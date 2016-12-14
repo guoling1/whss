@@ -1,0 +1,1 @@
+{"version":3,"sources":["wallet.js"],"names":["message","_require"],"mappings":";;AAAA;;;;AAIA;AACA,IAAMA,UAAUC,SAAS,SAAT,CAAhB","file":"wallet.js","sourcesContent":["/**\n * Created by administrator on 2016/12/9.\n */\n\n// 引入http message\nconst message = _require('message');\n\n"]}
