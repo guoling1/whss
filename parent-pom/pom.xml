@@ -16,6 +16,9 @@
     <properties>
         <hss.project.version>1.0.0-SNAPSHOT</hss.project.version>
         <!--自定义版本-->
+        <background.version>${hss.project.version}</background.version>
+        <common.version>${hss.project.version}</common.version>
+        <common.sdk.version>${hss.project.version}</common.sdk.version>
         <common.util.version>${hss.project.version}</common.util.version>
         <common.util.spring.version>${hss.project.version}</common.util.spring.version>
         <sms.sdk.version>${hss.project.version}</sms.sdk.version>
@@ -23,6 +26,7 @@
         <chronos.version>${hss.project.version}</chronos.version>
         <data.migration.version>${hss.project.version}</data.migration.version>
         <notifier.version>${hss.project.version}</notifier.version>
+        <service.version>${hss.project.version}</service.version>
         <account.version>${hss.project.version}</account.version>
         <bank.version>${hss.project.version}</bank.version>
         <dealer.version>${hss.project.version}</dealer.version>
@@ -31,6 +35,7 @@
         <user.version>${hss.project.version}</user.version>
         <admin.version>${hss.project.version}</admin.version>
         <mq.version>${hss.project.version}</mq.version>
+        <webapp.version>${hss.project.version}</webapp.version>
         <hss.mobile.version>${hss.project.version}</hss.mobile.version>
         <hss.admin.version>${hss.project.version}</hss.admin.version>
     </properties>
