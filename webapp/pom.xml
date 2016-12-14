@@ -8,7 +8,7 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>hss-web-admin</module>
-        <module>hss-web-mobile</module>
+        <module>admin</module>
+        <module>mobile</module>
     </modules>
 </project>
