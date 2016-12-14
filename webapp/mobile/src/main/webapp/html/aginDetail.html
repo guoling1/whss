@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <title>好收银</title>
+    <!--<link rel="stylesheet" href="http://img.jinkaimen.cn/hsy/css/reset.css">-->
+    <!--<link rel="stylesheet" href="http://img.jinkaimen.cn/hsy/css/style.css">-->
+    <link rel="stylesheet" href="../css/reset.css">
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <div id="aginDetail">
+    <div class="header">
+        <p class="w33">二级代理名称</p>
+
+        <p class="w21">收单分润</p>
+
+        <p class="w21">提现分润</p>
+
+        <p class="w21">分润总额</p>
+    </div>
+    <ul id="ul">
+        <li>
+            <!--总和-->
+            <div class="total">
+                <p class="w33"></p>
+
+                <p class="w21"></p>
+
+                <p class="w21"></p>
+
+                <p class="red w21"></p>
+            </div>
+            <!--每天详情-->
+            <div class="detail">
+                <p class="w33"></p>
+
+                <p class="w33"></p>
+
+                <p class="w21"></p>
+
+                <p class="w21"></p>
+
+                <p class="w21"></p>
+            </div>
+        </li>
+    </ul>
+</div>
+</body>
+<script src="../js/jQuery-2.1.4.min.js"></script>
+<script src="http://img.jinkaimen.cn/hsy/js/qrcode.min.js"></script>
+<script>
+    var data = [
+        {
+            "profitDate": "2016-11-29", //日期
+            "dayCollectTotalMoney": 1, //收单分润总额
+            "daywithdrawTotalMoney": 0, //提现分润总额
+            "dayTotalMoney": 1, //分润总额
+            "list": [
+                {
+                    "id": 1,
+                    "status": 0,
+                    "createTime": 1480503226000,
+                    "updateTime": 1480503226000,
+                    "shallMoneyType": 1,
+                    "merchantId": 1,
+                    "merchantName": "ziguang", //店铺名
+                    "secondDealerId": 0,
+                    "dealerName": "",
+                    "firstDealerId": 3,
+                    "statisticsDate": "2016-11-29",
+                    "collectMoney": 1,//收单分润
+                    "withdrawMoney": 0, //提现分润
+                    "totalMoney": 1//分润总额
+                }
+            ],
+            "createTime": 1480503226000
+        },
+        {
+            "profitDate": "2016-11-29",
+            "dayCollectTotalMoney": 1,
+            "daywithdrawTotalMoney": 0,
+            "dayTotalMoney": 1,
+            "list": [
+                {
+                    "id": 1,
+                    "status": 0,
+                    "createTime": 1480503226000,
+                    "updateTime": 1480503226000,
+                    "shallMoneyType": 1,
+                    "merchantId": 1,
+                    "merchantName": "ziguang",
+                    "secondDealerId": 0,
+                    "dealerName": "",
+                    "firstDealerId": 3,
+                    "statisticsDate": "2016-11-29",
+                    "collectMoney": 1,
+                    "withdrawMoney": 0,
+                    "totalMoney": 1
+                }
+            ],
+            "createTime": 1480503226000
+        }
+    ]
+    var $oUl = $('#ul');
+
+    for(var i = 0; i < data.length; i++){
+        var $oLi=document.createElement('li');
+        var $total ='<div class="total">'+
+                '<p class="w33">'+data[i].profitDate+'</p>'+
+                '<p class="w21">'+data[i].dayCollectTotalMoney+'</p>'+
+                '<p class="w21">'+data[i].daywithdrawTotalMoney+'</p>'+
+                '<p class="red w21">'+data[i].dayTotalMoney+'</p>'+
+                '</div>';
+        $oLi.innerHTML+= $total
+        for(var j = 0; j < data[i].list.length; j++){
+            var $detail = '<div class="detail">'+
+                    '<p class="w33">'+data[i].list[j].merchantName+'</p>'+
+                    '<p class="w21">'+data[i].list[j].collectMoney+'</p>'+
+                    '<p class="w21">'+data[i].list[j].withdrawMoney+'</p>'+
+                    '<p class="w21">'+data[i].list[j].totalMoney+'</p>'+'' +
+                    '</div>'
+            $oLi.innerHTML+= $detail
+        }
+        $oUl.append($oLi)
+    }
+</script>
+<script src="../js/dealerIndex.js"></script>
+</html>

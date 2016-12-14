@@ -1,0 +1,27 @@
+{
+  "name": "hsy",
+  "version": "1.0.0",
+  "description": "hsy",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "hsy"
+  ],
+  "author": "ibullet",
+  "license": "ISC",
+  "devDependencies": {
+    "babel-preset-es2015": "^6.18.0",
+    "browserify": "^13.1.1",
+    "gulp": "^3.9.1",
+    "gulp-babel": "^6.1.2",
+    "gulp-concat": "^2.6.1",
+    "gulp-less": "^3.3.0",
+    "gulp-sourcemaps": "^1.9.1",
+    "gulp-typescript": "^3.1.3",
+    "tsify": "^2.0.3",
+    "typescript": "^2.0.10",
+    "vinyl-source-stream": "^1.1.0"
+  }
+}
