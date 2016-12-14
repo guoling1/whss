@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jkm.hss.merchant.dao.MerchantInfoCheckRecordDao">
+
+
+    <update id="update" >
+        UPDATE tb_merchant_info
+        SET
+        account_id=#{accountId},
+        status = #{status}
+        WHERE id=#{merchantId}
+    </update>
+    <update id="updateStatus">
+        UPDATE tb_merchant_info
+        SET
+        status = #{status}
+        WHERE id=#{merchantId}
+    </update>
+
+    <insert id="add" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO tb_account_info
+        (
+          amount,
+          available,
+          frozen_amount,
+          status
+        )
+        VALUES
+        (
+          #{amount},
+          #{available},
+          #{frozenAmount},
+          #{status}
+        )
+
+    </insert>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO tb_merchant_info_check_record
+        (
+        merchant_id,
+        descr,
+        status
+        )
+        VALUES
+        (
+        #{merchantId},
+        #{descr},
+        #{status}
+        )
+
+    </insert>
+
+    <select id="getStauts" resultType="java.lang.Integer">
+        SELECT status FROM tb_merchant_info WHERE id=#{merchantId}
+    </select>
+
+    <select id="selectById" resultType="java.lang.String">
+        SELECT descr FROM tb_merchant_info_check_record WHERE merchant_id=#{merchantId} order by create_time desc limit 0,1
+    </select>
+
+    <select id="getId" resultType="java.lang.Integer">
+        SELECT id FROM tb_merchant_info_check_record WHERE merchant_id=#{merchantId}
+    </select>
+
+    <delete id="deletAccount">
+        DELETE FROM tb_account_info WHERE id=#{accountId}
+    </delete>
+    <delete id="deletIl">
+          DELETE FROM tb_merchant_info_check_record WHERE id=#{res}
+    </delete>
+
+</mapper>

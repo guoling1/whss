@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jkm.hss.merchant.dao.MerchantInfoDao">
+
+    <!-- 通用查询结果列-->
+    <sql id="Base_Column_List">
+        id,mobile,md_mobile,bank_no_short,	identity_face_pic,	identity_opposite_pic,	identity_hand_pic,	bank_hand_pic,	reserve_mobile,	merchant_name,	address,	name,	identity,	bank_bin,	bank_name,	bank_no,dealer_id,code,	status,	create_time,	update_time
+    </sql>
+
+    <update id="update" parameterType="com.jkm.hss.merchant.entity.MerchantInfo">
+        UPDATE tb_merchant_info
+        SET
+        merchant_name=#{merchantName},
+        address=#{address},
+        bank_no=#{bankNo},
+        bank_no_short=#{bankNoShort},
+        bank_bin=#{bankBin},
+        bank_name=#{bankName},
+        bank_pic=#{bankPic},
+        name=#{name},
+        identity=#{identity},
+        reserve_mobile = #{reserveMobile},
+        status = #{status}
+
+        WHERE id = #{id}
+    </update>
+
+    <update id="updatePic" parameterType="com.jkm.hss.merchant.entity.MerchantInfo">
+        UPDATE tb_merchant_info
+        SET
+        identity_face_pic = #{identityFacePic},
+        identity_opposite_pic = #{identityOppositePic},
+        identity_hand_pic = #{identityHandPic},
+        bank_hand_pic = #{bankHandPic},
+        status = #{status}
+
+        WHERE id = #{id}
+    </update>
+
+
+    <select id="selectById" resultType="com.jkm.hss.merchant.entity.MerchantInfo">
+        SELECT * FROM tb_merchant_info WHERE id = #{id}
+    </select>
+
+    <select id="getByNo" resultType="com.jkm.hss.merchant.entity.BankCardBin">
+        SELECT * from tb_bank_card_bin where bin_no=#{binNo}
+    </select>
+
+    <select id="selectByDealerId" resultType="com.jkm.hss.merchant.entity.MerchantInfo">
+        SELECT * FROM tb_merchant_info WHERE dealer_id = #{dealerId}
+    </select>
+
+    <select id="getAll" resultType="com.jkm.hss.merchant.entity.MerchantInfo">
+        SELECT * FROM tb_merchant_info
+
+    </select>
+
+
+
+
+    <!-- 添加 （匹配有值的字段）-->
+    <insert id="insertSelective" useGeneratedKeys="true" keyProperty="id" >
+        INSERT INTO tb_merchant_info
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test="mobile != null">
+                mobile,
+            </if>
+            <if test="mdMobile != null">
+                md_mobile,
+            </if>
+            <if test="bankNoShort != null">
+                bank_no_short,
+            </if>
+            <if test="identityFacePic != null">
+                identity_face_pic,
+            </if>
+            <if test="identityOppositePic != null">
+                identity_opposite_pic,
+            </if>
+            <if test="identityHandPic != null">
+                identity_hand_pic,
+            </if>
+            <if test="bankHandPic != null">
+                bank_hand_pic,
+            </if>
+            <if test="reserveMobile != null">
+                reserve_mobile,
+            </if>
+            <if test="merchantName != null">
+                merchant_name,
+            </if>
+            <if test="address != null">
+                address,
+            </if>
+            <if test="name != null">
+                name,
+            </if>
+            <if test="identity != null">
+                identity,
+            </if>
+            <if test="bankBin != null">
+                bank_bin,
+            </if>
+            <if test="bankName != null">
+                bank_name,
+            </if>
+            <if test="bankNo != null">
+                bank_no,
+            </if>
+            <if test="dealerId != null">
+                dealer_id,
+            </if>
+            <if test="code != null">
+                code,
+            </if>
+            <if test="accountId!=null">
+                account_id,
+            </if>
+            <if test="status != null">
+                status,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+            <if test="mobile != null">
+                #{mobile},
+            </if>
+            <if test="mdMobile != null">
+                #{mdMobile},
+            </if>
+            <if test="bankNoShort != null">
+                #{bankNoShort},
+            </if>
+            <if test="identityFacePic!=null">
+                #{identityFacePic},
+            </if>
+            <if test="identityOppositePic!=null">
+                #{identityOppositePic},
+            </if>
+            <if test="identityHandPic!=null">
+                #{identityHandPic},
+            </if>
+            <if test="bankHandPic!=null">
+                #{bankHandPic},
+            </if>
+            <if test="reserveMobile!=null">
+                #{reserveMobile},
+            </if>
+            <if test="merchantName!=null">
+                #{merchantName},
+            </if>
+            <if test="address!=null">
+                #{address},
+            </if>
+            <if test="name!=null">
+                #{name},
+            </if>
+            <if test="identity!=null">
+                #{identity},
+            </if>
+            <if test="bankBin!=null">
+                #{bankBin},
+            </if>
+            <if test="bankName!=null">
+                #{bankName},
+            </if>
+            <if test="bankNo!=null">
+                #{bankNo},
+            </if>
+            <if test="dealerId != null">
+                #{dealerId},
+            </if>
+            <if test="code != null">
+                #{code},
+            </if>
+            <if test="accountId!=null">
+                #{accountId},
+            </if>
+            <if test="status!=null">
+                #{status},
+            </if>
+        </trim>
+    </insert>
+
+    <!-- 修 改-->
+    <update id="updateBySelective">
+        UPDATE tb_merchant_info
+        <set>
+            <if test="identityFacePic != null">
+                identity_face_pic = #{identityFacePic},
+            </if>
+            <if test="identityOppositePic != null">
+                identity_opposite_pic = #{identityOppositePic},
+            </if>
+            <if test="identityHandPic != null">
+                identity_hand_pic = #{identityHandPic},
+            </if>
+            <if test="bankHandPic != null">
+                bank_hand_pic = #{bankHandPic},
+            </if>
+            <if test="reserveMobile != null">
+                reserve_mobile = #{reserveMobile},
+            </if>
+            <if test="merchantName != null">
+                merchant_name = #{merchantName},
+            </if>
+            <if test="address != null">
+                address = #{address},
+            </if>
+            <if test="name != null">
+                name = #{name},
+            </if>
+            <if test="identity != null">
+                identity = #{identity},
+            </if>
+            <if test="bankBin != null">
+                bank_bin = #{bankBin},
+            </if>
+            <if test="bankName != null">
+                bank_name = #{bankName},
+            </if>
+            <if test="bankNo != null">
+                bank_no = #{bankNo},
+            </if>
+            <if test="dealerId != null">
+                dealer_id = #{dealerId},
+            </if>
+            <if test="code != null">
+                code = #{code},
+            </if>
+            <if test="accountId != null">
+                account_id = #{accountId},
+            </if>
+            <if test="status != null">
+                status = #{status},
+            </if>
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <!-- 查询（根据OpenId查询） -->
+    <select id="selectByCode" resultType="com.jkm.hss.merchant.entity.MerchantInfo">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM tb_merchant_info
+        WHERE code = #{code}
+    </select>
+
+    <update id="updateStatus">
+        UPDATE tb_merchant_info
+        SET
+        status = #{status}
+        WHERE id = #{id}
+    </update>
+</mapper>

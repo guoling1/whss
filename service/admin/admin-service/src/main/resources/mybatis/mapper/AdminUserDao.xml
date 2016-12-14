@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jkm.hss.admin.dao.AdminUserDao">
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO tb_admin_user
+        (
+        username,
+        password,
+        salt,
+        realname,
+        email,
+        mobile,
+        status
+        )
+        VALUES
+        (
+        #{username},
+        #{password},
+        #{salt},
+        #{realname},
+        #{email},
+        #{mobile},
+        #{status}
+        );
+    </insert>
+    <update id="update">
+        UPDATE tb_admin_user
+        SET
+        username = #{username},
+        password = #{password},
+        salt = #{salt},
+        realname = #{realname},
+        email = #{email},
+        mobile = #{mobile},
+        status = #{status}
+        WHERE id = #{id}
+    </update>
+
+    <select id="selectById" resultType="com.jkm.hss.admin.entity.AdminUser">
+        SELECT * FROM tb_admin_user WHERE id = #{id}
+    </select>
+
+    <select id="selectByUsername" resultType="com.jkm.hss.admin.entity.AdminUser">
+        SELECT * FROM tb_admin_user WHERE username = #{username}
+    </select>
+</mapper>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns="http://www.springframework.org/schema/beans"
+
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <!--<import resource="classpath*:/spring/*.xml"/>-->
+    <context:component-scan base-package="com.jkm.hss.notifier"/>
+    <context:component-scan base-package="com.jkm.base.common.spring"/>
+
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage" value="com.jkm.hss.notifier.dao"/>
+        <property name="annotationClass" value="org.springframework.stereotype.Repository"/>
+        <!--对于一般项目结构可以将<property name="annotationClass" value="org.springframework.stereotype.Repository"/>
+        替换成<property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"></property>
+        所有mybatis配置放在一起
+        -->
+    </bean>
+
+</beans>

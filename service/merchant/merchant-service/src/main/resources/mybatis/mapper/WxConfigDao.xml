@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jkm.hss.merchant.dao.WxConfigDao">
+
+	<!-- 通用查询结果列-->
+	<sql id="Base_Column_List">
+		 id,	access_token,	jsapi_ticket,	expire_time,	status,	create_time,	update_time
+	</sql>
+
+	<select id="selectTop1" resultType="com.jkm.hss.merchant.entity.WxConfig">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM tb_wx_config
+		WHERE status=0 order by create_time desc limit 0,1;
+	</select>
+
+	<!-- 查询（根据主键ID查询） -->
+	<select id="selectByPrimaryKey" resultType="com.jkm.hss.merchant.entity.WxConfig" >
+		 SELECT
+		 <include refid="Base_Column_List" />
+		 FROM tb_wx_config
+		 WHERE id = #{id} and status=0
+	</select>
+
+	<!-- 添加 （匹配有值的字段）-->
+	<insert id="insertSelective" useGeneratedKeys="true" keyProperty="id" parameterType="com.jkm.hss.merchant.entity.WxConfig">
+		 INSERT INTO tb_wx_config
+		 <trim prefix="(" suffix=")" suffixOverrides="," >
+			<if test="id != null">
+				 id,
+			</if>
+			<if test="accessToken != null">
+				 access_token,
+			</if>
+			<if test="jsapiTicket != null">
+				 jsapi_ticket,
+			</if>
+			<if test="expireTime != null">
+				 expire_time,
+			</if>
+			<if test="status != null">
+				 status,
+			</if>
+			<if test="createTime != null">
+				 create_time,
+			</if>
+			<if test="updateTime != null">
+				 update_time,
+			</if>
+
+		 </trim>
+		 <trim prefix="values (" suffix=")" suffixOverrides="," >
+			<if test="id!=null">
+				 #{id},
+			</if>
+			<if test="accessToken!=null">
+				 #{accessToken},
+			</if>
+			<if test="jsapiTicket!=null">
+				 #{jsapiTicket},
+			</if>
+			<if test="expireTime!=null">
+				 #{expireTime},
+			</if>
+			<if test="status!=null">
+				 #{status},
+			</if>
+			<if test="createTime!=null">
+				 #{createTime},
+			</if>
+			<if test="updateTime!=null">
+				 #{updateTime},
+			</if>
+		 </trim>
+	</insert>
+
+	<!-- 修 改-->
+	<update id="updateByPrimaryKeySelective" parameterType="com.jkm.hss.merchant.entity.WxConfig">
+		 UPDATE tb_wx_config
+ 		 <set> 
+			<if test="accessToken != null">
+				 access_token = #{accessToken},
+			</if>
+			<if test="jsapiTicket != null">
+				 jsapi_ticket = #{jsapiTicket},
+			</if>
+			<if test="expireTime != null">
+				 expire_time = #{expireTime},
+			</if>
+			<if test="status != null">
+				 status = #{status},
+			</if>
+			<if test="createTime != null">
+				 create_time = #{createTime},
+			</if>
+			<if test="updateTime != null">
+				 update_time = #{updateTime},
+			</if>
+
+ 		 </set>
+		 WHERE id = #{id}
+	</update>
+
+</mapper>

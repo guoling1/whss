@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jkm.hss.admin.dao.DistributeQRCodeRecordDao">
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+         INSERT INTO tb_distribute_qr_code_record
+        (
+        first_level_dealer_id,
+        second_level_dealer_id,
+        count,
+        start_code,
+        end_code,
+        status
+        )
+        VALUES
+        (
+        #{firstLevelDealerId},
+        #{secondLevelDealerId},
+        #{count},
+        #{startCode},
+        #{endCode},
+        #{status}
+        );
+    </insert>
+
+    <select id="selectById" resultType="com.jkm.hss.admin.entity.DistributeQRCodeRecord">
+        SELECT * FROM tb_distribute_qr_code_record WHERE id = #{id}
+    </select>
+
+    <select id="selectDistributeSelfRecords" resultType="com.jkm.hss.admin.entity.DistributeQRCodeRecord">
+       SELECT * FROM tb_distribute_qr_code_record
+       WHERE first_level_dealer_id = #{firstLevelDealerId}
+       AND second_level_dealer_id = 0
+       ORDER BY id DESC
+    </select>
+
+    <select id="selectDistributeSecondDealerRecords" resultType="com.jkm.hss.admin.entity.DistributeQRCodeRecord">
+        SELECT * FROM tb_distribute_qr_code_record
+        WHERE first_level_dealer_id = #{firstLevelDealerId}
+        AND second_level_dealer_id > 0
+        ORDER BY id DESC
+    </select>
+
+    <select id="selectRecordBySecondLevelDealerId" resultType="com.jkm.hss.admin.entity.DistributeQRCodeRecord">
+         SELECT * FROM tb_distribute_qr_code_record
+        WHERE first_level_dealer_id = #{dealerId}
+        AND second_level_dealer_id = #{secondLevelDealerId}
+        ORDER BY id DESC
+    </select>
+</mapper>

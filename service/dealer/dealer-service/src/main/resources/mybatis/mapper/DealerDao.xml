@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jkm.hss.dealer.dao.DealerDao">
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO tb_dealer
+        (
+        account_id,
+        mobile,
+        proxy_name,
+        bank_account_name,
+        settle_bank_card,
+        bank_reserve_mobile,
+        belong_area,
+        level,
+        first_level_dealer_id,
+        second_level_dealer_id,
+        last_login_date,
+        status
+        )
+        VALUES
+        (
+        #{accountId},
+        #{mobile},
+        #{proxyName},
+        #{bankAccountName},
+        #{settleBankCard},
+        #{bankReserveMobile},
+        #{belongArea},
+        #{level},
+        #{firstLevelDealerId},
+        #{secondLevelDealerId},
+        #{lastLoginDate},
+        #{status}
+        );
+    </insert>
+    <update id="update">
+        UPDATE tb_dealer
+        SET
+        account_id = #{accountId},
+        mobile = #{mobile},
+        proxy_name = #{proxyName},
+        bank_account_name = #{bankAccountName},
+        settle_bank_card = #{settleBankCard},
+        bank_reserve_mobile = #{bankReserveMobile},
+        belong_area = #{belongArea},
+        level = #{level},
+        first_level_dealer_id = #{firstLevelDealerId},
+        second_level_dealer_id = #{secondLevelDealerId},
+        last_login_date = #{lastLoginDate},
+        status = #{status}
+        WHERE id = #{id}
+    </update>
+
+    <update id="updateLoginDate">
+        UPDATE tb_dealer SET last_login_date = NOW() WHERE id = #{dealerId}
+    </update>
+
+    <select id="selectById" resultType="com.jkm.hss.dealer.entity.Dealer">
+        SELECT * FROM tb_dealer WHERE id = #{id}
+    </select>
+
+    <select id="selectByIds" resultType="com.jkm.hss.dealer.entity.Dealer">
+         SELECT * FROM tb_dealer
+         WHERE id IN
+         <foreach collection="ids" index="index" item="item" open="(" separator="," close=")">
+             #{item}
+         </foreach>
+    </select>
+
+    <select id="selectByMobile" resultType="com.jkm.hss.dealer.entity.Dealer">
+        SELECT * FROM tb_dealer WHERE mobile = #{mobile}
+    </select>
+
+    <select id="selectByMobileUnIncludeNow" resultType="com.jkm.hss.dealer.entity.Dealer">
+         SELECT * FROM tb_dealer WHERE mobile = #{mobile} AND id != #{dealerId}
+    </select>
+
+    <select id="selectAllFirstLevelDealers" resultType="com.jkm.hss.dealer.entity.Dealer">
+        SELECT * FROM tb_dealer WHERE level = 1
+    </select>
+
+    <select id="selectSecondLevelDealersByFirstLevelDealerId" resultType="com.jkm.hss.dealer.entity.Dealer">
+        SELECT * FROM tb_dealer WHERE first_level_dealer_id = #{firstLevelDealerId} AND level = 2
+    </select>
+
+    <select id="selectThirdLevelDealersBySecondLevelDealerId" resultType="com.jkm.hss.dealer.entity.Dealer">
+        SELECT * FROM tb_dealer WHERE second_level_dealer_id = #{secondLevelDealerId} AND level = 3
+    </select>
+
+    <select id="selectByProxyName" resultType="java.lang.Long">
+         SELECT COUNT(*) FROM tb_dealer WHERE proxy_name = #{name}
+    </select>
+
+    <select id="selectByProxyNameUnIncludeNow" resultType="java.lang.Long">
+        SELECT COUNT(*) FROM tb_dealer WHERE proxy_name = #{proxyMame} AND id != #{dealerId}
+    </select>
+
+    <select id="selectByCondition" resultType="com.jkm.hss.dealer.entity.Dealer">
+        SELECT id, mobile, proxy_name FROM tb_dealer
+        WHERE (mobile LIKE "%"#{condition}"%" OR proxy_name LIKE "%"#{condition}"%")
+        <if test="dealerId > 0">
+            AND first_level_dealer_id = #{dealerId}
+        </if>
+        AND level = #{level}
+    </select>
+
+    <select id="selectMyDealerCount" resultType="java.lang.Integer">
+        SELECT COUNT(*) FROM tb_dealer WHERE first_level_dealer_id = #{firstDealerId} AND level = 2
+    </select>
+
+    <select id="selectDealerCountByPageParams" resultType="java.lang.Integer">
+        SELECT COUNT(*) FROM tb_dealer
+        <where>
+            <if test="id > 0">
+                AND id = ${id}
+            </if>
+            <if test="name != null">
+                AND `proxy_name` LIKE "%"#{name}"%"
+            </if>
+            <if test="mobile != null">
+                AND mobile = #{mobile}
+            </if>
+            <if test="belongArea != null">
+                AND belong_area LIKE "%"#{belongArea}"%"
+            </if>
+            <if test="level > 0">
+                AND level = #{level}
+            </if>
+        </where>
+    </select>
+
+    <select id="selectDealersByPageParams" resultType="com.jkm.hss.dealer.entity.Dealer">
+        SELECT * FROM tb_dealer
+        <where>
+            <if test="id > 0">
+                AND id = ${id}
+            </if>
+            <if test="name != null">
+                AND `proxy_name` LIKE "%"#{name}"%"
+            </if>
+            <if test="mobile != null">
+                AND mobile = #{mobile}
+            </if>
+            <if test="belongArea != null">
+                AND belong_area LIKE "%"#{belongArea}"%"
+            </if>
+            <if test="level > 0">
+                AND level = #{level}
+            </if>
+            ORDER BY id DESC LIMIT #{offset},#{count}
+        </where>
+    </select>
+</mapper>

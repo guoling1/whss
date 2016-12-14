@@ -1,0 +1,279 @@
+package com.jkm.hss.dealer.service.impl;
+
+import com.google.common.base.Optional;
+import com.google.common.base.Preconditions;
+import com.jkm.base.common.entity.PageModel;
+import com.jkm.base.common.util.DateFormatUtil;
+import com.jkm.hss.dealer.dao.DailyProfitDetailDao;
+import com.jkm.hss.dealer.entity.DailyProfitDetail;
+import com.jkm.hss.dealer.entity.Dealer;
+import com.jkm.hss.dealer.entity.ShallProfitDetail;
+import com.jkm.hss.dealer.enums.EnumDealerLevel;
+import com.jkm.hss.dealer.enums.EnumShallMoneyType;
+import com.jkm.hss.dealer.service.DailyProfitDetailService;
+import com.jkm.hss.dealer.service.DealerService;
+import com.jkm.hss.dealer.service.ShallProfitDetailService;
+import com.jkm.hss.merchant.entity.MerchantInfo;
+import com.jkm.hss.merchant.service.MerchantInfoService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.math.BigDecimal;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+
+/**
+ * Created by yuxiang on 2016-11-25.
+ */
+@Service
+public class DailyProfitDetailServiceImpl implements DailyProfitDetailService {
+
+    @Autowired
+    private ShallProfitDetailService shallProfitDetailService;
+    @Autowired
+    private MerchantInfoService merchantInfoService;
+    @Autowired
+    private DealerService dealerService;
+    @Autowired
+    private DailyProfitDetailDao dailyProfitDetailDao;
+    /**
+     *{@inheritDoc}
+     */
+    @Override
+    @Transactional
+    public void dailyProfitCount() {
+        final String profitDate = this.getProfitDate(new Date());
+        //查昨日有分润记录的商户
+        final List<Long> merchantIdList = this.shallProfitDetailService.selectMerchantIdByProfitDate(profitDate);
+        //遍历,计算每个商户每天的收单分润,体现分润
+        for (Long merchantId : merchantIdList){
+            final Optional<MerchantInfo> merchantInfoOptional = this.merchantInfoService.selectById(merchantId);
+            Preconditions.checkNotNull(merchantInfoOptional.isPresent(), "商户信息不存在");
+            final MerchantInfo merchantInfo = merchantInfoOptional.get();
+            // 判断该商户的代理是几级代理
+            final Optional<Dealer> dealerOptional = this.dealerService.getById(merchantInfo.getDealerId());
+            Preconditions.checkNotNull(dealerOptional.isPresent(), "代理商信息不存在");
+            final Dealer dealer = dealerOptional.get();
+            if (dealer.getLevel() == EnumDealerLevel.FIRST.getId()){
+                //收单分润
+                final BigDecimal collectMoney =
+                        this.shallProfitDetailService.selectFirstCollectMoneyByMerchantIdAndProfitDate(merchantId, profitDate);
+                //提现分润
+                 BigDecimal withdrawMoney =
+                        this.shallProfitDetailService.selectFirstWithdrawMoneyByMerchantIdAndProfitDate(merchantId, profitDate);
+                if (withdrawMoney == null){
+                    withdrawMoney = new BigDecimal(0);
+                }
+                final DailyProfitDetail dailyProfitDetail = new DailyProfitDetail();
+                dailyProfitDetail.setMerchantName(merchantInfo.getMerchantName());
+                dailyProfitDetail.setShallMoneyType(EnumShallMoneyType.TOMERCHANT.getId());
+                dailyProfitDetail.setMerchantId(merchantId);
+                dailyProfitDetail.setFirstDealerId(dealer.getId());
+                dailyProfitDetail.setSecondDealerId(0);
+                dailyProfitDetail.setDealerName("");
+                dailyProfitDetail.setStatisticsDate(profitDate);
+                dailyProfitDetail.setCollectMoney(collectMoney);
+                dailyProfitDetail.setWithdrawMoney(withdrawMoney);
+                dailyProfitDetail.setTotalMoney(collectMoney.add(withdrawMoney));
+                this.dailyProfitDetailDao.init(dailyProfitDetail);
+            }else if (dealer.getLevel() == EnumDealerLevel.SECOND.getId()){
+                //一级代理信息
+                final Optional<Dealer> firstDealerOptional = this.dealerService.getById(dealer.getFirstLevelDealerId());
+                Preconditions.checkNotNull(dealerOptional.isPresent(), "代理商信息不存在");
+                final Dealer firstDealer = firstDealerOptional.get();
+                //收单分润
+                final BigDecimal collectMoney =
+                        this.shallProfitDetailService.selectSecondCollectMoneyByMerchantIdAndProfitDate(merchantId, profitDate);
+                //提现分润
+                BigDecimal withdrawMoney =
+                        this.shallProfitDetailService.selectSecondWithdrawMoneyByMerchantIdAndProfitDate(merchantId, profitDate);
+                if (withdrawMoney == null){
+                    withdrawMoney = new BigDecimal(0);
+                }
+                //创建该一级代理的每日收益记录
+                final DailyProfitDetail firstRecord = this.dailyProfitDetailDao.selectByFirstDealerIdAndType(firstDealer.getId(),EnumShallMoneyType.TOFIRST.getId());
+                if (firstRecord == null){
+                    //不存在.新建
+                    final DailyProfitDetail dailyProfitDetail = new DailyProfitDetail();
+                    dailyProfitDetail.setShallMoneyType(EnumShallMoneyType.TOFIRST.getId());
+                    dailyProfitDetail.setMerchantId(0);
+                    dailyProfitDetail.setMerchantName("");
+                    dailyProfitDetail.setSecondDealerId(0);
+                    dailyProfitDetail.setDealerName("");
+                    dailyProfitDetail.setFirstDealerId(firstDealer.getId());
+                    dailyProfitDetail.setFirstDealerName(firstDealer.getProxyName());
+                    dailyProfitDetail.setStatisticsDate(DateFormatUtil.format(new Date(), DateFormatUtil.yyyy_MM_dd));
+                    dailyProfitDetail.setCollectMoney(collectMoney);
+                    dailyProfitDetail.setWithdrawMoney(withdrawMoney);
+                    dailyProfitDetail.setTotalMoney(collectMoney.add(withdrawMoney));
+                    this.dailyProfitDetailDao.init(dailyProfitDetail);
+                }else{
+                    //存在, 累加
+                    firstRecord.setCollectMoney(collectMoney.add(firstRecord.getCollectMoney()));
+                    firstRecord.setWithdrawMoney(withdrawMoney.add(firstRecord.getWithdrawMoney()));
+                    firstRecord.setTotalMoney(collectMoney.add(withdrawMoney).add(firstRecord.getTotalMoney()));
+                    this.dailyProfitDetailDao.update(firstRecord);
+                }
+                final DailyProfitDetail dailyProfitDetail = new DailyProfitDetail();
+                dailyProfitDetail.setMerchantName(merchantInfo.getMerchantName());
+                dailyProfitDetail.setShallMoneyType(EnumShallMoneyType.TOMERCHANT.getId());
+                dailyProfitDetail.setMerchantId(merchantId);
+                dailyProfitDetail.setFirstDealerId(firstDealer.getId());
+                dailyProfitDetail.setSecondDealerId(dealer.getId());
+                dailyProfitDetail.setDealerName(dealer.getProxyName());
+                dailyProfitDetail.setStatisticsDate(profitDate);
+                dailyProfitDetail.setCollectMoney(collectMoney);
+                dailyProfitDetail.setWithdrawMoney(withdrawMoney);
+                dailyProfitDetail.setTotalMoney(collectMoney.add(withdrawMoney));
+                this.dailyProfitDetailDao.init(dailyProfitDetail);
+            }
+        }
+        //每个二级代理每天的分润
+        //查询昨日二级代理有分润的帐号
+        final List<Long> dealerIdList = this.shallProfitDetailService.selectDealerIdByProfitDate(profitDate);
+        for (Long dealerId : dealerIdList){
+            final Optional<Dealer> dealerOptional = this.dealerService.getById(dealerId);
+            Preconditions.checkNotNull(dealerOptional.isPresent(), "代理商信息不存在");
+            final Dealer secondDealer = dealerOptional.get();
+            //查询该二级代理的一级代理
+            final Optional<Dealer> firstDealerOptional = this.dealerService.getById(secondDealer.getFirstLevelDealerId());
+            Preconditions.checkNotNull(firstDealerOptional.isPresent(), "代理商信息不存在");
+            final Dealer firstDealer = firstDealerOptional.get();
+            //收单分润
+            final BigDecimal collectMoney =
+                    this.shallProfitDetailService.selectFirstCollectMoneyByDealerIdAndProfitDate(secondDealer.getId(), profitDate);
+            //提现分润
+            final BigDecimal withdrawMoney =
+                    this.shallProfitDetailService.selectFirstWithdrawMoneyByDealerIdAndProfitDate(secondDealer.getId(), profitDate);
+            //创建该一级代理的每日收益记录
+            final DailyProfitDetail firstRecord = this.dailyProfitDetailDao.selectByFirstDealerIdAndType(firstDealer.getId(),EnumShallMoneyType.TOFIRST.getId());
+            if (firstRecord == null){
+                //不存在.新建
+                final DailyProfitDetail dailyProfitDetail = new DailyProfitDetail();
+                dailyProfitDetail.setShallMoneyType(EnumShallMoneyType.TOFIRST.getId());
+                dailyProfitDetail.setMerchantId(0);
+                dailyProfitDetail.setMerchantName("");
+                dailyProfitDetail.setSecondDealerId(0);
+                dailyProfitDetail.setDealerName("");
+                dailyProfitDetail.setFirstDealerId(firstDealer.getId());
+                dailyProfitDetail.setFirstDealerName(firstDealer.getProxyName());
+                dailyProfitDetail.setStatisticsDate(DateFormatUtil.format(new Date(), DateFormatUtil.yyyy_MM_dd));
+                dailyProfitDetail.setCollectMoney(collectMoney);
+                dailyProfitDetail.setWithdrawMoney(withdrawMoney);
+                dailyProfitDetail.setTotalMoney(collectMoney.add(withdrawMoney));
+                this.dailyProfitDetailDao.init(dailyProfitDetail);
+            }else{
+                //存在, 累加
+                firstRecord.setCollectMoney(collectMoney.add(firstRecord.getCollectMoney()));
+                firstRecord.setWithdrawMoney(withdrawMoney.add(firstRecord.getWithdrawMoney()));
+                firstRecord.setTotalMoney(collectMoney.add(withdrawMoney).add(firstRecord.getTotalMoney()));
+                this.dailyProfitDetailDao.update(firstRecord);
+            }
+            final DailyProfitDetail dailyProfitDetail = new DailyProfitDetail();
+            dailyProfitDetail.setMerchantName("");
+            dailyProfitDetail.setShallMoneyType(EnumShallMoneyType.TOSECOND.getId());
+            dailyProfitDetail.setMerchantId(0);
+            dailyProfitDetail.setFirstDealerId(firstDealer.getId());
+            dailyProfitDetail.setFirstDealerName(firstDealer.getProxyName());
+            dailyProfitDetail.setSecondDealerId(secondDealer.getId());
+            dailyProfitDetail.setDealerName(secondDealer.getProxyName());
+            dailyProfitDetail.setStatisticsDate(profitDate);
+            dailyProfitDetail.setCollectMoney(collectMoney);
+            dailyProfitDetail.setWithdrawMoney(withdrawMoney);
+            dailyProfitDetail.setTotalMoney(collectMoney.add(withdrawMoney));
+            this.dailyProfitDetailDao.init(dailyProfitDetail);
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param dealerId
+     * @return
+     */
+    @Override
+    public List<DailyProfitDetail> toMerchant(long dealerId) {
+        final Optional<Dealer> dealerOptional = this.dealerService.getById(dealerId);
+        Preconditions.checkNotNull(dealerOptional.isPresent(), "代理商不存在");
+        final Dealer dealer = dealerOptional.get();
+        final List<DailyProfitDetail> list;
+        //判断是一级代理还是二级代理
+        if (dealer.getLevel() == EnumDealerLevel.FIRST.getId()){
+             list = this.dailyProfitDetailDao.selectByFirstDealerId(dealerId);
+        }else{
+             list = this.dailyProfitDetailDao.selectBySecondDealerId(dealerId);
+        }
+        return list;
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param dealerId
+     * @return
+     */
+    @Override
+    public List<DailyProfitDetail> toDealer(long dealerId) {
+        final Optional<Dealer> dealerOptional = this.dealerService.getById(dealerId);
+        Preconditions.checkNotNull(dealerOptional.isPresent(), "代理商不存在");
+        final Dealer dealer = dealerOptional.get();
+        if (dealer.getLevel() == EnumDealerLevel.FIRST.getId()){
+          final List<DailyProfitDetail> list =  this.dailyProfitDetailDao.selectToSecondDealer(dealerId);
+            return list;
+        }
+        return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     * @param dealerId
+     * @param dealerName
+     * @param profitDate
+     * @param pageNO
+     * @param pageSize
+     * @return
+     */
+    @Override
+    public PageModel<DailyProfitDetail> selectFirstByParam(long dealerId, String dealerName, String profitDate, int pageNO, int pageSize) {
+        PageModel<DailyProfitDetail> pageModel = new PageModel<>(pageNO, pageSize);
+        List<DailyProfitDetail> list = this.dailyProfitDetailDao.selectFirstByParam(dealerId, dealerName, profitDate, pageModel.getFirstIndex(), pageSize);
+        if (list == null){
+            list = Collections.emptyList();
+        }
+        pageModel.setRecords(list);
+        return pageModel;
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param dealerId
+     * @param dealerName
+     * @param profitDate
+     * @param pageNO
+     * @param pageSize
+     * @return
+     */
+    @Override
+    public PageModel<DailyProfitDetail> selectSecondByParam(long dealerId, String dealerName, String profitDate, int pageNO, int pageSize) {
+        PageModel<DailyProfitDetail> pageModel = new PageModel<>(pageNO, pageSize);
+        List<DailyProfitDetail> list = this.dailyProfitDetailDao.selectSecondByParam(dealerId, dealerName, profitDate, pageModel.getFirstIndex(), pageSize);
+        if (list == null){
+            list = Collections.emptyList();
+        }
+        pageModel.setRecords(list);
+        return pageModel;
+    }
+
+    private String getProfitDate(Date date) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        calendar.add(Calendar.DAY_OF_MONTH, -1);
+        date = calendar.getTime();
+        final String format = DateFormatUtil.format(date, DateFormatUtil.yyyy_MM_dd);
+        return format;
+    }
+}

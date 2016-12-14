@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jkm.hss.notifier.dao.VerificationCodeDao">
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO tb_verification_code (mobile, code, type, retry_count, status, create_time)
+        VALUES (#{mobile}, #{code}, #{type}, #{retryCount}, #{status}, NOW())
+    </insert>
+    <update id="increaseRetryCount">
+        <![CDATA[
+
+
+
+          UPDATE tb_verification_code SET retry_count = retry_count + 1 WHERE id = #{id} AND retry_count < #{maxRetryCount}
+
+
+
+        ]]>
+    </update>
+    <update id="updateStatus">
+        UPDATE tb_verification_code SET status = #{status} WHERE id = #{id} AND status != #{status}
+    </update>
+    <select id="selectLast" resultType="com.jkm.hss.notifier.entity.VerificationCode">
+        SELECT * FROM tb_verification_code WHERE mobile = #{mobile} AND type = #{type}
+        ORDER BY id DESC LIMIT 1
+    </select>
+    <select id="selectTodaySendCount" resultType="java.lang.Integer">
+        SELECT COUNT(1) FROM tb_verification_code WHERE mobile = #{mobile} AND type = #{type} AND DATE(create_time) =
+        CURDATE()
+    </select>
+</mapper>

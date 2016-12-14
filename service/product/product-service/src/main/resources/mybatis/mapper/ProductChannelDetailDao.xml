@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jkm.hss.product.dao.ProductChannelDetailDao">
+
+    <insert id="init" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO tb_product_channel_detail
+        (product_id,
+        basic_channel_id,
+        channel_type_sign,
+        product_trade_rate,
+        product_balance_type,
+        product_withdraw_fee,
+        product_merchant_pay_rate,
+        product_merchant_withdraw_fee,
+        status
+        )VALUES(
+        #{productId},
+        #{basicChannelId},
+        #{channelTypeSign},
+        #{productTradeRate},
+        #{productBalanceType},
+        #{productWithdrawFee},
+        #{productMerchantPayRate},
+        #{productMerchantWithdrawFee},
+        #{status}
+        )
+    </insert>
+    <update id="update">
+        UPDATE tb_product_channel_detail
+        SET product_id = #{productId},
+        basic_channel_id = #{basicChannelId},
+        channel_type_sign = #{channelTypeSign},
+        product_trade_rate = #{productTradeRate},
+        product_balance_type = #{productBalanceType},
+        product_withdraw_fee = #{productWithdrawFee},
+        product_merchant_pay_rate = #{productMerchantPayRate},
+        product_merchant_withdraw_fee = #{productMerchantWithdrawFee},
+        status = #{status}
+        WHERE id = #{id}
+    </update>
+    <select id="selectByProductIdAndChannelId" resultType="com.jkm.hss.product.entity.ProductChannelDetail">
+        SELECT * FROM tb_product_channel_detail WHERE product_id = #{id}
+        AND channel_type_sign = #{channelSignId} AND status = 2
+    </select>
+    <select id="selectByProductId" resultType="com.jkm.hss.product.entity.ProductChannelDetail">
+        SELECT * FROM tb_product_channel_detail WHERE product_id = #{productId} AND status = 2
+    </select>
+    <select id="selectByChannelTypeSign" resultType="com.jkm.hss.product.entity.ProductChannelDetail">
+        SELECT * FROM tb_product_channel_detail WHERE channel_type_sign = #{payChannel} AND status = 2
+    </select>
+</mapper>

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jkm.hss.dealer.dao.DealerPassportDao">
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO tb_dealer_passport
+        (
+        dealer_id,
+        token,
+        type,
+        expire_time,
+        login_status,
+        status
+        )
+        VALUES
+        (
+        #{dealerId},
+        #{token},
+        #{type},
+        #{expireTime},
+        #{loginStatus},
+        #{status}
+        );
+    </insert>
+    <update id="updateByDealerId">
+        UPDATE tb_dealer_passport
+        SET
+        dealer_id = #{dealerId},
+        token = #{token},
+        type = #{type},
+        expire_time = #{expireTime},
+        login_status = #{loginStatus},
+        status = #{status}
+        WHERE dealer_id = #{dealerId}
+    </update>
+    <update id="updateLoginStatusById">
+        UPDATE tb_dealer_passport SET login_status = #{loginStatus} WHERE id = #{id}
+    </update>
+    <update id="updateExpireTimeById">
+        UPDATE tb_dealer_passport SET expire_time = ${expireTime} WHERE id = #{id}
+    </update>
+    <update id="updateLoginStatusByDealerId">
+        UPDATE tb_dealer_passport SET login_status = #{loginStatus} WHERE dealer_id = #{dealerId}
+    </update>
+    <select id="selectByDealerId" resultType="com.jkm.hss.dealer.entity.DealerPassport">
+        SELECT * FROM tb_dealer_passport WHERE dealer_id = #{dealerId}
+    </select>
+    <select id="selectByToken" resultType="com.jkm.hss.dealer.entity.DealerPassport">
+        SELECT * FROM tb_dealer_passport WHERE token = #{token} AND type = #{type}
+    </select>
+</mapper>

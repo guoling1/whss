@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jkm.hss.dealer.dao.DealerChannelRateDao">
+    <insert id="init" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO tb_dealer_channel_rate
+        (dealer_id,
+        product_id,
+        channel_type_sign,
+        dealer_trade_rate,
+        dealer_balance_type,
+        dealer_withdraw_fee,
+        dealer_merchant_pay_rate,
+        dealer_merchant_withdraw_fee,
+        status
+        )VALUES(
+        #{dealerId},
+        #{productId},
+        #{channelTypeSign},
+        #{dealerTradeRate},
+        #{dealerBalanceType},
+        #{dealerWithdrawFee},
+        #{dealerMerchantPayRate},
+        #{dealerMerchantWithdrawFee},
+        #{status}
+        )
+    </insert>
+
+    <update id="update">
+        UPDATE tb_dealer_channel_rate
+        SET
+        dealer_id = #{dealerId},
+        product_id = #{productId},
+        channel_type_sign = #{channelTypeSign},
+        dealer_trade_rate = #{dealerTradeRate},
+        dealer_balance_type = #{dealerBalanceType},
+        dealer_withdraw_fee = #{dealerWithdrawFee},
+        dealer_merchant_pay_rate = #{dealerMerchantPayRate},
+        dealer_merchant_withdraw_fee = #{dealerMerchantWithdrawFee},
+        status = #{status}
+        WHERE id = #{id}
+    </update>
+
+    <select id="selectByDealerIdAndChannelId" resultType="com.jkm.hss.dealer.entity.DealerChannelRate">
+        SELECT * FROM tb_dealer_channel_rate
+        WHERE dealer_id = #{dealerId} AND channel_type_sign = #{channelSignId} AND status = 2
+    </select>
+
+    <select id="selectByDealerId" resultType="com.jkm.hss.dealer.entity.DealerChannelRate">
+        SELECT * FROM tb_dealer_channel_rate WHERE dealer_id = #{dealerId} AND status = 2
+    </select>
+    <select id="selectByDealerIdAndProductId" resultType="com.jkm.hss.dealer.entity.DealerChannelRate">
+        SELECT * FROM tb_dealer_channel_rate WHERE dealer_id = #{dealerId} AND product_id = #{productId} AND status = 2
+    </select>
+
+    <select id="selectByDealerIdAndProductIdAndChannelType" resultType="com.jkm.hss.dealer.entity.DealerChannelRate">
+        SELECT * FROM tb_dealer_channel_rate
+        WHERE dealer_id = #{dealerId}
+        AND product_id = #{productId}
+        AND channel_type_sign = #{channelType}
+        AND status = 2
+    </select>
+</mapper>

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jkm.hss.product.dao.ProductDao">
+    <insert id="init" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO tb_product
+        (account_id,
+        product_name,
+        limit_pay_fee_rate,
+        limit_withdraw_fee_rate,
+        merchant_withdraw_type,
+        dealer_balance_type,
+        status
+        )VALUES(
+        #{accountId},
+        #{productName},
+        #{limitPayFeeRate},
+        #{limitWithdrawFeeRate},
+        #{merchantWithdrawType},
+        #{dealerBalanceType},
+        #{status}
+        )
+    </insert>
+    <update id="update">
+        UPDATE tb_product
+        SET account_id = #{accountId},
+        product_name = #{productName},
+        limit_pay_fee_rate = #{limitPayFeeRate},
+        limit_withdraw_fee_rate = #{limitWithdrawFeeRate},
+        merchant_withdraw_type = #{merchantWithdrawType},
+        dealer_balance_type = #{dealerBalanceType},
+        status = #{status}
+        WHERE id = #{id}
+    </update>
+    <select id="selectById" resultType="com.jkm.hss.product.entity.Product">
+        SELECT * FROM tb_product WHERE id = #{id} AND status = 2
+    </select>
+    <select id="selectAll" resultType="com.jkm.hss.product.entity.Product">
+        SELECT * FROM tb_product WHERE status = 2
+    </select>
+</mapper>

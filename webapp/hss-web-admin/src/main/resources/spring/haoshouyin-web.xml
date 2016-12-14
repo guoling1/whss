@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns="http://www.springframework.org/schema/beans"
+
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/mvc
+        http://www.springframework.org/schema/mvc/spring-mvc.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <mvc:annotation-driven validator="validator"/>
+    <mvc:default-servlet-handler />
+    <context:component-scan base-package="com.jkm.hss"/>
+
+    <bean id="validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean">
+        <property name="providerClass" value="org.hibernate.validator.HibernateValidator"/>
+    </bean>
+
+    <bean id="jspViewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="cache" value="true"/>
+        <property name="viewClass" value="org.springframework.web.servlet.view.JstlView"/>
+        <property name="prefix" value="/WEB-INF/"/>
+        <property name="suffix" value=".html"/>
+    </bean>
+
+    <bean id="ossClient" class="com.aliyun.oss.OSSClient" destroy-method="shutdown">
+        <constructor-arg name="endpoint" value="${oss_endpoint}"/>
+        <constructor-arg name="accessKeyId" value="${oss_accessKeyId}"/>
+        <constructor-arg name="secretAccessKey" value="${oss_secretAccessKey}"/>
+    </bean>
+
+    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <property name="maxUploadSize" value="10485760"/>
+    </bean>
+
+    <bean id="configProperties" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+        <property name="locations">
+            <list>
+                <value>classpath*:*.properties</value>
+            </list>
+        </property>
+        <property name="fileEncoding" value="utf-8"/>
+    </bean>
+
+    <bean id="configurationUtils" class="com.jkm.base.common.spring.config.ConfigurationUtils">
+        <property name="properties" ref="configProperties"/>
+    </bean>
+    <bean id="springContextHolder" class="com.jkm.base.common.spring.core.SpringContextHolder" lazy-init="false" />
+
+    <!--<mvc:resources mapping="/apidocs/**" location="/WEB-INF/apidocs/" />-->
+
+    <!--<bean class="com.jkm.hss.swagger.SwaggerConfig"/>-->
+    <mvc:interceptors>
+        <mvc:interceptor>
+            <mvc:mapping path="/admin/user/**"/>
+            <mvc:mapping path="/admin/dealer/**"/>
+            <mvc:exclude-mapping path="/admin/user/login*"/>
+            <!--<mvc:exclude-mapping path="/admin/qrcode/**"/>-->
+            <bean id="adminLoginInterceptor" class="com.jkm.hss.interceptor.AdminLoginInterceptor">
+                <property name="adminUserService" ref="adminUserServiceImpl"/>
+                <property name="adminUserPassportService" ref="adminUserPassportServiceImpl"/>
+            </bean>
+        </mvc:interceptor>
+    </mvc:interceptors>
+</beans>

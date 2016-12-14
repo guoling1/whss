@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--suppress ALL -->
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:task="http://www.springframework.org/schema/task"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns="http://www.springframework.org/schema/beans"
+
+       xsi:schemaLocation="http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context.xsd
+       http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/task
+       http://www.springframework.org/schema/task/spring-task.xsd
+       http://www.springframework.org/schema/tx
+       http://www.springframework.org/schema/tx/spring-tx.xsd">
+    <!--<import resource="classpath*:/spring/user-service.xml"/>-->
+        <!--引入所有需要的xml-->
+
+    <context:component-scan base-package="com.jkm.chronos.task"/>
+    <context:component-scan base-package="com.jkm.common.spring"/>
+
+    <context:annotation-config/>
+
+    <bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource" init-method="init" destroy-method="close">
+        <property name="url"
+                  value="jdbc:mysql://127.0.0.1:3306/db_sqb?autoReconnect=true&amp;useUnicode=true&amp;tinyInt1isBit=false&amp;zeroDateTimeBehavior=round&amp;characterEncoding=UTF-8&amp;yearIsDateType=false&amp;zeroDateTimeBehavior=convertToNull&amp;allowMultiQueries=true"/>
+        <property name="username" value="root"/>
+        <property name="password" value=""/>
+        <property name="initialSize" value="5"/>
+        <property name="minIdle" value="5"/>
+        <property name="maxActive" value="20"/>
+        <property name="maxWait" value="60000"/>
+        <property name="timeBetweenEvictionRunsMillis" value="60000"/>
+        <property name="minEvictableIdleTimeMillis" value="300000"/>
+        <property name="validationQuery" value="SELECT 'x'"/>
+        <property name="testWhileIdle" value="true"/>
+        <property name="testOnBorrow" value="false"/>
+        <property name="testOnReturn" value="false"/>
+        <property name="poolPreparedStatements" value="false"/>
+        <property name="maxPoolPreparedStatementPerConnectionSize" value="20"/>
+        <property name="filters" value="stat,slf4j"/>
+    </bean>
+
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+
+    <tx:annotation-driven transaction-manager="transactionManager"/>
+
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="configLocation" value="classpath:mybatis/mybatis.xml"/>
+        <property name="mapperLocations" value="classpath*:mybatis/mapper/**/*.xml"/>
+    </bean>
+
+    <bean id="configProperties" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+        <property name="locations">
+            <list>
+                <value>classpath*:*.properties</value>
+            </list>
+        </property>
+        <property name="fileEncoding" value="utf-8"/>
+    </bean>
+
+    <bean id="configurationUtils" class="com.jkm.base.common.spring.config.ConfigurationUtils">
+        <property name="properties" ref="configProperties"/>
+    </bean>
+</beans>

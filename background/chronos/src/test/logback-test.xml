@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration debug="false">
+
+    <property name="normal-pattern" value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n"/>
+
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <Encoding>UTF-8</Encoding>
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <Pattern>${normal-pattern}</Pattern>
+        </layout>
+    </appender>
+
+    <logger name="ch.qos.logback">
+        <level value="INFO"/>
+    </logger>
+    <root level="info">
+    <appender-ref ref="CONSOLE"/>
+    </root>
+</configuration>

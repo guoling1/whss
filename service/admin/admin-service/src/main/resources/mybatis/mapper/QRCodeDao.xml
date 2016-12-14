@@ -1,0 +1,316 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jkm.hss.admin.dao.QRCodeDao">
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+      INSERT INTO tb_qr_code
+      (
+      code,
+      admin_id,
+      first_level_dealer_id,
+      second_level_dealer_id,
+      merchant_id,
+      salt,
+      sign,
+      distribute_status,
+      activate_status,
+      type
+      )
+      VALUES
+      (
+      #{code},
+      #{adminId},
+      #{firstLevelDealerId},
+      #{secondLevelDealerId},
+      #{merchantId},
+      #{salt},
+      #{sign},
+      #{distributeStatus},
+      #{activateStatus},
+      #{type}
+      );
+    </insert>
+
+    <update id="updateById">
+        UPDATE tb_qr_code
+        SET
+        code = #{code},
+        admin_id = #{adminId},
+        first_level_dealer_id = #{firstLevelDealerId},
+        second_level_dealer_id = #{secondLevelDealerId},
+        merchant_id = #{merchantId},
+        salt = #{salt},
+        sign = #{sign},
+        distribute_status = #{distributeStatus},
+        activate_status = #{activateStatus},
+        type = #{type}
+        WHERE id = #{id}
+    </update>
+
+    <update id="updateByCode">
+        UPDATE tb_qr_code
+        SET
+        admin_id = #{adminId},
+        first_level_dealer_id = #{firstLevelDealerId},
+        second_level_dealer_id = #{secondLevelDealerId},
+        merchant_id = #{merchantId},
+        salt = #{salt},
+        sign = #{sign},
+        distribute_status = #{distributeStatus},
+        activate_status = #{activateStatus},
+        type = #{type}
+        WHERE code = #{code}
+    </update>
+
+    <update id="markCodeToDealer">
+        UPDATE tb_qr_code
+        SET first_level_dealer_id = #{firstLevelDealerId}
+        WHERE first_level_dealer_id =0
+        AND second_level_dealer_id = 0
+        AND distribute_status = 1
+        AND activate_status = 1
+        AND  id IN
+        <foreach collection="codeIds" item="item" index="index" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </update>
+
+    <update id="markCodeToDealerByRange">
+        UPDATE tb_qr_code
+        SET first_level_dealer_id = #{firstLevelDealerId}
+        WHERE first_level_dealer_id =0
+        AND second_level_dealer_id = 0
+        AND distribute_status = 1
+        AND activate_status = 1
+        AND code BETWEEN #{startCode} AND #{endCode}
+    </update>
+
+    <update id="markAsDistribute">
+         UPDATE tb_qr_code
+         SET distribute_status = 2
+         WHERE first_level_dealer_id = #{dealerId}
+         AND distribute_status = 1
+         ORDER BY id ASC
+         LIMIT #{count}
+    </update>
+
+    <update id="markAsDistribute2">
+         UPDATE tb_qr_code
+         SET distribute_status = 2,
+         second_level_dealer_id = #{toDealerId}
+         WHERE first_level_dealer_id = #{dealerId}
+         AND distribute_status = 1
+         ORDER BY id ASC
+         LIMIT #{count}
+    </update>
+
+    <update id="markAsActivate">
+        UPDATE tb_qr_code
+        SET
+        merchant_id = #{merchantId},
+        distribute_status = 2,
+        activate_status = 2
+        WHERE code = #{code}
+    </update>
+
+    <update id="test">
+        UPDATE tb_qr_code
+        SET distribute_status = 1
+        WHERE code BETWEEN #{startCode} AND #{endCode}
+    </update>
+
+    <select id="selectById" resultType="com.jkm.hss.admin.entity.QRCode">
+        SELECT * FROM tb_qr_code WHERE id = #{id}
+    </select>
+
+    <select id="selectByCode" resultType="com.jkm.hss.admin.entity.QRCode">
+        SELECT * FROM tb_qr_code WHERE code = #{code}
+    </select>
+
+    <select id="selectByMerchantId" resultType="com.jkm.hss.admin.entity.QRCode">
+        SELECT * FROM tb_qr_code WHERE merchant_id = #{merchantId}
+    </select>
+
+    <select id="selectByMerchantIds" resultType="com.jkm.hss.admin.entity.QRCode">
+        SELECT * FROM tb_qr_code
+        WHERE merchant_id IN
+        <foreach collection="ids" item="item" index="index" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+
+    <select id="selectFirstLevelDealerCodeByDealerId" resultType="com.jkm.hss.admin.entity.QRCode">
+        SELECT * FROM tb_qr_code WHERE first_level_dealer_id = #{firstLevelDealerId} AND status = #{status}
+    </select>
+
+    <select id="selectSecondLevelDealerCodeByDealerId" resultType="com.jkm.hss.admin.entity.QRCode">
+        SELECT * FROM tb_qr_code WHERE second_level_dealer_id = #{secondLevelDealerId} AND status = #{status}
+    </select>
+
+    <select id="selectLatestQRCodeForUpdate" resultType="com.jkm.hss.admin.entity.QRCode">
+         SELECT * FROM tb_qr_code ORDER BY code DESC LIMIT 1 FOR UPDATE
+    </select>
+
+    <select id="selectUnDistributeCodeCountByFirstLevelDealerId" resultType="java.lang.Integer">
+        SELECT COUNT(*) FROM tb_qr_code WHERE first_level_dealer_id = #{dealerId} AND distribute_status = 1
+    </select>
+
+    <select id="selectUnDistributeCodeByFirstLevelDealerId" resultType="com.jkm.hss.admin.entity.QRCode">
+         SELECT * FROM tb_qr_code
+         WHERE first_level_dealer_id = #{dealerId}
+         AND distribute_status = 1
+         ORDER BY id ASC
+         LIMIT #{count}
+    </select>
+
+    <select id="selectDistributeCodeCount" resultType="com.jkm.hss.admin.helper.responseparam.DistributeCodeCount">
+        SELECT second_level_dealer_id, COUNT(id) AS count FROM tb_qr_code
+        WHERE first_level_dealer_id = #{dealerId}
+        AND second_level_dealer_id IN
+        <foreach collection="secondLevelDealerIds" item="item" index="index" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        AND distribute_status = 2
+        GROUP BY second_level_dealer_id
+        ORDER BY second_level_dealer_id DESC
+    </select>
+
+    <select id="selectActiveCodeCount" resultType="com.jkm.hss.admin.helper.responseparam.ActiveCodeCount">
+        SELECT second_level_dealer_id, COUNT(id) AS count FROM tb_qr_code
+        WHERE first_level_dealer_id = #{dealerId}
+        AND second_level_dealer_id IN
+        <foreach collection="secondLevelDealerIds" item="item" index="index" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        AND distribute_status = 2
+        AND activate_status = 2
+        GROUP BY second_level_dealer_id
+        ORDER BY second_level_dealer_id DESC
+    </select>
+
+    <select id="selectFirstLastDayActivateCount" resultType="java.lang.Integer">
+        SELECT COUNT(*) FROM tb_qr_code
+        WHERE first_level_dealer_id = #{firstLevelDealerId}
+        AND activate_status = 2 AND update_time BETWEEN #{startDate} AND #{endDate}
+    </select>
+
+
+    <select id="selectSecondLastDayActivateCount" resultType="java.lang.Integer">
+        SELECT COUNT(*) FROM tb_qr_code
+        WHERE second_level_dealer_id = #{secondLevelDealerId}
+        AND activate_status = 2 AND update_time BETWEEN #{startDate} AND #{endDate}
+    </select>
+
+    <select id="getFirstResidueCount" resultType="java.lang.Integer">
+        SELECT COUNT(*) FROM tb_qr_code
+        WHERE first_level_dealer_id = #{firstLevelDealerId}
+        AND distribute_status = 1
+    </select>
+
+    <select id="getFirstDistributeCount" resultType="java.lang.Integer">
+        SELECT COUNT(*) FROM tb_qr_code
+        WHERE first_level_dealer_id = #{firstLevelDealerId}
+        AND distribute_status = 2
+    </select>
+
+    <select id="getFirstDistributeToSelfCount" resultType="java.lang.Integer">
+        SELECT COUNT(*) FROM tb_qr_code
+        WHERE first_level_dealer_id = #{firstLevelDealerId}
+        AND second_level_dealer_id = 0
+        AND distribute_status = 2
+    </select>
+
+    <select id="getFirstUnActivateCount" resultType="java.lang.Integer">
+        SELECT COUNT(*) FROM tb_qr_code
+        WHERE first_level_dealer_id = #{firstLevelDealerId}
+        AND distribute_status = 2
+        AND activate_status = 1
+    </select>
+
+    <select id="getFirstActivateCount" resultType="java.lang.Integer">
+        SELECT COUNT(*) FROM tb_qr_code
+        WHERE first_level_dealer_id = #{firstLevelDealerId}
+        AND distribute_status = 2
+        AND activate_status = 2
+    </select>
+
+    <select id="getSecondCodeCount" resultType="java.lang.Integer">
+        SELECT COUNT(*) FROM tb_qr_code
+        WHERE second_level_dealer_id = #{secondLevelDealerId}
+    </select>
+
+    <select id="getSecondUnActivateCount" resultType="java.lang.Integer">
+        SELECT COUNT(*) FROM tb_qr_code
+        WHERE second_level_dealer_id = #{secondLevelDealerId}
+        AND activate_status = 1
+    </select>
+
+    <select id="selectDistributeToSecondDealerCodeCount" resultType="java.lang.Integer">
+        SELECT COUNT(*) FROM tb_qr_code
+        WHERE first_level_dealer_id = #{firstLevelDealerId}
+        AND second_level_dealer_id > 0
+        AND distribute_status = 2
+    </select>
+
+    <select id="selectCurrentWeekActivateCodeCount" resultType="java.lang.Integer">
+        SELECT COUNT(*) FROM tb_qr_code
+        <where>
+            <if test="level == 1">
+                AND first_level_dealer_id = #{dealerId}
+                AND second_level_dealer_id = 0
+                AND distribute_status = 2
+                AND activate_status = 2
+                AND update_time BETWEEN #{startDate} AND #{endDate}
+            </if>
+            <if test="level == 2">
+                AND second_level_dealer_id = #{dealerId}
+                AND distribute_status = 2
+                AND activate_status = 2
+                AND update_time BETWEEN #{startDate} AND #{endDate}
+            </if>
+        </where>
+    </select>
+
+    <select id="selectActivateCodeCount" resultType="java.lang.Integer">
+        SELECT COUNT(*) FROM tb_qr_code
+        <where>
+            <if test="level == 1">
+                AND first_level_dealer_id = #{dealerId}
+                AND second_level_dealer_id = 0
+                AND distribute_status = 2
+                AND activate_status = 2
+            </if>
+            <if test="level == 2">
+                AND second_level_dealer_id = #{dealerId}
+                AND distribute_status = 2
+                AND activate_status = 2
+            </if>
+        </where>
+    </select>
+
+    <select id="getCodeByRange" resultType="com.jkm.hss.admin.entity.QRCode">
+        SELECT * FROM tb_qr_code WHERE code BETWEEN #{startCode} AND #{endCode}
+    </select>
+
+    <select id="selectByIdRange" resultType="com.jkm.hss.admin.entity.QRCode">
+        SELECT * FROM tb_qr_code WHERE id BETWEEN #{startId} AND #{endId}
+    </select>
+
+    <select id="getUnDistributeCode" resultType="java.lang.Long">
+        SELECT id FROM tb_qr_code
+        WHERE first_level_dealer_id =0
+        AND second_level_dealer_id = 0
+        AND distribute_status = 1
+        AND activate_status = 1
+        ORDER BY id ASC
+    </select>
+
+    <select id="selectCountByRange" resultType="java.lang.Integer">
+        SELECT COUNT(*) FROM tb_qr_code
+        WHERE first_level_dealer_id =0
+        AND second_level_dealer_id = 0
+        AND distribute_status = 1
+        AND activate_status = 1
+        AND code BETWEEN #{startCode} AND #{endCode}
+    </select>
+
+</mapper>

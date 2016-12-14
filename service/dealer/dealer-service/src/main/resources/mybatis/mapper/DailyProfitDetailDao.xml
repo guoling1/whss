@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jkm.hss.dealer.dao.DailyProfitDetailDao">
+    <insert id="init" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO tb_daily_profit_detail
+        (shall_money_type,
+        merchant_id,
+        merchant_name,
+        second_dealer_id,
+        dealer_name,
+        first_dealer_id,
+        first_dealer_name,
+        statistics_date,
+        collect_money,
+        withdraw_money,
+        total_money,
+        status
+        )VALUES(
+        #{shallMoneyType},
+        #{merchantId},
+        #{merchantName},
+        #{secondDealerId},
+        #{dealerName},
+        #{firstDealerId},
+        #{firstDealerName},
+        #{statisticsDate},
+        #{collectMoney},
+        #{withdrawMoney},
+        #{totalMoney},
+        #{status}
+        )
+    </insert>
+    <update id="update">
+        UPDATE tb_daily_profit_detail
+        SET shall_money_type = #{shallMoneyType},
+        merchant_id = #{merchantId},
+        merchant_name = #{merchantName},
+        second_dealer_id = #{secondDealerId},
+        dealer_name = #{dealerName},
+        first_dealer_id = #{firstDealerId},
+        first_dealer_name = #{firstDealerName},
+        statistics_date = #{statisticsDate},
+        collect_money = #{collectMoney},
+        withdraw_money = #{withdrawMoney},
+        total_money = #{totalMoney},
+        status = #{status}
+        WHERE id = #{id}
+    </update>
+    <select id="selectByFirstDealerId" resultType="com.jkm.hss.dealer.entity.DailyProfitDetail">
+        SELECT * FROM tb_daily_profit_detail
+        WHERE first_dealer_id = #{dealerId} AND second_dealer_id = 0 AND shall_money_type = 1 order by create_time DESC
+    </select>
+    <select id="selectBySecondDealerId" resultType="com.jkm.hss.dealer.entity.DailyProfitDetail">
+        SELECT * FROM tb_daily_profit_detail
+        WHERE second_dealer_id = #{dealerId} AND shall_money_type = 1 order by create_time DESC
+    </select>
+    <select id="selectToSecondDealer" resultType="com.jkm.hss.dealer.entity.DailyProfitDetail">
+        SELECT * FROM tb_daily_profit_detail
+        WHERE first_dealer_id = #{dealerId} AND shall_money_type = 2 order by create_time DESC
+    </select>
+    <select id="selectByFirstDealerIdAndType" resultType="com.jkm.hss.dealer.entity.DailyProfitDetail">
+        SELECT * FROM tb_daily_profit_detail WHERE first_dealer_id = #{dealerId} AND type = #{type}
+    </select>
+    <select id="selectSecondByParam" resultType="com.jkm.hss.dealer.entity.DailyProfitDetail">
+        SELECT * FROM tb_daily_profit_detail
+        WHERE shall_money_type = 2
+        <if test="dealerId != 0">
+            and second_dealer_id = #{dealerId}
+        </if>
+        <if test="dealerName != null">
+            and dealer_name = #{dealerName}
+        </if>
+        <if test="profitDate != null">
+            and profit_date = #{profitDate}
+        </if>
+        order by create_time DESC  LIMIT #{index},#{pageSize}
+    </select>
+    <select id="selectFirstByParam" resultType="com.jkm.hss.dealer.entity.DailyProfitDetail">
+        SELECT * FROM tb_daily_profit_detail
+        WHERE shall_money_type = 3
+        <if test="dealerId != 0">
+            and second_dealer_id = #{dealerId}
+        </if>
+        <if test="dealerName != null">
+            and dealer_name = #{dealerName}
+        </if>
+        <if test="profitDate != null">
+            and profit_date = #{profitDate}
+        </if>
+        order by create_time DESC  LIMIT #{index},#{pageSize}
+    </select>
+</mapper>

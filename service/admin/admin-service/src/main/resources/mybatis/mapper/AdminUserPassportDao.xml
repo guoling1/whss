@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jkm.hss.admin.dao.AdminUserPassportDao">
+    <insert id="save" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO `tb_admin_user_passport` (
+          auid,
+          token,
+          expire_time,
+          status
+        ) VALUES (
+          #{auid},
+          #{token},
+          #{expireTime},
+          #{status}
+        )
+    </insert>
+
+    <update id="update">
+        UPDATE `tb_admin_user_passport`
+        SET
+          auid = #{auid},
+          token = #{token},
+          expire_time = #{expireTime},
+          status = #{status}
+        WHERE auid = #{auid}
+    </update>
+
+    <update id="updateExpireTime">
+        UPDATE `tb_admin_user_passport` SET expire_time = #{expireTime} WHERE id = #{id}
+    </update>
+
+    <update id="updateStatus">
+        UPDATE `tb_admin_user_passport` SET status = #{status} WHERE auid = #{auid}
+    </update>
+
+    <select id="selectByAuid" resultType="com.jkm.hss.admin.entity.AdminUserPassport">
+        SELECT * FROM `tb_admin_user_passport` WHERE auid = #{auid}
+    </select>
+
+    <select id="selectByToken" resultType="com.jkm.hss.admin.entity.AdminUserPassport">
+        SELECT * FROM `tb_admin_user_passport` WHERE token = #{token};
+    </select>
+</mapper>

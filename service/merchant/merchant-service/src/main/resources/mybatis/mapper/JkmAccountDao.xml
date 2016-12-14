@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jkm.hss.merchant.dao.JkmAccountDao">
+
+	<update id="income">
+		UPDATE tb_jkm_account
+		set total_in = total_in+#{totalMoney}, total_available_in = total_available_in+#{money},balance=balance+#{money} WHERE id = #{id}
+	</update>
+	<update id="outMoney">
+		UPDATE tb_jkm_account
+		set total_withdrawals = total_withdrawals+#{money}, balance = balance-#{money} WHERE id = #{id}
+	</update>
+</mapper>

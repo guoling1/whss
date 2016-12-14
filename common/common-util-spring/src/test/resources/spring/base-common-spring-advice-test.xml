@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns="http://www.springframework.org/schema/beans"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
+
+    <context:annotation-config/>
+    <context:component-scan base-package="com.jkm.base.common.spring.advice"/>
+    <bean id="exceptionConverterAdvice"
+          class="com.jkm.base.common.spring.advice.exception.convert.ExceptionConverterAdvice">
+        <property name="exceptionConverter" ref="exceptionConverterForTest"/>
+    </bean>
+    <bean id="exceptionInterceptorAdvice"
+          class="com.jkm.base.common.spring.advice.exception.interceptor.ExceptionInterceptorAdvice">
+        <property name="exceptionInterceptor" ref="exceptionInterceptorForTest"/>
+    </bean>
+    <bean id="exceptionLogInterceptorAdvice"
+          class="com.jkm.base.common.spring.advice.exception.interceptor.ExceptionInterceptorAdvice">
+        <property name="exceptionInterceptor" ref="logExceptionInterceptor"/>
+    </bean>
+    <aop:config>
+        <aop:aspect id="exceptionConverterAspect" ref="exceptionConverterAdvice">
+            <aop:around method="around"
+                        pointcut="execution(* com.jkm.base.common.spring.advice.exception.A.*(..))"/>
+        </aop:aspect>
+        <aop:aspect id="exceptionInterceptorAspect" ref="exceptionInterceptorAdvice">
+            <aop:around method="around"
+                        pointcut="execution(* com.jkm.base.common.spring.advice.exception.B.*(..))"/>
+        </aop:aspect>
+        <aop:aspect id="exceptionLogInterceptorAspect" ref="exceptionLogInterceptorAdvice">
+            <aop:around method="around"
+                        pointcut="execution(* com.jkm.base.common.spring.advice.exception.*.*(..))"/>
+        </aop:aspect>
+    </aop:config>
+</beans>

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration debug="false">
+
+    <property name="normal-pattern" value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n"/>
+
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <Encoding>UTF-8</Encoding>
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <Pattern>${normal-pattern}</Pattern>
+        </layout>
+    </appender>
+
+    <appender name="FILE_LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <Encoding>UTF-8</Encoding>
+        <File>${log.dir}/hss-admin.log</File>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <FileNamePattern>${log.dir}/bak/hss-admin.%d{yyyy-MM-dd}.log.zip</FileNamePattern>
+        </rollingPolicy>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <Pattern>${normal-pattern}</Pattern>
+        </encoder>
+        <filter class="com.jkm.base.common.util.DaoLogFilter"/>
+    </appender>
+
+    <appender name="JKM_LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <Encoding>UTF-8</Encoding>
+        <File>${log.dir}/hss-admin_jkm.log</File>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <FileNamePattern>${log.dir}/bak/hss-admin_jkm.%d{yyyy-MM-dd}.log.zip</FileNamePattern>
+        </rollingPolicy>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <Pattern>${normal-pattern}</Pattern>
+        </encoder>
+        <filter class="com.jkm.base.common.util.DaoLogFilter"/>
+    </appender>
+
+    <logger name="com.jkm" additivity="${log.console.append}" level="DEBUG">
+        <appender-ref ref="FILE_LOG"/>
+        <appender-ref ref="JKM_LOG"/>
+    </logger>
+
+    <logger name="org.springframework" additivity="${log.console.append}" level="INFO">
+        <appender-ref ref="FILE_LOG"/>
+    </logger>
+
+    <logger name="org.apache" additivity="${log.console.append}" level="INFO">
+        <appender-ref ref="FILE_LOG"/>
+    </logger>
+
+    <logger name="com.alibaba" additivity="${log.console.append}" level="WARN">
+        <appender-ref ref="FILE_LOG"/>
+    </logger>
+
+    <logger name="druid.sql" additivity="${log.console.append}" level="INFO">
+        <appender-ref ref="FILE_LOG"/>
+    </logger>
+
+    <logger name="net.sf" additivity="${log.console.append}" level="INFO">
+        <appender-ref ref="FILE_LOG"/>
+        <level value="INFO"/>
+    </logger>
+
+    <logger name="org.mybatis" additivity="${log.console.append}" level="INFO">
+        <appender-ref ref="FILE_LOG"/>
+    </logger>
+
+    <root level="${log.root.level}">
+        <appender-ref ref="CONSOLE"/>
+    </root>
+</configuration>

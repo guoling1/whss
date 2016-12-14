@@ -1,0 +1,41 @@
+package com.jkm.hss.controller;
+
+import com.jkm.hss.admin.service.AdminUserInitService;
+import com.jkm.hss.notifier.service.MessageTemplateInitService;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import javax.annotation.PostConstruct;
+
+/**
+ * Created by yulong.zhang on 2016/11/16.
+ */
+@Slf4j
+@Component
+public class Init {
+
+    @Autowired
+    private MessageTemplateInitService messageTemplateInitService;
+
+    @Autowired
+    private AdminUserInitService adminUserInitService;
+
+    @PostConstruct
+    public void initSystem() {
+        log.info("######################初始化系统--start##########################");
+
+        this.initAdminUser();
+        log.info("######################初始化系统--end##########################");
+    }
+
+
+    /**
+     * 初始化后台用户
+     */
+    private void initAdminUser() {
+        log.info("######################初始化后台用户--start##########################");
+        this.adminUserInitService.initAdminUser();
+        log.info("######################初始化后台用户--start##########################");
+    }
+}

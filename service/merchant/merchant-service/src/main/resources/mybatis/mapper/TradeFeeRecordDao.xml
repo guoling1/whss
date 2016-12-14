@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jkm.hss.merchant.dao.TradeFeeRecordDao">
+
+	<!-- 通用查询结果列-->
+	<sql id="Base_Column_List">
+		 id,	merchant_id,	order_id,	trade_type,	total_fee,	status,	create_time,	update_time
+	</sql>
+
+	<!-- 查询（根据主键ID查询） -->
+	<select id="selectByPrimaryKey" resultType="com.jkm.hss.merchant.entity.TradeFeeRecord">
+		 SELECT
+		 <include refid="Base_Column_List" />
+		 FROM tb_trade_fee_record
+		 WHERE id = #{id} and status=0
+	</select>
+
+	<!-- 添加 （匹配有值的字段）-->
+	<insert id="insertSelective" useGeneratedKeys="true" keyProperty="id">
+		 INSERT INTO tb_trade_fee_record
+		 <trim prefix="(" suffix=")" suffixOverrides="," >
+			<if test="merchantId != null">
+				 merchant_id,
+			</if>
+			<if test="orderId != null">
+				 order_id,
+			</if>
+			<if test="tradeType != null">
+				 trade_type,
+			</if>
+			<if test="totalFee != null">
+				 total_fee,
+			</if>
+			<if test="status != null">
+				 status,
+			</if>
+		 </trim>
+		 <trim prefix="values (" suffix=")" suffixOverrides="," >
+			<if test="merchantId!=null">
+				 #{merchantId},
+			</if>
+			<if test="orderId!=null">
+				 #{orderId},
+			</if>
+			<if test="tradeType!=null">
+				 #{tradeType},
+			</if>
+			<if test="totalFee!=null">
+				 #{totalFee},
+			</if>
+			<if test="status!=null">
+				 #{status},
+			</if>
+		 </trim>
+	</insert>
+
+	<!-- 修 改-->
+	<update id="updateByPrimaryKey">
+		 UPDATE tb_trade_fee_record
+ 		 <set> 
+			<if test="merchantId != null">
+				 merchant_id = #{merchantId},
+			</if>
+			<if test="orderId != null">
+				 order_id = #{orderId},
+			</if>
+			<if test="tradeType != null">
+				 trade_type = #{tradeType},
+			</if>
+			<if test="totalFee != null">
+				 total_fee = #{totalFee},
+			</if>
+			<if test="status != null">
+				 status = #{status},
+			</if>
+ 		 </set>
+		 WHERE id = #{id}
+	</update>
+
+</mapper>

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jkm.hss.merchant.dao.VerifyID4ElementRecordDao">
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO tb_verify_id_4element_record
+        (
+        mobile,
+        bank_card,
+        real_name,
+        id_card,
+        bank_reserve_mobile,
+        verify_count,
+        remark,
+        status
+        )
+        VALUES
+        (
+        #{mobile},
+        #{bankCard},
+        #{realName},
+        #{idCard},
+        #{bankReserveMobile},
+        #{verifyCount},
+        #{remark},
+        #{status}
+        );
+    </insert>
+
+    <update id="update">
+        UPDATE tb_verify_id_4element_record
+        SET
+        mobile = #{mobile},
+        bank_card = #{bankCard},
+        real_name = #{realName},
+        id_card = #{idCard},
+        bank_reserve_mobile = #{bankReserveMobile},
+        verify_count = #{verifyCount},
+        remark = #{remark}
+        WHERE id = #{id}
+    </update>
+
+    <update id="markToIneffective">
+        UPDATE tb_verify_id_4element_record SET remark = #{remark}, status = 2 WHERE id = #{id}
+    </update>
+
+    <update id="updateRemark">
+        UPDATE tb_verify_id_4element_record SET remark = #{remark} WHERE id = #{id}
+    </update>
+
+
+    <select id="selectRecordByMobile" resultType="com.jkm.hss.merchant.entity.VerifyID4ElementRecord">
+        SELECT * FROM tb_verify_id_4element_record WHERE mobile = #{mobile} AND status = 1
+    </select>
+</mapper>

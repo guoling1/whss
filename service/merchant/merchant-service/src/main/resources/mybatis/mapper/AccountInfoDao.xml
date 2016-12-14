@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jkm.hss.merchant.dao.AccountInfoDao">
+
+	<!-- 通用查询结果列-->
+	<sql id="Base_Column_List">
+		 id,	amount,	available,	frozen_amount,	unsettled,	status,	create_time,	update_time
+	</sql>
+
+	<!-- 查询（根据主键ID查询） -->
+	<select id="selectByPrimaryKey" resultType="com.jkm.hss.merchant.entity.AccountInfo">
+		 SELECT
+		 <include refid="Base_Column_List" />
+		 FROM tb_account_info
+		 WHERE id = #{id} and status=0
+	</select>
+
+	<!-- 添加 （匹配有值的字段）-->
+	<insert id="insertSelective" useGeneratedKeys="true" keyProperty="id" parameterType="com.jkm.hss.merchant.entity.AccountInfo">
+		 INSERT INTO tb_account_info
+		 <trim prefix="(" suffix=")" suffixOverrides="," >
+			<if test="id != null">
+				 id,
+			</if>
+			<if test="amount != null">
+				 amount,
+			</if>
+			<if test="available != null">
+				 available,
+			</if>
+			<if test="frozenAmount != null">
+				 frozen_amount,
+			</if>
+			<if test="unsettled != null">
+				unsettled,
+			</if>
+			<if test="status != null">
+				 status,
+			</if>
+
+		 </trim>
+		 <trim prefix="values (" suffix=")" suffixOverrides="," >
+			<if test="id!=null">
+				 #{id},
+			</if>
+			<if test="amount!=null">
+				 #{amount},
+			</if>
+			<if test="available!=null">
+				 #{available},
+			</if>
+			<if test="frozenAmount!=null">
+				 #{frozenAmount},
+			</if>
+			<if test="unsettled!=null">
+				 #{unsettled},
+			</if>
+			<if test="status!=null">
+				 #{status},
+			</if>
+		 </trim>
+	</insert>
+
+	<!-- 修 改-->
+	<update id="updateByPrimaryKeySelective" parameterType="com.jkm.hss.merchant.entity.AccountInfo">
+		 UPDATE tb_account_info
+ 		 <set> 
+			<if test="amount != null">
+				 amount = #{amount},
+			</if>
+			<if test="available != null">
+				 available = #{available},
+			</if>
+			<if test="frozenAmount != null">
+				 frozen_amount = #{frozenAmount},
+			</if>
+			<if test="unsettled != null">
+				unsettled = #{unsettled},
+			</if>
+			<if test="status != null">
+				 status = #{status},
+			</if>
+ 		 </set>
+		 WHERE id = #{id}
+	</update>
+
+	<update id="addAvailableMoney" parameterType="com.jkm.hss.merchant.entity.AccountInfo">
+		UPDATE tb_account_info
+		set amount = amount+#{available}, available = available+#{available} WHERE id = #{id}
+	</update>
+
+	<update id="addUnsettledMoney" parameterType="com.jkm.hss.merchant.entity.AccountInfo">
+		UPDATE tb_account_info
+		set amount = amount+#{unsettled}, unsettled = unsettled+#{unsettled} WHERE id = #{id}
+	</update>
+	<!--冻结资金-->
+	<update id="frozenMoney">
+		UPDATE tb_account_info
+		set frozen_amount=frozen_amount+#{frozenAmount},available = available-#{frozenAmount} WHERE id = #{id}
+	</update>
+	<!--入账-->
+	<update id="inCome">
+		UPDATE tb_account_info
+		set frozen_amount=frozen_amount-#{frozenAmount},amount = amount-#{frozenAmount} WHERE id = #{id}
+	</update>
+	<!--解冻资金-->
+	<update id="backMoney">
+		UPDATE tb_account_info
+		set frozen_amount=frozen_amount-#{frozenAmount},available = available+#{frozenAmount} WHERE id = #{id}
+	</update>
+
+</mapper>
