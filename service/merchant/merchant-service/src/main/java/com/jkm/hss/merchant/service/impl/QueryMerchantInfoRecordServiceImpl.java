@@ -25,7 +25,7 @@ public class QueryMerchantInfoRecordServiceImpl implements QueryMerchantInfoReco
         List<MerchantInfoResponse> list = this.queryMerchantInfoRecordDao.getAll(merchantInfo);
         if(list!=null&&list.size()>0){
             for(int i=0;i<list.size();i++){
-                if (list.get(i).getMobile()!=null&&"".equals(list.get(i).getMobile())){
+                if (list.get(i).getMobile()!=null&&!"".equals(list.get(i).getMobile())){
                     list.get(i).setMobile(MerchantSupport.decryptMobile(list.get(i).getMobile()));
                 }
                 if(list.get(i).getReserveMobile()!=null&&!"".equals(list.get(i).getReserveMobile())){

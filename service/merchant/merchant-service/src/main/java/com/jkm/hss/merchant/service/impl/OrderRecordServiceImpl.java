@@ -2,6 +2,7 @@ package com.jkm.hss.merchant.service.impl;
 
 import com.google.common.base.Optional;
 import com.jkm.base.common.util.SnGenerator;
+import com.jkm.hss.dealer.enums.EnumSettlementPeriodType;
 import com.jkm.hss.dealer.service.DealerService;
 import com.jkm.hss.dealer.service.ShallProfitDetailService;
 import com.jkm.hss.merchant.dao.OrderRecordDao;
@@ -880,6 +881,7 @@ public class OrderRecordServiceImpl implements OrderRecordService {
                 paramsMap.put("amount", or.getRealFee().toString());
                 paramsMap.put("orderId", or.getOrderId());
                 paramsMap.put("bitchNo", or.getOrderId());
+                paramsMap.put("payType", EnumSettlementPeriodType.D0.getId());
                 paramsMap.put("phoneNo", MerchantSupport.decryptMobile(merchantInfoOptional.get().getReserveMobile()));
                 paramsMap.put("bankName", merchantInfoOptional.get().getBankName());
                 paramsMap.put("accountName", merchantInfoOptional.get().getName());
