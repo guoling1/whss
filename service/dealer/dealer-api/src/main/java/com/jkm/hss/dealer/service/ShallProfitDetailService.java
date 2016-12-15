@@ -177,4 +177,32 @@ public interface ShallProfitDetailService {
      * @return
      */
     ShallProfitDetail selectByOrderId(String orderId);
+
+    /**
+     * 查询公司收单分润
+     * @param profitDate
+     * @return
+     */
+    BigDecimal selectCompanyCollectProfitByProfitDate(String profitDate);
+
+    /**
+     * 查询公司体现分润
+     * @param profitDate
+     * @return
+     */
+    BigDecimal selectCompanyWithdrawProfitByProfitDate(String profitDate);
+
+    /**
+     * 查询二级代理每日分润明细
+     * @param dailyProfitId
+     * @return
+     */
+    List<ShallProfitDetail> getSecondDealerDeatail(long dailyProfitId);
+
+    /**
+     * 查询一级代理每日分润明细
+     * @param dailyProfitId
+     * @return
+     */
+    List<ShallProfitDetail> getFirstDealerDeatail(long dailyProfitId);
 }

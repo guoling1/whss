@@ -10,17 +10,22 @@ public class DealerProfitQueryParam extends PageQueryParam {
 
     //查询条件：分润日期，代理商编号，代理商名称
     /**
-     * 分润日期
+     * 开始分润日期
      */
-    private String profitDate;
+    private String beginProfitDate;
 
     /**
-     * 代理商编号
+     * 结束分润日期
      */
-    private long dealerId;
+    private String endProfitDate;
 
     /**
      * 代理商名称
      */
     private String dealerName;
+
+    /**
+     *每日分润id
+     */
+    private long dailyProfitId;
 }

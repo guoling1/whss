@@ -64,29 +64,38 @@
     <select id="selectSecondByParam" resultType="com.jkm.hss.dealer.entity.DailyProfitDetail">
         SELECT * FROM tb_daily_profit_detail
         WHERE shall_money_type = 2
-        <if test="dealerId != 0">
-            and second_dealer_id = #{dealerId}
-        </if>
         <if test="dealerName != null">
             and dealer_name = #{dealerName}
         </if>
-        <if test="profitDate != null">
-            and profit_date = #{profitDate}
+        <if test="beginProfitDate != null">
+            and create_time BETWEEN #{beginProfitDate} AND #{endProfitDate}
         </if>
         order by create_time DESC  LIMIT #{index},#{pageSize}
     </select>
     <select id="selectFirstByParam" resultType="com.jkm.hss.dealer.entity.DailyProfitDetail">
         SELECT * FROM tb_daily_profit_detail
         WHERE shall_money_type = 3
-        <if test="dealerId != 0">
-            and second_dealer_id = #{dealerId}
-        </if>
         <if test="dealerName != null">
             and dealer_name = #{dealerName}
         </if>
-        <if test="profitDate != null">
-            and profit_date = #{profitDate}
+        <if test="beginProfitDate != null">
+            and create_time BETWEEN #{beginProfitDate} AND #{endProfitDate}
         </if>
         order by create_time DESC  LIMIT #{index},#{pageSize}
+    </select>
+    <select id="selectCompanyByParam" resultType="com.jkm.hss.dealer.entity.DailyProfitDetail">
+        SELECT * FROM tb_daily_profit_detail
+        WHERE shall_money_type = 4
+        <if test="dealerName != null">
+            and dealer_name = #{dealerName}
+        </if>
+        <if test="beginProfitDate != null">
+            and create_time BETWEEN #{beginProfitDate} AND #{endProfitDate}
+        </if>
+        order by create_time DESC  LIMIT #{index},#{pageSize}
+    </select>
+    <select id="selectById" resultType="com.jkm.hss.dealer.entity.DailyProfitDetail">
+        SELECT * FROM tb_daily_profit_detail
+        WHERE id = #{id}
     </select>
 </mapper>

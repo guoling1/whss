@@ -57,4 +57,8 @@ public class CompanyProfitDetail extends BaseEntity {
      * 通道分润
      */
     private BigDecimal channelShallAmount;
+    /**
+     * 分润日期
+     */
+    private String profitDate;
 }
