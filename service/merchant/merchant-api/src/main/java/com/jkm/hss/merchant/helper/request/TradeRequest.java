@@ -2,8 +2,6 @@ package com.jkm.hss.merchant.helper.request;
 
 import lombok.Data;
 
-import java.math.BigDecimal;
-
 /**
  * @desc:
  * @author:xlj

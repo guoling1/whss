@@ -33,23 +33,41 @@ public interface DailyProfitDetailService {
 
     /**
      * 查询
-     * @param dealerId
+     * @param beginProfitDate
      * @param dealerName
-     * @param profitDate
+     * @param endProfitDate
      * @param pageNO
      * @param pageSize
      * @return
      */
-    PageModel<DailyProfitDetail> selectFirstByParam(long dealerId, String dealerName, String profitDate, int pageNO, int pageSize);
+    PageModel<DailyProfitDetail> selectFirstByParam(String beginProfitDate, String dealerName, String endProfitDate, int pageNO, int pageSize);
 
     /**
      * 查询
-     * @param dealerId
+     * @param beginProfitDate
      * @param dealerName
-     * @param profitDate
+     * @param endProfitDate
      * @param pageNO
      * @param pageSize
      * @return
      */
-    PageModel<DailyProfitDetail> selectSecondByParam(long dealerId, String dealerName, String profitDate, int pageNO, int pageSize);
+    PageModel<DailyProfitDetail> selectSecondByParam(String beginProfitDate, String dealerName, String endProfitDate, int pageNO, int pageSize);
+
+    /**
+     * 查询公司分润
+     * @param beginProfitDate
+     * @param dealerName
+     * @param endProfitDate
+     * @param pageNO
+     * @param pageSize
+     * @return
+     */
+    PageModel<DailyProfitDetail> selectCompanyByParam(String beginProfitDate, String dealerName, String endProfitDate, int pageNO, int pageSize);
+
+    /**
+     * 查询
+     * @param id
+     * @return
+     */
+    DailyProfitDetail selectById(long id);
 }

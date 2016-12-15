@@ -5,16 +5,10 @@ import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.jkm.base.common.util.DateFormatUtil;
 import com.jkm.hss.dealer.dao.ShallProfitDetailDao;
-import com.jkm.hss.dealer.entity.CompanyProfitDetail;
-import com.jkm.hss.dealer.entity.Dealer;
-import com.jkm.hss.dealer.entity.DealerChannelRate;
-import com.jkm.hss.dealer.entity.ShallProfitDetail;
+import com.jkm.hss.dealer.entity.*;
 import com.jkm.hss.dealer.enums.EnumDealerLevel;
 import com.jkm.hss.dealer.enums.EnumProfitType;
-import com.jkm.hss.dealer.service.CompanyProfitDetailService;
-import com.jkm.hss.dealer.service.DealerChannelRateService;
-import com.jkm.hss.dealer.service.DealerService;
-import com.jkm.hss.dealer.service.ShallProfitDetailService;
+import com.jkm.hss.dealer.service.*;
 import com.jkm.hss.merchant.entity.MerchantInfo;
 import com.jkm.hss.merchant.entity.OrderRecord;
 import com.jkm.hss.merchant.service.MerchantInfoService;
@@ -61,6 +55,8 @@ public class ShallProfitDetailServiceImpl implements ShallProfitDetailService{
     private DealerChannelRateService dealerChannelRateService;
     @Autowired
     private CompanyProfitDetailService companyProfitDetailService;
+    @Autowired
+    private DailyProfitDetailService dailyProfitDetailService;
     /**
      * {@inheritDoc}
      *
@@ -110,6 +106,7 @@ public class ShallProfitDetailServiceImpl implements ShallProfitDetailService{
             companyProfitDetail.setProductShallAmount(productMoney);
             companyProfitDetail.setChannelShallAmount(channelMoney);
             companyProfitDetail.setChannelCost(basicChannel.getBasicWithdrawFee());
+            companyProfitDetail.setProfitDate(DateFormatUtil.format(new Date(), DateFormatUtil.yyyy_MM_dd));
             this.companyProfitDetailService.add(companyProfitDetail);
             map.put("channelMoney",Triple.of(basicChannel.getAccountId(), channelMoney,"M1"));
             map.put("productMoney",Triple.of(product.getAccountId(), productMoney,"M1"));
@@ -476,5 +473,51 @@ public class ShallProfitDetailServiceImpl implements ShallProfitDetailService{
     @Override
     public ShallProfitDetail selectByOrderId(String orderId) {
         return this.shallProfitDetailDao.selectByOrderId(orderId);
+    }
+
+    /**
+     * {@inheritDoc}
+     * @param profitDate
+     * @return
+     */
+    @Override
+    public BigDecimal selectCompanyCollectProfitByProfitDate(String profitDate) {
+        return this.shallProfitDetailDao.selectCompanyCollectProfitByProfitDate(profitDate);
+    }
+
+    /**
+     * {@inheritDoc}
+     * @param profitDate
+     * @return
+     */
+    @Override
+    public BigDecimal selectCompanyWithdrawProfitByProfitDate(String profitDate) {
+        return this.shallProfitDetailDao.selectCompanyWithdrawProfitByProfitDate(profitDate);
+    }
+
+    /**
+     * {@inheritDoc}
+     * @param dailyProfitId
+     * @return
+     */
+    @Override
+    public List<ShallProfitDetail> getSecondDealerDeatail(long dailyProfitId) {
+        final DailyProfitDetail dailyProfitDetail = this.dailyProfitDetailService.selectById(dailyProfitId);
+        final List<ShallProfitDetail> list = this.shallProfitDetailDao.selectByProfitDateAndSecondDealerId(
+                dailyProfitDetail.getSecondDealerId(), dailyProfitDetail.getStatisticsDate());
+        return list;
+    }
+
+    /**
+     * {@inheritDoc}
+     * @param dailyProfitId
+     * @return
+     */
+    @Override
+    public List<ShallProfitDetail> getFirstDealerDeatail(long dailyProfitId) {
+        final DailyProfitDetail dailyProfitDetail = this.dailyProfitDetailService.selectById(dailyProfitId);
+        final List<ShallProfitDetail> list = this.shallProfitDetailDao.selectByProfitDateAndFirstDealerId(
+                dailyProfitDetail.getFirstDealerId(), dailyProfitDetail.getStatisticsDate());
+        return list;
     }
 }

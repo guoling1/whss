@@ -7,6 +7,7 @@ import com.jkm.base.common.util.DateFormatUtil;
 import com.jkm.base.common.util.ExcelUtil;
 import com.jkm.hss.controller.BaseController;
 import com.jkm.hss.dealer.entity.DailyProfitDetail;
+import com.jkm.hss.dealer.entity.ShallProfitDetail;
 import com.jkm.hss.dealer.service.DailyProfitDetailService;
 import com.jkm.hss.dealer.service.ShallProfitDetailService;
 import com.jkm.hss.helper.DealerProfitQueryParam;
@@ -30,7 +31,7 @@ import java.util.List;
 /**
  * Created by yuxiang on 2016-12-08.
  */
-@RequestMapping(value = "/profit")
+@RequestMapping(value = "/admin/profit")
 @Controller
 @Slf4j
 public class ProfitController extends BaseController {
@@ -47,11 +48,33 @@ public class ProfitController extends BaseController {
      */
     @ResponseBody
     @RequestMapping(value = "/companyProfit")
-    public CommonResponse getCompanyProfit(final PageQueryParam pageQueryParam){
-
-        return null;
+    public CommonResponse getCompanyProfit(@RequestBody final DealerProfitQueryParam pageQueryParam){
+        try{
+            PageModel<DailyProfitDetail> pageModel = this.dailyProfitDetailService.selectCompanyByParam(pageQueryParam.getBeginProfitDate(),
+                    pageQueryParam.getDealerName(), pageQueryParam.getEndProfitDate(), pageQueryParam.getPageNo(), pageQueryParam.getPageSize());
+            return CommonResponse.objectResponse(1, "success", pageModel);
+        }catch (final Throwable throwable){
+            log.error("查询一级代理商分润异常:" + throwable.getMessage());
+        }
+        return CommonResponse.simpleResponse(-1, "查询一级代理商分润异常");
     }
 
+    /**
+     * 公司分润详情
+     * @param pageQueryParam
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/companyProfit/detail")
+    public CommonResponse getCompanyProfitDeatail(@RequestBody final DealerProfitQueryParam pageQueryParam){
+
+        try{
+
+        }catch (final Throwable throwable){
+
+        }
+        return CommonResponse.simpleResponse(-1, "查询公司分润明细异常");
+    }
     /**
      * 一级代理商分润
      * @param pageQueryParam
@@ -61,14 +84,32 @@ public class ProfitController extends BaseController {
     @RequestMapping(value = "/firstProfit")
     public CommonResponse getFirstProfit(@RequestBody final DealerProfitQueryParam pageQueryParam){
         try{
-            PageModel<DailyProfitDetail> pageModel = this.dailyProfitDetailService.selectFirstByParam(pageQueryParam.getDealerId(),
-                    pageQueryParam.getDealerName(), pageQueryParam.getProfitDate(), pageQueryParam.getPageNO(), pageQueryParam.getPageSize());
-            return CommonResponse.objectResponse(1,"success",pageModel);
+            PageModel<DailyProfitDetail> pageModel = this.dailyProfitDetailService.selectFirstByParam(pageQueryParam.getBeginProfitDate(),
+                    pageQueryParam.getDealerName(), pageQueryParam.getEndProfitDate(), pageQueryParam.getPageNo(), pageQueryParam.getPageSize());
+            return CommonResponse.objectResponse(1, "success", pageModel);
         }catch (final Throwable throwable){
-            log.error("查询一级代理商分润异常");
+            log.error("查询一级代理商分润异常:" + throwable.getMessage());
         }
         return CommonResponse.simpleResponse(-1, "查询一级代理商分润异常");
 
+    }
+
+    /**
+     * 一级代理分润详情
+     * @param pageQueryParam
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/firstDealer/detail")
+    public CommonResponse getFirstDealerDeatail(@RequestBody final DealerProfitQueryParam pageQueryParam){
+
+        try{
+            final List<ShallProfitDetail> list = this.shallProfitDetailService.getFirstDealerDeatail(pageQueryParam.getDailyProfitId());
+            return CommonResponse.objectResponse(1, "success", list);
+        }catch (final Throwable throwable){
+            log.error("查询一级代理商分润详情异常:" + throwable.getMessage());
+        }
+        return CommonResponse.simpleResponse(-1, "查询一代分润明细异常");
     }
 
     /**
@@ -81,112 +122,30 @@ public class ProfitController extends BaseController {
     public CommonResponse getSecondProfit(@RequestBody final DealerProfitQueryParam pageQueryParam){
 
         try{
-            PageModel<DailyProfitDetail> pageModel = this.dailyProfitDetailService.selectSecondByParam(pageQueryParam.getDealerId(),
-                    pageQueryParam.getDealerName(), pageQueryParam.getProfitDate(), pageQueryParam.getPageNO(), pageQueryParam.getPageSize());
-            return CommonResponse.objectResponse(1,"success",pageModel);
+            PageModel<DailyProfitDetail> pageModel = this.dailyProfitDetailService.selectSecondByParam(pageQueryParam.getBeginProfitDate(),
+                    pageQueryParam.getDealerName(), pageQueryParam.getEndProfitDate(), pageQueryParam.getPageNo(), pageQueryParam.getPageSize());
+            return CommonResponse.objectResponse(1, "success", pageModel);
         }catch (final Throwable throwable){
-            log.error("查询二级代理商分润异常");
+            log.error("查询二级代理商分润异常:" + throwable.getMessage());
         }
-           return CommonResponse.simpleResponse(-1, "查询二级代理商分润异常");
+        return CommonResponse.simpleResponse(-1, "查询二级代理商分润异常");
     }
 
     /**
-     *  下载一级代理商分润数据
-     *
+     * 二级代理分润详情
      * @param pageQueryParam
-     * @param response
-     * @throws Exception
+     * @return
      */
-    @RequestMapping(value = "/first/excelExport", method = RequestMethod.GET)
-    public void firstExportExcel(@RequestBody final DealerProfitQueryParam pageQueryParam, final HttpServletResponse response)
-            throws Exception {
-        PageModel<DailyProfitDetail> pageModel = this.dailyProfitDetailService.selectFirstByParam(pageQueryParam.getDealerId(),
-                pageQueryParam.getDealerName(), pageQueryParam.getProfitDate(), pageQueryParam.getPageNO(), pageQueryParam.getPageSize());
+    @ResponseBody
+    @RequestMapping(value = "/secondDealer/detail")
+    public CommonResponse getSecondDealerDeatail(@RequestBody final DealerProfitQueryParam pageQueryParam){
 
-        final List<List<String>> list = new ArrayList<>();
-        for (final DailyProfitDetail input : pageModel.getRecords()) {
-            final List<String> obj = new ArrayList<>();
-            obj.add(String.valueOf(input.getTotalMoney()));
-            obj.add(input.getStatisticsDate());
-            obj.add(input.getDealerName());
-            obj.add(String.valueOf(input.getSecondDealerId()));
-            obj.add(String.valueOf(input.getCollectMoney()));
-            obj.add(String.valueOf(input.getWithdrawMoney()));
-            list.add(obj);
+        try{
+            final List<ShallProfitDetail> list = this.shallProfitDetailService.getSecondDealerDeatail(pageQueryParam.getDailyProfitId());
+            return CommonResponse.objectResponse(1, "success", list);
+        }catch (final Throwable throwable){
+            log.error("查询二级代理商分润详情异常:" + throwable.getMessage());
         }
-
-        response.setContentType("application/vnd.ms-excel");
-        response.setHeader("Content-disposition", "attachment;filename="+ DateFormatUtil.format(new Date(),DateFormatUtil.yyyy_MM_dd)+".xls");
-        final OutputStream outputStream = response.getOutputStream();
-
-        final ExcelSheetVO excelSheetVO = new ExcelSheetVO();
-        final List<String> head = new ArrayList<>();
-        head.add("一级代理分润");
-        head.add("分润日期");
-        head.add("代理商名称");
-        head.add("代理商编号");
-        head.add("收单交易分润金额");
-        head.add("提现分润金额");
-
-        list.add(0, head);
-        excelSheetVO.setName("代理商分润信息");
-        excelSheetVO.setDatas(list);
-        final List<ExcelSheetVO> excelSheetVOs = new ArrayList<>();
-        excelSheetVOs.add(excelSheetVO);
-        ExcelUtil.exportExcel(excelSheetVOs , outputStream);
-
-        outputStream.flush();
-        outputStream.close();
-    }
-
-    /**
-     *  下载二级代理商分润数据
-     *
-     * @param pageQueryParam
-     * @param response
-     * @throws Exception
-     */
-    @RequestMapping(value = "/second/excelExport", method = RequestMethod.GET)
-    public void secondExportExcel(@RequestBody final DealerProfitQueryParam pageQueryParam, final HttpServletResponse response)
-            throws Exception {
-        PageModel<DailyProfitDetail> pageModel = this.dailyProfitDetailService.selectSecondByParam(pageQueryParam.getDealerId(),
-                pageQueryParam.getDealerName(), pageQueryParam.getProfitDate(), pageQueryParam.getPageNO(), pageQueryParam.getPageSize());
-
-        final List<List<String>> list = new ArrayList<>();
-        for (final DailyProfitDetail input : pageModel.getRecords()) {
-            final List<String> obj = new ArrayList<>();
-            obj.add(input.getFirstDealerName());
-            obj.add(String.valueOf(input.getTotalMoney()));
-            obj.add(input.getStatisticsDate());
-            obj.add(input.getDealerName());
-            obj.add(String.valueOf(input.getSecondDealerId()));
-            obj.add(String.valueOf(input.getCollectMoney()));
-            obj.add(String.valueOf(input.getWithdrawMoney()));
-            list.add(obj);
-        }
-
-        response.setContentType("application/vnd.ms-excel");
-        response.setHeader("Content-disposition", "attachment;filename="+ DateFormatUtil.format(new Date(),DateFormatUtil.yyyy_MM_dd)+".xls");
-        final OutputStream outputStream = response.getOutputStream();
-
-        final ExcelSheetVO excelSheetVO = new ExcelSheetVO();
-        final List<String> head = new ArrayList<>();
-        head.add("所属上级");
-        head.add("二级代理分润");
-        head.add("分润日期");
-        head.add("代理商名称");
-        head.add("代理商编号");
-        head.add("收单交易分润金额");
-        head.add("提现分润金额");
-
-        list.add(0, head);
-        excelSheetVO.setName("代理商分润信息");
-        excelSheetVO.setDatas(list);
-        final List<ExcelSheetVO> excelSheetVOs = new ArrayList<>();
-        excelSheetVOs.add(excelSheetVO);
-        ExcelUtil.exportExcel(excelSheetVOs , outputStream);
-
-        outputStream.flush();
-        outputStream.close();
+        return CommonResponse.simpleResponse(-1, "查询二代分润明细异常");
     }
 }

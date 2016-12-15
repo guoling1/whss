@@ -171,6 +171,7 @@ public class DealerServiceImpl implements DealerService {
             companyProfitDetail.setProductShallAmount(productMoney);
             companyProfitDetail.setChannelCost(basicMoney);
             companyProfitDetail.setChannelShallAmount(channelMoney);
+            companyProfitDetail.setProfitDate(DateFormatUtil.format(new Date(), DateFormatUtil.yyyy_MM_dd));
             this.companyProfitDetailService.add(companyProfitDetail);
             map.put("merchant", Triple.of(merchantInfo.getAccountId(), merchantMoney, "D0"));
             map.put("merchantAndProfit", Triple.of(merchantInfo.getAccountId(), totalFee.subtract(basicMoney), "D0"));

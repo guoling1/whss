@@ -156,4 +156,35 @@ public interface ShallProfitDetailDao {
      * @return
      */
     ShallProfitDetail selectByOrderId(@Param("orderId") String orderId);
+
+    /**
+     * 查询
+     * @param profitDate
+     * @return
+     */
+    BigDecimal selectCompanyCollectProfitByProfitDate(@Param("profitDate") String profitDate);
+
+
+    /**
+     * 查询
+     * @param profitDate
+     * @return
+     */
+    BigDecimal selectCompanyWithdrawProfitByProfitDate(@Param("profitDate") String profitDate);
+
+    /**
+     * 查询二代每日分润详情
+     * @param secondDealerId
+     * @param statisticsDate
+     * @return
+     */
+    List<ShallProfitDetail> selectByProfitDateAndSecondDealerId(@Param("secondDealerId") long secondDealerId, @Param("statisticsDate") String statisticsDate);
+
+    /**
+     * 查询一代每日分润详情
+     * @param firstDealerId
+     * @param statisticsDate
+     * @return
+     */
+    List<ShallProfitDetail> selectByProfitDateAndFirstDealerId(@Param("firstDealerId") long firstDealerId, @Param("statisticsDate") String statisticsDate);
 }

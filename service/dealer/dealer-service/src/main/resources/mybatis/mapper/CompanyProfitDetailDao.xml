@@ -14,6 +14,7 @@
         channel_cost,
         channel_shall_amount,
         product_shall_amount,
+        profit_date,
         status
         )VALUES(
         #{merchantId},
@@ -26,7 +27,14 @@
         #{channelCost},
         #{channelShallAmount},
         #{productShallAmount},
+        #{profitDate},
         #{status}
         )
     </insert>
+    <select id="selectCollectProfitByProfitDate" resultType="java.math.BigDecimal">
+        SELECT sum(productShallAmount + channelShallAmount) FROM tb_company_profit_detail WHERE profit_type = 1 AND profit_date = #{profitDate}
+    </select>
+    <select id="selectWithdrawProfitByProfitDate" resultType="java.math.BigDecimal">
+        SELECT sum(productShallAmount + channelShallAmount) FROM tb_company_profit_detail WHERE profit_type = 2 AND profit_date = #{profitDate}
+    </select>
 </mapper>
