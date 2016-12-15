@@ -15,7 +15,9 @@ var http = _require('http');
 var mobile = document.getElementById('mobile');
 var code = document.getElementById('code');
 var submit = document.getElementById('submit');
-
+// 引入浏览器特性处理
+var browser = _require('browser');
+browser.elastic_touch();
 // 定义验证码
 animation.validcode({
   url: '/wx/getCode',

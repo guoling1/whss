@@ -11,6 +11,9 @@ var http = _require('http');
 var TimePicker = _require('timePicker');
 new TimePicker('dateFrom');
 new TimePicker('dateTo');
+// 引入浏览器特性处理
+var browser = _require('browser');
+browser.elastic_touch('list');
 // 引入分页插件
 var Paging = _require('paging');
 new Paging('trade_record', {

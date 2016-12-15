@@ -4,6 +4,9 @@
  * Created by administrator on 2016/12/8.
  */
 
+// 引入浏览器特性处理
+var browser = _require('browser');
+browser.elastic_touch();
 // 定义变量
 var color = document.getElementById('color');
 var logo = document.getElementById('logo');
@@ -26,5 +29,8 @@ var index = HasBank();
 if (index != -1) {
   color.className = 'group ' + bankLogoColor[index];
   logo.className = 'logo ' + pageData.bin;
+} else {
+  color.className = 'group red';
+  logo.className = 'logo DEFAULT';
 }
 //# sourceMappingURL=bank.js.map
