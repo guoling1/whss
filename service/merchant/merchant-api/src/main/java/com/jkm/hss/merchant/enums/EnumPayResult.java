@@ -40,9 +40,16 @@ public enum EnumPayResult {
     /**
      * 提现异常
      */
-    EXCEPTION("E", "提现异常");
+    EXCEPTION("E", "提现异常"),
+    /**
+     * 审核不通过
+     */
+    UNPASS("O", "审核不通过"),
 
-
+    /**
+     * 交易关闭
+     */
+    DOWN("D", "交易关闭");
     @Getter
     private String id;
     @Getter

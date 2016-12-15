@@ -10,9 +10,7 @@ import com.jkm.hss.merchant.enums.*;
 import com.jkm.hss.merchant.helper.MerchantConsts;
 import com.jkm.hss.merchant.helper.MerchantSupport;
 import com.jkm.hss.merchant.helper.SmPost;
-import com.jkm.hss.merchant.helper.request.DfmRequest;
-import com.jkm.hss.merchant.helper.request.RequestOrderRecord;
-import com.jkm.hss.merchant.helper.request.TradeRequest;
+import com.jkm.hss.merchant.helper.request.*;
 import com.jkm.hss.merchant.helper.response.DfQueryResponse;
 import com.jkm.hss.merchant.helper.response.DfmResponse;
 import com.jkm.hss.merchant.helper.response.OrderQueryResponse;
@@ -240,7 +238,7 @@ public class OrderRecordServiceImpl implements OrderRecordService {
 //        paramsMap.put("accountName", merchantInfo.getName());
 //        paramsMap.put("accountNumber", MerchantSupport.decryptBankCard(merchantInfo.getBankNo()));
 //        paramsMap.put("note", "提现");
-//        paramsMap.put("appId","wap_hss");
+//        paramsMap.put("appId","wap_hsy");
 //        paramsMap.put("idCard", MerchantSupport.decryptIdentity(merchantInfo.getIdentity()));
 //        paramsMap.put("isCompay", EnumIsCompay.ToPrivate.getId());
 //        log.info("组装数据结束。。。,数据为{}",JSONObject.fromObject(paramsMap).toString());
@@ -410,6 +408,150 @@ public class OrderRecordServiceImpl implements OrderRecordService {
 //            resultJo.put("code",-1);
 //            resultJo.put("message","请求异常");
 //        }
+        return resultJo;
+    }
+
+    /**
+     * 提现审核
+     * @param req
+     * @return
+     */
+    @Override
+    public JSONObject checkWithdraw(WithDrawRequest req) {
+        JSONObject resultJo = new JSONObject();
+        OrderRecord orderRecord = orderRecordDao.selectByPrimaryKey(req.getId());
+        if(orderRecord==null){
+            resultJo.put("code",-1);
+            resultJo.put("message","没有查到此订单");
+            return resultJo;
+        }
+        if(orderRecord.getPayResult()==EnumPayResult.SUCCESS.getId()){
+            resultJo.put("code",-1);
+            resultJo.put("message","已提现成功，不能多次提现");
+            return resultJo;
+        }
+        log.info("开始组装数据。。。");
+        Optional<MerchantInfo>  merchantInfoOptional = merchantInfoService.selectById(orderRecord.getMerchantId());
+        if(!merchantInfoOptional.isPresent()){
+            resultJo.put("code",-1);
+            resultJo.put("message","没有此商户");
+            return resultJo;
+        }
+        Map<String, String> paramsMap = new HashMap<String, String>();
+        paramsMap.put("amount", orderRecord.getRealFee().toString());
+        paramsMap.put("orderId", orderRecord.getOrderId());
+        paramsMap.put("bitchNo", orderRecord.getOrderId());
+        paramsMap.put("phoneNo", MerchantSupport.decryptMobile(merchantInfoOptional.get().getReserveMobile()));
+        paramsMap.put("bankName", merchantInfoOptional.get().getBankName());
+        paramsMap.put("accountName", merchantInfoOptional.get().getName());
+        paramsMap.put("accountNumber", MerchantSupport.decryptBankCard(merchantInfoOptional.get().getBankNo()));
+        paramsMap.put("note", "提现");
+        paramsMap.put("appId","wap_hsy");
+        paramsMap.put("notifyUrl", "http://hsy.qianbaojiajia.com/call/otherPayBack");     //后台通知url
+        paramsMap.put("idCard", MerchantSupport.decryptIdentity(merchantInfoOptional.get().getIdentity()));
+        paramsMap.put("isCompay", EnumIsCompay.ToPrivate.getId());
+        log.info("组装数据结束。。。,数据为{}",JSONObject.fromObject(paramsMap).toString());
+        log.info("开始向支付中心发请求。。。");
+        log.info("更该订单状态为【处理中】。。。");
+        orderRecord.setPayResult(EnumPayResult.HAND.getId());
+        orderRecordDao.updateByPrimaryKeySelective(orderRecord);
+        log.info("更该订单状态为【处理中】结束。。。");
+        String result = SmPost.post(MerchantConsts.getMerchantConfig().domain()+MerchantConsts.getMerchantConfig().otherPay(),paramsMap);
+        log.info("向支付中心发请求结束。。。，结果是{}",result);
+        if(result!=null&&!"".equals(result)){
+            log.info("支付中心返回代付结果是{}",result);
+            JSONObject jo = JSONObject.fromObject(result);
+            DfmResponse dfmResponse = (DfmResponse)JSONObject.toBean(jo, DfmResponse.class);
+            if("success".equals(dfmResponse.getError_code())){
+                log.info("代付success，订单号是{}",orderRecord.getOrderId());
+                orderRecord.setPayResult(EnumPayResult.ACCEPT.getId());
+                orderRecord.setOutTradeNo(dfmResponse.getSys_order_id());
+                orderRecord.setErrorMessage(dfmResponse.getMessage());
+                orderRecord.setPayTime(new Date());
+                orderRecord.setResultParams(result);
+                try{
+                    orderRecordDao.updateByPrimaryKeySelective(orderRecord);
+                    log.info("代付success,更改订单状态成功，订单号是{}",orderRecord.getOrderId());
+                }catch (Throwable e){
+                    log.error("代付success,更改订单状态异常，订单号是{}",orderRecord.getOrderId());
+                    log.error("代付success,更改订单状态异常{}",e.getStackTrace());
+                }
+                resultJo.put("code",1);
+                resultJo.put("message","退款请求已受理");
+            }else if("fail".equals(dfmResponse.getError_code())){
+                log.info("代付fail，更改订单信息，订单号是{}",orderRecord.getOrderId());
+                orderRecord.setPayResult(EnumPayResult.FAIL.getId());
+                orderRecord.setOutTradeNo(dfmResponse.getSys_order_id());
+                orderRecord.setErrorMessage(dfmResponse.getMessage());
+                orderRecord.setPayTime(new Date());
+                orderRecord.setResultParams(result);
+                try{
+                    orderRecordDao.updateByPrimaryKeySelective(orderRecord);
+                    log.info("代付fail，更改订单信息成功，订单号是{}",orderRecord.getOrderId());
+                }catch (Throwable e){
+                    log.error("代付fail，更改订单信息异常，订单号是{}",orderRecord.getOrderId());
+                    log.error("代付fail，更该订单信息异常{}",e.getStackTrace());
+                }
+                resultJo.put("code",-1);
+                resultJo.put("message",dfmResponse.getMessage());
+            }else if("invalid".equals(dfmResponse.getError_code())){//签名失败
+                log.info("代付invalid，更改订单信息，订单号是{}",orderRecord.getOrderId());
+                orderRecord.setPayResult(EnumPayResult.FAIL.getId());
+                orderRecord.setOutTradeNo(dfmResponse.getSys_order_id());
+                orderRecord.setErrorMessage(dfmResponse.getMessage());
+                orderRecord.setPayTime(new Date());
+                orderRecord.setResultParams(result);
+                try{
+                    orderRecordDao.updateByPrimaryKeySelective(orderRecord);
+                    log.info("代付invalid，更改订单信息成功，订单号是{}",orderRecord.getOrderId());
+                }catch (Throwable e){
+                    log.error("代付invalid，更该订单信息异常，订单号是{}",orderRecord.getOrderId());
+                    log.error("代付invalid，更该订单信息异常{}",e.getStackTrace());
+                }
+                resultJo.put("code",-1);
+                resultJo.put("message","签名失败");
+            }else if("exception".equals(dfmResponse.getError_code())){
+                log.info("代付exception，更改订单信息，订单号是{}",orderRecord.getOrderId());
+                orderRecord.setPayResult(EnumPayResult.EXCEPTION.getId());
+                orderRecord.setOutTradeNo(dfmResponse.getSys_order_id());
+                orderRecord.setErrorMessage(dfmResponse.getMessage());
+                orderRecord.setPayTime(new Date());
+                orderRecord.setResultParams(result);
+                //结算
+                try{
+                    orderRecordDao.updateByPrimaryKeySelective(orderRecord);
+                    log.info("代付exception，更改订单信息成功，订单号是{}",orderRecord.getOrderId());
+                }catch (Throwable e){
+                    log.error("代付exception，更该订单信息异常，订单号是{}",orderRecord.getOrderId());
+                    log.error("代付exception，更该订单信息异常{}",e.getStackTrace());
+                }
+                resultJo.put("code",1);
+                resultJo.put("message","返回结果，代付异常");
+            }else if("wait".equals(dfmResponse.getError_code())){
+                log.info("代付wait，更改订单信息，订单号是{}",orderRecord.getOrderId());
+                orderRecord.setPayResult(EnumPayResult.WAIT.getId());
+                orderRecord.setOutTradeNo(dfmResponse.getSys_order_id());
+                orderRecord.setErrorMessage(dfmResponse.getMessage());
+                orderRecord.setPayTime(new Date());
+                orderRecord.setResultParams(result);
+                try{
+                    orderRecordDao.updateByPrimaryKeySelective(orderRecord);
+                    log.info("代付wait，更改订单信息成功，订单号是{}",orderRecord.getOrderId());
+                }catch (Throwable e){
+                    log.error("代付wait，更该订单信息异常，订单号是{}",orderRecord.getOrderId());
+                    log.error("代付wait，更该订单信息异常{}",e.getStackTrace());
+                }
+                resultJo.put("code",1);
+                resultJo.put("message","等待系统确认");
+            }
+        }else{
+            log.error("提现异常,订单号是{}",orderRecord.getId());
+            orderRecord.setPayResult(EnumPayResult.EXCEPTION.getId());
+            orderRecord.setErrorMessage("请求异常");
+            orderRecordDao.updateByPrimaryKeySelective(orderRecord);
+            resultJo.put("code",-1);
+            resultJo.put("message","请求异常");
+        }
         return resultJo;
     }
 
@@ -962,6 +1104,108 @@ public class OrderRecordServiceImpl implements OrderRecordService {
         return orderRecordDao.selectOrderRecordByConditionsCount(orderRecordConditions);
     }
 
+    @Override
+    public List<OrderRecordAndMerchant> selectDrawWithRecordByPage(OrderRecordAndMerchantRequest req) {
+        List<OrderRecordAndMerchant> list = orderRecordDao.selectDrawWithRecordByPage(req);
+
+        return list;
+    }
+
+    @Override
+    public long selectDrawWithCount(OrderRecordAndMerchantRequest req) {
+        return orderRecordDao.selectDrawWithCount(req);
+    }
+    @Transactional
+    @Override
+    public JSONObject unPass(long id,String message) {
+        JSONObject resultJo = new JSONObject();
+        OrderRecord orderRecord = orderRecordDao.selectByPrimaryKey(id);
+        if(orderRecord==null){
+            resultJo.put("code",-1);
+            resultJo.put("message","查无此订单");
+            return resultJo;
+        }
+        Optional<MerchantInfo> merchantInfoOptional = merchantInfoService.selectById(orderRecord.getMerchantId());
+        if(merchantInfoOptional.isPresent()){
+            if(merchantInfoOptional.get().getAccountId()>0){
+                log.info("代付失败，订单号是{}",orderRecord.getOrderId());
+                try{
+                    log.info("代付失败，开始解冻资金。。。");
+                    accountInfoService.backMoney(orderRecord.getTotalFee(),merchantInfoOptional.get().getAccountId());
+                    log.info("代付失败，解冻资金结束。。。");
+                }catch (Throwable e){
+                    log.error("代付失败,解冻异常{}",e);
+                    log.error("代付失败,解冻异常,订单号是{}",orderRecord.getOrderId());
+                }
+                log.info("代付失败，更改订单信息，订单号是{}",orderRecord.getOrderId());
+                orderRecord.setPayResult(EnumPayResult.UNPASS.getId());
+                orderRecord.setErrorMessage(message);
+                try{
+                    orderRecordDao.updateByPrimaryKeySelective(orderRecord);
+                    log.info("代付失败，更改订单信息成功，订单号是{}",orderRecord.getOrderId());
+                }catch (Throwable e){
+                    log.error("代付失败，更改订单信息异常，订单号是{}",orderRecord.getOrderId());
+                    log.error("代付失败，更该订单信息异常{}",e.getStackTrace());
+                }
+                resultJo.put("code",1);
+                resultJo.put("message","操作成功");
+            }else{
+                resultJo.put("code",-1);
+                resultJo.put("message","查无此账户");
+            }
+        }else{
+            resultJo.put("code",-1);
+            resultJo.put("message","查无此商户");
+            log.info("商户号为{}的账户不存在",orderRecord.getMerchantId());
+        }
+        return resultJo;
+    }
+
+    @Transactional
+    @Override
+    public JSONObject unfreeze(long id) {
+        JSONObject resultJo = new JSONObject();
+        OrderRecord orderRecord = orderRecordDao.selectByPrimaryKey(id);
+        if(orderRecord==null){
+            resultJo.put("code",-1);
+            resultJo.put("message","查无此订单");
+            return resultJo;
+        }
+        Optional<MerchantInfo> merchantInfoOptional = merchantInfoService.selectById(orderRecord.getMerchantId());
+        if(merchantInfoOptional.isPresent()){
+            if(merchantInfoOptional.get().getAccountId()>0){
+                log.info("代付失败，订单号是{}",orderRecord.getOrderId());
+                try{
+                    log.info("代付失败，开始解冻资金。。。");
+                    accountInfoService.backMoney(orderRecord.getTotalFee(),merchantInfoOptional.get().getAccountId());
+                    log.info("代付失败，解冻资金结束。。。");
+                }catch (Throwable e){
+                    log.error("代付失败,解冻异常{}",e);
+                    log.error("代付失败,解冻异常,订单号是{}",orderRecord.getOrderId());
+                }
+                log.info("代付失败，更改订单信息，订单号是{}",orderRecord.getOrderId());
+                orderRecord.setPayResult(EnumPayResult.DOWN.getId());
+                try{
+                    orderRecordDao.updateByPrimaryKeySelective(orderRecord);
+                    log.info("代付失败，更改订单信息成功，订单号是{}",orderRecord.getOrderId());
+                }catch (Throwable e){
+                    log.error("代付失败，更改订单信息异常，订单号是{}",orderRecord.getOrderId());
+                    log.error("代付失败，更该订单信息异常{}",e.getStackTrace());
+                }
+                resultJo.put("code",1);
+                resultJo.put("message","操作成功");
+            }else{
+                resultJo.put("code",-1);
+                resultJo.put("message","查无此账户");
+            }
+        }else{
+            resultJo.put("code",-1);
+            resultJo.put("message","查无此商户");
+            log.info("商户号为{}的账户不存在",orderRecord.getMerchantId());
+        }
+        return resultJo;
+    }
+
     private void payBack(OrderRecord orderRecord){
         if(EnumPayResult.ACCEPT.equals(orderRecord.getPayResult())){//只有待支付、受理成功的状态查询
             Map<String, String> paramsMap = new HashMap<String, String>();
@@ -1139,5 +1383,108 @@ public class OrderRecordServiceImpl implements OrderRecordService {
             }
 
         }
+    }
+
+
+    private void otherPayBack(String outTradeNo,String tradeResult,String bankStatus,String payNum){
+        OrderRecord orderRecord = orderRecordDao.selectOrderId(payNum);
+        if(orderRecord!=null){
+            if("S".equals(tradeResult)){
+                if("S".equals(bankStatus)){//已成功
+                    Optional<MerchantInfo> merchantInfoOptional = merchantInfoService.selectById(orderRecord.getMerchantId());
+                    if(merchantInfoOptional.isPresent()){
+                        try{
+                            accountInfoService.inMoney(orderRecord.getTotalFee(),merchantInfoOptional.get().getAccountId());
+                            log.info("代付成功，订单号是{}",orderRecord.getOrderId());
+                            orderRecord.setPayResult(EnumPayResult.SUCCESS.getId());
+                            orderRecord.setOutTradeNo(outTradeNo);
+                            orderRecord.setPayTime(new Date());
+                            try{
+                                orderRecordDao.updateByPrimaryKeySelective(orderRecord);
+                                log.info("代付success,更改订单状态成功，订单号是{}",orderRecord.getOrderId());
+                            }catch (Throwable e){
+                                log.error("代付success,更改订单状态异常，订单号是{}",orderRecord.getOrderId());
+                                log.error("代付success,更改订单状态异常{}",e.getStackTrace());
+                            }
+                        }catch (Throwable e){
+                            log.error("订单号为{}的订单入账异常",orderRecord.getOrderId());
+                        }
+                        try{
+                            log.info("计算收益开始+++++++++++");
+                            calculationProfit(orderRecord);
+                            log.info("计算收益结束+++++++++++");
+                        }catch (Throwable e){
+                            log.error("订单号为{}的订单计算收益异常",orderRecord.getOrderId());
+                        }
+                        //代付成功通知
+                        try{
+                            log.info("商户号{}",orderRecord.getMerchantId());
+                            Optional<UserInfo> ui = userInfoService.selectByMerchantId(merchantInfoOptional.get().getId());
+                            if(ui.isPresent()){
+                                log.info("用户号",ui.get().getId());
+                                log.info("openId",ui.get().getOpenId());
+                                DecimalFormat decimalFormat=new DecimalFormat("0.00");//构造方法的字符格式这里如果小数不足2位,会以0补足.
+                                String total = decimalFormat.format(orderRecord.getTotalFee());
+                              sendMsgService.sendPushMessage(total,merchantInfoOptional.get().getBankName(),merchantInfoOptional.get().getBankNoShort(),ui.get().getOpenId());
+                            }
+                        }catch (Exception e){
+                            log.error("公众号通知提现消息发送失败");
+                        }
+
+                    }else{
+                        log.error("商户号为{}的账户不存在",orderRecord.getMerchantId());
+                    }
+                }
+                if("F".equals(bankStatus)){//出款失败， 原因见打款明细查询fail_Desc
+                    log.info("订单号为{}的订单提现失败",orderRecord.getOrderId());
+                    Optional<MerchantInfo> merchantInfoOptional = merchantInfoService.selectById(orderRecord.getMerchantId());
+                    if(merchantInfoOptional.isPresent()){
+                        log.info("代付失败，更改订单信息，订单号是{}",orderRecord.getOrderId());
+                        orderRecord.setPayResult(EnumPayResult.FAIL.getId());
+                        orderRecord.setOutTradeNo(outTradeNo);
+                        try{
+                            orderRecordDao.updateByPrimaryKeySelective(orderRecord);
+                            log.info("代付失败，更改订单信息成功，订单号是{}",orderRecord.getOrderId());
+                        }catch (Throwable e){
+                            log.error("代付失败，更改订单信息异常，订单号是{}",orderRecord.getOrderId());
+                            log.error("代付失败，更该订单信息异常{}",e.getStackTrace());
+                        }
+                    }else{
+                        log.error("商户号为{}的商户不存在",orderRecord.getMerchantId());
+                    }
+                }
+            }else if("F".equals(tradeResult)){
+                log.info("订单号为{}的订单提现失败",orderRecord.getOrderId());
+                Optional<MerchantInfo> merchantInfoOptional = merchantInfoService.selectById(orderRecord.getMerchantId());
+                if(merchantInfoOptional.isPresent()){
+                    log.info("代付失败，更改订单信息，订单号是{}",orderRecord.getOrderId());
+                    orderRecord.setPayResult(EnumPayResult.FAIL.getId());
+                    orderRecord.setOutTradeNo(outTradeNo);
+                    try{
+                        orderRecordDao.updateByPrimaryKeySelective(orderRecord);
+                        log.info("代付失败，更改订单信息成功，订单号是{}",orderRecord.getOrderId());
+                    }catch (Throwable e){
+                        log.error("代付失败，更改订单信息异常，订单号是{}",orderRecord.getOrderId());
+                        log.error("代付失败，更该订单信息异常{}",e.getStackTrace());
+                    }
+                }else{
+                    log.error("商户号为{}的商户不存在",orderRecord.getMerchantId());
+                }
+            }
+        }else{
+            log.info("代付查询不到订单，订单号{}",payNum);
+        }
+    }
+
+    /**
+     * 代付回调
+     * @param outTradeNo
+     * @param tradeResult
+     * @param bankStatus
+     * @param payNum
+     */
+    @Override
+    public void otherPayResult(String outTradeNo,String tradeResult,String bankStatus,String payNum) {
+        otherPayBack(outTradeNo,tradeResult,bankStatus,payNum);
     }
 }

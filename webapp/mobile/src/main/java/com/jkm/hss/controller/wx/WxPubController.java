@@ -5,24 +5,23 @@ import com.google.common.collect.ImmutableMap;
 import com.jkm.base.common.entity.CommonResponse;
 import com.jkm.base.common.entity.PageModel;
 import com.jkm.base.common.util.CookieUtil;
-import com.jkm.base.common.util.Md5Util;
 import com.jkm.base.common.util.ValidateUtils;
+import com.jkm.hss.controller.BaseController;
+import com.jkm.hss.dealer.service.ShallProfitDetailService;
 import com.jkm.hss.helper.ApplicationConsts;
 import com.jkm.hss.helper.request.MerchantLoginCodeRequest;
 import com.jkm.hss.helper.request.MerchantLoginRequest;
-import com.jkm.hss.controller.BaseController;
-import com.jkm.hss.dealer.service.ShallProfitDetailService;
 import com.jkm.hss.helper.request.OtherPayRequest;
 import com.jkm.hss.merchant.entity.AccountInfo;
 import com.jkm.hss.merchant.entity.MerchantInfo;
 import com.jkm.hss.merchant.entity.OrderRecord;
 import com.jkm.hss.merchant.entity.UserInfo;
 import com.jkm.hss.merchant.enums.EnumMerchantStatus;
-import com.jkm.hss.merchant.helper.MerchantConsts;
 import com.jkm.hss.merchant.helper.MerchantSupport;
 import com.jkm.hss.merchant.helper.WxPubUtil;
 import com.jkm.hss.merchant.helper.request.RequestOrderRecord;
 import com.jkm.hss.merchant.helper.request.TradeRequest;
+import com.jkm.hss.merchant.helper.request.WithDrawRequest;
 import com.jkm.hss.merchant.service.AccountInfoService;
 import com.jkm.hss.merchant.service.MerchantInfoService;
 import com.jkm.hss.merchant.service.OrderRecordService;
@@ -201,7 +200,7 @@ public class WxPubController extends BaseController {
      */
     @ResponseBody
     @RequestMapping(value = "getWithDrawCode", method = RequestMethod.POST)
-    public CommonResponse getWithDrawCode(final HttpServletRequest request,final HttpServletResponse response) {
+    public CommonResponse getWithDrawCode(final HttpServletRequest request, final HttpServletResponse response) {
         Optional<UserInfo> userInfoOptional = userInfoService.selectById(super.getUserId(request));
         if(!userInfoOptional.isPresent()){
             return CommonResponse.simpleResponse(-1, "登录异常，请重新登录");
@@ -233,7 +232,7 @@ public class WxPubController extends BaseController {
      */
     @ResponseBody
     @RequestMapping(value = "geBankInfo", method = RequestMethod.POST)
-    public CommonResponse geBankInfo(final HttpServletRequest request,final HttpServletResponse response) {
+    public CommonResponse geBankInfo(final HttpServletRequest request, final HttpServletResponse response) {
         //之所以能调到此页面，说明状态已经改过，在前面已经拦截
         Optional<UserInfo> userInfoOptional = userInfoService.selectById(super.getUserId(request));
         Optional<MerchantInfo> merchantInfo = this.merchantInfoService.selectById(userInfoOptional.get().getMerchantId());
@@ -256,7 +255,7 @@ public class WxPubController extends BaseController {
      */
     @ResponseBody
     @RequestMapping(value = "getOrderRecord", method = RequestMethod.POST)
-    public CommonResponse getOrderRecord(final HttpServletRequest request,final HttpServletResponse response,@RequestBody final RequestOrderRecord req) {
+    public CommonResponse getOrderRecord(final HttpServletRequest request, final HttpServletResponse response, @RequestBody final RequestOrderRecord req) {
         if(!super.isLogin(request)){
             return CommonResponse.simpleResponse(-2, "未登录");
         }
@@ -268,7 +267,7 @@ public class WxPubController extends BaseController {
         if(!merchantInfo.isPresent()){
             return CommonResponse.simpleResponse(-2, "未登录");
         }
-        if(merchantInfo.get().getStatus()!=EnumMerchantStatus.PASSED.getId()){
+        if(merchantInfo.get().getStatus()!= EnumMerchantStatus.PASSED.getId()){
             return CommonResponse.simpleResponse(-2, "未审核通过");
         }
         req.setMerchantId(merchantInfo.get().getId());
@@ -288,7 +287,7 @@ public class WxPubController extends BaseController {
      */
     @ResponseBody
     @RequestMapping(value = "getChargeRecord", method = RequestMethod.POST)
-    public CommonResponse getChargeRecord(final HttpServletRequest request,final HttpServletResponse response,@RequestBody final RequestOrderRecord req) {
+    public CommonResponse getChargeRecord(final HttpServletRequest request, final HttpServletResponse response, @RequestBody final RequestOrderRecord req) {
         if(!super.isLogin(request)){
             return CommonResponse.simpleResponse(-2, "未登录");
         }
@@ -319,7 +318,7 @@ public class WxPubController extends BaseController {
      */
     @ResponseBody
     @RequestMapping(value = "getChargeRecordDetail", method = RequestMethod.POST)
-    public CommonResponse getChargeRecordDetail(final HttpServletRequest request,final HttpServletResponse response,final String orderId) {
+    public CommonResponse getChargeRecordDetail(final HttpServletRequest request, final HttpServletResponse response, final String orderId) {
         Optional<OrderRecord> orderRecord = orderRecordService.selectOrderId(orderId);
         return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", orderRecord.get());
     }
@@ -331,7 +330,7 @@ public class WxPubController extends BaseController {
      */
     @ResponseBody
     @RequestMapping(value = "login", method = RequestMethod.POST)
-    public CommonResponse login(final HttpServletRequest request,final HttpServletResponse response, @RequestBody final MerchantLoginRequest loginRequest) {
+    public CommonResponse login(final HttpServletRequest request, final HttpServletResponse response, @RequestBody final MerchantLoginRequest loginRequest) {
         log.info("参数为{}",JSONObject.fromObject(loginRequest).toString());
         final String mobile = loginRequest.getMobile();
         final String verifyCode = loginRequest.getCode();
@@ -420,7 +419,7 @@ public class WxPubController extends BaseController {
      */
     @ResponseBody
     @RequestMapping(value = "receipt", method = RequestMethod.POST)
-    public CommonResponse receipt(final HttpServletRequest request,final HttpServletResponse response, @RequestBody final TradeRequest tradeRequest) {
+    public CommonResponse receipt(final HttpServletRequest request, final HttpServletResponse response, @RequestBody final TradeRequest tradeRequest) {
         if(!super.isLogin(request)){
             return CommonResponse.simpleResponse(-2, "未登录");
         }
@@ -457,7 +456,7 @@ public class WxPubController extends BaseController {
      */
     @ResponseBody
     @RequestMapping(value = "receiptByCode", method = RequestMethod.POST)
-    public CommonResponse receiptByCode(final HttpServletRequest request,final HttpServletResponse response, @RequestBody final TradeRequest tradeRequest) {
+    public CommonResponse receiptByCode(final HttpServletRequest request, final HttpServletResponse response, @RequestBody final TradeRequest tradeRequest) {
         Optional<MerchantInfo> merchantInfo = merchantInfoService.selectById(tradeRequest.getMerchantId());
         if(merchantInfo.get().getStatus()!=EnumMerchantStatus.PASSED.getId()){
             return CommonResponse.simpleResponse(-2, "未审核通过");
@@ -487,7 +486,7 @@ public class WxPubController extends BaseController {
      */
     @ResponseBody
     @RequestMapping(value = "withdraw", method = RequestMethod.POST)
-    public CommonResponse withdraw(final HttpServletRequest request,final HttpServletResponse response,@RequestBody final OtherPayRequest otherPayRequest) {
+    public CommonResponse withdraw(final HttpServletRequest request, final HttpServletResponse response, @RequestBody final OtherPayRequest otherPayRequest) {
         final String verifyCode = otherPayRequest.getCode();
         if(!super.isLogin(request)){
             log.info("提现cookie找不到");
@@ -521,13 +520,27 @@ public class WxPubController extends BaseController {
     }
 
     /**
+     * 通过审核
+     * @param request
+     * @param response
+     * @param req
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "checkWithdraw", method = RequestMethod.POST)
+    public CommonResponse checkWithdraw(final HttpServletRequest request, final HttpServletResponse response, @RequestBody final WithDrawRequest req) {
+        JSONObject jo = orderRecordService.checkWithdraw(req);
+        return CommonResponse.simpleResponse(jo.getInt("code"), jo.getString("message"));
+    }
+
+    /**
      * 提现查询
      *
      * @return
      */
     @ResponseBody
     @RequestMapping(value = "checkOtherPay", method = RequestMethod.POST)
-    public CommonResponse checkOtherPay(final HttpServletRequest request,final HttpServletResponse response) {
+    public CommonResponse checkOtherPay(final HttpServletRequest request, final HttpServletResponse response) {
         if(!super.isLogin(request)){
             return CommonResponse.simpleResponse(-2, "未登录");
         }

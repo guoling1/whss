@@ -1,7 +1,9 @@
 package com.jkm.hss.merchant.dao;
 
 import com.jkm.hss.merchant.entity.OrderRecord;
+import com.jkm.hss.merchant.entity.OrderRecordAndMerchant;
 import com.jkm.hss.merchant.entity.OrderRecordConditions;
+import com.jkm.hss.merchant.helper.request.OrderRecordAndMerchantRequest;
 import com.jkm.hss.merchant.helper.request.RequestOrderRecord;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
@@ -56,7 +58,7 @@ public interface OrderRecordDao {
 
     int updateByPrimaryKeySelective(OrderRecord orderRecord);
 
-    int updateParam(@Param("resultParams") String resultParams,@Param("outTradeNo") String outTradeNo,@Param("id") long id);
+    int updateParam(@Param("resultParams") String resultParams, @Param("outTradeNo") String outTradeNo, @Param("id") long id);
 
     List<OrderRecordConditions> selectOrderRecordByConditions(OrderRecordConditions orderRecord);
 
@@ -64,4 +66,15 @@ public interface OrderRecordDao {
     List<OrderRecord> selectPayByConditions();
 
     int selectOrderRecordByConditionsCount(OrderRecordConditions orderRecordConditions);
+
+
+    /**
+     * 提现
+     * @param req
+     * @return
+     */
+    List<OrderRecordAndMerchant> selectDrawWithRecordByPage(OrderRecordAndMerchantRequest req);
+
+    long selectDrawWithCount(OrderRecordAndMerchantRequest req);
+
 }
