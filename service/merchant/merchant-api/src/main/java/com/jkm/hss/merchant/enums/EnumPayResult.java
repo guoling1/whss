@@ -12,15 +12,11 @@ public enum EnumPayResult {
     /**
      * 待支付
      */
-    UNPAY("N", "待支付"),
+    UNPAY("N", "待支付/待提现"),
     /**
      * 处理中
      */
-    HAND("H", "支付中"),
-    /**
-     * 交易受理
-     */
-    ACCEPT("A", "交易受理"),
+    HAND("H", "支付中/提现中"),
 
     /**
      * 支付成功
@@ -30,7 +26,20 @@ public enum EnumPayResult {
     /**
      * 支付失败
      */
-    FAIL("F", "交易失败"),
+    FAIL("F", "交易失败/提现失败"),
+
+    ACCEPT("A","受理成功"),
+
+    /**
+     * 支付成功
+     */
+    SUCCESS1("S1", "提现成功"),
+
+    /**
+     * 支付失败
+     */
+    FAIL1("F1", "提现失败"),
+
 
     /**
      * 等待中
@@ -41,6 +50,8 @@ public enum EnumPayResult {
      * 提现异常
      */
     EXCEPTION("E", "提现异常"),
+
+
     /**
      * 审核不通过
      */
