@@ -6,6 +6,7 @@ import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableMap;
 import com.jkm.base.common.entity.CommonResponse;
 import com.jkm.base.common.util.DateFormatUtil;
+import com.jkm.base.common.util.SnGenerator;
 import com.jkm.base.common.util.ValidateUtils;
 import com.jkm.hss.helper.ApplicationConsts;
 import com.jkm.hss.controller.BaseController;
@@ -136,14 +137,8 @@ public class MerchantInfoController extends BaseController {
         meta.setContentType("application/octet-stream ");
         SimpleDateFormat sdf =   new SimpleDateFormat("yyyyMMdd");
         String nowDate = sdf.format(new Date());
-        SimpleDateFormat sdf1 =   new SimpleDateFormat("yyyyMMddHHmmss");
-        String nowDate1 = sdf1.format(new Date());
-        String photoName ="hss/"+ nowDate + "/" + nowDate1 + ".jpg";
+        String photoName ="hsy/"+ nowDate + "/" + SnGenerator.generate("",5) + ".jpg";
         ossClient.putObject(ApplicationConsts.getApplicationConfig().ossBucke(), photoName, inputStream,meta);
-//        Date expiration = new Date(new Date().getTime() + 30*60*1000);
-//        URL url = ossClient.generatePresignedUrl(ApplicationConsts.getApplicationConfig().ossBucke(), photoName,expiration);
-//        String urls = url.getPath();
-//        String urlss = urls.substring(1);
         merchantInfo.setReserveMobile(MerchantSupport.encryptMobile(merchantInfo.getReserveMobile()));
         final Optional<BankCardBin> bankCardBinOptional = this.bankCardBinService.analyseCardNo(bankNo);
         merchantInfo.setBankBin(bankCardBinOptional.get().getShorthand());
@@ -179,25 +174,14 @@ public class MerchantInfoController extends BaseController {
         meta.setContentType("application/octet-stream ");
         SimpleDateFormat sdf =   new SimpleDateFormat("yyyyMMdd");
         String nowDate = sdf.format(new Date());
-        SimpleDateFormat sdf1 =   new SimpleDateFormat("yyyyMMddHHmmss");
-        String nowDate1 = sdf1.format(new Date());
-        String photoName = "hss/"+  nowDate + "/" +  nowDate1 +".jpg";
-        String photoName1 = "hss/"+ nowDate + "/" + nowDate1 +".jpg";
-        String photoName2 = "hss/"+ nowDate + "/" + nowDate1 +".jpg";
-        String photoName3 = "hss/"+ nowDate + "/" + nowDate1 +".jpg";
+        String photoName = "hsy/"+  nowDate + "/" + SnGenerator.generate("",5) +".jpg";
+        String photoName1 = "hsy/"+ nowDate + "/" + SnGenerator.generate("",5) +".jpg";
+        String photoName2 = "hsy/"+ nowDate + "/" + SnGenerator.generate("",5) +".jpg";
+        String photoName3 = "hsy/"+ nowDate + "/" + SnGenerator.generate("",5) +".jpg";
         ossClient.putObject(ApplicationConsts.getApplicationConfig().ossBucke(), photoName, inputStream, meta);
         ossClient.putObject(ApplicationConsts.getApplicationConfig().ossBucke(), photoName1, inputStream1, meta);
         ossClient.putObject(ApplicationConsts.getApplicationConfig().ossBucke(), photoName2, inputStream2, meta);
         ossClient.putObject(ApplicationConsts.getApplicationConfig().ossBucke(), photoName3, inputStream3, meta);
-//        Date expiration = new Date(new Date().getTime() + 30*60*1000);
-//        URL url = ossClient.generatePresignedUrl(ApplicationConsts.getApplicationConfig().ossBucke(), photoName,expiration);
-//        URL url1 = ossClient.generatePresignedUrl(ApplicationConsts.getApplicationConfig().ossBucke(), photoName1,expiration);
-//        URL url2 = ossClient.generatePresignedUrl(ApplicationConsts.getApplicationConfig().ossBucke(), photoName2,expiration);
-//        URL url3 = ossClient.generatePresignedUrl(ApplicationConsts.getApplicationConfig().ossBucke(), photoName3,expiration);
-//        String urls = url.getPath();
-//        String urls1 = url1.getPath();
-//        String urls2 = url2.getPath();
-//        String urls3 = url3.getPath();
         merchantInfo.setIdentityFacePic(photoName);
         merchantInfo.setIdentityHandPic(photoName1);
         merchantInfo.setIdentityOppositePic(photoName2);
@@ -280,7 +264,7 @@ public class MerchantInfoController extends BaseController {
     private String getFileName(final String originalFilename) {
         final String dateFileName = DateFormatUtil.format(new Date(), DateFormatUtil.yyyyMMdd);
         final String extName = DateFormatUtil.format(new Date(), DateFormatUtil.yyyyMMddHHmmss)+".jpg";
-        return "hss/" + dateFileName + "/" + extName;
+        return "hsy/" + dateFileName + "/" + extName;
     }
 
     /**
