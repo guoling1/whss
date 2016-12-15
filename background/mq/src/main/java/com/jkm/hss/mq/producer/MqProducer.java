@@ -1,11 +1,11 @@
-package com.jkm.hsy.mq.producer;
+package com.jkm.hss.mq.producer;
 
 import com.alibaba.fastjson.JSONObject;
 import com.aliyun.openservices.ons.api.Message;
 import com.aliyun.openservices.ons.api.SendResult;
 import com.aliyun.openservices.ons.api.bean.ProducerBean;
 import com.jkm.base.common.spring.core.SpringContextHolder;
-import com.jkm.hsy.mq.config.MqConfig;
+import com.jkm.hss.mq.config.MqConfig;
 import lombok.extern.slf4j.Slf4j;
 
 /**

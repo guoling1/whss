@@ -138,7 +138,7 @@ public class MerchantInfoController extends BaseController {
         String nowDate = sdf.format(new Date());
         SimpleDateFormat sdf1 =   new SimpleDateFormat("yyyyMMddHHmmss");
         String nowDate1 = sdf1.format(new Date());
-        String photoName ="hsy/"+ nowDate + "/" + nowDate1 + ".jpg";
+        String photoName ="hss/"+ nowDate + "/" + nowDate1 + ".jpg";
         ossClient.putObject(ApplicationConsts.getApplicationConfig().ossBucke(), photoName, inputStream,meta);
 //        Date expiration = new Date(new Date().getTime() + 30*60*1000);
 //        URL url = ossClient.generatePresignedUrl(ApplicationConsts.getApplicationConfig().ossBucke(), photoName,expiration);
@@ -181,10 +181,10 @@ public class MerchantInfoController extends BaseController {
         String nowDate = sdf.format(new Date());
         SimpleDateFormat sdf1 =   new SimpleDateFormat("yyyyMMddHHmmss");
         String nowDate1 = sdf1.format(new Date());
-        String photoName = "hsy/"+  nowDate + "/" +  nowDate1 +".jpg";
-        String photoName1 = "hsy/"+ nowDate + "/" + nowDate1 +".jpg";
-        String photoName2 = "hsy/"+ nowDate + "/" + nowDate1 +".jpg";
-        String photoName3 = "hsy/"+ nowDate + "/" + nowDate1 +".jpg";
+        String photoName = "hss/"+  nowDate + "/" +  nowDate1 +".jpg";
+        String photoName1 = "hss/"+ nowDate + "/" + nowDate1 +".jpg";
+        String photoName2 = "hss/"+ nowDate + "/" + nowDate1 +".jpg";
+        String photoName3 = "hss/"+ nowDate + "/" + nowDate1 +".jpg";
         ossClient.putObject(ApplicationConsts.getApplicationConfig().ossBucke(), photoName, inputStream, meta);
         ossClient.putObject(ApplicationConsts.getApplicationConfig().ossBucke(), photoName1, inputStream1, meta);
         ossClient.putObject(ApplicationConsts.getApplicationConfig().ossBucke(), photoName2, inputStream2, meta);
@@ -280,7 +280,7 @@ public class MerchantInfoController extends BaseController {
     private String getFileName(final String originalFilename) {
         final String dateFileName = DateFormatUtil.format(new Date(), DateFormatUtil.yyyyMMdd);
         final String extName = DateFormatUtil.format(new Date(), DateFormatUtil.yyyyMMddHHmmss)+".jpg";
-        return "hsy/" + dateFileName + "/" + extName;
+        return "hss/" + dateFileName + "/" + extName;
     }
 
     /**

@@ -233,6 +233,6 @@ public class QRCodeUtil {
     public static void main(String[] args) {
         final String tempDir = getTempDir();
         System.out.println(generateCode(tempDir, "http://hss.qianbaojiajia.com/code/scanCode?code=100010060147&sign=e62fd5b945978ca18db19b7d05074fb26c225643d0472662c206bc529b0dab0a", "2"));
-//        System.out.println(parseCode("C:\\Users\\YULONG~1.ZHA\\AppData\\Local\\Temp\\hsy\\qr\\code\\1.jpg"));
+//        System.out.println(parseCode("C:\\Users\\YULONG~1.ZHA\\AppData\\Local\\Temp\\hss\\qr\\code\\1.jpg"));
     }
 }

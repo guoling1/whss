@@ -13,7 +13,7 @@
     <context:component-scan base-package="com.jkm.base.common.spring"/>
 
     <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
-        <property name="basePackage" value="com.jkm.hsy.account.dao"/>
+        <property name="basePackage" value="com.jkm.hss.account.dao"/>
         <property name="annotationClass" value="org.springframework.stereotype.Repository"/>
         <!--对于一般项目结构可以将<property name="annotationClass" value="org.springframework.stereotype.Repository"/>
         替换成<property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"></property>
