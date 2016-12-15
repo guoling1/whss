@@ -10,7 +10,9 @@ var http = _require('http');
 // 定义变量
 var qr = document.getElementById('qr');
 var refresh = document.getElementById('refresh');
-
+// 引入浏览器特性处理
+var browser = _require('browser');
+browser.elastic_touch();
 var qrImg = new QRCode(qr, {
   text: pageData.payUrl,
   width: 180,

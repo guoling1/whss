@@ -412,22 +412,9 @@ _require.register("validate", function (module, exports, _require, global) {
           // 多值数组校验
           if (_typeof(obj[method]) == 'object') {
             for (var m = 0; m < obj[method].length; m++) {
-              // 联合校验时 名称校验必须用data来传
-              if (method == 'length') {
-                if (!this[method](obj[method][m]['data'], obj[method][m]['min'], obj[method][m]['max'], obj[method][m]['text'])) {
-                  return false;
-                  break;
-                }
-              } else if (method == 'empty') {
-                if (!this[method](obj[method][m]['data'], obj[method][m]['text'])) {
-                  return false;
-                  break;
-                }
-              } else {
-                if (!this[method](obj[method][m])) {
-                  return false;
-                  break;
-                }
+              if (!this[method](obj[method][m])) {
+                return false;
+                break;
               }
             }
           } else {
@@ -450,11 +437,21 @@ _require.register("validate", function (module, exports, _require, global) {
         return true;
       }
     }, {
-      key: 'length',
-      value: function length(val, min, max, promptWords) {
+      key: 'name',
+      value: function name(val, promptWords) {
         // 商户名称 和 用户姓名 做长度校验 最多15个字
-        if (!('/^[\u4E00-\u9FA5_a-zA-Z0-9]{' + min + "," + max + "}$/".test(val))) {
-          message.prompt_show((promptWords ? promptWords : '名称') + '长度限制' + min + '-' + max + '个字');
+        if (!/^[\u4e00-\u9fa5_a-zA-Z0-9]{1,15}$/.test(val)) {
+          message.prompt_show((promptWords ? promptWords : '名称') + '长度限制1-15个字');
+          return false;
+        }
+        return true;
+      }
+    }, {
+      key: 'address',
+      value: function address(val, promptWords) {
+        // 地址 做长度校验 最多35个字
+        if (!/^[\u4e00-\u9fa5_a-zA-Z0-9]{1,35}$/.test(val)) {
+          message.prompt_show((promptWords ? promptWords : '名称') + '长度限制1-35个字');
           return false;
         }
         return true;
@@ -1500,6 +1497,59 @@ _require.register("animation", function (module, exports, _require, global) {
 });
 'use strict';
 
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+/**
+ * Created by administrator on 2016/12/15.
+ */
+
+/*
+ * 基础 模块化 加载 end*/
+
+_require.register("browser", function (module, exports, _require, global) {
+  /* browser 类
+   * 提供浏览器特性解决方案
+   * -webkit-overflow-scrolling: touch;
+   * 抛弃body滚动 自定义层级div 使用上述属性优化滑动
+   * ！！！ 仅支持单模块啊滑动 */
+  var Browser = function () {
+    function Browser() {
+      _classCallCheck(this, Browser);
+
+      console.log('browser 构建完成...');
+    }
+
+    _createClass(Browser, [{
+      key: 'elastic_touch',
+      value: function elastic_touch(allowClassName) {
+        var lastY = void 0,
+            touchY = void 0,
+            scroll = 0; // 记录Y轴坐标点
+        document.body.addEventListener('touchstart', function (event) {
+          lastY = event.touches[0].clientY;
+        });
+        document.body.addEventListener('touchmove', function (event) {
+          touchY = event.touches[0].clientY;
+          if (allowClassName) {
+            scroll = document.getElementsByClassName(allowClassName)[0].scrollTop;
+          }
+          if (touchY >= lastY && scroll <= 5) {
+            lastY = touchY;
+            event.preventDefault();
+          }
+        });
+      }
+    }]);
+
+    return Browser;
+  }();
+
+  module.exports = new Browser();
+});
+'use strict';
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 /**
@@ -1709,12 +1759,20 @@ _require.register("paging", function (module, exports, _require, global) {
         // 定义加载更多
         var nowPage = 1;
         var more = document.createElement('div');
+        more.className = 'touch_more';
         more.innerHTML = '加载更多';
         more.style.display = 'none';
         more.style.height = '50px';
         more.style.lineHeight = '50px';
         more.style.fontSize = '16px';
         more.style.color = '#999';
+        more.style.backgroundColor = '#f0eff5';
+        more.addEventListener('touchstart', function () {
+          more.style.backgroundColor = '#d8d7dc';
+        });
+        more.addEventListener('touchend', function () {
+          more.style.backgroundColor = '#f0eff5';
+        });
         more.addEventListener('click', function () {
           getData(null, nowPage + 1);
         });
@@ -1817,7 +1875,9 @@ _require.register("paging", function (module, exports, _require, global) {
 
   module.exports = Paging;
 });
-"use strict";
+'use strict';
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -1828,23 +1888,107 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 _require.register("touch", function (module, exports, _require, global) {
 
   /* touch 类处理点击的效果优化*/
-  var Touch =
-  /* 构建函数
-   * */
-  function Touch() {
-    _classCallCheck(this, Touch);
+  var Touch = function () {
+    /* 构建函数
+     * class 必须为touch_xx
+     * 参数 当前背景色 加深or变浅 等级*/
+    function Touch(name, bgc, type, level) {
+      _classCallCheck(this, Touch);
 
-    console.log('touch 构建成功...');
-  }
+      this.level = level;
 
-  // 得到较深的颜色 唯一参数 等级 默认 0.2
+      /* 初始化时判断touch类型
+       * 存储 新颜色*/
+      var newColor = '';
+      switch (type) {
+        case 'deep':
+          newColor = this.deepColor(bgc);
+          break;
+        case 'light':
+          break;
+      }
 
-  // 得到较浅的颜色 唯一参数 等级 默认 0.2
+      // 循环绑定事件
+      var body = document.getElementsByClassName(name);
 
-  // 将 rgb 转 hex
+      var _loop = function _loop(i) {
+        body[i].addEventListener('touchstart', function () {
+          body[i].style.backgroundColor = newColor;
+        });
+        body[i].addEventListener('touchend', function () {
+          body[i].style.backgroundColor = bgc;
+        });
+      };
 
-  // 将 hex 转 rgb
-  ;
+      for (var i = 0; i < body.length; i++) {
+        _loop(i);
+      }
+      console.log('touch 构建成功...');
+    }
+
+    // 得到较深的颜色 唯一参数 等级 默认 0.2
+
+
+    _createClass(Touch, [{
+      key: 'deepColor',
+      value: function deepColor(oldColor) {
+        var str = oldColor.replace('#', '');
+        var hexs = [];
+        if (str.length == 6) {
+          hexs = str.match(/../g);
+        } else if (str.length == 3) {
+          hexs = str.match(/./g);
+          for (var i = 0; i < hexs.length; i++) {
+            hexs[i] = hexs[i] + hexs[i];
+          }
+        } else {
+          console.log('不是正确的颜色格式');
+        }
+        var rgbs = this.hex2Rgb(hexs);
+        for (var _i = 0; _i < rgbs.length; _i++) {
+          rgbs[_i] = Math.floor(rgbs[_i] * (1 - this.level));
+        }
+        var colors = this.rgb2Hex(rgbs);
+        return '#' + colors[0] + colors[1] + colors[2];
+      }
+
+      // 得到较浅的颜色 唯一参数 等级 默认 0.2
+
+    }, {
+      key: 'lightColor',
+      value: function lightColor(oldColor) {
+        console.log(oldColor);
+        return '#000';
+      }
+
+      // 将 rgb 转 hex 带#号传入
+
+    }, {
+      key: 'rgb2Hex',
+      value: function rgb2Hex(rgbs) {
+        for (var i = 0; i < rgbs.length; i++) {
+          rgbs[i] = rgbs[i].toString(16);
+          if (rgbs[i].length == 1) {
+            rgbs[i] = '0' + rgbs[i];
+          }
+        }
+        return rgbs;
+      }
+
+      // 将 hex 转 rgb
+
+    }, {
+      key: 'hex2Rgb',
+      value: function hex2Rgb(hexs) {
+        for (var i = 0; i < hexs.length; i++) {
+          hexs[i] = parseInt(hexs[i], 16);
+        }
+        return hexs;
+      }
+    }]);
+
+    return Touch;
+  }();
 
   module.exports = Touch;
 });
@@ -1883,6 +2027,7 @@ _require.register("timePicker", function (module, exports, _require, global) {
           console.log(result);
         },
         onConfirm: function onConfirm(result) {
+          format = 'YYYY-MM-DD';
           format = format.replace('YYYY', result[0]);
           format = format.replace('MM', result[1] + 1);
           format = format.replace('DD', result[2]);
@@ -1940,7 +2085,7 @@ _require.register("upload", function (module, exports, _require, global) {
                   isShowProgressTips: 1, // 默认为1，显示进度提示
                   success: function success(res) {
                     _this.serverId = res.serverId; // 返回图片的服务器端ID
-                    _this.callback();
+                    _this.callback(_this.localId, _this.serverId);
                   }
                 });
               }, 100);

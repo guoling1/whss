@@ -11,6 +11,9 @@ var animation = new Animation();
 var validate = _require('validate');
 var message = _require('message');
 var http = _require('http');
+// 引入浏览器特性处理
+var browser = _require('browser');
+browser.elastic_touch();
 // 引入wx_upload
 var Upload = _require('upload');
 // 定义变量
@@ -58,16 +61,12 @@ bankNo.addEventListener('blur', function () {
 
 submit.addEventListener('click', function () {
   var bankPic = upload_bank.getServerId();
-  if (validate.joint({
-    empty: [{
-      data: bankPic,
-      text: '银行卡图片'
-    }],
+  if (validate.name(merchantName.value, '店铺名称') && validate.address(address.value, '店铺地址') && validate.joint({
     bankNo: bankNo.value,
     idCard: identity.value,
     phone: reserveMobile.value,
     code: code.value
-  })) {
+  }) && validate.empty(bankPic, '银行卡图片') && validate.name(username.value, '开户姓名')) {
     http.post('/merchantInfo/save', {
       merchantName: merchantName.value,
       address: address.value,

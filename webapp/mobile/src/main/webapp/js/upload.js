@@ -1,146 +1,55 @@
-// var validate = validate();
+'use strict';
 
-var images = {
-    localId: {},
-    serverId: {}
-};
-wx.ready(function () {
-    document.querySelector('#identityFacePic').onclick = function () {
-        wx.chooseImage({
-            count: 1,
-            sizeType: ['original', 'compressed'],
-            sourceType: ['album', 'camera'],
-            success: function (res) {
-                images.localId[0] = res.localIds[0];
-                $("#identityFacePic_src").attr("src",images.localId[0]);
-                // 图片选择完成后 延迟100ms调用上传 (解决安卓6.2以下的版本会出现的bug)
-                setTimeout(function () {
-                    wx.uploadImage({
-                        localId: images.localId[0], // 需要上传的图片的本地ID，由chooseImage接口获得
-                        isShowProgressTips: 1, // 默认为1，显示进度提示
-                        success: function (res) {
-                            images.serverId[0] = res.serverId; // 返回图片的服务器端ID
-                        }
-                    });
-                }, 100)
-            }
-        });
-    };
+/**
+ * Created by administrator on 2016/12/15.
+ */
 
-    document.querySelector('#identityOppositePic').onclick = function () {
-        wx.chooseImage({
-            count: 1,
-            sizeType: ['original', 'compressed'],
-            sourceType: ['album', 'camera'],
-            success: function (res) {
-                images.localId[1] = res.localIds[0];
-                $("#identityOppositePic_src").attr("src",images.localId[1]);
-                // 图片选择完成后 延迟100ms调用上传 (解决安卓6.2以下的版本会出现的bug)
-                setTimeout(function () {
-                    wx.uploadImage({
-                        localId: images.localId[1], // 需要上传的图片的本地ID，由chooseImage接口获得
-                        isShowProgressTips: 1, // 默认为1，显示进度提示
-                        success: function (res) {
-                            images.serverId[1] = res.serverId; // 返回图片的服务器端ID
-                        }
-                    });
-                }, 100)
-            }
-        });
-    };
+// 引入http message validate
+var validate = _require('validate');
+var message = _require('message');
+var http = _require('http');
+// 引入浏览器特性处理
+var browser = _require('browser');
+browser.elastic_touch('main');
+// 引入wx_upload
+var Upload = _require('upload');
+// 定义变量
+var submit = document.getElementById('submit');
+var identityFacePic_src = document.getElementById('identityFacePic_src');
+var identityOppositePic_src = document.getElementById('identityOppositePic_src');
+var identityHandPic_src = document.getElementById('identityHandPic_src');
+var bankHandPic_src = document.getElementById('bankHandPic_src');
 
-    document.querySelector('#identityHandPic').onclick = function () {
-        wx.chooseImage({
-            count: 1,
-            sizeType: ['original', 'compressed'],
-            sourceType: ['album', 'camera'],
-            success: function (res) {
-                images.localId[2] = res.localIds[0];
-                $("#identityHandPic_src").attr("src",images.localId[2]);
-                // 图片选择完成后 延迟100ms调用上传 (解决安卓6.2以下的版本会出现的bug)
-                setTimeout(function () {
-                    wx.uploadImage({
-                        localId: images.localId[2], // 需要上传的图片的本地ID，由chooseImage接口获得
-                        isShowProgressTips: 1, // 默认为1，显示进度提示
-                        success: function (res) {
-                            images.serverId[2] = res.serverId; // 返回图片的服务器端ID
-                        }
-                    });
-                }, 100)
-            }
-        });
-    };
-
-    document.querySelector('#bankHandPic').onclick = function () {
-        wx.chooseImage({
-            count: 1,
-            sizeType: ['original', 'compressed'],
-            sourceType: ['album', 'camera'],
-            success: function (res) {
-                images.localId[3] = res.localIds[0];
-                $("#bankHandPic_src").attr("src",images.localId[3]);
-                // 图片选择完成后 延迟100ms调用上传 (解决安卓6.2以下的版本会出现的bug)
-                setTimeout(function () {
-                    wx.uploadImage({
-                        localId: images.localId[3], // 需要上传的图片的本地ID，由chooseImage接口获得
-                        isShowProgressTips: 1, // 默认为1，显示进度提示
-                        success: function (res) {
-                            images.serverId[3] = res.serverId; // 返回图片的服务器端ID
-                        }
-                    });
-                }, 100)
-            }
-        });
-    };
-
+var upload_identityFacePic = new Upload('identityFacePic', function (localId) {
+  document.getElementById('identityFacePic_src').setAttribute('src', localId);
 });
 
+var upload_identityOppositePic = new Upload('identityOppositePic', function (localId) {
+  document.getElementById('identityOppositePic_src').setAttribute('src', localId);
+});
 
+var upload_identityHandPic = new Upload('identityHandPic', function (localId) {
+  document.getElementById('identityHandPic_src').setAttribute('src', localId);
+});
 
-function submit() {
-        var identityFacePic = images.serverId[0];
-        var identityOppositePic = images.serverId[1];
-        var identityHandPic = images.serverId[2];
-        var bankHandPic = images.serverId[3];
+var upload_bankHandPic = new Upload('bankHandPic', function (localId) {
+  document.getElementById('bankHandPic_src').setAttribute('src', localId);
+});
 
-        if (identityFacePic == null || identityFacePic == ""){
-            prompt_show(identityFacePic+" 输入值为空！");
-            return false;
-        }
-        if (identityOppositePic == null || identityOppositePic == ""){
-            prompt_show(identityOppositePic+" 输入值为空！");
-            return false;
-        }
-        if (identityHandPic == null || identityHandPic == ""){
-            prompt_show(identityHandPic+" 输入值为空！");
-            return false;
-        }
-        if (bankHandPic == null || bankHandPic == ""){
-            prompt_show(bankHandPic+" 输入值为空！");
-            return false;
-        }
-
-        var param = {"identityFacePic":identityFacePic,"identityOppositePic":identityOppositePic,
-            "identityHandPic":identityHandPic,"bankHandPic":bankHandPic};
-        var newParam=JSON.stringify(param);
-        $.ajax({
-            url : "/merchantInfo/savePic",
-            type : "post",
-            contentType:"application/json",
-            dataType:"json",
-            data :newParam,
-            success : function(r) {
-                if(r.code==1){
-                    window.location.href="/sqb/follow";
-                }else{
-                    prompt_show(r.msg);
-                }
-            },
-            error : function(){
-                prompt_show("系统异常");
-            }
-        });
-
-
-}
-
+submit.addEventListener('click', function () {
+  var identityFacePic = upload_identityFacePic.getServerId();
+  var identityOppositePic = upload_identityOppositePic.getServerId();
+  var identityHandPic = upload_identityHandPic.getServerId();
+  var bankHandPic = upload_bankHandPic.getServerId();
+  if (validate.empty(identityFacePic, '身份证正面照片') && validate.empty(identityOppositePic, '身份证背面照片') && validate.empty(identityHandPic, '手持身份证正面照片') && validate.empty(bankHandPic, '手持结算卡正面照片')) {
+    http.post('/merchantInfo/savePic', {
+      identityFacePic: identityFacePic,
+      identityOppositePic: identityOppositePic,
+      identityHandPic: identityHandPic,
+      bankHandPic: bankHandPic
+    }, function () {
+      window.location.href = "/sqb/follow";
+    });
+  }
+});
+//# sourceMappingURL=upload.js.map
