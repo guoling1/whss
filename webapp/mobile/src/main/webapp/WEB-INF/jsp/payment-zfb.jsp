@@ -15,7 +15,7 @@
   <meta name="viewport"
         content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
   <meta name="format-detection" content="telephone=no"/>
-  <title>好收银</title>
+  <title>好收收</title>
   <link rel="stylesheet" href="/css/reset.css">
   <link rel="stylesheet" href="/css/style.css">
   <link rel="stylesheet" href="/css/weui.css">
@@ -43,7 +43,7 @@
   <div class="keyboard" id="keyboard">
     <div class="copyright flexBox">
       <span class="line"></span>
-      <span class="word">由好收银提供技术支持</span>
+      <span class="word">由好收收提供技术支持</span>
       <span class="line"></span>
     </div>
     <div class="keys">

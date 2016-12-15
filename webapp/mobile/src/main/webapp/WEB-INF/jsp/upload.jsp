@@ -8,7 +8,7 @@
   <meta charset="UTF-8">
   <meta name="viewport"
         content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-  <title>好收银</title>
+  <title>好收收</title>
   <link rel="stylesheet" href="/css/reset.css">
   <link rel="stylesheet" href="/css/style.css">
   <link rel="stylesheet" href="/css/weui.css">
@@ -40,7 +40,7 @@
       </div>
       <div class="right">
         <div class="sample-title">示例</div>
-        <div class="sample-logo"><img src="http://img.jinkaimen.cn/hsy/assets/sample1.png"></div>
+        <div class="sample-logo"><img src="http://img.jinkaimen.cn/hss/assets/sample1.png"></div>
       </div>
     </div>
     <div class="space">
@@ -55,7 +55,7 @@
       </div>
       <div class="right">
         <div class="sample-title">示例</div>
-        <div class="sample-logo"><img src="http://img.jinkaimen.cn/hsy/assets/sample2.png"></div>
+        <div class="sample-logo"><img src="http://img.jinkaimen.cn/hss/assets/sample2.png"></div>
       </div>
     </div>
     <div class="space">
@@ -70,7 +70,7 @@
       </div>
       <div class="right">
         <div class="sample-title">示例</div>
-        <div class="sample-logo"><img src="http://img.jinkaimen.cn/hsy/assets/sample3.png"></div>
+        <div class="sample-logo"><img src="http://img.jinkaimen.cn/hss/assets/sample3.png"></div>
       </div>
     </div>
     <div class="space">
@@ -85,7 +85,7 @@
       </div>
       <div class="right">
         <div class="sample-title">示例</div>
-        <div class="sample-logo"><img src="http://img.jinkaimen.cn/hsy/assets/sample4.png"></div>
+        <div class="sample-logo"><img src="http://img.jinkaimen.cn/hss/assets/sample4.png"></div>
       </div>
     </div>
     <div class="next">

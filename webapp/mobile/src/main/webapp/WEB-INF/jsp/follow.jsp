@@ -11,7 +11,7 @@
   <meta charset="UTF-8">
   <meta name="viewport"
         content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-  <title>好收银</title>
+  <title>好收收</title>
   <link rel="stylesheet" href="/css/reset.css">
   <link rel="stylesheet" href="/css/style.css">
   <link rel="stylesheet" href="/css/weui.css">
@@ -25,7 +25,7 @@
   <p>2.“收银”提示，我们将通过微信逐笔通知您收银情况</p>
 
   <div class="content">
-    <img src="http://img.jinkaimen.cn/hsy/assets/cord.png" alt="">
+    <img src="http://img.jinkaimen.cn/hss/assets/cord.png" alt="">
 
     <div class="green">
       <p>长按关注公众号</p>

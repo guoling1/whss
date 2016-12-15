@@ -12,9 +12,7 @@
     <meta charset="UTF-8">
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <title>好收银</title>
-    <!--<link rel="stylesheet" href="http://img.jinkaimen.cn/hsy/css/reset.css">-->
-    <!--<link rel="stylesheet" href="http://img.jinkaimen.cn/hsy/css/style.css">-->
+    <title>好收收</title>
     <link rel="stylesheet" href="/css/reset.css">
     <link rel="stylesheet" href="/css/style.css">
 </head>
@@ -29,9 +27,9 @@
             <span>您好，${data.mobile}</span>
 
             <div class="right">
-                <a href="/dealer/get"><img src="http://img.jinkaimen.cn/hsy/assets/tx.png" alt=""/>
+                <a href="/dealer/get"><img src="http://img.jinkaimen.cn/hss/assets/tx.png" alt=""/>
                     我的信息</a>
-                <a href="/dealer/getCard"><img src="http://img.jinkaimen.cn/hsy/assets/yhcard.png" alt=""/>
+                <a href="/dealer/getCard"><img src="http://img.jinkaimen.cn/hss/assets/yhcard.png" alt=""/>
                     我的结算卡</a>
 
             </div>
@@ -56,7 +54,7 @@
     </div>
     <ul class="list">
         <li>
-            <img src="http://img.jinkaimen.cn/hsy/assets/mar.png" alt=""/>
+            <img src="http://img.jinkaimen.cn/hss/assets/mar.png" alt=""/>
 
             <div class="">
                 <p>${data.firstLevelDealerCodeInfos.residueCount}个</p>
@@ -65,7 +63,7 @@
             </div>
         </li>
         <li>
-            <img src="http://img.jinkaimen.cn/hsy/assets/jt.png" alt=""/>
+            <img src="http://img.jinkaimen.cn/hss/assets/jt.png" alt=""/>
 
             <div class="">
                 <p>${data.firstLevelDealerCodeInfos.distributeCount}个</p>
@@ -74,7 +72,7 @@
             </div>
         </li>
         <li>
-            <img src="http://img.jinkaimen.cn/hsy/assets/time.png" alt=""/>
+            <img src="http://img.jinkaimen.cn/hss/assets/time.png" alt=""/>
 
             <div class="">
                 <p>${data.firstLevelDealerCodeInfos.unActivateCount}个</p>
@@ -83,7 +81,7 @@
             </div>
         </li>
         <li>
-            <img src="http://img.jinkaimen.cn/hsy/assets/lamp.png" alt=""/>
+            <img src="http://img.jinkaimen.cn/hss/assets/lamp.png" alt=""/>
 
             <div class="">
                 <p>${data.firstLevelDealerCodeInfos.activateCount}个</p>
@@ -179,6 +177,6 @@
     </div>
 </div>
 </body>
-<script src="http://img.jinkaimen.cn/hsy/js/qrcode.min.js"></script>
+<script src="http://img.jinkaimen.cn/hss/js/qrcode.min.js"></script>
 <script src="../js/dealerIndex.js"></script>
 </html>
