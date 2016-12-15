@@ -89,15 +89,12 @@
       </div>
     </div>
     <div class="next">
-      <div onclick="submit()">提交</div>
+      <div id="submit">提交</div>
     </div>
   </div>
 </div>
 
 </body>
-<%@include file="message.jsp" %>
-<script src="/js/jQuery-2.1.4.min.js"></script>
-<script src="http://img.jinkaimen.cn/hsy/js/qrcode.min.js"></script>
 <script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
 <script>
 
@@ -124,6 +121,6 @@
     ]
   });
 </script>
-<script src="/js/utility.js"></script>
+<script src="/js/shoes.js"></script>
 <script src="/js/upload.js"></script>
 </html>

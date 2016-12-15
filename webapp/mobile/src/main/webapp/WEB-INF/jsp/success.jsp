@@ -34,4 +34,6 @@
 </div>
 
 </body>
+<script src="/js/shoes.js"></script>
+<script src="/js/common.js"></script>
 </html>

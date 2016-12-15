@@ -23,4 +23,6 @@
   <a href="/sqb/repeatAddInfo/${id}" class="btn">重新提交资料</a>
 </div>
 </body>
+<script src="/js/shoes.js"></script>
+<script src="/js/common.js"></script>
 </html>

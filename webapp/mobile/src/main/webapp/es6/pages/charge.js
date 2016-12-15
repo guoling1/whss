@@ -8,7 +8,9 @@ const http = _require('http');
 // 定义变量
 const qr = document.getElementById('qr');
 const refresh = document.getElementById('refresh');
-
+// 引入浏览器特性处理
+const browser = _require('browser');
+browser.elastic_touch();
 let qrImg = new QRCode(qr, {
   text: pageData.payUrl,
   width: 180,

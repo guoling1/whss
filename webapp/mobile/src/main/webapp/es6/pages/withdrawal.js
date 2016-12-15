@@ -16,7 +16,9 @@ const xx = document.getElementById('xx');
 const submit = document.getElementById('submit');
 const sendCode = document.getElementById('sendCode');
 const code = document.getElementById('code');
-
+// 引入浏览器特性处理
+const browser = _require('browser');
+browser.elastic_touch();
 // 判断按钮是否可以点击
 if (pageData.bookValue == 0) {
   next.setAttribute('disabled', 'true');

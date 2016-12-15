@@ -72,3 +72,4 @@ crashlytics-build.properties
 # /.gitignore
 # /www/mobile/src/main/webapp/node_modules/
 webapp/hss/src/main/webapp/node_modules
+webapp/mobile/src/main/webapp/node_modules

@@ -25,12 +25,20 @@ _require.register("paging", (module, exports, _require, global)=> {
       // 定义加载更多
       let nowPage = 1;
       let more = document.createElement('div');
+      more.className = 'touch_more';
       more.innerHTML = '加载更多';
       more.style.display = 'none';
       more.style.height = '50px';
       more.style.lineHeight = '50px';
       more.style.fontSize = '16px';
       more.style.color = '#999';
+      more.style.backgroundColor = '#f0eff5';
+      more.addEventListener('touchstart', function () {
+        more.style.backgroundColor = '#d8d7dc';
+      });
+      more.addEventListener('touchend', function () {
+        more.style.backgroundColor = '#f0eff5';
+      });
       more.addEventListener('click', function () {
         getData(null, nowPage + 1);
       });

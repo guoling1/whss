@@ -23,4 +23,6 @@
   <a href="/sqb/wallet" class="btn">返回首页</a>
 </div>
 </body>
+<script src="/js/shoes.js"></script>
+<script src="/js/common.js"></script>
 </html>
