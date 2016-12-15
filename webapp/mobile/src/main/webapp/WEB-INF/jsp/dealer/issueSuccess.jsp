@@ -14,16 +14,14 @@
     <meta charset="UTF-8">
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <title>好收银</title>
-    <!--<link rel="stylesheet" href="http://img.jinkaimen.cn/hsy/css/reset.css">-->
-    <!--<link rel="stylesheet" href="http://img.jinkaimen.cn/hsy/css/style.css">-->
+    <title>好收收</title>
     <link rel="stylesheet" href="../css/reset.css">
     <link rel="stylesheet" href="../css/style.css">
 </head>
 <body>
 <div id="issueSuccess">
     <div class="success">
-        <img src="http://img.jinkaimen.cn/hsy/assets/succ.png" alt="" />
+        <img src="http://img.jinkaimen.cn/hss/assets/succ.png" alt="" />
         <p>分配成功</p>
     </div>
     <ul>
@@ -53,5 +51,5 @@
     </div>
 </div>
 </body>
-<script src="http://img.jinkaimen.cn/hsy/js/qrcode.min.js"></script>
+<script src="http://img.jinkaimen.cn/hss/js/qrcode.min.js"></script>
 </html>

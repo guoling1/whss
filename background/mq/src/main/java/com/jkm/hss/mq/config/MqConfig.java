@@ -1,5 +1,5 @@
 
-package com.jkm.hsy.mq.config;
+package com.jkm.hss.mq.config;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;

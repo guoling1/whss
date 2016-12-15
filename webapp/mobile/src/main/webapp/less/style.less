@@ -638,6 +638,8 @@ input:focus {
       width: 50%;
       height: 55px;
       line-height: 55px;
+      font-size: 16px;
+      color: #7079a0;
     }
   }
 
@@ -1133,7 +1135,7 @@ input:focus {
     .bottom {
       .qr {
         display: block;
-        margin: 58px auto 0;
+        margin: 48px auto 0;
         width: 180px;
         height: 180px;
       }
@@ -2382,6 +2384,7 @@ input:focus {
   .list {
     overflow: auto;
     .flexItem(1);
+    -webkit-overflow-scrolling: touch;
     .group {
       width: 100%;
       height: 70px;
@@ -2424,10 +2427,60 @@ input:focus {
   }
 }
 
-#bankList {
+// 交易记录详情
+#transactionDetail {
   width: 100%;
   height: 100%;
   overflow: auto;
+  background-color: #f4f5f8;
+  -webkit-overflow-scrolling: touch;
+  .space {
+    width: 100%;
+    height: auto;
+    background-color: #FFF;
+    border-bottom: 1px solid #f4f5f8;
+    padding: 10px 0;
+  }
+  .amount {
+    width: 100%;
+    height: 40px;
+    line-height: 40px;
+    padding: 0 15px 0 10px;
+    .left {
+      float: left;
+      font-size: 15px;
+      color: #3d4463;
+    }
+    .right {
+      float: right;
+      font-size: 22px;
+      color: #3d4463;
+    }
+  }
+  .detail {
+    width: 100%;
+    height: 30px;
+    line-height: 30px;
+    padding: 0 15px 0 10px;
+    .left {
+      float: left;
+      font-size: 15px;
+      color: #8c93b2;
+    }
+    .right {
+      float: right;
+      font-size: 15px;
+      color: #8c93b2;
+      &.red {
+        color: #e94444;
+      }
+    }
+  }
+}
+
+#bankList {
+  width: 100%;
+  height: auto;
   background-color: #f0eff5;
   padding: 18px 10px 0;
   .group {
@@ -2518,6 +2571,10 @@ input:focus {
         }
         &.SHBANK {
           background: url("../assets/bank/SHBANK.png") no-repeat center;
+          background-size: 40px 40px;
+        }
+        &.DEFAULT {
+          background: url("../assets/bank/DEFAULT.png") no-repeat center;
           background-size: 40px 40px;
         }
       }

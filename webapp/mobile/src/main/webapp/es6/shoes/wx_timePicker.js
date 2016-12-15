@@ -23,6 +23,7 @@ _require.register("timePicker", (module, exports, _require, global)=> {
             console.log(result);
           },
           onConfirm: (result)=> {
+            format = 'YYYY-MM-DD';
             format = format.replace('YYYY', result[0]);
             format = format.replace('MM', result[1] + 1);
             format = format.replace('DD', result[2]);

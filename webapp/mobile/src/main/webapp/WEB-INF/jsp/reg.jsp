@@ -7,7 +7,7 @@
   <meta charset="UTF-8">
   <meta name="viewport"
         content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-  <title>好收银</title>
+  <title>好收收</title>
   <link rel="stylesheet" href="/css/reset.css">
   <link rel="stylesheet" href="/css/style.css">
   <link rel="stylesheet" href="/css/weui.css">
@@ -15,7 +15,7 @@
 <body>
 
 <div id='reg'>
-  <h1>好收银-商户</h1>
+  <h1>好收收-商户</h1>
 
   <h2>HAOSHOUYIN</h2>
   <ul>

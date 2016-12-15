@@ -69,7 +69,7 @@ public class QRCode extends BaseEntity {
     /**
      * 二维码生成方式（公众号关注生成， 扫码）
      *
-     * {@link com.jkm.hsy.admin.enums.EnumQRCodeType}
+     * {@link com.jkm.hss.admin.enums.EnumQRCodeType}
      */
     private int type;
 

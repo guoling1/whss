@@ -9,6 +9,9 @@ const http = _require('http');
 const TimePicker = _require('timePicker');
 new TimePicker('dateFrom');
 new TimePicker('dateTo');
+// 引入浏览器特性处理
+const browser = _require('browser');
+browser.elastic_touch('list');
 // 引入分页插件
 const Paging = _require('paging');
 new Paging('trade_record', {

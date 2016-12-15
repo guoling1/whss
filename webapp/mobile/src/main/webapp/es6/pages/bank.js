@@ -2,6 +2,9 @@
  * Created by administrator on 2016/12/8.
  */
 
+// 引入浏览器特性处理
+const browser = _require('browser');
+browser.elastic_touch();
 // 定义变量
 const color = document.getElementById('color');
 const logo = document.getElementById('logo');
@@ -24,4 +27,7 @@ let index = HasBank();
 if (index != -1) {
   color.className = 'group ' + bankLogoColor[index];
   logo.className = 'logo ' + pageData.bin;
+} else {
+  color.className = 'group red';
+  logo.className = 'logo DEFAULT';
 }

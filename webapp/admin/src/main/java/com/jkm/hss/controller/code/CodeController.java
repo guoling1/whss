@@ -156,6 +156,6 @@ public class CodeController extends BaseController {
     private String getFileName(final String originalFilename) {
         final String dateFileName = DateFormatUtil.format(new Date(), DateFormatUtil.yyyyMMdd);
         final String extName = originalFilename.substring(originalFilename.lastIndexOf(File.separator) + 1);
-        return "hsy/" + dateFileName + "/" + extName;
+        return "hss/" + dateFileName + "/" + extName;
     }
 }

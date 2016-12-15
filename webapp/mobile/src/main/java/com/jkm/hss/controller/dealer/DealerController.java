@@ -388,6 +388,13 @@ public class DealerController extends BaseController {
         final List<DealerChannelRate> channelRates = this.dealerRateService.getByDealerId(super.getDealerId());
         for (DealerChannelRate channelRate : channelRates) {
             if (channelRate.getChannelTypeSign() == EnumPayChannelSign.YG_WEIXIN.getId()) {
+
+                final BigDecimal withdrawSettleFee = new BigDecimal(secondLevelDealerAddRequest.getWithdrawSettleFee());
+                if (!(withdrawSettleFee.compareTo(channelRate.getDealerWithdrawFee()) > 0
+                        && withdrawSettleFee.compareTo(channelRate.getDealerMerchantWithdrawFee()) < 0)) {
+                    return CommonResponse.simpleResponse(-1, "提现结算价错误");
+                }
+
                 final BigDecimal weixinSettleRate = new BigDecimal(secondLevelDealerAddRequest.getWeixinSettleRate())
                         .divide(new BigDecimal("100"), 4, BigDecimal.ROUND_HALF_UP);
                 if (!(weixinSettleRate.compareTo(channelRate.getDealerTradeRate()) > 0

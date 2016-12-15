@@ -13,7 +13,7 @@ MASTER="zhangyulong@106.3.36.87"
 cd ${BASE_PATH};
 cd ..
 
-mvn clean install -Pproduction -f webapp/hsy/pom.xml
+mvn clean install -Pproduction -f webapp/hss/pom.xml
 
 [ $? -ne 0 ] && error_exit "编译错误"
 

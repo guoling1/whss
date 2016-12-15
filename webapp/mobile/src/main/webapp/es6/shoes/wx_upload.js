@@ -30,7 +30,7 @@ _require.register("upload", (module, exports, _require, global)=> {
                   isShowProgressTips: 1, // 默认为1，显示进度提示
                   success: (res)=> {
                     this.serverId = res.serverId; // 返回图片的服务器端ID
-                    this.callback();
+                    this.callback(this.localId, this.serverId);
                   }
                 });
               }, 100);

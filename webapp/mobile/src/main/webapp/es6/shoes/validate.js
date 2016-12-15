@@ -23,22 +23,9 @@ _require.register("validate", (module, exports, _require, global)=> {
         // 多值数组校验
         if (typeof (obj[method]) == 'object') {
           for (var m = 0; m < obj[method].length; m++) {
-            // 联合校验时 名称校验必须用data来传
-            if (method == 'length') {
-              if (!this[method](obj[method][m]['data'], obj[method][m]['min'], obj[method][m]['max'], obj[method][m]['text'])) {
-                return false;
-                break;
-              }
-            } else if (method == 'empty') {
-              if (!this[method](obj[method][m]['data'], obj[method][m]['text'])) {
-                return false;
-                break;
-              }
-            } else {
-              if (!this[method](obj[method][m])) {
-                return false;
-                break;
-              }
+            if (!this[method](obj[method][m])) {
+              return false;
+              break;
             }
           }
         } else {
@@ -60,10 +47,19 @@ _require.register("validate", (module, exports, _require, global)=> {
       return true;
     }
 
-    length(val, min, max, promptWords) {
+    name(val, promptWords) {
       // 商户名称 和 用户姓名 做长度校验 最多15个字
-      if (!("/^[\u4e00-\u9fa5_a-zA-Z0-9]{" + min + "," + max + "}$/".test(val))) {
-        message.prompt_show((promptWords ? promptWords : '名称') + '长度限制' + min + '-' + max + '个字');
+      if (!(/^[\u4e00-\u9fa5_a-zA-Z0-9]{1,15}$/.test(val))) {
+        message.prompt_show((promptWords ? promptWords : '名称') + '长度限制1-15个字');
+        return false;
+      }
+      return true;
+    }
+
+    address(val, promptWords) {
+      // 地址 做长度校验 最多35个字
+      if (!(/^[\u4e00-\u9fa5_a-zA-Z0-9]{1,35}$/.test(val))) {
+        message.prompt_show((promptWords ? promptWords : '名称') + '长度限制1-35个字');
         return false;
       }
       return true;

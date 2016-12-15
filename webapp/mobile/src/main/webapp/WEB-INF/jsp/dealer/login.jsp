@@ -14,16 +14,14 @@
     <meta charset="UTF-8">
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <title>好收银</title>
-    <%--<link rel="stylesheet" href="http://img.jinkaimen.cn/hsy/css/reset.css">--%>
-    <%--<link rel="stylesheet" href="http://img.jinkaimen.cn/hsy/css/style.css">--%>
+    <title>好收收</title>
     <link rel="stylesheet" href="/css/reset.css">
     <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
 
 <div id='login'>
-    <h1>好收银-代理商</h1>
+    <h1>好收收-代理商</h1>
 
     <h2>HAOSHOUYIN</h2>
     <ul>
@@ -42,7 +40,7 @@
 <jsp:include page="../message.jsp"></jsp:include>
 </body>
 
-<script src="http://img.jinkaimen.cn/hsy/js/qrcode.min.js"></script>
+<script src="http://img.jinkaimen.cn/hss/js/qrcode.min.js"></script>
 <script src="/js/jQuery-2.1.4.min.js"></script>
 <script src="/js/utility.js"></script>
 <script src="/js/shoes.js"></script>

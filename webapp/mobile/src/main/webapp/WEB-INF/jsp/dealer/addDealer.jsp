@@ -14,7 +14,7 @@
     <meta charset="UTF-8">
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <title>好收银</title>
+    <title>好收收</title>
     <link rel="stylesheet" href="/css/reset.css">
     <link rel="stylesheet" href="/css/style.css">
 </head>
@@ -55,7 +55,7 @@
         <ul>
             <li>
                 <div class="top">
-                    <img src="http://img.jinkaimen.cn/hsy/assets/zfb.png" alt="" />
+                    <img src="http://img.jinkaimen.cn/hss/assets/zfb.png" alt="" />
                     <span>支付宝(D0)</span>
                     <div class="">
                         <p>我的收单结算价：${alipaySettleRate}%</p>
@@ -71,7 +71,7 @@
             </li>
             <li>
                 <div class="top">
-                    <img src="http://img.jinkaimen.cn/hsy/assets/wx.png" alt="" />
+                    <img src="http://img.jinkaimen.cn/hss/assets/wx.png" alt="" />
                     <span>微信(D0)</span>
                     <div class="">
                         <p>我的收单结算价：${weixinSettleRate}%</p>
@@ -87,7 +87,7 @@
             </li>
             <li>
                 <div class="top">
-                    <img src="http://img.jinkaimen.cn/hsy/assets/card.png" alt="" />
+                    <img src="http://img.jinkaimen.cn/hss/assets/card.png" alt="" />
                     <span>无卡快捷(D0)</span>
                     <div class="">
                         <p>我的收单结算价：${quickSettleRate}%</p>
@@ -123,7 +123,7 @@
 <jsp:include page="../message.jsp"></jsp:include>
 </body>
 
-<script src="http://img.jinkaimen.cn/hsy/js/qrcode.min.js"></script>
+<script src="http://img.jinkaimen.cn/hss/js/qrcode.min.js"></script>
 <script src="/js/jQuery-2.1.4.min.js"></script>
 <script src="/js/utility.js"></script>
 <script src="/js/addDealer.js"></script>
