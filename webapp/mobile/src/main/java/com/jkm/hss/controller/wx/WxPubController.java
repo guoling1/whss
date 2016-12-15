@@ -439,6 +439,10 @@ public class WxPubController extends BaseController {
         if(StringUtils.isBlank(merchantInfo.get().getMerchantName())){
             return CommonResponse.simpleResponse(-1, "缺失商户名称");
         }
+        int compareResult = (new BigDecimal(totalFee)).compareTo(new BigDecimal("5"));
+        if(compareResult!=1){
+            return CommonResponse.simpleResponse(-1, "支付金额至少5.00元");
+        }
         tradeRequest.setMerchantId(merchantInfo.get().getId());
         tradeRequest.setSubMerName(merchantInfo.get().getMerchantName());
         tradeRequest.setSubMerNo(merchantInfo.get().getId()+"");
@@ -467,6 +471,10 @@ public class WxPubController extends BaseController {
         }
         if(StringUtils.isBlank(merchantInfo.get().getMerchantName())){
             return CommonResponse.simpleResponse(-1, "缺失商户名称");
+        }
+        int compareResult = (new BigDecimal(totalFee)).compareTo(new BigDecimal("5"));
+        if(compareResult!=1){
+            return CommonResponse.simpleResponse(-1, "支付金额至少5.00元");
         }
         tradeRequest.setSubMerName(merchantInfo.get().getMerchantName());
         tradeRequest.setSubMerNo(merchantInfo.get().getId()+"");
