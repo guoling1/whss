@@ -10,6 +10,7 @@ import com.jkm.hss.dealer.entity.Dealer;
 import com.jkm.hss.dealer.entity.ShallProfitDetail;
 import com.jkm.hss.dealer.enums.EnumDealerLevel;
 import com.jkm.hss.dealer.enums.EnumShallMoneyType;
+import com.jkm.hss.dealer.service.CompanyProfitDetailService;
 import com.jkm.hss.dealer.service.DailyProfitDetailService;
 import com.jkm.hss.dealer.service.DealerService;
 import com.jkm.hss.dealer.service.ShallProfitDetailService;
@@ -39,6 +40,8 @@ public class DailyProfitDetailServiceImpl implements DailyProfitDetailService {
     private DealerService dealerService;
     @Autowired
     private DailyProfitDetailDao dailyProfitDetailDao;
+    @Autowired
+    private CompanyProfitDetailService companyProfitDetailService;
     /**
      *{@inheritDoc}
      */
@@ -46,6 +49,27 @@ public class DailyProfitDetailServiceImpl implements DailyProfitDetailService {
     @Transactional
     public void dailyProfitCount() {
         final String profitDate = this.getProfitDate(new Date());
+        //公司分润
+        final DailyProfitDetail companyDaily = new DailyProfitDetail();
+        companyDaily.setShallMoneyType(EnumShallMoneyType.TOCOMPANY.getId());
+        companyDaily.setMerchantId(0);
+        companyDaily.setMerchantName("");
+        companyDaily.setSecondDealerId(0);
+        companyDaily.setDealerName("");
+        companyDaily.setFirstDealerId(0);
+        companyDaily.setFirstDealerName("");
+        companyDaily.setStatisticsDate(profitDate);
+        //公司收单分润
+        final BigDecimal companyCollectMoney = this.companyProfitDetailService.selectCollectProfitByProfitDate(profitDate);
+        final BigDecimal companyDealerCollectMoney = this.shallProfitDetailService.selectCompanyCollectProfitByProfitDate(profitDate);
+        //公司提现分润
+        final BigDecimal companyWithdrawMoney = this.companyProfitDetailService.selectWithdrawProfitByProfitDate(profitDate);
+        final BigDecimal companyDealerWithdrawMoney = this.shallProfitDetailService.selectCompanyWithdrawProfitByProfitDate(profitDate);
+        companyDaily.setCollectMoney(companyCollectMoney.add(companyDealerCollectMoney));
+        companyDaily.setWithdrawMoney(companyWithdrawMoney.add(companyDealerWithdrawMoney));
+        companyDaily.setTotalMoney(companyDaily.getCollectMoney().add(companyDaily.getWithdrawMoney()));
+        this.dailyProfitDetailDao.init(companyDaily);
+
         //查昨日有分润记录的商户
         final List<Long> merchantIdList = this.shallProfitDetailService.selectMerchantIdByProfitDate(profitDate);
         //遍历,计算每个商户每天的收单分润,体现分润
@@ -62,7 +86,7 @@ public class DailyProfitDetailServiceImpl implements DailyProfitDetailService {
                 final BigDecimal collectMoney =
                         this.shallProfitDetailService.selectFirstCollectMoneyByMerchantIdAndProfitDate(merchantId, profitDate);
                 //提现分润
-                 BigDecimal withdrawMoney =
+                BigDecimal withdrawMoney =
                         this.shallProfitDetailService.selectFirstWithdrawMoneyByMerchantIdAndProfitDate(merchantId, profitDate);
                 if (withdrawMoney == null){
                     withdrawMoney = new BigDecimal(0);
@@ -202,9 +226,9 @@ public class DailyProfitDetailServiceImpl implements DailyProfitDetailService {
         final List<DailyProfitDetail> list;
         //判断是一级代理还是二级代理
         if (dealer.getLevel() == EnumDealerLevel.FIRST.getId()){
-             list = this.dailyProfitDetailDao.selectByFirstDealerId(dealerId);
+            list = this.dailyProfitDetailDao.selectByFirstDealerId(dealerId);
         }else{
-             list = this.dailyProfitDetailDao.selectBySecondDealerId(dealerId);
+            list = this.dailyProfitDetailDao.selectBySecondDealerId(dealerId);
         }
         return list;
     }
@@ -221,7 +245,7 @@ public class DailyProfitDetailServiceImpl implements DailyProfitDetailService {
         Preconditions.checkNotNull(dealerOptional.isPresent(), "代理商不存在");
         final Dealer dealer = dealerOptional.get();
         if (dealer.getLevel() == EnumDealerLevel.FIRST.getId()){
-          final List<DailyProfitDetail> list =  this.dailyProfitDetailDao.selectToSecondDealer(dealerId);
+            final List<DailyProfitDetail> list =  this.dailyProfitDetailDao.selectToSecondDealer(dealerId);
             return list;
         }
         return null;
@@ -229,17 +253,23 @@ public class DailyProfitDetailServiceImpl implements DailyProfitDetailService {
 
     /**
      * {@inheritDoc}
-     * @param dealerId
+     * @param beginProfitDate
      * @param dealerName
-     * @param profitDate
+     * @param endProfitDate
      * @param pageNO
      * @param pageSize
      * @return
      */
     @Override
-    public PageModel<DailyProfitDetail> selectFirstByParam(long dealerId, String dealerName, String profitDate, int pageNO, int pageSize) {
+    public PageModel<DailyProfitDetail> selectFirstByParam(String beginProfitDate, String dealerName, String endProfitDate, int pageNO, int pageSize) {
         PageModel<DailyProfitDetail> pageModel = new PageModel<>(pageNO, pageSize);
-        List<DailyProfitDetail> list = this.dailyProfitDetailDao.selectFirstByParam(dealerId, dealerName, profitDate, pageModel.getFirstIndex(), pageSize);
+        Date beginDate =null;
+        Date endDate =null;
+        if (beginProfitDate !=null && endProfitDate!=null){
+            beginDate = DateFormatUtil.parse(beginProfitDate+ " 00:00:00", DateFormatUtil.yyyy_MM_dd_HH_mm_ss);
+            endDate  = DateFormatUtil.parse(endProfitDate + " 23:59:59", DateFormatUtil.yyyy_MM_dd_HH_mm_ss);
+        }
+        List<DailyProfitDetail> list = this.dailyProfitDetailDao.selectFirstByParam(beginDate, dealerName, endDate, pageModel.getFirstIndex(), pageSize);
         if (list == null){
             list = Collections.emptyList();
         }
@@ -250,22 +280,64 @@ public class DailyProfitDetailServiceImpl implements DailyProfitDetailService {
     /**
      * {@inheritDoc}
      *
-     * @param dealerId
+     * @param beginProfitDate
      * @param dealerName
-     * @param profitDate
+     * @param endProfitDate
      * @param pageNO
      * @param pageSize
      * @return
      */
     @Override
-    public PageModel<DailyProfitDetail> selectSecondByParam(long dealerId, String dealerName, String profitDate, int pageNO, int pageSize) {
+    public PageModel<DailyProfitDetail> selectSecondByParam(String beginProfitDate, String dealerName, String endProfitDate, int pageNO, int pageSize) {
         PageModel<DailyProfitDetail> pageModel = new PageModel<>(pageNO, pageSize);
-        List<DailyProfitDetail> list = this.dailyProfitDetailDao.selectSecondByParam(dealerId, dealerName, profitDate, pageModel.getFirstIndex(), pageSize);
+        Date beginDate =null;
+        Date endDate =null;
+        if (beginProfitDate !=null && endProfitDate!=null){
+            beginDate = DateFormatUtil.parse(beginProfitDate+ " 00:00:00", DateFormatUtil.yyyy_MM_dd_HH_mm_ss);
+            endDate  = DateFormatUtil.parse(endProfitDate + " 23:59:59", DateFormatUtil.yyyy_MM_dd_HH_mm_ss);
+        }
+        List<DailyProfitDetail> list = this.dailyProfitDetailDao.selectSecondByParam(beginDate, dealerName, endDate, pageModel.getFirstIndex(), pageSize);
         if (list == null){
             list = Collections.emptyList();
         }
         pageModel.setRecords(list);
         return pageModel;
+    }
+
+    /**
+     * {@inheritDoc}
+     * @param beginProfitDate
+     * @param dealerName
+     * @param endProfitDate
+     * @param pageNO
+     * @param pageSize
+     * @return
+     */
+    @Override
+    public PageModel<DailyProfitDetail> selectCompanyByParam(String beginProfitDate, String dealerName, String endProfitDate, int pageNO, int pageSize) {
+        PageModel<DailyProfitDetail> pageModel = new PageModel<>(pageNO, pageSize);
+        Date beginDate =null;
+        Date endDate =null;
+        if (beginProfitDate !=null && endProfitDate!=null){
+            beginDate = DateFormatUtil.parse(beginProfitDate+ " 00:00:00", DateFormatUtil.yyyy_MM_dd_HH_mm_ss);
+            endDate  = DateFormatUtil.parse(endProfitDate + " 23:59:59", DateFormatUtil.yyyy_MM_dd_HH_mm_ss);
+        }
+        List<DailyProfitDetail> list = this.dailyProfitDetailDao.selectCompanyByParam(beginDate, dealerName, endDate, pageModel.getFirstIndex(), pageSize);
+        if (list == null){
+            list = Collections.emptyList();
+        }
+        pageModel.setRecords(list);
+        return pageModel;
+    }
+
+    /**
+     * {@inheritDoc}
+     * @param id
+     * @return
+     */
+    @Override
+    public DailyProfitDetail selectById(long id) {
+        return this.dailyProfitDetailDao.selectById(id);
     }
 
     private String getProfitDate(Date date) {

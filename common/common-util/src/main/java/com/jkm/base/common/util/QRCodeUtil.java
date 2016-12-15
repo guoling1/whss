@@ -165,7 +165,7 @@ public class QRCodeUtil {
      * @return
      */
     public static String getTempDir() {
-        final String dir = System.getProperty("java.io.tmpdir") + File.separator + "hss" + File.separator + "qr" + File.separator + "code";
+        final String dir = System.getProperty("java.io.tmpdir") + "hss" + File.separator + "qr" + File.separator + "code";
         final File file = new File(dir);
         if (!file.exists()) {
             file.mkdirs();

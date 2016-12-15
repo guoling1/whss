@@ -111,4 +111,20 @@
     <select id="selectByOrderId" resultType="com.jkm.hss.dealer.entity.ShallProfitDetail">
         SELECT * FROM tb_shall_profit_detail where payment_sn = #{orderId}
     </select>
+    <select id="selectCompanyCollectProfitByProfitDate" resultType="java.math.BigDecimal">
+        SELECT sum(channel_shall_amount + product_shall_amount) FROM tb_shall_profit_detail
+        WHERE profit_date = #{profitDate} AND profit_type = 1
+    </select>
+    <select id="selectCompanyWithdrawProfitByProfitDate" resultType="java.math.BigDecimal">
+        SELECT sum(channel_shall_amount + product_shall_amount) FROM tb_shall_profit_detail
+        WHERE profit_date = #{profitDate} AND profit_type = 2
+    </select>
+    <select id="selectByProfitDateAndSecondDealerId" resultType="com.jkm.hss.dealer.entity.ShallProfitDetail">
+        SELECT * FROM tb_shall_profit_detail WHERE second_dealer_id = #{secondDealerId}
+        AND profit_date = #{statisticsDate}
+    </select>
+    <select id="selectByProfitDateAndFirstDealerId" resultType="com.jkm.hss.dealer.entity.ShallProfitDetail">
+        SELECT * FROM tb_shall_profit_detail WHERE first_dealer_id = #{firstDealerId}
+        AND profit_date = #{statisticsDate}
+    </select>
 </mapper>

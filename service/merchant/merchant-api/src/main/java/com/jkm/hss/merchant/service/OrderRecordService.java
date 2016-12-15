@@ -3,10 +3,9 @@ package com.jkm.hss.merchant.service;
 import com.google.common.base.Optional;
 import com.jkm.hss.merchant.entity.MerchantInfo;
 import com.jkm.hss.merchant.entity.OrderRecord;
+import com.jkm.hss.merchant.entity.OrderRecordAndMerchant;
 import com.jkm.hss.merchant.entity.OrderRecordConditions;
-import com.jkm.hss.merchant.helper.request.DfmRequest;
-import com.jkm.hss.merchant.helper.request.RequestOrderRecord;
-import com.jkm.hss.merchant.helper.request.TradeRequest;
+import com.jkm.hss.merchant.helper.request.*;
 import net.sf.json.JSONObject;
 
 import java.util.List;
@@ -58,6 +57,9 @@ public interface OrderRecordService {
      * @return
      */
     JSONObject otherPay(MerchantInfo merchantInfo);
+
+
+    JSONObject checkWithdraw(WithDrawRequest req);
     /**
      * 支付
      * @param req
@@ -73,13 +75,21 @@ public interface OrderRecordService {
      */
     void payResult(Map payResult);
 
+    /**
+     * 代付回调
+     * @param outTradeNo
+     * @param tradeResult
+     * @param payNum
+     */
+    void otherPayResult(String outTradeNo, String tradeResult, String bankStatus, String payNum);
+
 
     /**
      * 更改订单返回信息
      * @param resultParams
      * @return
      */
-    int updateParam(String resultParams,String outTradeNo,long id);
+    int updateParam(String resultParams, String outTradeNo, long id);
 
     /**
      * 根据传入的参数查询OrderRecord
@@ -98,4 +108,29 @@ public interface OrderRecordService {
     void regularlyCheckPayResult();
 
     int selectOrderRecordByConditionsCount(OrderRecordConditions orderRecordConditions);
+
+
+
+    /**
+     * 提现记录
+     * @param req
+     * @return
+     */
+    List<OrderRecordAndMerchant> selectDrawWithRecordByPage(OrderRecordAndMerchantRequest req);
+    /**
+     * 提现条数
+     * @param req
+     * @return
+     */
+    long selectDrawWithCount(OrderRecordAndMerchantRequest req);
+
+    /**
+     * 未通过
+     */
+    JSONObject unPass(long id, String message);
+
+    /**
+     * 解冻
+     */
+    JSONObject unfreeze(long id);
 }

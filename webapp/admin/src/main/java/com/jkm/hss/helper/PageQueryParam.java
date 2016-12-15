@@ -7,7 +7,7 @@ import lombok.Data;
  */
 @Data
 public class PageQueryParam {
-    protected int pageNO;
+    protected int pageNo;
     protected int pageSize;
 }
 

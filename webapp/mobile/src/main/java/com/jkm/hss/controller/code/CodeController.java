@@ -73,7 +73,7 @@ public class CodeController extends BaseController {
                 log.info("code[{}], merchant is not pass", code);
                 url = "/sqb/prompt";
             } else if (EnumMerchantStatus.PASSED.getId() == merchantInfo.getStatus()) {//审核通过
-                model.addAttribute("merchantName", merchantInfo.getMerchantName());
+                model.addAttribute("name", merchantInfo.getMerchantName());
                 if (agent.indexOf("MicroMessenger") > -1) {//weixin
                     url = "/sqb/paymentWx";
                 }

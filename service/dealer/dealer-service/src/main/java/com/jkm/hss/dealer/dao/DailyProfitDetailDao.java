@@ -4,7 +4,8 @@ import com.jkm.hss.dealer.entity.DailyProfitDetail;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
-import java.math.BigDecimal;
+
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -55,25 +56,46 @@ public interface DailyProfitDetailDao {
 
     /**
      * 查询
-     * @param dealerId
+     * @param beginProfitDate
      * @param dealerName
-     * @param profitDate
+     * @param endProfitDate
      * @param index
      * @param pageSize
      * @return
      */
-    List<DailyProfitDetail> selectSecondByParam(@Param("dealerId") long dealerId, @Param("dealerName") String dealerName,
-                                                @Param("profitDate") String profitDate, @Param("index") int index, @Param("pageSize") int pageSize);
+    List<DailyProfitDetail> selectSecondByParam(@Param("beginProfitDate") Date beginProfitDate, @Param("dealerName") String dealerName,
+                                                @Param("endProfitDate") Date endProfitDate, @Param("index") int index, @Param("pageSize") int pageSize);
 
     /**
      * 查询
-     * @param dealerId
+     * @param beginProfitDate
      * @param dealerName
-     * @param profitDate
+     * @param endProfitDate
      * @param index
      * @param pageSize
      * @return
      */
-    List<DailyProfitDetail> selectFirstByParam(@Param("dealerId") long dealerId, @Param("dealerName") String dealerName,
-                                               @Param("profitDate") String profitDate, @Param("index") int index, @Param("pageSize") int pageSize);
+    List<DailyProfitDetail> selectFirstByParam(@Param("beginProfitDate") Date beginProfitDate, @Param("dealerName") String dealerName,
+                                               @Param("endProfitDate") Date endProfitDate, @Param("index") int index, @Param("pageSize") int pageSize);
+
+    /**
+     * 查询
+     * @param beginProfitDate
+     * @param dealerName
+     * @param endProfitDate
+     * @param index
+     * @param pageSize
+     * @return
+     */
+    List<DailyProfitDetail> selectCompanyByParam(@Param("beginProfitDate") Date beginProfitDate, @Param("dealerName") String dealerName,
+                                                 @Param("endProfitDate") Date endProfitDate, @Param("index") int index, @Param("pageSize") int pageSize);
+
+    /**
+     * 查询
+     * @param id
+     * @return
+     */
+    DailyProfitDetail selectById(long id);
+
+
 }
