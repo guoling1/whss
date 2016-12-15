@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.jkm.hsy.merchant.dao.OrderRecordDao">
+<mapper namespace="com.jkm.hss.merchant.dao.OrderRecordDao">
 
 	<!-- 通用查询结果列-->
 	<sql id="Base_Column_List">
@@ -21,7 +21,7 @@
 		</if>
 	</select>
 	<!--分页查询交易明细记录-->
-	<select id="selectAllOrderRecordByPage" resultType="com.jkm.hsy.merchant.entity.OrderRecord">
+	<select id="selectAllOrderRecordByPage" resultType="com.jkm.hss.merchant.entity.OrderRecord">
 		SELECT <include refid="Base_Column_List" /> FROM tb_order_record
 		WHERE merchant_id = #{merchantId} AND status=0
 		<if test="startDate!=null and startDate!=''">
@@ -40,20 +40,20 @@
 		SELECT COUNT(1) FROM tb_order_record WHERE merchant_id = #{merchantId} AND status=0 and pay_result='S' and trade_type=0 and merchant_type=0
 	</select>
 
-	<select id="selectBalanceByPage" resultType="com.jkm.hsy.merchant.entity.OrderRecord">
+	<select id="selectBalanceByPage" resultType="com.jkm.hss.merchant.entity.OrderRecord">
 		SELECT <include refid="Base_Column_List" /> FROM tb_order_record
 		WHERE merchant_id = #{merchantId} AND status=0 and pay_result='S' and trade_type=0 and merchant_type=0
 		ORDER BY create_time DESC limit #{offset}, #{size}
 	</select>
 
-	<select id="selectOrderId" resultType="com.jkm.hsy.merchant.entity.OrderRecord">
+	<select id="selectOrderId" resultType="com.jkm.hss.merchant.entity.OrderRecord">
 		SELECT
 		<include refid="Base_Column_List" />
 		FROM tb_order_record
 		WHERE order_id = #{orderId} and status=0
 	</select>
 	<!-- 查询（根据主键ID查询） -->
-	<select id="selectByPrimaryKey" resultType="com.jkm.hsy.merchant.entity.OrderRecord">
+	<select id="selectByPrimaryKey" resultType="com.jkm.hss.merchant.entity.OrderRecord">
 		 SELECT
 		 <include refid="Base_Column_List" />
 		 FROM tb_order_record
@@ -271,7 +271,7 @@
 	</update>
 
 	<!-- 根据传入的条件查询 -->
-	<select id="selectOrderRecordByConditions" resultType="com.jkm.hsy.merchant.entity.OrderRecordConditions" parameterType="com.jkm.hsy.merchant.entity.OrderRecordConditions">
+	<select id="selectOrderRecordByConditions" resultType="com.jkm.hss.merchant.entity.OrderRecordConditions" parameterType="com.jkm.hss.merchant.entity.OrderRecordConditions">
 		SELECT o.update_time,o.order_id,o.merchant_id,o.sub_name,o.total_fee,o.pay_result,o.pay_channel,bank_no,mobile
 		FROM tb_order_record o
 		LEFT JOIN tb_merchant_info m
@@ -313,7 +313,7 @@
 		</if>
 	</select>
 
-	<select id="selectOrderRecordByConditionsCount" parameterType="com.jkm.hsy.merchant.entity.OrderRecordConditions" resultType="java.lang.Integer">
+	<select id="selectOrderRecordByConditionsCount" parameterType="com.jkm.hss.merchant.entity.OrderRecordConditions" resultType="java.lang.Integer">
 		SELECT COUNT(0) FROM tb_order_record
         WHERE 1 = 1
 		<if test="startTime != null">
@@ -347,11 +347,11 @@
 
 
 	<!--定时轮训代付结果的条件-->
-	<select id="selectOtherPayByConditions" resultType="com.jkm.hsy.merchant.entity.OrderRecord">
+	<select id="selectOtherPayByConditions" resultType="com.jkm.hss.merchant.entity.OrderRecord">
 		select <include refid="Base_Column_List" /> from tb_order_record where  trade_type = 1 and pay_result in ('H','A','W')  and status=0 order by create_time desc
 	</select>
 	<!--定时轮训支付结果的条件-->
-	<select id="selectPayByConditions" resultType="com.jkm.hsy.merchant.entity.OrderRecord">
+	<select id="selectPayByConditions" resultType="com.jkm.hss.merchant.entity.OrderRecord">
 		select <include refid="Base_Column_List" /> from tb_order_record where  trade_type = 0 and pay_result in ('A')  and status=0 order by create_time desc
 	</select>
 
@@ -389,7 +389,7 @@
 		</if>
 	</select>
 	<!--分页查询交易明细记录-->
-	<select id="selectDrawWithRecordByPage" resultType="com.jkm.hsy.merchant.entity.OrderRecordAndMerchant">
+	<select id="selectDrawWithRecordByPage" resultType="com.jkm.hss.merchant.entity.OrderRecordAndMerchant">
 		SELECT r.id,
 		r.order_id,
 		r.merchant_id,
