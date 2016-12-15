@@ -408,13 +408,15 @@ public class LoginController extends BaseController {
     }
 
     @RequestMapping(value = "/paymentWx", method = RequestMethod.GET)
-    public String paymentWx(final HttpServletRequest request, final HttpServletResponse response, final Model model,@RequestParam(value = "merchantId", required = true) long merchantId) throws IOException {
+    public String paymentWx(final HttpServletRequest request, final HttpServletResponse response, final Model model,@RequestParam(value = "merchantId", required = true) long merchantId,@RequestParam(value = "name") String name) throws IOException {
         model.addAttribute("mid", merchantId);
+        model.addAttribute("merchantName", name);
         return "/payment-wx";
     }
     @RequestMapping(value = "/paymentZfb", method = RequestMethod.GET)
-    public String paymentZfb(final HttpServletRequest request, final HttpServletResponse response, final Model model,@RequestParam(value = "merchantId", required = true) long merchantId) throws IOException {
+    public String paymentZfb(final HttpServletRequest request, final HttpServletResponse response, final Model model,@RequestParam(value = "merchantId", required = true) long merchantId,@RequestParam(value = "name") String name) throws IOException {
         model.addAttribute("mid", merchantId);
+        model.addAttribute("merchantName", name);
         return "/payment-zfb";
     }
 
