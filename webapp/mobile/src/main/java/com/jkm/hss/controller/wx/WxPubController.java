@@ -424,17 +424,19 @@ public class WxPubController extends BaseController {
             return CommonResponse.simpleResponse(-2, "未登录");
         }
         Optional<UserInfo> userInfoOptional = userInfoService.selectById(super.getUserId(request));
+        if(!userInfoOptional.isPresent()){
+            return CommonResponse.simpleResponse(-2, "未登录");
+        }
         Optional<MerchantInfo> merchantInfo = merchantInfoService.selectById(userInfoOptional.get().getMerchantId());
+        if(!merchantInfo.isPresent()){
+            return CommonResponse.simpleResponse(-2, "未登录");
+        }
         if(merchantInfo.get().getStatus()!=EnumMerchantStatus.PASSED.getId()){
             return CommonResponse.simpleResponse(-2, "未审核通过");
         }
         final String totalFee = tradeRequest.getTotalFee();
         if (StringUtils.isBlank(totalFee)) {
             return CommonResponse.simpleResponse(-1, "请输入收款金额");
-        }
-        log.info("商户号："+super.getUserId(request));
-        if(!merchantInfo.isPresent()){
-            return CommonResponse.simpleResponse(-2, "商户信息异常，请重新登录");
         }
         if(StringUtils.isBlank(merchantInfo.get().getMerchantName())){
             return CommonResponse.simpleResponse(-1, "缺失商户名称");
