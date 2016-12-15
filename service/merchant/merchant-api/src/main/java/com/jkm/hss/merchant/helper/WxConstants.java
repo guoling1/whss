@@ -9,8 +9,8 @@ public class WxConstants {
      * 微信公众账号
      */
     public final static String MCH_ID = "1254500201";//商户号
-    public static final String APP_ID = "wx2c95c8925f90f9ee";//服务号的应用号
-    public final static String APP_KEY = "a9920d4cf7ee3d13b3cca92ecb6357a9";//API密钥
+    public static final String APP_ID = "wx77635f5214432d7e";//服务号的应用号
+    public final static String APP_KEY = "8f77d0e84c850bb92f5136beb586e5d8";//API密钥
     public final static String API_KEY_CFT = "abcdefghijABCDEFGHIJ123456789jkm";//API密钥(财付通)
     public final static String SIGN_TYPE = "MD5";//签名加密方式
     /**
