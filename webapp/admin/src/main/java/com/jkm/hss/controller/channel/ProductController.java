@@ -120,12 +120,14 @@ public class ProductController extends BaseController {
             final Product product = this.productService.selectById(request.getProductId()).get();
             product.setProductName(request.getProductName());
             product.setAccountId(request.getAccountId());
-            product.setLimitPayFeeRate(request.getLimitPayFeeRate());
+            product.setLimitPayFeeRate(request.getLimitPayFeeRate().divide(new BigDecimal(100)));
             product.setLimitWithdrawFeeRate(request.getLimitWithdrawFeeRate());
             product.setMerchantWithdrawType(request.getMerchantWithdrawType());
             product.setDealerBalanceType(request.getDealerBalanceType());
             this.productService.update(product);
             for (ProductChannelDetail detail : request.getList()){
+                detail.setProductTradeRate(detail.getProductTradeRate().divide(new BigDecimal(100)));
+                detail.setProductMerchantPayRate(detail.getProductMerchantPayRate().divide(new BigDecimal(100)));
                 detail.setProductId(request.getProductId());
                 this.productChannelDetailService.update(detail);
             }
