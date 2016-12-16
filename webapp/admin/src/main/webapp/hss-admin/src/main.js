@@ -14,7 +14,7 @@ Vue.http.interceptors.push((request, next) => {
     if (status == 200) {
       if (body.code == -100 || body.code == -200 || body.code == -201) {
         store.commit('LOGIN_SHOW');
-        router.push('/login');
+        router.push('/admin/login');
       } else if (body.code != 1) {
         response.status = 500;
         response.statusMessage = body.msg || '系统异常';
