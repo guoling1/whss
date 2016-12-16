@@ -66,7 +66,7 @@ public class SendMsgServiceImpl implements SendMsgService {
 
 
                 jsonParam.put("touser",touser);
-                jsonParam.put("template_id","1hWFNrY67b8o9UODNFpgusFHDsf2I8EvV0ZrD-28kFg");
+                jsonParam.put("template_id","JW4HPfr8xrm0iQ7lqcWzHQKASHh79y69NMgMWOi41bE");
                 jsonParam.put("data",jo);
 
                 String tt  = jsonParam.toString();
@@ -136,7 +136,7 @@ public class SendMsgServiceImpl implements SendMsgService {
             remark.put("value","感谢您的使用！如有疑问请联系客服!");
             jo.put("remark",remark);
             jsonParam.put("touser",touser);
-            jsonParam.put("template_id","grXkJeJkkVovJc8mIUSlwl61CfplRMzL1P1iHSDICCg");
+            jsonParam.put("template_id","pdQoWhmiFChbff5YTTzj-86X_z9OjUsc1aqWPVeX4R8");
             jsonParam.put("data",jo);
 
             String tt  = jsonParam.toString();
