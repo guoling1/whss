@@ -17,7 +17,7 @@
 <div id='reg'>
   <h1>好收收-商户</h1>
 
-  <h2>HAOSHOUYIN</h2>
+  <h2>HAOSHOUSHOU</h2>
   <ul>
     <li class="top flexBox">
       <div class="logo phone"></div>
