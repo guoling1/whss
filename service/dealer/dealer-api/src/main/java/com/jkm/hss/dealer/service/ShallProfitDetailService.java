@@ -205,4 +205,18 @@ public interface ShallProfitDetailService {
      * @return
      */
     List<ShallProfitDetail> getFirstDealerDeatail(long dailyProfitId);
+
+    /**
+     * 查询
+     * @param profitDate
+     * @return
+     */
+    List<ShallProfitDetail> selectCompanyByProfitDate(String profitDate);
+
+    /**
+     * 查询
+     * @param statisticsDate
+     * @return
+     */
+    List<Long> getMerchantIdByProfitDate(String statisticsDate);
 }

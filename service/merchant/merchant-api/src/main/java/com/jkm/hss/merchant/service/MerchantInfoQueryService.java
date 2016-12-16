@@ -55,4 +55,5 @@ public interface MerchantInfoQueryService {
      * @return
      */
     List<MerchantInfoResponse> getCount();
+
 }

@@ -116,7 +116,7 @@ public class ShallProfitDetailServiceImpl implements ShallProfitDetailService{
         Preconditions.checkNotNull(dealerOptional.isPresent(), "代理商不存在");
         final Dealer dealer = dealerOptional.get();
         //根据代理商id查询其产品通道费率,产品费率,通道成本费率
-        List<ProductChannelDetail> list = this.productChannelDetailService.selectByProductId(dealer.getId());
+        List<ProductChannelDetail> list = this.productChannelDetailService.selectByChannelTypeSign(orderRecord.getPayChannel());
         final ProductChannelDetail productChannelDetail = list.get(0);
         final Optional<BasicChannel> basicChannelOptional = this.basicChannelService.selectByChannelTypeSign(productChannelDetail.getChannelTypeSign());
         final BasicChannel basicChannel = basicChannelOptional.get();
@@ -519,5 +519,26 @@ public class ShallProfitDetailServiceImpl implements ShallProfitDetailService{
         final List<ShallProfitDetail> list = this.shallProfitDetailDao.selectByProfitDateAndFirstDealerId(
                 dailyProfitDetail.getFirstDealerId(), dailyProfitDetail.getStatisticsDate());
         return list;
+    }
+
+
+    /**
+     * {@inheritDoc}
+     * @param profitDate
+     * @return
+     */
+    @Override
+    public List<ShallProfitDetail> selectCompanyByProfitDate(String profitDate) {
+        return this.shallProfitDetailDao.selectCompanyByProfitDate(profitDate);
+    }
+
+    /**
+     * {@inheritDoc}
+     * @param statisticsDate
+     * @return
+     */
+    @Override
+    public List<Long> getMerchantIdByProfitDate(String statisticsDate) {
+        return this.shallProfitDetailDao.getMerchantIdByProfitDate(statisticsDate);
     }
 }

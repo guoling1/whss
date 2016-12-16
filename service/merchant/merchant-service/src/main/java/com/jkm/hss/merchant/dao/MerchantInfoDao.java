@@ -104,4 +104,11 @@ public interface MerchantInfoDao {
      * @return
      */
     int updateStatus(@Param("status") int status,@Param("id") long id);
+
+    /**
+     *
+     * @param merchantIdList
+     * @return
+     */
+    List<MerchantInfo> batchGetMerchantInfo(@Param("merchantIdList") List<Long> merchantIdList);
 }

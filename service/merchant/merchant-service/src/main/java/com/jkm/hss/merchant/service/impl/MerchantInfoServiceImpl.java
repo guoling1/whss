@@ -125,5 +125,9 @@ public class MerchantInfoServiceImpl implements MerchantInfoService {
         return merchantInfoDao.updateStatus(status,id);
     }
 
+    @Override
+    public List<MerchantInfo> batchGetMerchantInfo(List<Long> merchantIdList) {
+        return this.merchantInfoDao.batchGetMerchantInfo(merchantIdList);
+    }
 
 }
