@@ -22,7 +22,7 @@ import java.util.List;
  * Created by lt on 2016/12/9.
  */
 @Controller
-@RequestMapping(value = "/export")
+@RequestMapping(value = "/admin/export")
 public class ExportOrderRecordController extends BaseController {
     @Autowired
     private OrderRecordService orderRecordService;
