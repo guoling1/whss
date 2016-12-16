@@ -206,7 +206,7 @@ public class OrderRecordServiceImpl implements OrderRecordService {
         paramsMap.put("accountName", req.getAccountName());
         paramsMap.put("accountNumber", req.getAccountNumber());
         paramsMap.put("note", "提现");
-        paramsMap.put("appId","wap_hsy");
+        paramsMap.put("appId","wap_hss");
         paramsMap.put("idCard", req.getIdCard());
         paramsMap.put("isCompay", EnumIsCompay.ToPrivate.getId());
         String result = SmPost.post(MerchantConsts.getMerchantConfig().domain()+MerchantConsts.getMerchantConfig().otherPay(),paramsMap);
@@ -240,65 +240,65 @@ public class OrderRecordServiceImpl implements OrderRecordService {
      */
     @Override
     public JSONObject otherPay(MerchantInfo merchantInfo) {
-        Pair<BigDecimal, BigDecimal> pair = shallProfitDetailService.withdrawParams(merchantInfo.getId());
-        BigDecimal serviceFeeTemp = pair.getLeft();//服务费（金开门收商户的钱）
-        BigDecimal channelFeeTemp = pair.getRight();//通道费（支付平台收金开门的钱）
+//        Pair<BigDecimal, BigDecimal> pair = shallProfitDetailService.withdrawParams(merchantInfo.getId());
+//        BigDecimal serviceFeeTemp = pair.getLeft();//服务费（金开门收商户的钱）
+//        BigDecimal channelFeeTemp = pair.getRight();//通道费（支付平台收金开门的钱）
         JSONObject resultJo = new JSONObject();
-        if(merchantInfo.getAccountId()==0){
-            resultJo.put("code",-1);
-            resultJo.put("message","商家账户信息为空");
-            return resultJo;
-        }
-        AccountInfo accountInfo = accountInfoService.selectByPrimaryKey(merchantInfo.getAccountId());
-        if(accountInfo==null){
-            resultJo.put("code",-1);
-            resultJo.put("message","没有此账户");
-            return resultJo;
-        }
-        int compareResult = accountInfo.getAvailable().compareTo(serviceFeeTemp);
-        if(compareResult!=1){
-            resultJo.put("code",-1);
-            resultJo.put("message","提现金额至少两元");
-            return resultJo;
-        }
-        log.info("开始冻结账户资金。。。");
-        BigDecimal availableAccount = accountInfo.getAvailable();
-        accountInfoService.frozenMoney(availableAccount,accountInfo.getId());
-        log.info("结束冻结账户资金。。。");
-        log.info("开始下单。。。");
-        log.info("开始创建订单。。。");
-        OrderRecord orderRecord = new OrderRecord();
-        String orderId = SnGenerator.generate();
-        orderRecord.setOrderId(orderId);
-        orderRecord.setMerchantId(merchantInfo.getId());
-        orderRecord.setMerchantType(EnumMerchantType.MERCHANT.getId());
-        orderRecord.setProductName("提现");
-        orderRecord.setSubName(merchantInfo.getMerchantName());
-        orderRecord.setPayChannel(EnumPayChannelSign.YG_YINLIAN.getId());
-        orderRecord.setTotalFee(availableAccount);
-        orderRecord.setRealFee(availableAccount.subtract(serviceFeeTemp));
-        orderRecord.setServiceFee(serviceFeeTemp);
-        orderRecord.setChannelFee(channelFeeTemp);
-        orderRecord.setPayResult(EnumPayResult.UNPAY.getId());
-        orderRecord.setSettlePeriod(EnumSettlePeriodType.D0.getId());
-        orderRecord.setSettleStatus(EnumSettleStatus.SETTLE.getId());
-        orderRecord.setPayParams("");
-        orderRecord.setStatus(EnumCommonStatus.NORMAL.getId());
-        orderRecord.setBody("提现");
-        orderRecord.setTradeType(EnumTradeType.DEPOSITOR.getId());
-        try{
-            orderRecordDao.insertSelective(orderRecord);
-            log.info("结束创建订单。。。");
-            resultJo.put("code",1);
-            resultJo.put("message","订单提交成功");
-        }catch(Exception e){
-            accountInfoService.backMoney(availableAccount,accountInfo.getId());
-            log.error("创建订单异常{}",e);
-            log.error("创建订单失败。。。");
-            resultJo.put("code",-1);
-            resultJo.put("message","提现请求失败");
-        }
-        log.info("下单结束。。。");
+//        if(merchantInfo.getAccountId()==0){
+//            resultJo.put("code",-1);
+//            resultJo.put("message","商家账户信息为空");
+//            return resultJo;
+//        }
+//        AccountInfo accountInfo = accountInfoService.selectByPrimaryKey(merchantInfo.getAccountId());
+//        if(accountInfo==null){
+//            resultJo.put("code",-1);
+//            resultJo.put("message","没有此账户");
+//            return resultJo;
+//        }
+//        int compareResult = accountInfo.getAvailable().compareTo(serviceFeeTemp);
+//        if(compareResult!=1){
+//            resultJo.put("code",-1);
+//            resultJo.put("message","提现金额至少两元");
+//            return resultJo;
+//        }
+//        log.info("开始冻结账户资金。。。");
+//        BigDecimal availableAccount = accountInfo.getAvailable();
+//        accountInfoService.frozenMoney(availableAccount,accountInfo.getId());
+//        log.info("结束冻结账户资金。。。");
+//        log.info("开始下单。。。");
+//        log.info("开始创建订单。。。");
+//        OrderRecord orderRecord = new OrderRecord();
+//        String orderId = SnGenerator.generate();
+//        orderRecord.setOrderId(orderId);
+//        orderRecord.setMerchantId(merchantInfo.getId());
+//        orderRecord.setMerchantType(EnumMerchantType.MERCHANT.getId());
+//        orderRecord.setProductName("提现");
+//        orderRecord.setSubName(merchantInfo.getMerchantName());
+//        orderRecord.setPayChannel(EnumPayChannelSign.YG_YINLIAN.getId());
+//        orderRecord.setTotalFee(availableAccount);
+//        orderRecord.setRealFee(availableAccount.subtract(serviceFeeTemp));
+//        orderRecord.setServiceFee(serviceFeeTemp);
+//        orderRecord.setChannelFee(channelFeeTemp);
+//        orderRecord.setPayResult(EnumPayResult.UNPAY.getId());
+//        orderRecord.setSettlePeriod(EnumSettlePeriodType.D0.getId());
+//        orderRecord.setSettleStatus(EnumSettleStatus.SETTLE.getId());
+//        orderRecord.setPayParams("");
+//        orderRecord.setStatus(EnumCommonStatus.NORMAL.getId());
+//        orderRecord.setBody("提现");
+//        orderRecord.setTradeType(EnumTradeType.DEPOSITOR.getId());
+//        try{
+//            orderRecordDao.insertSelective(orderRecord);
+//            log.info("结束创建订单。。。");
+//            resultJo.put("code",1);
+//            resultJo.put("message","订单提交成功");
+//        }catch(Exception e){
+//            accountInfoService.backMoney(availableAccount,accountInfo.getId());
+//            log.error("创建订单异常{}",e);
+//            log.error("创建订单失败。。。");
+//            resultJo.put("code",-1);
+//            resultJo.put("message","提现请求失败");
+//        }
+//        log.info("下单结束。。。");
 //        log.info("开始组装数据。。。");
 //        Map<String, String> paramsMap = new HashMap<String, String>();
 //        paramsMap.put("amount", orderRecord.getRealFee().toString());
@@ -517,7 +517,7 @@ public class OrderRecordServiceImpl implements OrderRecordService {
         paramsMap.put("accountName", merchantInfoOptional.get().getName());
         paramsMap.put("accountNumber", MerchantSupport.decryptBankCard(merchantInfoOptional.get().getBankNo()));
         paramsMap.put("note", "提现");
-        paramsMap.put("appId","wap_hsy");
+        paramsMap.put("appId","wap_hss");
         paramsMap.put("notifyUrl", "http://hss.qianbaojiajia.com/call/otherPayBack");     //后台通知url
         paramsMap.put("idCard", MerchantSupport.decryptIdentity(merchantInfoOptional.get().getIdentity()));
         paramsMap.put("isCompay", EnumIsCompay.ToPrivate.getId());
@@ -673,7 +673,7 @@ public class OrderRecordServiceImpl implements OrderRecordService {
         paramsMap.put("returnUrl", req.getReturnUrl());     //前台回调URL
         paramsMap.put("subMerName", req.getSubMerName());       //下游商户名称
         paramsMap.put("subMerNo", req.getSubMerNo());       //下游商户号
-        paramsMap.put("appId","wap_hsy");
+        paramsMap.put("appId","wap_hss");
         paramsMap.put("totalFee", orderRecord.getTotalFee().toString());         //总金额
         if(req.getPayChannel()==101||req.getPayChannel()==102){
             paramsMap.put("tradeType", "JSAPI");       //交易类型   JSAPI，NATIVE，APP，WAP,EPOS
@@ -955,7 +955,7 @@ public class OrderRecordServiceImpl implements OrderRecordService {
                  */
                 try{
                     //⑤.开始提现申请
-                    Pair<BigDecimal, BigDecimal> pair = shallProfitDetailService.withdrawParams(orderRecord.get().getMerchantId());
+                    Pair<BigDecimal, BigDecimal> pair = shallProfitDetailService.withdrawParams(orderRecord.get().getMerchantId(),orderRecord.get().getPayChannel());
                     BigDecimal serviceFeeTemp = pair.getLeft();//金开门收钱
                     BigDecimal channelFeeTemp = pair.getRight();//上游收钱
                     //查询
@@ -1003,7 +1003,8 @@ public class OrderRecordServiceImpl implements OrderRecordService {
                     paramsMap.put("accountName", merchantInfoOptional.get().getName());
                     paramsMap.put("accountNumber", MerchantSupport.decryptBankCard(merchantInfoOptional.get().getBankNo()));
                     paramsMap.put("note", "提现");
-                    paramsMap.put("appId","wap_hsy");
+                    paramsMap.put("appId","wap_hss");
+                    paramsMap.put("notifyUrl", "http://hss.qianbaojiajia.com/call/otherPayBack");     //后台通知url
                     paramsMap.put("idCard", MerchantSupport.decryptIdentity(merchantInfoOptional.get().getIdentity()));
                     paramsMap.put("isCompay", EnumIsCompay.ToPrivate.getId());
                     log.info("组装数据结束。。。,数据为{}",JSONObject.fromObject(paramsMap).toString());
