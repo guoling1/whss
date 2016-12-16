@@ -75,11 +75,11 @@ public class ShallProfitDetailServiceImpl implements ShallProfitDetailService{
     @Transactional
     @Override
     public Map<String, Triple<Long, BigDecimal, String>> withdrawProfitCount(OrderRecord orderRecord) {
-        final ShallProfitDetail detail = this.shallProfitDetailDao.selectByOrderId(orderRecord.getOrderId());
-        if (detail != null){
-            log.error("此订单分润业务已经处理过[" + orderRecord.getOrderId() +"]");
-            return null;
-        }
+//        final ShallProfitDetail detail = this.shallProfitDetailDao.selectByOrderId(orderRecord.getOrderId());
+//        if (detail != null){
+//            log.error("此订单分润业务已经处理过[" + orderRecord.getOrderId() +"]");
+//            return null;
+//        }
         //提现分润
         final Optional<MerchantInfo> merchantInfoOptional =
                 this.merchantInfoService.selectById(orderRecord.getMerchantId());
