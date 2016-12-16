@@ -21,24 +21,16 @@ public enum EnumPayResult {
     /**
      * 支付成功
      */
-    SUCCESS("S", "交易成功"),
+    SUCCESS("S", "支付成功/提现成功"),
 
     /**
      * 支付失败
      */
     FAIL("F", "交易失败/提现失败"),
-
+    /**
+     * 受理成功
+     */
     ACCEPT("A","受理成功"),
-
-    /**
-     * 支付成功
-     */
-    SUCCESS1("S1", "提现成功"),
-
-    /**
-     * 支付失败
-     */
-    FAIL1("F1", "提现失败"),
 
 
     /**
@@ -49,13 +41,13 @@ public enum EnumPayResult {
     /**
      * 提现异常
      */
-    EXCEPTION("E", "提现异常"),
+    EXCEPTION("E", "支付异常/提现异常"),
 
 
     /**
      * 审核不通过
      */
-    UNPASS("O", "审核不通过"),
+    UNPASS("O", "审核未通过"),
 
     /**
      * 交易关闭

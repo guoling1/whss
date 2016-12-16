@@ -47,7 +47,7 @@ public interface OrderRecordDao {
      * @param orderId
      * @return
      */
-    OrderRecord selectOrderId(@Param("orderId") String orderId);
+    OrderRecord selectOrderId(@Param("orderId") String orderId,@Param("tradeType")int tradeType);
 
     /**
      *

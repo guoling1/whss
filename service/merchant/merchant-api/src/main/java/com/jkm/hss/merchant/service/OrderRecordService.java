@@ -44,7 +44,7 @@ public interface OrderRecordService {
      */
     long selectBalanceCount(long merchantId);
 
-    Optional<OrderRecord> selectOrderId(String orderId);
+    Optional<OrderRecord> selectOrderId(String orderId,int tradeType);
 
     /**
      * 代理商提现
@@ -133,4 +133,10 @@ public interface OrderRecordService {
      * 解冻
      */
     JSONObject unfreeze(long id);
+    /**
+     *
+     * @param id
+     * @return
+     */
+    Optional<OrderRecord> selectByPrimaryKey(long id);
 }
