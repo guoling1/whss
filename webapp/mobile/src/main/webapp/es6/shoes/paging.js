@@ -83,28 +83,16 @@ _require.register("paging", (module, exports, _require, global)=> {
         }, function (res) {
           for (let i = 0; i < res.records.length; i++) {
             let group = document.createElement('a');
-            if (res.records[i].tradeType == 0) {
-              group.href = '/sqb/tradeDetail/' + res.records[i].id;
-            } else {
-              group.href = '/sqb/otherTradeDetail/' + res.records[i].id;
-            }
+            group.href = '/sqb/tradeDetail/' + res.records[i].id;
             group.className = 'group';
             let top = document.createElement('div');
             top.className = 'top';
             let topLeft = document.createElement('div');
             topLeft.className = 'left';
-            if (res.records[i].tradeType == 0) {
-              topLeft.innerHTML = res.records[i].body + '-' + payChannel[res.records[i].payChannel];
-            } else {
-              topLeft.innerHTML = res.records[i].body;
-            }
+            topLeft.innerHTML = res.records[i].body + '-' + payChannel[res.records[i].payChannel];
             let topRight = document.createElement('div');
             topRight.className = 'right';
-            if (res.records[i].tradeType == 0) {
-              topRight.innerHTML = '+' + res.records[i].totalFee + '元';
-            } else {
-              topRight.innerHTML = '-' + res.records[i].totalFee + '元';
-            }
+            topRight.innerHTML = '+' + res.records[i].totalFee + '元';
             top.appendChild(topLeft);
             top.appendChild(topRight);
             let bottom = document.createElement('div');
