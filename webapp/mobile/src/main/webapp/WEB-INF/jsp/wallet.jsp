@@ -34,10 +34,10 @@
       <div class="operation-title">余额</div>
       <div class="operation-small">${avaliable}</div>
     </div>
-    <a class="operation touch_op" href="/sqb/drawCash">
+    <div class="operation">
       <div class="logo card"></div>
       <div class="operation-title">提现</div>
-    </a>
+    </div>
   </div>
   <div class="record">
     <a href="/sqb/tradeRecord" class="group touch_gr"><span class="money"></span>交易记录</a>
