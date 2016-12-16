@@ -244,7 +244,12 @@
         FROM tb_merchant_info
         WHERE code = #{code}
     </select>
-
+    <select id="batchGetMerchantInfo" resultType="com.jkm.hss.merchant.entity.MerchantInfo">
+        SELECT * FROM tb_merchant_info
+        WHERE id in <foreach collection="merchantIdList" index="index" item="item" open="(" separator="," close=")">
+        #{item}
+    </foreach>
+    </select>
     <update id="updateStatus">
         UPDATE tb_merchant_info
         SET

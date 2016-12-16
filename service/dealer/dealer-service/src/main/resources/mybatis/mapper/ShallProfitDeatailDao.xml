@@ -127,4 +127,10 @@
         SELECT * FROM tb_shall_profit_detail WHERE first_dealer_id = #{firstDealerId}
         AND profit_date = #{statisticsDate}
     </select>
+    <select id="selectCompanyByProfitDate" resultType="com.jkm.hss.dealer.entity.ShallProfitDetail">
+        SELECT * FROM tb_shall_profit_detail WHERE profit_date = #{profitDate}
+    </select>
+    <select id="getMerchantIdByProfitDate" resultType="java.lang.Long">
+        SELECT distinct(merchant_id) FROM tb_shall_profit_detail WHERE profit_date = #{statisticsDate}
+    </select>
 </mapper>

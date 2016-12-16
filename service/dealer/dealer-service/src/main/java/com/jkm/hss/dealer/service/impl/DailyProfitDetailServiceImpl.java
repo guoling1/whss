@@ -60,11 +60,23 @@ public class DailyProfitDetailServiceImpl implements DailyProfitDetailService {
         companyDaily.setFirstDealerName("");
         companyDaily.setStatisticsDate(profitDate);
         //公司收单分润
-        final BigDecimal companyCollectMoney = this.companyProfitDetailService.selectCollectProfitByProfitDate(profitDate);
-        final BigDecimal companyDealerCollectMoney = this.shallProfitDetailService.selectCompanyCollectProfitByProfitDate(profitDate);
+        BigDecimal companyCollectMoney = this.companyProfitDetailService.selectCollectProfitByProfitDate(profitDate);
+        if (companyCollectMoney == null){
+            companyCollectMoney = new BigDecimal("0");
+        }
+        BigDecimal companyDealerCollectMoney = this.shallProfitDetailService.selectCompanyCollectProfitByProfitDate(profitDate);
+        if (companyDealerCollectMoney == null){
+            companyDealerCollectMoney = new BigDecimal("0");
+        }
         //公司提现分润
-        final BigDecimal companyWithdrawMoney = this.companyProfitDetailService.selectWithdrawProfitByProfitDate(profitDate);
-        final BigDecimal companyDealerWithdrawMoney = this.shallProfitDetailService.selectCompanyWithdrawProfitByProfitDate(profitDate);
+        BigDecimal companyWithdrawMoney = this.companyProfitDetailService.selectWithdrawProfitByProfitDate(profitDate);
+        if (companyWithdrawMoney == null){
+            companyWithdrawMoney = new BigDecimal("0");
+        }
+        BigDecimal companyDealerWithdrawMoney = this.shallProfitDetailService.selectCompanyWithdrawProfitByProfitDate(profitDate);
+        if (companyDealerWithdrawMoney == null){
+            companyDealerWithdrawMoney = new BigDecimal("0");
+        }
         companyDaily.setCollectMoney(companyCollectMoney.add(companyDealerCollectMoney));
         companyDaily.setWithdrawMoney(companyWithdrawMoney.add(companyDealerWithdrawMoney));
         companyDaily.setTotalMoney(companyDaily.getCollectMoney().add(companyDaily.getWithdrawMoney()));
@@ -265,7 +277,7 @@ public class DailyProfitDetailServiceImpl implements DailyProfitDetailService {
         PageModel<DailyProfitDetail> pageModel = new PageModel<>(pageNO, pageSize);
         Date beginDate =null;
         Date endDate =null;
-        if (beginProfitDate !=null && endProfitDate!=null){
+        if (beginProfitDate !=null && endProfitDate!=null && beginProfitDate!="" && endProfitDate!=""){
             beginDate = DateFormatUtil.parse(beginProfitDate+ " 00:00:00", DateFormatUtil.yyyy_MM_dd_HH_mm_ss);
             endDate  = DateFormatUtil.parse(endProfitDate + " 23:59:59", DateFormatUtil.yyyy_MM_dd_HH_mm_ss);
         }
@@ -292,7 +304,7 @@ public class DailyProfitDetailServiceImpl implements DailyProfitDetailService {
         PageModel<DailyProfitDetail> pageModel = new PageModel<>(pageNO, pageSize);
         Date beginDate =null;
         Date endDate =null;
-        if (beginProfitDate !=null && endProfitDate!=null){
+        if (beginProfitDate !=null && endProfitDate!=null && beginProfitDate!="" && endProfitDate!=""){
             beginDate = DateFormatUtil.parse(beginProfitDate+ " 00:00:00", DateFormatUtil.yyyy_MM_dd_HH_mm_ss);
             endDate  = DateFormatUtil.parse(endProfitDate + " 23:59:59", DateFormatUtil.yyyy_MM_dd_HH_mm_ss);
         }
@@ -318,7 +330,7 @@ public class DailyProfitDetailServiceImpl implements DailyProfitDetailService {
         PageModel<DailyProfitDetail> pageModel = new PageModel<>(pageNO, pageSize);
         Date beginDate =null;
         Date endDate =null;
-        if (beginProfitDate !=null && endProfitDate!=null){
+        if (beginProfitDate !=null && endProfitDate!=null && beginProfitDate!="" && endProfitDate!=""){
             beginDate = DateFormatUtil.parse(beginProfitDate+ " 00:00:00", DateFormatUtil.yyyy_MM_dd_HH_mm_ss);
             endDate  = DateFormatUtil.parse(endProfitDate + " 23:59:59", DateFormatUtil.yyyy_MM_dd_HH_mm_ss);
         }

@@ -100,4 +100,12 @@ public interface MerchantInfoService {
      * @return
      */
     int updateStauts(int status,long id);
+
+
+    /**
+     * 查询商户信息
+     * @param merchantIdList
+     * @return
+     */
+    List<MerchantInfo> batchGetMerchantInfo(List<Long> merchantIdList);
 }

@@ -37,4 +37,10 @@
     <select id="selectWithdrawProfitByProfitDate" resultType="java.math.BigDecimal">
         SELECT sum(product_shall_amount + channel_shall_amount) FROM tb_company_profit_detail WHERE profit_type = 2 AND profit_date = #{profitDate}
     </select>
+    <select id="selectByProfitDate" resultType="com.jkm.hss.dealer.entity.CompanyProfitDetail">
+        SELECT * FROM tb_company_profit_detail WHERE profit_date = #{profitDate}
+    </select>
+    <select id="getMerchantIdByProfitDate" resultType="java.lang.Long">
+        SELECT distinct(merchant_id) FROM tb_company_profit_detail WHERE profit_date = #{profitDate}
+    </select>
 </mapper>

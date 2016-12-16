@@ -27,6 +27,10 @@ import java.util.Map;
  * Created by yulong.zhang on 2016/11/23.
  */
 public interface DealerService {
+    /**
+     * 商户入账计算
+     */
+    Map<String, Pair<Long,BigDecimal>> merchantAmount(OrderRecord orderRecord);
 
     /**
      * 分润接口
