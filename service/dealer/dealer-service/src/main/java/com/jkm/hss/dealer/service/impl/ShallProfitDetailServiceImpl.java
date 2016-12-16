@@ -204,7 +204,8 @@ public class ShallProfitDetailServiceImpl implements ShallProfitDetailService{
             if (merchantInfo.getDealerId() == 0){
                 //jkm直属商户
                 final BasicChannel basicChannel = this.basicChannelService.selectByChannelTypeSign(EnumPayChannelSign.YG_WEIXIN.getId()).get();
-                return Pair.of(new BigDecimal("2").setScale(2), basicChannel.getBasicWithdrawFee().setScale(2));
+                final List<ProductChannelDetail> list = this.productChannelDetailService.selectByChannelTypeSign(EnumPayChannelSign.YG_WEIXIN.getId());
+                return Pair.of(list.get(0).getProductMerchantWithdrawFee().setScale(2), basicChannel.getBasicWithdrawFee().setScale(2));
             }
             final Optional<Dealer> dealerOptional = this.dealerService.getById(merchantInfo.getDealerId());
             Preconditions.checkNotNull(dealerOptional.isPresent(), "代理商不存在");
