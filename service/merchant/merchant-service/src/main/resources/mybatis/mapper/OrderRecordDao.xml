@@ -21,7 +21,7 @@
 		</if>
 	</select>
 	<!--分页查询交易明细记录-->
-	<select id="selectAllOrderRecordByPage" resultType="com.jkm.hsy.merchant.entity.OrderRecord">
+	<select id="selectAllOrderRecordByPage" resultType="com.jkm.hss.merchant.entity.OrderRecord">
 		SELECT <include refid="Base_Column_List" /> FROM tb_order_record
 		WHERE merchant_id = #{merchantId} AND status=0 AND trade_type=0
 		<if test="startDate!=null and startDate!=''">
