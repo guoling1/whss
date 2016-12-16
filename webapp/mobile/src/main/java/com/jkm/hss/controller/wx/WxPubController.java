@@ -537,34 +537,34 @@ public class WxPubController extends BaseController {
      *
      * @return
      */
-    @ResponseBody
-    @RequestMapping(value = "checkOtherPay", method = RequestMethod.POST)
-    public CommonResponse checkOtherPay(final HttpServletRequest request, final HttpServletResponse response) {
-        if(!super.isLogin(request)){
-            return CommonResponse.simpleResponse(-2, "未登录");
-        }
-        Optional<UserInfo> userInfoOptional = userInfoService.selectById(super.getUserId(request));
-        if(!userInfoOptional.isPresent()){
-            return CommonResponse.simpleResponse(-2, "未登录");
-        }
-        Optional<MerchantInfo> merchantInfo = merchantInfoService.selectById(userInfoOptional.get().getMerchantId());
-        if(!merchantInfo.isPresent()){
-            return CommonResponse.simpleResponse(-2, "未登录");
-        }
-        if(merchantInfo.get().getStatus()!=EnumMerchantStatus.PASSED.getId()){
-            return CommonResponse.simpleResponse(-2, "未审核通过");
-        }
-        AccountInfo accountInfo = accountInfoService.selectByPrimaryKey(merchantInfo.get().getAccountId());
-        if(accountInfo==null){
-            return CommonResponse.simpleResponse(-1, "账户信息有误");
-        }
-        Pair<BigDecimal, BigDecimal> pair = shallProfitDetailService.withdrawParams(merchantInfo.get().getId());
-        int compareResult = accountInfo.getAvailable().compareTo(pair.getLeft());
-        if(compareResult!=1){
-            return CommonResponse.simpleResponse(-1, "提现金额至少"+pair.getLeft()+"元");
-        }
-        return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "查询成功");
-    }
+//    @ResponseBody
+//    @RequestMapping(value = "checkOtherPay", method = RequestMethod.POST)
+//    public CommonResponse checkOtherPay(final HttpServletRequest request, final HttpServletResponse response) {
+//        if(!super.isLogin(request)){
+//            return CommonResponse.simpleResponse(-2, "未登录");
+//        }
+//        Optional<UserInfo> userInfoOptional = userInfoService.selectById(super.getUserId(request));
+//        if(!userInfoOptional.isPresent()){
+//            return CommonResponse.simpleResponse(-2, "未登录");
+//        }
+//        Optional<MerchantInfo> merchantInfo = merchantInfoService.selectById(userInfoOptional.get().getMerchantId());
+//        if(!merchantInfo.isPresent()){
+//            return CommonResponse.simpleResponse(-2, "未登录");
+//        }
+//        if(merchantInfo.get().getStatus()!=EnumMerchantStatus.PASSED.getId()){
+//            return CommonResponse.simpleResponse(-2, "未审核通过");
+//        }
+//        AccountInfo accountInfo = accountInfoService.selectByPrimaryKey(merchantInfo.get().getAccountId());
+//        if(accountInfo==null){
+//            return CommonResponse.simpleResponse(-1, "账户信息有误");
+//        }
+//        Pair<BigDecimal, BigDecimal> pair = shallProfitDetailService.withdrawParams(merchantInfo.get().getId());
+//        int compareResult = accountInfo.getAvailable().compareTo(pair.getLeft());
+//        if(compareResult!=1){
+//            return CommonResponse.simpleResponse(-1, "提现金额至少"+pair.getLeft()+"元");
+//        }
+//        return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "查询成功");
+//    }
 
     /**
      * 支付回调
