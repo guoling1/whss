@@ -6,7 +6,7 @@ module.exports = {
     env: require('./prod.env'),
     index: path.resolve(__dirname, '../../WEB-INF/index.html'),
     assetsRoot: path.resolve(__dirname, '../../'),
-    assetsSubDirectory: 'static.0.1.7',
+    assetsSubDirectory: 'static.0.1.8',
     assetsPublicPath: 'http://img.jinkaimen.cn/boss/hss/',
     productionSourceMap: true,
     // Gzip off by default as many popular static hosts such as
