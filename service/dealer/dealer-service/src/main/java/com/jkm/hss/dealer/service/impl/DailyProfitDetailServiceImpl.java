@@ -16,6 +16,7 @@ import com.jkm.hss.dealer.service.DealerService;
 import com.jkm.hss.dealer.service.ShallProfitDetailService;
 import com.jkm.hss.merchant.entity.MerchantInfo;
 import com.jkm.hss.merchant.service.MerchantInfoService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,6 +31,7 @@ import java.util.List;
  * Created by yuxiang on 2016-11-25.
  */
 @Service
+@Slf4j
 public class DailyProfitDetailServiceImpl implements DailyProfitDetailService {
 
     @Autowired
@@ -48,6 +50,7 @@ public class DailyProfitDetailServiceImpl implements DailyProfitDetailService {
     @Override
     @Transactional
     public void dailyProfitCount() {
+        log.info(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>大码每日分润定时任务开始执行.....<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
         final String profitDate = this.getProfitDate(new Date());
         //公司分润
         final DailyProfitDetail companyDaily = new DailyProfitDetail();
@@ -222,6 +225,7 @@ public class DailyProfitDetailServiceImpl implements DailyProfitDetailService {
             dailyProfitDetail.setTotalMoney(collectMoney.add(withdrawMoney));
             this.dailyProfitDetailDao.init(dailyProfitDetail);
         }
+        log.info(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>大码每日分润定时任务执行完成,success...<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
     }
 
     /**
