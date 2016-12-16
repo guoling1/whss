@@ -42,4 +42,16 @@ public class DealerChannelRateServiceImpl implements DealerChannelRateService{
     public List<DealerChannelRate> selectByDealerId(long dealerId) {
         return this.dealerChannelRateDao.selectByDealerId(dealerId);
     }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param dealerId
+     * @param payChannel
+     * @return
+     */
+    @Override
+    public List<DealerChannelRate> selectByDealerIdAndPayChannelSign(long dealerId, int payChannel) {
+        return this.dealerChannelRateDao.selectByDealerIdAndPayChannelSign(dealerId, payChannel);
+    }
 }

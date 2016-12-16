@@ -195,7 +195,7 @@ public class ShallProfitDetailServiceImpl implements ShallProfitDetailService{
      * @return
      */
     @Override
-    public Pair<BigDecimal, BigDecimal> withdrawParams(final long merchantId) {
+    public Pair<BigDecimal, BigDecimal> withdrawParams(final long merchantId, final int payChannel) {
         try{
             final Optional<MerchantInfo> merchantInfoOptional =
                     this.merchantInfoService.selectById(merchantId);
@@ -203,8 +203,8 @@ public class ShallProfitDetailServiceImpl implements ShallProfitDetailService{
             final MerchantInfo merchantInfo = merchantInfoOptional.get();
             if (merchantInfo.getDealerId() == 0){
                 //jkm直属商户
-                final BasicChannel basicChannel = this.basicChannelService.selectByChannelTypeSign(EnumPayChannelSign.YG_WEIXIN.getId()).get();
-                final List<ProductChannelDetail> list = this.productChannelDetailService.selectByChannelTypeSign(EnumPayChannelSign.YG_WEIXIN.getId());
+                final BasicChannel basicChannel = this.basicChannelService.selectByChannelTypeSign(payChannel).get();
+                final List<ProductChannelDetail> list = this.productChannelDetailService.selectByChannelTypeSign(payChannel);
                 return Pair.of(list.get(0).getProductMerchantWithdrawFee().setScale(2), basicChannel.getBasicWithdrawFee().setScale(2));
             }
             final Optional<Dealer> dealerOptional = this.dealerService.getById(merchantInfo.getDealerId());
@@ -212,7 +212,7 @@ public class ShallProfitDetailServiceImpl implements ShallProfitDetailService{
             final Dealer dealer = dealerOptional.get();
             //获取代理商通道费率
             final List<DealerChannelRate> dealerChannelList =
-                    this.dealerChannelRateService.selectByDealerId(dealer.getId());
+                    this.dealerChannelRateService.selectByDealerIdAndPayChannelSign(dealer.getId(), payChannel);
             final DealerChannelRate dealerChannelRate = dealerChannelList.get(0);
             final BasicChannel basicChannel = this.basicChannelService.selectByChannelTypeSign(dealerChannelRate.getChannelTypeSign()).get();
             //判断是几级代理

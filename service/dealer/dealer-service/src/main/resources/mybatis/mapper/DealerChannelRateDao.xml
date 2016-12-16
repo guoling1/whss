@@ -59,4 +59,8 @@
         AND channel_type_sign = #{channelType}
         AND status = 2
     </select>
+    <select id="selectByDealerIdAndPayChannelSign" resultType="com.jkm.hss.dealer.entity.DealerChannelRate">
+        SELECT * FROM tb_dealer_channel_rate
+        WHERE dealer_id = #{dealerId} AND channel_type_sign = #{payChannel} AND status = 2
+    </select>
 </mapper>

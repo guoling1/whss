@@ -64,4 +64,11 @@ public interface DealerChannelRateDao {
      */
     DealerChannelRate selectByDealerIdAndProductIdAndChannelType(@Param("dealerId") long dealerId, @Param("productId") long productId, @Param("channelType") int channelType);
 
+    /**
+     *
+     * @param dealerId
+     * @param payChannel
+     * @return
+     */
+    List<DealerChannelRate> selectByDealerIdAndPayChannelSign(@Param("dealerId") long dealerId, @Param("payChannel") int payChannel);
 }

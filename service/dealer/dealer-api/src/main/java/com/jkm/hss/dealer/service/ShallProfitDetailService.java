@@ -31,7 +31,7 @@ public interface ShallProfitDetailService {
      * @param merchantId
      * @return
      */
-    Pair<BigDecimal, BigDecimal> withdrawParams(long merchantId);
+    Pair<BigDecimal, BigDecimal> withdrawParams(long merchantId, int payChannel);
 
     /**
      * 查询昨日有分润记录的商户
