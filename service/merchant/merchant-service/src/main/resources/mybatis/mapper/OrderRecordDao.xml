@@ -9,7 +9,7 @@
 	</sql>
 	<!--查询交易明细总条数-->
 	<select id="selectAllOrderRecordCount" resultType="java.lang.Long">
-		SELECT COUNT(1) FROM tb_order_record WHERE merchant_id = #{merchantId} AND status=0
+		SELECT COUNT(1) FROM tb_order_record WHERE merchant_id = #{merchantId} AND status=0 AND trade_type=0
 		<if test="startDate!=null and startDate!=''">
 			AND create_time <![CDATA[ >= ]]> #{startDate}
 		</if>
@@ -21,9 +21,9 @@
 		</if>
 	</select>
 	<!--分页查询交易明细记录-->
-	<select id="selectAllOrderRecordByPage" resultType="com.jkm.hss.merchant.entity.OrderRecord">
+	<select id="selectAllOrderRecordByPage" resultType="com.jkm.hsy.merchant.entity.OrderRecord">
 		SELECT <include refid="Base_Column_List" /> FROM tb_order_record
-		WHERE merchant_id = #{merchantId} AND status=0
+		WHERE merchant_id = #{merchantId} AND status=0 AND trade_type=0
 		<if test="startDate!=null and startDate!=''">
 			AND create_time <![CDATA[ >= ]]> #{startDate}
 		</if>
@@ -50,14 +50,14 @@
 		SELECT
 		<include refid="Base_Column_List" />
 		FROM tb_order_record
-		WHERE order_id = #{orderId} and status=0
+		WHERE order_id = #{orderId} and status=0 and trade_type = #{tradeType}
 	</select>
 	<!-- 查询（根据主键ID查询） -->
 	<select id="selectByPrimaryKey" resultType="com.jkm.hss.merchant.entity.OrderRecord">
 		 SELECT
 		 <include refid="Base_Column_List" />
 		 FROM tb_order_record
-		 WHERE id = #{id} and status=0 and merchant_type=0
+		 WHERE id = #{id} and status=0
 	</select>
 
 

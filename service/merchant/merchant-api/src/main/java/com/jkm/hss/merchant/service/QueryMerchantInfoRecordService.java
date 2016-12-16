@@ -16,8 +16,26 @@ public interface QueryMerchantInfoRecordService {
      */
     List<MerchantInfoResponse> getAll(MerchantInfoResponse merchantInfo);
 
+    /**
+     * 查询是几级代理商
+     * @param dealerId
+     * @return
+     */
     List<MerchantInfoResponse> getLevel(long dealerId);
 
-    List<MerchantInfoResponse> getResults(long firstLevelDealerId);
+    /**
+     * level=1查询代理商名字
+     * @param level
+     * @param dealerId
+     * @return
+     */
+    List<MerchantInfoResponse> getResults(int level,long dealerId);
+
+    /**
+     * 查询一级代理商名称
+     * @param firstLevelDealerId
+     * @return
+     */
+    List<MerchantInfoResponse> getFirstLevel(long firstLevelDealerId);
 
 }

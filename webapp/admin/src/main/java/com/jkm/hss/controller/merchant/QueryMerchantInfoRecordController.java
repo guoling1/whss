@@ -80,23 +80,26 @@ public class QueryMerchantInfoRecordController extends BaseController {
                 if (list.get(i).getLevel()==2){
                     List<MerchantInfoResponse> res = queryMerchantInfoRecordService.getLevel(list.get(i).getDealerId());
                     for (int j=0;j<res.size();j++){
-                        list.get(i).setProxyName(res.get(j).getProxyName1());
+                        list.get(i).setProxyName1(res.get(j).getProxyName());
                         if (res.get(j).getFirstLevelDealerId() != 0){
-                            List<MerchantInfoResponse> results = queryMerchantInfoRecordService.getResults(res.get(j).getFirstLevelDealerId());
+                            long firstLevelDealerId = res.get(j).getFirstLevelDealerId();
+                            List<MerchantInfoResponse> results = queryMerchantInfoRecordService.getFirstLevel(firstLevelDealerId);
                             list.get(i).setProxyName(results.get(j).getProxyName());
                         }
                     }
                 }
                 if (list.get(i).getLevel()==1){
-                    List<MerchantInfoResponse> results = queryMerchantInfoRecordService.getResults(list.get(i).getFirstLevelDealerId());
+                    int level = list.get(i).getLevel();
+                    long dealerId = list.get(i).getDealerId();
+                    List<MerchantInfoResponse> results = queryMerchantInfoRecordService.getResults(level,dealerId);
                     for (int x=0;x<results.size();x++){
-                        list.get(i).setProxyName(results.get(x).getProxyName1());
+                        list.get(i).setProxyName(results.get(x).getProxyName());
                     }
                 }
-                if (list.get(i).getDealerId()==0){
-                    String ProxyName = "金开门";
-                    list.get(i).setProxyName(ProxyName);
-                }
+//                if (list.get(i).getDealerId()==0){
+//                    String ProxyName = "金开门";
+//                    list.get(i).setProxyName(ProxyName);
+//                }
 
                 return CommonResponse.objectResponse(1,"success",list);
 

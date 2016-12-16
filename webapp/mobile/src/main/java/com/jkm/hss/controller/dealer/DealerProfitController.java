@@ -8,6 +8,7 @@ import com.jkm.hss.dealer.entity.DailyProfitDetail;
 import com.jkm.hss.dealer.service.DailyProfitDetailService;
 import com.jkm.hss.dealer.service.DealerService;
 import com.jkm.hss.merchant.entity.OrderRecord;
+import com.jkm.hss.merchant.enums.EnumTradeType;
 import com.jkm.hss.merchant.service.OrderRecordService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
@@ -185,7 +186,7 @@ public class DealerProfitController extends BaseController {
         System.out.println(new BigDecimal(0.2000).compareTo(new BigDecimal(0.2000)));
         System.out.println(new BigDecimal(0.2000).compareTo(new BigDecimal(0.2001)));
         //this.dailyProfitDetailService.dailyProfitCount();
-       final OrderRecord orderRecord = this.orderRecordService.selectOrderId("JKM2016120113162064441368").get();
+       final OrderRecord orderRecord = this.orderRecordService.selectOrderId("JKM2016120113162064441368", EnumTradeType.DEAL.getId()).get();
         this.dealerService.shallProfit(orderRecord);
         return null;
     }

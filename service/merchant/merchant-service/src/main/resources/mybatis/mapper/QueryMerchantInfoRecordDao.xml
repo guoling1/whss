@@ -22,6 +22,11 @@
     </select>
 
     <select id="getResults" resultType="com.jkm.hss.merchant.entity.MerchantInfoResponse">
+        SELECT proxy_name FROM tb_dealer WHERE id=#{dealerId} AND level=#{level}
+
+    </select>
+
+    <select id="getFirstLevel" resultType="com.jkm.hss.merchant.entity.MerchantInfoResponse">
         SELECT proxy_name FROM tb_dealer WHERE id=#{firstLevelDealerId}
 
     </select>

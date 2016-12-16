@@ -21,5 +21,7 @@ public interface QueryMerchantInfoRecordDao {
 
     List<MerchantInfoResponse> getLevel(@Param("dealerId") long dealerId);
 
-    List<MerchantInfoResponse> getResults(@Param("firstLevelDealerId") long firstLevelDealerId);
+    List<MerchantInfoResponse> getResults(@Param("level") int level,@Param("dealerId") long dealerId);
+
+    List<MerchantInfoResponse> getFirstLevel(@Param("firstLevelDealerId") long firstLevelDealerId);
 }

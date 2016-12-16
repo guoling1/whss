@@ -50,9 +50,15 @@ public class QueryMerchantInfoRecordServiceImpl implements QueryMerchantInfoReco
     }
 
     @Override
-    public List<MerchantInfoResponse> getResults(long firstLevelDealerId) {
-        List<MerchantInfoResponse> res = this.queryMerchantInfoRecordDao.getResults(firstLevelDealerId);
+    public List<MerchantInfoResponse> getResults(int level,long dealerId) {
+        List<MerchantInfoResponse> res = this.queryMerchantInfoRecordDao.getResults(level,dealerId);
         return res;
 
+    }
+
+    @Override
+    public List<MerchantInfoResponse> getFirstLevel(long firstLevelDealerId) {
+        List<MerchantInfoResponse> res = this.queryMerchantInfoRecordDao.getFirstLevel(firstLevelDealerId);
+        return res;
     }
 }

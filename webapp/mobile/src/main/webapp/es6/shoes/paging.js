@@ -82,7 +82,12 @@ _require.register("paging", (module, exports, _require, global)=> {
           endDate: endDate.value
         }, function (res) {
           for (let i = 0; i < res.records.length; i++) {
-            let group = document.createElement('div');
+            let group = document.createElement('a');
+            if (res.records[i].tradeType == 0) {
+              group.href = '/sqb/tradeDetail/' + res.records[i].id;
+            } else {
+              group.href = '/sqb/otherTradeDetail/' + res.records[i].id;
+            }
             group.className = 'group';
             let top = document.createElement('div');
             top.className = 'top';
@@ -106,11 +111,7 @@ _require.register("paging", (module, exports, _require, global)=> {
             bottom.className = 'bottom';
             let bottomLeft = document.createElement('div');
             bottomLeft.className = 'left';
-            if (res.records[i].tradeType == 0) {
-              bottomLeft.innerHTML = payResult[res.records[i].payResult];
-            } else {
-              bottomLeft.innerHTML = walResult[res.records[i].payResult];
-            }
+            bottomLeft.innerHTML = res.records[i].errorMessage;
             let bottomRight = document.createElement('div');
             bottomRight.className = 'right';
             bottomRight.innerHTML = tools.dateFormat('YYYY-MM-DD HH:mm:ss', res.records[i].createTime);
