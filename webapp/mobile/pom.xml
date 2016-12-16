@@ -252,7 +252,7 @@
     <build>
         <defaultGoal>package</defaultGoal>
         <filters>
-            <filter>src/main/filters/filter_haoshouyin_${project.environment}.properties</filter>
+            <filter>src/main/filters/filter_hss_${project.environment}.properties</filter>
         </filters>
         <resources>
             <resource>
