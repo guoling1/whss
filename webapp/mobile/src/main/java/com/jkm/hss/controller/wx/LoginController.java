@@ -425,81 +425,81 @@ public class LoginController extends BaseController {
     }
 
 
-    /**
-     * 提现页面
-     * @param request
-     * @param response
-     * @return
-     */
-    @RequestMapping(value = "/drawCash", method = RequestMethod.GET)
-    public String drawCash(final HttpServletRequest request, final HttpServletResponse response, final Model model,@RequestParam(value = "code", required = false) String code) throws IOException {
-        boolean isRedirect = false;
-        if(!super.isLogin(request)){
-            return "redirect:"+ WxConstants.WEIXIN_USERINFO+request.getRequestURI()+ WxConstants.WEIXIN_USERINFO_REDIRECT;
-        }else {
-            String url = "";
-            Optional<UserInfo> userInfoOptional = userInfoService.selectById(super.getUserId(request));
-            if (userInfoOptional.isPresent()) {
-                Long merchantId = userInfoOptional.get().getMerchantId();
-                if (merchantId != null && merchantId != 0){
-                    Optional<MerchantInfo> result = merchantInfoService.selectById(merchantId);
-                    if (result.get().getStatus()== EnumMerchantStatus.LOGIN.getId()){//登录
-                        url = "/sqb/reg";
-                        isRedirect= true;
-                    }else if(result.get().getStatus()== EnumMerchantStatus.INIT.getId()){
-                        url = "/sqb/addInfo";
-                        isRedirect= true;
-                    }else if(result.get().getStatus()== EnumMerchantStatus.ONESTEP.getId()){
-                        url = "/sqb/addNext";
-                        isRedirect= true;
-                    }else if(result.get().getStatus()== EnumMerchantStatus.REVIEW.getId()||
-                            result.get().getStatus()== EnumMerchantStatus.UNPASSED.getId()||
-                            result.get().getStatus()== EnumMerchantStatus.DISABLE.getId()){
-                        url = "/sqb/prompt";
-                        isRedirect= true;
-                    }else if(result.get().getStatus()== EnumMerchantStatus.PASSED.getId()){//跳提现页面
-                        String phone = MerchantSupport.decryptMobile(result.get().getReserveMobile());
-                        String bankNo = MerchantSupport.decryptBankCard(result.get().getBankNo());
-                        model.addAttribute("phone_01", phone.substring(0,3));
-                        model.addAttribute("phone_02", phone.substring(phone.length()-4,phone.length()));
-                        model.addAttribute("bankNo", bankNo.substring(bankNo.length()-4,bankNo.length()));
-                        model.addAttribute("bankName",result.get().getBankName());
-                        AccountInfo accountInfo = accountInfoService.selectByPrimaryKey(result.get().getAccountId());
-                        DecimalFormat decimalFormat=new DecimalFormat("0.00");//构造方法的字符格式这里如果小数不足2位,会以0补足.
-                        if(accountInfo==null){//没有账户
-                            model.addAttribute("channelFee","0.00");
-                            model.addAttribute("avaMoney", "0.00");
-                            model.addAttribute("realMoney","0.00");
-                        }else{
-                            Pair<BigDecimal, BigDecimal> pair = shallProfitDetailService.withdrawParams(merchantId);
-                            model.addAttribute("avaMoney", accountInfo.getAvailable()==null?"0.00":decimalFormat.format(accountInfo.getAvailable()));
-                            int compareResult = accountInfo.getAvailable().compareTo(pair.getLeft());
-                            if(compareResult!=1){//提现金额小于手续费
-                                model.addAttribute("realMoney","0.00");
-                            }else{
-                                BigDecimal realMoney = accountInfo.getAvailable().subtract(pair.getLeft());
-                                model.addAttribute("realMoney",decimalFormat.format(realMoney));
-                            }
-                            model.addAttribute("channelFee", pair.getLeft());
-                        }
-                        url = "/withdrawal";
-                    }
-                }else{
-                    url = "/sqb/reg";
-                    isRedirect= true;
-                }
-            }else{
-                CookieUtil.deleteCookie(response,ApplicationConsts.MERCHANT_COOKIE_KEY,ApplicationConsts.getApplicationConfig().domain());
-                isRedirect= true;
-                url = "/sqb/reg";
-            }
-            if(isRedirect){
-                return "redirect:"+url;
-            }else{
-                return url;
-            }
-        }
-    }
+//    /**
+//     * 提现页面
+//     * @param request
+//     * @param response
+//     * @return
+//     */
+//    @RequestMapping(value = "/drawCash", method = RequestMethod.GET)
+//    public String drawCash(final HttpServletRequest request, final HttpServletResponse response, final Model model,@RequestParam(value = "code", required = false) String code) throws IOException {
+//        boolean isRedirect = false;
+//        if(!super.isLogin(request)){
+//            return "redirect:"+ WxConstants.WEIXIN_USERINFO+request.getRequestURI()+ WxConstants.WEIXIN_USERINFO_REDIRECT;
+//        }else {
+//            String url = "";
+//            Optional<UserInfo> userInfoOptional = userInfoService.selectById(super.getUserId(request));
+//            if (userInfoOptional.isPresent()) {
+//                Long merchantId = userInfoOptional.get().getMerchantId();
+//                if (merchantId != null && merchantId != 0){
+//                    Optional<MerchantInfo> result = merchantInfoService.selectById(merchantId);
+//                    if (result.get().getStatus()== EnumMerchantStatus.LOGIN.getId()){//登录
+//                        url = "/sqb/reg";
+//                        isRedirect= true;
+//                    }else if(result.get().getStatus()== EnumMerchantStatus.INIT.getId()){
+//                        url = "/sqb/addInfo";
+//                        isRedirect= true;
+//                    }else if(result.get().getStatus()== EnumMerchantStatus.ONESTEP.getId()){
+//                        url = "/sqb/addNext";
+//                        isRedirect= true;
+//                    }else if(result.get().getStatus()== EnumMerchantStatus.REVIEW.getId()||
+//                            result.get().getStatus()== EnumMerchantStatus.UNPASSED.getId()||
+//                            result.get().getStatus()== EnumMerchantStatus.DISABLE.getId()){
+//                        url = "/sqb/prompt";
+//                        isRedirect= true;
+//                    }else if(result.get().getStatus()== EnumMerchantStatus.PASSED.getId()){//跳提现页面
+//                        String phone = MerchantSupport.decryptMobile(result.get().getReserveMobile());
+//                        String bankNo = MerchantSupport.decryptBankCard(result.get().getBankNo());
+//                        model.addAttribute("phone_01", phone.substring(0,3));
+//                        model.addAttribute("phone_02", phone.substring(phone.length()-4,phone.length()));
+//                        model.addAttribute("bankNo", bankNo.substring(bankNo.length()-4,bankNo.length()));
+//                        model.addAttribute("bankName",result.get().getBankName());
+//                        AccountInfo accountInfo = accountInfoService.selectByPrimaryKey(result.get().getAccountId());
+//                        DecimalFormat decimalFormat=new DecimalFormat("0.00");//构造方法的字符格式这里如果小数不足2位,会以0补足.
+//                        if(accountInfo==null){//没有账户
+//                            model.addAttribute("channelFee","0.00");
+//                            model.addAttribute("avaMoney", "0.00");
+//                            model.addAttribute("realMoney","0.00");
+//                        }else{
+//                            Pair<BigDecimal, BigDecimal> pair = shallProfitDetailService.withdrawParams(merchantId);
+//                            model.addAttribute("avaMoney", accountInfo.getAvailable()==null?"0.00":decimalFormat.format(accountInfo.getAvailable()));
+//                            int compareResult = accountInfo.getAvailable().compareTo(pair.getLeft());
+//                            if(compareResult!=1){//提现金额小于手续费
+//                                model.addAttribute("realMoney","0.00");
+//                            }else{
+//                                BigDecimal realMoney = accountInfo.getAvailable().subtract(pair.getLeft());
+//                                model.addAttribute("realMoney",decimalFormat.format(realMoney));
+//                            }
+//                            model.addAttribute("channelFee", pair.getLeft());
+//                        }
+//                        url = "/withdrawal";
+//                    }
+//                }else{
+//                    url = "/sqb/reg";
+//                    isRedirect= true;
+//                }
+//            }else{
+//                CookieUtil.deleteCookie(response,ApplicationConsts.MERCHANT_COOKIE_KEY,ApplicationConsts.getApplicationConfig().domain());
+//                isRedirect= true;
+//                url = "/sqb/reg";
+//            }
+//            if(isRedirect){
+//                return "redirect:"+url;
+//            }else{
+//                return url;
+//            }
+//        }
+//    }
 
     @RequestMapping(value = "/ticket", method = RequestMethod.GET)
     public String ticket(final HttpServletRequest request, final HttpServletResponse response) throws IOException {
