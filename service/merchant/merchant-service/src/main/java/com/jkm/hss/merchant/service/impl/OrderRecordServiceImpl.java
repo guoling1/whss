@@ -993,7 +993,8 @@ public class OrderRecordServiceImpl implements OrderRecordService {
 
                     log.info("开始组装数据。。。");
                     Map<String, String> paramsMap = new HashMap<String, String>();
-                    paramsMap.put("amount", or.getRealFee().toString());
+                    DecimalFormat decimalFormat=new DecimalFormat("0.00");//构造方法的字符格式这里如果小数不足2位,会以0补足.
+                    paramsMap.put("amount", decimalFormat.format(or.getRealFee()));
                     paramsMap.put("orderId", or.getOrderId());
                     paramsMap.put("bitchNo", or.getOrderId());
                     paramsMap.put("payType", EnumSettlementPeriodType.D0.getId());
