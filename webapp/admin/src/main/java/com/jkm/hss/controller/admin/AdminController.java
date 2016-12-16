@@ -351,8 +351,8 @@ public class AdminController extends BaseController {
 
             }
             final BigDecimal alipayWithdrawFee = new BigDecimal(paramChannel.getWithdrawSettleFee());
-            if (alipayWithdrawFee.compareTo(productChannelDetail.getProductWithdrawFee()) <= 0
-                    || alipayWithdrawFee.compareTo(alipayMerchantWithdrawFee) >= 0) {
+            if (alipayWithdrawFee.compareTo(productChannelDetail.getProductWithdrawFee()) < 0
+                    || alipayWithdrawFee.compareTo(alipayMerchantWithdrawFee) > 0) {
                 return CommonResponse.simpleResponse(-1, "支付宝通道的提现结算费用：一级代理商的必须大于等于产品的, 小于等于商户的");
             }
 
@@ -375,8 +375,8 @@ public class AdminController extends BaseController {
 
             }
             final BigDecimal quickPayWithdrawFee = new BigDecimal(paramChannel.getWithdrawSettleFee());
-            if (quickPayWithdrawFee.compareTo(productChannelDetail.getProductWithdrawFee()) <= 0
-                    || quickPayWithdrawFee.compareTo(quickPayMerchantWithdrawFee) >= 0) {
+            if (quickPayWithdrawFee.compareTo(productChannelDetail.getProductWithdrawFee()) < 0
+                    || quickPayWithdrawFee.compareTo(quickPayMerchantWithdrawFee) > 0) {
                 return CommonResponse.simpleResponse(-1, "快捷支付通道的提现结算费用：一级代理商的必须大于等于产品的, 小于等于商户的");
             }
         }
