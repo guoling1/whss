@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * Created by yuxiang on 2016-12-05.
@@ -44,5 +45,26 @@ public class CompanyProfitDetailServiceImpl implements CompanyProfitDetailServic
     @Override
     public BigDecimal selectWithdrawProfitByProfitDate(String profitDate) {
         return this.companyProfitDetailDao.selectWithdrawProfitByProfitDate(profitDate);
+    }
+
+
+    /**
+     * {@inheritDoc}
+     * @param profitDate
+     * @return
+     */
+    @Override
+    public List<CompanyProfitDetail> selectByProfitDate(String profitDate) {
+        return this.companyProfitDetailDao.selectByProfitDate(profitDate);
+    }
+
+    /**
+     * {@inheritDoc}
+     * @param profitDate
+     * @return
+     */
+    @Override
+    public List<Long> getMerchantIdByProfitDate(String profitDate) {
+        return this.companyProfitDetailDao.getMerchantIdByProfitDate(profitDate);
     }
 }

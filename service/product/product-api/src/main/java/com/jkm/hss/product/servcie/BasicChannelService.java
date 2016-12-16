@@ -47,4 +47,6 @@ public interface BasicChannelService {
      * @param basicChannel
      */
     void update(BasicChannel basicChannel);
+
+    BasicChannel selectById(long id);
 }

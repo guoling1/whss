@@ -46,5 +46,8 @@
     <select id="selectAll" resultType="com.jkm.hss.product.entity.BasicChannel">
         SELECT * FROM tb_basic_channel WHERE status = 2;
     </select>
+    <select id="selectById" resultType="com.jkm.hss.product.entity.BasicChannel">
+        SELECT * FROM tb_basic_channel WHERE id = #{id};
+    </select>
 
 </mapper>

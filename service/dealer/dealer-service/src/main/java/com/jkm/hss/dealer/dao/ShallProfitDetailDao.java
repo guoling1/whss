@@ -187,4 +187,19 @@ public interface ShallProfitDetailDao {
      * @return
      */
     List<ShallProfitDetail> selectByProfitDateAndFirstDealerId(@Param("firstDealerId") long firstDealerId, @Param("statisticsDate") String statisticsDate);
+
+
+    /**
+     * 查询公司
+     * @param profitDate
+     * @return
+     */
+    List<ShallProfitDetail> selectCompanyByProfitDate(String profitDate);
+
+    /**
+     *
+     * @param statisticsDate
+     * @return
+     */
+    List<Long> getMerchantIdByProfitDate(String statisticsDate);
 }

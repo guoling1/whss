@@ -97,6 +97,8 @@ public class ChannelController extends BaseController {
     @RequestMapping(value = "update", method = RequestMethod.POST)
     public CommonResponse update(@RequestBody final BasicChannel request) {
         try{
+            final BasicChannel basicChannel = this.basicChannelService.selectById(request.getId());
+            request.setChannelTypeSign(basicChannel.getChannelTypeSign());
             this.basicChannelService.update(request);
             return  CommonResponse.simpleResponse(1, "success");
         }catch (final Throwable throwable){

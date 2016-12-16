@@ -19,7 +19,7 @@ import java.util.List;
  * Created by lt on 2016/12/7.
  */
 @Controller
-@RequestMapping(value = "/queryOrderRecord")
+@RequestMapping(value = "/admin/queryOrderRecord")
 public class OrderRecordController extends BaseController{
 
     @Autowired

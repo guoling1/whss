@@ -74,4 +74,9 @@ public class BasicChannelServiceImpl implements BasicChannelService {
     public void update(BasicChannel basicChannel) {
         this.basicChannelDao.update(basicChannel);
     }
+
+    @Override
+    public BasicChannel selectById(long id) {
+        return this.basicChannelDao.selectById(id);
+    }
 }
