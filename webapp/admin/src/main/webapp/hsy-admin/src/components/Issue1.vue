@@ -13,12 +13,8 @@
         </ul>
       </label>
       <label for="">
-        开始码段
-        <input type="text" name="number" placeholder="请输入开始码段" v-model="query.startCode"/>
-      </label>
-      <label for="">
-        结束码段
-        <input type="text" name="number" placeholder="请输入结束码段" v-model="query.endCode"/>
+        分配个数
+        <input type="text" name="number" placeholder="请输入分配个数" v-model="query.count"/>
       </label>
       <div class="submit btn btn-primary" id="submit" @click="submit">分配</div>
     </form>
@@ -38,9 +34,8 @@
       return {
         name:'',
         query:{
-          dealerId:'',
-          startCode:'',
-          endCode:''
+          count:'',
+          dealerId:''
         },
         findDealers:[],
         listIsShow: false
@@ -71,21 +66,21 @@
         this.$data.listIsShow = false;
       },
       submit: function() {
-        this.$http.post('/admin/user/distributeRangeQRCode',this.$data.query)
+        this.$http.post('/admin/user/distributeQRCode',this.$data.query)
           .then(function(res){
-            this.$router.push({path:'/admin/record/issueSuccess',query:{
-              name: res.data.name,
-              mobile: res.data.mobile,
-              distributeDate: res.data.distributeDate,
-              count: res.data.count,
-              startCode: res.data.startCode,
-              endCode: res.data.endCode
-            }})
-          },function(err){
-            this.$store.commit('MESSAGE_ACCORD_SHOW', {
-              text: err.statusMessage
-            })
+          this.$router.push({path:'/admin/record/issueSuccess',query:{
+            name: res.data.name,
+            mobile: res.data.mobile,
+            distributeDate: res.data.distributeDate,
+            count: res.data.count,
+            startCode: res.data.startCode,
+            endCode: res.data.endCode
+          }})
+        },function(err){
+          this.$store.commit('MESSAGE_ACCORD_SHOW', {
+            text: err.statusMessage
           })
+        })
       },
     },
     computed: {
@@ -141,12 +136,12 @@
     height:50px;
     line-height: 50px;
     margin: 10px;
-  input{
-    height: 40px;
-    margin-left: 10px;
-    padding: 10px;
-    width: 35%;
-  }
+    input{
+      height: 40px;
+      margin-left: 10px;
+      padding: 10px;
+      width: 35%;
+    }
   }
 
   .submit {

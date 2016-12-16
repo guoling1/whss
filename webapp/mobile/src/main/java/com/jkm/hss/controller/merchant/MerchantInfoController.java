@@ -139,7 +139,7 @@ public class MerchantInfoController extends BaseController {
         String nowDate = sdf.format(new Date());
         Date date = new Date();
         long nousedate =  date.getTime();
-        String photoName = "hsy/"+  nowDate + "/" + nousedate + RandomStringUtils.randomNumeric(5) +".jpg";
+        String photoName = "hss/"+  nowDate + "/" + nousedate + RandomStringUtils.randomNumeric(5) +".jpg";
         ossClient.putObject(ApplicationConsts.getApplicationConfig().ossBucke(), photoName, inputStream,meta);
         merchantInfo.setReserveMobile(MerchantSupport.encryptMobile(merchantInfo.getReserveMobile()));
         final Optional<BankCardBin> bankCardBinOptional = this.bankCardBinService.analyseCardNo(bankNo);
@@ -178,10 +178,10 @@ public class MerchantInfoController extends BaseController {
         String nowDate = sdf.format(new Date());
         Date date = new Date();
         long nousedate =  date.getTime();
-        String photoName = "hsy/"+  nowDate + "/" + nousedate + RandomStringUtils.randomNumeric(5) +".jpg";
-        String photoName1 = "hsy/"+ nowDate + "/" + nousedate + RandomStringUtils.randomNumeric(5) +".jpg";
-        String photoName2 = "hsy/"+ nowDate + "/" + nousedate + RandomStringUtils.randomNumeric(5) +".jpg";
-        String photoName3 = "hsy/"+ nowDate + "/" + nousedate + RandomStringUtils.randomNumeric(5) +".jpg";
+        String photoName = "hss/"+  nowDate + "/" + nousedate + RandomStringUtils.randomNumeric(5) +".jpg";
+        String photoName1 = "hss/"+ nowDate + "/" + nousedate + RandomStringUtils.randomNumeric(5) +".jpg";
+        String photoName2 = "hss/"+ nowDate + "/" + nousedate + RandomStringUtils.randomNumeric(5) +".jpg";
+        String photoName3 = "hss/"+ nowDate + "/" + nousedate + RandomStringUtils.randomNumeric(5) +".jpg";
 //        String photoName = "hsy/"+  nowDate + "/" + SnGenerator.generate("",5) +".jpg";
 //        String photoName1 = "hsy/"+ nowDate + "/" + SnGenerator.generate("",5) +".jpg";
 //        String photoName2 = "hsy/"+ nowDate + "/" + SnGenerator.generate("",5) +".jpg";

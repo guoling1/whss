@@ -21,8 +21,8 @@
             </div>
             <div class="date">
               <label for="date">交易日期：</label>
-              <input id="date" type="text" name="date" value="" v-model="$$data.startTime" placeholder="如：20161001">至
-              <input type="text" name="date" value="" v-model="$$data.endTime" placeholder="如：20161001">
+              <input id="date" type="datetime-local" name="date" value="" v-model="$$data.start">至
+              <input type="datetime-local" name="date" value="" v-model="$$data.end">
             </div>
             <div class="number">
               <label for="merchantId">商户编号：</label>
@@ -66,9 +66,7 @@
                 </select>
               </label>
             </div>
-            <div class="btn btn-primary" @click="lookup">
-            筛选
-          </div>
+            <div class="btn btn-primary" @click="lookup">筛选</div>
           </div>
         </div>
         <!-- /.box-body -->
@@ -152,6 +150,7 @@
       </div>
       <!-- /.box-body -->
     </div>
+    <!--登录页面-->
     <div class="login" v-if="isLogin">
       <form class="" action="index.html" method="post">
         <label for="phone">
@@ -180,6 +179,8 @@
         isLogin: false,
         msg:{
           orderId:'',
+          start:'',
+          end:'',
           startTime: '',
           endTime: '',
           merchantId: '',
@@ -189,7 +190,7 @@
           status:2,
           payResult: '',
           payChannel: '',
-          reserveMobile:'',
+          mdMobile:'',
           pageNo:1,
           pageSize:10,
           saveUrl:'D:'
@@ -199,22 +200,42 @@
       }
     },
     created:function(){
-      this.$http.post('/queryOrderRecord/selectOrderRecordByConditions',this.$data.msg)
+      this.$http.post('/admin/queryOrderRecord/selectOrderRecordByConditions',this.$data.msg)
         .then(function (res) {
           this.$data.orders=res.data.records;
           this.$data.total=res.data.totalPage;
           var str='',
             page=document.getElementById('page');
-          str+='<li class="paginate_button previous" id="example2_previous"><a href="#" aria-controls="example2" data-dt-idx="0" tabindex="0">Previous</a></li>'
+          str+='<li class="paginate_button previous" id="example2_previous"><a href="#" aria-controls="example2" data-dt-idx="0" tabindex="0">上一页</a></li>'
           for (var i=1; i<=this.$data.total;i++){
-            if(i==res.data.pageNO){
+            if(i==this.$data.msg.pageNo){
               str+='<li class="paginate_button active"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">'+i+'</a></li></li>';
               continue;
             }
             str+='<li class="paginate_button"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">'+i+'</a></li></li>'
           }
-          str+='<li class="paginate_button next" id="example2_next"><a href="#" aria-controls="example2" data-dt-idx="7" tabindex="0">Next</a></li>'
+          str+='<li class="paginate_button next" id="example2_next"><a href="#" aria-controls="example2" data-dt-idx="7" tabindex="0">下一页</a></li>'
           page.innerHTML=str;
+          var aLi = page.getElementsByTagName('li');
+          if(this.$data.msg.pageNo<6){
+            for(var i=0;i<aLi.length;i++){
+              if(i>11){
+                aLi[i].style.display='none'
+              }
+            }
+          }else if(this.$data.msg.pageNo>(this.$data.total-5)){
+            for(var i=0;i<aLi.length;i++){
+              if(i<(this.$data.total-12)){
+                aLi[i].style.display='none'
+              }
+            }
+          }else{
+            for(var i=0;i<aLi.length;i++){
+              if((i!=0&&i<this.$data.msg.pageNo-5)||(i!=this.$data.total+1&&i>this.$data.msg.pageNo+4)){
+                aLi[i].style.display='none'
+              }
+            }
+          }
         },function (err) {
           this.$store.commit('MESSAGE_ACCORD_SHOW', {
             text: err.statusMessage
@@ -228,14 +249,14 @@
         var tar = e.target||e.srcElement,
           tarInn = tar.innerHTML,
           n = this.$data.msg.pageNo;
-        if(tarInn == 'Previous'){
+        if(tarInn == '上一页'){
           if(n == 1){
             tar.parentNode.className+=' disabled'
             return;
           }
           n--;
         }
-        if(tarInn == 'Next'){
+        if(tarInn == '下一页'){
           if(n == this.$data.total){
             tar.parentNode.className+=' disabled'
             return;
@@ -250,22 +271,42 @@
           n = Number(tarInn);
         }
         this.$data.msg.pageNo = n;
-        this.$http.post('/queryOrderRecord/selectOrderRecordByConditions',this.$data.msg)
+        this.$http.post('/admin/queryOrderRecord/selectOrderRecordByConditions',this.$data.msg)
           .then(function (res) {
             this.$data.orders=res.data.records;
             this.$data.total=res.data.totalPage;
             var str='',
               page=document.getElementById('page');
-            str+='<li class="paginate_button previous" id="example2_previous"><a href="#" aria-controls="example2" data-dt-idx="0" tabindex="0">Previous</a></li>'
+            str+='<li class="paginate_button previous" id="example2_previous"><a href="#" aria-controls="example2" data-dt-idx="0" tabindex="0">上一页</a></li>'
             for (var i=1; i<=this.$data.total;i++){
-              if(i==res.data.pageNO){
+              if(i==this.$data.msg.pageNo){
                 str+='<li class="paginate_button active"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">'+i+'</a></li></li>';
                 continue;
               }
               str+='<li class="paginate_button"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">'+i+'</a></li></li>'
             }
-            str+='<li class="paginate_button next" id="example2_next"><a href="#" aria-controls="example2" data-dt-idx="7" tabindex="0">Next</a></li>'
+            str+='<li class="paginate_button next" id="example2_next"><a href="#" aria-controls="example2" data-dt-idx="7" tabindex="0">下一页</a></li>'
             page.innerHTML=str;
+            var aLi = page.getElementsByTagName('li');
+            if(this.$data.msg.pageNo<6){
+              for(var i=0;i<aLi.length;i++){
+                if(i>11){
+                  aLi[i].style.display='none'
+                }
+              }
+            }else if(this.$data.msg.pageNo>(this.$data.total-5)){
+              for(var i=0;i<aLi.length;i++){
+                if(i<(this.$data.total-12)){
+                  aLi[i].style.display='none'
+                }
+              }
+            }else{
+              for(var i=0;i<aLi.length;i++){
+                if((i!=0&&i<this.$data.msg.pageNo-5)||(i!=this.$data.total+1&&i>this.$data.msg.pageNo+4)){
+                  aLi[i].style.display='none'
+                }
+              }
+            }
           },function (err) {
             console.log(err)
           })
@@ -284,15 +325,15 @@
       },
       //筛选
       lookup: function () {
-        var time = this.$data.msg.startTime;
-        if(this.$data.msg.startTime!='' && (/\d{8}/.test(time))){
-          this.$data.msg.startTime = time.substring(4,0)+"-"+time.substring(4,6)+"-"+time.substring(6,8)+" 00:00:00";
+        var time = this.$data.msg.start;
+        if(time!=''){
+          this.$data.msg.startTime = time.replace(/\//g,'-').replace(/T/g,' ')+':00'
         }
-        var time = this.$data.msg.endTime;
-        if(this.$data.msg.endTime!=''&& (/\d{8}/.test(time))){
-          this.$data.msg.endTime = time.substring(4,0)+"-"+time.substring(4,6)+"-"+time.substring(6,8)+" 24:00:00";
+        var time = this.$data.msg.end;
+        if(time!=""){
+          this.$data.msg.endTime = time.replace(/\//g,'-').replace(/T/g,' ')+':00'
         }
-        this.$http.post('/queryOrderRecord/selectOrderRecordByConditions',this.$data.msg)
+        this.$http.post('/admin/queryOrderRecord/selectOrderRecordByConditions',this.$data.msg)
           .then(function (res) {
             this.$data.orders=res.data.records;
             this.$data.total=res.data.totalPage;
@@ -300,7 +341,7 @@
               page=document.getElementById('page');
             str+='<li class="paginate_button previous disabled" id="example2_previous"><a href="#" aria-controls="example2" data-dt-idx="0" tabindex="0">上一页</a></li>'
             for (var i=1; i<=this.$data.total;i++){
-              if(i==res.data.pageNO){
+              if(i==this.$data.msg.pageNo){
                 str+='<li class="paginate_button active"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">'+i+'</a></li></li>';
                 continue;
               }
@@ -308,12 +349,32 @@
             }
             str+='<li class="paginate_button next" id="example2_next"><a href="#" aria-controls="example2" data-dt-idx="7" tabindex="0">下一页</a></li>'
             page.innerHTML=str;
+            var aLi = page.getElementsByTagName('li');
+            if(this.$data.msg.pageNo<6){
+              for(var i=0;i<aLi.length;i++){
+                if(i>11){
+                  aLi[i].style.display='none'
+                }
+              }
+            }else if(this.$data.msg.pageNo>(this.$data.total-5)){
+              for(var i=0;i<aLi.length;i++){
+                if(i<(this.$data.total-12)){
+                  aLi[i].style.display='none'
+                }
+              }
+            }else{
+              for(var i=0;i<aLi.length;i++){
+                if((i!=0&&i<this.$data.msg.pageNo-5)||(i!=this.$data.total+1&&i>this.$data.msg.pageNo+4)){
+                  aLi[i].style.display='none'
+                }
+              }
+            }
           },function (err) {
             console.log(err)
           })
       },
       load: function () {
-        this.$http.post('/export/exportOrderRecord',this.$data.msg)
+        this.$http.post('/admin/export/exportOrderRecord',this.$data.msg)
           .then(function (res) {
             console.log(res)
             this.$store.commit('MESSAGE_ACCORD_SHOW', {
@@ -321,8 +382,9 @@
             })
           },function (err) {
             console.log(err)
+            alert(err.statusMessage)
             this.$store.commit('MESSAGE_ACCORD_SHOW', {
-              text: err.body.message
+              text: err.statusMessage
             })
           })
       }
@@ -359,7 +421,9 @@
         }
       },
       changeTime: function (val) {
-        if(val!=''){
+        if(val==''||val==null){
+          return ''
+        }else {
           val = new Date(val)
           var year=val.getFullYear();
           var month=val.getMonth()+1;
@@ -444,9 +508,6 @@
     width: 10%;
   }
 
-  tr:nth-child(2) {
-    background: #ccc;
-  }
 
   }
   .login {

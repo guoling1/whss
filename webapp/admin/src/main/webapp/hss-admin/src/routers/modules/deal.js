@@ -11,6 +11,7 @@ const StoreAudit = r => require.ensure([], () => r(require('../../components/Sto
 const AgentList = r => require.ensure([], () => r(require('../../components/AgentList')), 'group-record');
 const AgentAdd = r => require.ensure([], () => r(require('../../components/AgentAdd')), 'group-record');
 const CompanyProfit = r => require.ensure([], () => r(require('../../components/CompanyProfit')), 'group-record');
+const CompanyProfitDet = r => require.ensure([], () => r(require('../../components/CompanyProfitDet')), 'group-record');
 const FirProfit = r => require.ensure([], () => r(require('../../components/FirProfit')), 'group-record');
 const SecProfit = r => require.ensure([], () => r(require('../../components/SecProfit')), 'group-record');
 const PassAdd = r => require.ensure([], () => r(require('../../components/PassAdd')), 'group-record');
@@ -18,6 +19,7 @@ const PassList = r => require.ensure([], () => r(require('../../components/PassL
 const ProductAdd = r => require.ensure([], () => r(require('../../components/ProductAdd')), 'group-record');
 const ProductList = r => require.ensure([], () => r(require('../../components/ProductList')), 'group-record');
 const Issue = r => require.ensure([], () => r(require('../../components/Issue')), 'group-record');
+const Issue1 = r => require.ensure([], () => r(require('../../components/Issue1')), 'group-record');
 const IssueSuccess = r => require.ensure([], () => r(require('../../components/IssueSuccess')), 'group-record');
 const MoneyList = r => require.ensure([], () => r(require('../../components/MoneyList')), 'group-record');
 
@@ -62,6 +64,11 @@ export default {
       component: CompanyProfit
     },
     {
+      path: 'companyProfitDet',
+      name: 'CompanyProfitDet',
+      component: CompanyProfitDet
+    },
+    {
       path: 'firProfit',
       name: 'FirProfit',
       component: FirProfit
@@ -95,6 +102,11 @@ export default {
       path: 'issue',
       name: 'Issue',
       component: Issue
+    },
+    {
+      path: 'issue1',
+      name: 'Issue1',
+      component: Issue1
     },
     {
       path: 'issueSuccess',

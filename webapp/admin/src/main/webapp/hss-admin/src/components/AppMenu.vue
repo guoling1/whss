@@ -40,8 +40,8 @@
           </a>
           <ul class="treeview-menu">
             <li class="active"><router-link to="/admin/record/deal"><i class="fa fa-link"></i> <span>交易查询</span> </router-link></li>
-            <!--<li><router-link to="/admin/record/withdrawal"><i class="fa fa-link"></i> <span>提现查询</span> </router-link></li>
-            <li><router-link to="/admin/record/moneyList"><i class="fa fa-link"></i> <span>打款查询</span> </router-link></li>-->
+            <li><router-link to="/admin/record/withdrawal"><i class="fa fa-link"></i> <span>提现查询</span> </router-link></li>
+            <!--<li><router-link to="/admin/record/moneyList"><i class="fa fa-link"></i> <span>打款查询</span> </router-link></li>-->
           </ul>
         </li>
         <li class="treeview">
@@ -58,8 +58,8 @@
             </span>
           </a>
           <ul class="treeview-menu">
-            <li><router-link to="/admin/record/AgentList"><i class="fa fa-link"></i> <span>代理商列表</span> </router-link></li>
-            <li><router-link to="/admin/record/AgentAdd"><i class="fa fa-link"></i> <span>新增代理商</span> </router-link></li>
+            <li><router-link to="/admin/record/agentList"><i class="fa fa-link"></i> <span>代理商列表</span> </router-link></li>
+            <li><router-link to="/admin/record/agentAdd"><i class="fa fa-link"></i> <span>新增代理商</span> </router-link></li>
           </ul>
         </li>
         <li class="treeview">
@@ -69,14 +69,14 @@
             </span>
           </a>
           <ul class="treeview-menu">
-            <li><router-link to="/admin/record/CompanyProfit"><i class="fa fa-link"></i> <span>公司分润</span> </router-link></li>
-            <li><router-link to="/admin/record/FirProfit"><i class="fa fa-link"></i> <span>一级代理商分润</span> </router-link></li>
-            <li><router-link to="/admin/record/SecProfit"><i class="fa fa-link"></i> <span>二级代理商分润</span> </router-link></li>
+            <li><router-link to="/admin/record/companyProfit"><i class="fa fa-link"></i> <span>公司分润</span> </router-link></li>
+            <li><router-link to="/admin/record/firProfit"><i class="fa fa-link"></i> <span>一级代理商分润</span> </router-link></li>
+            <li><router-link to="/admin/record/secProfit"><i class="fa fa-link"></i> <span>二级代理商分润</span> </router-link></li>
           </ul>
         </li>
-        <li class="treeview">
+        <!--<li class="treeview">
           <a href="#"><i class="fa fa-link"></i><span>设备管理</span></a>
-        </li>
+        </li>-->
         <li class="treeview">
           <a href="#"><i class="fa fa-link"></i> <span>产品管理</span>
             <span class="pull-right-container">
@@ -99,7 +99,15 @@
             <li><router-link to="/admin/record/passAdd"><i class="fa fa-link"></i> <span>新增通道</span> </router-link></li>
         </li>
         <li class="treeview">
-          <router-link to="/admin/record/issue"><i class="fa fa-link"></i><span>分配二维码</span></router-link>
+          <a href="#"><i class="fa fa-link"></i> <span>分配二维码</span>
+            <span class="pull-right-container">
+              <i class="fa fa-angle-left pull-right"></i>
+            </span>
+          </a>
+          <ul class="treeview-menu">
+            <li><router-link to="/admin/record/issue1"><i class="fa fa-link"></i> <span>按个数分配</span> </router-link></li>
+            <li><router-link to="/admin/record/issue"><i class="fa fa-link"></i> <span>按码段分配</span> </router-link></li>
+          </ul>
         </li>
       </ul>
       <!-- /.sidebar-menu -->
