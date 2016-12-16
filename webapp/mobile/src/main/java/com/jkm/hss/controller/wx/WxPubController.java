@@ -311,17 +311,6 @@ public class WxPubController extends BaseController {
         pageModel.setRecords(orderList);
         return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", pageModel);
     }
-    /**
-     * 余额明细详情
-     *
-     * @return
-     */
-    @ResponseBody
-    @RequestMapping(value = "getChargeRecordDetail", method = RequestMethod.POST)
-    public CommonResponse getChargeRecordDetail(final HttpServletRequest request, final HttpServletResponse response, final String orderId) {
-        Optional<OrderRecord> orderRecord = orderRecordService.selectOrderId(orderId);
-        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", orderRecord.get());
-    }
 
     /**
      * 登录
@@ -475,7 +464,7 @@ public class WxPubController extends BaseController {
             return CommonResponse.simpleResponse(-1, "缺失商户名称");
         }
         int compareResult = (new BigDecimal(totalFee)).compareTo(new BigDecimal("5"));
-        if(compareResult!=1){
+        if(compareResult<0){
             return CommonResponse.simpleResponse(-1, "支付金额至少5.00元");
         }
         tradeRequest.setSubMerName(merchantInfo.get().getMerchantName());

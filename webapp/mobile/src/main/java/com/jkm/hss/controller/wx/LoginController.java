@@ -8,15 +8,16 @@ import com.jkm.hss.dealer.service.ShallProfitDetailService;
 import com.jkm.hss.helper.ApplicationConsts;
 import com.jkm.hss.merchant.entity.AccountInfo;
 import com.jkm.hss.merchant.entity.MerchantInfo;
+import com.jkm.hss.merchant.entity.OrderRecord;
 import com.jkm.hss.merchant.entity.UserInfo;
 import com.jkm.hss.merchant.enums.EnumMerchantStatus;
+import com.jkm.hss.merchant.enums.EnumSettlePeriodType;
+import com.jkm.hss.merchant.enums.EnumSettleStatus;
+import com.jkm.hss.merchant.enums.EnumTradeType;
 import com.jkm.hss.merchant.helper.MerchantSupport;
 import com.jkm.hss.merchant.helper.WxConstants;
 import com.jkm.hss.merchant.helper.WxPubUtil;
-import com.jkm.hss.merchant.service.AccountInfoService;
-import com.jkm.hss.merchant.service.MerchantInfoCheckRecordService;
-import com.jkm.hss.merchant.service.MerchantInfoService;
-import com.jkm.hss.merchant.service.UserInfoService;
+import com.jkm.hss.merchant.service.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +34,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.URLDecoder;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.Map;
 
 /**
@@ -59,6 +61,8 @@ public class LoginController extends BaseController {
 
     @Autowired
     private ShallProfitDetailService shallProfitDetailService;
+    @Autowired
+    private OrderRecordService orderRecordService;
 
     /**
      * 登录页面
@@ -595,6 +599,106 @@ public class LoginController extends BaseController {
             }else{
                 return url;
             }
+        }
+    }
+
+
+    private  Pair<String,String> payOf(int payWay,String status) {
+        String result="";
+        String message = "";
+        if(payWay==0){//交易
+            if("N".equals(status)){
+                result="N";
+                message="待支付";
+            }
+            if("H".equals(status)||"A".equals(status)||"E".equals(status)){
+                result="H";
+                message="支付中";
+            }
+            if("S".equals(status)){
+                result="S";
+                message="支付成功";
+            }
+            if("F".equals(status)){
+                result="S";
+                message="支付失败";
+            }
+        }
+        if(payWay==1){//提现
+            if("N".equals(status)){
+                result="N";
+                message="待审核";
+            }
+            if("H".equals(status)||"W".equals(status)||"E".equals(status)||"A".equals(status)){
+                result="H";
+                message="审核中";
+            }
+            if("S".equals(status)){
+                result="S";
+                message="提现成功";
+            }
+            if("F".equals(status)||"D".equals(status)){
+                result="F";
+                message="提现失败";
+            }
+            if("O".equals(status)){
+                result="O";
+                message="审核未通过";
+            }
+        }
+
+        return Pair.of(result,message);
+    }
+
+    /**
+     * 交易单详情
+     * @param request
+     * @param response
+     * @param model
+     * @param id
+     * @return
+     * @throws IOException
+     */
+    @RequestMapping(value = "/tradeDetail/{id}", method = RequestMethod.GET)
+    public String tradeDetail(final HttpServletRequest request, final HttpServletResponse response,final Model model,@PathVariable("id") long id) throws IOException {
+        Optional<OrderRecord> orderRecordOptional = orderRecordService.selectByPrimaryKey(id);
+        if(!orderRecordOptional.isPresent()){
+            return "/500";
+        }else{
+            DecimalFormat decimalFormat=new DecimalFormat("0.00");//构造方法的字符格式这里如果小数不足2位,会以0补足.
+            OrderRecord orderRecord = orderRecordOptional.get();
+            model.addAttribute("totalMoney", decimalFormat.format(orderRecord.getTotalFee()));
+            model.addAttribute("realMoney",decimalFormat.format(orderRecord.getRealFee()));
+            SimpleDateFormat time=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            model.addAttribute("createTime",time.format(orderRecord.getCreateTime()));
+            Pair<String,String> pair = payOf(0,orderRecord.getPayResult());
+            model.addAttribute("status",pair.getRight());
+            if(orderRecord.getPayChannel()==101||orderRecord.getPayChannel()==102){
+                model.addAttribute("payWay","扫码支付");
+            }
+            if(orderRecord.getPayChannel()==103){
+                model.addAttribute("payWay","快捷支付");
+            }
+            Optional<MerchantInfo> merchantInfoOptional = merchantInfoService.selectById(orderRecord.getMerchantId());
+            if(merchantInfoOptional.isPresent()){
+                model.addAttribute("merchantName",merchantInfoOptional.get().getMerchantName());
+            }else{
+                model.addAttribute("merchantName","");
+            }
+            model.addAttribute("orderId",orderRecord.getOrderId());
+            model.addAttribute("outTradeNo",orderRecord.getOutTradeNo());
+
+            Optional<OrderRecord> depositorRecord = orderRecordService.selectOrderId(orderRecord.getOrderId(), EnumTradeType.DEPOSITOR.getId());
+            if(depositorRecord.isPresent()){
+                if(depositorRecord.get().getSettleStatus()== EnumSettleStatus.SETTLE.getId()){
+                    model.addAttribute("settleStatus","已结算");
+                }else{
+                    model.addAttribute("settleStatus","未结算");
+                }
+            }else{
+                model.addAttribute("settleStatus","未结算");
+            }
+            return "/tradeRecordDetail";
         }
     }
 
