@@ -11,7 +11,7 @@ export default [
     redirect: '/admin/record'
   },
   {
-    path: '/login',
+    path: '/admin/login',
     component: Login
   },
   deal
