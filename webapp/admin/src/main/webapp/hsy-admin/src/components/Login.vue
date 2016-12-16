@@ -44,7 +44,7 @@
           password: this.$data.password
         }).then(function () {
           this.$store.commit('LOGIN_HIDE');
-          this.$router.push({path: '/record/deal'})
+          this.$router.push({path: '/admin/record/deal'})
         }, function (err) {
           console.log(err);
         });

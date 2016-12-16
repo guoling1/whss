@@ -2,13 +2,13 @@
   <div id="storeList">
     <h1>商户列表</h1>
 
-    <!--<div class="search" id="search">
-      <label for="name">商户编号：</label>
-      <input type="text" name="name" value="">
+    <div class="search" id="search">
+      <!--<label for="name">商户编号：</label>
+      <input type="text" name="name" value="">-->
       <label for="name">商户名称：</label>
-      <input type="text" name="name" value="">
+      <input type="text" name="name" value="" v-model="merchantName">
       <div class="btn btn-primary" @click="search">筛选</div>
-    </div>-->
+    </div>
     <div class="col-xs-12">
       <div class="box">
         <div class="box-body">
@@ -80,6 +80,7 @@
     name: 'storeList',
     data () {
       return {
+        merchantName:'',
         stores: [],
         msg:[],
         pageNo:1,
@@ -93,7 +94,8 @@
 
       this.$http.post('/admin/query/getAll',{
         pageNo:this.$data.pageNo,
-        pageSize:this.$data.pageSize
+        pageSize:this.$data.pageSize,
+        merchantName:this.$data.merchantName
       }).then(function (res) {
         this.$data.stores = this.$data.msg  = res.data.records;
         this.$data.total = res.data.totalPage;
@@ -153,7 +155,8 @@
         this.$data.pageNo = n;
         this.$http.post('/admin/query/getAll',{
           pageNo:this.$data.pageNo,
-          pageSize:this.$data.pageSize
+          pageSize:this.$data.pageSize,
+          merchantName:this.$data.merchantName
         }).then(function (res) {
           this.$data.stores = this.$data.msg  = res.data.records;
           this.$data.total = res.data.totalPage;
