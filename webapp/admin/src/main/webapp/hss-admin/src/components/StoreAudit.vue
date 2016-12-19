@@ -37,38 +37,41 @@
       <div class="cardNum">
         开户手机号：{{msg.reserveMobile}}
       </div>
-      <div v-if="status==4">
+      <!--<div v-if="status==4">
         未通过原因：不合格
-      </div>
+      </div>-->
     </div>
     <div class="right">
       <div class="firID">
         身份证正面:
         <div class="img">
           <!--<div @click="detail()">点击查看</div>-->
-          <img :src="msg.identityFacePic" alt=""/>
+          <img @click="changeBig()" :src="msg.identityFacePic" alt=""/>
         </div>
       </div>
       <div class="lastID">
         身份证反面:
         <div class="img">
           <!--<div @click="detail()">点击查看</div>-->
-          <img :src="msg.identityOppositePic" alt=""/>
+          <img @click="changeBig()" :src="msg.identityOppositePic" alt=""/>
         </div>
       </div>
       <div class="handID">
         手持身份证:
         <div class="img">
           <!--<div @click="detail()">点击查看</div>-->
-          <img :src="msg.identityHandPic" alt=""/>
+          <img @click="changeBig()" :src="msg.identityHandPic" alt=""/>
         </div>
       </div>
       <div class="handCard">
         手持结算卡:
         <div class="img">
           <!--<div @click="detail()">点击查看</div>-->
-          <img :src="msg.bankHandPic" alt=""/>
+          <img @click="changeBig()" :src="msg.bankHandPic" alt=""/>
         </div>
+      </div>
+      <div class="mask" id="mask" style="display: none" @click="isNo()">
+        <img src="" alt="">
       </div>
     </div>
     <div class="view" v-if="isShow">
@@ -105,8 +108,7 @@
         },
         reason:'',
         status:'',
-        isShow:true,
-        isClick:false
+        isShow:true
       }
     },
     created: function () {
@@ -151,8 +153,16 @@
             })
           })
       },
-      detail: function () {
-        this.$data.isClick=true;
+      changeBig: function (e) {
+        e = e||window.event;
+        var obj = e.srcElement||e.target;
+        var mask = document.getElementById('mask'),
+          img = mask.getElementsByTagName('img')[0];
+        img.src = obj.src;
+        mask.style.display= 'block'
+      },
+      isNo: function () {
+        document.getElementById('mask').style.display='none'
       }
     },
     filters: {
@@ -197,7 +207,21 @@
   a {
     color: #42b983;
   }
+  .mask{
+    background: rgba(0,0,0,0.8);
+    z-index: 1100;
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    top:0;
+    left: 0;
 
+    img{
+      display: inherit;
+      height: 100%;
+      margin: 0 auto;
+    }
+  }
   .storeAudit {
     float: right;
     width: 80%;
@@ -232,6 +256,12 @@
           width: 100%;
           height: 100%;
         }
+  .big{
+    position: fixed;
+    top:10%;
+    left:10%;
+    z-index: 1100;
+  }
         div{
           line-height: 150px;
           text-align: center;

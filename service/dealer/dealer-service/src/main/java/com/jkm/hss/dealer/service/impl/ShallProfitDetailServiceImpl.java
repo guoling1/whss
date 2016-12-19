@@ -1,6 +1,7 @@
 package com.jkm.hss.dealer.service.impl;
 
 
+import com.fasterxml.jackson.databind.ObjectReader;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.jkm.base.common.util.DateFormatUtil;
@@ -133,6 +134,7 @@ public class ShallProfitDetailServiceImpl implements ShallProfitDetailService{
             final BigDecimal productMoney = dealerChannelRate.getDealerWithdrawFee().subtract(productChannelDetail.getProductWithdrawFee());
             final BigDecimal channelMoney = productChannelDetail.getProductWithdrawFee().subtract(basicChannel.getBasicWithdrawFee());
             final ShallProfitDetail shallProfitDetail = new ShallProfitDetail();
+            shallProfitDetail.setMerchantId(orderRecord.getMerchantId());
             shallProfitDetail.setPaymentSn(orderRecord.getOrderId());
             shallProfitDetail.setWaitShallAmount(withdrawMoney);
             shallProfitDetail.setWaitShallOriginAmount(withdrawMoney);
@@ -166,7 +168,10 @@ public class ShallProfitDetailServiceImpl implements ShallProfitDetailService{
             final BigDecimal productMoney = firstDealerChannelRate.getDealerWithdrawFee().subtract(productChannelDetail.getProductWithdrawFee());
             final BigDecimal channelMoney = productChannelDetail.getProductWithdrawFee().subtract(basicChannel.getBasicWithdrawFee());
             final ShallProfitDetail shallProfitDetail = new ShallProfitDetail();
+            shallProfitDetail.setMerchantId(orderRecord.getMerchantId());
             shallProfitDetail.setPaymentSn(orderRecord.getOrderId());
+            shallProfitDetail.setChannelType(orderRecord.getPayChannel());
+            shallProfitDetail.setTotalFee(orderRecord.getTotalFee());
             shallProfitDetail.setWaitShallAmount(withdrawMoney);
             shallProfitDetail.setWaitShallOriginAmount(withdrawMoney);
             shallProfitDetail.setIsDirect(0);

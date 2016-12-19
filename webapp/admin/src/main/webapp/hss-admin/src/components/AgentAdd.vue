@@ -197,6 +197,7 @@
             this.$store.commit('MESSAGE_ACCORD_SHOW', {
               text: "添加成功"
             })
+            this.$router.push('/admin/record/agentList')
           }, function (err) {
             this.$store.commit('MESSAGE_ACCORD_SHOW', {
               text: err.statusMessage
@@ -234,6 +235,7 @@
             this.$store.commit('MESSAGE_ACCORD_SHOW', {
               text: "修改成功"
             })
+            this.$router.push('/admin/record/agentList')
           }, function (err) {
             this.$store.commit('MESSAGE_ACCORD_SHOW', {
               text: err.statusMessage
