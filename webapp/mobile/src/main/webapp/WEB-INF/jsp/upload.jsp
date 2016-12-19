@@ -15,7 +15,7 @@
 </head>
 <body>
 
-<div id="upload">
+<div id="upload" class="upload">
   <div class="process">
     <div class="steps">
       <span class="right"></span>填写资料

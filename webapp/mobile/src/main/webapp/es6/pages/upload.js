@@ -9,7 +9,7 @@ const message = _require('message');
 const http = _require('http');
 // 引入浏览器特性处理
 const browser = _require('browser');
-browser.elastic_touch('main');
+browser.elastic_touch('upload');
 // 引入wx_upload
 const Upload = _require('upload');
 // 定义变量
