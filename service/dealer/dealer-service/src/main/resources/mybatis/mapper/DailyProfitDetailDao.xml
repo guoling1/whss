@@ -98,4 +98,8 @@
         SELECT * FROM tb_daily_profit_detail
         WHERE id = #{id}
     </select>
+    <select id="selectBySecondDealerIdAndTypeAndProfitDate"
+            resultType="com.jkm.hss.dealer.entity.DailyProfitDetail">
+        SELECT * FROM tb_daily_profit_detail WHERE second_dealer_id = #{dealerId} AND shall_money_type = #{type} AND statistics_date = #{profitDate}
+    </select>
 </mapper>

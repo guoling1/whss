@@ -99,4 +99,6 @@ public interface DailyProfitDetailDao {
     DailyProfitDetail selectById(long id);
 
 
+    DailyProfitDetail selectBySecondDealerIdAndTypeAndProfitDate(@Param("dealerId") long dealerId,
+                                                                 @Param("type") int type, @Param("profitDate")String profitDate);
 }

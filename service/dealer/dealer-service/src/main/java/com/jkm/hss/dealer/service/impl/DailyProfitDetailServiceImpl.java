@@ -171,6 +171,30 @@ public class DailyProfitDetailServiceImpl implements DailyProfitDetailService {
                 dailyProfitDetail.setWithdrawMoney(withdrawMoney);
                 dailyProfitDetail.setTotalMoney(collectMoney.add(withdrawMoney));
                 this.dailyProfitDetailDao.init(dailyProfitDetail);
+                //创建该二级代理的每日收益记录
+                final DailyProfitDetail secondRecord = this.dailyProfitDetailDao.selectBySecondDealerIdAndTypeAndProfitDate(dealer.getId(),EnumShallMoneyType.TOSECONDSELF.getId(),profitDate);
+                if (secondRecord == null){
+                    //不存在.新建
+                    final DailyProfitDetail secondDailyProfitDetail = new DailyProfitDetail();
+                    secondDailyProfitDetail.setShallMoneyType(EnumShallMoneyType.TOSECONDSELF.getId());
+                    secondDailyProfitDetail.setMerchantId(0);
+                    secondDailyProfitDetail.setMerchantName("");
+                    secondDailyProfitDetail.setSecondDealerId(dealer.getId());
+                    secondDailyProfitDetail.setDealerName(dealer.getProxyName());
+                    secondDailyProfitDetail.setFirstDealerId(firstDealer.getId());
+                    secondDailyProfitDetail.setFirstDealerName(firstDealer.getProxyName());
+                    secondDailyProfitDetail.setStatisticsDate(profitDate);
+                    secondDailyProfitDetail.setCollectMoney(collectMoney);
+                    secondDailyProfitDetail.setWithdrawMoney(withdrawMoney);
+                    secondDailyProfitDetail.setTotalMoney(collectMoney.add(withdrawMoney));
+                    this.dailyProfitDetailDao.init(secondDailyProfitDetail);
+                }else{
+                    //存在, 累加
+                    secondRecord.setCollectMoney(collectMoney.add(secondRecord.getCollectMoney()));
+                    secondRecord.setWithdrawMoney(withdrawMoney.add(secondRecord.getWithdrawMoney()));
+                    secondRecord.setTotalMoney(collectMoney.add(withdrawMoney).add(secondRecord.getTotalMoney()));
+                    this.dailyProfitDetailDao.update(secondRecord);
+                }
             }
         }
         //每个二级代理每天的分润
