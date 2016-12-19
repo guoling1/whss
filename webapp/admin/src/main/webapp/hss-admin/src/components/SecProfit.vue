@@ -46,9 +46,9 @@
                   <td>{{index+1}}</td>
                   <td>{{record.dealerName}}</td>
                   <td>{{record.statisticsDate}}</td>
-                  <td>{{record.collectMoney}}</td>
-                  <td>{{record.withdrawMoney}}</td>
-                  <td>{{record.totalMoney}}</td>
+                  <td style="text-align: right">{{record.collectMoney|toFix}}</td>
+                  <td style="text-align: right">{{record.withdrawMoney|toFix}}</td>
+                  <td style="text-align: right">{{record.totalMoney|toFix}}</td>
                   <td><route-link to="/admin/record/companyProfitDet" class="btn btn-success">查看明细</route-link></td>
                 </tr>
                 </tbody>
@@ -259,6 +259,11 @@
     computed: {
       $$records: function () {
         return this.$data.records;
+      }
+    },
+    filters: {
+      toFix: function (val) {
+        return parseFloat(val).toFixed(2)
       }
     }
   }

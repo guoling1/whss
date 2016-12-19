@@ -25,7 +25,7 @@
           <tr v-for="(product,index) in $$products">
             <td>{{product.channelName}}</td>
             <td><input type="text" v-model="$$channels[index].productTradeRate">%</td>
-            <td>{{product.basicBalanceType}}</td>
+            <td>T1</td>
             <td><input type="text" v-model="$$channels[index].productWithdrawFee">元/笔</td>
             <td><input type="text" v-model="$$channels[index].productMerchantPayRate">%</td>
             <td><input type="text" v-model="$$channels[index].productMerchantWithdrawFee">元/笔</td>

@@ -43,7 +43,8 @@
             </div>
             <!--<div class="pay">
               <label for="">
-              订单状态：</label>
+              订单状态：
+              </label>
               <input type="radio" name="pay" value="0" v-model="$$data.status">已删除
               <input type="radio" name="pay" value="1" v-model="$$data.status">正常
 
@@ -51,9 +52,8 @@
             <div class="assount">
               <label for="">
               结算状态：</label>
-              <input type="radio" name="payResult" value="N" v-model="$$data.payResult">未结算
-              <input type="radio" name="payResult" value="S" v-model="$$data.payResult">已结算
-              <input type="radio" name="payResult" value="F" v-model="$$data.payResult">失败
+              <input type="radio" name="settleStatus" value="0" v-model="$$data.settleStatus">未结算
+              <input type="radio" name="settleStatus" value="1" v-model="$$data.settleStatus">已结算
               </label>
             </div>
             <div class="fun">
@@ -108,6 +108,8 @@
                   </th>
                   <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">结算状态
                   </th>
+                  <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">错误信息
+                  </th>
                   <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">业务
                   </th>
                   <!--<th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">详情-->
@@ -121,9 +123,10 @@
                   <td>{{order.merchantId}}</td>
                   <td>{{order.subName}}</td>
                   <td>{{order.mdMobile}}</td>
-                  <td>{{order.totalFee}}</td>
-                  <td>{{order.status|changeStatus}}</td>
+                  <td style="text-align: right">{{order.totalFee|toFix}}</td>
                   <td>{{order.payResult|changePayResult}}</td>
+                  <td>{{order.settleStatus|changeStatus}}</td>
+                  <td>{{order.errorMessage}}</td>
                   <td>{{order.payChannel|changeChannel}}</td>
                 </tr>
                 </tbody>
@@ -397,18 +400,20 @@
     filters: {
       changeStatus: function (val) {
         if(val == 0){
-          return '正常'
+          return '未结算'
         }else if(val == 1){
-          return '已删除'
+          return '已结算'
         }
       },
       changePayResult: function (val) {
-        if(val == 'S'){
-          return '已结算'
-        }else if(val == 'N'){
-          return '未结算'
+        if(val == 'N'){
+          return '待支付'
         }else if(val =='F'){
-          return '失败'
+          return '支付失败'
+        }else if(val =='H'){
+          return '支付成功'
+        }else if(val =='N'){
+          return '支付中'
         }
       },
       changeChannel: function (val) {
@@ -433,6 +438,9 @@
           var second=val.getSeconds();
           return year+"-"+month+"-"+date+" "+hour+":"+minute+":"+second;
         }
+      },
+      toFix: function (val) {
+        return parseFloat(val).toFixed(2);
       }
     }
   }

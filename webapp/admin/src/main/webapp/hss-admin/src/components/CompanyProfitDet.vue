@@ -57,9 +57,9 @@
                   <td>{{order.mdMobile}}</td>
                   <td>{{index+1}}</td>
                   <td>{{order.updateTime|changeTime}}</td>
-                  <td>{{order.merchantId}}</td>
-                  <td>{{order.subName}}</td>
-                  <td>{{order.mdMobile}}</td>
+                  <td style="text-align: right">{{order.merchantId|toFix}}</td>
+                  <td style="text-align: right">{{order.subName|toFix}}</td>
+                  <td style="text-align: right">{{order.mdMobile|toFix}}</td>
                 </tr>
                 </tbody>
               </table>

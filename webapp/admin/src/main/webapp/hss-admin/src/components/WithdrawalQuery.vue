@@ -84,6 +84,8 @@
                   </th>
                   <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">状态
                   </th>
+                  <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">备注
+                  </th>
                   <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">操作
                   </th>
                 </tr>
@@ -101,6 +103,8 @@
                   <td>{{record.payTime|changeTime}}</td>
                   <td>{{record.payChannel|changeChannel}}</td>
                   <td>{{record.payResult|changeStatus}}</td>
+                  <td v-if="record.payResult=='O'">{{record.errorMessage||changeMes}}</td>
+                  <td v-if="record.payResult!='O'"></td>
                   <td>
                     <p class="btn btn-success" v-if="record.payResult=='N'" @click="audit(index)">审核</p>
                     <p class="btn btn-success" v-if="record.payResult=='F'" @click="audit(index)">结果审核</p>
@@ -167,95 +171,36 @@
 </template>
 
 <script lang="babel">
-export default {
-  name: 'withDrawal',
-  data () {
-    return {
-      msg:{
-        page:1,//页数
-        size:10,//条数
-        name:'',
-        orderId:'',//流水号
-        bankNoShort:'',
-        payResult:'',//支付状态
-        merchantId:'',
-        mobile:'',
-        startDate:'',
-        endDate:'',
-        payStartDate:'',
-        payEndDate:''
-      },
-      total:'',
-      records:[],
-      isShow:false,
-      index:0,
-      remark:''
-    }
-  },
-  created:function () {
-    this.$http.post('/admin/withdraw/withdrawListByContions',this.$data.msg)
-      .then(function (res) {
-        this.$data.records = res.data.records;
-        this.$data.total = res.data.totalPage;
-        var str='',
-          page=document.getElementById('page');
-        str+='<li class="paginate_button previous" id="example2_previous"><a href="#" aria-controls="example2" data-dt-idx="0" tabindex="0">上一页</a></li>'
-        for (var i=1; i<=this.$data.total;i++){
-          if(i==this.$data.page){
-            str+='<li class="paginate_button active"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">'+i+'</a></li></li>';
-            continue;
-          }
-          str+='<li class="paginate_button"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">'+i+'</a></li></li>'
-        }
-        str+='<li class="paginate_button next" id="example2_next"><a href="#" aria-controls="example2" data-dt-idx="7" tabindex="0">下一页</a></li>'
-        page.innerHTML=str;
-        var aLi = page.getElementsByTagName('li');
-        for(var i=0;i<aLi.length;i++){
-          if(this.$data.msg.page<6&&i>10){
-            aLi[i].style.display='none'
-          }else if(this.$data.msg.page>(this.$data.total-6)&&i<(this.$data.total-11)){
-            aLi[i].style.display='none'
-          }else if((i!=0&&i<this.$data.msg.page-5)||(i!=this.$data.total+1&&i>this.$data.msg.page+4)){
-            aLi[i].style.display='none'
-          }
-        }
-      },function (err) {
-        console.log(err)
-      })
-  },
-  methods: {
-    //分页器
-    bindEvent: function (e) {
-      e = e||window.event;
-      var tar = e.target||e.srcElement,
-        tarInn = tar.innerHTML,
-        n = this.$data.msg.page;
-      if(tarInn == '上一页'){
-        if(n == 1){
-          tar.parentNode.className+=' disabled'
-          return;
-        }
-        n--;
+  export default {
+    name: 'withDrawal',
+    data () {
+      return {
+        msg:{
+          page:1,//页数
+          size:10,//条数
+          name:'',
+          orderId:'',//流水号
+          bankNoShort:'',
+          payResult:'',//支付状态
+          merchantId:'',
+          mobile:'',
+          startDate:'',
+          endDate:'',
+          payStartDate:'',
+          payEndDate:''
+        },
+        total:'',
+        records:[],
+        isShow:false,
+        index:0,
+        remark:''
       }
-      if(tarInn == '下一页'){
-        if(n == this.$data.total){
-          tar.parentNode.className+=' disabled'
-          return;
-        }
-        n++;
-      }
-      if(Number(tarInn)){
-        if(n == Number(tarInn)){
-          return;
-        }
-        tar.parentNode.className+=' active'
-        n = Number(tarInn);
-      }
-      this.$data.msg.page = n;
+    },
+    created:function () {
       this.$http.post('/admin/withdraw/withdrawListByContions',this.$data.msg)
         .then(function (res) {
           this.$data.records = res.data.records;
-          this.$data.total=res.data.totalPage;
+          this.$data.total = res.data.totalPage;
           var str='',
             page=document.getElementById('page');
           str+='<li class="paginate_button previous" id="example2_previous"><a href="#" aria-controls="example2" data-dt-idx="0" tabindex="0">上一页</a></li>'
@@ -282,193 +227,252 @@ export default {
           console.log(err)
         })
     },
-    //筛选
-    lookup: function () {
-      this.$http.post('/admin/withdraw/withdrawListByContions',this.$data.msg)
-        .then(function (res) {
-          this.$data.records = res.data.records;
-          this.$data.total=res.data.totalPage;
-          var str='',
-            page=document.getElementById('page');
-          str+='<li class="paginate_button previous disabled" id="example2_previous"><a href="#" aria-controls="example2" data-dt-idx="0" tabindex="0">上一页</a></li>'
-          for (var i=1; i<=this.$data.total;i++){
-            if(i==this.$data.page){
-              str+='<li class="paginate_button active"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">'+i+'</a></li></li>';
-              continue;
-            }
-            str+='<li class="paginate_button"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">'+i+'</a></li></li>'
+    methods: {
+      //分页器
+      bindEvent: function (e) {
+        e = e||window.event;
+        var tar = e.target||e.srcElement,
+          tarInn = tar.innerHTML,
+          n = this.$data.msg.page;
+        if(tarInn == '上一页'){
+          if(n == 1){
+            tar.parentNode.className+=' disabled'
+            return;
           }
-          str+='<li class="paginate_button next" id="example2_next"><a href="#" aria-controls="example2" data-dt-idx="7" tabindex="0">下一页</a></li>'
-          page.innerHTML=str;
-          var aLi = page.getElementsByTagName('li');
-          for(var i=0;i<aLi.length;i++){
-            if(this.$data.msg.page<6&&i>10){
-              aLi[i].style.display='none'
-            }else if(this.$data.msg.page>(this.$data.total-6)&&i<(this.$data.total-11)){
-              aLi[i].style.display='none'
-            }else if((i!=0&&i<this.$data.msg.page-5)||(i!=this.$data.total+1&&i>this.$data.msg.page+4)){
-              aLi[i].style.display='none'
-            }
+          n--;
+        }
+        if(tarInn == '下一页'){
+          if(n == this.$data.total){
+            tar.parentNode.className+=' disabled'
+            return;
           }
-        },function (err) {
-          console.log(err)
-        })
-    },
-    audit: function (index) {
+          n++;
+        }
+        if(Number(tarInn)){
+          if(n == Number(tarInn)){
+            return;
+          }
+          tar.parentNode.className+=' active'
+          n = Number(tarInn);
+        }
+        this.$data.msg.page = n;
+        this.$http.post('/admin/withdraw/withdrawListByContions',this.$data.msg)
+          .then(function (res) {
+            this.$data.records = res.data.records;
+            this.$data.total=res.data.totalPage;
+            var str='',
+              page=document.getElementById('page');
+            str+='<li class="paginate_button previous" id="example2_previous"><a href="#" aria-controls="example2" data-dt-idx="0" tabindex="0">上一页</a></li>'
+            for (var i=1; i<=this.$data.total;i++){
+              if(i==this.$data.page){
+                str+='<li class="paginate_button active"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">'+i+'</a></li></li>';
+                continue;
+              }
+              str+='<li class="paginate_button"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">'+i+'</a></li></li>'
+            }
+            str+='<li class="paginate_button next" id="example2_next"><a href="#" aria-controls="example2" data-dt-idx="7" tabindex="0">下一页</a></li>'
+            page.innerHTML=str;
+            var aLi = page.getElementsByTagName('li');
+            for(var i=0;i<aLi.length;i++){
+              if(this.$data.msg.page<6&&i>10){
+                aLi[i].style.display='none'
+              }else if(this.$data.msg.page>(this.$data.total-6)&&i<(this.$data.total-11)){
+                aLi[i].style.display='none'
+              }else if((i!=0&&i<this.$data.msg.page-5)||(i!=this.$data.total+1&&i>this.$data.msg.page+4)){
+                aLi[i].style.display='none'
+              }
+            }
+          },function (err) {
+            console.log(err)
+          })
+      },
+      //筛选
+      lookup: function () {
+        this.$http.post('/admin/withdraw/withdrawListByContions',this.$data.msg)
+          .then(function (res) {
+            this.$data.records = res.data.records;
+            this.$data.total=res.data.totalPage;
+            var str='',
+              page=document.getElementById('page');
+            str+='<li class="paginate_button previous disabled" id="example2_previous"><a href="#" aria-controls="example2" data-dt-idx="0" tabindex="0">上一页</a></li>'
+            for (var i=1; i<=this.$data.total;i++){
+              if(i==this.$data.page){
+                str+='<li class="paginate_button active"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">'+i+'</a></li></li>';
+                continue;
+              }
+              str+='<li class="paginate_button"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">'+i+'</a></li></li>'
+            }
+            str+='<li class="paginate_button next" id="example2_next"><a href="#" aria-controls="example2" data-dt-idx="7" tabindex="0">下一页</a></li>'
+            page.innerHTML=str;
+            var aLi = page.getElementsByTagName('li');
+            for(var i=0;i<aLi.length;i++){
+              if(this.$data.msg.page<6&&i>10){
+                aLi[i].style.display='none'
+              }else if(this.$data.msg.page>(this.$data.total-6)&&i<(this.$data.total-11)){
+                aLi[i].style.display='none'
+              }else if((i!=0&&i<this.$data.msg.page-5)||(i!=this.$data.total+1&&i>this.$data.msg.page+4)){
+                aLi[i].style.display='none'
+              }
+            }
+          },function (err) {
+            console.log(err)
+          })
+      },
+      audit: function (index) {
         this.$data.isShow=!this.$data.isShow
         this.$data.index = index;
-    },
-    pass: function () {
-      this.$http.post('/admin/withdraw/checkWithdraw',{
-        id:this.$data.records[this.$data.index].id
-      }).then(function (res) {
-        this.$data.isShow=!this.$data.isShow;
-        location.reload()
-      },function (err) {
-        console.log(err)
-        this.$store.commit('MESSAGE_ACCORD_SHOW', {
-          text: err.statusMessage
+      },
+      pass: function () {
+        this.$http.post('/admin/withdraw/checkWithdraw',{
+          id:this.$data.records[this.$data.index].id
+        }).then(function (res) {
+          this.$data.isShow=!this.$data.isShow;
+          location.reload()
+        },function (err) {
+          console.log(err)
+          this.$store.commit('MESSAGE_ACCORD_SHOW', {
+            text: err.statusMessage
+          })
+          this.$data.isShow=!this.$data.isShow;
         })
-        this.$data.isShow=!this.$data.isShow;
-      })
-    },
-    unPass: function () {
-      this.$http.post('/admin/withdraw/unPass',{
-        id:this.$data.records[this.$data.index].id,
-        message:this.$data.remark
-      }).then(function (res) {
-        this.$data.isShow=!this.$data.isShow;
-        location.reload()
-      },function (err) {
-        this.$store.commit('MESSAGE_ACCORD_SHOW', {
-          text: err.statusMessage
+      },
+      unPass: function () {
+        this.$http.post('/admin/withdraw/unPass',{
+          id:this.$data.records[this.$data.index].id,
+          message:this.$data.remark
+        }).then(function (res) {
+          this.$data.isShow=!this.$data.isShow;
+          location.reload()
+        },function (err) {
+          this.$store.commit('MESSAGE_ACCORD_SHOW', {
+            text: err.statusMessage
+          })
+          this.$data.isShow=!this.$data.isShow;
         })
-        this.$data.isShow=!this.$data.isShow;
-      })
-    },
-    freeze: function () {
-      this.$http.post('/admin/withdraw/unfreeze',{
-        id:this.$data.records[this.$data.index].id,
-      }).then(function (res) {
-        this.$data.isShow=!this.$data.isShow;
-        location.reload()
-      },function (err) {
-        this.$store.commit('MESSAGE_ACCORD_SHOW', {
-          text: err.msg
+      },
+      freeze: function () {
+        this.$http.post('/admin/withdraw/unfreeze',{
+          id:this.$data.records[this.$data.index].id,
+        }).then(function (res) {
+          this.$data.isShow=!this.$data.isShow;
+          location.reload()
+        },function (err) {
+          this.$store.commit('MESSAGE_ACCORD_SHOW', {
+            text: err.msg
+          })
+          this.$data.isShow=!this.$data.isShow;
+          location.reload()
         })
-        this.$data.isShow=!this.$data.isShow;
-        location.reload()
-      })
-    },
-    unfreeze: function () {
-      this.$data.isShow=!this.$data.isShow
-    }
-  },
-  computed:{
-    $$data:function () {
-      return this.$data
-    },
-    $$records: function () {
-      return this.$data.records
-    }
-  },
-  filters: {
-    changeStatus: function (val) {
-      if(val == "N"){
-        return '待审核'
-      }else if(val == "H"){
-        return '提现中'
-      }else if(val == "S"){
-        return '提现成功'
-      }else if(val == "F"){
-        return '提现失败'
-      }else if(val == "O"){
-        return '审核未通过'
-      }else if(val == "D"){
-        return '交易关闭'
+      },
+      unfreeze: function () {
+        this.$data.isShow=!this.$data.isShow
       }
     },
-    changeChannel: function (val) {
-      if(val == 101){
-        return '微信'
-      }else if(val == 102){
-        return '支付宝'
-      }else if(val == 103){
-        return '快捷'
+    computed:{
+      $$data:function () {
+        return this.$data
+      },
+      $$records: function () {
+        return this.$data.records
       }
     },
-    changeTime: function (val) {
-      if(val==''||val==null){
-        return ''
-      }else {
-        val = new Date(val)
-        var year=val.getFullYear();
-        var month=val.getMonth()+1;
-        var date=val.getDate();
-        var hour=val.getHours();
-        var minute=val.getMinutes();
-        var second=val.getSeconds();
-        return year+"-"+month+"-"+date+" "+hour+":"+minute+":"+second;
-      }
-    },
-    changeType: function (val) {
-      if(val==0){
-        return '商户'
-      }else if(val==1){
-        return '代理商'
-      }
+    filters: {
+      changeStatus: function (val) {
+        if(val == "N"){
+          return '待审核'
+        }else if(val == "H"){
+          return '提现中'
+        }else if(val == "S"){
+          return '提现成功'
+        }else if(val == "F"){
+          return '提现失败'
+        }else if(val == "O"){
+          return '审核未通过'
+        }else if(val == "D"){
+          return '交易关闭'
+        }
+      },
+      changeChannel: function (val) {
+        if(val == 101){
+          return '微信'
+        }else if(val == 102){
+          return '支付宝'
+        }else if(val == 103){
+          return '快捷'
+        }
+      },
+      changeTime: function (val) {
+        if(val==''||val==null){
+          return ''
+        }else {
+          val = new Date(val)
+          var year=val.getFullYear();
+          var month=val.getMonth()+1;
+          var date=val.getDate();
+          var hour=val.getHours();
+          var minute=val.getMinutes();
+          var second=val.getSeconds();
+          return year+"-"+month+"-"+date+" "+hour+":"+minute+":"+second;
+        }
+      },
+      changeType: function (val) {
+        if(val==0){
+          return '商户'
+        }else if(val==1){
+          return '代理商'
+        }
+      },
     }
   }
-}
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="less">
-h1, h2 {
-  font-weight: normal;
-  color: #337ab7;
-  font-weight: bold;
-  border-bottom: 2px solid #ccc;
-  padding-bottom: 10px;
-}
+  h1, h2 {
+    font-weight: normal;
+    color: #337ab7;
+    font-weight: bold;
+    border-bottom: 2px solid #ccc;
+    padding-bottom: 10px;
+  }
 
-ul {
-  list-style-type: none;
-  padding: 0;
-}
+  ul {
+    list-style-type: none;
+    padding: 0;
+  }
 
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
+  li {
+    display: inline-block;
+    margin: 0 10px;
+  }
 
-.search div{
-  float: left;
-  height: 34px;
-  margin-right: 22px;
-  margin-top: 10px;
+  .search div{
+    float: left;
+    height: 34px;
+    margin-right: 22px;
+    margin-top: 10px;
   input{
     width: 100px
   }
   &.date input,&.price input,&.card input{
-    width: 50px;
-  }
+                                width: 50px;
+                              }
   &.assount input,&.pay input{
-    width: 20px;
-  }
+                     width: 20px;
+                   }
   &.btn{
-    margin: 0 0 5px 0;
-    width: 80px;
-    float: right;
+     margin: 0 0 5px 0;
+     width: 80px;
+     float: right;
+   }
   }
-}
-#cashAudit{
-  width: 100%;
-  height:100%;
-  background: #cccccc;
-  position: fixed;
-  top:0;
-  z-index: 100;
+  #cashAudit{
+    width: 100%;
+    height:100%;
+    background: #cccccc;
+    position: fixed;
+    top:0;
+    z-index: 100;
   .content{
     margin:0 auto;
     position: absolute;
@@ -476,5 +480,5 @@ li {
     left:10%;
     width: 50%;
   }
-}
+  }
 </style>
