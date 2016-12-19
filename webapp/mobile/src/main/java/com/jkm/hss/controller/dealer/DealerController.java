@@ -581,7 +581,7 @@ public class DealerController extends BaseController {
         distributeQRCodeResponse.setToDealerId(dealerId);
         distributeQRCodeResponse.setName(dealerOptional.get().getProxyName());
         distributeQRCodeResponse.setMobile(dealerOptional.get().getMobile());
-        distributeQRCodeResponse.setDistributeDate(DateFormatUtil.format(records.get(0).getCreateTime(), DateFormatUtil.yyyy_MM_dd_HH_mm_ss));
+        distributeQRCodeResponse.setDistributeDate(DateFormatUtil.format(new Date(), DateFormatUtil.yyyy_MM_dd_HH_mm_ss));
         int count = 0;
         final List<DistributeQRCodeResponse.Code> codes = new ArrayList<>();
         for (DistributeQRCodeRecord record : records) {

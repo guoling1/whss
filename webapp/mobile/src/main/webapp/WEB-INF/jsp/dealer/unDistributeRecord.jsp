@@ -20,19 +20,16 @@
 
 <body>
 <div id="record">
-    <div class="title">
-        <span>剩余二维码</span>
-    </div>
     <div class="head">
-        <span class="w30">起始号码</span>
-        <span class="w30">终止号码</span>
+        <span class="w30" style="width: 38%;">起始号码</span>
+        <span class="w30" style="width: 38%;">终止号码</span>
         <span class="w12">个数</span>
     </div>
-    <ul>
-        <li>
+    <ul style="display:block">
+        <li style="height: 34px;line-height: 34px;">
             <c:forEach items="${codes}" var="code">
-                <span class="w30">${code.startCode}</span>
-                <span class="w30">${code.endCode}</span>
+                <span class="w30" style="width: 38%;">${code.startCode}</span>
+                <span class="w30" style="width: 38%;">${code.endCode}</span>
                 <span class="w12">${code.count}</span>
             </c:forEach>
         </li>

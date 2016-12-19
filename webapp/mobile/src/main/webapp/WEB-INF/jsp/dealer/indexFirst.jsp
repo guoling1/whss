@@ -57,8 +57,9 @@
             <img src="http://img.jinkaimen.cn/hss/assets/mar.png" alt=""/>
 
             <div class="">
-                <a href="/dealer/unDistributeCode">${data.firstLevelDealerCodeInfos.residueCount}个</a>
-
+                <p>
+                    <a href="/dealer/unDistributeCode" style="color: #272727;font-weight: bold;">${data.firstLevelDealerCodeInfos.residueCount}个</a>
+                </p>
                 <p>剩余二维码</p>
             </div>
         </li>
