@@ -8,6 +8,7 @@ import com.jkm.hss.admin.helper.SecondLevelDealerCodeInfo;
 import com.jkm.hss.admin.helper.responseparam.ActiveCodeCount;
 import com.jkm.hss.admin.helper.responseparam.DistributeCodeCount;
 import com.sun.org.apache.bcel.internal.classfile.Code;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.io.File;
 import java.util.List;
@@ -97,6 +98,15 @@ public interface QRCodeService {
      * @return
      */
     Optional<QRCode> getById(long id);
+
+    /**
+     * 按id查询
+     *
+     * @param ids
+     * @return
+     */
+    List<QRCode> getByIds(List<Long> ids);
+
 
     /**
      * 按码段查询
@@ -282,4 +292,19 @@ public interface QRCodeService {
     boolean checkRangeQRCode(String startCode, String endCode);
 
     void test(String startCode, String endCode);
+
+    /**
+     * 从list中，将连续的二维码分为一组，返回所有组
+     *
+     * @param qrCodes
+     * @return
+     */
+    List<Pair<QRCode, QRCode>> getPairQRCodeList(List<QRCode> qrCodes);
+
+    /**
+     * 查询系统中指定范围的可分配的二维码
+     *
+     * @return
+     */
+    List<Long> getUnDistributeCodeByRangeCode(String startCode, String endCode);
 }

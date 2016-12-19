@@ -91,6 +91,15 @@ public interface QRCodeDao {
     QRCode selectById(@Param("id") long id);
 
     /**
+     * 按ids查询
+     *
+     * @param codeIds
+     * @return
+     */
+    List<QRCode> selectByIds(@Param("codeIds") List<Long> codeIds);
+
+
+    /**
      * 按码段查询
      *
      * @param code
@@ -331,4 +340,13 @@ public interface QRCodeDao {
      * @return
      */
     int selectCountByRange(@Param("startCode") String startCode, @Param("endCode") String endCode);
+
+    /**
+     * 查询系统中指定范围的可分配的二维码
+     *
+     * @param startCode
+     * @param endCode
+     * @return
+     */
+    List<Long> selectUnDistributeCodeByRangeCode(@Param("startCode") String startCode, @Param("endCode") String endCode);
 }

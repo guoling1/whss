@@ -653,7 +653,7 @@ public class DealerServiceImpl implements DealerService {
         } else {
             this.qrCodeService.markAsDistribute2(qrCodeIds, toDealerId);
         }
-        final List<Pair<QRCode, QRCode>> pairQRCodeList = this.getPairQRCodeList(qrCodeList);
+        final List<Pair<QRCode, QRCode>> pairQRCodeList = this.qrCodeService.getPairQRCodeList(qrCodeList);
         for (Pair<QRCode, QRCode> pair : pairQRCodeList) {
             final QRCode left = pair.getLeft();
             final QRCode right = pair.getRight();
@@ -692,7 +692,7 @@ public class DealerServiceImpl implements DealerService {
         if (CollectionUtils.isEmpty(qrCodes)) {
             return Collections.emptyList();
         }
-        final List<Pair<QRCode, QRCode>> pairs = this.getPairQRCodeList(qrCodes);
+        final List<Pair<QRCode, QRCode>> pairs = this.qrCodeService.getPairQRCodeList(qrCodes);
         return pairs;
     }
 
@@ -933,32 +933,5 @@ public class DealerServiceImpl implements DealerService {
             dealerChannelRate.setStatus(EnumDealerChannelRateStatus.USEING.getId());
             this.dealerRateService.update(dealerChannelRate);
         }
-    }
-
-
-    /**
-     * 从list中，将连续的二维码分为一组，返回所有组
-     *
-     * @param qrCodes
-     * @return
-     */
-    private List<Pair<QRCode, QRCode>> getPairQRCodeList(final List<QRCode> qrCodes) {
-        final List<Pair<QRCode, QRCode>> pairs = new ArrayList<>();
-        while (!CollectionUtils.isEmpty(qrCodes)){
-            final Iterator<QRCode> codeIterator = qrCodes.iterator();
-            final QRCode first = codeIterator.next();
-            codeIterator.remove();
-            QRCode pre = first;
-            while (codeIterator.hasNext()) {
-                final QRCode next = codeIterator.next();
-                if ((Long.valueOf(next.getCode()) - Long.valueOf(pre.getCode())) != 1) {
-                    break;
-                }
-                codeIterator.remove();
-                pre = next;
-            }
-            pairs.add(Pair.of(first, pre));
-        }
-        return pairs;
     }
 }

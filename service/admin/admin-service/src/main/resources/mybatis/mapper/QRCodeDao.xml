@@ -122,6 +122,14 @@
         SELECT * FROM tb_qr_code WHERE id = #{id}
     </select>
 
+    <select id="selectByIds" resultType="com.jkm.hss.admin.entity.QRCode">
+        SELECT * FROM tb_qr_code
+        WHERE id IN
+        <foreach collection="codeIds" item="item" index="index" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+
     <select id="selectByCode" resultType="com.jkm.hss.admin.entity.QRCode">
         SELECT * FROM tb_qr_code WHERE code = #{code}
     </select>
@@ -323,6 +331,15 @@
 
     <select id="selectCountByRange" resultType="java.lang.Integer">
         SELECT COUNT(*) FROM tb_qr_code
+        WHERE first_level_dealer_id =0
+        AND second_level_dealer_id = 0
+        AND distribute_status = 1
+        AND activate_status = 1
+        AND code BETWEEN #{startCode} AND #{endCode}
+    </select>
+
+    <select id="selectUnDistributeCodeByRangeCode" resultType="java.lang.Long">
+        SELECT id FROM tb_qr_code
         WHERE first_level_dealer_id =0
         AND second_level_dealer_id = 0
         AND distribute_status = 1
