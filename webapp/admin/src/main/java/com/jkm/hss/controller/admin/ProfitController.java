@@ -58,7 +58,7 @@ public class ProfitController extends BaseController {
      * @return
      */
     @ResponseBody
-    @RequestMapping(value = "/companyProfit")
+    @RequestMapping(value = "/companyProfit", method = RequestMethod.POST)
     public CommonResponse getCompanyProfit(@RequestBody final DealerProfitQueryParam pageQueryParam){
         try{
             PageModel<DailyProfitDetail> pageModel = this.dailyProfitDetailService.selectCompanyByParam(pageQueryParam.getBeginProfitDate(),
@@ -76,7 +76,7 @@ public class ProfitController extends BaseController {
      * @return
      */
     @ResponseBody
-    @RequestMapping(value = "/companyProfit/detail")
+    @RequestMapping(value = "/companyProfit/detail", method = RequestMethod.POST)
     public CommonResponse getCompanyProfitDeatail(@RequestBody final DealerProfitQueryParam pageQueryParam){
 
             try{
@@ -112,7 +112,7 @@ public class ProfitController extends BaseController {
      * @return
      */
     @ResponseBody
-    @RequestMapping(value = "/firstProfit")
+    @RequestMapping(value = "/firstProfit", method = RequestMethod.POST)
     public CommonResponse getFirstProfit(@RequestBody final DealerProfitQueryParam pageQueryParam){
         try{
             PageModel<DailyProfitDetail> pageModel = this.dailyProfitDetailService.selectFirstByParam(pageQueryParam.getBeginProfitDate(),
@@ -131,7 +131,7 @@ public class ProfitController extends BaseController {
      * @return
      */
     @ResponseBody
-    @RequestMapping(value = "/firstDealer/detail")
+    @RequestMapping(value = "/firstDealer/detail", method = RequestMethod.POST)
     public CommonResponse getFirstDealerDeatail(@RequestBody final DealerProfitQueryParam pageQueryParam){
 
         try{
@@ -149,7 +149,7 @@ public class ProfitController extends BaseController {
      * @return
      */
     @ResponseBody
-    @RequestMapping(value = "/secondProfit")
+    @RequestMapping(value = "/secondProfit", method = RequestMethod.POST)
     public CommonResponse getSecondProfit(@RequestBody final DealerProfitQueryParam pageQueryParam){
 
         try{
@@ -168,7 +168,7 @@ public class ProfitController extends BaseController {
      * @return
      */
     @ResponseBody
-    @RequestMapping(value = "/secondDealer/detail")
+    @RequestMapping(value = "/secondDealer/detail", method = RequestMethod.POST)
     public CommonResponse getSecondDealerDeatail(@RequestBody final DealerProfitQueryParam pageQueryParam){
 
         try{
