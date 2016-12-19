@@ -21,7 +21,12 @@ public class DistributeQRCodeRequest {
     private int isSelf;
 
     /**
-     * 个数
+     * 开始二维码
      */
-    private int count;
+    private String startCode;
+
+    /**
+     * 结束二维码
+     */
+    private String endCode;
 }
