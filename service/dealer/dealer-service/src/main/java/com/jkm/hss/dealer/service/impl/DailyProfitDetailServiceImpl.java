@@ -62,7 +62,7 @@ public class DailyProfitDetailServiceImpl implements DailyProfitDetailService {
         companyDaily.setFirstDealerId(0);
         companyDaily.setFirstDealerName("");
         companyDaily.setStatisticsDate(profitDate);
-        //公司收单分润
+        //公司收单分润 0.26 0.10
         BigDecimal companyCollectMoney = this.companyProfitDetailService.selectCollectProfitByProfitDate(profitDate);
         if (companyCollectMoney == null){
             companyCollectMoney = new BigDecimal("0");
@@ -71,7 +71,7 @@ public class DailyProfitDetailServiceImpl implements DailyProfitDetailService {
         if (companyDealerCollectMoney == null){
             companyDealerCollectMoney = new BigDecimal("0");
         }
-        //公司提现分润
+        //公司提现分润 9.00 3.00
         BigDecimal companyWithdrawMoney = this.companyProfitDetailService.selectWithdrawProfitByProfitDate(profitDate);
         if (companyWithdrawMoney == null){
             companyWithdrawMoney = new BigDecimal("0");
@@ -85,7 +85,7 @@ public class DailyProfitDetailServiceImpl implements DailyProfitDetailService {
         companyDaily.setTotalMoney(companyDaily.getCollectMoney().add(companyDaily.getWithdrawMoney()));
         this.dailyProfitDetailDao.init(companyDaily);
 
-        //查昨日有分润记录的商户
+        //查昨日有分润记录的商户  69 70 72 73
         final List<Long> merchantIdList = this.shallProfitDetailService.selectMerchantIdByProfitDate(profitDate);
         //遍历,计算每个商户每天的收单分润,体现分润
         for (Long merchantId : merchantIdList){
@@ -111,6 +111,7 @@ public class DailyProfitDetailServiceImpl implements DailyProfitDetailService {
                 dailyProfitDetail.setShallMoneyType(EnumShallMoneyType.TOMERCHANT.getId());
                 dailyProfitDetail.setMerchantId(merchantId);
                 dailyProfitDetail.setFirstDealerId(dealer.getId());
+                dailyProfitDetail.setFirstDealerName(dealer.getProxyName());
                 dailyProfitDetail.setSecondDealerId(0);
                 dailyProfitDetail.setDealerName("");
                 dailyProfitDetail.setStatisticsDate(profitDate);
@@ -161,6 +162,7 @@ public class DailyProfitDetailServiceImpl implements DailyProfitDetailService {
                 dailyProfitDetail.setShallMoneyType(EnumShallMoneyType.TOMERCHANT.getId());
                 dailyProfitDetail.setMerchantId(merchantId);
                 dailyProfitDetail.setFirstDealerId(firstDealer.getId());
+                dailyProfitDetail.setFirstDealerName(firstDealer.getProxyName());
                 dailyProfitDetail.setSecondDealerId(dealer.getId());
                 dailyProfitDetail.setDealerName(dealer.getProxyName());
                 dailyProfitDetail.setStatisticsDate(profitDate);
