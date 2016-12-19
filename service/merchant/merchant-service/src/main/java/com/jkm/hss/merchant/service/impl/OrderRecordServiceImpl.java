@@ -969,7 +969,7 @@ public class OrderRecordServiceImpl implements OrderRecordService {
                     or.setMerchantType(EnumMerchantType.MERCHANT.getId());
                     or.setProductName("提现");
                     or.setSubName(merchantInfoOptional.get().getMerchantName());
-                    or.setPayChannel(EnumPayChannelSign.YG_YINLIAN.getId());
+                    or.setPayChannel(orderRecord.get().getPayChannel());
                     or.setTotalFee(orderRecord.get().getRealFee());
                     or.setRealFee((orderRecord.get().getRealFee()).subtract(serviceFeeTemp));
                     or.setServiceFee(serviceFeeTemp);
