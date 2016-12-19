@@ -58,8 +58,8 @@
         SELECT * FROM tb_daily_profit_detail
         WHERE first_dealer_id = #{dealerId} AND shall_money_type = 2 order by create_time DESC
     </select>
-    <select id="selectByFirstDealerIdAndType" resultType="com.jkm.hss.dealer.entity.DailyProfitDetail">
-        SELECT * FROM tb_daily_profit_detail WHERE first_dealer_id = #{dealerId} AND shall_money_type = #{type}
+    <select id="selectByFirstDealerIdAndTypeAndProfitDate" resultType="com.jkm.hss.dealer.entity.DailyProfitDetail">
+        SELECT * FROM tb_daily_profit_detail WHERE first_dealer_id = #{dealerId} AND shall_money_type = #{type} AND statistics_date = #{profitDate}
     </select>
     <select id="selectSecondByParam" resultType="com.jkm.hss.dealer.entity.DailyProfitDetail">
         SELECT * FROM tb_daily_profit_detail
