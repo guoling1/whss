@@ -44,7 +44,7 @@ public class ApplicationConsts {
     /**
      * 商户的cookie key
      */
-    public static final String MERCHANT_COOKIE_KEY = "_t_merchant_info_009";
+    public static final String MERCHANT_COOKIE_KEY = "_t_merchant_info_010";
 
 
 

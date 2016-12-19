@@ -110,25 +110,27 @@ public class WxPubController extends BaseController {
         }
 
         Map<String,String> ret = WxPubUtil.getOpenid(code);
-        String url ="";
-        if(ret!=null&&ret.size()>0) {
-            Optional<UserInfo> userInfo = userInfoService.selectByOpenId(ret.get("openid"));
-            if (userInfo.isPresent()) {//存在
-                CookieUtil.setPersistentCookie(response, ApplicationConsts.MERCHANT_COOKIE_KEY, userInfo.get().getId()+"",
-                        ApplicationConsts.getApplicationConfig().domain());
-                url = state;
-            } else {
-                UserInfo ui = new UserInfo();
-                ui.setOpenId(ret.get("openid"));
-                ui.setStatus(0);
-                userInfoService.insertUserInfo(ui);
-                CookieUtil.setPersistentCookie(response, ApplicationConsts.MERCHANT_COOKIE_KEY, ui.getId()+"",
-                        ApplicationConsts.getApplicationConfig().domain());
-//                url="/sqb/reg";
-                url = state;
-            }
-        }
-        String tempUrl = URLDecoder.decode(url, "UTF-8");
+        CookieUtil.setPersistentCookie(response, ApplicationConsts.MERCHANT_COOKIE_KEY, ret.get("openid"),
+                ApplicationConsts.getApplicationConfig().domain());
+//        String url ="";
+//        if(ret!=null&&ret.size()>0) {
+//            Optional<UserInfo> userInfo = userInfoService.selectByOpenId(ret.get("openid"));
+//            if (userInfo.isPresent()) {//存在
+//                CookieUtil.setPersistentCookie(response, ApplicationConsts.MERCHANT_COOKIE_KEY, ret.get("openid"),
+//                        ApplicationConsts.getApplicationConfig().domain());
+//                url = state;
+//            } else {
+//                UserInfo ui = new UserInfo();
+//                ui.setOpenId(ret.get("openid"));
+//                ui.setStatus(0);
+//                userInfoService.insertUserInfo(ui);
+//                CookieUtil.setPersistentCookie(response, ApplicationConsts.MERCHANT_COOKIE_KEY, ret.get("openid"),
+//                        ApplicationConsts.getApplicationConfig().domain());
+////                url="/sqb/reg";
+//                url = state;
+//            }
+//        }
+        String tempUrl = URLDecoder.decode(state, "UTF-8");
         return "redirect:"+tempUrl;
     }
 
@@ -201,7 +203,7 @@ public class WxPubController extends BaseController {
     @ResponseBody
     @RequestMapping(value = "getWithDrawCode", method = RequestMethod.POST)
     public CommonResponse getWithDrawCode(final HttpServletRequest request, final HttpServletResponse response) {
-        Optional<UserInfo> userInfoOptional = userInfoService.selectById(super.getUserId(request));
+        Optional<UserInfo> userInfoOptional = userInfoService.selectByOpenId(super.getOpenId(request));
         if(!userInfoOptional.isPresent()){
             return CommonResponse.simpleResponse(-1, "登录异常，请重新登录");
         }
@@ -234,7 +236,7 @@ public class WxPubController extends BaseController {
     @RequestMapping(value = "geBankInfo", method = RequestMethod.POST)
     public CommonResponse geBankInfo(final HttpServletRequest request, final HttpServletResponse response) {
         //之所以能调到此页面，说明状态已经改过，在前面已经拦截
-        Optional<UserInfo> userInfoOptional = userInfoService.selectById(super.getUserId(request));
+        Optional<UserInfo> userInfoOptional = userInfoService.selectByOpenId(super.getOpenId(request));
         Optional<MerchantInfo> merchantInfo = this.merchantInfoService.selectById(userInfoOptional.get().getMerchantId());
         if(!merchantInfo.isPresent()){
             return CommonResponse.simpleResponse(-1, "商户信息异常，请重新登录");
@@ -259,7 +261,7 @@ public class WxPubController extends BaseController {
         if(!super.isLogin(request)){
             return CommonResponse.simpleResponse(-2, "未登录");
         }
-        Optional<UserInfo> userInfoOptional = userInfoService.selectById(super.getUserId(request));
+        Optional<UserInfo> userInfoOptional = userInfoService.selectByOpenId(super.getOpenId(request));
         if(!userInfoOptional.isPresent()){
             return CommonResponse.simpleResponse(-2, "未登录");
         }
@@ -291,7 +293,7 @@ public class WxPubController extends BaseController {
         if(!super.isLogin(request)){
             return CommonResponse.simpleResponse(-2, "未登录");
         }
-        Optional<UserInfo> userInfoOptional = userInfoService.selectById(super.getUserId(request));
+        Optional<UserInfo> userInfoOptional = userInfoService.selectByOpenId(super.getOpenId(request));
         if(!userInfoOptional.isPresent()){
             return CommonResponse.simpleResponse(-2, "未登录");
         }
@@ -341,64 +343,44 @@ public class WxPubController extends BaseController {
         if (1 != checkResult.getLeft()) {
             return CommonResponse.simpleResponse(-1, checkResult.getRight());
         }
-        log.info("userId是{}",super.getUserId(request));
-        Optional<UserInfo> userInfoOptional = userInfoService.selectById(super.getUserId(request));
-        if(userInfoOptional.isPresent()){
-            log.info("用户存在");
-        }else{
-            log.info("用户不存在");
-        }
-        Optional<MerchantInfo> merchantInfoOptional = this.merchantInfoService.selectById(userInfoOptional.get().getMerchantId());
-        if (!merchantInfoOptional.isPresent()) {//存在
-            log.info("商户存在");
-            log.info("openidS={}",userInfoOptional.get().getOpenId());
-            MerchantInfo mi = new MerchantInfo();
-            mi.setStatus(EnumMerchantStatus.INIT.getId());
-            mi.setMobile(MerchantSupport.encryptMobile(mobile));
-            mi.setMdMobile(MerchantSupport.passwordDigest(mobile,"JKM"));
-            if(loginRequest.getQrCode()!=null&&!"".equals(loginRequest.getQrCode())){
-                log.info("扫码注册");
-                mi.setCode(loginRequest.getQrCode());
-                merchantInfoService.regByCode(mi);
-                Optional<UserInfo> ui = userInfoService.selectByOpenId(userInfoOptional.get().getOpenId());
-                if(ui.isPresent()){//存在
-                    userInfoService.uploadUserInfo(mi.getId(),MerchantSupport.encryptMobile(mobile),super.getUserId(request));
-                }else{//不存在，新增，添加cookie
-                    CookieUtil.deleteCookie(response,ApplicationConsts.MERCHANT_COOKIE_KEY,ApplicationConsts.getApplicationConfig().domain());
+        log.info("OpenId是{}",super.getOpenId(request));
 
-                    UserInfo uo = new UserInfo();
-                    uo.setOpenId(loginRequest.getOpenId());
-                    uo.setStatus(0);
-                    uo.setMobile(MerchantSupport.encryptMobile(mobile));
-                    uo.setMerchantId(mi.getId());
-                    userInfoService.insertUserInfo(uo);
-                    CookieUtil.setPersistentCookie(response, ApplicationConsts.MERCHANT_COOKIE_KEY, uo.getId()+"",
-                            ApplicationConsts.getApplicationConfig().domain());
-                }
-            }else{
-                log.info("普通注册");
-                log.info("openidS={}",userInfoOptional.get().getOpenId());
-                mi.setDealerId(0);
-                merchantInfoService.regByWxPub(mi);
-                Optional<UserInfo> ui = userInfoService.selectByOpenId(userInfoOptional.get().getOpenId());
-                if(ui.isPresent()){//存在
-                    userInfoService.uploadUserInfo(mi.getId(),MerchantSupport.encryptMobile(mobile),super.getUserId(request));
-                }else{//不存在，新增，添加cookie
-                    CookieUtil.deleteCookie(response,ApplicationConsts.MERCHANT_COOKIE_KEY,ApplicationConsts.getApplicationConfig().domain());
-                    UserInfo uo = new UserInfo();
-                    uo.setOpenId(loginRequest.getOpenId());
-                    uo.setStatus(0);
-                    uo.setMobile(MerchantSupport.encryptMobile(mobile));
-                    uo.setMerchantId(mi.getId());
-                    userInfoService.insertUserInfo(uo);
-                    CookieUtil.setPersistentCookie(response, ApplicationConsts.MERCHANT_COOKIE_KEY, uo.getId()+"",
-                            ApplicationConsts.getApplicationConfig().domain());
-                }
+        MerchantInfo mi = new MerchantInfo();
+        mi.setStatus(EnumMerchantStatus.INIT.getId());
+        mi.setMobile(MerchantSupport.encryptMobile(mobile));
+        mi.setMdMobile(MerchantSupport.passwordDigest(mobile,"JKM"));
+        if(loginRequest.getQrCode()!=null&&!"".equals(loginRequest.getQrCode())){
+            log.info("扫码注册");
+            mi.setCode(loginRequest.getQrCode());
+            merchantInfoService.regByCode(mi);
+            Optional<UserInfo> ui = userInfoService.selectByOpenId(super.getOpenId(request));
+            if(ui.isPresent()){//存在
+                userInfoService.uploadUserInfo(mi.getId(),MerchantSupport.encryptMobile(mobile),ui.get().getId());
+            }else{//不存在，新增，添加cookie
+                UserInfo uo = new UserInfo();
+                uo.setOpenId(super.getOpenId(request));
+                uo.setStatus(0);
+                uo.setMobile(MerchantSupport.encryptMobile(mobile));
+                uo.setMerchantId(mi.getId());
+                userInfoService.insertUserInfo(uo);
             }
-            return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "登录成功",mi.getId());
-        }else{//存在，不该调到此页面
-            return CommonResponse.simpleResponse(-1,"非法用户");
+        }else{
+            log.info("普通注册");
+            merchantInfoService.regByWxPub(mi);
+            Optional<UserInfo> userInfoOptional = userInfoService.selectByOpenId(super.getOpenId(request));
+            if(userInfoOptional.isPresent()){//存在
+                userInfoService.uploadUserInfo(mi.getId(),MerchantSupport.encryptMobile(mobile),userInfoOptional.get().getId());
+            }else{//不存在，新增，添加cookie
+                UserInfo uo = new UserInfo();
+                uo.setOpenId(super.getOpenId(request));
+                uo.setStatus(0);
+                uo.setMobile(MerchantSupport.encryptMobile(mobile));
+                uo.setMerchantId(mi.getId());
+                userInfoService.insertUserInfo(uo);
+            }
         }
+        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "登录成功",mi.getId());
+
     }
 
     /**
@@ -412,7 +394,7 @@ public class WxPubController extends BaseController {
         if(!super.isLogin(request)){
             return CommonResponse.simpleResponse(-2, "未登录");
         }
-        Optional<UserInfo> userInfoOptional = userInfoService.selectById(super.getUserId(request));
+        Optional<UserInfo> userInfoOptional = userInfoService.selectByOpenId(super.getOpenId(request));
         if(!userInfoOptional.isPresent()){
             return CommonResponse.simpleResponse(-2, "未登录");
         }
@@ -491,7 +473,7 @@ public class WxPubController extends BaseController {
             log.info("提现cookie找不到");
             return CommonResponse.simpleResponse(-2, "未登录");
         }
-        Optional<UserInfo> userInfoOptional = userInfoService.selectById(super.getUserId(request));
+        Optional<UserInfo> userInfoOptional = userInfoService.selectByOpenId(super.getOpenId(request));
         if(!userInfoOptional.isPresent()){
             log.info("提现用户找不到");
             return CommonResponse.simpleResponse(-2, "登录异常，请重新登录");
