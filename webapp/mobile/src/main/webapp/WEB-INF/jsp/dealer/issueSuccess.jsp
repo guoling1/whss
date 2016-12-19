@@ -43,7 +43,9 @@
         </li>
         <li>
             <span>分配号段</span>
-            <span class="right">${data.startCode}至${data.endCode}</span>
+            <c:forEach  items="${data.codes}" var="code">
+                <span class="right">${code.startCode}至${code.endCode}</span>
+            </c:forEach>
         </li>
     </ul>
     <div class="submit" onclick="window.location.replace('/dealer/toDistributeCode')">

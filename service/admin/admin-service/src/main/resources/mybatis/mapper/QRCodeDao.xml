@@ -166,6 +166,7 @@
         SELECT COUNT(0) FROM tb_qr_code
         WHERE first_level_dealer_id = #{dealerId}
         AND distribute_status = 1
+        AND activate_status = 1
         AND code BETWEEN #{startCode} AND #{endCode}
     </select>
 
@@ -173,6 +174,7 @@
         SELECT * FROM tb_qr_code
         WHERE first_level_dealer_id = #{dealerId}
         AND distribute_status = 1
+        AND activate_status = 1
         AND code BETWEEN #{startCode} AND #{endCode}
         ORDER BY code ASC
     </select>

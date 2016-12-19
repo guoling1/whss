@@ -137,10 +137,10 @@ public class AdminController extends BaseController {
         if (distributeQRCodeRequest.getCount() <= 0) {
             return CommonResponse.simpleResponse(-1, "分配个数不可以是0");
         }
-        final long unDistributeCodeCount = this.dealerService.getUnDistributeCodeCount(distributeQRCodeRequest.getDealerId());
-        if (unDistributeCodeCount > 0) {
-            return CommonResponse.simpleResponse(-1, "当前一级代理存在未分配的二维码，不可以分配");
-        }
+//        final long unDistributeCodeCount = this.dealerService.getUnDistributeCodeCount(distributeQRCodeRequest.getDealerId());
+//        if (unDistributeCodeCount > 0) {
+//            return CommonResponse.simpleResponse(-1, "当前一级代理存在未分配的二维码，不可以分配");
+//        }
         final Dealer dealer = dealerOptional.get();
         final Triple<Integer, String, QRCode> resultTriple = this.adminUserService.distributeQRCode(super.getAdminUser().getId(),
                 distributeQRCodeRequest.getDealerId(), distributeQRCodeRequest.getCount());
@@ -172,10 +172,10 @@ public class AdminController extends BaseController {
         if(!dealerOptional.isPresent()) {
             return CommonResponse.simpleResponse(-1, "代理商不存在");
         }
-        final long unDistributeCodeCount = this.dealerService.getUnDistributeCodeCount(distributeRangeQRCodeRequest.getDealerId());
-        if (unDistributeCodeCount > 0) {
-            return CommonResponse.simpleResponse(-1, "当前一级代理存在未分配的二维码，不可以分配");
-        }
+//        final long unDistributeCodeCount = this.dealerService.getUnDistributeCodeCount(distributeRangeQRCodeRequest.getDealerId());
+//        if (unDistributeCodeCount > 0) {
+//            return CommonResponse.simpleResponse(-1, "当前一级代理存在未分配的二维码，不可以分配");
+//        }
         final boolean checkResult = this.dealerService.checkRangeQRCode(distributeRangeQRCodeRequest.getStartCode(),
                 distributeRangeQRCodeRequest.getEndCode());
         if (!checkResult) {
