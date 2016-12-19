@@ -152,10 +152,11 @@ public interface DealerService {
      *
      * @param dealerId  一级代理商id
      * @param toDealerId  码段要分配给代理商的id
-     * @param count  个数
+     * @param startCode  开始二维码
+     * @param endCode  结束二维码
      * @return
      */
-    DistributeQRCodeRecord distributeQRCode(long dealerId, long toDealerId, int count);
+    List<DistributeQRCodeRecord> distributeQRCode(long dealerId, long toDealerId, String startCode, String endCode);
 
     /**
      * 当前一级代理商下未分配额二维码
@@ -164,6 +165,25 @@ public interface DealerService {
      * @return
      */
     long getUnDistributeCodeCount(long dealerId);
+
+    /**
+     * 当前一级代理商下未分配额二维码
+     *
+     * @param dealerId
+     * @return
+     */
+    List<Pair<QRCode,QRCode>> getUnDistributeCode(long dealerId);
+
+
+    /**
+     * 查询代理商某一二维码范围下的未分配的二维码个数
+     *
+     * @param startCode
+     * @param endCode
+     * @param dealerId
+     * @return
+     */
+    int getUnDistributeCodeCountByRangeCode(String startCode, String endCode, long dealerId);
 
     /**
      * 校验此码段范围的二维码是否可以分配
@@ -250,4 +270,5 @@ public interface DealerService {
      * @param request
      */
     void updateDealer(FirstLevelDealerUpdateRequest request);
+
 }

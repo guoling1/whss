@@ -120,26 +120,27 @@ public class QRCodeServiceImpl implements QRCodeService {
     /**
      * {@inheritDoc}
      *
-     * @param dealerId
-     * @param count
+     * @param codeIds
      */
     @Override
     @Transactional
-    public int markAsDistribute(final long dealerId, final int count) {
-        return this.qrCodeDao.markAsDistribute(dealerId, count);
+    public int markAsDistribute(final List<Long> codeIds) {
+        if (CollectionUtils.isEmpty(codeIds)) {
+            return 0;
+        }
+        return this.qrCodeDao.markAsDistribute(codeIds);
     }
 
     /**
      * {@inheritDoc}
      *
-     * @param dealerId
+     * @param codeIds
      * @param toDealerId
-     * @param count
      */
     @Override
     @Transactional
-    public int markAsDistribute2(final long dealerId, final long toDealerId, final int count) {
-        return this.qrCodeDao.markAsDistribute2(dealerId, toDealerId, count);
+    public int markAsDistribute2(final List<Long> codeIds, final long toDealerId) {
+        return this.qrCodeDao.markAsDistribute2(codeIds, toDealerId);
     }
 
 
@@ -290,13 +291,40 @@ public class QRCodeServiceImpl implements QRCodeService {
      * {@inheritDoc}
      *
      * @param dealerId
-     * @param count
      * @return
      */
     @Override
-    public List<QRCode> getUnDistributeCodeByFirstLevelDealerId(long dealerId, int count) {
-        return this.qrCodeDao.selectUnDistributeCodeByFirstLevelDealerId(dealerId, count);
+    public List<QRCode> getUnDistributeCodeByFirstLevelDealerId(long dealerId) {
+        return this.qrCodeDao.selectUnDistributeCodeByFirstLevelDealerId(dealerId);
     }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param startCode
+     * @param endCode
+     * @param dealerId
+     * @return
+     */
+    @Override
+    public int getUnDistributeCodeCountByDealerIdAndRangeCode(final String startCode,
+                                                              final String endCode, final long dealerId) {
+        return this.qrCodeDao.selectUnDistributeCodeCountByDealerIdAndRangeCode(startCode, endCode, dealerId);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param dealerId
+     * @param startCode
+     * @param endCode
+     * @return
+     */
+    @Override
+    public List<QRCode> getUnDistributeCodeByDealerIdAndRangeCode(long dealerId, String startCode, String endCode) {
+        return this.qrCodeDao.selectUnDistributeCodeByDealerIdAndRangeCode(dealerId, startCode, endCode);
+    }
+
 
     /**
      * {@inheritDoc}

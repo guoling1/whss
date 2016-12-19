@@ -70,22 +70,19 @@ public interface QRCodeService {
     int markAsActivate(String code, long merchantId);
 
     /**
-     * 将一级代理商下未分配的count个码段标记为自己名下已分配
+     * 将codeIds表示的二维码为自己名下已分配
      *
-     * @param dealerId
-     * @param count
+     * @param codeIds
      */
-    int markAsDistribute(long dealerId, int count);
+    int markAsDistribute(List<Long> codeIds);
 
     /**
-     * 将一级代理商（dealerId）下未分配的count个码段标记为二级代理商（toDealerId）名下已分配
+     * 将一级代理商（dealerId）下codeIds表示的码段标记为二级代理商（toDealerId）名下已分配
      *
-     * @param dealerId
+     * @param codeIds
      * @param toDealerId
-     * @param count
      */
-    int markAsDistribute2(long dealerId, long toDealerId, int count);
-
+    int markAsDistribute2(List<Long> codeIds, long toDealerId);
     /**
      * 初始化商户的二维码（公众号注册）
      *
@@ -165,13 +162,32 @@ public interface QRCodeService {
     int getUnDistributeCodeCountByFirstLevelDealerId(long dealerId);
 
     /**
-     * 查询一级代理商下未分配的count个码段
+     * 查询一级代理商下未分配的码段
      *
      * @param dealerId
-     * @param count
      * @return
      */
-    List<QRCode> getUnDistributeCodeByFirstLevelDealerId(long dealerId, int count);
+    List<QRCode> getUnDistributeCodeByFirstLevelDealerId(long dealerId);
+
+    /**
+     * 查询代理商某一二维码范围下的未分配的二维码个数
+     *
+     * @param startCode
+     * @param endCode
+     * @param dealerId
+     * @return
+     */
+    int getUnDistributeCodeCountByDealerIdAndRangeCode(String startCode, String endCode, long dealerId);
+
+    /**
+     * 查询代理商某一二维码范围下的未分配的二维码
+     *
+     * @param dealerId
+     * @param startCode
+     * @param endCode
+     * @return
+     */
+    List<QRCode> getUnDistributeCodeByDealerIdAndRangeCode(long dealerId, String startCode, String endCode);
 
     /**
      * 查询一级代理分配给二级代理的二维码数
