@@ -77,7 +77,7 @@ public class MerchantInfoController extends BaseController {
     @ResponseBody
     @RequestMapping(value = "/save", method = RequestMethod.POST)
     public CommonResponse save(final HttpServletRequest request, final HttpServletResponse response, @RequestBody final MerchantInfoAddRequest merchantInfo){
-        Optional<UserInfo> userInfoOptional = userInfoService.selectById(super.getUserId(request));
+        Optional<UserInfo> userInfoOptional = userInfoService.selectByOpenId(super.getOpenId(request));
         merchantInfo.setId(userInfoOptional.get().getMerchantId());
 //        merchantInfo.setId(49);
         merchantInfo.setIdentity(MerchantSupport.encryptIdenrity(merchantInfo.getIdentity()));
@@ -140,14 +140,27 @@ public class MerchantInfoController extends BaseController {
         Date date = new Date();
         long nousedate =  date.getTime();
         String photoName = "hss/"+  nowDate + "/" + nousedate + RandomStringUtils.randomNumeric(5) +".jpg";
-        ossClient.putObject(ApplicationConsts.getApplicationConfig().ossBucke(), photoName, inputStream,meta);
-        merchantInfo.setReserveMobile(MerchantSupport.encryptMobile(merchantInfo.getReserveMobile()));
-        final Optional<BankCardBin> bankCardBinOptional = this.bankCardBinService.analyseCardNo(bankNo);
-        merchantInfo.setBankBin(bankCardBinOptional.get().getShorthand());
-        merchantInfo.setBankName(bankCardBinOptional.get().getBankName());
-        merchantInfo.setBankNoShort(merchantInfo.getBankNo().substring((merchantInfo.getBankNo()).length()-4,(merchantInfo.getBankNo()).length()));
-        merchantInfo.setBankNo(MerchantSupport.encryptBankCard(merchantInfo.getBankNo()));
-        merchantInfo.setBankPic(photoName);
+        try {
+            ossClient.putObject(ApplicationConsts.getApplicationConfig().ossBucke(), photoName, inputStream,meta);
+            merchantInfo.setReserveMobile(MerchantSupport.encryptMobile(merchantInfo.getReserveMobile()));
+            final Optional<BankCardBin> bankCardBinOptional = this.bankCardBinService.analyseCardNo(bankNo);
+            merchantInfo.setBankBin(bankCardBinOptional.get().getShorthand());
+            merchantInfo.setBankName(bankCardBinOptional.get().getBankName());
+            merchantInfo.setBankNoShort(merchantInfo.getBankNo().substring((merchantInfo.getBankNo()).length()-4,(merchantInfo.getBankNo()).length()));
+            merchantInfo.setBankNo(MerchantSupport.encryptBankCard(merchantInfo.getBankNo()));
+            merchantInfo.setBankPic(photoName);
+        }catch (Exception e){
+            log.debug("上传文件失败",e);
+            return CommonResponse.simpleResponse(-1, "图片上传失败");
+        }
+//        ossClient.putObject(ApplicationConsts.getApplicationConfig().ossBucke(), photoName, inputStream,meta);
+//        merchantInfo.setReserveMobile(MerchantSupport.encryptMobile(merchantInfo.getReserveMobile()));
+//        final Optional<BankCardBin> bankCardBinOptional = this.bankCardBinService.analyseCardNo(bankNo);
+//        merchantInfo.setBankBin(bankCardBinOptional.get().getShorthand());
+//        merchantInfo.setBankName(bankCardBinOptional.get().getBankName());
+//        merchantInfo.setBankNoShort(merchantInfo.getBankNo().substring((merchantInfo.getBankNo()).length()-4,(merchantInfo.getBankNo()).length()));
+//        merchantInfo.setBankNo(MerchantSupport.encryptBankCard(merchantInfo.getBankNo()));
+//        merchantInfo.setBankPic(photoName);
         int res = this.merchantInfoService.update(merchantInfo);
         if (res<=0) {
             return CommonResponse.simpleResponse(-1, "资料添加失败");
@@ -160,7 +173,7 @@ public class MerchantInfoController extends BaseController {
     @ResponseBody
     @RequestMapping(value = "/savePic", method = RequestMethod.POST)
     public CommonResponse savePic(final HttpServletRequest request, final HttpServletResponse response,@RequestBody final MerchantInfoAddRequest merchantInfo){
-        Optional<UserInfo> userInfoOptional = userInfoService.selectById(super.getUserId(request));
+        Optional<UserInfo> userInfoOptional = userInfoService.selectByOpenId(super.getOpenId(request));
         merchantInfo.setId(userInfoOptional.get().getMerchantId());
         merchantInfo.setStatus(EnumMerchantStatus.REVIEW.getId());
         InputStream inputStream = WxPubUtil.getInputStream(merchantInfo.getIdentityFacePic());
@@ -186,14 +199,27 @@ public class MerchantInfoController extends BaseController {
 //        String photoName1 = "hsy/"+ nowDate + "/" + SnGenerator.generate("",5) +".jpg";
 //        String photoName2 = "hsy/"+ nowDate + "/" + SnGenerator.generate("",5) +".jpg";
 //        String photoName3 = "hsy/"+ nowDate + "/" + SnGenerator.generate("",5) +".jpg";
-        ossClient.putObject(ApplicationConsts.getApplicationConfig().ossBucke(), photoName, inputStream, meta);
-        ossClient.putObject(ApplicationConsts.getApplicationConfig().ossBucke(), photoName1, inputStream1, meta);
-        ossClient.putObject(ApplicationConsts.getApplicationConfig().ossBucke(), photoName2, inputStream2, meta);
-        ossClient.putObject(ApplicationConsts.getApplicationConfig().ossBucke(), photoName3, inputStream3, meta);
-        merchantInfo.setIdentityFacePic(photoName);
-        merchantInfo.setIdentityHandPic(photoName1);
-        merchantInfo.setIdentityOppositePic(photoName2);
-        merchantInfo.setBankHandPic(photoName3);
+        try {
+            ossClient.putObject(ApplicationConsts.getApplicationConfig().ossBucke(), photoName, inputStream, meta);
+            ossClient.putObject(ApplicationConsts.getApplicationConfig().ossBucke(), photoName1, inputStream1, meta);
+            ossClient.putObject(ApplicationConsts.getApplicationConfig().ossBucke(), photoName2, inputStream2, meta);
+            ossClient.putObject(ApplicationConsts.getApplicationConfig().ossBucke(), photoName3, inputStream3, meta);
+            merchantInfo.setIdentityFacePic(photoName);
+            merchantInfo.setIdentityHandPic(photoName1);
+            merchantInfo.setIdentityOppositePic(photoName2);
+            merchantInfo.setBankHandPic(photoName3);
+        }catch (Exception e){
+            log.debug("上传文件失败",e);
+            return CommonResponse.simpleResponse(-1, "图片上传失败");
+        }
+//        ossClient.putObject(ApplicationConsts.getApplicationConfig().ossBucke(), photoName, inputStream, meta);
+//        ossClient.putObject(ApplicationConsts.getApplicationConfig().ossBucke(), photoName1, inputStream1, meta);
+//        ossClient.putObject(ApplicationConsts.getApplicationConfig().ossBucke(), photoName2, inputStream2, meta);
+//        ossClient.putObject(ApplicationConsts.getApplicationConfig().ossBucke(), photoName3, inputStream3, meta);
+//        merchantInfo.setIdentityFacePic(photoName);
+//        merchantInfo.setIdentityHandPic(photoName1);
+//        merchantInfo.setIdentityOppositePic(photoName2);
+//        merchantInfo.setBankHandPic(photoName3);
         this.merchantInfoService.updatePic(merchantInfo);
         return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE,"照片添加成功");
     }
@@ -214,7 +240,7 @@ public class MerchantInfoController extends BaseController {
     @ResponseBody
     @RequestMapping(value = "/sendVerifyCode", method = RequestMethod.POST)
     public CommonResponse sendVerifyCode(@RequestBody final MerchantInfo merchantInfo, final HttpServletRequest request){
-        final Optional<UserInfo> userInfoOptional = userInfoService.selectById(super.getUserId(request));
+        final Optional<UserInfo> userInfoOptional = userInfoService.selectByOpenId(super.getOpenId(request));
         final Optional<MerchantInfo> merchantInfoOptional = this.merchantInfoService.selectById(userInfoOptional.get().getMerchantId());
         final String reserveMobile = merchantInfo.getReserveMobile();
         if (StringUtils.isBlank(reserveMobile)) {

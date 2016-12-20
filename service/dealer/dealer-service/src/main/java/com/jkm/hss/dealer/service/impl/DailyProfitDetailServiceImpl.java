@@ -111,6 +111,7 @@ public class DailyProfitDetailServiceImpl implements DailyProfitDetailService {
                 dailyProfitDetail.setShallMoneyType(EnumShallMoneyType.TOMERCHANT.getId());
                 dailyProfitDetail.setMerchantId(merchantId);
                 dailyProfitDetail.setFirstDealerId(dealer.getId());
+                dailyProfitDetail.setFirstDealerName(dealer.getProxyName());
                 dailyProfitDetail.setSecondDealerId(0);
                 dailyProfitDetail.setDealerName("");
                 dailyProfitDetail.setStatisticsDate(profitDate);
@@ -118,6 +119,30 @@ public class DailyProfitDetailServiceImpl implements DailyProfitDetailService {
                 dailyProfitDetail.setWithdrawMoney(withdrawMoney);
                 dailyProfitDetail.setTotalMoney(collectMoney.add(withdrawMoney));
                 this.dailyProfitDetailDao.init(dailyProfitDetail);
+                //创建该一级代理的每日收益记录
+                final DailyProfitDetail firstRecord = this.dailyProfitDetailDao.selectByFirstDealerIdAndTypeAndProfitDate(dealer.getId(),EnumShallMoneyType.TOFIRST.getId(),profitDate);
+                if (firstRecord == null){
+                    //不存在.新建
+                    final DailyProfitDetail firstDailyProfitDetail = new DailyProfitDetail();
+                    firstDailyProfitDetail.setShallMoneyType(EnumShallMoneyType.TOFIRST.getId());
+                    firstDailyProfitDetail.setMerchantId(0);
+                    firstDailyProfitDetail.setMerchantName("");
+                    firstDailyProfitDetail.setSecondDealerId(0);
+                    firstDailyProfitDetail.setDealerName("");
+                    firstDailyProfitDetail.setFirstDealerId(dealer.getId());
+                    firstDailyProfitDetail.setFirstDealerName(dealer.getProxyName());
+                    firstDailyProfitDetail.setStatisticsDate(profitDate);
+                    firstDailyProfitDetail.setCollectMoney(collectMoney);
+                    firstDailyProfitDetail.setWithdrawMoney(withdrawMoney);
+                    firstDailyProfitDetail.setTotalMoney(collectMoney.add(withdrawMoney));
+                    this.dailyProfitDetailDao.init(firstDailyProfitDetail);
+                }else{
+                    //存在, 累加
+                    firstRecord.setCollectMoney(collectMoney.add(firstRecord.getCollectMoney()));
+                    firstRecord.setWithdrawMoney(withdrawMoney.add(firstRecord.getWithdrawMoney()));
+                    firstRecord.setTotalMoney(collectMoney.add(withdrawMoney).add(firstRecord.getTotalMoney()));
+                    this.dailyProfitDetailDao.update(firstRecord);
+                }
             }else if (dealer.getLevel() == EnumDealerLevel.SECOND.getId()){
                 //一级代理信息
                 final Optional<Dealer> firstDealerOptional = this.dealerService.getById(dealer.getFirstLevelDealerId());
@@ -132,35 +157,13 @@ public class DailyProfitDetailServiceImpl implements DailyProfitDetailService {
                 if (withdrawMoney == null){
                     withdrawMoney = new BigDecimal(0);
                 }
-                //创建该一级代理的每日收益记录
-                final DailyProfitDetail firstRecord = this.dailyProfitDetailDao.selectByFirstDealerIdAndType(firstDealer.getId(),EnumShallMoneyType.TOFIRST.getId());
-                if (firstRecord == null){
-                    //不存在.新建
-                    final DailyProfitDetail dailyProfitDetail = new DailyProfitDetail();
-                    dailyProfitDetail.setShallMoneyType(EnumShallMoneyType.TOFIRST.getId());
-                    dailyProfitDetail.setMerchantId(0);
-                    dailyProfitDetail.setMerchantName("");
-                    dailyProfitDetail.setSecondDealerId(0);
-                    dailyProfitDetail.setDealerName("");
-                    dailyProfitDetail.setFirstDealerId(firstDealer.getId());
-                    dailyProfitDetail.setFirstDealerName(firstDealer.getProxyName());
-                    dailyProfitDetail.setStatisticsDate(DateFormatUtil.format(new Date(), DateFormatUtil.yyyy_MM_dd));
-                    dailyProfitDetail.setCollectMoney(collectMoney);
-                    dailyProfitDetail.setWithdrawMoney(withdrawMoney);
-                    dailyProfitDetail.setTotalMoney(collectMoney.add(withdrawMoney));
-                    this.dailyProfitDetailDao.init(dailyProfitDetail);
-                }else{
-                    //存在, 累加
-                    firstRecord.setCollectMoney(collectMoney.add(firstRecord.getCollectMoney()));
-                    firstRecord.setWithdrawMoney(withdrawMoney.add(firstRecord.getWithdrawMoney()));
-                    firstRecord.setTotalMoney(collectMoney.add(withdrawMoney).add(firstRecord.getTotalMoney()));
-                    this.dailyProfitDetailDao.update(firstRecord);
-                }
+
                 final DailyProfitDetail dailyProfitDetail = new DailyProfitDetail();
                 dailyProfitDetail.setMerchantName(merchantInfo.getMerchantName());
                 dailyProfitDetail.setShallMoneyType(EnumShallMoneyType.TOMERCHANT.getId());
                 dailyProfitDetail.setMerchantId(merchantId);
                 dailyProfitDetail.setFirstDealerId(firstDealer.getId());
+                dailyProfitDetail.setFirstDealerName(firstDealer.getProxyName());
                 dailyProfitDetail.setSecondDealerId(dealer.getId());
                 dailyProfitDetail.setDealerName(dealer.getProxyName());
                 dailyProfitDetail.setStatisticsDate(profitDate);
@@ -168,6 +171,30 @@ public class DailyProfitDetailServiceImpl implements DailyProfitDetailService {
                 dailyProfitDetail.setWithdrawMoney(withdrawMoney);
                 dailyProfitDetail.setTotalMoney(collectMoney.add(withdrawMoney));
                 this.dailyProfitDetailDao.init(dailyProfitDetail);
+                //创建该二级代理的每日收益记录
+                final DailyProfitDetail secondRecord = this.dailyProfitDetailDao.selectBySecondDealerIdAndTypeAndProfitDate(dealer.getId(),EnumShallMoneyType.TOSECONDSELF.getId(),profitDate);
+                if (secondRecord == null){
+                    //不存在.新建
+                    final DailyProfitDetail secondDailyProfitDetail = new DailyProfitDetail();
+                    secondDailyProfitDetail.setShallMoneyType(EnumShallMoneyType.TOSECONDSELF.getId());
+                    secondDailyProfitDetail.setMerchantId(0);
+                    secondDailyProfitDetail.setMerchantName("");
+                    secondDailyProfitDetail.setSecondDealerId(dealer.getId());
+                    secondDailyProfitDetail.setDealerName(dealer.getProxyName());
+                    secondDailyProfitDetail.setFirstDealerId(firstDealer.getId());
+                    secondDailyProfitDetail.setFirstDealerName(firstDealer.getProxyName());
+                    secondDailyProfitDetail.setStatisticsDate(profitDate);
+                    secondDailyProfitDetail.setCollectMoney(collectMoney);
+                    secondDailyProfitDetail.setWithdrawMoney(withdrawMoney);
+                    secondDailyProfitDetail.setTotalMoney(collectMoney.add(withdrawMoney));
+                    this.dailyProfitDetailDao.init(secondDailyProfitDetail);
+                }else{
+                    //存在, 累加
+                    secondRecord.setCollectMoney(collectMoney.add(secondRecord.getCollectMoney()));
+                    secondRecord.setWithdrawMoney(withdrawMoney.add(secondRecord.getWithdrawMoney()));
+                    secondRecord.setTotalMoney(collectMoney.add(withdrawMoney).add(secondRecord.getTotalMoney()));
+                    this.dailyProfitDetailDao.update(secondRecord);
+                }
             }
         }
         //每个二级代理每天的分润
@@ -188,22 +215,22 @@ public class DailyProfitDetailServiceImpl implements DailyProfitDetailService {
             final BigDecimal withdrawMoney =
                     this.shallProfitDetailService.selectFirstWithdrawMoneyByDealerIdAndProfitDate(secondDealer.getId(), profitDate);
             //创建该一级代理的每日收益记录
-            final DailyProfitDetail firstRecord = this.dailyProfitDetailDao.selectByFirstDealerIdAndType(firstDealer.getId(),EnumShallMoneyType.TOFIRST.getId());
+            final DailyProfitDetail firstRecord = this.dailyProfitDetailDao.selectByFirstDealerIdAndTypeAndProfitDate(firstDealer.getId(),EnumShallMoneyType.TOFIRST.getId(),profitDate);
             if (firstRecord == null){
                 //不存在.新建
-                final DailyProfitDetail dailyProfitDetail = new DailyProfitDetail();
-                dailyProfitDetail.setShallMoneyType(EnumShallMoneyType.TOFIRST.getId());
-                dailyProfitDetail.setMerchantId(0);
-                dailyProfitDetail.setMerchantName("");
-                dailyProfitDetail.setSecondDealerId(0);
-                dailyProfitDetail.setDealerName("");
-                dailyProfitDetail.setFirstDealerId(firstDealer.getId());
-                dailyProfitDetail.setFirstDealerName(firstDealer.getProxyName());
-                dailyProfitDetail.setStatisticsDate(DateFormatUtil.format(new Date(), DateFormatUtil.yyyy_MM_dd));
-                dailyProfitDetail.setCollectMoney(collectMoney);
-                dailyProfitDetail.setWithdrawMoney(withdrawMoney);
-                dailyProfitDetail.setTotalMoney(collectMoney.add(withdrawMoney));
-                this.dailyProfitDetailDao.init(dailyProfitDetail);
+                final DailyProfitDetail firstDailyProfitDetail = new DailyProfitDetail();
+                firstDailyProfitDetail.setShallMoneyType(EnumShallMoneyType.TOFIRST.getId());
+                firstDailyProfitDetail.setMerchantId(0);
+                firstDailyProfitDetail.setMerchantName("");
+                firstDailyProfitDetail.setSecondDealerId(0);
+                firstDailyProfitDetail.setDealerName("");
+                firstDailyProfitDetail.setFirstDealerId(firstDealer.getId());
+                firstDailyProfitDetail.setFirstDealerName(firstDealer.getProxyName());
+                firstDailyProfitDetail.setStatisticsDate(profitDate);
+                firstDailyProfitDetail.setCollectMoney(collectMoney);
+                firstDailyProfitDetail.setWithdrawMoney(withdrawMoney);
+                firstDailyProfitDetail.setTotalMoney(collectMoney.add(withdrawMoney));
+                this.dailyProfitDetailDao.init(firstDailyProfitDetail);
             }else{
                 //存在, 累加
                 firstRecord.setCollectMoney(collectMoney.add(firstRecord.getCollectMoney()));

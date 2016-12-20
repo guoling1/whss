@@ -1,6 +1,7 @@
 package com.jkm.hss.dealer.service.impl;
 
 
+import com.fasterxml.jackson.databind.ObjectReader;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.jkm.base.common.util.DateFormatUtil;
@@ -123,7 +124,7 @@ public class ShallProfitDetailServiceImpl implements ShallProfitDetailService{
         final Product product = this.productService.selectById(productChannelDetail.getProductId()).get();
         //获取代理商通道费率
         final List<DealerChannelRate> dealerChannelList =
-                this.dealerChannelRateService.selectByDealerIdAndProductId(dealer.getId(), productChannelDetail.getProductId());
+                this.dealerChannelRateService.selectByDealerIdAndPayChannelSign(dealer.getId(), orderRecord.getPayChannel());
         final DealerChannelRate dealerChannelRate = dealerChannelList.get(0);
         //判断是几级代理
         if (dealer.getLevel() == EnumDealerLevel.FIRST.getId()){
@@ -133,7 +134,10 @@ public class ShallProfitDetailServiceImpl implements ShallProfitDetailService{
             final BigDecimal productMoney = dealerChannelRate.getDealerWithdrawFee().subtract(productChannelDetail.getProductWithdrawFee());
             final BigDecimal channelMoney = productChannelDetail.getProductWithdrawFee().subtract(basicChannel.getBasicWithdrawFee());
             final ShallProfitDetail shallProfitDetail = new ShallProfitDetail();
+            shallProfitDetail.setMerchantId(orderRecord.getMerchantId());
             shallProfitDetail.setPaymentSn(orderRecord.getOrderId());
+            shallProfitDetail.setTotalFee(orderRecord.getTotalFee());
+            shallProfitDetail.setChannelType(orderRecord.getPayChannel());
             shallProfitDetail.setWaitShallAmount(withdrawMoney);
             shallProfitDetail.setWaitShallOriginAmount(withdrawMoney);
             shallProfitDetail.setIsDirect(1);
@@ -157,7 +161,7 @@ public class ShallProfitDetailServiceImpl implements ShallProfitDetailService{
             final Dealer firstDealer = firstDealerOptional.get();
             //获取一级代理商通道费率
             final List<DealerChannelRate> firstDealerChannelList =
-                    this.dealerChannelRateService.selectByDealerIdAndProductId(firstDealer.getId(), productChannelDetail.getProductId());
+                    this.dealerChannelRateService.selectByDealerIdAndPayChannelSign(firstDealer.getId(), orderRecord.getPayChannel());
             final DealerChannelRate firstDealerChannelRate = firstDealerChannelList.get(0);
             //商户体现手续费
             final BigDecimal withdrawMoney = firstDealerChannelRate.getDealerMerchantWithdrawFee();
@@ -166,7 +170,10 @@ public class ShallProfitDetailServiceImpl implements ShallProfitDetailService{
             final BigDecimal productMoney = firstDealerChannelRate.getDealerWithdrawFee().subtract(productChannelDetail.getProductWithdrawFee());
             final BigDecimal channelMoney = productChannelDetail.getProductWithdrawFee().subtract(basicChannel.getBasicWithdrawFee());
             final ShallProfitDetail shallProfitDetail = new ShallProfitDetail();
+            shallProfitDetail.setMerchantId(orderRecord.getMerchantId());
             shallProfitDetail.setPaymentSn(orderRecord.getOrderId());
+            shallProfitDetail.setChannelType(orderRecord.getPayChannel());
+            shallProfitDetail.setTotalFee(orderRecord.getTotalFee());
             shallProfitDetail.setWaitShallAmount(withdrawMoney);
             shallProfitDetail.setWaitShallOriginAmount(withdrawMoney);
             shallProfitDetail.setIsDirect(0);

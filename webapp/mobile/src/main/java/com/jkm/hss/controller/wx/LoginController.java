@@ -81,7 +81,7 @@ public class LoginController extends BaseController {
             return "redirect:"+ WxConstants.WEIXIN_USERINFO+ul+ WxConstants.WEIXIN_USERINFO_REDIRECT;
         }else {
             String url = "";
-            Optional<UserInfo> userInfoOptional = userInfoService.selectById(super.getUserId(request));
+            Optional<UserInfo> userInfoOptional = userInfoService.selectByOpenId(super.getOpenId(request));
             if (userInfoOptional.isPresent()) {
                 Long merchantId = userInfoOptional.get().getMerchantId();
                 if (merchantId != null && merchantId != 0){
@@ -114,7 +114,6 @@ public class LoginController extends BaseController {
                     url = "/reg";
                 }
             }else {
-                CookieUtil.deleteCookie(response, ApplicationConsts.MERCHANT_COOKIE_KEY,ApplicationConsts.getApplicationConfig().domain());
                 if(code!=null&&!"".equals(code)){
                     model.addAttribute("qrCode",code);
                 }
@@ -145,7 +144,7 @@ public class LoginController extends BaseController {
             return "redirect:"+ WxConstants.WEIXIN_USERINFO+request.getRequestURI()+ WxConstants.WEIXIN_USERINFO_REDIRECT;
         }else {
             String url = "";
-            Optional<UserInfo> userInfoOptional = userInfoService.selectById(super.getUserId(request));
+            Optional<UserInfo> userInfoOptional = userInfoService.selectByOpenId(super.getOpenId(request));
             if (userInfoOptional.isPresent()) {
                 Long merchantId = userInfoOptional.get().getMerchantId();
                 if (merchantId != null && merchantId != 0){
@@ -207,7 +206,7 @@ public class LoginController extends BaseController {
             return "redirect:"+ WxConstants.WEIXIN_USERINFO+request.getRequestURI()+ WxConstants.WEIXIN_USERINFO_REDIRECT;
         }else {
             String url = "";
-            Optional<UserInfo> userInfoOptional = userInfoService.selectById(super.getUserId(request));
+            Optional<UserInfo> userInfoOptional = userInfoService.selectByOpenId(super.getOpenId(request));
             if (userInfoOptional.isPresent()) {
                 Long merchantId = userInfoOptional.get().getMerchantId();
                 if (merchantId != null && merchantId != 0){
@@ -268,7 +267,7 @@ public class LoginController extends BaseController {
         if(!super.isLogin(request)){
             return "redirect:"+ WxConstants.WEIXIN_USERINFO+request.getRequestURI()+ WxConstants.WEIXIN_USERINFO_REDIRECT;
         }else {
-            Optional<UserInfo> userInfoOptional = userInfoService.selectById(super.getUserId(request));
+            Optional<UserInfo> userInfoOptional = userInfoService.selectByOpenId(super.getOpenId(request));
             Optional<MerchantInfo> result = merchantInfoService.selectById(userInfoOptional.get().getMerchantId());
             String res = merchantInfoCheckRecordService.selectById(userInfoOptional.get().getMerchantId());
             if (result.get().getStatus()==EnumMerchantStatus.UNPASSED.getId()){
@@ -352,7 +351,7 @@ public class LoginController extends BaseController {
         if(!super.isLogin(request)){
             model.addAttribute("avaliable", "0.00");
         }else{
-            Optional<UserInfo> userInfoOptional = userInfoService.selectById(super.getUserId(request));
+            Optional<UserInfo> userInfoOptional = userInfoService.selectByOpenId(super.getOpenId(request));
             if(userInfoOptional.get().getMerchantId()!=0){
                 Optional<MerchantInfo> merchantInfo = this.merchantInfoService.selectById(userInfoOptional.get().getMerchantId());
                 if(merchantInfo.isPresent()){
@@ -385,7 +384,7 @@ public class LoginController extends BaseController {
     @RequestMapping(value = "/collection", method = RequestMethod.GET)
     public String collection(final HttpServletRequest request, final HttpServletResponse response, final Model model) throws IOException {
         String merchantName = "";
-        Optional<UserInfo> userInfoOptional = userInfoService.selectById(super.getUserId(request));
+        Optional<UserInfo> userInfoOptional = userInfoService.selectByOpenId(super.getOpenId(request));
         if(userInfoOptional.isPresent()){
             Optional<MerchantInfo> merchantInfo = this.merchantInfoService.selectById(userInfoOptional.get().getMerchantId());
             if(merchantInfo.isPresent()){
@@ -513,7 +512,7 @@ public class LoginController extends BaseController {
             return "redirect:"+ WxConstants.WEIXIN_USERINFO+request.getRequestURI()+ WxConstants.WEIXIN_USERINFO_REDIRECT;
         }else {
             String url = "";
-            Optional<UserInfo> userInfoOptional = userInfoService.selectById(super.getUserId(request));
+            Optional<UserInfo> userInfoOptional = userInfoService.selectByOpenId(super.getOpenId(request));
             if (userInfoOptional.isPresent()) {
                 Long merchantId = userInfoOptional.get().getMerchantId();
                 if (merchantId != null && merchantId != 0){
@@ -559,7 +558,7 @@ public class LoginController extends BaseController {
             return "redirect:"+ WxConstants.WEIXIN_USERINFO+request.getRequestURI()+ WxConstants.WEIXIN_USERINFO_REDIRECT;
         }else {
             String url = "";
-            Optional<UserInfo> userInfoOptional = userInfoService.selectById(super.getUserId(request));
+            Optional<UserInfo> userInfoOptional = userInfoService.selectByOpenId(super.getOpenId(request));
             if (userInfoOptional.isPresent()) {
                 Long merchantId = userInfoOptional.get().getMerchantId();
                 if (merchantId != null && merchantId != 0){

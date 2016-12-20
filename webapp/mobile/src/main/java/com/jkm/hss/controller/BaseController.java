@@ -102,14 +102,10 @@ public class BaseController {
      * @param request
      * @return
      */
-    protected long getUserId(HttpServletRequest request) {
+    protected String getOpenId(HttpServletRequest request) {
         String cookie = CookieUtil.getCookie(request,ApplicationConsts.MERCHANT_COOKIE_KEY);
         log.info("获取id cookie是{}",cookie);
-        if("".equals(cookie)){
-            return 0;
-        }else{
-            return Long.parseLong(cookie);
-        }
+        return cookie;
     }
 
     /**
