@@ -63,7 +63,7 @@
     </select>
     <select id="selectSecondByParam" resultType="com.jkm.hss.dealer.entity.DailyProfitDetail">
         SELECT * FROM tb_daily_profit_detail
-        WHERE shall_money_type = 2
+        WHERE shall_money_type = 5
         <if test="dealerName != null">
             and dealer_name = #{dealerName}
         </if>

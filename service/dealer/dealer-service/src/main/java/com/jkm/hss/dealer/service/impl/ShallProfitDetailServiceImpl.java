@@ -164,8 +164,8 @@ public class ShallProfitDetailServiceImpl implements ShallProfitDetailService{
                     this.dealerChannelRateService.selectByDealerIdAndPayChannelSign(firstDealer.getId(), orderRecord.getPayChannel());
             final DealerChannelRate firstDealerChannelRate = firstDealerChannelList.get(0);
             //商户体现手续费
-            final BigDecimal withdrawMoney = firstDealerChannelRate.getDealerMerchantWithdrawFee();
-            final BigDecimal secondMoney = withdrawMoney.subtract(firstDealerChannelRate.getDealerWithdrawFee());
+            final BigDecimal withdrawMoney = dealerChannelRate.getDealerMerchantWithdrawFee();
+            final BigDecimal secondMoney = withdrawMoney.subtract(dealerChannelRate.getDealerWithdrawFee());
             final BigDecimal firstMoney = dealerChannelRate.getDealerWithdrawFee().subtract(firstDealerChannelRate.getDealerWithdrawFee());
             final BigDecimal productMoney = firstDealerChannelRate.getDealerWithdrawFee().subtract(productChannelDetail.getProductWithdrawFee());
             final BigDecimal channelMoney = productChannelDetail.getProductWithdrawFee().subtract(basicChannel.getBasicWithdrawFee());
