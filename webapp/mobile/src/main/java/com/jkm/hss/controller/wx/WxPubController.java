@@ -413,7 +413,7 @@ public class WxPubController extends BaseController {
             return CommonResponse.simpleResponse(-1, "缺失商户名称");
         }
         int compareResult = (new BigDecimal(totalFee)).compareTo(new BigDecimal("5"));
-        if(compareResult!=1){
+        if(compareResult<0){
             return CommonResponse.simpleResponse(-1, "支付金额至少5.00元");
         }
         tradeRequest.setMerchantId(merchantInfo.get().getId());
