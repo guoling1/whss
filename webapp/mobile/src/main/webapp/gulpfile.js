@@ -10,40 +10,20 @@ const path = require('path');
 const sourcemaps = require('gulp-sourcemaps');
 const babel = require('gulp-babel');
 const concat = require('gulp-concat');
+const replace = require('gulp-replace');
 
-const shoesPath = [
-  'es6/**/require.js',
-  'es6/shoes/tools.js',
-  'es6/shoes/message.js',
-  'es6/shoes/http.js',
-  'es6/shoes/validate.js',
-  'es6/shoes/fastclick.js',
-  'es6/shoes/*.js'
+const hssPath = [
+  'es6/hss/*.js'
 ];
 
-const pagesPath = [
-  'es6/pages/*.js'
-];
-
-gulp.task('shoes', () => {
-  return gulp.src(shoesPath)
-    .pipe(sourcemaps.init())
-    .pipe(babel({
-      presets: ['es2015']
-    }))
-    .pipe(concat('shoes.js'))
-    .pipe(sourcemaps.write('.'))
-    .pipe(gulp.dest('js'));
-});
-
-gulp.task('pages', () => {
-  return gulp.src(pagesPath)
+gulp.task('hss', () => {
+  return gulp.src(hssPath)
     .pipe(sourcemaps.init())
     .pipe(babel({
       presets: ['es2015']
     }))
     .pipe(sourcemaps.write('.'))
-    .pipe(gulp.dest('js'));
+    .pipe(gulp.dest('0.1.20'));
 });
 
 gulp.task('less', function () {
@@ -54,5 +34,11 @@ gulp.task('less', function () {
     .pipe(gulp.dest('css'));
 });
 
+gulp.task('replace', function () {
+  return gulp.src('WEB-INF/jsp/*.jsp')
+    .pipe(replace('0.1.19', '0.1.20'))
+    .pipe(gulp.dest('WEB-INF/jsp'));
+});
+
 // default 使用默认配置 开发时候使用
-gulp.task('default', ['shoes', 'pages', 'less']);
+gulp.task('default', ['hss', 'less', 'replace']);
