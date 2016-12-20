@@ -1,0 +1,1021 @@
+@import "../reset";
+//以下为代理商部分
+//添加代理商  addDealer
+#addDealer {
+  overflow: auto;
+  background: #eceff6;
+  font-size: 15px;
+  color: #272727;
+  text-align: left;
+  height: 100%;
+  .title {
+    padding-left: 15px;
+    font-size: 14px;
+    height: 39px;
+    line-height: 39px;
+    font-weight: bold;
+  }
+  .basic {
+    width: 100%;
+    background: #fff;
+    margin-bottom: 7px;
+
+    label {
+      display: inline-block;
+      padding-left: 15px;
+      width: 100%;
+      height: 54px;
+      line-height: 54px;
+      border-top: 1px solid #e8eaf2;
+
+      span {
+        display: inline-block;
+        width: 90px;
+      }
+
+      input {
+        width: 65%;
+        height: 52px;
+        line-height: 52px;
+      }
+
+    }
+  }
+  .set {
+    width: 100%;
+    background: #fff;
+    padding: 0 7px;
+
+    ul {
+      padding-bottom: 19px;
+
+      li {
+        margin-top: 11px;
+        padding: 3px;
+        background: #f1f4f9;
+        border-radius: 2px;
+
+        .top {
+          font-size: 12px;
+          line-height: 24px;
+
+          img {
+            width: 14px;
+            height: 14px;
+          }
+
+          p {
+            display: inline-block;
+            color: #999;
+            margin-left: 7px;
+            line-height: 20px;
+          }
+
+          div {
+            margin-left: 10px;
+          }
+
+        }
+        .bottom {
+          width: 100%;
+          height: 74px;
+          background: #fff;
+          padding: 21px 0;
+
+          label {
+            margin-left: 18px;
+            font-size: 15px;
+
+            input {
+              width: 35%;
+              height: 31px;
+              border: 1px solid #d0d7e3;
+              border-radius: 2px;
+              margin: 0 4px 0 6px;
+              text-align: right;
+            }
+
+          }
+        }
+      }
+    }
+  }
+  .price {
+    margin-top: 7px;
+    padding: 5px 15px 0;
+    height: 90px;
+    background: #fff;
+
+    .top {
+      font-size: 15px;
+      height: 50px;
+      line-height: 50px;
+      border-bottom: 1px solid #eceff6;
+
+      div {
+        float: right;
+        line-height: 50px;
+      }
+      input {
+        height: 35px;
+        line-height: 35px;
+        text-align: right;
+      }
+
+    }
+    .bottom {
+      height: 35px;
+      line-height: 35px;
+      font-size: 12px;
+      color: #999;
+
+      span {
+        margin-right: 5%;
+      }
+
+    }
+  }
+  .submit {
+    margin: 15px;
+    height: 50px;
+    line-height: 50px;
+    text-align: center;
+    font-size: 16px;
+    background: #5289fb;
+    border-radius: 4px;
+    color: #fff;
+  }
+  input:focus {
+    border: none;
+  }
+}
+
+//分润详情 aginDetail
+//二级分润详情 aginDetailSec
+#aginDetail, #aginDetailSec {
+  font-size: 12px;
+  color: #272727;
+  text-align: left;
+  overflow: auto;
+  background: #eceff6;
+  height: 100%;
+
+  .header {
+    background: #fff;
+    height: 32px;
+    line-height: 32px;
+    padding: 0 15px;
+
+    p {
+      display: inline-block;
+      font-weight: bold;
+    }
+    input:focus {
+      outline: none;
+    }
+
+  }
+
+  .w33 {
+    width: 32%;
+  }
+
+  .w21 {
+    width: 21%;
+  }
+
+  ul {
+
+    li {
+      margin: 7px 0;
+      background: #fff;
+
+      div {
+        padding: 0 15px;
+        height: 36px;
+        line-height: 36px;
+        border-bottom: 1px solid #eceff6;
+
+        p {
+          display: inline-block;
+        }
+
+        &
+        .total {
+          height: 45px;
+          line-height: 45px;
+          font-size: 14px;
+          font-weight: bold;
+        }
+
+        .red {
+          color: #fd4545;
+        }
+      }
+    }
+  }
+}
+
+//一级代理商首页 dealerIndex
+//二级代理商首页 dealerIndexSec
+#dealerIndex, #dealerIndexSec {
+  font-size: 12px;
+  color: #272727;
+  text-align: center;
+  overflow: auto;
+  background: #eceff6;
+  height: 100%;
+  .header {
+    width: 100%;
+    height: 173px;
+    background: #5289fb;
+    padding: 0 10px 0 15px;
+    margin-bottom: 6px;
+    color: #fff;
+    .top {
+      height: 57px;
+      line-height: 57px;
+      border-bottom: 1px solid #6a9bff;
+      font-size: 12px;
+      text-align: left;
+      .photo {
+        display: inline-block;
+        vertical-align: middle;
+        height: 24px;
+        width: 24px;
+        border: 2px solid #fff;
+        border-radius: 50%;
+        background: #ccc;
+        margin-right: 1%;
+      }
+      .right {
+        float: right;
+        color: #a9d1ff;
+        width: 50%;
+        text-align: right;
+        img:nth-child(1) {
+          width: 10px;
+          height: 10px;
+          margin-right: 1%;
+        }
+        img:nth-child(2) {
+          width: 11px;
+          height: 9px;
+          margin-right: 1%;
+          margin-left: 4%;
+        }
+      }
+    }
+    .bottom {
+      div {
+        display: inline-block;
+        width: 30%;
+        font-size: 12px;
+        p:nth-child(1) {
+          margin: 38px 0 8px 0;
+          font-weight: bold;
+          span {
+            font-size: 19px;
+          }
+        }
+      }
+    }
+  }
+
+  .list {
+    background: #fff;
+    width: 100%;
+    li {
+      display: inline-block;
+      width: 49%;
+      height: 75px;
+      border-bottom: 1px solid #eceff6;
+      border-right: 1px solid #eceff6;
+      &:nth-child(2), &:nth-child(4) {
+        //width: 50%;
+        border-right: none;
+      }
+      img {
+        display: inline-block;
+        vertical-align: super;
+        width: 21px;
+        height: 21px;
+      }
+      div {
+        display: inline-block;
+        margin: 23px 0 20px 23px;
+        color: #272727;
+        font-size: 12px;
+        p:nth-child(1) {
+          text-align: left;
+          font-size: 15px;
+          font-weight: bold;
+          margin-bottom: 9px;
+        }
+      }
+    }
+  }
+
+  .btn {
+    height: 49px;
+    line-height: 49px;
+    width: 100%;
+    background: #fff;
+    font-size: 16px;
+    color: #2c66de;
+    margin-bottom: 6px;
+    span {
+      float: left;
+      width: 50%;
+      height: 100%;
+      a {
+        color: #2c66de;
+      }
+    }
+  }
+
+  .same {
+    margin-bottom: 6px;
+    width: 100%;
+    height: 155px;
+    background: #fff;
+    padding: 0 15px;
+    .top {
+      height: 49px;
+      line-height: 49px;
+      border-bottom: 1px solid #eceff6;
+      text-align: left;
+      i {
+        display: inline-block;
+        width: 3px;
+        height: 11px;
+        background: #5289fb;
+      }
+      .title {
+        font-size: 15px;
+        font-weight: bold;
+        color: #272727;
+        margin-right: 10px;
+      }
+      .level {
+        padding-left: 9px;
+        font-size: 12px;
+        color: #272727;
+        border-left: 1px solid #d9d9d9;
+      }
+      .details {
+        float: right;
+        font-size: 12px;
+        a {
+          color: #999;
+        }
+      }
+    }
+    .bottom {
+      font-size: 12px;
+      color: #999;
+      div {
+        float: left;
+        width: 43%;
+        text-align: left;
+        margin: 31px 0 0 15px;
+        .price {
+          font-size: 24px;
+          color: #2f2f2f;
+          margin-bottom: 15px;
+        }
+      }
+    }
+  }
+
+  .myStore {
+    margin-bottom: 0;
+  }
+
+  .code {
+    padding-left: 15px;
+    width: 100%;
+    height: 47px;
+    line-height: 47px;
+    background: #fff;
+    text-align: left;
+    font-size: 15px;
+    color: #2f2f2f;
+    border-top: 1px solid #eceff6;
+  }
+  .secDiff {
+    margin: 7px 0;
+    background: #fff;
+    overflow: hidden;
+    padding-left: 15px;
+    li {
+      float: left;
+      width: 60%;
+      text-align: left;
+
+      p {
+        height: 30px;
+        line-height: 30px;
+        color: #999;
+        font-size: 14px;
+        span {
+          color: #272727;
+        }
+      }
+    }
+    li:nth-child(even) {
+      width: 40%;
+    }
+  }
+  a, a:hover, a:link, a:active {
+    text-decoration: none;
+    color: #a9d1ff
+  }
+}
+
+//我的结算卡 myCard
+#myCard {
+  overflow: auto;
+  background: #eceff6;
+  overflow: auto;
+  height: 100%;
+  ul {
+    background: #fff;
+
+    li {
+      padding: 0 15px;
+      height: 50px;
+      line-height: 50px;
+      text-align: left;
+      border-bottom: 1px solid #edeef5;
+      .right {
+        float: right;
+      }
+    }
+  }
+  .submit {
+    margin: 15px;
+    height: 50px;
+    line-height: 50px;
+    text-align: center;
+    font-size: 16px;
+    background: #5289fb;
+    border-radius: 4px;
+    color: #fff;
+  }
+}
+
+//我的代理商 myDealer
+#myDealer {
+  height: 100%;
+  font-size: 12px;
+  color: #272727;
+  overflow: auto;
+  background: #eceff6;
+  text-align: left;
+
+  .header {
+    background: #fff;
+    height: 32px;
+    line-height: 32px;
+    padding-left: 15px;
+    p {
+      display: inline-block;
+      font-weight: bold;
+      font-size: 12px;
+    }
+  }
+
+  .w1 {
+    width: 32%;
+  }
+
+  .w3 {
+    width: 33%;
+  }
+
+  .blue {
+    color: #5289fb;
+  }
+
+  ul {
+    li {
+      margin: 7px 0;
+      background: #fff;
+      div {
+        padding-left: 15px;
+        height: 36px;
+        line-height: 36px;
+        border-bottom: 1px solid #eceff6;
+        p {
+          display: inline-block;
+          font-size: 12px;
+        }
+        .red {
+          color: #fd4545;
+        }
+      }
+    }
+  }
+  .mask {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, .4);
+    .content {
+      position: inherit;
+      left: 0;
+      bottom: 0;
+      padding: 0 15px;
+      width: 100%;
+      height: 374px;
+      background: #fff;
+      overflow: hidden;
+      color: #272727;
+      h3 {
+        display: inline-block;
+        font-size: 16px;
+        font-weight: bold;
+        margin: 20px 0;
+      }
+      .X {
+        float: right;
+        font-size: 36px;
+        color: #c0c0c0;
+        font-weight: normal;
+        height: 56px;
+        line-height: 56px;
+      }
+      .total {
+        height: 30px;
+        line-height: 30px;
+        width: 100%;
+        font-size: 14px;
+        p {
+          display: inline-block;
+          margin-right: 3%;;
+          span {
+            font-weight: bold;
+          }
+        }
+      }
+      .middle {
+        line-height: 13px;
+        margin-top: 7px;
+      }
+      .detail {
+        width: 100%;
+        font-size: 12px;
+        .title {
+          height: 30px;
+          line-height: 30px;
+          background: #eceff6;
+          font-weight: bold;
+          padding: 0 23px;
+          p {
+            display: inline-block;
+            font-weight: bold;
+          }
+        }
+        .content {
+          padding: 0;
+          .row {
+            height: 43px;
+            line-height: 43px;
+            border: 1px solid #eceff6;
+            border-top: none;
+            padding: 0 23px;
+            p {
+              display: inline-block;
+            }
+          }
+        }
+
+      }
+    }
+    .w35 {
+      width: 35.5%;
+    }
+    .w50 {
+      width: 50%;
+    }
+  }
+}
+
+//我的信息 myMsg
+#myMsg {
+  overflow: auto;
+  background: #eceff6;
+  height: 100%;
+
+  ul {
+    background: #fff;
+
+    li {
+      padding: 0 15px;
+      height: 50px;
+      line-height: 50px;
+      text-align: left;
+      border-bottom: 1px solid #edeef5;
+      .right {
+        float: right;
+        line-height: 50px;
+      }
+    }
+  }
+  .submit {
+    margin: 15px;
+    height: 50px;
+    line-height: 50px;
+    text-align: center;
+    font-size: 16px;
+    background: #5289fb;
+    border-radius: 4px;
+    color: #fff;
+  }
+}
+
+//发展的店铺 myStore
+#myStore {
+  font-size: 12px;
+  color: #272727;
+  text-align: left;
+  overflow: auto;
+  background: #eceff6;
+  height: 100%;
+
+  .header {
+    background: #fff;
+    height: 32px;
+    line-height: 32px;
+    padding: 0 15px;
+    p {
+      display: inline-block;
+      font-weight: bold;
+      font-size: 14px;
+      word-break: normal;
+    }
+  }
+
+  .w33 {
+    width: 21%;
+  }
+
+  .w21 {
+    width: 25%;
+  }
+
+  ul {
+    margin-top: 7px;
+    li {
+      background: #fff;
+      div {
+        padding: 0 15px;
+        height: 36px;
+        line-height: 36px;
+        border-bottom: 1px solid #eceff6;
+        p {
+          display: inline-block;
+        }
+
+        .red {
+          color: #fd4545;
+        }
+      }
+    }
+  }
+}
+
+//提示审核 prompt
+//500 #err
+#prompt, #err {
+  padding: 89px 58px 0;
+  width: 100%;
+  height: 100%;
+  background: #FFF;
+  img {
+    display: block;
+    width: 76px;
+    height: 86px;
+    margin: 0 auto;
+    margin-bottom: 42px;
+  }
+  p {
+    font-size: 22px;
+    color: #aab2d3;
+  }
+  p.small {
+    font-size: 15px;
+    color: #aab2d3;
+    margin: 13px 0 43px;
+  }
+  .btn {
+    display: block;
+    margin-top: 15px;
+    width: 100%;
+    height: 50px;
+    line-height: 50px;
+    font-size: 16px;
+    color: #fff;
+    background: #7086bd;
+    border-radius: 4px;
+  }
+}
+
+//配码记录 record
+#record {
+  width: 100%;
+  height: 100%;
+  color: #272727;
+  font-size: 12px;
+  text-align: left;
+  overflow: auto;
+  background: #eceff6;
+  .show {
+    display: block;
+  }
+  .title {
+    height: 50px;
+    width: 100%;
+    line-height: 50px;
+    font-size: 15px;
+    color: #5289fb;
+    margin-bottom: 7px;
+    text-align: center;
+    span {
+      float: left;
+      line-height: 50px;
+      height: 100%;
+      background: #fff;
+      width: 50%;
+      &.active {
+        background: #f7f9fd;
+      }
+    }
+  }
+  .head {
+    height: 32px;
+    line-height: 32px;
+    padding: 0 15px;
+    background: #FFF;
+  }
+  ul {
+    display: none;
+  }
+  li {
+    border-top: 1px solid #e8eaf2;
+    padding: 0 15px 17px 15px;
+    background: #fff;
+    p {
+      font-size: 14px;
+      font-weight: bold;
+      margin: 16px 0 12px 0;
+    }
+  }
+  span.w30 {
+    display: inline-block;
+    width: 30%;
+  }
+  span.w12 {
+    display: inline-block;
+    width: 12%;
+  }
+}
+
+//配码成功 issueSuccess
+#issueSuccess {
+  overflow: auto;
+  background: #eceff6;
+  .success {
+    width: 100%;
+    height: 150px;
+    background: #fff;
+    img {
+      display: inline-block;
+      width: 64px;
+      height: 64px;
+      margin: 0 auto;
+      margin-top: 27px;
+      margin-bottom: 18px;
+    }
+  }
+  ul {
+    background: #fff;
+
+    li {
+      padding: 0 15px;
+      height: 50px;
+      line-height: 50px;
+      text-align: left;
+      border-bottom: 1px solid #edeef5;
+      .right {
+        float: right;
+        line-height: 50px;
+      }
+    }
+  }
+  .submit {
+    margin: 15px;
+    height: 50px;
+    line-height: 50px;
+    text-align: center;
+    font-size: 16px;
+    background: #5289fb;
+    border-radius: 4px;
+    color: #fff;
+  }
+}
+
+//分配二维码 issueCord
+#issueCord {
+  height: 100%;
+  overflow: hidden;
+  background: #eceff6;
+  .header {
+    height: 50px;
+    width: 100%;
+    line-height: 50px;
+    font-size: 15px;
+    color: #5289fb;
+    margin-bottom: 7px;
+    span {
+      float: left;
+      line-height: 50px;
+      height: 100%;
+      background: #fff;
+      width: 50%;
+      &.active {
+        background: #f7f9fd;
+      }
+    }
+  }
+  .box {
+    .show {
+      display: block;
+    }
+  }
+  .content {
+    display: none;
+    padding: 0 15px;
+    background: #fff;
+    margin-bottom: 20px;
+    label {
+      display: inline-block;
+      width: 100%;
+      height: 49px;
+      line-height: 49px;
+      text-align: left;
+      font-size: 15px;
+      color: #272727;
+      border-bottom: 1px solid #e8eaf2;
+      input {
+        margin-left: 5px;
+        width: 70%;
+        height: 47px;
+        line-height: 47px;
+      }
+    }
+    p span {
+      line-height: 32px;
+    }
+    .list {
+      display: none;
+      position: absolute;
+      right: 0;
+      width: 77%;
+      max-height: 350px;
+      overflow: auto;
+      border: 1px solid #e8eaf2;
+      background: #fff;
+      padding: 5px;
+      margin-right: 5px;
+      z-index: 100;
+      li {
+        height: 25px;
+        line-height: 25px;
+      }
+    }
+    p {
+      height: 32px;
+      line-height: 32px;
+      font-size: 12px;
+      color: #272727;
+      text-align: left;
+      span {
+        float: right;
+        a {
+          color: #5289fb;
+        }
+      }
+    }
+  }
+  .ownContent {
+    display: none;
+    padding: 0 15px;
+    background: #fff;
+    margin-bottom: 20px;
+    label {
+      display: inline-block;
+      width: 100%;
+      height: 49px;
+      line-height: 49px;
+      text-align: left;
+      font-size: 15px;
+      color: #272727;
+      border-bottom: 1px solid #e8eaf2;
+      input {
+        margin-left: 5px;
+        width: 70%;
+        height: 47px;
+        line-height: 47px;
+      }
+    }
+    .list {
+      position: absolute;
+      right: 0;
+      width: 77%;
+      max-height: 200px;
+      overflow: auto;
+      border: 1px solid #e8eaf2;
+      background: #fff;
+      padding-left: 5px;
+      margin-right: 5px;
+      li {
+        height: 25px;
+      }
+    }
+    p {
+      height: 32px;
+      line-height: 32px;
+      font-size: 12px;
+      color: #272727;
+      text-align: left;
+      span {
+        float: right;
+        line-height: 32px;
+        a {
+          color: #5289fb;
+        }
+      }
+    }
+  }
+  .submit {
+    margin: 15px 15px 0;
+    width: 90%;
+    height: 50px;
+    line-height: 50px;
+    font-size: 16px;
+    border-radius: 4px;
+    color: #fff;
+    background: #5289fb;
+    position: absolute;
+    left: 0;
+  }
+}
+
+//付款详情 payDetail
+#payDetail {
+  height: 100%;
+  overflow: hidden;
+  background: #eceff6;
+  color: #8c93b2;
+  font-size: 15px;
+  text-align: left;
+  .title {
+    padding: 0 15px 0 10px;
+    width: 100%;
+    height: 64px;
+    line-height: 64px;
+    background: #fff;
+    border-bottom: 1px solid #e8eaf3;
+    color: #3d4463;
+    font-size: 15px;
+    font-weight: bold;
+    span:nth-child(2) {
+      font-size: 22px;
+      float: right;
+      line-height: 64px;
+
+    }
+  }
+  .total, .pay, .refund {
+    padding: 7px 15px 7px 10px;
+    width: 100%;
+    background: #fff;
+    border-bottom: 1px solid #e8eaf3;
+    overflow: hidden;
+    li {
+      height: 30px;
+      line-height: 30px;
+      span:nth-child(2) {
+        float: right;
+        line-height: 30px;
+      }
+      span.red {
+        color: #e94444;
+      }
+    }
+  }
+}

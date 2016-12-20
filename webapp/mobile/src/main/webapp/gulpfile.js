@@ -28,11 +28,21 @@ gulp.task('hss', () => {
     .pipe(gulp.dest('js/0.1.20'));
 });
 
-gulp.task('less', function () {
-  return gulp.src('less/**/*.less')
+gulp.task('less-dealer', function () {
+  return gulp.src('less/**/dealer.less')
     .pipe(less({
       paths: [path.join(__dirname, 'less', 'includes')]
     }))
+    .pipe(rename({basename: "style"}))
+    .pipe(gulp.dest('css'));
+});
+
+gulp.task('less-hss', function () {
+  return gulp.src('less/**/hss.less')
+    .pipe(less({
+      paths: [path.join(__dirname, 'less', 'includes')]
+    }))
+    .pipe(rename({basename: "style"}))
     .pipe(gulp.dest('css'));
 });
 
@@ -43,4 +53,5 @@ gulp.task('replace', function () {
 });
 
 // default 使用默认配置 开发时候使用
-gulp.task('default', ['hss', 'less', 'replace']);
+gulp.task('hss', ['hss', 'less-dealer', 'replace']);
+gulp.task('dealer', ['less-dealer']);
