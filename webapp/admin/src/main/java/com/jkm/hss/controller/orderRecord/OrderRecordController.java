@@ -2,10 +2,16 @@ package com.jkm.hss.controller.orderRecord;
 
 import com.aliyun.openservices.shade.com.alibaba.rocketmq.shade.com.alibaba.fastjson.JSONObject;
 import com.jkm.base.common.entity.CommonResponse;
+import com.jkm.base.common.entity.PageModel;
 import com.jkm.hss.controller.BaseController;
+import com.jkm.hss.merchant.entity.MerchantAndOrderRecord;
+import com.jkm.hss.merchant.entity.OrderRecord;
+import com.jkm.hss.merchant.entity.OrderRecordAndMerchant;
 import com.jkm.hss.merchant.entity.OrderRecordConditions;
+import com.jkm.hss.merchant.helper.MerchantSupport;
 import com.jkm.hss.merchant.helper.PageUtils;
 import com.jkm.hss.merchant.helper.ValidateOrderRecord;
+import com.jkm.hss.merchant.helper.request.OrderListRequest;
 import com.jkm.hss.merchant.service.OrderRecordService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -41,6 +47,26 @@ public class OrderRecordController extends BaseController{
         page.setRecord(list);
         page.setTotalCount(count);
         return CommonResponse.objectResponse(1,"success",page);
+    }
+
+    /**
+     * 交易记录
+     * @param req
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/orderList",method = RequestMethod.POST)
+    public CommonResponse orderList(@RequestBody OrderListRequest req){
+        final PageModel<MerchantAndOrderRecord> pageModel = new PageModel<MerchantAndOrderRecord>(req.getPage(), req.getSize());
+        req.setOffset(pageModel.getFirstIndex());
+        if(req.getMdMobile()!=null&&!"".equals(req.getMdMobile())){
+            req.setMdMobile(MerchantSupport.passwordDigest(req.getMdMobile(),"JKM"));
+        }
+        List<MerchantAndOrderRecord> orderList =  orderRecordService.selectOrderListByPage(req);
+        long count = orderRecordService.selectOrderListCount(req);
+        pageModel.setCount(count);
+        pageModel.setRecords(orderList);
+        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", pageModel);
     }
 }
 
