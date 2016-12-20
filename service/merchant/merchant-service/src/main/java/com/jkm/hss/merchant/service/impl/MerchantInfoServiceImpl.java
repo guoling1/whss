@@ -98,6 +98,8 @@ public class MerchantInfoServiceImpl implements MerchantInfoService {
     public long regByWxPub(MerchantInfo merchantInfo) {
         merchantInfoDao.insertSelective(merchantInfo);
         QRCode qrCode = qrCodeService.initMerchantCode(merchantInfo.getId());
+        merchantInfo.setCode(qrCode.getCode());
+        merchantInfoDao.updateBySelective(merchantInfo);
         return merchantInfo.getId();
     }
 
