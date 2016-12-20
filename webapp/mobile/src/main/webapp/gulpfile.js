@@ -11,6 +11,7 @@ const sourcemaps = require('gulp-sourcemaps');
 const babel = require('gulp-babel');
 const concat = require('gulp-concat');
 const replace = require('gulp-replace');
+const rename = require("gulp-rename");
 
 const hssPath = [
   'es6/hss/*.js'
@@ -22,8 +23,9 @@ gulp.task('hss', () => {
     .pipe(babel({
       presets: ['es2015']
     }))
+    .pipe(rename({suffix: ".min"}))
     .pipe(sourcemaps.write('.'))
-    .pipe(gulp.dest('0.1.20'));
+    .pipe(gulp.dest('js/0.1.20'));
 });
 
 gulp.task('less', function () {

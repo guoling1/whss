@@ -1,1 +1,0 @@
-{"version":3,"sources":["common.js"],"names":["browser","_require","elastic_touch"],"mappings":";;AAAA;;;;AAIA;AACA,IAAMA,UAAUC,SAAS,SAAT,CAAhB;AACAD,QAAQE,aAAR","file":"common.js","sourcesContent":["/**\n * Created by administrator on 2016/12/15.\n */\n\n// 引入浏览器特性处理\nconst browser = _require('browser');\nbrowser.elastic_touch();"]}
