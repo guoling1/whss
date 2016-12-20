@@ -108,4 +108,6 @@ public interface MerchantInfoService {
      * @return
      */
     List<MerchantInfo> batchGetMerchantInfo(List<Long> merchantIdList);
+
+
 }
