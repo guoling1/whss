@@ -25,7 +25,7 @@ gulp.task('hss', () => {
     }))
     .pipe(rename({suffix: ".min"}))
     .pipe(sourcemaps.write('.'))
-    .pipe(gulp.dest('js/0.1.20'));
+    .pipe(gulp.dest('js/0.1.19'));
 });
 
 gulp.task('less-dealer', function () {
@@ -48,10 +48,10 @@ gulp.task('less-hss', function () {
 
 gulp.task('replace', function () {
   return gulp.src('WEB-INF/jsp/*.jsp')
-    .pipe(replace('0.1.19', '0.1.20'))
+    .pipe(replace('0.1.19', '0.1.19'))
     .pipe(gulp.dest('WEB-INF/jsp'));
 });
 
 // default 使用默认配置 开发时候使用
-gulp.task('hss', ['hss', 'less-dealer', 'replace']);
-gulp.task('dealer', ['less-dealer']);
+gulp.task('build-hss', ['hss', 'less-hss', 'replace']);
+gulp.task('build-dealer', ['less-dealer']);
