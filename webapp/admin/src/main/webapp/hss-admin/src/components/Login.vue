@@ -13,7 +13,7 @@
         <input type="password" class="ipt" placeholder="请输入密码" v-model="password">
       </div>
 
-      <div class="submit" @click="login">登录</div>
+      <div class="submit" @click="submit">登录</div>
     </div>
     <message></message>
   </div>
@@ -38,7 +38,7 @@
       this.$store.commit('LOGIN_SHOW');
     },
     methods: {
-      login: function () {
+      submit: function () {
         this.$http.post('/admin/user/login', {
           username: this.$data.username,
           password: this.$data.password
