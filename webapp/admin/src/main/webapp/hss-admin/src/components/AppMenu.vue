@@ -1,6 +1,6 @@
 <template lang="html">
   <!-- Left side column. contains the logo and sidebar -->
-  <aside class="main-sidebar">
+  <aside class="main-sidebar" style="width: 130px">
 
     <!-- sidebar: style can be found in sidebar.less -->
     <section class="sidebar">
@@ -34,79 +34,58 @@
         <!--<li><a href="#"><i class="fa fa-link"></i> <span>Link</span></a></li>-->
         <li class="treeview active">
           <a href="#"><i class="fa fa-link"></i> <span>交易管理</span>
-            <span class="pull-right-container">
-              <i class="fa fa-angle-left pull-right"></i>
-            </span>
+
           </a>
           <ul class="treeview-menu">
-            <li class="active"><router-link to="/admin/record/deal"><i class="fa fa-link"></i> <span>交易查询</span> </router-link></li>
-            <li><router-link to="/admin/record/withdrawal"><i class="fa fa-link"></i> <span>提现查询</span> </router-link></li>
+            <li class="active"><router-link to="/admin/record/deal"><span>交易查询</span> </router-link></li>
+            <li><router-link to="/admin/record/withdrawal"><span>提现查询</span> </router-link></li>
             <!--<li><router-link to="/admin/record/moneyList"><i class="fa fa-link"></i> <span>打款查询</span> </router-link></li>-->
           </ul>
         </li>
         <li class="treeview">
           <router-link to="/admin/record/storeList"><i class="fa fa-link"></i> <span>商户管理</span>
-            <span class="pull-right-container">
-              <i class="fa fa-angle-left pull-right"></i>
-            </span>
           </router-link>
         </li>
         <li class="treeview">
-          <a href="#"><i class="fa fa-link"></i> <span>代理商管理</span>
-            <span class="pull-right-container">
-              <i class="fa fa-angle-left pull-right"></i>
-            </span>
+          <a href="#"><i class="fa fa-link"></i><span>代理商管理</span>
           </a>
           <ul class="treeview-menu">
-            <li><router-link to="/admin/record/agentList"><i class="fa fa-link"></i> <span>代理商列表</span> </router-link></li>
-            <li><router-link to="/admin/record/agentAdd"><i class="fa fa-link"></i> <span>新增代理商</span> </router-link></li>
+            <li><router-link to="/admin/record/agentList"><span>代理商列表</span> </router-link></li>
+            <li><router-link to="/admin/record/agentAdd"><span>新增代理商</span> </router-link></li>
           </ul>
         </li>
         <li class="treeview">
-          <a href="#"><i class="fa fa-link"></i> <span>分润管理</span>
-            <span class="pull-right-container">
-              <i class="fa fa-angle-left pull-right"></i>
-            </span>
+          <a href="#"><i class="fa fa-link"></i><span>分润管理</span>
           </a>
           <ul class="treeview-menu">
-            <li><router-link to="/admin/record/companyProfit"><i class="fa fa-link"></i> <span>公司分润</span> </router-link></li>
-            <li><router-link to="/admin/record/firProfit"><i class="fa fa-link"></i> <span>一级代理商分润</span> </router-link></li>
-            <li><router-link to="/admin/record/secProfit"><i class="fa fa-link"></i> <span>二级代理商分润</span> </router-link></li>
-          </ul>
-        </li>
-        <!--<li class="treeview">
-          <a href="#"><i class="fa fa-link"></i><span>设备管理</span></a>
-        </li>-->
-        <li class="treeview">
-          <a href="#"><i class="fa fa-link"></i> <span>产品管理</span>
-            <span class="pull-right-container">
-              <i class="fa fa-angle-left pull-right"></i>
-            </span>
-          </a>
-          <ul class="treeview-menu">
-            <li><router-link to="/admin/record/productList"><i class="fa fa-link"></i> <span>产品列表</span> </router-link></li>
-            <li><router-link to="/admin/record/productAdd"><i class="fa fa-link"></i> <span>新增产品</span> </router-link></li>
+            <li><router-link to="/admin/record/companyProfit"><span>公司分润</span> </router-link></li>
+            <li><router-link to="/admin/record/firProfit"><span>一级代理商分润</span> </router-link></li>
+            <li><router-link to="/admin/record/secProfit"><span>二级代理商分润</span> </router-link></li>
           </ul>
         </li>
         <li class="treeview">
-          <a href="#"><i class="fa fa-link"></i> <span>通道管理</span>
-            <span class="pull-right-container">
-              <i class="fa fa-angle-left pull-right"></i>
-            </span>
+          <a href="#"><i class="fa fa-link"></i><span>产品管理</span>
+
           </a>
           <ul class="treeview-menu">
-            <li><router-link to="/admin/record/passList"><i class="fa fa-link"></i> <span>通道列表</span> </router-link></li>
-            <li><router-link to="/admin/record/passAdd"><i class="fa fa-link"></i> <span>新增通道</span> </router-link></li>
+            <li><router-link to="/admin/record/productList"><span>产品列表</span> </router-link></li>
+            <li><router-link to="/admin/record/productAdd"><span>新增产品</span> </router-link></li>
+          </ul>
         </li>
         <li class="treeview">
-          <a href="#"><i class="fa fa-link"></i> <span>分配二维码</span>
-            <span class="pull-right-container">
-              <i class="fa fa-angle-left pull-right"></i>
-            </span>
+          <a href="#"><i class="fa fa-link"></i><span>通道管理</span>
           </a>
           <ul class="treeview-menu">
-            <li><router-link to="/admin/record/issue1"><i class="fa fa-link"></i> <span>按个数分配</span> </router-link></li>
-            <li><router-link to="/admin/record/issue"><i class="fa fa-link"></i> <span>按码段分配</span> </router-link></li>
+            <li><router-link to="/admin/record/passList"><span>通道列表</span> </router-link></li>
+            <li><router-link to="/admin/record/passAdd"> <span>新增通道</span> </router-link></li>
+        </li>
+        <li class="treeview">
+          <a href="#"><i class="fa fa-link"></i><span>分配二维码</span>
+
+          </a>
+          <ul class="treeview-menu">
+            <li><router-link to="/admin/record/issue1"><span>按个数分配</span> </router-link></li>
+            <li><router-link to="/admin/record/issue"><span>按码段分配</span> </router-link></li>
           </ul>
         </li>
       </ul>
