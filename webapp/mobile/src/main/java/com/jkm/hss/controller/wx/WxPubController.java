@@ -166,6 +166,40 @@ public class WxPubController extends BaseController {
 
 
     /**
+     * 扫固定码获取openId(获取openId)
+     * @param request
+     * @param response
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value = "toMerchantSkip", method = RequestMethod.GET)
+    public String  toMerchantSkip(final HttpServletRequest request, final HttpServletResponse response,final Model model) throws Exception{
+        String getQueryString = "";
+        if(request.getQueryString() == null){
+            getQueryString="";
+        }else{
+            getQueryString = request.getQueryString();
+        }
+        String[] arr = getQueryString.split("&");
+        String code="";
+        String state="";
+        for(int i =0;i<arr.length;i++){
+            if("code".equals(arr[i].split("=")[0])){
+                code = arr[i].split("=")[1];
+            }
+            if("state".equals(arr[i].split("=")[0])){
+                state = arr[i].split("=")[1];
+            }
+        }
+        Map<String,String> ret = WxPubUtil.getOpenid(code);
+        model.addAttribute("openId", ret.get("openid"));
+        String tempUrl = URLDecoder.decode(state, "UTF-8");
+        String redirectUrl = URLDecoder.decode(tempUrl,"UTF-8");
+        String finalRedirectUrl = "http://hss.qianbaojiajia.com/code/scanCode?"+redirectUrl;
+        return "redirect:"+finalRedirectUrl;
+    }
+
+    /**
      * 商户登录发送验证码
      * @param codeRequest
      * @return
