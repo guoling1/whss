@@ -14,10 +14,8 @@
 </head>
 <body>
 <div id="prompt">
-    <img src="../assets/book.png" alt="">
-
+    <img src="http://static.jinkaimen.cn/hss/assets/book.png" alt="">
     <p>该商户资料正在审核</p>
-
     <p>请耐心等待</p>
 </div>
 </body>
