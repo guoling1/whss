@@ -9,9 +9,8 @@
   <meta name="viewport"
         content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
   <title>好收收</title>
-  <link rel="stylesheet" href="/css/reset.css">
-  <link rel="stylesheet" href="/css/style.css">
-  <link rel="stylesheet" href="/css/weui.css">
+  <link rel="stylesheet" href="http://static.jinkaimen.cn/hss/css/style.css">
+  <link rel="stylesheet" href="http://static.jinkaimen.cn/weui/weui.css">
 </head>
 <body>
 
@@ -40,7 +39,7 @@
       </div>
       <div class="right">
         <div class="sample-title">示例</div>
-        <div class="sample-logo"><img src="http://img.jinkaimen.cn/hss/assets/sample1.png"></div>
+        <div class="sample-logo"><img src="http://static.jinkaimen.cn/hss/assets/sample1.png"></div>
       </div>
     </div>
     <div class="space">
@@ -55,7 +54,7 @@
       </div>
       <div class="right">
         <div class="sample-title">示例</div>
-        <div class="sample-logo"><img src="http://img.jinkaimen.cn/hss/assets/sample2.png"></div>
+        <div class="sample-logo"><img src="http://static.jinkaimen.cn/hss/assets/sample2.png"></div>
       </div>
     </div>
     <div class="space">
@@ -70,7 +69,7 @@
       </div>
       <div class="right">
         <div class="sample-title">示例</div>
-        <div class="sample-logo"><img src="http://img.jinkaimen.cn/hss/assets/sample3.png"></div>
+        <div class="sample-logo"><img src="http://static.jinkaimen.cn/hss/assets/sample3.png"></div>
       </div>
     </div>
     <div class="space">
@@ -85,7 +84,7 @@
       </div>
       <div class="right">
         <div class="sample-title">示例</div>
-        <div class="sample-logo"><img src="http://img.jinkaimen.cn/hss/assets/sample4.png"></div>
+        <div class="sample-logo"><img src="http://static.jinkaimen.cn/hss/assets/sample4.png"></div>
       </div>
     </div>
     <div class="next">
@@ -121,6 +120,6 @@
     ]
   });
 </script>
-<script src="/js/shoes.js"></script>
-<script src="/js/upload.js"></script>
+<script src="http://static.jinkaimen.cn/vendor/vendor.min.js"></script>
+<script src="http://static.jinkaimen.cn/hss/0.1.19/upload.min.js"></script>
 </html>

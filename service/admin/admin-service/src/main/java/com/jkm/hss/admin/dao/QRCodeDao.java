@@ -59,21 +59,19 @@ public interface QRCodeDao {
     int markCodeToDealerByRange(@Param("firstLevelDealerId") long firstLevelDealerId, @Param("startCode") String startCode, @Param("endCode") String endCode);
 
     /**
-     * 将一级代理商下未分配的count个码段标记为已分配
+     * 将codeIds表示的二维码标记为已分配
      *
-     * @param dealerId
-     * @param count
+     * @param codeIds
      */
-    int markAsDistribute(@Param("dealerId") long dealerId, @Param("count") int count);
+    int markAsDistribute(@Param("codeIds") List<Long> codeIds);
 
     /**
-     * 将一级代理商（dealerId）下未分配的count个码段标记为二级代理商（toDealerId）名下已分配
+     * 将一级代理商（dealerId）下codeIds表示的码段标记为二级代理商（toDealerId）名下已分配
      *
-     * @param dealerId
-     * @param toDealerId
-     * @param count
+     * @param codeIds
+     * @param toDealerId 二级代理商id
      */
-    int markAsDistribute2(@Param("dealerId") long dealerId, @Param("toDealerId") long toDealerId, @Param("count") int count);
+    int markAsDistribute2(@Param("codeIds") List<Long> codeIds, @Param("toDealerId") long toDealerId);
 
     /**
      * code标记为已激活
@@ -91,6 +89,15 @@ public interface QRCodeDao {
      * @return
      */
     QRCode selectById(@Param("id") long id);
+
+    /**
+     * 按ids查询
+     *
+     * @param codeIds
+     * @return
+     */
+    List<QRCode> selectByIds(@Param("codeIds") List<Long> codeIds);
+
 
     /**
      * 按码段查询
@@ -148,14 +155,34 @@ public interface QRCodeDao {
     int selectUnDistributeCodeCountByFirstLevelDealerId(@Param("dealerId") long dealerId);
 
     /**
-     * 查询一级代理商下未分配的count个码段
+     * 查询一级代理商下未分配的码段
      *
      * @param dealerId
-     * @param count
      * @return
      */
-    List<QRCode> selectUnDistributeCodeByFirstLevelDealerId(@Param("dealerId") long dealerId, @Param("count") int count);
+    List<QRCode> selectUnDistributeCodeByFirstLevelDealerId(@Param("dealerId") long dealerId);
 
+    /**
+     * 查询代理商某一二维码范围下的未分配的二维码个数
+     *
+     * @param startCode
+     * @param endCode
+     * @param dealerId
+     * @return
+     */
+    int selectUnDistributeCodeCountByDealerIdAndRangeCode(@Param("startCode") String startCode,
+                                                          @Param("endCode") String endCode, @Param("dealerId") long dealerId);
+
+    /**
+     * 查询代理商某一二维码范围下的未分配的二维码
+     *
+     * @param dealerId
+     * @param startCode
+     * @param endCode
+     * @return
+     */
+    List<QRCode> selectUnDistributeCodeByDealerIdAndRangeCode(@Param("dealerId") long dealerId,
+                                                              @Param("startCode") String startCode, @Param("endCode") String endCode);
     /**
      * 查询一级代理分配给二级代理的二维码数
      *
@@ -313,4 +340,13 @@ public interface QRCodeDao {
      * @return
      */
     int selectCountByRange(@Param("startCode") String startCode, @Param("endCode") String endCode);
+
+    /**
+     * 查询系统中指定范围的可分配的二维码
+     *
+     * @param startCode
+     * @param endCode
+     * @return
+     */
+    List<Long> selectUnDistributeCodeByRangeCode(@Param("startCode") String startCode, @Param("endCode") String endCode);
 }

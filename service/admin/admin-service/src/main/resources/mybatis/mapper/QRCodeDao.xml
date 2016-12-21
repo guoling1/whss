@@ -85,22 +85,22 @@
     </update>
 
     <update id="markAsDistribute">
-         UPDATE tb_qr_code
-         SET distribute_status = 2
-         WHERE first_level_dealer_id = #{dealerId}
-         AND distribute_status = 1
-         ORDER BY id ASC
-         LIMIT #{count}
+        UPDATE tb_qr_code
+        SET distribute_status = 2
+        WHERE id IN
+        <foreach collection="codeIds" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
     </update>
 
     <update id="markAsDistribute2">
-         UPDATE tb_qr_code
-         SET distribute_status = 2,
-         second_level_dealer_id = #{toDealerId}
-         WHERE first_level_dealer_id = #{dealerId}
-         AND distribute_status = 1
-         ORDER BY id ASC
-         LIMIT #{count}
+        UPDATE tb_qr_code
+        SET distribute_status = 2,
+        second_level_dealer_id = #{toDealerId}
+        WHERE id IN
+        <foreach collection="codeIds" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
     </update>
 
     <update id="markAsActivate">
@@ -120,6 +120,14 @@
 
     <select id="selectById" resultType="com.jkm.hss.admin.entity.QRCode">
         SELECT * FROM tb_qr_code WHERE id = #{id}
+    </select>
+
+    <select id="selectByIds" resultType="com.jkm.hss.admin.entity.QRCode">
+        SELECT * FROM tb_qr_code
+        WHERE id IN
+        <foreach collection="codeIds" item="item" index="index" open="(" separator="," close=")">
+            #{item}
+        </foreach>
     </select>
 
     <select id="selectByCode" resultType="com.jkm.hss.admin.entity.QRCode">
@@ -158,8 +166,25 @@
          SELECT * FROM tb_qr_code
          WHERE first_level_dealer_id = #{dealerId}
          AND distribute_status = 1
-         ORDER BY id ASC
-         LIMIT #{count}
+         AND activate_status = 1
+         ORDER BY code ASC
+    </select>
+
+    <select id="selectUnDistributeCodeCountByDealerIdAndRangeCode" resultType="java.lang.Integer">
+        SELECT COUNT(0) FROM tb_qr_code
+        WHERE first_level_dealer_id = #{dealerId}
+        AND distribute_status = 1
+        AND activate_status = 1
+        AND code BETWEEN #{startCode} AND #{endCode}
+    </select>
+
+    <select id="selectUnDistributeCodeByDealerIdAndRangeCode" resultType="com.jkm.hss.admin.entity.QRCode">
+        SELECT * FROM tb_qr_code
+        WHERE first_level_dealer_id = #{dealerId}
+        AND distribute_status = 1
+        AND activate_status = 1
+        AND code BETWEEN #{startCode} AND #{endCode}
+        ORDER BY code ASC
     </select>
 
     <select id="selectDistributeCodeCount" resultType="com.jkm.hss.admin.helper.responseparam.DistributeCodeCount">
@@ -306,6 +331,15 @@
 
     <select id="selectCountByRange" resultType="java.lang.Integer">
         SELECT COUNT(*) FROM tb_qr_code
+        WHERE first_level_dealer_id =0
+        AND second_level_dealer_id = 0
+        AND distribute_status = 1
+        AND activate_status = 1
+        AND code BETWEEN #{startCode} AND #{endCode}
+    </select>
+
+    <select id="selectUnDistributeCodeByRangeCode" resultType="java.lang.Long">
+        SELECT id FROM tb_qr_code
         WHERE first_level_dealer_id =0
         AND second_level_dealer_id = 0
         AND distribute_status = 1

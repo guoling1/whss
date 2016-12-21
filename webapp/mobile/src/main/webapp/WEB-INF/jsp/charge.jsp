@@ -12,9 +12,8 @@
   <meta name="viewport"
         content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
   <title>好收收</title>
-  <link rel="stylesheet" href="/css/reset.css">
-  <link rel="stylesheet" href="/css/style.css">
-  <link rel="stylesheet" href="/css/weui.css">
+  <link rel="stylesheet" href="http://static.jinkaimen.cn/hss/css/style.css">
+  <link rel="stylesheet" href="http://static.jinkaimen.cn/weui/weui.css">
 </head>
 <body>
 
@@ -31,14 +30,15 @@
       <div class="qr" id="qr"></div>
 
       <div class="bar">
-        <img src="../../assets/wxb.png" alt=""/>
-        <img src="../../assets/zfbb.png" alt=""/>
+        <img src="http://static.jinkaimen.cn/hss/assets/wxb.png" alt=""/>
+        <img src="http://static.jinkaimen.cn/hss/assets/zfbb.png" alt=""/>
         <span>长按识别或保存二维码付款</span>
       </div>
     </div>
   </div>
   <div class="explain">
-    <p class="refresh">二维码仅支持扫描一次，<span class="reload" id="refresh"><img src="../../assets/reload.png"/>点击刷新</span></p>
+    <p class="refresh">二维码仅支持扫描一次，<span class="reload" id="refresh">
+      <img src="http://static.jinkaimen.cn/hss/assets/reload.png"/>点击刷新</span></p>
 
     <p class="server">由好收收提供服务</p>
   </div>
@@ -50,7 +50,7 @@
     amount: '${amount}'
   }
 </script>
-<script src="http://img.jinkaimen.cn/hss/js/qrcode.min.js"></script>
-<script src="/js/shoes.js"></script>
-<script src="/js/charge.js"></script>
+<script src="http://static.jinkaimen.cn/qrcode/qrcode.min.js"></script>
+<script src="http://static.jinkaimen.cn/vendor/vendor.min.js"></script>
+<script src="http://static.jinkaimen.cn/hss/0.1.19/charge.min.js"></script>
 </html>

@@ -31,7 +31,9 @@ import com.jkm.hss.product.entity.ProductChannelDetail;
 import com.jkm.hss.product.enums.EnumPayChannelSign;
 import com.jkm.hss.product.servcie.ProductChannelDetailService;
 import com.jkm.hss.product.servcie.ProductService;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -42,6 +44,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletResponse;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -137,27 +140,31 @@ public class AdminController extends BaseController {
         if (distributeQRCodeRequest.getCount() <= 0) {
             return CommonResponse.simpleResponse(-1, "分配个数不可以是0");
         }
-        final long unDistributeCodeCount = this.dealerService.getUnDistributeCodeCount(distributeQRCodeRequest.getDealerId());
-        if (unDistributeCodeCount > 0) {
-            return CommonResponse.simpleResponse(-1, "当前一级代理存在未分配的二维码，不可以分配");
-        }
+
         final Dealer dealer = dealerOptional.get();
-        final Triple<Integer, String, QRCode> resultTriple = this.adminUserService.distributeQRCode(super.getAdminUser().getId(),
+        final Triple<Integer, String, List<Pair<QRCode, QRCode>>> resultTriple = this.adminUserService.distributeQRCode(super.getAdminUser().getId(),
                 distributeQRCodeRequest.getDealerId(), distributeQRCodeRequest.getCount());
         if (1 != resultTriple.getLeft()) {
             return CommonResponse.simpleResponse(-1, resultTriple.getMiddle());
         }
-        final QRCode latestQRCode = resultTriple.getRight();
+        final List<Pair<QRCode, QRCode>> codePairs = resultTriple.getRight();
         final DistributeQRCodeResponse distributeQRCodeResponse = new DistributeQRCodeResponse();
         distributeQRCodeResponse.setDealerId(distributeQRCodeRequest.getDealerId());
         distributeQRCodeResponse.setName(dealer.getProxyName());
         distributeQRCodeResponse.setMobile(dealer.getMobile());
-        distributeQRCodeResponse.setDistributeDate(latestQRCode.getCreateTime());
+        distributeQRCodeResponse.setDistributeDate(new Date());
         distributeQRCodeResponse.setCount(distributeQRCodeRequest.getCount());
-        distributeQRCodeResponse.setStartCode(String.valueOf(Long.valueOf(latestQRCode.getCode()) - distributeQRCodeRequest.getCount() + 1));
-        distributeQRCodeResponse.setEndCode(latestQRCode.getCode());
+        final ArrayList<DistributeQRCodeResponse.Code> codes = new ArrayList<>();
+        for (Pair<QRCode, QRCode> pair : codePairs) {
+            final DistributeQRCodeResponse.Code code = distributeQRCodeResponse.new Code();
+            code.setStartCode(pair.getLeft().getCode());
+            code.setEndCode(pair.getRight().getCode());
+            codes.add(code);
+        }
+        distributeQRCodeResponse.setCodes(codes);
         return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "分配成功", distributeQRCodeResponse);
     }
+
 
     /**
      * 按码段范围给一级代理商分配码段
@@ -172,26 +179,28 @@ public class AdminController extends BaseController {
         if(!dealerOptional.isPresent()) {
             return CommonResponse.simpleResponse(-1, "代理商不存在");
         }
-        final long unDistributeCodeCount = this.dealerService.getUnDistributeCodeCount(distributeRangeQRCodeRequest.getDealerId());
-        if (unDistributeCodeCount > 0) {
-            return CommonResponse.simpleResponse(-1, "当前一级代理存在未分配的二维码，不可以分配");
-        }
-        final boolean checkResult = this.dealerService.checkRangeQRCode(distributeRangeQRCodeRequest.getStartCode(),
-                distributeRangeQRCodeRequest.getEndCode());
-        if (!checkResult) {
-            return CommonResponse.simpleResponse(-1, "请检查二维码是不是连续！！");
-        }
         final Dealer dealer = dealerOptional.get();
-        this.adminUserService.distributeRangeQRCode(super.getAdminUser().getId(), distributeRangeQRCodeRequest.getDealerId(),
+        final List<Pair<QRCode, QRCode>> pairs = this.adminUserService.distributeRangeQRCode(distributeRangeQRCodeRequest.getDealerId(),
                 distributeRangeQRCodeRequest.getStartCode(), distributeRangeQRCodeRequest.getEndCode());
+        if (CollectionUtils.isEmpty(pairs)) {
+            return CommonResponse.simpleResponse(-1, "此范围不存在可分配的二维码");
+        }
         final DistributeRangeQRCodeResponse distribute = new DistributeRangeQRCodeResponse();
         distribute.setDealerId(dealer.getId());
         distribute.setName(dealer.getProxyName());
         distribute.setMobile(dealer.getMobile());
         distribute.setDistributeDate(new Date());
-        distribute.setCount((int) (Long.valueOf(distributeRangeQRCodeRequest.getEndCode()) - Long.valueOf(distributeRangeQRCodeRequest.getStartCode()) + 1));
-        distribute.setStartCode(distributeRangeQRCodeRequest.getStartCode());
-        distribute.setEndCode(distributeRangeQRCodeRequest.getEndCode());
+        final ArrayList<DistributeRangeQRCodeResponse.Code> codes = new ArrayList<>();
+        int count = 0;
+        for (Pair<QRCode, QRCode> pair : pairs) {
+            final DistributeRangeQRCodeResponse.Code code = distribute.new Code();
+            code.setStartCode(pair.getLeft().getCode());
+            code.setEndCode(pair.getRight().getCode());
+            count += (int) (Long.valueOf(pair.getRight().getCode()) - Long.valueOf(pair.getLeft().getCode()) + 1);
+            codes.add(code);
+        }
+        distribute.setCount(count);
+        distribute.setCodes(codes);
         return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "分配成功", distribute);
     }
 

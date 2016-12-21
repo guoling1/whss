@@ -456,4 +456,91 @@
 		limit #{offset}, #{size}
 	</select>
 
+
+	<!-- 交易记录 -->
+	<select id="selectOrderList" resultType="com.jkm.hss.merchant.entity.MerchantAndOrderRecord">
+		SELECT o.id,o.order_id,o.merchant_id,o.sub_name,o.pay_channel,o.total_fee,o.real_fee,
+		o.service_fee,o.channel_fee,o.pay_result,o.settle_status,o.out_trade_no,o.error_message,
+		o.create_time,m.bank_no,m.mobile
+		FROM tb_order_record o
+		LEFT JOIN tb_merchant_info m
+		ON o.merchant_id = m.id
+		WHERE o.trade_type=0 and o.status= 0
+		<if test="startTime!=null and startTime!=''">
+			AND o.create_time <![CDATA[ >= ]]> #{startTime}
+		</if>
+		<if test="endTime!=null and endTime!=''">
+			AND o.create_time <![CDATA[ <= ]]> #{endTime}
+		</if>
+		<if test="orderId != null and orderId!=''">
+			AND o.order_id = #{orderId}
+		</if>
+		<if test="merchantId != null and merchantId!=''">
+			AND o.merchant_id = #{merchantId}
+		</if>
+		<if test="subName != null and subName!=''">
+			AND o.sub_name = #{subName}
+		</if>
+		<if test="lessTotalFee != null and lessTotalFee!=''">
+			AND o.total_fee <![CDATA[ >= ]]> #{lessTotalFee}
+		</if>
+		<if test="moreTotalFee != null and moreTotalFee!=''">
+			AND o.total_fee <![CDATA[ <= ]]> #{moreTotalFee}
+		</if>
+		<if test="payResults!=null and payResults.size()>0">
+			AND o.pay_result in
+			<foreach item="item" index="index" collection="payResults" open="(" separator="," close=")">
+				#{item}
+			</foreach>
+		</if>
+		<if test="payChannel != 0">
+			AND o.pay_channel = #{payChannel}
+		</if>
+		<if test="mdMobile != null and mdMobile!=''">
+			AND m.md_mobile = #{mdMobile}
+		</if>
+		ORDER BY o.create_time DESC
+		limit #{offset}, #{size}
+	</select>
+
+	<select id="selectOrderListCount"  resultType="java.lang.Integer">
+		SELECT COUNT(1)
+		FROM tb_order_record o
+		LEFT JOIN tb_merchant_info m
+		ON o.merchant_id = m.id
+		WHERE o.trade_type=0 and o.status= 0
+		<if test="startTime!=null and startTime!=''">
+			AND o.create_time <![CDATA[ >= ]]> #{startTime}
+		</if>
+		<if test="endTime!=null and endTime!=''">
+			AND o.create_time <![CDATA[ <= ]]> #{endTime}
+		</if>
+		<if test="orderId != null and orderId!=''">
+			AND o.order_id = #{orderId}
+		</if>
+		<if test="merchantId != null and merchantId!=''">
+			AND o.merchant_id = #{merchantId}
+		</if>
+		<if test="subName != null and subName!=''">
+			AND o.sub_name = #{subName}
+		</if>
+		<if test="lessTotalFee != null and lessTotalFee!=''">
+			AND o.total_fee <![CDATA[ >= ]]> #{lessTotalFee}
+		</if>
+		<if test="moreTotalFee != null and moreTotalFee!=''">
+			AND o.total_fee <![CDATA[ <= ]]> #{moreTotalFee}
+		</if>
+		<if test="payResults!=null and payResults.size()>0">
+			AND o.pay_result in
+			<foreach item="item" index="index" collection="payResults" open="(" separator="," close=")">
+				#{item}
+			</foreach>
+		</if>
+		<if test="payChannel != 0">
+			AND o.pay_channel = #{payChannel}
+		</if>
+		<if test="mdMobile != null and mdMobile!=''">
+			AND m.md_mobile = #{mdMobile}
+		</if>
+	</select>
 </mapper>

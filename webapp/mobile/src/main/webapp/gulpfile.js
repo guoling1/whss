@@ -10,49 +10,61 @@ const path = require('path');
 const sourcemaps = require('gulp-sourcemaps');
 const babel = require('gulp-babel');
 const concat = require('gulp-concat');
+const replace = require('gulp-replace');
+const rename = require("gulp-rename");
 
-const shoesPath = [
-  'es6/**/require.js',
-  'es6/shoes/tools.js',
-  'es6/shoes/message.js',
-  'es6/shoes/http.js',
-  'es6/shoes/validate.js',
-  'es6/shoes/fastclick.js',
-  'es6/shoes/*.js'
-];
-
-const pagesPath = [
-  'es6/pages/*.js'
-];
-
-gulp.task('shoes', () => {
-  return gulp.src(shoesPath)
+gulp.task('js-dealer', () => {
+  return gulp.src('es6/dealer/*.js')
     .pipe(sourcemaps.init())
     .pipe(babel({
       presets: ['es2015']
     }))
-    .pipe(concat('shoes.js'))
+    .pipe(rename({suffix: ".min"}))
     .pipe(sourcemaps.write('.'))
-    .pipe(gulp.dest('js'));
+    .pipe(gulp.dest('js/dealer/0.1.1'));
 });
 
-gulp.task('pages', () => {
-  return gulp.src(pagesPath)
-    .pipe(sourcemaps.init())
-    .pipe(babel({
-      presets: ['es2015']
-    }))
-    .pipe(sourcemaps.write('.'))
-    .pipe(gulp.dest('js'));
-});
-
-gulp.task('less', function () {
-  return gulp.src('less/**/*.less')
+gulp.task('less-dealer', function () {
+  return gulp.src('less/**/dealer.less')
     .pipe(less({
       paths: [path.join(__dirname, 'less', 'includes')]
     }))
+    .pipe(rename({basename: "style"}))
     .pipe(gulp.dest('css'));
 });
 
+gulp.task('replace-dealer', function () {
+  return gulp.src('WEB-INF/jsp/dealer/*.jsp')
+    .pipe(replace('0.1.1', '0.1.1'))
+    .pipe(gulp.dest('WEB-INF/jsp/dealer'));
+});
+
+gulp.task('less-hss', function () {
+  return gulp.src('less/**/hss.less')
+    .pipe(less({
+      paths: [path.join(__dirname, 'less', 'includes')]
+    }))
+    .pipe(rename({basename: "style"}))
+    .pipe(gulp.dest('css'));
+});
+
+gulp.task('js-hss', () => {
+  return gulp.src('es6/hss/*.js')
+    .pipe(sourcemaps.init())
+    .pipe(babel({
+      presets: ['es2015']
+    }))
+    .pipe(rename({suffix: ".min"}))
+    .pipe(sourcemaps.write('.'))
+    .pipe(gulp.dest('js/hss/0.1.19'));
+});
+
+gulp.task('replace-hss', function () {
+  return gulp.src('WEB-INF/jsp/*.jsp')
+    .pipe(replace('0.1.19', '0.1.19'))
+    .pipe(gulp.dest('WEB-INF/jsp'));
+});
+
 // default 使用默认配置 开发时候使用
-gulp.task('default', ['shoes', 'pages', 'less']);
+gulp.task('build-hss', ['js-hss', 'less-hss', 'replace-hss']);
+gulp.task('build-dealer', ['js-dealer', 'less-dealer', 'replace-dealer']);

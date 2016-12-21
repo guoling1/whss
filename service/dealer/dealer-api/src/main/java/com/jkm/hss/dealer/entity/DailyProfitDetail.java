@@ -44,7 +44,7 @@ public class DailyProfitDetail extends BaseEntity{
      */
     private String firstDealerName;
     /**
-     * 统计日期
+     * 统计的是哪天的交易
      * 1999-09-09
      */
     private String statisticsDate;

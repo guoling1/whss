@@ -16,13 +16,16 @@ import com.jkm.hss.admin.service.AdminUserPassportService;
 import com.jkm.hss.admin.service.AdminUserService;
 import com.jkm.hss.admin.service.QRCodeService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -144,34 +147,43 @@ public class AdminUserServiceImpl implements AdminUserService {
      */
     @Override
     @Transactional
-    synchronized public Triple<Integer, String, QRCode> distributeQRCode(final long adminId, final long firstLevelDealerId, final int count) {
+    synchronized public Triple<Integer, String, List<Pair<QRCode, QRCode>>> distributeQRCode(final long adminId,
+                                                                                             final long firstLevelDealerId, final int count) {
         final List<Long> unDistributeList = this.qrCodeService.getUnDistributeCode();
         log.info("未分配的二维码数量[{}]", unDistributeList.size());
         if (unDistributeList.size() < count) {
             return Triple.of(0, "未分配的二维码数量[" + unDistributeList.size() + "]小于要分配的个数[" + count+ "]", null);
         }
-        //默认二维码是有序的
-        final int updateCount = this.qrCodeService.markCodeToDealer(firstLevelDealerId, unDistributeList.subList(0, count));
+        final List<Long> ids = unDistributeList.subList(0, count);
+        final int updateCount = this.qrCodeService.markCodeToDealer(firstLevelDealerId, ids);
         log.info("分配二维码数量[{}], 实际要分配数量[{}]", updateCount, count);
         Preconditions.checkState(updateCount == count, "mark code to dealer error!!!");
-        final QRCode qrCode = this.qrCodeService.getById(unDistributeList.get(count - 1)).get();
-        return Triple.of(1, "分配成功", qrCode);
+        final List<QRCode> codes = this.qrCodeService.getByIds(ids);
+        final List<Pair<QRCode, QRCode>> pairs = this.qrCodeService.getPairQRCodeList(codes);
+        return Triple.of(1, "分配成功", pairs);
     }
 
     /**
      * {@inheritDoc}
      *
-     * @param adminId
+     *
      * @param firstLevelDealerId
      * @param startCode
      * @param endCode
      */
     @Override
     @Transactional
-    synchronized public void distributeRangeQRCode(final long adminId, final long firstLevelDealerId, final String startCode, final String endCode) {
-        final int updateCount = this.qrCodeService.markCodeToDealer(firstLevelDealerId, startCode, endCode);
-        log.info("分配二维码数量[{}], 实际要分配数量[{}]", updateCount, Long.valueOf(endCode) - Long.valueOf(startCode) + 1);
-        Preconditions.checkState(updateCount == (int) (Long.valueOf(endCode) - Long.valueOf(startCode) + 1), "mark code to dealer error!!!");
+    synchronized public List<Pair<QRCode, QRCode>> distributeRangeQRCode(final long firstLevelDealerId,
+                                                                         final String startCode, final String endCode) {
+        final List<Long> codeIds = this.qrCodeService.getUnDistributeCodeByRangeCode(startCode, endCode);
+        if (CollectionUtils.isEmpty(codeIds)) {
+            return Collections.emptyList();
+        }
+        final int updateCount = this.qrCodeService.markCodeToDealer(firstLevelDealerId, codeIds);
+        Preconditions.checkState(updateCount == codeIds.size(), "mark code to dealer error!!!");
+        final List<QRCode> codes = this.qrCodeService.getByIds(codeIds);
+        final List<Pair<QRCode, QRCode>> pairs = this.qrCodeService.getPairQRCodeList(codes);
+        return pairs;
     }
 
 }

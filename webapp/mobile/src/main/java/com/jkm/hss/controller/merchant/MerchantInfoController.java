@@ -77,7 +77,7 @@ public class MerchantInfoController extends BaseController {
     @ResponseBody
     @RequestMapping(value = "/save", method = RequestMethod.POST)
     public CommonResponse save(final HttpServletRequest request, final HttpServletResponse response, @RequestBody final MerchantInfoAddRequest merchantInfo){
-        Optional<UserInfo> userInfoOptional = userInfoService.selectById(super.getUserId(request));
+        Optional<UserInfo> userInfoOptional = userInfoService.selectByOpenId(super.getOpenId(request));
         merchantInfo.setId(userInfoOptional.get().getMerchantId());
 //        merchantInfo.setId(49);
         merchantInfo.setIdentity(MerchantSupport.encryptIdenrity(merchantInfo.getIdentity()));
@@ -173,7 +173,7 @@ public class MerchantInfoController extends BaseController {
     @ResponseBody
     @RequestMapping(value = "/savePic", method = RequestMethod.POST)
     public CommonResponse savePic(final HttpServletRequest request, final HttpServletResponse response,@RequestBody final MerchantInfoAddRequest merchantInfo){
-        Optional<UserInfo> userInfoOptional = userInfoService.selectById(super.getUserId(request));
+        Optional<UserInfo> userInfoOptional = userInfoService.selectByOpenId(super.getOpenId(request));
         merchantInfo.setId(userInfoOptional.get().getMerchantId());
         merchantInfo.setStatus(EnumMerchantStatus.REVIEW.getId());
         InputStream inputStream = WxPubUtil.getInputStream(merchantInfo.getIdentityFacePic());
@@ -240,7 +240,7 @@ public class MerchantInfoController extends BaseController {
     @ResponseBody
     @RequestMapping(value = "/sendVerifyCode", method = RequestMethod.POST)
     public CommonResponse sendVerifyCode(@RequestBody final MerchantInfo merchantInfo, final HttpServletRequest request){
-        final Optional<UserInfo> userInfoOptional = userInfoService.selectById(super.getUserId(request));
+        final Optional<UserInfo> userInfoOptional = userInfoService.selectByOpenId(super.getOpenId(request));
         final Optional<MerchantInfo> merchantInfoOptional = this.merchantInfoService.selectById(userInfoOptional.get().getMerchantId());
         final String reserveMobile = merchantInfo.getReserveMobile();
         if (StringUtils.isBlank(reserveMobile)) {

@@ -58,12 +58,12 @@
         SELECT * FROM tb_daily_profit_detail
         WHERE first_dealer_id = #{dealerId} AND shall_money_type = 2 order by create_time DESC
     </select>
-    <select id="selectByFirstDealerIdAndType" resultType="com.jkm.hss.dealer.entity.DailyProfitDetail">
-        SELECT * FROM tb_daily_profit_detail WHERE first_dealer_id = #{dealerId} AND shall_money_type = #{type}
+    <select id="selectByFirstDealerIdAndTypeAndProfitDate" resultType="com.jkm.hss.dealer.entity.DailyProfitDetail">
+        SELECT * FROM tb_daily_profit_detail WHERE first_dealer_id = #{dealerId} AND shall_money_type = #{type} AND statistics_date = #{profitDate}
     </select>
     <select id="selectSecondByParam" resultType="com.jkm.hss.dealer.entity.DailyProfitDetail">
         SELECT * FROM tb_daily_profit_detail
-        WHERE shall_money_type = 2
+        WHERE shall_money_type = 5
         <if test="dealerName != null">
             and dealer_name = #{dealerName}
         </if>
@@ -97,5 +97,9 @@
     <select id="selectById" resultType="com.jkm.hss.dealer.entity.DailyProfitDetail">
         SELECT * FROM tb_daily_profit_detail
         WHERE id = #{id}
+    </select>
+    <select id="selectBySecondDealerIdAndTypeAndProfitDate"
+            resultType="com.jkm.hss.dealer.entity.DailyProfitDetail">
+        SELECT * FROM tb_daily_profit_detail WHERE second_dealer_id = #{dealerId} AND shall_money_type = #{type} AND statistics_date = #{profitDate}
     </select>
 </mapper>

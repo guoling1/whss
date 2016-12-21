@@ -82,7 +82,7 @@
     </select>
     <select id="selectSecondYesterdayDealMoney" resultType="java.math.BigDecimal">
         SELECT sum(total_fee) FROM tb_shall_profit_detail
-        WHERE second_dealer_id = #{dealerId} AND is_direct = 0 AND profit_date = #{profitDate}
+        WHERE second_dealer_id = #{dealerId} AND is_direct = 0 AND profit_type = 1 AND profit_date = #{profitDate}
     </select>
     <select id="selectSecondHistoryProfitMoney" resultType="java.math.BigDecimal">
         SELECT sum(second_shall_amount) FROM tb_shall_profit_detail
@@ -106,7 +106,7 @@
     </select>
     <select id="selectFirstYesterdayDealMoney" resultType="java.math.BigDecimal">
         SELECT sum(total_fee)  FROM tb_shall_profit_detail
-        WHERE first_dealer_id = #{dealerId} AND is_direct = 1 AND profit_date = #{profitDate}
+        WHERE first_dealer_id = #{dealerId} AND is_direct = 1 AND profit_type = 1 AND profit_date = #{profitDate}
     </select>
     <select id="selectByOrderId" resultType="com.jkm.hss.dealer.entity.ShallProfitDetail">
         SELECT * FROM tb_shall_profit_detail where payment_sn = #{orderId}
