@@ -16,8 +16,8 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <title>好收收</title>
-    <link rel="stylesheet" href="/css/reset.css">
-    <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="http://static.jinkaimen.cn/dealer/css/style.css">
+  <link rel="stylesheet" href="http://static.jinkaimen.cn/weui/weui.css">
 </head>
 <body>
 <div id="err">
@@ -27,5 +27,4 @@
     <div class="btn" onclick="(function(){window.history.go(-1)})()">返回</div>
 </div>
 </body>
-<script src="http://img.jinkaimen.cn/hss/js/qrcode.min.js"></script>
 </html>

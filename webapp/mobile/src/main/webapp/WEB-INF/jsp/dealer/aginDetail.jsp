@@ -11,54 +11,54 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <title>好收收</title>
-    <link rel="stylesheet" href="/css/reset.css">
-    <link rel="stylesheet" href="/css/style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <title>好收收</title>
+  <link rel="stylesheet" href="http://static.jinkaimen.cn/dealer/css/style.css">
+  <link rel="stylesheet" href="http://static.jinkaimen.cn/weui/weui.css">
 </head>
 <body>
-    <div id="aginDetail">
-    <div class="header">
-        <p class="w33">二级代理名称</p>
+<div id="aginDetail">
+  <div class="header">
+    <p class="w33">二级代理名称</p>
 
-        <p class="w21">收单分润</p>
+    <p class="w21">收单分润</p>
 
-        <p class="w21">提现分润</p>
+    <p class="w21">提现分润</p>
 
-        <p class="w21">分润总额</p>
-    </div>
-    <ul>
-         <c:forEach items="${data}" var="everyDay">
-        <li>
-            <!--总和-->
-            <div class="total">
-                <p class="w33">${everyDay.profitDate}</p>
+    <p class="w21">分润总额</p>
+  </div>
+  <ul>
+    <c:forEach items="${data}" var="everyDay">
+      <li>
+        <!--总和-->
+        <div class="total">
+          <p class="w33">${everyDay.profitDate}</p>
 
-                <p class="w21 decimal">${everyDay.dayCollectTotalMoney}</p>
+          <p class="w21 decimal">${everyDay.dayCollectTotalMoney}</p>
 
-                <p class="w21 decimal">${everyDay.daywithdrawTotalMoney}</p>
+          <p class="w21 decimal">${everyDay.daywithdrawTotalMoney}</p>
 
-                <p class="red w21 decimal">${everyDay.dayTotalMoney}</p>
-            </div>
-            <!--每天详情-->
-            <c:forEach items="${everyDay.list}" var="detail">
-            <div class="">
-                <p class="w33">${detail.dealerName}</p>
+          <p class="red w21 decimal">${everyDay.dayTotalMoney}</p>
+        </div>
+        <!--每天详情-->
+        <c:forEach items="${everyDay.list}" var="detail">
+          <div class="">
+            <p class="w33">${detail.dealerName}</p>
 
-                <p class="w21 decimal">${detail.collectMoney}</p>
+            <p class="w21 decimal">${detail.collectMoney}</p>
 
-                <p class="w21 decimal">${detail.withdrawMoney}</p>
+            <p class="w21 decimal">${detail.withdrawMoney}</p>
 
-                <p class="w21 decimal">${detail.totalMoney}</p>
-            </div>
-            </c:forEach>
-        </li>
+            <p class="w21 decimal">${detail.totalMoney}</p>
+          </div>
         </c:forEach>
-    </ul>
+      </li>
+    </c:forEach>
+  </ul>
 </div>
 </body>
-<script src="http://img.jinkaimen.cn/hss/js/qrcode.min.js"></script>
-<script src="../js/dealerIndex.js"></script>
+<script src="http://static.jinkaimen.cn/vendor/vendor.min.js"></script>
+<script src="http://static.jinkaimen.cn/dealer/0.1.1/dealerIndex.min.js"></script>
 </html>

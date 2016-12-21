@@ -230,14 +230,18 @@
         return val;
       },
       changeTime: function (val) {
-        val = new Date(val)
-        var year=val.getFullYear();
-        var month=val.getMonth()+1;
-        var date=val.getDate();
-        var hour=val.getHours();
-        var minute=val.getMinutes();
-        var second=val.getSeconds();
-        return year+"-"+month+"-"+date+" "+hour+":"+minute+":"+second;
+        if(val==''||val==null){
+          return ''
+        }else {
+          val = new Date(val)
+          var year=val.getFullYear();
+          var month=val.getMonth()+1;
+          var date=val.getDate();
+          var hour=val.getHours();
+          var minute=val.getMinutes();
+          var second=val.getSeconds();
+          return year+"-"+month+"-"+date+" "+hour+":"+minute+":"+second;
+        }
       }
     }
   }

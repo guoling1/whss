@@ -13,10 +13,7 @@ import com.jkm.base.common.enums.EnumBoolean;
 import com.jkm.base.common.util.CookieUtil;
 import com.jkm.base.common.util.DateFormatUtil;
 import com.jkm.base.common.util.ValidateUtils;
-import com.jkm.hss.helper.request.DealerLoginRequest;
-import com.jkm.hss.helper.request.DealerSendVerifyCodeRequest;
-import com.jkm.hss.helper.request.DistributeQRCodeRequest;
-import com.jkm.hss.helper.request.MyDealerDetailGetRequest;
+import com.jkm.hss.helper.request.*;
 import com.jkm.hss.helper.response.*;
 import com.jkm.hss.admin.entity.DistributeQRCodeRecord;
 import com.jkm.hss.admin.entity.QRCode;
@@ -340,20 +337,65 @@ public class DealerController extends BaseController {
         final String format = DateFormatUtil.format(date, DateFormatUtil.yyyy_MM_dd);
         return format;
     }
+
     /**
-     * 查询一级代理商未分配的码个数
+     * 分配二维码页面
      *
      * @return
      */
     @RequestMapping(value = "/toDistributeCode")
-    public String getCodeCount(final Model model) {
-        final Optional<Dealer> dealerOptional = this.dealerService.getById(super.getDealerId());
-        Preconditions.checkState(dealerOptional.isPresent(), "代理商不存在");
-        Preconditions.checkState(EnumDealerLevel.FIRST.getId() == dealerOptional.get().getLevel(), "不是一级代理商");
-        final long count = this.dealerService.getUnDistributeCodeCount(super.getDealerId());
-        model.addAttribute("data", count);
+    public String toDistributeCodePage() {
         return "/dealer/issue";
     }
+
+
+    /**
+     * 查找一级代理未分配未激活的二维码
+     *
+     * @param model
+     * @return
+     */
+    @RequestMapping(value = "unDistributeCode")
+    public String findUnDistributeCode(final Model model) {
+        Preconditions.checkArgument(super.getDealer().get().getLevel() == EnumDealerLevel.FIRST.getId(), "不是一级代理");
+        final List<Pair<QRCode, QRCode>> pairs = this.dealerService.getUnDistributeCode(super.getDealerId());
+        final List<UnDistributeCodeResponse> codeResponses = new ArrayList<>();
+        if (!CollectionUtils.isEmpty(pairs)) {
+            for (Pair<QRCode, QRCode> pair : pairs) {
+                final UnDistributeCodeResponse unDistributeCodeResponse = new UnDistributeCodeResponse();
+                unDistributeCodeResponse.setStartCode(pair.getLeft().getCode());
+                unDistributeCodeResponse.setEndCode(pair.getRight().getCode());
+                unDistributeCodeResponse.setCount((int) (Long.valueOf(pair.getRight().getCode()) - Long.valueOf(pair.getLeft().getCode()) + 1));
+                codeResponses.add(unDistributeCodeResponse);
+            }
+        }
+        model.addAttribute("codes", codeResponses);
+        return "/dealer/unDistributeRecord";
+    }
+
+
+    /**
+     * 查询代理商某二维码范围下的未分配的二维码个数
+     *
+     * @param request
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "findCodeCount", method = RequestMethod.POST)
+    public CommonResponse findCodeCount(@RequestBody final FindUnDistributeCodeCountRequest request) {
+        Preconditions.checkArgument(super.getDealer().get().getLevel() == EnumDealerLevel.FIRST.getId(), "不是一级代理");
+        final String startCode = request.getStartCode();
+        final String endCode = request.getEndCode();
+        if (!StringUtils.isNumeric(startCode)) {
+            return CommonResponse.simpleResponse(-1, "输入的开始二维码格式错误");
+        }
+        if (!StringUtils.isNumeric(endCode)) {
+            return CommonResponse.simpleResponse(-1, "输入的结束二维码格式错误");
+        }
+        final int count = this.dealerService.getUnDistributeCodeCountByRangeCode(startCode, endCode, super.getDealerId());
+        return CommonResponse.builder4MapResult(CommonResponse.SUCCESS_CODE, "success").addParam("count", count).build();
+    }
+
 
     /**
      * 添加二级代理商
@@ -529,21 +571,28 @@ public class DealerController extends BaseController {
             dealerId = super.getDealerId();
         }
         final Optional<Dealer> dealerOptional = this.dealerService.getById(dealerId);
-        Preconditions.checkState(dealerOptional.isPresent(), "要分配二维码的代理商不存在");
+        Preconditions.checkState(dealerOptional.isPresent(), "要分配二维码的代理商[{}]不存在", dealerId);
         Preconditions.checkState(EnumBoolean.TRUE.getCode() == isSelf ? true : dealerOptional.get().getFirstLevelDealerId() == super.getDealerId(),
                 "二级代理商[{}]不是当前一级代理商[{}]的二级代理", dealerId, super.getDealerId());
-        final long count = this.dealerService.getUnDistributeCodeCount(super.getDealerId());
-        Preconditions.checkState(count >= distributeQRCodeRequest.getCount(), "可分配二维码数量不足");
-        final DistributeQRCodeRecord distributeQRCodeRecord = this.dealerService.distributeQRCode(super.getDealerId(), dealerId, distributeQRCodeRequest.getCount());
+        final List<DistributeQRCodeRecord> records = this.dealerService.distributeQRCode(super.getDealerId(),
+                dealerId, distributeQRCodeRequest.getStartCode(), distributeQRCodeRequest.getEndCode());
         final DistributeQRCodeResponse distributeQRCodeResponse = new DistributeQRCodeResponse();
         distributeQRCodeResponse.setFirstLevelDealerId(super.getDealerId());
         distributeQRCodeResponse.setToDealerId(dealerId);
         distributeQRCodeResponse.setName(dealerOptional.get().getProxyName());
         distributeQRCodeResponse.setMobile(dealerOptional.get().getMobile());
-        distributeQRCodeResponse.setDistributeDate(DateFormatUtil.format(distributeQRCodeRecord.getCreateTime(),DateFormatUtil.yyyy_MM_dd_HH_mm_ss));
-        distributeQRCodeResponse.setCount(distributeQRCodeRequest.getCount());
-        distributeQRCodeResponse.setStartCode(distributeQRCodeRecord.getStartCode());
-        distributeQRCodeResponse.setEndCode(distributeQRCodeRecord.getEndCode());
+        distributeQRCodeResponse.setDistributeDate(DateFormatUtil.format(new Date(), DateFormatUtil.yyyy_MM_dd_HH_mm_ss));
+        int count = 0;
+        final List<DistributeQRCodeResponse.Code> codes = new ArrayList<>();
+        for (DistributeQRCodeRecord record : records) {
+            count += record.getCount();
+            final DistributeQRCodeResponse.Code code = distributeQRCodeResponse.new Code();
+            code.setStartCode(record.getStartCode());
+            code.setEndCode(record.getEndCode());
+            codes.add(code);
+        }
+        distributeQRCodeResponse.setCount(count);
+        distributeQRCodeResponse.setCodes(codes);
         model.addAttribute("data", distributeQRCodeResponse);
         return "/dealer/issueSuccess";
     }
