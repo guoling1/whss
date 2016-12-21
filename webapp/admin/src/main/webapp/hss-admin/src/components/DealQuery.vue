@@ -21,34 +21,27 @@
             </div>
             <div class="date">
               <label for="date">交易日期：</label>
-              <input id="date" type="datetime-local" name="date" value="" v-model="$$data.start">至
-              <input type="datetime-local" name="date" value="" v-model="$$data.end">
-            </div>
-            <div class="number">
-              <label for="merchantId">商户编号：</label>
-              <input type="text" name="merchantId" v-model="$$data.merchantId">
+              <input id="date" type="date" name="date" value="" v-model="$$data.start">至
+              <input type="date" name="date" value="" v-model="$$data.end">
             </div>
             <div class="name">
               <label for="reserveMobile">商户名称：</label>
               <input type="text" name="name" v-model="$$data.subName">
-            </div>
-            <div class="phone">
-              <label for="phone">商户手机号：</label>
-              <input type="text" name="phone" v-model="$$data.mdMobile">
             </div>
             <div class="price">
               <label for="price">交易金额：</label>
               <input type="text" name="price" value="" v-model="$$data.lessTotalFee">至
               <input type="text" name="price" value="" v-model="$$data.moreTotalFee">
             </div>
-            <!--<div class="pay">
-              <label for="">
-              订单状态：
+            <div class="fun">
+              <label for="">订单状态：
+                <select class="fun" name="" v-model="$$data.payChannel">
+                  <option value="">全部</option>
+                  <option value="1">待支付</option>
+                  <option value="2">支付成功</option>
+                </select>
               </label>
-              <input type="radio" name="pay" value="0" v-model="$$data.status">已删除
-              <input type="radio" name="pay" value="1" v-model="$$data.status">正常
-
-            </div>-->
+            </div>
             <div class="assount">
               <label for="">
               结算状态：</label>
@@ -91,29 +84,29 @@
                 <thead>
                 <tr role="row">
                   <th class="sorting_asc" tabindex="0" aria-controls="example2" rowspan="1" colspan="1"
-                      aria-sort="ascending" aria-label="Rendering engine: activate to sort column descending">交易流水号
+                      aria-sort="ascending" aria-label="Rendering engine: activate to sort column descending">订单号
                   </th>
                   <th class="sorting_asc" tabindex="0" aria-controls="example2" rowspan="1" colspan="1"
                       aria-sort="ascending" aria-label="Rendering engine: activate to sort column descending">交易日期
                   </th>
-                  <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="Platform(s): activate to sort column ascending">商户编号
+                  <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="Platform(s): activate to sort column ascending">商户名称
                   </th>
-                  <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="Engine version: activate to sort column ascending">商户名称
+                  <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="Engine version: activate to sort column ascending">支付金额
                   </th>
-                  <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">商户手机号
-                  </th>
-                  <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">交易金额
+                  <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">手续费率
                   </th>
                   <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">订单状态
                   </th>
                   <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">结算状态
                   </th>
+                  <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">支付方式
+                  </th>
+                  <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">支付渠道
+                  </th>
                   <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">错误信息
                   </th>
-                  <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">业务
+                  <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">操作
                   </th>
-                  <!--<th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">详情-->
-                  <!--</th>-->
                 </tr>
                 </thead>
                 <tbody id="content">
@@ -141,10 +134,6 @@
             <div class="col-sm-7">
               <div class="dataTables_paginate paging_simple_numbers" id="example2_paginate">
                 <ul class="pagination" id="page" @click="bindEvent($event)">
-                  <!--<li class="paginate_button previous disabled" id="example2_previous"><a href="#" aria-controls="example2" data-dt-idx="0" tabindex="0">Previous</a>
-                  </li>
-                  <li class="paginate_button active"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">1</a></li>
-                  <li class="paginate_button next" id="example2_next"><a href="#" aria-controls="example2" data-dt-idx="7" tabindex="0">Next</a></li>-->
                 </ul>
               </div>
             </div>
