@@ -1,5 +1,6 @@
 package com.jkm.hss.merchant.dao;
 
+import com.jkm.hss.merchant.entity.MerchantAndOrderRecord;
 import com.jkm.hss.merchant.entity.OrderRecord;
 import com.jkm.hss.merchant.entity.OrderRecordAndMerchant;
 import com.jkm.hss.merchant.entity.OrderRecordConditions;
@@ -9,6 +10,7 @@ import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @desc:
@@ -76,5 +78,9 @@ public interface OrderRecordDao {
     List<OrderRecordAndMerchant> selectDrawWithRecordByPage(OrderRecordAndMerchantRequest req);
 
     long selectDrawWithCount(OrderRecordAndMerchantRequest req);
+
+    List<MerchantAndOrderRecord> selectOrderList(Map map);
+
+    int selectOrderListCount(Map map);
 
 }
