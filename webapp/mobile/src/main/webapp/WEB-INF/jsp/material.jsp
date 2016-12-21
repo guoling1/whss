@@ -78,7 +78,7 @@
   </div>
 
   <div class="sample" id="sampleHide">
-    <img src="/assets/card-sample.png" alt="">
+    <img src="http://static.jinkaimen.cn/hss/assets/card-sample.png" alt="">
   </div>
 </div>
 </div>

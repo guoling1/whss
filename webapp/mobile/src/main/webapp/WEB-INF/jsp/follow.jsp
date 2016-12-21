@@ -24,7 +24,7 @@
   <p>2.“收银”提示，我们将通过微信逐笔通知您收银情况</p>
 
   <div class="content">
-    <img src="http://img.jinkaimen.cn/hss/assets/cord.jpg" alt="">
+    <img src="http://static.jinkaimen.cn/hss/assets/cord.jpg" alt="">
 
     <div class="green">
       <p>长按关注公众号</p>

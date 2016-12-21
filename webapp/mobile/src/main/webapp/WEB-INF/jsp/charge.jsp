@@ -30,14 +30,15 @@
       <div class="qr" id="qr"></div>
 
       <div class="bar">
-        <img src="../../assets/wxb.png" alt=""/>
-        <img src="../../assets/zfbb.png" alt=""/>
+        <img src="http://static.jinkaimen.cn/hss/assets/wxb.png" alt=""/>
+        <img src="http://static.jinkaimen.cn/hss/assets/zfbb.png" alt=""/>
         <span>长按识别或保存二维码付款</span>
       </div>
     </div>
   </div>
   <div class="explain">
-    <p class="refresh">二维码仅支持扫描一次，<span class="reload" id="refresh"><img src="../../assets/reload.png"/>点击刷新</span></p>
+    <p class="refresh">二维码仅支持扫描一次，<span class="reload" id="refresh">
+      <img src="http://static.jinkaimen.cn/hss/assets/reload.png"/>点击刷新</span></p>
 
     <p class="server">由好收收提供服务</p>
   </div>

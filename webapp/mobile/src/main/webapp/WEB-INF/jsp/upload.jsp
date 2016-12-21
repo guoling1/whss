@@ -39,7 +39,7 @@
       </div>
       <div class="right">
         <div class="sample-title">示例</div>
-        <div class="sample-logo"><img src="http://img.jinkaimen.cn/hss/assets/sample1.png"></div>
+        <div class="sample-logo"><img src="http://static.jinkaimen.cn/hss/assets/sample1.png"></div>
       </div>
     </div>
     <div class="space">
@@ -54,7 +54,7 @@
       </div>
       <div class="right">
         <div class="sample-title">示例</div>
-        <div class="sample-logo"><img src="http://img.jinkaimen.cn/hss/assets/sample2.png"></div>
+        <div class="sample-logo"><img src="http://static.jinkaimen.cn/hss/assets/sample2.png"></div>
       </div>
     </div>
     <div class="space">
@@ -69,7 +69,7 @@
       </div>
       <div class="right">
         <div class="sample-title">示例</div>
-        <div class="sample-logo"><img src="http://img.jinkaimen.cn/hss/assets/sample3.png"></div>
+        <div class="sample-logo"><img src="http://static.jinkaimen.cn/hss/assets/sample3.png"></div>
       </div>
     </div>
     <div class="space">
@@ -84,7 +84,7 @@
       </div>
       <div class="right">
         <div class="sample-title">示例</div>
-        <div class="sample-logo"><img src="http://img.jinkaimen.cn/hss/assets/sample4.png"></div>
+        <div class="sample-logo"><img src="http://static.jinkaimen.cn/hss/assets/sample4.png"></div>
       </div>
     </div>
     <div class="next">

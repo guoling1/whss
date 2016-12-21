@@ -21,7 +21,7 @@
 </head>
 <body>
 <div id="err">
-    <img src="http://img.jinkaimen.cn/hss/assets/book.png" alt="">
+    <img src="http://static.jinkaimen.cn/dealer/assets/book.png" alt="">
     <p>系统异常</p>
     <p class="small">返回重试</p>
     <div class="btn" onclick="(function(){window.history.go(-1)})()">返回</div>

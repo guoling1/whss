@@ -36,7 +36,7 @@
     </div>
   </div>
   <div class="safe">
-    <img src="/assets/zfb-gray.png" alt="">
+    <img src="http://static.jinkaimen.cn/hss/assets/zfb-gray.png" alt="">
     支付宝安全支付
   </div>
   <div class="keyboard" id="keyboard">

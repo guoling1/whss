@@ -14,7 +14,7 @@
 </head>
 <body>
 <div id="prompt">
-  <img src="../assets/book.png" alt="">
+  <img src="http://static.jinkaimen.cn/hss/assets/book.png" alt="">
 
   <p>您的账户正在审核</p>
 

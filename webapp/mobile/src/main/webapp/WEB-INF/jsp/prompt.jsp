@@ -14,7 +14,7 @@
 </head>
 <body>
 <div id="prompt">
-  <img src="../assets/book.png" alt="">
+  <img src="http://static.jinkaimen.cn/hss/assets/book.png" alt="">
 
   <p>您的审核未通过,请重新提交审核资料</p>
 

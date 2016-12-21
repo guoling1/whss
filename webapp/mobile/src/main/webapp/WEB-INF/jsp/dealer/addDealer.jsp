@@ -55,7 +55,7 @@
     <ul>
       <li>
         <div class="top">
-          <img src="http://img.jinkaimen.cn/hss/assets/zfb.png" alt=""/>
+          <img src="http://static.jinkaimen.cn/dealer/assets/zfb.png" alt=""/>
           <span>支付宝(D0)</span>
 
           <div class="">
@@ -73,7 +73,7 @@
       </li>
       <li>
         <div class="top">
-          <img src="http://img.jinkaimen.cn/hss/assets/wx.png" alt=""/>
+          <img src="http://static.jinkaimen.cn/dealer/assets/wx.png" alt=""/>
           <span>微信(D0)</span>
 
           <div class="">
@@ -91,7 +91,7 @@
       </li>
       <li>
         <div class="top">
-          <img src="http://img.jinkaimen.cn/hss/assets/card.png" alt=""/>
+          <img src="http://static.jinkaimen.cn/dealer/assets/card.png" alt=""/>
           <span>无卡快捷(D0)</span>
 
           <div class="">

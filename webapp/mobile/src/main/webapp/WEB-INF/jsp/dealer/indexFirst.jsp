@@ -27,9 +27,9 @@
       <span>您好，${data.mobile}</span>
 
       <div class="right">
-        <a href="/dealer/get"><img src="http://img.jinkaimen.cn/hss/assets/tx.png" alt=""/>
+        <a href="/dealer/get"><img src="http://static.jinkaimen.cn/dealer/assets/tx.png" alt=""/>
           我的信息</a>
-        <a href="/dealer/getCard"><img src="http://img.jinkaimen.cn/hss/assets/yhcard.png" alt=""/>
+        <a href="/dealer/getCard"><img src="http://static.jinkaimen.cn/dealer/assets/yhcard.png" alt=""/>
           我的结算卡</a>
 
       </div>
@@ -54,7 +54,7 @@
   </div>
   <ul class="list">
     <li>
-      <img src="http://img.jinkaimen.cn/hss/assets/mar.png" alt=""/>
+      <img src="http://static.jinkaimen.cn/dealer/assets/mar.png" alt=""/>
 
       <div class="">
         <p>
@@ -66,7 +66,7 @@
       </div>
     </li>
     <li>
-      <img src="http://img.jinkaimen.cn/hss/assets/jt.png" alt=""/>
+      <img src="http://static.jinkaimen.cn/dealer/assets/jt.png" alt=""/>
 
       <div class="">
         <p>${data.firstLevelDealerCodeInfos.distributeCount}个</p>
@@ -75,7 +75,7 @@
       </div>
     </li>
     <li>
-      <img src="http://img.jinkaimen.cn/hss/assets/time.png" alt=""/>
+      <img src="http://static.jinkaimen.cn/dealer/assets/time.png" alt=""/>
 
       <div class="">
         <p>${data.firstLevelDealerCodeInfos.unActivateCount}个</p>
@@ -84,7 +84,7 @@
       </div>
     </li>
     <li>
-      <img src="http://img.jinkaimen.cn/hss/assets/lamp.png" alt=""/>
+      <img src="http://static.jinkaimen.cn/dealer/assets/lamp.png" alt=""/>
 
       <div class="">
         <p>${data.firstLevelDealerCodeInfos.activateCount}个</p>

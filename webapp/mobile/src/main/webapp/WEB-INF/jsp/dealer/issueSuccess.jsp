@@ -21,7 +21,7 @@
 <body>
 <div id="issueSuccess" style="height: 100%;">
   <div class="success">
-    <img src="http://img.jinkaimen.cn/hsy/assets/succ.png" alt=""/>
+    <img src="http://static.jinkaimen.cn/dealer/assets/succ.png" alt=""/>
 
     <p>分配成功</p>
   </div>

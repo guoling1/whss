@@ -27,9 +27,9 @@
       <span>您好，${data.mobile}</span>
 
       <div class="right">
-        <a href="/dealer/get"><img src="http://img.jinkaimen.cn/hss/assets/tx.png" alt=""/>
+        <a href="/dealer/get"><img src="http://static.jinkaimen.cn/dealer/assets/tx.png" alt=""/>
           我的信息</a>
-        <a href="/dealer/getCard"><img src="http://img.jinkaimen.cn/hss/assets/yhcard.png" alt=""/>
+        <a href="/dealer/getCard"><img src="http://static.jinkaimen.cn/dealer/assets/yhcard.png" alt=""/>
           我的结算卡</a>
 
       </div>

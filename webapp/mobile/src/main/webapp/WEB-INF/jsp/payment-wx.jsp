@@ -36,7 +36,7 @@
     </div>
   </div>
   <div class="safe">
-    <img src="/assets/wx-gray.png" alt="">
+    <img src="http://static.jinkaimen.cn/hss/assets/wx-gray.png" alt="">
     微信安全支付
   </div>
   <div class="keyboard" id="keyboard">
