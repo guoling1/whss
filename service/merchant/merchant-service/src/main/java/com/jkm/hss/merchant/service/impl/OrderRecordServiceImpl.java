@@ -11,6 +11,7 @@ import com.jkm.hss.merchant.enums.*;
 import com.jkm.hss.merchant.helper.MerchantConsts;
 import com.jkm.hss.merchant.helper.MerchantSupport;
 import com.jkm.hss.merchant.helper.SmPost;
+import com.jkm.hss.merchant.helper.WxConstants;
 import com.jkm.hss.merchant.helper.request.*;
 import com.jkm.hss.merchant.helper.response.DfQueryResponse;
 import com.jkm.hss.merchant.helper.response.DfmResponse;
@@ -515,7 +516,7 @@ public class OrderRecordServiceImpl implements OrderRecordService {
         paramsMap.put("accountNumber", MerchantSupport.decryptBankCard(merchantInfoOptional.get().getBankNo()));
         paramsMap.put("note", "提现");
         paramsMap.put("appId","wap_hss");
-        paramsMap.put("notifyUrl", "http://hss.qianbaojiajia.com/call/otherPayBack");     //后台通知url
+        paramsMap.put("notifyUrl", WxConstants.DOMAIN+"/call/otherPayBack");     //后台通知url
         paramsMap.put("idCard", MerchantSupport.decryptIdentity(merchantInfoOptional.get().getIdentity()));
         paramsMap.put("isCompay", EnumIsCompay.ToPrivate.getId());
         log.info("组装数据结束。。。,数据为{}",JSONObject.fromObject(paramsMap).toString());
@@ -632,7 +633,7 @@ public class OrderRecordServiceImpl implements OrderRecordService {
     public JSONObject PayOrder(TradeRequest req) {
         log.info("交易参数"+JSONObject.fromObject(req).toString());
         req.setBody("收款");
-        req.setNotifyUrl("http://hss.qianbaojiajia.com/wx/payResult");
+        req.setNotifyUrl("http://"+WxConstants.DOMAIN+"/wx/payResult");
         JSONObject resultJo = new JSONObject();
         log.info("开始下单。。。");
         log.info("开始创建订单。。。");
@@ -652,7 +653,7 @@ public class OrderRecordServiceImpl implements OrderRecordService {
         orderRecord.setBody(req.getBody());
         orderRecord.setTradeType(EnumTradeType.DEAL.getId());
         orderRecord.setOrderId(orderId);
-        req.setReturnUrl("http://hss.qianbaojiajia.com/sqb/success/"+new BigDecimal(req.getTotalFee())+"/"+orderId);
+        req.setReturnUrl("http://"+WxConstants.DOMAIN+"/sqb/success/"+new BigDecimal(req.getTotalFee())+"/"+orderId);
         try{
             orderRecordDao.insertSelective(orderRecord);
             log.info("结束创建订单。。。");
@@ -1001,7 +1002,7 @@ public class OrderRecordServiceImpl implements OrderRecordService {
                     paramsMap.put("accountNumber", MerchantSupport.decryptBankCard(merchantInfoOptional.get().getBankNo()));
                     paramsMap.put("note", "提现");
                     paramsMap.put("appId","wap_hss");
-                    paramsMap.put("notifyUrl", "http://hss.qianbaojiajia.com/call/otherPayBack");     //后台通知url
+                    paramsMap.put("notifyUrl", "http://"+WxConstants.DOMAIN+"/call/otherPayBack");     //后台通知url
                     paramsMap.put("idCard", MerchantSupport.decryptIdentity(merchantInfoOptional.get().getIdentity()));
                     paramsMap.put("isCompay", EnumIsCompay.ToPrivate.getId());
                     log.info("组装数据结束。。。,数据为{}",JSONObject.fromObject(paramsMap).toString());
@@ -1380,16 +1381,118 @@ public class OrderRecordServiceImpl implements OrderRecordService {
         return orderRecordDao.selectOrderRecordByConditionsCount(orderRecordConditions);
     }
 
+    private  Pair<String,String> otherPayOf(String status) {
+        String result="";
+        String message = "";
+        if("N".equals(status)){
+            result="N";
+            message="待审核";
+        }
+        if("H".equals(status)||"W".equals(status)||"A".equals(status)||"E".equals(status)){
+            result="H";
+            message="提现中";
+        }
+        if("S".equals(status)){
+            result="S";
+            message="提现成功";
+        }
+        if("F".equals(status)){
+            result="F";
+            message="提现失败";
+        }
+        if("O".equals(status)){
+            result="O";
+            message="审核未通过";
+        }
+        if("D".equals(status)){
+            result="D";
+            message="交易关闭";
+        }
+        return Pair.of(result,message);
+    }
+
+    private List<String>  backOtherPayOf(String status) {
+        List<String> payResults = new ArrayList<String>();
+        if("N".equals(status)){
+            payResults.add("N");
+        }
+        if("H".equals(status)){
+            payResults.add("H");
+            payResults.add("W");
+            payResults.add("A");
+            payResults.add("E");
+        }
+        if("S".equals(status)){
+            payResults.add("S");
+        }
+        if("F".equals(status)){
+            payResults.add("F");
+        }
+        if("O".equals(status)){
+            payResults.add("O");
+        }
+        if("D".equals(status)){
+            payResults.add("D");
+        }
+        return payResults;
+    }
+
+
+    /**
+     *
+     * N 待审核
+     * H 提现中
+     * S 提现成功
+     * F 提现失败
+     * O 审核未通过
+     * @param req
+     * @return
+     */
     @Override
     public List<OrderRecordAndMerchant> selectDrawWithRecordByPage(OrderRecordAndMerchantRequest req) {
-        List<OrderRecordAndMerchant> list = orderRecordDao.selectDrawWithRecordByPage(req);
-
+        List<String> payResults = backOtherPayOf(req.getPayResult());
+        req.setPayResults(payResults);
+        Map<String,Object> map = new HashMap<String,Object>();
+        map.put("merchantId",req.getMerchantId());
+        map.put("payResults",req.getPayResults());
+        map.put("mobile",req.getMobile());
+        map.put("bankNoShort",req.getBankNoShort());
+        map.put("startDate",req.getStartDate());
+        map.put("endDate",req.getEndDate());
+        map.put("payStartDate",req.getPayStartDate());
+        map.put("payEndDate",req.getPayEndDate());
+        map.put("offset",req.getOffset());
+        map.put("size",req.getSize());
+        List<OrderRecordAndMerchant> list = orderRecordDao.selectDrawWithRecordByPage(map);
+        if(list.size()>0){
+            for(int i=0;i<list.size();i++){
+                Pair<String,String> result = otherPayOf(list.get(i).getPayResult());
+                list.get(i).setPayResult(result.getLeft());
+                if(!"O".equals(result.getLeft())){
+                    list.get(i).setErrorMessage(result.getRight());
+                }
+                if(list.get(i).getBankNo()!=null && !"".equals(list.get(i).getBankNo())){
+                    list.get(i).setBankNo(MerchantSupport.decryptBankCard(list.get(i).getBankNo()));
+                }
+            }
+        }
         return list;
     }
 
     @Override
     public long selectDrawWithCount(OrderRecordAndMerchantRequest req) {
-        return orderRecordDao.selectDrawWithCount(req);
+        List<String> payResults = backOtherPayOf(req.getPayResult());
+        req.setPayResults(payResults);
+        Map<String,Object> map = new HashMap<String,Object>();
+        map.put("merchantId",req.getMerchantId());
+        map.put("payResults",req.getPayResults());
+        map.put("mobile",req.getMobile());
+        map.put("bankNoShort",req.getBankNoShort());
+        map.put("startDate",req.getStartDate());
+        map.put("endDate",req.getEndDate());
+        map.put("payStartDate",req.getPayStartDate());
+        map.put("payEndDate",req.getPayEndDate());
+        return orderRecordDao.selectDrawWithCount(map);
     }
     @Transactional
     @Override

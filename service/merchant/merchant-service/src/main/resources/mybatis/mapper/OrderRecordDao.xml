@@ -357,7 +357,7 @@
 
 
 
-	<!--查询交易明细总条数-->
+	<!--查询提现明细总条数-->
 	<select id="selectDrawWithCount" resultType="java.lang.Long">
 		SELECT count(r.id)
 		FROM tb_order_record  r
@@ -366,8 +366,11 @@
 		<if test="merchantId!=null and merchantId!=''">
 			AND r.merchant_id =  #{merchantId}
 		</if>
-		<if test="payResult!=null and payResult!=''">
-			AND r.pay_result =  #{payResult}
+		<if test="payResults!=null and payResults.size()>0">
+			AND r.pay_result in
+			<foreach item="item" index="index" collection="payResults" open="(" separator="," close=")">
+				#{item}
+			</foreach>
 		</if>
 		<if test="mobile!=null and mobile!=''">
 			AND m.md_mobile =  #{mobile}
@@ -388,7 +391,7 @@
 			AND r.pay_time <![CDATA[ <= ]]> #{payEndDate}
 		</if>
 	</select>
-	<!--分页查询交易明细记录-->
+	<!--分页查询提现记录-->
 	<select id="selectDrawWithRecordByPage" resultType="com.jkm.hss.merchant.entity.OrderRecordAndMerchant">
 		SELECT r.id,
 		r.order_id,
@@ -428,8 +431,11 @@
 		<if test="merchantId!=null and merchantId!=''">
 			AND r.merchant_id =  #{merchantId}
 		</if>
-		<if test="payResult!=null and payResult!=''">
-			AND r.pay_result =  #{payResult}
+		<if test="payResults!=null and payResults.size()>0">
+			AND r.pay_result in
+			<foreach item="item" index="index" collection="payResults" open="(" separator="," close=")">
+				#{item}
+			</foreach>
 		</if>
 		<if test="name!=null and name!=''">
 			AND m.name =  #{name}

@@ -195,7 +195,7 @@ public class WxPubController extends BaseController {
         model.addAttribute("openId", ret.get("openid"));
         String tempUrl = URLDecoder.decode(state, "UTF-8");
         String redirectUrl = URLDecoder.decode(tempUrl,"UTF-8");
-        String finalRedirectUrl = "http://hss.qianbaojiajia.com/code/scanCode?"+redirectUrl;
+        String finalRedirectUrl = "http://"+ApplicationConsts.getApplicationConfig().domain()+"/code/scanCode?"+redirectUrl;
         return "redirect:"+finalRedirectUrl;
     }
 

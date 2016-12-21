@@ -75,9 +75,9 @@ public interface OrderRecordDao {
      * @param req
      * @return
      */
-    List<OrderRecordAndMerchant> selectDrawWithRecordByPage(OrderRecordAndMerchantRequest req);
+    List<OrderRecordAndMerchant> selectDrawWithRecordByPage(Map req);
 
-    long selectDrawWithCount(OrderRecordAndMerchantRequest req);
+    long selectDrawWithCount(Map req);
 
     List<MerchantAndOrderRecord> selectOrderList(Map map);
 

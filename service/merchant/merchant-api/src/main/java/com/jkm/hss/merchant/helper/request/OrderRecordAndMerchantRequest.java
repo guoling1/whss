@@ -2,6 +2,8 @@ package com.jkm.hss.merchant.helper.request;
 
 import lombok.Data;
 
+import java.util.List;
+
 /**
  * @desc:
  * @author:xlj
@@ -59,4 +61,8 @@ public class OrderRecordAndMerchantRequest {
      * 流水号
      */
     private String orderId;
+    /**
+     * 支付状态
+     */
+    private List<String> payResults;
 }
