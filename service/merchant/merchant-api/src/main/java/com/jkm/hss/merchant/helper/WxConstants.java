@@ -1,11 +1,7 @@
 package com.jkm.hss.merchant.helper;
 
-import lombok.experimental.UtilityClass;
-import org.aeonbits.owner.ConfigCache;
-
-
 public class WxConstants {
-    public final static String DOMAIN = "test-hss.qianbaojiajia.com";
+    public final static String DOMAIN = "hss.qianbaojiajia.com";
     /**
      * 微信公众账号
      */
