@@ -254,13 +254,19 @@ public class LoginController extends BaseController {
     }
 
     /**
-     * 展示审核状态
+     * 扫码支付用户扫未审核通过的商户二维码页面
      * @param request
      * @param response
      * @param model
      * @return
      * @throws IOException
      */
+    @RequestMapping(value = "/unFinishedPrompt",method = RequestMethod.GET)
+    public String notLoggedPrompt(final HttpServletRequest request, final HttpServletResponse response, final Model model)throws IOException {
+        return "/unFinishedPrompt";
+    }
+
+
     @RequestMapping(value = "/prompt",method = RequestMethod.GET)
     public String prompt(final HttpServletRequest request, final HttpServletResponse response, final Model model)
             throws IOException {
