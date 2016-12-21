@@ -14,23 +14,14 @@ import com.jkm.hss.admin.helper.responseparam.DistributeCodeCount;
 import com.jkm.hss.admin.service.DistributeQRCodeRecordService;
 import com.jkm.hss.admin.service.QRCodeService;
 import com.jkm.hss.dealer.dao.DealerDao;
-import com.jkm.hss.dealer.entity.CompanyProfitDetail;
-import com.jkm.hss.dealer.entity.Dealer;
-import com.jkm.hss.dealer.entity.DealerChannelRate;
-import com.jkm.hss.dealer.entity.ShallProfitDetail;
-import com.jkm.hss.dealer.enums.EnumDealerChannelRateStatus;
-import com.jkm.hss.dealer.enums.EnumDealerLevel;
-import com.jkm.hss.dealer.enums.EnumProfitType;
-import com.jkm.hss.dealer.enums.EnumDealerStatus;
+import com.jkm.hss.dealer.entity.*;
+import com.jkm.hss.dealer.enums.*;
 import com.jkm.hss.dealer.helper.DealerSupport;
 import com.jkm.hss.dealer.helper.requestparam.FirstLevelDealerAddRequest;
 import com.jkm.hss.dealer.helper.requestparam.FirstLevelDealerUpdateRequest;
 import com.jkm.hss.dealer.helper.requestparam.ListDealerRequest;
 import com.jkm.hss.dealer.helper.requestparam.SecondLevelDealerAddRequest;
-import com.jkm.hss.dealer.service.CompanyProfitDetailService;
-import com.jkm.hss.dealer.service.DealerRateService;
-import com.jkm.hss.dealer.service.DealerService;
-import com.jkm.hss.dealer.service.ShallProfitDetailService;
+import com.jkm.hss.dealer.service.*;
 import com.jkm.hss.merchant.entity.MerchantInfo;
 import com.jkm.hss.merchant.entity.OrderRecord;
 import com.jkm.hss.merchant.service.AccountInfoService;
@@ -82,7 +73,8 @@ public class DealerServiceImpl implements DealerService {
     private ProductChannelDetailService productChannelDetailService;
     @Autowired
     private CompanyProfitDetailService companyProfitDetailService;
-
+    @Autowired
+    private ShallProfitExceptionRecordService shallProfitExceptionRecordService;
     /**
      * {@inheritDoc}
      *
@@ -202,6 +194,7 @@ public class DealerServiceImpl implements DealerService {
     @Override
     @Transactional
     public Map<String, Triple<Long, BigDecimal, String>> shallProfit(OrderRecord orderRecord) {
+        try{
         final ShallProfitDetail detail = this.shallProfitDetailService.selectByOrderId(orderRecord.getOrderId());
         if (detail != null){
             log.error("此订单分润业务已经处理过[" + orderRecord.getOrderId() +"]");
@@ -426,8 +419,20 @@ public class DealerServiceImpl implements DealerService {
             map.put("channelMoney",Triple.of(basicChannel.getAccountId(), channelMoney,"M1"));
             map.put("productMoney",Triple.of(product.getAccountId(), productMoney,"M1"));
         }
-        log.info("订单" + orderRecord.getOrderId() + "分润处理成功,返回map成功");
-        return map;
+            log.info("订单" + orderRecord.getOrderId() + "分润处理成功,返回map成功");
+            return map;
+        }catch (final Throwable throwable){
+            //分润异常记录
+            final ShallProfitExceptionRecord record = new ShallProfitExceptionRecord();
+            record.setOrderRecordId(orderRecord.getId());
+            record.setOrderId(orderRecord.getOrderId());
+            record.setMsg("收单分润异常");
+            record.setType("收单分润");
+            record.setStatus(EnumShallProfitExceptionStatus.EXCEPTION.getId());
+            this.shallProfitExceptionRecordService.add(record);
+            log.info("订单" + orderRecord.getOrderId() + "分润处理异常,异常信息:" + throwable.getMessage());
+            throw throwable;
+        }
     }
 
     /**

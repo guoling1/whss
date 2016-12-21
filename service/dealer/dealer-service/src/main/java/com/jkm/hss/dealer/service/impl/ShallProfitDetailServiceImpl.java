@@ -9,6 +9,7 @@ import com.jkm.hss.dealer.dao.ShallProfitDetailDao;
 import com.jkm.hss.dealer.entity.*;
 import com.jkm.hss.dealer.enums.EnumDealerLevel;
 import com.jkm.hss.dealer.enums.EnumProfitType;
+import com.jkm.hss.dealer.enums.EnumShallProfitExceptionStatus;
 import com.jkm.hss.dealer.service.*;
 import com.jkm.hss.merchant.entity.MerchantInfo;
 import com.jkm.hss.merchant.entity.OrderRecord;
@@ -58,6 +59,8 @@ public class ShallProfitDetailServiceImpl implements ShallProfitDetailService{
     private CompanyProfitDetailService companyProfitDetailService;
     @Autowired
     private DailyProfitDetailService dailyProfitDetailService;
+    @Autowired
+    private ShallProfitExceptionRecordService shallProfitExceptionRecordService;
     /**
      * {@inheritDoc}
      *
@@ -82,6 +85,7 @@ public class ShallProfitDetailServiceImpl implements ShallProfitDetailService{
 //            return null;
 //        }
         //提现分润
+        try{
         final Optional<MerchantInfo> merchantInfoOptional =
                 this.merchantInfoService.selectById(orderRecord.getMerchantId());
         Preconditions.checkNotNull(merchantInfoOptional.isPresent(), "商户信息不存在");
@@ -194,6 +198,18 @@ public class ShallProfitDetailServiceImpl implements ShallProfitDetailService{
         }
         log.info("订单" + orderRecord.getOrderId() + "分润处理成功,返回map成功");
         return map;
+        }catch (final Throwable throwable){
+            //分润异常记录
+            final ShallProfitExceptionRecord record = new ShallProfitExceptionRecord();
+            record.setOrderRecordId(orderRecord.getId());
+            record.setOrderId(orderRecord.getOrderId());
+            record.setMsg("提现分润异常");
+            record.setType("提现分润");
+            record.setStatus(EnumShallProfitExceptionStatus.EXCEPTION.getId());
+            this.shallProfitExceptionRecordService.add(record);
+            log.info("订单" + orderRecord.getOrderId() + "分润处理异常,异常信息:" + throwable.getMessage());
+            throw throwable;
+        }
     }
 
     /**
