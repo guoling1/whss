@@ -10,31 +10,32 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <title>好收收</title>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <title>好收收</title>
   <link rel="stylesheet" href="http://static.jinkaimen.cn/dealer/css/style.css">
   <link rel="stylesheet" href="http://static.jinkaimen.cn/weui/weui.css">
 </head>
 
 <body>
 <div id="record">
-    <div class="head">
-        <span class="w30" style="width: 38%;">起始号码</span>
-        <span class="w30" style="width: 38%;">终止号码</span>
-        <span class="w12">个数</span>
-    </div>
-    <ul style="display:block">
-        <li style="height: 34px;line-height: 34px;">
-            <c:forEach items="${codes}" var="code">
-                <span class="w30" style="width: 38%;">${code.startCode}</span>
-                <span class="w30" style="width: 38%;">${code.endCode}</span>
-                <span class="w12">${code.count}</span>
-            </c:forEach>
-        </li>
-    </ul>
+  <div class="head">
+    <span class="w30" style="width: 38%;">起始号码</span>
+    <span class="w30" style="width: 38%;">终止号码</span>
+    <span class="w12">个数</span>
+  </div>
+  <ul style="display:block">
+    <li style="height: 34px;line-height: 34px;">
+      <c:forEach items="${codes}" var="code">
+        <span class="w30" style="width: 38%;">${code.startCode}</span>
+        <span class="w30" style="width: 38%;">${code.endCode}</span>
+        <span class="w12">${code.count}</span>
+      </c:forEach>
+    </li>
+  </ul>
 </div>
-<jsp:include page="../message.jsp"></jsp:include>
 </body>
+<script src="http://static.jinkaimen.cn/vendor/vendor.min.js"></script>
+<script src="http://static.jinkaimen.cn/dealer/0.1.1/common.min.js"></script>
 </html>
