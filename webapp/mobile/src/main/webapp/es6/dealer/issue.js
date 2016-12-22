@@ -81,7 +81,9 @@ let dealerId1 = document.getElementById('dealerId1');
 mobile.addEventListener('input', function () {
   let val = mobile.value;
   if (validate.empty(val)) {
-    http.post_form('/dealer/find', 'condition=' + val, function (data) {
+    http.post_form('/dealer/find', {
+      condition: val
+    }, function (data) {
       listId.innerHTML = '';
       if (data.length != 0) {
         listId.style.display = "block";
