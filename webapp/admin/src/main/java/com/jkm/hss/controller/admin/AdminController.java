@@ -319,6 +319,19 @@ public class AdminController extends BaseController {
     private CommonResponse checkChannel(final FirstLevelDealerUpdateRequest.Channel paramChannel,
                                         final Map<Integer, ProductChannelDetail> integerProductChannelDetailImmutableMap,
                                         final Product product) {
+        if (StringUtils.isBlank(paramChannel.getMerchantSettleRate())) {
+            return CommonResponse.simpleResponse(-1, "商户支付手续费不能为空");
+        }
+        if (StringUtils.isBlank(paramChannel.getMerchantWithdrawFee())) {
+            return CommonResponse.simpleResponse(-1, "商户提现手续费不能为空");
+        }
+        if (StringUtils.isBlank(paramChannel.getPaymentSettleRate())) {
+            return CommonResponse.simpleResponse(-1, "支付结算手续费不能为空");
+        }
+        if (StringUtils.isBlank(paramChannel.getWithdrawSettleFee())) {
+            return CommonResponse.simpleResponse(-1, "提现结算费不能为空");
+        }
+
         if (paramChannel.getChannelType() == EnumPayChannelSign.YG_WEIXIN.getId()) {
             final ProductChannelDetail productChannelDetail = integerProductChannelDetailImmutableMap.get(EnumPayChannelSign.YG_WEIXIN.getId());
             final BigDecimal weixinMerchantSettleRate = new BigDecimal(paramChannel.getMerchantSettleRate())
@@ -395,6 +408,19 @@ public class AdminController extends BaseController {
     private CommonResponse checkChannel(final FirstLevelDealerAddRequest.Channel paramChannel,
                                         final Map<Integer, ProductChannelDetail> integerProductChannelDetailImmutableMap,
                                         final Product product) {
+        if (StringUtils.isBlank(paramChannel.getMerchantSettleRate())) {
+            return CommonResponse.simpleResponse(-1, "商户支付手续费不能为空");
+        }
+        if (StringUtils.isBlank(paramChannel.getMerchantWithdrawFee())) {
+            return CommonResponse.simpleResponse(-1, "商户提现手续费不能为空");
+        }
+        if (StringUtils.isBlank(paramChannel.getPaymentSettleRate())) {
+            return CommonResponse.simpleResponse(-1, "支付结算手续费不能为空");
+        }
+        if (StringUtils.isBlank(paramChannel.getWithdrawSettleFee())) {
+            return CommonResponse.simpleResponse(-1, "提现结算费不能为空");
+        }
+
         if (paramChannel.getChannelType() == EnumPayChannelSign.YG_WEIXIN.getId()) {
             final ProductChannelDetail productChannelDetail = integerProductChannelDetailImmutableMap.get(EnumPayChannelSign.YG_WEIXIN.getId());
             final BigDecimal weixinMerchantSettleRate = new BigDecimal(paramChannel.getMerchantSettleRate())
