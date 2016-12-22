@@ -1,12 +1,9 @@
 package com.jkm.hss.controller.orderRecord;
 
-import com.aliyun.openservices.shade.com.alibaba.rocketmq.shade.com.alibaba.fastjson.JSONObject;
 import com.jkm.base.common.entity.CommonResponse;
 import com.jkm.base.common.entity.PageModel;
 import com.jkm.hss.controller.BaseController;
 import com.jkm.hss.merchant.entity.MerchantAndOrderRecord;
-import com.jkm.hss.merchant.entity.OrderRecord;
-import com.jkm.hss.merchant.entity.OrderRecordAndMerchant;
 import com.jkm.hss.merchant.entity.OrderRecordConditions;
 import com.jkm.hss.merchant.helper.MerchantSupport;
 import com.jkm.hss.merchant.helper.PageUtils;
@@ -19,6 +16,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -56,9 +58,17 @@ public class OrderRecordController extends BaseController{
      */
     @ResponseBody
     @RequestMapping(value = "/orderList",method = RequestMethod.POST)
-    public CommonResponse orderList(@RequestBody OrderListRequest req){
+    public CommonResponse orderList(@RequestBody OrderListRequest req) throws ParseException {
         final PageModel<MerchantAndOrderRecord> pageModel = new PageModel<MerchantAndOrderRecord>(req.getPage(), req.getSize());
         req.setOffset(pageModel.getFirstIndex());
+        if(req.getEndTime()!=null&&!"".equals(req.getEndTime())){
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            Date dt = sdf.parse(req.getEndTime());
+            Calendar rightNow = Calendar.getInstance();
+            rightNow.setTime(dt);
+            rightNow.add(Calendar.DATE, 1);
+            req.setEndTime(sdf.format(rightNow.getTime()));
+        }
         if(req.getMdMobile()!=null&&!"".equals(req.getMdMobile())){
             req.setMdMobile(MerchantSupport.passwordDigest(req.getMdMobile(),"JKM"));
         }
