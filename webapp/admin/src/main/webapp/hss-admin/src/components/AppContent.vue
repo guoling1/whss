@@ -14,7 +14,7 @@
     </section> -->
 
     <!-- Main content -->
-    <section class="content">
+    <section class="content" style="overflow: hidden">
 
       <!-- Your Page Content Here -->
 
