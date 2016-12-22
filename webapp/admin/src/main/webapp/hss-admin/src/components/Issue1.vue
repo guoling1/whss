@@ -1,6 +1,6 @@
 <template lang="html">
   <div id="issue">
-    <h1>分配二维码</h1>
+    <div style="padding: 8px 30px; background: rgb(243, 156, 18); z-index: 999999; font-size: 22px; font-weight: 600;margin-bottom: 15px;    color: #fff;">分配二维码(按个数)</div>
     <form>
       <label for="">
         一级代理

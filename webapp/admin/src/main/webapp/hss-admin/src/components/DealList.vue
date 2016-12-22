@@ -1,86 +1,88 @@
 <template lang="html">
   <div id="dealList">
-    <h1>交易详情</h1>
-    <div class="box box-primary">
-      <p class="lead">Amount Due 2/22/2014</p>
+    <div style="padding: 8px 30px; background: rgb(243, 156, 18); z-index: 999999; font-size: 22px; font-weight: 600;margin-bottom: 15px;    color: #fff;">交易详情</div>
+    <div style="margin: 0 15px">
+      <div class="box box-primary">
+        <p class="lead">Amount Due 2/22/2014</p>
 
-      <div class="table-responsive">
-        <table class="table">
-          <tbody>
-          <tr>
-            <th style="text-align: right">Subtotal:</th>
-            <td>$250.30</td>
-            <th style="text-align: right">Subtotal:</th>
-            <td>$250.30</td>
-            <th style="text-align: right">Subtotal:</th>
-            <td>$250.30</td>
-          </tr>
-          <tr>
-            <th style="text-align: right">Subtotal:</th>
-            <td>$250.30</td>
-            <th style="text-align: right">Subtotal:</th>
-            <td>$250.30</td>
-            <th style="text-align: right">Subtotal:</th>
-            <td>$250.30</td>
-          </tr>
-          <tr>
-            <th style="text-align: right">Subtotal:</th>
-            <td>$250.30</td>
-            <th style="text-align: right">Subtotal:</th>
-            <td>$250.30</td>
-            <th style="text-align: right">Subtotal:</th>
-            <td>$250.30</td>
-          </tr>
-          <tr>
-            <th style="text-align: right">Subtotal:</th>
-            <td>$250.30</td>
-            <th style="text-align: right">Subtotal:</th>
-            <td>$250.30</td>
-            <th style="text-align: right">Subtotal:</th>
-            <td>$250.30</td>
-          </tr>
-          </tbody></table>
+        <div class="table-responsive">
+          <table class="table">
+            <tbody>
+            <tr>
+              <th style="text-align: right">Subtotal:</th>
+              <td>$250.30</td>
+              <th style="text-align: right">Subtotal:</th>
+              <td>$250.30</td>
+              <th style="text-align: right">Subtotal:</th>
+              <td>$250.30</td>
+            </tr>
+            <tr>
+              <th style="text-align: right">Subtotal:</th>
+              <td>$250.30</td>
+              <th style="text-align: right">Subtotal:</th>
+              <td>$250.30</td>
+              <th style="text-align: right">Subtotal:</th>
+              <td>$250.30</td>
+            </tr>
+            <tr>
+              <th style="text-align: right">Subtotal:</th>
+              <td>$250.30</td>
+              <th style="text-align: right">Subtotal:</th>
+              <td>$250.30</td>
+              <th style="text-align: right">Subtotal:</th>
+              <td>$250.30</td>
+            </tr>
+            <tr>
+              <th style="text-align: right">Subtotal:</th>
+              <td>$250.30</td>
+              <th style="text-align: right">Subtotal:</th>
+              <td>$250.30</td>
+              <th style="text-align: right">Subtotal:</th>
+              <td>$250.30</td>
+            </tr>
+            </tbody></table>
+        </div>
       </div>
-    </div>
-    <div class="box box-primary">
-      <p class="lead">Amount Due 2/22/2014</p>
+      <div class="box box-primary">
+        <p class="lead">Amount Due 2/22/2014</p>
 
-      <div class="table-responsive">
-        <table class="table">
-          <tbody>
-          <tr>
-            <th style="text-align: right">Subtotal:</th>
-            <td>$250.30</td>
-            <th style="text-align: right">Subtotal:</th>
-            <td>$250.30</td>
-            <th style="text-align: right">Subtotal:</th>
-            <td>$250.30</td>
-          </tr>
-          <tr>
-            <th style="text-align: right">Subtotal:</th>
-            <td>$250.30</td>
-            <th style="text-align: right">Subtotal:</th>
-            <td>$250.30</td>
-            <th style="text-align: right">Subtotal:</th>
-            <td>$250.30</td>
-          </tr>
-          <tr>
-            <th style="text-align: right">Subtotal:</th>
-            <td>$250.30</td>
-            <th style="text-align: right">Subtotal:</th>
-            <td>$250.30</td>
-            <th style="text-align: right">Subtotal:</th>
-            <td>$250.30</td>
-          </tr>
-          <tr>
-            <th style="text-align: right">Subtotal:</th>
-            <td>$250.30</td>
-            <th style="text-align: right">Subtotal:</th>
-            <td>$250.30</td>
-            <th style="text-align: right">Subtotal:</th>
-            <td>$250.30</td>
-          </tr>
-          </tbody></table>
+        <div class="table-responsive">
+          <table class="table">
+            <tbody>
+            <tr>
+              <th style="text-align: right">Subtotal:</th>
+              <td>$250.30</td>
+              <th style="text-align: right">Subtotal:</th>
+              <td>$250.30</td>
+              <th style="text-align: right">Subtotal:</th>
+              <td>$250.30</td>
+            </tr>
+            <tr>
+              <th style="text-align: right">Subtotal:</th>
+              <td>$250.30</td>
+              <th style="text-align: right">Subtotal:</th>
+              <td>$250.30</td>
+              <th style="text-align: right">Subtotal:</th>
+              <td>$250.30</td>
+            </tr>
+            <tr>
+              <th style="text-align: right">Subtotal:</th>
+              <td>$250.30</td>
+              <th style="text-align: right">Subtotal:</th>
+              <td>$250.30</td>
+              <th style="text-align: right">Subtotal:</th>
+              <td>$250.30</td>
+            </tr>
+            <tr>
+              <th style="text-align: right">Subtotal:</th>
+              <td>$250.30</td>
+              <th style="text-align: right">Subtotal:</th>
+              <td>$250.30</td>
+              <th style="text-align: right">Subtotal:</th>
+              <td>$250.30</td>
+            </tr>
+            </tbody></table>
+        </div>
       </div>
     </div>
     <message></message>

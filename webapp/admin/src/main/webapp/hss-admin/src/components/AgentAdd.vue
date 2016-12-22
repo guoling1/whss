@@ -1,112 +1,117 @@
 <template lang="html">
   <div id="agentAdd">
-    <h1 v-if="isShow">新增代理商</h1>
-    <h1 v-if="!isShow">代理商资料</h1>
-    <div class="box box-info" style="width: 50%">
-      <div class="box-header with-border">
-        <h3 class="box-title" v-if="isShow">资料填写</h3>
-        <h3 class="box-title" v-if="!isShow">基本资料</h3>
+    <div v-if="isShow" style="padding: 8px 30px; background: rgb(243, 156, 18); z-index: 999999; font-size: 22px; font-weight: 600;margin-bottom: 15px;color: #fff;">新增代理商</div>
+    <div v-if="!isShow" style="padding: 8px 30px; background: rgb(243, 156, 18); z-index: 999999; font-size: 22px; font-weight: 600;margin-bottom: 15px;color: #fff;">代理商资料</div>
+    <!--<h1 v-if="isShow">新增代理商</h1>
+    <h1 v-if="!isShow">代理商资料</h1>-->
+    <div style="margin: 0 10px">
+      <div class="box box-info" style="width: 50%">
+        <div class="box-header with-border">
+          <h3 class="box-title" v-if="isShow">资料填写</h3>
+          <h3 class="box-title" v-if="!isShow">基本资料</h3>
+        </div>
+        <!-- /.box-header -->
+        <!-- form start -->
+        <form class="form-horizontal">
+          <div class="box-body">
+            <div class="form-group">
+              <label for="mobile" class="col-sm-2 control-label">代理手机</label>
+
+              <div class="col-sm-9">
+                <input type="tel" id="mobile" class="form-control" name="mobile" placeholder="代理手机号，用于登录" v-model="$$data.mobile">
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="name" class="col-sm-2 control-label">代理名称</label>
+
+              <div class="col-sm-9">
+                <input type="text" class="form-control" id="name" name="name" placeholder="输入商户名称" v-model="$$data.name">
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="belongArea" class="col-sm-2 control-label">所在地</label>
+
+              <div class="col-sm-9">
+                <input type="text" class="form-control" id="belongArea" name="belongArea" placeholder="省/市/街道" v-model="$$data.belongArea">
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="bankCard" class="col-sm-2 control-label">结算卡</label>
+
+              <div class="col-sm-9">
+                <input type="text" class="form-control" id="bankCard" name="bankCard" placeholder="输入一级代理银行卡号" v-model="$$data.bankCard">
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="bankAccountName" class="col-sm-2 control-label">开户名</label>
+
+              <div class="col-sm-9">
+                <input type="text" class="form-control" id="bankAccountName" name="bankAccountName" placeholder="银行开户名称" v-model="$$data.bankAccountName">
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="bankReserveMobile" class="col-sm-2 control-label">手机号</label>
+
+              <div class="col-sm-9">
+                <input type="text" class="form-control" id="bankReserveMobile" name="bankReserveMobile" placeholder="银行开户预留手机号" v-model="$$data.bankReserveMobile">
+              </div>
+            </div>
+          </div>
+          <!-- /.box-body -->
+
+        </form>
       </div>
-      <!-- /.box-header -->
-      <!-- form start -->
-      <form class="form-horizontal">
-        <div class="box-body">
-          <div class="form-group">
-            <label for="mobile" class="col-sm-2 control-label">代理手机</label>
+      <div class="product">
+        <p>配置产品：</p>
+        <label v-for="(product,index) in $$products">
+          <input class="check" type="radio" name="name" :value="index" v-model="id">
 
-            <div class="col-sm-9">
-              <input type="tel" id="mobile" class="form-control" name="mobile" placeholder="代理手机号，用于登录" v-model="$$data.mobile">
-            </div>
-          </div>
-          <div class="form-group">
-            <label for="name" class="col-sm-2 control-label">代理名称</label>
-
-            <div class="col-sm-9">
-              <input type="text" class="form-control" id="name" name="name" placeholder="输入商户名称" v-model="$$data.name">
-            </div>
-          </div>
-          <div class="form-group">
-            <label for="belongArea" class="col-sm-2 control-label">所在地</label>
-
-            <div class="col-sm-9">
-              <input type="text" class="form-control" id="belongArea" name="belongArea" placeholder="省/市/街道" v-model="$$data.belongArea">
-            </div>
-          </div>
-          <div class="form-group">
-            <label for="bankCard" class="col-sm-2 control-label">结算卡</label>
-
-            <div class="col-sm-9">
-              <input type="text" class="form-control" id="bankCard" name="bankCard" placeholder="输入一级代理银行卡号" v-model="$$data.bankCard">
-            </div>
-          </div>
-          <div class="form-group">
-            <label for="bankAccountName" class="col-sm-2 control-label">开户名</label>
-
-            <div class="col-sm-9">
-              <input type="text" class="form-control" id="bankAccountName" name="bankAccountName" placeholder="银行开户名称" v-model="$$data.bankAccountName">
-            </div>
-          </div>
-          <div class="form-group">
-            <label for="bankReserveMobile" class="col-sm-2 control-label">手机号</label>
-
-            <div class="col-sm-9">
-              <input type="text" class="form-control" id="bankReserveMobile" name="bankReserveMobile" placeholder="银行开户预留手机号" v-model="$$data.bankReserveMobile">
-            </div>
-          </div>
-        </div>
-        <!-- /.box-body -->
-
-      </form>
-    </div>
-    <div class="product">
-      <p>配置产品：</p>
-      <label v-for="(product,index) in $$products">
-        <input class="check" type="radio" name="name" :value="index" v-model="id">
-
-        <div class="product1">
-          <div class="col-xs-12">
-            <div class="box">
-              <div class="box-header">
-                <h3 class="box-title">{{product.productName}}</h3>
+          <div class="product1">
+            <div class="col-xs-12">
+              <div class="box">
+                <div class="box-header">
+                  <h3 class="box-title">{{product.productName}}</h3>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body table-responsive no-padding">
+                  <table class="table table-hover">
+                    <tbody>
+                    <tr>
+                      <th>通道名称</th>
+                      <th>支付结算手续费</th>
+                      <th>结算时间</th>
+                      <th>提现结算费</th>
+                      <th>商户支付手续费</th>
+                      <th>商户提现手续费</th>
+                    </tr>
+                    <tr v-for="channel in product.list">
+                      <td>{{channel.channelTypeSign|changeName}}</td>
+                      <td><input type="text" name="name" v-model="channel.paymentSettleRate">%</td>
+                      <td>{{channel.productBalanceType}}</td>
+                      <td><input type="text" name="name" v-model="channel.withdrawSettleFee">元/笔</td>
+                      <td><input type="text" name="name" v-model="channel.merchantSettleRate">%</td>
+                      <td><input type="text" name="name" v-model="channel.merchantWithdrawFee">元/笔</td>
+                    </tr>
+                    </tbody></table>
+                </div>
+                <!-- /.box-body -->
               </div>
-              <!-- /.box-header -->
-              <div class="box-body table-responsive no-padding">
-                <table class="table table-hover">
-                  <tbody>
-                  <tr>
-                    <th>通道名称</th>
-                    <th>支付结算手续费</th>
-                    <th>结算时间</th>
-                    <th>提现结算费</th>
-                    <th>商户支付手续费</th>
-                    <th>商户提现手续费</th>
-                  </tr>
-                  <tr v-for="channel in product.list">
-                    <td>{{channel.channelTypeSign|changeName}}</td>
-                    <td><input type="text" name="name" v-model="channel.paymentSettleRate">%</td>
-                    <td>{{channel.productBalanceType}}</td>
-                    <td><input type="text" name="name" v-model="channel.withdrawSettleFee">元/笔</td>
-                    <td><input type="text" name="name" v-model="channel.merchantSettleRate">%</td>
-                    <td><input type="text" name="name" v-model="channel.merchantWithdrawFee">元/笔</td>
-                  </tr>
-                  </tbody></table>
-              </div>
-              <!-- /.box-body -->
+              <!-- /.box -->
             </div>
-            <!-- /.box -->
           </div>
-        </div>
-      </label>
+        </label>
+      </div>
+      <div class="btn btn-default" @click="create" v-if="isShow">
+        创建代理商
+      </div>
+      <div class="btn btn-default" @click="change" v-if="!isShow">
+        修改
+      </div>
+      <div class="btn btn-default" @click="goBack" v-if="!isShow">
+        返回
+      </div>
     </div>
-    <div class="btn btn-default" @click="create" v-if="isShow">
-      创建代理商
-    </div>
-    <div class="btn btn-default" @click="change" v-if="!isShow">
-      修改
-    </div>
-    <div class="btn btn-default" @click="goBack" v-if="!isShow">
-      返回
-    </div>
+
   </div>
 </template>
 

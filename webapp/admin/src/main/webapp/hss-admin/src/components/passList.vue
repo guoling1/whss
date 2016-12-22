@@ -1,7 +1,6 @@
 <template lang="html">
   <div id="agentAdd">
-    <h1>通道列表</h1>
-
+    <div style="padding: 8px 30px; background: rgb(243, 156, 18); z-index: 999999; font-size: 22px; font-weight: 600;margin-bottom: 15px;    color: #fff;">通道列表</div>
     <div class="col-xs-12">
       <div class="box">
         <div class="box-body">
@@ -69,7 +68,7 @@
       <!-- /.box -->
     </div>
 
-    <div class="btn btn-primary" @click="create">
+    <div class="btn btn-primary" @click="create" style="margin: 0 15px">
       新增通道
     </div>
   </div>

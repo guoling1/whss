@@ -1,7 +1,7 @@
 <template lang="html">
   <div id="agentList">
-    <h1>代理商列表</h1>
-
+    <!--<h1>代理商列表</h1>-->
+    <div style="padding: 8px 30px; background: rgb(243, 156, 18); z-index: 999999; font-size: 22px; font-weight: 600;margin-bottom: 15px;    color: #fff;">代理商列表</div>
     <div class="col-md-12">
       <div class="box box-success box-solid">
         <div class="box-header with-border">
@@ -102,7 +102,7 @@
       <!-- /.box -->
     </div>
 
-    <div class="btn btn-primary" @click="create">
+    <div class="btn btn-primary" @click="create" style="margin-left: 15px">
       新增代理商
     </div>
   </div>

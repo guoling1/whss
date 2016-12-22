@@ -1,6 +1,6 @@
 <template lang="html">
   <div id="dale">
-    <h1>交易查询</h1>
+    <div style="padding: 8px 30px; background: rgb(243, 156, 18); z-index: 999999; font-size: 22px; font-weight: 600;margin-bottom: 15px;    color: #fff;">交易查询</div>
     <div class="col-md-12">
       <!--筛选-->
       <div class="box box-success box-solid">
@@ -53,7 +53,7 @@
                 <select class="form-control select2 select2-hidden-accessible" style="width: 100%;" tabindex="-1" aria-hidden="true" v-model="$$query.settleStatus">
                     <option value="">全部</option>
                     <option value="1">未结算</option>
-                    <option value="2">已结算</option>
+                    <option value="0">已结算</option>
                   </select>
                 </select>
               </div>
@@ -155,7 +155,6 @@
         <div class="btn btn-primary sub" @click="login">登 录</div>
       </form>
 </div>
-
     </div>
   </div>
 </template>
@@ -215,7 +214,7 @@
             page=document.getElementById('page');
           str+='<li class="paginate_button previous" id="example2_previous"><a href="#" aria-controls="example2" data-dt-idx="0" tabindex="0">上一页</a></li>'
           for (var i=1; i<=this.$data.total;i++){
-            if(i==this.$data.msg.pageNo){
+            if(i==this.$data.query.page){
               str+='<li class="paginate_button active"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">'+i+'</a></li></li>';
               continue;
             }
@@ -332,14 +331,7 @@
       },
       //筛选
       lookup: function () {
-        /*var time = this.$data.msg.start;
-        if(time!=''){
-          this.$data.msg.startTime = time.replace(/\//g,'-').replace(/T/g,' ')+':00'
-        }
-        var time = this.$data.msg.end;
-        if(time!=""){
-          this.$data.msg.endTime = time.replace(/\//g,'-').replace(/T/g,' ')+':00'
-        }*/
+        this.$data.query.page = 1;
         this.$http.post('/admin/queryOrderRecord/orderList',this.$data.query)
           .then(function (res) {
             this.$data.orders=res.data.records;
@@ -404,22 +396,11 @@
     filters: {
       changeSettleStatus: function (val) {
         if(val == 0){
-          return '未结算'
-        }else if(val == 1){
           return '已结算'
+        }else if(val == 1){
+          return '未结算'
         }
       },
-      /*changePayResult: function (val) {
-        if(val == 'N'){
-          return '待支付'
-        }else if(val =='F'){
-          return '支付失败'
-        }else if(val =='S'){
-          return '支付成功'
-        }else if(val =='H'){
-          return '支付中'
-        }
-      },*/
       changePayChannel: function (val) {
         if(val == 101){
           return '微信'
@@ -456,14 +437,6 @@
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="less">
-  h1, h2 {
-    font-weight: normal;
-    color: #337ab7;
-    font-weight: bold;
-    border-bottom: 2px solid #ccc;
-    padding-bottom: 10px;
-  }
-
   ul {
     list-style-type: none;
     padding: 0;
@@ -478,54 +451,6 @@
     color: #42b983;
   }
 
-  .dale {
-    float: right;
-    width: 80%;
-  }
-
-  .search div {
-    float: left;
-    height: 34px;
-    margin-right: 22px;
-    margin-top: 10px;
-
-  &
-  .date input,
-
-  &
-  .price input,
-
-  &
-  .card input {
-    width: 50px;
-  }
-
-  &
-  .assount input,
-
-  &
-  .pay input {
-    width: 20px;
-  }
-
-  &
-  .btn {
-    margin: 0 0 5px 0;
-    width: 80px;
-    float: right;
-  }
-
-  }
-  .table {
-    overflow: hidden;
-
-  td, th {
-    text-align: center;
-    width: 10%;
-  }
-
-
-  }
   .login {
     z-index: 1000;
     position: fixed;

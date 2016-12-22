@@ -1,14 +1,6 @@
 <template lang="html">
   <div id="storeList">
-    <h1>商户列表</h1>
-
-    <div class="search" id="search">
-      <!--<label for="name">商户编号：</label>
-      <input type="text" name="name" value="">-->
-      <label for="name">商户名称：</label>
-      <input type="text" name="name" value="" v-model="merchantName">
-      <div class="btn btn-primary" @click="search">筛选</div>
-    </div>
+    <div style="padding: 8px 30px; background: rgb(243, 156, 18); z-index: 999999; font-size: 22px; font-weight: 600;margin-bottom: 15px;    color: #fff;">商户列表</div>
     <div class="col-xs-12">
       <div class="box">
         <div class="box-body">
@@ -16,6 +8,13 @@
             <div class="row">
               <div class="col-sm-6"></div>
               <div class="col-sm-6"></div>
+            </div>
+            <div class="search" id="search">
+              <!--<label for="name">商户编号：</label>
+              <input type="text" name="name" value="">-->
+              <label for="name">商户名称：</label>
+              <input type="text" name="name" value="" v-model="merchantName">
+              <div class="btn btn-primary" @click="search">筛选</div>
             </div>
             <div class="row">
               <div class="col-sm-12">
