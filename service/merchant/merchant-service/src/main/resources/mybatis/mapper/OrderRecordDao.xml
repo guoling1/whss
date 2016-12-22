@@ -480,7 +480,7 @@
 			AND o.create_time <![CDATA[ <= ]]> #{endTime}
 		</if>
 		<if test="orderId != null and orderId!=''">
-			AND o.order_id = #{orderId}
+			AND o.order_id LIKE CONCAT('%',#{orderId})
 		</if>
 		<if test="merchantId != null and merchantId!=''">
 			AND o.merchant_id = #{merchantId}
@@ -505,6 +505,9 @@
 		</if>
 		<if test="mdMobile != null and mdMobile!=''">
 			AND m.md_mobile = #{mdMobile}
+		</if>
+		<if test="settleStatus != null and settleStatus!=''">
+			AND settle_status = #{settleStatus}
 		</if>
 		ORDER BY o.create_time DESC
 		limit #{offset}, #{size}
@@ -523,7 +526,7 @@
 			AND o.create_time <![CDATA[ <= ]]> #{endTime}
 		</if>
 		<if test="orderId != null and orderId!=''">
-			AND o.order_id = #{orderId}
+			AND o.order_id LIKE CONCAT('%',#{orderId})
 		</if>
 		<if test="merchantId != null and merchantId!=''">
 			AND o.merchant_id = #{merchantId}
@@ -548,6 +551,9 @@
 		</if>
 		<if test="mdMobile != null and mdMobile!=''">
 			AND m.md_mobile = #{mdMobile}
+		</if>
+		<if test="settleStatus != null and settleStatus!=''">
+			AND settle_status = #{settleStatus}
 		</if>
 	</select>
 </mapper>

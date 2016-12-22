@@ -1926,6 +1926,7 @@ public class OrderRecordServiceImpl implements OrderRecordService {
         map.put("payResults",req.getPayResults());
         map.put("payChannel",req.getPayChannel());
         map.put("mdMobile",req.getMdMobile());
+        map.put("settleStatus",req.getSettleStatus());
         map.put("offset",req.getOffset());
         map.put("size",req.getSize());
         List<MerchantAndOrderRecord> list = orderRecordDao.selectOrderList(map);
@@ -1952,6 +1953,7 @@ public class OrderRecordServiceImpl implements OrderRecordService {
         map.put("payResults",req.getPayResults());
         map.put("payChannel",req.getPayChannel());
         map.put("mdMobile",req.getMdMobile());
+        map.put("settleStatus",req.getSettleStatus());
         map.put("offset",req.getOffset());
         map.put("size",req.getSize());
         return orderRecordDao.selectOrderListCount(map);
