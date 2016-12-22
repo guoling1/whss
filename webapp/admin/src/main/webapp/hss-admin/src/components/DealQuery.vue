@@ -107,7 +107,7 @@
                 </tr>
                 </thead>
                 <tbody id="content">
-                <tr role="row" v-for="order in this.$data.orders">
+                <tr v-if="order.tradeType==0" role="row" v-for="order in this.$data.orders">
                   <td><router-link to="/admin/record/dealList">{{order.orderId|changeHide}}</router-link></td>
                   <td>{{order.createTime|changeTime}}</td>
                   <td>{{order.subName}}</td>
@@ -340,7 +340,7 @@
         if(time!=""){
           this.$data.msg.endTime = time.replace(/\//g,'-').replace(/T/g,' ')+':00'
         }*/
-        this.$http.post('/admin/queryOrderRecord/selectOrderRecordByConditions',this.$data.query)
+        this.$http.post('/admin/queryOrderRecord/orderList',this.$data.query)
           .then(function (res) {
             this.$data.orders=res.data.records;
             this.$data.total=res.data.totalPage;
