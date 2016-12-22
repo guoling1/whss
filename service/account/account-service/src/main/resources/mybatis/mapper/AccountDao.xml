@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jkm.hss.account.dao.AccountDao">
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO tb_account
+        (
+        user_name,
+        total_amount,
+        available,
+        frozen_amount,
+        due_settel_amount,
+        status
+        )
+        VALUES
+        (
+        #{userName},
+        #{totalAmount},
+        #{available},
+        #{frozenAmount},
+        #{dueSettleAmount},
+        #{status}
+        )
+    </insert>
+
+    <update id="update">
+        UPDATE tb_account
+        SET
+        user_name = #{userName},
+        total_amount = #{totalAmount},
+        available = #{available},
+        frozen_amount = #{frozenAmount},
+        due_settel_amount = #{dueSettleAmount},
+        status = #{status}
+        WHERE id = #{id}
+    </update>
+
+    <select id="selectById" resultType="com.jkm.hss.account.entity.Account">
+        SELECT * FROM tb_account WHERE id = #{id}
+    </select>
+
+    <select id="selectByIdWithLock" resultType="com.jkm.hss.account.entity.Account">
+        SELECT * FROM tb_account WHERE id = #{id} FOR UPDATE
+    </select>
+</mapper>
