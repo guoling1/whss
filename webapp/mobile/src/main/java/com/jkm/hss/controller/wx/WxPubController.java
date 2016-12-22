@@ -49,9 +49,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.URLDecoder;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
  * @desc:
@@ -276,7 +276,7 @@ public class WxPubController extends BaseController {
      */
     @ResponseBody
     @RequestMapping(value = "getOrderRecord", method = RequestMethod.POST)
-    public CommonResponse getOrderRecord(final HttpServletRequest request, final HttpServletResponse response, @RequestBody final RequestOrderRecord req) {
+    public CommonResponse getOrderRecord(final HttpServletRequest request, final HttpServletResponse response, @RequestBody final RequestOrderRecord req) throws ParseException {
         if(!super.isLogin(request)){
             return CommonResponse.simpleResponse(-2, "未登录");
         }
@@ -294,6 +294,14 @@ public class WxPubController extends BaseController {
         req.setMerchantId(merchantInfo.get().getId());
         final PageModel<OrderRecord> pageModel = new PageModel<>(req.getPage(), req.getSize());
         req.setOffset(pageModel.getFirstIndex());
+        if(req.getEndDate()!=null&&!"".equals(req.getEndDate())){
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            Date dt = sdf.parse(req.getEndDate());
+            Calendar rightNow = Calendar.getInstance();
+            rightNow.setTime(dt);
+            rightNow.add(Calendar.DATE, 1);
+            req.setEndDate(sdf.format(rightNow.getTime()));
+        }
         List<OrderRecord> orderList =  orderRecordService.selectAllOrderRecordByPage(req);
         long count = orderRecordService.selectAllOrderRecordCount(req);
         pageModel.setCount(count);
