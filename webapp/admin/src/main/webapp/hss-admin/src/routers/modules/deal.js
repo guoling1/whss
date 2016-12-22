@@ -5,6 +5,7 @@
 import Crumbs from '../../Crumbs.vue';
 // 后台管理 交易 流水 组件
 const DealQuery = r => require.ensure([], () => r(require('../../components/DealQuery')), 'group-record');
+const DealList = r => require.ensure([], () => r(require('../../components/DealList')), 'group-record');
 const WithdrawalQuery = r => require.ensure([], () => r(require('../../components/WithdrawalQuery')), 'group-record');
 const StoreList = r => require.ensure([], () => r(require('../../components/StoreList')), 'group-record');
 const StoreAudit = r => require.ensure([], () => r(require('../../components/StoreAudit')), 'group-record');
@@ -32,6 +33,11 @@ export default {
       path: 'deal',
       name: 'DealQuery',
       component: DealQuery
+    },
+    {
+      path: 'dealList',
+      name: 'DealList',
+      component: DealList
     },
     {
       path: 'withdrawal',

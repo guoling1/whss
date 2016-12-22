@@ -12,8 +12,66 @@
           </div>
           <!-- /.box-tools -->
         </div>
-        <!-- /.box-header -->
         <div class="box-body">
+         <!-- <div class="row">
+            <div class="col-md-3">
+              <div class="form-group">
+                <label>Minimal</label>
+                <input type="text" class="form-control">
+              </div>
+              &lt;!&ndash; /.form-group &ndash;&gt;
+              <div class="form-group">
+                <label>Disabled</label>
+                <input type="text" class="form-control">
+              </div>
+              &lt;!&ndash; /.form-group &ndash;&gt;
+            </div>
+            &lt;!&ndash; /.col &ndash;&gt;
+            <div class="col-md-3">
+              <div class="form-group">
+                <label>Multiple</label>
+                <input type="text" class="form-control">
+              </div>
+              &lt;!&ndash; /.form-group &ndash;&gt;
+              <div class="form-group">
+                <label>Disabled Result</label>
+                <select class="form-control select2 select2-hidden-accessible" style="width: 100%;" tabindex="-1" aria-hidden="true">
+                  <option selected="selected">Alabama</option>
+                  <option>Alaska</option>
+                  <option disabled="disabled">California (disabled)</option>
+                  <option>Delaware</option>
+                  <option>Tennessee</option>
+                  <option>Texas</option>
+                  <option>Washington</option>
+                </select>
+              </div>
+        &lt;!&ndash; /.box-header &ndash;&gt;
+
+        &lt;!&ndash; /.box-body &ndash;&gt;
+      </div>
+            <div class="col-md-3">
+              <div class="form-group">
+                <label>Minimal</label>
+                <input type="text" class="form-control">
+              </div>
+              <div class="form-group">
+                <label>Disabled</label>
+                <input type="text" class="form-control">
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="form-group">
+                <label>Minimal</label>
+                <input type="text" class="form-control">
+              </div>
+              <div class="form-group">
+                <label>Disabled</label>
+                <input type="text" class="form-control">
+              </div>
+            </div>
+      &lt;!&ndash; /.box &ndash;&gt;
+    </div>-->
+
           <div class="search">
             <div class="number">
               <label for="orderId">交易流水号：</label>
@@ -21,8 +79,8 @@
             </div>
             <div class="date">
               <label for="date">交易日期：</label>
-              <input id="date" type="date" name="date" value="" v-model="$$data.start">至
-              <input type="date" name="date" value="" v-model="$$data.end">
+              <input id="date" type="date" name="date" value="" v-model="$$data.startTime">至
+              <input type="date" name="date" value="" v-model="$$data.endTime">
             </div>
             <div class="name">
               <label for="reserveMobile">商户名称：</label>
@@ -62,10 +120,7 @@
             <div class="btn btn-primary" @click="lookup">筛选</div>
           </div>
         </div>
-        <!-- /.box-body -->
       </div>
-      <!-- /.box -->
-    </div>
     <div class="box" style="overflow: hidden">
       <div class="box-header">
         <h3 class="box-title">交易记录</h3>
@@ -91,6 +146,8 @@
                   </th>
                   <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="Platform(s): activate to sort column ascending">商户名称
                   </th>
+                  <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="Platform(s): activate to sort column ascending">所属代理
+                  </th>
                   <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="Engine version: activate to sort column ascending">支付金额
                   </th>
                   <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">手续费率
@@ -111,16 +168,18 @@
                 </thead>
                 <tbody id="content">
                 <tr role="row" v-for="order in orders">
-                  <td>{{order.orderId}}</td>
-                  <td>{{order.updateTime|changeTime}}</td>
-                  <td>{{order.merchantId}}</td>
+                  <td><router-link to="/admin/record/dealList">{{order.orderId}}</router-link></td>
+                  <td>{{order.createTime|changeTime}}</td>
                   <td>{{order.subName}}</td>
-                  <td>{{order.mdMobile}}</td>
+                  <td>上级</td>
                   <td style="text-align: right">{{order.totalFee|toFix}}</td>
+                  <td>费率</td>
                   <td>{{order.payResult|changePayResult}}</td>
                   <td>{{order.settleStatus|changeStatus}}</td>
-                  <td>{{order.errorMessage}}</td>
                   <td>{{order.payChannel|changeChannel}}</td>
+                  <td>渠道</td>
+                  <td>{{order.errorMessage}}</td>
+                  <td>操作</td>
                 </tr>
                 </tbody>
               </table>
@@ -156,8 +215,8 @@
         </label>
         <div class="btn btn-primary sub" @click="login">登 录</div>
       </form>
+</div>
 
-    </div>
   </div>
 </template>
 
@@ -179,21 +238,22 @@
           subName: '',
           lessTotalFee: '',
           moreTotalFee: '',
-          status:2,
+          status:'',
           payResult: '',
           payChannel: '',
           mdMobile:'',
-          pageNo:1,
-          pageSize:10,
-          saveUrl:'D:'
+          page:1,
+          size:10,
+          saveUrl:''
         },
         orders:[],
         total:''
       }
     },
     created:function(){
-      this.$http.post('/admin/queryOrderRecord/selectOrderRecordByConditions',this.$data.msg)
+      this.$http.post('/admin/queryOrderRecord/orderList',this.$data.msg)
         .then(function (res) {
+        console.log(res)
           this.$data.orders=res.data.records;
           this.$data.total=res.data.totalPage;
           var str='',
