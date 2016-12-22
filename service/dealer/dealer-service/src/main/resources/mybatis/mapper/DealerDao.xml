@@ -88,11 +88,11 @@
     </select>
 
     <select id="selectByProxyName" resultType="java.lang.Long">
-         SELECT COUNT(*) FROM tb_dealer WHERE proxy_name = #{name}
+         SELECT COUNT(1) FROM tb_dealer WHERE proxy_name = #{name}
     </select>
 
     <select id="selectByProxyNameUnIncludeNow" resultType="java.lang.Long">
-        SELECT COUNT(*) FROM tb_dealer WHERE proxy_name = #{proxyMame} AND id != #{dealerId}
+        SELECT COUNT(1) FROM tb_dealer WHERE proxy_name = #{proxyMame} AND id != #{dealerId}
     </select>
 
     <select id="selectByCondition" resultType="com.jkm.hss.dealer.entity.Dealer">
@@ -105,11 +105,11 @@
     </select>
 
     <select id="selectMyDealerCount" resultType="java.lang.Integer">
-        SELECT COUNT(*) FROM tb_dealer WHERE first_level_dealer_id = #{firstDealerId} AND level = 2
+        SELECT COUNT(1) FROM tb_dealer WHERE first_level_dealer_id = #{firstDealerId} AND level = 2
     </select>
 
     <select id="selectDealerCountByPageParams" resultType="java.lang.Integer">
-        SELECT COUNT(*) FROM tb_dealer
+        SELECT COUNT(1) FROM tb_dealer
         <where>
             <if test="id > 0">
                 AND id = ${id}
