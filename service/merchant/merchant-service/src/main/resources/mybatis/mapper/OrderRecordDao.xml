@@ -507,7 +507,7 @@
 			AND m.md_mobile = #{mdMobile}
 		</if>
 		<if test="settleStatus != null and settleStatus!=''">
-			AND settle_status = #{settleStatus}
+			AND o.settle_status = #{settleStatus}
 		</if>
 		ORDER BY o.create_time DESC
 		limit #{offset}, #{size}
@@ -553,7 +553,7 @@
 			AND m.md_mobile = #{mdMobile}
 		</if>
 		<if test="settleStatus != null and settleStatus!=''">
-			AND settle_status = #{settleStatus}
+			AND o.settle_status = #{settleStatus}
 		</if>
 	</select>
 </mapper>
