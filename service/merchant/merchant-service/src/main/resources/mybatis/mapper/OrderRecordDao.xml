@@ -467,7 +467,8 @@
 	<select id="selectOrderList" resultType="com.jkm.hss.merchant.entity.MerchantAndOrderRecord">
 		SELECT o.id,o.order_id,o.merchant_id,o.sub_name,o.pay_channel,o.total_fee,o.real_fee,
 		o.service_fee,o.channel_fee,o.pay_result,o.settle_status,o.out_trade_no,o.error_message,
-		o.create_time,m.bank_no,m.mobile
+		o.create_time,m.bank_no,m.mobile,(SELECT a.proxy_name FROM tb_dealer a WHERE a.id=m.dealer_id) AS proxyName,
+		(SELECT b.channel_name FROM tb_basic_channel b WHERE b.channel_type_sign=o.pay_channel) AS channelName
 		FROM tb_order_record o
 		LEFT JOIN tb_merchant_info m
 		ON o.merchant_id = m.id

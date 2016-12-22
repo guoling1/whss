@@ -93,6 +93,22 @@ public class MerchantAndOrderRecord{
      * 查询条件：电话
      */
     private String mobile;
+
+    /**
+     * 渠道名称
+     */
+    private String channelName;
+
+    /**
+     * 所属上级（所属代理商）
+     */
+    private String proxyName;
+
+    /**
+     * 费率
+     */
+//    private
+
     /**
      * 创建时间
      * datetime
