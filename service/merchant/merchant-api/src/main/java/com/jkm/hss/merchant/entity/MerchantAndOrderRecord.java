@@ -118,4 +118,9 @@ public class MerchantAndOrderRecord{
      * 订单状态
      */
     private String orderMessage;
+
+    /**
+     * 交易类型
+     */
+    private int tradeType;
 }
