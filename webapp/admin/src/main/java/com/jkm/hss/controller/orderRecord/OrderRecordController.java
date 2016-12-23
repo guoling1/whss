@@ -96,7 +96,6 @@ public class OrderRecordController extends BaseController{
     @ResponseBody
     @RequestMapping(value = "/orderListAll",method = RequestMethod.POST)
     public CommonResponse orderListAll(@RequestBody OrderListRequest req) throws ParseException {
-        final PageModel<MerchantAndOrderRecord> pageModel = new PageModel<MerchantAndOrderRecord>(req.getPage(), req.getSize());
 
         if(req.getMdMobile()!=null&&!"".equals(req.getMdMobile())){
             req.setMdMobile(MerchantSupport.passwordDigest(req.getMdMobile(),"JKM"));
