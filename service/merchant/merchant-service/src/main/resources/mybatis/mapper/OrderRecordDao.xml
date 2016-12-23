@@ -363,6 +363,9 @@
 		FROM tb_order_record  r
 		LEFT JOIN tb_merchant_info m on r.merchant_id =m.id
 		WHERE   r.trade_type=1 and r.status= 0
+		<if test="orderId!=null and orderId!=''">
+			AND r.order_id LIKE CONCAT('%',#{orderId})
+		</if>
 		<if test="merchantId!=null and merchantId!=''">
 			AND r.merchant_id =  #{merchantId}
 		</if>
@@ -372,11 +375,14 @@
 				#{item}
 			</foreach>
 		</if>
+		<if test="name!=null and name!=''">
+			AND m.name =  #{name}
+		</if>
 		<if test="mobile!=null and mobile!=''">
 			AND m.md_mobile =  #{mobile}
 		</if>
 		<if test="bankNoShort!=null and bankNoShort!=''">
-			AND m.bank_no_short =  #{bankNoShort}
+			AND m.bank_no_short LIKE CONCAT('%',#{bankNoShort})
 		</if>
 		<if test="startDate!=null and startDate!=''">
 			AND r.create_time <![CDATA[ >= ]]> #{startDate}
@@ -426,7 +432,7 @@
 		LEFT JOIN tb_merchant_info m on r.merchant_id =m.id
 		WHERE   r.trade_type=1 and r.status= 0
 		<if test="orderId!=null and orderId!=''">
-			AND r.order_id =  #{orderId}
+			AND r.order_id LIKE CONCAT('%',#{orderId})
 		</if>
 		<if test="merchantId!=null and merchantId!=''">
 			AND r.merchant_id =  #{merchantId}
@@ -444,7 +450,7 @@
 			AND m.md_mobile =  #{mobile}
 		</if>
 		<if test="bankNoShort!=null and bankNoShort!=''">
-			AND m.bank_no_short =  #{bankNoShort}
+			AND m.bank_no_short LIKE CONCAT('%',#{bankNoShort})
 		</if>
 		<if test="startDate!=null and startDate!=''">
 			AND r.create_time <![CDATA[ >= ]]> #{startDate}

@@ -1454,6 +1454,8 @@ public class OrderRecordServiceImpl implements OrderRecordService {
         req.setPayResults(payResults);
         Map<String,Object> map = new HashMap<String,Object>();
         map.put("merchantId",req.getMerchantId());
+        map.put("orderId",req.getOrderId());
+        map.put("name",req.getName());
         map.put("payResults",req.getPayResults());
         map.put("mobile",req.getMobile());
         map.put("bankNoShort",req.getBankNoShort());
@@ -1485,6 +1487,8 @@ public class OrderRecordServiceImpl implements OrderRecordService {
         req.setPayResults(payResults);
         Map<String,Object> map = new HashMap<String,Object>();
         map.put("merchantId",req.getMerchantId());
+        map.put("orderId",req.getOrderId());
+        map.put("name",req.getName());
         map.put("payResults",req.getPayResults());
         map.put("mobile",req.getMobile());
         map.put("bankNoShort",req.getBankNoShort());
@@ -1492,6 +1496,8 @@ public class OrderRecordServiceImpl implements OrderRecordService {
         map.put("endDate",req.getEndDate());
         map.put("payStartDate",req.getPayStartDate());
         map.put("payEndDate",req.getPayEndDate());
+        map.put("offset",req.getOffset());
+        map.put("size",req.getSize());
         return orderRecordDao.selectDrawWithCount(map);
     }
     @Transactional
