@@ -123,4 +123,19 @@ public class MerchantAndOrderRecord{
      * 交易类型
      */
     private int tradeType;
+
+    /**
+     * 商户类型
+     */
+    private int merchantType;
+
+    /**
+     * 结算周期
+     */
+    private String settlePeriod;
+
+    /**
+     * 交易完成时间
+     */
+    private Date payTime;
 }

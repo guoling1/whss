@@ -4,7 +4,6 @@ import com.jkm.hss.merchant.entity.MerchantAndOrderRecord;
 import com.jkm.hss.merchant.entity.OrderRecord;
 import com.jkm.hss.merchant.entity.OrderRecordAndMerchant;
 import com.jkm.hss.merchant.entity.OrderRecordConditions;
-import com.jkm.hss.merchant.helper.request.OrderRecordAndMerchantRequest;
 import com.jkm.hss.merchant.helper.request.RequestOrderRecord;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
@@ -83,4 +82,5 @@ public interface OrderRecordDao {
 
     int selectOrderListCount(Map map);
 
+    List<MerchantAndOrderRecord> selectOrderListCountAll(Map map);
 }

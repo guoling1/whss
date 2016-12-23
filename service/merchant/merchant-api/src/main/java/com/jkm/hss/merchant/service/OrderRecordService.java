@@ -144,4 +144,11 @@ public interface OrderRecordService {
     List<MerchantAndOrderRecord> selectOrderListByPage(OrderListRequest orderRecord);
 
     int selectOrderListCount(OrderListRequest orderRecord);
+
+    /**
+     * 查询交易详情
+     * @param orderRecord
+     * @return
+     */
+    List<MerchantAndOrderRecord> selectOrderListByPageAll(OrderListRequest orderRecord);
 }

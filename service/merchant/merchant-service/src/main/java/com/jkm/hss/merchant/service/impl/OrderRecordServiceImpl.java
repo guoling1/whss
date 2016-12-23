@@ -1958,4 +1958,13 @@ public class OrderRecordServiceImpl implements OrderRecordService {
         map.put("size",req.getSize());
         return orderRecordDao.selectOrderListCount(map);
     }
+
+    @Override
+    public List<MerchantAndOrderRecord> selectOrderListByPageAll(OrderListRequest req) {
+        List<String> payResults = PayOf(req.getPayResult());
+        req.setPayResults(payResults);
+        Map<String,Object> map = new HashMap<String,Object>();
+        map.put("id",req.getId());
+        return orderRecordDao.selectOrderListCountAll(map);
+    }
 }

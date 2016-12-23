@@ -1,7 +1,9 @@
 package com.jkm.hss.controller.orderRecord;
 
+import com.aliyun.oss.OSSClient;
 import com.jkm.base.common.entity.CommonResponse;
 import com.jkm.base.common.entity.PageModel;
+import com.jkm.base.common.util.DateFormatUtil;
 import com.jkm.hss.controller.BaseController;
 import com.jkm.hss.merchant.entity.MerchantAndOrderRecord;
 import com.jkm.hss.merchant.entity.OrderRecordConditions;
@@ -10,6 +12,7 @@ import com.jkm.hss.merchant.helper.PageUtils;
 import com.jkm.hss.merchant.helper.ValidateOrderRecord;
 import com.jkm.hss.merchant.helper.request.OrderListRequest;
 import com.jkm.hss.merchant.service.OrderRecordService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.io.File;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -26,12 +30,17 @@ import java.util.List;
 /**
  * Created by lt on 2016/12/7.
  */
+@Slf4j
+
 @Controller
 @RequestMapping(value = "/admin/queryOrderRecord")
 public class OrderRecordController extends BaseController{
 
     @Autowired
     private OrderRecordService orderRecordService;
+
+    @Autowired
+    private OSSClient ossClient;
 
     @ResponseBody
     @RequestMapping(value = "/selectOrderRecordByConditions",method = RequestMethod.POST)
@@ -77,6 +86,71 @@ public class OrderRecordController extends BaseController{
         pageModel.setCount(count);
         pageModel.setRecords(orderList);
         return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", pageModel);
+    }
+
+    /**
+     * 交易记录详情
+     * @param req
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/orderListAll",method = RequestMethod.POST)
+    public CommonResponse orderListAll(@RequestBody OrderListRequest req) throws ParseException {
+        final PageModel<MerchantAndOrderRecord> pageModel = new PageModel<MerchantAndOrderRecord>(req.getPage(), req.getSize());
+
+        if(req.getMdMobile()!=null&&!"".equals(req.getMdMobile())){
+            req.setMdMobile(MerchantSupport.passwordDigest(req.getMdMobile(),"JKM"));
+        }
+        List<MerchantAndOrderRecord> orderList =  orderRecordService.selectOrderListByPageAll(req);
+        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", orderList);
+    }
+
+
+
+    /**
+     * 导出 Excel
+     *
+     * @return
+     */
+//    @ResponseBody
+//    @RequestMapping(value = "downloadExcel", method = RequestMethod.POST)
+//    public CommonResponse downloadExcel(@RequestBody final OrderListRequest req) {
+////        final String fileZip = this.qrCodeService.downloadExcel(1, request.getCount(),
+////                ApplicationConsts.getApplicationConfig().ossBucke());
+//
+//        final ObjectMetadata meta = new ObjectMetadata();
+//        meta.setCacheControl("public, max-age=31536000");
+//        meta.setExpirationTime(new DateTime().plusYears(1).toDate());
+//        meta.setContentType("application/x-xls");
+//        SimpleDateFormat sdf =   new SimpleDateFormat("yyyyMMdd");
+//        String nowDate = sdf.format(new Date());
+//        Date date = new Date();
+//        long nousedate =  date.getTime();
+//        String fileName = "hss/"+  nowDate + "/" + nousedate + RandomStringUtils.randomNumeric(5) +".xls";
+//        final Date expireDate = new Date(new Date().getTime() + 30 * 60 * 1000);
+//        URL url;
+//        try {
+//            ossClient.putObject(ApplicationConsts.getApplicationConfig().ossBucke(), fileName, new FileInputStream(new File(fileZip)), meta);
+//            url = ossClient.generatePresignedUrl(ApplicationConsts.getApplicationConfig().ossBucke(), fileName, expireDate);
+//        } catch (IOException e) {
+//            log.error("上传文件失败", e);
+//            return CommonResponse.simpleResponse(-1, "图片上传失败");
+//        }
+//        FileUtils.deleteQuietly(new File(fileZip));
+//        return CommonResponse.builder4MapResult(CommonResponse.SUCCESS_CODE, "success")
+//                .addParam("url", url.getHost() + url.getFile()).build();
+//    }
+
+    /**
+     * 获取随机文件名
+     *
+     * @param originalFilename
+     * @return
+     */
+    private String getFileName(final String originalFilename) {
+        final String dateFileName = DateFormatUtil.format(new Date(), DateFormatUtil.yyyyMMdd);
+        final String extName = originalFilename.substring(originalFilename.lastIndexOf(File.separator) + 1);
+        return "hss/" + dateFileName + "/" + extName;
     }
 }
 

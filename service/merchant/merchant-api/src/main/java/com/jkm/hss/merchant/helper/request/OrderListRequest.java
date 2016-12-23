@@ -2,8 +2,6 @@ package com.jkm.hss.merchant.helper.request;
 
 import lombok.Data;
 
-import java.math.BigDecimal;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -33,6 +31,11 @@ public class OrderListRequest {
      * 查询条件：结束时间
      */
     private String endTime;
+
+    /**
+     * 订单id
+     */
+    private long id;
 
     /**
      * 查询条件：设备编号（订单号）
