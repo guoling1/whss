@@ -96,11 +96,22 @@ public class OrderRecordController extends BaseController{
     @ResponseBody
     @RequestMapping(value = "/orderListAll",method = RequestMethod.POST)
     public CommonResponse orderListAll(@RequestBody OrderListRequest req) throws ParseException {
-
-        if(req.getMdMobile()!=null&&!"".equals(req.getMdMobile())){
-            req.setMdMobile(MerchantSupport.passwordDigest(req.getMdMobile(),"JKM"));
-        }
         List<MerchantAndOrderRecord> orderList =  orderRecordService.selectOrderListByPageAll(req);
+        if (orderList.size()>0){
+            for (int i=0;i<orderList.size();i++){
+                if (orderList.get(i).getBankNo()!= null){
+                    orderList.get(i).setBankNo(MerchantSupport.decryptBankCard(orderList.get(i).getBankNo()));
+                }
+                if (orderList.get(i).getMobile()!=null){
+                    orderList.get(i).setMobile(MerchantSupport.decryptMobile(orderList.get(i).getMobile()));
+                }
+                if (orderList.get(i).getReserveMobile()!=null){
+                    orderList.get(i).setReserveMobile(MerchantSupport.decryptMobile(orderList.get(i).getReserveMobile()));
+                }
+            }
+        }else {
+            return CommonResponse.simpleResponse(-1, "未查询到相关数据");
+        }
         return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", orderList);
     }
 

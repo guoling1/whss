@@ -95,6 +95,11 @@ public class MerchantAndOrderRecord{
     private String mobile;
 
     /**
+     * 银行预留手机号
+     */
+    private String reserveMobile;
+
+    /**
      * 渠道名称
      */
     private String channelName;
