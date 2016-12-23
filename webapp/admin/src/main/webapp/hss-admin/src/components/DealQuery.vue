@@ -111,7 +111,7 @@
                   <td>{{order.proxyName}}</td>
                   <td style="text-align: right">{{order.totalFee|toFix}}</td>
                   <td>{{order.tradeRate}}</td>
-                  <td>{{order.orderMessage}}<a href="">(补发)</a></td>
+                  <td>{{order.orderMessage}}<a href="javascript:;">(补发)</a></td>
                   <td>{{order.settleStatus|changeSettleStatus}}</td>
                   <td>{{order.payChannel|changePayChannel}}</td>
                   <td>{{order.channelName}}</td>
@@ -120,6 +120,9 @@
                 </tbody>
               </table>
             </div>
+          </div>
+          <div v-if="orders.length==0" class="row" style="text-align: center;color: red;font-size: 16px;">
+            <div class="col-sm-12">无此数据</div>
           </div>
           <div class="row">
             <div class="col-sm-5">
