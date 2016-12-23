@@ -1966,11 +1966,28 @@ public class OrderRecordServiceImpl implements OrderRecordService {
     }
 
     @Override
-    public List<MerchantAndOrderRecord> selectOrderListByPageAll(OrderListRequest req) {
+    public MerchantAndOrderRecord selectOrderListByPageAll(OrderListRequest req) {
         List<String> payResults = PayOf(req.getPayResult());
         req.setPayResults(payResults);
         Map<String,Object> map = new HashMap<String,Object>();
         map.put("id",req.getId());
-        return orderRecordDao.selectOrderListCountAll(map);
+        MerchantAndOrderRecord merchantAndOrderRecord = orderRecordDao.selectOrderListCountAll(map);
+        if(merchantAndOrderRecord!=null){
+            merchantAndOrderRecord.setOrderMessage(PayOfStatus(merchantAndOrderRecord.getPayResult()));
+        }
+        return merchantAndOrderRecord;
+    }
+
+    @Override
+    public OrderRecordAndMerchant selectDrawWithRecordByPageAll(OrderRecordAndMerchantRequest req) {
+        List<String> payResults = PayOf(req.getPayResult());
+        req.setPayResults(payResults);
+        Map<String,Object> map = new HashMap<String,Object>();
+        map.put("id",req.getId());
+        OrderRecordAndMerchant orderRecordAndMerchant = orderRecordDao.selectDrawWithRecordByPageAll(map);
+        if (orderRecordAndMerchant != null){
+            orderRecordAndMerchant.setOrderMessage(PayOfStatus(orderRecordAndMerchant.getPayResult()));
+        }
+        return orderRecordAndMerchant;
     }
 }

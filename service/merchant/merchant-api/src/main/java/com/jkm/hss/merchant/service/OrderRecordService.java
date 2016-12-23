@@ -150,5 +150,12 @@ public interface OrderRecordService {
      * @param orderRecord
      * @return
      */
-    List<MerchantAndOrderRecord> selectOrderListByPageAll(OrderListRequest orderRecord);
+    MerchantAndOrderRecord selectOrderListByPageAll(OrderListRequest orderRecord);
+
+    /**
+     * 提现详情
+     * @param req
+     * @return
+     */
+    OrderRecordAndMerchant selectDrawWithRecordByPageAll(OrderRecordAndMerchantRequest req);
 }

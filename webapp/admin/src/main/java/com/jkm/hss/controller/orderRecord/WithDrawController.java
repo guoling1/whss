@@ -56,6 +56,33 @@ public class WithDrawController extends BaseController {
     }
 
     /**
+     * 提现详情
+     * @param req
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/withdrawListByContionsAll", method = RequestMethod.POST)
+    public CommonResponse withdrawListByContionsAll(@RequestBody final OrderRecordAndMerchantRequest req) {
+
+        OrderRecordAndMerchant orderList =  orderRecordService.selectDrawWithRecordByPageAll(req);
+
+        if (orderList.getBankNo()!= null){
+            orderList.setBankNo(MerchantSupport.decryptBankCard(orderList.getBankNo()));
+        }
+        if (orderList.getMobile()!=null){
+            orderList.setMobile(MerchantSupport.decryptMobile(orderList.getMobile()));
+        }
+        if (orderList.getReserveMobile()!=null){
+            orderList.setReserveMobile(MerchantSupport.decryptMobile(orderList.getReserveMobile()));
+        }
+        if (orderList.getIdentity() != null){
+            orderList.setIdentity(MerchantSupport.decryptIdentity(orderList.getIdentity()));
+        }
+
+        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", orderList);
+    }
+
+    /**
      * 审核不通过
      * @param request
      * @param response

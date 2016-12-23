@@ -82,5 +82,7 @@ public interface OrderRecordDao {
 
     int selectOrderListCount(Map map);
 
-    List<MerchantAndOrderRecord> selectOrderListCountAll(Map map);
+    MerchantAndOrderRecord selectOrderListCountAll(Map map);
+
+    OrderRecordAndMerchant selectDrawWithRecordByPageAll(Map map);
 }
