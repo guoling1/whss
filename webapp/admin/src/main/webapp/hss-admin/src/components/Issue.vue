@@ -31,7 +31,7 @@
             </div>
           </div>
           <div class="box-footer">
-            <div type="submit" class="btn btn-info"  @click="submit">Sign in</div>
+            <div type="submit" class="btn btn-info"  @click="submit">分配二维码</div>
           </div>
         </form>
       </div>

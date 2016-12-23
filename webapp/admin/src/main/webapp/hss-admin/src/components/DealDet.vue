@@ -100,14 +100,17 @@
     data: function () {
       return {
         name:'',
-        query:{
-          dealerId:'',
-          startCode:'',
-          endCode:''
-        },
-        findDealers:[],
-        listIsShow: false
+        record:{}
       }
+    },
+    created: function(){
+      console.log(this.$route,this)
+      this.$http.post('/admin/queryOrderRecord/orderListAll',{id:this.$route.query.id})
+        .then(function (res) {
+          this.$data.record = res.data[0];
+        },function (err) {
+          console.log(err)
+        })
     },
     methods: {
 

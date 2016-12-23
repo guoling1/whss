@@ -1,6 +1,6 @@
 <template lang="html">
   <div id="dale">
-    <div style="padding: 8px 30px; background: rgb(243, 156, 18); z-index: 999999; font-size: 22px; font-weight: 600;margin-bottom: 15px;    color: #fff;">交易查询</div>
+    <div style="padding: 8px 30px; background: rgb(243, 156, 18); z-index: 999999; font-size: 22px; font-weight: 600;margin-bottom: 15px;color: #fff;">交易查询</div>
     <div class="col-md-12">
       <!--筛选-->
       <div class="box box-success box-solid">
@@ -38,14 +38,16 @@
                   <input type="text" style="border: none;display:inline-block;width: 45%" name="date" value="" v-model="$$query.moreTotalFee">
                 </div>
               </div>
-      </div>
+            </div>
             <div class="col-md-3">
               <div class="form-group">
                 <label>订单状态：</label>
                 <select class="form-control select2 select2-hidden-accessible" style="width: 100%;" tabindex="-1" aria-hidden="true" v-model="$$query.payResult">
                   <option value="">全部</option>
                   <option value="N">待支付</option>
+                  <option value="H">支付中</option>
                   <option value="S">支付成功</option>
+                  <option value="F">支付失败</option>
                 </select>
               </div>
               <div class="form-group">
@@ -72,22 +74,17 @@
                 <div class="btn btn-primary" @click="lookup">筛选</div>
               </div>
             </div>
-    </div>
+          </div>
         </div>
       </div>
       <!--列表-->
       <div class="box" style="overflow: hidden">
       <div class="box-header">
         <h3 class="box-title">交易记录</h3>
-        <button @click="load" class="btn btn-primary" style="float: right">导出</button>
+        <a :href="url" download="交易记录" class="btn btn-primary" style="float: right;color: #fff">导出</a>
       </div>
-      <!-- /.box-header -->
       <div class="box-body">
         <div id="example2_wrapper" class="dataTables_wrapper form-inline dt-bootstrap">
-          <div class="row">
-            <div class="col-sm-6"></div>
-            <div class="col-sm-6"></div>
-          </div>
           <div class="row">
             <div class="col-sm-12">
               <table id="example2" class="table table-bordered table-hover dataTable" role="grid" aria-describedby="example2_info">
@@ -108,7 +105,7 @@
                 </thead>
                 <tbody id="content">
                 <tr v-if="order.tradeType==0" role="row" v-for="order in this.$data.orders">
-                  <td><router-link to="/admin/record/dealList">{{order.orderId|changeHide}}</router-link></td>
+                  <td><router-link :to="{ path: '/admin/record/dealDet', query: {id: order.id}}">{{order.orderId|changeHide}}</router-link></td>
                   <td>{{order.createTime|changeTime}}</td>
                   <td>{{order.subName}}</td>
                   <td>{{order.proxyName}}</td>
@@ -138,7 +135,6 @@
           </div>
         </div>
       </div>
-      <!-- /.box-body -->
     </div>
       <!--登录页面-->
       <div class="login" v-if="isLogin">
@@ -180,57 +176,37 @@
           settleStatus:'',
           payChannel:''
         },
-        msg:{
-          orderId:'',
-          start:'',
-          end:'',
-          startTime: '',
-          endTime: '',
-          merchantId: '',
-          subName: '',
-          lessTotalFee: '',
-          moreTotalFee: '',
-          status:'',
-          payResult: '',
-          payChannel: '',
-          mdMobile:'',
-          page:1,
-          size:10,
-          saveUrl:''
-        },
         orders:[],
-        total:''
+        total:'',
+        url:''
       }
     },
     created:function(){
       this.$http.post('/admin/queryOrderRecord/orderList',this.$data.query)
         .then(function (res) {
-        console.log(res)
-        console.log(res.data.records)
           this.$data.orders=res.data.records;
           this.$data.total=res.data.totalPage;
-          console.log(this.$data.orders)
-          var str='',
-            page=document.getElementById('page');
+          var str = '',
+            page = document.getElementById('page');
           str+='<li class="paginate_button previous" id="example2_previous"><a href="#" aria-controls="example2" data-dt-idx="0" tabindex="0">上一页</a></li>'
-          for (var i=1; i<=this.$data.total;i++){
-            if(i==this.$data.query.page){
+          for (var i = 1; i <= this.$data.total; i++){
+            if(i == this.$data.query.page){
               str+='<li class="paginate_button active"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">'+i+'</a></li></li>';
               continue;
             }
             str+='<li class="paginate_button"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">'+i+'</a></li></li>'
           }
           str+='<li class="paginate_button next" id="example2_next"><a href="#" aria-controls="example2" data-dt-idx="7" tabindex="0">下一页</a></li>'
-          page.innerHTML=str;
+          page.innerHTML = str;
           var aLi = page.getElementsByTagName('li');
-          if(this.$data.query.page<6){
-            for(var i=0;i<aLi.length;i++){
-              if(i>11){
+          if(this.$data.query.page < 6){
+            for(var i = 0; i < aLi.length; i++){
+              if(i > 11){
                 aLi[i].style.display='none'
               }
             }
           }else if(this.$data.query.page>(this.$data.total-5)){
-            for(var i=0;i<aLi.length;i++){
+            for(var i = 0; i < aLi.length; i++){
               if(i<(this.$data.total-12)){
                 aLi[i].style.display='none'
               }
@@ -238,7 +214,7 @@
           }else{
             for(var i=0;i<aLi.length;i++){
               if((i!=0&&i<this.$data.query.page-5)||(i!=this.$data.total+1&&i>this.$data.query.page+4)){
-                aLi[i].style.display='none'
+                aLi[i].style.display = 'none';
               }
             }
           }
@@ -301,14 +277,14 @@
                 }
               }
             }else if(this.$data.query.page>(this.$data.total-5)){
-              for(var i=0;i<aLi.length;i++){
+              for(var i = 0; i < aLi.length; i++){
                 if(i<(this.$data.total-12)){
-                  aLi[i].style.display='none'
+                  aLi[i].style.display = 'none'
                 }
               }
             }else{
-              for(var i=0;i<aLi.length;i++){
-                if((i!=0&&i<this.$data.query.page-5)||(i!=this.$data.total+1&&i>this.$data.query.page+4)){
+              for(var i = 0; i < aLi.length; i++){
+                if((i != 0 && i < this.$data.query.page-5)||(i!=this.$data.total+1&&i>this.$data.query.page+4)){
                   aLi[i].style.display='none'
                 }
               }
@@ -370,21 +346,6 @@
             }
           },function (err) {
             console.log(err)
-          })
-      },
-      load: function () {
-        this.$http.post('/admin/export/exportOrderRecord',this.$data.msg)
-          .then(function (res) {
-            console.log(res)
-            this.$store.commit('MESSAGE_ACCORD_SHOW', {
-              text: '已成功导出到D盘'
-            })
-          },function (err) {
-            console.log(err)
-            alert(err.statusMessage)
-            this.$store.commit('MESSAGE_ACCORD_SHOW', {
-              text: err.statusMessage
-            })
           })
       }
     },
