@@ -1,6 +1,6 @@
 <template lang="html">
   <div id="withdrawalDet">
-    <div style="padding: 8px 30px; background: rgb(243, 156, 18); z-index: 999999; font-size: 22px; font-weight: 600;margin-bottom: 15px;    color: #fff;">提现详情</div>
+    <div style="padding: 8px 30px; background: rgb(243, 156, 18); z-index: 999999; font-size: 22px; font-weight: 600;margin-bottom: 15px;color: #fff;">打款详情</div>
     <div style="margin: 0 15px">
       <div class="box box-primary">
         <p class="lead">Amount Due 2/22/2014</p>

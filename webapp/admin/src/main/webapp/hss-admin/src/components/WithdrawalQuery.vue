@@ -1,6 +1,6 @@
 <template lang="html">
   <div id="withDrawal">
-    <div style="padding: 8px 30px; background: rgb(243, 156, 18); z-index: 999999; font-size: 22px; font-weight: 600;margin-bottom: 15px;    color: #fff;">提现查询</div>
+    <div style="padding: 8px 30px; background: rgb(243, 156, 18); z-index: 999999; font-size: 22px; font-weight: 600;margin-bottom: 15px;color: #fff;">打款查询</div>
     <div class="col-md-12">
       <div class="box box-success box-solid">
         <div class="box-header with-border">
@@ -18,25 +18,25 @@
             <div class="col-md-3">
               <div class="form-group">
                 <label for="date">订单号：</label>
-                <input type="text" class="form-control" name="date" value="" v-model="$$data.msg.orderId">
+                <input type="text" class="form-control" name="date" value="" v-model="$$data.query.orderId">
               </div>
             </div>
             <div class="col-md-3">
               <div class="form-group">
                 <label for="codeNumber">用户名称：</label>
-                <input type="text" name="codeNumber" class="form-control" v-model="$$data.msg.name">
+                <input type="text" name="codeNumber" class="form-control" v-model="$$data.query.name">
               </div>
             </div>
             <div class="col-md-2">
               <div class="form-group">
                 <label for="number">收款银行卡后四位：</label>
-                <input type="text" class="form-control" name="number" v-model="$$data.msg.bankNoShort">
+                <input type="text" class="form-control" name="number" v-model="$$data.query.bankNoShort">
               </div>
             </div>
             <div class="col-md-3">
               <div class="form-group">
                 <label>状态：</label>
-                <select class="form-control select2 select2-hidden-accessible" style="width: 100%;" tabindex="-1" aria-hidden="true" v-model="$$data.msg.payResult">
+                <select class="form-control select2 select2-hidden-accessible" style="width: 100%;" tabindex="-1" aria-hidden="true" v-model="$$data.query.payResult">
                   <option value="">全部</option>
                   <option value="N">申请</option>
                   <option value="H">提现中</option>
@@ -83,17 +83,16 @@
                   </thead>
                   <tbody>
                   <tr role="row" v-for="(record,index) in $$records">
-                    <td>{{record.orderId}}</td>
+                    <td><router-link :to="{ path: '/admin/record/withdrawalDet', query: {id: record.id}}">{{record.orderId|changeHide}}</router-link></td>
+                    <td>{{record.payTime|changeTime}}</td>
                     <td>{{record.name}}</td>
-                    <td>{{record.merchantType|changeType}}</td>
-                    <td>{{record.outTradeNo}}</td>
+                    <td>{{record.bankNo}}</td>
                     <td>{{record.totalFee}}</td>
                     <td>{{record.realFee}}</td>
-                    <td>{{record.bankName}}</td>
-                    <td>{{record.bankNo}}</td>
-                    <td>{{record.payTime|changeTime}}</td>
-                    <td>{{record.payChannel|changeChannel}}</td>
+                    <td>{{record.serviceFee}}</td>
                     <td>{{record.payResult|changeStatus}}</td>
+                    <td>{{record.errorMessage}}</td>
+
                     <!--<td v-if="record.payResult=='O'">{{record.errorMessage||changeMes}}</td>
                     <td v-if="record.payResult!='O'"></td>
                     <td>
@@ -204,7 +203,7 @@
             page=document.getElementById('page');
           str+='<li class="paginate_button previous" id="example2_previous"><a href="#" aria-controls="example2" data-dt-idx="0" tabindex="0">上一页</a></li>'
           for (var i=1; i<=this.$data.total;i++){
-            if(i==this.$data.page){
+            if(i==this.$data.query.page){
               str+='<li class="paginate_button active"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">'+i+'</a></li></li>';
               continue;
             }
@@ -263,7 +262,7 @@
               page=document.getElementById('page');
             str+='<li class="paginate_button previous" id="example2_previous"><a href="#" aria-controls="example2" data-dt-idx="0" tabindex="0">上一页</a></li>'
             for (var i=1; i<=this.$data.total;i++){
-              if(i==this.$data.page){
+              if(i==this.$data.query.page){
                 str+='<li class="paginate_button active"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">'+i+'</a></li></li>';
                 continue;
               }
@@ -287,6 +286,7 @@
       },
       //筛选
       lookup: function () {
+        this.$data.query.page = 1;
         this.$http.post('/admin/withdraw/withdrawListByContions',this.$data.query)
           .then(function (res) {
             this.$data.records = res.data.records;
@@ -420,6 +420,10 @@
         }else if(val==1){
           return '代理商'
         }
+      },
+      changeHide: function (val) {
+        val = val.replace(val.substring(3,19),"…");
+        return val
       },
     }
   }
