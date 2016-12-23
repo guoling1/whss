@@ -129,7 +129,7 @@
       this.$http.post('/admin/withdraw/withdrawListByContionsAll',{id:this.$route.query.id})
         .then(function (res) {
           console.log(res.data)
-          this.$data.record = res.data[0];
+          this.$data.record = res.data;
         }, function (err) {
           console.log(err)
         })

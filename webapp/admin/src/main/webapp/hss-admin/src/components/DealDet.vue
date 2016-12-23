@@ -128,7 +128,7 @@
     created: function(){
       this.$http.post('/admin/queryOrderRecord/orderListAll',{id:this.$route.query.id})
         .then(function (res) {
-          this.$data.record = res.data[0];
+          this.$data.record = res.data;
         },function (err) {
           console.log(err)
         })
