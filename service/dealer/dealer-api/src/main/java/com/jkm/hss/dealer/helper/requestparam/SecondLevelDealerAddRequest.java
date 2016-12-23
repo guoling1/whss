@@ -34,6 +34,10 @@ public class SecondLevelDealerAddRequest {
      * 结算卡
      */
     private String bankCard;
+    /**
+     * 银行名称
+     */
+    private String bankName;
 
     /**
      * 银行预留手机号
