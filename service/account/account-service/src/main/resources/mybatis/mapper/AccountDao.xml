@@ -34,6 +34,38 @@
         WHERE id = #{id}
     </update>
 
+    <update id="increaseTotalAmount">
+        UPDATE tb_account SET total_amount = total_amount + #{amount} WHERE id = #{id}
+    </update>
+
+    <update id="decreaseTotalAmount">
+        UPDATE tb_account SET total_amount = total_amount - #{amount} WHERE id = #{id}
+    </update>
+
+    <update id="increaseAvailableAmount">
+         UPDATE tb_account SET available = available + #{amount} WHERE id = #{id}
+    </update>
+
+    <update id="decreaseAvailableAmount">
+        UPDATE tb_account SET available = available - #{amount} WHERE id = #{id}
+    </update>
+
+    <update id="increaseFrozenAmount">
+         UPDATE tb_account SET frozen_amount = frozen_amount + #{amount} WHERE id = #{id}
+    </update>
+
+    <update id="decreaseFrozenAmount">
+         UPDATE tb_account SET frozen_amount = frozen_amount - #{amount} WHERE id = #{id}
+    </update>
+
+    <update id="increaseSettleAmount">
+         UPDATE tb_account SET frozen_amount = frozen_amount + #{amount} WHERE id = #{id}
+    </update>
+
+    <update id="decreaseSettleAmount">
+        UPDATE tb_account SET frozen_amount = frozen_amount - #{amount} WHERE id = #{id}
+    </update>
+
     <select id="selectById" resultType="com.jkm.hss.account.entity.Account">
         SELECT * FROM tb_account WHERE id = #{id}
     </select>

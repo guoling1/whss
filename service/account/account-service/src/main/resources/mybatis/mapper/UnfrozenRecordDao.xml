@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jkm.hss.account.dao.UnfrozenRecordDao">
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO tb_unfrozen_record
+        (
+        account_id,
+        frozen_record_id,
+        business_no,
+        unfrozen_type,
+        unfrozen_amount,
+        unfrozen_time,
+        remark
+        )
+        VALUES
+        (
+        #{accountId},
+        #{frozenRecordId},
+        #{businessNo},
+        #{unfrozenType},
+        #{unfrozenAmount},
+        #{unfrozenTime},
+        #{remark})
+    </insert>
+
+    <update id="update">
+        UPDATE tb_unfrozen_record
+        SET
+        account_id = #{accountId},
+        frozen_record_id = #{accountId},
+        business_no = #{businessNo},
+        unfrozen_type = #{unfrozenType},
+        unfrozen_amount = #{unfrozenAmount},
+        unfrozen_time = #{unfrozenTime},
+        remark = #{remark}
+        WHERE id = #{id}
+    </update>
+
+    <select id="selectById" resultType="com.jkm.hss.account.entity.UnfrozenRecord">
+        SELECT * FROM tb_unfrozen_record WHERE id = #{id}
+    </select>
+
+    <select id="selectByFrozenRecordId" resultType="com.jkm.hss.account.entity.UnfrozenRecord">
+        SELECT * FROM tb_unfrozen_record WHERE frozen_record_id = #{frozenRecordId}
+    </select>
+
+    <select id="selectByBusinessNo" resultType="com.jkm.hss.account.entity.UnfrozenRecord">
+        SELECT * FROM tb_unfrozen_record WHERE business_no = #{businessNo}
+    </select>
+
+    <select id="selectByAccountId" resultType="com.jkm.hss.account.entity.UnfrozenRecord">
+        SELECT * FROM tb_unfrozen_record WHERE account_id = #{accountId}
+    </select>
+</mapper>

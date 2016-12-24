@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jkm.hss.account.dao.FrozenRecordDao">
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO tb_frozen_record
+        (
+        account_id,
+        business_sn,
+        frozen_amount,
+        frozen_time,
+        remark
+        )
+        VALUES
+        (
+        #{accountId},
+        #{businessSn},
+        #{frozenAmount},
+        #{frozenTime},
+        #{remark})
+    </insert>
+
+    <update id="update">
+        UPDATE tb_frozen_record
+        SET account_id = #{accountId},
+        business_no = #{businessNo},
+        frozen_amount = #{frozenAmount},
+        frozen_time = #{frozenTime},
+        remark = #{remark}
+        WHERE id = #{id}
+    </update>
+
+    <update id="updateStatusByBusinessNo">
+        UPDATE tb_frozen_record
+        SET status = #{status}
+        WHERE business_no = #{businessNo}
+    </update>
+
+    <select id="selectById" resultType="com.jkm.hss.account.entity.FrozenRecord">
+        SELECT * FROM tb_frozen_record WHERE id = #{id}
+    </select>
+
+    <select id="selectByIds" resultType="com.jkm.hss.account.entity.FrozenRecord">
+        SELECT * FROM tb_frozen_record
+        WHERE id IN
+        <foreach collection="ids" item="item" index="index" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+
+    <select id="selectByAccountId" resultType="com.jkm.hss.account.entity.FrozenRecord">
+        SELECT * FROM tb_frozen_record WHERE account_id = #{accountId}
+    </select>
+
+    <select id="selectByBusinessNo" resultType="com.jkm.hss.account.entity.FrozenRecord">
+        SELECT * FROM tb_frozen_record WHERE business_no = #{businessNo}
+    </select>
+</mapper>

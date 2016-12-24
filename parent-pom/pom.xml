@@ -32,6 +32,7 @@
         <dealer.version>${hss.project.version}</dealer.version>
         <product.version>${hss.project.version}</product.version>
         <merchant.version>${hss.project.version}</merchant.version>
+        <bill.version>${hss.project.version}</bill.version>
         <user.version>${hss.project.version}</user.version>
         <admin.version>${hss.project.version}</admin.version>
         <mq.version>${hss.project.version}</mq.version>
@@ -132,6 +133,16 @@
                 <groupId>com.jkm</groupId>
                 <artifactId>hss-user-service</artifactId>
                 <version>${user.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.jkm</groupId>
+                <artifactId>hss-bill-api</artifactId>
+                <version>${bill.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.jkm</groupId>
+                <artifactId>hss-bill-service</artifactId>
+                <version>${bill.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.jkm</groupId>

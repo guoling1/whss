@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jkm.hss.account.dao.SplitAccountRecordDao">
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO tb_split_account_record
+        (
+        order_no,
+        split_order_no,
+        total_amount,
+        split_total_amount,
+        split_amount,
+        split_rate,
+        split_sn,
+        split_date,
+        out_money_account_id,
+        receipt_money_account_id,
+        receipt_money_user_name,
+        remark,
+        status
+        ) 
+        VALUES 
+        (
+        #{orderNo},
+        #{splitOrderNo},
+        #{totalAmount},
+        #{splitTotalAmount},
+        #{splitAmount},
+        #{splitRate},
+        #{outMoneyAccountId},
+        #{receiptMoneyAccountId},
+        #{receiptMoneyUserName},
+        #{remark},
+        #{status}
+        );
+    </insert>
+
+    <update id="update">
+        UPDATE tb_split_account_record
+        SET 
+        order_no = #{orderNo},
+        split_order_no = #{splitOrderNo},
+        total_amount = #{totalAmount},
+        split_total_amount = #{splitTotalAmount},
+        split_amount = #{splitAmount},
+        split_rate = #{splitRate},
+        split_sn = #{splitSn},
+        split_date = #{splitDate},
+        out_money_account_id = #{outMoneyAccountId},
+        receipt_money_account_id = #{receiptMoneyAccountId},
+        receipt_money_user_name = #{receiptMoneyUserName},
+        remark = #{remark},
+        status = #{status}
+        WHERE id = #{id}
+    </update>
+
+    <select id="selectById" resultType="com.jkm.hss.account.entity.SplitAccountRecord">
+        SELECT * FROM tb_split_account_record WHERE id = #{id}
+    </select>
+</mapper>

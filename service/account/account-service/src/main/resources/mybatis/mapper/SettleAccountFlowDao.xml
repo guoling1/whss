@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jkm.hss.account.dao.SettleAccountFlowDao">
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO tb_settle_account_flow
+        (
+        account_id,
+        order_no,
+        before_amount,
+        after_amount,
+        out_amount,
+        income_amount,
+        change_time,
+        remark,
+        status
+        )
+        VALUES
+        (
+        #{accountId},
+        #{orderNo},
+        #{beforeAmount},
+        #{afterAmount},
+        #{outAmount},
+        #{incomeAmount},
+        #{changeTime},
+        #{remark},
+        #{status}
+        );
+    </insert>
+
+    <select id="selectById" resultType="com.jkm.hss.account.entity.SettleAccountFlow">
+        SELECT * FROM tb_settle_account_flow WHERE id = #{id}
+    </select>
+
+    <select id="selectByOrderNo" resultType="com.jkm.hss.account.entity.SettleAccountFlow">
+        SELECT * FROM tb_settle_account_flow WHERE order_no = #{orderNo}
+    </select>
+</mapper>
