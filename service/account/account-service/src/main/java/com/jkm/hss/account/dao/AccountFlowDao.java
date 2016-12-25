@@ -24,4 +24,12 @@ public interface AccountFlowDao {
      * @return
      */
     AccountFlow selectById(@Param("id") long id);
+
+    /**
+     * 按交易订单号查询
+     *
+     * @param orderNo
+     * @return
+     */
+    AccountFlow selectByOrderNoAndAccountIdAndType(@Param("orderNo") String orderNo, @Param("accountId") long accountId, @Param("type") int type);
 }

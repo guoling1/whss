@@ -21,6 +21,7 @@
         settle_status,
         settle_time,
         success_settle_time,
+        pay_channel_sign,
         remark,
         status
         )
@@ -43,6 +44,7 @@
         #{settleStatus},
         #{settleTime},
         #{successSettleTime},
+        #{payChannelSign},
         #{remark},
         #{status}
         );

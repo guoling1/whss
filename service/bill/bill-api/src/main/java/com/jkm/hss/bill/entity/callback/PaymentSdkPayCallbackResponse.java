@@ -8,7 +8,7 @@ import lombok.Data;
  * 网关返回的支付结果参数
  */
 @Data
-public class PayCallbackResponse {
+public class PaymentSdkPayCallbackResponse {
 
     /**
      * 交易订单号

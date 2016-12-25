@@ -52,6 +52,13 @@ public class SettleAccountFlow extends BaseEntity {
     private Date changeTime;
 
     /**
+     * 类型
+     *
+     * {@link com.jkm.hss.account.enums.EnumAccountFlowType}
+     */
+    private int type;
+
+    /**
      * 备注
      */
     private String remark;

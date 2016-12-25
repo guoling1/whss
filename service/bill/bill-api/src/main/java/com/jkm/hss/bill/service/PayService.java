@@ -1,7 +1,7 @@
 package com.jkm.hss.bill.service;
 
 import com.jkm.hss.bill.entity.Order;
-import com.jkm.hss.bill.entity.callback.PayCallbackResponse;
+import com.jkm.hss.bill.entity.callback.PaymentSdkPayCallbackResponse;
 import com.jkm.hss.merchant.entity.MerchantInfo;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -20,38 +20,30 @@ public interface PayService {
      */
     Pair<Integer, String> codeReceipt(String totalAmount, int channel, long merchantId);
 
-    /**
-     * 代理商提现
-     *
-     * @param merchantId
-     * @param tradePeried 结算周期
-     * @return
-     */
-    Pair<Integer, String> merchantWithdraw(long merchantId, String tradePeried);
 
     /**
      * 处理支付中心， 支付结果回调
      *
-     * @param payCallbackResponse
+     * @param paymentSdkPayCallbackResponse
      */
-    void handlePayCallbackMsg(PayCallbackResponse payCallbackResponse);
+    void handlePayCallbackMsg(PaymentSdkPayCallbackResponse paymentSdkPayCallbackResponse);
 
     /**
      * 将交易订单标记为 支付成功
      *
-     * @param payCallbackResponse
+     * @param paymentSdkPayCallbackResponse
      * @param order
      */
-    void markPaySuccess(PayCallbackResponse payCallbackResponse, Order order);
+    void markPaySuccess(PaymentSdkPayCallbackResponse paymentSdkPayCallbackResponse, Order order);
 
 
     /**
      * 将交易订单标记为 支付失败
      *
-     * @param payCallbackResponse
+     * @param paymentSdkPayCallbackResponse
      * @param order
      */
-    void markPayFail(PayCallbackResponse payCallbackResponse, Order order);
+    void markPayFail(PaymentSdkPayCallbackResponse paymentSdkPayCallbackResponse, Order order);
 
     /**
      * 商户入账
@@ -66,16 +58,16 @@ public interface PayService {
     /**
      * 商户结算进入到可用余额
      *
-     * @param orderId
+     * @param order
      * @param merchantId
      */
-    void merchantSettle(long orderId, long merchantId);
+    void merchantSettle(Order order, long merchantId);
 
     /**
      * 手续费结算 到 代理商待结算账户
      *
-     * @param orderId
+     * @param order
      * @param merchantId
      */
-    void poundageSettle(long orderId, long merchantId);
+    void poundageSettle(Order order, long merchantId);
 }

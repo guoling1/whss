@@ -2,6 +2,7 @@ package com.jkm.hss.bill.entity;
 
 import com.jkm.base.common.entity.BaseEntity;
 import com.jkm.hss.bill.enums.EnumOrderStatus;
+import com.jkm.hss.bill.enums.EnumSettleStatus;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -117,6 +118,13 @@ public class Order extends BaseEntity {
     private String remark;
 
     /**
+     * 支付渠道标识（101， 102， 103）
+     *
+     * {@link com.jkm.hss.product.enums.EnumPayChannelSign}
+     */
+    private int payChannelSign;
+
+    /**
      * 是否待支付
      *
      * @return
@@ -142,4 +150,32 @@ public class Order extends BaseEntity {
     public boolean isWithDrawing() {
         return EnumOrderStatus.WITHDRAWING.getId() == this.status;
     }
+
+    /**
+     * 是否是待结算
+     *
+     * @return
+     */
+    public boolean isDueSettle() {
+        return EnumSettleStatus.DUE_SETTLE.getId() == this.settleStatus;
+    }
+
+    /**
+     * 是否是结算中
+     *
+     * @return
+     */
+    public boolean isSettleing() {
+        return EnumSettleStatus.SETTLE_ING.getId() == this.settleStatus;
+    }
+
+    /**
+     * 是否是已结算
+     *
+     * @return
+     */
+    public boolean isSettled() {
+        return EnumSettleStatus.SETTLED.getId() == this.settleStatus;
+    }
+
 }

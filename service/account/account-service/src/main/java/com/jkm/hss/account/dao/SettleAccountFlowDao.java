@@ -31,5 +31,5 @@ public interface SettleAccountFlowDao {
      * @param orderNo
      * @return
      */
-    SettleAccountFlow selectByOrderNo(@Param("orderNo") String orderNo);
+    SettleAccountFlow selectByOrderNoAndAccountIdAndType(@Param("orderNo") String orderNo, @Param("accountId") long accountId, @Param("type") int type);
 }

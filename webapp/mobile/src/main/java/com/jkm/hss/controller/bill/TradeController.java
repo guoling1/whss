@@ -3,6 +3,7 @@ package com.jkm.hss.controller.bill;
 import com.google.common.base.Optional;
 import com.jkm.base.common.entity.CommonResponse;
 import com.jkm.hss.bill.service.PayService;
+import com.jkm.hss.bill.service.WithdrawService;
 import com.jkm.hss.controller.BaseController;
 import com.jkm.hss.helper.request.DynamicCodePayRequest;
 import com.jkm.hss.helper.request.StaticCodePayRequest;
@@ -33,8 +34,8 @@ import java.math.BigDecimal;
  * Created by yulong.zhang on 2016/12/23.
  */
 @Controller
-@RequestMapping(value = "/pay")
-public class PayController extends BaseController {
+@RequestMapping(value = "/trade")
+public class TradeController extends BaseController {
 
     @Autowired
     private PayService payService;
@@ -42,7 +43,8 @@ public class PayController extends BaseController {
     private SmsAuthService smsAuthService;
     @Autowired
     private UserInfoService userInfoService;
-
+    @Autowired
+    private WithdrawService withdrawService;
     @Autowired
     private MerchantInfoService merchantInfoService;
 
@@ -132,7 +134,7 @@ public class PayController extends BaseController {
 
 
     /**
-     * 提现
+     * 商户提现
      *
      * @return
      */
@@ -159,7 +161,7 @@ public class PayController extends BaseController {
         if (1 != checkResult.getLeft()) {
             return CommonResponse.simpleResponse(-1, checkResult.getRight());
         }
-        final Pair<Integer, String> resultPair = this.payService.merchantWithdraw(merchantInfo.get().getId());
+        final Pair<Integer, String> resultPair = this.withdrawService.merchantWithdraw(merchantInfo.get().getId(), "D0");
         if (0 == resultPair.getLeft()) {
             return CommonResponse.simpleResponse(1, "受理成功");
         }

@@ -1,5 +1,6 @@
 package com.jkm.hss.controller;
 
+import com.jkm.hss.account.sevice.InitAccountService;
 import com.jkm.hss.admin.service.AdminUserInitService;
 import com.jkm.hss.notifier.service.MessageTemplateInitService;
 import lombok.extern.slf4j.Slf4j;
@@ -19,6 +20,9 @@ public class Init {
     private MessageTemplateInitService messageTemplateInitService;
 
     @Autowired
+    private InitAccountService initAccountService;
+
+    @Autowired
     private AdminUserInitService adminUserInitService;
 
     @PostConstruct
@@ -35,6 +39,15 @@ public class Init {
         log.info("######################初始化模板--start##########################");
         this.messageTemplateInitService.initTemplate();
         log.info("######################初始化模板--start##########################");
+    }
+
+    /**
+     * 初始化账户
+     */
+    private void initAccount() {
+        log.info("######################初始化账户--start##########################");
+        this.initAccountService.init();
+        log.info("######################初始化账户--start##########################");
     }
 
 }

@@ -11,6 +11,7 @@
         out_amount,
         income_amount,
         change_time,
+        type,
         remark,
         status
         )
@@ -23,6 +24,7 @@
         #{outAmount},
         #{incomeAmount},
         #{changeTime},
+        #{type},
         #{remark},
         #{status}
         );
@@ -30,5 +32,9 @@
     
     <select id="selectById" resultType="com.jkm.hss.account.entity.AccountFlow">
         SELECT * FROM tb_account_flow WHERE id = #{id}
+    </select>
+
+    <select id="selectByOrderNoAndAccountIdAndType" resultType="com.jkm.hss.account.entity.AccountFlow">
+         SELECT * FROM tb_account_flow WHERE order_no = #{orderNo} AND account_id = #{accountId} AND type = #{type}
     </select>
 </mapper>

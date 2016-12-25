@@ -6,19 +6,24 @@ import com.google.common.base.Preconditions;
 import com.jkm.base.common.spring.http.client.HttpClientFacade;
 import com.jkm.base.common.util.SnGenerator;
 import com.jkm.hss.account.entity.*;
+import com.jkm.hss.account.enums.EnumAccountFlowType;
 import com.jkm.hss.account.enums.EnumUnfrozenType;
+import com.jkm.hss.account.helper.AccountConstants;
 import com.jkm.hss.account.sevice.*;
 import com.jkm.hss.bill.entity.*;
-import com.jkm.hss.bill.entity.callback.PayCallbackResponse;
+import com.jkm.hss.bill.entity.callback.PaymentSdkPayCallbackResponse;
 import com.jkm.hss.bill.enums.*;
 import com.jkm.hss.bill.helper.PaymentSdkConstants;
 import com.jkm.hss.bill.helper.SdkSerializeUtil;
+import com.jkm.hss.bill.service.CalculateService;
 import com.jkm.hss.bill.service.OrderService;
 import com.jkm.hss.bill.service.PayService;
+import com.jkm.hss.bill.service.WithdrawService;
 import com.jkm.hss.dealer.service.DealerService;
 import com.jkm.hss.merchant.entity.MerchantInfo;
 import com.jkm.hss.merchant.helper.MerchantSupport;
 import com.jkm.hss.merchant.service.MerchantInfoService;
+import com.jkm.hss.product.enums.EnumBalanceTimeType;
 import com.jkm.hss.product.enums.EnumPayChannelSign;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.Pair;
@@ -52,11 +57,9 @@ public class PayServiceImpl implements PayService {
     @Autowired
     private SettleAccountFlowService settleAccountFlowService;
     @Autowired
-    private FrozenRecordService frozenRecordService;
+    private CalculateService calculateService;
     @Autowired
-    private UnfrozenRecordService unfrozenRecordService;
-    @Autowired
-    private DealerService dealerService;
+    private WithdrawService withdrawService;
     /**
      * {@inheritDoc}
      *
@@ -76,13 +79,17 @@ public class PayServiceImpl implements PayService {
         order.setTradeAmount(new BigDecimal(totalAmount));
         order.setRealPayAmount(new BigDecimal(totalAmount));
         order.setTradeType(EnumTradeType.PAY.getId());
+        order.setPayChannelSign(channel);
         order.setPayer(0);
         order.setPayee(merchantId);
         if (EnumPayChannelSign.YG_YINLIAN.getId() == channel) {
             order.setPayAccount(MerchantSupport.decryptBankCard(merchant.getBankNo()));
         }
-        //TODO 手续费， 费率
-
+        //手续费， 费率
+        final BigDecimal merchantPayPoundageRate = this.calculateService.getMerchantPayPoundageRate(merchantId, channel);
+        final BigDecimal merchantPayPoundage = this.calculateService.getMerchantPayPoundage(order.getTradeAmount(), merchantPayPoundageRate);
+        order.setPoundage(merchantPayPoundage);
+        order.setPayRate(merchantPayPoundageRate);
         order.setGoodsName(merchant.getMerchantName());
         order.setGoodsDescribe(merchant.getMerchantName());
         order.setSettleStatus(EnumSettleStatus.DUE_SETTLE.getId());
@@ -107,158 +114,23 @@ public class PayServiceImpl implements PayService {
         return Pair.of(-1, "下单失败");
     }
 
-    /**
-     * {@inheritDoc}
-     *
-     * @param merchantId
-     * @param tradePeried 结算周期
-     * @return
-     */
-    @Override
-    @Transactional
-    public Pair<Integer, String> merchantWithdraw(final long merchantId, final String tradePeried) {
-        log.info("商户[{}]，进行提现", merchantId);
-        final MerchantInfo merchant = this.merchantInfoService.selectById(merchantId).get();
-        final Account account = this.accountService.getByIdWithLock(merchant.getId()).get();
-        if (account.getAvailable().compareTo(new BigDecimal("2.00")) < 0) {
-            log.info("商户[{}]账户余额不足2元", merchant.getId());
-            return Pair.of(-1, "余额不足");
-        }
-        final Order order = new Order();
-        order.setOrderNo(SnGenerator.generate());
-        order.setTradeAmount(account.getAvailable());
-        order.setTradeType(EnumTradeType.WITHDRAW.getId());
-        order.setPayer(merchantId);
-        order.setPayee(0);
-        order.setPayAccount(tradePeried);
-        //TODO 手续费， 费率
 
-        order.setPoundage(new BigDecimal(""));
-
-        order.setGoodsName(merchant.getMerchantName());
-        order.setGoodsDescribe(merchant.getMerchantName());
-
-        order.setSettleStatus(EnumSettleStatus.DUE_SETTLE.getId());
-        order.setSettleTime(new Date());
-        order.setStatus(EnumOrderStatus.WITHDRAWING.getId());
-        this.orderService.add(order);
-        //冻结金额
-        this.accountService.decreaseAvailableAmount(account.getId(), account.getAvailable());
-        this.accountService.increaseFrozenAmount(account.getId(), account.getAvailable());
-        final FrozenRecord frozenRecord = new FrozenRecord();
-        frozenRecord.setAccountId(account.getId());
-        frozenRecord.setBusinessNo(order.getOrderNo());
-        frozenRecord.setFrozenAmount(account.getAvailable());
-        frozenRecord.setFrozenTime(new Date());
-        frozenRecord.setRemark("提现");
-        this.frozenRecordService.add(frozenRecord);
-        //添加账户流水
-        final AccountFlow accountFlow = new AccountFlow();
-        accountFlow.setAccountId(account.getId());
-        accountFlow.setOrderNo(order.getOrderNo());
-        accountFlow.setBeforeAmount(account.getAvailable());
-        accountFlow.setAfterAmount(account.getAvailable().subtract(order.getTradeAmount()));
-        accountFlow.setOutAmount(order.getTradeAmount());
-        accountFlow.setChangeTime(new Date());
-        accountFlow.setRemark("提现");
-        this.accountFlowService.add(accountFlow);
-
-        final PaymentSdkDaiFuRequest paymentSdkDaiFuRequest = new PaymentSdkDaiFuRequest();
-        paymentSdkDaiFuRequest.setAppId(PaymentSdkConstants.APP_ID);
-        paymentSdkDaiFuRequest.setOrderNo(order.getOrderNo());
-        paymentSdkDaiFuRequest.setTotalAmount(order.getTradeAmount().subtract(order.getPoundage()).toPlainString());
-        paymentSdkDaiFuRequest.setTradeType(tradePeried);
-        paymentSdkDaiFuRequest.setIsCompany("0");
-        paymentSdkDaiFuRequest.setMobile(MerchantSupport.decryptMobile(merchant.getMobile()));
-        paymentSdkDaiFuRequest.setBankName(merchant.getBankName());
-        paymentSdkDaiFuRequest.setAccountName(merchant.getName());
-        paymentSdkDaiFuRequest.setAccountNumber(MerchantSupport.decryptBankCard(merchant.getBankNo()));
-        paymentSdkDaiFuRequest.setIdCard(MerchantSupport.decryptIdentity(merchant.getIdentity()));
-        paymentSdkDaiFuRequest.setPlayMoneyChannel(EnumPlayMoneyChannel.SAOMI.getId());
-        paymentSdkDaiFuRequest.setNote(merchant.getMerchantName());
-        paymentSdkDaiFuRequest.setSystemCode(PaymentSdkConstants.APP_ID);
-        paymentSdkDaiFuRequest.setNotifyUrl(PaymentSdkConstants.SDK_PAY_WITHDRAW_NOTIFY_URL);
-
-        //请求三方
-        final String content = this.requestImpl(PaymentSdkConstants.SDK_PAY_WITHDRAW, SdkSerializeUtil.convertObjToMap(paymentSdkDaiFuRequest));
-        final PaymentSdkDaiFuResponse response = JSON.parseObject(content, PaymentSdkDaiFuResponse.class);
-
-
-        return null;
-    }
-
-    /**
-     * 处理提现结果
-     *
-     * @param orderId
-     * @param accountId
-     * @param response
-     * @return
-     */
-    private Pair<Integer, String> handleWithdrawResult(final long orderId, final long accountId,
-                                                       final PaymentSdkDaiFuResponse response) {
-        final Order order = this.orderService.getByIdWithLock(orderId).get();
-        if (order.isWithDrawing()) {
-            final EnumBasicStatus status = EnumBasicStatus.of(response.getCode());
-            switch (status) {
-                case SUCCESS:
-                this.markWithdrawSuccess(orderId, accountId, response);
-                    return Pair.of(0, "提现成功");
-                case FAIL:
-                    order.setRemark(response.getMessage());
-                    this.orderService.update(order);
-                    log.info("交易订单[{}]，提现暂未成功", order.getOrderNo());
-                    break;
-                default:
-                    order.setRemark(response.getMessage());
-                    this.orderService.update(order);
-                    log.info("交易订单[{}]，提现暂未成功", order.getOrderNo());
-                    break;
-            }
-        }
-        return Pair.of(-1, "提现中");
-    }
-
-    private void markWithdrawSuccess(final long orderId, final long accountId,
-                                     final PaymentSdkDaiFuResponse response) {
-        final Order order = this.orderService.getByIdWithLock(orderId).get();
-        final Account account = this.accountService.getByIdWithLock(accountId).get();
-        order.setStatus(EnumOrderStatus.WITHDRAW_SUCCESS.getId());
-        order.setRemark(response.getMessage());
-        this.orderService.update(order);
-        final FrozenRecord frozenRecord = this.frozenRecordService.getByBusinessNo(response.getOrderNo()).get();
-        //解冻金额
-        final UnfrozenRecord unfrozenRecord = new UnfrozenRecord();
-        unfrozenRecord.setAccountId(account.getId());
-        unfrozenRecord.setFrozenRecordId(frozenRecord.getId());
-        unfrozenRecord.setBusinessNo(order.getOrderNo());
-        unfrozenRecord.setUnfrozenType(EnumUnfrozenType.CONSUME.getId());
-        unfrozenRecord.setUnfrozenAmount(frozenRecord.getFrozenAmount());
-        unfrozenRecord.setUnfrozenTime(new Date());
-        frozenRecord.setRemark("提现成功");
-        this.unfrozenRecordService.add(unfrozenRecord);
-        //减少总金额
-        this.accountService.decreaseTotalAmount(accountId, frozenRecord.getFrozenAmount());
-        //结算
-        //TODO
-
-    }
 
     /**
      * {@inheritDoc}
      *
-     * @param payCallbackResponse
+     * @param paymentSdkPayCallbackResponse
      */
     @Override
     @Transactional
-    public void handlePayCallbackMsg(final PayCallbackResponse payCallbackResponse) {
-        final String orderNo = payCallbackResponse.getOrderNo();
+    public void handlePayCallbackMsg(final PaymentSdkPayCallbackResponse paymentSdkPayCallbackResponse) {
+        final String orderNo = paymentSdkPayCallbackResponse.getOrderNo();
         final Optional<Order> orderOptional = this.orderService.getByOrderNo(orderNo);
         Preconditions.checkState(!orderOptional.isPresent(), "交易订单[{}]不存在", orderNo);
         if (orderOptional.get().isDuePay()) {
             final Order order = this.orderService.getByIdWithLock(orderOptional.get().getId()).get();
             if (order.isDuePay()) {
-                this.handlePayCallbackMsgImpl(payCallbackResponse, order);
+                this.handlePayCallbackMsgImpl(paymentSdkPayCallbackResponse, order);
             }
         }
     }
@@ -266,20 +138,20 @@ public class PayServiceImpl implements PayService {
     /**
      * 支付结果回调实现
      *
-     * @param payCallbackResponse
+     * @param paymentSdkPayCallbackResponse
      * @param order
      */
-    private void handlePayCallbackMsgImpl(final PayCallbackResponse payCallbackResponse, final Order order) {
-        final EnumBasicStatus status = EnumBasicStatus.of(payCallbackResponse.getStatus());
+    private void handlePayCallbackMsgImpl(final PaymentSdkPayCallbackResponse paymentSdkPayCallbackResponse, final Order order) {
+        final EnumBasicStatus status = EnumBasicStatus.of(paymentSdkPayCallbackResponse.getStatus());
         switch (status) {
             case SUCCESS:
-                this.markPaySuccess(payCallbackResponse, order);
+                this.markPaySuccess(paymentSdkPayCallbackResponse, order);
                 break;
             case FAIL:
-                this.markPayFail(payCallbackResponse, order);
+                this.markPayFail(paymentSdkPayCallbackResponse, order);
                 break;
             default:
-                this.markPayFail(payCallbackResponse, order);
+                this.markPayFail(paymentSdkPayCallbackResponse, order);
                 break;
         }
 
@@ -288,37 +160,47 @@ public class PayServiceImpl implements PayService {
     /**
      * {@inheritDoc}
      *
-     * @param payCallbackResponse
+     * @param paymentSdkPayCallbackResponse
      * @param order
      */
     @Override
     @Transactional
-    public void markPaySuccess(final PayCallbackResponse payCallbackResponse, final Order order) {
-        order.setPayType(payCallbackResponse.getPayType());
-        order.setPaySuccessTime(new DateTime(Long.valueOf(payCallbackResponse.getPaySuccessTime())).toDate());
+    public void markPaySuccess(final PaymentSdkPayCallbackResponse paymentSdkPayCallbackResponse, final Order order) {
+        order.setPayType(paymentSdkPayCallbackResponse.getPayType());
+        order.setPaySuccessTime(new DateTime(Long.valueOf(paymentSdkPayCallbackResponse.getPaySuccessTime())).toDate());
         order.setStatus(EnumOrderStatus.PAY_SUCCESS.getId());
         this.orderService.update(order);
         //商户入账
         final MerchantInfo merchant = this.merchantInfoService.selectById(order.getPayee()).get();
         this.merchantRecorded(order.getId(), merchant);
         //商户结算
-        this.merchantSettle(order.getId(), merchant.getId());
-        //手续费结算到代理商
-        this.poundageSettle(order.getId(), merchant.getId());
-
+        final Optional<Order> orderOptional = this.orderService.getByIdWithLock(order.getId());
+        if (orderOptional.get().isPaySuccess() && (orderOptional.get().isDueSettle() || orderOptional.get().isSettleing())) {
+            log.info("交易订单号[{}], 进行结算操作", order.getOrderNo());
+            //将交易单标记为结算中
+            this.orderService.updateSettleStatus(orderOptional.get().getId(), EnumSettleStatus.SETTLE_ING.getId());
+            this.merchantSettle(orderOptional.get(), merchant.getId());
+            //TODO
+//            this.orderService.updateSettleStatus(orderOptional.get().getId(), EnumSettleStatus.SETTLED.getId());
+            //手续费结算到代理商
+            this.poundageSettle(orderOptional.get(), merchant.getId());
+            //结算完毕
+        }
+        //商户提现
+        this.withdrawService.merchantWithdraw(merchant.getId(), EnumBalanceTimeType.D0.getType());
     }
 
     /**
      * {@inheritDoc}
      *
-     * @param payCallbackResponse
+     * @param paymentSdkPayCallbackResponse
      * @param order
      */
     @Override
     @Transactional
-    public void markPayFail(final PayCallbackResponse payCallbackResponse, final Order order) {
+    public void markPayFail(final PaymentSdkPayCallbackResponse paymentSdkPayCallbackResponse, final Order order) {
         order.setStatus(EnumOrderStatus.PAY_FAIL.getId());
-        order.setRemark(payCallbackResponse.getMessage());
+        order.setRemark(paymentSdkPayCallbackResponse.getMessage());
         this.orderService.update(order);
     }
 
@@ -331,98 +213,70 @@ public class PayServiceImpl implements PayService {
     @Override
     @Transactional
     public void merchantRecorded(final long orderId, final MerchantInfo merchant) {
-        log.info("交易订单号[{}], 进行入账操作");
         final Order order = this.orderService.getByIdWithLock(orderId).get();
-        Preconditions.checkState(order.isPaySuccess());
+        log.info("交易订单号[{}], 进行入账操作", order.getOrderNo());
+        if (order.isPaySuccess() && order.isDueSettle()) {
+            //商户账户
+            final Account merchantAccount = this.accountService.getByIdWithLock(merchant.getAccountId()).get();
+            //商户待结算增加
+            this.settleAccountFlowService.addSettleAccountFlow(merchantAccount, order.getOrderNo(),
+                    order.getTradeAmount().subtract(order.getPoundage()), order.getGoodsName(), EnumAccountFlowType.INCREASE);
+            this.accountService.increaseTotalAmount(merchantAccount.getId(), order.getTradeAmount().subtract(order.getPoundage()));
+            this.accountService.increaseSettleAmount(merchantAccount.getId(), order.getTradeAmount().subtract(order.getPoundage()));
+
+            //手续费账户
+            final Account poundageAccount = this.accountService.getByIdWithLock(AccountConstants.POUNDATE_ACCOUNT_ID).get();
+            this.settleAccountFlowService.addSettleAccountFlow(poundageAccount, order.getOrderNo(),
+                    order.getPoundage(), order.getGoodsName(), EnumAccountFlowType.INCREASE);
+            this.accountService.increaseTotalAmount(poundageAccount.getId(), order.getPoundage());
+            this.accountService.increaseSettleAmount(poundageAccount.getId(), order.getPoundage());
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param order
+     * @param merchantId
+     */
+    @Override
+    @Transactional
+    public void merchantSettle(final Order order, final long merchantId) {
+        final MerchantInfo merchant = this.merchantInfoService.selectById(merchantId).get();
+        //商户结算
+        final Optional<SettleAccountFlow> optional = this.settleAccountFlowService.getByOrderNoAndAccountIdAndType(order.getOrderNo(),
+                merchant.getAccountId(), EnumAccountFlowType.DECREASE.getId());
+        if (!optional.isPresent() && !order.isSettled()) {
+            final Account merchantAccount = this.accountService.getByIdWithLock(merchant.getId()).get();
+            final SettleAccountFlow merchantIncreaseSettleAccountFlow =
+                    this.settleAccountFlowService.getByOrderNoAndAccountIdAndType(order.getOrderNo(), merchant.getAccountId(),
+                            EnumAccountFlowType.INCREASE.getId()).get();
+            //待结算金额减少
+            Preconditions.checkState(order.getTradeAmount().subtract(order.getPoundage()).compareTo(merchantAccount.getDueSettleAmount()) <= 0);
+            Preconditions.checkState(order.getTradeAmount().subtract(order.getPoundage()).compareTo(merchantIncreaseSettleAccountFlow.getIncomeAmount()) == 0);
+            this.settleAccountFlowService.addSettleAccountFlow(merchantAccount, order.getOrderNo(), merchantIncreaseSettleAccountFlow.getIncomeAmount(),
+                    order.getGoodsName(), EnumAccountFlowType.DECREASE);
+            this.accountService.increaseAvailableAmount(merchantAccount.getId(), merchantIncreaseSettleAccountFlow.getIncomeAmount());
+            this.accountService.decreaseSettleAmount(merchantAccount.getId(), merchantIncreaseSettleAccountFlow.getIncomeAmount());
+            //可用余额流水增加
+            this.accountFlowService.addAccountFlow(merchantAccount, order.getOrderNo(), merchantIncreaseSettleAccountFlow.getIncomeAmount(),
+                    order.getGoodsName(), EnumAccountFlowType.INCREASE);
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param order
+     * @param merchantId
+     */
+    @Override
+    @Transactional
+    public void poundageSettle(final Order order, final long merchantId) {
+        final MerchantInfo merchant = this.merchantInfoService.selectById(merchantId).get();
         //TODO
 
-        /**
-         * 调用接口，获得入账金额
-         *
-         * 1. 代理商待结算余额增加
-         * 2. 手续费账户余额增加
-         */
-        final long accountId1 = 0;
-        final long accountId2 = 0;
-        final Account account = this.accountService.getByIdWithLock(accountId1).get();
-        this.accountService.increaseTotalAmount(accountId1, new BigDecimal("0"));
-        this.accountService.increaseSettleAmount(accountId1, new BigDecimal("0"));
-        final SettleAccountFlow merchantSettleAccountFlow = new SettleAccountFlow();
-        merchantSettleAccountFlow.setAccountId(accountId1);
-        merchantSettleAccountFlow.setOrderNo(order.getOrderNo());
-        merchantSettleAccountFlow.setBeforeAmount(account.getDueSettleAmount());
-        merchantSettleAccountFlow.setIncomeAmount(new BigDecimal("0"));
-        merchantSettleAccountFlow.setAfterAmount(account.getDueSettleAmount().add(new BigDecimal("0")));
-        merchantSettleAccountFlow.setChangeTime(new Date());
-        merchantSettleAccountFlow.setRemark("商户待结算增加");
-        this.settleAccountFlowService.add(merchantSettleAccountFlow);
 
-        this.accountService.increaseTotalAmount(accountId2, new BigDecimal("0"));
-        this.accountService.increaseSettleAmount(accountId2, new BigDecimal("0"));
-        //TODO 手续费 需要放入待结算金额 ？
-
-        final SettleAccountFlow poundageSettleAccountFlow = new SettleAccountFlow();
-        poundageSettleAccountFlow.setAccountId(accountId1);
-        poundageSettleAccountFlow.setOrderNo(order.getOrderNo());
-        poundageSettleAccountFlow.setBeforeAmount(account.getDueSettleAmount());
-        poundageSettleAccountFlow.setIncomeAmount(new BigDecimal("0"));
-        poundageSettleAccountFlow.setAfterAmount(account.getDueSettleAmount().add(new BigDecimal("0")));
-        poundageSettleAccountFlow.setChangeTime(new Date());
-        poundageSettleAccountFlow.setRemark("商户待结算增加");
-        this.settleAccountFlowService.add(poundageSettleAccountFlow);
-
-
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @param orderId
-     * @param merchantId
-     */
-    @Override
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void merchantSettle(final long orderId, final long merchantId) {
-        final Order order = this.orderService.getByIdWithLock(orderId).get();
-        log.info("交易订单号[{}], 进行结算操作", order.getOrderNo());
-        //商户结算
-        final MerchantInfo merchant = this.merchantInfoService.selectById(merchantId).get();
-        final Account account = this.accountService.getByIdWithLock(merchant.getId()).get();
-        final SettleAccountFlow inSettleAccountFlow = this.settleAccountFlowService.getByOrderNo(order.getOrderNo()).get();
-        //待结算金额减少
-        Preconditions.checkState(order.getPoundage().compareTo(account.getDueSettleAmount()) <= 0);
-        Preconditions.checkState(order.getPoundage().compareTo(inSettleAccountFlow.getIncomeAmount()) == 0);
-        final SettleAccountFlow merchantSettleAccountFlow = new SettleAccountFlow();
-        merchantSettleAccountFlow.setAccountId(account.getId());
-        merchantSettleAccountFlow.setOrderNo(order.getOrderNo());
-        merchantSettleAccountFlow.setBeforeAmount(account.getDueSettleAmount());
-        merchantSettleAccountFlow.setOutAmount(inSettleAccountFlow.getIncomeAmount());
-        merchantSettleAccountFlow.setAfterAmount(account.getDueSettleAmount().subtract(inSettleAccountFlow.getIncomeAmount()));
-        merchantSettleAccountFlow.setChangeTime(new Date());
-        merchantSettleAccountFlow.setRemark("商户待结算减少");
-        this.settleAccountFlowService.add(merchantSettleAccountFlow);
-        this.accountService.increaseAvailableAmount(account.getId(), inSettleAccountFlow.getIncomeAmount());
-        this.accountService.decreaseSettleAmount(account.getId(), inSettleAccountFlow.getIncomeAmount());
-        final AccountFlow accountFlow = new AccountFlow();
-        accountFlow.setAccountId(merchant.getAccountId());
-        accountFlow.setOrderNo(order.getOrderNo());
-        accountFlow.setBeforeAmount(account.getAvailable());
-        accountFlow.setIncomeAmount(inSettleAccountFlow.getIncomeAmount());
-        accountFlow.setAfterAmount(account.getAvailable().add(inSettleAccountFlow.getIncomeAmount()));
-        accountFlow.setChangeTime(new Date());
-        accountFlow.setRemark(order.getGoodsName());
-        this.accountFlowService.add(accountFlow);
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @param orderId
-     * @param merchantId
-     */
-    @Override
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void poundageSettle(final long orderId, final long merchantId) {
         //查询分润接口，获取信息
         //循环放入到代理商待结算余额，并创建流水记录
 

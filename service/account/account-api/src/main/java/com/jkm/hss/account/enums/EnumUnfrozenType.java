@@ -19,9 +19,9 @@ public enum EnumUnfrozenType {
      * 消费，（第三方打款公司打款成功）
      */
     CONSUME(2, "消费");
-
+    @Getter
     private final int id;
-
+    @Getter
     private final String value;
 
     EnumUnfrozenType(final int id, final String value) {

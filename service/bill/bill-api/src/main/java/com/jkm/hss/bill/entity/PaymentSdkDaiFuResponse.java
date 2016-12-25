@@ -18,11 +18,21 @@ public class PaymentSdkDaiFuResponse {
     private String sn;
 
     /**
+     * 提现金额
+     */
+    private String withdrawAmount;
+
+    /**
+     * 提现完成时间
+     */
+    private String withdrawSuccessTime;
+
+    /**
      * 成功标识
      *
      * {@link com.jkm.hss.bill.enums.EnumBasicStatus}
      */
-    private int code;
+    private int status;
 
     /**
      * 错误信息

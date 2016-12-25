@@ -11,6 +11,7 @@
         out_amount,
         income_amount,
         change_time,
+        type,
         remark,
         status
         )
@@ -23,6 +24,7 @@
         #{outAmount},
         #{incomeAmount},
         #{changeTime},
+        #{type},
         #{remark},
         #{status}
         );
@@ -32,7 +34,7 @@
         SELECT * FROM tb_settle_account_flow WHERE id = #{id}
     </select>
 
-    <select id="selectByOrderNo" resultType="com.jkm.hss.account.entity.SettleAccountFlow">
-        SELECT * FROM tb_settle_account_flow WHERE order_no = #{orderNo}
+    <select id="selectByOrderNoAndAccountIdAndType" resultType="com.jkm.hss.account.entity.SettleAccountFlow">
+        SELECT * FROM tb_settle_account_flow WHERE order_no = #{orderNo} AND account_id = #{accountId} AND type = #{type}
     </select>
 </mapper>

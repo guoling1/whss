@@ -15,9 +15,9 @@ public enum EnumFrozenStatus {
     CONSUME(2, "已消费"),
 
     UN_FROZEN(3, "已解冻");
-
+    @Getter
     private final int id;
-
+    @Getter
     private final String value;
 
     EnumFrozenStatus(final int id, final String value) {
