@@ -207,7 +207,7 @@ public class WithdrawServiceImpl implements WithdrawService {
             this.accountService.decreaseFrozenAmount(accountId, frozenRecord.getFrozenAmount());
             this.accountService.decreaseTotalAmount(accountId, frozenRecord.getFrozenAmount());
             //入账到手续费账户
-            this.merchantPoundageRecorded(orderId, order.getPayer());
+            this.merchantPoundageRecorded(orderId);
             final Optional<Order> orderOptional = this.orderService.getByIdWithLock(order.getId());
             if (orderOptional.get().isPaySuccess() && (orderOptional.get().isDueSettle() || orderOptional.get().isSettleing())) {
                 //将交易单标记为结算中
@@ -222,9 +222,8 @@ public class WithdrawServiceImpl implements WithdrawService {
      * 提现入账到手续费账户
      *
      * @param orderId
-     * @param merchantId
      */
-    private void merchantPoundageRecorded(final long orderId, final long merchantId) {
+    private void merchantPoundageRecorded(final long orderId) {
         final Order order = this.orderService.getByIdWithLock(orderId).get();
         log.info("交易订单号[{}], 进行入账操作", order.getOrderNo());
         if (order.isPaySuccess() && order.isDueSettle()) {
