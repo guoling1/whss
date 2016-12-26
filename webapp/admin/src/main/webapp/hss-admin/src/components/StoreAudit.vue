@@ -40,30 +40,6 @@
               <th style="text-align: right">推荐人注册手机号:</th>
               <td><input type="text" style="background:#efecec;padding-left:5px;" readonly></td>
             </tr>
-            <tr>
-              <th style="text-align: right">商户名称:</th>
-              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.merchantName" readonly></td>
-              <th style="text-align: right">商户地址:</th>
-              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.address" readonly></td>
-              <th></th>
-              <td></td>
-            </tr>
-            <tr>
-              <th style="text-align: right">商户编号:</th>
-              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.id" readonly></td>
-              <th style="text-align: right">真实姓名:</th>
-              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.name" readonly></td>
-              <th style="text-align: right">身份证号:</th>
-              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.identity" readonly></td>
-            </tr>
-            <tr>
-              <th style="text-align: right">结算卡号:</th>
-              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.bankNo" readonly></td>
-              <th style="text-align: right">开户手机号:</th>
-              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.reserveMobile" readonly></td>
-              <th></th>
-              <td></td>
-            </tr>
             </tbody></table>
         </div>
       </div>
@@ -100,7 +76,7 @@
               <th style="text-align: right">资料提交时间:</th>
               <td><input type="text" style="background:#efecec;padding-left:5px;" readonly></td>
               <th style="text-align: right">资料审核状态:</th>
-              <td><input type="text" style="background:#efecec;padding-left:5px;" readonly></td>
+              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.status|status" readonly></td>
               <th style="text-align: right">审核时间:</th>
               <td><input type="text" style="background:#efecec;padding-left:5px;" readonly></td>
             </tr>
@@ -283,6 +259,21 @@
       }
     },
     filters: {
+      status: function (val) {
+        val = Number(val)
+        if(val == 0){
+          val = "已注册"
+        }else if(val == 1){
+          val = "已提交基本资料"
+        }else if(val == 2){
+          val = "待审核"
+        }else if(val == 3){
+          val = "审核通过"
+        }else if(val == 4){
+          val="审核未通过"
+        }
+        return val;
+      },
       changeTime: function (val) {
         if(val==''||val==null){
           return ''

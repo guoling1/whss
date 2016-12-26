@@ -44,12 +44,11 @@
               <td></td>
               <th style="text-align: right">付款人账户:</th>
               <td></td>
-              <th style="text-align: right">收款商户编号:</th>
-              <td></td>
+              <th style="text-align: right">订单号:</th>
+              <td>{{record.orderId}}</td>
             </tr>
             <tr>
-              <th style="text-align: right">收款商户名称:</th>
-              <td>{{record.subName}}</td>
+
               <th style="text-align: right">交易单号:</th>
               <td>{{record.outTradeNo}}</td>
               <th style="text-align: right">交易金额:</th>
@@ -75,7 +74,7 @@
               <th style="text-align: right">支付方式:</th>
               <td>{{record.payChannel|changePayChannel}}</td>
               <th style="text-align: right">交易类型:</th>
-              <td></td>
+              <td>{{record.tradeType|changeTradeType}}</td>
               <th style="text-align: right">交易状态:</th>
               <td>{{record.orderMessage}}</td>
             </tr>
@@ -188,6 +187,13 @@
           return '快捷'
         }
       },
+      changeTradeType: function (val) {
+        if(val == 0){
+          return '支付'
+        }else if(val == 1){
+          return '提现'
+        }
+      }
     }
   }
 </script>
