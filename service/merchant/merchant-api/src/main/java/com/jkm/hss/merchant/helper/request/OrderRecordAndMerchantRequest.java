@@ -61,6 +61,11 @@ public class OrderRecordAndMerchantRequest {
      * 流水号
      */
     private String orderId;
+
+    /**
+     * 提现单id
+     */
+    private Integer id;
     /**
      * 支付状态
      */

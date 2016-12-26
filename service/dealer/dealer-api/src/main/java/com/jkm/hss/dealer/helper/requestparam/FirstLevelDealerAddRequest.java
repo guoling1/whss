@@ -36,6 +36,10 @@ public class FirstLevelDealerAddRequest {
      * 银行开户名称
      */
     private String bankAccountName;
+    /**
+     * 银行名称
+     */
+    private String bankName;
 
     /**
      * 银行预留手机号

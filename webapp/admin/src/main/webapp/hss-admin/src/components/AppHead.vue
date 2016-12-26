@@ -2,13 +2,13 @@
   <!-- Main Header -->
   <header class="main-header">
     <!-- Logo -->
-    <a href="index2.html" class="logo">
+    <a href="javascript:;" class="logo" style="width: 130px">
       <!-- mini logo for sidebar mini 50x50 pixels -->
-      <span class="logo-mini">金</span>
+      <span class="logo-mini" style="font-size: 20px">好收银</span>
       <!-- logo for regular state and mobile devices -->
       <span class="logo-lg">好收银</span>
     </a>
-    <nav class="navbar navbar-static-top" role="navigation">
+    <nav class="navbar navbar-static-top" role="navigation" style="margin-left: 130px">
       <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
         <span class="sr-only">Toggle navigation</span>
       </a>

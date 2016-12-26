@@ -38,7 +38,7 @@
           </a>
           <ul class="treeview-menu">
             <li class="active"><router-link to="/admin/record/deal"><span>交易查询</span> </router-link></li>
-            <li><router-link to="/admin/record/withdrawal"><span>提现查询</span> </router-link></li>
+            <li><router-link to="/admin/record/withdrawal"><span>打款查询</span> </router-link></li>
             <!--<li><router-link to="/admin/record/moneyList"><i class="fa fa-link"></i> <span>打款查询</span> </router-link></li>-->
           </ul>
         </li>

@@ -1,6 +1,6 @@
 <template lang="html">
   <div id="issueSuccess">
-    <h2>分配成功</h2>
+    <div style="padding: 8px 30px; background: rgb(243, 156, 18); z-index: 999999; font-size: 22px; font-weight: 600;margin-bottom: 15px;    color: #fff;">分配成功</div>
     <ul>
       <li>
         <span class="left">代理商名称</span>

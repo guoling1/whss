@@ -1,7 +1,6 @@
 <template lang="html">
   <div id="agentAdd">
-    <h1>通道列表</h1>
-
+    <div style="padding: 8px 30px; background: rgb(243, 156, 18); z-index: 999999; font-size: 22px; font-weight: 600;margin-bottom: 15px;    color: #fff;">通道列表</div>
     <div class="col-xs-12">
       <div class="box">
         <div class="box-body">
@@ -53,11 +52,11 @@
               <div class="col-sm-7">
                 <div class="dataTables_paginate paging_simple_numbers" id="example2_paginate">
                   <ul class="pagination" id="page">
-                    <li class="paginate_button previous disabled" id="example2_previous"><a href="#" aria-controls="example2" data-dt-idx="0" tabindex="0">Previous</a>
+                    <li class="paginate_button previous disabled" id="example2_previous"><a href="#" aria-controls="example2" data-dt-idx="0" tabindex="0">上一页</a>
                     </li>
                     <li class="paginate_button active"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">1</a></li>
                     </li>
-                    <li class="paginate_button next" id="example2_next"><a href="#" aria-controls="example2" data-dt-idx="7" tabindex="0">Next</a></li>
+                    <li class="paginate_button next" id="example2_next"><a href="#" aria-controls="example2" data-dt-idx="7" tabindex="0">下一页</a></li>
                   </ul>
                 </div>
               </div>
@@ -69,7 +68,7 @@
       <!-- /.box -->
     </div>
 
-    <div class="btn btn-primary" @click="create">
+    <div class="btn btn-primary" @click="create" style="margin: 0 15px">
       新增通道
     </div>
   </div>

@@ -144,4 +144,20 @@ public interface OrderRecordService {
     List<MerchantAndOrderRecord> selectOrderListByPage(OrderListRequest orderRecord);
 
     int selectOrderListCount(OrderListRequest orderRecord);
+
+    /**
+     * 查询交易详情
+     * @param orderRecord
+     * @return
+     */
+    MerchantAndOrderRecord selectOrderListByPageAll(OrderListRequest orderRecord);
+
+    /**
+     * 提现详情
+     * @param req
+     * @return
+     */
+    OrderRecordAndMerchant selectDrawWithRecordByPageAll(OrderRecordAndMerchantRequest req);
+
+    String downloadExcel(String baseUrl);
 }

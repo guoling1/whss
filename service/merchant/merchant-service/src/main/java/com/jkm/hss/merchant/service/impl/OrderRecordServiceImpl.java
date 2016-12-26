@@ -1,6 +1,8 @@
 package com.jkm.hss.merchant.service.impl;
 
 import com.google.common.base.Optional;
+import com.jkm.base.common.entity.ExcelSheetVO;
+import com.jkm.base.common.util.ExcelUtil;
 import com.jkm.base.common.util.SnGenerator;
 import com.jkm.hss.dealer.enums.EnumSettlementPeriodType;
 import com.jkm.hss.dealer.service.DealerService;
@@ -26,8 +28,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.math.BigDecimal;
+import java.text.DateFormat;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -1454,6 +1461,8 @@ public class OrderRecordServiceImpl implements OrderRecordService {
         req.setPayResults(payResults);
         Map<String,Object> map = new HashMap<String,Object>();
         map.put("merchantId",req.getMerchantId());
+        map.put("orderId",req.getOrderId());
+        map.put("name",req.getName());
         map.put("payResults",req.getPayResults());
         map.put("mobile",req.getMobile());
         map.put("bankNoShort",req.getBankNoShort());
@@ -1485,6 +1494,8 @@ public class OrderRecordServiceImpl implements OrderRecordService {
         req.setPayResults(payResults);
         Map<String,Object> map = new HashMap<String,Object>();
         map.put("merchantId",req.getMerchantId());
+        map.put("orderId",req.getOrderId());
+        map.put("name",req.getName());
         map.put("payResults",req.getPayResults());
         map.put("mobile",req.getMobile());
         map.put("bankNoShort",req.getBankNoShort());
@@ -1492,6 +1503,8 @@ public class OrderRecordServiceImpl implements OrderRecordService {
         map.put("endDate",req.getEndDate());
         map.put("payStartDate",req.getPayStartDate());
         map.put("payEndDate",req.getPayEndDate());
+        map.put("offset",req.getOffset());
+        map.put("size",req.getSize());
         return orderRecordDao.selectDrawWithCount(map);
     }
     @Transactional
@@ -1957,5 +1970,161 @@ public class OrderRecordServiceImpl implements OrderRecordService {
         map.put("offset",req.getOffset());
         map.put("size",req.getSize());
         return orderRecordDao.selectOrderListCount(map);
+    }
+
+    @Override
+    public MerchantAndOrderRecord selectOrderListByPageAll(OrderListRequest req) {
+        List<String> payResults = PayOf(req.getPayResult());
+        req.setPayResults(payResults);
+        Map<String,Object> map = new HashMap<String,Object>();
+        map.put("id",req.getId());
+        MerchantAndOrderRecord merchantAndOrderRecord = orderRecordDao.selectOrderListCountAll(map);
+        if(merchantAndOrderRecord!=null){
+            merchantAndOrderRecord.setOrderMessage(PayOfStatus(merchantAndOrderRecord.getPayResult()));
+        }
+        return merchantAndOrderRecord;
+    }
+
+    @Override
+    public OrderRecordAndMerchant selectDrawWithRecordByPageAll(OrderRecordAndMerchantRequest req) {
+        List<String> payResults = PayOf(req.getPayResult());
+        req.setPayResults(payResults);
+        Map<String,Object> map = new HashMap<String,Object>();
+        map.put("id",req.getId());
+        OrderRecordAndMerchant orderRecordAndMerchant = orderRecordDao.selectDrawWithRecordByPageAll(map);
+        if (orderRecordAndMerchant != null){
+            orderRecordAndMerchant.setOrderMessage(PayOfStatus(orderRecordAndMerchant.getPayResult()));
+        }
+        return orderRecordAndMerchant;
+    }
+
+    /**
+     * 获取临时路径
+     *
+     * @return
+     */
+    public static String getTempDir() {
+        final String dir = System.getProperty("java.io.tmpdir") + "hss" + File.separator + "trade" + File.separator + "record";
+        final File file = new File(dir);
+        if (!file.exists()) {
+            file.mkdirs();
+        }
+        return dir;
+    }
+
+    /**
+     * 下载Excele
+     * @param
+     * @param baseUrl
+     * @return
+     */
+    @Override
+    @Transactional
+    public String downloadExcel(String baseUrl) {
+        final String tempDir = this.getTempDir();
+        final File excelFile = new File(tempDir + File.separator + ".xls");
+        final ExcelSheetVO excelSheet = generateCodeExcelSheet(baseUrl);
+        final List<ExcelSheetVO> excelSheets = new ArrayList<>();
+        excelSheets.add(excelSheet);
+        FileOutputStream fileOutputStream = null;
+        try {
+            fileOutputStream = new FileOutputStream(excelFile);
+            ExcelUtil.exportExcel(excelSheets, fileOutputStream);
+            return excelFile.getAbsolutePath();
+        } catch (final Exception e) {
+            log.error("download trade record error", e);
+            e.printStackTrace();
+        }  finally {
+            if (fileOutputStream != null) {
+                try {
+                    fileOutputStream.close();
+                } catch (final IOException e) {
+                    log.error("close fileOutputStream error", e);
+                    e.printStackTrace();
+                }
+            }
+        }
+        return "";
+    }
+
+
+    /**
+     * 生成ExcelVo
+     * @param
+     * @param baseUrl
+     * @return
+     */
+    private ExcelSheetVO generateCodeExcelSheet(String baseUrl) {
+        //查询数据
+//        List<String> payResults = PayOf(req.getPayResult());
+//        req.setPayResults(payResults);
+//        Map<String,Object> map = new HashMap<String,Object>();
+//        map.put("orderId",req.getOrderId());
+//        map.put("startTime",req.getStartTime());
+//        map.put("endTime",req.getEndTime());
+//        map.put("merchantId",req.getMerchantId());
+//        map.put("subName",req.getSubName());
+//        map.put("lessTotalFee",req.getLessTotalFee());
+//        map.put("moreTotalFee",req.getMoreTotalFee());
+//        map.put("payResults",req.getPayResults());
+//        map.put("payChannel",req.getPayChannel());
+//        map.put("mdMobile",req.getMdMobile());
+//        map.put("settleStatus",req.getSettleStatus());
+//        map.put("offset",req.getOffset());
+//        map.put("size",req.getSize());
+        List<MerchantAndOrderRecord> list = orderRecordDao.selectOrderListTrade();
+        final ExcelSheetVO excelSheetVO = new ExcelSheetVO();
+        final List<List<String>> datas = new ArrayList<List<String>>();
+        final ArrayList<String> heads = new ArrayList<>();
+        excelSheetVO.setName("trade");
+        heads.add("订单号");
+        heads.add("交易日期");
+        heads.add("商户名称");
+        heads.add("所属代理");
+        heads.add("支付金额");
+        heads.add("手续费率");
+        heads.add("订单状态");
+        heads.add("结算状态");
+        heads.add("支付方式");
+        heads.add("支付渠道");
+        heads.add("错误信息");
+        datas.add(heads);
+        if(list.size()>0){
+            for(int i=0;i<list.size();i++){
+                ArrayList<String> columns = new ArrayList<>();
+                list.get(i).setOrderMessage(PayOfStatus(list.get(i).getPayResult()));
+                columns.add(list.get(i).getOrderId());
+                if (list.get(i).getCreateTime()!= null && !"".equals(list.get(i).getCreateTime())){
+                    DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                    String st = df.format(list.get(i).getCreateTime());
+                    columns.add(st);
+
+                }else {
+                    columns.add("");
+                }
+                columns.add(list.get(i).getSubName());
+                columns.add(list.get(i).getProxyName());
+                columns.add(String.valueOf(list.get(i).getTotalFee()));
+                columns.add("");
+                columns.add(list.get(i).getOrderMessage());
+                if (list.get(i).getSettleStatus()==1){
+                    columns.add("未结算");
+                }
+                if (list.get(i).getSettleStatus()==0){
+                    columns.add("已结算");
+                }
+                if (list.get(i).getPayChannel()==101){
+                    columns.add("微信");
+                }
+                if (list.get(i).getPayChannel()==103){
+                    columns.add("快捷");
+                }
+                columns.add(list.get(i).getChannelName());
+                columns.add(list.get(i).getErrorMessage());
+                datas.add(columns);
+            }
+        }
+        excelSheetVO.setDatas(datas);
+        return excelSheetVO;
     }
 }

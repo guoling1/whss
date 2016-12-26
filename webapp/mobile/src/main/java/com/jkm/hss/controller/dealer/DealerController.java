@@ -415,6 +415,7 @@ public class DealerController extends BaseController {
         if (!bankCardBinOptional.isPresent()) {
             return CommonResponse.simpleResponse(-1, "结算卡格式错误");
         }
+        secondLevelDealerAddRequest.setBankName(bankCardBinOptional.get().getBankName());
         final String bankReserveMobile = secondLevelDealerAddRequest.getBankReserveMobile();
         if (!ValidateUtils.isMobile(bankReserveMobile)) {
             return CommonResponse.simpleResponse(-1, "银行预留手机号错误");

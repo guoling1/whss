@@ -466,6 +466,7 @@ public class DealerServiceImpl implements DealerService {
         dealer.setAccountId(accountId);
         dealer.setMobile(request.getMobile());
         dealer.setProxyName(request.getName());
+        dealer.setBankName(request.getBankName());
         dealer.setBankAccountName(request.getBankAccountName());
         dealer.setBelongArea(request.getBelongArea());
         dealer.setLevel(EnumDealerLevel.SECOND.getId());
@@ -737,6 +738,7 @@ public class DealerServiceImpl implements DealerService {
         dealer.setMobile(firstLevelDealerAddRequest.getMobile());
         dealer.setProxyName(firstLevelDealerAddRequest.getName());
         dealer.setBankAccountName(firstLevelDealerAddRequest.getBankAccountName());
+        dealer.setBankName(firstLevelDealerAddRequest.getBankName());
         dealer.setBelongArea(firstLevelDealerAddRequest.getBelongArea());
         dealer.setLevel(EnumDealerLevel.FIRST.getId());
         dealer.setSettleBankCard(DealerSupport.encryptBankCard(firstLevelDealerAddRequest.getBankCard()));

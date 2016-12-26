@@ -5,8 +5,9 @@
 import Crumbs from '../../Crumbs.vue';
 // 后台管理 交易 流水 组件
 const DealQuery = r => require.ensure([], () => r(require('../../components/DealQuery')), 'group-record');
-const DealList = r => require.ensure([], () => r(require('../../components/DealList')), 'group-record');
+const DealDet = r => require.ensure([], () => r(require('../../components/DealDet')), 'group-record');
 const WithdrawalQuery = r => require.ensure([], () => r(require('../../components/WithdrawalQuery')), 'group-record');
+const WithdrawalDet = r => require.ensure([], () => r(require('../../components/WithdrawalDet')), 'group-record');
 const StoreList = r => require.ensure([], () => r(require('../../components/StoreList')), 'group-record');
 const StoreAudit = r => require.ensure([], () => r(require('../../components/StoreAudit')), 'group-record');
 const AgentList = r => require.ensure([], () => r(require('../../components/AgentList')), 'group-record');
@@ -22,7 +23,6 @@ const ProductList = r => require.ensure([], () => r(require('../../components/Pr
 const Issue = r => require.ensure([], () => r(require('../../components/Issue')), 'group-record');
 const Issue1 = r => require.ensure([], () => r(require('../../components/Issue1')), 'group-record');
 const IssueSuccess = r => require.ensure([], () => r(require('../../components/IssueSuccess')), 'group-record');
-const MoneyList = r => require.ensure([], () => r(require('../../components/MoneyList')), 'group-record');
 
 export default {
   path: '/admin/record',
@@ -35,14 +35,19 @@ export default {
       component: DealQuery
     },
     {
-      path: 'dealList',
-      name: 'DealList',
-      component: DealList
+      path: 'dealDet',
+      name: 'DealDet',
+      component: DealDet
     },
     {
       path: 'withdrawal',
       name: 'WithdrawalQuery',
       component: WithdrawalQuery
+    },
+    {
+      path: 'withdrawalDet',
+      name: 'WithdrawalDet',
+      component: WithdrawalDet
     },
     {
       path: 'storeList',
@@ -118,11 +123,6 @@ export default {
       path: 'issueSuccess',
       name: 'IssueSuccess',
       component: IssueSuccess
-    },
-    {
-      path: 'MoneyList',
-      name: 'MoneyList',
-      component: MoneyList
     }
   ]
 }

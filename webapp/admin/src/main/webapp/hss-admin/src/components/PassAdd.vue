@@ -1,8 +1,10 @@
 <template lang="html">
     <div id="passAdd">
-      <h1 v-if="isShow">增加通道</h1>
-      <h1 v-else="isShow">修改通道</h1>
-      <form action="">
+      <div v-if="isShow" style="padding: 8px 30px; background: rgb(243, 156, 18); z-index: 999999; font-size: 22px; font-weight: 600;margin-bottom: 15px;color: #fff;">增加通道</div>
+      <div v-else="isShow" style="padding: 8px 30px; background: rgb(243, 156, 18); z-index: 999999; font-size: 22px; font-weight: 600;margin-bottom: 15px;color: #fff;">修改通道</div>
+      <!--<h1 v-if="isShow">增加通道</h1>
+      <h1 v-else="isShow">修改通道</h1>-->
+      <form action="" style="margin: 0 15px">
         <label>
           通道名称：
           <input type="text" v-model="channelName" value="">

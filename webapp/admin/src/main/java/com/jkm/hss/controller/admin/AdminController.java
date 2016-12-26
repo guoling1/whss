@@ -232,6 +232,7 @@ public class AdminController extends BaseController {
             if (!bankCardBinOptional.isPresent()) {
                 return CommonResponse.simpleResponse(-1, "结算卡格式错误");
             }
+            firstLevelDealerAddRequest.setBankName(bankCardBinOptional.get().getBankName());
             if(!ValidateUtils.isMobile(firstLevelDealerAddRequest.getBankReserveMobile())) {
                 return CommonResponse.simpleResponse(-1, "银行预留手机号格式错误");
             }
@@ -266,7 +267,7 @@ public class AdminController extends BaseController {
             firstLevelDealerAddResponse.setDealerId(dealerId);
             return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "分配成功", firstLevelDealerAddResponse);
         }catch (Exception e){
-            log.error("错误信息时",e.getStackTrace());
+            log.error("错误信息时",e);
             return CommonResponse.simpleResponse(-1, e.getMessage());
         }
     }
