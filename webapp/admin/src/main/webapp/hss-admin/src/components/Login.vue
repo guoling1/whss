@@ -46,7 +46,9 @@
           this.$store.commit('LOGIN_HIDE');
           this.$router.push({path: '/admin/record/deal'})
         }, function (err) {
-          console.log(err);
+          this.$store.commit('MESSAGE_ACCORD_SHOW', {
+            text: err.statusMessage
+          })
         });
       }
     },

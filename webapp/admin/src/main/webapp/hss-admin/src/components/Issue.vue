@@ -9,12 +9,14 @@
               <label for="inputEmail3" class="col-sm-3 control-label">一级代理</label>
               <div class="col-sm-5">
                 <input @keyup="find" class="form-control" id="inputEmail3" name="name" placeholder="输入代理手机号或名称" v-model="name" autocomplete="off"/>
-                <ul class="list" v-if="listIsShow">
-                  <li v-for="(findDealer,index) in this.$data.findDealers" @click='change(index)'>
-                    <span>{{findDealer.name}}</span>
-                    <span>{{findDealer.mobile}}</span>
-                  </li>
-                </ul>
+                <div style="position: relative">
+                  <ul class="col-sm-12 list" v-if="listIsShow">
+                    <li v-for="(findDealer,index) in this.$data.findDealers" @click='change(index)'>
+                      <span>{{findDealer.name}}</span>
+                      <span>{{findDealer.mobile}}</span>
+                    </li>
+                  </ul>
+                </div>
               </div>
             </div>
             <div class="form-group">
@@ -135,11 +137,11 @@
 
   ul {
     list-style-type: none;
-    padding: 0;
     background: #fff;
-    position: relative;
-    left: 70px;
-    width: 300px;
+    border: 1px solid #d0d0d0;
+    padding: 5px 0;
+    position: absolute;
+    z-index: 10;
   }
 
   li {

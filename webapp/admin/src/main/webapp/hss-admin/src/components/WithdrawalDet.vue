@@ -108,16 +108,16 @@
               <td></td>
               <th style="text-align: right">付款人账户:</th>
               <td></td>
-              <th style="text-align: right">收款商户编号:</th>
-              <td></td>
+              <th style="text-align: right">订单号:</th>
+              <td>{{record.orderId}}</td>
             </tr>
             <tr>
-              <th style="text-align: right">收款商户名称:</th>
-              <td>{{record.subName}}</td>
               <th style="text-align: right">交易单号:</th>
               <td>{{record.outTradeNo}}</td>
               <th style="text-align: right">交易金额:</th>
               <td>{{record.totalFee}}</td>
+              <th></th>
+              <td></td>
             </tr>
             <tr>
               <th style="text-align: right">手续费率:</th>
