@@ -18,13 +18,20 @@ var submit = document.getElementById('submit');
 // 引入浏览器特性处理
 var browser = _require('browser');
 browser.elastic_touch();
-// 定义验证码
-animation.validcode({
-  url: '/wx/getCode',
-  phoneName: 'mobile',
-  phoneVal: 'mobile',
-  btn: 'sendCode'
-});
+
+if (!pageData.qrCode || pageData.qrCode == '') {
+  document.getElementById('sendCode').addEventListener('click', function () {
+    message.prompt_show('您需要扫码才能进行注册');
+  });
+} else {
+  // 定义验证码
+  animation.validcode({
+    url: '/wx/getCode',
+    phoneName: 'mobile',
+    phoneVal: 'mobile',
+    btn: 'sendCode'
+  });
+}
 
 // 注册
 submit.addEventListener('click', function () {
