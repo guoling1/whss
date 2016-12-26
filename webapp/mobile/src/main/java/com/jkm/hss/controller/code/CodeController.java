@@ -120,8 +120,23 @@ public class CodeController extends BaseController {
                     log.error("code[{}] is activate, but merchant[{}] is disabled", code, merchantId);
                 }
             }else{
-                log.info("code[{}], when user scan code Prompt merchant is not pass", code);
-                url = "/sqb/unFinishedPrompt";
+                log.info("code[{}] is activate", code);
+                final Optional<MerchantInfo> merchantInfoOptional = this.merchantInfoService.selectById(merchantId);
+                Preconditions.checkState(merchantInfoOptional.isPresent(), "merchant is not exist");
+                final MerchantInfo merchantInfo = merchantInfoOptional.get();
+                model.addAttribute("merchantId", merchantId);
+                if (EnumMerchantStatus.PASSED.getId() == merchantInfo.getStatus()) {//审核通过
+                    model.addAttribute("name", merchantInfo.getMerchantName());
+                    if (agent.indexOf("MicroMessenger") > -1) {//weixin
+                        url = "/sqb/paymentWx";
+                    }
+                    if (agent.indexOf("AliApp") > -1) {// AliApp
+                        url = "/sqb/paymentZfb";
+                    }
+                }else{
+                    log.info("code[{}], merchant is not pass", code);
+                    url = "/sqb/unFinishedPrompt";
+                }
             }
         } else {//注册
             Preconditions.checkState(agent.indexOf("MicroMessenger") > -1, "please register in weixin");
