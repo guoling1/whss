@@ -27,7 +27,7 @@
               <th style="text-align: right">一级代理名称:</th>
               <td>{{record.proxyName}}</td>
               <th style="text-align: right">二级代理名称:</th>
-              <td></td>
+              <td>{{record.proxyName1}}</td>
               <th style="text-align: right">推荐人:</th>
               <td></td>
             </tr>
