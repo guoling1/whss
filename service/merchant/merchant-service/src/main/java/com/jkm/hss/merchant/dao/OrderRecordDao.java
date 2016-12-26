@@ -85,4 +85,10 @@ public interface OrderRecordDao {
     MerchantAndOrderRecord selectOrderListCountAll(Map map);
 
     OrderRecordAndMerchant selectDrawWithRecordByPageAll(Map map);
+
+    /**
+     * 导出
+     * @return
+     */
+    List<MerchantAndOrderRecord> selectOrderListTrade();
 }

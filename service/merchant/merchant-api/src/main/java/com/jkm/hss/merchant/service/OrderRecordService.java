@@ -158,4 +158,6 @@ public interface OrderRecordService {
      * @return
      */
     OrderRecordAndMerchant selectDrawWithRecordByPageAll(OrderRecordAndMerchantRequest req);
+
+    String downloadExcel(String baseUrl);
 }

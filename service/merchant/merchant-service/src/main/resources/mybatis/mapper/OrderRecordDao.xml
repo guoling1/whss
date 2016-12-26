@@ -519,6 +519,17 @@
 		limit #{offset}, #{size}
 	</select>
 
+	<select id="selectOrderListTrade" resultType="com.jkm.hss.merchant.entity.MerchantAndOrderRecord">
+	SELECT o.id,o.order_id,o.merchant_id,o.sub_name,o.pay_channel,o.total_fee,o.real_fee,o.trade_type,
+	o.service_fee,o.channel_fee,o.pay_result,o.settle_status,o.out_trade_no,o.error_message,
+	o.create_time,m.mobile,(SELECT a.proxy_name FROM tb_dealer a WHERE a.id=m.dealer_id) AS proxyName,
+	(SELECT b.channel_name FROM tb_basic_channel b WHERE b.channel_type_sign=o.pay_channel) AS channelName
+	FROM tb_order_record o
+	LEFT JOIN tb_merchant_info m
+	ON o.merchant_id = m.id
+	WHERE o.trade_type=0 and o.status= 0
+</select>
+
 	<!-- 交易详情 -->
 	<select id="selectOrderListCountAll" resultType="com.jkm.hss.merchant.entity.MerchantAndOrderRecord">
 		SELECT o.id,o.order_id,o.merchant_id,o.sub_name,o.pay_channel,o.total_fee,o.real_fee,o.trade_type,

@@ -1,6 +1,8 @@
 package com.jkm.hss.merchant.service.impl;
 
 import com.google.common.base.Optional;
+import com.jkm.base.common.entity.ExcelSheetVO;
+import com.jkm.base.common.util.ExcelUtil;
 import com.jkm.base.common.util.SnGenerator;
 import com.jkm.hss.dealer.enums.EnumSettlementPeriodType;
 import com.jkm.hss.dealer.service.DealerService;
@@ -26,6 +28,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.*;
@@ -1989,5 +1994,100 @@ public class OrderRecordServiceImpl implements OrderRecordService {
             orderRecordAndMerchant.setOrderMessage(PayOfStatus(orderRecordAndMerchant.getPayResult()));
         }
         return orderRecordAndMerchant;
+    }
+
+    /**
+     * 获取临时路径
+     *
+     * @return
+     */
+    public static String getTempDir() {
+        final String dir = System.getProperty("java.io.tmpdir") + "hss" + File.separator + "trade" + File.separator + "record";
+        final File file = new File(dir);
+        if (!file.exists()) {
+            file.mkdirs();
+        }
+        return dir;
+    }
+
+    /**
+     * 下载Excele
+     * @param req
+     * @param baseUrl
+     * @return
+     */
+    @Override
+    @Transactional
+    public String downloadExcel(String baseUrl) {
+        final String tempDir = this.getTempDir();
+        final File excelFile = new File(tempDir + File.separator + ".xls");
+        final ExcelSheetVO excelSheet = generateCodeExcelSheet(baseUrl);
+        final List<ExcelSheetVO> excelSheets = new ArrayList<>();
+        excelSheets.add(excelSheet);
+        FileOutputStream fileOutputStream = null;
+        try {
+            fileOutputStream = new FileOutputStream(excelFile);
+            ExcelUtil.exportExcel(excelSheets, fileOutputStream);
+            return excelFile.getAbsolutePath();
+        } catch (final Exception e) {
+            log.error("download trade record error", e);
+            e.printStackTrace();
+        }  finally {
+            if (fileOutputStream != null) {
+                try {
+                    fileOutputStream.close();
+                } catch (final IOException e) {
+                    log.error("close fileOutputStream error", e);
+                    e.printStackTrace();
+                }
+            }
+        }
+        return "";
+    }
+
+
+    /**
+     * 生成ExcelVo
+     * @param
+     * @param baseUrl
+     * @return
+     */
+    private ExcelSheetVO generateCodeExcelSheet(String baseUrl) {
+        //查询数据
+//        List<String> payResults = PayOf(req.getPayResult());
+//        req.setPayResults(payResults);
+//        Map<String,Object> map = new HashMap<String,Object>();
+//        map.put("orderId",req.getOrderId());
+//        map.put("startTime",req.getStartTime());
+//        map.put("endTime",req.getEndTime());
+//        map.put("merchantId",req.getMerchantId());
+//        map.put("subName",req.getSubName());
+//        map.put("lessTotalFee",req.getLessTotalFee());
+//        map.put("moreTotalFee",req.getMoreTotalFee());
+//        map.put("payResults",req.getPayResults());
+//        map.put("payChannel",req.getPayChannel());
+//        map.put("mdMobile",req.getMdMobile());
+//        map.put("settleStatus",req.getSettleStatus());
+//        map.put("offset",req.getOffset());
+//        map.put("size",req.getSize());
+        List<MerchantAndOrderRecord> list = orderRecordDao.selectOrderListTrade();
+        final ExcelSheetVO excelSheetVO = new ExcelSheetVO();
+        final List<List<String>> datas = new ArrayList<List<String>>();
+        final ArrayList<String> heads = new ArrayList<>();
+        excelSheetVO.setName("trade");
+        heads.add("ID");
+        heads.add("卡号");
+        datas.add(heads);
+        if(list.size()>0){
+            for(int i=0;i<list.size();i++){
+                ArrayList<String> columns = new ArrayList<>();
+                list.get(i).setOrderMessage(PayOfStatus(list.get(i).getPayResult()));
+                columns.add(list.get(i).getId()+"");
+                columns.add(list.get(i).getBankNo());
+                datas.add(columns);
+            }
+        }
+        excelSheetVO.setDatas(datas);
+        return excelSheetVO;
     }
 }
