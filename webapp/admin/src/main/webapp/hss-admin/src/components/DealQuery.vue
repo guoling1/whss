@@ -189,6 +189,7 @@
         .then(function (res) {
           this.$data.orders=res.data.records;
           this.$data.total=res.data.totalPage;
+          this.$data.url = res.data.downloadExcel;
           var str = '',
             page = document.getElementById('page');
           str+='<li class="paginate_button previous" id="example2_previous"><a href="#" aria-controls="example2" data-dt-idx="0" tabindex="0">上一页</a></li>'
