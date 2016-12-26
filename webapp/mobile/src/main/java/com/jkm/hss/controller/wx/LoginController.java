@@ -352,17 +352,21 @@ public class LoginController extends BaseController {
             model.addAttribute("avaliable", "0.00");
         }else{
             Optional<UserInfo> userInfoOptional = userInfoService.selectByOpenId(super.getOpenId(request));
-            if(userInfoOptional.get().getMerchantId()!=0){
-                Optional<MerchantInfo> merchantInfo = this.merchantInfoService.selectById(userInfoOptional.get().getMerchantId());
-                if(merchantInfo.isPresent()){
-                    AccountInfo accountInfo = accountInfoService.selectByPrimaryKey(merchantInfo.get().getAccountId());
-                    if(accountInfo==null){
-                        model.addAttribute("avaliable", "0.00");
-                    }else{
-                        DecimalFormat decimalFormat=new DecimalFormat("0.00");//构造方法的字符格式这里如果小数不足2位,会以0补足.
-                        model.addAttribute("avaliable", accountInfo.getAvailable()==null?"0.00":decimalFormat.format(accountInfo.getAvailable()));
-                    }
+            if(userInfoOptional.isPresent()){//存在
+                if(userInfoOptional.get().getMerchantId()!=0){
+                    Optional<MerchantInfo> merchantInfo = this.merchantInfoService.selectById(userInfoOptional.get().getMerchantId());
+                    if(merchantInfo.isPresent()){
+                        AccountInfo accountInfo = accountInfoService.selectByPrimaryKey(merchantInfo.get().getAccountId());
+                        if(accountInfo==null){
+                            model.addAttribute("avaliable", "0.00");
+                        }else{
+                            DecimalFormat decimalFormat=new DecimalFormat("0.00");//构造方法的字符格式这里如果小数不足2位,会以0补足.
+                            model.addAttribute("avaliable", accountInfo.getAvailable()==null?"0.00":decimalFormat.format(accountInfo.getAvailable()));
+                        }
 
+                    }else{
+                        model.addAttribute("avaliable", "0.00");
+                    }
                 }else{
                     model.addAttribute("avaliable", "0.00");
                 }
