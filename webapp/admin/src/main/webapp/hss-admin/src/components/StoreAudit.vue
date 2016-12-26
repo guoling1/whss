@@ -4,48 +4,119 @@
     <div v-else="isShow" style="padding: 8px 30px; background: rgb(243, 156, 18); z-index: 999999; font-size: 22px; font-weight: 600;margin-bottom: 15px;color: #fff;">商户资料</div>
     <div style="margin: 0 15px">
       <div class="box box-primary">
-        <p class="lead">基本信息</p>
-
+        <p class="lead">商户注册信息</p>
         <div class="table-responsive">
           <table class="table">
             <tbody>
             <tr>
-              <th style="text-align: right">商户名称:</th>
-              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.merchantName"></td>
-              <th style="text-align: right">商户地址:</th>
-              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.address"></td>
-              <th style="text-align: right">所属二代:</th>
-              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.proxyName1|changeDeal"></td>
+              <th style="text-align: right">注册手机:</th>
+              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.mobile" readonly></td>
+              <th style="text-align: right">注册时间:</th>
+              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.createTime|changeTime" readonly></td>
+              <th style="text-align: right">注册方式:</th>
+              <td><input type="text" style="background:#efecec;padding-left:5px;" readonly></td>
             </tr>
             <tr>
-              <th style="text-align: right">所属一代:</th>
-              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.proxyName|changeDeal"></td>
-              <th style="text-align: right">注册手机:</th>
-              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.mobile"></td>
-              <th style="text-align: right">注册时间:</th>
-              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.createTime|changeTime"></td>
+              <th style="text-align: right">一级代理编号:</th>
+              <td><input type="text" style="background:#efecec;padding-left:5px;" readonly></td>
+              <th style="text-align: right">一级代理名称:</th>
+              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.proxyName|changeDeal" readonly></td>
+              <th></th>
+              <td></td>
+            </tr>
+            <tr>
+              <th style="text-align: right">二级代理编号:</th>
+              <td><input type="text" style="background:#efecec;padding-left:5px;" readonly></td>
+              <th style="text-align: right">二级代理名称:</th>
+              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.proxyName1|changeDeal" readonly></td>
+              <th></th>
+              <td></td>
+            </tr>
+            <tr>
+              <th style="text-align: right">推荐人编号:</th>
+              <td><input type="text" style="background:#efecec;padding-left:5px;" readonly></td>
+              <th style="text-align: right">推荐人名称:</th>
+              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.proxyName1|changeDeal" readonly></td>
+              <th style="text-align: right">推荐人注册手机号:</th>
+              <td><input type="text" style="background:#efecec;padding-left:5px;" readonly></td>
+            </tr>
+            <tr>
+              <th style="text-align: right">商户名称:</th>
+              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.merchantName" readonly></td>
+              <th style="text-align: right">商户地址:</th>
+              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.address" readonly></td>
+              <th></th>
+              <td></td>
             </tr>
             <tr>
               <th style="text-align: right">商户编号:</th>
-              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.id"></td>
+              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.id" readonly></td>
               <th style="text-align: right">真实姓名:</th>
-              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.name"></td>
+              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.name" readonly></td>
               <th style="text-align: right">身份证号:</th>
-              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.identity"></td>
+              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.identity" readonly></td>
             </tr>
             <tr>
               <th style="text-align: right">结算卡号:</th>
-              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.bankNo"></td>
+              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.bankNo" readonly></td>
               <th style="text-align: right">开户手机号:</th>
-              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.reserveMobile"></td>
-
+              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.reserveMobile" readonly></td>
+              <th></th>
+              <td></td>
             </tr>
             </tbody></table>
         </div>
       </div>
       <div class="box box-primary">
-        <p class="lead">照片</p>
-
+        <p class="lead">商户认证信息</p>
+        <div class="table-responsive">
+          <table class="table">
+            <tbody>
+            <tr>
+              <th style="text-align: right">真实姓名:</th>
+              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.name" readonly></td>
+              <th style="text-align: right">身份证号:</th>
+              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.identity" readonly></td>
+              <th style="text-align: right">商户名称:</th>
+              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.merchantName" readonly></td>
+            </tr>
+            <tr>
+              <th style="text-align: right">经营种类:</th>
+              <td><input type="text" style="background:#efecec;padding-left:5px;" readonly></td>
+              <th style="text-align: right">省市区:</th>
+              <td><input type="text" style="background:#efecec;padding-left:5px;" readonly></td>
+              <th style="text-align: right">商户详细地址:</th>
+              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.address" readonly></td>
+            </tr>
+            <tr>
+              <th style="text-align: right">结算卡号:</th>
+              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.bankNo" readonly></td>
+              <th style="text-align: right">所属银行:</th>
+              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.bankNo" readonly></td>
+              <th style="text-align: right">开户手机号:</th>
+              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.reserveMobile" readonly></td>
+            </tr>
+            <tr>
+              <th style="text-align: right">资料提交时间:</th>
+              <td><input type="text" style="background:#efecec;padding-left:5px;" readonly></td>
+              <th style="text-align: right">资料审核状态:</th>
+              <td><input type="text" style="background:#efecec;padding-left:5px;" readonly></td>
+              <th style="text-align: right">审核时间:</th>
+              <td><input type="text" style="background:#efecec;padding-left:5px;" readonly></td>
+            </tr>
+            <tr>
+              <th style="text-align: right">审核人:</th>
+              <td><input type="text" style="background:#efecec;padding-left:5px;" readonly></td>
+              <th style="text-align: right">审核批复信息:</th>
+              <td><input type="text" style="background:#efecec;padding-left:5px;" readonly></td>
+              <th></th>
+              <td></td>
+            </tr>
+            </tbody></table>
+        </div>
+      </div>
+      <div class="box box-primary">
+        <p class="lead">商户认证资料</p>
         <div class="table-responsive">
           <table class="table">
             <tbody>
@@ -56,15 +127,53 @@
               <th class="col-md-3" style="text-align: center;">手持结算卡:</th>
             </tr>
             <tr class="row">
-              <td class="col-md-3" style="text-align: center;border: none;"><img style="width: 200px" @click="changeBig()" :src="msg.identityFacePic" alt=""/></td>
-              <td class="col-md-3" style="text-align: center;border: none;"><img style="width: 200px"  @click="changeBig()" :src="msg.identityOppositePic" alt=""/></td>
-
-              <td class="col-md-3" style="text-align: center;border: none;"><img style="width: 200px"  @click="changeBig()" :src="msg.identityHandPic" alt=""/></td>
-
-              <td class="col-md-3" style="text-align: center;border: none;"><img style="width: 200px"  @click="changeBig()" :src="msg.bankHandPic" alt=""/></td>
+              <td class="col-md-3" style="text-align: center;border: none;">
+                <img style="width: 200px" @click="changeBig()" :src="msg.identityFacePic" alt=""/>
+              </td>
+              <td class="col-md-3" style="text-align: center;border: none;">
+                <img style="width: 200px"  @click="changeBig()" :src="msg.identityOppositePic" alt=""/>
+              </td>
+              <td class="col-md-3" style="text-align: center;border: none;">
+                <img style="width: 200px"  @click="changeBig()" :src="msg.identityHandPic" alt=""/>
+              </td>
+              <td class="col-md-3" style="text-align: center;border: none;">
+                <img style="width: 200px"  @click="changeBig()" :src="msg.bankHandPic" alt=""/>
+              </td>
             </tr>
             </tbody>
           </table>
+        </div>
+      </div>
+      <div class="box box-primary">
+        <p class="lead">商户结算信息(好收收)</p>
+        <div class="table-responsive">
+          <table class="table">
+            <tbody>
+            <tr>
+              <th style="text-align: right">阳光万维微信:</th>
+              <td></td>
+              <th style="text-align: right">收款结算方式:</th>
+              <td></td>
+              <th style="text-align: right">提现费:</th>
+              <td>元/笔</td>
+            </tr>
+            <tr>
+              <th style="text-align: right">阳光万维支付宝:</th>
+              <td></td>
+              <th style="text-align: right">收款结算方式:</th>
+              <td></td>
+              <th style="text-align: right">提现费:</th>
+              <td>元/笔</td>
+            </tr>
+            <tr>
+              <th style="text-align: right">阳光万维无卡快捷:</th>
+              <td></td>
+              <th style="text-align: right">收款结算方式:</th>
+              <td></td>
+              <th style="text-align: right">提现费:</th>
+              <td>元/笔</td>
+            </tr>
+            </tbody></table>
         </div>
       </div>
       <div class="mask" id="mask" style="display: none" @click="isNo()">
