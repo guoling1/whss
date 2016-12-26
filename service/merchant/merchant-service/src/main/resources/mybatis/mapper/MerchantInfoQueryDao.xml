@@ -54,6 +54,14 @@
             (select d.proxy_name from tb_dealer as d where d.id=dealer_id) as proxy_name
         FROM
             tb_merchant_info
+        WHERE 1=1
+    <if test="merchantName != null and merchantName != ''">
+        AND merchant_name=#{merchantName}
+    </if>
+
+    <if test="status != null">
+        AND status=#{status}
+    </if>
         ORDER BY
             create_time DESC
         LIMIT ${pageNo},${pageSize}

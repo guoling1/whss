@@ -104,7 +104,19 @@ public class OrderRecordController extends BaseController{
     @RequestMapping(value = "/orderListAll",method = RequestMethod.POST)
     public CommonResponse orderListAll(@RequestBody OrderListRequest req) throws ParseException {
         MerchantAndOrderRecord orderList =  orderRecordService.selectOrderListByPageAll(req);
+        if (orderList.getLevel()==1){
+            orderList.setProxyName(orderList.getProxyName());
+        }
+        if (orderList.getLevel()==2){
+//            MerchantAndOrderRecord res = orderRecordService.selectProxyName(req);
+            orderList.setProxyName1(orderList.getProxyName());
+            if (orderList.getFirstLevel() != 0){
+                long FirstLevel =orderList.getFirstLevel();
+                MerchantAndOrderRecord res = orderRecordService.selectProxyName(FirstLevel);
+                orderList.setProxyName(res.getProxyName());
+            }
 
+        }
 
         if (orderList.getBankNo()!= null){
             orderList.setBankNo(MerchantSupport.decryptBankCard(orderList.getBankNo()));
