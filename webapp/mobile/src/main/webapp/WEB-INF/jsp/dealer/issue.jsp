@@ -27,7 +27,7 @@
   <div class="box">
     <!--分配给二级代理-->
     <div class="content show" id="content">
-      <form action="/dealer/distributeQRCode" method="post">
+      <form id="form1" action="/dealer/distributeQRCode" method="post">
         <label for="">
           二级代理
           <input type="text" name="name" id="mobile" placeholder="输入代理手机号或名称">
@@ -52,7 +52,7 @@
     </div>
     <!--分配给自己-->
     <div class="ownContent" id="ownContent">
-      <form action="/dealer/distributeQRCode" method="post">
+      <form id="form2" action="/dealer/distributeQRCode" method="post">
         <label for="">
           起始码
           <input type="number" name="startCode" id="number3" placeholder="请输入起始二维码">
