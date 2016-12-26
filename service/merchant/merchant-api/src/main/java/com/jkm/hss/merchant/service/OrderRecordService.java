@@ -160,4 +160,11 @@ public interface OrderRecordService {
     OrderRecordAndMerchant selectDrawWithRecordByPageAll(OrderRecordAndMerchantRequest req);
 
     String downloadExcel(String baseUrl);
+
+    /**
+     * 查询所属代理商
+     * @param firstLevel
+     * @return
+     */
+    MerchantAndOrderRecord selectProxyName(long firstLevel);
 }

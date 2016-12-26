@@ -2047,6 +2047,11 @@ public class OrderRecordServiceImpl implements OrderRecordService {
         return "";
     }
 
+    @Override
+    public MerchantAndOrderRecord selectProxyName(long firstLevel) {
+        return orderRecordDao.selectProxyName(firstLevel);
+    }
+
 
     /**
      * 生成ExcelVo

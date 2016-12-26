@@ -17,6 +17,28 @@ public class MerchantAndOrderRecord{
     private String url;
 
     /**
+     *
+     */
+    private long firstLevel;
+
+    /**
+     * 代理商id
+     */
+    private int dealerId;
+
+    /**
+     * 二级代理商名
+     */
+    private String proxyName1;
+
+    /**
+     * 经销商级别
+     *
+     * {@link com.jkm.hss.merchant.enums.EnumDealerLevel}
+     */
+    private int level;
+
+    /**
      * 主键id
      */
     private long id;

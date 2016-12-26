@@ -91,4 +91,6 @@ public interface OrderRecordDao {
      * @return
      */
     List<MerchantAndOrderRecord> selectOrderListTrade();
+
+    MerchantAndOrderRecord selectProxyName(long firstLevel);
 }
