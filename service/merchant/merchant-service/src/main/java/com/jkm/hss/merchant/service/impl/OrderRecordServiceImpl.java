@@ -32,7 +32,9 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.text.DateFormat;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -2012,7 +2014,7 @@ public class OrderRecordServiceImpl implements OrderRecordService {
 
     /**
      * 下载Excele
-     * @param req
+     * @param
      * @param baseUrl
      * @return
      */
@@ -2075,15 +2077,50 @@ public class OrderRecordServiceImpl implements OrderRecordService {
         final List<List<String>> datas = new ArrayList<List<String>>();
         final ArrayList<String> heads = new ArrayList<>();
         excelSheetVO.setName("trade");
-        heads.add("ID");
-        heads.add("卡号");
+        heads.add("订单号");
+        heads.add("交易日期");
+        heads.add("商户名称");
+        heads.add("所属代理");
+        heads.add("支付金额");
+        heads.add("手续费率");
+        heads.add("订单状态");
+        heads.add("结算状态");
+        heads.add("支付方式");
+        heads.add("支付渠道");
+        heads.add("错误信息");
         datas.add(heads);
         if(list.size()>0){
             for(int i=0;i<list.size();i++){
                 ArrayList<String> columns = new ArrayList<>();
                 list.get(i).setOrderMessage(PayOfStatus(list.get(i).getPayResult()));
-                columns.add(list.get(i).getId()+"");
-                columns.add(list.get(i).getBankNo());
+                columns.add(list.get(i).getOrderId());
+                if (list.get(i).getCreateTime()!= null && !"".equals(list.get(i).getCreateTime())){
+                    DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                    String st = df.format(list.get(i).getCreateTime());
+                    columns.add(st);
+
+                }else {
+                    columns.add("");
+                }
+                columns.add(list.get(i).getSubName());
+                columns.add(list.get(i).getProxyName());
+                columns.add(String.valueOf(list.get(i).getTotalFee()));
+                columns.add("");
+                columns.add(list.get(i).getOrderMessage());
+                if (list.get(i).getSettleStatus()==1){
+                    columns.add("未结算");
+                }
+                if (list.get(i).getSettleStatus()==0){
+                    columns.add("已结算");
+                }
+                if (list.get(i).getPayChannel()==101){
+                    columns.add("微信");
+                }
+                if (list.get(i).getPayChannel()==103){
+                    columns.add("快捷");
+                }
+                columns.add(list.get(i).getChannelName());
+                columns.add(list.get(i).getErrorMessage());
                 datas.add(columns);
             }
         }

@@ -42,6 +42,10 @@ public class PageModel<T> {
      * 起始index
      */
     private int firstIndex;
+    /**
+     * 额外参数
+     */
+    private String ext;
 
     /**
      * constructor

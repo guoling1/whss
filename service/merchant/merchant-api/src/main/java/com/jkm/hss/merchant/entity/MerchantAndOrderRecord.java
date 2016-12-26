@@ -10,6 +10,12 @@ import java.util.Date;
  */
 @Data
 public class MerchantAndOrderRecord{
+
+    /**
+     * 导出地址
+     */
+    private String url;
+
     /**
      * 主键id
      */
