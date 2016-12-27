@@ -21,7 +21,6 @@ import javax.servlet.http.HttpServletResponse;
 @Controller
 @RequestMapping(value = "/call")
 public class CallBackController extends BaseController {
-    //
     @Autowired
     private OrderRecordService orderRecordService;
     /**
