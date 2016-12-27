@@ -58,7 +58,7 @@
       </div>
       <div class="group">
         <div class="name">身份证</div>
-        <input type="number" class="ipt" placeholder="输入身份证号" id="identity">
+        <input type="text" class="ipt" placeholder="输入身份证号" id="identity">
       </div>
       <div class="group">
         <div class="name">手机号</div>
