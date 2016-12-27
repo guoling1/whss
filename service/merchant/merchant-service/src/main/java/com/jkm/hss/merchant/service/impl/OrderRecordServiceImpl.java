@@ -694,6 +694,7 @@ public class OrderRecordServiceImpl implements OrderRecordService {
         log.info("更该订单状态为【处理中】结束。。。");
 
         try{
+            System.out.println("支付地址是："+MerchantConsts.getMerchantConfig().domain());
             String result = SmPost.post(MerchantConsts.getMerchantConfig().domain()+MerchantConsts.getMerchantConfig().trade(),paramsMap);
             log.info("支付交易结果{}",JSONObject.fromObject(paramsMap).toString());
             //更新参数
