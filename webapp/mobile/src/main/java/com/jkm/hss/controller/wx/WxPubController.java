@@ -338,18 +338,25 @@ public class WxPubController extends BaseController {
         if (1 != checkResult.getLeft()) {
             return CommonResponse.simpleResponse(-1, checkResult.getRight());
         }
-        MerchantInfo mi = new MerchantInfo();
-        mi.setStatus(EnumMerchantStatus.INIT.getId());
-        mi.setMobile(MerchantSupport.encryptMobile(mobile));
-        mi.setMdMobile(MerchantSupport.passwordDigest(mobile,"JKM"));
-        if(loginRequest.getQrCode()!=null&&!"".equals(loginRequest.getQrCode())){
-            log.info("扫码注册");
-            mi.setCode(loginRequest.getQrCode());
-            merchantInfoService.regByCode(mi);
-            Optional<UserInfo> ui = userInfoService.selectByOpenId(super.getOpenId(request));
-            if(ui.isPresent()){
-                userInfoService.uploadUserInfo(mi.getId(),MerchantSupport.encryptMobile(mobile),ui.get().getId());
+        Optional<UserInfo> ui = userInfoService.selectByOpenId(super.getOpenId(request));
+        if(!ui.isPresent()){//不存在
+            MerchantInfo mi = new MerchantInfo();
+            mi.setStatus(EnumMerchantStatus.INIT.getId());
+            mi.setMobile(MerchantSupport.encryptMobile(mobile));
+            mi.setMdMobile(MerchantSupport.passwordDigest(mobile,"JKM"));
+            if(loginRequest.getQrCode()!=null&&!"".equals(loginRequest.getQrCode())){
+                log.info("扫码注册");
+                mi.setCode(loginRequest.getQrCode());
+                merchantInfoService.regByCode(mi);
+                UserInfo uo = new UserInfo();
+                uo.setOpenId(super.getOpenId(request));
+                uo.setStatus(EnumCommonStatus.NORMAL.getId());
+                uo.setMobile(MerchantSupport.encryptMobile(mobile));
+                uo.setMerchantId(mi.getId());
+                userInfoService.insertUserInfo(uo);
             }else{
+                log.info("普通注册");
+                merchantInfoService.regByWxPub(mi);
                 UserInfo uo = new UserInfo();
                 uo.setOpenId(super.getOpenId(request));
                 uo.setStatus(EnumCommonStatus.NORMAL.getId());
@@ -357,23 +364,10 @@ public class WxPubController extends BaseController {
                 uo.setMerchantId(mi.getId());
                 userInfoService.insertUserInfo(uo);
             }
-        }else{
-            log.info("普通注册");
-            merchantInfoService.regByWxPub(mi);
-            Optional<UserInfo> userInfoOptional = userInfoService.selectByOpenId(super.getOpenId(request));
-            if(userInfoOptional.isPresent()){
-                userInfoService.uploadUserInfo(mi.getId(),MerchantSupport.encryptMobile(mobile),userInfoOptional.get().getId());
-            }else{
-                UserInfo uo = new UserInfo();
-                uo.setOpenId(super.getOpenId(request));
-                uo.setStatus(EnumCommonStatus.NORMAL.getId());
-                uo.setMobile(MerchantSupport.encryptMobile(mobile));
-                uo.setMerchantId(mi.getId());
-                userInfoService.insertUserInfo(uo);
-            }
+            return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "登录成功",mi.getId());
+        }else{//存在
+            return CommonResponse.simpleResponse(-1, "已存在该商户，不能重复注册");
         }
-        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "登录成功",mi.getId());
-
     }
 
     /**
