@@ -38,6 +38,8 @@
         <webapp.version>${hss.project.version}</webapp.version>
         <hss.mobile.version>${hss.project.version}</hss.mobile.version>
         <hss.admin.version>${hss.project.version}</hss.admin.version>
+        <hsy.mobile.version>${hss.project.version}</hsy.mobile.version>
+        <hsy.api.version>${hss.project.version}</hsy.api.version>
     </properties>
 
     <dependencyManagement>
