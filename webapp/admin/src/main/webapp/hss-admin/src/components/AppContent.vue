@@ -1,6 +1,6 @@
 <template lang="html">
   <!-- Content Wrapper. Contains page content -->
-  <div class="content-wrapper">
+  <div class="content-wrapper" style="margin-left: 130px">
     <!-- Content Header (Page header) -->
     <!-- <section class="content-header">
       <h1>
@@ -14,7 +14,7 @@
     </section> -->
 
     <!-- Main content -->
-    <section class="content">
+    <section class="content" style="overflow: hidden;padding: 0">
 
       <!-- Your Page Content Here -->
 

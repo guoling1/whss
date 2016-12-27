@@ -120,26 +120,27 @@ public class QRCodeServiceImpl implements QRCodeService {
     /**
      * {@inheritDoc}
      *
-     * @param dealerId
-     * @param count
+     * @param codeIds
      */
     @Override
     @Transactional
-    public int markAsDistribute(final long dealerId, final int count) {
-        return this.qrCodeDao.markAsDistribute(dealerId, count);
+    public int markAsDistribute(final List<Long> codeIds) {
+        if (CollectionUtils.isEmpty(codeIds)) {
+            return 0;
+        }
+        return this.qrCodeDao.markAsDistribute(codeIds);
     }
 
     /**
      * {@inheritDoc}
      *
-     * @param dealerId
+     * @param codeIds
      * @param toDealerId
-     * @param count
      */
     @Override
     @Transactional
-    public int markAsDistribute2(final long dealerId, final long toDealerId, final int count) {
-        return this.qrCodeDao.markAsDistribute2(dealerId, toDealerId, count);
+    public int markAsDistribute2(final List<Long> codeIds, final long toDealerId) {
+        return this.qrCodeDao.markAsDistribute2(codeIds, toDealerId);
     }
 
 
@@ -184,6 +185,21 @@ public class QRCodeServiceImpl implements QRCodeService {
     public Optional<QRCode> getById(final long id) {
         return Optional.fromNullable(this.qrCodeDao.selectById(id));
     }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param ids
+     * @return
+     */
+    @Override
+    public List<QRCode> getByIds(final List<Long> ids) {
+        if (CollectionUtils.isEmpty(ids)) {
+            return  Collections.emptyList();
+        }
+        return this.qrCodeDao.selectByIds(ids);
+    }
+
 
     /**
      * {@inheritDoc}
@@ -290,13 +306,40 @@ public class QRCodeServiceImpl implements QRCodeService {
      * {@inheritDoc}
      *
      * @param dealerId
-     * @param count
      * @return
      */
     @Override
-    public List<QRCode> getUnDistributeCodeByFirstLevelDealerId(long dealerId, int count) {
-        return this.qrCodeDao.selectUnDistributeCodeByFirstLevelDealerId(dealerId, count);
+    public List<QRCode> getUnDistributeCodeByFirstLevelDealerId(long dealerId) {
+        return this.qrCodeDao.selectUnDistributeCodeByFirstLevelDealerId(dealerId);
     }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param startCode
+     * @param endCode
+     * @param dealerId
+     * @return
+     */
+    @Override
+    public int getUnDistributeCodeCountByDealerIdAndRangeCode(final String startCode,
+                                                              final String endCode, final long dealerId) {
+        return this.qrCodeDao.selectUnDistributeCodeCountByDealerIdAndRangeCode(startCode, endCode, dealerId);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param dealerId
+     * @param startCode
+     * @param endCode
+     * @return
+     */
+    @Override
+    public List<QRCode> getUnDistributeCodeByDealerIdAndRangeCode(long dealerId, String startCode, String endCode) {
+        return this.qrCodeDao.selectUnDistributeCodeByDealerIdAndRangeCode(dealerId, startCode, endCode);
+    }
+
 
     /**
      * {@inheritDoc}
@@ -622,5 +665,43 @@ public class QRCodeServiceImpl implements QRCodeService {
         final String format = DateFormatUtil.format(new DateTime(new Date().getTime()).minusDays(1).toDate(), DateFormatUtil.yyyy_MM_dd);
         return Pair.of(DateFormatUtil.parse(format + " " + "00:00:01", DateFormatUtil.yyyy_MM_dd_HH_mm_ss),
                 DateFormatUtil.parse(format + " " + "23:59:59", DateFormatUtil.yyyy_MM_dd_HH_mm_ss));
+    }
+
+    /**
+     * 从list中，将连续的二维码分为一组，返回所有组
+     *
+     * @param qrCodes
+     * @return
+     */
+    public List<Pair<QRCode, QRCode>> getPairQRCodeList(final List<QRCode> qrCodes) {
+        final List<Pair<QRCode, QRCode>> pairs = new ArrayList<>();
+        while (!CollectionUtils.isEmpty(qrCodes)){
+            final Iterator<QRCode> codeIterator = qrCodes.iterator();
+            final QRCode first = codeIterator.next();
+            codeIterator.remove();
+            QRCode pre = first;
+            while (codeIterator.hasNext()) {
+                final QRCode next = codeIterator.next();
+                if ((Long.valueOf(next.getCode()) - Long.valueOf(pre.getCode())) != 1) {
+                    break;
+                }
+                codeIterator.remove();
+                pre = next;
+            }
+            pairs.add(Pair.of(first, pre));
+        }
+        return pairs;
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param startCode
+     * @param endCode
+     * @return
+     */
+    @Override
+    public List<Long> getUnDistributeCodeByRangeCode(final String startCode, final String endCode) {
+        return this.qrCodeDao.selectUnDistributeCodeByRangeCode(startCode, endCode);
     }
 }

@@ -1,10 +1,7 @@
 package com.jkm.hss.merchant.service;
 
 import com.google.common.base.Optional;
-import com.jkm.hss.merchant.entity.MerchantInfo;
-import com.jkm.hss.merchant.entity.OrderRecord;
-import com.jkm.hss.merchant.entity.OrderRecordAndMerchant;
-import com.jkm.hss.merchant.entity.OrderRecordConditions;
+import com.jkm.hss.merchant.entity.*;
 import com.jkm.hss.merchant.helper.request.*;
 import net.sf.json.JSONObject;
 
@@ -139,4 +136,35 @@ public interface OrderRecordService {
      * @return
      */
     Optional<OrderRecord> selectByPrimaryKey(long id);
+    /**
+     * 查询交易列表
+     * @param orderRecord
+     * @return
+     */
+    List<MerchantAndOrderRecord> selectOrderListByPage(OrderListRequest orderRecord);
+
+    int selectOrderListCount(OrderListRequest orderRecord);
+
+    /**
+     * 查询交易详情
+     * @param orderRecord
+     * @return
+     */
+    MerchantAndOrderRecord selectOrderListByPageAll(OrderListRequest orderRecord);
+
+    /**
+     * 提现详情
+     * @param req
+     * @return
+     */
+    OrderRecordAndMerchant selectDrawWithRecordByPageAll(OrderRecordAndMerchantRequest req);
+
+    String downloadExcel(String baseUrl);
+
+    /**
+     * 查询所属代理商
+     * @param firstLevel
+     * @return
+     */
+    MerchantAndOrderRecord selectProxyName(long firstLevel);
 }

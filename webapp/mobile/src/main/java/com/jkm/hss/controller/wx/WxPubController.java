@@ -12,16 +12,15 @@ import com.jkm.hss.helper.ApplicationConsts;
 import com.jkm.hss.helper.request.MerchantLoginCodeRequest;
 import com.jkm.hss.helper.request.MerchantLoginRequest;
 import com.jkm.hss.helper.request.OtherPayRequest;
-import com.jkm.hss.merchant.entity.AccountInfo;
 import com.jkm.hss.merchant.entity.MerchantInfo;
 import com.jkm.hss.merchant.entity.OrderRecord;
 import com.jkm.hss.merchant.entity.UserInfo;
+import com.jkm.hss.merchant.enums.EnumCommonStatus;
 import com.jkm.hss.merchant.enums.EnumMerchantStatus;
 import com.jkm.hss.merchant.helper.MerchantSupport;
 import com.jkm.hss.merchant.helper.WxPubUtil;
 import com.jkm.hss.merchant.helper.request.RequestOrderRecord;
 import com.jkm.hss.merchant.helper.request.TradeRequest;
-import com.jkm.hss.merchant.helper.request.WithDrawRequest;
 import com.jkm.hss.merchant.service.AccountInfoService;
 import com.jkm.hss.merchant.service.MerchantInfoService;
 import com.jkm.hss.merchant.service.OrderRecordService;
@@ -50,9 +49,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.URLDecoder;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
  * @desc:
@@ -80,12 +79,11 @@ public class WxPubController extends BaseController {
     private ShallProfitDetailService shallProfitDetailService;
 
 
-
-
     /**
-     * 登录页面
+     * 好收收注册微信跳转页面
      * @param request
      * @param response
+     * @param model
      * @return
      * @throws Exception
      */
@@ -112,30 +110,12 @@ public class WxPubController extends BaseController {
         Map<String,String> ret = WxPubUtil.getOpenid(code);
         CookieUtil.setPersistentCookie(response, ApplicationConsts.MERCHANT_COOKIE_KEY, ret.get("openid"),
                 ApplicationConsts.getApplicationConfig().domain());
-//        String url ="";
-//        if(ret!=null&&ret.size()>0) {
-//            Optional<UserInfo> userInfo = userInfoService.selectByOpenId(ret.get("openid"));
-//            if (userInfo.isPresent()) {//存在
-//                CookieUtil.setPersistentCookie(response, ApplicationConsts.MERCHANT_COOKIE_KEY, ret.get("openid"),
-//                        ApplicationConsts.getApplicationConfig().domain());
-//                url = state;
-//            } else {
-//                UserInfo ui = new UserInfo();
-//                ui.setOpenId(ret.get("openid"));
-//                ui.setStatus(0);
-//                userInfoService.insertUserInfo(ui);
-//                CookieUtil.setPersistentCookie(response, ApplicationConsts.MERCHANT_COOKIE_KEY, ret.get("openid"),
-//                        ApplicationConsts.getApplicationConfig().domain());
-////                url="/sqb/reg";
-//                url = state;
-//            }
-//        }
         String tempUrl = URLDecoder.decode(state, "UTF-8");
         return "redirect:"+tempUrl;
     }
 
     /**
-     * 火车票页面
+     * 火车票微信跳转页面
      * @param request
      * @param response
      * @return
@@ -164,6 +144,40 @@ public class WxPubController extends BaseController {
         return "redirect:http://hcp.jinkaimen.com/ticket/main-menu/reserve?appid=1012&uid="+ ret.get("openid");
     }
 
+
+    /**
+     * 扫固定微信跳转页面
+     * @param request
+     * @param response
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value = "toMerchantSkip", method = RequestMethod.GET)
+    public String  toMerchantSkip(final HttpServletRequest request, final HttpServletResponse response,final Model model) throws Exception{
+        String getQueryString = "";
+        if(request.getQueryString() == null){
+            getQueryString="";
+        }else{
+            getQueryString = request.getQueryString();
+        }
+        String[] arr = getQueryString.split("&");
+        String code="";
+        String state="";
+        for(int i =0;i<arr.length;i++){
+            if("code".equals(arr[i].split("=")[0])){
+                code = arr[i].split("=")[1];
+            }
+            if("state".equals(arr[i].split("=")[0])){
+                state = arr[i].split("=")[1];
+            }
+        }
+        Map<String,String> ret = WxPubUtil.getOpenid(code);
+        model.addAttribute("openId", ret.get("openid"));
+        String tempUrl = URLDecoder.decode(state, "UTF-8");
+        String redirectUrl = URLDecoder.decode(tempUrl,"UTF-8");
+        String finalRedirectUrl = "http://"+ApplicationConsts.getApplicationConfig().domain()+"/code/scanCode?"+redirectUrl;
+        return "redirect:"+finalRedirectUrl;
+    }
 
     /**
      * 商户登录发送验证码
@@ -235,11 +249,16 @@ public class WxPubController extends BaseController {
     @ResponseBody
     @RequestMapping(value = "geBankInfo", method = RequestMethod.POST)
     public CommonResponse geBankInfo(final HttpServletRequest request, final HttpServletResponse response) {
-        //之所以能调到此页面，说明状态已经改过，在前面已经拦截
+        if(!super.isLogin(request)){
+            return CommonResponse.simpleResponse(-2, "未登录");
+        }
         Optional<UserInfo> userInfoOptional = userInfoService.selectByOpenId(super.getOpenId(request));
-        Optional<MerchantInfo> merchantInfo = this.merchantInfoService.selectById(userInfoOptional.get().getMerchantId());
+        if(!userInfoOptional.isPresent()){
+            return CommonResponse.simpleResponse(-2, "未登录");
+        }
+        Optional<MerchantInfo> merchantInfo = merchantInfoService.selectById(userInfoOptional.get().getMerchantId());
         if(!merchantInfo.isPresent()){
-            return CommonResponse.simpleResponse(-1, "商户信息异常，请重新登录");
+            return CommonResponse.simpleResponse(-2, "未登录");
         }
         Map map = new HashMap();
         map.put("bankBin",merchantInfo.get().getBankBin());
@@ -257,7 +276,7 @@ public class WxPubController extends BaseController {
      */
     @ResponseBody
     @RequestMapping(value = "getOrderRecord", method = RequestMethod.POST)
-    public CommonResponse getOrderRecord(final HttpServletRequest request, final HttpServletResponse response, @RequestBody final RequestOrderRecord req) {
+    public CommonResponse getOrderRecord(final HttpServletRequest request, final HttpServletResponse response, @RequestBody final RequestOrderRecord req) throws ParseException {
         if(!super.isLogin(request)){
             return CommonResponse.simpleResponse(-2, "未登录");
         }
@@ -275,40 +294,16 @@ public class WxPubController extends BaseController {
         req.setMerchantId(merchantInfo.get().getId());
         final PageModel<OrderRecord> pageModel = new PageModel<>(req.getPage(), req.getSize());
         req.setOffset(pageModel.getFirstIndex());
+        if(req.getEndDate()!=null&&!"".equals(req.getEndDate())){
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            Date dt = sdf.parse(req.getEndDate());
+            Calendar rightNow = Calendar.getInstance();
+            rightNow.setTime(dt);
+            rightNow.add(Calendar.DATE, 1);
+            req.setEndDate(sdf.format(rightNow.getTime()));
+        }
         List<OrderRecord> orderList =  orderRecordService.selectAllOrderRecordByPage(req);
         long count = orderRecordService.selectAllOrderRecordCount(req);
-        pageModel.setCount(count);
-        pageModel.setRecords(orderList);
-        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", pageModel);
-    }
-
-    /**
-     * 余额明细
-     *
-     * @return
-     */
-    @ResponseBody
-    @RequestMapping(value = "getChargeRecord", method = RequestMethod.POST)
-    public CommonResponse getChargeRecord(final HttpServletRequest request, final HttpServletResponse response, @RequestBody final RequestOrderRecord req) {
-        if(!super.isLogin(request)){
-            return CommonResponse.simpleResponse(-2, "未登录");
-        }
-        Optional<UserInfo> userInfoOptional = userInfoService.selectByOpenId(super.getOpenId(request));
-        if(!userInfoOptional.isPresent()){
-            return CommonResponse.simpleResponse(-2, "未登录");
-        }
-        Optional<MerchantInfo> merchantInfo = merchantInfoService.selectById(userInfoOptional.get().getMerchantId());
-        if(!merchantInfo.isPresent()){
-            return CommonResponse.simpleResponse(-2, "未登录");
-        }
-        if(merchantInfo.get().getStatus()!=EnumMerchantStatus.PASSED.getId()){
-            return CommonResponse.simpleResponse(-2, "未审核通过");
-        }
-        req.setMerchantId(merchantInfo.get().getId());
-        final PageModel<OrderRecord> pageModel = new PageModel<>(req.getPage(), req.getSize());
-        req.setOffset(pageModel.getFirstIndex());
-        List<OrderRecord> orderList =  orderRecordService.selectBalanceByPage(req);
-        long count = orderRecordService.selectBalanceCount(req.getMerchantId());
         pageModel.setCount(count);
         pageModel.setRecords(orderList);
         return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", pageModel);
@@ -343,8 +338,6 @@ public class WxPubController extends BaseController {
         if (1 != checkResult.getLeft()) {
             return CommonResponse.simpleResponse(-1, checkResult.getRight());
         }
-        log.info("OpenId是{}",super.getOpenId(request));
-
         MerchantInfo mi = new MerchantInfo();
         mi.setStatus(EnumMerchantStatus.INIT.getId());
         mi.setMobile(MerchantSupport.encryptMobile(mobile));
@@ -354,12 +347,12 @@ public class WxPubController extends BaseController {
             mi.setCode(loginRequest.getQrCode());
             merchantInfoService.regByCode(mi);
             Optional<UserInfo> ui = userInfoService.selectByOpenId(super.getOpenId(request));
-            if(ui.isPresent()){//存在
+            if(ui.isPresent()){
                 userInfoService.uploadUserInfo(mi.getId(),MerchantSupport.encryptMobile(mobile),ui.get().getId());
-            }else{//不存在，新增，添加cookie
+            }else{
                 UserInfo uo = new UserInfo();
                 uo.setOpenId(super.getOpenId(request));
-                uo.setStatus(0);
+                uo.setStatus(EnumCommonStatus.NORMAL.getId());
                 uo.setMobile(MerchantSupport.encryptMobile(mobile));
                 uo.setMerchantId(mi.getId());
                 userInfoService.insertUserInfo(uo);
@@ -368,12 +361,12 @@ public class WxPubController extends BaseController {
             log.info("普通注册");
             merchantInfoService.regByWxPub(mi);
             Optional<UserInfo> userInfoOptional = userInfoService.selectByOpenId(super.getOpenId(request));
-            if(userInfoOptional.isPresent()){//存在
+            if(userInfoOptional.isPresent()){
                 userInfoService.uploadUserInfo(mi.getId(),MerchantSupport.encryptMobile(mobile),userInfoOptional.get().getId());
-            }else{//不存在，新增，添加cookie
+            }else{
                 UserInfo uo = new UserInfo();
                 uo.setOpenId(super.getOpenId(request));
-                uo.setStatus(0);
+                uo.setStatus(EnumCommonStatus.NORMAL.getId());
                 uo.setMobile(MerchantSupport.encryptMobile(mobile));
                 uo.setMerchantId(mi.getId());
                 userInfoService.insertUserInfo(uo);
@@ -470,22 +463,18 @@ public class WxPubController extends BaseController {
     public CommonResponse withdraw(final HttpServletRequest request, final HttpServletResponse response, @RequestBody final OtherPayRequest otherPayRequest) {
         final String verifyCode = otherPayRequest.getCode();
         if(!super.isLogin(request)){
-            log.info("提现cookie找不到");
             return CommonResponse.simpleResponse(-2, "未登录");
         }
         Optional<UserInfo> userInfoOptional = userInfoService.selectByOpenId(super.getOpenId(request));
         if(!userInfoOptional.isPresent()){
-            log.info("提现用户找不到");
-            return CommonResponse.simpleResponse(-2, "登录异常，请重新登录");
+            return CommonResponse.simpleResponse(-2, "未登录");
         }
-        Optional<MerchantInfo> merchantInfo = this.merchantInfoService.selectById(userInfoOptional.get().getMerchantId());
+        Optional<MerchantInfo> merchantInfo = merchantInfoService.selectById(userInfoOptional.get().getMerchantId());
         if(!merchantInfo.isPresent()){
-            log.info("提现商户找不到");
-            return CommonResponse.simpleResponse(-2, "登录异常，请重新登录");
+            return CommonResponse.simpleResponse(-2, "未登录");
         }
-        if(merchantInfo.get().getStatus()!=3){
-            log.info("注册信息不完善");
-            return CommonResponse.simpleResponse(-2, "商户信息不完善");
+        if(merchantInfo.get().getStatus()!=EnumMerchantStatus.PASSED.getId()){
+            return CommonResponse.simpleResponse(-2, "未审核通过");
         }
         final Pair<Integer, String> checkResult =
                 this.smsAuthService.checkVerifyCode(MerchantSupport.decryptMobile(merchantInfo.get().getReserveMobile()), verifyCode, EnumVerificationCodeType.WITH_DRAW);
@@ -500,53 +489,7 @@ public class WxPubController extends BaseController {
         }
     }
 
-    /**
-     * 通过审核
-     * @param request
-     * @param response
-     * @param req
-     * @return
-     */
-    @ResponseBody
-    @RequestMapping(value = "checkWithdraw", method = RequestMethod.POST)
-    public CommonResponse checkWithdraw(final HttpServletRequest request, final HttpServletResponse response, @RequestBody final WithDrawRequest req) {
-        JSONObject jo = orderRecordService.checkWithdraw(req);
-        return CommonResponse.simpleResponse(jo.getInt("code"), jo.getString("message"));
-    }
 
-    /**
-     * 提现查询
-     *
-     * @return
-     */
-//    @ResponseBody
-//    @RequestMapping(value = "checkOtherPay", method = RequestMethod.POST)
-//    public CommonResponse checkOtherPay(final HttpServletRequest request, final HttpServletResponse response) {
-//        if(!super.isLogin(request)){
-//            return CommonResponse.simpleResponse(-2, "未登录");
-//        }
-//        Optional<UserInfo> userInfoOptional = userInfoService.selectById(super.getUserId(request));
-//        if(!userInfoOptional.isPresent()){
-//            return CommonResponse.simpleResponse(-2, "未登录");
-//        }
-//        Optional<MerchantInfo> merchantInfo = merchantInfoService.selectById(userInfoOptional.get().getMerchantId());
-//        if(!merchantInfo.isPresent()){
-//            return CommonResponse.simpleResponse(-2, "未登录");
-//        }
-//        if(merchantInfo.get().getStatus()!=EnumMerchantStatus.PASSED.getId()){
-//            return CommonResponse.simpleResponse(-2, "未审核通过");
-//        }
-//        AccountInfo accountInfo = accountInfoService.selectByPrimaryKey(merchantInfo.get().getAccountId());
-//        if(accountInfo==null){
-//            return CommonResponse.simpleResponse(-1, "账户信息有误");
-//        }
-//        Pair<BigDecimal, BigDecimal> pair = shallProfitDetailService.withdrawParams(merchantInfo.get().getId());
-//        int compareResult = accountInfo.getAvailable().compareTo(pair.getLeft());
-//        if(compareResult!=1){
-//            return CommonResponse.simpleResponse(-1, "提现金额至少"+pair.getLeft()+"元");
-//        }
-//        return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "查询成功");
-//    }
 
     /**
      * 支付回调

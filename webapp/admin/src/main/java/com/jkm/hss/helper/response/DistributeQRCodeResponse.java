@@ -3,6 +3,7 @@ package com.jkm.hss.helper.response;
 import lombok.Data;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by yulong.zhang on 2016/11/25.
@@ -38,13 +39,18 @@ public class DistributeQRCodeResponse {
      */
     private int count;
 
-    /**
-     * 开始码段
-     */
-    private String startCode;
+    private List<Code> codes;
 
-    /**
-     * 结束码段
-     */
-    private String endCode;
+    @Data
+    public class Code{
+        /**
+         * 开始码段
+         */
+        private String startCode;
+
+        /**
+         * 结束码段
+         */
+        private String endCode;
+    }
 }

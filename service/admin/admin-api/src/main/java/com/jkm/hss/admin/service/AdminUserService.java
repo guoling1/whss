@@ -8,6 +8,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by huangwei on 6/3/15.
@@ -83,15 +84,14 @@ public interface AdminUserService {
      * @param count
      * @return
      */
-    Triple<Integer, String, QRCode> distributeQRCode(long adminId, long firstLevelDealerId, int count);
+    Triple<Integer, String, List<Pair<QRCode, QRCode>>> distributeQRCode(long adminId, long firstLevelDealerId, int count);
 
     /**
      * 给一级代理商分配指定范围的码段
      *
-     * @param adminId
      * @param dealerId
      * @param startCode
      * @param endCode
      */
-    void distributeRangeQRCode(long adminId, long dealerId, String startCode, String endCode);
+    List<Pair<QRCode, QRCode>> distributeRangeQRCode(long dealerId, String startCode, String endCode);
 }

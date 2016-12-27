@@ -18,6 +18,7 @@ import com.jkm.hss.merchant.helper.MerchantSupport;
 import com.jkm.hss.merchant.helper.WxConstants;
 import com.jkm.hss.merchant.helper.WxPubUtil;
 import com.jkm.hss.merchant.service.*;
+import com.jkm.hss.product.enums.EnumPayChannelSign;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -175,6 +176,7 @@ public class LoginController extends BaseController {
                         isRedirect= true;
                     }
                 }else{
+                    CookieUtil.deleteCookie(response,ApplicationConsts.MERCHANT_COOKIE_KEY,ApplicationConsts.getApplicationConfig().domain());
                     url = "/sqb/reg";
                     isRedirect= true;
                 }
@@ -237,6 +239,7 @@ public class LoginController extends BaseController {
                         isRedirect= true;
                     }
                 }else{
+                    CookieUtil.deleteCookie(response,ApplicationConsts.MERCHANT_COOKIE_KEY,ApplicationConsts.getApplicationConfig().domain());
                     isRedirect= true;
                     url = "/sqb/reg";
                 }
@@ -254,7 +257,20 @@ public class LoginController extends BaseController {
     }
 
     /**
-     * 展示审核状态
+     * 扫码支付用户扫未审核通过的商户二维码页面
+     * @param request
+     * @param response
+     * @param model
+     * @return
+     * @throws IOException
+     */
+    @RequestMapping(value = "/unFinishedPrompt",method = RequestMethod.GET)
+    public String notLoggedPrompt(final HttpServletRequest request, final HttpServletResponse response, final Model model)throws IOException {
+        return "/unFinishedPrompt";
+    }
+
+    /**
+     * 审核状态页面
      * @param request
      * @param response
      * @param model
@@ -387,17 +403,22 @@ public class LoginController extends BaseController {
      */
     @RequestMapping(value = "/collection", method = RequestMethod.GET)
     public String collection(final HttpServletRequest request, final HttpServletResponse response, final Model model) throws IOException {
-        String merchantName = "";
-        Optional<UserInfo> userInfoOptional = userInfoService.selectByOpenId(super.getOpenId(request));
-        if(userInfoOptional.isPresent()){
-            Optional<MerchantInfo> merchantInfo = this.merchantInfoService.selectById(userInfoOptional.get().getMerchantId());
-            if(merchantInfo.isPresent()){
-                merchantName = merchantInfo.get().getMerchantName();
+        if(!super.isLogin(request)){
+            model.addAttribute("merchantName", "");
+        }else{
+            String merchantName = "";
+            Optional<UserInfo> userInfoOptional = userInfoService.selectByOpenId(super.getOpenId(request));
+            if(userInfoOptional.isPresent()){
+                Optional<MerchantInfo> merchantInfo = this.merchantInfoService.selectById(userInfoOptional.get().getMerchantId());
+                if(merchantInfo.isPresent()){
+                    merchantName = merchantInfo.get().getMerchantName();
+                }
             }
+            model.addAttribute("merchantName", merchantName);
         }
-        model.addAttribute("merchantName", merchantName);
         return "/collection";
     }
+
     /**
      * 支付成功页面
      * @param request
@@ -414,12 +435,33 @@ public class LoginController extends BaseController {
         return "/success";
     }
 
+    /**
+     * 扫固定码微信支付页面
+     * @param request
+     * @param response
+     * @param model
+     * @param merchantId
+     * @param name
+     * @return
+     * @throws IOException
+     */
     @RequestMapping(value = "/paymentWx", method = RequestMethod.GET)
     public String paymentWx(final HttpServletRequest request, final HttpServletResponse response, final Model model,@RequestParam(value = "merchantId", required = true) long merchantId,@RequestParam(value = "name") String name) throws IOException {
         model.addAttribute("mid", merchantId);
         model.addAttribute("merchantName", name);
         return "/payment-wx";
     }
+
+    /**
+     * 扫固定码支付宝支付页面
+     * @param request
+     * @param response
+     * @param model
+     * @param merchantId
+     * @param name
+     * @return
+     * @throws IOException
+     */
     @RequestMapping(value = "/paymentZfb", method = RequestMethod.GET)
     public String paymentZfb(final HttpServletRequest request, final HttpServletResponse response, final Model model,@RequestParam(value = "merchantId", required = true) long merchantId,@RequestParam(value = "name") String name) throws IOException {
         model.addAttribute("mid", merchantId);
@@ -504,11 +546,26 @@ public class LoginController extends BaseController {
 //        }
 //    }
 
+    /**
+     * 业务块（火车票跳转页面）
+     * @param request
+     * @param response
+     * @return
+     * @throws IOException
+     */
     @RequestMapping(value = "/ticket", method = RequestMethod.GET)
     public String ticket(final HttpServletRequest request, final HttpServletResponse response) throws IOException {
         return "redirect:"+ WxConstants.WEIXIN_TICKET_USERINFO;
     }
 
+    /**
+     * 交易记录页面
+     * @param request
+     * @param response
+     * @param model
+     * @return
+     * @throws IOException
+     */
     @RequestMapping(value = "/tradeRecord", method = RequestMethod.GET)
     public String tradRecord(final HttpServletRequest request, final HttpServletResponse response,final Model model) throws IOException {
         boolean isRedirect = false;
@@ -539,8 +596,9 @@ public class LoginController extends BaseController {
                         url = "/tradeRecord";
                     }
                 }else{
-                    url = "/sqb/reg";
+                    CookieUtil.deleteCookie(response,ApplicationConsts.MERCHANT_COOKIE_KEY,ApplicationConsts.getApplicationConfig().domain());
                     isRedirect= true;
+                    url = "/sqb/reg";
                 }
             }else{
                 CookieUtil.deleteCookie(response,ApplicationConsts.MERCHANT_COOKIE_KEY,ApplicationConsts.getApplicationConfig().domain());
@@ -555,6 +613,14 @@ public class LoginController extends BaseController {
         }
     }
 
+    /**
+     * 我的银行卡
+     * @param request
+     * @param response
+     * @param model
+     * @return
+     * @throws IOException
+     */
     @RequestMapping(value = "/bank", method = RequestMethod.GET)
     public String bank(final HttpServletRequest request, final HttpServletResponse response,final Model model) throws IOException {
         boolean isRedirect = false;
@@ -589,8 +655,9 @@ public class LoginController extends BaseController {
                         url = "/bank";
                     }
                 }else{
-                    url = "/sqb/reg";
+                    CookieUtil.deleteCookie(response,ApplicationConsts.MERCHANT_COOKIE_KEY,ApplicationConsts.getApplicationConfig().domain());
                     isRedirect= true;
+                    url = "/sqb/reg";
                 }
             }else{
                 CookieUtil.deleteCookie(response,ApplicationConsts.MERCHANT_COOKIE_KEY,ApplicationConsts.getApplicationConfig().domain());
@@ -676,10 +743,10 @@ public class LoginController extends BaseController {
             model.addAttribute("createTime",time.format(orderRecord.getCreateTime()));
             Pair<String,String> pair = payOf(0,orderRecord.getPayResult());
             model.addAttribute("status",pair.getRight());
-            if(orderRecord.getPayChannel()==101||orderRecord.getPayChannel()==102){
+            if(orderRecord.getPayChannel()== EnumPayChannelSign.YG_WEIXIN.getId()||orderRecord.getPayChannel()==EnumPayChannelSign.YG_ZHIFUBAO.getId()){
                 model.addAttribute("payWay","扫码支付");
             }
-            if(orderRecord.getPayChannel()==103){
+            if(orderRecord.getPayChannel()==EnumPayChannelSign.YG_YINLIAN.getId()){
                 model.addAttribute("payWay","快捷支付");
             }
             Optional<MerchantInfo> merchantInfoOptional = merchantInfoService.selectById(orderRecord.getMerchantId());

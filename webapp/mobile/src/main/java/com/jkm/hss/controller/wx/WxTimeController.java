@@ -35,8 +35,8 @@ public class WxTimeController extends BaseController {
      */
     @RequestMapping(value = "regularlyCheckPayResult", method = RequestMethod.POST)
     public void regularlyCheckPayResult() {
-        log.info("开始查询退款状态。。。");
+        log.info("开始查询支付状态。。。");
         orderRecordService.regularlyCheckPayResult();
-        log.info("结束查询退款状态。。。");
+        log.info("结束查询支付状态。。。");
     }
 }

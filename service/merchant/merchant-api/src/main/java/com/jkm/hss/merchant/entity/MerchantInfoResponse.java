@@ -136,7 +136,7 @@ public class MerchantInfoResponse {
     /**
      * 商户状态
      */
-    private int status;
+    private Integer status;
 
     /**
      * code

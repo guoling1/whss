@@ -3,7 +3,6 @@ package com.jkm.hss.dealer.service.impl;
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.jkm.base.common.entity.PageModel;
@@ -32,7 +31,6 @@ import com.jkm.hss.dealer.service.CompanyProfitDetailService;
 import com.jkm.hss.dealer.service.DealerRateService;
 import com.jkm.hss.dealer.service.DealerService;
 import com.jkm.hss.dealer.service.ShallProfitDetailService;
-import com.jkm.hss.merchant.entity.AccountInfo;
 import com.jkm.hss.merchant.entity.MerchantInfo;
 import com.jkm.hss.merchant.entity.OrderRecord;
 import com.jkm.hss.merchant.service.AccountInfoService;
@@ -47,18 +45,13 @@ import com.jkm.hss.product.servcie.ProductService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.tuple.Pair;
-import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.util.Date;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by yulong.zhang on 2016/11/23.
@@ -473,6 +466,7 @@ public class DealerServiceImpl implements DealerService {
         dealer.setAccountId(accountId);
         dealer.setMobile(request.getMobile());
         dealer.setProxyName(request.getName());
+        dealer.setBankName(request.getBankName());
         dealer.setBankAccountName(request.getBankAccountName());
         dealer.setBelongArea(request.getBelongArea());
         dealer.setLevel(EnumDealerLevel.SECOND.getId());
@@ -636,31 +630,44 @@ public class DealerServiceImpl implements DealerService {
      *
      * @param dealerId  一级代理商id
      * @param toDealerId  码段要分配给代理商的id
-     * @param count  个数
+     * @param startCode  开始二维码
+     * @param endCode  结束二维码
      * @return
      */
     @Override
     @Transactional
-    public DistributeQRCodeRecord distributeQRCode(final long dealerId, final long toDealerId, final int count) {
-        final int unDistributeCount = this.qrCodeService.getUnDistributeCodeCountByFirstLevelDealerId(dealerId);
-        Preconditions.checkState(unDistributeCount >= count, "未分配的码段个数小于要分配的个数");
-        final List<QRCode> qrCodeList = this.qrCodeService.getUnDistributeCodeByFirstLevelDealerId(dealerId, count);
-        final DistributeQRCodeRecord distributeQRCodeRecord = new DistributeQRCodeRecord();
-        distributeQRCodeRecord.setFirstLevelDealerId(dealerId);
-        distributeQRCodeRecord.setCount(count);
-        distributeQRCodeRecord.setStartCode(qrCodeList.get(0).getCode());
-        distributeQRCodeRecord.setEndCode(qrCodeList.get(qrCodeList.size() - 1).getCode());
-        if (dealerId == toDealerId) {
-            final int markCount = this.qrCodeService.markAsDistribute(dealerId, count);
-            Preconditions.checkState(markCount == count, "一级代理商[{}]分配给自己码段出现数量异常", dealerId);
-        } else {
-            distributeQRCodeRecord.setSecondLevelDealerId(toDealerId);
-            final int markCount = this.qrCodeService.markAsDistribute2(dealerId, toDealerId, count);
-            Preconditions.checkState(markCount == count, "一级代理商[{}]分配给二级代理商[{}]码段出现数量异常", dealerId, toDealerId);
+    public List<DistributeQRCodeRecord> distributeQRCode(final long dealerId, final long toDealerId,
+                                                         final String startCode, final String endCode) {
+        final List<DistributeQRCodeRecord> records = new ArrayList<>();
+        final List<QRCode> qrCodeList = this.qrCodeService.getUnDistributeCodeByDealerIdAndRangeCode(dealerId, startCode, endCode);
+        if (CollectionUtils.isEmpty(qrCodeList)) {
+            return records;
         }
-        this.distributeQRCodeRecordService.add(distributeQRCodeRecord);
-        final Optional<DistributeQRCodeRecord> recordOptional = this.distributeQRCodeRecordService.getById(distributeQRCodeRecord.getId());
-        return recordOptional.get();
+        final List<Long> qrCodeIds = Lists.transform(qrCodeList, new Function<QRCode, Long>() {
+            @Override
+            public Long apply(QRCode input) {
+                return input.getId();
+            }
+        });
+        if (dealerId == toDealerId) {
+            this.qrCodeService.markAsDistribute(qrCodeIds);
+        } else {
+            this.qrCodeService.markAsDistribute2(qrCodeIds, toDealerId);
+        }
+        final List<Pair<QRCode, QRCode>> pairQRCodeList = this.qrCodeService.getPairQRCodeList(qrCodeList);
+        for (Pair<QRCode, QRCode> pair : pairQRCodeList) {
+            final QRCode left = pair.getLeft();
+            final QRCode right = pair.getRight();
+            final DistributeQRCodeRecord distributeQRCodeRecord = new DistributeQRCodeRecord();
+            distributeQRCodeRecord.setFirstLevelDealerId(dealerId);
+            distributeQRCodeRecord.setSecondLevelDealerId(dealerId == toDealerId ? 0 : toDealerId);
+            distributeQRCodeRecord.setCount((int) (Long.valueOf(right.getCode()) - Long.valueOf(left.getCode()) + 1));
+            distributeQRCodeRecord.setStartCode(left.getCode());
+            distributeQRCodeRecord.setEndCode(right.getCode());
+            records.add(distributeQRCodeRecord);
+            this.distributeQRCodeRecordService.add(distributeQRCodeRecord);
+        }
+        return records;
     }
 
     /**
@@ -672,6 +679,35 @@ public class DealerServiceImpl implements DealerService {
     @Override
     public long getUnDistributeCodeCount(final long dealerId) {
         return this.qrCodeService.getUnDistributeCodeCountByFirstLevelDealerId(dealerId);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param dealerId
+     * @return
+     */
+    @Override
+    public List<Pair<QRCode, QRCode>> getUnDistributeCode(long dealerId) {
+        final List<QRCode> qrCodes = this.qrCodeService.getUnDistributeCodeByFirstLevelDealerId(dealerId);
+        if (CollectionUtils.isEmpty(qrCodes)) {
+            return Collections.emptyList();
+        }
+        final List<Pair<QRCode, QRCode>> pairs = this.qrCodeService.getPairQRCodeList(qrCodes);
+        return pairs;
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param startCode
+     * @param endCode
+     * @param dealerId
+     * @return
+     */
+    @Override
+    public int getUnDistributeCodeCountByRangeCode(final String startCode, final String endCode, final long dealerId) {
+        return this.qrCodeService.getUnDistributeCodeCountByDealerIdAndRangeCode(startCode, endCode, dealerId);
     }
 
     /**
@@ -702,6 +738,7 @@ public class DealerServiceImpl implements DealerService {
         dealer.setMobile(firstLevelDealerAddRequest.getMobile());
         dealer.setProxyName(firstLevelDealerAddRequest.getName());
         dealer.setBankAccountName(firstLevelDealerAddRequest.getBankAccountName());
+        dealer.setBankName(firstLevelDealerAddRequest.getBankName());
         dealer.setBelongArea(firstLevelDealerAddRequest.getBelongArea());
         dealer.setLevel(EnumDealerLevel.FIRST.getId());
         dealer.setSettleBankCard(DealerSupport.encryptBankCard(firstLevelDealerAddRequest.getBankCard()));

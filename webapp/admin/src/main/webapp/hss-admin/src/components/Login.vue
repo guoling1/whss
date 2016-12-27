@@ -13,7 +13,7 @@
         <input type="password" class="ipt" placeholder="请输入密码" v-model="password">
       </div>
 
-      <div class="submit" @click="loginQ">登录</div>
+      <div class="submit" @click="submit">登录</div>
     </div>
     <message></message>
   </div>
@@ -38,7 +38,7 @@
       this.$store.commit('LOGIN_SHOW');
     },
     methods: {
-      loginQ: function () {
+      submit: function () {
         this.$http.post('/admin/user/login', {
           username: this.$data.username,
           password: this.$data.password
@@ -46,7 +46,9 @@
           this.$store.commit('LOGIN_HIDE');
           this.$router.push({path: '/admin/record/deal'})
         }, function (err) {
-          console.log(err);
+          this.$store.commit('MESSAGE_ACCORD_SHOW', {
+            text: err.statusMessage
+          })
         });
       }
     },

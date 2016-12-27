@@ -1,7 +1,7 @@
 <template lang="html">
   <div id="agentList">
-    <h1>代理商列表</h1>
-
+    <!--<h1>代理商列表</h1>-->
+    <div style="padding: 8px 30px; background: rgb(243, 156, 18); z-index: 999999; font-size: 22px; font-weight: 600;margin-bottom: 15px;    color: #fff;">代理商列表</div>
     <div class="col-md-12">
       <div class="box box-success box-solid">
         <div class="box-header with-border">
@@ -102,7 +102,7 @@
       <!-- /.box -->
     </div>
 
-    <div class="btn btn-primary" @click="create">
+    <div class="btn btn-primary" @click="create" style="margin-left: 15px">
       新增代理商
     </div>
   </div>
@@ -141,7 +141,7 @@
           console.log(this.$data)
           var str='',
             page=document.getElementById('page');
-          str+='<li class="paginate_button previous disabled" id="example2_previous"><a href="#" aria-controls="example2" data-dt-idx="0" tabindex="0">Previous</a></li>'
+          str+='<li class="paginate_button previous disabled" id="example2_previous"><a href="#" aria-controls="example2" data-dt-idx="0" tabindex="0">上一页</a></li>'
           for (var i=1; i<=this.$data.total;i++){
             if(i==res.data.pageNO){
               str+='<li class="paginate_button active"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">'+i+'</a></li></li>';
@@ -149,7 +149,7 @@
             }
             str+='<li class="paginate_button"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">'+i+'</a></li></li>'
           }
-          str+='<li class="paginate_button next" id="example2_next"><a href="#" aria-controls="example2" data-dt-idx="7" tabindex="0">Next</a></li>'
+          str+='<li class="paginate_button next" id="example2_next"><a href="#" aria-controls="example2" data-dt-idx="7" tabindex="0">下一页</a></li>'
           page.innerHTML=str;
         }, function (err) {
           this.$store.commit('MESSAGE_ACCORD_SHOW', {
@@ -163,14 +163,14 @@
         var tar = e.target||e.srcElement,
           tarInn = tar.innerHTML,
           n = this.$data.pageNo;
-        if(tarInn == 'Previous'){
+        if(tarInn == '上一页'){
           if(n == 1){
             tar.parentNode.className+=' disabled'
             return;
           }
           n--;
         }
-        if(tarInn == 'Next'){
+        if(tarInn == '下一页'){
           if(n == this.$data.total){
             tar.parentNode.className+=' disabled'
             return;
@@ -195,7 +195,7 @@
             this.$data.pageNO = res.data.pageNO;
             var str='',
               page=document.getElementById('page');
-            str+='<li class="paginate_button previous disabled" id="example2_previous"><a href="#" aria-controls="example2" data-dt-idx="0" tabindex="0">Previous</a></li>'
+            str+='<li class="paginate_button previous disabled" id="example2_previous"><a href="#" aria-controls="example2" data-dt-idx="0" tabindex="0">上一页</a></li>'
             for (var i=1; i<=this.$data.total;i++){
               if(i==res.data.pageNO){
                 str+='<li class="paginate_button active"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">'+i+'</a></li></li>';
@@ -203,7 +203,7 @@
               }
               str+='<li class="paginate_button"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">'+i+'</a></li></li>'
             }
-            str+='<li class="paginate_button next" id="example2_next"><a href="#" aria-controls="example2" data-dt-idx="7" tabindex="0">Next</a></li>'
+            str+='<li class="paginate_button next" id="example2_next"><a href="#" aria-controls="example2" data-dt-idx="7" tabindex="0">下一页</a></li>'
             page.innerHTML=str;
           }, function (err) {
             this.$store.commit('MESSAGE_ACCORD_SHOW', {
@@ -234,7 +234,7 @@
             console.log(this.$data)
             var str='',
               page=document.getElementById('page');
-            str+='<li class="paginate_button previous disabled" id="example2_previous"><a href="#" aria-controls="example2" data-dt-idx="0" tabindex="0">Previous</a></li>'
+            str+='<li class="paginate_button previous disabled" id="example2_previous"><a href="#" aria-controls="example2" data-dt-idx="0" tabindex="0">上一页</a></li>'
             for (var i=1; i<=this.$data.pageSize;i++){
               if(i==res.data.pageNO){
                 str+='<li class="paginate_button active"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">'+i+'</a></li></li>';
@@ -242,7 +242,7 @@
               }
               str+='<li class="paginate_button"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">'+i+'</a></li></li>'
             }
-            str+='<li class="paginate_button next" id="example2_next"><a href="#" aria-controls="example2" data-dt-idx="7" tabindex="0">Next</a></li>'
+            str+='<li class="paginate_button next" id="example2_next"><a href="#" aria-controls="example2" data-dt-idx="7" tabindex="0">下一页</a></li>'
             page.innerHTML=str;
           }, function (err) {
             this.$store.commit('MESSAGE_ACCORD_SHOW', {
