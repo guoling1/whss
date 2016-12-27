@@ -1,6 +1,9 @@
 <template lang="html">
   <div id="dale">
-    <div style="padding: 8px 30px; background: rgb(243, 156, 18); z-index: 999999; font-size: 22px; font-weight: 600;margin-bottom: 15px;color: #fff;">交易查询</div>
+    <div style="padding: 8px 30px; background: rgb(243, 156, 18); z-index: 999999; font-size: 22px; font-weight: 600;margin-bottom: 15px;color: #fff;">
+      交易查询
+      <div class="btn btn-primary pull-right" @click="refresh()">刷新</div>
+    </div>
     <div class="col-md-12">
       <!--筛选-->
       <div class="box box-success box-solid">
@@ -229,6 +232,9 @@
         })
     },
     methods: {
+      refresh: function () {
+        location.reload()
+      },
       //分页器
       bindEvent: function (e) {
         e = e||window.event;
