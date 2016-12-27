@@ -2,7 +2,7 @@ package com.jkm.hss.merchant.helper;
 
 public class WxConstants {
     public final static String DOMAIN = "hss.qianbaojiajia.com";
-    public final static String PAY_DOMAIN = "192.168.1.20:8082";
+//    public final static String PAY_DOMAIN = "192.168.1.20:8082";
     /**
      * 微信公众账号
      */
