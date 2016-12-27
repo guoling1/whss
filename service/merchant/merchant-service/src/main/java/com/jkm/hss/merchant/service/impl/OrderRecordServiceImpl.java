@@ -523,7 +523,7 @@ public class OrderRecordServiceImpl implements OrderRecordService {
         paramsMap.put("accountNumber", MerchantSupport.decryptBankCard(merchantInfoOptional.get().getBankNo()));
         paramsMap.put("note", "提现");
         paramsMap.put("appId","wap_hss");
-        paramsMap.put("notifyUrl", WxConstants.DOMAIN+"/call/otherPayBack");     //后台通知url
+        paramsMap.put("notifyUrl", WxConstants.PAY_DOMAIN+"/call/otherPayBack");     //后台通知url
         paramsMap.put("idCard", MerchantSupport.decryptIdentity(merchantInfoOptional.get().getIdentity()));
         paramsMap.put("isCompay", EnumIsCompay.ToPrivate.getId());
         log.info("组装数据结束。。。,数据为{}",JSONObject.fromObject(paramsMap).toString());
@@ -640,7 +640,7 @@ public class OrderRecordServiceImpl implements OrderRecordService {
     public JSONObject PayOrder(TradeRequest req) {
         log.info("交易参数"+JSONObject.fromObject(req).toString());
         req.setBody("收款");
-        req.setNotifyUrl("http://"+WxConstants.DOMAIN+"/wx/payResult");
+        req.setNotifyUrl("http://"+WxConstants.PAY_DOMAIN+"/wx/payResult");
         JSONObject resultJo = new JSONObject();
         log.info("开始下单。。。");
         log.info("开始创建订单。。。");
@@ -660,7 +660,7 @@ public class OrderRecordServiceImpl implements OrderRecordService {
         orderRecord.setBody(req.getBody());
         orderRecord.setTradeType(EnumTradeType.DEAL.getId());
         orderRecord.setOrderId(orderId);
-        req.setReturnUrl("http://"+WxConstants.DOMAIN+"/sqb/success/"+new BigDecimal(req.getTotalFee())+"/"+orderId);
+        req.setReturnUrl("http://"+WxConstants.PAY_DOMAIN+"/sqb/success/"+new BigDecimal(req.getTotalFee())+"/"+orderId);
         try{
             orderRecordDao.insertSelective(orderRecord);
             log.info("结束创建订单。。。");
@@ -1009,7 +1009,7 @@ public class OrderRecordServiceImpl implements OrderRecordService {
                     paramsMap.put("accountNumber", MerchantSupport.decryptBankCard(merchantInfoOptional.get().getBankNo()));
                     paramsMap.put("note", "提现");
                     paramsMap.put("appId","wap_hss");
-                    paramsMap.put("notifyUrl", "http://"+WxConstants.DOMAIN+"/call/otherPayBack");     //后台通知url
+                    paramsMap.put("notifyUrl", "http://"+WxConstants.PAY_DOMAIN+"/call/otherPayBack");     //后台通知url
                     paramsMap.put("idCard", MerchantSupport.decryptIdentity(merchantInfoOptional.get().getIdentity()));
                     paramsMap.put("isCompay", EnumIsCompay.ToPrivate.getId());
                     log.info("组装数据结束。。。,数据为{}",JSONObject.fromObject(paramsMap).toString());
