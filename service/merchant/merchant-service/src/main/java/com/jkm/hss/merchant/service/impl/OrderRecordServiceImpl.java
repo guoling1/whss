@@ -13,7 +13,6 @@ import com.jkm.hss.merchant.enums.*;
 import com.jkm.hss.merchant.helper.MerchantConsts;
 import com.jkm.hss.merchant.helper.MerchantSupport;
 import com.jkm.hss.merchant.helper.SmPost;
-import com.jkm.hss.merchant.helper.WxConstants;
 import com.jkm.hss.merchant.helper.request.*;
 import com.jkm.hss.merchant.helper.response.DfQueryResponse;
 import com.jkm.hss.merchant.helper.response.DfmResponse;
@@ -2022,10 +2021,10 @@ public class OrderRecordServiceImpl implements OrderRecordService {
      */
     @Override
     @Transactional
-    public String downloadExcel(String baseUrl) {
+    public String downloadExcel(OrderListRequest req,String baseUrl) {
         final String tempDir = this.getTempDir();
         final File excelFile = new File(tempDir + File.separator + ".xls");
-        final ExcelSheetVO excelSheet = generateCodeExcelSheet(baseUrl);
+        final ExcelSheetVO excelSheet = generateCodeExcelSheet(req,baseUrl);
         final List<ExcelSheetVO> excelSheets = new ArrayList<>();
         excelSheets.add(excelSheet);
         FileOutputStream fileOutputStream = null;
@@ -2061,7 +2060,7 @@ public class OrderRecordServiceImpl implements OrderRecordService {
      * @param baseUrl
      * @return
      */
-    private ExcelSheetVO generateCodeExcelSheet(String baseUrl) {
+    private ExcelSheetVO generateCodeExcelSheet(OrderListRequest req,String baseUrl) {
         //查询数据
 //        List<String> payResults = PayOf(req.getPayResult());
 //        req.setPayResults(payResults);
@@ -2079,7 +2078,7 @@ public class OrderRecordServiceImpl implements OrderRecordService {
 //        map.put("settleStatus",req.getSettleStatus());
 //        map.put("offset",req.getOffset());
 //        map.put("size",req.getSize());
-        List<MerchantAndOrderRecord> list = orderRecordDao.selectOrderListTrade();
+        List<MerchantAndOrderRecord> list = orderRecordDao.selectOrderListTrade(req);
         final ExcelSheetVO excelSheetVO = new ExcelSheetVO();
         final List<List<String>> datas = new ArrayList<List<String>>();
         final ArrayList<String> heads = new ArrayList<>();

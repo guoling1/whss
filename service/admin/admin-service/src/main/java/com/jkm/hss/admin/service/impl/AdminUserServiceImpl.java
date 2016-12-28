@@ -188,14 +188,20 @@ public class AdminUserServiceImpl implements AdminUserService {
     }
 
     @Override
-    public CodeQueryResponse getProxyName(long merchantId) {
-        final CodeQueryResponse codeQueryResponse = this.qrCodeService.getProxyName(merchantId);
+    public CodeQueryResponse getProxyName(long firstLevelDealerId) {
+        final CodeQueryResponse codeQueryResponse = this.qrCodeService.getProxyName(firstLevelDealerId);
         return codeQueryResponse;
     }
 
     @Override
-    public CodeQueryResponse getProxyName1(long firstLevelDealerId) {
-        final CodeQueryResponse codeQueryResponse = this.qrCodeService.getProxyName1(firstLevelDealerId);
+    public CodeQueryResponse getProxyName1(long secondLevelDealerId) {
+        final CodeQueryResponse codeQueryResponse = this.qrCodeService.getProxyName1(secondLevelDealerId);
+        return codeQueryResponse;
+    }
+
+    @Override
+    public CodeQueryResponse getMerchantName(long merchantId) {
+        final CodeQueryResponse codeQueryResponse = this.qrCodeService.getMerchantName(merchantId);
         return codeQueryResponse;
     }
 

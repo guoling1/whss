@@ -90,7 +90,7 @@ public class OrderRecordController extends BaseController{
         long count = orderRecordService.selectOrderListCount(req);
         pageModel.setCount(count);
         pageModel.setRecords(orderList);
-        String downLoadExcel = downLoad();
+        String downLoadExcel = downLoad(req);
         pageModel.setExt(downLoadExcel);
         return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", pageModel);
     }
@@ -134,8 +134,8 @@ public class OrderRecordController extends BaseController{
      * 导出全部
      * @return
      */
-    private String downLoad(){
-        final String fileZip = this.orderRecordService.downloadExcel(ApplicationConsts.getApplicationConfig().ossBucke());
+    private String downLoad(@RequestBody OrderListRequest req){
+        final String fileZip = this.orderRecordService.downloadExcel(req,ApplicationConsts.getApplicationConfig().ossBucke());
 
         final ObjectMetadata meta = new ObjectMetadata();
         meta.setCacheControl("public, max-age=31536000");
@@ -158,38 +158,7 @@ public class OrderRecordController extends BaseController{
         return null;
     }
 
-    /**
-     * 导出 Excel
-     *
-     * @return
-     */
-//    @ResponseBody
-//    @RequestMapping(value = "downloadExcel", method = RequestMethod.POST)
-//    public CommonResponse downloadExcel() {
-//        final String fileZip = this.orderRecordService.downloadExcel(ApplicationConsts.getApplicationConfig().ossBucke());
-//
-//        final ObjectMetadata meta = new ObjectMetadata();
-//        meta.setCacheControl("public, max-age=31536000");
-//        meta.setExpirationTime(new DateTime().plusYears(1).toDate());
-//        meta.setContentType("application/x-xls");
-//        SimpleDateFormat sdf =   new SimpleDateFormat("yyyyMMdd");
-//        String nowDate = sdf.format(new Date());
-//        Date date = new Date();
-//        long nousedate =  date.getTime();
-//        String fileName = "hss/"+  nowDate + "/" + nousedate + RandomStringUtils.randomNumeric(5) +".xls";
-//        final Date expireDate = new Date(new Date().getTime() + 30 * 60 * 1000);
-//        URL url;
-//        try {
-//            ossClient.putObject(ApplicationConsts.getApplicationConfig().ossBucke(), fileName, new FileInputStream(new File(fileZip)), meta);
-//            url = ossClient.generatePresignedUrl(ApplicationConsts.getApplicationConfig().ossBucke(), fileName, expireDate);
-//        } catch (IOException e) {
-//            log.error("上传文件失败", e);
-//            return CommonResponse.simpleResponse(-1, "文件上传失败");
-//        }
-//        FileUtils.deleteQuietly(new File(fileZip));
-//        return CommonResponse.builder4MapResult(CommonResponse.SUCCESS_CODE, "success")
-//                .addParam("url", url.getHost() + url.getFile()).build();
-//    }
+
 
 
 }

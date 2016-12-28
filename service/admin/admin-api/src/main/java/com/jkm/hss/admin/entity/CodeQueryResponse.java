@@ -22,6 +22,11 @@ public class CodeQueryResponse extends BaseEntity {
     private String code;
 
     /**
+     * 所属金开门
+     */
+    private String jkm;
+
+    /**
      * 代理商级别
      */
     private int level;

@@ -216,22 +216,41 @@ public class AdminController extends BaseController {
     @RequestMapping(value = "/getCode", method = RequestMethod.POST)
     public CommonResponse getCode(@RequestBody CodeQueryRequest code) {
         CodeQueryResponse codeQueryResponse = adminUserService.getCode(code.getCode());
+
         if (codeQueryResponse.getActivateStatus()==2){
-            long merchantId = codeQueryResponse.getMerchantId();
-            CodeQueryResponse res = adminUserService.getProxyName(merchantId);
-            if (res==null){
-                return CommonResponse.simpleResponse(-1, "未查询到符合的商户。");
+
+            if (codeQueryResponse.getFirstLevelDealerId()==0){
+                String jkm="金开门";
+                codeQueryResponse.setJkm(jkm);
             }
-            codeQueryResponse.setMerchantName(res.getMerchantName());
-            if (res.getLevel()==1){
+            if (codeQueryResponse.getFirstLevelDealerId()>0){
+                CodeQueryResponse res = adminUserService.getProxyName(codeQueryResponse.getFirstLevelDealerId());
                 codeQueryResponse.setProxyName(res.getProxyName());
             }
-            if (res.getLevel()==2){
-                codeQueryResponse.setProxyName1(res.getProxyName());
-                long firstLevelDealerId = res.getFirstLevelDealerId();
-                CodeQueryResponse res1 =adminUserService.getProxyName1(firstLevelDealerId);
-                codeQueryResponse.setProxyName(res1.getProxyName());
+            if (codeQueryResponse.getSecondLevelDealerId()>0){
+                CodeQueryResponse res1 =adminUserService.getProxyName1(codeQueryResponse.getSecondLevelDealerId());
+                codeQueryResponse.setProxyName1(res1.getProxyName());
             }
+            if (codeQueryResponse.getMerchantId()>0){
+                CodeQueryResponse getName =adminUserService.getMerchantName(codeQueryResponse.getMerchantId());
+                codeQueryResponse.setMerchantName(getName.getMerchantName());
+            }
+
+//            long merchantId = codeQueryResponse.getMerchantId();
+//            CodeQueryResponse res = adminUserService.getProxyName(merchantId);
+//            if (res==null){
+//                return CommonResponse.simpleResponse(-1, "未查询到符合的商户。");
+//            }
+//            codeQueryResponse.setMerchantName(res.getMerchantName());
+//            if (res.getLevel()==1){
+//                codeQueryResponse.setProxyName(res.getProxyName());
+//            }
+//            if (res.getLevel()==2){
+//                codeQueryResponse.setProxyName1(res.getProxyName());
+//                long firstLevelDealerId = res.getFirstLevelDealerId();
+//                CodeQueryResponse res1 =adminUserService.getProxyName1(firstLevelDealerId);
+//                codeQueryResponse.setProxyName(res1.getProxyName());
+//            }
         }
         if (codeQueryResponse.getDistributeStatus()==1&&codeQueryResponse.getActivateStatus()==1){
             return CommonResponse.simpleResponse(-1, "该码未被注册且未被分配，该码可用。");

@@ -359,16 +359,24 @@ public interface QRCodeDao {
 
     /**
      * 商户id查询其名称
-     * @param merchantId
+     * @param firstLevelDealerId
      * @return
      */
-    CodeQueryResponse getProxyName(@Param("merchantId") long merchantId);
+    CodeQueryResponse getProxyName(@Param("firstLevelDealerId") long firstLevelDealerId);
 
     /**
      * 根据firstLevelDealerId
      * 查询一级代理商名称
-     * @param firstLevelDealerId
+     * @param secondLevelDealerId
      * @return
      */
-    CodeQueryResponse getProxyName1(long firstLevelDealerId);
+    CodeQueryResponse getProxyName1(@Param("secondLevelDealerId") long secondLevelDealerId);
+
+    /**
+     * 根据merchantId
+     * 查询商户名称
+     * @param merchantId
+     * @return
+     */
+    CodeQueryResponse getMerchantName(@Param("merchantId") long merchantId);
 }

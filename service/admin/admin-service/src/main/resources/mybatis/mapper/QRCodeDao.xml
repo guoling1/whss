@@ -330,17 +330,11 @@
 
     <select id="getProxyName" resultType="com.jkm.hss.admin.entity.CodeQueryResponse">
         SELECT
-	      a.dealer_id,
-	      a.merchant_name,
-	      b.proxy_name,
-          b.level,
-	      b.first_level_dealer_id
+	      proxy_name
         FROM
-            tb_merchant_info a
-        LEFT JOIN tb_dealer b
-        ON a.dealer_id=b.id
+            tb_dealer
         WHERE
-           a.id = #{merchantId}
+           id = #{firstLevelDealerId}
     </select>
 
     <select id="getProxyName1" resultType="com.jkm.hss.admin.entity.CodeQueryResponse">
@@ -349,9 +343,17 @@
         FROM
             tb_dealer b
         WHERE
-            id = #{firstLevelDealerId}
+            id = #{secondLevelDealerId}
     </select>
 
+    <select id="getMerchantName" resultType="com.jkm.hss.admin.entity.CodeQueryResponse">
+        SELECT
+        merchant_name
+        FROM
+        tb_merchant_info
+        WHERE
+        id = #{merchantId}
+    </select>
 
     <select id="selectByIdRange" resultType="com.jkm.hss.admin.entity.QRCode">
         SELECT * FROM tb_qr_code WHERE id BETWEEN #{startId} AND #{endId}

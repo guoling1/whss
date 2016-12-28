@@ -713,14 +713,20 @@ public class QRCodeServiceImpl implements QRCodeService {
     }
 
     @Override
-    public CodeQueryResponse getProxyName(long merchantId) {
-        CodeQueryResponse codeQueryResponse = this.qrCodeDao.getProxyName(merchantId);
+    public CodeQueryResponse getProxyName(long firstLevelDealerId) {
+        CodeQueryResponse codeQueryResponse = this.qrCodeDao.getProxyName(firstLevelDealerId);
         return codeQueryResponse;
     }
 
     @Override
-    public CodeQueryResponse getProxyName1(long firstLevelDealerId) {
-        CodeQueryResponse codeQueryResponse = this.qrCodeDao.getProxyName1(firstLevelDealerId);
+    public CodeQueryResponse getProxyName1(long secondLevelDealerId) {
+        CodeQueryResponse codeQueryResponse = this.qrCodeDao.getProxyName1(secondLevelDealerId);
+        return codeQueryResponse;
+    }
+
+    @Override
+    public CodeQueryResponse getMerchantName(long merchantId) {
+        CodeQueryResponse codeQueryResponse = this.qrCodeDao.getMerchantName(merchantId);
         return codeQueryResponse;
     }
 }
