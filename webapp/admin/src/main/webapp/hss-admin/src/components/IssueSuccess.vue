@@ -38,7 +38,8 @@
         distributeDate:'',
         count:'',
         startCode:'',
-        endCode:''
+        endCode:'',
+        codes:[]
       }
     },
     created: function(){
@@ -48,6 +49,7 @@
       this.$data.count=this.$route.query.count;
       this.$data.startCode=this.$route.query.startCode;
       this.$data.endCode=this.$route.query.endCode;
+      this.$data.codes=eval(this.$route.query.codes);
     },
     computed:{
       $$data:function () {

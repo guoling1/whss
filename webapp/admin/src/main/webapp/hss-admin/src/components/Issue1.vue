@@ -32,23 +32,6 @@
         </form>
       </div>
     </div>
-    <!--<form>
-      <label for="">
-        一级代理
-        <input @keyup="find" type="text" name="name" placeholder="输入代理手机号或名称" v-model="name" autocomplete="off"/>
-        <ul class="list" v-if="listIsShow">
-          <li v-for="(findDealer,index) in this.$data.findDealers" @click='change(index)'>
-            <span>{{findDealer.name}}</span>
-            <span>{{findDealer.mobile}}</span>
-          </li>
-        </ul>
-      </label>
-      <label for="">
-        分配个数
-        <input type="text" name="number" placeholder="请输入分配个数" v-model="query.count"/>
-      </label>
-      <div class="submit btn btn-primary" id="submit" @click="submit">分配</div>
-    </form>-->
     <message></message>
   </div>
   </div>
@@ -104,8 +87,7 @@
             mobile: res.data.mobile,
             distributeDate: res.data.distributeDate,
             count: res.data.count,
-            startCode: res.data.startCode,
-            endCode: res.data.endCode
+            codes: res.data.codes
           }})
         },function(err){
           this.$store.commit('MESSAGE_ACCORD_SHOW', {

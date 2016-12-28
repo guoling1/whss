@@ -1,127 +1,72 @@
 <template lang="html">
-  <div id="dealList">
-    <div style="padding: 8px 30px; background: rgb(243, 156, 18); z-index: 999999; font-size: 22px; font-weight: 600;margin-bottom: 15px;    color: #fff;">交易详情</div>
-    <div style="margin: 0 15px">
-      <div class="box box-primary">
-        <p class="lead"> 收款商户详情</p>
-        <div class="table-responsive">
-          <table class="table">
-            <tbody>
-            <tr>
-              <th style="text-align: right">商户类型:</th>
-              <td>{{record.merchantType|changeMerchantType}}</td>
-              <th style="text-align: right">商户编号:</th>
-              <td>{{record.merchantId}}</td>
-              <th style="text-align: right">商户名称:</th>
-              <td>{{record.subName}}</td>
-            </tr>
-            <tr>
-              <th style="text-align: right">注册手机号:</th>
-              <td>{{record.mobile}}</td>
-              <th style="text-align: right">银行卡号:</th>
-              <td>{{record.bankNo}}</td>
-              <th style="text-align: right">银行预留手机号:</th>
-              <td>{{record.reserveMobile}}</td>
-            </tr>
-            <tr>
-              <th style="text-align: right">一级代理名称:</th>
-              <td>{{record.proxyName}}</td>
-              <th style="text-align: right">二级代理名称:</th>
-              <td>{{record.proxyName1}}</td>
-              <th style="text-align: right">推荐人:</th>
-              <td></td>
-            </tr>
-            </tbody></table>
+  <div id="companyProfitDet">
+    <div style="padding: 8px 30px; background: rgb(243, 156, 18); z-index: 999999; font-size: 22px; font-weight: 600;margin-bottom: 15px;    color: #fff;">分润详情</div>
+    <div style="margin: 0 15px;">
+      <div class="box">
+        <div class="box-header">
+          <h3 class="box-title">分润详情</h3>
         </div>
-      </div>
-      <div class="box box-primary">
-        <p class="lead"> 交易订单</p>
-        <div class="table-responsive">
-          <table class="table">
-            <tbody>
-            <tr>
-              <th style="text-align: right">付款人:</th>
-              <td></td>
-              <th style="text-align: right">付款人账户:</th>
-              <td></td>
-              <th style="text-align: right">订单号:</th>
-              <td>{{record.orderId}}</td>
-            </tr>
-            <tr>
+        <!-- /.box-header -->
+        <div class="box-body">
+          <div id="example2_wrapper" class="dataTables_wrapper form-inline dt-bootstrap">
+            <div>
+              <span>日期：</span>
+              <input type="date" v-model="query.beginProfitDate">
+              <span>至</span>
+              <input type="date" v-model="query.endProfitDate">
+              <div class="btn btn-primary" @click="search()">筛选</div>
+            </div>
+            <div class="row">
+              <div class="col-sm-12">
+                <table id="example2" class="table table-bordered table-hover dataTable" role="grid" aria-describedby="example2_info">
+                  <thead>
+                  <tr role="row">
+                    <th class="sorting_asc" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Rendering engine: activate to sort column descending">序号
+                    </th>
+                    <th class="sorting_asc" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Rendering engine: activate to sort column descending">订单号</th>
+                    <th class="sorting_asc" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Rendering engine: activate to sort column descending">交易类型</th>
+                    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="Platform(s): activate to sort column ascending">交易日期</th>
+                    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="Engine version: activate to sort column ascending">结算周期</th>
+                    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">商户名称</th>
+                    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">上级代理名称</th>
+                    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">交易金额</th>
+                    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">商户手续费</th>
+                    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">分润金额</th>
+                  </tr>
+                  </thead>
+                  <tbody id="content">
+                  <tr role="row" v-for="(record,index) in $$records">
+                    <td>{{index+1}}</td>
+                    <td>{{record.paymentSn}}</td>
+                    <td>{{record.profitType|changeProfitType}}</td>
+                    <td>{{record.profitDate}}</td>
+                    <td>{{record.settleDate}}</td>
+                    <td>{{record.merchantName}}</td>
+                    <td>{{record.dealerName}}</td>
+                    <td style="text-align: right">{{record.totalFee|toFix}}</td>
+                    <td style="text-align: right">{{record.merchantFee|toFix}}</td>
+                    <td style="text-align: right">{{record.shallMoney|toFix}}</td>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-sm-5">
+                <div class="dataTables_info" id="example2_info" role="status" aria-live="polite">
+                </div>
+              </div>
+              <div class="col-sm-7">
+                <div class="dataTables_paginate paging_simple_numbers" id="example2_paginate">
+                  <ul class="pagination" id="page" @click="bindEvent($event)">
 
-              <th style="text-align: right">交易单号:</th>
-              <td>{{record.outTradeNo}}</td>
-              <th style="text-align: right">交易金额:</th>
-              <td>{{record.totalFee}}</td>
-            </tr>
-            <tr>
-              <th style="text-align: right">手续费率:</th>
-              <td></td>
-              <th style="text-align: right">手续费:</th>
-              <td></td>
-              <th style="text-align: right">服务费:</th>
-              <td>{{record.serviceFee}}</td>
-            </tr>
-            <tr>
-              <th style="text-align: right">通道名称:</th>
-              <td>{{record.channelName}}</td>
-              <th style="text-align: right">通道费:</th>
-              <td>{{record.channelFee}}</td>
-              <th style="text-align: right">实际所得:</th>
-              <td>{{record.realFee}}</td>
-            </tr>
-            <tr>
-              <th style="text-align: right">支付方式:</th>
-              <td>{{record.payChannel|changePayChannel}}</td>
-              <th style="text-align: right">交易类型:</th>
-              <td>{{record.tradeType|changeTradeType}}</td>
-              <th style="text-align: right">交易状态:</th>
-              <td>{{record.orderMessage}}</td>
-            </tr>
-            <tr>
-              <th style="text-align: right">结算状态:</th>
-              <td>{{record.settleStatus|changeSettleStatus}}</td>
-              <th style="text-align: right">结算周期:</th>
-              <td>{{record.settlePeriod}}</td>
-              <th style="text-align: right">交易时间:</th>
-              <td>{{record.createTime|changeTime}}</td>
-            </tr>
-            <tr>
-              <th style="text-align: right">交易成功时间:</th>
-              <td>{{record.payTime|changeTime}}</td>
-              <th style="text-align: right">预计结算时间:</th>
-              <td></td>
-              <th style="text-align: right">结算时间:</th>
-              <td></td>
-            </tr>
-            <tr>
-              <th style="text-align: right">商品名称:</th>
-              <td></td>
-              <th style="text-align: right">商品描述:</th>
-              <td></td>
-              <th style="text-align: right">备注:</th>
-              <td>{{record.errorMessage}}</td>
-            </tr>
-            </tbody></table>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-      </div>
-      <div class="box box-primary">
-        <p class="lead"> 支付流水单</p>
-        <div class="table-responsive">
-          <table class="table">
-            <tbody>
-            </tbody>
-          </table>
-        </div>
-      </div>
-      <div class="box box-primary">
-        <p class="lead"> 分帐单</p>
-        <div class="table-responsive">
-          <table class="table">
-            <tbody>
-            </tbody>
-          </table>
-        </div>
+        <!-- /.box-body -->
       </div>
     </div>
     <message></message>
@@ -132,67 +77,62 @@
 <script lang="babel">
   import Message from './Message.vue'
   export default {
-    name: 'dealList',
+    name: 'companyProfitDet',
     components: {
       Message
     },
     data: function () {
       return {
-        record:{}
+        query:{
+          dailyProfitId:'',
+          beginProfitDate:'',
+          endProfitDate:'',
+          dealerName:''
+        },
+        record:[],
+        path:''
       }
     },
     created: function(){
-      this.$http.post('/admin/queryOrderRecord/orderListAll',{id:this.$route.query.id})
+      this.$data.query.dailyProfitId = this.$route.query.id;
+      if(this.$route.path=="/admin/record/companyProfitDet"){
+        this.$data.path = '/admin/profit/companyProfit/detail'
+      }else if(this.$route.path=="/admin/record/firProfitDet"){
+        this.$data.path = '/admin/profit/firstDealer/detail'
+      }else if(this.$route.path=="/admin/record/secProfitDet"){
+        this.$data.path = '/admin/profit/secondDealer/detail'
+      }
+      this.$http.post(this.$data.path,this.$data.query)
         .then(function (res) {
           this.$data.record = res.data;
         },function (err) {
-          console.log(err)
+          this.$store.commit('MESSAGE_ACCORD_SHOW', {
+            text: err.statusMessage
+          })
         })
     },
+    methods: {
+      search: function () {
+        this.$http.post('/admin/profit/companyProfit/detail',this.$data.query)
+          .then(function (res) {
+            this.$data.record = res.data;
+          },function (err) {
+            this.$store.commit('MESSAGE_ACCORD_SHOW', {
+              text: err.statusMessage
+            })
+          })
+      }
+    },
     filters: {
-      changeMerchantType: function (val) {
-        if(val==0){
-          return "商户"
-        }else if(val==1){
-          return "代理商"
-        }
-      },
-      changeTime: function (val) {
-        if(val==''||val==null){
-          return ''
-        }else {
-          val = new Date(val)
-          var year=val.getFullYear();
-          var month=val.getMonth()+1;
-          var date=val.getDate();
-          var hour=val.getHours();
-          var minute=val.getMinutes();
-          var second=val.getSeconds();
-          return year+"-"+month+"-"+date+" "+hour+":"+minute+":"+second;
-        }
-      },
-      changeSettleStatus: function (val) {
-        if(val == 0){
-          return '已结算'
-        }else if(val == 1){
-          return '未结算'
-        }
-      },
-      changePayChannel: function (val) {
-        if(val == 101){
-          return '微信'
-        }else if(val == 102){
-          return '支付宝'
-        }else if(val == 103){
-          return '快捷'
-        }
-      },
-      changeTradeType: function (val) {
-        if(val == 0){
+      changeProfitType: function (val) {
+        if(val == 1){
           return '支付'
-        }else if(val == 1){
+        }else if(val == 2){
           return '提现'
         }
+      },
+      toFix: function (val) {
+        return parseFloat(val).toFixed(2)
       }
     }
   }
@@ -221,24 +161,6 @@
     font-weight: bold;
     border-bottom: 2px solid #ccc;
     padding-bottom: 10px;
-  }
-
-  ul {
-    list-style-type: none;
-    padding: 0;
-    background: #fff;
-    position: relative;
-    left: 70px;
-    width: 300px;
-  }
-
-  li {
-    /*display: inline-block;*/
-    margin: 0 10px;
-  }
-
-  a {
-    color: #42b983;
   }
 
 </style>

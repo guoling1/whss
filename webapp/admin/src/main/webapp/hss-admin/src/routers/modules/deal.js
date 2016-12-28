@@ -15,7 +15,9 @@ const AgentAdd = r => require.ensure([], () => r(require('../../components/Agent
 const CompanyProfit = r => require.ensure([], () => r(require('../../components/CompanyProfit')), 'group-record');
 const CompanyProfitDet = r => require.ensure([], () => r(require('../../components/CompanyProfitDet')), 'group-record');
 const FirProfit = r => require.ensure([], () => r(require('../../components/FirProfit')), 'group-record');
+const FirProfitDet = r => require.ensure([], () => r(require('../../components/CompanyProfitDet')), 'group-record');
 const SecProfit = r => require.ensure([], () => r(require('../../components/SecProfit')), 'group-record');
+const SecProfitDet = r => require.ensure([], () => r(require('../../components/CompanyProfitDet')), 'group-record');
 const PassAdd = r => require.ensure([], () => r(require('../../components/PassAdd')), 'group-record');
 const PassList = r => require.ensure([], () => r(require('../../components/PassList')), 'group-record');
 const ProductAdd = r => require.ensure([], () => r(require('../../components/ProductAdd')), 'group-record');
@@ -25,6 +27,7 @@ const Issue1 = r => require.ensure([], () => r(require('../../components/Issue1'
 const IssueSuccess = r => require.ensure([], () => r(require('../../components/IssueSuccess')), 'group-record');
 const Invite = r => require.ensure([], () => r(require('../../components/Invite')), 'group-record');
 const Upgrade = r => require.ensure([], () => r(require('../../components/Upgrade')), 'group-record');
+const CodeStatus = r => require.ensure([], () => r(require('../../components/CodeStatus')), 'group-record');
 
 export default {
   path: '/admin/record',
@@ -87,9 +90,19 @@ export default {
       component: FirProfit
     },
     {
+      path: 'firProfitDet',
+      name: 'FirProfitDet',
+      component: FirProfitDet
+    },
+    {
       path: 'secProfit',
       name: 'SecProfit',
       component: SecProfit
+    },
+    {
+      path: 'secProfitDet',
+      name: 'SecProfitDet',
+      component: SecProfitDet
     },
     {
       path: 'passAdd',
@@ -135,6 +148,11 @@ export default {
       path: 'upgrade',
       name: 'Upgrade',
       component: Upgrade
+    },
+    {
+      path: 'codeStatus',
+      name: 'CodeStatus',
+      component: CodeStatus
     }
   ]
 }

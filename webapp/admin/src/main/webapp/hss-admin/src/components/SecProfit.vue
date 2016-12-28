@@ -46,7 +46,7 @@
                     <td style="text-align: right">{{record.collectMoney|toFix}}</td>
                     <td style="text-align: right">{{record.withdrawMoney|toFix}}</td>
                     <td style="text-align: right">{{record.totalMoney|toFix}}</td>
-                    <td><route-link to="/admin/record/companyProfitDet" class="btn btn-success">查看明细</route-link></td>
+                    <td><router-link :to="{path:'/admin/record/secProfitDet',query:{id:record.id}}" class="btn btn-success" v-if="record.totalMoney!=0">查看明细</router-link></td>
                   </tr>
                   </tbody>
                 </table>
