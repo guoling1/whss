@@ -316,6 +316,41 @@
         SELECT * FROM tb_qr_code WHERE code BETWEEN #{startCode} AND #{endCode}
     </select>
 
+    <select id="getCode" resultType="com.jkm.hss.admin.entity.CodeQueryResponse">
+        SELECT
+          first_level_dealer_id,
+          second_level_dealer_id,
+          merchant_id,
+          distribute_status,
+          activate_status
+        FROM tb_qr_code
+        WHERE code=#{code}
+    </select>
+
+    <select id="getProxyName" resultType="com.jkm.hss.admin.entity.CodeQueryResponse">
+        SELECT
+	      a.dealer_id,
+	      a.merchant_name,
+          b.level,
+	      b.first_level_dealer_id
+        FROM
+            tb_merchant_info a
+        LEFT JOIN tb_dealer b
+        ON a.dealer_id=b.id
+        WHERE
+           a.id = #{merchantId}
+    </select>
+
+    <select id="getProxyName1" resultType="com.jkm.hss.admin.entity.CodeQueryResponse">
+        SELECT
+          proxy_name
+        FROM
+            tb_dealer b
+        WHERE
+            id = #{firstLevelDealerId}
+    </select>
+
+
     <select id="selectByIdRange" resultType="com.jkm.hss.admin.entity.QRCode">
         SELECT * FROM tb_qr_code WHERE id BETWEEN #{startId} AND #{endId}
     </select>

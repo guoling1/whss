@@ -1,5 +1,6 @@
 package com.jkm.hss.admin.dao;
 
+import com.jkm.hss.admin.entity.CodeQueryResponse;
 import com.jkm.hss.admin.entity.QRCode;
 import com.jkm.hss.admin.helper.responseparam.ActiveCodeCount;
 import com.jkm.hss.admin.helper.responseparam.DistributeCodeCount;
@@ -8,7 +9,6 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by yulong.zhang on 2016/11/25.
@@ -349,4 +349,26 @@ public interface QRCodeDao {
      * @return
      */
     List<Long> selectUnDistributeCodeByRangeCode(@Param("startCode") String startCode, @Param("endCode") String endCode);
+
+    /**
+     * 按码段查询状态
+     * @param code
+     * @return
+     */
+    CodeQueryResponse getCode(@Param("code") String code);
+
+    /**
+     * 商户id查询其名称
+     * @param merchantId
+     * @return
+     */
+    CodeQueryResponse getProxyName(@Param("merchantId") long merchantId);
+
+    /**
+     * 根据firstLevelDealerId
+     * 查询一级代理商名称
+     * @param firstLevelDealerId
+     * @return
+     */
+    CodeQueryResponse getProxyName1(long firstLevelDealerId);
 }

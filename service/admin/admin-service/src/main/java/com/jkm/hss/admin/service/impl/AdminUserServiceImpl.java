@@ -5,26 +5,21 @@ import com.google.common.base.Preconditions;
 import com.jkm.hss.admin.dao.AdminUserDao;
 import com.jkm.hss.admin.entity.AdminUser;
 import com.jkm.hss.admin.entity.AdminUserPassport;
+import com.jkm.hss.admin.entity.CodeQueryResponse;
 import com.jkm.hss.admin.entity.QRCode;
 import com.jkm.hss.admin.enums.EnumAdminUserStatus;
-import com.jkm.hss.admin.enums.EnumQRCodeActivateStatus;
-import com.jkm.hss.admin.enums.EnumQRCodeDistributionStatus;
-import com.jkm.hss.admin.enums.EnumQRCodeType;
 import com.jkm.hss.admin.helper.AdminUserSupporter;
-import com.jkm.hss.admin.helper.QRCodeConsts;
 import com.jkm.hss.admin.service.AdminUserPassportService;
 import com.jkm.hss.admin.service.AdminUserService;
 import com.jkm.hss.admin.service.QRCodeService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -184,6 +179,24 @@ public class AdminUserServiceImpl implements AdminUserService {
         final List<QRCode> codes = this.qrCodeService.getByIds(codeIds);
         final List<Pair<QRCode, QRCode>> pairs = this.qrCodeService.getPairQRCodeList(codes);
         return pairs;
+    }
+
+    @Override
+    public CodeQueryResponse getCode(final String code) {
+        final CodeQueryResponse codeQueryResponse = this.qrCodeService.getCode(code);
+        return codeQueryResponse;
+    }
+
+    @Override
+    public CodeQueryResponse getProxyName(long merchantId) {
+        final CodeQueryResponse codeQueryResponse = this.qrCodeService.getProxyName(merchantId);
+        return codeQueryResponse;
+    }
+
+    @Override
+    public CodeQueryResponse getProxyName1(long firstLevelDealerId) {
+        final CodeQueryResponse codeQueryResponse = this.qrCodeService.getProxyName1(firstLevelDealerId);
+        return codeQueryResponse;
     }
 
 }
