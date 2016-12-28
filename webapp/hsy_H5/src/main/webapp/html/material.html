@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <title>好收银</title>
+  <!--<link rel="stylesheet" href="http://img.jinkaimen.cn/hsy/css/reset.css">-->
+  <!--<link rel="stylesheet" href="http://img.jinkaimen.cn/hsy/css/style.css">-->
+  <link rel="stylesheet" href="../css/reset.css">
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+
+<div id="material">
+  <div class="process">
+    <div class="steps active">
+      <span>1</span>填写资料
+    </div>
+    <div class="steps">
+      <span>2</span>上传资料
+    </div>
+    <div class="steps">
+      <span>3</span>开始使用
+    </div>
+  </div>
+  <div class="main flexBox flex-box-column">
+    <div class="top">
+      <div class="group">
+        <div class="name">店铺名</div>
+        <input type="text" class="ipt" placeholder="例如某某小卖部">
+      </div>
+      <div class="group">
+        <div class="name">地址</div>
+        <input type="text" class="ipt" placeholder="输入店铺地址">
+      </div>
+    </div>
+    <div class="bottom">
+      <div class="group">
+        <div class="name">结算卡</div>
+        <input type="text" class="ipt" placeholder="输入本人名下借记卡号">
+      </div>
+      <div class="group">
+        <div class="name">上传</div>
+        <a href="javascript:void(0);" class="file">
+          点击上传结算卡正面照
+          <div></div>
+        </a>
+
+        <div class="btn">查看示例</div>
+      </div>
+      <div class="group">
+        <div class="name">开户名</div>
+        <input type="text" class="ipt" placeholder="本人银行卡开户姓名">
+      </div>
+      <div class="group">
+        <div class="name">身份证</div>
+        <input type="text" class="ipt" placeholder="输入身份证号">
+      </div>
+      <div class="group">
+        <div class="name">手机号</div>
+        <input type="text" class="ipt" placeholder="开户银行预留手机号">
+
+        <div class="btn">发送验证码</div>
+      </div>
+      <div class="group">
+        <div class="name">验证码</div>
+        <input type="text" class="ipt" placeholder="输入短信验证码">
+      </div>
+      <div class="next">
+        <div @click="next($event)">下一步</div>
+      </div>
+      <div class="skip">跳过</div>
+    </div>
+  </div>
+</div>
+</body>
+
+<script src="http://img.jinkaimen.cn/hsy/js/qrcode.min.js"></script>
+</html>

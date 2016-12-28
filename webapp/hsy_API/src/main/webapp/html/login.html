@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <title>好收银</title>
+  <link rel="stylesheet" href="http://img.jinkaimen.cn/hsy/css/reset.css">
+  <link rel="stylesheet" href="http://img.jinkaimen.cn/hsy/css/style.css">
+</head>
+<body>
+
+<div id='login'>
+  <h1>好收银-代理商</h1>
+
+  <h2>HAOSHOUYIN</h2>
+  <ul>
+    <li class="top flexBox">
+      <div class="logo phone"></div>
+      <input type="text" placeholder="请输入手机号">
+
+      <button style="background: #fff" class="btn" onclick="send()">发送验证码</button>
+    </li>
+    <li class="bottom flexBox">
+      <div class="logo message"></div>
+      <input type="text" placeholder="请输入验证码">
+    </li>
+  </ul>
+  <div class="reg" @click="reg">登录</div>
+</div>
+
+</body>
+<script src="../js/jQuery-2.1.4.min.js"></script>
+<script src="http://img.jinkaimen.cn/hsy/js/qrcode.min.js"></script>
+<script>
+  function send() {
+    $('.btn')[0].innerHTML = 60
+    var timer=setInterval(function () {
+      $('.btn')[0].innerHTML --;
+      if(Number($('.btn')[0].innerHTML)){
+        $('.btn')[0].disabled = true
+      }else {
+        $('.btn')[0].disabled = false
+      }
+      if($('.btn')[0].innerHTML==0){
+        clearInterval(timer)
+        $('.btn')[0].innerHTML = '重新获取'
+      }
+    },1000)
+  }
+</script>
+</html>

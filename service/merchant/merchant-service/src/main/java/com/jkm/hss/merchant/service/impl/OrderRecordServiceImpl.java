@@ -523,7 +523,7 @@ public class OrderRecordServiceImpl implements OrderRecordService {
         paramsMap.put("accountNumber", MerchantSupport.decryptBankCard(merchantInfoOptional.get().getBankNo()));
         paramsMap.put("note", "提现");
         paramsMap.put("appId","wap_hss");
-        paramsMap.put("notifyUrl", WxConstants.DOMAIN+"/call/otherPayBack");     //后台通知url
+        paramsMap.put("notifyUrl", MerchantConsts.getMerchantConfig().backDomain()+"/call/otherPayBack");     //后台通知url
         paramsMap.put("idCard", MerchantSupport.decryptIdentity(merchantInfoOptional.get().getIdentity()));
         paramsMap.put("isCompay", EnumIsCompay.ToPrivate.getId());
         log.info("组装数据结束。。。,数据为{}",JSONObject.fromObject(paramsMap).toString());
@@ -640,7 +640,8 @@ public class OrderRecordServiceImpl implements OrderRecordService {
     public JSONObject PayOrder(TradeRequest req) {
         log.info("交易参数"+JSONObject.fromObject(req).toString());
         req.setBody("收款");
-        req.setNotifyUrl("http://"+WxConstants.DOMAIN+"/wx/payResult");
+        log.info("回调域名是：================={}",MerchantConsts.getMerchantConfig().backDomain());
+        req.setNotifyUrl(MerchantConsts.getMerchantConfig().backDomain()+"/wx/payResult");
         JSONObject resultJo = new JSONObject();
         log.info("开始下单。。。");
         log.info("开始创建订单。。。");
@@ -660,7 +661,7 @@ public class OrderRecordServiceImpl implements OrderRecordService {
         orderRecord.setBody(req.getBody());
         orderRecord.setTradeType(EnumTradeType.DEAL.getId());
         orderRecord.setOrderId(orderId);
-        req.setReturnUrl("http://"+WxConstants.DOMAIN+"/sqb/success/"+new BigDecimal(req.getTotalFee())+"/"+orderId);
+        req.setReturnUrl(MerchantConsts.getMerchantConfig().backDomain()+"/sqb/success/"+new BigDecimal(req.getTotalFee())+"/"+orderId);
         try{
             orderRecordDao.insertSelective(orderRecord);
             log.info("结束创建订单。。。");
@@ -694,6 +695,7 @@ public class OrderRecordServiceImpl implements OrderRecordService {
         log.info("更该订单状态为【处理中】结束。。。");
 
         try{
+            System.out.println("支付地址是："+MerchantConsts.getMerchantConfig().domain());
             String result = SmPost.post(MerchantConsts.getMerchantConfig().domain()+MerchantConsts.getMerchantConfig().trade(),paramsMap);
             log.info("支付交易结果{}",JSONObject.fromObject(paramsMap).toString());
             //更新参数
@@ -1009,7 +1011,7 @@ public class OrderRecordServiceImpl implements OrderRecordService {
                     paramsMap.put("accountNumber", MerchantSupport.decryptBankCard(merchantInfoOptional.get().getBankNo()));
                     paramsMap.put("note", "提现");
                     paramsMap.put("appId","wap_hss");
-                    paramsMap.put("notifyUrl", "http://"+WxConstants.DOMAIN+"/call/otherPayBack");     //后台通知url
+                    paramsMap.put("notifyUrl", MerchantConsts.getMerchantConfig().backDomain()+"/call/otherPayBack");     //后台通知url
                     paramsMap.put("idCard", MerchantSupport.decryptIdentity(merchantInfoOptional.get().getIdentity()));
                     paramsMap.put("isCompay", EnumIsCompay.ToPrivate.getId());
                     log.info("组装数据结束。。。,数据为{}",JSONObject.fromObject(paramsMap).toString());
