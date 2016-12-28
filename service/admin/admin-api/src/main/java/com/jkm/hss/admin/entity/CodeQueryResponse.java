@@ -70,13 +70,13 @@ public class CodeQueryResponse extends BaseEntity {
      */
     private int activateStatus;
 
-//    /**
-//     * 二维码生成方式（公众号关注生成， 扫码）
-//     *
-//     * {@link com.jkm.hss.admin.enums.EnumQRCodeType}
-//     */
-//    private int type;
-//
+    /**
+     * 二维码生成方式（公众号关注生成， 扫码）
+     *
+     * {@link com.jkm.hss.admin.enums.EnumQRCodeType}
+     */
+    private int type;
+
 //    /**
 //     * 获取签名
 //     *

@@ -322,7 +322,8 @@
           second_level_dealer_id,
           merchant_id,
           distribute_status,
-          activate_status
+          activate_status,
+          type
         FROM tb_qr_code
         WHERE code=#{code}
     </select>
