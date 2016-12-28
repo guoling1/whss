@@ -219,6 +219,9 @@ public class AdminController extends BaseController {
         if (codeQueryResponse.getActivateStatus()==2){
             long merchantId = codeQueryResponse.getMerchantId();
             CodeQueryResponse res = adminUserService.getProxyName(merchantId);
+            if (res==null){
+                return CommonResponse.simpleResponse(-1, "未查询到符合的商户。");
+            }
             codeQueryResponse.setMerchantName(res.getMerchantName());
             if (res.getLevel()==1){
                 codeQueryResponse.setProxyName(res.getProxyName());

@@ -331,6 +331,7 @@
         SELECT
 	      a.dealer_id,
 	      a.merchant_name,
+	      b.proxy_name,
           b.level,
 	      b.first_level_dealer_id
         FROM
