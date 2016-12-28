@@ -10,6 +10,11 @@
   <title>好收收</title>
   <link rel="stylesheet" href="http://static.jinkaimen.cn/hss/css/style.css">
   <link rel="stylesheet" href="http://static.jinkaimen.cn/weui/weui.css">
+  <style>
+    .reg:disabled {
+      background-color: #b0c3f2 !important;
+    }
+  </style>
 </head>
 <body>
 
@@ -28,14 +33,27 @@
       <div class="logo message"></div>
       <input type="number" placeholder="请输入验证码" id="code">
     </li>
+    <li class="bottom flexBox">
+      <div class="logo"
+           style="background:url(http://static.jinkaimen.cn/hss/assets/code2.png) center no-repeat;background-size: 21px 15px;"></div>
+      <input type="text" placeholder="请通过扫码注册获取邀请码" id="qrcode" value="${qrCode}" readonly>
+    </li>
   </ul>
-  <div class="reg" id="submit">注册</div>
+  <div style="padding:0 15px;">
+    <button class="reg" style="width:100%;margin:0;" id="submit">注册</button>
+  </div>
 </div>
 
 </body>
 <script>
   var pageData = {
     qrCode: '${qrCode}'
+  }
+</script>
+<script>
+  if (!pageData.qrCode || pageData.qrCode == '') {
+    var dis = document.getElementById('submit');
+    dis.setAttribute('disabled', 'true');
   }
 </script>
 <script src="http://static.jinkaimen.cn/vendor/vendor.min.js"></script>
