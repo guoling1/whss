@@ -210,7 +210,7 @@ public class AdminController extends BaseController {
 
 
     /**
-     *
+     *码段查询
      */
     @ResponseBody
     @RequestMapping(value = "/getCode", method = RequestMethod.POST)
