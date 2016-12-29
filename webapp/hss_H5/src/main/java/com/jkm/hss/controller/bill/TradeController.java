@@ -17,7 +17,6 @@ import com.jkm.hss.merchant.service.UserInfoService;
 import com.jkm.hss.notifier.enums.EnumVerificationCodeType;
 import com.jkm.hss.notifier.service.SmsAuthService;
 import com.jkm.hss.product.enums.EnumPayChannelSign;
-import net.sf.json.JSONObject;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -90,7 +89,8 @@ public class TradeController extends BaseController {
                 payRequest.getPayChannel(), 2);
         if (0 == resultPair.getLeft()) {
             return CommonResponse.builder4MapResult(CommonResponse.SUCCESS_CODE, "收款成功")
-                    .addParam("payUrl", resultPair.getRight()).build();
+                    .addParam("payUrl", resultPair.getRight()).addParam("subMerName", merchantInfo.get().getMerchantName())
+                    .addParam("amount", totalFee).build();
         }
         return CommonResponse.simpleResponse(-1, resultPair.getRight());
     }
