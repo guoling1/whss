@@ -13,9 +13,9 @@ public enum EnumAccountFlowType {
     DECREASE(2, "减少");
 
     @Getter
-    private final int id;
+    private int id;
     @Getter
-    private final String value;
+    private String value;
 
     EnumAccountFlowType(final int id, final String value) {
         this.id = id;

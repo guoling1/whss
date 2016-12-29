@@ -7,7 +7,6 @@ import lombok.Getter;
 /**
  * Created by yulong.zhang on 2016/9/23.
  */
-@Getter
 public enum EnumUnfrozenType {
 
     /**
@@ -20,9 +19,9 @@ public enum EnumUnfrozenType {
      */
     CONSUME(2, "消费");
     @Getter
-    private final int id;
+    private int id;
     @Getter
-    private final String value;
+    private String value;
 
     EnumUnfrozenType(final int id, final String value) {
         this.id = id;

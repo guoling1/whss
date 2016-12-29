@@ -78,7 +78,7 @@ public class SplitAccountRecordServiceImpl implements SplitAccountRecordService 
         splitAccountRecord.setSplitOrderNo(orderNo1);
         splitAccountRecord.setTotalAmount(tradeAmount);
         splitAccountRecord.setSplitSn(SnGenerator.generate());
-        splitAccountRecord.setOutMoneyAccountId(AccountConstants.POUNDATE_ACCOUNT_ID);
+        splitAccountRecord.setOutMoneyAccountId(AccountConstants.POUNDAGE_ACCOUNT_ID);
         splitAccountRecord.setReceiptMoneyAccountId(triple.getLeft());
         splitAccountRecord.setReceiptMoneyUserName(receiptMoneyUserName);
         splitAccountRecord.setSplitAmount(triple.getMiddle());
@@ -107,7 +107,7 @@ public class SplitAccountRecordServiceImpl implements SplitAccountRecordService 
         splitAccountRecord.setSplitOrderNo(orderNo1);
         splitAccountRecord.setTotalAmount(tradeAmount);
         splitAccountRecord.setSplitSn(SnGenerator.generate());
-        splitAccountRecord.setOutMoneyAccountId(AccountConstants.POUNDATE_ACCOUNT_ID);
+        splitAccountRecord.setOutMoneyAccountId(AccountConstants.POUNDAGE_ACCOUNT_ID);
         splitAccountRecord.setReceiptMoneyAccountId(triple.getLeft());
         splitAccountRecord.setReceiptMoneyUserName(receiptMoneyUserName);
         splitAccountRecord.setSplitAmount(triple.getMiddle());

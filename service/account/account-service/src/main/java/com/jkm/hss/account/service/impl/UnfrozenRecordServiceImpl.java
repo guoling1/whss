@@ -2,7 +2,7 @@ package com.jkm.hss.account.service.impl;
 
 import com.google.common.base.Optional;
 import com.jkm.hss.account.dao.UnfrozenRecordDao;
-import com.jkm.hss.account.entity.UnfrozenRecord;
+import com.jkm.hss.account.entity.UnFrozenRecord;
 import com.jkm.hss.account.sevice.UnfrozenRecordService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,22 +23,22 @@ public class UnfrozenRecordServiceImpl implements UnfrozenRecordService {
     /**
      * {@inheritDoc}
      *
-     * @param unfrozenRecord
+     * @param unFrozenRecord
      */
     @Override
-    public  void add(final UnfrozenRecord unfrozenRecord) {
-        this.unfrozenRecordDao.insert(unfrozenRecord);
+    public  void add(final UnFrozenRecord unFrozenRecord) {
+        this.unfrozenRecordDao.insert(unFrozenRecord);
     }
 
     /**
      * {@inheritDoc}
      *
-     * @param unfrozenRecord
+     * @param unFrozenRecord
      * @return
      */
     @Override
-    public int update(final UnfrozenRecord unfrozenRecord) {
-        return this.unfrozenRecordDao.update(unfrozenRecord);
+    public int update(final UnFrozenRecord unFrozenRecord) {
+        return this.unfrozenRecordDao.update(unFrozenRecord);
     }
 
     /**
@@ -48,7 +48,7 @@ public class UnfrozenRecordServiceImpl implements UnfrozenRecordService {
      * @return
      */
     @Override
-    public Optional<UnfrozenRecord> getById(final long id) {
+    public Optional<UnFrozenRecord> getById(final long id) {
         return Optional.fromNullable(this.unfrozenRecordDao.selectById(id));
     }
 
@@ -59,7 +59,7 @@ public class UnfrozenRecordServiceImpl implements UnfrozenRecordService {
      * @return
      */
     @Override
-    public Optional<UnfrozenRecord> getByFrozenRecordId(final long frozenRecordId) {
+    public Optional<UnFrozenRecord> getByFrozenRecordId(final long frozenRecordId) {
     return Optional.fromNullable(this.unfrozenRecordDao.selectByFrozenRecordId(frozenRecordId));
     }
 
@@ -70,7 +70,7 @@ public class UnfrozenRecordServiceImpl implements UnfrozenRecordService {
      * @return
      */
     @Override
-    public Optional<UnfrozenRecord> getByBusinessNo(final long businessNo) {
+    public Optional<UnFrozenRecord> getByBusinessNo(final long businessNo) {
         return Optional.fromNullable(this.unfrozenRecordDao.selectByBusinessNo(businessNo));
     }
 
@@ -81,7 +81,7 @@ public class UnfrozenRecordServiceImpl implements UnfrozenRecordService {
      * @return
      */
     @Override
-    public List<UnfrozenRecord> getByAccountId(final long accountId) {
+    public List<UnFrozenRecord> getByAccountId(final long accountId) {
         return this.unfrozenRecordDao.selectByAccountId(accountId);
     }
 }

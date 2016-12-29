@@ -1,6 +1,6 @@
 package com.jkm.hss.account.dao;
 
-import com.jkm.hss.account.entity.UnfrozenRecord;
+import com.jkm.hss.account.entity.UnFrozenRecord;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
@@ -15,17 +15,17 @@ public interface UnfrozenRecordDao {
     /**
      * 插入解冻记录
      *
-     * @param unfrozenRecord
+     * @param unFrozenRecord
      */
-    void insert(UnfrozenRecord unfrozenRecord);
+    void insert(UnFrozenRecord unFrozenRecord);
 
     /**
      * 更新解冻记录
      *
-     * @param unfrozenRecord
+     * @param unFrozenRecord
      * @return
      */
-    int update(UnfrozenRecord unfrozenRecord);
+    int update(UnFrozenRecord unFrozenRecord);
 
     /**
      * 按id查询解冻记录
@@ -33,7 +33,7 @@ public interface UnfrozenRecordDao {
      * @param id
      * @return
      */
-    UnfrozenRecord selectById(@Param("id") long id);
+    UnFrozenRecord selectById(@Param("id") long id);
 
 
     /**
@@ -42,7 +42,7 @@ public interface UnfrozenRecordDao {
      * @param frozenRecordId
      * @return
      */
-    UnfrozenRecord selectByFrozenRecordId(@Param("frozenRecordId") long frozenRecordId);
+    UnFrozenRecord selectByFrozenRecordId(@Param("frozenRecordId") long frozenRecordId);
 
     /**
      * 按businessSn查询解冻记录
@@ -50,7 +50,7 @@ public interface UnfrozenRecordDao {
      * @param businessNo
      * @return
      */
-    UnfrozenRecord selectByBusinessNo(@Param("businessNo") long businessNo);
+    UnFrozenRecord selectByBusinessNo(@Param("businessNo") long businessNo);
 
     /**
      * 按账户id插叙解冻记录
@@ -58,5 +58,5 @@ public interface UnfrozenRecordDao {
      * @param accountId
      * @return
      */
-    List<UnfrozenRecord> selectByAccountId(@Param("accountId") long accountId);
+    List<UnFrozenRecord> selectByAccountId(@Param("accountId") long accountId);
 }

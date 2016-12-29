@@ -1,7 +1,6 @@
 package com.jkm.hss.account.sevice;
 
 import com.google.common.base.Optional;
-import com.jkm.hss.account.entity.Account;
 import com.jkm.hss.account.entity.AccountFlow;
 import com.jkm.hss.account.enums.EnumAccountFlowType;
 

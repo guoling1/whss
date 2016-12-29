@@ -1,6 +1,7 @@
 package com.jkm.hss.account.entity;
 
 import com.jkm.base.common.entity.BaseEntity;
+import com.jkm.hss.account.enums.EnumAccountFlowType;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -54,7 +55,7 @@ public class SettleAccountFlow extends BaseEntity {
     /**
      * 类型
      *
-     * {@link com.jkm.hss.account.enums.EnumAccountFlowType}
+     * {@link EnumAccountFlowType}
      */
     private int type;
 

@@ -11,5 +11,5 @@ public final class AccountConstants {
     /**
      * 手续费账户默认 1
      */
-    public static final long POUNDATE_ACCOUNT_ID = 1;
+    public static final long POUNDAGE_ACCOUNT_ID = 1;
 }

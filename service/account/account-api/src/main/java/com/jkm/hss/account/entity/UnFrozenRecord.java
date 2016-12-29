@@ -14,7 +14,7 @@ import java.util.Date;
  * tb_unfrozen_record
  */
 @Data
-public class UnfrozenRecord extends BaseEntity {
+public class UnFrozenRecord extends BaseEntity {
 
     /**
      * 账户id

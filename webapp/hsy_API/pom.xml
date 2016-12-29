@@ -67,10 +67,6 @@
         </dependency>
         <dependency>
             <groupId>com.jkm</groupId>
-            <artifactId>hss-mq</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.jkm</groupId>
             <artifactId>hss-common-util</artifactId>
         </dependency>
         <dependency>

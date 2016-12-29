@@ -1,7 +1,7 @@
 package com.jkm.hss.account.sevice;
 
 import com.google.common.base.Optional;
-import com.jkm.hss.account.entity.UnfrozenRecord;
+import com.jkm.hss.account.entity.UnFrozenRecord;
 
 import java.util.List;
 
@@ -13,24 +13,24 @@ public interface UnfrozenRecordService {
     /**
      * 插入解冻记录
      *
-     * @param unfrozenRecord
+     * @param unFrozenRecord
      */
-     void add(UnfrozenRecord unfrozenRecord);
+     void add(UnFrozenRecord unFrozenRecord);
 
     /**
      * 更新解冻记录
      *
-     * @param unfrozenRecord
+     * @param unFrozenRecord
      * @return
      */
-    int update(UnfrozenRecord unfrozenRecord);
+    int update(UnFrozenRecord unFrozenRecord);
     /**
      * 按id查询解冻记录
      *
      * @param id
      * @return
      */
-    Optional<UnfrozenRecord> getById(long id);
+    Optional<UnFrozenRecord> getById(long id);
 
 
     /**
@@ -39,7 +39,7 @@ public interface UnfrozenRecordService {
      * @param frozenRecordId
      * @return
      */
-    Optional<UnfrozenRecord> getByFrozenRecordId(long frozenRecordId);
+    Optional<UnFrozenRecord> getByFrozenRecordId(long frozenRecordId);
 
     /**
      * 按businessSn查询解冻记录
@@ -47,7 +47,7 @@ public interface UnfrozenRecordService {
      * @param businessNo
      * @return
      */
-    Optional<UnfrozenRecord> getByBusinessNo(long businessNo);
+    Optional<UnFrozenRecord> getByBusinessNo(long businessNo);
 
     /**
      * 按账户id插叙解冻记录
@@ -55,5 +55,5 @@ public interface UnfrozenRecordService {
      * @param accountId
      * @return
      */
-    List<UnfrozenRecord> getByAccountId(long accountId);
+    List<UnFrozenRecord> getByAccountId(long accountId);
 }

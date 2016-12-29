@@ -7,7 +7,6 @@ import lombok.Getter;
 /**
  * Created by yuxiang on 2016-09-27.
  */
-@Getter
 public enum EnumFrozenStatus {
 
     FROZEN(1, "冻结中"),
@@ -16,9 +15,9 @@ public enum EnumFrozenStatus {
 
     UN_FROZEN(3, "已解冻");
     @Getter
-    private final int id;
+    private int id;
     @Getter
-    private final String value;
+    private String value;
 
     EnumFrozenStatus(final int id, final String value) {
         this.id = id;

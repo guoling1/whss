@@ -9,7 +9,7 @@
         total_amount,
         available,
         frozen_amount,
-        due_settel_amount,
+        due_settle_amount,
         status
         )
         VALUES

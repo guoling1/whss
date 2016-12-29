@@ -42,7 +42,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.text.DecimalFormat;
 import java.util.Date;
 import java.util.Map;
 
@@ -269,7 +268,7 @@ public class PayServiceImpl implements PayService {
                     order.getTradeAmount().subtract(order.getPoundage()), "支付", EnumAccountFlowType.INCREASE);
 
             //手续费账户
-            final Account poundageAccount = this.accountService.getByIdWithLock(AccountConstants.POUNDATE_ACCOUNT_ID).get();
+            final Account poundageAccount = this.accountService.getByIdWithLock(AccountConstants.POUNDAGE_ACCOUNT_ID).get();
             this.accountService.increaseTotalAmount(poundageAccount.getId(), order.getPoundage());
             this.accountService.increaseSettleAmount(poundageAccount.getId(), order.getPoundage());
             this.settleAccountFlowService.addSettleAccountFlow(poundageAccount.getId(), order.getOrderNo(),
@@ -329,7 +328,7 @@ public class PayServiceImpl implements PayService {
         final BigDecimal secondMoney = null == secondMoneyTriple ? new BigDecimal("0") : secondMoneyTriple.getMiddle();
         Preconditions.checkState(order.getPoundage().compareTo(channelMoney.add(productMoney).add(firstMoney).add(secondMoney)) >= 0);
         //手续费账户结算
-        final Account poundageAccount = this.accountService.getByIdWithLock(AccountConstants.POUNDATE_ACCOUNT_ID).get();
+        final Account poundageAccount = this.accountService.getByIdWithLock(AccountConstants.POUNDAGE_ACCOUNT_ID).get();
         Preconditions.checkState(order.getPoundage().compareTo(poundageAccount.getDueSettleAmount()) <= 0);
         //待结算--可用余额
         this.accountService.increaseAvailableAmount(poundageAccount.getId(), order.getPoundage());

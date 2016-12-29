@@ -36,19 +36,19 @@
         WHERE id = #{id}
     </update>
 
-    <select id="selectById" resultType="com.jkm.hss.account.entity.UnfrozenRecord">
+    <select id="selectById" resultType="com.jkm.hss.account.entity.UnFrozenRecord">
         SELECT * FROM tb_unfrozen_record WHERE id = #{id}
     </select>
 
-    <select id="selectByFrozenRecordId" resultType="com.jkm.hss.account.entity.UnfrozenRecord">
+    <select id="selectByFrozenRecordId" resultType="com.jkm.hss.account.entity.UnFrozenRecord">
         SELECT * FROM tb_unfrozen_record WHERE frozen_record_id = #{frozenRecordId}
     </select>
 
-    <select id="selectByBusinessNo" resultType="com.jkm.hss.account.entity.UnfrozenRecord">
+    <select id="selectByBusinessNo" resultType="com.jkm.hss.account.entity.UnFrozenRecord">
         SELECT * FROM tb_unfrozen_record WHERE business_no = #{businessNo}
     </select>
 
-    <select id="selectByAccountId" resultType="com.jkm.hss.account.entity.UnfrozenRecord">
+    <select id="selectByAccountId" resultType="com.jkm.hss.account.entity.UnFrozenRecord">
         SELECT * FROM tb_unfrozen_record WHERE account_id = #{accountId}
     </select>
 </mapper>

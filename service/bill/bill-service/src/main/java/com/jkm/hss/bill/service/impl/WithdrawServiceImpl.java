@@ -3,12 +3,10 @@ package com.jkm.hss.bill.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
-import com.jkm.base.common.spring.http.client.HttpClientFacade;
 import com.jkm.base.common.util.HttpClientPost;
-import com.jkm.base.common.util.SnGenerator;
 import com.jkm.hss.account.entity.Account;
 import com.jkm.hss.account.entity.FrozenRecord;
-import com.jkm.hss.account.entity.UnfrozenRecord;
+import com.jkm.hss.account.entity.UnFrozenRecord;
 import com.jkm.hss.account.enums.EnumAccountFlowType;
 import com.jkm.hss.account.enums.EnumUnfrozenType;
 import com.jkm.hss.account.helper.AccountConstants;
@@ -40,7 +38,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.text.DecimalFormat;
 import java.util.Date;
 import java.util.Map;
 
@@ -217,15 +214,15 @@ public class WithdrawServiceImpl implements WithdrawService {
             this.orderService.update(order);
             final FrozenRecord frozenRecord = this.frozenRecordService.getByBusinessNo(response.getOrderNo()).get();
             //解冻金额
-            final UnfrozenRecord unfrozenRecord = new UnfrozenRecord();
-            unfrozenRecord.setAccountId(account.getId());
-            unfrozenRecord.setFrozenRecordId(frozenRecord.getId());
-            unfrozenRecord.setBusinessNo(order.getOrderNo());
-            unfrozenRecord.setUnfrozenType(EnumUnfrozenType.CONSUME.getId());
-            unfrozenRecord.setUnfrozenAmount(frozenRecord.getFrozenAmount());
-            unfrozenRecord.setUnfrozenTime(new Date());
-            unfrozenRecord.setRemark("提现成功");
-            this.unfrozenRecordService.add(unfrozenRecord);
+            final UnFrozenRecord unFrozenRecord = new UnFrozenRecord();
+            unFrozenRecord.setAccountId(account.getId());
+            unFrozenRecord.setFrozenRecordId(frozenRecord.getId());
+            unFrozenRecord.setBusinessNo(order.getOrderNo());
+            unFrozenRecord.setUnfrozenType(EnumUnfrozenType.CONSUME.getId());
+            unFrozenRecord.setUnfrozenAmount(frozenRecord.getFrozenAmount());
+            unFrozenRecord.setUnfrozenTime(new Date());
+            unFrozenRecord.setRemark("提现成功");
+            this.unfrozenRecordService.add(unFrozenRecord);
             //减少总金额,减少冻结金额
             Preconditions.checkState(account.getFrozenAmount().compareTo(frozenRecord.getFrozenAmount()) >= 0);
             Preconditions.checkState(account.getTotalAmount().compareTo(frozenRecord.getFrozenAmount()) >= 0);
@@ -271,7 +268,7 @@ public class WithdrawServiceImpl implements WithdrawService {
         log.info("提现单--交易订单号[{}], 进行入账操作", order.getOrderNo());
         if (order.isWithdrawSuccess() && order.isDueSettle()) {
             //手续费账户
-            final Account poundageAccount = this.accountService.getByIdWithLock(AccountConstants.POUNDATE_ACCOUNT_ID).get();
+            final Account poundageAccount = this.accountService.getByIdWithLock(AccountConstants.POUNDAGE_ACCOUNT_ID).get();
             this.accountService.increaseTotalAmount(poundageAccount.getId(), order.getPoundage());
             this.accountService.increaseSettleAmount(poundageAccount.getId(), order.getPoundage());
             this.settleAccountFlowService.addSettleAccountFlow(poundageAccount.getId(), order.getOrderNo(),
@@ -300,7 +297,7 @@ public class WithdrawServiceImpl implements WithdrawService {
         final BigDecimal secondMoney = null == secondMoneyTriple ? new BigDecimal("0") : secondMoneyTriple.getMiddle();
         Preconditions.checkState(order.getPoundage().compareTo(channelMoney.add(productMoney).add(firstMoney).add(secondMoney)) >= 0);
         //手续费账户结算
-        final Account poundageAccount = this.accountService.getByIdWithLock(AccountConstants.POUNDATE_ACCOUNT_ID).get();
+        final Account poundageAccount = this.accountService.getByIdWithLock(AccountConstants.POUNDAGE_ACCOUNT_ID).get();
         Preconditions.checkState(order.getPoundage().compareTo(poundageAccount.getDueSettleAmount()) <= 0);
         //待结算--可用余额
         this.accountService.increaseAvailableAmount(poundageAccount.getId(), order.getPoundage());
@@ -310,7 +307,7 @@ public class WithdrawServiceImpl implements WithdrawService {
         this.accountFlowService.addAccountFlow(poundageAccount.getId(), order.getOrderNo(), order.getPoundage(),
                 "提现分润", EnumAccountFlowType.INCREASE);
         //分账
-        final Account poundageAccount1 = this.accountService.getByIdWithLock(AccountConstants.POUNDATE_ACCOUNT_ID).get();
+        final Account poundageAccount1 = this.accountService.getByIdWithLock(AccountConstants.POUNDAGE_ACCOUNT_ID).get();
         Preconditions.checkState(poundageAccount1.getAvailable().compareTo(channelMoney.add(productMoney).add(firstMoney).add(secondMoney)) >= 0);
         this.accountService.decreaseAvailableAmount(poundageAccount.getId(), order.getPoundage());
         this.accountService.decreaseTotalAmount(poundageAccount.getId(), order.getPoundage());
