@@ -39,11 +39,11 @@ public interface AccountFlowService {
     /**
      * 添加流水
      *
-     * @param account
+     * @param accountId
      * @param orderNo  交易订单号
      * @param changeAmount  变动金额
      * @param remark  备注
      * @param type 变更方向
      */
-    void addAccountFlow(Account account, String orderNo, BigDecimal changeAmount, String remark, EnumAccountFlowType type);
+    void addAccountFlow(long accountId, String orderNo, BigDecimal changeAmount, String remark, EnumAccountFlowType type);
 }

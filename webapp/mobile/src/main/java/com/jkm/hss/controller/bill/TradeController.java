@@ -87,7 +87,7 @@ public class TradeController extends BaseController {
             return CommonResponse.simpleResponse(-1, "支付方式错误");
         }
         final Pair<Integer, String> resultPair = this.payService.codeReceipt(payRequest.getTotalFee(),
-                payRequest.getPayChannel(), merchantInfo.get().getId());
+                payRequest.getPayChannel(), 2);
         if (0 == resultPair.getLeft()) {
             return CommonResponse.builder4MapResult(CommonResponse.SUCCESS_CODE, "收款成功")
                     .addParam("payUrl", resultPair.getRight()).build();
@@ -161,7 +161,7 @@ public class TradeController extends BaseController {
         if (1 != checkResult.getLeft()) {
             return CommonResponse.simpleResponse(-1, checkResult.getRight());
         }
-        final Pair<Integer, String> resultPair = this.withdrawService.merchantWithdraw(merchantInfo.get().getId(), "D0");
+        final Pair<Integer, String> resultPair = Pair.of(0, "");//this.withdrawService.merchantWithdraw(2, 87, "D0");
         if (0 == resultPair.getLeft()) {
             return CommonResponse.simpleResponse(1, "受理成功");
         }

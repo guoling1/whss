@@ -23,6 +23,17 @@ public final class SnGenerator {
     }
 
     /**
+     * 生成交易订单号
+     *
+     * @param tradeType
+     * @return
+     */
+    public static String generateSn(final int tradeType) {
+        return tradeType + "0" + DateFormatUtil.format(new Date(), "yyyyMMddHHmmssSSS") + RandomStringUtils.randomNumeric(6);
+    }
+
+
+    /**
      * 生成length位订单号
      * "JKM" + 时间戳＋＊位随机数
      *

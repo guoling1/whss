@@ -28,6 +28,15 @@ public interface OrderDao {
     int update(Order order);
 
     /**
+     * 更改交易备注
+     *
+     * @param id
+     * @param remark
+     * @return
+     */
+    int updateRemark(@Param("id") long id, @Param("remark") String remark);
+
+    /**
      * 更新交易状态
      *
      * @param id
@@ -72,7 +81,16 @@ public interface OrderDao {
      * 按交易订单号查询
      *
      * @param orderNo
+     * @param tradeType
      * @return
      */
-    Order selectByOrderNo(@Param("orderNo") String orderNo);
+    Order selectByOrderNoAndTradeType(@Param("orderNo") String orderNo, @Param("tradeType") int tradeType);
+
+    /**
+     * 根据支付单id查询打款单
+     *
+     * @param payOrderId
+     * @return
+     */
+    Order selectByPayOrderId(@Param("payOrderId") long payOrderId);
 }

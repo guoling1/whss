@@ -42,17 +42,17 @@ public final class PaymentSdkConstants {
     static {
         final PaymentSdkConfig config = getConfig();
         APP_ID= config.appId();
-        Preconditions.checkState(StringUtils.isEmpty(APP_ID), "加载好收收appId失败");
+        Preconditions.checkState(!StringUtils.isEmpty(APP_ID), "加载好收收appId失败");
         SDK_PAY_RETURN_URL= config.sdkPayReturnUrl();
-        Preconditions.checkState(StringUtils.isEmpty(SDK_PAY_RETURN_URL), "加载支付中心支付前端回调url失败");
+        Preconditions.checkState(!StringUtils.isEmpty(SDK_PAY_RETURN_URL), "加载支付中心支付前端回调url失败");
         SDK_PAY_NOTIFY_URL= config.sdkPayNotifyUrl();
-        Preconditions.checkState(StringUtils.isEmpty(SDK_PAY_NOTIFY_URL), "加载支付中心支付后台回调url失败");
+        Preconditions.checkState(!StringUtils.isEmpty(SDK_PAY_NOTIFY_URL), "加载支付中心支付后台回调url失败");
         SDK_PAY_WITHDRAW_NOTIFY_URL= config.sdkPayWithdrawNOtifyUrl();
-        Preconditions.checkState(StringUtils.isEmpty(SDK_PAY_WITHDRAW_NOTIFY_URL), "加载支付中心提现回调url失败");
+        Preconditions.checkState(!StringUtils.isEmpty(SDK_PAY_WITHDRAW_NOTIFY_URL), "加载支付中心提现回调url失败");
         SDK_PAY_PLACE_ORDER= config.sdkPayPlaceOrder();
-        Preconditions.checkState(StringUtils.isEmpty(SDK_PAY_PLACE_ORDER), "加载支付中心下单url失败");
+        Preconditions.checkState(!StringUtils.isEmpty(SDK_PAY_PLACE_ORDER), "加载支付中心下单url失败");
         SDK_PAY_WITHDRAW= config.sdkPayWithdraw();
-        Preconditions.checkState(StringUtils.isEmpty(SDK_PAY_WITHDRAW), "加载支付中心提现url失败");
+        Preconditions.checkState(!StringUtils.isEmpty(SDK_PAY_WITHDRAW), "加载支付中心提现url失败");
     }
 
     private static PaymentSdkConfig getConfig() {

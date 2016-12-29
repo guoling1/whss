@@ -2,6 +2,7 @@ package com.jkm.hss.controller.channel;
 
 import com.google.common.collect.Lists;
 import com.jkm.base.common.entity.CommonResponse;
+import com.jkm.hss.account.sevice.AccountService;
 import com.jkm.hss.helper.response.ProductListResponse;
 import com.jkm.hss.controller.BaseController;
 import com.jkm.hss.helper.request.ProductAddRequest;
@@ -39,7 +40,7 @@ public class ProductController extends BaseController {
     @Autowired
     private ProductChannelDetailService productChannelDetailService;
     @Autowired
-    private AccountInfoService accountInfoService;
+    private AccountService accountService;
     /**
      * 录入产品
      *
@@ -50,7 +51,7 @@ public class ProductController extends BaseController {
     @RequestMapping(value = "add", method = RequestMethod.POST)
     public CommonResponse add(@RequestBody final ProductAddRequest request) {
         try{
-            final long accountId = this.accountInfoService.addNewAccount();
+            final long accountId = this.accountService.initAccount(request.getProductName());
             final Product product = new Product();
             product.setAccountId(accountId);
             product.setProductName(request.getProductName());

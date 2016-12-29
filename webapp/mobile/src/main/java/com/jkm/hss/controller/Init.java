@@ -1,7 +1,10 @@
 package com.jkm.hss.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import com.jkm.hss.account.sevice.InitAccountService;
 import com.jkm.hss.admin.service.AdminUserInitService;
+import com.jkm.hss.mq.config.MqConfig;
+import com.jkm.hss.mq.producer.MqProducer;
 import com.jkm.hss.notifier.service.MessageTemplateInitService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +32,7 @@ public class Init {
     public void initSystem() {
         log.info("######################初始化系统--start##########################");
         this.initSmsTemplate();
+        this.initAccount();
         log.info("######################初始化系统--end##########################");
     }
 

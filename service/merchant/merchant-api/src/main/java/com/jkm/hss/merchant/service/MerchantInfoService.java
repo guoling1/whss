@@ -64,7 +64,7 @@ public interface MerchantInfoService {
      * @param requestMerchantInfo
      * @return
      */
-    long updateRecord(RequestMerchantInfo requestMerchantInfo);
+//    long updateRecord(RequestMerchantInfo requestMerchantInfo);
 
     /**
      * 扫码注册
@@ -109,5 +109,12 @@ public interface MerchantInfoService {
      */
     List<MerchantInfo> batchGetMerchantInfo(List<Long> merchantIdList);
 
-
+    /**
+     * 插入accountId
+     *
+     * @param accountId
+     * @param status
+     * @param merchantId
+     */
+    int addAccountId(long accountId, int status, long merchantId);
 }

@@ -7,6 +7,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.jkm.base.common.entity.PageModel;
 import com.jkm.base.common.util.DateFormatUtil;
+import com.jkm.hss.account.sevice.AccountService;
 import com.jkm.hss.admin.entity.DistributeQRCodeRecord;
 import com.jkm.hss.admin.entity.QRCode;
 import com.jkm.hss.admin.helper.responseparam.ActiveCodeCount;
@@ -33,7 +34,6 @@ import com.jkm.hss.dealer.service.DealerService;
 import com.jkm.hss.dealer.service.ShallProfitDetailService;
 import com.jkm.hss.merchant.entity.MerchantInfo;
 import com.jkm.hss.merchant.entity.OrderRecord;
-import com.jkm.hss.merchant.service.AccountInfoService;
 import com.jkm.hss.merchant.service.MerchantInfoService;
 import com.jkm.hss.product.entity.BasicChannel;
 import com.jkm.hss.product.entity.Product;
@@ -73,7 +73,7 @@ public class DealerServiceImpl implements DealerService {
     @Autowired
     private QRCodeService qrCodeService;
     @Autowired
-    private AccountInfoService accountInfoService;
+    private AccountService accountService;
     @Autowired
     private DistributeQRCodeRecordService distributeQRCodeRecordService;
     @Autowired
@@ -196,29 +196,33 @@ public class DealerServiceImpl implements DealerService {
     /**
      * {@inheritDoc}
      *
-     * @param orderRecord
+     * @param orderNo  交易订单号
+     * @param tradeAmount  交易金额
+     * @param channelSign  101,102,103
+     * @param merchantId  商户id
      * @return
      */
     @Override
     @Transactional
-    public Map<String, Triple<Long, BigDecimal, String>> shallProfit(OrderRecord orderRecord) {
-        final ShallProfitDetail detail = this.shallProfitDetailService.selectByOrderId(orderRecord.getOrderId());
+    public Map<String, Triple<Long, BigDecimal, BigDecimal>> shallProfit(final String orderNo, final BigDecimal tradeAmount,
+                                                                     final int channelSign, final long merchantId) {
+        final ShallProfitDetail detail = this.shallProfitDetailService.selectByOrderId(orderNo);
         if (detail != null){
-            log.error("此订单分润业务已经处理过[" + orderRecord.getOrderId() +"]");
+            log.error("此订单分润业务已经处理过[" + orderNo +"]");
             return null;
         }
         //根据代理商id查询代理商信息
-        final Optional<MerchantInfo> optional = this.merchantInfoService.selectById(orderRecord.getMerchantId());
+        final Optional<MerchantInfo> optional = this.merchantInfoService.selectById(merchantId);
         Preconditions.checkArgument(optional.isPresent(), "商户信息不存在");
         final MerchantInfo merchantInfo = optional.get();
         //待分润金额
-        final BigDecimal totalFee = orderRecord.getTotalFee();
-        final Map<String, Triple<Long, BigDecimal, String>> map = new HashMap<>();
+        final BigDecimal totalFee = tradeAmount;
+        final Map<String, Triple<Long, BigDecimal, BigDecimal>> map = new HashMap<>();
         //判断该经销商属于哪个代理, 若不属于代理, 则分润进入公司资金帐户
         if (merchantInfo.getDealerId() == 0){
-            final List<ProductChannelDetail> list = this.productChannelDetailService.selectByChannelTypeSign(orderRecord.getPayChannel());
+            final List<ProductChannelDetail> list = this.productChannelDetailService.selectByChannelTypeSign(channelSign);
             final ProductChannelDetail productChannelDetail = list.get(0);
-            final Optional<BasicChannel> channelOptional =  this.basicChannelService.selectByChannelTypeSign(orderRecord.getPayChannel());
+            final Optional<BasicChannel> channelOptional =  this.basicChannelService.selectByChannelTypeSign(channelSign);
             final BasicChannel basicChannel = channelOptional.get();
             final BigDecimal waitOriginMoney = totalFee.multiply(productChannelDetail.getProductMerchantPayRate());
             BigDecimal waitMoney;
@@ -265,10 +269,10 @@ public class DealerServiceImpl implements DealerService {
             }
             //记录通道, 产品分润明细
             final CompanyProfitDetail companyProfitDetail = new CompanyProfitDetail();
-            companyProfitDetail.setMerchantId(orderRecord.getMerchantId());
-            companyProfitDetail.setPaymentSn(orderRecord.getOrderId());
-            companyProfitDetail.setChannelType(orderRecord.getPayChannel());
-            companyProfitDetail.setTotalFee(orderRecord.getTotalFee());
+            companyProfitDetail.setMerchantId(merchantId);
+            companyProfitDetail.setPaymentSn(orderNo);
+            companyProfitDetail.setChannelType(channelSign);
+            companyProfitDetail.setTotalFee(totalFee);
             companyProfitDetail.setWaitShallAmount(waitMoney);
             companyProfitDetail.setWaitShallOriginAmount(waitOriginMoney);
             companyProfitDetail.setProfitType(EnumProfitType.BALANCE.getId());
@@ -277,24 +281,24 @@ public class DealerServiceImpl implements DealerService {
             companyProfitDetail.setChannelShallAmount(channelMoney);
             companyProfitDetail.setProfitDate(DateFormatUtil.format(new Date(), DateFormatUtil.yyyy_MM_dd));
             this.companyProfitDetailService.add(companyProfitDetail);
-            map.put("merchant", Triple.of(merchantInfo.getAccountId(), merchantMoney, "D0"));
-            map.put("merchantAndProfit", Triple.of(merchantInfo.getAccountId(), totalFee.subtract(basicMoney), "D0"));
-            map.put("channelMoney",Triple.of(basicChannel.getAccountId(), channelMoney,"M1"));
-            map.put("productMoney",Triple.of(product.getAccountId(), productMoney,"M1"));
+//            map.put("merchant", Triple.of(merchantInfo.getAccountId(), merchantMoney, "D0"));
+//            map.put("merchantAndProfit", Triple.of(merchantInfo.getAccountId(), totalFee.subtract(basicMoney), "D0"));
+            map.put("channelMoney",Triple.of(basicChannel.getAccountId(), channelMoney, basicChannel.getBasicTradeRate()));
+            map.put("productMoney",Triple.of(product.getAccountId(), productMoney, productChannelDetail.getProductTradeRate()));
             return map;
         }
 
         final Dealer dealer = this.dealerDao.selectById(merchantInfo.getDealerId());
         //查询该代理商的收单利率
-        final List<DealerChannelRate> dealerChannelRateList =  this.dealerRateService.selectByDealerIdAndChannelId(dealer.getId(), orderRecord.getPayChannel());
+        final List<DealerChannelRate> dealerChannelRateList =  this.dealerRateService.selectByDealerIdAndChannelId(dealer.getId(), channelSign);
         final DealerChannelRate dealerChannelRate = dealerChannelRateList.get(0);
         //获取产品的信息, 产品通道的费率
         final Optional<Product> productOptional = this.productService.selectById(dealerChannelRate.getProductId());
         final  Product product = productOptional.get();
         final Optional<ProductChannelDetail> productChannelDetailOptional =
-                this.productChannelDetailService.selectByProductIdAndChannelId(product.getId(), orderRecord.getPayChannel());
+                this.productChannelDetailService.selectByProductIdAndChannelId(product.getId(), channelSign);
         final ProductChannelDetail productChannelDetail = productChannelDetailOptional.get();
-        final Optional<BasicChannel> channelOptional =  this.basicChannelService.selectByChannelTypeSign(orderRecord.getPayChannel());
+        final Optional<BasicChannel> channelOptional =  this.basicChannelService.selectByChannelTypeSign(channelSign);
         final BasicChannel basicChannel = channelOptional.get();
         //待分润金额
         final BigDecimal waitOriginMoney = totalFee.multiply(dealerChannelRate.getDealerMerchantPayRate());
@@ -344,8 +348,8 @@ public class DealerServiceImpl implements DealerService {
             final ShallProfitDetail shallProfitDetail = new ShallProfitDetail();
             shallProfitDetail.setMerchantId(merchantInfo.getId());
             shallProfitDetail.setTotalFee(totalFee);
-            shallProfitDetail.setChannelType(orderRecord.getPayChannel());
-            shallProfitDetail.setPaymentSn(orderRecord.getOrderId());
+            shallProfitDetail.setChannelType(channelSign);
+            shallProfitDetail.setPaymentSn(orderNo);
             shallProfitDetail.setWaitShallAmount(waitMoney);
             shallProfitDetail.setWaitShallOriginAmount(waitOriginMoney);
             shallProfitDetail.setIsDirect(1);
@@ -359,17 +363,17 @@ public class DealerServiceImpl implements DealerService {
             shallProfitDetail.setSecondShallAmount(new BigDecimal(0));
             shallProfitDetail.setProfitDate(DateFormatUtil.format(new Date(), DateFormatUtil.yyyy_MM_dd));
             this.shallProfitDetailService.init(shallProfitDetail);
-            map.put("merchant", Triple.of(merchantInfo.getAccountId(), merchantMoney,"D0"));
-            map.put("merchantAndProfit", Triple.of(merchantInfo.getAccountId(), totalFee.subtract(basicMoney), "D0"));
-            map.put("firstMoney", Triple.of(dealer.getAccountId(), firestMoney, "M1"));
-            map.put("channelMoney",Triple.of(basicChannel.getAccountId(), channelMoney, "M1"));
-            map.put("productMoney",Triple.of(product.getAccountId(), productMoney, "M1"));
+//            map.put("merchant", Triple.of(merchantInfo.getAccountId(), merchantMoney,"D0"));
+//            map.put("merchantAndProfit", Triple.of(merchantInfo.getAccountId(), totalFee.subtract(basicMoney), "D0"));
+            map.put("firstMoney", Triple.of(dealer.getAccountId(), firestMoney, dealerChannelRate.getDealerTradeRate()));
+            map.put("channelMoney",Triple.of(basicChannel.getAccountId(), channelMoney, basicChannel.getBasicTradeRate()));
+            map.put("productMoney",Triple.of(product.getAccountId(), productMoney, productChannelDetail.getProductTradeRate()));
         }else{
             //二级
             //获取二级的一级dealer信息
             final Dealer firestDealer = this.dealerDao.selectById(dealer.getFirstLevelDealerId());
             //查询二级的一级dealer 收单费率
-            final List<DealerChannelRate> firstDealerChannelRateList =  this.dealerRateService.selectByDealerIdAndChannelId(firestDealer.getId(), orderRecord.getPayChannel());
+            final List<DealerChannelRate> firstDealerChannelRateList =  this.dealerRateService.selectByDealerIdAndChannelId(firestDealer.getId(), channelSign);
             final DealerChannelRate firstDealerChannelRate = firstDealerChannelRateList.get(0);
             //一级分润
             final BigDecimal firestMoney = totalFee.multiply(dealerChannelRate.getDealerTradeRate().
@@ -404,8 +408,8 @@ public class DealerServiceImpl implements DealerService {
             final ShallProfitDetail shallProfitDetail = new ShallProfitDetail();
             shallProfitDetail.setMerchantId(merchantInfo.getId());
             shallProfitDetail.setTotalFee(totalFee);
-            shallProfitDetail.setChannelType(orderRecord.getPayChannel());
-            shallProfitDetail.setPaymentSn(orderRecord.getOrderId());
+            shallProfitDetail.setChannelType(channelSign);
+            shallProfitDetail.setPaymentSn(orderNo);
             shallProfitDetail.setWaitShallAmount(waitMoney);
             shallProfitDetail.setWaitShallOriginAmount(waitOriginMoney);
             shallProfitDetail.setIsDirect(0);
@@ -419,14 +423,14 @@ public class DealerServiceImpl implements DealerService {
             shallProfitDetail.setSecondShallAmount(secondMoney);
             shallProfitDetail.setProfitDate(DateFormatUtil.format(new Date(), DateFormatUtil.yyyy_MM_dd));
             this.shallProfitDetailService.init(shallProfitDetail);
-            map.put("merchant", Triple.of(merchantInfo.getAccountId(), merchantMoney, "D0"));
-            map.put("merchantAndProfit", Triple.of(merchantInfo.getAccountId(), totalFee.subtract(basicMoney), "D0"));
-            map.put("firstMoney", Triple.of(firestDealer.getAccountId(), firestMoney, "M1"));
-            map.put("secondMoney", Triple.of(dealer.getAccountId(),secondMoney, "M1"));
-            map.put("channelMoney",Triple.of(basicChannel.getAccountId(), channelMoney,"M1"));
-            map.put("productMoney",Triple.of(product.getAccountId(), productMoney,"M1"));
+//            map.put("merchant", Triple.of(merchantInfo.getAccountId(), merchantMoney, "D0"));
+//            map.put("merchantAndProfit", Triple.of(merchantInfo.getAccountId(), totalFee.subtract(basicMoney), "D0"));
+            map.put("firstMoney", Triple.of(firestDealer.getAccountId(), firestMoney, firstDealerChannelRate.getDealerTradeRate()));
+            map.put("secondMoney", Triple.of(dealer.getAccountId(),secondMoney, dealerChannelRate.getDealerTradeRate()));
+            map.put("channelMoney",Triple.of(basicChannel.getAccountId(), channelMoney, basicChannel.getBasicTradeRate()));
+            map.put("productMoney",Triple.of(product.getAccountId(), productMoney, productChannelDetail.getProductTradeRate()));
         }
-        log.info("订单" + orderRecord.getOrderId() + "分润处理成功,返回map成功");
+        log.info("订单" + orderNo + "分润处理成功,返回map成功");
         return map;
     }
 
@@ -461,7 +465,7 @@ public class DealerServiceImpl implements DealerService {
     @Override
     @Transactional
     public long createSecondDealer(final SecondLevelDealerAddRequest request, final long firstLevelDealerId) {
-        final long accountId = this.accountInfoService.addNewAccount();
+        final long accountId = this.accountService.initAccount(request.getName());
         final Dealer dealer = new Dealer();
         dealer.setAccountId(accountId);
         dealer.setMobile(request.getMobile());
@@ -533,6 +537,17 @@ public class DealerServiceImpl implements DealerService {
             return Collections.emptyList();
         }
         return this.dealerDao.selectByIds(ids);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param accountId
+     * @return
+     */
+    @Override
+    public Optional<Dealer> getByAccountId(final long accountId) {
+        return Optional.fromNullable(this.dealerDao.selectByAccountId(accountId));
     }
 
     /**
@@ -731,7 +746,7 @@ public class DealerServiceImpl implements DealerService {
     @Override
     @Transactional
     public long createFirstDealer(final FirstLevelDealerAddRequest firstLevelDealerAddRequest) {
-        final long accountId = this.accountInfoService.addNewAccount();
+        final long accountId = this.accountService.initAccount(firstLevelDealerAddRequest.getName());
         final Dealer dealer = new Dealer();
         dealer.setAccountId(accountId);
         dealer.setMobile(firstLevelDealerAddRequest.getMobile());

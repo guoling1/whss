@@ -74,7 +74,7 @@ public class PaymentSdkDaiFuRequest {
     private String note;
 
     /**
-     * 自定义系统名称（非ygww）
+     * 自定义系统名称（非ygww）和appId一致
      */
     private String systemCode;
 

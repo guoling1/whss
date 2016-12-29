@@ -45,6 +45,15 @@ public interface PayService {
      */
     void markPayFail(PaymentSdkPayCallbackResponse paymentSdkPayCallbackResponse, Order order);
 
+
+    /**
+     * 将交易订单标记为 处理中
+     *
+     * @param paymentSdkPayCallbackResponse
+     * @param order
+     */
+    void markPayHandling(PaymentSdkPayCallbackResponse paymentSdkPayCallbackResponse, Order order);
+
     /**
      * 商户入账
      *  1.入账到商户的账户待结算余额
@@ -64,7 +73,7 @@ public interface PayService {
     void merchantSettle(Order order, long merchantId);
 
     /**
-     * 手续费结算 到 代理商待结算账户
+     * 支付手续费结算 到 代理商等 待结算账户
      *
      * @param order
      * @param merchantId

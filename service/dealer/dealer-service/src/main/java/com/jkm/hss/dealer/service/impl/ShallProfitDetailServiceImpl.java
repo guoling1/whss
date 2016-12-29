@@ -71,11 +71,16 @@ public class ShallProfitDetailServiceImpl implements ShallProfitDetailService{
     /**
      * {@inheritDoc}
      *
-     * @param orderRecord
+     * @param orderNo
+     * @param tradeAmount
+     * @param channelSign
+     * @param merchantId
+     * @return
      */
     @Transactional
     @Override
-    public Map<String, Triple<Long, BigDecimal, String>> withdrawProfitCount(OrderRecord orderRecord) {
+    public Map<String, Triple<Long, BigDecimal, String>> withdrawProfitCount(final String orderNo, final BigDecimal tradeAmount,
+                                                                             final int channelSign, final long merchantId) {
 //        final ShallProfitDetail detail = this.shallProfitDetailDao.selectByOrderId(orderRecord.getOrderId());
 //        if (detail != null){
 //            log.error("此订单分润业务已经处理过[" + orderRecord.getOrderId() +"]");
@@ -83,14 +88,14 @@ public class ShallProfitDetailServiceImpl implements ShallProfitDetailService{
 //        }
         //提现分润
         final Optional<MerchantInfo> merchantInfoOptional =
-                this.merchantInfoService.selectById(orderRecord.getMerchantId());
+                this.merchantInfoService.selectById(merchantId);
         Preconditions.checkNotNull(merchantInfoOptional.isPresent(), "商户信息不存在");
         final Map<String, Triple<Long, BigDecimal, String>> map = new HashMap<>();
         final MerchantInfo merchantInfo = merchantInfoOptional.get();
         if (merchantInfo.getDealerId() == 0){
-            final List<ProductChannelDetail> list = this.productChannelDetailService.selectByChannelTypeSign(orderRecord.getPayChannel());
+            final List<ProductChannelDetail> list = this.productChannelDetailService.selectByChannelTypeSign(channelSign);
             final ProductChannelDetail productChannelDetail = list.get(0);
-            final Optional<BasicChannel> channelOptional =  this.basicChannelService.selectByChannelTypeSign(orderRecord.getPayChannel());
+            final Optional<BasicChannel> channelOptional =  this.basicChannelService.selectByChannelTypeSign(channelSign);
             final BasicChannel basicChannel = channelOptional.get();
             //获取产品的信息, 产品通道的费率
             final Optional<Product> productOptional = this.productService.selectById(productChannelDetail.getProductId());
@@ -98,9 +103,9 @@ public class ShallProfitDetailServiceImpl implements ShallProfitDetailService{
             final BigDecimal productMoney = productChannelDetail.getProductMerchantWithdrawFee().subtract(productChannelDetail.getProductWithdrawFee());
             final BigDecimal channelMoney = productChannelDetail.getProductWithdrawFee().subtract(basicChannel.getBasicWithdrawFee());
             final CompanyProfitDetail companyProfitDetail = new CompanyProfitDetail();
-            companyProfitDetail.setMerchantId(orderRecord.getMerchantId());
-            companyProfitDetail.setPaymentSn(orderRecord.getOrderId());
-            companyProfitDetail.setTotalFee(orderRecord.getTotalFee());
+            companyProfitDetail.setMerchantId(merchantId);
+            companyProfitDetail.setPaymentSn(orderNo);
+            companyProfitDetail.setTotalFee(tradeAmount);
             companyProfitDetail.setWaitShallAmount(productChannelDetail.getProductMerchantWithdrawFee());
             companyProfitDetail.setWaitShallOriginAmount(productChannelDetail.getProductMerchantWithdrawFee());
             companyProfitDetail.setProfitType(EnumProfitType.WITHDRAW.getId());
@@ -117,14 +122,14 @@ public class ShallProfitDetailServiceImpl implements ShallProfitDetailService{
         Preconditions.checkNotNull(dealerOptional.isPresent(), "代理商不存在");
         final Dealer dealer = dealerOptional.get();
         //根据代理商id查询其产品通道费率,产品费率,通道成本费率
-        List<ProductChannelDetail> list = this.productChannelDetailService.selectByChannelTypeSign(orderRecord.getPayChannel());
+        List<ProductChannelDetail> list = this.productChannelDetailService.selectByChannelTypeSign(channelSign);
         final ProductChannelDetail productChannelDetail = list.get(0);
         final Optional<BasicChannel> basicChannelOptional = this.basicChannelService.selectByChannelTypeSign(productChannelDetail.getChannelTypeSign());
         final BasicChannel basicChannel = basicChannelOptional.get();
         final Product product = this.productService.selectById(productChannelDetail.getProductId()).get();
         //获取代理商通道费率
         final List<DealerChannelRate> dealerChannelList =
-                this.dealerChannelRateService.selectByDealerIdAndPayChannelSign(dealer.getId(), orderRecord.getPayChannel());
+                this.dealerChannelRateService.selectByDealerIdAndPayChannelSign(dealer.getId(), channelSign);
         final DealerChannelRate dealerChannelRate = dealerChannelList.get(0);
         //判断是几级代理
         if (dealer.getLevel() == EnumDealerLevel.FIRST.getId()){
@@ -134,10 +139,10 @@ public class ShallProfitDetailServiceImpl implements ShallProfitDetailService{
             final BigDecimal productMoney = dealerChannelRate.getDealerWithdrawFee().subtract(productChannelDetail.getProductWithdrawFee());
             final BigDecimal channelMoney = productChannelDetail.getProductWithdrawFee().subtract(basicChannel.getBasicWithdrawFee());
             final ShallProfitDetail shallProfitDetail = new ShallProfitDetail();
-            shallProfitDetail.setMerchantId(orderRecord.getMerchantId());
-            shallProfitDetail.setPaymentSn(orderRecord.getOrderId());
-            shallProfitDetail.setTotalFee(orderRecord.getTotalFee());
-            shallProfitDetail.setChannelType(orderRecord.getPayChannel());
+            shallProfitDetail.setMerchantId(merchantId);
+            shallProfitDetail.setPaymentSn(orderNo);
+            shallProfitDetail.setTotalFee(tradeAmount);
+            shallProfitDetail.setChannelType(channelSign);
             shallProfitDetail.setWaitShallAmount(withdrawMoney);
             shallProfitDetail.setWaitShallOriginAmount(withdrawMoney);
             shallProfitDetail.setIsDirect(1);
@@ -161,7 +166,7 @@ public class ShallProfitDetailServiceImpl implements ShallProfitDetailService{
             final Dealer firstDealer = firstDealerOptional.get();
             //获取一级代理商通道费率
             final List<DealerChannelRate> firstDealerChannelList =
-                    this.dealerChannelRateService.selectByDealerIdAndPayChannelSign(firstDealer.getId(), orderRecord.getPayChannel());
+                    this.dealerChannelRateService.selectByDealerIdAndPayChannelSign(firstDealer.getId(), channelSign);
             final DealerChannelRate firstDealerChannelRate = firstDealerChannelList.get(0);
             //商户体现手续费
             final BigDecimal withdrawMoney = dealerChannelRate.getDealerMerchantWithdrawFee();
@@ -170,10 +175,10 @@ public class ShallProfitDetailServiceImpl implements ShallProfitDetailService{
             final BigDecimal productMoney = firstDealerChannelRate.getDealerWithdrawFee().subtract(productChannelDetail.getProductWithdrawFee());
             final BigDecimal channelMoney = productChannelDetail.getProductWithdrawFee().subtract(basicChannel.getBasicWithdrawFee());
             final ShallProfitDetail shallProfitDetail = new ShallProfitDetail();
-            shallProfitDetail.setMerchantId(orderRecord.getMerchantId());
-            shallProfitDetail.setPaymentSn(orderRecord.getOrderId());
-            shallProfitDetail.setChannelType(orderRecord.getPayChannel());
-            shallProfitDetail.setTotalFee(orderRecord.getTotalFee());
+            shallProfitDetail.setMerchantId(merchantId);
+            shallProfitDetail.setPaymentSn(orderNo);
+            shallProfitDetail.setChannelType(channelSign);
+            shallProfitDetail.setTotalFee(tradeAmount);
             shallProfitDetail.setWaitShallAmount(withdrawMoney);
             shallProfitDetail.setWaitShallOriginAmount(withdrawMoney);
             shallProfitDetail.setIsDirect(0);
@@ -192,7 +197,7 @@ public class ShallProfitDetailServiceImpl implements ShallProfitDetailService{
             map.put("channelMoney",Triple.of(basicChannel.getAccountId(), channelMoney,"M1"));
             map.put("productMoney",Triple.of(product.getAccountId(), productMoney,"M1"));
         }
-        log.info("订单" + orderRecord.getOrderId() + "分润处理成功,返回map成功");
+        log.info("订单" + orderNo + "分润处理成功,返回map成功");
         return map;
     }
 

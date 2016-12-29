@@ -5,9 +5,12 @@ import com.jkm.hss.account.dao.SettleAccountFlowDao;
 import com.jkm.hss.account.entity.Account;
 import com.jkm.hss.account.entity.SettleAccountFlow;
 import com.jkm.hss.account.enums.EnumAccountFlowType;
+import com.jkm.hss.account.sevice.AccountService;
 import com.jkm.hss.account.sevice.SettleAccountFlowService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -19,7 +22,10 @@ import java.util.Date;
 @Service
 public class SettleAccountFlowServiceImpl implements SettleAccountFlowService {
 
+    @Autowired
     private SettleAccountFlowDao settleAccountFlowDao;
+    @Autowired
+    private AccountService accountService;
 
     /**
      * {@inheritDoc}
@@ -56,27 +62,33 @@ public class SettleAccountFlowServiceImpl implements SettleAccountFlowService {
     }
 
     /**
+     *{@inheritDoc}
      *
-     * @param account
+     * @param accountId
      * @param orderNo  交易订单号
      * @param changeAmount  变动金额
      * @param remark  备注
      * @param type 变更方向
      */
     @Override
-    public void addSettleAccountFlow(Account account, String orderNo, BigDecimal changeAmount, String remark, EnumAccountFlowType type) {
+    @Transactional
+    public void addSettleAccountFlow(long accountId, String orderNo, BigDecimal changeAmount, String remark, EnumAccountFlowType type) {
+        //此时的account已经是可用余额改变的结果
+        final Account account = this.accountService.getByIdWithLock(accountId).get();
         final SettleAccountFlow settleAccountFlow = new SettleAccountFlow();
         settleAccountFlow.setAccountId(account.getId());
         settleAccountFlow.setOrderNo(orderNo);
-        settleAccountFlow.setBeforeAmount(account.getAvailable());
         settleAccountFlow.setType(type.getId());
         if (EnumAccountFlowType.DECREASE.getId() == type.getId()) {
             settleAccountFlow.setOutAmount(changeAmount);
+            settleAccountFlow.setBeforeAmount(account.getDueSettleAmount().add(changeAmount));
+            settleAccountFlow.setAfterAmount(account.getDueSettleAmount());
         }
         if (EnumAccountFlowType.INCREASE.getId() == type.getId()) {
             settleAccountFlow.setIncomeAmount(changeAmount);
+            settleAccountFlow.setBeforeAmount(account.getDueSettleAmount().subtract(changeAmount));
+            settleAccountFlow.setAfterAmount(account.getDueSettleAmount());
         }
-        settleAccountFlow.setAfterAmount(account.getAvailable().add(changeAmount));
         settleAccountFlow.setChangeTime(new Date());
         settleAccountFlow.setRemark(remark);
         this.settleAccountFlowDao.insert(settleAccountFlow);

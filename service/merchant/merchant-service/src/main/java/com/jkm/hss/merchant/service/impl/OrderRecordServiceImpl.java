@@ -830,8 +830,10 @@ public class OrderRecordServiceImpl implements OrderRecordService {
                     log.info("支付完成，开始计算收益");
                     /**
                      * ①计算收益
+                     *
+                     * dealerService.shallProfit(orderRecord.get());
                      */
-                    Map<String, Triple<Long, BigDecimal, String>> map = dealerService.shallProfit(orderRecord.get());
+                    Map<String, Triple<Long, BigDecimal, String>> map = null;
                     log.info("分佣返回参数为{}",JSONObject.fromObject(map).toString());
 
                     /**
@@ -1142,7 +1144,7 @@ public class OrderRecordServiceImpl implements OrderRecordService {
         Map<String, Triple<Long, BigDecimal, String>> map= null;
         try{
             log.info("代付success,开始查询订单号为{}的收益。。。",orderRecord.getOrderId());
-            map = shallProfitDetailService.withdrawProfitCount(orderRecord);
+//            map = shallProfitDetailService.withdrawProfitCount(orderRecord);
             log.info("代付success,查询收益成功");
         }catch(Throwable e){
             log.error("代付success,订单为{}的【提现收益计算】异常",orderRecord.getOrderId());
@@ -1613,7 +1615,7 @@ public class OrderRecordServiceImpl implements OrderRecordService {
                              */
                             Map<String, Triple<Long, BigDecimal, String>> map=null;
                             try{
-                                map = dealerService.shallProfit(orderRecord);
+//                                map = dealerService.shallProfit(orderRecord);
                             }catch (Throwable e){
                                 log.error("订单为{}的【收益计算】错误",orderRecord.getOrderId());
                                 log.error("【收益计算】异常{}",e);

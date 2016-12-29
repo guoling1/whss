@@ -6,6 +6,7 @@ import com.jkm.hss.account.entity.Account;
 import com.jkm.hss.account.entity.AccountFlow;
 import com.jkm.hss.account.enums.EnumAccountFlowType;
 import com.jkm.hss.account.sevice.AccountFlowService;
+import com.jkm.hss.account.sevice.AccountService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,6 +23,8 @@ public class AccountFlowServiceImpl implements AccountFlowService {
 
     @Autowired
     private AccountFlowDao accountFlowDao;
+    @Autowired
+    private AccountService accountService;
 
     /**
      * {@inheritDoc}
@@ -60,26 +63,30 @@ public class AccountFlowServiceImpl implements AccountFlowService {
     /**
      * {@inheritDoc}
      *
-     * @param account
+     * @param accountId
      * @param orderNo  交易订单号
      * @param changeAmount  变动金额
      * @param remark  备注
      */
     @Override
-    public void addAccountFlow(final Account account, final String orderNo, final BigDecimal changeAmount,
+    public void addAccountFlow(final long accountId, final String orderNo, final BigDecimal changeAmount,
                                final String remark, EnumAccountFlowType type) {
+        //此时的account已经是可用余额改变的结果
+        final Account account = this.accountService.getByIdWithLock(accountId).get();
         final AccountFlow accountFlow = new AccountFlow();
         accountFlow.setAccountId(account.getId());
         accountFlow.setOrderNo(orderNo);
-        accountFlow.setBeforeAmount(account.getAvailable());
         accountFlow.setType(type.getId());
         if (EnumAccountFlowType.DECREASE.getId() == type.getId()) {
             accountFlow.setOutAmount(changeAmount);
+            accountFlow.setBeforeAmount(account.getAvailable().add(changeAmount));
+            accountFlow.setAfterAmount(account.getAvailable());
         }
         if (EnumAccountFlowType.INCREASE.getId() == type.getId()) {
             accountFlow.setIncomeAmount(changeAmount);
+            accountFlow.setBeforeAmount(account.getAvailable().subtract(changeAmount));
+            accountFlow.setAfterAmount(account.getAvailable());
         }
-        accountFlow.setAfterAmount(account.getAvailable().add(changeAmount));
         accountFlow.setChangeTime(new Date());
         accountFlow.setRemark(remark);
         this.accountFlowDao.insert(accountFlow);

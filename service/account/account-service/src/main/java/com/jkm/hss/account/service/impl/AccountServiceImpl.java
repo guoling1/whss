@@ -39,6 +39,10 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public long initAccount(final String userName) {
         final Account account = new Account();
+        account.setDueSettleAmount(new BigDecimal("0.00"));
+        account.setFrozenAmount(new BigDecimal("0.00"));
+        account.setAvailable(new BigDecimal("0.00"));
+        account.setTotalAmount(new BigDecimal("0.00"));
         account.setUserName(userName);
         this.add(account);
         return account.getId();
@@ -136,7 +140,7 @@ public class AccountServiceImpl implements AccountService {
      */
     @Override
     public int increaseSettleAmount(final long id, final BigDecimal amount) {
-        return 0;
+        return this.accountDao.increaseSettleAmount(id, amount);
     }
 
     /**
@@ -148,7 +152,7 @@ public class AccountServiceImpl implements AccountService {
      */
     @Override
     public int decreaseSettleAmount(final long id, final BigDecimal amount) {
-        return 0;
+        return this.accountDao.decreaseSettleAmount(id, amount);
     }
 
     /**

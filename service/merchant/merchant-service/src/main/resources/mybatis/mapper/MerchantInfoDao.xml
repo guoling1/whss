@@ -181,6 +181,15 @@
         </trim>
     </insert>
 
+    <update id="addAccountId">
+        UPDATE tb_merchant_info
+        SET
+        account_id=#{accountId},
+        status = #{status}
+        WHERE id=#{merchantId}
+    </update>
+
+
     <!-- 修 改-->
     <update id="updateBySelective">
         UPDATE tb_merchant_info

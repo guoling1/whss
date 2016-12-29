@@ -21,6 +21,11 @@ import java.util.Date;
 public class Order extends BaseEntity {
 
     /**
+     * 如果是提现单 ，此值表示 对应支付单的id
+     */
+    private long payOrderId;
+
+    /**
      * 交易订单号
      */
     private String orderNo;
@@ -149,6 +154,15 @@ public class Order extends BaseEntity {
      */
     public boolean isWithDrawing() {
         return EnumOrderStatus.WITHDRAWING.getId() == this.status;
+    }
+
+    /**
+     * 是否提现成功
+     *
+     * @return
+     */
+    public boolean isWithdrawSuccess() {
+        return EnumOrderStatus.WITHDRAW_SUCCESS.getId() == this.status;
     }
 
     /**

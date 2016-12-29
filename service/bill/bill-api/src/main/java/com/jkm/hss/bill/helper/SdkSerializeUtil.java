@@ -1,5 +1,6 @@
 package com.jkm.hss.bill.helper;
 
+import com.google.common.base.Objects;
 import com.google.common.base.Throwables;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
@@ -34,7 +35,11 @@ public class SdkSerializeUtil {
         final Map<String, String> result = new HashMap<>();
         for (final Field field : fields) {
             final String key = field.getName();
-            final String value = getFieldValue(field, obj).toString();
+            final Object fieldValue = getFieldValue(field, obj);
+            if (Objects.equal(fieldValue, null) || Objects.equal(field, "")) {
+                continue;
+            }
+            final String value = fieldValue.toString();
             result.put(key, value);
         }
         return result;

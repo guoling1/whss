@@ -34,6 +34,10 @@
         </dependency>
         <dependency>
             <groupId>com.jkm</groupId>
+            <artifactId>hss-common-mq</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.jkm</groupId>
             <artifactId>hss-sms-sdk</artifactId>
         </dependency>
         <dependency>

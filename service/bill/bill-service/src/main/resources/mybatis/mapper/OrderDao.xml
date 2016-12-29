@@ -4,6 +4,7 @@
     <insert id="insert" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO tb_order
         (
+        pay_order_id,
         order_no,
         trade_amount,
         real_pay_amount,
@@ -27,6 +28,7 @@
         )
         VALUES
         (
+        #{payOrderId},
         #{orderNo},
         #{tradeAmount},
         #{realPayAmount},
@@ -51,6 +53,8 @@
     </insert>
 
     <update id="update">
+        UPDATE tb_order
+        SET
         order_no = #{orderNo},
         trade_amount = #{tradeAmount},
         real_pay_amount = #{realPayAmount},
@@ -73,16 +77,20 @@
         WHERE id = #{id}
     </update>
 
+    <update id="updateRemark">
+        UPDATE tb_order SET remark = #{remark} WHERE id = #{id}
+    </update>
+
     <update id="updateStatus">
         UPDATE tb_order SET status = #{status}, remark = #{remark} WHERE id = #{id}
     </update>
 
     <update id="updateSettleStatus">
-        UPDATE tb_order settleStatus = #{status} WHERE id = #{id}
+        UPDATE tb_order SET settle_status = #{status} WHERE id = #{id}
     </update>
 
     <update id="markSettleSuccess">
-        UPDATE tb_order settleStatus = #{status}, success_settle_time = #{successSettleTime} WHERE id = #{id}
+        UPDATE tb_order SET settle_status = #{status}, success_settle_time = #{successSettleTime} WHERE id = #{id}
     </update>
 
     <select id="selectById" resultType="com.jkm.hss.bill.entity.Order">
@@ -93,8 +101,12 @@
         SELECT * FROM tb_order WHERE id = #{id} FOR UPDATE
     </select>
 
-    <select id="selectByOrderNo" resultType="com.jkm.hss.bill.entity.Order">
-        SELECT * FROM tb_order WHERE order_no = #{orderNo}
+    <select id="selectByOrderNoAndTradeType" resultType="com.jkm.hss.bill.entity.Order">
+        SELECT * FROM tb_order WHERE order_no = #{orderNo} AND trade_type = #{tradeType};
+    </select>
+
+    <select id="selectByPayOrderId" resultType="com.jkm.hss.bill.entity.Order">
+        SELECT * FROM tb_order WHERE pay_order_id = #{payOrderId} AND trade_type = 3;
     </select>
 
 </mapper>

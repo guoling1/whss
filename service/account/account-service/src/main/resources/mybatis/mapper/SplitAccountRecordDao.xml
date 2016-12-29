@@ -26,6 +26,8 @@
         #{splitTotalAmount},
         #{splitAmount},
         #{splitRate},
+        #{splitSn},
+        #{splitDate},
         #{outMoneyAccountId},
         #{receiptMoneyAccountId},
         #{receiptMoneyUserName},

@@ -24,9 +24,9 @@ public class MqProducer {
 
         final ProducerBean producer = SpringContextHolder.getBeanByName("producer");
         try {
-            Message message = new Message(MqConfig.TOPIC, mqType, requestData.toString().getBytes("UTF-8"));
+            final Message message = new Message(MqConfig.TOPIC, mqType, requestData.toString().getBytes("UTF-8"));
             message.setStartDeliverTime(System.currentTimeMillis() + delayTime);
-            SendResult result = producer.send(message);
+            final SendResult result = producer.send(message);
             log.info("mq消息tag[{}], msgId[{}]生产成功", mqType, result.getMessageId());
         } catch (Throwable e) {
             log.error("mq消息tag[" + mqType + "]生产失败", e);

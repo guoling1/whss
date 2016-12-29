@@ -89,10 +89,10 @@ public class MerchantInfoServiceImpl implements MerchantInfoService {
         return this.merchantInfoDao.getAll(merchantInfo);
     }
 
-    @Override
-    public long updateRecord(RequestMerchantInfo requestMerchantInfo) {
-        return this.merchantInfoDao.updateRecord(requestMerchantInfo);
-    }
+//    @Override
+//    public long updateRecord(RequestMerchantInfo requestMerchantInfo) {
+//        return this.merchantInfoDao.updateRecord(requestMerchantInfo);
+//    }
 
     @Override
     public long regByWxPub(MerchantInfo merchantInfo) {
@@ -130,6 +130,19 @@ public class MerchantInfoServiceImpl implements MerchantInfoService {
     @Override
     public List<MerchantInfo> batchGetMerchantInfo(List<Long> merchantIdList) {
         return this.merchantInfoDao.batchGetMerchantInfo(merchantIdList);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param accountId
+     * @param status
+     * @param merchantId
+     * @return
+     */
+    @Override
+    public int addAccountId(final long accountId, final int status, final long merchantId) {
+        return this.merchantInfoDao.addAccountId(accountId, status, merchantId);
     }
 
 }

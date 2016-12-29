@@ -14,7 +14,9 @@ public enum EnumBasicStatus {
 
     SUCCESS(1, "成功"),
 
-    FAIL(2, "失败");
+    FAIL(2, "失败"),
+
+    HANDLING(3, "处理中");
 
     @Getter
     private int id;

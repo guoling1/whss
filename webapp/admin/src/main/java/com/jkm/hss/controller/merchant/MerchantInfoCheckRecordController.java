@@ -3,6 +3,7 @@ package com.jkm.hss.controller.merchant;
 import com.google.common.base.Optional;
 import com.jkm.base.common.entity.BaseEntity;
 import com.jkm.base.common.entity.CommonResponse;
+import com.jkm.hss.account.sevice.AccountService;
 import com.jkm.hss.controller.BaseController;
 import com.jkm.hss.merchant.entity.MerchantInfo;
 import com.jkm.hss.merchant.enums.EnumMerchantStatus;
@@ -30,7 +31,7 @@ public class MerchantInfoCheckRecordController extends BaseController {
     private MerchantInfoCheckRecordService merchantInfoCheckRecordService;
 
     @Autowired
-    private AccountInfoService accountInfoService;
+    private AccountService accountService;
 
     @Autowired
     private VerifyIdService verifyIdService;
@@ -42,23 +43,36 @@ public class MerchantInfoCheckRecordController extends BaseController {
     @RequestMapping(value = "/record",method = RequestMethod.POST)
     public CommonResponse<BaseEntity> record(@RequestBody final RequestMerchantInfo requestMerchantInfo){
 
-        this.merchantInfoCheckRecordService.save(requestMerchantInfo);
-
-        long accountId = this.accountInfoService.addNewAccount();
-        if (accountId>0) {
-            requestMerchantInfo.setAccountId(accountId);
-            requestMerchantInfo.setStatus(EnumMerchantStatus.PASSED.getId());
-            int i = this.merchantInfoCheckRecordService.update(requestMerchantInfo);
-            int result = merchantInfoCheckRecordService.getStauts(requestMerchantInfo.getMerchantId());
-            if (result != 3){
-                this.merchantInfoCheckRecordService.deletAccount(accountId);
-                int res = merchantInfoCheckRecordService.getId(requestMerchantInfo.getMerchantId());
-                this.merchantInfoCheckRecordService.deletIl(res);
-                return CommonResponse.simpleResponse(-1,"审核未通过");
-            }
-        }else {
-            return CommonResponse.simpleResponse(-1,"账户开通失败");
+        final Optional<MerchantInfo> merchantInfoOptional = this.merchantInfoService.selectById(requestMerchantInfo.getMerchantId());
+        if (!merchantInfoOptional.isPresent()) {
+            return CommonResponse.simpleResponse(-1, "商户不存在");
         }
+        this.merchantInfoCheckRecordService.save(requestMerchantInfo);
+        final MerchantInfo merchant = merchantInfoOptional.get();
+        if (EnumMerchantStatus.PASSED.getId() == requestMerchantInfo.getStatus()) {
+            final long accountId = this.accountService.initAccount(merchant.getMerchantName());
+            merchant.setAccountId(accountId);
+            merchant.setStatus(EnumMerchantStatus.PASSED.getId());
+            this.merchantInfoService.addAccountId(accountId, EnumMerchantStatus.PASSED.getId(), merchant.getAccountId());
+        } else {
+            return CommonResponse.simpleResponse(-1,"审核未通过");
+        }
+
+//        long accountId = this.accountInfoService.addNewAccount();
+//        if (accountId>0) {
+//            requestMerchantInfo.setAccountId(accountId);
+//            requestMerchantInfo.setStatus(EnumMerchantStatus.PASSED.getId());
+            int i = this.merchantInfoCheckRecordService.update(requestMerchantInfo);
+//            int result = merchantInfoCheckRecordService.getStauts(requestMerchantInfo.getMerchantId());
+//            if (result != 3){
+//                this.merchantInfoCheckRecordService.deletAccount(accountId);
+//                int res = merchantInfoCheckRecordService.getId(requestMerchantInfo.getMerchantId());
+//                this.merchantInfoCheckRecordService.deletIl(res);
+//                return CommonResponse.simpleResponse(-1,"审核未通过");
+//            }
+//        }else {
+//            return CommonResponse.simpleResponse(-1,"账户开通失败");
+//        }
         return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE,"审核通过");
     }
 

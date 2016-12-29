@@ -43,6 +43,13 @@ public interface DealerDao {
      */
     Dealer selectById(@Param("id") long id);
 
+    /**
+     * 按accountId查询
+     *
+     * @param accountId
+     * @return
+     */
+    Dealer selectByAccountId(@Param("accountId") long accountId);
 
     /**
      * 按ids查询

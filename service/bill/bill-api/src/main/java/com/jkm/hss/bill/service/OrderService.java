@@ -18,12 +18,30 @@ public interface OrderService {
     void add(Order order);
 
     /**
+     * 创建提现单
+     *
+     * @param payOrderId
+     * @param merchantId
+     * @param tradePeriod
+     */
+    long createOrder(long payOrderId, long merchantId, String tradePeriod);
+
+    /**
      * 更新
      *
      * @param order
      * @return
      */
     int update(Order order);
+
+    /**
+     * 更新交易备注
+     *
+     * @param id
+     * @param remark
+     */
+    int updateRemark(long id, String remark);
+
 
     /**
      * 更新交易状态
@@ -70,7 +88,16 @@ public interface OrderService {
      * 按交易订单号查询
      *
      * @param orderNo
+     * @param tradeType
      * @return
      */
-    Optional<Order> getByOrderNo(String orderNo);
+    Optional<Order> getByOrderNoAndTradeType(String orderNo, int tradeType);
+
+    /**
+     * 根据支付单查询对应的打款单
+     *
+     * @param payOrderId
+     * @return
+     */
+    Optional<Order> getByPayOrderId(long payOrderId);
 }

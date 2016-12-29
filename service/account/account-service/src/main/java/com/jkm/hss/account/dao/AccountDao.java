@@ -14,6 +14,13 @@ import java.math.BigDecimal;
 public interface AccountDao {
 
     /**
+     * 初始化手续费账户（其他不可调用）
+     *
+     * @param account
+     */
+    void initPoundageAccount(Account account);
+
+    /**
      * 插入
      *
      * @param account

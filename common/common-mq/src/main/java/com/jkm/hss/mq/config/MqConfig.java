@@ -16,10 +16,16 @@ public class MqConfig {
     public static final String ACCESS_KEY;
     public static final String SECRET_KEY;
     public static final String ONSADDR;
+
     /**
      * 测试
      */
-    public static final String TEST = "TEST";
+    public static final String TEST = "test";
+
+    /**
+     * 提现
+     */
+    public static final String MERCHANT_WITHDRAW = "hss_merchant_withdraw";
 
     static {
         final MqConfigs mqConfigs = getMqConfigs();
