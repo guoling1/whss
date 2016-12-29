@@ -54,7 +54,7 @@ public class TradeController extends BaseController {
      * @return
      */
     @ResponseBody
-    @RequestMapping(value = "receipt", method = RequestMethod.POST)
+    @RequestMapping(value = "dcReceipt", method = RequestMethod.POST)
     public CommonResponse dynamicCodeReceipt(@RequestBody final DynamicCodePayRequest payRequest,
                                              final HttpServletRequest request) {
         if(!super.isLogin(request)){

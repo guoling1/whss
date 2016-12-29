@@ -47,7 +47,7 @@ public final class PaymentSdkConstants {
         Preconditions.checkState(!StringUtils.isEmpty(SDK_PAY_RETURN_URL), "加载支付中心支付前端回调url失败");
         SDK_PAY_NOTIFY_URL= config.sdkPayNotifyUrl();
         Preconditions.checkState(!StringUtils.isEmpty(SDK_PAY_NOTIFY_URL), "加载支付中心支付后台回调url失败");
-        SDK_PAY_WITHDRAW_NOTIFY_URL= config.sdkPayWithdrawNOtifyUrl();
+        SDK_PAY_WITHDRAW_NOTIFY_URL= config.sdkPayWithdrawNotifyUrl();
         Preconditions.checkState(!StringUtils.isEmpty(SDK_PAY_WITHDRAW_NOTIFY_URL), "加载支付中心提现回调url失败");
         SDK_PAY_PLACE_ORDER= config.sdkPayPlaceOrder();
         Preconditions.checkState(!StringUtils.isEmpty(SDK_PAY_PLACE_ORDER), "加载支付中心下单url失败");
@@ -85,7 +85,7 @@ public final class PaymentSdkConstants {
          */
         @Key("payment.sdk.pay.withdraw.notify.url")
         @DefaultValue("http://hss.qianbaojiajia.com/callback/withdraw")
-        String sdkPayWithdrawNOtifyUrl();
+        String sdkPayWithdrawNotifyUrl();
 
         /**
          * 支付中心下单url
