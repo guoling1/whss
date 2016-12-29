@@ -347,7 +347,7 @@ public class PayServiceImpl implements PayService {
         //通道利润--到结算--到可用余额
         if (null != channelMoneyTriple) {
             this.splitAccountRecordService.addPaySplitAccountRecord(order.getOrderNo(), order.getOrderNo(),
-                    order.getTradeAmount(), channelMoneyTriple, "通道账户", EnumTradeType.PAY.getValue());
+                    order.getTradeAmount(), order.getPoundage(), channelMoneyTriple, "通道账户", EnumTradeType.PAY.getValue());
             final Account account = this.accountService.getById(channelMoneyTriple.getLeft()).get();
             this.accountService.increaseTotalAmount(account.getId(), channelMoneyTriple.getMiddle());
             this.accountService.increaseSettleAmount(account.getId(), channelMoneyTriple.getMiddle());
@@ -365,7 +365,7 @@ public class PayServiceImpl implements PayService {
         //产品利润--到结算--可用余额
         if (null != productMoneyTriple) {
             this.splitAccountRecordService.addPaySplitAccountRecord(order.getOrderNo(), order.getOrderNo(),
-                    order.getTradeAmount(), productMoneyTriple, "产品账户", EnumTradeType.PAY.getValue());
+                    order.getTradeAmount(), order.getPoundage(), productMoneyTriple, "产品账户", EnumTradeType.PAY.getValue());
             final Account account = this.accountService.getById(productMoneyTriple.getLeft()).get();
             this.accountService.increaseTotalAmount(account.getId(), productMoneyTriple.getMiddle());
             this.accountService.increaseSettleAmount(account.getId(), productMoneyTriple.getMiddle());
@@ -384,7 +384,7 @@ public class PayServiceImpl implements PayService {
         if (null != firstMoneyTriple) {
             final Dealer dealer = this.dealerService.getByAccountId(firstMoneyTriple.getLeft()).get();
             this.splitAccountRecordService.addPaySplitAccountRecord(order.getOrderNo(), order.getOrderNo(),
-                    order.getTradeAmount(), firstMoneyTriple, dealer.getProxyName(), EnumTradeType.PAY.getValue());
+                    order.getTradeAmount(), order.getPoundage(), firstMoneyTriple, dealer.getProxyName(), EnumTradeType.PAY.getValue());
             final Account account = this.accountService.getById(firstMoneyTriple.getLeft()).get();
             this.accountService.increaseTotalAmount(account.getId(), firstMoneyTriple.getMiddle());
             this.accountService.increaseSettleAmount(account.getId(), firstMoneyTriple.getMiddle());
@@ -404,7 +404,7 @@ public class PayServiceImpl implements PayService {
             final Dealer dealer = this.dealerService.getByAccountId(secondMoneyTriple.getLeft()).get();
             final Account account = this.accountService.getById(secondMoneyTriple.getLeft()).get();
             this.splitAccountRecordService.addPaySplitAccountRecord(order.getOrderNo(), order.getOrderNo(),
-                    order.getTradeAmount(), secondMoneyTriple, dealer.getProxyName(), EnumTradeType.PAY.getValue());
+                    order.getTradeAmount(), order.getPoundage(), secondMoneyTriple, dealer.getProxyName(), EnumTradeType.PAY.getValue());
             this.accountService.increaseTotalAmount(account.getId(), secondMoneyTriple.getMiddle());
             this.accountService.increaseSettleAmount(account.getId(), secondMoneyTriple.getMiddle());
             this.settleAccountFlowService.addSettleAccountFlow(account.getId(), order.getOrderNo(), secondMoneyTriple.getMiddle(),
