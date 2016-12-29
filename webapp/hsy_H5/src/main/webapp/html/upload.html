@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <title>好收银</title>
+  <link rel="stylesheet" href="http://img.jinkaimen.cn/hsy/css/reset.css">
+  <link rel="stylesheet" href="http://img.jinkaimen.cn/hsy/css/style.css">
+</head>
+<body>
+
+<div id="upload">
+  <div class="process">
+    <div class="steps">
+      <span class="right"></span>填写资料
+    </div>
+    <div class="steps active">
+      <span>2</span>上传资料
+    </div>
+    <div class="steps">
+      <span>3</span>开始使用
+    </div>
+  </div>
+  <div class="main flexBox flex-box-column">
+    <div class="space">
+      <div class="left">
+        <a href="javascript:void(0);" class="file">
+          <div class="file-title">身份证正面照片</div>
+          <div class="file-logo">
+            <img>
+          </div>
+          <div class="btn"></div>
+        </a>
+      </div>
+      <div class="right">
+        <div class="sample-title">示例</div>
+        <div class="sample-logo"><img src="http://img.jinkaimen.cn/hsy/assets/sample1.png"></div>
+      </div>
+    </div>
+    <div class="space">
+      <div class="left">
+        <a href="javascript:void(0);" class="file">
+          <div class="file-title">身份证背面照片</div>
+          <div class="file-logo">
+            <img>
+          </div>
+          <div class="btn"></div>
+        </a>
+      </div>
+      <div class="right">
+        <div class="sample-title">示例</div>
+        <div class="sample-logo"><img src="http://img.jinkaimen.cn/hsy/assets/sample2.png"></div>
+      </div>
+    </div>
+    <div class="space">
+      <div class="left">
+        <a href="javascript:void(0);" class="file">
+          <div class="file-title">手持身份证正面照片</div>
+          <div class="file-logo">
+            <img>
+          </div>
+          <div class="btn"></div>
+        </a>
+      </div>
+      <div class="right">
+        <div class="sample-title">示例</div>
+        <div class="sample-logo"><img src="http://img.jinkaimen.cn/hsy/assets/sample3.png"></div>
+      </div>
+    </div>
+    <div class="space">
+      <div class="left">
+        <a href="javascript:void(0);" class="file">
+          <div class="file-title">手持结算卡正面照片</div>
+          <div class="file-logo">
+            <img>
+          </div>
+          <div class="btn"></div>
+        </a>
+      </div>
+      <div class="right">
+        <div class="sample-title">示例</div>
+        <div class="sample-logo"><img src="http://img.jinkaimen.cn/hsy/assets/sample4.png"></div>
+      </div>
+    </div>
+    <div class="next">
+      <div @click="next($event)">提交</div>
+    </div>
+  </div>
+</div>
+
+</body>
+
+<script src="http://img.jinkaimen.cn/hsy/js/qrcode.min.js"></script>
+</html>

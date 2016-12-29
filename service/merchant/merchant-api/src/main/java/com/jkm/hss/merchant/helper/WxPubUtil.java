@@ -5,6 +5,7 @@ import com.google.gson.JsonParser;
 import com.jkm.hss.merchant.entity.WxConfig;
 import com.jkm.hss.merchant.enums.EnumCommonStatus;
 import com.jkm.hss.merchant.service.WxConfigService;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -33,6 +34,7 @@ import java.util.UUID;
  * @mail:java_xlj@163.com
  * @create:2016-11-24 16:04
  */
+@Slf4j
 @Component
 public class WxPubUtil {
     @Autowired
@@ -281,6 +283,7 @@ public class WxPubUtil {
         InputStream is = null;
         String url = "http://file.api.weixin.qq.com/cgi-bin/media/get?access_token="
                 + tokenAndTicket.get("accessToken").toString() + "&media_id=" + mediaId;
+        log.debug("mediaId:"+ mediaId);
         try {
             URL urlGet = new URL(url);
             HttpURLConnection http = (HttpURLConnection) urlGet

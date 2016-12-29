@@ -144,4 +144,27 @@ public interface OrderRecordService {
     List<MerchantAndOrderRecord> selectOrderListByPage(OrderListRequest orderRecord);
 
     int selectOrderListCount(OrderListRequest orderRecord);
+
+    /**
+     * 查询交易详情
+     * @param orderRecord
+     * @return
+     */
+    MerchantAndOrderRecord selectOrderListByPageAll(OrderListRequest orderRecord);
+
+    /**
+     * 提现详情
+     * @param req
+     * @return
+     */
+    OrderRecordAndMerchant selectDrawWithRecordByPageAll(OrderRecordAndMerchantRequest req);
+
+    String downloadExcel(OrderListRequest req,String baseUrl);
+
+    /**
+     * 查询所属代理商
+     * @param firstLevel
+     * @return
+     */
+    MerchantAndOrderRecord selectProxyName(long firstLevel);
 }

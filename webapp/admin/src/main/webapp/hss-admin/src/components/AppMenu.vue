@@ -38,7 +38,7 @@
           </a>
           <ul class="treeview-menu">
             <li class="active"><router-link to="/admin/record/deal"><span>交易查询</span> </router-link></li>
-            <li><router-link to="/admin/record/withdrawal"><span>提现查询</span> </router-link></li>
+            <li><router-link to="/admin/record/withdrawal"><span>打款查询</span> </router-link></li>
             <!--<li><router-link to="/admin/record/moneyList"><i class="fa fa-link"></i> <span>打款查询</span> </router-link></li>-->
           </ul>
         </li>
@@ -78,6 +78,7 @@
           <ul class="treeview-menu">
             <li><router-link to="/admin/record/passList"><span>通道列表</span> </router-link></li>
             <li><router-link to="/admin/record/passAdd"> <span>新增通道</span> </router-link></li>
+          </ul>
         </li>
         <li class="treeview">
           <a href="#"><i class="fa fa-link"></i><span>分配二维码</span>
@@ -86,6 +87,7 @@
           <ul class="treeview-menu">
             <li><router-link to="/admin/record/issue1"><span>按个数分配</span> </router-link></li>
             <li><router-link to="/admin/record/issue"><span>按码段分配</span> </router-link></li>
+            <li><router-link to="/admin/record/codeStatus"><span>二维码状态查询</span> </router-link></li>
           </ul>
         </li>
       </ul>

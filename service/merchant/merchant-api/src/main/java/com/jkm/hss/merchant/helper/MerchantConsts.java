@@ -57,6 +57,10 @@ public class MerchantConsts {
         @DefaultValue("")
         String domain();
 
+        @Key("pay.back.domain")
+        @DefaultValue("")
+        String backDomain();
+
         @Key("pay.trade.url")
         @DefaultValue("")
         String trade();

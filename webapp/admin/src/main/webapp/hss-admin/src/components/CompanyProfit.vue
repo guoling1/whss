@@ -1,73 +1,71 @@
 <template lang="html">
   <div id="companyProfit">
-    <h1>公司分润</h1>
-    <div class="search">
-      <span>日期：</span>
-      <input type="date" v-model="begin">
-      <span>至</span>
-      <input type="date" v-model="end">
-      <div class="btn btn-primary" @click="lookup()">筛选</div>
-    </div>
-    <div class="box">
-      <div class="box-header">
-        <h3 class="box-title">分润记录</h3>
-      </div>
-      <!-- /.box-header -->
-      <div class="box-body">
-        <div id="example2_wrapper" class="dataTables_wrapper form-inline dt-bootstrap">
-          <div class="row">
-            <div class="col-sm-6"></div>
-            <div class="col-sm-6"></div>
-          </div>
-          <div class="row">
-            <div class="col-sm-12">
-              <table id="example2" class="table table-bordered table-hover dataTable" role="grid" aria-describedby="example2_info">
-                <thead>
-                <tr role="row">
-                  <th class="sorting_asc" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Rendering engine: activate to sort column descending">序号
-                  </th>
-                  <th class="sorting_asc" tabindex="0" aria-controls="example2" rowspan="1" colspan="1"
-                      aria-sort="ascending" aria-label="Rendering engine: activate to sort column descending">收益日期
-                  </th>
-                  <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="Platform(s): activate to sort column ascending">收单收益
-                  </th>
-                  <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="Engine version: activate to sort column ascending">结算收益
-                  </th>
-                  <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">收益总额
-                  </th>
-                  <!--<th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">操作
-                  </th>-->
-                </tr>
-                </thead>
-                <tbody id="content">
-                <tr role="row" v-for="(record,index) in $$records">
-                  <td>{{index+1}}</td>
-                  <td>{{record.statisticsDate}}</td>
-                  <td style="text-align: right">{{record.collectMoney|toFix}}</td>
-                  <td style="text-align: right">{{record.withdrawMoney|toFix}}</td>
-                  <td style="text-align: right">{{record.totalMoney|toFix}}</td>
-                  <!--<td><route-link to="/admin/record/companyProfitDet" class="btn btn-success">查看明细</route-link></td>-->
-                </tr>
-                </tbody>
-              </table>
+    <div style="padding: 8px 30px; background: rgb(243, 156, 18); z-index: 999999; font-size: 22px; font-weight: 600;margin-bottom: 15px;    color: #fff;">公司分润</div>
+    <div style="margin: 0 15px;">
+      <div class="box">
+        <div class="box-header">
+          <h3 class="box-title">分润记录</h3>
+        </div>
+        <!-- /.box-header -->
+        <div class="box-body">
+          <div id="example2_wrapper" class="dataTables_wrapper form-inline dt-bootstrap">
+            <div class="search">
+              <span>日期：</span>
+              <input type="date" v-model="begin">
+              <span>至</span>
+              <input type="date" v-model="end">
+              <div class="btn btn-primary" @click="lookup()">筛选</div>
             </div>
-          </div>
-          <div class="row">
-            <div class="col-sm-5">
-              <div class="dataTables_info" id="example2_info" role="status" aria-live="polite">
+            <div class="row">
+              <div class="col-sm-12">
+                <table id="example2" class="table table-bordered table-hover dataTable" role="grid" aria-describedby="example2_info">
+                  <thead>
+                  <tr role="row">
+                    <th class="sorting_asc" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Rendering engine: activate to sort column descending">序号
+                    </th>
+                    <th class="sorting_asc" tabindex="0" aria-controls="example2" rowspan="1" colspan="1"
+                        aria-sort="ascending" aria-label="Rendering engine: activate to sort column descending">收益日期
+                    </th>
+                    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="Platform(s): activate to sort column ascending">收单收益
+                    </th>
+                    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="Engine version: activate to sort column ascending">结算收益
+                    </th>
+                    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">收益总额
+                    </th>
+                    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">操作
+                    </th>
+                  </tr>
+                  </thead>
+                  <tbody id="content">
+                  <tr role="row" v-for="(record,index) in $$records">
+                    <td>{{index+1}}</td>
+                    <td>{{record.statisticsDate}}</td>
+                    <td style="text-align: right">{{record.collectMoney|toFix}}</td>
+                    <td style="text-align: right">{{record.withdrawMoney|toFix}}</td>
+                    <td style="text-align: right">{{record.totalMoney|toFix}}</td>
+                    <td><router-link :to="{path:'/admin/record/companyProfitDet',query:{id:record.id}}" class="btn btn-success" v-if="record.totalMoney!=0">查看明细</router-link></td>
+                  </tr>
+                  </tbody>
+                </table>
               </div>
             </div>
-            <div class="col-sm-7">
-              <div class="dataTables_paginate paging_simple_numbers" id="example2_paginate">
-                <ul class="pagination" id="page" @click="bindEvent($event)">
+            <div class="row">
+              <div class="col-sm-5">
+                <div class="dataTables_info" id="example2_info" role="status" aria-live="polite">
+                </div>
+              </div>
+              <div class="col-sm-7">
+                <div class="dataTables_paginate paging_simple_numbers" id="example2_paginate">
+                  <ul class="pagination" id="page" @click="bindEvent($event)">
 
-                </ul>
+                  </ul>
+                </div>
               </div>
             </div>
           </div>
         </div>
+        <!-- /.box-body -->
       </div>
-      <!-- /.box-body -->
     </div>
   </div>
 </template>
@@ -283,7 +281,7 @@ li {
 }
 
 .search{
-  margin:20px 0;
+  margin: -12px 0 20px 0;
   span{
     font-size: 18px;
 

@@ -10,6 +10,34 @@ import java.util.Date;
  */
 @Data
 public class MerchantAndOrderRecord{
+
+    /**
+     * 导出地址
+     */
+    private String url;
+
+    /**
+     *
+     */
+    private long firstLevel;
+
+    /**
+     * 代理商id
+     */
+    private int dealerId;
+
+    /**
+     * 二级代理商名
+     */
+    private String proxyName1;
+
+    /**
+     * 经销商级别
+     *
+     * {@link com.jkm.hss.merchant.enums.EnumDealerLevel}
+     */
+    private int level;
+
     /**
      * 主键id
      */
@@ -95,6 +123,11 @@ public class MerchantAndOrderRecord{
     private String mobile;
 
     /**
+     * 银行预留手机号
+     */
+    private String reserveMobile;
+
+    /**
      * 渠道名称
      */
     private String channelName;
@@ -123,4 +156,19 @@ public class MerchantAndOrderRecord{
      * 交易类型
      */
     private int tradeType;
+
+    /**
+     * 商户类型
+     */
+    private int merchantType;
+
+    /**
+     * 结算周期
+     */
+    private String settlePeriod;
+
+    /**
+     * 交易完成时间
+     */
+    private Date payTime;
 }

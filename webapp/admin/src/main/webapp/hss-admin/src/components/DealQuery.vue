@@ -1,6 +1,9 @@
 <template lang="html">
   <div id="dale">
-    <h1>交易查询</h1>
+    <div style="padding: 8px 30px; background: rgb(243, 156, 18); z-index: 999999; font-size: 22px; font-weight: 600;margin-bottom: 15px;color: #fff;">
+      交易查询
+      <div class="btn btn-primary pull-right" @click="refresh()">刷新</div>
+    </div>
     <div class="col-md-12">
       <!--筛选-->
       <div class="box box-success box-solid">
@@ -38,14 +41,16 @@
                   <input type="text" style="border: none;display:inline-block;width: 45%" name="date" value="" v-model="$$query.moreTotalFee">
                 </div>
               </div>
-      </div>
+            </div>
             <div class="col-md-3">
               <div class="form-group">
                 <label>订单状态：</label>
                 <select class="form-control select2 select2-hidden-accessible" style="width: 100%;" tabindex="-1" aria-hidden="true" v-model="$$query.payResult">
                   <option value="">全部</option>
                   <option value="N">待支付</option>
+                  <option value="H">支付中</option>
                   <option value="S">支付成功</option>
+                  <option value="F">支付失败</option>
                 </select>
               </div>
               <div class="form-group">
@@ -53,7 +58,7 @@
                 <select class="form-control select2 select2-hidden-accessible" style="width: 100%;" tabindex="-1" aria-hidden="true" v-model="$$query.settleStatus">
                     <option value="">全部</option>
                     <option value="1">未结算</option>
-                    <option value="2">已结算</option>
+                    <option value="0">已结算</option>
                   </select>
                 </select>
               </div>
@@ -72,22 +77,17 @@
                 <div class="btn btn-primary" @click="lookup">筛选</div>
               </div>
             </div>
-    </div>
+          </div>
         </div>
       </div>
       <!--列表-->
       <div class="box" style="overflow: hidden">
       <div class="box-header">
         <h3 class="box-title">交易记录</h3>
-        <button @click="load" class="btn btn-primary" style="float: right">导出</button>
+        <a :href="'http://'+this.$data.url" download="交易记录" class="btn btn-primary" style="float: right;color: #fff">导出</a>
       </div>
-      <!-- /.box-header -->
       <div class="box-body">
         <div id="example2_wrapper" class="dataTables_wrapper form-inline dt-bootstrap">
-          <div class="row">
-            <div class="col-sm-6"></div>
-            <div class="col-sm-6"></div>
-          </div>
           <div class="row">
             <div class="col-sm-12">
               <table id="example2" class="table table-bordered table-hover dataTable" role="grid" aria-describedby="example2_info">
@@ -107,14 +107,14 @@
                 </tr>
                 </thead>
                 <tbody id="content">
-                <tr role="row" v-for="order in this.$data.orders">
-                  <td><router-link to="/admin/record/dealList">{{order.orderId|changeHide}}</router-link></td>
+                <tr v-if="order.tradeType==0" role="row" v-for="order in this.$data.orders">
+                  <td><router-link :to="{ path: '/admin/record/dealDet', query: {id: order.id}}">{{order.orderId|changeHide}}</router-link></td>
                   <td>{{order.createTime|changeTime}}</td>
                   <td>{{order.subName}}</td>
                   <td>{{order.proxyName}}</td>
                   <td style="text-align: right">{{order.totalFee|toFix}}</td>
                   <td>{{order.tradeRate}}</td>
-                  <td>{{order.orderMessage}}<a href="">(补发)</a></td>
+                  <td>{{order.orderMessage}}<a href="javascript:;">(补发)</a></td>
                   <td>{{order.settleStatus|changeSettleStatus}}</td>
                   <td>{{order.payChannel|changePayChannel}}</td>
                   <td>{{order.channelName}}</td>
@@ -123,6 +123,9 @@
                 </tbody>
               </table>
             </div>
+          </div>
+          <div v-if="orders.length==0" class="row" style="text-align: center;color: red;font-size: 16px;">
+            <div class="col-sm-12">无此数据</div>
           </div>
           <div class="row">
             <div class="col-sm-5">
@@ -138,7 +141,6 @@
           </div>
         </div>
       </div>
-      <!-- /.box-body -->
     </div>
       <!--登录页面-->
       <div class="login" v-if="isLogin">
@@ -155,7 +157,6 @@
         <div class="btn btn-primary sub" @click="login">登 录</div>
       </form>
 </div>
-
     </div>
   </div>
 </template>
@@ -181,57 +182,38 @@
           settleStatus:'',
           payChannel:''
         },
-        msg:{
-          orderId:'',
-          start:'',
-          end:'',
-          startTime: '',
-          endTime: '',
-          merchantId: '',
-          subName: '',
-          lessTotalFee: '',
-          moreTotalFee: '',
-          status:'',
-          payResult: '',
-          payChannel: '',
-          mdMobile:'',
-          page:1,
-          size:10,
-          saveUrl:''
-        },
         orders:[],
-        total:''
+        total:'',
+        url:''
       }
     },
     created:function(){
       this.$http.post('/admin/queryOrderRecord/orderList',this.$data.query)
         .then(function (res) {
-        console.log(res)
-        console.log(res.data.records)
           this.$data.orders=res.data.records;
           this.$data.total=res.data.totalPage;
-          console.log(this.$data.orders)
-          var str='',
-            page=document.getElementById('page');
+          this.$data.url=res.data.ext;
+          var str = '',
+            page = document.getElementById('page');
           str+='<li class="paginate_button previous" id="example2_previous"><a href="#" aria-controls="example2" data-dt-idx="0" tabindex="0">上一页</a></li>'
-          for (var i=1; i<=this.$data.total;i++){
-            if(i==this.$data.msg.pageNo){
+          for (var i = 1; i <= this.$data.total; i++){
+            if(i == this.$data.query.page){
               str+='<li class="paginate_button active"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">'+i+'</a></li></li>';
               continue;
             }
             str+='<li class="paginate_button"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">'+i+'</a></li></li>'
           }
           str+='<li class="paginate_button next" id="example2_next"><a href="#" aria-controls="example2" data-dt-idx="7" tabindex="0">下一页</a></li>'
-          page.innerHTML=str;
+          page.innerHTML = str;
           var aLi = page.getElementsByTagName('li');
-          if(this.$data.query.page<6){
-            for(var i=0;i<aLi.length;i++){
-              if(i>11){
+          if(this.$data.query.page < 6){
+            for(var i = 0; i < aLi.length; i++){
+              if(i > 11){
                 aLi[i].style.display='none'
               }
             }
           }else if(this.$data.query.page>(this.$data.total-5)){
-            for(var i=0;i<aLi.length;i++){
+            for(var i = 0; i < aLi.length; i++){
               if(i<(this.$data.total-12)){
                 aLi[i].style.display='none'
               }
@@ -239,7 +221,7 @@
           }else{
             for(var i=0;i<aLi.length;i++){
               if((i!=0&&i<this.$data.query.page-5)||(i!=this.$data.total+1&&i>this.$data.query.page+4)){
-                aLi[i].style.display='none'
+                aLi[i].style.display = 'none';
               }
             }
           }
@@ -250,6 +232,9 @@
         })
     },
     methods: {
+      refresh: function () {
+        location.reload()
+      },
       //分页器
       bindEvent: function (e) {
         e = e||window.event;
@@ -282,6 +267,7 @@
           .then(function (res) {
             this.$data.orders=res.data.records;
             this.$data.total=res.data.totalPage;
+            this.$data.url=res.data.ext;
             var str='',
               page=document.getElementById('page');
             str+='<li class="paginate_button previous" id="example2_previous"><a href="#" aria-controls="example2" data-dt-idx="0" tabindex="0">上一页</a></li>'
@@ -302,14 +288,14 @@
                 }
               }
             }else if(this.$data.query.page>(this.$data.total-5)){
-              for(var i=0;i<aLi.length;i++){
+              for(var i = 0; i < aLi.length; i++){
                 if(i<(this.$data.total-12)){
-                  aLi[i].style.display='none'
+                  aLi[i].style.display = 'none'
                 }
               }
             }else{
-              for(var i=0;i<aLi.length;i++){
-                if((i!=0&&i<this.$data.query.page-5)||(i!=this.$data.total+1&&i>this.$data.query.page+4)){
+              for(var i = 0; i < aLi.length; i++){
+                if((i != 0 && i < this.$data.query.page-5)||(i!=this.$data.total+1&&i>this.$data.query.page+4)){
                   aLi[i].style.display='none'
                 }
               }
@@ -332,18 +318,12 @@
       },
       //筛选
       lookup: function () {
-        /*var time = this.$data.msg.start;
-        if(time!=''){
-          this.$data.msg.startTime = time.replace(/\//g,'-').replace(/T/g,' ')+':00'
-        }
-        var time = this.$data.msg.end;
-        if(time!=""){
-          this.$data.msg.endTime = time.replace(/\//g,'-').replace(/T/g,' ')+':00'
-        }*/
-        this.$http.post('/admin/queryOrderRecord/selectOrderRecordByConditions',this.$data.query)
+        this.$data.query.page = 1;
+        this.$http.post('/admin/queryOrderRecord/orderList',this.$data.query)
           .then(function (res) {
             this.$data.orders=res.data.records;
             this.$data.total=res.data.totalPage;
+            this.$data.url=res.data.ext;
             var str='',
               page=document.getElementById('page');
             str+='<li class="paginate_button previous disabled" id="example2_previous"><a href="#" aria-controls="example2" data-dt-idx="0" tabindex="0">上一页</a></li>'
@@ -379,21 +359,6 @@
           },function (err) {
             console.log(err)
           })
-      },
-      load: function () {
-        this.$http.post('/admin/export/exportOrderRecord',this.$data.msg)
-          .then(function (res) {
-            console.log(res)
-            this.$store.commit('MESSAGE_ACCORD_SHOW', {
-              text: '已成功导出到D盘'
-            })
-          },function (err) {
-            console.log(err)
-            alert(err.statusMessage)
-            this.$store.commit('MESSAGE_ACCORD_SHOW', {
-              text: err.statusMessage
-            })
-          })
       }
     },
     computed: {
@@ -404,22 +369,11 @@
     filters: {
       changeSettleStatus: function (val) {
         if(val == 0){
-          return '未结算'
-        }else if(val == 1){
           return '已结算'
+        }else if(val == 1){
+          return '未结算'
         }
       },
-      /*changePayResult: function (val) {
-        if(val == 'N'){
-          return '待支付'
-        }else if(val =='F'){
-          return '支付失败'
-        }else if(val =='S'){
-          return '支付成功'
-        }else if(val =='H'){
-          return '支付中'
-        }
-      },*/
       changePayChannel: function (val) {
         if(val == 101){
           return '微信'
@@ -456,14 +410,6 @@
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="less">
-  h1, h2 {
-    font-weight: normal;
-    color: #337ab7;
-    font-weight: bold;
-    border-bottom: 2px solid #ccc;
-    padding-bottom: 10px;
-  }
-
   ul {
     list-style-type: none;
     padding: 0;
@@ -474,58 +420,6 @@
     margin: 0 10px;
   }
 
-  a {
-    color: #42b983;
-  }
-
-  .dale {
-    float: right;
-    width: 80%;
-  }
-
-  .search div {
-    float: left;
-    height: 34px;
-    margin-right: 22px;
-    margin-top: 10px;
-
-  &
-  .date input,
-
-  &
-  .price input,
-
-  &
-  .card input {
-    width: 50px;
-  }
-
-  &
-  .assount input,
-
-  &
-  .pay input {
-    width: 20px;
-  }
-
-  &
-  .btn {
-    margin: 0 0 5px 0;
-    width: 80px;
-    float: right;
-  }
-
-  }
-  .table {
-    overflow: hidden;
-
-  td, th {
-    text-align: center;
-    width: 10%;
-  }
-
-
-  }
   .login {
     z-index: 1000;
     position: fixed;
