@@ -39,12 +39,13 @@ public interface SplitAccountRecordService {
      *
      * @param orderNo
      * @param orderNo1  分账单号（目前和交易订单号一致）
-     * @param tradeAmount
-     * @param triple
-     * @param receiptMoneyUserName
+     * @param tradeAmount  交易总额
+     * @param poundage   手续费
+     * @param triple  <accountId, 分账金额， 分账费率>
+     * @param receiptMoneyUserName  收钱人
      * @param remark
      */
-    void addPaySplitAccountRecord(String orderNo, String orderNo1, BigDecimal tradeAmount,
+    void addPaySplitAccountRecord(String orderNo, String orderNo1, BigDecimal tradeAmount, BigDecimal poundage,
                                   Triple<Long, BigDecimal, BigDecimal> triple,
                                   String receiptMoneyUserName, String remark);
 
@@ -53,12 +54,13 @@ public interface SplitAccountRecordService {
      *
      * @param orderNo
      * @param orderNo1  分账单号（目前和交易订单号一致）
-     * @param tradeAmount
-     * @param triple
-     * @param receiptMoneyUserName
+     * @param tradeAmount  交易总额
+     * @param poundage   手续费
+     * @param triple  <accountId, 分账金额， 分账费率>
+     * @param receiptMoneyUserName  收钱人
      * @param remark
      */
-    void addWithdrawSplitAccountRecord(String orderNo, String orderNo1, BigDecimal tradeAmount,
+    void addWithdrawSplitAccountRecord(String orderNo, String orderNo1, BigDecimal tradeAmount, BigDecimal poundage,
                                   Triple<Long, BigDecimal, String> triple,
                                   String receiptMoneyUserName, String remark);
 }

@@ -61,16 +61,17 @@ public class SplitAccountRecordServiceImpl implements SplitAccountRecordService 
      * {@inheritDoc}
      *
      * @param orderNo
-     * @param orderNo1
-     * @param tradeAmount
-     * @param triple
-     * @param receiptMoneyUserName
+     * @param orderNo1  分账单号（目前和交易订单号一致）
+     * @param tradeAmount  交易总额
+     * @param poundage   手续费
+     * @param triple  <accountId, 分账金额， 分账费率>
+     * @param receiptMoneyUserName  收钱人
      * @param remark
      */
     @Override
     @Transactional
     public void addPaySplitAccountRecord(final String orderNo, final String orderNo1, final BigDecimal tradeAmount,
-                                         final Triple<Long, BigDecimal, BigDecimal> triple,
+                                         final BigDecimal poundage, final Triple<Long, BigDecimal, BigDecimal> triple,
                                          final String receiptMoneyUserName, final String remark) {
 
         final SplitAccountRecord splitAccountRecord = new SplitAccountRecord();
@@ -82,6 +83,7 @@ public class SplitAccountRecordServiceImpl implements SplitAccountRecordService 
         splitAccountRecord.setReceiptMoneyAccountId(triple.getLeft());
         splitAccountRecord.setReceiptMoneyUserName(receiptMoneyUserName);
         splitAccountRecord.setSplitAmount(triple.getMiddle());
+        splitAccountRecord.setSplitTotalAmount(poundage);
         splitAccountRecord.setSplitRate(triple.getRight());
         splitAccountRecord.setRemark(remark);
         splitAccountRecord.setSplitDate(new Date());
@@ -93,15 +95,17 @@ public class SplitAccountRecordServiceImpl implements SplitAccountRecordService 
      *
      * @param orderNo
      * @param orderNo1  分账单号（目前和交易订单号一致）
-     * @param tradeAmount
-     * @param triple
-     * @param receiptMoneyUserName
+     * @param tradeAmount  交易总额
+     * @param poundage   手续费
+     * @param triple  <accountId, 分账金额， 分账费率>
+     * @param receiptMoneyUserName  收钱人
      * @param remark
      */
     @Override
+    @Transactional
     public void addWithdrawSplitAccountRecord(final String orderNo, final String orderNo1, final BigDecimal tradeAmount,
-                                              final Triple<Long, BigDecimal, String> triple, final String receiptMoneyUserName,
-                                              final String remark) {
+                                              final BigDecimal poundage, final Triple<Long, BigDecimal, String> triple,
+                                              final String receiptMoneyUserName, final String remark) {
         final SplitAccountRecord splitAccountRecord = new SplitAccountRecord();
         splitAccountRecord.setOrderNo(orderNo);
         splitAccountRecord.setSplitOrderNo(orderNo1);
@@ -111,7 +115,7 @@ public class SplitAccountRecordServiceImpl implements SplitAccountRecordService 
         splitAccountRecord.setReceiptMoneyAccountId(triple.getLeft());
         splitAccountRecord.setReceiptMoneyUserName(receiptMoneyUserName);
         splitAccountRecord.setSplitAmount(triple.getMiddle());
-
+        splitAccountRecord.setSplitTotalAmount(poundage);
         splitAccountRecord.setRemark(remark);
         splitAccountRecord.setSplitDate(new Date());
         this.add(splitAccountRecord);
