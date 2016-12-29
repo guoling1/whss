@@ -216,6 +216,9 @@ public class AdminController extends BaseController {
     @RequestMapping(value = "/getCode", method = RequestMethod.POST)
     public CommonResponse getCode(@RequestBody CodeQueryRequest code) {
         CodeQueryResponse codeQueryResponse = adminUserService.getCode(code.getCode());
+        if (codeQueryResponse==null){
+            return CommonResponse.simpleResponse(-1, "未查询到与之匹配的信息。");
+        }
 
         if (codeQueryResponse.getActivateStatus()==2){
 
@@ -235,28 +238,22 @@ public class AdminController extends BaseController {
                 CodeQueryResponse getName =adminUserService.getMerchantName(codeQueryResponse.getMerchantId());
                 codeQueryResponse.setMerchantName(getName.getMerchantName());
             }
-
-//            long merchantId = codeQueryResponse.getMerchantId();
-//            CodeQueryResponse res = adminUserService.getProxyName(merchantId);
-//            if (res==null){
-//                return CommonResponse.simpleResponse(-1, "未查询到符合的商户。");
-//            }
-//            codeQueryResponse.setMerchantName(res.getMerchantName());
-//            if (res.getLevel()==1){
-//                codeQueryResponse.setProxyName(res.getProxyName());
-//            }
-//            if (res.getLevel()==2){
-//                codeQueryResponse.setProxyName1(res.getProxyName());
-//                long firstLevelDealerId = res.getFirstLevelDealerId();
-//                CodeQueryResponse res1 =adminUserService.getProxyName1(firstLevelDealerId);
-//                codeQueryResponse.setProxyName(res1.getProxyName());
-//            }
         }
         if (codeQueryResponse.getDistributeStatus()==1&&codeQueryResponse.getActivateStatus()==1){
             return CommonResponse.simpleResponse(-1, "该码未被注册且未被分配，该码可用。");
         }
         if (codeQueryResponse.getDistributeStatus()==2&&codeQueryResponse.getActivateStatus()==1){
-            return CommonResponse.simpleResponse(-1, "该码已被分配但未注册，该码可用。");
+
+            if (codeQueryResponse.getFirstLevelDealerId()>0){
+                CodeQueryResponse res = adminUserService.getProxyName(codeQueryResponse.getFirstLevelDealerId());
+                codeQueryResponse.setProxyName(res.getProxyName());
+            }
+            if (codeQueryResponse.getSecondLevelDealerId()>0){
+                CodeQueryResponse res1 =adminUserService.getProxyName1(codeQueryResponse.getSecondLevelDealerId());
+                codeQueryResponse.setProxyName1(res1.getProxyName());
+            }
+
+            return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "该码已被分配但未注册，该码可用。", codeQueryResponse);
         }
 
         return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", codeQueryResponse);
