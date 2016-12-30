@@ -3,6 +3,8 @@ package com.jkm.hss.bill.service.impl;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.jkm.base.common.util.SnGenerator;
+import com.jkm.hss.account.entity.Account;
+import com.jkm.hss.account.sevice.AccountService;
 import com.jkm.hss.bill.dao.OrderDao;
 import com.jkm.hss.bill.entity.Order;
 import com.jkm.hss.bill.enums.EnumOrderStatus;
@@ -35,6 +37,8 @@ public class OrderServiceImpl implements OrderService {
 
     @Autowired
     private MerchantInfoService merchantInfoService;
+    @Autowired
+    private AccountService accountService;
     /**
      * {@inheritDoc}
      *
@@ -63,6 +67,8 @@ public class OrderServiceImpl implements OrderService {
                 payOrderId);
         final Order payOrder = this.getByIdWithLock(payOrderId).get();
         Preconditions.checkState(payOrder.isPaySuccess());
+        final Account account = this.accountService.getByIdWithLock(merchant.getAccountId()).get();
+        Preconditions.checkState(payOrder.getTradeAmount().subtract(payOrder.getPoundage()).compareTo(account.getAvailable()) <= 0);
         final Order playMoneyOrder = new Order();
         playMoneyOrder.setPayOrderId(payOrderId);
         playMoneyOrder.setOrderNo(SnGenerator.generateSn(EnumTradeType.WITHDRAW.getId()));

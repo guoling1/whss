@@ -104,8 +104,6 @@ public class WithdrawServiceImpl implements WithdrawService {
         final MerchantInfo merchant = this.merchantInfoService.selectById(merchantId).get();
         final Account account = this.accountService.getByIdWithLock(merchant.getAccountId()).get();
         final Order playMoneyOrder = this.orderService.getByIdWithLock(playMoneyOrderId).get();
-
-        Preconditions.checkState(playMoneyOrder.getTradeAmount().compareTo(account.getAvailable()) <= 0);
         this.accountService.decreaseAvailableAmount(account.getId(), playMoneyOrder.getTradeAmount());
         this.accountService.increaseFrozenAmount(account.getId(), playMoneyOrder.getTradeAmount());
         final FrozenRecord frozenRecord = new FrozenRecord();
