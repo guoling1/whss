@@ -86,7 +86,7 @@ public class TradeController extends BaseController {
             return CommonResponse.simpleResponse(-1, "支付方式错误");
         }
         final Pair<Integer, String> resultPair = this.payService.codeReceipt(payRequest.getTotalFee(),
-                payRequest.getPayChannel(), 2);
+                payRequest.getPayChannel(), merchantInfo.get().getId());
         if (0 == resultPair.getLeft()) {
             return CommonResponse.builder4MapResult(CommonResponse.SUCCESS_CODE, "收款成功")
                     .addParam("payUrl", resultPair.getRight()).addParam("subMerName", merchantInfo.get().getMerchantName())
