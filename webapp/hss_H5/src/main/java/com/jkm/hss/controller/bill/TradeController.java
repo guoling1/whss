@@ -27,7 +27,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
+import java.net.URLDecoder;
 
 /**
  * Created by yulong.zhang on 2016/12/23.
@@ -55,7 +57,7 @@ public class TradeController extends BaseController {
     @ResponseBody
     @RequestMapping(value = "dcReceipt", method = RequestMethod.POST)
     public CommonResponse dynamicCodeReceipt(@RequestBody final DynamicCodePayRequest payRequest,
-                                             final HttpServletRequest request) {
+                                             final HttpServletRequest request) throws UnsupportedEncodingException {
         if(!super.isLogin(request)){
             return CommonResponse.simpleResponse(-2, "未登录");
         }
@@ -89,7 +91,7 @@ public class TradeController extends BaseController {
                 payRequest.getPayChannel(), merchantInfo.get().getId());
         if (0 == resultPair.getLeft()) {
             return CommonResponse.builder4MapResult(CommonResponse.SUCCESS_CODE, "收款成功")
-                    .addParam("payUrl", resultPair.getRight()).addParam("subMerName", merchantInfo.get().getMerchantName())
+                    .addParam("payUrl", URLDecoder.decode(resultPair.getRight(), "UTF-8")).addParam("subMerName", merchantInfo.get().getMerchantName())
                     .addParam("amount", totalFee).build();
         }
         return CommonResponse.simpleResponse(-1, resultPair.getRight());
@@ -105,7 +107,7 @@ public class TradeController extends BaseController {
     @ResponseBody
     @RequestMapping(value = "scReceipt", method = RequestMethod.POST)
     public CommonResponse staticCodeReceipt(@RequestBody final StaticCodePayRequest payRequest,
-                                             final HttpServletRequest request) {
+                                             final HttpServletRequest request) throws UnsupportedEncodingException {
         final Optional<MerchantInfo> merchantInfo = this.merchantInfoService.selectById(payRequest.getMerchantId());
         if(merchantInfo.get().getStatus()!=EnumMerchantStatus.PASSED.getId()){
             return CommonResponse.simpleResponse(-2, "未审核通过");
@@ -127,7 +129,8 @@ public class TradeController extends BaseController {
                 payRequest.getPayChannel(), merchantInfo.get().getId());
         if (0 == resultPair.getLeft()) {
             return CommonResponse.builder4MapResult(CommonResponse.SUCCESS_CODE, "收款成功")
-                    .addParam("payUrl", resultPair.getRight()).build();
+                    .addParam("payUrl", URLDecoder.decode(resultPair.getRight(), "UTF-8")).addParam("subMerName", merchantInfo.get().getMerchantName())
+                    .addParam("amount", totalAmount).build();
         }
         return CommonResponse.simpleResponse(-1, resultPair.getRight());
     }
