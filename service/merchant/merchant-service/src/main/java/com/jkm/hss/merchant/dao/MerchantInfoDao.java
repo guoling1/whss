@@ -121,4 +121,12 @@ public interface MerchantInfoDao {
      * @return
      */
     int addAccountId(@Param("accountId") long accountId, @Param("status") int status, @Param("merchantId") long merchantId);
+
+    /**
+     * 根据accountId查询
+     *
+     * @param accountId
+     * @return
+     */
+    MerchantInfo selectByAccountId(@Param("accountId") long accountId);
 }

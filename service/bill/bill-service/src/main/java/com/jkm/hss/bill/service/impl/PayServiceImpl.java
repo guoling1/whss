@@ -97,7 +97,7 @@ public class PayServiceImpl implements PayService {
         order.setTradeType(EnumTradeType.PAY.getId());
         order.setPayChannelSign(channel);
         order.setPayer(0);
-        order.setPayee(merchantId);
+        order.setPayee(merchant.getAccountId());
         if (EnumPayChannelSign.YG_YINLIAN.getId() == channel) {
             order.setPayAccount(MerchantSupport.decryptBankCard(merchant.getBankNo()));
         }
@@ -191,7 +191,7 @@ public class PayServiceImpl implements PayService {
         order.setStatus(EnumOrderStatus.PAY_SUCCESS.getId());
         this.orderService.update(order);
         //商户入账
-        final MerchantInfo merchant = this.merchantInfoService.selectById(order.getPayee()).get();
+        final MerchantInfo merchant = this.merchantInfoService.getByAccountId(order.getPayee()).get();
         this.merchantRecorded(order.getId(), merchant);
         //商户结算
         final Optional<Order> orderOptional = this.orderService.getByIdWithLock(order.getId());
@@ -218,7 +218,6 @@ public class PayServiceImpl implements PayService {
         requestJsonObject.put("payOrderId", order.getId());
         requestJsonObject.put("balanceAccountType", EnumBalanceTimeType.D0.getType());
         MqProducer.produce(requestJsonObject, MqConfig.MERCHANT_WITHDRAW, 100);
-//        this.withdrawService.merchantWithdraw(merchant.getId(), order.getId(), EnumBalanceTimeType.D0.getType());
     }
 
     /**

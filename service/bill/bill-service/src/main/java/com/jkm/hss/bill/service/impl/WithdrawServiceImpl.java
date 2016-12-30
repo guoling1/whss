@@ -84,23 +84,23 @@ public class WithdrawServiceImpl implements WithdrawService {
      * @return
      */
     @Override
-    public Pair<Integer, String> merchantWithdraw(final long merchantId, final long payOrderId, final String tradePeriod) {
+    public Pair<Integer, String> merchantWithdrawByOrder(final long merchantId, final long payOrderId, final String tradePeriod) {
         log.info("商户[{}]，对支付交易订单[{}],进行提现", merchantId, payOrderId);
-        final long playMoneyOrderId = this.orderService.createOrder(payOrderId, merchantId, tradePeriod);
-        return this.withdraw(merchantId, playMoneyOrderId, tradePeriod);
+        final long playMoneyOrderId = this.orderService.createPlayMoneyOrderByPayOrder(payOrderId, merchantId, tradePeriod);
+        return this.withdrawByOrder(merchantId, playMoneyOrderId, tradePeriod);
     }
 
     /**
      * {@inheritDoc}
      *
-     * @param merchantId
+     * @param merchantId merchantId
      * @param playMoneyOrderId
      * @param tradePeriod
      * @return
      */
     @Override
     @Transactional
-    public Pair<Integer, String> withdraw(long merchantId, long playMoneyOrderId, String tradePeriod) {
+    public Pair<Integer, String> withdrawByOrder(final long merchantId, final long playMoneyOrderId, final String tradePeriod) {
         final MerchantInfo merchant = this.merchantInfoService.selectById(merchantId).get();
         final Account account = this.accountService.getByIdWithLock(merchant.getAccountId()).get();
         final Order playMoneyOrder = this.orderService.getByIdWithLock(playMoneyOrderId).get();
@@ -157,7 +157,7 @@ public class WithdrawServiceImpl implements WithdrawService {
     @Transactional
     public void handleWithdrawCallbackMsg(final PaymentSdkWithdrawCallbackResponse paymentSdkWithdrawCallbackResponse) {
         final Order order = this.orderService.getByOrderNoAndTradeType(paymentSdkWithdrawCallbackResponse.getOrderNo(), EnumTradeType.WITHDRAW.getId()).get();
-        final MerchantInfo merchant = this.merchantInfoService.selectById(order.getPayer()).get();
+        final MerchantInfo merchant = this.merchantInfoService.getByAccountId(order.getPayer()).get();
         if (order.isWithDrawing()) {
             this.handleWithdrawResult(order.getId(), merchant.getAccountId(), paymentSdkWithdrawCallbackResponse);
         }
@@ -239,8 +239,8 @@ public class WithdrawServiceImpl implements WithdrawService {
                 //结算完毕
                 this.orderService.updateSettleStatus(orderOptional.get().getId(), EnumSettleStatus.SETTLED.getId());
             }
-            final MerchantInfo merchant= this.merchantInfoService.selectById(order.getPayer()).get();
-            final UserInfo user = userInfoService.selectByMerchantId(order.getPayer()).get();
+            final MerchantInfo merchant= this.merchantInfoService.getByAccountId(order.getPayer()).get();
+            final UserInfo user = userInfoService.selectByMerchantId(merchant.getId()).get();
             log.info("商户[{}], 提现单[{}], 提现成功", merchant.getId(), order.getOrderNo());
             this.sendMsgService.sendPushMessage(order.getTradeAmount().toPlainString(), merchant.getBankName(), merchant.getBankNoShort(), user.getOpenId());
         }
@@ -280,13 +280,14 @@ public class WithdrawServiceImpl implements WithdrawService {
      * 商户提现结算
      *
      * @param order
-     * @param merchantId
+     * @param accountId
      */
     @Override
     @Transactional
-    public void merchantPoundageSettle(final Order order, final long merchantId) {
+    public void merchantPoundageSettle(final Order order, final long accountId) {
+        final MerchantInfo merchant = this.merchantInfoService.getByAccountId(accountId).get();
         final Map<String, Triple<Long, BigDecimal, String>> shallProfitMap =
-                this.shallProfitDetailService.withdrawProfitCount(order.getOrderNo(), order.getTradeAmount(), order.getPayChannelSign(), merchantId);
+                this.shallProfitDetailService.withdrawProfitCount(order.getOrderNo(), order.getTradeAmount(), order.getPayChannelSign(), merchant.getId());
         final Triple<Long, BigDecimal, String> channelMoneyTriple = shallProfitMap.get("channelMoney");
         final Triple<Long, BigDecimal, String> productMoneyTriple = shallProfitMap.get("productMoney");
         final Triple<Long, BigDecimal, String> firstMoneyTriple = shallProfitMap.get("firstMoney");

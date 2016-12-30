@@ -18,17 +18,17 @@ public interface WithdrawService {
      * @param tradePeriod 结算周期
      * @return
      */
-    Pair<Integer, String> merchantWithdraw(long merchantId, long payOrderId, String tradePeriod);
+    Pair<Integer, String> merchantWithdrawByOrder(long merchantId, long payOrderId, String tradePeriod);
 
     /**
-     * 提现
+     * 按账单提现
      *
      * @param merchantId
      * @param playMoneyOrderId
      * @param tradePeriod
      * @return
      */
-    Pair<Integer, String> withdraw(long merchantId, long playMoneyOrderId, String tradePeriod);
+    Pair<Integer, String> withdrawByOrder(long merchantId, long playMoneyOrderId, String tradePeriod);
 
 
     /**
@@ -42,7 +42,7 @@ public interface WithdrawService {
      * 商户提现结算
      *
      * @param order
-     * @param merchantId
+     * @param accountId
      */
-    void merchantPoundageSettle(Order order, long merchantId);
+    void merchantPoundageSettle(Order order, long accountId);
 }

@@ -55,7 +55,7 @@ public class OrderServiceImpl implements OrderService {
      */
     @Override
     @Transactional
-    public long createOrder(final long payOrderId, final long merchantId, final String tradePeriod) {
+    public long createPlayMoneyOrderByPayOrder(final long payOrderId, final long merchantId, final String tradePeriod) {
         final MerchantInfo merchant = this.merchantInfoService.selectById(merchantId).get();
         // 查询支付单对应的提现单是否存在
         final Optional<Order> playMoneyOrderOptional = this.getByPayOrderId(payOrderId);
@@ -70,7 +70,7 @@ public class OrderServiceImpl implements OrderService {
         playMoneyOrder.setRealPayAmount(playMoneyOrder.getTradeAmount());
         playMoneyOrder.setTradeType(EnumTradeType.WITHDRAW.getId());
         playMoneyOrder.setPayChannelSign(payOrder.getPayChannelSign());
-        playMoneyOrder.setPayer(merchantId);
+        playMoneyOrder.setPayer(merchant.getAccountId());
         playMoneyOrder.setPayee(0);
         playMoneyOrder.setPayAccount(tradePeriod);
         BigDecimal merchantWithdrawPoundage = this.calculateService.getMerchantWithdrawPoundage(merchantId, payOrder.getPayChannelSign());

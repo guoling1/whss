@@ -25,7 +25,13 @@ public interface MerchantInfoService {
      */
     Optional<MerchantInfo> selectById(long id);
 
-
+    /**
+     * 根据accountId查询
+     *
+     * @param accountId
+     * @return
+     */
+    Optional<MerchantInfo> getByAccountId(long accountId);
     /**
      * 根据条件插入
      * @param merchantInfo

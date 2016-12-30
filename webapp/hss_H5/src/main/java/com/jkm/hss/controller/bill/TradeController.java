@@ -161,7 +161,7 @@ public class TradeController extends BaseController {
         if (1 != checkResult.getLeft()) {
             return CommonResponse.simpleResponse(-1, checkResult.getRight());
         }
-        final Pair<Integer, String> resultPair = Pair.of(0, "");//this.withdrawService.merchantWithdraw(2, 87, "D0");
+        final Pair<Integer, String> resultPair = Pair.of(0, "");
         if (0 == resultPair.getLeft()) {
             return CommonResponse.simpleResponse(1, "受理成功");
         }

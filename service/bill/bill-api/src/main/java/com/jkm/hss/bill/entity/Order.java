@@ -48,12 +48,12 @@ public class Order extends BaseEntity {
     private int tradeType;
 
     /**
-     * 付款人
+     * 付款人(accountId)
      */
     private long payer;
 
     /**
-     * 收款人(商户id)
+     * 收款人(accountId)
      */
     private long payee;
 

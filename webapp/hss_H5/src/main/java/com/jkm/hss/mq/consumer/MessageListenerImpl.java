@@ -36,7 +36,7 @@ public class MessageListenerImpl implements MessageListener {
                 final Long merchantId = body.getLong("merchantId");
                 final Long payOrderId = body.getLong("payOrderId");
                 final String balanceAccountType = body.getString("balanceAccountType");
-                this.withdrawService.merchantWithdraw(merchantId, payOrderId, balanceAccountType);
+                this.withdrawService.merchantWithdrawByOrder(merchantId, payOrderId, balanceAccountType);
             }
         } catch (final Throwable e) {
             log.error("consume message error, Topic is: [{}], tag is: [{}] MsgId is: [{}]", message.getTopic(),

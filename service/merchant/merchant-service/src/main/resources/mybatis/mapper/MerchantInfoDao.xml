@@ -259,6 +259,11 @@
         #{item}
     </foreach>
     </select>
+
+    <select id="selectByAccountId" resultType="com.jkm.hss.merchant.entity.MerchantInfo">
+         SELECT * FROM tb_merchant_info WHERE account_id = #{accountId}
+    </select>
+
     <update id="updateStatus">
         UPDATE tb_merchant_info
         SET

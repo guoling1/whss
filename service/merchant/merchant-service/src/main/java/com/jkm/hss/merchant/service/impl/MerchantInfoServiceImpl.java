@@ -48,6 +48,17 @@ public class MerchantInfoServiceImpl implements MerchantInfoService {
         return Optional.fromNullable(this.merchantInfoDao.selectById(id));
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param accountId
+     * @return
+     */
+    @Override
+    public Optional<MerchantInfo> getByAccountId(final long accountId) {
+        return Optional.fromNullable(this.merchantInfoDao.selectByAccountId(accountId));
+    }
+
 
     @Override
     public long insertSelective(MerchantInfo merchantInfo) {
