@@ -2,8 +2,11 @@ package com.jkm.hss.bill.service;
 
 import com.google.common.base.Optional;
 import com.jkm.hss.bill.entity.Order;
+import com.jkm.hss.bill.entity.callback.MerchantTradeResponse;
+import com.jkm.hss.merchant.helper.request.OrderTradeRequest;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by yulong.zhang on 2016/12/22.
@@ -100,4 +103,20 @@ public interface OrderService {
      * @return
      */
     Optional<Order> getByPayOrderId(long payOrderId);
+
+    /**
+     * 查询交易列表
+     * @param orderRecord
+     * @return
+     */
+    List<MerchantTradeResponse> selectOrderListByPage(OrderTradeRequest orderRecord);
+
+    int selectOrderListCount(OrderTradeRequest orderRecord);
+
+    /**
+     * 查询交易详情
+     * @param orderRecord
+     * @return
+     */
+//    MerchantTradeResponse selectOrderListByPageAll(OrderListRequest orderRecord);
 }

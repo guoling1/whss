@@ -2094,6 +2094,8 @@ public class OrderRecordServiceImpl implements OrderRecordService {
         heads.add("订单状态");
         heads.add("结算状态");
         heads.add("支付方式");
+        heads.add("通道费");
+        heads.add("服务费");
         heads.add("支付渠道");
         heads.add("错误信息");
         datas.add(heads);
@@ -2127,6 +2129,8 @@ public class OrderRecordServiceImpl implements OrderRecordService {
                 if (list.get(i).getPayChannel()==103){
                     columns.add("快捷");
                 }
+                columns.add(String.valueOf(list.get(i).getServiceFee()));
+                columns.add(String.valueOf(list.get(i).getChannelFee()));
                 columns.add(list.get(i).getChannelName());
                 columns.add(list.get(i).getErrorMessage());
                 datas.add(columns);

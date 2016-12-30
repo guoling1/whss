@@ -565,7 +565,7 @@
 			AND o.settle_status = #{settleStatus}
 		</if>
 		ORDER BY o.create_time DESC
-		limit #{offset}, #{size}
+
 	</select>
 
 	<select id="selectProxyName" resultType="com.jkm.hss.merchant.entity.MerchantAndOrderRecord">

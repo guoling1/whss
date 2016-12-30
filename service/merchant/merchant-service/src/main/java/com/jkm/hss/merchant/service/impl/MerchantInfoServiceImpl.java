@@ -6,12 +6,12 @@ import com.jkm.hss.admin.service.QRCodeService;
 import com.jkm.hss.merchant.dao.MerchantInfoDao;
 import com.jkm.hss.merchant.entity.MerchantInfo;
 import com.jkm.hss.merchant.helper.request.MerchantInfoAddRequest;
-import com.jkm.hss.merchant.helper.request.RequestMerchantInfo;
 import com.jkm.hss.merchant.service.MerchantInfoService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -125,6 +125,7 @@ public class MerchantInfoServiceImpl implements MerchantInfoService {
 
     @Override
     public int updatePic(MerchantInfoAddRequest merchantInfo) {
+        merchantInfo.setAuthenticationTime(new Date());
         return this.merchantInfoDao.updatePic(merchantInfo);
     }
 
@@ -152,8 +153,8 @@ public class MerchantInfoServiceImpl implements MerchantInfoService {
      * @return
      */
     @Override
-    public int addAccountId(final long accountId, final int status, final long merchantId) {
-        return this.merchantInfoDao.addAccountId(accountId, status, merchantId);
+    public int addAccountId(final long accountId, final int status, final long merchantId,Date checkedTime) {
+        return this.merchantInfoDao.addAccountId(accountId, status, merchantId,checkedTime);
     }
 
 }

@@ -7,12 +7,14 @@ import com.jkm.hss.account.entity.Account;
 import com.jkm.hss.account.sevice.AccountService;
 import com.jkm.hss.bill.dao.OrderDao;
 import com.jkm.hss.bill.entity.Order;
+import com.jkm.hss.bill.entity.callback.MerchantTradeResponse;
 import com.jkm.hss.bill.enums.EnumOrderStatus;
 import com.jkm.hss.bill.enums.EnumSettleStatus;
 import com.jkm.hss.bill.enums.EnumTradeType;
 import com.jkm.hss.bill.service.CalculateService;
 import com.jkm.hss.bill.service.OrderService;
 import com.jkm.hss.merchant.entity.MerchantInfo;
+import com.jkm.hss.merchant.helper.request.OrderTradeRequest;
 import com.jkm.hss.merchant.service.MerchantInfoService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.util.Date;
+import java.util.*;
 
 /**
  * Created by yulong.zhang on 2016/12/22.
@@ -197,4 +199,102 @@ public class OrderServiceImpl implements OrderService {
     public Optional<Order> getByPayOrderId(final long payOrderId) {
         return Optional.fromNullable(this.orderDao.selectByPayOrderId(payOrderId));
     }
+
+    private List<String>  PayOf(String status) {
+        List<String> payResults = new ArrayList<String>();
+        if("N".equals(status)){
+            payResults.add("N");
+        }
+        if("H".equals(status)){
+            payResults.add("H");
+            payResults.add("W");
+            payResults.add("A");
+            payResults.add("E");
+        }
+        if("S".equals(status)){
+            payResults.add("S");
+        }
+        if("F".equals(status)){
+            payResults.add("F");
+        }
+        return payResults;
+    }
+
+    private String  PayOfStatus(String status) {
+        String message = "";
+        if("N".equals(status)){
+            message="待支付";
+        }
+        if("H".equals(status)||"W".equals(status)||"A".equals(status)||"E".equals(status)){
+            message="支付中";
+        }
+        if("S".equals(status)){
+            message="支付成功";
+        }
+        if("F".equals(status)){
+            message="支付失败";
+        }
+        return message;
+    }
+
+    @Override
+    public List<MerchantTradeResponse> selectOrderListByPage(OrderTradeRequest req) {
+//        List<String> payResults = PayOf(req.getPayResult());
+//        req.setPayResults(payResults);
+        Map<String,Object> map = new HashMap<String,Object>();
+        map.put("orderNo",req.getOrderNo());
+        map.put("startTime",req.getStartTime());
+        map.put("endTime",req.getEndTime());
+        map.put("merchantId",req.getMerchantId());
+        map.put("merchantName",req.getMerchantName());
+        map.put("orderNo",req.getOrderNo());
+        map.put("payType",req.getPayType());
+        map.put("settleStatus",req.getSettleStatus());
+        map.put("status",req.getStatus());
+        map.put("tradeAmount",req.getTradeAmount());
+//        map.put("settleStatus",req.getSettleStatus());
+        map.put("offset",req.getOffset());
+        map.put("size",req.getSize());
+        List<MerchantTradeResponse> list = orderDao.selectOrderList(map);
+//        if(list.size()>0){
+//            for(int i=0;i<list.size();i++){
+//                list.get(i).setOrderMessage(PayOfStatus(list.get(i).getPayResult()));
+//            }
+//        }
+        return list;
+    }
+
+    @Override
+    public int selectOrderListCount(OrderTradeRequest req) {
+//        List<String> payResults = PayOf(req.getPayResult());
+//        req.setPayResults(payResults);
+        Map<String,Object> map = new HashMap<String,Object>();
+        map.put("orderNo",req.getOrderNo());
+        map.put("startTime",req.getStartTime());
+        map.put("endTime",req.getEndTime());
+        map.put("merchantId",req.getMerchantId());
+        map.put("merchantName",req.getMerchantName());
+        map.put("orderNo",req.getOrderNo());
+        map.put("payType",req.getPayType());
+        map.put("settleStatus",req.getSettleStatus());
+        map.put("status",req.getStatus());
+        map.put("tradeAmount",req.getTradeAmount());
+        map.put("offset",req.getOffset());
+        map.put("size",req.getSize());
+        return orderDao.selectOrderListCount(map);
+    }
+
+//    @Override
+//    public MerchantTradeResponse selectOrderListByPageAll(OrderListRequest req) {
+//        List<String> payResults = PayOf(req.getPayResult());
+//        req.setPayResults(payResults);
+//        Map<String,Object> map = new HashMap<String,Object>();
+//        map.put("id",req.getId());
+//        MerchantTradeResponse merchantTradeResponse = orderDao.selectOrderListCountAll(map);
+//        if(merchantTradeResponse!=null){
+//            merchantTradeResponse.setOrderMessage(PayOfStatus(merchantTradeResponse.getPayResult()));
+//        }
+//        return merchantTradeResponse;
+//    }
+
 }

@@ -3,8 +3,8 @@ package com.jkm.hss.merchant.service;
 import com.google.common.base.Optional;
 import com.jkm.hss.merchant.entity.MerchantInfo;
 import com.jkm.hss.merchant.helper.request.MerchantInfoAddRequest;
-import com.jkm.hss.merchant.helper.request.RequestMerchantInfo;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -122,5 +122,5 @@ public interface MerchantInfoService {
      * @param status
      * @param merchantId
      */
-    int addAccountId(long accountId, int status, long merchantId);
+    int addAccountId(long accountId, int status, long merchantId, Date checkedTime);
 }

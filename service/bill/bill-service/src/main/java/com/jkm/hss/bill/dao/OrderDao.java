@@ -1,10 +1,13 @@
 package com.jkm.hss.bill.dao;
 
 import com.jkm.hss.bill.entity.Order;
+import com.jkm.hss.bill.entity.callback.MerchantTradeResponse;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by yulong.zhang on 2016/12/22.
@@ -93,4 +96,25 @@ public interface OrderDao {
      * @return
      */
     Order selectByPayOrderId(@Param("payOrderId") long payOrderId);
+
+    /**
+     * 交易列表
+     * @param map
+     * @return
+     */
+    List<MerchantTradeResponse> selectOrderList(Map map);
+
+    /**
+     * 总页数
+     * @param map
+     * @return
+     */
+    int selectOrderListCount(Map map);
+
+    /**
+     * 交易详情
+     * @param map
+     * @return
+     */
+    MerchantTradeResponse selectOrderListCountAll(Map map);
 }

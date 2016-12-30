@@ -108,7 +108,6 @@ public class OrderRecordController extends BaseController{
             orderList.setProxyName(orderList.getProxyName());
         }
         if (orderList.getLevel()==2){
-//            MerchantAndOrderRecord res = orderRecordService.selectProxyName(req);
             orderList.setProxyName1(orderList.getProxyName());
             if (orderList.getFirstLevel() != 0){
                 long FirstLevel =orderList.getFirstLevel();

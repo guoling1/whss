@@ -11,6 +11,11 @@ import java.util.Date;
 public class MerchantInfoAddRequest {
 
     /**
+     * 认证时间
+     */
+    private Date authenticationTime;
+
+    /**
      * 商户id
      */
     private long id;
