@@ -22,6 +22,11 @@ public class PaymentSdkDaiFuRequest {
     private String orderNo;
 
     /**
+     * 支付中心支付单流水号
+     */
+    private String payOrderSn;
+
+    /**
      * 总金额
      */
     private String totalAmount;

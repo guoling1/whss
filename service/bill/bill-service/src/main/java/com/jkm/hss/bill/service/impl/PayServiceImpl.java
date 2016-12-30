@@ -216,6 +216,7 @@ public class PayServiceImpl implements PayService {
         final JSONObject requestJsonObject = new JSONObject();
         requestJsonObject.put("merchantId", merchant.getId());
         requestJsonObject.put("payOrderId", order.getId());
+        requestJsonObject.put("payOrderSn", paymentSdkPayCallbackResponse.getSn());
         requestJsonObject.put("balanceAccountType", EnumBalanceTimeType.D0.getType());
         MqProducer.produce(requestJsonObject, MqConfig.MERCHANT_WITHDRAW, 100);
     }

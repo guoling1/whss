@@ -79,15 +79,16 @@ public class WithdrawServiceImpl implements WithdrawService {
      * {@inheritDoc}
      *
      * @param merchantId
-     * @param payOrderId 支付单id
+     * @param payOrderId 交易单（支付单）id
+     * @param payOrderSn 支付中心支付流水号
      * @param tradePeriod 结算周期
      * @return
      */
     @Override
-    public Pair<Integer, String> merchantWithdrawByOrder(final long merchantId, final long payOrderId, final String tradePeriod) {
+    public Pair<Integer, String> merchantWithdrawByOrder(final long merchantId, final long payOrderId, final String payOrderSn, final String tradePeriod) {
         log.info("商户[{}]，对支付交易订单[{}],进行提现", merchantId, payOrderId);
         final long playMoneyOrderId = this.orderService.createPlayMoneyOrderByPayOrder(payOrderId, merchantId, tradePeriod);
-        return this.withdrawByOrder(merchantId, playMoneyOrderId, tradePeriod);
+        return this.withdrawByOrder(merchantId, playMoneyOrderId, payOrderSn, tradePeriod);
     }
 
     /**
@@ -100,7 +101,7 @@ public class WithdrawServiceImpl implements WithdrawService {
      */
     @Override
     @Transactional
-    public Pair<Integer, String> withdrawByOrder(final long merchantId, final long playMoneyOrderId, final String tradePeriod) {
+    public Pair<Integer, String> withdrawByOrder(final long merchantId, final long playMoneyOrderId,  final String payOrderSn, final String tradePeriod) {
         final MerchantInfo merchant = this.merchantInfoService.selectById(merchantId).get();
         final Account account = this.accountService.getByIdWithLock(merchant.getAccountId()).get();
         final Order playMoneyOrder = this.orderService.getByIdWithLock(playMoneyOrderId).get();
@@ -132,7 +133,7 @@ public class WithdrawServiceImpl implements WithdrawService {
         paymentSdkDaiFuRequest.setNote(merchant.getMerchantName());
         paymentSdkDaiFuRequest.setSystemCode(PaymentSdkConstants.APP_ID);
         paymentSdkDaiFuRequest.setNotifyUrl(PaymentSdkConstants.SDK_PAY_WITHDRAW_NOTIFY_URL);
-
+        paymentSdkDaiFuRequest.setPayOrderSn(payOrderSn);
         //请求网关
         PaymentSdkDaiFuResponse response;
         try {

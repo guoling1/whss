@@ -14,21 +14,23 @@ public interface WithdrawService {
      * 代理商提现
      *
      * @param merchantId
-     * @param payOrderId 支付单id
+     * @param payOrderId 交易单（支付单）id
+     * @param payOrderSn 支付中心支付流水号
      * @param tradePeriod 结算周期
      * @return
      */
-    Pair<Integer, String> merchantWithdrawByOrder(long merchantId, long payOrderId, String tradePeriod);
+    Pair<Integer, String> merchantWithdrawByOrder(long merchantId, long payOrderId, String payOrderSn, String tradePeriod);
 
     /**
      * 按账单提现
      *
      * @param merchantId
      * @param playMoneyOrderId
+     * @param payOrderSn 支付中心支付流水号
      * @param tradePeriod
      * @return
      */
-    Pair<Integer, String> withdrawByOrder(long merchantId, long playMoneyOrderId, String tradePeriod);
+    Pair<Integer, String> withdrawByOrder(long merchantId, long playMoneyOrderId, String payOrderSn, String tradePeriod);
 
 
     /**

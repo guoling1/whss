@@ -35,8 +35,9 @@ public class MessageListenerImpl implements MessageListener {
                 log.info("消费消息--提现单[{}]， 向网关发送提现请求", body.getLong("payOrderId"));
                 final Long merchantId = body.getLong("merchantId");
                 final Long payOrderId = body.getLong("payOrderId");
+                final String payOrderSn = body.getString("payOrderSn");
                 final String balanceAccountType = body.getString("balanceAccountType");
-                this.withdrawService.merchantWithdrawByOrder(merchantId, payOrderId, balanceAccountType);
+                this.withdrawService.merchantWithdrawByOrder(merchantId, payOrderId, payOrderSn, balanceAccountType);
             }
         } catch (final Throwable e) {
             log.error("consume message error, Topic is: [{}], tag is: [{}] MsgId is: [{}]", message.getTopic(),
