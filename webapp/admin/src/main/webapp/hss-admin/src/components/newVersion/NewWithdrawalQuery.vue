@@ -73,31 +73,31 @@
                 <table id="example2" class="table table-bordered table-hover dataTable" role="grid" aria-describedby="example2_info">
                   <thead>
                   <tr role="row">
-                    <th class="sorting_asc" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Rendering engine: activate to sort column descending">订单号</th>
-                    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="Browser: activate to sort column ascending">打款时间</th>
-                    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="Platform(s): activate to sort column ascending">用户名称</th>
+                    <th class="sorting_asc" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Rendering engine: activate to sort column descending">打款流水号</th>
+                    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="Browser: activate to sort column ascending">交易单号</th>
+                    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="Platform(s): activate to sort column ascending">打款时间</th>
+                    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="Platform(s): activate to sort column ascending">用户名</th>
                     <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="Engine version: activate to sort column ascending">收款银行账号</th>
-                    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">支付金额</th>
-                    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">实际所得</th>
-                    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">服务费</th>
+                    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">打款金额</th>
                     <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">支付状态</th>
+                    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">打款通道</th>
                     <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">错误信息</th>
                     <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">操作</th>
                   </tr>
                   </thead>
                   <tbody>
                   <tr role="row" v-for="(record,index) in $$records">
-                    <td><router-link :to="{ path: '/admin/record/withdrawalDet', query: {id: record.id}}">{{record.orderId|changeHide}}</router-link></td>
-                    <td>{{record.payTime|changeTime}}</td>
-                    <td>{{record.name}}</td>
-                    <td>{{record.bankNo}}</td>
-                    <td>{{record.totalFee}}</td>
-                    <td>{{record.realFee}}</td>
-                    <td>{{record.serviceFee}}</td>
-                    <td>{{record.payResult|changeStatus}}</td>
-                    <td>{{record.errorMessage}}</td>
+                    <td><router-link :to="{ path: '/admin/record/withdrawalDet', query: {id: record.id}}">{{record.orderNo|changeHide}}</router-link></td>
+                    <td>{{record.sn|changeHide}}</td>
+                    <td>{{record.requestTime|changeTime}}</td>
+                    <td>{{record.receiptUserName}}</td>
+                    <td>{{record.bankCard}}</td>
+                    <td>{{record.amount}}</td>
+                    <td>{{record.statusValue}}</td>
+                    <td>{{record.playMoneyChannel}}</td>
+                    <td>{{record.message}}</td>
                     <td>
-                      <router-link v-if="record.payResult=='F'" :to="{path:'/admin/record/withdrawalAudit'}">审核</router-link>
+                      <router-link v-if="record.message=='5'" :to="{path:'/admin/record/withdrawalAudit'}">审核</router-link>
                     </td>
                   </tr>
                   </tbody>
@@ -123,6 +123,7 @@
         </div>
       </div>
     </div>
+    <!--下载-->
   </div>
 </template>
 
@@ -160,9 +161,9 @@
         remark:''
       }
     },
-    http: {
+    /*http: {
       headers: {'Content-Type': 'application/x-www-form-urlencoded'}
-    },
+  },*/
     created:function () {
       this.$http.post('http://192.168.1.20:8076/order/withdraw/listOrder',this.$data.query)
         .then(function (res) {
@@ -190,7 +191,8 @@
               aLi[i].style.display='none'
             }
           }
-        },function (err) {
+        })
+        .catch(function (err) {
           console.log(err)
         })
     },
@@ -226,7 +228,7 @@
           n = Number(tarInn);
         }
         this.$data.query.page = n;
-        this.$http.post('/admin/order/withdraw/listOrder',this.$data.query)
+        this.$http.post('http://192.168.1.20:8076/order/withdraw/listOrder',this.$data.query)
           .then(function (res) {
             this.$data.records = res.data.records;
             this.$data.total=res.data.totalPage;
@@ -258,7 +260,7 @@
       },
       //筛选
       lookup: function () {
-        this.$data.query.page = 1;
+        this.$data.query.pageNo = 1;
         this.$http.post('http://192.168.1.20:8076/order/withdraw/listOrder',this.$data.query)
           .then(function (res) {
             this.$data.records = res.data.records;
@@ -348,7 +350,7 @@
       }
     },
     filters: {
-      changeStatus: function (val) {
+      /*changeStatus: function (val) {
         if(val == "N"){
           return '待审核'
         }else if(val == "H"){
@@ -361,6 +363,19 @@
           return '审核未通过'
         }else if(val == "D"){
           return '交易关闭'
+        }
+      },*/
+      changeStatus: function (val) {
+        if(val == "1"){
+          return '待提现'
+        }else if(val == "2"){
+          return '准备打款'
+        }else if(val == "3"){
+          return '请求成功'
+        }else if(val == "4"){
+          return '打款成功'
+        }else if(val == "5"){
+          return '打款失败'
         }
       },
       changeChannel: function (val) {

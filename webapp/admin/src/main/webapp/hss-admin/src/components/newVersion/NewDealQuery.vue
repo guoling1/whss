@@ -116,7 +116,7 @@
                 </thead>
                 <tbody id="content">
                 <tr role="row" v-for="order in orders">
-                  <td><router-link :to="{ path: '/admin/record/dealDet', query: {id: order.id}}">{{order.orderNo|changeHide}}</router-link></td>
+                  <td><router-link :to="{ path: '/admin/record/newDealDet', query: {orderNo: order.orderNo}}">{{order.orderNo|changeHide}}</router-link></td>
                   <td>{{order.createTime|changeTime}}</td>
                   <td>{{order.merchantName}}</td>
                   <td>{{order.proxyName}}</td>

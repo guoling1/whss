@@ -142,7 +142,7 @@
       }
     },
     created: function(){
-      this.$http.post('/admin/queryOrderRecord/orderListAll',{id:this.$route.query.id})
+      this.$http.post('/admin/queryOrder/orderListAll',{orderNo:this.$route.query.orderNo})
         .then(function (res) {
           this.$data.record = res.data;
         },function (err) {

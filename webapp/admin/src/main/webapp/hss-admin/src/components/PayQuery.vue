@@ -20,31 +20,31 @@
               <div class="form-group">
                 <label>支付创建日期：</label>
                 <div class="form-control">
-                  <input type="date" style="border: none;display:inline-block;width: 45%" name="date" value="" v-model="$$query.startTime">至
-                  <input type="date" style="border: none;display:inline-block;width: 45%" name="date" value="" v-model="$$query.endTime">
+                  <input type="date" style="border: none;display:inline-block;width: 45%" name="date" value="" v-model="$$query.startCreateTime">至
+                  <input type="date" style="border: none;display:inline-block;width: 45%" name="date" value="" v-model="$$query.endCreateTime">
                 </div>
               </div>
               <div class="form-group">
                 <label>支付完成日期：</label>
                 <div class="form-control">
-                  <input type="date" style="border: none;display:inline-block;width: 45%" name="date" value="" v-model="$$query.startTime">至
-                  <input type="date" style="border: none;display:inline-block;width: 45%" name="date" value="" v-model="$$query.endTime">
+                  <input type="date" style="border: none;display:inline-block;width: 45%" name="date" value="" v-model="$$query.startFinishTime">至
+                  <input type="date" style="border: none;display:inline-block;width: 45%" name="date" value="" v-model="$$query.endFinishTime">
                 </div>
               </div>
             </div>
             <div class="col-md-3">
               <div class="form-group">
                 <label>交易单号：</label>
-                <input type="text" class="form-control" v-model="$$query.orderId">
+                <input type="text" class="form-control" v-model="$$query.orderNo">
               </div>
               <div class="form-group">
                 <label>支付状态：</label>
-                <select class="form-control select2 select2-hidden-accessible" style="width: 100%;" tabindex="-1" aria-hidden="true" v-model="$$query.payResult">
+                <select class="form-control select2 select2-hidden-accessible" style="width: 100%;" tabindex="-1" aria-hidden="true" v-model="$$query.status">
                   <option value="">全部</option>
-                  <option value="N">待支付</option>
-                  <option value="H">支付中</option>
-                  <option value="S">支付成功</option>
-                  <option value="F">支付失败</option>
+                  <option value="1">待支付</option>
+                  <option value="2">支付中</option>
+                  <option value="4">支付成功</option>
+                  <option value="5">支付失败</option>
                 </select>
               </div>
             </div>
@@ -156,15 +156,13 @@
         query:{
           page:1,
           size:10,
-          orderId:'',
-          subName: '',
-          startTime: '',
-          endTime: '',
-          lessTotalFee: '',
-          moreTotalFee: '',
-          payResult: '',
-          settleStatus:'',
-          payChannel:''
+          sn:'',
+          orderNo:'',
+          status: '',
+          startCreateTime: '',
+          endCreateTime: '',
+          startFinishTime: '',
+          endFinishTime: ''
         },
         orders:[],
         total:'',
@@ -172,7 +170,7 @@
       }
     },
     created:function(){
-      /*this.$http.post('/admin/queryOrderRecord/orderList',this.$data.query)
+      this.$http.post('http://192.168.1.20:8076/order/pay/listOrder',this.$data.query)
         .then(function (res) {
           this.$data.orders=res.data.records;
           this.$data.total=res.data.totalPage;
@@ -213,7 +211,7 @@
           this.$store.commit('MESSAGE_ACCORD_SHOW', {
             text: err.statusMessage
           })
-        })*/
+        })
     },
     methods: {
       refresh: function () {
@@ -247,7 +245,7 @@
           n = Number(tarInn);
         }
         this.$data.query.page = n;
-        this.$http.post('/admin/queryOrderRecord/orderList',this.$data.query)
+        this.$http.post('http://192.168.1.20:8076/order/pay/listOrder',this.$data.query)
           .then(function (res) {
             this.$data.orders=res.data.records;
             this.$data.total=res.data.totalPage;
@@ -303,7 +301,7 @@
       //筛选
       lookup: function () {
         this.$data.query.page = 1;
-        this.$http.post('/admin/queryOrderRecord/orderList',this.$data.query)
+        this.$http.post('http://192.168.1.20:8076/order/pay/listOrder',this.$data.query)
           .then(function (res) {
             this.$data.orders=res.data.records;
             this.$data.total=res.data.totalPage;
@@ -351,11 +349,15 @@
       }
     },
     filters: {
-      changeSettleStatus: function (val) {
-        if(val == 0){
-          return '已结算'
+      changeStatus: function (val) {
+        if(val == 1){
+          return '待支付'
         }else if(val == 1){
-          return '未结算'
+          return '支付中'
+        }else if(val == 4){
+          return '支付成功'
+        }else if(val == 5){
+          return '支付失败'
         }
       },
       changePayChannel: function (val) {

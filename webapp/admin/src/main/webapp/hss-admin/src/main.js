@@ -11,21 +11,21 @@ Vue.use(VueResource);
 Vue.http.interceptors.push((request, next) => {
   next((response) => {
     let {status,body} = response;
-    if (status == 200) {
-      if (body.code == -100 || body.code == -200 || body.code == -201) {
-        store.commit('LOGIN_SHOW');
-        router.push('/admin/login');
-      } else if (body.code != 1) {
-        response.status = 500;
-        response.statusMessage = body.msg || '系统异常';
-        response.statusText = 'Internal Server Error';
-        response.ok = false;
+      if (status == 200) {
+        if (body.code == -100 || body.code == -200 || body.code == -201) {
+          store.commit('LOGIN_SHOW');
+          router.push('/admin/login');
+        } else if (body.code != 1) {
+          response.status = 500;
+          response.statusMessage = body.msg || '系统异常';
+          response.statusText = 'Internal Server Error';
+          response.ok = false;
+        } else {
+          response.data = body.result;
+        }
       } else {
-        response.data = body.result;
+        response.statusMessage = '系统异常';
       }
-    } else {
-      response.statusMessage = '系统异常';
-    }
     return response;
   })
 });
