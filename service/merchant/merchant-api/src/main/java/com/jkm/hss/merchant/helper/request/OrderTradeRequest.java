@@ -2,8 +2,6 @@ package com.jkm.hss.merchant.helper.request;
 
 import lombok.Data;
 
-import java.math.BigDecimal;
-
 /**
  * Created by Thinkpad on 2016/12/20.
  */
@@ -48,9 +46,14 @@ public class OrderTradeRequest {
     private String merchantName;
 
     /**
-     * 查询条件：交易金额
+     * 查询条件：交易金额（小）
      */
-    private BigDecimal tradeAmount;
+    private Double lessTotalFee;
+
+    /**
+     * 查询条件：交易金额（大）
+     */
+    private Double moreTotalFee;
 
     /**
      * 查询条件：订单状态

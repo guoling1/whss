@@ -2,6 +2,7 @@ package com.jkm.hss.bill.dao;
 
 import com.jkm.hss.bill.entity.MerchantTradeResponse;
 import com.jkm.hss.bill.entity.Order;
+import com.jkm.hss.merchant.helper.request.OrderTradeRequest;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
@@ -139,4 +140,11 @@ public interface OrderDao {
      * @return
      */
     List<MerchantTradeResponse> getProxyName(long firstLevelDealerId);
+
+    /**
+     * 导出excel
+     * @param req
+     * @return
+     */
+    List<MerchantTradeResponse> selectOrderListTrade(OrderTradeRequest req);
 }

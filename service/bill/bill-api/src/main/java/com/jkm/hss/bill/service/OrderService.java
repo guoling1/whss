@@ -113,6 +113,8 @@ public interface OrderService {
 
     int selectOrderListCount(OrderTradeRequest orderRecord);
 
+    String downloadExcel(OrderTradeRequest req, String baseUrl);
+
     /**
      * 查询交易详情
      * @param orderRecord
