@@ -11,4 +11,9 @@ public class WithdrawRequest {
      * 验证码
      */
     private String code;
+
+    /**
+     * 提现金额
+     */
+    private String amount;
 }

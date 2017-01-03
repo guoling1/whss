@@ -33,11 +33,14 @@ public enum EnumVerificationCodeType {
     BIND_CARD_DEALER(4, EnumNoticeType.BIND_CARD_DEALER, 5),
 
     /**
-     * 商户提现
+     * 提现
      */
-    WITH_DRAW(5, EnumNoticeType.WITHDRAW_CODE, 100);
+    WITH_DRAW(5, EnumNoticeType.WITHDRAW_CODE, 100),
 
-
+    /**
+     * 代理商提现
+     */
+    WITHDRAW_DEALER(6, EnumNoticeType.WITHDRAW_CODE_DEALER, 100);
 
     private static final Map<Integer, EnumVerificationCodeType> TYPE_MAP = new HashMap<>();
 

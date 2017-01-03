@@ -37,7 +37,12 @@ public enum EnumNoticeType {
     PAYMENT_CODE(601, "支付验证码"),
 
     //########## 提现消息 ##########
-    WITHDRAW_CODE(701, "提现验证码");
+    WITHDRAW_CODE(701, "提现验证码"),
+
+    /**
+     * 代理商提现
+     */
+    WITHDRAW_CODE_DEALER(702, "提现验证码");
 
 
 
