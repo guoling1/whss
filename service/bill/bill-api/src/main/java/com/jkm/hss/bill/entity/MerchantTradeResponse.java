@@ -20,6 +20,11 @@ import java.util.Date;
 public class MerchantTradeResponse {
 
     /**
+     * 身份证号
+     */
+    private String identity;
+
+    /**
      * 交易日期
      */
     private Date createTime;
@@ -231,5 +236,30 @@ public class MerchantTradeResponse {
     public boolean isSettled() {
         return EnumSettleStatus.SETTLED.getId() == this.settleStatus;
     }
+
+    /**
+     * 绑卡姓名
+     */
+    private String name;
+
+    /**
+     * 注册手机号
+     */
+    private String mobile;
+
+    /**
+     * 银行卡号
+     */
+    private String bankNo;
+
+    /**
+     * 银行预留手机号
+     */
+    private String reserveMobile;
+
+    /**
+     * 注册时间
+     */
+    private Date createTimes;
 
 }

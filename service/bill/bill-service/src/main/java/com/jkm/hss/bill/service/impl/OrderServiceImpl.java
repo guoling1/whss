@@ -16,6 +16,7 @@ import com.jkm.hss.bill.enums.EnumTradeType;
 import com.jkm.hss.bill.service.CalculateService;
 import com.jkm.hss.bill.service.OrderService;
 import com.jkm.hss.merchant.entity.MerchantInfo;
+import com.jkm.hss.merchant.helper.MerchantSupport;
 import com.jkm.hss.merchant.helper.request.OrderTradeRequest;
 import com.jkm.hss.merchant.service.MerchantInfoService;
 import lombok.extern.slf4j.Slf4j;
@@ -249,8 +250,6 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public List<MerchantTradeResponse> selectOrderListByPage(OrderTradeRequest req) {
-//        List<String> payResults = PayOf(req.getPayResult());
-//        req.setPayResults(payResults);
         Map<String,Object> map = new HashMap<String,Object>();
         map.put("orderNo",req.getOrderNo());
         map.put("startTime",req.getStartTime());
@@ -347,6 +346,50 @@ public class OrderServiceImpl implements OrderService {
             }
         }
         return "";
+    }
+
+    @Override
+    public MerchantTradeResponse selectOrderListByPageAll(OrderTradeRequest req) {
+        MerchantTradeResponse list = orderDao.selectOrderListByPageAll(req.getOrderNo());
+        if(list != null){
+            long payee = list.getPayee();
+            long payer = list.getPayer();
+            MerchantTradeResponse lists = orderDao.getMerchantAll(payee,payer);
+            list.setCreateTimes(lists.getCreateTime());
+            if (lists.getMobile()!=null&&!"".equals(lists.getMobile())){
+                list.setMobile(MerchantSupport.decryptMobile(lists.getMobile()));
+            }
+            if (lists.getBankNo()!=null&&!"".equals(lists.getBankNo())){
+                list.setBankNo(MerchantSupport.decryptBankCard(lists.getBankNo()));
+            }
+            if (lists.getReserveMobile()!=null&&!"".equals(lists.getReserveMobile())){
+                list.setReserveMobile(MerchantSupport.decryptMobile(lists.getReserveMobile()));
+            }
+            if (lists.getIdentity()!=null&&!"".equals(lists.getIdentity())){
+                list.setIdentity(MerchantSupport.decryptIdentity(lists.getIdentity()));
+            }
+
+            list.setName(lists.getName());
+            list.setMerchantName(lists.getMerchantName());
+            if (lists!=null){
+                list.setMerchantName(lists.getMerchantName());
+                MerchantTradeResponse result = orderDao.getDealerAll(lists.getDealerId());
+                    if (result!=null){
+                        if (result.getLevel()==1){
+                            list.setProxyName(result.getProxyName());
+                        }
+                        if (result.getLevel()==1){
+                            MerchantTradeResponse res = orderDao.getProxyName1(result.getFirstLevelDealerId());
+                            if (res!=null){
+                                list.setProxyName1(res.getProxyName());
+                            }
+                        }
+                    }
+            }
+
+
+            }
+        return list;
     }
 
     /**

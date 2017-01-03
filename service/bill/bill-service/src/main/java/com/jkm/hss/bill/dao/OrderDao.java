@@ -112,12 +112,6 @@ public interface OrderDao {
      */
     int selectOrderListCount(Map map);
 
-    /**
-     * 交易详情
-     * @param map
-     * @return
-     */
-    MerchantTradeResponse selectOrderListCountAll(Map map);
 
     /**
      * 查询商户信息
@@ -147,4 +141,35 @@ public interface OrderDao {
      * @return
      */
     List<MerchantTradeResponse> selectOrderListTrade(OrderTradeRequest req);
+
+
+
+    /**
+     * 交易详情
+     * @param orderNo
+     * @return
+     */
+    MerchantTradeResponse selectOrderListByPageAll(@Param("orderNo") String orderNo);
+
+    /**
+     * 查询商户信息
+     * @param payee
+     * @param payer
+     * @return
+     */
+    MerchantTradeResponse getMerchantAll(@Param("payee") long payee,@Param("payer") long payer);
+
+    /**
+     * 查询代理商信息
+     * @param dealerId
+     * @return
+     */
+    MerchantTradeResponse getDealerAll(@Param("dealerId") long dealerId);
+
+    /**
+     * 查询二级代理商
+     * @param firstLevelDealerId
+     * @return
+     */
+    MerchantTradeResponse getProxyName1(@Param("firstLevelDealerId") long firstLevelDealerId);
 }

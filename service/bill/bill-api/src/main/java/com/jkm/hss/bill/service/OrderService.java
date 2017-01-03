@@ -116,6 +116,13 @@ public interface OrderService {
     String downloadExcel(OrderTradeRequest req, String baseUrl);
 
     /**
+     * 交易详情
+     * @param req
+     * @return
+     */
+    MerchantTradeResponse selectOrderListByPageAll(OrderTradeRequest req);
+
+    /**
      * 查询交易详情
      * @param orderRecord
      * @return
