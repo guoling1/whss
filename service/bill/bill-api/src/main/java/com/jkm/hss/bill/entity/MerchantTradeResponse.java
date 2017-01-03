@@ -20,6 +20,11 @@ import java.util.Date;
 public class MerchantTradeResponse {
 
     /**
+     * 交易日期
+     */
+    private Date createTime;
+
+    /**
      * 一级代理商id
      */
     private long firstLevelDealerId;
