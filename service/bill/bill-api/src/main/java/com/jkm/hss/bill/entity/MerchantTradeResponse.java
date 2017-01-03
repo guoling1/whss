@@ -20,6 +20,11 @@ import java.util.Date;
 public class MerchantTradeResponse {
 
     /**
+     * 商户id
+     */
+    private long id;
+
+    /**
      * 身份证号
      */
     private String identity;
