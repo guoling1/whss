@@ -262,7 +262,7 @@ public class OrderServiceImpl implements OrderService {
                 long payer = list.get(i).getPayer();
                 List<MerchantTradeResponse> lists = orderDao.getMerchant(payee,payer);
                 if (lists.size()>0){
-                    for(int j=0;j<list.size();j++){
+                    for(int j=0;j<lists.size();j++){
                         list.get(i).setMerchantName(lists.get(j).getMerchantName());
                         List<MerchantTradeResponse> result = orderDao.getDealer(lists.get(j).getDealerId());
                         if (result.size()>0){
