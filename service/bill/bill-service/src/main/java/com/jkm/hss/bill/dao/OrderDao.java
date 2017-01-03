@@ -1,7 +1,7 @@
 package com.jkm.hss.bill.dao;
 
+import com.jkm.hss.bill.entity.MerchantTradeResponse;
 import com.jkm.hss.bill.entity.Order;
-import com.jkm.hss.bill.entity.callback.MerchantTradeResponse;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 

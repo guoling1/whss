@@ -1,8 +1,8 @@
 package com.jkm.hss.bill.service;
 
 import com.google.common.base.Optional;
+import com.jkm.hss.bill.entity.MerchantTradeResponse;
 import com.jkm.hss.bill.entity.Order;
-import com.jkm.hss.bill.entity.callback.MerchantTradeResponse;
 import com.jkm.hss.merchant.helper.request.OrderTradeRequest;
 
 import java.util.Date;

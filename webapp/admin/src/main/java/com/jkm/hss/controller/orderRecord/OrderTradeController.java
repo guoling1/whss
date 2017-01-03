@@ -3,7 +3,7 @@ package com.jkm.hss.controller.orderRecord;
 import com.aliyun.oss.OSSClient;
 import com.jkm.base.common.entity.CommonResponse;
 import com.jkm.base.common.entity.PageModel;
-import com.jkm.hss.bill.entity.callback.MerchantTradeResponse;
+import com.jkm.hss.bill.entity.MerchantTradeResponse;
 import com.jkm.hss.bill.service.OrderService;
 import com.jkm.hss.controller.BaseController;
 import com.jkm.hss.merchant.helper.request.OrderTradeRequest;
