@@ -152,8 +152,11 @@
         <if test="payType != null and payType!=''">
             AND pay_type =  #{payType}
         </if>
-        <if test="realPayAmount != null and realPayAmount!=''">
-            AND real_pay_amount = #{realPayAmount}
+        <if test="lessTotalFee != null and lessTotalFee!=''">
+            AND real_pay_amount <![CDATA[ >= ]]> #{lessTotalFee}
+        </if>
+        <if test="moreTotalFee != null and moreTotalFee!=''">
+            AND real_pay_amount <![CDATA[ <= ]]> #{moreTotalFee}
         </if>
         <if test="settleStatus != null">
             AND settle_status = #{settleStatus}
@@ -193,7 +196,7 @@
             AND create_time <![CDATA[ <= ]]> #{endTime}
         </if>
         <if test="orderNo != null and orderNo!=''">
-            AND order_no = #{orderNo}
+            AND order_no LIKE CONCAT('%',#{orderNo})
         </if>
         <if test="merchantName != null and merchantName!=''">
             AND merchant_name = #{merchantName}
@@ -280,12 +283,5 @@
     </select>
 
 
-    <!--<select id="selectOrderListCount" resultType="com.jkm.hss.bill.entity.Order">-->
-        <!--SELECT * FROM tb_order-->
-    <!--</select>-->
-
-    <!--<select id="selectOrderListCountAll" resultType="com.jkm.hss.bill.entity.Order">-->
-        <!--SELECT * FROM tb_order-->
-    <!--</select>-->
 
 </mapper>

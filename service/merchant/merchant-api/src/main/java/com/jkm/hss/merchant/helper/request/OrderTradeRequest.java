@@ -64,11 +64,8 @@ public class OrderTradeRequest {
     /**
      * 查询条件：支付方式
      *
-     *101.微信扫码
-     * 102.支付宝扫码
-     * 103.银联
      */
-    private Integer payType;
+    private String payType;
 
     /**
      *结算状态1：待结算，2：结算中，3：已结算

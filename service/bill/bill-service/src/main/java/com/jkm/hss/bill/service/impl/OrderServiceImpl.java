@@ -431,6 +431,18 @@ public class OrderServiceImpl implements OrderService {
                 if (list.get(i).getStatus()==4){
                     columns.add("支付成功");
                 }
+                if (list.get(i).getStatus()==5){
+                    columns.add("提现中");
+                }
+                if (list.get(i).getStatus()==6){
+                    columns.add("提现成功");
+                }
+                if (list.get(i).getStatus()==7){
+                    columns.add("充值成功");
+                }
+                if (list.get(i).getStatus()==8){
+                    columns.add("充值失败");
+                }
                 if (list.get(i).getSettleStatus()==1){
                     columns.add("未结算");
                 }
@@ -441,21 +453,26 @@ public class OrderServiceImpl implements OrderService {
                     columns.add("已结算");
                 }
 
-                if (list.get(i).getPayType()=="S"){
+                if ("S".equals(list.get(i).getPayType())){
                     columns.add("微信扫码");
                 }
-                if (list.get(i).getPayType()=="N"){
+                if ("N".equals(list.get(i).getPayType())){
                     columns.add("微信二维码");
+
                 }
-                if (list.get(i).getPayType()=="H"){
+                if ("H".equals(list.get(i).getPayType())){
                     columns.add("微信H5收银台");
                 }
-                if (list.get(i).getPayType()=="B"){
+                if ("B".equals(list.get(i).getPayType())){
                     columns.add("快捷收款");
                 }
-                if (list.get(i).getPayType()=="Z"){
+                if ("Z".equals(list.get(i).getPayType())){
                     columns.add("支付宝扫码");
                 }
+                if("".equals(list.get(i).getPayType())|| list.get(i).getPayType()==null){
+                    columns.add("-");
+                }
+
                 columns.add(String.valueOf(list.get(i).getPoundage()));
                 if (list.get(i).getPayChannelSign()==101){
                     columns.add("阳光微信扫码");
