@@ -818,7 +818,7 @@ public class DealerController extends BaseController {
         }
         final Account account = this.accountService.getById(dealer.getAccountId()).get();
         if (account.getAvailable().compareTo(new BigDecimal(withdrawRequest.getAmount())) < 0) {
-            return CommonResponse.simpleResponse(-11, "提现金额不足");
+            return CommonResponse.simpleResponse(-1, "提现金额不足");
         }
         final Pair<Integer, String> resultPair = null;//this.withdrawService.withdrawByAccount(account.getId(), new BigDecimal(withdrawRequest.getAmount()));
         if (0 == resultPair.getLeft()) {

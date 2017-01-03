@@ -2,10 +2,16 @@ package com.jkm.hss.controller.bill;
 
 import com.google.common.base.Optional;
 import com.jkm.base.common.entity.CommonResponse;
+import com.jkm.hss.bill.entity.Order;
+import com.jkm.hss.bill.enums.EnumTradeType;
+import com.jkm.hss.bill.service.OrderService;
 import com.jkm.hss.bill.service.PayService;
 import com.jkm.hss.bill.service.WithdrawService;
 import com.jkm.hss.controller.BaseController;
+import com.jkm.hss.dealer.entity.Dealer;
+import com.jkm.hss.dealer.service.DealerService;
 import com.jkm.hss.helper.request.DynamicCodePayRequest;
+import com.jkm.hss.helper.request.QueryInfoByOrderNoRequest;
 import com.jkm.hss.helper.request.StaticCodePayRequest;
 import com.jkm.hss.helper.request.WithdrawRequest;
 import com.jkm.hss.merchant.entity.MerchantInfo;
@@ -42,6 +48,10 @@ public class TradeController extends BaseController {
     private PayService payService;
     @Autowired
     private SmsAuthService smsAuthService;
+    @Autowired
+    private OrderService orderService;
+    @Autowired
+    private DealerService dealerService;
     @Autowired
     private UserInfoService userInfoService;
     @Autowired
@@ -171,4 +181,41 @@ public class TradeController extends BaseController {
         return CommonResponse.simpleResponse(-1, resultPair.getRight());
     }
 
+
+    /**
+     * 提现
+     *
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "queryInfoByOrderNo", method = RequestMethod.POST)
+    public CommonResponse queryInfoByOrderNo(@RequestBody QueryInfoByOrderNoRequest queryInfoByOrderNoRequest) {
+        final String orderNo = queryInfoByOrderNoRequest.getOrderNo();
+        if (StringUtils.isEmpty(orderNo)) {
+            return CommonResponse.simpleResponse(-1, "交易订单号不能空");
+        }
+        final Order order = this.orderService.getByOrderNo(orderNo).get();
+        if (EnumTradeType.WITHDRAW.getId() != order.getTradeType()) {
+            return CommonResponse.simpleResponse(-1, "交易单[提现单]异常");
+        }
+        final Optional<MerchantInfo> merchantInfoOptional = this.merchantInfoService.getByAccountId(order.getPayer());
+        if (merchantInfoOptional.isPresent()) {
+            final MerchantInfo merchantInfo = merchantInfoOptional.get();
+            return CommonResponse.builder4MapResult(CommonResponse.SUCCESS_CODE, "success")
+                    .addParam("accountId", merchantInfo.getAccountId())
+                    .addParam("userName", merchantInfo.getMerchantName())
+                    .addParam("userType", "商户")
+                    .build();
+        }
+        final Optional<Dealer> dealerOptional = this.dealerService.getByAccountId(order.getPayer());
+        if (dealerOptional.isPresent()) {
+            final Dealer dealer = dealerOptional.get();
+            return CommonResponse.builder4MapResult(CommonResponse.SUCCESS_CODE, "success")
+                    .addParam("accountId", dealer.getAccountId())
+                    .addParam("userName", dealer.getProxyName())
+                    .addParam("userType", "代理商")
+                    .build();
+        }
+        return CommonResponse.simpleResponse(-1, "没有查到打款用户信息");
+    }
 }

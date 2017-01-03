@@ -279,6 +279,10 @@
         id = #{firstLevelDealerId}
     </select>
 
+    <select id="selectByOrderNo" resultType="com.jkm.hss.bill.entity.Order">
+        SELECT * FROM tb_order WHERE order_no = #{orderNo}
+    </select>
+
 
     <!--<select id="selectOrderListCount" resultType="com.jkm.hss.bill.entity.Order">-->
         <!--SELECT * FROM tb_order-->

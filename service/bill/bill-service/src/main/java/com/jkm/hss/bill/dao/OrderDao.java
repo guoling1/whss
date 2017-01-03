@@ -147,4 +147,12 @@ public interface OrderDao {
      * @return
      */
     List<MerchantTradeResponse> selectOrderListTrade(OrderTradeRequest req);
+
+    /**
+     * 按交易订单号查询
+     *
+     * @param orderNo
+     * @return
+     */
+    Order selectByOrderNo(@Param("orderNo") String orderNo);
 }

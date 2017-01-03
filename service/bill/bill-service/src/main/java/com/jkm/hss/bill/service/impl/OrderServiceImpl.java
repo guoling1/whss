@@ -350,6 +350,17 @@ public class OrderServiceImpl implements OrderService {
     }
 
     /**
+     * {@inheritDoc}
+     *
+     * @param orderNo
+     * @return
+     */
+    @Override
+    public Optional<Order> getByOrderNo(final String orderNo) {
+        return Optional.fromNullable(this.orderDao.selectByOrderNo(orderNo));
+    }
+
+    /**
      * 生成ExcelVo
      * @param
      * @param baseUrl
