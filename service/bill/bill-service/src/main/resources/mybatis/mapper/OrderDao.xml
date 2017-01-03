@@ -141,7 +141,7 @@
             AND create_time <![CDATA[ <= ]]> #{endTime}
         </if>
         <if test="orderNo != null and orderNo!=''">
-            AND order_no = #{orderNo}
+            AND order_no LIKE CONCAT('%',#{orderNo})
         </if>
         <if test="merchantName != null and merchantName!=''">
             AND merchant_name = #{merchantName}
@@ -160,6 +160,60 @@
         </if>
         ORDER BY create_time DESC
         limit #{offset}, #{size}
+    </select>
+
+    <select id="selectOrderListTrade" resultType="com.jkm.hss.bill.entity.MerchantTradeResponse">
+        SELECT
+        order_no,
+        trade_amount,
+        real_pay_amount,
+        trade_type,
+        payer,
+        payee,
+        pay_account,
+        pay_account_type,
+        pay_type,
+        pay_success_time,
+        poundage,
+        pay_rate,
+        settle_status,
+        settle_time,
+        success_settle_time,
+        pay_channel_sign,
+        remark,
+        status,
+        create_time
+        FROM
+        tb_order
+        WHERE 1=1
+        <if test="startTime!=null and startTime!=''">
+            AND create_time <![CDATA[ >= ]]> #{startTime}
+        </if>
+        <if test="endTime!=null and endTime!=''">
+            AND create_time <![CDATA[ <= ]]> #{endTime}
+        </if>
+        <if test="orderNo != null and orderNo!=''">
+            AND order_no = #{orderNo}
+        </if>
+        <if test="merchantName != null and merchantName!=''">
+            AND merchant_name = #{merchantName}
+        </if>
+        <if test="status != null and status!=''">
+            AND status=#{status}
+        </if>
+        <if test="payType != null and payType!=''">
+            AND pay_type =  #{payType}
+        </if>
+        <if test="lessTotalFee != null and lessTotalFee!=''">
+            AND real_pay_amount <![CDATA[ >= ]]> #{lessTotalFee}
+        </if>
+        <if test="moreTotalFee != null and moreTotalFee!=''">
+            AND real_pay_amount <![CDATA[ <= ]]> #{moreTotalFee}
+        </if>
+        <if test="settleStatus != null">
+            AND settle_status = #{settleStatus}
+        </if>
+        ORDER BY create_time DESC
     </select>
 
     <select id="selectOrderListCount"  resultType="java.lang.Integer">

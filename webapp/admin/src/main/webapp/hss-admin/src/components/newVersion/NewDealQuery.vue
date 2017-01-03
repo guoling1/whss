@@ -2,6 +2,7 @@
   <div id="dale">
     <div style="padding: 8px 30px; background: rgb(243, 156, 18); z-index: 999999; font-size: 22px; font-weight: 600;margin-bottom: 15px;color: #fff;">
       交易查询
+      <router-link to="/admin/record/deal" class="btn btn-success pull-right" style="margin-left: 20px">切换旧版</router-link>
       <div class="btn btn-primary pull-right" @click="refresh()">刷新</div>
     </div>
     <div class="col-md-12">
@@ -19,11 +20,11 @@
             <div class="col-md-3">
               <div class="form-group">
                 <label>订单号：</label>
-                <input type="text" class="form-control" v-model="$$query.orderId">
+                <input type="text" class="form-control" v-model="$$query.orderNo">
               </div>
               <div class="form-group">
                 <label>商户名称</label>
-                <input type="text" class="form-control" v-model="$$query.subName">
+                <input type="text" class="form-control" v-model="$$query.merchantName">
               </div>
             </div>
             <div class="col-md-3">
@@ -45,12 +46,15 @@
             <div class="col-md-3">
               <div class="form-group">
                 <label>订单状态：</label>
-                <select class="form-control select2 select2-hidden-accessible" style="width: 100%;" tabindex="-1" aria-hidden="true" v-model="$$query.payResult">
+                <select class="form-control select2 select2-hidden-accessible" style="width: 100%;" tabindex="-1" aria-hidden="true" v-model="$$query.status">
                   <option value="">全部</option>
-                  <option value="N">待支付</option>
-                  <option value="H">支付中</option>
-                  <option value="S">支付成功</option>
-                  <option value="F">支付失败</option>
+                  <option value="1">待支付</option>
+                  <option value="4">支付成功</option>
+                  <option value="3">支付失败</option>
+                  <option value="5">提现中</option>
+                  <option value="6">提现成功</option>
+                  <option value="7">充值成功</option>
+                  <option value="8">充值失败</option>
                 </select>
               </div>
               <div class="form-group">
@@ -58,7 +62,8 @@
                 <select class="form-control select2 select2-hidden-accessible" style="width: 100%;" tabindex="-1" aria-hidden="true" v-model="$$query.settleStatus">
                     <option value="">全部</option>
                     <option value="1">未结算</option>
-                    <option value="0">已结算</option>
+                    <option value="2">结算中</option>
+                    <option value="3">已结算</option>
                   </select>
                 </select>
               </div>
@@ -66,11 +71,13 @@
             <div class="col-md-3">
               <div class="form-group">
                 <label>支付方式：</label>
-                <select class="form-control select2 select2-hidden-accessible" style="width: 100%;" tabindex="-1" aria-hidden="true" v-model="$$query.payChannel">
+                <select class="form-control select2 select2-hidden-accessible" style="width: 100%;" tabindex="-1" aria-hidden="true" v-model="$$query.payType">
                   <option value="">全部</option>
-                  <option value="101">微信</option>
-                  <option value="102">支付宝</option>
-                  <option value="103">快捷</option>
+                  <option value="S">微信扫码</option>
+                  <option value="N">微信二维码</option>
+                  <option value="H">微信H5收银台</option>
+                  <option value="B">快捷收款</option>
+                  <option value="Z">支付宝扫码</option>
                 </select>
               </div>
               <div class="form-group">
@@ -108,19 +115,19 @@
                 </tr>
                 </thead>
                 <tbody id="content">
-                <tr v-if="order.tradeType==0" role="row" v-for="order in this.$data.orders">
-                  <td><router-link :to="{ path: '/admin/record/dealDet', query: {id: order.id}}">{{order.orderId|changeHide}}</router-link></td>
+                <tr role="row" v-for="order in orders">
+                  <td><router-link :to="{ path: '/admin/record/dealDet', query: {id: order.id}}">{{order.orderNo|changeHide}}</router-link></td>
                   <td>{{order.createTime|changeTime}}</td>
-                  <td>{{order.subName}}</td>
+                  <td>{{order.merchantName}}</td>
                   <td>{{order.proxyName}}</td>
                   <td>{{order.proxyName1}}</td>
-                  <td style="text-align: right">{{order.totalFee|toFix}}</td>
-                  <td>{{order.tradeRate}}</td>
-                  <td>{{order.orderMessage}}<a href="javascript:;">(补发)</a></td>
+                  <td style="text-align: right">{{order.tradeAmount|toFix}}</td>
+                  <td>{{order.payRate}}</td>
+                  <td>{{order.status|changeStatus}}<!--<a href="javascript:;">(补发)</a>--></td>
                   <td>{{order.settleStatus|changeSettleStatus}}</td>
-                  <td>{{order.payChannel|changePayChannel}}</td>
-                  <td>{{order.channelName}}</td>
-                  <td>{{order.errorMessage}}</td>
+                  <td>{{order.payType|changePayType}}</td>
+                  <td>{{order.payChannelSign|changePayChannel}}</td>
+                  <td>{{order.remark}}</td>
                 </tr>
                 </tbody>
               </table>
@@ -174,15 +181,15 @@
         query:{
           page:1,
           size:10,
-          orderId:'',
-          subName: '',
+          orderNo:'',
+          merchantName: '',
           startTime: '',
           endTime: '',
           lessTotalFee: '',
           moreTotalFee: '',
-          payResult: '',
+          status: '',
           settleStatus:'',
-          payChannel:''
+          payType:''
         },
         orders:[],
         total:'',
@@ -266,7 +273,7 @@
           n = Number(tarInn);
         }
         this.$data.query.page = n;
-        this.$http.post('/admin/queryOrderRecord/orderList',this.$data.query)
+        this.$http.post('/admin/queryOrder/orderList',this.$data.query)
           .then(function (res) {
             this.$data.orders=res.data.records;
             this.$data.total=res.data.totalPage;
@@ -322,7 +329,7 @@
       //筛选
       lookup: function () {
         this.$data.query.page = 1;
-        this.$http.post('/admin/queryOrderRecord/orderList',this.$data.query)
+        this.$http.post('/admin/queryOrder/orderList',this.$data.query)
           .then(function (res) {
             this.$data.orders=res.data.records;
             this.$data.total=res.data.totalPage;
@@ -370,20 +377,52 @@
       }
     },
     filters: {
+      changePayType: function (val) {
+        if(val == "S"){
+          return "微信扫码"
+        }else if(val == "N"){
+          return "微信二维码"
+        }else if(val == "H"){
+          return "微信H5收银台"
+        }else if(val == "B"){
+          return "快捷收款"
+        }else if(val == "Z"){
+          return "支付宝扫码"
+        }
+      },
+      changeStatus: function (val) {
+        if(val == 1){
+          return "待支付"
+        }else if(val == 3){
+          return "支付失败"
+        }else if(val == 4){
+          return "支付成功"
+        }else if(val == 5){
+          return "提现中"
+        }else if(val == 6){
+          return "提现成功"
+        }else if(val == 7){
+          return "充值成功"
+        }else if(val == 6){
+          return "充值失败"
+        }
+      },
       changeSettleStatus: function (val) {
-        if(val == 0){
-          return '已结算'
+        if(val == 2){
+          return '结算中'
         }else if(val == 1){
-          return '未结算'
+          return '待结算'
+        }else if(val == 3){
+          return '已结算'
         }
       },
       changePayChannel: function (val) {
         if(val == 101){
-          return '微信'
+          return '阳光微信扫码'
         }else if(val == 102){
-          return '支付宝'
+          return '阳光支付宝扫码'
         }else if(val == 103){
-          return '快捷'
+          return '阳光银联支付'
         }
       },
       changeTime: function (val) {

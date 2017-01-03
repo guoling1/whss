@@ -1,7 +1,7 @@
 <template lang="html">
   <div id="withDrawal">
-    <div style="padding: 8px 30px; background: rgb(243, 156, 18); z-index: 999999; font-size: 22px; font-weight: 600;margin-bottom: 15px;color: #fff;">打款查询
-      <router-link to="/admin/record/newWithdrawalQuery" class="btn btn-success pull-right" style="margin-left: 20px">切换新版</router-link>
+    <div style="padding: 8px 30px; background: rgb(243, 156, 18); z-index: 999999; font-size: 22px; font-weight: 600;margin-bottom: 15px;color: #fff;">打款查询1
+      <router-link to="/admin/record/withdrawal" class="btn btn-success pull-right" style="margin-left: 20px">切换旧版</router-link>
       <div class="btn btn-primary pull-right" @click="refresh()">刷新</div>
     </div>
     <div class="col-md-12">
@@ -20,32 +20,32 @@
           <div class="row">
             <div class="col-md-3">
               <div class="form-group">
-                <label for="date">订单号：</label>
-                <input type="text" class="form-control" name="date" value="" v-model="$$data.query.orderId">
+                <label for="date">打款流水号：</label>
+                <input type="text" class="form-control" name="date" value="" v-model="$$data.query.sn">
               </div>
             </div>
             <div class="col-md-3">
               <div class="form-group">
-                <label for="codeNumber">用户名称：</label>
-                <input type="text" name="codeNumber" class="form-control" v-model="$$data.query.name">
+                <label for="number">交易单号：</label>
+                <input type="text" class="form-control" name="number" v-model="$$data.query.orderNo">
               </div>
             </div>
-            <div class="col-md-2">
+            <div class="col-md-3">
               <div class="form-group">
-                <label for="number">收款银行卡后四位：</label>
-                <input type="text" class="form-control" name="number" v-model="$$data.query.bankNoShort">
+                <label for="codeNumber">收款账户名：</label>
+                <input type="text" name="codeNumber" class="form-control" v-model="$$data.query.userName">
               </div>
             </div>
+
             <div class="col-md-3">
               <div class="form-group">
                 <label>状态：</label>
-                <select class="form-control select2 select2-hidden-accessible" style="width: 100%;" tabindex="-1" aria-hidden="true" v-model="$$data.query.payResult">
+                <select class="form-control select2 select2-hidden-accessible" style="width: 100%;" tabindex="-1" aria-hidden="true" v-model="$$data.query.status">
                   <option value="">全部</option>
-                  <option value="N">申请</option>
-                  <option value="H">提现中</option>
-                  <!--<option value="S">驳回</option>-->
-                  <option value="S">提现成功</option>
-                  <option value="F">提现失败</option>
+                  <option value="1">待提现</option>
+                  <option value="2">打款中</option>
+                  <option value="4">打款成功</option>
+                  <option value="5">打款失败</option>
                 </select>
               </div>
             </div>
@@ -146,12 +146,12 @@
           payEndDate:''
         },
         query:{
-          page:1,
-          size:10,
-          orderId:'',
-          name:'',
-          bankNoShort:'',
-          payResult:''
+          pageNo:"1",
+          pageSize:"10",
+          orderNo:'',
+          sn:'',
+          userName:'',
+          status:''
         },
         total:'',
         records:[],
@@ -160,8 +160,11 @@
         remark:''
       }
     },
+    http: {
+      headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+    },
     created:function () {
-      this.$http.post('/admin/withdraw/withdrawListByContions',this.$data.query)
+      this.$http.post('http://192.168.1.20:8076/order/withdraw/listOrder',this.$data.query)
         .then(function (res) {
           this.$data.records = res.data.records;
           this.$data.total = res.data.totalPage;
@@ -223,7 +226,7 @@
           n = Number(tarInn);
         }
         this.$data.query.page = n;
-        this.$http.post('/admin/withdraw/withdrawListByContions',this.$data.query)
+        this.$http.post('/admin/order/withdraw/listOrder',this.$data.query)
           .then(function (res) {
             this.$data.records = res.data.records;
             this.$data.total=res.data.totalPage;
@@ -256,7 +259,7 @@
       //筛选
       lookup: function () {
         this.$data.query.page = 1;
-        this.$http.post('/admin/withdraw/withdrawListByContions',this.$data.query)
+        this.$http.post('http://192.168.1.20:8076/order/withdraw/listOrder',this.$data.query)
           .then(function (res) {
             this.$data.records = res.data.records;
             this.$data.total=res.data.totalPage;

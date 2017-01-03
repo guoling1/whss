@@ -2,6 +2,8 @@ package com.jkm.hss.bill.service.impl;
 
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
+import com.jkm.base.common.entity.ExcelSheetVO;
+import com.jkm.base.common.util.ExcelUtil;
 import com.jkm.base.common.util.SnGenerator;
 import com.jkm.hss.account.entity.Account;
 import com.jkm.hss.account.sevice.AccountService;
@@ -21,7 +23,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.math.BigDecimal;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -200,39 +207,42 @@ public class OrderServiceImpl implements OrderService {
         return Optional.fromNullable(this.orderDao.selectByPayOrderId(payOrderId));
     }
 
-    private List<String>  PayOf(String status) {
-        List<String> payResults = new ArrayList<String>();
-        if("N".equals(status)){
-            payResults.add("N");
-        }
-        if("H".equals(status)){
-            payResults.add("H");
-            payResults.add("W");
-            payResults.add("A");
-            payResults.add("E");
-        }
-        if("S".equals(status)){
-            payResults.add("S");
-        }
-        if("F".equals(status)){
-            payResults.add("F");
-        }
-        return payResults;
-    }
-
+//    private List<String>  PayOf(String status) {
+//        List<String> payResults = new ArrayList<String>();
+//        if("N".equals(status)){
+//            payResults.add("N");
+//        }
+//        if("H".equals(status)){
+//            payResults.add("H");
+//            payResults.add("W");
+//            payResults.add("A");
+//            payResults.add("E");
+//        }
+//        if("S".equals(status)){
+//            payResults.add("S");
+//        }
+//        if("F".equals(status)){
+//            payResults.add("F");
+//        }
+//        return payResults;
+//    }
+//
     private String  PayOfStatus(String status) {
         String message = "";
         if("N".equals(status)){
-            message="待支付";
+            message="微信二维码";
         }
         if("H".equals(status)||"W".equals(status)||"A".equals(status)||"E".equals(status)){
-            message="支付中";
+            message="微信H5收银台";
         }
         if("S".equals(status)){
-            message="支付成功";
+            message="微信扫码";
         }
-        if("F".equals(status)){
-            message="支付失败";
+        if("B".equals(status)){
+            message="快捷收款";
+        }
+        if("Z".equals(status)){
+            message="支付宝扫码";
         }
         return message;
     }
@@ -251,7 +261,8 @@ public class OrderServiceImpl implements OrderService {
         map.put("payType",req.getPayType());
         map.put("settleStatus",req.getSettleStatus());
         map.put("status",req.getStatus());
-        map.put("tradeAmount",req.getTradeAmount());
+        map.put("lessTotalFee",req.getLessTotalFee());
+        map.put("moreTotalFee",req.getMoreTotalFee());
 //        map.put("settleStatus",req.getSettleStatus());
         map.put("offset",req.getOffset());
         map.put("size",req.getSize());
@@ -289,10 +300,182 @@ public class OrderServiceImpl implements OrderService {
         return list;
     }
 
+    /**
+     * 获取临时路径
+     *
+     * @return
+     */
+    public static String getTempDir() {
+        final String dir = System.getProperty("java.io.tmpdir") + "hss" + File.separator + "trade" + File.separator + "record";
+        final File file = new File(dir);
+        if (!file.exists()) {
+            file.mkdirs();
+        }
+        return dir;
+    }
+
+    /**
+     * 下载Excele
+     * @param
+     * @param baseUrl
+     * @return
+     */
+    @Override
+    @Transactional
+    public String downloadExcel(OrderTradeRequest req, String baseUrl) {
+        final String tempDir = this.getTempDir();
+        final File excelFile = new File(tempDir + File.separator + ".xls");
+        final ExcelSheetVO excelSheet = generateCodeExcelSheet(req,baseUrl);
+        final List<ExcelSheetVO> excelSheets = new ArrayList<>();
+        excelSheets.add(excelSheet);
+        FileOutputStream fileOutputStream = null;
+        try {
+            fileOutputStream = new FileOutputStream(excelFile);
+            ExcelUtil.exportExcel(excelSheets, fileOutputStream);
+            return excelFile.getAbsolutePath();
+        } catch (final Exception e) {
+            log.error("download trade record error", e);
+            e.printStackTrace();
+        }  finally {
+            if (fileOutputStream != null) {
+                try {
+                    fileOutputStream.close();
+                } catch (final IOException e) {
+                    log.error("close fileOutputStream error", e);
+                    e.printStackTrace();
+                }
+            }
+        }
+        return "";
+    }
+
+    /**
+     * 生成ExcelVo
+     * @param
+     * @param baseUrl
+     * @return
+     */
+    private ExcelSheetVO generateCodeExcelSheet(OrderTradeRequest req,String baseUrl) {
+        List<MerchantTradeResponse> list = orderDao.selectOrderListTrade(req);
+        if(list.size()>0){
+            for(int i=0;i<list.size();i++){
+                long payee = list.get(i).getPayee();
+                long payer = list.get(i).getPayer();
+                List<MerchantTradeResponse> lists = orderDao.getMerchant(payee,payer);
+                if (lists.size()>0){
+                    for(int j=0;j<lists.size();j++){
+                        list.get(i).setMerchantName(lists.get(j).getMerchantName());
+                        List<MerchantTradeResponse> result = orderDao.getDealer(lists.get(j).getDealerId());
+                        if (result.size()>0){
+                            for (int x=0;result.size()>x;x++){
+                                if (result.get(x).getLevel()==1){
+                                    list.get(i).setProxyName(result.get(x).getProxyName());
+                                }
+                                if (result.get(x).getLevel()==1){
+                                    List<MerchantTradeResponse> res = orderDao.getProxyName(result.get(x).getFirstLevelDealerId());
+                                    if (res.size()>0){
+                                        for (int m=0;res.size()>m;m++){
+                                            list.get(i).setProxyName1(res.get(m).getProxyName());
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+
+            }
+        }
+        final ExcelSheetVO excelSheetVO = new ExcelSheetVO();
+        final List<List<String>> datas = new ArrayList<List<String>>();
+        final ArrayList<String> heads = new ArrayList<>();
+        excelSheetVO.setName("trade");
+        heads.add("订单号");
+        heads.add("交易日期");
+        heads.add("商户名称");
+        heads.add("所属一级代理");
+        heads.add("所属二级代理");
+        heads.add("支付金额");
+        heads.add("手续费率");
+        heads.add("订单状态");
+        heads.add("结算状态");
+        heads.add("支付方式");
+        heads.add("手续费");
+        heads.add("支付渠道");
+        heads.add("错误信息");
+        datas.add(heads);
+        if(list.size()>0){
+            for(int i=0;i<list.size();i++){
+                ArrayList<String> columns = new ArrayList<>();
+                columns.add(list.get(i).getOrderNo());
+                if (list.get(i).getCreateTime()!= null && !"".equals(list.get(i).getCreateTime())){
+                    DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                    String st = df.format(list.get(i).getCreateTime());
+                    columns.add(st);
+
+                }else {
+                    columns.add("");
+                }
+                columns.add(list.get(i).getMerchantName());
+                columns.add(list.get(i).getProxyName());
+                columns.add(list.get(i).getProxyName1());
+                columns.add(String.valueOf(list.get(i).getTradeAmount()));
+                columns.add(String.valueOf(list.get(i).getPayRate()));
+                if (list.get(i).getStatus()==1){
+                    columns.add("待支付");
+                }
+                if (list.get(i).getStatus()==3){
+                    columns.add("支付失败");
+                }
+                if (list.get(i).getStatus()==4){
+                    columns.add("支付成功");
+                }
+                if (list.get(i).getSettleStatus()==1){
+                    columns.add("未结算");
+                }
+                if (list.get(i).getSettleStatus()==2){
+                    columns.add("结算中");
+                }
+                if (list.get(i).getSettleStatus()==3){
+                    columns.add("已结算");
+                }
+
+                if (list.get(i).getPayType()=="S"){
+                    columns.add("微信扫码");
+                }
+                if (list.get(i).getPayType()=="N"){
+                    columns.add("微信二维码");
+                }
+                if (list.get(i).getPayType()=="H"){
+                    columns.add("微信H5收银台");
+                }
+                if (list.get(i).getPayType()=="B"){
+                    columns.add("快捷收款");
+                }
+                if (list.get(i).getPayType()=="Z"){
+                    columns.add("支付宝扫码");
+                }
+                columns.add(String.valueOf(list.get(i).getPoundage()));
+                if (list.get(i).getPayChannelSign()==101){
+                    columns.add("阳光微信扫码");
+                }
+                if (list.get(i).getPayChannelSign()==102){
+                    columns.add("阳光支付宝扫码");
+                }
+                if (list.get(i).getPayChannelSign()==103){
+                    columns.add("阳光银联支付");
+                }
+                columns.add(list.get(i).getRemark());
+                datas.add(columns);
+            }
+        }
+        excelSheetVO.setDatas(datas);
+        return excelSheetVO;
+    }
+
     @Override
     public int selectOrderListCount(OrderTradeRequest req) {
-//        List<String> payResults = PayOf(req.getPayResult());
-//        req.setPayResults(payResults);
         Map<String,Object> map = new HashMap<String,Object>();
         map.put("orderNo",req.getOrderNo());
         map.put("startTime",req.getStartTime());
@@ -303,7 +486,8 @@ public class OrderServiceImpl implements OrderService {
         map.put("payType",req.getPayType());
         map.put("settleStatus",req.getSettleStatus());
         map.put("status",req.getStatus());
-        map.put("tradeAmount",req.getTradeAmount());
+        map.put("lessTotalFee",req.getLessTotalFee());
+        map.put("moreTotalFee",req.getMoreTotalFee());
         map.put("offset",req.getOffset());
         map.put("size",req.getSize());
         return orderDao.selectOrderListCount(map);

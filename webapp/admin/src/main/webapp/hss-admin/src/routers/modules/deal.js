@@ -36,6 +36,9 @@ const Test = r => require.ensure([], () => r(require('../../components/Test')), 
 const BootPage = r => require.ensure([], () => r(require('../../components/BootPage')), 'group-record');
 
 const NewDealQuery = r => require.ensure([], () => r(require('../../components/newVersion/NewDealQuery')), 'group-record');
+const NewDealDet = r => require.ensure([], () => r(require('../../components/newVersion/NewDealDet')), 'group-record');
+const NewWithdrawalQuery = r => require.ensure([], () => r(require('../../components/newVersion/NewWithdrawalQuery')), 'group-record');
+const NewWithdrawalDet = r => require.ensure([], () => r(require('../../components/newVersion/NewWithdrawalDet')), 'group-record');
 
 export default {
   path: '/admin/record',
@@ -46,6 +49,21 @@ export default {
       path: 'newDeal',
       name: 'NewDealQuery',
       component: NewDealQuery
+    },
+    {
+      path: 'newDealDet',
+      name: 'NewDealDet',
+      component: NewDealDet
+    },
+    {
+      path: 'newWithdrawalQuery',
+      name: 'NewWithdrawalQuery',
+      component: NewWithdrawalQuery
+    },
+    {
+      path: 'newWithdrawalDet',
+      name: 'NewWithdrawalDet',
+      component: NewWithdrawalDet
     },
     {
       path: 'test',
