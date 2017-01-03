@@ -163,7 +163,7 @@
         <if test="settleStatus != null">
             AND a.settle_status = #{settleStatus}
         </if>
-        ORDER BY o.create_time DESC
+        ORDER BY a.create_time DESC
         limit #{offset}, #{size}
     </select>
 
