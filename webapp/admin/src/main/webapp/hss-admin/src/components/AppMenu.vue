@@ -34,16 +34,20 @@
         <!--<li><a href="#"><i class="fa fa-link"></i> <span>Link</span></a></li>-->
         <li class="treeview active">
           <a href="#"><i class="fa fa-link"></i> <span>交易管理</span>
-
           </a>
           <ul class="treeview-menu">
             <li class="active"><router-link to="/admin/record/deal"><span>交易查询</span> </router-link></li>
+            <li><router-link to="/admin/record/payQuery"><span>支付查询</span> </router-link></li>
             <li><router-link to="/admin/record/withdrawal"><span>打款查询</span> </router-link></li>
-            <!--<li><router-link to="/admin/record/moneyList"><i class="fa fa-link"></i> <span>打款查询</span> </router-link></li>-->
           </ul>
         </li>
         <li class="treeview">
-          <router-link to="/admin/record/storeList"><i class="fa fa-link"></i> <span>商户管理</span>
+          <a href="#"><i class="fa fa-link"></i> <span>商户管理</span>
+          </a>
+          <ul class="treeview-menu">
+            <li class="active"><router-link to="/admin/record/storeList"><span>商户列表</span> </router-link></li>
+            <li><router-link to="/admin/record/storeAccount"><span>商户账户</span> </router-link></li>
+          </ul>
           </router-link>
         </li>
         <li class="treeview">
@@ -51,6 +55,7 @@
           </a>
           <ul class="treeview-menu">
             <li><router-link to="/admin/record/agentList"><span>代理商列表</span> </router-link></li>
+            <li><router-link to="/admin/record/agentAccount"><span>代理商账户</span> </router-link></li>
             <li><router-link to="/admin/record/agentAdd"><span>新增代理商</span> </router-link></li>
           </ul>
         </li>

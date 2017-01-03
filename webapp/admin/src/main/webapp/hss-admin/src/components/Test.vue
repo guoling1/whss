@@ -2,8 +2,7 @@
   <div id="dale">
     <div style="padding: 8px 30px; background: rgb(243, 156, 18); z-index: 999999; font-size: 22px; font-weight: 600;margin-bottom: 15px;color: #fff;">
       交易查询
-      <div class="btn btn-primary pull-right" @click="refresh()">刷新</div>
-      <router-link to="/admin/record/newDeal" class="btn btn-success pull-right">切换新版</router-link>
+      <!--<div class="btn btn-primary pull-right" @click="refresh()">刷新</div>-->
     </div>
     <div class="col-md-12">
       <!--筛选-->
@@ -20,33 +19,33 @@
             <div class="col-md-3">
               <div class="form-group">
                 <label>订单号：</label>
-                <input type="text" class="form-control" v-model="$$query.orderId">
+                <input type="text" class="form-control" v-model="param.orderId">
               </div>
               <div class="form-group">
                 <label>商户名称</label>
-                <input type="text" class="form-control" v-model="$$query.subName">
+                <input type="text" class="form-control" v-model="param.subName">
               </div>
             </div>
             <div class="col-md-3">
               <div class="form-group">
                 <label>交易日期：</label>
                 <div class="form-control">
-                  <input type="date" style="border: none;display:inline-block;width: 45%" name="date" value="" v-model="$$query.startTime">至
-                  <input type="date" style="border: none;display:inline-block;width: 45%" name="date" value="" v-model="$$query.endTime">
+                  <input type="date" style="border: none;display:inline-block;width: 45%" name="date" value="" v-model="param.startTime">至
+                  <input type="date" style="border: none;display:inline-block;width: 45%" name="date" value="" v-model="param.endTime">
                 </div>
               </div>
               <div class="form-group">
                 <label>交易金额：</label>
                 <div class="form-control">
-                  <input type="text" style="border: none;display:inline-block;width: 45%" name="date" value="" v-model="$$query.lessTotalFee">至
-                  <input type="text" style="border: none;display:inline-block;width: 45%" name="date" value="" v-model="$$query.moreTotalFee">
+                  <input type="text" style="border: none;display:inline-block;width: 45%" name="date" value="" v-model="param.lessTotalFee">至
+                  <input type="text" style="border: none;display:inline-block;width: 45%" name="date" value="" v-model="param.moreTotalFee">
                 </div>
               </div>
             </div>
             <div class="col-md-3">
               <div class="form-group">
                 <label>订单状态：</label>
-                <select class="form-control select2 select2-hidden-accessible" style="width: 100%;" tabindex="-1" aria-hidden="true" v-model="$$query.payResult">
+                <select class="form-control select2 select2-hidden-accessible" style="width: 100%;" tabindex="-1" aria-hidden="true" v-model="param.payResult">
                   <option value="">全部</option>
                   <option value="N">待支付</option>
                   <option value="H">支付中</option>
@@ -56,7 +55,7 @@
               </div>
               <div class="form-group">
                 <label>结算状态：</label>
-                <select class="form-control select2 select2-hidden-accessible" style="width: 100%;" tabindex="-1" aria-hidden="true" v-model="$$query.settleStatus">
+                <select class="form-control select2 select2-hidden-accessible" style="width: 100%;" tabindex="-1" aria-hidden="true" v-model="param.settleStatus">
                     <option value="">全部</option>
                     <option value="1">未结算</option>
                     <option value="0">已结算</option>
@@ -67,7 +66,7 @@
             <div class="col-md-3">
               <div class="form-group">
                 <label>支付方式：</label>
-                <select class="form-control select2 select2-hidden-accessible" style="width: 100%;" tabindex="-1" aria-hidden="true" v-model="$$query.payChannel">
+                <select class="form-control select2 select2-hidden-accessible" style="width: 100%;" tabindex="-1" aria-hidden="true" v-model="param.payChannel">
                   <option value="">全部</option>
                   <option value="101">微信</option>
                   <option value="102">支付宝</option>
@@ -75,7 +74,7 @@
                 </select>
               </div>
               <div class="form-group">
-                <div class="btn btn-primary" @click="lookup">筛选</div>
+                <!--<div class="btn btn-primary" @click="lookup">筛选</div>-->
               </div>
             </div>
           </div>
@@ -135,12 +134,8 @@
               <div class="dataTables_info" id="example2_info" role="status" aria-live="polite">
               </div>
             </div>
-            <div class="col-sm-7">
-              <div class="dataTables_paginate paging_simple_numbers" id="example2_paginate">
-                <ul class="pagination" id="page" @click="bindEvent($event)">
-                </ul>
-              </div>
-            </div>
+            <!--<boot-page v-ref:page :async="true" :url="url" :data="records" :lens="lenArr" :param="param"></boot-page>-->
+            <boot-page :async="true" :lens="lenArr" :url="url1" :page-len="pageLen" :param="param"></boot-page>
           </div>
         </div>
       </div>
@@ -157,7 +152,7 @@
           密码:
           <input type="password" name="password" placeholder="请输入密码" v-model="password">
         </label>
-        <div class="btn btn-primary sub" @click="login">登 录</div>
+        <!--<div class="btn btn-primary sub" @click="login">登 录</div>-->
       </form>
 </div>
     </div>
@@ -165,10 +160,29 @@
 </template>
 
 <script lang="babel">
+  import bootPage from './BootPage.vue'
   export default {
     name: 'deal',
     data () {
       return {
+        lenArr:[2,5,10],// 每页显示长度设置
+        pageLen: 5, // 可显示的分页数
+        url1: '/admin/queryOrderRecord/orderList', // 请求路径
+        param: {
+          page:1,
+          size:10,
+          orderId:'',
+          subName: '',
+          startTime: '',
+          endTime: '',
+          lessTotalFee: '',
+          moreTotalFee: '',
+          payResult: '',
+          settleStatus:'',
+          payChannel:''
+        }, // 传递参数
+        orders: [],// 分页组件传回的分页后数据
+
         phone: '',
         password: '',
         isLogin: false,
@@ -190,7 +204,20 @@
         url:''
       }
     },
-    created:function(){
+    components:{
+      bootPage
+    },
+    events:{
+      // 分页组件传回的表格数据
+      'data' (data) {
+        this.$data.orders = data
+      },
+      // 刷新数据
+      'refresh' () {
+        this.refresh()
+      }
+    },
+    /*created:function(){
       this.$http.post('/admin/queryOrderRecord/orderList',this.$data.query)
         .then(function (res) {
           this.$data.orders=res.data.records;
@@ -368,7 +395,7 @@
       $$query: function () {
         return this.$data.query
       }
-    },
+    },*/
     filters: {
       changeSettleStatus: function (val) {
         if(val == 0){

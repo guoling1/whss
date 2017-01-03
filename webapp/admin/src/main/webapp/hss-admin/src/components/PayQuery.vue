@@ -1,9 +1,8 @@
 <template lang="html">
-  <div id="dale">
+  <div id="payQuery">
     <div style="padding: 8px 30px; background: rgb(243, 156, 18); z-index: 999999; font-size: 22px; font-weight: 600;margin-bottom: 15px;color: #fff;">
-      交易查询
+      支付查询
       <div class="btn btn-primary pull-right" @click="refresh()">刷新</div>
-      <router-link to="/admin/record/newDeal" class="btn btn-success pull-right">切换新版</router-link>
     </div>
     <div class="col-md-12">
       <!--筛选-->
@@ -19,33 +18,27 @@
           <div class="row">
             <div class="col-md-3">
               <div class="form-group">
-                <label>订单号：</label>
-                <input type="text" class="form-control" v-model="$$query.orderId">
-              </div>
-              <div class="form-group">
-                <label>商户名称</label>
-                <input type="text" class="form-control" v-model="$$query.subName">
-              </div>
-            </div>
-            <div class="col-md-3">
-              <div class="form-group">
-                <label>交易日期：</label>
+                <label>支付创建日期：</label>
                 <div class="form-control">
                   <input type="date" style="border: none;display:inline-block;width: 45%" name="date" value="" v-model="$$query.startTime">至
                   <input type="date" style="border: none;display:inline-block;width: 45%" name="date" value="" v-model="$$query.endTime">
                 </div>
               </div>
               <div class="form-group">
-                <label>交易金额：</label>
+                <label>支付完成日期：</label>
                 <div class="form-control">
-                  <input type="text" style="border: none;display:inline-block;width: 45%" name="date" value="" v-model="$$query.lessTotalFee">至
-                  <input type="text" style="border: none;display:inline-block;width: 45%" name="date" value="" v-model="$$query.moreTotalFee">
+                  <input type="date" style="border: none;display:inline-block;width: 45%" name="date" value="" v-model="$$query.startTime">至
+                  <input type="date" style="border: none;display:inline-block;width: 45%" name="date" value="" v-model="$$query.endTime">
                 </div>
               </div>
             </div>
             <div class="col-md-3">
               <div class="form-group">
-                <label>订单状态：</label>
+                <label>交易单号：</label>
+                <input type="text" class="form-control" v-model="$$query.orderId">
+              </div>
+              <div class="form-group">
+                <label>支付状态：</label>
                 <select class="form-control select2 select2-hidden-accessible" style="width: 100%;" tabindex="-1" aria-hidden="true" v-model="$$query.payResult">
                   <option value="">全部</option>
                   <option value="N">待支付</option>
@@ -54,25 +47,11 @@
                   <option value="F">支付失败</option>
                 </select>
               </div>
-              <div class="form-group">
-                <label>结算状态：</label>
-                <select class="form-control select2 select2-hidden-accessible" style="width: 100%;" tabindex="-1" aria-hidden="true" v-model="$$query.settleStatus">
-                    <option value="">全部</option>
-                    <option value="1">未结算</option>
-                    <option value="0">已结算</option>
-                  </select>
-                </select>
-              </div>
             </div>
             <div class="col-md-3">
               <div class="form-group">
-                <label>支付方式：</label>
-                <select class="form-control select2 select2-hidden-accessible" style="width: 100%;" tabindex="-1" aria-hidden="true" v-model="$$query.payChannel">
-                  <option value="">全部</option>
-                  <option value="101">微信</option>
-                  <option value="102">支付宝</option>
-                  <option value="103">快捷</option>
-                </select>
+                <label>支付流水号：</label>
+                <input type="text" class="form-control" v-model="$$query.orderId">
               </div>
               <div class="form-group">
                 <div class="btn btn-primary" @click="lookup">筛选</div>
@@ -84,8 +63,8 @@
       <!--列表-->
       <div class="box" style="overflow: hidden">
       <div class="box-header">
-        <h3 class="box-title">交易记录</h3>
-        <a :href="'http://'+this.$data.url" download="交易记录" class="btn btn-primary" style="float: right;color: #fff">导出</a>
+        <h3 class="box-title">支付记录</h3>
+        <!--<a :href="'http://'+this.$data.url" download="交易记录" class="btn btn-primary" style="float: right;color: #fff">导出</a>-->
       </div>
       <div class="box-body">
         <div id="example2_wrapper" class="dataTables_wrapper form-inline dt-bootstrap">
@@ -94,18 +73,21 @@
               <table id="example2" class="table table-bordered table-hover dataTable" role="grid" aria-describedby="example2_info">
                 <thead>
                 <tr role="row">
-                  <th class="sorting_asc" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Rendering engine: activate to sort column descending">订单号</th>
-                  <th class="sorting_asc" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Rendering engine: activate to sort column descending">交易日期</th>
-                  <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="Platform(s): activate to sort column ascending">商户名称</th>
-                  <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="Platform(s): activate to sort column ascending">所属一级代理</th>
-                  <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="Platform(s): activate to sort column ascending">所属二级代理</th>
-                  <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="Engine version: activate to sort column ascending">支付金额</th>
-                  <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">手续费率</th>
-                  <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">订单状态</th>
-                  <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">结算状态</th>
-                  <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">支付方式</th>
+                  <th class="sorting_asc" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Rendering engine: activate to sort column descending">序号</th>
+                  <th class="sorting_asc" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Rendering engine: activate to sort column descending">支付流水号</th>
+                  <th class="sorting_asc" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Rendering engine: activate to sort column descending">交易单号</th>
+                  <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="Platform(s): activate to sort column ascending">支付金额</th>
+                  <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="Platform(s): activate to sort column ascending">创建时间</th>
+                  <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="Engine version: activate to sort column ascending">支付发起时间</th>
+                  <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">支付完成时间</th>
                   <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">支付渠道</th>
-                  <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">错误信息</th>
+                  <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">支付方式</th>
+                  <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">渠道方</th>
+                  <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">支付账号</th>
+                  <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">支付状态</th>
+                  <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">报错信息</th>
+                  <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">备注信息</th>
+                  <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">操作</th>
                 </tr>
                 </thead>
                 <tbody id="content">
@@ -114,7 +96,6 @@
                   <td>{{order.createTime|changeTime}}</td>
                   <td>{{order.subName}}</td>
                   <td>{{order.proxyName}}</td>
-                  <td>{{order.proxyName1}}</td>
                   <td style="text-align: right">{{order.totalFee|toFix}}</td>
                   <td>{{order.tradeRate}}</td>
                   <td>{{order.orderMessage}}<a href="javascript:;">(补发)</a></td>
@@ -166,7 +147,7 @@
 
 <script lang="babel">
   export default {
-    name: 'deal',
+    name: 'payQuery',
     data () {
       return {
         phone: '',
@@ -191,7 +172,7 @@
       }
     },
     created:function(){
-      this.$http.post('/admin/queryOrderRecord/orderList',this.$data.query)
+      /*this.$http.post('/admin/queryOrderRecord/orderList',this.$data.query)
         .then(function (res) {
           this.$data.orders=res.data.records;
           this.$data.total=res.data.totalPage;
@@ -232,7 +213,7 @@
           this.$store.commit('MESSAGE_ACCORD_SHOW', {
             text: err.statusMessage
           })
-        })
+        })*/
     },
     methods: {
       refresh: function () {

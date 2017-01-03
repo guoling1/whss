@@ -8,9 +8,13 @@ const DealQuery = r => require.ensure([], () => r(require('../../components/Deal
 const DealDet = r => require.ensure([], () => r(require('../../components/DealDet')), 'group-record');
 const WithdrawalQuery = r => require.ensure([], () => r(require('../../components/WithdrawalQuery')), 'group-record');
 const WithdrawalDet = r => require.ensure([], () => r(require('../../components/WithdrawalDet')), 'group-record');
+const WithdrawalAudit = r => require.ensure([], () => r(require('../../components/WithdrawalAudit')), 'group-record');
+const PayQuery = r => require.ensure([], () => r(require('../../components/PayQuery')), 'group-record');
+const StoreAccount = r => require.ensure([], () => r(require('../../components/StoreAccount')), 'group-record');
 const StoreList = r => require.ensure([], () => r(require('../../components/StoreList')), 'group-record');
 const StoreAudit = r => require.ensure([], () => r(require('../../components/StoreAudit')), 'group-record');
 const AgentList = r => require.ensure([], () => r(require('../../components/AgentList')), 'group-record');
+const AgentAccount = r => require.ensure([], () => r(require('../../components/AgentAccount')), 'group-record');
 const AgentAdd = r => require.ensure([], () => r(require('../../components/AgentAdd')), 'group-record');
 const CompanyProfit = r => require.ensure([], () => r(require('../../components/CompanyProfit')), 'group-record');
 const CompanyProfitDet = r => require.ensure([], () => r(require('../../components/CompanyProfitDet')), 'group-record');
@@ -28,12 +32,31 @@ const IssueSuccess = r => require.ensure([], () => r(require('../../components/I
 const Invite = r => require.ensure([], () => r(require('../../components/Invite')), 'group-record');
 const Upgrade = r => require.ensure([], () => r(require('../../components/Upgrade')), 'group-record');
 const CodeStatus = r => require.ensure([], () => r(require('../../components/CodeStatus')), 'group-record');
+const Test = r => require.ensure([], () => r(require('../../components/Test')), 'group-record');
+const BootPage = r => require.ensure([], () => r(require('../../components/BootPage')), 'group-record');
+
+const NewDealQuery = r => require.ensure([], () => r(require('../../components/newVersion/NewDealQuery')), 'group-record');
 
 export default {
   path: '/admin/record',
   redirect: '/admin/record/deal',
   component: Crumbs,
   children: [
+    {
+      path: 'newDeal',
+      name: 'NewDealQuery',
+      component: NewDealQuery
+    },
+    {
+      path: 'test',
+      name: 'Test',
+      component: Test
+    },
+    {
+      path: 'bootPage',
+      name: 'BootPage',
+      component: BootPage
+    },
     {
       path: 'deal',
       name: 'DealQuery',
@@ -50,9 +73,24 @@ export default {
       component: WithdrawalQuery
     },
     {
+      path: 'withdrawalAudit',
+      name: 'WithdrawalAudit',
+      component: WithdrawalAudit
+    },
+    {
       path: 'withdrawalDet',
       name: 'WithdrawalDet',
       component: WithdrawalDet
+    },
+    {
+      path: 'payQuery',
+      name: 'PayQuery',
+      component: PayQuery
+    },
+    {
+      path: 'storeAccount',
+      name: 'StoreAccount',
+      component: StoreAccount
     },
     {
       path: 'storeList',
@@ -68,6 +106,11 @@ export default {
       path: 'agentList',
       name: 'AgentList',
       component: AgentList
+    },
+    {
+      path: 'agentAccount',
+      name: 'AgentAccount',
+      component: AgentAccount
     },
     {
       path: 'agentAdd',

@@ -133,7 +133,7 @@
               <label for="" class="col-sm-3 control-label">一级代理分润比例</label>
 
               <div class="col-sm-4 middle">
-                <input type="text" class="form-control" name="bankAccountName" placeholder="">
+                <input type="text" class="form-control" v-model="inp1">
                 <i>%</i>
               </div>
             </div>
@@ -141,7 +141,7 @@
               <label for="" class="col-sm-3 control-label">二级级代理分润比例</label>
 
               <div class="col-sm-4 middle">
-                <input type="text" class="form-control" name="bankAccountName" placeholder="">
+                <input type="text" class="form-control" v-model="inp2">
                 <i>%</i>
               </div>
             </div>
@@ -149,7 +149,7 @@
               <label for="" class="col-sm-3 control-label">金开门分润比例</label>
 
               <div class="col-sm-4 middle">
-                <input type="text" class="form-control" name="bankAccountName" placeholder="">
+                <input type="text" class="form-control" disabled="true" v-model="$$inp3">
                 <i>%</i>
               </div>
               <div class="col-sm-5 right">金开门＝100%－一级－二级</div>
@@ -168,7 +168,7 @@
               <label for="" class="col-sm-3 control-label">一级代理分润比例</label>
 
               <div class="col-sm-4 middle">
-                <input type="text" class="form-control" name="bankAccountName" placeholder="">
+                <input type="text" class="form-control" v-model="inp4">
                 <i>%</i>
               </div>
             </div>
@@ -176,7 +176,7 @@
               <label for="" class="col-sm-3 control-label">二级级代理分润比例</label>
 
               <div class="col-sm-4 middle">
-                <input type="text" class="form-control" name="bankAccountName" placeholder="">
+                <input type="text" class="form-control" v-model="inp5">
                 <i>%</i>
               </div>
             </div>
@@ -184,7 +184,7 @@
               <label for="" class="col-sm-3 control-label">金开门分润比例</label>
 
               <div class="col-sm-4 middle">
-                <input type="text" class="form-control" name="bankAccountName" placeholder="">
+                <input type="text" class="form-control" disabled="true" v-model="$$inp6">
                 <i>%</i>
               </div>
             </div>
@@ -223,7 +223,13 @@
         },
         products: [],//所有产品
         id: 0,
-        isShow:true
+        isShow:true,
+        inp1:'',
+        inp2:'',
+        inp3:'',
+        inp4:"",
+        inp5:'',
+        inp6:"",
       }
     },
     created: function () {
@@ -344,7 +350,13 @@
       },
       $$data: function () {
         return this.$data;
-      }
+      },
+      $$inp3: function () {
+        return this.$data.inp3 = 100-this.$data.inp1-this.$data.inp2
+      },
+      $$inp6: function () {
+        return this.$data.inp6 = 100-this.$data.inp5-this.$data.inp4
+      },
     },
     filters: {
       changeName: function (val) {
@@ -390,27 +402,6 @@
   }
   tr th,tr td{
     text-align: center;
-  }
-  .agentAdd {
-    float: right;
-    width: 80%;
-  }
-
-  .add {
-    border: 1px solid #ccc;
-    width: 800px;
-    border-top: none;
-    font-size: 16px;
-
-    th {
-      width: 200px;
-      vertical-align: middle;
-      text-align: center;
-    }
-    td input {
-      border: none;
-      width: 600px;
-    }
   }
   .middle{
     position: relative;

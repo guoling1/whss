@@ -35,7 +35,7 @@
                   </tr>
                   </thead>
                   <tbody id="content">
-                  <tr role="row" v-for="(record,index) in $$records">
+                  <tr role="row" v-for="(record,index) in records">
                     <td>{{index+1}}</td>
                     <td>{{record.paymentSn}}</td>
                     <td>{{record.profitType|changeProfitType}}</td>
@@ -89,7 +89,7 @@
           endProfitDate:'',
           dealerName:''
         },
-        record:[],
+        records:[],
         path:''
       }
     },
@@ -104,7 +104,7 @@
       }
       this.$http.post(this.$data.path,this.$data.query)
         .then(function (res) {
-          this.$data.record = res.data;
+          this.$data.records = res.data;
         },function (err) {
           this.$store.commit('MESSAGE_ACCORD_SHOW', {
             text: err.statusMessage
@@ -113,7 +113,7 @@
     },
     methods: {
       search: function () {
-        this.$http.post('/admin/profit/companyProfit/detail',this.$data.query)
+        this.$http.post(this.$data.path,this.$data.query)
           .then(function (res) {
             this.$data.record = res.data;
           },function (err) {
