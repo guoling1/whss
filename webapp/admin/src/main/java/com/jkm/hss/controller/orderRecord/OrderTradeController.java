@@ -75,34 +75,12 @@ public class OrderTradeController extends BaseController{
      * @param req
      * @return
      */
-//    @ResponseBody
-//    @RequestMapping(value = "/orderListAll",method = RequestMethod.POST)
-//    public CommonResponse orderListAll(@RequestBody OrderListRequest req) throws ParseException {
-//        MerchantAndOrderRecord orderList =  orderService.selectOrderListByPageAll(req);
-//        if (orderList.getLevel()==1){
-//            orderList.setProxyName(orderList.getProxyName());
-//        }
-//        if (orderList.getLevel()==2){
-//            orderList.setProxyName1(orderList.getProxyName());
-//            if (orderList.getFirstLevel() != 0){
-//                long FirstLevel =orderList.getFirstLevel();
-//                MerchantAndOrderRecord res = orderService.selectProxyName(FirstLevel);
-//                orderList.setProxyName(res.getProxyName());
-//            }
-//
-//        }
-//
-//        if (orderList.getBankNo()!= null){
-//            orderList.setBankNo(MerchantSupport.decryptBankCard(orderList.getBankNo()));
-//        }
-//        if (orderList.getMobile()!=null){
-//            orderList.setMobile(MerchantSupport.decryptMobile(orderList.getMobile()));
-//        }
-//        if (orderList.getReserveMobile()!=null) {
-//            orderList.setReserveMobile(MerchantSupport.decryptMobile(orderList.getReserveMobile()));
-//        }
-//        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", orderList);
-//    }
+    @ResponseBody
+    @RequestMapping(value = "/orderListAll",method = RequestMethod.POST)
+    public CommonResponse orderListAll(@RequestBody OrderTradeRequest req) throws ParseException {
+        MerchantTradeResponse orderList =  orderService.selectOrderListByPageAll(req);
+        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", orderList);
+    }
 
     /**
      * 导出全部

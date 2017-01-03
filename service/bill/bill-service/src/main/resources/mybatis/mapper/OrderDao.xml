@@ -152,8 +152,11 @@
         <if test="payType != null and payType!=''">
             AND pay_type =  #{payType}
         </if>
-        <if test="realPayAmount != null and realPayAmount!=''">
-            AND real_pay_amount = #{realPayAmount}
+        <if test="lessTotalFee != null and lessTotalFee!=''">
+            AND real_pay_amount <![CDATA[ >= ]]> #{lessTotalFee}
+        </if>
+        <if test="moreTotalFee != null and moreTotalFee!=''">
+            AND real_pay_amount <![CDATA[ <= ]]> #{moreTotalFee}
         </if>
         <if test="settleStatus != null">
             AND settle_status = #{settleStatus}
@@ -162,6 +165,38 @@
         limit #{offset}, #{size}
     </select>
 
+    <!-- 交易详情 -->
+    <select id="selectOrderListByPageAll" resultType="com.jkm.hss.bill.entity.MerchantTradeResponse">
+        SELECT
+            pay_order_id,
+            order_no,
+            trade_amount,
+            real_pay_amount,
+            trade_type,
+            payer,
+            payee,
+            pay_account,
+            pay_account_type,
+            pay_type,
+            pay_success_time,
+            poundage,
+            pay_rate,
+            settle_status,
+            settle_time,
+            success_settle_time,
+            pay_channel_sign,
+            remark,
+            status,
+            create_time
+        FROM
+            tb_order
+        WHERE
+            order_no = #{orderNo}
+        ORDER BY
+            create_time DESC
+    </select>
+
+    <!--查询生成ExcelVo 导出excel-->
     <select id="selectOrderListTrade" resultType="com.jkm.hss.bill.entity.MerchantTradeResponse">
         SELECT
         order_no,
@@ -193,7 +228,7 @@
             AND create_time <![CDATA[ <= ]]> #{endTime}
         </if>
         <if test="orderNo != null and orderNo!=''">
-            AND order_no = #{orderNo}
+            AND order_no LIKE CONCAT('%',#{orderNo})
         </if>
         <if test="merchantName != null and merchantName!=''">
             AND merchant_name = #{merchantName}
@@ -259,6 +294,26 @@
             account_id = #{payee}
     </select>
 
+    <!--查询商户详情  -->
+    <select id="getMerchantAll" resultType="com.jkm.hss.bill.entity.MerchantTradeResponse">
+        SELECT
+            merchant_name,
+            dealer_id,
+            account_id,
+            bank_no,
+            name,
+            mobile,
+            reserve_mobile,
+            create_time,
+            identity
+        FROM
+            tb_merchant_info
+        WHERE
+            account_id = #{payer}
+        OR
+            account_id = #{payee}
+    </select>
+
     <select id="getDealer" resultType="com.jkm.hss.bill.entity.MerchantTradeResponse">
         SELECT
             proxy_name,
@@ -270,7 +325,28 @@
             id = #{dealerId}
     </select>
 
+    <!--查询代理商详情-->
+    <select id="getDealerAll" resultType="com.jkm.hss.bill.entity.MerchantTradeResponse">
+        SELECT
+        proxy_name,
+        first_level_dealer_id,
+        LEVEL
+        FROM
+        tb_dealer
+        WHERE
+        id = #{dealerId}
+    </select>
+
     <select id="getProxyName" resultType="com.jkm.hss.bill.entity.MerchantTradeResponse">
+        SELECT
+        proxy_name
+        FROM
+        tb_dealer
+        WHERE
+        id = #{firstLevelDealerId}
+    </select>
+
+    <select id="getProxyName1" resultType="com.jkm.hss.bill.entity.MerchantTradeResponse">
         SELECT
         proxy_name
         FROM
@@ -284,12 +360,5 @@
     </select>
 
 
-    <!--<select id="selectOrderListCount" resultType="com.jkm.hss.bill.entity.Order">-->
-        <!--SELECT * FROM tb_order-->
-    <!--</select>-->
-
-    <!--<select id="selectOrderListCountAll" resultType="com.jkm.hss.bill.entity.Order">-->
-        <!--SELECT * FROM tb_order-->
-    <!--</select>-->
 
 </mapper>
