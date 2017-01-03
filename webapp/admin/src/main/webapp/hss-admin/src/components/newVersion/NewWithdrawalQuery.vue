@@ -146,10 +146,10 @@
           payEndDate:''
         },
         query:{
-          pageNo:1,
-          pageSize:10,
+          pageNo:"1",
+          pageSize:"10",
           orderNo:'',
-          nsname:'',
+          sn:'',
           userName:'',
           status:''
         },
@@ -160,8 +160,11 @@
         remark:''
       }
     },
+    http: {
+      headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+    },
     created:function () {
-      this.$http.post('/order/withdraw/listOrder',this.$data.query)
+      this.$http.post('http://192.168.1.20:8076/order/withdraw/listOrder',this.$data.query)
         .then(function (res) {
           this.$data.records = res.data.records;
           this.$data.total = res.data.totalPage;
@@ -256,7 +259,7 @@
       //筛选
       lookup: function () {
         this.$data.query.page = 1;
-        this.$http.post('/admin/order/withdraw/listOrder',this.$data.query)
+        this.$http.post('http://192.168.1.20:8076/order/withdraw/listOrder',this.$data.query)
           .then(function (res) {
             this.$data.records = res.data.records;
             this.$data.total=res.data.totalPage;

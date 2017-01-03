@@ -49,7 +49,6 @@
                 <select class="form-control select2 select2-hidden-accessible" style="width: 100%;" tabindex="-1" aria-hidden="true" v-model="$$query.status">
                   <option value="">全部</option>
                   <option value="1">待支付</option>
-                  <option value="2">支付中</option>
                   <option value="4">支付成功</option>
                   <option value="3">支付失败</option>
                   <option value="5">提现中</option>
@@ -72,11 +71,13 @@
             <div class="col-md-3">
               <div class="form-group">
                 <label>支付方式：</label>
-                <select class="form-control select2 select2-hidden-accessible" style="width: 100%;" tabindex="-1" aria-hidden="true" v-model="$$query.payChannelSign">
+                <select class="form-control select2 select2-hidden-accessible" style="width: 100%;" tabindex="-1" aria-hidden="true" v-model="$$query.payType">
                   <option value="">全部</option>
-                  <option value="101">微信</option>
-                  <option value="102">支付宝</option>
-                  <option value="103">快捷</option>
+                  <option value="S">微信扫码</option>
+                  <option value="N">微信二维码</option>
+                  <option value="H">微信H5收银台</option>
+                  <option value="B">快捷收款</option>
+                  <option value="Z">支付宝扫码</option>
                 </select>
               </div>
               <div class="form-group">
@@ -124,8 +125,8 @@
                   <td>{{order.payRate}}</td>
                   <td>{{order.status|changeStatus}}<!--<a href="javascript:;">(补发)</a>--></td>
                   <td>{{order.settleStatus|changeSettleStatus}}</td>
+                  <td>{{order.payType|changePayType}}</td>
                   <td>{{order.payChannelSign|changePayChannel}}</td>
-                  <td>{{order.payChannelSign}}</td>
                   <td>{{order.remark}}</td>
                 </tr>
                 </tbody>
@@ -188,7 +189,7 @@
           moreTotalFee: '',
           status: '',
           settleStatus:'',
-          payChannelSign:''
+          payType:''
         },
         orders:[],
         total:'',
@@ -376,11 +377,22 @@
       }
     },
     filters: {
+      changePayType: function (val) {
+        if(val == "S"){
+          return "微信扫码"
+        }else if(val == "N"){
+          return "微信二维码"
+        }else if(val == "H"){
+          return "微信H5收银台"
+        }else if(val == "B"){
+          return "快捷收款"
+        }else if(val == "Z"){
+          return "支付宝扫码"
+        }
+      },
       changeStatus: function (val) {
         if(val == 1){
           return "待支付"
-        }else if(val == 2){
-          return "支付中"
         }else if(val == 3){
           return "支付失败"
         }else if(val == 4){
@@ -406,11 +418,11 @@
       },
       changePayChannel: function (val) {
         if(val == 101){
-          return '微信'
+          return '阳光微信扫码'
         }else if(val == 102){
-          return '支付宝'
+          return '阳光支付宝扫码'
         }else if(val == 103){
-          return '快捷'
+          return '阳光银联支付'
         }
       },
       changeTime: function (val) {
