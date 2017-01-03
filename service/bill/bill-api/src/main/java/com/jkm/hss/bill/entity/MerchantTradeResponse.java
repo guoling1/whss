@@ -20,6 +20,31 @@ import java.util.Date;
 public class MerchantTradeResponse {
 
     /**
+     * 一级代理商id
+     */
+    private long firstLevelDealerId;
+
+    /**
+     * 代理商等级
+     */
+    private int level;
+
+    /**
+     * 一级代理商名
+     */
+    private String proxyName;
+
+    /**
+     * 二级代理商名
+     */
+    private String proxyName1;
+
+    /**
+     * 代理商id
+     */
+    private long dealerId;
+
+    /**
      * 状态
      * tinyint
      */
@@ -58,9 +83,14 @@ public class MerchantTradeResponse {
     private long payer;
 
     /**
-     * 收款人(商户id)
+     * 收款人(账户id)
      */
     private long payee;
+
+    /**
+     * 商户名称
+     */
+    private String merchantName;
 
     /**
      * 付款账户（支付宝，微信，银行）目前只有银行卡

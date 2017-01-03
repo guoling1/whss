@@ -38,6 +38,9 @@ public class OrderServiceImpl implements OrderService {
     private CalculateService calculateService;
 
     @Autowired
+    private OrderService orderService;
+
+    @Autowired
     private MerchantInfoService merchantInfoService;
     @Autowired
     private AccountService accountService;
@@ -256,11 +259,36 @@ public class OrderServiceImpl implements OrderService {
         map.put("offset",req.getOffset());
         map.put("size",req.getSize());
         List<MerchantTradeResponse> list = orderDao.selectOrderList(map);
-//        if(list.size()>0){
-//            for(int i=0;i<list.size();i++){
-//                list.get(i).setOrderMessage(PayOfStatus(list.get(i).getPayResult()));
-//            }
-//        }
+        if(list.size()>0){
+            for(int i=0;i<list.size();i++){
+                long payee = list.get(i).getPayee();
+                long payer = list.get(i).getPayer();
+                List<MerchantTradeResponse> lists = orderService.getMerchant(payee,payer);
+                if (lists.size()>0){
+                    for(int j=0;j<list.size();j++){
+                        list.get(i).setMerchantName(lists.get(j).getMerchantName());
+                        List<MerchantTradeResponse> result = orderService.getDealer(lists.get(j).getDealerId());
+                        if (result.size()>0){
+                            for (int x=0;result.size()>x;x++){
+                                if (result.get(x).getLevel()==1){
+                                    list.get(i).setProxyName(result.get(x).getProxyName());
+                                }
+                                if (result.get(x).getLevel()==1){
+                                    List<MerchantTradeResponse> res = orderService.getProxyName(result.get(x).getFirstLevelDealerId());
+                                    if (res.size()>0){
+                                        for (int m=0;res.size()>m;m++){
+                                            list.get(i).setProxyName1(res.get(m).getProxyName());
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+
+            }
+        }
         return list;
     }
 
@@ -282,6 +310,24 @@ public class OrderServiceImpl implements OrderService {
         map.put("offset",req.getOffset());
         map.put("size",req.getSize());
         return orderDao.selectOrderListCount(map);
+    }
+
+    @Override
+    public List<MerchantTradeResponse> getMerchant(long payee, long payer) {
+        List<MerchantTradeResponse> list = orderDao.getMerchant(payee,payer);
+        return list;
+    }
+
+    @Override
+    public List<MerchantTradeResponse> getDealer(long dealerId) {
+        List<MerchantTradeResponse> list = orderDao.getDealer(dealerId);
+        return list;
+    }
+
+    @Override
+    public List<MerchantTradeResponse> getProxyName(long firstLevelDealerId) {
+        List<MerchantTradeResponse> list = orderDao.getProxyName(firstLevelDealerId);
+        return list;
     }
 
 //    @Override

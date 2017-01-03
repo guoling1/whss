@@ -117,4 +117,26 @@ public interface OrderDao {
      * @return
      */
     MerchantTradeResponse selectOrderListCountAll(Map map);
+
+    /**
+     * 查询商户信息
+     * @param payee
+     * @param payer
+     * @return
+     */
+    List<MerchantTradeResponse> getMerchant(@Param("payee") long payee,@Param("payer") long payer);
+
+    /**
+     * 查询代理商
+     * @param dealerId
+     * @return
+     */
+    List<MerchantTradeResponse> getDealer(@Param("dealerId") long dealerId);
+
+    /**
+     * 查询firstLevelDealerId
+     * @param firstLevelDealerId
+     * @return
+     */
+    List<MerchantTradeResponse> getProxyName(long firstLevelDealerId);
 }

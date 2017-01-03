@@ -114,6 +114,28 @@ public interface OrderService {
     int selectOrderListCount(OrderTradeRequest orderRecord);
 
     /**
+     * 查询商户信息
+     * @param payee
+     * @param payer
+     * @return
+     */
+    List<MerchantTradeResponse> getMerchant(long payee, long payer);
+
+    /**
+     * 查询代理商
+     * @param dealerId
+     * @return
+     */
+    List<MerchantTradeResponse> getDealer(long dealerId);
+
+    /**
+     * 查询firstLevelDealerId
+     * @param firstLevelDealerId
+     * @return
+     */
+    List<MerchantTradeResponse> getProxyName(long firstLevelDealerId);
+
+    /**
      * 查询交易详情
      * @param orderRecord
      * @return
