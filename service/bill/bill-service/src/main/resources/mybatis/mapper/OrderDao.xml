@@ -109,7 +109,7 @@
         SELECT * FROM tb_order WHERE pay_order_id = #{payOrderId} AND trade_type = 3;
     </select>
 
-    <select id="selectOrderList" resultType="com.jkm.hss.bill.entity.Order">
+    <select id="selectOrderList" resultType="com.jkm.hss.bill.entity.MerchantTradeResponse">
         SELECT
             a.pay_order_id,
             a.order_no,
@@ -199,12 +199,12 @@
         </if>
     </select>
 
-    <select id="selectOrderListCount" resultType="com.jkm.hss.bill.entity.Order">
-        SELECT * FROM tb_order
-    </select>
+    <!--<select id="selectOrderListCount" resultType="com.jkm.hss.bill.entity.Order">-->
+        <!--SELECT * FROM tb_order-->
+    <!--</select>-->
 
-    <select id="selectOrderListCountAll" resultType="com.jkm.hss.bill.entity.Order">
-        SELECT * FROM tb_order
-    </select>
+    <!--<select id="selectOrderListCountAll" resultType="com.jkm.hss.bill.entity.Order">-->
+        <!--SELECT * FROM tb_order-->
+    <!--</select>-->
 
 </mapper>

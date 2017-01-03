@@ -1,4 +1,4 @@
-package com.jkm.hss.bill.entity.callback;
+package com.jkm.hss.bill.entity;
 
 import com.jkm.hss.bill.enums.EnumOrderStatus;
 import com.jkm.hss.bill.enums.EnumSettleStatus;
