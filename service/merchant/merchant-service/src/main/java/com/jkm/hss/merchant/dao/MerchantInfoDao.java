@@ -3,10 +3,10 @@ package com.jkm.hss.merchant.dao;
 import com.google.common.base.Optional;
 import com.jkm.hss.merchant.entity.MerchantInfo;
 import com.jkm.hss.merchant.helper.request.MerchantInfoAddRequest;
-import com.jkm.hss.merchant.helper.request.RequestMerchantInfo;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -120,7 +120,7 @@ public interface MerchantInfoDao {
      * @param merchantId
      * @return
      */
-    int addAccountId(@Param("accountId") long accountId, @Param("status") int status, @Param("merchantId") long merchantId);
+    int addAccountId(@Param("accountId") long accountId, @Param("status") int status, @Param("merchantId") long merchantId,@Param("checkedTime") Date checkedTime);
 
     /**
      * 根据accountId查询
