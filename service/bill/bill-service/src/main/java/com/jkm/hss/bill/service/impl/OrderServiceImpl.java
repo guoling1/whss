@@ -368,7 +368,7 @@ public class OrderServiceImpl implements OrderService {
             if (lists.getIdentity()!=null&&!"".equals(lists.getIdentity())){
                 list.setIdentity(MerchantSupport.decryptIdentity(lists.getIdentity()));
             }
-
+            list.setId(lists.getId());
             list.setName(lists.getName());
             list.setMerchantName(lists.getMerchantName());
             if (lists!=null){

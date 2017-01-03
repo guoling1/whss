@@ -283,6 +283,7 @@
 
     <select id="getMerchant" resultType="com.jkm.hss.bill.entity.MerchantTradeResponse">
         SELECT
+            id,
             merchant_name,
             dealer_id,
             account_id
