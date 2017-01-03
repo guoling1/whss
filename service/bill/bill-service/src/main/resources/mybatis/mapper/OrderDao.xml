@@ -137,7 +137,7 @@
         FROM
             tb_order a
         LEFT JOIN tb_merchant_info b
-        ON a.payer=b.account_id
+        ON a.payee=b.account_id
         WHERE 1=1
         <if test="startTime!=null and startTime!=''">
             AND a.create_time <![CDATA[ >= ]]> #{startTime}

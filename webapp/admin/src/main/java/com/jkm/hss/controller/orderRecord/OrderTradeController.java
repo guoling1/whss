@@ -27,7 +27,7 @@ import java.util.List;
 @Slf4j
 
 @Controller
-@RequestMapping(value = "/admin/queryOrderRecord")
+@RequestMapping(value = "/admin/queryOrder")
 public class OrderTradeController extends BaseController{
 
     @Autowired
