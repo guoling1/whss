@@ -111,28 +111,81 @@
 
     <select id="selectOrderList" resultType="com.jkm.hss.bill.entity.MerchantTradeResponse">
         SELECT
-            pay_order_id,
-            order_no,
-            trade_amount,
-            real_pay_amount,
-            trade_type,
-            payer,
-            payee,
-            pay_account,
-            pay_account_type,
-            pay_type,
-            pay_success_time,
-            poundage,
-            pay_rate,
-            settle_status,
-            settle_time,
-            success_settle_time,
-            pay_channel_sign,
-            remark,
-            status,
-            create_time
+        a.pay_order_id,
+        a.order_no,
+        a.trade_amount,
+        a.real_pay_amount,
+        a.trade_type,
+        a.payer,
+        a.payee,
+        a.pay_account,
+        a.pay_account_type,
+        a.pay_type,
+        a.pay_success_time,
+        a.poundage,
+        a.pay_rate,
+        a.settle_status,
+        a.settle_time,
+        a.success_settle_time,
+        a.pay_channel_sign,
+        a.remark,
+        a. STATUS,
+        a.create_time,
+        (
+        SELECT
+        b.merchant_name
         FROM
-            tb_order
+        tb_merchant_info b
+        WHERE
+        b.account_id = a.payee
+        ) AS merchantName,
+        (
+        SELECT
+        c.proxy_name
+        FROM
+        tb_dealer c
+        WHERE
+        c.id = (
+        SELECT
+        b.dealer_id
+        FROM
+        tb_merchant_info b
+        WHERE
+        b.account_id = a.payee
+        )
+        ) AS proxyName,
+        (
+        SELECT
+        c. LEVEL
+        FROM
+        tb_dealer c
+        WHERE
+        c.id = (
+        SELECT
+        b.dealer_id
+        FROM
+        tb_merchant_info b
+        WHERE
+        b.account_id = a.payee
+        )
+        ) AS LEVEL,
+        (
+        SELECT
+        c.first_level_dealer_id
+        FROM
+        tb_dealer c
+        WHERE
+        c.id = (
+        SELECT
+        b.dealer_id
+        FROM
+        tb_merchant_info b
+        WHERE
+        b.account_id = a.payee
+        )
+        ) AS firstLevelDealerId
+        FROM
+        tb_order a
         WHERE 1=1
         <if test="startTime!=null and startTime!=''">
             AND create_time <![CDATA[ >= ]]> #{startTime}
@@ -199,27 +252,81 @@
     <!--查询生成ExcelVo 导出excel-->
     <select id="selectOrderListTrade" resultType="com.jkm.hss.bill.entity.MerchantTradeResponse">
         SELECT
-        order_no,
-        trade_amount,
-        real_pay_amount,
-        trade_type,
-        payer,
-        payee,
-        pay_account,
-        pay_account_type,
-        pay_type,
-        pay_success_time,
-        poundage,
-        pay_rate,
-        settle_status,
-        settle_time,
-        success_settle_time,
-        pay_channel_sign,
-        remark,
-        status,
-        create_time
+        a.pay_order_id,
+        a.order_no,
+        a.trade_amount,
+        a.real_pay_amount,
+        a.trade_type,
+        a.payer,
+        a.payee,
+        a.pay_account,
+        a.pay_account_type,
+        a.pay_type,
+        a.pay_success_time,
+        a.poundage,
+        a.pay_rate,
+        a.settle_status,
+        a.settle_time,
+        a.success_settle_time,
+        a.pay_channel_sign,
+        a.remark,
+        a. STATUS,
+        a.create_time,
+        (
+        SELECT
+        b.merchant_name
         FROM
-        tb_order
+        tb_merchant_info b
+        WHERE
+        b.account_id = a.payee
+        ) AS merchantName,
+        (
+        SELECT
+        c.proxy_name
+        FROM
+        tb_dealer c
+        WHERE
+        c.id = (
+        SELECT
+        b.dealer_id
+        FROM
+        tb_merchant_info b
+        WHERE
+        b.account_id = a.payee
+        )
+        ) AS proxyName,
+        (
+        SELECT
+        c. LEVEL
+        FROM
+        tb_dealer c
+        WHERE
+        c.id = (
+        SELECT
+        b.dealer_id
+        FROM
+        tb_merchant_info b
+        WHERE
+        b.account_id = a.payee
+        )
+        ) AS LEVEL,
+        (
+        SELECT
+        c.first_level_dealer_id
+        FROM
+        tb_dealer c
+        WHERE
+        c.id = (
+        SELECT
+        b.dealer_id
+        FROM
+        tb_merchant_info b
+        WHERE
+        b.account_id = a.payee
+        )
+        ) AS firstLevelDealerId
+        FROM
+        tb_order a
         WHERE 1=1
         <if test="startTime!=null and startTime!=''">
             AND create_time <![CDATA[ >= ]]> #{startTime}
@@ -281,20 +388,6 @@
         </if>
     </select>
 
-    <select id="getMerchant" resultType="com.jkm.hss.bill.entity.MerchantTradeResponse">
-        SELECT
-            id,
-            merchant_name,
-            dealer_id,
-            account_id
-        FROM
-            tb_merchant_info
-        WHERE
-            account_id = #{payer}
-        OR
-            account_id = #{payee}
-    </select>
-
     <!--查询商户详情  -->
     <select id="getMerchantAll" resultType="com.jkm.hss.bill.entity.MerchantTradeResponse">
         SELECT
@@ -313,17 +406,6 @@
             account_id = #{payer}
         OR
             account_id = #{payee}
-    </select>
-
-    <select id="getDealer" resultType="com.jkm.hss.bill.entity.MerchantTradeResponse">
-        SELECT
-            proxy_name,
-            first_level_dealer_id,
-            LEVEL
-        FROM
-            tb_dealer
-        WHERE
-            id = #{dealerId}
     </select>
 
     <!--查询代理商详情-->
