@@ -186,7 +186,7 @@
         ) AS firstLevelDealerId
         FROM
         tb_order a
-        WHERE 1=1
+        WHERE a.trade_type=1
         <if test="startTime!=null and startTime!=''">
             AND create_time <![CDATA[ >= ]]> #{startTime}
         </if>
@@ -327,7 +327,7 @@
         ) AS firstLevelDealerId
         FROM
         tb_order a
-        WHERE 1=1
+        WHERE a.trade_type=1
         <if test="startTime!=null and startTime!=''">
             AND create_time <![CDATA[ >= ]]> #{startTime}
         </if>
@@ -361,7 +361,7 @@
     <select id="selectOrderListCount"  resultType="java.lang.Integer">
         SELECT COUNT(1)
 		FROM tb_order
-        WHERE 1=1
+        WHERE trade_type=1
         <if test="startTime!=null and startTime!=''">
             AND create_time <![CDATA[ >= ]]> #{startTime}
         </if>
@@ -391,6 +391,7 @@
     <!--查询商户详情  -->
     <select id="getMerchantAll" resultType="com.jkm.hss.bill.entity.MerchantTradeResponse">
         SELECT
+            id,
             merchant_name,
             dealer_id,
             account_id,
@@ -403,8 +404,6 @@
         FROM
             tb_merchant_info
         WHERE
-            account_id = #{payer}
-        OR
             account_id = #{payee}
     </select>
 
@@ -441,7 +440,39 @@
     <select id="selectByOrderNo" resultType="com.jkm.hss.bill.entity.Order">
         SELECT * FROM tb_order WHERE order_no = #{orderNo}
     </select>
+    
+    <select id="selectMerchantPayOrders" resultType="com.jkm.hss.bill.entity.Order">
+        SELECT * FROM tb_order
+        WHERE trade_type = 1
+        <if test="orderNo != null">
+            AND order_no = #{orderNo}
+        </if>
+        <if test="payType != null">
+            AND pay_type = #{payType}
+        </if>
+        <if test="payStatus > 0">
+            AND status = #{payStatus}
+        </if>
+        <if test="startDate != null">
+            AND create_time BETWEEN #{startDate} AND #{endDate}
+        </if>
+        ORDER BY id DESC LIMIT #{offset}, #{count}
+    </select>
 
-
-
+    <select id="selectCountMerchantPayOrders" resultType="java.lang.Long">
+        SELECT COUNT(0) FROM tb_order
+        WHERE trade_type = 1
+        <if test="orderNo != null">
+            AND order_no = #{orderNo}
+        </if>
+        <if test="payType != null">
+            AND pay_type = #{payType}
+        </if>
+        <if test="payStatus > 0">
+            AND status = #{payStatus}
+        </if>
+        <if test="startDate != null">
+            AND create_time BETWEEN #{startDate} AND #{endDate}
+        </if>
+    </select>
 </mapper>

@@ -3,6 +3,8 @@ package com.jkm.hss.controller.wx;
 
 import com.google.common.base.Optional;
 import com.jkm.base.common.util.CookieUtil;
+import com.jkm.hss.account.entity.Account;
+import com.jkm.hss.account.sevice.AccountService;
 import com.jkm.hss.bill.entity.Order;
 import com.jkm.hss.bill.service.OrderService;
 import com.jkm.hss.controller.BaseController;
@@ -75,6 +77,8 @@ public class LoginController extends BaseController {
 
     @Autowired
     private OrderService orderService;
+    @Autowired
+    private AccountService accountService;
     /**
      * 扫固定码注册和微信公众号注册入口
      * @param request
@@ -384,12 +388,14 @@ public class LoginController extends BaseController {
                 if(userInfoOptional.get().getMerchantId()!=0){
                     Optional<MerchantInfo> merchantInfo = this.merchantInfoService.selectById(userInfoOptional.get().getMerchantId());
                     if(merchantInfo.isPresent()){
-                        AccountInfo accountInfo = accountInfoService.selectByPrimaryKey(merchantInfo.get().getAccountId());
-                        if(accountInfo==null){
+//                        AccountInfo accountInfo = accountInfoService.selectByPrimaryKey(merchantInfo.get().getAccountId());
+                        final Optional<Account> accountOptional = this.accountService.getById(merchantInfo.get().getAccountId());
+                        if(!accountOptional.isPresent()){
                             model.addAttribute("avaliable", "0.00");
                         }else{
+                            final Account account = accountOptional.get();
                             DecimalFormat decimalFormat=new DecimalFormat("0.00");//构造方法的字符格式这里如果小数不足2位,会以0补足.
-                            model.addAttribute("avaliable", accountInfo.getAvailable()==null?"0.00":decimalFormat.format(accountInfo.getAvailable()));
+                            model.addAttribute("avaliable", account.getAvailable()==null?"0.00":decimalFormat.format(account.getAvailable()));
                         }
 
                     }else{

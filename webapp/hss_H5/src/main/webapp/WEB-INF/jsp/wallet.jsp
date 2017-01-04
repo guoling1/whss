@@ -81,6 +81,6 @@
   </div>
 </div>
 </body>
-<script src="http://static.jinkaimen.cn/vendor/vendor.min.js"></script>
+<script src="http://static.jinkaimen.cn/vendor/vendor.1.0.1.min.js"></script>
 <script src="http://static.jinkaimen.cn/hss/0.1.19/wallet.min.js"></script>
 </html>
