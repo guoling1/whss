@@ -413,7 +413,7 @@ public class OrderServiceImpl implements OrderService {
         heads.add("支付方式");
         heads.add("手续费");
         heads.add("支付渠道");
-        heads.add("错误信息");
+        heads.add("备注信息");
         datas.add(heads);
         if(list.size()>0){
             for(int i=0;i<list.size();i++){
