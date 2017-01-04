@@ -88,8 +88,8 @@
                   </thead>
                   <tbody>
                   <tr role="row" v-for="(record,index) in $$records">
-                    <td>{{record.orderNo|changeHide}}</td>
                     <td>{{record.sn|changeHide}}</td>
+                    <td>{{record.orderNo|changeHide}}</td>
                     <td>{{record.requestTime|changeTime}}</td>
                     <td>{{record.receiptUserName}}</td>
                     <td>{{record.bankCard}}</td>
@@ -117,6 +117,7 @@
                 <div class="dataTables_paginate paging_simple_numbers" id="example2_paginate">
                   <ul class="pagination" id="page" @click="bindEvent($event)">
                   </ul>
+                  <span class="count">共{{count}}条</span>
                 </div>
               </div>
             </div>
@@ -170,7 +171,8 @@
         index:0,
         remark:'',
         isMask: false,
-        url: ''
+        url: '',
+        count:''
       }
     },
     created:function () {
@@ -178,6 +180,7 @@
         .then(function (res) {
           this.$data.records = res.data.records;
           this.$data.total = res.data.totalPage;
+          this.$data.count = res.data.count;
           var str='',
             page=document.getElementById('page');
           str+='<li class="paginate_button previous" id="example2_previous"><a href="#" aria-controls="example2" data-dt-idx="0" tabindex="0">上一页</a></li>'
@@ -432,5 +435,10 @@
   }
   .table td[data-v-497723e2], .table th[data-v-497723e2]{
     width: inherit;
+  }
+  .count{
+    display: inline-block;
+    vertical-align: top;
+    margin: 28px 10px;
   }
 </style>

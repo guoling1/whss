@@ -11,6 +11,16 @@
           </div>
         </div>
       </div>
+      <div class="col-md-3 content" v-show="$$delay">
+        <div class="box box-danger">
+          <div class="box-header with-border">
+            <h3 class="box-title">提示</h3>
+          </div>
+          <div class="box-body">
+            {{$$text}}
+          </div>
+        </div>
+      </div>
       <!--<div class="group" v-show="$$delay">
         <div class="prompt">提示</div>
         <div class="text">{{$$text}}</div>

@@ -26,9 +26,9 @@
             </tr>
             <tr>
               <th style="text-align: right">一级代理名称:</th>
-              <td>{{record.proxyName}}</td>
+              <td>{{record.proxyName|changeName}}</td>
               <th style="text-align: right">二级代理名称:</th>
-              <td>{{record.proxyName1}}</td>
+              <td>{{record.proxyName1|changeName}}</td>
               <th style="text-align: right">推荐人:</th>
               <td>—</td>
             </tr>
@@ -53,16 +53,16 @@
               <td>{{record.tradeAmount}}</td>
               <th style="text-align: right">手续费率:</th>
               <td>{{record.payRate}}</td>
-              <th style="text-align: right"></th>
-              <td></td>
-            </tr>
-            <tr>
               <th style="text-align: right">手续费:</th>
               <td>{{record.poundage}}</td>
+            </tr>
+            <tr>
               <th style="text-align: right">通道名称:</th>
               <td>{{record.payChannelSign|changePayChannel}}</td>
               <th style="text-align: right">通道费:</th>
               <td>—</td>
+              <th style="text-align: right"></th>
+              <td></td>
             </tr>
             <tr>
               <th style="text-align: right">支付方式:</th>
@@ -220,6 +220,13 @@
           return "充值"
         }else if(val ==3){
           return "提现"
+        }
+      },
+      changeName: function (val) {
+        if(val==null){
+          return "无"
+        }else {
+          return val
         }
       }
     }
