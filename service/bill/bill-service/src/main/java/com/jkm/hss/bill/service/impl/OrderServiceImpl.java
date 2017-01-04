@@ -208,46 +208,6 @@ public class OrderServiceImpl implements OrderService {
         return Optional.fromNullable(this.orderDao.selectByPayOrderId(payOrderId));
     }
 
-//    private List<String>  PayOf(String status) {
-//        List<String> payResults = new ArrayList<String>();
-//        if("N".equals(status)){
-//            payResults.add("N");
-//        }
-//        if("H".equals(status)){
-//            payResults.add("H");
-//            payResults.add("W");
-//            payResults.add("A");
-//            payResults.add("E");
-//        }
-//        if("S".equals(status)){
-//            payResults.add("S");
-//        }
-//        if("F".equals(status)){
-//            payResults.add("F");
-//        }
-//        return payResults;
-//    }
-//
-    private String  PayOfStatus(String status) {
-        String message = "";
-        if("N".equals(status)){
-            message="微信二维码";
-        }
-        if("H".equals(status)||"W".equals(status)||"A".equals(status)||"E".equals(status)){
-            message="微信H5收银台";
-        }
-        if("S".equals(status)){
-            message="微信扫码";
-        }
-        if("B".equals(status)){
-            message="快捷收款";
-        }
-        if("Z".equals(status)){
-            message="支付宝扫码";
-        }
-        return message;
-    }
-
     @Override
     public List<MerchantTradeResponse> selectOrderListByPage(OrderTradeRequest req) {
         Map<String,Object> map = new HashMap<String,Object>();
@@ -268,30 +228,18 @@ public class OrderServiceImpl implements OrderService {
         List<MerchantTradeResponse> list = orderDao.selectOrderList(map);
         if(list.size()>0){
             for(int i=0;i<list.size();i++){
-                long payee = list.get(i).getPayee();
-                long payer = list.get(i).getPayer();
-                List<MerchantTradeResponse> lists = orderDao.getMerchant(payee,payer);
-                if (lists.size()>0){
-                    for(int j=0;j<lists.size();j++){
-                        list.get(i).setMerchantName(lists.get(j).getMerchantName());
-                        List<MerchantTradeResponse> result = orderDao.getDealer(lists.get(j).getDealerId());
-                        if (result.size()>0){
-                            for (int x=0;result.size()>x;x++){
-                                if (result.get(x).getLevel()==1){
-                                    list.get(i).setProxyName(result.get(x).getProxyName());
-                                }
-                                if (result.get(x).getLevel()==1){
-                                    List<MerchantTradeResponse> res = orderDao.getProxyName(result.get(x).getFirstLevelDealerId());
-                                    if (res.size()>0){
-                                        for (int m=0;res.size()>m;m++){
-                                            list.get(i).setProxyName1(res.get(m).getProxyName());
-                                        }
-                                    }
-                                }
-                            }
+                if (list.get(i).getLevel()==1){
+                    list.get(i).setProxyName(list.get(i).getProxyName());
+                }
+                if (list.get(i).getLevel()==2){
+                    List<MerchantTradeResponse> res = orderDao.getProxyName(list.get(i).getFirstLevelDealerId());
+                    if (res.size()>0){
+                        for (int m=0;res.size()>m;m++){
+                            list.get(i).setProxyName1(res.get(m).getProxyName());
                         }
                     }
                 }
+
 
 
             }
@@ -413,29 +361,18 @@ public class OrderServiceImpl implements OrderService {
         List<MerchantTradeResponse> list = orderDao.selectOrderListTrade(req);
         if(list.size()>0){
             for(int i=0;i<list.size();i++){
-                long payee = list.get(i).getPayee();
-                long payer = list.get(i).getPayer();
-                List<MerchantTradeResponse> lists = orderDao.getMerchant(payee,payer);
-                if (lists.size()>0){
-                    for(int j=0;j<lists.size();j++){
-                        list.get(i).setMerchantName(lists.get(j).getMerchantName());
-                        List<MerchantTradeResponse> result = orderDao.getDealer(lists.get(j).getDealerId());
-                        if (result.size()>0){
-                            for (int x=0;result.size()>x;x++){
-                                if (result.get(x).getLevel()==1){
-                                    list.get(i).setProxyName(result.get(x).getProxyName());
-                                }
-                                if (result.get(x).getLevel()==1){
-                                    List<MerchantTradeResponse> res = orderDao.getProxyName(result.get(x).getFirstLevelDealerId());
-                                    if (res.size()>0){
-                                        for (int m=0;res.size()>m;m++){
-                                            list.get(i).setProxyName1(res.get(m).getProxyName());
-                                        }
-                                    }
-                                }
-                            }
+
+                if (list.get(i).getLevel()==1){
+                    list.get(i).setProxyName(list.get(i).getProxyName());
+                }
+                if (list.get(i).getLevel()==2){
+                    List<MerchantTradeResponse> res = orderDao.getProxyName(list.get(i).getFirstLevelDealerId());
+                    if (res.size()>0){
+                        for (int m=0;res.size()>m;m++){
+                            list.get(i).setProxyName1(res.get(m).getProxyName());
                         }
                     }
+
                 }
 
 
