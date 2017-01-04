@@ -67,11 +67,17 @@ public interface MerchantInfoService {
     long updateRecord(RequestMerchantInfo requestMerchantInfo);
 
     /**
-     * 扫码注册
+     * 公众号注册
      * @param merchantInfo
      * @return
      */
     long regByWxPub(MerchantInfo merchantInfo);
+    /**
+     * 公众号注册（新）
+     * @param merchantInfo
+     * @return
+     */
+    long regByWx(MerchantInfo merchantInfo);
     /**
      * 扫固定码注册
      * @param merchantInfo
@@ -108,6 +114,11 @@ public interface MerchantInfoService {
      * @return
      */
     List<MerchantInfo> batchGetMerchantInfo(List<Long> merchantIdList);
+
+    /**
+     * 根据id查询
+     */
+    Optional<MerchantInfo> selectByMobile(String mobile);
 
 
 }

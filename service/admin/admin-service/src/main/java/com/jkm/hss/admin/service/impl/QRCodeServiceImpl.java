@@ -22,6 +22,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.tuple.Pair;
+import org.apache.commons.lang3.tuple.Triple;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -30,6 +31,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -176,6 +178,38 @@ public class QRCodeServiceImpl implements QRCodeService {
     }
 
     /**
+     * 初始化商户的二维码（公众号注册）
+     *
+     * @param merchantId
+     * @param firstDealerId
+     * @param secondDealerId
+     * @return
+     */
+    @Override
+    public QRCode initMerchantCode(long merchantId, long firstDealerId, long secondDealerId) {
+        final Optional<QRCode> latestQRCode = this.getLatestQRCodeForUpdate();
+        String startCode;
+        if (latestQRCode.isPresent()) {
+            startCode = (Long.valueOf(latestQRCode.get().getCode()) + 1) + "";
+        } else {
+            startCode = QRCodeConsts.start_code_num + 1;
+        }
+        final QRCode qrCode = new QRCode();
+        qrCode.setCode(startCode);
+        qrCode.setAdminId(0);
+        qrCode.setFirstLevelDealerId(firstDealerId);
+        qrCode.setSecondLevelDealerId(secondDealerId);
+        qrCode.setMerchantId(merchantId);
+        qrCode.setSalt(RandomStringUtils.randomAlphanumeric(16));
+        qrCode.setSign(qrCode.getSignCode());
+        qrCode.setDistributeStatus(EnumQRCodeDistributionStatus.DISTRIBUTION.getCode());
+        qrCode.setActivateStatus(EnumQRCodeActivateStatus.ACTIVATE.getCode());
+        qrCode.setType(EnumQRCodeType.PUBLIC.getCode());
+        this.add(qrCode);
+        return qrCode;
+    }
+
+    /**
      * {@inheritDoc}
      *
      * @param id
@@ -230,6 +264,29 @@ public class QRCodeServiceImpl implements QRCodeService {
         }
         return 0;
     }
+
+    /**
+     * 按code查询当前代理商id，一级代理商id,二级代理商id
+     *
+     * @param code
+     * @return
+     */
+    @Override
+    public Triple<Long, Long, Long> getCurrentAndFirstAndSecondByCode(String code) {
+        final Optional<QRCode> codeOptional = this.getByCode(code);
+        Preconditions.checkState(codeOptional.isPresent(), "code[{}]对应的二维码不存在", code);
+        final QRCode qrCode = codeOptional.get();
+        Long currentDealerId = 0l;
+        Long firstDealerId = qrCode.getFirstLevelDealerId();
+        Long secondDealerId = qrCode.getSecondLevelDealerId();
+        if (qrCode.getSecondLevelDealerId() > 0) {
+            currentDealerId = qrCode.getSecondLevelDealerId();
+        } else if (qrCode.getFirstLevelDealerId() > 0) {
+            currentDealerId = qrCode.getFirstLevelDealerId();
+        }
+        return Triple.of(currentDealerId,firstDealerId,secondDealerId);
+    }
+
 
     /**
      * {@inheritDoc}

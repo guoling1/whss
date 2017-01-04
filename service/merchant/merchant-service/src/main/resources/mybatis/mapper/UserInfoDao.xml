@@ -4,7 +4,7 @@
 
     <!-- 通用查询结果列-->
     <sql id="Base_Column_List">
-        id,	mobile,	pwd,	open_id,role_id,merchant_id,status,	create_time,update_time
+        id,	mobile,	pwd,	open_id,nick_name,head_img_url,mark_code,role_id,merchant_id,status,	create_time,update_time
     </sql>
 
     <!-- 查询（根据OpenId查询） -->
@@ -43,6 +43,15 @@
             <if test="openId != null">
                 open_id,
             </if>
+            <if test="nickName != null">
+                nick_name,
+            </if>
+            <if test="headImgUrl != null">
+                head_img_url,
+            </if>
+            <if test="markCode != null">
+                mark_code,
+            </if>
             <if test="merchantId != null">
                 merchant_id,
             </if>
@@ -62,6 +71,15 @@
             </if>
             <if test="openId!=null">
                 #{openId},
+            </if>
+            <if test="nickName!=null">
+                #{nickName},
+            </if>
+            <if test="headImgUrl!=null">
+                #{headImgUrl},
+            </if>
+            <if test="markCode!=null">
+                #{markCode},
             </if>
             <if test="merchantId!=null">
                 #{merchantId},

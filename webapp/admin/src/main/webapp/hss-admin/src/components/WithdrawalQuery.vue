@@ -1,8 +1,6 @@
 <template lang="html">
   <div id="withDrawal">
-    <div style="padding: 8px 30px; background: rgb(243, 156, 18); z-index: 999999; font-size: 22px; font-weight: 600;margin-bottom: 15px;color: #fff;">打款查询
-      <div class="btn btn-primary pull-right" @click="refresh()">刷新</div>
-    </div>
+    <div style="padding: 8px 30px; background: rgb(243, 156, 18); z-index: 999999; font-size: 22px; font-weight: 600;margin-bottom: 15px;color: #fff;">打款查询</div>
     <div class="col-md-12">
       <div class="box box-success box-solid">
         <div class="box-header with-border">
@@ -228,9 +226,6 @@
         })
     },
     methods: {
-      refresh: function () {
-        location.reload()
-      },
       //分页器
       bindEvent: function (e) {
         e = e||window.event;

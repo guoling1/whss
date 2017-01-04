@@ -35,5 +35,22 @@ public class UserInfo extends BaseEntity {
      * 密码
      */
     private String pwd;
+    /**
+     * 昵称
+     */
+    private String nickName;
+    /**
+     * 头像
+     */
+    private String headImgUrl;
+    /**
+     * 用户标示
+     */
+    private String markCode;
+
+    /**
+     * 用户类型 0 好收收 1，好收银
+     */
+    private int type;
 
 }

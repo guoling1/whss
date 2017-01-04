@@ -45,6 +45,7 @@ import com.jkm.hss.merchant.entity.BankCardBin;
 import com.jkm.hss.merchant.entity.MerchantInfo;
 import com.jkm.hss.merchant.entity.PastRecord;
 import com.jkm.hss.merchant.enums.EnumMerchantStatus;
+import com.jkm.hss.merchant.helper.ValidationUtil;
 import com.jkm.hss.merchant.service.BankCardBinService;
 import com.jkm.hss.merchant.service.PastRecordService;
 import com.jkm.hss.notifier.enums.EnumNoticeType;
@@ -427,6 +428,9 @@ public class DealerController extends BaseController {
         final Optional<Dealer> dealerOptional = this.dealerService.getByMobile(secondLevelDealerAddRequest.getMobile());
         if (dealerOptional.isPresent()) {
             return CommonResponse.simpleResponse(-1, "代理商手机号已经注册");
+        }
+        if(!ValidationUtil.isIdCard(secondLevelDealerAddRequest.getIdCard())){
+            return CommonResponse.simpleResponse(-1, "身份证格式不正确");
         }
         final List<DealerChannelRate> channelRates = this.dealerRateService.getByDealerId(super.getDealerId());
         for (DealerChannelRate channelRate : channelRates) {

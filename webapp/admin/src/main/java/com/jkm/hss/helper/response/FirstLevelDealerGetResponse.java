@@ -1,7 +1,9 @@
 package com.jkm.hss.helper.response;
 
+import com.jkm.hss.dealer.helper.requestparam.FirstLevelDealerUpdateRequest;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -29,6 +31,10 @@ public class FirstLevelDealerGetResponse {
      * 结算卡
      */
     private String bankCard;
+    /**
+     * 银行名称
+     */
+    private String bankName;
 
     /**
      * 银行开户名称
@@ -39,6 +45,59 @@ public class FirstLevelDealerGetResponse {
      * 银行预留手机号
      */
     private String bankReserveMobile;
+    /**
+     * 身份证号
+     */
+    private String idCard;
+    /**
+     * 合伙人推荐功能开关
+     * {@link com.jkm.hss.dealer.enums.EnumRecommendBtn}
+     */
+    private int recommendBtn;
+
+    /**
+     * 收单总分润空间
+     */
+    private BigDecimal totalProfitSpace;
+    /**
+     * 合伙人推荐分润
+     */
+    private List<DealerUpgerdeRate> DealerUpgerdeRates;
+    @Data
+    public static class DealerUpgerdeRate {
+        /**
+         * 升级分润费率编码
+         */
+        private long id;
+        /**
+         * 产品编码
+         */
+        private long productId;
+        /**
+         * 代理商编码
+         */
+        private long dealerId;
+        /**
+         * 分润类型
+         * {@link com.jkm.hss.dealer.enums.EnumDealerRateType}
+         */
+        private int type;
+
+        /**
+         *一级代理商分润比例
+         */
+        private String firstDealerShareProfitRate;
+
+        /**
+         *二级代理商分润比例
+         */
+        private String secondDealerShareProfitRate;
+
+        /**
+         *金开门分润比例
+         */
+        private String bossDealerShareRate;
+    }
 
     /**
      * 产品列表

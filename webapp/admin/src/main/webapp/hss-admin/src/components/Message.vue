@@ -1,17 +1,7 @@
 <template lang="html">
   <transition name="fade">
-    <div class="main" v-if="$$message" @click="know">
-      <div class="col-md-3 content" v-show="$$accord">
-        <div class="box box-danger">
-          <div class="box-header with-border">
-            <h3 class="box-title">提示</h3>
-          </div>
-          <div class="box-body">
-            {{$$text}}
-          </div>
-        </div>
-      </div>
-      <!--<div class="group" v-show="$$delay">
+    <div class="main" v-if="$$message">
+      <div class="group" v-show="$$delay">
         <div class="prompt">提示</div>
         <div class="text">{{$$text}}</div>
       </div>
@@ -19,7 +9,7 @@
         <div class="prompt">提示</div>
         <div class="text">{{$$text}}</div>
         <div class="btn" @click="know">我知道了</div>
-      </div>-->
+      </div>
     </div>
   </transition>
 </template>
@@ -64,9 +54,7 @@
   .fade-enter, .fade-leave-active {
     opacity: 0
   }
-  i{
-    font-style: normal;
-  }
+
   .main {
     width: 100%;
     height: 100%;
@@ -76,13 +64,6 @@
     left: 0;
     z-index: 999999;
     background: rgba(0, 0, 0, 0.5);
-  }
-  .content{
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate3d(-50%, -50%, 0);
-    /*padding: 20px 15px 25px;*/
   }
 
   .group {

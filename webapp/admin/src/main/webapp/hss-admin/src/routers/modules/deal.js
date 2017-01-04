@@ -23,8 +23,6 @@ const ProductList = r => require.ensure([], () => r(require('../../components/Pr
 const Issue = r => require.ensure([], () => r(require('../../components/Issue')), 'group-record');
 const Issue1 = r => require.ensure([], () => r(require('../../components/Issue1')), 'group-record');
 const IssueSuccess = r => require.ensure([], () => r(require('../../components/IssueSuccess')), 'group-record');
-const Invite = r => require.ensure([], () => r(require('../../components/Invite')), 'group-record');
-const Upgrade = r => require.ensure([], () => r(require('../../components/Upgrade')), 'group-record');
 
 export default {
   path: '/admin/record',
@@ -125,16 +123,6 @@ export default {
       path: 'issueSuccess',
       name: 'IssueSuccess',
       component: IssueSuccess
-    },
-    {
-      path: 'invite',
-      name: 'Invite',
-      component: Invite
-    },
-    {
-      path: 'upgrade',
-      name: 'Upgrade',
-      component: Upgrade
     }
   ]
 }

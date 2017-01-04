@@ -1,198 +1,99 @@
 <template lang="html">
-  <div id="dealList">
-    <div style="padding: 8px 30px; background: rgb(243, 156, 18); z-index: 999999; font-size: 22px; font-weight: 600;margin-bottom: 15px;    color: #fff;">交易详情</div>
-    <div style="margin: 0 15px">
-      <div class="box box-primary">
-        <p class="lead"> 收款商户详情</p>
-        <div class="table-responsive">
-          <table class="table">
-            <tbody>
-            <tr>
-              <th style="text-align: right">商户类型:</th>
-              <td>{{record.merchantType|changeMerchantType}}</td>
-              <th style="text-align: right">商户编号:</th>
-              <td>{{record.merchantId}}</td>
-              <th style="text-align: right">商户名称:</th>
-              <td>{{record.subName}}</td>
-            </tr>
-            <tr>
-              <th style="text-align: right">注册手机号:</th>
-              <td>{{record.mobile}}</td>
-              <th style="text-align: right">银行卡号:</th>
-              <td>{{record.bankNo}}</td>
-              <th style="text-align: right">银行预留手机号:</th>
-              <td>{{record.reserveMobile}}</td>
-            </tr>
-            <tr>
-              <th style="text-align: right">一级代理名称:</th>
-              <td>{{record.proxyName}}</td>
-              <th style="text-align: right">二级代理名称:</th>
-              <td>{{record.proxyName1}}</td>
-              <th style="text-align: right">推荐人:</th>
-              <td></td>
-            </tr>
-            </tbody></table>
-        </div>
-      </div>
-      <div class="box box-primary">
-        <p class="lead"> 交易订单</p>
-        <div class="table-responsive">
-          <table class="table">
-            <tbody>
-            <tr>
-              <th style="text-align: right">付款人:</th>
-              <td></td>
-              <th style="text-align: right">付款人账户:</th>
-              <td></td>
-              <th style="text-align: right">订单号:</th>
-              <td>{{record.orderId}}</td>
-            </tr>
-            <tr>
-
-              <th style="text-align: right">交易单号:</th>
-              <td>{{record.outTradeNo}}</td>
-              <th style="text-align: right">交易金额:</th>
-              <td>{{record.totalFee}}</td>
-            </tr>
-            <tr>
-              <th style="text-align: right">手续费率:</th>
-              <td></td>
-              <th style="text-align: right">手续费:</th>
-              <td></td>
-              <th style="text-align: right">服务费:</th>
-              <td>{{record.serviceFee}}</td>
-            </tr>
-            <tr>
-              <th style="text-align: right">通道名称:</th>
-              <td>{{record.channelName}}</td>
-              <th style="text-align: right">通道费:</th>
-              <td>{{record.channelFee}}</td>
-              <th style="text-align: right">实际所得:</th>
-              <td>{{record.realFee}}</td>
-            </tr>
-            <tr>
-              <th style="text-align: right">支付方式:</th>
-              <td>{{record.payChannel|changePayChannel}}</td>
-              <th style="text-align: right">交易类型:</th>
-              <td>{{record.tradeType|changeTradeType}}</td>
-              <th style="text-align: right">交易状态:</th>
-              <td>{{record.orderMessage}}</td>
-            </tr>
-            <tr>
-              <th style="text-align: right">结算状态:</th>
-              <td>{{record.settleStatus|changeSettleStatus}}</td>
-              <th style="text-align: right">结算周期:</th>
-              <td>{{record.settlePeriod}}</td>
-              <th style="text-align: right">交易时间:</th>
-              <td>{{record.createTime|changeTime}}</td>
-            </tr>
-            <tr>
-              <th style="text-align: right">交易成功时间:</th>
-              <td>{{record.payTime|changeTime}}</td>
-              <th style="text-align: right">预计结算时间:</th>
-              <td></td>
-              <th style="text-align: right">结算时间:</th>
-              <td></td>
-            </tr>
-            <tr>
-              <th style="text-align: right">商品名称:</th>
-              <td></td>
-              <th style="text-align: right">商品描述:</th>
-              <td></td>
-              <th style="text-align: right">备注:</th>
-              <td>{{record.errorMessage}}</td>
-            </tr>
-            </tbody></table>
-        </div>
-      </div>
-      <div class="box box-primary">
-        <p class="lead"> 支付流水单</p>
-        <div class="table-responsive">
-          <table class="table">
-            <tbody>
-            </tbody>
-          </table>
-        </div>
-      </div>
-      <div class="box box-primary">
-        <p class="lead"> 分帐单</p>
-        <div class="table-responsive">
-          <table class="table">
-            <tbody>
-            </tbody>
-          </table>
-        </div>
-      </div>
+  <div id="companyProfitDet">
+    <h1>公司分润详情</h1>
+    <div class="search">
+      <span>日期：</span>
+      <input type="datetime-local">
+      <span>至</span>
+      <input type="datetime-local">
+      <div class="btn btn-primary" @click="lookup">筛选</div>
     </div>
-    <message></message>
-  </div>
+    <div class="box">
+      <div class="box-header">
+        <h3 class="box-title">交易记录</h3>
+        <!--<button @click="load" class="btn btn-primary" style="float: right">导出</button>-->
+      </div>
+      <!-- /.box-header -->
+      <div class="box-body">
+        <div id="example2_wrapper" class="dataTables_wrapper form-inline dt-bootstrap">
+          <div class="row">
+            <div class="col-sm-6"></div>
+            <div class="col-sm-6"></div>
+          </div>
+          <div class="row">
+            <div class="col-sm-12">
+              <table id="example2" class="table table-bordered table-hover dataTable" role="grid" aria-describedby="example2_info">
+                <thead>
+                <tr role="row">
+                  <th class="sorting_asc" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Rendering engine: activate to sort column descending">序号
+                  </th>
+                  <th class="sorting_asc" tabindex="0" aria-controls="example2" rowspan="1" colspan="1"
+                      aria-sort="ascending" aria-label="Rendering engine: activate to sort column descending">流水号
+                  </th>
+                  <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="Platform(s): activate to sort column ascending">业务类型
+                  </th>
+                  <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="Engine version: activate to sort column ascending">交易日期
+                  </th>
+                  <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">结算周期
+                  </th>
+                  <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">商户名称
+                  </th>
+                  <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">上级代理名称
+                  </th>
+                  <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">交易金额
+                  </th>
+                  <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">商户手续费
+                  </th>
+                  <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">分润金额
+                  </th>
+                </tr>
+                </thead>
+                <tbody id="content">
+                <tr role="row" v-for="(order,index) in orders">
+                  <td>{{index+1}}</td>
+                  <td>{{order.updateTime|changeTime}}</td>
+                  <td>{{order.merchantId}}</td>
+                  <td>{{order.subName}}</td>
+                  <td>{{order.mdMobile}}</td>
+                  <td>{{index+1}}</td>
+                  <td>{{order.updateTime|changeTime}}</td>
+                  <td style="text-align: right">{{order.merchantId|toFix}}</td>
+                  <td style="text-align: right">{{order.subName|toFix}}</td>
+                  <td style="text-align: right">{{order.mdMobile|toFix}}</td>
+                </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-5">
+              <div class="dataTables_info" id="example2_info" role="status" aria-live="polite">
+              </div>
+            </div>
+            <div class="col-sm-7">
+              <div class="dataTables_paginate paging_simple_numbers" id="example2_paginate">
+                <ul class="pagination" id="page" @click="bindEvent($event)">
+                  <!--<li class="paginate_button previous disabled" id="example2_previous"><a href="#" aria-controls="example2" data-dt-idx="0" tabindex="0">Previous</a>
+                  </li>
+                  <li class="paginate_button active"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">1</a></li>
+                  <li class="paginate_button next" id="example2_next"><a href="#" aria-controls="example2" data-dt-idx="7" tabindex="0">Next</a></li>-->
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- /.box-body -->
+    </div>
   </div>
 </template>
 
 <script lang="babel">
-  import Message from './Message.vue'
   export default {
-    name: 'dealList',
-    components: {
-      Message
-    },
-    data: function () {
+    name: 'CompanyProfitDet',
+    data () {
       return {
-        record:{}
-      }
-    },
-    created: function(){
-      this.$http.post('/admin/queryOrderRecord/orderListAll',{id:this.$route.query.id})
-        .then(function (res) {
-          this.$data.record = res.data;
-        },function (err) {
-          console.log(err)
-        })
-    },
-    filters: {
-      changeMerchantType: function (val) {
-        if(val==0){
-          return "商户"
-        }else if(val==1){
-          return "代理商"
-        }
-      },
-      changeTime: function (val) {
-        if(val==''||val==null){
-          return ''
-        }else {
-          val = new Date(val)
-          var year=val.getFullYear();
-          var month=val.getMonth()+1;
-          var date=val.getDate();
-          var hour=val.getHours();
-          var minute=val.getMinutes();
-          var second=val.getSeconds();
-          return year+"-"+month+"-"+date+" "+hour+":"+minute+":"+second;
-        }
-      },
-      changeSettleStatus: function (val) {
-        if(val == 0){
-          return '已结算'
-        }else if(val == 1){
-          return '未结算'
-        }
-      },
-      changePayChannel: function (val) {
-        if(val == 101){
-          return '微信'
-        }else if(val == 102){
-          return '支付宝'
-        }else if(val == 103){
-          return '快捷'
-        }
-      },
-      changeTradeType: function (val) {
-        if(val == 0){
-          return '支付'
-        }else if(val == 1){
-          return '提现'
-        }
+
       }
     }
   }
@@ -200,21 +101,6 @@
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="less">
-  .flexItem(@val) {
-    box-flex: @val;
-    -webkit-box-flex: @val;
-    -webkit-flex: @val;
-    -ms-flex: @val;
-    flex: @val;
-  }
-
-  .flexBox {
-    display: box;
-    display: -webkit-box;
-    display: -ms-flexbox;
-    display: flex;
-    display: -webkit-flex;
-  }
   h1, h2 {
     font-weight: normal;
     color: #337ab7;
@@ -226,19 +112,23 @@
   ul {
     list-style-type: none;
     padding: 0;
-    background: #fff;
-    position: relative;
-    left: 70px;
-    width: 300px;
   }
 
   li {
-    /*display: inline-block;*/
+    display: inline-block;
     margin: 0 10px;
   }
 
-  a {
-    color: #42b983;
+  .search{
+    margin:20px 0;
+    span{
+      font-size: 18px;
+    }
   }
-
+  .box-title {
+    display: inline-block;
+    font-size: 20px;
+    line-height: 34px;
+    height: 34px;
+  }
 </style>

@@ -8,7 +8,11 @@ import com.jkm.hss.merchant.entity.MerchantInfo;
 import com.jkm.hss.merchant.helper.request.MerchantInfoAddRequest;
 import com.jkm.hss.merchant.helper.request.RequestMerchantInfo;
 import com.jkm.hss.merchant.service.MerchantInfoService;
+import com.jkm.hss.product.enums.EnumPayChannelSign;
+import com.jkm.hss.product.enums.EnumUpGradeType;
+import com.jkm.hss.product.servcie.ProductChannelDetailService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.tuple.Triple;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,6 +29,7 @@ public class MerchantInfoServiceImpl implements MerchantInfoService {
     private MerchantInfoDao merchantInfoDao;
     @Autowired
     private QRCodeService qrCodeService;
+
 
 
 //    @Override
@@ -104,9 +109,24 @@ public class MerchantInfoServiceImpl implements MerchantInfoService {
     }
 
     @Override
+    public long regByWx(MerchantInfo merchantInfo) {
+        merchantInfoDao.insertSelective(merchantInfo);
+        QRCode qrCode = qrCodeService.initMerchantCode(merchantInfo.getId(),merchantInfo.getFirstDealerId(),merchantInfo.getSecondMerchantId());
+        merchantInfo.setCode(qrCode.getCode());
+        merchantInfoDao.updateBySelective(merchantInfo);
+        return merchantInfo.getId();
+    }
+
+    @Override
     public long regByCode(MerchantInfo merchantInfo) {
-        long dealerId = qrCodeService.getDealerIdByCode(merchantInfo.getCode());
-        merchantInfo.setDealerId(dealerId);
+//        Triple<Long, Long, Long> triple =  qrCodeService.getCurrentAndFirstAndSecondByCode(merchantInfo.getCode());
+//        merchantInfo.setDealerId(triple.getLeft());
+//        merchantInfo.setFirstDealerId(triple.getMiddle());
+//        merchantInfo.setSecondDealerId(triple.getRight());
+//        merchantInfo.setFirstMerchantId(0);
+//        merchantInfo.setSecondMerchantId(0);
+//        merchantInfo.setLevel(EnumUpGradeType.COMMON.getId());
+//        merchantInfo.setHierarchy(0);
         merchantInfoDao.insertSelective(merchantInfo);
         qrCodeService.markAsActivate(merchantInfo.getCode(),merchantInfo.getId());
         return merchantInfo.getId();
@@ -130,6 +150,16 @@ public class MerchantInfoServiceImpl implements MerchantInfoService {
     @Override
     public List<MerchantInfo> batchGetMerchantInfo(List<Long> merchantIdList) {
         return this.merchantInfoDao.batchGetMerchantInfo(merchantIdList);
+    }
+
+    /**
+     * 根据id查询
+     *
+     * @param mobile
+     */
+    @Override
+    public Optional<MerchantInfo> selectByMobile(String mobile) {
+        return Optional.fromNullable(this.merchantInfoDao.selectByMobile(mobile));
     }
 
 }
