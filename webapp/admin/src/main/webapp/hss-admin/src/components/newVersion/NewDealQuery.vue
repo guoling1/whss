@@ -51,10 +51,6 @@
                   <option value="1">待支付</option>
                   <option value="4">支付成功</option>
                   <option value="3">支付失败</option>
-                  <option value="5">提现中</option>
-                  <option value="6">提现成功</option>
-                  <option value="7">充值成功</option>
-                  <option value="8">充值失败</option>
                 </select>
               </div>
               <div class="form-group">
@@ -111,7 +107,7 @@
                   <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">结算状态</th>
                   <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">支付方式</th>
                   <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">支付渠道</th>
-                  <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">错误信息</th>
+                  <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">备注信息</th>
                 </tr>
                 </thead>
                 <tbody id="content">
