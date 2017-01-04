@@ -247,6 +247,9 @@
     computed:{
       $$data:function () {
         return this.$data
+      },
+      $$url: function () {
+        return this.$data.url
       }
     },
     filters: {
