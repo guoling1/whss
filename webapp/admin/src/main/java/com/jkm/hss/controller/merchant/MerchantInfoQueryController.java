@@ -36,15 +36,8 @@ public class MerchantInfoQueryController extends BaseController {
         List<MerchantInfoResponse> list1 = this.merchantInfoQueryService.getCount();
         List<MerchantInfoResponse> list = this.merchantInfoQueryService.getAll(merchantInfoResponse);
 
-        if (list.size()>0){
-            for (int i=0;i<list.size();i++){
-                if (list.get(i).getDealerId()==0){
-                    String proxyName = "金开门";
-                    list.get(i).setProxyName(proxyName);
-                }
+        if (list == null){
 
-            }
-        }else {
             return CommonResponse.simpleResponse(-1,"未查到相关数据");
         }
         PageModel<MerchantInfoResponse> pageModel = new PageModel<>(pageNo,pageSize);
