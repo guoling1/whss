@@ -11,6 +11,10 @@ import com.jkm.hss.merchant.entity.AccountInfo;
 import com.jkm.hss.merchant.entity.MerchantInfo;
 import com.jkm.hss.merchant.service.AccountInfoService;
 import com.jkm.hss.merchant.service.MerchantInfoService;
+import com.jkm.hss.product.entity.BasicChannel;
+import com.jkm.hss.product.entity.Product;
+import com.jkm.hss.product.servcie.BasicChannelService;
+import com.jkm.hss.product.servcie.ProductService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -37,6 +41,10 @@ public class MigrationController extends BaseController {
     @Autowired
     private MerchantInfoService merchantInfoService;
     @Autowired
+    private BasicChannelService basicChannelService;
+    @Autowired
+    private ProductService productService;
+    @Autowired
     private AccountDao accountDao;
 
     @RequestMapping(value = "account")
@@ -52,9 +60,9 @@ public class MigrationController extends BaseController {
                     account1.setId(accountInfo.getId());
                     account1.setUserName(dealerOptional.get().getProxyName());
                     account1.setTotalAmount(accountInfo.getAmount());
-                    account1.setAvailable(accountInfo.getAvailable());
-                    account1.setFrozenAmount(accountInfo.getFrozenAmount());
-                    account1.setDueSettleAmount(accountInfo.getUnsettled());
+                    account1.setAvailable(accountInfo.getAmount());
+                    account1.setFrozenAmount(new BigDecimal("0.00"));
+                    account1.setDueSettleAmount(new BigDecimal("0.00"));
                     this.accountDao.initPoundageAccount(account1);
                     merchantAccountIds.add(account1.getId());
                 }
@@ -70,9 +78,32 @@ public class MigrationController extends BaseController {
                     this.accountDao.initPoundageAccount(account1);
                     dealerAccountIds.add(account1.getId());
                 }
+                final BasicChannel basicChannel = this.basicChannelService.selectByChannelTypeSign(101).get();
+                if (basicChannel.getAccountId() == accountInfo.getId()) {
+                    final Account account1 = new Account();
+                    account1.setId(accountInfo.getId());
+                    account1.setUserName("通道账户");
+                    account1.setTotalAmount(accountInfo.getAmount());
+                    account1.setAvailable(accountInfo.getAmount());
+                    account1.setFrozenAmount(new BigDecimal("0.00"));
+                    account1.setDueSettleAmount(new BigDecimal("0.00"));
+                    this.accountDao.initPoundageAccount(account1);
+                }
+
+                final Product product = this.productService.selectAll().get(0);
+                if (product.getAccountId() == accountInfo.getId()) {
+                    final Account account1 = new Account();
+                    account1.setId(accountInfo.getId());
+                    account1.setUserName("产品账户");
+                    account1.setTotalAmount(accountInfo.getAmount());
+                    account1.setAvailable(accountInfo.getAmount());
+                    account1.setFrozenAmount(new BigDecimal("0.00"));
+                    account1.setDueSettleAmount(new BigDecimal("0.00"));
+                    this.accountDao.initPoundageAccount(account1);
+                }
             }
         }
-        log.info("merchant [{]]", merchantAccountIds);
-        log.info("dealer [{]]", dealerAccountIds);
+        log.info("merchant [{}]", merchantAccountIds);
+        log.info("dealer [{}]", dealerAccountIds);
     }
 }
