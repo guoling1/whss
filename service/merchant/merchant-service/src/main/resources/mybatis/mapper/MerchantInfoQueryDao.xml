@@ -51,6 +51,7 @@
             STATUS,
             dealer_id,
             create_time,
+            authentication_time,
             (select d.proxy_name from tb_dealer as d where d.id=dealer_id) as proxy_name
         FROM
             tb_merchant_info
