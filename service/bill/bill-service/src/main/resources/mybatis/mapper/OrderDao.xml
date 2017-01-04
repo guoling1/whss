@@ -72,6 +72,7 @@
         settle_status = #{settleStatus},
         settle_time = #{settleTime},
         success_settle_time = #{successSettleTime},
+        pay_channel_sign = #{payChannelSign},
         remark = #{remark},
         status = #{status}
         WHERE id = #{id}
