@@ -209,7 +209,7 @@ public class WithdrawServiceImpl implements WithdrawService {
         if (order.isWithDrawing()) {
             final Account account = this.accountService.getByIdWithLock(accountId).get();
             order.setStatus(EnumOrderStatus.WITHDRAW_SUCCESS.getId());
-            order.setRemark(response.getMessage());
+            order.setRemark(response.getSn());
             this.orderService.update(order);
             final FrozenRecord frozenRecord = this.frozenRecordService.getByBusinessNo(response.getOrderNo()).get();
             //解冻金额

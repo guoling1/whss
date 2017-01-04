@@ -131,17 +131,17 @@ public class PayServiceImpl implements PayService {
         order.setTradeAmount(new BigDecimal(totalAmount));
         order.setRealPayAmount(new BigDecimal(totalAmount));
         order.setTradeType(EnumTradeType.PAY.getId());
-        order.setPayChannelSign(channel);
+//        order.setPayChannelSign(channel);
         order.setPayer(0);
         order.setPayee(merchant.getAccountId());
-        if (EnumPayChannelSign.YG_YINLIAN.getId() == channel) {
+//        if (EnumPayChannelSign.YG_YINLIAN.getId() == channel) {
 //            order.setPayAccount(MerchantSupport.decryptBankCard(merchant.getBankNo()));
-        }
+//        }
         //手续费， 费率
-        final BigDecimal merchantPayPoundageRate = this.calculateService.getMerchantPayPoundageRate(merchantId, channel);
-        final BigDecimal merchantPayPoundage = this.calculateService.getMerchantPayPoundage(order.getTradeAmount(), merchantPayPoundageRate);
-        order.setPoundage(merchantPayPoundage);
-        order.setPayRate(merchantPayPoundageRate);
+//        final BigDecimal merchantPayPoundageRate = this.calculateService.getMerchantPayPoundageRate(merchantId, channel);
+//        final BigDecimal merchantPayPoundage = this.calculateService.getMerchantPayPoundage(order.getTradeAmount(), merchantPayPoundageRate);
+//        order.setPoundage(merchantPayPoundage);
+//        order.setPayRate(merchantPayPoundageRate);
         order.setGoodsName(merchant.getMerchantName());
         order.setGoodsDescribe(merchant.getMerchantName());
         order.setSettleStatus(EnumSettleStatus.DUE_SETTLE.getId());
@@ -226,11 +226,16 @@ public class PayServiceImpl implements PayService {
     public void markPaySuccess(final PaymentSdkPayCallbackResponse paymentSdkPayCallbackResponse, final Order order) {
         order.setPayType(paymentSdkPayCallbackResponse.getPayType());
         order.setPaySuccessTime(new DateTime(Long.valueOf(paymentSdkPayCallbackResponse.getPaySuccessTime())).toDate());
-        order.setRemark(StringUtils.isEmpty(paymentSdkPayCallbackResponse.getMessage()) ? "success" : paymentSdkPayCallbackResponse.getMessage());
+        order.setRemark(paymentSdkPayCallbackResponse.getSn());
         order.setStatus(EnumOrderStatus.PAY_SUCCESS.getId());
-        this.orderService.update(order);
         //处理商户升级的支付单(此时商户自己付款给金开门)
         if (order.getPayer() > 0 && order.getPayee() == AccountConstants.JKM_ACCOUNT_ID) {
+            //手续费， 费率
+//            final BigDecimal merchantPayPoundageRate = this.calculateService.getMerchantPayPoundageRate(merchantId, channel);
+//            final BigDecimal merchantPayPoundage = this.calculateService.getMerchantPayPoundage(order.getTradeAmount(), merchantPayPoundageRate);
+//            order.setPoundage(merchantPayPoundage);
+//            order.setPayRate(merchantPayPoundageRate);
+            this.orderService.update(order);
             //入账
             this.companyRecorded(order.getId());
             //结算
@@ -249,8 +254,23 @@ public class PayServiceImpl implements PayService {
         }
         //普通支付单处理业务
 
-        //商户入账
         final MerchantInfo merchant = this.merchantInfoService.getByAccountId(order.getPayee()).get();
+        //手续费， 费率
+        int channel = 0;
+        if (EnumPaymentType.QUICK_APY.getId().equals(paymentSdkPayCallbackResponse.getPayType())) {
+            channel = EnumPayChannelSign.YG_YINLIAN.getId();
+        } else if (EnumPaymentType.WECHAT_H5_CASHIER_DESK.getId().equals(paymentSdkPayCallbackResponse.getPayType())) {
+            channel = EnumPayChannelSign.YG_WEIXIN.getId();
+        } else if (EnumPaymentType.ALIPAY_SCAN_CODE.getId().equals(paymentSdkPayCallbackResponse.getPayType())) {
+            channel = EnumPayChannelSign.YG_ZHIFUBAO.getId();
+        }
+        final BigDecimal merchantPayPoundageRate = this.calculateService.getMerchantPayPoundageRate(merchant.getId(), channel);
+        final BigDecimal merchantPayPoundage = this.calculateService.getMerchantPayPoundage(order.getTradeAmount(), merchantPayPoundageRate);
+        order.setPayChannelSign(channel);
+        order.setPoundage(merchantPayPoundage);
+        order.setPayRate(merchantPayPoundageRate);
+        this.orderService.update(order);
+        //商户入账
         this.merchantRecorded(order.getId(), merchant);
         //商户结算
         final Optional<Order> orderOptional = this.orderService.getByIdWithLock(order.getId());
