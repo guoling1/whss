@@ -5,10 +5,21 @@ import com.jkm.hss.bill.entity.callback.PaymentSdkPayCallbackResponse;
 import com.jkm.hss.merchant.entity.MerchantInfo;
 import org.apache.commons.lang3.tuple.Pair;
 
+import java.math.BigDecimal;
+
 /**
  * Created by yulong.zhang on 2016/12/23.
  */
 public interface PayService {
+
+    /**
+     * 商户升级，付款获得url
+     *
+     * @param merchantId
+     * @param amount
+     * @return
+     */
+    Pair<Integer, String> generateMerchantUpgradeUrl(long merchantId, BigDecimal amount);
 
     /**
      * 动态码收款
@@ -55,7 +66,7 @@ public interface PayService {
     void markPayHandling(PaymentSdkPayCallbackResponse paymentSdkPayCallbackResponse, Order order);
 
     /**
-     * 商户入账
+     * 用户付款，商户入账
      *  1.入账到商户的账户待结算余额
      *  2.入账到手续费账户待结算余额
      *
@@ -65,12 +76,26 @@ public interface PayService {
     void merchantRecorded(long orderId, MerchantInfo merchant);
 
     /**
+     * 商户升级，商户付款，公司入账
+     *
+     * @param orderId
+     */
+    void companyRecorded(long orderId);
+
+    /**
      * 商户结算进入到可用余额
      *
      * @param order
      * @param merchantId
      */
     void merchantSettle(Order order, long merchantId);
+
+    /**
+     * 公司账户结算
+     *
+     * @param order
+     */
+    void companySettle(Order order);
 
     /**
      * 支付手续费结算 到 代理商等 待结算账户
