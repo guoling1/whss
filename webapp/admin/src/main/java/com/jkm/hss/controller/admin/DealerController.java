@@ -165,8 +165,8 @@ public class DealerController extends BaseController {
             channels.add(channel);
         }
 
-        final List<FirstLevelDealerGetResponse.DealerUpgerdeRate> DealerUpgerdeRates = new ArrayList<>();
-        firstLevelDealerGetResponse.setDealerUpgerdeRates(DealerUpgerdeRates);
+        final List<FirstLevelDealerGetResponse.DealerUpgerdeRate> dealerUpgerdeRates = new ArrayList<>();
+        firstLevelDealerGetResponse.setDealerUpgerdeRates(dealerUpgerdeRates);
 
         List<DealerUpgerdeRate> upgerdeRates = dealerUpgerdeRateService.selectByDealerIdAndProductId(dealerId,product.getId());
         for(DealerUpgerdeRate dealerUpgerdeRate:upgerdeRates){
@@ -178,7 +178,7 @@ public class DealerController extends BaseController {
             du.setFirstDealerShareProfitRate(dealerUpgerdeRate.getFirstDealerShareProfitRate().toString());
             du.setSecondDealerShareProfitRate(dealerUpgerdeRate.getSecondDealerShareProfitRate().toString());
             du.setBossDealerShareRate(dealerUpgerdeRate.getBossDealerShareRate().toString());
-            DealerUpgerdeRates.add(du);
+            dealerUpgerdeRates.add(du);
         }
 
         return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "success", firstLevelDealerGetResponse);

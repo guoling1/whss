@@ -71,7 +71,7 @@ public class FirstLevelDealerAddRequest {
     /**
      * 合伙人推荐分润
      */
-    private List<DealerUpgerdeRate> DealerUpgerdeRates;
+    private List<DealerUpgerdeRate> dealerUpgerdeRates;
 
 
     @Data
