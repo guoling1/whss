@@ -68,4 +68,12 @@ public interface MerchantInfoQueryService {
      * @return
      */
     List<MerchantInfoResponse> getCountRecord();
+
+    /**
+     * 导出
+     * @param merchantInfoResponse
+     * @param baseUrl
+     * @return
+     */
+    String downloadExcel(MerchantInfoResponse merchantInfoResponse, String baseUrl);
 }
