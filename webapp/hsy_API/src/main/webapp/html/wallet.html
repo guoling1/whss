@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <title>好收银</title>
+  <!--<link rel="stylesheet" href="http://img.jinkaimen.cn/hsy/css/reset.css">
+  <link rel="stylesheet" href="http://img.jinkaimen.cn/hsy/css/style.css">-->
+  <link rel="stylesheet" href="../css/reset.css">
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+
+<div id="wallet">
+  <div class="wallet">
+    <div class="operation">
+      <div class="logo collection"></div>
+      <div class="operation-title">收款</div>
+    </div>
+    <div class="operation">
+      <div class="logo wallet"></div>
+      <div class="operation-title">余额</div>
+      <div class="operation-small">${totalAmount}</div>
+    </div>
+    <div class="operation">
+      <div class="logo card"></div>
+      <div class="operation-title">提现</div>
+    </div>
+  </div>
+  <div class="record">
+    <div class="group"><span class="money"></span>收款记录</div>
+    <div class="group"><span class="card"></span>银行卡</div>
+  </div>
+  <div class="flexBox flex-box-column">
+    <div class="advertisement">
+
+    </div>
+    <div class="application">
+      <div class="group">
+        <img src='../assets/shengjizhong.png'/>
+        <div class="logo friend"></div>
+        <div class="text">推荐好友</div>
+      </div>
+      <div class="group">
+        <div class="logo upgrade"></div>
+        <div class="text">我要升级</div>
+      </div>
+      <div class="group">
+        <div class="logo train"></div>
+        <div class="text">火车票</div>
+      </div>
+      <!--<div class="group">-->
+      <!--<div class="logo movie"></div>-->
+      <!--<div class="text">电影票</div>-->
+      <!--</div>-->
+      <div class="group">
+        <div class="logo loan"></div>
+        <div class="text">贷款申请</div>
+      </div>
+      <div class="group">
+        <div class="logo credit"></div>
+        <div class="text">信用卡申请</div>
+      </div>
+      <div class="group">
+        <div class="logo more"></div>
+        <div class="text">更多</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+
+<script src="http://img.jinkaimen.cn/hsy/js/qrcode.min.js"></script>
+<script>
+  var oper = document.getElementsByClassName('operation');
+  for(var i=0;i<oper.length;i++){
+    oper[i].addEventListener('touchstart',function () {
+      this.style.background="#495f97"
+    })
+    oper[i].addEventListener('touchend',function () {
+      this.style.background="#4b65a8"
+    })
+  }
+  var group = document.getElementsByClassName('group');
+  for(var i=0;i<group.length;i++){
+    group[i].addEventListener('touchstart',function () {
+      this.style.background="#e2e3e5"
+    })
+    group[i].addEventListener('touchend',function () {
+      this.style.background="#fff"
+    })
+  }
+</script>
+</html>

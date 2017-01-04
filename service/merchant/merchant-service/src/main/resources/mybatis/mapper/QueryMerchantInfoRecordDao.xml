@@ -7,7 +7,7 @@
         SELECT a.id,a.identity_face_pic,a.identity_opposite_pic,a.identity_hand_pic
         ,a.bank_hand_pic,a.bank_pic,a.reserve_mobile,a.merchant_name,a.address
         ,a.name,a.identity,a.bank_no,a.dealer_id,a.status
-        ,a.create_time,a.reserve_mobile,
+        ,a.create_time,a.mobile,
 				(SELECT b.level FROM tb_dealer b WHERE a.dealer_id=b.id) AS level,
 				(SELECT b.id AS dealerId FROM tb_dealer b WHERE a.dealer_id=b.id) AS dealerId
 

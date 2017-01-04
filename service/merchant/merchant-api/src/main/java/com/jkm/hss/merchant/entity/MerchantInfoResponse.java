@@ -8,6 +8,10 @@ import java.util.Date;
 @Data
 public class MerchantInfoResponse {
 
+    /**
+     * 认证时间
+     */
+    private Date authenticationTime;
 
     /**
      *
@@ -136,7 +140,7 @@ public class MerchantInfoResponse {
     /**
      * 商户状态
      */
-    private int status;
+    private Integer status;
 
     /**
      * code

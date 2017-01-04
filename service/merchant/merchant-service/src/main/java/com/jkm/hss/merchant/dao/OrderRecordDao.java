@@ -4,7 +4,7 @@ import com.jkm.hss.merchant.entity.MerchantAndOrderRecord;
 import com.jkm.hss.merchant.entity.OrderRecord;
 import com.jkm.hss.merchant.entity.OrderRecordAndMerchant;
 import com.jkm.hss.merchant.entity.OrderRecordConditions;
-import com.jkm.hss.merchant.helper.request.OrderRecordAndMerchantRequest;
+import com.jkm.hss.merchant.helper.request.OrderListRequest;
 import com.jkm.hss.merchant.helper.request.RequestOrderRecord;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
@@ -75,12 +75,23 @@ public interface OrderRecordDao {
      * @param req
      * @return
      */
-    List<OrderRecordAndMerchant> selectDrawWithRecordByPage(OrderRecordAndMerchantRequest req);
+    List<OrderRecordAndMerchant> selectDrawWithRecordByPage(Map req);
 
-    long selectDrawWithCount(OrderRecordAndMerchantRequest req);
+    long selectDrawWithCount(Map req);
 
     List<MerchantAndOrderRecord> selectOrderList(Map map);
 
     int selectOrderListCount(Map map);
 
+    MerchantAndOrderRecord selectOrderListCountAll(Map map);
+
+    OrderRecordAndMerchant selectDrawWithRecordByPageAll(Map map);
+
+    /**
+     * 导出
+     * @return
+     */
+    List<MerchantAndOrderRecord> selectOrderListTrade(OrderListRequest req);
+
+    MerchantAndOrderRecord selectProxyName(long firstLevel);
 }

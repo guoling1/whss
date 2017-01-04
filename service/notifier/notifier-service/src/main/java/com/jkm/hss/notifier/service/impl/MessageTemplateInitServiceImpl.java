@@ -38,6 +38,8 @@ public class MessageTemplateInitServiceImpl implements MessageTemplateInitServic
                 "好收银绑定银行卡验证码${code}，5分钟有效，千万不要告诉别人哦【" + platformName + "】");
         addSmsTemplate(EnumNoticeType.WITHDRAW_CODE,
                 "好收银提现验证码${code}，5分钟有效，千万不要告诉别人哦【" + platformName + "】");
+        addSmsTemplate(EnumNoticeType.WITHDRAW_CODE_DEALER,
+                "好收银提现验证码${code}，5分钟有效，千万不要告诉别人哦【" + platformName + "】");
     }
 
     private void addSmsTemplate(final EnumNoticeType noticeType,

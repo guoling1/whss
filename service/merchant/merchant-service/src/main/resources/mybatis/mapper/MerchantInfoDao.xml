@@ -32,6 +32,7 @@
         identity_opposite_pic = #{identityOppositePic},
         identity_hand_pic = #{identityHandPic},
         bank_hand_pic = #{bankHandPic},
+        authentication_time = #{authenticationTime},
         status = #{status}
 
         WHERE id = #{id}
@@ -181,6 +182,16 @@
         </trim>
     </insert>
 
+    <update id="addAccountId">
+        UPDATE tb_merchant_info
+        SET
+        account_id=#{accountId},
+        checked_time=#{checkedTime},
+        status = #{status}
+        WHERE id=#{merchantId}
+    </update>
+
+
     <!-- 修 改-->
     <update id="updateBySelective">
         UPDATE tb_merchant_info
@@ -250,6 +261,11 @@
         #{item}
     </foreach>
     </select>
+
+    <select id="selectByAccountId" resultType="com.jkm.hss.merchant.entity.MerchantInfo">
+         SELECT * FROM tb_merchant_info WHERE account_id = #{accountId}
+    </select>
+
     <update id="updateStatus">
         UPDATE tb_merchant_info
         SET

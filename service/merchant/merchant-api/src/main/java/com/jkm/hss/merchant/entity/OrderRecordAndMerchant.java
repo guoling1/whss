@@ -32,6 +32,16 @@ public class OrderRecordAndMerchant {
     private int merchantType;
 
     /**
+     * 订单状态
+     */
+    private String orderMessage;
+
+    /**
+     * 交易类型
+     */
+    private int tradeType;
+
+    /**
      *商品名称
      */
     private String productName;
@@ -63,6 +73,11 @@ public class OrderRecordAndMerchant {
     private BigDecimal channelFee;
 
     /**
+     *商户名称
+     */
+    private String subName;
+
+    /**
      *支付结果
      * N-待支付/待提现
      * H-处理中
@@ -78,6 +93,11 @@ public class OrderRecordAndMerchant {
      *交易单号
      */
     private String outTradeNo;
+
+    /**
+     *结算状态 0,已经算 1.未结算
+     */
+    private int settleStatus;
 
     /**
      *支付参数
@@ -105,10 +125,26 @@ public class OrderRecordAndMerchant {
     private Date payTime;
 
     /**
+     * 结算周期
+     */
+    private String settlePeriod;
+
+    /**
      * 创建时间
      * datetime
      */
     protected Date createTime;
+
+    /**
+     * 渠道名称
+     */
+    private String channelName;
+
+    /**
+     * 所属上级（所属代理商）
+     */
+    private String proxyName;
+
     /**
      * 修改时间
      * timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP

@@ -21,5 +21,6 @@
         <module>dealer</module>
         <module>product</module>
         <module>admin</module>
+        <module>bill</module>
     </modules>
 </project>

@@ -1,137 +1,134 @@
 <template lang="html">
   <div id="dale">
-    <h1>交易查询</h1>
+    <div style="padding: 8px 30px; background: rgb(243, 156, 18); z-index: 999999; font-size: 22px; font-weight: 600;margin-bottom: 15px;color: #fff;">
+      交易查询(旧版)
+      <router-link to="/admin/record/newDeal" class="btn btn-success pull-right" style="margin-left: 20px">切换新版</router-link>
+      <div class="btn btn-primary pull-right" @click="refresh()">刷新</div>
+    </div>
     <div class="col-md-12">
+      <!--筛选-->
       <div class="box box-success box-solid">
         <div class="box-header with-border">
           <h3 class="box-title">筛选条件</h3>
-
           <div class="box-tools pull-right">
             <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
             </button>
           </div>
-          <!-- /.box-tools -->
         </div>
-        <!-- /.box-header -->
         <div class="box-body">
-          <div class="search">
-            <div class="number">
-              <label for="orderId">交易流水号：</label>
-              <input id="orderId" type="text" name="number" v-model="$$data.orderId">
+          <div class="row">
+            <div class="col-md-3">
+              <div class="form-group">
+                <label>订单号：</label>
+                <input type="text" class="form-control" v-model="$$query.orderId">
+              </div>
+              <div class="form-group">
+                <label>商户名称</label>
+                <input type="text" class="form-control" v-model="$$query.subName">
+              </div>
             </div>
-            <div class="date">
-              <label for="date">交易日期：</label>
-              <input id="date" type="datetime-local" name="date" value="" v-model="$$data.start">至
-              <input type="datetime-local" name="date" value="" v-model="$$data.end">
+            <div class="col-md-3">
+              <div class="form-group">
+                <label>交易日期：</label>
+                <div class="form-control">
+                  <input type="date" style="border: none;display:inline-block;width: 45%" name="date" value="" v-model="$$query.startTime">至
+                  <input type="date" style="border: none;display:inline-block;width: 45%" name="date" value="" v-model="$$query.endTime">
+                </div>
+              </div>
+              <div class="form-group">
+                <label>交易金额：</label>
+                <div class="form-control">
+                  <input type="text" style="border: none;display:inline-block;width: 45%" name="date" value="" v-model="$$query.lessTotalFee">至
+                  <input type="text" style="border: none;display:inline-block;width: 45%" name="date" value="" v-model="$$query.moreTotalFee">
+                </div>
+              </div>
             </div>
-            <div class="number">
-              <label for="merchantId">商户编号：</label>
-              <input type="text" name="merchantId" v-model="$$data.merchantId">
+            <div class="col-md-3">
+              <div class="form-group">
+                <label>订单状态：</label>
+                <select class="form-control select2 select2-hidden-accessible" style="width: 100%;" tabindex="-1" aria-hidden="true" v-model="$$query.payResult">
+                  <option value="">全部</option>
+                  <option value="N">待支付</option>
+                  <option value="H">支付中</option>
+                  <option value="S">支付成功</option>
+                  <option value="F">支付失败</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>结算状态：</label>
+                <select class="form-control select2 select2-hidden-accessible" style="width: 100%;" tabindex="-1" aria-hidden="true" v-model="$$query.settleStatus">
+                    <option value="">全部</option>
+                    <option value="1">未结算</option>
+                    <option value="0">已结算</option>
+                  </select>
+                </select>
+              </div>
             </div>
-            <div class="name">
-              <label for="reserveMobile">商户名称：</label>
-              <input type="text" name="name" v-model="$$data.subName">
-            </div>
-            <div class="phone">
-              <label for="phone">商户手机号：</label>
-              <input type="text" name="phone" v-model="$$data.mdMobile">
-            </div>
-            <div class="price">
-              <label for="price">交易金额：</label>
-              <input type="text" name="price" value="" v-model="$$data.lessTotalFee">至
-              <input type="text" name="price" value="" v-model="$$data.moreTotalFee">
-            </div>
-            <!--<div class="pay">
-              <label for="">
-              订单状态：
-              </label>
-              <input type="radio" name="pay" value="0" v-model="$$data.status">已删除
-              <input type="radio" name="pay" value="1" v-model="$$data.status">正常
-
-            </div>-->
-            <div class="assount">
-              <label for="">
-              结算状态：</label>
-              <input type="radio" name="settleStatus" value="0" v-model="$$data.settleStatus">未结算
-              <input type="radio" name="settleStatus" value="1" v-model="$$data.settleStatus">已结算
-              </label>
-            </div>
-            <div class="fun">
-              <label for="">业务：
-                <select class="fun" name="" v-model="$$data.payChannel">
+            <div class="col-md-3">
+              <div class="form-group">
+                <label>支付方式：</label>
+                <select class="form-control select2 select2-hidden-accessible" style="width: 100%;" tabindex="-1" aria-hidden="true" v-model="$$query.payChannel">
                   <option value="">全部</option>
                   <option value="101">微信</option>
                   <option value="102">支付宝</option>
                   <option value="103">快捷</option>
                 </select>
-              </label>
+              </div>
+              <div class="form-group">
+                <div class="btn btn-primary" @click="lookup">筛选</div>
+              </div>
             </div>
-            <div class="btn btn-primary" @click="lookup">筛选</div>
           </div>
         </div>
-        <!-- /.box-body -->
       </div>
-      <!-- /.box -->
-    </div>
-    <div class="box" style="overflow: hidden">
+      <!--列表-->
+      <div class="box" style="overflow: hidden">
       <div class="box-header">
         <h3 class="box-title">交易记录</h3>
-        <button @click="load" class="btn btn-primary" style="float: right">导出</button>
+        <a :href="'http://'+this.$data.url" download="交易记录" class="btn btn-primary" style="float: right;color: #fff">导出</a>
       </div>
-      <!-- /.box-header -->
       <div class="box-body">
         <div id="example2_wrapper" class="dataTables_wrapper form-inline dt-bootstrap">
-          <div class="row">
-            <div class="col-sm-6"></div>
-            <div class="col-sm-6"></div>
-          </div>
           <div class="row">
             <div class="col-sm-12">
               <table id="example2" class="table table-bordered table-hover dataTable" role="grid" aria-describedby="example2_info">
                 <thead>
                 <tr role="row">
-                  <th class="sorting_asc" tabindex="0" aria-controls="example2" rowspan="1" colspan="1"
-                      aria-sort="ascending" aria-label="Rendering engine: activate to sort column descending">交易流水号
-                  </th>
-                  <th class="sorting_asc" tabindex="0" aria-controls="example2" rowspan="1" colspan="1"
-                      aria-sort="ascending" aria-label="Rendering engine: activate to sort column descending">交易日期
-                  </th>
-                  <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="Platform(s): activate to sort column ascending">商户编号
-                  </th>
-                  <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="Engine version: activate to sort column ascending">商户名称
-                  </th>
-                  <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">商户手机号
-                  </th>
-                  <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">交易金额
-                  </th>
-                  <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">订单状态
-                  </th>
-                  <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">结算状态
-                  </th>
-                  <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">错误信息
-                  </th>
-                  <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">业务
-                  </th>
-                  <!--<th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">详情-->
-                  <!--</th>-->
+                  <th class="sorting_asc" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Rendering engine: activate to sort column descending">订单号</th>
+                  <th class="sorting_asc" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Rendering engine: activate to sort column descending">交易日期</th>
+                  <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="Platform(s): activate to sort column ascending">商户名称</th>
+                  <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="Platform(s): activate to sort column ascending">所属一级代理</th>
+                  <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="Platform(s): activate to sort column ascending">所属二级代理</th>
+                  <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="Engine version: activate to sort column ascending">支付金额</th>
+                  <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">手续费率</th>
+                  <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">订单状态</th>
+                  <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">结算状态</th>
+                  <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">支付方式</th>
+                  <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">支付渠道</th>
+                  <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">错误信息</th>
                 </tr>
                 </thead>
                 <tbody id="content">
-                <tr role="row" v-for="order in orders">
-                  <td>{{order.orderId}}</td>
-                  <td>{{order.updateTime|changeTime}}</td>
-                  <td>{{order.merchantId}}</td>
+                <tr v-if="order.tradeType==0" role="row" v-for="order in this.$data.orders">
+                  <td><router-link :to="{ path: '/admin/record/dealDet', query: {id: order.id}}">{{order.orderId|changeHide}}</router-link></td>
+                  <td>{{order.createTime|changeTime}}</td>
                   <td>{{order.subName}}</td>
-                  <td>{{order.mdMobile}}</td>
+                  <td>{{order.proxyName}}</td>
+                  <td>{{order.proxyName1}}</td>
                   <td style="text-align: right">{{order.totalFee|toFix}}</td>
-                  <td>{{order.payResult|changePayResult}}</td>
-                  <td>{{order.settleStatus|changeStatus}}</td>
+                  <td>{{order.tradeRate}}</td>
+                  <td>{{order.orderMessage}}<a href="javascript:;">(补发)</a></td>
+                  <td>{{order.settleStatus|changeSettleStatus}}</td>
+                  <td>{{order.payChannel|changePayChannel}}</td>
+                  <td>{{order.channelName}}</td>
                   <td>{{order.errorMessage}}</td>
-                  <td>{{order.payChannel|changeChannel}}</td>
                 </tr>
                 </tbody>
               </table>
             </div>
+          </div>
+          <div v-if="orders.length==0" class="row" style="text-align: center;color: red;font-size: 16px;">
+            <div class="col-sm-12">无此数据</div>
           </div>
           <div class="row">
             <div class="col-sm-5">
@@ -141,20 +138,15 @@
             <div class="col-sm-7">
               <div class="dataTables_paginate paging_simple_numbers" id="example2_paginate">
                 <ul class="pagination" id="page" @click="bindEvent($event)">
-                  <!--<li class="paginate_button previous disabled" id="example2_previous"><a href="#" aria-controls="example2" data-dt-idx="0" tabindex="0">Previous</a>
-                  </li>
-                  <li class="paginate_button active"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">1</a></li>
-                  <li class="paginate_button next" id="example2_next"><a href="#" aria-controls="example2" data-dt-idx="7" tabindex="0">Next</a></li>-->
                 </ul>
               </div>
             </div>
           </div>
         </div>
       </div>
-      <!-- /.box-body -->
     </div>
-    <!--登录页面-->
-    <div class="login" v-if="isLogin">
+      <!--登录页面-->
+      <div class="login" v-if="isLogin">
       <form class="" action="index.html" method="post">
         <label for="phone">
           手机号:
@@ -167,7 +159,7 @@
         </label>
         <div class="btn btn-primary sub" @click="login">登 录</div>
       </form>
-
+</div>
     </div>
   </div>
 </template>
@@ -180,62 +172,59 @@
         phone: '',
         password: '',
         isLogin: false,
-        msg:{
+        query:{
+          page:1,
+          size:10,
           orderId:'',
-          start:'',
-          end:'',
+          subName: '',
           startTime: '',
           endTime: '',
-          merchantId: '',
-          subName: '',
           lessTotalFee: '',
           moreTotalFee: '',
-          status:2,
           payResult: '',
-          payChannel: '',
-          mdMobile:'',
-          pageNo:1,
-          pageSize:10,
-          saveUrl:'D:'
+          settleStatus:'',
+          payChannel:''
         },
         orders:[],
-        total:''
+        total:'',
+        url:''
       }
     },
     created:function(){
-      this.$http.post('/admin/queryOrderRecord/selectOrderRecordByConditions',this.$data.msg)
+      this.$http.post('/admin/queryOrderRecord/orderList',this.$data.query)
         .then(function (res) {
           this.$data.orders=res.data.records;
           this.$data.total=res.data.totalPage;
-          var str='',
-            page=document.getElementById('page');
+          this.$data.url=res.data.ext;
+          var str = '',
+            page = document.getElementById('page');
           str+='<li class="paginate_button previous" id="example2_previous"><a href="#" aria-controls="example2" data-dt-idx="0" tabindex="0">上一页</a></li>'
-          for (var i=1; i<=this.$data.total;i++){
-            if(i==this.$data.msg.pageNo){
+          for (var i = 1; i <= this.$data.total; i++){
+            if(i == this.$data.query.page){
               str+='<li class="paginate_button active"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">'+i+'</a></li></li>';
               continue;
             }
             str+='<li class="paginate_button"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">'+i+'</a></li></li>'
           }
           str+='<li class="paginate_button next" id="example2_next"><a href="#" aria-controls="example2" data-dt-idx="7" tabindex="0">下一页</a></li>'
-          page.innerHTML=str;
+          page.innerHTML = str;
           var aLi = page.getElementsByTagName('li');
-          if(this.$data.msg.pageNo<6){
-            for(var i=0;i<aLi.length;i++){
-              if(i>11){
+          if(this.$data.query.page < 6){
+            for(var i = 0; i < aLi.length; i++){
+              if(i > 11){
                 aLi[i].style.display='none'
               }
             }
-          }else if(this.$data.msg.pageNo>(this.$data.total-5)){
-            for(var i=0;i<aLi.length;i++){
+          }else if(this.$data.query.page>(this.$data.total-5)){
+            for(var i = 0; i < aLi.length; i++){
               if(i<(this.$data.total-12)){
                 aLi[i].style.display='none'
               }
             }
           }else{
             for(var i=0;i<aLi.length;i++){
-              if((i!=0&&i<this.$data.msg.pageNo-5)||(i!=this.$data.total+1&&i>this.$data.msg.pageNo+4)){
-                aLi[i].style.display='none'
+              if((i!=0&&i<this.$data.query.page-5)||(i!=this.$data.total+1&&i>this.$data.query.page+4)){
+                aLi[i].style.display = 'none';
               }
             }
           }
@@ -246,12 +235,15 @@
         })
     },
     methods: {
+      refresh: function () {
+        location.reload()
+      },
       //分页器
       bindEvent: function (e) {
         e = e||window.event;
         var tar = e.target||e.srcElement,
           tarInn = tar.innerHTML,
-          n = this.$data.msg.pageNo;
+          n = this.$data.query.page;
         if(tarInn == '上一页'){
           if(n == 1){
             tar.parentNode.className+=' disabled'
@@ -273,16 +265,17 @@
           tar.parentNode.className+=' active'
           n = Number(tarInn);
         }
-        this.$data.msg.pageNo = n;
-        this.$http.post('/admin/queryOrderRecord/selectOrderRecordByConditions',this.$data.msg)
+        this.$data.query.page = n;
+        this.$http.post('/admin/queryOrderRecord/orderList',this.$data.query)
           .then(function (res) {
             this.$data.orders=res.data.records;
             this.$data.total=res.data.totalPage;
+            this.$data.url=res.data.ext;
             var str='',
               page=document.getElementById('page');
             str+='<li class="paginate_button previous" id="example2_previous"><a href="#" aria-controls="example2" data-dt-idx="0" tabindex="0">上一页</a></li>'
             for (var i=1; i<=this.$data.total;i++){
-              if(i==this.$data.msg.pageNo){
+              if(i==this.$data.query.page){
                 str+='<li class="paginate_button active"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">'+i+'</a></li></li>';
                 continue;
               }
@@ -291,21 +284,21 @@
             str+='<li class="paginate_button next" id="example2_next"><a href="#" aria-controls="example2" data-dt-idx="7" tabindex="0">下一页</a></li>'
             page.innerHTML=str;
             var aLi = page.getElementsByTagName('li');
-            if(this.$data.msg.pageNo<6){
+            if(this.$data.query.page<6){
               for(var i=0;i<aLi.length;i++){
                 if(i>11){
                   aLi[i].style.display='none'
                 }
               }
-            }else if(this.$data.msg.pageNo>(this.$data.total-5)){
-              for(var i=0;i<aLi.length;i++){
+            }else if(this.$data.query.page>(this.$data.total-5)){
+              for(var i = 0; i < aLi.length; i++){
                 if(i<(this.$data.total-12)){
-                  aLi[i].style.display='none'
+                  aLi[i].style.display = 'none'
                 }
               }
             }else{
-              for(var i=0;i<aLi.length;i++){
-                if((i!=0&&i<this.$data.msg.pageNo-5)||(i!=this.$data.total+1&&i>this.$data.msg.pageNo+4)){
+              for(var i = 0; i < aLi.length; i++){
+                if((i != 0 && i < this.$data.query.page-5)||(i!=this.$data.total+1&&i>this.$data.query.page+4)){
                   aLi[i].style.display='none'
                 }
               }
@@ -328,23 +321,17 @@
       },
       //筛选
       lookup: function () {
-        var time = this.$data.msg.start;
-        if(time!=''){
-          this.$data.msg.startTime = time.replace(/\//g,'-').replace(/T/g,' ')+':00'
-        }
-        var time = this.$data.msg.end;
-        if(time!=""){
-          this.$data.msg.endTime = time.replace(/\//g,'-').replace(/T/g,' ')+':00'
-        }
-        this.$http.post('/admin/queryOrderRecord/selectOrderRecordByConditions',this.$data.msg)
+        this.$data.query.page = 1;
+        this.$http.post('/admin/queryOrderRecord/orderList',this.$data.query)
           .then(function (res) {
             this.$data.orders=res.data.records;
             this.$data.total=res.data.totalPage;
+            this.$data.url=res.data.ext;
             var str='',
               page=document.getElementById('page');
             str+='<li class="paginate_button previous disabled" id="example2_previous"><a href="#" aria-controls="example2" data-dt-idx="0" tabindex="0">上一页</a></li>'
             for (var i=1; i<=this.$data.total;i++){
-              if(i==this.$data.msg.pageNo){
+              if(i==this.$data.query.page){
                 str+='<li class="paginate_button active"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">'+i+'</a></li></li>';
                 continue;
               }
@@ -353,13 +340,13 @@
             str+='<li class="paginate_button next" id="example2_next"><a href="#" aria-controls="example2" data-dt-idx="7" tabindex="0">下一页</a></li>'
             page.innerHTML=str;
             var aLi = page.getElementsByTagName('li');
-            if(this.$data.msg.pageNo<6){
+            if(this.$data.query.page<6){
               for(var i=0;i<aLi.length;i++){
                 if(i>11){
                   aLi[i].style.display='none'
                 }
               }
-            }else if(this.$data.msg.pageNo>(this.$data.total-5)){
+            }else if(this.$data.query.page>(this.$data.total-5)){
               for(var i=0;i<aLi.length;i++){
                 if(i<(this.$data.total-12)){
                   aLi[i].style.display='none'
@@ -367,7 +354,7 @@
               }
             }else{
               for(var i=0;i<aLi.length;i++){
-                if((i!=0&&i<this.$data.msg.pageNo-5)||(i!=this.$data.total+1&&i>this.$data.msg.pageNo+4)){
+                if((i!=0&&i<this.$data.query.page-5)||(i!=this.$data.total+1&&i>this.$data.query.page+4)){
                   aLi[i].style.display='none'
                 }
               }
@@ -375,48 +362,22 @@
           },function (err) {
             console.log(err)
           })
-      },
-      load: function () {
-        this.$http.post('/admin/export/exportOrderRecord',this.$data.msg)
-          .then(function (res) {
-            console.log(res)
-            this.$store.commit('MESSAGE_ACCORD_SHOW', {
-              text: '已成功导出到D盘'
-            })
-          },function (err) {
-            console.log(err)
-            alert(err.statusMessage)
-            this.$store.commit('MESSAGE_ACCORD_SHOW', {
-              text: err.statusMessage
-            })
-          })
       }
     },
     computed: {
-      $$data: function () {
-        return this.$data.msg
+      $$query: function () {
+        return this.$data.query
       }
     },
     filters: {
-      changeStatus: function (val) {
+      changeSettleStatus: function (val) {
         if(val == 0){
-          return '未结算'
-        }else if(val == 1){
           return '已结算'
+        }else if(val == 1){
+          return '未结算'
         }
       },
-      changePayResult: function (val) {
-        if(val == 'N'){
-          return '待支付'
-        }else if(val =='F'){
-          return '支付失败'
-        }else if(val =='H'){
-          return '支付成功'
-        }else if(val =='N'){
-          return '支付中'
-        }
-      },
-      changeChannel: function (val) {
+      changePayChannel: function (val) {
         if(val == 101){
           return '微信'
         }else if(val == 102){
@@ -439,6 +400,10 @@
           return year+"-"+month+"-"+date+" "+hour+":"+minute+":"+second;
         }
       },
+      changeHide: function (val) {
+        val = val.replace(val.substring(3,19),"…");
+        return val
+      },
       toFix: function (val) {
         return parseFloat(val).toFixed(2);
       }
@@ -448,14 +413,6 @@
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="less">
-  h1, h2 {
-    font-weight: normal;
-    color: #337ab7;
-    font-weight: bold;
-    border-bottom: 2px solid #ccc;
-    padding-bottom: 10px;
-  }
-
   ul {
     list-style-type: none;
     padding: 0;
@@ -466,58 +423,6 @@
     margin: 0 10px;
   }
 
-  a {
-    color: #42b983;
-  }
-
-  .dale {
-    float: right;
-    width: 80%;
-  }
-
-  .search div {
-    float: left;
-    height: 34px;
-    margin-right: 22px;
-    margin-top: 10px;
-
-  &
-  .date input,
-
-  &
-  .price input,
-
-  &
-  .card input {
-    width: 50px;
-  }
-
-  &
-  .assount input,
-
-  &
-  .pay input {
-    width: 20px;
-  }
-
-  &
-  .btn {
-    margin: 0 0 5px 0;
-    width: 80px;
-    float: right;
-  }
-
-  }
-  .table {
-    overflow: hidden;
-
-  td, th {
-    text-align: center;
-    width: 10%;
-  }
-
-
-  }
   .login {
     z-index: 1000;
     position: fixed;
@@ -550,5 +455,14 @@
     font-size: 20px;
   }
 
+  }
+  .form-control{
+    height: 29px;
+    line-height: 25px;
+    font-size: 12px;
+    padding: 0 6px;
+  }
+  .table td[data-v-497723e2], .table th[data-v-497723e2]{
+    width: inherit;
   }
 </style>

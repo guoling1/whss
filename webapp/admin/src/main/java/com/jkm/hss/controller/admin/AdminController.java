@@ -6,24 +6,26 @@ import com.google.common.collect.Maps;
 import com.jkm.base.common.entity.CommonResponse;
 import com.jkm.base.common.util.CookieUtil;
 import com.jkm.base.common.util.ValidateUtils;
-import com.jkm.hss.controller.BaseController;
-import com.jkm.hss.helper.ApplicationConsts;
-import com.jkm.hss.helper.request.DistributeRangeQRCodeRequest;
-import com.jkm.hss.helper.response.FirstLevelDealerAddResponse;
 import com.jkm.hss.admin.entity.AdminUser;
 import com.jkm.hss.admin.entity.AdminUserPassport;
+import com.jkm.hss.admin.entity.CodeQueryResponse;
 import com.jkm.hss.admin.entity.QRCode;
 import com.jkm.hss.admin.service.AdminUserService;
+import com.jkm.hss.controller.BaseController;
 import com.jkm.hss.dealer.entity.Dealer;
 import com.jkm.hss.dealer.helper.DealerConsts;
 import com.jkm.hss.dealer.helper.requestparam.FirstLevelDealerAddRequest;
 import com.jkm.hss.dealer.helper.requestparam.FirstLevelDealerUpdateRequest;
 import com.jkm.hss.dealer.service.DealerRateService;
 import com.jkm.hss.dealer.service.DealerService;
+import com.jkm.hss.helper.ApplicationConsts;
 import com.jkm.hss.helper.request.AdminUserLoginRequest;
+import com.jkm.hss.helper.request.CodeQueryRequest;
 import com.jkm.hss.helper.request.DistributeQRCodeRequest;
+import com.jkm.hss.helper.request.DistributeRangeQRCodeRequest;
 import com.jkm.hss.helper.response.DistributeQRCodeResponse;
 import com.jkm.hss.helper.response.DistributeRangeQRCodeResponse;
+import com.jkm.hss.helper.response.FirstLevelDealerAddResponse;
 import com.jkm.hss.merchant.entity.BankCardBin;
 import com.jkm.hss.merchant.service.BankCardBinService;
 import com.jkm.hss.product.entity.Product;
@@ -31,6 +33,7 @@ import com.jkm.hss.product.entity.ProductChannelDetail;
 import com.jkm.hss.product.enums.EnumPayChannelSign;
 import com.jkm.hss.product.servcie.ProductChannelDetailService;
 import com.jkm.hss.product.servcie.ProductService;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
@@ -52,6 +55,7 @@ import java.util.Map;
 /**
  * Created by yulong.zhang on 2016/11/23.
  */
+@Slf4j
 @Controller
 @RequestMapping(value = "/admin/user")
 public class AdminController extends BaseController {
@@ -205,6 +209,57 @@ public class AdminController extends BaseController {
     }
 
 
+    /**
+     *码段查询
+     */
+    @ResponseBody
+    @RequestMapping(value = "/getCode", method = RequestMethod.POST)
+    public CommonResponse getCode(@RequestBody CodeQueryRequest code) {
+        CodeQueryResponse codeQueryResponse = adminUserService.getCode(code.getCode());
+        if (codeQueryResponse==null){
+            return CommonResponse.simpleResponse(-1, "未查询到与之匹配的信息。");
+        }
+
+        if (codeQueryResponse.getActivateStatus()==2){
+
+            if (codeQueryResponse.getFirstLevelDealerId()==0){
+                String jkm="金开门";
+                codeQueryResponse.setJkm(jkm);
+            }
+            if (codeQueryResponse.getFirstLevelDealerId()>0){
+                CodeQueryResponse res = adminUserService.getProxyName(codeQueryResponse.getFirstLevelDealerId());
+                codeQueryResponse.setProxyName(res.getProxyName());
+            }
+            if (codeQueryResponse.getSecondLevelDealerId()>0){
+                CodeQueryResponse res1 =adminUserService.getProxyName1(codeQueryResponse.getSecondLevelDealerId());
+                codeQueryResponse.setProxyName1(res1.getProxyName());
+            }
+            if (codeQueryResponse.getMerchantId()>0){
+                CodeQueryResponse getName =adminUserService.getMerchantName(codeQueryResponse.getMerchantId());
+                codeQueryResponse.setMerchantName(getName.getMerchantName());
+            }
+        }
+        if (codeQueryResponse.getDistributeStatus()==1&&codeQueryResponse.getActivateStatus()==1){
+            return CommonResponse.simpleResponse(-1, "该码未被注册且未被分配，该码可用。");
+        }
+        if (codeQueryResponse.getDistributeStatus()==2&&codeQueryResponse.getActivateStatus()==1){
+
+            if (codeQueryResponse.getFirstLevelDealerId()>0){
+                CodeQueryResponse res = adminUserService.getProxyName(codeQueryResponse.getFirstLevelDealerId());
+                codeQueryResponse.setProxyName(res.getProxyName());
+            }
+            if (codeQueryResponse.getSecondLevelDealerId()>0){
+                CodeQueryResponse res1 =adminUserService.getProxyName1(codeQueryResponse.getSecondLevelDealerId());
+                codeQueryResponse.setProxyName1(res1.getProxyName());
+            }
+
+            return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "该码已被分配但未注册，该码可用。", codeQueryResponse);
+        }
+
+        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", codeQueryResponse);
+    }
+
+
 
     /**
      * 添加一级代理商
@@ -214,51 +269,60 @@ public class AdminController extends BaseController {
     @ResponseBody
     @RequestMapping(value = "/addFirstDealer", method = RequestMethod.POST)
     public CommonResponse addFirstDealer(@RequestBody final FirstLevelDealerAddRequest firstLevelDealerAddRequest) {
-        if(!ValidateUtils.isMobile(firstLevelDealerAddRequest.getMobile())) {
-            return CommonResponse.simpleResponse(-1, "代理手机号格式错误");
-        }
-        final String bankCard = firstLevelDealerAddRequest.getBankCard();
-        final Optional<BankCardBin> bankCardBinOptional = this.bankCardBinService.analyseCardNo(bankCard);
-        if (!bankCardBinOptional.isPresent()) {
-            return CommonResponse.simpleResponse(-1, "结算卡格式错误");
-        }
-        if(!ValidateUtils.isMobile(firstLevelDealerAddRequest.getBankReserveMobile())) {
-            return CommonResponse.simpleResponse(-1, "银行预留手机号格式错误");
-        }
-        final long proxyNameCount = this.dealerService.getByProxyName(firstLevelDealerAddRequest.getName());
-        if (proxyNameCount > 0) {
-            return CommonResponse.simpleResponse(-1, "代理商名字已经存在");
-        }
-        final Optional<Dealer> dealerOptional = this.dealerService.getByMobile(firstLevelDealerAddRequest.getMobile());
-        if (dealerOptional.isPresent()) {
-            return CommonResponse.simpleResponse(-1, "代理商手机号已经注册");
-        }
-        final FirstLevelDealerAddRequest.Product productParam = firstLevelDealerAddRequest.getProduct();
-        final long productId = productParam.getProductId();
-        final Optional<Product> productOptional = this.productService.selectById(productId);
-        if (!productOptional.isPresent()) {
-            return CommonResponse.simpleResponse(-1, "产品不存在");
-        }
-        final Product product = productOptional.get();
-        final List<ProductChannelDetail> productChannelDetails = this.productChannelDetailService.selectByProductId(productId);
-        final Map<Integer, ProductChannelDetail> integerProductChannelDetailImmutableMap =
-                Maps.uniqueIndex(productChannelDetails, new Function<ProductChannelDetail, Integer>() {
-            @Override
-            public Integer apply(ProductChannelDetail input) {
-                return input.getChannelTypeSign();
+        try{
+            if(!ValidateUtils.isMobile(firstLevelDealerAddRequest.getMobile())) {
+                return CommonResponse.simpleResponse(-1, "代理手机号格式错误");
             }
-        });
-        final List<FirstLevelDealerAddRequest.Channel> channelParams = productParam.getChannels();
-        for (FirstLevelDealerAddRequest.Channel channelParam : channelParams) {
-            final CommonResponse commonResponse = this.checkChannel(channelParam, integerProductChannelDetailImmutableMap, product);
-            if (1 != commonResponse.getCode()) {
-                return commonResponse;
+            if(StringUtils.isBlank(firstLevelDealerAddRequest.getName())) {
+                return CommonResponse.simpleResponse(-1, "代理名称不能为空");
             }
+            final long proxyNameCount = this.dealerService.getByProxyName(firstLevelDealerAddRequest.getName());
+            if (proxyNameCount > 0) {
+                return CommonResponse.simpleResponse(-1, "代理名称已经存在");
+            }
+            final String bankCard = firstLevelDealerAddRequest.getBankCard();
+            final Optional<BankCardBin> bankCardBinOptional = this.bankCardBinService.analyseCardNo(bankCard);
+            if (!bankCardBinOptional.isPresent()) {
+                return CommonResponse.simpleResponse(-1, "结算卡格式错误");
+            }
+            firstLevelDealerAddRequest.setBankName(bankCardBinOptional.get().getBankName());
+            if(!ValidateUtils.isMobile(firstLevelDealerAddRequest.getBankReserveMobile())) {
+                return CommonResponse.simpleResponse(-1, "银行预留手机号格式错误");
+            }
+            final Optional<Dealer> dealerOptional = this.dealerService.getByMobile(firstLevelDealerAddRequest.getMobile());
+            if (dealerOptional.isPresent()) {
+                return CommonResponse.simpleResponse(-1, "代理商手机号已经注册");
+            }
+            final FirstLevelDealerAddRequest.Product productParam = firstLevelDealerAddRequest.getProduct();
+            final long productId = productParam.getProductId();
+            final Optional<Product> productOptional = this.productService.selectById(productId);
+            if (!productOptional.isPresent()) {
+                return CommonResponse.simpleResponse(-1, "产品不存在");
+            }
+            final Product product = productOptional.get();
+            final List<ProductChannelDetail> productChannelDetails = this.productChannelDetailService.selectByProductId(productId);
+            final Map<Integer, ProductChannelDetail> integerProductChannelDetailImmutableMap =
+                    Maps.uniqueIndex(productChannelDetails, new Function<ProductChannelDetail, Integer>() {
+                        @Override
+                        public Integer apply(ProductChannelDetail input) {
+                            return input.getChannelTypeSign();
+                        }
+                    });
+            final List<FirstLevelDealerAddRequest.Channel> channelParams = productParam.getChannels();
+            for (FirstLevelDealerAddRequest.Channel channelParam : channelParams) {
+                final CommonResponse commonResponse = this.checkChannel(channelParam, integerProductChannelDetailImmutableMap, product);
+                if (1 != commonResponse.getCode()) {
+                    return commonResponse;
+                }
+            }
+            final long dealerId = this.dealerService.createFirstDealer(firstLevelDealerAddRequest);
+            final FirstLevelDealerAddResponse firstLevelDealerAddResponse = new FirstLevelDealerAddResponse();
+            firstLevelDealerAddResponse.setDealerId(dealerId);
+            return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "分配成功", firstLevelDealerAddResponse);
+        }catch (Exception e){
+            log.error("错误信息时",e);
+            return CommonResponse.simpleResponse(-1, e.getMessage());
         }
-        final long dealerId = this.dealerService.createFirstDealer(firstLevelDealerAddRequest);
-        final FirstLevelDealerAddResponse firstLevelDealerAddResponse = new FirstLevelDealerAddResponse();
-        firstLevelDealerAddResponse.setDealerId(dealerId);
-        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "分配成功", firstLevelDealerAddResponse);
     }
 
     /**
@@ -270,55 +334,73 @@ public class AdminController extends BaseController {
     @ResponseBody
     @RequestMapping(value = "updateDealer", method = RequestMethod.POST)
     public CommonResponse updateDealer(@RequestBody FirstLevelDealerUpdateRequest request) {
-        if(!ValidateUtils.isMobile(request.getMobile())) {
-            return CommonResponse.simpleResponse(-1, "代理手机号格式错误");
-        }
-        final String bankCard = request.getBankCard();
-        final Optional<BankCardBin> bankCardBinOptional = this.bankCardBinService.analyseCardNo(bankCard);
-        if (!bankCardBinOptional.isPresent()) {
-            return CommonResponse.simpleResponse(-1, "结算卡格式错误");
-        }
-        if(!ValidateUtils.isMobile(request.getBankReserveMobile())) {
-            return CommonResponse.simpleResponse(-1, "银行预留手机号格式错误");
-        }
-        final long proxyNameCount = this.dealerService.getByProxyNameUnIncludeNow(request.getName(), request.getDealerId());
-        if (proxyNameCount > 0) {
-            return CommonResponse.simpleResponse(-1, "代理商名字已经存在");
-        }
-        final Optional<Dealer> dealerOptional = this.dealerService.getByMobileUnIncludeNow(request.getMobile(), request.getDealerId());
-        if (dealerOptional.isPresent()) {
-            return CommonResponse.simpleResponse(-1, "代理商手机号已经注册");
-        }
-        final FirstLevelDealerUpdateRequest.Product productParam = request.getProduct();
-        final long productId = productParam.getProductId();
-        final Optional<Product> productOptional = this.productService.selectById(productId);
-        if (!productOptional.isPresent()) {
-            return CommonResponse.simpleResponse(-1, "产品不存在");
-        }
-        final Product product = productOptional.get();
-        final List<ProductChannelDetail> productChannelDetails = this.productChannelDetailService.selectByProductId(productId);
-        final Map<Integer, ProductChannelDetail> integerProductChannelDetailImmutableMap =
-                Maps.uniqueIndex(productChannelDetails, new Function<ProductChannelDetail, Integer>() {
-                    @Override
-                    public Integer apply(ProductChannelDetail input) {
-                        return input.getChannelTypeSign();
-                    }
-                });
-        final List<FirstLevelDealerUpdateRequest.Channel> channelParams = productParam.getChannels();
-        for (FirstLevelDealerUpdateRequest.Channel channelParam : channelParams) {
-            final CommonResponse commonResponse = this.checkChannel(channelParam, integerProductChannelDetailImmutableMap, product);
-            if (1 != commonResponse.getCode()) {
-                return commonResponse;
+        try{
+            if(!ValidateUtils.isMobile(request.getMobile())) {
+                return CommonResponse.simpleResponse(-1, "代理手机号格式错误");
             }
+            final String bankCard = request.getBankCard();
+            final Optional<BankCardBin> bankCardBinOptional = this.bankCardBinService.analyseCardNo(bankCard);
+            if (!bankCardBinOptional.isPresent()) {
+                return CommonResponse.simpleResponse(-1, "结算卡格式错误");
+            }
+            if(!ValidateUtils.isMobile(request.getBankReserveMobile())) {
+                return CommonResponse.simpleResponse(-1, "银行预留手机号格式错误");
+            }
+            final long proxyNameCount = this.dealerService.getByProxyNameUnIncludeNow(request.getName(), request.getDealerId());
+            if (proxyNameCount > 0) {
+                return CommonResponse.simpleResponse(-1, "代理商名字已经存在");
+            }
+            final Optional<Dealer> dealerOptional = this.dealerService.getByMobileUnIncludeNow(request.getMobile(), request.getDealerId());
+            if (dealerOptional.isPresent()) {
+                return CommonResponse.simpleResponse(-1, "代理商手机号已经注册");
+            }
+            final FirstLevelDealerUpdateRequest.Product productParam = request.getProduct();
+            final long productId = productParam.getProductId();
+            final Optional<Product> productOptional = this.productService.selectById(productId);
+            if (!productOptional.isPresent()) {
+                return CommonResponse.simpleResponse(-1, "产品不存在");
+            }
+            final Product product = productOptional.get();
+            final List<ProductChannelDetail> productChannelDetails = this.productChannelDetailService.selectByProductId(productId);
+            final Map<Integer, ProductChannelDetail> integerProductChannelDetailImmutableMap =
+                    Maps.uniqueIndex(productChannelDetails, new Function<ProductChannelDetail, Integer>() {
+                        @Override
+                        public Integer apply(ProductChannelDetail input) {
+                            return input.getChannelTypeSign();
+                        }
+                    });
+            final List<FirstLevelDealerUpdateRequest.Channel> channelParams = productParam.getChannels();
+            for (FirstLevelDealerUpdateRequest.Channel channelParam : channelParams) {
+                final CommonResponse commonResponse = this.checkChannel(channelParam, integerProductChannelDetailImmutableMap, product);
+                if (1 != commonResponse.getCode()) {
+                    return commonResponse;
+                }
+            }
+            this.dealerService.updateDealer(request);
+            return CommonResponse.builder4MapResult(CommonResponse.SUCCESS_CODE, "success")
+                    .addParam("dealerId", request.getDealerId()).build();
+        }catch (Exception e){
+            log.error("错误信息时",e.getStackTrace());
+            return CommonResponse.simpleResponse(-1, e.getMessage());
         }
-        this.dealerService.updateDealer(request);
-        return CommonResponse.builder4MapResult(CommonResponse.SUCCESS_CODE, "success")
-                .addParam("dealerId", request.getDealerId()).build();
     }
 
     private CommonResponse checkChannel(final FirstLevelDealerUpdateRequest.Channel paramChannel,
                                         final Map<Integer, ProductChannelDetail> integerProductChannelDetailImmutableMap,
                                         final Product product) {
+        if (StringUtils.isBlank(paramChannel.getMerchantSettleRate())) {
+            return CommonResponse.simpleResponse(-1, "商户支付手续费不能为空");
+        }
+        if (StringUtils.isBlank(paramChannel.getMerchantWithdrawFee())) {
+            return CommonResponse.simpleResponse(-1, "商户提现手续费不能为空");
+        }
+        if (StringUtils.isBlank(paramChannel.getPaymentSettleRate())) {
+            return CommonResponse.simpleResponse(-1, "支付结算手续费不能为空");
+        }
+        if (StringUtils.isBlank(paramChannel.getWithdrawSettleFee())) {
+            return CommonResponse.simpleResponse(-1, "提现结算费不能为空");
+        }
+
         if (paramChannel.getChannelType() == EnumPayChannelSign.YG_WEIXIN.getId()) {
             final ProductChannelDetail productChannelDetail = integerProductChannelDetailImmutableMap.get(EnumPayChannelSign.YG_WEIXIN.getId());
             final BigDecimal weixinMerchantSettleRate = new BigDecimal(paramChannel.getMerchantSettleRate())
@@ -395,6 +477,19 @@ public class AdminController extends BaseController {
     private CommonResponse checkChannel(final FirstLevelDealerAddRequest.Channel paramChannel,
                                         final Map<Integer, ProductChannelDetail> integerProductChannelDetailImmutableMap,
                                         final Product product) {
+        if (StringUtils.isBlank(paramChannel.getMerchantSettleRate())) {
+            return CommonResponse.simpleResponse(-1, "商户支付手续费不能为空");
+        }
+        if (StringUtils.isBlank(paramChannel.getMerchantWithdrawFee())) {
+            return CommonResponse.simpleResponse(-1, "商户提现手续费不能为空");
+        }
+        if (StringUtils.isBlank(paramChannel.getPaymentSettleRate())) {
+            return CommonResponse.simpleResponse(-1, "支付结算手续费不能为空");
+        }
+        if (StringUtils.isBlank(paramChannel.getWithdrawSettleFee())) {
+            return CommonResponse.simpleResponse(-1, "提现结算费不能为空");
+        }
+
         if (paramChannel.getChannelType() == EnumPayChannelSign.YG_WEIXIN.getId()) {
             final ProductChannelDetail productChannelDetail = integerProductChannelDetailImmutableMap.get(EnumPayChannelSign.YG_WEIXIN.getId());
             final BigDecimal weixinMerchantSettleRate = new BigDecimal(paramChannel.getMerchantSettleRate())

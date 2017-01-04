@@ -3,11 +3,11 @@ package com.jkm.hss.admin.service;
 import com.google.common.base.Optional;
 import com.jkm.hss.admin.entity.AdminUser;
 import com.jkm.hss.admin.entity.AdminUserPassport;
+import com.jkm.hss.admin.entity.CodeQueryResponse;
 import com.jkm.hss.admin.entity.QRCode;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
 
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -94,4 +94,34 @@ public interface AdminUserService {
      * @param endCode
      */
     List<Pair<QRCode, QRCode>> distributeRangeQRCode(long dealerId, String startCode, String endCode);
+
+    /**
+     * 查询码段状态
+     * @param code
+     * @return
+     */
+    CodeQueryResponse getCode(String code);
+
+    /**
+     * 商户id查询其名称
+     * @param firstLevelDealerId
+     * @return
+     */
+    CodeQueryResponse getProxyName(long firstLevelDealerId);
+
+    /**
+     * 根据firstLevelDealerId
+     * 查询一级代理商名称
+     * @param secondLevelDealerId
+     * @return
+     */
+    CodeQueryResponse getProxyName1(long secondLevelDealerId);
+
+    /**
+     * 根据merchantId
+     * 查询商户名称
+     * @param merchantId
+     * @return
+     */
+    CodeQueryResponse getMerchantName(long merchantId);
 }

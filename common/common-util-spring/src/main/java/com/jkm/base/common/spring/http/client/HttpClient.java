@@ -1,5 +1,6 @@
 package com.jkm.base.common.spring.http.client;
 
+import com.alibaba.fastjson.JSONObject;
 import com.google.common.base.Throwables;
 import com.jkm.base.common.spring.http.client.factory.HttpClientAbstractFactory;
 import lombok.extern.slf4j.Slf4j;
@@ -12,6 +13,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.RequestBuilder;
 import org.apache.http.entity.ByteArrayEntity;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.message.BasicHeader;
 import org.apache.http.protocol.HTTP;
@@ -112,7 +114,7 @@ public class HttpClient implements Closeable {
      * @return 返回报文
      */
     public String post(final String uri, final Map<String, String> parameters) {
-        return post(uri, parameters, "UTF-8");
+        return post(uri, parameters, "UTF-8", false);
     }
 
     /**
@@ -120,20 +122,28 @@ public class HttpClient implements Closeable {
      *
      * @param uri        URI
      * @param parameters 内容
+     * @param isUseJson 是否用application/json
      * @return 返回报文
      */
     public String post(final String uri,
                        final Map<String, String> parameters,
-                       final String charset) {
+                       final String charset,
+                       final boolean isUseJson) {
         final RequestBuilder requestBuilder = RequestBuilder.post()
                 .setUri(uri)
                 .setConfig(httpClientAbstractFactory.createRequestConfig())
                 .addHeader(new BasicHeader(HTTP.CONTENT_ENCODING, charset));
-        for (final Map.Entry<String, String> entry : parameters.entrySet()) {
-            requestBuilder.addParameter(entry.getKey(), entry.getValue());
+        if (isUseJson) {
+            requestBuilder.addHeader(new BasicHeader(HTTP.CONTENT_TYPE, "application/json"));
+            requestBuilder.setEntity(new StringEntity(JSONObject.toJSONString(parameters),
+                    Charset.forName(charset)));
+        } else {
+            for (final Map.Entry<String, String> entry : parameters.entrySet()) {
+                requestBuilder.addParameter(entry.getKey(), entry.getValue());
+            }
+            requestBuilder.setEntity(new UrlEncodedFormEntity(requestBuilder.getParameters(),
+                    Charset.forName(charset)));
         }
-        requestBuilder.setEntity(new UrlEncodedFormEntity(requestBuilder.getParameters(),
-                Charset.forName(charset)));
         try (final CloseableHttpResponse closeableHttpResponse = closeableHttpClient.execute(requestBuilder.build())) {
             return EntityUtils.toString(getResponseEntity(closeableHttpResponse));
         } catch (Exception e) {

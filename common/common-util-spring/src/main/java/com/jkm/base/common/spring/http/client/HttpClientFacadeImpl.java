@@ -73,9 +73,10 @@ public class HttpClientFacadeImpl implements HttpClientFacade {
     @Override
     public String post(final String uri,
                        final Map<String, String> parameters,
-                       final String charset) {
+                       final String charset,
+                       final boolean isUserJson) {
         try (final HttpClient httpClient = createHttpClient()) {
-            return httpClient.post(uri, parameters, charset);
+            return httpClient.post(uri, parameters, charset, isUserJson);
         }
     }
 

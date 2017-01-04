@@ -1,66 +1,91 @@
 <template lang="html">
   <div id="productAdd">
-    <h1 v-if="isShow">增加产品</h1>
-    <h1 v-else="isShow">产品详情</h1>
-    <label for="">
-      <p>产品名称：</p>
-      <input type="text" v-model="productName">
-      <span>例如：快收银2.0</span>
-    </label>
-    <div class="passAdd">
-      <label for="">
-        <p>添加通道：</p>
-        <table class="table table-bordered" >
-          <thead>
-          <tr>
-            <th>通道名称</th>
-            <th>支付结算手续费</th>
-            <th>结算时间</th>
-            <th>提现结算费</th>
-            <th>商户支付手续费</th>
-            <th>商户提现手续费</th>
-          </tr>
-          </thead>
-          <tbody>
-          <tr v-for="(product,index) in $$products">
-            <td>{{product.channelName}}</td>
-            <td><input type="text" v-model="$$channels[index].productTradeRate">%</td>
-            <td>T1</td>
-            <td><input type="text" v-model="$$channels[index].productWithdrawFee">元/笔</td>
-            <td><input type="text" v-model="$$channels[index].productMerchantPayRate">%</td>
-            <td><input type="text" v-model="$$channels[index].productMerchantWithdrawFee">元/笔</td>
-          </tr>
+    <div v-if="isShow" style="padding: 8px 30px; background: rgb(243, 156, 18); z-index: 999999; font-size: 22px; font-weight: 600;margin-bottom: 15px;color: #fff;">增加产品</div>
+    <div v-else="isShow" style="padding: 8px 30px; background: rgb(243, 156, 18); z-index: 999999; font-size: 22px; font-weight: 600;margin-bottom: 15px;color: #fff;">产品详情</div>
+    <div style="margin: 0 15px;width: inherit" class="box box-info">
+      <form class="form-horizontal">
+        <div class="box-body">
+          <div class="form-group">
+            <label for="productName" class="col-sm-2 control-label">产品名称</label>
+            <div class="col-sm-4">
+              <input type="text" class="form-control" id="productName" v-model="productName">
+            </div>
+            <div class="col-sm-6 right">例如：快收银2.0</div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-2 control-label" style="text-align: left;margin: 0 0 15px 4%;">通道配置</label>
+            <table class="table table-bordered" >
+              <thead>
+              <tr>
+                <th>通道名称</th>
+                <th>支付结算手续费</th>
+                <th>结算时间</th>
+                <th>提现结算费</th>
+                <th>商户支付手续费</th>
+                <th>商户提现手续费</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr v-for="(product,index) in $$products">
+                <td>{{product.channelName}}</td>
+                <td><input type="text" v-model="$$channels[index].productTradeRate"> %</td>
+                <td>T1</td>
+                <td><input type="text" v-model="$$channels[index].productWithdrawFee"> 元/笔</td>
+                <td><input type="text" v-model="$$channels[index].productMerchantPayRate"> %</td>
+                <td><input type="text" v-model="$$channels[index].productMerchantWithdrawFee"> 元/笔</td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="form-group">
+            <label for="limitPayFeeRate" class="col-sm-2 control-label">支付手续费加价限额</label>
 
-          </tbody>
-        </table>
-        <router-link to="/admin/record/passAdd" class="btn btn-primary add">添加通道</router-link>
-      </label>
+            <div class="col-sm-4 middle">
+              <input type="text" class="form-control" id="limitPayFeeRate" v-model="limitPayFeeRate">
+              <i>%</i>
+            </div>
+            <div class="col-sm-6 right">允许一级代理商提高商户的手续费最高限制，例如：0.05%</div>
+          </div>
+          <div class="form-group">
+            <label for="limitWithdrawFeeRate" class="col-sm-2 control-label">提现手续费加价限额</label>
+
+            <div class="col-sm-4 middle">
+              <input type="text" class="form-control" id="limitWithdrawFeeRate" v-model="basicTradeRate">
+              <i>元/笔</i>
+            </div>
+            <div class="col-sm-6 right">允许一级代理商提高商户的手续费最高限制，例如：0.5元／笔</div>
+          </div>
+          <div class="form-group">
+            <label for="" class="col-sm-2 control-label">商户提现模式</label>
+
+            <div class="col-sm-4">
+              <select class="form-control" v-model="merchantWithdrawType">
+                <option value="">请选择</option>
+                <option value="HAND">手动提现</option>
+                <option value="AUTO">逐笔自动提现</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="" class="col-sm-2 control-label">代理商结算模式</label>
+
+            <div class="col-sm-4 middle">
+              <select class="form-control" v-model="dealerBalanceType">
+                <option value="">请选择</option>
+                <option value="D0">D0</option>
+                <option value="D1">日结</option>
+                <option value="M1">月结</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="box-footer">
+          <div type="submit" class="btn btn-default" @click="productAdd" v-if="isShow">创建产品</div>
+          <div type="submit" class="btn btn-default" @click="productAdd" v-if="!isShow">修 改</div>
+          <div type="submit" class="btn btn-info pull-right" v-if="!isShow" @click="goBack">返 回</div>
+        </div>
+      </form>
     </div>
-    <label for="">
-      <p>支付手续费加价限额：</p>
-      <input type="text" v-model="limitPayFeeRate">%
-      <span>允许一级代理商提高商户的手续费最高限制，例如：0.05%</span>
-    </label>
-    <label for="">
-      <p>提现手续费加价限额：</p>
-      <input type="text" v-model="limitWithdrawFeeRate">
-      元/笔
-      <span>允许一级代理商提高商户的手续费最高限制，例如：0.5元／笔</span>
-    </label>
-    <label for="">
-      <p>商户提现模式：</p>
-      <input type="radio" value="HAND" v-model="merchantWithdrawType">手动提现
-      <input type="radio" style="margin-left: 20px" value="AUTO" v-model="merchantWithdrawType">逐笔自动提现
-    </label>
-    <label for="">
-      <p>代理商结算模式：</p>
-      <input type="radio" value="D0" v-model="dealerBalanceType">D0
-      <input type="radio" style="margin-left: 20px" value="D1" v-model="dealerBalanceType">日结
-      <input type="radio" style="margin-left: 20px" value="M1" v-model="dealerBalanceType">月结
-    </label>
-    <div class="btn btn-primary product" @click="productAdd" v-if="isShow">创建产品</div>
-    <div class="btn btn-danger product" @click="productAdd" v-if="!isShow">修改</div>
-    <div class="btn btn-success product" @click="" v-if="!isShow" @click="geBack">返回</div>
   </div>
 </template>
 
@@ -95,7 +120,6 @@
             }
           }
           this.$data.products=res.data;
-          console.log(this.$data.products)
         },function (err) {
           this.$store.commit('MESSAGE_ACCORD_SHOW', {
             text: err.statusMessage
@@ -107,7 +131,6 @@
         this.$http.post('/admin/product/list')
           .then(function (res) {
             var data = this.$data.product = res.data[this.$route.query.id];
-            console.log(this.$data.product)
             this.$data.productName = data.productName;
             this.$data.limitPayFeeRate = data.limitPayFeeRate;
             this.$data.limitWithdrawFeeRate = data.limitWithdrawFeeRate;
@@ -210,37 +233,20 @@
   a {
     color: #fff;
   }
-  .productAdd{
-    float: right;
-    width: 80%;
-  }
-  label{
-    display:block;
-    p{
-      display: inline-block;
-      width: 80px;
-    }
-    span{
-      color: #ccc;
-      margin-left: 20px;
-    }
-  }
-  table{
-    width: 80%;
-    margin:20px 0 0 50px;
-    th,td{
-      width: 16.6%;
-      input{
-        width: 70%;
-      }
-    }
 
+  table{
+    width: 90%;
+    margin:20px auto;
   }
-  .add{
-    margin:10px 0 10px 50px;
+  .middle{
+    position: relative;
+    i{
+      position: absolute;
+      right: 23px;
+      top: 8px;
+    }
   }
-  .product{
-    margin:20px 0 0 20px;
-    width: 200px;
+  .right{
+    padding-top: 7px;
   }
 </style>

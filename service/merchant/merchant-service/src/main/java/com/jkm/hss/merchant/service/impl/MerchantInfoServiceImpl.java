@@ -6,12 +6,12 @@ import com.jkm.hss.admin.service.QRCodeService;
 import com.jkm.hss.merchant.dao.MerchantInfoDao;
 import com.jkm.hss.merchant.entity.MerchantInfo;
 import com.jkm.hss.merchant.helper.request.MerchantInfoAddRequest;
-import com.jkm.hss.merchant.helper.request.RequestMerchantInfo;
 import com.jkm.hss.merchant.service.MerchantInfoService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -46,6 +46,17 @@ public class MerchantInfoServiceImpl implements MerchantInfoService {
     @Override
     public Optional<MerchantInfo> selectById(long id) {
         return Optional.fromNullable(this.merchantInfoDao.selectById(id));
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param accountId
+     * @return
+     */
+    @Override
+    public Optional<MerchantInfo> getByAccountId(final long accountId) {
+        return Optional.fromNullable(this.merchantInfoDao.selectByAccountId(accountId));
     }
 
 
@@ -89,10 +100,10 @@ public class MerchantInfoServiceImpl implements MerchantInfoService {
         return this.merchantInfoDao.getAll(merchantInfo);
     }
 
-    @Override
-    public long updateRecord(RequestMerchantInfo requestMerchantInfo) {
-        return this.merchantInfoDao.updateRecord(requestMerchantInfo);
-    }
+//    @Override
+//    public long updateRecord(RequestMerchantInfo requestMerchantInfo) {
+//        return this.merchantInfoDao.updateRecord(requestMerchantInfo);
+//    }
 
     @Override
     public long regByWxPub(MerchantInfo merchantInfo) {
@@ -114,6 +125,7 @@ public class MerchantInfoServiceImpl implements MerchantInfoService {
 
     @Override
     public int updatePic(MerchantInfoAddRequest merchantInfo) {
+        merchantInfo.setAuthenticationTime(new Date());
         return this.merchantInfoDao.updatePic(merchantInfo);
     }
 
@@ -130,6 +142,19 @@ public class MerchantInfoServiceImpl implements MerchantInfoService {
     @Override
     public List<MerchantInfo> batchGetMerchantInfo(List<Long> merchantIdList) {
         return this.merchantInfoDao.batchGetMerchantInfo(merchantIdList);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param accountId
+     * @param status
+     * @param merchantId
+     * @return
+     */
+    @Override
+    public int addAccountId(final long accountId, final int status, final long merchantId,Date checkedTime) {
+        return this.merchantInfoDao.addAccountId(accountId, status, merchantId,checkedTime);
     }
 
 }

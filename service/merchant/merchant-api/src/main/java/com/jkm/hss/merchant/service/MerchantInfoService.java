@@ -3,8 +3,8 @@ package com.jkm.hss.merchant.service;
 import com.google.common.base.Optional;
 import com.jkm.hss.merchant.entity.MerchantInfo;
 import com.jkm.hss.merchant.helper.request.MerchantInfoAddRequest;
-import com.jkm.hss.merchant.helper.request.RequestMerchantInfo;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -25,7 +25,13 @@ public interface MerchantInfoService {
      */
     Optional<MerchantInfo> selectById(long id);
 
-
+    /**
+     * 根据accountId查询
+     *
+     * @param accountId
+     * @return
+     */
+    Optional<MerchantInfo> getByAccountId(long accountId);
     /**
      * 根据条件插入
      * @param merchantInfo
@@ -64,7 +70,7 @@ public interface MerchantInfoService {
      * @param requestMerchantInfo
      * @return
      */
-    long updateRecord(RequestMerchantInfo requestMerchantInfo);
+//    long updateRecord(RequestMerchantInfo requestMerchantInfo);
 
     /**
      * 扫码注册
@@ -109,5 +115,12 @@ public interface MerchantInfoService {
      */
     List<MerchantInfo> batchGetMerchantInfo(List<Long> merchantIdList);
 
-
+    /**
+     * 插入accountId
+     *
+     * @param accountId
+     * @param status
+     * @param merchantId
+     */
+    int addAccountId(long accountId, int status, long merchantId, Date checkedTime);
 }

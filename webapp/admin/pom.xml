@@ -71,7 +71,11 @@
         </dependency>
         <dependency>
             <groupId>com.jkm</groupId>
-            <artifactId>hss-mq</artifactId>
+            <artifactId>hss-bill-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.jkm</groupId>
+            <artifactId>hss-bill-service</artifactId>
         </dependency>
         <dependency>
             <groupId>com.jkm</groupId>

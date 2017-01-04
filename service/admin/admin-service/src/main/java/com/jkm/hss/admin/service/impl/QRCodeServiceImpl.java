@@ -7,6 +7,7 @@ import com.jkm.base.common.util.DateFormatUtil;
 import com.jkm.base.common.util.ExcelUtil;
 import com.jkm.base.common.util.QRCodeUtil;
 import com.jkm.hss.admin.dao.QRCodeDao;
+import com.jkm.hss.admin.entity.CodeQueryResponse;
 import com.jkm.hss.admin.entity.QRCode;
 import com.jkm.hss.admin.enums.EnumQRCodeActivateStatus;
 import com.jkm.hss.admin.enums.EnumQRCodeDistributionStatus;
@@ -703,5 +704,29 @@ public class QRCodeServiceImpl implements QRCodeService {
     @Override
     public List<Long> getUnDistributeCodeByRangeCode(final String startCode, final String endCode) {
         return this.qrCodeDao.selectUnDistributeCodeByRangeCode(startCode, endCode);
+    }
+
+    @Override
+    public CodeQueryResponse getCode(String code) {
+        CodeQueryResponse codeQueryResponse = this.qrCodeDao.getCode(code);
+        return codeQueryResponse;
+    }
+
+    @Override
+    public CodeQueryResponse getProxyName(long firstLevelDealerId) {
+        CodeQueryResponse codeQueryResponse = this.qrCodeDao.getProxyName(firstLevelDealerId);
+        return codeQueryResponse;
+    }
+
+    @Override
+    public CodeQueryResponse getProxyName1(long secondLevelDealerId) {
+        CodeQueryResponse codeQueryResponse = this.qrCodeDao.getProxyName1(secondLevelDealerId);
+        return codeQueryResponse;
+    }
+
+    @Override
+    public CodeQueryResponse getMerchantName(long merchantId) {
+        CodeQueryResponse codeQueryResponse = this.qrCodeDao.getMerchantName(merchantId);
+        return codeQueryResponse;
     }
 }

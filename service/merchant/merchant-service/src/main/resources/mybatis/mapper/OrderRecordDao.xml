@@ -357,23 +357,32 @@
 
 
 
-	<!--查询交易明细总条数-->
+	<!--查询提现明细总条数-->
 	<select id="selectDrawWithCount" resultType="java.lang.Long">
 		SELECT count(r.id)
 		FROM tb_order_record  r
 		LEFT JOIN tb_merchant_info m on r.merchant_id =m.id
 		WHERE   r.trade_type=1 and r.status= 0
+		<if test="orderId!=null and orderId!=''">
+			AND r.order_id LIKE CONCAT('%',#{orderId})
+		</if>
 		<if test="merchantId!=null and merchantId!=''">
 			AND r.merchant_id =  #{merchantId}
 		</if>
-		<if test="payResult!=null and payResult!=''">
-			AND r.pay_result =  #{payResult}
+		<if test="payResults!=null and payResults.size()>0">
+			AND r.pay_result in
+			<foreach item="item" index="index" collection="payResults" open="(" separator="," close=")">
+				#{item}
+			</foreach>
+		</if>
+		<if test="name!=null and name!=''">
+			AND m.name =  #{name}
 		</if>
 		<if test="mobile!=null and mobile!=''">
 			AND m.md_mobile =  #{mobile}
 		</if>
 		<if test="bankNoShort!=null and bankNoShort!=''">
-			AND m.bank_no_short =  #{bankNoShort}
+			AND m.bank_no_short LIKE CONCAT('%',#{bankNoShort})
 		</if>
 		<if test="startDate!=null and startDate!=''">
 			AND r.create_time <![CDATA[ >= ]]> #{startDate}
@@ -388,7 +397,7 @@
 			AND r.pay_time <![CDATA[ <= ]]> #{payEndDate}
 		</if>
 	</select>
-	<!--分页查询交易明细记录-->
+	<!--分页查询提现记录-->
 	<select id="selectDrawWithRecordByPage" resultType="com.jkm.hss.merchant.entity.OrderRecordAndMerchant">
 		SELECT r.id,
 		r.order_id,
@@ -423,13 +432,16 @@
 		LEFT JOIN tb_merchant_info m on r.merchant_id =m.id
 		WHERE   r.trade_type=1 and r.status= 0
 		<if test="orderId!=null and orderId!=''">
-			AND r.order_id =  #{orderId}
+			AND r.order_id LIKE CONCAT('%',#{orderId})
 		</if>
 		<if test="merchantId!=null and merchantId!=''">
 			AND r.merchant_id =  #{merchantId}
 		</if>
-		<if test="payResult!=null and payResult!=''">
-			AND r.pay_result =  #{payResult}
+		<if test="payResults!=null and payResults.size()>0">
+			AND r.pay_result in
+			<foreach item="item" index="index" collection="payResults" open="(" separator="," close=")">
+				#{item}
+			</foreach>
 		</if>
 		<if test="name!=null and name!=''">
 			AND m.name =  #{name}
@@ -438,7 +450,7 @@
 			AND m.md_mobile =  #{mobile}
 		</if>
 		<if test="bankNoShort!=null and bankNoShort!=''">
-			AND m.bank_no_short =  #{bankNoShort}
+			AND m.bank_no_short LIKE CONCAT('%',#{bankNoShort})
 		</if>
 		<if test="startDate!=null and startDate!=''">
 			AND r.create_time <![CDATA[ >= ]]> #{startDate}
@@ -459,9 +471,10 @@
 
 	<!-- 交易记录 -->
 	<select id="selectOrderList" resultType="com.jkm.hss.merchant.entity.MerchantAndOrderRecord">
-		SELECT o.id,o.order_id,o.merchant_id,o.sub_name,o.pay_channel,o.total_fee,o.real_fee,
+		SELECT o.id,o.order_id,o.merchant_id,o.sub_name,o.pay_channel,o.total_fee,o.real_fee,o.trade_type,
 		o.service_fee,o.channel_fee,o.pay_result,o.settle_status,o.out_trade_no,o.error_message,
-		o.create_time,m.bank_no,m.mobile
+		o.create_time,m.mobile,(SELECT a.proxy_name FROM tb_dealer a WHERE a.id=m.dealer_id) AS proxyName,
+		(SELECT b.channel_name FROM tb_basic_channel b WHERE b.channel_type_sign=o.pay_channel) AS channelName
 		FROM tb_order_record o
 		LEFT JOIN tb_merchant_info m
 		ON o.merchant_id = m.id
@@ -473,7 +486,7 @@
 			AND o.create_time <![CDATA[ <= ]]> #{endTime}
 		</if>
 		<if test="orderId != null and orderId!=''">
-			AND o.order_id = #{orderId}
+			AND o.order_id LIKE CONCAT('%',#{orderId})
 		</if>
 		<if test="merchantId != null and merchantId!=''">
 			AND o.merchant_id = #{merchantId}
@@ -499,8 +512,94 @@
 		<if test="mdMobile != null and mdMobile!=''">
 			AND m.md_mobile = #{mdMobile}
 		</if>
+		<if test="settleStatus != null">
+			AND o.settle_status = #{settleStatus}
+		</if>
 		ORDER BY o.create_time DESC
 		limit #{offset}, #{size}
+	</select>
+
+	<select id="selectOrderListTrade" resultType="com.jkm.hss.merchant.entity.MerchantAndOrderRecord">
+	SELECT o.id,o.order_id,o.merchant_id,o.sub_name,o.pay_channel,o.total_fee,o.real_fee,o.trade_type,
+	o.service_fee,o.channel_fee,o.pay_result,o.settle_status,o.out_trade_no,o.error_message,
+	o.create_time,m.mobile,(SELECT a.proxy_name FROM tb_dealer a WHERE a.id=m.dealer_id) AS proxyName,
+	(SELECT b.channel_name FROM tb_basic_channel b WHERE b.channel_type_sign=o.pay_channel) AS channelName
+	FROM tb_order_record o
+	LEFT JOIN tb_merchant_info m
+	ON o.merchant_id = m.id
+	WHERE o.trade_type=0 and o.status= 0
+		<if test="startTime!=null and startTime!=''">
+			AND o.create_time <![CDATA[ >= ]]> #{startTime}
+		</if>
+		<if test="endTime!=null and endTime!=''">
+			AND o.create_time <![CDATA[ <= ]]> #{endTime}
+		</if>
+		<if test="orderId != null and orderId!=''">
+			AND o.order_id LIKE CONCAT('%',#{orderId})
+		</if>
+		<if test="merchantId != null and merchantId!=''">
+			AND o.merchant_id = #{merchantId}
+		</if>
+		<if test="subName != null and subName!=''">
+			AND o.sub_name = #{subName}
+		</if>
+		<if test="lessTotalFee != null and lessTotalFee!=''">
+			AND o.total_fee <![CDATA[ >= ]]> #{lessTotalFee}
+		</if>
+		<if test="moreTotalFee != null and moreTotalFee!=''">
+			AND o.total_fee <![CDATA[ <= ]]> #{moreTotalFee}
+		</if>
+		<if test="payResults!=null and payResults.size()>0">
+			AND o.pay_result in
+			<foreach item="item" index="index" collection="payResults" open="(" separator="," close=")">
+				#{item}
+			</foreach>
+		</if>
+		<if test="payChannel != 0">
+			AND o.pay_channel = #{payChannel}
+		</if>
+		<if test="mdMobile != null and mdMobile!=''">
+			AND m.md_mobile = #{mdMobile}
+		</if>
+		<if test="settleStatus != null">
+			AND o.settle_status = #{settleStatus}
+		</if>
+		ORDER BY o.create_time DESC
+
+	</select>
+
+	<select id="selectProxyName" resultType="com.jkm.hss.merchant.entity.MerchantAndOrderRecord">
+		SELECT proxy_name FROM tb_dealer WHERE id=#{firstLevel}
+	</select>
+
+	<!-- 交易详情 -->
+	<select id="selectOrderListCountAll" resultType="com.jkm.hss.merchant.entity.MerchantAndOrderRecord">
+		SELECT o.id,o.order_id,o.merchant_id,o.sub_name,o.pay_channel,o.total_fee,o.real_fee,o.trade_type,
+		o.service_fee,o.channel_fee,o.pay_result,o.settle_status,o.out_trade_no,o.error_message,
+		o.pay_time,o.settle_period,m.reserve_mobile,
+		o.create_time,m.bank_no,m.mobile,(SELECT a.proxy_name FROM tb_dealer a WHERE a.id=m.dealer_id) AS proxyName,
+		(SELECT x.level FROM tb_dealer x WHERE x.id=m.dealer_id) AS level,
+		(SELECT x.first_level_dealer_id FROM tb_dealer x WHERE x.id=m.dealer_id) AS firstLevel,
+		(SELECT b.channel_name FROM tb_basic_channel b WHERE b.channel_type_sign=o.pay_channel) AS channelName
+		FROM tb_order_record o
+		LEFT JOIN tb_merchant_info m
+		ON o.merchant_id = m.id
+		WHERE o.trade_type=0 and o.status= 0
+		AND o.id=#{id}
+	</select>
+
+	<!-- 提现详情 -->
+	<select id="selectDrawWithRecordByPageAll" resultType="com.jkm.hss.merchant.entity.OrderRecordAndMerchant">
+		SELECT o.id,o.order_id,o.merchant_id,o.sub_name,o.pay_channel,o.total_fee,o.real_fee,o.trade_type,
+		o.service_fee,o.channel_fee,o.pay_result,o.settle_status,o.out_trade_no,o.error_message,o.body,
+		o.pay_time,o.settle_period,m.reserve_mobile,m.identity,m.bank_name,
+		o.create_time,m.bank_no,m.mobile,(SELECT a.proxy_name FROM tb_dealer a WHERE a.id=m.dealer_id) AS proxyName,
+		(SELECT b.channel_name FROM tb_basic_channel b WHERE b.channel_type_sign=o.pay_channel) AS channelName
+		FROM tb_order_record o
+		LEFT JOIN tb_merchant_info m
+		ON o.merchant_id = m.id
+		WHERE o.trade_type=1 and o.status= 0
+		AND o.id=#{id}
 	</select>
 
 	<select id="selectOrderListCount"  resultType="java.lang.Integer">
@@ -516,7 +615,7 @@
 			AND o.create_time <![CDATA[ <= ]]> #{endTime}
 		</if>
 		<if test="orderId != null and orderId!=''">
-			AND o.order_id = #{orderId}
+			AND o.order_id LIKE CONCAT('%',#{orderId})
 		</if>
 		<if test="merchantId != null and merchantId!=''">
 			AND o.merchant_id = #{merchantId}
@@ -541,6 +640,9 @@
 		</if>
 		<if test="mdMobile != null and mdMobile!=''">
 			AND m.md_mobile = #{mdMobile}
+		</if>
+		<if test="settleStatus != null">
+			AND o.settle_status = #{settleStatus}
 		</if>
 	</select>
 </mapper>

@@ -22,9 +22,15 @@ public interface ShallProfitDetailService {
 
     /**
      * 提现分润
-     * @param orderRecord
+     *
+     * @param orderNo
+     * @param tradeAmount
+     * @param channelSign
+     * @param merchantId
+     * @return
      */
-    Map<String, Triple<Long, BigDecimal, String>> withdrawProfitCount(OrderRecord orderRecord);
+    Map<String, Triple<Long, BigDecimal, String>> withdrawProfitCount(String orderNo, BigDecimal tradeAmount,
+                                                                      int channelSign, long merchantId);
 
     /**
      * 提现需要的参数 (手续费,通道成本)

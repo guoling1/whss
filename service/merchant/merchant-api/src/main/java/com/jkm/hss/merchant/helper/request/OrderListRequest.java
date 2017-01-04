@@ -2,8 +2,6 @@ package com.jkm.hss.merchant.helper.request;
 
 import lombok.Data;
 
-import java.math.BigDecimal;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -14,15 +12,15 @@ public class OrderListRequest {
     /**
      * 页数
      */
-    private int page;
+    private Integer page;
     /**
      * 每页条数
      */
-    private int size;
+    private Integer size;
     /**
      * 条数
      */
-    private int offset;
+    private Integer offset;
 
     /**
      * 查询条件：开始时间
@@ -33,6 +31,11 @@ public class OrderListRequest {
      * 查询条件：结束时间
      */
     private String endTime;
+
+    /**
+     * 订单id
+     */
+    private Long id;
 
     /**
      * 查询条件：设备编号（订单号）
@@ -86,5 +89,5 @@ public class OrderListRequest {
     /**
      *结算状态 0,已经算 1.未结算
      */
-    private int settleStatus=-1;
+    private Integer settleStatus=-1;
 }

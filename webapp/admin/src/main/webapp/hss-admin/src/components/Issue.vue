@@ -1,27 +1,43 @@
 <template lang="html">
   <div id="issue">
-    <h1>分配二维码</h1>
-    <form>
-      <label for="">
-        一级代理
-        <input @keyup="find" type="text" name="name" placeholder="输入代理手机号或名称" v-model="name" autocomplete="off"/>
-        <ul class="list" v-if="listIsShow">
-          <li v-for="(findDealer,index) in this.$data.findDealers" @click='change(index)'>
-            <span>{{findDealer.name}}</span>
-            <span>{{findDealer.mobile}}</span>
-          </li>
-        </ul>
-      </label>
-      <label for="">
-        开始码段
-        <input type="text" name="number" placeholder="请输入开始码段" v-model="query.startCode"/>
-      </label>
-      <label for="">
-        结束码段
-        <input type="text" name="number" placeholder="请输入结束码段" v-model="query.endCode"/>
-      </label>
-      <div class="submit btn btn-primary" id="submit" @click="submit">分配</div>
-    </form>
+    <div style="padding: 8px 30px; background: rgb(243, 156, 18); z-index: 999999; font-size: 22px; font-weight: 600;margin-bottom: 15px;    color: #fff;">分配二维码(按码段)</div>
+    <div style="margin: 0 15px">
+      <div class="box box-info">
+        <form class="form-horizontal">
+          <div class="box-body">
+            <div class="form-group">
+              <label for="inputEmail3" class="col-sm-3 control-label">一级代理</label>
+              <div class="col-sm-5">
+                <input @keyup="find" class="form-control" id="inputEmail3" name="name" placeholder="输入代理手机号或名称" v-model="name" autocomplete="off"/>
+                <div style="position: relative">
+                  <ul class="col-sm-12 list" v-if="listIsShow">
+                    <li v-for="(findDealer,index) in this.$data.findDealers" @click='change(index)'>
+                      <span>{{findDealer.name}}</span>
+                      <span>{{findDealer.mobile}}</span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="inputPassword3" class="col-sm-3 control-label">开始码段</label>
+              <div class="col-sm-5">
+                <input type="text" class="form-control" id="inputPassword3" name="number" placeholder="请输入开始码段" v-model="query.startCode"/>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="inputPassword3" class="col-sm-3 control-label">结束码段</label>
+              <div class="col-sm-5">
+                <input type="text"  class="form-control" id="inputPassword4" name="number" placeholder="请输入结束码段" v-model="query.endCode"/>
+              </div>
+            </div>
+          </div>
+          <div class="box-footer">
+            <div type="submit" class="btn btn-info"  @click="submit">分配二维码</div>
+          </div>
+        </form>
+      </div>
+    </div>
     <message></message>
   </div>
   </div>
@@ -78,8 +94,7 @@
               mobile: res.data.mobile,
               distributeDate: res.data.distributeDate,
               count: res.data.count,
-              startCode: res.data.startCode,
-              endCode: res.data.endCode
+              codes: res.data.codes
             }})
           },function(err){
             this.$store.commit('MESSAGE_ACCORD_SHOW', {
@@ -121,11 +136,11 @@
 
   ul {
     list-style-type: none;
-    padding: 0;
     background: #fff;
-    position: relative;
-    left: 70px;
-    width: 300px;
+    border: 1px solid #d0d0d0;
+    padding: 5px 0;
+    position: absolute;
+    z-index: 10;
   }
 
   li {
@@ -135,23 +150,5 @@
 
   a {
     color: #42b983;
-  }
-  label{
-    display: block;
-    height:50px;
-    line-height: 50px;
-    margin: 10px;
-  input{
-    height: 40px;
-    margin-left: 10px;
-    padding: 10px;
-    width: 35%;
-  }
-  }
-
-  .submit {
-    width: 350px;
-    margin-left: 20px;
-    margin-top: 20px;
   }
 </style>

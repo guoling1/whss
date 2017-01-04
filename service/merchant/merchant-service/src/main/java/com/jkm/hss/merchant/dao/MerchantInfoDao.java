@@ -3,10 +3,10 @@ package com.jkm.hss.merchant.dao;
 import com.google.common.base.Optional;
 import com.jkm.hss.merchant.entity.MerchantInfo;
 import com.jkm.hss.merchant.helper.request.MerchantInfoAddRequest;
-import com.jkm.hss.merchant.helper.request.RequestMerchantInfo;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -33,7 +33,7 @@ public interface MerchantInfoDao {
      * @param openId
      * @return
      */
-    MerchantInfo selectByOpenId(@Param("openId") String openId);
+//    MerchantInfo selectByOpenId(@Param("openId") String openId);
 
 
     /**
@@ -41,7 +41,7 @@ public interface MerchantInfoDao {
      * @param mobile
      * @return
      */
-    MerchantInfo selectByMobile(@Param("mobile") String mobile);
+//    MerchantInfo selectByMobile(@Param("mobile") String mobile);
     /**
      * 根据条件插入
      * @param merchantInfo
@@ -54,7 +54,7 @@ public interface MerchantInfoDao {
      * @param bankNo
      * @return
      */
-    Optional<MerchantInfo> getByNo(@Param("bankNo") String bankNo);
+//    Optional<MerchantInfo> getByNo(@Param("bankNo") String bankNo);
 
     /**
      * 根据dealerId代理商查询
@@ -81,7 +81,7 @@ public interface MerchantInfoDao {
      * @param requestMerchantInfo
      * @return
      */
-    long updateRecord(RequestMerchantInfo requestMerchantInfo);
+//    long updateRecord(RequestMerchantInfo requestMerchantInfo);
 
     /**
      * 商户提交照片
@@ -111,4 +111,22 @@ public interface MerchantInfoDao {
      * @return
      */
     List<MerchantInfo> batchGetMerchantInfo(@Param("merchantIdList") List<Long> merchantIdList);
+
+    /**
+     * 插入accountId
+     *
+     * @param accountId
+     * @param status
+     * @param merchantId
+     * @return
+     */
+    int addAccountId(@Param("accountId") long accountId, @Param("status") int status, @Param("merchantId") long merchantId,@Param("checkedTime") Date checkedTime);
+
+    /**
+     * 根据accountId查询
+     *
+     * @param accountId
+     * @return
+     */
+    MerchantInfo selectByAccountId(@Param("accountId") long accountId);
 }

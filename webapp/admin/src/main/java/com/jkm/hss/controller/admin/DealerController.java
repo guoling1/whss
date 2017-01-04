@@ -123,11 +123,11 @@ public class DealerController extends BaseController {
         final Dealer dealer = dealerOptional.get();
         final List<DealerChannelRate> channelRates = this.dealerChannelRateService.selectByDealerId(dealerId);
         if (CollectionUtils.isEmpty(channelRates)) {
-            return CommonResponse.simpleResponse(-1, "代理商對應产品通道不存在");
+            return CommonResponse.simpleResponse(-1, "代理商对应产品通道不存在");
         }
         final Optional<Product> productOptional = this.productService.selectById(channelRates.get(0).getProductId());
         if (!productOptional.isPresent()) {
-            return CommonResponse.simpleResponse(-1, "代理商對應产品不存在");
+            return CommonResponse.simpleResponse(-1, "代理商对应产品不存在");
         }
         final Product product = productOptional.get();
         final FirstLevelDealerGetResponse firstLevelDealerGetResponse = new FirstLevelDealerGetResponse();
