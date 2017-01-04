@@ -26,6 +26,15 @@
             tb_merchant_info
     </select>
 
+    <!--查询待审核总数-->
+    <select id="getCountRecord" resultType="com.jkm.hss.merchant.entity.MerchantInfoResponse">
+        SELECT
+        COUNT(*)
+        FROM
+        tb_merchant_info
+        WHERE status=2
+    </select>
+
     <select id="selectByName" resultType="com.jkm.hss.merchant.entity.MerchantInfoResponse">
         SELECT
             id,
@@ -52,7 +61,9 @@
             dealer_id,
             create_time,
             authentication_time,
-            (select d.proxy_name from tb_dealer as d where d.id=dealer_id) as proxy_name
+            (select d.proxy_name from tb_dealer as d where d.id=dealer_id) as proxy_name,
+            (select d.level from tb_dealer as d where d.id=dealer_id) as level,
+            (select d.first_level_dealer_id from tb_dealer as d where d.id=dealer_id) as firstLevelDealerId
         FROM
             tb_merchant_info
         WHERE 1=1
@@ -99,9 +110,19 @@
         FROM
           tb_dealer
         WHERE
-          first_level_dealer_id=#{firstLevelDealerId}
-
-
+          id=#{firstLevelDealerId}
     </select>
+
+    <select id="getProxyName1"  resultType="com.jkm.hss.merchant.entity.MerchantInfoResponse">
+
+        SELECT
+        proxy_name
+        FROM
+        tb_dealer
+        WHERE
+        id=#{firstLevelDealerId}
+    </select>
+
+
 
 </mapper>
