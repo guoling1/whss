@@ -10,11 +10,6 @@ import lombok.Getter;
 public enum EnumPaymentType {
 
     /**
-     * 微信公众号
-     */
-//    WECHAT_SUBSCRIPTION(1, "微信公众号"),
-
-    /**
      * 微信扫码
      */
     WECHAT_SCAN_CODE("S", "微信扫码"),

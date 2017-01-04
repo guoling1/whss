@@ -86,7 +86,7 @@
     </update>
 
     <update id="updateSettleStatus">
-        UPDATE tb_order SET settle_status = #{status} WHERE id = #{id}
+        UPDATE tb_order SET settle_status = #{status}, success_settle_time = NOW() WHERE id = #{id}
     </update>
 
     <update id="markSettleSuccess">
