@@ -1143,7 +1143,7 @@ input:focus {
 #payment-wx .keyboard .keys .qr .quick,
 #payment-zfb .keyboard .keys .qr .quick {
   width: 100%;
-  height: 81px;
+  height: 93px;
   overflow: hidden;
   background-color: #ffae44;
 }
@@ -1167,7 +1167,7 @@ input:focus {
 #payment-wx .keyboard .keys .qr .wx-zfb,
 #payment-zfb .keyboard .keys .qr .wx-zfb {
   width: 100%;
-  height: 140px;
+  height: 118px;
   overflow: hidden;
   background-color: #2dc767;
 }
@@ -1176,7 +1176,7 @@ input:focus {
 #payment-zfb .keyboard .keys .qr .wx-zfb .wx-zfb {
   width: 26px;
   height: 60px;
-  margin: 15px auto 10px;
+  margin: 9px auto 4px;
   background: url("../assets/wx&zfb.png") no-repeat center;
   background-size: 26px 60px;
 }
@@ -1230,6 +1230,15 @@ input:focus {
   width: 12px;
   height: 12px;
   transform: translate3d(0, 1px, 0);
+}
+#collection .prompt-deep,
+#payment-wx .prompt-deep,
+#payment-zfb .prompt-deep {
+  font-size: 14px;
+  color: #a6abc3;
+  text-align: left;
+  margin-left: 15px;
+  line-height: 50px;
 }
 #chargeCode {
   padding: 20px 0;
@@ -1752,4 +1761,251 @@ input:focus {
   font-size: 19px;
   color: #FFF;
   font-weight: bold;
+}
+#promote {
+  width: 100%;
+  height: 100%;
+  background-color: #f0eff5;
+}
+#promote .top {
+  width: 100%;
+  height: 180px;
+  background-color: #FFF;
+  padding-top: 25px;
+}
+#promote .top .promote-title {
+  font-size: 14px;
+  color: #7f8cae;
+}
+#promote .top .amount {
+  font-size: 36px;
+  color: #35405b;
+  font-weight: bold;
+}
+#promote .top .qr-code {
+  width: 202px;
+  height: 46px;
+  border-radius: 23px;
+  background-color: #f1f3fb;
+  line-height: 46px;
+  font-size: 15px;
+  color: #7079a0;
+  margin: auto;
+}
+#promote .top .qr-code span {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  background: url("../assets/hss-icon-qrcode.png") no-repeat center;
+  background-size: 18px 18px;
+  margin-right: 10px;
+  transform: translate3d(0, 3px, 0);
+}
+#promote .bottom {
+  box-flex: 1;
+  -webkit-box-flex: 1;
+  -webkit-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
+  width: 100%;
+  background-color: #FFF;
+  border-top: 8px solid #f4f5f8;
+}
+#promote .bottom .teb .space {
+  float: left;
+  width: 50%;
+  height: 45px;
+  line-height: 45px;
+  font-size: 14px;
+  background-color: #FFF;
+  color: #35405b;
+  border: none;
+}
+#promote .bottom .teb .space.disabled {
+  border-bottom: 1px solid #e8eaf3;
+  color: #9ba1bb;
+}
+#promote .bottom .teb .space.disabled.shadow-right {
+  background: #fcfcfe url("../assets/hss-shadow-right.png") no-repeat right top;
+  background-size: 15px 89px;
+}
+#promote .bottom .teb .space.disabled.shadow-left {
+  background: #fcfcfe url("../assets/hss-shadow-left.png") no-repeat left top;
+  background-size: 15px 89px;
+}
+#promote .bottom .cont {
+  box-flex: 1;
+  -webkit-box-flex: 1;
+  -webkit-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
+  width: 100%;
+  overflow: hidden;
+  position: relative;
+}
+#promote .bottom .cont .window {
+  width: 200%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+#promote .bottom .cont .window li {
+  float: left;
+  width: 50%;
+  height: 100%;
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+}
+#promote .bottom .cont .window li .total {
+  width: 100%;
+  height: 40px;
+  line-height: 40px;
+  padding-left: 15px;
+  font-size: 15px;
+  color: #48527f;
+  text-align: left;
+}
+#promote .bottom .cont .window li .list {
+  width: 100%;
+  height: 40px;
+  line-height: 40px;
+  padding: 0 15px;
+}
+#promote .bottom .cont .window li .list .name {
+  float: left;
+  width: 35%;
+  text-align: left;
+  font-size: 15px;
+  color: #48527f;
+}
+#promote .bottom .cont .window li .list .name span {
+  display: inline-block;
+  margin-left: 5px;
+  width: 31px;
+  height: 14px;
+  line-height: 14px;
+  background-color: #4ecab1;
+  font-size: 10px;
+  color: #FFF;
+  border-radius: 7px;
+  transform: translate3d(0, -1px, 0);
+  text-align: center;
+}
+#promote .bottom .cont .window li .list .name span.z {
+  background-color: #4ecab1;
+}
+#promote .bottom .cont .window li .list .name span.j {
+  background-color: #f8ac74;
+}
+#promote .bottom .cont .window li .list .date {
+  float: left;
+  width: 40%;
+  text-align: center;
+  font-size: 14px;
+  color: #48527f;
+}
+#promote .bottom .cont .window li .list .amount {
+  float: right;
+  width: 25%;
+  text-align: right;
+  font-size: 15px;
+  color: #48527f;
+}
+#promote .rules {
+  width: 50px;
+  height: 50px;
+  position: fixed;
+  background-color: #FFF;
+  z-index: 9;
+  bottom: 30px;
+  right: 15px;
+  border-radius: 50%;
+  box-shadow: 0 0 15px #dddddd;
+  font-size: 10px;
+  color: #7f8cae;
+}
+#promote .rules span {
+  display: block;
+  width: 15px;
+  height: 17px;
+  margin: 10px auto 0;
+  background: url("../assets/hss-rules.png") no-repeat center;
+  background-size: 15px 17px;
+}
+#promote .layer {
+  display: none;
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 99;
+  background: #575757;
+  padding: 25px 15px;
+  transition: all 0.4s;
+  -webkit-transition: all 0.4s;
+}
+#promote .layer.active {
+  display: block;
+}
+#promote .layer .space {
+  width: 100%;
+  height: 100%;
+  background-color: #FFF;
+  box-shadow: 0 5px 7px #424242;
+}
+#promote .layer .space .content {
+  box-flex: 1;
+  -webkit-box-flex: 1;
+  -webkit-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
+  width: 100%;
+}
+#promote .layer .space .content .logo {
+  width: 100px;
+  height: 31px;
+  background: url("../assets/hss-logo.png") no-repeat center;
+  background-size: 100px 31px;
+  margin: 40px auto;
+}
+#promote .layer .space .content .qr-code {
+  box-flex: 1;
+  -webkit-box-flex: 1;
+  -webkit-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
+  width: 100%;
+  position: relative;
+}
+#promote .layer .space .content .qr-code div {
+  width: 210px;
+  height: 210px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate3d(-50%, -50%, 0);
+}
+#promote .layer .space .content .word {
+  margin: 40px auto;
+  font-size: 12px;
+  color: #2b2b2b;
+}
+#promote .layer .space .divider {
+  width: 100%;
+  height: 18px;
+  background: url('../assets/hss-divider.png') no-repeat center;
+  background-size: 100% 18px;
+}
+#promote .layer .space .describe {
+  width: 100%;
+  height: 90px;
+}
+#promote .layer .space .describe p {
+  font-size: 12px;
+  color: #989898;
+  text-align: left;
+  padding-left: 15px;
+  line-height: 26px;
 }
