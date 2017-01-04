@@ -22,6 +22,6 @@
   <a href="/sqb/repeatAddInfo/${id}" class="btn">重新提交资料</a>
 </div>
 </body>
-<script src="http://static.jinkaimen.cn/vendor/vendor.min.js"></script>
+<script src="http://static.jinkaimen.cn/vendor/vendor.1.0.1.min.js"></script>
 <script src="http://static.jinkaimen.cn/hss/0.1.19/common.min.js"></script>
 </html>

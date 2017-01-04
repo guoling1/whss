@@ -36,6 +36,6 @@
   </ul>
 </div>
 </body>
-<script src="http://static.jinkaimen.cn/vendor/vendor.min.js"></script>
+<script src="http://static.jinkaimen.cn/vendor/vendor.1.0.1.min.js"></script>
 <script src="http://static.jinkaimen.cn/dealer/0.1.1/common.min.js"></script>
 </html>

@@ -76,6 +76,6 @@
     merchantId: ${mid}
   }
 </script>
-<script src="http://static.jinkaimen.cn/vendorT/vendor.min.js"></script>
+<script src="http://static.jinkaimen.cn/vendor/vendor.1.0.1.min.js"></script>
 <script src="http://static.jinkaimen.cn/hss/0.1.19/payment.min.js"></script>
 </html>
