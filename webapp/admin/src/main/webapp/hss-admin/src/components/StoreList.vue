@@ -40,8 +40,8 @@
                   <tr role="row" class="odd" v-for="store in $$data.stores">
                     <td class="sorting_1">{{store.id}}</td>
                     <td>{{store.merchantName}}</td>
-                    <td>{{store.proxyName}}</td>
-                    <td>{{store.proxyName1}}</td>
+                    <td>{{store.proxyName|changeName}}</td>
+                    <td>{{store.proxyName1|changeName}}</td>
                     <td>{{store.createTime|changeTime}}</td>
                     <td>{{store.authenticationTime|changeTime}}</td>
                     <td>{{store.checkedTime|changeTime}}</td>
@@ -62,6 +62,7 @@
                   <ul class="pagination" id="page" @click="bindEvent($event)">
 
                   </ul>
+                  <span class="count">共{{count}}条</span>
                 </div>
               </div>
             </div>
@@ -96,7 +97,8 @@
         total:0,
         status:'',
         isMask: false,
-        url: ''
+        url: '',
+        count:''
       }
     },
     created: function () {
@@ -110,6 +112,7 @@
       }).then(function (res) {
         this.$data.stores   = res.data.records;
         this.$data.total = res.data.totalPage;
+        this.$data.count = res.data.count;
         var str='',
           page=document.getElementById('page');
         str+='<li class="paginate_button previous disabled" id="example2_previous"><a href="#" aria-controls="example2" data-dt-idx="0" tabindex="0">上一页</a></li>'
@@ -131,13 +134,14 @@
     methods: {
       onload:function () {
         this.$data.isMask = true;
-        this.$http.post('',{
-          pageNo:this.$data.pageNo,
+        this.$http.post('/admin/query/downLoad',{
+          /*pageNo:this.$data.pageNo,
           pageSize:this.$data.pageSize,
           merchantName:this.$data.merchantName,
-          status: this.$data.status
+          status: this.$data.status*/
         })
           .then(function (res) {
+            console.log(res)
             this.$data.url = res.data.url;
           },function (err) {
             this.$store.commit('MESSAGE_ACCORD_SHOW', {
@@ -283,6 +287,13 @@
           var second=val.getSeconds();
           return year+"-"+month+"-"+date+" "+hour+":"+minute+":"+second;
         }
+      },
+      changeName: function (val) {
+        if(val==null){
+          return "无"
+        }else {
+          return val
+        }
       }
     }
   }
@@ -308,9 +319,6 @@
     margin: 0 10px;
   }
 
-  a {
-    color: #42b983;
-  }
 
   .search{
     margin-bottom: 15px;
@@ -320,5 +328,17 @@
     select{
       margin-right: 20px;
     }
+  }
+  .mask{
+    width: 30%;
+    position: fixed;
+    top: 30%;
+    left: 46%;
+    box-shadow: 0 0 15px #000;
+  }
+  .count{
+    display: inline-block;
+    vertical-align: top;
+    margin: 28px 10px;
   }
 </style>

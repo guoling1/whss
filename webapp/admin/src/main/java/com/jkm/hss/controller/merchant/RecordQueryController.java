@@ -33,7 +33,7 @@ public class RecordQueryController extends BaseController {
         int pageNo = merchantInfoResponse.getPageNo();
         int pageSize = merchantInfoResponse.getPageSize();
         merchantInfoResponse.setPageNo((pageNo-1) * pageSize);
-        List<MerchantInfoResponse> list1 = this.merchantInfoQueryService.getCount();
+        List<MerchantInfoResponse> list1 = this.merchantInfoQueryService.getCountRecord();
         List<MerchantInfoResponse> list = this.merchantInfoQueryService.getRecord(merchantInfoResponse);
         if (list==null){
             return CommonResponse.simpleResponse(-1,"未查到相关数据");

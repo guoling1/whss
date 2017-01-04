@@ -51,7 +51,7 @@
             <div class="col-md-3">
               <div class="form-group">
                 <label>支付流水号：</label>
-                <input type="text" class="form-control" v-model="$$query.orderId">
+                <input type="text" class="form-control" v-model="$$query.sn">
               </div>
               <div class="form-group">
                 <div class="btn btn-primary" @click="lookup">筛选</div>
@@ -84,8 +84,9 @@
                   <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">渠道方</th>
                   <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">支付账号</th>
                   <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">支付状态</th>
-                  <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">报错信息</th>
+                  <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">渠道信息</th>
                   <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">备注信息</th>
+                  <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">操作</th>
                 </tr>
                 </thead>
                 <tbody id="content">
@@ -103,6 +104,7 @@
                   <td>{{order.statusValue}}</td>
                   <td>{{order.message}}</td>
                   <td>{{order.remark}}</td>
+                  <td><a href="javascript:;" @click="synchro(order.sn)">补单</a></td>
                 </tr>
                 </tbody>
               </table>
@@ -120,6 +122,7 @@
               <div class="dataTables_paginate paging_simple_numbers" id="example2_paginate">
                 <ul class="pagination" id="page" @click="bindEvent($event)">
                 </ul>
+                <span class="count">共{{count}}条</span>
               </div>
             </div>
           </div>
@@ -162,7 +165,8 @@
         orders:[],
         total:'',
         isMask: false,
-        url: ''
+        url: '',
+        count:''
       }
     },
     created:function(){
@@ -170,6 +174,7 @@
         .then(function (res) {
           this.$data.orders=res.data.records;
           this.$data.total=res.data.totalPage;
+          this.$data.count=res.data.count;
           var str = '',
             page = document.getElementById('page');
           str+='<li class="paginate_button previous" id="example2_previous"><a href="#" aria-controls="example2" data-dt-idx="0" tabindex="0">上一页</a></li>'
@@ -254,7 +259,7 @@
           tar.parentNode.className+=' active'
           n = Number(tarInn);
         }
-        this.$data.query.pageNo = n;
+        this.$data.query.page = n;
         this.$http.post('http://192.168.1.20:8076/order/pay/listOrder',this.$data.query)
           .then(function (res) {
             this.$data.orders=res.data.records;
@@ -371,6 +376,20 @@
               })
             })
         }
+      },
+      //补单
+      synchro: function (val) {
+        console.log(val)
+        this.$http.post('http://192.168.1.20:8076/order/syncPayOrder',{sn:val})
+          .then(function (res) {
+            this.$store.commit('MESSAGE_ACCORD_SHOW', {
+              text: res.msg
+            })
+          },function (err) {
+            this.$store.commit('MESSAGE_ACCORD_SHOW', {
+              text: err.statusMessage
+            })
+          })
       }
     },
     computed: {
@@ -456,5 +475,10 @@
   }
   .table td[data-v-497723e2], .table th[data-v-497723e2]{
     width: inherit;
+  }
+  .count{
+    display: inline-block;
+    vertical-align: top;
+    margin: 28px 10px;
   }
 </style>

@@ -115,8 +115,8 @@
                   <td><router-link :to="{ path: '/admin/record/newDealDet', query: {orderNo: order.orderNo}}">{{order.orderNo|changeHide}}</router-link></td>
                   <td>{{order.createTime|changeTime}}</td>
                   <td>{{order.merchantName}}</td>
-                  <td>{{order.proxyName}}</td>
-                  <td>{{order.proxyName1}}</td>
+                  <td>{{order.proxyName|changeName}}</td>
+                  <td>{{order.proxyName1|changeName}}</td>
                   <td style="text-align: right">{{order.tradeAmount|toFix}}</td>
                   <td>{{order.payRate}}</td>
                   <td>{{order.status|changeStatus}}<!--<a href="javascript:;">(补发)</a>--></td>
@@ -141,6 +141,7 @@
               <div class="dataTables_paginate paging_simple_numbers" id="example2_paginate">
                 <ul class="pagination" id="page" @click="bindEvent($event)">
                 </ul>
+                <span class="count">共{{count}}条</span>
               </div>
             </div>
           </div>
@@ -189,7 +190,8 @@
         },
         orders:[],
         total:'',
-        url:''
+        url:'',
+        count:''
       }
     },
     created:function(){
@@ -198,6 +200,7 @@
           console.log(res)
           this.$data.orders=res.data.records;
           this.$data.total=res.data.totalPage;
+          this.$data.count=res.data.count;
           this.$data.url=res.data.ext;
           var str = '',
             page = document.getElementById('page');
@@ -441,6 +444,13 @@
       },
       toFix: function (val) {
         return parseFloat(val).toFixed(2);
+      },
+      changeName: function (val) {
+        if(val==null){
+          return "无"
+        }else {
+          return val
+        }
       }
     }
   }
@@ -496,6 +506,11 @@
     line-height: 25px;
     font-size: 12px;
     padding: 0 6px;
+  }
+  .count{
+    display: inline-block;
+    vertical-align: top;
+    margin: 28px 10px;
   }
   .table td[data-v-497723e2], .table th[data-v-497723e2]{
     width: inherit;
