@@ -156,9 +156,9 @@ public class WithdrawServiceImpl implements WithdrawService {
     @Transactional
     public void handleWithdrawCallbackMsg(final PaymentSdkWithdrawCallbackResponse paymentSdkWithdrawCallbackResponse) {
         final Order order = this.orderService.getByOrderNoAndTradeType(paymentSdkWithdrawCallbackResponse.getOrderNo(), EnumTradeType.WITHDRAW.getId()).get();
-        final MerchantInfo merchant = this.merchantInfoService.getByAccountId(order.getPayer()).get();
+//        final MerchantInfo merchant = this.merchantInfoService.getByAccountId().get();
         if (order.isWithDrawing()) {
-            this.handleWithdrawResult(order.getId(), merchant.getAccountId(), paymentSdkWithdrawCallbackResponse);
+            this.handleWithdrawResult(order.getId(), order.getPayer(), paymentSdkWithdrawCallbackResponse);
         }
     }
 

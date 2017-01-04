@@ -16,7 +16,7 @@
         content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
   <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
   <title>好收收</title>
-  <link rel="stylesheet" href="http://static.jinkaimen.cn/hss/css/style.css">
+  <link rel="stylesheet" href="http://static.jinkaimen.cn/hss/css/style.2.0.1.css">
   <link rel="stylesheet" href="http://static.jinkaimen.cn/weui/weui.css">
 </head>
 <body>
@@ -39,12 +39,14 @@
     </div>
   </div>
   <div class="record">
-    <a href="/sqb/tradeRecord" class="group touch_gr"><span class="money"></span>交易记录</a>
-    <a href="/sqb/bank" class="group touch_gr"><span class="card"></span>银行卡</a>
+    <a href="/sqb/tradeRecord" class="group touch_gr"><span class="record"></span>交易记录</a>
+    <a href="/sqb/bank" class="group touch_gr"><span class="bank"></span>银行卡</a>
+    <a href="javascript:void(0)" class="group touch_gr"><span class="user"></span>用户认证</a>
+    <a href="javascript:void(0)" class="group touch_gr"><span class="help"></span>使用帮助</a>
   </div>
   <div class="flexBox flex-box-column">
     <div class="advertisement">
-
+      <img src="http://static.jinkaimen.cn/hss/assets/banner.png" alt="">
     </div>
     <div class="application">
       <div class="group">
@@ -81,6 +83,6 @@
   </div>
 </div>
 </body>
-<script src="http://static.jinkaimen.cn/vendor/vendor.min.js"></script>
-<script src="http://static.jinkaimen.cn/hss/0.1.19/wallet.min.js"></script>
+<script src="http://static.jinkaimen.cn/vendor/vendor.1.0.1.min.js"></script>
+<script src="http://static.jinkaimen.cn/hss/2.0.1/wallet.min.js"></script>
 </html>

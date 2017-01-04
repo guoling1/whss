@@ -79,10 +79,12 @@ public class AccountFlowServiceImpl implements AccountFlowService {
         accountFlow.setType(type.getId());
         if (EnumAccountFlowType.DECREASE.getId() == type.getId()) {
             accountFlow.setOutAmount(changeAmount);
+            accountFlow.setIncomeAmount(new BigDecimal("0.00"));
             accountFlow.setBeforeAmount(account.getAvailable().add(changeAmount));
             accountFlow.setAfterAmount(account.getAvailable());
         }
         if (EnumAccountFlowType.INCREASE.getId() == type.getId()) {
+            accountFlow.setOutAmount(new BigDecimal("0.00"));
             accountFlow.setIncomeAmount(changeAmount);
             accountFlow.setBeforeAmount(account.getAvailable().subtract(changeAmount));
             accountFlow.setAfterAmount(account.getAvailable());

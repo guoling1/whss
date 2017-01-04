@@ -3,6 +3,7 @@ package com.jkm.hss.bill.service.impl;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.jkm.base.common.entity.ExcelSheetVO;
+import com.jkm.base.common.entity.PageModel;
 import com.jkm.base.common.util.ExcelUtil;
 import com.jkm.base.common.util.SnGenerator;
 import com.jkm.hss.account.entity.Account;
@@ -13,6 +14,7 @@ import com.jkm.hss.bill.entity.Order;
 import com.jkm.hss.bill.enums.EnumOrderStatus;
 import com.jkm.hss.bill.enums.EnumSettleStatus;
 import com.jkm.hss.bill.enums.EnumTradeType;
+import com.jkm.hss.bill.helper.requestparam.QueryMerchantPayOrdersRequestParam;
 import com.jkm.hss.bill.service.CalculateService;
 import com.jkm.hss.bill.service.OrderService;
 import com.jkm.hss.merchant.entity.MerchantInfo;
@@ -88,7 +90,7 @@ public class OrderServiceImpl implements OrderService {
         playMoneyOrder.setPayChannelSign(payOrder.getPayChannelSign());
         playMoneyOrder.setPayer(merchant.getAccountId());
         playMoneyOrder.setPayee(0);
-        playMoneyOrder.setPayAccount(tradePeriod);
+//        playMoneyOrder.setPayAccount(tradePeriod);
         BigDecimal merchantWithdrawPoundage = this.calculateService.getMerchantWithdrawPoundage(merchantId, payOrder.getPayChannelSign());
         playMoneyOrder.setPoundage(merchantWithdrawPoundage);
         playMoneyOrder.setGoodsName(merchant.getMerchantName());
@@ -208,46 +210,6 @@ public class OrderServiceImpl implements OrderService {
         return Optional.fromNullable(this.orderDao.selectByPayOrderId(payOrderId));
     }
 
-//    private List<String>  PayOf(String status) {
-//        List<String> payResults = new ArrayList<String>();
-//        if("N".equals(status)){
-//            payResults.add("N");
-//        }
-//        if("H".equals(status)){
-//            payResults.add("H");
-//            payResults.add("W");
-//            payResults.add("A");
-//            payResults.add("E");
-//        }
-//        if("S".equals(status)){
-//            payResults.add("S");
-//        }
-//        if("F".equals(status)){
-//            payResults.add("F");
-//        }
-//        return payResults;
-//    }
-//
-    private String  PayOfStatus(String status) {
-        String message = "";
-        if("N".equals(status)){
-            message="微信二维码";
-        }
-        if("H".equals(status)||"W".equals(status)||"A".equals(status)||"E".equals(status)){
-            message="微信H5收银台";
-        }
-        if("S".equals(status)){
-            message="微信扫码";
-        }
-        if("B".equals(status)){
-            message="快捷收款";
-        }
-        if("Z".equals(status)){
-            message="支付宝扫码";
-        }
-        return message;
-    }
-
     @Override
     public List<MerchantTradeResponse> selectOrderListByPage(OrderTradeRequest req) {
         Map<String,Object> map = new HashMap<String,Object>();
@@ -268,30 +230,18 @@ public class OrderServiceImpl implements OrderService {
         List<MerchantTradeResponse> list = orderDao.selectOrderList(map);
         if(list.size()>0){
             for(int i=0;i<list.size();i++){
-                long payee = list.get(i).getPayee();
-                long payer = list.get(i).getPayer();
-                List<MerchantTradeResponse> lists = orderDao.getMerchant(payee,payer);
-                if (lists.size()>0){
-                    for(int j=0;j<lists.size();j++){
-                        list.get(i).setMerchantName(lists.get(j).getMerchantName());
-                        List<MerchantTradeResponse> result = orderDao.getDealer(lists.get(j).getDealerId());
-                        if (result.size()>0){
-                            for (int x=0;result.size()>x;x++){
-                                if (result.get(x).getLevel()==1){
-                                    list.get(i).setProxyName(result.get(x).getProxyName());
-                                }
-                                if (result.get(x).getLevel()==1){
-                                    List<MerchantTradeResponse> res = orderDao.getProxyName(result.get(x).getFirstLevelDealerId());
-                                    if (res.size()>0){
-                                        for (int m=0;res.size()>m;m++){
-                                            list.get(i).setProxyName1(res.get(m).getProxyName());
-                                        }
-                                    }
-                                }
-                            }
+                if (list.get(i).getLevel()==1){
+                    list.get(i).setProxyName(list.get(i).getProxyName());
+                }
+                if (list.get(i).getLevel()==2){
+                    List<MerchantTradeResponse> res = orderDao.getProxyName(list.get(i).getFirstLevelDealerId());
+                    if (res.size()>0){
+                        for (int m=0;res.size()>m;m++){
+                            list.get(i).setProxyName1(res.get(m).getProxyName());
                         }
                     }
                 }
+
 
 
             }
@@ -353,8 +303,7 @@ public class OrderServiceImpl implements OrderService {
         MerchantTradeResponse list = orderDao.selectOrderListByPageAll(req.getOrderNo());
         if(list != null){
             long payee = list.getPayee();
-            long payer = list.getPayer();
-            MerchantTradeResponse lists = orderDao.getMerchantAll(payee,payer);
+            MerchantTradeResponse lists = orderDao.getMerchantAll(payee);
             list.setCreateTimes(lists.getCreateTime());
             if (lists.getMobile()!=null&&!"".equals(lists.getMobile())){
                 list.setMobile(MerchantSupport.decryptMobile(lists.getMobile()));
@@ -404,6 +353,24 @@ public class OrderServiceImpl implements OrderService {
     }
 
     /**
+     * {@inheritDoc}
+     *
+     * @param requestParam
+     * @return
+     */
+    @Override
+    public PageModel<Order> queryMerchantPayOrders(final QueryMerchantPayOrdersRequestParam requestParam) {
+        final PageModel<Order> pageModel = new PageModel<>(requestParam.getPageNo(), requestParam.getPageSize());
+        requestParam.setOffset(pageModel.getFirstIndex());
+        requestParam.setCount(pageModel.getPageSize());
+        final long count = this.orderDao.selectCountMerchantPayOrders(requestParam);
+        final List<Order> orders = this.orderDao.selectMerchantPayOrders(requestParam);
+        pageModel.setCount(count);
+        pageModel.setRecords(orders);
+        return pageModel;
+    }
+
+    /**
      * 生成ExcelVo
      * @param
      * @param baseUrl
@@ -413,29 +380,18 @@ public class OrderServiceImpl implements OrderService {
         List<MerchantTradeResponse> list = orderDao.selectOrderListTrade(req);
         if(list.size()>0){
             for(int i=0;i<list.size();i++){
-                long payee = list.get(i).getPayee();
-                long payer = list.get(i).getPayer();
-                List<MerchantTradeResponse> lists = orderDao.getMerchant(payee,payer);
-                if (lists.size()>0){
-                    for(int j=0;j<lists.size();j++){
-                        list.get(i).setMerchantName(lists.get(j).getMerchantName());
-                        List<MerchantTradeResponse> result = orderDao.getDealer(lists.get(j).getDealerId());
-                        if (result.size()>0){
-                            for (int x=0;result.size()>x;x++){
-                                if (result.get(x).getLevel()==1){
-                                    list.get(i).setProxyName(result.get(x).getProxyName());
-                                }
-                                if (result.get(x).getLevel()==1){
-                                    List<MerchantTradeResponse> res = orderDao.getProxyName(result.get(x).getFirstLevelDealerId());
-                                    if (res.size()>0){
-                                        for (int m=0;res.size()>m;m++){
-                                            list.get(i).setProxyName1(res.get(m).getProxyName());
-                                        }
-                                    }
-                                }
-                            }
+
+                if (list.get(i).getLevel()==1){
+                    list.get(i).setProxyName(list.get(i).getProxyName());
+                }
+                if (list.get(i).getLevel()==2){
+                    List<MerchantTradeResponse> res = orderDao.getProxyName(list.get(i).getFirstLevelDealerId());
+                    if (res.size()>0){
+                        for (int m=0;res.size()>m;m++){
+                            list.get(i).setProxyName1(res.get(m).getProxyName());
                         }
                     }
+
                 }
 
 
@@ -457,7 +413,7 @@ public class OrderServiceImpl implements OrderService {
         heads.add("支付方式");
         heads.add("手续费");
         heads.add("支付渠道");
-        heads.add("错误信息");
+        heads.add("备注信息");
         datas.add(heads);
         if(list.size()>0){
             for(int i=0;i<list.size();i++){

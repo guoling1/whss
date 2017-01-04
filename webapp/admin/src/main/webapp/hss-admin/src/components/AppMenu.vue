@@ -47,6 +47,7 @@
           <ul class="treeview-menu">
             <li class="active"><router-link to="/admin/record/storeList"><span>商户列表</span> </router-link></li>
             <li><router-link to="/admin/record/storeAccount"><span>商户账户</span> </router-link></li>
+            <li class="active"><router-link to="/admin/record/storeAuditList"><span>待审核商户</span> </router-link></li>
           </ul>
           </router-link>
         </li>

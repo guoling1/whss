@@ -14,11 +14,11 @@
               <th style="text-align: right">注册时间:</th>
               <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.createTime|changeTime" readonly></td>
               <th style="text-align: right">注册方式:</th>
-              <td><input type="text" style="background:#efecec;padding-left:5px;" readonly></td>
+              <td><input type="text" style="background:#efecec;padding-left:5px;" value="—" readonly></td>
             </tr>
             <tr>
               <th style="text-align: right">一级代理编号:</th>
-              <td><input type="text" style="background:#efecec;padding-left:5px;" readonly></td>
+              <td><input type="text" style="background:#efecec;padding-left:5px;" value="—" readonly></td>
               <th style="text-align: right">一级代理名称:</th>
               <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.proxyName|changeDeal" readonly></td>
               <th></th>
@@ -26,7 +26,7 @@
             </tr>
             <tr>
               <th style="text-align: right">二级代理编号:</th>
-              <td><input type="text" style="background:#efecec;padding-left:5px;" readonly></td>
+              <td><input type="text" style="background:#efecec;padding-left:5px;" value="—" readonly></td>
               <th style="text-align: right">二级代理名称:</th>
               <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.proxyName1|changeDeal" readonly></td>
               <th></th>
@@ -34,11 +34,11 @@
             </tr>
             <tr>
               <th style="text-align: right">推荐人编号:</th>
-              <td><input type="text" style="background:#efecec;padding-left:5px;" readonly></td>
+              <td><input type="text" style="background:#efecec;padding-left:5px;" value="—" readonly></td>
               <th style="text-align: right">推荐人名称:</th>
               <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.proxyName1|changeDeal" readonly></td>
               <th style="text-align: right">推荐人注册手机号:</th>
-              <td><input type="text" style="background:#efecec;padding-left:5px;" readonly></td>
+              <td><input type="text" style="background:#efecec;padding-left:5px;" value="—" readonly></td>
             </tr>
             </tbody></table>
         </div>
@@ -58,7 +58,7 @@
             </tr>
             <tr>
               <th style="text-align: right">经营种类:</th>
-              <td><input type="text" style="background:#efecec;padding-left:5px;" readonly></td>
+              <td><input type="text" style="background:#efecec;padding-left:5px;" value="—" readonly></td>
               <th style="text-align: right">商户详细地址:</th>
               <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.address" readonly></td>
               <th style="text-align: right">结算卡号:</th>
@@ -70,7 +70,7 @@
               <th style="text-align: right">开户手机号:</th>
               <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.reserveMobile" readonly></td>
               <th style="text-align: right">实名认证时间:</th>
-              <td><input type="text" style="background:#efecec;padding-left:5px;" readonly></td>
+              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.authenticationTime" readonly></td>
             </tr>
             </tbody></table>
         </div>
@@ -84,13 +84,13 @@
               <th style="text-align: right">资料审核状态:</th>
               <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.status|status" readonly></td>
               <th style="text-align: right">审核时间:</th>
-              <td><input type="text" style="background:#efecec;padding-left:5px;" readonly></td>
+              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.checkedTime|changeTime" readonly></td>
               <th style="text-align: right">审核人:</th>
-              <td><input type="text" style="background:#efecec;padding-left:5px;" readonly></td>
+              <td><input type="text" style="background:#efecec;padding-left:5px;" value="—" readonly></td>
             </tr>
             <tr>
               <th style="text-align: right">审核批复信息:</th>
-              <td><input type="text" style="background:#efecec;padding-left:5px;" readonly></td>
+              <td><input type="text" style="background:#efecec;padding-left:5px;" value="—" readonly></td>
               <th></th>
               <td></td>
               <th></th>

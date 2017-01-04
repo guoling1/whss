@@ -2,6 +2,7 @@ package com.jkm.hss.bill.dao;
 
 import com.jkm.hss.bill.entity.MerchantTradeResponse;
 import com.jkm.hss.bill.entity.Order;
+import com.jkm.hss.bill.helper.requestparam.QueryMerchantPayOrdersRequestParam;
 import com.jkm.hss.merchant.helper.request.OrderTradeRequest;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
@@ -113,20 +114,7 @@ public interface OrderDao {
     int selectOrderListCount(Map map);
 
 
-    /**
-     * 查询商户信息
-     * @param payee
-     * @param payer
-     * @return
-     */
-    List<MerchantTradeResponse> getMerchant(@Param("payee") long payee,@Param("payer") long payer);
 
-    /**
-     * 查询代理商
-     * @param dealerId
-     * @return
-     */
-    List<MerchantTradeResponse> getDealer(@Param("dealerId") long dealerId);
 
     /**
      * 查询firstLevelDealerId
@@ -154,10 +142,9 @@ public interface OrderDao {
     /**
      * 查询商户信息
      * @param payee
-     * @param payer
      * @return
      */
-    MerchantTradeResponse getMerchantAll(@Param("payee") long payee,@Param("payer") long payer);
+    MerchantTradeResponse getMerchantAll(@Param("payee") long payee);
 
     /**
      * 查询代理商信息
@@ -180,4 +167,20 @@ public interface OrderDao {
      * @return
      */
     Order selectByOrderNo(@Param("orderNo") String orderNo);
+
+    /**
+     * 查询商户的收款单-分页
+     *
+     * @param requestParam
+     * @return
+     */
+    List<Order> selectMerchantPayOrders(QueryMerchantPayOrdersRequestParam requestParam);
+
+    /**
+     * 查询商户的收款单个数-分页
+     *
+     * @param requestParam
+     * @return
+     */
+    long selectCountMerchantPayOrders(QueryMerchantPayOrdersRequestParam requestParam);
 }

@@ -1,5 +1,7 @@
 package com.jkm.hss.bill.enums;
 
+import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableMap;
 import lombok.Getter;
 
 /**
@@ -8,11 +10,6 @@ import lombok.Getter;
  * 支付方式
  */
 public enum EnumPaymentType {
-
-    /**
-     * 微信公众号
-     */
-//    WECHAT_SUBSCRIPTION(1, "微信公众号"),
 
     /**
      * 微信扫码
@@ -50,5 +47,20 @@ public enum EnumPaymentType {
     EnumPaymentType(final String id, final String value) {
         this.id = id;
         this.value = value;
+    }
+
+    private static final ImmutableMap<String, EnumPaymentType> INIT_MAP;
+
+    static {
+        final ImmutableMap.Builder<String, EnumPaymentType> builder = new ImmutableMap.Builder<>();
+        for (EnumPaymentType status : EnumPaymentType.values()) {
+            builder.put(status.getId(), status);
+        }
+        INIT_MAP = builder.build();
+    }
+
+    public static EnumPaymentType of (final String type) {
+        Preconditions.checkState(INIT_MAP.containsKey(type), "unknown status[{}]", type);
+        return INIT_MAP.get(type);
     }
 }

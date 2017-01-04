@@ -64,7 +64,7 @@
       <div class="box" style="overflow: hidden">
       <div class="box-header">
         <h3 class="box-title">支付记录</h3>
-        <!--<a :href="'http://'+this.$data.url" download="交易记录" class="btn btn-primary" style="float: right;color: #fff">导出</a>-->
+        <span @click="onload()" download="交易记录" class="btn btn-primary" style="float: right;color: #fff">导出</span>
       </div>
       <div class="box-body">
         <div id="example2_wrapper" class="dataTables_wrapper form-inline dt-bootstrap">
@@ -73,8 +73,7 @@
               <table id="example2" class="table table-bordered table-hover dataTable" role="grid" aria-describedby="example2_info">
                 <thead>
                 <tr role="row">
-                  <th class="sorting_asc" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Rendering engine: activate to sort column descending">序号</th>
-                  <th class="sorting_asc" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Rendering engine: activate to sort column descending">支付流水号</th>
+                  <th class="sorting_asc" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Rendering engine: activate to sort column descending">打款流水号</th>
                   <th class="sorting_asc" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Rendering engine: activate to sort column descending">交易单号</th>
                   <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="Platform(s): activate to sort column ascending">支付金额</th>
                   <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="Platform(s): activate to sort column ascending">创建时间</th>
@@ -87,22 +86,23 @@
                   <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">支付状态</th>
                   <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">报错信息</th>
                   <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">备注信息</th>
-                  <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">操作</th>
                 </tr>
                 </thead>
                 <tbody id="content">
-                <tr v-if="order.tradeType==0" role="row" v-for="order in this.$data.orders">
-                  <td><router-link :to="{ path: '/admin/record/dealDet', query: {id: order.id}}">{{order.orderId|changeHide}}</router-link></td>
+                <tr role="row" v-for="order in $$orders">
+                  <td>{{order.sn}}</td>
+                  <td>{{order.orderNo}}</td>
+                  <td>{{order.payAmount}}</td>
                   <td>{{order.createTime|changeTime}}</td>
-                  <td>{{order.subName}}</td>
-                  <td>{{order.proxyName}}</td>
-                  <td style="text-align: right">{{order.totalFee|toFix}}</td>
-                  <td>{{order.tradeRate}}</td>
-                  <td>{{order.orderMessage}}<a href="javascript:;">(补发)</a></td>
-                  <td>{{order.settleStatus|changeSettleStatus}}</td>
-                  <td>{{order.payChannel|changePayChannel}}</td>
-                  <td>{{order.channelName}}</td>
-                  <td>{{order.errorMessage}}</td>
+                  <td>{{order.requestTime|changeTime}}</td>
+                  <td>{{order.finishTime|changeTime}}</td>
+                  <td>{{order.payChannel}}</td>
+                  <td>{{order.payType}}</td>
+                  <td>{{order.upperChannel}}</td>
+                  <td>{{order.payAccount}}</td>
+                  <td>{{order.statusValue}}</td>
+                  <td>{{order.message}}</td>
+                  <td>{{order.remark}}</td>
                 </tr>
                 </tbody>
               </table>
@@ -126,21 +126,17 @@
         </div>
       </div>
     </div>
-      <!--登录页面-->
-      <div class="login" v-if="isLogin">
-      <form class="" action="index.html" method="post">
-        <label for="phone">
-          手机号:
-          <input type="text" name="phone" placeholder="请输入手机号" v-model="phone">
-          <!-- <span class='btn btn-primary'>获取验证码</span> -->
-        </label>
-        <label for="phone">
-          密码:
-          <input type="password" name="password" placeholder="请输入密码" v-model="password">
-        </label>
-        <div class="btn btn-primary sub" @click="login">登 录</div>
-      </form>
-</div>
+
+    </div>
+    <!--下载-->
+    <div class="box box-info mask" v-if="isMask">
+      <div class="box-body" style="text-align: center;font-size: 20px;">
+        确认下载吗？
+      </div>
+      <div class="box-footer clearfix" style="border-top: none">
+        <a :href="'http://'+$$url" @click="close()" class="btn btn-sm btn-info btn-flat pull-left">下载</a>
+        <a href="javascript:void(0)" @click="close()" class="btn btn-sm btn-default btn-flat pull-right">取消</a>
+      </div>
     </div>
   </div>
 </template>
@@ -152,7 +148,6 @@
       return {
         phone: '',
         password: '',
-        isLogin: false,
         query:{
           page:1,
           size:10,
@@ -166,7 +161,8 @@
         },
         orders:[],
         total:'',
-        url:''
+        isMask: false,
+        url: ''
       }
     },
     created:function(){
@@ -174,7 +170,6 @@
         .then(function (res) {
           this.$data.orders=res.data.records;
           this.$data.total=res.data.totalPage;
-          this.$data.url=res.data.ext;
           var str = '',
             page = document.getElementById('page');
           str+='<li class="paginate_button previous" id="example2_previous"><a href="#" aria-controls="example2" data-dt-idx="0" tabindex="0">上一页</a></li>'
@@ -214,6 +209,21 @@
         })
     },
     methods: {
+      onload:function () {
+        this.$data.isMask = true;
+        this.$http.post('http://192.168.1.20:8076/order/pay/exportExcel',this.$data.query)
+          .then(function (res) {
+            this.$data.url = res.data.url;
+          },function (err) {
+            this.$store.commit('MESSAGE_ACCORD_SHOW', {
+              text: err.statusMessage
+            })
+            this.$data.isMask = false;
+          })
+      },
+      close: function () {
+        this.$data.isMask = false;
+      },
       refresh: function () {
         location.reload()
       },
@@ -244,7 +254,7 @@
           tar.parentNode.className+=' active'
           n = Number(tarInn);
         }
-        this.$data.query.page = n;
+        this.$data.query.pageNo = n;
         this.$http.post('http://192.168.1.20:8076/order/pay/listOrder',this.$data.query)
           .then(function (res) {
             this.$data.orders=res.data.records;
@@ -286,66 +296,92 @@
             console.log(err)
           })
       },
-      login: function () {
-        this.$http.post('/admin/login', {
-          mobile: this.$data.phone,
-          password: this.$data.password
-        }).then(function () {
-          this.$data.isLogin = false;
-        }, function () {
-          this.$store.commit('MESSAGE_ACCORD_SHOW', {
-            text: err.body.message
-          })
-        })
-      },
       //筛选
       lookup: function () {
-        this.$data.query.page = 1;
-        this.$http.post('http://192.168.1.20:8076/order/pay/listOrder',this.$data.query)
-          .then(function (res) {
-            this.$data.orders=res.data.records;
-            this.$data.total=res.data.totalPage;
-            this.$data.url=res.data.ext;
-            var str='',
-              page=document.getElementById('page');
-            str+='<li class="paginate_button previous disabled" id="example2_previous"><a href="#" aria-controls="example2" data-dt-idx="0" tabindex="0">上一页</a></li>'
-            for (var i=1; i<=this.$data.total;i++){
-              if(i==this.$data.query.page){
-                str+='<li class="paginate_button active"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">'+i+'</a></li></li>';
-                continue;
-              }
-              str+='<li class="paginate_button"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">'+i+'</a></li></li>'
-            }
-            str+='<li class="paginate_button next" id="example2_next"><a href="#" aria-controls="example2" data-dt-idx="7" tabindex="0">下一页</a></li>'
-            page.innerHTML=str;
-            var aLi = page.getElementsByTagName('li');
-            if(this.$data.query.page<6){
-              for(var i=0;i<aLi.length;i++){
-                if(i>11){
-                  aLi[i].style.display='none'
-                }
-              }
-            }else if(this.$data.query.page>(this.$data.total-5)){
-              for(var i=0;i<aLi.length;i++){
-                if(i<(this.$data.total-12)){
-                  aLi[i].style.display='none'
-                }
-              }
-            }else{
-              for(var i=0;i<aLi.length;i++){
-                if((i!=0&&i<this.$data.query.page-5)||(i!=this.$data.total+1&&i>this.$data.query.page+4)){
-                  aLi[i].style.display='none'
-                }
-              }
-            }
-          },function (err) {
-            console.log(err)
+        this.$data.query.pageNo = 1;
+        if(this.$data.query.startCreateTime!=""&&this.$data.query.endCreateTime==""){
+          var date = new Date();
+          var month = date.getMonth() + 1;
+          var strDate = date.getDate();
+          if (month >= 1 && month <= 9) {
+            month = "0" + month;
+          }
+          if (strDate >= 0 && strDate <= 9) {
+            strDate = "0" + strDate;
+          }
+          this.$data.query.endCreateTime = date.getFullYear() + "-" + month + "-" + strDate;
+        }
+        if(this.$data.query.startFinishTime!=""&&this.$data.query.endFinishTime==""){
+          var date = new Date();
+          var month = date.getMonth() + 1;
+          var strDate = date.getDate();
+          if (month >= 1 && month <= 9) {
+            month = "0" + month;
+          }
+          if (strDate >= 0 && strDate <= 9) {
+            strDate = "0" + strDate;
+          }
+          this.$data.query.endFinishTime = date.getFullYear() + "-" + month + "-" + strDate;
+        }
+        if((this.$data.query.startCreateTime==""&&this.$data.query.endCreateTime!="")||(this.$data.query.startFinishTime==""&&this.$data.query.endFinishTime!="")){
+          this.$store.commit('MESSAGE_ACCORD_SHOW', {
+            text: "请输入开始时间"
           })
+        }else {
+          this.$http.post('http://192.168.1.20:8076/order/pay/listOrder',this.$data.query)
+            .then(function (res) {
+              this.$data.orders=res.data.records;
+              this.$data.total=res.data.totalPage;
+              this.$data.url=res.data.ext;
+              var str='',
+                page=document.getElementById('page');
+              str+='<li class="paginate_button previous disabled" id="example2_previous"><a href="#" aria-controls="example2" data-dt-idx="0" tabindex="0">上一页</a></li>'
+              for (var i=1; i<=this.$data.total;i++){
+                if(i==this.$data.query.page){
+                  str+='<li class="paginate_button active"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">'+i+'</a></li></li>';
+                  continue;
+                }
+                str+='<li class="paginate_button"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">'+i+'</a></li></li>'
+              }
+              str+='<li class="paginate_button next" id="example2_next"><a href="#" aria-controls="example2" data-dt-idx="7" tabindex="0">下一页</a></li>'
+              page.innerHTML=str;
+              var aLi = page.getElementsByTagName('li');
+              if(this.$data.query.page<6){
+                for(var i=0;i<aLi.length;i++){
+                  if(i>11){
+                    aLi[i].style.display='none'
+                  }
+                }
+              }else if(this.$data.query.page>(this.$data.total-5)){
+                for(var i=0;i<aLi.length;i++){
+                  if(i<(this.$data.total-12)){
+                    aLi[i].style.display='none'
+                  }
+                }
+              }else{
+                for(var i=0;i<aLi.length;i++){
+                  if((i!=0&&i<this.$data.query.page-5)||(i!=this.$data.total+1&&i>this.$data.query.page+4)){
+                    aLi[i].style.display='none'
+                  }
+                }
+              }
+            },function (err) {
+              this.$store.commit('MESSAGE_ACCORD_SHOW', {
+                text: err.statusMessage
+              })
+            })
+        }
       }
     },
     computed: {
       $$query: function () {
         return this.$data.query
+      },
+      $$orders: function () {
+        return this.$data.orders
+      },
+      $$url: function () {
+        return this.$data.url
       }
     },
     filters: {
@@ -405,39 +441,12 @@
     display: inline-block;
     margin: 0 10px;
   }
-
-  .login {
-    z-index: 1000;
+  .mask{
+    width: 20%;
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: #fff;
-
-  form {
-    margin: 0 auto;
-    margin-top: 200px;
-    padding: 50px;
-    width: 450px;
-    height: 400px;
-    border: 2px solid #ccc;
-
-  label {
-    font-size: 18px;
-    height: 50px;
-    line-height: 30px;
-  }
-
-  }
-  .sub {
-    margin-top: 50px;
-    width: 100%;
-    height: 50px;
-    line-height: 35px;
-    font-size: 20px;
-  }
-
+    top: 30%;
+    left: 46%;
+    box-shadow: 0 0 15px #000;
   }
   .form-control{
     height: 29px;

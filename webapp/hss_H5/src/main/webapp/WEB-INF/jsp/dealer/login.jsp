@@ -39,6 +39,6 @@
   <div class="reg" id="submit">登录</div>
 </div>
 </body>
-<script src="http://static.jinkaimen.cn/vendor/vendor.min.js"></script>
+<script src="http://static.jinkaimen.cn/vendor/vendor.1.0.1.min.js"></script>
 <script src="http://static.jinkaimen.cn/dealer/0.1.1/dealerLogin.min.js"></script>
 </html>

@@ -1,6 +1,6 @@
 <template lang="html">
   <div id="withDrawal">
-    <div style="padding: 8px 30px; background: rgb(243, 156, 18); z-index: 999999; font-size: 22px; font-weight: 600;margin-bottom: 15px;color: #fff;">打款查询1
+    <div style="padding: 8px 30px; background: rgb(243, 156, 18); z-index: 999999; font-size: 22px; font-weight: 600;margin-bottom: 15px;color: #fff;">打款查询(新版)
       <router-link to="/admin/record/withdrawal" class="btn btn-success pull-right" style="margin-left: 20px">切换旧版</router-link>
       <div class="btn btn-primary pull-right" @click="refresh()">刷新</div>
     </div>
@@ -64,6 +64,7 @@
       <div class="box" style="overflow-x: hidden;">
         <div class="box-header">
           <h3 class="box-title">提现记录</h3>
+          <span @click="onload()" download="交易记录" class="btn btn-primary" style="float: right;color: #fff">导出</span>
         </div>
         <!-- /.box-header -->
         <div class="box-body">
@@ -87,7 +88,7 @@
                   </thead>
                   <tbody>
                   <tr role="row" v-for="(record,index) in $$records">
-                    <td><router-link :to="{ path: '/admin/record/withdrawalDet', query: {id: record.id}}">{{record.orderNo|changeHide}}</router-link></td>
+                    <td>{{record.orderNo|changeHide}}</td>
                     <td>{{record.sn|changeHide}}</td>
                     <td>{{record.requestTime|changeTime}}</td>
                     <td>{{record.receiptUserName}}</td>
@@ -97,7 +98,7 @@
                     <td>{{record.playMoneyChannel}}</td>
                     <td>{{record.message}}</td>
                     <td>
-                      <router-link v-if="record.message=='5'" :to="{path:'/admin/record/withdrawalAudit'}">审核</router-link>
+                      <router-link v-if="record.status=='5'" :to="{path:'/admin/record/withdrawalAudit',query:{orderNo:record.orderNo,sn:record.sn,requestTime:record.requestTime,amount:record.amount,receiptUserName:record.receiptUserName,playMoneyChannel:record.playMoneyChannel,status:record.status,bankCard:record.bankCard,message:record.message}}">审核</router-link>
                     </td>
                   </tr>
                   </tbody>
@@ -124,6 +125,15 @@
       </div>
     </div>
     <!--下载-->
+    <div class="box box-info mask" v-if="isMask">
+      <div class="box-body" style="text-align: center;font-size: 20px;">
+        确认下载吗？
+      </div>
+      <div class="box-footer clearfix" style="border-top: none">
+        <a :href="'http://'+$$url" @click="close()" class="btn btn-sm btn-info btn-flat pull-left">下载</a>
+        <a href="javascript:void(0)" @click="close()" class="btn btn-sm btn-default btn-flat pull-right">取消</a>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -158,12 +168,11 @@
         records:[],
         isShow:false,
         index:0,
-        remark:''
+        remark:'',
+        isMask: false,
+        url: ''
       }
     },
-    /*http: {
-      headers: {'Content-Type': 'application/x-www-form-urlencoded'}
-  },*/
     created:function () {
       this.$http.post('http://192.168.1.20:8076/order/withdraw/listOrder',this.$data.query)
         .then(function (res) {
@@ -193,10 +202,27 @@
           }
         })
         .catch(function (err) {
-          console.log(err)
+          this.$store.commit('MESSAGE_ACCORD_SHOW', {
+            text: err.statusMessage
+          })
         })
     },
     methods: {
+      onload:function () {
+        this.$data.isMask = true;
+        this.$http.post('http://192.168.1.20:8076/order/withdraw/exportExcel',this.$data.query)
+          .then(function (res) {
+            this.$data.url = res.data.url;
+          },function (err) {
+            this.$store.commit('MESSAGE_ACCORD_SHOW', {
+              text: err.statusMessage
+            })
+            this.$data.isMask = false;
+          })
+      },
+      close: function () {
+        this.$data.isMask = false;
+      },
       refresh: function () {
         location.reload()
       },
@@ -255,7 +281,9 @@
               }
             }
           },function (err) {
-            console.log(err)
+            this.$store.commit('MESSAGE_ACCORD_SHOW', {
+              text: err.statusMessage
+            })
           })
       },
       //筛选
@@ -291,55 +319,6 @@
             console.log(err)
           })
       },
-      /*audit: function (index) {
-        this.$data.isShow=!this.$data.isShow
-        this.$data.index = index;
-      },*/
-      /*pass: function () {
-        this.$http.post('/admin/withdraw/checkWithdraw',{
-          id:this.$data.records[this.$data.index].id
-        }).then(function (res) {
-          this.$data.isShow=!this.$data.isShow;
-          location.reload()
-        },function (err) {
-          console.log(err)
-          this.$store.commit('MESSAGE_ACCORD_SHOW', {
-            text: err.statusMessage
-          })
-          this.$data.isShow=!this.$data.isShow;
-        })
-      },*/
-      /*unPass: function () {
-        this.$http.post('/admin/withdraw/unPass',{
-          id:this.$data.records[this.$data.index].id,
-          message:this.$data.remark
-        }).then(function (res) {
-          this.$data.isShow=!this.$data.isShow;
-          location.reload()
-        },function (err) {
-          this.$store.commit('MESSAGE_ACCORD_SHOW', {
-            text: err.statusMessage
-          })
-          this.$data.isShow=!this.$data.isShow;
-        })
-      },*/
-      /*freeze: function () {
-        this.$http.post('/admin/withdraw/unfreeze',{
-          id:this.$data.records[this.$data.index].id,
-        }).then(function (res) {
-          this.$data.isShow=!this.$data.isShow;
-          location.reload()
-        },function (err) {
-          this.$store.commit('MESSAGE_ACCORD_SHOW', {
-            text: err.msg
-          })
-          this.$data.isShow=!this.$data.isShow;
-          location.reload()
-        })
-      },
-      unfreeze: function () {
-        this.$data.isShow=!this.$data.isShow
-      }*/
     },
     computed:{
       $$data:function () {
@@ -347,6 +326,9 @@
       },
       $$records: function () {
         return this.$data.records
+      },
+      $$url: function () {
+        return this.$data.url
       }
     },
     filters: {
@@ -435,21 +417,12 @@
     display: inline-block;
     margin: 0 10px;
   }
-
-  #cashAudit{
-    width: 100%;
-    height:100%;
-    background: #cccccc;
+  .mask{
+    width: 20%;
     position: fixed;
-    top:0;
-    z-index: 100;
-  .content{
-    margin:0 auto;
-    position: absolute;
-    top:20%;
-    left:10%;
-    width: 50%;
-  }
+    top: 30%;
+    left: 46%;
+    box-shadow: 0 0 15px #000;
   }
   .form-control{
     height: 29px;

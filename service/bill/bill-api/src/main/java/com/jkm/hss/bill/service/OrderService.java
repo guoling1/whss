@@ -1,8 +1,10 @@
 package com.jkm.hss.bill.service;
 
 import com.google.common.base.Optional;
+import com.jkm.base.common.entity.PageModel;
 import com.jkm.hss.bill.entity.MerchantTradeResponse;
 import com.jkm.hss.bill.entity.Order;
+import com.jkm.hss.bill.helper.requestparam.QueryMerchantPayOrdersRequestParam;
 import com.jkm.hss.merchant.helper.request.OrderTradeRequest;
 
 import java.util.Date;
@@ -128,6 +130,14 @@ public interface OrderService {
      * @param orderNo
      */
     Optional<Order> getByOrderNo(String orderNo);
+
+    /**
+     * 查询商户的收款单
+     *
+     * @param requestParam
+     * @return
+     */
+    PageModel<Order> queryMerchantPayOrders(QueryMerchantPayOrdersRequestParam requestParam);
 
     /**
      * 查询交易详情

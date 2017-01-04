@@ -56,4 +56,10 @@ public interface MerchantInfoQueryService {
      */
     List<MerchantInfoResponse> getCount();
 
+    /**
+     * 查询待审核商户列表
+     * @param merchantInfoResponse
+     * @return
+     */
+    List<MerchantInfoResponse> getRecord(MerchantInfoResponse merchantInfoResponse);
 }

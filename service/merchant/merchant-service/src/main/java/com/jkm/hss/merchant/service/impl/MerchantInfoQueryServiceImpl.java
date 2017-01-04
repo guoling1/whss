@@ -55,6 +55,17 @@ public class MerchantInfoQueryServiceImpl implements MerchantInfoQueryService {
     public List<MerchantInfoResponse> selectByName(int pageNo, int pageSize, String merchantName) {
 
         List<MerchantInfoResponse> list = this.merchantInfoQueryDao.selectByName(pageNo,pageSize,merchantName);
+        if (list.size()>0){
+            for (int i=0;list.size()>i;i++){
+                if (list.get(i).getLevel()==1){
+                    list.get(i).setProxyName(list.get(i).getProxyName());
+                }
+                if (list.get(i).getLevel()==2){
+                    MerchantInfoResponse res = merchantInfoQueryDao.getProxyName(list.get(i).getFirstLevelDealerId());
+                    list.get(i).setProxyName1(res.getProxyName());
+                }
+            }
+        }
         return list;
     }
 
@@ -63,6 +74,24 @@ public class MerchantInfoQueryServiceImpl implements MerchantInfoQueryService {
 
         List<MerchantInfoResponse> list = this.merchantInfoQueryDao.getCount();
 
+        return list;
+    }
+
+    @Override
+    public List<MerchantInfoResponse> getRecord(MerchantInfoResponse merchantInfoResponse) {
+
+        List<MerchantInfoResponse> list = this.merchantInfoQueryDao.getRecord(merchantInfoResponse);
+        if (list.size()>0){
+            for (int i=0;list.size()>i;i++){
+                if (list.get(i).getLevel()==1){
+                    list.get(i).setProxyName(list.get(i).getProxyName());
+                }
+                if (list.get(i).getLevel()==2){
+                    MerchantInfoResponse res = merchantInfoQueryDao.getProxyName(list.get(i).getFirstLevelDealerId());
+                    list.get(i).setProxyName1(res.getProxyName());
+                }
+            }
+        }
         return list;
     }
 }
