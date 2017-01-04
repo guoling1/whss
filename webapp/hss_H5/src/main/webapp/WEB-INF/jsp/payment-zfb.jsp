@@ -16,7 +16,7 @@
         content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
   <meta name="format-detection" content="telephone=no"/>
   <title>好收收</title>
-  <link rel="stylesheet" href="http://static.jinkaimen.cn/hss/css/style.css">
+  <link rel="stylesheet" href="http://static.jinkaimen.cn/hss/css/style.2.0.1.css">
   <link rel="stylesheet" href="http://static.jinkaimen.cn/weui/weui.css">
 </head>
 <body>
@@ -77,5 +77,5 @@
   }
 </script>
 <script src="http://static.jinkaimen.cn/vendor/vendor.1.0.1.min.js"></script>
-<script src="http://static.jinkaimen.cn/hss/0.1.19/payment.min.js"></script>
+<script src="http://static.jinkaimen.cn/hss/2.0.1/payment.min.js"></script>
 </html>
