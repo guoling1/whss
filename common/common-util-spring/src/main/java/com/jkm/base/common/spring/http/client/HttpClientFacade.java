@@ -44,9 +44,10 @@ public interface HttpClientFacade {
      *
      * @param uri
      * @param parameters
+     * @param isUserJson 是否用application/json
      * @return
      */
-    String post(final String uri, final Map<String, String> parameters, final String charset);
+    String post(final String uri, final Map<String, String> parameters, final String charset, final boolean isUserJson);
 
     /**
      * 异步发送post http请求

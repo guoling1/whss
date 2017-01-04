@@ -31,10 +31,6 @@
         </dependency>
         <dependency>
             <groupId>com.jkm</groupId>
-            <artifactId>hss-notifier-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.jkm</groupId>
             <artifactId>hss-account-service</artifactId>
         </dependency>
         <dependency>
@@ -67,7 +63,15 @@
         </dependency>
         <dependency>
             <groupId>com.jkm</groupId>
-            <artifactId>hss-mq</artifactId>
+            <artifactId>hss-bill-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.jkm</groupId>
+            <artifactId>hss-bill-service</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.jkm</groupId>
+            <artifactId>hss-common-mq</artifactId>
         </dependency>
         <dependency>
             <groupId>com.jkm</groupId>

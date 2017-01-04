@@ -13,18 +13,24 @@ import com.jkm.hss.helper.request.DistributeRangeQRCodeRequest;
 import com.jkm.hss.helper.response.FirstLevelDealerAddResponse;
 import com.jkm.hss.admin.entity.AdminUser;
 import com.jkm.hss.admin.entity.AdminUserPassport;
+import com.jkm.hss.admin.entity.CodeQueryResponse;
 import com.jkm.hss.admin.entity.QRCode;
 import com.jkm.hss.admin.service.AdminUserService;
+import com.jkm.hss.controller.BaseController;
 import com.jkm.hss.dealer.entity.Dealer;
 import com.jkm.hss.dealer.helper.DealerConsts;
 import com.jkm.hss.dealer.helper.requestparam.FirstLevelDealerAddRequest;
 import com.jkm.hss.dealer.helper.requestparam.FirstLevelDealerUpdateRequest;
 import com.jkm.hss.dealer.service.DealerRateService;
 import com.jkm.hss.dealer.service.DealerService;
+import com.jkm.hss.helper.ApplicationConsts;
 import com.jkm.hss.helper.request.AdminUserLoginRequest;
+import com.jkm.hss.helper.request.CodeQueryRequest;
 import com.jkm.hss.helper.request.DistributeQRCodeRequest;
+import com.jkm.hss.helper.request.DistributeRangeQRCodeRequest;
 import com.jkm.hss.helper.response.DistributeQRCodeResponse;
 import com.jkm.hss.helper.response.DistributeRangeQRCodeResponse;
+import com.jkm.hss.helper.response.FirstLevelDealerAddResponse;
 import com.jkm.hss.merchant.entity.BankCardBin;
 import com.jkm.hss.merchant.helper.ValidationUtil;
 import com.jkm.hss.merchant.service.BankCardBinService;
@@ -206,6 +212,57 @@ public class AdminController extends BaseController {
         distribute.setCount(count);
         distribute.setCodes(codes);
         return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "分配成功", distribute);
+    }
+
+
+    /**
+     *码段查询
+     */
+    @ResponseBody
+    @RequestMapping(value = "/getCode", method = RequestMethod.POST)
+    public CommonResponse getCode(@RequestBody CodeQueryRequest code) {
+        CodeQueryResponse codeQueryResponse = adminUserService.getCode(code.getCode());
+        if (codeQueryResponse==null){
+            return CommonResponse.simpleResponse(-1, "未查询到与之匹配的信息。");
+        }
+
+        if (codeQueryResponse.getActivateStatus()==2){
+
+            if (codeQueryResponse.getFirstLevelDealerId()==0){
+                String jkm="金开门";
+                codeQueryResponse.setJkm(jkm);
+            }
+            if (codeQueryResponse.getFirstLevelDealerId()>0){
+                CodeQueryResponse res = adminUserService.getProxyName(codeQueryResponse.getFirstLevelDealerId());
+                codeQueryResponse.setProxyName(res.getProxyName());
+            }
+            if (codeQueryResponse.getSecondLevelDealerId()>0){
+                CodeQueryResponse res1 =adminUserService.getProxyName1(codeQueryResponse.getSecondLevelDealerId());
+                codeQueryResponse.setProxyName1(res1.getProxyName());
+            }
+            if (codeQueryResponse.getMerchantId()>0){
+                CodeQueryResponse getName =adminUserService.getMerchantName(codeQueryResponse.getMerchantId());
+                codeQueryResponse.setMerchantName(getName.getMerchantName());
+            }
+        }
+        if (codeQueryResponse.getDistributeStatus()==1&&codeQueryResponse.getActivateStatus()==1){
+            return CommonResponse.simpleResponse(-1, "该码未被注册且未被分配，该码可用。");
+        }
+        if (codeQueryResponse.getDistributeStatus()==2&&codeQueryResponse.getActivateStatus()==1){
+
+            if (codeQueryResponse.getFirstLevelDealerId()>0){
+                CodeQueryResponse res = adminUserService.getProxyName(codeQueryResponse.getFirstLevelDealerId());
+                codeQueryResponse.setProxyName(res.getProxyName());
+            }
+            if (codeQueryResponse.getSecondLevelDealerId()>0){
+                CodeQueryResponse res1 =adminUserService.getProxyName1(codeQueryResponse.getSecondLevelDealerId());
+                codeQueryResponse.setProxyName1(res1.getProxyName());
+            }
+
+            return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "该码已被分配但未注册，该码可用。", codeQueryResponse);
+        }
+
+        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", codeQueryResponse);
     }
 
 

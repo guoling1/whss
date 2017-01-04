@@ -87,6 +87,11 @@ public class MerchantInfo extends BaseEntity{
     private Date checkedTime;
 
     /**
+     * 认证时间
+     */
+    private Date authenticationTime;
+
+    /**
      * code
      */
     private String code;

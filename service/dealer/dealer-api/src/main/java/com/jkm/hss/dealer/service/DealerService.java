@@ -35,7 +35,8 @@ public interface DealerService {
     /**
      * 分润接口
      */
-    Map<String, Triple<Long, BigDecimal, String>> shallProfit(OrderRecord orderRecord);
+    Map<String, Triple<Long, BigDecimal, BigDecimal>> shallProfit(String orderNo, BigDecimal tradeAmount,
+                                                              int channelSign, long merchantId);
 
     /**
      * 添加代理商
@@ -83,6 +84,14 @@ public interface DealerService {
      * @return
      */
     List<Dealer> getByIds(List<Long> ids);
+
+    /**
+     * 按账户id查询
+     *
+     * @param accountId
+     * @return
+     */
+    Optional<Dealer> getByAccountId(long accountId);
 
     /**
      * 按mobile查询

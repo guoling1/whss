@@ -59,32 +59,40 @@
             <tr>
               <th style="text-align: right">经营种类:</th>
               <td><input type="text" style="background:#efecec;padding-left:5px;" readonly></td>
-              <th style="text-align: right">省市区:</th>
-              <td><input type="text" style="background:#efecec;padding-left:5px;" readonly></td>
               <th style="text-align: right">商户详细地址:</th>
               <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.address" readonly></td>
-            </tr>
-            <tr>
               <th style="text-align: right">结算卡号:</th>
               <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.bankNo" readonly></td>
+            </tr>
+            <tr>
               <th style="text-align: right">所属银行:</th>
               <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.bankNo" readonly></td>
               <th style="text-align: right">开户手机号:</th>
               <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.reserveMobile" readonly></td>
-            </tr>
-            <tr>
-              <th style="text-align: right">资料提交时间:</th>
+              <th style="text-align: right">实名认证时间:</th>
               <td><input type="text" style="background:#efecec;padding-left:5px;" readonly></td>
+            </tr>
+            </tbody></table>
+        </div>
+      </div>
+      <div class="box box-primary">
+        <p class="lead">审核日志</p>
+        <div class="table-responsive">
+          <table class="table">
+            <tbody>
+            <tr>
               <th style="text-align: right">资料审核状态:</th>
               <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.status|status" readonly></td>
               <th style="text-align: right">审核时间:</th>
               <td><input type="text" style="background:#efecec;padding-left:5px;" readonly></td>
-            </tr>
-            <tr>
               <th style="text-align: right">审核人:</th>
               <td><input type="text" style="background:#efecec;padding-left:5px;" readonly></td>
+            </tr>
+            <tr>
               <th style="text-align: right">审核批复信息:</th>
               <td><input type="text" style="background:#efecec;padding-left:5px;" readonly></td>
+              <th></th>
+              <td></td>
               <th></th>
               <td></td>
             </tr>

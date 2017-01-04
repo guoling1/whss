@@ -4,9 +4,9 @@
     <!-- Logo -->
     <a href="javascript:;" class="logo" style="width: 130px">
       <!-- mini logo for sidebar mini 50x50 pixels -->
-      <span class="logo-mini" style="font-size: 20px">好收银</span>
+      <span class="logo-mini" style="font-size: 20px">好收收</span>
       <!-- logo for regular state and mobile devices -->
-      <span class="logo-lg">好收银</span>
+      <span class="logo-lg">好收收</span>
     </a>
     <nav class="navbar navbar-static-top" role="navigation" style="margin-left: 130px">
       <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">

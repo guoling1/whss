@@ -21,7 +21,7 @@ let qrImg = new QRCode(qr, {
 });
 
 refresh.addEventListener('click', function () {
-  http.post('/wx/receipt', {
+  http.post('/trade/dcReceipt', {
     totalFee: pageData.amount,
     payChannel: '101'
   }, function (data) {

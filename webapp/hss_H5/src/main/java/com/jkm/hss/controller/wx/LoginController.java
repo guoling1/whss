@@ -3,6 +3,8 @@ package com.jkm.hss.controller.wx;
 
 import com.google.common.base.Optional;
 import com.jkm.base.common.util.CookieUtil;
+import com.jkm.hss.bill.entity.Order;
+import com.jkm.hss.bill.service.OrderService;
 import com.jkm.hss.controller.BaseController;
 import com.jkm.hss.helper.ApplicationConsts;
 import com.jkm.hss.merchant.entity.AccountInfo;
@@ -71,6 +73,8 @@ public class LoginController extends BaseController {
     @Autowired
     private RecommendService recommendService;
 
+    @Autowired
+    private OrderService orderService;
     /**
      * 扫固定码注册和微信公众号注册入口
      * @param request
@@ -436,10 +440,11 @@ public class LoginController extends BaseController {
      * @throws IOException
      */
     @RequestMapping(value = "/success/{amount}/{orderId}", method = RequestMethod.GET)
-    public String success(final HttpServletRequest request, final HttpServletResponse response, final Model model, @PathVariable("amount") String amount, @PathVariable("orderId") String orderId) throws IOException {
+    public String success(final HttpServletRequest request, final HttpServletResponse response, final Model model, @PathVariable("amount") String amount, @PathVariable("orderId") long orderId) throws IOException {
         model.addAttribute("money", amount);
-        model.addAttribute("firstSn", orderId.substring(0,orderId.length()-6));
-        model.addAttribute("secondSn", orderId.substring(orderId.length()-6,orderId.length()));
+        final Order order = this.orderService.getById(orderId).get();
+        model.addAttribute("firstSn", order.getOrderNo().substring(0, order.getOrderNo().length() - 6));
+        model.addAttribute("secondSn", order.getOrderNo().substring(order.getOrderNo().length() - 6, order.getOrderNo().length()));
         return "/success";
     }
 

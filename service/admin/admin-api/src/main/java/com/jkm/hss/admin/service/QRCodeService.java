@@ -1,19 +1,17 @@
 package com.jkm.hss.admin.service;
 
 import com.google.common.base.Optional;
+import com.jkm.hss.admin.entity.CodeQueryResponse;
 import com.jkm.hss.admin.entity.QRCode;
 import com.jkm.hss.admin.helper.FirstLevelDealerCodeInfo;
 import com.jkm.hss.admin.helper.MyMerchantCount;
 import com.jkm.hss.admin.helper.SecondLevelDealerCodeInfo;
 import com.jkm.hss.admin.helper.responseparam.ActiveCodeCount;
 import com.jkm.hss.admin.helper.responseparam.DistributeCodeCount;
-import com.sun.org.apache.bcel.internal.classfile.Code;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
 
-import java.io.File;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by yulong.zhang on 2016/11/25.
@@ -321,4 +319,34 @@ public interface QRCodeService {
      * @return
      */
     List<Long> getUnDistributeCodeByRangeCode(String startCode, String endCode);
+
+    /**
+     * 按码段查询状态
+     * @param code
+     * @return
+     */
+    CodeQueryResponse getCode(String code);
+
+    /**
+     * 商户id查询其名称
+     * @param firstLevelDealerId
+     * @return
+     */
+    CodeQueryResponse getProxyName(long firstLevelDealerId);
+
+    /**
+     * 根据firstLevelDealerId
+     * 查询一级代理商名称
+     * @param secondLevelDealerId
+     * @return
+     */
+    CodeQueryResponse getProxyName1(long secondLevelDealerId);
+
+    /**
+     * 根据merchantId
+     * 查询商户名称
+     * @param merchantId
+     * @return
+     */
+    CodeQueryResponse getMerchantName(long merchantId);
 }

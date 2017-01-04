@@ -13,7 +13,6 @@ import com.jkm.hss.merchant.enums.*;
 import com.jkm.hss.merchant.helper.MerchantConsts;
 import com.jkm.hss.merchant.helper.MerchantSupport;
 import com.jkm.hss.merchant.helper.SmPost;
-import com.jkm.hss.merchant.helper.WxConstants;
 import com.jkm.hss.merchant.helper.request.*;
 import com.jkm.hss.merchant.helper.response.DfQueryResponse;
 import com.jkm.hss.merchant.helper.response.DfmResponse;
@@ -839,8 +838,10 @@ public class OrderRecordServiceImpl implements OrderRecordService {
                     log.info("支付完成，开始计算收益");
                     /**
                      * ①计算收益
+                     *
+                     * dealerService.shallProfit(orderRecord.get());
                      */
-                    Map<String, Triple<Long, BigDecimal, String>> map = dealerService.shallProfit(orderRecord.get());
+                    Map<String, Triple<Long, BigDecimal, String>> map = null;
                     log.info("分佣返回参数为{}",JSONObject.fromObject(map).toString());
 
                     /**
@@ -1151,7 +1152,7 @@ public class OrderRecordServiceImpl implements OrderRecordService {
         Map<String, Triple<Long, BigDecimal, String>> map= null;
         try{
             log.info("代付success,开始查询订单号为{}的收益。。。",orderRecord.getOrderId());
-            map = shallProfitDetailService.withdrawProfitCount(orderRecord);
+//            map = shallProfitDetailService.withdrawProfitCount(orderRecord);
             log.info("代付success,查询收益成功");
         }catch(Throwable e){
             log.error("代付success,订单为{}的【提现收益计算】异常",orderRecord.getOrderId());
@@ -1628,7 +1629,7 @@ public class OrderRecordServiceImpl implements OrderRecordService {
                              */
                             Map<String, Triple<Long, BigDecimal, String>> map=null;
                             try{
-                                map = dealerService.shallProfit(orderRecord);
+//                                map = dealerService.shallProfit(orderRecord);
                             }catch (Throwable e){
                                 log.error("订单为{}的【收益计算】错误",orderRecord.getOrderId());
                                 log.error("【收益计算】异常{}",e);
@@ -2022,10 +2023,10 @@ public class OrderRecordServiceImpl implements OrderRecordService {
      */
     @Override
     @Transactional
-    public String downloadExcel(String baseUrl) {
+    public String downloadExcel(OrderListRequest req,String baseUrl) {
         final String tempDir = this.getTempDir();
         final File excelFile = new File(tempDir + File.separator + ".xls");
-        final ExcelSheetVO excelSheet = generateCodeExcelSheet(baseUrl);
+        final ExcelSheetVO excelSheet = generateCodeExcelSheet(req,baseUrl);
         final List<ExcelSheetVO> excelSheets = new ArrayList<>();
         excelSheets.add(excelSheet);
         FileOutputStream fileOutputStream = null;
@@ -2061,7 +2062,7 @@ public class OrderRecordServiceImpl implements OrderRecordService {
      * @param baseUrl
      * @return
      */
-    private ExcelSheetVO generateCodeExcelSheet(String baseUrl) {
+    private ExcelSheetVO generateCodeExcelSheet(OrderListRequest req,String baseUrl) {
         //查询数据
 //        List<String> payResults = PayOf(req.getPayResult());
 //        req.setPayResults(payResults);
@@ -2079,7 +2080,7 @@ public class OrderRecordServiceImpl implements OrderRecordService {
 //        map.put("settleStatus",req.getSettleStatus());
 //        map.put("offset",req.getOffset());
 //        map.put("size",req.getSize());
-        List<MerchantAndOrderRecord> list = orderRecordDao.selectOrderListTrade();
+        List<MerchantAndOrderRecord> list = orderRecordDao.selectOrderListTrade(req);
         final ExcelSheetVO excelSheetVO = new ExcelSheetVO();
         final List<List<String>> datas = new ArrayList<List<String>>();
         final ArrayList<String> heads = new ArrayList<>();
@@ -2093,6 +2094,8 @@ public class OrderRecordServiceImpl implements OrderRecordService {
         heads.add("订单状态");
         heads.add("结算状态");
         heads.add("支付方式");
+        heads.add("通道费");
+        heads.add("服务费");
         heads.add("支付渠道");
         heads.add("错误信息");
         datas.add(heads);
@@ -2126,6 +2129,8 @@ public class OrderRecordServiceImpl implements OrderRecordService {
                 if (list.get(i).getPayChannel()==103){
                     columns.add("快捷");
                 }
+                columns.add(String.valueOf(list.get(i).getServiceFee()));
+                columns.add(String.valueOf(list.get(i).getChannelFee()));
                 columns.add(list.get(i).getChannelName());
                 columns.add(list.get(i).getErrorMessage());
                 datas.add(columns);

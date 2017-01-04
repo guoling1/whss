@@ -187,7 +187,7 @@ public class DealerProfitController extends BaseController {
         System.out.println(new BigDecimal(0.2000).compareTo(new BigDecimal(0.2001)));
         //this.dailyProfitDetailService.dailyProfitCount();
        final OrderRecord orderRecord = this.orderRecordService.selectOrderId("JKM2016120113162064441368", EnumTradeType.DEAL.getId()).get();
-        this.dealerService.shallProfit(orderRecord);
+//        this.dealerService.shallProfit(orderRecord);
         return null;
     }
 

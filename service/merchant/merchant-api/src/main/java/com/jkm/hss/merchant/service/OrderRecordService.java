@@ -159,7 +159,7 @@ public interface OrderRecordService {
      */
     OrderRecordAndMerchant selectDrawWithRecordByPageAll(OrderRecordAndMerchantRequest req);
 
-    String downloadExcel(String baseUrl);
+    String downloadExcel(OrderListRequest req,String baseUrl);
 
     /**
      * 查询所属代理商

@@ -94,8 +94,7 @@
               mobile: res.data.mobile,
               distributeDate: res.data.distributeDate,
               count: res.data.count,
-              startCode: res.data.startCode,
-              endCode: res.data.endCode
+              codes: res.data.codes
             }})
           },function(err){
             this.$store.commit('MESSAGE_ACCORD_SHOW', {
@@ -151,23 +150,5 @@
 
   a {
     color: #42b983;
-  }
-  /*label{
-    display: block;
-    height:50px;
-    line-height: 50px;
-    margin: 10px;
-  input{
-    height: 40px;
-    margin-left: 10px;
-    padding: 10px;
-    width: 35%;
-  }
-  }*/
-
-  .submit {
-    width: 350px;
-    margin-left: 20px;
-    margin-top: 20px;
   }
 </style>

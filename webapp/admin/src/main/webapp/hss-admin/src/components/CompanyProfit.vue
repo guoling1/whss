@@ -32,8 +32,8 @@
                     </th>
                     <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">收益总额
                     </th>
-                    <!--<th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">操作
-                    </th>-->
+                    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">操作
+                    </th>
                   </tr>
                   </thead>
                   <tbody id="content">
@@ -43,7 +43,7 @@
                     <td style="text-align: right">{{record.collectMoney|toFix}}</td>
                     <td style="text-align: right">{{record.withdrawMoney|toFix}}</td>
                     <td style="text-align: right">{{record.totalMoney|toFix}}</td>
-                    <!--<td><route-link to="/admin/record/companyProfitDet" class="btn btn-success">查看明细</route-link></td>-->
+                    <td><router-link :to="{path:'/admin/record/companyProfitDet',query:{id:record.id}}" class="btn btn-success" v-if="record.totalMoney!=0">查看明细</router-link></td>
                   </tr>
                   </tbody>
                 </table>
@@ -67,7 +67,6 @@
         <!-- /.box-body -->
       </div>
     </div>
-
   </div>
 </template>
 

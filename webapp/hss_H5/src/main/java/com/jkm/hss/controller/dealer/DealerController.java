@@ -13,6 +13,9 @@ import com.jkm.base.common.enums.EnumBoolean;
 import com.jkm.base.common.util.CookieUtil;
 import com.jkm.base.common.util.DateFormatUtil;
 import com.jkm.base.common.util.ValidateUtils;
+import com.jkm.hss.account.entity.Account;
+import com.jkm.hss.account.sevice.AccountService;
+import com.jkm.hss.bill.service.WithdrawService;
 import com.jkm.hss.helper.request.*;
 import com.jkm.hss.helper.response.*;
 import com.jkm.hss.admin.entity.DistributeQRCodeRecord;
@@ -120,7 +123,10 @@ public class DealerController extends BaseController {
 
     @Autowired
     private PastRecordService pastRecordService;
-
+    @Autowired
+    private WithdrawService withdrawService;
+    @Autowired
+    private AccountService accountService;
     /**
      * 登录页面
      *
@@ -797,5 +803,31 @@ public class DealerController extends BaseController {
         final List<Product> products = this.productService.selectAll();
         List<DealerChannelRate> list = this.dealerChannelRateService.selectByDealerIdAndProductId(this.getDealerId(), products.get(0).getId());
         return CommonResponse.objectResponse(1, "success", list);
+    }
+
+    /**
+     * 提现
+     *
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "withdraw", method = RequestMethod.POST)
+    public CommonResponse withdraw(@RequestBody final WithdrawRequest withdrawRequest, final HttpServletRequest request) {
+        final String verifiedCode = withdrawRequest.getCode();
+        final Dealer dealer = super.getDealer().get();
+        final Pair<Integer, String> checkResult =
+                this.smsAuthService.checkVerifyCode(DealerSupport.decryptMobile(dealer.getId(), dealer.getBankReserveMobile()), verifiedCode, EnumVerificationCodeType.WITHDRAW_DEALER);
+        if (1 != checkResult.getLeft()) {
+            return CommonResponse.simpleResponse(-1, checkResult.getRight());
+        }
+        final Account account = this.accountService.getById(dealer.getAccountId()).get();
+        if (account.getAvailable().compareTo(new BigDecimal(withdrawRequest.getAmount())) < 0) {
+            return CommonResponse.simpleResponse(-1, "提现金额不足");
+        }
+        final Pair<Integer, String> resultPair = null;//this.withdrawService.withdrawByAccount(account.getId(), new BigDecimal(withdrawRequest.getAmount()));
+        if (0 == resultPair.getLeft()) {
+            return CommonResponse.simpleResponse(1, "提现受理成功");
+        }
+        return CommonResponse.simpleResponse(-1, resultPair.getRight());
     }
 }

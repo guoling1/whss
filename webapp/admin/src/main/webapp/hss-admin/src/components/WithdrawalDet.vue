@@ -164,7 +164,7 @@
               <td></td>
               <th style="text-align: right">商品描述:</th>
               <td></td>
-              <th style="text-align: right">备注:</th>
+              <th style="text-align: right">错误信息:</th>
               <td>{{record.errorMessage}}</td>
             </tr>
             </tbody></table>

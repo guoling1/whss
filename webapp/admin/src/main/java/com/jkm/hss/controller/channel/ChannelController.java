@@ -3,6 +3,7 @@ package com.jkm.hss.controller.channel;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.jkm.base.common.entity.CommonResponse;
+import com.jkm.hss.account.sevice.AccountService;
 import com.jkm.hss.controller.BaseController;
 import com.jkm.hss.helper.request.ChannelAddRequest;
 import com.jkm.hss.merchant.service.AccountInfoService;
@@ -32,7 +33,7 @@ public class ChannelController extends BaseController {
     @Autowired
     private BasicChannelService basicChannelService;
     @Autowired
-    private AccountInfoService accountInfoService;
+    private AccountService accountService;
     /**
      * 添加通道
      *
@@ -54,7 +55,7 @@ public class ChannelController extends BaseController {
                 basicChannel.setAccountId(basicChannelOptional.get().getAccountId());
             }else{
                 //没有,则创建
-                final long accountId = this.accountInfoService.addNewAccount();
+                final long accountId = this.accountService.initAccount("基本通道账户");
                 basicChannel.setAccountId(accountId);
             }
             basicChannel.setChannelTypeSign(EnumPayChannelSign.of(request.getChannelName()).getId());
