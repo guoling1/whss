@@ -37,4 +37,8 @@ public class QueryMerchantPayOrdersRequestParam extends PageQueryParams {
      * 结束日期
      */
     private String endDate;
+
+    private long offset;
+
+    private int count;
 }

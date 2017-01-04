@@ -1,5 +1,7 @@
 package com.jkm.hss.bill.enums;
 
+import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableMap;
 import lombok.Getter;
 
 /**
@@ -58,5 +60,20 @@ public enum  EnumOrderStatus {
     EnumOrderStatus(final int id, final String value) {
         this.id = id;
         this.value = value;
+    }
+
+    private static final ImmutableMap<Integer, EnumOrderStatus> INIT_MAP;
+
+    static {
+        final ImmutableMap.Builder<Integer, EnumOrderStatus> builder = new ImmutableMap.Builder<>();
+        for (EnumOrderStatus status : EnumOrderStatus.values()) {
+            builder.put(status.getId(), status);
+        }
+        INIT_MAP = builder.build();
+    }
+
+    public static EnumOrderStatus of (final int status) {
+        Preconditions.checkState(INIT_MAP.containsKey(status), "unknown status[{}]", status);
+        return INIT_MAP.get(status);
     }
 }

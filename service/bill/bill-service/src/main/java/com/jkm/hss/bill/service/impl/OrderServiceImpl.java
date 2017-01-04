@@ -3,6 +3,7 @@ package com.jkm.hss.bill.service.impl;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.jkm.base.common.entity.ExcelSheetVO;
+import com.jkm.base.common.entity.PageModel;
 import com.jkm.base.common.util.ExcelUtil;
 import com.jkm.base.common.util.SnGenerator;
 import com.jkm.hss.account.entity.Account;
@@ -13,6 +14,7 @@ import com.jkm.hss.bill.entity.Order;
 import com.jkm.hss.bill.enums.EnumOrderStatus;
 import com.jkm.hss.bill.enums.EnumSettleStatus;
 import com.jkm.hss.bill.enums.EnumTradeType;
+import com.jkm.hss.bill.helper.requestparam.QueryMerchantPayOrdersRequestParam;
 import com.jkm.hss.bill.service.CalculateService;
 import com.jkm.hss.bill.service.OrderService;
 import com.jkm.hss.merchant.entity.MerchantInfo;
@@ -348,6 +350,24 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public Optional<Order> getByOrderNo(final String orderNo) {
         return Optional.fromNullable(this.orderDao.selectByOrderNo(orderNo));
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param requestParam
+     * @return
+     */
+    @Override
+    public PageModel<Order> queryMerchantPayOrders(final QueryMerchantPayOrdersRequestParam requestParam) {
+        final PageModel<Order> pageModel = new PageModel<>(requestParam.getPageNo(), requestParam.getPageSize());
+        requestParam.setOffset(pageModel.getFirstIndex());
+        requestParam.setCount(pageModel.getPageSize());
+        final long count = this.orderDao.selectCountMerchantPayOrders(requestParam);
+        final List<Order> orders = this.orderDao.selectMerchantPayOrders(requestParam);
+        pageModel.setCount(count);
+        pageModel.setRecords(orders);
+        return pageModel;
     }
 
     /**

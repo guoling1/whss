@@ -2,6 +2,7 @@ package com.jkm.hss.bill.dao;
 
 import com.jkm.hss.bill.entity.MerchantTradeResponse;
 import com.jkm.hss.bill.entity.Order;
+import com.jkm.hss.bill.helper.requestparam.QueryMerchantPayOrdersRequestParam;
 import com.jkm.hss.merchant.helper.request.OrderTradeRequest;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
@@ -166,4 +167,20 @@ public interface OrderDao {
      * @return
      */
     Order selectByOrderNo(@Param("orderNo") String orderNo);
+
+    /**
+     * 查询商户的收款单-分页
+     *
+     * @param requestParam
+     * @return
+     */
+    List<Order> selectMerchantPayOrders(QueryMerchantPayOrdersRequestParam requestParam);
+
+    /**
+     * 查询商户的收款单个数-分页
+     *
+     * @param requestParam
+     * @return
+     */
+    long selectCountMerchantPayOrders(QueryMerchantPayOrdersRequestParam requestParam);
 }
