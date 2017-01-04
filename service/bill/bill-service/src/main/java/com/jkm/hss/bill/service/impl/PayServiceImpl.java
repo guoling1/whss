@@ -257,13 +257,14 @@ public class PayServiceImpl implements PayService {
         final MerchantInfo merchant = this.merchantInfoService.getByAccountId(order.getPayee()).get();
         //手续费， 费率
         int channel = 0;
-        if (EnumPaymentType.QUICK_APY.getId().equals(paymentSdkPayCallbackResponse.getPayType())) {
+        if (EnumPaymentType.QUICK_APY.getId().equals(order.getPayType())) {
             channel = EnumPayChannelSign.YG_YINLIAN.getId();
-        } else if (EnumPaymentType.WECHAT_H5_CASHIER_DESK.getId().equals(paymentSdkPayCallbackResponse.getPayType())) {
+        } else if (EnumPaymentType.WECHAT_H5_CASHIER_DESK.getId().equals(order.getPayType())) {
             channel = EnumPayChannelSign.YG_WEIXIN.getId();
-        } else if (EnumPaymentType.ALIPAY_SCAN_CODE.getId().equals(paymentSdkPayCallbackResponse.getPayType())) {
+        } else if (EnumPaymentType.ALIPAY_SCAN_CODE.getId().equals(order.getPayType())) {
             channel = EnumPayChannelSign.YG_ZHIFUBAO.getId();
         }
+        log.info("返回的通道是[{}]", order.getPayType());
         final BigDecimal merchantPayPoundageRate = this.calculateService.getMerchantPayPoundageRate(merchant.getId(), channel);
         final BigDecimal merchantPayPoundage = this.calculateService.getMerchantPayPoundage(order.getTradeAmount(), merchantPayPoundageRate);
         order.setPayChannelSign(channel);
