@@ -1,7 +1,7 @@
 <template lang="html">
   <div id="dale">
     <div style="padding: 8px 30px; background: rgb(243, 156, 18); z-index: 999999; font-size: 22px; font-weight: 600;margin-bottom: 15px;color: #fff;">
-      交易查询
+      交易查询(新版)
       <router-link to="/admin/record/deal" class="btn btn-success pull-right" style="margin-left: 20px">切换旧版</router-link>
       <div class="btn btn-primary pull-right" @click="refresh()">刷新</div>
     </div>

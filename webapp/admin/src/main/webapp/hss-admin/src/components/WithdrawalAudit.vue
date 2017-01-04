@@ -71,6 +71,16 @@
         </div>
       </form>
     </div>
+    <!--选择账号-->
+    <div class="box box-info mask" v-if="isMask">
+      <div class="box-body" style="text-align: center;font-size: 20px;">
+        请选择打款账户
+      </div>
+      <div class="box-footer clearfix" style="border-top: none">
+        <a href="javascript:void(0)" @click="choose(1)" class="btn btn-sm btn-info btn-flat pull-left">D0账户打款</a>
+        <a href="javascript:void(0)" @click="choose(2)" class="btn btn-sm btn-default btn-flat pull-right">T1账户打款</a>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -88,17 +98,18 @@
           tradeType:"提现",
           opinionContent:"",
           opinion:"",
+          accountType:""
         },
+        isMask: false,
         record: this.$route.query
       }
     },
     created: function () {
-      this.$http.post("/admin/order/queryInfoByOrderNo",{sn:this.$route.query.sn})
+      this.$http.post("/admin/order/queryInfoByOrderNo",{orderNo:this.$route.query.orderNo})
         .then(function (res) {
-          console.log(res)
-          this.$data.accountId = res.data.accountId;
-          this.$data.userName = res.data.userName;
-          this.$data.userType = res.data.userType;
+          this.$data.query.accountId = res.data.accountId;
+          this.$data.query.userName = res.data.userName;
+          this.$data.query.userType = res.data.userType;
         },function (err) {
           this.$store.commit('MESSAGE_ACCORD_SHOW', {
             text: err.statusMessage
@@ -111,17 +122,37 @@
       },
       audit: function (val) {
         this.$data.query.opinion = val;
+        if(val==2){
+          this.$data.isMask = true;
+        }else {
+          this.$http.post('http://192.168.1.20:8076/order/withdraw/audit',this.$data.query)
+            .then(function (res) {
+              this.$store.commit('MESSAGE_ACCORD_SHOW', {
+                text: "操作成功"
+              })
+              this.$router.push('/admin/record/newWithdrawalQuery')
+            },function (err) {
+              this.$store.commit('MESSAGE_ACCORD_SHOW', {
+                text: err.statusMessage
+              })
+            })
+        }
+      },
+      choose: function (val) {
+        this.$data.query.accountType = val;
         console.log(this.$data.query)
-        /*this.$http.post('http://192.168.1.20:8076/order/withdraw/audit',this.$data.query)
+        this.$http.post('http://192.168.1.20:8076/order/withdraw/audit',this.$data.query)
           .then(function (res) {
             this.$store.commit('MESSAGE_ACCORD_SHOW', {
-              text: res.data.msg
+              text: "操作成功"
             })
+            this.$data.isMask = false;
           },function (err) {
             this.$store.commit('MESSAGE_ACCORD_SHOW', {
               text: err.statusMessage
             })
-          })*/
+            this.$data.isMask = false;
+          })
       }
     },
     computed: {
@@ -153,5 +184,12 @@
 
   .form-group div{
     padding-top: 7px;
+  }
+  .mask{
+    width: 20%;
+    position: fixed;
+    top: 30%;
+    left: 46%;
+    box-shadow: 0 0 15px #000;
   }
 </style>
