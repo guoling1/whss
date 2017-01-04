@@ -301,8 +301,7 @@ public class OrderServiceImpl implements OrderService {
         MerchantTradeResponse list = orderDao.selectOrderListByPageAll(req.getOrderNo());
         if(list != null){
             long payee = list.getPayee();
-            long payer = list.getPayer();
-            MerchantTradeResponse lists = orderDao.getMerchantAll(payee,payer);
+            MerchantTradeResponse lists = orderDao.getMerchantAll(payee);
             list.setCreateTimes(lists.getCreateTime());
             if (lists.getMobile()!=null&&!"".equals(lists.getMobile())){
                 list.setMobile(MerchantSupport.decryptMobile(lists.getMobile()));

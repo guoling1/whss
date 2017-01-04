@@ -141,10 +141,9 @@ public interface OrderDao {
     /**
      * 查询商户信息
      * @param payee
-     * @param payer
      * @return
      */
-    MerchantTradeResponse getMerchantAll(@Param("payee") long payee,@Param("payer") long payer);
+    MerchantTradeResponse getMerchantAll(@Param("payee") long payee);
 
     /**
      * 查询代理商信息
