@@ -73,8 +73,7 @@
               <table id="example2" class="table table-bordered table-hover dataTable" role="grid" aria-describedby="example2_info">
                 <thead>
                 <tr role="row">
-                  <th class="sorting_asc" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Rendering engine: activate to sort column descending">序号</th>
-                  <th class="sorting_asc" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Rendering engine: activate to sort column descending">支付流水号</th>
+                  <th class="sorting_asc" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Rendering engine: activate to sort column descending">打款流水号</th>
                   <th class="sorting_asc" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Rendering engine: activate to sort column descending">交易单号</th>
                   <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="Platform(s): activate to sort column ascending">支付金额</th>
                   <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="Platform(s): activate to sort column ascending">创建时间</th>
@@ -87,22 +86,23 @@
                   <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">支付状态</th>
                   <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">报错信息</th>
                   <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">备注信息</th>
-                  <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">操作</th>
                 </tr>
                 </thead>
                 <tbody id="content">
-                <tr v-if="order.tradeType==0" role="row" v-for="order in this.$data.orders">
-                  <td><router-link :to="{ path: '/admin/record/dealDet', query: {id: order.id}}">{{order.orderId|changeHide}}</router-link></td>
+                <tr role="row" v-for="order in $$orders">
+                  <td>{{order.sn}}</td>
+                  <td>{{order.orderNo}}</td>
+                  <td>{{order.payAmount}}</td>
                   <td>{{order.createTime|changeTime}}</td>
-                  <td>{{order.subName}}</td>
-                  <td>{{order.proxyName}}</td>
-                  <td style="text-align: right">{{order.totalFee|toFix}}</td>
-                  <td>{{order.tradeRate}}</td>
-                  <td>{{order.orderMessage}}<a href="javascript:;">(补发)</a></td>
-                  <td>{{order.settleStatus|changeSettleStatus}}</td>
-                  <td>{{order.payChannel|changePayChannel}}</td>
-                  <td>{{order.channelName}}</td>
-                  <td>{{order.errorMessage}}</td>
+                  <td>{{order.requestTime|changeTime}}</td>
+                  <td>{{order.finishTime|changeTime}}</td>
+                  <td>{{order.payChannel}}</td>
+                  <td>{{order.payType}}</td>
+                  <td>{{order.upperChannel}}</td>
+                  <td>{{order.payAccount}}</td>
+                  <td>{{order.statusValue}}</td>
+                  <td>{{order.message}}</td>
+                  <td>{{order.remark}}</td>
                 </tr>
                 </tbody>
               </table>
@@ -173,6 +173,7 @@
       this.$http.post('http://192.168.1.20:8076/order/pay/listOrder',this.$data.query)
         .then(function (res) {
           this.$data.orders=res.data.records;
+          console.log(this.$data.orders)
           this.$data.total=res.data.totalPage;
           this.$data.url=res.data.ext;
           var str = '',
@@ -244,7 +245,7 @@
           tar.parentNode.className+=' active'
           n = Number(tarInn);
         }
-        this.$data.query.page = n;
+        this.$data.query.pageNo = n;
         this.$http.post('http://192.168.1.20:8076/order/pay/listOrder',this.$data.query)
           .then(function (res) {
             this.$data.orders=res.data.records;
@@ -300,7 +301,7 @@
       },
       //筛选
       lookup: function () {
-        this.$data.query.page = 1;
+        this.$data.query.pageNo = 1;
         this.$http.post('http://192.168.1.20:8076/order/pay/listOrder',this.$data.query)
           .then(function (res) {
             this.$data.orders=res.data.records;
@@ -346,6 +347,9 @@
     computed: {
       $$query: function () {
         return this.$data.query
+      },
+      $$orders: function () {
+        return this.$data.orders
       }
     },
     filters: {

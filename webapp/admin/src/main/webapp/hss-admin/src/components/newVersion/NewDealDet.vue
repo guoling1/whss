@@ -11,9 +11,9 @@
               <th style="text-align: right">商户类型:</th>
               <td>{{record.merchantType|changeMerchantType}}</td>
               <th style="text-align: right">商户编号:</th>
-              <td>{{record.merchantId}}</td>
+              <td>{{record.id}}</td>
               <th style="text-align: right">商户名称:</th>
-              <td>{{record.subName}}</td>
+              <td>{{record.merchantName}}</td>
             </tr>
             <tr>
               <th style="text-align: right">注册手机号:</th>
@@ -45,62 +45,63 @@
               <th style="text-align: right">付款人账户:</th>
               <td></td>
               <th style="text-align: right">订单号:</th>
-              <td>{{record.orderId}}</td>
+              <td>{{record.orderNo}}</td>
             </tr>
             <tr>
-
               <th style="text-align: right">交易单号:</th>
-              <td>{{record.outTradeNo}}</td>
+              <td></td>
               <th style="text-align: right">交易金额:</th>
-              <td>{{record.totalFee}}</td>
+              <td>{{record.tradeAmount}}</td>
+              <th></th>
+              <td></td>
             </tr>
             <tr>
               <th style="text-align: right">手续费率:</th>
-              <td></td>
+              <td>{{record.payRate}}</td>
               <th style="text-align: right">手续费:</th>
+              <td>{{record.poundage}}</td>
+              <th></th>
               <td></td>
-              <th style="text-align: right">服务费:</th>
-              <td>{{record.serviceFee}}</td>
             </tr>
             <tr>
               <th style="text-align: right">通道名称:</th>
-              <td>{{record.channelName}}</td>
+              <td>{{record.payChannelSign|changePayChannel}}</td>
               <th style="text-align: right">通道费:</th>
-              <td>{{record.channelFee}}</td>
+              <td></td>
               <th style="text-align: right">实际所得:</th>
-              <td>{{record.realFee}}</td>
+              <td></td>
             </tr>
             <tr>
               <th style="text-align: right">支付方式:</th>
-              <td>{{record.payChannel|changePayChannel}}</td>
+              <td>{{record.payType|changePayType}}</td>
               <th style="text-align: right">交易类型:</th>
               <td>{{record.tradeType|changeTradeType}}</td>
               <th style="text-align: right">交易状态:</th>
-              <td>{{record.orderMessage}}</td>
+              <td>{{record.status|changeStatus}}</td>
             </tr>
             <tr>
               <th style="text-align: right">结算状态:</th>
               <td>{{record.settleStatus|changeSettleStatus}}</td>
               <th style="text-align: right">结算周期:</th>
-              <td>{{record.settlePeriod}}</td>
+              <td></td>
               <th style="text-align: right">交易时间:</th>
               <td>{{record.createTime|changeTime}}</td>
             </tr>
             <tr>
               <th style="text-align: right">交易成功时间:</th>
-              <td>{{record.payTime|changeTime}}</td>
+              <td>{{record.paySuccessTime|changeTime}}</td>
               <th style="text-align: right">预计结算时间:</th>
-              <td></td>
+              <td>{{record.settleTime|changeTime}}</td>
               <th style="text-align: right">结算时间:</th>
-              <td></td>
+              <td>{{record.successSettleTime|changeTime}}</td>
             </tr>
             <tr>
               <th style="text-align: right">商品名称:</th>
-              <td></td>
+              <td>{{record.goodsName}}</td>
               <th style="text-align: right">商品描述:</th>
-              <td></td>
-              <th style="text-align: right">错误信息:</th>
-              <td>{{record.errorMessage}}</td>
+              <td>{{record.goodsDescribe}}</td>
+              <th style="text-align: right">备注信息:</th>
+              <td>{{record.remark}}</td>
             </tr>
             </tbody></table>
         </div>
@@ -171,27 +172,61 @@
           return year+"-"+month+"-"+date+" "+hour+":"+minute+":"+second;
         }
       },
+      changePayType: function (val) {
+        if(val == "S"){
+          return "微信扫码"
+        }else if(val == "N"){
+          return "微信二维码"
+        }else if(val == "H"){
+          return "微信H5收银台"
+        }else if(val == "B"){
+          return "快捷收款"
+        }else if(val == "Z"){
+          return "支付宝扫码"
+        }
+      },
+      changeStatus: function (val) {
+        if(val == 1){
+          return "待支付"
+        }else if(val == 3){
+          return "支付失败"
+        }else if(val == 4){
+          return "支付成功"
+        }else if(val == 5){
+          return "提现中"
+        }else if(val == 6){
+          return "提现成功"
+        }else if(val == 7){
+          return "充值成功"
+        }else if(val == 6){
+          return "充值失败"
+        }
+      },
       changeSettleStatus: function (val) {
-        if(val == 0){
-          return '已结算'
+        if(val == 2){
+          return '结算中'
         }else if(val == 1){
-          return '未结算'
+          return '待结算'
+        }else if(val == 3){
+          return '已结算'
         }
       },
       changePayChannel: function (val) {
         if(val == 101){
-          return '微信'
+          return '阳光微信扫码'
         }else if(val == 102){
-          return '支付宝'
+          return '阳光支付宝扫码'
         }else if(val == 103){
-          return '快捷'
+          return '阳光银联支付'
         }
       },
       changeTradeType: function (val) {
-        if(val == 0){
-          return '支付'
-        }else if(val == 1){
-          return '提现'
+        if(val == 1){
+          return "支付"
+        }else if(val == 2){
+          return "充值"
+        }else if(val ==3){
+          return "提现"
         }
       }
     }
