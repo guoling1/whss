@@ -165,4 +165,8 @@
             ORDER BY id DESC LIMIT #{offset},#{count}
         </where>
     </select>
+
+    <update id="updateMarkCode">
+        UPDATE tb_dealer SET mark_code = #{markCode} WHERE id = #{dealerId}
+    </update>
 </mapper>

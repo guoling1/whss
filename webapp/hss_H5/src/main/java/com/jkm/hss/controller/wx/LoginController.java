@@ -790,7 +790,23 @@ public class LoginController extends BaseController {
         }
     }
 
-
+    /**
+     * 登录页面
+     * @param request
+     * @param response
+     * @param model
+     * @return
+     * @throws IOException
+     */
+    @RequestMapping(value = "/login", method = RequestMethod.GET)
+    public String login(final HttpServletRequest request, final HttpServletResponse response, final Model model) throws IOException {
+        String ul = request.getRequestURI();
+        if(!super.isLogin(request)){
+            return "redirect:"+ WxConstants.WEIXIN_USERINFO+ul+ WxConstants.WEIXIN_USERINFO_REDIRECT;
+        }else {
+            return "/login";
+        }
+    }
     /**
      * 我的推广页面
      * @param request
@@ -827,7 +843,7 @@ public class LoginController extends BaseController {
                         isRedirect= true;
                         url = "/sqb/prompt";
                     }else if(result.get().getStatus()== EnumMerchantStatus.PASSED.getId()){
-                        // TODO: 2016/12/29 累计分润和未结分润
+                        // TODO: 2016/12/29 累计分润
                         url = "/myRecommend";
                     }
                 }else {

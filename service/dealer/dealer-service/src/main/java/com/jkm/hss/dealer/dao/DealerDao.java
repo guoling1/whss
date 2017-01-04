@@ -147,4 +147,13 @@ public interface DealerDao {
      * @return
      */
     List<Dealer> selectDealersByPageParams(ListDealerRequest listDealerRequest);
+
+
+    /**
+     * 写入markCode
+     * @param markCode
+     * @param dealerId
+     * @return
+     */
+    int updateMarkCode(@Param("markCode") String markCode, @Param("dealerId") long dealerId);
 }

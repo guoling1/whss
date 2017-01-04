@@ -6,7 +6,10 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.jkm.base.common.entity.PageModel;
+import com.jkm.base.common.enums.EnumGlobalIDPro;
+import com.jkm.base.common.enums.EnumGlobalIDType;
 import com.jkm.base.common.util.DateFormatUtil;
+import com.jkm.base.common.util.GlobalID;
 import com.jkm.hss.account.sevice.AccountService;
 import com.jkm.hss.admin.entity.DistributeQRCodeRecord;
 import com.jkm.hss.admin.entity.QRCode;
@@ -476,6 +479,7 @@ public class DealerServiceImpl implements DealerService {
         dealer.setIdCard(DealerSupport.encryptIdenrity(request.getIdCard()));
         dealer.setStatus(EnumDealerStatus.NORMAL.getId());
         this.add(dealer);
+        this.updateMarkCode(GlobalID.GetGlobalID(EnumGlobalIDType.DEALER, EnumGlobalIDPro.MIN,dealer.getId()+""),dealer.getId());
 
         final List<DealerChannelRate> channelRates = this.dealerRateService.getByDealerId(firstLevelDealerId);
         for (DealerChannelRate channelRate : channelRates) {
@@ -760,6 +764,7 @@ public class DealerServiceImpl implements DealerService {
         dealer.setRecommendBtn(firstLevelDealerAddRequest.getRecommendBtn());
         dealer.setStatus(EnumDealerStatus.NORMAL.getId());
         this.add(dealer);
+        this.updateMarkCode(GlobalID.GetGlobalID(EnumGlobalIDType.DEALER, EnumGlobalIDPro.MIN,dealer.getId()+""),dealer.getId());
         final FirstLevelDealerAddRequest.Product product = firstLevelDealerAddRequest.getProduct();
         final long productId = product.getProductId();
         final List<FirstLevelDealerAddRequest.Channel> channels = product.getChannels();
@@ -978,5 +983,17 @@ public class DealerServiceImpl implements DealerService {
             this.dealerUpgerdeRateService.insert(du);
         }
 
+    }
+
+    /**
+     * 写入markCode
+     *
+     * @param markCode
+     * @param dealerId
+     * @return
+     */
+    @Override
+    public int updateMarkCode(String markCode, long dealerId) {
+        return this.dealerDao.updateMarkCode(markCode,dealerId);
     }
 }
