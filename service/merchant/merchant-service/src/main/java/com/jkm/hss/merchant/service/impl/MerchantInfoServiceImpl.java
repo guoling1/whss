@@ -1,6 +1,9 @@
 package com.jkm.hss.merchant.service.impl;
 
 import com.google.common.base.Optional;
+import com.jkm.base.common.enums.EnumGlobalIDPro;
+import com.jkm.base.common.enums.EnumGlobalIDType;
+import com.jkm.base.common.util.GlobalID;
 import com.jkm.hss.admin.entity.QRCode;
 import com.jkm.hss.admin.service.QRCodeService;
 import com.jkm.hss.merchant.dao.MerchantInfoDao;
@@ -124,21 +127,16 @@ public class MerchantInfoServiceImpl implements MerchantInfoService {
         merchantInfoDao.insertSelective(merchantInfo);
         QRCode qrCode = qrCodeService.initMerchantCode(merchantInfo.getId(),merchantInfo.getFirstDealerId(),merchantInfo.getSecondMerchantId());
         merchantInfo.setCode(qrCode.getCode());
+        merchantInfo.setMarkCode(GlobalID.GetGlobalID(EnumGlobalIDType.MERCHANT, EnumGlobalIDPro.MIN,merchantInfo.getId()+""));
         merchantInfoDao.updateBySelective(merchantInfo);
         return merchantInfo.getId();
     }
 
     @Override
     public long regByCode(MerchantInfo merchantInfo) {
-//        Triple<Long, Long, Long> triple =  qrCodeService.getCurrentAndFirstAndSecondByCode(merchantInfo.getCode());
-//        merchantInfo.setDealerId(triple.getLeft());
-//        merchantInfo.setFirstDealerId(triple.getMiddle());
-//        merchantInfo.setSecondDealerId(triple.getRight());
-//        merchantInfo.setFirstMerchantId(0);
-//        merchantInfo.setSecondMerchantId(0);
-//        merchantInfo.setLevel(EnumUpGradeType.COMMON.getId());
-//        merchantInfo.setHierarchy(0);
         merchantInfoDao.insertSelective(merchantInfo);
+        merchantInfo.setMarkCode(GlobalID.GetGlobalID(EnumGlobalIDType.MERCHANT, EnumGlobalIDPro.MIN,merchantInfo.getId()+""));
+        merchantInfoDao.updateBySelective(merchantInfo);
         qrCodeService.markAsActivate(merchantInfo.getCode(),merchantInfo.getId());
         return merchantInfo.getId();
     }

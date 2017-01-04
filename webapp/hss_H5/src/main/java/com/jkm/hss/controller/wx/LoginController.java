@@ -9,7 +9,6 @@ import com.jkm.hss.bill.entity.Order;
 import com.jkm.hss.bill.service.OrderService;
 import com.jkm.hss.controller.BaseController;
 import com.jkm.hss.helper.ApplicationConsts;
-import com.jkm.hss.merchant.entity.AccountInfo;
 import com.jkm.hss.merchant.entity.MerchantInfo;
 import com.jkm.hss.merchant.entity.OrderRecord;
 import com.jkm.hss.merchant.entity.UserInfo;
