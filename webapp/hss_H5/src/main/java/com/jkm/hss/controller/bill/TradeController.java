@@ -203,7 +203,7 @@ public class TradeController extends BaseController {
         if (EnumOrderStatus.DUE_PAY.getId() != payStatus
                 && EnumOrderStatus.PAY_FAIL.getId() != payStatus
                 && EnumOrderStatus.PAY_SUCCESS.getId() != payStatus) {
-            requestParam.setPayStatus(EnumOrderStatus.PAY_SUCCESS.getId());
+            requestParam.setPayStatus(0);
         }
         if (!EnumPaymentType.WECHAT_SCAN_CODE.getId().equals(payType)
                 && !EnumPaymentType.WECHAT_QR_CODE.getId().equals(payType)
