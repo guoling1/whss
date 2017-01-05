@@ -52,5 +52,5 @@
     }
 </script>
 <script src="/js/hss/2.0.1/vendor.1.0.1.min.js"></script>
-<script src="/js/hss/2.0.1/reg.min.js"></script>
+<script src="/js/hss/2.0.1/login.min.js"></script>
 </html>

@@ -108,35 +108,41 @@ public class LoginController extends BaseController {
             String url = "";
             Optional<UserInfo> userInfoOptional = userInfoService.selectByOpenId(super.getOpenId(request));
             if (userInfoOptional.isPresent()) {
-                Long merchantId = userInfoOptional.get().getMerchantId();
-                if (merchantId != null && merchantId != 0){
-                    Optional<MerchantInfo> result = merchantInfoService.selectById(merchantId);
-                    if (result.get().getStatus()== EnumMerchantStatus.LOGIN.getId()){//登录
-                        if(code!=null&&!"".equals(code)){
-                            model.addAttribute("code",code);
+                if(code!=null&&!"".equals(code)){
+                    model.addAttribute("message","您的微信已经绑定了好收收账号\n" +
+                            "请使用其他微信账号扫码");
+                    url = "/message";
+                }else{
+                    Long merchantId = userInfoOptional.get().getMerchantId();
+                    if (merchantId != null && merchantId != 0){
+                        Optional<MerchantInfo> result = merchantInfoService.selectById(merchantId);
+                        if (result.get().getStatus()== EnumMerchantStatus.LOGIN.getId()){//登录
+                            if(code!=null&&!"".equals(code)){
+                                model.addAttribute("code",code);
+                            }
+                            model.addAttribute("openId",userInfoOptional.get().getOpenId());
+                            url = "/reg";
+                        }else if(result.get().getStatus()== EnumMerchantStatus.INIT.getId()){
+                            url = "/sqb/addInfo";
+                            isRedirect= true;
+                        }else if(result.get().getStatus()== EnumMerchantStatus.ONESTEP.getId()){
+                            url = "/sqb/addNext";
+                            isRedirect= true;
+                        }else if(result.get().getStatus()== EnumMerchantStatus.REVIEW.getId()||
+                                result.get().getStatus()== EnumMerchantStatus.UNPASSED.getId()||
+                                result.get().getStatus()== EnumMerchantStatus.DISABLE.getId()){
+                            url = "/sqb/prompt";
+                            isRedirect= true;
+                        }else if(result.get().getStatus()== EnumMerchantStatus.PASSED.getId()){//跳首页
+                            url = "/sqb/wallet";
+                            isRedirect= true;
                         }
-                        model.addAttribute("openId",userInfoOptional.get().getOpenId());
+                    }else {
+                        if(code!=null&&!"".equals(code)){
+                            model.addAttribute("qrCode",code);
+                        }
                         url = "/reg";
-                    }else if(result.get().getStatus()== EnumMerchantStatus.INIT.getId()){
-                        url = "/sqb/addInfo";
-                        isRedirect= true;
-                    }else if(result.get().getStatus()== EnumMerchantStatus.ONESTEP.getId()){
-                        url = "/sqb/addNext";
-                        isRedirect= true;
-                    }else if(result.get().getStatus()== EnumMerchantStatus.REVIEW.getId()||
-                            result.get().getStatus()== EnumMerchantStatus.UNPASSED.getId()||
-                            result.get().getStatus()== EnumMerchantStatus.DISABLE.getId()){
-                        url = "/sqb/prompt";
-                        isRedirect= true;
-                    }else if(result.get().getStatus()== EnumMerchantStatus.PASSED.getId()){//跳首页
-                        url = "/sqb/wallet";
-                        isRedirect= true;
                     }
-                }else {
-                    if(code!=null&&!"".equals(code)){
-                        model.addAttribute("qrCode",code);
-                    }
-                    url = "/reg";
                 }
             }else {
                 if(code!=null&&!"".equals(code)){
@@ -807,11 +813,12 @@ public class LoginController extends BaseController {
      * @throws IOException
      */
     @RequestMapping(value = "/login", method = RequestMethod.GET)
-    public String login(final HttpServletRequest request, final HttpServletResponse response, final Model model) throws IOException {
+    public String login(final HttpServletRequest request, final HttpServletResponse response, final Model model,@RequestParam(value = "mobile", required = false) String mobile) throws IOException {
         String ul = request.getRequestURI();
         if(!super.isLogin(request)){
             return "redirect:"+ WxConstants.WEIXIN_USERINFO+ul+ WxConstants.WEIXIN_USERINFO_REDIRECT;
         }else {
+            model.addAttribute("mobile",mobile);
             return "/login";
         }
     }
@@ -824,15 +831,30 @@ public class LoginController extends BaseController {
      * @throws IOException
      */
     @RequestMapping(value = "/invite/{id}", method = RequestMethod.GET)
-    public String login(final HttpServletRequest request, final HttpServletResponse response, final Model model,@PathVariable("id") long id) throws IOException {
-        Optional<UserInfo> userInfoOptional = userInfoService.selectById(id);
-        if(userInfoOptional.isPresent()){
-            model.addAttribute("message","该用户不存在");
-            return "/500";
-        }else{
-            model.addAttribute("inviteCode",MerchantSupport.decryptMobile(userInfoOptional.get().getMobile()));
-            return "/reg";
+    public String invite(final HttpServletRequest request, final HttpServletResponse response, final Model model,@PathVariable("id") long id) throws IOException {
+        boolean isRedirect = false;
+        String ul = request.getRequestURI();
+        if(!super.isLogin(request)){
+            return "redirect:"+ WxConstants.WEIXIN_USERINFO+ul+ WxConstants.WEIXIN_USERINFO_REDIRECT;
+        }else {
+            String url = "";
+            Optional<UserInfo> userInfoOptional = userInfoService.selectByOpenId(super.getOpenId(request));
+            if (userInfoOptional.isPresent()) {
+                model.addAttribute("message","您已经注册过了\n" +
+                        "不能再被邀请注册");
+                url = "/message";
+            }else {
+                Optional<UserInfo> uiOptional = userInfoService.selectById(id);
+                model.addAttribute("inviteCode",MerchantSupport.decryptMobile(uiOptional.get().getMobile()));
+                url = "/reg";
+            }
+            if(isRedirect){
+                return "redirect:"+url;
+            }else{
+                return url;
+            }
         }
+
     }
     /**
      * 我的推广页面
