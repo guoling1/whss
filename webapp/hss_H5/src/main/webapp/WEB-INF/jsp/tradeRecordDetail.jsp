@@ -27,11 +27,11 @@
     <div class="space">
         <div class="detail">
             <div class="left">商品名称</div>
-            <div class="right"></div>
+            <div class="right">${goodsName}</div>
         </div>
         <div class="detail">
             <div class="left">商品描述</div>
-            <div class="right"></div>
+            <div class="right">${goodsDescribe}</div>
         </div>
         <div class="detail">
             <div class="left">时间</div>

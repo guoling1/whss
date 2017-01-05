@@ -7,6 +7,7 @@ import com.jkm.base.common.util.DateFormatUtil;
 import com.jkm.hss.account.entity.Account;
 import com.jkm.hss.account.sevice.AccountService;
 import com.jkm.hss.bill.entity.Order;
+import com.jkm.hss.bill.enums.EnumOrderStatus;
 import com.jkm.hss.bill.enums.EnumPaymentType;
 import com.jkm.hss.bill.service.OrderService;
 import com.jkm.hss.controller.BaseController;
@@ -759,8 +760,8 @@ public class LoginController extends BaseController {
             model.addAttribute("goodsDescribe", order.getGoodsDescribe());
             model.addAttribute("createTime", DateFormatUtil.format(order.getCreateTime(), DateFormatUtil.yyyy_MM_dd_HH_mm_ss));
 //            Pair<String,String> pair = payOf(0,orderRecord.getPayResult());
-            model.addAttribute("status", com.jkm.hss.bill.enums.EnumSettleStatus.of(order.getSettleStatus()).getValue());
-            model.addAttribute("payType", StringUtils.isEmpty(order.getPayType()) ? "" : EnumPaymentType.of(order.getPayType()));
+            model.addAttribute("status", EnumOrderStatus.of(order.getStatus()).getValue());
+            model.addAttribute("payType", StringUtils.isEmpty(order.getPayType()) ? "" : EnumPaymentType.of(order.getPayType()).getValue());
             final MerchantInfo merchantInfo = this.merchantInfoService.getByAccountId(order.getPayee()).get();
             model.addAttribute("merchantName", merchantInfo.getMerchantName());
             model.addAttribute("orderNo", order.getOrderNo());
