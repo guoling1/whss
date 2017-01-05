@@ -13,7 +13,7 @@
         content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
   <meta name="format-detection" content="telephone=no"/>
   <title>好收收</title>
-  <link rel="stylesheet" href="http://static.jinkaimen.cn/hss/css/style.css">
+  <link rel="stylesheet" href="http://static.jinkaimen.cn/hss/css/style.2.0.1.css">
   <link rel="stylesheet" href="http://static.jinkaimen.cn/weui/weui.css">
 </head>
 <body>
@@ -29,6 +29,7 @@
       <input type="hidden" id="key-input" value="">
     </div>
   </div>
+  <div class="prompt-deep">收款实时到账;无卡快捷单笔限额2万</div>
   <div class="keyboard" id="keyboard">
     <div class="copyright flexBox">
       <span class="line"></span>
@@ -55,12 +56,13 @@
         <div class="quick" keyCtrl="quick">
           <div class="logo"></div>
           <div class="word">无卡快捷</div>
-          <div class="date">(D0)</div>
+          <div class="date">(实时到账)</div>
+          <div class="date">限额2万</div>
         </div>
         <div class="wx-zfb" keyCtrl="wx-zfb">
           <div class="wx-zfb"></div>
           <div class="word">微信/支付宝</div>
-          <div class="date">(D0)</div>
+          <div class="date">(实时到账)</div>
         </div>
       </div>
     </div>
@@ -69,5 +71,5 @@
 
 </body>
 <script src="http://static.jinkaimen.cn/vendor/vendor.1.0.1.min.js"></script>
-<script src="http://static.jinkaimen.cn/hss/0.1.19/collection.min.js"></script>
+<script src="http://static.jinkaimen.cn/hss/2.0.1/collection.min.js"></script>
 </html>

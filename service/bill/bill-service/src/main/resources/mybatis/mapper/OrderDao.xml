@@ -72,6 +72,7 @@
         settle_status = #{settleStatus},
         settle_time = #{settleTime},
         success_settle_time = #{successSettleTime},
+        pay_channel_sign = #{payChannelSign},
         remark = #{remark},
         status = #{status}
         WHERE id = #{id}
@@ -131,28 +132,14 @@
         a.remark,
         a. STATUS,
         a.create_time,
-        (
-        SELECT
-        b.merchant_name
-        FROM
-        tb_merchant_info b
-        WHERE
-        b.account_id = a.payee
-        ) AS merchantName,
+        b.merchant_name,
         (
         SELECT
         c.proxy_name
         FROM
         tb_dealer c
         WHERE
-        c.id = (
-        SELECT
-        b.dealer_id
-        FROM
-        tb_merchant_info b
-        WHERE
-        b.account_id = a.payee
-        )
+        c.id = b.dealer_id
         ) AS proxyName,
         (
         SELECT
@@ -160,14 +147,7 @@
         FROM
         tb_dealer c
         WHERE
-        c.id = (
-        SELECT
-        b.dealer_id
-        FROM
-        tb_merchant_info b
-        WHERE
-        b.account_id = a.payee
-        )
+        c.id = b.dealer_id
         ) AS LEVEL,
         (
         SELECT
@@ -175,46 +155,41 @@
         FROM
         tb_dealer c
         WHERE
-        c.id = (
-        SELECT
-        b.dealer_id
-        FROM
-        tb_merchant_info b
-        WHERE
-        b.account_id = a.payee
-        )
+        c.id = b.dealer_id
         ) AS firstLevelDealerId
         FROM
         tb_order a
+        LEFT JOIN tb_merchant_info b
+        ON a.payee=b.account_id
         WHERE a.trade_type=1
         <if test="startTime!=null and startTime!=''">
-            AND create_time <![CDATA[ >= ]]> #{startTime}
+            AND a.create_time <![CDATA[ >= ]]> #{startTime}
         </if>
         <if test="endTime!=null and endTime!=''">
-            AND create_time <![CDATA[ <= ]]> #{endTime}
+            AND a.create_time <![CDATA[ <= ]]> #{endTime}
         </if>
         <if test="orderNo != null and orderNo!=''">
-            AND order_no LIKE CONCAT('%',#{orderNo})
+            AND a.order_no LIKE CONCAT('%',#{orderNo})
         </if>
         <if test="merchantName != null and merchantName!=''">
-            AND merchant_name = #{merchantName}
+            AND b.merchant_name = #{merchantName}
         </if>
         <if test="status != null and status!=''">
-            AND status=#{status}
+            AND a.status=#{status}
         </if>
         <if test="payType != null and payType!=''">
-            AND pay_type =  #{payType}
+            AND a.pay_type =  #{payType}
         </if>
         <if test="lessTotalFee != null and lessTotalFee!=''">
-            AND real_pay_amount <![CDATA[ >= ]]> #{lessTotalFee}
+            AND a.real_pay_amount <![CDATA[ >= ]]> #{lessTotalFee}
         </if>
         <if test="moreTotalFee != null and moreTotalFee!=''">
-            AND real_pay_amount <![CDATA[ <= ]]> #{moreTotalFee}
+            AND a.real_pay_amount <![CDATA[ <= ]]> #{moreTotalFee}
         </if>
         <if test="settleStatus != null">
-            AND settle_status = #{settleStatus}
+            AND a.settle_status = #{settleStatus}
         </if>
-        ORDER BY create_time DESC
+        ORDER BY a.create_time DESC
         limit #{offset}, #{size}
     </select>
 
@@ -272,28 +247,14 @@
         a.remark,
         a. STATUS,
         a.create_time,
-        (
-        SELECT
-        b.merchant_name
-        FROM
-        tb_merchant_info b
-        WHERE
-        b.account_id = a.payee
-        ) AS merchantName,
+        b.merchant_name,
         (
         SELECT
         c.proxy_name
         FROM
         tb_dealer c
         WHERE
-        c.id = (
-        SELECT
-        b.dealer_id
-        FROM
-        tb_merchant_info b
-        WHERE
-        b.account_id = a.payee
-        )
+        c.id = b.dealer_id
         ) AS proxyName,
         (
         SELECT
@@ -301,14 +262,7 @@
         FROM
         tb_dealer c
         WHERE
-        c.id = (
-        SELECT
-        b.dealer_id
-        FROM
-        tb_merchant_info b
-        WHERE
-        b.account_id = a.payee
-        )
+        c.id = b.dealer_id
         ) AS LEVEL,
         (
         SELECT
@@ -316,75 +270,76 @@
         FROM
         tb_dealer c
         WHERE
-        c.id = (
-        SELECT
-        b.dealer_id
-        FROM
-        tb_merchant_info b
-        WHERE
-        b.account_id = a.payee
-        )
+        c.id = b.dealer_id
         ) AS firstLevelDealerId
         FROM
         tb_order a
+        LEFT JOIN tb_merchant_info b
+        ON a.payee=b.account_id
         WHERE a.trade_type=1
         <if test="startTime!=null and startTime!=''">
-            AND create_time <![CDATA[ >= ]]> #{startTime}
+            AND a.create_time <![CDATA[ >= ]]> #{startTime}
         </if>
         <if test="endTime!=null and endTime!=''">
-            AND create_time <![CDATA[ <= ]]> #{endTime}
+            AND a.create_time <![CDATA[ <= ]]> #{endTime}
         </if>
         <if test="orderNo != null and orderNo!=''">
-            AND order_no LIKE CONCAT('%',#{orderNo})
+            AND a.order_no LIKE CONCAT('%',#{orderNo})
         </if>
         <if test="merchantName != null and merchantName!=''">
-            AND merchant_name = #{merchantName}
+            AND b.merchant_name = #{merchantName}
         </if>
         <if test="status != null and status!=''">
-            AND status=#{status}
+            AND a.status=#{status}
         </if>
         <if test="payType != null and payType!=''">
-            AND pay_type =  #{payType}
+            AND a.pay_type =  #{payType}
         </if>
         <if test="lessTotalFee != null and lessTotalFee!=''">
-            AND real_pay_amount <![CDATA[ >= ]]> #{lessTotalFee}
+            AND a.real_pay_amount <![CDATA[ >= ]]> #{lessTotalFee}
         </if>
         <if test="moreTotalFee != null and moreTotalFee!=''">
-            AND real_pay_amount <![CDATA[ <= ]]> #{moreTotalFee}
+            AND a.real_pay_amount <![CDATA[ <= ]]> #{moreTotalFee}
         </if>
         <if test="settleStatus != null">
-            AND settle_status = #{settleStatus}
+            AND a.settle_status = #{settleStatus}
         </if>
-        ORDER BY create_time DESC
+        ORDER BY a.create_time DESC
     </select>
 
     <select id="selectOrderListCount"  resultType="java.lang.Integer">
         SELECT COUNT(1)
-		FROM tb_order
-        WHERE trade_type=1
+        FROM
+        tb_order a
+        LEFT JOIN tb_merchant_info b
+        ON a.payee=b.account_id
+        WHERE a.trade_type=1
         <if test="startTime!=null and startTime!=''">
-            AND create_time <![CDATA[ >= ]]> #{startTime}
+            AND a.create_time <![CDATA[ >= ]]> #{startTime}
         </if>
         <if test="endTime!=null and endTime!=''">
-            AND create_time <![CDATA[ <= ]]> #{endTime}
+            AND a.create_time <![CDATA[ <= ]]> #{endTime}
         </if>
         <if test="orderNo != null and orderNo!=''">
-            AND order_no = #{orderNo}
+            AND a.order_no LIKE CONCAT('%',#{orderNo})
         </if>
         <if test="merchantName != null and merchantName!=''">
-            AND merchant_name = #{merchantName}
+            AND b.merchant_name = #{merchantName}
         </if>
         <if test="status != null and status!=''">
-            AND status=#{status}
+            AND a.status=#{status}
         </if>
         <if test="payType != null and payType!=''">
-            AND pay_type =  #{payType}
+            AND a.pay_type =  #{payType}
         </if>
-        <if test="realPayAmount != null and realPayAmount!=''">
-            AND real_pay_amount = #{realPayAmount}
+        <if test="lessTotalFee != null and lessTotalFee!=''">
+            AND a.real_pay_amount <![CDATA[ >= ]]> #{lessTotalFee}
+        </if>
+        <if test="moreTotalFee != null and moreTotalFee!=''">
+            AND a.real_pay_amount <![CDATA[ <= ]]> #{moreTotalFee}
         </if>
         <if test="settleStatus != null">
-            AND settle_status = #{settleStatus}
+            AND a.settle_status = #{settleStatus}
         </if>
     </select>
 

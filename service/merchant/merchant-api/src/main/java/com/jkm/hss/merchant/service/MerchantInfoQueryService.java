@@ -56,4 +56,24 @@ public interface MerchantInfoQueryService {
      */
     List<MerchantInfoResponse> getCount();
 
+    /**
+     * 查询待审核商户列表
+     * @param merchantInfoResponse
+     * @return
+     */
+    List<MerchantInfoResponse> getRecord(MerchantInfoResponse merchantInfoResponse);
+
+    /**
+     * 查询待审核总数
+     * @return
+     */
+    List<MerchantInfoResponse> getCountRecord();
+
+    /**
+     * 导出
+     * @param merchantInfoResponse
+     * @param baseUrl
+     * @return
+     */
+    String downloadExcel(MerchantInfoResponse merchantInfoResponse, String baseUrl);
 }

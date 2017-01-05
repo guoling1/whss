@@ -10,6 +10,7 @@ const WithdrawalQuery = r => require.ensure([], () => r(require('../../component
 const WithdrawalDet = r => require.ensure([], () => r(require('../../components/WithdrawalDet')), 'group-record');
 const StoreList = r => require.ensure([], () => r(require('../../components/StoreList')), 'group-record');
 const StoreAudit = r => require.ensure([], () => r(require('../../components/StoreAudit')), 'group-record');
+const StoreAuditList = r => require.ensure([], () => r(require('../../components/StoreAuditList')), 'group-record');
 const AgentList = r => require.ensure([], () => r(require('../../components/AgentList')), 'group-record');
 const AgentAdd = r => require.ensure([], () => r(require('../../components/AgentAdd')), 'group-record');
 const CompanyProfit = r => require.ensure([], () => r(require('../../components/CompanyProfit')), 'group-record');
@@ -53,6 +54,11 @@ export default {
       path: 'storeList',
       name: 'StoreList',
       component: StoreList
+    },
+    {
+      path: 'storeAuditList',
+      name: 'StoreAuditList',
+      component: StoreAuditList
     },
     {
       path: 'storeAudit',

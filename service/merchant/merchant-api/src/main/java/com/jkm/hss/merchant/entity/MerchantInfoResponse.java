@@ -8,11 +8,17 @@ import java.util.Date;
 @Data
 public class MerchantInfoResponse {
 
+    /**
+     * 认证时间
+     */
+    private Date authenticationTime;
 
     /**
-     *
+     * 代理商级别
      */
     private long firstLevelDealerId;
+
+
 
     /**
      * 经销商级别

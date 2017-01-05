@@ -18,6 +18,7 @@
                 <option value="4">审核未通过</option>
               </select>
               <div class="btn btn-primary" @click="search">筛选</div>
+              <span @click="onload()" download="交易记录" class="btn btn-primary pull-right" style="float: right;color: #fff">导出</span>
             </div>
             <div class="row">
               <div class="col-sm-12">
@@ -26,9 +27,11 @@
                   <tr role="row">
                     <th class="sorting_asc" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Rendering engine: activate to sort column descending">商户编号</th>
                     <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="Browser: activate to sort column ascending">商户名称</th>
-                    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="Platform(s): activate to sort column ascending">所属代理商</th>
-                    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="Engine version: activate to sort column ascending">所属代理商编号</th>
+                    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="Platform(s): activate to sort column ascending">所属一级代理商</th>
+                    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="Engine version: activate to sort column ascending">所属二级代理</th>
                     <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">注册时间</th>
+                    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">认证时间</th>
+                    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">审核时间</th>
                     <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">可用状态</th>
                     <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">操作</th>
                   </tr>
@@ -37,9 +40,11 @@
                   <tr role="row" class="odd" v-for="store in $$data.stores">
                     <td class="sorting_1">{{store.id}}</td>
                     <td>{{store.merchantName}}</td>
-                    <td>{{store.proxyName}}</td>
-                    <td>{{store.dealerId}}</td>
+                    <td>{{store.proxyName|changeName}}</td>
+                    <td>{{store.proxyName1|changeName}}</td>
                     <td>{{store.createTime|changeTime}}</td>
+                    <td>{{store.authenticationTime|changeTime}}</td>
+                    <td>{{store.checkedTime|changeTime}}</td>
                     <td>{{store.status|status}}</td>
                     <td>
                       <div class="btn btn-primary" @click="audit($event,store.id,store.status)">{{store.status|operate}}</div>
@@ -57,6 +62,7 @@
                   <ul class="pagination" id="page" @click="bindEvent($event)">
 
                   </ul>
+                  <span class="count">共{{count}}条</span>
                 </div>
               </div>
             </div>
@@ -65,6 +71,16 @@
         <!-- /.box-body -->
       </div>
       <!-- /.box -->
+    </div>
+    <!--下载-->
+    <div class="box box-info mask" v-if="isMask">
+      <div class="box-body" style="text-align: center;font-size: 20px;">
+        确认下载吗？
+      </div>
+      <div class="box-footer clearfix" style="border-top: none">
+        <a :href="'http://'+$$url" @click="close()" class="btn btn-sm btn-info btn-flat pull-left">下载</a>
+        <a href="javascript:void(0)" @click="close()" class="btn btn-sm btn-default btn-flat pull-right">取消</a>
+      </div>
     </div>
   </div>
 </template>
@@ -79,7 +95,10 @@
         pageNo:1,
         pageSize:10,
         total:0,
-        status:''
+        status:'',
+        isMask: false,
+        url: '',
+        count:''
       }
     },
     created: function () {
@@ -93,6 +112,7 @@
       }).then(function (res) {
         this.$data.stores   = res.data.records;
         this.$data.total = res.data.totalPage;
+        this.$data.count = res.data.count;
         var str='',
           page=document.getElementById('page');
         str+='<li class="paginate_button previous disabled" id="example2_previous"><a href="#" aria-controls="example2" data-dt-idx="0" tabindex="0">上一页</a></li>'
@@ -112,6 +132,27 @@
       })
     },
     methods: {
+      onload:function () {
+        this.$data.isMask = true;
+        this.$http.post('/admin/query/downLoad',{
+          /*pageNo:this.$data.pageNo,
+          pageSize:this.$data.pageSize,
+          merchantName:this.$data.merchantName,
+          status: this.$data.status*/
+        })
+          .then(function (res) {
+            console.log(res)
+            this.$data.url = res.data.url;
+          },function (err) {
+            this.$store.commit('MESSAGE_ACCORD_SHOW', {
+              text: err.statusMessage
+            })
+            this.$data.isMask = false;
+          })
+      },
+      close: function () {
+        this.$data.isMask = false;
+      },
       audit: function (event, id, status) {
         this.$router.push({
           path: '/admin/record/StoreAudit', query: {
@@ -206,6 +247,9 @@
     computed:{
       $$data:function () {
         return this.$data
+      },
+      $$url: function () {
+        return this.$data.url
       }
     },
     filters: {
@@ -246,6 +290,13 @@
           var second=val.getSeconds();
           return year+"-"+month+"-"+date+" "+hour+":"+minute+":"+second;
         }
+      },
+      changeName: function (val) {
+        if(val==null){
+          return "无"
+        }else {
+          return val
+        }
       }
     }
   }
@@ -271,9 +322,6 @@
     margin: 0 10px;
   }
 
-  a {
-    color: #42b983;
-  }
 
   .search{
     margin-bottom: 15px;
@@ -283,5 +331,17 @@
     select{
       margin-right: 20px;
     }
+  }
+  .mask{
+    width: 30%;
+    position: fixed;
+    top: 30%;
+    left: 46%;
+    box-shadow: 0 0 15px #000;
+  }
+  .count{
+    display: inline-block;
+    vertical-align: top;
+    margin: 28px 10px;
   }
 </style>

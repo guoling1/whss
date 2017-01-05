@@ -1,6 +1,10 @@
 <template lang="html">
   <div id="dale">
-    <div style="padding: 8px 30px; background: rgb(243, 156, 18); z-index: 999999; font-size: 22px; font-weight: 600;margin-bottom: 15px;color: #fff;">交易查询</div>
+    <div style="padding: 8px 30px; background: rgb(243, 156, 18); z-index: 999999; font-size: 22px; font-weight: 600;margin-bottom: 15px;color: #fff;">
+      交易查询(旧版)
+      <router-link to="/admin/record/newDeal" class="btn btn-success pull-right" style="margin-left: 20px">切换新版</router-link>
+      <div class="btn btn-primary pull-right" @click="refresh()">刷新</div>
+    </div>
     <div class="col-md-12">
       <!--筛选-->
       <div class="box box-success box-solid">
@@ -93,14 +97,15 @@
                   <th class="sorting_asc" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Rendering engine: activate to sort column descending">订单号</th>
                   <th class="sorting_asc" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Rendering engine: activate to sort column descending">交易日期</th>
                   <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="Platform(s): activate to sort column ascending">商户名称</th>
-                  <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="Platform(s): activate to sort column ascending">所属代理</th>
+                  <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="Platform(s): activate to sort column ascending">所属一级代理</th>
+                  <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="Platform(s): activate to sort column ascending">所属二级代理</th>
                   <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="Engine version: activate to sort column ascending">支付金额</th>
                   <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">手续费率</th>
                   <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">订单状态</th>
                   <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">结算状态</th>
                   <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">支付方式</th>
                   <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">支付渠道</th>
-                  <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">备注</th>
+                  <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">错误信息</th>
                 </tr>
                 </thead>
                 <tbody id="content">
@@ -109,6 +114,7 @@
                   <td>{{order.createTime|changeTime}}</td>
                   <td>{{order.subName}}</td>
                   <td>{{order.proxyName}}</td>
+                  <td>{{order.proxyName1}}</td>
                   <td style="text-align: right">{{order.totalFee|toFix}}</td>
                   <td>{{order.tradeRate}}</td>
                   <td>{{order.orderMessage}}<a href="javascript:;">(补发)</a></td>
@@ -229,6 +235,9 @@
         })
     },
     methods: {
+      refresh: function () {
+        location.reload()
+      },
       //分页器
       bindEvent: function (e) {
         e = e||window.event;
