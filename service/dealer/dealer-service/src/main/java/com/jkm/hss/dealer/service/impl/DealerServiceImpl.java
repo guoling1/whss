@@ -6,7 +6,10 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.jkm.base.common.entity.PageModel;
+import com.jkm.base.common.enums.EnumGlobalIDPro;
+import com.jkm.base.common.enums.EnumGlobalIDType;
 import com.jkm.base.common.util.DateFormatUtil;
+import com.jkm.base.common.util.GlobalID;
 import com.jkm.hss.account.sevice.AccountService;
 import com.jkm.hss.admin.entity.DistributeQRCodeRecord;
 import com.jkm.hss.admin.entity.QRCode;
@@ -15,10 +18,7 @@ import com.jkm.hss.admin.helper.responseparam.DistributeCodeCount;
 import com.jkm.hss.admin.service.DistributeQRCodeRecordService;
 import com.jkm.hss.admin.service.QRCodeService;
 import com.jkm.hss.dealer.dao.DealerDao;
-import com.jkm.hss.dealer.entity.CompanyProfitDetail;
-import com.jkm.hss.dealer.entity.Dealer;
-import com.jkm.hss.dealer.entity.DealerChannelRate;
-import com.jkm.hss.dealer.entity.ShallProfitDetail;
+import com.jkm.hss.dealer.entity.*;
 import com.jkm.hss.dealer.enums.EnumDealerChannelRateStatus;
 import com.jkm.hss.dealer.enums.EnumDealerLevel;
 import com.jkm.hss.dealer.enums.EnumProfitType;
@@ -28,10 +28,7 @@ import com.jkm.hss.dealer.helper.requestparam.FirstLevelDealerAddRequest;
 import com.jkm.hss.dealer.helper.requestparam.FirstLevelDealerUpdateRequest;
 import com.jkm.hss.dealer.helper.requestparam.ListDealerRequest;
 import com.jkm.hss.dealer.helper.requestparam.SecondLevelDealerAddRequest;
-import com.jkm.hss.dealer.service.CompanyProfitDetailService;
-import com.jkm.hss.dealer.service.DealerRateService;
-import com.jkm.hss.dealer.service.DealerService;
-import com.jkm.hss.dealer.service.ShallProfitDetailService;
+import com.jkm.hss.dealer.service.*;
 import com.jkm.hss.merchant.entity.MerchantInfo;
 import com.jkm.hss.merchant.entity.OrderRecord;
 import com.jkm.hss.merchant.service.MerchantInfoService;
@@ -82,6 +79,8 @@ public class DealerServiceImpl implements DealerService {
     private ProductChannelDetailService productChannelDetailService;
     @Autowired
     private CompanyProfitDetailService companyProfitDetailService;
+    @Autowired
+    private DealerUpgerdeRateService dealerUpgerdeRateService;
 
     /**
      * {@inheritDoc}
@@ -477,8 +476,10 @@ public class DealerServiceImpl implements DealerService {
         dealer.setFirstLevelDealerId(firstLevelDealerId);
         dealer.setSettleBankCard(DealerSupport.encryptBankCard(request.getBankCard()));
         dealer.setBankReserveMobile(DealerSupport.encryptMobile(request.getBankReserveMobile()));
+        dealer.setIdCard(DealerSupport.encryptIdenrity(request.getIdCard()));
         dealer.setStatus(EnumDealerStatus.NORMAL.getId());
         this.add(dealer);
+        this.updateMarkCode(GlobalID.GetGlobalID(EnumGlobalIDType.DEALER, EnumGlobalIDPro.MIN,dealer.getId()+""),dealer.getId());
 
         final List<DealerChannelRate> channelRates = this.dealerRateService.getByDealerId(firstLevelDealerId);
         for (DealerChannelRate channelRate : channelRates) {
@@ -758,8 +759,12 @@ public class DealerServiceImpl implements DealerService {
         dealer.setLevel(EnumDealerLevel.FIRST.getId());
         dealer.setSettleBankCard(DealerSupport.encryptBankCard(firstLevelDealerAddRequest.getBankCard()));
         dealer.setBankReserveMobile(DealerSupport.encryptMobile(firstLevelDealerAddRequest.getBankReserveMobile()));
+        dealer.setIdCard(DealerSupport.encryptIdenrity(firstLevelDealerAddRequest.getIdCard()));
+        dealer.setTotalProfitSpace(firstLevelDealerAddRequest.getTotalProfitSpace());
+        dealer.setRecommendBtn(firstLevelDealerAddRequest.getRecommendBtn());
         dealer.setStatus(EnumDealerStatus.NORMAL.getId());
         this.add(dealer);
+        this.updateMarkCode(GlobalID.GetGlobalID(EnumGlobalIDType.DEALER, EnumGlobalIDPro.MIN,dealer.getId()+""),dealer.getId());
         final FirstLevelDealerAddRequest.Product product = firstLevelDealerAddRequest.getProduct();
         final long productId = product.getProductId();
         final List<FirstLevelDealerAddRequest.Channel> channels = product.getChannels();
@@ -775,6 +780,19 @@ public class DealerServiceImpl implements DealerService {
             dealerChannelRate.setDealerMerchantWithdrawFee(new BigDecimal(channel.getMerchantWithdrawFee()));
             dealerChannelRate.setStatus(EnumDealerChannelRateStatus.USEING.getId());
             this.dealerRateService.init(dealerChannelRate);
+        }
+
+        final List<FirstLevelDealerAddRequest.DealerUpgerdeRate> dealerUpgerdeRates =firstLevelDealerAddRequest.getDealerUpgerdeRates();
+        for(FirstLevelDealerAddRequest.DealerUpgerdeRate dealerUpgerdeRate:dealerUpgerdeRates){
+            DealerUpgerdeRate du = new DealerUpgerdeRate();
+            du.setProductId(productId);
+            du.setType(dealerUpgerdeRate.getType());
+            du.setDealerId(dealer.getId());
+            du.setFirstDealerShareProfitRate(new BigDecimal(dealerUpgerdeRate.getFirstDealerShareProfitRate()));
+            du.setSecondDealerShareProfitRate(new BigDecimal(dealerUpgerdeRate.getSecondDealerShareProfitRate()));
+            du.setBossDealerShareRate(new BigDecimal(dealerUpgerdeRate.getBossDealerShareRate()));
+            du.setStatus(EnumDealerStatus.NORMAL.getId());
+            this.dealerUpgerdeRateService.insert(du);
         }
         return dealer.getId();
     }
@@ -950,5 +968,32 @@ public class DealerServiceImpl implements DealerService {
             dealerChannelRate.setStatus(EnumDealerChannelRateStatus.USEING.getId());
             this.dealerRateService.update(dealerChannelRate);
         }
+
+        final List<FirstLevelDealerUpdateRequest.DealerUpgerdeRate> dealerUpgerdeRates =request.getDealerUpgerdeRates();
+        for(FirstLevelDealerUpdateRequest.DealerUpgerdeRate dealerUpgerdeRate:dealerUpgerdeRates){
+            DealerUpgerdeRate du = new DealerUpgerdeRate();
+            du.setId(dealerUpgerdeRate.getId());
+            du.setProductId(productId);
+            du.setType(dealerUpgerdeRate.getType());
+            du.setDealerId(dealer.getId());
+            du.setFirstDealerShareProfitRate(new BigDecimal(dealerUpgerdeRate.getFirstDealerShareProfitRate()));
+            du.setSecondDealerShareProfitRate(new BigDecimal(dealerUpgerdeRate.getSecondDealerShareProfitRate()));
+            du.setBossDealerShareRate(new BigDecimal(dealerUpgerdeRate.getBossDealerShareRate()));
+            du.setStatus(EnumDealerStatus.NORMAL.getId());
+            this.dealerUpgerdeRateService.insert(du);
+        }
+
+    }
+
+    /**
+     * 写入markCode
+     *
+     * @param markCode
+     * @param dealerId
+     * @return
+     */
+    @Override
+    public int updateMarkCode(String markCode, long dealerId) {
+        return this.dealerDao.updateMarkCode(markCode,dealerId);
     }
 }

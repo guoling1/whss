@@ -77,8 +77,6 @@ public class CodeController extends BaseController {
         final Optional<QRCode> qrCodeOptional = this.qrCodeService.getByCode(code);
         Preconditions.checkState(qrCodeOptional.isPresent(), "QRCode not exist");
         final QRCode qrCode = qrCodeOptional.get();
-        //未分配，也可以扫码
-//        Preconditions.checkState(qrCode.isDistribute(), "QRCode not distribute");
         Preconditions.checkState(qrCode.isCorrectSign(sign), "sign is not correct");
         final long merchantId = qrCode.getMerchantId();
         final String agent = request.getHeader("User-Agent");
