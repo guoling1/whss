@@ -66,7 +66,7 @@
             </tr>
             <tr>
               <th style="text-align: right">所属银行:</th>
-              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.bankNo" readonly></td>
+              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.bankName" readonly></td>
               <th style="text-align: right">开户手机号:</th>
               <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.reserveMobile" readonly></td>
               <th style="text-align: right">实名认证时间:</th>
