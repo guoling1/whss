@@ -196,7 +196,22 @@ public class TradeController extends BaseController {
      */
     @ResponseBody
     @RequestMapping(value = "queryMerchantPayOrders", method = RequestMethod.POST)
-    public CommonResponse queryMerchantPayOrders(@RequestBody QueryMerchantPayOrdersRequestParam requestParam) {
+    public CommonResponse queryMerchantPayOrders(@RequestBody QueryMerchantPayOrdersRequestParam requestParam, final HttpServletRequest request) {
+        if(!super.isLogin(request)){
+            return CommonResponse.simpleResponse(-2, "未登录");
+        }
+        Optional<UserInfo> userInfoOptional = userInfoService.selectByOpenId(super.getOpenId(request));
+        if(!userInfoOptional.isPresent()){
+            return CommonResponse.simpleResponse(-2, "未登录");
+        }
+        Optional<MerchantInfo> merchantInfo = merchantInfoService.selectById(userInfoOptional.get().getMerchantId());
+        if(!merchantInfo.isPresent()){
+            return CommonResponse.simpleResponse(-2, "未登录");
+        }
+        if(merchantInfo.get().getStatus()!= EnumMerchantStatus.PASSED.getId()){
+            return CommonResponse.simpleResponse(-2, "未审核通过");
+        }
+        requestParam.setMerchantId(merchantInfo.get().getId());
         final PageModel<QueryMerchantPayOrdersResponse> result = new PageModel<>(requestParam.getPageNo(), requestParam.getPageSize());
         final int payStatus = requestParam.getPayStatus();
         final String payType = requestParam.getPayType();
