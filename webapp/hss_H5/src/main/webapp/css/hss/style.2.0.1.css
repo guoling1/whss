@@ -2245,6 +2245,19 @@ input:focus {
   font-size: 15px;
   color: #222222;
 }
+#upgradeWay .space .cont .upType li .left .check {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 1px solid #c8c8c8;
+  margin-right: 5px;
+  transform: translate3d(0, 2px, 0);
+}
+#upgradeWay .space .cont .upType li .left .check.active {
+  background: url("../assets/hss-check-active.png") no-repeat center;
+  background-size: 6px 6px;
+}
 #upgradeWay .space .cont .upType li .right {
   float: right;
   text-align: right;

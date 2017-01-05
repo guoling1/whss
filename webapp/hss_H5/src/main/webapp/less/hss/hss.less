@@ -1948,6 +1948,19 @@ input:focus {
             text-align: left;
             font-size: 15px;
             color: #222222;
+            .check {
+              display: inline-block;
+              width: 14px;
+              height: 14px;
+              border-radius: 50%;
+              border: 1px solid #c8c8c8;
+              margin-right: 5px;
+              transform: translate3d(0, 2px, 0);
+              &.active {
+                background: url("../assets/hss-check-active.png") no-repeat center;
+                background-size: 6px 6px;
+              }
+            }
           }
           .right {
             float: right;
