@@ -1,56 +1,109 @@
 <template lang="html">
   <div id="invite">
     <div style="padding: 8px 30px; background: rgb(243, 156, 18); z-index: 999999; font-size: 22px; font-weight: 600;margin-bottom: 15px;color: #fff;">邀请规则设置</div>
-    <div class="box box-info">
-      <div class="box-header with-border">
-        <h3 class="box-title">商户升级规则设置</h3>
-      </div>
+    <div style="margin: 0 15px 15px;width: inherit" class="box box-info">
       <form class="form-horizontal">
         <div class="box-body">
           <div class="form-group">
-            <div class="product">
-              <label v-for="(product,index) in $$products">
-                <input class="check" type="radio" name="name" :value="index" v-model="id">
-
-                <div class="product1">
-                  <div class="col-xs-12">
-                    <div class="box box1">
-                      <div class="box-body table-responsive no-padding">
-                        <table class="table table-hover">
-                          <tbody>
-                          <tr>
-                            <th>合伙人等级</th>
-                            <th>微信费率</th>
-                            <th>支付宝费率</th>
-                            <th>无卡费率</th>
-                            <th>升级费</th>
-                            <th>邀请人数</th>
-                          </tr>
-                          <tr>
-                            <td>0.49%</td>
-                            <td>0.49%</td>
-                            <td>0.55%</td>
-                            <td>无</td>
-                            <td>无</td>
-                          </tr>
-                          <tr >
-                            <td><input type="text" name="name">普通</td>
-                            <td><input type="text" name="name" v-model="channel.paymentSettleRate">%</td>
-                            <td><input type="text" name="name" v-model="channel.paymentSettleRate">%</td>
-                            <td><input type="text" name="name" v-model="channel.withdrawSettleFee">%</td>
-                            <td><input type="text" name="name" v-model="channel.merchantSettleRate">元</td>
-                            <td><input type="text" name="name" v-model="channel.merchantWithdrawFee">人</td>
-                          </tr>
-                          </tbody></table>
-                      </div>
-                      <!-- /.box-body -->
-                    </div>
-                    <!-- /.box -->
-                  </div>
-                </div>
-              </label>
+            <label for="channelName" class="col-sm-3 control-label">一级代理商</label>
+            <div class="col-sm-4">
+              <input type="text" class="form-control" id="channelName" v-model="channelName">
             </div>
+            <div class="col-sm-5 right"></div>
           </div>
+          <div class="form-group">
+            <label for="thirdCompany" class="col-sm-3 control-label">受邀用户开通费</label>
+
+            <div class="col-sm-4 middle">
+              <input type="text" class="form-control" id="thirdCompany" v-model="thirdCompany">
+              <i>元</i>
+            </div>
+            <div class="col-sm-5 right">  默认值：29元</div>
+          </div>
+          <div class="form-group">
+            <label for="channelSources" class="col-sm-3 control-label">一级代理开通费分润</label>
+
+            <div class="col-sm-4 middle">
+              <input type="text" class="form-control" id="channelSources" v-model="channelSource">
+              <i>元</i>
+            </div>
+            <div class="col-sm-5 right"></div>
+          </div>
+          <div class="form-group">
+            <label for="channelSource" class="col-sm-3 control-label">二级代理开通费分润</label>
+
+            <div class="col-sm-4 middle">
+              <input type="text" class="form-control" id="channelSource" v-model="channelSource">
+              <i>元</i>
+            </div>
+            <div class="col-sm-5 right"></div>
+          </div>
+          <div class="form-group">
+            <label for="basicTradeRate" class="col-sm-3 control-label">邀请人分润比例(一级)</label>
+
+            <div class="col-sm-4 middle">
+              <input type="number" class="form-control" id="basicTradeRate" v-model="basicTradeRate">
+              <i>%</i>
+            </div>
+            <div class="col-sm-5 right">需要邀请3人<span>默认值：0.02%(直属金开门的用户)</span></div>
+          </div>
+          <div class="form-group">
+            <label for="basicTradeRate1" class="col-sm-3 control-label">邀请人分润比例(二级)</label>
+
+            <div class="col-sm-4 middle">
+              <input type="number" class="form-control" id="basicTradeRate1" v-model="basicTradeRate">
+              <i>%</i>
+            </div>
+            <div class="col-sm-5 right">需要邀请5人<span>默认值：0.03%(直属金开门的用户)</span></div>
+          </div>
+          <div class="form-group">
+            <label for="basicTradeRate2" class="col-sm-3 control-label">邀请人分润比例(三级)</label>
+
+            <div class="col-sm-4 middle">
+              <input type="number" class="form-control" id="basicTradeRate2" v-model="basicTradeRate">
+              <i>%</i>
+            </div>
+            <div class="col-sm-5 right">需要邀请10人<span>默认值：0.04%(直属金开门的用户)</span></div>
+          </div>
+          <div class="form-group">
+            <label for="basicWithdrawFee" class="col-sm-3 control-label">邀请人一级代理收单分润比例</label>
+
+            <div class="col-sm-4 middle">
+              <input type="number" class="form-control" id="basicWithdrawFee" v-model="basicWithdrawFee">
+              <i>%</i>
+            </div>
+            <div class="col-sm-5 right"></div>
+          </div>
+          <div class="form-group">
+            <label for="basicWithdraw" class="col-sm-3 control-label">邀请人二级代理提现分润</label>
+
+            <div class="col-sm-4 middle">
+              <input type="number" class="form-control" id="basicWithdraw" v-model="basicWithdrawFee">
+              <i>元/笔</i>
+            </div>
+            <div class="col-sm-5 right"></div>
+          </div>
+          <div class="form-group">
+            <label for="basicWith" class="col-sm-3 control-label">邀请人二级代理收单分润比例</label>
+
+            <div class="col-sm-4 middle">
+              <input type="number" class="form-control" id="basicWith" v-model="basicWithdrawFee">
+              <i>%</i>
+            </div>
+            <div class="col-sm-5 right"></div>
+          </div>
+          <div class="form-group">
+            <label for="basic" class="col-sm-3 control-label">邀请人二级代理结算分润</label>
+
+            <div class="col-sm-4 middle">
+              <input type="number" class="form-control" id="basic" v-model="basicWithdrawFee">
+              <i>元/笔</i>
+            </div>
+            <div class="col-sm-5 right"></div>
+          </div>
+        </div>
+        <div class="box-footer">
+          <div type="submit" class="btn btn-info">保 存</div>
         </div>
       </form>
     </div>
@@ -62,20 +115,7 @@
     name:"invite",
     data(){
       return{
-        query: {
-          upgradeRulesList: [
-            {
-              productId:1,     //产品编码
-              name:店员,    //合伙人名称
-              type:1,        //合伙人类型 1店员 2店长 3老板
-              "promotionNum":20,//须推广人数
-              "upgradeCost":168,//升级费用
-              "weixinRate":0.49,//微信费率
-              "alipayRate":0.49,//支付宝费率
-              "fastRate":0.6,
-            }
-          ]
-        }
+
       }
     },
     created: function () {

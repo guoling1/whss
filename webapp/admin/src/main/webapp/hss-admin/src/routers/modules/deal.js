@@ -8,21 +8,15 @@ const DealQuery = r => require.ensure([], () => r(require('../../components/Deal
 const DealDet = r => require.ensure([], () => r(require('../../components/DealDet')), 'group-record');
 const WithdrawalQuery = r => require.ensure([], () => r(require('../../components/WithdrawalQuery')), 'group-record');
 const WithdrawalDet = r => require.ensure([], () => r(require('../../components/WithdrawalDet')), 'group-record');
-const WithdrawalAudit = r => require.ensure([], () => r(require('../../components/WithdrawalAudit')), 'group-record');
-const PayQuery = r => require.ensure([], () => r(require('../../components/PayQuery')), 'group-record');
-const StoreAccount = r => require.ensure([], () => r(require('../../components/StoreAccount')), 'group-record');
 const StoreList = r => require.ensure([], () => r(require('../../components/StoreList')), 'group-record');
 const StoreAudit = r => require.ensure([], () => r(require('../../components/StoreAudit')), 'group-record');
 const StoreAuditList = r => require.ensure([], () => r(require('../../components/StoreAuditList')), 'group-record');
 const AgentList = r => require.ensure([], () => r(require('../../components/AgentList')), 'group-record');
-const AgentAccount = r => require.ensure([], () => r(require('../../components/AgentAccount')), 'group-record');
 const AgentAdd = r => require.ensure([], () => r(require('../../components/AgentAdd')), 'group-record');
 const CompanyProfit = r => require.ensure([], () => r(require('../../components/CompanyProfit')), 'group-record');
 const CompanyProfitDet = r => require.ensure([], () => r(require('../../components/CompanyProfitDet')), 'group-record');
 const FirProfit = r => require.ensure([], () => r(require('../../components/FirProfit')), 'group-record');
-const FirProfitDet = r => require.ensure([], () => r(require('../../components/CompanyProfitDet')), 'group-record');
 const SecProfit = r => require.ensure([], () => r(require('../../components/SecProfit')), 'group-record');
-const SecProfitDet = r => require.ensure([], () => r(require('../../components/CompanyProfitDet')), 'group-record');
 const PassAdd = r => require.ensure([], () => r(require('../../components/PassAdd')), 'group-record');
 const PassList = r => require.ensure([], () => r(require('../../components/PassList')), 'group-record');
 const ProductAdd = r => require.ensure([], () => r(require('../../components/ProductAdd')), 'group-record');
@@ -30,52 +24,12 @@ const ProductList = r => require.ensure([], () => r(require('../../components/Pr
 const Issue = r => require.ensure([], () => r(require('../../components/Issue')), 'group-record');
 const Issue1 = r => require.ensure([], () => r(require('../../components/Issue1')), 'group-record');
 const IssueSuccess = r => require.ensure([], () => r(require('../../components/IssueSuccess')), 'group-record');
-const Invite = r => require.ensure([], () => r(require('../../components/Invite')), 'group-record');
-const Upgrade = r => require.ensure([], () => r(require('../../components/Upgrade')), 'group-record');
-const CodeStatus = r => require.ensure([], () => r(require('../../components/CodeStatus')), 'group-record');
-const Test = r => require.ensure([], () => r(require('../../components/Test')), 'group-record');
-const BootPage = r => require.ensure([], () => r(require('../../components/BootPage')), 'group-record');
-
-const NewDealQuery = r => require.ensure([], () => r(require('../../components/newVersion/NewDealQuery')), 'group-record');
-const NewDealDet = r => require.ensure([], () => r(require('../../components/newVersion/NewDealDet')), 'group-record');
-const NewWithdrawalQuery = r => require.ensure([], () => r(require('../../components/newVersion/NewWithdrawalQuery')), 'group-record');
-const NewWithdrawalDet = r => require.ensure([], () => r(require('../../components/newVersion/NewWithdrawalDet')), 'group-record');
 
 export default {
   path: '/admin/record',
   redirect: '/admin/record/deal',
   component: Crumbs,
   children: [
-    {
-      path: 'newDeal',
-      name: 'NewDealQuery',
-      component: NewDealQuery
-    },
-    {
-      path: 'newDealDet',
-      name: 'NewDealDet',
-      component: NewDealDet
-    },
-    {
-      path: 'newWithdrawalQuery',
-      name: 'NewWithdrawalQuery',
-      component: NewWithdrawalQuery
-    },
-    {
-      path: 'newWithdrawalDet',
-      name: 'NewWithdrawalDet',
-      component: NewWithdrawalDet
-    },
-    {
-      path: 'test',
-      name: 'Test',
-      component: Test
-    },
-    {
-      path: 'bootPage',
-      name: 'BootPage',
-      component: BootPage
-    },
     {
       path: 'deal',
       name: 'DealQuery',
@@ -92,24 +46,9 @@ export default {
       component: WithdrawalQuery
     },
     {
-      path: 'withdrawalAudit',
-      name: 'WithdrawalAudit',
-      component: WithdrawalAudit
-    },
-    {
       path: 'withdrawalDet',
       name: 'WithdrawalDet',
       component: WithdrawalDet
-    },
-    {
-      path: 'payQuery',
-      name: 'PayQuery',
-      component: PayQuery
-    },
-    {
-      path: 'storeAccount',
-      name: 'StoreAccount',
-      component: StoreAccount
     },
     {
       path: 'storeList',
@@ -132,11 +71,6 @@ export default {
       component: AgentList
     },
     {
-      path: 'agentAccount',
-      name: 'AgentAccount',
-      component: AgentAccount
-    },
-    {
       path: 'agentAdd',
       name: 'AgentAdd',
       component: AgentAdd
@@ -157,19 +91,9 @@ export default {
       component: FirProfit
     },
     {
-      path: 'firProfitDet',
-      name: 'FirProfitDet',
-      component: FirProfitDet
-    },
-    {
       path: 'secProfit',
       name: 'SecProfit',
       component: SecProfit
-    },
-    {
-      path: 'secProfitDet',
-      name: 'SecProfitDet',
-      component: SecProfitDet
     },
     {
       path: 'passAdd',
@@ -205,21 +129,6 @@ export default {
       path: 'issueSuccess',
       name: 'IssueSuccess',
       component: IssueSuccess
-    },
-    {
-      path: 'invite',
-      name: 'Invite',
-      component: Invite
-    },
-    {
-      path: 'upgrade',
-      name: 'Upgrade',
-      component: Upgrade
-    },
-    {
-      path: 'codeStatus',
-      name: 'CodeStatus',
-      component: CodeStatus
     }
   ]
 }

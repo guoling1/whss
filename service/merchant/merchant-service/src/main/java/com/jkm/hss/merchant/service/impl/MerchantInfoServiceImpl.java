@@ -1,13 +1,20 @@
 package com.jkm.hss.merchant.service.impl;
 
 import com.google.common.base.Optional;
+import com.jkm.base.common.enums.EnumGlobalIDPro;
+import com.jkm.base.common.enums.EnumGlobalIDType;
+import com.jkm.base.common.util.GlobalID;
 import com.jkm.hss.admin.entity.QRCode;
 import com.jkm.hss.admin.service.QRCodeService;
 import com.jkm.hss.merchant.dao.MerchantInfoDao;
 import com.jkm.hss.merchant.entity.MerchantInfo;
 import com.jkm.hss.merchant.helper.request.MerchantInfoAddRequest;
 import com.jkm.hss.merchant.service.MerchantInfoService;
+import com.jkm.hss.product.enums.EnumPayChannelSign;
+import com.jkm.hss.product.enums.EnumUpGradeType;
+import com.jkm.hss.product.servcie.ProductChannelDetailService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.tuple.Triple;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,6 +32,7 @@ public class MerchantInfoServiceImpl implements MerchantInfoService {
     private MerchantInfoDao merchantInfoDao;
     @Autowired
     private QRCodeService qrCodeService;
+
 
 
 //    @Override
@@ -115,10 +123,20 @@ public class MerchantInfoServiceImpl implements MerchantInfoService {
     }
 
     @Override
-    public long regByCode(MerchantInfo merchantInfo) {
-        long dealerId = qrCodeService.getDealerIdByCode(merchantInfo.getCode());
-        merchantInfo.setDealerId(dealerId);
+    public long regByWx(MerchantInfo merchantInfo) {
         merchantInfoDao.insertSelective(merchantInfo);
+        QRCode qrCode = qrCodeService.initMerchantCode(merchantInfo.getId(),merchantInfo.getFirstDealerId(),merchantInfo.getSecondMerchantId());
+        merchantInfo.setCode(qrCode.getCode());
+        merchantInfo.setMarkCode(GlobalID.GetGlobalID(EnumGlobalIDType.MERCHANT, EnumGlobalIDPro.MIN,merchantInfo.getId()+""));
+        merchantInfoDao.updateBySelective(merchantInfo);
+        return merchantInfo.getId();
+    }
+
+    @Override
+    public long regByCode(MerchantInfo merchantInfo) {
+        merchantInfoDao.insertSelective(merchantInfo);
+        merchantInfo.setMarkCode(GlobalID.GetGlobalID(EnumGlobalIDType.MERCHANT, EnumGlobalIDPro.MIN,merchantInfo.getId()+""));
+        merchantInfoDao.updateBySelective(merchantInfo);
         qrCodeService.markAsActivate(merchantInfo.getCode(),merchantInfo.getId());
         return merchantInfo.getId();
     }
@@ -142,6 +160,16 @@ public class MerchantInfoServiceImpl implements MerchantInfoService {
     @Override
     public List<MerchantInfo> batchGetMerchantInfo(List<Long> merchantIdList) {
         return this.merchantInfoDao.batchGetMerchantInfo(merchantIdList);
+    }
+
+    /**
+     * 根据id查询
+     *
+     * @param mobile
+     */
+    @Override
+    public Optional<MerchantInfo> selectByMobile(String mobile) {
+        return Optional.fromNullable(this.merchantInfoDao.selectByMobile(mobile));
     }
 
     /**

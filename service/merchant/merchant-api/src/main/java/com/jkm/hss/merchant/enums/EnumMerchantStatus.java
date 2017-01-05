@@ -34,9 +34,13 @@ public enum EnumMerchantStatus {
      */
     UNPASSED(4, "审核未通过"),
     /**
-     * 审核失败
+     * 禁用
      */
-    DISABLE(5, "禁用");
+    DISABLE(5, "禁用"),
+    /**
+     * 禁用
+     */
+    FRIEND(6, "消费达到指定数额，成为真实好友");
 
 
     @Getter

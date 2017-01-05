@@ -49,16 +49,16 @@
       <img src="http://static.jinkaimen.cn/hss/assets/banner.png" alt="">
     </div>
     <div class="application">
-      <div class="group">
+      <a class="group touch_gr" href="/sqb/myRecommend">
         <div class="ing"></div>
         <div class="logo friend"></div>
         <div class="text">推荐好友</div>
-      </div>
-      <div class="group">
+      </a>
+      <a class="group" href="/sqb/upgerde">
         <div class="ing"></div>
         <div class="logo upgrade"></div>
         <div class="text">我要升级</div>
-      </div>
+      </a>
       <a class="group touch_gr" href="/sqb/ticket">
         <div class="logo train"></div>
         <div class="text">火车票</div>
