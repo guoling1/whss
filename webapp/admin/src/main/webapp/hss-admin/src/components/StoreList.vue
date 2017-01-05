@@ -8,7 +8,7 @@
             <div class="search" id="search">
               <label for="name">商户名称：</label>
               <input class="form-control" type="text" name="name" value="" v-model="merchantName">
-              <label>订单状态：</label>
+              <label>状态：</label>
               <select class="form-control select2 select2-hidden-accessible" tabindex="-1" aria-hidden="true" v-model="status">
                 <option value="">全部</option>
                 <option value="0">已注册</option>
@@ -32,7 +32,7 @@
                     <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">注册时间</th>
                     <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">认证时间</th>
                     <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">审核时间</th>
-                    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">可用状态</th>
+                    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">状态</th>
                     <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">操作</th>
                   </tr>
                   </thead>
