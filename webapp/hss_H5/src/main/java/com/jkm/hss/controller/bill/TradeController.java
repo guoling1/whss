@@ -211,7 +211,7 @@ public class TradeController extends BaseController {
         if(merchantInfo.get().getStatus()!= EnumMerchantStatus.PASSED.getId()){
             return CommonResponse.simpleResponse(-2, "未审核通过");
         }
-        requestParam.setMerchantId(merchantInfo.get().getId());
+        requestParam.setAccountId(merchantInfo.get().getAccountId());
         final PageModel<QueryMerchantPayOrdersResponse> result = new PageModel<>(requestParam.getPageNo(), requestParam.getPageSize());
         final int payStatus = requestParam.getPayStatus();
         final String payType = requestParam.getPayType();
