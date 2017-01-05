@@ -39,7 +39,7 @@
     </div>
   </div>
   <div class="record">
-    <a href="/sqb/tradeRecord" class="group touch_gr"><span class="record"></span>交易记录</a>
+    <a href="/sqb/tradeRecord" class="group touch_gr"><span class="record"></span>收款记录</a>
     <a href="/sqb/bank" class="group touch_gr"><span class="bank"></span>银行卡</a>
     <a href="javascript:void(0)" class="group touch_gr"><span class="user"></span>用户认证</a>
     <a href="javascript:void(0)" class="group touch_gr"><span class="help"></span>使用帮助</a>
