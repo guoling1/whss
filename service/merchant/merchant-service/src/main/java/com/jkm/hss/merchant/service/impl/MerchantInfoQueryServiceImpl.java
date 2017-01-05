@@ -184,43 +184,47 @@ public class MerchantInfoQueryServiceImpl implements MerchantInfoQueryService {
         excelSheetVO.setName("merchant");
         heads.add("商户编号");
         heads.add("商户名称");
-        heads.add("商户名称");
         heads.add("所属一级代理");
         heads.add("所属二级代理");
         heads.add("注册时间");
         heads.add("认证时间");
         heads.add("审核时间");
-        heads.add("可用状态");
-        heads.add("操作");
+        heads.add("审核状态");
         datas.add(heads);
         if(list.size()>0){
             for(int i=0;i<list.size();i++){
                 ArrayList<String> columns = new ArrayList<>();
                 columns.add(String.valueOf(list.get(i).getId()));
-                columns.add(list.get(i).getMerchantName());
-                columns.add(list.get(i).getProxyName());
-                columns.add(list.get(i).getProxyName1());
+                if (!"".equals(list.get(i).getMerchantName())){
+                    columns.add(list.get(i).getMerchantName());
+                }
+                if (!"".equals(list.get(i).getProxyName())){
+                    columns.add(list.get(i).getProxyName());
+                }
+                if (!"".equals(list.get(i).getProxyName1())){
+                    columns.add(list.get(i).getProxyName1());
+                }
                 if (list.get(i).getCreateTime()!= null && !"".equals(list.get(i).getCreateTime())){
                     DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                     String st = df.format(list.get(i).getCreateTime());
                     columns.add(st);
 
                 }else {
-                    columns.add("");
+                    columns.add("-");
                 }
                 if (list.get(i).getAuthenticationTime()!=null && !"".equals(list.get(i).getAuthenticationTime())){
                     DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                     String st = df.format(list.get(i).getAuthenticationTime());
                     columns.add(st);
                 }else {
-                    columns.add("");
+                    columns.add("-");
                 }
                 if (list.get(i).getCheckedTime()!=null && !"".equals(list.get(i).getCreateTime())){
                     DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                     String st = df.format(list.get(i).getCreateTime());
                     columns.add(st);
                 }else {
-                    columns.add("");
+                    columns.add("-");
                 }
                 if (list.get(i).getStatus()==0){
                     columns.add("初始化");
