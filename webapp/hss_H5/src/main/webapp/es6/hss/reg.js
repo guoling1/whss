@@ -3,33 +3,43 @@
  */
 
 // 引入动画模版 处理验证码
-const Animation = _require('animation');
-const animation = new Animation();
+const AnimationCountdown = _require('art-countdown');
+let countdown = new AnimationCountdown('sendCode', '重新获取');
 // 引入http message
 const validate = _require('validate');
 const message = _require('message');
 const http = _require('http');
 // 定义变量
 const mobile = document.getElementById('mobile');
+const sendCode = document.getElementById('sendCode');
 const code = document.getElementById('code');
 const submit = document.getElementById('submit');
+const invite = document.getElementById('invite');
+const inviteCode = document.getElementById('inviteCode');
 // 引入浏览器特性处理
 const browser = _require('browser');
 browser.elastic_touch();
 
 if (!pageData.qrCode || pageData.qrCode == '') {
-  document.getElementById('sendCode').addEventListener('click', function () {
-    message.prompt_show('您需要扫码才能进行注册');
-  })
-} else {
-  // 定义验证码
-  animation.validcode({
-    url: '/wx/getCode',
-    phoneName: 'mobile',
-    phoneVal: 'mobile',
-    btn: 'sendCode'
-  });
+  invite.style.display = 'block';
 }
+
+if (!pageData.inviteCode || pageData.inviteCode == '') {
+  inviteCode.readonly = false;
+}
+
+sendCode.addEventListener('click', function () {
+  if (validate.phone(mobile.value)) {
+    if (countdown.check()) {
+      http.post('/wx/getCode', {
+        mobile: mobile.value
+      }, function (data) {
+        console.log(data);
+        countdown.submit_start();
+      })
+    }
+  }
+});
 
 // 注册
 submit.addEventListener('click', ()=> {
