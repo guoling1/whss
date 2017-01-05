@@ -37,6 +37,18 @@
     <button class="reg-btn" id="submit">注册</button>
   </div>
   <a class="login" href="/sqb/login">已有账号，直接登录</a>
+  <div class="layer" id="layer">
+    <div class="space">
+      <div class="space-title">
+        提示
+        <div class="xx" id="xx"></div>
+      </div>
+      <div class="space-cont">
+        <div></div>
+        <div class="submit">确认提现</div>
+      </div>
+    </div>
+  </div>
 </div>
 
 </body>
