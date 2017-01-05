@@ -2,6 +2,7 @@ package com.jkm.hss.controller.wx;
 
 
 import com.google.common.base.Optional;
+import com.jkm.base.common.entity.CommonResponse;
 import com.jkm.base.common.util.CookieUtil;
 import com.jkm.hss.account.entity.Account;
 import com.jkm.hss.account.sevice.AccountService;
@@ -19,9 +20,11 @@ import com.jkm.hss.merchant.helper.MerchantSupport;
 import com.jkm.hss.merchant.helper.WxConstants;
 import com.jkm.hss.merchant.helper.WxPubUtil;
 import com.jkm.hss.merchant.service.*;
+import com.jkm.hss.product.entity.ProductChannelDetail;
 import com.jkm.hss.product.entity.UpgradeResult;
 import com.jkm.hss.product.entity.UpgradeRules;
 import com.jkm.hss.product.enums.EnumPayChannelSign;
+import com.jkm.hss.product.servcie.ProductChannelDetailService;
 import com.jkm.hss.product.servcie.UpgradeRulesService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.Pair;
@@ -39,6 +42,7 @@ import java.io.IOException;
 import java.net.URLDecoder;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -76,8 +80,12 @@ public class LoginController extends BaseController {
 
     @Autowired
     private OrderService orderService;
+
     @Autowired
     private AccountService accountService;
+
+    @Autowired
+    private ProductChannelDetailService productChannelDetailService;
     /**
      * 扫固定码注册和微信公众号注册入口
      * @param request
@@ -808,6 +816,25 @@ public class LoginController extends BaseController {
         }
     }
     /**
+     * 邀请注册
+     * @param request
+     * @param response
+     * @param model
+     * @return
+     * @throws IOException
+     */
+    @RequestMapping(value = "/invite/{id}", method = RequestMethod.GET)
+    public String login(final HttpServletRequest request, final HttpServletResponse response, final Model model,@PathVariable("id") long id) throws IOException {
+        Optional<UserInfo> userInfoOptional = userInfoService.selectById(id);
+        if(userInfoOptional.isPresent()){
+            model.addAttribute("message","该用户不存在");
+            return "/500";
+        }else{
+            model.addAttribute("inviteCode",MerchantSupport.decryptMobile(userInfoOptional.get().getMobile()));
+            return "/reg";
+        }
+    }
+    /**
      * 我的推广页面
      * @param request
      * @param response
@@ -906,9 +933,36 @@ public class LoginController extends BaseController {
                         }
                         model.addAttribute("mobile",MerchantSupport.decryptMobile(result.get().getMobile()));
                         model.addAttribute("level",result.get().getLevel());
-                        List<UpgradeResult> list =  upgradeRulesService.selectUpgradeList(result.get().getProductId(),result.get().getLevel());
+                        model.addAttribute("weixinRate",result.get().getWeixinRate());
+                        model.addAttribute("alipayRate",result.get().getAlipayRate());
+                        model.addAttribute("fastRate",result.get().getFastRate());
+
+                        List<ProductChannelDetail> productChannelDetails = productChannelDetailService.selectByProductId(result.get().getProductId());
+                        if(productChannelDetails.size()==0){
+                            model.addAttribute("message","该产品商户基础费率不存在");
+                            return "/500";
+                        }
+                        //商户升级规则设置
+                        List<UpgradeResult> list = new ArrayList<UpgradeResult>();
+                        UpgradeResult upgradeResult = new UpgradeResult();
+                        upgradeResult.setId(0);
+                        upgradeResult.setName("普通");
+                        upgradeResult.setType(0);
+                        upgradeResult.setIsUpgrade(1);
+                        for(int i=0;i<productChannelDetails.size();i++){
+                            if(EnumPayChannelSign.YG_WEIXIN.getId()==productChannelDetails.get(i).getChannelTypeSign()){
+                                upgradeResult.setWeixinRate(productChannelDetails.get(i).getProductMerchantPayRate());
+                            }
+                            if(EnumPayChannelSign.YG_ZHIFUBAO.getId()==productChannelDetails.get(i).getChannelTypeSign()){
+                                upgradeResult.setAlipayRate(productChannelDetails.get(i).getProductMerchantPayRate());
+                            }
+                            if(EnumPayChannelSign.YG_YINLIAN.getId()==productChannelDetails.get(i).getChannelTypeSign()){
+                                upgradeResult.setWeixinRate(productChannelDetails.get(i).getProductMerchantPayRate());
+                            }
+                        }
+                        List<UpgradeResult> list1 =  upgradeRulesService.selectUpgradeList(result.get().getProductId(),result.get().getLevel());
+                        list.addAll(list1);
                         model.addAttribute("upgradeArray",list);
-                        //// TODO: 2016/12/29 当前费率
                         url = "/upgerde";
                     }
                 }else {
@@ -966,17 +1020,18 @@ public class LoginController extends BaseController {
                         if(upgradeRulesOptional.isPresent()){
                             if(result.get().getLevel()>=upgradeRulesOptional.get().getType()){
                                 model.addAttribute("message","暂无此级别信息");
-                                return "/message";
+                                return "/500";
                             }else{
-                                model.addAttribute("UpgradeRules",upgradeRulesOptional.get());
+                                model.addAttribute("upgradeRules",upgradeRulesOptional.get());
                                 int hasCount = recommendService.selectFriendCount(result.get().getId());
                                 model.addAttribute("restCount",upgradeRulesOptional.get().getPromotionNum()-hasCount);
                                 model.addAttribute("merchantId",result.get().getId());
+                                model.addAttribute("shareUrl","http://"+ApplicationConsts.getApplicationConfig().domain()+"/invite/"+userInfoOptional.get().getId());
                                 return "/toUpgerde";
                             }
                         }else{
                             model.addAttribute("message","暂无此级别信息");
-                            return "/message";
+                            return "/500";
                         }
                     }
                 }else {

@@ -460,7 +460,7 @@ public class WxPubController extends BaseController {
                     userInfoService.insertUserInfo(uo);
                     String tempMarkCode = GlobalID.GetGlobalID(EnumGlobalIDType.USER,EnumGlobalIDPro.MIN,uo.getId()+"");
                     userInfoService.updatemarkCode(tempMarkCode,uo.getId());
-                    return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "登录成功",mi.getId());
+                    return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "注册成功",mi.getId());
                 }else{
                     log.info("推荐注册");
                     MerchantInfo mi = new MerchantInfo();
@@ -499,7 +499,7 @@ public class WxPubController extends BaseController {
                     userInfoService.insertUserInfo(uo);
                     String tempMarkCode = GlobalID.GetGlobalID(EnumGlobalIDType.USER,EnumGlobalIDPro.MIN,uo.getId()+"");
                     userInfoService.updatemarkCode(tempMarkCode,uo.getId());
-                    return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "登录成功",mi.getId());
+                    return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "注册成功",mi.getId());
                 }
             }
         }else{//该商户已注册
@@ -759,7 +759,7 @@ public class WxPubController extends BaseController {
             return CommonResponse.simpleResponse(-2, "未审核通过");
         }
         RecommendAndMerchant recommendAndMerchant = recommendService.myRecommend(merchantInfo.get().getId());
-        return CommonResponse.objectResponse(-1, "查询好友列表成功",recommendAndMerchant);
+        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功",recommendAndMerchant);
     }
 
 }

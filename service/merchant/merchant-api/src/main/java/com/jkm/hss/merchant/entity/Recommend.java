@@ -26,9 +26,4 @@ public class Recommend extends BaseEntity{
      */
     private Integer type;
 
-    /**
-     * 是否是真实好友
-     * {@link com.jkm.hss.merchant.enums.EnumIsReal}
-     */
-    private Integer isReal;
 }

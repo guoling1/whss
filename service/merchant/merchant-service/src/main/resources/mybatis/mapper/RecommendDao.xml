@@ -4,7 +4,7 @@
 
     <!-- 通用查询结果列-->
     <sql id="Base_Column_List">
-		 id,	merchant_id,	recommend_merchant_id,	type,is_real,status,	create_time,	update_time
+		 id,	merchant_id,	recommend_merchant_id,	type,status,	create_time,	update_time
 	</sql>
 
     <!-- 添加 （匹配有值的字段）-->
@@ -20,9 +20,6 @@
             <if test="type != null">
                 type,
             </if>
-            <if test="isReal != null and isReal !=0">
-                is_real,
-            </if>
             <if test="status != null">
                 status,
             </if>
@@ -36,9 +33,6 @@
             </if>
             <if test="type!=null">
                 #{type},
-            </if>
-            <if test="isReal!=null and isReal !=0">
-                #{isReal},
             </if>
             <if test="status!=null">
                 #{status},
@@ -58,9 +52,6 @@
             </if>
             <if test="type != null">
                 type = #{type},
-            </if>
-            <if test="isReal != null and isReal !=0">
-                is_real = #{isReal},
             </if>
             <if test="status != null">
                 status = #{status},
@@ -88,7 +79,7 @@
     <!--我的好友-->
     <select id="myRecommend" resultType="com.jkm.hss.merchant.entity.RecommendShort">
         SELECT
-        i.name,r.type,r.status
+        i.name,r.type,i.status
         FROM tb_recommend as r left JOIN tb_merchant_info as i on r.merchant_id=i.id
         WHERE r.recommend_merchant_id=#{merchantId} and r.status = 1;
     </select>
@@ -97,7 +88,7 @@
     <select id="selectFriendCount">
         SELECT
         count(1)
-        FROM tb_recommend
-        WHERE recommend_merchant_id=#{merchantId} and status = 1 and is_real=2 and type=1;
+        FROM tb_recommend as r left JOIN tb_merchant_info as i on r.merchant_id=i.id
+        WHERE r.recommend_merchant_id=#{merchantId} and r.status = 1 and i.status=5;
     </select>
 </mapper>

@@ -18,10 +18,7 @@ public class MerchantLoginRequest {
      * code
      */
     private String code;
-    /**
-     * openid
-     */
-    private String openId;
+
     /**
      * 邀请码（邀请码或二维码至少与一个不为空）
      */
