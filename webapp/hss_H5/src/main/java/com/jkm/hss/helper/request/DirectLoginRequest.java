@@ -13,7 +13,7 @@ public class DirectLoginRequest {
     private String mobile;
 
     /**
-     * 直接登录不用验证码
+     * 验证码
      */
     private String code;
 }
