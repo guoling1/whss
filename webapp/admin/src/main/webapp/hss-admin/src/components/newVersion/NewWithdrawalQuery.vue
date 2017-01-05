@@ -82,7 +82,8 @@
                     <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">打款金额</th>
                     <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">支付状态</th>
                     <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">打款通道</th>
-                    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">错误信息</th>
+                    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">渠道信息</th>
+                    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">备注信息</th>
                     <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">操作</th>
                   </tr>
                   </thead>
@@ -96,8 +97,8 @@
                     <td>{{record.amount}}</td>
                     <td>{{record.statusValue}}</td>
                     <td>{{record.playMoneyChannel}}</td>
-
                     <td>{{record.message}}</td>
+                    <td>{{record.remark}}</td>
                     <td>
                       <a id="audit" v-if="record.status=='5'&&record.auditStatusValue==0" @click="audit()">审核</a>
                       <span v-if="record.status=='5'&&record.auditStatusValue!=0">{{record.auditStatusValue}}</span>
@@ -174,7 +175,7 @@
         remark:'',
         isMask: false,
         url: '',
-        count:''
+        count:0
       }
     },
     created:function () {
