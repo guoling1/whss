@@ -23,6 +23,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URL;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -92,7 +93,7 @@ public class MerchantInfoQueryController extends BaseController {
      */
     @ResponseBody
     @RequestMapping(value = "/downLoad",method = RequestMethod.POST)
-    public JSONObject downLoad(@RequestBody MerchantInfoResponse merchantInfoResponse){
+    public JSONObject downLoad(@RequestBody MerchantInfoResponse merchantInfoResponse) throws ParseException {
         final String fileZip = this.merchantInfoQueryService.downloadExcel(merchantInfoResponse, ApplicationConsts.getApplicationConfig().ossBucke());
 
         final ObjectMetadata meta = new ObjectMetadata();
