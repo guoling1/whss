@@ -156,7 +156,7 @@
       }
     },
     created:function () {
-      this.$http.post('http://192.168.1.20:8076/order/withdraw/listOrder',this.$data.query)
+      this.$http.post('http://pay.qianbaojiajia.com/order/withdraw/listOrder',this.$data.query)
         .then(function (res) {
           this.$data.records = res.data.records;
           this.$data.total = res.data.totalPage;
@@ -193,7 +193,7 @@
     methods: {
       onload:function () {
         this.$data.isMask = true;
-        this.$http.post('http://192.168.1.20:8076/order/withdraw/exportExcel',this.$data.query)
+        this.$http.post('http://pay.qianbaojiajia.com/order/withdraw/exportExcel',this.$data.query)
           .then(function (res) {
             this.$data.url = res.data.url;
           },function (err) {
@@ -237,7 +237,7 @@
           n = Number(tarInn);
         }
         this.$data.query.pageNo = n;
-        this.$http.post('http://192.168.1.20:8076/order/withdraw/listOrder',this.$data.query)
+        this.$http.post('http://pay.qianbaojiajia.com/order/withdraw/listOrder',this.$data.query)
           .then(function (res) {
             this.$data.records = res.data.records;
             this.$data.total=res.data.totalPage;
@@ -272,7 +272,7 @@
       //筛选
       lookup: function () {
         this.$data.query.pageNo = 1;
-        this.$http.post('http://192.168.1.20:8076/order/withdraw/listOrder',this.$data.query)
+        this.$http.post('http://pay.qianbaojiajia.com/order/withdraw/listOrder',this.$data.query)
           .then(function (res) {
             this.$data.records = res.data.records;
             this.$data.total=res.data.totalPage;
