@@ -55,4 +55,33 @@ public interface MerchantInfoQueryDao {
      * @return
      */
     List<MerchantInfoResponse> getCount();
+
+    /**
+     * 查询待审核商户列表
+     * @param merchantInfoResponse
+     * @return
+     */
+    List<MerchantInfoResponse> getRecord(MerchantInfoResponse merchantInfoResponse);
+
+    /**
+     * 查询代理商
+     * @param firstLevelDealerId
+     * @return
+     */
+    MerchantInfoResponse getProxyName(@Param("firstLevelDealerId") long firstLevelDealerId);
+
+    /**
+     * 查询待审核总数
+     * @return
+     */
+    List<MerchantInfoResponse> getCountRecord();
+
+    MerchantInfoResponse getProxyName1(long firstLevelDealerId);
+
+    /**
+     * 导出
+     * @param merchantInfoResponse
+     * @return
+     */
+    List<MerchantInfoResponse> selectMerchant(MerchantInfoResponse merchantInfoResponse);
 }

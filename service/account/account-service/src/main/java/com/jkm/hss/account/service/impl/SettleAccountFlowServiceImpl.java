@@ -81,10 +81,12 @@ public class SettleAccountFlowServiceImpl implements SettleAccountFlowService {
         settleAccountFlow.setType(type.getId());
         if (EnumAccountFlowType.DECREASE.getId() == type.getId()) {
             settleAccountFlow.setOutAmount(changeAmount);
+            settleAccountFlow.setIncomeAmount(new BigDecimal("0.00"));
             settleAccountFlow.setBeforeAmount(account.getDueSettleAmount().add(changeAmount));
             settleAccountFlow.setAfterAmount(account.getDueSettleAmount());
         }
         if (EnumAccountFlowType.INCREASE.getId() == type.getId()) {
+            settleAccountFlow.setOutAmount(new BigDecimal("0.00"));
             settleAccountFlow.setIncomeAmount(changeAmount);
             settleAccountFlow.setBeforeAmount(account.getDueSettleAmount().subtract(changeAmount));
             settleAccountFlow.setAfterAmount(account.getDueSettleAmount());

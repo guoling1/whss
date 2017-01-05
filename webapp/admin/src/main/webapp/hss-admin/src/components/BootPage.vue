@@ -1,5 +1,5 @@
 <!-- 表格分页组件 -->
-<template>
+<!--<template>
   <nav class="boot-nav">
     <ul class="pagination boot-page">
       <li>
@@ -33,7 +33,7 @@
   <select class="form-control boot-select" v-model="len">
     <option v-for="arr in lens" :value="arr" v-text="arr" :selected="$index === 0 ? true : false"></option>
   </select>
-</template>
+</template>-->
 
 <script>
   export default {

@@ -71,6 +71,17 @@
         </div>
       </form>
     </div>
+    <!--选择账号-->
+    <div class="box box-info mask" v-if="isMask">
+      <div class="box-body" style="text-align: center;font-size: 22px;margin-top: 18px;">
+        请选择打款账户
+        <span @click="close">×</span>
+      </div>
+      <div class="box-footer clearfix" style="border-top: none;text-align: center">
+        <a href="javascript:void(0)" id="btn1" @click="choose(1)" class="btn btn-sm btn-info btn-flat">D0账户打款</a>
+        <a href="javascript:void(0)" id="btn2" @click="choose(2)" class="btn btn-sm btn-primary btn-flat">T1账户打款</a>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -88,17 +99,18 @@
           tradeType:"提现",
           opinionContent:"",
           opinion:"",
+          accountType:""
         },
+        isMask: false,
         record: this.$route.query
       }
     },
     created: function () {
-      this.$http.post("/admin/order/queryInfoByOrderNo",{sn:this.$route.query.sn})
+      this.$http.post("/admin/order/queryInfoByOrderNo",{orderNo:this.$route.query.orderNo})
         .then(function (res) {
-          console.log(res)
-          this.$data.accountId = res.data.accountId;
-          this.$data.userName = res.data.userName;
-          this.$data.userType = res.data.userType;
+          this.$data.query.accountId = res.data.accountId;
+          this.$data.query.userName = res.data.userName;
+          this.$data.query.userType = res.data.userType;
         },function (err) {
           this.$store.commit('MESSAGE_ACCORD_SHOW', {
             text: err.statusMessage
@@ -111,17 +123,46 @@
       },
       audit: function (val) {
         this.$data.query.opinion = val;
-        console.log(this.$data.query)
-        /*this.$http.post('http://192.168.1.20:8076/order/withdraw/audit',this.$data.query)
-          .then(function (res) {
-            this.$store.commit('MESSAGE_ACCORD_SHOW', {
-              text: res.data.msg
+        if(val==2){
+          this.$data.isMask = true;
+        }else {
+          this.$http.post('http://192.168.1.20:8076/order/withdraw/audit',this.$data.query)
+            .then(function (res) {
+              this.$store.commit('MESSAGE_DELAY_SHOW', {
+                text: "操作成功"
+              })
+              this.$router.push('/admin/record/newWithdrawalQuery')
+            },function (err) {
+              this.$store.commit('MESSAGE_DELAY_SHOW', {
+                text: err.statusMessage
+              })
+              this.$router.push('/admin/record/newWithdrawalQuery')
             })
+        }
+      },
+      close: function () {
+        this.$data.isMask = false
+      },
+      choose: function (val) {
+        this.$data.query.accountType = val;
+        document.getElementById('btn1').setAttribute("disabled","disabled");
+        document.getElementById('btn1').onclick="";
+        document.getElementById('btn2').setAttribute("disabled","disabled");
+        document.getElementById('btn2').onclick="";
+        this.$http.post('http://192.168.1.20:8076/order/withdraw/audit',this.$data.query)
+          .then(function (res) {
+            this.$store.commit('MESSAGE_DELAY_SHOW', {
+              text: "操作成功"
+            })
+            this.$data.isMask = false;
+            this.$router.push('/admin/record/newWithdrawalQuery')
           },function (err) {
-            this.$store.commit('MESSAGE_ACCORD_SHOW', {
+            this.$store.commit('MESSAGE_DELAY_SHOW', {
               text: err.statusMessage
             })
-          })*/
+            this.$data.isMask = false;
+            this.$router.push('/admin/record/newWithdrawalQuery')
+          })
       }
     },
     computed: {
@@ -153,5 +194,23 @@
 
   .form-group div{
     padding-top: 7px;
+  }
+  .mask{
+    width: 500px;
+    height: 30%;
+    position: fixed;
+    top: 30%;
+    left: 33%;
+    box-shadow: 0 0 15px #000;
+    a{
+      margin: 5% 7%;
+      font-size: 18px;
+    }
+    span{
+      position: absolute;
+      top: 0;
+      right: 10px;
+      font-size: 30px;
+    }
   }
 </style>

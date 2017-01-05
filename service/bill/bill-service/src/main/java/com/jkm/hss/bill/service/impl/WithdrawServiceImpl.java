@@ -156,9 +156,9 @@ public class WithdrawServiceImpl implements WithdrawService {
     @Transactional
     public void handleWithdrawCallbackMsg(final PaymentSdkWithdrawCallbackResponse paymentSdkWithdrawCallbackResponse) {
         final Order order = this.orderService.getByOrderNoAndTradeType(paymentSdkWithdrawCallbackResponse.getOrderNo(), EnumTradeType.WITHDRAW.getId()).get();
-        final MerchantInfo merchant = this.merchantInfoService.getByAccountId(order.getPayer()).get();
+//        final MerchantInfo merchant = this.merchantInfoService.getByAccountId().get();
         if (order.isWithDrawing()) {
-            this.handleWithdrawResult(order.getId(), merchant.getAccountId(), paymentSdkWithdrawCallbackResponse);
+            this.handleWithdrawResult(order.getId(), order.getPayer(), paymentSdkWithdrawCallbackResponse);
         }
     }
 
@@ -209,7 +209,7 @@ public class WithdrawServiceImpl implements WithdrawService {
         if (order.isWithDrawing()) {
             final Account account = this.accountService.getByIdWithLock(accountId).get();
             order.setStatus(EnumOrderStatus.WITHDRAW_SUCCESS.getId());
-            order.setRemark(response.getMessage());
+            order.setRemark(response.getSn());
             this.orderService.update(order);
             final FrozenRecord frozenRecord = this.frozenRecordService.getByBusinessNo(response.getOrderNo()).get();
             //解冻金额

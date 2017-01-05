@@ -1,6 +1,6 @@
 <template lang="html">
   <div id="withDrawal">
-    <div style="padding: 8px 30px; background: rgb(243, 156, 18); z-index: 999999; font-size: 22px; font-weight: 600;margin-bottom: 15px;color: #fff;">打款查询1
+    <div style="padding: 8px 30px; background: rgb(243, 156, 18); z-index: 999999; font-size: 22px; font-weight: 600;margin-bottom: 15px;color: #fff;">打款查询(新版)
       <router-link to="/admin/record/withdrawal" class="btn btn-success pull-right" style="margin-left: 20px">切换旧版</router-link>
       <div class="btn btn-primary pull-right" @click="refresh()">刷新</div>
     </div>
@@ -88,8 +88,8 @@
                   </thead>
                   <tbody>
                   <tr role="row" v-for="(record,index) in $$records">
-                    <td>{{record.orderNo|changeHide}}</td>
                     <td>{{record.sn|changeHide}}</td>
+                    <td>{{record.orderNo|changeHide}}</td>
                     <td>{{record.requestTime|changeTime}}</td>
                     <td>{{record.receiptUserName}}</td>
                     <td>{{record.bankCard}}</td>
@@ -98,8 +98,7 @@
                     <td>{{record.playMoneyChannel}}</td>
                     <td>{{record.message}}</td>
                     <td>
-                      <!--<router-link v-if="record.message=='5'" :to="{path:'/admin/record/withdrawalAudit'}">审核</router-link>-->
-                      <router-link :to="{path:'/admin/record/withdrawalAudit',query:{orderNo:record.orderNo,sn:record.sn,requestTime:record.requestTime,amount:record.amount,receiptUserName:record.receiptUserName,playMoneyChannel:record.playMoneyChannel,status:record.status,bankCard:record.bankCard,message:record.message}}">审核</router-link>
+                      <router-link v-if="record.status=='5'" :to="{path:'/admin/record/withdrawalAudit',query:{orderNo:record.orderNo,sn:record.sn,requestTime:record.requestTime,amount:record.amount,receiptUserName:record.receiptUserName,playMoneyChannel:record.playMoneyChannel,status:record.status,bankCard:record.bankCard,message:record.message}}">审核</router-link>
                     </td>
                   </tr>
                   </tbody>
@@ -118,6 +117,7 @@
                 <div class="dataTables_paginate paging_simple_numbers" id="example2_paginate">
                   <ul class="pagination" id="page" @click="bindEvent($event)">
                   </ul>
+                  <span class="count">共{{count}}条</span>
                 </div>
               </div>
             </div>
@@ -171,17 +171,16 @@
         index:0,
         remark:'',
         isMask: false,
-        url: ''
+        url: '',
+        count:''
       }
     },
-    /*http: {
-      headers: {'Content-Type': 'application/x-www-form-urlencoded'}
-  },*/
     created:function () {
       this.$http.post('http://192.168.1.20:8076/order/withdraw/listOrder',this.$data.query)
         .then(function (res) {
           this.$data.records = res.data.records;
           this.$data.total = res.data.totalPage;
+          this.$data.count = res.data.count;
           var str='',
             page=document.getElementById('page');
           str+='<li class="paginate_button previous" id="example2_previous"><a href="#" aria-controls="example2" data-dt-idx="0" tabindex="0">上一页</a></li>'
@@ -206,7 +205,9 @@
           }
         })
         .catch(function (err) {
-          console.log(err)
+          this.$store.commit('MESSAGE_ACCORD_SHOW', {
+            text: err.statusMessage
+          })
         })
     },
     methods: {
@@ -215,7 +216,6 @@
         this.$http.post('http://192.168.1.20:8076/order/withdraw/exportExcel',this.$data.query)
           .then(function (res) {
             this.$data.url = res.data.url;
-            console.log(this.$data.url)
           },function (err) {
             this.$store.commit('MESSAGE_ACCORD_SHOW', {
               text: err.statusMessage
@@ -322,55 +322,6 @@
             console.log(err)
           })
       },
-      /*audit: function (index) {
-        this.$data.isShow=!this.$data.isShow
-        this.$data.index = index;
-      },*/
-      /*pass: function () {
-        this.$http.post('/admin/withdraw/checkWithdraw',{
-          id:this.$data.records[this.$data.index].id
-        }).then(function (res) {
-          this.$data.isShow=!this.$data.isShow;
-          location.reload()
-        },function (err) {
-          console.log(err)
-          this.$store.commit('MESSAGE_ACCORD_SHOW', {
-            text: err.statusMessage
-          })
-          this.$data.isShow=!this.$data.isShow;
-        })
-      },*/
-      /*unPass: function () {
-        this.$http.post('/admin/withdraw/unPass',{
-          id:this.$data.records[this.$data.index].id,
-          message:this.$data.remark
-        }).then(function (res) {
-          this.$data.isShow=!this.$data.isShow;
-          location.reload()
-        },function (err) {
-          this.$store.commit('MESSAGE_ACCORD_SHOW', {
-            text: err.statusMessage
-          })
-          this.$data.isShow=!this.$data.isShow;
-        })
-      },*/
-      /*freeze: function () {
-        this.$http.post('/admin/withdraw/unfreeze',{
-          id:this.$data.records[this.$data.index].id,
-        }).then(function (res) {
-          this.$data.isShow=!this.$data.isShow;
-          location.reload()
-        },function (err) {
-          this.$store.commit('MESSAGE_ACCORD_SHOW', {
-            text: err.msg
-          })
-          this.$data.isShow=!this.$data.isShow;
-          location.reload()
-        })
-      },
-      unfreeze: function () {
-        this.$data.isShow=!this.$data.isShow
-      }*/
     },
     computed:{
       $$data:function () {
@@ -484,5 +435,10 @@
   }
   .table td[data-v-497723e2], .table th[data-v-497723e2]{
     width: inherit;
+  }
+  .count{
+    display: inline-block;
+    vertical-align: top;
+    margin: 28px 10px;
   }
 </style>
