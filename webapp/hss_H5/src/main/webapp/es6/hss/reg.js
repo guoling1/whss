@@ -34,7 +34,10 @@ sendCode.addEventListener('click', function () {
       http.post('/wx/getCode', {
         mobile: mobile.value
       }, function (data) {
-        console.log(data);
+        if (data === false) {
+          console.log('跳转到登录');
+          return;
+        }
         countdown.submit_start();
       })
     }
