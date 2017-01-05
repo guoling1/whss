@@ -135,10 +135,8 @@
       onload:function () {
         this.$data.isMask = true;
         this.$http.post('/admin/query/downLoad',{
-          /*pageNo:this.$data.pageNo,
-          pageSize:this.$data.pageSize,
           merchantName:this.$data.merchantName,
-          status: this.$data.status*/
+          status: this.$data.status
         })
           .then(function (res) {
             console.log(res)
