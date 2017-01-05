@@ -10,6 +10,7 @@ import com.jkm.hss.helper.ApplicationConsts;
 import com.jkm.hss.merchant.entity.MerchantInfoResponse;
 import com.jkm.hss.merchant.service.MerchantInfoQueryService;
 import lombok.extern.slf4j.Slf4j;
+import net.sf.json.JSONObject;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -91,7 +92,7 @@ public class MerchantInfoQueryController extends BaseController {
      */
     @ResponseBody
     @RequestMapping(value = "/downLoad",method = RequestMethod.POST)
-    private String downLoad(@RequestBody MerchantInfoResponse merchantInfoResponse){
+    public JSONObject downLoad(@RequestBody MerchantInfoResponse merchantInfoResponse){
         final String fileZip = this.merchantInfoQueryService.downloadExcel(merchantInfoResponse, ApplicationConsts.getApplicationConfig().ossBucke());
 
         final ObjectMetadata meta = new ObjectMetadata();
@@ -102,13 +103,19 @@ public class MerchantInfoQueryController extends BaseController {
         String nowDate = sdf.format(new Date());
         Date date = new Date();
         long nousedate =  date.getTime();
-        String fileName = "hss/"+  nowDate + "/" + "trade.xls";
+        String fileName = "hss/"+  nowDate + "/" + "merchant.xls";
         final Date expireDate = new Date(new Date().getTime() + 30 * 60 * 1000);
         URL url = null;
         try {
             ossClient.putObject(ApplicationConsts.getApplicationConfig().ossBucke(), fileName, new FileInputStream(new File(fileZip)), meta);
             url = ossClient.generatePresignedUrl(ApplicationConsts.getApplicationConfig().ossBucke(), fileName, expireDate);
-            return url.getHost() + url.getFile();
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("code",1);
+            JSONObject jo = new JSONObject();
+            jo.put("url",url.getHost() + url.getFile());
+            jsonObject.put("msg","success");
+            jsonObject.put("result",jo);
+            return jsonObject;
         } catch (IOException e) {
             log.error("上传文件失败", e);
         }

@@ -29,6 +29,7 @@
       <input type="hidden" id="key-input" value="">
     </div>
   </div>
+  <div class="prompt-deep">收款实时到账;无卡快捷单笔限额2万</div>
   <div class="keyboard" id="keyboard">
     <div class="copyright flexBox">
       <span class="line"></span>
@@ -55,12 +56,13 @@
         <div class="quick" keyCtrl="quick">
           <div class="logo"></div>
           <div class="word">无卡快捷</div>
-          <div class="date">(D0)</div>
+          <div class="date">(实时到账)</div>
+          <div class="date">限额2万</div>
         </div>
         <div class="wx-zfb" keyCtrl="wx-zfb">
           <div class="wx-zfb"></div>
           <div class="word">微信/支付宝</div>
-          <div class="date">(D0)</div>
+          <div class="date">(实时到账)</div>
         </div>
       </div>
     </div>

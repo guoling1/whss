@@ -96,9 +96,11 @@
                     <td>{{record.amount}}</td>
                     <td>{{record.statusValue}}</td>
                     <td>{{record.playMoneyChannel}}</td>
+
                     <td>{{record.message}}</td>
                     <td>
-                      <router-link v-if="record.status=='5'" :to="{path:'/admin/record/withdrawalAudit',query:{orderNo:record.orderNo,sn:record.sn,requestTime:record.requestTime,amount:record.amount,receiptUserName:record.receiptUserName,playMoneyChannel:record.playMoneyChannel,status:record.status,bankCard:record.bankCard,message:record.message}}">审核</router-link>
+                      <a id="audit" v-if="record.status=='5'&&record.auditStatusValue==0" @click="audit()">审核</a>
+                      <span v-if="record.status=='5'&&record.auditStatusValue!=0">{{record.auditStatusValue}}</span>
                     </td>
                   </tr>
                   </tbody>
@@ -211,6 +213,9 @@
         })
     },
     methods: {
+      audit: function () {
+        this.$router.push("{path:'/admin/record/withdrawalAudit',query:{orderNo:record.orderNo,sn:record.sn,requestTime:record.requestTime,amount:record.amount,receiptUserName:record.receiptUserName,playMoneyChannel:record.playMoneyChannel,status:record.status,bankCard:record.bankCard,message:record.message}}")
+      },
       onload:function () {
         this.$data.isMask = true;
         this.$http.post('http://192.168.1.20:8076/order/withdraw/exportExcel',this.$data.query)
