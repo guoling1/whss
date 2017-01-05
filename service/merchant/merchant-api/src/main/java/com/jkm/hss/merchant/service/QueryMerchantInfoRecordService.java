@@ -1,5 +1,6 @@
 package com.jkm.hss.merchant.service;
 
+import com.jkm.hss.merchant.entity.LogResponse;
 import com.jkm.hss.merchant.entity.MerchantInfoResponse;
 
 import java.text.ParseException;
@@ -39,4 +40,10 @@ public interface QueryMerchantInfoRecordService {
      */
     List<MerchantInfoResponse> getFirstLevel(long firstLevelDealerId);
 
+    /**
+     * 审核记录
+     * @param merchantInfo
+     * @return
+     */
+    List<LogResponse> getLog(MerchantInfoResponse merchantInfo) throws ParseException;
 }
