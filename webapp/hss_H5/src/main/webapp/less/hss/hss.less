@@ -1769,6 +1769,12 @@ input:focus {
         float: left;
         width: 20%;
         overflow: hidden;
+        &.w22 {
+          width: 22%;
+        }
+        &.w34 {
+          width: 34%;
+        }
       }
       .t-head {
         width: 100%;
@@ -1786,6 +1792,11 @@ input:focus {
         .p {
           height: 64px;
           line-height: 64px;
+          font-size: 12px;
+          color: #48527f
+        }
+        .l {
+          height: 64px;
           font-size: 12px;
           color: #48527f
         }
@@ -1809,6 +1820,15 @@ input:focus {
           font-size: 10px;
           color: #48527f;
         }
+        .mes {
+          width: 53px;
+          height: 21px;
+          line-height: 21px;
+          background: url("../assets/hss-mes.png") no-repeat center;
+          background-size: 53px 21px;
+          font-size: 9px;
+          color: #48527f;
+        }
         .up {
           width: 56px;
           height: 24px;
@@ -1819,6 +1839,24 @@ input:focus {
           font-size: 10px;
           color: #37c493;
         }
+        .ups {
+          width: 50px;
+          height: 20px;
+          line-height: 20px;
+          border: 1px solid #4ecea2;
+          border-radius: 10px;
+          font-size: 9px;
+          color: #37c493;
+        }
+        .up1 {
+          margin-top: 10px;
+          display: inline-block;
+          font-size: 12px;
+          color: #48527f;
+          p {
+            line-height: 20px;
+          }
+        }
         .star1 {
           display: inline-block;
           width: 24px;
@@ -1826,7 +1864,9 @@ input:focus {
           margin-right: 5px;
           background: url("../assets/hss-star-1.png") no-repeat center;
           background-size: 24px 30px;
-          transform: translate3d(0, 9px, 0);
+          &.upn {
+            transform: translate3d(0, 9px, 0);
+          }
         }
         .star2 {
           display: inline-block;
@@ -1835,7 +1875,9 @@ input:focus {
           margin-right: 4px;
           background: url("../assets/hss-star-2.png") no-repeat center;
           background-size: 25px 30px;
-          transform: translate3d(0, 9px, 0);
+          &.upn {
+            transform: translate3d(0, 9px, 0);
+          }
         }
         .star3 {
           display: inline-block;
@@ -1843,7 +1885,9 @@ input:focus {
           height: 30px;
           background: url("../assets/hss-star-3.png") no-repeat center;
           background-size: 29px 30px;
-          transform: translate3d(0, 9px, 0);
+          &.upn {
+            transform: translate3d(0, 9px, 0);
+          }
         }
         .star4 {
           display: inline-block;
@@ -1852,7 +1896,9 @@ input:focus {
           margin-right: 3px;
           background: url("../assets/hss-star-4.png") no-repeat center;
           background-size: 26px 30px;
-          transform: translate3d(0, 9px, 0);
+          &.upn {
+            transform: translate3d(0, 9px, 0);
+          }
         }
       }
     }
