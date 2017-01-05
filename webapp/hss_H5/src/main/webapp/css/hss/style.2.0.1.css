@@ -2009,3 +2009,264 @@ input:focus {
   padding-left: 15px;
   line-height: 26px;
 }
+#upgrade {
+  width: 100%;
+  height: auto;
+}
+#upgrade .info {
+  width: 100%;
+  height: 57px;
+  background-color: #192128;
+  padding: 11px 15px;
+}
+#upgrade .info .head {
+  float: left;
+  width: 35px;
+  height: 35px;
+}
+#upgrade .info .head img {
+  width: 35px;
+  height: 35px;
+}
+#upgrade .info .status {
+  float: left;
+  line-height: 35px;
+  font-size: 15px;
+  color: #5583a7;
+  margin-left: 10px;
+}
+#upgrade .info .status span {
+  display: inline-block;
+  width: auto;
+  height: 16px;
+  line-height: 16px;
+  border-radius: 3px;
+  border: 1px solid #67a7c8;
+  font-size: 10px;
+  color: #5583a7;
+  margin-left: 5px;
+}
+#upgrade .upgrade .small {
+  line-height: 40px;
+  padding-left: 20px;
+  text-align: left;
+  font-size: 12px;
+  color: #aab0c6;
+}
+#upgrade .upgrade .table {
+  padding: 0 15px;
+}
+#upgrade .upgrade .table .li {
+  float: left;
+  width: 20%;
+  overflow: hidden;
+}
+#upgrade .upgrade .table .t-head {
+  width: 100%;
+  height: 38px;
+  background-color: #f4f5f8;
+}
+#upgrade .upgrade .table .t-head .t {
+  line-height: 38px;
+  font-size: 12px;
+  color: #35405b;
+}
+#upgrade .upgrade .table .t-body {
+  width: 100%;
+  height: 64px;
+}
+#upgrade .upgrade .table .t-body .p {
+  height: 64px;
+  line-height: 64px;
+  font-size: 12px;
+  color: #48527f;
+}
+#upgrade .upgrade .table .t-body .w {
+  padding: 10px 0;
+  height: 64px;
+  font-size: 12px;
+  color: #48527f;
+  border-bottom: 1px solid #e8eaf3;
+}
+#upgrade .upgrade .table .t-body .w.n {
+  border: none;
+}
+#upgrade .upgrade .table .t-body .me {
+  width: 60px;
+  height: 25px;
+  line-height: 25px;
+  margin: 10px auto;
+  background: url("../assets/hss-me.png") no-repeat center;
+  background-size: 60px 25px;
+  font-size: 10px;
+  color: #48527f;
+}
+#upgrade .upgrade .table .t-body .up {
+  width: 56px;
+  height: 24px;
+  line-height: 24px;
+  margin: 10px auto;
+  border: 1px solid #4ecea2;
+  border-radius: 12px;
+  font-size: 10px;
+  color: #37c493;
+}
+#upgrade .upgrade .table .t-body .star1 {
+  display: inline-block;
+  width: 24px;
+  height: 30px;
+  margin-right: 5px;
+  background: url("../assets/hss-star-1.png") no-repeat center;
+  background-size: 24px 30px;
+  transform: translate3d(0, 9px, 0);
+}
+#upgrade .upgrade .table .t-body .star2 {
+  display: inline-block;
+  width: 25px;
+  height: 30px;
+  margin-right: 4px;
+  background: url("../assets/hss-star-2.png") no-repeat center;
+  background-size: 25px 30px;
+  transform: translate3d(0, 9px, 0);
+}
+#upgrade .upgrade .table .t-body .star3 {
+  display: inline-block;
+  width: 29px;
+  height: 30px;
+  background: url("../assets/hss-star-3.png") no-repeat center;
+  background-size: 29px 30px;
+  transform: translate3d(0, 9px, 0);
+}
+#upgrade .upgrade .table .t-body .star4 {
+  display: inline-block;
+  width: 26px;
+  height: 30px;
+  margin-right: 3px;
+  background: url("../assets/hss-star-4.png") no-repeat center;
+  background-size: 26px 30px;
+  transform: translate3d(0, 9px, 0);
+}
+#upgrade .upgrade .btn {
+  padding: 5px 15px;
+}
+#upgrade .upgrade .btn div {
+  width: 100%;
+  height: 45px;
+  line-height: 45px;
+  border-radius: 3px;
+  background-color: #4ecea2;
+  font-size: 15px;
+  color: #FFF;
+}
+#upgrade .rocket {
+  width: 65px;
+  height: 100px;
+  position: fixed;
+  bottom: 25px;
+  right: 15px;
+  background: url("../assets/hss-rocket.png") no-repeat center;
+  background-size: 65px 100px;
+}
+#upgradeWay {
+  width: 100%;
+  height: 100%;
+  padding: 45px 30px;
+}
+#upgradeWay .space {
+  width: 100%;
+  height: 100%;
+  border-radius: 10px;
+  box-shadow: 0 0 8px #e4e4e4;
+}
+#upgradeWay .space .cont {
+  box-flex: 1;
+  -webkit-box-flex: 1;
+  -webkit-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
+  width: 100%;
+}
+#upgradeWay .space .cont .info {
+  margin: 38px 0 20px 0;
+}
+#upgradeWay .space .cont .info .boss {
+  width: 88px;
+  height: 88px;
+  margin: auto;
+  background: url("../assets/hss-head-boss.png") no-repeat center;
+  background-size: 88px 88px;
+}
+#upgradeWay .space .cont .info .name {
+  margin-top: 10px;
+  font-size: 18px;
+  color: #222222;
+  font-weight: bold;
+}
+#upgradeWay .space .cont .payType {
+  overflow: hidden;
+}
+#upgradeWay .space .cont .payType .li {
+  width: 33.33%;
+  float: left;
+  font-size: 13px;
+  color: #222222;
+}
+#upgradeWay .space .cont .payType .li span {
+  display: block;
+  width: 35px;
+  height: 35px;
+  margin: 15px auto;
+}
+#upgradeWay .space .cont .payType .li span.wx {
+  background: url("../assets/hss-pay-wx.png") no-repeat center;
+  background-size: 35px 35px;
+}
+#upgradeWay .space .cont .payType .li span.ali {
+  background: url("../assets/hss-pay-ali.png") no-repeat center;
+  background-size: 35px 35px;
+}
+#upgradeWay .space .cont .payType .li span.quick {
+  background: url("../assets/hss-pay-quick.png") no-repeat center;
+  background-size: 35px 35px;
+}
+#upgradeWay .space .cont .upType {
+  margin-top: 40px;
+  padding: 0 20px;
+}
+#upgradeWay .space .cont .upType li {
+  width: 100%;
+  height: 56px;
+  line-height: 56px;
+  border-top: 1px solid #e8e8e8;
+}
+#upgradeWay .space .cont .upType li .left {
+  float: left;
+  text-align: left;
+  font-size: 15px;
+  color: #222222;
+}
+#upgradeWay .space .cont .upType li .right {
+  float: right;
+  text-align: right;
+  font-size: 15px;
+  color: #222222;
+}
+#upgradeWay .space .cont .upType li .small {
+  font-size: 10px;
+  color: #b3b4b4;
+  clear: both;
+  text-align: left;
+  transform: translate3d(60px, -30px, 0);
+}
+#upgradeWay .pay {
+  width: 100%;
+  height: 64px;
+  line-height: 64px;
+  font-size: 16px;
+  color: #FFF;
+  background-color: #4ecea2;
+  border-radius: 0 0 10px 10px;
+}
+#ad img {
+  width: 100%;
+}
