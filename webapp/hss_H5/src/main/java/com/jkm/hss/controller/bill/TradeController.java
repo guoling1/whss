@@ -180,7 +180,7 @@ public class TradeController extends BaseController {
         if (1 != checkResult.getLeft()) {
             return CommonResponse.simpleResponse(-1, checkResult.getRight());
         }
-        final Pair<Integer, String> resultPair = this.withdrawService.merchantWithdrawByOrder(2, 108, "", "D0");
+        final Pair<Integer, String> resultPair = this.withdrawService.merchantWithdrawByOrder(withdrawRequest.getMerchantId(), withdrawRequest.getPayOrderId(), withdrawRequest.getPayOrderSn(), "D0");
         if (0 == resultPair.getLeft()) {
             return CommonResponse.simpleResponse(1, "受理成功");
         }
