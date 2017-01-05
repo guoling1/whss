@@ -370,7 +370,7 @@ public class LoginController extends BaseController {
      * @throws IOException
      */
     @RequestMapping(value = "/charge", method = RequestMethod.GET)
-    public String qrCode(final HttpServletRequest request, final HttpServletResponse response, final Model model,@RequestParam(value = "qrCode", required = true) String qrCode,
+    public String charge(final HttpServletRequest request, final HttpServletResponse response, final Model model,@RequestParam(value = "qrCode", required = true) String qrCode,
                          @RequestParam(value = "name", required = true) String name,
                          @RequestParam(value = "money", required = true) String money) throws IOException {
         model.addAttribute("payUrl",URLDecoder.decode(qrCode, "UTF-8"));
@@ -386,7 +386,7 @@ public class LoginController extends BaseController {
      * @return
      */
     @RequestMapping(value = "/wallet", method = RequestMethod.GET)
-    public String reg(final HttpServletRequest request, final Model model) throws IOException {
+    public String wallet(final HttpServletRequest request, final Model model) throws IOException {
         if(!super.isLogin(request)){
             model.addAttribute("avaliable", "0.00");
         }else{

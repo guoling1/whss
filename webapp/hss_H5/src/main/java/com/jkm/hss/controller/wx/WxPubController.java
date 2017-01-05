@@ -356,17 +356,11 @@ public class WxPubController extends BaseController {
         if (!ValidateUtils.verifyCodeCheck(verifyCode)) {
             return CommonResponse.simpleResponse(-1, "请输入正确的6位数字验证码");
         }
-
-        final Pair<Integer, String> checkResult =
-                this.smsAuthService.checkVerifyCode(mobile, verifyCode, EnumVerificationCodeType.REGISTER_MERCHANT);
-        if (1 != checkResult.getLeft()) {
-            return CommonResponse.simpleResponse(-1, checkResult.getRight());
-        }
         if ((loginRequest.getQrCode()==null||"".equals(loginRequest.getQrCode()))&&StringUtils.isBlank(loginRequest.getInviteCode())) {
             return CommonResponse.simpleResponse(-1, "邀请码不能为空");
         }
         if (!StringUtils.isBlank(loginRequest.getInviteCode())) {
-            Optional<MerchantInfo> merchantInfoOptional =  merchantInfoService.selectByMobile(MerchantSupport.passwordDigest(loginRequest.getInviteCode(),"JKM"));
+            Optional<MerchantInfo> merchantInfoOptional =  merchantInfoService.selectByMobile(MerchantSupport.encryptMobile(loginRequest.getInviteCode()));
             if(!merchantInfoOptional.isPresent()){
                 return CommonResponse.simpleResponse(-1, "邀请码不存在");
             }
@@ -374,6 +368,13 @@ public class WxPubController extends BaseController {
                 return CommonResponse.simpleResponse(-1, "不能邀请自己");
             }
         }
+        final Pair<Integer, String> checkResult =
+                this.smsAuthService.checkVerifyCode(mobile, verifyCode, EnumVerificationCodeType.REGISTER_MERCHANT);
+        if (1 != checkResult.getLeft()) {
+            return CommonResponse.simpleResponse(-1, checkResult.getRight());
+        }
+
+
         //产品id
         long productId = 2;
         Optional<ProductChannelDetail> weixinChannelDetail = productChannelDetailService.selectByProductIdAndChannelId(productId,EnumPayChannelSign.YG_WEIXIN.getId());
@@ -470,7 +471,7 @@ public class WxPubController extends BaseController {
                     mi.setSource(EnumSource.RECOMMEND.getId());
                     mi.setProductId(productId);
                     //初始化代理商和商户
-                    Optional<MerchantInfo> merchantInfoOptional =  merchantInfoService.selectByMobile(MerchantSupport.passwordDigest(loginRequest.getInviteCode(),"JKM"));
+                    Optional<MerchantInfo> merchantInfoOptional =  merchantInfoService.selectByMobile(MerchantSupport.encryptMobile(loginRequest.getInviteCode()));
                     mi.setDealerId(merchantInfoOptional.get().getFirstDealerId());
                     mi.setFirstDealerId(merchantInfoOptional.get().getFirstDealerId());
                     mi.setSecondDealerId(merchantInfoOptional.get().getSecondDealerId());
