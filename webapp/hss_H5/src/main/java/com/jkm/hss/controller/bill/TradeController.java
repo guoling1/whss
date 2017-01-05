@@ -5,6 +5,7 @@ import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
 import com.jkm.base.common.entity.CommonResponse;
 import com.jkm.base.common.entity.PageModel;
+import com.jkm.base.common.util.DateFormatUtil;
 import com.jkm.hss.bill.entity.Order;
 import com.jkm.hss.bill.enums.EnumOrderStatus;
 import com.jkm.hss.bill.enums.EnumPaymentType;
@@ -41,6 +42,7 @@ import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.net.URLDecoder;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -214,12 +216,16 @@ public class TradeController extends BaseController {
             requestParam.setOrderNo(null);
         }
         if ("".equals(requestParam.getStartDate()) || null == requestParam.getStartDate()) {
-            requestParam.setStartDate(null);
+            //TODO
+            requestParam.setStartDate("2016-01-01 00:00:01");
+//            requestParam.setStartDate(null);
         } else {
             requestParam.setStartDate(requestParam.getStartDate() + " 00:00:01");
         }
         if ("".equals(requestParam.getEndDate()) || null == requestParam.getEndDate()) {
-            requestParam.setEndDate(null);
+            //TODO
+            requestParam.setEndDate(DateFormatUtil.format(new Date(), DateFormatUtil.yyyy_MM_dd) + " 23:59:59");
+//            requestParam.setEndDate(null);
         } else {
             requestParam.setEndDate(requestParam.getEndDate() + " 23:59:59");
         }

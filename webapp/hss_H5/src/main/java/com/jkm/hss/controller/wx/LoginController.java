@@ -3,9 +3,11 @@ package com.jkm.hss.controller.wx;
 
 import com.google.common.base.Optional;
 import com.jkm.base.common.util.CookieUtil;
+import com.jkm.base.common.util.DateFormatUtil;
 import com.jkm.hss.account.entity.Account;
 import com.jkm.hss.account.sevice.AccountService;
 import com.jkm.hss.bill.entity.Order;
+import com.jkm.hss.bill.enums.EnumPaymentType;
 import com.jkm.hss.bill.service.OrderService;
 import com.jkm.hss.controller.BaseController;
 import com.jkm.hss.dealer.service.ShallProfitDetailService;
@@ -24,6 +26,7 @@ import com.jkm.hss.merchant.helper.WxPubUtil;
 import com.jkm.hss.merchant.service.*;
 import com.jkm.hss.product.enums.EnumPayChannelSign;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -741,43 +744,28 @@ public class LoginController extends BaseController {
      */
     @RequestMapping(value = "/tradeDetail/{id}", method = RequestMethod.GET)
     public String tradeDetail(final HttpServletRequest request, final HttpServletResponse response,final Model model,@PathVariable("id") long id) throws IOException {
-        Optional<OrderRecord> orderRecordOptional = orderRecordService.selectByPrimaryKey(id);
-        if(!orderRecordOptional.isPresent()){
+//        Optional<OrderRecord> orderRecordOptional = orderRecordService.selectByPrimaryKey(id);
+        final Optional<Order> orderOptional = this.orderService.getById(id);
+
+        if(!orderOptional.isPresent()){
             return "/500";
         }else{
-            DecimalFormat decimalFormat=new DecimalFormat("0.00");//构造方法的字符格式这里如果小数不足2位,会以0补足.
-            OrderRecord orderRecord = orderRecordOptional.get();
-            model.addAttribute("totalMoney", decimalFormat.format(orderRecord.getTotalFee()));
-            model.addAttribute("realMoney",decimalFormat.format(orderRecord.getRealFee()));
-            SimpleDateFormat time=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            model.addAttribute("createTime",time.format(orderRecord.getCreateTime()));
-            Pair<String,String> pair = payOf(0,orderRecord.getPayResult());
-            model.addAttribute("status",pair.getRight());
-            if(orderRecord.getPayChannel()== EnumPayChannelSign.YG_WEIXIN.getId()||orderRecord.getPayChannel()==EnumPayChannelSign.YG_ZHIFUBAO.getId()){
-                model.addAttribute("payWay","扫码支付");
-            }
-            if(orderRecord.getPayChannel()==EnumPayChannelSign.YG_YINLIAN.getId()){
-                model.addAttribute("payWay","快捷支付");
-            }
-            Optional<MerchantInfo> merchantInfoOptional = merchantInfoService.selectById(orderRecord.getMerchantId());
-            if(merchantInfoOptional.isPresent()){
-                model.addAttribute("merchantName",merchantInfoOptional.get().getMerchantName());
-            }else{
-                model.addAttribute("merchantName","");
-            }
-            model.addAttribute("orderId",orderRecord.getOrderId());
-            model.addAttribute("outTradeNo",orderRecord.getOutTradeNo());
-
-            Optional<OrderRecord> depositorRecord = orderRecordService.selectOrderId(orderRecord.getOrderId(), EnumTradeType.DEPOSITOR.getId());
-            if(depositorRecord.isPresent()){
-                if(depositorRecord.get().getSettleStatus()== EnumSettleStatus.SETTLE.getId()){
-                    model.addAttribute("settleStatus","已结算");
-                }else{
-                    model.addAttribute("settleStatus","未结算");
-                }
-            }else{
-                model.addAttribute("settleStatus","未结算");
-            }
+//            DecimalFormat decimalFormat=new DecimalFormat("0.00");//构造方法的字符格式这里如果小数不足2位,会以0补足.
+            final Order order = orderOptional.get();
+            model.addAttribute("totalMoney", order.getTradeAmount().toPlainString());
+//            model.addAttribute("realMoney", decimalFormat.format(orderRecord.getRealFee()));
+//            SimpleDateFormat time=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            model.addAttribute("goodsName", order.getGoodsName());
+            model.addAttribute("goodsDescribe", order.getGoodsDescribe());
+            model.addAttribute("createTime", DateFormatUtil.format(order.getCreateTime(), DateFormatUtil.yyyy_MM_dd_HH_mm_ss));
+//            Pair<String,String> pair = payOf(0,orderRecord.getPayResult());
+            model.addAttribute("status", com.jkm.hss.bill.enums.EnumSettleStatus.of(order.getSettleStatus()).getValue());
+            model.addAttribute("payType", StringUtils.isEmpty(order.getPayType()) ? "" : EnumPaymentType.of(order.getPayType()));
+            final MerchantInfo merchantInfo = this.merchantInfoService.getByAccountId(order.getPayee()).get();
+            model.addAttribute("merchantName", merchantInfo.getMerchantName());
+            model.addAttribute("orderNo", order.getOrderNo());
+            model.addAttribute("sn", order.getRemark());
+            model.addAttribute("settleStatus", com.jkm.hss.bill.enums.EnumSettleStatus.of(order.getSettleStatus()).getValue());
             return "/tradeRecordDetail";
         }
     }

@@ -43,7 +43,7 @@
         </div>
         <div class="detail">
             <div class="left">付款方式</div>
-            <div class="right">${payWay}</div>
+            <div class="right">${payType}</div>
         </div>
         <div class="detail">
             <div class="left">商户名称</div>
@@ -51,11 +51,11 @@
         </div>
         <div class="detail">
             <div class="left">商户订单号</div>
-            <div class="right">${orderId}</div>
+            <div class="right">${orderNo}</div>
         </div>
         <div class="detail">
             <div class="left">交易流水号</div>
-            <div class="right">${outTradeNo}</div>
+            <div class="right">${sn}</div>
         </div>
         <div class="detail">
             <div class="left">结算状态</div>
