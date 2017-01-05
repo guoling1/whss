@@ -912,15 +912,106 @@ public class LoginController extends BaseController {
     }
 
     /**
-     * 升级降费率
+     * 升级降费率(大尺寸)
      * @param request
      * @param response
      * @param model
      * @return
      * @throws IOException
      */
-    @RequestMapping(value = "/upgerde", method = RequestMethod.GET)
-    public String upgerde(final HttpServletRequest request, final HttpServletResponse response,final Model model) throws IOException {
+    @RequestMapping(value = "/upgradeMax", method = RequestMethod.GET)
+    public String upgradeMax(final HttpServletRequest request, final HttpServletResponse response,final Model model) throws IOException {
+        boolean isRedirect = false;
+        String ul = request.getRequestURI();
+        if(!super.isLogin(request)){
+            return "redirect:"+ WxConstants.WEIXIN_USERINFO+ul+ WxConstants.WEIXIN_USERINFO_REDIRECT;
+        }else {
+            String url = "";
+            Optional<UserInfo> userInfoOptional = userInfoService.selectByOpenId(super.getOpenId(request));
+            if (userInfoOptional.isPresent()) {
+                Long merchantId = userInfoOptional.get().getMerchantId();
+                if (merchantId != null && merchantId != 0){
+                    Optional<MerchantInfo> result = merchantInfoService.selectById(merchantId);
+                    if (result.get().getStatus()== EnumMerchantStatus.LOGIN.getId()){//登录
+                        isRedirect= true;
+                        url = "/sqb/reg";
+                    }else if(result.get().getStatus()== EnumMerchantStatus.INIT.getId()){
+                        isRedirect= true;
+                        url = "/sqb/addInfo";
+                    }else if(result.get().getStatus()== EnumMerchantStatus.ONESTEP.getId()){
+                        isRedirect= true;
+                        url = "/sqb/addNext";
+                    }else if(result.get().getStatus()== EnumMerchantStatus.REVIEW.getId()||
+                            result.get().getStatus()== EnumMerchantStatus.UNPASSED.getId()||
+                            result.get().getStatus()== EnumMerchantStatus.DISABLE.getId()){
+                        isRedirect= true;
+                        url = "/sqb/prompt";
+                    }else if(result.get().getStatus()== EnumMerchantStatus.PASSED.getId()){
+                        Map<String, String> map = WxPubUtil.getUserInfo(userInfoOptional.get().getOpenId());
+                        if(map==null){
+                            model.addAttribute("headimgUrl","");
+                        }else{
+                            model.addAttribute("headimgUrl",map.get("headimgurl").toString());
+                        }
+                        model.addAttribute("mobile",MerchantSupport.decryptMobile(result.get().getMobile()));
+                        model.addAttribute("level",result.get().getLevel());
+                        model.addAttribute("weixinRate",result.get().getWeixinRate());
+                        model.addAttribute("alipayRate",result.get().getAlipayRate());
+                        model.addAttribute("fastRate",result.get().getFastRate());
+
+                        List<ProductChannelDetail> productChannelDetails = productChannelDetailService.selectByProductId(result.get().getProductId());
+                        if(productChannelDetails.size()==0){
+                            model.addAttribute("message","该产品商户基础费率不存在");
+                            return "/500";
+                        }
+                        //商户升级规则设置
+                        List<UpgradeResult> list = new ArrayList<UpgradeResult>();
+                        UpgradeResult upgradeResult = new UpgradeResult();
+                        upgradeResult.setId(0);
+                        upgradeResult.setName("普通");
+                        upgradeResult.setType(0);
+                        upgradeResult.setIsUpgrade(1);
+                        for(int i=0;i<productChannelDetails.size();i++){
+                            if(EnumPayChannelSign.YG_WEIXIN.getId()==productChannelDetails.get(i).getChannelTypeSign()){
+                                upgradeResult.setWeixinRate(productChannelDetails.get(i).getProductMerchantPayRate());
+                            }
+                            if(EnumPayChannelSign.YG_ZHIFUBAO.getId()==productChannelDetails.get(i).getChannelTypeSign()){
+                                upgradeResult.setAlipayRate(productChannelDetails.get(i).getProductMerchantPayRate());
+                            }
+                            if(EnumPayChannelSign.YG_YINLIAN.getId()==productChannelDetails.get(i).getChannelTypeSign()){
+                                upgradeResult.setWeixinRate(productChannelDetails.get(i).getProductMerchantPayRate());
+                            }
+                        }
+                        List<UpgradeResult> list1 =  upgradeRulesService.selectUpgradeList(result.get().getProductId(),result.get().getLevel());
+                        list.addAll(list1);
+                        model.addAttribute("upgradeArray",list);
+                        url = "/upgerdeMax";
+                    }
+                }else {
+                    isRedirect= true;
+                    url = "/sqb/reg";
+                }
+            }else {
+                isRedirect= true;
+                url = "/sqb/reg";
+            }
+            if(isRedirect){
+                return "redirect:"+url;
+            }else{
+                return url;
+            }
+        }
+    }
+    /**
+     * 升级降费率(小尺寸)
+     * @param request
+     * @param response
+     * @param model
+     * @return
+     * @throws IOException
+     */
+    @RequestMapping(value = "/upgradeMin", method = RequestMethod.GET)
+    public String upgradeMin(final HttpServletRequest request, final HttpServletResponse response,final Model model) throws IOException {
         boolean isRedirect = false;
         String ul = request.getRequestURI();
         if(!super.isLogin(request)){
@@ -1010,8 +1101,8 @@ public class LoginController extends BaseController {
      * @return
      * @throws IOException
      */
-    @RequestMapping(value = "/toUpgerde/{id}", method = RequestMethod.GET)
-    public String upgerde(final HttpServletRequest request, final HttpServletResponse response,final Model model,@PathVariable("id") long id) throws IOException {
+    @RequestMapping(value = "/toUpgrade/{id}", method = RequestMethod.GET)
+    public String toUpgrade(final HttpServletRequest request, final HttpServletResponse response,final Model model,@PathVariable("id") long id) throws IOException {
         boolean isRedirect = false;
         String ul = request.getRequestURI();
         if(!super.isLogin(request)){

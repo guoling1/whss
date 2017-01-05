@@ -220,7 +220,7 @@ public class WxPubController extends BaseController {
         }
         Optional<UserInfo> userInfoOptional = userInfoService.selectByMobile(MerchantSupport.encryptMobile(mobile));
         if(userInfoOptional.isPresent()){
-            return CommonResponse.simpleResponse(2, "该用户已注册,请直接登录");
+            return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "该用户已注册,请直接登录",false);
         }
         final Pair<Integer, String> verifyCode = this.smsAuthService.getVerifyCode(mobile, EnumVerificationCodeType.REGISTER_MERCHANT);
         if (1 == verifyCode.getLeft()) {
@@ -233,7 +233,7 @@ public class WxPubController extends BaseController {
                     .noticeType(EnumNoticeType.REGISTER_MERCHANT)
                     .build()
             );
-            return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "发送验证码成功");
+            return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "发送验证码成功",true);
         }
         return CommonResponse.simpleResponse(-1, verifyCode.getRight());
     }
