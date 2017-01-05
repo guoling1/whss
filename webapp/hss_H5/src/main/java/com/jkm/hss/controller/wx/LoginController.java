@@ -28,6 +28,7 @@ import com.jkm.hss.merchant.service.*;
 import com.jkm.hss.product.enums.EnumPayChannelSign;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -765,7 +766,7 @@ public class LoginController extends BaseController {
             final MerchantInfo merchantInfo = this.merchantInfoService.getByAccountId(order.getPayee()).get();
             model.addAttribute("merchantName", merchantInfo.getMerchantName());
             model.addAttribute("orderNo", order.getOrderNo());
-            model.addAttribute("sn", order.getRemark());
+            model.addAttribute("sn", NumberUtils.isNumber(order.getRemark()) ? order.getRemark() : "");
             model.addAttribute("settleStatus", com.jkm.hss.bill.enums.EnumSettleStatus.of(order.getSettleStatus()).getValue());
             return "/tradeRecordDetail";
         }
