@@ -16,4 +16,10 @@ public class WithdrawRequest {
      * 提现金额
      */
     private String amount;
+
+    private long merchantId;
+
+    private long payOrderId;
+
+    private String payOrderSn;
 }

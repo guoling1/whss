@@ -1,0 +1,192 @@
+<template lang="html">
+  <div id="invite">
+    <div style="padding: 8px 30px; background: rgb(243, 156, 18); z-index: 999999; font-size: 22px; font-weight: 600;margin-bottom: 15px;color: #fff;">邀请规则设置</div>
+    <div style="margin: 0 15px 15px">
+      <div class="box ">
+        <form class="form-horizontal">
+          <div class="box-body">
+            <div class="form-group">
+              <div class="col-xs-12">
+                产品选择：
+                <select class="form-control select2 select2-hidden-accessible" style="width: 25%;display: inline-block" tabindex="-1" aria-hidden="true">
+                  <!--<option value="2">好收银</option>-->
+                  <option value="1">好收收</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="box box-info">
+        <div class="box-header with-border">
+          <h3 class="box-title">商户升级规则设置</h3>
+        </div>
+        <form class="form-horizontal">
+          <div class="box-body">
+            <div class="form-group">
+              <div class="col-xs-12">
+                <div class="box box1">
+                  <div class="box-body table-responsive no-padding">
+                    <table class="table table-hover">
+                      <tbody>
+                      <tr>
+                        <th>合伙人等级</th>
+                        <th>微信费率</th>
+                        <th>支付宝费率</th>
+                        <th>无卡费率</th>
+                        <th>升级费</th>
+                        <th>邀请人数</th>
+                      </tr>
+                      <tr>
+                        <td>普通</td>
+                        <td>0.49%</td>
+                        <td>0.49%</td>
+                        <td>0.55%</td>
+                        <td>无</td>
+                        <td>无</td>
+                      </tr>
+                      <tr >
+                        <td>店员</td>
+                        <td><input type="text" name="name" >%</td>
+                        <td><input type="text" name="name">%</td>
+                        <td><input type="text" name="name">%</td>
+                        <td><input type="text" name="name">元</td>
+                        <td><input type="text" name="name">人</td>
+                      </tr>
+                      <tr >
+                        <td>店长</td>
+                        <td><input type="text" name="name" >%</td>
+                        <td><input type="text" name="name">%</td>
+                        <td><input type="text" name="name">%</td>
+                        <td><input type="text" name="name">元</td>
+                        <td><input type="text" name="name">人</td>
+                      </tr>
+                      <tr >
+                        <td>老板</td>
+                        <td><input type="text" name="name" >%</td>
+                        <td><input type="text" name="name">%</td>
+                        <td><input type="text" name="name">%</td>
+                        <td><input type="text" name="name">元</td>
+                        <td><input type="text" name="name">人</td>
+                      </tr>
+                      <tr >
+                        <td colspan="6">邀请用户达标标准：收款满<input type="text" name="name" style="width: 100px;" v-model="standard">元
+                        </td>
+                      </tr>
+                      </tbody></table>
+                  </div>
+                  <!-- /.box-body -->
+                </div>
+                <!-- /.box -->
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="box box-info">
+        <div class="box-header with-border">
+          <h3 class="box-title">升级推荐分润设置</h3>
+        </div>
+        <form class="form-horizontal">
+          <div class="box-body">
+            <div class="form-group">
+              <div class="col-xs-8">
+                <div class="box box1">
+                  <div class="box-body table-responsive no-padding">
+                    <table class="table table-hover">
+                      <tbody>
+                      <tr>
+                        <th>分润类型</th>
+                        <th>金开门分润比例</th>
+                      </tr>
+                      <tr>
+                        <td>升级费分润</td>
+                        <td><input type="text" name="name" v-model="upgradeRate">%</td>
+                      </tr>
+                      <tr >
+                        <td>收单分润</td>
+                        <td><input type="text" name="name" v-model="tradeRate">%</td>
+                      </tr>
+                      <tr >
+                        <td colspan="2">收单奖励分润池：<input type="text" name="name" style="width: 100px;" v-model="rewardRate">%
+                        </td>
+                      </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="btn btn-primary" @click="save">保 存</div>
+    </div>
+  </div>
+</template>
+
+<script lang="babel">
+  export default {
+    name:"invite",
+    data(){
+      return{
+        standard: '',
+        upgradeRate: '',
+        tradeRate:'',
+        rewardRate:'',
+        upgradeRulesList:[],
+        list:[]
+      }
+    },
+    created: function () {
+        this.$http.post('/admin/upgrade/init',{productId:1})
+          .then(function (res) {
+            console.log(res)
+            this.$data.standard = res.data.standard;
+            this.$data.upgradeRate = res.data.upgradeRate;
+            this.$data.tradeRate = res.data.tradeRate;
+            this.$data.rewardRate = res.data.rewardRate;
+            this.$data.upgradeRulesList = res.data.upgradeRulesList;
+          }, function (err) {
+            this.$store.commit('MESSAGE_ACCORD_SHOW', {
+              text: err.statusMessage
+            })
+          })
+    },
+    methods: {
+      save: function () {
+        /*this.$http.post('/admin/upgrade/addOrUpdate',{})
+          .then(function (res) {
+
+          })*/
+      }
+    },
+    computed: {
+
+    }
+  }
+</script>
+<style scoped lang="less">
+  h1, h2 {
+    font-weight: normal;
+    color: #337ab7;
+    font-weight: bold;
+    border-bottom: 2px solid #ccc;
+    padding-bottom: 10px;
+  }
+
+  ul {
+    list-style-type: none;
+    padding: 0;
+  }
+
+  li {
+    display: inline-block;
+    margin: 0 10px;
+  }
+  input {
+    width: 77%;
+    border: none;
+    border-bottom: 1px solid #d0d0d0;
+  }
+</style>

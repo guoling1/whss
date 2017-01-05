@@ -76,6 +76,7 @@
           <ul class="treeview-menu">
             <li><router-link to="/admin/record/productList"><span>产品列表</span> </router-link></li>
             <li><router-link to="/admin/record/productAdd"><span>新增产品</span> </router-link></li>
+            <li><router-link to="/admin/record/invite"><span>合伙人推荐</span> </router-link></li>
           </ul>
         </li>
         <li class="treeview">
