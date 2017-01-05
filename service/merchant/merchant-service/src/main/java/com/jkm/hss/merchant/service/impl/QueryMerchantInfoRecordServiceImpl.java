@@ -51,7 +51,7 @@ public class QueryMerchantInfoRecordServiceImpl implements QueryMerchantInfoReco
                     String CheckedTime = list.get(i).getCheckedTime();
                     Date date =formatter.parse(CheckedTime);
                     String checkedTime = formatter.format(date);
-                    list.get(i).setAuthenticationTime(checkedTime);
+                    list.get(i).setCheckedTime(checkedTime);
                 }
 
             }
