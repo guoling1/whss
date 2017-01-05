@@ -46,7 +46,7 @@
           </div>
           <div class="form-group">
             <label class="col-sm-6 control-label">打款状态：</label>
-            <div class="col-sm-6">{{record.status}}</div>
+            <div class="col-sm-6">{{record.status|changeStatus}}</div>
           </div>
           <div class="form-group">
             <label class="col-sm-6 control-label">失败原因：</label>
@@ -165,7 +165,20 @@
           })
       }
     },
-    computed: {
+    filters: {
+      changeStatus: function (val) {
+        if(val == "1"){
+          return '待提现'
+        }else if(val == "2"){
+          return '准备打款'
+        }else if(val == "3"){
+          return '请求成功'
+        }else if(val == "4"){
+          return '打款成功'
+        }else if(val == "5"){
+          return '打款失败'
+        }
+      }
     }
   }
 </script>

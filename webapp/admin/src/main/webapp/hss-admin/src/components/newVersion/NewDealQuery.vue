@@ -6,89 +6,7 @@
       <div class="btn btn-primary pull-right" @click="refresh()">刷新</div>
     </div>
     <div class="col-md-12">
-      <!--筛选-->
-      <!--<div class="box box-success box-solid">
-        <div class="box-header with-border">
-          <h3 class="box-title">筛选条件</h3>
-          <div class="box-tools pull-right">
-            <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
-            </button>
-          </div>
-        </div>
-        <div class="box-body">
-          <div class="row">
-            <div class="col-md-3">
-              <div class="form-group">
-                <label>订单号：</label>
-                <input type="text" class="form-control" v-model="$$query.orderNo">
-              </div>
-              <div class="form-group">
-                <label>商户名称</label>
-                <input type="text" class="form-control" v-model="$$query.merchantName">
-              </div>
-            </div>
-            <div class="col-md-3">
-              <div class="form-group">
-                <label>交易日期：</label>
-                <div class="form-control">
-                  <input type="date" style="border: none;display:inline-block;width: 45%" name="date" value="" v-model="$$query.startTime">至
-                  <input type="date" style="border: none;display:inline-block;width: 45%" name="date" value="" v-model="$$query.endTime">
-                </div>
-              </div>
-              <div class="form-group">
-                <label>交易金额：</label>
-                <div class="form-control">
-                  <input type="text" style="border: none;display:inline-block;width: 45%" name="date" value="" v-model="$$query.lessTotalFee">至
-                  <input type="text" style="border: none;display:inline-block;width: 45%" name="date" value="" v-model="$$query.moreTotalFee">
-                </div>
-              </div>
-            </div>
-            <div class="col-md-3">
-              <div class="form-group">
-                <label>订单状态：</label>
-                <select class="form-control select2 select2-hidden-accessible" style="width: 100%;" tabindex="-1" aria-hidden="true" v-model="$$query.status">
-                  <option value="">全部</option>
-                  <option value="1">待支付</option>
-                  <option value="4">支付成功</option>
-                  <option value="3">支付失败</option>
-                </select>
-              </div>
-              <div class="form-group">
-                <label>结算状态：</label>
-                <select class="form-control select2 select2-hidden-accessible" style="width: 100%;" tabindex="-1" aria-hidden="true" v-model="$$query.settleStatus">
-                    <option value="">全部</option>
-                    <option value="1">未结算</option>
-                    <option value="2">结算中</option>
-                    <option value="3">已结算</option>
-                  </select>
-                </select>
-              </div>
-            </div>
-            <div class="col-md-3">
-              <div class="form-group">
-                <label>支付方式：</label>
-                <select class="form-control select2 select2-hidden-accessible" style="width: 100%;" tabindex="-1" aria-hidden="true" v-model="$$query.payType">
-                  <option value="">全部</option>
-                  <option value="S">微信扫码</option>
-                  <option value="N">微信二维码</option>
-                  <option value="H">微信H5收银台</option>
-                  <option value="B">快捷收款</option>
-                  <option value="Z">支付宝扫码</option>
-                </select>
-              </div>
-              <div class="form-group">
-                <div class="btn btn-primary" @click="lookup">筛选</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>-->
-      <!--列表-->
       <div class="box" style="overflow: hidden">
-      <!--<div class="box-header">
-        <h3 class="box-title">交易记录</h3>
-        <a :href="'http://'+this.$data.url" download="交易记录" class="btn btn-primary" style="float: right;color: #fff">导出</a>
-      </div>-->
       <div class="box-body">
         <div class="row">
           <div class="col-md-3">
@@ -157,7 +75,6 @@
           </div>
         </div>
         <div id="example2_wrapper" class="dataTables_wrapper form-inline dt-bootstrap">
-
           <div class="row">
             <div class="col-sm-12">
               <table id="example2" class="table table-bordered table-hover dataTable" role="grid" aria-describedby="example2_info">
