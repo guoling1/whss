@@ -4,6 +4,7 @@ import com.google.common.base.Optional;
 import com.jkm.hss.merchant.entity.MerchantInfo;
 import com.jkm.hss.merchant.entity.MerchantInfoResponse;
 
+import java.text.ParseException;
 import java.util.List;
 
 
@@ -75,5 +76,5 @@ public interface MerchantInfoQueryService {
      * @param baseUrl
      * @return
      */
-    String downloadExcel(MerchantInfoResponse merchantInfoResponse, String baseUrl);
+    String downloadExcel(MerchantInfoResponse merchantInfoResponse, String baseUrl) throws ParseException;
 }
