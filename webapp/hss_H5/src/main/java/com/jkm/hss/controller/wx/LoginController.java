@@ -1194,6 +1194,18 @@ public class LoginController extends BaseController {
         return "redirect:"+url;
     }
 
+    /**
+     * 算算H5
+     * @param request
+     * @param response
+     * @param model
+     * @return
+     * @throws IOException
+     */
+    @RequestMapping(value = "/suansuan", method = RequestMethod.GET)
+    public String suansuan(final HttpServletRequest request, final HttpServletResponse response,final Model model) throws IOException {
+        return "/suansuan";
+    }
 
 
 }
