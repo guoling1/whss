@@ -901,6 +901,22 @@ public class LoginController extends BaseController {
         }
     }
 
+    private String getNameByLevel(int level){
+        String name = "";
+        if(level==0){
+            name="普通会员";
+        }
+        if(level==1){
+            name="店员";
+        }
+        if(level==2){
+            name="店长";
+        }
+        if(level==3){
+            name="老板";
+        }
+        return name;
+    }
     /**
      * 升级降费率(大尺寸)
      * @param request
@@ -937,7 +953,8 @@ public class LoginController extends BaseController {
                         isRedirect= true;
                         url = "/sqb/prompt";
                     }else if(result.get().getStatus()== EnumMerchantStatus.PASSED.getId()||result.get().getStatus()== EnumMerchantStatus.FRIEND.getId()){
-                        Map<String, String> map = WxPubUtil.getUserInfo(userInfoOptional.get().getOpenId());
+//                        Map<String, String> map = WxPubUtil.getUserInfo(userInfoOptional.get().getOpenId());
+                        Map<String, String> map=null;
                         if(map==null){
                             model.addAttribute("headimgUrl","");
                         }else{
@@ -946,6 +963,7 @@ public class LoginController extends BaseController {
                         String phone = MerchantSupport.decryptMobile(result.get().getMobile());
                         phone = phone.substring(0,3)+"***"+phone.substring(phone.length()-3,phone.length());
                         model.addAttribute("mobile",phone);
+                        model.addAttribute("name",getNameByLevel(result.get().getLevel()));
                         model.addAttribute("level",result.get().getLevel());
                         model.addAttribute("weixinRate",result.get().getWeixinRate());
                         model.addAttribute("alipayRate",result.get().getAlipayRate());
@@ -971,13 +989,14 @@ public class LoginController extends BaseController {
                                 upgradeResult.setAlipayRate(productChannelDetails.get(i).getProductMerchantPayRate());
                             }
                             if(EnumPayChannelSign.YG_YINLIAN.getId()==productChannelDetails.get(i).getChannelTypeSign()){
-                                upgradeResult.setWeixinRate(productChannelDetails.get(i).getProductMerchantPayRate());
+                                upgradeResult.setFastRate(productChannelDetails.get(i).getProductMerchantPayRate());
                             }
                         }
+                        list.add(upgradeResult);
                         List<UpgradeResult> list1 =  upgradeRulesService.selectUpgradeList(result.get().getProductId(),result.get().getLevel());
                         list.addAll(list1);
                         model.addAttribute("upgradeArray",list);
-                        url = "/upgerdeMax";
+                        url = "/upgradeMax";
                     }
                 }else {
                     isRedirect= true;
@@ -1030,13 +1049,17 @@ public class LoginController extends BaseController {
                         isRedirect= true;
                         url = "/sqb/prompt";
                     }else if(result.get().getStatus()== EnumMerchantStatus.PASSED.getId()||result.get().getStatus()== EnumMerchantStatus.FRIEND.getId()){
-                        Map<String, String> map = WxPubUtil.getUserInfo(userInfoOptional.get().getOpenId());
+//                        Map<String, String> map = WxPubUtil.getUserInfo(userInfoOptional.get().getOpenId());
+                        Map<String, String> map=null;
                         if(map==null){
                             model.addAttribute("headimgUrl","");
                         }else{
                             model.addAttribute("headimgUrl",map.get("headimgurl").toString());
                         }
-                        model.addAttribute("mobile",MerchantSupport.decryptMobile(result.get().getMobile()));
+                        String phone = MerchantSupport.decryptMobile(result.get().getMobile());
+                        phone = phone.substring(0,3)+"***"+phone.substring(phone.length()-3,phone.length());
+                        model.addAttribute("mobile",phone);
+                        model.addAttribute("name",getNameByLevel(result.get().getLevel()));
                         model.addAttribute("level",result.get().getLevel());
                         model.addAttribute("weixinRate",result.get().getWeixinRate());
                         model.addAttribute("alipayRate",result.get().getAlipayRate());
@@ -1062,13 +1085,14 @@ public class LoginController extends BaseController {
                                 upgradeResult.setAlipayRate(productChannelDetails.get(i).getProductMerchantPayRate());
                             }
                             if(EnumPayChannelSign.YG_YINLIAN.getId()==productChannelDetails.get(i).getChannelTypeSign()){
-                                upgradeResult.setWeixinRate(productChannelDetails.get(i).getProductMerchantPayRate());
+                                upgradeResult.setFastRate(productChannelDetails.get(i).getProductMerchantPayRate());
                             }
                         }
+                        list.add(upgradeResult);
                         List<UpgradeResult> list1 =  upgradeRulesService.selectUpgradeList(result.get().getProductId(),result.get().getLevel());
                         list.addAll(list1);
                         model.addAttribute("upgradeArray",list);
-                        url = "/upgerde";
+                        url = "/upgradeMin";
                     }
                 }else {
                     isRedirect= true;
