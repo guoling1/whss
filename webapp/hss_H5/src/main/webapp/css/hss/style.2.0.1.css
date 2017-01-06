@@ -2371,7 +2371,7 @@ input:focus {
   width: 20px;
   height: 20px;
   padding: 20px 0 40px;
-  background: url("../../assets/hss-x.png") no-repeat center;
+  background: url("../assets/hss-x.png") no-repeat center;
   background-size: 20px 20px;
 }
 #upgradeWay {
