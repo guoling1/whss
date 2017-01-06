@@ -4,6 +4,7 @@ import com.google.common.base.Optional;
 import com.jkm.hss.merchant.entity.MerchantInfo;
 import com.jkm.hss.merchant.helper.request.MerchantInfoAddRequest;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -73,11 +74,17 @@ public interface MerchantInfoService {
 //    long updateRecord(RequestMerchantInfo requestMerchantInfo);
 
     /**
-     * 扫码注册
+     * 公众号注册
      * @param merchantInfo
      * @return
      */
     long regByWxPub(MerchantInfo merchantInfo);
+    /**
+     * 公众号注册（新）
+     * @param merchantInfo
+     * @return
+     */
+    long regByWx(MerchantInfo merchantInfo);
     /**
      * 扫固定码注册
      * @param merchantInfo
@@ -116,6 +123,12 @@ public interface MerchantInfoService {
     List<MerchantInfo> batchGetMerchantInfo(List<Long> merchantIdList);
 
     /**
+     * 根据id查询
+     */
+    Optional<MerchantInfo> selectByMobile(String mobile);
+
+
+    /**
      * 插入accountId
      *
      * @param accountId
@@ -123,4 +136,10 @@ public interface MerchantInfoService {
      * @param merchantId
      */
     int addAccountId(long accountId, int status, long merchantId, Date checkedTime);
+
+    /**
+     * 推荐好友，大于某个金额去升级
+     * @param merchantId
+     */
+    void toUpgradeByRecommend(long merchantId, BigDecimal totalTradeMoney);
 }

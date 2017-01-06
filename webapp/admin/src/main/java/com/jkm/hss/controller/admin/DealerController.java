@@ -10,11 +10,15 @@ import com.jkm.base.common.entity.PageModel;
 import com.jkm.hss.controller.BaseController;
 import com.jkm.hss.dealer.entity.Dealer;
 import com.jkm.hss.dealer.entity.DealerChannelRate;
+import com.jkm.hss.dealer.entity.DealerUpgerdeRate;
 import com.jkm.hss.dealer.enums.EnumDealerLevel;
+import com.jkm.hss.dealer.enums.EnumDealerStatus;
 import com.jkm.hss.dealer.helper.DealerSupport;
+import com.jkm.hss.dealer.helper.requestparam.FirstLevelDealerUpdateRequest;
 import com.jkm.hss.dealer.helper.requestparam.ListDealerRequest;
 import com.jkm.hss.dealer.service.DealerChannelRateService;
 import com.jkm.hss.dealer.service.DealerService;
+import com.jkm.hss.dealer.service.DealerUpgerdeRateService;
 import com.jkm.hss.helper.request.FirstLevelDealerFindRequest;
 import com.jkm.hss.helper.response.FirstLevelDealerFindResponse;
 import com.jkm.hss.helper.response.FirstLevelDealerGetResponse;
@@ -45,6 +49,9 @@ public class DealerController extends BaseController {
 
     @Autowired
     private DealerChannelRateService dealerChannelRateService;
+
+    @Autowired
+    private DealerUpgerdeRateService dealerUpgerdeRateService;
 
     /**
      * 按手机号和名称模糊匹配
@@ -135,6 +142,8 @@ public class DealerController extends BaseController {
         firstLevelDealerGetResponse.setName(dealer.getProxyName());
         firstLevelDealerGetResponse.setBelongArea(dealer.getBelongArea());
         firstLevelDealerGetResponse.setBankCard(DealerSupport.decryptBankCard(dealer.getId(), dealer.getSettleBankCard()));
+        firstLevelDealerGetResponse.setBankName(dealer.getBankName());
+        firstLevelDealerGetResponse.setIdCard(DealerSupport.decryptIdentity(dealer.getId(),dealer.getIdCard()));
         firstLevelDealerGetResponse.setBankAccountName(dealer.getBankAccountName());
         firstLevelDealerGetResponse.setBankReserveMobile(DealerSupport.decryptMobile(dealer.getId(), dealer.getBankReserveMobile()));
         final FirstLevelDealerGetResponse.Product productResponse = firstLevelDealerGetResponse.new Product();
@@ -155,6 +164,23 @@ public class DealerController extends BaseController {
             channel.setMerchantWithdrawFee(dealerChannelRate.getDealerMerchantWithdrawFee().toPlainString());
             channels.add(channel);
         }
+
+        final List<FirstLevelDealerGetResponse.DealerUpgerdeRate> dealerUpgerdeRates = new ArrayList<>();
+        firstLevelDealerGetResponse.setDealerUpgerdeRates(dealerUpgerdeRates);
+
+        List<DealerUpgerdeRate> upgerdeRates = dealerUpgerdeRateService.selectByDealerIdAndProductId(dealerId,product.getId());
+        for(DealerUpgerdeRate dealerUpgerdeRate:upgerdeRates){
+            final FirstLevelDealerGetResponse.DealerUpgerdeRate du = new FirstLevelDealerGetResponse.DealerUpgerdeRate();
+            du.setId(dealerUpgerdeRate.getId());
+            du.setProductId(dealerUpgerdeRate.getProductId());
+            du.setType(dealerUpgerdeRate.getType());
+            du.setDealerId(dealerUpgerdeRate.getDealerId());
+            du.setFirstDealerShareProfitRate(dealerUpgerdeRate.getFirstDealerShareProfitRate().toString());
+            du.setSecondDealerShareProfitRate(dealerUpgerdeRate.getSecondDealerShareProfitRate().toString());
+            du.setBossDealerShareRate(dealerUpgerdeRate.getBossDealerShareRate().toString());
+            dealerUpgerdeRates.add(du);
+        }
+
         return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "success", firstLevelDealerGetResponse);
     }
 }

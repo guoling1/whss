@@ -4,15 +4,15 @@
 
     <!-- 通用查询结果列-->
     <sql id="Base_Column_List">
-        id,	mobile,	pwd,	open_id,role_id,merchant_id,status,	create_time,update_time
+        id,	mobile,	pwd,open_id,nick_name,head_img_url,mark_code,type,role_id,merchant_id,status,create_time,update_time
     </sql>
 
-    <!-- 查询（根据OpenId查询） -->
+    <!-- 查询（根据Id查询） -->
     <select id="selectById" resultType="com.jkm.hss.merchant.entity.UserInfo">
         SELECT
         <include refid="Base_Column_List" />
         FROM tb_user_info
-        WHERE id = #{id} and status=0
+        WHERE id = #{id} and status=0 and type=0
     </select>
 
     <!-- 查询（根据OpenId查询） -->
@@ -20,14 +20,15 @@
         SELECT
         <include refid="Base_Column_List" />
         FROM tb_user_info
-        WHERE open_id = #{openId} and status=0
+        WHERE open_id = #{openId} and status=0 and type=0
     </select>
+
     <!-- 查询（根据merchantId查询） -->
     <select id="selectByMerchantId" resultType="com.jkm.hss.merchant.entity.UserInfo">
         SELECT
         <include refid="Base_Column_List" />
         FROM tb_user_info
-        WHERE merchant_id = #{merchantId} and status=0 limit 0,1
+        WHERE merchant_id = #{merchantId} and status=0 and type=0 and role_id=0 limit 0,1
     </select>
 
     <!-- 添加 （匹配有值的字段）-->
@@ -42,6 +43,18 @@
             </if>
             <if test="openId != null">
                 open_id,
+            </if>
+            <if test="nickName != null">
+                nick_name,
+            </if>
+            <if test="headImgUrl != null">
+                head_img_url,
+            </if>
+            <if test="markCode != null">
+                mark_code,
+            </if>
+            <if test="type != null">
+                type,
             </if>
             <if test="merchantId != null">
                 merchant_id,
@@ -63,6 +76,18 @@
             <if test="openId!=null">
                 #{openId},
             </if>
+            <if test="nickName!=null">
+                #{nickName},
+            </if>
+            <if test="headImgUrl!=null">
+                #{headImgUrl},
+            </if>
+            <if test="markCode!=null">
+                #{markCode},
+            </if>
+            <if test="type!=null">
+                #{type},
+            </if>
             <if test="merchantId!=null">
                 #{merchantId},
             </if>
@@ -82,4 +107,34 @@
         mobile = #{mobile}
         WHERE id = #{id}
     </update>
+
+    <update id="updatemarkCode">
+        UPDATE tb_user_info
+        SET
+        mark_code = #{markCode}
+        WHERE id = #{id}
+    </update>
+
+
+    <select id="selectByMobile" resultType="com.jkm.hss.merchant.entity.UserInfo">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM tb_user_info
+        WHERE mobile = #{mobile} and status=0 and type=0 limit 0,1
+    </select>
+
+    <update id="cleanOpenId">
+        UPDATE tb_user_info
+        SET
+        open_id = ''
+        WHERE id = #{id}
+    </update>
+
+    <update id="bindOpenId">
+        UPDATE tb_user_info
+        SET
+        open_id = #{openId}
+        WHERE id = #{id}
+    </update>
+
 </mapper>

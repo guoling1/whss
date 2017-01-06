@@ -40,4 +40,35 @@ public interface UserInfoService {
      * @return
      */
     Optional<UserInfo> selectByMerchantId(long merchantId);
+    /**
+     * 插入markCode
+     * @param markCode
+     * @param id
+     * @return
+     */
+    int updatemarkCode(String markCode,long id);
+
+    /**
+     * 根据手机号查询
+     * @param mobile
+     * @return
+     */
+    Optional<UserInfo> selectByMobile(String mobile);
+
+    /**
+     * 清除openId
+     * @param id
+     * @return
+     */
+    int cleanOpenId(long id);
+
+    /**
+     * 绑定openId
+     * @param id
+     * @param openId
+     * @return
+     */
+    int bindOpenId(long id,String openId);
+
+
 }
