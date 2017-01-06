@@ -51,6 +51,27 @@
         AND status=#{status}
     </if>
 
+    <if test="startTime!=null and startTime!=''">
+        AND create_time <![CDATA[ >= ]]> #{startTime}
+    </if>
+    <if test="endTime!=null and endTime!=''">
+        AND create_time <![CDATA[ <= ]]> #{endTime}
+    </if>
+
+    <if test="startTime1!=null and startTime1!=''">
+        AND authentication_time <![CDATA[ >= ]]> #{authenticationTime}
+    </if>
+
+    <if test="endTime1!=null and endTime1!=''">
+        AND authentication_time <![CDATA[ <= ]]> #{authenticationTime}
+    </if>
+
+    <if test="startTime2!=null and startTime2!=''">
+        AND checked_time <![CDATA[ >= ]]> #{checkedTime}
+    </if>
+    <if test="endTime2!=null and endTime2!=''">
+        AND checked_time <![CDATA[ <= ]]> #{checkedTime}
+    </if>
         ORDER BY
             create_time DESC
         LIMIT #{offset},#{pageSize}
