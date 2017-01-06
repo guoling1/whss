@@ -48,6 +48,7 @@ public class MerchantInfoCheckRecordController extends BaseController {
         if (!merchantInfoOptional.isPresent()) {
             return CommonResponse.simpleResponse(-1, "商户不存在");
         }
+        requestMerchantInfo.setStatus(EnumMerchantStatus.PASSED.getId());
         this.merchantInfoCheckRecordService.save(requestMerchantInfo);
         final MerchantInfo merchant = merchantInfoOptional.get();
         final long accountId = this.accountService.initAccount(merchant.getMerchantName());
@@ -64,10 +65,10 @@ public class MerchantInfoCheckRecordController extends BaseController {
 
             final Optional<MerchantInfo> merchantInfoOptional = this.merchantInfoService.selectById(requestMerchantInfo.getMerchantId());
             final MerchantInfo merchantInfo = merchantInfoOptional.get();
-
+            requestMerchantInfo.setStatus(EnumMerchantStatus.UNPASSED.getId());
             this.merchantInfoCheckRecordService.save(requestMerchantInfo);
 
-            requestMerchantInfo.setStatus(EnumMerchantStatus.UNPASSED.getId());
+//            requestMerchantInfo.setStatus(EnumMerchantStatus.UNPASSED.getId());
             int i = this.merchantInfoCheckRecordService.updateStatus(requestMerchantInfo);
             this.verifyIdService.markToIneffective(MerchantSupport.decryptMobile(merchantInfo.getMobile()));
             return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE,"审核未通过");
