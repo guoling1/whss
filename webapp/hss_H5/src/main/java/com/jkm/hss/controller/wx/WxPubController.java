@@ -173,8 +173,11 @@ public class WxPubController extends BaseController {
         }
         Map<String,String> ret = WxPubUtil.getOpenid(code);
         model.addAttribute("openId", ret.get("openid"));
+        log.info("openid是：{}",ret.get("openid"));
         String tempUrl = URLDecoder.decode(state, "UTF-8");
+        log.info("tempUrl是：{}",tempUrl);
         String redirectUrl = URLDecoder.decode(tempUrl,"UTF-8");
+        log.info("redirectUrl是：{}",redirectUrl);
         String finalRedirectUrl = "http://"+ApplicationConsts.getApplicationConfig().domain()+"/code/scanCode?"+redirectUrl;
         log.info("跳转地址是：{}",finalRedirectUrl);
         return "redirect:"+finalRedirectUrl;
