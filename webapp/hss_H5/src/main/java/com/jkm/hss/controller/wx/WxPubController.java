@@ -795,22 +795,22 @@ public class WxPubController extends BaseController {
     @ResponseBody
     @RequestMapping(value = "myRecommend", method = RequestMethod.POST)
     public CommonResponse myRecommend(final HttpServletRequest request, final HttpServletResponse response,@RequestBody final RecommendRequest recommendRequest ) {
-//        if(!super.isLogin(request)){
-//            return CommonResponse.simpleResponse(-2, "未登录");
-//        }
-//        Optional<UserInfo> userInfoOptional = userInfoService.selectByOpenId(super.getOpenId(request));
-//        if(!userInfoOptional.isPresent()){
-//            return CommonResponse.simpleResponse(-2, "未登录");
-//        }
-//        Optional<MerchantInfo> merchantInfo = merchantInfoService.selectById(userInfoOptional.get().getMerchantId());
-//        if(!merchantInfo.isPresent()){
-//            return CommonResponse.simpleResponse(-2, "未登录");
-//        }
-//        if(merchantInfo.get().getStatus()!=EnumMerchantStatus.PASSED.getId()||merchantInfo.get().getStatus()!=EnumMerchantStatus.FRIEND.getId()){
-//            return CommonResponse.simpleResponse(-2, "未审核通过");
-//        }
+        if(!super.isLogin(request)){
+            return CommonResponse.simpleResponse(-2, "未登录");
+        }
+        Optional<UserInfo> userInfoOptional = userInfoService.selectByOpenId(super.getOpenId(request));
+        if(!userInfoOptional.isPresent()){
+            return CommonResponse.simpleResponse(-2, "未登录");
+        }
+        Optional<MerchantInfo> merchantInfo = merchantInfoService.selectById(userInfoOptional.get().getMerchantId());
+        if(!merchantInfo.isPresent()){
+            return CommonResponse.simpleResponse(-2, "未登录");
+        }
+        if(merchantInfo.get().getStatus()!=EnumMerchantStatus.PASSED.getId()||merchantInfo.get().getStatus()!=EnumMerchantStatus.FRIEND.getId()){
+            return CommonResponse.simpleResponse(-2, "未审核通过");
+        }
         final PageModel<RecommendShort> pageModel = new PageModel<>(recommendRequest.getPage(), recommendRequest.getSize());
-        recommendRequest.setMerchantId(recommendRequest.getMerchantId());
+        recommendRequest.setMerchantId(merchantInfo.get().getId());
         recommendRequest.setOffset(pageModel.getFirstIndex());
         List<RecommendShort> recommendShorts = recommendService.selectRecommendByPage(recommendRequest);
         int count = recommendService.selectRecommendCount(recommendRequest);

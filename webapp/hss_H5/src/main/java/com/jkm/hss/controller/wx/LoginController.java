@@ -12,6 +12,9 @@ import com.jkm.hss.bill.enums.EnumOrderStatus;
 import com.jkm.hss.bill.enums.EnumPaymentType;
 import com.jkm.hss.bill.service.OrderService;
 import com.jkm.hss.controller.BaseController;
+import com.jkm.hss.dealer.entity.Dealer;
+import com.jkm.hss.dealer.enums.EnumRecommendBtn;
+import com.jkm.hss.dealer.service.DealerService;
 import com.jkm.hss.dealer.service.ShallProfitDetailService;
 import com.jkm.hss.helper.ApplicationConsts;
 import com.jkm.hss.merchant.entity.AccountInfo;
@@ -97,6 +100,9 @@ public class LoginController extends BaseController {
 
     @Autowired
     private ShallProfitDetailService shallProfitDetailService;
+
+    @Autowired
+    private DealerService dealerService;
     /**
      * 扫固定码注册和微信公众号注册入口
      * @param request
@@ -406,6 +412,7 @@ public class LoginController extends BaseController {
     public String wallet(final HttpServletRequest request, final Model model) throws IOException {
         if(!super.isLogin(request)){
             model.addAttribute("avaliable", "0.00");
+            model.addAttribute("showRecommend", 1);
         }else{
             Optional<UserInfo> userInfoOptional = userInfoService.selectByOpenId(super.getOpenId(request));
             if(userInfoOptional.isPresent()){//存在
@@ -421,14 +428,31 @@ public class LoginController extends BaseController {
                             DecimalFormat decimalFormat=new DecimalFormat("0.00");//构造方法的字符格式这里如果小数不足2位,会以0补足.
                             model.addAttribute("avaliable", account.getAvailable()==null?"0.00":decimalFormat.format(account.getAvailable()));
                         }
-
+                        //是否显示推荐和升级
+                        if(merchantInfo.get().getFirstDealerId()!=0){
+                            Optional<Dealer> dealerOptional = dealerService.getById(merchantInfo.get().getFirstDealerId());
+                            if(dealerOptional.isPresent()){
+                                if(dealerOptional.get().getRecommendBtn()== EnumRecommendBtn.OFF.getId()){
+                                    model.addAttribute("showRecommend", 2);//不显示升级
+                                }else{
+                                    model.addAttribute("showRecommend", 1);//显示升级
+                                }
+                            }else{
+                                model.addAttribute("showRecommend", 1);//显示升级
+                            }
+                        }else{
+                            model.addAttribute("showRecommend", 1);//显示升级按钮
+                        }
                     }else{
+                        model.addAttribute("showRecommend", 1);
                         model.addAttribute("avaliable", "0.00");
                     }
                 }else{
+                    model.addAttribute("showRecommend", 1);
                     model.addAttribute("avaliable", "0.00");
                 }
             }else{
+                model.addAttribute("showRecommend", 1);
                 model.addAttribute("avaliable", "0.00");
             }
         }
