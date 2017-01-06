@@ -52,6 +52,7 @@ public class CodeController extends BaseController {
      */
     @RequestMapping(value = "/scanCode", method = RequestMethod.GET)
     public String scanCode(final HttpServletRequest request, final HttpServletResponse response, final Model model,@RequestParam(value = "openId", required = false) String openId) {
+
         //如何没有openId跳授权页面
         if(openId==null||"".equals(openId)){
             String requestUrl = "";
@@ -60,6 +61,7 @@ public class CodeController extends BaseController {
             }else{
                 requestUrl = request.getQueryString();
             }
+            log.info("跳转地址是{}",requestUrl);
             try {
                 String encoderUrl = URLEncoder.encode(requestUrl, "UTF-8");
                 return "redirect:"+ WxConstants.WEIXIN_MERCHANT_USERINFO+encoderUrl+ WxConstants.WEIXIN_USERINFO_REDIRECT;
