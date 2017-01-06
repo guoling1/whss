@@ -1207,5 +1207,65 @@ public class LoginController extends BaseController {
         return "/suansuan";
     }
 
+    /**
+     * 我的认证
+     * @param request
+     * @param response
+     * @param model
+     * @return
+     * @throws IOException
+     */
+    @RequestMapping(value = "/authentication", method = RequestMethod.GET)
+    public String authentication(final HttpServletRequest request, final HttpServletResponse response,final Model model) throws IOException {
+        boolean isRedirect = false;
+        if(!super.isLogin(request)){
+            return "redirect:"+ WxConstants.WEIXIN_USERINFO+request.getRequestURI()+ WxConstants.WEIXIN_USERINFO_REDIRECT;
+        }else {
+            String url = "";
+            Optional<UserInfo> userInfoOptional = userInfoService.selectByOpenId(super.getOpenId(request));
+            if (userInfoOptional.isPresent()) {
+                Long merchantId = userInfoOptional.get().getMerchantId();
+                if (merchantId != null && merchantId != 0){
+                    Optional<MerchantInfo> result = merchantInfoService.selectById(merchantId);
+                    if (result.get().getStatus()== EnumMerchantStatus.LOGIN.getId()){//登录
+                        url = "/sqb/reg";
+                        isRedirect= true;
+                    }else if(result.get().getStatus()== EnumMerchantStatus.INIT.getId()){
+                        url = "/sqb/addInfo";
+                        isRedirect= true;
+                    }else if(result.get().getStatus()== EnumMerchantStatus.ONESTEP.getId()){
+                        url = "/sqb/addNext";
+                        isRedirect= true;
+                    }else if(result.get().getStatus()== EnumMerchantStatus.REVIEW.getId()||
+                            result.get().getStatus()== EnumMerchantStatus.UNPASSED.getId()||
+                            result.get().getStatus()== EnumMerchantStatus.DISABLE.getId()){
+                        url = "/sqb/prompt";
+                        isRedirect= true;
+                    }else if(result.get().getStatus()== EnumMerchantStatus.PASSED.getId()||result.get().getStatus()== EnumMerchantStatus.FRIEND.getId()){//跳首页
+                        model.addAttribute("merchantName",result.get().getMerchantName());
+                        model.addAttribute("address",result.get().getAddress());
+                        model.addAttribute("createTime",result.get().getCreateTime()==null?"":DateFormatUtil.format(result.get().getCreateTime(), DateFormatUtil.yyyy_MM_dd_HH_mm_ss));
+                        model.addAttribute("name",result.get().getName());
+                        model.addAttribute("authenticationTime",result.get().getAuthenticationTime()==null?"":DateFormatUtil.format(result.get().getAuthenticationTime(), DateFormatUtil.yyyy_MM_dd_HH_mm_ss));
+                        url = "/authentication";
+                    }
+                }else{
+                    CookieUtil.deleteCookie(response,ApplicationConsts.MERCHANT_COOKIE_KEY,ApplicationConsts.getApplicationConfig().domain());
+                    url = "/sqb/reg";
+                    isRedirect= true;
+                }
+            }else{
+                CookieUtil.deleteCookie(response,ApplicationConsts.MERCHANT_COOKIE_KEY,ApplicationConsts.getApplicationConfig().domain());
+                isRedirect= true;
+                url = "/sqb/reg";
+            }
+            if(isRedirect){
+                return "redirect:"+url;
+            }else{
+                return url;
+            }
+        }
+    }
+
 
 }
