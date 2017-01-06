@@ -89,6 +89,8 @@ public class CodeController extends BaseController {
             Optional<UserInfo> userInfoOptional = userInfoService.selectByMerchantId(merchantId);
             Preconditions.checkState(userInfoOptional.isPresent(), "userInfo is not exist");
             String openIdTemp = userInfoOptional.get().getOpenId();
+            log.info("openId{}",openId);
+            log.info("openIdTemp{}",openIdTemp);
             if(openId.equals(openIdTemp)){
                 log.info("code[{}] is activate", code);
                 final Optional<MerchantInfo> merchantInfoOptional = this.merchantInfoService.selectById(merchantId);
