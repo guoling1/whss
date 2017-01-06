@@ -213,19 +213,32 @@ public class TradeController extends BaseController {
         }
         requestParam.setAccountId(merchantInfo.get().getAccountId());
         final PageModel<QueryMerchantPayOrdersResponse> result = new PageModel<>(requestParam.getPageNo(), requestParam.getPageSize());
-        final int payStatus = requestParam.getPayStatus();
-        final String payType = requestParam.getPayType();
-        if (EnumOrderStatus.DUE_PAY.getId() != payStatus
-                && EnumOrderStatus.PAY_FAIL.getId() != payStatus
-                && EnumOrderStatus.PAY_SUCCESS.getId() != payStatus) {
-            requestParam.setPayStatus(0);
+        final List<Integer> payStatusList = requestParam.getPayStatus();
+        final List<String> payTypeList = requestParam.getPayType();
+        if (CollectionUtils.isEmpty(payStatusList)) {
+            return CommonResponse.simpleResponse(-1, "支付状态不可以为空");
         }
-        if (!EnumPaymentType.WECHAT_SCAN_CODE.getId().equals(payType)
-                && !EnumPaymentType.WECHAT_QR_CODE.getId().equals(payType)
-                && !EnumPaymentType.WECHAT_H5_CASHIER_DESK.getId().equals(payType)
-                && !EnumPaymentType.QUICK_APY.getId().equals(payType)
-                && !EnumPaymentType.ALIPAY_SCAN_CODE.getId().equals(payType)) {
-            requestParam.setPayType(null);
+        if (CollectionUtils.isEmpty(payTypeList)) {
+            return CommonResponse.simpleResponse(-1, "支付方式不可以为空");
+        }
+
+        for (int i = 0; i < payStatusList.size(); i++) {
+            final Integer payStatus = payStatusList.get(i);
+            if (EnumOrderStatus.DUE_PAY.getId() != payStatus
+                    && EnumOrderStatus.PAY_FAIL.getId() != payStatus
+                    && EnumOrderStatus.PAY_SUCCESS.getId() != payStatus) {
+                return CommonResponse.simpleResponse(-1, "不存在的支付状态");
+            }
+        }
+        for (int i = 0; i < payTypeList.size(); i++) {
+            final String payType = payTypeList.get(i);
+            if (!EnumPaymentType.WECHAT_SCAN_CODE.getId().equals(payType)
+                    && !EnumPaymentType.WECHAT_QR_CODE.getId().equals(payType)
+                    && !EnumPaymentType.WECHAT_H5_CASHIER_DESK.getId().equals(payType)
+                    && !EnumPaymentType.QUICK_APY.getId().equals(payType)
+                    && !EnumPaymentType.ALIPAY_SCAN_CODE.getId().equals(payType)) {
+                return CommonResponse.simpleResponse(-1, "不存在的支付方式");
+            }
         }
         if (StringUtils.isEmpty(requestParam.getOrderNo())) {
             requestParam.setOrderNo(null);
