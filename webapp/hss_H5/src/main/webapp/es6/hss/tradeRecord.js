@@ -17,7 +17,7 @@ const Paging = _require('paging');
 new Paging('trade_record', {
   content: 'content',
   url: '/trade/queryMerchantPayOrders',
-  size: 5,
+  size: 20,
   startDate: 'dateFrom',
   endDate: 'dateTo'
 });

@@ -38,6 +38,11 @@ public class QueryMerchantPayOrdersRequestParam extends PageQueryParams {
      */
     private String endDate;
 
+    /**
+     * 商户的账户id
+     */
+    private long accountId;
+
     private long offset;
 
     private int count;
