@@ -16,6 +16,7 @@
 <div id="upgrade">
     <div class="info">
         <div class="head">
+
             <img src="http://static.jinkaimen.cn/hss/assets/hss-default-head.png" alt="">
         </div>
         <div class="status">${mobile} <span>普通会员</span></div>
