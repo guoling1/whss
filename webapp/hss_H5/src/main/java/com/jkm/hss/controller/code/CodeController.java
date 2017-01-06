@@ -72,9 +72,9 @@ public class CodeController extends BaseController {
         }
         final String code = request.getParameter("code");
         final String sign = request.getParameter("sign");
-        if ((Long.valueOf(code) >= Long.valueOf("100010063208")) && (Long.valueOf(code) <= Long.valueOf("100010068207"))) {
-            return "redirect:http://"+ ApplicationConsts.getApplicationConfig().domain()+"/code/scanCode?" + "code" + "=" + code + "&" + "sign" + "=" + sign;
-        }
+//        if ((Long.valueOf(code) >= Long.valueOf("100010063208")) && (Long.valueOf(code) <= Long.valueOf("100010068207"))) {
+//            return "redirect:http://"+ ApplicationConsts.getApplicationConfig().domain()+"/code/scanCode?" + "code" + "=" + code + "&" + "sign" + "=" + sign;
+//        }
         log.info("scan code[{}], sign is [{}]", code, sign);
         final Optional<QRCode> qrCodeOptional = this.qrCodeService.getByCode(code);
         Preconditions.checkState(qrCodeOptional.isPresent(), "QRCode not exist");
