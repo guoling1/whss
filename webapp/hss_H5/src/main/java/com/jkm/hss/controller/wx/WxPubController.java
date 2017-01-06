@@ -26,6 +26,7 @@ import com.jkm.hss.merchant.entity.*;
 import com.jkm.hss.merchant.enums.*;
 import com.jkm.hss.merchant.helper.MerchantSupport;
 import com.jkm.hss.merchant.helper.WxPubUtil;
+import com.jkm.hss.merchant.helper.request.RecommendRequest;
 import com.jkm.hss.merchant.helper.request.RequestOrderRecord;
 import com.jkm.hss.merchant.helper.request.TradeRequest;
 import com.jkm.hss.merchant.service.*;
@@ -793,23 +794,35 @@ public class WxPubController extends BaseController {
      */
     @ResponseBody
     @RequestMapping(value = "myRecommend", method = RequestMethod.POST)
-    public CommonResponse myRecommend(final HttpServletRequest request, final HttpServletResponse response) {
-        if(!super.isLogin(request)){
-            return CommonResponse.simpleResponse(-2, "未登录");
-        }
-        Optional<UserInfo> userInfoOptional = userInfoService.selectByOpenId(super.getOpenId(request));
-        if(!userInfoOptional.isPresent()){
-            return CommonResponse.simpleResponse(-2, "未登录");
-        }
-        Optional<MerchantInfo> merchantInfo = merchantInfoService.selectById(userInfoOptional.get().getMerchantId());
-        if(!merchantInfo.isPresent()){
-            return CommonResponse.simpleResponse(-2, "未登录");
-        }
-        if(merchantInfo.get().getStatus()!=EnumMerchantStatus.PASSED.getId()||merchantInfo.get().getStatus()!=EnumMerchantStatus.FRIEND.getId()){
-            return CommonResponse.simpleResponse(-2, "未审核通过");
-        }
-        RecommendAndMerchant recommendAndMerchant = recommendService.myRecommend(merchantInfo.get().getId());
-        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功",recommendAndMerchant);
+    public CommonResponse myRecommend(final HttpServletRequest request, final HttpServletResponse response,@RequestBody final RecommendRequest recommendRequest ) {
+//        if(!super.isLogin(request)){
+//            return CommonResponse.simpleResponse(-2, "未登录");
+//        }
+//        Optional<UserInfo> userInfoOptional = userInfoService.selectByOpenId(super.getOpenId(request));
+//        if(!userInfoOptional.isPresent()){
+//            return CommonResponse.simpleResponse(-2, "未登录");
+//        }
+//        Optional<MerchantInfo> merchantInfo = merchantInfoService.selectById(userInfoOptional.get().getMerchantId());
+//        if(!merchantInfo.isPresent()){
+//            return CommonResponse.simpleResponse(-2, "未登录");
+//        }
+//        if(merchantInfo.get().getStatus()!=EnumMerchantStatus.PASSED.getId()||merchantInfo.get().getStatus()!=EnumMerchantStatus.FRIEND.getId()){
+//            return CommonResponse.simpleResponse(-2, "未审核通过");
+//        }
+        final PageModel<RecommendShort> pageModel = new PageModel<>(recommendRequest.getPage(), recommendRequest.getSize());
+        recommendRequest.setMerchantId(recommendRequest.getMerchantId());
+        recommendRequest.setOffset(pageModel.getFirstIndex());
+        List<RecommendShort> recommendShorts = recommendService.selectRecommendByPage(recommendRequest);
+        int count = recommendService.selectRecommendCount(recommendRequest);
+        pageModel.setCount(count);
+        pageModel.setRecords(recommendShorts);
+        RecommendAndMerchant recommendAndMerchant = new RecommendAndMerchant();
+        int indirectCount =recommendService.selectIndirectCount(recommendRequest.getMerchantId());
+        int directCount = recommendService.selectDirectCount(recommendRequest.getMerchantId());
+        recommendAndMerchant.setIndirectCount(indirectCount);
+        recommendAndMerchant.setDirectCount(directCount);
+        recommendAndMerchant.setRecommends(pageModel);
+        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", recommendAndMerchant);
     }
 
 }
