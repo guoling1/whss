@@ -413,6 +413,6 @@
         WHERE id = #{id}
     </update>
     <select id="selectByMobile" resultType="com.jkm.hss.merchant.entity.MerchantInfo">
-        SELECT * from tb_merchant_info where md_mobile=#{mobile} limit 0,1
+        SELECT * from tb_merchant_info where mobile=#{mobile} limit 0,1
     </select>
 </mapper>

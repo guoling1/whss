@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.net.URL;
+import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
 
@@ -35,7 +36,7 @@ public class QueryMerchantInfoRecordController extends BaseController {
 
     @ResponseBody
     @RequestMapping(value = "/getAll",method = RequestMethod.POST)
-    public CommonResponse<BaseEntity> getAll(@RequestBody final MerchantInfoResponse merchantInfo){
+    public CommonResponse<BaseEntity> getAll(@RequestBody final MerchantInfoResponse merchantInfo) throws ParseException {
 
         List<MerchantInfoResponse> list = this.queryMerchantInfoRecordService.getAll(merchantInfo);
         if (list!=null&&list.size()>0){

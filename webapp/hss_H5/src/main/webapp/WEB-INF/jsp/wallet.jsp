@@ -54,7 +54,7 @@
         <div class="logo friend"></div>
         <div class="text">推荐好友</div>
       </a>
-      <a class="group" href="/sqb/upgerde">
+      <a class="group" href="/sqb/upgradeMax">
         <div class="ing"></div>
         <div class="logo upgrade"></div>
         <div class="text">我要升级</div>

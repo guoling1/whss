@@ -204,13 +204,48 @@ public class WxPubController extends BaseController {
     }
 
     /**
-     * 商户登录发送验证码
+     * 获取注册验证码
      * @param codeRequest
      * @return
      */
     @ResponseBody
     @RequestMapping(value = "getCode", method = RequestMethod.POST)
     public CommonResponse getCode(@RequestBody MerchantLoginCodeRequest codeRequest) {
+        final String mobile = codeRequest.getMobile();
+        if (StringUtils.isBlank(mobile)) {
+            return CommonResponse.simpleResponse(-1, "手机号不能为空");
+        }
+        if (!ValidateUtils.isMobile(mobile)) {
+            return CommonResponse.simpleResponse(-1, "手机号格式错误");
+        }
+        Optional<UserInfo> userInfoOptional = userInfoService.selectByMobile(MerchantSupport.encryptMobile(mobile));
+        if(userInfoOptional.isPresent()){
+            return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "该用户已注册,请直接登录",false);
+        }
+        final Pair<Integer, String> verifyCode = this.smsAuthService.getVerifyCode(mobile, EnumVerificationCodeType.REGISTER_MERCHANT);
+        if (1 == verifyCode.getLeft()) {
+            final Map<String, String> params = ImmutableMap.of("code", verifyCode.getRight());
+            this.sendMessageService.sendMessage(SendMessageParams.builder()
+                    .mobile(mobile)
+                    .uid("")
+                    .data(params)
+                    .userType(EnumUserType.BACKGROUND_USER)
+                    .noticeType(EnumNoticeType.REGISTER_MERCHANT)
+                    .build()
+            );
+            return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "发送验证码成功",true);
+        }
+        return CommonResponse.simpleResponse(-1, verifyCode.getRight());
+    }
+
+    /**
+     * 获取登录验证码
+     * @param codeRequest
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "getLoginCode", method = RequestMethod.POST)
+    public CommonResponse getLoginCode(@RequestBody MerchantLoginCodeRequest codeRequest) {
         final String mobile = codeRequest.getMobile();
         if (StringUtils.isBlank(mobile)) {
             return CommonResponse.simpleResponse(-1, "手机号不能为空");
@@ -356,17 +391,11 @@ public class WxPubController extends BaseController {
         if (!ValidateUtils.verifyCodeCheck(verifyCode)) {
             return CommonResponse.simpleResponse(-1, "请输入正确的6位数字验证码");
         }
-
-        final Pair<Integer, String> checkResult =
-                this.smsAuthService.checkVerifyCode(mobile, verifyCode, EnumVerificationCodeType.REGISTER_MERCHANT);
-        if (1 != checkResult.getLeft()) {
-            return CommonResponse.simpleResponse(-1, checkResult.getRight());
-        }
         if ((loginRequest.getQrCode()==null||"".equals(loginRequest.getQrCode()))&&StringUtils.isBlank(loginRequest.getInviteCode())) {
             return CommonResponse.simpleResponse(-1, "邀请码不能为空");
         }
         if (!StringUtils.isBlank(loginRequest.getInviteCode())) {
-            Optional<MerchantInfo> merchantInfoOptional =  merchantInfoService.selectByMobile(MerchantSupport.passwordDigest(loginRequest.getInviteCode(),"JKM"));
+            Optional<MerchantInfo> merchantInfoOptional =  merchantInfoService.selectByMobile(MerchantSupport.encryptMobile(loginRequest.getInviteCode()));
             if(!merchantInfoOptional.isPresent()){
                 return CommonResponse.simpleResponse(-1, "邀请码不存在");
             }
@@ -374,6 +403,13 @@ public class WxPubController extends BaseController {
                 return CommonResponse.simpleResponse(-1, "不能邀请自己");
             }
         }
+        final Pair<Integer, String> checkResult =
+                this.smsAuthService.checkVerifyCode(mobile, verifyCode, EnumVerificationCodeType.REGISTER_MERCHANT);
+        if (1 != checkResult.getLeft()) {
+            return CommonResponse.simpleResponse(-1, checkResult.getRight());
+        }
+
+
         //产品id
         long productId = 2;
         Optional<ProductChannelDetail> weixinChannelDetail = productChannelDetailService.selectByProductIdAndChannelId(productId,EnumPayChannelSign.YG_WEIXIN.getId());
@@ -470,7 +506,7 @@ public class WxPubController extends BaseController {
                     mi.setSource(EnumSource.RECOMMEND.getId());
                     mi.setProductId(productId);
                     //初始化代理商和商户
-                    Optional<MerchantInfo> merchantInfoOptional =  merchantInfoService.selectByMobile(MerchantSupport.passwordDigest(loginRequest.getInviteCode(),"JKM"));
+                    Optional<MerchantInfo> merchantInfoOptional =  merchantInfoService.selectByMobile(MerchantSupport.encryptMobile(loginRequest.getInviteCode()));
                     mi.setDealerId(merchantInfoOptional.get().getFirstDealerId());
                     mi.setFirstDealerId(merchantInfoOptional.get().getFirstDealerId());
                     mi.setSecondDealerId(merchantInfoOptional.get().getSecondDealerId());
@@ -539,18 +575,39 @@ public class WxPubController extends BaseController {
     @ResponseBody
     @RequestMapping(value = "directLogin", method = RequestMethod.POST)
     public CommonResponse directLogin(final HttpServletRequest request, final HttpServletResponse response, @RequestBody final DirectLoginRequest directLoginRequest) {
-        if(directLoginRequest.getCode()!=null&&!"".equals(directLoginRequest.getCode())){//直接登录
-            log.info("直接登陆");
-            Optional<UserInfo> uoOptional = userInfoService.selectByMobile(MerchantSupport.encryptMobile(directLoginRequest.getMobile()));
-            if(uoOptional.get().getOpenId()!=null||!"".equals(uoOptional.get().getOpenId())){//openId不为空,以当前手机号登陆，删除原来cookie，重新赋cookie
-                log.info("openId不为空,以当前手机号登陆，删除原来cookie，重新赋cookie");
-                CookieUtil.deleteCookie(response,ApplicationConsts.MERCHANT_COOKIE_KEY,ApplicationConsts.getApplicationConfig().domain());
-                CookieUtil.setPersistentCookie(response, ApplicationConsts.MERCHANT_COOKIE_KEY, uoOptional.get().getOpenId(),
-                        ApplicationConsts.getApplicationConfig().domain());
-                return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "登陆成功");
-            }else{//说明解绑过，需要重新绑定
+        log.info("手机号登录");
+        if (StringUtils.isBlank(directLoginRequest.getMobile())) {
+            return CommonResponse.simpleResponse(-1, "手机号不能为空");
+        }
+        if (StringUtils.isBlank(directLoginRequest.getCode())) {
+            return CommonResponse.simpleResponse(-1, "验证码不能为空");
+        }
+        if (!ValidateUtils.isMobile(directLoginRequest.getMobile())) {
+            return CommonResponse.simpleResponse(-1, "手机号格式错误");
+        }
+        if (!ValidateUtils.verifyCodeCheck(directLoginRequest.getCode())) {
+            return CommonResponse.simpleResponse(-1, "请输入正确的6位数字验证码");
+        }
+        final Pair<Integer, String> checkResult =
+                this.smsAuthService.checkVerifyCode(directLoginRequest.getMobile(), directLoginRequest.getCode(), EnumVerificationCodeType.REGISTER_MERCHANT);
+        if (1 != checkResult.getLeft()) {
+            return CommonResponse.simpleResponse(-1, checkResult.getRight());
+        }
+        Optional<UserInfo> userInfoOptional = userInfoService.selectByMobile(MerchantSupport.encryptMobile(directLoginRequest.getMobile()));
+        if(userInfoOptional.isPresent()){
+            if(userInfoOptional.get().getOpenId()!=null&&!"".equals(userInfoOptional.get().getOpenId())){
+                if((userInfoOptional.get().getOpenId()).equals(super.getOpenId(request))){//相等，直接登录
+                    CookieUtil.deleteCookie(response,ApplicationConsts.MERCHANT_COOKIE_KEY,ApplicationConsts.getApplicationConfig().domain());
+                    CookieUtil.setPersistentCookie(response, ApplicationConsts.MERCHANT_COOKIE_KEY, userInfoOptional.get().getOpenId(),
+                            ApplicationConsts.getApplicationConfig().domain());
+                    return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "登陆成功");
+                }else{//不相等，报错
+                    log.info("该手机号已绑定其他微信号，请解绑后再次登陆");
+                    return CommonResponse.simpleResponse(-1, "该手机号已绑定其他微信号，请解绑后再次登陆");
+                }
+            }else{
                 log.info("openId为空,说明解绑过，需要重新绑定");
-                int backCount = userInfoService.bindOpenId(uoOptional.get().getId(),super.getOpenId(request));
+                int backCount = userInfoService.bindOpenId(userInfoOptional.get().getId(),super.getOpenId(request));
                 if(backCount>0){
                     log.info("绑定openId成功");
                     return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "登陆成功");
@@ -559,38 +616,9 @@ public class WxPubController extends BaseController {
                     return CommonResponse.simpleResponse(-1, "登陆失败，请重试");
                 }
             }
-        }else{//手机号登录
-            log.info("手机号登录");
-            if (StringUtils.isBlank(directLoginRequest.getMobile())) {
-                return CommonResponse.simpleResponse(-1, "手机号不能为空");
-            }
-            if (StringUtils.isBlank(directLoginRequest.getCode())) {
-                return CommonResponse.simpleResponse(-1, "验证码不能为空");
-            }
-            if (!ValidateUtils.isMobile(directLoginRequest.getMobile())) {
-                return CommonResponse.simpleResponse(-1, "手机号格式错误");
-            }
-            if (!ValidateUtils.verifyCodeCheck(directLoginRequest.getCode())) {
-                return CommonResponse.simpleResponse(-1, "请输入正确的6位数字验证码");
-            }
-            final Pair<Integer, String> checkResult =
-                    this.smsAuthService.checkVerifyCode(directLoginRequest.getMobile(), directLoginRequest.getCode(), EnumVerificationCodeType.REGISTER_MERCHANT);
-            if (1 != checkResult.getLeft()) {
-                return CommonResponse.simpleResponse(-1, checkResult.getRight());
-            }
-            Optional<UserInfo> userInfoOptional = userInfoService.selectByMobile(MerchantSupport.encryptMobile(directLoginRequest.getMobile()));
-            if(userInfoOptional.isPresent()){
-                if((userInfoOptional.get().getOpenId()!=null&&!"".equals(userInfoOptional.get().getOpenId())&&(!(userInfoOptional.get().getOpenId()).equals(super.getOpenId(request))))){
-                    log.info("该手机号已绑定其他微信号，请解绑后再次登陆");
-                    return CommonResponse.simpleResponse(-1, "该手机号已绑定其他微信号，请解绑后再次登陆");
-                }else{
-                    log.info("登陆成功");
-                    return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "登陆成功");
-                }
-            }else{
-                log.info("手机号不正确");
-                return CommonResponse.simpleResponse(-1, "该账户不存在，请确定手机号是否正确");
-            }
+        }else{
+            log.info("手机号不正确");
+            return CommonResponse.simpleResponse(-1, "该账户不存在，请确定手机号是否正确");
         }
     }
 

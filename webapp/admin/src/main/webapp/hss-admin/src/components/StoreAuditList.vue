@@ -72,7 +72,7 @@
         pageSize:10,
         total:0,
         status:'',
-        count:''
+        count:0
       }
     },
     created: function () {

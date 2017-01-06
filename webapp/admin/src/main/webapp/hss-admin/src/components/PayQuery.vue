@@ -5,75 +5,59 @@
       <div class="btn btn-primary pull-right" @click="refresh()">刷新</div>
     </div>
     <div class="col-md-12">
-      <!--筛选-->
-      <div class="box box-success box-solid">
-        <div class="box-header with-border">
-          <h3 class="box-title">筛选条件</h3>
-          <div class="box-tools pull-right">
-            <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
-            </button>
-          </div>
-        </div>
-        <div class="box-body">
-          <div class="row">
-            <div class="col-md-3">
-              <div class="form-group">
-                <label>支付创建日期：</label>
-                <div class="form-control">
-                  <input type="date" style="border: none;display:inline-block;width: 45%" name="date" value="" v-model="$$query.startCreateTime">至
-                  <input type="date" style="border: none;display:inline-block;width: 45%" name="date" value="" v-model="$$query.endCreateTime">
-                </div>
-              </div>
-              <div class="form-group">
-                <label>支付完成日期：</label>
-                <div class="form-control">
-                  <input type="date" style="border: none;display:inline-block;width: 45%" name="date" value="" v-model="$$query.startFinishTime">至
-                  <input type="date" style="border: none;display:inline-block;width: 45%" name="date" value="" v-model="$$query.endFinishTime">
-                </div>
-              </div>
-            </div>
-            <div class="col-md-3">
-              <div class="form-group">
-                <label>交易单号：</label>
-                <input type="text" class="form-control" v-model="$$query.orderNo">
-              </div>
-              <div class="form-group">
-                <label>支付状态：</label>
-                <select class="form-control select2 select2-hidden-accessible" style="width: 100%;" tabindex="-1" aria-hidden="true" v-model="$$query.status">
-                  <option value="">全部</option>
-                  <option value="1">待支付</option>
-                  <option value="2">支付中</option>
-                  <option value="4">支付成功</option>
-                  <option value="5">支付失败</option>
-                </select>
-              </div>
-            </div>
-            <div class="col-md-3">
-              <div class="form-group">
-                <label>支付流水号：</label>
-                <input type="text" class="form-control" v-model="$$query.sn">
-              </div>
-              <div class="form-group">
-                <div class="btn btn-primary" @click="lookup">筛选</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <!--列表-->
       <div class="box" style="overflow: hidden">
-      <div class="box-header">
-        <h3 class="box-title">支付记录</h3>
-        <span @click="onload()" download="交易记录" class="btn btn-primary" style="float: right;color: #fff">导出</span>
-      </div>
       <div class="box-body">
+        <div class="row">
+          <div class="col-md-3">
+            <div class="form-group">
+              <label>支付创建日期：</label>
+              <div class="form-control">
+                <input type="date" style="border: none;display:inline-block;width: 45%" name="date" value="" v-model="$$query.startCreateTime">至
+                <input type="date" style="border: none;display:inline-block;width: 45%" name="date" value="" v-model="$$query.endCreateTime">
+              </div>
+            </div>
+            <div class="form-group">
+              <label>支付完成日期：</label>
+              <div class="form-control">
+                <input type="date" style="border: none;display:inline-block;width: 45%" name="date" value="" v-model="$$query.startFinishTime">至
+                <input type="date" style="border: none;display:inline-block;width: 45%" name="date" value="" v-model="$$query.endFinishTime">
+              </div>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="form-group">
+              <label>交易单号：</label>
+              <input type="text" class="form-control" v-model="$$query.orderNo">
+            </div>
+            <div class="form-group">
+              <label>支付状态：</label>
+              <select class="form-control select2 select2-hidden-accessible" style="width: 100%;" tabindex="-1" aria-hidden="true" v-model="$$query.status">
+                <option value="">全部</option>
+                <option value="1">待支付</option>
+                <option value="2">支付中</option>
+                <option value="4">支付成功</option>
+                <option value="5">支付失败</option>
+              </select>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="form-group">
+              <label>支付流水号：</label>
+              <input type="text" class="form-control" v-model="$$query.sn">
+            </div>
+          </div>
+          <div class="col-md-3">
+            <span @click="onload()" download="交易记录" class="btn btn-primary" style="float: right;color: #fff">导出</span>
+            <div class="btn btn-primary" @click="lookup" style="margin-top: 22px">筛选</div>
+          </div>
+        </div>
         <div id="example2_wrapper" class="dataTables_wrapper form-inline dt-bootstrap">
           <div class="row">
             <div class="col-sm-12">
               <table id="example2" class="table table-bordered table-hover dataTable" role="grid" aria-describedby="example2_info">
                 <thead>
                 <tr role="row">
-                  <th class="sorting_asc" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Rendering engine: activate to sort column descending">打款流水号</th>
+                  <th class="sorting_asc" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Rendering engine: activate to sort column descending">支付流水号</th>
                   <th class="sorting_asc" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Rendering engine: activate to sort column descending">交易单号</th>
                   <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="Platform(s): activate to sort column ascending">支付金额</th>
                   <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="Platform(s): activate to sort column ascending">创建时间</th>
@@ -91,9 +75,9 @@
                 </thead>
                 <tbody id="content">
                 <tr role="row" v-for="order in $$orders">
-                  <td>{{order.sn}}</td>
-                  <td>{{order.orderNo}}</td>
-                  <td>{{order.payAmount}}</td>
+                  <td>{{order.sn|changeHide}}</td>
+                  <td>{{order.orderNo|changeHide}}</td>
+                  <td style="text-align: right;">{{order.payAmount}}</td>
                   <td>{{order.createTime|changeTime}}</td>
                   <td>{{order.requestTime|changeTime}}</td>
                   <td>{{order.finishTime|changeTime}}</td>
@@ -152,8 +136,8 @@
         phone: '',
         password: '',
         query:{
-          page:1,
-          size:10,
+          pageNo:1,
+          pageSize:10,
           sn:'',
           orderNo:'',
           status: '',
@@ -179,7 +163,7 @@
             page = document.getElementById('page');
           str+='<li class="paginate_button previous" id="example2_previous"><a href="#" aria-controls="example2" data-dt-idx="0" tabindex="0">上一页</a></li>'
           for (var i = 1; i <= this.$data.total; i++){
-            if(i == this.$data.query.page){
+            if(i == this.$data.query.pageNo){
               str+='<li class="paginate_button active"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">'+i+'</a></li></li>';
               continue;
             }
@@ -188,13 +172,13 @@
           str+='<li class="paginate_button next" id="example2_next"><a href="#" aria-controls="example2" data-dt-idx="7" tabindex="0">下一页</a></li>'
           page.innerHTML = str;
           var aLi = page.getElementsByTagName('li');
-          if(this.$data.query.page < 6){
+          if(this.$data.query.pageNo < 6){
             for(var i = 0; i < aLi.length; i++){
               if(i > 11){
                 aLi[i].style.display='none'
               }
             }
-          }else if(this.$data.query.page>(this.$data.total-5)){
+          }else if(this.$data.query.pageNo>(this.$data.total-5)){
             for(var i = 0; i < aLi.length; i++){
               if(i<(this.$data.total-12)){
                 aLi[i].style.display='none'
@@ -202,7 +186,7 @@
             }
           }else{
             for(var i=0;i<aLi.length;i++){
-              if((i!=0&&i<this.$data.query.page-5)||(i!=this.$data.total+1&&i>this.$data.query.page+4)){
+              if((i!=0&&i<this.$data.query.pageNo-5)||(i!=this.$data.total+1&&i>this.$data.query.pageNo+4)){
                 aLi[i].style.display = 'none';
               }
             }
@@ -237,7 +221,7 @@
         e = e||window.event;
         var tar = e.target||e.srcElement,
           tarInn = tar.innerHTML,
-          n = this.$data.query.page;
+          n = this.$data.query.pageNo;
         if(tarInn == '上一页'){
           if(n == 1){
             tar.parentNode.className+=' disabled'
@@ -259,7 +243,7 @@
           tar.parentNode.className+=' active'
           n = Number(tarInn);
         }
-        this.$data.query.page = n;
+        this.$data.query.pageNo = n;
         this.$http.post('http://192.168.1.20:8076/order/pay/listOrder',this.$data.query)
           .then(function (res) {
             this.$data.orders=res.data.records;
@@ -269,7 +253,7 @@
               page=document.getElementById('page');
             str+='<li class="paginate_button previous" id="example2_previous"><a href="#" aria-controls="example2" data-dt-idx="0" tabindex="0">上一页</a></li>'
             for (var i=1; i<=this.$data.total;i++){
-              if(i==this.$data.query.page){
+              if(i==this.$data.query.pageNo){
                 str+='<li class="paginate_button active"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">'+i+'</a></li></li>';
                 continue;
               }
@@ -278,13 +262,13 @@
             str+='<li class="paginate_button next" id="example2_next"><a href="#" aria-controls="example2" data-dt-idx="7" tabindex="0">下一页</a></li>'
             page.innerHTML=str;
             var aLi = page.getElementsByTagName('li');
-            if(this.$data.query.page<6){
+            if(this.$data.query.pageNo<6){
               for(var i=0;i<aLi.length;i++){
                 if(i>11){
                   aLi[i].style.display='none'
                 }
               }
-            }else if(this.$data.query.page>(this.$data.total-5)){
+            }else if(this.$data.query.pageNo>(this.$data.total-5)){
               for(var i = 0; i < aLi.length; i++){
                 if(i<(this.$data.total-12)){
                   aLi[i].style.display = 'none'
@@ -292,7 +276,7 @@
               }
             }else{
               for(var i = 0; i < aLi.length; i++){
-                if((i != 0 && i < this.$data.query.page-5)||(i!=this.$data.total+1&&i>this.$data.query.page+4)){
+                if((i != 0 && i < this.$data.query.pageNo-5)||(i!=this.$data.total+1&&i>this.$data.query.pageNo+4)){
                   aLi[i].style.display='none'
                 }
               }
@@ -342,7 +326,7 @@
                 page=document.getElementById('page');
               str+='<li class="paginate_button previous disabled" id="example2_previous"><a href="#" aria-controls="example2" data-dt-idx="0" tabindex="0">上一页</a></li>'
               for (var i=1; i<=this.$data.total;i++){
-                if(i==this.$data.query.page){
+                if(i==this.$data.query.pageNo){
                   str+='<li class="paginate_button active"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">'+i+'</a></li></li>';
                   continue;
                 }
@@ -351,13 +335,13 @@
               str+='<li class="paginate_button next" id="example2_next"><a href="#" aria-controls="example2" data-dt-idx="7" tabindex="0">下一页</a></li>'
               page.innerHTML=str;
               var aLi = page.getElementsByTagName('li');
-              if(this.$data.query.page<6){
+              if(this.$data.query.pageNo<6){
                 for(var i=0;i<aLi.length;i++){
                   if(i>11){
                     aLi[i].style.display='none'
                   }
                 }
-              }else if(this.$data.query.page>(this.$data.total-5)){
+              }else if(this.$data.query.pageNo>(this.$data.total-5)){
                 for(var i=0;i<aLi.length;i++){
                   if(i<(this.$data.total-12)){
                     aLi[i].style.display='none'
@@ -365,7 +349,7 @@
                 }
               }else{
                 for(var i=0;i<aLi.length;i++){
-                  if((i!=0&&i<this.$data.query.page-5)||(i!=this.$data.total+1&&i>this.$data.query.page+4)){
+                  if((i!=0&&i<this.$data.query.pageNo-5)||(i!=this.$data.total+1&&i>this.$data.query.pageNo+4)){
                     aLi[i].style.display='none'
                   }
                 }
@@ -439,7 +423,9 @@
         }
       },
       changeHide: function (val) {
-        val = val.replace(val.substring(3,19),"…");
+        if(val!=""&&val!=null){
+          val = val.replace(val.substring(3,val.length-6),"…");
+        }
         return val
       },
       toFix: function (val) {

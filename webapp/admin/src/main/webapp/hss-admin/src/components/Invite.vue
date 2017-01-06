@@ -1,111 +1,126 @@
 <template lang="html">
   <div id="invite">
     <div style="padding: 8px 30px; background: rgb(243, 156, 18); z-index: 999999; font-size: 22px; font-weight: 600;margin-bottom: 15px;color: #fff;">邀请规则设置</div>
-    <div style="margin: 0 15px 15px;width: inherit" class="box box-info">
-      <form class="form-horizontal">
-        <div class="box-body">
-          <div class="form-group">
-            <label for="channelName" class="col-sm-3 control-label">一级代理商</label>
-            <div class="col-sm-4">
-              <input type="text" class="form-control" id="channelName" v-model="channelName">
+    <div style="margin: 0 15px 15px">
+      <div class="box ">
+        <form class="form-horizontal">
+          <div class="box-body">
+            <div class="form-group">
+              <div class="col-xs-12">
+                产品选择：
+                <select class="form-control select2 select2-hidden-accessible" style="width: 25%;display: inline-block" tabindex="-1" aria-hidden="true">
+                  <!--<option value="2">好收银</option>-->
+                  <option value="1">好收收</option>
+                </select>
+              </div>
             </div>
-            <div class="col-sm-5 right"></div>
           </div>
-          <div class="form-group">
-            <label for="thirdCompany" class="col-sm-3 control-label">受邀用户开通费</label>
-
-            <div class="col-sm-4 middle">
-              <input type="text" class="form-control" id="thirdCompany" v-model="thirdCompany">
-              <i>元</i>
-            </div>
-            <div class="col-sm-5 right">  默认值：29元</div>
-          </div>
-          <div class="form-group">
-            <label for="channelSources" class="col-sm-3 control-label">一级代理开通费分润</label>
-
-            <div class="col-sm-4 middle">
-              <input type="text" class="form-control" id="channelSources" v-model="channelSource">
-              <i>元</i>
-            </div>
-            <div class="col-sm-5 right"></div>
-          </div>
-          <div class="form-group">
-            <label for="channelSource" class="col-sm-3 control-label">二级代理开通费分润</label>
-
-            <div class="col-sm-4 middle">
-              <input type="text" class="form-control" id="channelSource" v-model="channelSource">
-              <i>元</i>
-            </div>
-            <div class="col-sm-5 right"></div>
-          </div>
-          <div class="form-group">
-            <label for="basicTradeRate" class="col-sm-3 control-label">邀请人分润比例(一级)</label>
-
-            <div class="col-sm-4 middle">
-              <input type="number" class="form-control" id="basicTradeRate" v-model="basicTradeRate">
-              <i>%</i>
-            </div>
-            <div class="col-sm-5 right">需要邀请3人<span>默认值：0.02%(直属金开门的用户)</span></div>
-          </div>
-          <div class="form-group">
-            <label for="basicTradeRate1" class="col-sm-3 control-label">邀请人分润比例(二级)</label>
-
-            <div class="col-sm-4 middle">
-              <input type="number" class="form-control" id="basicTradeRate1" v-model="basicTradeRate">
-              <i>%</i>
-            </div>
-            <div class="col-sm-5 right">需要邀请5人<span>默认值：0.03%(直属金开门的用户)</span></div>
-          </div>
-          <div class="form-group">
-            <label for="basicTradeRate2" class="col-sm-3 control-label">邀请人分润比例(三级)</label>
-
-            <div class="col-sm-4 middle">
-              <input type="number" class="form-control" id="basicTradeRate2" v-model="basicTradeRate">
-              <i>%</i>
-            </div>
-            <div class="col-sm-5 right">需要邀请10人<span>默认值：0.04%(直属金开门的用户)</span></div>
-          </div>
-          <div class="form-group">
-            <label for="basicWithdrawFee" class="col-sm-3 control-label">邀请人一级代理收单分润比例</label>
-
-            <div class="col-sm-4 middle">
-              <input type="number" class="form-control" id="basicWithdrawFee" v-model="basicWithdrawFee">
-              <i>%</i>
-            </div>
-            <div class="col-sm-5 right"></div>
-          </div>
-          <div class="form-group">
-            <label for="basicWithdraw" class="col-sm-3 control-label">邀请人二级代理提现分润</label>
-
-            <div class="col-sm-4 middle">
-              <input type="number" class="form-control" id="basicWithdraw" v-model="basicWithdrawFee">
-              <i>元/笔</i>
-            </div>
-            <div class="col-sm-5 right"></div>
-          </div>
-          <div class="form-group">
-            <label for="basicWith" class="col-sm-3 control-label">邀请人二级代理收单分润比例</label>
-
-            <div class="col-sm-4 middle">
-              <input type="number" class="form-control" id="basicWith" v-model="basicWithdrawFee">
-              <i>%</i>
-            </div>
-            <div class="col-sm-5 right"></div>
-          </div>
-          <div class="form-group">
-            <label for="basic" class="col-sm-3 control-label">邀请人二级代理结算分润</label>
-
-            <div class="col-sm-4 middle">
-              <input type="number" class="form-control" id="basic" v-model="basicWithdrawFee">
-              <i>元/笔</i>
-            </div>
-            <div class="col-sm-5 right"></div>
-          </div>
+        </form>
+      </div>
+      <div class="box box-info">
+        <div class="box-header with-border">
+          <h3 class="box-title">商户升级规则设置</h3>
         </div>
-        <div class="box-footer">
-          <div type="submit" class="btn btn-info">保 存</div>
+        <form class="form-horizontal">
+          <div class="box-body">
+            <div class="form-group">
+              <div class="col-xs-12">
+                <div class="box box1">
+                  <div class="box-body table-responsive no-padding">
+                    <table class="table table-hover">
+                      <tbody>
+                      <tr>
+                        <th>合伙人等级</th>
+                        <th>微信费率</th>
+                        <th>支付宝费率</th>
+                        <th>无卡费率</th>
+                        <th>升级费</th>
+                        <th>邀请人数</th>
+                      </tr>
+                      <tr>
+                        <td>普通</td>
+                        <td>0.49%</td>
+                        <td>0.49%</td>
+                        <td>0.55%</td>
+                        <td>无</td>
+                        <td>无</td>
+                      </tr>
+                      <tr >
+                        <td>店员</td>
+                        <td><input type="text" name="name" >%</td>
+                        <td><input type="text" name="name">%</td>
+                        <td><input type="text" name="name">%</td>
+                        <td><input type="text" name="name">元</td>
+                        <td><input type="text" name="name">人</td>
+                      </tr>
+                      <tr >
+                        <td>店长</td>
+                        <td><input type="text" name="name" >%</td>
+                        <td><input type="text" name="name">%</td>
+                        <td><input type="text" name="name">%</td>
+                        <td><input type="text" name="name">元</td>
+                        <td><input type="text" name="name">人</td>
+                      </tr>
+                      <tr >
+                        <td>老板</td>
+                        <td><input type="text" name="name" >%</td>
+                        <td><input type="text" name="name">%</td>
+                        <td><input type="text" name="name">%</td>
+                        <td><input type="text" name="name">元</td>
+                        <td><input type="text" name="name">人</td>
+                      </tr>
+                      <tr >
+                        <td colspan="6">邀请用户达标标准：收款满<input type="text" name="name" style="width: 100px;" v-model="standard">元
+                        </td>
+                      </tr>
+                      </tbody></table>
+                  </div>
+                  <!-- /.box-body -->
+                </div>
+                <!-- /.box -->
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="box box-info">
+        <div class="box-header with-border">
+          <h3 class="box-title">升级推荐分润设置</h3>
         </div>
-      </form>
+        <form class="form-horizontal">
+          <div class="box-body">
+            <div class="form-group">
+              <div class="col-xs-8">
+                <div class="box box1">
+                  <div class="box-body table-responsive no-padding">
+                    <table class="table table-hover">
+                      <tbody>
+                      <tr>
+                        <th>分润类型</th>
+                        <th>金开门分润比例</th>
+                      </tr>
+                      <tr>
+                        <td>升级费分润</td>
+                        <td><input type="text" name="name" v-model="upgradeRate">%</td>
+                      </tr>
+                      <tr >
+                        <td>收单分润</td>
+                        <td><input type="text" name="name" v-model="tradeRate">%</td>
+                      </tr>
+                      <tr >
+                        <td colspan="2">收单奖励分润池：<input type="text" name="name" style="width: 100px;" v-model="rewardRate">%
+                        </td>
+                      </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="btn btn-primary" @click="save">保 存</div>
     </div>
   </div>
 </template>
@@ -115,13 +130,23 @@
     name:"invite",
     data(){
       return{
-
+        standard: '',
+        upgradeRate: '',
+        tradeRate:'',
+        rewardRate:'',
+        upgradeRulesList:[],
+        list:[]
       }
     },
     created: function () {
-        this.$http.post('/admin/channel/list')
+        this.$http.post('/admin/upgrade/init',{productId:1})
           .then(function (res) {
-
+            console.log(res)
+            this.$data.standard = res.data.standard;
+            this.$data.upgradeRate = res.data.upgradeRate;
+            this.$data.tradeRate = res.data.tradeRate;
+            this.$data.rewardRate = res.data.rewardRate;
+            this.$data.upgradeRulesList = res.data.upgradeRulesList;
           }, function (err) {
             this.$store.commit('MESSAGE_ACCORD_SHOW', {
               text: err.statusMessage
@@ -129,7 +154,12 @@
           })
     },
     methods: {
+      save: function () {
+        /*this.$http.post('/admin/upgrade/addOrUpdate',{})
+          .then(function (res) {
 
+          })*/
+      }
     },
     computed: {
 
@@ -154,21 +184,9 @@
     display: inline-block;
     margin: 0 10px;
   }
-  .middle{
-    position: relative;
-    i {
-      position: absolute;
-      top: 7px;
-      right: -23px;
-      width: 33px;
-      font-style: normal;
-    }
-  }
-  .right{
-    padding-top: 7px;
-    span {
-      margin-left: 10px;
-      color: #ccc;
-    }
+  input {
+    width: 77%;
+    border: none;
+    border-bottom: 1px solid #d0d0d0;
   }
 </style>
