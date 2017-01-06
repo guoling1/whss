@@ -9,8 +9,8 @@
               <div class="col-xs-12">
                 产品选择：
                 <select class="form-control select2 select2-hidden-accessible" style="width: 25%;display: inline-block" tabindex="-1" aria-hidden="true">
-                  <!--<option value="2">好收银</option>-->
-                  <option value="1">好收收</option>
+                  <option value="">请选择产品</option>
+                  <option :value="list.productId" v-for="list in lists">{{list.productName}}</option>
                 </select>
               </div>
             </div>
@@ -135,11 +135,19 @@
         tradeRate:'',
         rewardRate:'',
         upgradeRulesList:[],
-        list:[]
+        lists:[]    //产品列表
       }
     },
     created: function () {
-        this.$http.post('/admin/upgrade/init',{productId:1})
+      this.$http.post("/admin/product/list")
+        .then(function (res) {
+          this.$data.list = res.data
+        },function (err) {
+          this.$store.commit('MESSAGE_ACCORD_SHOW', {
+            text: err.statusMessage
+          })
+        })
+        /*this.$http.post('/admin/upgrade/init',{productId:1})
           .then(function (res) {
             console.log(res)
             this.$data.standard = res.data.standard;
@@ -151,7 +159,7 @@
             this.$store.commit('MESSAGE_ACCORD_SHOW', {
               text: err.statusMessage
             })
-          })
+          })*/
     },
     methods: {
       save: function () {

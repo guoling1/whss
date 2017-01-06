@@ -115,7 +115,7 @@
       return {
         dealers: [],
         pageSize:10,
-        pageNO:1,
+        pageNo:1,
         mobile:'',
         belongArea:'',
         id:'',
@@ -137,13 +137,11 @@
         .then(function (res) {
           this.$data.dealers = res.data.records;
           this.$data.total = res.data.totalPage;
-          this.$data.pageNO = res.data.pageNO;
-          console.log(this.$data)
           var str='',
             page=document.getElementById('page');
-          str+='<li class="paginate_button previous disabled" id="example2_previous"><a href="#" aria-controls="example2" data-dt-idx="0" tabindex="0">上一页</a></li>'
+          str+='<li class="paginate_button previous" id="example2_previous"><a href="#" aria-controls="example2" data-dt-idx="0" tabindex="0">上一页</a></li>'
           for (var i=1; i<=this.$data.total;i++){
-            if(i==res.data.pageNO){
+            if(i==this.$data.pageNo){
               str+='<li class="paginate_button active"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">'+i+'</a></li></li>';
               continue;
             }
@@ -151,6 +149,26 @@
           }
           str+='<li class="paginate_button next" id="example2_next"><a href="#" aria-controls="example2" data-dt-idx="7" tabindex="0">下一页</a></li>'
           page.innerHTML=str;
+          var aLi = page.getElementsByTagName('li');
+          if(this.$data.pageNo < 6){
+            for(var i = 0; i < aLi.length; i++){
+              if(i > 11){
+                aLi[i].style.display='none'
+              }
+            }
+          }else if(this.$data.pageNo>(this.$data.total-5)){
+            for(var i = 0; i < aLi.length; i++){
+              if(i<(this.$data.total-12)){
+                aLi[i].style.display='none'
+              }
+            }
+          }else{
+            for(var i=0;i<aLi.length;i++){
+              if((i!=0&&i<this.$data.pageNo-5)||(i!=this.$data.total+1&&i>this.$data.pageNo+4)){
+                aLi[i].style.display = 'none';
+              }
+            }
+          }
         }, function (err) {
           this.$store.commit('MESSAGE_ACCORD_SHOW', {
             text: err.statusMessage
@@ -187,17 +205,21 @@
         this.$data.pageNo = n;
         this.$http.post('/admin/dealer/listDealer',{
           pageNo:this.$data.pageNo,
-          pageSize:10
+          pageSize:10,
+          mobile:this.$data.mobile,
+          belongArea:this.$data.belongArea,
+          id:this.$data.id,
+          name:this.$data.name,
+          level:this.$data.level
         })
           .then(function (res) {
             this.$data.dealers = res.data.records;
             this.$data.total = res.data.totalPage;
-            this.$data.pageNO = res.data.pageNO;
             var str='',
               page=document.getElementById('page');
-            str+='<li class="paginate_button previous disabled" id="example2_previous"><a href="#" aria-controls="example2" data-dt-idx="0" tabindex="0">上一页</a></li>'
+            str+='<li class="paginate_button previous" id="example2_previous"><a href="#" aria-controls="example2" data-dt-idx="0" tabindex="0">上一页</a></li>'
             for (var i=1; i<=this.$data.total;i++){
-              if(i==res.data.pageNO){
+              if(i==this.$data.pageNo){
                 str+='<li class="paginate_button active"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">'+i+'</a></li></li>';
                 continue;
               }
@@ -205,6 +227,26 @@
             }
             str+='<li class="paginate_button next" id="example2_next"><a href="#" aria-controls="example2" data-dt-idx="7" tabindex="0">下一页</a></li>'
             page.innerHTML=str;
+            var aLi = page.getElementsByTagName('li');
+            if(this.$data.pageNo<6){
+              for(var i=0;i<aLi.length;i++){
+                if(i>11){
+                  aLi[i].style.display='none'
+                }
+              }
+            }else if(this.$data.pageNo>(this.$data.total-5)){
+              for(var i = 0; i < aLi.length; i++){
+                if(i<(this.$data.total-12)){
+                  aLi[i].style.display = 'none'
+                }
+              }
+            }else{
+              for(var i = 0; i < aLi.length; i++){
+                if((i != 0 && i < this.$data.pageNo-5)||(i!=this.$data.total+1&&i>this.$data.pageNo+4)){
+                  aLi[i].style.display='none'
+                }
+              }
+            }
           }, function (err) {
             this.$store.commit('MESSAGE_ACCORD_SHOW', {
               text: err.statusMessage
@@ -230,13 +272,11 @@
           .then(function (res) {
             this.$data.dealers = res.data.records;
             this.$data.pageSize = res.data.totalPage;
-            this.$data.pageNO = res.data.pageNO;
-            console.log(this.$data)
             var str='',
               page=document.getElementById('page');
-            str+='<li class="paginate_button previous disabled" id="example2_previous"><a href="#" aria-controls="example2" data-dt-idx="0" tabindex="0">上一页</a></li>'
+            str+='<li class="paginate_button previous" id="example2_previous"><a href="#" aria-controls="example2" data-dt-idx="0" tabindex="0">上一页</a></li>'
             for (var i=1; i<=this.$data.pageSize;i++){
-              if(i==res.data.pageNO){
+              if(i==this.$data.pageNo){
                 str+='<li class="paginate_button active"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">'+i+'</a></li></li>';
                 continue;
               }
