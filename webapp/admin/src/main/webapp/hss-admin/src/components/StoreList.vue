@@ -216,7 +216,7 @@
         var content = document.getElementById('content'),
           page = document.getElementById('page');
         this.$http.post('/admin/query/getAll',{
-          pageNo:this.$data.pageNo,
+          pageNo:1,
           pageSize:this.$data.pageSize,
           merchantName:this.$data.merchantName,
           status: this.$data.status

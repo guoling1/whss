@@ -44,4 +44,7 @@ export default {
      /*width: 85%;*/
      /*float: right;*/
   /*}*/
+  body{
+    font-size: 12px;
+  }
 </style>

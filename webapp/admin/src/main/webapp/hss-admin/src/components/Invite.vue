@@ -8,10 +8,11 @@
             <div class="form-group">
               <div class="col-xs-12">
                 产品选择：
-                <select class="form-control select2 select2-hidden-accessible" style="width: 25%;display: inline-block" tabindex="-1" aria-hidden="true">
+                <select class="form-control select2 select2-hidden-accessible" v-model="productId" style="width: 25%;display: inline-block" tabindex="-1" aria-hidden="true">
                   <option value="">请选择产品</option>
                   <option :value="list.productId" v-for="list in lists">{{list.productName}}</option>
                 </select>
+                <span class="btn btn-primary" @click="search" style="margin-left: 15px">确 定</span>
               </div>
             </div>
           </div>
@@ -135,19 +136,25 @@
         tradeRate:'',
         rewardRate:'',
         upgradeRulesList:[],
-        lists:[]    //产品列表
+        lists:[],    //产品列表,
+        productId:''
       }
     },
     created: function () {
       this.$http.post("/admin/product/list")
         .then(function (res) {
-          this.$data.list = res.data
+          this.$data.lists = res.data
+          console.log(this.$data.lists)
         },function (err) {
           this.$store.commit('MESSAGE_ACCORD_SHOW', {
             text: err.statusMessage
           })
         })
-        /*this.$http.post('/admin/upgrade/init',{productId:1})
+
+    },
+    methods: {
+      search: function () {
+        this.$http.post('/admin/upgrade/init', {productId: this.$data.productId})
           .then(function (res) {
             console.log(res)
             this.$data.standard = res.data.standard;
@@ -159,9 +166,8 @@
             this.$store.commit('MESSAGE_ACCORD_SHOW', {
               text: err.statusMessage
             })
-          })*/
-    },
-    methods: {
+          })
+      },
       save: function () {
         /*this.$http.post('/admin/upgrade/addOrUpdate',{})
           .then(function (res) {
