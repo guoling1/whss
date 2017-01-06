@@ -4,6 +4,7 @@ import com.google.common.base.Optional;
 import com.jkm.hss.merchant.entity.MerchantInfo;
 import com.jkm.hss.merchant.helper.request.MerchantInfoAddRequest;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -135,4 +136,10 @@ public interface MerchantInfoService {
      * @param merchantId
      */
     int addAccountId(long accountId, int status, long merchantId, Date checkedTime);
+
+    /**
+     * 推荐好友，大于某个金额去升级
+     * @param merchantId
+     */
+    void toUpgradeByRecommend(long merchantId, BigDecimal totalTradeMoney);
 }

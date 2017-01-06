@@ -51,4 +51,9 @@ public interface RecommendDao {
      * @return
      */
     int selectFriendCount(@Param("merchantId") long merchantId);
+    /**
+     * 推荐我的人
+     * @return
+     */
+    List<Recommend> selectRecommend(@Param("merchantId") long merchantId);
 }

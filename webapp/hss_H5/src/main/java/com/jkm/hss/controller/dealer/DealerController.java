@@ -705,7 +705,7 @@ public class DealerController extends BaseController {
                     myMerchantResponse.setStatus("已注册");
                 } else if (EnumMerchantStatus.REVIEW.getId() == input.getStatus()) {
                     myMerchantResponse.setStatus(EnumMerchantStatus.REVIEW.getName());
-                } else if (EnumMerchantStatus.PASSED.getId() == input.getStatus()) {
+                } else if (EnumMerchantStatus.PASSED.getId() == input.getStatus()||EnumMerchantStatus.FRIEND.getId() == input.getStatus()) {
                     myMerchantResponse.setStatus(EnumMerchantStatus.PASSED.getName());
                 } else if (EnumMerchantStatus.UNPASSED.getId() == input.getStatus()) {
                     myMerchantResponse.setStatus(EnumMerchantStatus.UNPASSED.getName());

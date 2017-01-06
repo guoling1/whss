@@ -103,7 +103,7 @@ public class CodeController extends BaseController {
                 } else if (EnumMerchantStatus.UNPASSED.getId() == merchantInfo.getStatus()) {//审核未通过
                     log.info("code[{}], merchant is not pass", code);
                     url = "/sqb/prompt";
-                } else if (EnumMerchantStatus.PASSED.getId() == merchantInfo.getStatus()) {//审核通过
+                } else if (EnumMerchantStatus.PASSED.getId() == merchantInfo.getStatus()||EnumMerchantStatus.FRIEND.getId() == merchantInfo.getStatus()) {//审核通过
                     model.addAttribute("name", merchantInfo.getMerchantName());
                     if (agent.indexOf("MicroMessenger") > -1) {//weixin
                         url = "/sqb/paymentWx";
@@ -123,7 +123,7 @@ public class CodeController extends BaseController {
                 Preconditions.checkState(merchantInfoOptional.isPresent(), "merchant is not exist");
                 final MerchantInfo merchantInfo = merchantInfoOptional.get();
                 model.addAttribute("merchantId", merchantId);
-                if (EnumMerchantStatus.PASSED.getId() == merchantInfo.getStatus()) {//审核通过
+                if (EnumMerchantStatus.PASSED.getId() == merchantInfo.getStatus()||EnumMerchantStatus.FRIEND.getId() == merchantInfo.getStatus()) {//审核通过
                     model.addAttribute("name", merchantInfo.getMerchantName());
                     if (agent.indexOf("MicroMessenger") > -1) {//weixin
                         url = "/sqb/paymentWx";

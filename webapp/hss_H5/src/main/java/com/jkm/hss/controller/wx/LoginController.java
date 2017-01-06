@@ -133,7 +133,7 @@ public class LoginController extends BaseController {
                                 result.get().getStatus()== EnumMerchantStatus.DISABLE.getId()){
                             url = "/sqb/prompt";
                             isRedirect= true;
-                        }else if(result.get().getStatus()== EnumMerchantStatus.PASSED.getId()){//跳首页
+                        }else if(result.get().getStatus()== EnumMerchantStatus.PASSED.getId()||result.get().getStatus()== EnumMerchantStatus.FRIEND.getId()){//跳首页
                             url = "/sqb/wallet";
                             isRedirect= true;
                         }
@@ -200,7 +200,7 @@ public class LoginController extends BaseController {
                             result.get().getStatus()== EnumMerchantStatus.DISABLE.getId()){
                         url = "/sqb/prompt";
                         isRedirect= true;
-                    }else if(result.get().getStatus()== EnumMerchantStatus.PASSED.getId()){//跳首页
+                    }else if(result.get().getStatus()== EnumMerchantStatus.PASSED.getId()||result.get().getStatus()== EnumMerchantStatus.FRIEND.getId()){//跳首页
                         url = "/sqb/wallet";
                         isRedirect= true;
                     }
@@ -263,7 +263,7 @@ public class LoginController extends BaseController {
                             result.get().getStatus()== EnumMerchantStatus.DISABLE.getId()){
                         url = "/sqb/prompt";
                         isRedirect= true;
-                    }else if(result.get().getStatus()== EnumMerchantStatus.PASSED.getId()){//跳首页
+                    }else if(result.get().getStatus()== EnumMerchantStatus.PASSED.getId()||result.get().getStatus()== EnumMerchantStatus.FRIEND.getId()){//跳首页
                         url = "/sqb/wallet";
                         isRedirect= true;
                     }
@@ -624,7 +624,7 @@ public class LoginController extends BaseController {
                             result.get().getStatus()== EnumMerchantStatus.DISABLE.getId()){
                         url = "/sqb/prompt";
                         isRedirect= true;
-                    }else if(result.get().getStatus()== EnumMerchantStatus.PASSED.getId()){//跳提现页面
+                    }else if(result.get().getStatus()== EnumMerchantStatus.PASSED.getId()||result.get().getStatus()== EnumMerchantStatus.FRIEND.getId()){//跳提现页面
                         url = "/tradeRecord";
                     }
                 }else{
@@ -679,7 +679,7 @@ public class LoginController extends BaseController {
                             result.get().getStatus()== EnumMerchantStatus.DISABLE.getId()){
                         url = "/sqb/prompt";
                         isRedirect= true;
-                    }else if(result.get().getStatus()== EnumMerchantStatus.PASSED.getId()){//跳提现页面
+                    }else if(result.get().getStatus()== EnumMerchantStatus.PASSED.getId()||result.get().getStatus()== EnumMerchantStatus.FRIEND.getId()){//跳提现页面
                         String bankNo = MerchantSupport.decryptBankCard(result.get().getBankNo());
                         model.addAttribute("bankName", result.get().getBankName());
                         model.addAttribute("bankNo",bankNo.substring(bankNo.length()-4,bankNo.length()));
@@ -891,7 +891,7 @@ public class LoginController extends BaseController {
                             result.get().getStatus()== EnumMerchantStatus.DISABLE.getId()){
                         isRedirect= true;
                         url = "/sqb/prompt";
-                    }else if(result.get().getStatus()== EnumMerchantStatus.PASSED.getId()){
+                    }else if(result.get().getStatus()== EnumMerchantStatus.PASSED.getId()||result.get().getStatus()== EnumMerchantStatus.FRIEND.getId()){
                         // TODO: 2016/12/29 累计分润
                         url = "/myRecommend";
                     }
@@ -946,7 +946,7 @@ public class LoginController extends BaseController {
                             result.get().getStatus()== EnumMerchantStatus.DISABLE.getId()){
                         isRedirect= true;
                         url = "/sqb/prompt";
-                    }else if(result.get().getStatus()== EnumMerchantStatus.PASSED.getId()){
+                    }else if(result.get().getStatus()== EnumMerchantStatus.PASSED.getId()||result.get().getStatus()== EnumMerchantStatus.FRIEND.getId()){
                         Map<String, String> map = WxPubUtil.getUserInfo(userInfoOptional.get().getOpenId());
                         if(map==null){
                             model.addAttribute("headimgUrl","");
@@ -1037,7 +1037,7 @@ public class LoginController extends BaseController {
                             result.get().getStatus()== EnumMerchantStatus.DISABLE.getId()){
                         isRedirect= true;
                         url = "/sqb/prompt";
-                    }else if(result.get().getStatus()== EnumMerchantStatus.PASSED.getId()){
+                    }else if(result.get().getStatus()== EnumMerchantStatus.PASSED.getId()||result.get().getStatus()== EnumMerchantStatus.FRIEND.getId()){
                         Map<String, String> map = WxPubUtil.getUserInfo(userInfoOptional.get().getOpenId());
                         if(map==null){
                             model.addAttribute("headimgUrl","");
@@ -1128,7 +1128,7 @@ public class LoginController extends BaseController {
                             result.get().getStatus()== EnumMerchantStatus.DISABLE.getId()){
                         isRedirect= true;
                         url = "/sqb/prompt";
-                    }else if(result.get().getStatus()== EnumMerchantStatus.PASSED.getId()){
+                    }else if(result.get().getStatus()== EnumMerchantStatus.PASSED.getId()||result.get().getStatus()== EnumMerchantStatus.FRIEND.getId()){
                         Optional<UpgradeRules> upgradeRulesOptional = upgradeRulesService.selectById(id);
                         if(upgradeRulesOptional.isPresent()){
                             if(result.get().getLevel()>=upgradeRulesOptional.get().getType()){
