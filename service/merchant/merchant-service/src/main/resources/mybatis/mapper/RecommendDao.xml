@@ -85,11 +85,11 @@
     </select>
 
     <!--我的好友-->
-    <select id="selectFriendCount">
+    <select id="selectFriendCount" resultType="java.lang.Integer">
         SELECT
         count(1)
         FROM tb_recommend as r left JOIN tb_merchant_info as i on r.merchant_id=i.id
-        WHERE r.recommend_merchant_id=#{merchantId} and r.status = 1 and i.status=5;
+        WHERE r.recommend_merchant_id=#{merchantId} and r.status = 1 and i.status=5 and r.type=1;
     </select>
 
     <!--推荐我的人-->

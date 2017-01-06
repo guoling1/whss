@@ -46,7 +46,7 @@ public interface RecommendDao {
     List<RecommendShort> myRecommend(@Param("merchantId") long merchantId);
 
     /**
-     * 我的真实好友数量（验证通过并且消费达标）
+     * 我的真实好友数量（验证通过并且消费达标并且是直接好友）
      * @param merchantId
      * @return
      */
