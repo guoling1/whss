@@ -16,6 +16,10 @@ const code = document.getElementById('code');
 const submit = document.getElementById('submit');
 const invite = document.getElementById('invite');
 const inviteCode = document.getElementById('inviteCode');
+const layer = document.getElementById('layer');
+const xx = document.getElementById('xx');
+const cancel = document.getElementById('cancel');
+const login = document.getElementById('login');
 // 引入浏览器特性处理
 const browser = _require('browser');
 browser.elastic_touch();
@@ -35,13 +39,26 @@ sendCode.addEventListener('click', function () {
         mobile: mobile.value
       }, function (data) {
         if (data === false) {
-          console.log('跳转到登录');
+          layer.style.display = 'block';
           return;
         }
+        message.prompt_show('验证码发送成功');
         countdown.submit_start();
       })
     }
   }
+});
+
+xx.addEventListener('click', function () {
+  layer.style.display = 'none';
+});
+
+cancel.addEventListener('click', function () {
+  layer.style.display = 'none';
+});
+
+login.addEventListener('click', function () {
+  window.location.href = '/sqb/login?phone=' + mobile.value;
 });
 
 // 注册

@@ -37,6 +37,7 @@
     <button class="reg-btn" id="submit">注册</button>
   </div>
   <a class="login" href="/sqb/login">已有账号，直接登录</a>
+
   <div class="layer" id="layer">
     <div class="space">
       <div class="space-title">
@@ -44,8 +45,11 @@
         <div class="xx" id="xx"></div>
       </div>
       <div class="space-cont">
-        <div></div>
-        <div class="submit">确认提现</div>
+        <div class="cont-detail">手机号已经注册，确认使用该手机号登录？</div>
+        <div class="operation">
+          <div class="cancel" id="cancel">取消</div>
+          <div class="submit" id="login">登录</div>
+        </div>
       </div>
     </div>
   </div>
@@ -58,7 +62,6 @@
     inviteCode: '${inviteCode}'
   }
 </script>
-<%--<script src="http://static.jinkaimen.cn/vendor/vendor.1.0.1.min.js"></script>--%>
-<script src="/js/hss/2.0.1/vendor.1.0.1.min.js"></script>
-<script src="/js/hss/2.0.1/reg.min.js"></script>
+<script src="http://static.jinkaimen.cn/vendor/vendor.1.0.1.min.js"></script>
+<script src="http://static.jinkaimen.cn/hss/2.0.1/reg.min.js"></script>
 </html>

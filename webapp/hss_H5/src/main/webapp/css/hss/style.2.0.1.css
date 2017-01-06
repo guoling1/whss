@@ -271,32 +271,38 @@ span {
 input:focus {
   border: none;
 }
-#reg {
+#reg,
+#login {
   overflow: auto;
 }
-#reg h1 {
+#reg h1,
+#login h1 {
   margin-top: 41px;
   font-size: 31px;
   color: #7086bd;
   font-weight: bold;
 }
-#reg h2 {
+#reg h2,
+#login h2 {
   font-size: 14px;
   font-weight: lighter;
   color: #a1b0d5;
   height: 21px;
   margin-top: 5px;
 }
-#reg ul {
+#reg ul,
+#login ul {
   margin: 41px 0 21px;
 }
-#reg ul li {
+#reg ul li,
+#login ul li {
   width: 100%;
   height: 56.5px;
   border-bottom: 1px solid #edeef5;
   padding: 25px 15px 0 20px;
 }
-#reg ul li input {
+#reg ul li input,
+#login ul li input {
   box-flex: 1;
   -webkit-box-flex: 1;
   -webkit-flex: 1;
@@ -307,55 +313,68 @@ input:focus {
   font-size: 16px;
   color: #4a5171;
 }
-#reg ul li ::-webkit-input-placeholder {
+#reg ul li ::-webkit-input-placeholder,
+#login ul li ::-webkit-input-placeholder {
   color: #aab2d2;
 }
-#reg ul li :-moz-placeholder {
+#reg ul li :-moz-placeholder,
+#login ul li :-moz-placeholder {
   color: #aab2d2;
 }
-#reg ul li ::-moz-placeholder {
+#reg ul li ::-moz-placeholder,
+#login ul li ::-moz-placeholder {
   color: #aab2d2;
 }
-#reg ul li :-ms-input-placeholder {
+#reg ul li :-ms-input-placeholder,
+#login ul li :-ms-input-placeholder {
   color: #aab2d2;
 }
-#reg ul li .logo {
+#reg ul li .logo,
+#login ul li .logo {
   float: left;
   width: 35px;
   height: 50px;
 }
-#reg ul li .logo.phone {
+#reg ul li .logo.phone,
+#login ul li .logo.phone {
   background: url("../assets/phone.png") no-repeat center;
   background-size: 16px 20px;
 }
-#reg ul li .logo.message {
+#reg ul li .logo.message,
+#login ul li .logo.message {
   background: url("../assets/message.png") no-repeat center;
   background-size: 21px 15px;
 }
-#reg ul li .logo.invite {
+#reg ul li .logo.invite,
+#login ul li .logo.invite {
   background: url("../assets/code2.png") no-repeat center;
   background-size: 21px 15px;
 }
-#reg ul li.top {
+#reg ul li.top,
+#login ul li.top {
   width: 100%;
   height: 50px;
   padding: 0 15px;
 }
-#reg ul li.top .btn {
+#reg ul li.top .btn,
+#login ul li.top .btn {
   float: right;
   line-height: 50px;
   font-size: 14px;
   color: #7086bd;
 }
-#reg ul li.bottom {
+#reg ul li.bottom,
+#login ul li.bottom {
   width: 100%;
   height: 50px;
   padding: 0 15px;
 }
-#reg .reg {
+#reg .reg,
+#login .reg {
   padding: 0 15px;
 }
-#reg .reg .reg-btn {
+#reg .reg .reg-btn,
+#login .reg .reg-btn {
   width: 100%;
   height: 50px;
   line-height: 50px;
@@ -364,13 +383,15 @@ input:focus {
   font-size: 16px;
   color: #fff;
 }
-#reg .login {
+#reg .login,
+#login .login {
   line-height: 50px;
   font-size: 14px;
   color: #7086bd;
   text-align: center;
 }
-#reg .layer {
+#reg .layer,
+#login .layer {
   display: none;
   position: fixed;
   top: 0;
@@ -380,7 +401,8 @@ input:focus {
   height: 100%;
   background: rgba(0, 0, 0, 0.5);
 }
-#reg .layer .space {
+#reg .layer .space,
+#login .layer .space {
   width: 95%;
   height: auto;
   border-radius: 3px;
@@ -391,7 +413,8 @@ input:focus {
   transform: translate3d(-50%, -50%, 0);
   overflow: hidden;
 }
-#reg .layer .space .space-title {
+#reg .layer .space .space-title,
+#login .layer .space .space-title {
   width: 100%;
   height: 65px;
   line-height: 65px;
@@ -399,36 +422,43 @@ input:focus {
   text-align: left;
   padding-left: 15px;
 }
-#reg .layer .space .space-title .xx {
+#reg .layer .space .space-title .xx,
+#login .layer .space .space-title .xx {
   float: right;
   width: 65px;
   height: 65px;
   background: url("../assets/xx.png") no-repeat center;
   background-size: 18px 18px;
 }
-#reg .layer .space .space-cont {
+#reg .layer .space .space-cont,
+#login .layer .space .space-cont {
   padding: 0 15px 10px;
 }
-#reg .layer .space .space-cont .input {
+#reg .layer .space .space-cont .cont-detail,
+#login .layer .space .space-cont .cont-detail {
+  line-height: 80px;
+}
+#reg .layer .space .space-cont .operation,
+#login .layer .space .space-cont .operation {
   width: 100%;
   height: 50px;
+}
+#reg .layer .space .space-cont .operation .cancel,
+#login .layer .space .space-cont .operation .cancel {
+  float: left;
+  width: 45%;
+  height: 50px;
   line-height: 50px;
-  border-bottom: 1px solid #f4f5f8;
-  margin: 10px 0;
+  background-color: #FFF;
+  font-size: 16px;
+  color: #111;
+  border-radius: 5px;
+  border: 1px solid #eee;
 }
-#reg .layer .space .space-cont .input input {
-  box-flex: 1;
-  -webkit-box-flex: 1;
-  -webkit-flex: 1;
-  -ms-flex: 1;
-  flex: 1;
-  padding-left: 15px;
-}
-#reg .layer .space .space-cont .input .re {
-  color: #9b9fb4;
-}
-#reg .layer .space .space-cont .submit {
-  width: 100%;
+#reg .layer .space .space-cont .operation .submit,
+#login .layer .space .space-cont .operation .submit {
+  float: right;
+  width: 45%;
   height: 50px;
   line-height: 50px;
   background-color: #7086bd;
