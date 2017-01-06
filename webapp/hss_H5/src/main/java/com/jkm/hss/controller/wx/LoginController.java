@@ -883,6 +883,8 @@ public class LoginController extends BaseController {
                         url = "/sqb/prompt";
                     }else if(result.get().getStatus()== EnumMerchantStatus.PASSED.getId()||result.get().getStatus()== EnumMerchantStatus.FRIEND.getId()){
                         // TODO: 2016/12/29 累计分润
+                        model.addAttribute("totalProfit","0.00");
+                        model.addAttribute("shareUrl","http://"+ApplicationConsts.getApplicationConfig().domain()+"/invite/"+userInfoOptional.get().getId());
                         url = "/myRecommend";
                     }
                 }else {
