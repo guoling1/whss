@@ -16,8 +16,10 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -125,7 +127,7 @@ public class MerchantInfoQueryServiceImpl implements MerchantInfoQueryService {
     }
 
     @Override
-    public String downloadExcel(MerchantInfoResponse merchantInfoResponse, String baseUrl) {
+    public String downloadExcel(MerchantInfoResponse merchantInfoResponse, String baseUrl) throws ParseException {
         final String tempDir = this.getTempDir();
         final File excelFile = new File(tempDir + File.separator + ".xls");
         final ExcelSheetVO excelSheet = generateCodeExcelSheet(merchantInfoResponse,baseUrl);
@@ -158,7 +160,7 @@ public class MerchantInfoQueryServiceImpl implements MerchantInfoQueryService {
      * @param baseUrl
      * @return
      */
-    private ExcelSheetVO generateCodeExcelSheet(MerchantInfoResponse merchantInfoResponse, String baseUrl) {
+    private ExcelSheetVO generateCodeExcelSheet(MerchantInfoResponse merchantInfoResponse, String baseUrl) throws ParseException {
         List<MerchantInfoResponse> list = merchantInfoQueryDao.selectMerchant(merchantInfoResponse);
         if(list.size()>0){
             for(int i=0;i<list.size();i++){
@@ -213,9 +215,12 @@ public class MerchantInfoQueryServiceImpl implements MerchantInfoQueryService {
                     columns.add("-");
                 }
                 if (list.get(i).getAuthenticationTime()!=null && !"".equals(list.get(i).getAuthenticationTime())){
-                    DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                    String st = df.format(list.get(i).getAuthenticationTime());
-                    columns.add(st);
+                    DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                    String AuthenticationTime = list.get(i).getAuthenticationTime();
+                    Date date =formatter.parse(AuthenticationTime);
+                    String authenticationTime = formatter.format(date);
+//                    list.get(i).setCreateTime(authenticationTime);
+                    columns.add(authenticationTime);
                 }else {
                     columns.add("-");
                 }

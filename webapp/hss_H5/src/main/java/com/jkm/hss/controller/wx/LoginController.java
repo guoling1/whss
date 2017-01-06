@@ -4,9 +4,12 @@ package com.jkm.hss.controller.wx;
 import com.google.common.base.Optional;
 import com.jkm.base.common.entity.CommonResponse;
 import com.jkm.base.common.util.CookieUtil;
+import com.jkm.base.common.util.DateFormatUtil;
 import com.jkm.hss.account.entity.Account;
 import com.jkm.hss.account.sevice.AccountService;
 import com.jkm.hss.bill.entity.Order;
+import com.jkm.hss.bill.enums.EnumOrderStatus;
+import com.jkm.hss.bill.enums.EnumPaymentType;
 import com.jkm.hss.bill.service.OrderService;
 import com.jkm.hss.controller.BaseController;
 import com.jkm.hss.helper.ApplicationConsts;
@@ -27,6 +30,8 @@ import com.jkm.hss.product.enums.EnumPayChannelSign;
 import com.jkm.hss.product.servcie.ProductChannelDetailService;
 import com.jkm.hss.product.servcie.UpgradeRulesService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -133,7 +138,7 @@ public class LoginController extends BaseController {
                                 result.get().getStatus()== EnumMerchantStatus.DISABLE.getId()){
                             url = "/sqb/prompt";
                             isRedirect= true;
-                        }else if(result.get().getStatus()== EnumMerchantStatus.PASSED.getId()){//跳首页
+                        }else if(result.get().getStatus()== EnumMerchantStatus.PASSED.getId()||result.get().getStatus()== EnumMerchantStatus.FRIEND.getId()){//跳首页
                             url = "/sqb/wallet";
                             isRedirect= true;
                         }
@@ -200,7 +205,7 @@ public class LoginController extends BaseController {
                             result.get().getStatus()== EnumMerchantStatus.DISABLE.getId()){
                         url = "/sqb/prompt";
                         isRedirect= true;
-                    }else if(result.get().getStatus()== EnumMerchantStatus.PASSED.getId()){//跳首页
+                    }else if(result.get().getStatus()== EnumMerchantStatus.PASSED.getId()||result.get().getStatus()== EnumMerchantStatus.FRIEND.getId()){//跳首页
                         url = "/sqb/wallet";
                         isRedirect= true;
                     }
@@ -263,7 +268,7 @@ public class LoginController extends BaseController {
                             result.get().getStatus()== EnumMerchantStatus.DISABLE.getId()){
                         url = "/sqb/prompt";
                         isRedirect= true;
-                    }else if(result.get().getStatus()== EnumMerchantStatus.PASSED.getId()){//跳首页
+                    }else if(result.get().getStatus()== EnumMerchantStatus.PASSED.getId()||result.get().getStatus()== EnumMerchantStatus.FRIEND.getId()){//跳首页
                         url = "/sqb/wallet";
                         isRedirect= true;
                     }
@@ -624,7 +629,7 @@ public class LoginController extends BaseController {
                             result.get().getStatus()== EnumMerchantStatus.DISABLE.getId()){
                         url = "/sqb/prompt";
                         isRedirect= true;
-                    }else if(result.get().getStatus()== EnumMerchantStatus.PASSED.getId()){//跳提现页面
+                    }else if(result.get().getStatus()== EnumMerchantStatus.PASSED.getId()||result.get().getStatus()== EnumMerchantStatus.FRIEND.getId()){//跳提现页面
                         url = "/tradeRecord";
                     }
                 }else{
@@ -679,7 +684,7 @@ public class LoginController extends BaseController {
                             result.get().getStatus()== EnumMerchantStatus.DISABLE.getId()){
                         url = "/sqb/prompt";
                         isRedirect= true;
-                    }else if(result.get().getStatus()== EnumMerchantStatus.PASSED.getId()){//跳提现页面
+                    }else if(result.get().getStatus()== EnumMerchantStatus.PASSED.getId()||result.get().getStatus()== EnumMerchantStatus.FRIEND.getId()){//跳提现页面
                         String bankNo = MerchantSupport.decryptBankCard(result.get().getBankNo());
                         model.addAttribute("bankName", result.get().getBankName());
                         model.addAttribute("bankNo",bankNo.substring(bankNo.length()-4,bankNo.length()));
@@ -763,43 +768,28 @@ public class LoginController extends BaseController {
      */
     @RequestMapping(value = "/tradeDetail/{id}", method = RequestMethod.GET)
     public String tradeDetail(final HttpServletRequest request, final HttpServletResponse response,final Model model,@PathVariable("id") long id) throws IOException {
-        Optional<OrderRecord> orderRecordOptional = orderRecordService.selectByPrimaryKey(id);
-        if(!orderRecordOptional.isPresent()){
+//        Optional<OrderRecord> orderRecordOptional = orderRecordService.selectByPrimaryKey(id);
+        final Optional<Order> orderOptional = this.orderService.getById(id);
+
+        if(!orderOptional.isPresent()){
             return "/500";
         }else{
-            DecimalFormat decimalFormat=new DecimalFormat("0.00");//构造方法的字符格式这里如果小数不足2位,会以0补足.
-            OrderRecord orderRecord = orderRecordOptional.get();
-            model.addAttribute("totalMoney", decimalFormat.format(orderRecord.getTotalFee()));
-            model.addAttribute("realMoney",decimalFormat.format(orderRecord.getRealFee()));
-            SimpleDateFormat time=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            model.addAttribute("createTime",time.format(orderRecord.getCreateTime()));
-            Pair<String,String> pair = payOf(0,orderRecord.getPayResult());
-            model.addAttribute("status",pair.getRight());
-            if(orderRecord.getPayChannel()== EnumPayChannelSign.YG_WEIXIN.getId()||orderRecord.getPayChannel()==EnumPayChannelSign.YG_ZHIFUBAO.getId()){
-                model.addAttribute("payWay","扫码支付");
-            }
-            if(orderRecord.getPayChannel()==EnumPayChannelSign.YG_YINLIAN.getId()){
-                model.addAttribute("payWay","快捷支付");
-            }
-            Optional<MerchantInfo> merchantInfoOptional = merchantInfoService.selectById(orderRecord.getMerchantId());
-            if(merchantInfoOptional.isPresent()){
-                model.addAttribute("merchantName",merchantInfoOptional.get().getMerchantName());
-            }else{
-                model.addAttribute("merchantName","");
-            }
-            model.addAttribute("orderId",orderRecord.getOrderId());
-            model.addAttribute("outTradeNo",orderRecord.getOutTradeNo());
-
-            Optional<OrderRecord> depositorRecord = orderRecordService.selectOrderId(orderRecord.getOrderId(), EnumTradeType.DEPOSITOR.getId());
-            if(depositorRecord.isPresent()){
-                if(depositorRecord.get().getSettleStatus()== EnumSettleStatus.SETTLE.getId()){
-                    model.addAttribute("settleStatus","已结算");
-                }else{
-                    model.addAttribute("settleStatus","未结算");
-                }
-            }else{
-                model.addAttribute("settleStatus","未结算");
-            }
+//            DecimalFormat decimalFormat=new DecimalFormat("0.00");//构造方法的字符格式这里如果小数不足2位,会以0补足.
+            final Order order = orderOptional.get();
+            model.addAttribute("totalMoney", order.getTradeAmount().toPlainString());
+//            model.addAttribute("realMoney", decimalFormat.format(orderRecord.getRealFee()));
+//            SimpleDateFormat time=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            model.addAttribute("goodsName", order.getGoodsName());
+            model.addAttribute("goodsDescribe", order.getGoodsDescribe());
+            model.addAttribute("createTime", DateFormatUtil.format(order.getCreateTime(), DateFormatUtil.yyyy_MM_dd_HH_mm_ss));
+//            Pair<String,String> pair = payOf(0,orderRecord.getPayResult());
+            model.addAttribute("status", EnumOrderStatus.of(order.getStatus()).getValue());
+            model.addAttribute("payType", StringUtils.isEmpty(order.getPayType()) ? "" : EnumPaymentType.of(order.getPayType()).getValue());
+            final MerchantInfo merchantInfo = this.merchantInfoService.getByAccountId(order.getPayee()).get();
+            model.addAttribute("merchantName", merchantInfo.getMerchantName());
+            model.addAttribute("orderNo", order.getOrderNo());
+            model.addAttribute("sn", NumberUtils.isNumber(order.getRemark()) ? order.getRemark() : "");
+            model.addAttribute("settleStatus", com.jkm.hss.bill.enums.EnumSettleStatus.of(order.getSettleStatus()).getValue());
             return "/tradeRecordDetail";
         }
     }
@@ -891,7 +881,7 @@ public class LoginController extends BaseController {
                             result.get().getStatus()== EnumMerchantStatus.DISABLE.getId()){
                         isRedirect= true;
                         url = "/sqb/prompt";
-                    }else if(result.get().getStatus()== EnumMerchantStatus.PASSED.getId()){
+                    }else if(result.get().getStatus()== EnumMerchantStatus.PASSED.getId()||result.get().getStatus()== EnumMerchantStatus.FRIEND.getId()){
                         // TODO: 2016/12/29 累计分润
                         url = "/myRecommend";
                     }
@@ -946,14 +936,16 @@ public class LoginController extends BaseController {
                             result.get().getStatus()== EnumMerchantStatus.DISABLE.getId()){
                         isRedirect= true;
                         url = "/sqb/prompt";
-                    }else if(result.get().getStatus()== EnumMerchantStatus.PASSED.getId()){
+                    }else if(result.get().getStatus()== EnumMerchantStatus.PASSED.getId()||result.get().getStatus()== EnumMerchantStatus.FRIEND.getId()){
                         Map<String, String> map = WxPubUtil.getUserInfo(userInfoOptional.get().getOpenId());
                         if(map==null){
                             model.addAttribute("headimgUrl","");
                         }else{
                             model.addAttribute("headimgUrl",map.get("headimgurl").toString());
                         }
-                        model.addAttribute("mobile",MerchantSupport.decryptMobile(result.get().getMobile()));
+                        String phone = MerchantSupport.decryptMobile(result.get().getMobile());
+                        phone = phone.substring(0,3)+"***"+phone.substring(phone.length()-3,phone.length());
+                        model.addAttribute("mobile",phone);
                         model.addAttribute("level",result.get().getLevel());
                         model.addAttribute("weixinRate",result.get().getWeixinRate());
                         model.addAttribute("alipayRate",result.get().getAlipayRate());
@@ -1037,7 +1029,7 @@ public class LoginController extends BaseController {
                             result.get().getStatus()== EnumMerchantStatus.DISABLE.getId()){
                         isRedirect= true;
                         url = "/sqb/prompt";
-                    }else if(result.get().getStatus()== EnumMerchantStatus.PASSED.getId()){
+                    }else if(result.get().getStatus()== EnumMerchantStatus.PASSED.getId()||result.get().getStatus()== EnumMerchantStatus.FRIEND.getId()){
                         Map<String, String> map = WxPubUtil.getUserInfo(userInfoOptional.get().getOpenId());
                         if(map==null){
                             model.addAttribute("headimgUrl","");
@@ -1128,7 +1120,7 @@ public class LoginController extends BaseController {
                             result.get().getStatus()== EnumMerchantStatus.DISABLE.getId()){
                         isRedirect= true;
                         url = "/sqb/prompt";
-                    }else if(result.get().getStatus()== EnumMerchantStatus.PASSED.getId()){
+                    }else if(result.get().getStatus()== EnumMerchantStatus.PASSED.getId()||result.get().getStatus()== EnumMerchantStatus.FRIEND.getId()){
                         Optional<UpgradeRules> upgradeRulesOptional = upgradeRulesService.selectById(id);
                         if(upgradeRulesOptional.isPresent()){
                             if(result.get().getLevel()>=upgradeRulesOptional.get().getType()){
@@ -1162,5 +1154,22 @@ public class LoginController extends BaseController {
             }
         }
     }
+
+    /**
+     * 我要升级
+     * @param request
+     * @param response
+     * @param model
+     * @return
+     * @throws IOException
+     */
+    @RequestMapping(value = "/recharge", method = RequestMethod.GET)
+    public String recharge(final HttpServletRequest request, final HttpServletResponse response,final Model model) throws IOException {
+        String url = "";
+
+        return "redirect:"+url;
+    }
+
+
 
 }

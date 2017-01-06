@@ -16,9 +16,10 @@
 <div id="upgrade">
     <div class="info">
         <div class="head">
+
             <img src="http://static.jinkaimen.cn/hss/assets/hss-default-head.png" alt="">
         </div>
-        <div class="status">137***396 <span>普通会员</span></div>
+        <div class="status">${mobile} <span>普通会员</span></div>
     </div>
     <div class="upgrade">
         <div class="small">升级合伙人，不仅能降费率，推广好友还能拿分润</div>

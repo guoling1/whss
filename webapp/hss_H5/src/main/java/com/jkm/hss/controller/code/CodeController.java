@@ -52,6 +52,7 @@ public class CodeController extends BaseController {
      */
     @RequestMapping(value = "/scanCode", method = RequestMethod.GET)
     public String scanCode(final HttpServletRequest request, final HttpServletResponse response, final Model model,@RequestParam(value = "openId", required = false) String openId) {
+        log.info("扫码openId{}",openId);
         //如何没有openId跳授权页面
         if(openId==null||"".equals(openId)){
             String requestUrl = "";
@@ -60,6 +61,7 @@ public class CodeController extends BaseController {
             }else{
                 requestUrl = request.getQueryString();
             }
+            log.info("跳转地址是{}",requestUrl);
             try {
                 String encoderUrl = URLEncoder.encode(requestUrl, "UTF-8");
                 return "redirect:"+ WxConstants.WEIXIN_MERCHANT_USERINFO+encoderUrl+ WxConstants.WEIXIN_USERINFO_REDIRECT;
@@ -70,9 +72,9 @@ public class CodeController extends BaseController {
         }
         final String code = request.getParameter("code");
         final String sign = request.getParameter("sign");
-        if ((Long.valueOf(code) >= Long.valueOf("100010063208")) && (Long.valueOf(code) <= Long.valueOf("100010068207"))) {
-            return "redirect:http://"+ ApplicationConsts.getApplicationConfig().domain()+"/code/scanCode?" + "code" + "=" + code + "&" + "sign" + "=" + sign;
-        }
+//        if ((Long.valueOf(code) >= Long.valueOf("100010063208")) && (Long.valueOf(code) <= Long.valueOf("100010068207"))) {
+//            return "redirect:http://"+ ApplicationConsts.getApplicationConfig().domain()+"/code/scanCode?" + "code" + "=" + code + "&" + "sign" + "=" + sign;
+//        }
         log.info("scan code[{}], sign is [{}]", code, sign);
         final Optional<QRCode> qrCodeOptional = this.qrCodeService.getByCode(code);
         Preconditions.checkState(qrCodeOptional.isPresent(), "QRCode not exist");
@@ -85,6 +87,8 @@ public class CodeController extends BaseController {
             Optional<UserInfo> userInfoOptional = userInfoService.selectByMerchantId(merchantId);
             Preconditions.checkState(userInfoOptional.isPresent(), "userInfo is not exist");
             String openIdTemp = userInfoOptional.get().getOpenId();
+            log.info("openId{}",openId);
+            log.info("openIdTemp{}",openIdTemp);
             if(openId.equals(openIdTemp)){
                 log.info("code[{}] is activate", code);
                 final Optional<MerchantInfo> merchantInfoOptional = this.merchantInfoService.selectById(merchantId);
@@ -103,7 +107,7 @@ public class CodeController extends BaseController {
                 } else if (EnumMerchantStatus.UNPASSED.getId() == merchantInfo.getStatus()) {//审核未通过
                     log.info("code[{}], merchant is not pass", code);
                     url = "/sqb/prompt";
-                } else if (EnumMerchantStatus.PASSED.getId() == merchantInfo.getStatus()) {//审核通过
+                } else if (EnumMerchantStatus.PASSED.getId() == merchantInfo.getStatus()||EnumMerchantStatus.FRIEND.getId() == merchantInfo.getStatus()) {//审核通过
                     model.addAttribute("name", merchantInfo.getMerchantName());
                     if (agent.indexOf("MicroMessenger") > -1) {//weixin
                         url = "/sqb/paymentWx";
@@ -123,7 +127,7 @@ public class CodeController extends BaseController {
                 Preconditions.checkState(merchantInfoOptional.isPresent(), "merchant is not exist");
                 final MerchantInfo merchantInfo = merchantInfoOptional.get();
                 model.addAttribute("merchantId", merchantId);
-                if (EnumMerchantStatus.PASSED.getId() == merchantInfo.getStatus()) {//审核通过
+                if (EnumMerchantStatus.PASSED.getId() == merchantInfo.getStatus()||EnumMerchantStatus.FRIEND.getId() == merchantInfo.getStatus()) {//审核通过
                     model.addAttribute("name", merchantInfo.getMerchantName());
                     if (agent.indexOf("MicroMessenger") > -1) {//weixin
                         url = "/sqb/paymentWx";

@@ -22,14 +22,8 @@ import com.jkm.hss.helper.request.DirectLoginRequest;
 import com.jkm.hss.helper.request.MerchantLoginCodeRequest;
 import com.jkm.hss.helper.request.MerchantLoginRequest;
 import com.jkm.hss.helper.request.OtherPayRequest;
-import com.jkm.hss.merchant.entity.MerchantInfo;
-import com.jkm.hss.merchant.entity.OrderRecord;
-import com.jkm.hss.merchant.entity.RecommendAndMerchant;
-import com.jkm.hss.merchant.entity.UserInfo;
-import com.jkm.hss.merchant.enums.EnumCommonStatus;
-import com.jkm.hss.merchant.enums.EnumMerchantStatus;
-import com.jkm.hss.merchant.enums.EnumSource;
-import com.jkm.hss.merchant.enums.EnumUserInfoType;
+import com.jkm.hss.merchant.entity.*;
+import com.jkm.hss.merchant.enums.*;
 import com.jkm.hss.merchant.helper.MerchantSupport;
 import com.jkm.hss.merchant.helper.WxPubUtil;
 import com.jkm.hss.merchant.helper.request.RequestOrderRecord;
@@ -101,6 +95,7 @@ public class WxPubController extends BaseController {
     private DealerService dealerService;
     @Autowired
     private DealerChannelRateService dealerChannelRateService;
+
 
 
     /**
@@ -197,9 +192,13 @@ public class WxPubController extends BaseController {
         }
         Map<String,String> ret = WxPubUtil.getOpenid(code);
         model.addAttribute("openId", ret.get("openid"));
+        log.info("openid是：{}",ret.get("openid"));
         String tempUrl = URLDecoder.decode(state, "UTF-8");
+        log.info("tempUrl是：{}",tempUrl);
         String redirectUrl = URLDecoder.decode(tempUrl,"UTF-8");
+        log.info("redirectUrl是：{}",redirectUrl);
         String finalRedirectUrl = "http://"+ApplicationConsts.getApplicationConfig().domain()+"/code/scanCode?"+redirectUrl;
+        log.info("跳转地址是：{}",finalRedirectUrl);
         return "redirect:"+finalRedirectUrl;
     }
 
@@ -347,7 +346,7 @@ public class WxPubController extends BaseController {
         if(!merchantInfo.isPresent()){
             return CommonResponse.simpleResponse(-2, "未登录");
         }
-        if(merchantInfo.get().getStatus()!= EnumMerchantStatus.PASSED.getId()){
+        if(merchantInfo.get().getStatus()!= EnumMerchantStatus.PASSED.getId()||merchantInfo.get().getStatus()!= EnumMerchantStatus.FRIEND.getId()){
             return CommonResponse.simpleResponse(-2, "未审核通过");
         }
         req.setMerchantId(merchantInfo.get().getId());
@@ -395,8 +394,8 @@ public class WxPubController extends BaseController {
             return CommonResponse.simpleResponse(-1, "邀请码不能为空");
         }
         if (!StringUtils.isBlank(loginRequest.getInviteCode())) {
-            Optional<MerchantInfo> merchantInfoOptional =  merchantInfoService.selectByMobile(MerchantSupport.encryptMobile(loginRequest.getInviteCode()));
-            if(!merchantInfoOptional.isPresent()){
+            Optional<UserInfo> uoOptional =  userInfoService.selectByMobile(MerchantSupport.encryptMobile(loginRequest.getInviteCode()));
+            if(!uoOptional.isPresent()){
                 return CommonResponse.simpleResponse(-1, "邀请码不存在");
             }
             if(loginRequest.getInviteCode().equals(loginRequest.getMobile())){
@@ -506,12 +505,18 @@ public class WxPubController extends BaseController {
                     mi.setSource(EnumSource.RECOMMEND.getId());
                     mi.setProductId(productId);
                     //初始化代理商和商户
-                    Optional<MerchantInfo> merchantInfoOptional =  merchantInfoService.selectByMobile(MerchantSupport.encryptMobile(loginRequest.getInviteCode()));
+                    Optional<UserInfo> inviteUserOptional =  userInfoService.selectByMobile(MerchantSupport.encryptMobile(loginRequest.getInviteCode()));
+                    Optional<MerchantInfo> merchantInfoOptional = merchantInfoService.selectById(inviteUserOptional.get().getMerchantId());
+                    if(!merchantInfoOptional.isPresent()){
+                        log.info("该用户没有关联的商户");
+                        return CommonResponse.simpleResponse(-1, "该用户没有关联的商户");
+                    }
+//                    Optional<MerchantInfo> merchantInfoOptional =  merchantInfoService.selectByMobile(MerchantSupport.encryptMobile(loginRequest.getInviteCode()));
                     mi.setDealerId(merchantInfoOptional.get().getFirstDealerId());
                     mi.setFirstDealerId(merchantInfoOptional.get().getFirstDealerId());
                     mi.setSecondDealerId(merchantInfoOptional.get().getSecondDealerId());
-                    mi.setFirstMerchantId(merchantInfoOptional.get().getFirstMerchantId());
-                    mi.setSecondMerchantId(merchantInfoOptional.get().getSecondMerchantId());
+                    mi.setFirstMerchantId(merchantInfoOptional.get().getId());
+                    mi.setSecondMerchantId(merchantInfoOptional.get().getFirstMerchantId());
                     mi.setAccountId(0);
                     mi.setLevel(EnumUpGradeType.COMMON.getId());
                     mi.setHierarchy(merchantInfoOptional.get().getHierarchy()+1);//邀请人级别加1
@@ -535,6 +540,23 @@ public class WxPubController extends BaseController {
                     userInfoService.insertUserInfo(uo);
                     String tempMarkCode = GlobalID.GetGlobalID(EnumGlobalIDType.USER,EnumGlobalIDPro.MIN,uo.getId()+"");
                     userInfoService.updatemarkCode(tempMarkCode,uo.getId());
+                    //添加好友
+                    if(mi.getFirstMerchantId()!=0){//直接好友
+                        Recommend recommend = new Recommend();
+                        recommend.setMerchantId(mi.getId());
+                        recommend.setRecommendMerchantId(mi.getFirstMerchantId());
+                        recommend.setType(EnumRecommendType.DIRECT.getId());
+                        recommend.setStatus(1);
+                        recommendService.insert(recommend);
+                    }
+                    if(mi.getSecondMerchantId()!=0){//间接好友
+                        Recommend recommend = new Recommend();
+                        recommend.setMerchantId(mi.getId());
+                        recommend.setRecommendMerchantId(mi.getSecondMerchantId());
+                        recommend.setType(EnumRecommendType.INDIRECT.getId());
+                        recommend.setStatus(1);
+                        recommendService.insert(recommend);
+                    }
                     return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "注册成功",mi.getId());
                 }
             }
@@ -643,7 +665,7 @@ public class WxPubController extends BaseController {
         if(!merchantInfo.isPresent()){
             return CommonResponse.simpleResponse(-2, "未登录");
         }
-        if(merchantInfo.get().getStatus()!=EnumMerchantStatus.PASSED.getId()){
+        if(merchantInfo.get().getStatus()!=EnumMerchantStatus.PASSED.getId()||merchantInfo.get().getStatus()!=EnumMerchantStatus.FRIEND.getId()){
             return CommonResponse.simpleResponse(-2, "未审核通过");
         }
         final String totalFee = tradeRequest.getTotalFee();
@@ -676,7 +698,7 @@ public class WxPubController extends BaseController {
     @RequestMapping(value = "receiptByCode", method = RequestMethod.POST)
     public CommonResponse receiptByCode(final HttpServletRequest request, final HttpServletResponse response, @RequestBody final TradeRequest tradeRequest) {
         Optional<MerchantInfo> merchantInfo = merchantInfoService.selectById(tradeRequest.getMerchantId());
-        if(merchantInfo.get().getStatus()!=EnumMerchantStatus.PASSED.getId()){
+        if(merchantInfo.get().getStatus()!=EnumMerchantStatus.PASSED.getId()||merchantInfo.get().getStatus()!=EnumMerchantStatus.FRIEND.getId()){
             return CommonResponse.simpleResponse(-2, "未审核通过");
         }
         final String totalFee = tradeRequest.getTotalFee();
@@ -721,7 +743,7 @@ public class WxPubController extends BaseController {
         if(!merchantInfo.isPresent()){
             return CommonResponse.simpleResponse(-2, "未登录");
         }
-        if(merchantInfo.get().getStatus()!=EnumMerchantStatus.PASSED.getId()){
+        if(merchantInfo.get().getStatus()!=EnumMerchantStatus.PASSED.getId()||merchantInfo.get().getStatus()!=EnumMerchantStatus.FRIEND.getId()){
             return CommonResponse.simpleResponse(-2, "未审核通过");
         }
         final Pair<Integer, String> checkResult =
@@ -783,7 +805,7 @@ public class WxPubController extends BaseController {
         if(!merchantInfo.isPresent()){
             return CommonResponse.simpleResponse(-2, "未登录");
         }
-        if(merchantInfo.get().getStatus()!=EnumMerchantStatus.PASSED.getId()){
+        if(merchantInfo.get().getStatus()!=EnumMerchantStatus.PASSED.getId()||merchantInfo.get().getStatus()!=EnumMerchantStatus.FRIEND.getId()){
             return CommonResponse.simpleResponse(-2, "未审核通过");
         }
         RecommendAndMerchant recommendAndMerchant = recommendService.myRecommend(merchantInfo.get().getId());

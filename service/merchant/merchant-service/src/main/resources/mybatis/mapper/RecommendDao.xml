@@ -91,4 +91,12 @@
         FROM tb_recommend as r left JOIN tb_merchant_info as i on r.merchant_id=i.id
         WHERE r.recommend_merchant_id=#{merchantId} and r.status = 1 and i.status=5;
     </select>
+
+    <!--推荐我的人-->
+    <select id="selectRecommend" resultType="com.jkm.hss.merchant.entity.Recommend">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM tb_recommend
+        WHERE merchant_id=#{merchantId} and status = 1;
+    </select>
 </mapper>

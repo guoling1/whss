@@ -1,6 +1,7 @@
 package com.jkm.hss.merchant.service.impl;
 
 import com.jkm.hss.merchant.dao.QueryMerchantInfoRecordDao;
+import com.jkm.hss.merchant.entity.LogResponse;
 import com.jkm.hss.merchant.entity.MerchantInfoResponse;
 import com.jkm.hss.merchant.helper.MerchantSupport;
 import com.jkm.hss.merchant.service.QueryMerchantInfoRecordService;
@@ -75,6 +76,23 @@ public class QueryMerchantInfoRecordServiceImpl implements QueryMerchantInfoReco
     @Override
     public List<MerchantInfoResponse> getFirstLevel(long firstLevelDealerId) {
         List<MerchantInfoResponse> res = this.queryMerchantInfoRecordDao.getFirstLevel(firstLevelDealerId);
+        return res;
+    }
+
+    @Override
+    public List<LogResponse> getLog(MerchantInfoResponse merchantInfo) throws ParseException {
+        List<LogResponse> res = this.queryMerchantInfoRecordDao.getLog(merchantInfo);
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        if (res.size()>0){
+            for (int i=0;res.size()>i;i++){
+                if (res.get(i).getCreateTime()!=null&&!"".equals(res.get(i).getCreateTime())){
+                    String CreateTime = res.get(i).getCreateTime();
+                    Date date =formatter.parse(CreateTime);
+                    String createTime = formatter.format(date);
+                    res.get(i).setCreateTime(createTime);
+                }
+            }
+        }
         return res;
     }
 }

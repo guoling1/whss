@@ -78,7 +78,7 @@
       <div class="box box-primary" v-if="!isShow">
         <p class="lead">审核日志</p>
         <div class="table-responsive">
-          <!--<div class="col-sm-12">
+          <div class="col-sm-12">
             <table id="example2" class="table table-bordered table-hover dataTable" role="grid" aria-describedby="example2_info">
               <thead>
               <tr role="row">
@@ -89,16 +89,16 @@
               </tr>
               </thead>
               <tbody id="content">
-              <tr role="row" class="odd">
-                <td class="sorting_1">{{msg.status|status}}</td>
-                <td>{{msg.checkedTime|changeTime}}</td>
+              <tr role="row" class="odd" v-for="re in this.$data.res">
+                <td class="sorting_1">{{re.status|status}}</td>
+                <td>{{re.createTime|changeTime}}</td>
                 <td>—</td>
-                <td>—</td>
+                <td>{{re.descr}}</td>
               </tr>
               </tbody>
             </table>
-          </div>-->
-          <table class="table">
+          </div>
+          <!--<table class="table">
             <tbody>
             <tr>
               <th style="text-align: right">资料审核状态:</th>
@@ -116,7 +116,7 @@
               <th></th>
               <td></td>
             </tr>
-            </tbody></table>
+            </tbody></table>-->
         </div>
       </div>
       <div class="box box-primary">
@@ -225,11 +225,12 @@
           proxyName1:'',
           proxyName: '',
           reserveMobile:'',
-          createTime:''
+          createTime:'',
         },
         reason:'',
         status:'',
-        isShow:true
+        isShow:true,
+        res: []
       }
     },
     created: function () {
@@ -240,7 +241,9 @@
       }
       this.$http.post('/admin/QueryMerchantInfoRecord/getAll',{id:this.$data.id})
         .then(function (res) {
-          this.$data.msg = res.data[0];
+          this.$data.msg = res.data.list[0];
+          this.$data.res = res.data.res;
+          console.log(this.$data.res)
         },function (err) {
           this.$store.commit('MESSAGE_ACCORD_SHOW', {
             text: err.statusMessage
