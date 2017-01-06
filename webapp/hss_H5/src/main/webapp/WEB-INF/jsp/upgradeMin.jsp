@@ -33,10 +33,34 @@
             <c:forEach items="${upgradeArray}" var="item" varStatus="status">
                 <c:if test="${status.index==0}">
                     <div class="t-body">
-                        <div class="li w34 p">
-                            <span class="star1 upn"></span>
-                            普通
-                        </div>
+                        <c:if test="${level==item.type}">
+                            <div class="li w34 p">
+                                <span class="star${status.index+1}"></span>
+
+                                <div class="up1">
+                                    <p>${item.name}</p>
+
+                                    <div class="mes">我的费率</div>
+                                </div>
+                            </div>
+                        </c:if>
+                        <c:if test="${level<item.type}">
+                            <div class="li w34 p">
+                                <span class="star${status.index+1}"></span>
+
+                                <div class="up1">
+                                    <p>${item.name}</p>
+
+                                    <div class="ups" onclick="javascript:location.href='/sqb/toUpgrade/${item.id}'">立即升级</div>
+                                </div>
+                            </div>
+                        </c:if>
+                        <c:if test="${level>item.type}">
+                            <div class="li w34 p">
+                                <span class="star${status.index+1} upn"></span>
+                                    ${item.name}
+                            </div>
+                        </c:if>
                         <div class="li w22 w">${item.weixinRate}% <br> 无分佣</div>
                         <div class="li w22 w">${item.alipayRate}% <br> 无分佣</div>
                         <div class="li w22 w">${item.fastRate}% <br> 无分佣</div>
@@ -152,7 +176,7 @@
             </c:forEach>
         </div>
         <div class="btn">
-            <div>算算能挣多少钱</div>
+            <div onclick="javascript:location.href='/sqb/suansuan'">算算能挣多少钱</div>
         </div>
     </div>
     <div class="rocket"></div>

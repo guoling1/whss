@@ -41,7 +41,19 @@
                         <div class="li w">${item.weixinRate}% <br> 无分佣</div>
                         <div class="li w">${item.alipayRate}% <br> 无分佣</div>
                         <div class="li w">${item.fastRate}% <br> 无分佣</div>
-                        <div class="li w">- -</div>
+                        <c:if test="${level==item.type}">
+                            <div class="li w">
+                                <div class="me">&nbsp;我的费率</div>
+                            </div>
+                        </c:if>
+                        <c:if test="${level<item.type}">
+                            <div class="li w">
+                                <div class="up" onclick="javascript:location.href='/sqb/toUpgrade/${item.id}'">立即升级</div>
+                            </div>
+                        </c:if>
+                        <c:if test="${level>item.type}">
+                            <div class="li w">- -</div>
+                        </c:if>
                     </div>
                 </c:if>
                 <c:if test="${status.index==1}">
@@ -119,7 +131,7 @@
             </c:forEach>
         </div>
         <div class="btn">
-            <div>算算能挣多少钱</div>
+            <div onclick="javascript:location.href='/sqb/suansuan'">算算能挣多少钱</div>
         </div>
     </div>
     <div class="rocket"></div>
