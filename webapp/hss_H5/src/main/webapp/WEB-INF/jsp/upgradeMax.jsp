@@ -171,16 +171,22 @@
 
 </body>
 
-<script src="/js/hss/vendor.1.0.1.min.js"></script>
+<script src="http://static.jinkaimen.cn/vendor/vendor.1.0.1.min.js"></script>
 <script>
   var notice = document.getElementById('notice');
   var rocket = document.getElementById('rocket');
   var xx = document.getElementById('xx');
   rocket.addEventListener('click', function () {
     notice.className = 'notice flexBox flex-box-column';
+    setTimeout(function () {
+      notice.style.opacity = 1;
+    }, 0);
   });
   xx.addEventListener('click', function () {
-    notice.className = 'notice flexBox flex-box-column miss';
+    notice.style.opacity = 0;
+    setTimeout(function () {
+      notice.className = 'notice flexBox flex-box-column miss';
+    }, 400);
   })
 </script>
 </html>

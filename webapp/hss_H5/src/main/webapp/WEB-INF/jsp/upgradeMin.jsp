@@ -8,8 +8,7 @@
   <meta name="viewport"
         content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
   <title>我的推广</title>
-  <%--<link rel="stylesheet" href="http://static.jinkaimen.cn/hss/css/style.2.0.1.css">--%>
-  <link rel="stylesheet" href="/css/hss/style.2.0.1.css">
+  <link rel="stylesheet" href="http://static.jinkaimen.cn/hss/css/style.2.0.1.css">
   <link rel="stylesheet" href="http://static.jinkaimen.cn/weui/weui.css">
 </head>
 <body>
@@ -223,9 +222,15 @@
   var xx = document.getElementById('xx');
   rocket.addEventListener('click', function () {
     notice.className = 'notice flexBox flex-box-column';
+    setTimeout(function () {
+      notice.style.opacity = 1;
+    }, 0);
   });
   xx.addEventListener('click', function () {
-    notice.className = 'notice flexBox flex-box-column miss';
+    notice.style.opacity = 0;
+    setTimeout(function () {
+      notice.className = 'notice flexBox flex-box-column miss';
+    }, 400);
   })
 </script>
 </html>
