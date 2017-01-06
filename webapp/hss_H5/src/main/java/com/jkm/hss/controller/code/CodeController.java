@@ -52,7 +52,7 @@ public class CodeController extends BaseController {
      */
     @RequestMapping(value = "/scanCode", method = RequestMethod.GET)
     public String scanCode(final HttpServletRequest request, final HttpServletResponse response, final Model model,@RequestParam(value = "openId", required = false) String openId) {
-
+        log.info("扫码openId{}",openId);
         //如何没有openId跳授权页面
         if(openId==null||"".equals(openId)){
             String requestUrl = "";
