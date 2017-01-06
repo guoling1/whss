@@ -55,7 +55,7 @@ public interface RecommendService {
      * 按分页查询好友列表
      * @return
      */
-    List<RecommendShort> selectRecommendByPage(RecommendRequest recommendRequest);
+    RecommendAndMerchant selectRecommend(RecommendRequest recommendRequest);
     /**
      * 按分页查询好友列表总条数
      * @return

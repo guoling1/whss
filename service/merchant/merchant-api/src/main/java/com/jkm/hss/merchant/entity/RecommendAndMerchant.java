@@ -21,5 +21,5 @@ public class RecommendAndMerchant{
     /**
      * 好友列表
      */
-    private PageModel<RecommendShort> recommends;
+    private List<RecommendShort> recommends;
 }

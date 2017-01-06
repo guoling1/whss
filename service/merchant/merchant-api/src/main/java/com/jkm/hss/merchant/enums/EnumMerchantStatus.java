@@ -40,7 +40,7 @@ public enum EnumMerchantStatus {
     /**
      * 消费达到指定数额，成为真实好友
      */
-    FRIEND(6, "消费达到指定数额，成为真实好友");
+    FRIEND(6, "好友");
 
 
     @Getter
@@ -52,5 +52,6 @@ public enum EnumMerchantStatus {
         this.id = id;
         this.name = name;
     }
+
 
 }

@@ -61,9 +61,9 @@
                                     ${item.name}
                             </div>
                         </c:if>
-                        <div class="li w22 w">${item.weixinRate}% <br> 无分佣</div>
-                        <div class="li w22 w">${item.alipayRate}% <br> 无分佣</div>
-                        <div class="li w22 w">${item.fastRate}% <br> 无分佣</div>
+                        <div class="li w22 w">${item.weixinRate*100}% <br> 无分佣</div>
+                        <div class="li w22 w">${item.alipayRate*100}% <br> 无分佣</div>
+                        <div class="li w22 w">${item.fastRate*100}% <br> 无分佣</div>
                     </div>
                 </c:if>
                 <c:if test="${status.index==1}">
@@ -96,9 +96,9 @@
                                     ${item.name}
                             </div>
                         </c:if>
-                        <div class="li w22 w">${item.weixinRate}% <br> 万三分佣</div>
-                        <div class="li w22 w">${item.alipayRate}% <br> 万三分佣</div>
-                        <div class="li w22 w">${item.fastRate}% <br> 万三分佣</div>
+                        <div class="li w22 w">${item.weixinRate*100}% <br> 万三分佣</div>
+                        <div class="li w22 w">${item.alipayRate*100}% <br> 万三分佣</div>
+                        <div class="li w22 w">${item.fastRate*100}% <br> 万三分佣</div>
                     </div>
                 </c:if>
 
@@ -132,9 +132,9 @@
                                     ${item.name}
                             </div>
                         </c:if>
-                        <div class="li w22 w">${item.weixinRate}% <br> 万五分佣</div>
-                        <div class="li w22 w">${item.alipayRate}% <br> 万五分佣</div>
-                        <div class="li w22 w">${item.fastRate}% <br> 万五分佣</div>
+                        <div class="li w22 w">${item.weixinRate*100}% <br> 万五分佣</div>
+                        <div class="li w22 w">${item.alipayRate*100}% <br> 万五分佣</div>
+                        <div class="li w22 w">${item.fastRate*100}% <br> 万五分佣</div>
                     </div>
                 </c:if>
 
@@ -168,9 +168,9 @@
                                     ${item.name}
                             </div>
                         </c:if>
-                        <div class="li w22 w">${item.weixinRate}% <br> 万七分佣</div>
-                        <div class="li w22 w">${item.alipayRate}% <br> 万七分佣</div>
-                        <div class="li w22 w">${item.fastRate}% <br> 万七分佣</div>
+                        <div class="li w22 w">${item.weixinRate*100}% <br> 万七分佣</div>
+                        <div class="li w22 w">${item.alipayRate*100}% <br> 万七分佣</div>
+                        <div class="li w22 w">${item.fastRate*100}% <br> 万七分佣</div>
                     </div>
                 </c:if>
             </c:forEach>
