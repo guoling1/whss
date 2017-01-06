@@ -84,7 +84,7 @@
         WHERE r.recommend_merchant_id=#{merchantId} and r.status = 1;
     </select>
 
-    <!--我的好友-->
+    <!--我的真实好友-->
     <select id="selectFriendCount" resultType="java.lang.Integer">
         SELECT
         count(1)
@@ -98,5 +98,37 @@
         <include refid="Base_Column_List" />
         FROM tb_recommend
         WHERE merchant_id=#{merchantId} and status = 1;
+    </select>
+
+    <!--分页查询交易明细记录-->
+    <select id="selectRecommendByPage" resultType="com.jkm.hss.merchant.entity.RecommendShort">
+        SELECT
+        i.name,r.type,i.status
+        FROM tb_recommend as r left JOIN tb_merchant_info as i on r.merchant_id=i.id
+        WHERE r.recommend_merchant_id=#{merchantId} and r.status = 1 ORDER BY r.create_time DESC limit #{offset}, #{size}
+    </select>
+
+    <!--查询我的所有好友总条数-->
+    <select id="selectRecommendCount" resultType="java.lang.Integer">
+        SELECT
+        count(1)
+        FROM tb_recommend
+        WHERE recommend_merchant_id=#{merchantId} and status = 1
+    </select>
+
+    <!--间接好友数量-->
+    <select id="selectIndirectCount" resultType="java.lang.Integer">
+        SELECT
+        count(1)
+        FROM tb_recommend
+        WHERE recommend_merchant_id=#{merchantId} and type=2 and status = 1
+    </select>
+
+    <!--直接好友数量-->
+    <select id="selectDirectCount" resultType="java.lang.Integer">
+        SELECT
+        count(1)
+        FROM tb_recommend
+        WHERE recommend_merchant_id=#{merchantId} and type=1 and status = 1
     </select>
 </mapper>
