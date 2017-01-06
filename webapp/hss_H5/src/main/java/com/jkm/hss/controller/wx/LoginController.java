@@ -943,7 +943,9 @@ public class LoginController extends BaseController {
                         }else{
                             model.addAttribute("headimgUrl",map.get("headimgurl").toString());
                         }
-                        model.addAttribute("mobile",MerchantSupport.decryptMobile(result.get().getMobile()));
+                        String phone = MerchantSupport.decryptMobile(result.get().getMobile());
+                        phone = phone.substring(0,3)+"***"+phone.substring(phone.length()-3,phone.length());
+                        model.addAttribute("mobile",phone);
                         model.addAttribute("level",result.get().getLevel());
                         model.addAttribute("weixinRate",result.get().getWeixinRate());
                         model.addAttribute("alipayRate",result.get().getAlipayRate());
@@ -1152,5 +1154,22 @@ public class LoginController extends BaseController {
             }
         }
     }
+
+    /**
+     * 我要升级
+     * @param request
+     * @param response
+     * @param model
+     * @return
+     * @throws IOException
+     */
+    @RequestMapping(value = "/recharge", method = RequestMethod.GET)
+    public String recharge(final HttpServletRequest request, final HttpServletResponse response,final Model model) throws IOException {
+        String url = "";
+
+        return "redirect:"+url;
+    }
+
+
 
 }
