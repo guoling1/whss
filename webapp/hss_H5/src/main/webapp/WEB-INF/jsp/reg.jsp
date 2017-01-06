@@ -41,7 +41,7 @@
   <div class="layer" id="layer">
     <div class="space">
       <div class="space-title">
-        提示
+        手机号已注册
         <div class="xx" id="xx"></div>
       </div>
       <div class="space-cont">
