@@ -42,7 +42,7 @@
     <a href="/sqb/tradeRecord" class="group touch_gr"><span class="record"></span>收款记录</a>
     <a href="/sqb/bank" class="group touch_gr"><span class="bank"></span>银行卡</a>
     <a href="javascript:void(0)" class="group"><span class="user"></span>用户认证</a>
-    <a href="javascript:void(0)" class="group"><span class="help"></span>使用帮助</a>
+    <a href="http://mp.weixin.qq.com/s/-GYEGM7PAboICupcETBPhw" class="group"><span class="help"></span>使用帮助</a>
   </div>
   <div class="flexBox flex-box-column">
     <div class="advertisement">
