@@ -21,4 +21,9 @@ public class RecommendShort {
      * {@link com.jkm.hss.merchant.enums.EnumMerchantStatus}
      */
     private int status;
+
+    /**
+     * 审核状态
+     */
+    private String statusName;
 }

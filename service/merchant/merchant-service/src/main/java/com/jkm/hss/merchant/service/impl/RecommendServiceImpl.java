@@ -5,6 +5,7 @@ import com.jkm.hss.merchant.dao.RecommendDao;
 import com.jkm.hss.merchant.entity.Recommend;
 import com.jkm.hss.merchant.entity.RecommendAndMerchant;
 import com.jkm.hss.merchant.entity.RecommendShort;
+import com.jkm.hss.merchant.enums.EnumMerchantStatus;
 import com.jkm.hss.merchant.enums.EnumRecommendType;
 import com.jkm.hss.merchant.helper.request.RecommendRequest;
 import com.jkm.hss.merchant.service.RecommendService;
@@ -85,6 +86,8 @@ public class RecommendServiceImpl implements RecommendService{
         return recommendDao.selectRecommend(merchantId);
     }
 
+
+
     /**
      * 按分页查询好友列表
      *
@@ -92,9 +95,58 @@ public class RecommendServiceImpl implements RecommendService{
      * @return
      */
     @Override
-    public List<RecommendShort> selectRecommendByPage(RecommendRequest recommendRequest) {
-        return recommendDao.selectRecommendByPage(recommendRequest);
+    public RecommendAndMerchant selectRecommend(RecommendRequest recommendRequest) {
+        int direct = 0;
+        int indirect = 0;
+        List<RecommendShort> list = recommendDao.selectRecommendByPage(recommendRequest);
+        RecommendAndMerchant recommendAndMerchant = new RecommendAndMerchant();
+        if(list.size()>0){
+            for(int i=0;i<list.size();i++){
+                if (EnumRecommendType.INDIRECT.getId()==list.get(i).getType()){
+                    list.get(i).setName("*"+list.get(i).getName().substring(list.get(i).getName().length()-1,list.get(i).getName().length()));
+                    list.get(i).setStatusName(getStatusName(list.get(i).getStatus()));
+                    indirect++;
+                }else{
+                    list.get(i).setStatusName(getStatusName(list.get(i).getStatus()));
+                    direct++;
+                }
+            }
+        }
+        recommendAndMerchant.setRecommends(list);
+        recommendAndMerchant.setDirectCount(direct);
+        recommendAndMerchant.setIndirectCount(indirect);
+        return recommendAndMerchant;
     }
+
+    private String getStatusName(int status){
+        String name = "";
+        if(status==EnumMerchantStatus.LOGIN.getId()){
+            name=EnumMerchantStatus.LOGIN.getName();
+        }
+        if(status==EnumMerchantStatus.INIT.getId()){
+            name=EnumMerchantStatus.INIT.getName();
+        }
+        if(status==EnumMerchantStatus.ONESTEP.getId()){
+            name=EnumMerchantStatus.ONESTEP.getName();
+        }
+        if(status==EnumMerchantStatus.REVIEW.getId()){
+            name=EnumMerchantStatus.REVIEW.getName();
+        }
+        if(status==EnumMerchantStatus.PASSED.getId()){
+            name=EnumMerchantStatus.PASSED.getName();
+        }
+        if(status==EnumMerchantStatus.UNPASSED.getId()){
+            name=EnumMerchantStatus.UNPASSED.getName();
+        }
+        if(status==EnumMerchantStatus.FRIEND.getId()){
+            name=EnumMerchantStatus.FRIEND.getName();
+        }
+        return name;
+    }
+
+
+
+
 
     /**
      * 按分页查询好友列表总条数

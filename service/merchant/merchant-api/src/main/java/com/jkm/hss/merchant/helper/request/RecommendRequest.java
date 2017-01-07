@@ -7,8 +7,5 @@ import lombok.Data;
  */
 @Data
 public class RecommendRequest {
-    private int page;
-    private int size;
-    private int offset;
     private long merchantId;
 }

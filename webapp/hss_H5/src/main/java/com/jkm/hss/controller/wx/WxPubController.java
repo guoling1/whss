@@ -809,19 +809,8 @@ public class WxPubController extends BaseController {
         if(merchantInfo.get().getStatus()!=EnumMerchantStatus.PASSED.getId()||merchantInfo.get().getStatus()!=EnumMerchantStatus.FRIEND.getId()){
             return CommonResponse.simpleResponse(-2, "未审核通过");
         }
-        final PageModel<RecommendShort> pageModel = new PageModel<>(recommendRequest.getPage(), recommendRequest.getSize());
         recommendRequest.setMerchantId(merchantInfo.get().getId());
-        recommendRequest.setOffset(pageModel.getFirstIndex());
-        List<RecommendShort> recommendShorts = recommendService.selectRecommendByPage(recommendRequest);
-        int count = recommendService.selectRecommendCount(recommendRequest);
-        pageModel.setCount(count);
-        pageModel.setRecords(recommendShorts);
-        RecommendAndMerchant recommendAndMerchant = new RecommendAndMerchant();
-        int indirectCount =recommendService.selectIndirectCount(recommendRequest.getMerchantId());
-        int directCount = recommendService.selectDirectCount(recommendRequest.getMerchantId());
-        recommendAndMerchant.setIndirectCount(indirectCount);
-        recommendAndMerchant.setDirectCount(directCount);
-        recommendAndMerchant.setRecommends(pageModel);
+        RecommendAndMerchant recommendAndMerchant = recommendService.selectRecommend(recommendRequest);
         return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", recommendAndMerchant);
     }
 
