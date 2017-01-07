@@ -75,6 +75,71 @@
             </tbody></table>
         </div>
       </div>
+      <div class="box box-primary">
+        <p class="lead">商户认证资料</p>
+        <div class="table-responsive">
+          <table class="table">
+            <tbody>
+            <tr class="row">
+              <th class="col-md-3" style="text-align: center;">身份证正面:</th>
+              <th class="col-md-3" style="text-align: center;">身份证反面:</th>
+              <th class="col-md-3" style="text-align: center;">手持身份证:</th>
+              <th class="col-md-3" style="text-align: center;">银行卡正面:</th>
+              <th class="col-md-3" style="text-align: center;">手持结算卡:</th>
+            </tr>
+            <tr class="row">
+              <td class="col-md-3" style="text-align: center;border: none;">
+                <img style="width: 200px" @click="changeBig()" :src="msg.identityFacePic" alt=""/>
+              </td>
+              <td class="col-md-3" style="text-align: center;border: none;">
+                <img style="width: 200px"  @click="changeBig()" :src="msg.identityOppositePic" alt=""/>
+              </td>
+              <td class="col-md-3" style="text-align: center;border: none;">
+                <img style="width: 200px"  @click="changeBig()" :src="msg.identityHandPic" alt=""/>
+              </td>
+              <td class="col-md-3" style="text-align: center;border: none;">
+                <img style="width: 200px"  @click="changeBig()" :src="msg.bankPic" alt=""/>
+              </td>
+              <td class="col-md-3" style="text-align: center;border: none;">
+                <img style="width: 200px"  @click="changeBig()" :src="msg.bankHandPic" alt=""/>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="box box-primary">
+        <p class="lead">商户结算信息(好收收)</p>
+        <div class="table-responsive">
+          <table class="table">
+            <tbody>
+            <tr>
+              <th style="text-align: right">阳光万维微信:</th>
+              <td></td>
+              <th style="text-align: right">收款结算方式:</th>
+              <td></td>
+              <th style="text-align: right">提现费:</th>
+              <td>元/笔</td>
+            </tr>
+            <tr>
+              <th style="text-align: right">阳光万维支付宝:</th>
+              <td></td>
+              <th style="text-align: right">收款结算方式:</th>
+              <td></td>
+              <th style="text-align: right">提现费:</th>
+              <td>元/笔</td>
+            </tr>
+            <tr>
+              <th style="text-align: right">阳光万维无卡快捷:</th>
+              <td></td>
+              <th style="text-align: right">收款结算方式:</th>
+              <td></td>
+              <th style="text-align: right">提现费:</th>
+              <td>元/笔</td>
+            </tr>
+            </tbody></table>
+        </div>
+      </div>
       <div class="box box-primary" v-if="!isShow">
         <p class="lead">审核日志</p>
         <div class="table-responsive">
@@ -117,67 +182,6 @@
               <td></td>
             </tr>
             </tbody></table>-->
-        </div>
-      </div>
-      <div class="box box-primary">
-        <p class="lead">商户认证资料</p>
-        <div class="table-responsive">
-          <table class="table">
-            <tbody>
-            <tr class="row">
-              <th class="col-md-3" style="text-align: center;">身份证正面:</th>
-              <th class="col-md-3" style="text-align: center;">身份证反面:</th>
-              <th class="col-md-3" style="text-align: center;">手持身份证:</th>
-              <th class="col-md-3" style="text-align: center;">手持结算卡:</th>
-            </tr>
-            <tr class="row">
-              <td class="col-md-3" style="text-align: center;border: none;">
-                <img style="width: 200px" @click="changeBig()" :src="msg.identityFacePic" alt=""/>
-              </td>
-              <td class="col-md-3" style="text-align: center;border: none;">
-                <img style="width: 200px"  @click="changeBig()" :src="msg.identityOppositePic" alt=""/>
-              </td>
-              <td class="col-md-3" style="text-align: center;border: none;">
-                <img style="width: 200px"  @click="changeBig()" :src="msg.identityHandPic" alt=""/>
-              </td>
-              <td class="col-md-3" style="text-align: center;border: none;">
-                <img style="width: 200px"  @click="changeBig()" :src="msg.bankHandPic" alt=""/>
-              </td>
-            </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-      <div class="box box-primary">
-        <p class="lead">商户结算信息(好收收)</p>
-        <div class="table-responsive">
-          <table class="table">
-            <tbody>
-            <tr>
-              <th style="text-align: right">阳光万维微信:</th>
-              <td></td>
-              <th style="text-align: right">收款结算方式:</th>
-              <td></td>
-              <th style="text-align: right">提现费:</th>
-              <td>元/笔</td>
-            </tr>
-            <tr>
-              <th style="text-align: right">阳光万维支付宝:</th>
-              <td></td>
-              <th style="text-align: right">收款结算方式:</th>
-              <td></td>
-              <th style="text-align: right">提现费:</th>
-              <td>元/笔</td>
-            </tr>
-            <tr>
-              <th style="text-align: right">阳光万维无卡快捷:</th>
-              <td></td>
-              <th style="text-align: right">收款结算方式:</th>
-              <td></td>
-              <th style="text-align: right">提现费:</th>
-              <td>元/笔</td>
-            </tr>
-            </tbody></table>
         </div>
       </div>
       <div class="mask" id="mask" style="display: none" @click="isNo()">
