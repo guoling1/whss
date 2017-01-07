@@ -130,10 +130,14 @@
         <form class="form-horizontal">
           <div class="box-body">
             <div class="form-group">
-              <select class="form-control select2 select2-hidden-accessible" style="width: 25%;margin-left: 10%;" tabindex="-1" aria-hidden="true" v-model="recommendBtn">
+              <!--<select class="form-control select2 select2-hidden-accessible" style="width: 25%;margin-left: 10%;" tabindex="-1" aria-hidden="true" v-model="recommendBtn">
                 <option value="2">开</option>
                 <option value="1">关</option>
-              </select>
+              </select>-->
+              <input type="radio" id="one" value="One" v-model="picked" style="margin-left: 50px;">
+              <label for="one">开 (开通后，代理商设置的商户终端费率按产品费率执行)</label>
+              <input type="radio" id="two" value="Two" v-model="picked" style="margin-left: 50px;">
+              <label for="two">关</label>
             </div>
           </div>
           <!-- /.box-body -->
