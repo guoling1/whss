@@ -15,6 +15,27 @@
         <if test="status != null">
             AND status=#{status}
         </if>
+        <if test="startTime!=null and startTime!=''">
+            AND create_time <![CDATA[ >= ]]> #{startTime}
+        </if>
+        <if test="endTime!=null and endTime!=''">
+            AND create_time <![CDATA[ <= ]]> #{endTime}
+        </if>
+
+        <if test="startTime1!=null and startTime1!=''">
+            AND authentication_time <![CDATA[ >= ]]> #{startTime1}
+        </if>
+
+        <if test="endTime1!=null and endTime1!=''">
+            AND authentication_time <![CDATA[ <= ]]> #{endTime1}
+        </if>
+
+        <if test="startTime2!=null and startTime2!=''">
+            AND checked_time <![CDATA[ >= ]]> #{startTime2}
+        </if>
+        <if test="endTime2!=null and endTime2!=''">
+            AND checked_time <![CDATA[ <= ]]> #{endTime2}
+        </if>
     </select>
 
     <!--查询待审核总数-->
@@ -59,18 +80,18 @@
     </if>
 
     <if test="startTime1!=null and startTime1!=''">
-        AND authentication_time <![CDATA[ >= ]]> #{authenticationTime}
+        AND authentication_time <![CDATA[ >= ]]> #{startTime1}
     </if>
 
     <if test="endTime1!=null and endTime1!=''">
-        AND authentication_time <![CDATA[ <= ]]> #{authenticationTime}
+        AND authentication_time <![CDATA[ <= ]]> #{endTime1}
     </if>
 
     <if test="startTime2!=null and startTime2!=''">
-        AND checked_time <![CDATA[ >= ]]> #{checkedTime}
+        AND checked_time <![CDATA[ >= ]]> #{startTime2}
     </if>
     <if test="endTime2!=null and endTime2!=''">
-        AND checked_time <![CDATA[ <= ]]> #{checkedTime}
+        AND checked_time <![CDATA[ <= ]]> #{endTime2}
     </if>
         ORDER BY
             create_time DESC
