@@ -52,9 +52,23 @@
       </ul>
     </div>
   </div>
-  <div class="rules">
+  <div class="rules" id="rules">
     <span></span>
     规则
+  </div>
+  <div class="notice flexBox flex-box-column miss" id="notice">
+    <div class="cont">
+      <h5>推广规则：</h5>
+
+      <h6>1. 通过您的推广二维码注册，或者在注册时填写您的邀请码，才能算作您推广的好友</h6>
+
+      <h6>2. 指导好友提交资料通过审核后，收款达到2000元即可激活</h6>
+
+      <h6>3. 每笔分润金额 = 好友每笔收款金额 × (您的费率 - 好友费率)。如果好友的费率低于或等于您的费率，则好友在收款时您不享受分佣。</h6>
+
+      <h6>4. 好友2年内产生的收款参与分润</h6>
+    </div>
+    <div class="xx" id="xx"></div>
   </div>
   <div class="layer" id="layer">
     <div class="space flexBox flex-box-column">
