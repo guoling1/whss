@@ -17,7 +17,7 @@
   <link rel="stylesheet" href="http://static.jinkaimen.cn/weui/weui.css">
 </head>
 <body>
-<div id="dealerIndex">
+<div id="dealerIndex" class="dealerIndex">
   <div class="header">
     <div class="top">
       <!--头像-->
