@@ -42,9 +42,11 @@ public enum EnumNoticeType {
     /**
      * 代理商提现
      */
-    WITHDRAW_CODE_DEALER(702, "提现验证码");
+    WITHDRAW_CODE_DEALER(702, "提现验证码"),
 
+    //#############退款消息################
 
+    DUPLICATE_PAY_REFUND(801, "重复支付退款");
 
 
     private static final Map<Integer, EnumNoticeType> ENUM_MAP = new HashMap<>();
