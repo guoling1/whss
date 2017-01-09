@@ -20,6 +20,11 @@ import java.util.Date;
 public class MerchantTradeResponse {
 
     /**
+     *
+     */
+    private int level;
+
+    /**
      * 商户id
      */
     private long id;
@@ -79,6 +84,7 @@ public class MerchantTradeResponse {
      * 实付金额（未来可能有红包）
      */
     private BigDecimal realPayAmount;
+
 
     /**
      * 交易类型
