@@ -49,11 +49,11 @@
       <img src="http://static.jinkaimen.cn/hss/assets/banner.png" alt="">
     </div>
     <div class="application">
-      <a class="group touch_gr show_tj" href="/sqb/myRecommend">
+      <a class="group touch_gr" id="show_recommend" href="/sqb/myRecommend">
         <div class="logo friend"></div>
         <div class="text">推荐好友</div>
       </a>
-      <a class="group touch_gr show_tj" href="/sqb/upgradeMax">
+      <a class="group touch_gr" id="show_upgrade" href="/sqb/upgradeMax">
         <div class="logo upgrade"></div>
         <div class="text">我要升级</div>
       </a>
@@ -86,8 +86,8 @@
     showRecommend: '${showRecommend}'//1显示升级 2不显示升级
   }
   if(pageData.showRecommend==2){
-    var show_tj = document.getElementsByClassName('show_tj');
-    show_tj.style.display="none";
+    document.getElementById('show_recommend').style.display="none";
+    document.getElementById('show_upgrade').style.display="none";
   }
 </script>
 <script src="http://static.jinkaimen.cn/vendor/vendor.1.0.1.min.js"></script>
