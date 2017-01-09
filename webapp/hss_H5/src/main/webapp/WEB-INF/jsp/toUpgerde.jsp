@@ -17,12 +17,15 @@
   <div class="space flexBox flex-box-column">
     <div class="cont">
       <div class="info">
-        <%-- 店员 --%>
-        <%--<div class="assistant"></div>--%>
-        <%-- 店长 --%>
-        <%--<div class="manager"></div>--%>
-        <%-- 老板 --%>
-        <div class="boss"></div>
+          <c:if test="${upgradeRules.type==1}">
+              <div class="assistant"></div>
+          </c:if>
+          <c:if test="${upgradeRules.type==2}">
+              <div class="manager"></div>
+          </c:if>
+          <c:if test="${upgradeRules.type==3}">
+              <div class="boss"></div>
+          </c:if>
         <div class="name">${upgradeRules.name}</div>
       </div>
       <div class="payType">
