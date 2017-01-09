@@ -8,10 +8,11 @@
             <div class="form-group">
               <div class="col-xs-12">
                 产品选择：
-                <select class="form-control select2 select2-hidden-accessible" style="width: 25%;display: inline-block" tabindex="-1" aria-hidden="true">
+                <select class="form-control select2 select2-hidden-accessible" style="width: 25%;display: inline-block" tabindex="-1" aria-hidden="true" v-model="productId">
                   <option value="">请选择产品</option>
                   <option :value="list.productId" v-for="list in lists">{{list.productName}}</option>
                 </select>
+                <div @click="search" class="btn btn-primary">确定</div>
               </div>
             </div>
           </div>
@@ -141,12 +142,9 @@
     name:"invite",
     data(){
       return{
-        standard: '',
-        upgradeRate: '',
-        tradeRate:'',
-        rewardRate:'',
-        upgradeRulesList:[],
-        lists:[] //产品列表
+        result: '',
+        lists:[], //产品列表
+        productId:''
       }
     },
     created: function () {
@@ -158,21 +156,24 @@
             text: err.statusMessage
           })
         })
-        /*this.$http.post('/admin/upgrade/init',{productId:1})
+    },
+    methods: {
+      search: function () {
+        this.$http.post('/admin/upgrade/init', {productId: this.$data.productId})
           .then(function (res) {
             console.log(res)
-            this.$data.standard = res.data.standard;
+            /*this.$data.standard = res.data.standard;
             this.$data.upgradeRate = res.data.upgradeRate;
             this.$data.tradeRate = res.data.tradeRate;
             this.$data.rewardRate = res.data.rewardRate;
-            this.$data.upgradeRulesList = res.data.upgradeRulesList;
+            this.$data.upgradeRulesList = res.data.upgradeRulesList;*/
+            this.$data.result = res.data;
           }, function (err) {
             this.$store.commit('MESSAGE_ACCORD_SHOW', {
               text: err.statusMessage
             })
-          })*/
-    },
-    methods: {
+          })
+      },
       save: function () {
         /*this.$http.post('/admin/upgrade/addOrUpdate',{})
           .then(function (res) {
