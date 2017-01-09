@@ -4,7 +4,7 @@
 
     <!-- 通用查询结果列-->
     <sql id="Base_Column_List">
-        id,	merchant_id,type,upgrade_result,note,status,create_time,update_time
+        id,	merchant_id,type,level,note,status,create_time,update_time
     </sql>
 
     <!-- 添加 （匹配有值的字段）-->
@@ -17,8 +17,8 @@
             <if test="type != null">
                 type,
             </if>
-            <if test="upgradeResult != null">
-                upgrade_result,
+            <if test="level != null">
+                level,
             </if>
             <if test="note != null">
                 note,
@@ -34,8 +34,8 @@
             <if test="type!=null">
                 #{type},
             </if>
-            <if test="upgradeResult!=null">
-                #{upgradeResult},
+            <if test="level!=null">
+                #{level},
             </if>
             <if test="note!=null">
                 #{note},

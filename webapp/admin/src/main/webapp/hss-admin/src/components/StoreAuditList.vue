@@ -1,33 +1,75 @@
 <template lang="html">
-  <div id="storeList">
-    <div style="padding: 8px 30px; background: rgb(243, 156, 18); z-index: 999999; font-size: 22px; font-weight: 600;margin-bottom: 15px;    color: #fff;">待审核商户</div>
+  <div id="storeList" style="margin-top: 15px">
     <div class="col-xs-12">
       <div class="box">
+        <div class="box-header">
+          <h3 class="box-title">待审核商户</h3>
+        </div>
         <div class="box-body">
+          <div class="row">
+            <div class="col-md-2">
+              <div class="form-group">
+                <label>商户编号：</label>
+                <input type="text" class="form-control" v-model="markCode">
+              </div>
+            </div>
+            <div class="col-md-2">
+              <div class="form-group">
+                <label>商户名称</label>
+                <input type="text" class="form-control" v-model="merchantName">
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="form-group">
+                <label>注册时间：</label>
+                <div class="form-control">
+                  <input type="date" style="border: none;display:inline-block;width: 45%" name="date" value="" v-model="startTime">至
+                  <input type="date" style="border: none;display:inline-block;width: 45%" name="date" value="" v-model="endTime">
+                </div>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="form-group">
+                <label>认证时间：</label>
+                <div class="form-control">
+                  <input type="date" style="border: none;display:inline-block;width: 45%" name="date" value="" v-model="startTime1">至
+                  <input type="date" style="border: none;display:inline-block;width: 45%" name="date" value="" v-model="endTime1">
+                </div>
+              </div>
+            </div>
+            <div class="col-md-2">
+              <div class="btn btn-primary" @click="search" style="margin-top: 22px">筛选</div>
+              <!--<span @click="onload()" download="交易记录" class="btn btn-primary pull-right" style="float: right;color: #fff">导出</span>-->
+            </div>
+          </div>
           <div id="example2_wrapper" class="dataTables_wrapper form-inline dt-bootstrap">
             <div class="row">
               <div class="col-sm-12">
                 <table id="example2" class="table table-bordered table-hover dataTable" role="grid" aria-describedby="example2_info">
                   <thead>
                   <tr role="row">
+                    <th class="sorting_asc" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Rendering engine: activate to sort column descending">序号</th>
                     <th class="sorting_asc" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Rendering engine: activate to sort column descending">商户编号</th>
                     <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="Browser: activate to sort column ascending">商户名称</th>
-                    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="Platform(s): activate to sort column ascending">所属代理商</th>
-                    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="Engine version: activate to sort column ascending">所属代理商编号</th>
+                    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="Platform(s): activate to sort column ascending">所属一级代理商</th>
+                    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="Engine version: activate to sort column ascending">所属二级代理</th>
                     <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">注册时间</th>
                     <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">认证时间</th>
-                    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">可用状态</th>
+                    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">审核时间</th>
+                    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">状态</th>
                     <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">操作</th>
                   </tr>
                   </thead>
                   <tbody id="content">
-                  <tr role="row" class="odd" v-for="store in $$data.stores">
-                    <td class="sorting_1">{{store.id}}</td>
+                  <tr role="row" class="odd" v-for="(store,index) in $$data.stores">
+                    <td>{{(pageNo-1)*10+(index+1)}}</td>
+                    <td class="sorting_1">{{store.markCode}}</td>
                     <td>{{store.merchantName}}</td>
-                    <td>{{store.proxyName}}</td>
-                    <td>{{store.dealerId}}</td>
+                    <td>{{store.proxyName|changeName}}</td>
+                    <td>{{store.proxyName1|changeName}}</td>
                     <td>{{store.createTime|changeTime}}</td>
                     <td>{{store.authenticationTime|changeTime}}</td>
+                    <td>{{store.checkedTime|changeTime}}</td>
                     <td>{{store.status|status}}</td>
                     <td>
                       <div class="btn btn-primary" @click="audit($event,store.id,store.status)">{{store.status|operate}}</div>
@@ -36,9 +78,6 @@
                   </tbody>
                 </table>
               </div>
-            </div>
-            <div v-if="$$data.stores.length==0" class="row" style="text-align: center;color: red;font-size: 16px;">
-              <div class="col-sm-12">暂无待审核商户</div>
             </div>
             <div class="row">
               <div class="col-sm-5">
@@ -58,6 +97,16 @@
       </div>
       <!-- /.box -->
     </div>
+    <!--下载-->
+    <div class="box box-info mask" v-if="isMask">
+      <div class="box-body" style="text-align: center;font-size: 20px;">
+        确认下载吗？
+      </div>
+      <div class="box-footer clearfix" style="border-top: none">
+        <a :href="'http://'+$$url" @click="close()" class="btn btn-sm btn-info btn-flat pull-left">下载</a>
+        <a href="javascript:void(0)" @click="close()" class="btn btn-sm btn-default btn-flat pull-right">取消</a>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -71,18 +120,34 @@
         pageNo:1,
         pageSize:10,
         total:0,
-        status:'',
-        count:0
+        status:2,
+        isMask: false,
+        url: '',
+        count:0,
+        markCode:'',
+        startTime:'',
+        startTime1:'',
+        startTime2:'',
+        endTime:'',
+        endTime1:'',
+        endTime2:'',
       }
     },
     created: function () {
       var content = document.getElementById('content'),
         page = document.getElementById('page');
-      this.$http.post('/admin/queryRecord/getRecord',{
+      this.$http.post('/admin/query/getAll',{
         pageNo:this.$data.pageNo,
         pageSize:this.$data.pageSize,
         merchantName:this.$data.merchantName,
-        status: this.$data.status
+        status: this.$data.status,
+        markCode: this.$data.markCode,
+        startTime: this.$data.startTime,
+        endTime: this.$data.endTime,
+        startTime1: this.$data.startTime1,
+        endTime1: this.$data.endTime1,
+        startTime2: this.$data.startTime2,
+        endTime2: this.$data.endTime2,
       }).then(function (res) {
         this.$data.stores   = res.data.records;
         this.$data.total = res.data.totalPage;
@@ -106,6 +171,25 @@
       })
     },
     methods: {
+      onload:function () {
+        this.$data.isMask = true;
+        this.$http.post('/admin/query/downLoad',{
+          merchantName:this.$data.merchantName,
+          status: this.$data.status
+        })
+          .then(function (res) {
+            console.log(res)
+            this.$data.url = res.data.url;
+          },function (err) {
+            this.$store.commit('MESSAGE_ACCORD_SHOW', {
+              text: err.statusMessage
+            })
+            this.$data.isMask = false;
+          })
+      },
+      close: function () {
+        this.$data.isMask = false;
+      },
       audit: function (event, id, status) {
         this.$router.push({
           path: '/admin/record/StoreAudit', query: {
@@ -141,7 +225,7 @@
           n = Number(tarInn);
         }
         this.$data.pageNo = n;
-        this.$http.post('/admin/queryRecord/getRecord',{
+        this.$http.post('/admin/query/getAll',{
           pageNo:this.$data.pageNo,
           pageSize:this.$data.pageSize,
           merchantName:this.$data.merchantName,
@@ -149,6 +233,7 @@
         }).then(function (res) {
           this.$data.stores   = res.data.records;
           this.$data.total = res.data.totalPage;
+          this.$data.count = res.data.count;
           var str='',
             page=document.getElementById('page');
           str+='<li class="paginate_button previous disabled" id="example2_previous"><a href="#" aria-controls="example2" data-dt-idx="0" tabindex="0">上一页</a></li>'
@@ -167,10 +252,51 @@
           })
         })
       },
+      search: function () {
+        var content = document.getElementById('content'),
+          page = document.getElementById('page');
+        this.$data.pageNo=1;
+        this.$http.post('/admin/query/getAll',{
+          pageNo:this.$data.pageNo,
+          pageSize:this.$data.pageSize,
+          merchantName:this.$data.merchantName,
+          status: this.$data.status,
+          markCode: this.$data.markCode,
+          startTime: this.$data.startTime,
+          endTime: this.$data.endTime,
+          startTime1: this.$data.startTime1,
+          endTime1: this.$data.endTime1,
+          startTime2: this.$data.startTime2,
+          endTime2: this.$data.endTime2,
+        }).then(function (res) {
+          this.$data.stores  = res.data.records;
+          this.$data.total = res.data.totalPage;
+          this.$data.count = res.data.count;
+          var str='',
+            page=document.getElementById('page');
+          str+='<li class="paginate_button previous disabled" id="example2_previous"><a href="#" aria-controls="example2" data-dt-idx="0" tabindex="0">上一页</a></li>'
+          for (var i=1; i<=this.$data.total;i++){
+            if(i==this.$data.pageNo){
+              str+='<li class="paginate_button active"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">'+i+'</a></li></li>';
+              continue;
+            }
+            str+='<li class="paginate_button"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">'+i+'</a></li></li>'
+          }
+          str+='<li class="paginate_button next" id="example2_next"><a href="#" aria-controls="example2" data-dt-idx="7" tabindex="0">下一页</a></li>'
+          page.innerHTML=str;
+        }, function (err) {
+          this.$store.commit('MESSAGE_ACCORD_SHOW', {
+            text: err.statusMessage
+          })
+        })
+      }
     },
     computed:{
       $$data:function () {
         return this.$data
+      },
+      $$url: function () {
+        return this.$data.url
       }
     },
     filters: {
@@ -209,7 +335,20 @@
           var hour=val.getHours();
           var minute=val.getMinutes();
           var second=val.getSeconds();
-          return year+"-"+month+"-"+date+" "+hour+":"+minute+":"+second;
+          function tod(a) {
+            if(a<10){
+              a = "0"+a
+            }
+            return a;
+          }
+          return year+"-"+tod(month)+"-"+tod(date)+" "+tod(hour)+":"+tod(minute)+":"+tod(second);
+        }
+      },
+      changeName: function (val) {
+        if(val==null){
+          return "无"
+        }else {
+          return val
         }
       }
     }
@@ -236,8 +375,15 @@
     margin: 0 10px;
   }
 
-  a {
-    color: #42b983;
+  input,.form-control,.btn{
+    font-size: 12px;
+  }
+  .mask{
+    width: 30%;
+    position: fixed;
+    top: 30%;
+    left: 46%;
+    box-shadow: 0 0 15px #000;
   }
   .count{
     display: inline-block;

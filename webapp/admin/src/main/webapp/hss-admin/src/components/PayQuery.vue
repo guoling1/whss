@@ -1,11 +1,11 @@
 <template lang="html">
   <div id="payQuery">
-    <div style="padding: 8px 30px; background: rgb(243, 156, 18); z-index: 999999; font-size: 22px; font-weight: 600;margin-bottom: 15px;color: #fff;">
-      支付查询
-      <div class="btn btn-primary pull-right" @click="refresh()">刷新</div>
-    </div>
     <div class="col-md-12">
-      <div class="box" style="overflow: hidden">
+      <div class="box" style="margin-top:15px;overflow: hidden">
+        <div class="box-header">
+          <h3 class="box-title">支付查询</h3>
+          <span @click="onload()" download="交易记录" class="btn btn-primary" style="float: right;color: #fff">导出</span>
+        </div>
       <div class="box-body">
         <div class="row">
           <div class="col-md-3">
@@ -47,7 +47,6 @@
             </div>
           </div>
           <div class="col-md-3">
-            <span @click="onload()" download="交易记录" class="btn btn-primary" style="float: right;color: #fff">导出</span>
             <div class="btn btn-primary" @click="lookup" style="margin-top: 22px">筛选</div>
           </div>
         </div>
@@ -57,6 +56,7 @@
               <table id="example2" class="table table-bordered table-hover dataTable" role="grid" aria-describedby="example2_info">
                 <thead>
                 <tr role="row">
+                  <th class="sorting_asc" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Rendering engine: activate to sort column descending">序号</th>
                   <th class="sorting_asc" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Rendering engine: activate to sort column descending">支付流水号</th>
                   <th class="sorting_asc" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Rendering engine: activate to sort column descending">交易单号</th>
                   <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="Platform(s): activate to sort column ascending">支付金额</th>
@@ -74,7 +74,8 @@
                 </tr>
                 </thead>
                 <tbody id="content">
-                <tr role="row" v-for="order in $$orders">
+                <tr role="row" v-for="(order,index) in $$orders">
+                  <td>{{(query.pageNo-1)*10+(index+1)}}</td>
                   <td>{{order.sn|changeHide}}</td>
                   <td>{{order.orderNo|changeHide}}</td>
                   <td style="text-align: right;">{{order.payAmount}}</td>
@@ -113,7 +114,6 @@
         </div>
       </div>
     </div>
-
     </div>
     <!--下载-->
     <div class="box box-info mask" v-if="isMask">
@@ -321,6 +321,7 @@
             .then(function (res) {
               this.$data.orders=res.data.records;
               this.$data.total=res.data.totalPage;
+              this.$data.count=res.data.count;
               this.$data.url=res.data.ext;
               var str='',
                 page=document.getElementById('page');
@@ -419,7 +420,13 @@
           var hour=val.getHours();
           var minute=val.getMinutes();
           var second=val.getSeconds();
-          return year+"-"+month+"-"+date+" "+hour+":"+minute+":"+second;
+          function tod(a) {
+            if(a<10){
+              a = "0"+a
+            }
+            return a;
+          }
+          return year+"-"+tod(month)+"-"+tod(date)+" "+tod(hour)+":"+tod(minute)+":"+tod(second);
         }
       },
       changeHide: function (val) {
@@ -466,5 +473,8 @@
     display: inline-block;
     vertical-align: top;
     margin: 28px 10px;
+  }
+  .btn{
+    font-size: 12px;
   }
 </style>

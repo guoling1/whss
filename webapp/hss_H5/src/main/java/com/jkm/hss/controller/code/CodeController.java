@@ -2,11 +2,9 @@ package com.jkm.hss.controller.code;
 
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
-import com.jkm.base.common.entity.CommonResponse;
 import com.jkm.hss.admin.entity.QRCode;
 import com.jkm.hss.admin.service.QRCodeService;
 import com.jkm.hss.controller.BaseController;
-import com.jkm.hss.helper.ApplicationConsts;
 import com.jkm.hss.merchant.entity.MerchantInfo;
 import com.jkm.hss.merchant.entity.UserInfo;
 import com.jkm.hss.merchant.enums.EnumMerchantStatus;
@@ -24,7 +22,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
 import java.net.URLEncoder;
 
 /**
@@ -40,6 +37,7 @@ public class CodeController extends BaseController {
 
     @Autowired
     private MerchantInfoService merchantInfoService;
+
     @Autowired
     private UserInfoService userInfoService;
 
@@ -52,35 +50,12 @@ public class CodeController extends BaseController {
      */
     @RequestMapping(value = "/scanCode", method = RequestMethod.GET)
     public String scanCode(final HttpServletRequest request, final HttpServletResponse response, final Model model,@RequestParam(value = "openId", required = false) String openId) {
-//        log.info("扫码openId{}",openId);
-//        //如何没有openId跳授权页面
-//        if(openId==null||"".equals(openId)){
-//            String requestUrl = "";
-//            if(request.getQueryString() == null){
-//                requestUrl = "";
-//            }else{
-//                requestUrl = request.getQueryString();
-//            }
-//            log.info("跳转地址是{}",requestUrl);
-//            try {
-//                String encoderUrl = URLEncoder.encode(requestUrl, "UTF-8");
-//                return "redirect:"+ WxConstants.WEIXIN_MERCHANT_USERINFO+encoderUrl+ WxConstants.WEIXIN_USERINFO_REDIRECT;
-//            } catch (UnsupportedEncodingException e) {
-//                e.printStackTrace();
-//            }
-//
-//        }
         final String code = request.getParameter("code");
         final String sign = request.getParameter("sign");
-//        if ((Long.valueOf(code) >= Long.valueOf("100010063208")) && (Long.valueOf(code) <= Long.valueOf("100010068207"))) {
-//            return "redirect:http://"+ ApplicationConsts.getApplicationConfig().domain()+"/code/scanCode?" + "code" + "=" + code + "&" + "sign" + "=" + sign;
-//        }
         log.info("scan code[{}], sign is [{}]", code, sign);
         final Optional<QRCode> qrCodeOptional = this.qrCodeService.getByCode(code);
         Preconditions.checkState(qrCodeOptional.isPresent(), "QRCode not exist");
         final QRCode qrCode = qrCodeOptional.get();
-        //未分配，也可以扫码
-//        Preconditions.checkState(qrCode.isDistribute(), "QRCode not distribute");
         Preconditions.checkState(qrCode.isCorrectSign(sign), "sign is not correct");
         final long merchantId = qrCode.getMerchantId();
         final String agent = request.getHeader("User-Agent");
@@ -90,7 +65,6 @@ public class CodeController extends BaseController {
             Preconditions.checkState(userInfoOptional.isPresent(), "用户不存在");
             String openIdTemp = userInfoOptional.get().getOpenId();
             log.info("openIdTemp{}",openIdTemp);
-//            if(openId.equals(openIdTemp)){
             log.info("code[{}] is activate", code);
             final Optional<MerchantInfo> merchantInfoOptional = this.merchantInfoService.selectById(merchantId);
             Preconditions.checkState(merchantInfoOptional.isPresent(), "商户不存在");
@@ -235,25 +209,6 @@ public class CodeController extends BaseController {
             } else {
                 log.error("code[{}] is activate, but merchant[{}] is disabled", code, merchantId);
             }
-//            }else{
-//                log.info("code[{}] is activate", code);
-//                final Optional<MerchantInfo> merchantInfoOptional = this.merchantInfoService.selectById(merchantId);
-//                Preconditions.checkState(merchantInfoOptional.isPresent(), "merchant is not exist");
-//                final MerchantInfo merchantInfo = merchantInfoOptional.get();
-//                model.addAttribute("merchantId", merchantId);
-//                if (EnumMerchantStatus.PASSED.getId() == merchantInfo.getStatus()) {//审核通过
-//                    model.addAttribute("name", merchantInfo.getMerchantName());
-//                    if (agent.indexOf("MicroMessenger") > -1) {//weixin
-//                        url = "/sqb/paymentWx";
-//                    }
-//                    if (agent.indexOf("AliApp") > -1) {// AliApp
-//                        url = "/sqb/paymentZfb";
-//                    }
-//                }else{
-//                    log.info("code[{}], merchant is not pass", code);
-//                    url = "/sqb/unFinishedPrompt";
-//                }
-//            }
         } else {//注册
             Preconditions.checkState(agent.indexOf("MicroMessenger") > -1, "please register in weixin");
             model.addAttribute("code", code);

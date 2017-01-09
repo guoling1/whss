@@ -175,7 +175,7 @@
             AND a.order_no LIKE CONCAT('%',#{orderNo})
         </if>
         <if test="merchantName != null and merchantName!=''">
-            AND b.merchant_name = #{merchantName}
+            AND b.merchant_name LIKE CONCAT('%',#{merchantName},'%')
         </if>
         <if test="status != null and status!=''">
             AND a.status=#{status}
@@ -290,7 +290,7 @@
             AND a.order_no LIKE CONCAT('%',#{orderNo})
         </if>
         <if test="merchantName != null and merchantName!=''">
-            AND b.merchant_name = #{merchantName}
+            AND b.merchant_name LIKE CONCAT('%',#{merchantName},'%')
         </if>
         <if test="status != null and status!=''">
             AND a.status=#{status}
@@ -327,7 +327,7 @@
             AND a.order_no LIKE CONCAT('%',#{orderNo})
         </if>
         <if test="merchantName != null and merchantName!=''">
-            AND b.merchant_name = #{merchantName}
+            AND b.merchant_name LIKE CONCAT('%',#{merchantName},'%')
         </if>
         <if test="status != null and status!=''">
             AND a.status=#{status}

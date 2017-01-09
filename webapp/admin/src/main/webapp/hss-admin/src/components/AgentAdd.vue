@@ -1,7 +1,13 @@
 <template lang="html">
   <div id="agentAdd">
-    <div v-if="isShow" style="padding: 8px 30px; background: rgb(243, 156, 18); z-index: 999999; font-size: 22px; font-weight: 600;margin-bottom: 15px;color: #fff;">新增代理商</div>
-    <div v-if="!isShow" style="padding: 8px 30px; background: rgb(243, 156, 18); z-index: 999999; font-size: 22px; font-weight: 600;margin-bottom: 15px;color: #fff;">代理商资料</div>
+    <div v-if="isShow" class="box-header with-border" style="margin: 0 0 0 3px;">
+      <h3 class="box-title" style="border-left: 3px solid #e4e0e0;padding-left: 10px;">新增代理商</h3>
+    </div>
+    <div v-if="!isShow" class="box-header with-border" style="margin: 0 0 0 3px;">
+      <h3 class="box-title" style="border-left: 3px solid #e4e0e0;padding-left: 10px;">代理商资料</h3>
+    </div>
+    <!--<h3 v-if="isShow" class="box-title">新增代理商</h3>-->
+    <!--<div v-if="!isShow" style="padding: 8px 30px; background: rgb(243, 156, 18); z-index: 999999; font-size: 22px; font-weight: 600;margin-bottom: 15px;color: #fff;">代理商资料</div>-->
     <div style="margin: 0px 15px 15px;">
       <div class="box box-info">
         <div class="box-header with-border">
@@ -20,7 +26,7 @@
               <label for="name" class="col-sm-3 control-label">代理名称</label>
 
               <div class="col-sm-4">
-                <input type="text" class="form-control" id="name" name="name" placeholder="" v-model="$$data.name">
+                <input type="text" class="form-control" id="name" name="name" placeholder="代理商名称" v-model="$$data.name">
               </div>
             </div>
             <div class="form-group">
@@ -59,7 +65,7 @@
               <label for="idCard" class="col-sm-3 control-label">身份证号</label>
 
               <div class="col-sm-4">
-                <input type="text" class="form-control" id="idCard" name="idCard" placeholder="" v-model="$$data.idCard">
+                <input type="text" class="form-control" id="idCard" name="idCard" placeholder="开户身份证号" v-model="$$data.idCard">
               </div>
             </div>
             <div class="form-group">

@@ -141,5 +141,14 @@ public interface MerchantInfoService {
      * 推荐好友，大于某个金额去升级
      * @param merchantId
      */
-    void toUpgradeByRecommend(long merchantId, BigDecimal totalTradeMoney);
+    void toUpgradeByRecommend(long merchantId);
+
+    /**
+     * 升级
+     * @param reqSn
+     * @param result
+     * @return
+     */
+    void toUpgrade(String reqSn, String result);
+
 }
