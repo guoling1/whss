@@ -88,7 +88,7 @@
     </update>
 
     <!-- 查询（根据主键ID查询） -->
-    <select id="selectById" resultType="com.jkm.hss.dealer.entity.DealerUpgradeRate">
+    <select id="selectById" resultType="com.jkm.hss.dealer.entity.DealerUpgerdeRate">
         SELECT
         <include refid="Base_Column_List" />
         FROM tb_dealer_upgrade_rate
@@ -96,7 +96,7 @@
     </select>
 
     <!--查询所有记录-->
-    <select id="selectAll" resultType="com.jkm.hss.dealer.entity.DealerUpgradeRate">
+    <select id="selectAll" resultType="com.jkm.hss.dealer.entity.DealerUpgerdeRate">
         SELECT
         <include refid="Base_Column_List" />
         FROM tb_dealer_upgrade_rate
@@ -105,7 +105,7 @@
 
 
     <!--根据代理商id和产品id查询记录-->
-    <select id="selectByDealerIdAndProductId" resultType="com.jkm.hss.dealer.entity.DealerUpgradeRate">
+    <select id="selectByDealerIdAndProductId" resultType="com.jkm.hss.dealer.entity.DealerUpgerdeRate">
         SELECT
         <include refid="Base_Column_List" />
         FROM tb_dealer_upgrade_rate
