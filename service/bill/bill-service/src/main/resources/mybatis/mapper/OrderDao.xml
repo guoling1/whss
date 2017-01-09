@@ -6,6 +6,7 @@
         (
         pay_order_id,
         order_no,
+        sn,
         trade_amount,
         real_pay_amount,
         trade_type,
@@ -30,6 +31,7 @@
         (
         #{payOrderId},
         #{orderNo},
+        #{sn},
         #{tradeAmount},
         #{realPayAmount},
         #{tradeType},
@@ -56,6 +58,7 @@
         UPDATE tb_order
         SET
         order_no = #{orderNo},
+        sn = #{sn},
         trade_amount = #{tradeAmount},
         real_pay_amount = #{realPayAmount},
         trade_type = #{tradeType},
@@ -404,10 +407,16 @@
             AND order_no = #{orderNo}
         </if>
         <if test="payType != null">
-            AND pay_type = #{payType}
+            AND pay_type IN
+            <foreach collection="payType" index="index" item="item" open="(" close=")" separator=",">
+                #{item}
+            </foreach>
         </if>
-        <if test="payStatus > 0">
-            AND status = #{payStatus}
+        <if test="payStatus != null">
+            AND status IN
+            <foreach collection="payStatus" index="index" item="item" open="(" close=")" separator=",">
+                #{item}
+            </foreach>
         </if>
         <if test="startDate != null">
             AND create_time BETWEEN #{startDate} AND #{endDate}
@@ -423,10 +432,16 @@
             AND order_no = #{orderNo}
         </if>
         <if test="payType != null">
-            AND pay_type = #{payType}
+            AND pay_type IN
+            <foreach collection="payType" index="index" item="item" open="(" close=")" separator=",">
+                #{item}
+            </foreach>
         </if>
-        <if test="payStatus > 0">
-            AND status = #{payStatus}
+        <if test="payStatus != null">
+            AND status IN
+            <foreach collection="payStatus" index="index" item="item" open="(" close=")" separator=",">
+                #{item}
+            </foreach>
         </if>
         <if test="startDate != null">
             AND create_time BETWEEN #{startDate} AND #{endDate}
