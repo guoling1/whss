@@ -2719,6 +2719,25 @@ input:focus {
   padding-left: 15px;
   line-height: 26px;
 }
+#authentication .group {
+  width: 100%;
+  height: 50px;
+  line-height: 50px;
+  padding: 0 15px;
+  border-bottom: 1px solid #edeef5;
+}
+#authentication .group .name {
+  float: left;
+  line-height: 50px;
+  font-size: 15px;
+  color: #4a5171;
+}
+#authentication .group .value {
+  float: right;
+  line-height: 50px;
+  font-size: 15px;
+  color: #4a5171;
+}
 #ad img {
   width: 100%;
 }
