@@ -8,7 +8,7 @@ import java.math.BigDecimal;
 /**
  * Created by Thinkpad on 2016/12/29.
  * 推荐人规则分润
- * tb_dealer_recommend_rate
+ * tb_dealer_upgerde_rate
  */
 @Data
 public class DealerUpgerdeRate extends BaseEntity {

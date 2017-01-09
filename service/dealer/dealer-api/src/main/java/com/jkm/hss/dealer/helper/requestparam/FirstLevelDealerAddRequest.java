@@ -1,6 +1,5 @@
 package com.jkm.hss.dealer.helper.requestparam;
 
-import com.jkm.hss.dealer.entity.DealerUpgerdeRate;
 import lombok.Data;
 
 import java.math.BigDecimal;

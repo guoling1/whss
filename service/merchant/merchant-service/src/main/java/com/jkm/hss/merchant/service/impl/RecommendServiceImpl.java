@@ -5,7 +5,9 @@ import com.jkm.hss.merchant.dao.RecommendDao;
 import com.jkm.hss.merchant.entity.Recommend;
 import com.jkm.hss.merchant.entity.RecommendAndMerchant;
 import com.jkm.hss.merchant.entity.RecommendShort;
+import com.jkm.hss.merchant.enums.EnumMerchantStatus;
 import com.jkm.hss.merchant.enums.EnumRecommendType;
+import com.jkm.hss.merchant.helper.request.RecommendRequest;
 import com.jkm.hss.merchant.service.RecommendService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -61,33 +63,6 @@ public class RecommendServiceImpl implements RecommendService{
         return recommendDao.selectAll();
     }
 
-    /**
-     * 我推广的好友
-     *
-     * @param merchantId
-     * @return
-     */
-    @Override
-    public RecommendAndMerchant myRecommend(long merchantId) {
-        List<RecommendShort> list = recommendDao.myRecommend(merchantId);
-        RecommendAndMerchant recommendAndMerchant = new RecommendAndMerchant();
-        int direct = 0;
-        int indirect = 0;
-        if(list.size()>0){
-            for(int i=0;i<list.size();i++){
-                if (EnumRecommendType.INDIRECT.getId()==list.get(i).getType()){
-                    list.get(i).setName("*"+list.get(i).getName().substring(list.get(i).getName().length()-1,list.get(i).getName().length()));
-                    indirect++;
-                }else{
-                    direct++;
-                }
-            }
-        }
-        recommendAndMerchant.setRecommends(list);
-        recommendAndMerchant.setDirectCount(direct);
-        recommendAndMerchant.setIndirectCount(indirect);
-        return recommendAndMerchant;
-    }
 
     /**
      * 我的真实好友数量（验证通过并且消费达标）
@@ -109,6 +84,112 @@ public class RecommendServiceImpl implements RecommendService{
     @Override
     public List<Recommend> selectRecommend(long merchantId) {
         return recommendDao.selectRecommend(merchantId);
+    }
+
+
+
+    /**
+     * 按分页查询好友列表
+     *
+     * @param recommendRequest
+     * @return
+     */
+    @Override
+    public RecommendAndMerchant selectRecommend(RecommendRequest recommendRequest) {
+        int direct = 0;
+        int indirect = 0;
+        List<RecommendShort> list = recommendDao.selectRecommendByPage(recommendRequest);
+        RecommendAndMerchant recommendAndMerchant = new RecommendAndMerchant();
+        if(list.size()>0){
+            for(int i=0;i<list.size();i++){
+                if (EnumRecommendType.INDIRECT.getId()==list.get(i).getType()){
+                    list.get(i).setName("*"+list.get(i).getName().substring(list.get(i).getName().length()-1,list.get(i).getName().length()));
+                    list.get(i).setStatusName(getStatusName(list.get(i).getStatus()));
+                    indirect++;
+                }else{
+                    list.get(i).setStatusName(getStatusName(list.get(i).getStatus()));
+                    direct++;
+                }
+            }
+        }
+        recommendAndMerchant.setRecommends(list);
+        recommendAndMerchant.setDirectCount(direct);
+        recommendAndMerchant.setIndirectCount(indirect);
+        return recommendAndMerchant;
+    }
+
+    private String getStatusName(int status){
+        String name = "";
+        if(status==EnumMerchantStatus.LOGIN.getId()){
+            name=EnumMerchantStatus.LOGIN.getName();
+        }
+        if(status==EnumMerchantStatus.INIT.getId()){
+            name=EnumMerchantStatus.INIT.getName();
+        }
+        if(status==EnumMerchantStatus.ONESTEP.getId()){
+            name=EnumMerchantStatus.ONESTEP.getName();
+        }
+        if(status==EnumMerchantStatus.REVIEW.getId()){
+            name=EnumMerchantStatus.REVIEW.getName();
+        }
+        if(status==EnumMerchantStatus.PASSED.getId()){
+            name=EnumMerchantStatus.PASSED.getName();
+        }
+        if(status==EnumMerchantStatus.UNPASSED.getId()){
+            name=EnumMerchantStatus.UNPASSED.getName();
+        }
+        if(status==EnumMerchantStatus.FRIEND.getId()){
+            name=EnumMerchantStatus.FRIEND.getName();
+        }
+        return name;
+    }
+
+
+
+
+
+    /**
+     * 按分页查询好友列表总条数
+     *
+     * @param recommendRequest
+     * @return
+     */
+    @Override
+    public int selectRecommendCount(RecommendRequest recommendRequest) {
+        return recommendDao.selectRecommendCount(recommendRequest);
+    }
+
+    /**
+     * 间接好友数量
+     *
+     * @param merchantId
+     * @return
+     */
+    @Override
+    public int selectIndirectCount(long merchantId) {
+        return recommendDao.selectIndirectCount(merchantId);
+    }
+
+    /**
+     * 直接好友数量
+     *
+     * @param merchantId
+     * @return
+     */
+    @Override
+    public int selectDirectCount(long merchantId) {
+        return recommendDao.selectDirectCount(merchantId);
+    }
+
+    /**
+     * 查询商户的直接好友
+     *
+     * @param merchantId
+     * @return
+     */
+    @Override
+    public List<Recommend> selectDirectFriend(long merchantId) {
+        return recommendDao.selectDirectFriend(merchantId);
     }
 
 }

@@ -19,16 +19,11 @@ public class UpgradeRecord extends BaseEntity {
      */
     private int type;
 
+
     /**
-     *升级结果 0 等待结果 1.升级成功 2升级失败
+     *合伙人级别
      */
-    /**
-     * 升级结果
-     * 0.等待结果
-     * 1.升级成功
-     * 2.升级失败
-     */
-    private int upgradeResult;
+    private int level;
 
     /**
      * 备注

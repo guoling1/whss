@@ -3,6 +3,7 @@ package com.jkm.hss.merchant.dao;
 import com.jkm.hss.merchant.entity.Recommend;
 import com.jkm.hss.merchant.entity.RecommendAndMerchant;
 import com.jkm.hss.merchant.entity.RecommendShort;
+import com.jkm.hss.merchant.helper.request.RecommendRequest;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
@@ -56,4 +57,35 @@ public interface RecommendDao {
      * @return
      */
     List<Recommend> selectRecommend(@Param("merchantId") long merchantId);
+
+    /**
+     * 按分页查询好友列表
+     * @return
+     */
+    List<RecommendShort> selectRecommendByPage(RecommendRequest recommendRequest);
+    /**
+     * 按分页查询好友列表总条数
+     * @return
+     */
+    int selectRecommendCount(RecommendRequest recommendRequest);
+    /**
+     * 间接好友数量
+     * @param merchantId
+     * @return
+     */
+    int selectIndirectCount(@Param("merchantId") long merchantId);
+
+    /**
+     * 直接好友数量
+     * @param merchantId
+     * @return
+     */
+    int selectDirectCount(@Param("merchantId") long merchantId);
+
+    /**
+     * 查询商户的直接好友
+     * @param merchantId
+     * @return
+     */
+    List<Recommend> selectDirectFriend(@Param("merchantId") long merchantId);
 }
