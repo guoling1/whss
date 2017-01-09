@@ -886,7 +886,7 @@ public class LoginController extends BaseController {
 
     }
     /**
-     * 我的推广页面
+     * 推荐好友页面
      * @param request
      * @param response
      * @param model
@@ -1235,20 +1235,6 @@ public class LoginController extends BaseController {
         }
     }
 
-    /**
-     * 我要升级
-     * @param request
-     * @param response
-     * @param model
-     * @return
-     * @throws IOException
-     */
-    @RequestMapping(value = "/recharge", method = RequestMethod.GET)
-    public String recharge(final HttpServletRequest request, final HttpServletResponse response,final Model model) throws IOException {
-        String url = "";
-
-        return "redirect:"+url;
-    }
 
     /**
      * 算算H5
@@ -1398,7 +1384,7 @@ public class LoginController extends BaseController {
     }
 
     /**
-     * 支付成功页面
+     * 支付升级成功页面
      * @param request
      * @param response
      * @param model
