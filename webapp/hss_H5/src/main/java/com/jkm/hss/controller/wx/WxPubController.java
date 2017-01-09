@@ -811,7 +811,7 @@ public class WxPubController extends BaseController {
         if(!merchantInfo.isPresent()){
             return CommonResponse.simpleResponse(-2, "未登录");
         }
-        if(merchantInfo.get().getStatus()!=EnumMerchantStatus.PASSED.getId()||merchantInfo.get().getStatus()!=EnumMerchantStatus.FRIEND.getId()){
+        if(merchantInfo.get().getStatus()!=EnumMerchantStatus.PASSED.getId()&&merchantInfo.get().getStatus()!=EnumMerchantStatus.FRIEND.getId()){
             return CommonResponse.simpleResponse(-2, "未审核通过");
         }
         recommendRequest.setMerchantId(merchantInfo.get().getId());
