@@ -181,4 +181,15 @@ public class RecommendServiceImpl implements RecommendService{
         return recommendDao.selectDirectCount(merchantId);
     }
 
+    /**
+     * 查询商户的直接好友
+     *
+     * @param merchantId
+     * @return
+     */
+    @Override
+    public List<Recommend> selectDirectFriend(long merchantId) {
+        return recommendDao.selectDirectFriend(merchantId);
+    }
+
 }

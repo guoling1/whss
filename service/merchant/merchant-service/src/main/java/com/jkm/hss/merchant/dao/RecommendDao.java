@@ -81,4 +81,11 @@ public interface RecommendDao {
      * @return
      */
     int selectDirectCount(@Param("merchantId") long merchantId);
+
+    /**
+     * 查询商户的直接好友
+     * @param merchantId
+     * @return
+     */
+    List<Recommend> selectDirectFriend(@Param("merchantId") long merchantId);
 }

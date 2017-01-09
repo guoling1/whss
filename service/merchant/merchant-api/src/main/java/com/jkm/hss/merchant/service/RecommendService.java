@@ -75,5 +75,11 @@ public interface RecommendService {
      * @return
      */
     int selectDirectCount(long merchantId);
+    /**
+     * 查询商户的直接好友
+     * @param merchantId
+     * @return
+     */
+    List<Recommend> selectDirectFriend(long merchantId);
 
 }

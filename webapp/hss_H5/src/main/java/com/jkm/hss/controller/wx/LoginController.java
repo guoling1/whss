@@ -1325,7 +1325,7 @@ public class LoginController extends BaseController {
 
 
     /**
-     * 我的认证
+     * 立即升级
      * @param request
      * @param response
      * @param model
@@ -1376,7 +1376,7 @@ public class LoginController extends BaseController {
                             upgradePayRecordService.insert(upgradePayRecord);
                             isRedirect= true;
                             //// TODO: 2017/1/9
-                            url = "";
+                            url = "/buySuccess/100/201701091832000000";
                         }
                     }
                 }else{
@@ -1397,5 +1397,20 @@ public class LoginController extends BaseController {
         }
     }
 
+    /**
+     * 支付成功页面
+     * @param request
+     * @param response
+     * @param model
+     * @return
+     * @throws IOException
+     */
+    @RequestMapping(value = "/buySuccess/{amount}/{orderId}", method = RequestMethod.GET)
+    public String buySuccess(final HttpServletRequest request, final HttpServletResponse response, final Model model, @PathVariable("amount") String amount, @PathVariable("orderId") String orderId) throws IOException {
+        model.addAttribute("money", amount);
+        model.addAttribute("firstSn", orderId.substring(0, orderId.length() - 6));
+        model.addAttribute("secondSn", orderId.substring(orderId.length() - 6, orderId.length()));
+        return "/buySuccess";
+    }
 
 }
