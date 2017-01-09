@@ -30,10 +30,6 @@ public class MerchantInfoQueryServiceImpl implements MerchantInfoQueryService {
 
     @Override
     public int getCount(MerchantInfoRequest req) {
-//        Map<String,Object> map = new HashMap<String,Object>();
-//        map.put("merchantName",merchantInfoResponse.getMerchantName());
-//        map.put("status",merchantInfoResponse.getStatus());
-//        map.put("offset",merchantInfoResponse.getOffset());
         int count = merchantInfoQueryDao.getCount(req);
         return count;
     }
@@ -42,17 +38,6 @@ public class MerchantInfoQueryServiceImpl implements MerchantInfoQueryService {
     public List<MerchantInfoResponse> getRecord(MerchantInfoRequest req) {
 
         List<MerchantInfoResponse> list = this.merchantInfoQueryDao.getRecord(req);
-        if (list.size()>0){
-            for (int i=0;list.size()>i;i++){
-                if (list.get(i).getLevel()==1){
-                    list.get(i).setProxyName(list.get(i).getProxyName());
-                }
-                if (list.get(i).getLevel()==2){
-                    MerchantInfoResponse res = merchantInfoQueryDao.getProxyName(list.get(i).getFirstLevelDealerId());
-                    list.get(i).setProxyName1(res.getProxyName());
-                }
-            }
-        }
         return list;
     }
 
