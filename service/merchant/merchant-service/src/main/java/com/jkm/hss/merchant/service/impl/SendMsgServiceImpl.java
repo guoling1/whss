@@ -16,6 +16,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -104,42 +105,43 @@ public class SendMsgServiceImpl implements SendMsgService {
         }
 
     @Override
-    public void sendPushMessage(String money,String bankName,String bankNo,String touser) {
+    public void sendPushMessage(final BigDecimal totalAmount, final Date withdrawTime, final BigDecimal poundage,
+                                final String bankNo, final String toUser) {
         Map<String, String> ret = new HashMap<String, String>();
         String turl = "https://api.weixin.qq.com/cgi-bin/message/template/send?access_token="+ WxPubUtil.getToken();
 
-        HttpClient client = new DefaultHttpClient();
-        HttpPost method = new HttpPost(turl);
-        Date date=new Date();
-        DateFormat format=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        String time=format.format(date);
+        final HttpClient client = new DefaultHttpClient();
+        final HttpPost method = new HttpPost(turl);
         JsonParser jsonparer = new JsonParser();// 初始化解析json格式的对象
-        try
-        {
+        try {
+            final DateFormat format=new SimpleDateFormat("yyyy/MM/dd HH:mm");
             JSONObject jsonParam = new JSONObject();
 
             JSONObject jo = new JSONObject();
 
-            JSONObject first =new JSONObject();
-            first.put("value","恭喜，您的提现已转银行处理，具体到账时间以银行为准，请注意查收~~");
+            final JSONObject first =new JSONObject();
+            first.put("value","您于" + format.format(withdrawTime) + "申请的提现已到账，请查收。");
             jo.put("first",first);
-            JSONObject keyword1 =new JSONObject();
-            keyword1.put("value","￥"+ money);
-            jo.put("keyword1",keyword1);
-            JSONObject keyword2 =new JSONObject();
-            keyword2.put("value",time);
+
+            final JSONObject keyword1 =new JSONObject();
+            keyword1.put("value", totalAmount);
+            jo.put("keyword1", keyword1);
+
+            final JSONObject keyword2 =new JSONObject();
+            keyword2.put("value", poundage);
             jo.put("keyword2",keyword2);
-            JSONObject keyword3 =new JSONObject();
-            keyword3.put("value",bankName+"("+bankNo+")");
+
+            final JSONObject keyword3 =new JSONObject();
+            keyword3.put("value", totalAmount.subtract(poundage).toPlainString());
             jo.put("keyword3",keyword3);
+
             JSONObject remark = new JSONObject();
-            remark.put("value","感谢您的使用！如有疑问请联系客服!");
+            remark.put("value","到账银行卡尾号 " + bankNo + "，如有疑问，请联系我们：400-622-6233");
             jo.put("remark",remark);
-            jsonParam.put("touser",touser);
+            jsonParam.put("touser", toUser);
             jsonParam.put("template_id","pdQoWhmiFChbff5YTTzj-86X_z9OjUsc1aqWPVeX4R8");
             jsonParam.put("data",jo);
 
-            String tt  = jsonParam.toString();
             method.setEntity(new StringEntity(jsonParam.toString(), "UTF-8"));
             HttpResponse res = client.execute(method);
             String responseContent = null; // 响应内容

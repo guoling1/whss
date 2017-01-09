@@ -1,6 +1,5 @@
 <template lang="html">
   <div id="companyProfitDet">
-    <div style="padding: 8px 30px; background: rgb(243, 156, 18); z-index: 999999; font-size: 22px; font-weight: 600;margin-bottom: 15px;    color: #fff;">分润详情</div>
     <div style="margin: 0 15px;">
       <div class="box">
         <div class="box-header">
