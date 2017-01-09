@@ -209,7 +209,8 @@ public class WithdrawServiceImpl implements WithdrawService {
         if (order.isWithDrawing()) {
             final Account account = this.accountService.getByIdWithLock(accountId).get();
             order.setStatus(EnumOrderStatus.WITHDRAW_SUCCESS.getId());
-            order.setRemark(response.getSn());
+            order.setRemark(response.getMessage());
+            order.setSn(response.getSn());
             this.orderService.update(order);
             final FrozenRecord frozenRecord = this.frozenRecordService.getByBusinessNo(response.getOrderNo()).get();
             //解冻金额
@@ -241,7 +242,8 @@ public class WithdrawServiceImpl implements WithdrawService {
             final MerchantInfo merchant= this.merchantInfoService.getByAccountId(order.getPayer()).get();
             final UserInfo user = userInfoService.selectByMerchantId(merchant.getId()).get();
             log.info("商户[{}], 提现单[{}], 提现成功", merchant.getId(), order.getOrderNo());
-            this.sendMsgService.sendPushMessage(order.getTradeAmount().toPlainString(), merchant.getBankName(), merchant.getBankNoShort(), user.getOpenId());
+            this.sendMsgService.sendPushMessage(order.getTradeAmount(), orderOptional.get().getPaySuccessTime(),
+                    orderOptional.get().getPoundage(), merchant.getBankNoShort(), user.getOpenId());
         }
     }
 

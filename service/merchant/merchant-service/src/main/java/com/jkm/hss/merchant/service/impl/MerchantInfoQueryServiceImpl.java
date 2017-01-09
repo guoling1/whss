@@ -50,9 +50,9 @@ public class MerchantInfoQueryServiceImpl implements MerchantInfoQueryService {
     }
 
     @Override
-    public List<MerchantInfoResponse> getRecord(MerchantInfoResponse merchantInfoResponse) {
+    public List<MerchantInfoResponse> getRecord(MerchantInfoRequest req) {
 
-        List<MerchantInfoResponse> list = this.merchantInfoQueryDao.getRecord(merchantInfoResponse);
+        List<MerchantInfoResponse> list = this.merchantInfoQueryDao.getRecord(req);
         if (list.size()>0){
             for (int i=0;list.size()>i;i++){
                 if (list.get(i).getLevel()==1){
@@ -68,10 +68,10 @@ public class MerchantInfoQueryServiceImpl implements MerchantInfoQueryService {
     }
 
     @Override
-    public List<MerchantInfoResponse> getCountRecord() {
-        List<MerchantInfoResponse> list = this.merchantInfoQueryDao.getCountRecord();
+    public int getCountRecord(MerchantInfoRequest req) {
+        int count = this.merchantInfoQueryDao.getCountRecord(req);
 
-        return list;
+        return count;
     }
 
 
