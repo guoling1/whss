@@ -1,5 +1,6 @@
 package com.jkm.hss.merchant.dao;
 
+import com.jkm.hss.merchant.entity.LogResponse;
 import com.jkm.hss.merchant.entity.MerchantInfoResponse;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
@@ -24,4 +25,11 @@ public interface QueryMerchantInfoRecordDao {
     List<MerchantInfoResponse> getResults(@Param("level") int level,@Param("dealerId") long dealerId);
 
     List<MerchantInfoResponse> getFirstLevel(@Param("firstLevelDealerId") long firstLevelDealerId);
+
+    /**
+     * 审核记录
+     * @param merchantInfo
+     * @return
+     */
+    List<LogResponse> getLog(MerchantInfoResponse merchantInfo);
 }

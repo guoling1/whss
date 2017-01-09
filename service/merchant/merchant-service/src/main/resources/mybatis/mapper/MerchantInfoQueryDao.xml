@@ -2,28 +2,40 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.jkm.hss.merchant.dao.MerchantInfoQueryDao">
 
-    <select id="selectById" resultType="com.jkm.hss.merchant.entity.MerchantInfo">
-
-    </select>
-
-    <select id="selectByStatus" resultType="com.jkm.hss.merchant.entity.MerchantInfo">
-
-    </select>
-    <select id="selectByDealerId" resultType="com.jkm.hss.merchant.entity.MerchantInfo">
-
-    </select>
-
-
-    <select id="getCount" resultType="com.jkm.hss.merchant.entity.MerchantInfoResponse">
+    <select id="getCount" resultType="java.lang.Integer">
         SELECT
-            id,
-            merchant_name,
-            STATUS,
-            dealer_id,
-            create_time,
-            (select d.proxy_name from tb_dealer as d where d.id=dealer_id) as proxy_name
+           COUNT(*)
         FROM
             tb_merchant_info
+        WHERE 1=1
+        <if test="merchantName != null and merchantName != ''">
+            AND merchant_name=#{merchantName}
+        </if>
+
+        <if test="status != null">
+            AND status=#{status}
+        </if>
+        <if test="startTime!=null and startTime!=''">
+            AND create_time <![CDATA[ >= ]]> #{startTime}
+        </if>
+        <if test="endTime!=null and endTime!=''">
+            AND create_time <![CDATA[ <= ]]> #{endTime}
+        </if>
+
+        <if test="startTime1!=null and startTime1!=''">
+            AND authentication_time <![CDATA[ >= ]]> #{startTime1}
+        </if>
+
+        <if test="endTime1!=null and endTime1!=''">
+            AND authentication_time <![CDATA[ <= ]]> #{endTime1}
+        </if>
+
+        <if test="startTime2!=null and startTime2!=''">
+            AND checked_time <![CDATA[ >= ]]> #{startTime2}
+        </if>
+        <if test="endTime2!=null and endTime2!=''">
+            AND checked_time <![CDATA[ <= ]]> #{endTime2}
+        </if>
     </select>
 
     <!--查询待审核总数-->
@@ -35,22 +47,6 @@
         WHERE status=2
     </select>
 
-    <select id="selectByName" resultType="com.jkm.hss.merchant.entity.MerchantInfoResponse">
-        SELECT
-            id,
-            merchant_name,
-            STATUS,
-            dealer_id,
-            create_time,
-            (select d.proxy_name from tb_dealer as d where d.id=dealer_id) as proxy_name
-        FROM
-            tb_merchant_info
-        WHERE
-            merchant_name=#{merchantName}
-        ORDER BY
-            create_time DESC
-        LIMIT ${pageNo},${pageSize}
-    </select>
 
     <select id="getAll"  resultType="com.jkm.hss.merchant.entity.MerchantInfoResponse">
 
@@ -61,6 +57,7 @@
             dealer_id,
             create_time,
             authentication_time,
+            checked_time,
             (select d.proxy_name from tb_dealer as d where d.id=dealer_id) as proxy_name,
             (select d.level from tb_dealer as d where d.id=dealer_id) as level,
             (select d.first_level_dealer_id from tb_dealer as d where d.id=dealer_id) as firstLevelDealerId
@@ -75,37 +72,31 @@
         AND status=#{status}
     </if>
 
+    <if test="startTime!=null and startTime!=''">
+        AND create_time <![CDATA[ >= ]]> #{startTime}
+    </if>
+    <if test="endTime!=null and endTime!=''">
+        AND create_time <![CDATA[ <= ]]> #{endTime}
+    </if>
+
+    <if test="startTime1!=null and startTime1!=''">
+        AND authentication_time <![CDATA[ >= ]]> #{startTime1}
+    </if>
+
+    <if test="endTime1!=null and endTime1!=''">
+        AND authentication_time <![CDATA[ <= ]]> #{endTime1}
+    </if>
+
+    <if test="startTime2!=null and startTime2!=''">
+        AND checked_time <![CDATA[ >= ]]> #{startTime2}
+    </if>
+    <if test="endTime2!=null and endTime2!=''">
+        AND checked_time <![CDATA[ <= ]]> #{endTime2}
+    </if>
         ORDER BY
             create_time DESC
-        LIMIT ${pageNo},${pageSize}
+        LIMIT #{offset},#{pageSize}
 
-    </select>
-
-    <!--导出-->
-    <select id="selectMerchant"  resultType="com.jkm.hss.merchant.entity.MerchantInfoResponse">
-
-        SELECT
-        id,
-        merchant_name,
-        STATUS,
-        dealer_id,
-        create_time,
-        authentication_time,
-        (select d.proxy_name from tb_dealer as d where d.id=dealer_id) as proxy_name,
-        (select d.level from tb_dealer as d where d.id=dealer_id) as level,
-        (select d.first_level_dealer_id from tb_dealer as d where d.id=dealer_id) as firstLevelDealerId
-        FROM
-        tb_merchant_info
-        WHERE 1=1
-        <if test="merchantName != null and merchantName != ''">
-            AND merchant_name=#{merchantName}
-        </if>
-
-        <if test="status != null">
-            AND status=#{status}
-        </if>
-        ORDER BY
-        create_time DESC
     </select>
 
     <!--查询待审核商户-->
@@ -126,10 +117,9 @@
         WHERE status=2
         ORDER BY
         create_time DESC
-        LIMIT ${pageNo},${pageSize}
+        LIMIT #{pageNo},#{pageSize}
 
     </select>
-
 
     <select id="getProxyName"  resultType="com.jkm.hss.merchant.entity.MerchantInfoResponse">
 
@@ -150,7 +140,5 @@
         WHERE
         id=#{firstLevelDealerId}
     </select>
-
-
 
 </mapper>

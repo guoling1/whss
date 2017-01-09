@@ -154,7 +154,7 @@
       }
     },
     created:function(){
-      this.$http.post('http://192.168.1.20:8076/order/pay/listOrder',this.$data.query)
+      this.$http.post('http://pay.qianbaojiajia.com/order/pay/listOrder',this.$data.query)
         .then(function (res) {
           this.$data.orders=res.data.records;
           this.$data.total=res.data.totalPage;
@@ -200,7 +200,7 @@
     methods: {
       onload:function () {
         this.$data.isMask = true;
-        this.$http.post('http://192.168.1.20:8076/order/pay/exportExcel',this.$data.query)
+        this.$http.post('http://pay.qianbaojiajia.com/order/pay/exportExcel',this.$data.query)
           .then(function (res) {
             this.$data.url = res.data.url;
           },function (err) {
@@ -244,7 +244,7 @@
           n = Number(tarInn);
         }
         this.$data.query.pageNo = n;
-        this.$http.post('http://192.168.1.20:8076/order/pay/listOrder',this.$data.query)
+        this.$http.post('http://pay.qianbaojiajia.com/order/pay/listOrder',this.$data.query)
           .then(function (res) {
             this.$data.orders=res.data.records;
             this.$data.total=res.data.totalPage;
@@ -317,7 +317,7 @@
             text: "请输入开始时间"
           })
         }else {
-          this.$http.post('http://192.168.1.20:8076/order/pay/listOrder',this.$data.query)
+          this.$http.post('http://pay.qianbaojiajia.com/order/pay/listOrder',this.$data.query)
             .then(function (res) {
               this.$data.orders=res.data.records;
               this.$data.total=res.data.totalPage;
@@ -364,7 +364,7 @@
       //补单
       synchro: function (val) {
         console.log(val)
-        this.$http.post('http://192.168.1.20:8076/order/syncPayOrder',{sn:val})
+        this.$http.post('http://pay.qianbaojiajia.com/order/syncPayOrder',{sn:val})
           .then(function (res) {
             this.$store.commit('MESSAGE_ACCORD_SHOW', {
               text: res.msg

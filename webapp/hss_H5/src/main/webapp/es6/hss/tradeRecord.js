@@ -16,8 +16,8 @@ browser.elastic_touch('list');
 const Paging = _require('paging');
 new Paging('trade_record', {
   content: 'content',
-  url: '/wx/getOrderRecord',
-  size: 5,
+  url: '/trade/queryMerchantPayOrders',
+  size: 20,
   startDate: 'dateFrom',
   endDate: 'dateTo'
 });

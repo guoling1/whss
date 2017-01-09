@@ -77,8 +77,8 @@
                     <td>{{record.message}}</td>
                     <td>{{record.remark|changeHide}}</td>
                     <td>
-                      <a id="audit" v-if="record.status=='5'&&record.auditStatusValue==0" @click="audit()">审核</a>
-                      <span v-if="record.status=='5'&&record.auditStatusValue!=0">{{record.auditStatusValue}}</span>
+                      <router-link :to="{path:'/admin/record/withdrawalAudit',query:{orderNo:record.orderNo,sn:record.sn,requestTime:record.requestTime,amount:record.amount,receiptUserName:record.receiptUserName,playMoneyChannel:record.playMoneyChannel,status:record.status,bankCard:record.bankCard,message:record.message}}" id="audit" v-if="record.status=='5'&&record.auditStatus==0" >审核</router-link>
+                      <span v-if="record.status=='5'&&record.auditStatus!=0">{{record.auditStatusValue}}</span>
                     </td>
                   </tr>
                   </tbody>
@@ -156,7 +156,7 @@
       }
     },
     created:function () {
-      this.$http.post('http://192.168.1.20:8076/order/withdraw/listOrder',this.$data.query)
+      this.$http.post('http://pay.qianbaojiajia.com/order/withdraw/listOrder',this.$data.query)
         .then(function (res) {
           this.$data.records = res.data.records;
           this.$data.total = res.data.totalPage;
@@ -191,12 +191,9 @@
         })
     },
     methods: {
-      audit: function () {
-        this.$router.push("{path:'/admin/record/withdrawalAudit',query:{orderNo:record.orderNo,sn:record.sn,requestTime:record.requestTime,amount:record.amount,receiptUserName:record.receiptUserName,playMoneyChannel:record.playMoneyChannel,status:record.status,bankCard:record.bankCard,message:record.message}}")
-      },
       onload:function () {
         this.$data.isMask = true;
-        this.$http.post('http://192.168.1.20:8076/order/withdraw/exportExcel',this.$data.query)
+        this.$http.post('http://pay.qianbaojiajia.com/order/withdraw/exportExcel',this.$data.query)
           .then(function (res) {
             this.$data.url = res.data.url;
           },function (err) {
@@ -240,7 +237,7 @@
           n = Number(tarInn);
         }
         this.$data.query.pageNo = n;
-        this.$http.post('http://192.168.1.20:8076/order/withdraw/listOrder',this.$data.query)
+        this.$http.post('http://pay.qianbaojiajia.com/order/withdraw/listOrder',this.$data.query)
           .then(function (res) {
             this.$data.records = res.data.records;
             this.$data.total=res.data.totalPage;
@@ -275,7 +272,7 @@
       //筛选
       lookup: function () {
         this.$data.query.pageNo = 1;
-        this.$http.post('http://192.168.1.20:8076/order/withdraw/listOrder',this.$data.query)
+        this.$http.post('http://pay.qianbaojiajia.com/order/withdraw/listOrder',this.$data.query)
           .then(function (res) {
             this.$data.records = res.data.records;
             this.$data.total=res.data.totalPage;

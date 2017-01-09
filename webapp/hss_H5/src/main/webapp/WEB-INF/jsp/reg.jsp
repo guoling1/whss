@@ -39,8 +39,8 @@
       <input type="text" placeholder="请通过扫码注册获取邀请码" id="qrcode" value="" >
     </li>
   </ul>
-  <div style="padding:0 15px;">
-    <button class="reg" style="width:100%;margin:0;" id="submit">注册</button>
+  <div class="reg">
+    <button class="reg-btn" id="submit">注册</button>
   </div>
   <a style="text-align:center" href="/sqb/login">已有账号，直接登录</a>
 </div>
