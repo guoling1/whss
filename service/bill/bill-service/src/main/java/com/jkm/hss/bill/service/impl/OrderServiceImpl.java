@@ -431,8 +431,18 @@ public class OrderServiceImpl implements OrderService {
                 columns.add(list.get(i).getProxyName());
                 columns.add(list.get(i).getProxyName1());
                 columns.add(String.valueOf(list.get(i).getTradeAmount()));
-                columns.add(String.valueOf(list.get(i).getPayRate()));
-                columns.add(String.valueOf(list.get(i).getPoundage()));
+                if (list.get(i).getPayRate()==null){
+                    String x = " ";
+                    columns.add(x);
+                }else {
+                    columns.add(String.valueOf(list.get(i).getPayRate()));
+                }
+                if (list.get(i).getPoundage()==null){
+                    String x = " ";
+                    columns.add(x);
+                }else {
+                    columns.add(String.valueOf(list.get(i).getPoundage()));
+                }
                 if (list.get(i).getStatus()==1){
                     columns.add("待支付");
                 }
@@ -479,9 +489,6 @@ public class OrderServiceImpl implements OrderService {
                 }
                 if ("Z".equals(list.get(i).getPayType())){
                     columns.add("支付宝扫码");
-                }
-                if("".equals(list.get(i).getPayType())|| list.get(i).getPayType()==null){
-                    columns.add("-");
                 }
                 if (list.get(i).getPayChannelSign()==101){
                     columns.add("阳光微信扫码");
