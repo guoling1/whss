@@ -48,6 +48,7 @@ import com.jkm.hss.merchant.entity.BankCardBin;
 import com.jkm.hss.merchant.entity.MerchantInfo;
 import com.jkm.hss.merchant.entity.PastRecord;
 import com.jkm.hss.merchant.enums.EnumMerchantStatus;
+import com.jkm.hss.merchant.helper.ValidationUtil;
 import com.jkm.hss.merchant.service.BankCardBinService;
 import com.jkm.hss.merchant.service.PastRecordService;
 import com.jkm.hss.notifier.enums.EnumNoticeType;
@@ -434,6 +435,9 @@ public class DealerController extends BaseController {
         if (dealerOptional.isPresent()) {
             return CommonResponse.simpleResponse(-1, "代理商手机号已经注册");
         }
+        if(!ValidationUtil.isIdCard(secondLevelDealerAddRequest.getIdCard())){
+            return CommonResponse.simpleResponse(-1, "身份证格式不正确");
+        }
         final List<DealerChannelRate> channelRates = this.dealerRateService.getByDealerId(super.getDealerId());
         for (DealerChannelRate channelRate : channelRates) {
             if (channelRate.getChannelTypeSign() == EnumPayChannelSign.YG_WEIXIN.getId()) {
@@ -701,7 +705,7 @@ public class DealerController extends BaseController {
                     myMerchantResponse.setStatus("已注册");
                 } else if (EnumMerchantStatus.REVIEW.getId() == input.getStatus()) {
                     myMerchantResponse.setStatus(EnumMerchantStatus.REVIEW.getName());
-                } else if (EnumMerchantStatus.PASSED.getId() == input.getStatus()) {
+                } else if (EnumMerchantStatus.PASSED.getId() == input.getStatus()||EnumMerchantStatus.FRIEND.getId() == input.getStatus()) {
                     myMerchantResponse.setStatus(EnumMerchantStatus.PASSED.getName());
                 } else if (EnumMerchantStatus.UNPASSED.getId() == input.getStatus()) {
                     myMerchantResponse.setStatus(EnumMerchantStatus.UNPASSED.getName());

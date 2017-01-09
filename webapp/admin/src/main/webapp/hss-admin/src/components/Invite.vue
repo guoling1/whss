@@ -36,12 +36,16 @@
                         <th>无卡费率</th>
                         <th>升级费</th>
                         <th>邀请人数</th>
+                        <th>直接升级费奖励</th>
+                        <th>间推升级费奖励</th>
                       </tr>
                       <tr>
                         <td>普通</td>
                         <td>0.49%</td>
                         <td>0.49%</td>
                         <td>0.55%</td>
+                        <td>无</td>
+                        <td>无</td>
                         <td>无</td>
                         <td>无</td>
                       </tr>
@@ -52,6 +56,8 @@
                         <td><input type="text" name="name">%</td>
                         <td><input type="text" name="name">元</td>
                         <td><input type="text" name="name">人</td>
+                        <td><input type="text" name="name">元</td>
+                        <td><input type="text" name="name">元</td>
                       </tr>
                       <tr >
                         <td>店长</td>
@@ -60,6 +66,8 @@
                         <td><input type="text" name="name">%</td>
                         <td><input type="text" name="name">元</td>
                         <td><input type="text" name="name">人</td>
+                        <td><input type="text" name="name">元</td>
+                        <td><input type="text" name="name">元</td>
                       </tr>
                       <tr >
                         <td>老板</td>
@@ -68,9 +76,11 @@
                         <td><input type="text" name="name">%</td>
                         <td><input type="text" name="name">元</td>
                         <td><input type="text" name="name">人</td>
+                        <td><input type="text" name="name">元</td>
+                        <td><input type="text" name="name">元</td>
                       </tr>
                       <tr >
-                        <td colspan="6">邀请用户达标标准：收款满<input type="text" name="name" style="width: 100px;" v-model="standard">元
+                        <td colspan="6">邀请用户“激活”标准：收款满<input type="text" name="name" style="width: 100px;" v-model="standard">元
                         </td>
                       </tr>
                       </tbody></table>
@@ -121,6 +131,7 @@
         </form>
       </div>
       <div class="btn btn-primary" @click="save">保 存</div>
+      <span>(对新审核通过的有效)</span>
     </div>
   </div>
 </template>
@@ -135,13 +146,13 @@
         tradeRate:'',
         rewardRate:'',
         upgradeRulesList:[],
-        lists:[]    //产品列表
+        lists:[] //产品列表
       }
     },
     created: function () {
       this.$http.post("/admin/product/list")
         .then(function (res) {
-          this.$data.list = res.data
+          this.$data.lists = res.data
         },function (err) {
           this.$store.commit('MESSAGE_ACCORD_SHOW', {
             text: err.statusMessage

@@ -10,6 +10,12 @@ import java.util.Date;
 public class MerchantInfoResponse {
 
     /**
+     * 条数
+     */
+    private Integer offset;
+
+
+    /**
      * 微信费率
      */
     private BigDecimal weixinRate;

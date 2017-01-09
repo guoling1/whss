@@ -2,6 +2,7 @@ package com.jkm.hss.controller.wx;
 
 
 import com.google.common.base.Optional;
+import com.jkm.base.common.entity.CommonResponse;
 import com.jkm.base.common.util.CookieUtil;
 import com.jkm.base.common.util.DateFormatUtil;
 import com.jkm.hss.account.entity.Account;
@@ -11,21 +12,23 @@ import com.jkm.hss.bill.enums.EnumOrderStatus;
 import com.jkm.hss.bill.enums.EnumPaymentType;
 import com.jkm.hss.bill.service.OrderService;
 import com.jkm.hss.controller.BaseController;
-import com.jkm.hss.dealer.service.ShallProfitDetailService;
 import com.jkm.hss.helper.ApplicationConsts;
-import com.jkm.hss.merchant.entity.AccountInfo;
 import com.jkm.hss.merchant.entity.MerchantInfo;
 import com.jkm.hss.merchant.entity.OrderRecord;
 import com.jkm.hss.merchant.entity.UserInfo;
 import com.jkm.hss.merchant.enums.EnumMerchantStatus;
-import com.jkm.hss.merchant.enums.EnumSettlePeriodType;
 import com.jkm.hss.merchant.enums.EnumSettleStatus;
 import com.jkm.hss.merchant.enums.EnumTradeType;
 import com.jkm.hss.merchant.helper.MerchantSupport;
 import com.jkm.hss.merchant.helper.WxConstants;
 import com.jkm.hss.merchant.helper.WxPubUtil;
 import com.jkm.hss.merchant.service.*;
+import com.jkm.hss.product.entity.ProductChannelDetail;
+import com.jkm.hss.product.entity.UpgradeResult;
+import com.jkm.hss.product.entity.UpgradeRules;
 import com.jkm.hss.product.enums.EnumPayChannelSign;
+import com.jkm.hss.product.servcie.ProductChannelDetailService;
+import com.jkm.hss.product.servcie.UpgradeRulesService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
@@ -41,10 +44,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.net.URLDecoder;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -57,6 +61,7 @@ import java.util.Map;
 @Controller
 @RequestMapping(value = "/sqb")
 public class LoginController extends BaseController {
+
     @Autowired
     private UserInfoService userInfoService;
 
@@ -70,18 +75,30 @@ public class LoginController extends BaseController {
     private MerchantInfoCheckRecordService merchantInfoCheckRecordService;
 
     @Autowired
-    private ShallProfitDetailService shallProfitDetailService;
-    @Autowired
     private OrderRecordService orderRecordService;
+
+    @Autowired
+    private UpgradeRulesService upgradeRulesService;
+
+    @Autowired
+    private RecommendService recommendService;
+
     @Autowired
     private OrderService orderService;
+
     @Autowired
     private AccountService accountService;
+
+    @Autowired
+    private ProductChannelDetailService productChannelDetailService;
     /**
-     * 登录页面
+     * 扫固定码注册和微信公众号注册入口
      * @param request
      * @param response
+     * @param model
+     * @param code
      * @return
+     * @throws IOException
      */
     @RequestMapping(value = "/reg", method = RequestMethod.GET)
     public String reg(final HttpServletRequest request, final HttpServletResponse response, final Model model,@RequestParam(value = "code", required = false) String code) throws IOException {
@@ -96,35 +113,41 @@ public class LoginController extends BaseController {
             String url = "";
             Optional<UserInfo> userInfoOptional = userInfoService.selectByOpenId(super.getOpenId(request));
             if (userInfoOptional.isPresent()) {
-                Long merchantId = userInfoOptional.get().getMerchantId();
-                if (merchantId != null && merchantId != 0){
-                    Optional<MerchantInfo> result = merchantInfoService.selectById(merchantId);
-                    if (result.get().getStatus()== EnumMerchantStatus.LOGIN.getId()){//登录
-                        if(code!=null&&!"".equals(code)){
-                            model.addAttribute("code",code);
+                if(code!=null&&!"".equals(code)){
+                    model.addAttribute("message","您的微信已经绑定了好收收账号\n" +
+                            "请使用其他微信账号扫码");
+                    url = "/message";
+                }else{
+                    Long merchantId = userInfoOptional.get().getMerchantId();
+                    if (merchantId != null && merchantId != 0){
+                        Optional<MerchantInfo> result = merchantInfoService.selectById(merchantId);
+                        if (result.get().getStatus()== EnumMerchantStatus.LOGIN.getId()){//登录
+                            if(code!=null&&!"".equals(code)){
+                                model.addAttribute("code",code);
+                            }
+                            model.addAttribute("openId",userInfoOptional.get().getOpenId());
+                            url = "/reg";
+                        }else if(result.get().getStatus()== EnumMerchantStatus.INIT.getId()){
+                            url = "/sqb/addInfo";
+                            isRedirect= true;
+                        }else if(result.get().getStatus()== EnumMerchantStatus.ONESTEP.getId()){
+                            url = "/sqb/addNext";
+                            isRedirect= true;
+                        }else if(result.get().getStatus()== EnumMerchantStatus.REVIEW.getId()||
+                                result.get().getStatus()== EnumMerchantStatus.UNPASSED.getId()||
+                                result.get().getStatus()== EnumMerchantStatus.DISABLE.getId()){
+                            url = "/sqb/prompt";
+                            isRedirect= true;
+                        }else if(result.get().getStatus()== EnumMerchantStatus.PASSED.getId()||result.get().getStatus()== EnumMerchantStatus.FRIEND.getId()){//跳首页
+                            url = "/sqb/wallet";
+                            isRedirect= true;
                         }
-                        model.addAttribute("openId",userInfoOptional.get().getOpenId());
+                    }else {
+                        if(code!=null&&!"".equals(code)){
+                            model.addAttribute("qrCode",code);
+                        }
                         url = "/reg";
-                    }else if(result.get().getStatus()== EnumMerchantStatus.INIT.getId()){
-                        url = "/sqb/addInfo";
-                        isRedirect= true;
-                    }else if(result.get().getStatus()== EnumMerchantStatus.ONESTEP.getId()){
-                        url = "/sqb/addNext";
-                        isRedirect= true;
-                    }else if(result.get().getStatus()== EnumMerchantStatus.REVIEW.getId()||
-                            result.get().getStatus()== EnumMerchantStatus.UNPASSED.getId()||
-                            result.get().getStatus()== EnumMerchantStatus.DISABLE.getId()){
-                        url = "/sqb/prompt";
-                        isRedirect= true;
-                    }else if(result.get().getStatus()== EnumMerchantStatus.PASSED.getId()){//跳首页
-                        url = "/sqb/wallet";
-                        isRedirect= true;
                     }
-                }else {
-                    if(code!=null&&!"".equals(code)){
-                        model.addAttribute("qrCode",code);
-                    }
-                    url = "/reg";
                 }
             }else {
                 if(code!=null&&!"".equals(code)){
@@ -137,7 +160,6 @@ public class LoginController extends BaseController {
             }else{
                 return url;
             }
-
         }
     }
 
@@ -183,7 +205,7 @@ public class LoginController extends BaseController {
                             result.get().getStatus()== EnumMerchantStatus.DISABLE.getId()){
                         url = "/sqb/prompt";
                         isRedirect= true;
-                    }else if(result.get().getStatus()== EnumMerchantStatus.PASSED.getId()){//跳首页
+                    }else if(result.get().getStatus()== EnumMerchantStatus.PASSED.getId()||result.get().getStatus()== EnumMerchantStatus.FRIEND.getId()){//跳首页
                         url = "/sqb/wallet";
                         isRedirect= true;
                     }
@@ -246,7 +268,7 @@ public class LoginController extends BaseController {
                             result.get().getStatus()== EnumMerchantStatus.DISABLE.getId()){
                         url = "/sqb/prompt";
                         isRedirect= true;
-                    }else if(result.get().getStatus()== EnumMerchantStatus.PASSED.getId()){//跳首页
+                    }else if(result.get().getStatus()== EnumMerchantStatus.PASSED.getId()||result.get().getStatus()== EnumMerchantStatus.FRIEND.getId()){//跳首页
                         url = "/sqb/wallet";
                         isRedirect= true;
                     }
@@ -359,7 +381,7 @@ public class LoginController extends BaseController {
      * @throws IOException
      */
     @RequestMapping(value = "/charge", method = RequestMethod.GET)
-    public String qrCode(final HttpServletRequest request, final HttpServletResponse response, final Model model,@RequestParam(value = "qrCode", required = true) String qrCode,
+    public String charge(final HttpServletRequest request, final HttpServletResponse response, final Model model,@RequestParam(value = "qrCode", required = true) String qrCode,
                          @RequestParam(value = "name", required = true) String name,
                          @RequestParam(value = "money", required = true) String money) throws IOException {
         model.addAttribute("payUrl",URLDecoder.decode(qrCode, "UTF-8"));
@@ -375,7 +397,7 @@ public class LoginController extends BaseController {
      * @return
      */
     @RequestMapping(value = "/wallet", method = RequestMethod.GET)
-    public String reg(final HttpServletRequest request, final Model model) throws IOException {
+    public String wallet(final HttpServletRequest request, final Model model) throws IOException {
         if(!super.isLogin(request)){
             model.addAttribute("avaliable", "0.00");
         }else{
@@ -607,7 +629,7 @@ public class LoginController extends BaseController {
                             result.get().getStatus()== EnumMerchantStatus.DISABLE.getId()){
                         url = "/sqb/prompt";
                         isRedirect= true;
-                    }else if(result.get().getStatus()== EnumMerchantStatus.PASSED.getId()){//跳提现页面
+                    }else if(result.get().getStatus()== EnumMerchantStatus.PASSED.getId()||result.get().getStatus()== EnumMerchantStatus.FRIEND.getId()){//跳提现页面
                         url = "/tradeRecord";
                     }
                 }else{
@@ -662,7 +684,7 @@ public class LoginController extends BaseController {
                             result.get().getStatus()== EnumMerchantStatus.DISABLE.getId()){
                         url = "/sqb/prompt";
                         isRedirect= true;
-                    }else if(result.get().getStatus()== EnumMerchantStatus.PASSED.getId()){//跳提现页面
+                    }else if(result.get().getStatus()== EnumMerchantStatus.PASSED.getId()||result.get().getStatus()== EnumMerchantStatus.FRIEND.getId()){//跳提现页面
                         String bankNo = MerchantSupport.decryptBankCard(result.get().getBankNo());
                         model.addAttribute("bankName", result.get().getBankName());
                         model.addAttribute("bankNo",bankNo.substring(bankNo.length()-4,bankNo.length()));
@@ -771,5 +793,479 @@ public class LoginController extends BaseController {
             return "/tradeRecordDetail";
         }
     }
+
+    /**
+     * 登录页面
+     * @param request
+     * @param response
+     * @param model
+     * @return
+     * @throws IOException
+     */
+    @RequestMapping(value = "/login", method = RequestMethod.GET)
+    public String login(final HttpServletRequest request, final HttpServletResponse response, final Model model,@RequestParam(value = "mobile", required = false) String mobile) throws IOException {
+        String ul = request.getRequestURI();
+        if(!super.isLogin(request)){
+            return "redirect:"+ WxConstants.WEIXIN_USERINFO+ul+ WxConstants.WEIXIN_USERINFO_REDIRECT;
+        }else {
+            model.addAttribute("mobile",mobile);
+            return "/login";
+        }
+    }
+    /**
+     * 邀请注册
+     * @param request
+     * @param response
+     * @param model
+     * @return
+     * @throws IOException
+     */
+    @RequestMapping(value = "/invite/{id}", method = RequestMethod.GET)
+    public String invite(final HttpServletRequest request, final HttpServletResponse response, final Model model,@PathVariable("id") long id) throws IOException {
+        boolean isRedirect = false;
+        String ul = request.getRequestURI();
+        if(!super.isLogin(request)){
+            return "redirect:"+ WxConstants.WEIXIN_USERINFO+ul+ WxConstants.WEIXIN_USERINFO_REDIRECT;
+        }else {
+            String url = "";
+            Optional<UserInfo> userInfoOptional = userInfoService.selectByOpenId(super.getOpenId(request));
+            if (userInfoOptional.isPresent()) {
+                model.addAttribute("message","您已经注册过了\n" +
+                        "不能再被邀请注册");
+                url = "/message";
+            }else {
+                Optional<UserInfo> uiOptional = userInfoService.selectById(id);
+                model.addAttribute("inviteCode",MerchantSupport.decryptMobile(uiOptional.get().getMobile()));
+                url = "/reg";
+            }
+            if(isRedirect){
+                return "redirect:"+url;
+            }else{
+                return url;
+            }
+        }
+
+    }
+    /**
+     * 我的推广页面
+     * @param request
+     * @param response
+     * @param model
+     * @return
+     * @throws IOException
+     */
+    @RequestMapping(value = "/myRecommend", method = RequestMethod.GET)
+    public String myRecommend(final HttpServletRequest request, final HttpServletResponse response,final Model model) throws IOException {
+        boolean isRedirect = false;
+        String ul = request.getRequestURI();
+        if(!super.isLogin(request)){
+            return "redirect:"+ WxConstants.WEIXIN_USERINFO+ul+ WxConstants.WEIXIN_USERINFO_REDIRECT;
+        }else {
+            String url = "";
+            Optional<UserInfo> userInfoOptional = userInfoService.selectByOpenId(super.getOpenId(request));
+            if (userInfoOptional.isPresent()) {
+                Long merchantId = userInfoOptional.get().getMerchantId();
+                if (merchantId != null && merchantId != 0){
+                    Optional<MerchantInfo> result = merchantInfoService.selectById(merchantId);
+                    if (result.get().getStatus()== EnumMerchantStatus.LOGIN.getId()){//登录
+                        isRedirect= true;
+                        url = "/sqb/reg";
+                    }else if(result.get().getStatus()== EnumMerchantStatus.INIT.getId()){
+                        isRedirect= true;
+                        url = "/sqb/addInfo";
+                    }else if(result.get().getStatus()== EnumMerchantStatus.ONESTEP.getId()){
+                        isRedirect= true;
+                        url = "/sqb/addNext";
+                    }else if(result.get().getStatus()== EnumMerchantStatus.REVIEW.getId()||
+                            result.get().getStatus()== EnumMerchantStatus.UNPASSED.getId()||
+                            result.get().getStatus()== EnumMerchantStatus.DISABLE.getId()){
+                        isRedirect= true;
+                        url = "/sqb/prompt";
+                    }else if(result.get().getStatus()== EnumMerchantStatus.PASSED.getId()||result.get().getStatus()== EnumMerchantStatus.FRIEND.getId()){
+                        // TODO: 2016/12/29 累计分润
+                        url = "/myRecommend";
+                    }
+                }else {
+                    isRedirect= true;
+                    url = "/sqb/reg";
+                }
+            }else {
+                isRedirect= true;
+                url = "/sqb/reg";
+            }
+            if(isRedirect){
+                return "redirect:"+url;
+            }else{
+                return url;
+            }
+        }
+    }
+
+    private String getNameByLevel(int level){
+        String name = "";
+        if(level==0){
+            name="普通会员";
+        }
+        if(level==1){
+            name="店员";
+        }
+        if(level==2){
+            name="店长";
+        }
+        if(level==3){
+            name="老板";
+        }
+        return name;
+    }
+    /**
+     * 升级降费率(大尺寸)
+     * @param request
+     * @param response
+     * @param model
+     * @return
+     * @throws IOException
+     */
+    @RequestMapping(value = "/upgradeMax", method = RequestMethod.GET)
+    public String upgradeMax(final HttpServletRequest request, final HttpServletResponse response,final Model model) throws IOException {
+        boolean isRedirect = false;
+        String ul = request.getRequestURI();
+        if(!super.isLogin(request)){
+            return "redirect:"+ WxConstants.WEIXIN_USERINFO+ul+ WxConstants.WEIXIN_USERINFO_REDIRECT;
+        }else {
+            String url = "";
+            Optional<UserInfo> userInfoOptional = userInfoService.selectByOpenId(super.getOpenId(request));
+            if (userInfoOptional.isPresent()) {
+                Long merchantId = userInfoOptional.get().getMerchantId();
+                if (merchantId != null && merchantId != 0){
+                    Optional<MerchantInfo> result = merchantInfoService.selectById(merchantId);
+                    if (result.get().getStatus()== EnumMerchantStatus.LOGIN.getId()){//登录
+                        isRedirect= true;
+                        url = "/sqb/reg";
+                    }else if(result.get().getStatus()== EnumMerchantStatus.INIT.getId()){
+                        isRedirect= true;
+                        url = "/sqb/addInfo";
+                    }else if(result.get().getStatus()== EnumMerchantStatus.ONESTEP.getId()){
+                        isRedirect= true;
+                        url = "/sqb/addNext";
+                    }else if(result.get().getStatus()== EnumMerchantStatus.REVIEW.getId()||
+                            result.get().getStatus()== EnumMerchantStatus.UNPASSED.getId()||
+                            result.get().getStatus()== EnumMerchantStatus.DISABLE.getId()){
+                        isRedirect= true;
+                        url = "/sqb/prompt";
+                    }else if(result.get().getStatus()== EnumMerchantStatus.PASSED.getId()||result.get().getStatus()== EnumMerchantStatus.FRIEND.getId()){
+//                        Map<String, String> map = WxPubUtil.getUserInfo(userInfoOptional.get().getOpenId());
+                        Map<String, String> map=null;
+                        if(map==null){
+                            model.addAttribute("headimgUrl","");
+                        }else{
+                            model.addAttribute("headimgUrl",map.get("headimgurl").toString());
+                        }
+                        String phone = MerchantSupport.decryptMobile(result.get().getMobile());
+                        phone = phone.substring(0,3)+"***"+phone.substring(phone.length()-3,phone.length());
+                        model.addAttribute("mobile",phone);
+                        model.addAttribute("name",getNameByLevel(result.get().getLevel()));
+                        model.addAttribute("level",result.get().getLevel());
+                        model.addAttribute("weixinRate",result.get().getWeixinRate());
+                        model.addAttribute("alipayRate",result.get().getAlipayRate());
+                        model.addAttribute("fastRate",result.get().getFastRate());
+
+                        List<ProductChannelDetail> productChannelDetails = productChannelDetailService.selectByProductId(result.get().getProductId());
+                        if(productChannelDetails.size()==0){
+                            model.addAttribute("message","该产品商户基础费率不存在");
+                            return "/500";
+                        }
+                        //商户升级规则设置
+                        List<UpgradeResult> list = new ArrayList<UpgradeResult>();
+                        UpgradeResult upgradeResult = new UpgradeResult();
+                        upgradeResult.setId(0);
+                        upgradeResult.setName("普通");
+                        upgradeResult.setType(0);
+                        upgradeResult.setIsUpgrade(1);
+                        for(int i=0;i<productChannelDetails.size();i++){
+                            if(EnumPayChannelSign.YG_WEIXIN.getId()==productChannelDetails.get(i).getChannelTypeSign()){
+                                upgradeResult.setWeixinRate(productChannelDetails.get(i).getProductMerchantPayRate());
+                            }
+                            if(EnumPayChannelSign.YG_ZHIFUBAO.getId()==productChannelDetails.get(i).getChannelTypeSign()){
+                                upgradeResult.setAlipayRate(productChannelDetails.get(i).getProductMerchantPayRate());
+                            }
+                            if(EnumPayChannelSign.YG_YINLIAN.getId()==productChannelDetails.get(i).getChannelTypeSign()){
+                                upgradeResult.setFastRate(productChannelDetails.get(i).getProductMerchantPayRate());
+                            }
+                        }
+                        list.add(upgradeResult);
+                        List<UpgradeResult> list1 =  upgradeRulesService.selectUpgradeList(result.get().getProductId(),result.get().getLevel());
+                        list.addAll(list1);
+                        model.addAttribute("upgradeArray",list);
+                        url = "/upgradeMax";
+                    }
+                }else {
+                    isRedirect= true;
+                    url = "/sqb/reg";
+                }
+            }else {
+                isRedirect= true;
+                url = "/sqb/reg";
+            }
+            if(isRedirect){
+                return "redirect:"+url;
+            }else{
+                return url;
+            }
+        }
+    }
+    /**
+     * 升级降费率(小尺寸)
+     * @param request
+     * @param response
+     * @param model
+     * @return
+     * @throws IOException
+     */
+    @RequestMapping(value = "/upgradeMin", method = RequestMethod.GET)
+    public String upgradeMin(final HttpServletRequest request, final HttpServletResponse response,final Model model) throws IOException {
+        boolean isRedirect = false;
+        String ul = request.getRequestURI();
+        if(!super.isLogin(request)){
+            return "redirect:"+ WxConstants.WEIXIN_USERINFO+ul+ WxConstants.WEIXIN_USERINFO_REDIRECT;
+        }else {
+            String url = "";
+            Optional<UserInfo> userInfoOptional = userInfoService.selectByOpenId(super.getOpenId(request));
+            if (userInfoOptional.isPresent()) {
+                Long merchantId = userInfoOptional.get().getMerchantId();
+                if (merchantId != null && merchantId != 0){
+                    Optional<MerchantInfo> result = merchantInfoService.selectById(merchantId);
+                    if (result.get().getStatus()== EnumMerchantStatus.LOGIN.getId()){//登录
+                        isRedirect= true;
+                        url = "/sqb/reg";
+                    }else if(result.get().getStatus()== EnumMerchantStatus.INIT.getId()){
+                        isRedirect= true;
+                        url = "/sqb/addInfo";
+                    }else if(result.get().getStatus()== EnumMerchantStatus.ONESTEP.getId()){
+                        isRedirect= true;
+                        url = "/sqb/addNext";
+                    }else if(result.get().getStatus()== EnumMerchantStatus.REVIEW.getId()||
+                            result.get().getStatus()== EnumMerchantStatus.UNPASSED.getId()||
+                            result.get().getStatus()== EnumMerchantStatus.DISABLE.getId()){
+                        isRedirect= true;
+                        url = "/sqb/prompt";
+                    }else if(result.get().getStatus()== EnumMerchantStatus.PASSED.getId()||result.get().getStatus()== EnumMerchantStatus.FRIEND.getId()){
+//                        Map<String, String> map = WxPubUtil.getUserInfo(userInfoOptional.get().getOpenId());
+                        Map<String, String> map=null;
+                        if(map==null){
+                            model.addAttribute("headimgUrl","");
+                        }else{
+                            model.addAttribute("headimgUrl",map.get("headimgurl").toString());
+                        }
+                        String phone = MerchantSupport.decryptMobile(result.get().getMobile());
+                        phone = phone.substring(0,3)+"***"+phone.substring(phone.length()-3,phone.length());
+                        model.addAttribute("mobile",phone);
+                        model.addAttribute("name",getNameByLevel(result.get().getLevel()));
+                        model.addAttribute("level",result.get().getLevel());
+                        model.addAttribute("weixinRate",result.get().getWeixinRate());
+                        model.addAttribute("alipayRate",result.get().getAlipayRate());
+                        model.addAttribute("fastRate",result.get().getFastRate());
+
+                        List<ProductChannelDetail> productChannelDetails = productChannelDetailService.selectByProductId(result.get().getProductId());
+                        if(productChannelDetails.size()==0){
+                            model.addAttribute("message","该产品商户基础费率不存在");
+                            return "/500";
+                        }
+                        //商户升级规则设置
+                        List<UpgradeResult> list = new ArrayList<UpgradeResult>();
+                        UpgradeResult upgradeResult = new UpgradeResult();
+                        upgradeResult.setId(0);
+                        upgradeResult.setName("普通");
+                        upgradeResult.setType(0);
+                        upgradeResult.setIsUpgrade(1);
+                        for(int i=0;i<productChannelDetails.size();i++){
+                            if(EnumPayChannelSign.YG_WEIXIN.getId()==productChannelDetails.get(i).getChannelTypeSign()){
+                                upgradeResult.setWeixinRate(productChannelDetails.get(i).getProductMerchantPayRate());
+                            }
+                            if(EnumPayChannelSign.YG_ZHIFUBAO.getId()==productChannelDetails.get(i).getChannelTypeSign()){
+                                upgradeResult.setAlipayRate(productChannelDetails.get(i).getProductMerchantPayRate());
+                            }
+                            if(EnumPayChannelSign.YG_YINLIAN.getId()==productChannelDetails.get(i).getChannelTypeSign()){
+                                upgradeResult.setFastRate(productChannelDetails.get(i).getProductMerchantPayRate());
+                            }
+                        }
+                        list.add(upgradeResult);
+                        List<UpgradeResult> list1 =  upgradeRulesService.selectUpgradeList(result.get().getProductId(),result.get().getLevel());
+                        list.addAll(list1);
+                        model.addAttribute("upgradeArray",list);
+                        url = "/upgradeMin";
+                    }
+                }else {
+                    isRedirect= true;
+                    url = "/sqb/reg";
+                }
+            }else {
+                isRedirect= true;
+                url = "/sqb/reg";
+            }
+            if(isRedirect){
+                return "redirect:"+url;
+            }else{
+                return url;
+            }
+        }
+    }
+    /**
+     * 我要升级
+     * @param request
+     * @param response
+     * @param model
+     * @return
+     * @throws IOException
+     */
+    @RequestMapping(value = "/toUpgrade/{id}", method = RequestMethod.GET)
+    public String toUpgrade(final HttpServletRequest request, final HttpServletResponse response,final Model model,@PathVariable("id") long id) throws IOException {
+        boolean isRedirect = false;
+        String ul = request.getRequestURI();
+        if(!super.isLogin(request)){
+            return "redirect:"+ WxConstants.WEIXIN_USERINFO+ul+ WxConstants.WEIXIN_USERINFO_REDIRECT;
+        }else {
+            String url = "";
+            Optional<UserInfo> userInfoOptional = userInfoService.selectByOpenId(super.getOpenId(request));
+            if (userInfoOptional.isPresent()) {
+                Long merchantId = userInfoOptional.get().getMerchantId();
+                if (merchantId != null && merchantId != 0){
+                    Optional<MerchantInfo> result = merchantInfoService.selectById(merchantId);
+                    if (result.get().getStatus()== EnumMerchantStatus.LOGIN.getId()){//登录
+                        isRedirect= true;
+                        url = "/sqb/reg";
+                    }else if(result.get().getStatus()== EnumMerchantStatus.INIT.getId()){
+                        isRedirect= true;
+                        url = "/sqb/addInfo";
+                    }else if(result.get().getStatus()== EnumMerchantStatus.ONESTEP.getId()){
+                        isRedirect= true;
+                        url = "/sqb/addNext";
+                    }else if(result.get().getStatus()== EnumMerchantStatus.REVIEW.getId()||
+                            result.get().getStatus()== EnumMerchantStatus.UNPASSED.getId()||
+                            result.get().getStatus()== EnumMerchantStatus.DISABLE.getId()){
+                        isRedirect= true;
+                        url = "/sqb/prompt";
+                    }else if(result.get().getStatus()== EnumMerchantStatus.PASSED.getId()||result.get().getStatus()== EnumMerchantStatus.FRIEND.getId()){
+                        Optional<UpgradeRules> upgradeRulesOptional = upgradeRulesService.selectById(id);
+                        if(upgradeRulesOptional.isPresent()){
+                            if(result.get().getLevel()>=upgradeRulesOptional.get().getType()){
+                                model.addAttribute("message","暂无此级别信息");
+                                return "/500";
+                            }else{
+                                model.addAttribute("upgradeRules",upgradeRulesOptional.get());
+                                int hasCount = recommendService.selectFriendCount(result.get().getId());
+                                model.addAttribute("restCount",upgradeRulesOptional.get().getPromotionNum()-hasCount);
+                                model.addAttribute("merchantId",result.get().getId());
+                                model.addAttribute("shareUrl","http://"+ApplicationConsts.getApplicationConfig().domain()+"/invite/"+userInfoOptional.get().getId());
+                                return "/toUpgerde";
+                            }
+                        }else{
+                            model.addAttribute("message","暂无此级别信息");
+                            return "/500";
+                        }
+                    }
+                }else {
+                    isRedirect= true;
+                    url = "/sqb/reg";
+                }
+            }else {
+                isRedirect= true;
+                url = "/sqb/reg";
+            }
+            if(isRedirect){
+                return "redirect:"+url;
+            }else{
+                return url;
+            }
+        }
+    }
+
+    /**
+     * 我要升级
+     * @param request
+     * @param response
+     * @param model
+     * @return
+     * @throws IOException
+     */
+    @RequestMapping(value = "/recharge", method = RequestMethod.GET)
+    public String recharge(final HttpServletRequest request, final HttpServletResponse response,final Model model) throws IOException {
+        String url = "";
+
+        return "redirect:"+url;
+    }
+
+    /**
+     * 算算H5
+     * @param request
+     * @param response
+     * @param model
+     * @return
+     * @throws IOException
+     */
+    @RequestMapping(value = "/suansuan", method = RequestMethod.GET)
+    public String suansuan(final HttpServletRequest request, final HttpServletResponse response,final Model model) throws IOException {
+        return "/suansuan";
+    }
+
+    /**
+     * 我的认证
+     * @param request
+     * @param response
+     * @param model
+     * @return
+     * @throws IOException
+     */
+    @RequestMapping(value = "/authentication", method = RequestMethod.GET)
+    public String authentication(final HttpServletRequest request, final HttpServletResponse response,final Model model) throws IOException {
+        boolean isRedirect = false;
+        if(!super.isLogin(request)){
+            return "redirect:"+ WxConstants.WEIXIN_USERINFO+request.getRequestURI()+ WxConstants.WEIXIN_USERINFO_REDIRECT;
+        }else {
+            String url = "";
+            Optional<UserInfo> userInfoOptional = userInfoService.selectByOpenId(super.getOpenId(request));
+            if (userInfoOptional.isPresent()) {
+                Long merchantId = userInfoOptional.get().getMerchantId();
+                if (merchantId != null && merchantId != 0){
+                    Optional<MerchantInfo> result = merchantInfoService.selectById(merchantId);
+                    if (result.get().getStatus()== EnumMerchantStatus.LOGIN.getId()){//登录
+                        url = "/sqb/reg";
+                        isRedirect= true;
+                    }else if(result.get().getStatus()== EnumMerchantStatus.INIT.getId()){
+                        url = "/sqb/addInfo";
+                        isRedirect= true;
+                    }else if(result.get().getStatus()== EnumMerchantStatus.ONESTEP.getId()){
+                        url = "/sqb/addNext";
+                        isRedirect= true;
+                    }else if(result.get().getStatus()== EnumMerchantStatus.REVIEW.getId()||
+                            result.get().getStatus()== EnumMerchantStatus.UNPASSED.getId()||
+                            result.get().getStatus()== EnumMerchantStatus.DISABLE.getId()){
+                        url = "/sqb/prompt";
+                        isRedirect= true;
+                    }else if(result.get().getStatus()== EnumMerchantStatus.PASSED.getId()||result.get().getStatus()== EnumMerchantStatus.FRIEND.getId()){//跳首页
+                        model.addAttribute("merchantName",result.get().getMerchantName());
+                        model.addAttribute("address",result.get().getAddress());
+                        model.addAttribute("createTime",result.get().getCreateTime()==null?"":DateFormatUtil.format(result.get().getCreateTime(), DateFormatUtil.yyyy_MM_dd_HH_mm_ss));
+                        model.addAttribute("name",result.get().getName());
+                        model.addAttribute("authenticationTime",result.get().getAuthenticationTime()==null?"":DateFormatUtil.format(result.get().getAuthenticationTime(), DateFormatUtil.yyyy_MM_dd_HH_mm_ss));
+                        url = "/authentication";
+                    }
+                }else{
+                    CookieUtil.deleteCookie(response,ApplicationConsts.MERCHANT_COOKIE_KEY,ApplicationConsts.getApplicationConfig().domain());
+                    url = "/sqb/reg";
+                    isRedirect= true;
+                }
+            }else{
+                CookieUtil.deleteCookie(response,ApplicationConsts.MERCHANT_COOKIE_KEY,ApplicationConsts.getApplicationConfig().domain());
+                isRedirect= true;
+                url = "/sqb/reg";
+            }
+            if(isRedirect){
+                return "redirect:"+url;
+            }else{
+                return url;
+            }
+        }
+    }
+
 
 }

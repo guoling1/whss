@@ -3,6 +3,7 @@ package com.jkm.hss.merchant.entity;
 import com.jkm.base.common.entity.BaseEntity;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 
@@ -107,6 +108,55 @@ public class MerchantInfo extends BaseEntity{
      */
     private String bankNoShort;
 
+    /**
+     * 一级代理商编码
+     */
+    private long firstDealerId;
+    /**
+     * 二级代理商编码
+     */
+    private long secondDealerId;
+    /**
+     * 直接商户
+     */
+    private long firstMerchantId;
+    /**
+     * 间接商户
+     */
+    private long secondMerchantId;
+    /**
+     * 商户标示码
+     */
+    private String markCode;
+    /**
+     * 合伙人级别
+     *
+     */
+    private Integer level;
+    /**
+     * 微信费率
+     */
+    private BigDecimal weixinRate;
+    /**
+     * 支付宝费率
+     */
+    private BigDecimal alipayRate;
+    /**
+     * 快捷费率
+     */
+    private BigDecimal fastRate;
+    /**
+     * 当前商户层级
+     */
+    private Integer hierarchy;
+    /**
+     * 产品编码
+     */
+    private Long productId;
+    /**
+     * 商户来源
+     */
+    private int source;
 
 
 }

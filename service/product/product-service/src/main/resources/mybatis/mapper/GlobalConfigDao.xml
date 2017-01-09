@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jkm.hss.product.dao.GlobalConfigDao">
+
+    <!-- 通用查询结果列-->
+    <sql id="Base_Column_List">
+		 id,	config_key,	config_value,	status,	create_time,	update_time
+	</sql>
+
+    <!-- 添加 （匹配有值的字段）-->
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO tb_global_config
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test="configKey != null">
+                config_key,
+            </if>
+            <if test="configValue != null">
+                config_value,
+            </if>
+            <if test="status != null">
+                status,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+            <if test="configKey!=null">
+                #{configKey},
+            </if>
+            <if test="configValue!=null">
+                #{configValue},
+            </if>
+            <if test="status!=null">
+                #{status},
+            </if>
+        </trim>
+    </insert>
+
+    <!-- 修 改-->
+    <update id="update">
+        UPDATE tb_global_config
+        <set>
+            <if test="configKey != null">
+                config_key = #{configKey},
+            </if>
+            <if test="configValue != null">
+                config_value = #{configValue},
+            </if>
+            <if test="status != null">
+                status = #{status},
+            </if>
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <!-- 查询（根据主键ID查询） -->
+    <select id="selectById" resultType="com.jkm.hss.product.entity.GlobalConfig">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM tb_global_config
+        WHERE id = #{id} and status=1
+    </select>
+
+    <!--查询所有记录-->
+    <select id="selectAll" resultType="com.jkm.hss.product.entity.GlobalConfig">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM tb_global_config
+        WHERE status = 1
+    </select>
+
+
+</mapper>
