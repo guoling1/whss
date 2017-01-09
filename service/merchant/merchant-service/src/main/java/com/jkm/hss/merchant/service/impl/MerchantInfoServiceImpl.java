@@ -19,12 +19,13 @@ import com.jkm.hss.merchant.service.MerchantInfoService;
 import com.jkm.hss.merchant.service.RecommendService;
 import com.jkm.hss.merchant.service.UpgradeRecordService;
 import com.jkm.hss.product.entity.Product;
+import com.jkm.hss.product.entity.UpgradePayRecord;
 import com.jkm.hss.product.entity.UpgradeRecommendRules;
+import com.jkm.hss.product.entity.UpgradeRules;
 import com.jkm.hss.product.enums.EnumPayChannelSign;
 import com.jkm.hss.product.enums.EnumUpGradeType;
-import com.jkm.hss.product.servcie.ProductChannelDetailService;
-import com.jkm.hss.product.servcie.ProductService;
-import com.jkm.hss.product.servcie.UpgradeRecommendRulesService;
+import com.jkm.hss.product.enums.EnumUpgradePayResult;
+import com.jkm.hss.product.servcie.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.Triple;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,6 +55,10 @@ public class MerchantInfoServiceImpl implements MerchantInfoService {
     private UpgradeRecordService upgradeRecordService;
     @Autowired
     private RecommendService recommendService;
+    @Autowired
+    private UpgradeRulesService upgradeRulesService;
+    @Autowired
+    private UpgradePayRecordService upgradePayRecordService;
 
 
 
@@ -207,6 +212,7 @@ public class MerchantInfoServiceImpl implements MerchantInfoService {
         return this.merchantInfoDao.addAccountId(accountId, status, merchantId,checkedTime);
     }
 
+
     /**
      * 推荐好友，大于某个金额去升级
      *
@@ -240,7 +246,6 @@ public class MerchantInfoServiceImpl implements MerchantInfoService {
                             upgradeRecord.setMerchantId(merchantId);
                             upgradeRecord.setStatus(EnumStatus.NORMAL.getId());
                             upgradeRecord.setType(EnumUpgradeRecordType.RECOMMEND.getId());
-                            upgradeRecord.setUpgradeResult(EnumUpgradeResult.SUCCESS.getId());
                             upgradeRecordService.insert(upgradeRecord);
                         }else{
                             log.info("该商户刷的额度不够");
@@ -256,6 +261,38 @@ public class MerchantInfoServiceImpl implements MerchantInfoService {
             }
         }catch (Exception e){
             log.error("系统出错",e);
+        }
+    }
+
+    /**
+     * 升级
+     *
+     * @param reqSn
+     * @param result
+     * @return
+     */
+    @Override
+    public void toUpgrade(String reqSn, String result) {
+        UpgradePayRecord upgradePayRecord = upgradePayRecordService.selectByReqSn(reqSn);
+        if(upgradePayRecord!=null){
+            if(!EnumUpgradePayResult.SUCCESS.getId().equals(upgradePayRecord.getPayResult())){
+                upgradePayRecordService.updatePayResult(result,reqSn);
+                Optional<UpgradeRules> upgradeRulesOptional = upgradeRulesService.selectById(upgradePayRecord.getUpgradeRulesId());
+                if(upgradeRulesOptional.isPresent()){
+                    merchantInfoDao.toUpgrade(upgradePayRecord.getMerchantId(),upgradeRulesOptional.get().getType(),upgradeRulesOptional.get().getWeixinRate(),upgradeRulesOptional.get().getAlipayRate(),upgradeRulesOptional.get().getFastRate());
+                    //判断直接好友或间接好友是否需要升级
+                    UpgradeRecord upgradeRecord = new UpgradeRecord();
+                    upgradeRecord.setMerchantId(upgradePayRecord.getMerchantId());
+                    upgradeRecord.setStatus(EnumStatus.NORMAL.getId());
+                    upgradeRecord.setType(EnumUpgradeRecordType.RECHARGE.getId());
+                    upgradeRecord.setLevel(upgradeRulesOptional.get().getType());
+                    upgradeRecordService.insert(upgradeRecord);
+                }else{
+                    log.info("没有此合伙人{}",upgradePayRecord.getUpgradeRulesId());
+                }
+            }
+        }else{
+            log.info("付费升级失败，没有查到该记录{}",reqSn);
         }
     }
 

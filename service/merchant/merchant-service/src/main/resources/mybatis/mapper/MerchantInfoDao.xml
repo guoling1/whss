@@ -415,4 +415,11 @@
     <select id="selectByMobile" resultType="com.jkm.hss.merchant.entity.MerchantInfo">
         SELECT * from tb_merchant_info where mobile=#{mobile} limit 0,1
     </select>
+
+    <update id="toUpgrade">
+        UPDATE tb_merchant_info
+        SET level = #{level},weixin_rate = #{weixinRate},alipay_rate = #{alipayRate},fast_rate = #{fastRate}
+        WHERE id = #{merchantId}
+    </update>
+
 </mapper>

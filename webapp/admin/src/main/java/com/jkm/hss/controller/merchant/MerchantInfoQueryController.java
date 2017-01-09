@@ -15,6 +15,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -32,9 +36,34 @@ public class MerchantInfoQueryController extends BaseController {
 
     @ResponseBody
     @RequestMapping(value = "/getAll",method = RequestMethod.POST)
-    public CommonResponse<BaseEntity> getAll(@RequestBody MerchantInfoRequest req) {
+    public CommonResponse<BaseEntity> getAll(@RequestBody MerchantInfoRequest req) throws ParseException {
         final PageModel<MerchantInfoResponse> pageModel = new PageModel<MerchantInfoResponse>(req.getPageNo(), req.getPageSize());
         req.setOffset(pageModel.getFirstIndex());
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        if(req.getEndTime()!=null&&!"".equals(req.getEndTime())){
+//            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            Date dt = sdf.parse(req.getEndTime());
+            Calendar rightNow = Calendar.getInstance();
+            rightNow.setTime(dt);
+            rightNow.add(Calendar.DATE, 1);
+            req.setEndTime(sdf.format(rightNow.getTime()));
+        }
+        if(req.getEndTime1()!=null&&!"".equals(req.getEndTime1())){
+//            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            Date dt = sdf.parse(req.getEndTime1());
+            Calendar rightNow = Calendar.getInstance();
+            rightNow.setTime(dt);
+            rightNow.add(Calendar.DATE, 1);
+            req.setEndTime1(sdf.format(rightNow.getTime()));
+        }
+        if(req.getEndTime2()!=null&&!"".equals(req.getEndTime2())){
+//            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            Date dt = sdf.parse(req.getEndTime2());
+            Calendar rightNow = Calendar.getInstance();
+            rightNow.setTime(dt);
+            rightNow.add(Calendar.DATE, 1);
+            req.setEndTime2(sdf.format(rightNow.getTime()));
+        }
         long count = this.merchantInfoQueryService.getCount(req);
         List<MerchantInfoResponse> list = this.merchantInfoQueryService.getAll(req);
         if (list == null){

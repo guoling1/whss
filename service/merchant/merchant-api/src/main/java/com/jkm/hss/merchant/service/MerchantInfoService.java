@@ -142,4 +142,13 @@ public interface MerchantInfoService {
      * @param merchantId
      */
     void toUpgradeByRecommend(long merchantId, BigDecimal totalTradeMoney);
+
+    /**
+     * 升级
+     * @param reqSn
+     * @param result
+     * @return
+     */
+    void toUpgrade(String reqSn, String result);
+
 }

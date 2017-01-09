@@ -20,7 +20,7 @@
                                             alt=""></c:if>
       <c:if test="${not empty headimgUrl}"><img src="${headimgUrl}" alt=""></c:if>
     </div>
-    <div class="status">${mobile} <span>普通会员</span></div>
+    <div class="status">${mobile} <span>${name}</span></div>
   </div>
   <div class="upgrade">
     <div class="small" onclick="javascript:location.href='/sqb/suansuan'">升级合伙人，不仅能降费率，推广好友还能拿分润</div>
@@ -62,9 +62,9 @@
                   ${item.name}
               </div>
             </c:if>
-            <div class="li w22 w">${item.weixinRate*100}% <br> 无分佣</div>
-            <div class="li w22 w">${item.alipayRate*100}% <br> 无分佣</div>
-            <div class="li w22 w">${item.fastRate*100}% <br> 无分佣</div>
+            <div class="li w22 w"><fmt:formatNumber value="${item.weixinRate*100}" pattern="0.00#"/>% <br> 无分佣</div>
+            <div class="li w22 w"><fmt:formatNumber value="${item.alipayRate*100}" pattern="0.00#"/>% <br> 无分佣</div>
+            <div class="li w22 w"><fmt:formatNumber value="${item.fastRate*100}" pattern="0.00#"/>% <br> 无分佣</div>
           </div>
         </c:if>
         <c:if test="${status.index==1}">
@@ -97,9 +97,9 @@
                   ${item.name}
               </div>
             </c:if>
-            <div class="li w22 w">${item.weixinRate*100}% <br> 万三分佣</div>
-            <div class="li w22 w">${item.alipayRate*100}% <br> 万三分佣</div>
-            <div class="li w22 w">${item.fastRate*100}% <br> 万三分佣</div>
+            <div class="li w22 w"><fmt:formatNumber value="${item.weixinRate*100}" pattern="0.00#"/>% <br> 万三分佣</div>
+            <div class="li w22 w"><fmt:formatNumber value="${item.alipayRate*100}" pattern="0.00#"/>% <br> 万三分佣</div>
+            <div class="li w22 w"><fmt:formatNumber value="${item.fastRate*100}" pattern="0.00#"/>% <br> 万三分佣</div>
           </div>
         </c:if>
 
@@ -133,9 +133,9 @@
                   ${item.name}
               </div>
             </c:if>
-            <div class="li w22 w">${item.weixinRate*100}% <br> 万五分佣</div>
-            <div class="li w22 w">${item.alipayRate*100}% <br> 万五分佣</div>
-            <div class="li w22 w">${item.fastRate*100}% <br> 万五分佣</div>
+            <div class="li w22 w"><fmt:formatNumber value="${item.weixinRate*100}" pattern="0.00#"/>% <br> 万五分佣</div>
+            <div class="li w22 w"><fmt:formatNumber value="${item.alipayRate*100}" pattern="0.00#"/>% <br> 万五分佣</div>
+            <div class="li w22 w"><fmt:formatNumber value="${item.fastRate*100}" pattern="0.00#"/>% <br> 万五分佣</div>
           </div>
         </c:if>
 
@@ -169,9 +169,9 @@
                   ${item.name}
               </div>
             </c:if>
-            <div class="li w22 w">${item.weixinRate*100}% <br> 万七分佣</div>
-            <div class="li w22 w">${item.alipayRate*100}% <br> 万七分佣</div>
-            <div class="li w22 w">${item.fastRate*100}% <br> 万七分佣</div>
+            <div class="li w22 w"><fmt:formatNumber value="${item.weixinRate*100}" pattern="0.00#"/>% <br> 万七分佣</div>
+            <div class="li w22 w"><fmt:formatNumber value="${item.alipayRate*100}" pattern="0.00#"/>% <br> 万七分佣</div>
+            <div class="li w22 w"><fmt:formatNumber value="${item.fastRate*100}" pattern="0.00#"/>% <br> 万七分佣</div>
           </div>
         </c:if>
       </c:forEach>
