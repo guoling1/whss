@@ -24,16 +24,16 @@
   <div class="top">
     <div class="promote-title">累计分润(元)</div>
     <div class="amount">${totalProfit}</div>
-    <div class="qr-code"><span></span>我的推广二维码</div>
+    <div class="qr-code" id="shareShow"><span></span>我的推广二维码</div>
   </div>
   <div class="bottom flexBox flex-box-column">
     <div class="teb">
-      <div class="space shadow-right">我的分润</div>
-      <div class="space shadow-left disabled">我推广的好友</div>
+      <div class="space shadow-right" id="profitsBtn">我的分润</div>
+      <div class="space shadow-left disabled" id="friendsBtn">我推广的好友</div>
     </div>
     <div class="cont">
-      <ul class="window">
-        <li>
+      <ul class="window" id="windows">
+        <li id="profits">
           <div class="list">
             <div class="name">张伟<span class="z">直接</span></div>
             <div class="date">2016/10/26</div>
@@ -45,7 +45,7 @@
             <div class="amount">2.00元</div>
           </div>
         </li>
-        <li>
+        <li id="friends">
           <div class="total">我推广的好友(直接:4人 间接:17人)</div>
           <div class="list">
             <div class="name">张伟<span class="z">直接</span></div>
@@ -63,12 +63,12 @@
     <span></span>
     规则
   </div>
-  <div class="layer">
+  <div class="layer" id="layer">
     <div class="space flexBox flex-box-column">
       <div class="content flexBox flex-box-column">
         <div class="logo"></div>
         <div class="qr-code">
-          <div></div>
+          <div id="qr"></div>
         </div>
         <div class="word">微信识别二维码，即刻开通收款</div>
       </div>
@@ -91,5 +91,8 @@
     shareUrl: '${shareUrl}'
   }
 </script>
+<script src="http://static.jinkaimen.cn/qrcode/qrcode.min.js"></script>
 <script src="http://static.jinkaimen.cn/vendor/vendor.1.0.1.min.js"></script>
+<%--<script src="http://static.jinkaimen.cn/hss/2.0.1/myRecommend.min.js"></script>--%>
+<script src="/js/hss/2.0.1/myRecommend.min.js"></script>
 </html>

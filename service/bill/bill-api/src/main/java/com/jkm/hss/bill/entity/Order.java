@@ -31,6 +31,11 @@ public class Order extends BaseEntity {
     private String orderNo;
 
     /**
+     * 流水好
+     */
+    private String sn;
+
+    /**
      * 交易金额
      */
     private BigDecimal tradeAmount;

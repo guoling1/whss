@@ -28,7 +28,7 @@
       <div class="operation-title">收款</div>
     </a>
 
-    <div class="operation" id="tt">
+    <div class="operation" id="tt" onclick="javascript:location.href='/sqb/drawCash'">
       <div class="logo wallet"></div>
       <div class="operation-title">余额</div>
       <div class="operation-small">${avaliable}</div>
@@ -41,7 +41,7 @@
   <div class="record">
     <a href="/sqb/tradeRecord" class="group touch_gr"><span class="record"></span>收款记录</a>
     <a href="/sqb/bank" class="group touch_gr"><span class="bank"></span>银行卡</a>
-    <a href="/sqb/authentication" class="group"><span class="user"></span>用户认证</a>
+    <a href="/sqb/authentication" class="group touch_gr"><span class="user"></span>用户认证</a>
     <a href="http://mp.weixin.qq.com/s/-GYEGM7PAboICupcETBPhw" class="group touch_gr"><span class="help"></span>使用帮助</a>
   </div>
   <div class="flexBox flex-box-column">
@@ -50,12 +50,10 @@
     </div>
     <div class="application">
       <a class="group touch_gr" href="/sqb/myRecommend">
-        <div class="ing"></div>
         <div class="logo friend"></div>
         <div class="text">推荐好友</div>
       </a>
-      <a class="group" href="/sqb/upgradeMax">
-        <div class="ing"></div>
+      <a class="group touch_gr" href="/sqb/upgradeMax">
         <div class="logo upgrade"></div>
         <div class="text">我要升级</div>
       </a>
