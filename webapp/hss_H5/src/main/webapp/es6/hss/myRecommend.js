@@ -16,6 +16,21 @@ const friendsBtn = document.getElementById('friendsBtn');
 const directCount = document.getElementById('directCount');
 const indirectCount = document.getElementById('indirectCount');
 const windows = document.getElementById('windows');
+let notice = document.getElementById('notice');
+let rules = document.getElementById('rules');
+let xx = document.getElementById('xx');
+rules.addEventListener('click', function () {
+  notice.className = 'notice flexBox flex-box-column';
+  setTimeout(function () {
+    notice.style.opacity = 1;
+  }, 0);
+});
+xx.addEventListener('click', function () {
+  notice.style.opacity = 0;
+  setTimeout(function () {
+    notice.className = 'notice flexBox flex-box-column miss';
+  }, 400);
+});
 // 引入浏览器特性处理
 const browser = _require('browser');
 browser.elastic_touch();

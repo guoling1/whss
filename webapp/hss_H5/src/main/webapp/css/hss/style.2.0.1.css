@@ -2132,6 +2132,58 @@ input:focus {
   background: url("../assets/hss-rules.png") no-repeat center;
   background-size: 15px 17px;
 }
+#promote .notice {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 99;
+  padding: 20px 15px;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.9);
+  transition: all 0.4s;
+  -webkit-transition: all 0.4s;
+  opacity: 0;
+}
+#promote .notice.miss {
+  display: none;
+}
+#promote .notice .cont {
+  box-flex: 1;
+  -webkit-box-flex: 1;
+  -webkit-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
+  width: 100%;
+  overflow: auto;
+  text-align: left;
+  -webkit-overflow-scrolling: touch;
+}
+#promote .notice .cont h5 {
+  font-size: 14px;
+  color: #111;
+  font-weight: bold;
+}
+#promote .notice .cont h6 {
+  font-size: 12px;
+  color: #111;
+  font-weight: bold;
+  line-height: 24px;
+}
+#promote .notice .cont p {
+  font-size: 12px;
+  color: #111;
+  text-indent: 10px;
+  line-height: 20px;
+}
+#promote .notice .xx {
+  margin: auto;
+  width: 20px;
+  height: 20px;
+  padding: 20px 0 40px;
+  background: url("../assets/hss-x.png") no-repeat center;
+  background-size: 20px 20px;
+}
 #promote .layer {
   display: none;
   width: 100%;
