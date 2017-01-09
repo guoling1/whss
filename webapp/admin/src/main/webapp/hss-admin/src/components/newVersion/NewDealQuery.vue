@@ -80,6 +80,7 @@
               <table id="example2" class="table table-bordered table-hover dataTable" role="grid" aria-describedby="example2_info">
                 <thead>
                 <tr role="row">
+                  <th class="sorting_asc" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Rendering engine: activate to sort column descending">序号</th>
                   <th class="sorting_asc" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Rendering engine: activate to sort column descending">订单号</th>
                   <th class="sorting_asc" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Rendering engine: activate to sort column descending">交易日期</th>
                   <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="Platform(s): activate to sort column ascending">商户名称</th>
@@ -95,7 +96,8 @@
                 </tr>
                 </thead>
                 <tbody id="content">
-                <tr role="row" v-for="order in orders">
+                <tr role="row" v-for="(order,index) in orders">
+                  <td>{{(query.page-1)*10+(index+1)}}</td>
                   <td><router-link :to="{ path: '/admin/record/newDealDet', query: {orderNo: order.orderNo}}">{{order.orderNo|changeHide}}</router-link></td>
                   <td>{{order.createTime|changeTime}}</td>
                   <td>{{order.merchantName}}</td>
