@@ -3,6 +3,7 @@ package com.jkm.hss.product.entity;
 import com.jkm.base.common.entity.BaseEntity;
 import com.jkm.hss.product.enums.EnumMerchantWithdrawType;
 import com.jkm.hss.product.enums.EnumPayChannelSign;
+import com.jkm.hss.product.enums.EnumProductType;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -49,4 +50,9 @@ public class Product extends BaseEntity {
      * 代理商结算模式
      */
     private String dealerBalanceType;
+    /**
+     * 类型 hss,hsy
+     * {@link EnumProductType}
+     */
+    private String type;
 }
