@@ -408,10 +408,10 @@ public class OrderServiceImpl implements OrderService {
         heads.add("所属二级代理");
         heads.add("支付金额");
         heads.add("手续费率");
+        heads.add("手续费");
         heads.add("订单状态");
         heads.add("结算状态");
         heads.add("支付方式");
-        heads.add("手续费");
         heads.add("支付渠道");
         heads.add("备注信息");
         datas.add(heads);
@@ -432,6 +432,7 @@ public class OrderServiceImpl implements OrderService {
                 columns.add(list.get(i).getProxyName1());
                 columns.add(String.valueOf(list.get(i).getTradeAmount()));
                 columns.add(String.valueOf(list.get(i).getPayRate()));
+                columns.add(String.valueOf(list.get(i).getPoundage()));
                 if (list.get(i).getStatus()==1){
                     columns.add("待支付");
                 }
@@ -482,8 +483,6 @@ public class OrderServiceImpl implements OrderService {
                 if("".equals(list.get(i).getPayType())|| list.get(i).getPayType()==null){
                     columns.add("-");
                 }
-
-                columns.add(String.valueOf(list.get(i).getPoundage()));
                 if (list.get(i).getPayChannelSign()==101){
                     columns.add("阳光微信扫码");
                 }
@@ -521,18 +520,5 @@ public class OrderServiceImpl implements OrderService {
     }
 
 
-
-//    @Override
-//    public MerchantTradeResponse selectOrderListByPageAll(OrderListRequest req) {
-//        List<String> payResults = PayOf(req.getPayResult());
-//        req.setPayResults(payResults);
-//        Map<String,Object> map = new HashMap<String,Object>();
-//        map.put("id",req.getId());
-//        MerchantTradeResponse merchantTradeResponse = orderDao.selectOrderListCountAll(map);
-//        if(merchantTradeResponse!=null){
-//            merchantTradeResponse.setOrderMessage(PayOfStatus(merchantTradeResponse.getPayResult()));
-//        }
-//        return merchantTradeResponse;
-//    }
 
 }
