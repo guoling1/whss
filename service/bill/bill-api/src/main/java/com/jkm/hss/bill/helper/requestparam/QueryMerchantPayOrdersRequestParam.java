@@ -3,6 +3,8 @@ package com.jkm.hss.bill.helper.requestparam;
 import com.jkm.base.common.entity.PageQueryParams;
 import lombok.Data;
 
+import java.util.List;
+
 /**
  * Created by yulong.zhang on 2017/1/4.
  */
@@ -14,14 +16,14 @@ public class QueryMerchantPayOrdersRequestParam extends PageQueryParams {
      *
      * {@link com.jkm.hss.bill.enums.EnumOrderStatus}
      */
-    private int payStatus;
+    private List<Integer> payStatus;
 
     /**
      * 支付方式
      *
      * {@link com.jkm.hss.bill.enums.EnumPaymentType}
      */
-    private String payType;
+    private List<String> payType;
 
     /**
      * 交易订单号

@@ -226,7 +226,8 @@ public class PayServiceImpl implements PayService {
     public void markPaySuccess(final PaymentSdkPayCallbackResponse paymentSdkPayCallbackResponse, final Order order) {
         order.setPayType(paymentSdkPayCallbackResponse.getPayType());
         order.setPaySuccessTime(new DateTime(Long.valueOf(paymentSdkPayCallbackResponse.getPaySuccessTime())).toDate());
-        order.setRemark(paymentSdkPayCallbackResponse.getSn());
+        order.setRemark(paymentSdkPayCallbackResponse.getMessage());
+        order.setSn(paymentSdkPayCallbackResponse.getSn());
         order.setStatus(EnumOrderStatus.PAY_SUCCESS.getId());
         //处理商户升级的支付单(此时商户自己付款给金开门)
         if (order.getPayer() > 0 && order.getPayee() == AccountConstants.JKM_ACCOUNT_ID) {
@@ -293,12 +294,12 @@ public class PayServiceImpl implements PayService {
                 merchant.getMerchantName(),  merchant.getMerchantName(), ui.get().getOpenId());
 
         //商户提现(发消息)
-        final JSONObject requestJsonObject = new JSONObject();
-        requestJsonObject.put("merchantId", merchant.getId());
-        requestJsonObject.put("payOrderId", order.getId());
-        requestJsonObject.put("payOrderSn", paymentSdkPayCallbackResponse.getSn());
-        requestJsonObject.put("balanceAccountType", EnumBalanceTimeType.D0.getType());
-        MqProducer.produce(requestJsonObject, MqConfig.MERCHANT_WITHDRAW, 100);
+//        final JSONObject requestJsonObject = new JSONObject();
+//        requestJsonObject.put("merchantId", merchant.getId());
+//        requestJsonObject.put("payOrderId", order.getId());
+//        requestJsonObject.put("payOrderSn", paymentSdkPayCallbackResponse.getSn());
+//        requestJsonObject.put("balanceAccountType", EnumBalanceTimeType.D0.getType());
+//        MqProducer.produce(requestJsonObject, MqConfig.MERCHANT_WITHDRAW, 100);
     }
 
     /**
