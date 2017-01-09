@@ -47,4 +47,13 @@ public interface RecommendService {
      * @return
      */
     int selectFriendCount(long merchantId);
+
+    /**
+     * 推荐我的人
+     * @return
+     */
+    List<Recommend> selectRecommend(long merchantId);
+
+
+
 }

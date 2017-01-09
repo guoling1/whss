@@ -100,4 +100,15 @@ public class RecommendServiceImpl implements RecommendService{
         return recommendDao.selectFriendCount(merchantId);
     }
 
+    /**
+     * 推荐我的人
+     *
+     * @param merchantId
+     * @return
+     */
+    @Override
+    public List<Recommend> selectRecommend(long merchantId) {
+        return recommendDao.selectRecommend(merchantId);
+    }
+
 }
