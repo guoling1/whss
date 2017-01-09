@@ -1,10 +1,9 @@
 <template lang="html">
   <div id="secProfit">
-    <div style="padding: 8px 30px; background: rgb(243, 156, 18); z-index: 999999; font-size: 22px; font-weight: 600;margin-bottom: 15px;    color: #fff;">二级代理分润</div>
     <div style="margin: 0 15px">
       <div class="box">
         <div class="box-header">
-          <h3 class="box-title">分润记录</h3>
+          <h3 class="box-title">二级代理分润</h3>
         </div>
         <!-- /.box-header -->
         <div class="box-body">

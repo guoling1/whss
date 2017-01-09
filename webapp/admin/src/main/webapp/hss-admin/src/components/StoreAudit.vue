@@ -20,7 +20,7 @@
               <th style="text-align: right">一级代理编号:</th>
               <td><input type="text" style="background:#efecec;padding-left:5px;" value="—" readonly></td>
               <th style="text-align: right">一级代理名称:</th>
-              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.proxyName|changeDeal" readonly></td>
+              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.proxyName" readonly></td>
               <th></th>
               <td></td>
             </tr>
@@ -28,7 +28,7 @@
               <th style="text-align: right">二级代理编号:</th>
               <td><input type="text" style="background:#efecec;padding-left:5px;" value="—" readonly></td>
               <th style="text-align: right">二级代理名称:</th>
-              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.proxyName1|changeDeal" readonly></td>
+              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.proxyName1" readonly></td>
               <th></th>
               <td></td>
             </tr>
@@ -36,7 +36,7 @@
               <th style="text-align: right">推荐人编号:</th>
               <td><input type="text" style="background:#efecec;padding-left:5px;" value="—" readonly></td>
               <th style="text-align: right">推荐人名称:</th>
-              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.proxyName1|changeDeal" readonly></td>
+              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.proxyName1" readonly></td>
               <th style="text-align: right">推荐人注册手机号:</th>
               <td><input type="text" style="background:#efecec;padding-left:5px;" value="—" readonly></td>
             </tr>
@@ -320,7 +320,13 @@
           var hour=val.getHours();
           var minute=val.getMinutes();
           var second=val.getSeconds();
-          return year+"-"+month+"-"+date+" "+hour+":"+minute+":"+second;
+          function tod(a) {
+            if(a<10){
+              a = "0"+a
+            }
+            return a;
+          }
+          return year+"-"+tod(month)+"-"+tod(date)+" "+tod(hour)+":"+tod(minute)+":"+tod(second);
         }
       },
       changeDeal: function (val) {

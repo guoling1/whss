@@ -51,6 +51,7 @@
                 <table id="example2" class="table table-bordered table-hover dataTable" role="grid" aria-describedby="example2_info">
                   <thead>
                   <tr role="row">
+                    <th class="sorting_asc" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Rendering engine: activate to sort column descending">序号</th>
                     <th class="sorting_asc" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Rendering engine: activate to sort column descending">打款流水号</th>
                     <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="Browser: activate to sort column ascending">交易单号</th>
                     <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="Platform(s): activate to sort column ascending">打款时间</th>
@@ -66,6 +67,7 @@
                   </thead>
                   <tbody>
                   <tr role="row" v-for="(record,index) in $$records">
+                    <td>{{(query.pageNo-1)*10+(index+1)}}</td>
                     <td id="td" @mouseover.self="mouseover($event)" @mouseout.self="mouseout($event)">{{record.sn|changeHide}}
                       <span style="display: none">{{record.sn}}</span>
                     </td>
@@ -299,6 +301,7 @@
           .then(function (res) {
             this.$data.records = res.data.records;
             this.$data.total=res.data.totalPage;
+            this.$data.count=res.data.count;
             var str='',
               page=document.getElementById('page');
             str+='<li class="paginate_button previous disabled" id="example2_previous"><a href="#" aria-controls="example2" data-dt-idx="0" tabindex="0">上一页</a></li>'
@@ -383,7 +386,13 @@
           var hour=val.getHours();
           var minute=val.getMinutes();
           var second=val.getSeconds();
-          return year+"-"+month+"-"+date+" "+hour+":"+minute+":"+second;
+          function tod(a) {
+            if(a<10){
+              a = "0"+a
+            }
+            return a;
+          }
+          return year+"-"+tod(month)+"-"+tod(date)+" "+tod(hour)+":"+tod(minute)+":"+tod(second);
         }
       },
       changeType: function (val) {

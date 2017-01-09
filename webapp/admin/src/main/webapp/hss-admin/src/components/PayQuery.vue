@@ -56,6 +56,7 @@
               <table id="example2" class="table table-bordered table-hover dataTable" role="grid" aria-describedby="example2_info">
                 <thead>
                 <tr role="row">
+                  <th class="sorting_asc" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Rendering engine: activate to sort column descending">序号</th>
                   <th class="sorting_asc" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Rendering engine: activate to sort column descending">支付流水号</th>
                   <th class="sorting_asc" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Rendering engine: activate to sort column descending">交易单号</th>
                   <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="Platform(s): activate to sort column ascending">支付金额</th>
@@ -73,7 +74,8 @@
                 </tr>
                 </thead>
                 <tbody id="content">
-                <tr role="row" v-for="order in $$orders">
+                <tr role="row" v-for="(order,index) in $$orders">
+                  <td>{{(query.pageNo-1)*10+(index+1)}}</td>
                   <td>{{order.sn|changeHide}}</td>
                   <td>{{order.orderNo|changeHide}}</td>
                   <td style="text-align: right;">{{order.payAmount}}</td>
@@ -112,7 +114,6 @@
         </div>
       </div>
     </div>
-
     </div>
     <!--下载-->
     <div class="box box-info mask" v-if="isMask">
@@ -320,6 +321,7 @@
             .then(function (res) {
               this.$data.orders=res.data.records;
               this.$data.total=res.data.totalPage;
+              this.$data.count=res.data.count;
               this.$data.url=res.data.ext;
               var str='',
                 page=document.getElementById('page');
@@ -418,7 +420,13 @@
           var hour=val.getHours();
           var minute=val.getMinutes();
           var second=val.getSeconds();
-          return year+"-"+month+"-"+date+" "+hour+":"+minute+":"+second;
+          function tod(a) {
+            if(a<10){
+              a = "0"+a
+            }
+            return a;
+          }
+          return year+"-"+tod(month)+"-"+tod(date)+" "+tod(hour)+":"+tod(minute)+":"+tod(second);
         }
       },
       changeHide: function (val) {
