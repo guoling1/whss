@@ -36,9 +36,9 @@
           <a href="#"><i class="fa fa-link"></i> <span>交易管理</span>
           </a>
           <ul class="treeview-menu">
-            <li class="active"><router-link to="/admin/record/deal"><span>交易查询</span> </router-link></li>
+            <li class="active"><router-link to="/admin/record/newDeal"><span>交易查询</span> </router-link></li>
             <li><router-link to="/admin/record/payQuery"><span>支付查询</span> </router-link></li>
-            <li><router-link to="/admin/record/withdrawal"><span>打款查询</span> </router-link></li>
+            <li><router-link to="/admin/record/newWithdrawalQuery"><span>打款查询</span> </router-link></li>
           </ul>
         </li>
         <li class="treeview">

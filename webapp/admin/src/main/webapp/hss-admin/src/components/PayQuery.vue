@@ -4,6 +4,7 @@
       <div class="box" style="margin-top:15px;overflow: hidden">
         <div class="box-header">
           <h3 class="box-title">支付查询</h3>
+          <span @click="onload()" download="交易记录" class="btn btn-primary" style="float: right;color: #fff">导出</span>
         </div>
       <div class="box-body">
         <div class="row">
@@ -46,7 +47,6 @@
             </div>
           </div>
           <div class="col-md-3">
-            <span @click="onload()" download="交易记录" class="btn btn-primary" style="float: right;color: #fff">导出</span>
             <div class="btn btn-primary" @click="lookup" style="margin-top: 22px">筛选</div>
           </div>
         </div>
@@ -465,5 +465,8 @@
     display: inline-block;
     vertical-align: top;
     margin: 28px 10px;
+  }
+  .btn{
+    font-size: 12px;
   }
 </style>

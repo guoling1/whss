@@ -1,8 +1,10 @@
 <template lang="html">
-  <div id="storeList">
-    <div style="padding: 8px 30px; background: rgb(243, 156, 18); z-index: 999999; font-size: 22px; font-weight: 600;margin-bottom: 15px;    color: #fff;">商户列表</div>
+  <div id="storeList" style="margin-top: 15px">
     <div class="col-xs-12">
       <div class="box">
+        <div class="box-header">
+          <h3 class="box-title">商户列表</h3>
+        </div>
         <div class="box-body">
           <div class="row">
             <div class="col-md-3">
@@ -40,7 +42,7 @@
                 </div>
               </div>
               <div class="form-group">
-                <label>结算状态：</label>
+                <label>审核状态：</label>
                 <select class="form-control select2 select2-hidden-accessible" tabindex="-1" aria-hidden="true" v-model="status">
                   <option value="">全部</option>
                   <option value="0">已注册</option>
@@ -52,26 +54,11 @@
               </div>
             </div>
             <div class="col-md-3">
-              <div class="btn btn-primary" @click="search">筛选</div>
+              <div class="btn btn-primary" @click="search" style="margin-top: 22px">筛选</div>
               <!--<span @click="onload()" download="交易记录" class="btn btn-primary pull-right" style="float: right;color: #fff">导出</span>-->
             </div>
           </div>
           <div id="example2_wrapper" class="dataTables_wrapper form-inline dt-bootstrap">
-            <!--<div class="search" id="search">
-              <label for="name">商户名称：</label>
-              <input class="form-control" type="text" name="name" value="" v-model="merchantName">
-              <label>状态：</label>
-              <select class="form-control select2 select2-hidden-accessible" tabindex="-1" aria-hidden="true" v-model="status">
-                <option value="">全部</option>
-                <option value="0">已注册</option>
-                <option value="1">已提交基本资料</option>
-                <option value="2">待审核</option>
-                <option value="3">审核通过</option>
-                <option value="4">审核未通过</option>
-              </select>
-              <div class="btn btn-primary" @click="search">筛选</div>
-              <span @click="onload()" download="交易记录" class="btn btn-primary pull-right" style="float: right;color: #fff">导出</span>
-            </div>-->
             <div class="row">
               <div class="col-sm-12">
                 <table id="example2" class="table table-bordered table-hover dataTable" role="grid" aria-describedby="example2_info">
@@ -281,8 +268,9 @@
       search: function () {
         var content = document.getElementById('content'),
           page = document.getElementById('page');
+        this.$data.pageNo=1;
         this.$http.post('/admin/query/getAll',{
-          pageNo:1,
+          pageNo:this.$data.pageNo,
           pageSize:this.$data.pageSize,
           merchantName:this.$data.merchantName,
           status: this.$data.status,
@@ -296,6 +284,7 @@
         }).then(function (res) {
           this.$data.stores  = res.data.records;
           this.$data.total = res.data.totalPage;
+          this.$data.count = res.data.count;
           var str='',
             page=document.getElementById('page');
           str+='<li class="paginate_button previous disabled" id="example2_previous"><a href="#" aria-controls="example2" data-dt-idx="0" tabindex="0">上一页</a></li>'
@@ -393,15 +382,8 @@
     margin: 0 10px;
   }
 
-
-  .search{
-    margin-bottom: 15px;
-    input{
-      margin-right: 20px;
-    }
-    select{
-      margin-right: 20px;
-    }
+  input,.form-control,.btn{
+    font-size: 12px;
   }
   .mask{
     width: 30%;

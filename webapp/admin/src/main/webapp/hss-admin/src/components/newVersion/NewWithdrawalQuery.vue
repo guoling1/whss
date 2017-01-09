@@ -79,7 +79,7 @@
                     <td>{{record.message}}</td>
                     <td>{{record.remark|changeHide}}</td>
                     <td>
-                      <router-link :to="{path:'/admin/record/withdrawalAudit',query:{orderNo:record.orderNo,sn:record.sn,requestTime:record.requestTime,amount:record.amount,receiptUserName:record.receiptUserName,playMoneyChannel:record.playMoneyChannel,status:record.status,bankCard:record.bankCard,message:record.message}}" id="audit" v-if="record.status=='5'&&record.auditStatus==0" >审核</router-link>
+                      <router-link :to="{path:'/admin/record/withdrawalAudit',query:{orderNo:record.orderNo,sn:record.sn,requestTime:record.requestTime,amount:record.amount,receiptUserName:record.receiptUserName,playMoneyChannel:record.playMoneyChannel,status:record.status,bankCard:record.bankCard,message:record.message}}" id="audit" v-if="(record.status=='2'||record.status=='3'||record.status=='5')&&record.auditStatus==0" >审核</router-link>
                       <span v-if="record.status=='5'&&record.auditStatus!=0">{{record.auditStatusValue}}</span>
                       <a href="javascript:;" @click="updata(record.sn)">同步</a>
                     </td>
