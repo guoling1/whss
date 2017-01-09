@@ -10,7 +10,7 @@
             <div class="col-md-3">
               <div class="form-group">
                 <label>商户编号：</label>
-                <input type="text" class="form-control" v-model="id">
+                <input type="text" class="form-control" v-model="markCode">
               </div>
               <div class="form-group">
                 <label>商户名称</label>
@@ -64,6 +64,7 @@
                 <table id="example2" class="table table-bordered table-hover dataTable" role="grid" aria-describedby="example2_info">
                   <thead>
                   <tr role="row">
+                    <th class="sorting_asc" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Rendering engine: activate to sort column descending">序号</th>
                     <th class="sorting_asc" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Rendering engine: activate to sort column descending">商户编号</th>
                     <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="Browser: activate to sort column ascending">商户名称</th>
                     <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="Platform(s): activate to sort column ascending">所属一级代理商</th>
@@ -76,17 +77,18 @@
                   </tr>
                   </thead>
                   <tbody id="content">
-                  <tr role="row" class="odd" v-for="store in $$data.stores">
-                    <td class="sorting_1">{{store.id}}</td>
+                  <tr role="row" class="odd" v-for="(store,index) in $$data.stores">
+                    <td>{{(pageNo-1)*10+(index+1)}}</td>
+                    <td class="sorting_1">{{store.markCode}}</td>
                     <td>{{store.merchantName}}</td>
-                    <td>{{store.proxyName|changeName}}</td>
-                    <td>{{store.proxyName1|changeName}}</td>
+                    <td>{{store.proxyName}}</td>
+                    <td>{{store.proxyName1}}</td>
                     <td>{{store.createTime|changeTime}}</td>
                     <td>{{store.authenticationTime|changeTime}}</td>
                     <td>{{store.checkedTime|changeTime}}</td>
                     <td>{{store.status|status}}</td>
                     <td>
-                      <div class="btn btn-primary" @click="audit($event,store.id,store.status)">{{store.status|operate}}</div>
+                      <div class="btn btn-primary" @click="audit($event,store.markCode,store.status)">{{store.status|operate}}</div>
                     </td>
                   </tr>
                   </tbody>
@@ -137,8 +139,8 @@
         status:'',
         isMask: false,
         url: '',
-        count:'',
-        id:'',
+        count:0,
+        markCode:'',
         startTime:'',
         startTime1:'',
         startTime2:'',
@@ -155,7 +157,7 @@
         pageSize:this.$data.pageSize,
         merchantName:this.$data.merchantName,
         status: this.$data.status,
-        id: this.$data.id,
+        markCode: this.$data.markCode,
         startTime: this.$data.startTime,
         endTime: this.$data.endTime,
         startTime1: this.$data.startTime1,
@@ -274,7 +276,7 @@
           pageSize:this.$data.pageSize,
           merchantName:this.$data.merchantName,
           status: this.$data.status,
-          id: this.$data.id,
+          markCode: this.$data.markCode,
           startTime: this.$data.startTime,
           endTime: this.$data.endTime,
           startTime1: this.$data.startTime1,
@@ -348,7 +350,13 @@
           var hour=val.getHours();
           var minute=val.getMinutes();
           var second=val.getSeconds();
-          return year+"-"+month+"-"+date+" "+hour+":"+minute+":"+second;
+          function tod(a) {
+            if(a<10){
+              a = "0"+a
+            }
+            return a;
+          }
+          return year+"-"+tod(month)+"-"+tod(date)+" "+tod(hour)+":"+tod(minute)+":"+tod(second);
         }
       },
       changeName: function (val) {

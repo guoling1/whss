@@ -101,8 +101,8 @@
                   <td><router-link :to="{ path: '/admin/record/newDealDet', query: {orderNo: order.orderNo}}">{{order.orderNo|changeHide}}</router-link></td>
                   <td>{{order.createTime|changeTime}}</td>
                   <td>{{order.merchantName}}</td>
-                  <td>{{order.proxyName|changeName}}</td>
-                  <td>{{order.proxyName1|changeName}}</td>
+                  <td>{{order.proxyName}}</td>
+                  <td>{{order.proxyName1}}</td>
                   <td style="text-align: right">{{order.tradeAmount|toFix}}</td>
                   <td>{{order.payRate}}</td>
                   <td>{{order.status|changeStatus}}<!--<a href="javascript:;">(补发)</a>--></td>
@@ -262,6 +262,7 @@
           .then(function (res) {
             this.$data.orders=res.data.records;
             this.$data.total=res.data.totalPage;
+            this.$data.count=res.data.count;
             this.$data.url=res.data.ext;
             var str='',
               page=document.getElementById('page');
@@ -318,6 +319,7 @@
           .then(function (res) {
             this.$data.orders=res.data.records;
             this.$data.total=res.data.totalPage;
+            this.$data.count=res.data.count;
             this.$data.url=res.data.ext;
             var str='',
               page=document.getElementById('page');
@@ -421,7 +423,13 @@
           var hour=val.getHours();
           var minute=val.getMinutes();
           var second=val.getSeconds();
-          return year+"-"+month+"-"+date+" "+hour+":"+minute+":"+second;
+          function tod(a) {
+            if(a<10){
+              a = "0"+a
+            }
+            return a;
+          }
+          return year+"-"+tod(month)+"-"+tod(date)+" "+tod(hour)+":"+tod(minute)+":"+tod(second);
         }
       },
       changeHide: function (val) {
@@ -500,5 +508,8 @@
   }
   .table td[data-v-497723e2], .table th[data-v-497723e2]{
     width: inherit;
+  }
+  .btn{
+    font-size: 12px;
   }
 </style>

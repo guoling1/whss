@@ -10,7 +10,7 @@
             <div class="col-md-2">
               <div class="form-group">
                 <label>商户编号：</label>
-                <input type="text" class="form-control" v-model="id">
+                <input type="text" class="form-control" v-model="markCode">
               </div>
             </div>
             <div class="col-md-2">
@@ -48,6 +48,7 @@
                 <table id="example2" class="table table-bordered table-hover dataTable" role="grid" aria-describedby="example2_info">
                   <thead>
                   <tr role="row">
+                    <th class="sorting_asc" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Rendering engine: activate to sort column descending">序号</th>
                     <th class="sorting_asc" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Rendering engine: activate to sort column descending">商户编号</th>
                     <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="Browser: activate to sort column ascending">商户名称</th>
                     <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="Platform(s): activate to sort column ascending">所属一级代理商</th>
@@ -60,8 +61,9 @@
                   </tr>
                   </thead>
                   <tbody id="content">
-                  <tr role="row" class="odd" v-for="store in $$data.stores">
-                    <td class="sorting_1">{{store.id}}</td>
+                  <tr role="row" class="odd" v-for="(store,index) in $$data.stores">
+                    <td>{{(pageNo-1)*10+(index+1)}}</td>
+                    <td class="sorting_1">{{store.markCode}}</td>
                     <td>{{store.merchantName}}</td>
                     <td>{{store.proxyName|changeName}}</td>
                     <td>{{store.proxyName1|changeName}}</td>
@@ -70,7 +72,7 @@
                     <td>{{store.checkedTime|changeTime}}</td>
                     <td>{{store.status|status}}</td>
                     <td>
-                      <div class="btn btn-primary" @click="audit($event,store.id,store.status)">{{store.status|operate}}</div>
+                      <div class="btn btn-primary" @click="audit($event,store.markCode,store.status)">{{store.status|operate}}</div>
                     </td>
                   </tr>
                   </tbody>
@@ -118,11 +120,11 @@
         pageNo:1,
         pageSize:10,
         total:0,
-        status:'',
+        status:2,
         isMask: false,
         url: '',
         count:0,
-        id:'',
+        markCode:'',
         startTime:'',
         startTime1:'',
         startTime2:'',
@@ -139,7 +141,7 @@
         pageSize:this.$data.pageSize,
         merchantName:this.$data.merchantName,
         status: this.$data.status,
-        id: this.$data.id,
+        markCode: this.$data.markCode,
         startTime: this.$data.startTime,
         endTime: this.$data.endTime,
         startTime1: this.$data.startTime1,
@@ -231,6 +233,7 @@
         }).then(function (res) {
           this.$data.stores   = res.data.records;
           this.$data.total = res.data.totalPage;
+          this.$data.count = res.data.count;
           var str='',
             page=document.getElementById('page');
           str+='<li class="paginate_button previous disabled" id="example2_previous"><a href="#" aria-controls="example2" data-dt-idx="0" tabindex="0">上一页</a></li>'
@@ -258,7 +261,7 @@
           pageSize:this.$data.pageSize,
           merchantName:this.$data.merchantName,
           status: this.$data.status,
-          id: this.$data.id,
+          markCode: this.$data.markCode,
           startTime: this.$data.startTime,
           endTime: this.$data.endTime,
           startTime1: this.$data.startTime1,
@@ -332,7 +335,13 @@
           var hour=val.getHours();
           var minute=val.getMinutes();
           var second=val.getSeconds();
-          return year+"-"+month+"-"+date+" "+hour+":"+minute+":"+second;
+          function tod(a) {
+            if(a<10){
+              a = "0"+a
+            }
+            return a;
+          }
+          return year+"-"+tod(month)+"-"+tod(date)+" "+tod(hour)+":"+tod(minute)+":"+tod(second);
         }
       },
       changeName: function (val) {
