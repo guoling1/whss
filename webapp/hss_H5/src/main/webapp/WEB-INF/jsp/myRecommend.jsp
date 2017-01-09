@@ -46,15 +46,8 @@
           </div>
         </li>
         <li id="friends">
-          <div class="total">我推广的好友(直接:4人 间接:17人)</div>
-          <div class="list">
-            <div class="name">张伟<span class="z">直接</span></div>
-            <div class="amount">未提交资料</div>
-          </div>
-          <div class="list">
-            <div class="name">张伟<span class="j">间接</span></div>
-            <div class="amount">已审核</div>
-          </div>
+          <div class="total">我推广的好友(直接:<span id="directCount"></span>人 间接:<span id="indirectCount"></span>人)</div>
+          <%-- 以下列表内容动态添加 --%>
         </li>
       </ul>
     </div>

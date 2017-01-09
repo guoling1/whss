@@ -13,6 +13,8 @@ const profits = document.getElementById('profits');
 const profitsBtn = document.getElementById('profitsBtn');
 const friends = document.getElementById('friends');
 const friendsBtn = document.getElementById('friendsBtn');
+const directCount = document.getElementById('directCount');
+const indirectCount = document.getElementById('indirectCount');
 const windows = document.getElementById('windows');
 // 引入浏览器特性处理
 const browser = _require('browser');
@@ -39,7 +41,7 @@ profits.addEventListener('touchstart', function (event) {
 });
 profits.addEventListener('touchmove', function (event) {
   profitsTouchX = event.touches[0].clientX;
-  if (profitsTouchX <= profitsLastX - 10) {
+  if (profitsTouchX <= profitsLastX - 100) {
     windows.style.left = '-100%';
     profitsBtn.className = 'space shadow-right disabled';
     friendsBtn.className = 'space shadow-left';
@@ -60,7 +62,7 @@ friends.addEventListener('touchstart', function (event) {
 });
 friends.addEventListener('touchmove', function (event) {
   friendsTouchX = event.touches[0].clientX;
-  if (friendsTouchX >= friendsLastX - 10) {
+  if (friendsTouchX >= friendsLastX + 100) {
     windows.style.left = '0';
     profitsBtn.className = 'space shadow-right';
     friendsBtn.className = 'space shadow-left disabled';
@@ -70,9 +72,33 @@ friends.addEventListener('touchmove', function (event) {
 // 推广的好友的数据获取
 http.post('/wx/myRecommend', {}, function (data) {
   console.log(data);
+  directCount.innerHTML = data.directCount;
+  indirectCount.innerHTML = data.indirectCount;
+  for (let i = 0; i < data.recommends.length; i++) {
+    let list = document.createElement('div');
+    list.className = 'list';
+    let name = document.createElement('div');
+    name.className = 'name';
+    name.innerHTML = data.recommends[i].name;
+    let span = document.createElement('span');
+    if (data.recommends[i].type == 1) {
+      span.className = 'z';
+      span.innerHTML = '直接';
+    } else {
+      span.className = 'j';
+      span.innerHTML = '间接';
+    }
+    name.appendChild(span);
+    let amount = document.createElement('amount');
+    amount.className = 'amount';
+    amount.innerHTML = data.recommends[i].statusName;
+    list.appendChild(name);
+    list.appendChild(amount);
+    friends.appendChild(list);
+  }
 });
 
-let qrImg = new QRCode(qr, {
+new QRCode(qr, {
   text: pageData.shareUrl,
   width: 210,
   height: 210,
