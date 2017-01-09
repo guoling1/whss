@@ -14,7 +14,7 @@ const browser = _require('browser');
 browser.elastic_touch('list');
 // 引入分页插件
 const Paging = _require('paging');
-new Paging('trade_record', {
+let pag = new Paging('trade_record', {
   content: 'content',
   url: '/trade/queryMerchantPayOrders',
   size: 20,
@@ -103,15 +103,5 @@ submit.addEventListener('click', function () {
     }
   }
   // 唤起请求事件
-  http.post('/trade/queryMerchantPayOrders', {
-    pageNo: 1,
-    pageSize: 20,
-    orderNo: '',  //交易订单号
-    payStatus: payStatus,   //支付状态（1：待支付，3：支付失败，4：支付成功）
-    payType: payType,    //支付方式
-    startDate: '',
-    endDate: ''
-  }, function (data) {
-    console.log(data);
-  })
+  pag.FunRun(payStatus, payType);
 });
