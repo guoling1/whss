@@ -47,7 +47,6 @@ public interface MerchantInfoQueryDao {
      */
     int getCountRecord(MerchantInfoRequest req);
 
-    MerchantInfoResponse getProxyName1(long firstLevelDealerId);
 
 
 }

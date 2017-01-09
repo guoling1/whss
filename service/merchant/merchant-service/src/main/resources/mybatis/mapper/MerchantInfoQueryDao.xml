@@ -79,6 +79,7 @@
     <select id="getAll"  resultType="com.jkm.hss.merchant.entity.MerchantInfoResponse">
 
         SELECT
+            mark_code,
             id,
             merchant_name,
             STATUS,
@@ -86,9 +87,8 @@
             create_time,
             authentication_time,
             checked_time,
-            (select d.proxy_name from tb_dealer as d where d.id=dealer_id) as proxy_name,
-            (select d.level from tb_dealer as d where d.id=dealer_id) as level,
-            (select d.first_level_dealer_id from tb_dealer as d where d.id=dealer_id) as firstLevelDealerId
+            (select d.proxy_name from tb_dealer as d where d.id=first_dealer_id) as proxy_name,
+            (select d.proxy_name from tb_dealer as d where d.id=second_dealer_id) as proxy_name1
         FROM
             tb_merchant_info
         WHERE 1=1
@@ -131,6 +131,7 @@
     <select id="getRecord"  resultType="com.jkm.hss.merchant.entity.MerchantInfoResponse">
 
         SELECT
+        mark_code,
         id,
         merchant_name,
         STATUS,
