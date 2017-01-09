@@ -48,6 +48,7 @@
                   <ul class="pagination" id="page" @click="bindEvent($event)">
 
                   </ul>
+                  <span class="count">共{{count}}条</span>
                 </div>
               </div>
             </div>
@@ -70,7 +71,8 @@
         pageNo:1,
         pageSize:10,
         total:0,
-        status:''
+        status:'',
+        count:0
       }
     },
     created: function () {
@@ -84,6 +86,7 @@
       }).then(function (res) {
         this.$data.stores   = res.data.records;
         this.$data.total = res.data.totalPage;
+        this.$data.count = res.data.count;
         var str='',
           page=document.getElementById('page');
         str+='<li class="paginate_button previous disabled" id="example2_previous"><a href="#" aria-controls="example2" data-dt-idx="0" tabindex="0">上一页</a></li>'
@@ -236,5 +239,9 @@
   a {
     color: #42b983;
   }
-
+  .count{
+    display: inline-block;
+    vertical-align: top;
+    margin: 28px 10px;
+  }
 </style>

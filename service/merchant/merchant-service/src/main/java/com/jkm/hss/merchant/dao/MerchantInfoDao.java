@@ -33,7 +33,7 @@ public interface MerchantInfoDao {
      * @param openId
      * @return
      */
-//    MerchantInfo selectByOpenId(@Param("openId") String openId);
+    MerchantInfo selectByOpenId(@Param("openId") String openId);
 
 
     /**
@@ -41,7 +41,7 @@ public interface MerchantInfoDao {
      * @param mobile
      * @return
      */
-//    MerchantInfo selectByMobile(@Param("mobile") String mobile);
+    MerchantInfo selectByMobile(@Param("mobile") String mobile);
     /**
      * 根据条件插入
      * @param merchantInfo

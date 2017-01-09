@@ -6,7 +6,7 @@ import lombok.Data;
 @Data
 public class MerchantLoginRequest {
     /**
-     *
+     *扫码注册的二维码
      */
     private String qrCode;
     /**
@@ -18,8 +18,9 @@ public class MerchantLoginRequest {
      * code
      */
     private String code;
+
     /**
-     * openid
+     * 邀请码（邀请码或二维码至少与一个不为空）
      */
-    private String openId;
+    private String inviteCode;
 }

@@ -1,5 +1,6 @@
 package com.jkm.hss.dealer.service.impl;
 
+import com.google.common.base.Optional;
 import com.jkm.hss.dealer.dao.DealerChannelRateDao;
 import com.jkm.hss.dealer.entity.DealerChannelRate;
 import com.jkm.hss.dealer.service.DealerChannelRateService;
@@ -53,5 +54,18 @@ public class DealerChannelRateServiceImpl implements DealerChannelRateService{
     @Override
     public List<DealerChannelRate> selectByDealerIdAndPayChannelSign(long dealerId, int payChannel) {
         return this.dealerChannelRateDao.selectByDealerIdAndPayChannelSign(dealerId, payChannel);
+    }
+
+    /**
+     * 根据代理商id、产品id与通道标识查询代理商费率
+     *
+     * @param dealerId
+     * @param productId
+     * @param channelType
+     * @return
+     */
+    @Override
+    public Optional<DealerChannelRate> selectByDealerIdAndProductIdAndChannelType(long dealerId, long productId, int channelType) {
+        return Optional.fromNullable(this.dealerChannelRateDao.selectByDealerIdAndProductIdAndChannelType(dealerId,productId,channelType));
     }
 }

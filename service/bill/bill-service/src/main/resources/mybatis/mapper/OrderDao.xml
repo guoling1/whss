@@ -72,6 +72,7 @@
         settle_status = #{settleStatus},
         settle_time = #{settleTime},
         success_settle_time = #{successSettleTime},
+        pay_channel_sign = #{payChannelSign},
         remark = #{remark},
         status = #{status}
         WHERE id = #{id}
@@ -398,6 +399,7 @@
     <select id="selectMerchantPayOrders" resultType="com.jkm.hss.bill.entity.Order">
         SELECT * FROM tb_order
         WHERE trade_type = 1
+        AND payee = #{accountId}
         <if test="orderNo != null">
             AND order_no = #{orderNo}
         </if>
@@ -416,6 +418,7 @@
     <select id="selectCountMerchantPayOrders" resultType="java.lang.Long">
         SELECT COUNT(0) FROM tb_order
         WHERE trade_type = 1
+        AND payee = #{accountId}
         <if test="orderNo != null">
             AND order_no = #{orderNo}
         </if>

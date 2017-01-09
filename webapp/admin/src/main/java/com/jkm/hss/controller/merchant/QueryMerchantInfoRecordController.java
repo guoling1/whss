@@ -1,11 +1,11 @@
 package com.jkm.hss.controller.merchant;
 
 
+import com.alibaba.fastjson.JSONObject;
 import com.aliyun.oss.OSSClient;
-import com.jkm.base.common.entity.BaseEntity;
-import com.jkm.base.common.entity.CommonResponse;
 import com.jkm.hss.controller.BaseController;
 import com.jkm.hss.helper.ApplicationConsts;
+import com.jkm.hss.merchant.entity.LogResponse;
 import com.jkm.hss.merchant.entity.MerchantInfoResponse;
 import com.jkm.hss.merchant.service.QueryMerchantInfoRecordService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.net.URL;
+import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
 
@@ -35,9 +36,10 @@ public class QueryMerchantInfoRecordController extends BaseController {
 
     @ResponseBody
     @RequestMapping(value = "/getAll",method = RequestMethod.POST)
-    public CommonResponse<BaseEntity> getAll(@RequestBody final MerchantInfoResponse merchantInfo){
-
+    public JSONObject getAll(@RequestBody final MerchantInfoResponse merchantInfo) throws ParseException {
+        JSONObject jsonObject = new JSONObject();
         List<MerchantInfoResponse> list = this.queryMerchantInfoRecordService.getAll(merchantInfo);
+        List<LogResponse> lists = this.queryMerchantInfoRecordService.getLog(merchantInfo);
         if (list!=null&&list.size()>0){
             for (int i=0;i<list.size();i++){
                 if (list.get(i).getIdentityFacePic()!=null&&!"".equals(list.get(i).getIdentityFacePic())){
@@ -100,12 +102,20 @@ public class QueryMerchantInfoRecordController extends BaseController {
 //                    String ProxyName = "金开门";
 //                    list.get(i).setProxyName(ProxyName);
 //                }
+//                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("code",1);
+                jsonObject.put("msg","success");
+                JSONObject jo = new JSONObject();
+                jo.put("list",list);
+                jo.put("res",lists);
+                jsonObject.put("result",jo);
 
-                return CommonResponse.objectResponse(1,"success",list);
+                return jsonObject;
 
             }
         }
-
-        return CommonResponse.simpleResponse(-1, "没有查到符合条件的数据");
+        jsonObject.put("code",-1);
+        jsonObject.put("msg","没有查到符合条件的数据");
+        return jsonObject;
     }
 }

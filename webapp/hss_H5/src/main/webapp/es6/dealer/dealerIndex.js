@@ -5,7 +5,7 @@
 
 // 引入浏览器特性处理
 const browser = _require('browser');
-browser.elastic_touch();
+browser.elastic_touch('dealerIndex');
 // 引入浏览器特性处理
 const tools = _require('tools');
 let aSpan = document.getElementsByClassName("decimal");

@@ -5,6 +5,7 @@ import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
 import com.jkm.base.common.entity.CommonResponse;
 import com.jkm.base.common.entity.PageModel;
+import com.jkm.base.common.util.DateFormatUtil;
 import com.jkm.hss.bill.entity.Order;
 import com.jkm.hss.bill.enums.EnumOrderStatus;
 import com.jkm.hss.bill.enums.EnumPaymentType;
@@ -41,6 +42,7 @@ import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.net.URLDecoder;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -85,7 +87,7 @@ public class TradeController extends BaseController {
         if(!merchantInfo.isPresent()){
             return CommonResponse.simpleResponse(-2, "未登录");
         }
-        if(merchantInfo.get().getStatus()!= EnumMerchantStatus.PASSED.getId()){
+        if(merchantInfo.get().getStatus()!= EnumMerchantStatus.PASSED.getId()||merchantInfo.get().getStatus()!= EnumMerchantStatus.FRIEND.getId()){
             return CommonResponse.simpleResponse(-2, "未审核通过");
         }
         final String totalFee = payRequest.getTotalFee();
@@ -125,7 +127,7 @@ public class TradeController extends BaseController {
     public CommonResponse staticCodeReceipt(@RequestBody final StaticCodePayRequest payRequest,
                                              final HttpServletRequest request) throws UnsupportedEncodingException {
         final Optional<MerchantInfo> merchantInfo = this.merchantInfoService.selectById(payRequest.getMerchantId());
-        if(merchantInfo.get().getStatus()!=EnumMerchantStatus.PASSED.getId()){
+        if(merchantInfo.get().getStatus()!=EnumMerchantStatus.PASSED.getId()||merchantInfo.get().getStatus()!=EnumMerchantStatus.FRIEND.getId()){
             return CommonResponse.simpleResponse(-2, "未审核通过");
         }
         final String totalAmount = payRequest.getTotalFee();
@@ -160,27 +162,27 @@ public class TradeController extends BaseController {
     @ResponseBody
     @RequestMapping(value = "withdraw", method = RequestMethod.POST)
     public CommonResponse withdraw(@RequestBody final WithdrawRequest withdrawRequest, final HttpServletRequest request) {
-        final String verifiedCode = withdrawRequest.getCode();
-        if (!super.isLogin(request)) {
-            return CommonResponse.simpleResponse(-2, "未登录");
-        }
-        Optional<UserInfo> userInfoOptional = userInfoService.selectByOpenId(super.getOpenId(request));
-        if (!userInfoOptional.isPresent()) {
-            return CommonResponse.simpleResponse(-2, "未登录");
-        }
-        Optional<MerchantInfo> merchantInfo = merchantInfoService.selectById(userInfoOptional.get().getMerchantId());
-        if (!merchantInfo.isPresent()) {
-            return CommonResponse.simpleResponse(-2, "未登录");
-        }
-        if (merchantInfo.get().getStatus() != EnumMerchantStatus.PASSED.getId()) {
-            return CommonResponse.simpleResponse(-2, "未审核通过");
-        }
-        final Pair<Integer, String> checkResult =
-                this.smsAuthService.checkVerifyCode(MerchantSupport.decryptMobile(merchantInfo.get().getReserveMobile()), verifiedCode, EnumVerificationCodeType.WITH_DRAW);
-        if (1 != checkResult.getLeft()) {
-            return CommonResponse.simpleResponse(-1, checkResult.getRight());
-        }
-        final Pair<Integer, String> resultPair = this.withdrawService.merchantWithdrawByOrder(2, 108, "", "D0");
+//        final String verifiedCode = withdrawRequest.getCode();
+//        if (!super.isLogin(request)) {
+//            return CommonResponse.simpleResponse(-2, "未登录");
+//        }
+//        Optional<UserInfo> userInfoOptional = userInfoService.selectByOpenId(super.getOpenId(request));
+//        if (!userInfoOptional.isPresent()) {
+//            return CommonResponse.simpleResponse(-2, "未登录");
+//        }
+//        Optional<MerchantInfo> merchantInfo = merchantInfoService.selectById(userInfoOptional.get().getMerchantId());
+//        if (!merchantInfo.isPresent()) {
+//            return CommonResponse.simpleResponse(-2, "未登录");
+//        }
+//        if (merchantInfo.get().getStatus() != EnumMerchantStatus.PASSED.getId()) {
+//            return CommonResponse.simpleResponse(-2, "未审核通过");
+//        }
+//        final Pair<Integer, String> checkResult =
+//                this.smsAuthService.checkVerifyCode(MerchantSupport.decryptMobile(merchantInfo.get().getReserveMobile()), verifiedCode, EnumVerificationCodeType.WITH_DRAW);
+//        if (1 != checkResult.getLeft()) {
+//            return CommonResponse.simpleResponse(-1, checkResult.getRight());
+//        }
+        final Pair<Integer, String> resultPair = this.withdrawService.merchantWithdrawByOrder(withdrawRequest.getMerchantId(), withdrawRequest.getPayOrderId(), withdrawRequest.getPayOrderSn(), "D0");
         if (0 == resultPair.getLeft()) {
             return CommonResponse.simpleResponse(1, "受理成功");
         }
@@ -194,14 +196,29 @@ public class TradeController extends BaseController {
      */
     @ResponseBody
     @RequestMapping(value = "queryMerchantPayOrders", method = RequestMethod.POST)
-    public CommonResponse queryMerchantPayOrders(@RequestBody QueryMerchantPayOrdersRequestParam requestParam) {
+    public CommonResponse queryMerchantPayOrders(@RequestBody QueryMerchantPayOrdersRequestParam requestParam, final HttpServletRequest request) {
+        if(!super.isLogin(request)){
+            return CommonResponse.simpleResponse(-2, "未登录");
+        }
+        Optional<UserInfo> userInfoOptional = userInfoService.selectByOpenId(super.getOpenId(request));
+        if(!userInfoOptional.isPresent()){
+            return CommonResponse.simpleResponse(-2, "未登录");
+        }
+        Optional<MerchantInfo> merchantInfo = merchantInfoService.selectById(userInfoOptional.get().getMerchantId());
+        if(!merchantInfo.isPresent()){
+            return CommonResponse.simpleResponse(-2, "未登录");
+        }
+        if(merchantInfo.get().getStatus()!= EnumMerchantStatus.PASSED.getId()){
+            return CommonResponse.simpleResponse(-2, "未审核通过");
+        }
+        requestParam.setAccountId(merchantInfo.get().getAccountId());
         final PageModel<QueryMerchantPayOrdersResponse> result = new PageModel<>(requestParam.getPageNo(), requestParam.getPageSize());
         final int payStatus = requestParam.getPayStatus();
         final String payType = requestParam.getPayType();
         if (EnumOrderStatus.DUE_PAY.getId() != payStatus
                 && EnumOrderStatus.PAY_FAIL.getId() != payStatus
                 && EnumOrderStatus.PAY_SUCCESS.getId() != payStatus) {
-            requestParam.setPayStatus(EnumOrderStatus.PAY_SUCCESS.getId());
+            requestParam.setPayStatus(0);
         }
         if (!EnumPaymentType.WECHAT_SCAN_CODE.getId().equals(payType)
                 && !EnumPaymentType.WECHAT_QR_CODE.getId().equals(payType)
@@ -214,12 +231,16 @@ public class TradeController extends BaseController {
             requestParam.setOrderNo(null);
         }
         if ("".equals(requestParam.getStartDate()) || null == requestParam.getStartDate()) {
-            requestParam.setStartDate(null);
+            //TODO
+            requestParam.setStartDate("2016-01-01 00:00:01");
+//            requestParam.setStartDate(null);
         } else {
             requestParam.setStartDate(requestParam.getStartDate() + " 00:00:01");
         }
         if ("".equals(requestParam.getEndDate()) || null == requestParam.getEndDate()) {
-            requestParam.setEndDate(null);
+            //TODO
+            requestParam.setEndDate(DateFormatUtil.format(new Date(), DateFormatUtil.yyyy_MM_dd) + " 23:59:59");
+//            requestParam.setEndDate(null);
         } else {
             requestParam.setEndDate(requestParam.getEndDate() + " 23:59:59");
         }

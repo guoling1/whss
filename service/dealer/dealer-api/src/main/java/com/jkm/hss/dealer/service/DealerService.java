@@ -280,4 +280,12 @@ public interface DealerService {
      */
     void updateDealer(FirstLevelDealerUpdateRequest request);
 
+    /**
+     * 写入markCode
+     * @param markCode
+     * @param dealerId
+     * @return
+     */
+    int updateMarkCode(String markCode, long dealerId);
+
 }

@@ -24,7 +24,7 @@ public enum EnumPaymentType {
     /**
      * 微信H5收银台
      */
-    WECHAT_H5_CASHIER_DESK("H", "微信H5收银台"),
+    WECHAT_H5_CASHIER_DESK("H", "微信扫码"),
 
     /**
      * 无卡快捷支付

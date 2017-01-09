@@ -56,10 +56,10 @@
               </div>
             </div>
             <div class="form-group">
-              <label for="identity" class="col-sm-3 control-label">身份证号</label>
+              <label for="idCard" class="col-sm-3 control-label">身份证号</label>
 
               <div class="col-sm-4">
-                <input type="text" class="form-control" id="identity" name="identity" placeholder="" v-model="$$data.identity">
+                <input type="text" class="form-control" id="idCard" name="idCard" placeholder="" v-model="$$data.idCard">
               </div>
             </div>
             <div class="form-group">
@@ -125,34 +125,19 @@
       </div>
       <div class="box box-info">
         <div class="box-header with-border">
-          <h3 class="box-title">商户升级设置</h3>
+          <h3 class="box-title">合伙人推荐功能开关</h3>
         </div>
         <form class="form-horizontal">
           <div class="box-body">
             <div class="form-group">
-              <label for="" class="col-sm-3 control-label">一级代理分润比例</label>
-
-              <div class="col-sm-4 middle">
-                <input type="text" class="form-control" v-model="inp1">
-                <i>%</i>
-              </div>
-            </div>
-            <div class="form-group">
-              <label for="" class="col-sm-3 control-label">二级级代理分润比例</label>
-
-              <div class="col-sm-4 middle">
-                <input type="text" class="form-control" v-model="inp2">
-                <i>%</i>
-              </div>
-            </div>
-            <div class="form-group">
-              <label for="" class="col-sm-3 control-label">金开门分润比例</label>
-
-              <div class="col-sm-4 middle">
-                <input type="text" class="form-control" disabled="true" v-model="$$inp3">
-                <i>%</i>
-              </div>
-              <div class="col-sm-5 right">金开门＝100%－一级－二级</div>
+              <!--<select class="form-control select2 select2-hidden-accessible" style="width: 25%;margin-left: 10%;" tabindex="-1" aria-hidden="true" v-model="recommendBtn">
+                <option value="2">开</option>
+                <option value="1">关</option>
+              </select>-->
+              <input type="radio" id="one" value="One" v-model="picked" style="margin-left: 50px;">
+              <label for="one">开 (开通后，代理商设置的商户终端费率按产品费率执行)</label>
+              <input type="radio" id="two" value="Two" v-model="picked" style="margin-left: 50px;">
+              <label for="two">关</label>
             </div>
           </div>
           <!-- /.box-body -->
@@ -160,36 +145,52 @@
       </div>
       <div class="box box-info">
         <div class="box-header with-border">
-          <h3 class="box-title">推荐人规则设置</h3>
+          <h3 class="box-title">合伙人推荐分润设置</h3>
         </div>
         <form class="form-horizontal">
           <div class="box-body">
             <div class="form-group">
-              <label for="" class="col-sm-3 control-label">一级代理分润比例</label>
-
-              <div class="col-sm-4 middle">
-                <input type="text" class="form-control" v-model="inp4">
-                <i>%</i>
-              </div>
-            </div>
-            <div class="form-group">
-              <label for="" class="col-sm-3 control-label">二级级代理分润比例</label>
-
-              <div class="col-sm-4 middle">
-                <input type="text" class="form-control" v-model="inp5">
-                <i>%</i>
-              </div>
-            </div>
-            <div class="form-group">
-              <label for="" class="col-sm-3 control-label">金开门分润比例</label>
-
-              <div class="col-sm-4 middle">
-                <input type="text" class="form-control" disabled="true" v-model="$$inp6">
-                <i>%</i>
+              <div class="product">
+                <div class="col-xs-12">
+                      <div class="box box1">
+                        <div class="box-body table-responsive no-padding">
+                          <table class="table table-hover">
+                            <tbody>
+                            <tr>
+                              <th>收单总分润空间</th>
+                              <th colspan="5">
+                                <input type="number" style="width: 20%" v-model="totalProfitSpace">%
+                                （总分润空间不可高于0.2%，收单分润需扣除商户升级及推荐的分润成本）
+                              </th>
+                            </tr>
+                            <tr>
+                              <td>分润类型</td>
+                              <td>金开门分润比例</td>
+                              <td>一级代理商分润比例</td>
+                              <td>二级代理分润比例</td>
+                              <td rowspan="3" style="width: 20%">金开门，一级代理，二级代理的比例之和必须等于100%</td>
+                            </tr>
+                            <tr>
+                              <td>升级费分润</td>
+                              <td>20%</td>
+                              <td><input type="number" v-model="rate1">%</td>
+                              <td><input type="number" v-model="rate2">%</td>
+                            </tr>
+                            <tr>
+                              <td>收单分润</td>
+                              <td>20%</td>
+                              <td><input type="number" v-model="rate3">%</td>
+                              <td><input type="number" v-model="rate4">%</td>
+                            </tr>
+                            </tbody></table>
+                        </div>
+                        <!-- /.box-body -->
+                      </div>
+                      <!-- /.box -->
+                    </div>
               </div>
             </div>
           </div>
-          <!-- /.box-body -->
         </form>
       </div>
       <div class="btn btn-default" @click="create" v-if="isShow">
@@ -217,19 +218,35 @@
         bankCard: '',
         bankAccountName: '',
         bankReserveMobile: '',
-        identity:'',
+        idCard:'',
         product: {
           channels: []
         },
         products: [],//所有产品
         id: 0,
         isShow:true,
-        inp1:'',
-        inp2:'',
-        inp3:'',
-        inp4:"",
-        inp5:'',
-        inp6:"",
+        recommendBtn:2,
+        totalProfitSpace:'',
+        rate1:'',
+        rate2:'',
+        rate3:'',
+        rate4:'',
+        dealerUpgerdeRates:[
+          {
+            productId:'',
+            type:1,
+            firstDealerShareProfitRate:'',
+            secondDealerShareProfitRate:'',
+            bossDealerShareRate:0.2
+          },
+          {
+            productId:'',
+            type:2,
+            firstDealerShareProfitRate:'',
+            secondDealerShareProfitRate:'',
+            bossDealerShareRate:0.2
+          }
+        ],
       }
     },
     created: function () {
@@ -253,15 +270,20 @@
                   this.$data.belongArea = res.data.belongArea;
                   this.$data.bankCard = res.data.bankCard;
                   this.$data.bankAccountName = res.data.bankAccountName;
+                  this.$data.idCard = res.data.idCard;
+                  this.$data.recommendBtn = res.data.recommendBtn;
+                  this.$data.totalProfitSpace = res.data.totalProfitSpace*100;
                   this.$data.bankReserveMobile = res.data.bankReserveMobile;
                   this.$data.products = [res.data.product];
                   this.$data.products[0].list = res.data.product.channels
                   for(var i= 0; i < this.$data.products[0].list.length; i++){
                       this.$data.products[0].list[i].channelTypeSign = this.$data.products[0].list[i].channelType
                       this.$data.products[0].list[i].productBalanceType = this.$data.products[0].list[i].settleType
-
                   }
-                  console.log(this.$data.products[0])
+                  this.$data.rate1 = res.data.dealerUpgerdeRates[0].firstDealerShareProfitRate*100;
+                  this.$data.rate2 = res.data.dealerUpgerdeRates[0].secondDealerShareProfitRate*100;
+                  this.$data.rate3 = res.data.dealerUpgerdeRates[1].firstDealerShareProfitRate*100;
+                  this.$data.rate4 = res.data.dealerUpgerdeRates[1].secondDealerShareProfitRate*100;
                 })
             }
           }, function (err) {
@@ -274,6 +296,8 @@
       create: function () {
         this.$data.product.channels = [];
         this.$data.product.productId = this.$data.products[this.$data.id].productId;
+        this.$data.dealerUpgerdeRates[0].productId = this.$data.products[this.$data.id].productId;
+        this.$data.dealerUpgerdeRates[1].productId = this.$data.products[this.$data.id].productId;
         for (let i = 0; i < this.$data.products[this.$data.id].list.length; i++) {
           this.$data.product.channels.push({
             channelType: this.$data.products[this.$data.id].list[i].channelTypeSign,
@@ -284,6 +308,11 @@
             merchantWithdrawFee: this.$data.products[this.$data.id].list[i].merchantWithdrawFee
           })
         }
+        this.$data.totalProfitSpace = this.$data.totalProfitSpace/100;
+        this.$data.dealerUpgerdeRates[0].firstDealerShareProfitRate= this.$data.rate1/100;
+        this.$data.dealerUpgerdeRates[0].secondDealerShareProfitRate= this.$data.rate2/100;
+        this.$data.dealerUpgerdeRates[1].firstDealerShareProfitRate= this.$data.rate3/100;
+        this.$data.dealerUpgerdeRates[1].secondDealerShareProfitRate= this.$data.rate4/100;
         let query = {
           mobile: this.$data.mobile,
           name: this.$data.name,
@@ -291,7 +320,11 @@
           bankCard: this.$data.bankCard,
           bankAccountName: this.$data.bankAccountName,
           bankReserveMobile: this.$data.bankReserveMobile,
-          product: this.$data.product
+          product: this.$data.product,
+          idCard: this.$data.idCard,
+          recommendBtn: this.$data.recommendBtn,
+          totalProfitSpace: this.$data.totalProfitSpace,
+          dealerUpgerdeRates: this.$data.dealerUpgerdeRates
         };
         this.$http.post('/admin/user/addFirstDealer', query)
           .then(function (res) {
@@ -308,9 +341,12 @@
       goBack: function () {
         this.$router.push('/admin/record/agentList')
       },
+      //修改
       change: function () {
         this.$data.product.channels = [];
         this.$data.product.productId = this.$data.products[this.$data.id].productId;
+        this.$data.dealerUpgerdeRates[0].productId = this.$data.products[this.$data.id].productId;
+        this.$data.dealerUpgerdeRates[1].productId = this.$data.products[this.$data.id].productId;
         for (let i = 0; i < this.$data.products[this.$data.id].list.length; i++) {
           this.$data.product.channels.push({
             channelType: this.$data.products[this.$data.id].list[i].channelTypeSign,
@@ -321,6 +357,11 @@
             merchantWithdrawFee: this.$data.products[this.$data.id].list[i].merchantWithdrawFee
           })
         }
+        this.$data.totalProfitSpace = this.$data.totalProfitSpace/100;
+        this.$data.dealerUpgerdeRates[0].firstDealerShareProfitRate= this.$data.rate1/100;
+        this.$data.dealerUpgerdeRates[0].secondDealerShareProfitRate= this.$data.rate2/100;
+        this.$data.dealerUpgerdeRates[1].firstDealerShareProfitRate= this.$data.rate3/100;
+        this.$data.dealerUpgerdeRates[1].secondDealerShareProfitRate= this.$data.rate4/100;
         let query = {
           dealerId: this.$route.query.id,
           mobile: this.$data.mobile,
@@ -329,7 +370,11 @@
           bankCard: this.$data.bankCard,
           bankAccountName: this.$data.bankAccountName,
           bankReserveMobile: this.$data.bankReserveMobile,
-          product: this.$data.product
+          product: this.$data.product,
+          idCard: this.$data.idCard,
+          recommendBtn: this.$data.recommendBtn,
+          totalProfitSpace: this.$data.totalProfitSpace,
+          dealerUpgerdeRates: this.$data.dealerUpgerdeRates
         };
         this.$http.post('/admin/user/updateDealer', query)
           .then(function (res) {
@@ -350,12 +395,6 @@
       },
       $$data: function () {
         return this.$data;
-      },
-      $$inp3: function () {
-        return this.$data.inp3 = 100-this.$data.inp1-this.$data.inp2
-      },
-      $$inp6: function () {
-        return this.$data.inp6 = 100-this.$data.inp5-this.$data.inp4
       },
     },
     filters: {
@@ -403,6 +442,7 @@
   tr th,tr td{
     text-align: center;
   }
+
   .middle{
     position: relative;
     i{
@@ -431,6 +471,7 @@
     input {
       width: 77%;
       border: none;
+      border-bottom: 1px solid #d0d0d0;
     }
   }
 </style>

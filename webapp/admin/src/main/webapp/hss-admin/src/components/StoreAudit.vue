@@ -66,35 +66,11 @@
             </tr>
             <tr>
               <th style="text-align: right">所属银行:</th>
-              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.bankNo" readonly></td>
+              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.bankName" readonly></td>
               <th style="text-align: right">开户手机号:</th>
               <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.reserveMobile" readonly></td>
               <th style="text-align: right">实名认证时间:</th>
               <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.authenticationTime" readonly></td>
-            </tr>
-            </tbody></table>
-        </div>
-      </div>
-      <div class="box box-primary">
-        <p class="lead">审核日志</p>
-        <div class="table-responsive">
-          <table class="table">
-            <tbody>
-            <tr>
-              <th style="text-align: right">资料审核状态:</th>
-              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.status|status" readonly></td>
-              <th style="text-align: right">审核时间:</th>
-              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.checkedTime|changeTime" readonly></td>
-              <th style="text-align: right">审核人:</th>
-              <td><input type="text" style="background:#efecec;padding-left:5px;" value="—" readonly></td>
-            </tr>
-            <tr>
-              <th style="text-align: right">审核批复信息:</th>
-              <td><input type="text" style="background:#efecec;padding-left:5px;" value="—" readonly></td>
-              <th></th>
-              <td></td>
-              <th></th>
-              <td></td>
             </tr>
             </tbody></table>
         </div>
@@ -108,6 +84,7 @@
               <th class="col-md-3" style="text-align: center;">身份证正面:</th>
               <th class="col-md-3" style="text-align: center;">身份证反面:</th>
               <th class="col-md-3" style="text-align: center;">手持身份证:</th>
+              <th class="col-md-3" style="text-align: center;">银行卡正面:</th>
               <th class="col-md-3" style="text-align: center;">手持结算卡:</th>
             </tr>
             <tr class="row">
@@ -119,6 +96,9 @@
               </td>
               <td class="col-md-3" style="text-align: center;border: none;">
                 <img style="width: 200px"  @click="changeBig()" :src="msg.identityHandPic" alt=""/>
+              </td>
+              <td class="col-md-3" style="text-align: center;border: none;">
+                <img style="width: 200px"  @click="changeBig()" :src="msg.bankPic" alt=""/>
               </td>
               <td class="col-md-3" style="text-align: center;border: none;">
                 <img style="width: 200px"  @click="changeBig()" :src="msg.bankHandPic" alt=""/>
@@ -158,6 +138,50 @@
               <td>元/笔</td>
             </tr>
             </tbody></table>
+        </div>
+      </div>
+      <div class="box box-primary" v-if="!isShow">
+        <p class="lead">审核日志</p>
+        <div class="table-responsive">
+          <div class="col-sm-12">
+            <table id="example2" class="table table-bordered table-hover dataTable" role="grid" aria-describedby="example2_info">
+              <thead>
+              <tr role="row">
+                <th class="sorting_asc" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Rendering engine: activate to sort column descending">资料审核状态</th>
+                <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="Browser: activate to sort column ascending">审核时间</th>
+                <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="Platform(s): activate to sort column ascending">审核人</th>
+                <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="Engine version: activate to sort column ascending">批复信息</th>
+              </tr>
+              </thead>
+              <tbody id="content">
+              <tr role="row" class="odd" v-for="re in this.$data.res">
+                <td class="sorting_1">{{re.status|status}}</td>
+                <td>{{re.createTime|changeTime}}</td>
+                <td>—</td>
+                <td>{{re.descr}}</td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+          <!--<table class="table">
+            <tbody>
+            <tr>
+              <th style="text-align: right">资料审核状态:</th>
+              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.status|status" readonly></td>
+              <th style="text-align: right">审核时间:</th>
+              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.checkedTime|changeTime" readonly></td>
+              <th style="text-align: right">审核人:</th>
+              <td><input type="text" style="background:#efecec;padding-left:5px;" value="—" readonly></td>
+            </tr>
+            <tr>
+              <th style="text-align: right">审核批复信息:</th>
+              <td><input type="text" style="background:#efecec;padding-left:5px;" value="—" readonly></td>
+              <th></th>
+              <td></td>
+              <th></th>
+              <td></td>
+            </tr>
+            </tbody></table>-->
         </div>
       </div>
       <div class="mask" id="mask" style="display: none" @click="isNo()">
@@ -205,11 +229,12 @@
           proxyName1:'',
           proxyName: '',
           reserveMobile:'',
-          createTime:''
+          createTime:'',
         },
         reason:'',
         status:'',
-        isShow:true
+        isShow:true,
+        res: []
       }
     },
     created: function () {
@@ -220,7 +245,9 @@
       }
       this.$http.post('/admin/QueryMerchantInfoRecord/getAll',{id:this.$data.id})
         .then(function (res) {
-          this.$data.msg = res.data[0];
+          this.$data.msg = res.data.list[0];
+          this.$data.res = res.data.res;
+          console.log(this.$data.res)
         },function (err) {
           this.$store.commit('MESSAGE_ACCORD_SHOW', {
             text: err.statusMessage

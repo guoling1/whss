@@ -9,6 +9,7 @@ import com.jkm.hss.admin.helper.SecondLevelDealerCodeInfo;
 import com.jkm.hss.admin.helper.responseparam.ActiveCodeCount;
 import com.jkm.hss.admin.helper.responseparam.DistributeCodeCount;
 import org.apache.commons.lang3.tuple.Pair;
+import org.apache.commons.lang3.tuple.Triple;
 
 import java.util.List;
 
@@ -88,6 +89,12 @@ public interface QRCodeService {
      * @return
      */
     QRCode initMerchantCode(long merchantId);
+    /**
+     * 初始化商户的二维码（公众号注册）
+     *
+     * @return
+     */
+    QRCode initMerchantCode(long merchantId,long firstDealerId,long secondDealerId);
 
     /**
      * 按id查询
@@ -121,6 +128,13 @@ public interface QRCodeService {
      * @return
      */
     long getDealerIdByCode(String code);
+    /**
+     * 按code查询当前代理商id，一级代理商id,二级代理商id
+     *
+     * @param code
+     * @return
+     */
+    Triple<Long, Long, Long> getCurrentAndFirstAndSecondByCode(String code);
 
     /**
      * 按商户id查询

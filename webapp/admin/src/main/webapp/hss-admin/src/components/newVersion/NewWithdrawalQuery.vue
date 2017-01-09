@@ -4,40 +4,29 @@
       <router-link to="/admin/record/withdrawal" class="btn btn-success pull-right" style="margin-left: 20px">切换旧版</router-link>
       <div class="btn btn-primary pull-right" @click="refresh()">刷新</div>
     </div>
-    <div class="col-md-12">
-      <div class="box box-success box-solid">
-        <div class="box-header with-border">
-          <h3 class="box-title">筛选条件</h3>
-
-          <div class="box-tools pull-right">
-            <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
-            </button>
-          </div>
-          <!-- /.box-tools -->
-        </div>
-        <!-- /.box-header -->
+    <div style="margin: 0 15px">
+      <div class="box" style="overflow-x: hidden;">
         <div class="box-body">
           <div class="row">
-            <div class="col-md-3">
+            <div class="col-md-2">
               <div class="form-group">
                 <label for="date">打款流水号：</label>
                 <input type="text" class="form-control" name="date" value="" v-model="$$data.query.sn">
               </div>
             </div>
-            <div class="col-md-3">
+            <div class="col-md-2">
               <div class="form-group">
                 <label for="number">交易单号：</label>
                 <input type="text" class="form-control" name="number" v-model="$$data.query.orderNo">
               </div>
             </div>
-            <div class="col-md-3">
+            <div class="col-md-2">
               <div class="form-group">
                 <label for="codeNumber">收款账户名：</label>
                 <input type="text" name="codeNumber" class="form-control" v-model="$$data.query.userName">
               </div>
             </div>
-
-            <div class="col-md-3">
+            <div class="col-md-2">
               <div class="form-group">
                 <label>状态：</label>
                 <select class="form-control select2 select2-hidden-accessible" style="width: 100%;" tabindex="-1" aria-hidden="true" v-model="$$data.query.status">
@@ -49,25 +38,13 @@
                 </select>
               </div>
             </div>
-            <div class="col-md-1">
+            <div class="col-md-4" style="margin-top: 20px;">
               <div class="form-group">
                 <div class="btn btn-primary" @click="lookup">筛选</div>
+                <span @click="onload()" download="交易记录" class="btn btn-primary" style="float: right;color: #fff">导出</span>
               </div>
             </div>
           </div>
-        </div>
-        <!-- /.box-body -->
-      </div>
-      <!-- /.box -->
-    </div>
-    <div style="margin: 0 15px">
-      <div class="box" style="overflow-x: hidden;">
-        <div class="box-header">
-          <h3 class="box-title">提现记录</h3>
-          <span @click="onload()" download="交易记录" class="btn btn-primary" style="float: right;color: #fff">导出</span>
-        </div>
-        <!-- /.box-header -->
-        <div class="box-body">
           <div id="example2_wrapper" class="dataTables_wrapper form-inline dt-bootstrap">
             <div class="row">
               <div class="col-sm-12">
@@ -82,23 +59,26 @@
                     <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">打款金额</th>
                     <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">支付状态</th>
                     <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">打款通道</th>
-                    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">错误信息</th>
+                    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">渠道信息</th>
+                    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">备注信息</th>
                     <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">操作</th>
                   </tr>
                   </thead>
                   <tbody>
                   <tr role="row" v-for="(record,index) in $$records">
-                    <td>{{record.orderNo|changeHide}}</td>
                     <td>{{record.sn|changeHide}}</td>
+                    <td>{{record.orderNo|changeHide}}</td>
                     <td>{{record.requestTime|changeTime}}</td>
                     <td>{{record.receiptUserName}}</td>
-                    <td>{{record.bankCard}}</td>
-                    <td>{{record.amount}}</td>
+                    <td>{{record.bankCard|changeHide}}</td>
+                    <td style="text-align: right;">{{record.amount}}</td>
                     <td>{{record.statusValue}}</td>
                     <td>{{record.playMoneyChannel}}</td>
                     <td>{{record.message}}</td>
+                    <td>{{record.remark|changeHide}}</td>
                     <td>
-                      <router-link v-if="record.status=='5'" :to="{path:'/admin/record/withdrawalAudit',query:{orderNo:record.orderNo,sn:record.sn,requestTime:record.requestTime,amount:record.amount,receiptUserName:record.receiptUserName,playMoneyChannel:record.playMoneyChannel,status:record.status,bankCard:record.bankCard,message:record.message}}">审核</router-link>
+                      <router-link :to="{path:'/admin/record/withdrawalAudit',query:{orderNo:record.orderNo,sn:record.sn,requestTime:record.requestTime,amount:record.amount,receiptUserName:record.receiptUserName,playMoneyChannel:record.playMoneyChannel,status:record.status,bankCard:record.bankCard,message:record.message}}" id="audit" v-if="record.status=='5'&&record.auditStatus==0" >审核</router-link>
+                      <span v-if="record.status=='5'&&record.auditStatus!=0">{{record.auditStatusValue}}</span>
                     </td>
                   </tr>
                   </tbody>
@@ -117,6 +97,7 @@
                 <div class="dataTables_paginate paging_simple_numbers" id="example2_paginate">
                   <ul class="pagination" id="page" @click="bindEvent($event)">
                   </ul>
+                  <span class="count">共{{count}}条</span>
                 </div>
               </div>
             </div>
@@ -170,19 +151,21 @@
         index:0,
         remark:'',
         isMask: false,
-        url: ''
+        url: '',
+        count:0
       }
     },
     created:function () {
-      this.$http.post('http://192.168.1.20:8076/order/withdraw/listOrder',this.$data.query)
+      this.$http.post('http://pay.qianbaojiajia.com/order/withdraw/listOrder',this.$data.query)
         .then(function (res) {
           this.$data.records = res.data.records;
           this.$data.total = res.data.totalPage;
+          this.$data.count = res.data.count;
           var str='',
             page=document.getElementById('page');
           str+='<li class="paginate_button previous" id="example2_previous"><a href="#" aria-controls="example2" data-dt-idx="0" tabindex="0">上一页</a></li>'
           for (var i=1; i<=this.$data.total;i++){
-            if(i==this.$data.query.page){
+            if(i==this.$data.query.pageNo){
               str+='<li class="paginate_button active"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">'+i+'</a></li></li>';
               continue;
             }
@@ -192,11 +175,11 @@
           page.innerHTML=str;
           var aLi = page.getElementsByTagName('li');
           for(var i=0;i<aLi.length;i++){
-            if(this.$data.query.page<6&&i>10){
+            if(this.$data.query.pageNo<6&&i>10){
               aLi[i].style.display='none'
-            }else if(this.$data.query.page>(this.$data.total-6)&&i<(this.$data.total-11)){
+            }else if(this.$data.query.pageNo>(this.$data.total-6)&&i<(this.$data.total-11)){
               aLi[i].style.display='none'
-            }else if((i!=0&&i<this.$data.query.page-5)||(i!=this.$data.total+1&&i>this.$data.query.page+4)){
+            }else if((i!=0&&i<this.$data.query.pageNo-5)||(i!=this.$data.total+1&&i>this.$data.query.pageNo+4)){
               aLi[i].style.display='none'
             }
           }
@@ -210,7 +193,7 @@
     methods: {
       onload:function () {
         this.$data.isMask = true;
-        this.$http.post('http://192.168.1.20:8076/order/withdraw/exportExcel',this.$data.query)
+        this.$http.post('http://pay.qianbaojiajia.com/order/withdraw/exportExcel',this.$data.query)
           .then(function (res) {
             this.$data.url = res.data.url;
           },function (err) {
@@ -231,7 +214,7 @@
         e = e||window.event;
         var tar = e.target||e.srcElement,
           tarInn = tar.innerHTML,
-          n = this.$data.query.page;
+          n = this.$data.query.pageNo;
         if(tarInn == '上一页'){
           if(n == 1){
             tar.parentNode.className+=' disabled'
@@ -253,8 +236,8 @@
           tar.parentNode.className+=' active'
           n = Number(tarInn);
         }
-        this.$data.query.page = n;
-        this.$http.post('http://192.168.1.20:8076/order/withdraw/listOrder',this.$data.query)
+        this.$data.query.pageNo = n;
+        this.$http.post('http://pay.qianbaojiajia.com/order/withdraw/listOrder',this.$data.query)
           .then(function (res) {
             this.$data.records = res.data.records;
             this.$data.total=res.data.totalPage;
@@ -262,7 +245,7 @@
               page=document.getElementById('page');
             str+='<li class="paginate_button previous" id="example2_previous"><a href="#" aria-controls="example2" data-dt-idx="0" tabindex="0">上一页</a></li>'
             for (var i=1; i<=this.$data.total;i++){
-              if(i==this.$data.query.page){
+              if(i==this.$data.query.pageNo){
                 str+='<li class="paginate_button active"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">'+i+'</a></li></li>';
                 continue;
               }
@@ -272,11 +255,11 @@
             page.innerHTML=str;
             var aLi = page.getElementsByTagName('li');
             for(var i=0;i<aLi.length;i++){
-              if(this.$data.query.page<6&&i>10){
+              if(this.$data.query.pageNo<6&&i>10){
                 aLi[i].style.display='none'
-              }else if(this.$data.query.page>(this.$data.total-6)&&i<(this.$data.total-11)){
+              }else if(this.$data.query.pageNo>(this.$data.total-6)&&i<(this.$data.total-11)){
                 aLi[i].style.display='none'
-              }else if((i!=0&&i<this.$data.query.page-5)||(i!=this.$data.total+1&&i>this.$data.query.page+4)){
+              }else if((i!=0&&i<this.$data.query.pageNo-5)||(i!=this.$data.total+1&&i>this.$data.query.pageNo+4)){
                 aLi[i].style.display='none'
               }
             }
@@ -289,7 +272,7 @@
       //筛选
       lookup: function () {
         this.$data.query.pageNo = 1;
-        this.$http.post('http://192.168.1.20:8076/order/withdraw/listOrder',this.$data.query)
+        this.$http.post('http://pay.qianbaojiajia.com/order/withdraw/listOrder',this.$data.query)
           .then(function (res) {
             this.$data.records = res.data.records;
             this.$data.total=res.data.totalPage;
@@ -332,21 +315,6 @@
       }
     },
     filters: {
-      /*changeStatus: function (val) {
-        if(val == "N"){
-          return '待审核'
-        }else if(val == "H"){
-          return '提现中'
-        }else if(val == "S"){
-          return '提现成功'
-        }else if(val == "F"){
-          return '提现失败'
-        }else if(val == "O"){
-          return '审核未通过'
-        }else if(val == "D"){
-          return '交易关闭'
-        }
-      },*/
       changeStatus: function (val) {
         if(val == "1"){
           return '待提现'
@@ -391,7 +359,9 @@
         }
       },
       changeHide: function (val) {
-        val = val.replace(val.substring(3,19),"…");
+        if(val!=""&&val!=null){
+          val = val.replace(val.substring(3,val.length-6),"…");
+        }
         return val
       },
     }
@@ -432,5 +402,10 @@
   }
   .table td[data-v-497723e2], .table th[data-v-497723e2]{
     width: inherit;
+  }
+  .count{
+    display: inline-block;
+    vertical-align: top;
+    margin: 28px 10px;
   }
 </style>

@@ -2,6 +2,7 @@ package com.jkm.hss.merchant.entity;
 
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 
@@ -9,14 +10,38 @@ import java.util.Date;
 public class MerchantInfoResponse {
 
     /**
-     * 认证时间
+     * 条数
      */
-    private Date authenticationTime;
+    private Integer offset;
+
 
     /**
-     *
+     * 微信费率
+     */
+    private BigDecimal weixinRate;
+
+    /**
+     * 支付宝费率
+     */
+    private BigDecimal alipayRate;
+
+    /**
+     * 快捷费率
+     */
+    private BigDecimal fastRate;
+
+
+    /**
+     * 认证时间
+     */
+    private String authenticationTime;
+
+    /**
+     * 代理商级别
      */
     private long firstLevelDealerId;
+
+
 
     /**
      * 经销商级别
@@ -119,7 +144,7 @@ public class MerchantInfoResponse {
     /**
      *审核通过时间
      */
-    private Date checkedTime;
+    private String checkedTime;
 
     /**
      * 所属1代理商名称
