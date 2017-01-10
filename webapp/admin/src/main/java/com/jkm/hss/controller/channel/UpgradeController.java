@@ -70,7 +70,7 @@ public class UpgradeController extends BaseController {
                 upgradeRules.setAlipayRate(productChannelDetails.get(i).getProductMerchantPayRate());
             }
             if(EnumPayChannelSign.YG_YINLIAN.getId()==productChannelDetails.get(i).getChannelTypeSign()){
-                upgradeRules.setWeixinRate(productChannelDetails.get(i).getProductMerchantPayRate());
+                upgradeRules.setFastRate(productChannelDetails.get(i).getProductMerchantPayRate());
             }
         }
         upgradeRulesList.add(upgradeRules);
