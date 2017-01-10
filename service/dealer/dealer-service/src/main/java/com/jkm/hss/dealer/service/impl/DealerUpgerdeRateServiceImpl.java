@@ -3,6 +3,7 @@ package com.jkm.hss.dealer.service.impl;
 import com.google.common.base.Optional;
 import com.jkm.hss.dealer.dao.DealerUpgerdeRateDao;
 import com.jkm.hss.dealer.entity.DealerUpgerdeRate;
+import com.jkm.hss.dealer.enums.EnumDealerRateType;
 import com.jkm.hss.dealer.service.DealerUpgerdeRateService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -68,5 +69,17 @@ public class DealerUpgerdeRateServiceImpl implements DealerUpgerdeRateService{
     @Override
     public List<DealerUpgerdeRate> selectByDealerIdAndProductId(long dealerId, long productId) {
         return dealerUpgerdeRateDao.selectByDealerIdAndProductId(dealerId,productId);
+    }
+
+    /**
+     * {@inheritDoc}
+     * @param dealerId
+     * @param type
+     * @param productId
+     * @return
+     */
+    @Override
+    public DealerUpgerdeRate selectByDealerIdAndTypeAndProductId(long dealerId, EnumDealerRateType type, long productId) {
+        return dealerUpgerdeRateDao.selectByDealerIdAndTypeAndProductId(dealerId, type.getId(), productId);
     }
 }
