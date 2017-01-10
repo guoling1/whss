@@ -1,5 +1,6 @@
 package com.jkm.hss.merchant.service.impl;
 
+
 import com.jkm.hss.dealer.entity.Dealer;
 import com.jkm.hss.dealer.entity.DealerUpgerdeRate;
 import com.jkm.hss.dealer.enums.EnumDealerRateType;
@@ -17,6 +18,7 @@ import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.Triple;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
@@ -29,6 +31,7 @@ import java.util.Map;
  */
 @Data
 @Slf4j
+@Service
 public class MerchantPromoteShallServiceImpl implements MerchantPromoteShallService {
 
 
@@ -103,7 +106,7 @@ public class MerchantPromoteShallServiceImpl implements MerchantPromoteShallServ
             }
             //一级代理分润 = （升级费 - 直推分润 - 间推分润）* 一级代理分润比例
             BigDecimal firstMoney = (waitAmount.subtract(directMoney).subtract(inDirectMoney))
-                        .multiply(dealerUpgerdeRates.getFirstDealerShareProfitRate());
+                    .multiply(dealerUpgerdeRates.getFirstDealerShareProfitRate());
             //金开门利润 = 升级费 - 直推分润 - 间推分润 - 一级代理分润 - 二级代理分润
             final Product product = this.productService.selectById(2).get();
             BigDecimal productMoney = waitAmount.subtract(directMoney).subtract(inDirectMoney).subtract(firstMoney).subtract(secondMoney);
@@ -128,6 +131,4 @@ public class MerchantPromoteShallServiceImpl implements MerchantPromoteShallServ
         }
 
     }
-
-
 }

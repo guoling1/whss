@@ -909,7 +909,7 @@ public class LoginController extends BaseController {
                     }else if(result.get().getStatus()== EnumMerchantStatus.PASSED.getId()||result.get().getStatus()== EnumMerchantStatus.FRIEND.getId()){
                         // TODO: 2016/12/29 累计分润
                         model.addAttribute("totalProfit","0.00");
-                        model.addAttribute("shareUrl","http://"+ApplicationConsts.getApplicationConfig().domain()+"/invite/"+userInfoOptional.get().getId());
+                        model.addAttribute("shareUrl","http://"+ApplicationConsts.getApplicationConfig().domain()+"/sqb/invite/"+userInfoOptional.get().getId());
                         url = "/myRecommend";
                     }
                 }else {
@@ -1213,7 +1213,7 @@ public class LoginController extends BaseController {
                                 int hasCount = recommendService.selectFriendCount(result.get().getId());
                                 model.addAttribute("restCount",upgradeRulesOptional.get().getPromotionNum()-hasCount);
                                 model.addAttribute("merchantId",result.get().getId());
-                                model.addAttribute("shareUrl","http://"+ApplicationConsts.getApplicationConfig().domain()+"/invite/"+userInfoOptional.get().getId());
+                                model.addAttribute("shareUrl","http://"+ApplicationConsts.getApplicationConfig().domain()+"/sqb/invite/"+userInfoOptional.get().getId());
                                 return "/toUpgerde";
                             }
                         }else{

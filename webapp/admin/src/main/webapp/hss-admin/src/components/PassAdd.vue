@@ -1,7 +1,6 @@
 <template lang="html">
     <div id="passAdd">
-      <div v-if="isShow" style="padding: 8px 30px; background: rgb(243, 156, 18); z-index: 999999; font-size: 22px; font-weight: 600;margin-bottom: 15px;color: #fff;">增加通道</div>
-      <div v-else="isShow" style="padding: 8px 30px; background: rgb(243, 156, 18); z-index: 999999; font-size: 22px; font-weight: 600;margin-bottom: 15px;color: #fff;">修改通道</div>
+
       <!--<form action="" style="margin: 0 15px">
         <label>
           通道名称：
@@ -41,8 +40,12 @@
           </select>
         </label>
       </form>-->
-      <div style="margin: 0 15px;width: inherit" class="box box-info">
+      <div style="margin: 15px;width: inherit" class="box">
         <form class="form-horizontal">
+          <div class="box-header">
+            <h3 v-if="isShow" class="box-title">增加通道</h3>
+            <h3 v-else="isShow" class="box-title">修改通道</h3>
+          </div>
           <div class="box-body">
             <div class="form-group">
               <label for="channelName" class="col-sm-2 control-label">通道名称</label>
