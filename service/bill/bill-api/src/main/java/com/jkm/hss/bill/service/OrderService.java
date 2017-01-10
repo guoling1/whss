@@ -7,6 +7,7 @@ import com.jkm.hss.bill.entity.Order;
 import com.jkm.hss.bill.helper.requestparam.QueryMerchantPayOrdersRequestParam;
 import com.jkm.hss.merchant.helper.request.OrderTradeRequest;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -138,6 +139,22 @@ public interface OrderService {
      * @return
      */
     PageModel<Order> queryMerchantPayOrders(QueryMerchantPayOrdersRequestParam requestParam);
+
+    /**
+     * 按下游业务订单号查询
+     *
+     * @param businessOrderNo
+     * @return
+     */
+    Optional<Order> getByBusinessOrderNo(String businessOrderNo);
+
+    /**
+     * 查询当前账户的交易总额
+     *
+     * @param accountId
+     * @return
+     */
+    BigDecimal getTotalTradeAmountByAccountId(long accountId);
 
     /**
      * 查询交易详情

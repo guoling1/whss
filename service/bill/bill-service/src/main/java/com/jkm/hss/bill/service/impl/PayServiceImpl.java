@@ -81,14 +81,25 @@ public class PayServiceImpl implements PayService {
      * {@inheritDoc}
      *
      * @param merchantId
+     * @param businessOrderNo 业务订单号
      * @param amount
      * @return
      */
     @Override
-    public Pair<Integer, String> generateMerchantUpgradeUrl(final long merchantId, final BigDecimal amount) {
+    public Pair<Integer, String> generateMerchantUpgradeUrl(final long merchantId, final String businessOrderNo, final BigDecimal amount) {
+
+        final Optional<Order> orderOptional = this.orderService.getByBusinessOrderNo(businessOrderNo);
+        if (orderOptional.isPresent()) {
+            final Order order = orderOptional.get();
+            if (order.isPaySuccess()) {
+                return Pair.of(-1, "该订单号已经支付成功");
+            }
+            return Pair.of(-1, "订单号重复");
+        }
         final MerchantInfo merchant = this.merchantInfoService.selectById(merchantId).get();
 
         final Order order = new Order();
+        order.setBusinessOrderNo(businessOrderNo);
         order.setOrderNo(SnGenerator.generateSn(EnumTradeType.PAY.getId()));
         order.setTradeAmount(amount);
         order.setRealPayAmount(amount);
@@ -229,8 +240,18 @@ public class PayServiceImpl implements PayService {
         order.setRemark(paymentSdkPayCallbackResponse.getMessage());
         order.setSn(paymentSdkPayCallbackResponse.getSn());
         order.setStatus(EnumOrderStatus.PAY_SUCCESS.getId());
+        int channel = 0;
+        if (EnumPaymentType.QUICK_APY.getId().equals(order.getPayType())) {
+            channel = EnumPayChannelSign.YG_YINLIAN.getId();
+        } else if (EnumPaymentType.WECHAT_H5_CASHIER_DESK.getId().equals(order.getPayType())) {
+            channel = EnumPayChannelSign.YG_WEIXIN.getId();
+        } else if (EnumPaymentType.ALIPAY_SCAN_CODE.getId().equals(order.getPayType())) {
+            channel = EnumPayChannelSign.YG_ZHIFUBAO.getId();
+        }
+        log.info("返回的通道是[{}]", order.getPayType());
         //处理商户升级的支付单(此时商户自己付款给金开门)
         if (order.getPayer() > 0 && order.getPayee() == AccountConstants.JKM_ACCOUNT_ID) {
+            log.info("交易订单[{}]，处理商户升级支付回调业务", order.getOrderNo());
             //手续费， 费率
 //            final BigDecimal merchantPayPoundageRate = this.calculateService.getMerchantPayPoundageRate(merchantId, channel);
 //            final BigDecimal merchantPayPoundage = this.calculateService.getMerchantPayPoundage(order.getTradeAmount(), merchantPayPoundageRate);
@@ -251,21 +272,13 @@ public class PayServiceImpl implements PayService {
                 //结算完毕
                 this.orderService.updateSettleStatus(orderOptional.get().getId(), EnumSettleStatus.SETTLED.getId());
             }
+            //回调业务 TODO
             return;
         }
         //普通支付单处理业务
-
+        log.info("交易订单[{}]，处理普通支付回调业务", order.getOrderNo());
         final MerchantInfo merchant = this.merchantInfoService.getByAccountId(order.getPayee()).get();
         //手续费， 费率
-        int channel = 0;
-        if (EnumPaymentType.QUICK_APY.getId().equals(order.getPayType())) {
-            channel = EnumPayChannelSign.YG_YINLIAN.getId();
-        } else if (EnumPaymentType.WECHAT_H5_CASHIER_DESK.getId().equals(order.getPayType())) {
-            channel = EnumPayChannelSign.YG_WEIXIN.getId();
-        } else if (EnumPaymentType.ALIPAY_SCAN_CODE.getId().equals(order.getPayType())) {
-            channel = EnumPayChannelSign.YG_ZHIFUBAO.getId();
-        }
-        log.info("返回的通道是[{}]", order.getPayType());
         final BigDecimal merchantPayPoundageRate = this.calculateService.getMerchantPayPoundageRate(merchant.getId(), channel);
         final BigDecimal merchantPayPoundage = this.calculateService.getMerchantPayPoundage(order.getTradeAmount(), merchantPayPoundageRate);
         order.setPayChannelSign(channel);
@@ -287,6 +300,11 @@ public class PayServiceImpl implements PayService {
             this.orderService.updateSettleStatus(orderOptional.get().getId(), EnumSettleStatus.SETTLED.getId());
 
         }
+        //判断交易金额
+        final BigDecimal totalTradeAmount = this.orderService.getTotalTradeAmountByAccountId(merchant.getAccountId());
+        if (totalTradeAmount.compareTo(AccountConstants.MERCHANT_UPGRADE_MIN_AMOUNT) >= 0) {
+
+        }
         //通知商户
         Optional<UserInfo> ui = userInfoService.selectByMerchantId(merchant.getId());
         log.info("商户号[{}], 交易点单号[{}]支付完成，开始通知商户", merchant.getId(), order.getOrderNo());
@@ -294,12 +312,12 @@ public class PayServiceImpl implements PayService {
                 merchant.getMerchantName(),  merchant.getMerchantName(), ui.get().getOpenId());
 
         //商户提现(发消息)
-//        final JSONObject requestJsonObject = new JSONObject();
-//        requestJsonObject.put("merchantId", merchant.getId());
-//        requestJsonObject.put("payOrderId", order.getId());
-//        requestJsonObject.put("payOrderSn", paymentSdkPayCallbackResponse.getSn());
-//        requestJsonObject.put("balanceAccountType", EnumBalanceTimeType.D0.getType());
-//        MqProducer.produce(requestJsonObject, MqConfig.MERCHANT_WITHDRAW, 100);
+        final JSONObject requestJsonObject = new JSONObject();
+        requestJsonObject.put("merchantId", merchant.getId());
+        requestJsonObject.put("payOrderId", order.getId());
+        requestJsonObject.put("payOrderSn", paymentSdkPayCallbackResponse.getSn());
+        requestJsonObject.put("balanceAccountType", EnumBalanceTimeType.D0.getType());
+        MqProducer.produce(requestJsonObject, MqConfig.MERCHANT_WITHDRAW, 100);
     }
 
     /**
