@@ -27,7 +27,7 @@ import com.jkm.hss.merchant.helper.WxPubUtil;
 import com.jkm.hss.merchant.service.*;
 import com.jkm.hss.product.entity.ProductChannelDetail;
 import com.jkm.hss.product.entity.UpgradePayRecord;
-import com.jkm.hss.product.entity.UpgradeResult;
+import com.jkm.hss.product.helper.response.UpgradeResult;
 import com.jkm.hss.product.entity.UpgradeRules;
 import com.jkm.hss.product.enums.EnumPayChannelSign;
 import com.jkm.hss.product.enums.EnumUpgrade;
