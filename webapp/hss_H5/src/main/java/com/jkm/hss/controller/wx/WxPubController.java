@@ -491,6 +491,9 @@ public class WxPubController extends BaseController {
                                 mi.setWeixinRate(weixinDealerChannelRate.get().getDealerMerchantPayRate());
                                 mi.setAlipayRate(zhifubaoDealerChannelRate.get().getDealerMerchantPayRate());
                                 mi.setFastRate(yinlianDealerChannelRate.get().getDealerMerchantPayRate());
+                                mi.setIsUpgrade(EnumIsUpgrade.CANNOTUPGRADE.getId());
+                            }else{//能升级
+                                mi.setIsUpgrade(EnumIsUpgrade.CANUPGRADE.getId());
                             }
                         }
                     }
@@ -539,6 +542,7 @@ public class WxPubController extends BaseController {
                     mi.setWeixinRate(weixinChannelDetail.get().getProductMerchantPayRate());
                     mi.setAlipayRate(zhifubaoChannelDetail.get().getProductMerchantPayRate());
                     mi.setFastRate(yinlianChannelDetail.get().getProductMerchantPayRate());
+                    mi.setIsUpgrade(EnumIsUpgrade.CANUPGRADE.getId());
                     merchantInfoService.regByWx(mi);
                     //添加用户
                     UserInfo uo = new UserInfo();
