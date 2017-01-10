@@ -263,7 +263,7 @@ public class WxPubController extends BaseController {
         if (!ValidateUtils.isMobile(mobile)) {
             return CommonResponse.simpleResponse(-1, "手机号格式错误");
         }
-        final Pair<Integer, String> verifyCode = this.smsAuthService.getVerifyCode(mobile, EnumVerificationCodeType.REGISTER_MERCHANT);
+        final Pair<Integer, String> verifyCode = this.smsAuthService.getVerifyCode(mobile, EnumVerificationCodeType.LOGIN_MERCHANT);
         if (1 == verifyCode.getLeft()) {
             final Map<String, String> params = ImmutableMap.of("code", verifyCode.getRight());
             this.sendMessageService.sendMessage(SendMessageParams.builder()
@@ -271,7 +271,7 @@ public class WxPubController extends BaseController {
                     .uid("")
                     .data(params)
                     .userType(EnumUserType.BACKGROUND_USER)
-                    .noticeType(EnumNoticeType.REGISTER_MERCHANT)
+                    .noticeType(EnumNoticeType.LOGIN_MERCHANT)
                     .build()
             );
             return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "发送验证码成功");
@@ -414,7 +414,7 @@ public class WxPubController extends BaseController {
             }
         }
         final Pair<Integer, String> checkResult =
-                this.smsAuthService.checkVerifyCode(mobile, verifyCode, EnumVerificationCodeType.REGISTER_MERCHANT);
+                this.smsAuthService.checkVerifyCode(mobile, verifyCode, EnumVerificationCodeType.LOGIN_MERCHANT);
         if (1 != checkResult.getLeft()) {
             return CommonResponse.simpleResponse(-1, checkResult.getRight());
         }

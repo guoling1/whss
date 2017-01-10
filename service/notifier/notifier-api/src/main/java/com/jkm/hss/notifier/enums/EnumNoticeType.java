@@ -26,8 +26,9 @@ public enum EnumNoticeType {
 //    RETRIEVE_PASSWORD_MERCHANT(302, "商户找回密码"),
 //    RETRIEVE_PASSWORD_DEALER(303, "经销商找回密码"),
 
-    REGISTER_MERCHANT(401, "商户注册"),
 
+    REGISTER_MERCHANT(401, "商户注册"),
+    LOGIN_MERCHANT(402, "商户登录"),
     //########## 绑定银行卡消息 ##########
     BIND_CARD_MERCHANT(501, "商户绑定银行卡"),
     BIND_CARD_DEALER(502, "代理商绑定银行卡"),
