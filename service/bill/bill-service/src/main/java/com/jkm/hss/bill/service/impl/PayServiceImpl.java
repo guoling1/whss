@@ -735,8 +735,7 @@ public class PayServiceImpl implements PayService {
         placeOrderRequest.setReturnUrl(PaymentSdkConstants.SDK_PAY_RETURN_URL + order.getTradeAmount() + "/" + order.getId());
         placeOrderRequest.setNotifyUrl(PaymentSdkConstants.SDK_PAY_NOTIFY_URL);
         placeOrderRequest.setMerName(merchant.getMerchantName());
-        //TODO
-        placeOrderRequest.setMerNo(merchant.getId() + "");
+        placeOrderRequest.setMerNo(merchant.getMarkCode());
         placeOrderRequest.setTotalAmount(order.getTradeAmount().toPlainString());
         if (EnumPayChannelSign.YG_WEIXIN.getId() == channel
                 || EnumPayChannelSign.YG_ZHIFUBAO.getId() == channel) {
