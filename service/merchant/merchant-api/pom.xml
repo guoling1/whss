@@ -122,10 +122,6 @@
             <artifactId>ons-client</artifactId>
             <version>1.2.5</version>
         </dependency>
-        <dependency>
-            <groupId>com.jkm</groupId>
-            <artifactId>hss-bill-api</artifactId>
-        </dependency>
     </dependencies>
 
 </project>

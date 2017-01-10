@@ -1,7 +1,5 @@
 package com.jkm.hss.merchant.service.impl;
 
-import com.jkm.hss.bill.entity.Order;
-import com.jkm.hss.bill.service.OrderService;
 import com.jkm.hss.dealer.entity.Dealer;
 import com.jkm.hss.dealer.entity.DealerUpgerdeRate;
 import com.jkm.hss.dealer.enums.EnumDealerRateType;
@@ -37,8 +35,8 @@ public class MerchantPromoteShallServiceImpl implements MerchantPromoteShallServ
     @Autowired
     private UpgradeRulesService upgradeRulesService;
 
-    @Autowired
-    private OrderService orderService;
+//    @Autowired
+//    private OrderService orderService;
 
     @Autowired
     private MerchantInfoService merchantInfoService;
