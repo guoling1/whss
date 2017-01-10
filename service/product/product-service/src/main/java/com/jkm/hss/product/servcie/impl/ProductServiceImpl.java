@@ -51,4 +51,15 @@ public class ProductServiceImpl implements ProductService {
     public void update(Product product) {
         this.productDao.update(product);
     }
+
+    /**
+     * 根据id查询
+     *
+     * @param type
+     * @return
+     */
+    @Override
+    public Optional<Product> selectByType(String type) {
+        return Optional.fromNullable(this.productDao.selectByType(type));
+    }
 }
