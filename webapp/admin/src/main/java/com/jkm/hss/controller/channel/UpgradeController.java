@@ -75,6 +75,16 @@ public class UpgradeController extends BaseController {
         }
         upgradeRulesList.add(upgradeRules);
         List<UpgradeRules> upgradeRulesArr =  upgradeRulesService.selectAll(req.getProductId());//升级规则
+
+        for(int i=0;i<3;i++){
+            UpgradeRules upgradeRulesTemp = new UpgradeRules();
+            upgradeRulesList.add(upgradeRulesTemp);
+        }
+        if(upgradeRulesArr.size()>0){
+            for(int j=0;j<upgradeRulesArr.size();j++){
+                upgradeRulesList.add(upgradeRulesArr.get(j).getType(),upgradeRulesArr.get(j));
+            }
+        }
         upgradeRulesList.addAll(upgradeRulesArr);
         UpgradeRulesAndRateResponse upgradeRulesAndRateResponse = new  UpgradeRulesAndRateResponse();
         upgradeRulesAndRateResponse.setUpgradeRulesList(upgradeRulesList);
