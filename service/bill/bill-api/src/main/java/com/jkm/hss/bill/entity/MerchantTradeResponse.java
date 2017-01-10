@@ -20,6 +20,11 @@ import java.util.Date;
 public class MerchantTradeResponse {
 
     /**
+     * 支付流水号
+     */
+    private String sn;
+
+    /**
      *
      */
     private int level;
