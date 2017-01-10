@@ -83,7 +83,7 @@ public class UpgradeRecommendRulesServiceImpl implements UpgradeRecommendRulesSe
     @Override
     public BigDecimal selectInviteStandard() {
         Optional<Product> productOptional = productService.selectByType(EnumProductType.HSS.getId());
-        Optional<UpgradeRecommendRules>  upgradeRecommendRulesOptional=  Optional.fromNullable(upgradeRecommendRulesDao.selectByProductId(productOptional.get().getId()));
-        return upgradeRecommendRulesOptional.get().getInviteStandard();
+        UpgradeRecommendRules  upgradeRecommendRules=  upgradeRecommendRulesDao.selectByProductId(productOptional.get().getId());
+        return upgradeRecommendRules.getInviteStandard();
     }
 }
