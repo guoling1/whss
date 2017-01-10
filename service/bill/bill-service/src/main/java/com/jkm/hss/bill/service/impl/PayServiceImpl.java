@@ -116,11 +116,6 @@ public class PayServiceImpl implements PayService {
         order.setPayChannelSign(EnumPayChannelSign.YG_WEIXIN.getId());
         order.setPayer(merchant.getAccountId());
         order.setPayee(AccountConstants.JKM_ACCOUNT_ID);
-        //TODO 手续费， 费率
-        final BigDecimal merchantPayPoundageRate = this.calculateService.getMerchantPayPoundageRate(merchantId, EnumPayChannelSign.YG_WEIXIN.getId());
-        final BigDecimal merchantPayPoundage = this.calculateService.getMerchantPayPoundage(order.getTradeAmount(), merchantPayPoundageRate);
-        order.setPoundage(merchantPayPoundage);
-        order.setPayRate(merchantPayPoundageRate);
         order.setGoodsName(merchant.getMerchantName());
         order.setGoodsDescribe(merchant.getMerchantName());
         order.setSettleStatus(EnumSettleStatus.DUE_SETTLE.getId());
@@ -258,7 +253,7 @@ public class PayServiceImpl implements PayService {
             final BigDecimal merchantUpgradePoundage = this.calculateService.getMerchantUpgradePoundage(merchant.getId());
             order.setPoundage(merchantUpgradePoundage);
             this.orderService.update(order);
-            //公司利润账户--手续费入账
+            //公司利润账户，手续费入账
             this.companyRecorded(order.getId());
             //结算
             final Optional<Order> orderOptional = this.orderService.getByIdWithLock(order.getId());
@@ -305,14 +300,10 @@ public class PayServiceImpl implements PayService {
 
         }
         //判断商户交易金额--是否升级
-        try {
-            final BigDecimal totalTradeAmount = this.orderService.getTotalTradeAmountByAccountId(merchant.getAccountId());
-            final BigDecimal merchantUpgradeMinAmount = this.upgradeRecommendRulesService.selectInviteStandard();
-            if (totalTradeAmount.compareTo(merchantUpgradeMinAmount) >= 0) {
-                this.merchantInfoService.toUpgradeByRecommend(merchant.getId());
-            }
-        } catch (final Throwable e) {
-            log.error("############调用商户升级异常################");
+        final BigDecimal totalTradeAmount = this.orderService.getTotalTradeAmountByAccountId(merchant.getAccountId());
+        final BigDecimal merchantUpgradeMinAmount = this.upgradeRecommendRulesService.selectInviteStandard();
+        if (totalTradeAmount.compareTo(merchantUpgradeMinAmount) >= 0) {
+            this.merchantInfoService.toUpgradeByRecommend(merchant.getId());
         }
         //通知商户
         Optional<UserInfo> ui = userInfoService.selectByMerchantId(merchant.getId());
