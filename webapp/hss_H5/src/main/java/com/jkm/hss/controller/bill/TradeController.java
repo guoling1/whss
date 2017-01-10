@@ -87,7 +87,7 @@ public class TradeController extends BaseController {
         if(!merchantInfo.isPresent()){
             return CommonResponse.simpleResponse(-2, "未登录");
         }
-        if(merchantInfo.get().getStatus()!= EnumMerchantStatus.PASSED.getId()||merchantInfo.get().getStatus()!= EnumMerchantStatus.FRIEND.getId()){
+        if(merchantInfo.get().getStatus()!= EnumMerchantStatus.PASSED.getId()&&merchantInfo.get().getStatus()!= EnumMerchantStatus.FRIEND.getId()){
             return CommonResponse.simpleResponse(-2, "未审核通过");
         }
         final String totalFee = payRequest.getTotalFee();
@@ -127,7 +127,7 @@ public class TradeController extends BaseController {
     public CommonResponse staticCodeReceipt(@RequestBody final StaticCodePayRequest payRequest,
                                              final HttpServletRequest request) throws UnsupportedEncodingException {
         final Optional<MerchantInfo> merchantInfo = this.merchantInfoService.selectById(payRequest.getMerchantId());
-        if(merchantInfo.get().getStatus()!=EnumMerchantStatus.PASSED.getId()||merchantInfo.get().getStatus()!=EnumMerchantStatus.FRIEND.getId()){
+        if(merchantInfo.get().getStatus()!=EnumMerchantStatus.PASSED.getId()&&merchantInfo.get().getStatus()!=EnumMerchantStatus.FRIEND.getId()){
             return CommonResponse.simpleResponse(-2, "未审核通过");
         }
         final String totalAmount = payRequest.getTotalFee();
@@ -208,7 +208,7 @@ public class TradeController extends BaseController {
         if(!merchantInfo.isPresent()){
             return CommonResponse.simpleResponse(-2, "未登录");
         }
-        if(merchantInfo.get().getStatus()!= EnumMerchantStatus.PASSED.getId()){
+        if(merchantInfo.get().getStatus()!= EnumMerchantStatus.PASSED.getId()&&merchantInfo.get().getStatus()!= EnumMerchantStatus.FRIEND.getId()){
             return CommonResponse.simpleResponse(-2, "未审核通过");
         }
         requestParam.setAccountId(merchantInfo.get().getAccountId());
