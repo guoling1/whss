@@ -4,12 +4,12 @@
 
     <select id="getAll" resultType="com.jkm.hss.merchant.entity.MerchantInfoResponse">
 
-        SELECT a.id,a.identity_face_pic,a.identity_opposite_pic,a.identity_hand_pic
-        ,a.bank_hand_pic,a.bank_pic,a.reserve_mobile,a.merchant_name,a.address
-        ,a.name,a.identity,a.bank_no,a.dealer_id,a.status,a.bank_name
-        ,a.create_time,a.mobile,a.authentication_time,a.checked_time,
-        (SELECT b.level FROM tb_dealer b WHERE a.dealer_id=b.id) AS level,
-        (SELECT b.id AS dealerId FROM tb_dealer b WHERE a.dealer_id=b.id) AS dealerId
+        SELECT id,identity_face_pic,identity_opposite_pic,identity_hand_pic
+        ,bank_hand_pic,bank_pic,reserve_mobile,merchant_name,address
+        ,name,identity,bank_no,dealer_id,status,bank_name
+        ,create_time,mobile,authentication_time,checked_time,
+        (select d.proxy_name from tb_dealer as d where d.id=first_dealer_id) as proxy_name,
+        (select d.proxy_name from tb_dealer as d where d.id=second_dealer_id) as proxy_name1
 
         FROM tb_merchant_info a
         WHERE

@@ -951,7 +951,7 @@ public class OrderRecordServiceImpl implements OrderRecordService {
                             log.info("openId",ui.get().getOpenId());
                             DecimalFormat decimalFormat=new DecimalFormat("0.00");//构造方法的字符格式这里如果小数不足2位,会以0补足.
                             String total = decimalFormat.format(orderRecord.get().getTotalFee());
-                            sendMsgService.sendMessage(total,orderRecord.get().getOrderId(),payResult.get("outTradeNo").toString(),mr.get().getMerchantName(),mr.get().getMerchantName(),ui.get().getOpenId());
+//                            sendMsgService.sendMessage(total,orderRecord.get().getOrderId(),payResult.get("outTradeNo").toString(),mr.get().getMerchantName(),mr.get().getMerchantName(),ui.get().getOpenId());
                         }
                     }
                 }catch (Exception e){
@@ -1767,7 +1767,7 @@ public class OrderRecordServiceImpl implements OrderRecordService {
                                     if(ui.isPresent()){
                                         log.info("用户号",ui.get().getId());
                                         log.info("openId",ui.get().getOpenId());
-                                        sendMsgService.sendMessage(orderRecord.getTotalFee().toString(),orderRecord.getOrderId(),orderRecord.getOutTradeNo(),mr.get().getMerchantName(),mr.get().getMerchantName(),ui.get().getOpenId());
+//                                        sendMsgService.sendMessage(orderRecord.getTotalFee().toString(),orderRecord.getOrderId(),orderRecord.getOutTradeNo(),mr.get().getMerchantName(),mr.get().getMerchantName(),ui.get().getOpenId());
                                     }
 
                                 }
@@ -1827,7 +1827,7 @@ public class OrderRecordServiceImpl implements OrderRecordService {
                                 log.info("openId",ui.get().getOpenId());
                                 DecimalFormat decimalFormat=new DecimalFormat("0.00");//构造方法的字符格式这里如果小数不足2位,会以0补足.
                                 String total = decimalFormat.format(orderRecord.getTotalFee());
-                              sendMsgService.sendPushMessage(total,merchantInfoOptional.get().getBankName(),merchantInfoOptional.get().getBankNoShort(),ui.get().getOpenId());
+//                              sendMsgService.sendPushMessage(total,merchantInfoOptional.get().getBankName(),merchantInfoOptional.get().getBankNoShort(),ui.get().getOpenId());
                             }
                         }catch (Exception e){
                             log.error("公众号通知提现消息发送失败");

@@ -1,23 +1,26 @@
 <template lang="html">
   <div id="invite">
-    <div style="padding: 8px 30px; background: rgb(243, 156, 18); z-index: 999999; font-size: 22px; font-weight: 600;margin-bottom: 15px;color: #fff;">邀请规则设置</div>
-    <div style="margin: 0 15px 15px">
+    <div style="margin: 15px">
       <div class="box ">
         <form class="form-horizontal">
+          <div class="box-header">
+            <h3 class="box-title">邀请规则设置</h3>
+          </div>
           <div class="box-body">
             <div class="form-group">
               <div class="col-xs-12">
                 产品选择：
-                <select class="form-control select2 select2-hidden-accessible" style="width: 25%;display: inline-block" tabindex="-1" aria-hidden="true">
+                <select class="form-control select2 select2-hidden-accessible" style="width: 25%;display: inline-block" tabindex="-1" aria-hidden="true" v-model="productId">
                   <option value="">请选择产品</option>
                   <option :value="list.productId" v-for="list in lists">{{list.productName}}</option>
                 </select>
+                <div @click="search" class="btn btn-primary">确定</div>
               </div>
             </div>
           </div>
         </form>
       </div>
-      <div class="box box-info">
+      <div class="box box-info" v-if="result.length!=0">
         <div class="box-header with-border">
           <h3 class="box-title">商户升级规则设置</h3>
         </div>
@@ -41,25 +44,25 @@
                       </tr>
                       <tr>
                         <td>普通</td>
-                        <td>0.49%</td>
-                        <td>0.49%</td>
-                        <td>0.55%</td>
+                        <td>{{result.upgradeRulesList[0].weixinRate}}</td>
+                        <td>{{result.upgradeRulesList[0].alipayRate}}</td>
+                        <td>{{result.upgradeRulesList[0].fastRate}}</td>
                         <td>无</td>
                         <td>无</td>
                         <td>无</td>
                         <td>无</td>
                       </tr>
-                      <tr >
-                        <td>店员</td>
-                        <td><input type="text" name="name" >%</td>
-                        <td><input type="text" name="name">%</td>
-                        <td><input type="text" name="name">%</td>
-                        <td><input type="text" name="name">元</td>
-                        <td><input type="text" name="name">人</td>
-                        <td><input type="text" name="name">元</td>
-                        <td><input type="text" name="name">元</td>
+                      <tr v-for="upgrade in result.upgradeRulesList" v-if="upgrade.name!=null">
+                        <td>{{upgrade.name}}</td>
+                        <td><input type="text" name="name" v-model="upgrade.weixinRate">%</td>
+                        <td><input type="text" name="name" v-model="upgrade.alipayRate">%</td>
+                        <td><input type="text" name="name" v-model="upgrade.fastRate">%</td>
+                        <td><input type="text" name="name" v-model="upgrade.upgradeCost">元</td>
+                        <td><input type="text" name="name" v-model="upgrade.promotionNum">人</td>
+                        <td><input type="text" name="name" v-model="upgrade.directReward">元</td>
+                        <td><input type="text" name="name" v-model="upgrade.indirectReward">元</td>
                       </tr>
-                      <tr >
+                      <!--<tr >
                         <td>店长</td>
                         <td><input type="text" name="name" >%</td>
                         <td><input type="text" name="name">%</td>
@@ -78,9 +81,9 @@
                         <td><input type="text" name="name">人</td>
                         <td><input type="text" name="name">元</td>
                         <td><input type="text" name="name">元</td>
-                      </tr>
+                      </tr>-->
                       <tr >
-                        <td colspan="6">邀请用户“激活”标准：收款满<input type="text" name="name" style="width: 100px;" v-model="standard">元
+                        <td colspan="6">邀请用户“激活”标准：收款满<input type="text" name="name" style="width: 100px;" v-model="result.standard">元
                         </td>
                       </tr>
                       </tbody></table>
@@ -93,7 +96,7 @@
           </div>
         </form>
       </div>
-      <div class="box box-info">
+      <div class="box box-info" v-if="result.length!=0">
         <div class="box-header with-border">
           <h3 class="box-title">升级推荐分润设置</h3>
         </div>
@@ -111,14 +114,14 @@
                       </tr>
                       <tr>
                         <td>升级费分润</td>
-                        <td><input type="text" name="name" v-model="upgradeRate">%</td>
+                        <td><input type="text" name="name" v-model="result.upgradeRate">%</td>
                       </tr>
                       <tr >
                         <td>收单分润</td>
-                        <td><input type="text" name="name" v-model="tradeRate">%</td>
+                        <td><input type="text" name="name" v-model="result.tradeRate">%</td>
                       </tr>
                       <tr >
-                        <td colspan="2">收单奖励分润池：<input type="text" name="name" style="width: 100px;" v-model="rewardRate">%
+                        <td colspan="2">收单奖励分润池：<input type="text" name="name" style="width: 100px;" v-model="result.rewardRate">%
                         </td>
                       </tr>
                       </tbody>
@@ -130,8 +133,8 @@
           </div>
         </form>
       </div>
-      <div class="btn btn-primary" @click="save">保 存</div>
-      <span>(对新审核通过的有效)</span>
+      <div class="btn btn-primary" @click="save" v-if="result.length!=0">保 存</div>
+      <span v-if="result.length!=0">(对新审核通过的有效)</span>
     </div>
   </div>
 </template>
@@ -141,12 +144,9 @@
     name:"invite",
     data(){
       return{
-        standard: '',
-        upgradeRate: '',
-        tradeRate:'',
-        rewardRate:'',
-        upgradeRulesList:[],
-        lists:[] //产品列表
+        result: '',
+        lists:[], //产品列表
+        productId:''
       }
     },
     created: function () {
@@ -158,31 +158,27 @@
             text: err.statusMessage
           })
         })
-        /*this.$http.post('/admin/upgrade/init',{productId:1})
+    },
+    methods: {
+      search: function () {
+        this.$http.post('/admin/upgrade/init', {productId: this.$data.productId})
           .then(function (res) {
             console.log(res)
-            this.$data.standard = res.data.standard;
-            this.$data.upgradeRate = res.data.upgradeRate;
-            this.$data.tradeRate = res.data.tradeRate;
-            this.$data.rewardRate = res.data.rewardRate;
-            this.$data.upgradeRulesList = res.data.upgradeRulesList;
+            this.$data.result = res.data;
           }, function (err) {
             this.$store.commit('MESSAGE_ACCORD_SHOW', {
               text: err.statusMessage
             })
-          })*/
-    },
-    methods: {
+          })
+      },
       save: function () {
-        /*this.$http.post('/admin/upgrade/addOrUpdate',{})
+        console.log(this.$data.result)
+        this.$http.post('/admin/upgrade/addOrUpdate',{})
           .then(function (res) {
 
-          })*/
+          })
       }
     },
-    computed: {
-
-    }
   }
 </script>
 <style scoped lang="less">

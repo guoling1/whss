@@ -294,12 +294,12 @@ public class PayServiceImpl implements PayService {
                 merchant.getMerchantName(),  merchant.getMerchantName(), ui.get().getOpenId());
 
         //商户提现(发消息)
-        final JSONObject requestJsonObject = new JSONObject();
-        requestJsonObject.put("merchantId", merchant.getId());
-        requestJsonObject.put("payOrderId", order.getId());
-        requestJsonObject.put("payOrderSn", paymentSdkPayCallbackResponse.getSn());
-        requestJsonObject.put("balanceAccountType", EnumBalanceTimeType.D0.getType());
-        MqProducer.produce(requestJsonObject, MqConfig.MERCHANT_WITHDRAW, 100);
+//        final JSONObject requestJsonObject = new JSONObject();
+//        requestJsonObject.put("merchantId", merchant.getId());
+//        requestJsonObject.put("payOrderId", order.getId());
+//        requestJsonObject.put("payOrderSn", paymentSdkPayCallbackResponse.getSn());
+//        requestJsonObject.put("balanceAccountType", EnumBalanceTimeType.D0.getType());
+//        MqProducer.produce(requestJsonObject, MqConfig.MERCHANT_WITHDRAW, 100);
     }
 
     /**

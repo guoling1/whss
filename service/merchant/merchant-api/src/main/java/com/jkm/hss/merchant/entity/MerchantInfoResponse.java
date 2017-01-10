@@ -10,6 +10,11 @@ import java.util.Date;
 public class MerchantInfoResponse {
 
     /**
+     * 商户编号（正确的）
+     */
+    private String markCode;
+
+    /**
      * 条数
      */
     private Integer offset;
