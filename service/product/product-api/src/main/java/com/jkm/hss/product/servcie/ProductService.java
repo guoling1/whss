@@ -34,4 +34,11 @@ public interface ProductService {
      * @param product
      */
     void update(Product product);
+
+    /**
+     * 根据id查询
+     * @param type
+     * @return
+     */
+    Optional<Product> selectByType(String type);
 }

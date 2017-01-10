@@ -352,6 +352,28 @@ public class OrderServiceImpl implements OrderService {
     }
 
     /**
+     * {@inheritDoc}
+     *
+     * @param businessOrderNo
+     * @return
+     */
+    @Override
+    public Optional<Order> getByBusinessOrderNo(final String businessOrderNo) {
+        return Optional.fromNullable(this.orderDao.selectByBusinessOrderNo(businessOrderNo));
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param accountId
+     * @return
+     */
+    @Override
+    public BigDecimal getTotalTradeAmountByAccountId(final long accountId) {
+        return this.orderDao.selectTotalTradeAmountByAccountId(accountId);
+    }
+
+    /**
      * 生成ExcelVo
      * @param
      * @param baseUrl
