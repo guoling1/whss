@@ -224,28 +224,9 @@ public class OrderServiceImpl implements OrderService {
         map.put("status",req.getStatus());
         map.put("lessTotalFee",req.getLessTotalFee());
         map.put("moreTotalFee",req.getMoreTotalFee());
-//        map.put("settleStatus",req.getSettleStatus());
         map.put("offset",req.getOffset());
         map.put("size",req.getSize());
         List<MerchantTradeResponse> list = orderDao.selectOrderList(map);
-        if(list.size()>0){
-            for(int i=0;i<list.size();i++){
-                if (list.get(i).getLevel()==1){
-                    list.get(i).setProxyName(list.get(i).getProxyName());
-                }
-                if (list.get(i).getLevel()==2){
-                    List<MerchantTradeResponse> res = orderDao.getProxyName(list.get(i).getFirstLevelDealerId());
-                    if (res.size()>0){
-                        for (int m=0;res.size()>m;m++){
-                            list.get(i).setProxyName1(res.get(m).getProxyName());
-                        }
-                    }
-                }
-
-
-
-            }
-        }
         return list;
     }
 
@@ -378,25 +359,6 @@ public class OrderServiceImpl implements OrderService {
      */
     private ExcelSheetVO generateCodeExcelSheet(OrderTradeRequest req,String baseUrl) {
         List<MerchantTradeResponse> list = orderDao.selectOrderListTrade(req);
-        if(list.size()>0){
-            for(int i=0;i<list.size();i++){
-
-                if (list.get(i).getLevel()==1){
-                    list.get(i).setProxyName(list.get(i).getProxyName());
-                }
-                if (list.get(i).getLevel()==2){
-                    List<MerchantTradeResponse> res = orderDao.getProxyName(list.get(i).getFirstLevelDealerId());
-                    if (res.size()>0){
-                        for (int m=0;res.size()>m;m++){
-                            list.get(i).setProxyName1(res.get(m).getProxyName());
-                        }
-                    }
-
-                }
-
-
-            }
-        }
         final ExcelSheetVO excelSheetVO = new ExcelSheetVO();
         final List<List<String>> datas = new ArrayList<List<String>>();
         final ArrayList<String> heads = new ArrayList<>();

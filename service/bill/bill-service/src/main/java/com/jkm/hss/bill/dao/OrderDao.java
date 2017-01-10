@@ -113,16 +113,6 @@ public interface OrderDao {
      */
     int selectOrderListCount(Map map);
 
-
-
-
-    /**
-     * 查询firstLevelDealerId
-     * @param firstLevelDealerId
-     * @return
-     */
-    List<MerchantTradeResponse> getProxyName(long firstLevelDealerId);
-
     /**
      * 导出excel
      * @param req
