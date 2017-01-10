@@ -33,16 +33,16 @@
         <!-- Optionally, you can add icons to the links -->
         <!--<li><a href="#"><i class="fa fa-link"></i> <span>Link</span></a></li>-->
         <li class="treeview active">
-          <a href="#"><i class="fa fa-link"></i> <span>交易管理</span>
+          <a href="#"><span>交易管理</span>
           </a>
           <ul class="treeview-menu">
-            <li class="active" @click="refrash"><router-link to="/admin/record/newDeal"><span>交易查询</span> </router-link></li>
+            <li class="" @click="refrash"><router-link to="/admin/record/newDeal"><span>交易查询</span> </router-link></li>
             <li @click="refrash"><router-link to="/admin/record/payQuery"><span>支付查询</span> </router-link></li>
             <li @click="refrash"><router-link to="/admin/record/newWithdrawalQuery"><span>打款查询</span> </router-link></li>
           </ul>
         </li>
         <li class="treeview">
-          <a href="#"><i class="fa fa-link"></i> <span>商户管理</span>
+          <a href="#"><span>商户管理</span>
           </a>
           <ul class="treeview-menu">
             <li class="active" @click="refrash"><router-link to="/admin/record/storeList"><span>商户列表</span> </router-link></li>
@@ -52,7 +52,7 @@
           </router-link>
         </li>
         <li class="treeview">
-          <a href="#"><i class="fa fa-link"></i><span>代理商管理</span>
+          <a href="#"><span>代理商管理</span>
           </a>
           <ul class="treeview-menu">
             <li @click="refrash"><router-link to="/admin/record/agentList"><span>代理商列表</span> </router-link></li>
@@ -61,7 +61,7 @@
           </ul>
         </li>
         <li class="treeview">
-          <a href="#"><i class="fa fa-link"></i><span>分润管理</span>
+          <a href="#"><span>分润管理</span>
           </a>
           <ul class="treeview-menu">
             <li @click="refrash"><router-link to="/admin/record/companyProfit"><span>公司分润</span> </router-link></li>
@@ -70,8 +70,7 @@
           </ul>
         </li>
         <li class="treeview">
-          <a href="#"><i class="fa fa-link"></i><span>产品管理</span>
-
+          <a href="#"><span>产品管理</span>
           </a>
           <ul class="treeview-menu">
             <li @click="refrash"><router-link to="/admin/record/productList"><span>产品列表</span> </router-link></li>
@@ -80,7 +79,7 @@
           </ul>
         </li>
         <li class="treeview">
-          <a href="#"><i class="fa fa-link"></i><span>通道管理</span>
+          <a href="#"><span>通道管理</span>
           </a>
           <ul class="treeview-menu">
             <li @click="refrash"><router-link to="/admin/record/passList"><span>通道列表</span> </router-link></li>
@@ -88,7 +87,7 @@
           </ul>
         </li>
         <li class="treeview">
-          <a href="#"><i class="fa fa-link"></i><span>分配二维码</span>
+          <a href="#"><span>分配二维码</span>
 
           </a>
           <ul class="treeview-menu">
@@ -119,3 +118,12 @@ export default {
   }
 }
 </script>
+<style scoped lang="less">
+  /*.content-wrapper{*/
+  /*width: 85%;*/
+  /*float: right;*/
+  /*}*/
+  .sidebar-menu .treeview-menu>li>a{
+    font-size: 12px;
+  }
+</style>
