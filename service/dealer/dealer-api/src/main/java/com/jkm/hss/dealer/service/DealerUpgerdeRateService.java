@@ -2,6 +2,7 @@ package com.jkm.hss.dealer.service;
 
 import com.google.common.base.Optional;
 import com.jkm.hss.dealer.entity.DealerUpgerdeRate;
+import com.jkm.hss.dealer.enums.EnumDealerRateType;
 
 import java.util.List;
 
@@ -40,4 +41,13 @@ public interface DealerUpgerdeRateService {
      * @return
      */
     List<DealerUpgerdeRate> selectByDealerIdAndProductId(long dealerId,long productId);
+
+    /**
+     * 查询代理商的升级分润规则
+     * @param dealerId
+     * @param type
+     * @param id
+     * @return
+     */
+    DealerUpgerdeRate selectByDealerIdAndTypeAndProductId(long dealerId, EnumDealerRateType type, long id);
 }

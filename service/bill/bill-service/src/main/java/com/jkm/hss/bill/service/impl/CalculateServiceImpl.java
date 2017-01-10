@@ -92,4 +92,15 @@ public class CalculateServiceImpl implements CalculateService {
         }
         return originDueSplitAmount.setScale(2, BigDecimal.ROUND_UP);
     }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param merchantId
+     * @return
+     */
+    @Override
+    public BigDecimal getMerchantUpgradePoundage(final long merchantId) {
+        return null;
+    }
 }

@@ -205,6 +205,8 @@ public class DealerServiceImpl implements DealerService {
     @Transactional
     public Map<String, Triple<Long, BigDecimal, BigDecimal>> shallProfit(final String orderNo, final BigDecimal tradeAmount,
                                                                      final int channelSign, final long merchantId) {
+
+
         final ShallProfitDetail detail = this.shallProfitDetailService.selectByOrderId(orderNo);
         if (detail != null){
             log.error("此订单分润业务已经处理过[" + orderNo +"]");

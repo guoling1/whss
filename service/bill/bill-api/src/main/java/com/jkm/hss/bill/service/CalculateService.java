@@ -33,4 +33,12 @@ public interface CalculateService {
      * @return
      */
     BigDecimal getMerchantPayPoundage(BigDecimal traderAmount, BigDecimal merchantPayPoundageRate);
+
+    /**
+     * 获取当前商户升级，所有分给（代理商，推荐人）的钱--记录为手续费
+     *
+     * @param merchantId
+     * @return
+     */
+    BigDecimal getMerchantUpgradePoundage(long merchantId);
 }
