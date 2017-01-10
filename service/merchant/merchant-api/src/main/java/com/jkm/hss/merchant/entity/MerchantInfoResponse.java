@@ -10,6 +10,26 @@ import java.util.Date;
 public class MerchantInfoResponse {
 
     /**
+     * 注册方式标识
+     */
+    private int source;
+
+    /**
+     * 一级代理编号
+     */
+    private long firstDealerId;
+
+    /**
+     * 二级代理编号
+     */
+    private long secondDealerId;
+
+    /**
+     * 注册方式
+     */
+    private String registered;
+
+    /**
      * 商户编号（正确的）
      */
     private String markCode;
