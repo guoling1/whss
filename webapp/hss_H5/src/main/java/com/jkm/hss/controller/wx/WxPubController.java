@@ -414,7 +414,7 @@ public class WxPubController extends BaseController {
             }
         }
         final Pair<Integer, String> checkResult =
-                this.smsAuthService.checkVerifyCode(mobile, verifyCode, EnumVerificationCodeType.LOGIN_MERCHANT);
+                this.smsAuthService.checkVerifyCode(mobile, verifyCode, EnumVerificationCodeType.REGISTER_MERCHANT);
         if (1 != checkResult.getLeft()) {
             return CommonResponse.simpleResponse(-1, checkResult.getRight());
         }
@@ -626,7 +626,7 @@ public class WxPubController extends BaseController {
             return CommonResponse.simpleResponse(-1, "请输入正确的6位数字验证码");
         }
         final Pair<Integer, String> checkResult =
-                this.smsAuthService.checkVerifyCode(directLoginRequest.getMobile(), directLoginRequest.getCode(), EnumVerificationCodeType.REGISTER_MERCHANT);
+                this.smsAuthService.checkVerifyCode(directLoginRequest.getMobile(), directLoginRequest.getCode(), EnumVerificationCodeType.LOGIN_MERCHANT);
         if (1 != checkResult.getLeft()) {
             return CommonResponse.simpleResponse(-1, checkResult.getRight());
         }
