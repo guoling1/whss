@@ -11,3 +11,13 @@ new Touch('touch_gr', '#FFF', 'deep', '0.1');
 // 引入浏览器特性处理
 const browser = _require('browser');
 browser.elastic_touch();
+// 定义变量
+const upgrade = document.getElementById('upgrade');
+const pxPerRem = document.documentElement.clientWidth;
+upgrade.addEventListener('click', function () {
+  if (pxPerRem > 390) {
+    window.location.href = '/sqb/upgradeMax';
+  } else {
+    window.location.href = '/sqb/upgradeMin';
+  }
+});

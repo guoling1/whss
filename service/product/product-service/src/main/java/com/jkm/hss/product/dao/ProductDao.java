@@ -34,4 +34,10 @@ public interface ProductDao {
      * @param product
      */
     void update(Product product);
+    /**
+     *
+     * @param type
+     * @return
+     */
+    Product selectByType(@Param("type") String type);
 }

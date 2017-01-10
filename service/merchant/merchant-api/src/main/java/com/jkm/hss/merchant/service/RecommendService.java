@@ -3,6 +3,8 @@ package com.jkm.hss.merchant.service;
 import com.google.common.base.Optional;
 import com.jkm.hss.merchant.entity.Recommend;
 import com.jkm.hss.merchant.entity.RecommendAndMerchant;
+import com.jkm.hss.merchant.entity.RecommendShort;
+import com.jkm.hss.merchant.helper.request.RecommendRequest;
 
 import java.util.List;
 
@@ -35,11 +37,7 @@ public interface RecommendService {
      * @return
      */
     List<Recommend> selectAll();
-    /**
-     * 我推广的好友
-     * @return
-     */
-    RecommendAndMerchant myRecommend(long merchantId);
+
 
     /**
      * 我的真实好友数量（验证通过并且消费达标）
@@ -53,7 +51,35 @@ public interface RecommendService {
      * @return
      */
     List<Recommend> selectRecommend(long merchantId);
+    /**
+     * 按分页查询好友列表
+     * @return
+     */
+    RecommendAndMerchant selectRecommend(RecommendRequest recommendRequest);
+    /**
+     * 按分页查询好友列表总条数
+     * @return
+     */
+    int selectRecommendCount(RecommendRequest recommendRequest);
 
+    /**
+     * 间接好友数量
+     * @param merchantId
+     * @return
+     */
+    int selectIndirectCount(long merchantId);
 
+    /**
+     * 直接好友数量
+     * @param merchantId
+     * @return
+     */
+    int selectDirectCount(long merchantId);
+    /**
+     * 查询商户的直接好友
+     * @param merchantId
+     * @return
+     */
+    List<Recommend> selectDirectFriend(long merchantId);
 
 }

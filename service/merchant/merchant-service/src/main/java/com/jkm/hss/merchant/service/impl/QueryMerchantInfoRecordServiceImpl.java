@@ -54,30 +54,18 @@ public class QueryMerchantInfoRecordServiceImpl implements QueryMerchantInfoReco
                     String checkedTime = formatter.format(date);
                     list.get(i).setCheckedTime(checkedTime);
                 }
+                if (list.get(i).getSource()==0){
+                    list.get(i).setRegistered("扫码注册");
+                }
+                if (list.get(i).getSource()==1){
+                    list.get(i).setRegistered("推荐注册");
+                }
 
             }
         }
         return list;
     }
 
-    @Override
-    public List<MerchantInfoResponse> getLevel(long dealerId) {
-        List<MerchantInfoResponse> res = this.queryMerchantInfoRecordDao.getLevel(dealerId);
-        return res;
-    }
-
-    @Override
-    public List<MerchantInfoResponse> getResults(int level,long dealerId) {
-        List<MerchantInfoResponse> res = this.queryMerchantInfoRecordDao.getResults(level,dealerId);
-        return res;
-
-    }
-
-    @Override
-    public List<MerchantInfoResponse> getFirstLevel(long firstLevelDealerId) {
-        List<MerchantInfoResponse> res = this.queryMerchantInfoRecordDao.getFirstLevel(firstLevelDealerId);
-        return res;
-    }
 
     @Override
     public List<LogResponse> getLog(MerchantInfoResponse merchantInfo) throws ParseException {

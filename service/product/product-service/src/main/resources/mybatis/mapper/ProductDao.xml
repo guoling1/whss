@@ -9,6 +9,7 @@
         limit_withdraw_fee_rate,
         merchant_withdraw_type,
         dealer_balance_type,
+        type,
         status
         )VALUES(
         #{accountId},
@@ -17,6 +18,7 @@
         #{limitWithdrawFeeRate},
         #{merchantWithdrawType},
         #{dealerBalanceType},
+        #{type},
         #{status}
         )
     </insert>
@@ -36,5 +38,8 @@
     </select>
     <select id="selectAll" resultType="com.jkm.hss.product.entity.Product">
         SELECT * FROM tb_product WHERE status = 2
+    </select>
+    <select id="selectByType" resultType="com.jkm.hss.product.entity.Product">
+        SELECT * FROM tb_product WHERE type = #{type} AND status = 2
     </select>
 </mapper>

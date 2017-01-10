@@ -16,10 +16,11 @@ public interface PayService {
      * 商户升级，付款获得url
      *
      * @param merchantId
+     * @param businessOrderNo 业务订单号
      * @param amount
      * @return
      */
-    Pair<Integer, String> generateMerchantUpgradeUrl(long merchantId, BigDecimal amount);
+    Pair<Integer, String> generateMerchantUpgradeUrl(long merchantId, String businessOrderNo, BigDecimal amount);
 
     /**
      * 动态码收款

@@ -1,4 +1,4 @@
-package com.jkm.hss.product.entity;
+package com.jkm.hss.product.helper.response;
 
 import lombok.Data;
 

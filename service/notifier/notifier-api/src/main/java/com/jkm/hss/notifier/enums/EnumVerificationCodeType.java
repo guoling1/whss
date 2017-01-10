@@ -40,7 +40,11 @@ public enum EnumVerificationCodeType {
     /**
      * 代理商提现
      */
-    WITHDRAW_DEALER(6, EnumNoticeType.WITHDRAW_CODE_DEALER, 100);
+    WITHDRAW_DEALER(6, EnumNoticeType.WITHDRAW_CODE_DEALER, 100),
+    /**
+     * 商户登录验证码
+     */
+    LOGIN_MERCHANT(7, EnumNoticeType.LOGIN_MERCHANT, 100);
 
     private static final Map<Integer, EnumVerificationCodeType> TYPE_MAP = new HashMap<>();
 
