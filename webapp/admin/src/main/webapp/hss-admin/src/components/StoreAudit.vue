@@ -14,11 +14,11 @@
               <th style="text-align: right">注册时间:</th>
               <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.createTime|changeTime" readonly></td>
               <th style="text-align: right">注册方式:</th>
-              <td><input type="text" style="background:#efecec;padding-left:5px;" value="—" readonly></td>
+              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.registered" readonly></td>
             </tr>
             <tr>
               <th style="text-align: right">一级代理编号:</th>
-              <td><input type="text" style="background:#efecec;padding-left:5px;" value="—" readonly></td>
+              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.firstDealerId==0?'':msg.firstDealerId" readonly></td>
               <th style="text-align: right">一级代理名称:</th>
               <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.proxyName" readonly></td>
               <th></th>
@@ -26,7 +26,7 @@
             </tr>
             <tr>
               <th style="text-align: right">二级代理编号:</th>
-              <td><input type="text" style="background:#efecec;padding-left:5px;" value="—" readonly></td>
+              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.secondDealerId==0?'':msg.secondDealerId" readonly></td>
               <th style="text-align: right">二级代理名称:</th>
               <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.proxyName1" readonly></td>
               <th></th>
