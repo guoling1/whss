@@ -39,7 +39,7 @@
                     <td class="sorting_1">{{product.channelName}}</td>
                     <td>{{product.thirdCompany}}</td>
                     <td>{{product.channelSource}}</td>
-                    <td>{{product.basicTradeRate}}</td>
+                    <td>{{product.basicTradeRate}}%</td>
                     <td>{{product.basicWithdrawFee}}</td>
                     <td>{{product.basicBalanceType|changeBalanceType}}</td>
                     <td><div class="btn btn-primary" @click="detail(index)">修改</div></td>
