@@ -36,6 +36,9 @@ public class MerchantPromoteShallServiceImpl implements MerchantPromoteShallServ
     @Autowired
     private UpgradeRulesService upgradeRulesService;
 
+//    @Autowired
+//    private OrderService orderService;
+
     @Autowired
     private MerchantInfoService merchantInfoService;
 
@@ -54,9 +57,8 @@ public class MerchantPromoteShallServiceImpl implements MerchantPromoteShallServ
      */
     @Transactional
     @Override
-    public Map<String, Triple<Long, BigDecimal, String>> merchantPromoteShall(final long merchantId, final BigDecimal tradeAmount,
-                            final String orderNo) {
-        log.info("商户[" + merchantId + "]请求进行升级费分润，交易订单号：" + orderNo);
+    public Map<String, Triple<Long, BigDecimal, String>> merchantPromoteShall(final long merchantId, final BigDecimal tradeAmount) {
+//        log.info("商户[" + merchantId + "]请求进行升级费分润，交易订单号：" + order.getOrderNo());
         try{
             //判断该支付订单是否已经参与分润
 
@@ -102,7 +104,7 @@ public class MerchantPromoteShallServiceImpl implements MerchantPromoteShallServ
             }
             //一级代理分润 = （升级费 - 直推分润 - 间推分润）* 一级代理分润比例
             BigDecimal firstMoney = (waitAmount.subtract(directMoney).subtract(inDirectMoney))
-                        .multiply(dealerUpgerdeRates.getFirstDealerShareProfitRate());
+                    .multiply(dealerUpgerdeRates.getFirstDealerShareProfitRate());
             //金开门利润 = 升级费 - 直推分润 - 间推分润 - 一级代理分润 - 二级代理分润
             final Product product = this.productService.selectById(2).get();
             BigDecimal productMoney = waitAmount.subtract(directMoney).subtract(inDirectMoney).subtract(firstMoney).subtract(secondMoney);
@@ -122,11 +124,9 @@ public class MerchantPromoteShallServiceImpl implements MerchantPromoteShallServ
 
             return map;
         }catch (final Throwable throwable){
-            log.error("商户[" + merchantId + "]请求进行升级费分润异常，交易订单号：" + orderNo +"异常信息：" + throwable.getMessage());
+            log.error("商户[" + merchantId + "]请求进行升级费分润异常，交易订单号：" +"异常信息：" + throwable.getMessage());
             throw throwable;
         }
 
     }
-
-
 }
