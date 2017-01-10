@@ -67,7 +67,7 @@ public class ChannelController extends BaseController {
             basicChannel.setStatus(EnumBasicChannelStatus.USEING.getId());
             this.basicChannelService.add(basicChannel);
             return CommonResponse.simpleResponse(1,"success");
-        }catch(final Throwable throwable){
+         }catch(final Throwable throwable){
             log.error("添加通道失败,异常信息:" + throwable.getMessage());
         }
         return  CommonResponse.simpleResponse(-1, "fail");
