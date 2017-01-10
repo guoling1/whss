@@ -2,7 +2,6 @@ package com.jkm.hss.account.helper;
 
 import lombok.experimental.UtilityClass;
 
-import java.math.BigDecimal;
 
 /**
  * Created by yulong.zhang on 2016/12/25.
@@ -20,9 +19,4 @@ public final class AccountConstants {
      * 金开门 收钱默认账户
      */
     public static final long JKM_ACCOUNT_ID = 2;
-
-    /**
-     * 商户自动升级最低金额
-     */
-    public static final BigDecimal MERCHANT_UPGRADE_MIN_AMOUNT = new BigDecimal("2000");
 }

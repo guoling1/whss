@@ -82,8 +82,8 @@ public class PaymentSdkCallbackController extends BaseController {
      * @param paymentSdkRefundCallbackResponse
      */
     @ResponseBody
-    @RequestMapping(value = "withdraw", method = RequestMethod.POST)
-    public Object handleWithdrawCallbackMsg(@RequestBody final PaymentSdkRefundCallbackResponse paymentSdkRefundCallbackResponse) {
+    @RequestMapping(value = "refund", method = RequestMethod.POST)
+    public Object handleRefundCallbackMsg(@RequestBody final PaymentSdkRefundCallbackResponse paymentSdkRefundCallbackResponse) {
         log.info("收到支付中心的重复支付退款回调请求，订单号[{}], 流水号[{}], 参数[{}]", paymentSdkRefundCallbackResponse.getOrderNo(),
                 paymentSdkRefundCallbackResponse.getSn(), paymentSdkRefundCallbackResponse);
         final Optional<Order> orderOptional = this.orderService.getByOrderNo(paymentSdkRefundCallbackResponse.getOrderNo());

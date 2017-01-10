@@ -32,6 +32,7 @@ import com.jkm.hss.mq.config.MqConfig;
 import com.jkm.hss.mq.producer.MqProducer;
 import com.jkm.hss.product.enums.EnumBalanceTimeType;
 import com.jkm.hss.product.enums.EnumPayChannelSign;
+import com.jkm.hss.product.servcie.ProductService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
@@ -68,6 +69,8 @@ public class PayServiceImpl implements PayService {
     private CalculateService calculateService;
     @Autowired
     private WithdrawService withdrawService;
+    @Autowired
+    private ProductService productService;
     @Autowired
     private DealerService dealerService;
     @Autowired
@@ -302,9 +305,10 @@ public class PayServiceImpl implements PayService {
         }
         //判断交易金额
         final BigDecimal totalTradeAmount = this.orderService.getTotalTradeAmountByAccountId(merchant.getAccountId());
-        if (totalTradeAmount.compareTo(AccountConstants.MERCHANT_UPGRADE_MIN_AMOUNT) >= 0) {
-
-        }
+//        this.productService.
+//        if (totalTradeAmount.compareTo(AccountConstants.MERCHANT_UPGRADE_MIN_AMOUNT) >= 0) {
+//
+//        }
         //通知商户
         Optional<UserInfo> ui = userInfoService.selectByMerchantId(merchant.getId());
         log.info("商户号[{}], 交易点单号[{}]支付完成，开始通知商户", merchant.getId(), order.getOrderNo());
