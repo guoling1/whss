@@ -1364,7 +1364,7 @@ public class LoginController extends BaseController {
                             upgradePayRecordService.insert(upgradePayRecord);
                             isRedirect= true;
                             //// TODO: 2017/1/9
-                            url = "/buySuccess/"+needMoney+"/201701091832000000";
+                            url = "http://"+ApplicationConsts.getApplicationConfig().domain()+"/sqb/buySuccess/"+needMoney+"/201701091832000000";
                         }
                     }
                 }else{
