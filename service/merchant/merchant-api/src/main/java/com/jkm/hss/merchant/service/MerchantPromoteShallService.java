@@ -19,5 +19,6 @@ public interface MerchantPromoteShallService {
      * @param merchantId
      * @return
      */
-    Map<String, Triple<Long, BigDecimal, String>> merchantPromoteShall(long merchantId, Order order);
+    Map<String, Triple<Long, BigDecimal, String>> merchantPromoteShall(final long merchantId, final BigDecimal tradeAmount,
+                                                                       final String orderNo);
 }

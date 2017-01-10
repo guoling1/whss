@@ -1,6 +1,5 @@
 package com.jkm.hss.merchant.service.impl;
 
-import com.jkm.hss.bill.entity.Order;
 import com.jkm.hss.bill.service.OrderService;
 import com.jkm.hss.dealer.entity.Dealer;
 import com.jkm.hss.dealer.entity.DealerUpgerdeRate;
@@ -58,15 +57,16 @@ public class MerchantPromoteShallServiceImpl implements MerchantPromoteShallServ
      */
     @Transactional
     @Override
-    public Map<String, Triple<Long, BigDecimal, String>> merchantPromoteShall(final long merchantId, final Order order) {
-        log.info("商户[" + merchantId + "]请求进行升级费分润，交易订单号：" + order.getOrderNo());
+    public Map<String, Triple<Long, BigDecimal, String>> merchantPromoteShall(final long merchantId, final BigDecimal tradeAmount,
+                            final String orderNo) {
+        log.info("商户[" + merchantId + "]请求进行升级费分润，交易订单号：" + orderNo);
         try{
             //判断该支付订单是否已经参与分润
 
             //获取商户
             final MerchantInfo merchantInfo = this.merchantInfoService.selectById(merchantId).get();
             //获取分润金额
-            final BigDecimal waitAmount = order.getTradeAmount();
+            final BigDecimal waitAmount = tradeAmount;
             //获取升级规则
             final UpgradeRules upgradeRules = this.upgradeRulesService.selectByProductIdAndType(2, EnumUpGradeType.CLERK.getId()).get();
             BigDecimal directMoney = null;
@@ -125,7 +125,7 @@ public class MerchantPromoteShallServiceImpl implements MerchantPromoteShallServ
 
             return map;
         }catch (final Throwable throwable){
-            log.error("商户[" + merchantId + "]请求进行升级费分润异常，交易订单号：" + order.getOrderNo() +"异常信息：" + throwable.getMessage());
+            log.error("商户[" + merchantId + "]请求进行升级费分润异常，交易订单号：" + orderNo +"异常信息：" + throwable.getMessage());
             throw throwable;
         }
 
