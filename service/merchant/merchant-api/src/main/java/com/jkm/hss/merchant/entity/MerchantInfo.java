@@ -117,11 +117,11 @@ public class MerchantInfo extends BaseEntity{
      */
     private long secondDealerId;
     /**
-     * 直接商户
+     * 直接商户 上级
      */
     private long firstMerchantId;
     /**
-     * 间接商户
+     * 间接商户 上上级
      */
     private long secondMerchantId;
     /**
