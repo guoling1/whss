@@ -208,7 +208,7 @@ public class TradeController extends BaseController {
         if(!merchantInfo.isPresent()){
             return CommonResponse.simpleResponse(-2, "未登录");
         }
-        if(merchantInfo.get().getStatus()!= EnumMerchantStatus.PASSED.getId()){
+        if(merchantInfo.get().getStatus()!= EnumMerchantStatus.PASSED.getId()&&merchantInfo.get().getStatus()!= EnumMerchantStatus.FRIEND.getId()){
             return CommonResponse.simpleResponse(-2, "未审核通过");
         }
         requestParam.setAccountId(merchantInfo.get().getAccountId());
