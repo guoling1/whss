@@ -357,7 +357,7 @@ public class WxPubController extends BaseController {
         if(!merchantInfo.isPresent()){
             return CommonResponse.simpleResponse(-2, "未登录");
         }
-        if(merchantInfo.get().getStatus()!= EnumMerchantStatus.PASSED.getId()||merchantInfo.get().getStatus()!= EnumMerchantStatus.FRIEND.getId()){
+        if(merchantInfo.get().getStatus()!= EnumMerchantStatus.PASSED.getId()&&merchantInfo.get().getStatus()!= EnumMerchantStatus.FRIEND.getId()){
             return CommonResponse.simpleResponse(-2, "未审核通过");
         }
         req.setMerchantId(merchantInfo.get().getId());
@@ -684,7 +684,7 @@ public class WxPubController extends BaseController {
         if(!merchantInfo.isPresent()){
             return CommonResponse.simpleResponse(-2, "未登录");
         }
-        if(merchantInfo.get().getStatus()!=EnumMerchantStatus.PASSED.getId()||merchantInfo.get().getStatus()!=EnumMerchantStatus.FRIEND.getId()){
+        if(merchantInfo.get().getStatus()!=EnumMerchantStatus.PASSED.getId()&&merchantInfo.get().getStatus()!=EnumMerchantStatus.FRIEND.getId()){
             return CommonResponse.simpleResponse(-2, "未审核通过");
         }
         final String totalFee = tradeRequest.getTotalFee();
@@ -717,7 +717,7 @@ public class WxPubController extends BaseController {
     @RequestMapping(value = "receiptByCode", method = RequestMethod.POST)
     public CommonResponse receiptByCode(final HttpServletRequest request, final HttpServletResponse response, @RequestBody final TradeRequest tradeRequest) {
         Optional<MerchantInfo> merchantInfo = merchantInfoService.selectById(tradeRequest.getMerchantId());
-        if(merchantInfo.get().getStatus()!=EnumMerchantStatus.PASSED.getId()||merchantInfo.get().getStatus()!=EnumMerchantStatus.FRIEND.getId()){
+        if(merchantInfo.get().getStatus()!=EnumMerchantStatus.PASSED.getId()&&merchantInfo.get().getStatus()!=EnumMerchantStatus.FRIEND.getId()){
             return CommonResponse.simpleResponse(-2, "未审核通过");
         }
         final String totalFee = tradeRequest.getTotalFee();
@@ -762,7 +762,7 @@ public class WxPubController extends BaseController {
         if(!merchantInfo.isPresent()){
             return CommonResponse.simpleResponse(-2, "未登录");
         }
-        if(merchantInfo.get().getStatus()!=EnumMerchantStatus.PASSED.getId()||merchantInfo.get().getStatus()!=EnumMerchantStatus.FRIEND.getId()){
+        if(merchantInfo.get().getStatus()!=EnumMerchantStatus.PASSED.getId()&&merchantInfo.get().getStatus()!=EnumMerchantStatus.FRIEND.getId()){
             return CommonResponse.simpleResponse(-2, "未审核通过");
         }
         final Pair<Integer, String> checkResult =
