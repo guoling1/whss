@@ -82,6 +82,7 @@
                 <tr role="row">
                   <th class="sorting_asc" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Rendering engine: activate to sort column descending">序号</th>
                   <th class="sorting_asc" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Rendering engine: activate to sort column descending">订单号</th>
+                  <th class="sorting_asc" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Rendering engine: activate to sort column descending">交易流水号</th>
                   <th class="sorting_asc" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Rendering engine: activate to sort column descending">交易日期</th>
                   <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="Platform(s): activate to sort column ascending">商户名称</th>
                   <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="Platform(s): activate to sort column ascending">所属一级</th>
@@ -99,6 +100,7 @@
                 <tr role="row" v-for="(order,index) in orders">
                   <td>{{(query.page-1)*10+(index+1)}}</td>
                   <td><router-link :to="{ path: '/admin/record/newDealDet', query: {orderNo: order.orderNo}}">{{order.orderNo|changeHide}}</router-link></td>
+                  <td><router-link :to="{ path: '/admin/record/newDealDet', query: {orderNo: order.orderNo}}">{{order.sn|changeHide}}</router-link></td>
                   <td>{{order.createTime|changeTime}}</td>
                   <td>{{order.merchantName}}</td>
                   <td>{{order.proxyName}}</td>
@@ -183,43 +185,51 @@
     created:function(){
       this.$http.post('/admin/queryOrder/orderList',this.$data.query)
         .then(function (res) {
-          console.log(res)
           this.$data.orders=res.data.records;
           this.$data.total=res.data.totalPage;
-          this.$data.count=res.data.count;
           this.$data.url=res.data.ext;
-          var str = '',
-            page = document.getElementById('page');
+          this.$data.count = res.data.count;
+          var str='',
+            page=document.getElementById('page');
           str+='<li class="paginate_button previous" id="example2_previous"><a href="#" aria-controls="example2" data-dt-idx="0" tabindex="0">上一页</a></li>'
-          for (var i = 1; i <= this.$data.total; i++){
-            if(i == this.$data.query.page){
-              str+='<li class="paginate_button active"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">'+i+'</a></li></li>';
-              continue;
+          if(this.$data.total<=10){
+            for (var i = 1; i <= this.$data.total; i++){
+              if(i == this.$data.query.page){
+                str+='<li class="paginate_button active"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">'+i+'</a></li></li>';
+                continue;
+              }
+              str+='<li class="paginate_button"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">'+i+'</a></li></li>'
             }
-            str+='<li class="paginate_button"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">'+i+'</a></li></li>'
-          }
+          }else {
+            if(this.$data.query.page<6){
+              for (var i = 1; i <= 10; i++){
+                if(i == this.$data.query.page){
+                  str+='<li class="paginate_button active"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">'+i+'</a></li></li>';
+                  continue;
+                }
+                str+='<li class="paginate_button"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">'+i+'</a></li></li>'
+              }
+            }else if(this.$data.query.page>=6&&this.$data.query.page<=(this.$data.total-5)){
+              console.log(this.$data.query.page)
+              for (var i = this.$data.query.page-4; i <= this.$data.query.page+5; i++){
+                if(i == this.$data.query.page){
+                  str+='<li class="paginate_button active"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">'+i+'</a></li></li>';
+                  continue;
+                }
+                str+='<li class="paginate_button"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">'+i+'</a></li></li>'
+              }
+            }else if(this.$data.query.page>=6&&this.$data.query.page>this.$data.total-5){
+              console.log(2)
+              for (var i = this.$data.total-9; i <= this.$data.total; i++){
+                if(i == this.$data.query.page){
+                  str+='<li class="paginate_button active"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">'+i+'</a></li></li>';
+                  continue;
+                }
+                str+='<li class="paginate_button"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">'+i+'</a></li></li>'
+              }
+            }}
           str+='<li class="paginate_button next" id="example2_next"><a href="#" aria-controls="example2" data-dt-idx="7" tabindex="0">下一页</a></li>'
-          page.innerHTML = str;
-          var aLi = page.getElementsByTagName('li');
-          if(this.$data.query.page < 6){
-            for(var i = 0; i < aLi.length; i++){
-              if(i > 11){
-                aLi[i].style.display='none'
-              }
-            }
-          }else if(this.$data.query.page>(this.$data.total-5)){
-            for(var i = 0; i < aLi.length; i++){
-              if(i<(this.$data.total-12)){
-                aLi[i].style.display='none'
-              }
-            }
-          }else{
-            for(var i=0;i<aLi.length;i++){
-              if((i!=0&&i<this.$data.query.page-5)||(i!=this.$data.total+1&&i>this.$data.query.page+4)){
-                aLi[i].style.display = 'none';
-              }
-            }
-          }
+          page.innerHTML=str;
         },function (err) {
           this.$store.commit('MESSAGE_ACCORD_SHOW', {
             text: err.statusMessage
@@ -262,42 +272,53 @@
           .then(function (res) {
             this.$data.orders=res.data.records;
             this.$data.total=res.data.totalPage;
-            this.$data.count=res.data.count;
             this.$data.url=res.data.ext;
+            this.$data.count = res.data.count;
             var str='',
               page=document.getElementById('page');
             str+='<li class="paginate_button previous" id="example2_previous"><a href="#" aria-controls="example2" data-dt-idx="0" tabindex="0">上一页</a></li>'
-            for (var i=1; i<=this.$data.total;i++){
-              if(i==this.$data.query.page){
-                str+='<li class="paginate_button active"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">'+i+'</a></li></li>';
-                continue;
+            if(this.$data.total<=10){
+              for (var i = 1; i <= this.$data.total; i++){
+                if(i == this.$data.query.page){
+                  str+='<li class="paginate_button active"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">'+i+'</a></li></li>';
+                  continue;
+                }
+                str+='<li class="paginate_button"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">'+i+'</a></li></li>'
               }
-              str+='<li class="paginate_button"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">'+i+'</a></li></li>'
-            }
+            }else {
+              if(this.$data.query.page<6){
+                for (var i = 1; i <= 10; i++){
+                  if(i == this.$data.query.page){
+                    str+='<li class="paginate_button active"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">'+i+'</a></li></li>';
+                    continue;
+                  }
+                  str+='<li class="paginate_button"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">'+i+'</a></li></li>'
+                }
+              }else if(this.$data.query.page>=6&&this.$data.query.page<=(this.$data.total-5)){
+                console.log(this.$data.query.page)
+                for (var i = this.$data.query.page-4; i <= this.$data.query.page+5; i++){
+                  if(i == this.$data.query.page){
+                    str+='<li class="paginate_button active"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">'+i+'</a></li></li>';
+                    continue;
+                  }
+                  str+='<li class="paginate_button"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">'+i+'</a></li></li>'
+                }
+              }else if(this.$data.query.page>=6&&this.$data.query.page>this.$data.total-5){
+                console.log(2)
+                for (var i = this.$data.total-9; i <= this.$data.total; i++){
+                  if(i == this.$data.query.page){
+                    str+='<li class="paginate_button active"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">'+i+'</a></li></li>';
+                    continue;
+                  }
+                  str+='<li class="paginate_button"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">'+i+'</a></li></li>'
+                }
+              }}
             str+='<li class="paginate_button next" id="example2_next"><a href="#" aria-controls="example2" data-dt-idx="7" tabindex="0">下一页</a></li>'
             page.innerHTML=str;
-            var aLi = page.getElementsByTagName('li');
-            if(this.$data.query.page<6){
-              for(var i=0;i<aLi.length;i++){
-                if(i>11){
-                  aLi[i].style.display='none'
-                }
-              }
-            }else if(this.$data.query.page>(this.$data.total-5)){
-              for(var i = 0; i < aLi.length; i++){
-                if(i<(this.$data.total-12)){
-                  aLi[i].style.display = 'none'
-                }
-              }
-            }else{
-              for(var i = 0; i < aLi.length; i++){
-                if((i != 0 && i < this.$data.query.page-5)||(i!=this.$data.total+1&&i>this.$data.query.page+4)){
-                  aLi[i].style.display='none'
-                }
-              }
-            }
           },function (err) {
-            console.log(err)
+            this.$store.commit('MESSAGE_ACCORD_SHOW', {
+              text: err.statusMessage
+            })
           })
       },
       login: function () {
@@ -319,42 +340,53 @@
           .then(function (res) {
             this.$data.orders=res.data.records;
             this.$data.total=res.data.totalPage;
-            this.$data.count=res.data.count;
             this.$data.url=res.data.ext;
+            this.$data.count = res.data.count;
             var str='',
               page=document.getElementById('page');
-            str+='<li class="paginate_button previous disabled" id="example2_previous"><a href="#" aria-controls="example2" data-dt-idx="0" tabindex="0">上一页</a></li>'
-            for (var i=1; i<=this.$data.total;i++){
-              if(i==this.$data.query.page){
-                str+='<li class="paginate_button active"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">'+i+'</a></li></li>';
-                continue;
+            str+='<li class="paginate_button previous" id="example2_previous"><a href="#" aria-controls="example2" data-dt-idx="0" tabindex="0">上一页</a></li>'
+            if(this.$data.total<=10){
+              for (var i = 1; i <= this.$data.total; i++){
+                if(i == this.$data.query.page){
+                  str+='<li class="paginate_button active"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">'+i+'</a></li></li>';
+                  continue;
+                }
+                str+='<li class="paginate_button"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">'+i+'</a></li></li>'
               }
-              str+='<li class="paginate_button"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">'+i+'</a></li></li>'
-            }
+            }else {
+              if(this.$data.query.page<6){
+                for (var i = 1; i <= 10; i++){
+                  if(i == this.$data.query.page){
+                    str+='<li class="paginate_button active"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">'+i+'</a></li></li>';
+                    continue;
+                  }
+                  str+='<li class="paginate_button"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">'+i+'</a></li></li>'
+                }
+              }else if(this.$data.query.page>=6&&this.$data.query.page<=(this.$data.total-5)){
+                console.log(this.$data.query.page)
+                for (var i = this.$data.query.page-4; i <= this.$data.query.page+5; i++){
+                  if(i == this.$data.query.page){
+                    str+='<li class="paginate_button active"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">'+i+'</a></li></li>';
+                    continue;
+                  }
+                  str+='<li class="paginate_button"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">'+i+'</a></li></li>'
+                }
+              }else if(this.$data.query.page>=6&&this.$data.query.page>this.$data.total-5){
+                console.log(2)
+                for (var i = this.$data.total-9; i <= this.$data.total; i++){
+                  if(i == this.$data.query.page){
+                    str+='<li class="paginate_button active"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">'+i+'</a></li></li>';
+                    continue;
+                  }
+                  str+='<li class="paginate_button"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">'+i+'</a></li></li>'
+                }
+              }}
             str+='<li class="paginate_button next" id="example2_next"><a href="#" aria-controls="example2" data-dt-idx="7" tabindex="0">下一页</a></li>'
             page.innerHTML=str;
-            var aLi = page.getElementsByTagName('li');
-            if(this.$data.query.page<6){
-              for(var i=0;i<aLi.length;i++){
-                if(i>11){
-                  aLi[i].style.display='none'
-                }
-              }
-            }else if(this.$data.query.page>(this.$data.total-5)){
-              for(var i=0;i<aLi.length;i++){
-                if(i<(this.$data.total-12)){
-                  aLi[i].style.display='none'
-                }
-              }
-            }else{
-              for(var i=0;i<aLi.length;i++){
-                if((i!=0&&i<this.$data.query.page-5)||(i!=this.$data.total+1&&i>this.$data.query.page+4)){
-                  aLi[i].style.display='none'
-                }
-              }
-            }
           },function (err) {
-            console.log(err)
+            this.$store.commit('MESSAGE_ACCORD_SHOW', {
+              text: err.statusMessage
+            })
           })
       }
     },
@@ -433,7 +465,9 @@
         }
       },
       changeHide: function (val) {
-        val = val.replace(val.substring(3,19),"…");
+        if(val!=""&&val!=null){
+          val = val.replace(val.substring(3,val.length-6),"…");
+        }
         return val
       },
       toFix: function (val) {

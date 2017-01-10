@@ -1,6 +1,6 @@
 <template lang="html">
   <div id="companyProfitDet">
-    <div style="margin: 0 15px;">
+    <div style="margin: 15px;">
       <div class="box">
         <div class="box-header">
           <h3 class="box-title">分润详情</h3>
@@ -161,5 +161,7 @@
     border-bottom: 2px solid #ccc;
     padding-bottom: 10px;
   }
-
+  .btn{
+    font-size: 12px;
+  }
 </style>

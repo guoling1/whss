@@ -1,6 +1,6 @@
 <template lang="html">
   <div id="secProfit">
-    <div style="margin: 0 15px">
+    <div style="margin: 15px">
       <div class="box">
         <div class="box-header">
           <h3 class="box-title">二级代理分润</h3>
@@ -45,7 +45,7 @@
                     <td style="text-align: right">{{record.collectMoney|toFix}}</td>
                     <td style="text-align: right">{{record.withdrawMoney|toFix}}</td>
                     <td style="text-align: right">{{record.totalMoney|toFix}}</td>
-                    <td><router-link :to="{path:'/admin/record/secProfitDet',query:{id:record.id}}" class="btn btn-success" v-if="record.totalMoney!=0">查看明细</router-link></td>
+                    <td><router-link :to="{path:'/admin/record/secProfitDet',query:{id:record.id}}" v-if="record.totalMoney!=0">查看明细</router-link></td>
                   </tr>
                   </tbody>
                 </table>
@@ -300,5 +300,9 @@
     font-size: 20px;
     line-height: 34px;
     height: 34px;
+  }
+  .btn{
+    margin-left: 15px;
+    font-size: 12px;
   }
 </style>
