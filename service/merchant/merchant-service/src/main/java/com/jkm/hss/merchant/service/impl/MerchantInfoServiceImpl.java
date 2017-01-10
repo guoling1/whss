@@ -221,7 +221,7 @@ public class MerchantInfoServiceImpl implements MerchantInfoService {
     public void toUpgradeByRecommend(long merchantId) {
         try {
             MerchantInfo merchantInfo = merchantInfoDao.selectById(merchantId);
-            if(merchantInfo!=null&&merchantInfo.getLevel()==EnumUpGradeType.BOSS.getId()){//已经是老板，不用升级
+            if(merchantInfo!=null&&merchantInfo.getStatus()==EnumMerchantStatus.FRIEND.getId()){//已经激活，不再调用
                 if(merchantInfo.getStatus()==EnumMerchantStatus.PASSED.getId()){
                     Optional<UpgradeRecommendRules> upgradeRecommendRulesOptional = upgradeRecommendRulesService.selectByProductId(merchantInfo.getProductId());
                     if(upgradeRecommendRulesOptional.isPresent()){
@@ -247,7 +247,7 @@ public class MerchantInfoServiceImpl implements MerchantInfoService {
                                     }
                                 }
                                 if(mi.getLevel()==1){//店员
-                                    int needNum = upgradeRules.get(0).getPromotionNum()+upgradeRules.get(1).getPromotionNum();
+                                    int needNum = upgradeRules.get(1).getPromotionNum();
                                     if(friendCount>=needNum){
                                         Optional<UpgradeRules> upgradeRulesOptional = upgradeRulesService.selectByProductIdAndType(merchantInfo.getProductId(),EnumUpGradeType.SHOPOWNER.getId());
                                         if(upgradeRulesOptional.isPresent()){
@@ -257,7 +257,7 @@ public class MerchantInfoServiceImpl implements MerchantInfoService {
                                     }
                                 }
                                 if(mi.getLevel()==2){//店长
-                                    int needNum = upgradeRules.get(0).getPromotionNum()+upgradeRules.get(1).getPromotionNum()+upgradeRules.get(2).getPromotionNum();
+                                    int needNum = upgradeRules.get(2).getPromotionNum();
                                     if(friendCount>=needNum){
                                         Optional<UpgradeRules> upgradeRulesOptional = upgradeRulesService.selectByProductIdAndType(merchantInfo.getProductId(),EnumUpGradeType.BOSS.getId());
                                         if(upgradeRulesOptional.isPresent()){
@@ -272,10 +272,10 @@ public class MerchantInfoServiceImpl implements MerchantInfoService {
                         log.info("推荐好友，没有此升级配置");
                     }
                 }else{
-                    log.info("商户状态是{}，此状态下不算升级");
+                    log.info("商户状态是{}，此状态下不能升级",merchantInfo.getStatus());
                 }
             }else{
-                log.info("推荐好友，没有此商户或者已经是老板，不用升级，商户编码{}",merchantId);
+                log.info("推荐好友，没有此商户或者已经激活，不用激活，商户编码{}",merchantId);
             }
         }catch (Exception e){
             log.error("系统出错",e);
