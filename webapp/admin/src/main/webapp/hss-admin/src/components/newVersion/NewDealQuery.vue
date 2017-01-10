@@ -82,6 +82,7 @@
                 <tr role="row">
                   <th class="sorting_asc" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Rendering engine: activate to sort column descending">序号</th>
                   <th class="sorting_asc" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Rendering engine: activate to sort column descending">订单号</th>
+                  <th class="sorting_asc" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Rendering engine: activate to sort column descending">交易流水号</th>
                   <th class="sorting_asc" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Rendering engine: activate to sort column descending">交易日期</th>
                   <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="Platform(s): activate to sort column ascending">商户名称</th>
                   <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="Platform(s): activate to sort column ascending">所属一级</th>
@@ -99,6 +100,7 @@
                 <tr role="row" v-for="(order,index) in orders">
                   <td>{{(query.page-1)*10+(index+1)}}</td>
                   <td><router-link :to="{ path: '/admin/record/newDealDet', query: {orderNo: order.orderNo}}">{{order.orderNo|changeHide}}</router-link></td>
+                  <td><router-link :to="{ path: '/admin/record/newDealDet', query: {orderNo: order.orderNo}}">{{order.sn|changeHide}}</router-link></td>
                   <td>{{order.createTime|changeTime}}</td>
                   <td>{{order.merchantName}}</td>
                   <td>{{order.proxyName}}</td>
@@ -463,7 +465,9 @@
         }
       },
       changeHide: function (val) {
-        val = val.replace(val.substring(3,19),"…");
+        if(val!=""&&val!=null){
+          val = val.replace(val.substring(3,val.length-6),"…");
+        }
         return val
       },
       toFix: function (val) {

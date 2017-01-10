@@ -1,6 +1,6 @@
 <template lang="html">
   <div id="firProfit">
-    <div style="margin: 0 15px;">
+    <div style="margin: 15px;">
       <div class="box">
         <div class="box-header">
           <h3 class="box-title">一级代理商分润</h3>
