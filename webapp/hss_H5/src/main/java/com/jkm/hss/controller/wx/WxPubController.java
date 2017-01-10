@@ -414,7 +414,7 @@ public class WxPubController extends BaseController {
             }
         }
         final Pair<Integer, String> checkResult =
-                this.smsAuthService.checkVerifyCode(mobile, verifyCode, EnumVerificationCodeType.LOGIN_MERCHANT);
+                this.smsAuthService.checkVerifyCode(mobile, verifyCode, EnumVerificationCodeType.REGISTER_MERCHANT);
         if (1 != checkResult.getLeft()) {
             return CommonResponse.simpleResponse(-1, checkResult.getRight());
         }
@@ -491,6 +491,9 @@ public class WxPubController extends BaseController {
                                 mi.setWeixinRate(weixinDealerChannelRate.get().getDealerMerchantPayRate());
                                 mi.setAlipayRate(zhifubaoDealerChannelRate.get().getDealerMerchantPayRate());
                                 mi.setFastRate(yinlianDealerChannelRate.get().getDealerMerchantPayRate());
+                                mi.setIsUpgrade(EnumIsUpgrade.CANNOTUPGRADE.getId());
+                            }else{//能升级
+                                mi.setIsUpgrade(EnumIsUpgrade.CANUPGRADE.getId());
                             }
                         }
                     }
@@ -539,6 +542,7 @@ public class WxPubController extends BaseController {
                     mi.setWeixinRate(weixinChannelDetail.get().getProductMerchantPayRate());
                     mi.setAlipayRate(zhifubaoChannelDetail.get().getProductMerchantPayRate());
                     mi.setFastRate(yinlianChannelDetail.get().getProductMerchantPayRate());
+                    mi.setIsUpgrade(EnumIsUpgrade.CANUPGRADE.getId());
                     merchantInfoService.regByWx(mi);
                     //添加用户
                     UserInfo uo = new UserInfo();
@@ -626,7 +630,7 @@ public class WxPubController extends BaseController {
             return CommonResponse.simpleResponse(-1, "请输入正确的6位数字验证码");
         }
         final Pair<Integer, String> checkResult =
-                this.smsAuthService.checkVerifyCode(directLoginRequest.getMobile(), directLoginRequest.getCode(), EnumVerificationCodeType.REGISTER_MERCHANT);
+                this.smsAuthService.checkVerifyCode(directLoginRequest.getMobile(), directLoginRequest.getCode(), EnumVerificationCodeType.LOGIN_MERCHANT);
         if (1 != checkResult.getLeft()) {
             return CommonResponse.simpleResponse(-1, checkResult.getRight());
         }

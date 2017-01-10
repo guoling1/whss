@@ -158,5 +158,11 @@ public class MerchantInfo extends BaseEntity{
      */
     private int source;
 
+    /**
+     * 是否升级
+     * {@link com.jkm.hss.merchant.enums.EnumIsUpgrade}
+     */
+    private int isUpgrade;
+
 
 }

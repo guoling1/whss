@@ -1,6 +1,5 @@
 package com.jkm.hss.merchant.service;
 
-import com.jkm.hss.bill.entity.Order;
 import org.apache.commons.lang3.tuple.Triple;
 
 import java.math.BigDecimal;
@@ -19,6 +18,5 @@ public interface MerchantPromoteShallService {
      * @param merchantId
      * @return
      */
-    Map<String, Triple<Long, BigDecimal, String>> merchantPromoteShall(final long merchantId, final BigDecimal tradeAmount,
-                                                                       final String orderNo);
+    Map<String, Triple<Long, BigDecimal, String>> merchantPromoteShall(long merchantId, BigDecimal tradeAmount);
 }

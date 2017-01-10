@@ -20,6 +20,7 @@ import com.jkm.hss.helper.ApplicationConsts;
 import com.jkm.hss.merchant.entity.AccountInfo;
 import com.jkm.hss.merchant.entity.MerchantInfo;
 import com.jkm.hss.merchant.entity.UserInfo;
+import com.jkm.hss.merchant.enums.EnumIsUpgrade;
 import com.jkm.hss.merchant.enums.EnumMerchantStatus;
 import com.jkm.hss.merchant.helper.MerchantSupport;
 import com.jkm.hss.merchant.helper.WxConstants;
@@ -432,19 +433,10 @@ public class LoginController extends BaseController {
                             model.addAttribute("avaliable", account.getAvailable()==null?"0.00":decimalFormat.format(account.getAvailable()));
                         }
                         //是否显示推荐和升级
-                        if(merchantInfo.get().getFirstDealerId()!=0){
-                            Optional<Dealer> dealerOptional = dealerService.getById(merchantInfo.get().getFirstDealerId());
-                            if(dealerOptional.isPresent()){
-                                if(dealerOptional.get().getRecommendBtn()== EnumRecommendBtn.OFF.getId()){
-                                    model.addAttribute("showRecommend", 2);//不显示升级
-                                }else{
-                                    model.addAttribute("showRecommend", 1);//显示升级
-                                }
-                            }else{
-                                model.addAttribute("showRecommend", 1);//显示升级
-                            }
+                        if(merchantInfo.get().getIsUpgrade()== EnumIsUpgrade.CANUPGRADE.getId()){//显示升级
+                            model.addAttribute("showRecommend", 1);//显示升级
                         }else{
-                            model.addAttribute("showRecommend", 1);//显示升级按钮
+                            model.addAttribute("showRecommend", 2);//不显示升级
                         }
                     }else{
                         model.addAttribute("showRecommend", 1);
@@ -1144,6 +1136,20 @@ public class LoginController extends BaseController {
             }
         }
     }
+
+    private BigDecimal needMoney(long productId,int currentLevel,int needLevel){
+        BigDecimal needMoney = null;
+        //所升级别需付费
+        Optional<UpgradeRules> upgradeRulesOptional = upgradeRulesService.selectByProductIdAndType(productId,needLevel);
+        //当前级别需付费
+        Optional<UpgradeRules> currentUpgradeRulesOptional = upgradeRulesService.selectByProductIdAndType(productId,currentLevel);
+        if(!currentUpgradeRulesOptional.isPresent()){
+            needMoney = upgradeRulesOptional.get().getUpgradeCost();
+        }else{
+            needMoney = upgradeRulesOptional.get().getUpgradeCost().subtract(currentUpgradeRulesOptional.get().getUpgradeCost());
+        }
+        return needMoney;
+    }
     /**
      * 我要升级
      * @param request
@@ -1201,6 +1207,8 @@ public class LoginController extends BaseController {
                                 upgradeRulesOptional.get().setWeixinRate(upgradeRulesOptional.get().getWeixinRate().multiply(new BigDecimal(100)).setScale(2,   BigDecimal.ROUND_HALF_UP));
                                 upgradeRulesOptional.get().setAlipayRate(upgradeRulesOptional.get().getAlipayRate().multiply(new BigDecimal(100)).setScale(2,   BigDecimal.ROUND_HALF_UP));
                                 upgradeRulesOptional.get().setFastRate(upgradeRulesOptional.get().getFastRate().multiply(new BigDecimal(100)).setScale(2,   BigDecimal.ROUND_HALF_UP));
+                                BigDecimal needMoney = needMoney(result.get().getProductId(),result.get().getLevel(),upgradeRulesOptional.get().getType());
+                                model.addAttribute("needMoney",needMoney);
                                 model.addAttribute("upgradeRules",upgradeRulesOptional.get());
                                 int hasCount = recommendService.selectFriendCount(result.get().getId());
                                 model.addAttribute("restCount",upgradeRulesOptional.get().getPromotionNum()-hasCount);
@@ -1344,11 +1352,12 @@ public class LoginController extends BaseController {
                             model.addAttribute("message","没有次级别合伙人");
                             url = "/message";
                         }else{
+                            BigDecimal needMoney = needMoney(result.get().getProductId(),result.get().getLevel(),upgradeRulesOptional.get().getType());
                             UpgradePayRecord upgradePayRecord = new UpgradePayRecord();
                             upgradePayRecord.setMerchantId(merchantId);
                             upgradePayRecord.setStatus(EnumUpgrade.NORMAL.getId());
                             upgradePayRecord.setReqSn(SnGenerator.generate());
-                            upgradePayRecord.setAmount(upgradeRulesOptional.get().getUpgradeCost());
+                            upgradePayRecord.setAmount(needMoney);
                             upgradePayRecord.setLevel(upgradeRulesOptional.get().getType());
                             upgradePayRecord.setUpgradeRulesId(id);
                             upgradePayRecord.setNote("充值升级");
@@ -1356,7 +1365,7 @@ public class LoginController extends BaseController {
                             upgradePayRecordService.insert(upgradePayRecord);
                             isRedirect= true;
                             //// TODO: 2017/1/9
-                            url = "/buySuccess/100/201701091832000000";
+                            url = "/buySuccess/"+needMoney+"/201701091832000000";
                         }
                     }
                 }else{

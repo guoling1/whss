@@ -119,7 +119,7 @@
         SELECT
         a.pay_order_id,a.order_no,a.trade_amount,a.real_pay_amount,a.trade_type,a.payer,a.payee,a.pay_account,
         a.pay_account_type,a.pay_type,a.pay_success_time,a.poundage,a.pay_rate,a.settle_status,a.settle_time,
-        a.success_settle_time,a.pay_channel_sign,a.remark,a. STATUS,a.create_time,b.merchant_name,
+        a.success_settle_time,a.pay_channel_sign,a.remark,a. STATUS,a.create_time,b.merchant_name,a.sn,
         (SELECT c.proxy_name FROM tb_dealer c WHERE c.id = b.first_dealer_id) AS proxyName,
         (SELECT c.proxy_name FROM tb_dealer c WHERE c.id = b.second_dealer_id) AS proxyName1
         FROM
