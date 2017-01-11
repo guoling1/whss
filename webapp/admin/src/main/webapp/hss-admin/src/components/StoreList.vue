@@ -95,6 +95,12 @@
                 </table>
               </div>
             </div>
+            <div v-if="isShow">
+              <img src="http://img.jinkaimen.cn/admin/common/dist/img/ICBCLoading.gif" alt="">
+            </div>
+            <div v-if="$$data.stores.length==0&&!isShow" class="row" style="text-align: center;color: red;font-size: 16px;">
+              <div class="col-sm-12">无此数据</div>
+            </div>
             <div class="row">
               <div class="col-sm-5">
               </div>
@@ -103,7 +109,7 @@
                   <ul class="pagination" id="page" @click="bindEvent($event)">
 
                   </ul>
-                  <span class="count">共{{count}}条</span>
+                  <span class="count">共{{total}}页 {{count}}条</span>
                 </div>
               </div>
             </div>
@@ -147,9 +153,14 @@
         endTime:'',
         endTime1:'',
         endTime2:'',
+        isShow: false
       }
     },
     created: function () {
+      this.$data.isShow = true;
+      this.$data.stores = '';
+      this.$data.total = 0;
+      this.$data.count = 0;
       var content = document.getElementById('content'),
         page = document.getElementById('page');
       this.$http.post('/admin/query/getAll',{
@@ -165,7 +176,8 @@
         startTime2: this.$data.startTime2,
         endTime2: this.$data.endTime2,
       }).then(function (res) {
-        this.$data.stores   = res.data.records;
+        this.$data.isShow = false;
+        this.$data.stores = res.data.records;
         this.$data.total = res.data.totalPage;
         this.$data.count = res.data.count;
         var str='',
@@ -181,6 +193,7 @@
         str+='<li class="paginate_button next" id="example2_next"><a href="#" aria-controls="example2" data-dt-idx="7" tabindex="0">下一页</a></li>'
         page.innerHTML=str;
       }, function (err) {
+        this.$data.isShow = false;
         this.$store.commit('MESSAGE_ACCORD_SHOW', {
           text: err.statusMessage
         })
@@ -271,6 +284,10 @@
         var content = document.getElementById('content'),
           page = document.getElementById('page');
         this.$data.pageNo=1;
+        this.$data.isShow  = true;
+        this.$data.stores  = '';
+        this.$data.total = 0;
+        this.$data.count = 0;
         this.$http.post('/admin/query/getAll',{
           pageNo:this.$data.pageNo,
           pageSize:this.$data.pageSize,
@@ -284,6 +301,7 @@
           startTime2: this.$data.startTime2,
           endTime2: this.$data.endTime2,
         }).then(function (res) {
+          this.$data.isShow  = false;
           this.$data.stores  = res.data.records;
           this.$data.total = res.data.totalPage;
           this.$data.count = res.data.count;
@@ -300,6 +318,7 @@
           str+='<li class="paginate_button next" id="example2_next"><a href="#" aria-controls="example2" data-dt-idx="7" tabindex="0">下一页</a></li>'
           page.innerHTML=str;
         }, function (err) {
+          this.$data.isShow  = false;
           this.$store.commit('MESSAGE_ACCORD_SHOW', {
             text: err.statusMessage
           })
@@ -404,5 +423,10 @@
     display: inline-block;
     vertical-align: top;
     margin: 28px 10px;
+  }
+  img{
+    width: 8%;
+    margin: 0 auto;
+    display: inherit;
   }
 </style>

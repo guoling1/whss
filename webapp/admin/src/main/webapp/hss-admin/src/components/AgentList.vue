@@ -60,6 +60,12 @@
                 </table>
               </div>
             </div>
+            <div v-if="isShow">
+              <img src="http://img.jinkaimen.cn/admin/common/dist/img/ICBCLoading.gif" alt="">
+            </div>
+            <div v-if="dealers.length==0&&!isShow" class="row" style="text-align: center;color: red;font-size: 16px;">
+              <div class="col-sm-12">无此数据</div>
+            </div>
             <div class="row">
               <div class="col-sm-5">
               </div>
@@ -67,6 +73,7 @@
                 <div class="dataTables_paginate paging_simple_numbers" id="example2_paginate">
                   <ul class="pagination" id="page" @click="bindEvent($event)">
                   </ul>
+                  <span class="count">共{{total}}页 {{count}}条</span>
                 </div>
               </div>
             </div>
@@ -95,10 +102,17 @@
         id:'',
         level:'',
         name:'',
-        total:0
+        total:0,
+        count:0,
+        isShow:false
       }
     },
     created: function () {
+      this.$data.isShow = true;
+      this.$data.dealers = '';
+      this.$data.total = 0;
+      this.$data.pageNo = 1;
+      this.$data.count = 0;
       this.$http.post('/admin/dealer/listDealer',{
         pageNo:1,
         pageSize:10,
@@ -109,10 +123,11 @@
         level:this.$data.level
       })
         .then(function (res) {
+          this.$data.isShow = false;
           this.$data.dealers = res.data.records;
           this.$data.total = res.data.totalPage;
           this.$data.pageNo = res.data.pageNO;
-          console.log(this.$data)
+          this.$data.count = res.data.count;
           var str='',
             page=document.getElementById('page');
           str+='<li class="paginate_button previous disabled" id="example2_previous"><a href="#" aria-controls="example2" data-dt-idx="0" tabindex="0">上一页</a></li>'
@@ -126,6 +141,7 @@
           str+='<li class="paginate_button next" id="example2_next"><a href="#" aria-controls="example2" data-dt-idx="7" tabindex="0">下一页</a></li>'
           page.innerHTML=str;
         }, function (err) {
+          this.$data.isShow = false;
           this.$store.commit('MESSAGE_ACCORD_SHOW', {
             text: err.statusMessage
           })
@@ -167,6 +183,7 @@
             this.$data.dealers = res.data.records;
             this.$data.total = res.data.totalPage;
             this.$data.pageNo = res.data.pageNO;
+            this.$data.count = res.data.count;
             var str='',
               page=document.getElementById('page');
             str+='<li class="paginate_button previous disabled" id="example2_previous"><a href="#" aria-controls="example2" data-dt-idx="0" tabindex="0">上一页</a></li>'
@@ -192,6 +209,11 @@
         this.$router.push({path:'/admin/record/agentAdd',query:{id:id,level:level}})
       },
       lookup: function () {
+        this.$data.isShow = true;
+        this.$data.dealers = '';
+        this.$data.total = 0;
+        this.$data.pageNo = 1;
+        this.$data.count = 0;
         this.$http.post('/admin/dealer/listDealer',{
           pageNo:1,
           pageSize:10,
@@ -202,10 +224,11 @@
           level:this.$data.level
         })
           .then(function (res) {
+            this.$data.isShow = false;
             this.$data.dealers = res.data.records;
             this.$data.pageSize = res.data.totalPage;
             this.$data.pageNo = res.data.pageNO;
-            console.log(this.$data)
+            this.$data.count = res.data.count;
             var str='',
               page=document.getElementById('page');
             str+='<li class="paginate_button previous disabled" id="example2_previous"><a href="#" aria-controls="example2" data-dt-idx="0" tabindex="0">上一页</a></li>'
@@ -219,6 +242,7 @@
             str+='<li class="paginate_button next" id="example2_next"><a href="#" aria-controls="example2" data-dt-idx="7" tabindex="0">下一页</a></li>'
             page.innerHTML=str;
           }, function (err) {
+            this.$data.isShow = false
             this.$store.commit('MESSAGE_ACCORD_SHOW', {
               text: err.statusMessage
             })
@@ -261,5 +285,10 @@
   }
   .btn{
     font-size: 12px;
+  }
+  img{
+    width: 8%;
+    margin: 0 auto;
+    display: inherit;
   }
 </style>

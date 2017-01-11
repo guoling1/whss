@@ -95,7 +95,10 @@
               </table>
             </div>
           </div>
-          <div v-if="orders.length==0" class="row" style="text-align: center;color: red;font-size: 16px;">
+          <div v-if="isShow">
+            <img src="http://img.jinkaimen.cn/admin/common/dist/img/ICBCLoading.gif" alt="">
+          </div>
+          <div v-if="orders.length==0&&!isShow" class="row" style="text-align: center;color: red;font-size: 16px;">
             <div class="col-sm-12">无此数据</div>
           </div>
           <div class="row">
@@ -107,7 +110,7 @@
               <div class="dataTables_paginate paging_simple_numbers" id="example2_paginate">
                 <ul class="pagination" id="page" @click="bindEvent($event)">
                 </ul>
-                <span class="count">共{{count}}条</span>
+                <span class="count">共{{total}}页 {{count}}条</span>
               </div>
             </div>
           </div>
@@ -147,10 +150,11 @@
           endFinishTime: ''
         },
         orders:[],
-        total:'',
+        total:0,
         isMask: false,
         url: '',
-        count:'',
+        count:0,
+        isShow:false,
         //正式
         /*queryUrl:'http://pay.qianbaojiajia.com/order/pay/listOrder',
         excelUrl:'http://pay.qianbaojiajia.com/order/pay/exportExcel',
@@ -162,8 +166,13 @@
       }
     },
     created:function(){
+      this.$data.isShow = true;
+      this.$data.orders='';
+      this.$data.total=0;
+      this.$data.count = 0;
       this.$http.post(this.$data.queryUrl,this.$data.query)
         .then(function (res) {
+          this.$data.isShow = false;
           this.$data.orders=res.data.records;
           this.$data.total=res.data.totalPage;
           this.$data.url=res.data.ext;
@@ -210,6 +219,7 @@
           str+='<li class="paginate_button next" id="example2_next"><a href="#" aria-controls="example2" data-dt-idx="7" tabindex="0">下一页</a></li>'
           page.innerHTML=str;
         },function (err) {
+          this.$data.isShow = false;
           this.$store.commit('MESSAGE_ACCORD_SHOW', {
             text: err.statusMessage
           })
@@ -347,8 +357,13 @@
             text: "请输入开始时间"
           })
         }else {
+          this.$data.isShow = true;
+          this.$data.orders='';
+          this.$data.total=0;
+          this.$data.count = 0;
           this.$http.post(this.$data.queryUrl,this.$data.query)
             .then(function (res) {
+              this.$data.isShow = false;
               this.$data.orders=res.data.records;
               this.$data.total=res.data.totalPage;
               this.$data.url=res.data.ext;
@@ -395,6 +410,7 @@
               str+='<li class="paginate_button next" id="example2_next"><a href="#" aria-controls="example2" data-dt-idx="7" tabindex="0">下一页</a></li>'
               page.innerHTML=str;
             },function (err) {
+              this.$data.isShow = false;
               this.$store.commit('MESSAGE_ACCORD_SHOW', {
                 text: err.statusMessage
               })
@@ -515,5 +531,10 @@
   }
   .btn{
     font-size: 12px;
+  }
+  img{
+    width: 8%;
+    margin: 0 auto;
+    display: inherit;
   }
 </style>
