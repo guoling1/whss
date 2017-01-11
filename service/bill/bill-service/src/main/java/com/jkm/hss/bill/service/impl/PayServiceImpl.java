@@ -92,10 +92,12 @@ public class PayServiceImpl implements PayService {
      * @param merchantId
      * @param businessOrderNo 业务订单号
      * @param amount
+     * @param businessReturnUrl 业务方回调url
      * @return
      */
     @Override
-    public Pair<Integer, String> generateMerchantUpgradeUrl(final long merchantId, final String businessOrderNo, final BigDecimal amount) {
+    public Pair<Integer, String> generateMerchantUpgradeUrl(final long merchantId, final String businessOrderNo,
+                                                            final BigDecimal amount, final String businessReturnUrl) {
 
         final Optional<Order> orderOptional = this.orderService.getByBusinessOrderNo(businessOrderNo);
         if (orderOptional.isPresent()) {
@@ -123,7 +125,8 @@ public class PayServiceImpl implements PayService {
         order.setStatus(EnumOrderStatus.DUE_PAY.getId());
         this.orderService.add(order);
         //请求支付中心下单
-        final PaymentSdkPlaceOrderResponse placeOrderResponse = this.requestPlaceOrder(order, EnumPayChannelSign.YG_WEIXIN.getId(), merchant);
+        final PaymentSdkPlaceOrderResponse placeOrderResponse = this.requestPlaceOrder(order,
+                EnumPayChannelSign.YG_WEIXIN.getId(), merchant, businessReturnUrl);
         return this.handlePlaceOrder(placeOrderResponse, order);
     }
 
@@ -155,7 +158,8 @@ public class PayServiceImpl implements PayService {
         order.setStatus(EnumOrderStatus.DUE_PAY.getId());
         this.orderService.add(order);
         //请求支付中心下单
-        final PaymentSdkPlaceOrderResponse placeOrderResponse = this.requestPlaceOrder(order, channel, merchant);
+        final PaymentSdkPlaceOrderResponse placeOrderResponse = this.requestPlaceOrder(order, channel, merchant,
+                PaymentSdkConstants.SDK_PAY_RETURN_URL + order.getTradeAmount() + "/" + order.getId());
         return this.handlePlaceOrder(placeOrderResponse, order);
     }
 
@@ -726,13 +730,15 @@ public class PayServiceImpl implements PayService {
      *
      * @param order
      * @param merchant
+     * @param returnUrl 前端回调地址
      */
-    private PaymentSdkPlaceOrderResponse requestPlaceOrder(final Order order, final int channel, final MerchantInfo merchant) {
+    private PaymentSdkPlaceOrderResponse requestPlaceOrder(final Order order, final int channel,
+                                                           final MerchantInfo merchant, final String returnUrl) {
         final PaymentSdkPlaceOrderRequest placeOrderRequest = new PaymentSdkPlaceOrderRequest();
         placeOrderRequest.setAppId(PaymentSdkConstants.APP_ID);
         placeOrderRequest.setOrderNo(order.getOrderNo());
         placeOrderRequest.setGoodsDescribe(order.getGoodsDescribe());
-        placeOrderRequest.setReturnUrl(PaymentSdkConstants.SDK_PAY_RETURN_URL + order.getTradeAmount() + "/" + order.getId());
+        placeOrderRequest.setReturnUrl(returnUrl);
         placeOrderRequest.setNotifyUrl(PaymentSdkConstants.SDK_PAY_NOTIFY_URL);
         placeOrderRequest.setMerName(merchant.getMerchantName());
         placeOrderRequest.setMerNo(merchant.getMarkCode());
