@@ -229,7 +229,7 @@ public class MerchantInfoServiceImpl implements MerchantInfoService {
         log.info("merchantId:{}",merchantId);
         try {
             MerchantInfo merchantInfo = merchantInfoDao.selectById(merchantId);
-            if(merchantInfo!=null&&merchantInfo.getStatus()==EnumMerchantStatus.FRIEND.getId()){//已经激活，不再调用
+            if(merchantInfo!=null&&merchantInfo.getStatus()!=EnumMerchantStatus.FRIEND.getId()){//已经激活，不再调用
                 log.info("没有升级，可以升级");
                 log.info("状态是:{}",merchantInfo.getStatus());
                 if(merchantInfo.getStatus()==EnumMerchantStatus.PASSED.getId()){
@@ -246,7 +246,7 @@ public class MerchantInfoServiceImpl implements MerchantInfoService {
                         if(recommends.size()>0){
                             for(int i=0;i<recommends.size();i++){
                                 MerchantInfo mi = merchantInfoDao.selectById(recommends.get(i).getRecommendMerchantId());
-                                int friendCount = recommendService.selectDirectCount(recommends.get(i).getRecommendMerchantId());
+                                int friendCount = recommendService.selectFriendCount(recommends.get(i).getRecommendMerchantId());
                                 if(mi.getLevel()==0){//普通
                                     log.info("当前级别是普通");
                                     int needNum = upgradeRules.get(0).getPromotionNum();

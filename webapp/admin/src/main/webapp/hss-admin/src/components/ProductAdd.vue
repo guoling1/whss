@@ -52,7 +52,7 @@
             <label for="limitWithdrawFeeRate" class="col-sm-2 control-label">提现手续费加价限额</label>
 
             <div class="col-sm-4 middle">
-              <input type="text" class="form-control" id="limitWithdrawFeeRate" v-model="basicTradeRate">
+              <input type="text" class="form-control" id="limitWithdrawFeeRate" v-model="limitWithdrawFeeRate">
               <i>元/笔</i>
             </div>
             <div class="col-sm-6 right">允许一级代理商提高商户的手续费最高限制，例如：0.5元／笔</div>
