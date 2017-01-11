@@ -6,16 +6,20 @@ import com.jkm.hss.dealer.entity.DealerChannelRate;
 import com.jkm.hss.dealer.service.*;
 import com.jkm.hss.merchant.entity.MerchantInfo;
 import com.jkm.hss.merchant.service.MerchantInfoService;
+import com.jkm.hss.merchant.service.MerchantPromoteShallService;
 import com.jkm.hss.product.entity.ProductChannelDetail;
 import com.jkm.hss.product.enums.EnumPayChannelSign;
 import com.jkm.hss.product.servcie.ProductChannelDetailService;
 import com.jkm.hss.product.servcie.ProductService;
 import com.jkm.hss.product.servcie.UpgradeRulesService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.tuple.Pair;
+import org.apache.commons.lang3.tuple.Triple;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.Map;
 
 /**
  * Created by yulong.zhang on 2016/12/25.
@@ -42,6 +46,8 @@ public class CalculateServiceImpl implements CalculateService {
     private ProductService productService;
     @Autowired
     private PartnerShallProfitDetailService partnerShallProfitDetailService;
+    @Autowired
+    private MerchantPromoteShallService merchantPromoteShallService;
 
     /**
      * {@inheritDoc}
@@ -104,8 +110,11 @@ public class CalculateServiceImpl implements CalculateService {
      * @return
      */
     @Override
-    public BigDecimal getMerchantUpgradePoundage(final long merchantId) {
-        return null;
+    public BigDecimal getMerchantUpgradePoundage(final long merchantId ,String orderNo, BigDecimal tradeAmount, String businessNo) {
+
+        final Map<String, Triple<Long, BigDecimal, String>> map = this.merchantPromoteShallService.merchantPromoteShall(merchantId, orderNo, businessNo, tradeAmount);
+
+        return map.get("companyMoney").getMiddle();
     }
 
     private BigDecimal getMerchantRate(int channelSign, final MerchantInfo merchantInfo){

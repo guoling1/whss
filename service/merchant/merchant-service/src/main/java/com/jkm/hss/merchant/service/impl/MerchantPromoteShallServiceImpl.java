@@ -72,7 +72,7 @@ public class MerchantPromoteShallServiceImpl implements MerchantPromoteShallServ
     @Override
     public Map<String, Triple<Long, BigDecimal, String>> merchantPromoteShall(final long merchantId, final String orderNo, final String businessNo,final BigDecimal tradeAmount) {
         try{
-
+            log.info("商户【" +merchantId +"]请求进行升级费分润：" + orderNo);
             Pair<BigDecimal, BigDecimal> pair = merchantInfoService.getUpgradeShareProfit(businessNo);
 
             //获取商户

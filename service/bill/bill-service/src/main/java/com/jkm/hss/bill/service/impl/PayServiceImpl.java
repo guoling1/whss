@@ -253,7 +253,7 @@ public class PayServiceImpl implements PayService {
             log.info("交易订单[{}]，处理商户升级支付回调业务", order.getOrderNo());
             final MerchantInfo merchant = this.merchantInfoService.getByAccountId(order.getPayer()).get();
             //手续费， 费率
-            final BigDecimal merchantUpgradePoundage = this.calculateService.getMerchantUpgradePoundage(merchant.getId());
+            final BigDecimal merchantUpgradePoundage = this.calculateService.getMerchantUpgradePoundage(merchant.getId(),order.getOrderNo(), order.getTradeAmount(), order.getBusinessOrderNo());
             order.setPoundage(merchantUpgradePoundage);
             this.orderService.update(order);
             //公司利润账户，手续费入账

@@ -43,5 +43,5 @@ public interface CalculateService {
      * @param merchantId
      * @return
      */
-    BigDecimal getMerchantUpgradePoundage(long merchantId);
+    BigDecimal getMerchantUpgradePoundage(long merchantId , String orderNo ,BigDecimal tradeAmount, String businessNo);
 }
