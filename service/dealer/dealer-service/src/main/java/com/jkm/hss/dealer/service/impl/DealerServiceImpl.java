@@ -249,6 +249,37 @@ public class DealerServiceImpl implements DealerService {
         final ProductChannelDetail productChannelDetail = this.productChannelDetailService.selectByProductIdAndChannelId(product.getId(), channelSign).get();
         final BigDecimal channelMoney = tradeAmount.multiply(productChannelDetail.getProductTradeRate().
                 subtract(basicChannel.getBasicTradeRate())).setScale(2,BigDecimal.ROUND_DOWN);
+        //判断是否是公司直属商户发展的商户
+        if (merchantInfo.getDealerId() == 0){
+            final BigDecimal productMoney = waitOriginMoney.subtract(basicMoney).subtract(channelMoney);
+            map.put("channelMoney", Triple.of(basicChannel.getAccountId(), channelMoney, basicChannel.getBasicTradeRate()));
+            map.put("productMoney", Triple.of(product.getAccountId(), productMoney, productChannelDetail.getProductTradeRate()));
+
+            final PartnerShallProfitDetail detail = new PartnerShallProfitDetail();
+            detail.setMerchantId(merchantId);
+            detail.setOrderNo(orderNo);
+            detail.setChannelType(0);
+            detail.setTotalFee(tradeAmount);
+            detail.setWaitShallAmount(waitOriginMoney);
+            detail.setWaitShallOriginAmount(originMoney);
+            detail.setProfitType(EnumDealerRateType.TRADE.getId());
+            detail.setChannelCost(basicMoney);
+            detail.setChannelShallAmount(channelMoney);
+            detail.setProductShallAmount(productMoney);
+            detail.setFirstDealerId(0);
+            detail.setFirstDealerShallAmount(new BigDecimal(0));
+            detail.setSecondDealerId(0);
+            detail.setSecondDealerShallAmount(new BigDecimal(0));
+            detail.setFirstMerchantId(0);
+            detail.setFirstMerchantShallAmount(new BigDecimal(0));
+            detail.setSecondMerchantId(0);
+            detail.setSecondMerchantShallAmount(new BigDecimal(0));
+            detail.setProfitDate(DateFormatUtil.format(new Date(), DateFormatUtil.yyyy_MM_dd));
+            this.partnerShallProfitDetailService.init(detail);
+            return map;
+        }
+
+
 
         //一级代理
         final Dealer firstDealer = this.dealerDao.selectById(merchantInfo.getFirstDealerId());
