@@ -221,10 +221,13 @@ public class MerchantInfoServiceImpl implements MerchantInfoService {
     @Transactional
     @Override
     public void toUpgradeByRecommend(long merchantId) {
+        log.info("merchantId:{}",merchantId);
         try {
             MerchantInfo merchantInfo = merchantInfoDao.selectById(merchantId);
             if(merchantInfo!=null&&merchantInfo.getStatus()==EnumMerchantStatus.FRIEND.getId()){//已经激活，不再调用
+                log.info("状态是:{}",merchantInfo.getStatus());
                 if(merchantInfo.getStatus()==EnumMerchantStatus.PASSED.getId()){
+                    log.info("开始升级");
                     Optional<UpgradeRecommendRules> upgradeRecommendRulesOptional = upgradeRecommendRulesService.selectByProductId(merchantInfo.getProductId());
                     if(upgradeRecommendRulesOptional.isPresent()){
                         //①更改该商户状态
@@ -239,6 +242,7 @@ public class MerchantInfoServiceImpl implements MerchantInfoService {
                                 MerchantInfo mi = merchantInfoDao.selectById(recommends.get(i).getRecommendMerchantId());
                                 int friendCount = recommendService.selectDirectCount(recommends.get(i).getRecommendMerchantId());
                                 if(mi.getLevel()==0){//普通
+                                    log.info("当前级别是普通");
                                     int needNum = upgradeRules.get(0).getPromotionNum();
                                     if(friendCount>=needNum){
                                         Optional<UpgradeRules> upgradeRulesOptional = upgradeRulesService.selectByProductIdAndType(merchantInfo.getProductId(),EnumUpGradeType.CLERK.getId());
@@ -249,6 +253,7 @@ public class MerchantInfoServiceImpl implements MerchantInfoService {
                                     }
                                 }
                                 if(mi.getLevel()==1){//店员
+                                    log.info("当前级别是店员");
                                     int needNum = upgradeRules.get(1).getPromotionNum();
                                     if(friendCount>=needNum){
                                         Optional<UpgradeRules> upgradeRulesOptional = upgradeRulesService.selectByProductIdAndType(merchantInfo.getProductId(),EnumUpGradeType.SHOPOWNER.getId());
@@ -259,6 +264,7 @@ public class MerchantInfoServiceImpl implements MerchantInfoService {
                                     }
                                 }
                                 if(mi.getLevel()==2){//店长
+                                    log.info("当前级别是店长");
                                     int needNum = upgradeRules.get(2).getPromotionNum();
                                     if(friendCount>=needNum){
                                         Optional<UpgradeRules> upgradeRulesOptional = upgradeRulesService.selectByProductIdAndType(merchantInfo.getProductId(),EnumUpGradeType.BOSS.getId());
@@ -309,6 +315,9 @@ public class MerchantInfoServiceImpl implements MerchantInfoService {
      */
     @Override
     public void toUpgrade(String reqSn, String result) {
+        log.info("充值升级回调开始。。。。。。。。。。。。");
+        log.info("reqSn:{}",reqSn);
+        log.info("result:{}",result);
         UpgradePayRecord upgradePayRecord = upgradePayRecordService.selectByReqSn(reqSn);
         if(upgradePayRecord!=null){
             if(!EnumUpgradePayResult.SUCCESS.getId().equals(upgradePayRecord.getPayResult())){
