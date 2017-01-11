@@ -19,7 +19,7 @@
               <div class="form-group">
                 <label>级别：</label>
                 <select class="form-control fun"  name="" v-model="$$data.level">
-                  <!--<option value="">请选择代理级别</option>-->
+                  <option value="">全部</option>
                   <option value="1">一级代理商</option>
                   <option value="2">二级代理商</option>
                 </select>
@@ -54,7 +54,7 @@
                     <td>{{dealer.bankAccountName}}</td>
                     <td>{{dealer.settleBankCard}}</td>
                     <td>{{dealer.bankReserveMobile}}</td>
-                    <td><div class="btn btn-primary" @click="detail(index,dealer.id)">修改</div></td>
+                    <td><div class="btn btn-primary" @click="detail(index,dealer.id,dealer.level)">修改</div></td>
                   </tr>
                   </tbody>
                 </table>
@@ -93,7 +93,7 @@
         mobile:'',
         belongArea:'',
         id:'',
-        level:1,
+        level:'',
         name:'',
         total:0
       }
@@ -188,8 +188,8 @@
       create: function () {
         this.$router.push('/admin/record/agentAdd')
       },
-      detail: function (val,id) {
-        this.$router.push({path:'/admin/record/agentAdd',query:{id:id}})
+      detail: function (val,id,level) {
+        this.$router.push({path:'/admin/record/agentAdd',query:{id:id,level:level}})
       },
       lookup: function () {
         this.$http.post('/admin/dealer/listDealer',{

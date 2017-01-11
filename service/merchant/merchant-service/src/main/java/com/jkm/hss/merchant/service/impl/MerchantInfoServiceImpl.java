@@ -10,13 +10,12 @@ import com.jkm.hss.merchant.dao.MerchantInfoDao;
 import com.jkm.hss.merchant.entity.MerchantInfo;
 import com.jkm.hss.merchant.entity.Recommend;
 import com.jkm.hss.merchant.entity.UpgradeRecord;
+import com.jkm.hss.merchant.entity.UserInfo;
 import com.jkm.hss.merchant.enums.EnumMerchantStatus;
 import com.jkm.hss.merchant.enums.EnumStatus;
 import com.jkm.hss.merchant.enums.EnumUpgradeRecordType;
 import com.jkm.hss.merchant.helper.request.MerchantInfoAddRequest;
-import com.jkm.hss.merchant.service.MerchantInfoService;
-import com.jkm.hss.merchant.service.RecommendService;
-import com.jkm.hss.merchant.service.UpgradeRecordService;
+import com.jkm.hss.merchant.service.*;
 import com.jkm.hss.product.entity.UpgradePayRecord;
 import com.jkm.hss.product.entity.UpgradeRecommendRules;
 import com.jkm.hss.product.entity.UpgradeRules;
@@ -57,7 +56,10 @@ public class MerchantInfoServiceImpl implements MerchantInfoService {
     private UpgradeRulesService upgradeRulesService;
     @Autowired
     private UpgradePayRecordService upgradePayRecordService;
-
+    @Autowired
+    private SendMsgService sendMsgService;
+    @Autowired
+    private UserInfoService userInfoService;
 
 
 //    @Override
@@ -282,6 +284,22 @@ public class MerchantInfoServiceImpl implements MerchantInfoService {
         }
     }
 
+    private String getNameByLevel(int level){
+        String name = "";
+        if(level==0){
+            name="普通会员";
+        }
+        if(level==1){
+            name="店员";
+        }
+        if(level==2){
+            name="店长";
+        }
+        if(level==3){
+            name="老板";
+        }
+        return name;
+    }
     /**
      * 升级
      *
@@ -307,6 +325,10 @@ public class MerchantInfoServiceImpl implements MerchantInfoService {
                     upgradeRecordService.insert(upgradeRecord);
                 }else{
                     log.info("没有此合伙人{}",upgradePayRecord.getUpgradeRulesId());
+                }
+                Optional<UserInfo> userInfoOptional = userInfoService.selectByMerchantId(upgradePayRecord.getMerchantId());
+                if(userInfoOptional.isPresent()){//存在
+                    sendMsgService.sendChargeMessage(upgradePayRecord.getAmount()+"",getNameByLevel(upgradePayRecord.getLevel()),userInfoOptional.get().getOpenId());
                 }
             }
         }else{
