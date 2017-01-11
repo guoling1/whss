@@ -6,7 +6,6 @@ import com.jkm.base.common.entity.CommonResponse;
 import com.jkm.hss.account.sevice.AccountService;
 import com.jkm.hss.controller.BaseController;
 import com.jkm.hss.helper.request.ChannelAddRequest;
-import com.jkm.hss.merchant.service.AccountInfoService;
 import com.jkm.hss.product.entity.BasicChannel;
 import com.jkm.hss.product.enums.EnumBasicChannelStatus;
 import com.jkm.hss.product.enums.EnumPayChannelSign;
@@ -68,7 +67,7 @@ public class ChannelController extends BaseController {
             basicChannel.setStatus(EnumBasicChannelStatus.USEING.getId());
             this.basicChannelService.add(basicChannel);
             return CommonResponse.simpleResponse(1,"success");
-        }catch(final Throwable throwable){
+         }catch(final Throwable throwable){
             log.error("添加通道失败,异常信息:" + throwable.getMessage());
         }
         return  CommonResponse.simpleResponse(-1, "fail");
@@ -83,6 +82,14 @@ public class ChannelController extends BaseController {
     public CommonResponse list() {
         try{
             final List<BasicChannel> list = this.basicChannelService.selectAll();
+            if (list.size()>0){
+                for (int i=0;i<list.size();i++){
+                    BigDecimal basicTradeRate = list.get(i).getBasicTradeRate();
+                    BigDecimal res = new BigDecimal(100);
+//                    basicTradeRate.multiply(res).doubleValue();
+                    list.get(i).setBasicTradeRate(basicTradeRate.multiply(res));
+                }
+            }
             return  CommonResponse.objectResponse(1, "success", list);
         }catch (final Throwable throwable){
             log.error("获取通道列表异常,异常信息:" + throwable.getMessage());

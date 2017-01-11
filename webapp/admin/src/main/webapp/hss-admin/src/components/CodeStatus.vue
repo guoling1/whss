@@ -1,8 +1,10 @@
 <template lang="html">
   <div id="productAdd">
-    <div style="padding: 8px 30px; background: rgb(243, 156, 18); z-index: 999999; font-size: 22px; font-weight: 600;margin-bottom: 15px;color: #fff;">二维码状态查询</div>
-    <div style="margin: 0 15px;width: inherit" class="box box-info">
+    <div style="margin: 15px;width: inherit" class="box">
       <form class="form-horizontal">
+        <div class="box-header">
+          <h3 class="box-title">二维码状态查询</h3>
+        </div>
         <div class="box-body content">
           <div class="form-group">
             <label for="productName" class="col-sm-2 control-label">二维码编号</label>

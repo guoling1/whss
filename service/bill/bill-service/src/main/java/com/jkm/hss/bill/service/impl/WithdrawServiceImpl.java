@@ -254,7 +254,7 @@ public class WithdrawServiceImpl implements WithdrawService {
      * @param accountId
      * @param response
      */
-    private void markWithdrawFail(final long orderId, final long accountId,
+    private void  markWithdrawFail(final long orderId, final long accountId,
                                   final PaymentSdkDaiFuResponse response) {
         log.error("###########【Impossible】#########提现单[{}]出现--好收收暂时不会出现的一种情况：打款最终结果，上游返回失败，不可以再次补发提现####################", orderId);
     }
