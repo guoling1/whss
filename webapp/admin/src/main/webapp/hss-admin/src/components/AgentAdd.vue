@@ -165,7 +165,7 @@
                             <tbody>
                             <tr>
                               <th>收单总分润空间</th>
-                              <th colspan="5">
+                              <th colspan="5" style="text-align: left">
                                 <input type="number" style="width: 20%" v-model="totalProfitSpace">%
                                 （总分润空间不可高于0.2%，收单分润需扣除商户升级及推荐的分润成本）
                               </th>

@@ -291,4 +291,9 @@
     margin: 0 auto;
     display: inherit;
   }
+  .count{
+    display: inline-block;
+    vertical-align: top;
+    margin: 28px 10px;
+  }
 </style>
