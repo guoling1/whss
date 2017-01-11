@@ -1,77 +1,52 @@
 <template lang="html">
   <div id="agentList">
-    <!--<h1>代理商列表</h1>-->
-    <div style="padding: 8px 30px; background: rgb(243, 156, 18); z-index: 999999; font-size: 22px; font-weight: 600;margin-bottom: 15px;    color: #fff;">代理商列表</div>
-    <div class="col-md-12">
-      <div class="box box-success box-solid">
-        <div class="box-header with-border">
-          <h3 class="box-title">筛选条件</h3>
-
-          <div class="box-tools pull-right">
-            <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
-            </button>
-          </div>
-          <!-- /.box-tools -->
-        </div>
-        <!-- /.box-header -->
-        <div class="box-body">
-          <label for="">
-            手机号：
-            <input type="tel" v-model="$$data.mobile">
-          </label>
-          <label for="">
-            名称：
-            <input type="text" v-model="$$data.name">
-          </label>
-          <label for="">
-            级别：
-            <select class="fun" name="" v-model="$$data.level">
-              <option value="1">一级代理商</option>
-              <option value="2">二级代理商</option>
-            </select>
-          </label>
-          <div class="btn btn-primary" @click="lookup">
-            筛选
-          </div>
-        </div>
-        <!-- /.box-body -->
-      </div>
-      <!-- /.box -->
-    </div>
-    <div class="col-xs-12">
+    <div class="col-xs-12" style="margin-top: 15px;">
       <div class="box">
+        <div class="box-header">
+          <h3 class="box-title">代理商列表</h3>
+        </div>
         <div class="box-body">
           <div id="example2_wrapper" class="dataTables_wrapper form-inline dt-bootstrap">
-            <div class="row">
-              <div class="col-sm-6"></div>
-              <div class="col-sm-6"></div>
+            <div>
+              <div class="form-group">
+                <label>手机号：</label>
+                <input class="form-control" type="tel" v-model="$$data.mobile">
+              </div>
+              <div class="form-group">
+                <label>名称：</label>
+                <input class="form-control" type="text" v-model="$$data.name">
+              </div>
+              <div class="form-group">
+                <label>级别：</label>
+                <select class="form-control fun"  name="" v-model="$$data.level">
+                  <!--<option value="">请选择代理级别</option>-->
+                  <option value="1">一级代理商</option>
+                  <option value="2">二级代理商</option>
+                </select>
+              </div>
+              <div class="btn btn-primary" @click="lookup">
+                筛选
+              </div>
             </div>
-            <div class="row">
+            <div style="margin-top: 15px" class="row">
               <div class="col-sm-12">
                 <table id="example2" class="table table-bordered table-hover dataTable" role="grid" aria-describedby="example2_info">
                   <thead>
                   <tr role="row">
-                    <th class="sorting_asc" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Rendering engine: activate to sort column descending">
-                      代理名称
-                    </th>
-                    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="Browser: activate to sort column ascending">手机号
-                    </th>
-                    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="Platform(s): activate to sort column ascending">所属区域
-                    </th>
-                    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="Engine version: activate to sort column ascending">级别
-                    </th>
-                    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">银行账户名称
-                    </th>
-                    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">银行卡号
-                    </th>
-                    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">银行预留手机号
-                    </th>
-                    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">操作
-                    </th>
+                    <th class="sorting_asc" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Rendering engine: activate to sort column descending">序号</th>
+                    <th class="sorting_asc" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Rendering engine: activate to sort column descending">代理名称</th>
+                    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="Browser: activate to sort column ascending">手机号</th>
+                    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="Platform(s): activate to sort column ascending">所属区域</th>
+                    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="Engine version: activate to sort column ascending">级别</th>
+                    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">银行账户名称</th>
+                    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">银行卡号</th>
+                    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">银行预留手机号</th>
+                    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">操作</th>
                   </tr>
                   </thead>
                   <tbody id="content">
                   <tr role="row" class="odd" v-for="(dealer,index) in dealers">
+                    <td>{{(pageNo-1)*10+(index+1)}}</td>
                     <td class="sorting_1">{{dealer.proxyName}}</td>
                     <td>{{dealer.mobile}}</td>
                     <td>{{dealer.belongArea}}</td>
@@ -101,7 +76,6 @@
       </div>
       <!-- /.box -->
     </div>
-
     <div class="btn btn-primary" @click="create" style="margin-left: 15px">
       新增代理商
     </div>
@@ -115,7 +89,7 @@
       return {
         dealers: [],
         pageSize:10,
-        pageNO:1,
+        pageNo:1,
         mobile:'',
         belongArea:'',
         id:'',
@@ -137,7 +111,7 @@
         .then(function (res) {
           this.$data.dealers = res.data.records;
           this.$data.total = res.data.totalPage;
-          this.$data.pageNO = res.data.pageNO;
+          this.$data.pageNo = res.data.pageNO;
           console.log(this.$data)
           var str='',
             page=document.getElementById('page');
@@ -192,7 +166,7 @@
           .then(function (res) {
             this.$data.dealers = res.data.records;
             this.$data.total = res.data.totalPage;
-            this.$data.pageNO = res.data.pageNO;
+            this.$data.pageNo = res.data.pageNO;
             var str='',
               page=document.getElementById('page');
             str+='<li class="paginate_button previous disabled" id="example2_previous"><a href="#" aria-controls="example2" data-dt-idx="0" tabindex="0">上一页</a></li>'
@@ -230,7 +204,7 @@
           .then(function (res) {
             this.$data.dealers = res.data.records;
             this.$data.pageSize = res.data.totalPage;
-            this.$data.pageNO = res.data.pageNO;
+            this.$data.pageNo = res.data.pageNO;
             console.log(this.$data)
             var str='',
               page=document.getElementById('page');
@@ -278,12 +252,14 @@
     display: inline-block;
     margin: 0 10px;
   }
-
-  a {
-    color: #42b983;
-  }
-  input{
+  input,select{
     margin-right: 30px;
+    height: 27px;
+    font-size: 12px;
+    padding-top: 0;
+    padding-bottom: 0;
   }
-
+  .btn{
+    font-size: 12px;
+  }
 </style>

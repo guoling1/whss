@@ -1,9 +1,11 @@
 <template lang="html">
   <div id="productAdd">
-    <div v-if="isShow" style="padding: 8px 30px; background: rgb(243, 156, 18); z-index: 999999; font-size: 22px; font-weight: 600;margin-bottom: 15px;color: #fff;">增加产品</div>
-    <div v-else="isShow" style="padding: 8px 30px; background: rgb(243, 156, 18); z-index: 999999; font-size: 22px; font-weight: 600;margin-bottom: 15px;color: #fff;">产品详情</div>
-    <div style="margin: 0 15px;width: inherit" class="box box-info">
+    <div style="margin: 15px;width: inherit" class="box">
       <form class="form-horizontal">
+        <div class="box-header">
+          <h3 v-if="isShow" class="box-title">增加产品</h3>
+          <h3 v-else="isShow" class="box-title">产品详情</h3>
+        </div>
         <div class="box-body">
           <div class="form-group">
             <label for="productName" class="col-sm-2 control-label">产品名称</label>
@@ -175,6 +177,7 @@
                 this.$store.commit('MESSAGE_ACCORD_SHOW', {
                   text: '创建成功'
                 })
+              this.$router.push('/admin/record/productList')
             },function(err){
               this.$store.commit('MESSAGE_ACCORD_SHOW', {
                 text: err.statusMessage
@@ -248,5 +251,8 @@
   }
   .right{
     padding-top: 7px;
+  }
+  .btn,select{
+    font-size: 12px;
   }
 </style>
