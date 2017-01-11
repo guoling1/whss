@@ -58,7 +58,7 @@ public class MerchantPromoteShallServiceImpl implements MerchantPromoteShallServ
     @Transactional
     @Override
     public Map<String, Triple<Long, BigDecimal, String>> merchantPromoteShall(final long merchantId, final BigDecimal tradeAmount) {
-//        log.info("商户[" + merchantId + "]请求进行升级费分润，交易订单号：" + order.getOrderNo());
+       // log.info("商户[" + merchantId + "]请求进行升级费分润，交易订单号：" + order.getOrderNo());
         try{
             //判断该支付订单是否已经参与分润
 
