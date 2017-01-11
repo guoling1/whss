@@ -600,7 +600,7 @@ public class PayServiceImpl implements PayService {
     @Transactional
     public void merchantUpgradePoundageSettle(final Order order, final long merchantId) {
         final Map<String, Triple<Long, BigDecimal, String>> promoteShallMap =
-                this.merchantPromoteShallService.merchantPromoteShall(merchantId, order.getOrderNo(), order.getTradeAmount());
+                this.merchantPromoteShallService.merchantPromoteShall(merchantId, order.getOrderNo(), order.getBusinessOrderNo(), order.getTradeAmount());
 
         final Triple<Long, BigDecimal, String> jkmMoneyTriple = promoteShallMap.get("productMoney");
         final Triple<Long, BigDecimal, String> firstMoneyTriple = promoteShallMap.get("firstMoney");
