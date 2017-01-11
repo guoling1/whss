@@ -11,6 +11,7 @@ import com.jkm.hss.bill.entity.Order;
 import com.jkm.hss.bill.enums.EnumOrderStatus;
 import com.jkm.hss.bill.enums.EnumPaymentType;
 import com.jkm.hss.bill.service.OrderService;
+import com.jkm.hss.bill.service.PayService;
 import com.jkm.hss.controller.BaseController;
 import com.jkm.hss.dealer.entity.Dealer;
 import com.jkm.hss.dealer.enums.EnumRecommendBtn;
@@ -107,6 +108,9 @@ public class LoginController extends BaseController {
 
     @Autowired
     private UpgradePayRecordService upgradePayRecordService;
+
+    @Autowired
+    private PayService payService;
     /**
      * 扫固定码注册和微信公众号注册入口
      * @param request
@@ -1355,16 +1359,24 @@ public class LoginController extends BaseController {
                             UpgradePayRecord upgradePayRecord = new UpgradePayRecord();
                             upgradePayRecord.setMerchantId(merchantId);
                             upgradePayRecord.setStatus(EnumUpgrade.NORMAL.getId());
-                            upgradePayRecord.setReqSn(SnGenerator.generate());
+                            upgradePayRecord.setReqSn(SnGenerator.generateReqSn());
                             upgradePayRecord.setAmount(needMoney);
                             upgradePayRecord.setLevel(upgradeRulesOptional.get().getType());
                             upgradePayRecord.setUpgradeRulesId(id);
                             upgradePayRecord.setNote("充值升级");
                             upgradePayRecord.setPayResult(EnumUpgradePayResult.UNPAY.getId());
                             upgradePayRecordService.insert(upgradePayRecord);
-                            isRedirect= true;
-                            //// TODO: 2017/1/9
-                            url = "http://"+ApplicationConsts.getApplicationConfig().domain()+"/sqb/buySuccess/"+needMoney+"/201701091832000000";
+                            String skipUrl = "http://"+ApplicationConsts.getApplicationConfig().domain()+"/sqb/buySuccess/"+needMoney+"/"+upgradePayRecord.getReqSn();
+                            Pair<Integer, String> pair = payService.generateMerchantUpgradeUrl(upgradePayRecord.getMerchantId(),upgradePayRecord.getReqSn(),needMoney,skipUrl);
+                            log.info("返回left:{}",pair.getLeft());
+                            log.info("返回right:{}",pair.getRight());
+                            if(pair.getLeft()==0){
+                                isRedirect= true;
+                                url = pair.getRight();
+                            }else{
+                                model.addAttribute("message",pair.getRight());
+                                url = "/message";
+                            }
                         }
                     }
                 }else{
