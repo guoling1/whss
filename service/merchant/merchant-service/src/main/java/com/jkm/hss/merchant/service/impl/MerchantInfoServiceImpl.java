@@ -328,9 +328,9 @@ public class MerchantInfoServiceImpl implements MerchantInfoService {
                     //判断直接好友或间接好友是否需要升级
                     UpgradeRecord upgradeRecord = new UpgradeRecord();
                     upgradeRecord.setMerchantId(upgradePayRecord.getMerchantId());
-                    upgradeRecord.setStatus(EnumStatus.NORMAL.getId());
                     upgradeRecord.setType(EnumUpgradeRecordType.RECHARGE.getId());
                     upgradeRecord.setLevel(upgradeRulesOptional.get().getType());
+                    upgradeRecord.setStatus(EnumStatus.NORMAL.getId());
                     upgradeRecordService.insert(upgradeRecord);
                 }else{
                     log.info("没有此合伙人{}",upgradePayRecord.getUpgradeRulesId());
