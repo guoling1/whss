@@ -16,9 +16,11 @@ import com.jkm.hss.merchant.enums.EnumStatus;
 import com.jkm.hss.merchant.enums.EnumUpgradeRecordType;
 import com.jkm.hss.merchant.helper.request.MerchantInfoAddRequest;
 import com.jkm.hss.merchant.service.*;
+import com.jkm.hss.product.entity.Product;
 import com.jkm.hss.product.entity.UpgradePayRecord;
 import com.jkm.hss.product.entity.UpgradeRecommendRules;
 import com.jkm.hss.product.entity.UpgradeRules;
+import com.jkm.hss.product.enums.EnumProductType;
 import com.jkm.hss.product.enums.EnumUpGradeType;
 import com.jkm.hss.product.enums.EnumUpgradePayResult;
 import com.jkm.hss.product.servcie.ProductService;
@@ -26,10 +28,12 @@ import com.jkm.hss.product.servcie.UpgradePayRecordService;
 import com.jkm.hss.product.servcie.UpgradeRecommendRulesService;
 import com.jkm.hss.product.servcie.UpgradeRulesService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -342,6 +346,33 @@ public class MerchantInfoServiceImpl implements MerchantInfoService {
             }
         }else{
             log.info("付费升级失败，没有查到该记录{}",reqSn);
+        }
+    }
+
+    /**
+     * 根据请求单号查询分润费
+     *
+     * @param reqSn
+     * @return
+     */
+    @Override
+    public Pair<BigDecimal, BigDecimal> getUpgradeShareProfit(String reqSn) {
+        UpgradePayRecord upgradePayRecord = upgradePayRecordService.selectByReqSn(reqSn);
+        if(upgradePayRecord!=null){
+            log.info("升级分润有误");
+            return Pair.of(new BigDecimal("0.00"), new BigDecimal("0.00"));
+        }else{
+            MerchantInfo merchantInfo = merchantInfoDao.selectById(upgradePayRecord.getMerchantId());
+            if(merchantInfo!=null){
+                Optional<Product> productOptional = productService.selectByType(EnumProductType.HSS.getId());
+                Optional<UpgradeRules> upgradeRulesOptional1 = upgradeRulesService.selectByProductIdAndType(productOptional.get().getId(),merchantInfo.getLevel());//当前级别对应的升级费
+                Optional<UpgradeRules> upgradeRulesOptional2 = upgradeRulesService.selectByProductIdAndType(productOptional.get().getId(),upgradePayRecord.getLevel());//升级后对应的升级费
+                BigDecimal left = (upgradeRulesOptional2.get().getDirectPromoteShall()).subtract(upgradeRulesOptional1.get().getDirectPromoteShall());
+                BigDecimal right = (upgradeRulesOptional2.get().getInDirectPromoteShall()).subtract(upgradeRulesOptional1.get().getInDirectPromoteShall());
+                return Pair.of(left, right);
+            }else{
+                return Pair.of(new BigDecimal("0.00"), new BigDecimal("0.00"));
+            }
         }
     }
 

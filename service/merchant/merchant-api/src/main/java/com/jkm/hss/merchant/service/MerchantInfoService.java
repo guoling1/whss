@@ -3,6 +3,7 @@ package com.jkm.hss.merchant.service;
 import com.google.common.base.Optional;
 import com.jkm.hss.merchant.entity.MerchantInfo;
 import com.jkm.hss.merchant.helper.request.MerchantInfoAddRequest;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -150,5 +151,12 @@ public interface MerchantInfoService {
      * @return
      */
     void toUpgrade(String reqSn, String result);
+
+    /**
+     * 根据请求单号查询分润费
+     * @param reqSn
+     * @return
+     */
+    Pair<BigDecimal,BigDecimal> getUpgradeShareProfit(String reqSn);
 
 }
