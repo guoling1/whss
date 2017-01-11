@@ -253,23 +253,23 @@ public class PayServiceImpl implements PayService {
             log.info("交易订单[{}]，处理商户升级支付回调业务", order.getOrderNo());
             final MerchantInfo merchant = this.merchantInfoService.getByAccountId(order.getPayer()).get();
             //手续费， 费率
-//            final BigDecimal merchantUpgradePoundage = this.calculateService.getMerchantUpgradePoundage(merchant.getId());
-//            order.setPoundage(merchantUpgradePoundage);
-//            this.orderService.update(order);
-//            //公司利润账户，手续费入账
-//            this.companyRecorded(order.getId());
-//            //结算
-//            final Optional<Order> orderOptional = this.orderService.getByIdWithLock(order.getId());
-//            if (orderOptional.get().isPaySuccess() && (orderOptional.get().isDueSettle() || orderOptional.get().isSettleing())) {
-//                //将交易单标记为结算中
-//                this.orderService.updateSettleStatus(orderOptional.get().getId(), EnumSettleStatus.SETTLE_ING.getId());
-//                log.info("交易订单号[{}], 进行结算操作", order.getOrderNo());
-//                this.companySettle(orderOptional.get());
-//                //手续费结算到代理商等，再到 可用余额
-//                this.merchantUpgradePoundageSettle(orderOptional.get(), merchant.getId());
-//                //结算完毕
-//                this.orderService.updateSettleStatus(orderOptional.get().getId(), EnumSettleStatus.SETTLED.getId());
-//            }
+            final BigDecimal merchantUpgradePoundage = this.calculateService.getMerchantUpgradePoundage(merchant.getId());
+            order.setPoundage(merchantUpgradePoundage);
+            this.orderService.update(order);
+            //公司利润账户，手续费入账
+            this.companyRecorded(order.getId());
+            //结算
+            final Optional<Order> orderOptional = this.orderService.getByIdWithLock(order.getId());
+            if (orderOptional.get().isPaySuccess() && (orderOptional.get().isDueSettle() || orderOptional.get().isSettleing())) {
+                //将交易单标记为结算中
+                this.orderService.updateSettleStatus(orderOptional.get().getId(), EnumSettleStatus.SETTLE_ING.getId());
+                log.info("交易订单号[{}], 进行结算操作", order.getOrderNo());
+                this.companySettle(orderOptional.get());
+                //手续费结算到代理商等，再到 可用余额
+                this.merchantUpgradePoundageSettle(orderOptional.get(), merchant.getId());
+                //结算完毕
+                this.orderService.updateSettleStatus(orderOptional.get().getId(), EnumSettleStatus.SETTLED.getId());
+            }
             //回调商户升级业务
             try  {
                 this.merchantInfoService.toUpgrade(order.getBusinessOrderNo(), "S");

@@ -641,7 +641,7 @@ public class AdminController extends BaseController {
         BigDecimal b2 = new BigDecimal(dealerUpgerdeRateParam.getFirstDealerShareProfitRate());
         BigDecimal b3 = new BigDecimal(dealerUpgerdeRateParam.getSecondDealerShareProfitRate());
         BigDecimal b = b1.add(b2).add(b3);
-        if (b.compareTo(new BigDecimal("100"))!=0) {
+        if (b.compareTo(new BigDecimal("1"))!=0) {
             return CommonResponse.simpleResponse(-1, "金开门，一级代理，二级代理的比例之和必须等于100%");
         }
         return CommonResponse.simpleResponse(1, "");

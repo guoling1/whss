@@ -16,6 +16,14 @@ public class UpgradePayRecord extends BaseEntity {
      *商户编码
      */
     private long merchantId;
+    /**
+     * 产品编码
+     */
+    private long productId;
+    /**
+     * 升级前级别
+     */
+    private int beforeLevel;
 
     /**
      *达到级别

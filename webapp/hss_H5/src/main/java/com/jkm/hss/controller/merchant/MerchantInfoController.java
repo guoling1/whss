@@ -5,10 +5,15 @@ import com.aliyun.oss.model.ObjectMetadata;
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableMap;
 import com.jkm.base.common.entity.CommonResponse;
+import com.jkm.base.common.entity.PageModel;
 import com.jkm.base.common.util.DateFormatUtil;
 import com.jkm.base.common.util.ValidateUtils;
 import com.jkm.hss.controller.BaseController;
+import com.jkm.hss.dealer.entity.PartnerShallProfitDetail;
+import com.jkm.hss.dealer.service.PartnerShallProfitDetailService;
 import com.jkm.hss.helper.ApplicationConsts;
+import com.jkm.hss.helper.request.PartnerShallRequest;
+import com.jkm.hss.helper.response.PartnerShallResponse;
 import com.jkm.hss.merchant.entity.BankCardBin;
 import com.jkm.hss.merchant.entity.MerchantInfo;
 import com.jkm.hss.merchant.entity.UserInfo;
@@ -41,6 +46,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.InputStream;
+import java.math.BigDecimal;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -72,7 +78,8 @@ public class MerchantInfoController extends BaseController {
     private UserInfoService userInfoService;
     @Autowired
     private VerifyIdService verifyIdService;
-
+    @Autowired
+    private PartnerShallProfitDetailService partnerShallProfitDetailService;
 
     @ResponseBody
     @RequestMapping(value = "/save", method = RequestMethod.POST)
@@ -314,4 +321,20 @@ public class MerchantInfoController extends BaseController {
         final Pair<Integer, String> pair = this.verifyIdService.verifyID(mobile, bankcard, idCard, bankReserveMobile, realName);
         return pair;
     }
+
+    @ResponseBody
+    @RequestMapping(value = "/queryShall", method = RequestMethod.POST)
+    public CommonResponse queryShall(@RequestBody final PartnerShallRequest request){
+
+        PageModel<PartnerShallProfitDetail> pageModel = this.partnerShallProfitDetailService.
+                getPartnerShallProfitList(request.getMerchantId(), request.getShallId(),request.getPageSize());
+        final BigDecimal totalProfit = this.partnerShallProfitDetailService.selectTotalProfitByMerchantId(request.getMerchantId());
+
+        PartnerShallResponse response = new PartnerShallResponse();
+        response.setPageModel(pageModel);
+        response.setTotalShall(String.valueOf(totalProfit));
+
+        return CommonResponse.objectResponse(1,"success", response);
+    }
+
 }

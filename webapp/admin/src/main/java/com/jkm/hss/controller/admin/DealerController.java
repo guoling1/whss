@@ -148,6 +148,7 @@ public class DealerController extends BaseController {
         firstLevelDealerGetResponse.setBankReserveMobile(DealerSupport.decryptMobile(dealer.getId(), dealer.getBankReserveMobile()));
         final FirstLevelDealerGetResponse.Product productResponse = firstLevelDealerGetResponse.new Product();
         firstLevelDealerGetResponse.setProduct(productResponse);
+        firstLevelDealerGetResponse.setTotalProfitSpace(dealer.getTotalProfitSpace());
         productResponse.setProductId(product.getId());
         productResponse.setProductName(product.getProductName());
         productResponse.setLimitPayFeeRate(product.getLimitPayFeeRate().multiply(new BigDecimal("100")).setScale(2).toPlainString());

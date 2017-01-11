@@ -94,9 +94,9 @@ public class TradeController extends BaseController {
         if (StringUtils.isBlank(totalFee)) {
             return CommonResponse.simpleResponse(-1, "请输入收款金额");
         }
-        if(new BigDecimal(totalFee).compareTo(new BigDecimal("5.00")) < 0){
-            return CommonResponse.simpleResponse(-1, "支付金额至少5.00元");
-        }
+//        if(new BigDecimal(totalFee).compareTo(new BigDecimal("5.00")) < 0){
+//            return CommonResponse.simpleResponse(-1, "支付金额至少5.00元");
+//        }
         if(StringUtils.isBlank(merchantInfo.get().getMerchantName())){
             return CommonResponse.simpleResponse(-1, "缺失商户名称");
         }
@@ -135,9 +135,9 @@ public class TradeController extends BaseController {
             return CommonResponse.simpleResponse(-1, "请输入收款金额");
         }
 
-        if(new BigDecimal(totalAmount).compareTo(new BigDecimal("5.00")) < 0){
-            return CommonResponse.simpleResponse(-1, "支付金额至少5.00元");
-        }
+//        if(new BigDecimal(totalAmount).compareTo(new BigDecimal("5.00")) < 0){
+//            return CommonResponse.simpleResponse(-1, "支付金额至少5.00元");
+//        }
 
         if(StringUtils.isBlank(merchantInfo.get().getMerchantName())){
             return CommonResponse.simpleResponse(-1, "缺失商户名称");

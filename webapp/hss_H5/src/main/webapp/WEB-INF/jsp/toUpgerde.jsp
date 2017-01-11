@@ -55,7 +55,7 @@
         </li>
       </ul>
     </div>
-    <div class="pay" id="toUp">微信立即支付 ￥${upgradeRules.upgradeCost}</div>
+    <div class="pay" id="toUp">微信立即支付 ￥${needMoney}</div>
   </div>
   <div class="layer" id="layer">
     <div class="space flexBox flex-box-column">
