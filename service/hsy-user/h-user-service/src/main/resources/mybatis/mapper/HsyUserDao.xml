@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jkm.hsy.user.dao.HsyUserDao">
+    <resultMap id="appAuUserMap" type="com.jkm.hsy.user.entity.AppAuUser">
+        <id property="id" column="ID"/>
+        <result property="cellphone" column="CELLPHONE"/>
+        <result property="password" column="PASSWORD"/>
+        <result property="nickname" column="NICKNAME"/>
+        <result property="realname" column="REALNAME"/>
+        <result property="status" column="STATUS"/>
+        <result property="idcard" column="IDCARD"/>
+        <result property="idcardf" column="IDCARDF"/>
+        <result property="idcardb" column="IDCARDB"/>
+        <result property="idcardh" column="IDCARDH"/>
+        <result property="createTime" column="CREATETIME"/>
+        <result property="updateTime" column="UPDATETIME"/>
+    </resultMap>
+
+    <select id="findAppAuUserByParam" parameterType="com.jkm.hsy.user.entity.AppAuUser" resultMap="appAuUserMap">
+        select
+            ID,CELLPHONE,PASSWORD,NICKNAME,REALNAME,STATUS,IDCARD,IDCARDF,IDCARDB,IDCARDH,CREATETIME,UPDATETIME
+        from app_au_user
+        where 1=1
+          <if test="cellphone!=null and cellphone!=''">and CELLPHONE=#{cellphone}</if>
+        order by UPDATETIME
+    </select>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id" parameterType="com.jkm.hsy.user.entity.AppAuUser">
+        insert into app_au_user(CELLPHONE,PASSWORD,NICKNAME,REALNAME,STATUS,IDCARD,IDCARDF,IDCARDB,IDCARDH,CREATETIME,UPDATETIME) values(#{cellphone},#{password},#{nickname},#{realname},#{status},#{idcard},#{idcardf},#{idcardb},#{idcardh},#{createTime},#{updateTime})
+    </insert>
+
+    <update id="update" parameterType="com.jkm.hsy.user.entity.AppAuUser">
+        update app_au_user
+        <set>
+            <if test="password!=null and password!=''">PASSWORD=#{password},</if>
+            <if test="nickname!=null and nickname!=''">NICKNAME=#{nickname},</if>
+            <if test="realname!=null and realname!=''">REALNAME=#{realname},</if>
+            <if test="status!=null">STATUS=#{status},</if>
+            <if test="idcard!=null and idcard!=''">IDCARD=#{idcard},</if>
+            <if test="idcardf!=null and idcardf!=''">IDCARDF=#{idcardf},</if>
+            <if test="idcardb!=null and idcardb!=''">IDCARDB=#{idcardb},</if>
+            <if test="idcardh!=null and idcardh!=''">IDCARDH=#{idcardh},</if>
+            <if test="createTime!=null">CREATETIME=#{createTime},</if>
+            <if test="updateTime!=null">UPDATETIME=#{updateTime}</if>
+        </set> where CELLPHONE=#{cellphone}
+    </update>
+</mapper>
