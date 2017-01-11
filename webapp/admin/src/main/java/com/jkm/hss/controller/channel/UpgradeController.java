@@ -76,16 +76,25 @@ public class UpgradeController extends BaseController {
         upgradeRulesList.add(upgradeRules);
         List<UpgradeRules> upgradeRulesArr =  upgradeRulesService.selectAll(req.getProductId());//升级规则
 
-        for(int i=1;i<4;i++){
-            UpgradeRules upgradeRulesTemp = new UpgradeRules();
-            upgradeRulesTemp.setType(i);
-            upgradeRulesList.add(upgradeRulesTemp);
-        }
-        if(upgradeRulesArr.size()>0){
-            for(int j=0;j<upgradeRulesArr.size();j++){
-                upgradeRulesList.add(upgradeRulesArr.get(j).getType(),upgradeRulesArr.get(j));
+        if (upgradeRulesArr.size()==0){
+            for(int i=1;i<4;i++){
+                UpgradeRules upgradeRulesTemp = new UpgradeRules();
+                upgradeRulesTemp.setType(i);
+                upgradeRulesList.add(upgradeRulesTemp);
             }
         }
+
+//        if(upgradeRulesArr.size()>0){
+//            for(int j=0;j<upgradeRulesArr.size();j++){
+//                upgradeRulesList.add(upgradeRulesArr.get(j).getType(),upgradeRulesArr.get(j));
+//            }
+//        }else {
+//            for(int i=1;i<4;i++){
+//                UpgradeRules upgradeRulesTemp = new UpgradeRules();
+//                upgradeRulesTemp.setType(i);
+//                upgradeRulesList.add(upgradeRulesTemp);
+//            }
+//        }
         upgradeRulesList.addAll(upgradeRulesArr);
         UpgradeRulesAndRateResponse upgradeRulesAndRateResponse = new  UpgradeRulesAndRateResponse();
         upgradeRulesAndRateResponse.setUpgradeRulesList(upgradeRulesList);
@@ -125,13 +134,15 @@ public class UpgradeController extends BaseController {
                     upgradeRules.setId(upgradeRulesOptional.get().getId());
                     upgradeRules.setProductId(req.getProductId());
                     upgradeRules.setName(req.getUpgradeRulesList().get(i).getName());
-                    upgradeRules.setType(upgradeRulesOptional.get().getType());
+                    upgradeRules.setType(req.getUpgradeRulesList().get(i).getType());
                     upgradeRules.setPromotionNum(req.getUpgradeRulesList().get(i).getPromotionNum());
                     upgradeRules.setUpgradeCost(req.getUpgradeRulesList().get(i).getUpgradeCost());
                     upgradeRules.setWeixinRate(req.getUpgradeRulesList().get(i).getWeixinRate());
                     upgradeRules.setAlipayRate(req.getUpgradeRulesList().get(i).getAlipayRate());
                     upgradeRules.setFastRate(req.getUpgradeRulesList().get(i).getFastRate());
-                    upgradeRules.setAlipayRate(upgradeRulesOptional.get().getAlipayRate());
+                    upgradeRules.setAlipayRate(req.getUpgradeRulesList().get(i).getAlipayRate());
+                    upgradeRules.setDirectPromoteShall(req.getUpgradeRulesList().get(i).getDirectPromoteShall());
+                    upgradeRules.setInDirectPromoteShall(req.getUpgradeRulesList().get(i).getInDirectPromoteShall());
                     upgradeRules.setStatus(EnumUpgrade.NORMAL.getId());
                     upgradeRulesService.update(upgradeRules);
                 }else{//不存在新增
@@ -144,7 +155,6 @@ public class UpgradeController extends BaseController {
             for(int i=0;i<req.getUpgradeRulesList().size();i++){
                 req.getUpgradeRulesList().get(i).setStatus(EnumUpgrade.NORMAL.getId());
                 req.getUpgradeRulesList().get(i).setProductId(req.getProductId());
-                req.getUpgradeRulesList().get(i).setType(req.getType());
                 upgradeRulesService.insert(req.getUpgradeRulesList().get(i));
             }
         }

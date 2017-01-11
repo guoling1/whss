@@ -17,4 +17,8 @@ public interface SendMsgService {
      * 提现成功推送
      */
     void sendPushMessage(BigDecimal totalAmount, Date withdrawTime, BigDecimal poundage, String bankNo, String toUser);
+    /**
+     * 充值升级成功推送
+     */
+    void sendChargeMessage(String money,String typeName,String touser);
 }

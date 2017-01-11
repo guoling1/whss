@@ -59,11 +59,11 @@
                         <td><input type="text" name="name" v-model="upgrade.fastRate">%</td>
                         <td><input type="text" name="name" v-model="upgrade.upgradeCost">元</td>
                         <td><input type="text" name="name" v-model="upgrade.promotionNum">人</td>
-                        <td><input type="text" name="name" v-model="upgrade.directReward">元</td>
-                        <td><input type="text" name="name" v-model="upgrade.indirectReward">元</td>
+                        <td><input type="text" name="name" v-model="upgrade.directPromoteShall">元</td>
+                        <td><input type="text" name="name" v-model="upgrade.inDirectPromoteShall">元</td>
                       </tr>
                       <tr >
-                        <td colspan="6">邀请用户“激活”标准：收款满<input type="text" name="name" style="width: 100px;" v-model="result.standard">元
+                        <td colspan="6">有效激活标准：收款满<input type="text" name="name" style="width: 100px;" v-model="result.standard">元
                         </td>
                       </tr>
                       </tbody></table>
@@ -126,10 +126,12 @@
       return{
         result: '',
         lists:[], //产品列表
-        productId:''
+        productId:3,
+        query:''
       }
     },
     created: function () {
+      //产品列表
       this.$http.post("/admin/product/list")
         .then(function (res) {
           this.$data.lists = res.data
@@ -138,13 +140,37 @@
             text: err.statusMessage
           })
         })
+      //内容
+      this.$http.post('/admin/upgrade/init', {productId: this.$data.productId})
+        .then(function (res) {
+          console.log(res)
+          this.$data.result = res.data;
+
+          this.$data.result.upgradeRulesList.sort(function (a, b) {
+            return a.type-b.type
+          })
+          console.log(this.$data.result.upgradeRulesList)
+          this.$data.result.upgradeRulesList[0].name = '普通'
+          this.$data.result.upgradeRulesList[1].name = '店员'
+          this.$data.result.upgradeRulesList[2].name = '店长'
+          this.$data.result.upgradeRulesList[3].name = '老板'
+        }, function (err) {
+          this.$store.commit('MESSAGE_ACCORD_SHOW', {
+            text: err.statusMessage
+          })
+        })
     },
     methods: {
       search: function () {
+        this.$data.result = ''
         this.$http.post('/admin/upgrade/init', {productId: this.$data.productId})
           .then(function (res) {
             console.log(res)
             this.$data.result = res.data;
+            this.$data.result.upgradeRulesList.sort(function (a, b) {
+              return a.type-b.type
+            })
+            console.log(this.$data.result.upgradeRulesList)
             this.$data.result.upgradeRulesList[0].name = '普通'
             this.$data.result.upgradeRulesList[1].name = '店员'
             this.$data.result.upgradeRulesList[2].name = '店长'
@@ -156,10 +182,17 @@
           })
       },
       save: function () {
-        this.$data.result.upgradeRulesList.shift()
-        this.$data.result.productId = this.$data.productId
-        console.log(this.$data.result)
-        this.$http.post('/admin/upgrade/addOrUpdate',this.$data.result)
+        var upgradeRulesList= this.$data.result.upgradeRulesList.concat()
+        upgradeRulesList.shift()
+        var query = {
+          productId:this.$data.productId,
+          standard:this.$data.result.standard,
+          upgradeRate:this.$data.result.upgradeRate,
+          tradeRate:this.$data.result.tradeRate,
+          rewardRate:this.$data.result.rewardRate,
+          upgradeRulesList:upgradeRulesList
+        }
+        this.$http.post('/admin/upgrade/addOrUpdate',query)
           .then(function (res) {
             this.$store.commit('MESSAGE_ACCORD_SHOW', {
               text: "操作成功"

@@ -102,7 +102,15 @@
           accountType:""
         },
         isMask: false,
-        record: this.$route.query
+        record: this.$route.query,
+        //正式
+        /*queryUrl:'http://pay.qianbaojiajia.com/order/withdraw/audit',
+         excelUrl:'http://pay.qianbaojiajia.com/order/withdraw/exportExcel',
+         syncUrl:'http://pay.qianbaojiajia.com/order/syncWithdrawOrder',*/
+        //测试
+        queryUrl:'http://192.168.1.20:8076/order/withdraw/audit',
+        excelUrl:'http://192.168.1.20:8076/order/withdraw/exportExcel',
+        syncUrl:'http://192.168.1.20:8076/order/syncWithdrawOrder',
       }
     },
     created: function () {
@@ -126,7 +134,7 @@
         if(val==2){
           this.$data.isMask = true;
         }else {
-          this.$http.post('http://pay.qianbaojiajia.com/order/withdraw/audit',this.$data.query)
+          this.$http.post(this.$data.queryUrl,this.$data.query)
             .then(function (res) {
               this.$store.commit('MESSAGE_DELAY_SHOW', {
                 text: "操作成功"
@@ -149,7 +157,7 @@
         document.getElementById('btn1').onclick="";
         document.getElementById('btn2').setAttribute("disabled","disabled");
         document.getElementById('btn2').onclick="";
-        this.$http.post('http://pay.qianbaojiajia.com/order/withdraw/audit',this.$data.query)
+        this.$http.post(this.$data.queryUrl,this.$data.query)
           .then(function (res) {
             this.$store.commit('MESSAGE_DELAY_SHOW', {
               text: "操作成功"
