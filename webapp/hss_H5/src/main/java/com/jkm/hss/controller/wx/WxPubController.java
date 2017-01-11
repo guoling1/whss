@@ -831,6 +831,17 @@ public class WxPubController extends BaseController {
         RecommendAndMerchant recommendAndMerchant = recommendService.selectRecommend(recommendRequest);
         return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", recommendAndMerchant);
     }
-
+    //    =========以下为测试专用类==========
+    /**
+     * 商户自动升级
+     * @param request
+     * @param response
+     * @param recommendRequest
+     */
+    @ResponseBody
+    @RequestMapping(value = "test", method = RequestMethod.POST)
+    public void test(final HttpServletRequest request, final HttpServletResponse response,@RequestBody final RecommendRequest recommendRequest ) {
+        merchantInfoService.toUpgradeByRecommend(recommendRequest.getMerchantId());
+    }
 
 }
