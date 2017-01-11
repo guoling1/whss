@@ -39,4 +39,7 @@
     <select id="selectAll" resultType="com.jkm.hss.product.entity.Product">
         SELECT * FROM tb_product WHERE status = 2
     </select>
+    <select id="selectByType" resultType="com.jkm.hss.product.entity.Product">
+        SELECT * FROM tb_product WHERE type = #{type} AND status = 2
+    </select>
 </mapper>

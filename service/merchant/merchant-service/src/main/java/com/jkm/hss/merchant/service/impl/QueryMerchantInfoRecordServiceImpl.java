@@ -54,6 +54,12 @@ public class QueryMerchantInfoRecordServiceImpl implements QueryMerchantInfoReco
                     String checkedTime = formatter.format(date);
                     list.get(i).setCheckedTime(checkedTime);
                 }
+                if (list.get(i).getSource()==0){
+                    list.get(i).setRegistered("扫码注册");
+                }
+                if (list.get(i).getSource()==1){
+                    list.get(i).setRegistered("推荐注册");
+                }
 
             }
         }

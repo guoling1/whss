@@ -45,4 +45,12 @@ public interface DealerUpgerdeRateDao {
      * @return
      */
     List<DealerUpgerdeRate> selectByDealerIdAndProductId(@Param("dealerId") long dealerId,@Param("productId") long productId);
+
+    /**
+     *
+     * @param dealerId
+     * @param type @param productId
+     * @return
+     */
+    DealerUpgerdeRate selectByDealerIdAndTypeAndProductId(@Param("dealerId") long dealerId, @Param("type") int type, @Param("productId") long productId);
 }

@@ -1,7 +1,7 @@
 package com.jkm.hss.product.servcie;
 
 import com.google.common.base.Optional;
-import com.jkm.hss.product.entity.UpgradeResult;
+import com.jkm.hss.product.helper.response.UpgradeResult;
 import com.jkm.hss.product.entity.UpgradeRules;
 
 import java.util.List;

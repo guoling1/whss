@@ -3,6 +3,7 @@ package com.jkm.hss.product.servcie;
 import com.google.common.base.Optional;
 import com.jkm.hss.product.entity.UpgradeRecommendRules;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -41,5 +42,11 @@ public interface UpgradeRecommendRulesService {
      * @return
      */
     Optional<UpgradeRecommendRules> selectByProductId(long productId);
+
+    /**
+     * 查询达标标准
+     * @return
+     */
+    BigDecimal selectInviteStandard();
 
 }

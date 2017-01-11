@@ -12,9 +12,7 @@ import com.jkm.hss.dealer.entity.Dealer;
 import com.jkm.hss.dealer.entity.DealerChannelRate;
 import com.jkm.hss.dealer.entity.DealerUpgerdeRate;
 import com.jkm.hss.dealer.enums.EnumDealerLevel;
-import com.jkm.hss.dealer.enums.EnumDealerStatus;
 import com.jkm.hss.dealer.helper.DealerSupport;
-import com.jkm.hss.dealer.helper.requestparam.FirstLevelDealerUpdateRequest;
 import com.jkm.hss.dealer.helper.requestparam.ListDealerRequest;
 import com.jkm.hss.dealer.service.DealerChannelRateService;
 import com.jkm.hss.dealer.service.DealerService;
@@ -143,7 +141,9 @@ public class DealerController extends BaseController {
         firstLevelDealerGetResponse.setBelongArea(dealer.getBelongArea());
         firstLevelDealerGetResponse.setBankCard(DealerSupport.decryptBankCard(dealer.getId(), dealer.getSettleBankCard()));
         firstLevelDealerGetResponse.setBankName(dealer.getBankName());
-        firstLevelDealerGetResponse.setIdCard(DealerSupport.decryptIdentity(dealer.getId(),dealer.getIdCard()));
+        if (dealer.getIdCard()!=null){
+            firstLevelDealerGetResponse.setIdCard(DealerSupport.decryptIdentity(dealer.getId(),dealer.getIdCard()));
+        }
         firstLevelDealerGetResponse.setBankAccountName(dealer.getBankAccountName());
         firstLevelDealerGetResponse.setBankReserveMobile(DealerSupport.decryptMobile(dealer.getId(), dealer.getBankReserveMobile()));
         final FirstLevelDealerGetResponse.Product productResponse = firstLevelDealerGetResponse.new Product();
@@ -169,6 +169,9 @@ public class DealerController extends BaseController {
         firstLevelDealerGetResponse.setDealerUpgerdeRates(dealerUpgerdeRates);
 
         List<DealerUpgerdeRate> upgerdeRates = dealerUpgerdeRateService.selectByDealerIdAndProductId(dealerId,product.getId());
+        if (upgerdeRates==null){
+            return CommonResponse.simpleResponse(-1,"未查到相关数据");
+        }
         for(DealerUpgerdeRate dealerUpgerdeRate:upgerdeRates){
             final FirstLevelDealerGetResponse.DealerUpgerdeRate du = new FirstLevelDealerGetResponse.DealerUpgerdeRate();
             du.setId(dealerUpgerdeRate.getId());

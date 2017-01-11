@@ -4,7 +4,7 @@
 
     <!-- 通用查询结果列-->
     <sql id="Base_Column_List">
-		 id,	product_id,  name,	type,	promotion_num,	upgrade_cost,	weixin_rate,	alipay_rate,	fast_rate,	status,	create_time,	update_time
+		 id,	product_id,  name,	type,	promotion_num,	upgrade_cost,	weixin_rate,	alipay_rate,	fast_rate,direct_promote_shall,in_direct_promote_shall,	status,	create_time,	update_time
 	</sql>
 
     <!-- 添加 （匹配有值的字段）-->
@@ -35,6 +35,12 @@
             <if test="fastRate != null">
                 fast_rate,
             </if>
+            <if test="direct_promote_shall != null">
+                direct_promote_shall,
+            </if>
+            <if test="in_direct_promote_shall != null">
+                in_direct_promote_shall,
+            </if>
             <if test="status != null">
                 status,
             </if>
@@ -63,6 +69,12 @@
             </if>
             <if test="fastRate!=null">
                 #{fastRate},
+            </if>
+            <if test="directPromoteShall!=null">
+                #{directPromoteShall},
+            </if>
+            <if test="inDirectPromoteShall!=null">
+                #{inDirectPromoteShall},
             </if>
             <if test="status!=null">
                 #{status},
@@ -97,6 +109,12 @@
             </if>
             <if test="fastRate != null">
                 fast_rate = #{fastRate},
+            </if>
+            <if test="directPromoteShall!=null">
+                direct_promote_shall = #{directPromoteShall},
+            </if>
+            <if test="inDirectPromoteShall!=null">
+                in_direct_promote_shall = #{inDirectPromoteShall},
             </if>
             <if test="status != null">
                 status = #{status},

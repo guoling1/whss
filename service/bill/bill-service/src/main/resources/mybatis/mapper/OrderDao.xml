@@ -5,6 +5,7 @@
         INSERT INTO tb_order
         (
         pay_order_id,
+        business_order_no,
         order_no,
         sn,
         trade_amount,
@@ -30,6 +31,7 @@
         VALUES
         (
         #{payOrderId},
+        #{businessOrderNo},
         #{orderNo},
         #{sn},
         #{tradeAmount},
@@ -115,51 +117,11 @@
 
     <select id="selectOrderList" resultType="com.jkm.hss.bill.entity.MerchantTradeResponse">
         SELECT
-        a.pay_order_id,
-        a.order_no,
-        a.trade_amount,
-        a.real_pay_amount,
-        a.trade_type,
-        a.payer,
-        a.payee,
-        a.pay_account,
-        a.pay_account_type,
-        a.pay_type,
-        a.pay_success_time,
-        a.poundage,
-        a.pay_rate,
-        a.settle_status,
-        a.settle_time,
-        a.success_settle_time,
-        a.pay_channel_sign,
-        a.remark,
-        a. STATUS,
-        a.create_time,
-        b.merchant_name,
-        (
-        SELECT
-        c.proxy_name
-        FROM
-        tb_dealer c
-        WHERE
-        c.id = b.dealer_id
-        ) AS proxyName,
-        (
-        SELECT
-        c. LEVEL
-        FROM
-        tb_dealer c
-        WHERE
-        c.id = b.dealer_id
-        ) AS LEVEL,
-        (
-        SELECT
-        c.first_level_dealer_id
-        FROM
-        tb_dealer c
-        WHERE
-        c.id = b.dealer_id
-        ) AS firstLevelDealerId
+        a.pay_order_id,a.order_no,a.trade_amount,a.real_pay_amount,a.trade_type,a.payer,a.payee,a.pay_account,
+        a.pay_account_type,a.pay_type,a.pay_success_time,a.poundage,a.pay_rate,a.settle_status,a.settle_time,
+        a.success_settle_time,a.pay_channel_sign,a.remark,a. STATUS,a.create_time,b.merchant_name,a.sn,
+        (SELECT c.proxy_name FROM tb_dealer c WHERE c.id = b.first_dealer_id) AS proxyName,
+        (SELECT c.proxy_name FROM tb_dealer c WHERE c.id = b.second_dealer_id) AS proxyName1
         FROM
         tb_order a
         LEFT JOIN tb_merchant_info b
@@ -230,51 +192,11 @@
     <!--查询生成ExcelVo 导出excel-->
     <select id="selectOrderListTrade" resultType="com.jkm.hss.bill.entity.MerchantTradeResponse">
         SELECT
-        a.pay_order_id,
-        a.order_no,
-        a.trade_amount,
-        a.real_pay_amount,
-        a.trade_type,
-        a.payer,
-        a.payee,
-        a.pay_account,
-        a.pay_account_type,
-        a.pay_type,
-        a.pay_success_time,
-        a.poundage,
-        a.pay_rate,
-        a.settle_status,
-        a.settle_time,
-        a.success_settle_time,
-        a.pay_channel_sign,
-        a.remark,
-        a. STATUS,
-        a.create_time,
-        b.merchant_name,
-        (
-        SELECT
-        c.proxy_name
-        FROM
-        tb_dealer c
-        WHERE
-        c.id = b.dealer_id
-        ) AS proxyName,
-        (
-        SELECT
-        c. LEVEL
-        FROM
-        tb_dealer c
-        WHERE
-        c.id = b.dealer_id
-        ) AS LEVEL,
-        (
-        SELECT
-        c.first_level_dealer_id
-        FROM
-        tb_dealer c
-        WHERE
-        c.id = b.dealer_id
-        ) AS firstLevelDealerId
+        a.pay_order_id,a.order_no,a.trade_amount,a.real_pay_amount,a.trade_type,a.payer,a.payee,a.pay_account,
+        a.pay_account_type,a.pay_type,a.pay_success_time,a.poundage,a.pay_rate,a.settle_status,a.settle_time,
+        a.success_settle_time,a.pay_channel_sign,a.remark,a. STATUS,a.create_time,b.merchant_name,
+        (SELECT c.proxy_name FROM tb_dealer c WHERE c.id = b.first_dealer_id) AS proxyName,
+        (SELECT c.proxy_name FROM tb_dealer c WHERE c.id = b.second_dealer_id) AS proxyName1
         FROM
         tb_order a
         LEFT JOIN tb_merchant_info b
@@ -446,5 +368,13 @@
         <if test="startDate != null">
             AND create_time BETWEEN #{startDate} AND #{endDate}
         </if>
+    </select>
+
+    <select id="selectByBusinessOrderNo" resultType="com.jkm.hss.bill.entity.Order">
+        SELECT * FROM tb_order WHERE business_order_no = #{businessOrderNo}
+    </select>
+
+    <select id="selectTotalTradeAmountByAccountId" resultType="java.math.BigDecimal">
+        SELECT SUM(trade_amount) FROM tb_order WHERE payee = #{accountId} AND trade_type = 1
     </select>
 </mapper>
