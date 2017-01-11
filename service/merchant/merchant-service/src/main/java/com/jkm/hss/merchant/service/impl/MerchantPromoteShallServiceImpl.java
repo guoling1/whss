@@ -74,7 +74,6 @@ public class MerchantPromoteShallServiceImpl implements MerchantPromoteShallServ
         try{
 
             Pair<BigDecimal, BigDecimal> pair = merchantInfoService.getUpgradeShareProfit(businessNo);
-            //判断该支付订单是否已经参与分润
 
             //获取商户
             final MerchantInfo merchantInfo = this.merchantInfoService.selectById(merchantId).get();
@@ -83,7 +82,6 @@ public class MerchantPromoteShallServiceImpl implements MerchantPromoteShallServ
 
             final Product product = this.productService.selectByType(EnumProductType.HSS.getId()).get();
             //获取升级规则
-            final UpgradeRules upgradeRules = this.upgradeRulesService.selectByProductIdAndType(product.getId(), EnumUpGradeType.CLERK.getId()).get();
             BigDecimal directMoney = null;
             MerchantInfo directMerchantInfo = null;
             //上级商户分润 ，直推分润
