@@ -45,8 +45,8 @@
       <ul class="upType">
         <li id="payToUp">
           <div class="left"><span id="payToCheck" class="check active"></span>方式一：付费升级</div>
-          <div class="right">￥${upgradeRules.upgradeCost}</div>
-          <s class="small">￥${needMoney}</s>
+          <div class="right">￥${needMoney}</div>
+          <s class="small">￥${upgradeRules.upgradeCost}</s>
         </li>
         <li id="pushToUp">
           <div class="left"><span id="pushToCheck" class="check"></span>方式二：推广${upgradeRules.promotionNum}个好友</div>
