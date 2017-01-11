@@ -136,10 +136,6 @@
         <form class="form-horizontal">
           <div class="box-body">
             <div class="form-group">
-              <!--<select class="form-control select2 select2-hidden-accessible" style="width: 25%;margin-left: 10%;" tabindex="-1" aria-hidden="true" v-model="recommendBtn">
-                <option value="2">开</option>
-                <option value="1">关</option>
-              </select>-->
               <input type="radio" id="one" value="1" v-model="recommendBtn" style="margin-left: 50px;">
               <label for="one">开 (开通后，代理商设置的商户终端费率按产品费率执行)</label>
               <input type="radio" id="two" value="2" v-model="recommendBtn" style="margin-left: 50px;">
@@ -166,7 +162,7 @@
                             <tr>
                               <th>收单总分润空间</th>
                               <th colspan="5" style="text-align: left">
-                                <input type="number" style="width: 20%" v-model="totalProfitSpace">%
+                                <input type="number" style="width: 20%" v-model="rate">%
                                 （总分润空间不可高于0.2%，收单分润需扣除商户升级及推荐的分润成本）
                               </th>
                             </tr>
@@ -203,7 +199,7 @@
       <div class="btn btn-default" @click="create" v-if="isShow">
         创建代理商
       </div>
-      <div class="btn btn-default" @click="change" v-if="!isShow">
+      <div class="btn btn-default" @click="change" v-if="!isShow&&level==1">
         修改
       </div>
       <div class="btn btn-default" @click="goBack" v-if="!isShow">
@@ -235,6 +231,7 @@
         isShow:true,
         recommendBtn:2,
         totalProfitSpace:'',
+        rate:'',
         rate1:'',
         rate2:'',
         rate3:'',
@@ -281,7 +278,7 @@
                   this.$data.bankAccountName = res.data.bankAccountName;
                   this.$data.idCard = res.data.idCard;
                   this.$data.recommendBtn = res.data.recommendBtn;
-                  this.$data.totalProfitSpace = res.data.totalProfitSpace*100;
+                  this.$data.rate = res.data.totalProfitSpace*100;
                   this.$data.bankReserveMobile = res.data.bankReserveMobile;
                   this.$data.products = [res.data.product];
                   this.$data.products[0].list = res.data.product.channels
@@ -317,7 +314,7 @@
             merchantWithdrawFee: this.$data.products[this.$data.id].list[i].merchantWithdrawFee
           })
         }
-        this.$data.totalProfitSpace = this.$data.totalProfitSpace/100;
+        this.$data.totalProfitSpace = this.$data.rate/100;
         this.$data.dealerUpgerdeRates[0].firstDealerShareProfitRate= this.$data.rate1/100;
         this.$data.dealerUpgerdeRates[0].secondDealerShareProfitRate= this.$data.rate2/100;
         this.$data.dealerUpgerdeRates[1].firstDealerShareProfitRate= this.$data.rate3/100;
@@ -332,7 +329,7 @@
           product: this.$data.product,
           idCard: this.$data.idCard,
           recommendBtn: this.$data.recommendBtn,
-          totalProfitSpace: this.$data.totalProfitSpace,
+          totalProfitSpace: this.$data.rate,
           dealerUpgerdeRates: this.$data.dealerUpgerdeRates
         };
         this.$http.post('/admin/user/addFirstDealer', query)
@@ -366,7 +363,7 @@
             merchantWithdrawFee: this.$data.products[this.$data.id].list[i].merchantWithdrawFee
           })
         }
-        this.$data.totalProfitSpace = this.$data.totalProfitSpace/100;
+        this.$data.totalProfitSpace = this.$data.rate/100;
         this.$data.dealerUpgerdeRates[0].firstDealerShareProfitRate= this.$data.rate1/100;
         this.$data.dealerUpgerdeRates[0].secondDealerShareProfitRate= this.$data.rate2/100;
         this.$data.dealerUpgerdeRates[1].firstDealerShareProfitRate= this.$data.rate3/100;
@@ -382,7 +379,7 @@
           product: this.$data.product,
           idCard: this.$data.idCard,
           recommendBtn: this.$data.recommendBtn,
-          totalProfitSpace: this.$data.totalProfitSpace,
+          totalProfitSpace: this.$data.rate,
           dealerUpgerdeRates: this.$data.dealerUpgerdeRates
         };
         this.$http.post('/admin/user/updateDealer', query)
