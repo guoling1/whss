@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jkm.hsy.user.dao.HsyShopDao">
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id" parameterType="com.jkm.hsy.user.entity.AppBizShop">
+        insert into app_biz_shop(NAME,SHORTNAME,INDUSTRYCODE,DISTRICTCODE,ADDRESS,LICENCEID,STOREFRONTID,COUNTERID,INDOORID,PARENTID,CONTACTNAME,CONTACTCELLPHONE,STATUS,ISPUBLIC,CREATETIME,UPDATETIME) values(#{name},#{shortName},#{industryCode},#{districtCode},#{address},#{licenceID},#{storefrontID},#{counterID},#{indoorID},#{parentID},#{contactName},#{contactCellphone},#{status},#{isPublic},#{createTime},#{updateTime})
+    </insert>
+
+    <insert id="insertAppBizShopUserRole" useGeneratedKeys="true" keyProperty="id" parameterType="com.jkm.hsy.user.entity.AppBizShopUserRole">
+        insert into app_biz_shop_user_role(SID,UID,ROLE,STATUS) values(#{sid},#{uid},#{role},#{status})
+    </insert>
+
+    <update id="update" parameterType="com.jkm.hsy.user.entity.AppBizShop">
+        update app_biz_shop
+        <set>
+            <if test="name!=null and name!=''">NAME=#{name},</if>
+            <if test="shortName!=null and shortName!=''">SHORTNAME=#{shortName},</if>
+            <if test="industryCode!=null and industryCode!=''">INDUSTRYCODE=#{industryCode},</if>
+            <if test="districtCode!=null and districtCode!=''">DISTRICTCODE=#{districtCode},</if>
+            <if test="address!=null and address!=''">ADDRESS=#{address},</if>
+            <if test="licenceID!=null and licenceID!=''">LICENCEID=#{licenceID},</if>
+            <if test="storefrontID!=null and storefrontID!=''">STOREFRONTID=#{storefrontID},</if>
+            <if test="counterID!=null and counterID!=''">COUNTERID=#{counterID},</if>
+            <if test="indoorID!=null and indoorID!=''">INDOORID=#{indoorID},</if>
+            <if test="parentID!=null and parentID!=''">PARENTID=#{parentID},</if>
+            <if test="contactName!=null and contactName!=''">CONTACTNAME=#{contactName},</if>
+            <if test="contactCellphone!=null and contactCellphone!=''">CONTACTCELLPHONE=#{contactCellphone},</if>
+            <if test="status!=null">STATUS=#{status},</if>
+            <if test="isPublic!=null">ISPUBLIC=#{isPublic},</if>
+            <if test="createTime!=null">CREATETIME=#{createTime},</if>
+            <if test="updateTime!=null">UPDATETIME=#{updateTime}</if>
+        </set> where ID=#{id}
+    </update>
+
+    <insert id="insertAppBizCard" useGeneratedKeys="true" keyProperty="id" parameterType="com.jkm.hsy.user.entity.AppBizCard">
+        insert into app_biz_card(SID,CARDNO,CARDACCOUNTNAME,CARDBANK,BANKADDRESS,CARDFID,CARDCELLPHONE,IDCARDNO,STATUS,CREATETIME,UPDATETIME) values(#{sid},#{cardNO},#{cardAccountName},#{cardBank},#{bankAddress},#{cardfID},#{cardCellphone},#{idcardNO},#{status},#{createTime},#{updateTime})
+    </insert>
+
+    <select id="findAppBizCardByParam" parameterType="com.jkm.hsy.user.entity.AppBizCard" resultType="com.jkm.hsy.user.entity.AppBizCard">
+        select
+            ID,SID,CARDNO,CARDACCOUNTNAME,CARDBANK,BANKADDRESS,CARDFID,CARDCELLPHONE,IDCARDNO,STATUS,CREATETIME,UPDATETIME
+        from app_biz_card
+        where 1=1
+          <if test="cardNO!=null and cardNO!=''">and CARDNO=#{cardNO}</if>
+        order by UPDATETIME
+    </select>
+
+</mapper>
