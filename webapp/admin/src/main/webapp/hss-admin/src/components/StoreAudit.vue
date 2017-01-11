@@ -187,6 +187,7 @@
         </div>
       </div>
       <div class="mask" id="mask" style="display: none" @click="isNo()">
+        <p @click="isNo">×</p>
         <img src="" alt="">
       </div>
       <div class="box box-primary" v-if="isShow">
@@ -348,6 +349,22 @@
     position: fixed;
     top:0;
     left: 0;
+  p{
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    z-index: 1200;
+    width: 65px;
+    height: 65px;
+    line-height: 55px;
+    font-size: 65px;
+    color: #d2d1d1;
+    text-align: center;
+    border: 6px solid #adaaaa;
+    border-radius: 50%;
+    box-shadow: 0 0 16px #000;
+    text-shadow: 0 0 16px #000;
+  }
 
   img{
     display: inherit;

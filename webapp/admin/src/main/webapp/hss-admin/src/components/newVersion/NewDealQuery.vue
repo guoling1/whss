@@ -117,6 +117,9 @@
               </table>
             </div>
           </div>
+          <!--<div v-if="isShow">
+            <img src="http://img.jinkaimen.cn/admin/common/dist/img/ICBCLoading.gif" alt="">
+          </div>-->
           <div v-if="orders.length==0" class="row" style="text-align: center;color: red;font-size: 16px;">
             <div class="col-sm-12">无此数据</div>
           </div>
@@ -179,12 +182,15 @@
         orders:[],
         total:'',
         url:'',
-        count:0
+        count:0,
+        isShow:false
       }
     },
     created:function(){
+      this.$data.isShow = true;
       this.$http.post('/admin/queryOrder/orderList',this.$data.query)
         .then(function (res) {
+          this.$data.isShow = false;
           this.$data.orders=res.data.records;
           this.$data.total=res.data.totalPage;
           this.$data.url=res.data.ext;
@@ -231,6 +237,7 @@
           str+='<li class="paginate_button next" id="example2_next"><a href="#" aria-controls="example2" data-dt-idx="7" tabindex="0">下一页</a></li>'
           page.innerHTML=str;
         },function (err) {
+          this.$data.isShow = false;
           this.$store.commit('MESSAGE_ACCORD_SHOW', {
             text: err.statusMessage
           })
@@ -336,8 +343,10 @@
       //筛选
       lookup: function () {
         this.$data.query.page = 1;
+        this.$data.isShow = true;
         this.$http.post('/admin/queryOrder/orderList',this.$data.query)
           .then(function (res) {
+            this.$data.isShow = false;
             this.$data.orders=res.data.records;
             this.$data.total=res.data.totalPage;
             this.$data.url=res.data.ext;
@@ -384,6 +393,7 @@
             str+='<li class="paginate_button next" id="example2_next"><a href="#" aria-controls="example2" data-dt-idx="7" tabindex="0">下一页</a></li>'
             page.innerHTML=str;
           },function (err) {
+            this.$data.isShow = false;
             this.$store.commit('MESSAGE_ACCORD_SHOW', {
               text: err.statusMessage
             })
@@ -545,5 +555,10 @@
   }
   .btn{
     font-size: 12px;
+  }
+  img{
+    width: 8%;
+    margin: 0 auto;
+    display: inherit;
   }
 </style>
