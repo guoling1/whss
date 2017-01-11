@@ -9,6 +9,7 @@ import com.jkm.base.common.util.DateFormatUtil;
 import com.jkm.base.common.util.ValidateUtils;
 import com.jkm.hss.controller.BaseController;
 import com.jkm.hss.helper.ApplicationConsts;
+import com.jkm.hss.helper.request.PartnerShallRequest;
 import com.jkm.hss.merchant.entity.BankCardBin;
 import com.jkm.hss.merchant.entity.MerchantInfo;
 import com.jkm.hss.merchant.entity.UserInfo;
@@ -314,4 +315,16 @@ public class MerchantInfoController extends BaseController {
         final Pair<Integer, String> pair = this.verifyIdService.verifyID(mobile, bankcard, idCard, bankReserveMobile, realName);
         return pair;
     }
+
+    @ResponseBody
+    @RequestMapping(value = "/queryShall", method = RequestMethod.POST)
+    public CommonResponse queryShall(@RequestBody final PartnerShallRequest merchantInfo){
+
+       // String bankNo = merchantInfo.getBankNo();
+        //final Optional<BankCardBin> bankCardBinOptional = this.bankCardBinService.analyseCardNo(bankNo);
+
+
+        return null;
+    }
+
 }
