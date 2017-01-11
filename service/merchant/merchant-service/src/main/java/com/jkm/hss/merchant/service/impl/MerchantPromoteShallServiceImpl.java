@@ -69,7 +69,7 @@ public class MerchantPromoteShallServiceImpl implements MerchantPromoteShallServ
      */
     @Transactional
     @Override
-    public Map<String, Triple<Long, BigDecimal, String>> merchantPromoteShall(final long merchantId, final String orderNo,final BigDecimal tradeAmount) {
+    public Map<String, Triple<Long, BigDecimal, String>> merchantPromoteShall(final long merchantId, final String orderNo, final String businessNo,final BigDecimal tradeAmount) {
         try{
             //判断该支付订单是否已经参与分润
 
