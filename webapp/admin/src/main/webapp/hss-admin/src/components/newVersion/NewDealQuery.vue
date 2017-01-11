@@ -139,21 +139,6 @@
         </div>
       </div>
     </div>
-      <!--登录页面-->
-      <div class="login" v-if="isLogin">
-      <form class="" action="index.html" method="post">
-        <label for="phone">
-          手机号:
-          <input type="text" name="phone" placeholder="请输入手机号" v-model="phone">
-          <!-- <span class='btn btn-primary'>获取验证码</span> -->
-        </label>
-        <label for="phone">
-          密码:
-          <input type="password" name="password" placeholder="请输入密码" v-model="password">
-        </label>
-        <div class="btn btn-primary sub" @click="login">登 录</div>
-      </form>
-</div>
     </div>
   </div>
 </template>
@@ -163,9 +148,6 @@
     name: 'deal',
     data () {
       return {
-        phone: '',
-        password: '',
-        isLogin: false,
         query:{
           page:1,
           size:10,
@@ -328,18 +310,6 @@
               text: err.statusMessage
             })
           })
-      },
-      login: function () {
-        this.$http.post('/admin/login', {
-          mobile: this.$data.phone,
-          password: this.$data.password
-        }).then(function () {
-          this.$data.isLogin = false;
-        }, function () {
-          this.$store.commit('MESSAGE_ACCORD_SHOW', {
-            text: err.body.message
-          })
-        })
       },
       //筛选
       lookup: function () {

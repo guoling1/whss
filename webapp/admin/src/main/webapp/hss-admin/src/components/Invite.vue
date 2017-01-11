@@ -126,7 +126,7 @@
       return{
         result: '',
         lists:[], //产品列表
-        productId:3,
+        productId:'',
         query:''
       }
     },
@@ -141,7 +141,7 @@
           })
         })
       //内容
-      this.$http.post('/admin/upgrade/init', {productId: this.$data.productId})
+      /*this.$http.post('/admin/upgrade/init', {productId: this.$data.productId})
         .then(function (res) {
           console.log(res)
           this.$data.result = res.data;
@@ -158,7 +158,7 @@
           this.$store.commit('MESSAGE_ACCORD_SHOW', {
             text: err.statusMessage
           })
-        })
+        })*/
     },
     methods: {
       search: function () {

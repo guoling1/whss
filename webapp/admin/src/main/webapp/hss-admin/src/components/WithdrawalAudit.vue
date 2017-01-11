@@ -1,7 +1,9 @@
 <template lang="html">
   <div id="productAdd">
-    <div style="padding: 8px 30px; background: rgb(243, 156, 18); z-index: 999999; font-size: 22px; font-weight: 600;margin-bottom: 15px;color: #fff;">审核打款结果</div>
-    <div style="margin: 0 15px;width: inherit" class="box box-info">
+    <div style="margin: 15px;width: inherit" class="box">
+      <div class="box-header">
+        <h3 class="box-title">审核打款结果</h3>
+      </div>
       <form class="form-horizontal">
         <div class="box-body">
           <div class="form-group">
@@ -53,7 +55,7 @@
             <div class="col-sm-6">{{record.message}}</div>
           </div>
           <div class="form-group">
-            <label class="col-sm-4 control-label">审核备注：</label>
+            <label class="col-sm-4 control-label" style="margin-top: 7px">审核备注：</label>
             <div class="col-sm-5">
               <input type="text" class="form-control" v-model="query.opinionContent" placeholder="必填">
             </div>
@@ -61,9 +63,15 @@
           <div class="form-group">
             <label class="col-sm-4 control-label"></label>
             <div class="col-sm-5">
-              <div class="btn btn-success" @click="audit(1)">打款成功</div>
-              <div class="btn btn-info" style="margin: 0 auto;" @click="audit(2)">确认失败 重新打款</div>
-              <div class="btn btn-warning" @click="audit(3)">确认失败 解冻</div>
+              <div class=" col-sm-4">
+                <div style="width: 125px;" class="btn btn-default" @click="audit(1)">打款成功</div>
+              </div>
+              <div class=" col-sm-4">
+                <div class="btn btn-default" style="width: 125px;margin: 0 auto;" @click="audit(2)">确认失败 重新打款</div>
+              </div>
+              <div class=" col-sm-4">
+                <div style="width: 125px;" class="btn btn-default" @click="audit(3)">确认失败 解冻</div>
+              </div>
             </div>
           </div>
           <div class="form-group" style="text-align: center;">注意：操作不可逆，请谨慎操作</div>
@@ -233,5 +241,8 @@
       right: 10px;
       font-size: 30px;
     }
+  }
+  .btn,input{
+    font-size: 12px;
   }
 </style>
