@@ -35,10 +35,10 @@
             <if test="fastRate != null">
                 fast_rate,
             </if>
-            <if test="direct_promote_shall != null">
+            <if test="directPromoteShall != null">
                 direct_promote_shall,
             </if>
-            <if test="in_direct_promote_shall != null">
+            <if test="inDirectPromoteShall != null">
                 in_direct_promote_shall,
             </if>
             <if test="status != null">

@@ -76,8 +76,9 @@ public class UpgradeController extends BaseController {
         upgradeRulesList.add(upgradeRules);
         List<UpgradeRules> upgradeRulesArr =  upgradeRulesService.selectAll(req.getProductId());//升级规则
 
-        for(int i=0;i<3;i++){
+        for(int i=1;i<4;i++){
             UpgradeRules upgradeRulesTemp = new UpgradeRules();
+            upgradeRulesTemp.setType(i);
             upgradeRulesList.add(upgradeRulesTemp);
         }
         if(upgradeRulesArr.size()>0){
@@ -107,7 +108,7 @@ public class UpgradeController extends BaseController {
     @ResponseBody
     @RequestMapping(value = "addOrUpdate", method = RequestMethod.POST)
     public CommonResponse addOrUpdate(@RequestBody final UpgradeAndRecommendRequest req) {
-        if(req.getUpgradeRuleslist()==null||req.getUpgradeRuleslist().size()==0){
+        if(req.getUpgradeRulesList()==null||req.getUpgradeRulesList().size()==0){
             return CommonResponse.simpleResponse(-1,"商户升级规则设置不能为空");
         }
         Optional<Product> productOptional = productService.selectById(req.getProductId());
@@ -117,31 +118,34 @@ public class UpgradeController extends BaseController {
         //商户升级规则设置不能为空
         List<UpgradeRules> upgradeRulesList =  upgradeRulesService.selectAll(req.getProductId());//升级规则
         if(upgradeRulesList.size()>0){//修改
-            for(int i=0;i<req.getUpgradeRuleslist().size();i++){
-                Optional<UpgradeRules> upgradeRulesOptional = upgradeRulesService.selectByProductIdAndType(req.getProductId(),req.getUpgradeRuleslist().get(i).getType());
+            for(int i=0;i<req.getUpgradeRulesList().size();i++){
+                Optional<UpgradeRules> upgradeRulesOptional = upgradeRulesService.selectByProductIdAndType(req.getProductId(),req.getUpgradeRulesList().get(i).getType());
                 if(upgradeRulesOptional.isPresent()){//存在修改
                     UpgradeRules upgradeRules = new UpgradeRules();
                     upgradeRules.setId(upgradeRulesOptional.get().getId());
-                    upgradeRules.setProductId(upgradeRulesOptional.get().getProductId());
-                    upgradeRules.setName(req.getUpgradeRuleslist().get(i).getName());
+                    upgradeRules.setProductId(req.getProductId());
+                    upgradeRules.setName(req.getUpgradeRulesList().get(i).getName());
                     upgradeRules.setType(upgradeRulesOptional.get().getType());
-                    upgradeRules.setPromotionNum(req.getUpgradeRuleslist().get(i).getPromotionNum());
-                    upgradeRules.setUpgradeCost(req.getUpgradeRuleslist().get(i).getUpgradeCost());
-                    upgradeRules.setWeixinRate(req.getUpgradeRuleslist().get(i).getWeixinRate());
-                    upgradeRules.setAlipayRate(req.getUpgradeRuleslist().get(i).getAlipayRate());
-                    upgradeRules.setFastRate(req.getUpgradeRuleslist().get(i).getFastRate());
+                    upgradeRules.setPromotionNum(req.getUpgradeRulesList().get(i).getPromotionNum());
+                    upgradeRules.setUpgradeCost(req.getUpgradeRulesList().get(i).getUpgradeCost());
+                    upgradeRules.setWeixinRate(req.getUpgradeRulesList().get(i).getWeixinRate());
+                    upgradeRules.setAlipayRate(req.getUpgradeRulesList().get(i).getAlipayRate());
+                    upgradeRules.setFastRate(req.getUpgradeRulesList().get(i).getFastRate());
                     upgradeRules.setAlipayRate(upgradeRulesOptional.get().getAlipayRate());
                     upgradeRules.setStatus(EnumUpgrade.NORMAL.getId());
                     upgradeRulesService.update(upgradeRules);
                 }else{//不存在新增
-                    req.getUpgradeRuleslist().get(i).setStatus(EnumUpgrade.NORMAL.getId());
-                    upgradeRulesService.insert(req.getUpgradeRuleslist().get(i));
+                    req.getUpgradeRulesList().get(i).setStatus(EnumUpgrade.NORMAL.getId());
+                    req.getUpgradeRulesList().get(i).setProductId(req.getProductId());
+                    upgradeRulesService.insert(req.getUpgradeRulesList().get(i));
                 }
             }
         }else{//新增
-            for(int i=0;i<req.getUpgradeRuleslist().size();i++){
-                req.getUpgradeRuleslist().get(i).setStatus(EnumUpgrade.NORMAL.getId());
-                upgradeRulesService.insert(req.getUpgradeRuleslist().get(i));
+            for(int i=0;i<req.getUpgradeRulesList().size();i++){
+                req.getUpgradeRulesList().get(i).setStatus(EnumUpgrade.NORMAL.getId());
+                req.getUpgradeRulesList().get(i).setProductId(req.getProductId());
+                req.getUpgradeRulesList().get(i).setType(req.getType());
+                upgradeRulesService.insert(req.getUpgradeRulesList().get(i));
             }
         }
         //升级推荐分润设置及达标标准设置
