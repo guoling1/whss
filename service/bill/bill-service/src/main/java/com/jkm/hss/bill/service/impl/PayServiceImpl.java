@@ -274,7 +274,7 @@ public class PayServiceImpl implements PayService {
             try  {
                 this.merchantInfoService.toUpgrade(order.getBusinessOrderNo(), "S");
             } catch (final Throwable e) {
-                log.error("##############商户升级支付成功，回调商户升级业务异常##############");
+                log.error("##############商户升级支付成功，回调商户升级业务异常##############", e);
             }
             return;
         }
@@ -310,7 +310,7 @@ public class PayServiceImpl implements PayService {
                 this.merchantInfoService.toUpgradeByRecommend(merchant.getId());
             }
         } catch (final Throwable e) {
-            log.error("##############商户交易金额达到升级标准，调用商户升级业务异常##############");
+            log.error("##############商户交易金额达到升级标准，调用商户升级业务异常##############", e);
         }
 
         //通知商户

@@ -116,7 +116,7 @@ public class SendMsgServiceImpl implements SendMsgService {
             remark.put("value","到账银行卡尾号 " + bankNo + "，如有疑问，请联系我们：400-622-6233");
             jo.put("remark",remark);
             jsonParam.put("touser", toUser);
-            jsonParam.put("template_id","pdQoWhmiFChbff5YTTzj-86X_z9OjUsc1aqWPVeX4R8");
+            jsonParam.put("template_id", "2dIyIc91CjMLiWaFFF7-RAlxv-bjGCjXL2c049TPPtQ");
             jsonParam.put("data",jo);
             method.setEntity(new StringEntity(jsonParam.toString(), "UTF-8"));
             HttpResponse res = client.execute(method);
