@@ -3,13 +3,14 @@ package com.jkm.hss.bill.service.impl;
 import com.jkm.hss.bill.service.CalculateService;
 import com.jkm.hss.dealer.entity.Dealer;
 import com.jkm.hss.dealer.entity.DealerChannelRate;
-import com.jkm.hss.dealer.service.DealerChannelRateService;
-import com.jkm.hss.dealer.service.DealerRateService;
-import com.jkm.hss.dealer.service.DealerService;
+import com.jkm.hss.dealer.service.*;
 import com.jkm.hss.merchant.entity.MerchantInfo;
 import com.jkm.hss.merchant.service.MerchantInfoService;
 import com.jkm.hss.product.entity.ProductChannelDetail;
+import com.jkm.hss.product.enums.EnumPayChannelSign;
 import com.jkm.hss.product.servcie.ProductChannelDetailService;
+import com.jkm.hss.product.servcie.ProductService;
+import com.jkm.hss.product.servcie.UpgradeRulesService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -33,6 +34,14 @@ public class CalculateServiceImpl implements CalculateService {
     private MerchantInfoService merchantInfoService;
     @Autowired
     private ProductChannelDetailService productChannelDetailService;
+    @Autowired
+    private UpgradeRulesService upgradeRulesService;
+    @Autowired
+    private DealerUpgerdeRateService dealerUpgerdeRateService;
+    @Autowired
+    private ProductService productService;
+    @Autowired
+    private PartnerShallProfitDetailService partnerShallProfitDetailService;
 
     /**
      * {@inheritDoc}
@@ -44,13 +53,8 @@ public class CalculateServiceImpl implements CalculateService {
     @Override
     public BigDecimal getMerchantPayPoundageRate(final long merchantId, final int channelSign) {
         final MerchantInfo merchant = this.merchantInfoService.selectById(merchantId).get();
-        if (0 == merchant.getDealerId()) {
-            final ProductChannelDetail productChannelDetail = this.productChannelDetailService.selectByChannelTypeSign(channelSign).get(0);
-            return productChannelDetail.getProductMerchantPayRate();
-        }
-        final Dealer dealer = this.dealerService.getById(merchant.getDealerId()).get();
-        final DealerChannelRate dealerChannelRate = this.dealerRateService.selectByDealerIdAndChannelId(dealer.getId(), channelSign).get(0);
-        return dealerChannelRate.getDealerMerchantPayRate();
+
+        return getMerchantRate(channelSign, merchant);
     }
 
     /**
@@ -102,5 +106,17 @@ public class CalculateServiceImpl implements CalculateService {
     @Override
     public BigDecimal getMerchantUpgradePoundage(final long merchantId) {
         return null;
+    }
+
+    private BigDecimal getMerchantRate(int channelSign, final MerchantInfo merchantInfo){
+
+        final BigDecimal merchantRate;
+        if (channelSign == EnumPayChannelSign.YG_WEIXIN.getId()){
+            return  merchantInfo.getWeixinRate();
+        }else if (channelSign == EnumPayChannelSign.YG_ZHIFUBAO.getId()){
+            return merchantInfo.getAlipayRate();
+        }else{
+            return merchantInfo.getFastRate();
+        }
     }
 }
