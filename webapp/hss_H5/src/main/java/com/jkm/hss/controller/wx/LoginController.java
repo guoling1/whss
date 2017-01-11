@@ -1372,7 +1372,7 @@ public class LoginController extends BaseController {
                             log.info("返回right:{}",pair.getRight());
                             if(pair.getLeft()==0){
                                 isRedirect= true;
-                                url = pair.getRight();
+                                url = URLDecoder.decode(pair.getRight(), "UTF-8");
                             }else{
                                 model.addAttribute("message",pair.getRight());
                                 url = "/message";
