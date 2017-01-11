@@ -112,7 +112,7 @@
         WHERE status = 1 and dealer_id = #{dealerId} and product_id = #{productId};
     </select>
     <select id="selectByDealerIdAndTypeAndProductId" resultType="com.jkm.hss.dealer.entity.DealerUpgerdeRate">
-        SELECT * FROM tb_dealer_upgerde_rate WHERE  status = 1 and dealer_id = #{dealerId} and product_id = #{productId} AND type = #{type};
+        SELECT * FROM tb_dealer_upgrade_rate WHERE  status = 1 and dealer_id = #{dealerId} and product_id = #{productId} AND type = #{type};
     </select>
 
 </mapper>
