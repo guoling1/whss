@@ -1358,6 +1358,8 @@ public class LoginController extends BaseController {
                             BigDecimal needMoney = needMoney(result.get().getProductId(),result.get().getLevel(),upgradeRulesOptional.get().getType());
                             UpgradePayRecord upgradePayRecord = new UpgradePayRecord();
                             upgradePayRecord.setMerchantId(merchantId);
+                            upgradePayRecord.setProductId(result.get().getProductId());
+                            upgradePayRecord.setBeforeLevel(result.get().getLevel());
                             upgradePayRecord.setStatus(EnumUpgrade.NORMAL.getId());
                             upgradePayRecord.setReqSn(SnGenerator.generateReqSn());
                             upgradePayRecord.setAmount(needMoney);
