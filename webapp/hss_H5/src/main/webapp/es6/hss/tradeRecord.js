@@ -5,6 +5,7 @@
 // 引入 message http
 const message = _require('message');
 const http = _require('http');
+const tools = _require('tools');
 // 引入时间选择器
 const TimePicker = _require('timePicker');
 new TimePicker('dateFrom');
