@@ -75,7 +75,7 @@
     <!--根据请求单号更改订单状态-->
     <update id="updatePayResult">
         UPDATE tb_upgrade_pay_record
-        SET pay_result=#{payResult},
+        SET pay_result=#{payResult}
         WHERE req_sn = #{reqSn}
     </update>
 

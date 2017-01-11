@@ -84,11 +84,7 @@
 <script>
   var pageData = {
     showRecommend: '${showRecommend}'//1显示升级 2不显示升级
-  }
-  if(pageData.showRecommend==2){
-    document.getElementById('show_recommend').style.display="none";
-    document.getElementById('show_upgrade').style.display="none";
-  }
+  };
 </script>
 <script src="http://static.jinkaimen.cn/vendor/vendor.1.0.1.min.js"></script>
 <script src="http://static.jinkaimen.cn/hss/2.0.1/wallet.min.js"></script>

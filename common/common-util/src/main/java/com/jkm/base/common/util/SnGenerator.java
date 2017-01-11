@@ -21,7 +21,15 @@ public final class SnGenerator {
     public static String generate() {
         return "JKM" + DateFormatUtil.format(new Date(), "yyyyMMddHHmmssSSS") + RandomStringUtils.randomNumeric(5);
     }
-
+    /**
+     * 生成升级支付单号
+     * JKM + 时间戳＋5位随机数
+     *
+     * @return
+     */
+    public static String generateReqSn() {
+        return DateFormatUtil.format(new Date(), "yyyyMMddHHmmssSSS") + RandomStringUtils.randomNumeric(5);
+    }
     /**
      * 生成交易订单号
      *

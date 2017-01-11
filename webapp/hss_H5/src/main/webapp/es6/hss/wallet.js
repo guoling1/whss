@@ -21,3 +21,8 @@ upgrade.addEventListener('click', function () {
     window.location.href = '/sqb/upgradeMin';
   }
 });
+// 是否展示升级功能
+if (pageData.showRecommend == 2) {
+  document.getElementById('show_recommend').style.display = "none";
+  document.getElementById('show_upgrade').style.display = "none";
+}
