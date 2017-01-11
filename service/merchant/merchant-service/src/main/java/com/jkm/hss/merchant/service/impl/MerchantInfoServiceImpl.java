@@ -362,17 +362,11 @@ public class MerchantInfoServiceImpl implements MerchantInfoService {
             log.info("升级分润有误");
             return Pair.of(new BigDecimal("0.00"), new BigDecimal("0.00"));
         }else{
-            MerchantInfo merchantInfo = merchantInfoDao.selectById(upgradePayRecord.getMerchantId());
-            if(merchantInfo!=null){
-                Optional<Product> productOptional = productService.selectByType(EnumProductType.HSS.getId());
-                Optional<UpgradeRules> upgradeRulesOptional1 = upgradeRulesService.selectByProductIdAndType(productOptional.get().getId(),merchantInfo.getLevel());//当前级别对应的升级费
-                Optional<UpgradeRules> upgradeRulesOptional2 = upgradeRulesService.selectByProductIdAndType(productOptional.get().getId(),upgradePayRecord.getLevel());//升级后对应的升级费
-                BigDecimal left = (upgradeRulesOptional2.get().getDirectPromoteShall()).subtract(upgradeRulesOptional1.get().getDirectPromoteShall());
-                BigDecimal right = (upgradeRulesOptional2.get().getInDirectPromoteShall()).subtract(upgradeRulesOptional1.get().getInDirectPromoteShall());
-                return Pair.of(left, right);
-            }else{
-                return Pair.of(new BigDecimal("0.00"), new BigDecimal("0.00"));
-            }
+            Optional<UpgradeRules> upgradeRulesOptional1 = upgradeRulesService.selectByProductIdAndType(upgradePayRecord.getProductId(),upgradePayRecord.getBeforeLevel());//当前级别对应的升级费
+            Optional<UpgradeRules> upgradeRulesOptional2 = upgradeRulesService.selectByProductIdAndType(upgradePayRecord.getProductId(),upgradePayRecord.getLevel());//升级后对应的升级费
+            BigDecimal left = (upgradeRulesOptional2.get().getDirectPromoteShall()).subtract(upgradeRulesOptional1.get().getDirectPromoteShall());
+            BigDecimal right = (upgradeRulesOptional2.get().getInDirectPromoteShall()).subtract(upgradeRulesOptional1.get().getInDirectPromoteShall());
+            return Pair.of(left, right);
         }
     }
 
