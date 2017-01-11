@@ -1390,6 +1390,7 @@ public class LoginController extends BaseController {
                 url = "/sqb/reg";
             }
             if(isRedirect){
+                log.info("直接跳转{}",url);
                 return "redirect:"+url;
             }else{
                 return url;
