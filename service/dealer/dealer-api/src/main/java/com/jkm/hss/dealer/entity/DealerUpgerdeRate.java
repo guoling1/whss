@@ -7,8 +7,10 @@ import java.math.BigDecimal;
 
 /**
  * Created by Thinkpad on 2016/12/29.
- * 推荐人规则分润
+ * 推荐人规则分润()
  * tb_dealer_recommend_rate
+ * 推荐人规则分润
+ * tb_dealer_upgerde_rate
  */
 @Data
 public class DealerUpgerdeRate extends BaseEntity {
@@ -18,6 +20,8 @@ public class DealerUpgerdeRate extends BaseEntity {
     private long productId;
     /**
      * 分润类型
+     *
+     * {@link com.jkm.hss.dealer.enums.EnumDealerRateType}
      */
     private int type;
     /**

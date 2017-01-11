@@ -26,6 +26,7 @@ import com.jkm.hss.merchant.entity.*;
 import com.jkm.hss.merchant.enums.*;
 import com.jkm.hss.merchant.helper.MerchantSupport;
 import com.jkm.hss.merchant.helper.WxPubUtil;
+import com.jkm.hss.merchant.helper.request.RecommendRequest;
 import com.jkm.hss.merchant.helper.request.RequestOrderRecord;
 import com.jkm.hss.merchant.helper.request.TradeRequest;
 import com.jkm.hss.merchant.service.*;
@@ -35,10 +36,16 @@ import com.jkm.hss.notifier.enums.EnumVerificationCodeType;
 import com.jkm.hss.notifier.helper.SendMessageParams;
 import com.jkm.hss.notifier.service.SendMessageService;
 import com.jkm.hss.notifier.service.SmsAuthService;
+import com.jkm.hss.product.entity.Product;
 import com.jkm.hss.product.entity.ProductChannelDetail;
+import com.jkm.hss.product.entity.UpgradePayRecord;
 import com.jkm.hss.product.enums.EnumPayChannelSign;
+import com.jkm.hss.product.enums.EnumProductType;
 import com.jkm.hss.product.enums.EnumUpGradeType;
+import com.jkm.hss.product.enums.EnumUpgradePayResult;
 import com.jkm.hss.product.servcie.ProductChannelDetailService;
+import com.jkm.hss.product.servcie.ProductService;
+import com.jkm.hss.product.servcie.UpgradePayRecordService;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.json.JSONObject;
 import org.apache.commons.lang3.StringUtils;
@@ -95,6 +102,10 @@ public class WxPubController extends BaseController {
     private DealerService dealerService;
     @Autowired
     private DealerChannelRateService dealerChannelRateService;
+    @Autowired
+    private UpgradePayRecordService upgradePayRecordService;
+    @Autowired
+    private ProductService productService;
 
 
 
@@ -252,7 +263,7 @@ public class WxPubController extends BaseController {
         if (!ValidateUtils.isMobile(mobile)) {
             return CommonResponse.simpleResponse(-1, "手机号格式错误");
         }
-        final Pair<Integer, String> verifyCode = this.smsAuthService.getVerifyCode(mobile, EnumVerificationCodeType.REGISTER_MERCHANT);
+        final Pair<Integer, String> verifyCode = this.smsAuthService.getVerifyCode(mobile, EnumVerificationCodeType.LOGIN_MERCHANT);
         if (1 == verifyCode.getLeft()) {
             final Map<String, String> params = ImmutableMap.of("code", verifyCode.getRight());
             this.sendMessageService.sendMessage(SendMessageParams.builder()
@@ -260,7 +271,7 @@ public class WxPubController extends BaseController {
                     .uid("")
                     .data(params)
                     .userType(EnumUserType.BACKGROUND_USER)
-                    .noticeType(EnumNoticeType.REGISTER_MERCHANT)
+                    .noticeType(EnumNoticeType.LOGIN_MERCHANT)
                     .build()
             );
             return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "发送验证码成功");
@@ -346,7 +357,7 @@ public class WxPubController extends BaseController {
         if(!merchantInfo.isPresent()){
             return CommonResponse.simpleResponse(-2, "未登录");
         }
-        if(merchantInfo.get().getStatus()!= EnumMerchantStatus.PASSED.getId()||merchantInfo.get().getStatus()!= EnumMerchantStatus.FRIEND.getId()){
+        if(merchantInfo.get().getStatus()!= EnumMerchantStatus.PASSED.getId()&&merchantInfo.get().getStatus()!= EnumMerchantStatus.FRIEND.getId()){
             return CommonResponse.simpleResponse(-2, "未审核通过");
         }
         req.setMerchantId(merchantInfo.get().getId());
@@ -410,7 +421,11 @@ public class WxPubController extends BaseController {
 
 
         //产品id
-        long productId = 2;
+        Optional<Product> productOptional = productService.selectByType(EnumProductType.HSS.getId());
+        if(!productOptional.isPresent()){
+            return CommonResponse.simpleResponse(-1, "产品信息有误");
+        }
+        long productId = productOptional.get().getId();
         Optional<ProductChannelDetail> weixinChannelDetail = productChannelDetailService.selectByProductIdAndChannelId(productId,EnumPayChannelSign.YG_WEIXIN.getId());
         if(!weixinChannelDetail.isPresent()){
             return CommonResponse.simpleResponse(-1, "产品：微信费率配置有误");
@@ -476,6 +491,9 @@ public class WxPubController extends BaseController {
                                 mi.setWeixinRate(weixinDealerChannelRate.get().getDealerMerchantPayRate());
                                 mi.setAlipayRate(zhifubaoDealerChannelRate.get().getDealerMerchantPayRate());
                                 mi.setFastRate(yinlianDealerChannelRate.get().getDealerMerchantPayRate());
+                                mi.setIsUpgrade(EnumIsUpgrade.CANNOTUPGRADE.getId());
+                            }else{//能升级
+                                mi.setIsUpgrade(EnumIsUpgrade.CANUPGRADE.getId());
                             }
                         }
                     }
@@ -524,6 +542,7 @@ public class WxPubController extends BaseController {
                     mi.setWeixinRate(weixinChannelDetail.get().getProductMerchantPayRate());
                     mi.setAlipayRate(zhifubaoChannelDetail.get().getProductMerchantPayRate());
                     mi.setFastRate(yinlianChannelDetail.get().getProductMerchantPayRate());
+                    mi.setIsUpgrade(EnumIsUpgrade.CANUPGRADE.getId());
                     merchantInfoService.regByWx(mi);
                     //添加用户
                     UserInfo uo = new UserInfo();
@@ -611,7 +630,7 @@ public class WxPubController extends BaseController {
             return CommonResponse.simpleResponse(-1, "请输入正确的6位数字验证码");
         }
         final Pair<Integer, String> checkResult =
-                this.smsAuthService.checkVerifyCode(directLoginRequest.getMobile(), directLoginRequest.getCode(), EnumVerificationCodeType.REGISTER_MERCHANT);
+                this.smsAuthService.checkVerifyCode(directLoginRequest.getMobile(), directLoginRequest.getCode(), EnumVerificationCodeType.LOGIN_MERCHANT);
         if (1 != checkResult.getLeft()) {
             return CommonResponse.simpleResponse(-1, checkResult.getRight());
         }
@@ -665,7 +684,7 @@ public class WxPubController extends BaseController {
         if(!merchantInfo.isPresent()){
             return CommonResponse.simpleResponse(-2, "未登录");
         }
-        if(merchantInfo.get().getStatus()!=EnumMerchantStatus.PASSED.getId()||merchantInfo.get().getStatus()!=EnumMerchantStatus.FRIEND.getId()){
+        if(merchantInfo.get().getStatus()!=EnumMerchantStatus.PASSED.getId()&&merchantInfo.get().getStatus()!=EnumMerchantStatus.FRIEND.getId()){
             return CommonResponse.simpleResponse(-2, "未审核通过");
         }
         final String totalFee = tradeRequest.getTotalFee();
@@ -698,7 +717,7 @@ public class WxPubController extends BaseController {
     @RequestMapping(value = "receiptByCode", method = RequestMethod.POST)
     public CommonResponse receiptByCode(final HttpServletRequest request, final HttpServletResponse response, @RequestBody final TradeRequest tradeRequest) {
         Optional<MerchantInfo> merchantInfo = merchantInfoService.selectById(tradeRequest.getMerchantId());
-        if(merchantInfo.get().getStatus()!=EnumMerchantStatus.PASSED.getId()||merchantInfo.get().getStatus()!=EnumMerchantStatus.FRIEND.getId()){
+        if(merchantInfo.get().getStatus()!=EnumMerchantStatus.PASSED.getId()&&merchantInfo.get().getStatus()!=EnumMerchantStatus.FRIEND.getId()){
             return CommonResponse.simpleResponse(-2, "未审核通过");
         }
         final String totalFee = tradeRequest.getTotalFee();
@@ -743,7 +762,7 @@ public class WxPubController extends BaseController {
         if(!merchantInfo.isPresent()){
             return CommonResponse.simpleResponse(-2, "未登录");
         }
-        if(merchantInfo.get().getStatus()!=EnumMerchantStatus.PASSED.getId()||merchantInfo.get().getStatus()!=EnumMerchantStatus.FRIEND.getId()){
+        if(merchantInfo.get().getStatus()!=EnumMerchantStatus.PASSED.getId()&&merchantInfo.get().getStatus()!=EnumMerchantStatus.FRIEND.getId()){
             return CommonResponse.simpleResponse(-2, "未审核通过");
         }
         final Pair<Integer, String> checkResult =
@@ -793,7 +812,7 @@ public class WxPubController extends BaseController {
      */
     @ResponseBody
     @RequestMapping(value = "myRecommend", method = RequestMethod.POST)
-    public CommonResponse myRecommend(final HttpServletRequest request, final HttpServletResponse response) {
+    public CommonResponse myRecommend(final HttpServletRequest request, final HttpServletResponse response,@RequestBody final RecommendRequest recommendRequest ) {
         if(!super.isLogin(request)){
             return CommonResponse.simpleResponse(-2, "未登录");
         }
@@ -805,11 +824,13 @@ public class WxPubController extends BaseController {
         if(!merchantInfo.isPresent()){
             return CommonResponse.simpleResponse(-2, "未登录");
         }
-        if(merchantInfo.get().getStatus()!=EnumMerchantStatus.PASSED.getId()||merchantInfo.get().getStatus()!=EnumMerchantStatus.FRIEND.getId()){
+        if(merchantInfo.get().getStatus()!=EnumMerchantStatus.PASSED.getId()&&merchantInfo.get().getStatus()!=EnumMerchantStatus.FRIEND.getId()){
             return CommonResponse.simpleResponse(-2, "未审核通过");
         }
-        RecommendAndMerchant recommendAndMerchant = recommendService.myRecommend(merchantInfo.get().getId());
-        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功",recommendAndMerchant);
+        recommendRequest.setMerchantId(merchantInfo.get().getId());
+        RecommendAndMerchant recommendAndMerchant = recommendService.selectRecommend(recommendRequest);
+        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", recommendAndMerchant);
     }
+
 
 }

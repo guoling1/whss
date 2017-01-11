@@ -103,7 +103,7 @@ public class WxPubUtil {
     {
         Map<String, String> token= getTokenAndJsapiTicket();
         Map<String, String> ret = new HashMap<String, String>();
-        String turl = String.format("%s?access_token=%s&openid=%s&lang=zh_CN", WxConstants.GET_USER_INFO,WxConstants.APP_ID,token.get("accessToken"),openId);
+        String turl = String.format("%s?access_token=%s&openid=%s&lang=zh_CN", WxConstants.GET_USER_INFO,token.get("accessToken"),openId);
         HttpClient client = new DefaultHttpClient();
         HttpGet get = new HttpGet(turl);
         JsonParser jsonparer = new JsonParser();// 初始化解析json格式的对象
@@ -119,18 +119,14 @@ public class WxPubUtil {
             {
                 if (json.get("errcode")!=null)
                 {// 错误时微信会返回错误码等信息，{"errcode":40013,"errmsg":"invalid appid"}
-//                    ret.put("errcode", json.get("errcode").getAsString());
-//                    ret.put("errmsg",json.get("errmsg").getAsString());
                     System.out.print("获取微信用户信息错误，错误信息是:"+json.get("errmsg").getAsString());
                     ret.put("nickname", "");
                     ret.put("headimgurl","");
-                    ret.put("unionid","");
                 }
                 else
                 {// 正常情况下{"access_token":"ACCESS_TOKEN","expires_in":7200}
                     ret.put("nickname", json.get("nickname").getAsString());
                     ret.put("headimgurl",json.get("headimgurl").getAsString());
-                    ret.put("unionid",json.get("unionid").getAsString());
                 }
             }
         }
@@ -139,7 +135,6 @@ public class WxPubUtil {
             System.out.print("获取微信用户信息异常:"+e);
             ret.put("nickname", "");
             ret.put("headimgurl","");
-            ret.put("unionid","");
         }
         finally
         {
@@ -192,6 +187,51 @@ public class WxPubUtil {
             return result;
         }
     }
+
+    /**
+     * 方法名称: getcallbackip<br>
+     * 描述：获取服务器ip列表
+     * 作者: 邢留杰
+     * 修改日期：2015年12月19日上午9:46:18
+     * @return
+     */
+    public static String getcallbackip(String accessToken)
+    {
+        String turl = String.format("%s?access_token=%s", WxConstants.GET_CALLBACK_IP,accessToken);
+        HttpClient client = new DefaultHttpClient();
+        HttpGet get = new HttpGet(turl);
+        JsonParser jsonparer = new JsonParser();// 初始化解析json格式的对象
+        String result = null;
+        try
+        {
+            HttpResponse res = client.execute(get);
+            String responseContent = null; // 响应内容
+            HttpEntity entity = res.getEntity();
+            responseContent = EntityUtils.toString(entity, "UTF-8");
+            JsonObject json = jsonparer.parse(responseContent).getAsJsonObject();// 将json字符串转换为json对象
+            if (res.getStatusLine().getStatusCode() == HttpStatus.SC_OK)
+            {
+                if (json.get("errcode") != null)
+                {// 错误时微信会返回错误码等信息，{"errcode":40013,"errmsg":"invalid appid"}
+                }
+                else
+                {// 正常情况下{"ip_list":["127.0.0.1","127.0.0.1"]}
+                    result="success";
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        finally
+        {
+            // 关闭连接 ,释放资源
+            client.getConnectionManager().shutdown();
+            return result;
+        }
+    }
+
     /**
      * 方法名称: getJsapiTicket<br>
      * 描述：获取jsapiTicket
@@ -274,6 +314,17 @@ public class WxPubUtil {
             if(wxConfig.getExpireTime()>System.currentTimeMillis()){
                 accessToken = wxConfig.getAccessToken();// 获取token
                 jsapi_ticket = wxConfig.getJsapiTicket();
+                String ipList = wxPubUtil.getcallbackip(accessToken);
+                if(ipList==null){//token过期
+                    accessToken = getToken();// 获取token
+                    jsapi_ticket = getJsapiTicket(accessToken);
+                    WxConfig wx = new WxConfig();
+                    wx.setStatus(EnumCommonStatus.NORMAL.getId());
+                    wx.setAccessToken(accessToken);
+                    wx.setJsapiTicket(jsapi_ticket);
+                    wx.setExpireTime(System.currentTimeMillis()+60*60*1000);
+                    wxPubUtil.wxConfigService.insertSelective(wx);
+                }
             }else{
                 accessToken = getToken();// 获取token
                 jsapi_ticket = getJsapiTicket(accessToken);

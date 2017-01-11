@@ -6,6 +6,7 @@ import com.jkm.hss.merchant.helper.request.MerchantInfoAddRequest;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -129,4 +130,15 @@ public interface MerchantInfoDao {
      * @return
      */
     MerchantInfo selectByAccountId(@Param("accountId") long accountId);
+
+    /**
+     * 去升级
+     * @param merchantId
+     * @param level
+     * @param weixinRate
+     * @param alipayRate
+     * @param fastRate
+     * @return
+     */
+    int toUpgrade(@Param("merchantId") long merchantId, @Param("level") int level, @Param("weixinRate") BigDecimal weixinRate, @Param("alipayRate") BigDecimal alipayRate, @Param("fastRate") BigDecimal fastRate);
 }

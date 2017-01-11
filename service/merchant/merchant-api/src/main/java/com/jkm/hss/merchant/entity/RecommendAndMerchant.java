@@ -1,5 +1,6 @@
 package com.jkm.hss.merchant.entity;
 
+import com.jkm.base.common.entity.PageModel;
 import lombok.Data;
 
 import java.util.List;

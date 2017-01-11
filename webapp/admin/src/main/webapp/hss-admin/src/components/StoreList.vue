@@ -1,14 +1,16 @@
 <template lang="html">
-  <div id="storeList">
-    <div style="padding: 8px 30px; background: rgb(243, 156, 18); z-index: 999999; font-size: 22px; font-weight: 600;margin-bottom: 15px;    color: #fff;">商户列表</div>
+  <div id="storeList" style="margin-top: 15px">
     <div class="col-xs-12">
       <div class="box">
+        <div class="box-header">
+          <h3 class="box-title">商户列表</h3>
+        </div>
         <div class="box-body">
           <div class="row">
             <div class="col-md-3">
               <div class="form-group">
                 <label>商户编号：</label>
-                <input type="text" class="form-control" v-model="id">
+                <input type="text" class="form-control" v-model="markCode">
               </div>
               <div class="form-group">
                 <label>商户名称</label>
@@ -40,7 +42,7 @@
                 </div>
               </div>
               <div class="form-group">
-                <label>结算状态：</label>
+                <label>审核状态：</label>
                 <select class="form-control select2 select2-hidden-accessible" tabindex="-1" aria-hidden="true" v-model="status">
                   <option value="">全部</option>
                   <option value="0">已注册</option>
@@ -52,31 +54,17 @@
               </div>
             </div>
             <div class="col-md-3">
-              <div class="btn btn-primary" @click="search">筛选</div>
+              <div class="btn btn-primary" @click="search" style="margin-top: 22px">筛选</div>
               <!--<span @click="onload()" download="交易记录" class="btn btn-primary pull-right" style="float: right;color: #fff">导出</span>-->
             </div>
           </div>
           <div id="example2_wrapper" class="dataTables_wrapper form-inline dt-bootstrap">
-            <!--<div class="search" id="search">
-              <label for="name">商户名称：</label>
-              <input class="form-control" type="text" name="name" value="" v-model="merchantName">
-              <label>状态：</label>
-              <select class="form-control select2 select2-hidden-accessible" tabindex="-1" aria-hidden="true" v-model="status">
-                <option value="">全部</option>
-                <option value="0">已注册</option>
-                <option value="1">已提交基本资料</option>
-                <option value="2">待审核</option>
-                <option value="3">审核通过</option>
-                <option value="4">审核未通过</option>
-              </select>
-              <div class="btn btn-primary" @click="search">筛选</div>
-              <span @click="onload()" download="交易记录" class="btn btn-primary pull-right" style="float: right;color: #fff">导出</span>
-            </div>-->
             <div class="row">
               <div class="col-sm-12">
                 <table id="example2" class="table table-bordered table-hover dataTable" role="grid" aria-describedby="example2_info">
                   <thead>
                   <tr role="row">
+                    <th class="sorting_asc" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Rendering engine: activate to sort column descending">序号</th>
                     <th class="sorting_asc" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Rendering engine: activate to sort column descending">商户编号</th>
                     <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="Browser: activate to sort column ascending">商户名称</th>
                     <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="Platform(s): activate to sort column ascending">所属一级代理商</th>
@@ -89,11 +77,12 @@
                   </tr>
                   </thead>
                   <tbody id="content">
-                  <tr role="row" class="odd" v-for="store in $$data.stores">
-                    <td class="sorting_1">{{store.id}}</td>
+                  <tr role="row" class="odd" v-for="(store,index) in $$data.stores">
+                    <td>{{(pageNo-1)*10+(index+1)}}</td>
+                    <td class="sorting_1">{{store.markCode}}</td>
                     <td>{{store.merchantName}}</td>
-                    <td>{{store.proxyName|changeName}}</td>
-                    <td>{{store.proxyName1|changeName}}</td>
+                    <td>{{store.proxyName}}</td>
+                    <td>{{store.proxyName1}}</td>
                     <td>{{store.createTime|changeTime}}</td>
                     <td>{{store.authenticationTime|changeTime}}</td>
                     <td>{{store.checkedTime|changeTime}}</td>
@@ -150,8 +139,8 @@
         status:'',
         isMask: false,
         url: '',
-        count:'',
-        id:'',
+        count:0,
+        markCode:'',
         startTime:'',
         startTime1:'',
         startTime2:'',
@@ -168,7 +157,7 @@
         pageSize:this.$data.pageSize,
         merchantName:this.$data.merchantName,
         status: this.$data.status,
-        id: this.$data.id,
+        markCode: this.$data.markCode,
         startTime: this.$data.startTime,
         endTime: this.$data.endTime,
         startTime1: this.$data.startTime1,
@@ -281,12 +270,13 @@
       search: function () {
         var content = document.getElementById('content'),
           page = document.getElementById('page');
+        this.$data.pageNo=1;
         this.$http.post('/admin/query/getAll',{
-          pageNo:1,
+          pageNo:this.$data.pageNo,
           pageSize:this.$data.pageSize,
           merchantName:this.$data.merchantName,
           status: this.$data.status,
-          id: this.$data.id,
+          markCode: this.$data.markCode,
           startTime: this.$data.startTime,
           endTime: this.$data.endTime,
           startTime1: this.$data.startTime1,
@@ -296,6 +286,7 @@
         }).then(function (res) {
           this.$data.stores  = res.data.records;
           this.$data.total = res.data.totalPage;
+          this.$data.count = res.data.count;
           var str='',
             page=document.getElementById('page');
           str+='<li class="paginate_button previous disabled" id="example2_previous"><a href="#" aria-controls="example2" data-dt-idx="0" tabindex="0">上一页</a></li>'
@@ -359,7 +350,13 @@
           var hour=val.getHours();
           var minute=val.getMinutes();
           var second=val.getSeconds();
-          return year+"-"+month+"-"+date+" "+hour+":"+minute+":"+second;
+          function tod(a) {
+            if(a<10){
+              a = "0"+a
+            }
+            return a;
+          }
+          return year+"-"+tod(month)+"-"+tod(date)+" "+tod(hour)+":"+tod(minute)+":"+tod(second);
         }
       },
       changeName: function (val) {
@@ -393,15 +390,8 @@
     margin: 0 10px;
   }
 
-
-  .search{
-    margin-bottom: 15px;
-    input{
-      margin-right: 20px;
-    }
-    select{
-      margin-right: 20px;
-    }
+  input,.form-control,.btn{
+    font-size: 12px;
   }
   .mask{
     width: 30%;

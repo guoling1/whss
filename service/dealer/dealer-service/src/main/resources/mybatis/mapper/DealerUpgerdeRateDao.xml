@@ -9,7 +9,7 @@
 
     <!-- 添加 （匹配有值的字段）-->
     <insert id="insert" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO tb_dealer_upgerde_rate
+        INSERT INTO tb_dealer_upgrade_rate
         <trim prefix="(" suffix=")" suffixOverrides="," >
             <if test="productId != null">
                 product_id,
@@ -60,7 +60,7 @@
 
     <!-- 修 改-->
     <update id="update">
-        UPDATE tb_dealer_upgerde_rate
+        UPDATE tb_dealer_upgrade_rate
         <set>
             <if test="productId != null">
                 product_id = #{productId},
@@ -91,7 +91,7 @@
     <select id="selectById" resultType="com.jkm.hss.dealer.entity.DealerUpgerdeRate">
         SELECT
         <include refid="Base_Column_List" />
-        FROM tb_dealer_upgerde_rate
+        FROM tb_dealer_upgrade_rate
         WHERE id = #{id} and status=1
     </select>
 
@@ -99,7 +99,7 @@
     <select id="selectAll" resultType="com.jkm.hss.dealer.entity.DealerUpgerdeRate">
         SELECT
         <include refid="Base_Column_List" />
-        FROM tb_dealer_upgerde_rate
+        FROM tb_dealer_upgrade_rate
         WHERE status = 1;
     </select>
 
@@ -108,8 +108,11 @@
     <select id="selectByDealerIdAndProductId" resultType="com.jkm.hss.dealer.entity.DealerUpgerdeRate">
         SELECT
         <include refid="Base_Column_List" />
-        FROM tb_dealer_upgerde_rate
+        FROM tb_dealer_upgrade_rate
         WHERE status = 1 and dealer_id = #{dealerId} and product_id = #{productId};
+    </select>
+    <select id="selectByDealerIdAndTypeAndProductId" resultType="com.jkm.hss.dealer.entity.DealerUpgerdeRate">
+        SELECT * FROM tb_dealer_upgerde_rate WHERE  status = 1 and dealer_id = #{dealerId} and product_id = #{productId} AND type = #{type};
     </select>
 
 </mapper>

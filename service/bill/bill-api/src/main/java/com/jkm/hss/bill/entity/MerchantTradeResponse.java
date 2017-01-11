@@ -20,6 +20,16 @@ import java.util.Date;
 public class MerchantTradeResponse {
 
     /**
+     * 支付流水号
+     */
+    private String sn;
+
+    /**
+     *
+     */
+    private int level;
+
+    /**
      * 商户id
      */
     private long id;
@@ -38,11 +48,6 @@ public class MerchantTradeResponse {
      * 一级代理商id
      */
     private long firstLevelDealerId;
-
-    /**
-     * 代理商等级
-     */
-    private int level;
 
     /**
      * 一级代理商名
@@ -84,6 +89,7 @@ public class MerchantTradeResponse {
      * 实付金额（未来可能有红包）
      */
     private BigDecimal realPayAmount;
+
 
     /**
      * 交易类型
@@ -178,69 +184,6 @@ public class MerchantTradeResponse {
      * {@link com.jkm.hss.product.enums.EnumPayChannelSign}
      */
     private int payChannelSign;
-
-    /**
-     * 是否待支付
-     *
-     * @return
-     */
-    public boolean isDuePay() {
-        return EnumOrderStatus.DUE_PAY.getId() == this.status;
-    }
-
-    /**
-     * 是否待支付成功
-     *
-     * @return
-     */
-    public boolean isPaySuccess() {
-        return EnumOrderStatus.PAY_SUCCESS.getId() == this.status;
-    }
-
-    /**
-     * 是否提现中
-     *
-     * @return
-     */
-    public boolean isWithDrawing() {
-        return EnumOrderStatus.WITHDRAWING.getId() == this.status;
-    }
-
-    /**
-     * 是否提现成功
-     *
-     * @return
-     */
-    public boolean isWithdrawSuccess() {
-        return EnumOrderStatus.WITHDRAW_SUCCESS.getId() == this.status;
-    }
-
-    /**
-     * 是否是待结算
-     *
-     * @return
-     */
-    public boolean isDueSettle() {
-        return EnumSettleStatus.DUE_SETTLE.getId() == this.settleStatus;
-    }
-
-    /**
-     * 是否是结算中
-     *
-     * @return
-     */
-    public boolean isSettleing() {
-        return EnumSettleStatus.SETTLE_ING.getId() == this.settleStatus;
-    }
-
-    /**
-     * 是否是已结算
-     *
-     * @return
-     */
-    public boolean isSettled() {
-        return EnumSettleStatus.SETTLED.getId() == this.settleStatus;
-    }
 
     /**
      * 绑卡姓名

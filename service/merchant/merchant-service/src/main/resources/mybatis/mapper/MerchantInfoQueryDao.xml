@@ -9,7 +9,7 @@
             tb_merchant_info
         WHERE 1=1
         <if test="merchantName != null and merchantName != ''">
-            AND merchant_name=#{merchantName}
+            AND merchant_name LIKE CONCAT('%',#{merchantName},'%')
         </if>
 
         <if test="status != null">
@@ -39,18 +39,47 @@
     </select>
 
     <!--查询待审核总数-->
-    <select id="getCountRecord" resultType="com.jkm.hss.merchant.entity.MerchantInfoResponse">
+    <select id="getCountRecord" resultType="java.lang.Integer">
         SELECT
         COUNT(*)
         FROM
         tb_merchant_info
-        WHERE status=2
+        WHERE 1=1
+        <if test="merchantName != null and merchantName != ''">
+            AND merchant_name LIKE CONCAT('%',#{merchantName},'%')
+        </if>
+
+        <if test="status != null">
+            AND status=#{status}
+        </if>
+        <if test="startTime!=null and startTime!=''">
+            AND create_time <![CDATA[ >= ]]> #{startTime}
+        </if>
+        <if test="endTime!=null and endTime!=''">
+            AND create_time <![CDATA[ <= ]]> #{endTime}
+        </if>
+
+        <if test="startTime1!=null and startTime1!=''">
+            AND authentication_time <![CDATA[ >= ]]> #{startTime1}
+        </if>
+
+        <if test="endTime1!=null and endTime1!=''">
+            AND authentication_time <![CDATA[ <= ]]> #{endTime1}
+        </if>
+
+        <if test="startTime2!=null and startTime2!=''">
+            AND checked_time <![CDATA[ >= ]]> #{startTime2}
+        </if>
+        <if test="endTime2!=null and endTime2!=''">
+            AND checked_time <![CDATA[ <= ]]> #{endTime2}
+        </if>
     </select>
 
 
     <select id="getAll"  resultType="com.jkm.hss.merchant.entity.MerchantInfoResponse">
 
         SELECT
+            mark_code,
             id,
             merchant_name,
             STATUS,
@@ -58,14 +87,13 @@
             create_time,
             authentication_time,
             checked_time,
-            (select d.proxy_name from tb_dealer as d where d.id=dealer_id) as proxy_name,
-            (select d.level from tb_dealer as d where d.id=dealer_id) as level,
-            (select d.first_level_dealer_id from tb_dealer as d where d.id=dealer_id) as firstLevelDealerId
+            (select d.proxy_name from tb_dealer as d where d.id=first_dealer_id) as proxy_name,
+            (select d.proxy_name from tb_dealer as d where d.id=second_dealer_id) as proxy_name1
         FROM
             tb_merchant_info
         WHERE 1=1
     <if test="merchantName != null and merchantName != ''">
-        AND merchant_name=#{merchantName}
+        AND merchant_name LIKE CONCAT('%',#{merchantName},'%')
     </if>
 
     <if test="status != null">
@@ -103,21 +131,51 @@
     <select id="getRecord"  resultType="com.jkm.hss.merchant.entity.MerchantInfoResponse">
 
         SELECT
+        mark_code,
         id,
         merchant_name,
         STATUS,
         dealer_id,
         create_time,
         authentication_time,
-        (select d.proxy_name from tb_dealer as d where d.id=dealer_id) as proxy_name,
-        (select d.level from tb_dealer as d where d.id=dealer_id) as level,
-        (select d.first_level_dealer_id from tb_dealer as d where d.id=dealer_id) as firstLevelDealerId
+        checked_time,
+        (select d.proxy_name from tb_dealer as d where d.id=first_dealer_id) as proxy_name,
+        (select d.proxy_name from tb_dealer as d where d.id=second_dealer_id) as proxy_name1
         FROM
         tb_merchant_info
-        WHERE status=2
+        WHERE 1=1
+        <if test="merchantName != null and merchantName != ''">
+            AND merchant_name LIKE CONCAT('%',#{merchantName},'%')
+        </if>
+
+        <if test="status != null">
+            AND status=#{status}
+        </if>
+
+        <if test="startTime!=null and startTime!=''">
+            AND create_time <![CDATA[ >= ]]> #{startTime}
+        </if>
+        <if test="endTime!=null and endTime!=''">
+            AND create_time <![CDATA[ <= ]]> #{endTime}
+        </if>
+
+        <if test="startTime1!=null and startTime1!=''">
+            AND authentication_time <![CDATA[ >= ]]> #{startTime1}
+        </if>
+
+        <if test="endTime1!=null and endTime1!=''">
+            AND authentication_time <![CDATA[ <= ]]> #{endTime1}
+        </if>
+
+        <if test="startTime2!=null and startTime2!=''">
+            AND checked_time <![CDATA[ >= ]]> #{startTime2}
+        </if>
+        <if test="endTime2!=null and endTime2!=''">
+            AND checked_time <![CDATA[ <= ]]> #{endTime2}
+        </if>
         ORDER BY
         create_time DESC
-        LIMIT #{pageNo},#{pageSize}
+        LIMIT #{offset},#{pageSize}
 
     </select>
 

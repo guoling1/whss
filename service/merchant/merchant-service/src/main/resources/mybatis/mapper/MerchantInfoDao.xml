@@ -7,7 +7,7 @@
         id,mobile,md_mobile,bank_no_short,	identity_face_pic,	identity_opposite_pic,	identity_hand_pic,	bank_hand_pic,bank_pic,
         	reserve_mobile,	merchant_name,	address,	name,	identity,	bank_bin,	bank_name,	bank_no,dealer_id,code,account_id,
         	checked_time,authentication_time,status,	create_time,	update_time,first_dealer_id,second_dealer_id,first_merchant_id,
-        	second_merchant_id,mark_code,level,weixin_rate,alipay_rate,fast_rate,hierarchy,product_id,source
+        	second_merchant_id,mark_code,level,weixin_rate,alipay_rate,fast_rate,hierarchy,product_id,source,is_upgrade
     </sql>
 
     <update id="update" parameterType="com.jkm.hss.merchant.entity.MerchantInfo">
@@ -168,6 +168,9 @@
             <if test="source!=null">
                 source,
             </if>
+            <if test="isUpgrade!=null">
+                is_upgrade,
+            </if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides="," >
             <if test="mobile != null">
@@ -271,6 +274,9 @@
             </if>
             <if test="source!=null">
                 #{source},
+            </if>
+            <if test="isUpgrade!=null">
+                #{isUpgrade},
             </if>
         </trim>
     </insert>
@@ -415,4 +421,11 @@
     <select id="selectByMobile" resultType="com.jkm.hss.merchant.entity.MerchantInfo">
         SELECT * from tb_merchant_info where mobile=#{mobile} limit 0,1
     </select>
+
+    <update id="toUpgrade">
+        UPDATE tb_merchant_info
+        SET level = #{level},weixin_rate = #{weixinRate},alipay_rate = #{alipayRate},fast_rate = #{fastRate}
+        WHERE id = #{merchantId}
+    </update>
+
 </mapper>

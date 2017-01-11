@@ -7,6 +7,7 @@ import com.jkm.hss.merchant.helper.request.OrderTradeRequest;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -113,16 +114,6 @@ public interface OrderDao {
      */
     int selectOrderListCount(Map map);
 
-
-
-
-    /**
-     * 查询firstLevelDealerId
-     * @param firstLevelDealerId
-     * @return
-     */
-    List<MerchantTradeResponse> getProxyName(long firstLevelDealerId);
-
     /**
      * 导出excel
      * @param req
@@ -183,4 +174,20 @@ public interface OrderDao {
      * @return
      */
     long selectCountMerchantPayOrders(QueryMerchantPayOrdersRequestParam requestParam);
+
+    /**
+     * 按下游业务订单号查询
+     *
+     * @param businessOrderNo
+     * @return
+     */
+    Order selectByBusinessOrderNo(@Param("businessOrderNo") String businessOrderNo);
+
+    /**
+     * 查询当前账户的交易总额
+     *
+     * @param accountId
+     * @return
+     */
+    BigDecimal selectTotalTradeAmountByAccountId(@Param("accountId") long accountId);
 }

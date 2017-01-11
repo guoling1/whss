@@ -2,7 +2,7 @@ package com.jkm.hss.product.servcie.impl;
 
 import com.google.common.base.Optional;
 import com.jkm.hss.product.dao.UpgradeRulesDao;
-import com.jkm.hss.product.entity.UpgradeResult;
+import com.jkm.hss.product.helper.response.UpgradeResult;
 import com.jkm.hss.product.entity.UpgradeRules;
 import com.jkm.hss.product.enums.EnumIsUpGrade;
 import com.jkm.hss.product.servcie.UpgradeRulesService;

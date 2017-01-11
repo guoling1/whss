@@ -26,9 +26,19 @@ public class Order extends BaseEntity {
     private long payOrderId;
 
     /**
+     * 业务订单号（下游）
+     */
+    private String businessOrderNo;
+
+    /**
      * 交易订单号
      */
     private String orderNo;
+
+    /**
+     * 流水好
+     */
+    private String sn;
 
     /**
      * 交易金额

@@ -13,25 +13,24 @@ import com.jkm.hss.merchant.entity.UpgradeRecord;
 import com.jkm.hss.merchant.enums.EnumMerchantStatus;
 import com.jkm.hss.merchant.enums.EnumStatus;
 import com.jkm.hss.merchant.enums.EnumUpgradeRecordType;
-import com.jkm.hss.merchant.enums.EnumUpgradeResult;
 import com.jkm.hss.merchant.helper.request.MerchantInfoAddRequest;
 import com.jkm.hss.merchant.service.MerchantInfoService;
 import com.jkm.hss.merchant.service.RecommendService;
 import com.jkm.hss.merchant.service.UpgradeRecordService;
-import com.jkm.hss.product.entity.Product;
+import com.jkm.hss.product.entity.UpgradePayRecord;
 import com.jkm.hss.product.entity.UpgradeRecommendRules;
-import com.jkm.hss.product.enums.EnumPayChannelSign;
+import com.jkm.hss.product.entity.UpgradeRules;
 import com.jkm.hss.product.enums.EnumUpGradeType;
-import com.jkm.hss.product.servcie.ProductChannelDetailService;
+import com.jkm.hss.product.enums.EnumUpgradePayResult;
 import com.jkm.hss.product.servcie.ProductService;
+import com.jkm.hss.product.servcie.UpgradePayRecordService;
 import com.jkm.hss.product.servcie.UpgradeRecommendRulesService;
+import com.jkm.hss.product.servcie.UpgradeRulesService;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.tuple.Triple;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -54,6 +53,10 @@ public class MerchantInfoServiceImpl implements MerchantInfoService {
     private UpgradeRecordService upgradeRecordService;
     @Autowired
     private RecommendService recommendService;
+    @Autowired
+    private UpgradeRulesService upgradeRulesService;
+    @Autowired
+    private UpgradePayRecordService upgradePayRecordService;
 
 
 
@@ -207,55 +210,107 @@ public class MerchantInfoServiceImpl implements MerchantInfoService {
         return this.merchantInfoDao.addAccountId(accountId, status, merchantId,checkedTime);
     }
 
+
     /**
      * 推荐好友，大于某个金额去升级
      *
      * @param merchantId
-     * @param totalTradeMoney
      */
     @Transactional
     @Override
-    public void toUpgradeByRecommend(long merchantId, BigDecimal totalTradeMoney) {
+    public void toUpgradeByRecommend(long merchantId) {
         try {
             MerchantInfo merchantInfo = merchantInfoDao.selectById(merchantId);
-            if(merchantInfo!=null){
+            if(merchantInfo!=null&&merchantInfo.getStatus()==EnumMerchantStatus.FRIEND.getId()){//已经激活，不再调用
                 if(merchantInfo.getStatus()==EnumMerchantStatus.PASSED.getId()){
                     Optional<UpgradeRecommendRules> upgradeRecommendRulesOptional = upgradeRecommendRulesService.selectByProductId(merchantInfo.getProductId());
                     if(upgradeRecommendRulesOptional.isPresent()){
-                        if(totalTradeMoney.compareTo(upgradeRecommendRulesOptional.get().getInviteStandard())>=0){
-                            //①更改该商户状态
-                            merchantInfoDao.updateStatus(EnumMerchantStatus.FRIEND.getId(),merchantId);
-                            //②计算好友是否升级
-                            List<Recommend> recommends = recommendService.selectRecommend(merchantId);
-                            if(recommends.size()>0){
-                                for(int i=0;i<recommends.size();i++){
-                                    MerchantInfo mi = merchantInfoDao.selectById(recommends.get(i).getRecommendMerchantId());
-//                                    if(mi.){
-//
-//                                    }
+                        //①更改该商户状态
+                        merchantInfoDao.updateStatus(EnumMerchantStatus.FRIEND.getId(),merchantId);
+                        //②该商户的直接好友
+                        List<Recommend> recommends = recommendService.selectDirectFriend(merchantId);
+                        log.info("产品编码是{}",merchantInfo.getProductId());
+                        //③每个级别需推荐人数
+                        List<UpgradeRules> upgradeRules = upgradeRulesService.selectAll(merchantInfo.getProductId());
+                        if(recommends.size()>0){
+                            for(int i=0;i<recommends.size();i++){
+                                MerchantInfo mi = merchantInfoDao.selectById(recommends.get(i).getRecommendMerchantId());
+                                int friendCount = recommendService.selectDirectCount(recommends.get(i).getRecommendMerchantId());
+                                if(mi.getLevel()==0){//普通
+                                    int needNum = upgradeRules.get(0).getPromotionNum();
+                                    if(friendCount>=needNum){
+                                        Optional<UpgradeRules> upgradeRulesOptional = upgradeRulesService.selectByProductIdAndType(merchantInfo.getProductId(),EnumUpGradeType.CLERK.getId());
+                                        if(upgradeRulesOptional.isPresent()){
+                                            merchantInfoDao.toUpgrade(recommends.get(i).getRecommendMerchantId(),upgradeRulesOptional.get().getType(),
+                                                    upgradeRulesOptional.get().getWeixinRate(),upgradeRulesOptional.get().getAlipayRate(),upgradeRulesOptional.get().getFastRate());
+                                        }
+                                    }
+                                }
+                                if(mi.getLevel()==1){//店员
+                                    int needNum = upgradeRules.get(1).getPromotionNum();
+                                    if(friendCount>=needNum){
+                                        Optional<UpgradeRules> upgradeRulesOptional = upgradeRulesService.selectByProductIdAndType(merchantInfo.getProductId(),EnumUpGradeType.SHOPOWNER.getId());
+                                        if(upgradeRulesOptional.isPresent()){
+                                            merchantInfoDao.toUpgrade(recommends.get(i).getRecommendMerchantId(),upgradeRulesOptional.get().getType(),
+                                                    upgradeRulesOptional.get().getWeixinRate(),upgradeRulesOptional.get().getAlipayRate(),upgradeRulesOptional.get().getFastRate());
+                                        }
+                                    }
+                                }
+                                if(mi.getLevel()==2){//店长
+                                    int needNum = upgradeRules.get(2).getPromotionNum();
+                                    if(friendCount>=needNum){
+                                        Optional<UpgradeRules> upgradeRulesOptional = upgradeRulesService.selectByProductIdAndType(merchantInfo.getProductId(),EnumUpGradeType.BOSS.getId());
+                                        if(upgradeRulesOptional.isPresent()){
+                                            merchantInfoDao.toUpgrade(recommends.get(i).getRecommendMerchantId(),upgradeRulesOptional.get().getType(),
+                                                    upgradeRulesOptional.get().getWeixinRate(),upgradeRulesOptional.get().getAlipayRate(),upgradeRulesOptional.get().getFastRate());
+                                        }
+                                    }
                                 }
                             }
-                            //判断直接好友或间接好友是否需要升级
-                            UpgradeRecord upgradeRecord = new UpgradeRecord();
-                            upgradeRecord.setMerchantId(merchantId);
-                            upgradeRecord.setStatus(EnumStatus.NORMAL.getId());
-                            upgradeRecord.setType(EnumUpgradeRecordType.RECOMMEND.getId());
-                            upgradeRecord.setUpgradeResult(EnumUpgradeResult.SUCCESS.getId());
-                            upgradeRecordService.insert(upgradeRecord);
-                        }else{
-                            log.info("该商户刷的额度不够");
                         }
                     }else{
                         log.info("推荐好友，没有此升级配置");
                     }
                 }else{
-                    log.info("商户状态是{}，此状态下不算升级");
+                    log.info("商户状态是{}，此状态下不能升级",merchantInfo.getStatus());
                 }
             }else{
-                log.info("推荐好友，没有此商户");
+                log.info("推荐好友，没有此商户或者已经激活，不用激活，商户编码{}",merchantId);
             }
         }catch (Exception e){
             log.error("系统出错",e);
+        }
+    }
+
+    /**
+     * 升级
+     *
+     * @param reqSn
+     * @param result
+     * @return
+     */
+    @Override
+    public void toUpgrade(String reqSn, String result) {
+        UpgradePayRecord upgradePayRecord = upgradePayRecordService.selectByReqSn(reqSn);
+        if(upgradePayRecord!=null){
+            if(!EnumUpgradePayResult.SUCCESS.getId().equals(upgradePayRecord.getPayResult())){
+                upgradePayRecordService.updatePayResult(result,reqSn);
+                Optional<UpgradeRules> upgradeRulesOptional = upgradeRulesService.selectById(upgradePayRecord.getUpgradeRulesId());
+                if(upgradeRulesOptional.isPresent()){
+                    merchantInfoDao.toUpgrade(upgradePayRecord.getMerchantId(),upgradeRulesOptional.get().getType(),upgradeRulesOptional.get().getWeixinRate(),upgradeRulesOptional.get().getAlipayRate(),upgradeRulesOptional.get().getFastRate());
+                    //判断直接好友或间接好友是否需要升级
+                    UpgradeRecord upgradeRecord = new UpgradeRecord();
+                    upgradeRecord.setMerchantId(upgradePayRecord.getMerchantId());
+                    upgradeRecord.setStatus(EnumStatus.NORMAL.getId());
+                    upgradeRecord.setType(EnumUpgradeRecordType.RECHARGE.getId());
+                    upgradeRecord.setLevel(upgradeRulesOptional.get().getType());
+                    upgradeRecordService.insert(upgradeRecord);
+                }else{
+                    log.info("没有此合伙人{}",upgradePayRecord.getUpgradeRulesId());
+                }
+            }
+        }else{
+            log.info("付费升级失败，没有查到该记录{}",reqSn);
         }
     }
 

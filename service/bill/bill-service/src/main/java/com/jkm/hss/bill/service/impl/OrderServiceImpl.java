@@ -224,28 +224,9 @@ public class OrderServiceImpl implements OrderService {
         map.put("status",req.getStatus());
         map.put("lessTotalFee",req.getLessTotalFee());
         map.put("moreTotalFee",req.getMoreTotalFee());
-//        map.put("settleStatus",req.getSettleStatus());
         map.put("offset",req.getOffset());
         map.put("size",req.getSize());
         List<MerchantTradeResponse> list = orderDao.selectOrderList(map);
-        if(list.size()>0){
-            for(int i=0;i<list.size();i++){
-                if (list.get(i).getLevel()==1){
-                    list.get(i).setProxyName(list.get(i).getProxyName());
-                }
-                if (list.get(i).getLevel()==2){
-                    List<MerchantTradeResponse> res = orderDao.getProxyName(list.get(i).getFirstLevelDealerId());
-                    if (res.size()>0){
-                        for (int m=0;res.size()>m;m++){
-                            list.get(i).setProxyName1(res.get(m).getProxyName());
-                        }
-                    }
-                }
-
-
-
-            }
-        }
         return list;
     }
 
@@ -371,6 +352,28 @@ public class OrderServiceImpl implements OrderService {
     }
 
     /**
+     * {@inheritDoc}
+     *
+     * @param businessOrderNo
+     * @return
+     */
+    @Override
+    public Optional<Order> getByBusinessOrderNo(final String businessOrderNo) {
+        return Optional.fromNullable(this.orderDao.selectByBusinessOrderNo(businessOrderNo));
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param accountId
+     * @return
+     */
+    @Override
+    public BigDecimal getTotalTradeAmountByAccountId(final long accountId) {
+        return this.orderDao.selectTotalTradeAmountByAccountId(accountId);
+    }
+
+    /**
      * 生成ExcelVo
      * @param
      * @param baseUrl
@@ -378,25 +381,6 @@ public class OrderServiceImpl implements OrderService {
      */
     private ExcelSheetVO generateCodeExcelSheet(OrderTradeRequest req,String baseUrl) {
         List<MerchantTradeResponse> list = orderDao.selectOrderListTrade(req);
-        if(list.size()>0){
-            for(int i=0;i<list.size();i++){
-
-                if (list.get(i).getLevel()==1){
-                    list.get(i).setProxyName(list.get(i).getProxyName());
-                }
-                if (list.get(i).getLevel()==2){
-                    List<MerchantTradeResponse> res = orderDao.getProxyName(list.get(i).getFirstLevelDealerId());
-                    if (res.size()>0){
-                        for (int m=0;res.size()>m;m++){
-                            list.get(i).setProxyName1(res.get(m).getProxyName());
-                        }
-                    }
-
-                }
-
-
-            }
-        }
         final ExcelSheetVO excelSheetVO = new ExcelSheetVO();
         final List<List<String>> datas = new ArrayList<List<String>>();
         final ArrayList<String> heads = new ArrayList<>();
@@ -431,8 +415,18 @@ public class OrderServiceImpl implements OrderService {
                 columns.add(list.get(i).getProxyName());
                 columns.add(list.get(i).getProxyName1());
                 columns.add(String.valueOf(list.get(i).getTradeAmount()));
-                columns.add(String.valueOf(list.get(i).getPayRate()));
-                columns.add(String.valueOf(list.get(i).getPoundage()));
+                if (list.get(i).getPayRate()==null){
+                    String x = " ";
+                    columns.add(x);
+                }else {
+                    columns.add(String.valueOf(list.get(i).getPayRate()));
+                }
+                if (list.get(i).getPoundage()==null){
+                    String x = " ";
+                    columns.add(x);
+                }else {
+                    columns.add(String.valueOf(list.get(i).getPoundage()));
+                }
                 if (list.get(i).getStatus()==1){
                     columns.add("待支付");
                 }
@@ -479,9 +473,6 @@ public class OrderServiceImpl implements OrderService {
                 }
                 if ("Z".equals(list.get(i).getPayType())){
                     columns.add("支付宝扫码");
-                }
-                if("".equals(list.get(i).getPayType())|| list.get(i).getPayType()==null){
-                    columns.add("-");
                 }
                 if (list.get(i).getPayChannelSign()==101){
                     columns.add("阳光微信扫码");

@@ -1,9 +1,11 @@
 <template lang="html">
   <div id="issue">
-    <div style="padding: 8px 30px; background: rgb(243, 156, 18); z-index: 999999; font-size: 22px; font-weight: 600;margin-bottom: 15px;    color: #fff;">分配二维码(按个数)</div>
-    <div style="margin: 0 15px">
-      <div class="box box-info">
+    <div style="margin: 15px">
+      <div class="box">
         <form class="form-horizontal">
+          <div class="box-header">
+            <h3 class="box-title">分配二维码(按个数)</h3>
+          </div>
           <div class="box-body">
             <div class="form-group">
               <label for="inputEmail3" class="col-sm-3 control-label">一级代理</label>
