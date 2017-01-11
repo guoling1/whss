@@ -162,11 +162,11 @@
     },
     methods: {
       search: function () {
+        this.$data.result = ''
         this.$http.post('/admin/upgrade/init', {productId: this.$data.productId})
           .then(function (res) {
             console.log(res)
             this.$data.result = res.data;
-
             this.$data.result.upgradeRulesList.sort(function (a, b) {
               return a.type-b.type
             })

@@ -166,9 +166,10 @@
          excelUrl:'http://pay.qianbaojiajia.com/order/withdraw/exportExcel',
          syncUrl:'http://pay.qianbaojiajia.com/order/syncWithdrawOrder',*/
         //测试
-        queryUrl:'http://192.168.1.21:8076/order/withdraw/listOrder',
-        excelUrl:'http://192.168.1.21:8076/order/withdraw/exportExcel',
-        syncUrl:'http://192.168.1.21:8076/order/syncWithdrawOrder',
+        queryUrl:'http://192.168.1.20:8076/order/withdraw/listOrder',
+        excelUrl:'http://192.168.1.20:8076/order/withdraw/exportExcel',
+        syncUrl:'http://192.168.1.20:8076/order/syncWithdrawOrder',
+        syncUrl:'http://192.168.1.20:8076/order/syncWithdrawOrder',
       }
     },
     created:function () {
@@ -201,7 +202,6 @@
                 str+='<li class="paginate_button"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">'+i+'</a></li></li>'
               }
             }else if(this.$data.query.pageNo>=6&&this.$data.query.pageNo<=(this.$data.total-5)){
-              console.log(this.$data.query.pageNo)
               for (var i = this.$data.query.pageNo-4; i <= this.$data.query.pageNo+5; i++){
                 if(i == this.$data.query.pageNo){
                   str+='<li class="paginate_button active"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">'+i+'</a></li></li>';
@@ -221,7 +221,7 @@
           str+='<li class="paginate_button next" id="example2_next"><a href="#" aria-controls="example2" data-dt-idx="7" tabindex="0">下一页</a></li>'
           page.innerHTML=str;
         },function (err) {
-          this.$data.isShow = true;
+          this.$data.isShow = false;
           this.$store.commit('MESSAGE_ACCORD_SHOW', {
             text: err.statusMessage
           })
@@ -229,8 +229,7 @@
     },
     methods: {
       mouseover: function (e) {
-        /*console.log(e)
-        var obj = e.target;
+        /*var obj = e.target;
         obj.style.position='relative'
         var span = e.target.lastElementChild;
         span.style.display="block";
@@ -320,7 +319,6 @@
                   str+='<li class="paginate_button"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">'+i+'</a></li></li>'
                 }
               }else if(this.$data.query.pageNo>=6&&this.$data.query.pageNo<=(this.$data.total-5)){
-                console.log(this.$data.query.pageNo)
                 for (var i = this.$data.query.pageNo-4; i <= this.$data.query.pageNo+5; i++){
                   if(i == this.$data.query.pageNo){
                     str+='<li class="paginate_button active"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">'+i+'</a></li></li>';
@@ -329,7 +327,6 @@
                   str+='<li class="paginate_button"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">'+i+'</a></li></li>'
                 }
               }else if(this.$data.query.pageNo>=6&&this.$data.query.pageNo>this.$data.total-5){
-                console.log(2)
                 for (var i = this.$data.total-9; i <= this.$data.total; i++){
                   if(i == this.$data.query.pageNo){
                     str+='<li class="paginate_button active"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">'+i+'</a></li></li>';
@@ -381,7 +378,6 @@
                   str+='<li class="paginate_button"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">'+i+'</a></li></li>'
                 }
               }else if(this.$data.query.pageNo>=6&&this.$data.query.pageNo<=(this.$data.total-5)){
-                console.log(this.$data.query.pageNo)
                 for (var i = this.$data.query.pageNo-4; i <= this.$data.query.pageNo+5; i++){
                   if(i == this.$data.query.pageNo){
                     str+='<li class="paginate_button active"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">'+i+'</a></li></li>';
@@ -390,7 +386,6 @@
                   str+='<li class="paginate_button"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">'+i+'</a></li></li>'
                 }
               }else if(this.$data.query.pageNo>=6&&this.$data.query.pageNo>this.$data.total-5){
-                console.log(2)
                 for (var i = this.$data.total-9; i <= this.$data.total; i++){
                   if(i == this.$data.query.pageNo){
                     str+='<li class="paginate_button active"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">'+i+'</a></li></li>';

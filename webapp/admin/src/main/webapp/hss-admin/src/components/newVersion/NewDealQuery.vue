@@ -117,10 +117,10 @@
               </table>
             </div>
           </div>
-          <!--<div v-if="isShow">
+          <div v-if="isShow">
             <img src="http://img.jinkaimen.cn/admin/common/dist/img/ICBCLoading.gif" alt="">
-          </div>-->
-          <div v-if="orders.length==0" class="row" style="text-align: center;color: red;font-size: 16px;">
+          </div>
+          <div v-if="orders.length==0&&!isShow" class="row" style="text-align: center;color: red;font-size: 16px;">
             <div class="col-sm-12">无此数据</div>
           </div>
           <div class="row">
@@ -275,6 +275,7 @@
           n = Number(tarInn);
         }
         this.$data.query.page = n;
+        this.$data.orders='';
         this.$http.post('/admin/queryOrder/orderList',this.$data.query)
           .then(function (res) {
             this.$data.orders=res.data.records;
@@ -344,6 +345,9 @@
       lookup: function () {
         this.$data.query.page = 1;
         this.$data.isShow = true;
+        this.$data.orders='';
+        this.$data.total=0;
+        this.$data.count = 0;
         this.$http.post('/admin/queryOrder/orderList',this.$data.query)
           .then(function (res) {
             this.$data.isShow = false;

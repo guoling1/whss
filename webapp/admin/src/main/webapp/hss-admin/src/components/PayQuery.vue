@@ -156,9 +156,9 @@
         excelUrl:'http://pay.qianbaojiajia.com/order/pay/exportExcel',
         syncUrl:'http://pay.qianbaojiajia.com/order/syncPayOrder',*/
         //测试
-        queryUrl:'http://192.168.1.21:8076/order/pay/listOrder',
-        excelUrl:'http://192.168.1.21:8076/order/pay/exportExcel',
-        syncUrl:'http://192.168.1.21:8076/order/syncPayOrder',
+        queryUrl:'http://192.168.1.20:8076/order/pay/listOrder',
+        excelUrl:'http://192.168.1.20:8076/order/pay/exportExcel',
+        syncUrl:'http://192.168.1.20:8076/order/syncPayOrder',
       }
     },
     created:function(){
