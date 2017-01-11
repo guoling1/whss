@@ -81,7 +81,7 @@
 </body>
 <script>
   var pageData = {
-    level: 1,
+    level: ${upgradeRules.id},
     shareUrl: '${shareUrl}'
   }
 </script>

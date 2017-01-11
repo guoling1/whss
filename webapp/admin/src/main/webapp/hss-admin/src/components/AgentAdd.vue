@@ -140,15 +140,16 @@
                 <option value="2">开</option>
                 <option value="1">关</option>
               </select>-->
-              <input type="radio" id="one" value="One" v-model="recommendBtn" style="margin-left: 50px;">
+              <input type="radio" id="one" value="1" v-model="recommendBtn" style="margin-left: 50px;">
               <label for="one">开 (开通后，代理商设置的商户终端费率按产品费率执行)</label>
-              <input type="radio" id="two" value="Two" v-model="recommendBtn" style="margin-left: 50px;">
+              <input type="radio" id="two" value="2" v-model="recommendBtn" style="margin-left: 50px;">
               <label for="two">关</label>
             </div>
           </div>
           <!-- /.box-body -->
         </form>
       </div>
+      <!--<div class="box box-info" v-if="level!=2&&recommentBtn==1">-->
       <div class="box box-info" v-if="level!=2">
         <div class="box-header with-border">
           <h3 class="box-title">合伙人推荐分润设置</h3>
@@ -164,7 +165,7 @@
                             <tbody>
                             <tr>
                               <th>收单总分润空间</th>
-                              <th colspan="5">
+                              <th colspan="5" style="text-align: left">
                                 <input type="number" style="width: 20%" v-model="totalProfitSpace">%
                                 （总分润空间不可高于0.2%，收单分润需扣除商户升级及推荐的分润成本）
                               </th>

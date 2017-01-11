@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -64,13 +65,19 @@ public class UpgradeController extends BaseController {
         UpgradeRules upgradeRules = new UpgradeRules();
         for(int i=0;i<productChannelDetails.size();i++){
             if(EnumPayChannelSign.YG_WEIXIN.getId()==productChannelDetails.get(i).getChannelTypeSign()){
-                upgradeRules.setWeixinRate(productChannelDetails.get(i).getProductMerchantPayRate());
+                BigDecimal weixinRate = productChannelDetails.get(i).getProductMerchantPayRate();
+                BigDecimal b1 = new BigDecimal(100);
+                upgradeRules.setWeixinRate(weixinRate.multiply(b1));
             }
             if(EnumPayChannelSign.YG_ZHIFUBAO.getId()==productChannelDetails.get(i).getChannelTypeSign()){
-                upgradeRules.setAlipayRate(productChannelDetails.get(i).getProductMerchantPayRate());
+                BigDecimal alipayRate = productChannelDetails.get(i).getProductMerchantPayRate();
+                BigDecimal b1 = new BigDecimal(100);
+                upgradeRules.setAlipayRate(alipayRate.multiply(b1));
             }
             if(EnumPayChannelSign.YG_YINLIAN.getId()==productChannelDetails.get(i).getChannelTypeSign()){
-                upgradeRules.setFastRate(productChannelDetails.get(i).getProductMerchantPayRate());
+                BigDecimal fastRate = productChannelDetails.get(i).getProductMerchantPayRate();
+                BigDecimal b1 = new BigDecimal(100);
+                upgradeRules.setFastRate(fastRate.multiply(b1));
             }
         }
         upgradeRulesList.add(upgradeRules);
@@ -82,30 +89,37 @@ public class UpgradeController extends BaseController {
                 upgradeRulesTemp.setType(i);
                 upgradeRulesList.add(upgradeRulesTemp);
             }
+        }else {
+            for (int i=0;i<upgradeRulesArr.size();i++){
+                if(upgradeRulesArr.get(i).getType()==1||upgradeRulesArr.get(i).getType()==2||upgradeRulesArr.get(i).getType()==3){
+                    BigDecimal weixinRate = upgradeRulesArr.get(i).getWeixinRate();
+                    BigDecimal alipayRate = upgradeRulesArr.get(i).getAlipayRate();
+                    BigDecimal fastRate = upgradeRulesArr.get(i).getFastRate();
+                    BigDecimal b1 = new BigDecimal(100);
+                    upgradeRulesArr.get(i).setWeixinRate(weixinRate.multiply(b1));
+                    upgradeRulesArr.get(i).setAlipayRate(alipayRate.multiply(b1));
+                    upgradeRulesArr.get(i).setFastRate(fastRate.multiply(b1));
+                }
+            }
+
         }
 
-//        if(upgradeRulesArr.size()>0){
-//            for(int j=0;j<upgradeRulesArr.size();j++){
-//                upgradeRulesList.add(upgradeRulesArr.get(j).getType(),upgradeRulesArr.get(j));
-//            }
-//        }else {
-//            for(int i=1;i<4;i++){
-//                UpgradeRules upgradeRulesTemp = new UpgradeRules();
-//                upgradeRulesTemp.setType(i);
-//                upgradeRulesList.add(upgradeRulesTemp);
-//            }
-//        }
+
         upgradeRulesList.addAll(upgradeRulesArr);
         UpgradeRulesAndRateResponse upgradeRulesAndRateResponse = new  UpgradeRulesAndRateResponse();
         upgradeRulesAndRateResponse.setUpgradeRulesList(upgradeRulesList);
         //升级推荐分润设置及达标标准设置
         Optional<UpgradeRecommendRules> upgradeRecommendRulesOptional = upgradeRecommendRulesService.selectByProductId(req.getProductId());
         if(upgradeRecommendRulesOptional.isPresent()){
+            BigDecimal upgradeRate = upgradeRecommendRulesOptional.get().getUpgradeRate();
+            BigDecimal rewardRate = upgradeRecommendRulesOptional.get().getRewardRate();
+            BigDecimal tradeRate = upgradeRecommendRulesOptional.get().getTradeRate();
+            BigDecimal b1 = new BigDecimal(100);
+            upgradeRulesAndRateResponse.setUpgradeRate(upgradeRate.multiply(b1));
+            upgradeRulesAndRateResponse.setRewardRate(rewardRate.multiply(b1));
+            upgradeRulesAndRateResponse.setTradeRate(tradeRate.multiply(b1));
             upgradeRulesAndRateResponse.setStandard(upgradeRecommendRulesOptional.get().getInviteStandard());
-            upgradeRulesAndRateResponse.setRewardRate(upgradeRecommendRulesOptional.get().getRewardRate());
-            upgradeRulesAndRateResponse.setTradeRate(upgradeRecommendRulesOptional.get().getTradeRate());
-            upgradeRulesAndRateResponse.setUpgradeRate(upgradeRecommendRulesOptional.get().getUpgradeRate());
-        }
+    }
         return CommonResponse.objectResponse(1, "success", upgradeRulesAndRateResponse);
     }
 
@@ -131,16 +145,23 @@ public class UpgradeController extends BaseController {
                 Optional<UpgradeRules> upgradeRulesOptional = upgradeRulesService.selectByProductIdAndType(req.getProductId(),req.getUpgradeRulesList().get(i).getType());
                 if(upgradeRulesOptional.isPresent()){//存在修改
                     UpgradeRules upgradeRules = new UpgradeRules();
+                    BigDecimal weixinRate = req.getUpgradeRulesList().get(i).getWeixinRate();
+                    BigDecimal alipayRate = req.getUpgradeRulesList().get(i).getAlipayRate();
+                    BigDecimal fastRate = req.getUpgradeRulesList().get(i).getFastRate();
+                    BigDecimal b1 = new BigDecimal(100);
                     upgradeRules.setId(upgradeRulesOptional.get().getId());
                     upgradeRules.setProductId(req.getProductId());
                     upgradeRules.setName(req.getUpgradeRulesList().get(i).getName());
                     upgradeRules.setType(req.getUpgradeRulesList().get(i).getType());
                     upgradeRules.setPromotionNum(req.getUpgradeRulesList().get(i).getPromotionNum());
                     upgradeRules.setUpgradeCost(req.getUpgradeRulesList().get(i).getUpgradeCost());
-                    upgradeRules.setWeixinRate(req.getUpgradeRulesList().get(i).getWeixinRate());
-                    upgradeRules.setAlipayRate(req.getUpgradeRulesList().get(i).getAlipayRate());
-                    upgradeRules.setFastRate(req.getUpgradeRulesList().get(i).getFastRate());
-                    upgradeRules.setAlipayRate(req.getUpgradeRulesList().get(i).getAlipayRate());
+                    upgradeRules.setWeixinRate(weixinRate.divide(b1));
+                    upgradeRules.setAlipayRate(alipayRate.divide(b1));
+                    upgradeRules.setFastRate(fastRate.divide(b1));
+//                    upgradeRules.setWeixinRate(req.getUpgradeRulesList().get(i).getWeixinRate());
+//                    upgradeRules.setAlipayRate(req.getUpgradeRulesList().get(i).getAlipayRate());
+//                    upgradeRules.setFastRate(req.getUpgradeRulesList().get(i).getFastRate());
+//                    upgradeRules.setAlipayRate(req.getUpgradeRulesList().get(i).getAlipayRate());
                     upgradeRules.setDirectPromoteShall(req.getUpgradeRulesList().get(i).getDirectPromoteShall());
                     upgradeRules.setInDirectPromoteShall(req.getUpgradeRulesList().get(i).getInDirectPromoteShall());
                     upgradeRules.setStatus(EnumUpgrade.NORMAL.getId());
@@ -160,20 +181,28 @@ public class UpgradeController extends BaseController {
         }
         //升级推荐分润设置及达标标准设置
         Optional<UpgradeRecommendRules> upgradeRecommendRulesOptional = upgradeRecommendRulesService.selectByProductId(req.getProductId());
+        BigDecimal upgradeRate = req.getUpgradeRate();
+        BigDecimal tradeRate = req.getTradeRate();
+        BigDecimal rewardRate = req.getRewardRate();
+        BigDecimal b1 = new BigDecimal(100);
         if(upgradeRecommendRulesOptional.isPresent()){//修改
+//            BigDecimal upgradeRate = req.getUpgradeRate();
+//            BigDecimal tradeRate = req.getTradeRate();
+//            BigDecimal rewardRate = req.getRewardRate();
+//            BigDecimal b1 = new BigDecimal(100);
             upgradeRecommendRulesOptional.get().setInviteStandard(req.getStandard());
-            upgradeRecommendRulesOptional.get().setUpgradeRate(req.getUpgradeRate());
-            upgradeRecommendRulesOptional.get().setTradeRate(req.getTradeRate());
-            upgradeRecommendRulesOptional.get().setRewardRate(req.getRewardRate());
+            upgradeRecommendRulesOptional.get().setUpgradeRate(upgradeRate.divide(b1));
+            upgradeRecommendRulesOptional.get().setTradeRate(tradeRate.divide(b1));
+            upgradeRecommendRulesOptional.get().setRewardRate(rewardRate.divide(b1));
             upgradeRecommendRulesService.update(upgradeRecommendRulesOptional.get());
         }else{//新增
             UpgradeRecommendRules upgradeRecommendRules = new UpgradeRecommendRules();
             upgradeRecommendRules.setStatus(EnumUpgrade.NORMAL.getId());
             upgradeRecommendRules.setProductId(req.getProductId());
             upgradeRecommendRules.setInviteStandard(req.getStandard());
-            upgradeRecommendRules.setUpgradeRate(req.getUpgradeRate());
-            upgradeRecommendRules.setTradeRate(req.getTradeRate());
-            upgradeRecommendRules.setRewardRate(req.getRewardRate());
+            upgradeRecommendRules.setUpgradeRate(upgradeRate.divide(b1));
+            upgradeRecommendRules.setTradeRate(tradeRate.divide(b1));
+            upgradeRecommendRules.setRewardRate(rewardRate.divide(b1));
             upgradeRecommendRulesService.insert(upgradeRecommendRules);
         }
         return CommonResponse.simpleResponse(1, "操作成功");
