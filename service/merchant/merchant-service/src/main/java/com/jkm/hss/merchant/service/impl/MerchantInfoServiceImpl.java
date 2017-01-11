@@ -225,10 +225,12 @@ public class MerchantInfoServiceImpl implements MerchantInfoService {
     @Transactional
     @Override
     public void toUpgradeByRecommend(long merchantId) {
+        log.info("用户升级开始。。。。。。。。。。。。");
         log.info("merchantId:{}",merchantId);
         try {
             MerchantInfo merchantInfo = merchantInfoDao.selectById(merchantId);
             if(merchantInfo!=null&&merchantInfo.getStatus()==EnumMerchantStatus.FRIEND.getId()){//已经激活，不再调用
+                log.info("没有升级，可以升级");
                 log.info("状态是:{}",merchantInfo.getStatus());
                 if(merchantInfo.getStatus()==EnumMerchantStatus.PASSED.getId()){
                     log.info("开始升级");
