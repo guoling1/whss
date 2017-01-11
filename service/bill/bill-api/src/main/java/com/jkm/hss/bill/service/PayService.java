@@ -18,9 +18,10 @@ public interface PayService {
      * @param merchantId
      * @param businessOrderNo 业务订单号
      * @param amount
+     * @param businessCallbackUrl 业务方回调url
      * @return
      */
-    Pair<Integer, String> generateMerchantUpgradeUrl(long merchantId, String businessOrderNo, BigDecimal amount);
+    Pair<Integer, String> generateMerchantUpgradeUrl(long merchantId, String businessOrderNo, BigDecimal amount, String businessCallbackUrl);
 
     /**
      * 动态码收款
