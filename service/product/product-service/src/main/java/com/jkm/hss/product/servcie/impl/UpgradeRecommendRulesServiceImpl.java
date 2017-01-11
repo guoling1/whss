@@ -7,6 +7,7 @@ import com.jkm.hss.product.entity.UpgradeRecommendRules;
 import com.jkm.hss.product.enums.EnumProductType;
 import com.jkm.hss.product.servcie.ProductService;
 import com.jkm.hss.product.servcie.UpgradeRecommendRulesService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +17,7 @@ import java.util.List;
 /**
  * Created by Thinkpad on 2016/12/30.
  */
+@Slf4j
 @Service
 public class UpgradeRecommendRulesServiceImpl implements UpgradeRecommendRulesService{
     @Autowired
@@ -82,8 +84,10 @@ public class UpgradeRecommendRulesServiceImpl implements UpgradeRecommendRulesSe
      */
     @Override
     public BigDecimal selectInviteStandard() {
+        log.info("开始查询达标标准。。。。。。。。。。。。。。。");
         Optional<Product> productOptional = productService.selectByType(EnumProductType.HSS.getId());
         UpgradeRecommendRules  upgradeRecommendRules=  upgradeRecommendRulesDao.selectByProductId(productOptional.get().getId());
+        log.info("达标标准是{}",upgradeRecommendRules.getInviteStandard());
         return upgradeRecommendRules.getInviteStandard();
     }
 }
