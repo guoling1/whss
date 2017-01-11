@@ -24,7 +24,7 @@ import com.jkm.hss.dealer.entity.Dealer;
 import com.jkm.hss.dealer.service.DealerService;
 import com.jkm.hss.merchant.entity.MerchantInfo;
 import com.jkm.hss.merchant.entity.UserInfo;
-import com.jkm.hss.merchant.helper.MerchantSupport;
+
 import com.jkm.hss.merchant.service.MerchantInfoService;
 import com.jkm.hss.merchant.service.MerchantPromoteShallService;
 import com.jkm.hss.merchant.service.SendMsgService;
@@ -36,7 +36,6 @@ import com.jkm.hss.product.enums.EnumPayChannelSign;
 import com.jkm.hss.product.servcie.ProductService;
 import com.jkm.hss.product.servcie.UpgradeRecommendRulesService;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
 import org.joda.time.DateTime;

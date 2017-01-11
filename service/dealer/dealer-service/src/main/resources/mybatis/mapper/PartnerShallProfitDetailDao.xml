@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jkm.hss.dealer.dao.PartnerShallProfitDetailDao">
+    <insert id="init" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO tb_shall_profit_detail
+        (merchant_id,
+        order_no,
+        channel_type,
+        total_fee,
+        wait_shall_amount,
+        wait_shall_origin_amount,
+        profit_type,
+        channel_cost,
+        channel_shall_amount,
+        product_shall_amount,
+        first_dealer_id,
+        first_dealer_shall_amount,
+        second_dealer_id,
+        second_dealer_shall_amount,
+        first_merchant_id,
+        first_merchant_shall_amount,
+        second_merchant_id,
+        second_merchant_shall_amount,
+        profit_date,
+        status
+        )VALUES(
+        #{merchantId},
+        #{orderNo},
+        #{channelType},
+        #{totalFee},
+        #{waitShallAmount},
+        #{waitShallOriginAmount},
+        #{profitType},
+        #{channelCost},
+        #{channelShallAmount},
+        #{productShallAmount},
+        #{firstDealerId},
+        #{firstDealerShallAmount},
+        #{secondDealerId},
+        #{secondDealerShallAmount},
+        #{firstMerchantId},
+        #{firstMerchantShallAmount},
+        #{secondMerchantId},
+        #{secondMerchantShallAmount},
+        #{profitDate},
+        #{status}
+        )
+    </insert>
+</mapper>
