@@ -58,7 +58,7 @@
                 <tr role="row">
                   <th class="sorting_asc" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Rendering engine: activate to sort column descending">序号</th>
                   <th class="sorting_asc" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Rendering engine: activate to sort column descending">支付流水号</th>
-                  <th class="sorting_asc" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Rendering engine: activate to sort column descending">交易单号</th>
+                  <th class="sorting_asc" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Rendering engine: activate to sort column descending">订单号</th>
                   <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="Platform(s): activate to sort column ascending">支付金额</th>
                   <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="Platform(s): activate to sort column ascending">创建时间</th>
                   <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="Engine version: activate to sort column ascending">支付发起时间</th>
@@ -150,11 +150,19 @@
         total:'',
         isMask: false,
         url: '',
-        count:''
+        count:'',
+        //正式
+        /*queryUrl:'http://pay.qianbaojiajia.com/order/pay/listOrder',
+        excelUrl:'http://pay.qianbaojiajia.com/order/pay/exportExcel',
+        syncUrl:'http://pay.qianbaojiajia.com/order/syncPayOrder',*/
+        //测试
+        queryUrl:'http://192.168.1.21:8076/order/pay/listOrder',
+        excelUrl:'http://192.168.1.21:8076/order/pay/exportExcel',
+        syncUrl:'http://192.168.1.21:8076/order/syncPayOrder',
       }
     },
     created:function(){
-      this.$http.post('http://pay.qianbaojiajia.com/order/pay/listOrder',this.$data.query)
+      this.$http.post(this.$data.queryUrl,this.$data.query)
         .then(function (res) {
           this.$data.orders=res.data.records;
           this.$data.total=res.data.totalPage;
@@ -210,7 +218,7 @@
     methods: {
       onload:function () {
         this.$data.isMask = true;
-        this.$http.post('http://pay.qianbaojiajia.com/order/pay/exportExcel',this.$data.query)
+        this.$http.post(this.$data.excelUrl,this.$data.query)
           .then(function (res) {
             this.$data.url = res.data.url;
           },function (err) {
@@ -254,7 +262,7 @@
           n = Number(tarInn);
         }
         this.$data.query.pageNo = n;
-        this.$http.post('http://pay.qianbaojiajia.com/order/pay/listOrder',this.$data.query)
+        this.$http.post(this.$data.queryUrl,this.$data.query)
           .then(function (res) {
             this.$data.orders=res.data.records;
             this.$data.total=res.data.totalPage;
@@ -339,7 +347,7 @@
             text: "请输入开始时间"
           })
         }else {
-          this.$http.post('http://pay.qianbaojiajia.com/order/pay/listOrder',this.$data.query)
+          this.$http.post(this.$data.queryUrl,this.$data.query)
             .then(function (res) {
               this.$data.orders=res.data.records;
               this.$data.total=res.data.totalPage;
@@ -396,7 +404,7 @@
       //补单
       synchro: function (val) {
         console.log(val)
-        this.$http.post('http://pay.qianbaojiajia.com/order/syncPayOrder',{sn:val})
+        this.$http.post(this.$data.syncUrl,{sn:val})
           .then(function (res) {
             this.$store.commit('MESSAGE_ACCORD_SHOW', {
               text: res.msg

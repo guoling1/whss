@@ -12,6 +12,11 @@ import java.util.List;
 @Data
 public class UpgradeAndRecommendRequest {
     /**
+     * 升级级别
+     */
+    private Integer type;
+
+    /**
      * 产品编码
      */
     private long productId;
@@ -34,7 +39,7 @@ public class UpgradeAndRecommendRequest {
     /**
      * 升级规则
      */
-    private List<UpgradeRules> upgradeRuleslist;
+    private List<UpgradeRules> upgradeRulesList;
 
 
 }
