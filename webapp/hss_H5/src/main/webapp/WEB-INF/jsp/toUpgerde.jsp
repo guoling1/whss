@@ -45,7 +45,7 @@
       <ul class="upType">
         <li id="payToUp">
           <div class="left"><span id="payToCheck" class="check active"></span>方式一：付费升级</div>
-          <div class="right">￥${upgradeRules.upgradeCost}</div>
+          <div class="right">￥${needMoney}</div>
           <s class="small">￥${upgradeRules.upgradeCost}</s>
         </li>
         <li id="pushToUp">
