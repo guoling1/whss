@@ -82,7 +82,7 @@ public class UserInfoServiceImpl implements UserInfoService{
      */
     @Override
     public int bindOpenId(long id,String openId) {
-        return 0;
+        return userInfoDao.bindOpenId(id,openId);
     }
 
     @Override
