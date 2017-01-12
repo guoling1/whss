@@ -68,7 +68,18 @@ let box = document.getElementById('profits');
 let pag_No = '';
 let pag_box = document.createElement('div');
 let pag_more = document.createElement('div');
-pag_more.innerHTML = '加载更多。。。';
+pag_more.innerHTML = '加载更多';
+pag_more.style.height = '40px';
+pag_more.style.lineHeight = '40px';
+pag_more.style.fontSize = '16px';
+pag_more.style.color = '#999';
+pag_more.style.backgroundColor = '#FFF';
+pag_more.addEventListener('touchstart', function () {
+  pag_more.style.backgroundColor = '#f0eff5';
+});
+pag_more.addEventListener('touchend', function () {
+  pag_more.style.backgroundColor = '#FFF';
+});
 let g = function (shallId, pageSize) {
   return new Promise((resolve, reject) => {
     http.post('/merchantInfo/queryShall', {
