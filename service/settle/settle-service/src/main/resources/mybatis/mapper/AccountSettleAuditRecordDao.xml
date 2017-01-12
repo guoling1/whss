@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jkm.hss.settle.dao.AccountSettleAuditRecordDao">
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO tb_account_settle_audit_record
+          (
+          merchant_no,
+          merchant_name,
+          dealer_no,
+          dealer_name,
+          app_id,
+          trade_date,
+          trade_number,
+          settle_amount,
+          account_check_status,
+          settle_status,
+          status
+          )
+          VALUES
+          (
+          #{merchantNo},
+          #{merchantName},
+          #{dealerNo},
+          #{dealerName},
+          #{appId},
+          #{tradeDate},
+          #{tradeNumber},
+          #{settleAmount},
+          #{accountCheckStatus},
+          #{settleStatus},
+          #{status}
+          );
+    </insert>
+
+    <update id="updateAccountCheckStatus">
+        UPDATE tb_account_settle_audit_record SET account_check_status = #{status} WHERE id = #{id}
+    </update>
+
+    <update id="updateSettleStatus">
+        UPDATE tb_account_settle_audit_record SET settle_status = #{status} WHERE id = #{id}
+    </update>
+</mapper>
