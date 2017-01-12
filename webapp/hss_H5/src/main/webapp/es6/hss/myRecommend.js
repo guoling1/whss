@@ -122,7 +122,7 @@ let c = function (name, type, date, money) {
   return div_list;
 };
 // 初始化数据
-g(pag_No, 1, pag_tag).then(function (data) {
+g(pag_No, 5, pag_tag).then(function (data) {
   // 循环添加数据
   for (let i = 0; i < data.records.length; i++) {
     pag_box.appendChild(c(data.records[i].name, data.records[i].type, data.records[i].date, data.records[i].money));
@@ -140,7 +140,7 @@ g(pag_No, 1, pag_tag).then(function (data) {
 });
 // 加载更多
 pag_more.addEventListener('click', function () {
-  g(pag_No, 1, pag_tag).then(function (data) {
+  g(pag_No, 5, pag_tag).then(function (data) {
     // 循环添加数据
     for (let i = 0; i < data.records.length; i++) {
       pag_box.appendChild(c(data.records[i].name, data.records[i].type, data.records[i].date, data.records[i].money));
