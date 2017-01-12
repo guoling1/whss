@@ -90,7 +90,7 @@ public class OrderServiceImpl implements OrderService {
         playMoneyOrder.setPayChannelSign(payOrder.getPayChannelSign());
         playMoneyOrder.setPayer(merchant.getAccountId());
         playMoneyOrder.setPayee(0);
-//        playMoneyOrder.setPayAccount(tradePeriod);
+        playMoneyOrder.setAppId(payOrder.getAppId());
         BigDecimal merchantWithdrawPoundage = this.calculateService.getMerchantWithdrawPoundage(merchantId, payOrder.getPayChannelSign());
         playMoneyOrder.setPoundage(merchantWithdrawPoundage);
         playMoneyOrder.setGoodsName(merchant.getMerchantName());
