@@ -407,7 +407,7 @@
         this.$http.post(this.$data.syncUrl,{sn:val})
           .then(function (res) {
             this.$store.commit('MESSAGE_DELAY_SHOW', {
-              text: res.msg
+              text: "同步成功"
             })
           },function (err) {
             this.$store.commit('MESSAGE_DELAY_SHOW', {
