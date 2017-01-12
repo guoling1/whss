@@ -270,7 +270,7 @@ public class DealerServiceImpl implements DealerService {
                 //没有上上级
                 final PartnerShallProfitDetail detail = new PartnerShallProfitDetail();
                 detail.setMerchantId(merchantId);
-                detail.setMerchantName(merchantInfo.getMerchantName());
+                detail.setMerchantName(merchantInfo.getName());
                 detail.setOrderNo(orderNo);
                 detail.setChannelType(0);
                 detail.setTotalFee(tradeAmount);
@@ -303,7 +303,7 @@ public class DealerServiceImpl implements DealerService {
                 //有上上级
                 final PartnerShallProfitDetail detail = new PartnerShallProfitDetail();
                 detail.setMerchantId(merchantId);
-                detail.setMerchantName(merchantInfo.getMerchantName());
+                detail.setMerchantName(merchantInfo.getName());
                 detail.setOrderNo(orderNo);
                 detail.setChannelType(0);
                 detail.setTotalFee(tradeAmount);
@@ -368,7 +368,7 @@ public class DealerServiceImpl implements DealerService {
 
                 final PartnerShallProfitDetail detail = new PartnerShallProfitDetail();
                 detail.setMerchantId(merchantId);
-                detail.setMerchantName(merchantInfo.getMerchantName());
+                detail.setMerchantName(merchantInfo.getName());
                 detail.setOrderNo(orderNo);
                 detail.setChannelType(0);
                 detail.setTotalFee(tradeAmount);
@@ -406,7 +406,7 @@ public class DealerServiceImpl implements DealerService {
 
                 final PartnerShallProfitDetail detail = new PartnerShallProfitDetail();
                 detail.setMerchantId(merchantId);
-                detail.setMerchantName(merchantInfo.getMerchantName());
+                detail.setMerchantName(merchantInfo.getName());
                 detail.setOrderNo(orderNo);
                 detail.setChannelType(0);
                 detail.setTotalFee(tradeAmount);
@@ -452,7 +452,7 @@ public class DealerServiceImpl implements DealerService {
 
                 final PartnerShallProfitDetail detail = new PartnerShallProfitDetail();
                 detail.setMerchantId(merchantId);
-                detail.setMerchantName(merchantInfo.getMerchantName());
+                detail.setMerchantName(merchantInfo.getName());
                 detail.setOrderNo(orderNo);
                 detail.setChannelType(0);
                 detail.setTotalFee(tradeAmount);
@@ -492,7 +492,7 @@ public class DealerServiceImpl implements DealerService {
 
                 final PartnerShallProfitDetail detail = new PartnerShallProfitDetail();
                 detail.setMerchantId(merchantId);
-                detail.setMerchantName(merchantInfo.getMerchantName());
+                detail.setMerchantName(merchantInfo.getName());
                 detail.setOrderNo(orderNo);
                 detail.setChannelType(0);
                 detail.setTotalFee(tradeAmount);
