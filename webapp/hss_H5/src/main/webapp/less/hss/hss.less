@@ -212,7 +212,8 @@ input:focus {
       .space-cont {
         padding: 0 15px 10px;
         .cont-detail {
-          line-height: 80px;
+          padding: 20px 0;
+          line-height: 40px;
         }
         .operation {
           width: 100%;
@@ -241,6 +242,39 @@ input:focus {
         }
       }
     }
+  }
+}
+
+#prompt, #err {
+  padding: 89px 58px 0;
+  width: 100%;
+  height: 100%;
+  background: #FFF;
+  img {
+    display: block;
+    width: 76px;
+    height: 86px;
+    margin: 0 auto 42px;
+  }
+  p {
+    font-size: 22px;
+    color: #aab2d3;
+  }
+  p.small {
+    font-size: 15px;
+    color: #aab2d3;
+    margin: 13px 0 43px;
+  }
+  .btn {
+    display: block;
+    margin-top: 15px;
+    width: 100%;
+    height: 50px;
+    line-height: 50px;
+    font-size: 16px;
+    color: #fff;
+    background: #7086bd;
+    border-radius: 4px;
   }
 }
 
@@ -674,6 +708,74 @@ input:focus {
         font-size: 14px;
         color: #7079a0;
         text-align: center;
+      }
+    }
+  }
+  .layer {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 99;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    .space {
+      width: 95%;
+      height: auto;
+      border-radius: 3px;
+      background-color: #FFF;
+      position: absolute;
+      top: 45%;
+      left: 50%;
+      transform: translate3d(-50%, -50%, 0);
+      overflow: hidden;
+      .space-title {
+        width: 100%;
+        height: 65px;
+        line-height: 65px;
+        background-color: #f4f5f8;
+        text-align: left;
+        padding-left: 15px;
+        .xx {
+          float: right;
+          width: 65px;
+          height: 65px;
+          background: url("../assets/xx.png") no-repeat center;
+          background-size: 18px 18px;
+        }
+      }
+      .space-cont {
+        padding: 0 15px 10px;
+        .cont-detail {
+          padding: 20px 0;
+          line-height: 40px;
+        }
+        .operation {
+          width: 100%;
+          height: 50px;
+          .cancel {
+            float: left;
+            width: 45%;
+            height: 50px;
+            line-height: 50px;
+            background-color: #FFF;
+            font-size: 16px;
+            color: #111;
+            border-radius: 5px;
+            border: 1px solid #eee;
+          }
+          .submit {
+            float: right;
+            width: 45%;
+            height: 50px;
+            line-height: 50px;
+            background-color: #7086bd;
+            font-size: 16px;
+            color: #FFF;
+            border-radius: 5px;
+          }
+        }
       }
     }
   }

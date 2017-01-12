@@ -371,11 +371,13 @@ public class MerchantInfoServiceImpl implements MerchantInfoService {
                 log.info("======普通会员===========");
                 BigDecimal left = (upgradeRulesOptional2.get().getDirectPromoteShall());
                 BigDecimal right = (upgradeRulesOptional2.get().getInDirectPromoteShall());
+                log.info("直接差值{}，间接差值{}",left,right);
                 return Pair.of(left, right);
             }else{
                 log.info("======店员、店长、老板===========");
                 BigDecimal left = (upgradeRulesOptional2.get().getDirectPromoteShall()).subtract(upgradeRulesOptional1.get().getDirectPromoteShall());
                 BigDecimal right = (upgradeRulesOptional2.get().getInDirectPromoteShall()).subtract(upgradeRulesOptional1.get().getInDirectPromoteShall());
+                log.info("直接差值{}，间接差值{}",left,right);
                 return Pair.of(left, right);
             }
         }

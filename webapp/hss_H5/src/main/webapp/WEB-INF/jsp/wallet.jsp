@@ -74,10 +74,30 @@
         <div class="logo credit"></div>
         <div class="text">信用卡申请</div>
       </a>
+
+      <div class="group touch_gr" id="unbundling">
+        <div class="logo upgrade"></div>
+        <div class="text">解绑微信</div>
+      </div>
       <%--<div class="group touch_gr">--%>
       <%--<div class="logo more"></div>--%>
       <%--<div class="text">更多</div>--%>
       <%--</div>--%>
+    </div>
+  </div>
+  <div class="layer" id="layer">
+    <div class="space">
+      <div class="space-title">
+        解绑微信
+        <div class="xx" id="xx"></div>
+      </div>
+      <div class="space-cont">
+        <div class="cont-detail">解绑后，再次进入需要使用手机验证码登录并绑定微信。</div>
+        <div class="operation">
+          <div class="cancel" id="cancel">取消</div>
+          <div class="submit" id="unbundlingSubmit">解绑</div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
