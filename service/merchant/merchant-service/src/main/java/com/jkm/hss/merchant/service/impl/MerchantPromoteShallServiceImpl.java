@@ -220,7 +220,7 @@ public class MerchantPromoteShallServiceImpl implements MerchantPromoteShallServ
                 detail.setFirstMerchantId(0);
                 detail.setFirstMerchantShallAmount(new BigDecimal(0));
             }
-
+            log.info(">>>>>>>>>>>>>>>>>>>>>>>>>>>>" + inDirectMoney);
             if (inDirectMoney.compareTo(new BigDecimal("0")) == 1){
                 detail.setSecondMerchantId(inDirectMerchantInfo.getId());
                 detail.setSecondMerchantShallAmount(inDirectMoney);
