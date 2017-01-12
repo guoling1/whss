@@ -364,7 +364,7 @@ public class MerchantInfoController extends BaseController {
                     jsonObject.put("shallId", input.getId());
                 }else{
                     jsonObject.put("type","2");
-                    jsonObject.put("name",input.getMerchantName());
+                    jsonObject.put("name",getInDirectName(input.getMerchantName()));
                     jsonObject.put("date", input.getCreateTime());
                     jsonObject.put("money", input.getSecondMerchantShallAmount());
                     jsonObject.put("shallId", input.getId());
@@ -373,9 +373,9 @@ public class MerchantInfoController extends BaseController {
                 return jsonObject;
             }
         });
-        PageModel<JSONObject> model = new PageModel<>();
+        PageModel<JSONObject> model = new PageModel<>(1,shallRequest.getPageSize());
         model.setRecords(list);
-        //model.setCount(pageModel.getCount());
+        model.setCount(pageModel.getCount());
         model.setHasNextPage(pageModel.isHasNextPage());
         model.setPageSize(pageModel.getPageSize());
         PartnerShallResponse response = new PartnerShallResponse();
@@ -389,8 +389,11 @@ public class MerchantInfoController extends BaseController {
     private String getInDirectName(String name){
         final int length = name.length();
         if (length <= 2){
-            return "*";
+            return "*" + name.charAt(1);
+        }else if (length == 3){
+
+            return "**" + name.charAt(2);
         }
-   return null;
+          return "**" + name.charAt(length - 1);
     }
 }
