@@ -373,7 +373,7 @@ public class MerchantInfoController extends BaseController {
                 return jsonObject;
             }
         });
-        PageModel<JSONObject> model = new PageModel<>(1,shallRequest.getPageSize());
+        PageModel<JSONObject> model = new PageModel<>(shallRequest.getPageNo(),shallRequest.getPageSize());
         model.setRecords(list);
         model.setCount(pageModel.getCount());
         model.setHasNextPage(pageModel.isHasNextPage());

@@ -315,8 +315,6 @@
             text: err.statusMessage
           })
         })
-
-
     },
     methods: {
       create: function () {
@@ -334,7 +332,6 @@
             merchantWithdrawFee: this.$data.products[this.$data.id].list[i].merchantWithdrawFee
           })
         }
-        this.$data.totalProfitSpace = this.$data.rate/100;
         this.$data.dealerUpgerdeRates[0].firstDealerShareProfitRate= this.$data.rate1/100;
         this.$data.dealerUpgerdeRates[0].secondDealerShareProfitRate= this.$data.rate2/100;
         this.$data.dealerUpgerdeRates[0].bossDealerShareRate= this.$data.bossRate1/100;
@@ -351,7 +348,7 @@
           product: this.$data.product,
           idCard: this.$data.idCard,
           recommendBtn: this.$data.recommendBtn,
-          totalProfitSpace: this.$data.rate,
+          totalProfitSpace: this.$data.rate/100,
           dealerUpgerdeRates: this.$data.dealerUpgerdeRates
         };
         this.$http.post('/admin/user/addFirstDealer', query)
@@ -385,7 +382,6 @@
             merchantWithdrawFee: this.$data.products[this.$data.id].list[i].merchantWithdrawFee
           })
         }
-        this.$data.totalProfitSpace = this.$data.rate/100;
         this.$data.dealerUpgerdeRates[0].firstDealerShareProfitRate= this.$data.rate1/100;
         this.$data.dealerUpgerdeRates[0].secondDealerShareProfitRate= this.$data.rate2/100;
         this.$data.dealerUpgerdeRates[0].bossDealerShareRate= this.$data.bossRate1/100;
@@ -403,7 +399,7 @@
           product: this.$data.product,
           idCard: this.$data.idCard,
           recommendBtn: this.$data.recommendBtn,
-          totalProfitSpace: this.$data.rate,
+          totalProfitSpace: this.$data.rate/100,
           dealerUpgerdeRates: this.$data.dealerUpgerdeRates
         };
         this.$http.post('/admin/user/updateDealer', query)
