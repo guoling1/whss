@@ -111,7 +111,9 @@ let c = function (name, type, date, money) {
 g(pag_No, 1).then(function (data) {
   // 循环添加数据
   for (let i = 0; i < data.records.length; i++) {
-    pag_box.appendChild(c(data.records[i].name, data.records[i].type, data.records[i].date, data.records[i].money))
+    pag_box.appendChild(c(data.records[i].name, data.records[i].type, data.records[i].date, data.records[i].money));
+    // 重置下一页
+    pag_No = data.records[i].shallId;
   }
   // 判断是否需要加载更多
   if (!data.hasNextPage) {
@@ -128,7 +130,7 @@ pag_more.addEventListener('click', function () {
     for (let i = 0; i < data.records.length; i++) {
       pag_box.appendChild(c(data.records[i].name, data.records[i].type, data.records[i].date, data.records[i].money));
       // 重置下一页
-      
+      pag_No = data.records[i].shallId;
     }
     // 判断是否需要加载更多
     if (!data.hasNextPage) {
