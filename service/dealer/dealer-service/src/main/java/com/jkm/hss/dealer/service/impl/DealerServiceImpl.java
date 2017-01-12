@@ -205,7 +205,6 @@ public class DealerServiceImpl implements DealerService {
     public Map<String, Triple<Long, BigDecimal, BigDecimal>> shallProfit(final String orderNo, final BigDecimal tradeAmount,
 
                                                                      final int channelSign, final long merchantId) {
-        log.info("交易订单号["+ orderNo + "]分润：交易金额" + tradeAmount);
         try{
             final MerchantInfo merchantInfo = this.merchantInfoService.selectById(merchantId).get();
             //判断商户是否是直属商户
@@ -271,7 +270,7 @@ public class DealerServiceImpl implements DealerService {
                 //没有上上级
                 final PartnerShallProfitDetail detail = new PartnerShallProfitDetail();
                 detail.setMerchantId(merchantId);
-                detail.setMerchantName(merchantInfo.getName());
+                detail.setMerchantName(merchantInfo.getMerchantName());
                 detail.setOrderNo(orderNo);
                 detail.setChannelType(0);
                 detail.setTotalFee(tradeAmount);
@@ -304,7 +303,7 @@ public class DealerServiceImpl implements DealerService {
                 //有上上级
                 final PartnerShallProfitDetail detail = new PartnerShallProfitDetail();
                 detail.setMerchantId(merchantId);
-                detail.setMerchantName(merchantInfo.getName());
+                detail.setMerchantName(merchantInfo.getMerchantName());
                 detail.setOrderNo(orderNo);
                 detail.setChannelType(0);
                 detail.setTotalFee(tradeAmount);
@@ -369,7 +368,7 @@ public class DealerServiceImpl implements DealerService {
 
                 final PartnerShallProfitDetail detail = new PartnerShallProfitDetail();
                 detail.setMerchantId(merchantId);
-                detail.setMerchantName(merchantInfo.getName());
+                detail.setMerchantName(merchantInfo.getMerchantName());
                 detail.setOrderNo(orderNo);
                 detail.setChannelType(0);
                 detail.setTotalFee(tradeAmount);
@@ -407,7 +406,7 @@ public class DealerServiceImpl implements DealerService {
 
                 final PartnerShallProfitDetail detail = new PartnerShallProfitDetail();
                 detail.setMerchantId(merchantId);
-                detail.setMerchantName(merchantInfo.getName());
+                detail.setMerchantName(merchantInfo.getMerchantName());
                 detail.setOrderNo(orderNo);
                 detail.setChannelType(0);
                 detail.setTotalFee(tradeAmount);
@@ -453,7 +452,7 @@ public class DealerServiceImpl implements DealerService {
 
                 final PartnerShallProfitDetail detail = new PartnerShallProfitDetail();
                 detail.setMerchantId(merchantId);
-                detail.setMerchantName(merchantInfo.getName());
+                detail.setMerchantName(merchantInfo.getMerchantName());
                 detail.setOrderNo(orderNo);
                 detail.setChannelType(0);
                 detail.setTotalFee(tradeAmount);
@@ -493,7 +492,7 @@ public class DealerServiceImpl implements DealerService {
 
                 final PartnerShallProfitDetail detail = new PartnerShallProfitDetail();
                 detail.setMerchantId(merchantId);
-                detail.setMerchantName(merchantInfo.getName());
+                detail.setMerchantName(merchantInfo.getMerchantName());
                 detail.setOrderNo(orderNo);
                 detail.setChannelType(0);
                 detail.setTotalFee(tradeAmount);
@@ -1298,9 +1297,11 @@ public class DealerServiceImpl implements DealerService {
         dealer.setBankAccountName(request.getBankAccountName());
         dealer.setBelongArea(request.getBelongArea());
         dealer.setLevel(EnumDealerLevel.FIRST.getId());
+        dealer.setRecommendBtn(request.getRecommendBtn());
         dealer.setSettleBankCard(DealerSupport.encryptBankCard(request.getBankCard()));
         dealer.setBankReserveMobile(DealerSupport.encryptMobile(request.getBankReserveMobile()));
         dealer.setStatus(EnumDealerStatus.NORMAL.getId());
+        dealer.setTotalProfitSpace(request.getTotalProfitSpace());
         this.update(dealer);
         final FirstLevelDealerUpdateRequest.Product product = request.getProduct();
         final long productId = product.getProductId();
