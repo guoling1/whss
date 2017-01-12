@@ -4,6 +4,7 @@
     <insert id="init" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO tb_partner_shall_profit_detail
         (merchant_id,
+        merchant_name,
         order_no,
         channel_type,
         total_fee,
@@ -25,6 +26,7 @@
         status
         )VALUES(
         #{merchantId},
+        #{merchantName},
         #{orderNo},
         #{channelType},
         #{totalFee},

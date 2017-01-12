@@ -1,9 +1,12 @@
 package com.jkm.hss.controller.merchant;
 
+import com.alibaba.fastjson.JSONObject;
 import com.aliyun.oss.OSSClient;
 import com.aliyun.oss.model.ObjectMetadata;
+import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Lists;
 import com.jkm.base.common.entity.CommonResponse;
 import com.jkm.base.common.entity.PageModel;
 import com.jkm.base.common.util.DateFormatUtil;
@@ -50,6 +53,7 @@ import java.math.BigDecimal;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -330,8 +334,34 @@ public class MerchantInfoController extends BaseController {
                 getPartnerShallProfitList(request.getMerchantId(), request.getShallId(),request.getPageSize());
         final BigDecimal totalProfit = this.partnerShallProfitDetailService.selectTotalProfitByMerchantId(request.getMerchantId());
 
+        final List<PartnerShallProfitDetail> records = pageModel.getRecords();
+
+        List<JSONObject> list = Lists.transform(records, new Function<PartnerShallProfitDetail, JSONObject>() {
+            @Override
+            public JSONObject apply(PartnerShallProfitDetail input) {
+                JSONObject jsonObject = new JSONObject();
+                if (input.getFirstMerchantId() == request.getMerchantId()){
+                    jsonObject.put("type","1");
+                    jsonObject.put("name",input.getMerchantName());
+                    jsonObject.put("date", input.getCreateTime());
+                    jsonObject.put("money", input.getFirstMerchantShallAmount());
+                }else{
+                    jsonObject.put("type","2");
+                    jsonObject.put("name",input.getMerchantName());
+                    jsonObject.put("date", input.getCreateTime());
+                    jsonObject.put("money", input.getSecondMerchantShallAmount());
+                }
+
+                return jsonObject;
+            }
+        });
+        PageModel<JSONObject> model = new PageModel<>();
+        model.setRecords(list);
+        model.setCount(pageModel.getCount());
+        model.setHasNextPage(pageModel.isHasNextPage());
+        model.setPageSize(pageModel.getPageSize());
         PartnerShallResponse response = new PartnerShallResponse();
-        response.setPageModel(pageModel);
+        response.setPageModel(model);
         response.setTotalShall(String.valueOf(totalProfit));
 
         return CommonResponse.objectResponse(1,"success", response);

@@ -79,6 +79,66 @@ public class MerchantPromoteShallServiceImpl implements MerchantPromoteShallServ
             final MerchantInfo merchantInfo = this.merchantInfoService.selectById(merchantId).get();
             //获取分润金额
             final BigDecimal waitAmount = tradeAmount;
+            //判断有无代理商
+            if(merchantInfo.getDealerId() == 0){
+                Map<String, Triple<Long, BigDecimal, String>> map = new HashMap<>();
+                BigDecimal directMoney = null;
+                MerchantInfo directMerchantInfo = null;
+                //上级商户分润 ，直推分润
+                if (merchantInfo.getFirstMerchantId() != 0){
+                    directMerchantInfo = this.merchantInfoService.selectById(merchantInfo.getFirstMerchantId()).get();
+                    directMoney = pair.getLeft();
+                }else{
+                    directMoney = new BigDecimal("0");
+                }
+                BigDecimal inDirectMoney = null;
+                MerchantInfo inDirectMerchantInfo = null;
+                //上上级商户分润，间推分润
+                if (merchantInfo.getSecondDealerId() != 0){
+                    inDirectMerchantInfo = this.merchantInfoService.selectById(merchantInfo.getSecondMerchantId()).get();
+                    inDirectMoney = pair.getRight();
+                }else{
+                    inDirectMoney = new BigDecimal("0");
+                }
+                //金开门利润 = 升级费 - 直推分润 - 间推分润
+                BigDecimal productMoney = waitAmount.subtract(pair.getLeft()).subtract(pair.getRight());
+                final PartnerShallProfitDetail detail = new PartnerShallProfitDetail();
+                detail.setMerchantId(merchantId);
+                detail.setMerchantName(merchantInfo.getMerchantName());
+                detail.setOrderNo(orderNo);
+                detail.setChannelType(0);
+                detail.setTotalFee(waitAmount);
+                detail.setWaitShallAmount(waitAmount);
+                detail.setWaitShallOriginAmount(waitAmount);
+                detail.setProfitType(EnumDealerRateType.UPGRADE.getId());
+                detail.setChannelCost(new BigDecimal(0));
+                detail.setChannelShallAmount(new BigDecimal(0));
+                detail.setProductShallAmount(productMoney);
+                detail.setFirstDealerId(0);
+                detail.setFirstDealerShallAmount(new BigDecimal(0));
+                detail.setSecondDealerId(0);
+                detail.setSecondDealerShallAmount(new BigDecimal(0));
+                detail.setProfitDate(DateFormatUtil.format(new Date(), DateFormatUtil.yyyy_MM_dd));
+                if (directMoney.compareTo(new BigDecimal("0")) == 1){
+                    detail.setFirstMerchantId(directMerchantInfo.getId());
+                    detail.setFirstMerchantShallAmount(directMoney);
+                    map.put("directMoney", Triple.of(directMerchantInfo.getAccountId(), pair.getLeft(), "D0"));
+                }else{
+                    detail.setFirstMerchantId(0);
+                    detail.setFirstMerchantShallAmount(new BigDecimal(0));
+                }
+                if (inDirectMoney.compareTo(new BigDecimal("0")) == 1){
+                    detail.setSecondMerchantId(inDirectMerchantInfo.getId());
+                    detail.setSecondMerchantShallAmount(inDirectMoney);
+                    map.put("inDirectMoney", Triple.of(inDirectMerchantInfo.getAccountId(), pair.getRight(), "D0"));
+                }else{
+                    detail.setSecondMerchantId(0);
+                    detail.setSecondMerchantShallAmount(new BigDecimal(0));
+                }
+                this.partnerShallProfitDetailService.init(detail);
+                map.put("companyMoney", Triple.of(AccountConstants.JKM_ACCOUNT_ID, productMoney, "D0"));
+                return map;
+            }
 
             final Product product = this.productService.selectByType(EnumProductType.HSS.getId()).get();
             //获取升级规则
@@ -124,6 +184,7 @@ public class MerchantPromoteShallServiceImpl implements MerchantPromoteShallServ
 
             final PartnerShallProfitDetail detail = new PartnerShallProfitDetail();
             detail.setMerchantId(merchantId);
+            detail.setMerchantName(merchantInfo.getMerchantName());
             detail.setOrderNo(orderNo);
             detail.setChannelType(0);
             detail.setTotalFee(waitAmount);
