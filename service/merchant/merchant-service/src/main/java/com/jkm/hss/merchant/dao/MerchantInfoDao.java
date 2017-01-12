@@ -74,8 +74,8 @@ public interface MerchantInfoDao {
      * 查询商户列表
      * @return
      */
-//    List getAll();
-    Optional<MerchantInfo> getAll(MerchantInfo merchantInfo);
+    List<MerchantInfo> getAll();
+//    Optional<MerchantInfo> getAll(MerchantInfo merchantInfo);
 
     /**
      * 审核商户（更改商户状态）
