@@ -229,13 +229,13 @@
           .then(function (res) {
             this.$data.isShow = false;
             this.$data.dealers = res.data.records;
-            this.$data.pageSize = res.data.totalPage;
             this.$data.pageNo = res.data.pageNO;
             this.$data.count = res.data.count;
+            this.$data.total = res.data.totalPage;
             var str='',
               page=document.getElementById('page');
             str+='<li class="paginate_button previous disabled" id="example2_previous"><a href="#" aria-controls="example2" data-dt-idx="0" tabindex="0">上一页</a></li>'
-            for (var i=1; i<=this.$data.pageSize;i++){
+            for (var i=1; i<=this.$data.total;i++){
               if(i==res.data.pageNO){
                 str+='<li class="paginate_button active"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">'+i+'</a></li></li>';
                 continue;
