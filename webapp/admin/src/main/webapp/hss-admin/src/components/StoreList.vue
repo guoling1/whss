@@ -342,7 +342,7 @@
           val = "已提交基本资料"
         }else if(val == 2){
           val = "待审核"
-        }else if(val == 3){
+        }else if(val == 3||val==6){
           val = "审核通过"
         }else if(val == 4){
           val="审核未通过"
@@ -351,7 +351,7 @@
       },
       operate: function (val) {
         val = Number(val)
-        if(val == 0||val == 1||val == 3||val == 4){
+        if(val == 0||val == 1||val == 3||val == 4||val==6){
           val = "查看详情"
         }else if(val == 2){
           val = "审核"
