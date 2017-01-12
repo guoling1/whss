@@ -260,9 +260,9 @@ public class DealerServiceImpl implements DealerService {
             final BigDecimal firstMerchantRate = getMerchantRate(channelSign, firstMerchantInfo);
             final BigDecimal firstMerchantMoney;
             if (merchantRate.compareTo(firstMerchantRate) == 1){
-                firstMerchantMoney =  new BigDecimal(0);
-            }else{
                 firstMerchantMoney = merchantRate.subtract(firstMerchantRate).multiply(tradeAmount).setScale(2, BigDecimal.ROUND_DOWN);
+            }else{
+                firstMerchantMoney =  new BigDecimal(0);
             }
 
             if (merchantInfo.getSecondMerchantId() == 0){
@@ -347,9 +347,9 @@ public class DealerServiceImpl implements DealerService {
         final BigDecimal firstMerchantRate = getMerchantRate(channelSign, firstMerchantInfo);
         final BigDecimal firstMerchantMoney;
         if (merchantRate.compareTo(firstMerchantRate) == 1){
-            firstMerchantMoney =  new BigDecimal(0);
-        }else{
             firstMerchantMoney = merchantRate.subtract(firstMerchantRate).multiply(tradeAmount).setScale(2, BigDecimal.ROUND_DOWN);
+        }else{
+            firstMerchantMoney =  new BigDecimal(0);
         }
         //上上级商户 = 【（商户费率 -  上上级商户 ）- |（商户费率 -  上级商户）|】* 商户交易金额（如果商户费率低于或等于上级商户，那么上级商户无润）
         if (merchantInfo.getSecondMerchantId() == 0){
