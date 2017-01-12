@@ -126,7 +126,6 @@ public class CalculateServiceImpl implements CalculateService {
 
     private Map<String, Triple<Long, BigDecimal, String>> merchantPromoteShallTo(final long merchantId, final String orderNo, final String businessNo,final BigDecimal tradeAmount) {
         try{
-            log.info("商户【" +merchantId +"]请求进行升级费分润：" + orderNo);
             Pair<BigDecimal, BigDecimal> pair = merchantInfoService.getUpgradeShareProfit(businessNo);
 
             //获取商户
@@ -245,7 +244,6 @@ public class CalculateServiceImpl implements CalculateService {
 
             return map;
         }catch (final Throwable throwable){
-            log.error("商户[" + merchantId + "]请求进行升级费分润异常，交易订单号：" +"异常信息：" + throwable.getMessage());
             throw throwable;
         }
 
