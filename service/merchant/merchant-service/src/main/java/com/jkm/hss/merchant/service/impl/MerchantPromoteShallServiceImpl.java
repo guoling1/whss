@@ -156,6 +156,7 @@ public class MerchantPromoteShallServiceImpl implements MerchantPromoteShallServ
             MerchantInfo inDirectMerchantInfo = null;
             //上上级商户分润，间推分润
             if (merchantInfo.getSecondDealerId() != 0){
+                log.info("刘杰给错了，：" + pair.getRight().toString() +  pair.getLeft().toString());
                 inDirectMerchantInfo = this.merchantInfoService.selectById(merchantInfo.getSecondMerchantId()).get();
                 inDirectMoney = pair.getRight();
             }else{
