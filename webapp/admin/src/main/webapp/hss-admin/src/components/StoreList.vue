@@ -54,7 +54,7 @@
               </div>
             </div>
             <div class="col-md-3">
-              <div class="btn btn-primary" @click="search" style="margin-top: 22px">筛选</div>
+              <div class="btn btn-primary" @click="search" style="margin-top: 95px">筛选</div>
               <!--<span @click="onload()" download="交易记录" class="btn btn-primary pull-right" style="float: right;color: #fff">导出</span>-->
             </div>
           </div>
