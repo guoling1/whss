@@ -1,6 +1,10 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
+    <modules>
+        <module>settle-api</module>
+        <module>settle-service</module>
+    </modules>
 
     <parent>
         <groupId>com.jkm</groupId>
@@ -8,20 +12,9 @@
         <version>1.0.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>hss-service</artifactId>
-    <version>${service.version}</version>
+    <artifactId>hss-settle</artifactId>
+    <version>${settle.version}</version>
     <packaging>pom</packaging>
 
-    <modules>
-        <module>notifier</module>
-        <module>user</module>
-        <module>bank</module>
-        <module>account</module>
-        <module>merchant</module>
-        <module>dealer</module>
-        <module>product</module>
-        <module>admin</module>
-        <module>bill</module>
-        <module>settle</module>
-    </modules>
+
 </project>

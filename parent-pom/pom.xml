@@ -35,6 +35,7 @@
         <merchant.version>${hss.project.version}</merchant.version>
         <bill.version>${hss.project.version}</bill.version>
         <user.version>${hss.project.version}</user.version>
+        <settle.version>${hss.project.version}</settle.version>
         <admin.version>${hss.project.version}</admin.version>
         <webapp.version>${hss.project.version}</webapp.version>
         <hss.mobile.version>${hss.project.version}</hss.mobile.version>
@@ -145,6 +146,16 @@
                 <groupId>com.jkm</groupId>
                 <artifactId>hss-bill-service</artifactId>
                 <version>${bill.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.jkm</groupId>
+                <artifactId>hss-settle-api</artifactId>
+                <version>${settle.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.jkm</groupId>
+                <artifactId>hss-settle-service</artifactId>
+                <version>1.0.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>com.jkm</groupId>
