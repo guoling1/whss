@@ -34,16 +34,7 @@
     <div class="cont">
       <ul class="window" id="windows">
         <li id="profits">
-          <div class="list">
-            <div class="name">张伟<span class="z">直接</span></div>
-            <div class="date">2016/10/26</div>
-            <div class="amount">2.00元</div>
-          </div>
-          <div class="list">
-            <div class="name">张伟<span class="j">间接</span></div>
-            <div class="date">2016/10/26</div>
-            <div class="amount">2.00元</div>
-          </div>
+          <%-- 以下列表内容动态添加 --%>
         </li>
         <li id="friends">
           <div class="total">我推广的好友(直接:<span id="directCount"></span>人 间接:<span id="indirectCount"></span>人)</div>
