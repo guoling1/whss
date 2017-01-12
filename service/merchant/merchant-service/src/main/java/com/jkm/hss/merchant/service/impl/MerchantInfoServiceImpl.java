@@ -368,10 +368,12 @@ public class MerchantInfoServiceImpl implements MerchantInfoService {
             Optional<UpgradeRules> upgradeRulesOptional1 = upgradeRulesService.selectByProductIdAndType(upgradePayRecord.getProductId(),upgradePayRecord.getBeforeLevel());//当前级别对应的升级费
             Optional<UpgradeRules> upgradeRulesOptional2 = upgradeRulesService.selectByProductIdAndType(upgradePayRecord.getProductId(),upgradePayRecord.getLevel());//升级后对应的升级费
             if(!upgradeRulesOptional1.isPresent()){
+                log.info("======普通会员===========");
                 BigDecimal left = (upgradeRulesOptional2.get().getDirectPromoteShall());
                 BigDecimal right = (upgradeRulesOptional2.get().getInDirectPromoteShall());
                 return Pair.of(left, right);
             }else{
+                log.info("======店员、店长、老板===========");
                 BigDecimal left = (upgradeRulesOptional2.get().getDirectPromoteShall()).subtract(upgradeRulesOptional1.get().getDirectPromoteShall());
                 BigDecimal right = (upgradeRulesOptional2.get().getInDirectPromoteShall()).subtract(upgradeRulesOptional1.get().getInDirectPromoteShall());
                 return Pair.of(left, right);
