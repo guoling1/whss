@@ -119,6 +119,7 @@ public class MerchantPromoteShallServiceImpl implements MerchantPromoteShallServ
                 detail.setSecondDealerId(0);
                 detail.setSecondDealerShallAmount(new BigDecimal(0));
                 detail.setProfitDate(DateFormatUtil.format(new Date(), DateFormatUtil.yyyy_MM_dd));
+                log.info("<<<<<<<<<<<<<<<<<<<<<,"+ inDirectMoney.toString() + directMoney.toString());
                 if (directMoney.compareTo(new BigDecimal("0")) == 1){
                     detail.setFirstMerchantId(directMerchantInfo.getId());
                     detail.setFirstMerchantShallAmount(directMoney);
