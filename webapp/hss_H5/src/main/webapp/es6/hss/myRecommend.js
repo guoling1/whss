@@ -186,7 +186,7 @@ http.post('/wx/myRecommend', {}, function (data) {
     let list = document.createElement('div');
     list.className = 'list';
     let name = document.createElement('div');
-    name.className = 'name';
+    name.className = 'name w';
     name.innerHTML = data.recommends[i].name;
     let span = document.createElement('span');
     if (data.recommends[i].type == 1) {

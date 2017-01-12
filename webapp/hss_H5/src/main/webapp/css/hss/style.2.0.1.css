@@ -2078,6 +2078,9 @@ input:focus {
   font-size: 15px;
   color: #48527f;
 }
+#promote .bottom .cont .window li .list .name.w {
+  width: 70%;
+}
 #promote .bottom .cont .window li .list .name span {
   display: inline-block;
   margin-left: 5px;
