@@ -1,9 +1,12 @@
 package com.jkm.hss.controller.merchant;
 
+import com.alibaba.fastjson.JSONObject;
 import com.aliyun.oss.OSSClient;
 import com.aliyun.oss.model.ObjectMetadata;
+import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Lists;
 import com.jkm.base.common.entity.CommonResponse;
 import com.jkm.base.common.entity.PageModel;
 import com.jkm.base.common.util.DateFormatUtil;
@@ -50,6 +53,7 @@ import java.math.BigDecimal;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -324,14 +328,56 @@ public class MerchantInfoController extends BaseController {
 
     @ResponseBody
     @RequestMapping(value = "/queryShall", method = RequestMethod.POST)
-    public CommonResponse queryShall(@RequestBody final PartnerShallRequest request){
+    public CommonResponse queryShall(final HttpServletRequest request, @RequestBody final PartnerShallRequest shallRequest){
 
+        if(!super.isLogin(request)){
+            return CommonResponse.simpleResponse(-2, "未登录");
+        }
+        Optional<UserInfo> userInfoOptional = userInfoService.selectByOpenId(super.getOpenId(request));
+        if(!userInfoOptional.isPresent()){
+            return CommonResponse.simpleResponse(-2, "未登录");
+        }
+        Optional<MerchantInfo> merchantInfo = merchantInfoService.selectById(userInfoOptional.get().getMerchantId());
+        if(!merchantInfo.isPresent()){
+            return CommonResponse.simpleResponse(-2, "未登录");
+        }
+        if(merchantInfo.get().getStatus()!=EnumMerchantStatus.PASSED.getId()&&merchantInfo.get().getStatus()!=EnumMerchantStatus.FRIEND.getId()){
+            return CommonResponse.simpleResponse(-2, "未审核通过");
+        }
+
+        shallRequest.setMerchantId(merchantInfo.get().getId());
         PageModel<PartnerShallProfitDetail> pageModel = this.partnerShallProfitDetailService.
-                getPartnerShallProfitList(request.getMerchantId(), request.getShallId(),request.getPageSize());
-        final BigDecimal totalProfit = this.partnerShallProfitDetailService.selectTotalProfitByMerchantId(request.getMerchantId());
+                getPartnerShallProfitList(shallRequest.getMerchantId(), shallRequest.getShallId(),shallRequest.getPageSize());
+        final BigDecimal totalProfit = this.partnerShallProfitDetailService.selectTotalProfitByMerchantId(shallRequest.getMerchantId());
 
+        final List<PartnerShallProfitDetail> records = pageModel.getRecords();
+
+        List<JSONObject> list = Lists.transform(records, new Function<PartnerShallProfitDetail, JSONObject>() {
+            @Override
+            public JSONObject apply(PartnerShallProfitDetail input) {
+                JSONObject jsonObject = new JSONObject();
+                if (input.getFirstMerchantId() == shallRequest.getMerchantId()){
+                    jsonObject.put("type","1");
+                    jsonObject.put("name",input.getMerchantName());
+                    jsonObject.put("date", input.getCreateTime());
+                    jsonObject.put("money", input.getFirstMerchantShallAmount());
+                }else{
+                    jsonObject.put("type","2");
+                    jsonObject.put("name",input.getMerchantName());
+                    jsonObject.put("date", input.getCreateTime());
+                    jsonObject.put("money", input.getSecondMerchantShallAmount());
+                }
+
+                return jsonObject;
+            }
+        });
+        PageModel<JSONObject> model = new PageModel<>();
+        model.setRecords(list);
+        //model.setCount(pageModel.getCount());
+        model.setHasNextPage(pageModel.isHasNextPage());
+        model.setPageSize(pageModel.getPageSize());
         PartnerShallResponse response = new PartnerShallResponse();
-        response.setPageModel(pageModel);
+        response.setPageModel(model);
         response.setTotalShall(String.valueOf(totalProfit));
 
         return CommonResponse.objectResponse(1,"success", response);

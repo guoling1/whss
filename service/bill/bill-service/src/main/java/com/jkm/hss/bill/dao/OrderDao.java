@@ -187,7 +187,9 @@ public interface OrderDao {
      * 查询当前账户的交易总额
      *
      * @param accountId
+     * @param appId
+     * @param serviceType
      * @return
      */
-    BigDecimal selectTotalTradeAmountByAccountId(@Param("accountId") long accountId);
+    BigDecimal selectTotalTradeAmountByAccountId(@Param("accountId") long accountId, @Param("appId") String appId, @Param("serviceType") int serviceType);
 }

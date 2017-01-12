@@ -21,6 +21,20 @@ import java.util.Date;
 public class Order extends BaseEntity {
 
     /**
+     * 业务线
+     *
+     * {@link com.jkm.hss.bill.enums.EnumAppType}
+     */
+    private String appId;
+
+    /**
+     * 业务类型
+     *
+     * {@link com.jkm.hss.bill.enums.EnumServiceType}
+     */
+    private int serviceType;
+
+    /**
      * 如果是提现单 ，此值表示 对应支付单的id
      */
     private long payOrderId;

@@ -1,5 +1,6 @@
 package com.jkm.hss.helper.response;
 
+import com.alibaba.fastjson.JSONObject;
 import com.jkm.base.common.entity.PageModel;
 import com.jkm.hss.dealer.entity.PartnerShallProfitDetail;
 import lombok.Data;
@@ -12,5 +13,5 @@ public class PartnerShallResponse {
 
     private String totalShall;
 
-    private PageModel<PartnerShallProfitDetail> pageModel;
+    private PageModel<JSONObject> pageModel;
 }

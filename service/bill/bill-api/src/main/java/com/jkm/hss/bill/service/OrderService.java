@@ -152,9 +152,11 @@ public interface OrderService {
      * 查询当前账户的交易总额
      *
      * @param accountId
+     * @param appId
+     * @param serviceType
      * @return
      */
-    BigDecimal getTotalTradeAmountByAccountId(long accountId);
+    BigDecimal getTotalTradeAmountByAccountId(long accountId, String appId, int serviceType);
 
     /**
      * 查询交易详情

@@ -21,6 +21,10 @@ public class PartnerShallProfitDetail extends BaseEntity{
      */
     private long merchantId;
     /**
+     *
+     */
+    private String merchantName;
+    /**
      * 商户交易流水号
      */
     private String orderNo;

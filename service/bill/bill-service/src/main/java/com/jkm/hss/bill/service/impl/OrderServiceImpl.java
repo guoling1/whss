@@ -366,11 +366,13 @@ public class OrderServiceImpl implements OrderService {
      * {@inheritDoc}
      *
      * @param accountId
+     * @param appId
+     * @param serviceType
      * @return
      */
     @Override
-    public BigDecimal getTotalTradeAmountByAccountId(final long accountId) {
-        return this.orderDao.selectTotalTradeAmountByAccountId(accountId);
+    public BigDecimal getTotalTradeAmountByAccountId(final long accountId, final String appId, final int serviceType) {
+        return this.orderDao.selectTotalTradeAmountByAccountId(accountId, appId, serviceType);
     }
 
     /**
