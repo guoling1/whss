@@ -2345,14 +2345,17 @@ input:focus {
   color: #48527f;
 }
 #upgrade .upgrade .table .t-body .w {
-  padding: 10px 0;
   height: 64px;
+  line-height: 64px;
   font-size: 12px;
   color: #48527f;
   border-bottom: 1px solid #e8eaf3;
 }
 #upgrade .upgrade .table .t-body .w.n {
   border: none;
+}
+#upgrade .upgrade .table .t-body .w.b {
+  padding: 10px 0;
 }
 #upgrade .upgrade .table .t-body .me {
   width: 60px;

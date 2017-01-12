@@ -49,14 +49,14 @@
       <img src="http://static.jinkaimen.cn/hss/assets/banner.png" alt="">
     </div>
     <div class="application">
-      <a class="group touch_gr" id="show_recommend" href="/sqb/myRecommend">
+      <div class="group touch_gr" id="show_recommend">
         <div class="logo friend"></div>
         <div class="text">推荐好友</div>
-      </a>
-      <a class="group touch_gr" id="show_upgrade" href="/sqb/upgradeMax">
+      </div>
+      <div class="group touch_gr" id="show_upgrade">
         <div class="logo upgrade"></div>
         <div class="text">我要升级</div>
-      </a>
+      </div>
       <a class="group touch_gr" href="/sqb/ticket">
         <div class="logo train"></div>
         <div class="text">火车票</div>
@@ -87,5 +87,6 @@
   };
 </script>
 <script src="http://static.jinkaimen.cn/vendor/vendor.1.0.1.min.js"></script>
-<script src="http://static.jinkaimen.cn/hss/2.0.1/wallet.min.js"></script>
+<%--<script src="http://static.jinkaimen.cn/hss/2.0.1/wallet.min.js"></script>--%>
+<script src="/js/hss/2.0.1/wallet.min.js"></script>
 </html>

@@ -41,7 +41,7 @@
                 <div class="up1">
                   <p>${item.name}</p>
 
-                  <div class="mes">我的费率</div>
+                  <div class="mes">我的等级</div>
                 </div>
               </div>
             </c:if>
@@ -62,9 +62,9 @@
                   ${item.name}
               </div>
             </c:if>
-            <div class="li w22 w"><fmt:formatNumber value="${item.weixinRate*100}" pattern="0.00#"/>% <br> 无分佣</div>
-            <div class="li w22 w"><fmt:formatNumber value="${item.alipayRate*100}" pattern="0.00#"/>% <br> 无分佣</div>
-            <div class="li w22 w"><fmt:formatNumber value="${item.fastRate*100}" pattern="0.00#"/>% <br> 无分佣</div>
+            <div class="li w22 w"><fmt:formatNumber value="${item.weixinRate*100}" pattern="0.00#"/>%</div>
+            <div class="li w22 w"><fmt:formatNumber value="${item.alipayRate*100}" pattern="0.00#"/>%</div>
+            <div class="li w22 w"><fmt:formatNumber value="${item.fastRate*100}" pattern="0.00#"/>%</div>
           </div>
         </c:if>
         <c:if test="${status.index==1}">
@@ -76,7 +76,7 @@
                 <div class="up1">
                   <p>${item.name}</p>
 
-                  <div class="mes">我的费率</div>
+                  <div class="mes">我的等级</div>
                 </div>
               </div>
             </c:if>
@@ -97,9 +97,9 @@
                   ${item.name}
               </div>
             </c:if>
-            <div class="li w22 w"><fmt:formatNumber value="${item.weixinRate*100}" pattern="0.00#"/>% <br> 万三分佣</div>
-            <div class="li w22 w"><fmt:formatNumber value="${item.alipayRate*100}" pattern="0.00#"/>% <br> 万三分佣</div>
-            <div class="li w22 w"><fmt:formatNumber value="${item.fastRate*100}" pattern="0.00#"/>% <br> 万三分佣</div>
+            <div class="li w22 w"><fmt:formatNumber value="${item.weixinRate*100}" pattern="0.00#"/>%</div>
+            <div class="li w22 w"><fmt:formatNumber value="${item.alipayRate*100}" pattern="0.00#"/>%</div>
+            <div class="li w22 w"><fmt:formatNumber value="${item.fastRate*100}" pattern="0.00#"/>%</div>
           </div>
         </c:if>
 
@@ -112,7 +112,7 @@
                 <div class="up1">
                   <p>${item.name}</p>
 
-                  <div class="mes">我的费率</div>
+                  <div class="mes">我的等级</div>
                 </div>
               </div>
             </c:if>
@@ -133,9 +133,9 @@
                   ${item.name}
               </div>
             </c:if>
-            <div class="li w22 w"><fmt:formatNumber value="${item.weixinRate*100}" pattern="0.00#"/>% <br> 万五分佣</div>
-            <div class="li w22 w"><fmt:formatNumber value="${item.alipayRate*100}" pattern="0.00#"/>% <br> 万五分佣</div>
-            <div class="li w22 w"><fmt:formatNumber value="${item.fastRate*100}" pattern="0.00#"/>% <br> 万五分佣</div>
+            <div class="li w22 w"><fmt:formatNumber value="${item.weixinRate*100}" pattern="0.00#"/>%</div>
+            <div class="li w22 w"><fmt:formatNumber value="${item.alipayRate*100}" pattern="0.00#"/>%</div>
+            <div class="li w22 w"><fmt:formatNumber value="${item.fastRate*100}" pattern="0.00#"/>%</div>
           </div>
         </c:if>
 
@@ -148,7 +148,7 @@
                 <div class="up1">
                   <p>${item.name}</p>
 
-                  <div class="mes">我的费率</div>
+                  <div class="mes">我的等级</div>
                 </div>
               </div>
             </c:if>
@@ -169,9 +169,9 @@
                   ${item.name}
               </div>
             </c:if>
-            <div class="li w22 w"><fmt:formatNumber value="${item.weixinRate*100}" pattern="0.00#"/>% <br> 万七分佣</div>
-            <div class="li w22 w"><fmt:formatNumber value="${item.alipayRate*100}" pattern="0.00#"/>% <br> 万七分佣</div>
-            <div class="li w22 w"><fmt:formatNumber value="${item.fastRate*100}" pattern="0.00#"/>% <br> 万七分佣</div>
+            <div class="li w22 w"><fmt:formatNumber value="${item.weixinRate*100}" pattern="0.00#"/>%</div>
+            <div class="li w22 w"><fmt:formatNumber value="${item.alipayRate*100}" pattern="0.00#"/>%</div>
+            <div class="li w22 w"><fmt:formatNumber value="${item.fastRate*100}" pattern="0.00#"/>%</div>
           </div>
         </c:if>
       </c:forEach>

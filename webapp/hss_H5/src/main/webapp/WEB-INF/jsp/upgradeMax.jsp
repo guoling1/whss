@@ -39,21 +39,21 @@
               <span class="star${status.index+1} upn"></span>
                 ${item.name}
             </div>
-            <div class="li w"><fmt:formatNumber value="${item.weixinRate*100}" pattern="0.00#"/>% <br> 无分佣</div>
-            <div class="li w"><fmt:formatNumber value="${item.alipayRate*100}" pattern="0.00#"/>% <br> 无分佣</div>
-            <div class="li w"><fmt:formatNumber value="${item.fastRate*100}" pattern="0.00#"/>% <br> 无分佣</div>
+            <div class="li w"><fmt:formatNumber value="${item.weixinRate*100}" pattern="0.00#"/>%</div>
+            <div class="li w"><fmt:formatNumber value="${item.alipayRate*100}" pattern="0.00#"/>%</div>
+            <div class="li w"><fmt:formatNumber value="${item.fastRate*100}" pattern="0.00#"/>%</div>
             <c:if test="${level==item.type}">
-              <div class="li w">
-                <div class="me">&nbsp;我的费率</div>
+              <div class="li w b">
+                <div class="me">&nbsp;我的等级</div>
               </div>
             </c:if>
             <c:if test="${level<item.type}">
-              <div class="li w">
+              <div class="li w b">
                 <div class="up" onclick="javascript:location.href='/sqb/toUpgrade/${item.id}'">立即升级</div>
               </div>
             </c:if>
             <c:if test="${level>item.type}">
-              <div class="li w">- -</div>
+              <div class="li w b">- -</div>
             </c:if>
           </div>
         </c:if>
@@ -63,21 +63,21 @@
               <span class="star${status.index+1} upn"></span>
                 ${item.name}
             </div>
-            <div class="li w"><fmt:formatNumber value="${item.weixinRate*100}" pattern="0.00#"/>% <br> 万三分佣</div>
-            <div class="li w"><fmt:formatNumber value="${item.alipayRate*100}" pattern="0.00#"/>% <br> 万三分佣</div>
-            <div class="li w"><fmt:formatNumber value="${item.fastRate*100}" pattern="0.00#"/>% <br> 万三分佣</div>
+            <div class="li w"><fmt:formatNumber value="${item.weixinRate*100}" pattern="0.00#"/>%</div>
+            <div class="li w"><fmt:formatNumber value="${item.alipayRate*100}" pattern="0.00#"/>%</div>
+            <div class="li w"><fmt:formatNumber value="${item.fastRate*100}" pattern="0.00#"/>%</div>
             <c:if test="${level==item.type}">
-              <div class="li w">
-                <div class="me">&nbsp;我的费率</div>
+              <div class="li w b">
+                <div class="me">&nbsp;我的等级</div>
               </div>
             </c:if>
             <c:if test="${level<item.type}">
-              <div class="li w">
+              <div class="li w b">
                 <div class="up" onclick="javascript:location.href='/sqb/toUpgrade/${item.id}'">立即升级</div>
               </div>
             </c:if>
             <c:if test="${level>item.type}">
-              <div class="li w">- -</div>
+              <div class="li w b">- -</div>
             </c:if>
           </div>
         </c:if>
@@ -87,21 +87,21 @@
               <span class="star${status.index+1} upn"></span>
                 ${item.name}
             </div>
-            <div class="li w"><fmt:formatNumber value="${item.weixinRate*100}" pattern="0.00#"/>% <br> 万五分佣</div>
-            <div class="li w"><fmt:formatNumber value="${item.alipayRate*100}" pattern="0.00#"/>% <br> 万五分佣</div>
-            <div class="li w"><fmt:formatNumber value="${item.fastRate*100}" pattern="0.00#"/>% <br> 万五分佣</div>
+            <div class="li w"><fmt:formatNumber value="${item.weixinRate*100}" pattern="0.00#"/>%</div>
+            <div class="li w"><fmt:formatNumber value="${item.alipayRate*100}" pattern="0.00#"/>%</div>
+            <div class="li w"><fmt:formatNumber value="${item.fastRate*100}" pattern="0.00#"/>%</div>
             <c:if test="${level==item.type}">
-              <div class="li w">
-                <div class="me">&nbsp;我的费率</div>
+              <div class="li w b">
+                <div class="me">&nbsp;我的等级</div>
               </div>
             </c:if>
             <c:if test="${level<item.type}">
-              <div class="li w">
+              <div class="li w b">
                 <div class="up" onclick="javascript:location.href='/sqb/toUpgrade/${item.id}'">立即升级</div>
               </div>
             </c:if>
             <c:if test="${level>item.type}">
-              <div class="li w">- -</div>
+              <div class="li w b">- -</div>
             </c:if>
           </div>
         </c:if>
@@ -111,21 +111,21 @@
               <span class="star${status.index+1} upn"></span>
                 ${item.name}
             </div>
-            <div class="li w"><fmt:formatNumber value="${item.weixinRate*100}" pattern="0.00#"/>% <br> 万七分佣</div>
-            <div class="li w"><fmt:formatNumber value="${item.alipayRate*100}" pattern="0.00#"/>% <br> 万七分佣</div>
-            <div class="li w"><fmt:formatNumber value="${item.fastRate*100}" pattern="0.00#"/>% <br> 万七分佣</div>
+            <div class="li w"><fmt:formatNumber value="${item.weixinRate*100}" pattern="0.00#"/>%</div>
+            <div class="li w"><fmt:formatNumber value="${item.alipayRate*100}" pattern="0.00#"/>%</div>
+            <div class="li w"><fmt:formatNumber value="${item.fastRate*100}" pattern="0.00#"/>%</div>
             <c:if test="${level==item.type}">
-              <div class="li w">
-                <div class="me">&nbsp;我的费率</div>
+              <div class="li w b">
+                <div class="me">&nbsp;我的等级</div>
               </div>
             </c:if>
             <c:if test="${level<item.type}">
-              <div class="li w">
+              <div class="li w b">
                 <div class="up" onclick="javascript:location.href='/sqb/toUpgrade/${item.id}'">立即升级</div>
               </div>
             </c:if>
             <c:if test="${level>item.type}">
-              <div class="li w">- -</div>
+              <div class="li w b">- -</div>
             </c:if>
           </div>
         </c:if>
