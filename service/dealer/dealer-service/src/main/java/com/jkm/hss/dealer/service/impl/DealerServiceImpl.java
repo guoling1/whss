@@ -205,6 +205,7 @@ public class DealerServiceImpl implements DealerService {
     public Map<String, Triple<Long, BigDecimal, BigDecimal>> shallProfit(final String orderNo, final BigDecimal tradeAmount,
 
                                                                      final int channelSign, final long merchantId) {
+        log.info("交易订单号["+ orderNo + "]分润：交易金额" + tradeAmount);
         try{
             final MerchantInfo merchantInfo = this.merchantInfoService.selectById(merchantId).get();
             //判断商户是否是直属商户
