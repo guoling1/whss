@@ -132,7 +132,6 @@ g(pag_No, 5, pag_tag).then(function (data) {
   }
   // 判断是否需要加载更多
   if (!data.hasNextPage) {
-    console.log('下一页消失');
     pag_more.style.display = 'none';
   }
 }, function (err) {
@@ -150,7 +149,6 @@ pag_more.addEventListener('click', function () {
     }
     // 判断是否需要加载更多
     if (!data.hasNextPage) {
-      console.log('下一页消失');
       pag_more.style.display = 'none';
     }
   }, function (err) {
@@ -182,7 +180,6 @@ friends.addEventListener('touchmove', function (event) {
 });
 // 推广的好友的数据获取
 http.post('/wx/myRecommend', {}, function (data) {
-  console.log(data);
   directCount.innerHTML = data.directCount;
   indirectCount.innerHTML = data.indirectCount;
   for (let i = 0; i < data.recommends.length; i++) {

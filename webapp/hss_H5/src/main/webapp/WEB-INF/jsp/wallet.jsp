@@ -49,10 +49,11 @@
       <img src="http://static.jinkaimen.cn/hss/assets/banner.png" alt="">
     </div>
     <div class="application">
-      <div class="group touch_gr" id="show_recommend">
+      <a class="group touch_gr" id="show_recommend" href="/sqb/myRecommend">
         <div class="logo friend"></div>
         <div class="text">推荐好友</div>
-      </div>
+      </a>
+
       <div class="group touch_gr" id="show_upgrade">
         <div class="logo upgrade"></div>
         <div class="text">我要升级</div>
