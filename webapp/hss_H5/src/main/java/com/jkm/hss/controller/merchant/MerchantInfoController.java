@@ -347,7 +347,7 @@ public class MerchantInfoController extends BaseController {
 
         shallRequest.setMerchantId(merchantInfo.get().getId());
         PageModel<PartnerShallProfitDetail> pageModel = this.partnerShallProfitDetailService.
-                getPartnerShallProfitList(shallRequest.getMerchantId(), shallRequest.getShallId(),shallRequest.getPageSize());
+                getPartnerShallProfitList(shallRequest.getMerchantId(), shallRequest.getShallId(),shallRequest.getPageNo() ,shallRequest.getPageSize());
         final BigDecimal totalProfit = this.partnerShallProfitDetailService.selectTotalProfitByMerchantId(shallRequest.getMerchantId());
 
         final List<PartnerShallProfitDetail> records = pageModel.getRecords();
