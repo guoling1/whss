@@ -848,11 +848,10 @@ public class WxPubController extends BaseController {
      * 初始化商户
      * @param request
      * @param response
-     * @param recommendRequest
      */
     @ResponseBody
-    @RequestMapping(value = "init", method = RequestMethod.POST)
-    public void init(final HttpServletRequest request, final HttpServletResponse response,@RequestBody final RecommendRequest recommendRequest ) {
+    @RequestMapping(value = "init", method = RequestMethod.GET)
+    public void init(final HttpServletRequest request, final HttpServletResponse response) {
         List<MerchantInfo> merchantInfos = merchantInfoService.getAll();
         if(merchantInfos.size()>0){
             for(int i=0;i<merchantInfos.size();i++){
