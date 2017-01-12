@@ -381,4 +381,14 @@ public class MerchantInfoServiceImpl implements MerchantInfoService {
         }
     }
 
+    /**
+     * 初始化推荐版本数据
+     *
+     * @param merchantInfo
+     */
+    @Override
+    public void updateByCondition(MerchantInfo merchantInfo) {
+            merchantInfoDao.updateByCondition(merchantInfo);
+    }
+
 }
