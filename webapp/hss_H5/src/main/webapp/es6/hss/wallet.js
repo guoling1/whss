@@ -12,7 +12,7 @@ new Touch('touch_gr', '#FFF', 'deep', '0.1');
 const browser = _require('browser');
 browser.elastic_touch();
 // 定义变量
-const upgrade = document.getElementById('upgrade');
+const upgrade = document.getElementById('show_upgrade');
 const pxPerRem = document.documentElement.clientWidth;
 upgrade.addEventListener('click', function () {
   if (pxPerRem > 390) {
