@@ -1222,7 +1222,7 @@ public class LoginController extends BaseController {
                                 model.addAttribute("restCount",upgradeRulesOptional.get().getPromotionNum()-hasCount);
                                 model.addAttribute("merchantId",result.get().getId());
                                 model.addAttribute("shareUrl","http://"+ApplicationConsts.getApplicationConfig().domain()+"/sqb/invite/"+userInfoOptional.get().getId());
-                                return "/toUpgerde";
+                                url = "/toUpgerde";
                             }
                         }else{
                             model.addAttribute("message","暂无此级别信息");
