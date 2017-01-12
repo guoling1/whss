@@ -48,8 +48,12 @@ public class PartnerShallProfitDetailServiceImpl implements PartnerShallProfitDe
     @Override
     public BigDecimal selectTotalProfitByMerchantId(long merchantId) {
 
-        return  this.partnerShallProfitDetailDao.selectFirstTotalProfitByMerchantId(merchantId).add(
-                this.partnerShallProfitDetailDao.selectSecondTotalProfitByMerchantId(merchantId)
-        );
+        final BigDecimal b = partnerShallProfitDetailDao.selectFirstTotalProfitByMerchantId(merchantId);
+        final BigDecimal b1 =( b  == null ? new BigDecimal(0) : b);
+
+        final BigDecimal a = partnerShallProfitDetailDao.selectSecondTotalProfitByMerchantId(merchantId);
+        final BigDecimal a1 = (a  == null ? new BigDecimal(0) : a);
+
+        return  a1.add(b1);
     }
 }

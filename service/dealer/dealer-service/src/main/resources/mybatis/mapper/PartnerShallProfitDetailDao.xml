@@ -52,8 +52,8 @@
         SELECT count(*) FROM tb_partner_shall_profit_detail WHERE first_merchant_id = #{merchantId} OR second_merchant_id = #{mechantId}
     </select>
     <select id="selectByMerchantIdAndId" resultType="com.jkm.hss.dealer.entity.PartnerShallProfitDetail">
-        SELECT * FROM tb_partner_shall_profit_detail  WHERE (first_merchant_id = #{merchantId} OR second_merchant_id = #{mechantId})
-        <if test="merchantId != 0">
+        SELECT * FROM tb_partner_shall_profit_detail  WHERE (first_merchant_id = #{merchantId} OR second_merchant_id = #{merchantId})
+        <if test="id != 0">
             AND id &lt; #{id}
         </if>
         ORDER BY id DESC LIMIT #{pageSize}

@@ -8,11 +8,11 @@ import lombok.Data;
 @Data
 public class PartnerShallRequest {
 
-    final long merchantId;
+    private long merchantId;
 
-    final long shallId;
+    private long shallId;
 
-    final int pageNo;
+    private int pageNo;
 
-    final int pageSize;
+    private int pageSize;
 }

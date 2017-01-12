@@ -328,11 +328,27 @@ public class MerchantInfoController extends BaseController {
 
     @ResponseBody
     @RequestMapping(value = "/queryShall", method = RequestMethod.POST)
-    public CommonResponse queryShall(@RequestBody final PartnerShallRequest request){
+    public CommonResponse queryShall(final HttpServletRequest request, @RequestBody final PartnerShallRequest shallRequest){
 
+        if(!super.isLogin(request)){
+            return CommonResponse.simpleResponse(-2, "未登录");
+        }
+        Optional<UserInfo> userInfoOptional = userInfoService.selectByOpenId(super.getOpenId(request));
+        if(!userInfoOptional.isPresent()){
+            return CommonResponse.simpleResponse(-2, "未登录");
+        }
+        Optional<MerchantInfo> merchantInfo = merchantInfoService.selectById(userInfoOptional.get().getMerchantId());
+        if(!merchantInfo.isPresent()){
+            return CommonResponse.simpleResponse(-2, "未登录");
+        }
+        if(merchantInfo.get().getStatus()!=EnumMerchantStatus.PASSED.getId()&&merchantInfo.get().getStatus()!=EnumMerchantStatus.FRIEND.getId()){
+            return CommonResponse.simpleResponse(-2, "未审核通过");
+        }
+
+        shallRequest.setMerchantId(merchantInfo.get().getId());
         PageModel<PartnerShallProfitDetail> pageModel = this.partnerShallProfitDetailService.
-                getPartnerShallProfitList(request.getMerchantId(), request.getShallId(),request.getPageSize());
-        final BigDecimal totalProfit = this.partnerShallProfitDetailService.selectTotalProfitByMerchantId(request.getMerchantId());
+                getPartnerShallProfitList(shallRequest.getMerchantId(), shallRequest.getShallId(),shallRequest.getPageSize());
+        final BigDecimal totalProfit = this.partnerShallProfitDetailService.selectTotalProfitByMerchantId(shallRequest.getMerchantId());
 
         final List<PartnerShallProfitDetail> records = pageModel.getRecords();
 
@@ -340,7 +356,7 @@ public class MerchantInfoController extends BaseController {
             @Override
             public JSONObject apply(PartnerShallProfitDetail input) {
                 JSONObject jsonObject = new JSONObject();
-                if (input.getFirstMerchantId() == request.getMerchantId()){
+                if (input.getFirstMerchantId() == shallRequest.getMerchantId()){
                     jsonObject.put("type","1");
                     jsonObject.put("name",input.getMerchantName());
                     jsonObject.put("date", input.getCreateTime());
@@ -357,7 +373,7 @@ public class MerchantInfoController extends BaseController {
         });
         PageModel<JSONObject> model = new PageModel<>();
         model.setRecords(list);
-        model.setCount(pageModel.getCount());
+        //model.setCount(pageModel.getCount());
         model.setHasNextPage(pageModel.isHasNextPage());
         model.setPageSize(pageModel.getPageSize());
         PartnerShallResponse response = new PartnerShallResponse();
