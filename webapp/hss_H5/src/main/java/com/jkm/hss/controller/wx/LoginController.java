@@ -16,6 +16,7 @@ import com.jkm.hss.controller.BaseController;
 import com.jkm.hss.dealer.entity.Dealer;
 import com.jkm.hss.dealer.enums.EnumRecommendBtn;
 import com.jkm.hss.dealer.service.DealerService;
+import com.jkm.hss.dealer.service.PartnerShallProfitDetailService;
 import com.jkm.hss.dealer.service.ShallProfitDetailService;
 import com.jkm.hss.helper.ApplicationConsts;
 import com.jkm.hss.merchant.entity.AccountInfo;
@@ -111,6 +112,8 @@ public class LoginController extends BaseController {
 
     @Autowired
     private PayService payService;
+    @Autowired
+    private PartnerShallProfitDetailService partnerShallProfitDetailService;
     /**
      * 扫固定码注册和微信公众号注册入口
      * @param request
@@ -912,7 +915,9 @@ public class LoginController extends BaseController {
                         url = "/sqb/prompt";
                     }else if(result.get().getStatus()== EnumMerchantStatus.PASSED.getId()||result.get().getStatus()== EnumMerchantStatus.FRIEND.getId()){
                         // TODO: 2016/12/29 累计分润
-                        model.addAttribute("totalProfit","0.00");
+                        BigDecimal totalProfit = partnerShallProfitDetailService.selectTotalProfitByMerchantId(result.get().getId());
+                        DecimalFormat decimalFormat=new DecimalFormat("0.00");//构造方法的字符格式这里如果小数不足2位,会以0补足.
+                        model.addAttribute("totalProfit", totalProfit==null?"0.00":decimalFormat.format(totalProfit));
                         model.addAttribute("shareUrl","http://"+ApplicationConsts.getApplicationConfig().domain()+"/sqb/invite/"+userInfoOptional.get().getId());
                         url = "/myRecommend";
                     }

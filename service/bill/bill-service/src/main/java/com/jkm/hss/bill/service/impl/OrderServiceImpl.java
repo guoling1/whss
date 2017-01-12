@@ -372,7 +372,8 @@ public class OrderServiceImpl implements OrderService {
      */
     @Override
     public BigDecimal getTotalTradeAmountByAccountId(final long accountId, final String appId, final int serviceType) {
-        return this.orderDao.selectTotalTradeAmountByAccountId(accountId, appId, serviceType);
+        final BigDecimal totalAmount = this.orderDao.selectTotalTradeAmountByAccountId(accountId, appId, serviceType);
+        return null == totalAmount ? new BigDecimal("0.00") : totalAmount;
     }
 
     /**
