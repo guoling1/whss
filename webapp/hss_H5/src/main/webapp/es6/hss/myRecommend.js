@@ -5,6 +5,7 @@
 // 引入http message
 const message = _require('message');
 const http = _require('http');
+const tools = _require('tools');
 // 定义变量
 const qr = document.getElementById('qr');
 const shareShow = document.getElementById('shareShow');
@@ -65,7 +66,8 @@ profits.addEventListener('touchmove', function (event) {
 });
 // 分润的数据获取以及分页
 let box = document.getElementById('profits');
-let pag_No = '';
+let pag_No = 1;
+let pag_tag = '';
 let pag_box = document.createElement('div');
 let pag_more = document.createElement('div');
 pag_more.innerHTML = '加载更多';
@@ -80,9 +82,10 @@ pag_more.addEventListener('touchstart', function () {
 pag_more.addEventListener('touchend', function () {
   pag_more.style.backgroundColor = '#FFF';
 });
-let g = function (shallId, pageSize) {
+let g = function (pageNO, pageSize, shallId) {
   return new Promise((resolve, reject) => {
     http.post('/merchantInfo/queryShall', {
+      pageNo: pageNO,
       shallId: shallId,
       pageSize: pageSize
     }, function (res) {
@@ -109,7 +112,7 @@ let c = function (name, type, date, money) {
   }
   let div_date = document.createElement('div');
   div_date.className = 'date';
-  div_date.innerHTML = date;
+  div_date.innerHTML = tools.dateFormat('YYYY/MM/DD', date);
   let div_amount = document.createElement('div');
   div_amount.className = 'amount';
   div_amount.innerHTML = money + '元';
@@ -119,12 +122,13 @@ let c = function (name, type, date, money) {
   return div_list;
 };
 // 初始化数据
-g(pag_No, 1).then(function (data) {
+g(pag_No, 1, pag_tag).then(function (data) {
   // 循环添加数据
   for (let i = 0; i < data.records.length; i++) {
     pag_box.appendChild(c(data.records[i].name, data.records[i].type, data.records[i].date, data.records[i].money));
     // 重置下一页
-    pag_No = data.records[i].shallId;
+    pag_No++;
+    pag_tag = data.records[i].shallId;
   }
   // 判断是否需要加载更多
   if (!data.hasNextPage) {
@@ -136,12 +140,13 @@ g(pag_No, 1).then(function (data) {
 });
 // 加载更多
 pag_more.addEventListener('click', function () {
-  g(pag_No, 1).then(function (data) {
+  g(pag_No, 1, pag_tag).then(function (data) {
     // 循环添加数据
     for (let i = 0; i < data.records.length; i++) {
       pag_box.appendChild(c(data.records[i].name, data.records[i].type, data.records[i].date, data.records[i].money));
       // 重置下一页
-      pag_No = data.records[i].shallId;
+      pag_No++;
+      pag_tag = data.records[i].shallId;
     }
     // 判断是否需要加载更多
     if (!data.hasNextPage) {
