@@ -121,6 +121,9 @@
     <if test="endTime2!=null and endTime2!=''">
         AND checked_time <![CDATA[ <= ]]> #{endTime2}
     </if>
+    <if test="markCode!=null and markCode!=''">
+        AND mark_code LIKE CONCAT('%',#{markCode},'%')
+    </if>
         ORDER BY
             create_time DESC
         LIMIT #{offset},#{pageSize}
