@@ -497,14 +497,19 @@ public class PayServiceImpl implements PayService {
         final Triple<Long, BigDecimal, BigDecimal> productMoneyTriple = shallProfitMap.get("productMoney");
         final Triple<Long, BigDecimal, BigDecimal> firstMoneyTriple = shallProfitMap.get("firstMoney");
         final Triple<Long, BigDecimal, BigDecimal> secondMoneyTriple = shallProfitMap.get("secondMoney");
-        final BigDecimal channelMoney = null == channelMoneyTriple ? new BigDecimal("0") : channelMoneyTriple.getMiddle();
-        final BigDecimal productMoney = null == productMoneyTriple ? new BigDecimal("0") : productMoneyTriple.getMiddle();
-        final BigDecimal firstMoney = null == firstMoneyTriple ? new BigDecimal("0") : firstMoneyTriple.getMiddle();
-        final BigDecimal secondMoney = null == secondMoneyTriple ? new BigDecimal("0") : secondMoneyTriple.getMiddle();
-        Preconditions.checkState(order.getPoundage().compareTo(channelMoney.add(productMoney).add(firstMoney).add(secondMoney)) >= 0);
+        final Triple<Long, BigDecimal, BigDecimal> firstMerchantMoneyTriple = shallProfitMap.get("firstMerchantMoney");
+        final Triple<Long, BigDecimal, BigDecimal> secondMerchantMoneyTriple = shallProfitMap.get("secondMerchantMoney");
+
+        final BigDecimal channelMoney = null == channelMoneyTriple ? new BigDecimal("0.00") : channelMoneyTriple.getMiddle();
+        final BigDecimal productMoney = null == productMoneyTriple ? new BigDecimal("0.00") : productMoneyTriple.getMiddle();
+        final BigDecimal firstMoney = null == firstMoneyTriple ? new BigDecimal("0.00") : firstMoneyTriple.getMiddle();
+        final BigDecimal secondMoney = null == secondMoneyTriple ? new BigDecimal("0.00") : secondMoneyTriple.getMiddle();
+        final BigDecimal firstMerchantMoney = null == firstMerchantMoneyTriple ? new BigDecimal("0.00") : firstMerchantMoneyTriple.getMiddle();
+        final BigDecimal secondMerchantMoney = null == secondMerchantMoneyTriple ? new BigDecimal("0.00") : secondMerchantMoneyTriple.getMiddle();
+        Preconditions.checkState(order.getPoundage().compareTo(channelMoney.add(productMoney).add(firstMoney).add(secondMoney).add(firstMerchantMoney).add(secondMerchantMoney)) >= 0, "收学费不可以小于分润总和");
         //手续费账户结算
         final Account poundageAccount = this.accountService.getByIdWithLock(AccountConstants.POUNDAGE_ACCOUNT_ID).get();
-        Preconditions.checkState(order.getPoundage().compareTo(poundageAccount.getDueSettleAmount()) <= 0);
+        Preconditions.checkState(order.getPoundage().compareTo(poundageAccount.getDueSettleAmount()) <= 0, "该笔订单的收学费不可以大于手续费账户的待结算余额总和");
         //待结算--可用余额
         this.accountService.increaseAvailableAmount(poundageAccount.getId(), order.getPoundage());
         this.accountService.decreaseSettleAmount(poundageAccount.getId(), order.getPoundage());
@@ -593,6 +598,45 @@ public class PayServiceImpl implements PayService {
             this.accountFlowService.addAccountFlow(account.getId(), order.getOrderNo(), secondMoneyTriple.getMiddle(),
                     "支付分润", EnumAccountFlowType.INCREASE);
         }
+        //直推商户利润--到结算--可用余额
+        if (null != firstMerchantMoneyTriple) {
+            final MerchantInfo merchant = this.merchantInfoService.getByAccountId(firstMerchantMoneyTriple.getLeft()).get();
+            final Account account = this.accountService.getById(firstMerchantMoneyTriple.getLeft()).get();
+            this.splitAccountRecordService.addPaySplitAccountRecord(order.getOrderNo(), order.getOrderNo(),
+                    order.getTradeAmount(), order.getPoundage(), firstMerchantMoneyTriple, merchant.getMerchantName(), EnumTradeType.PAY.getValue());
+            this.accountService.increaseTotalAmount(account.getId(), firstMerchantMoneyTriple.getMiddle());
+            this.accountService.increaseSettleAmount(account.getId(), firstMerchantMoneyTriple.getMiddle());
+            this.settleAccountFlowService.addSettleAccountFlow(account.getId(), order.getOrderNo(), firstMerchantMoneyTriple.getMiddle(),
+                    "支付分润", EnumAccountFlowType.INCREASE);
+
+            //待结算--可用余额
+            this.accountService.increaseAvailableAmount(account.getId(), firstMerchantMoneyTriple.getMiddle());
+            this.accountService.decreaseSettleAmount(account.getId(), firstMerchantMoneyTriple.getMiddle());
+            this.settleAccountFlowService.addSettleAccountFlow(account.getId(), order.getOrderNo(), firstMerchantMoneyTriple.getMiddle(),
+                    "支付分润", EnumAccountFlowType.DECREASE);
+            this.accountFlowService.addAccountFlow(account.getId(), order.getOrderNo(), firstMerchantMoneyTriple.getMiddle(),
+                    "支付分润", EnumAccountFlowType.INCREASE);
+        }
+        //间推商户利润--到结算--可用余额
+        if (null != secondMerchantMoneyTriple) {
+            final MerchantInfo merchant = this.merchantInfoService.getByAccountId(secondMerchantMoneyTriple.getLeft()).get();
+            this.splitAccountRecordService.addPaySplitAccountRecord(order.getOrderNo(), order.getOrderNo(),
+                    order.getTradeAmount(), order.getPoundage(), secondMerchantMoneyTriple, merchant.getMerchantName(), EnumTradeType.PAY.getValue());
+            final Account account = this.accountService.getById(secondMerchantMoneyTriple.getLeft()).get();
+            this.accountService.increaseTotalAmount(account.getId(), secondMerchantMoneyTriple.getMiddle());
+            this.accountService.increaseSettleAmount(account.getId(), secondMerchantMoneyTriple.getMiddle());
+            this.settleAccountFlowService.addSettleAccountFlow(account.getId(), order.getOrderNo(), secondMerchantMoneyTriple.getMiddle(),
+                    "支付分润", EnumAccountFlowType.INCREASE);
+
+            //待结算--可用余额
+            this.accountService.increaseAvailableAmount(account.getId(), secondMerchantMoneyTriple.getMiddle());
+            this.accountService.decreaseSettleAmount(account.getId(), secondMerchantMoneyTriple.getMiddle());
+            this.settleAccountFlowService.addSettleAccountFlow(account.getId(), order.getOrderNo(), secondMerchantMoneyTriple.getMiddle(),
+                    "支付分润", EnumAccountFlowType.DECREASE);
+            this.accountFlowService.addAccountFlow(account.getId(), order.getOrderNo(), secondMerchantMoneyTriple.getMiddle(),
+                    "支付分润", EnumAccountFlowType.INCREASE);
+        }
+
     }
 
     /**
