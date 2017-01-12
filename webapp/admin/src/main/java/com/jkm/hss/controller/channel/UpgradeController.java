@@ -92,6 +92,10 @@ public class UpgradeController extends BaseController {
         }else {
             for (int i=0;i<upgradeRulesArr.size();i++){
                 if(upgradeRulesArr.get(i).getType()==1||upgradeRulesArr.get(i).getType()==2||upgradeRulesArr.get(i).getType()==3){
+//                    final CommonResponse commonResponse = this.rewardJudge(upgradeRulesArr);
+//                    if (1 != commonResponse.getCode()) {
+//                        return commonResponse;
+//                    }
                     BigDecimal weixinRate = upgradeRulesArr.get(i).getWeixinRate();
                     BigDecimal alipayRate = upgradeRulesArr.get(i).getAlipayRate();
                     BigDecimal fastRate = upgradeRulesArr.get(i).getFastRate();
@@ -124,6 +128,33 @@ public class UpgradeController extends BaseController {
     }
 
     /**
+     *
+     * 判断直接奖励+间接奖励是否小于升级费
+     * @param req
+     * @param req
+     */
+    private CommonResponse rewardJudge(UpgradeAndRecommendRequest req){
+        if (req!=null){
+            if (req.getUpgradeRulesList().size()>0){
+                for (int i=0;i<req.getUpgradeRulesList().size();i++){
+                    BigDecimal directPromoteShall = req.getUpgradeRulesList().get(i).getDirectPromoteShall();
+                    BigDecimal inDirectPromoteShall = req.getUpgradeRulesList().get(i).getInDirectPromoteShall();
+                    BigDecimal upgradeCost = req.getUpgradeRulesList().get(i).getUpgradeCost();
+                    int res = upgradeCost.compareTo(directPromoteShall.add(inDirectPromoteShall));
+                    if (res==-1){
+                        return CommonResponse.simpleResponse(-1, "升级费必须大于等于直接奖励加间接奖励");
+                    }
+                }
+
+            }
+        }
+
+
+        return CommonResponse.simpleResponse(1, "");
+    }
+
+
+    /**
      * 添加或修改
      * @param req
      * @return
@@ -137,6 +168,10 @@ public class UpgradeController extends BaseController {
         Optional<Product> productOptional = productService.selectById(req.getProductId());
         if(!productOptional.isPresent()){
             return CommonResponse.simpleResponse(-1,"该产品不存在");
+        }
+        final CommonResponse commonResponse = this.rewardJudge(req);
+        if (1 != commonResponse.getCode()) {
+            return commonResponse;
         }
         //商户升级规则设置不能为空
         List<UpgradeRules> upgradeRulesList =  upgradeRulesService.selectAll(req.getProductId());//升级规则
@@ -158,10 +193,6 @@ public class UpgradeController extends BaseController {
                     upgradeRules.setWeixinRate(weixinRate.divide(b1));
                     upgradeRules.setAlipayRate(alipayRate.divide(b1));
                     upgradeRules.setFastRate(fastRate.divide(b1));
-//                    upgradeRules.setWeixinRate(req.getUpgradeRulesList().get(i).getWeixinRate());
-//                    upgradeRules.setAlipayRate(req.getUpgradeRulesList().get(i).getAlipayRate());
-//                    upgradeRules.setFastRate(req.getUpgradeRulesList().get(i).getFastRate());
-//                    upgradeRules.setAlipayRate(req.getUpgradeRulesList().get(i).getAlipayRate());
                     upgradeRules.setDirectPromoteShall(req.getUpgradeRulesList().get(i).getDirectPromoteShall());
                     upgradeRules.setInDirectPromoteShall(req.getUpgradeRulesList().get(i).getInDirectPromoteShall());
                     upgradeRules.setStatus(EnumUpgrade.NORMAL.getId());
@@ -186,10 +217,6 @@ public class UpgradeController extends BaseController {
         BigDecimal rewardRate = req.getRewardRate();
         BigDecimal b1 = new BigDecimal(100);
         if(upgradeRecommendRulesOptional.isPresent()){//修改
-//            BigDecimal upgradeRate = req.getUpgradeRate();
-//            BigDecimal tradeRate = req.getTradeRate();
-//            BigDecimal rewardRate = req.getRewardRate();
-//            BigDecimal b1 = new BigDecimal(100);
             upgradeRecommendRulesOptional.get().setInviteStandard(req.getStandard());
             upgradeRecommendRulesOptional.get().setUpgradeRate(upgradeRate.divide(b1));
             upgradeRecommendRulesOptional.get().setTradeRate(tradeRate.divide(b1));
