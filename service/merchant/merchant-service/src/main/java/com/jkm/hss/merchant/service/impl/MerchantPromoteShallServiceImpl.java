@@ -101,7 +101,7 @@ public class MerchantPromoteShallServiceImpl implements MerchantPromoteShallServ
                     inDirectMoney = new BigDecimal("0");
                 }
                 //金开门利润 = 升级费 - 直推分润 - 间推分润
-                BigDecimal productMoney = waitAmount.subtract(pair.getLeft()).subtract(pair.getRight());
+                BigDecimal productMoney = waitAmount.subtract(directMoney).subtract(inDirectMoney);
                 final PartnerShallProfitDetail detail = new PartnerShallProfitDetail();
                 detail.setMerchantId(merchantId);
                 detail.setMerchantName(merchantInfo.getMerchantName());
@@ -181,7 +181,7 @@ public class MerchantPromoteShallServiceImpl implements MerchantPromoteShallServ
             BigDecimal firstMoney = (waitAmount.subtract(pair.getLeft()).subtract(pair.getRight()))
                     .multiply(dealerUpgerdeRates.getFirstDealerShareProfitRate());
             //金开门利润 = 升级费 - 直推分润 - 间推分润 - 一级代理分润 - 二级代理分润
-            BigDecimal productMoney = waitAmount.subtract(pair.getLeft()).subtract(pair.getRight()).subtract(firstMoney).subtract(secondMoney);
+            BigDecimal productMoney = waitAmount.subtract(directMoney).subtract(inDirectMoney).subtract(firstMoney).subtract(secondMoney);
 
             final PartnerShallProfitDetail detail = new PartnerShallProfitDetail();
             detail.setMerchantId(merchantId);

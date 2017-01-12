@@ -154,7 +154,7 @@ public class CalculateServiceImpl implements CalculateService {
                     inDirectMoney = new BigDecimal("0");
                 }
                 //金开门利润 = 升级费 - 直推分润 - 间推分润
-                BigDecimal productMoney = waitAmount.subtract(pair.getLeft()).subtract(pair.getRight());
+                BigDecimal productMoney = waitAmount.subtract(directMoney).subtract(inDirectMoney);
 
                 if (directMoney.compareTo(new BigDecimal("0")) == 1){
 
@@ -210,7 +210,7 @@ public class CalculateServiceImpl implements CalculateService {
                 secondMoney = new BigDecimal("0");
             }
             //一级代理分润 = （升级费 - 直推分润 - 间推分润）* 一级代理分润比例
-            BigDecimal firstMoney = (waitAmount.subtract(pair.getLeft()).subtract(pair.getRight()))
+            BigDecimal firstMoney = (waitAmount.subtract(directMoney).subtract(inDirectMoney))
                     .multiply(dealerUpgerdeRates.getFirstDealerShareProfitRate());
             //金开门利润 = 升级费 - 直推分润 - 间推分润 - 一级代理分润 - 二级代理分润
             BigDecimal productMoney = waitAmount.subtract(pair.getLeft()).subtract(pair.getRight()).subtract(firstMoney).subtract(secondMoney);
