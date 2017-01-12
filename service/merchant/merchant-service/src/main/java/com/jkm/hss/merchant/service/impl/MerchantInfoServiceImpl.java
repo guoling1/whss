@@ -360,7 +360,7 @@ public class MerchantInfoServiceImpl implements MerchantInfoService {
     @Override
     public Pair<BigDecimal, BigDecimal> getUpgradeShareProfit(String reqSn) {
         UpgradePayRecord upgradePayRecord = upgradePayRecordService.selectByReqSn(reqSn);
-        if(upgradePayRecord!=null){
+        if(upgradePayRecord == null){
             log.info("升级分润有误");
             return Pair.of(new BigDecimal("0.00"), new BigDecimal("0.00"));
         }else{
