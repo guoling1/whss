@@ -13,7 +13,7 @@ public interface PartnerShallProfitDetailService {
 
     void init(PartnerShallProfitDetail partnerShallProfitDetail);
 
-    PageModel<PartnerShallProfitDetail> getPartnerShallProfitList(long merchantId, long id, int pageSize);
+    PageModel<PartnerShallProfitDetail> getPartnerShallProfitList(long merchantId, long id, int pageNo,int pageSize);
 
     BigDecimal selectTotalProfitByMerchantId(long merchantId);
 }
