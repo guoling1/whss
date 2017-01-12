@@ -113,7 +113,9 @@ public class PayServiceImpl implements PayService {
         order.setOrderNo(SnGenerator.generateSn(EnumTradeType.PAY.getId()));
         order.setTradeAmount(amount);
         order.setRealPayAmount(amount);
+        order.setAppId(EnumAppType.HSS.getId());
         order.setTradeType(EnumTradeType.PAY.getId());
+        order.setServiceType(EnumServiceType.APPRECIATION_PAY.getId());
         order.setPayChannelSign(EnumPayChannelSign.YG_WEIXIN.getId());
         order.setPayer(merchant.getAccountId());
         order.setPayee(AccountConstants.JKM_ACCOUNT_ID);
@@ -147,7 +149,9 @@ public class PayServiceImpl implements PayService {
         order.setOrderNo(SnGenerator.generateSn(EnumTradeType.PAY.getId()));
         order.setTradeAmount(new BigDecimal(totalAmount));
         order.setRealPayAmount(new BigDecimal(totalAmount));
+        order.setAppId(EnumAppType.HSS.getId());
         order.setTradeType(EnumTradeType.PAY.getId());
+        order.setServiceType(EnumServiceType.RECEIVE_MONEY.getId());
         order.setPayer(0);
         order.setPayee(merchant.getAccountId());
         order.setGoodsName(merchant.getMerchantName());
@@ -304,7 +308,8 @@ public class PayServiceImpl implements PayService {
         }
         //判断商户交易金额--是否升级
         try  {
-            final BigDecimal totalTradeAmount = this.orderService.getTotalTradeAmountByAccountId(merchant.getAccountId());
+            final BigDecimal totalTradeAmount = this.orderService.getTotalTradeAmountByAccountId(merchant.getAccountId(),
+                    EnumAppType.HSS.getId(), EnumServiceType.APPRECIATION_PAY.getId());
             final BigDecimal merchantUpgradeMinAmount = this.upgradeRecommendRulesService.selectInviteStandard();
             if (totalTradeAmount.compareTo(merchantUpgradeMinAmount) >= 0) {
                 this.merchantInfoService.toUpgradeByRecommend(merchant.getId());
