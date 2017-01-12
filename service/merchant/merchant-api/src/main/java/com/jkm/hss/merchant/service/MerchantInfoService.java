@@ -65,7 +65,7 @@ public interface MerchantInfoService {
     /**
      * 查询商户列表
      */
-    Optional<MerchantInfo> getAll(MerchantInfo merchantInfo);
+    List<MerchantInfo> getAll();
 
     /**
      * 审核商户（更改商户状态）

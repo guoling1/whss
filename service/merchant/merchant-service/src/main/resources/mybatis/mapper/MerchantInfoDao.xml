@@ -55,7 +55,7 @@
     </select>
 
     <select id="getAll" resultType="com.jkm.hss.merchant.entity.MerchantInfo">
-        SELECT * FROM tb_merchant_info
+        SELECT <include refid="Base_Column_List" /> FROM tb_merchant_info
 
     </select>
 

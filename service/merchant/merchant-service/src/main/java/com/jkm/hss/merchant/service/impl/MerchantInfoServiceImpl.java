@@ -135,8 +135,8 @@ public class MerchantInfoServiceImpl implements MerchantInfoService {
     }
 
     @Override
-    public Optional<MerchantInfo> getAll(MerchantInfo merchantInfo) {
-        return this.merchantInfoDao.getAll(merchantInfo);
+    public List<MerchantInfo> getAll() {
+        return this.merchantInfoDao.getAll();
     }
 
 //    @Override
@@ -156,7 +156,8 @@ public class MerchantInfoServiceImpl implements MerchantInfoService {
     @Override
     public long regByWx(MerchantInfo merchantInfo) {
         merchantInfoDao.insertSelective(merchantInfo);
-        QRCode qrCode = qrCodeService.initMerchantCode(merchantInfo.getId(),merchantInfo.getFirstDealerId(),merchantInfo.getSecondMerchantId());
+        QRCode qrCode = qrCodeService.initMerchantCode(merchantInfo.getId());
+//        QRCode qrCode = qrCodeService.initMerchantCode(merchantInfo.getId(),merchantInfo.getFirstDealerId(),merchantInfo.getSecondMerchantId());
         merchantInfo.setCode(qrCode.getCode());
         merchantInfo.setMarkCode(GlobalID.GetGlobalID(EnumGlobalIDType.MERCHANT, EnumGlobalIDPro.MIN,merchantInfo.getId()+""));
         merchantInfoDao.updateBySelective(merchantInfo);
