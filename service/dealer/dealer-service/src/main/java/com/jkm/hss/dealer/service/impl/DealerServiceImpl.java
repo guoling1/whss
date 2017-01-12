@@ -296,7 +296,7 @@ public class DealerServiceImpl implements DealerService {
                 return map;
             }else{
                 //上上级商户 = 【（商户费率 -  上上级商户 ）- |（商户费率 -  上级商户）|】* 商户交易金额（如果商户费率低于或等于上级商户，那么上级商户无润）
-                final MerchantInfo secondMerchantInfo = this.merchantInfoService.selectById(firstMerchantInfo.getSecondMerchantId()).get();
+                final MerchantInfo secondMerchantInfo = this.merchantInfoService.selectById(merchantInfo.getSecondMerchantId()).get();
                 final BigDecimal secondMerchantRate = getMerchantRate(channelSign, secondMerchantInfo);
                 final BigDecimal secondSelfMerchantRate = (merchantRate.subtract(secondMerchantRate).subtract( merchantRate.subtract(firstMerchantRate).abs())).abs();
                 final BigDecimal secondMerchantMoney = secondSelfMerchantRate.multiply(tradeAmount).setScale(2, BigDecimal.ROUND_DOWN);
@@ -325,7 +325,7 @@ public class DealerServiceImpl implements DealerService {
                 detail.setProfitDate(DateFormatUtil.format(new Date(), DateFormatUtil.yyyy_MM_dd));
                 this.partnerShallProfitDetailService.init(detail);
                 map.put("firstMerchantMoney", Triple.of(firstMerchantInfo.getAccountId(), firstMerchantMoney, getMerchantRate(channelSign,firstMerchantInfo)));
-                map.put("secondMerchantMoney", Triple.of(firstMerchantInfo.getAccountId(), secondMerchantMoney, getMerchantRate(channelSign,secondMerchantInfo)));
+                map.put("secondMerchantMoney", Triple.of(secondMerchantInfo.getAccountId(), secondMerchantMoney, getMerchantRate(channelSign,secondMerchantInfo)));
                 map.put("productMoney", Triple.of(product.getAccountId(), productMoney, productChannelDetail.getProductTradeRate()));
                 return map;
             }
@@ -433,7 +433,7 @@ public class DealerServiceImpl implements DealerService {
         }else {
 
             //上上级商户 = 【（商户费率 -  上上级商户 ）- |（商户费率 -  上级商户）|】* 商户交易金额（如果商户费率低于或等于上级商户，那么上级商户无润）
-            final MerchantInfo secondMerchantInfo = this.merchantInfoService.selectById(firstMerchantInfo.getSecondMerchantId()).get();
+            final MerchantInfo secondMerchantInfo = this.merchantInfoService.selectById(merchantInfo.getSecondMerchantId()).get();
             final BigDecimal secondMerchantRate = getMerchantRate(channelSign, secondMerchantInfo);
             final BigDecimal secondSelfMerchantRate = (merchantRate.subtract(secondMerchantRate).subtract( merchantRate.subtract(firstMerchantRate).abs())).abs();
             final BigDecimal secondMerchantMoney = secondSelfMerchantRate.multiply(tradeAmount).setScale(2, BigDecimal.ROUND_DOWN);
