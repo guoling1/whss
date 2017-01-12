@@ -10,7 +10,9 @@
         sn,
         trade_amount,
         real_pay_amount,
+        app_id,
         trade_type,
+        service_type,
         payer,
         payee,
         pay_account,
@@ -36,7 +38,9 @@
         #{sn},
         #{tradeAmount},
         #{realPayAmount},
+        #{appId},
         #{tradeType},
+        #{serviceType},
         #{payer},
         #{payee},
         #{payAccount},
@@ -375,6 +379,6 @@
     </select>
 
     <select id="selectTotalTradeAmountByAccountId" resultType="java.math.BigDecimal">
-        SELECT SUM(trade_amount) FROM tb_order WHERE payee = #{accountId} AND trade_type = 1
+        SELECT SUM(trade_amount) FROM tb_order WHERE app_id = #{appId} AND payee = #{accountId} AND service_type = #{serviceType} AND trade_type = 1
     </select>
 </mapper>
