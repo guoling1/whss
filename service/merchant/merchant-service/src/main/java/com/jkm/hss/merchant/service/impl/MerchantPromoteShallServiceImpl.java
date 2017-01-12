@@ -104,7 +104,7 @@ public class MerchantPromoteShallServiceImpl implements MerchantPromoteShallServ
                 BigDecimal productMoney = waitAmount.subtract(directMoney).subtract(inDirectMoney);
                 final PartnerShallProfitDetail detail = new PartnerShallProfitDetail();
                 detail.setMerchantId(merchantId);
-                detail.setMerchantName(merchantInfo.getMerchantName());
+                detail.setMerchantName(merchantInfo.getName());
                 detail.setOrderNo(orderNo);
                 detail.setChannelType(0);
                 detail.setTotalFee(waitAmount);
@@ -185,7 +185,7 @@ public class MerchantPromoteShallServiceImpl implements MerchantPromoteShallServ
 
             final PartnerShallProfitDetail detail = new PartnerShallProfitDetail();
             detail.setMerchantId(merchantId);
-            detail.setMerchantName(merchantInfo.getMerchantName());
+            detail.setMerchantName(merchantInfo.getName());
             detail.setOrderNo(orderNo);
             detail.setChannelType(0);
             detail.setTotalFee(waitAmount);

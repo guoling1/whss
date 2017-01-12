@@ -361,11 +361,13 @@ public class MerchantInfoController extends BaseController {
                     jsonObject.put("name",input.getMerchantName());
                     jsonObject.put("date", input.getCreateTime());
                     jsonObject.put("money", input.getFirstMerchantShallAmount());
+                    jsonObject.put("shallId", input.getId());
                 }else{
                     jsonObject.put("type","2");
                     jsonObject.put("name",input.getMerchantName());
                     jsonObject.put("date", input.getCreateTime());
                     jsonObject.put("money", input.getSecondMerchantShallAmount());
+                    jsonObject.put("shallId", input.getId());
                 }
 
                 return jsonObject;
@@ -383,4 +385,12 @@ public class MerchantInfoController extends BaseController {
         return CommonResponse.objectResponse(1,"success", response);
     }
 
+
+    private String getInDirectName(String name){
+        final int length = name.length();
+        if (length <= 2){
+            return "*";
+        }
+   return null;
+    }
 }
