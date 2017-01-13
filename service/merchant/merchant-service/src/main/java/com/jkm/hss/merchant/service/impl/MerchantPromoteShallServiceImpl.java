@@ -179,8 +179,16 @@ public class MerchantPromoteShallServiceImpl implements MerchantPromoteShallServ
                 secondMoney = new BigDecimal("0");
             }
             //一级代理分润 = （升级费 - 直推分润 - 间推分润）* 一级代理分润比例
-            BigDecimal firstMoney = (waitAmount.subtract(inDirectMoney).subtract(directMoney))
-                    .multiply(dealerUpgerdeRates.getFirstDealerShareProfitRate()).setScale(2, BigDecimal.ROUND_DOWN);
+            BigDecimal firstMoney;
+            if (merchantInfo.getSecondDealerId() != 0){
+                firstMoney = (waitAmount.subtract(inDirectMoney).subtract(directMoney))
+                        .multiply(dealerUpgerdeRates.getFirstDealerShareProfitRate()).setScale(2, BigDecimal.ROUND_DOWN);
+            }else{
+                //没有二级代理
+                firstMoney = (waitAmount.subtract(inDirectMoney).subtract(directMoney))
+                        .multiply(dealerUpgerdeRates.getFirstDealerShareProfitRate().add(dealerUpgerdeRates.getSecondDealerShareProfitRate())).setScale(2, BigDecimal.ROUND_DOWN);
+            }
+
             //金开门利润 = 升级费 - 直推分润 - 间推分润 - 一级代理分润 - 二级代理分润
             BigDecimal productMoney = waitAmount.subtract(directMoney).subtract(inDirectMoney).subtract(firstMoney).subtract(secondMoney);
 
