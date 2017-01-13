@@ -4,7 +4,7 @@
 
     <!-- 通用查询结果列-->
     <sql id="Base_Column_List">
-		 id,	product_id,invite_standard,upgrade_rate,	trade_rate,	reward_rate,	status,	create_time,	update_time
+		 id,	product_id,invite_standard,upgrade_rate,	trade_rate,	status,	create_time,	update_time
 	</sql>
 
     <!-- 添加 （匹配有值的字段）-->
@@ -23,9 +23,6 @@
             <if test="tradeRate != null">
                 trade_rate,
             </if>
-            <!--<if test="rewardRate != null">-->
-                <!--reward_rate,-->
-            <!--</if>-->
             <if test="status != null">
                 status,
             </if>
@@ -67,9 +64,6 @@
             </if>
             <if test="tradeRate != null">
                 trade_rate = #{tradeRate},
-            </if>
-            <if test="rewardRate != null">
-                reward_rate = #{rewardRate},
             </if>
             <if test="status != null">
                 status = #{status},
