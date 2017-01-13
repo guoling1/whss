@@ -39,4 +39,8 @@
     <update id="updateSettleStatus">
         UPDATE tb_account_settle_audit_record SET settle_status = #{status} WHERE id = #{id}
     </update>
+
+    <select id="selectById" resultType="com.jkm.hss.settle.entity.AccountSettleAuditRecord">
+        SELECT * FROM tb_account_settle_audit_record WHERE id = #{id}
+    </select>
 </mapper>

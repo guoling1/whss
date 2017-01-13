@@ -37,4 +37,12 @@ public interface AccountSettleAuditRecordDao {
      * @return
      */
     int updateSettleStatus(@Param("id") long id, @Param("status") int status);
+
+    /**
+     * 按id 查询
+     *
+     * @param id
+     * @return
+     */
+    AccountSettleAuditRecord selectById(@Param("id") long id);
 }

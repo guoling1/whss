@@ -24,6 +24,11 @@ public class SettleAccountFlow extends BaseEntity {
     private long accountId;
 
     /**
+     * 结算审核记录id
+     */
+    private long settleAuditRecordId;
+
+    /**
      * 账户所属用户类型
      *
      * {@link com.jkm.hss.account.enums.EnumAccountUserType}

@@ -21,6 +21,15 @@ public interface SettleAccountFlowService {
     void add(SettleAccountFlow accountFlow);
 
     /**
+     * 保存结算审核记录
+     *
+     * @param orderNos
+     * @param settleAuditRecordId
+     * @return
+     */
+    int updateSettleAuditRecordIdByOrderNos(List<String> orderNos, long settleAuditRecordId);
+
+    /**
      * 按id查询
      *
      * @param id

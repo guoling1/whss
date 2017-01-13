@@ -8,6 +8,7 @@ import com.jkm.hss.account.enums.EnumAccountFlowType;
 import com.jkm.hss.account.sevice.AccountService;
 import com.jkm.hss.account.sevice.SettleAccountFlowService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,6 +37,21 @@ public class SettleAccountFlowServiceImpl implements SettleAccountFlowService {
     @Override
     public void add(final SettleAccountFlow accountFlow) {
         this.settleAccountFlowDao.insert(accountFlow);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param orderNos
+     * @param settleAuditRecordId
+     * @return
+     */
+    @Override
+    public int updateSettleAuditRecordIdByOrderNos(final List<String> orderNos, final long settleAuditRecordId) {
+        if (CollectionUtils.isEmpty(orderNos)) {
+            return 0;
+        }
+        return this.settleAccountFlowDao.updateSettleAuditRecordIdByOrderNos(orderNos, settleAuditRecordId);
     }
 
     /**

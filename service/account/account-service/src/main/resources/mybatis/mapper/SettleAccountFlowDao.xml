@@ -5,6 +5,7 @@
         INSERT INTO tb_settle_account_flow
         (
         account_id,
+        settle_audit_record_id,
         account_user_type,
         order_no,
         before_amount,
@@ -21,6 +22,7 @@
         VALUES
         (
         #{accountId},
+        #{settleAuditRecordId},
         #{accountUserType},
         #{orderNo},
         #{beforeAmount},
@@ -35,6 +37,15 @@
         #{status}
         );
     </insert>
+
+    <update id="updateSettleAuditRecordIdByOrderNos">
+        UPDATE tb_settle_account_flow
+        SET settle_audit_record_id = #{settleAuditRecordId}
+        WHERE order_no IN
+        <foreach collection="orderNos" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </update>
 
     <select id="selectById" resultType="com.jkm.hss.account.entity.SettleAccountFlow">
         SELECT * FROM tb_settle_account_flow WHERE id = #{id}

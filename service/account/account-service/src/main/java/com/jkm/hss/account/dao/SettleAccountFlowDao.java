@@ -21,6 +21,15 @@ public interface SettleAccountFlowDao {
     void insert(SettleAccountFlow settleAccountFlow);
 
     /**
+     * 保存结算审核记录
+     *
+     * @param orderNos
+     * @param settleAuditRecordId
+     * @return
+     */
+    int updateSettleAuditRecordIdByOrderNos(@Param("orderNos") List<String> orderNos, @Param("settleAuditRecordId") long settleAuditRecordId);
+
+    /**
      * 按id查询
      *
      * @param id

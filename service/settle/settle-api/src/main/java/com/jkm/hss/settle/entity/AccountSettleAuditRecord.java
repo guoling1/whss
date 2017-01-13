@@ -1,6 +1,7 @@
 package com.jkm.hss.settle.entity;
 
 import com.jkm.base.common.entity.BaseEntity;
+import com.jkm.hss.settle.enums.EnumAccountCheckStatus;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -71,4 +72,31 @@ public class AccountSettleAuditRecord extends BaseEntity {
      * {@link com.jkm.hss.settle.enums.EnumSettleStatus}
      */
     private int settleStatus;
+
+    /**
+     * 是否是待对账
+     *
+     * @return
+     */
+    public boolean isDueAccountCheck() {
+        return EnumAccountCheckStatus.DUE_ACCOUNT_CHECK.getId() == this.accountCheckStatus;
+    }
+
+    /**
+     * 是否是对账完成
+     *
+     * @return
+     */
+    public boolean isSuccessAccountCheck() {
+        return EnumAccountCheckStatus.SUCCESS_ACCOUNT_CHECK.getId() == this.accountCheckStatus;
+    }
+
+    /**
+     * 是否是单边
+     *
+     * @return
+     */
+    public boolean isSideException() {
+        return EnumAccountCheckStatus.SIDE_EXCEPTION.getId() == this.accountCheckStatus;
+    }
 }
