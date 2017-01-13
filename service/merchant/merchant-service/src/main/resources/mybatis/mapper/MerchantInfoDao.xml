@@ -436,4 +436,10 @@
         WHERE id = #{merchantId}
     </update>
 
+    <update id="updateByCondition">
+        UPDATE tb_merchant_info
+        SET first_dealer_id = #{firstDealerId},second_dealer_id = #{secondDealerId},product_id = #{productId},
+        weixin_rate = #{weixinRate},alipay_rate = #{alipayRate},fast_rate = #{fastRate}
+        WHERE id = #{id}
+    </update>
 </mapper>

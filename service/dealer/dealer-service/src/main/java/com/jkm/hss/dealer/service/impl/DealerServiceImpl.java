@@ -205,7 +205,6 @@ public class DealerServiceImpl implements DealerService {
     public Map<String, Triple<Long, BigDecimal, BigDecimal>> shallProfit(final String orderNo, final BigDecimal tradeAmount,
 
                                                                      final int channelSign, final long merchantId) {
-        log.info("交易订单号["+ orderNo + "]分润：交易金额" + tradeAmount);
         try{
             final MerchantInfo merchantInfo = this.merchantInfoService.selectById(merchantId).get();
             //判断商户是否是直属商户
@@ -251,7 +250,7 @@ public class DealerServiceImpl implements DealerService {
         final BigDecimal channelMoney = tradeAmount.multiply(productChannelDetail.getProductTradeRate().
                 subtract(basicChannel.getBasicTradeRate())).setScale(2,BigDecimal.ROUND_DOWN);
         //判断是否是公司直属商户发展的商户
-        if (merchantInfo.getDealerId() == 0){
+        if (merchantInfo.getFirstDealerId() == 0){
             map.put("channelMoney", Triple.of(basicChannel.getAccountId(), channelMoney, basicChannel.getBasicTradeRate()));
 
             //上级商户 = （商户费率 -  上级商户）* 商户交易金额（如果商户费率低于或等于上级商户，那么上级商户无润）
@@ -260,9 +259,9 @@ public class DealerServiceImpl implements DealerService {
             final BigDecimal firstMerchantRate = getMerchantRate(channelSign, firstMerchantInfo);
             final BigDecimal firstMerchantMoney;
             if (merchantRate.compareTo(firstMerchantRate) == 1){
-                firstMerchantMoney =  new BigDecimal(0);
-            }else{
                 firstMerchantMoney = merchantRate.subtract(firstMerchantRate).multiply(tradeAmount).setScale(2, BigDecimal.ROUND_DOWN);
+            }else{
+                firstMerchantMoney =  new BigDecimal(0);
             }
 
             if (merchantInfo.getSecondMerchantId() == 0){
@@ -271,7 +270,7 @@ public class DealerServiceImpl implements DealerService {
                 //没有上上级
                 final PartnerShallProfitDetail detail = new PartnerShallProfitDetail();
                 detail.setMerchantId(merchantId);
-                detail.setMerchantName(merchantInfo.getMerchantName());
+                detail.setMerchantName(merchantInfo.getName());
                 detail.setOrderNo(orderNo);
                 detail.setChannelType(0);
                 detail.setTotalFee(tradeAmount);
@@ -296,15 +295,36 @@ public class DealerServiceImpl implements DealerService {
                 return map;
             }else{
                 //上上级商户 = 【（商户费率 -  上上级商户 ）- |（商户费率 -  上级商户）|】* 商户交易金额（如果商户费率低于或等于上级商户，那么上级商户无润）
-                final MerchantInfo secondMerchantInfo = this.merchantInfoService.selectById(firstMerchantInfo.getSecondMerchantId()).get();
+                final MerchantInfo secondMerchantInfo = this.merchantInfoService.selectById(merchantInfo.getSecondMerchantId()).get();
                 final BigDecimal secondMerchantRate = getMerchantRate(channelSign, secondMerchantInfo);
-                final BigDecimal secondSelfMerchantRate = (merchantRate.subtract(secondMerchantRate).subtract( merchantRate.subtract(firstMerchantRate).abs())).abs();
+                final BigDecimal secondSelfMerchantRate;
+                final BigDecimal a = merchantRate.subtract(secondMerchantRate);
+                final BigDecimal b = merchantRate.subtract(firstMerchantRate);
+                if (a.compareTo(new BigDecimal("0"))  ==1 ){
+                    //商户大于上上级
+                    if (b.compareTo(new BigDecimal("0")) == 1){
+
+                        final BigDecimal  d = a.subtract(b);
+                            if (d.compareTo( new BigDecimal("0")) == 1){
+                                secondSelfMerchantRate = d;
+                            }else {
+                                secondSelfMerchantRate = new BigDecimal("0");
+                            }
+                    }else{
+                        secondSelfMerchantRate = a;
+                    }
+
+                }else{
+                    //商户小于等于上上级
+                    secondSelfMerchantRate = new BigDecimal("0");
+                }
+
                 final BigDecimal secondMerchantMoney = secondSelfMerchantRate.multiply(tradeAmount).setScale(2, BigDecimal.ROUND_DOWN);
                 final BigDecimal productMoney = waitOriginMoney.subtract(basicMoney).subtract(channelMoney).subtract(firstMerchantMoney).subtract(secondMerchantMoney);
                 //有上上级
                 final PartnerShallProfitDetail detail = new PartnerShallProfitDetail();
                 detail.setMerchantId(merchantId);
-                detail.setMerchantName(merchantInfo.getMerchantName());
+                detail.setMerchantName(merchantInfo.getName());
                 detail.setOrderNo(orderNo);
                 detail.setChannelType(0);
                 detail.setTotalFee(tradeAmount);
@@ -325,7 +345,7 @@ public class DealerServiceImpl implements DealerService {
                 detail.setProfitDate(DateFormatUtil.format(new Date(), DateFormatUtil.yyyy_MM_dd));
                 this.partnerShallProfitDetailService.init(detail);
                 map.put("firstMerchantMoney", Triple.of(firstMerchantInfo.getAccountId(), firstMerchantMoney, getMerchantRate(channelSign,firstMerchantInfo)));
-                map.put("secondMerchantMoney", Triple.of(firstMerchantInfo.getAccountId(), secondMerchantMoney, getMerchantRate(channelSign,secondMerchantInfo)));
+                map.put("secondMerchantMoney", Triple.of(secondMerchantInfo.getAccountId(), secondMerchantMoney, getMerchantRate(channelSign,secondMerchantInfo)));
                 map.put("productMoney", Triple.of(product.getAccountId(), productMoney, productChannelDetail.getProductTradeRate()));
                 return map;
             }
@@ -347,9 +367,9 @@ public class DealerServiceImpl implements DealerService {
         final BigDecimal firstMerchantRate = getMerchantRate(channelSign, firstMerchantInfo);
         final BigDecimal firstMerchantMoney;
         if (merchantRate.compareTo(firstMerchantRate) == 1){
-            firstMerchantMoney =  new BigDecimal(0);
-        }else{
             firstMerchantMoney = merchantRate.subtract(firstMerchantRate).multiply(tradeAmount).setScale(2, BigDecimal.ROUND_DOWN);
+        }else{
+            firstMerchantMoney =  new BigDecimal(0);
         }
         //上上级商户 = 【（商户费率 -  上上级商户 ）- |（商户费率 -  上级商户）|】* 商户交易金额（如果商户费率低于或等于上级商户，那么上级商户无润）
         if (merchantInfo.getSecondMerchantId() == 0){
@@ -369,7 +389,7 @@ public class DealerServiceImpl implements DealerService {
 
                 final PartnerShallProfitDetail detail = new PartnerShallProfitDetail();
                 detail.setMerchantId(merchantId);
-                detail.setMerchantName(merchantInfo.getMerchantName());
+                detail.setMerchantName(merchantInfo.getName());
                 detail.setOrderNo(orderNo);
                 detail.setChannelType(0);
                 detail.setTotalFee(tradeAmount);
@@ -407,7 +427,7 @@ public class DealerServiceImpl implements DealerService {
 
                 final PartnerShallProfitDetail detail = new PartnerShallProfitDetail();
                 detail.setMerchantId(merchantId);
-                detail.setMerchantName(merchantInfo.getMerchantName());
+                detail.setMerchantName(merchantInfo.getName());
                 detail.setOrderNo(orderNo);
                 detail.setChannelType(0);
                 detail.setTotalFee(tradeAmount);
@@ -433,9 +453,29 @@ public class DealerServiceImpl implements DealerService {
         }else {
 
             //上上级商户 = 【（商户费率 -  上上级商户 ）- |（商户费率 -  上级商户）|】* 商户交易金额（如果商户费率低于或等于上级商户，那么上级商户无润）
-            final MerchantInfo secondMerchantInfo = this.merchantInfoService.selectById(firstMerchantInfo.getSecondMerchantId()).get();
+            final MerchantInfo secondMerchantInfo = this.merchantInfoService.selectById(merchantInfo.getSecondMerchantId()).get();
             final BigDecimal secondMerchantRate = getMerchantRate(channelSign, secondMerchantInfo);
-            final BigDecimal secondSelfMerchantRate = (merchantRate.subtract(secondMerchantRate).subtract( merchantRate.subtract(firstMerchantRate).abs())).abs();
+            final BigDecimal secondSelfMerchantRate;
+            final BigDecimal a = merchantRate.subtract(secondMerchantRate);
+            final BigDecimal b = merchantRate.subtract(firstMerchantRate);
+            if (a.compareTo(new BigDecimal("0"))  ==1 ){
+                //商户大于上上级
+                if (b.compareTo(new BigDecimal("0")) == 1){
+
+                    final BigDecimal  d = a.subtract(b);
+                    if (d.compareTo( new BigDecimal("0")) == 1){
+                        secondSelfMerchantRate = d;
+                    }else {
+                        secondSelfMerchantRate = new BigDecimal("0");
+                    }
+                }else{
+                    secondSelfMerchantRate = a;
+                }
+
+            }else{
+                //商户小于等于上上级
+                secondSelfMerchantRate = new BigDecimal("0");
+            }
             final BigDecimal secondMerchantMoney = secondSelfMerchantRate.multiply(tradeAmount).setScale(2, BigDecimal.ROUND_DOWN);
             if (merchantInfo.getSecondDealerId() == 0){
                 //有上上级，一级下的商户
@@ -453,7 +493,7 @@ public class DealerServiceImpl implements DealerService {
 
                 final PartnerShallProfitDetail detail = new PartnerShallProfitDetail();
                 detail.setMerchantId(merchantId);
-                detail.setMerchantName(merchantInfo.getMerchantName());
+                detail.setMerchantName(merchantInfo.getName());
                 detail.setOrderNo(orderNo);
                 detail.setChannelType(0);
                 detail.setTotalFee(tradeAmount);
@@ -493,7 +533,7 @@ public class DealerServiceImpl implements DealerService {
 
                 final PartnerShallProfitDetail detail = new PartnerShallProfitDetail();
                 detail.setMerchantId(merchantId);
-                detail.setMerchantName(merchantInfo.getMerchantName());
+                detail.setMerchantName(merchantInfo.getName());
                 detail.setOrderNo(orderNo);
                 detail.setChannelType(0);
                 detail.setTotalFee(tradeAmount);
@@ -1298,9 +1338,11 @@ public class DealerServiceImpl implements DealerService {
         dealer.setBankAccountName(request.getBankAccountName());
         dealer.setBelongArea(request.getBelongArea());
         dealer.setLevel(EnumDealerLevel.FIRST.getId());
+        dealer.setRecommendBtn(request.getRecommendBtn());
         dealer.setSettleBankCard(DealerSupport.encryptBankCard(request.getBankCard()));
         dealer.setBankReserveMobile(DealerSupport.encryptMobile(request.getBankReserveMobile()));
         dealer.setStatus(EnumDealerStatus.NORMAL.getId());
+        dealer.setTotalProfitSpace(request.getTotalProfitSpace());
         this.update(dealer);
         final FirstLevelDealerUpdateRequest.Product product = request.getProduct();
         final long productId = product.getProductId();

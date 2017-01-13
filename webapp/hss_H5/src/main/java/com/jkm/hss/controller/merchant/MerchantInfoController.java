@@ -347,7 +347,7 @@ public class MerchantInfoController extends BaseController {
 
         shallRequest.setMerchantId(merchantInfo.get().getId());
         PageModel<PartnerShallProfitDetail> pageModel = this.partnerShallProfitDetailService.
-                getPartnerShallProfitList(shallRequest.getMerchantId(), shallRequest.getShallId(),shallRequest.getPageSize());
+                getPartnerShallProfitList(shallRequest.getMerchantId(), shallRequest.getShallId(),shallRequest.getPageNo() ,shallRequest.getPageSize());
         final BigDecimal totalProfit = this.partnerShallProfitDetailService.selectTotalProfitByMerchantId(shallRequest.getMerchantId());
 
         final List<PartnerShallProfitDetail> records = pageModel.getRecords();
@@ -361,19 +361,21 @@ public class MerchantInfoController extends BaseController {
                     jsonObject.put("name",input.getMerchantName());
                     jsonObject.put("date", input.getCreateTime());
                     jsonObject.put("money", input.getFirstMerchantShallAmount());
+                    jsonObject.put("shallId", input.getId());
                 }else{
                     jsonObject.put("type","2");
-                    jsonObject.put("name",input.getMerchantName());
+                    jsonObject.put("name",getInDirectName(input.getMerchantName()));
                     jsonObject.put("date", input.getCreateTime());
                     jsonObject.put("money", input.getSecondMerchantShallAmount());
+                    jsonObject.put("shallId", input.getId());
                 }
 
                 return jsonObject;
             }
         });
-        PageModel<JSONObject> model = new PageModel<>();
+        PageModel<JSONObject> model = new PageModel<>(shallRequest.getPageNo(),shallRequest.getPageSize());
         model.setRecords(list);
-        //model.setCount(pageModel.getCount());
+        model.setCount(pageModel.getCount());
         model.setHasNextPage(pageModel.isHasNextPage());
         model.setPageSize(pageModel.getPageSize());
         PartnerShallResponse response = new PartnerShallResponse();
@@ -383,4 +385,15 @@ public class MerchantInfoController extends BaseController {
         return CommonResponse.objectResponse(1,"success", response);
     }
 
+
+    private String getInDirectName(String name){
+        final int length = name.length();
+        if (length <= 2){
+            return "*" + name.charAt(1);
+        }else if (length == 3){
+
+            return "**" + name.charAt(2);
+        }
+          return "**" + name.charAt(length - 1);
+    }
 }

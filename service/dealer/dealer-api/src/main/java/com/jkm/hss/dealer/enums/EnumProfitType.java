@@ -8,7 +8,9 @@ import lombok.Getter;
 public enum EnumProfitType {
 
     BALANCE(1, "收单分润"),
-    WITHDRAW(2, "提现分润");
+    WITHDRAW(2, "提现分润"),
+    INDIRECTWITHDRAW(3, "推荐商户提现分润");
+
 
     @Getter
     private int id;

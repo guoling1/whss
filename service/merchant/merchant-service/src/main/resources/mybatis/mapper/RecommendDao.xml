@@ -103,7 +103,7 @@
     <!--我推荐的好友-->
     <select id="selectRecommendByPage" resultType="com.jkm.hss.merchant.entity.RecommendShort">
         SELECT
-        i.name,r.type,i.status
+        i.name,r.type,i.status,i.mobile
         FROM tb_recommend as r left JOIN tb_merchant_info as i on r.merchant_id=i.id
         WHERE r.recommend_merchant_id=#{merchantId} and r.status = 1 ORDER BY r.create_time DESC
     </select>

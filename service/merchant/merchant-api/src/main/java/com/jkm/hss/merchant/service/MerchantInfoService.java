@@ -160,6 +160,12 @@ public interface MerchantInfoService {
     Pair<BigDecimal,BigDecimal> getUpgradeShareProfit(String reqSn);
 
     /**
+     * 初始化推荐版本数据
+     * @param merchantInfo
+     */
+    void updateByCondition(MerchantInfo merchantInfo);
+
+    /**
      * 按accountIds批量查询
      *
      * @param accountIds

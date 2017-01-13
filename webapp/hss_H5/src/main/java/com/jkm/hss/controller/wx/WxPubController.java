@@ -848,11 +848,10 @@ public class WxPubController extends BaseController {
      * 初始化商户
      * @param request
      * @param response
-     * @param recommendRequest
      */
     @ResponseBody
-    @RequestMapping(value = "init", method = RequestMethod.POST)
-    public void init(final HttpServletRequest request, final HttpServletResponse response,@RequestBody final RecommendRequest recommendRequest ) {
+    @RequestMapping(value = "init", method = RequestMethod.GET)
+    public void init(final HttpServletRequest request, final HttpServletResponse response) {
         List<MerchantInfo> merchantInfos = merchantInfoService.getAll();
         if(merchantInfos.size()>0){
             for(int i=0;i<merchantInfos.size();i++){
@@ -867,13 +866,14 @@ public class WxPubController extends BaseController {
 
                             Optional<DealerChannelRate> yinlianDealerChannelRate = dealerChannelRateService.selectByDealerIdAndProductIdAndChannelType(dealerOptional.get().getId(), productOptional.get().getId(),EnumPayChannelSign.YG_YINLIAN.getId());
                             MerchantInfo merchantInfo = new MerchantInfo();
+                            merchantInfo.setId(merchantInfos.get(i).getId());
                             merchantInfo.setFirstDealerId(dealerOptional.get().getId());
                             merchantInfo.setSecondDealerId(0);
-                            merchantInfo.setProductId(productOptional.get().getId());
                             merchantInfo.setProductId(productOptional.get().getId());
                             merchantInfo.setWeixinRate(weixinDealerChannelRate.get().getDealerMerchantPayRate());
                             merchantInfo.setAlipayRate(zhifubaoDealerChannelRate.get().getDealerMerchantPayRate());
                             merchantInfo.setFastRate(yinlianDealerChannelRate.get().getDealerMerchantPayRate());
+                            merchantInfoService.updateByCondition(merchantInfo);
                         }
                         if(dealerOptional.get().getLevel()==2){//二级
                             Optional<DealerChannelRate> weixinDealerChannelRate = dealerChannelRateService.selectByDealerIdAndProductIdAndChannelType(dealerOptional.get().getFirstLevelDealerId(), productOptional.get().getId(),EnumPayChannelSign.YG_WEIXIN.getId());
@@ -883,12 +883,14 @@ public class WxPubController extends BaseController {
                             Optional<DealerChannelRate> yinlianDealerChannelRate = dealerChannelRateService.selectByDealerIdAndProductIdAndChannelType(dealerOptional.get().getFirstLevelDealerId(), productOptional.get().getId(),EnumPayChannelSign.YG_YINLIAN.getId());
 
                             MerchantInfo merchantInfo = new MerchantInfo();
+                            merchantInfo.setId(merchantInfos.get(i).getId());
                             merchantInfo.setFirstDealerId(dealerOptional.get().getFirstLevelDealerId());
                             merchantInfo.setSecondDealerId(dealerOptional.get().getId());
                             merchantInfo.setProductId(productOptional.get().getId());
                             merchantInfo.setWeixinRate(weixinDealerChannelRate.get().getDealerMerchantPayRate());
                             merchantInfo.setAlipayRate(zhifubaoDealerChannelRate.get().getDealerMerchantPayRate());
                             merchantInfo.setFastRate(yinlianDealerChannelRate.get().getDealerMerchantPayRate());
+                            merchantInfoService.updateByCondition(merchantInfo);
                         }
 
                     }
@@ -899,12 +901,14 @@ public class WxPubController extends BaseController {
 
                     Optional<ProductChannelDetail> yinlianChannelDetail = productChannelDetailService.selectByProductIdAndChannelId(productOptional.get().getId(),EnumPayChannelSign.YG_YINLIAN.getId());
                     MerchantInfo merchantInfo = new MerchantInfo();
+                    merchantInfo.setId(merchantInfos.get(i).getId());
                     merchantInfo.setFirstDealerId(0);
                     merchantInfo.setSecondDealerId(0);
                     merchantInfo.setProductId(productOptional.get().getId());
                     merchantInfo.setWeixinRate(weixinChannelDetail.get().getProductMerchantPayRate());
                     merchantInfo.setAlipayRate(zhifubaoChannelDetail.get().getProductMerchantPayRate());
                     merchantInfo.setFastRate(yinlianChannelDetail.get().getProductMerchantPayRate());
+                    merchantInfoService.updateByCondition(merchantInfo);
                 }
             }
         }

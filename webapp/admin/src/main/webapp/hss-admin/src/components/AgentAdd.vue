@@ -175,13 +175,13 @@
                             </tr>
                             <tr>
                               <td>升级费分润</td>
-                              <td>20%</td>
+                              <td>{{bossRate1}}%</td>
                               <td><input type="number" v-model="rate1">%</td>
                               <td><input type="number" v-model="rate2">%</td>
                             </tr>
                             <tr>
                               <td>收单分润</td>
-                              <td>20%</td>
+                              <td>{{bossRate2}}%</td>
                               <td><input type="number" v-model="rate3">%</td>
                               <td><input type="number" v-model="rate4">%</td>
                             </tr>
@@ -242,61 +242,79 @@
             type:1,
             firstDealerShareProfitRate:'',
             secondDealerShareProfitRate:'',
-            bossDealerShareRate:0.2
+            bossDealerShareRate:""
           },
           {
             productId:'',
             type:2,
             firstDealerShareProfitRate:'',
             secondDealerShareProfitRate:'',
-            bossDealerShareRate:0.2
+            bossDealerShareRate:""
           }
         ],
+        bossRate1:'',//收单分润
+        bossRate2:'',//升级费分润,
+        productId:''
       }
     },
     created: function () {
       this.$data.level = this.$route.query.level;
-        this.$http.post('/admin/product/list')
-          .then(function (res) {
-            this.$data.products = res.data;
-            for (let i = 0; i < this.$data.products.length; i++) {
-              for (let j = 0; j < this.$data.products[i].list.length; j++) {
-                this.$data.products[i].list[j].paymentSettleRate = '';
-                (this.$data.products[i].list)[j].withdrawSettleFee = '';
-                (this.$data.products[i].list)[j].merchantSettleRate = '';
-                (this.$data.products[i].list)[j].merchantWithdrawFee = '';
-              }
-            }
-            if(this.$route.query.id !=undefined){
-              this.$data.isShow = false;
-              this.$http.get('/admin/dealer/'+this.$route.query.id)
-                .then(function (res) {
-                  this.$data.mobile = res.data.mobile;
-                  this.$data.name = res.data.name;
-                  this.$data.belongArea = res.data.belongArea;
-                  this.$data.bankCard = res.data.bankCard;
-                  this.$data.bankAccountName = res.data.bankAccountName;
-                  this.$data.idCard = res.data.idCard;
-                  this.$data.recommendBtn = res.data.recommendBtn;
-                  this.$data.rate = res.data.totalProfitSpace*100;
-                  this.$data.bankReserveMobile = res.data.bankReserveMobile;
-                  this.$data.products = [res.data.product];
-                  this.$data.products[0].list = res.data.product.channels
-                  for(var i= 0; i < this.$data.products[0].list.length; i++){
-                      this.$data.products[0].list[i].channelTypeSign = this.$data.products[0].list[i].channelType
-                      this.$data.products[0].list[i].productBalanceType = this.$data.products[0].list[i].settleType
-                  }
-                  this.$data.rate1 = res.data.dealerUpgerdeRates[0].firstDealerShareProfitRate*100;
-                  this.$data.rate2 = res.data.dealerUpgerdeRates[0].secondDealerShareProfitRate*100;
-                  this.$data.rate3 = res.data.dealerUpgerdeRates[1].firstDealerShareProfitRate*100;
-                  this.$data.rate4 = res.data.dealerUpgerdeRates[1].secondDealerShareProfitRate*100;
-                })
-            }
-          }, function (err) {
-            this.$store.commit('MESSAGE_ACCORD_SHOW', {
-              text: err.statusMessage
+
+      this.$http.post('/admin/product/list')
+        .then(function (res) {
+          this.$data.products = res.data;
+          this.$data.productId = res.data[0].productId;
+          //查询金开门分润比例
+          this.$http.post('/admin/upgrade/init',{productId:this.$data.productId})
+            .then(function (res) {
+              this.$data.bossRate1 = res.data.upgradeRate;
+              this.$data.bossRate2 = res.data.tradeRate;
+            },function (err) {
+              this.$store.commit('MESSAGE_ACCORD_SHOW', {
+                text: err.statusMessage
+              })
             })
+
+          for (let i = 0; i < this.$data.products.length; i++) {
+            for (let j = 0; j < this.$data.products[i].list.length; j++) {
+              this.$data.products[i].list[j].paymentSettleRate = '';
+              (this.$data.products[i].list)[j].withdrawSettleFee = '';
+              (this.$data.products[i].list)[j].merchantSettleRate = '';
+              (this.$data.products[i].list)[j].merchantWithdrawFee = '';
+            }
+          }
+          if(this.$route.query.id !=undefined){
+            this.$data.isShow = false;
+            this.$http.get('/admin/dealer/'+this.$route.query.id)
+              .then(function (res) {
+                this.$data.mobile = res.data.mobile;
+                this.$data.name = res.data.name;
+                this.$data.belongArea = res.data.belongArea;
+                this.$data.bankCard = res.data.bankCard;
+                this.$data.bankAccountName = res.data.bankAccountName;
+                this.$data.idCard = res.data.idCard;
+                this.$data.recommendBtn = res.data.recommendBtn;
+                this.$data.rate = res.data.totalProfitSpace*100;
+                this.$data.bankReserveMobile = res.data.bankReserveMobile;
+                this.$data.products = [res.data.product];
+                this.$data.products[0].list = res.data.product.channels
+                for(var i= 0; i < this.$data.products[0].list.length; i++){
+                  this.$data.products[0].list[i].channelTypeSign = this.$data.products[0].list[i].channelType
+                  this.$data.products[0].list[i].productBalanceType = this.$data.products[0].list[i].settleType
+                }
+                this.$data.rate1 = res.data.dealerUpgerdeRates[0].firstDealerShareProfitRate*100;
+                this.$data.rate2 = res.data.dealerUpgerdeRates[0].secondDealerShareProfitRate*100;
+                this.$data.rate3 = res.data.dealerUpgerdeRates[1].firstDealerShareProfitRate*100;
+                this.$data.rate4 = res.data.dealerUpgerdeRates[1].secondDealerShareProfitRate*100;
+                this.$data.bossRate1 = res.data.dealerUpgerdeRates[0].bossDealerShareRate*100;
+                this.$data.bossRate2 = res.data.dealerUpgerdeRates[1].bossDealerShareRate*100;
+              })
+          }
+        }, function (err) {
+          this.$store.commit('MESSAGE_ACCORD_SHOW', {
+            text: err.statusMessage
           })
+        })
     },
     methods: {
       create: function () {
@@ -314,11 +332,12 @@
             merchantWithdrawFee: this.$data.products[this.$data.id].list[i].merchantWithdrawFee
           })
         }
-        this.$data.totalProfitSpace = this.$data.rate/100;
         this.$data.dealerUpgerdeRates[0].firstDealerShareProfitRate= this.$data.rate1/100;
         this.$data.dealerUpgerdeRates[0].secondDealerShareProfitRate= this.$data.rate2/100;
+        this.$data.dealerUpgerdeRates[0].bossDealerShareRate= this.$data.bossRate1/100;
         this.$data.dealerUpgerdeRates[1].firstDealerShareProfitRate= this.$data.rate3/100;
         this.$data.dealerUpgerdeRates[1].secondDealerShareProfitRate= this.$data.rate4/100;
+        this.$data.dealerUpgerdeRates[1].bossDealerShareRate= this.$data.bossRate2/100;
         let query = {
           mobile: this.$data.mobile,
           name: this.$data.name,
@@ -329,7 +348,7 @@
           product: this.$data.product,
           idCard: this.$data.idCard,
           recommendBtn: this.$data.recommendBtn,
-          totalProfitSpace: this.$data.rate,
+          totalProfitSpace: this.$data.rate/100,
           dealerUpgerdeRates: this.$data.dealerUpgerdeRates
         };
         this.$http.post('/admin/user/addFirstDealer', query)
@@ -363,11 +382,12 @@
             merchantWithdrawFee: this.$data.products[this.$data.id].list[i].merchantWithdrawFee
           })
         }
-        this.$data.totalProfitSpace = this.$data.rate/100;
         this.$data.dealerUpgerdeRates[0].firstDealerShareProfitRate= this.$data.rate1/100;
         this.$data.dealerUpgerdeRates[0].secondDealerShareProfitRate= this.$data.rate2/100;
+        this.$data.dealerUpgerdeRates[0].bossDealerShareRate= this.$data.bossRate1/100;
         this.$data.dealerUpgerdeRates[1].firstDealerShareProfitRate= this.$data.rate3/100;
         this.$data.dealerUpgerdeRates[1].secondDealerShareProfitRate= this.$data.rate4/100;
+        this.$data.dealerUpgerdeRates[1].bossDealerShareRate= this.$data.bossRate2/100;
         let query = {
           dealerId: this.$route.query.id,
           mobile: this.$data.mobile,
@@ -379,7 +399,7 @@
           product: this.$data.product,
           idCard: this.$data.idCard,
           recommendBtn: this.$data.recommendBtn,
-          totalProfitSpace: this.$data.rate,
+          totalProfitSpace: this.$data.rate/100,
           dealerUpgerdeRates: this.$data.dealerUpgerdeRates
         };
         this.$http.post('/admin/user/updateDealer', query)

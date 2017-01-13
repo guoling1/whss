@@ -914,7 +914,6 @@ public class LoginController extends BaseController {
                         isRedirect= true;
                         url = "/sqb/prompt";
                     }else if(result.get().getStatus()== EnumMerchantStatus.PASSED.getId()||result.get().getStatus()== EnumMerchantStatus.FRIEND.getId()){
-                        // TODO: 2016/12/29 累计分润
                         BigDecimal totalProfit = partnerShallProfitDetailService.selectTotalProfitByMerchantId(result.get().getId());
                         DecimalFormat decimalFormat=new DecimalFormat("0.00");//构造方法的字符格式这里如果小数不足2位,会以0补足.
                         model.addAttribute("totalProfit", totalProfit==null?"0.00":decimalFormat.format(totalProfit));
@@ -1084,8 +1083,7 @@ public class LoginController extends BaseController {
                         isRedirect= true;
                         url = "/sqb/prompt";
                     }else if(result.get().getStatus()== EnumMerchantStatus.PASSED.getId()||result.get().getStatus()== EnumMerchantStatus.FRIEND.getId()){
-//                        Map<String, String> map = WxPubUtil.getUserInfo(userInfoOptional.get().getOpenId());
-                        Map<String, String> map=null;
+                        Map<String, String> map = WxPubUtil.getUserInfo(userInfoOptional.get().getOpenId());
                         if(map==null){
                             model.addAttribute("headimgUrl","");
                         }else{
@@ -1222,7 +1220,7 @@ public class LoginController extends BaseController {
                                 model.addAttribute("restCount",upgradeRulesOptional.get().getPromotionNum()-hasCount);
                                 model.addAttribute("merchantId",result.get().getId());
                                 model.addAttribute("shareUrl","http://"+ApplicationConsts.getApplicationConfig().domain()+"/sqb/invite/"+userInfoOptional.get().getId());
-                                return "/toUpgerde";
+                                url = "/toUpgerde";
                             }
                         }else{
                             model.addAttribute("message","暂无此级别信息");

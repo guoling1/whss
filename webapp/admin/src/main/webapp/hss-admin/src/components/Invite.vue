@@ -100,10 +100,10 @@
                         <td>收单分润</td>
                         <td><input type="text" name="name" v-model="result.tradeRate">%</td>
                       </tr>
-                      <tr >
+                      <!--<tr >
                         <td colspan="2">收单奖励分润池：<input type="text" name="name" style="width: 100px;" v-model="result.rewardRate">%
                         </td>
-                      </tr>
+                      </tr>-->
                       </tbody>
                     </table>
                   </div>

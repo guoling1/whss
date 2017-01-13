@@ -26,4 +26,8 @@ public class RecommendShort {
      * 审核状态
      */
     private String statusName;
+    /**
+     * 手机号
+     */
+    private String mobile;
 }

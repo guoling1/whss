@@ -54,7 +54,7 @@
               </div>
             </div>
             <div class="col-md-3">
-              <div class="btn btn-primary" @click="search" style="margin-top: 22px">筛选</div>
+              <div class="btn btn-primary" @click="search" style="margin-top: 95px">筛选</div>
               <!--<span @click="onload()" download="交易记录" class="btn btn-primary pull-right" style="float: right;color: #fff">导出</span>-->
             </div>
           </div>
@@ -342,7 +342,7 @@
           val = "已提交基本资料"
         }else if(val == 2){
           val = "待审核"
-        }else if(val == 3){
+        }else if(val == 3||val==6){
           val = "审核通过"
         }else if(val == 4){
           val="审核未通过"
@@ -351,7 +351,7 @@
       },
       operate: function (val) {
         val = Number(val)
-        if(val == 0||val == 1||val == 3||val == 4){
+        if(val == 0||val == 1||val == 3||val == 4||val==6){
           val = "查看详情"
         }else if(val == 2){
           val = "审核"

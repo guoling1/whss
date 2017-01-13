@@ -7,6 +7,7 @@ import com.jkm.hss.merchant.entity.RecommendAndMerchant;
 import com.jkm.hss.merchant.entity.RecommendShort;
 import com.jkm.hss.merchant.enums.EnumMerchantStatus;
 import com.jkm.hss.merchant.enums.EnumRecommendType;
+import com.jkm.hss.merchant.helper.MerchantSupport;
 import com.jkm.hss.merchant.helper.request.RecommendRequest;
 import com.jkm.hss.merchant.service.RecommendService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -102,11 +103,22 @@ public class RecommendServiceImpl implements RecommendService{
         RecommendAndMerchant recommendAndMerchant = new RecommendAndMerchant();
         if(list.size()>0){
             for(int i=0;i<list.size();i++){
-                if (EnumRecommendType.INDIRECT.getId()==list.get(i).getType()){
-                    list.get(i).setName("*"+list.get(i).getName().substring(list.get(i).getName().length()-1,list.get(i).getName().length()));
+                if (EnumRecommendType.INDIRECT.getId()==list.get(i).getType()){//间接推广人
+                    if(list.get(i).getName()!=null&&!"".equals(list.get(i).getName())){
+                        list.get(i).setName("*"+list.get(i).getName().substring(list.get(i).getName().length()-1,list.get(i).getName().length()));
+                    }else{
+                        String mobile = MerchantSupport.decryptMobile(list.get(i).getMobile());
+                        list.get(i).setName(mobile.substring(0,3)+"****"+mobile.substring(mobile.length()-4,mobile.length()));
+                    }
                     list.get(i).setStatusName(getStatusName(list.get(i).getStatus()));
                     indirect++;
-                }else{
+                }else{//直接推广人
+                    if(list.get(i).getName()!=null&&!"".equals(list.get(i).getName())){
+                        list.get(i).setName(list.get(i).getName());
+                    }else{
+                        String mobile = MerchantSupport.decryptMobile(list.get(i).getMobile());
+                        list.get(i).setName(mobile);
+                    }
                     list.get(i).setStatusName(getStatusName(list.get(i).getStatus()));
                     direct++;
                 }

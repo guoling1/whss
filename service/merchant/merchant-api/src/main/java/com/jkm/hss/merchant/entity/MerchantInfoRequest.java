@@ -9,6 +9,11 @@ import java.util.Date;
 public class MerchantInfoRequest {
 
     /**
+     * 商户编号
+     */
+    private String markCode;
+
+    /**
      * 条数
      */
     private Integer offset;

@@ -149,6 +149,7 @@ public class DealerController extends BaseController {
         final FirstLevelDealerGetResponse.Product productResponse = firstLevelDealerGetResponse.new Product();
         firstLevelDealerGetResponse.setProduct(productResponse);
         firstLevelDealerGetResponse.setTotalProfitSpace(dealer.getTotalProfitSpace());
+        firstLevelDealerGetResponse.setRecommendBtn(dealer.getRecommendBtn());
         productResponse.setProductId(product.getId());
         productResponse.setProductName(product.getProductName());
         productResponse.setLimitPayFeeRate(product.getLimitPayFeeRate().multiply(new BigDecimal("100")).setScale(2).toPlainString());

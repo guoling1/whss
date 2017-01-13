@@ -80,7 +80,7 @@ public class MerchantPromoteShallServiceImpl implements MerchantPromoteShallServ
             //获取分润金额
             final BigDecimal waitAmount = tradeAmount;
             //判断有无代理商
-            if(merchantInfo.getDealerId() == 0){
+            if(merchantInfo.getFirstDealerId() == 0){
                 Map<String, Triple<Long, BigDecimal, String>> map = new HashMap<>();
                 BigDecimal directMoney = null;
                 MerchantInfo directMerchantInfo = null;
@@ -94,7 +94,7 @@ public class MerchantPromoteShallServiceImpl implements MerchantPromoteShallServ
                 BigDecimal inDirectMoney = null;
                 MerchantInfo inDirectMerchantInfo = null;
                 //上上级商户分润，间推分润
-                if (merchantInfo.getSecondDealerId() != 0){
+                if (merchantInfo.getSecondMerchantId() != 0){
                     inDirectMerchantInfo = this.merchantInfoService.selectById(merchantInfo.getSecondMerchantId()).get();
                     inDirectMoney = pair.getRight();
                 }else{
@@ -104,7 +104,7 @@ public class MerchantPromoteShallServiceImpl implements MerchantPromoteShallServ
                 BigDecimal productMoney = waitAmount.subtract(directMoney).subtract(inDirectMoney);
                 final PartnerShallProfitDetail detail = new PartnerShallProfitDetail();
                 detail.setMerchantId(merchantId);
-                detail.setMerchantName(merchantInfo.getMerchantName());
+                detail.setMerchantName(merchantInfo.getName());
                 detail.setOrderNo(orderNo);
                 detail.setChannelType(0);
                 detail.setTotalFee(waitAmount);
@@ -155,7 +155,8 @@ public class MerchantPromoteShallServiceImpl implements MerchantPromoteShallServ
             BigDecimal inDirectMoney = null;
             MerchantInfo inDirectMerchantInfo = null;
             //上上级商户分润，间推分润
-            if (merchantInfo.getSecondDealerId() != 0){
+            if (merchantInfo.getSecondMerchantId() != 0){
+
                 inDirectMerchantInfo = this.merchantInfoService.selectById(merchantInfo.getSecondMerchantId()).get();
                 inDirectMoney = pair.getRight();
             }else{
@@ -171,21 +172,21 @@ public class MerchantPromoteShallServiceImpl implements MerchantPromoteShallServ
             final Dealer secondDealer;
             if (merchantInfo.getSecondDealerId() != 0){
                 secondDealer = this.dealerService.getById(merchantInfo.getSecondDealerId()).get();
-                secondMoney = (waitAmount.subtract(pair.getLeft()).subtract(pair.getRight()))
-                        .multiply(dealerUpgerdeRates.getSecondDealerShareProfitRate());
+                secondMoney = (waitAmount.subtract(directMoney).subtract(inDirectMoney))
+                        .multiply(dealerUpgerdeRates.getSecondDealerShareProfitRate()).setScale(2, BigDecimal.ROUND_DOWN);
             }else{
                 secondDealer = null;
                 secondMoney = new BigDecimal("0");
             }
             //一级代理分润 = （升级费 - 直推分润 - 间推分润）* 一级代理分润比例
-            BigDecimal firstMoney = (waitAmount.subtract(pair.getLeft()).subtract(pair.getRight()))
-                    .multiply(dealerUpgerdeRates.getFirstDealerShareProfitRate());
+            BigDecimal firstMoney = (waitAmount.subtract(inDirectMoney).subtract(directMoney))
+                    .multiply(dealerUpgerdeRates.getFirstDealerShareProfitRate()).setScale(2, BigDecimal.ROUND_DOWN);
             //金开门利润 = 升级费 - 直推分润 - 间推分润 - 一级代理分润 - 二级代理分润
             BigDecimal productMoney = waitAmount.subtract(directMoney).subtract(inDirectMoney).subtract(firstMoney).subtract(secondMoney);
 
             final PartnerShallProfitDetail detail = new PartnerShallProfitDetail();
             detail.setMerchantId(merchantId);
-            detail.setMerchantName(merchantInfo.getMerchantName());
+            detail.setMerchantName(merchantInfo.getName());
             detail.setOrderNo(orderNo);
             detail.setChannelType(0);
             detail.setTotalFee(waitAmount);
@@ -219,7 +220,7 @@ public class MerchantPromoteShallServiceImpl implements MerchantPromoteShallServ
                 detail.setFirstMerchantId(0);
                 detail.setFirstMerchantShallAmount(new BigDecimal(0));
             }
-
+            log.info(">>>>>>>>>>>>>>>>>>>>>>>>>>>>" + inDirectMoney);
             if (inDirectMoney.compareTo(new BigDecimal("0")) == 1){
                 detail.setSecondMerchantId(inDirectMerchantInfo.getId());
                 detail.setSecondMerchantShallAmount(inDirectMoney);

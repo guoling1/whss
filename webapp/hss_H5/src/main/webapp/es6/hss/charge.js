@@ -11,6 +11,7 @@ const refresh = document.getElementById('refresh');
 // 引入浏览器特性处理
 const browser = _require('browser');
 browser.elastic_touch();
+browser.set_html_size();
 let qrImg = new QRCode(qr, {
   text: pageData.payUrl,
   width: 180,

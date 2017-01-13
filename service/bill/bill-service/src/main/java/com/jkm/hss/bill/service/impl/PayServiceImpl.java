@@ -310,7 +310,7 @@ public class PayServiceImpl implements PayService {
         //判断商户交易金额--是否升级
         try  {
             final BigDecimal totalTradeAmount = this.orderService.getTotalTradeAmountByAccountId(merchant.getAccountId(),
-                    EnumAppType.HSS.getId(), EnumServiceType.APPRECIATION_PAY.getId());
+                    EnumAppType.HSS.getId(), EnumServiceType.RECEIVE_MONEY.getId());
             final BigDecimal merchantUpgradeMinAmount = this.upgradeRecommendRulesService.selectInviteStandard();
             if (totalTradeAmount.compareTo(merchantUpgradeMinAmount) >= 0) {
                 this.merchantInfoService.toUpgradeByRecommend(merchant.getId());

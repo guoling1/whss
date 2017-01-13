@@ -30,9 +30,9 @@ public class PartnerShallProfitDetailServiceImpl implements PartnerShallProfitDe
     }
 
     @Override
-    public PageModel<PartnerShallProfitDetail> getPartnerShallProfitList(long merchantId, long id, int pageSize) {
+    public PageModel<PartnerShallProfitDetail> getPartnerShallProfitList(long merchantId, long id,int pageNo, int pageSize) {
 
-        final PageModel<PartnerShallProfitDetail> page = new PageModel<>(1, pageSize);
+        final PageModel<PartnerShallProfitDetail> page = new PageModel<>(pageNo, pageSize);
 
         final long count = partnerShallProfitDetailDao.selectCountByMerchantId(merchantId);
         final List<PartnerShallProfitDetail> detailList = partnerShallProfitDetailDao.selectByMerchantIdAndId(merchantId, id, pageSize);
