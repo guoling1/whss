@@ -172,14 +172,14 @@ public class MerchantPromoteShallServiceImpl implements MerchantPromoteShallServ
             final Dealer secondDealer;
             if (merchantInfo.getSecondDealerId() != 0){
                 secondDealer = this.dealerService.getById(merchantInfo.getSecondDealerId()).get();
-                secondMoney = (waitAmount.subtract(pair.getLeft()).subtract(pair.getRight()))
+                secondMoney = (waitAmount.subtract(directMoney).subtract(inDirectMoney))
                         .multiply(dealerUpgerdeRates.getSecondDealerShareProfitRate()).setScale(2, BigDecimal.ROUND_DOWN);
             }else{
                 secondDealer = null;
                 secondMoney = new BigDecimal("0");
             }
             //一级代理分润 = （升级费 - 直推分润 - 间推分润）* 一级代理分润比例
-            BigDecimal firstMoney = (waitAmount.subtract(pair.getLeft()).subtract(pair.getRight()))
+            BigDecimal firstMoney = (waitAmount.subtract(inDirectMoney).subtract(directMoney))
                     .multiply(dealerUpgerdeRates.getFirstDealerShareProfitRate()).setScale(2, BigDecimal.ROUND_DOWN);
             //金开门利润 = 升级费 - 直推分润 - 间推分润 - 一级代理分润 - 二级代理分润
             BigDecimal productMoney = waitAmount.subtract(directMoney).subtract(inDirectMoney).subtract(firstMoney).subtract(secondMoney);
