@@ -24,6 +24,16 @@ public class AppBizShop {
 
     private Long uid;//用户ID
     private Integer role;//角色 1法人 2店长 3店员  4财务
+    private Integer type;//类型1主店 2分店
+
+    private String licenceURL;//营业执照URL
+    private String storefrontURL;//店面照片URL
+    private String counterURL;//收银台URL
+    private String indoorURL;//室内URL
+
+    private String fileA;
+    private String fileB;
+    private String fileC;
 
     public Long getId() {
         return id;
@@ -175,5 +185,69 @@ public class AppBizShop {
 
     public void setAddress(String address) {
         this.address = address;
+    }
+
+    public Integer getType() {
+        return type;
+    }
+
+    public void setType(Integer type) {
+        this.type = type;
+    }
+
+    public String getFileA() {
+        return fileA;
+    }
+
+    public void setFileA(String fileA) {
+        this.fileA = fileA;
+    }
+
+    public String getFileB() {
+        return fileB;
+    }
+
+    public void setFileB(String fileB) {
+        this.fileB = fileB;
+    }
+
+    public String getFileC() {
+        return fileC;
+    }
+
+    public void setFileC(String fileC) {
+        this.fileC = fileC;
+    }
+
+    public String getStorefrontURL() {
+        return storefrontURL;
+    }
+
+    public void setStorefrontURL(String storefrontURL) {
+        this.storefrontURL = storefrontURL;
+    }
+
+    public String getCounterURL() {
+        return counterURL;
+    }
+
+    public void setCounterURL(String counterURL) {
+        this.counterURL = counterURL;
+    }
+
+    public String getIndoorURL() {
+        return indoorURL;
+    }
+
+    public void setIndoorURL(String indoorURL) {
+        this.indoorURL = indoorURL;
+    }
+
+    public String getLicenceURL() {
+        return licenceURL;
+    }
+
+    public void setLicenceURL(String licenceURL) {
+        this.licenceURL = licenceURL;
     }
 }

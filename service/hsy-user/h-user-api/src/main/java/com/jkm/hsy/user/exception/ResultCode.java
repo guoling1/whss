@@ -23,7 +23,11 @@ public enum ResultCode {
 	VERIFICATIONCODE_TYPE_NULL(2017,"验证码类型为空"),
 	VERIFICATIONCODE_TYPE_NOT_EXSIT(2018,"验证码类型不存在"),
 	VERIFICATIONCODE_FREQUENT(2019,"验证码发送太频繁"),
-	CARDNO_HAS_EXSITED(2020,"银行卡号已存在");
+	CARDNO_HAS_EXSITED(2020,"该商铺银行卡号已存在"),
+	FILE_UPLOAD_FAIL(2021,"上传失败"),
+	UPLOADFILE_NOT_EXSITS(2022,"存在未上传文件"),
+	UPLOADFILE_COUNT_NOT_RIGHT(2023,"文件个数不符合"),
+	FILE_TYPE_NOT_EXSIT(2024,"上传类型不存在"),;
 
 	public int resultCode;
 	public String resultMessage;
