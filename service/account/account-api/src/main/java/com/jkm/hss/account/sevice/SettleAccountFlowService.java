@@ -5,6 +5,8 @@ import com.jkm.hss.account.entity.SettleAccountFlow;
 import com.jkm.hss.account.enums.EnumAccountFlowType;
 
 import java.math.BigDecimal;
+import java.util.Date;
+import java.util.List;
 
 /**
  * Created by yulong.zhang on 2016/12/22.
@@ -46,4 +48,14 @@ public interface SettleAccountFlowService {
      * @param type 变更方向
      */
     void addSettleAccountFlow(long accountId, String orderNo, BigDecimal changeAmount, String remark, EnumAccountFlowType type);
+
+    /**
+     * 查询上一个工作日的结算流水（未结算）
+     *
+     * 如果今日是周一查询的是（周五至周日）的；
+     *
+     * @param tradeDateList
+     * @return
+     */
+    List<SettleAccountFlow> getLastWordDayRecord(List<Date> tradeDateList);
 }

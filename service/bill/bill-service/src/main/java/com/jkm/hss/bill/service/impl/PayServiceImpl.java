@@ -9,6 +9,7 @@ import com.jkm.base.common.util.HttpClientPost;
 import com.jkm.base.common.util.SnGenerator;
 import com.jkm.hss.account.entity.*;
 import com.jkm.hss.account.enums.EnumAccountFlowType;
+import com.jkm.hss.account.enums.EnumAppType;
 import com.jkm.hss.account.helper.AccountConstants;
 import com.jkm.hss.account.sevice.*;
 import com.jkm.hss.bill.entity.*;

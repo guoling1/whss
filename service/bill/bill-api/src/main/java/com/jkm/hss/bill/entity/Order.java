@@ -23,7 +23,7 @@ public class Order extends BaseEntity {
     /**
      * 业务线
      *
-     * {@link com.jkm.hss.bill.enums.EnumAppType}
+     * {@link com.jkm.hss.account.enums.EnumAppType}
      */
     private String appId;
 

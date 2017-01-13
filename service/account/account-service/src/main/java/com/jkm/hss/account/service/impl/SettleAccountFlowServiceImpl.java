@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by yulong.zhang on 2016/12/22.
@@ -94,5 +95,16 @@ public class SettleAccountFlowServiceImpl implements SettleAccountFlowService {
         settleAccountFlow.setChangeTime(new Date());
         settleAccountFlow.setRemark(remark);
         this.settleAccountFlowDao.insert(settleAccountFlow);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param tradeDateList
+     * @return
+     */
+    @Override
+    public List<SettleAccountFlow> getLastWordDayRecord(final List<Date> tradeDateList) {
+        return this.settleAccountFlowDao.selectLastWordDayRecord(tradeDateList);
     }
 }

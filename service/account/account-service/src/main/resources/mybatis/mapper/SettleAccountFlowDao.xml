@@ -10,9 +10,12 @@
         after_amount,
         out_amount,
         income_amount,
+        app_id,
+        trade_date,
         change_time,
         type,
         remark,
+        settle_status,
         status
         )
         VALUES
@@ -23,9 +26,12 @@
         #{afterAmount},
         #{outAmount},
         #{incomeAmount},
+        #{appId},
+        #{tradeDate}
         #{changeTime},
         #{type},
         #{remark},
+        #{settleStatus},
         #{status}
         );
     </insert>
@@ -37,4 +43,15 @@
     <select id="selectByOrderNoAndAccountIdAndType" resultType="com.jkm.hss.account.entity.SettleAccountFlow">
         SELECT * FROM tb_settle_account_flow WHERE order_no = #{orderNo} AND account_id = #{accountId} AND type = #{type}
     </select>
+
+    <select id="selectLastWordDayRecord" resultType="com.jkm.hss.account.entity.SettleAccountFlow">
+        SELECT * FROM tb_settle_account_flow
+        WHERE app_id != `hss`
+        AND settle_status = 1
+        AND trade_date IN
+        <foreach collection="tradeDates" item="item" index="index" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+
 </mapper>

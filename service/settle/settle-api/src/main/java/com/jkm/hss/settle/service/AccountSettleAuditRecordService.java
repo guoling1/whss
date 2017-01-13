@@ -31,4 +31,9 @@ public interface AccountSettleAuditRecordService {
      * @return
      */
     int updateSettleStatus(long id, int status);
+
+    /**
+     * 处理 T1 结算审核, 生成记录
+     */
+    void handleT1SettleTask();
 }

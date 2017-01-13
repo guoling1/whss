@@ -1,4 +1,4 @@
-package com.jkm.hss.settle.enums;
+package com.jkm.hss.account.enums;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;

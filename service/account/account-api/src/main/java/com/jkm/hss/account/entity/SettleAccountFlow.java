@@ -13,6 +13,7 @@ import java.util.Date;
  * 账户的待结算金额变动 记录
  *
  * tb_settle_account_flow
+ *
  */
 @Data
 public class SettleAccountFlow extends BaseEntity {
@@ -48,6 +49,18 @@ public class SettleAccountFlow extends BaseEntity {
     private BigDecimal incomeAmount;
 
     /**
+     * 业务线
+     *
+     * {@link com.jkm.hss.account.enums.EnumAppType}
+     */
+    private String appId;
+
+    /**
+     * 交易日期
+     */
+    private Date tradeDate;
+
+    /**
      * 发生时间
      */
     private Date changeTime;
@@ -63,4 +76,11 @@ public class SettleAccountFlow extends BaseEntity {
      * 备注
      */
     private String remark;
+
+    /**
+     * 结算状态
+     *
+     * {@link com.jkm.hss.account.enums.EnumSettleStatus}
+     */
+    private int settleStatus;
 }
