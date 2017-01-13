@@ -113,7 +113,7 @@ public class ShallProfitDetailServiceImpl implements ShallProfitDetailService{
             companyProfitDetail.setTotalFee(tradeAmount);
             companyProfitDetail.setWaitShallAmount(productChannelDetail.getProductMerchantWithdrawFee());
             companyProfitDetail.setWaitShallOriginAmount(productChannelDetail.getProductMerchantWithdrawFee());
-            companyProfitDetail.setProfitType(EnumProfitType.WITHDRAW.getId());
+            companyProfitDetail.setProfitType(EnumProfitType.INDIRECTWITHDRAW.getId());
             companyProfitDetail.setProductShallAmount(productMoney);
             companyProfitDetail.setChannelShallAmount(channelMoney);
             companyProfitDetail.setChannelCost(basicChannel.getBasicWithdrawFee());
