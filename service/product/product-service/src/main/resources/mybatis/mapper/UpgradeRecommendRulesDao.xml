@@ -23,9 +23,9 @@
             <if test="tradeRate != null">
                 trade_rate,
             </if>
-            <if test="rewardRate != null">
-                reward_rate,
-            </if>
+            <!--<if test="rewardRate != null">-->
+                <!--reward_rate,-->
+            <!--</if>-->
             <if test="status != null">
                 status,
             </if>
@@ -43,9 +43,9 @@
             <if test="tradeRate!=null">
                 #{tradeRate},
             </if>
-            <if test="rewardRate!=null">
-                #{rewardRate},
-            </if>
+            <!--<if test="rewardRate!=null">-->
+                <!--#{rewardRate},-->
+            <!--</if>-->
             <if test="status!=null">
                 #{status},
             </if>
