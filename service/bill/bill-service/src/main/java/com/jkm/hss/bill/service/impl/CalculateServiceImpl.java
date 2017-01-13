@@ -203,7 +203,7 @@ public class CalculateServiceImpl implements CalculateService {
             final Dealer secondDealer;
             if (merchantInfo.getSecondDealerId() != 0){
                 secondDealer = this.dealerService.getById(merchantInfo.getSecondDealerId()).get();
-                secondMoney = (waitAmount.subtract(pair.getLeft()).subtract(pair.getRight()))
+                secondMoney = (waitAmount.subtract(inDirectMoney).subtract(directMoney))
                         .multiply(dealerUpgerdeRates.getSecondDealerShareProfitRate());
             }else{
                 secondDealer = null;
@@ -213,7 +213,7 @@ public class CalculateServiceImpl implements CalculateService {
             BigDecimal firstMoney = (waitAmount.subtract(directMoney).subtract(inDirectMoney))
                     .multiply(dealerUpgerdeRates.getFirstDealerShareProfitRate());
             //金开门利润 = 升级费 - 直推分润 - 间推分润 - 一级代理分润 - 二级代理分润
-            BigDecimal productMoney = waitAmount.subtract(pair.getLeft()).subtract(pair.getRight()).subtract(firstMoney).subtract(secondMoney);
+            BigDecimal productMoney = waitAmount.subtract(inDirectMoney).subtract(directMoney).subtract(firstMoney).subtract(secondMoney);
 
             final PartnerShallProfitDetail detail = new PartnerShallProfitDetail();
 
