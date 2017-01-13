@@ -6,6 +6,7 @@ public class AppBizShopUserRole {
     private Long uid;//用户ID
     private Integer role;//角色 1法人 2店长 3店员  4财务
     private Integer status;//状态：1 正常  99禁用
+    private Integer type;//类型1主店 2分店
 
     public Long getSid() {
         return sid;
@@ -37,5 +38,13 @@ public class AppBizShopUserRole {
 
     public void setStatus(Integer status) {
         this.status = status;
+    }
+
+    public Integer getType() {
+        return type;
+    }
+
+    public void setType(Integer type) {
+        this.type = type;
     }
 }

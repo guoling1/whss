@@ -255,5 +255,14 @@
             <groupId>com.jkm</groupId>
             <artifactId>hss-notifier-api</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.jkm</groupId>
+            <artifactId>hss-merchant-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>RELEASE</version>
+        </dependency>
     </dependencies>
 </project>

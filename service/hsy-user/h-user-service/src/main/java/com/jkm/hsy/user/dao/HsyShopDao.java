@@ -1,6 +1,7 @@
 package com.jkm.hsy.user.dao;
 
 import com.jkm.hsy.user.entity.AppBizCard;
+import com.jkm.hsy.user.entity.AppBizDistrict;
 import com.jkm.hsy.user.entity.AppBizShop;
 import com.jkm.hsy.user.entity.AppBizShopUserRole;
 import org.springframework.stereotype.Repository;
@@ -17,4 +18,6 @@ public interface HsyShopDao {
     public void update(AppBizShop appBizShop);
     public void insertAppBizCard(AppBizCard appBizCard);
     public List<AppBizCard> findAppBizCardByParam(AppBizCard appBizCard);
+    public List<AppBizDistrict> findDistrictByParentCode(AppBizDistrict appBizDistrict);
+    public List<AppBizShop> findPrimaryAppBizShopByUserID(AppBizShop appBizShop);
 }

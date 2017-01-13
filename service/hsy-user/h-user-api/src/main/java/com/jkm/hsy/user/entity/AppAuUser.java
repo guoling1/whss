@@ -10,6 +10,8 @@ public class AppAuUser {
     private String nickname;//昵称
     private String realname;//真实姓名
     private Integer status;//状态 1正常 2待审核 99禁用
+    private String profile;//头像
+    private String auStep;//步骤
     private String idcard;//身份证号码
     private String idcardf;//身份证正面照
     private String idcardb;//身份证背面照
@@ -19,6 +21,12 @@ public class AppAuUser {
 
     //展示字段
     private String code;//验证码
+    private String shopName;//店铺名称
+    private String industryCode;//行业代码
+    private String profileURL;//头像URL
+    private String idcardfURL;//身份证正面照URL
+    private String idcardbURL;//身份证背面照URL
+    private String idcardhURL;//身份证手持照URL
 
     public long getId() {
         return id;
@@ -122,5 +130,69 @@ public class AppAuUser {
 
     public void setCode(String code) {
         this.code = code;
+    }
+
+    public String getShopName() {
+        return shopName;
+    }
+
+    public void setShopName(String shopName) {
+        this.shopName = shopName;
+    }
+
+    public String getIndustryCode() {
+        return industryCode;
+    }
+
+    public void setIndustryCode(String industryCode) {
+        this.industryCode = industryCode;
+    }
+
+    public String getProfile() {
+        return profile;
+    }
+
+    public void setProfile(String profile) {
+        this.profile = profile;
+    }
+
+    public String getAuStep() {
+        return auStep;
+    }
+
+    public void setAuStep(String auStep) {
+        this.auStep = auStep;
+    }
+
+    public String getProfileURL() {
+        return profileURL;
+    }
+
+    public void setProfileURL(String profileURL) {
+        this.profileURL = profileURL;
+    }
+
+    public String getIdcardfURL() {
+        return idcardfURL;
+    }
+
+    public void setIdcardfURL(String idcardfURL) {
+        this.idcardfURL = idcardfURL;
+    }
+
+    public String getIdcardbURL() {
+        return idcardbURL;
+    }
+
+    public void setIdcardbURL(String idcardbURL) {
+        this.idcardbURL = idcardbURL;
+    }
+
+    public String getIdcardhURL() {
+        return idcardhURL;
+    }
+
+    public void setIdcardhURL(String idcardhURL) {
+        this.idcardhURL = idcardhURL;
     }
 }
