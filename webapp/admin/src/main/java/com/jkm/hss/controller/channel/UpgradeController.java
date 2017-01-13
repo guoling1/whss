@@ -116,11 +116,9 @@ public class UpgradeController extends BaseController {
         Optional<UpgradeRecommendRules> upgradeRecommendRulesOptional = upgradeRecommendRulesService.selectByProductId(req.getProductId());
         if(upgradeRecommendRulesOptional.isPresent()){
             BigDecimal upgradeRate = upgradeRecommendRulesOptional.get().getUpgradeRate();
-            BigDecimal rewardRate = upgradeRecommendRulesOptional.get().getRewardRate();
             BigDecimal tradeRate = upgradeRecommendRulesOptional.get().getTradeRate();
             BigDecimal b1 = new BigDecimal(100);
             upgradeRulesAndRateResponse.setUpgradeRate(upgradeRate.multiply(b1));
-            upgradeRulesAndRateResponse.setRewardRate(rewardRate.multiply(b1));
             upgradeRulesAndRateResponse.setTradeRate(tradeRate.multiply(b1));
             upgradeRulesAndRateResponse.setStandard(upgradeRecommendRulesOptional.get().getInviteStandard());
     }
@@ -220,7 +218,6 @@ public class UpgradeController extends BaseController {
             upgradeRecommendRulesOptional.get().setInviteStandard(req.getStandard());
             upgradeRecommendRulesOptional.get().setUpgradeRate(upgradeRate.divide(b1));
             upgradeRecommendRulesOptional.get().setTradeRate(tradeRate.divide(b1));
-            upgradeRecommendRulesOptional.get().setRewardRate(rewardRate.divide(b1));
             upgradeRecommendRulesService.update(upgradeRecommendRulesOptional.get());
         }else{//新增
             UpgradeRecommendRules upgradeRecommendRules = new UpgradeRecommendRules();
@@ -229,7 +226,6 @@ public class UpgradeController extends BaseController {
             upgradeRecommendRules.setInviteStandard(req.getStandard());
             upgradeRecommendRules.setUpgradeRate(upgradeRate.divide(b1));
             upgradeRecommendRules.setTradeRate(tradeRate.divide(b1));
-            upgradeRecommendRules.setRewardRate(rewardRate.divide(b1));
             upgradeRecommendRulesService.insert(upgradeRecommendRules);
         }
         return CommonResponse.simpleResponse(1, "操作成功");

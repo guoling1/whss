@@ -1,0 +1,381 @@
+@import "../reset";
+
+/* 项目通用demo
+ * 避免fixed定位
+ * start
+ * z-index { global>99 handel>49 }
+ */
+
+@border: #f5f5f5;
+@font-light: #aab2d2;
+
+.flex-box-column {
+  flex-direction: column;
+}
+
+.flexBox {
+  display: box;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  display: -webkit-flex;
+}
+
+.flexItem(@val) {
+  box-flex: @val;
+  -webkit-box-flex: @val;
+  -webkit-flex: @val;
+  -ms-flex: @val;
+  flex: @val;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: auto;
+  text-align: center;
+}
+
+div, p, span {
+  word-break: break-all;
+}
+
+.clear {
+  width: 0 !important;
+  height: 0 !important;
+  clear: both;
+}
+
+.none {
+  display: none;
+}
+
+/* 透明 input*/
+.input-sky {
+  position: relative;
+  input::-webkit-input-placeholder {
+    color: @font-light !important;
+  }
+  input:-moz-placeholder {
+    color: @font-light !important;
+  }
+  input::-moz-placeholder {
+    color: @font-light !important;
+  }
+  input:-ms-input-placeholder {
+    color: @font-light !important;
+  }
+  input {
+    width: 100%;
+    font-size: 16px;
+    color: #111111;
+    border: 0;
+    background-color: transparent;
+  }
+}
+
+input:focus {
+  border: none;
+}
+
+// 商户升级页面
+#upgradeWay {
+  width: 100%;
+  height: 100%;
+  padding: 45px 30px;
+  .space {
+    width: 100%;
+    height: 100%;
+    border-radius: 10px;
+    box-shadow: 0 0 8px #e4e4e4;
+    .cont {
+      .flexItem(1);
+      width: 100%;
+      .info {
+        margin: 38px 0 20px 0;
+        .assistant {
+          width: 88px;
+          height: 88px;
+          margin: auto;
+          background: url("../assets/hss-head-assistant.png") no-repeat center;
+          background-size: 88px 88px;
+        }
+        .manager {
+          width: 88px;
+          height: 88px;
+          margin: auto;
+          background: url("../assets/hss-head-manager.png") no-repeat center;
+          background-size: 88px 88px;
+        }
+        .boss {
+          width: 88px;
+          height: 88px;
+          margin: auto;
+          background: url("../assets/hss-head-boss.png") no-repeat center;
+          background-size: 88px 88px;
+        }
+        .name {
+          margin-top: 10px;
+          font-size: 18px;
+          color: #222222;
+          font-weight: bold;
+        }
+      }
+      .payType {
+        overflow: hidden;
+        .li {
+          width: 33.33%;
+          float: left;
+          font-size: 13px;
+          color: #222222;
+          span {
+            display: block;
+            width: 35px;
+            height: 35px;
+            margin: 15px auto;
+            &.wx {
+              background: url("../assets/hss-pay-wx.png") no-repeat center;
+              background-size: 35px 35px;
+            }
+            &.ali {
+              background: url("../assets/hss-pay-ali.png") no-repeat center;
+              background-size: 35px 35px;
+            }
+            &.quick {
+              background: url("../assets/hss-pay-quick.png") no-repeat center;
+              background-size: 35px 35px;
+            }
+          }
+        }
+      }
+      .upType {
+        margin-top: 40px;
+        padding: 0 20px;
+        li {
+          width: 100%;
+          height: 66px;
+          border-top: 1px solid #e8e8e8;
+          .left {
+            float: left;
+            line-height: 56px;
+            text-align: left;
+            font-size: 15px;
+            color: #222222;
+            .check {
+              display: inline-block;
+              width: 14px;
+              height: 14px;
+              border-radius: 50%;
+              border: 1px solid #c8c8c8;
+              margin-right: 5px;
+              transform: translate3d(0, 2px, 0);
+              &.active {
+                background: url("../assets/hss-check-active.png") no-repeat center;
+                background-size: 6px 6px;
+              }
+            }
+          }
+          .right {
+            float: right;
+            line-height: 56px;
+            text-align: right;
+            font-size: 15px;
+            color: #222222;
+          }
+          .small {
+            display: block;
+            font-size: 10px;
+            color: #b3b4b4;
+            clear: both;
+            text-align: right;
+            transform: translate3d(0, -15px, 0);
+          }
+        }
+      }
+    }
+  }
+  .pay {
+    width: 100%;
+    height: 64px;
+    line-height: 64px;
+    font-size: 16px;
+    color: #FFF;
+    background-color: #4ecea2;
+    border-radius: 0 0 10px 10px;
+  }
+  .layer {
+    display: none;
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 99;
+    background: rgba(87, 87, 87, 1);
+    padding: 25px 15px;
+    transition: all 0.4s;
+    -webkit-transition: all 0.4s;
+    &.active {
+      display: block;
+    }
+    .space {
+      width: 100%;
+      height: 100%;
+      background-color: #FFF;
+      box-shadow: 0 5px 7px #424242;
+      .content {
+        .flexItem(1);
+        width: 100%;
+        .logo {
+          width: 100px;
+          height: 31px;
+          background: url("../assets/hss-logo.png") no-repeat center;
+          background-size: 100px 31px;
+          margin: 40px auto;
+        }
+        .qr-code {
+          .flexItem(1);
+          width: 100%;
+          position: relative;
+          div {
+            width: 210px;
+            height: 210px;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate3d(-50%, -50%, 0);
+          }
+        }
+        .word {
+          margin: 40px auto;
+          font-size: 12px;
+          color: #2b2b2b;
+        }
+      }
+      .divider {
+        width: 100%;
+        height: 18px;
+        background: url('../assets/hss-divider.png') no-repeat center;
+        background-size: 100% 18px;
+      }
+      .describe {
+        width: 100%;
+        height: 90px;
+        p {
+          font-size: 12px;
+          color: #989898;
+          text-align: left;
+          padding-left: 15px;
+          line-height: 26px;
+        }
+      }
+    }
+  }
+}
+
+//生成二维码
+#chargeCode {
+  padding: 20px 0;
+  width: 100%;
+  height: 100%;
+  background-color: #4b526d;
+  .content {
+    .flexItem(1);
+    margin: 0 auto;
+    position: relative;
+    width: 92%;
+    height: auto;
+    overflow: auto;
+    background: #fff;
+    box-shadow: 0 0 10px #424964;
+    .top {
+      position: relative;
+      width: 100%;
+      height: 140px;
+      border-bottom: 1px dashed #666d87;
+      color: #4b526d;
+      .shop {
+        padding: 34px 0 24px;
+        font-size: 15px;
+      }
+      .price {
+        font-size: 36px;
+        font-weight: bold;
+        span {
+          font-size: 40px;
+        }
+      }
+      i {
+        display: block;
+        width: 9px;
+        height: 18px;
+        background: #424964;
+        position: absolute;
+
+        &.left {
+          border-radius: 0 9px 9px 0;
+          bottom: -9px;
+        }
+        &.right {
+          border-radius: 9px 0 0 9px;
+          bottom: -9px;
+          right: 0;
+        }
+      }
+    }
+    .bottom {
+      .qr {
+        display: block;
+        margin: 48px auto 0;
+        width: 180px;
+        height: 180px;
+      }
+      .bar {
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+        height: 50px;
+        line-height: 50px;
+        background: url('../assets/bg.png') no-repeat bottom;
+        background-size: 100% 57px;
+        color: #fff;
+        font-size: 15px;
+        img {
+          display: inline-block;
+          margin-right: 11px;
+          width: 23px;
+          height: 23px;
+        }
+        span {
+          display: inline-block;
+          vertical-align: middle;
+          margin-bottom: 16px;
+        }
+      }
+    }
+  }
+
+  .explain {
+    height: 100px;
+    .refresh {
+      line-height: 60px;
+      font-size: 12px;
+      color: #7984ac;
+      .reload {
+        color: #96a1c8;
+        img {
+          width: 12px;
+          height: 12px;
+          vertical-align: -1px;
+          margin-right: 4px;
+        }
+      }
+    }
+    .server {
+      font-size: 12px;
+      color: #596283;
+    }
+  }
+}

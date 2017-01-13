@@ -124,6 +124,12 @@
     <if test="markCode!=null and markCode!=''">
         AND mark_code LIKE CONCAT('%',#{markCode},'%')
     </if>
+    <!--<if test="proxyName!=null and proxyName!=''">-->
+        <!--AND proxy_name LIKE CONCAT('%',#{proxyName},'%')-->
+    <!--</if>-->
+    <!--<if test="proxyName1!=null and proxyName1!=''">-->
+        <!--AND proxy_name LIKE CONCAT('%',#{proxyName1},'%')-->
+    <!--</if>-->
         ORDER BY
             create_time DESC
         LIMIT #{offset},#{pageSize}
