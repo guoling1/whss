@@ -301,7 +301,7 @@ public class AdminController extends BaseController {
             if(firstLevelDealerAddRequest.getTotalProfitSpace()==null){
                 return CommonResponse.simpleResponse(-1, "收单总分润空间不能为空");
             }
-            if((firstLevelDealerAddRequest.getTotalProfitSpace()).compareTo(new BigDecimal("0.2"))>0){
+            if((firstLevelDealerAddRequest.getTotalProfitSpace()).compareTo(new BigDecimal("0.002"))>0){
                 return CommonResponse.simpleResponse(-1, "总分润空间不可高于0.2%");
             }
             final FirstLevelDealerAddRequest.Product productParam = firstLevelDealerAddRequest.getProduct();
@@ -383,7 +383,7 @@ public class AdminController extends BaseController {
             if(request.getTotalProfitSpace()==null){
                 return CommonResponse.simpleResponse(-1, "收单总分润空间不能为空");
             }
-            if((request.getTotalProfitSpace()).compareTo(new BigDecimal("0.2"))>0){
+            if((request.getTotalProfitSpace()).compareTo(new BigDecimal("0.002"))>0){
                 return CommonResponse.simpleResponse(-1, "总分润空间不可高于0.2%");
             }
             final FirstLevelDealerUpdateRequest.Product productParam = request.getProduct();
