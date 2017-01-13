@@ -49,6 +49,7 @@ cancel.addEventListener('click', function () {
 
 unbundlingSubmit.addEventListener('click', function () {
   http.post('/wx/unbundling', {}, function (res) {
-    console.log(res);
+    message.prompt_show('解绑成功');
+    layer.style.display = 'none';
   })
 });

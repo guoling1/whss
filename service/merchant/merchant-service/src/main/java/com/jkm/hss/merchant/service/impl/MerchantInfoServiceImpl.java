@@ -16,11 +16,9 @@ import com.jkm.hss.merchant.enums.EnumStatus;
 import com.jkm.hss.merchant.enums.EnumUpgradeRecordType;
 import com.jkm.hss.merchant.helper.request.MerchantInfoAddRequest;
 import com.jkm.hss.merchant.service.*;
-import com.jkm.hss.product.entity.Product;
 import com.jkm.hss.product.entity.UpgradePayRecord;
 import com.jkm.hss.product.entity.UpgradeRecommendRules;
 import com.jkm.hss.product.entity.UpgradeRules;
-import com.jkm.hss.product.enums.EnumProductType;
 import com.jkm.hss.product.enums.EnumUpGradeType;
 import com.jkm.hss.product.enums.EnumUpgradePayResult;
 import com.jkm.hss.product.servcie.ProductService;
@@ -371,11 +369,13 @@ public class MerchantInfoServiceImpl implements MerchantInfoService {
                 log.info("======普通会员===========");
                 BigDecimal left = (upgradeRulesOptional2.get().getDirectPromoteShall());
                 BigDecimal right = (upgradeRulesOptional2.get().getInDirectPromoteShall());
+                log.info("直接差值{}，间接差值{}",left,right);
                 return Pair.of(left, right);
             }else{
                 log.info("======店员、店长、老板===========");
                 BigDecimal left = (upgradeRulesOptional2.get().getDirectPromoteShall()).subtract(upgradeRulesOptional1.get().getDirectPromoteShall());
                 BigDecimal right = (upgradeRulesOptional2.get().getInDirectPromoteShall()).subtract(upgradeRulesOptional1.get().getInDirectPromoteShall());
+                log.info("直接差值{}，间接差值{}",left,right);
                 return Pair.of(left, right);
             }
         }

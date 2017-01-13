@@ -147,7 +147,7 @@ public class CalculateServiceImpl implements CalculateService {
                 BigDecimal inDirectMoney = null;
                 MerchantInfo inDirectMerchantInfo = null;
                 //上上级商户分润，间推分润
-                if (merchantInfo.getSecondDealerId() != 0){
+                if (merchantInfo.getSecondMerchantId() != 0){
                     inDirectMerchantInfo = this.merchantInfoService.selectById(merchantInfo.getSecondMerchantId()).get();
                     inDirectMoney = pair.getRight();
                 }else{
@@ -187,7 +187,7 @@ public class CalculateServiceImpl implements CalculateService {
             BigDecimal inDirectMoney = null;
             MerchantInfo inDirectMerchantInfo = null;
             //上上级商户分润，间推分润
-            if (merchantInfo.getSecondDealerId() != 0){
+            if (merchantInfo.getSecondMerchantId() != 0){
                 inDirectMerchantInfo = this.merchantInfoService.selectById(merchantInfo.getSecondMerchantId()).get();
                 inDirectMoney = pair.getRight();
             }else{

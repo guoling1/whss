@@ -37,7 +37,7 @@
     methods: {
       logout: function () {
         this.$http.post('/admin/user/logout').then(function () {
-          this.$router.push('/login')
+          this.$router.push('/admin/login')
         }, function (err) {
           console.log(err);
         })
