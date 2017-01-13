@@ -30,8 +30,5 @@ public class UpgradeRecommendRules extends BaseEntity {
      */
     private BigDecimal tradeRate;
 
-    /**
-     *收单奖励分润池
-     */
-    private BigDecimal rewardRate;
+
 }
