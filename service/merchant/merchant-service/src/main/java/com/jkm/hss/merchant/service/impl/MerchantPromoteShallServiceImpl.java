@@ -80,7 +80,7 @@ public class MerchantPromoteShallServiceImpl implements MerchantPromoteShallServ
             //获取分润金额
             final BigDecimal waitAmount = tradeAmount;
             //判断有无代理商
-            if(merchantInfo.getDealerId() == 0){
+            if(merchantInfo.getFirstDealerId() == 0){
                 Map<String, Triple<Long, BigDecimal, String>> map = new HashMap<>();
                 BigDecimal directMoney = null;
                 MerchantInfo directMerchantInfo = null;
