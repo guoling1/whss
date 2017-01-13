@@ -247,6 +247,10 @@ input:focus {
             left: 50%;
             transform: translate3d(-50%, -50%, 0);
           }
+          img {
+            width: 210px;
+            height: 210px;
+          }
         }
         .word {
           margin: 40px auto;
@@ -376,6 +380,108 @@ input:focus {
     .server {
       font-size: 12px;
       color: #596283;
+    }
+  }
+}
+
+/* iphone4 iphone4s */
+@media screen and (device-width: 320px) and (max-device-height: 480px) {
+  #upgradeWay {
+    padding: 25px 17px;
+    .space {
+      .cont {
+        .info {
+          margin: 20px 0 9px 0;
+          .name {
+            margin-top: 6px;
+          }
+        }
+        .payType {
+          .li {
+            span {
+              margin: 10px auto;
+            }
+          }
+        }
+        .upType {
+          margin-top: 25px;
+          padding: 0 15px;
+        }
+      }
+    }
+    .layer {
+      padding: 15px 10px;
+      .space {
+        .content {
+          .logo {
+            margin: 20px auto 10px;
+          }
+          .qr-code {
+            div {
+              width: 210px;
+              height: 210px;
+              position: absolute;
+              top: 50%;
+              left: 50%;
+              transform: translate3d(-50%, -50%, 0);
+            }
+            img {
+              width: 210px;
+              height: 210px;
+            }
+          }
+          .word {
+            margin: 20px auto;
+            font-size: 12px;
+            color: #2b2b2b;
+          }
+        }
+        .describe {
+          p {
+            line-height: 20px;
+          }
+        }
+      }
+    }
+  }
+}
+
+/* iphone5 */
+@media screen and (device-width: 320px)and (min-device-height: 480px) and (max-device-height: 568px) {
+  #upgradeWay {
+    .layer {
+      padding: 15px 10px;
+      .space {
+        .content {
+          .logo {
+            margin: 20px auto 10px;
+          }
+          .qr-code {
+            div {
+              width: 210px;
+              height: 210px;
+              position: absolute;
+              top: 50%;
+              left: 50%;
+              transform: translate3d(-50%, -50%, 0);
+            }
+            img {
+              width: 210px;
+              height: 210px;
+            }
+          }
+          .word {
+            margin: 20px auto;
+            font-size: 12px;
+            color: #2b2b2b;
+          }
+        }
+        .describe {
+          p {
+            line-height: 20px;
+          }
+        }
+      }
     }
   }
 }
