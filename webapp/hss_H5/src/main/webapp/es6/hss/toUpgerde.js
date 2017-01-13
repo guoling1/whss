@@ -49,8 +49,6 @@ layer.addEventListener('click', function () {
 
 new QRCode(qr, {
   text: pageData.shareUrl,
-  width: 210,
-  height: 210,
   colorDark: "#000000",
   colorLight: "#ffffff",
   correctLevel: QRCode.CorrectLevel.H
