@@ -44,5 +44,5 @@ public interface SettleAccountFlowDao {
      * @param tradeDateList
      * @return
      */
-    List<SettleAccountFlow> selectLastWordDayRecord(@Param("tradeDateList") List<Date> tradeDateList);
+    List<SettleAccountFlow> selectMerchantLastWordDayRecord(@Param("tradeDateList") List<Date> tradeDateList);
 }

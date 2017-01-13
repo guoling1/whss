@@ -5,6 +5,7 @@
         INSERT INTO tb_settle_account_flow
         (
         account_id,
+        account_user_type,
         order_no,
         before_amount,
         after_amount,
@@ -15,12 +16,12 @@
         change_time,
         type,
         remark,
-        settle_status,
         status
         )
         VALUES
         (
         #{accountId},
+        #{accountUserType},
         #{orderNo},
         #{beforeAmount},
         #{afterAmount},
@@ -31,7 +32,6 @@
         #{changeTime},
         #{type},
         #{remark},
-        #{settleStatus},
         #{status}
         );
     </insert>
@@ -44,10 +44,11 @@
         SELECT * FROM tb_settle_account_flow WHERE order_no = #{orderNo} AND account_id = #{accountId} AND type = #{type}
     </select>
 
-    <select id="selectLastWordDayRecord" resultType="com.jkm.hss.account.entity.SettleAccountFlow">
+    <select id="selectMerchantLastWordDayRecord" resultType="com.jkm.hss.account.entity.SettleAccountFlow">
         SELECT * FROM tb_settle_account_flow
-        WHERE app_id != `hss`
-        AND settle_status = 1
+        WHERE account_user_type = 2
+        AND app_id != `hss`
+        AND type = 1
         AND trade_date IN
         <foreach collection="tradeDates" item="item" index="index" open="(" separator="," close=")">
             #{item}

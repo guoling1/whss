@@ -1,12 +1,16 @@
 package com.jkm.hss.settle.service.impl;
 
-import com.alibaba.fastjson.JSON;
 import com.google.common.base.Function;
 import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
-import com.jkm.base.common.util.DateFormatUtil;
+import com.google.common.collect.Maps;
 import com.jkm.hss.account.entity.SettleAccountFlow;
 import com.jkm.hss.account.sevice.SettleAccountFlowService;
+import com.jkm.hss.dealer.entity.Dealer;
+import com.jkm.hss.dealer.service.DealerService;
+import com.jkm.hss.merchant.entity.MerchantInfo;
+import com.jkm.hss.merchant.service.MerchantInfoService;
 import com.jkm.hss.settle.dao.AccountSettleAuditRecordDao;
 import com.jkm.hss.settle.entity.AccountSettleAuditRecord;
 import com.jkm.hss.settle.service.AccountSettleAuditRecordService;
@@ -15,10 +19,9 @@ import org.apache.commons.collections.CollectionUtils;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by yulong.zhang on 2017/1/12.
@@ -27,6 +30,10 @@ import java.util.List;
 @Service
 public class AccountSettleAuditRecordServiceImpl implements AccountSettleAuditRecordService {
 
+    @Autowired
+    private MerchantInfoService merchantInfoService;
+    @Autowired
+    private DealerService dealerService;
     @Autowired
     private SettleAccountFlowService settleAccountFlowService;
     @Autowired
@@ -69,6 +76,7 @@ public class AccountSettleAuditRecordServiceImpl implements AccountSettleAuditRe
      * {@inheritDoc}
      */
     @Override
+    @Transactional
     public void handleT1SettleTask() {
         final List<Date> tradeDateList = new ArrayList<>();
         final DateTime now = DateTime.now();
@@ -78,9 +86,96 @@ public class AccountSettleAuditRecordServiceImpl implements AccountSettleAuditRe
             tradeDateList.add(now.minusDays(2).toDate());
             tradeDateList.add(now.minusDays(3).toDate());
         }
-        final List<SettleAccountFlow> settleAccountFlows = this.settleAccountFlowService.getLastWordDayRecord(tradeDateList);
+        //商户昨日待结算记录
+        final List<SettleAccountFlow> settleAccountFlows = this.settleAccountFlowService.getMerchantLastWordDayRecord(tradeDateList);
         if (!CollectionUtils.isEmpty(settleAccountFlows)) {
+            final HashSet<Long> accountIds = new HashSet<>();
+            for (SettleAccountFlow settleAccountFlow : settleAccountFlows) {
+                accountIds.add(settleAccountFlow.getAccountId());
+            }
+            //TODO
+            final List<MerchantInfo> merchants = this.merchantInfoService.batchGetByAccountIds(new ArrayList<>(accountIds));
+            //accountId--merchant
+            final Map<Long, MerchantInfo> merchantMap = Maps.uniqueIndex(merchants, new Function<MerchantInfo, Long>() {
+                @Override
+                public Long apply(MerchantInfo input) {
+                    return input.getAccountId();
+                }
+            });
+            final List<Long> dealerIds = Lists.transform(merchants, new Function<MerchantInfo, Long>() {
+                @Override
+                public Long apply(MerchantInfo input) {
+                    return input.getDealerId();
+                }
+            });
+            final List<Dealer> dealers = this.dealerService.getByIds(dealerIds);
+            //dealerId--dealer
+            final Map<Long, Dealer> dealerMap = Maps.uniqueIndex(dealers, new Function<Dealer, Long>() {
+                @Override
+                public Long apply(Dealer input) {
+                    return input.getId();
+                }
+            });
+            //accountId--List<SettleAccountFlow>
+            final Map<Long, List<SettleAccountFlow>> accountIdFlowMap = this.getAccountIdFlowMap(accountIds, settleAccountFlows);
+            if (!accountIdFlowMap.isEmpty()) {
+                final Set<Long> keySet = accountIdFlowMap.keySet();
+                final Iterator<Long> keyIterator = keySet.iterator();
+                while (keyIterator.hasNext()) {
+                    final Long key = keyIterator.next();
+                    final List<SettleAccountFlow> flows = accountIdFlowMap.get(key);
+                    //周一
+                    if (1 == now.dayOfWeek().get()) {
 
+                    } else {
+
+                    }
+                }
+            }
         }
+    }
+
+
+    /**
+     * 生成结算审核记录
+     */
+    private void generateAuditRecord(final long accountId, final List<SettleAccountFlow> flows,
+                                     final Map<Long, MerchantInfo> merchantMap, final Map<Long, Dealer> dealerMap) {
+        final AccountSettleAuditRecord accountSettleAuditRecord = new AccountSettleAuditRecord();
+        final MerchantInfo merchant = merchantMap.get(accountId);
+        accountSettleAuditRecord.setMerchantNo(merchant.getMarkCode());
+        accountSettleAuditRecord.setMerchantName(merchant.getMerchantName());
+        final Dealer dealer = dealerMap.get(merchant.getDealerId());
+        if (null != dealer) {
+//            accountSettleAuditRecord.setDealerNo(dealer.get);
+        }
+
+    }
+
+
+    /**
+     * 获得accountId--List<SettleAccountFlow>的map
+     *
+     * @param accountIds
+     * @param settleAccountFlows
+     * @return
+     */
+    private Map<Long, List<SettleAccountFlow>> getAccountIdFlowMap(final HashSet<Long> accountIds,
+                                                                   final List<SettleAccountFlow> settleAccountFlows) {
+        final List<SettleAccountFlow> settleAccountFlowList = new ArrayList<>(settleAccountFlows);
+        final Map<Long, List<SettleAccountFlow>> accountIdFlowMap = new HashMap<>(accountIds.size());
+        for (long accountId : accountIds) {
+            final List<SettleAccountFlow> flows = new ArrayList<>();
+            accountIdFlowMap.put(accountId, flows);
+            final Iterator<SettleAccountFlow> iterator = settleAccountFlowList.iterator();
+            while (iterator.hasNext()) {
+                final SettleAccountFlow settleAccountFlow = iterator.next();
+                if (accountId == settleAccountFlow.getAccountId()) {
+                    flows.add(settleAccountFlow);
+                    iterator.remove();
+                }
+            }
+        }
+        return accountIdFlowMap;
     }
 }

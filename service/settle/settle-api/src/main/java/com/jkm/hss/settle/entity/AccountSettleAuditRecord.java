@@ -1,7 +1,6 @@
 package com.jkm.hss.settle.entity;
 
 import com.jkm.base.common.entity.BaseEntity;
-import com.jkm.hss.account.enums.EnumSettleStatus;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -69,7 +68,7 @@ public class AccountSettleAuditRecord extends BaseEntity {
     /**
      * 结算状态
      *
-     * {@link EnumSettleStatus}
+     * {@link com.jkm.hss.settle.enums.EnumSettleStatus}
      */
     private int settleStatus;
 }

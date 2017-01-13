@@ -57,5 +57,5 @@ public interface SettleAccountFlowService {
      * @param tradeDateList
      * @return
      */
-    List<SettleAccountFlow> getLastWordDayRecord(List<Date> tradeDateList);
+    List<SettleAccountFlow> getMerchantLastWordDayRecord(List<Date> tradeDateList);
 }

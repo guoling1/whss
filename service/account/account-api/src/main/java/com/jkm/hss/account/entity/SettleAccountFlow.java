@@ -24,6 +24,13 @@ public class SettleAccountFlow extends BaseEntity {
     private long accountId;
 
     /**
+     * 账户所属用户类型
+     *
+     * {@link com.jkm.hss.account.enums.EnumAccountUserType}
+     */
+    private int accountUserType;
+
+    /**
      * 业务号（交易订单号）
      */
     private String orderNo;
@@ -76,11 +83,4 @@ public class SettleAccountFlow extends BaseEntity {
      * 备注
      */
     private String remark;
-
-    /**
-     * 结算状态
-     *
-     * {@link com.jkm.hss.account.enums.EnumSettleStatus}
-     */
-    private int settleStatus;
 }

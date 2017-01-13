@@ -104,7 +104,7 @@ public class SettleAccountFlowServiceImpl implements SettleAccountFlowService {
      * @return
      */
     @Override
-    public List<SettleAccountFlow> getLastWordDayRecord(final List<Date> tradeDateList) {
-        return this.settleAccountFlowDao.selectLastWordDayRecord(tradeDateList);
+    public List<SettleAccountFlow> getMerchantLastWordDayRecord(final List<Date> tradeDateList) {
+        return this.settleAccountFlowDao.selectMerchantLastWordDayRecord(tradeDateList);
     }
 }

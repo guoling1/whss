@@ -159,4 +159,11 @@ public interface MerchantInfoService {
      */
     Pair<BigDecimal,BigDecimal> getUpgradeShareProfit(String reqSn);
 
+    /**
+     * 按accountIds批量查询
+     *
+     * @param accountIds
+     * @return
+     */
+    List<MerchantInfo> batchGetByAccountIds(List<Long> accountIds);
 }

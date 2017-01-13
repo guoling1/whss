@@ -141,4 +141,12 @@ public interface MerchantInfoDao {
      * @return
      */
     int toUpgrade(@Param("merchantId") long merchantId, @Param("level") int level, @Param("weixinRate") BigDecimal weixinRate, @Param("alipayRate") BigDecimal alipayRate, @Param("fastRate") BigDecimal fastRate);
+
+    /**
+     * 按accountIds批量查询
+     *
+     * @param accountIds
+     * @return
+     */
+    List<MerchantInfo> batchSelectByAccountIds(@Param("accountIds") List<Long> accountIds);
 }

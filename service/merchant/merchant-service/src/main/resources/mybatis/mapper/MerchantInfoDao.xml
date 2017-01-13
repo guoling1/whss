@@ -422,6 +422,14 @@
         SELECT * from tb_merchant_info where mobile=#{mobile} limit 0,1
     </select>
 
+    <select id="batchSelectByAccountIds" resultType="com.jkm.hss.merchant.entity.MerchantInfo">
+        SELECT * FROM tb_merchant_info
+        WHERE account_id IN
+        <foreach collection="accountIds" index="index" item="item" close="(" separator="," open=")">
+            #{item}
+        </foreach>
+    </select>
+
     <update id="toUpgrade">
         UPDATE tb_merchant_info
         SET level = #{level},weixin_rate = #{weixinRate},alipay_rate = #{alipayRate},fast_rate = #{fastRate}
