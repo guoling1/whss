@@ -38,10 +38,18 @@
               <th style="text-align: right">推荐人编号:</th>
               <td><input type="text" style="background:#efecec;padding-left:5px;" value="—" readonly></td>
               <th style="text-align: right">推荐人名称:</th>
-              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.proxyName1" readonly></td>
+              <td><input type="text" style="background:#efecec;padding-left:5px;" value="—" readonly></td>
               <th style="text-align: right">推荐人注册手机号:</th>
               <td><input type="text" style="background:#efecec;padding-left:5px;" value="—" readonly></td>
             </tr>
+            <!--<tr>
+              <th style="text-align: right">推荐所属一级代理名:</th>
+              <td><input type="text" style="background:#efecec;padding-left:5px;" value="proxyNameYQ" readonly></td>
+              <th style="text-align: right">推荐所属二级代理名:</th>
+              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.proxyNameYQ1" readonly></td>
+              <th style="text-align: right"></th>
+              <td><input type="text" style="background:#efecec;padding-left:5px;" value="—" readonly></td>
+            </tr>-->
             </tbody></table>
         </div>
       </div>
@@ -250,7 +258,6 @@
         .then(function (res) {
           this.$data.msg = res.data.list[0];
           this.$data.res = res.data.res;
-          console.log(this.$data.res)
         },function (err) {
           this.$store.commit('MESSAGE_ACCORD_SHOW', {
             text: err.statusMessage
