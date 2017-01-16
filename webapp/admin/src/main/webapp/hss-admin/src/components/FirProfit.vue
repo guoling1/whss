@@ -46,7 +46,7 @@
                   </thead>
                   <tbody id="content">
                   <tr role="row" v-for="(record,index) in $$records">
-                    <td>{{index+1}}</td>
+                    <td>{{(mmsg.pageNo-1)*10+(index+1)}}</td>
                     <td>{{record.firstDealerName}}</td>
                     <td>{{record.statisticsDate}}</td>
                     <td style="text-align: right">{{record.collectMoney|toFix}}</td>
@@ -58,6 +58,12 @@
                 </table>
               </div>
             </div>
+            <div v-if="isShow">
+              <img src="http://img.jinkaimen.cn/admin/common/dist/img/ICBCLoading.gif" alt="">
+            </div>
+            <div v-if="$$records.length==0&&!isShow" class="row" style="text-align: center;color: red;font-size: 16px;">
+              <div class="col-sm-12">无此数据</div>
+            </div>
             <div class="row">
               <div class="col-sm-5">
                 <div class="dataTables_info" id="example2_info" role="status" aria-live="polite">
@@ -66,8 +72,8 @@
               <div class="col-sm-7">
                 <div class="dataTables_paginate paging_simple_numbers" id="example2_paginate">
                   <ul class="pagination" id="page" @click="bindEvent($event)">
-
                   </ul>
+                  <span class="count">共{{total}}页 {{count}}条</span>
                 </div>
               </div>
             </div>
@@ -94,10 +100,13 @@
         begin:'',
         end:'',
         records:[],
-        total:1
+        total:0,
+        count:'',
+        isShow: false
       }
     },
     created: function () {
+      this.$data.isShow = true;
       if(this.$route.path=='/admin/record/firProfit'){
         this.$data.path = '/admin/profit/firstProfit'
       }else if(this.$route.path=='/admin/record/secProfit'){
@@ -105,8 +114,10 @@
       }
       this.$http.post(this.$data.path,this.$data.msg)
         .then(function (res) {
+          this.$data.isShow = false;
           this.$data.records = res.data.records;
           this.$data.total=res.data.totalPage;
+          this.$data.count = res.data.count;
           var str='',
             page=document.getElementById('page');
           str+='<li class="paginate_button previous" id="example2_previous"><a href="#" aria-controls="example2" data-dt-idx="0" tabindex="0">上一页</a></li>'
@@ -140,6 +151,7 @@
             }
           }
         },function (err) {
+          this.$data.isShow = false;
           this.$store.commit('MESSAGE_ACCORD_SHOW', {
             text: err.statusMessage
           })
@@ -177,6 +189,7 @@
           .then(function (res) {
             this.$data.records=res.data.records;
             this.$data.total=res.data.totalPage;
+            this.$data.count = res.data.count;
             var str='',
               page=document.getElementById('page');
             str+='<li class="paginate_button previous" id="example2_previous"><a href="#" aria-controls="example2" data-dt-idx="0" tabindex="0">上一页</a></li>'
@@ -210,7 +223,10 @@
               }
             }
           },function (err) {
-            console.log(err)
+            this.$data.isShow = false;
+            this.$store.commit('MESSAGE_ACCORD_SHOW', {
+              text: err.statusMessage
+            })
           })
       },
       lookup: function () {
@@ -220,10 +236,17 @@
         if(this.$data.end!=''){
           this.$data.msg.endProfitDate=this.$data.end.replace(/\//g,'-')
         }
+        this.$data.msg.pageNo = 1;
+        this.$data.isShow = true;
+        this.$data.records='';
+        this.$data.total=0;
+        this.$data.count = 0;
         this.$http.post(this.$data.path,this.$data.msg)
           .then(function (res) {
+            this.$data.isShow = false;
             this.$data.records=res.data.records;
             this.$data.total=res.data.totalPage;
+            this.$data.count = res.data.count;
             var str='',
               page=document.getElementById('page');
             str+='<li class="paginate_button previous disabled" id="example2_previous"><a href="#" aria-controls="example2" data-dt-idx="0" tabindex="0">上一页</a></li>'
@@ -257,7 +280,10 @@
               }
             }
           },function (err) {
-            console.log(err)
+            this.$data.isShow = false;
+            this.$store.commit('MESSAGE_ACCORD_SHOW', {
+              text: err.statusMessage
+            })
           })
       },
     },
@@ -305,5 +331,15 @@
     font-size: 20px;
     line-height: 34px;
     height: 34px;
+  }
+  .count{
+    display: inline-block;
+    vertical-align: top;
+    margin: 28px 10px;
+  }
+  img{
+    width: 8%;
+    margin: 0 auto;
+    display: inherit;
   }
 </style>

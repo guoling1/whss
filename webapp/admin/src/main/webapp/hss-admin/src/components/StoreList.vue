@@ -64,7 +64,7 @@
               </div>
             </div>
             <div class="col-md-1">
-              <div class="btn btn-primary" @click="search" style="margin-top: 95px">筛选</div>
+              <div class="btn btn-primary" @click="search" style="margin-top: 85px">筛选</div>
               <!--<span @click="onload()" download="交易记录" class="btn btn-primary pull-right" style="float: right;color: #fff">导出</span>-->
             </div>
           </div>
@@ -88,7 +88,7 @@
                   </thead>
                   <tbody id="content">
                   <tr role="row" class="odd" v-for="(store,index) in $$data.stores">
-                    <td>{{(pageNo-1)*10+(index+1)}}</td>
+                    <td>{{(query.pageNo-1)*10+(index+1)}}</td>
                     <td class="sorting_1">{{store.markCode}}</td>
                     <td>{{store.merchantName}}</td>
                     <td>{{store.proxyName}}</td>
