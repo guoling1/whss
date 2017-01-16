@@ -13,7 +13,9 @@
       sign,
       distribute_status,
       activate_status,
-      type
+      type,
+      product_id,
+      sys_type
       )
       VALUES
       (
@@ -26,7 +28,9 @@
       #{sign},
       #{distributeStatus},
       #{activateStatus},
-      #{type}
+      #{type},
+      #{productId},
+      #{sysType}
       );
     </insert>
 
@@ -156,6 +160,10 @@
 
     <select id="selectLatestQRCodeForUpdate" resultType="com.jkm.hss.admin.entity.QRCode">
          SELECT * FROM tb_qr_code ORDER BY code DESC LIMIT 1 FOR UPDATE
+    </select>
+
+    <select id="selectLatestQRCodeForUpdateBySysType" resultType="com.jkm.hss.admin.entity.QRCode">
+        SELECT * FROM tb_qr_code WHERE sys_type=#{sysType} ORDER BY code DESC LIMIT 1 FOR UPDATE
     </select>
 
     <select id="selectUnDistributeCodeCountByFirstLevelDealerId" resultType="java.lang.Integer">

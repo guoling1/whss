@@ -32,7 +32,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.util.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -155,8 +154,8 @@ public class QRCodeServiceImpl implements QRCodeService {
      */
     @Override
     @Transactional
-    public QRCode initMerchantCode(final long merchantId) {
-        final Optional<QRCode> latestQRCode = this.getLatestQRCodeForUpdate();
+    public QRCode initMerchantCode(final long merchantId,final long productId,final String sysType) {
+        final Optional<QRCode> latestQRCode = this.getLatestQRCodeForUpdateBySysType(sysType);
         String startCode;
         if (latestQRCode.isPresent()) {
             startCode = (Long.valueOf(latestQRCode.get().getCode()) + 1) + "";
@@ -174,41 +173,12 @@ public class QRCodeServiceImpl implements QRCodeService {
         qrCode.setDistributeStatus(EnumQRCodeDistributionStatus.DISTRIBUTION.getCode());
         qrCode.setActivateStatus(EnumQRCodeActivateStatus.ACTIVATE.getCode());
         qrCode.setType(EnumQRCodeType.PUBLIC.getCode());
+        qrCode.setProductId(productId);
+        qrCode.setSysType(sysType);
         this.add(qrCode);
         return qrCode;
     }
 
-    /**
-     * 初始化商户的二维码（公众号注册）
-     *
-     * @param merchantId
-     * @param firstDealerId
-     * @param secondDealerId
-     * @return
-     */
-    @Override
-    public QRCode initMerchantCode(long merchantId, long firstDealerId, long secondDealerId) {
-        final Optional<QRCode> latestQRCode = this.getLatestQRCodeForUpdate();
-        String startCode;
-        if (latestQRCode.isPresent()) {
-            startCode = (Long.valueOf(latestQRCode.get().getCode()) + 1) + "";
-        } else {
-            startCode = QRCodeConsts.start_code_num + 1;
-        }
-        final QRCode qrCode = new QRCode();
-        qrCode.setCode(startCode);
-        qrCode.setAdminId(0);
-        qrCode.setFirstLevelDealerId(firstDealerId);
-        qrCode.setSecondLevelDealerId(secondDealerId);
-        qrCode.setMerchantId(merchantId);
-        qrCode.setSalt(RandomStringUtils.randomAlphanumeric(16));
-        qrCode.setSign(qrCode.getSignCode());
-        qrCode.setDistributeStatus(EnumQRCodeDistributionStatus.DISTRIBUTION.getCode());
-        qrCode.setActivateStatus(EnumQRCodeActivateStatus.ACTIVATE.getCode());
-        qrCode.setType(EnumQRCodeType.PUBLIC.getCode());
-        this.add(qrCode);
-        return qrCode;
-    }
 
     /**
      * {@inheritDoc}
@@ -347,6 +317,17 @@ public class QRCodeServiceImpl implements QRCodeService {
     @Transactional
     public Optional<QRCode> getLatestQRCodeForUpdate() {
         return Optional.fromNullable(this.qrCodeDao.selectLatestQRCodeForUpdate());
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @return
+     */
+    @Override
+    @Transactional
+    public Optional<QRCode> getLatestQRCodeForUpdateBySysType(final String sysType) {
+        return Optional.fromNullable(this.qrCodeDao.selectLatestQRCodeForUpdateBySysType(sysType));
     }
 
     /**
@@ -512,8 +493,8 @@ public class QRCodeServiceImpl implements QRCodeService {
      */
     @Override
     @Transactional
-    public String downloadCodeZip(final long adminId, final int count, final String baseUrl) {
-        final List<QRCode> codes = generateCode(adminId, count);
+    public String downloadCodeZip(final long adminId, final int count, final String baseUrl,final long productId,final String sysType) {
+        final List<QRCode> codes = generateCode(adminId, count,productId,sysType);
         //download
         ZipOutputStream zipOutputStream = null;
         try {
@@ -556,8 +537,8 @@ public class QRCodeServiceImpl implements QRCodeService {
      */
     @Override
     @Transactional
-    public String downloadExcel(final long adminId, final int count, final String baseUrl) {
-        final List<QRCode> codes = generateCode(adminId, count);
+    public String downloadExcel(final long adminId, final int count, final String baseUrl,final long productId,final String sysType) {
+        final List<QRCode> codes = generateCode(adminId, count,productId,sysType);
         //download
         final String tempDir = QRCodeUtil.getTempDir();
         final File excelFile = new File(tempDir + File.separator + codes.get(0).getCode() + "-" +
@@ -666,9 +647,9 @@ public class QRCodeServiceImpl implements QRCodeService {
      * @param count
      * @return
      */
-    private List<QRCode> generateCode(final long adminId, final int count) {
+    private List<QRCode> generateCode(final long adminId, final int count,long productId,String sysType) {
         final List<QRCode> codes = new ArrayList<>(count);
-        final Optional<QRCode> latestQRCode = this.getLatestQRCodeForUpdate();
+        final Optional<QRCode> latestQRCode = this.getLatestQRCodeForUpdateBySysType(sysType);
         String startCode = QRCodeConsts.start_code_num;
         if (latestQRCode.isPresent()) {
             startCode = latestQRCode.get().getCode();
@@ -685,6 +666,8 @@ public class QRCodeServiceImpl implements QRCodeService {
             qrCode.setDistributeStatus(EnumQRCodeDistributionStatus.DISTRIBUTION.getCode());
             qrCode.setActivateStatus(EnumQRCodeActivateStatus.UN_ACTIVATE.getCode());
             qrCode.setType(EnumQRCodeType.SCAN_CODE.getCode());
+            qrCode.setProductId(productId);
+            qrCode.setSysType(sysType);
             this.add(qrCode);
             codes.add(qrCode);
         }

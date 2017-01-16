@@ -7,6 +7,16 @@ import lombok.Data;
  */
 @Data
 public class CodeDownloadRequest {
-
+    /**
+     * 生成二维码个数
+     */
     private int count;
+    /**
+     * 产品编码
+     */
+    private long productId;
+    /**
+     * 系统类型（hss,hsy）
+     */
+    private String sysType;
 }

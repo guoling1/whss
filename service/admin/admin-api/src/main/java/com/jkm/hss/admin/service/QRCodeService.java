@@ -88,13 +88,8 @@ public interface QRCodeService {
      *
      * @return
      */
-    QRCode initMerchantCode(long merchantId);
-    /**
-     * 初始化商户的二维码（公众号注册）
-     *
-     * @return
-     */
-    QRCode initMerchantCode(long merchantId,long firstDealerId,long secondDealerId);
+    QRCode initMerchantCode(long merchantId,final long productId,final String sysType);
+
 
     /**
      * 按id查询
@@ -174,6 +169,12 @@ public interface QRCodeService {
      * @return
      */
     Optional<QRCode> getLatestQRCodeForUpdate();
+    /**
+     * 按系统类型查找最新的一个码段(新增)
+     *
+     * @return
+     */
+    Optional<QRCode> getLatestQRCodeForUpdateBySysType(String sysType);
 
     /**
      * 查询一级代理商下未分配的码段
@@ -266,14 +267,14 @@ public interface QRCodeService {
      *
      * @param count
      */
-    String downloadCodeZip(long adminId, int count, final String baseUrl);
+    String downloadCodeZip(long adminId, int count, final String baseUrl,long productId,String sysType);
 
     /**
      * 下载二维码Excel
      *
      * @param count
      */
-    String downloadExcel(long adminId, int count, final String baseUrl);
+    String downloadExcel(long adminId, int count, final String baseUrl,long productId,String sysType);
 
 
     /**
