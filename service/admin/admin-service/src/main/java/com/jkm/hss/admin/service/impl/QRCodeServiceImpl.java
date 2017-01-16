@@ -282,8 +282,10 @@ public class QRCodeServiceImpl implements QRCodeService {
         Long secondDealerId = qrCode.getSecondLevelDealerId();
         if (qrCode.getSecondLevelDealerId() > 0) {
             currentDealerId = qrCode.getSecondLevelDealerId();
+            return Triple.of(currentDealerId,firstDealerId,secondDealerId);
         } else if (qrCode.getFirstLevelDealerId() > 0) {
             currentDealerId = qrCode.getFirstLevelDealerId();
+            return Triple.of(currentDealerId,firstDealerId,secondDealerId);
         }
         return Triple.of(currentDealerId,firstDealerId,secondDealerId);
     }
