@@ -8,23 +8,35 @@
         <div class="box-body">
           <div id="example2_wrapper" class="dataTables_wrapper form-inline dt-bootstrap">
             <div>
-              <div class="form-group">
+              <div class="form-group" style="margin-bottom: 15px;">
                 <label>手机号：</label>
-                <input class="form-control" type="tel" v-model="$$data.mobile">
+                <input class="form-control" type="tel" v-model="query.mobile">
               </div>
-              <div class="form-group">
+              <div class="form-group" style="margin-bottom: 15px;">
                 <label>名称：</label>
-                <input class="form-control" type="text" v-model="$$data.name">
+                <input class="form-control" type="text" v-model="query.name">
               </div>
-              <div class="form-group">
+              <div class="form-group" style="margin-bottom: 15px;">
+                <label>所属区域：</label>
+                <input class="form-control" type="text" v-model="query.belongArea">
+              </div>
+              <div class="form-group" style="margin-bottom: 15px;">
+                <label>银行卡号：</label>
+                <input class="form-control" type="text" v-model="query.settleBankCard">
+              </div>
+              <div class="form-group" style="margin-bottom: 15px;">
+                <label>银行预留手机号：</label>
+                <input class="form-control" type="text" v-model="query.bankReserveMobile">
+              </div>
+              <div class="form-group" style="margin-bottom: 15px;">
                 <label>级别：</label>
-                <select class="form-control fun"  name="" v-model="$$data.level">
+                <select class="form-control fun"  name="" v-model="query.level">
                   <option value="">全部</option>
                   <option value="1">一级代理商</option>
                   <option value="2">二级代理商</option>
                 </select>
               </div>
-              <div class="btn btn-primary" @click="lookup">
+              <div class="btn btn-primary" @click="lookup" style="margin-top: -15px">
                 筛选
               </div>
             </div>
@@ -39,7 +51,7 @@
                     <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="Platform(s): activate to sort column ascending">所属区域</th>
                     <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="Engine version: activate to sort column ascending">级别</th>
                     <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">银行账户名称</th>
-                    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">银行卡号</th>
+                    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">结算卡号</th>
                     <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">银行预留手机号</th>
                     <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">操作</th>
                   </tr>
@@ -97,6 +109,16 @@
     name: 'agentList',
     data () {
       return {
+        query:{
+          pageNo:1,
+          pageSize:10,
+          mobile:'',
+          name:'',
+          belongArea:'',
+          settleBankCard:'',
+          bankReserveMobile:'',
+          level:''
+        },
         dealers: [],
         pageSize:10,
         pageNo:1,
@@ -116,20 +138,11 @@
       this.$data.total = 0;
       this.$data.pageNo = 1;
       this.$data.count = 0;
-      this.$http.post('/admin/dealer/listDealer',{
-        pageNo:1,
-        pageSize:10,
-        mobile:this.$data.mobile,
-        belongArea:this.$data.belongArea,
-        id:this.$data.id,
-        name:this.$data.name,
-        level:this.$data.level
-      })
+      this.$http.post('/admin/dealer/listDealer',this.$data.query)
         .then(function (res) {
           this.$data.isShow = false;
           this.$data.dealers = res.data.records;
           this.$data.total = res.data.totalPage;
-          this.$data.pageNo = res.data.pageNO;
           this.$data.count = res.data.count;
           var str='',
             page=document.getElementById('page');
@@ -155,7 +168,7 @@
         e = e||window.event;
         var tar = e.target||e.srcElement,
           tarInn = tar.innerHTML,
-          n = this.$data.pageNo;
+          n = this.$data.query.pageNo;
         if(tarInn == '上一页'){
           if(n == 1){
             tar.parentNode.className+=' disabled'
@@ -177,15 +190,11 @@
           tar.parentNode.className+=' active'
           n = Number(tarInn);
         }
-        this.$data.pageNo = n;
-        this.$http.post('/admin/dealer/listDealer',{
-          pageNo:this.$data.pageNo,
-          pageSize:10
-        })
+        this.$data.query.pageNo = n;
+        this.$http.post('/admin/dealer/listDealer',this.$data.query)
           .then(function (res) {
             this.$data.dealers = res.data.records;
             this.$data.total = res.data.totalPage;
-            this.$data.pageNo = res.data.pageNO;
             this.$data.count = res.data.count;
             var str='',
               page=document.getElementById('page');
@@ -215,21 +224,12 @@
         this.$data.isShow = true;
         this.$data.dealers = '';
         this.$data.total = 0;
-        this.$data.pageNo = 1;
+        this.$data.query.pageNo = 1;
         this.$data.count = 0;
-        this.$http.post('/admin/dealer/listDealer',{
-          pageNo:1,
-          pageSize:10,
-          mobile:this.$data.mobile,
-          belongArea:this.$data.belongArea,
-          id:this.$data.id,
-          name:this.$data.name,
-          level:this.$data.level
-        })
+        this.$http.post('/admin/dealer/listDealer',this.$data.query)
           .then(function (res) {
             this.$data.isShow = false;
             this.$data.dealers = res.data.records;
-            this.$data.pageNo = res.data.pageNO;
             this.$data.count = res.data.count;
             this.$data.total = res.data.totalPage;
             var str='',

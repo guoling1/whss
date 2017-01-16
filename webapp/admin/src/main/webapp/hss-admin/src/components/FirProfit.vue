@@ -9,10 +9,17 @@
         <div class="box-body">
           <div id="example2_wrapper" class="dataTables_wrapper form-inline dt-bootstrap">
             <div class="search">
-              <span>日期：</span>
-              <input type="date" v-model="begin">
-              <span>至</span>
-              <input type="date" v-model="end">
+              <div class="form-group">
+                <label>日期：</label>
+                <div class="form-control" style="margin-right: 15px;padding: 0;width: 248px;height: 30px;line-height: 26px;">
+                  <input type="date" style="border: none;display:inline-block;width: 45%" name="date" value="" v-model="begin">至
+                  <input type="date" style="border: none;display:inline-block;width: 45%" name="date" value="" v-model="end">
+                </div>
+              </div>
+              <div class="form-group">
+                <label>代理商名称：</label>
+                <input style="height: 30px;margin-right: 15px" type="text" class="form-control" v-model="msg.firstDealerName">
+              </div>
               <div class="btn btn-primary" @click="lookup()">筛选</div>
             </div>
             <div class="row">
@@ -81,7 +88,8 @@
           pageNo:1,
           pageSize:10,
           beginProfitDate:'',
-          endProfitDate:''
+          endProfitDate:'',
+          firstDealerName:''
         },
         begin:'',
         end:'',
@@ -285,16 +293,12 @@
     display: inline-block;
     margin: 0 10px;
   }
+  .btn,input{
+    font-size: 12px;
+  }
 
   .search{
     margin: -12px 0 20px 0;
-  span{
-    font-size: 18px;
-
-  }
-  span:nth-child(2){
-    margin:0 10px;
-  }
   }
   .box-title {
     display: inline-block;
