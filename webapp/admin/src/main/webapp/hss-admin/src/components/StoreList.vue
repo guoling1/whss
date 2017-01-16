@@ -64,7 +64,7 @@
               </div>
             </div>
             <div class="col-md-1">
-              <div class="btn btn-primary" @click="search" style="margin-top: 95px">筛选</div>
+              <div class="btn btn-primary" @click="search" style="margin-top: 85px">筛选</div>
               <!--<span @click="onload()" download="交易记录" class="btn btn-primary pull-right" style="float: right;color: #fff">导出</span>-->
             </div>
           </div>
@@ -80,6 +80,7 @@
                     <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="Platform(s): activate to sort column ascending">所属一级代理商</th>
                     <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="Engine version: activate to sort column ascending">所属二级代理</th>
                     <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">注册时间</th>
+                    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">注册方式</th>
                     <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">认证时间</th>
                     <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">审核时间</th>
                     <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">状态</th>
@@ -88,12 +89,13 @@
                   </thead>
                   <tbody id="content">
                   <tr role="row" class="odd" v-for="(store,index) in $$data.stores">
-                    <td>{{(pageNo-1)*10+(index+1)}}</td>
+                    <td>{{(query.pageNo-1)*10+(index+1)}}</td>
                     <td class="sorting_1">{{store.markCode}}</td>
                     <td>{{store.merchantName}}</td>
                     <td>{{store.proxyName}}</td>
                     <td>{{store.proxyName1}}</td>
                     <td>{{store.createTime|changeTime}}</td>
+                    <td>{{store.source|changeSource}}</td>
                     <td>{{store.authenticationTime|changeTime}}</td>
                     <td>{{store.checkedTime|changeTime}}</td>
                     <td>{{store.status|status}}</td>
@@ -401,6 +403,14 @@
       }
     },
     filters: {
+      changeSource: function (val) {
+        if(val== 0){
+          val = "扫码注册"
+        }else if(val == 1){
+          val = "推荐注册"
+        }
+        return val
+      },
       status: function (val) {
         val = Number(val)
         if(val == 0){

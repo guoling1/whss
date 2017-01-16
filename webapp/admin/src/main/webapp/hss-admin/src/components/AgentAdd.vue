@@ -166,9 +166,9 @@
         <form class="form-horizontal">
           <div class="box-body">
             <div class="form-group">
-              <input type="radio" id="one" value="1" v-model="recommendBtn" style="margin-left: 50px;">
+              <input type="radio" id="one" value="2" v-model="recommendBtn" style="margin-left: 50px;">
               <label for="one">开 (开通后，代理商设置的商户终端费率按产品费率执行)</label>
-              <input type="radio" id="two" value="2" v-model="recommendBtn" style="margin-left: 50px;">
+              <input type="radio" id="two" value="1" v-model="recommendBtn" style="margin-left: 50px;">
               <label for="two">关</label>
             </div>
           </div>
@@ -259,7 +259,7 @@
         products: [],//所有产品
         id: 0,
         isShow:true,
-        recommendBtn:2,
+        recommendBtn:1,
         totalProfitSpace:'',
         rate:'',
         rate1:'',

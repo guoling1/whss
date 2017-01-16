@@ -74,5 +74,6 @@
 </div>
 </body>
 <script src="http://static.jinkaimen.cn/vendor/vendor.1.0.1.min.js"></script>
-<script src="http://static.jinkaimen.cn/dealer/0.1.1/issue.min.js"></script>
+<%--<script src="http://static.jinkaimen.cn/dealer/0.1.1/issue.min.js"></script>--%>
+<script src="/js/dealer/0.1.1/issue.min.js"></script>
 </html>
