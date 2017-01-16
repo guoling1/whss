@@ -265,10 +265,10 @@ public class QRCodeServiceImpl implements QRCodeService {
      * @param merchantId
      * @return
      */
-    @Override
-    public Optional<QRCode> getByMerchantId(final long merchantId) {
-        return Optional.fromNullable(this.qrCodeDao.selectByMerchantId(merchantId));
-    }
+//    @Override
+//    public Optional<QRCode> getByMerchantId(final long merchantId) {
+//        return Optional.fromNullable(this.qrCodeDao.selectByMerchantId(merchantId));
+//    }
 
     /**
      * {@inheritDoc}
@@ -768,5 +768,17 @@ public class QRCodeServiceImpl implements QRCodeService {
     public CodeQueryResponse getMerchantName(long merchantId) {
         CodeQueryResponse codeQueryResponse = this.qrCodeDao.getMerchantName(merchantId);
         return codeQueryResponse;
+    }
+
+    /**
+     * 按码段查询
+     *
+     * @param code
+     * @param sysType
+     * @return
+     */
+    @Override
+    public Optional<QRCode> getByCode(String code, String sysType) {
+        return Optional.fromNullable(this.qrCodeDao.selectByCodeAndSysType(code,sysType));
     }
 }

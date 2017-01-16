@@ -385,4 +385,13 @@ public interface QRCodeDao {
      * @return
      */
     CodeQueryResponse getMerchantName(@Param("merchantId") long merchantId);
+
+
+    /**
+     * 按码段查询
+     *
+     * @param code
+     * @return
+     */
+    QRCode selectByCodeAndSysType(@Param("code") String code,@Param("sysType") String sysType);
 }

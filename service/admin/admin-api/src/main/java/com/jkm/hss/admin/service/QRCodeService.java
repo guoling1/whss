@@ -137,7 +137,7 @@ public interface QRCodeService {
      * @param merchantId
      * @return
      */
-    Optional<QRCode> getByMerchantId(long merchantId);
+//    Optional<QRCode> getByMerchantId(long merchantId);
 
     /**
      * 按商户ids查询
@@ -350,4 +350,13 @@ public interface QRCodeService {
      * @return
      */
     CodeQueryResponse getMerchantName(long merchantId);
+
+    //  =================以下为好收银新增部分=======================
+    /**
+     * 按码段查询
+     *
+     * @param code
+     * @return
+     */
+    Optional<QRCode> getByCode(String code,String sysType);
 }

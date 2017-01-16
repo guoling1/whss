@@ -1,9 +1,17 @@
 package com.jkm.hss.controller.code;
 
+import com.google.common.base.Optional;
 import com.jkm.base.common.entity.CommonResponse;
+import com.jkm.hss.admin.entity.QRCode;
+import com.jkm.hss.admin.enums.EnumQRCodeSysType;
+import com.jkm.hss.admin.service.QRCodeService;
 import com.jkm.hss.controller.BaseController;
+import com.jkm.hss.helper.request.BindShopRequest;
 import com.jkm.hss.helper.request.MerchantLoginCodeRequest;
+import com.jkm.hsy.user.service.HsyShopService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,34 +25,28 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 @RequestMapping(value = "/qrCode")
 public class QRCodeController extends BaseController {
+    @Autowired
+    private QRCodeService qrCodeService;
+    @Autowired
+    private HsyShopService hsyShopService;
+
     /**
      * 店铺绑定二维码
-     * @param codeRequest
+     * @param bindShopRequest
      * @return
      */
     @ResponseBody
     @RequestMapping(value = "bindShop", method = RequestMethod.POST)
-    public CommonResponse getCode(@RequestBody MerchantLoginCodeRequest codeRequest) {
-//        final String mobile = codeRequest.getMobile();
-//        if (StringUtils.isBlank(mobile)) {
-//            return CommonResponse.simpleResponse(-1, "手机号不能为空");
-//        }
-//        if (!ValidateUtils.isMobile(mobile)) {
-//            return CommonResponse.simpleResponse(-1, "手机号格式错误");
-//        }
-//        final Pair<Integer, String> verifyCode = this.smsAuthService.getVerifyCode(mobile, EnumVerificationCodeType.REGISTER_MERCHANT);
-//        if (1 == verifyCode.getLeft()) {
-//            final Map<String, String> params = ImmutableMap.of("code", verifyCode.getRight());
-//            this.sendMessageService.sendMessage(SendMessageParams.builder()
-//                    .mobile(mobile)
-//                    .uid("")
-//                    .data(params)
-//                    .userType(EnumUserType.BACKGROUND_USER)
-//                    .noticeType(EnumNoticeType.REGISTER_MERCHANT)
-//                    .build()
-//            );
-//            return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "发送验证码成功");
-//        }
+    public CommonResponse bindShop(@RequestBody BindShopRequest bindShopRequest) {
+        String code = bindShopRequest.getCode();
+        log.info("获取的二维码是{}",code);
+        if (StringUtils.isBlank(code)) {
+            return CommonResponse.simpleResponse(-1, "二维码不能为空");
+        }
+        Optional<QRCode> qrCodeOptional =  qrCodeService.getByCode(code, EnumQRCodeSysType.HSY.getId());
+        if(!qrCodeOptional.isPresent()){//不存在
+            return CommonResponse.simpleResponse(-1, "二维码不存在");
+        }
         return CommonResponse.simpleResponse(-1, "");
     }
 }
