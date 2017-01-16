@@ -475,7 +475,15 @@
     display: inline-block;
     margin: 0 10px;
   }
-
+  .form-control{
+    font-size: 12px;
+    height: 28px;
+    padding-top: 0;
+    padding-bottom: 0;
+  input{
+    height: 25px;
+  }
+  }
   input,.form-control,.btn{
     font-size: 12px;
   }

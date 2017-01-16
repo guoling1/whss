@@ -8,13 +8,21 @@
         <!-- /.box-header -->
         <div class="box-body">
           <div id="example2_wrapper" class="dataTables_wrapper form-inline dt-bootstrap">
-            <div>
-              <span>日期：</span>
-              <input type="date" v-model="query.beginProfitDate">
-              <span>至</span>
-              <input type="date" v-model="query.endProfitDate">
-              <div class="btn btn-primary" @click="search()">筛选</div>
+            <div class="search">
+              <div class="form-group" style="margin-bottom: 15px">
+                <label>日期：</label>
+                <div class="form-control" style="margin-right: 15px;padding: 0;width: 248px;height: 30px;line-height: 26px;">
+                  <input type="date" style="border: none;display:inline-block;width: 45%" name="date" value="" v-model="query.beginProfitDate">至
+                  <input type="date" style="border: none;display:inline-block;width: 45%" name="date" value="" v-model="query.endProfitDate">
+                </div>
+              </div>
+              <div class="form-group" style="margin-bottom: 15px">
+                <label>代理商名称：</label>
+                <input style="height: 30px;margin-right: 15px" type="text" class="form-control" v-model="query.dealerName">
+              </div>
+              <div class="btn btn-primary" @click="search()" style="margin-top: -15px">筛选</div>
             </div>
+
             <div class="row">
               <div class="col-sm-12">
                 <table id="example2" class="table table-bordered table-hover dataTable" role="grid" aria-describedby="example2_info">
