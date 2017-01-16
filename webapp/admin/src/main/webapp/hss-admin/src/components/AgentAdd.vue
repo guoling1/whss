@@ -9,11 +9,25 @@
     <!--<h3 v-if="isShow" class="box-title">新增代理商</h3>-->
     <!--<div v-if="!isShow" style="padding: 8px 30px; background: rgb(243, 156, 18); z-index: 999999; font-size: 22px; font-weight: 600;margin-bottom: 15px;color: #fff;">代理商资料</div>-->
     <div style="margin: 0px 15px 15px;">
-      <div class="box box-info">
+      <div class="box box-info tableTop">
         <div class="box-header with-border">
           <h3 class="box-title">基本信息</h3>
         </div>
-        <form class="form-horizontal">
+        <div class="table-responsive">
+          <table class="table">
+            <tbody>
+            <tr>
+              <th style="text-align: right">代理商手机号:</th>
+              <td><input type="tel" id="mobile" class="form-control" name="mobile" placeholder="代理手机号，用于登录" v-model="$$data.mobile"></td>
+              <th style="text-align: right">代理名称:</th>
+              <td><input type="text" class="form-control" id="name" name="name" placeholder="代理商名称" v-model="$$data.name"></td>
+              <th style="text-align: right">所在地:</th>
+              <td><input type="text" class="form-control" id="belongArea" name="belongArea" placeholder="省/市/街道" v-model="$$data.belongArea"></td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+        <!--<form class="form-horizontal">
           <div class="box-body">
             <div class="form-group">
               <label for="mobile" class="col-sm-3 control-label">代理商手机号</label>
@@ -24,7 +38,6 @@
             </div>
             <div class="form-group">
               <label for="name" class="col-sm-3 control-label">代理名称</label>
-
               <div class="col-sm-4">
                 <input type="text" class="form-control" id="name" name="name" placeholder="代理商名称" v-model="$$data.name">
               </div>
@@ -37,19 +50,38 @@
               </div>
             </div>
           </div>
-        </form>
+        </form>-->
       </div>
-      <div class="box box-info">
+      <div class="box box-info tableTop">
         <div class="box-header with-border">
           <h3 class="box-title">结算信息</h3>
         </div>
-        <!-- /.box-header -->
-        <!-- form start -->
-        <form class="form-horizontal">
+        <div class="table-responsive">
+          <table class="table">
+            <tbody>
+            <tr>
+              <th style="text-align: right">结算卡:</th>
+              <td><input type="text" class="form-control" id="bankCard" name="bankCard" placeholder="输入一级代理银行卡号" v-model="$$data.bankCard"></td>
+              <th style="text-align: right">开户名:</th>
+              <td><input type="text" class="form-control" id="bankAccountName" name="bankAccountName" placeholder="银行开户名称" v-model="$$data.bankAccountName"></td>
+              <th style="text-align: right">身份证号:</th>
+              <td><input type="text" class="form-control" id="idCard" name="idCard" placeholder="开户身份证号" v-model="$$data.idCard"></td>
+            </tr>
+            <tr>
+              <th style="text-align: right">开户手机号:</th>
+              <td><input type="text" class="form-control" id="bankReserveMobile" name="bankReserveMobile" placeholder="银行开户预留手机号" v-model="$$data.bankReserveMobile"></td>
+              <th style="text-align: right"></th>
+              <td></td>
+              <th style="text-align: right"></th>
+              <td></td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+        <!--<form class="form-horizontal">
           <div class="box-body">
             <div class="form-group">
               <label for="bankCard" class="col-sm-3 control-label">结算卡</label>
-
               <div class="col-sm-4">
                 <input type="text" class="form-control" id="bankCard" name="bankCard" placeholder="输入一级代理银行卡号" v-model="$$data.bankCard">
               </div>
@@ -63,21 +95,19 @@
             </div>
             <div class="form-group">
               <label for="idCard" class="col-sm-3 control-label">身份证号</label>
-
               <div class="col-sm-4">
                 <input type="text" class="form-control" id="idCard" name="idCard" placeholder="开户身份证号" v-model="$$data.idCard">
               </div>
             </div>
             <div class="form-group">
               <label for="bankReserveMobile" class="col-sm-3 control-label">开户手机号</label>
-
               <div class="col-sm-4">
                 <input type="text" class="form-control" id="bankReserveMobile" name="bankReserveMobile" placeholder="银行开户预留手机号" v-model="$$data.bankReserveMobile">
               </div>
             </div>
           </div>
-          <!-- /.box-body -->
-        </form>
+          &lt;!&ndash; /.box-body &ndash;&gt;
+        </form>-->
       </div>
       <div class="box box-info">
         <div class="box-header with-border">
@@ -469,6 +499,22 @@
     text-align: center;
   }
 
+  table tr th{
+    text-align: right;
+    padding-top: 14px;
+  }
+  .tableTop{
+    input{
+      width: 90%;
+      font-size: 12px;
+      height: 28px;
+    }
+    tr{
+      th,td{
+        border: none;
+      }
+    }
+  }
   .middle{
     position: relative;
     i{
