@@ -19,6 +19,7 @@ public class AppBizShop {
     private String contactCellphone;//联系人手机号
     private Integer status;//状态：1 正常 99禁用
     private Integer isPublic;//是否对公1是 2否'
+    private String checkErrorInfo;//审核错误原因
     private Date createTime;
     private Date updateTime;
 
@@ -34,6 +35,8 @@ public class AppBizShop {
     private String fileA;
     private String fileB;
     private String fileC;
+
+    private Integer countEmployee;//员工个数
 
     public Long getId() {
         return id;
@@ -249,5 +252,21 @@ public class AppBizShop {
 
     public void setLicenceURL(String licenceURL) {
         this.licenceURL = licenceURL;
+    }
+
+    public Integer getCountEmployee() {
+        return countEmployee;
+    }
+
+    public void setCountEmployee(Integer countEmployee) {
+        this.countEmployee = countEmployee;
+    }
+
+    public String getCheckErrorInfo() {
+        return checkErrorInfo;
+    }
+
+    public void setCheckErrorInfo(String checkErrorInfo) {
+        this.checkErrorInfo = checkErrorInfo;
     }
 }

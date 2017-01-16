@@ -1,9 +1,7 @@
 package com.jkm.hsy.user.dao;
 
-import com.jkm.hsy.user.entity.AppBizCard;
-import com.jkm.hsy.user.entity.AppBizDistrict;
-import com.jkm.hsy.user.entity.AppBizShop;
-import com.jkm.hsy.user.entity.AppBizShopUserRole;
+import com.jkm.hsy.user.entity.*;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -17,7 +15,12 @@ public interface HsyShopDao {
     public void insertAppBizShopUserRole(AppBizShopUserRole appBizShopUserRole);
     public void update(AppBizShop appBizShop);
     public void insertAppBizCard(AppBizCard appBizCard);
+    public void updateAppBizCard(AppBizCard appBizCard);
     public List<AppBizCard> findAppBizCardByParam(AppBizCard appBizCard);
     public List<AppBizDistrict> findDistrictByParentCode(AppBizDistrict appBizDistrict);
     public List<AppBizShop> findPrimaryAppBizShopByUserID(AppBizShop appBizShop);
+    public List<AppBizShopUserRole> findsurByRoleTypeSid(@Param("sid")Long sid);
+    public List<AppBizShop> findShopList(AppBizShop appBizShop);
+    public List<AppBizShop> findShopDetail(AppBizShop appBizShop);
+    public List<AppAuUser> findUserByShopID(@Param("sid")Long sid);
 }

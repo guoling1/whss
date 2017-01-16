@@ -143,6 +143,32 @@ public class ActiveControllerTester {
     }
 
     @Test
+    public void testFindShopList()throws Exception{
+        AppParam p=new AppParam();
+        p.setServiceCode("HSY001010");
+        p.setAccessToken("");
+        p.setAppType("android");
+        p.setTimeStamp(AppDateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
+        p.setV("v1.0");
+        String param="{\"uid\":18}";
+        p.setRequestData(param);
+        ActiveControllerTester.testRest(p);
+    }
+
+    @Test
+    public void testFindShopDetail()throws Exception{
+        AppParam p=new AppParam();
+        p.setServiceCode("HSY001012");
+        p.setAccessToken("");
+        p.setAppType("android");
+        p.setTimeStamp(AppDateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
+        p.setV("v1.0");
+        String param="{\"id\":10}";
+        p.setRequestData(param);
+        ActiveControllerTester.testRest(p);
+    }
+
+    @Test
     public void testFindIndustryList()throws Exception{
         AppParam p=new AppParam();
         p.setServiceCode("HSY001013");
@@ -155,6 +181,33 @@ public class ActiveControllerTester {
         p.setRequestData(param);
         ActiveControllerTester.testRest(p);
     }
+
+    @Test
+    public void testInsertBranchShop()throws Exception{
+        AppParam p=new AppParam();
+        p.setServiceCode("HSY001014");
+        p.setAccessToken("");
+        p.setAppType("android");
+        p.setTimeStamp(AppDateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
+        p.setV("v1.0");
+        String param="{\"uid\":18,\"shortName\":\"分店简称\",\"districtCode\":\"110000\",\"address\":\"分店街道\"}";
+        p.setRequestData(param);
+        ActiveControllerTester.testRest(p);
+    }
+
+    @Test
+    public void testFindContractInfo()throws Exception{
+        AppParam p=new AppParam();
+        p.setServiceCode("HSY001015");
+        p.setAccessToken("");
+        p.setAppType("android");
+        p.setTimeStamp(AppDateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
+        p.setV("v1.0");
+        String param="{\"id\":10}";
+        p.setRequestData(param);
+        ActiveControllerTester.testRest(p);
+    }
+
 
     @Test
     public void generateSQL()throws Exception{

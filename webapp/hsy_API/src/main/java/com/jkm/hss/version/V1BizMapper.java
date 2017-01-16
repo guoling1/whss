@@ -15,10 +15,11 @@ public class V1BizMapper {
 		bizMapper.put("HSY001007", new String[]{"hsyShopService","insertHsyCard","保存结算账户成功"});
 		bizMapper.put("HSY001008", new String[]{"hsyShopService","findHsyCardBankByBankNO"});
 		bizMapper.put("HSY001009", new String[]{"hsyShopService","findDistrictByParentCode"});
-//		bizMapper.put("HSY001010", new String[]{"hsyFileService","insertFileLicenceAndUpload","上传营业执照成功"});
+		bizMapper.put("HSY001010", new String[]{"hsyShopService","findShopList"});
 		bizMapper.put("HSY001011", new String[]{"hsyFileService","insertFileShopAndUpload","上传商铺相关照片成功"});
-//		bizMapper.put("HSY001012", new String[]{"hsyFileService","insertFileUserAndUpload","上传用户身份证相关照片成功"});
+		bizMapper.put("HSY001012", new String[]{"hsyShopService","findShopDetail"});
 		bizMapper.put("HSY001013", new String[]{"hsyShopService","findIndustryList"});
-
+		bizMapper.put("HSY001014", new String[]{"hsyShopService","insertBranchShop","保存店铺信息成功"});
+		bizMapper.put("HSY001015", new String[]{"hsyShopService","findContractInfo"});
 	}
 }
