@@ -27,6 +27,8 @@ public class AppAuUser {
     private String idcardfURL;//身份证正面照URL
     private String idcardbURL;//身份证背面照URL
     private String idcardhURL;//身份证手持照URL
+    private Long role;//角色
+    private String roleName;//角色名称
 
     public long getId() {
         return id;
@@ -194,5 +196,21 @@ public class AppAuUser {
 
     public void setIdcardhURL(String idcardhURL) {
         this.idcardhURL = idcardhURL;
+    }
+
+    public Long getRole() {
+        return role;
+    }
+
+    public void setRole(Long role) {
+        this.role = role;
+    }
+
+    public String getRoleName() {
+        return roleName;
+    }
+
+    public void setRoleName(String roleName) {
+        this.roleName = roleName;
     }
 }

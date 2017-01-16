@@ -10,7 +10,9 @@ public class AppConstant {
     public static int USER_STATUS_NO_CHECK=2;
     public static int USER_STATUS_FORBID=99;
 
-    public static int SHOP_STATUS_NORMAL=1;
+    public static int SHOP_STATUS_NORMAL=1;//正常
+    public static int SHOP_STATUS_NO_CHECK=2;//待审核
+    public static int SHOP_STATUS_REJECT=3;//申请驳回
     public static int SHOP_STATUS_FORBID=99;
 
     public static int CARD_STATUS_NORMAL=1;

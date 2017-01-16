@@ -7,10 +7,7 @@ import com.jkm.hsy.user.constant.FileType;
 import com.jkm.hsy.user.dao.HsyFileDao;
 import com.jkm.hsy.user.dao.HsyShopDao;
 import com.jkm.hsy.user.dao.HsyUserDao;
-import com.jkm.hsy.user.entity.AppAuUser;
-import com.jkm.hsy.user.entity.AppBizShop;
-import com.jkm.hsy.user.entity.AppCmFile;
-import com.jkm.hsy.user.entity.AppParam;
+import com.jkm.hsy.user.entity.*;
 import com.jkm.hsy.user.exception.ApiHandleException;
 import com.jkm.hsy.user.exception.ResultCode;
 import com.jkm.hsy.user.service.HsyFileService;
@@ -84,7 +81,19 @@ public class HsyFileServiceImpl implements HsyFileService {
 
         }
 
+        Date date=new Date();
+        appBizShop.setUpdateTime(date);
         hsyShopDao.update(appBizShop);
+        List<AppBizShopUserRole> surList=hsyShopDao.findsurByRoleTypeSid(appBizShop.getId());
+        if(surList!=null&&surList.size()!=0)
+        {
+            AppBizShopUserRole sur= surList.get(0);
+            AppAuUser user=new AppAuUser();
+            user.setId(sur.getUid());
+            user.setAuStep("2");
+            user.setUpdateTime(date);
+            hsyUserDao.updateByID(user);
+        }
         return "";
     }
 
