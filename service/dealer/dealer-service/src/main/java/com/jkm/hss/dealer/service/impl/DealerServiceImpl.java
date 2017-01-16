@@ -272,7 +272,7 @@ public class DealerServiceImpl implements DealerService {
                 detail.setMerchantId(merchantId);
                 detail.setMerchantName(merchantInfo.getName());
                 detail.setOrderNo(orderNo);
-                detail.setChannelType(0);
+                detail.setChannelType(channelSign);
                 detail.setTotalFee(tradeAmount);
                 detail.setWaitShallAmount(waitOriginMoney);
                 detail.setWaitShallOriginAmount(originMoney);
@@ -326,7 +326,7 @@ public class DealerServiceImpl implements DealerService {
                 detail.setMerchantId(merchantId);
                 detail.setMerchantName(merchantInfo.getName());
                 detail.setOrderNo(orderNo);
-                detail.setChannelType(0);
+                detail.setChannelType(channelSign);
                 detail.setTotalFee(tradeAmount);
                 detail.setWaitShallAmount(waitOriginMoney);
                 detail.setWaitShallOriginAmount(originMoney);
@@ -358,7 +358,7 @@ public class DealerServiceImpl implements DealerService {
         final Dealer firstDealer = this.dealerDao.selectById(merchantInfo.getFirstDealerId());
         final DealerUpgerdeRate dealerUpgerdeRate = this.dealerUpgerdeRateService.selectByDealerIdAndTypeAndProductId
                 (merchantInfo.getFirstDealerId(), EnumDealerRateType.TRADE, product.getId());
-        final BigDecimal totalProfitSpace = firstDealer.getTotalProfitSpace().subtract( productChannelDetail.getProductMerchantPayRate().subtract(merchantRate) );
+        final BigDecimal totalProfitSpace = firstDealer.getTotalProfitSpace();
         //二级代理信息
         final Dealer secondDealer = this.dealerDao.selectById(merchantInfo.getSecondDealerId());
         //上级商户 = （商户费率 -  上级商户）* 商户交易金额（如果商户费率低于或等于上级商户，那么上级商户无润）
@@ -391,7 +391,7 @@ public class DealerServiceImpl implements DealerService {
                 detail.setMerchantId(merchantId);
                 detail.setMerchantName(merchantInfo.getName());
                 detail.setOrderNo(orderNo);
-                detail.setChannelType(0);
+                detail.setChannelType(channelSign);
                 detail.setTotalFee(tradeAmount);
                 detail.setWaitShallAmount(waitOriginMoney);
                 detail.setWaitShallOriginAmount(originMoney);
@@ -429,7 +429,7 @@ public class DealerServiceImpl implements DealerService {
                 detail.setMerchantId(merchantId);
                 detail.setMerchantName(merchantInfo.getName());
                 detail.setOrderNo(orderNo);
-                detail.setChannelType(0);
+                detail.setChannelType(channelSign);
                 detail.setTotalFee(tradeAmount);
                 detail.setWaitShallAmount(waitOriginMoney);
                 detail.setWaitShallOriginAmount(originMoney);
@@ -452,7 +452,7 @@ public class DealerServiceImpl implements DealerService {
 
         }else {
 
-            //上上级商户 = 【（商户费率 -  上上级商户 ）- |（商户费率 -  上级商户）|】* 商户交易金额（如果商户费率低于或等于上级商户，那么上级商户无润）
+            //上上级商户 = 【（商户费率 -  上上级商户 -  上级商户）|】* 商户交易金额（如果商户费率低于或等于上级商户，那么上级商户无润）
             final MerchantInfo secondMerchantInfo = this.merchantInfoService.selectById(merchantInfo.getSecondMerchantId()).get();
             final BigDecimal secondMerchantRate = getMerchantRate(channelSign, secondMerchantInfo);
             final BigDecimal secondSelfMerchantRate;
@@ -495,7 +495,7 @@ public class DealerServiceImpl implements DealerService {
                 detail.setMerchantId(merchantId);
                 detail.setMerchantName(merchantInfo.getName());
                 detail.setOrderNo(orderNo);
-                detail.setChannelType(0);
+                detail.setChannelType(channelSign);
                 detail.setTotalFee(tradeAmount);
                 detail.setWaitShallAmount(waitOriginMoney);
                 detail.setWaitShallOriginAmount(originMoney);
@@ -535,7 +535,7 @@ public class DealerServiceImpl implements DealerService {
                 detail.setMerchantId(merchantId);
                 detail.setMerchantName(merchantInfo.getName());
                 detail.setOrderNo(orderNo);
-                detail.setChannelType(0);
+                detail.setChannelType(channelSign);
                 detail.setTotalFee(tradeAmount);
                 detail.setWaitShallAmount(waitOriginMoney);
                 detail.setWaitShallOriginAmount(originMoney);
