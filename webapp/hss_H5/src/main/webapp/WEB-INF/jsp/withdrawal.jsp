@@ -59,5 +59,5 @@
   }
 </script>
 <script src="http://static.jinkaimen.cn/vendor/vendor.1.0.1.min.js"></script>
-<script src="http://static.jinkaimen.cn/hss/2.0.1//withdrawal.min.js"></script>
+<script src="http://static.jinkaimen.cn/hss/2.0.1/withdrawal.min.js"></script>
 </html>

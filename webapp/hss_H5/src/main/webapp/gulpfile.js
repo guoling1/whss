@@ -12,6 +12,7 @@ const babel = require('gulp-babel');
 const concat = require('gulp-concat');
 const replace = require('gulp-replace');
 const rename = require("gulp-rename");
+const px2rem = require('gulp-px2rem');
 
 gulp.task('js-dealer', () => {
   return gulp.src('es6/dealer/*.js')
@@ -48,6 +49,25 @@ gulp.task('less-hss', function () {
     .pipe(gulp.dest('css'));
 });
 
+
+const px2remOptions = {
+  rootValue: 37.5,
+  replace: true,
+  minPx: 1
+};
+const postCssOptions = {
+  map: true
+};
+gulp.task('less-hss-beta', function () {
+  return gulp.src('less/**/hss.2.0.2.less')
+    .pipe(less({
+      paths: [path.join(__dirname, 'less', 'includes')]
+    }))
+    .pipe(px2rem(px2remOptions, postCssOptions))
+    .pipe(rename({basename: "style.2.0.2"}))
+    .pipe(gulp.dest('css'));
+});
+
 gulp.task('js-hss', () => {
   return gulp.src('es6/hss/*.js')
     .pipe(sourcemaps.init())
@@ -67,5 +87,5 @@ gulp.task('replace-hss', function () {
 });
 
 // default 使用默认配置 开发时候使用
-gulp.task('build-hss', ['js-hss', 'less-hss', 'replace-hss']);
+gulp.task('build-hss', ['js-hss', 'less-hss', 'less-hss-beta', 'replace-hss']);
 gulp.task('build-dealer', ['js-dealer', 'less-dealer', 'replace-dealer']);

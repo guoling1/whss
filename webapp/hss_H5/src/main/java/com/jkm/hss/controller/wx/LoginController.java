@@ -1083,8 +1083,7 @@ public class LoginController extends BaseController {
                         isRedirect= true;
                         url = "/sqb/prompt";
                     }else if(result.get().getStatus()== EnumMerchantStatus.PASSED.getId()||result.get().getStatus()== EnumMerchantStatus.FRIEND.getId()){
-//                        Map<String, String> map = WxPubUtil.getUserInfo(userInfoOptional.get().getOpenId());
-                        Map<String, String> map=null;
+                        Map<String, String> map = WxPubUtil.getUserInfo(userInfoOptional.get().getOpenId());
                         if(map==null){
                             model.addAttribute("headimgUrl","");
                         }else{

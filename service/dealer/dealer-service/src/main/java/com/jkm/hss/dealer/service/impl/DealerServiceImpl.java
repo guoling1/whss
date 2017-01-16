@@ -250,7 +250,7 @@ public class DealerServiceImpl implements DealerService {
         final BigDecimal channelMoney = tradeAmount.multiply(productChannelDetail.getProductTradeRate().
                 subtract(basicChannel.getBasicTradeRate())).setScale(2,BigDecimal.ROUND_DOWN);
         //判断是否是公司直属商户发展的商户
-        if (merchantInfo.getDealerId() == 0){
+        if (merchantInfo.getFirstDealerId() == 0){
             map.put("channelMoney", Triple.of(basicChannel.getAccountId(), channelMoney, basicChannel.getBasicTradeRate()));
 
             //上级商户 = （商户费率 -  上级商户）* 商户交易金额（如果商户费率低于或等于上级商户，那么上级商户无润）
@@ -1361,18 +1361,32 @@ public class DealerServiceImpl implements DealerService {
         }
 
         final List<FirstLevelDealerUpdateRequest.DealerUpgerdeRate> dealerUpgerdeRates =request.getDealerUpgerdeRates();
-        for(FirstLevelDealerUpdateRequest.DealerUpgerdeRate dealerUpgerdeRate:dealerUpgerdeRates){
-            DealerUpgerdeRate du = new DealerUpgerdeRate();
-            du.setId(dealerUpgerdeRate.getId());
-            du.setProductId(productId);
-            du.setType(dealerUpgerdeRate.getType());
-            du.setDealerId(dealer.getId());
-            du.setFirstDealerShareProfitRate(new BigDecimal(dealerUpgerdeRate.getFirstDealerShareProfitRate()));
-            du.setSecondDealerShareProfitRate(new BigDecimal(dealerUpgerdeRate.getSecondDealerShareProfitRate()));
-            du.setBossDealerShareRate(new BigDecimal(dealerUpgerdeRate.getBossDealerShareRate()));
-            du.setStatus(EnumDealerStatus.NORMAL.getId());
-            this.dealerUpgerdeRateService.insert(du);
+        if (dealerUpgerdeRates.size()==0){
+            for(FirstLevelDealerUpdateRequest.DealerUpgerdeRate dealerUpgerdeRate:dealerUpgerdeRates){
+                DealerUpgerdeRate du = new DealerUpgerdeRate();
+                du.setId(dealerUpgerdeRate.getId());
+                du.setProductId(productId);
+                du.setType(dealerUpgerdeRate.getType());
+                du.setDealerId(dealer.getId());
+                du.setFirstDealerShareProfitRate(new BigDecimal(dealerUpgerdeRate.getFirstDealerShareProfitRate()));
+                du.setSecondDealerShareProfitRate(new BigDecimal(dealerUpgerdeRate.getSecondDealerShareProfitRate()));
+                du.setBossDealerShareRate(new BigDecimal(dealerUpgerdeRate.getBossDealerShareRate()));
+                du.setStatus(EnumDealerStatus.NORMAL.getId());
+                this.dealerUpgerdeRateService.insert(du);
+            }
         }
+//        for(FirstLevelDealerUpdateRequest.DealerUpgerdeRate dealerUpgerdeRate:dealerUpgerdeRates){
+//            DealerUpgerdeRate du = new DealerUpgerdeRate();
+//            du.setId(dealerUpgerdeRate.getId());
+//            du.setProductId(productId);
+//            du.setType(dealerUpgerdeRate.getType());
+//            du.setDealerId(dealer.getId());
+//            du.setFirstDealerShareProfitRate(new BigDecimal(dealerUpgerdeRate.getFirstDealerShareProfitRate()));
+//            du.setSecondDealerShareProfitRate(new BigDecimal(dealerUpgerdeRate.getSecondDealerShareProfitRate()));
+//            du.setBossDealerShareRate(new BigDecimal(dealerUpgerdeRate.getBossDealerShareRate()));
+//            du.setStatus(EnumDealerStatus.NORMAL.getId());
+//            this.dealerUpgerdeRateService.insert(du);
+//        }
 
     }
 

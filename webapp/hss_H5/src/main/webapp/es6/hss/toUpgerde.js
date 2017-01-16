@@ -5,6 +5,9 @@
 // 引入http message
 const message = _require('message');
 const http = _require('http');
+// 引入浏览器特性处理
+const browser = _require('browser');
+browser.set_html_size();
 // 定义变量
 let toWhere = true;
 const payToUp = document.getElementById('payToUp');
@@ -46,8 +49,6 @@ layer.addEventListener('click', function () {
 
 new QRCode(qr, {
   text: pageData.shareUrl,
-  width: 210,
-  height: 210,
   colorDark: "#000000",
   colorLight: "#ffffff",
   correctLevel: QRCode.CorrectLevel.H

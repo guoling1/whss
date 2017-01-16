@@ -103,6 +103,13 @@ public class Dealer extends BaseEntity {
     private boolean isLogin;
 
 
+    /**
+     * 代理商标示
+     */
+    private String markCode;
+
+
+
     public void setLogin () {
         this.isLogin = true;
     }
