@@ -10,6 +10,7 @@ const http = _require('http');
 let submit = document.getElementById('submit');
 let mobile = document.getElementById('mobile');
 let name = document.getElementById('name');
+let idCard = document.getElementById('idCard');
 let belongArea = document.getElementById('belongArea');
 let bankAccountName = document.getElementById('bankAccountName');
 let bankCard = document.getElementById('bankCard');
@@ -30,7 +31,7 @@ submit.addEventListener('click', function () {
     && validate.empty(quickSettleRate.value, '无卡快捷结算费率')
     && validate.empty(withdrawSettleFee.value, '提现结算价')) {
     http.post('/dealer/addSecondDealer', {
-      mobile: mobile.value, name: name.value, belongArea: belongArea.value,
+      mobile: mobile.value, name: name.value, idCard: idCard.value, belongArea: belongArea.value,
       bankAccountName: bankAccountName.value, bankCard: bankCard.value,
       bankReserveMobile: bankReserveMobile.value, weixinSettleRate: weixinSettleRate.value,
       alipaySettleRate: alipaySettleRate.value, quickSettleRate: quickSettleRate.value,
