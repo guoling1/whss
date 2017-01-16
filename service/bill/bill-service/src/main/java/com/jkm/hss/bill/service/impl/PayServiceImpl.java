@@ -142,7 +142,7 @@ public class PayServiceImpl implements PayService {
      */
     @Override
     @Transactional
-    public Pair<Integer, String> codeReceipt(final String totalAmount, final int channel, final long merchantId) {
+    public Pair<Integer, String> codeReceipt(final String totalAmount, final int channel, final long merchantId, final String appId) {
         log.info("代理商[{}] 通过动态扫码， 支付一笔资金[{}]", merchantId, totalAmount);
         final MerchantInfo merchant = this.merchantInfoService.selectById(merchantId).get();
 
@@ -150,7 +150,7 @@ public class PayServiceImpl implements PayService {
         order.setOrderNo(SnGenerator.generateSn(EnumTradeType.PAY.getId()));
         order.setTradeAmount(new BigDecimal(totalAmount));
         order.setRealPayAmount(new BigDecimal(totalAmount));
-        order.setAppId(EnumAppType.HSS.getId());
+        order.setAppId(appId);
         order.setTradeType(EnumTradeType.PAY.getId());
         order.setServiceType(EnumServiceType.RECEIVE_MONEY.getId());
         order.setPayer(0);

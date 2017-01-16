@@ -433,16 +433,16 @@ public class AccountSettleAuditRecordServiceImpl implements AccountSettleAuditRe
         accountSettleAuditRecord.setMerchantName(merchant.getMerchantName());
         final Dealer dealer = dealerMap.get(merchant.getDealerId());
         if (null != dealer) {
-//            accountSettleAuditRecord.setDealerNo(dealer.get);
+            accountSettleAuditRecord.setDealerNo(dealer.getMarkCode());
             accountSettleAuditRecord.setDealerName(dealer.getProxyName());
         }
         accountSettleAuditRecord.setAppId(flows.get(0).getAppId());
         accountSettleAuditRecord.setTradeDate(flows.get(0).getTradeDate());
         accountSettleAuditRecord.setTradeNumber(flows.size());
-        final BigDecimal totalAmount = new BigDecimal("0.00");
+        BigDecimal totalAmount = new BigDecimal("0.00");
         final List<String> orderNos = new ArrayList<>();
         for (SettleAccountFlow settleAccountFlow : flows) {
-            totalAmount.add(settleAccountFlow.getIncomeAmount());
+            totalAmount = totalAmount.add(settleAccountFlow.getIncomeAmount());
             orderNos.add(settleAccountFlow.getOrderNo());
         }
         accountSettleAuditRecord.setSettleAmount(totalAmount);

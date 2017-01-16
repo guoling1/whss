@@ -116,11 +116,11 @@ public class AccountSettleAuditRecord extends BaseEntity {
     }
 
     /**
-     * 是否是结算成功
+     * 是否是结算成功(全部)
      *
      * @return
      */
     public boolean isSettleSuccess() {
-        return EnumSettleStatus.SETTLED.getId() == this.settleStatus;
+        return EnumSettleStatus.SETTLED_ALL.getId() == this.settleStatus;
     }
 }
