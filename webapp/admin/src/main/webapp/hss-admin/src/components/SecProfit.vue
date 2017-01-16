@@ -46,7 +46,7 @@
                   </thead>
                   <tbody id="content">
                   <tr role="row" v-for="(record,index) in $$records">
-                    <td>{{(mmsg.pageNo-1)*10+(index+1)}}</td>
+                    <td>{{(msg.pageNo-1)*10+(index+1)}}</td>
                     <td>{{record.dealerName}}</td>
                     <td>{{record.statisticsDate}}</td>
                     <td style="text-align: right">{{record.collectMoney|toFix}}</td>
