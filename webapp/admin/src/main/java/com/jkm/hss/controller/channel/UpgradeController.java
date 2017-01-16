@@ -196,15 +196,30 @@ public class UpgradeController extends BaseController {
                     upgradeRules.setStatus(EnumUpgrade.NORMAL.getId());
                     upgradeRulesService.update(upgradeRules);
                 }else{//不存在新增
+                    BigDecimal weixinRate = req.getUpgradeRulesList().get(i).getWeixinRate();
+                    BigDecimal alipayRate = req.getUpgradeRulesList().get(i).getAlipayRate();
+                    BigDecimal fastRate = req.getUpgradeRulesList().get(i).getFastRate();
+                    BigDecimal b1 = new BigDecimal(100);
                     req.getUpgradeRulesList().get(i).setStatus(EnumUpgrade.NORMAL.getId());
                     req.getUpgradeRulesList().get(i).setProductId(req.getProductId());
+                    req.getUpgradeRulesList().get(i).setProductId(req.getProductId());
+                    req.getUpgradeRulesList().get(i).setWeixinRate(weixinRate.divide(b1));
+                    req.getUpgradeRulesList().get(i).setAlipayRate(alipayRate.divide(b1));
+                    req.getUpgradeRulesList().get(i).setFastRate(fastRate.divide(b1));
                     upgradeRulesService.insert(req.getUpgradeRulesList().get(i));
                 }
             }
         }else{//新增
             for(int i=0;i<req.getUpgradeRulesList().size();i++){
+                BigDecimal weixinRate = req.getUpgradeRulesList().get(i).getWeixinRate();
+                BigDecimal alipayRate = req.getUpgradeRulesList().get(i).getAlipayRate();
+                BigDecimal fastRate = req.getUpgradeRulesList().get(i).getFastRate();
+                BigDecimal b1 = new BigDecimal(100);
                 req.getUpgradeRulesList().get(i).setStatus(EnumUpgrade.NORMAL.getId());
                 req.getUpgradeRulesList().get(i).setProductId(req.getProductId());
+                req.getUpgradeRulesList().get(i).setWeixinRate(weixinRate.divide(b1));
+                req.getUpgradeRulesList().get(i).setAlipayRate(alipayRate.divide(b1));
+                req.getUpgradeRulesList().get(i).setFastRate(fastRate.divide(b1));
                 upgradeRulesService.insert(req.getUpgradeRulesList().get(i));
             }
         }
