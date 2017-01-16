@@ -1,5 +1,7 @@
 package com.jkm.hsy.user.entity;
 
+import org.springframework.web.multipart.MultipartFile;
+
 public class AppParam {
 	private String serviceCode;//业务代码
 	private String accessToken;//请求令牌
@@ -8,6 +10,8 @@ public class AppParam {
 	private String appType;//app类型
 	private String requestData;//加密
 	private String deviceid;//设备号
+
+	private MultipartFile[] files;
 
 	public String getServiceCode() {
 		return serviceCode;
@@ -63,6 +67,14 @@ public class AppParam {
 
 	public void setDeviceid(String deviceid) {
 		this.deviceid = deviceid;
+	}
+
+	public MultipartFile[] getFiles() {
+		return files;
+	}
+
+	public void setFiles(MultipartFile[] files) {
+		this.files = files;
 	}
 
 	public String toString(){

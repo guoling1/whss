@@ -6,7 +6,7 @@
     </insert>
 
     <insert id="insertAppBizShopUserRole" useGeneratedKeys="true" keyProperty="id" parameterType="com.jkm.hsy.user.entity.AppBizShopUserRole">
-        insert into app_biz_shop_user_role(SID,UID,ROLE,STATUS) values(#{sid},#{uid},#{role},#{status})
+        insert into app_biz_shop_user_role(SID,UID,ROLE,STATUS,TYPE) values(#{sid},#{uid},#{role},#{status},#{type})
     </insert>
 
     <update id="update" parameterType="com.jkm.hsy.user.entity.AppBizShop">
@@ -41,7 +41,31 @@
         from app_biz_card
         where 1=1
           <if test="cardNO!=null and cardNO!=''">and CARDNO=#{cardNO}</if>
+          <if test="sid!=null and sid!=''">and SID=#{sid}</if>
         order by UPDATETIME
+    </select>
+
+    <select id="findDistrictByParentCode" parameterType="com.jkm.hsy.user.entity.AppBizDistrict" resultType="com.jkm.hsy.user.entity.AppBizDistrict">
+        select
+          CODE,ANAME,AINDEX,ATYPE,PARENTCODE,ISLEAF
+        from app_biz_district
+        where 1=1
+        <if test="parentCode!=null and parentCode!=''">and PARENTCODE=#{parentCode}</if>
+        order by CODE
+    </select>
+
+    <select id="findPrimaryAppBizShopByUserID" parameterType="com.jkm.hsy.user.entity.AppBizShop" resultType="com.jkm.hsy.user.entity.AppBizShop">
+        select
+          shop.ID,shop.NAME,shop.SHORTNAME,shop.INDUSTRYCODE,shop.DISTRICTCODE,shop.ADDRESS,shop.LICENCEID,shop.STOREFRONTID,shop.COUNTERID,shop.INDOORID,shop.PARENTID,shop.CONTACTNAME,shop.CONTACTCELLPHONE,shop.STATUS,shop.ISPUBLIC,shop.CREATETIME,shop.UPDATETIME,
+        (select PATH from app_cm_file acf where uuid=shop.LICENCEID) LICENCEURL,
+        (select PATH from app_cm_file where uuid=shop.STOREFRONTID) STOREFRONTURL,
+        (select PATH from app_cm_file where uuid=shop.COUNTERID) COUNTERURL,
+        (select PATH from app_cm_file where uuid=shop.INDOORID) INDOORURL
+        from app_biz_shop shop left join app_biz_shop_user_role sur on shop.ID=sur.SID
+        where 1=1
+        <if test="uid!=null and uid!=''">and sur.UID=#{uid}</if>
+        <if test="type!=null and type!=''">and sur.TYPE=#{type}</if>
+        order by shop.UPDATETIME
     </select>
 
 </mapper>
