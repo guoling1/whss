@@ -166,7 +166,7 @@ public class TradeController extends BaseController {
 //        final String verifiedCode = withdrawRequest.getCode();
 //        if (!super.isLogin(request)) {
 //            return CommonResponse.simpleResponse(-2, "未登录");
-//        }
+//        }+
 //        Optional<UserInfo> userInfoOptional = userInfoService.selectByOpenId(super.getOpenId(request));
 //        if (!userInfoOptional.isPresent()) {
 //            return CommonResponse.simpleResponse(-2, "未登录");
