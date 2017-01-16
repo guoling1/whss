@@ -66,4 +66,12 @@
         </foreach>
     </select>
 
+    <select id="selectByAuditRecordId" resultType="com.jkm.hss.account.entity.SettleAccountFlow">
+        SELECT * FROM tb_settle_account_flow WHERE settle_audit_record_id = #{recordId}
+    </select>
+
+    <select id="selectDealerOrCompanyFlowByOrderNo" resultType="com.jkm.hss.account.entity.SettleAccountFlow">
+        SELECT * FROM tb_settle_account_flow WHERE order_no = #{orderNo} AND account_user_type != 2
+    </select>
+
 </mapper>

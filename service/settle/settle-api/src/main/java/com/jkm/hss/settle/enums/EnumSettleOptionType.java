@@ -24,7 +24,7 @@ public enum  EnumSettleOptionType {
     /**
      * 强制结算全部
      */
-    SETTLE_ALL(3, "强制结算全部")
+    SETTLE_FORCE_ALL(3, "强制结算全部")
     ;
 
 

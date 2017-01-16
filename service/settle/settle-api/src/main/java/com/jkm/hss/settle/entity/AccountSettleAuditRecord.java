@@ -2,6 +2,7 @@ package com.jkm.hss.settle.entity;
 
 import com.jkm.base.common.entity.BaseEntity;
 import com.jkm.hss.settle.enums.EnumAccountCheckStatus;
+import com.jkm.hss.settle.enums.EnumSettleStatus;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -21,6 +22,11 @@ public class AccountSettleAuditRecord extends BaseEntity {
      * 商户编号
      */
     private String merchantNo;
+
+    /**
+     * 账户id
+     */
+    private long accountId;
 
     /**
      * 商户名称
@@ -98,5 +104,23 @@ public class AccountSettleAuditRecord extends BaseEntity {
      */
     public boolean isSideException() {
         return EnumAccountCheckStatus.SIDE_EXCEPTION.getId() == this.accountCheckStatus;
+    }
+
+    /**
+     * 是否是待结算
+     *
+     * @return
+     */
+    public boolean isDueSettle() {
+        return EnumSettleStatus.DUE_SETTLE.getId() == this.settleStatus;
+    }
+
+    /**
+     * 是否是结算成功
+     *
+     * @return
+     */
+    public boolean isSettleSuccess() {
+        return EnumSettleStatus.SETTLED.getId() == this.settleStatus;
     }
 }

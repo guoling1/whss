@@ -123,4 +123,27 @@ public class SettleAccountFlowServiceImpl implements SettleAccountFlowService {
     public List<SettleAccountFlow> getMerchantLastWordDayRecord(final List<Date> tradeDateList) {
         return this.settleAccountFlowDao.selectMerchantLastWordDayRecord(tradeDateList);
     }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param recordId
+     * @return
+     */
+    @Override
+    public List<SettleAccountFlow> getByAuditRecordId(final long recordId) {
+        return this.settleAccountFlowDao.selectByAuditRecordId(recordId);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param orderNo
+     * @return
+     */
+    @Override
+    @Transactional
+    public List<SettleAccountFlow> getDealerOrCompanyFlowByOrderNo(final String orderNo) {
+        return this.settleAccountFlowDao.selectDealerOrCompanyFlowByOrderNo(orderNo);
+    }
 }

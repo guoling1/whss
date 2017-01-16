@@ -15,14 +15,22 @@ public enum EnumSettleStatus {
      * 待结算
      */
     DUE_SETTLE(1, "待结算"),
+
     /**
-     *结算中
+     * 结算中
      */
-//    SETTLE_ING(2, "结算中"),
+    SETTLE_ING(2, "结算中"),
+
+
     /**
-     *已结算
+     * 结算成功
      */
-    SETTLED(3, "结算成功")
+    SETTLED_ALL(3, "结算成功"),
+
+    /**
+     * 部分结算
+     */
+    SETTLE_PART(4, "部分结算")
     ;
 
 

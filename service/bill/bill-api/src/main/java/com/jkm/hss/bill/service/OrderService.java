@@ -159,6 +159,14 @@ public interface OrderService {
     BigDecimal getTotalTradeAmountByAccountId(long accountId, String appId, int serviceType);
 
     /**
+     * 查询已经对过账的订单号
+     *
+     * @param strings
+     * @return
+     */
+    List<String> getCheckedOrderNosByOrderNos(List<String> strings);
+
+    /**
      * 查询交易详情
      * @param orderRecord
      * @return

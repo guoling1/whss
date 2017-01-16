@@ -67,4 +67,20 @@ public interface SettleAccountFlowService {
      * @return
      */
     List<SettleAccountFlow> getMerchantLastWordDayRecord(List<Date> tradeDateList);
+
+    /**
+     * 按审核记录id查询
+     *
+     * @param recordId
+     * @return
+     */
+    List<SettleAccountFlow> getByAuditRecordId(long recordId);
+
+    /**按交易订单号查询代理商和公司(等)的分润流水
+     *
+     *
+     * @param orderNo
+     * @return
+     */
+    List<SettleAccountFlow> getDealerOrCompanyFlowByOrderNo(String orderNo);
 }

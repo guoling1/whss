@@ -5,6 +5,7 @@
         INSERT INTO tb_account_settle_audit_record
           (
           merchant_no,
+          account_id,
           merchant_name,
           dealer_no,
           dealer_name,
@@ -19,6 +20,7 @@
           VALUES
           (
           #{merchantNo},
+          #{accountId},
           #{merchantName},
           #{dealerNo},
           #{dealerName},
@@ -42,5 +44,17 @@
 
     <select id="selectById" resultType="com.jkm.hss.settle.entity.AccountSettleAuditRecord">
         SELECT * FROM tb_account_settle_audit_record WHERE id = #{id}
+    </select>
+
+    <select id="selectByIdWithLock" resultType="com.jkm.hss.settle.entity.AccountSettleAuditRecord">
+        SELECT * FROM tb_account_settle_audit_record WHERE id = #{id} FOR UPDATE
+    </select>
+
+    <select id="selectByIds" resultType="com.jkm.hss.settle.entity.AccountSettleAuditRecord">
+         SELECT * FROM tb_account_settle_audit_record
+         WHERE id IN
+         <foreach collection="recordIds" index="index" item="item" open="(" separator="," close=")">
+             #{item}
+         </foreach>
     </select>
 </mapper>

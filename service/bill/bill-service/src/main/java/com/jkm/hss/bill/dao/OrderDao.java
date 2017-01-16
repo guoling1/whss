@@ -60,6 +60,15 @@ public interface OrderDao {
     int updateSettleStatus(@Param("id") long id, @Param("status") int status);
 
     /**
+     * 更新对账状态
+     *
+     * @param id
+     * @param checkedStatus
+     * @return
+     */
+    int updateCheckedStatus(@Param("id") long id, @Param("checkedStatus") int checkedStatus);
+
+    /**
      * 结算成功
      *
      * @param id
@@ -192,4 +201,12 @@ public interface OrderDao {
      * @return
      */
     BigDecimal selectTotalTradeAmountByAccountId(@Param("accountId") long accountId, @Param("appId") String appId, @Param("serviceType") int serviceType);
+
+    /**
+     * 查询已经对过账的订单号
+     *
+     * @param orderNos
+     * @return
+     */
+    List<String> selectCheckedOrderNosByOrderNos(@Param("orderNos") List<String> orderNos);
 }

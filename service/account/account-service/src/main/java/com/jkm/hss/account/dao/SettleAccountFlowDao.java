@@ -54,4 +54,20 @@ public interface SettleAccountFlowDao {
      * @return
      */
     List<SettleAccountFlow> selectMerchantLastWordDayRecord(@Param("tradeDateList") List<Date> tradeDateList);
+
+    /**
+     * 按审核记录id查询
+     *
+     * @param recordId
+     * @return
+     */
+    List<SettleAccountFlow> selectByAuditRecordId(@Param("recordId") long recordId);
+
+    /**
+     * 按交易订单号查询代理商和公司(等)的分润流水
+     *
+     * @param orderNo
+     * @return
+     */
+    List<SettleAccountFlow> selectDealerOrCompanyFlowByOrderNo(@Param("orderNo") String orderNo);
 }

@@ -125,6 +125,13 @@ public class Order extends BaseEntity {
     private String goodsDescribe;
 
     /**
+     * 对账状态(1:已对账， 0未对账)
+     *
+     * {@link com.jkm.base.common.enums.EnumBoolean}
+     */
+    private int checkedStatus;
+
+    /**
      * 结算状态
      *
      * {@link com.jkm.hss.bill.enums.EnumSettleStatus}

@@ -45,4 +45,20 @@ public interface AccountSettleAuditRecordDao {
      * @return
      */
     AccountSettleAuditRecord selectById(@Param("id") long id);
+
+    /**
+     * 加锁按id 查询
+     *
+     * @param id
+     * @return
+     */
+    AccountSettleAuditRecord selectByIdWithLock(@Param("id") long id);
+
+    /**
+     * 按ids查询
+     *
+     * @param recordIds
+     * @return
+     */
+    List<AccountSettleAuditRecord> selectByIds(@Param("recordIds") List<Long> recordIds);
 }
