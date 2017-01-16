@@ -856,6 +856,7 @@ public class DealerServiceImpl implements DealerService {
     @Override
     @Transactional
     public long createSecondDealer(final SecondLevelDealerAddRequest request, final long firstLevelDealerId) {
+        Dealer firstDealer = dealerDao.selectById(firstLevelDealerId);
         final long accountId = this.accountService.initAccount(request.getName());
         final Dealer dealer = new Dealer();
         dealer.setAccountId(accountId);
@@ -870,6 +871,7 @@ public class DealerServiceImpl implements DealerService {
         dealer.setBankReserveMobile(DealerSupport.encryptMobile(request.getBankReserveMobile()));
         dealer.setIdCard(DealerSupport.encryptIdenrity(request.getIdCard()));
         dealer.setStatus(EnumDealerStatus.NORMAL.getId());
+        dealer.setRecommendBtn(firstDealer.getRecommendBtn());
         this.add(dealer);
         this.updateMarkCode(GlobalID.GetGlobalID(EnumGlobalIDType.DEALER, EnumGlobalIDPro.MIN,dealer.getId()+""),dealer.getId());
 
