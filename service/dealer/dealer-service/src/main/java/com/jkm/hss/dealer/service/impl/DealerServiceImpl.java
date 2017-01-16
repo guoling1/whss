@@ -272,7 +272,7 @@ public class DealerServiceImpl implements DealerService {
                 detail.setMerchantId(merchantId);
                 detail.setMerchantName(merchantInfo.getName());
                 detail.setOrderNo(orderNo);
-                detail.setChannelType(0);
+                detail.setChannelType(channelSign);
                 detail.setTotalFee(tradeAmount);
                 detail.setWaitShallAmount(waitOriginMoney);
                 detail.setWaitShallOriginAmount(originMoney);
@@ -326,7 +326,7 @@ public class DealerServiceImpl implements DealerService {
                 detail.setMerchantId(merchantId);
                 detail.setMerchantName(merchantInfo.getName());
                 detail.setOrderNo(orderNo);
-                detail.setChannelType(0);
+                detail.setChannelType(channelSign);
                 detail.setTotalFee(tradeAmount);
                 detail.setWaitShallAmount(waitOriginMoney);
                 detail.setWaitShallOriginAmount(originMoney);
@@ -358,7 +358,7 @@ public class DealerServiceImpl implements DealerService {
         final Dealer firstDealer = this.dealerDao.selectById(merchantInfo.getFirstDealerId());
         final DealerUpgerdeRate dealerUpgerdeRate = this.dealerUpgerdeRateService.selectByDealerIdAndTypeAndProductId
                 (merchantInfo.getFirstDealerId(), EnumDealerRateType.TRADE, product.getId());
-        final BigDecimal totalProfitSpace = firstDealer.getTotalProfitSpace().subtract( productChannelDetail.getProductMerchantPayRate().subtract(merchantRate) );
+        final BigDecimal totalProfitSpace = firstDealer.getTotalProfitSpace();
         //二级代理信息
         final Dealer secondDealer = this.dealerDao.selectById(merchantInfo.getSecondDealerId());
         //上级商户 = （商户费率 -  上级商户）* 商户交易金额（如果商户费率低于或等于上级商户，那么上级商户无润）
@@ -366,17 +366,20 @@ public class DealerServiceImpl implements DealerService {
             //上级商户的费率
         final BigDecimal firstMerchantRate = getMerchantRate(channelSign, firstMerchantInfo);
         final BigDecimal firstMerchantMoney;
+        final BigDecimal firetMerchantSelfRate;
         if (merchantRate.compareTo(firstMerchantRate) == 1){
             firstMerchantMoney = merchantRate.subtract(firstMerchantRate).multiply(tradeAmount).setScale(2, BigDecimal.ROUND_DOWN);
+            firetMerchantSelfRate = merchantRate.subtract(firstMerchantRate);
         }else{
             firstMerchantMoney =  new BigDecimal(0);
+            firetMerchantSelfRate = new BigDecimal(0);
         }
         //上上级商户 = 【（商户费率 -  上上级商户 ）- |（商户费率 -  上级商户）|】* 商户交易金额（如果商户费率低于或等于上级商户，那么上级商户无润）
         if (merchantInfo.getSecondMerchantId() == 0){
 
             if (merchantInfo.getSecondDealerId() == 0){
                 //没有上上级,一级下的商户
-                final BigDecimal space = totalProfitSpace.subtract(merchantRate.subtract(firstMerchantRate));
+                final BigDecimal space = totalProfitSpace.subtract(firetMerchantSelfRate);
                 //一级代理（间接商户）=（利润空间 - 上级商户分润）*  一级分润比例
                 final BigDecimal add = (dealerUpgerdeRate.getSecondDealerShareProfitRate()).add(dealerUpgerdeRate.getFirstDealerShareProfitRate());
                 final BigDecimal firstMoney = tradeAmount.multiply(space.multiply(add)).setScale(2,BigDecimal.ROUND_DOWN);
@@ -391,7 +394,7 @@ public class DealerServiceImpl implements DealerService {
                 detail.setMerchantId(merchantId);
                 detail.setMerchantName(merchantInfo.getName());
                 detail.setOrderNo(orderNo);
-                detail.setChannelType(0);
+                detail.setChannelType(channelSign);
                 detail.setTotalFee(tradeAmount);
                 detail.setWaitShallAmount(waitOriginMoney);
                 detail.setWaitShallOriginAmount(originMoney);
@@ -412,7 +415,7 @@ public class DealerServiceImpl implements DealerService {
                 return map;
             }else{
                 //没有上上级，二级下的商户
-                final BigDecimal space = totalProfitSpace.subtract(merchantRate.subtract(firstMerchantRate));
+                final BigDecimal space = totalProfitSpace.subtract(firetMerchantSelfRate);
                 //二级代理（间接商户）=（利润空间 - 上级商户分润 ）* 二级分润比例（利润空间，不同的一级代理不同）
                 final BigDecimal secondMoney = tradeAmount.multiply(space.multiply(dealerUpgerdeRate.getSecondDealerShareProfitRate())).setScale(2,BigDecimal.ROUND_DOWN);
                 //一级代理（间接商户）=（利润空间 - 上级商户分润 ）*  一级分润比例
@@ -429,7 +432,7 @@ public class DealerServiceImpl implements DealerService {
                 detail.setMerchantId(merchantId);
                 detail.setMerchantName(merchantInfo.getName());
                 detail.setOrderNo(orderNo);
-                detail.setChannelType(0);
+                detail.setChannelType(channelSign);
                 detail.setTotalFee(tradeAmount);
                 detail.setWaitShallAmount(waitOriginMoney);
                 detail.setWaitShallOriginAmount(originMoney);
@@ -452,7 +455,7 @@ public class DealerServiceImpl implements DealerService {
 
         }else {
 
-            //上上级商户 = 【（商户费率 -  上上级商户 ）- |（商户费率 -  上级商户）|】* 商户交易金额（如果商户费率低于或等于上级商户，那么上级商户无润）
+            //上上级商户 = 【（商户费率 -  上上级商户 -  上级商户）|】* 商户交易金额（如果商户费率低于或等于上级商户，那么上级商户无润）
             final MerchantInfo secondMerchantInfo = this.merchantInfoService.selectById(merchantInfo.getSecondMerchantId()).get();
             final BigDecimal secondMerchantRate = getMerchantRate(channelSign, secondMerchantInfo);
             final BigDecimal secondSelfMerchantRate;
@@ -479,7 +482,7 @@ public class DealerServiceImpl implements DealerService {
             final BigDecimal secondMerchantMoney = secondSelfMerchantRate.multiply(tradeAmount).setScale(2, BigDecimal.ROUND_DOWN);
             if (merchantInfo.getSecondDealerId() == 0){
                 //有上上级，一级下的商户
-                final BigDecimal space = totalProfitSpace.subtract(merchantRate.subtract(firstMerchantRate)).subtract(secondSelfMerchantRate);
+                final BigDecimal space = totalProfitSpace.subtract(firetMerchantSelfRate).subtract(secondSelfMerchantRate);
                 //一级代理（间接商户）=（利润空间 - 上级商户分润 - 上上级商户分润）*  一级分润比例
                 final BigDecimal add = (dealerUpgerdeRate.getSecondDealerShareProfitRate()).add(dealerUpgerdeRate.getFirstDealerShareProfitRate());
                 final BigDecimal firstMoney = tradeAmount.multiply(space.multiply(add)).setScale(2,BigDecimal.ROUND_DOWN);
@@ -495,7 +498,7 @@ public class DealerServiceImpl implements DealerService {
                 detail.setMerchantId(merchantId);
                 detail.setMerchantName(merchantInfo.getName());
                 detail.setOrderNo(orderNo);
-                detail.setChannelType(0);
+                detail.setChannelType(channelSign);
                 detail.setTotalFee(tradeAmount);
                 detail.setWaitShallAmount(waitOriginMoney);
                 detail.setWaitShallOriginAmount(originMoney);
@@ -517,7 +520,7 @@ public class DealerServiceImpl implements DealerService {
 
             }else{
                 //有上上级，二级下的商户
-                final BigDecimal space = totalProfitSpace.subtract(merchantRate.subtract(firstMerchantRate)).subtract(secondSelfMerchantRate);
+                final BigDecimal space = totalProfitSpace.subtract(firetMerchantSelfRate).subtract(secondSelfMerchantRate);
                 //二级代理（间接商户）=（利润空间 - 上级商户分润 - 上上级商户分润）* 二级分润比例（利润空间，不同的一级代理不同）
                 final BigDecimal secondMoney = tradeAmount.multiply(space.multiply(dealerUpgerdeRate.getSecondDealerShareProfitRate())).setScale(2,BigDecimal.ROUND_DOWN);
                 //一级代理（间接商户）=（利润空间 - 上级商户分润 - 上上级商户分润）*  一级分润比例
@@ -535,7 +538,7 @@ public class DealerServiceImpl implements DealerService {
                 detail.setMerchantId(merchantId);
                 detail.setMerchantName(merchantInfo.getName());
                 detail.setOrderNo(orderNo);
-                detail.setChannelType(0);
+                detail.setChannelType(channelSign);
                 detail.setTotalFee(tradeAmount);
                 detail.setWaitShallAmount(waitOriginMoney);
                 detail.setWaitShallOriginAmount(originMoney);
@@ -1361,18 +1364,32 @@ public class DealerServiceImpl implements DealerService {
         }
 
         final List<FirstLevelDealerUpdateRequest.DealerUpgerdeRate> dealerUpgerdeRates =request.getDealerUpgerdeRates();
-        for(FirstLevelDealerUpdateRequest.DealerUpgerdeRate dealerUpgerdeRate:dealerUpgerdeRates){
-            DealerUpgerdeRate du = new DealerUpgerdeRate();
-            du.setId(dealerUpgerdeRate.getId());
-            du.setProductId(productId);
-            du.setType(dealerUpgerdeRate.getType());
-            du.setDealerId(dealer.getId());
-            du.setFirstDealerShareProfitRate(new BigDecimal(dealerUpgerdeRate.getFirstDealerShareProfitRate()));
-            du.setSecondDealerShareProfitRate(new BigDecimal(dealerUpgerdeRate.getSecondDealerShareProfitRate()));
-            du.setBossDealerShareRate(new BigDecimal(dealerUpgerdeRate.getBossDealerShareRate()));
-            du.setStatus(EnumDealerStatus.NORMAL.getId());
-            this.dealerUpgerdeRateService.insert(du);
+        if (dealerUpgerdeRates.size()==0){
+            for(FirstLevelDealerUpdateRequest.DealerUpgerdeRate dealerUpgerdeRate:dealerUpgerdeRates){
+                DealerUpgerdeRate du = new DealerUpgerdeRate();
+                du.setId(dealerUpgerdeRate.getId());
+                du.setProductId(productId);
+                du.setType(dealerUpgerdeRate.getType());
+                du.setDealerId(dealer.getId());
+                du.setFirstDealerShareProfitRate(new BigDecimal(dealerUpgerdeRate.getFirstDealerShareProfitRate()));
+                du.setSecondDealerShareProfitRate(new BigDecimal(dealerUpgerdeRate.getSecondDealerShareProfitRate()));
+                du.setBossDealerShareRate(new BigDecimal(dealerUpgerdeRate.getBossDealerShareRate()));
+                du.setStatus(EnumDealerStatus.NORMAL.getId());
+                this.dealerUpgerdeRateService.insert(du);
+            }
         }
+//        for(FirstLevelDealerUpdateRequest.DealerUpgerdeRate dealerUpgerdeRate:dealerUpgerdeRates){
+//            DealerUpgerdeRate du = new DealerUpgerdeRate();
+//            du.setId(dealerUpgerdeRate.getId());
+//            du.setProductId(productId);
+//            du.setType(dealerUpgerdeRate.getType());
+//            du.setDealerId(dealer.getId());
+//            du.setFirstDealerShareProfitRate(new BigDecimal(dealerUpgerdeRate.getFirstDealerShareProfitRate()));
+//            du.setSecondDealerShareProfitRate(new BigDecimal(dealerUpgerdeRate.getSecondDealerShareProfitRate()));
+//            du.setBossDealerShareRate(new BigDecimal(dealerUpgerdeRate.getBossDealerShareRate()));
+//            du.setStatus(EnumDealerStatus.NORMAL.getId());
+//            this.dealerUpgerdeRateService.insert(du);
+//        }
 
     }
 

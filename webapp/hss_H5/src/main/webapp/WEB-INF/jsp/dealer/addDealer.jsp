@@ -46,6 +46,10 @@
       <input type="text" id="bankAccountName" placeholder="银行开户名称">
     </label>
     <label for="">
+      <span>身份证号</span>
+      <input type="text" id="idCard" placeholder="开户人身份证号">
+    </label>
+    <label for="">
       <span>预留手机号</span>
       <input type="number" id="bankReserveMobile" placeholder="银行开户预留手机号">
     </label>
@@ -127,5 +131,6 @@
 </div>
 </body>
 <script src="http://static.jinkaimen.cn/vendor/vendor.1.0.1.min.js"></script>
-<script src="http://static.jinkaimen.cn/dealer/0.1.1/addDealer.min.js"></script>
+<%--<script src="http://static.jinkaimen.cn/dealer/0.1.1/addDealer.min.js"></script>--%>
+<script src="/js/dealer/0.1.1/addDealer.min.js"></script>
 </html>

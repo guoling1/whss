@@ -28,12 +28,12 @@
       <div class="operation-title">收款</div>
     </a>
 
-    <div class="operation" id="tt" onclick="javascript:location.href='/sqb/drawCash'">
+    <div class="operation" onclick="javascript:location.href='/sqb/drawCash'">
       <div class="logo wallet"></div>
       <div class="operation-title">余额</div>
       <div class="operation-small">${avaliable}</div>
     </div>
-    <div class="operation">
+    <div class="operation" onclick="javascript:location.href='/sqb/drawCash'">
       <div class="logo card"></div>
       <div class="operation-title">提现</div>
     </div>

@@ -412,7 +412,12 @@ public class WxPubController extends BaseController {
             if(loginRequest.getInviteCode().equals(loginRequest.getMobile())){
                 return CommonResponse.simpleResponse(-1, "不能邀请自己");
             }
+            Optional<MerchantInfo> miOptional = merchantInfoService.selectByMobile(MerchantSupport.encryptMobile(loginRequest.getInviteCode()));
+            if(miOptional.isPresent()&&miOptional.get().getIsUpgrade()==EnumIsUpgrade.CANNOTUPGRADE.getId()){
+                return CommonResponse.simpleResponse(-1, "邀请码不存在");
+            }
         }
+
         final Pair<Integer, String> checkResult =
                 this.smsAuthService.checkVerifyCode(mobile, verifyCode, EnumVerificationCodeType.REGISTER_MERCHANT);
         if (1 != checkResult.getLeft()) {

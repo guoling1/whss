@@ -4,28 +4,21 @@ import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.jkm.base.common.entity.CommonResponse;
-import com.jkm.base.common.entity.ExcelSheetVO;
 import com.jkm.base.common.entity.PageModel;
-import com.jkm.base.common.util.DateFormatUtil;
-import com.jkm.base.common.util.ExcelUtil;
 import com.jkm.hss.controller.BaseController;
 import com.jkm.hss.dealer.entity.CompanyProfitDetail;
 import com.jkm.hss.dealer.entity.DailyProfitDetail;
 import com.jkm.hss.dealer.entity.Dealer;
 import com.jkm.hss.dealer.entity.ShallProfitDetail;
-import com.jkm.hss.dealer.enums.EnumProfitType;
 import com.jkm.hss.dealer.service.CompanyProfitDetailService;
 import com.jkm.hss.dealer.service.DailyProfitDetailService;
 import com.jkm.hss.dealer.service.DealerService;
 import com.jkm.hss.dealer.service.ShallProfitDetailService;
-import com.jkm.hss.dealer.service.impl.DealerServiceImpl;
 import com.jkm.hss.helper.DealerProfitQueryParam;
-import com.jkm.hss.helper.PageQueryParam;
 import com.jkm.hss.helper.ProfitDetailResponse;
 import com.jkm.hss.merchant.entity.MerchantInfo;
 import com.jkm.hss.merchant.service.MerchantInfoService;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -33,11 +26,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.OutputStream;
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by yuxiang on 2016-12-08.
@@ -155,7 +148,7 @@ public class ProfitController extends BaseController {
     public CommonResponse getFirstProfit(@RequestBody final DealerProfitQueryParam pageQueryParam){
         try{
             PageModel<DailyProfitDetail> pageModel = this.dailyProfitDetailService.selectFirstByParam(pageQueryParam.getBeginProfitDate(),
-                    pageQueryParam.getDealerName(), pageQueryParam.getEndProfitDate(), pageQueryParam.getPageNo(), pageQueryParam.getPageSize());
+                    pageQueryParam.getFirstDealerName(), pageQueryParam.getEndProfitDate(), pageQueryParam.getPageNo(), pageQueryParam.getPageSize());
             return CommonResponse.objectResponse(1, "success", pageModel);
         }catch (final Throwable throwable){
             log.error("查询一级代理商分润异常:" + throwable.getMessage());
