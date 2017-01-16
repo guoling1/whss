@@ -111,12 +111,13 @@ mobile.addEventListener('input', function () {
 
 // 提交前的校验
 let submit1 = document.getElementById('submit1');
+let form1 = document.getElementById('form1');
 submit1.addEventListener('click', function () {
   if (!validate.empty(dealerId1.value, '二级代理商')) {
     return false;
   }
   if (count1.innerHTML > 0) {
-    submit1.submit();
+    form1.submit();
   } else {
     message.prompt_show('请输入正确的分配码段');
     return false;
@@ -124,9 +125,10 @@ submit1.addEventListener('click', function () {
 });
 
 let submit2 = document.getElementById('submit2');
+let form2 = document.getElementById('form2');
 submit2.addEventListener('click', function () {
   if (count3.innerHTML > 0) {
-    submit2.submit();
+    form2.submit();
   } else {
     message.prompt_show('请输入正确的分配码段');
     return false;
