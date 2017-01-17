@@ -39,7 +39,7 @@
                     <td>{{product.limitWithdrawFeeRate}}</td>
                     <td>{{product.merchantWithdrawType|changeDrawType}}</td>
                     <td>{{product.dealerBalanceType|changeBalanceType}}</td>
-                    <td><div class="btn btn-primary" @click="detail(index)">查看详情</div></td>
+                    <td><a @click="detail(index)">查看详情</a></td>
                   </tr>
                   </tbody>
                 </table>

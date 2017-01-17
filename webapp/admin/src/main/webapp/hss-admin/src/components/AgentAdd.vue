@@ -8,7 +8,7 @@
     </div>
     <!--<h3 v-if="isShow" class="box-title">新增代理商</h3>-->
     <!--<div v-if="!isShow" style="padding: 8px 30px; background: rgb(243, 156, 18); z-index: 999999; font-size: 22px; font-weight: 600;margin-bottom: 15px;color: #fff;">代理商资料</div>-->
-    <div style="margin: 0px 15px 15px;">
+    <div style="margin: 0px 15px 150px;">
       <div class="box box-info tableTop">
         <div class="box-header with-border">
           <h3 class="box-title">基本信息</h3>

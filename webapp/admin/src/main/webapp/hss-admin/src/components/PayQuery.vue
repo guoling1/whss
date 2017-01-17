@@ -76,8 +76,8 @@
                 <tbody id="content">
                 <tr role="row" v-for="(order,index) in $$orders">
                   <td>{{(query.pageNo-1)*10+(index+1)}}</td>
-                  <td>{{order.sn|changeHide}}</td>
-                  <td>{{order.orderNo|changeHide}}</td>
+                  <td class="td" :data-clipboard-text="order.sn">{{order.sn|changeHide}}</td>
+                  <td class="td" :data-clipboard-text="order.orderNo">{{order.orderNo|changeHide}}</td>
                   <td style="text-align: right;">{{order.payAmount}}</td>
                   <td>{{order.createTime|changeTime}}</td>
                   <td>{{order.requestTime|changeTime}}</td>
@@ -132,6 +132,7 @@
 </template>
 
 <script lang="babel">
+  import Clipboard from "clipboard"
   export default {
     name: 'payQuery',
     data () {
@@ -156,13 +157,13 @@
         count:0,
         isShow:false,
         //正式
-        queryUrl:'http://pay.qianbaojiajia.com/order/pay/listOrder',
+        /*queryUrl:'http://pay.qianbaojiajia.com/order/pay/listOrder',
         excelUrl:'http://pay.qianbaojiajia.com/order/pay/exportExcel',
-        syncUrl:'http://pay.qianbaojiajia.com/order/syncPayOrder',
+        syncUrl:'http://pay.qianbaojiajia.com/order/syncPayOrder',*/
         //测试
-        /*queryUrl:'http://192.168.1.20:8076/order/pay/listOrder',
+        queryUrl:'http://192.168.1.20:8076/order/pay/listOrder',
         excelUrl:'http://192.168.1.20:8076/order/pay/exportExcel',
-        syncUrl:'http://192.168.1.20:8076/order/syncPayOrder',*/
+        syncUrl:'http://192.168.1.20:8076/order/syncPayOrder',
       }
     },
     created:function(){
@@ -177,6 +178,14 @@
           this.$data.total=res.data.totalPage;
           this.$data.url=res.data.ext;
           this.$data.count = res.data.count;
+          var clipboard = new Clipboard('.td');
+          //复制成功执行的回调，可选
+          clipboard.on('success', (e)=> {
+            console.log(e)
+            this.$store.commit('MESSAGE_ACCORD_SHOW', {
+              text: "复制成功  内容为："+e.text
+            })
+          });
           var str='',
             page=document.getElementById('page');
           str+='<li class="paginate_button previous" id="example2_previous"><a href="#" aria-controls="example2" data-dt-idx="0" tabindex="0">上一页</a></li>'
@@ -531,6 +540,9 @@
   }
   .btn{
     font-size: 12px;
+  }
+  .td{
+    cursor: pointer;
   }
   img{
     width: 8%;

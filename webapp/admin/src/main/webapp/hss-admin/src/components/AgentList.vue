@@ -67,8 +67,8 @@
                     <td>{{dealer.settleBankCard}}</td>
                     <td>{{dealer.bankReserveMobile}}</td>
                     <td>
-                      <div class="btn btn-primary" v-if="dealer.level==1" @click="detail(index,dealer.id,dealer.level)">修改</div>
-                      <div class="btn btn-primary" v-if="dealer.level==2" @click="detail(index,dealer.id,dealer.level)">查看详情</div>
+                      <a v-if="dealer.level==1" @click="detail(index,dealer.id,dealer.level)">修改</a>
+                      <a v-if="dealer.level==2" @click="detail(index,dealer.id,dealer.level)">查看详情</a>
                     </td>
                   </tr>
                   </tbody>

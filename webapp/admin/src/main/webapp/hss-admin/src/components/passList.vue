@@ -42,7 +42,7 @@
                     <td>{{product.basicTradeRate}}%</td>
                     <td>{{product.basicWithdrawFee}}</td>
                     <td>{{product.basicBalanceType|changeBalanceType}}</td>
-                    <td><div class="btn btn-primary" @click="detail(index)">修改</div></td>
+                    <td><a @click="detail(index)">修改</a></td>
                   </tr>
                   </tbody>
                 </table>
@@ -139,11 +139,6 @@
     display: inline-block;
     margin: 0 10px;
   }
-
-  a {
-    color: #42b983;
-  }
-
   .agentAdd {
     float: right;
     width: 80%;
