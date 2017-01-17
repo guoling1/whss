@@ -182,6 +182,16 @@ public class MerchantInfoResponse {
     private String proxyName1;
 
     /**
+     * 推荐所属1代理商名称
+     */
+    private String proxyNameYq;
+
+    /**
+     * 推荐所属2代理商名称
+     */
+    private String proxyNameYq1;
+
+    /**
      * 注册时间
      * datetime
      */

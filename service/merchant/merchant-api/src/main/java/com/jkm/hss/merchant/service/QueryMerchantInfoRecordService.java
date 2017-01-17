@@ -2,6 +2,7 @@ package com.jkm.hss.merchant.service;
 
 import com.jkm.hss.merchant.entity.LogResponse;
 import com.jkm.hss.merchant.entity.MerchantInfoResponse;
+import com.jkm.hss.merchant.entity.ReferralResponse;
 
 import java.text.ParseException;
 import java.util.List;
@@ -27,4 +28,11 @@ public interface QueryMerchantInfoRecordService {
      * @return
      */
     List<LogResponse> getLog(MerchantInfoResponse merchantInfo) throws ParseException;
+
+    /**
+     * 查询推荐信息
+     * @param id
+     * @return
+     */
+    ReferralResponse getRefInformation(long id);
 }
