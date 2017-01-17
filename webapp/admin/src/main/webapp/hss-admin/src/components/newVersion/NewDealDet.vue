@@ -1,6 +1,9 @@
 <template lang="html">
   <div id="dealList">
-    <div style="padding: 8px 30px; background: rgb(243, 156, 18); z-index: 999999; font-size: 22px; font-weight: 600;margin-bottom: 15px;    color: #fff;">交易详情</div>
+    <!--<div style="padding: 8px 30px; background: rgb(243, 156, 18); z-index: 999999; font-size: 22px; font-weight: 600;margin-bottom: 15px;    color: #fff;">交易详情</div>-->
+    <div class="box-header with-border" style="margin: 0 0 0 3px;">
+      <h3 class="box-title" style="border-left: 3px solid #e4e0e0;padding-left: 10px;">交易详情</h3>
+    </div>
     <div style="margin: 0 15px">
       <div class="box box-primary">
         <p class="lead"> 收款商户详情</p>
@@ -12,7 +15,7 @@
               <td>—</td>
               <!--<td>{{record.merchantType|changeMerchantType}}</td>-->
               <th style="text-align: right">商户编号:</th>
-              <td>{{record.id}}</td>
+              <td>{{record.markCode}}</td>
               <th style="text-align: right">商户名称:</th>
               <td>{{record.merchantName}}</td>
             </tr>
@@ -26,9 +29,9 @@
             </tr>
             <tr>
               <th style="text-align: right">一级代理名称:</th>
-              <td>{{record.proxyName|changeName}}</td>
+              <td>{{record.proxyName}}</td>
               <th style="text-align: right">二级代理名称:</th>
-              <td>{{record.proxyName1|changeName}}</td>
+              <td>{{record.proxyName1}}</td>
               <th style="text-align: right">推荐人:</th>
               <td>—</td>
             </tr>
@@ -162,7 +165,13 @@
           var hour=val.getHours();
           var minute=val.getMinutes();
           var second=val.getSeconds();
-          return year+"-"+month+"-"+date+" "+hour+":"+minute+":"+second;
+          function tod(a) {
+            if(a<10){
+              a = "0"+a
+            }
+            return a;
+          }
+          return year+"-"+tod(month)+"-"+tod(date)+" "+tod(hour)+":"+tod(minute)+":"+tod(second);
         }
       },
       changePayType: function (val) {

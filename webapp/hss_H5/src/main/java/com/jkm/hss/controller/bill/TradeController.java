@@ -6,6 +6,7 @@ import com.google.common.collect.Lists;
 import com.jkm.base.common.entity.CommonResponse;
 import com.jkm.base.common.entity.PageModel;
 import com.jkm.base.common.util.DateFormatUtil;
+import com.jkm.hss.account.enums.EnumAppType;
 import com.jkm.hss.bill.entity.Order;
 import com.jkm.hss.bill.enums.EnumOrderStatus;
 import com.jkm.hss.bill.enums.EnumPaymentType;
@@ -87,7 +88,7 @@ public class TradeController extends BaseController {
         if(!merchantInfo.isPresent()){
             return CommonResponse.simpleResponse(-2, "未登录");
         }
-        if(merchantInfo.get().getStatus()!= EnumMerchantStatus.PASSED.getId()){
+        if(merchantInfo.get().getStatus()!= EnumMerchantStatus.PASSED.getId()&&merchantInfo.get().getStatus()!= EnumMerchantStatus.FRIEND.getId()){
             return CommonResponse.simpleResponse(-2, "未审核通过");
         }
         final String totalFee = payRequest.getTotalFee();
@@ -106,7 +107,7 @@ public class TradeController extends BaseController {
             return CommonResponse.simpleResponse(-1, "支付方式错误");
         }
         final Pair<Integer, String> resultPair = this.payService.codeReceipt(payRequest.getTotalFee(),
-                payRequest.getPayChannel(), merchantInfo.get().getId());
+                payRequest.getPayChannel(), merchantInfo.get().getId(), EnumAppType.HSS.getId());
         if (0 == resultPair.getLeft()) {
             return CommonResponse.builder4MapResult(CommonResponse.SUCCESS_CODE, "收款成功")
                     .addParam("payUrl", URLDecoder.decode(resultPair.getRight(), "UTF-8")).addParam("subMerName", merchantInfo.get().getMerchantName())
@@ -127,7 +128,7 @@ public class TradeController extends BaseController {
     public CommonResponse staticCodeReceipt(@RequestBody final StaticCodePayRequest payRequest,
                                              final HttpServletRequest request) throws UnsupportedEncodingException {
         final Optional<MerchantInfo> merchantInfo = this.merchantInfoService.selectById(payRequest.getMerchantId());
-        if(merchantInfo.get().getStatus()!=EnumMerchantStatus.PASSED.getId()){
+        if(merchantInfo.get().getStatus()!=EnumMerchantStatus.PASSED.getId()&&merchantInfo.get().getStatus()!=EnumMerchantStatus.FRIEND.getId()){
             return CommonResponse.simpleResponse(-2, "未审核通过");
         }
         final String totalAmount = payRequest.getTotalFee();
@@ -144,7 +145,7 @@ public class TradeController extends BaseController {
         }
 
         final Pair<Integer, String> resultPair = this.payService.codeReceipt(payRequest.getTotalFee(),
-                payRequest.getPayChannel(), merchantInfo.get().getId());
+                payRequest.getPayChannel(), merchantInfo.get().getId(), EnumAppType.HSS.getId());
         if (0 == resultPair.getLeft()) {
             return CommonResponse.builder4MapResult(CommonResponse.SUCCESS_CODE, "收款成功")
                     .addParam("payUrl", URLDecoder.decode(resultPair.getRight(), "UTF-8")).addParam("subMerName", merchantInfo.get().getMerchantName())
@@ -165,7 +166,7 @@ public class TradeController extends BaseController {
 //        final String verifiedCode = withdrawRequest.getCode();
 //        if (!super.isLogin(request)) {
 //            return CommonResponse.simpleResponse(-2, "未登录");
-//        }
+//        }+
 //        Optional<UserInfo> userInfoOptional = userInfoService.selectByOpenId(super.getOpenId(request));
 //        if (!userInfoOptional.isPresent()) {
 //            return CommonResponse.simpleResponse(-2, "未登录");
@@ -208,24 +209,37 @@ public class TradeController extends BaseController {
         if(!merchantInfo.isPresent()){
             return CommonResponse.simpleResponse(-2, "未登录");
         }
-        if(merchantInfo.get().getStatus()!= EnumMerchantStatus.PASSED.getId()){
+        if(merchantInfo.get().getStatus()!= EnumMerchantStatus.PASSED.getId()&&merchantInfo.get().getStatus()!= EnumMerchantStatus.FRIEND.getId()){
             return CommonResponse.simpleResponse(-2, "未审核通过");
         }
         requestParam.setAccountId(merchantInfo.get().getAccountId());
         final PageModel<QueryMerchantPayOrdersResponse> result = new PageModel<>(requestParam.getPageNo(), requestParam.getPageSize());
-        final int payStatus = requestParam.getPayStatus();
-        final String payType = requestParam.getPayType();
-        if (EnumOrderStatus.DUE_PAY.getId() != payStatus
-                && EnumOrderStatus.PAY_FAIL.getId() != payStatus
-                && EnumOrderStatus.PAY_SUCCESS.getId() != payStatus) {
-            requestParam.setPayStatus(0);
+        final List<Integer> payStatusList = requestParam.getPayStatus();
+        final List<String> payTypeList = requestParam.getPayType();
+        if (CollectionUtils.isEmpty(payStatusList)) {
+            return CommonResponse.simpleResponse(-1, "支付状态不可以为空");
         }
-        if (!EnumPaymentType.WECHAT_SCAN_CODE.getId().equals(payType)
-                && !EnumPaymentType.WECHAT_QR_CODE.getId().equals(payType)
-                && !EnumPaymentType.WECHAT_H5_CASHIER_DESK.getId().equals(payType)
-                && !EnumPaymentType.QUICK_APY.getId().equals(payType)
-                && !EnumPaymentType.ALIPAY_SCAN_CODE.getId().equals(payType)) {
-            requestParam.setPayType(null);
+        if (CollectionUtils.isEmpty(payTypeList)) {
+            return CommonResponse.simpleResponse(-1, "支付方式不可以为空");
+        }
+
+        for (int i = 0; i < payStatusList.size(); i++) {
+            final Integer payStatus = payStatusList.get(i);
+            if (EnumOrderStatus.DUE_PAY.getId() != payStatus
+                    && EnumOrderStatus.PAY_FAIL.getId() != payStatus
+                    && EnumOrderStatus.PAY_SUCCESS.getId() != payStatus) {
+                return CommonResponse.simpleResponse(-1, "不存在的支付状态");
+            }
+        }
+        for (int i = 0; i < payTypeList.size(); i++) {
+            final String payType = payTypeList.get(i);
+            if (!EnumPaymentType.WECHAT_SCAN_CODE.getId().equals(payType)
+                    && !EnumPaymentType.WECHAT_QR_CODE.getId().equals(payType)
+                    && !EnumPaymentType.WECHAT_H5_CASHIER_DESK.getId().equals(payType)
+                    && !EnumPaymentType.QUICK_APY.getId().equals(payType)
+                    && !EnumPaymentType.ALIPAY_SCAN_CODE.getId().equals(payType)) {
+                return CommonResponse.simpleResponse(-1, "不存在的支付方式");
+            }
         }
         if (StringUtils.isEmpty(requestParam.getOrderNo())) {
             requestParam.setOrderNo(null);

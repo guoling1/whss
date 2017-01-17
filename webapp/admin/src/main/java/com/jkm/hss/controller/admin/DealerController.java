@@ -10,11 +10,13 @@ import com.jkm.base.common.entity.PageModel;
 import com.jkm.hss.controller.BaseController;
 import com.jkm.hss.dealer.entity.Dealer;
 import com.jkm.hss.dealer.entity.DealerChannelRate;
+import com.jkm.hss.dealer.entity.DealerUpgerdeRate;
 import com.jkm.hss.dealer.enums.EnumDealerLevel;
 import com.jkm.hss.dealer.helper.DealerSupport;
 import com.jkm.hss.dealer.helper.requestparam.ListDealerRequest;
 import com.jkm.hss.dealer.service.DealerChannelRateService;
 import com.jkm.hss.dealer.service.DealerService;
+import com.jkm.hss.dealer.service.DealerUpgerdeRateService;
 import com.jkm.hss.helper.request.FirstLevelDealerFindRequest;
 import com.jkm.hss.helper.response.FirstLevelDealerFindResponse;
 import com.jkm.hss.helper.response.FirstLevelDealerGetResponse;
@@ -45,6 +47,9 @@ public class DealerController extends BaseController {
 
     @Autowired
     private DealerChannelRateService dealerChannelRateService;
+
+    @Autowired
+    private DealerUpgerdeRateService dealerUpgerdeRateService;
 
     /**
      * 按手机号和名称模糊匹配
@@ -80,10 +85,10 @@ public class DealerController extends BaseController {
     @ResponseBody
     @RequestMapping(value = "/listDealer", method = RequestMethod.POST)
     public CommonResponse listDealer(@RequestBody final ListDealerRequest listDealerRequest) {
-        if (EnumDealerLevel.FIRST.getId() != listDealerRequest.getLevel()
-                && EnumDealerLevel.SECOND.getId() != listDealerRequest.getLevel()) {
-            listDealerRequest.setLevel(EnumDealerLevel.FIRST.getId());
-        }
+//        if (EnumDealerLevel.FIRST.getId() != listDealerRequest.getLevel()
+//                && EnumDealerLevel.SECOND.getId() != listDealerRequest.getLevel()) {
+//            listDealerRequest.setLevel(EnumDealerLevel.FIRST.getId());
+//        }
         final String mobile = listDealerRequest.getMobile();
         if (StringUtils.isEmpty(StringUtils.trim(mobile))) {
             listDealerRequest.setMobile(null);
@@ -135,10 +140,16 @@ public class DealerController extends BaseController {
         firstLevelDealerGetResponse.setName(dealer.getProxyName());
         firstLevelDealerGetResponse.setBelongArea(dealer.getBelongArea());
         firstLevelDealerGetResponse.setBankCard(DealerSupport.decryptBankCard(dealer.getId(), dealer.getSettleBankCard()));
+        firstLevelDealerGetResponse.setBankName(dealer.getBankName());
+        if (dealer.getIdCard()!=null){
+            firstLevelDealerGetResponse.setIdCard(DealerSupport.decryptIdentity(dealer.getId(),dealer.getIdCard()));
+        }
         firstLevelDealerGetResponse.setBankAccountName(dealer.getBankAccountName());
         firstLevelDealerGetResponse.setBankReserveMobile(DealerSupport.decryptMobile(dealer.getId(), dealer.getBankReserveMobile()));
         final FirstLevelDealerGetResponse.Product productResponse = firstLevelDealerGetResponse.new Product();
         firstLevelDealerGetResponse.setProduct(productResponse);
+        firstLevelDealerGetResponse.setTotalProfitSpace(dealer.getTotalProfitSpace());
+        firstLevelDealerGetResponse.setRecommendBtn(dealer.getRecommendBtn());
         productResponse.setProductId(product.getId());
         productResponse.setProductName(product.getProductName());
         productResponse.setLimitPayFeeRate(product.getLimitPayFeeRate().multiply(new BigDecimal("100")).setScale(2).toPlainString());
@@ -155,6 +166,26 @@ public class DealerController extends BaseController {
             channel.setMerchantWithdrawFee(dealerChannelRate.getDealerMerchantWithdrawFee().toPlainString());
             channels.add(channel);
         }
+
+        final List<FirstLevelDealerGetResponse.DealerUpgerdeRate> dealerUpgerdeRates = new ArrayList<>();
+        firstLevelDealerGetResponse.setDealerUpgerdeRates(dealerUpgerdeRates);
+
+        List<DealerUpgerdeRate> upgerdeRates = dealerUpgerdeRateService.selectByDealerIdAndProductId(dealerId,product.getId());
+        if (upgerdeRates==null){
+            return CommonResponse.simpleResponse(-1,"未查到相关数据");
+        }
+        for(DealerUpgerdeRate dealerUpgerdeRate:upgerdeRates){
+            final FirstLevelDealerGetResponse.DealerUpgerdeRate du = new FirstLevelDealerGetResponse.DealerUpgerdeRate();
+            du.setId(dealerUpgerdeRate.getId());
+            du.setProductId(dealerUpgerdeRate.getProductId());
+            du.setType(dealerUpgerdeRate.getType());
+            du.setDealerId(dealerUpgerdeRate.getDealerId());
+            du.setFirstDealerShareProfitRate(dealerUpgerdeRate.getFirstDealerShareProfitRate().toString());
+            du.setSecondDealerShareProfitRate(dealerUpgerdeRate.getSecondDealerShareProfitRate().toString());
+            du.setBossDealerShareRate(dealerUpgerdeRate.getBossDealerShareRate().toString());
+            dealerUpgerdeRates.add(du);
+        }
+
         return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "success", firstLevelDealerGetResponse);
     }
 }

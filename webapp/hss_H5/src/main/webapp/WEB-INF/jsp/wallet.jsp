@@ -28,7 +28,7 @@
       <div class="operation-title">收款</div>
     </a>
 
-    <div class="operation" id="tt">
+    <div class="operation">
       <div class="logo wallet"></div>
       <div class="operation-title">余额</div>
       <div class="operation-small">${avaliable}</div>
@@ -41,7 +41,7 @@
   <div class="record">
     <a href="/sqb/tradeRecord" class="group touch_gr"><span class="record"></span>收款记录</a>
     <a href="/sqb/bank" class="group touch_gr"><span class="bank"></span>银行卡</a>
-    <a href="javascript:void(0)" class="group"><span class="user"></span>用户认证</a>
+    <a href="/sqb/authentication" class="group touch_gr"><span class="user"></span>用户认证</a>
     <a href="http://mp.weixin.qq.com/s/-GYEGM7PAboICupcETBPhw" class="group touch_gr"><span class="help"></span>使用帮助</a>
   </div>
   <div class="flexBox flex-box-column">
@@ -49,13 +49,12 @@
       <img src="http://static.jinkaimen.cn/hss/assets/banner.png" alt="">
     </div>
     <div class="application">
-      <div class="group">
-        <div class="ing"></div>
+      <a class="group touch_gr" id="show_recommend" href="/sqb/myRecommend">
         <div class="logo friend"></div>
         <div class="text">推荐好友</div>
-      </div>
-      <div class="group">
-        <div class="ing"></div>
+      </a>
+
+      <div class="group touch_gr" id="show_upgrade">
         <div class="logo upgrade"></div>
         <div class="text">我要升级</div>
       </div>
@@ -75,14 +74,40 @@
         <div class="logo credit"></div>
         <div class="text">信用卡申请</div>
       </a>
+
+      <div class="group touch_gr" id="unbundling">
+        <div class="logo upgrade"></div>
+        <div class="text">解绑微信</div>
+      </div>
       <%--<div class="group touch_gr">--%>
       <%--<div class="logo more"></div>--%>
       <%--<div class="text">更多</div>--%>
       <%--</div>--%>
     </div>
   </div>
+  <div class="layer" id="layer">
+    <div class="space">
+      <div class="space-title">
+        解绑微信
+        <div class="xx" id="xx"></div>
+      </div>
+      <div class="space-cont">
+        <div class="cont-detail">解绑后，再次进入需要使用手机验证码登录并绑定微信。</div>
+        <div class="operation">
+          <div class="cancel" id="cancel">取消</div>
+          <div class="submit" id="unbundlingSubmit">解绑</div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 </body>
+<script>
+  var pageData = {
+    showRecommend: '${showRecommend}'//1显示升级 2不显示升级
+  };
+</script>
 <script src="http://static.jinkaimen.cn/vendor/vendor.1.0.1.min.js"></script>
-<script src="http://static.jinkaimen.cn/hss/2.0.1/wallet.min.js"></script>
+<%--<script src="http://static.jinkaimen.cn/hss/2.0.1/wallet.min.js"></script>--%>
+<script src="/js/hss/2.0.1/wallet.min.js"></script>
 </html>

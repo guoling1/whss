@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jkm.hss.product.dao.UpgradeRecommendRulesDao">
+
+    <!-- 通用查询结果列-->
+    <sql id="Base_Column_List">
+		 id,	product_id,invite_standard,upgrade_rate,	trade_rate,	status,	create_time,	update_time
+	</sql>
+
+    <!-- 添加 （匹配有值的字段）-->
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO tb_upgrade_recommend_rules
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test="productId != null">
+                product_id,
+            </if>
+            <if test="inviteStandard != null">
+                invite_standard,
+            </if>
+            <if test="upgradeRate != null">
+                upgrade_rate,
+            </if>
+            <if test="tradeRate != null">
+                trade_rate,
+            </if>
+            <if test="status != null">
+                status,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+            <if test="productId!=null">
+                #{productId},
+            </if>
+            <if test="inviteStandard!=null">
+                #{inviteStandard},
+            </if>
+            <if test="upgradeRate!=null">
+                #{upgradeRate},
+            </if>
+            <if test="tradeRate!=null">
+                #{tradeRate},
+            </if>
+            <!--<if test="rewardRate!=null">-->
+                <!--#{rewardRate},-->
+            <!--</if>-->
+            <if test="status!=null">
+                #{status},
+            </if>
+        </trim>
+    </insert>
+
+    <!-- 修 改-->
+    <update id="update">
+        UPDATE tb_upgrade_recommend_rules
+        <set>
+            <if test="productId != null">
+                product_id=#{productId},
+            </if>
+            <if test="inviteStandard != null">
+                invite_standard=#{inviteStandard},
+            </if>
+            <if test="upgradeRate != null">
+                upgrade_rate = #{upgradeRate},
+            </if>
+            <if test="tradeRate != null">
+                trade_rate = #{tradeRate},
+            </if>
+            <if test="status != null">
+                status = #{status},
+            </if>
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <!-- 查询（根据主键ID查询） -->
+    <select id="selectById" resultType="com.jkm.hss.product.entity.UpgradeRecommendRules">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM tb_upgrade_recommend_rules
+        WHERE id = #{id} and status=1
+    </select>
+
+    <!--查询所有记录-->
+    <select id="selectAll" resultType="com.jkm.hss.product.entity.UpgradeRecommendRules">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM tb_upgrade_recommend_rules
+        WHERE status = 1
+    </select>
+
+    <!--根据产品编码查找记录-->
+    <select id="selectByProductId" resultType="com.jkm.hss.product.entity.UpgradeRecommendRules">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM tb_upgrade_recommend_rules
+        WHERE status = 1 and product_id=#{productId} limit 0,1
+    </select>
+</mapper>

@@ -43,4 +43,35 @@ public interface UserInfoDao {
      * @return
      */
     UserInfo selectByMerchantId(@Param("merchantId") long merchantId);
+
+    /**
+     * 插入markCode
+     * @param markCode
+     * @param id
+     * @return
+     */
+    int updatemarkCode(@Param("markCode") String markCode,@Param("id") long id);
+
+    /**
+     * 根据手机号查询
+     * @param mobile
+     * @return
+     */
+    UserInfo selectByMobile(@Param("mobile") String mobile);
+
+    /**
+     * 清除openId
+     *
+     * @param id
+     * @return
+     */
+    int cleanOpenId(@Param("id") long id);
+    /**
+     * 绑定openId
+     * @param id
+     * @param openId
+     * @return
+     */
+    int bindOpenId(@Param("id") long id,@Param("openId") String openId);
+
 }

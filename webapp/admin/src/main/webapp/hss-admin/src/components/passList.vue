@@ -1,8 +1,10 @@
 <template lang="html">
   <div id="agentAdd">
-    <div style="padding: 8px 30px; background: rgb(243, 156, 18); z-index: 999999; font-size: 22px; font-weight: 600;margin-bottom: 15px;    color: #fff;">通道列表</div>
-    <div class="col-xs-12">
+    <div class="col-xs-12" style="margin-top: 15px">
       <div class="box">
+        <div class="box-header">
+          <h3 class="box-title">通道列表</h3>
+        </div>
         <div class="box-body">
           <div id="example2_wrapper" class="dataTables_wrapper form-inline dt-bootstrap">
             <div class="row">
@@ -37,28 +39,13 @@
                     <td class="sorting_1">{{product.channelName}}</td>
                     <td>{{product.thirdCompany}}</td>
                     <td>{{product.channelSource}}</td>
-                    <td>{{product.basicTradeRate}}</td>
+                    <td>{{product.basicTradeRate}}%</td>
                     <td>{{product.basicWithdrawFee}}</td>
                     <td>{{product.basicBalanceType|changeBalanceType}}</td>
                     <td><div class="btn btn-primary" @click="detail(index)">修改</div></td>
                   </tr>
                   </tbody>
                 </table>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-sm-5">
-              </div>
-              <div class="col-sm-7">
-                <div class="dataTables_paginate paging_simple_numbers" id="example2_paginate">
-                  <ul class="pagination" id="page">
-                    <li class="paginate_button previous disabled" id="example2_previous"><a href="#" aria-controls="example2" data-dt-idx="0" tabindex="0">上一页</a>
-                    </li>
-                    <li class="paginate_button active"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">1</a></li>
-                    </li>
-                    <li class="paginate_button next" id="example2_next"><a href="#" aria-controls="example2" data-dt-idx="7" tabindex="0">下一页</a></li>
-                  </ul>
-                </div>
               </div>
             </div>
           </div>
@@ -211,5 +198,8 @@
   }
 
   }
+  }
+  .btn{
+    font-size: 12px;
   }
 </style>

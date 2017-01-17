@@ -1,7 +1,9 @@
 <template lang="html">
   <div id="storeAudit">
-    <div v-if="isShow" style="padding: 8px 30px; background: rgb(243, 156, 18); z-index: 999999; font-size: 22px; font-weight: 600;margin-bottom: 15px;color: #fff;">商户审核</div>
-    <div v-else="isShow" style="padding: 8px 30px; background: rgb(243, 156, 18); z-index: 999999; font-size: 22px; font-weight: 600;margin-bottom: 15px;color: #fff;">商户资料</div>
+    <div class="box-header with-border" style="margin: 0 0 0 3px;">
+      <h3 v-if="isShow" class="box-title" style="border-left: 3px solid #e4e0e0;padding-left: 10px;">商户审核</h3>
+      <h3 v-else="isShow" class="box-title" style="border-left: 3px solid #e4e0e0;padding-left: 10px;">商户资料</h3>
+    </div>
     <div style="margin: 0 15px">
       <div class="box box-primary">
         <p class="lead">商户注册信息</p>
@@ -14,21 +16,21 @@
               <th style="text-align: right">注册时间:</th>
               <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.createTime|changeTime" readonly></td>
               <th style="text-align: right">注册方式:</th>
-              <td><input type="text" style="background:#efecec;padding-left:5px;" value="—" readonly></td>
+              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.registered" readonly></td>
             </tr>
             <tr>
               <th style="text-align: right">一级代理编号:</th>
-              <td><input type="text" style="background:#efecec;padding-left:5px;" value="—" readonly></td>
+              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.firstDealerId==0?'':msg.firstDealerId" readonly></td>
               <th style="text-align: right">一级代理名称:</th>
-              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.proxyName|changeDeal" readonly></td>
+              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.proxyName" readonly></td>
               <th></th>
               <td></td>
             </tr>
             <tr>
               <th style="text-align: right">二级代理编号:</th>
-              <td><input type="text" style="background:#efecec;padding-left:5px;" value="—" readonly></td>
+              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.secondDealerId==0?'':msg.secondDealerId" readonly></td>
               <th style="text-align: right">二级代理名称:</th>
-              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.proxyName1|changeDeal" readonly></td>
+              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.proxyName1" readonly></td>
               <th></th>
               <td></td>
             </tr>
@@ -36,10 +38,18 @@
               <th style="text-align: right">推荐人编号:</th>
               <td><input type="text" style="background:#efecec;padding-left:5px;" value="—" readonly></td>
               <th style="text-align: right">推荐人名称:</th>
-              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.proxyName1|changeDeal" readonly></td>
+              <td><input type="text" style="background:#efecec;padding-left:5px;" value="—" readonly></td>
               <th style="text-align: right">推荐人注册手机号:</th>
               <td><input type="text" style="background:#efecec;padding-left:5px;" value="—" readonly></td>
             </tr>
+            <!--<tr>
+              <th style="text-align: right">推荐所属一级代理名:</th>
+              <td><input type="text" style="background:#efecec;padding-left:5px;" value="proxyNameYQ" readonly></td>
+              <th style="text-align: right">推荐所属二级代理名:</th>
+              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.proxyNameYQ1" readonly></td>
+              <th style="text-align: right"></th>
+              <td><input type="text" style="background:#efecec;padding-left:5px;" value="—" readonly></td>
+            </tr>-->
             </tbody></table>
         </div>
       </div>
@@ -71,6 +81,71 @@
               <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.reserveMobile" readonly></td>
               <th style="text-align: right">实名认证时间:</th>
               <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.authenticationTime" readonly></td>
+            </tr>
+            </tbody></table>
+        </div>
+      </div>
+      <div class="box box-primary">
+        <p class="lead">商户认证资料</p>
+        <div class="table-responsive">
+          <table class="table">
+            <tbody>
+            <tr class="row">
+              <th class="col-md-3" style="text-align: center;">身份证正面:</th>
+              <th class="col-md-3" style="text-align: center;">身份证反面:</th>
+              <th class="col-md-3" style="text-align: center;">手持身份证:</th>
+              <th class="col-md-3" style="text-align: center;">银行卡正面:</th>
+              <th class="col-md-3" style="text-align: center;">手持结算卡:</th>
+            </tr>
+            <tr class="row">
+              <td class="col-md-3" style="text-align: center;border: none;">
+                <img style="width: 200px" @click="changeBig()" :src="msg.identityFacePic" alt=""/>
+              </td>
+              <td class="col-md-3" style="text-align: center;border: none;">
+                <img style="width: 200px"  @click="changeBig()" :src="msg.identityOppositePic" alt=""/>
+              </td>
+              <td class="col-md-3" style="text-align: center;border: none;">
+                <img style="width: 200px"  @click="changeBig()" :src="msg.identityHandPic" alt=""/>
+              </td>
+              <td class="col-md-3" style="text-align: center;border: none;">
+                <img style="width: 200px"  @click="changeBig()" :src="msg.bankPic" alt=""/>
+              </td>
+              <td class="col-md-3" style="text-align: center;border: none;">
+                <img style="width: 200px"  @click="changeBig()" :src="msg.bankHandPic" alt=""/>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="box box-primary">
+        <p class="lead">商户结算信息(好收收)</p>
+        <div class="table-responsive">
+          <table class="table">
+            <tbody>
+            <tr>
+              <th style="text-align: right">阳光万维微信:</th>
+              <td></td>
+              <th style="text-align: right">收款结算方式:</th>
+              <td></td>
+              <th style="text-align: right">提现费:</th>
+              <td>元/笔</td>
+            </tr>
+            <tr>
+              <th style="text-align: right">阳光万维支付宝:</th>
+              <td></td>
+              <th style="text-align: right">收款结算方式:</th>
+              <td></td>
+              <th style="text-align: right">提现费:</th>
+              <td>元/笔</td>
+            </tr>
+            <tr>
+              <th style="text-align: right">阳光万维无卡快捷:</th>
+              <td></td>
+              <th style="text-align: right">收款结算方式:</th>
+              <td></td>
+              <th style="text-align: right">提现费:</th>
+              <td>元/笔</td>
             </tr>
             </tbody></table>
         </div>
@@ -119,68 +194,8 @@
             </tbody></table>-->
         </div>
       </div>
-      <div class="box box-primary">
-        <p class="lead">商户认证资料</p>
-        <div class="table-responsive">
-          <table class="table">
-            <tbody>
-            <tr class="row">
-              <th class="col-md-3" style="text-align: center;">身份证正面:</th>
-              <th class="col-md-3" style="text-align: center;">身份证反面:</th>
-              <th class="col-md-3" style="text-align: center;">手持身份证:</th>
-              <th class="col-md-3" style="text-align: center;">手持结算卡:</th>
-            </tr>
-            <tr class="row">
-              <td class="col-md-3" style="text-align: center;border: none;">
-                <img style="width: 200px" @click="changeBig()" :src="msg.identityFacePic" alt=""/>
-              </td>
-              <td class="col-md-3" style="text-align: center;border: none;">
-                <img style="width: 200px"  @click="changeBig()" :src="msg.identityOppositePic" alt=""/>
-              </td>
-              <td class="col-md-3" style="text-align: center;border: none;">
-                <img style="width: 200px"  @click="changeBig()" :src="msg.identityHandPic" alt=""/>
-              </td>
-              <td class="col-md-3" style="text-align: center;border: none;">
-                <img style="width: 200px"  @click="changeBig()" :src="msg.bankHandPic" alt=""/>
-              </td>
-            </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-      <div class="box box-primary">
-        <p class="lead">商户结算信息(好收收)</p>
-        <div class="table-responsive">
-          <table class="table">
-            <tbody>
-            <tr>
-              <th style="text-align: right">阳光万维微信:</th>
-              <td></td>
-              <th style="text-align: right">收款结算方式:</th>
-              <td></td>
-              <th style="text-align: right">提现费:</th>
-              <td>元/笔</td>
-            </tr>
-            <tr>
-              <th style="text-align: right">阳光万维支付宝:</th>
-              <td></td>
-              <th style="text-align: right">收款结算方式:</th>
-              <td></td>
-              <th style="text-align: right">提现费:</th>
-              <td>元/笔</td>
-            </tr>
-            <tr>
-              <th style="text-align: right">阳光万维无卡快捷:</th>
-              <td></td>
-              <th style="text-align: right">收款结算方式:</th>
-              <td></td>
-              <th style="text-align: right">提现费:</th>
-              <td>元/笔</td>
-            </tr>
-            </tbody></table>
-        </div>
-      </div>
       <div class="mask" id="mask" style="display: none" @click="isNo()">
+        <p @click="isNo">×</p>
         <img src="" alt="">
       </div>
       <div class="box box-primary" v-if="isShow">
@@ -243,7 +258,6 @@
         .then(function (res) {
           this.$data.msg = res.data.list[0];
           this.$data.res = res.data.res;
-          console.log(this.$data.res)
         },function (err) {
           this.$store.commit('MESSAGE_ACCORD_SHOW', {
             text: err.statusMessage
@@ -316,7 +330,13 @@
           var hour=val.getHours();
           var minute=val.getMinutes();
           var second=val.getSeconds();
-          return year+"-"+month+"-"+date+" "+hour+":"+minute+":"+second;
+          function tod(a) {
+            if(a<10){
+              a = "0"+a
+            }
+            return a;
+          }
+          return year+"-"+tod(month)+"-"+tod(date)+" "+tod(hour)+":"+tod(minute)+":"+tod(second);
         }
       },
       changeDeal: function (val) {
@@ -336,6 +356,22 @@
     position: fixed;
     top:0;
     left: 0;
+  p{
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    z-index: 1200;
+    width: 65px;
+    height: 65px;
+    line-height: 55px;
+    font-size: 65px;
+    color: #d2d1d1;
+    text-align: center;
+    border: 6px solid #adaaaa;
+    border-radius: 50%;
+    box-shadow: 0 0 16px #000;
+    text-shadow: 0 0 16px #000;
+  }
 
   img{
     display: inherit;

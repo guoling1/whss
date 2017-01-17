@@ -1,5 +1,6 @@
 package com.jkm.hss.dealer.service;
 
+import com.google.common.base.Optional;
 import com.jkm.hss.dealer.entity.DealerChannelRate;
 
 import java.util.List;
@@ -37,4 +38,13 @@ public interface DealerChannelRateService {
      * @return
      */
     List<DealerChannelRate> selectByDealerIdAndPayChannelSign(long dealerId, int payChannel);
+
+    /**
+     * 根据代理商id、产品id与通道标识查询代理商费率
+     * @param dealerId
+     * @param productId
+     * @param channelType
+     * @return
+     */
+    Optional<DealerChannelRate> selectByDealerIdAndProductIdAndChannelType(long dealerId, long productId, int channelType);
 }

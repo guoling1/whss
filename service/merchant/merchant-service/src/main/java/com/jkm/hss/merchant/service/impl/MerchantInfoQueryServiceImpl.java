@@ -26,13 +26,13 @@ public class MerchantInfoQueryServiceImpl implements MerchantInfoQueryService {
 
         List<MerchantInfoResponse> list = this.merchantInfoQueryDao.getAll(req);
         if (list.size()>0){
-            for (int i=0;list.size()>i;i++){
-                if (list.get(i).getLevel()==1){
-                    list.get(i).setProxyName(list.get(i).getProxyName());
-                }
-                if (list.get(i).getLevel()==2){
-                    MerchantInfoResponse res = merchantInfoQueryDao.getProxyName1(list.get(i).getFirstLevelDealerId());
-                    list.get(i).setProxyName1(res.getProxyName());
+            for (int i=0;i<list.size();i++){
+                int source = list.get(i).getSource();
+                String proxyName = "";
+                String proxyName1 = "";
+                if (source==1){
+                    list.get(i).setProxyName(proxyName);
+                    list.get(i).setProxyName1(proxyName1);
                 }
             }
         }
@@ -41,37 +41,22 @@ public class MerchantInfoQueryServiceImpl implements MerchantInfoQueryService {
 
     @Override
     public int getCount(MerchantInfoRequest req) {
-//        Map<String,Object> map = new HashMap<String,Object>();
-//        map.put("merchantName",merchantInfoResponse.getMerchantName());
-//        map.put("status",merchantInfoResponse.getStatus());
-//        map.put("offset",merchantInfoResponse.getOffset());
         int count = merchantInfoQueryDao.getCount(req);
         return count;
     }
 
     @Override
-    public List<MerchantInfoResponse> getRecord(MerchantInfoResponse merchantInfoResponse) {
+    public List<MerchantInfoResponse> getRecord(MerchantInfoRequest req) {
 
-        List<MerchantInfoResponse> list = this.merchantInfoQueryDao.getRecord(merchantInfoResponse);
-        if (list.size()>0){
-            for (int i=0;list.size()>i;i++){
-                if (list.get(i).getLevel()==1){
-                    list.get(i).setProxyName(list.get(i).getProxyName());
-                }
-                if (list.get(i).getLevel()==2){
-                    MerchantInfoResponse res = merchantInfoQueryDao.getProxyName(list.get(i).getFirstLevelDealerId());
-                    list.get(i).setProxyName1(res.getProxyName());
-                }
-            }
-        }
+        List<MerchantInfoResponse> list = this.merchantInfoQueryDao.getRecord(req);
         return list;
     }
 
     @Override
-    public List<MerchantInfoResponse> getCountRecord() {
-        List<MerchantInfoResponse> list = this.merchantInfoQueryDao.getCountRecord();
+    public int getCountRecord(MerchantInfoRequest req) {
+        int count = this.merchantInfoQueryDao.getCountRecord(req);
 
-        return list;
+        return count;
     }
 
 

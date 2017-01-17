@@ -12,6 +12,7 @@ import com.jkm.hss.product.entity.Product;
 import com.jkm.hss.product.entity.ProductChannelDetail;
 import com.jkm.hss.product.enums.EnumProductChannelDetailStatus;
 import com.jkm.hss.product.enums.EnumProductStatus;
+import com.jkm.hss.product.enums.EnumProductType;
 import com.jkm.hss.product.servcie.ProductChannelDetailService;
 import com.jkm.hss.product.servcie.ProductService;
 import lombok.extern.slf4j.Slf4j;
@@ -60,6 +61,7 @@ public class ProductController extends BaseController {
             product.setMerchantWithdrawType(request.getMerchantWithdrawType());
             product.setDealerBalanceType(request.getDealerBalanceType());
             product.setStatus(EnumProductStatus.USEING.getId());
+            product.setType(EnumProductType.HSS.getId());
             this.productService.init(product);
             for (ProductChannelDetail detail : request.getChannels()){
                 detail.setProductTradeRate(detail.getProductTradeRate().divide(new BigDecimal(100)));

@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jkm.hss.product.dao.UpgradeRulesDao">
+
+    <!-- 通用查询结果列-->
+    <sql id="Base_Column_List">
+		 id,	product_id,  name,	type,	promotion_num,	upgrade_cost,	weixin_rate,	alipay_rate,	fast_rate,direct_promote_shall,in_direct_promote_shall,	status,	create_time,	update_time
+	</sql>
+
+    <!-- 添加 （匹配有值的字段）-->
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO tb_upgrade_rules
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test="productId != null">
+                product_id,
+            </if>
+            <if test="name != null">
+                name,
+            </if>
+            <if test="type != null">
+                type,
+            </if>
+            <if test="promotionNum != null">
+                promotion_num,
+            </if>
+            <if test="upgradeCost != null">
+                upgrade_cost,
+            </if>
+            <if test="weixinRate != null">
+                weixin_rate,
+            </if>
+            <if test="alipayRate != null">
+                alipay_rate,
+            </if>
+            <if test="fastRate != null">
+                fast_rate,
+            </if>
+            <if test="directPromoteShall != null">
+                direct_promote_shall,
+            </if>
+            <if test="inDirectPromoteShall != null">
+                in_direct_promote_shall,
+            </if>
+            <if test="status != null">
+                status,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+            <if test="productId!=null">
+                #{productId},
+            </if>
+            <if test="name!=null">
+                #{name},
+            </if>
+            <if test="type!=null">
+                #{type},
+            </if>
+            <if test="promotionNum!=null">
+                #{promotionNum},
+            </if>
+            <if test="upgradeCost!=null">
+                #{upgradeCost},
+            </if>
+            <if test="weixinRate!=null">
+                #{weixinRate},
+            </if>
+            <if test="alipayRate!=null">
+                #{alipayRate},
+            </if>
+            <if test="fastRate!=null">
+                #{fastRate},
+            </if>
+            <if test="directPromoteShall!=null">
+                #{directPromoteShall},
+            </if>
+            <if test="inDirectPromoteShall!=null">
+                #{inDirectPromoteShall},
+            </if>
+            <if test="status!=null">
+                #{status},
+            </if>
+        </trim>
+    </insert>
+
+    <!-- 修 改-->
+    <update id="update">
+        UPDATE tb_upgrade_rules
+        <set>
+            <if test="productId != null">
+                product_id = #{productId},
+            </if>
+            <if test="name != null">
+                name = #{name},
+            </if>
+            <if test="type != null">
+                type = #{type},
+            </if>
+            <if test="promotionNum != null">
+                promotion_num = #{promotionNum},
+            </if>
+            <if test="upgradeCost != null">
+                upgrade_cost = #{upgradeCost},
+            </if>
+            <if test="weixinRate != null">
+                weixin_rate = #{weixinRate},
+            </if>
+            <if test="alipayRate != null">
+                alipay_rate = #{alipayRate},
+            </if>
+            <if test="fastRate != null">
+                fast_rate = #{fastRate},
+            </if>
+            <if test="directPromoteShall!=null">
+                direct_promote_shall = #{directPromoteShall},
+            </if>
+            <if test="inDirectPromoteShall!=null">
+                in_direct_promote_shall = #{inDirectPromoteShall},
+            </if>
+            <if test="status != null">
+                status = #{status},
+            </if>
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <!-- 查询（根据主键ID查询） -->
+    <select id="selectById" resultType="com.jkm.hss.product.entity.UpgradeRules">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM tb_upgrade_rules
+        WHERE id = #{id} and status=1
+    </select>
+
+    <!--查询所有记录-->
+    <select id="selectAll" resultType="com.jkm.hss.product.entity.UpgradeRules">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM tb_upgrade_rules
+        WHERE status = 1 ORDER BY type ASC
+    </select>
+
+    <!--根据产品编码查找当前编码下的记录-->
+    <select id="selectByProductId" resultType="com.jkm.hss.product.entity.UpgradeRules">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM tb_upgrade_rules
+        WHERE status = 1 and product_id=#{productId} ORDER BY type ASC
+    </select>
+
+    <!--根据产品编码和类型查询-->
+    <select id="selectByProductIdAndType" resultType="com.jkm.hss.product.entity.UpgradeRules">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM tb_upgrade_rules
+        WHERE status = 1 and product_id=#{productId} and type = #{type}
+    </select>
+
+</mapper>

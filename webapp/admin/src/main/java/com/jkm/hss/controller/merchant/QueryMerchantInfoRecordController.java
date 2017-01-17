@@ -79,25 +79,8 @@ public class QueryMerchantInfoRecordController extends BaseController {
                     list.get(i).setIdentityHandPic(urls);
 
                 }
-                if (list.get(i).getLevel()==2){
-                    List<MerchantInfoResponse> res = queryMerchantInfoRecordService.getLevel(list.get(i).getDealerId());
-                    for (int j=0;j<res.size();j++){
-                        list.get(i).setProxyName1(res.get(j).getProxyName());
-                        if (res.get(j).getFirstLevelDealerId() != 0){
-                            long firstLevelDealerId = res.get(j).getFirstLevelDealerId();
-                            List<MerchantInfoResponse> results = queryMerchantInfoRecordService.getFirstLevel(firstLevelDealerId);
-                            list.get(i).setProxyName(results.get(j).getProxyName());
-                        }
-                    }
-                }
-                if (list.get(i).getLevel()==1){
-                    int level = list.get(i).getLevel();
-                    long dealerId = list.get(i).getDealerId();
-                    List<MerchantInfoResponse> results = queryMerchantInfoRecordService.getResults(level,dealerId);
-                    for (int x=0;x<results.size();x++){
-                        list.get(i).setProxyName(results.get(x).getProxyName());
-                    }
-                }
+                list.get(i).setProxyName(list.get(i).getProxyName());
+               list.get(i).setProxyName1(list.get(i).getProxyName1());
 //                if (list.get(i).getDealerId()==0){
 //                    String ProxyName = "金开门";
 //                    list.get(i).setProxyName(ProxyName);

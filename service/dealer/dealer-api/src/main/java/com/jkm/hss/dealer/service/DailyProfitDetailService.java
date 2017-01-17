@@ -3,7 +3,6 @@ package com.jkm.hss.dealer.service;
 import com.jkm.base.common.entity.PageModel;
 import com.jkm.hss.dealer.entity.DailyProfitDetail;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -34,13 +33,13 @@ public interface DailyProfitDetailService {
     /**
      * 查询
      * @param beginProfitDate
-     * @param dealerName
+     * @param firstDealerName
      * @param endProfitDate
      * @param pageNO
      * @param pageSize
      * @return
      */
-    PageModel<DailyProfitDetail> selectFirstByParam(String beginProfitDate, String dealerName, String endProfitDate, int pageNO, int pageSize);
+    PageModel<DailyProfitDetail> selectFirstByParam(String beginProfitDate, String firstDealerName ,String endProfitDate, int pageNO, int pageSize);
 
     /**
      * 查询
