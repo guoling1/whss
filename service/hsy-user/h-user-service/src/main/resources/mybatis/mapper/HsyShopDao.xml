@@ -123,6 +123,25 @@
         order by sur.ROLE,user.UPDATETIME
     </select>
 
+    <select id="findCorporateUserByShopID" parameterType="java.lang.Long" resultType="com.jkm.hsy.user.entity.AppAuUser">
+        select
+        user.ID,user.CELLPHONE,user.PASSWORD,user.NICKNAME,user.REALNAME,user.STATUS,
+        (select PATH from app_cm_file acf where uuid=user.PROFILE) PROFILE,
+        user.AUSTEP,user.IDCARD,user.IDCARDF,user.IDCARDB,user.IDCARDH,user.CREATETIME,user.UPDATETIME,
+        (select PATH from app_cm_file acf where uuid=user.IDCARDF) IDCARDFURL,
+        (select PATH from app_cm_file acf where uuid=user.IDCARDB) IDCARDBURL,
+        (select PATH from app_cm_file acf where uuid=user.IDCARDH) IDCARDHURL,
+        sur.ROLE ROLE,
+        (case when sur.ROLE=1 then '法人'
+        when sur.ROLE=2 then '店长'
+        when sur.ROLE=3 then '店员'
+        when sur.ROLE=4 then '财务' else '' end) ROLENAME
+        from app_au_user user left join app_biz_shop_user_role sur on user.ID=sur.UID
+        where sur.role =1
+        <if test="sid!=null and sid!=''">and sur.sid=#{sid}</if>
+        order by sur.ROLE,user.UPDATETIME
+    </select>
+
     <update id="updateAppBizCard" parameterType="com.jkm.hsy.user.entity.AppBizCard">
         update app_biz_card
         <set>
