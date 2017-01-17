@@ -268,6 +268,7 @@
         rate4:'',
         dealerUpgerdeRates:[
           {
+            id:'',
             productId:'',
             type:1,
             firstDealerShareProfitRate:'',
@@ -275,6 +276,7 @@
             bossDealerShareRate:""
           },
           {
+            id:'',
             productId:'',
             type:2,
             firstDealerShareProfitRate:'',
@@ -338,6 +340,8 @@
                 this.$data.rate4 = res.data.dealerUpgerdeRates[1].secondDealerShareProfitRate*100;
                 this.$data.bossRate1 = res.data.dealerUpgerdeRates[0].bossDealerShareRate*100;
                 this.$data.bossRate2 = res.data.dealerUpgerdeRates[1].bossDealerShareRate*100;
+                this.$data.dealerUpgerdeRates[0].id = res.data.dealerUpgerdeRates[0].id;
+                this.$data.dealerUpgerdeRates[1].id = res.data.dealerUpgerdeRates[1].id;
               })
           }
         }, function (err) {
