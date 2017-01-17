@@ -81,6 +81,7 @@
         SELECT
             mark_code,
             id,
+            source,
             merchant_name,
             STATUS,
             dealer_id,

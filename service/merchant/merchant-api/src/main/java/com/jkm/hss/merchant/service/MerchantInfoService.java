@@ -159,4 +159,11 @@ public interface MerchantInfoService {
      */
     void updateByCondition(MerchantInfo merchantInfo);
 
+    /**
+     * 按accountIds批量查询
+     *
+     * @param accountIds
+     * @return
+     */
+    List<MerchantInfo> batchGetByAccountIds(List<Long> accountIds);
 }

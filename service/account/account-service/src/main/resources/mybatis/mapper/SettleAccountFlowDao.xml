@@ -5,11 +5,15 @@
         INSERT INTO tb_settle_account_flow
         (
         account_id,
+        settle_audit_record_id,
+        account_user_type,
         order_no,
         before_amount,
         after_amount,
         out_amount,
         income_amount,
+        app_id,
+        trade_date,
         change_time,
         type,
         remark,
@@ -18,17 +22,30 @@
         VALUES
         (
         #{accountId},
+        #{settleAuditRecordId},
+        #{accountUserType},
         #{orderNo},
         #{beforeAmount},
         #{afterAmount},
         #{outAmount},
         #{incomeAmount},
+        #{appId},
+        #{tradeDate}
         #{changeTime},
         #{type},
         #{remark},
         #{status}
         );
     </insert>
+
+    <update id="updateSettleAuditRecordIdByOrderNos">
+        UPDATE tb_settle_account_flow
+        SET settle_audit_record_id = #{settleAuditRecordId}
+        WHERE order_no IN
+        <foreach collection="orderNos" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </update>
 
     <select id="selectById" resultType="com.jkm.hss.account.entity.SettleAccountFlow">
         SELECT * FROM tb_settle_account_flow WHERE id = #{id}
@@ -37,4 +54,24 @@
     <select id="selectByOrderNoAndAccountIdAndType" resultType="com.jkm.hss.account.entity.SettleAccountFlow">
         SELECT * FROM tb_settle_account_flow WHERE order_no = #{orderNo} AND account_id = #{accountId} AND type = #{type}
     </select>
+
+    <select id="selectMerchantLastWordDayRecord" resultType="com.jkm.hss.account.entity.SettleAccountFlow">
+        SELECT * FROM tb_settle_account_flow
+        WHERE account_user_type = 2
+        AND app_id != `hss`
+        AND type = 1
+        AND trade_date IN
+        <foreach collection="tradeDates" item="item" index="index" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+
+    <select id="selectByAuditRecordId" resultType="com.jkm.hss.account.entity.SettleAccountFlow">
+        SELECT * FROM tb_settle_account_flow WHERE settle_audit_record_id = #{recordId}
+    </select>
+
+    <select id="selectDealerOrCompanyFlowByOrderNo" resultType="com.jkm.hss.account.entity.SettleAccountFlow">
+        SELECT * FROM tb_settle_account_flow WHERE order_no = #{orderNo} AND account_user_type != 2
+    </select>
+
 </mapper>

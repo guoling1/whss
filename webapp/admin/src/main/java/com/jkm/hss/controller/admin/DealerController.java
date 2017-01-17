@@ -85,10 +85,10 @@ public class DealerController extends BaseController {
     @ResponseBody
     @RequestMapping(value = "/listDealer", method = RequestMethod.POST)
     public CommonResponse listDealer(@RequestBody final ListDealerRequest listDealerRequest) {
-        if (EnumDealerLevel.FIRST.getId() != listDealerRequest.getLevel()
-                && EnumDealerLevel.SECOND.getId() != listDealerRequest.getLevel()) {
-            listDealerRequest.setLevel(EnumDealerLevel.FIRST.getId());
-        }
+//        if (EnumDealerLevel.FIRST.getId() != listDealerRequest.getLevel()
+//                && EnumDealerLevel.SECOND.getId() != listDealerRequest.getLevel()) {
+//            listDealerRequest.setLevel(EnumDealerLevel.FIRST.getId());
+//        }
         final String mobile = listDealerRequest.getMobile();
         if (StringUtils.isEmpty(StringUtils.trim(mobile))) {
             listDealerRequest.setMobile(null);

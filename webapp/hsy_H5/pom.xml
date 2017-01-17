@@ -15,6 +15,14 @@
     <dependencies>
         <dependency>
             <groupId>com.jkm</groupId>
+            <artifactId>hss-bill-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.jkm</groupId>
+            <artifactId>hss-bill-service</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.jkm</groupId>
             <artifactId>hss-admin-api</artifactId>
         </dependency>
         <dependency>

@@ -16,6 +16,15 @@
         order by UPDATETIME
     </select>
 
+    <select id="findAppAuUserByID" parameterType="java.lang.Long" resultType="com.jkm.hsy.user.entity.AppAuUser">
+        select
+        user.ID,user.CELLPHONE,user.PASSWORD,user.NICKNAME,user.REALNAME,user.STATUS,user.PROFILE,user.AUSTEP,user.IDCARD,user.IDCARDF,user.IDCARDB,user.IDCARDH,user.CREATETIME,user.UPDATETIME
+        from app_au_user user
+        where 1=1
+        <if test="id!=null and id!=''">and ID=#{id}</if>
+        order by UPDATETIME
+    </select>
+
     <insert id="insert" useGeneratedKeys="true" keyProperty="id" parameterType="com.jkm.hsy.user.entity.AppAuUser">
         insert into app_au_user(CELLPHONE,PASSWORD,NICKNAME,REALNAME,STATUS,PROFILE,AUSTEP,IDCARD,IDCARDF,IDCARDB,IDCARDH,CREATETIME,UPDATETIME) values(#{cellphone},#{password},#{nickname},#{realname},#{status},#{profile},#{auStep},#{idcard},#{idcardf},#{idcardb},#{idcardh},#{createTime},#{updateTime})
     </insert>

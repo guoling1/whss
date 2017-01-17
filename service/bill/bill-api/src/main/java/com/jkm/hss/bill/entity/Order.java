@@ -23,7 +23,7 @@ public class Order extends BaseEntity {
     /**
      * 业务线
      *
-     * {@link com.jkm.hss.bill.enums.EnumAppType}
+     * {@link com.jkm.hss.account.enums.EnumAppType}
      */
     private String appId;
 
@@ -123,6 +123,13 @@ public class Order extends BaseEntity {
      * 商品描述（好收收店铺名）
      */
     private String goodsDescribe;
+
+    /**
+     * 对账状态(1:已对账， 0未对账)
+     *
+     * {@link com.jkm.base.common.enums.EnumBoolean}
+     */
+    private int checkedStatus;
 
     /**
      * 结算状态

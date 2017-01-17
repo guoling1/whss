@@ -15,6 +15,14 @@
     <dependencies>
         <dependency>
             <groupId>com.jkm</groupId>
+            <artifactId>hss-settle-service</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.jkm</groupId>
+            <artifactId>hss-settle-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.jkm</groupId>
             <artifactId>hss-product-api</artifactId>
         </dependency>
         <dependency>

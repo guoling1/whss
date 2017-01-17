@@ -27,12 +27,14 @@ import com.jkm.hss.product.servcie.UpgradePayRecordService;
 import com.jkm.hss.product.servcie.UpgradeRecommendRulesService;
 import com.jkm.hss.product.servcie.UpgradeRulesService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -381,6 +383,20 @@ public class MerchantInfoServiceImpl implements MerchantInfoService {
     @Override
     public void updateByCondition(MerchantInfo merchantInfo) {
             merchantInfoDao.updateByCondition(merchantInfo);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param accountIds
+     * @return
+     */
+    @Override
+    public List<MerchantInfo> batchGetByAccountIds(final List<Long> accountIds) {
+        if (CollectionUtils.isEmpty(accountIds)) {
+            return Collections.emptyList();
+        }
+        return this.merchantInfoDao.batchSelectByAccountIds(accountIds);
     }
 
 }

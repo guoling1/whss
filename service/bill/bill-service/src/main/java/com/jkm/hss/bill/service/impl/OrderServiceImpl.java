@@ -22,6 +22,7 @@ import com.jkm.hss.merchant.helper.MerchantSupport;
 import com.jkm.hss.merchant.helper.request.OrderTradeRequest;
 import com.jkm.hss.merchant.service.MerchantInfoService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -90,7 +91,7 @@ public class OrderServiceImpl implements OrderService {
         playMoneyOrder.setPayChannelSign(payOrder.getPayChannelSign());
         playMoneyOrder.setPayer(merchant.getAccountId());
         playMoneyOrder.setPayee(0);
-//        playMoneyOrder.setPayAccount(tradePeriod);
+        playMoneyOrder.setAppId(payOrder.getAppId());
         BigDecimal merchantWithdrawPoundage = this.calculateService.getMerchantWithdrawPoundage(merchantId, payOrder.getPayChannelSign());
         playMoneyOrder.setPoundage(merchantWithdrawPoundage);
         playMoneyOrder.setGoodsName(merchant.getMerchantName());
@@ -374,6 +375,20 @@ public class OrderServiceImpl implements OrderService {
     public BigDecimal getTotalTradeAmountByAccountId(final long accountId, final String appId, final int serviceType) {
         final BigDecimal totalAmount = this.orderDao.selectTotalTradeAmountByAccountId(accountId, appId, serviceType);
         return null == totalAmount ? new BigDecimal("0.00") : totalAmount;
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param orderNos
+     * @return
+     */
+    @Override
+    public List<String> getCheckedOrderNosByOrderNos(final List<String> orderNos) {
+        if (CollectionUtils.isEmpty(orderNos)) {
+            return Collections.emptyList();
+        }
+        return this.orderDao.selectCheckedOrderNosByOrderNos(orderNos);
     }
 
     /**
