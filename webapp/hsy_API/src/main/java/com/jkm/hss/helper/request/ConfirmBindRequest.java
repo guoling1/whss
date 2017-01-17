@@ -3,10 +3,10 @@ package com.jkm.hss.helper.request;
 import lombok.Data;
 
 /**
- * Created by Thinkpad on 2017/1/16.
+ * Created by Thinkpad on 2017/1/17.
  */
 @Data
-public class BindShopRequest {
+public class ConfirmBindRequest {
     /**
      * 二维码
      */

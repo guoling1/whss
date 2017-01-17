@@ -395,7 +395,7 @@
     </select>
 
 
-    <select id="selectByCode" resultType="com.jkm.hss.admin.entity.QRCode">
+    <select id="selectByCodeAndSysType" resultType="com.jkm.hss.admin.entity.QRCode">
         SELECT * FROM tb_qr_code WHERE code = #{code} and sys_type=#{sysType}
     </select>
 </mapper>
