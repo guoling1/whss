@@ -8,21 +8,12 @@
         <version>1.0.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>hss-service</artifactId>
-    <version>${service.version}</version>
+    <artifactId>hsy-user</artifactId>
+    <version>${user.version}</version>
     <packaging>pom</packaging>
 
     <modules>
-        <module>notifier</module>
-        <module>user</module>
-        <module>bank</module>
-        <module>account</module>
-        <module>merchant</module>
-        <module>dealer</module>
-        <module>product</module>
-        <module>admin</module>
-        <module>bill</module>
-        <module>settle</module>
-        <module>hsy-user</module>
+        <module>h-user-api</module>
+        <module>h-user-service</module>
     </modules>
 </project>
