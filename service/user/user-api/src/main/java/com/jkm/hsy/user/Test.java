@@ -1,7 +1,7 @@
-package com.jkm.hss.user.dao;
+package com.jkm.hsy.user;
 
 /**
  * Created by yulong.zhang on 2016/11/22.
  */
-public class Test {
+public interface Test {
 }
