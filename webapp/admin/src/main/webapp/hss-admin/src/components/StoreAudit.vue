@@ -42,14 +42,14 @@
               <th style="text-align: right">推荐人注册手机号:</th>
               <td><input type="text" style="background:#efecec;padding-left:5px;" value="—" readonly></td>
             </tr>
-            <!--<tr>
+            <tr>
               <th style="text-align: right">推荐所属一级代理名:</th>
-              <td><input type="text" style="background:#efecec;padding-left:5px;" value="proxyNameYQ" readonly></td>
+              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.proxyNameYq" readonly></td>
               <th style="text-align: right">推荐所属二级代理名:</th>
-              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.proxyNameYQ1" readonly></td>
+              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.proxyNameYq1" readonly></td>
               <th style="text-align: right"></th>
-              <td><input type="text" style="background:#efecec;padding-left:5px;" value="—" readonly></td>
-            </tr>-->
+              <td></td>
+            </tr>
             </tbody></table>
         </div>
       </div>
@@ -173,25 +173,6 @@
               </tbody>
             </table>
           </div>
-          <!--<table class="table">
-            <tbody>
-            <tr>
-              <th style="text-align: right">资料审核状态:</th>
-              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.status|status" readonly></td>
-              <th style="text-align: right">审核时间:</th>
-              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.checkedTime|changeTime" readonly></td>
-              <th style="text-align: right">审核人:</th>
-              <td><input type="text" style="background:#efecec;padding-left:5px;" value="—" readonly></td>
-            </tr>
-            <tr>
-              <th style="text-align: right">审核批复信息:</th>
-              <td><input type="text" style="background:#efecec;padding-left:5px;" value="—" readonly></td>
-              <th></th>
-              <td></td>
-              <th></th>
-              <td></td>
-            </tr>
-            </tbody></table>-->
         </div>
       </div>
       <div class="mask" id="mask" style="display: none" @click="isNo()">
@@ -241,6 +222,8 @@
           proxyName: '',
           reserveMobile:'',
           createTime:'',
+          proxyNameYQ:'',
+          proxyNameYQ1:'',
         },
         reason:'',
         status:'',

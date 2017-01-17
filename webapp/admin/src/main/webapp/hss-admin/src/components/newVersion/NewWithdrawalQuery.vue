@@ -68,10 +68,8 @@
                   <tbody>
                   <tr role="row" v-for="(record,index) in $$records">
                     <td>{{(query.pageNo-1)*10+(index+1)}}</td>
-                    <td id="td" @mouseover.self="mouseover($event)" @mouseout.self="mouseout($event)">{{record.sn|changeHide}}
-                      <span style="display: none">{{record.sn}}</span>
-                    </td>
-                    <td>{{record.orderNo|changeHide}}</td>
+                    <td class="td" :data-clipboard-text="record.sn">{{record.sn|changeHide}}</td>
+                    <td class="td" :data-clipboard-text="record.orderNo">{{record.orderNo|changeHide}}</td>
                     <td>{{record.requestTime|changeTime}}</td>
                     <td>{{record.receiptUserName}}</td>
                     <td>{{record.bankCard|changeHide}}</td>
@@ -127,6 +125,7 @@
 </template>
 
 <script lang="babel">
+  import Clipboard from "clipboard"
   export default {
     name: 'withDrawal',
     data () {
@@ -162,14 +161,13 @@
         url: '',
         count:0,
         //正式
-        queryUrl:'http://pay.qianbaojiajia.com/order/withdraw/listOrder',
+        /*queryUrl:'http://pay.qianbaojiajia.com/order/withdraw/listOrder',
          excelUrl:'http://pay.qianbaojiajia.com/order/withdraw/exportExcel',
-         syncUrl:'http://pay.qianbaojiajia.com/order/syncWithdrawOrder',
+         syncUrl:'http://pay.qianbaojiajia.com/order/syncWithdrawOrder',*/
         //测试
-        /*queryUrl:'http://192.168.1.20:8076/order/withdraw/listOrder',
+        queryUrl:'http://192.168.1.20:8076/order/withdraw/listOrder',
         excelUrl:'http://192.168.1.20:8076/order/withdraw/exportExcel',
-        syncUrl:'http://192.168.1.20:8076/order/syncWithdrawOrder',
-        syncUrl:'http://192.168.1.20:8076/order/syncWithdrawOrder',*/
+        syncUrl:'http://192.168.1.20:8076/order/syncWithdrawOrder'
       }
     },
     created:function () {
@@ -181,6 +179,15 @@
           this.$data.total=res.data.totalPage;
           this.$data.url=res.data.ext;
           this.$data.count = res.data.count;
+
+          var clipboard = new Clipboard('.td');
+          //复制成功执行的回调，可选
+          clipboard.on('success', (e)=> {
+            this.$store.commit('MESSAGE_ACCORD_SHOW', {
+              text: "复制成功  内容为："+e.text
+            })
+          });
+
           var str='',
             page=document.getElementById('page');
           str+='<li class="paginate_button previous" id="example2_previous"><a href="#" aria-controls="example2" data-dt-idx="0" tabindex="0">上一页</a></li>'
@@ -228,23 +235,6 @@
         })
     },
     methods: {
-      mouseover: function (e) {
-        /*var obj = e.target;
-        obj.style.position='relative'
-        var span = e.target.lastElementChild;
-        span.style.display="block";
-        span.style.position="absolute";
-        span.style.bottom='25px';
-        span.style.left= '21px';
-        span.style.background='#fff';
-        span.style.boxShadow= '0 0 10px';
-        span.style.padding= '5px';
-        span.style.borderRadius= '4px';*/
-      },
-      mouseout: function (e) {
-        /*var obj = e.target;
-        e.target.lastElementChild.style.display="none"*/
-      },
       onload:function () {
         this.$data.isMask = true;
         this.$http.post(this.$data.excelUrl,this.$data.query)
@@ -531,5 +521,11 @@
     width: 8%;
     margin: 0 auto;
     display: inherit;
+  }
+  .td{
+    cursor: pointer;
+  }
+  .btn{
+    font-size: 12px;
   }
 </style>
