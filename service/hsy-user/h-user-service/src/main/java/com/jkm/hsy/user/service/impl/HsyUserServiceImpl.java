@@ -74,6 +74,7 @@ public class HsyUserServiceImpl implements HsyUserService {
         /**用户 商铺 中间表 保存*/
         Date date=new Date();
         appAuUser.setStatus(AppConstant.USER_STATUS_NO_CHECK);
+        appAuUser.setAuStep("0");
         appAuUser.setCreateTime(date);
         appAuUser.setUpdateTime(date);
         hsyUserDao.insert(appAuUser);
@@ -111,7 +112,6 @@ public class HsyUserServiceImpl implements HsyUserService {
         Map map=new HashMap();
         appAuUser.setCode(null);
         appAuUser.setShopName(null);
-        appAuUser.setProfile("");
         map.put("appAuUser",appAuUser);
         map.put("appBizShop",appBizShop);
         return gson.toJson(map);

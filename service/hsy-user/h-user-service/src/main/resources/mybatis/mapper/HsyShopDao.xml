@@ -68,4 +68,76 @@
         order by shop.UPDATETIME
     </select>
 
+    <select id="findsurByRoleTypeSid" parameterType="java.lang.Long" resultType="com.jkm.hsy.user.entity.AppBizShopUserRole">
+      select SID,UID,ROLE,STATUS,TYPE from app_biz_shop_user_role
+      where role=1 and type=1 and sid=#{sid}
+    </select>
+
+    <select id="findShopList" parameterType="com.jkm.hsy.user.entity.AppBizShop" resultType="com.jkm.hsy.user.entity.AppBizShop">
+        select
+        shop.ID,shop.NAME,shop.SHORTNAME,shop.INDUSTRYCODE,shop.DISTRICTCODE,shop.ADDRESS,shop.LICENCEID,shop.STOREFRONTID,shop.COUNTERID,shop.INDOORID,shop.PARENTID,shop.CONTACTNAME,shop.CONTACTCELLPHONE,shop.STATUS,shop.ISPUBLIC,shop.CREATETIME,shop.UPDATETIME,
+        (select PATH from app_cm_file acf where uuid=shop.LICENCEID) LICENCEURL,
+        (select PATH from app_cm_file where uuid=shop.STOREFRONTID) STOREFRONTURL,
+        (select PATH from app_cm_file where uuid=shop.COUNTERID) COUNTERURL,
+        (select PATH from app_cm_file where uuid=shop.INDOORID) INDOORURL,
+        (select count(*) from app_biz_shop_user_role where role=3) COUNTEMPLOYEE,
+        sur.TYPE TYPE
+        from app_biz_shop shop left join app_biz_shop_user_role sur on shop.ID=sur.SID
+        where 1=1
+        <if test="uid!=null and uid!=''">and sur.UID=#{uid}</if>
+        order by sur.TYPE,shop.UPDATETIME
+    </select>
+
+    <select id="findShopDetail" parameterType="com.jkm.hsy.user.entity.AppBizShop" resultType="com.jkm.hsy.user.entity.AppBizShop">
+        select
+        shop.ID,shop.NAME,shop.SHORTNAME,shop.INDUSTRYCODE,shop.DISTRICTCODE,shop.ADDRESS,shop.LICENCEID,shop.STOREFRONTID,shop.COUNTERID,shop.INDOORID,shop.PARENTID,shop.CONTACTNAME,shop.CONTACTCELLPHONE,shop.STATUS,shop.ISPUBLIC,shop.CREATETIME,shop.UPDATETIME,
+        (select PATH from app_cm_file acf where uuid=shop.LICENCEID) LICENCEURL,
+        (select PATH from app_cm_file where uuid=shop.STOREFRONTID) STOREFRONTURL,
+        (select PATH from app_cm_file where uuid=shop.COUNTERID) COUNTERURL,
+        (select PATH from app_cm_file where uuid=shop.INDOORID) INDOORURL,
+        (select count(*) from app_biz_shop_user_role where role=3) COUNTEMPLOYEE,
+        sur.TYPE TYPE,
+        sur.UID UID,
+        shop.CHECKERRORINFO CHECKERRORINFO
+        from app_biz_shop shop left join app_biz_shop_user_role sur on shop.ID=sur.SID
+        where 1=1
+        <if test="id!=null and id!=''">and shop.ID=#{id}</if>
+        order by sur.TYPE,shop.UPDATETIME
+    </select>
+
+    <select id="findUserByShopID" parameterType="java.lang.Long" resultType="com.jkm.hsy.user.entity.AppAuUser">
+        select
+          user.ID,user.CELLPHONE,user.PASSWORD,user.NICKNAME,user.REALNAME,user.STATUS,
+          (select PATH from app_cm_file acf where uuid=user.PROFILE) PROFILE,
+          user.AUSTEP,user.IDCARD,user.IDCARDF,user.IDCARDB,user.IDCARDH,user.CREATETIME,user.UPDATETIME,
+         (select PATH from app_cm_file acf where uuid=user.IDCARDF) IDCARDFURL,
+         (select PATH from app_cm_file acf where uuid=user.IDCARDB) IDCARDBURL,
+         (select PATH from app_cm_file acf where uuid=user.IDCARDH) IDCARDHURL,
+         sur.ROLE ROLE,
+        (case when sur.ROLE=1 then '法人'
+         when sur.ROLE=2 then '店长'
+         when sur.ROLE=3 then '店员'
+         when sur.ROLE=4 then '财务' else '' end) ROLENAME
+        from app_au_user user left join app_biz_shop_user_role sur on user.ID=sur.UID
+        where sur.role in(2,3)
+          <if test="sid!=null and sid!=''">and sur.sid=#{sid}</if>
+        order by sur.ROLE,user.UPDATETIME
+    </select>
+
+    <update id="updateAppBizCard" parameterType="com.jkm.hsy.user.entity.AppBizCard">
+        update app_biz_card
+        <set>
+            <if test="sid!=null and sid!=''">SID=#{sid},</if>
+            <if test="cardNO!=null and cardNO!=''">CARDNO=#{cardNO},</if>
+            <if test="cardAccountName!=null and cardAccountName!=''">CARDACCOUNTNAME=#{cardAccountName},</if>
+            <if test="cardBank!=null and cardBank!=''">CARDBANK=#{cardBank},</if>
+            <if test="bankAddress!=null and bankAddress!=''">BANKADDRESS=#{bankAddress},</if>
+            <if test="cardfID!=null and cardfID!=''">CARDFID=#{cardfID},</if>
+            <if test="cardCellphone!=null and cardCellphone!=''">CARDCELLPHONE=#{cardCellphone},</if>
+            <if test="idcardNO!=null and idcardNO!=''">IDCARDNO=#{idcardNO},</if>
+            <if test="status!=null and status!=''">STATUS=#{status},</if>
+            <if test="createTime!=null">CREATETIME=#{createTime},</if>
+            <if test="updateTime!=null">UPDATETIME=#{updateTime}</if>
+        </set> where ID=#{id}
+    </update>
 </mapper>
