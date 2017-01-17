@@ -89,7 +89,7 @@
     </select>
 
     <select id="findShopDetail" parameterType="com.jkm.hsy.user.entity.AppBizShop" resultType="com.jkm.hsy.user.entity.AppBizShop">
-        select
+        select distinct
         shop.ID,shop.NAME,shop.SHORTNAME,shop.INDUSTRYCODE,shop.DISTRICTCODE,shop.ADDRESS,shop.LICENCEID,shop.STOREFRONTID,shop.COUNTERID,shop.INDOORID,shop.PARENTID,shop.CONTACTNAME,shop.CONTACTCELLPHONE,shop.STATUS,shop.ISPUBLIC,shop.CREATETIME,shop.UPDATETIME,
         (select PATH from app_cm_file acf where uuid=shop.LICENCEID) LICENCEURL,
         (select PATH from app_cm_file where uuid=shop.STOREFRONTID) STOREFRONTURL,
@@ -97,7 +97,6 @@
         (select PATH from app_cm_file where uuid=shop.INDOORID) INDOORURL,
         (select count(*) from app_biz_shop_user_role where role=3) COUNTEMPLOYEE,
         sur.TYPE TYPE,
-        sur.UID UID,
         shop.CHECKERRORINFO CHECKERRORINFO
         from app_biz_shop shop left join app_biz_shop_user_role sur on shop.ID=sur.SID
         where 1=1
