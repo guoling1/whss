@@ -398,4 +398,21 @@
     <select id="selectByCodeAndSysType" resultType="com.jkm.hss.admin.entity.QRCode">
         SELECT * FROM tb_qr_code WHERE code = #{code} and sys_type=#{sysType}
     </select>
+
+
+    <update id="bindShop">
+        UPDATE tb_qr_code
+        SET merchant_id = #{shopId}
+        WHERE code=#{code} and sys_type=#{sysType}
+    </update>
+
+    <select id="bindShopCount" resultType="java.lang.Integer">
+        SELECT COUNT(1) FROM tb_qr_code
+        WHERE merchant_id=#{shopId} and sys_type=#{sysType}
+    </select>
+
+    <select id="bindShopList" resultType="com.jkm.hss.admin.helper.responseparam.QRCodeList">
+        SELECT code FROM tb_qr_code
+        WHERE merchant_id=#{shopId} and sys_type=#{sysType} and status=1
+    </select>
 </mapper>

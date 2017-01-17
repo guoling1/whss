@@ -8,6 +8,7 @@ import com.jkm.hss.admin.service.QRCodeService;
 import com.jkm.hss.controller.BaseController;
 import com.jkm.hss.helper.request.BindShopRequest;
 import com.jkm.hss.helper.request.ConfirmBindRequest;
+import com.jkm.hss.helper.response.ConfirmBindResponse;
 import com.jkm.hsy.user.dao.HsyShopDao;
 import com.jkm.hsy.user.dao.HsyUserDao;
 import com.jkm.hsy.user.entity.AppAuUser;
@@ -121,10 +122,23 @@ public class QRCodeController extends BaseController {
             return CommonResponse.simpleResponse(-1, "该店铺不存在");
         }
         //登录用户
-        long merchantId = qrCodeOptional.get().getMerchantId();
-        return null;
-//        return CommonResponse.objectResponse(1, "确认将该二维码已经绑定到门店“"+shops.get(0).getShortName()+"”下吗？");
+        List<AppAuUser> appAuUsers = hsyUserDao.findAppAuUserByID(confirmBindRequest.getUserId());
+        if(appAuUsers==null||appAuUsers.size()==0){
+            return CommonResponse.simpleResponse(-1, "没有该商户");
+        }
+        int count = qrCodeService.bindShop(confirmBindRequest.getCode(),confirmBindRequest.getShopId(),EnumQRCodeSysType.HSY.getId());
+        ConfirmBindResponse confirmBindResponse = new ConfirmBindResponse();
+        confirmBindResponse.setCode(confirmBindRequest.getCode());
+        confirmBindResponse.setName(shops.get(0).getShortName());
+        if(count>0){
+            qrCodeService.markAsActivate(confirmBindRequest.getCode(),confirmBindRequest.getShopId());
+            return CommonResponse.objectResponse(1, "绑定成功",confirmBindResponse);
+        }else {
+            return CommonResponse.simpleResponse(-1, "绑定失败，请重试");
+        }
     }
+
+
 
 
 

@@ -180,12 +180,12 @@
             <dependency>
                 <groupId>com.jkm</groupId>
                 <artifactId>hsy-user-api</artifactId>
-                <version>${hss.admin.version}</version>
+                <version>${user.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.jkm</groupId>
                 <artifactId>hsy-user-service</artifactId>
-                <version>${hss.admin.version}</version>
+                <version>${user.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

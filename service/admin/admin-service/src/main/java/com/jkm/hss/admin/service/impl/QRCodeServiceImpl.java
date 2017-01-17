@@ -18,6 +18,7 @@ import com.jkm.hss.admin.helper.QRCodeConsts;
 import com.jkm.hss.admin.helper.SecondLevelDealerCodeInfo;
 import com.jkm.hss.admin.helper.responseparam.ActiveCodeCount;
 import com.jkm.hss.admin.helper.responseparam.DistributeCodeCount;
+import com.jkm.hss.admin.helper.responseparam.QRCodeList;
 import com.jkm.hss.admin.service.QRCodeService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
@@ -782,5 +783,42 @@ public class QRCodeServiceImpl implements QRCodeService {
     @Override
     public Optional<QRCode> getByCode(String code, String sysType) {
         return Optional.fromNullable(this.qrCodeDao.selectByCodeAndSysType(code,sysType));
+    }
+
+    /**
+     * 绑定店铺
+     *
+     * @param code
+     * @param shopId
+     * @param sysType
+     * @return
+     */
+    @Override
+    public int bindShop(String code, long shopId, String sysType) {
+        return this.qrCodeDao.bindShop(code,shopId,sysType);
+    }
+
+    /**
+     * 绑定店铺个数
+     *
+     * @param shopId
+     * @param sysType
+     * @return
+     */
+    @Override
+    public int bindShopCount(long shopId, String sysType) {
+        return this.qrCodeDao.bindShopCount(shopId,sysType);
+    }
+
+    /**
+     * 二维码列表
+     *
+     * @param shopId
+     * @param sysType
+     * @return
+     */
+    @Override
+    public List<QRCodeList> bindShopList(long shopId, String sysType) {
+        return this.qrCodeDao.bindShopList(shopId,sysType);
     }
 }

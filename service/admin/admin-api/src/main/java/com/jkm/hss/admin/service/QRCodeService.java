@@ -8,6 +8,7 @@ import com.jkm.hss.admin.helper.MyMerchantCount;
 import com.jkm.hss.admin.helper.SecondLevelDealerCodeInfo;
 import com.jkm.hss.admin.helper.responseparam.ActiveCodeCount;
 import com.jkm.hss.admin.helper.responseparam.DistributeCodeCount;
+import com.jkm.hss.admin.helper.responseparam.QRCodeList;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
 
@@ -359,4 +360,29 @@ public interface QRCodeService {
      * @return
      */
     Optional<QRCode> getByCode(String code,String sysType);
+
+    /**
+     * 绑定店铺
+     * @param code
+     * @param shopId
+     * @param sysType
+     * @return
+     */
+    int bindShop(String code,long shopId,String sysType);
+
+    /**
+     * 绑定店铺个数
+     * @param shopId
+     * @param sysType
+     * @return
+     */
+    int bindShopCount(long shopId,String sysType);
+
+    /**
+     * 二维码列表
+     * @param shopId
+     * @param sysType
+     * @return
+     */
+    List<QRCodeList> bindShopList(long shopId,String sysType);
 }
