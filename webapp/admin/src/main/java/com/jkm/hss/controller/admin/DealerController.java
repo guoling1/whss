@@ -85,10 +85,10 @@ public class DealerController extends BaseController {
     @ResponseBody
     @RequestMapping(value = "/listDealer", method = RequestMethod.POST)
     public CommonResponse listDealer(@RequestBody final ListDealerRequest listDealerRequest) {
-        if (EnumDealerLevel.FIRST.getId() != listDealerRequest.getLevel()
-                && EnumDealerLevel.SECOND.getId() != listDealerRequest.getLevel()) {
-            listDealerRequest.setLevel(EnumDealerLevel.FIRST.getId());
-        }
+//        if (EnumDealerLevel.FIRST.getId() != listDealerRequest.getLevel()
+//                && EnumDealerLevel.SECOND.getId() != listDealerRequest.getLevel()) {
+//            listDealerRequest.setLevel(EnumDealerLevel.FIRST.getId());
+//        }
         final String mobile = listDealerRequest.getMobile();
         if (StringUtils.isEmpty(StringUtils.trim(mobile))) {
             listDealerRequest.setMobile(null);
@@ -148,6 +148,8 @@ public class DealerController extends BaseController {
         firstLevelDealerGetResponse.setBankReserveMobile(DealerSupport.decryptMobile(dealer.getId(), dealer.getBankReserveMobile()));
         final FirstLevelDealerGetResponse.Product productResponse = firstLevelDealerGetResponse.new Product();
         firstLevelDealerGetResponse.setProduct(productResponse);
+        firstLevelDealerGetResponse.setTotalProfitSpace(dealer.getTotalProfitSpace());
+        firstLevelDealerGetResponse.setRecommendBtn(dealer.getRecommendBtn());
         productResponse.setProductId(product.getId());
         productResponse.setProductName(product.getProductName());
         productResponse.setLimitPayFeeRate(product.getLimitPayFeeRate().multiply(new BigDecimal("100")).setScale(2).toPlainString());

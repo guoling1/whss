@@ -44,46 +44,26 @@
                       </tr>
                       <tr>
                         <td>普通</td>
-                        <td>{{result.upgradeRulesList[0].weixinRate}}</td>
-                        <td>{{result.upgradeRulesList[0].alipayRate}}</td>
-                        <td>{{result.upgradeRulesList[0].fastRate}}</td>
+                        <td>{{result.upgradeRulesList[0].weixinRate}}%</td>
+                        <td>{{result.upgradeRulesList[0].alipayRate}}%</td>
+                        <td>{{result.upgradeRulesList[0].fastRate}}%</td>
                         <td>无</td>
                         <td>无</td>
                         <td>无</td>
                         <td>无</td>
                       </tr>
-                      <tr v-for="upgrade in result.upgradeRulesList" v-if="upgrade.name!=null">
+                      <tr v-for="(upgrade,index) in result.upgradeRulesList" v-if="index!=0">
                         <td>{{upgrade.name}}</td>
                         <td><input type="text" name="name" v-model="upgrade.weixinRate">%</td>
                         <td><input type="text" name="name" v-model="upgrade.alipayRate">%</td>
                         <td><input type="text" name="name" v-model="upgrade.fastRate">%</td>
                         <td><input type="text" name="name" v-model="upgrade.upgradeCost">元</td>
                         <td><input type="text" name="name" v-model="upgrade.promotionNum">人</td>
-                        <td><input type="text" name="name" v-model="upgrade.directReward">元</td>
-                        <td><input type="text" name="name" v-model="upgrade.indirectReward">元</td>
-                      </tr>
-                      <!--<tr >
-                        <td>店长</td>
-                        <td><input type="text" name="name" >%</td>
-                        <td><input type="text" name="name">%</td>
-                        <td><input type="text" name="name">%</td>
-                        <td><input type="text" name="name">元</td>
-                        <td><input type="text" name="name">人</td>
-                        <td><input type="text" name="name">元</td>
-                        <td><input type="text" name="name">元</td>
+                        <td><input type="text" name="name" v-model="upgrade.directPromoteShall">元</td>
+                        <td><input type="text" name="name" v-model="upgrade.inDirectPromoteShall">元</td>
                       </tr>
                       <tr >
-                        <td>老板</td>
-                        <td><input type="text" name="name" >%</td>
-                        <td><input type="text" name="name">%</td>
-                        <td><input type="text" name="name">%</td>
-                        <td><input type="text" name="name">元</td>
-                        <td><input type="text" name="name">人</td>
-                        <td><input type="text" name="name">元</td>
-                        <td><input type="text" name="name">元</td>
-                      </tr>-->
-                      <tr >
-                        <td colspan="6">邀请用户“激活”标准：收款满<input type="text" name="name" style="width: 100px;" v-model="result.standard">元
+                        <td colspan="6">有效激活标准：收款满<input type="text" name="name" style="width: 100px;" v-model="result.standard">元
                         </td>
                       </tr>
                       </tbody></table>
@@ -120,10 +100,10 @@
                         <td>收单分润</td>
                         <td><input type="text" name="name" v-model="result.tradeRate">%</td>
                       </tr>
-                      <tr >
+                      <!--<tr >
                         <td colspan="2">收单奖励分润池：<input type="text" name="name" style="width: 100px;" v-model="result.rewardRate">%
                         </td>
-                      </tr>
+                      </tr>-->
                       </tbody>
                     </table>
                   </div>
@@ -146,10 +126,12 @@
       return{
         result: '',
         lists:[], //产品列表
-        productId:''
+        productId:'',
+        query:''
       }
     },
     created: function () {
+      //产品列表
       this.$http.post("/admin/product/list")
         .then(function (res) {
           this.$data.lists = res.data
@@ -158,13 +140,41 @@
             text: err.statusMessage
           })
         })
+      //内容
+      /*this.$http.post('/admin/upgrade/init', {productId: this.$data.productId})
+        .then(function (res) {
+          console.log(res)
+          this.$data.result = res.data;
+
+          this.$data.result.upgradeRulesList.sort(function (a, b) {
+            return a.type-b.type
+          })
+          console.log(this.$data.result.upgradeRulesList)
+          this.$data.result.upgradeRulesList[0].name = '普通'
+          this.$data.result.upgradeRulesList[1].name = '店员'
+          this.$data.result.upgradeRulesList[2].name = '店长'
+          this.$data.result.upgradeRulesList[3].name = '老板'
+        }, function (err) {
+          this.$store.commit('MESSAGE_ACCORD_SHOW', {
+            text: err.statusMessage
+          })
+        })*/
     },
     methods: {
       search: function () {
+        this.$data.result = ''
         this.$http.post('/admin/upgrade/init', {productId: this.$data.productId})
           .then(function (res) {
             console.log(res)
             this.$data.result = res.data;
+            this.$data.result.upgradeRulesList.sort(function (a, b) {
+              return a.type-b.type
+            })
+            console.log(this.$data.result.upgradeRulesList)
+            this.$data.result.upgradeRulesList[0].name = '普通'
+            this.$data.result.upgradeRulesList[1].name = '店员'
+            this.$data.result.upgradeRulesList[2].name = '店长'
+            this.$data.result.upgradeRulesList[3].name = '老板'
           }, function (err) {
             this.$store.commit('MESSAGE_ACCORD_SHOW', {
               text: err.statusMessage
@@ -172,10 +182,25 @@
           })
       },
       save: function () {
-        console.log(this.$data.result)
-        this.$http.post('/admin/upgrade/addOrUpdate',{})
+        var upgradeRulesList= this.$data.result.upgradeRulesList.concat()
+        upgradeRulesList.shift()
+        var query = {
+          productId:this.$data.productId,
+          standard:this.$data.result.standard,
+          upgradeRate:this.$data.result.upgradeRate,
+          tradeRate:this.$data.result.tradeRate,
+          rewardRate:this.$data.result.rewardRate,
+          upgradeRulesList:upgradeRulesList
+        }
+        this.$http.post('/admin/upgrade/addOrUpdate',query)
           .then(function (res) {
-
+            this.$store.commit('MESSAGE_ACCORD_SHOW', {
+              text: "操作成功"
+            })
+          },function (err) {
+            this.$store.commit('MESSAGE_ACCORD_SHOW', {
+              text: err.statusMessage
+            })
           })
       }
     },
@@ -203,5 +228,8 @@
     width: 77%;
     border: none;
     border-bottom: 1px solid #d0d0d0;
+  }
+  .btn,select{
+    font-size: 12px;
   }
 </style>

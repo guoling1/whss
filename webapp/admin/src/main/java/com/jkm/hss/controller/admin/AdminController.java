@@ -6,11 +6,6 @@ import com.google.common.collect.Maps;
 import com.jkm.base.common.entity.CommonResponse;
 import com.jkm.base.common.util.CookieUtil;
 import com.jkm.base.common.util.ValidateUtils;
-import com.jkm.hss.controller.BaseController;
-import com.jkm.hss.dealer.enums.EnumRecommendBtn;
-import com.jkm.hss.helper.ApplicationConsts;
-import com.jkm.hss.helper.request.DistributeRangeQRCodeRequest;
-import com.jkm.hss.helper.response.FirstLevelDealerAddResponse;
 import com.jkm.hss.admin.entity.AdminUser;
 import com.jkm.hss.admin.entity.AdminUserPassport;
 import com.jkm.hss.admin.entity.CodeQueryResponse;
@@ -18,6 +13,7 @@ import com.jkm.hss.admin.entity.QRCode;
 import com.jkm.hss.admin.service.AdminUserService;
 import com.jkm.hss.controller.BaseController;
 import com.jkm.hss.dealer.entity.Dealer;
+import com.jkm.hss.dealer.enums.EnumRecommendBtn;
 import com.jkm.hss.dealer.helper.DealerConsts;
 import com.jkm.hss.dealer.helper.requestparam.FirstLevelDealerAddRequest;
 import com.jkm.hss.dealer.helper.requestparam.FirstLevelDealerUpdateRequest;
@@ -305,7 +301,7 @@ public class AdminController extends BaseController {
             if(firstLevelDealerAddRequest.getTotalProfitSpace()==null){
                 return CommonResponse.simpleResponse(-1, "收单总分润空间不能为空");
             }
-            if((firstLevelDealerAddRequest.getTotalProfitSpace()).compareTo(new BigDecimal("0.2"))>0){
+            if((firstLevelDealerAddRequest.getTotalProfitSpace()).compareTo(new BigDecimal("0.002"))>0){
                 return CommonResponse.simpleResponse(-1, "总分润空间不可高于0.2%");
             }
             final FirstLevelDealerAddRequest.Product productParam = firstLevelDealerAddRequest.getProduct();
@@ -387,7 +383,7 @@ public class AdminController extends BaseController {
             if(request.getTotalProfitSpace()==null){
                 return CommonResponse.simpleResponse(-1, "收单总分润空间不能为空");
             }
-            if((request.getTotalProfitSpace()).compareTo(new BigDecimal("0.2"))>0){
+            if((request.getTotalProfitSpace()).compareTo(new BigDecimal("0.002"))>0){
                 return CommonResponse.simpleResponse(-1, "总分润空间不可高于0.2%");
             }
             final FirstLevelDealerUpdateRequest.Product productParam = request.getProduct();
@@ -625,7 +621,7 @@ public class AdminController extends BaseController {
         BigDecimal b2 = new BigDecimal(dealerUpgerdeRateParam.getFirstDealerShareProfitRate());
         BigDecimal b3 = new BigDecimal(dealerUpgerdeRateParam.getSecondDealerShareProfitRate());
         BigDecimal b = b1.add(b2).add(b3);
-        if (b.compareTo(new BigDecimal("100"))!=0) {
+        if (b.compareTo(new BigDecimal("1"))!=0) {
             return CommonResponse.simpleResponse(-1, "金开门，一级代理，二级代理的比例之和必须等于100%");
         }
         return CommonResponse.simpleResponse(1, "");
@@ -645,7 +641,7 @@ public class AdminController extends BaseController {
         BigDecimal b2 = new BigDecimal(dealerUpgerdeRateParam.getFirstDealerShareProfitRate());
         BigDecimal b3 = new BigDecimal(dealerUpgerdeRateParam.getSecondDealerShareProfitRate());
         BigDecimal b = b1.add(b2).add(b3);
-        if (b.compareTo(new BigDecimal("100"))!=0) {
+        if (b.compareTo(new BigDecimal("1"))!=0) {
             return CommonResponse.simpleResponse(-1, "金开门，一级代理，二级代理的比例之和必须等于100%");
         }
         return CommonResponse.simpleResponse(1, "");

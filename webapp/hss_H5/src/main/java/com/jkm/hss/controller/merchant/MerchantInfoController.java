@@ -1,14 +1,22 @@
 package com.jkm.hss.controller.merchant;
 
+import com.alibaba.fastjson.JSONObject;
 import com.aliyun.oss.OSSClient;
 import com.aliyun.oss.model.ObjectMetadata;
+import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Lists;
 import com.jkm.base.common.entity.CommonResponse;
+import com.jkm.base.common.entity.PageModel;
 import com.jkm.base.common.util.DateFormatUtil;
 import com.jkm.base.common.util.ValidateUtils;
 import com.jkm.hss.controller.BaseController;
+import com.jkm.hss.dealer.entity.PartnerShallProfitDetail;
+import com.jkm.hss.dealer.service.PartnerShallProfitDetailService;
 import com.jkm.hss.helper.ApplicationConsts;
+import com.jkm.hss.helper.request.PartnerShallRequest;
+import com.jkm.hss.helper.response.PartnerShallResponse;
 import com.jkm.hss.merchant.entity.BankCardBin;
 import com.jkm.hss.merchant.entity.MerchantInfo;
 import com.jkm.hss.merchant.entity.UserInfo;
@@ -41,9 +49,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.InputStream;
+import java.math.BigDecimal;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -72,7 +82,8 @@ public class MerchantInfoController extends BaseController {
     private UserInfoService userInfoService;
     @Autowired
     private VerifyIdService verifyIdService;
-
+    @Autowired
+    private PartnerShallProfitDetailService partnerShallProfitDetailService;
 
     @ResponseBody
     @RequestMapping(value = "/save", method = RequestMethod.POST)
@@ -313,5 +324,76 @@ public class MerchantInfoController extends BaseController {
         final String realName = merchantInfo.getName();
         final Pair<Integer, String> pair = this.verifyIdService.verifyID(mobile, bankcard, idCard, bankReserveMobile, realName);
         return pair;
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/queryShall", method = RequestMethod.POST)
+    public CommonResponse queryShall(final HttpServletRequest request, @RequestBody final PartnerShallRequest shallRequest){
+
+        if(!super.isLogin(request)){
+            return CommonResponse.simpleResponse(-2, "未登录");
+        }
+        Optional<UserInfo> userInfoOptional = userInfoService.selectByOpenId(super.getOpenId(request));
+        if(!userInfoOptional.isPresent()){
+            return CommonResponse.simpleResponse(-2, "未登录");
+        }
+        Optional<MerchantInfo> merchantInfo = merchantInfoService.selectById(userInfoOptional.get().getMerchantId());
+        if(!merchantInfo.isPresent()){
+            return CommonResponse.simpleResponse(-2, "未登录");
+        }
+        if(merchantInfo.get().getStatus()!=EnumMerchantStatus.PASSED.getId()&&merchantInfo.get().getStatus()!=EnumMerchantStatus.FRIEND.getId()){
+            return CommonResponse.simpleResponse(-2, "未审核通过");
+        }
+
+        shallRequest.setMerchantId(merchantInfo.get().getId());
+        PageModel<PartnerShallProfitDetail> pageModel = this.partnerShallProfitDetailService.
+                getPartnerShallProfitList(shallRequest.getMerchantId(), shallRequest.getShallId(),shallRequest.getPageNo() ,shallRequest.getPageSize());
+        final BigDecimal totalProfit = this.partnerShallProfitDetailService.selectTotalProfitByMerchantId(shallRequest.getMerchantId());
+
+        final List<PartnerShallProfitDetail> records = pageModel.getRecords();
+
+        List<JSONObject> list = Lists.transform(records, new Function<PartnerShallProfitDetail, JSONObject>() {
+            @Override
+            public JSONObject apply(PartnerShallProfitDetail input) {
+                JSONObject jsonObject = new JSONObject();
+                if (input.getFirstMerchantId() == shallRequest.getMerchantId()){
+                    jsonObject.put("type","1");
+                    jsonObject.put("name",input.getMerchantName());
+                    jsonObject.put("date", input.getCreateTime());
+                    jsonObject.put("money", input.getFirstMerchantShallAmount());
+                    jsonObject.put("shallId", input.getId());
+                }else{
+                    jsonObject.put("type","2");
+                    jsonObject.put("name",getInDirectName(input.getMerchantName()));
+                    jsonObject.put("date", input.getCreateTime());
+                    jsonObject.put("money", input.getSecondMerchantShallAmount());
+                    jsonObject.put("shallId", input.getId());
+                }
+
+                return jsonObject;
+            }
+        });
+        PageModel<JSONObject> model = new PageModel<>(shallRequest.getPageNo(),shallRequest.getPageSize());
+        model.setRecords(list);
+        model.setCount(pageModel.getCount());
+        model.setHasNextPage(pageModel.isHasNextPage());
+        model.setPageSize(pageModel.getPageSize());
+        PartnerShallResponse response = new PartnerShallResponse();
+        response.setPageModel(model);
+        response.setTotalShall(String.valueOf(totalProfit));
+
+        return CommonResponse.objectResponse(1,"success", response);
+    }
+
+
+    private String getInDirectName(String name){
+        final int length = name.length();
+        if (length <= 2){
+            return "*" + name.charAt(1);
+        }else if (length == 3){
+
+            return "**" + name.charAt(2);
+        }
+          return "**" + name.charAt(length - 1);
     }
 }

@@ -7,6 +7,7 @@ import com.jkm.hss.merchant.helper.request.OrderTradeRequest;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -57,6 +58,15 @@ public interface OrderDao {
      * @return
      */
     int updateSettleStatus(@Param("id") long id, @Param("status") int status);
+
+    /**
+     * 更新对账状态
+     *
+     * @param id
+     * @param checkedStatus
+     * @return
+     */
+    int updateCheckedStatus(@Param("id") long id, @Param("checkedStatus") int checkedStatus);
 
     /**
      * 结算成功
@@ -173,4 +183,30 @@ public interface OrderDao {
      * @return
      */
     long selectCountMerchantPayOrders(QueryMerchantPayOrdersRequestParam requestParam);
+
+    /**
+     * 按下游业务订单号查询
+     *
+     * @param businessOrderNo
+     * @return
+     */
+    Order selectByBusinessOrderNo(@Param("businessOrderNo") String businessOrderNo);
+
+    /**
+     * 查询当前账户的交易总额
+     *
+     * @param accountId
+     * @param appId
+     * @param serviceType
+     * @return
+     */
+    BigDecimal selectTotalTradeAmountByAccountId(@Param("accountId") long accountId, @Param("appId") String appId, @Param("serviceType") int serviceType);
+
+    /**
+     * 查询已经对过账的订单号
+     *
+     * @param orderNos
+     * @return
+     */
+    List<String> selectCheckedOrderNosByOrderNos(@Param("orderNos") List<String> orderNos);
 }

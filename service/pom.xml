@@ -22,5 +22,6 @@
         <module>product</module>
         <module>admin</module>
         <module>bill</module>
+        <module>settle</module>
     </modules>
 </project>

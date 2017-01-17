@@ -4,7 +4,7 @@
 
     <!-- 通用查询结果列-->
     <sql id="Base_Column_List">
-        id,	merchant_id,	level,	upgrade_rules_id,	req_sn,	amount,	note,pay_result,	status,	create_time,	update_time
+        id,	merchant_id,product_id,before_level,level,	upgrade_rules_id,	req_sn,	amount,	note,pay_result,	status,	create_time,	update_time
     </sql>
 
     <!-- 添加 （匹配有值的字段）-->
@@ -13,6 +13,12 @@
         <trim prefix="(" suffix=")" suffixOverrides="," >
             <if test="merchantId != null">
                 merchant_id,
+            </if>
+            <if test="productId != null">
+                product_id,
+            </if>
+            <if test="beforeLevel != null">
+                before_level,
             </if>
             <if test="level != null">
                 level,
@@ -39,6 +45,12 @@
         <trim prefix="values (" suffix=")" suffixOverrides="," >
             <if test="merchantId!=null">
                 #{merchantId},
+            </if>
+            <if test="productId != null">
+                #{productId},
+            </if>
+            <if test="beforeLevel != null">
+                #{beforeLevel},
             </if>
             <if test="level!=null">
                 #{level},
@@ -75,7 +87,7 @@
     <!--根据请求单号更改订单状态-->
     <update id="updatePayResult">
         UPDATE tb_upgrade_pay_record
-        SET pay_result=#{payResult},
+        SET pay_result=#{payResult}
         WHERE req_sn = #{reqSn}
     </update>
 

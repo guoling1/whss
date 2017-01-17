@@ -1,9 +1,11 @@
 <template lang="html">
   <div id="productAdd">
-    <div v-if="isShow" style="padding: 8px 30px; background: rgb(243, 156, 18); z-index: 999999; font-size: 22px; font-weight: 600;margin-bottom: 15px;color: #fff;">增加产品</div>
-    <div v-else="isShow" style="padding: 8px 30px; background: rgb(243, 156, 18); z-index: 999999; font-size: 22px; font-weight: 600;margin-bottom: 15px;color: #fff;">产品详情</div>
-    <div style="margin: 0 15px;width: inherit" class="box box-info">
+    <div style="margin: 15px;width: inherit" class="box">
       <form class="form-horizontal">
+        <div class="box-header">
+          <h3 v-if="isShow" class="box-title">增加产品</h3>
+          <h3 v-else="isShow" class="box-title">产品详情</h3>
+        </div>
         <div class="box-body">
           <div class="form-group">
             <label for="productName" class="col-sm-2 control-label">产品名称</label>
@@ -50,7 +52,7 @@
             <label for="limitWithdrawFeeRate" class="col-sm-2 control-label">提现手续费加价限额</label>
 
             <div class="col-sm-4 middle">
-              <input type="text" class="form-control" id="limitWithdrawFeeRate" v-model="basicTradeRate">
+              <input type="text" class="form-control" id="limitWithdrawFeeRate" v-model="limitWithdrawFeeRate">
               <i>元/笔</i>
             </div>
             <div class="col-sm-6 right">允许一级代理商提高商户的手续费最高限制，例如：0.5元／笔</div>
@@ -175,6 +177,7 @@
                 this.$store.commit('MESSAGE_ACCORD_SHOW', {
                   text: '创建成功'
                 })
+              this.$router.push('/admin/record/productList')
             },function(err){
               this.$store.commit('MESSAGE_ACCORD_SHOW', {
                 text: err.statusMessage
@@ -248,5 +251,8 @@
   }
   .right{
     padding-top: 7px;
+  }
+  .btn,select{
+    font-size: 12px;
   }
 </style>

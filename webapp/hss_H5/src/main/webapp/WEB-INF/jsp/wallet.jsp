@@ -28,7 +28,7 @@
       <div class="operation-title">收款</div>
     </a>
 
-    <div class="operation" id="tt" onclick="javascript:location.href='/sqb/drawCash'">
+    <div class="operation">
       <div class="logo wallet"></div>
       <div class="operation-title">余额</div>
       <div class="operation-small">${avaliable}</div>
@@ -53,10 +53,11 @@
         <div class="logo friend"></div>
         <div class="text">推荐好友</div>
       </a>
-      <a class="group touch_gr" id="show_upgrade" href="/sqb/upgradeMax">
+
+      <div class="group touch_gr" id="show_upgrade">
         <div class="logo upgrade"></div>
         <div class="text">我要升级</div>
-      </a>
+      </div>
       <a class="group touch_gr" href="/sqb/ticket">
         <div class="logo train"></div>
         <div class="text">火车票</div>
@@ -73,10 +74,30 @@
         <div class="logo credit"></div>
         <div class="text">信用卡申请</div>
       </a>
+
+      <div class="group touch_gr" id="unbundling">
+        <div class="logo upgrade"></div>
+        <div class="text">解绑微信</div>
+      </div>
       <%--<div class="group touch_gr">--%>
       <%--<div class="logo more"></div>--%>
       <%--<div class="text">更多</div>--%>
       <%--</div>--%>
+    </div>
+  </div>
+  <div class="layer" id="layer">
+    <div class="space">
+      <div class="space-title">
+        解绑微信
+        <div class="xx" id="xx"></div>
+      </div>
+      <div class="space-cont">
+        <div class="cont-detail">解绑后，再次进入需要使用手机验证码登录并绑定微信。</div>
+        <div class="operation">
+          <div class="cancel" id="cancel">取消</div>
+          <div class="submit" id="unbundlingSubmit">解绑</div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -84,12 +105,9 @@
 <script>
   var pageData = {
     showRecommend: '${showRecommend}'//1显示升级 2不显示升级
-  }
-  if(pageData.showRecommend==2){
-    document.getElementById('show_recommend').style.display="none";
-    document.getElementById('show_upgrade').style.display="none";
-  }
+  };
 </script>
 <script src="http://static.jinkaimen.cn/vendor/vendor.1.0.1.min.js"></script>
-<script src="http://static.jinkaimen.cn/hss/2.0.1/wallet.min.js"></script>
+<%--<script src="http://static.jinkaimen.cn/hss/2.0.1/wallet.min.js"></script>--%>
+<script src="/js/hss/2.0.1/wallet.min.js"></script>
 </html>

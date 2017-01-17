@@ -8,7 +8,7 @@
   <meta name="viewport"
         content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
   <title>我的推广</title>
-  <link rel="stylesheet" href="http://static.jinkaimen.cn/hss/css/style.2.0.1.css">
+  <link rel="stylesheet" href="http://static.jinkaimen.cn/hss/css/style.2.0.2.css">
   <link rel="stylesheet" href="http://static.jinkaimen.cn/weui/weui.css">
 </head>
 <body>
@@ -45,7 +45,8 @@
       <ul class="upType">
         <li id="payToUp">
           <div class="left"><span id="payToCheck" class="check active"></span>方式一：付费升级</div>
-          <div class="right">￥${upgradeRules.upgradeCost}</div>
+          <div class="right">￥${needMoney}</div>
+          <s class="small">￥${upgradeRules.upgradeCost}</s>
         </li>
         <li id="pushToUp">
           <div class="left"><span id="pushToCheck" class="check"></span>方式二：推广${upgradeRules.promotionNum}个好友</div>
@@ -54,7 +55,7 @@
         </li>
       </ul>
     </div>
-    <div class="pay" id="toUp">微信立即支付 ￥${upgradeRules.upgradeCost}</div>
+    <div class="pay" id="toUp">微信立即支付 ￥${needMoney}</div>
   </div>
   <div class="layer" id="layer">
     <div class="space flexBox flex-box-column">
@@ -80,12 +81,13 @@
 </body>
 <script>
   var pageData = {
-    level: 1,
+    level: ${upgradeRules.id},
     shareUrl: '${shareUrl}'
   }
 </script>
 <script src="http://static.jinkaimen.cn/qrcode/qrcode.min.js"></script>
-<script src="http://static.jinkaimen.cn/vendor/vendor.1.0.1.min.js"></script>
+<%--<script src="http://static.jinkaimen.cn/vendor/vendor.1.0.1.min.js"></script>--%>
+<script src="/js/hss/vendor.1.0.1.min.js"></script>
 <%--<script src="http://static.jinkaimen.cn/hss/2.0.1/toUpgerde.min.js"></script>--%>
 <script src="/js/hss/2.0.1/toUpgerde.min.js"></script>
 </html>

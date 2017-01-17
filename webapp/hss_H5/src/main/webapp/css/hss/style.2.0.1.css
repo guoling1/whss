@@ -436,7 +436,8 @@ input:focus {
 }
 #reg .layer .space .space-cont .cont-detail,
 #login .layer .space .space-cont .cont-detail {
-  line-height: 80px;
+  padding: 20px 0;
+  line-height: 40px;
 }
 #reg .layer .space .space-cont .operation,
 #login .layer .space .space-cont .operation {
@@ -465,6 +466,43 @@ input:focus {
   font-size: 16px;
   color: #FFF;
   border-radius: 5px;
+}
+#prompt,
+#err {
+  padding: 89px 58px 0;
+  width: 100%;
+  height: 100%;
+  background: #FFF;
+}
+#prompt img,
+#err img {
+  display: block;
+  width: 76px;
+  height: 86px;
+  margin: 0 auto 42px;
+}
+#prompt p,
+#err p {
+  font-size: 22px;
+  color: #aab2d3;
+}
+#prompt p.small,
+#err p.small {
+  font-size: 15px;
+  color: #aab2d3;
+  margin: 13px 0 43px;
+}
+#prompt .btn,
+#err .btn {
+  display: block;
+  margin-top: 15px;
+  width: 100%;
+  height: 50px;
+  line-height: 50px;
+  font-size: 16px;
+  color: #fff;
+  background: #7086bd;
+  border-radius: 4px;
 }
 #material {
   width: 100%;
@@ -910,6 +948,74 @@ input:focus {
   font-size: 14px;
   color: #7079a0;
   text-align: center;
+}
+#wallet .layer {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 99;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+}
+#wallet .layer .space {
+  width: 95%;
+  height: auto;
+  border-radius: 3px;
+  background-color: #FFF;
+  position: absolute;
+  top: 45%;
+  left: 50%;
+  transform: translate3d(-50%, -50%, 0);
+  overflow: hidden;
+}
+#wallet .layer .space .space-title {
+  width: 100%;
+  height: 65px;
+  line-height: 65px;
+  background-color: #f4f5f8;
+  text-align: left;
+  padding-left: 15px;
+}
+#wallet .layer .space .space-title .xx {
+  float: right;
+  width: 65px;
+  height: 65px;
+  background: url("../assets/xx.png") no-repeat center;
+  background-size: 18px 18px;
+}
+#wallet .layer .space .space-cont {
+  padding: 0 15px 10px;
+}
+#wallet .layer .space .space-cont .cont-detail {
+  padding: 20px 0;
+  line-height: 40px;
+}
+#wallet .layer .space .space-cont .operation {
+  width: 100%;
+  height: 50px;
+}
+#wallet .layer .space .space-cont .operation .cancel {
+  float: left;
+  width: 45%;
+  height: 50px;
+  line-height: 50px;
+  background-color: #FFF;
+  font-size: 16px;
+  color: #111;
+  border-radius: 5px;
+  border: 1px solid #eee;
+}
+#wallet .layer .space .space-cont .operation .submit {
+  float: right;
+  width: 45%;
+  height: 50px;
+  line-height: 50px;
+  background-color: #7086bd;
+  font-size: 16px;
+  color: #FFF;
+  border-radius: 5px;
 }
 #success {
   width: 100%;
@@ -2078,6 +2184,9 @@ input:focus {
   font-size: 15px;
   color: #48527f;
 }
+#promote .bottom .cont .window li .list .name.w {
+  width: 70%;
+}
 #promote .bottom .cont .window li .list .name span {
   display: inline-block;
   margin-left: 5px;
@@ -2278,6 +2387,7 @@ input:focus {
 #upgrade .info .head img {
   width: 35px;
   height: 35px;
+  border-radius: 50%;
 }
 #upgrade .info .status {
   float: left;
@@ -2344,14 +2454,17 @@ input:focus {
   color: #48527f;
 }
 #upgrade .upgrade .table .t-body .w {
-  padding: 10px 0;
   height: 64px;
+  line-height: 64px;
   font-size: 12px;
   color: #48527f;
   border-bottom: 1px solid #e8eaf3;
 }
 #upgrade .upgrade .table .t-body .w.n {
   border: none;
+}
+#upgrade .upgrade .table .t-body .w.b {
+  padding: 10px 0;
 }
 #upgrade .upgrade .table .t-body .me {
   width: 60px;
@@ -2598,12 +2711,12 @@ input:focus {
 }
 #upgradeWay .space .cont .upType li {
   width: 100%;
-  height: 56px;
-  line-height: 56px;
+  height: 66px;
   border-top: 1px solid #e8e8e8;
 }
 #upgradeWay .space .cont .upType li .left {
   float: left;
+  line-height: 56px;
   text-align: left;
   font-size: 15px;
   color: #222222;
@@ -2623,16 +2736,18 @@ input:focus {
 }
 #upgradeWay .space .cont .upType li .right {
   float: right;
+  line-height: 56px;
   text-align: right;
   font-size: 15px;
   color: #222222;
 }
 #upgradeWay .space .cont .upType li .small {
+  display: block;
   font-size: 10px;
   color: #b3b4b4;
   clear: both;
-  text-align: left;
-  transform: translate3d(60px, -30px, 0);
+  text-align: right;
+  transform: translate3d(0, -15px, 0);
 }
 #upgradeWay .pay {
   width: 100%;

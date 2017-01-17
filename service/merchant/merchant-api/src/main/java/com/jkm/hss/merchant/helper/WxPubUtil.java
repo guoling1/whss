@@ -103,7 +103,7 @@ public class WxPubUtil {
     {
         Map<String, String> token= getTokenAndJsapiTicket();
         Map<String, String> ret = new HashMap<String, String>();
-        String turl = String.format("%s?access_token=%s&openid=%s&lang=zh_CN", WxConstants.GET_USER_INFO,WxConstants.APP_ID,token.get("accessToken"),openId);
+        String turl = String.format("%s?access_token=%s&openid=%s&lang=zh_CN", WxConstants.GET_USER_INFO,token.get("accessToken"),openId);
         HttpClient client = new DefaultHttpClient();
         HttpGet get = new HttpGet(turl);
         JsonParser jsonparer = new JsonParser();// 初始化解析json格式的对象
@@ -119,18 +119,14 @@ public class WxPubUtil {
             {
                 if (json.get("errcode")!=null)
                 {// 错误时微信会返回错误码等信息，{"errcode":40013,"errmsg":"invalid appid"}
-//                    ret.put("errcode", json.get("errcode").getAsString());
-//                    ret.put("errmsg",json.get("errmsg").getAsString());
                     System.out.print("获取微信用户信息错误，错误信息是:"+json.get("errmsg").getAsString());
                     ret.put("nickname", "");
                     ret.put("headimgurl","");
-                    ret.put("unionid","");
                 }
                 else
                 {// 正常情况下{"access_token":"ACCESS_TOKEN","expires_in":7200}
                     ret.put("nickname", json.get("nickname").getAsString());
                     ret.put("headimgurl",json.get("headimgurl").getAsString());
-                    ret.put("unionid",json.get("unionid").getAsString());
                 }
             }
         }
@@ -139,7 +135,6 @@ public class WxPubUtil {
             System.out.print("获取微信用户信息异常:"+e);
             ret.put("nickname", "");
             ret.put("headimgurl","");
-            ret.put("unionid","");
         }
         finally
         {

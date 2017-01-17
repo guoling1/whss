@@ -1,6 +1,9 @@
 package com.jkm.hss.bill.service;
 
+import org.apache.commons.lang3.tuple.Triple;
+
 import java.math.BigDecimal;
+import java.util.Map;
 
 /**
  * Created by yulong.zhang on 2016/12/25.
@@ -33,4 +36,12 @@ public interface CalculateService {
      * @return
      */
     BigDecimal getMerchantPayPoundage(BigDecimal traderAmount, BigDecimal merchantPayPoundageRate);
+
+    /**
+     * 获取当前商户升级，所有分给（代理商，推荐人）的钱--记录为手续费
+     *
+     * @param merchantId
+     * @return
+     */
+    BigDecimal getMerchantUpgradePoundage(long merchantId , String orderNo ,BigDecimal tradeAmount, String businessNo);
 }

@@ -68,12 +68,12 @@ public class MerchantInfoCheckRecordController extends BaseController {
             requestMerchantInfo.setStatus(EnumMerchantStatus.UNPASSED.getId());
             this.merchantInfoCheckRecordService.save(requestMerchantInfo);
 
-//            requestMerchantInfo.setStatus(EnumMerchantStatus.UNPASSED.getId());
-            int i = this.merchantInfoCheckRecordService.updateStatus(requestMerchantInfo);
+
+            this.merchantInfoCheckRecordService.updateStatus(requestMerchantInfo);
             this.verifyIdService.markToIneffective(MerchantSupport.decryptMobile(merchantInfo.getMobile()));
+
             return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE,"审核未通过");
 
-//            return "";
         }
 
 

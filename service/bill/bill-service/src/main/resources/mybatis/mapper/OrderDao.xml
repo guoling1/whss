@@ -5,11 +5,14 @@
         INSERT INTO tb_order
         (
         pay_order_id,
+        business_order_no,
         order_no,
         sn,
         trade_amount,
         real_pay_amount,
+        app_id,
         trade_type,
+        service_type,
         payer,
         payee,
         pay_account,
@@ -30,11 +33,14 @@
         VALUES
         (
         #{payOrderId},
+        #{businessOrderNo},
         #{orderNo},
         #{sn},
         #{tradeAmount},
         #{realPayAmount},
+        #{appId},
         #{tradeType},
+        #{serviceType},
         #{payer},
         #{payee},
         #{payAccount},
@@ -91,6 +97,10 @@
 
     <update id="updateSettleStatus">
         UPDATE tb_order SET settle_status = #{status}, success_settle_time = NOW() WHERE id = #{id}
+    </update>
+
+    <update id="updateCheckedStatus">
+        UPDATE tb_order SET checked_status = #{checkedStatus} WHERE id = #{id}
     </update>
 
     <update id="markSettleSuccess">
@@ -366,5 +376,22 @@
         <if test="startDate != null">
             AND create_time BETWEEN #{startDate} AND #{endDate}
         </if>
+    </select>
+
+    <select id="selectByBusinessOrderNo" resultType="com.jkm.hss.bill.entity.Order">
+        SELECT * FROM tb_order WHERE business_order_no = #{businessOrderNo}
+    </select>
+
+    <select id="selectTotalTradeAmountByAccountId" resultType="java.math.BigDecimal">
+        SELECT SUM(trade_amount) FROM tb_order WHERE app_id = #{appId} AND payee = #{accountId} AND service_type = #{serviceType} AND trade_type = 1
+    </select>
+
+    <select id="selectCheckedOrderNosByOrderNos" resultType="java.lang.String">
+        SELECT order_no FROM tb_order
+        WHERE order_no IN
+        <foreach collection="orderNos" item="item" index="index" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        AND checked_status = 1
     </select>
 </mapper>

@@ -51,4 +51,14 @@ public class UpgradeRules extends BaseEntity{
      * 快捷费率
      */
     private BigDecimal fastRate;
+
+    /**
+     *直推升级费奖励
+     */
+    private BigDecimal directPromoteShall;
+
+    /**
+     *间推升级费奖励
+     */
+    private BigDecimal inDirectPromoteShall;
 }

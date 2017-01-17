@@ -9,6 +9,7 @@ import java.util.Date;
 @Data
 public class MerchantInfoResponse {
 
+
     /**
      * 注册方式标识
      */

@@ -7,7 +7,6 @@ import com.jkm.base.common.util.DateFormatUtil;
 import com.jkm.hss.dealer.dao.DailyProfitDetailDao;
 import com.jkm.hss.dealer.entity.DailyProfitDetail;
 import com.jkm.hss.dealer.entity.Dealer;
-import com.jkm.hss.dealer.entity.ShallProfitDetail;
 import com.jkm.hss.dealer.enums.EnumDealerLevel;
 import com.jkm.hss.dealer.enums.EnumShallMoneyType;
 import com.jkm.hss.dealer.service.CompanyProfitDetailService;
@@ -304,7 +303,7 @@ public class DailyProfitDetailServiceImpl implements DailyProfitDetailService {
      * @return
      */
     @Override
-    public PageModel<DailyProfitDetail> selectFirstByParam(String beginProfitDate, String dealerName, String endProfitDate, int pageNO, int pageSize) {
+    public PageModel<DailyProfitDetail> selectFirstByParam(String beginProfitDate, String firstDealerName, String endProfitDate, int pageNO, int pageSize) {
         PageModel<DailyProfitDetail> pageModel = new PageModel<>(pageNO, pageSize);
         Date beginDate =null;
         Date endDate =null;
@@ -312,7 +311,7 @@ public class DailyProfitDetailServiceImpl implements DailyProfitDetailService {
             beginDate = DateFormatUtil.parse(beginProfitDate+ " 00:00:00", DateFormatUtil.yyyy_MM_dd_HH_mm_ss);
             endDate  = DateFormatUtil.parse(endProfitDate + " 23:59:59", DateFormatUtil.yyyy_MM_dd_HH_mm_ss);
         }
-        List<DailyProfitDetail> list = this.dailyProfitDetailDao.selectFirstByParam(beginDate, dealerName, endDate, pageModel.getFirstIndex(), pageSize);
+        List<DailyProfitDetail> list = this.dailyProfitDetailDao.selectFirstByParam(beginDate, firstDealerName, endDate, pageModel.getFirstIndex(), pageSize);
         if (list == null){
             list = Collections.emptyList();
         }

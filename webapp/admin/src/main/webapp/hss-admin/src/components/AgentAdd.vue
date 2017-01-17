@@ -9,11 +9,25 @@
     <!--<h3 v-if="isShow" class="box-title">新增代理商</h3>-->
     <!--<div v-if="!isShow" style="padding: 8px 30px; background: rgb(243, 156, 18); z-index: 999999; font-size: 22px; font-weight: 600;margin-bottom: 15px;color: #fff;">代理商资料</div>-->
     <div style="margin: 0px 15px 15px;">
-      <div class="box box-info">
+      <div class="box box-info tableTop">
         <div class="box-header with-border">
           <h3 class="box-title">基本信息</h3>
         </div>
-        <form class="form-horizontal">
+        <div class="table-responsive">
+          <table class="table">
+            <tbody>
+            <tr>
+              <th style="text-align: right">代理商手机号:</th>
+              <td><input type="tel" id="mobile" class="form-control" name="mobile" placeholder="代理手机号，用于登录" v-model="$$data.mobile"></td>
+              <th style="text-align: right">代理名称:</th>
+              <td><input type="text" class="form-control" id="name" name="name" placeholder="代理商名称" v-model="$$data.name"></td>
+              <th style="text-align: right">所在地:</th>
+              <td><input type="text" class="form-control" id="belongArea" name="belongArea" placeholder="省/市/街道" v-model="$$data.belongArea"></td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+        <!--<form class="form-horizontal">
           <div class="box-body">
             <div class="form-group">
               <label for="mobile" class="col-sm-3 control-label">代理商手机号</label>
@@ -24,7 +38,6 @@
             </div>
             <div class="form-group">
               <label for="name" class="col-sm-3 control-label">代理名称</label>
-
               <div class="col-sm-4">
                 <input type="text" class="form-control" id="name" name="name" placeholder="代理商名称" v-model="$$data.name">
               </div>
@@ -37,19 +50,38 @@
               </div>
             </div>
           </div>
-        </form>
+        </form>-->
       </div>
-      <div class="box box-info">
+      <div class="box box-info tableTop">
         <div class="box-header with-border">
           <h3 class="box-title">结算信息</h3>
         </div>
-        <!-- /.box-header -->
-        <!-- form start -->
-        <form class="form-horizontal">
+        <div class="table-responsive">
+          <table class="table">
+            <tbody>
+            <tr>
+              <th style="text-align: right">结算卡:</th>
+              <td><input type="text" class="form-control" id="bankCard" name="bankCard" placeholder="输入一级代理银行卡号" v-model="$$data.bankCard"></td>
+              <th style="text-align: right">开户名:</th>
+              <td><input type="text" class="form-control" id="bankAccountName" name="bankAccountName" placeholder="银行开户名称" v-model="$$data.bankAccountName"></td>
+              <th style="text-align: right">身份证号:</th>
+              <td><input type="text" class="form-control" id="idCard" name="idCard" placeholder="开户身份证号" v-model="$$data.idCard"></td>
+            </tr>
+            <tr>
+              <th style="text-align: right">开户手机号:</th>
+              <td><input type="text" class="form-control" id="bankReserveMobile" name="bankReserveMobile" placeholder="银行开户预留手机号" v-model="$$data.bankReserveMobile"></td>
+              <th style="text-align: right"></th>
+              <td></td>
+              <th style="text-align: right"></th>
+              <td></td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+        <!--<form class="form-horizontal">
           <div class="box-body">
             <div class="form-group">
               <label for="bankCard" class="col-sm-3 control-label">结算卡</label>
-
               <div class="col-sm-4">
                 <input type="text" class="form-control" id="bankCard" name="bankCard" placeholder="输入一级代理银行卡号" v-model="$$data.bankCard">
               </div>
@@ -63,21 +95,19 @@
             </div>
             <div class="form-group">
               <label for="idCard" class="col-sm-3 control-label">身份证号</label>
-
               <div class="col-sm-4">
                 <input type="text" class="form-control" id="idCard" name="idCard" placeholder="开户身份证号" v-model="$$data.idCard">
               </div>
             </div>
             <div class="form-group">
               <label for="bankReserveMobile" class="col-sm-3 control-label">开户手机号</label>
-
               <div class="col-sm-4">
                 <input type="text" class="form-control" id="bankReserveMobile" name="bankReserveMobile" placeholder="银行开户预留手机号" v-model="$$data.bankReserveMobile">
               </div>
             </div>
           </div>
-          <!-- /.box-body -->
-        </form>
+          &lt;!&ndash; /.box-body &ndash;&gt;
+        </form>-->
       </div>
       <div class="box box-info">
         <div class="box-header with-border">
@@ -129,27 +159,24 @@
           </div>
         </form>
       </div>
-      <div class="box box-info">
+      <div class="box box-info" v-if="level!=2">
         <div class="box-header with-border">
           <h3 class="box-title">合伙人推荐功能开关</h3>
         </div>
         <form class="form-horizontal">
           <div class="box-body">
             <div class="form-group">
-              <!--<select class="form-control select2 select2-hidden-accessible" style="width: 25%;margin-left: 10%;" tabindex="-1" aria-hidden="true" v-model="recommendBtn">
-                <option value="2">开</option>
-                <option value="1">关</option>
-              </select>-->
-              <input type="radio" id="one" value="One" v-model="picked" style="margin-left: 50px;">
+              <input type="radio" id="one" value="2" v-model="recommendBtn" style="margin-left: 50px;">
               <label for="one">开 (开通后，代理商设置的商户终端费率按产品费率执行)</label>
-              <input type="radio" id="two" value="Two" v-model="picked" style="margin-left: 50px;">
+              <input type="radio" id="two" value="1" v-model="recommendBtn" style="margin-left: 50px;">
               <label for="two">关</label>
             </div>
           </div>
           <!-- /.box-body -->
         </form>
       </div>
-      <div class="box box-info">
+      <!--<div class="box box-info" v-if="level!=2&&recommentBtn==1">-->
+      <div class="box box-info" v-if="level!=2">
         <div class="box-header with-border">
           <h3 class="box-title">合伙人推荐分润设置</h3>
         </div>
@@ -164,8 +191,8 @@
                             <tbody>
                             <tr>
                               <th>收单总分润空间</th>
-                              <th colspan="5">
-                                <input type="number" style="width: 20%" v-model="totalProfitSpace">%
+                              <th colspan="5" style="text-align: left">
+                                <input type="number" style="width: 20%" v-model="rate">%
                                 （总分润空间不可高于0.2%，收单分润需扣除商户升级及推荐的分润成本）
                               </th>
                             </tr>
@@ -178,13 +205,13 @@
                             </tr>
                             <tr>
                               <td>升级费分润</td>
-                              <td>20%</td>
+                              <td>{{bossRate1}}%</td>
                               <td><input type="number" v-model="rate1">%</td>
                               <td><input type="number" v-model="rate2">%</td>
                             </tr>
                             <tr>
                               <td>收单分润</td>
-                              <td>20%</td>
+                              <td>{{bossRate2}}%</td>
                               <td><input type="number" v-model="rate3">%</td>
                               <td><input type="number" v-model="rate4">%</td>
                             </tr>
@@ -202,7 +229,7 @@
       <div class="btn btn-default" @click="create" v-if="isShow">
         创建代理商
       </div>
-      <div class="btn btn-default" @click="change" v-if="!isShow">
+      <div class="btn btn-default" @click="change" v-if="!isShow&&level==1">
         修改
       </div>
       <div class="btn btn-default" @click="goBack" v-if="!isShow">
@@ -218,6 +245,7 @@
     name: 'dale',
     data () {
       return {
+        level:'',
         mobile: '',
         name: '',
         belongArea: '',
@@ -231,8 +259,9 @@
         products: [],//所有产品
         id: 0,
         isShow:true,
-        recommendBtn:2,
+        recommendBtn:1,
         totalProfitSpace:'',
+        rate:'',
         rate1:'',
         rate2:'',
         rate3:'',
@@ -243,60 +272,79 @@
             type:1,
             firstDealerShareProfitRate:'',
             secondDealerShareProfitRate:'',
-            bossDealerShareRate:0.2
+            bossDealerShareRate:""
           },
           {
             productId:'',
             type:2,
             firstDealerShareProfitRate:'',
             secondDealerShareProfitRate:'',
-            bossDealerShareRate:0.2
+            bossDealerShareRate:""
           }
         ],
+        bossRate1:'',//收单分润
+        bossRate2:'',//升级费分润,
+        productId:''
       }
     },
     created: function () {
-        this.$http.post('/admin/product/list')
-          .then(function (res) {
-            this.$data.products = res.data;
-            for (let i = 0; i < this.$data.products.length; i++) {
-              for (let j = 0; j < this.$data.products[i].list.length; j++) {
-                this.$data.products[i].list[j].paymentSettleRate = '';
-                (this.$data.products[i].list)[j].withdrawSettleFee = '';
-                (this.$data.products[i].list)[j].merchantSettleRate = '';
-                (this.$data.products[i].list)[j].merchantWithdrawFee = '';
-              }
-            }
-            if(this.$route.query.id !=undefined){
-              this.$data.isShow = false;
-              this.$http.get('/admin/dealer/'+this.$route.query.id)
-                .then(function (res) {
-                  this.$data.mobile = res.data.mobile;
-                  this.$data.name = res.data.name;
-                  this.$data.belongArea = res.data.belongArea;
-                  this.$data.bankCard = res.data.bankCard;
-                  this.$data.bankAccountName = res.data.bankAccountName;
-                  this.$data.idCard = res.data.idCard;
-                  this.$data.recommendBtn = res.data.recommendBtn;
-                  this.$data.totalProfitSpace = res.data.totalProfitSpace*100;
-                  this.$data.bankReserveMobile = res.data.bankReserveMobile;
-                  this.$data.products = [res.data.product];
-                  this.$data.products[0].list = res.data.product.channels
-                  for(var i= 0; i < this.$data.products[0].list.length; i++){
-                      this.$data.products[0].list[i].channelTypeSign = this.$data.products[0].list[i].channelType
-                      this.$data.products[0].list[i].productBalanceType = this.$data.products[0].list[i].settleType
-                  }
-                  this.$data.rate1 = res.data.dealerUpgerdeRates[0].firstDealerShareProfitRate*100;
-                  this.$data.rate2 = res.data.dealerUpgerdeRates[0].secondDealerShareProfitRate*100;
-                  this.$data.rate3 = res.data.dealerUpgerdeRates[1].firstDealerShareProfitRate*100;
-                  this.$data.rate4 = res.data.dealerUpgerdeRates[1].secondDealerShareProfitRate*100;
-                })
-            }
-          }, function (err) {
-            this.$store.commit('MESSAGE_ACCORD_SHOW', {
-              text: err.statusMessage
+      this.$data.level = this.$route.query.level;
+
+      this.$http.post('/admin/product/list')
+        .then(function (res) {
+          this.$data.products = res.data;
+          this.$data.productId = res.data[0].productId;
+          //查询金开门分润比例
+          this.$http.post('/admin/upgrade/init',{productId:this.$data.productId})
+            .then(function (res) {
+              this.$data.bossRate1 = res.data.upgradeRate;
+              this.$data.bossRate2 = res.data.tradeRate;
+            },function (err) {
+              this.$store.commit('MESSAGE_ACCORD_SHOW', {
+                text: err.statusMessage
+              })
             })
+
+          for (let i = 0; i < this.$data.products.length; i++) {
+            for (let j = 0; j < this.$data.products[i].list.length; j++) {
+              this.$data.products[i].list[j].paymentSettleRate = '';
+              (this.$data.products[i].list)[j].withdrawSettleFee = '';
+              (this.$data.products[i].list)[j].merchantSettleRate = '';
+              (this.$data.products[i].list)[j].merchantWithdrawFee = '';
+            }
+          }
+          if(this.$route.query.id !=undefined){
+            this.$data.isShow = false;
+            this.$http.get('/admin/dealer/'+this.$route.query.id)
+              .then(function (res) {
+                this.$data.mobile = res.data.mobile;
+                this.$data.name = res.data.name;
+                this.$data.belongArea = res.data.belongArea;
+                this.$data.bankCard = res.data.bankCard;
+                this.$data.bankAccountName = res.data.bankAccountName;
+                this.$data.idCard = res.data.idCard;
+                this.$data.recommendBtn = res.data.recommendBtn;
+                this.$data.rate = res.data.totalProfitSpace*100;
+                this.$data.bankReserveMobile = res.data.bankReserveMobile;
+                this.$data.products = [res.data.product];
+                this.$data.products[0].list = res.data.product.channels
+                for(var i= 0; i < this.$data.products[0].list.length; i++){
+                  this.$data.products[0].list[i].channelTypeSign = this.$data.products[0].list[i].channelType
+                  this.$data.products[0].list[i].productBalanceType = this.$data.products[0].list[i].settleType
+                }
+                this.$data.rate1 = res.data.dealerUpgerdeRates[0].firstDealerShareProfitRate*100;
+                this.$data.rate2 = res.data.dealerUpgerdeRates[0].secondDealerShareProfitRate*100;
+                this.$data.rate3 = res.data.dealerUpgerdeRates[1].firstDealerShareProfitRate*100;
+                this.$data.rate4 = res.data.dealerUpgerdeRates[1].secondDealerShareProfitRate*100;
+                this.$data.bossRate1 = res.data.dealerUpgerdeRates[0].bossDealerShareRate*100;
+                this.$data.bossRate2 = res.data.dealerUpgerdeRates[1].bossDealerShareRate*100;
+              })
+          }
+        }, function (err) {
+          this.$store.commit('MESSAGE_ACCORD_SHOW', {
+            text: err.statusMessage
           })
+        })
     },
     methods: {
       create: function () {
@@ -314,11 +362,12 @@
             merchantWithdrawFee: this.$data.products[this.$data.id].list[i].merchantWithdrawFee
           })
         }
-        this.$data.totalProfitSpace = this.$data.totalProfitSpace/100;
         this.$data.dealerUpgerdeRates[0].firstDealerShareProfitRate= this.$data.rate1/100;
         this.$data.dealerUpgerdeRates[0].secondDealerShareProfitRate= this.$data.rate2/100;
+        this.$data.dealerUpgerdeRates[0].bossDealerShareRate= this.$data.bossRate1/100;
         this.$data.dealerUpgerdeRates[1].firstDealerShareProfitRate= this.$data.rate3/100;
         this.$data.dealerUpgerdeRates[1].secondDealerShareProfitRate= this.$data.rate4/100;
+        this.$data.dealerUpgerdeRates[1].bossDealerShareRate= this.$data.bossRate2/100;
         let query = {
           mobile: this.$data.mobile,
           name: this.$data.name,
@@ -329,7 +378,7 @@
           product: this.$data.product,
           idCard: this.$data.idCard,
           recommendBtn: this.$data.recommendBtn,
-          totalProfitSpace: this.$data.totalProfitSpace,
+          totalProfitSpace: this.$data.rate/100,
           dealerUpgerdeRates: this.$data.dealerUpgerdeRates
         };
         this.$http.post('/admin/user/addFirstDealer', query)
@@ -363,11 +412,12 @@
             merchantWithdrawFee: this.$data.products[this.$data.id].list[i].merchantWithdrawFee
           })
         }
-        this.$data.totalProfitSpace = this.$data.totalProfitSpace/100;
         this.$data.dealerUpgerdeRates[0].firstDealerShareProfitRate= this.$data.rate1/100;
         this.$data.dealerUpgerdeRates[0].secondDealerShareProfitRate= this.$data.rate2/100;
+        this.$data.dealerUpgerdeRates[0].bossDealerShareRate= this.$data.bossRate1/100;
         this.$data.dealerUpgerdeRates[1].firstDealerShareProfitRate= this.$data.rate3/100;
         this.$data.dealerUpgerdeRates[1].secondDealerShareProfitRate= this.$data.rate4/100;
+        this.$data.dealerUpgerdeRates[1].bossDealerShareRate= this.$data.bossRate2/100;
         let query = {
           dealerId: this.$route.query.id,
           mobile: this.$data.mobile,
@@ -379,7 +429,7 @@
           product: this.$data.product,
           idCard: this.$data.idCard,
           recommendBtn: this.$data.recommendBtn,
-          totalProfitSpace: this.$data.totalProfitSpace,
+          totalProfitSpace: this.$data.rate/100,
           dealerUpgerdeRates: this.$data.dealerUpgerdeRates
         };
         this.$http.post('/admin/user/updateDealer', query)
@@ -449,6 +499,22 @@
     text-align: center;
   }
 
+  table tr th{
+    text-align: right;
+    padding-top: 14px;
+  }
+  .tableTop{
+    input{
+      width: 90%;
+      font-size: 12px;
+      height: 28px;
+    }
+    tr{
+      th,td{
+        border: none;
+      }
+    }
+  }
   .middle{
     position: relative;
     i{

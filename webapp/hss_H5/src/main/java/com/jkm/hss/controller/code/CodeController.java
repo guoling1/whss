@@ -195,8 +195,9 @@ public class CodeController extends BaseController {
                     log.info("code[{}], merchant is not pass", code);
                     url = "/sqb/unFinishedPrompt";
                 }
-            } else if (EnumMerchantStatus.PASSED.getId() == merchantInfo.getStatus()) {//审核通过
+            } else if (EnumMerchantStatus.PASSED.getId() == merchantInfo.getStatus()||EnumMerchantStatus.FRIEND.getId() == merchantInfo.getStatus()) {//审核通过
                 model.addAttribute("name", merchantInfo.getMerchantName());
+                log.info("设备标示{}",agent.indexOf("MicroMessenger"));
                 if (agent.indexOf("MicroMessenger") > -1) {//weixin
                     url = "/sqb/paymentWx";
                 }

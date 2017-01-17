@@ -74,8 +74,8 @@ public interface MerchantInfoDao {
      * 查询商户列表
      * @return
      */
-//    List getAll();
-    Optional<MerchantInfo> getAll(MerchantInfo merchantInfo);
+    List<MerchantInfo> getAll();
+//    Optional<MerchantInfo> getAll(MerchantInfo merchantInfo);
 
     /**
      * 审核商户（更改商户状态）
@@ -141,4 +141,17 @@ public interface MerchantInfoDao {
      * @return
      */
     int toUpgrade(@Param("merchantId") long merchantId, @Param("level") int level, @Param("weixinRate") BigDecimal weixinRate, @Param("alipayRate") BigDecimal alipayRate, @Param("fastRate") BigDecimal fastRate);
+    /**
+     * 初始化推荐版本数据
+     * @param merchantInfo
+     */
+    void updateByCondition(MerchantInfo merchantInfo);
+
+    /**
+     * 按accountIds批量查询
+     *
+     * @param accountIds
+     * @return
+     */
+    List<MerchantInfo> batchSelectByAccountIds(@Param("accountIds") List<Long> accountIds);
 }

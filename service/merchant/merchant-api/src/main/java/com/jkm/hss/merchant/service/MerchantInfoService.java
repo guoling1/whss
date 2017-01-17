@@ -3,6 +3,7 @@ package com.jkm.hss.merchant.service;
 import com.google.common.base.Optional;
 import com.jkm.hss.merchant.entity.MerchantInfo;
 import com.jkm.hss.merchant.helper.request.MerchantInfoAddRequest;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -64,7 +65,7 @@ public interface MerchantInfoService {
     /**
      * 查询商户列表
      */
-    Optional<MerchantInfo> getAll(MerchantInfo merchantInfo);
+    List<MerchantInfo> getAll();
 
     /**
      * 审核商户（更改商户状态）
@@ -151,4 +152,24 @@ public interface MerchantInfoService {
      */
     void toUpgrade(String reqSn, String result);
 
+    /**
+     * 根据请求单号查询分润费
+     * @param reqSn
+     * @return
+     */
+    Pair<BigDecimal,BigDecimal> getUpgradeShareProfit(String reqSn);
+
+    /**
+     * 初始化推荐版本数据
+     * @param merchantInfo
+     */
+    void updateByCondition(MerchantInfo merchantInfo);
+
+    /**
+     * 按accountIds批量查询
+     *
+     * @param accountIds
+     * @return
+     */
+    List<MerchantInfo> batchGetByAccountIds(List<Long> accountIds);
 }

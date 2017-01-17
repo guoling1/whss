@@ -11,15 +11,18 @@ import com.jkm.hss.bill.entity.Order;
 import com.jkm.hss.bill.enums.EnumOrderStatus;
 import com.jkm.hss.bill.enums.EnumPaymentType;
 import com.jkm.hss.bill.service.OrderService;
+import com.jkm.hss.bill.service.PayService;
 import com.jkm.hss.controller.BaseController;
 import com.jkm.hss.dealer.entity.Dealer;
 import com.jkm.hss.dealer.enums.EnumRecommendBtn;
 import com.jkm.hss.dealer.service.DealerService;
+import com.jkm.hss.dealer.service.PartnerShallProfitDetailService;
 import com.jkm.hss.dealer.service.ShallProfitDetailService;
 import com.jkm.hss.helper.ApplicationConsts;
 import com.jkm.hss.merchant.entity.AccountInfo;
 import com.jkm.hss.merchant.entity.MerchantInfo;
 import com.jkm.hss.merchant.entity.UserInfo;
+import com.jkm.hss.merchant.enums.EnumIsUpgrade;
 import com.jkm.hss.merchant.enums.EnumMerchantStatus;
 import com.jkm.hss.merchant.helper.MerchantSupport;
 import com.jkm.hss.merchant.helper.WxConstants;
@@ -106,6 +109,11 @@ public class LoginController extends BaseController {
 
     @Autowired
     private UpgradePayRecordService upgradePayRecordService;
+
+    @Autowired
+    private PayService payService;
+    @Autowired
+    private PartnerShallProfitDetailService partnerShallProfitDetailService;
     /**
      * 扫固定码注册和微信公众号注册入口
      * @param request
@@ -432,19 +440,10 @@ public class LoginController extends BaseController {
                             model.addAttribute("avaliable", account.getAvailable()==null?"0.00":decimalFormat.format(account.getAvailable()));
                         }
                         //是否显示推荐和升级
-                        if(merchantInfo.get().getFirstDealerId()!=0){
-                            Optional<Dealer> dealerOptional = dealerService.getById(merchantInfo.get().getFirstDealerId());
-                            if(dealerOptional.isPresent()){
-                                if(dealerOptional.get().getRecommendBtn()== EnumRecommendBtn.OFF.getId()){
-                                    model.addAttribute("showRecommend", 2);//不显示升级
-                                }else{
-                                    model.addAttribute("showRecommend", 1);//显示升级
-                                }
-                            }else{
-                                model.addAttribute("showRecommend", 1);//显示升级
-                            }
+                        if(merchantInfo.get().getIsUpgrade()== EnumIsUpgrade.CANUPGRADE.getId()){//显示升级
+                            model.addAttribute("showRecommend", 1);//显示升级
                         }else{
-                            model.addAttribute("showRecommend", 1);//显示升级按钮
+                            model.addAttribute("showRecommend", 2);//不显示升级
                         }
                     }else{
                         model.addAttribute("showRecommend", 1);
@@ -915,9 +914,10 @@ public class LoginController extends BaseController {
                         isRedirect= true;
                         url = "/sqb/prompt";
                     }else if(result.get().getStatus()== EnumMerchantStatus.PASSED.getId()||result.get().getStatus()== EnumMerchantStatus.FRIEND.getId()){
-                        // TODO: 2016/12/29 累计分润
-                        model.addAttribute("totalProfit","0.00");
-                        model.addAttribute("shareUrl","http://"+ApplicationConsts.getApplicationConfig().domain()+"/invite/"+userInfoOptional.get().getId());
+                        BigDecimal totalProfit = partnerShallProfitDetailService.selectTotalProfitByMerchantId(result.get().getId());
+                        DecimalFormat decimalFormat=new DecimalFormat("0.00");//构造方法的字符格式这里如果小数不足2位,会以0补足.
+                        model.addAttribute("totalProfit", totalProfit==null?"0.00":decimalFormat.format(totalProfit));
+                        model.addAttribute("shareUrl","http://"+ApplicationConsts.getApplicationConfig().domain()+"/sqb/invite/"+userInfoOptional.get().getId());
                         url = "/myRecommend";
                     }
                 }else {
@@ -988,8 +988,7 @@ public class LoginController extends BaseController {
                         isRedirect= true;
                         url = "/sqb/prompt";
                     }else if(result.get().getStatus()== EnumMerchantStatus.PASSED.getId()||result.get().getStatus()== EnumMerchantStatus.FRIEND.getId()){
-//                        Map<String, String> map = WxPubUtil.getUserInfo(userInfoOptional.get().getOpenId());
-                        Map<String, String> map=null;
+                        Map<String, String> map = WxPubUtil.getUserInfo(userInfoOptional.get().getOpenId());
                         if(map==null){
                             model.addAttribute("headimgUrl","");
                         }else{
@@ -1084,8 +1083,7 @@ public class LoginController extends BaseController {
                         isRedirect= true;
                         url = "/sqb/prompt";
                     }else if(result.get().getStatus()== EnumMerchantStatus.PASSED.getId()||result.get().getStatus()== EnumMerchantStatus.FRIEND.getId()){
-//                        Map<String, String> map = WxPubUtil.getUserInfo(userInfoOptional.get().getOpenId());
-                        Map<String, String> map=null;
+                        Map<String, String> map = WxPubUtil.getUserInfo(userInfoOptional.get().getOpenId());
                         if(map==null){
                             model.addAttribute("headimgUrl","");
                         }else{
@@ -1144,6 +1142,20 @@ public class LoginController extends BaseController {
             }
         }
     }
+
+    private BigDecimal needMoney(long productId,int currentLevel,int needLevel){
+        BigDecimal needMoney = null;
+        //所升级别需付费
+        Optional<UpgradeRules> upgradeRulesOptional = upgradeRulesService.selectByProductIdAndType(productId,needLevel);
+        //当前级别需付费
+        Optional<UpgradeRules> currentUpgradeRulesOptional = upgradeRulesService.selectByProductIdAndType(productId,currentLevel);
+        if(!currentUpgradeRulesOptional.isPresent()){
+            needMoney = upgradeRulesOptional.get().getUpgradeCost();
+        }else{
+            needMoney = upgradeRulesOptional.get().getUpgradeCost().subtract(currentUpgradeRulesOptional.get().getUpgradeCost());
+        }
+        return needMoney;
+    }
     /**
      * 我要升级
      * @param request
@@ -1201,12 +1213,14 @@ public class LoginController extends BaseController {
                                 upgradeRulesOptional.get().setWeixinRate(upgradeRulesOptional.get().getWeixinRate().multiply(new BigDecimal(100)).setScale(2,   BigDecimal.ROUND_HALF_UP));
                                 upgradeRulesOptional.get().setAlipayRate(upgradeRulesOptional.get().getAlipayRate().multiply(new BigDecimal(100)).setScale(2,   BigDecimal.ROUND_HALF_UP));
                                 upgradeRulesOptional.get().setFastRate(upgradeRulesOptional.get().getFastRate().multiply(new BigDecimal(100)).setScale(2,   BigDecimal.ROUND_HALF_UP));
+                                BigDecimal needMoney = needMoney(result.get().getProductId(),result.get().getLevel(),upgradeRulesOptional.get().getType());
+                                model.addAttribute("needMoney",needMoney);
                                 model.addAttribute("upgradeRules",upgradeRulesOptional.get());
                                 int hasCount = recommendService.selectFriendCount(result.get().getId());
                                 model.addAttribute("restCount",upgradeRulesOptional.get().getPromotionNum()-hasCount);
                                 model.addAttribute("merchantId",result.get().getId());
-                                model.addAttribute("shareUrl","http://"+ApplicationConsts.getApplicationConfig().domain()+"/invite/"+userInfoOptional.get().getId());
-                                return "/toUpgerde";
+                                model.addAttribute("shareUrl","http://"+ApplicationConsts.getApplicationConfig().domain()+"/sqb/invite/"+userInfoOptional.get().getId());
+                                url = "/toUpgerde";
                             }
                         }else{
                             model.addAttribute("message","暂无此级别信息");
@@ -1344,19 +1358,30 @@ public class LoginController extends BaseController {
                             model.addAttribute("message","没有次级别合伙人");
                             url = "/message";
                         }else{
+                            BigDecimal needMoney = needMoney(result.get().getProductId(),result.get().getLevel(),upgradeRulesOptional.get().getType());
                             UpgradePayRecord upgradePayRecord = new UpgradePayRecord();
                             upgradePayRecord.setMerchantId(merchantId);
+                            upgradePayRecord.setProductId(result.get().getProductId());
+                            upgradePayRecord.setBeforeLevel(result.get().getLevel());
                             upgradePayRecord.setStatus(EnumUpgrade.NORMAL.getId());
-                            upgradePayRecord.setReqSn(SnGenerator.generate());
-                            upgradePayRecord.setAmount(upgradeRulesOptional.get().getUpgradeCost());
+                            upgradePayRecord.setReqSn(SnGenerator.generateReqSn());
+                            upgradePayRecord.setAmount(needMoney);
                             upgradePayRecord.setLevel(upgradeRulesOptional.get().getType());
                             upgradePayRecord.setUpgradeRulesId(id);
                             upgradePayRecord.setNote("充值升级");
                             upgradePayRecord.setPayResult(EnumUpgradePayResult.UNPAY.getId());
                             upgradePayRecordService.insert(upgradePayRecord);
-                            isRedirect= true;
-                            //// TODO: 2017/1/9
-                            url = "/buySuccess/100/201701091832000000";
+                            String skipUrl = "http://"+ApplicationConsts.getApplicationConfig().domain()+"/sqb/buySuccess/"+needMoney+"/"+upgradePayRecord.getReqSn();
+                            Pair<Integer, String> pair = payService.generateMerchantUpgradeUrl(upgradePayRecord.getMerchantId(),upgradePayRecord.getReqSn(),needMoney,skipUrl);
+                            log.info("返回left:{}",pair.getLeft());
+                            log.info("返回right:{}",pair.getRight());
+                            if(pair.getLeft()==0){
+                                isRedirect= true;
+                                url = URLDecoder.decode(pair.getRight(), "UTF-8");
+                            }else{
+                                model.addAttribute("message",pair.getRight());
+                                url = "/message";
+                            }
                         }
                     }
                 }else{
@@ -1370,6 +1395,7 @@ public class LoginController extends BaseController {
                 url = "/sqb/reg";
             }
             if(isRedirect){
+                log.info("直接跳转{}",url);
                 return "redirect:"+url;
             }else{
                 return url;

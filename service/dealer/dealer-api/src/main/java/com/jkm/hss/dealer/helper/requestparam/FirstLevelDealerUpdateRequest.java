@@ -75,6 +75,11 @@ public class FirstLevelDealerUpdateRequest {
     @Data
     public static class DealerUpgerdeRate {
         /**
+         * 代理商id
+         */
+        private long dealerId;
+
+        /**
          * 升级分润费率编码
          */
         private long id;

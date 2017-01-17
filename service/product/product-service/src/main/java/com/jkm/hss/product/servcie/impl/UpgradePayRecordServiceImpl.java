@@ -44,4 +44,5 @@ public class UpgradePayRecordServiceImpl implements UpgradePayRecordService {
     public int updatePayResult(String payResult,String reqSn) {
         return upgradePayRecordDao.updatePayResult(payResult,reqSn);
     }
+
 }

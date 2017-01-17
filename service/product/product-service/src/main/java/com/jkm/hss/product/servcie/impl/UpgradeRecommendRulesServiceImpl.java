@@ -2,20 +2,28 @@ package com.jkm.hss.product.servcie.impl;
 
 import com.google.common.base.Optional;
 import com.jkm.hss.product.dao.UpgradeRecommendRulesDao;
+import com.jkm.hss.product.entity.Product;
 import com.jkm.hss.product.entity.UpgradeRecommendRules;
+import com.jkm.hss.product.enums.EnumProductType;
+import com.jkm.hss.product.servcie.ProductService;
 import com.jkm.hss.product.servcie.UpgradeRecommendRulesService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
  * Created by Thinkpad on 2016/12/30.
  */
+@Slf4j
 @Service
 public class UpgradeRecommendRulesServiceImpl implements UpgradeRecommendRulesService{
     @Autowired
     private UpgradeRecommendRulesDao upgradeRecommendRulesDao;
+    @Autowired
+    private ProductService productService;
     /**
      * 初始化
      *
@@ -67,5 +75,19 @@ public class UpgradeRecommendRulesServiceImpl implements UpgradeRecommendRulesSe
     @Override
     public Optional<UpgradeRecommendRules> selectByProductId(long productId) {
         return Optional.fromNullable(upgradeRecommendRulesDao.selectByProductId(productId));
+    }
+
+    /**
+     * 查询达标标准
+     *
+     * @return
+     */
+    @Override
+    public BigDecimal selectInviteStandard() {
+        log.info("开始查询达标标准。。。。。。。。。。。。。。。");
+        Optional<Product> productOptional = productService.selectByType(EnumProductType.HSS.getId());
+        UpgradeRecommendRules  upgradeRecommendRules=  upgradeRecommendRulesDao.selectByProductId(productOptional.get().getId());
+        log.info("达标标准是{}",upgradeRecommendRules.getInviteStandard());
+        return upgradeRecommendRules.getInviteStandard();
     }
 }

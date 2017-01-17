@@ -1,6 +1,6 @@
 <template lang="html">
   <div id="secProfit">
-    <div style="margin: 0 15px">
+    <div style="margin: 15px">
       <div class="box">
         <div class="box-header">
           <h3 class="box-title">二级代理分润</h3>
@@ -9,10 +9,17 @@
         <div class="box-body">
           <div id="example2_wrapper" class="dataTables_wrapper form-inline dt-bootstrap">
             <div class="search">
-              <span>日期：</span>
-              <input type="date" v-model="begin">
-              <span>至</span>
-              <input type="date" v-model="end">
+              <div class="form-group">
+                <label>日期：</label>
+                <div class="form-control" style="margin-right: 15px;padding: 0;width: 248px;height: 30px;line-height: 26px;">
+                  <input type="date" style="border: none;display:inline-block;width: 45%" name="date" value="" v-model="begin">至
+                  <input type="date" style="border: none;display:inline-block;width: 45%" name="date" value="" v-model="end">
+                </div>
+              </div>
+              <div class="form-group">
+                <label>代理商名称：</label>
+                <input style="height: 30px;margin-right: 15px" type="text" class="form-control" v-model="msg.dealerName">
+              </div>
               <div class="btn btn-primary" @click="lookup()">筛选</div>
             </div>
             <div class="row">
@@ -39,17 +46,23 @@
                   </thead>
                   <tbody id="content">
                   <tr role="row" v-for="(record,index) in $$records">
-                    <td>{{index+1}}</td>
+                    <td>{{(msg.pageNo-1)*10+(index+1)}}</td>
                     <td>{{record.dealerName}}</td>
                     <td>{{record.statisticsDate}}</td>
                     <td style="text-align: right">{{record.collectMoney|toFix}}</td>
                     <td style="text-align: right">{{record.withdrawMoney|toFix}}</td>
                     <td style="text-align: right">{{record.totalMoney|toFix}}</td>
-                    <td><router-link :to="{path:'/admin/record/secProfitDet',query:{id:record.id}}" class="btn btn-success" v-if="record.totalMoney!=0">查看明细</router-link></td>
+                    <td><router-link :to="{path:'/admin/record/secProfitDet',query:{id:record.id}}" v-if="record.totalMoney!=0">查看明细</router-link></td>
                   </tr>
                   </tbody>
                 </table>
               </div>
+            </div>
+            <div v-if="isShow">
+              <img src="http://img.jinkaimen.cn/admin/common/dist/img/ICBCLoading.gif" alt="">
+            </div>
+            <div v-if="$$records.length==0&&!isShow" class="row" style="text-align: center;color: red;font-size: 16px;">
+              <div class="col-sm-12">无此数据</div>
             </div>
             <div class="row">
               <div class="col-sm-5">
@@ -59,8 +72,8 @@
               <div class="col-sm-7">
                 <div class="dataTables_paginate paging_simple_numbers" id="example2_paginate">
                   <ul class="pagination" id="page" @click="bindEvent($event)">
-
                   </ul>
+                  <span class="count">共{{total}}页 {{count}}条</span>
                 </div>
               </div>
             </div>
@@ -80,15 +93,19 @@
           pageNo:1,
           pageSize:10,
           beginProfitDate:'',
-          endProfitDate:''
+          endProfitDate:'',
+          dealerName:''
         },
         begin:'',
         end:'',
         records:[],
-        total:1
+        total:0,
+        count:'',
+        isShow: false
       }
     },
     created: function () {
+      this.$data.isShow = true;
       if(this.$route.path=='/admin/record/firProfit'){
         this.$data.path = '/admin/profit/firstProfit'
       }else if(this.$route.path=='/admin/record/secProfit'){
@@ -96,8 +113,10 @@
       }
       this.$http.post(this.$data.path,this.$data.msg)
         .then(function (res) {
+          this.$data.isShow = false;
           this.$data.records = res.data.records;
           this.$data.total=res.data.totalPage;
+          this.$data.count = res.data.count;
           var str='',
             page=document.getElementById('page');
           str+='<li class="paginate_button previous" id="example2_previous"><a href="#" aria-controls="example2" data-dt-idx="0" tabindex="0">上一页</a></li>'
@@ -131,6 +150,7 @@
             }
           }
         },function (err) {
+          this.$data.isShow = false;
           this.$store.commit('MESSAGE_ACCORD_SHOW', {
             text: err.statusMessage
           })
@@ -168,6 +188,7 @@
           .then(function (res) {
             this.$data.records=res.data.records;
             this.$data.total=res.data.totalPage;
+            this.$data.count = res.data.count;
             var str='',
               page=document.getElementById('page');
             str+='<li class="paginate_button previous" id="example2_previous"><a href="#" aria-controls="example2" data-dt-idx="0" tabindex="0">上一页</a></li>'
@@ -201,7 +222,10 @@
               }
             }
           },function (err) {
-            console.log(err)
+            this.$data.isShow = false;
+            this.$store.commit('MESSAGE_ACCORD_SHOW', {
+              text: err.statusMessage
+            })
           })
       },
       lookup: function () {
@@ -211,10 +235,17 @@
         if(this.$data.end!=''){
           this.$data.msg.endProfitDate=this.$data.end.replace(/\//g,'-')
         }
+        this.$data.msg.pageNo = 1;
+        this.$data.isShow = true;
+        this.$data.records='';
+        this.$data.total=0;
+        this.$data.count = 0;
         this.$http.post(this.$data.path,this.$data.msg)
           .then(function (res) {
+            this.$data.isShow = false;
             this.$data.records=res.data.records;
             this.$data.total=res.data.totalPage;
+            this.$data.count = res.data.count;
             var str='',
               page=document.getElementById('page');
             str+='<li class="paginate_button previous disabled" id="example2_previous"><a href="#" aria-controls="example2" data-dt-idx="0" tabindex="0">上一页</a></li>'
@@ -248,7 +279,10 @@
               }
             }
           },function (err) {
-            console.log(err)
+            this.$data.isShow = false;
+            this.$store.commit('MESSAGE_ACCORD_SHOW', {
+              text: err.statusMessage
+            })
           })
       },
     },
@@ -287,18 +321,24 @@
 
   .search{
     margin: -12px 0 20px 0;
-  span{
-    font-size: 18px;
-
-  }
-  span:nth-child(2){
-    margin:0 10px;
-  }
   }
   .box-title {
     display: inline-block;
     font-size: 20px;
     line-height: 34px;
     height: 34px;
+  }
+  input,.btn{
+    font-size: 12px;
+  }
+  .count{
+    display: inline-block;
+    vertical-align: top;
+    margin: 28px 10px;
+  }
+  img{
+    width: 8%;
+    margin: 0 auto;
+    display: inherit;
   }
 </style>

@@ -70,13 +70,13 @@ public interface DailyProfitDetailDao {
     /**
      * 查询
      * @param beginProfitDate
-     * @param dealerName
+     * @param firstDealerName
      * @param endProfitDate
      * @param index
      * @param pageSize
      * @return
      */
-    List<DailyProfitDetail> selectFirstByParam(@Param("beginProfitDate") Date beginProfitDate, @Param("dealerName") String dealerName,
+    List<DailyProfitDetail> selectFirstByParam(@Param("beginProfitDate") Date beginProfitDate, @Param("firstDealerName") String firstDealerName,
                                                @Param("endProfitDate") Date endProfitDate, @Param("index") int index, @Param("pageSize") int pageSize);
 
     /**

@@ -81,6 +81,7 @@
         SELECT
             mark_code,
             id,
+            source,
             merchant_name,
             STATUS,
             dealer_id,
@@ -121,6 +122,15 @@
     <if test="endTime2!=null and endTime2!=''">
         AND checked_time <![CDATA[ <= ]]> #{endTime2}
     </if>
+    <if test="markCode!=null and markCode!=''">
+        AND mark_code LIKE CONCAT('%',#{markCode},'%')
+    </if>
+    <!--<if test="proxyName!=null and proxyName!=''">-->
+        <!--AND proxy_name LIKE CONCAT('%',#{proxyName},'%')-->
+    <!--</if>-->
+    <!--<if test="proxyName1!=null and proxyName1!=''">-->
+        <!--AND proxy_name LIKE CONCAT('%',#{proxyName1},'%')-->
+    <!--</if>-->
         ORDER BY
             create_time DESC
         LIMIT #{offset},#{pageSize}

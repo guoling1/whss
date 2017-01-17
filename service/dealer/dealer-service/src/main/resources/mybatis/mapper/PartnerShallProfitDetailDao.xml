@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jkm.hss.dealer.dao.PartnerShallProfitDetailDao">
+    <insert id="init" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO tb_partner_shall_profit_detail
+        (merchant_id,
+        merchant_name,
+        order_no,
+        channel_type,
+        total_fee,
+        wait_shall_amount,
+        wait_shall_origin_amount,
+        profit_type,
+        channel_cost,
+        channel_shall_amount,
+        product_shall_amount,
+        first_dealer_id,
+        first_dealer_shall_amount,
+        second_dealer_id,
+        second_dealer_shall_amount,
+        first_merchant_id,
+        first_merchant_shall_amount,
+        second_merchant_id,
+        second_merchant_shall_amount,
+        profit_date,
+        status
+        )VALUES(
+        #{merchantId},
+        #{merchantName},
+        #{orderNo},
+        #{channelType},
+        #{totalFee},
+        #{waitShallAmount},
+        #{waitShallOriginAmount},
+        #{profitType},
+        #{channelCost},
+        #{channelShallAmount},
+        #{productShallAmount},
+        #{firstDealerId},
+        #{firstDealerShallAmount},
+        #{secondDealerId},
+        #{secondDealerShallAmount},
+        #{firstMerchantId},
+        #{firstMerchantShallAmount},
+        #{secondMerchantId},
+        #{secondMerchantShallAmount},
+        #{profitDate},
+        #{status}
+        )
+    </insert>
+    <select id="selectCountByMerchantId" resultType="java.lang.Long">
+        SELECT count(*) FROM tb_partner_shall_profit_detail WHERE first_merchant_id = #{merchantId} OR second_merchant_id = #{mechantId}
+    </select>
+    <select id="selectByMerchantIdAndId" resultType="com.jkm.hss.dealer.entity.PartnerShallProfitDetail">
+        SELECT * FROM tb_partner_shall_profit_detail  WHERE (first_merchant_id = #{merchantId} OR second_merchant_id = #{merchantId})
+        <if test="id != 0">
+            AND id &lt; #{id}
+        </if>
+        ORDER BY id DESC LIMIT #{pageSize}
+    </select>
+    <select id="selectFirstTotalProfitByMerchantId" resultType="java.math.BigDecimal">
+        SELECT sum(first_merchant_shall_amount) FROM tb_partner_shall_profit_detail
+        WHERE first_merchant_id = #{merchantId}
+    </select>
+    <select id="selectSecondTotalProfitByMerchantId" resultType="java.math.BigDecimal">
+        SELECT sum(second_merchant_shall_amount) FROM tb_partner_shall_profit_detail
+        WHERE second_merchant_id = #{merchantId}
+    </select>
+</mapper>

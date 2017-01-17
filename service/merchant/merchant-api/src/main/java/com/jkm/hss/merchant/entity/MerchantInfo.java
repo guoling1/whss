@@ -117,11 +117,11 @@ public class MerchantInfo extends BaseEntity{
      */
     private long secondDealerId;
     /**
-     * 直接商户
+     * 直接商户 上级
      */
     private long firstMerchantId;
     /**
-     * 间接商户
+     * 间接商户 上上级
      */
     private long secondMerchantId;
     /**
@@ -157,6 +157,12 @@ public class MerchantInfo extends BaseEntity{
      * 商户来源
      */
     private int source;
+
+    /**
+     * 是否升级
+     * {@link com.jkm.hss.merchant.enums.EnumIsUpgrade}
+     */
+    private int isUpgrade;
 
 
 }

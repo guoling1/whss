@@ -33,8 +33,6 @@ const IssueSuccess = r => require.ensure([], () => r(require('../../components/I
 const Invite = r => require.ensure([], () => r(require('../../components/Invite')), 'group-record');
 const Upgrade = r => require.ensure([], () => r(require('../../components/Upgrade')), 'group-record');
 const CodeStatus = r => require.ensure([], () => r(require('../../components/CodeStatus')), 'group-record');
-const Test = r => require.ensure([], () => r(require('../../components/Test')), 'group-record');
-const BootPage = r => require.ensure([], () => r(require('../../components/BootPage')), 'group-record');
 
 const NewDealQuery = r => require.ensure([], () => r(require('../../components/newVersion/NewDealQuery')), 'group-record');
 const NewDealDet = r => require.ensure([], () => r(require('../../components/newVersion/NewDealDet')), 'group-record');
@@ -65,16 +63,6 @@ export default {
       path: 'newWithdrawalDet',
       name: 'NewWithdrawalDet',
       component: NewWithdrawalDet
-    },
-    {
-      path: 'test',
-      name: 'Test',
-      component: Test
-    },
-    {
-      path: 'bootPage',
-      name: 'BootPage',
-      component: BootPage
     },
     {
       path: 'deal',
