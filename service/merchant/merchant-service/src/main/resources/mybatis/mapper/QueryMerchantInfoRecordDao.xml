@@ -16,7 +16,15 @@
 				a.id=#{id}
     </select>
 
-    <!--审核记录-->
+    <!--查询推荐信息-->
+    <select id="getRefInformation" resultType="com.jkm.hss.merchant.entity.ReferralResponse">
+        SELECT
+            (select d.proxy_name from tb_dealer as d where d.id=first_dealer_id) as proxy_name_yq,
+            (select d.proxy_name from tb_dealer as d where d.id=second_dealer_id) as proxy_name_yq1
+        FROM tb_merchant_info WHERE id=#{id}
+    </select>
+
+    <!--审核日志-->
     <select id="getLog" resultType="com.jkm.hss.merchant.entity.LogResponse">
 
         SELECT
