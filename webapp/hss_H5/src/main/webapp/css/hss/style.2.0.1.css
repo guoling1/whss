@@ -271,32 +271,38 @@ span {
 input:focus {
   border: none;
 }
-#reg {
+#reg,
+#login {
   overflow: auto;
 }
-#reg h1 {
+#reg h1,
+#login h1 {
   margin-top: 41px;
   font-size: 31px;
   color: #7086bd;
   font-weight: bold;
 }
-#reg h2 {
+#reg h2,
+#login h2 {
   font-size: 14px;
   font-weight: lighter;
   color: #a1b0d5;
   height: 21px;
   margin-top: 5px;
 }
-#reg ul {
+#reg ul,
+#login ul {
   margin: 41px 0 21px;
 }
-#reg ul li {
+#reg ul li,
+#login ul li {
   width: 100%;
   height: 56.5px;
   border-bottom: 1px solid #edeef5;
   padding: 25px 15px 0 20px;
 }
-#reg ul li input {
+#reg ul li input,
+#login ul li input {
   box-flex: 1;
   -webkit-box-flex: 1;
   -webkit-flex: 1;
@@ -307,55 +313,196 @@ input:focus {
   font-size: 16px;
   color: #4a5171;
 }
-#reg ul li ::-webkit-input-placeholder {
+#reg ul li ::-webkit-input-placeholder,
+#login ul li ::-webkit-input-placeholder {
   color: #aab2d2;
 }
-#reg ul li :-moz-placeholder {
+#reg ul li :-moz-placeholder,
+#login ul li :-moz-placeholder {
   color: #aab2d2;
 }
-#reg ul li ::-moz-placeholder {
+#reg ul li ::-moz-placeholder,
+#login ul li ::-moz-placeholder {
   color: #aab2d2;
 }
-#reg ul li :-ms-input-placeholder {
+#reg ul li :-ms-input-placeholder,
+#login ul li :-ms-input-placeholder {
   color: #aab2d2;
 }
-#reg ul li .logo {
+#reg ul li .logo,
+#login ul li .logo {
   float: left;
   width: 35px;
   height: 50px;
 }
-#reg ul li .logo.phone {
+#reg ul li .logo.phone,
+#login ul li .logo.phone {
   background: url("../assets/phone.png") no-repeat center;
   background-size: 16px 20px;
 }
-#reg ul li .logo.message {
+#reg ul li .logo.message,
+#login ul li .logo.message {
   background: url("../assets/message.png") no-repeat center;
   background-size: 21px 15px;
 }
-#reg ul li.top {
+#reg ul li .logo.invite,
+#login ul li .logo.invite {
+  background: url("../assets/code2.png") no-repeat center;
+  background-size: 21px 15px;
+}
+#reg ul li.top,
+#login ul li.top {
   width: 100%;
   height: 50px;
   padding: 0 15px;
 }
-#reg ul li.top .btn {
+#reg ul li.top .btn,
+#login ul li.top .btn {
   float: right;
   line-height: 50px;
   font-size: 14px;
   color: #7086bd;
 }
-#reg ul li.bottom {
+#reg ul li.bottom,
+#login ul li.bottom {
   width: 100%;
   height: 50px;
   padding: 0 15px;
 }
-#reg .reg {
-  margin: 0 15px;
+#reg .reg,
+#login .reg {
+  padding: 0 15px;
+}
+#reg .reg .reg-btn,
+#login .reg .reg-btn {
+  width: 100%;
   height: 50px;
   line-height: 50px;
   background: #7086bd;
   border-radius: 4px;
   font-size: 16px;
   color: #fff;
+}
+#reg .login,
+#login .login {
+  line-height: 50px;
+  font-size: 14px;
+  color: #7086bd;
+  text-align: center;
+}
+#reg .layer,
+#login .layer {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 99;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+}
+#reg .layer .space,
+#login .layer .space {
+  width: 95%;
+  height: auto;
+  border-radius: 3px;
+  background-color: #FFF;
+  position: absolute;
+  top: 45%;
+  left: 50%;
+  transform: translate3d(-50%, -50%, 0);
+  overflow: hidden;
+}
+#reg .layer .space .space-title,
+#login .layer .space .space-title {
+  width: 100%;
+  height: 65px;
+  line-height: 65px;
+  background-color: #f4f5f8;
+  text-align: left;
+  padding-left: 15px;
+}
+#reg .layer .space .space-title .xx,
+#login .layer .space .space-title .xx {
+  float: right;
+  width: 65px;
+  height: 65px;
+  background: url("../assets/xx.png") no-repeat center;
+  background-size: 18px 18px;
+}
+#reg .layer .space .space-cont,
+#login .layer .space .space-cont {
+  padding: 0 15px 10px;
+}
+#reg .layer .space .space-cont .cont-detail,
+#login .layer .space .space-cont .cont-detail {
+  padding: 20px 0;
+  line-height: 40px;
+}
+#reg .layer .space .space-cont .operation,
+#login .layer .space .space-cont .operation {
+  width: 100%;
+  height: 50px;
+}
+#reg .layer .space .space-cont .operation .cancel,
+#login .layer .space .space-cont .operation .cancel {
+  float: left;
+  width: 45%;
+  height: 50px;
+  line-height: 50px;
+  background-color: #FFF;
+  font-size: 16px;
+  color: #111;
+  border-radius: 5px;
+  border: 1px solid #eee;
+}
+#reg .layer .space .space-cont .operation .submit,
+#login .layer .space .space-cont .operation .submit {
+  float: right;
+  width: 45%;
+  height: 50px;
+  line-height: 50px;
+  background-color: #7086bd;
+  font-size: 16px;
+  color: #FFF;
+  border-radius: 5px;
+}
+#prompt,
+#err {
+  padding: 89px 58px 0;
+  width: 100%;
+  height: 100%;
+  background: #FFF;
+}
+#prompt img,
+#err img {
+  display: block;
+  width: 76px;
+  height: 86px;
+  margin: 0 auto 42px;
+}
+#prompt p,
+#err p {
+  font-size: 22px;
+  color: #aab2d3;
+}
+#prompt p.small,
+#err p.small {
+  font-size: 15px;
+  color: #aab2d3;
+  margin: 13px 0 43px;
+}
+#prompt .btn,
+#err .btn {
+  display: block;
+  margin-top: 15px;
+  width: 100%;
+  height: 50px;
+  line-height: 50px;
+  font-size: 16px;
+  color: #fff;
+  background: #7086bd;
+  border-radius: 4px;
 }
 #material {
   width: 100%;
@@ -801,6 +948,74 @@ input:focus {
   font-size: 14px;
   color: #7079a0;
   text-align: center;
+}
+#wallet .layer {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 99;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+}
+#wallet .layer .space {
+  width: 95%;
+  height: auto;
+  border-radius: 3px;
+  background-color: #FFF;
+  position: absolute;
+  top: 45%;
+  left: 50%;
+  transform: translate3d(-50%, -50%, 0);
+  overflow: hidden;
+}
+#wallet .layer .space .space-title {
+  width: 100%;
+  height: 65px;
+  line-height: 65px;
+  background-color: #f4f5f8;
+  text-align: left;
+  padding-left: 15px;
+}
+#wallet .layer .space .space-title .xx {
+  float: right;
+  width: 65px;
+  height: 65px;
+  background: url("../assets/xx.png") no-repeat center;
+  background-size: 18px 18px;
+}
+#wallet .layer .space .space-cont {
+  padding: 0 15px 10px;
+}
+#wallet .layer .space .space-cont .cont-detail {
+  padding: 20px 0;
+  line-height: 40px;
+}
+#wallet .layer .space .space-cont .operation {
+  width: 100%;
+  height: 50px;
+}
+#wallet .layer .space .space-cont .operation .cancel {
+  float: left;
+  width: 45%;
+  height: 50px;
+  line-height: 50px;
+  background-color: #FFF;
+  font-size: 16px;
+  color: #111;
+  border-radius: 5px;
+  border: 1px solid #eee;
+}
+#wallet .layer .space .space-cont .operation .submit {
+  float: right;
+  width: 45%;
+  height: 50px;
+  line-height: 50px;
+  background-color: #7086bd;
+  font-size: 16px;
+  color: #FFF;
+  border-radius: 5px;
 }
 #success {
   width: 100%;
@@ -1489,9 +1704,21 @@ input:focus {
   height: 50px;
   background-color: #FFF;
   margin-bottom: 5px;
-  padding: 0 15px;
+  overflow: hidden;
+  transition: all 0.3s;
+  -webkit-transition: all 0.3s;
+  position: relative;
 }
-#transaction .query .logo {
+#transaction .query.active {
+  height: 100%;
+  top: 0;
+  left: 0;
+  z-index: 99;
+}
+#transaction .query .top {
+  border-bottom: 1px solid #f0eff5;
+}
+#transaction .query .top .logo {
   width: 18px;
   height: 18px;
   margin-top: 16px;
@@ -1499,31 +1726,107 @@ input:focus {
   background-size: 18px 18px;
   padding: 0 20px;
 }
-#transaction .query .input {
+#transaction .query .top .searchBox {
   box-flex: 1;
   -webkit-box-flex: 1;
   -webkit-flex: 1;
   -ms-flex: 1;
   flex: 1;
+  padding: 0 15px;
+}
+#transaction .query .top .searchBox .input {
+  width: 100%;
   height: 34px;
   line-height: 34px;
   margin-top: 7px;
   border: 1px solid #f5f5f5;
   border-radius: 5px;
 }
-#transaction .query .input input {
-  box-flex: 1;
-  -webkit-box-flex: 1;
-  -webkit-flex: 1;
-  -ms-flex: 1;
-  flex: 1;
+#transaction .query .top .searchBox .input input {
+  width: 47%;
   font-size: 15px;
   color: #474d65;
   text-align: center;
 }
-#transaction .query .input span {
+#transaction .query .top .searchBox .input span {
+  width: 6%;
   font-size: 15px;
   color: #afb4ca;
+}
+#transaction .query .top .unfold {
+  width: 65px;
+  height: 50px;
+  line-height: 50px;
+  font-size: 15px;
+  color: #474d65;
+  border-left: 1px solid #f0eff5;
+}
+#transaction .query .bottom {
+  position: absolute;
+  top: 51px;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+}
+#transaction .query .bottom .screen {
+  width: 100%;
+  height: auto;
+  background-color: #FFF;
+  padding-top: 10px;
+}
+#transaction .query .bottom .screen .group {
+  padding: 0 15px;
+}
+#transaction .query .bottom .screen .group .g-title {
+  text-align: left;
+  font-size: 12px;
+  color: #333333;
+}
+#transaction .query .bottom .screen .group .g-list {
+  overflow: hidden;
+  margin: 10px 0;
+}
+#transaction .query .bottom .screen .group .g-list .li {
+  float: left;
+  margin-right: 10px;
+  width: 77px;
+  height: 30px;
+  line-height: 30px;
+  border-radius: 15px;
+  background-color: #FFF;
+  border: 1px solid #d7d9de;
+  font-size: 14px;
+  color: #7d7d7d;
+}
+#transaction .query .bottom .screen .group .g-list .li.active {
+  background-color: #edf2fd;
+  border: 1px solid #7086bd;
+  color: #5168a2;
+}
+#transaction .query .bottom .screen .btn {
+  width: 100%;
+  height: 47px;
+  margin-top: 25px;
+}
+#transaction .query .bottom .screen .btn .cancel {
+  float: left;
+  width: 50%;
+  height: 47px;
+  line-height: 47px;
+  border-top: 1px solid #e1e4ef;
+  background-color: #FFF;
+  font-size: 16px;
+  color: #526fb8;
+}
+#transaction .query .bottom .screen .btn .submit {
+  float: right;
+  width: 50%;
+  height: 47px;
+  line-height: 47px;
+  background-color: #7086bd;
+  font-size: 16px;
+  color: #FFF;
 }
 #transaction .list {
   overflow: auto;
@@ -1849,6 +2152,8 @@ input:focus {
   position: absolute;
   top: 0;
   left: 0;
+  transition: all 0.4s;
+  -webkit-transition: all 0.4s;
 }
 #promote .bottom .cont .window li {
   float: left;
@@ -1878,6 +2183,9 @@ input:focus {
   text-align: left;
   font-size: 15px;
   color: #48527f;
+}
+#promote .bottom .cont .window li .list .name.w {
+  width: 70%;
 }
 #promote .bottom .cont .window li .list .name span {
   display: inline-block;
@@ -1932,6 +2240,58 @@ input:focus {
   margin: 10px auto 0;
   background: url("../assets/hss-rules.png") no-repeat center;
   background-size: 15px 17px;
+}
+#promote .notice {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 99;
+  padding: 20px 15px;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.9);
+  transition: all 0.4s;
+  -webkit-transition: all 0.4s;
+  opacity: 0;
+}
+#promote .notice.miss {
+  display: none;
+}
+#promote .notice .cont {
+  box-flex: 1;
+  -webkit-box-flex: 1;
+  -webkit-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
+  width: 100%;
+  overflow: auto;
+  text-align: left;
+  -webkit-overflow-scrolling: touch;
+}
+#promote .notice .cont h5 {
+  font-size: 14px;
+  color: #111;
+  font-weight: bold;
+}
+#promote .notice .cont h6 {
+  font-size: 12px;
+  color: #111;
+  font-weight: bold;
+  line-height: 24px;
+}
+#promote .notice .cont p {
+  font-size: 12px;
+  color: #111;
+  text-indent: 10px;
+  line-height: 20px;
+}
+#promote .notice .xx {
+  margin: auto;
+  width: 20px;
+  height: 20px;
+  padding: 20px 0 40px;
+  background: url("../assets/hss-x.png") no-repeat center;
+  background-size: 20px 20px;
 }
 #promote .layer {
   display: none;
@@ -2027,6 +2387,7 @@ input:focus {
 #upgrade .info .head img {
   width: 35px;
   height: 35px;
+  border-radius: 50%;
 }
 #upgrade .info .status {
   float: left;
@@ -2093,14 +2454,17 @@ input:focus {
   color: #48527f;
 }
 #upgrade .upgrade .table .t-body .w {
-  padding: 10px 0;
   height: 64px;
+  line-height: 64px;
   font-size: 12px;
   color: #48527f;
   border-bottom: 1px solid #e8eaf3;
 }
 #upgrade .upgrade .table .t-body .w.n {
   border: none;
+}
+#upgrade .upgrade .table .t-body .w.b {
+  padding: 10px 0;
 }
 #upgrade .upgrade .table .t-body .me {
   width: 60px;
@@ -2213,6 +2577,58 @@ input:focus {
   background: url("../assets/hss-rocket.png") no-repeat center;
   background-size: 65px 100px;
 }
+#upgrade .notice {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 99;
+  padding: 20px 15px;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.9);
+  transition: all 0.4s;
+  -webkit-transition: all 0.4s;
+  opacity: 0;
+}
+#upgrade .notice.miss {
+  display: none;
+}
+#upgrade .notice .cont {
+  box-flex: 1;
+  -webkit-box-flex: 1;
+  -webkit-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
+  width: 100%;
+  overflow: auto;
+  text-align: left;
+  -webkit-overflow-scrolling: touch;
+}
+#upgrade .notice .cont h5 {
+  font-size: 14px;
+  color: #111;
+  font-weight: bold;
+}
+#upgrade .notice .cont h6 {
+  font-size: 12px;
+  color: #111;
+  font-weight: bold;
+  line-height: 24px;
+}
+#upgrade .notice .cont p {
+  font-size: 12px;
+  color: #111;
+  text-indent: 10px;
+  line-height: 20px;
+}
+#upgrade .notice .xx {
+  margin: auto;
+  width: 20px;
+  height: 20px;
+  padding: 20px 0 40px;
+  background: url("../assets/hss-x.png") no-repeat center;
+  background-size: 20px 20px;
+}
 #upgradeWay {
   width: 100%;
   height: 100%;
@@ -2234,6 +2650,20 @@ input:focus {
 }
 #upgradeWay .space .cont .info {
   margin: 38px 0 20px 0;
+}
+#upgradeWay .space .cont .info .assistant {
+  width: 88px;
+  height: 88px;
+  margin: auto;
+  background: url("../assets/hss-head-assistant.png") no-repeat center;
+  background-size: 88px 88px;
+}
+#upgradeWay .space .cont .info .manager {
+  width: 88px;
+  height: 88px;
+  margin: auto;
+  background: url("../assets/hss-head-manager.png") no-repeat center;
+  background-size: 88px 88px;
 }
 #upgradeWay .space .cont .info .boss {
   width: 88px;
@@ -2281,12 +2711,12 @@ input:focus {
 }
 #upgradeWay .space .cont .upType li {
   width: 100%;
-  height: 56px;
-  line-height: 56px;
+  height: 66px;
   border-top: 1px solid #e8e8e8;
 }
 #upgradeWay .space .cont .upType li .left {
   float: left;
+  line-height: 56px;
   text-align: left;
   font-size: 15px;
   color: #222222;
@@ -2306,16 +2736,18 @@ input:focus {
 }
 #upgradeWay .space .cont .upType li .right {
   float: right;
+  line-height: 56px;
   text-align: right;
   font-size: 15px;
   color: #222222;
 }
 #upgradeWay .space .cont .upType li .small {
+  display: block;
   font-size: 10px;
   color: #b3b4b4;
   clear: both;
-  text-align: left;
-  transform: translate3d(60px, -30px, 0);
+  text-align: right;
+  transform: translate3d(0, -15px, 0);
 }
 #upgradeWay .pay {
   width: 100%;
@@ -2325,6 +2757,101 @@ input:focus {
   color: #FFF;
   background-color: #4ecea2;
   border-radius: 0 0 10px 10px;
+}
+#upgradeWay .layer {
+  display: none;
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 99;
+  background: #575757;
+  padding: 25px 15px;
+  transition: all 0.4s;
+  -webkit-transition: all 0.4s;
+}
+#upgradeWay .layer.active {
+  display: block;
+}
+#upgradeWay .layer .space {
+  width: 100%;
+  height: 100%;
+  background-color: #FFF;
+  box-shadow: 0 5px 7px #424242;
+}
+#upgradeWay .layer .space .content {
+  box-flex: 1;
+  -webkit-box-flex: 1;
+  -webkit-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
+  width: 100%;
+}
+#upgradeWay .layer .space .content .logo {
+  width: 100px;
+  height: 31px;
+  background: url("../assets/hss-logo.png") no-repeat center;
+  background-size: 100px 31px;
+  margin: 40px auto;
+}
+#upgradeWay .layer .space .content .qr-code {
+  box-flex: 1;
+  -webkit-box-flex: 1;
+  -webkit-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
+  width: 100%;
+  position: relative;
+}
+#upgradeWay .layer .space .content .qr-code div {
+  width: 210px;
+  height: 210px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate3d(-50%, -50%, 0);
+}
+#upgradeWay .layer .space .content .word {
+  margin: 40px auto;
+  font-size: 12px;
+  color: #2b2b2b;
+}
+#upgradeWay .layer .space .divider {
+  width: 100%;
+  height: 18px;
+  background: url('../assets/hss-divider.png') no-repeat center;
+  background-size: 100% 18px;
+}
+#upgradeWay .layer .space .describe {
+  width: 100%;
+  height: 90px;
+}
+#upgradeWay .layer .space .describe p {
+  font-size: 12px;
+  color: #989898;
+  text-align: left;
+  padding-left: 15px;
+  line-height: 26px;
+}
+#authentication .group {
+  width: 100%;
+  height: 50px;
+  line-height: 50px;
+  padding: 0 15px;
+  border-bottom: 1px solid #edeef5;
+}
+#authentication .group .name {
+  float: left;
+  line-height: 50px;
+  font-size: 15px;
+  color: #4a5171;
+}
+#authentication .group .value {
+  float: right;
+  line-height: 50px;
+  font-size: 15px;
+  color: #4a5171;
 }
 #ad img {
   width: 100%;

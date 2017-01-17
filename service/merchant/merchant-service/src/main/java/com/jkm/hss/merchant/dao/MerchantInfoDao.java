@@ -6,6 +6,7 @@ import com.jkm.hss.merchant.helper.request.MerchantInfoAddRequest;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -33,7 +34,7 @@ public interface MerchantInfoDao {
      * @param openId
      * @return
      */
-//    MerchantInfo selectByOpenId(@Param("openId") String openId);
+    MerchantInfo selectByOpenId(@Param("openId") String openId);
 
 
     /**
@@ -41,7 +42,7 @@ public interface MerchantInfoDao {
      * @param mobile
      * @return
      */
-//    MerchantInfo selectByMobile(@Param("mobile") String mobile);
+    MerchantInfo selectByMobile(@Param("mobile") String mobile);
     /**
      * 根据条件插入
      * @param merchantInfo
@@ -73,8 +74,8 @@ public interface MerchantInfoDao {
      * 查询商户列表
      * @return
      */
-//    List getAll();
-    Optional<MerchantInfo> getAll(MerchantInfo merchantInfo);
+    List<MerchantInfo> getAll();
+//    Optional<MerchantInfo> getAll(MerchantInfo merchantInfo);
 
     /**
      * 审核商户（更改商户状态）
@@ -129,4 +130,28 @@ public interface MerchantInfoDao {
      * @return
      */
     MerchantInfo selectByAccountId(@Param("accountId") long accountId);
+
+    /**
+     * 去升级
+     * @param merchantId
+     * @param level
+     * @param weixinRate
+     * @param alipayRate
+     * @param fastRate
+     * @return
+     */
+    int toUpgrade(@Param("merchantId") long merchantId, @Param("level") int level, @Param("weixinRate") BigDecimal weixinRate, @Param("alipayRate") BigDecimal alipayRate, @Param("fastRate") BigDecimal fastRate);
+    /**
+     * 初始化推荐版本数据
+     * @param merchantInfo
+     */
+    void updateByCondition(MerchantInfo merchantInfo);
+
+    /**
+     * 按accountIds批量查询
+     *
+     * @param accountIds
+     * @return
+     */
+    List<MerchantInfo> batchSelectByAccountIds(@Param("accountIds") List<Long> accountIds);
 }

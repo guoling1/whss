@@ -40,6 +40,51 @@ public class UserInfoServiceImpl implements UserInfoService{
         return Optional.fromNullable(userInfoDao.selectByMerchantId(merchantId));
     }
 
+    /**
+     * 插入markCode
+     *
+     * @param markCode
+     * @param id
+     * @return
+     */
+    @Override
+    public int updatemarkCode(String markCode, long id) {
+        return userInfoDao.updatemarkCode(markCode,id);
+    }
+
+    /**
+     * 根据手机号查询
+     *
+     * @param mobile
+     * @return
+     */
+    @Override
+    public Optional<UserInfo> selectByMobile(String mobile) {
+        return Optional.fromNullable(userInfoDao.selectByMobile(mobile));
+    }
+
+    /**
+     * 清除openId
+     *
+     * @param id
+     * @return
+     */
+    @Override
+    public int cleanOpenId(long id) {
+        return userInfoDao.cleanOpenId(id);
+    }
+
+    /**
+     * 绑定openId
+     * @param id
+     * @param openId
+     * @return
+     */
+    @Override
+    public int bindOpenId(long id,String openId) {
+        return userInfoDao.bindOpenId(id,openId);
+    }
+
     @Override
     public int uploadUserInfo(long merchantId,String mobile,long id) {
         return userInfoDao.updataUserInfo(merchantId,mobile,id);

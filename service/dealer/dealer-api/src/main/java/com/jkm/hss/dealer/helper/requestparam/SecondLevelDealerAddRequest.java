@@ -40,6 +40,11 @@ public class SecondLevelDealerAddRequest {
     private String bankName;
 
     /**
+     * 身份证号
+     */
+    private String idCard;
+
+    /**
      * 银行预留手机号
      */
     private String bankReserveMobile;

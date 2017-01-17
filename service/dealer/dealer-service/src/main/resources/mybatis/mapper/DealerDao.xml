@@ -16,7 +16,10 @@
         first_level_dealer_id,
         second_level_dealer_id,
         last_login_date,
-        status
+        status,
+        recommend_btn,
+        id_card,
+        total_profit_space
         )
         VALUES
         (
@@ -32,7 +35,10 @@
         #{firstLevelDealerId},
         #{secondLevelDealerId},
         #{lastLoginDate},
-        #{status}
+        #{status},
+        #{recommendBtn},
+        #{idCard},
+        #{totalProfitSpace}
         );
     </insert>
     <update id="update">
@@ -49,7 +55,10 @@
         first_level_dealer_id = #{firstLevelDealerId},
         second_level_dealer_id = #{secondLevelDealerId},
         last_login_date = #{lastLoginDate},
-        status = #{status}
+        status = #{status},
+        recommend_btn = #{recommendBtn},
+        id_card = #{idCard},
+        total_profit_space = #{totalProfitSpace}
         WHERE id = #{id}
     </update>
 
@@ -137,7 +146,7 @@
 
     <select id="selectDealersByPageParams" resultType="com.jkm.hss.dealer.entity.Dealer">
         SELECT * FROM tb_dealer
-        <where>
+        <where>1=1
             <if test="id > 0">
                 AND id = ${id}
             </if>
@@ -156,4 +165,8 @@
             ORDER BY id DESC LIMIT #{offset},#{count}
         </where>
     </select>
+
+    <update id="updateMarkCode">
+        UPDATE tb_dealer SET mark_code = #{markCode} WHERE id = #{dealerId}
+    </update>
 </mapper>

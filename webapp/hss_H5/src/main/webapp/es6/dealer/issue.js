@@ -78,79 +78,46 @@ ownTitle.addEventListener('click', function () {
 let mobile = document.getElementById('mobile');
 let listId = document.getElementById('listId');
 let dealerId1 = document.getElementById('dealerId1');
-mobile.addEventListener('focus', function () {
-    var oldVal = null;
-    time = setInterval(function () {
-        var val = mobile.value;
-        if(val!=oldVal||val.length==1){
-            if (val!="") {
-                http.post_form('/dealer/find', {
-                    condition: val
-                }, function (data) {
-                    listId.innerHTML = '';
-                    if (data.length != 0) {
-                        console.log(val,oldVal)
-                        console.log(1)
-                        listId.style.display = "block";
-                        oldVal=val;
-                        var _loop = function _loop(i) {
-                            var li = document.createElement('li');
-                            li.addEventListener('click', function () {
-                                listId.style.display = "none";
-                                mobile.value = data[i].name + ' ' + data[i].mobile;
-                                dealerId1.value = dealerId1.dealerId;
-                            });
-                            var c_name = document.createElement('span');
-                            c_name.innerHTML = data[i].name;
-                            var c_mobile = document.createElement('span');
-                            c_mobile.innerHTML = data[i].mobile;
-                            li.appendChild(c_name);
-                            li.appendChild(c_mobile);
-                            listId.appendChild(li);
-                        };
-                        for (var i = 0; i < data.length; i++) {
-                            _loop(i);
-                        }
-                    } else {
-                        listId.style.display = "none";
-                    }
-                });
-            }else {
-                listId.style.display = "none";
-            }
+mobile.addEventListener('input', function () {
+  let val = mobile.value;
+  if (validate.empty(val)) {
+    http.post_form('/dealer/find', {
+      condition: val
+    }, function (data) {
+      listId.innerHTML = '';
+      if (data.length != 0) {
+        listId.style.display = "block";
+        for (let i = 0; i < data.length; i++) {
+          let li = document.createElement('li');
+          li.addEventListener('click', function () {
+            listId.style.display = "none";
+            mobile.value = data[i].name + ' ' + data[i].mobile;
+            dealerId1.value = data[i].dealerId;
+          });
+          let c_name = document.createElement('span');
+          c_name.innerHTML = data[i].name;
+          let c_mobile = document.createElement('span');
+          c_mobile.innerHTML = data[i].mobile;
+          li.appendChild(c_name);
+          li.appendChild(c_mobile);
+          listId.appendChild(li);
         }
-    },100)
+      } else {
+        listId.style.display = "none";
+      }
+    })
+  }
 });
-mobile.addEventListener('blur',function () {
-
-    clearInterval(time)
-    var val = mobile.value;
-    listId.style.display = "none";
-    console.log(val)
-    if(val!=''){
-        http.post_form('/dealer/find', {
-            condition: val
-        }, function (data) {
-            listId.innerHTML = '';
-            console.log(data)
-            if (data.length !=0) {
-                console.log(2)
-                mobile.value = data[0].name + ' ' + data[0].mobile;
-                dealerId1.value = dealerId1.dealerId;
-                listId.style.display = "none";
-            }
-        })
-    }
-})
 
 // 提交前的校验
 let submit1 = document.getElementById('submit1');
+let form1 = document.getElementById('form1');
 submit1.addEventListener('click', function () {
   if (!validate.empty(dealerId1.value, '二级代理商')) {
     return false;
   }
   if (count1.innerHTML > 0) {
-    submit1.submit();
+    form1.submit();
   } else {
     message.prompt_show('请输入正确的分配码段');
     return false;
@@ -158,9 +125,10 @@ submit1.addEventListener('click', function () {
 });
 
 let submit2 = document.getElementById('submit2');
+let form2 = document.getElementById('form2');
 submit2.addEventListener('click', function () {
   if (count3.innerHTML > 0) {
-    submit2.submit();
+    form2.submit();
   } else {
     message.prompt_show('请输入正确的分配码段');
     return false;

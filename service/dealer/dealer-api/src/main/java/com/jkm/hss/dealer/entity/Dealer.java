@@ -4,6 +4,7 @@ import com.jkm.base.common.entity.BaseEntity;
 import com.jkm.hss.dealer.enums.EnumLoginStatus;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -36,6 +37,22 @@ public class Dealer extends BaseEntity {
      * 银行名称
      */
     private String bankName;
+
+    /**
+     * 身份证号
+     */
+    private String idCard;
+
+    /**
+     * 合伙人推荐功能开关
+     * {@link com.jkm.hss.dealer.enums.EnumRecommendBtn}
+     */
+    private int recommendBtn;
+
+    /**
+     * 收单总分润空间
+     */
+    private BigDecimal totalProfitSpace;
 
     /**
      * 所属区域
@@ -84,6 +101,13 @@ public class Dealer extends BaseEntity {
      * 是否登录
      */
     private boolean isLogin;
+
+
+    /**
+     * 代理商标示
+     */
+    private String markCode;
+
 
 
     public void setLogin () {

@@ -1,12 +1,10 @@
 <template lang="html">
   <div id="agentAdd">
-    <div style="padding: 8px 30px; background: rgb(243, 156, 18); z-index: 999999; font-size: 22px; font-weight: 600;margin-bottom: 15px;    color: #fff;">产品列表</div>
-    <div class="col-xs-12">
+    <div style="margin-top: 15px" class="col-xs-12">
       <div class="box">
-        <!--<div class="box-header">-->
-          <!--<h3 class="box-title">产品列表</h3>-->
-        <!--</div>-->
-        <!-- /.box-header -->
+        <div class="box-header">
+          <h3 class="box-title">产品列表</h3>
+        </div>
         <div class="box-body">
           <div id="example2_wrapper" class="dataTables_wrapper form-inline dt-bootstrap">
             <div class="row">
@@ -47,7 +45,8 @@
                 </table>
               </div>
             </div>
-            <div class="row">
+            <!--分页-->
+            <!--<div class="row">
               <div class="col-sm-5">
               </div>
               <div class="col-sm-7">
@@ -61,7 +60,7 @@
                   </ul>
                 </div>
               </div>
-            </div>
+            </div>-->
           </div>
         </div>
         <!-- /.box-body -->
@@ -69,9 +68,9 @@
       <!-- /.box -->
     </div>
 
-    <div class="btn btn-primary" @click="create" style="margin: 0 15px">
+    <router-link class="btn btn-primary" to="/admin/record/productAdd" style="margin: 0 15px">
       新增产品
-    </div>
+    </router-link>
   </div>
 </template>
 
@@ -202,42 +201,8 @@
     margin: 0 10px;
   }
 
-  a {
-    color: #42b983;
-  }
-
-  .agentAdd {
-    float: right;
-    width: 80%;
-  }
-
-  .add {
-    border: 1px solid #ccc;
-    width: 800px;
-    border-top: none;
-    font-size: 16px;
-
-  th {
-    width: 200px;
-    vertical-align: middle;
-    text-align: center;
-  }
-
-  td input {
-    border: none;
-    width: 600px;
-  }
-
-  }
-
-  .product1 {
-    display: inline-block;
-    width: 90%;
-  }
-
-  input.check {
-    position: relative;
-    top: -50px;
+  .btn{
+    font-size: 12px;
   }
 
   .product .table {

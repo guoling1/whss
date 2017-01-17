@@ -1,5 +1,8 @@
 package com.jkm.hss.merchant.service;
 
+import java.math.BigDecimal;
+import java.util.Date;
+
 /**
  * Created by zhangbin on 2016/12/2.
  */
@@ -13,5 +16,9 @@ public interface SendMsgService {
     /**
      * 提现成功推送
      */
-    void sendPushMessage(String money,String bankName,String bankNo,String touser);
+    void sendPushMessage(BigDecimal totalAmount, Date withdrawTime, BigDecimal poundage, String bankNo, String toUser);
+    /**
+     * 充值升级成功推送
+     */
+    void sendChargeMessage(String money,String typeName,String touser);
 }

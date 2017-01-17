@@ -42,7 +42,7 @@ public class InitAccountServiceImpl implements InitAccountService {
         if (null == jkmAccount1) {
             final Account jkmAccount = new Account();
             jkmAccount.setId(AccountConstants.JKM_ACCOUNT_ID);
-            jkmAccount.setUserName("金开门收费账户");
+            jkmAccount.setUserName("金开门利润账户");
             jkmAccount.setTotalAmount(new BigDecimal("0.00"));
             jkmAccount.setAvailable(new BigDecimal("0.00"));
             jkmAccount.setFrozenAmount(new BigDecimal("0.00"));

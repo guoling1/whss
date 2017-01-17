@@ -26,8 +26,9 @@ public enum EnumNoticeType {
 //    RETRIEVE_PASSWORD_MERCHANT(302, "商户找回密码"),
 //    RETRIEVE_PASSWORD_DEALER(303, "经销商找回密码"),
 
-    REGISTER_MERCHANT(401, "商户注册"),
 
+    REGISTER_MERCHANT(401, "商户注册"),
+    LOGIN_MERCHANT(402, "商户登录"),
     //########## 绑定银行卡消息 ##########
     BIND_CARD_MERCHANT(501, "商户绑定银行卡"),
     BIND_CARD_DEALER(502, "代理商绑定银行卡"),
@@ -42,9 +43,11 @@ public enum EnumNoticeType {
     /**
      * 代理商提现
      */
-    WITHDRAW_CODE_DEALER(702, "提现验证码");
+    WITHDRAW_CODE_DEALER(702, "提现验证码"),
 
+    //#############退款消息################
 
+    DUPLICATE_PAY_REFUND(801, "重复支付退款");
 
 
     private static final Map<Integer, EnumNoticeType> ENUM_MAP = new HashMap<>();

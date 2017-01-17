@@ -1,19 +1,21 @@
 <template lang="html">
   <div id="companyProfit">
-    <div style="padding: 8px 30px; background: rgb(243, 156, 18); z-index: 999999; font-size: 22px; font-weight: 600;margin-bottom: 15px;    color: #fff;">公司分润</div>
-    <div style="margin: 0 15px;">
+    <div style="margin: 15px;">
       <div class="box">
         <div class="box-header">
-          <h3 class="box-title">分润记录</h3>
+          <h3 class="box-title">公司分润</h3>
         </div>
         <!-- /.box-header -->
         <div class="box-body">
           <div id="example2_wrapper" class="dataTables_wrapper form-inline dt-bootstrap">
             <div class="search">
-              <span>日期：</span>
-              <input type="date" v-model="begin">
-              <span>至</span>
-              <input type="date" v-model="end">
+              <div class="form-group">
+                <label>日期：</label>
+                <div class="form-control" style="margin-right: 15px;padding: 0;width: 248px;height: 30px;line-height: 26px;">
+                  <input type="date" style="border: none;display:inline-block;width: 45%" name="date" value="" v-model="begin">至
+                  <input type="date" style="border: none;display:inline-block;width: 45%" name="date" value="" v-model="end">
+                </div>
+              </div>
               <div class="btn btn-primary" @click="lookup()">筛选</div>
             </div>
             <div class="row">
@@ -43,7 +45,7 @@
                     <td style="text-align: right">{{record.collectMoney|toFix}}</td>
                     <td style="text-align: right">{{record.withdrawMoney|toFix}}</td>
                     <td style="text-align: right">{{record.totalMoney|toFix}}</td>
-                    <td><router-link :to="{path:'/admin/record/companyProfitDet',query:{id:record.id}}" class="btn btn-success" v-if="record.totalMoney!=0">查看明细</router-link></td>
+                    <td><router-link :to="{path:'/admin/record/companyProfitDet',query:{id:record.id}}" v-if="record.totalMoney!=0">查看明细</router-link></td>
                   </tr>
                   </tbody>
                 </table>
@@ -296,4 +298,7 @@ span:nth-child(2){
   line-height: 34px;
   height: 34px;
 }
+  .btn{
+    font-size: 12px;
+  }
 </style>

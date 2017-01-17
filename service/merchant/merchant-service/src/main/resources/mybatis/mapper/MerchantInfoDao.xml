@@ -4,7 +4,10 @@
 
     <!-- 通用查询结果列-->
     <sql id="Base_Column_List">
-        id,mobile,md_mobile,bank_no_short,	identity_face_pic,	identity_opposite_pic,	identity_hand_pic,	bank_hand_pic,	reserve_mobile,	merchant_name,	address,	name,	identity,	bank_bin,	bank_name,	bank_no,dealer_id,code,	status,	create_time,	update_time
+        id,mobile,md_mobile,bank_no_short,	identity_face_pic,	identity_opposite_pic,	identity_hand_pic,	bank_hand_pic,bank_pic,
+        	reserve_mobile,	merchant_name,	address,	name,	identity,	bank_bin,	bank_name,	bank_no,dealer_id,code,account_id,
+        	checked_time,authentication_time,status,	create_time,	update_time,first_dealer_id,second_dealer_id,first_merchant_id,
+        	second_merchant_id,mark_code,level,weixin_rate,alipay_rate,fast_rate,hierarchy,product_id,source,is_upgrade
     </sql>
 
     <update id="update" parameterType="com.jkm.hss.merchant.entity.MerchantInfo">
@@ -52,7 +55,7 @@
     </select>
 
     <select id="getAll" resultType="com.jkm.hss.merchant.entity.MerchantInfo">
-        SELECT * FROM tb_merchant_info
+        SELECT <include refid="Base_Column_List" /> FROM tb_merchant_info
 
     </select>
 
@@ -83,6 +86,9 @@
             </if>
             <if test="bankHandPic != null">
                 bank_hand_pic,
+            </if>
+            <if test="bankPic != null">
+                bank_pic,
             </if>
             <if test="reserveMobile != null">
                 reserve_mobile,
@@ -120,6 +126,51 @@
             <if test="status != null">
                 status,
             </if>
+            <if test="checkedTime!=null">
+                checked_time,
+            </if>
+            <if test="authenticationTime!=null">
+                authentication_time,
+            </if>
+            <if test="firstDealerId!=null">
+                first_dealer_id,
+            </if>
+            <if test="secondDealerId!=null">
+                second_dealer_id,
+            </if>
+            <if test="firstMerchantId!=null">
+                first_merchant_id,
+            </if>
+            <if test="secondMerchantId!=null">
+                second_merchant_id,
+            </if>
+            <if test="markCode!=null">
+                mark_code,
+            </if>
+            <if test="level!=null">
+                level,
+            </if>
+            <if test="weixinRate!=null">
+                weixin_rate,
+            </if>
+            <if test="alipayRate!=null">
+                alipay_rate,
+            </if>
+            <if test="fastRate!=null">
+                fast_rate,
+            </if>
+            <if test="hierarchy!=null">
+                hierarchy,
+            </if>
+            <if test="productId!=null">
+                product_id,
+            </if>
+            <if test="source!=null">
+                source,
+            </if>
+            <if test="isUpgrade!=null">
+                is_upgrade,
+            </if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides="," >
             <if test="mobile != null">
@@ -142,6 +193,9 @@
             </if>
             <if test="bankHandPic!=null">
                 #{bankHandPic},
+            </if>
+            <if test="bankPic != null">
+                #{bankPic},
             </if>
             <if test="reserveMobile!=null">
                 #{reserveMobile},
@@ -179,6 +233,51 @@
             <if test="status!=null">
                 #{status},
             </if>
+            <if test="checkedTime!=null">
+                #{checkedTime},
+            </if>
+            <if test="authenticationTime!=null">
+                #{authenticationTime},
+            </if>
+            <if test="firstDealerId!=null">
+                #{firstDealerId},
+            </if>
+            <if test="secondDealerId!=null">
+                #{secondDealerId},
+            </if>
+            <if test="firstMerchantId!=null">
+                #{firstMerchantId},
+            </if>
+            <if test="secondMerchantId!=null">
+                #{secondMerchantId},
+            </if>
+            <if test="markCode!=null">
+                #{markCode},
+            </if>
+            <if test="level!=null">
+                #{level},
+            </if>
+            <if test="weixinRate!=null">
+                #{weixinRate},
+            </if>
+            <if test="alipayRate!=null">
+                #{alipayRate},
+            </if>
+            <if test="fastRate!=null">
+                #{fastRate},
+            </if>
+            <if test="hierarchy!=null">
+                #{hierarchy},
+            </if>
+            <if test="productId!=null">
+                #{productId},
+            </if>
+            <if test="source!=null">
+                #{source},
+            </if>
+            <if test="isUpgrade!=null">
+                #{isUpgrade},
+            </if>
         </trim>
     </insert>
 
@@ -207,6 +306,9 @@
             </if>
             <if test="bankHandPic != null">
                 bank_hand_pic = #{bankHandPic},
+            </if>
+            <if test="bankPic != null">
+                bank_pic = #{bankPic},
             </if>
             <if test="reserveMobile != null">
                 reserve_mobile = #{reserveMobile},
@@ -244,6 +346,50 @@
             <if test="status != null">
                 status = #{status},
             </if>
+
+
+            <if test="checkedTime!=null">
+                checked_time = #{checkedTime},
+            </if>
+            <if test="authenticationTime!=null">
+                authentication_time = #{authenticationTime},
+            </if>
+            <if test="firstDealerId!=null">
+                first_dealer_id = #{firstDealerId},
+            </if>
+            <if test="secondDealerId!=null">
+                second_dealer_id = #{secondDealerId},
+            </if>
+            <if test="firstMerchantId!=null">
+                first_merchant_id = #{firstMerchantId},
+            </if>
+            <if test="secondMerchantId!=null">
+                second_merchant_id = #{secondMerchantId},
+            </if>
+            <if test="markCode!=null">
+                mark_code = #{markCode},
+            </if>
+            <if test="level!=null">
+                level = #{level},
+            </if>
+            <if test="weixinRate!=null">
+                weixin_rate = #{weixinRate},
+            </if>
+            <if test="alipayRate!=null">
+                alipay_rate = #{alipayRate},
+            </if>
+            <if test="fastRate!=null">
+                fast_rate = #{fastRate},
+            </if>
+            <if test="hierarchy!=null">
+                hierarchy = #{hierarchy},
+            </if>
+            <if test="productId!=null">
+                product_id = #{productId},
+            </if>
+            <if test="source!=null">
+                source = #{source},
+            </if>
         </set>
         WHERE id = #{id}
     </update>
@@ -270,6 +416,30 @@
         UPDATE tb_merchant_info
         SET
         status = #{status}
+        WHERE id = #{id}
+    </update>
+    <select id="selectByMobile" resultType="com.jkm.hss.merchant.entity.MerchantInfo">
+        SELECT * from tb_merchant_info where mobile=#{mobile} limit 0,1
+    </select>
+
+    <select id="batchSelectByAccountIds" resultType="com.jkm.hss.merchant.entity.MerchantInfo">
+        SELECT * FROM tb_merchant_info
+        WHERE account_id IN
+        <foreach collection="accountIds" index="index" item="item" close="(" separator="," open=")">
+            #{item}
+        </foreach>
+    </select>
+
+    <update id="toUpgrade">
+        UPDATE tb_merchant_info
+        SET level = #{level},weixin_rate = #{weixinRate},alipay_rate = #{alipayRate},fast_rate = #{fastRate}
+        WHERE id = #{merchantId}
+    </update>
+
+    <update id="updateByCondition">
+        UPDATE tb_merchant_info
+        SET first_dealer_id = #{firstDealerId},second_dealer_id = #{secondDealerId},product_id = #{productId},
+        weixin_rate = #{weixinRate},alipay_rate = #{alipayRate},fast_rate = #{fastRate}
         WHERE id = #{id}
     </update>
 </mapper>

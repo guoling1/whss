@@ -16,10 +16,12 @@ public interface PayService {
      * 商户升级，付款获得url
      *
      * @param merchantId
+     * @param businessOrderNo 业务订单号
      * @param amount
+     * @param businessCallbackUrl 业务方回调url
      * @return
      */
-    Pair<Integer, String> generateMerchantUpgradeUrl(long merchantId, BigDecimal amount);
+    Pair<Integer, String> generateMerchantUpgradeUrl(long merchantId, String businessOrderNo, BigDecimal amount, String businessCallbackUrl);
 
     /**
      * 动态码收款
@@ -29,7 +31,7 @@ public interface PayService {
      * @param merchantId
      * @return
      */
-    Pair<Integer, String> codeReceipt(String totalAmount, int channel, long merchantId);
+    Pair<Integer, String> codeReceipt(String totalAmount, int channel, long merchantId, String appId);
 
 
     /**
@@ -104,4 +106,12 @@ public interface PayService {
      * @param merchantId
      */
     void poundageSettle(Order order, long merchantId);
+
+    /**
+     * 支付手续费结算 到 代理商等 待结算账户
+     *
+     * @param order
+     * @param merchantId
+     */
+    void merchantUpgradePoundageSettle(Order order, long merchantId);
 }

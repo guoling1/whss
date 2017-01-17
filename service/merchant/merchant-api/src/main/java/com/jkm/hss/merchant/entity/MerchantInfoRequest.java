@@ -9,11 +9,44 @@ import java.util.Date;
 public class MerchantInfoRequest {
 
     /**
+     * 商户编号
+     */
+    private String markCode;
+
+    /**
      * 条数
      */
     private Integer offset;
 
+    /**
+     * 查询条件：开始时间
+     */
+    private String startTime;
 
+    /**
+     * 查询条件：结束时间
+     */
+    private String endTime;
+
+    /**
+     * 查询条件：开始时间
+     */
+    private String startTime1;
+
+    /**
+     * 查询条件：结束时间
+     */
+    private String endTime1;
+
+    /**
+     * 查询条件：开始时间
+     */
+    private String startTime2;
+
+    /**
+     * 查询条件：结束时间
+     */
+    private String endTime2;
 
     /**
      * 认证时间

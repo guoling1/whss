@@ -2,7 +2,6 @@ package com.jkm.hss.merchant.dao;
 
 import com.jkm.hss.merchant.entity.MerchantInfoRequest;
 import com.jkm.hss.merchant.entity.MerchantInfoResponse;
-import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -29,25 +28,17 @@ public interface MerchantInfoQueryDao {
 
     /**
      * 查询待审核商户列表
-     * @param merchantInfoResponse
+     * @param req
      * @return
      */
-    List<MerchantInfoResponse> getRecord(MerchantInfoResponse merchantInfoResponse);
-
-    /**
-     * 查询代理商
-     * @param firstLevelDealerId
-     * @return
-     */
-    MerchantInfoResponse getProxyName(@Param("firstLevelDealerId") long firstLevelDealerId);
+    List<MerchantInfoResponse> getRecord(MerchantInfoRequest req);
 
     /**
      * 查询待审核总数
      * @return
      */
-    List<MerchantInfoResponse> getCountRecord();
+    int getCountRecord(MerchantInfoRequest req);
 
-    MerchantInfoResponse getProxyName1(long firstLevelDealerId);
 
 
 }

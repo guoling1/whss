@@ -14,6 +14,8 @@ public class WxConstants {
      * 微信基础接口地址
      */
     public static final String GET_TOKEN_URL = "https://api.weixin.qq.com/cgi-bin/token";// 获取access
+    public static final String GET_CALLBACK_IP = "https://api.weixin.qq.com/cgi-bin/getcallbackip";// 获取access
+    public static final String GET_USER_INFO = "https://api.weixin.qq.com/cgi-bin/user/info"; //获取用户基本信息
     public static final String GET_TICKET_URL = "https://api.weixin.qq.com/cgi-bin/ticket/getticket";//获取ticket
     public static final String GET_LOGIN_TOKEN_URL = "https://api.weixin.qq.com/sns/oauth2/access_token";// 获取access
     public static final String GET_USERINFO = "https://api.weixin.qq.com/sns/userinfo";

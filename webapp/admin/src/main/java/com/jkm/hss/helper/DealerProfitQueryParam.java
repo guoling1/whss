@@ -20,9 +20,14 @@ public class DealerProfitQueryParam extends PageQueryParam {
     private String endProfitDate;
 
     /**
-     * 代理商名称
+     * 二代理商名称
      */
     private String dealerName;
+
+    /**
+     * 所属一级代理商名称
+     */
+    private String firstDealerName;
 
     /**
      *每日分润id

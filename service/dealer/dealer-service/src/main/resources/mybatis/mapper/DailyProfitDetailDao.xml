@@ -64,7 +64,7 @@
     <select id="selectSecondByParam" resultType="com.jkm.hss.dealer.entity.DailyProfitDetail">
         SELECT * FROM tb_daily_profit_detail
         WHERE shall_money_type = 5
-        <if test="dealerName != null">
+        <if test="dealerName != null and dealerName != ''">
             and dealer_name = #{dealerName}
         </if>
         <if test="beginProfitDate != null">
@@ -75,8 +75,8 @@
     <select id="selectFirstByParam" resultType="com.jkm.hss.dealer.entity.DailyProfitDetail">
         SELECT * FROM tb_daily_profit_detail
         WHERE shall_money_type = 3
-        <if test="dealerName != null">
-            and dealer_name = #{dealerName}
+        <if test="firstDealerName != null and firstDealerName != ''" >
+            and first_dealer_name = #{firstDealerName}
         </if>
         <if test="beginProfitDate != null">
             and create_time BETWEEN #{beginProfitDate} AND #{endProfitDate}

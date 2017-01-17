@@ -13,6 +13,7 @@ import com.jkm.hss.admin.entity.QRCode;
 import com.jkm.hss.admin.service.AdminUserService;
 import com.jkm.hss.controller.BaseController;
 import com.jkm.hss.dealer.entity.Dealer;
+import com.jkm.hss.dealer.enums.EnumRecommendBtn;
 import com.jkm.hss.dealer.helper.DealerConsts;
 import com.jkm.hss.dealer.helper.requestparam.FirstLevelDealerAddRequest;
 import com.jkm.hss.dealer.helper.requestparam.FirstLevelDealerUpdateRequest;
@@ -27,6 +28,7 @@ import com.jkm.hss.helper.response.DistributeQRCodeResponse;
 import com.jkm.hss.helper.response.DistributeRangeQRCodeResponse;
 import com.jkm.hss.helper.response.FirstLevelDealerAddResponse;
 import com.jkm.hss.merchant.entity.BankCardBin;
+import com.jkm.hss.merchant.helper.ValidationUtil;
 import com.jkm.hss.merchant.service.BankCardBinService;
 import com.jkm.hss.product.entity.Product;
 import com.jkm.hss.product.entity.ProductChannelDetail;
@@ -293,6 +295,15 @@ public class AdminController extends BaseController {
             if (dealerOptional.isPresent()) {
                 return CommonResponse.simpleResponse(-1, "代理商手机号已经注册");
             }
+            if(!ValidationUtil.isIdCard(firstLevelDealerAddRequest.getIdCard())){
+                return CommonResponse.simpleResponse(-1, "身份证格式不正确");
+            }
+            if(firstLevelDealerAddRequest.getTotalProfitSpace()==null){
+                return CommonResponse.simpleResponse(-1, "收单总分润空间不能为空");
+            }
+            if((firstLevelDealerAddRequest.getTotalProfitSpace()).compareTo(new BigDecimal("0.002"))>0){
+                return CommonResponse.simpleResponse(-1, "总分润空间不可高于0.2%");
+            }
             final FirstLevelDealerAddRequest.Product productParam = firstLevelDealerAddRequest.getProduct();
             final long productId = productParam.getProductId();
             final Optional<Product> productOptional = this.productService.selectById(productId);
@@ -315,6 +326,18 @@ public class AdminController extends BaseController {
                     return commonResponse;
                 }
             }
+
+            List<FirstLevelDealerAddRequest.DealerUpgerdeRate> dealerUpgerdeRateParams = firstLevelDealerAddRequest.getDealerUpgerdeRates();
+            for (FirstLevelDealerAddRequest.DealerUpgerdeRate dealerUpgerdeRateParam : dealerUpgerdeRateParams) {
+                final CommonResponse commonResponse = this.checkDealerUpgerdeRate(dealerUpgerdeRateParam);
+                if (1 != commonResponse.getCode()) {
+                    return commonResponse;
+                }
+            }
+            if(firstLevelDealerAddRequest.getRecommendBtn()!=EnumRecommendBtn.ON.getId()&&firstLevelDealerAddRequest.getRecommendBtn()!=EnumRecommendBtn.OFF.getId()){
+                return CommonResponse.simpleResponse(-1, "开关参数有误");
+            }
+
             final long dealerId = this.dealerService.createFirstDealer(firstLevelDealerAddRequest);
             final FirstLevelDealerAddResponse firstLevelDealerAddResponse = new FirstLevelDealerAddResponse();
             firstLevelDealerAddResponse.setDealerId(dealerId);
@@ -354,6 +377,15 @@ public class AdminController extends BaseController {
             if (dealerOptional.isPresent()) {
                 return CommonResponse.simpleResponse(-1, "代理商手机号已经注册");
             }
+            if(!ValidationUtil.isIdCard(request.getIdCard())){
+                return CommonResponse.simpleResponse(-1, "身份证格式不正确");
+            }
+            if(request.getTotalProfitSpace()==null){
+                return CommonResponse.simpleResponse(-1, "收单总分润空间不能为空");
+            }
+            if((request.getTotalProfitSpace()).compareTo(new BigDecimal("0.002"))>0){
+                return CommonResponse.simpleResponse(-1, "总分润空间不可高于0.2%");
+            }
             final FirstLevelDealerUpdateRequest.Product productParam = request.getProduct();
             final long productId = productParam.getProductId();
             final Optional<Product> productOptional = this.productService.selectById(productId);
@@ -376,6 +408,18 @@ public class AdminController extends BaseController {
                     return commonResponse;
                 }
             }
+
+            List<FirstLevelDealerUpdateRequest.DealerUpgerdeRate> dealerUpgerdeRateParams = request.getDealerUpgerdeRates();
+            for (FirstLevelDealerUpdateRequest.DealerUpgerdeRate dealerUpgerdeRateParam : dealerUpgerdeRateParams) {
+                final CommonResponse commonResponse = this.checkDealerUpgerdeRate(dealerUpgerdeRateParam);
+                if (1 != commonResponse.getCode()) {
+                    return commonResponse;
+                }
+            }
+            if(request.getRecommendBtn()!=EnumRecommendBtn.ON.getId()&&request.getRecommendBtn()!=EnumRecommendBtn.OFF.getId()){
+                return CommonResponse.simpleResponse(-1, "开关参数有误");
+            }
+
             this.dealerService.updateDealer(request);
             return CommonResponse.builder4MapResult(CommonResponse.SUCCESS_CODE, "success")
                     .addParam("dealerId", request.getDealerId()).build();
@@ -559,6 +603,46 @@ public class AdminController extends BaseController {
                     || quickPayWithdrawFee.compareTo(quickPayMerchantWithdrawFee) > 0) {
                 return CommonResponse.simpleResponse(-1, "快捷支付通道的提现结算费用：一级代理商的必须大于等于产品的, 小于等于商户的");
             }
+        }
+        return CommonResponse.simpleResponse(1, "");
+    }
+
+    private CommonResponse checkDealerUpgerdeRate(final FirstLevelDealerAddRequest.DealerUpgerdeRate dealerUpgerdeRateParam) {
+        if (StringUtils.isBlank(dealerUpgerdeRateParam.getBossDealerShareRate())) {
+            return CommonResponse.simpleResponse(-1, "金开门分润比例不能为空");
+        }
+        if (StringUtils.isBlank(dealerUpgerdeRateParam.getFirstDealerShareProfitRate())) {
+            return CommonResponse.simpleResponse(-1, "一级代理商分润比例不能为空");
+        }
+        if (StringUtils.isBlank(dealerUpgerdeRateParam.getSecondDealerShareProfitRate())) {
+            return CommonResponse.simpleResponse(-1, "二级代理分润比例不能为空");
+        }
+        BigDecimal b1 = new BigDecimal(dealerUpgerdeRateParam.getBossDealerShareRate());
+        BigDecimal b2 = new BigDecimal(dealerUpgerdeRateParam.getFirstDealerShareProfitRate());
+        BigDecimal b3 = new BigDecimal(dealerUpgerdeRateParam.getSecondDealerShareProfitRate());
+        BigDecimal b = b1.add(b2).add(b3);
+        if (b.compareTo(new BigDecimal("1"))!=0) {
+            return CommonResponse.simpleResponse(-1, "金开门，一级代理，二级代理的比例之和必须等于100%");
+        }
+        return CommonResponse.simpleResponse(1, "");
+    }
+
+    private CommonResponse checkDealerUpgerdeRate(final FirstLevelDealerUpdateRequest.DealerUpgerdeRate dealerUpgerdeRateParam) {
+        if (StringUtils.isBlank(dealerUpgerdeRateParam.getBossDealerShareRate())) {
+            return CommonResponse.simpleResponse(-1, "金开门分润比例不能为空");
+        }
+        if (StringUtils.isBlank(dealerUpgerdeRateParam.getFirstDealerShareProfitRate())) {
+            return CommonResponse.simpleResponse(-1, "一级代理商分润比例不能为空");
+        }
+        if (StringUtils.isBlank(dealerUpgerdeRateParam.getSecondDealerShareProfitRate())) {
+            return CommonResponse.simpleResponse(-1, "二级代理分润比例不能为空");
+        }
+        BigDecimal b1 = new BigDecimal(dealerUpgerdeRateParam.getBossDealerShareRate());
+        BigDecimal b2 = new BigDecimal(dealerUpgerdeRateParam.getFirstDealerShareProfitRate());
+        BigDecimal b3 = new BigDecimal(dealerUpgerdeRateParam.getSecondDealerShareProfitRate());
+        BigDecimal b = b1.add(b2).add(b3);
+        if (b.compareTo(new BigDecimal("1"))!=0) {
+            return CommonResponse.simpleResponse(-1, "金开门，一级代理，二级代理的比例之和必须等于100%");
         }
         return CommonResponse.simpleResponse(1, "");
     }

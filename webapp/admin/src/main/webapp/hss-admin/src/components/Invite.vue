@@ -1,23 +1,26 @@
 <template lang="html">
   <div id="invite">
-    <div style="padding: 8px 30px; background: rgb(243, 156, 18); z-index: 999999; font-size: 22px; font-weight: 600;margin-bottom: 15px;color: #fff;">邀请规则设置</div>
-    <div style="margin: 0 15px 15px">
+    <div style="margin: 15px">
       <div class="box ">
         <form class="form-horizontal">
+          <div class="box-header">
+            <h3 class="box-title">邀请规则设置</h3>
+          </div>
           <div class="box-body">
             <div class="form-group">
               <div class="col-xs-12">
                 产品选择：
-                <select class="form-control select2 select2-hidden-accessible" style="width: 25%;display: inline-block" tabindex="-1" aria-hidden="true">
+                <select class="form-control select2 select2-hidden-accessible" style="width: 25%;display: inline-block" tabindex="-1" aria-hidden="true" v-model="productId">
                   <option value="">请选择产品</option>
                   <option :value="list.productId" v-for="list in lists">{{list.productName}}</option>
                 </select>
+                <div @click="search" class="btn btn-primary">确定</div>
               </div>
             </div>
           </div>
         </form>
       </div>
-      <div class="box box-info">
+      <div class="box box-info" v-if="result.length!=0">
         <div class="box-header with-border">
           <h3 class="box-title">商户升级规则设置</h3>
         </div>
@@ -36,41 +39,31 @@
                         <th>无卡费率</th>
                         <th>升级费</th>
                         <th>邀请人数</th>
+                        <th>直接升级费奖励</th>
+                        <th>间推升级费奖励</th>
                       </tr>
                       <tr>
                         <td>普通</td>
-                        <td>0.49%</td>
-                        <td>0.49%</td>
-                        <td>0.55%</td>
+                        <td>{{result.upgradeRulesList[0].weixinRate}}%</td>
+                        <td>{{result.upgradeRulesList[0].alipayRate}}%</td>
+                        <td>{{result.upgradeRulesList[0].fastRate}}%</td>
+                        <td>无</td>
+                        <td>无</td>
                         <td>无</td>
                         <td>无</td>
                       </tr>
-                      <tr >
-                        <td>店员</td>
-                        <td><input type="text" name="name" >%</td>
-                        <td><input type="text" name="name">%</td>
-                        <td><input type="text" name="name">%</td>
-                        <td><input type="text" name="name">元</td>
-                        <td><input type="text" name="name">人</td>
+                      <tr v-for="(upgrade,index) in result.upgradeRulesList" v-if="index!=0">
+                        <td>{{upgrade.name}}</td>
+                        <td><input type="text" name="name" v-model="upgrade.weixinRate">%</td>
+                        <td><input type="text" name="name" v-model="upgrade.alipayRate">%</td>
+                        <td><input type="text" name="name" v-model="upgrade.fastRate">%</td>
+                        <td><input type="text" name="name" v-model="upgrade.upgradeCost">元</td>
+                        <td><input type="text" name="name" v-model="upgrade.promotionNum">人</td>
+                        <td><input type="text" name="name" v-model="upgrade.directPromoteShall">元</td>
+                        <td><input type="text" name="name" v-model="upgrade.inDirectPromoteShall">元</td>
                       </tr>
                       <tr >
-                        <td>店长</td>
-                        <td><input type="text" name="name" >%</td>
-                        <td><input type="text" name="name">%</td>
-                        <td><input type="text" name="name">%</td>
-                        <td><input type="text" name="name">元</td>
-                        <td><input type="text" name="name">人</td>
-                      </tr>
-                      <tr >
-                        <td>老板</td>
-                        <td><input type="text" name="name" >%</td>
-                        <td><input type="text" name="name">%</td>
-                        <td><input type="text" name="name">%</td>
-                        <td><input type="text" name="name">元</td>
-                        <td><input type="text" name="name">人</td>
-                      </tr>
-                      <tr >
-                        <td colspan="6">邀请用户达标标准：收款满<input type="text" name="name" style="width: 100px;" v-model="standard">元
+                        <td colspan="6">有效激活标准：收款满<input type="text" name="name" style="width: 100px;" v-model="result.standard">元
                         </td>
                       </tr>
                       </tbody></table>
@@ -83,7 +76,7 @@
           </div>
         </form>
       </div>
-      <div class="box box-info">
+      <div class="box box-info" v-if="result.length!=0">
         <div class="box-header with-border">
           <h3 class="box-title">升级推荐分润设置</h3>
         </div>
@@ -101,16 +94,16 @@
                       </tr>
                       <tr>
                         <td>升级费分润</td>
-                        <td><input type="text" name="name" v-model="upgradeRate">%</td>
+                        <td><input type="text" name="name" v-model="result.upgradeRate">%</td>
                       </tr>
                       <tr >
                         <td>收单分润</td>
-                        <td><input type="text" name="name" v-model="tradeRate">%</td>
+                        <td><input type="text" name="name" v-model="result.tradeRate">%</td>
                       </tr>
-                      <tr >
-                        <td colspan="2">收单奖励分润池：<input type="text" name="name" style="width: 100px;" v-model="rewardRate">%
+                      <!--<tr >
+                        <td colspan="2">收单奖励分润池：<input type="text" name="name" style="width: 100px;" v-model="result.rewardRate">%
                         </td>
-                      </tr>
+                      </tr>-->
                       </tbody>
                     </table>
                   </div>
@@ -120,7 +113,8 @@
           </div>
         </form>
       </div>
-      <div class="btn btn-primary" @click="save">保 存</div>
+      <div class="btn btn-primary" @click="save" v-if="result.length!=0">保 存</div>
+      <span v-if="result.length!=0">(对新审核通过的有效)</span>
     </div>
   </div>
 </template>
@@ -130,48 +124,86 @@
     name:"invite",
     data(){
       return{
-        standard: '',
-        upgradeRate: '',
-        tradeRate:'',
-        rewardRate:'',
-        upgradeRulesList:[],
-        lists:[]    //产品列表
+        result: '',
+        lists:[], //产品列表
+        productId:'',
+        query:''
       }
     },
     created: function () {
+      //产品列表
       this.$http.post("/admin/product/list")
         .then(function (res) {
-          this.$data.list = res.data
+          this.$data.lists = res.data
         },function (err) {
           this.$store.commit('MESSAGE_ACCORD_SHOW', {
             text: err.statusMessage
           })
         })
-        /*this.$http.post('/admin/upgrade/init',{productId:1})
+      //内容
+      /*this.$http.post('/admin/upgrade/init', {productId: this.$data.productId})
+        .then(function (res) {
+          console.log(res)
+          this.$data.result = res.data;
+
+          this.$data.result.upgradeRulesList.sort(function (a, b) {
+            return a.type-b.type
+          })
+          console.log(this.$data.result.upgradeRulesList)
+          this.$data.result.upgradeRulesList[0].name = '普通'
+          this.$data.result.upgradeRulesList[1].name = '店员'
+          this.$data.result.upgradeRulesList[2].name = '店长'
+          this.$data.result.upgradeRulesList[3].name = '老板'
+        }, function (err) {
+          this.$store.commit('MESSAGE_ACCORD_SHOW', {
+            text: err.statusMessage
+          })
+        })*/
+    },
+    methods: {
+      search: function () {
+        this.$data.result = ''
+        this.$http.post('/admin/upgrade/init', {productId: this.$data.productId})
           .then(function (res) {
             console.log(res)
-            this.$data.standard = res.data.standard;
-            this.$data.upgradeRate = res.data.upgradeRate;
-            this.$data.tradeRate = res.data.tradeRate;
-            this.$data.rewardRate = res.data.rewardRate;
-            this.$data.upgradeRulesList = res.data.upgradeRulesList;
+            this.$data.result = res.data;
+            this.$data.result.upgradeRulesList.sort(function (a, b) {
+              return a.type-b.type
+            })
+            console.log(this.$data.result.upgradeRulesList)
+            this.$data.result.upgradeRulesList[0].name = '普通'
+            this.$data.result.upgradeRulesList[1].name = '店员'
+            this.$data.result.upgradeRulesList[2].name = '店长'
+            this.$data.result.upgradeRulesList[3].name = '老板'
           }, function (err) {
             this.$store.commit('MESSAGE_ACCORD_SHOW', {
               text: err.statusMessage
             })
-          })*/
-    },
-    methods: {
+          })
+      },
       save: function () {
-        /*this.$http.post('/admin/upgrade/addOrUpdate',{})
+        var upgradeRulesList= this.$data.result.upgradeRulesList.concat()
+        upgradeRulesList.shift()
+        var query = {
+          productId:this.$data.productId,
+          standard:this.$data.result.standard,
+          upgradeRate:this.$data.result.upgradeRate,
+          tradeRate:this.$data.result.tradeRate,
+          rewardRate:this.$data.result.rewardRate,
+          upgradeRulesList:upgradeRulesList
+        }
+        this.$http.post('/admin/upgrade/addOrUpdate',query)
           .then(function (res) {
-
-          })*/
+            this.$store.commit('MESSAGE_ACCORD_SHOW', {
+              text: "操作成功"
+            })
+          },function (err) {
+            this.$store.commit('MESSAGE_ACCORD_SHOW', {
+              text: err.statusMessage
+            })
+          })
       }
     },
-    computed: {
-
-    }
   }
 </script>
 <style scoped lang="less">
@@ -196,5 +228,8 @@
     width: 77%;
     border: none;
     border-bottom: 1px solid #d0d0d0;
+  }
+  .btn,select{
+    font-size: 12px;
   }
 </style>

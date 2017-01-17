@@ -3,7 +3,9 @@ package com.jkm.hss.merchant.service;
 import com.google.common.base.Optional;
 import com.jkm.hss.merchant.entity.MerchantInfo;
 import com.jkm.hss.merchant.helper.request.MerchantInfoAddRequest;
+import org.apache.commons.lang3.tuple.Pair;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -63,7 +65,7 @@ public interface MerchantInfoService {
     /**
      * 查询商户列表
      */
-    Optional<MerchantInfo> getAll(MerchantInfo merchantInfo);
+    List<MerchantInfo> getAll();
 
     /**
      * 审核商户（更改商户状态）
@@ -73,11 +75,17 @@ public interface MerchantInfoService {
 //    long updateRecord(RequestMerchantInfo requestMerchantInfo);
 
     /**
-     * 扫码注册
+     * 公众号注册
      * @param merchantInfo
      * @return
      */
     long regByWxPub(MerchantInfo merchantInfo);
+    /**
+     * 公众号注册（新）
+     * @param merchantInfo
+     * @return
+     */
+    long regByWx(MerchantInfo merchantInfo);
     /**
      * 扫固定码注册
      * @param merchantInfo
@@ -116,6 +124,12 @@ public interface MerchantInfoService {
     List<MerchantInfo> batchGetMerchantInfo(List<Long> merchantIdList);
 
     /**
+     * 根据id查询
+     */
+    Optional<MerchantInfo> selectByMobile(String mobile);
+
+
+    /**
      * 插入accountId
      *
      * @param accountId
@@ -123,4 +137,39 @@ public interface MerchantInfoService {
      * @param merchantId
      */
     int addAccountId(long accountId, int status, long merchantId, Date checkedTime);
+
+    /**
+     * 推荐好友，大于某个金额去升级
+     * @param merchantId
+     */
+    void toUpgradeByRecommend(long merchantId);
+
+    /**
+     * 升级
+     * @param reqSn
+     * @param result
+     * @return
+     */
+    void toUpgrade(String reqSn, String result);
+
+    /**
+     * 根据请求单号查询分润费
+     * @param reqSn
+     * @return
+     */
+    Pair<BigDecimal,BigDecimal> getUpgradeShareProfit(String reqSn);
+
+    /**
+     * 初始化推荐版本数据
+     * @param merchantInfo
+     */
+    void updateByCondition(MerchantInfo merchantInfo);
+
+    /**
+     * 按accountIds批量查询
+     *
+     * @param accountIds
+     * @return
+     */
+    List<MerchantInfo> batchGetByAccountIds(List<Long> accountIds);
 }
