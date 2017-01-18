@@ -10,6 +10,7 @@ import com.jkm.hss.account.entity.Account;
 import com.jkm.hss.account.entity.SettleAccountFlow;
 import com.jkm.hss.account.enums.EnumAccountFlowType;
 import com.jkm.hss.account.enums.EnumAccountUserType;
+import com.jkm.hss.account.enums.EnumAppType;
 import com.jkm.hss.account.sevice.AccountFlowService;
 import com.jkm.hss.account.sevice.AccountService;
 import com.jkm.hss.account.sevice.SettleAccountFlowService;
@@ -133,7 +134,7 @@ public class AccountSettleAuditRecordServiceImpl implements AccountSettleAuditRe
         final DateTime now = DateTime.now();
         tradeDateList.add(now.minusDays(1).toDate());
         Preconditions.checkState(!(6 == now.dayOfWeek().get() || 7 == now.dayOfWeek().get()), "T1结算定时任务，在非法的日期启动");
-        if (1 == now.dayOfWeek().get()) {
+        if (1 == now.getDayOfWeek()) {
             tradeDateList.add(now.minusDays(2).toDate());
             tradeDateList.add(now.minusDays(3).toDate());
         }
@@ -176,12 +177,12 @@ public class AccountSettleAuditRecordServiceImpl implements AccountSettleAuditRe
                     final Long key = keyIterator.next();
                     final List<SettleAccountFlow> flows = accountIdFlowMap.get(key);
                     //周一
-                    if (1 == now.dayOfWeek().get()) {
+                    if (1 == now.getDayOfWeek()) {
                         for (Date date : tradeDateList) {
                             final List<SettleAccountFlow> flows1 = this.getFlows(date, flows);
                             this.generateAuditRecord(key, flows1, merchantMap, dealerMap);
                         }
-                    } else {//
+                    } else if (now.getDayOfWeek() >=2 && now.getDayOfWeek() <= 5) {//
                         this.generateAuditRecord(key, flows, merchantMap, dealerMap);
                     }
                 }
@@ -376,7 +377,8 @@ public class AccountSettleAuditRecordServiceImpl implements AccountSettleAuditRe
         this.accountService.increaseAvailableAmount(merchantAccount.getId(), merchantIncreaseSettleAccountFlow.getIncomeAmount());
         this.accountService.decreaseSettleAmount(merchantAccount.getId(), merchantIncreaseSettleAccountFlow.getIncomeAmount());
         this.settleAccountFlowService.addSettleAccountFlow(merchantAccount.getId(), orderNo, merchantIncreaseSettleAccountFlow.getIncomeAmount(),
-                "支付", EnumAccountFlowType.DECREASE);
+                "支付", EnumAccountFlowType.DECREASE, merchantIncreaseSettleAccountFlow.getAppId(), merchantIncreaseSettleAccountFlow.getTradeDate(),
+                merchantIncreaseSettleAccountFlow.getAccountUserType());
         //可用余额流水增加
         this.accountFlowService.addAccountFlow(merchantAccount.getId(), orderNo, merchantIncreaseSettleAccountFlow.getIncomeAmount(),
                 "支付", EnumAccountFlowType.INCREASE);
@@ -403,7 +405,8 @@ public class AccountSettleAuditRecordServiceImpl implements AccountSettleAuditRe
                 this.accountService.increaseAvailableAmount(account.getId(), settleAccountFlow.getIncomeAmount());
                 this.accountService.decreaseSettleAmount(account.getId(), settleAccountFlow.getIncomeAmount());
                 this.settleAccountFlowService.addSettleAccountFlow(account.getId(), orderNo, settleAccountFlow.getIncomeAmount(),
-                        "分润", EnumAccountFlowType.DECREASE);
+                        "分润", EnumAccountFlowType.DECREASE, settleAccountFlow.getAppId(), settleAccountFlow.getTradeDate(),
+                        settleAccountFlow.getAccountUserType());
                 this.accountFlowService.addAccountFlow(account.getId(), orderNo, settleAccountFlow.getIncomeAmount(),
                         "分润", EnumAccountFlowType.INCREASE);
             }

@@ -41,15 +41,7 @@ import java.util.Map;
 public class PaymentSdkCallbackController extends BaseController {
 
     @Autowired
-    private PayService payService;
-    @Autowired
-    private MerchantInfoService merchantInfoService;
-    @Autowired
-    private WithdrawService withdrawService;
-    @Autowired
     private OrderService orderService;
-    @Autowired
-    private SendMessageService sendMessageService;
     @Autowired
     private HSYTradeService hsyTradeService;
 
@@ -62,7 +54,7 @@ public class PaymentSdkCallbackController extends BaseController {
     @RequestMapping(value = "pay", method = RequestMethod.POST)
     public Object handlePayCallbackMsg(@RequestBody final PaymentSdkPayCallbackResponse paymentSdkPayCallbackResponse) {
         log.info("收到支付中心的支付回调请求，订单号[{}], 参数[{}]", paymentSdkPayCallbackResponse.getOrderNo(), paymentSdkPayCallbackResponse);
-        this.payService.handlePayCallbackMsg(paymentSdkPayCallbackResponse);
+        this.hsyTradeService.handleHsyPayCallbackMsg(paymentSdkPayCallbackResponse);
         return "success";
     }
 
@@ -75,7 +67,7 @@ public class PaymentSdkCallbackController extends BaseController {
     @RequestMapping(value = "withdraw", method = RequestMethod.POST)
     public Object handleWithdrawCallbackMsg(@RequestBody final PaymentSdkWithdrawCallbackResponse paymentSdkWithdrawCallbackResponse) {
         log.info("收到支付中心的提现回调请求，订单号[{}], 参数[{}]", paymentSdkWithdrawCallbackResponse.getOrderNo(), JSON.toJSONString(paymentSdkWithdrawCallbackResponse));
-        this.withdrawService.handleWithdrawCallbackMsg(paymentSdkWithdrawCallbackResponse);
+        this.hsyTradeService.handleHsyWithdrawCallbackMsg(paymentSdkWithdrawCallbackResponse);
         return "success";
     }
 
@@ -91,20 +83,7 @@ public class PaymentSdkCallbackController extends BaseController {
         log.info("收到支付中心的重复支付退款回调请求，订单号[{}], 流水号[{}], 参数[{}]", paymentSdkRefundCallbackResponse.getOrderNo(),
                 paymentSdkRefundCallbackResponse.getSn(), paymentSdkRefundCallbackResponse);
         final Optional<Order> orderOptional = this.orderService.getByOrderNo(paymentSdkRefundCallbackResponse.getOrderNo());
-        if (orderOptional.isPresent()) {
-            final Order payOrder = orderOptional.get();
-            final MerchantInfo merchantInfo = this.merchantInfoService.getByAccountId(payOrder.getPayer()).get();
-            final Map<String, String> params = ImmutableMap.of("time", DateFormatUtil.format(new DateTime(paymentSdkRefundCallbackResponse.getRequestTime()).toDate(), DateFormatUtil.yyyy_MM_dd_HH_mm_ss),
-                    "amount", paymentSdkRefundCallbackResponse.getAmount());
-            this.sendMessageService.sendMessage(SendMessageParams.builder()
-                    .mobile(MerchantSupport.decryptMobile(merchantInfo.getReserveMobile()))
-                    .uid(merchantInfo.getId() + "")
-                    .data(params)
-                    .userType(EnumUserType.FOREGROUND_USER)
-                    .noticeType(EnumNoticeType.DUPLICATE_PAY_REFUND)
-                    .build()
-            );
-        }
+
         return "success";
     }
 

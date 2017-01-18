@@ -56,7 +56,8 @@ public interface SettleAccountFlowService {
      * @param remark  备注
      * @param type 变更方向
      */
-    void addSettleAccountFlow(long accountId, String orderNo, BigDecimal changeAmount, String remark, EnumAccountFlowType type);
+    void addSettleAccountFlow(long accountId, String orderNo, BigDecimal changeAmount, String remark, EnumAccountFlowType type,
+            String appId, Date tradeDate, int accountUserType);
 
     /**
      * 查询上一个工作日的结算流水（未结算）

@@ -46,4 +46,23 @@ public class DateTimeUtil {
     public static Date todayDate() {
         return today().toDate();
     }
+
+    /**
+     * 获取T1的结算时间
+     *
+     * @return
+     */
+    public static Date getSettleDate() {
+        final DateTime now = DateTime.now();
+        if (now.getDayOfWeek() >= 1 && now.getDayOfWeek() <= 4) {
+            return now.plusDays(1).toDate();
+        } else if (now.getDayOfWeek() == 5) {
+            return now.plusDays(3).toDate();
+        } else if (now.getDayOfWeek() == 6) {
+            return now.plusDays(2).toDate();
+        } else if (now.getDayOfWeek() == 7) {
+            return now.plusDays(1).toDate();
+        }
+        throw new RuntimeException("can not be here");
+    }
 }

@@ -8,6 +8,8 @@ import com.jkm.hss.account.entity.Account;
 import com.jkm.hss.account.entity.FrozenRecord;
 import com.jkm.hss.account.entity.UnFrozenRecord;
 import com.jkm.hss.account.enums.EnumAccountFlowType;
+import com.jkm.hss.account.enums.EnumAccountUserType;
+import com.jkm.hss.account.enums.EnumAppType;
 import com.jkm.hss.account.enums.EnumUnfrozenType;
 import com.jkm.hss.account.helper.AccountConstants;
 import com.jkm.hss.account.sevice.*;
@@ -119,7 +121,7 @@ public class WithdrawServiceImpl implements WithdrawService {
                 "提现", EnumAccountFlowType.DECREASE);
 
         final PaymentSdkDaiFuRequest paymentSdkDaiFuRequest = new PaymentSdkDaiFuRequest();
-        paymentSdkDaiFuRequest.setAppId(PaymentSdkConstants.APP_ID);
+        paymentSdkDaiFuRequest.setAppId(playMoneyOrder.getAppId());
         paymentSdkDaiFuRequest.setOrderNo(playMoneyOrder.getOrderNo());
         paymentSdkDaiFuRequest.setTotalAmount(playMoneyOrder.getTradeAmount().subtract(playMoneyOrder.getPoundage()).toPlainString());
         paymentSdkDaiFuRequest.setTradeType(tradePeriod);
@@ -131,7 +133,7 @@ public class WithdrawServiceImpl implements WithdrawService {
         paymentSdkDaiFuRequest.setIdCard(MerchantSupport.decryptIdentity(merchant.getIdentity()));
         paymentSdkDaiFuRequest.setPlayMoneyChannel(EnumPlayMoneyChannel.SAOMI.getId());
         paymentSdkDaiFuRequest.setNote(merchant.getMerchantName());
-        paymentSdkDaiFuRequest.setSystemCode(PaymentSdkConstants.APP_ID);
+        paymentSdkDaiFuRequest.setSystemCode(playMoneyOrder.getAppId());
         paymentSdkDaiFuRequest.setNotifyUrl(PaymentSdkConstants.SDK_PAY_WITHDRAW_NOTIFY_URL);
         paymentSdkDaiFuRequest.setPayOrderSn(payOrderSn);
         //请求网关
@@ -273,7 +275,7 @@ public class WithdrawServiceImpl implements WithdrawService {
             this.accountService.increaseTotalAmount(poundageAccount.getId(), order.getPoundage());
             this.accountService.increaseSettleAmount(poundageAccount.getId(), order.getPoundage());
             this.settleAccountFlowService.addSettleAccountFlow(poundageAccount.getId(), order.getOrderNo(),
-                    order.getPoundage(), "提现分润", EnumAccountFlowType.INCREASE);
+                    order.getPoundage(), "提现分润", EnumAccountFlowType.INCREASE, EnumAppType.HSS.getId(), order.getPaySuccessTime(), EnumAccountUserType.COMPANY.getId());
         }
     }
 
@@ -305,7 +307,7 @@ public class WithdrawServiceImpl implements WithdrawService {
         this.accountService.increaseAvailableAmount(poundageAccount.getId(), order.getPoundage());
         this.accountService.decreaseSettleAmount(poundageAccount.getId(), order.getPoundage());
         this.settleAccountFlowService.addSettleAccountFlow(poundageAccount.getId(), order.getOrderNo(), order.getPoundage(),
-                "提现分润", EnumAccountFlowType.DECREASE);
+                "提现分润", EnumAccountFlowType.DECREASE, EnumAppType.HSS.getId(), order.getPaySuccessTime(), EnumAccountUserType.COMPANY.getId());
         this.accountFlowService.addAccountFlow(poundageAccount.getId(), order.getOrderNo(), order.getPoundage(),
                 "提现分润", EnumAccountFlowType.INCREASE);
         //分账
@@ -325,13 +327,13 @@ public class WithdrawServiceImpl implements WithdrawService {
             this.accountService.increaseTotalAmount(account.getId(), channelMoneyTriple.getMiddle());
             this.accountService.increaseSettleAmount(account.getId(), channelMoneyTriple.getMiddle());
             this.settleAccountFlowService.addSettleAccountFlow(account.getId(), order.getOrderNo(), channelMoneyTriple.getMiddle(),
-                    "提现分润", EnumAccountFlowType.INCREASE);
+                    "提现分润", EnumAccountFlowType.INCREASE, EnumAppType.HSS.getId(), order.getPaySuccessTime(), EnumAccountUserType.COMPANY.getId());
 
             //待结算--可用余额
             this.accountService.increaseAvailableAmount(account.getId(), channelMoneyTriple.getMiddle());
             this.accountService.decreaseSettleAmount(account.getId(), channelMoneyTriple.getMiddle());
             this.settleAccountFlowService.addSettleAccountFlow(account.getId(), order.getOrderNo(), channelMoneyTriple.getMiddle(),
-                    "提现分润", EnumAccountFlowType.DECREASE);
+                    "提现分润", EnumAccountFlowType.DECREASE, EnumAppType.HSS.getId(), order.getPaySuccessTime(), EnumAccountUserType.COMPANY.getId());
             this.accountFlowService.addAccountFlow(account.getId(), order.getOrderNo(), channelMoneyTriple.getMiddle(),
                     "提现分润", EnumAccountFlowType.INCREASE);
         }
@@ -343,13 +345,13 @@ public class WithdrawServiceImpl implements WithdrawService {
             this.accountService.increaseTotalAmount(account.getId(), productMoneyTriple.getMiddle());
             this.accountService.increaseSettleAmount(account.getId(), productMoneyTriple.getMiddle());
             this.settleAccountFlowService.addSettleAccountFlow(account.getId(), order.getOrderNo(), productMoneyTriple.getMiddle(),
-                    "提现分润", EnumAccountFlowType.INCREASE);
+                    "提现分润", EnumAccountFlowType.INCREASE, EnumAppType.HSS.getId(), order.getPaySuccessTime(), EnumAccountUserType.COMPANY.getId());
 
             //待结算--可用余额
             this.accountService.increaseAvailableAmount(account.getId(), productMoneyTriple.getMiddle());
             this.accountService.decreaseSettleAmount(account.getId(), productMoneyTriple.getMiddle());
             this.settleAccountFlowService.addSettleAccountFlow(account.getId(), order.getOrderNo(), productMoneyTriple.getMiddle(),
-                    "提现分润", EnumAccountFlowType.DECREASE);
+                    "提现分润", EnumAccountFlowType.DECREASE, EnumAppType.HSS.getId(), order.getPaySuccessTime(), EnumAccountUserType.COMPANY.getId());
             this.accountFlowService.addAccountFlow(account.getId(), order.getOrderNo(), productMoneyTriple.getMiddle(),
                     "提现分润", EnumAccountFlowType.INCREASE);
         }
@@ -362,13 +364,13 @@ public class WithdrawServiceImpl implements WithdrawService {
             this.accountService.increaseTotalAmount(account.getId(), firstMoneyTriple.getMiddle());
             this.accountService.increaseSettleAmount(account.getId(), firstMoneyTriple.getMiddle());
             this.settleAccountFlowService.addSettleAccountFlow(account.getId(), order.getOrderNo(), firstMoneyTriple.getMiddle(),
-                    "提现分润", EnumAccountFlowType.INCREASE);
+                    "提现分润", EnumAccountFlowType.INCREASE, EnumAppType.HSS.getId(), order.getPaySuccessTime(), EnumAccountUserType.DEALER.getId());
 
             //待结算--可用余额
             this.accountService.increaseAvailableAmount(account.getId(), firstMoneyTriple.getMiddle());
             this.accountService.decreaseSettleAmount(account.getId(), firstMoneyTriple.getMiddle());
             this.settleAccountFlowService.addSettleAccountFlow(account.getId(), order.getOrderNo(), firstMoneyTriple.getMiddle(),
-                    "提现分润", EnumAccountFlowType.DECREASE);
+                    "提现分润", EnumAccountFlowType.DECREASE, EnumAppType.HSS.getId(), order.getPaySuccessTime(), EnumAccountUserType.DEALER.getId());
             this.accountFlowService.addAccountFlow(account.getId(), order.getOrderNo(), firstMoneyTriple.getMiddle(),
                     "提现分润", EnumAccountFlowType.INCREASE);
         }
@@ -381,13 +383,13 @@ public class WithdrawServiceImpl implements WithdrawService {
             this.accountService.increaseTotalAmount(account.getId(), secondMoneyTriple.getMiddle());
             this.accountService.increaseSettleAmount(account.getId(), secondMoneyTriple.getMiddle());
             this.settleAccountFlowService.addSettleAccountFlow(account.getId(), order.getOrderNo(), secondMoneyTriple.getMiddle(),
-                    "提现分润", EnumAccountFlowType.INCREASE);
+                    "提现分润", EnumAccountFlowType.INCREASE, EnumAppType.HSS.getId(), order.getPaySuccessTime(), EnumAccountUserType.DEALER.getId());
 
             //待结算--可用余额
             this.accountService.increaseAvailableAmount(account.getId(), secondMoneyTriple.getMiddle());
             this.accountService.decreaseSettleAmount(account.getId(), secondMoneyTriple.getMiddle());
             this.settleAccountFlowService.addSettleAccountFlow(account.getId(), order.getOrderNo(), secondMoneyTriple.getMiddle(),
-                    "提现分润", EnumAccountFlowType.DECREASE);
+                    "提现分润", EnumAccountFlowType.DECREASE, EnumAppType.HSS.getId(), order.getPaySuccessTime(), EnumAccountUserType.DEALER.getId());
             this.accountFlowService.addAccountFlow(account.getId(), order.getOrderNo(), secondMoneyTriple.getMiddle(),
                     "分润", EnumAccountFlowType.INCREASE);
         }
