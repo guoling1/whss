@@ -32,6 +32,7 @@ import com.jkm.hss.merchant.helper.MerchantSupport;
 import com.jkm.hss.merchant.service.MerchantInfoService;
 import com.jkm.hss.merchant.service.SendMsgService;
 import com.jkm.hss.merchant.service.UserInfoService;
+import com.jkm.hss.product.enums.EnumProductType;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
@@ -290,7 +291,7 @@ public class WithdrawServiceImpl implements WithdrawService {
     public void merchantPoundageSettle(final Order order, final long accountId) {
         final MerchantInfo merchant = this.merchantInfoService.getByAccountId(accountId).get();
         final Map<String, Triple<Long, BigDecimal, String>> shallProfitMap =
-                this.shallProfitDetailService.withdrawProfitCount(order.getOrderNo(), order.getTradeAmount(), order.getPayChannelSign(), merchant.getId());
+                this.shallProfitDetailService.withdrawProfitCount(EnumProductType.HSS, order.getOrderNo(), order.getTradeAmount(), order.getPayChannelSign(), merchant.getId());
         final Triple<Long, BigDecimal, String> channelMoneyTriple = shallProfitMap.get("channelMoney");
         final Triple<Long, BigDecimal, String> productMoneyTriple = shallProfitMap.get("productMoney");
         final Triple<Long, BigDecimal, String> firstMoneyTriple = shallProfitMap.get("firstMoney");

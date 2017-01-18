@@ -26,6 +26,7 @@ import com.jkm.hss.merchant.entity.MerchantInfo;
 import com.jkm.hss.merchant.helper.MerchantSupport;
 import com.jkm.hss.merchant.helper.request.OrderTradeRequest;
 import com.jkm.hss.merchant.service.MerchantInfoService;
+import com.jkm.hss.product.enums.EnumProductType;
 import com.jkm.hsy.user.entity.AppBizShop;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
@@ -100,7 +101,7 @@ public class OrderServiceImpl implements OrderService {
         playMoneyOrder.setPayer(merchant.getAccountId());
         playMoneyOrder.setPayee(0);
         playMoneyOrder.setAppId(payOrder.getAppId());
-        BigDecimal merchantWithdrawPoundage = this.calculateService.getMerchantWithdrawPoundage(merchantId, payOrder.getPayChannelSign());
+        BigDecimal merchantWithdrawPoundage = this.calculateService.getMerchantWithdrawPoundage(EnumProductType.HSS, merchantId, payOrder.getPayChannelSign());
         playMoneyOrder.setPoundage(merchantWithdrawPoundage);
         playMoneyOrder.setGoodsName(merchant.getMerchantName());
         playMoneyOrder.setGoodsDescribe(merchant.getMerchantName());
@@ -138,8 +139,7 @@ public class OrderServiceImpl implements OrderService {
         playMoneyOrder.setPayer(account.getId());
         playMoneyOrder.setPayee(0);
         playMoneyOrder.setAppId(appId);
-        //TODO
-        BigDecimal merchantWithdrawPoundage = new BigDecimal("");//this.calculateService.getMerchantWithdrawPoundage(merchantId, payOrder.getPayChannelSign());
+        BigDecimal merchantWithdrawPoundage = this.calculateService.getMerchantWithdrawPoundage(EnumProductType.HSS, shop.getId(), channel);
         playMoneyOrder.setPoundage(merchantWithdrawPoundage);
         playMoneyOrder.setGoodsName(shop.getName());
         playMoneyOrder.setGoodsDescribe(shop.getName());
