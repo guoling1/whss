@@ -7,6 +7,7 @@ import com.jkm.hss.admin.entity.QRCode;
 import com.jkm.hss.admin.enums.EnumQRCodeActivateStatus;
 import com.jkm.hss.admin.enums.EnumQRCodeSysType;
 import com.jkm.hss.admin.service.QRCodeService;
+import com.jkm.hss.dealer.service.DealerChannelRateService;
 import com.jkm.hsy.user.constant.AppConstant;
 import com.jkm.hsy.user.dao.HsyShopDao;
 import com.jkm.hsy.user.dao.HsyUserDao;
@@ -35,6 +36,8 @@ public class HsyQrCodeServiceImpl implements HsyQrCodeService{
     private HsyShopDao hsyShopDao;
     @Autowired
     private HsyUserDao hsyUserDao;
+    @Autowired
+    private DealerChannelRateService dealerChannelRateService;
 
     /**
      * 绑定二维码
@@ -80,7 +83,10 @@ public class HsyQrCodeServiceImpl implements HsyQrCodeService{
         long currentDealerId = triple.getLeft();
         long productId = qrCodeOptional.get().getProductId();
         // TODO: 2017/1/17 调用查询用户接口
-        if(currentDealerId==1)
+        List<AppAuUser> list = hsyShopDao.findCorporateUserByShopID(appBindShop.getShopId());
+        if(list==null||list.size()==0)
+            throw new ApiHandleException(ResultCode.RESULT_FAILE,"商户信息不存在");
+//        if(currentDealerId!=list.get(0).get)
             throw new ApiHandleException(ResultCode.RESULT_FAILE,"二维码必须绑定在同一代理商下");
         if(productId==1)
             throw new ApiHandleException(ResultCode.RESULT_FAILE,"必须有相同的产品");
