@@ -12,6 +12,8 @@
       <option value="">请选择</option>
       <option :value="district" v-for="district in $$data.districts">{{district}}</option>
     </select>
+
+    <input id="indate4" type="text" placeholder="请选择">
   </div>
 </template>
 
@@ -38,6 +40,12 @@
           }
         }
       }
+      /*jeDate({
+        dateCell: '#indate4',
+        format: "YYYY-MM-DD",
+        minDate: jeDate.now(-1), //0代表今天，-1代表昨天，-2代表前天，以此类推
+        maxDate: jeDate.now(5) //1代表明天，2代表后天，以此类推
+      })*/
     },
     watch: {
       province: function (val, oldval) {
@@ -70,3 +78,18 @@
     }
   }
 </script>
+<style>
+  /*input {
+    display: block;
+    margin: 20px;
+    width: 240px;
+    height: 30px;
+    border:1px solid #0E90D2 ;
+    text-indent: 5px;
+    !*background: url(icon.png) no-repeat 210px;*!
+  }
+  pre{
+    margin-left: 30px;
+    color: red;
+  }*/
+</style>
