@@ -710,7 +710,7 @@ public class DealerServiceImpl implements DealerService {
         if (dealer.getLevel() == EnumDealerLevel.FIRST.getId()){
             //一级
             //一级分润
-            final BigDecimal firestMoney = totalFee.multiply(dealerChannelRate.getDealerMerchantPayRate().
+            final BigDecimal firestMoney = totalFee.multiply(merchantRate.
                     subtract(dealerChannelRate.getDealerTradeRate())).setScale(2,BigDecimal.ROUND_DOWN);
             //通道成本
             BigDecimal basicMoney;
