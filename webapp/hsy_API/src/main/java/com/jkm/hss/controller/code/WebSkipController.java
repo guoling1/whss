@@ -35,6 +35,20 @@ public class WebSkipController extends BaseController {
         model.addAttribute("secondSn", orderId.substring(orderId.length() - 6, orderId.length()));
         return "/buySuccess";
     }
+
+    /**
+     * 支付升级成功页面
+     * @param request
+     * @param response
+     * @param model
+     * @return
+     * @throws IOException
+     */
+    @RequestMapping(value = "message", method = RequestMethod.GET)
+    public String message(final HttpServletRequest request, final HttpServletResponse response, final Model model) throws IOException {
+        model.addAttribute("message", "错误");
+        return "/message";
+    }
     /**
      * 扫固定码微信支付页面
      * @param request
