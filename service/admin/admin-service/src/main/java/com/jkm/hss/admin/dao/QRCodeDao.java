@@ -396,13 +396,7 @@ public interface QRCodeDao {
      */
     QRCode selectByCodeAndSysType(@Param("code") String code,@Param("sysType") String sysType);
 
-    /**
-     * 好收银绑定店铺
-     *
-     * @param code
-     * @return
-     */
-    int bindShop(@Param("code") String code,@Param("shopId") long shopId,@Param("sysType") String sysType);
+
 
     /**
      * 店铺个数

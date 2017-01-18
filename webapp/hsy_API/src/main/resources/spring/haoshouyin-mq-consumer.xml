@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
 <beans>
-    <!--<bean id="consumer" class="com.aliyun.openservices.ons.api.bean.ConsumerBean"
+    <bean id="consumer" class="com.aliyun.openservices.ons.api.bean.ConsumerBean"
           init-method="start" destroy-method="shutdown">
         <property name="properties">
             <map>
@@ -17,7 +17,7 @@
                     <key>
                         <bean class="com.aliyun.openservices.ons.api.bean.Subscription">
                             <property name="topic" value="${mq.topic}"/>
-                            <property name="expression" value="*"/>&lt;!&ndash; MessageType名: 多个messageType 用 “||”分割 &ndash;&gt;
+                            <property name="expression" value="hss_merchant_withdraw||normal_settle||poundage_settle||update_order_settle_status"/><!-- MessageType名: 多个messageType 用 “||”分割 -->
                         </bean>
                     </key>
                 </entry>
@@ -26,6 +26,6 @@
         </property>
     </bean>
 
-    &lt;!&ndash; 消息处理器 &ndash;&gt;
-    <bean id="messageListener" class="com.jkm.hss.mq.consumer.MessageListenerImpl"/>-->
+    <!-- 消息处理器 -->
+    <bean id="messageListener" class="com.jkm.hss.mq.consumer.MessageListenerImpl"/>
 </beans>

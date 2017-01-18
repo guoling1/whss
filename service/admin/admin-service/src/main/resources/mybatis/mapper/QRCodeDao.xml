@@ -400,11 +400,6 @@
     </select>
 
 
-    <update id="bindShop">
-        UPDATE tb_qr_code
-        SET merchant_id = #{shopId}
-        WHERE code=#{code} and sys_type=#{sysType}
-    </update>
 
     <select id="bindShopCount" resultType="java.lang.Integer">
         SELECT COUNT(1) FROM tb_qr_code

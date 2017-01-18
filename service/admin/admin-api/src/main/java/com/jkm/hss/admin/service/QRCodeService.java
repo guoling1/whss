@@ -361,14 +361,7 @@ public interface QRCodeService {
      */
     Optional<QRCode> getByCode(String code,String sysType);
 
-    /**
-     * 绑定店铺
-     * @param code
-     * @param shopId
-     * @param sysType
-     * @return
-     */
-    int bindShop(String code,long shopId,String sysType);
+
 
     /**
      * 绑定店铺个数

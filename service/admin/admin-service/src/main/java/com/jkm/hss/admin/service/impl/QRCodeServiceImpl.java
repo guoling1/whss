@@ -785,18 +785,7 @@ public class QRCodeServiceImpl implements QRCodeService {
         return Optional.fromNullable(this.qrCodeDao.selectByCodeAndSysType(code,sysType));
     }
 
-    /**
-     * 绑定店铺
-     *
-     * @param code
-     * @param shopId
-     * @param sysType
-     * @return
-     */
-    @Override
-    public int bindShop(String code, long shopId, String sysType) {
-        return this.qrCodeDao.bindShop(code,shopId,sysType);
-    }
+
 
     /**
      * 绑定店铺个数

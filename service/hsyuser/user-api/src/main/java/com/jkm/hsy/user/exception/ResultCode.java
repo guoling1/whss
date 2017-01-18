@@ -28,7 +28,9 @@ public enum ResultCode {
 	UPLOADFILE_NOT_EXSITS(2022,"存在未上传文件"),
 	UPLOADFILE_COUNT_NOT_RIGHT(2023,"文件个数不符合"),
 	FILE_TYPE_NOT_EXSIT(2024,"上传类型不存在"),
-	PRIMARY_SHOP_NOT_EXSIT(2025,"主店类型不存在"),;
+	PRIMARY_SHOP_NOT_EXSIT(2025,"主店类型不存在"),
+	RESULT_FAILE(2100,"返回结果错误"),
+	;
 
 	public int resultCode;
 	public String resultMessage;
