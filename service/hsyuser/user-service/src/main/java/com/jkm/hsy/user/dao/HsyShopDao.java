@@ -26,4 +26,5 @@ public interface HsyShopDao {
     public List<AppAuUser> findCorporateUserByShopID(@Param("sid")Long sid);
     public List<AppBizShop> findAppBizShopByID(@Param("id")Long id);
     public List<AppBizShop> findAppBizShopByAccountID(@Param("accountID")Long accountID);
+    public String findShopNameByID(@Param("id")Long id);
 }
