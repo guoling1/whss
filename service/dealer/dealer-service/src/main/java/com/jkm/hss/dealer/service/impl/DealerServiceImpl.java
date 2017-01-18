@@ -1388,7 +1388,6 @@ public class DealerServiceImpl implements DealerService {
             du.setSecondDealerShareProfitRate(new BigDecimal(dealerUpgerdeRate.getSecondDealerShareProfitRate()));
             du.setBossDealerShareRate(new BigDecimal(dealerUpgerdeRate.getBossDealerShareRate()));
             du.setStatus(EnumDealerStatus.NORMAL.getId());
-            du.setId(dealerUpgerdeRate.getId());
             this.dealerUpgerdeRateService.update(du);
         }
 
