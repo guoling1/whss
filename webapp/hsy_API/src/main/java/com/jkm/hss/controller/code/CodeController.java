@@ -2,18 +2,12 @@ package com.jkm.hss.controller.code;
 
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
-import com.jkm.base.common.entity.CommonResponse;
 import com.jkm.hss.admin.entity.QRCode;
 import com.jkm.hss.admin.enums.EnumQRCodeSysType;
 import com.jkm.hss.admin.service.QRCodeService;
 import com.jkm.hss.controller.BaseController;
-import com.jkm.hss.helper.ApplicationConsts;
 import com.jkm.hss.merchant.entity.MerchantInfo;
-import com.jkm.hss.merchant.entity.UserInfo;
-import com.jkm.hss.merchant.enums.EnumMerchantStatus;
-import com.jkm.hss.merchant.helper.WxConstants;
 import com.jkm.hss.merchant.service.MerchantInfoService;
-import com.jkm.hss.merchant.service.UserInfoService;
 import com.jkm.hsy.user.dao.HsyShopDao;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,9 +19,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
-import java.net.URLEncoder;
 
 /**
  * 微信扫码入口
