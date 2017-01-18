@@ -246,6 +246,10 @@
             <artifactId>swagger-springmvc</artifactId>
             <version>1.0.2</version>
         </dependency>
+        <dependency>
+            <groupId>com.jkm</groupId>
+            <artifactId>hsy-user-api</artifactId>
+        </dependency>
     </dependencies>
 
     <properties>

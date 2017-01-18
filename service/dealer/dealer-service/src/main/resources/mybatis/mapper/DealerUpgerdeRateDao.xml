@@ -84,7 +84,7 @@
                 status = #{status},
             </if>
         </set>
-        WHERE id = #{id}
+        WHERE dealer_id = #{dealerId} AND id=#{id}
     </update>
 
     <!-- 查询（根据主键ID查询） -->

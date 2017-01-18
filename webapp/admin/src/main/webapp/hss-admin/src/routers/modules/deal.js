@@ -33,6 +33,7 @@ const IssueSuccess = r => require.ensure([], () => r(require('../../components/I
 const Invite = r => require.ensure([], () => r(require('../../components/Invite')), 'group-record');
 const Upgrade = r => require.ensure([], () => r(require('../../components/Upgrade')), 'group-record');
 const CodeStatus = r => require.ensure([], () => r(require('../../components/CodeStatus')), 'group-record');
+const Test = r => require.ensure([], () => r(require('../../components/test')), 'group-record');
 
 const NewDealQuery = r => require.ensure([], () => r(require('../../components/newVersion/NewDealQuery')), 'group-record');
 const NewDealDet = r => require.ensure([], () => r(require('../../components/newVersion/NewDealDet')), 'group-record');
@@ -44,6 +45,11 @@ export default {
   redirect: '/admin/record/deal',
   component: Crumbs,
   children: [
+    {
+      path: 'test',
+      name: 'Test',
+      component: Test
+    },
     {
       path: 'newDeal',
       name: 'NewDealQuery',

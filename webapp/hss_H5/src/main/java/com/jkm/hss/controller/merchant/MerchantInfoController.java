@@ -9,7 +9,6 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.jkm.base.common.entity.CommonResponse;
 import com.jkm.base.common.entity.PageModel;
-import com.jkm.base.common.util.DateFormatUtil;
 import com.jkm.base.common.util.ValidateUtils;
 import com.jkm.hss.controller.BaseController;
 import com.jkm.hss.dealer.entity.PartnerShallProfitDetail;
@@ -50,7 +49,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.InputStream;
 import java.math.BigDecimal;
-import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -90,7 +88,6 @@ public class MerchantInfoController extends BaseController {
     public CommonResponse save(final HttpServletRequest request, final HttpServletResponse response, @RequestBody final MerchantInfoAddRequest merchantInfo){
         Optional<UserInfo> userInfoOptional = userInfoService.selectByOpenId(super.getOpenId(request));
         merchantInfo.setId(userInfoOptional.get().getMerchantId());
-//        merchantInfo.setId(49);
         merchantInfo.setIdentity(MerchantSupport.encryptIdenrity(merchantInfo.getIdentity()));
         merchantInfo.setStatus(EnumMerchantStatus.ONESTEP.getId());
         final String reserveMobile = merchantInfo.getReserveMobile();
@@ -164,14 +161,6 @@ public class MerchantInfoController extends BaseController {
             log.debug("上传文件失败",e);
             return CommonResponse.simpleResponse(-1, "图片上传失败");
         }
-//        ossClient.putObject(ApplicationConsts.getApplicationConfig().ossBucke(), photoName, inputStream,meta);
-//        merchantInfo.setReserveMobile(MerchantSupport.encryptMobile(merchantInfo.getReserveMobile()));
-//        final Optional<BankCardBin> bankCardBinOptional = this.bankCardBinService.analyseCardNo(bankNo);
-//        merchantInfo.setBankBin(bankCardBinOptional.get().getShorthand());
-//        merchantInfo.setBankName(bankCardBinOptional.get().getBankName());
-//        merchantInfo.setBankNoShort(merchantInfo.getBankNo().substring((merchantInfo.getBankNo()).length()-4,(merchantInfo.getBankNo()).length()));
-//        merchantInfo.setBankNo(MerchantSupport.encryptBankCard(merchantInfo.getBankNo()));
-//        merchantInfo.setBankPic(photoName);
         int res = this.merchantInfoService.update(merchantInfo);
         if (res<=0) {
             return CommonResponse.simpleResponse(-1, "资料添加失败");
@@ -206,10 +195,6 @@ public class MerchantInfoController extends BaseController {
         String photoName1 = "hss/"+ nowDate + "/" + nousedate + RandomStringUtils.randomNumeric(5) +".jpg";
         String photoName2 = "hss/"+ nowDate + "/" + nousedate + RandomStringUtils.randomNumeric(5) +".jpg";
         String photoName3 = "hss/"+ nowDate + "/" + nousedate + RandomStringUtils.randomNumeric(5) +".jpg";
-//        String photoName = "hsy/"+  nowDate + "/" + SnGenerator.generate("",5) +".jpg";
-//        String photoName1 = "hsy/"+ nowDate + "/" + SnGenerator.generate("",5) +".jpg";
-//        String photoName2 = "hsy/"+ nowDate + "/" + SnGenerator.generate("",5) +".jpg";
-//        String photoName3 = "hsy/"+ nowDate + "/" + SnGenerator.generate("",5) +".jpg";
         try {
             ossClient.putObject(ApplicationConsts.getApplicationConfig().ossBucke(), photoName, inputStream, meta);
             ossClient.putObject(ApplicationConsts.getApplicationConfig().ossBucke(), photoName1, inputStream1, meta);
@@ -223,14 +208,6 @@ public class MerchantInfoController extends BaseController {
             log.debug("上传文件失败",e);
             return CommonResponse.simpleResponse(-1, "图片上传失败");
         }
-//        ossClient.putObject(ApplicationConsts.getApplicationConfig().ossBucke(), photoName, inputStream, meta);
-//        ossClient.putObject(ApplicationConsts.getApplicationConfig().ossBucke(), photoName1, inputStream1, meta);
-//        ossClient.putObject(ApplicationConsts.getApplicationConfig().ossBucke(), photoName2, inputStream2, meta);
-//        ossClient.putObject(ApplicationConsts.getApplicationConfig().ossBucke(), photoName3, inputStream3, meta);
-//        merchantInfo.setIdentityFacePic(photoName);
-//        merchantInfo.setIdentityHandPic(photoName1);
-//        merchantInfo.setIdentityOppositePic(photoName2);
-//        merchantInfo.setBankHandPic(photoName3);
         this.merchantInfoService.updatePic(merchantInfo);
         return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE,"照片添加成功");
     }
@@ -282,35 +259,24 @@ public class MerchantInfoController extends BaseController {
         }
         return CommonResponse.simpleResponse(-1, verifyCode.getRight());
     }
+//
+//    @RequestMapping(value = "/test1", method = RequestMethod.GET)
+//    public void test1(){
+//        InputStream inputStream = WxPubUtil.getInputStream("R4DKmoNFwJZPdRvTTz5d39A8Lri-4kAsmXLc2jJfg1y2Cy6cfVI84dJtV0qEIi4v");
+//        final ObjectMetadata meta = new ObjectMetadata();
+//        meta.setCacheControl("public, max-age=31536000");
+//        meta.setExpirationTime(new DateTime().plusYears(1).toDate());
+//        meta.setContentType("image/*");
+//        SimpleDateFormat sdf =   new SimpleDateFormat("yyyyMMdd");
+//        String nowDate = sdf.format(new Date());
+//        String photoName =  nowDate + "/" + ".jpeg";
+//        ossClient.putObject(ApplicationConsts.getApplicationConfig().ossBucke(), photoName, inputStream, meta);
+//        Date expiration = new Date(new Date().getTime() + 30*60*1000);
+//        URL url = ossClient.generatePresignedUrl(ApplicationConsts.getApplicationConfig().ossBucke(), photoName,expiration);
+//        String urls = url.getHost() + url.getPath();
+//        }
 
-    @RequestMapping(value = "/test1", method = RequestMethod.GET)
-    public void test1(){
-        InputStream inputStream = WxPubUtil.getInputStream("R4DKmoNFwJZPdRvTTz5d39A8Lri-4kAsmXLc2jJfg1y2Cy6cfVI84dJtV0qEIi4v");
-        final ObjectMetadata meta = new ObjectMetadata();
-        meta.setCacheControl("public, max-age=31536000");
-        meta.setExpirationTime(new DateTime().plusYears(1).toDate());
-        meta.setContentType("image/*");
-        SimpleDateFormat sdf =   new SimpleDateFormat("yyyyMMdd");
-        String nowDate = sdf.format(new Date());
-        String photoName =  nowDate + "/" + ".jpeg";
-        ossClient.putObject(ApplicationConsts.getApplicationConfig().ossBucke(), photoName, inputStream, meta);
-        Date expiration = new Date(new Date().getTime() + 30*60*1000);
-        URL url = ossClient.generatePresignedUrl(ApplicationConsts.getApplicationConfig().ossBucke(), photoName,expiration);
-        String urls = url.getHost() + url.getPath();
-        }
 
-
-    /**
-     * 获取随机文件名
-     *
-     * @param originalFilename
-     * @return
-     */
-    private String getFileName(final String originalFilename) {
-        final String dateFileName = DateFormatUtil.format(new Date(), DateFormatUtil.yyyyMMdd);
-        final String extName = DateFormatUtil.format(new Date(), DateFormatUtil.yyyyMMddHHmmss)+".jpg";
-        return "hsy/" + dateFileName + "/" + extName;
-    }
 
     /**
      * 校验身份4要素
