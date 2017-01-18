@@ -6,8 +6,6 @@ import com.jkm.hss.admin.entity.QRCode;
 import com.jkm.hss.admin.enums.EnumQRCodeSysType;
 import com.jkm.hss.admin.service.QRCodeService;
 import com.jkm.hss.controller.BaseController;
-import com.jkm.hss.helper.ApplicationConsts;
-import com.jkm.hss.merchant.service.MerchantInfoService;
 import com.jkm.hsy.user.dao.HsyShopDao;
 import com.jkm.hsy.user.entity.AppBizShop;
 import lombok.extern.slf4j.Slf4j;
