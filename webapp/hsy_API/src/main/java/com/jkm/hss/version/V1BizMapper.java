@@ -25,7 +25,7 @@ public class V1BizMapper {
 
 
 
-		bizMapper.put("HSY001030", new String[]{"hsyTradeService", "receipt"});
+		bizMapper.put("HSY001030", new String[]{"hsyTradeService", "appReceipt"});
 		bizMapper.put("HSY001031", new String[]{"hsyTradeService", "withdraw"});
 	}
 }

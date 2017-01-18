@@ -5,12 +5,22 @@ import com.jkm.hss.bill.entity.Order;
 import com.jkm.hss.bill.entity.callback.PaymentSdkPayCallbackResponse;
 import com.jkm.hss.bill.entity.callback.PaymentSdkWithdrawCallbackResponse;
 import com.jkm.hsy.user.entity.AppBizShop;
+import com.jkm.hsy.user.entity.AppParam;
 import org.apache.commons.lang3.tuple.Pair;
 
 /**
  * Created by yulong.zhang on 2017/1/17.
  */
 public interface HSYTradeService {
+
+    /**
+     * app收款
+     *
+     * @param paramData
+     * @param appParam
+     * @return
+     */
+    String appReceipt(String paramData, AppParam appParam);
 
     /**
      * 收款
