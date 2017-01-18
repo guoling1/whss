@@ -1365,31 +1365,31 @@ public class DealerServiceImpl implements DealerService {
         }
 
         final List<FirstLevelDealerUpdateRequest.DealerUpgerdeRate> dealerUpgerdeRates =request.getDealerUpgerdeRates();
-        if (dealerUpgerdeRates.size()==0){
+        if (dealerUpgerdeRates.size()!=0){
             for(FirstLevelDealerUpdateRequest.DealerUpgerdeRate dealerUpgerdeRate:dealerUpgerdeRates){
-                DealerUpgerdeRate du = new DealerUpgerdeRate();
-                du.setId(dealerUpgerdeRate.getId());
-                du.setProductId(productId);
-                du.setType(dealerUpgerdeRate.getType());
-                du.setDealerId(dealer.getId());
-                du.setFirstDealerShareProfitRate(new BigDecimal(dealerUpgerdeRate.getFirstDealerShareProfitRate()));
-                du.setSecondDealerShareProfitRate(new BigDecimal(dealerUpgerdeRate.getSecondDealerShareProfitRate()));
-                du.setBossDealerShareRate(new BigDecimal(dealerUpgerdeRate.getBossDealerShareRate()));
-                du.setStatus(EnumDealerStatus.NORMAL.getId());
-                this.dealerUpgerdeRateService.insert(du);
-            }
+                if(dealerUpgerdeRate.getId()==null||dealerUpgerdeRate.getId()==0){
+                    DealerUpgerdeRate du = new DealerUpgerdeRate();
+                    du.setProductId(dealerUpgerdeRate.getProductId());
+                    du.setType(dealerUpgerdeRate.getType());
+                    du.setDealerId(dealer.getId());
+                    du.setFirstDealerShareProfitRate(new BigDecimal(dealerUpgerdeRate.getFirstDealerShareProfitRate()));
+                    du.setSecondDealerShareProfitRate(new BigDecimal(dealerUpgerdeRate.getSecondDealerShareProfitRate()));
+                    du.setBossDealerShareRate(new BigDecimal(dealerUpgerdeRate.getBossDealerShareRate()));
+                    du.setStatus(EnumDealerStatus.NORMAL.getId());
+                    this.dealerUpgerdeRateService.insert(du);
+                }else{
+                    DealerUpgerdeRate du = new DealerUpgerdeRate();
+                    du.setId(dealerUpgerdeRate.getId());
+                    du.setProductId(dealerUpgerdeRate.getProductId());
+                    du.setType(dealerUpgerdeRate.getType());
+                    du.setDealerId(dealer.getId());
+                    du.setFirstDealerShareProfitRate(new BigDecimal(dealerUpgerdeRate.getFirstDealerShareProfitRate()));
+                    du.setSecondDealerShareProfitRate(new BigDecimal(dealerUpgerdeRate.getSecondDealerShareProfitRate()));
+                    du.setBossDealerShareRate(new BigDecimal(dealerUpgerdeRate.getBossDealerShareRate()));
+                    du.setStatus(EnumDealerStatus.NORMAL.getId());
+                    this.dealerUpgerdeRateService.update(du);
+                }
         }
-        for(FirstLevelDealerUpdateRequest.DealerUpgerdeRate dealerUpgerdeRate:dealerUpgerdeRates){
-            DealerUpgerdeRate du = new DealerUpgerdeRate();
-            du.setId(dealerUpgerdeRate.getId());
-            du.setProductId(productId);
-            du.setType(dealerUpgerdeRate.getType());
-            du.setDealerId(dealer.getId());
-            du.setFirstDealerShareProfitRate(new BigDecimal(dealerUpgerdeRate.getFirstDealerShareProfitRate()));
-            du.setSecondDealerShareProfitRate(new BigDecimal(dealerUpgerdeRate.getSecondDealerShareProfitRate()));
-            du.setBossDealerShareRate(new BigDecimal(dealerUpgerdeRate.getBossDealerShareRate()));
-            du.setStatus(EnumDealerStatus.NORMAL.getId());
-            this.dealerUpgerdeRateService.update(du);
         }
 
     }
