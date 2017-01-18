@@ -16,6 +16,8 @@
                 <input type="date" style="border: none;display:inline-block;width: 45%" name="date" value="" v-model="$$query.endCreateTime">
               </div>
             </div>
+          </div>
+          <div class="col-md-3">
             <div class="form-group">
               <label>支付完成日期：</label>
               <div class="form-control">
@@ -24,11 +26,19 @@
               </div>
             </div>
           </div>
-          <div class="col-md-3">
+          <div class="col-md-2">
             <div class="form-group">
-              <label>交易单号：</label>
+              <label>支付流水号：</label>
+              <input type="text" class="form-control" v-model="$$query.sn">
+            </div>
+          </div>
+          <div class="col-md-2">
+            <div class="form-group">
+              <label>订单号：</label>
               <input type="text" class="form-control" v-model="$$query.orderNo">
             </div>
+          </div>
+          <div class="col-md-1">
             <div class="form-group">
               <label>支付状态：</label>
               <select class="form-control select2 select2-hidden-accessible" style="width: 100%;" tabindex="-1" aria-hidden="true" v-model="$$query.status">
@@ -40,14 +50,9 @@
               </select>
             </div>
           </div>
-          <div class="col-md-3">
-            <div class="form-group">
-              <label>支付流水号：</label>
-              <input type="text" class="form-control" v-model="$$query.sn">
-            </div>
-          </div>
-          <div class="col-md-3">
-            <div class="btn btn-primary" @click="lookup" style="margin-top: 22px">筛选</div>
+
+          <div class="col-md-1">
+            <div class="btn btn-primary" @click="lookup" style="margin: 12px 0 15px;">筛选</div>
           </div>
         </div>
         <div id="example2_wrapper" class="dataTables_wrapper form-inline dt-bootstrap">
