@@ -6,9 +6,9 @@ import com.jkm.hss.admin.entity.QRCode;
 import com.jkm.hss.admin.enums.EnumQRCodeSysType;
 import com.jkm.hss.admin.service.QRCodeService;
 import com.jkm.hss.controller.BaseController;
-import com.jkm.hss.merchant.entity.MerchantInfo;
 import com.jkm.hss.merchant.service.MerchantInfoService;
 import com.jkm.hsy.user.dao.HsyShopDao;
+import com.jkm.hsy.user.entity.AppBizShop;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 
 /**
  * 微信扫码入口
@@ -59,11 +60,11 @@ public class CodeController extends BaseController {
         String url = "";
         if (qrCode.isActivate()) {//已激活
             log.info("code[{}] is activate", code);
-            final Optional<MerchantInfo> merchantInfoOptional = this.merchantInfoService.selectById(merchantId);
-            Preconditions.checkState(merchantInfoOptional.isPresent(), "商户不存在");
-            final MerchantInfo merchantInfo = merchantInfoOptional.get();
+            List<AppBizShop> appBizShops = hsyShopDao.findAppBizShopByID(merchantId);
+            Preconditions.checkState(appBizShops!=null&&appBizShops.size()>0, "商户不存在");
+            String merchantName = hsyShopDao.findShopNameByID(merchantId);
             model.addAttribute("merchantId", merchantId);
-            model.addAttribute("name", merchantInfo.getMerchantName());
+            model.addAttribute("name", merchantName);
             log.info("设备标示{}",agent.indexOf("MicroMessenger"));
             if (agent.indexOf("MicroMessenger") > -1) {
                 url = "/sqb/paymentWx";
