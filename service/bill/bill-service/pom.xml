@@ -262,5 +262,9 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-tx</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.jkm</groupId>
+            <artifactId>hsy-user-service</artifactId>
+        </dependency>
     </dependencies>
 </project>

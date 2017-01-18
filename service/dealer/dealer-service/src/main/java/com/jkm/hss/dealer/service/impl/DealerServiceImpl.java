@@ -202,24 +202,34 @@ public class DealerServiceImpl implements DealerService {
      */
     @Override
     @Transactional
-    public Map<String, Triple<Long, BigDecimal, BigDecimal>> shallProfit(final String orderNo, final BigDecimal tradeAmount,
+    public Map<String, Triple<Long, BigDecimal, BigDecimal>> shallProfit(final EnumProductType type,final String orderNo, final BigDecimal tradeAmount,
 
                                                                      final int channelSign, final long merchantId) {
-        try{
-            final MerchantInfo merchantInfo = this.merchantInfoService.selectById(merchantId).get();
-            //判断商户是否是直属商户
-            if (merchantInfo.getFirstMerchantId() == 0){
-                //直属商户
-                return this.getShallProfitDirect(orderNo, tradeAmount, channelSign, merchantId);
-            }else {
-                //推荐商户
-                return this.getShallProfitInDirect(orderNo, tradeAmount, channelSign, merchantId);
-            }
 
-        }catch (final Throwable throwable){
-            log.error("交易订单号["+ orderNo + "]分润异常，异常信息：" + throwable.getMessage());
-            throw  throwable;
-        }
+       if (type.getId().equals( EnumProductType.HSS)){
+
+           //好收收收单分润
+           try{
+               final MerchantInfo merchantInfo = this.merchantInfoService.selectById(merchantId).get();
+               //判断商户是否是直属商户
+               if (merchantInfo.getFirstMerchantId() == 0){
+                   //直属商户
+                   return this.getShallProfitDirect(orderNo, tradeAmount, channelSign, merchantId);
+               }else {
+                   //推荐商户
+                   return this.getShallProfitInDirect(orderNo, tradeAmount, channelSign, merchantId);
+               }
+
+           }catch (final Throwable throwable){
+               log.error("交易订单号["+ orderNo + "]分润异常，异常信息：" + throwable.getMessage());
+               throw  throwable;
+           }
+       }else{
+
+           //好收银收单分润
+           return this.getShallProfitDirect(orderNo, tradeAmount, channelSign, merchantId);
+       }
+
 
     }
 
@@ -710,7 +720,7 @@ public class DealerServiceImpl implements DealerService {
         if (dealer.getLevel() == EnumDealerLevel.FIRST.getId()){
             //一级
             //一级分润
-            final BigDecimal firestMoney = totalFee.multiply(dealerChannelRate.getDealerMerchantPayRate().
+            final BigDecimal firstMoney = totalFee.multiply(merchantRate.
                     subtract(dealerChannelRate.getDealerTradeRate())).setScale(2,BigDecimal.ROUND_DOWN);
             //通道成本
             BigDecimal basicMoney;
@@ -732,7 +742,7 @@ public class DealerServiceImpl implements DealerService {
                 //支付金额一分,不收手续费
                 productMoney = new BigDecimal("0");
             }else{
-                productMoney = waitMoney.subtract(firestMoney).subtract(channelMoney).subtract(basicMoney);
+                productMoney = waitMoney.subtract(firstMoney).subtract(channelMoney).subtract(basicMoney);
             }
             //记录分润明细
             final ShallProfitDetail shallProfitDetail = new ShallProfitDetail();
@@ -748,14 +758,14 @@ public class DealerServiceImpl implements DealerService {
             shallProfitDetail.setChannelShallAmount(channelMoney);
             shallProfitDetail.setProductShallAmount(productMoney);
             shallProfitDetail.setFirstDealerId(dealer.getId());
-            shallProfitDetail.setFirstShallAmount(firestMoney);
+            shallProfitDetail.setFirstShallAmount(firstMoney);
             shallProfitDetail.setSecondDealerId(0);
             shallProfitDetail.setSecondShallAmount(new BigDecimal(0));
             shallProfitDetail.setProfitDate(DateFormatUtil.format(new Date(), DateFormatUtil.yyyy_MM_dd));
             this.shallProfitDetailService.init(shallProfitDetail);
 //            map.put("merchant", Triple.of(merchantInfo.getAccountId(), merchantMoney,"D0"));
 //            map.put("merchantAndProfit", Triple.of(merchantInfo.getAccountId(), totalFee.subtract(basicMoney), "D0"));
-            map.put("firstMoney", Triple.of(dealer.getAccountId(), firestMoney, dealerChannelRate.getDealerTradeRate()));
+            map.put("firstMoney", Triple.of(dealer.getAccountId(), firstMoney, dealerChannelRate.getDealerTradeRate()));
             map.put("channelMoney",Triple.of(basicChannel.getAccountId(), channelMoney, basicChannel.getBasicTradeRate()));
             map.put("productMoney",Triple.of(product.getAccountId(), productMoney, productChannelDetail.getProductTradeRate()));
         }else{

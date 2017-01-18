@@ -17,6 +17,7 @@ import com.jkm.hss.product.entity.BasicChannel;
 import com.jkm.hss.product.entity.Product;
 import com.jkm.hss.product.entity.ProductChannelDetail;
 import com.jkm.hss.product.enums.EnumPayChannelSign;
+import com.jkm.hss.product.enums.EnumProductType;
 import com.jkm.hss.product.servcie.BasicChannelService;
 import com.jkm.hss.product.servcie.ProductChannelDetailService;
 import com.jkm.hss.product.servcie.ProductService;
@@ -81,7 +82,7 @@ public class ShallProfitDetailServiceImpl implements ShallProfitDetailService{
      */
     @Transactional
     @Override
-    public Map<String, Triple<Long, BigDecimal, String>> withdrawProfitCount(final String orderNo, final BigDecimal tradeAmount,
+    public Map<String, Triple<Long, BigDecimal, String>> withdrawProfitCount(final EnumProductType type,final String orderNo, final BigDecimal tradeAmount,
                                                                              final int channelSign, final long merchantId) {
 
         log.info("商户[" + merchantId + "]请求进行提现分润，交易订单号:" + orderNo);

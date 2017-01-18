@@ -2,6 +2,7 @@ package com.jkm.hss.dealer.service;
 
 import com.jkm.hss.dealer.entity.ShallProfitDetail;
 import com.jkm.hss.merchant.entity.OrderRecord;
+import com.jkm.hss.product.enums.EnumProductType;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
 
@@ -29,7 +30,7 @@ public interface ShallProfitDetailService {
      * @param merchantId
      * @return
      */
-    Map<String, Triple<Long, BigDecimal, String>> withdrawProfitCount(String orderNo, BigDecimal tradeAmount,
+    Map<String, Triple<Long, BigDecimal, String>> withdrawProfitCount(EnumProductType type, String orderNo, BigDecimal tradeAmount,
                                                                       int channelSign, long merchantId);
 
     /**

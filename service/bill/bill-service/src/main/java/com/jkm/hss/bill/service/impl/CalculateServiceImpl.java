@@ -19,6 +19,7 @@ import com.jkm.hss.product.enums.EnumProductType;
 import com.jkm.hss.product.servcie.ProductChannelDetailService;
 import com.jkm.hss.product.servcie.ProductService;
 import com.jkm.hss.product.servcie.UpgradeRulesService;
+import com.jkm.hsy.user.dao.HsyShopDao;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
@@ -55,6 +56,8 @@ public class CalculateServiceImpl implements CalculateService {
     private ProductService productService;
     @Autowired
     private MerchantPromoteShallService merchantPromoteShallService;
+    @Autowired
+    private HsyShopDao hsyShopDao;
 
     /**
      * {@inheritDoc}
@@ -64,10 +67,18 @@ public class CalculateServiceImpl implements CalculateService {
      * @return
      */
     @Override
-    public BigDecimal getMerchantPayPoundageRate(final long merchantId, final int channelSign) {
-        final MerchantInfo merchant = this.merchantInfoService.selectById(merchantId).get();
+    public BigDecimal getMerchantPayPoundageRate(EnumProductType type,final long merchantId, final int channelSign) {
+        if (type.getId().equals( EnumProductType.HSS)){
+            //hss
+            final MerchantInfo merchant = this.merchantInfoService.selectById(merchantId).get();
+            return getMerchantRate(channelSign, merchant);
 
-        return getMerchantRate(channelSign, merchant);
+        }else{
+            //hsy
+            return null;
+
+        }
+
     }
 
     /**
@@ -78,7 +89,7 @@ public class CalculateServiceImpl implements CalculateService {
      * @return
      */
     @Override
-    public BigDecimal getMerchantWithdrawPoundage(final long merchantId, final int channelSign) {
+    public BigDecimal getMerchantWithdrawPoundage(EnumProductType type,final long merchantId, final int channelSign) {
         final MerchantInfo merchant = this.merchantInfoService.selectById(merchantId).get();
         if (0 == merchant.getDealerId()) {
             final ProductChannelDetail productChannelDetail = this.productChannelDetailService.selectByChannelTypeSign(channelSign).get(0);
@@ -97,7 +108,7 @@ public class CalculateServiceImpl implements CalculateService {
      * @return
      */
     @Override
-    public BigDecimal getMerchantPayPoundage(final BigDecimal traderAmount, final BigDecimal merchantPayPoundageRate) {
+    public BigDecimal getMerchantPayPoundage(EnumProductType type,final BigDecimal traderAmount, final BigDecimal merchantPayPoundageRate) {
         //原始手续费
         final BigDecimal originDueSplitAmount = traderAmount.multiply(merchantPayPoundageRate);
         final BigDecimal minPoundage = new BigDecimal("0.01");
