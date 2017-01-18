@@ -7,6 +7,7 @@ import com.jkm.hss.admin.entity.QRCode;
 import com.jkm.hss.admin.enums.EnumQRCodeActivateStatus;
 import com.jkm.hss.admin.enums.EnumQRCodeSysType;
 import com.jkm.hss.admin.service.QRCodeService;
+import com.jkm.hss.dealer.service.DealerChannelRateService;
 import com.jkm.hsy.user.constant.AppConstant;
 import com.jkm.hsy.user.dao.HsyShopDao;
 import com.jkm.hsy.user.dao.HsyUserDao;
@@ -22,6 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -35,6 +37,8 @@ public class HsyQrCodeServiceImpl implements HsyQrCodeService{
     private HsyShopDao hsyShopDao;
     @Autowired
     private HsyUserDao hsyUserDao;
+    @Autowired
+    private DealerChannelRateService dealerChannelRateService;
 
     /**
      * 绑定二维码
@@ -79,17 +83,29 @@ public class HsyQrCodeServiceImpl implements HsyQrCodeService{
         Triple<Long, Long, Long> triple = qrCodeService.getCurrentAndFirstAndSecondByCode(appBindShop.getCode());
         long currentDealerId = triple.getLeft();
         long productId = qrCodeOptional.get().getProductId();
-        // TODO: 2017/1/17 调用查询用户接口
-        if(currentDealerId==1)
+        List<AppAuUser> list = hsyShopDao.findCorporateUserByShopID(appBindShop.getShopId());
+        if(list==null||list.size()==0)
+            throw new ApiHandleException(ResultCode.RESULT_FAILE,"商户信息不存在");
+
+        if(list.get(0).getDealerID()!=null&&currentDealerId!=list.get(0).getDealerID())
             throw new ApiHandleException(ResultCode.RESULT_FAILE,"二维码必须绑定在同一代理商下");
-        if(productId==1)
-            throw new ApiHandleException(ResultCode.RESULT_FAILE,"必须有相同的产品");
+        if(list.get(0).getProductID()!=null&&productId!=list.get(0).getProductID())
+            throw new ApiHandleException(ResultCode.RESULT_FAILE,"二维码必须绑定在同一产品下");
         //绑定并激活
         qrCodeService.markAsActivate(appBindShop.getCode(),appBindShop.getShopId());
-        // TODO: 2017/1/17 调用查询费率接口
-
-        // TODO: 2017/1/17 保存费率
-
+        //计算费率
+        Triple<BigDecimal, BigDecimal, BigDecimal> decimalTriple = dealerChannelRateService.getMerchantRateByDealerId(currentDealerId,qrCodeOptional.get().getProductId());
+        if(decimalTriple==null)
+            throw new ApiHandleException(ResultCode.RESULT_FAILE,"费率计算错误");
+        //保存费率
+        AppAuUser saveAppAuUser = new AppAuUser();
+        saveAppAuUser.setId(list.get(0).getId());
+        saveAppAuUser.setDealerID(currentDealerId);
+        saveAppAuUser.setProductID(productId);
+        saveAppAuUser.setWeixinRate(decimalTriple.getLeft());
+        saveAppAuUser.setAlipayRate(decimalTriple.getMiddle());
+        saveAppAuUser.setFastRate(decimalTriple.getRight());
+        hsyUserDao.updateByID(saveAppAuUser);
         return "";
 
     }

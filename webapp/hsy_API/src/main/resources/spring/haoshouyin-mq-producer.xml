@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
 <beans>
-    <!--<bean id="producer" class="com.aliyun.openservices.ons.api.bean.ProducerBean"
+    <bean id="producer" class="com.aliyun.openservices.ons.api.bean.ProducerBean"
           init-method="start" destroy-method="shutdown">
         <property name="properties">
             <map>
@@ -11,5 +11,5 @@
                 <entry key="ONSAddr" value="${mq.onsaddr}"/>
             </map>
         </property>
-    </bean>-->
+    </bean>
 </beans>

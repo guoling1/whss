@@ -41,7 +41,6 @@ public class MerchantInfoQueryController extends BaseController {
         req.setOffset(pageModel.getFirstIndex());
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         if(req.getEndTime()!=null&&!"".equals(req.getEndTime())){
-//            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
             Date dt = sdf.parse(req.getEndTime());
             Calendar rightNow = Calendar.getInstance();
             rightNow.setTime(dt);
@@ -49,7 +48,6 @@ public class MerchantInfoQueryController extends BaseController {
             req.setEndTime(sdf.format(rightNow.getTime()));
         }
         if(req.getEndTime1()!=null&&!"".equals(req.getEndTime1())){
-//            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
             Date dt = sdf.parse(req.getEndTime1());
             Calendar rightNow = Calendar.getInstance();
             rightNow.setTime(dt);
@@ -57,7 +55,6 @@ public class MerchantInfoQueryController extends BaseController {
             req.setEndTime1(sdf.format(rightNow.getTime()));
         }
         if(req.getEndTime2()!=null&&!"".equals(req.getEndTime2())){
-//            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
             Date dt = sdf.parse(req.getEndTime2());
             Calendar rightNow = Calendar.getInstance();
             rightNow.setTime(dt);

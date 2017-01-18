@@ -5,10 +5,6 @@ import com.aliyun.openservices.ons.api.Action;
 import com.aliyun.openservices.ons.api.ConsumeContext;
 import com.aliyun.openservices.ons.api.Message;
 import com.aliyun.openservices.ons.api.MessageListener;
-import com.google.common.base.Optional;
-import com.google.common.base.Preconditions;
-import com.jkm.hss.bill.entity.Order;
-import com.jkm.hss.bill.enums.EnumSettleStatus;
 import com.jkm.hss.bill.service.OrderService;
 import com.jkm.hss.bill.service.WithdrawService;
 import com.jkm.hss.mq.config.MqConfig;
@@ -48,22 +44,6 @@ public class MessageListenerImpl implements MessageListener {
                 final String payOrderSn = body.getString("payOrderSn");
                 final String balanceAccountType = body.getString("balanceAccountType");
                 this.withdrawService.merchantWithdrawByOrder(merchantId, payOrderId, payOrderSn, balanceAccountType);
-            } else if (MqConfig.POUNDAGE_SETTLE.equals(message.getTag())) {
-                log.info("消费消息--订单[{}]， 手续费结算", body.getString("orderNo"));
-                final String orderNo = body.getString("orderNo");
-                this.accountSettleAuditRecordService.poundageSettle(orderNo);
-            } else if (MqConfig.UPDATE_ORDER_SETTLE_STATUS.equals(message.getTag())) {
-                log.info("消费消息--订单[{}]， 更新结算状态", body.getString("orderNo"));
-                final String orderNo = body.getString("orderNo");
-                final Optional<Order> orderOptional = this.orderService.getByOrderNo(orderNo);
-                Preconditions.checkState(orderOptional.isPresent(), "结算成功，更新交易结算状态， 没有查询到交易记录[{}]", orderNo);
-                if (this.orderService.getByIdWithLock(orderOptional.get().getId()).get().isDueSettle()) {
-                    this.orderService.updateSettleStatus(orderOptional.get().getId(), EnumSettleStatus.SETTLED.getId());
-                }
-            } else if (MqConfig.NORMAL_SETTLE.equals(message.getTag())) {
-                log.info("消费消息--结算审核记录[{}]， 结算", body.getLong("recordId"));
-                final long recordId = body.getLong("recordId");
-                this.accountSettleAuditRecordService.normalSettle(recordId);
             }
         } catch (final Throwable e) {
             log.error("consume message error, Topic is: [{}], tag is: [{}] MsgId is: [{}]", message.getTopic(),
