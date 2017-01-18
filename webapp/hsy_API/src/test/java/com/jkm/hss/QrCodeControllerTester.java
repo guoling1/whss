@@ -26,7 +26,7 @@ public class QrCodeControllerTester {
         p.setAppType("android");
         p.setTimeStamp(AppDateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
         p.setV("v1.0");
-        String param="{\"code\": \"100010060002\",\"userId\":\"28\",\"shopId\":\"21\"}";
+        String param="{\"code\": \"100010060001\",\"userId\":\"28\",\"shopId\":\"21\"}";
         p.setRequestData(param);
         QrCodeControllerTester.testRest(p);
     }

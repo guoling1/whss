@@ -86,10 +86,11 @@ public class HsyQrCodeServiceImpl implements HsyQrCodeService{
         List<AppAuUser> list = hsyShopDao.findCorporateUserByShopID(appBindShop.getShopId());
         if(list==null||list.size()==0)
             throw new ApiHandleException(ResultCode.RESULT_FAILE,"商户信息不存在");
-        if(currentDealerId!=1)
+
+        if(list.get(0).getDealerID()!=null&&currentDealerId!=list.get(0).getDealerID())
             throw new ApiHandleException(ResultCode.RESULT_FAILE,"二维码必须绑定在同一代理商下");
-        if(productId==1)
-            throw new ApiHandleException(ResultCode.RESULT_FAILE,"必须有相同的产品");
+        if(list.get(0).getProductID()!=null&&productId!=list.get(0).getProductID())
+            throw new ApiHandleException(ResultCode.RESULT_FAILE,"二维码必须绑定在同一产品下");
         //绑定并激活
         qrCodeService.markAsActivate(appBindShop.getCode(),appBindShop.getShopId());
         //计算费率
