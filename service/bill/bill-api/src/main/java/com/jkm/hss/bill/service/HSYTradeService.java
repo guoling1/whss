@@ -78,12 +78,11 @@ public interface HSYTradeService {
      *
      * @param shopId 店铺id
      * @param totalAmount
-     * @param appId
      * @param channel
      * @param settleType
      * @return
      */
-    String withdraw(long shopId, String totalAmount, String appId, int channel, String settleType);
+    String withdraw(long shopId, String totalAmount, int channel, String settleType);
 
     /**
      * 提现实现

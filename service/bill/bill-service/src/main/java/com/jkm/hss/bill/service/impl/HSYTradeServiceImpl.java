@@ -22,11 +22,14 @@ import com.jkm.hss.bill.entity.callback.PaymentSdkWithdrawCallbackResponse;
 import com.jkm.hss.bill.enums.*;
 import com.jkm.hss.bill.helper.PaymentSdkConstants;
 import com.jkm.hss.bill.helper.SdkSerializeUtil;
+import com.jkm.hss.bill.service.CalculateService;
 import com.jkm.hss.bill.service.HSYTradeService;
 import com.jkm.hss.bill.service.OrderService;
 import com.jkm.hss.dealer.entity.Dealer;
 import com.jkm.hss.dealer.service.DealerService;
+import com.jkm.hss.dealer.service.ShallProfitDetailService;
 import com.jkm.hss.product.enums.EnumPayChannelSign;
+import com.jkm.hss.product.enums.EnumProductType;
 import com.jkm.hsy.user.dao.HsyShopDao;
 import com.jkm.hsy.user.entity.AppBizCard;
 import com.jkm.hsy.user.entity.AppBizShop;
@@ -42,7 +45,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -57,6 +59,8 @@ public class HSYTradeServiceImpl implements HSYTradeService {
     @Autowired
     @Qualifier("hsyShopService")
     private HsyShopService hsyShopService;
+    @Autowired
+    private CalculateService calculateService;
     @Autowired
     private DealerService dealerService;
     @Autowired
@@ -73,6 +77,8 @@ public class HSYTradeServiceImpl implements HSYTradeService {
     private SettleAccountFlowService settleAccountFlowService;
     @Autowired
     private SplitAccountRecordService splitAccountRecordService;
+    @Autowired
+    private ShallProfitDetailService shallProfitDetailService;
     /**
      * {@inheritDoc}
      *
@@ -200,12 +206,12 @@ public class HSYTradeServiceImpl implements HSYTradeService {
         order.setPayChannelSign(channel);
         log.info("返回的通道是[{}]", order.getPayType());
         log.info("交易订单[{}]，处理hsy支付回调业务", order.getOrderNo());
-        //TODO 费率
-
-//        order.setPoundage();
-//        order.setPayRate();
-        this.orderService.update(order);
         final AppBizShop shop = this.hsyShopDao.findAppBizShopByAccountID(order.getPayee()).get(0);
+        final BigDecimal merchantPayPoundageRate = this.calculateService.getMerchantPayPoundageRate(EnumProductType.HSY, shop.getId() , channel);
+        final BigDecimal merchantPayPoundage = this.calculateService.getMerchantPayPoundage(order.getTradeAmount(), merchantPayPoundageRate);
+        order.setPoundage(merchantPayPoundage);
+        order.setPayRate(merchantPayPoundageRate);
+        this.orderService.update(order);
         //入账
         this.recorded(order.getId(), shop);
         //分账
@@ -282,8 +288,8 @@ public class HSYTradeServiceImpl implements HSYTradeService {
     @Override
     @Transactional
     public void paySplitAccount(final Order order, final AppBizShop shop) {
-        //TODO
-        final Map<String, Triple<Long, BigDecimal, BigDecimal>> shallProfitMap = new HashMap<>();
+        final Map<String, Triple<Long, BigDecimal, BigDecimal>> shallProfitMap = this.dealerService.shallProfit(EnumProductType.HSY, order.getOrderNo(),
+                order.getTradeAmount(), order.getPayChannelSign(), shop.getId());
         final Triple<Long, BigDecimal, BigDecimal> channelMoneyTriple = shallProfitMap.get("channelMoney");
         final Triple<Long, BigDecimal, BigDecimal> productMoneyTriple = shallProfitMap.get("productMoney");
         final Triple<Long, BigDecimal, BigDecimal> firstMoneyTriple = shallProfitMap.get("firstMoney");
@@ -384,18 +390,17 @@ public class HSYTradeServiceImpl implements HSYTradeService {
      *
      * @param shopId
      * @param totalAmount
-     * @param appId
      * @param channel
      * @param settleType
      * @return
      */
     @Override
-    public String withdraw(final long shopId, final String totalAmount, final String appId, final int channel, final String settleType) {
+    public String withdraw(final long shopId, final String totalAmount, final int channel, final String settleType) {
         Preconditions.checkState(EnumPayChannelSign.YG_WEIXIN.getId() == channel
                 || EnumPayChannelSign.YG_ZHIFUBAO.getId() == channel
                 || EnumPayChannelSign.YG_YINLIAN.getId() == channel, "渠道选择错误[{}]", channel);
         final AppBizShop shop = this.hsyShopDao.findAppBizShopByID(shopId).get(0);
-        final long playMoneyOrderId = this.orderService.createPlayMoneyOrder(shop, new BigDecimal(totalAmount), appId, channel, settleType);
+        final long playMoneyOrderId = this.orderService.createPlayMoneyOrder(shop, new BigDecimal(totalAmount), EnumProductType.HSY.getId(), channel, settleType);
         return this.withdrawImpl(shop, playMoneyOrderId);
     }
 
@@ -475,9 +480,8 @@ public class HSYTradeServiceImpl implements HSYTradeService {
     @Override
     @Transactional
     public void withdrawSplitAccount(final Order order, final AppBizShop shop) {
-
-//        final MerchantInfo merchant = this.merchantInfoService.getByAccountId(accountId).get();
-        final Map<String, Triple<Long, BigDecimal, String>> shallProfitMap = new HashMap<>();
+        final Map<String, Triple<Long, BigDecimal, String>> shallProfitMap =
+                this.shallProfitDetailService.withdrawProfitCount(EnumProductType.HSY, order.getOrderNo(), order.getTradeAmount(), order.getPayChannelSign(), shop.getId());
         final Triple<Long, BigDecimal, String> channelMoneyTriple = shallProfitMap.get("channelMoney");
         final Triple<Long, BigDecimal, String> productMoneyTriple = shallProfitMap.get("productMoney");
         final Triple<Long, BigDecimal, String> firstMoneyTriple = shallProfitMap.get("firstMoney");
@@ -504,7 +508,7 @@ public class HSYTradeServiceImpl implements HSYTradeService {
             this.accountService.increaseTotalAmount(account.getId(), channelMoneyTriple.getMiddle());
             this.accountService.increaseSettleAmount(account.getId(), channelMoneyTriple.getMiddle());
             this.settleAccountFlowService.addSettleAccountFlow(account.getId(), order.getOrderNo(), channelMoneyTriple.getMiddle(),
-                    "提现分润", EnumAccountFlowType.INCREASE, EnumAppType.HSS.getId(), order.getPaySuccessTime(), EnumAccountUserType.COMPANY.getId());
+                    "提现分润", EnumAccountFlowType.INCREASE, EnumAppType.HSY.getId(), order.getPaySuccessTime(), EnumAccountUserType.COMPANY.getId());
         }
         //产品利润--到结算
         if (null != productMoneyTriple) {
@@ -514,7 +518,7 @@ public class HSYTradeServiceImpl implements HSYTradeService {
             this.accountService.increaseTotalAmount(account.getId(), productMoneyTriple.getMiddle());
             this.accountService.increaseSettleAmount(account.getId(), productMoneyTriple.getMiddle());
             this.settleAccountFlowService.addSettleAccountFlow(account.getId(), order.getOrderNo(), productMoneyTriple.getMiddle(),
-                    "提现分润", EnumAccountFlowType.INCREASE, EnumAppType.HSS.getId(), order.getPaySuccessTime(), EnumAccountUserType.COMPANY.getId());
+                    "提现分润", EnumAccountFlowType.INCREASE, EnumAppType.HSY.getId(), order.getPaySuccessTime(), EnumAccountUserType.COMPANY.getId());
         }
         //一级代理商利润--到结算
         if (null != firstMoneyTriple) {
@@ -525,7 +529,7 @@ public class HSYTradeServiceImpl implements HSYTradeService {
             this.accountService.increaseTotalAmount(account.getId(), firstMoneyTriple.getMiddle());
             this.accountService.increaseSettleAmount(account.getId(), firstMoneyTriple.getMiddle());
             this.settleAccountFlowService.addSettleAccountFlow(account.getId(), order.getOrderNo(), firstMoneyTriple.getMiddle(),
-                    "提现分润", EnumAccountFlowType.INCREASE, EnumAppType.HSS.getId(), order.getPaySuccessTime(), EnumAccountUserType.DEALER.getId());
+                    "提现分润", EnumAccountFlowType.INCREASE, EnumAppType.HSY.getId(), order.getPaySuccessTime(), EnumAccountUserType.DEALER.getId());
         }
         //二级代理商利润--到结算
         if (null != secondMoneyTriple) {
@@ -536,7 +540,7 @@ public class HSYTradeServiceImpl implements HSYTradeService {
             this.accountService.increaseTotalAmount(account.getId(), secondMoneyTriple.getMiddle());
             this.accountService.increaseSettleAmount(account.getId(), secondMoneyTriple.getMiddle());
             this.settleAccountFlowService.addSettleAccountFlow(account.getId(), order.getOrderNo(), secondMoneyTriple.getMiddle(),
-                    "提现分润", EnumAccountFlowType.INCREASE, EnumAppType.HSS.getId(), order.getPaySuccessTime(), EnumAccountUserType.DEALER.getId());
+                    "提现分润", EnumAccountFlowType.INCREASE, EnumAppType.HSY.getId(), order.getPaySuccessTime(), EnumAccountUserType.DEALER.getId());
         }
 
     }
