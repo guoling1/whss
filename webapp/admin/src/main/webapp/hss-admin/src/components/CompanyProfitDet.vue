@@ -20,6 +20,21 @@
                 <label>代理商名称：</label>
                 <input style="height: 30px;margin-right: 15px" type="text" class="form-control" v-model="query.dealerName">
               </div>
+              <div class="form-group" style="margin-bottom: 15px">
+                <label>订单号：</label>
+                <input style="height: 30px;margin-right: 15px" type="text" class="form-control" v-model="query.paymentSn">
+              </div>
+              <div class="form-group" style="margin-bottom: 15px">
+                <label>交易类型：</label>
+                <input style="height: 30px;margin-right: 15px" type="text" class="form-control" v-model="query.profitType">
+              </div>
+              <div class="form-group" style="margin-bottom: 15px">
+                <label>交易金额：</label>
+                <div class="form-control" style="margin-right: 15px;padding: 0;width: 248px;height: 30px;line-height: 26px;">
+                  <input type="text" style="border: none;display:inline-block;width: 45%" name="date" value="" v-model="query.more">至
+                  <input type="text" style="border: none;display:inline-block;width: 45%" name="date" value="" v-model="query.less">
+                </div>
+              </div>
               <div class="btn btn-primary" @click="search()" style="margin-top: -15px">筛选</div>
             </div>
 
@@ -94,7 +109,11 @@
           dailyProfitId:'',
           beginProfitDate:'',
           endProfitDate:'',
-          dealerName:''
+          dealerName:'',
+          paymentSn:'',
+          profitType:'',
+          more:'',
+          less:''
         },
         records:[],
         path:''

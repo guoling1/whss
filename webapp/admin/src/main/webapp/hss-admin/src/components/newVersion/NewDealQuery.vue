@@ -9,7 +9,7 @@
         </div>
       <div class="box-body">
         <div class="row">
-          <div class="col-md-3">
+          <div class="col-md-2">
             <div class="form-group">
               <label>订单号：</label>
               <input type="text" class="form-control" v-model="$$query.orderNo">
@@ -17,6 +17,16 @@
             <div class="form-group">
               <label>商户名称</label>
               <input type="text" class="form-control" v-model="$$query.merchantName">
+            </div>
+          </div>
+          <div class="col-md-2">
+            <div class="form-group">
+              <label>所属一级代理：</label>
+              <input type="text" class="form-control" v-model="$$query.proxyName">
+            </div>
+            <div class="form-group">
+              <label>所属二级代理</label>
+              <input type="text" class="form-control" v-model="$$query.proxyName1">
             </div>
           </div>
           <div class="col-md-3">
@@ -35,7 +45,7 @@
               </div>
             </div>
           </div>
-          <div class="col-md-3">
+          <div class="col-md-2">
             <div class="form-group">
               <label>订单状态：</label>
               <select class="form-control select2 select2-hidden-accessible" style="width: 100%;" tabindex="-1" aria-hidden="true" v-model="$$query.status">
@@ -56,7 +66,7 @@
               </select>
             </div>
           </div>
-          <div class="col-md-3">
+          <div class="col-md-2">
             <div class="form-group">
               <label>支付方式：</label>
               <select class="form-control select2 select2-hidden-accessible" style="width: 100%;" tabindex="-1" aria-hidden="true" v-model="$$query.payType">
@@ -100,7 +110,7 @@
                 <tr role="row" v-for="(order,index) in orders">
                   <td>{{(query.page-1)*10+(index+1)}}</td>
                   <td><router-link :to="{ path: '/admin/record/newDealDet', query: {orderNo: order.orderNo}}">{{order.orderNo|changeHide}}</router-link></td>
-                  <td><router-link :to="{ path: '/admin/record/newDealDet', query: {orderNo: order.orderNo}}">{{order.sn|changeHide}}</router-link></td>
+                  <td>{{order.sn|changeHide}}</td>
                   <td>{{order.createTime|changeTime}}</td>
                   <td>{{order.merchantName}}</td>
                   <td>{{order.proxyName}}</td>
@@ -159,7 +169,9 @@
           moreTotalFee: '',
           status: '',
           settleStatus:'',
-          payType:''
+          payType:'',
+          proxyName:'',
+          proxyName1:''
         },
         orders:[],
         total:'',
