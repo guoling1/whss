@@ -21,7 +21,7 @@ public class AppBizShop {
     private Integer status;//状态：1 正常 99禁用
     private Integer isPublic;//是否对公1是 2否'
     private String checkErrorInfo;//审核错误原因
-    private String accountID;//账户ID
+    private Long accountID;//账户ID
     private Date createTime;
     private Date updateTime;
 
@@ -280,11 +280,11 @@ public class AppBizShop {
         this.globalID = globalID;
     }
 
-    public String getAccountID() {
+    public Long getAccountID() {
         return accountID;
     }
 
-    public void setAccountID(String accountID) {
+    public void setAccountID(Long accountID) {
         this.accountID = accountID;
     }
 }
