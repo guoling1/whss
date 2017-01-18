@@ -8,4 +8,5 @@ import lombok.Data;
 @Data
 public class QRCodeList {
     private String code;
+    private String createtime;
 }
