@@ -13,10 +13,10 @@
       <option :value="district" v-for="district in $$data.districts">{{district}}</option>
     </select>
 
-    <input id="indate4" type="text" placeholder="请选择">
+    <input id="indate4" type="text" placeholder="请选择"  value="" v-model="$$data.time">
+    <div class="btn" @click="test">打印</div>
   </div>
 </template>
-
 <script>
   var msg = require('../../city.json')
   export default {
@@ -28,7 +28,8 @@
         districts:'',
         province:'',
         city:'',
-        district:''
+        district:'',
+        time:''
       }
     },
     created:function () {
@@ -40,12 +41,22 @@
           }
         }
       }
-      /*jeDate({
-        dateCell: '#indate4',
-        format: "YYYY-MM-DD",
-        minDate: jeDate.now(-1), //0代表今天，-1代表昨天，-2代表前天，以此类推
-        maxDate: jeDate.now(5) //1代表明天，2代表后天，以此类推
-      })*/
+    },
+    methods:{
+      test:function () {
+        console.log(document.getElementById("indate4").value)
+      }
+    },
+    mounted:function () {
+      jeDate({
+       dateCell: '#indate4',
+       format: "YYYY-MM-DD",
+       maxDate: jeDate.now(5), //1代表明天，2代表后天，以此类推
+        choosefun:function(elem, val) {
+          console.log(elem,val)
+        }
+
+      })
     },
     watch: {
       province: function (val, oldval) {
