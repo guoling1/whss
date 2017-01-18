@@ -35,7 +35,7 @@ public interface CalculateService {
      * @param merchantPayPoundageRate  商户支付手续费率
      * @return
      */
-    BigDecimal getMerchantPayPoundage(EnumProductType type,BigDecimal traderAmount, BigDecimal merchantPayPoundageRate);
+    BigDecimal getMerchantPayPoundage(BigDecimal traderAmount, BigDecimal merchantPayPoundageRate);
 
     /**
      * 获取当前商户升级，所有分给（代理商，推荐人）的钱--记录为手续费
