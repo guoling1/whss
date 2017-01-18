@@ -144,6 +144,13 @@ public class Order extends BaseEntity {
     private Date settleTime;
 
     /**
+     * 结算类型
+     *
+     * {@link com.jkm.hss.product.enums.EnumBalanceTimeType}
+     */
+    private String settleType;
+
+    /**
      * 成功结算时间
      */
     private Date successSettleTime;

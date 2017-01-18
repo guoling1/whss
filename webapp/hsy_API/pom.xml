@@ -15,6 +15,22 @@
     <dependencies>
         <dependency>
             <groupId>com.jkm</groupId>
+            <artifactId>hss-settle-service</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.jkm</groupId>
+            <artifactId>hss-settle-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.jkm</groupId>
+            <artifactId>hss-bill-service</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.jkm</groupId>
+            <artifactId>hss-bill-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.jkm</groupId>
             <artifactId>hsy-user-api</artifactId>
         </dependency>
         <dependency>
@@ -80,6 +96,10 @@
         <dependency>
             <groupId>com.jkm</groupId>
             <artifactId>hss-common-util-spring</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.jkm</groupId>
+            <artifactId>hss-common-mq</artifactId>
         </dependency>
         <dependency>
             <groupId>javax.servlet</groupId>
