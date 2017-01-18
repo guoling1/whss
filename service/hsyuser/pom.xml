@@ -13,7 +13,7 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>h-user-api</module>
-        <module>h-user-service</module>
+        <module>user-api</module>
+        <module>user-service</module>
     </modules>
 </project>
