@@ -1,10 +1,12 @@
 package com.jkm.hsy.user.entity;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 /** app_au_user*/
 public class AppAuUser {
-    private long id;
+    private Long id;
+    private String globalID;//对外ID
     private String cellphone;//手机号
     private String password;//密码
     private String nickname;//昵称
@@ -16,6 +18,11 @@ public class AppAuUser {
     private String idcardf;//身份证正面照
     private String idcardb;//身份证背面照
     private String idcardh;//身份证手持照
+    private Long dealerID;//代理商ID
+    private Long productID;//产品ID
+    private BigDecimal weixinRate;//微信费率
+    private BigDecimal alipayRate;//支付宝费率
+    private BigDecimal fastRate;//快捷费率
     private Date createTime;
     private Date updateTime;
 
@@ -30,12 +37,20 @@ public class AppAuUser {
     private Long role;//角色
     private String roleName;//角色名称
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getGlobalID() {
+        return globalID;
+    }
+
+    public void setGlobalID(String globalID) {
+        this.globalID = globalID;
     }
 
     public String getCellphone() {
@@ -212,5 +227,45 @@ public class AppAuUser {
 
     public void setRoleName(String roleName) {
         this.roleName = roleName;
+    }
+
+    public Long getDealerID() {
+        return dealerID;
+    }
+
+    public void setDealerID(Long dealerID) {
+        this.dealerID = dealerID;
+    }
+
+    public Long getProductID() {
+        return productID;
+    }
+
+    public void setProductID(Long productID) {
+        this.productID = productID;
+    }
+
+    public BigDecimal getWeixinRate() {
+        return weixinRate;
+    }
+
+    public void setWeixinRate(BigDecimal weixinRate) {
+        this.weixinRate = weixinRate;
+    }
+
+    public BigDecimal getAlipayRate() {
+        return alipayRate;
+    }
+
+    public void setAlipayRate(BigDecimal alipayRate) {
+        this.alipayRate = alipayRate;
+    }
+
+    public BigDecimal getFastRate() {
+        return fastRate;
+    }
+
+    public void setFastRate(BigDecimal fastRate) {
+        this.fastRate = fastRate;
     }
 }
