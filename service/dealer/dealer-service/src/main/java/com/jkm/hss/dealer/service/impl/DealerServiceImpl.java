@@ -1344,6 +1344,7 @@ public class DealerServiceImpl implements DealerService {
         dealer.setRecommendBtn(request.getRecommendBtn());
         dealer.setSettleBankCard(DealerSupport.encryptBankCard(request.getBankCard()));
         dealer.setBankReserveMobile(DealerSupport.encryptMobile(request.getBankReserveMobile()));
+        dealer.setIdCard(DealerSupport.encryptIdenrity(request.getIdCard()));
         dealer.setStatus(EnumDealerStatus.NORMAL.getId());
         dealer.setTotalProfitSpace(request.getTotalProfitSpace());
         this.update(dealer);
