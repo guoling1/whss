@@ -3,6 +3,7 @@ package com.jkm.hss.merchant.service.impl;
 import com.jkm.hss.merchant.dao.QueryMerchantInfoRecordDao;
 import com.jkm.hss.merchant.entity.LogResponse;
 import com.jkm.hss.merchant.entity.MerchantInfoResponse;
+import com.jkm.hss.merchant.entity.ReferralResponse;
 import com.jkm.hss.merchant.helper.MerchantSupport;
 import com.jkm.hss.merchant.service.QueryMerchantInfoRecordService;
 import lombok.extern.slf4j.Slf4j;
@@ -82,5 +83,11 @@ public class QueryMerchantInfoRecordServiceImpl implements QueryMerchantInfoReco
             }
         }
         return res;
+    }
+
+    @Override
+    public ReferralResponse getRefInformation(long id) {
+        ReferralResponse refInformation = this.queryMerchantInfoRecordDao.getRefInformation(id);
+        return refInformation;
     }
 }

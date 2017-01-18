@@ -8,7 +8,7 @@
     </div>
     <!--<h3 v-if="isShow" class="box-title">新增代理商</h3>-->
     <!--<div v-if="!isShow" style="padding: 8px 30px; background: rgb(243, 156, 18); z-index: 999999; font-size: 22px; font-weight: 600;margin-bottom: 15px;color: #fff;">代理商资料</div>-->
-    <div style="margin: 0px 15px 15px;">
+    <div style="margin: 0px 15px 150px;">
       <div class="box box-info tableTop">
         <div class="box-header with-border">
           <h3 class="box-title">基本信息</h3>
@@ -268,6 +268,7 @@
         rate4:'',
         dealerUpgerdeRates:[
           {
+            id:'',
             productId:'',
             type:1,
             firstDealerShareProfitRate:'',
@@ -275,6 +276,7 @@
             bossDealerShareRate:""
           },
           {
+            id:'',
             productId:'',
             type:2,
             firstDealerShareProfitRate:'',
@@ -338,6 +340,8 @@
                 this.$data.rate4 = res.data.dealerUpgerdeRates[1].secondDealerShareProfitRate*100;
                 this.$data.bossRate1 = res.data.dealerUpgerdeRates[0].bossDealerShareRate*100;
                 this.$data.bossRate2 = res.data.dealerUpgerdeRates[1].bossDealerShareRate*100;
+                this.$data.dealerUpgerdeRates[0].id = res.data.dealerUpgerdeRates[0].id;
+                this.$data.dealerUpgerdeRates[1].id = res.data.dealerUpgerdeRates[1].id;
               })
           }
         }, function (err) {

@@ -98,7 +98,7 @@
                     <td>{{store.checkedTime|changeTime}}</td>
                     <td>{{store.status|status}}</td>
                     <td>
-                      <div class="btn btn-primary" @click="audit($event,store.id,store.status)">{{store.status|operate}}</div>
+                      <a @click="audit($event,store.id,store.status)">{{store.status|operate}}</a>
                     </td>
                   </tr>
                   </tbody>

@@ -61,6 +61,7 @@
     },
     methods:{
       search: function(){
+        this.$data.record = "";
         if(this.$data.code!=""){
           this.$http.post('/admin/user/getCode',{code:this.$data.code})
             .then(function(res){
@@ -72,8 +73,11 @@
                 text: err.statusMessage
               })
             })
+        }else {
+          this.$store.commit('MESSAGE_ACCORD_SHOW', {
+            text: "请填写二维码编号"
+          })
         }
-
       }
     },
     filters: {

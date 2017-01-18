@@ -7,6 +7,7 @@ import com.jkm.hss.controller.BaseController;
 import com.jkm.hss.helper.ApplicationConsts;
 import com.jkm.hss.merchant.entity.LogResponse;
 import com.jkm.hss.merchant.entity.MerchantInfoResponse;
+import com.jkm.hss.merchant.entity.ReferralResponse;
 import com.jkm.hss.merchant.service.QueryMerchantInfoRecordService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -38,7 +39,26 @@ public class QueryMerchantInfoRecordController extends BaseController {
     @RequestMapping(value = "/getAll",method = RequestMethod.POST)
     public JSONObject getAll(@RequestBody final MerchantInfoResponse merchantInfo) throws ParseException {
         JSONObject jsonObject = new JSONObject();
+        ReferralResponse res = this.queryMerchantInfoRecordService.getRefInformation(merchantInfo.getId());
         List<MerchantInfoResponse> list = this.queryMerchantInfoRecordService.getAll(merchantInfo);
+        if (list.size()>0){
+            for (int i=0;i<list.size();i++){
+                int source = list.get(i).getSource();
+                String proxyName = "";
+                String proxyName1 = "";
+                if (source==1){
+                    list.get(i).setProxyName(proxyName);
+                    list.get(i).setProxyName1(proxyName1);
+                    if (res!=null){
+                        list.get(i).setProxyNameYq(res.getProxyNameYq());
+                        list.get(i).setProxyNameYq1(res.getProxyNameYq1());
+                    }
+
+                }
+
+            }
+        }
+
         List<LogResponse> lists = this.queryMerchantInfoRecordService.getLog(merchantInfo);
         if (list!=null&&list.size()>0){
             for (int i=0;i<list.size();i++){
