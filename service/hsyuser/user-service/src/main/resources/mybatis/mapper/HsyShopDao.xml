@@ -177,4 +177,11 @@
         where ACCOUNTID=#{accountID}
     </select>
 
+    <select id="findShopNameByID" parameterType="java.lang.Long" resultType="java.lang.String">
+        select
+          shop.SHORTNAME
+        from app_biz_shop shop
+        where shop.ID=#{id}
+    </select>
+
 </mapper>
