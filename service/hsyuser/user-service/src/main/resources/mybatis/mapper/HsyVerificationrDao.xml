@@ -20,7 +20,7 @@
         <if test="cellphone!=null and cellphone!=''">AND CELLPHONE=#{cellphone}</if>
         <if test="timeout!=null"><![CDATA[AND TIMEOUT>=#{timeout,jdbcType=TIMESTAMP}]]></if>
         <if test="type!=null">AND TYPE=#{type}</if>
-        order by UPDATETIME
+        order by UPDATETIME desc
     </select>
 
     <insert id="insert" useGeneratedKeys="true" keyProperty="uuid" parameterType="com.jkm.hsy.user.entity.AppAuVerification">

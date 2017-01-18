@@ -5,7 +5,7 @@ package com.jkm.hsy.user.constant;
  */
 public class AppConstant {
     public static String DATE_FORMAT="yyyy-MM-dd HH:mm:ss";
-    public static String FIlE_ROOT="hsy_app";
+    public static String FIlE_ROOT="hsy";
     public static int USER_STATUS_NORMAL=1;
     public static int USER_STATUS_NO_CHECK=2;
     public static int USER_STATUS_FORBID=99;

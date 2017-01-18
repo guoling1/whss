@@ -39,6 +39,7 @@ public class AppBizShop {
     private String fileC;
 
     private Integer countEmployee;//员工个数
+    private Integer countQR;//二维码个数
 
     public Long getId() {
         return id;
@@ -286,5 +287,13 @@ public class AppBizShop {
 
     public void setAccountID(Long accountID) {
         this.accountID = accountID;
+    }
+
+    public Integer getCountQR() {
+        return countQR;
+    }
+
+    public void setCountQR(Integer countQR) {
+        this.countQR = countQR;
     }
 }

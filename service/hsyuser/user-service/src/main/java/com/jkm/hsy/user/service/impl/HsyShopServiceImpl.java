@@ -3,6 +3,8 @@ package com.jkm.hsy.user.service.impl;
 import com.google.common.base.Optional;
 import com.google.gson.*;
 import com.jkm.base.common.util.ValidateUtils;
+import com.jkm.hss.admin.helper.responseparam.QRCodeList;
+import com.jkm.hss.admin.service.QRCodeService;
 import com.jkm.hss.merchant.entity.BankCardBin;
 import com.jkm.hss.merchant.service.BankCardBinService;
 import com.jkm.hsy.user.constant.AppConstant;
@@ -20,6 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.lang.reflect.Type;
+import java.math.BigDecimal;
 import java.util.*;
 
 /**
@@ -35,6 +38,8 @@ public class HsyShopServiceImpl implements HsyShopService {
     private HsyFileService hsyFileService;
     @Autowired
     private HsyUserDao hsyUserDao;
+    @Autowired
+    private QRCodeService qRCodeService;
 
     /**HSY001005 更新店铺资料店铺名字*/
     public String updateHsyShop(String dataParam,AppParam appParam,Map<String,MultipartFile> files)throws ApiHandleException{
@@ -306,11 +311,13 @@ public class HsyShopServiceImpl implements HsyShopService {
 
         List<AppBizShop> shopList=hsyShopDao.findShopDetail(appBizShop);
         List<AppAuUser> userList=hsyShopDao.findUserByShopID(appBizShop.getId());
+        List<QRCodeList> qrList=qRCodeService.bindShopList(appBizShop.getId(),AppConstant.FIlE_ROOT);
         if(shopList!=null&&shopList.size()!=0)
             appBizShop=shopList.get(0);
         Map map=new HashMap();
         map.put("appBizShop",appBizShop);
         map.put("userList",userList);
+        map.put("qrList",qrList);
         gson = new GsonBuilder().registerTypeAdapter(Date.class, new JsonSerializer<Date>() {
             public JsonElement serialize(Date date, Type typeOfT, JsonSerializationContext context) throws JsonParseException {
                 return new JsonPrimitive(date.getTime());
@@ -406,10 +413,30 @@ public class HsyShopServiceImpl implements HsyShopService {
             throw new ApiHandleException(ResultCode.PARAM_LACK,"商铺ID");
 
         List<AppBizShop> shopList=hsyShopDao.findShopDetail(appBizShop);
+        List<AppAuUser> userList=hsyShopDao.findCorporateUserByShopID(appBizShop.getId());
         if(shopList!=null&&shopList.size()!=0)
             appBizShop=shopList.get(0);
+        AppAuUser appAuUser=null;
+        if(userList!=null&&userList.size()!=0)
+            appAuUser=userList.get(0);
+        List<Map> rateList=new ArrayList<Map>();
+        Map rateMapWX=new HashMap();
+        rateMapWX.put("name","微信费率");
+        rateMapWX.put("rate",appAuUser==null||appAuUser.getWeixinRate()==null?0:appAuUser.getWeixinRate());
+        rateList.add(rateMapWX);
+        Map rateMapAL=new HashMap();
+        rateMapAL.put("name","支付宝费率");
+        rateMapAL.put("rate",appAuUser==null||appAuUser.getAlipayRate()==null?0:appAuUser.getAlipayRate());
+        rateList.add(rateMapAL);
+        Map rateMapF=new HashMap();
+        rateMapF.put("name","快捷费率");
+        rateMapF.put("rate",appAuUser==null||appAuUser.getFastRate()==null?0:appAuUser.getFastRate());
+        rateList.add(rateMapF);
+
         Map map=new HashMap();
         map.put("appBizShop",appBizShop);
+        map.put("rateList",rateList);
+
         gson = new GsonBuilder().registerTypeAdapter(Date.class, new JsonSerializer<Date>() {
             public JsonElement serialize(Date date, Type typeOfT, JsonSerializationContext context) throws JsonParseException {
                 return new JsonPrimitive(date.getTime());
