@@ -19,7 +19,7 @@ import java.io.IOException;
 @Slf4j
 @Controller
 @RequestMapping(value = "/sqb")
-public class SkipController extends BaseController {
+public class WebSkipController extends BaseController {
     /**
      * 支付升级成功页面
      * @param request
@@ -46,7 +46,7 @@ public class SkipController extends BaseController {
      * @throws IOException
      */
     @RequestMapping(value = "/paymentWx", method = RequestMethod.GET)
-    public String paymentWx(final HttpServletRequest request, final HttpServletResponse response, final Model model,@RequestParam(value = "merchantId", required = true) long merchantId,@RequestParam(value = "name") String name) throws IOException {
+    public String paymentWx(final HttpServletRequest request, final HttpServletResponse response, final Model model, @RequestParam(value = "merchantId", required = true) long merchantId, @RequestParam(value = "name") String name) throws IOException {
         model.addAttribute("mid", merchantId);
         model.addAttribute("merchantName", name);
         return "/payment-wx";
