@@ -264,5 +264,9 @@
             <artifactId>gson</artifactId>
             <version>RELEASE</version>
         </dependency>
+        <dependency>
+            <groupId>com.jkm</groupId>
+            <artifactId>hss-admin-api</artifactId>
+        </dependency>
     </dependencies>
 </project>
