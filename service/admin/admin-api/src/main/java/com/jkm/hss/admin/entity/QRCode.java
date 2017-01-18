@@ -72,6 +72,15 @@ public class QRCode extends BaseEntity {
      * {@link com.jkm.hss.admin.enums.EnumQRCodeType}
      */
     private int type;
+    /**
+     * 产品编码
+     */
+    private long productId;
+    /**
+     * 系统类型
+     * {@link com.jkm.hss.admin.enums.EnumQRCodeSysType}
+     */
+    private String sysType;
 
     /**
      * 获取签名
