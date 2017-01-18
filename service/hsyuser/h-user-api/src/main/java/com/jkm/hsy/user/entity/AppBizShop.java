@@ -5,6 +5,7 @@ import java.util.Date;
 /**app_biz_shop*/
 public class AppBizShop {
     private Long id;
+    private String globalID;//对外ID
     private String name;//店铺名称
     private String shortName;//店铺简称
     private String industryCode;//行业代码
@@ -20,6 +21,7 @@ public class AppBizShop {
     private Integer status;//状态：1 正常 99禁用
     private Integer isPublic;//是否对公1是 2否'
     private String checkErrorInfo;//审核错误原因
+    private String accountID;//账户ID
     private Date createTime;
     private Date updateTime;
 
@@ -268,5 +270,21 @@ public class AppBizShop {
 
     public void setCheckErrorInfo(String checkErrorInfo) {
         this.checkErrorInfo = checkErrorInfo;
+    }
+
+    public String getGlobalID() {
+        return globalID;
+    }
+
+    public void setGlobalID(String globalID) {
+        this.globalID = globalID;
+    }
+
+    public String getAccountID() {
+        return accountID;
+    }
+
+    public void setAccountID(String accountID) {
+        this.accountID = accountID;
     }
 }

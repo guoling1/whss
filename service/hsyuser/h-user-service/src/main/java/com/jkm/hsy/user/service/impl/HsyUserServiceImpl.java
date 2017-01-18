@@ -1,6 +1,9 @@
 package com.jkm.hsy.user.service.impl;
 
 import com.google.gson.*;
+import com.jkm.base.common.enums.EnumGlobalIDPro;
+import com.jkm.base.common.enums.EnumGlobalIDType;
+import com.jkm.base.common.util.GlobalID;
 import com.jkm.base.common.util.ValidateUtils;
 import com.jkm.base.sms.service.SmsSendMessageService;
 import com.jkm.hsy.user.constant.AppConstant;
@@ -78,6 +81,10 @@ public class HsyUserServiceImpl implements HsyUserService {
         appAuUser.setCreateTime(date);
         appAuUser.setUpdateTime(date);
         hsyUserDao.insert(appAuUser);
+        AppAuUser appAuUserUp=new AppAuUser();
+        appAuUserUp.setId(appAuUser.getId());
+        appAuUserUp.setGlobalID(GlobalID.GetGlobalID(EnumGlobalIDType.MERCHANT, EnumGlobalIDPro.MAX,appAuUser.getId().toString()));
+        hsyUserDao.updateByID(appAuUserUp);
         AppBizShop appBizShop=new AppBizShop();
         appBizShop.setName(appAuUser.getShopName());
         appBizShop.setIndustryCode(appAuUser.getIndustryCode());
@@ -86,6 +93,10 @@ public class HsyUserServiceImpl implements HsyUserService {
         appBizShop.setStatus(AppConstant.SHOP_STATUS_NORMAL);
         appBizShop.setParentID(0L);
         hsyShopDao.insert(appBizShop);
+        AppBizShop appBizShopUp=new AppBizShop();
+        appBizShopUp.setId(appBizShop.getId());
+        appBizShopUp.setGlobalID(GlobalID.GetGlobalID(EnumGlobalIDType.MERCHANT, EnumGlobalIDPro.MAX,appBizShop.getId().toString()));
+        hsyShopDao.update(appBizShopUp);
         AppBizShopUserRole appBizShopUserRole=new AppBizShopUserRole();
         appBizShopUserRole.setSid(appBizShop.getId());
         appBizShopUserRole.setUid(appAuUser.getId());
