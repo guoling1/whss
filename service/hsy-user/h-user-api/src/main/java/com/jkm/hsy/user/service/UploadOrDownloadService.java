@@ -7,6 +7,7 @@ import org.omg.CORBA.portable.InputStream;
  */
 public interface UploadOrDownloadService {
 
-    String getUrl(InputStream inputStream, String fileName);
+    String getHsyUrl(InputStream inputStream, String fileName);
+
 
 }
