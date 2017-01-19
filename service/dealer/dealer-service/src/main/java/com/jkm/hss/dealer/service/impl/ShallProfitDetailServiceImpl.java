@@ -1,7 +1,6 @@
 package com.jkm.hss.dealer.service.impl;
 
 
-import com.fasterxml.jackson.databind.ObjectReader;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.jkm.base.common.util.DateFormatUtil;
@@ -11,12 +10,10 @@ import com.jkm.hss.dealer.enums.EnumDealerLevel;
 import com.jkm.hss.dealer.enums.EnumProfitType;
 import com.jkm.hss.dealer.service.*;
 import com.jkm.hss.merchant.entity.MerchantInfo;
-import com.jkm.hss.merchant.entity.OrderRecord;
 import com.jkm.hss.merchant.service.MerchantInfoService;
 import com.jkm.hss.product.entity.BasicChannel;
 import com.jkm.hss.product.entity.Product;
 import com.jkm.hss.product.entity.ProductChannelDetail;
-import com.jkm.hss.product.enums.EnumPayChannelSign;
 import com.jkm.hss.product.enums.EnumProductType;
 import com.jkm.hss.product.servcie.BasicChannelService;
 import com.jkm.hss.product.servcie.ProductChannelDetailService;
@@ -439,8 +436,8 @@ public class ShallProfitDetailServiceImpl implements ShallProfitDetailService{
      * @return
      */
     @Override
-    public List<ShallProfitDetail> selectDeatailByProfitDate(String profitDate) {
-        return this.shallProfitDetailDao.selectDeatailByProfitDate(profitDate);
+    public List<ShallProfitDetail> selectDeatailByProfitDateToHss(String profitDate) {
+        return this.shallProfitDetailDao.selectDetailByProfitDateToHss(profitDate);
     }
 
     /**
@@ -450,8 +447,8 @@ public class ShallProfitDetailServiceImpl implements ShallProfitDetailService{
      * @return
      */
     @Override
-    public List<Long> selectMerchantIdByProfitDate(String profitDate) {
-        return this.shallProfitDetailDao.selectMerchantIdByProfitDate(profitDate);
+    public List<Long> selectMerchantIdByProfitDateToHss(String profitDate) {
+        return this.shallProfitDetailDao.selectMerchantIdByProfitDateToHss(profitDate);
     }
 
     /**
@@ -462,8 +459,8 @@ public class ShallProfitDetailServiceImpl implements ShallProfitDetailService{
      * @return
      */
     @Override
-    public BigDecimal selectSecondCollectMoneyByMerchantIdAndProfitDate(Long merchantId, String profitDate) {
-        final BigDecimal bigDecimal = shallProfitDetailDao.selectSecondCollectMoneyByMerchantIdAndProfitDate(merchantId, profitDate);
+    public BigDecimal selectSecondCollectMoneyByMerchantIdAndProfitDateToHss(Long merchantId, String profitDate) {
+        final BigDecimal bigDecimal = shallProfitDetailDao.selectSecondCollectMoneyByMerchantIdAndProfitDateToHss(merchantId, profitDate);
         if (bigDecimal == null){
             return new BigDecimal(0);
         }
@@ -477,8 +474,8 @@ public class ShallProfitDetailServiceImpl implements ShallProfitDetailService{
      * @return
      */
     @Override
-    public BigDecimal selectFirstCollectMoneyByMerchantIdAndProfitDate(Long merchantId, String profitDate) {
-        final BigDecimal bigDecimal = this.shallProfitDetailDao.selectFirstCollectMoneyByMerchantIdAndProfitDate(merchantId, profitDate);
+    public BigDecimal selectFirstCollectMoneyByMerchantIdAndProfitDateToHss(Long merchantId, String profitDate) {
+        final BigDecimal bigDecimal = this.shallProfitDetailDao.selectFirstCollectMoneyByMerchantIdAndProfitDateToHss(merchantId, profitDate);
         if (bigDecimal == null){
             return new BigDecimal(0);
         }
@@ -492,8 +489,8 @@ public class ShallProfitDetailServiceImpl implements ShallProfitDetailService{
      * @return
      */
     @Override
-    public BigDecimal selectFirstWithdrawMoneyByMerchantIdAndProfitDate(Long merchantId, String profitDate) {
-        final BigDecimal bigDecimal = this.shallProfitDetailDao.selectFirstWithdrawMoneyByMerchantIdAndProfitDate(merchantId, profitDate);
+    public BigDecimal selectFirstWithdrawMoneyByMerchantIdAndProfitDateToHss(Long merchantId, String profitDate) {
+        final BigDecimal bigDecimal = this.shallProfitDetailDao.selectFirstWithdrawMoneyByMerchantIdAndProfitDateToHss(merchantId, profitDate);
         if (bigDecimal == null){
             return new BigDecimal(0);
         }
@@ -507,8 +504,8 @@ public class ShallProfitDetailServiceImpl implements ShallProfitDetailService{
      * @return
      */
     @Override
-    public BigDecimal selectSecondWithdrawMoneyByMerchantIdAndProfitDate(Long merchantId, String profitDate) {
-        final BigDecimal bigDecimal = this.shallProfitDetailDao.selectSecondWithdrawMoneyByMerchantIdAndProfitDate(merchantId, profitDate);
+    public BigDecimal selectSecondWithdrawMoneyByMerchantIdAndProfitDateToHss(Long merchantId, String profitDate) {
+        final BigDecimal bigDecimal = this.shallProfitDetailDao.selectSecondWithdrawMoneyByMerchantIdAndProfitDateToHss(merchantId, profitDate);
         if (bigDecimal == null){
             return new BigDecimal(0);
         }
@@ -521,8 +518,8 @@ public class ShallProfitDetailServiceImpl implements ShallProfitDetailService{
      * @return
      */
     @Override
-    public List<Long> selectDealerIdByProfitDate(String profitDate) {
-        return this.shallProfitDetailDao.selectDealerIdByProfitDate(profitDate);
+    public List<Long> selectDealerIdByProfitDateToHss(String profitDate) {
+        return this.shallProfitDetailDao.selectDealerIdByProfitDateToHss(profitDate);
     }
 
     /**
@@ -532,23 +529,8 @@ public class ShallProfitDetailServiceImpl implements ShallProfitDetailService{
      * @return
      */
     @Override
-    public BigDecimal selectFirstCollectMoneyByDealerIdAndProfitDate(long dealerId, String profitDate) {
-        final BigDecimal bigDecimal = this.shallProfitDetailDao.selectFirstCollectMoneyByDealerIdAndProfitDate(dealerId, profitDate);
-        if (bigDecimal == null){
-            return new BigDecimal(0);
-        }
-        return bigDecimal;
-    }
-
-    /**
-     * {@inheritDoc}
-     * @param dealerId
-     * @param profitDate
-     * @return
-     */
-    @Override
-    public BigDecimal selectFirstWithdrawMoneyByDealerIdAndProfitDate(long dealerId, String profitDate) {
-        final BigDecimal bigDecimal = this.shallProfitDetailDao.selectFirstWithdrawMoneyByDealerIdAndProfitDate(dealerId, profitDate);
+    public BigDecimal selectFirstCollectMoneyByDealerIdAndProfitDateToHss(long dealerId, String profitDate) {
+        final BigDecimal bigDecimal = this.shallProfitDetailDao.selectFirstCollectMoneyByDealerIdAndProfitDateToHss(dealerId, profitDate);
         if (bigDecimal == null){
             return new BigDecimal(0);
         }
@@ -562,8 +544,8 @@ public class ShallProfitDetailServiceImpl implements ShallProfitDetailService{
      * @return
      */
     @Override
-    public BigDecimal selectSecondYesterdayProfitMoney(long dealerId, String profitDate) {
-        final BigDecimal bigDecimal = this.shallProfitDetailDao.selectSecondYesterdayProfitMoney(dealerId, profitDate);
+    public BigDecimal selectFirstWithdrawMoneyByDealerIdAndProfitDateToHss(long dealerId, String profitDate) {
+        final BigDecimal bigDecimal = this.shallProfitDetailDao.selectFirstWithdrawMoneyByDealerIdAndProfitDateToHss(dealerId, profitDate);
         if (bigDecimal == null){
             return new BigDecimal(0);
         }
@@ -577,8 +559,8 @@ public class ShallProfitDetailServiceImpl implements ShallProfitDetailService{
      * @return
      */
     @Override
-    public BigDecimal selectSecondYesterdayDealMoney(long dealerId, String profitDate) {
-        final BigDecimal bigDecimal = this.shallProfitDetailDao.selectSecondYesterdayDealMoney(dealerId, profitDate);
+    public BigDecimal selectSecondYesterdayProfitMoneyToHss(long dealerId, String profitDate) {
+        final BigDecimal bigDecimal = this.shallProfitDetailDao.selectSecondYesterdayProfitMoneyToHss(dealerId, profitDate);
         if (bigDecimal == null){
             return new BigDecimal(0);
         }
@@ -588,12 +570,27 @@ public class ShallProfitDetailServiceImpl implements ShallProfitDetailService{
     /**
      * {@inheritDoc}
      * @param dealerId
+     * @param profitDate
+     * @return
+     */
+    @Override
+    public BigDecimal selectSecondYesterdayDealMoneyToHss(long dealerId, String profitDate) {
+        final BigDecimal bigDecimal = this.shallProfitDetailDao.selectSecondYesterdayDealMoneyToHss(dealerId, profitDate);
+        if (bigDecimal == null){
+            return new BigDecimal(0);
+        }
+        return bigDecimal;
+    }
+
+    /**
+     * {@inheritDoc}
      * @param
+     * @param dealerId
      * @return
      */
     @Override
-    public BigDecimal selectSecondHistoryProfitMoney(long dealerId) {
-        final BigDecimal bigDecimal = this.shallProfitDetailDao.selectSecondHistoryProfitMoney(dealerId);
+    public BigDecimal selectSecondHistoryProfitMoneyToHss(long dealerId) {
+        final BigDecimal bigDecimal = this.shallProfitDetailDao.selectSecondHistoryProfitMoneyToHss(dealerId);
         if (bigDecimal == null){
             return new BigDecimal(0);
         }
@@ -608,8 +605,8 @@ public class ShallProfitDetailServiceImpl implements ShallProfitDetailService{
      * @return
      */
     @Override
-    public BigDecimal selectFirstSecondYesterdayProfitMoney(long dealerId, String profitDate) {
-        final BigDecimal bigDecimal = this.shallProfitDetailDao.selectFirstSecondYesterdayProfitMoney(dealerId, profitDate);
+    public BigDecimal selectFirstSecondYesterdayProfitMoneyToHss(long dealerId, String profitDate) {
+        final BigDecimal bigDecimal = this.shallProfitDetailDao.selectFirstSecondYesterdayProfitMoneyToHss(dealerId, profitDate);
         if (bigDecimal == null){
             return new BigDecimal(0);
         }
@@ -622,37 +619,8 @@ public class ShallProfitDetailServiceImpl implements ShallProfitDetailService{
      * @return
      */
     @Override
-    public BigDecimal selectFirstSecondHistoryProfitMoney(long dealerId) {
-        final BigDecimal bigDecimal = this.shallProfitDetailDao.selectFirstSecondHistoryProfitMoney(dealerId);
-        if (bigDecimal == null){
-            return new BigDecimal(0);
-        }
-        return bigDecimal;
-    }
-
-    /**
-     * {@inheritDoc}
-     * @param dealerId
-     * @param profitDate
-     * @return
-     */
-    @Override
-    public BigDecimal selectFirstMerchantYesterdayProfitMoney(long dealerId, String profitDate) {
-        final BigDecimal bigDecimal = this.shallProfitDetailDao.selectFirstMerchantYesterdayProfitMoney(dealerId, profitDate);
-        if (bigDecimal == null){
-            return new BigDecimal(0);
-        }
-        return bigDecimal;
-    }
-
-    /**
-     * {@inheritDoc}
-     * @param dealerId
-     * @return
-     */
-    @Override
-    public BigDecimal selectFirstMerchantHistoryProfitMoney(long dealerId) {
-        final BigDecimal bigDecimal = this.shallProfitDetailDao.selectFirstMerchantHistoryProfitMoney(dealerId);
+    public BigDecimal selectFirstSecondHistoryProfitMoneyToHss(long dealerId) {
+        final BigDecimal bigDecimal = this.shallProfitDetailDao.selectFirstSecondHistoryProfitMoneyToHss(dealerId);
         if (bigDecimal == null){
             return new BigDecimal(0);
         }
@@ -666,8 +634,37 @@ public class ShallProfitDetailServiceImpl implements ShallProfitDetailService{
      * @return
      */
     @Override
-    public BigDecimal selectFirstYesterdayDealMoney(long dealerId, String profitDate) {
-        final BigDecimal bigDecimal = this.shallProfitDetailDao.selectFirstYesterdayDealMoney(dealerId, profitDate);
+    public BigDecimal selectFirstMerchantYesterdayProfitMoneyToHss(long dealerId, String profitDate) {
+        final BigDecimal bigDecimal = this.shallProfitDetailDao.selectFirstMerchantYesterdayProfitMoneyToHss(dealerId, profitDate);
+        if (bigDecimal == null){
+            return new BigDecimal(0);
+        }
+        return bigDecimal;
+    }
+
+    /**
+     * {@inheritDoc}
+     * @param dealerId
+     * @return
+     */
+    @Override
+    public BigDecimal selectFirstMerchantHistoryProfitMoneyToHss(long dealerId) {
+        final BigDecimal bigDecimal = this.shallProfitDetailDao.selectFirstMerchantHistoryProfitMoneyToHss(dealerId);
+        if (bigDecimal == null){
+            return new BigDecimal(0);
+        }
+        return bigDecimal;
+    }
+
+    /**
+     * {@inheritDoc}
+     * @param dealerId
+     * @param profitDate
+     * @return
+     */
+    @Override
+    public BigDecimal selectFirstYesterdayDealMoneyToHss(long dealerId, String profitDate) {
+        final BigDecimal bigDecimal = this.shallProfitDetailDao.selectFirstYesterdayDealMoneyToHss(dealerId, profitDate);
         if (bigDecimal == null){
             return new BigDecimal(0);
         }
@@ -678,8 +675,8 @@ public class ShallProfitDetailServiceImpl implements ShallProfitDetailService{
      * {@inheritDoc}
      */
     @Override
-    public ShallProfitDetail selectByOrderId(String orderId) {
-        return this.shallProfitDetailDao.selectByOrderId(orderId);
+    public ShallProfitDetail selectByOrderIdToHss(String orderId) {
+        return this.shallProfitDetailDao.selectByOrderIdToHss(orderId);
     }
 
     /**
@@ -688,8 +685,8 @@ public class ShallProfitDetailServiceImpl implements ShallProfitDetailService{
      * @return
      */
     @Override
-    public BigDecimal selectCompanyCollectProfitByProfitDate(String profitDate) {
-        return this.shallProfitDetailDao.selectCompanyCollectProfitByProfitDate(profitDate);
+    public BigDecimal selectCompanyCollectProfitByProfitDateToHss(String profitDate) {
+        return this.shallProfitDetailDao.selectCompanyCollectProfitByProfitDateToHss(profitDate);
     }
 
     /**
@@ -698,8 +695,8 @@ public class ShallProfitDetailServiceImpl implements ShallProfitDetailService{
      * @return
      */
     @Override
-    public BigDecimal selectCompanyWithdrawProfitByProfitDate(String profitDate) {
-        return this.shallProfitDetailDao.selectCompanyWithdrawProfitByProfitDate(profitDate);
+    public BigDecimal selectCompanyWithdrawProfitByProfitDateToHss(String profitDate) {
+        return this.shallProfitDetailDao.selectCompanyWithdrawProfitByProfitDateToHss(profitDate);
     }
 
     /**
@@ -708,9 +705,9 @@ public class ShallProfitDetailServiceImpl implements ShallProfitDetailService{
      * @return
      */
     @Override
-    public List<ShallProfitDetail> getSecondDealerDeatail(long dailyProfitId) {
+    public List<ShallProfitDetail> getSecondDealerDetailToHss(long dailyProfitId) {
         final DailyProfitDetail dailyProfitDetail = this.dailyProfitDetailService.selectById(dailyProfitId);
-        final List<ShallProfitDetail> list = this.shallProfitDetailDao.selectByProfitDateAndSecondDealerId(
+        final List<ShallProfitDetail> list = this.shallProfitDetailDao.selectByProfitDateAndSecondDealerIdToHss(
                 dailyProfitDetail.getSecondDealerId(), dailyProfitDetail.getStatisticsDate());
         return list;
     }
@@ -721,9 +718,9 @@ public class ShallProfitDetailServiceImpl implements ShallProfitDetailService{
      * @return
      */
     @Override
-    public List<ShallProfitDetail> getFirstDealerDeatail(long dailyProfitId) {
+    public List<ShallProfitDetail> getFirstDealerDetailToHss(long dailyProfitId) {
         final DailyProfitDetail dailyProfitDetail = this.dailyProfitDetailService.selectById(dailyProfitId);
-        final List<ShallProfitDetail> list = this.shallProfitDetailDao.selectByProfitDateAndFirstDealerId(
+        final List<ShallProfitDetail> list = this.shallProfitDetailDao.selectByProfitDateAndFirstDealerIdToHss(
                 dailyProfitDetail.getFirstDealerId(), dailyProfitDetail.getStatisticsDate());
         return list;
     }
@@ -735,8 +732,8 @@ public class ShallProfitDetailServiceImpl implements ShallProfitDetailService{
      * @return
      */
     @Override
-    public List<ShallProfitDetail> selectCompanyByProfitDate(String profitDate) {
-        return this.shallProfitDetailDao.selectCompanyByProfitDate(profitDate);
+    public List<ShallProfitDetail> selectCompanyByProfitDateToHss(String profitDate) {
+        return this.shallProfitDetailDao.selectCompanyByProfitDateToHss(profitDate);
     }
 
     /**
@@ -745,7 +742,7 @@ public class ShallProfitDetailServiceImpl implements ShallProfitDetailService{
      * @return
      */
     @Override
-    public List<Long> getMerchantIdByProfitDate(String statisticsDate) {
-        return this.shallProfitDetailDao.getMerchantIdByProfitDate(statisticsDate);
+    public List<Long> getMerchantIdByProfitDateToHss(String statisticsDate) {
+        return this.shallProfitDetailDao.getMerchantIdByProfitDateToHss(statisticsDate);
     }
 }

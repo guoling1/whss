@@ -62,11 +62,11 @@ public class DailyProfitDetailServiceImpl implements DailyProfitDetailService {
         companyDaily.setFirstDealerName("");
         companyDaily.setStatisticsDate(profitDate);
         //公司收单分润
-        BigDecimal companyCollectMoney = this.companyProfitDetailService.selectCollectProfitByProfitDate(profitDate);
+        BigDecimal companyCollectMoney = this.companyProfitDetailService.selectCollectProfitByProfitDateToHss(profitDate);
         if (companyCollectMoney == null){
             companyCollectMoney = new BigDecimal("0");
         }
-        BigDecimal companyDealerCollectMoney = this.shallProfitDetailService.selectCompanyCollectProfitByProfitDate(profitDate);
+        BigDecimal companyDealerCollectMoney = this.shallProfitDetailService.selectCompanyCollectProfitByProfitDateToHss(profitDate);
         if (companyDealerCollectMoney == null){
             companyDealerCollectMoney = new BigDecimal("0");
         }
@@ -75,7 +75,7 @@ public class DailyProfitDetailServiceImpl implements DailyProfitDetailService {
         if (companyWithdrawMoney == null){
             companyWithdrawMoney = new BigDecimal("0");
         }
-        BigDecimal companyDealerWithdrawMoney = this.shallProfitDetailService.selectCompanyWithdrawProfitByProfitDate(profitDate);
+        BigDecimal companyDealerWithdrawMoney = this.shallProfitDetailService.selectCompanyWithdrawProfitByProfitDateToHss(profitDate);
         if (companyDealerWithdrawMoney == null){
             companyDealerWithdrawMoney = new BigDecimal("0");
         }
@@ -85,7 +85,7 @@ public class DailyProfitDetailServiceImpl implements DailyProfitDetailService {
         this.dailyProfitDetailDao.init(companyDaily);
 
         //查昨日有分润记录的商户
-        final List<Long> merchantIdList = this.shallProfitDetailService.selectMerchantIdByProfitDate(profitDate);
+        final List<Long> merchantIdList = this.shallProfitDetailService.selectMerchantIdByProfitDateToHss(profitDate);
         //遍历,计算每个商户每天的收单分润,体现分润
         for (Long merchantId : merchantIdList){
             final Optional<MerchantInfo> merchantInfoOptional = this.merchantInfoService.selectById(merchantId);
@@ -98,10 +98,10 @@ public class DailyProfitDetailServiceImpl implements DailyProfitDetailService {
             if (dealer.getLevel() == EnumDealerLevel.FIRST.getId()){
                 //收单分润
                 final BigDecimal collectMoney =
-                        this.shallProfitDetailService.selectFirstCollectMoneyByMerchantIdAndProfitDate(merchantId, profitDate);
+                        this.shallProfitDetailService.selectFirstCollectMoneyByMerchantIdAndProfitDateToHss(merchantId, profitDate);
                 //提现分润
                 BigDecimal withdrawMoney =
-                        this.shallProfitDetailService.selectFirstWithdrawMoneyByMerchantIdAndProfitDate(merchantId, profitDate);
+                        this.shallProfitDetailService.selectFirstWithdrawMoneyByMerchantIdAndProfitDateToHss(merchantId, profitDate);
                 if (withdrawMoney == null){
                     withdrawMoney = new BigDecimal(0);
                 }
@@ -149,10 +149,10 @@ public class DailyProfitDetailServiceImpl implements DailyProfitDetailService {
                 final Dealer firstDealer = firstDealerOptional.get();
                 //收单分润
                 final BigDecimal collectMoney =
-                        this.shallProfitDetailService.selectSecondCollectMoneyByMerchantIdAndProfitDate(merchantId, profitDate);
+                        this.shallProfitDetailService.selectSecondCollectMoneyByMerchantIdAndProfitDateToHss(merchantId, profitDate);
                 //提现分润
                 BigDecimal withdrawMoney =
-                        this.shallProfitDetailService.selectSecondWithdrawMoneyByMerchantIdAndProfitDate(merchantId, profitDate);
+                        this.shallProfitDetailService.selectSecondWithdrawMoneyByMerchantIdAndProfitDateToHss(merchantId, profitDate);
                 if (withdrawMoney == null){
                     withdrawMoney = new BigDecimal(0);
                 }
@@ -198,7 +198,7 @@ public class DailyProfitDetailServiceImpl implements DailyProfitDetailService {
         }
         //每个二级代理每天的分润
         //查询昨日二级代理有分润的帐号
-        final List<Long> dealerIdList = this.shallProfitDetailService.selectDealerIdByProfitDate(profitDate);
+        final List<Long> dealerIdList = this.shallProfitDetailService.selectDealerIdByProfitDateToHss(profitDate);
         for (Long dealerId : dealerIdList){
             final Optional<Dealer> dealerOptional = this.dealerService.getById(dealerId);
             Preconditions.checkNotNull(dealerOptional.isPresent(), "代理商信息不存在");
@@ -209,10 +209,10 @@ public class DailyProfitDetailServiceImpl implements DailyProfitDetailService {
             final Dealer firstDealer = firstDealerOptional.get();
             //收单分润
             final BigDecimal collectMoney =
-                    this.shallProfitDetailService.selectFirstCollectMoneyByDealerIdAndProfitDate(secondDealer.getId(), profitDate);
+                    this.shallProfitDetailService.selectFirstCollectMoneyByDealerIdAndProfitDateToHss(secondDealer.getId(), profitDate);
             //提现分润
             final BigDecimal withdrawMoney =
-                    this.shallProfitDetailService.selectFirstWithdrawMoneyByDealerIdAndProfitDate(secondDealer.getId(), profitDate);
+                    this.shallProfitDetailService.selectFirstWithdrawMoneyByDealerIdAndProfitDateToHss(secondDealer.getId(), profitDate);
             //创建该一级代理的每日收益记录
             final DailyProfitDetail firstRecord = this.dailyProfitDetailDao.selectByFirstDealerIdAndTypeAndProfitDate(firstDealer.getId(),EnumShallMoneyType.TOFIRST.getId(),profitDate);
             if (firstRecord == null){
