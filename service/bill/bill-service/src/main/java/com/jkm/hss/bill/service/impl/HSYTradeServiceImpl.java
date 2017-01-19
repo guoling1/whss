@@ -33,6 +33,7 @@ import com.jkm.hss.product.enums.EnumProductType;
 import com.jkm.hsy.user.dao.HsyShopDao;
 import com.jkm.hsy.user.entity.AppBizCard;
 import com.jkm.hsy.user.entity.AppBizShop;
+import com.jkm.hsy.user.entity.AppParam;
 import com.jkm.hsy.user.service.HsyShopService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.Pair;
@@ -79,6 +80,25 @@ public class HSYTradeServiceImpl implements HSYTradeService {
     private SplitAccountRecordService splitAccountRecordService;
     @Autowired
     private ShallProfitDetailService shallProfitDetailService;
+
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param paramData
+     * @param appParam
+     * @return
+     */
+    @Override
+    public String appReceipt(final String paramData, final AppParam appParam) {
+        final JSONObject paramJo = JSONObject.parseObject(paramData);
+        final String totalAmount = paramJo.getString("totalAmount");
+        final int channel = paramJo.getIntValue("channel");
+        final long shopId = paramJo.getLongValue("shopId");
+        final String appId = paramJo.getString("appId");
+        return this.receipt(totalAmount, channel, shopId, appId);
+    }
+
     /**
      * {@inheritDoc}
      *
