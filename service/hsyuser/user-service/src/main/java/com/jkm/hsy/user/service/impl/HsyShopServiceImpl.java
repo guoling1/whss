@@ -291,7 +291,9 @@ public class HsyShopServiceImpl implements HsyShopService {
                 return new java.util.Date(json.getAsJsonPrimitive().getAsLong());
             }
         }).create();
-        return gson.toJson(shopList);
+        Map map=new HashMap();
+        map.put("shopList",shopList);
+        return gson.toJson(map);
     }
 
     /**HSY001012 找到店铺细节*/
@@ -318,7 +320,14 @@ public class HsyShopServiceImpl implements HsyShopService {
         map.put("appBizShop",appBizShop);
         map.put("userList",userList);
         map.put("qrList",qrList);
-        gson = new GsonBuilder().registerTypeAdapter(Date.class, new JsonSerializer<Date>() {
+        gson = new GsonBuilder().setExclusionStrategies(new ExclusionStrategy() {
+            public boolean shouldSkipField(FieldAttributes f) {
+                return f.getName().contains("password");
+            }
+            public boolean shouldSkipClass(Class<?> aClass) {
+                return false;
+            }
+        }).registerTypeAdapter(Date.class, new JsonSerializer<Date>() {
             public JsonElement serialize(Date date, Type typeOfT, JsonSerializationContext context) throws JsonParseException {
                 return new JsonPrimitive(date.getTime());
             }

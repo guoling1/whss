@@ -27,4 +27,6 @@ public interface HsyShopDao {
     public List<AppBizShop> findAppBizShopByID(@Param("id")Long id);
     public List<AppBizShop> findAppBizShopByAccountID(@Param("accountID")Long accountID);
     public String findShopNameByID(@Param("id")Long id);
+    public List<AppBizShop> findAppBizShopByAccountIDList(List<Long> accountIDList);
+    public List<AppBizShop> findPrimaryAppBizShopByAccountID(@Param("accountID")Long accountID);
 }
