@@ -57,7 +57,7 @@
     </select>
 
     <select id="findPrimaryAppBizShopByUserID" parameterType="com.jkm.hsy.user.entity.AppBizShop" resultType="com.jkm.hsy.user.entity.AppBizShop">
-        select
+        select distinct
           shop.ID,shop.GLOBALID,shop.NAME,shop.SHORTNAME,shop.INDUSTRYCODE,shop.DISTRICTCODE,shop.ADDRESS,shop.LICENCEID,shop.STOREFRONTID,shop.COUNTERID,shop.INDOORID,shop.PARENTID,shop.CONTACTNAME,shop.CONTACTCELLPHONE,shop.STATUS,shop.ISPUBLIC,shop.accountID,shop.CREATETIME,shop.UPDATETIME,
         (select PATH from app_cm_file acf where uuid=shop.LICENCEID) LICENCEURL,
         (select PATH from app_cm_file where uuid=shop.STOREFRONTID) STOREFRONTURL,
@@ -206,6 +206,24 @@
           shop.SHORTNAME
         from app_biz_shop shop
         where shop.ID=#{id}
+    </select>
+
+    <select id="findCorporateUserByShopIDList" resultType="com.jkm.hsy.user.entity.AppAuUser">
+        select
+        user.ID,user.globalID,user.CELLPHONE,user.PASSWORD,user.NICKNAME,user.REALNAME,user.STATUS,
+        user.AUSTEP,user.IDCARD,user.IDCARDF,user.IDCARDB,user.IDCARDH,user.CREATETIME,user.UPDATETIME,
+        user.DEALERID DEALERID,user.PRODUCTID PRODUCTID,user.WEIXINRATE WEIXINRATE,user.ALIPAYRATE ALIPAYRATE,user.FASTRATE FASTRATE,
+        sur.ROLE ROLE,
+        (case when sur.ROLE=1 then '法人'
+        when sur.ROLE=2 then '店长'
+        when sur.ROLE=3 then '店员'
+        when sur.ROLE=4 then '财务' else '' end) ROLENAME
+        from app_au_user user left join app_biz_shop_user_role sur on user.ID=sur.UID
+        where sur.sid=-1
+        <foreach collection="list" item="sid" open="" separator="" close="">
+            or sur.sid=#{sid}
+        </foreach>
+        order by sur.ROLE,user.UPDATETIME desc
     </select>
 
 </mapper>
