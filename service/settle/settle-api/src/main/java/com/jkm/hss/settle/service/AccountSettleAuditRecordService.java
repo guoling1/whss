@@ -3,6 +3,7 @@ package com.jkm.hss.settle.service;
 import com.google.common.base.Optional;
 import com.jkm.hss.account.entity.SettleAccountFlow;
 import com.jkm.hss.settle.entity.AccountSettleAuditRecord;
+import com.jkm.hsy.user.entity.AppParam;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.List;
@@ -59,6 +60,15 @@ public interface AccountSettleAuditRecordService {
      * @param recordIds
      */
     List<AccountSettleAuditRecord> getByIds(List<Long> recordIds);
+
+    /**
+     * app结算审核记录列表
+     *
+     * @param dataParam
+     * @param appParam
+     * @return
+     */
+    String appSettleRecordList(String dataParam, AppParam appParam);
 
     /**
      * 处理 T1 结算审核, 生成记录

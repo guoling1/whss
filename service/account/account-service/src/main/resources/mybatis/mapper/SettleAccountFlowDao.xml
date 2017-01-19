@@ -30,7 +30,7 @@
         #{outAmount},
         #{incomeAmount},
         #{appId},
-        #{tradeDate}
+        #{tradeDate},
         #{changeTime},
         #{type},
         #{remark},

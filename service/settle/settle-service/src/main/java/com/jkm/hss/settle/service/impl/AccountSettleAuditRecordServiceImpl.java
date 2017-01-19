@@ -1,5 +1,6 @@
 package com.jkm.hss.settle.service.impl;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
@@ -24,6 +25,7 @@ import com.jkm.hss.settle.dao.AccountSettleAuditRecordDao;
 import com.jkm.hss.settle.entity.AccountSettleAuditRecord;
 import com.jkm.hss.settle.enums.EnumSettleStatus;
 import com.jkm.hss.settle.service.AccountSettleAuditRecordService;
+import com.jkm.hsy.user.entity.AppParam;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.tuple.Pair;
@@ -39,7 +41,7 @@ import java.util.*;
  * Created by yulong.zhang on 2017/1/12.
  */
 @Slf4j
-@Service
+@Service(value = "accountSettleAuditRecordService")
 public class AccountSettleAuditRecordServiceImpl implements AccountSettleAuditRecordService {
 
     @Autowired
@@ -122,6 +124,32 @@ public class AccountSettleAuditRecordServiceImpl implements AccountSettleAuditRe
             return Collections.emptyList();
         }
         return this.accountSettleAuditRecordDao.selectByIds(recordIds);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param dataParam
+     * @param appParam
+     * @return
+     */
+    @Override
+    public String appSettleRecordList(final String dataParam, final AppParam appParam) {
+        final JSONObject paramJo = JSONObject.parseObject(dataParam);
+        final JSONArray result = new JSONArray();
+        final long accountId = paramJo.getLongValue("accountId");
+        final List<AccountSettleAuditRecord> records = this.accountSettleAuditRecordDao.selectByAccountId(accountId);
+        if (CollectionUtils.isEmpty(records)) {
+            for (AccountSettleAuditRecord record : records) {
+                final JSONObject jo = new JSONObject();
+                result.add(jo);
+                jo.put("recordId", record.getId());
+                jo.put("settleDate", record.getSettleDate());
+                jo.put("number", record.getTradeNumber());
+                jo.put("settleAmount", record.getSettleAmount());
+            }
+        }
+        return result.toJSONString();
     }
 
     /**
@@ -448,6 +476,7 @@ public class AccountSettleAuditRecordServiceImpl implements AccountSettleAuditRe
             totalAmount = totalAmount.add(settleAccountFlow.getIncomeAmount());
             orderNos.add(settleAccountFlow.getOrderNo());
         }
+        accountSettleAuditRecord.setSettleDate(new Date());
         accountSettleAuditRecord.setSettleAmount(totalAmount);
         accountSettleAuditRecord.setSettleStatus(EnumSettleStatus.DUE_SETTLE.getId());
         this.add(accountSettleAuditRecord);

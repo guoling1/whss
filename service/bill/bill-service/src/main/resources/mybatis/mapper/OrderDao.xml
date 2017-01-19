@@ -54,7 +54,7 @@
         #{goodsDescribe},
         #{settleStatus},
         #{settleTime},
-        #{serviceType},
+        #{settleType},
         #{successSettleTime},
         #{payChannelSign},
         #{remark},

@@ -61,4 +61,12 @@ public interface AccountSettleAuditRecordDao {
      * @return
      */
     List<AccountSettleAuditRecord> selectByIds(@Param("recordIds") List<Long> recordIds);
+
+    /**
+     * 按accountId查询
+     *
+     * @param accountId
+     * @return
+     */
+    List<AccountSettleAuditRecord> selectByAccountId(@Param("accountId") long accountId);
 }

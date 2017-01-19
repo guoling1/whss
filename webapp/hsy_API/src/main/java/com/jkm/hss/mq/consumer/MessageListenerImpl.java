@@ -14,6 +14,7 @@ import com.jkm.hss.mq.config.MqConfig;
 import com.jkm.hss.settle.service.AccountSettleAuditRecordService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 /**
  * Created by yulong.zhang on 2016/11/18.
@@ -24,6 +25,7 @@ public class MessageListenerImpl implements MessageListener {
     @Autowired
     private OrderService orderService;
     @Autowired
+    @Qualifier("accountSettleAuditRecordService")
     private AccountSettleAuditRecordService accountSettleAuditRecordService;
     /**
      * 消费消息
