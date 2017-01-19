@@ -33,8 +33,8 @@ public class CompanyProfitDetailServiceImpl implements CompanyProfitDetailServic
      * @return
      */
     @Override
-    public BigDecimal selectCollectProfitByProfitDate(String profitDate) {
-        return this.companyProfitDetailDao.selectCollectProfitByProfitDate(profitDate);
+    public BigDecimal selectCollectProfitByProfitDateToHss(String profitDate) {
+        return this.companyProfitDetailDao.selectCollectProfitByProfitDateToHss(profitDate);
     }
 
     /**
@@ -44,7 +44,7 @@ public class CompanyProfitDetailServiceImpl implements CompanyProfitDetailServic
      */
     @Override
     public BigDecimal selectWithdrawProfitByProfitDate(String profitDate) {
-        return this.companyProfitDetailDao.selectWithdrawProfitByProfitDate(profitDate);
+        return this.companyProfitDetailDao.selectWithdrawProfitByProfitDateToHss(profitDate);
     }
 
 
@@ -54,8 +54,8 @@ public class CompanyProfitDetailServiceImpl implements CompanyProfitDetailServic
      * @return
      */
     @Override
-    public List<CompanyProfitDetail> selectByProfitDate(String profitDate) {
-        return this.companyProfitDetailDao.selectByProfitDate(profitDate);
+    public List<CompanyProfitDetail> selectByProfitDateToHss(String profitDate) {
+        return this.companyProfitDetailDao.selectByProfitDateToHss(profitDate);
     }
 
     /**
@@ -64,7 +64,7 @@ public class CompanyProfitDetailServiceImpl implements CompanyProfitDetailServic
      * @return
      */
     @Override
-    public List<Long> getMerchantIdByProfitDate(String profitDate) {
-        return this.companyProfitDetailDao.getMerchantIdByProfitDate(profitDate);
+    public List<Long> getMerchantIdByProfitDateToHss(String profitDate) {
+        return this.companyProfitDetailDao.getMerchantIdByProfitDateToHss(profitDate);
     }
 }

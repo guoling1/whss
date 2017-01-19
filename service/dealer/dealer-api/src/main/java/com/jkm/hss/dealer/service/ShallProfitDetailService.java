@@ -45,14 +45,14 @@ public interface ShallProfitDetailService {
      * @param profitDate
      * @return
      */
-    List<ShallProfitDetail> selectDeatailByProfitDate(String profitDate);
+    List<ShallProfitDetail> selectDeatailByProfitDateToHss(String profitDate);
 
     /**
      * 查询昨日有分润记录的商户id
      * @param profitDate
      * @return
      */
-    List<Long> selectMerchantIdByProfitDate(String profitDate);
+    List<Long> selectMerchantIdByProfitDateToHss(String profitDate);
 
     /**
      * 查询某个商户某天的收单分润
@@ -60,7 +60,7 @@ public interface ShallProfitDetailService {
      * @param profitDate
      * @return
      */
-    BigDecimal selectSecondCollectMoneyByMerchantIdAndProfitDate(Long merchantId, String profitDate);
+    BigDecimal selectSecondCollectMoneyByMerchantIdAndProfitDateToHss(Long merchantId, String profitDate);
 
     /**
      * 查询某个商户某天的收单分润
@@ -68,7 +68,7 @@ public interface ShallProfitDetailService {
      * @param profitDate
      * @return
      */
-    BigDecimal selectFirstCollectMoneyByMerchantIdAndProfitDate(Long merchantId, String profitDate);
+    BigDecimal selectFirstCollectMoneyByMerchantIdAndProfitDateToHss(Long merchantId, String profitDate);
 
     /**
      * 查询某个商户一级提现分润
@@ -76,7 +76,7 @@ public interface ShallProfitDetailService {
      * @param profitDate
      * @return
      */
-    BigDecimal selectFirstWithdrawMoneyByMerchantIdAndProfitDate(Long merchantId, String profitDate);
+    BigDecimal selectFirstWithdrawMoneyByMerchantIdAndProfitDateToHss(Long merchantId, String profitDate);
 
     /**
      * 查询某个商户二级提现分润
@@ -84,14 +84,14 @@ public interface ShallProfitDetailService {
      * @param profitDate
      * @return
      */
-    BigDecimal selectSecondWithdrawMoneyByMerchantIdAndProfitDate(Long merchantId, String profitDate);
+    BigDecimal selectSecondWithdrawMoneyByMerchantIdAndProfitDateToHss(Long merchantId, String profitDate);
 
     /**
      *查询二级代理商id
      * @param profitDate
      * @return
      */
-    List<Long> selectDealerIdByProfitDate(String profitDate);
+    List<Long> selectDealerIdByProfitDateToHss(String profitDate);
 
     /**
      *
@@ -100,7 +100,7 @@ public interface ShallProfitDetailService {
      * @param profitDate
      * @return
      */
-    BigDecimal selectFirstCollectMoneyByDealerIdAndProfitDate(long dealerId, String profitDate);
+    BigDecimal selectFirstCollectMoneyByDealerIdAndProfitDateToHss(long dealerId, String profitDate);
 
     /**
      *
@@ -109,7 +109,7 @@ public interface ShallProfitDetailService {
      * @param profitDate
      * @return
      */
-    BigDecimal selectFirstWithdrawMoneyByDealerIdAndProfitDate(long dealerId, String profitDate);
+    BigDecimal selectFirstWithdrawMoneyByDealerIdAndProfitDateToHss(long dealerId, String profitDate);
 
     /**
      * 查询二级昨日分润总额
@@ -117,7 +117,7 @@ public interface ShallProfitDetailService {
      * @param profitDate
      * @return
      */
-    BigDecimal selectSecondYesterdayProfitMoney(long dealerId, String profitDate);
+    BigDecimal selectSecondYesterdayProfitMoneyToHss(long dealerId, String profitDate);
 
     /**
      * 查询二级昨日店铺交易总额
@@ -126,15 +126,15 @@ public interface ShallProfitDetailService {
      * @param profitDate
      * @return
      */
-    BigDecimal selectSecondYesterdayDealMoney(long dealerId, String profitDate);
+    BigDecimal selectSecondYesterdayDealMoneyToHss(long dealerId, String profitDate);
 
     /**
      * 查询二级历史分润总额
-     * @param dealerId
      * @param
+     * @param dealerId
      * @return
      */
-    BigDecimal selectSecondHistoryProfitMoney(long dealerId);
+    BigDecimal selectSecondHistoryProfitMoneyToHss(long dealerId);
 
     /**
      * 我的分润-二级代理 昨日分润金额
@@ -142,7 +142,7 @@ public interface ShallProfitDetailService {
      * @param profitDate
      * @return
      */
-    BigDecimal selectFirstSecondYesterdayProfitMoney(long dealerId, String profitDate);
+    BigDecimal selectFirstSecondYesterdayProfitMoneyToHss(long dealerId, String profitDate);
 
     /**
      * 我的分润-二级代理 历史分润总额
@@ -150,7 +150,7 @@ public interface ShallProfitDetailService {
      * @param dealerId
      * @return
      */
-    BigDecimal selectFirstSecondHistoryProfitMoney(long dealerId);
+    BigDecimal selectFirstSecondHistoryProfitMoneyToHss(long dealerId);
 
     /**
      * 我的分润-直管店铺 昨日分润金额
@@ -159,7 +159,7 @@ public interface ShallProfitDetailService {
      * @param profitDate
      * @return
      */
-    BigDecimal selectFirstMerchantYesterdayProfitMoney(long dealerId, String profitDate);
+    BigDecimal selectFirstMerchantYesterdayProfitMoneyToHss(long dealerId, String profitDate);
 
     /**
      * 我的分润-直管店铺 历史分润总额
@@ -167,7 +167,7 @@ public interface ShallProfitDetailService {
      * @param dealerId
      * @return
      */
-    BigDecimal selectFirstMerchantHistoryProfitMoney(long dealerId);
+    BigDecimal selectFirstMerchantHistoryProfitMoneyToHss(long dealerId);
 
     /**
      * 昨日店铺交易总额(一级)
@@ -176,54 +176,54 @@ public interface ShallProfitDetailService {
      * @param profitDate
      * @return
      */
-    BigDecimal selectFirstYesterdayDealMoney(long dealerId, String profitDate);
+    BigDecimal selectFirstYesterdayDealMoneyToHss(long dealerId, String profitDate);
 
     /**
      * 查询
      * @param orderId
      * @return
      */
-    ShallProfitDetail selectByOrderId(String orderId);
+    ShallProfitDetail selectByOrderIdToHss(String orderId);
 
     /**
      * 查询公司收单分润
      * @param profitDate
      * @return
      */
-    BigDecimal selectCompanyCollectProfitByProfitDate(String profitDate);
+    BigDecimal selectCompanyCollectProfitByProfitDateToHss(String profitDate);
 
     /**
      * 查询公司体现分润
      * @param profitDate
      * @return
      */
-    BigDecimal selectCompanyWithdrawProfitByProfitDate(String profitDate);
+    BigDecimal selectCompanyWithdrawProfitByProfitDateToHss(String profitDate);
 
     /**
      * 查询二级代理每日分润明细
      * @param dailyProfitId
      * @return
      */
-    List<ShallProfitDetail> getSecondDealerDeatail(long dailyProfitId);
+    List<ShallProfitDetail> getSecondDealerDetailToHss(long dailyProfitId);
 
     /**
      * 查询一级代理每日分润明细
      * @param dailyProfitId
      * @return
      */
-    List<ShallProfitDetail> getFirstDealerDeatail(long dailyProfitId);
+    List<ShallProfitDetail> getFirstDealerDetailToHss(long dailyProfitId);
 
     /**
      * 查询
      * @param profitDate
      * @return
      */
-    List<ShallProfitDetail> selectCompanyByProfitDate(String profitDate);
+    List<ShallProfitDetail> selectCompanyByProfitDateToHss(String profitDate);
 
     /**
      * 查询
      * @param statisticsDate
      * @return
      */
-    List<Long> getMerchantIdByProfitDate(String statisticsDate);
+    List<Long> getMerchantIdByProfitDateToHss(String statisticsDate);
 }

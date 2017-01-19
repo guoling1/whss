@@ -241,7 +241,7 @@ public class DealerServiceImpl implements DealerService {
     private Map<String,Triple<Long,BigDecimal,BigDecimal>> getShallProfitDirectToHsy(String orderNo, BigDecimal tradeAmount, int channelSign, long merchantId) {
 
         log.info("交易单号[" + orderNo + "]请求就行收单分润，分润金额：" + tradeAmount);
-        final ShallProfitDetail detail = this.shallProfitDetailService.selectByOrderId(orderNo);
+        final ShallProfitDetail detail = this.shallProfitDetailService.selectByOrderIdToHss(orderNo);
         if (detail != null){
             log.error("此订单分润业务已经处理过[" + orderNo +"]");
             return null;
@@ -842,7 +842,7 @@ public class DealerServiceImpl implements DealerService {
     //直属商户分润
     private Map<String,Triple<Long,BigDecimal,BigDecimal>> getShallProfitDirect(String orderNo, BigDecimal tradeAmount, int channelSign, long merchantId) {
         log.info("交易单号[" + orderNo + "]请求就行收单分润，分润金额：" + tradeAmount);
-        final ShallProfitDetail detail = this.shallProfitDetailService.selectByOrderId(orderNo);
+        final ShallProfitDetail detail = this.shallProfitDetailService.selectByOrderIdToHss(orderNo);
         if (detail != null){
             log.error("此订单分润业务已经处理过[" + orderNo +"]");
             return null;

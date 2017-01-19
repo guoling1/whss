@@ -5,6 +5,7 @@
     <insert id="add" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO tb_company_profit_detail
         (merchant_id,
+        product_type,
         payment_sn,
         channel_type,
         total_fee,
@@ -18,6 +19,7 @@
         status
         )VALUES(
         #{merchantId},
+        #{productType},
         #{paymentSn},
         #{channelType},
         #{totalFee},
@@ -31,16 +33,16 @@
         #{status}
         )
     </insert>
-    <select id="selectCollectProfitByProfitDate" resultType="java.math.BigDecimal">
-        SELECT sum(product_shall_amount + channel_shall_amount) FROM tb_company_profit_detail WHERE profit_type = 1 AND profit_date = #{profitDate}
+    <select id="selectCollectProfitByProfitDateToHss" resultType="java.math.BigDecimal">
+        SELECT sum(product_shall_amount + channel_shall_amount) FROM tb_company_profit_detail WHERE product_type = 'hss' AND profit_type = 1 AND profit_date = #{profitDate}
     </select>
-    <select id="selectWithdrawProfitByProfitDate" resultType="java.math.BigDecimal">
-        SELECT sum(product_shall_amount + channel_shall_amount) FROM tb_company_profit_detail WHERE profit_type = 2 AND profit_date = #{profitDate}
+    <select id="selectWithdrawProfitByProfitDateToHss" resultType="java.math.BigDecimal">
+        SELECT sum(product_shall_amount + channel_shall_amount) FROM tb_company_profit_detail WHERE product_type = 'hss' AND profit_type = 2 AND profit_date = #{profitDate}
     </select>
-    <select id="selectByProfitDate" resultType="com.jkm.hss.dealer.entity.CompanyProfitDetail">
-        SELECT * FROM tb_company_profit_detail WHERE profit_date = #{profitDate}
+    <select id="selectByProfitDateToHss" resultType="com.jkm.hss.dealer.entity.CompanyProfitDetail">
+        SELECT * FROM tb_company_profit_detail WHERE product_type = 'hss' AND profit_date = #{profitDate}
     </select>
-    <select id="getMerchantIdByProfitDate" resultType="java.lang.Long">
-        SELECT distinct(merchant_id) FROM tb_company_profit_detail WHERE profit_date = #{profitDate}
+    <select id="getMerchantIdByProfitDateToHss" resultType="java.lang.Long">
+        SELECT distinct(merchant_id) FROM tb_company_profit_detail WHERE product_type = 'hss' AND profit_date = #{profitDate}
     </select>
 </mapper>
