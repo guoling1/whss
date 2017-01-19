@@ -84,8 +84,8 @@ public class ProfitController extends BaseController {
                 }
                 final List<ProfitDetailResponse> list = new ArrayList<>();
                 //公司直属商户收益 ,
-                final List<CompanyProfitDetail> companyList = this.companyProfitDetailService.selectByProfitDate(dailyProfitDetail.getStatisticsDate());
-                final List<Long> merchantIdList = this.companyProfitDetailService.getMerchantIdByProfitDate(dailyProfitDetail.getStatisticsDate());
+                final List<CompanyProfitDetail> companyList = this.companyProfitDetailService.selectByProfitDateToHss(dailyProfitDetail.getStatisticsDate());
+                final List<Long> merchantIdList = this.companyProfitDetailService.getMerchantIdByProfitDateToHss(dailyProfitDetail.getStatisticsDate());
                 final List<MerchantInfo> merchantInfoList = this.merchantInfoService.batchGetMerchantInfo(merchantIdList);
                 final Map<Long, MerchantInfo> map = Maps.uniqueIndex(merchantInfoList, new Function<MerchantInfo, Long>() {
                     @Override
@@ -109,8 +109,8 @@ public class ProfitController extends BaseController {
 
 
                 //代理商给公司收益
-                final List<ShallProfitDetail> dealerList = this.shallProfitDetailService.selectCompanyByProfitDate(dailyProfitDetail.getStatisticsDate());
-                final List<Long> merchantIdListOther = this.shallProfitDetailService.getMerchantIdByProfitDate(dailyProfitDetail.getStatisticsDate());
+                final List<ShallProfitDetail> dealerList = this.shallProfitDetailService.selectCompanyByProfitDateToHss(dailyProfitDetail.getStatisticsDate());
+                final List<Long> merchantIdListOther = this.shallProfitDetailService.getMerchantIdByProfitDateToHss(dailyProfitDetail.getStatisticsDate());
                 final List<MerchantInfo> merchantInfoOtherList = this.merchantInfoService.batchGetMerchantInfo(merchantIdListOther);
                 final Map<Long, MerchantInfo> mapOther = Maps.uniqueIndex(merchantInfoOtherList, new Function<MerchantInfo, Long>() {
                     @Override
@@ -167,7 +167,7 @@ public class ProfitController extends BaseController {
     public CommonResponse getFirstDealerDeatail(@RequestBody final DealerProfitQueryParam pageQueryParam){
 
         try{
-            final List<ShallProfitDetail> list = this.shallProfitDetailService.getFirstDealerDeatail(pageQueryParam.getDailyProfitId());
+            final List<ShallProfitDetail> list = this.shallProfitDetailService.getFirstDealerDetailToHss(pageQueryParam.getDailyProfitId());
 
             final List<Long> merchantIdList = Lists.transform(list, new Function<ShallProfitDetail, Long>() {
                 @Override
@@ -237,7 +237,7 @@ public class ProfitController extends BaseController {
     public CommonResponse getSecondDealerDeatail(@RequestBody final DealerProfitQueryParam pageQueryParam){
 
         try{
-            final List<ShallProfitDetail> list = this.shallProfitDetailService.getSecondDealerDeatail(pageQueryParam.getDailyProfitId());
+            final List<ShallProfitDetail> list = this.shallProfitDetailService.getSecondDealerDetailToHss(pageQueryParam.getDailyProfitId());
             final List<Long> merchantIdList = Lists.transform(list, new Function<ShallProfitDetail, Long>() {
                 @Override
                 public Long apply(ShallProfitDetail input) {

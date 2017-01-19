@@ -24,14 +24,14 @@ public interface CompanyProfitDetailDao {
      * @param profitDate
      * @return
      */
-    BigDecimal selectCollectProfitByProfitDate(String profitDate);
+    BigDecimal selectCollectProfitByProfitDateToHss(String profitDate);
 
     /**
      * 查询
      * @param profitDate
      * @return
      */
-    BigDecimal selectWithdrawProfitByProfitDate(String profitDate);
+    BigDecimal selectWithdrawProfitByProfitDateToHss(String profitDate);
 
 
     /**
@@ -39,12 +39,12 @@ public interface CompanyProfitDetailDao {
      * @param profitDate
      * @return
      */
-    List<CompanyProfitDetail> selectByProfitDate(String profitDate);
+    List<CompanyProfitDetail> selectByProfitDateToHss(String profitDate);
 
     /**
      * 查询
      * @param profitDate
      * @return
      */
-    List<Long> getMerchantIdByProfitDate(String profitDate);
+    List<Long> getMerchantIdByProfitDateToHss(String profitDate);
 }
