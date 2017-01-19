@@ -21,6 +21,7 @@ import java.util.*;
  * Created by Allen on 2017/1/7.
  */
 public class ActiveControllerTester {
+//    public static String url="http://192.168.1.99:8080/hsy/active/rest";
     public static String url="http://localhost:8080/hsy/active/rest";
 
     @Test
@@ -31,7 +32,8 @@ public class ActiveControllerTester {
         p.setAppType("android");
         p.setTimeStamp(AppDateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
         p.setV("v1.0");
-        String param="{\"cellphone\": \"13521691435\",\"password\":\"123456\",\"code\":\"272683\",\"shopName\":\"店铺名称\",\"industryCode\":\"1000\"}";
+        String param="{\"cellphone\": \"18640426296\",\"password\":\"123456\",\"code\":\"123456\",\"shopName\":\"张玉龙专用测试店铺名称\",\"industryCode\":\"1000\"}";
+//        String param="{\"cellphone\": \"13521691435\",\"password\":\"123456\",\"code\":\"272683\",\"shopName\":\"店铺名称\",\"industryCode\":\"1000\"}";
         p.setRequestData(param);
         ActiveControllerTester.testRest(p);
     }
@@ -110,7 +112,8 @@ public class ActiveControllerTester {
         p.setAppType("android");
         p.setTimeStamp(AppDateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
         p.setV("v1.0");
-        String param="{\"cardNO\":\"4033930019071753\",\"cardBank\":\"1000000\",\"cardAccountName\":\"开户名\",\"sid\":5,\"bankAddress\":\"开户行支行\"}";
+        String param="{\"cardNO\":\"6214830107011438\",\"cardBank\":\"招商银行\",\"cardAccountName\":\"张玉龙\",\"sid\":22,\"bankAddress\":\"招商银行北新桥分行\"}";
+//        String param="{\"cardNO\":\"4033930019071753\",\"cardBank\":\"1000000\",\"cardAccountName\":\"开户名\",\"sid\":5,\"bankAddress\":\"开户行支行\"}";
         p.setRequestData(param);
         ActiveControllerTester.testRest(p);
     }

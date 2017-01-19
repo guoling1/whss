@@ -179,6 +179,28 @@
         where ACCOUNTID=#{accountID}
     </select>
 
+    <select id="findAppBizShopByAccountIDList" resultType="com.jkm.hsy.user.entity.AppBizShop">
+        select
+        ID,GLOBALID,NAME,SHORTNAME,INDUSTRYCODE,DISTRICTCODE,ADDRESS,LICENCEID,STOREFRONTID,COUNTERID,INDOORID,PARENTID,CONTACTNAME,CONTACTCELLPHONE,STATUS,ISPUBLIC,ACCOUNTID,CREATETIME,UPDATETIME
+        from app_biz_shop
+        where ACCOUNTID=-1
+        <foreach collection="list" item="account" open="" separator="" close="">
+            or ACCOUNTID = #{account}
+        </foreach>
+    </select>
+
+    <select id="findPrimaryAppBizShopByAccountID" parameterType="java.lang.Long" resultType="com.jkm.hsy.user.entity.AppBizShop">
+        select distinct
+        shop.ID,shop.GLOBALID,shop.NAME,shop.SHORTNAME,shop.INDUSTRYCODE,shop.DISTRICTCODE,shop.ADDRESS,shop.LICENCEID,shop.STOREFRONTID,shop.COUNTERID,shop.INDOORID,shop.PARENTID,shop.CONTACTNAME,shop.CONTACTCELLPHONE,shop.STATUS,shop.ISPUBLIC,shop.accountID,shop.CREATETIME,shop.UPDATETIME,
+        (select PATH from app_cm_file acf where uuid=shop.LICENCEID) LICENCEURL,
+        (select PATH from app_cm_file where uuid=shop.STOREFRONTID) STOREFRONTURL,
+        (select PATH from app_cm_file where uuid=shop.COUNTERID) COUNTERURL,
+        (select PATH from app_cm_file where uuid=shop.INDOORID) INDOORURL
+        from app_biz_shop shop left join app_biz_shop_user_role sur on shop.ID=sur.SID
+        where 1=1 and sur.TYPE=1 and shop.ACCOUNTID=#{accountID}
+        order by shop.UPDATETIME desc
+    </select>
+
     <select id="findShopNameByID" parameterType="java.lang.Long" resultType="java.lang.String">
         select
           shop.SHORTNAME
