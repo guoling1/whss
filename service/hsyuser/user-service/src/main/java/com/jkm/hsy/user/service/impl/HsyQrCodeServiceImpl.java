@@ -107,8 +107,5 @@ public class HsyQrCodeServiceImpl implements HsyQrCodeService{
         saveAppAuUser.setFastRate(decimalTriple.getRight());
         hsyUserDao.updateByID(saveAppAuUser);
         return "";
-
     }
-
-
 }
