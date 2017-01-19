@@ -5,6 +5,8 @@ import com.jkm.hss.account.entity.SettleAccountFlow;
 import com.jkm.hss.account.enums.EnumAccountFlowType;
 
 import java.math.BigDecimal;
+import java.util.Date;
+import java.util.List;
 
 /**
  * Created by yulong.zhang on 2016/12/22.
@@ -17,6 +19,15 @@ public interface SettleAccountFlowService {
      * @param accountFlow
      */
     void add(SettleAccountFlow accountFlow);
+
+    /**
+     * 保存结算审核记录
+     *
+     * @param orderNos
+     * @param settleAuditRecordId
+     * @return
+     */
+    int updateSettleAuditRecordIdByOrderNos(List<String> orderNos, long settleAuditRecordId);
 
     /**
      * 按id查询
@@ -45,5 +56,32 @@ public interface SettleAccountFlowService {
      * @param remark  备注
      * @param type 变更方向
      */
-    void addSettleAccountFlow(long accountId, String orderNo, BigDecimal changeAmount, String remark, EnumAccountFlowType type);
+    void addSettleAccountFlow(long accountId, String orderNo, BigDecimal changeAmount, String remark, EnumAccountFlowType type,
+            String appId, Date tradeDate, int accountUserType);
+
+    /**
+     * 查询上一个工作日的结算流水（未结算）
+     *
+     * 如果今日是周一查询的是（周五至周日）的；
+     *
+     * @param tradeDateList
+     * @return
+     */
+    List<SettleAccountFlow> getMerchantLastWordDayRecord(List<Date> tradeDateList);
+
+    /**
+     * 按审核记录id查询
+     *
+     * @param recordId
+     * @return
+     */
+    List<SettleAccountFlow> getByAuditRecordId(long recordId);
+
+    /**按交易订单号查询代理商和公司(等)的分润流水
+     *
+     *
+     * @param orderNo
+     * @return
+     */
+    List<SettleAccountFlow> getDealerOrCompanyFlowByOrderNo(String orderNo);
 }

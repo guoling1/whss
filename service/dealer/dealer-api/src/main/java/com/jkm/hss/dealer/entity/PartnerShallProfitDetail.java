@@ -17,13 +17,19 @@ import java.math.BigDecimal;
 public class PartnerShallProfitDetail extends BaseEntity{
 
     /**
-     * 商户id
+     * 商户id / 店铺id
      */
     private long merchantId;
     /**
-     *
+     * 商户名称
      */
     private String merchantName;
+    /**
+     * 产品类型 ， hss hsy
+     * {@link com.jkm.hss.product.enums.EnumProductType}
+     */
+    private int productType;
+
     /**
      * 商户交易流水号
      */

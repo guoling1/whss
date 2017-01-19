@@ -48,7 +48,7 @@
               <td>—</td>
               <th style="text-align: right">付款人账户:</th>
               <td>—</td>
-              <th style="text-align: right">交易订单号:</th>
+              <th style="text-align: right">订单号:</th>
               <td>{{record.orderNo}}</td>
             </tr>
             <tr>
@@ -56,16 +56,16 @@
               <td>{{record.tradeAmount}}</td>
               <th style="text-align: right">手续费率:</th>
               <td>{{record.payRate}}</td>
-              <th style="text-align: right">手续费:</th>
-              <td>{{record.poundage}}</td>
+              <th style="text-align: right">交易流水号</th>
+              <td>{{record.sn}}</td>
             </tr>
             <tr>
               <th style="text-align: right">通道名称:</th>
               <td>{{record.payChannelSign|changePayChannel}}</td>
               <th style="text-align: right">通道费:</th>
               <td>—</td>
-              <th style="text-align: right"></th>
-              <td></td>
+              <th style="text-align: right">手续费:</th>
+              <td>{{record.poundage}}</td>
             </tr>
             <tr>
               <th style="text-align: right">支付方式:</th>

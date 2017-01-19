@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jkm.hsy.user.dao.HsyMerchantAuditDao">
+    <select id="getMerchant" resultType="com.jkm.hsy.user.entity.AppCmFile">
+        SELECT * FROM app_biz_shop
+    </select>
+
+    <select id="getDetails" resultType="com.jkm.hsy.user.entity.AppCmFile">
+        SELECT * FROM app_biz_shop
+    </select>
+</mapper>

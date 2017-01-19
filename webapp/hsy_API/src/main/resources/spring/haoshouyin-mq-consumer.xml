@@ -17,7 +17,7 @@
                     <key>
                         <bean class="com.aliyun.openservices.ons.api.bean.Subscription">
                             <property name="topic" value="${mq.topic}"/>
-                            <property name="expression" value="*"/><!-- MessageType名: 多个messageType 用 “||”分割 -->
+                            <property name="expression" value="normal_settle||poundage_settle||update_order_settle_status"/><!--MessageType名: 多个messageType 用 “||”分割-->
                         </bean>
                     </key>
                 </entry>
@@ -26,6 +26,5 @@
         </property>
     </bean>
 
-    <!-- 消息处理器 -->
     <bean id="messageListener" class="com.jkm.hss.mq.consumer.MessageListenerImpl"/>
 </beans>

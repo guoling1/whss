@@ -4,10 +4,15 @@ import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.jkm.base.common.entity.ExcelSheetVO;
 import com.jkm.base.common.entity.PageModel;
+import com.jkm.base.common.util.DateTimeUtil;
 import com.jkm.base.common.util.ExcelUtil;
 import com.jkm.base.common.util.SnGenerator;
 import com.jkm.hss.account.entity.Account;
+import com.jkm.hss.account.entity.FrozenRecord;
+import com.jkm.hss.account.enums.EnumAccountFlowType;
+import com.jkm.hss.account.sevice.AccountFlowService;
 import com.jkm.hss.account.sevice.AccountService;
+import com.jkm.hss.account.sevice.FrozenRecordService;
 import com.jkm.hss.bill.dao.OrderDao;
 import com.jkm.hss.bill.entity.MerchantTradeResponse;
 import com.jkm.hss.bill.entity.Order;
@@ -21,7 +26,10 @@ import com.jkm.hss.merchant.entity.MerchantInfo;
 import com.jkm.hss.merchant.helper.MerchantSupport;
 import com.jkm.hss.merchant.helper.request.OrderTradeRequest;
 import com.jkm.hss.merchant.service.MerchantInfoService;
+import com.jkm.hss.product.enums.EnumProductType;
+import com.jkm.hsy.user.entity.AppBizShop;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -43,10 +51,12 @@ public class OrderServiceImpl implements OrderService {
 
     @Autowired
     private OrderDao orderDao;
-
+    @Autowired
+    private FrozenRecordService frozenRecordService;
+    @Autowired
+    private AccountFlowService accountFlowService;
     @Autowired
     private CalculateService calculateService;
-
     @Autowired
     private MerchantInfoService merchantInfoService;
     @Autowired
@@ -67,11 +77,11 @@ public class OrderServiceImpl implements OrderService {
      *
      * @param payOrderId
      * @param merchantId
-     * @param tradePeriod
+     * @param settleType
      */
     @Override
     @Transactional
-    public long createPlayMoneyOrderByPayOrder(final long payOrderId, final long merchantId, final String tradePeriod) {
+    public long createPlayMoneyOrderByPayOrder(final long payOrderId, final long merchantId, final String settleType) {
         final MerchantInfo merchant = this.merchantInfoService.selectById(merchantId).get();
         // 查询支付单对应的提现单是否存在
         final Optional<Order> playMoneyOrderOptional = this.getByPayOrderId(payOrderId);
@@ -90,15 +100,65 @@ public class OrderServiceImpl implements OrderService {
         playMoneyOrder.setPayChannelSign(payOrder.getPayChannelSign());
         playMoneyOrder.setPayer(merchant.getAccountId());
         playMoneyOrder.setPayee(0);
-//        playMoneyOrder.setPayAccount(tradePeriod);
-        BigDecimal merchantWithdrawPoundage = this.calculateService.getMerchantWithdrawPoundage(merchantId, payOrder.getPayChannelSign());
+        playMoneyOrder.setAppId(payOrder.getAppId());
+        final BigDecimal merchantWithdrawPoundage = this.calculateService.getMerchantWithdrawPoundage(EnumProductType.HSS, merchantId, payOrder.getPayChannelSign());
         playMoneyOrder.setPoundage(merchantWithdrawPoundage);
         playMoneyOrder.setGoodsName(merchant.getMerchantName());
         playMoneyOrder.setGoodsDescribe(merchant.getMerchantName());
         playMoneyOrder.setSettleStatus(EnumSettleStatus.DUE_SETTLE.getId());
         playMoneyOrder.setSettleTime(new Date());
+        playMoneyOrder.setSettleType(settleType);
         playMoneyOrder.setStatus(EnumOrderStatus.WITHDRAWING.getId());
         this.add(playMoneyOrder);
+        return playMoneyOrder.getId();
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param shop
+     * @param amount
+     * @param appId
+     * @param channel
+     * @param settleType
+     * @return
+     */
+    @Override
+    @Transactional
+    public long createPlayMoneyOrder(final AppBizShop shop, final BigDecimal amount,
+                                     final String appId, final int channel, final String settleType) {
+        final Account account = this.accountService.getByIdWithLock(shop.getAccountID()).get();
+        Preconditions.checkState(account.getAvailable().compareTo(amount) >= 0, "余额不足");
+        final Order playMoneyOrder = new Order();
+        playMoneyOrder.setPayOrderId(0);
+        playMoneyOrder.setOrderNo(SnGenerator.generateSn(EnumTradeType.WITHDRAW.getId()));
+        playMoneyOrder.setTradeAmount(amount);
+        playMoneyOrder.setRealPayAmount(amount);
+        playMoneyOrder.setTradeType(EnumTradeType.WITHDRAW.getId());
+        playMoneyOrder.setPayChannelSign(channel);
+        playMoneyOrder.setPayer(account.getId());
+        playMoneyOrder.setPayee(0);
+        playMoneyOrder.setAppId(appId);
+        final BigDecimal merchantWithdrawPoundage = this.calculateService.getMerchantWithdrawPoundage(EnumProductType.HSY, shop.getId(), channel);
+        playMoneyOrder.setPoundage(merchantWithdrawPoundage);
+        playMoneyOrder.setGoodsName(shop.getName());
+        playMoneyOrder.setGoodsDescribe(shop.getName());
+        playMoneyOrder.setSettleStatus(EnumSettleStatus.DUE_SETTLE.getId());
+        playMoneyOrder.setSettleTime(DateTimeUtil.getSettleDate());
+        playMoneyOrder.setSettleType(settleType);
+        playMoneyOrder.setStatus(EnumOrderStatus.WITHDRAWING.getId());
+        this.add(playMoneyOrder);
+        this.accountService.decreaseAvailableAmount(account.getId(), amount);
+        this.accountService.increaseFrozenAmount(account.getId(), amount);
+        final FrozenRecord frozenRecord = new FrozenRecord();
+        frozenRecord.setAccountId(account.getId());
+        frozenRecord.setFrozenAmount(amount);
+        frozenRecord.setFrozenTime(new Date());
+        frozenRecord.setRemark("手动提现");
+        this.frozenRecordService.add(frozenRecord);
+        //添加账户流水--减少
+        this.accountFlowService.addAccountFlow(account.getId(), "", amount,
+                "手动提现", EnumAccountFlowType.DECREASE);
         return playMoneyOrder.getId();
     }
 
@@ -374,6 +434,20 @@ public class OrderServiceImpl implements OrderService {
     public BigDecimal getTotalTradeAmountByAccountId(final long accountId, final String appId, final int serviceType) {
         final BigDecimal totalAmount = this.orderDao.selectTotalTradeAmountByAccountId(accountId, appId, serviceType);
         return null == totalAmount ? new BigDecimal("0.00") : totalAmount;
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param orderNos
+     * @return
+     */
+    @Override
+    public List<String> getCheckedOrderNosByOrderNos(final List<String> orderNos) {
+        if (CollectionUtils.isEmpty(orderNos)) {
+            return Collections.emptyList();
+        }
+        return this.orderDao.selectCheckedOrderNosByOrderNos(orderNos);
     }
 
     /**

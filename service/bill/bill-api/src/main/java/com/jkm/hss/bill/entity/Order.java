@@ -23,7 +23,7 @@ public class Order extends BaseEntity {
     /**
      * 业务线
      *
-     * {@link com.jkm.hss.bill.enums.EnumAppType}
+     * {@link com.jkm.hss.account.enums.EnumAppType}
      */
     private String appId;
 
@@ -125,6 +125,13 @@ public class Order extends BaseEntity {
     private String goodsDescribe;
 
     /**
+     * 对账状态(1:已对账， 0未对账)
+     *
+     * {@link com.jkm.base.common.enums.EnumBoolean}
+     */
+    private int checkedStatus;
+
+    /**
      * 结算状态
      *
      * {@link com.jkm.hss.bill.enums.EnumSettleStatus}
@@ -135,6 +142,13 @@ public class Order extends BaseEntity {
      * 结算时间(预计结算时间)
      */
     private Date settleTime;
+
+    /**
+     * 结算类型
+     *
+     * {@link com.jkm.hss.product.enums.EnumBalanceTimeType}
+     */
+    private String settleType;
 
     /**
      * 成功结算时间

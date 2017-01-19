@@ -4,10 +4,12 @@ import com.alibaba.fastjson.JSON;
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableMap;
 import com.jkm.base.common.util.DateFormatUtil;
+import com.jkm.hss.account.enums.EnumAppType;
 import com.jkm.hss.bill.entity.Order;
 import com.jkm.hss.bill.entity.callback.PaymentSdkPayCallbackResponse;
 import com.jkm.hss.bill.entity.callback.PaymentSdkRefundCallbackResponse;
 import com.jkm.hss.bill.entity.callback.PaymentSdkWithdrawCallbackResponse;
+import com.jkm.hss.bill.service.HSYTradeService;
 import com.jkm.hss.bill.service.OrderService;
 import com.jkm.hss.bill.service.PayService;
 import com.jkm.hss.bill.service.WithdrawService;
@@ -48,6 +50,8 @@ public class PaymentSdkCallbackController extends BaseController {
     private OrderService orderService;
     @Autowired
     private SendMessageService sendMessageService;
+    @Autowired
+    private HSYTradeService hsyTradeService;
 
     /**
      * 支付回调

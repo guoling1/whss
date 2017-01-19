@@ -5,8 +5,10 @@ import com.aliyun.openservices.ons.api.Action;
 import com.aliyun.openservices.ons.api.ConsumeContext;
 import com.aliyun.openservices.ons.api.Message;
 import com.aliyun.openservices.ons.api.MessageListener;
+import com.jkm.hss.bill.service.OrderService;
 import com.jkm.hss.bill.service.WithdrawService;
 import com.jkm.hss.mq.config.MqConfig;
+import com.jkm.hss.settle.service.AccountSettleAuditRecordService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -18,6 +20,10 @@ public class MessageListenerImpl implements MessageListener {
 
     @Autowired
     private WithdrawService withdrawService;
+    @Autowired
+    private OrderService orderService;
+    @Autowired
+    private AccountSettleAuditRecordService accountSettleAuditRecordService;
     /**
      * 消费消息
      *

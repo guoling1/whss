@@ -25,6 +25,7 @@
         goods_describe,
         settle_status,
         settle_time,
+        settle_type,
         success_settle_time,
         pay_channel_sign,
         remark,
@@ -53,6 +54,7 @@
         #{goodsDescribe},
         #{settleStatus},
         #{settleTime},
+        #{serviceType},
         #{successSettleTime},
         #{payChannelSign},
         #{remark},
@@ -97,6 +99,10 @@
 
     <update id="updateSettleStatus">
         UPDATE tb_order SET settle_status = #{status}, success_settle_time = NOW() WHERE id = #{id}
+    </update>
+
+    <update id="updateCheckedStatus">
+        UPDATE tb_order SET checked_status = #{checkedStatus} WHERE id = #{id}
     </update>
 
     <update id="markSettleSuccess">
@@ -380,5 +386,14 @@
 
     <select id="selectTotalTradeAmountByAccountId" resultType="java.math.BigDecimal">
         SELECT SUM(trade_amount) FROM tb_order WHERE app_id = #{appId} AND payee = #{accountId} AND service_type = #{serviceType} AND trade_type = 1
+    </select>
+
+    <select id="selectCheckedOrderNosByOrderNos" resultType="java.lang.String">
+        SELECT order_no FROM tb_order
+        WHERE order_no IN
+        <foreach collection="orderNos" item="item" index="index" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        AND checked_status = 1
     </select>
 </mapper>

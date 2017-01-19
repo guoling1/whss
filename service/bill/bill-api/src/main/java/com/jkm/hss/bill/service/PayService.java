@@ -31,7 +31,7 @@ public interface PayService {
      * @param merchantId
      * @return
      */
-    Pair<Integer, String> codeReceipt(String totalAmount, int channel, long merchantId);
+    Pair<Integer, String> codeReceipt(String totalAmount, int channel, long merchantId, String appId);
 
 
     /**

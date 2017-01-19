@@ -14,6 +14,14 @@
     <dependencies>
         <dependency>
             <groupId>com.jkm</groupId>
+            <artifactId>hsy-user-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.jkm</groupId>
+            <artifactId>hss-account-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.jkm</groupId>
             <artifactId>hss-product-api</artifactId>
         </dependency>
         <dependency>
