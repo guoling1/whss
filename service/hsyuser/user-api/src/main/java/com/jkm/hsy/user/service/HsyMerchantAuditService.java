@@ -19,4 +19,14 @@ public interface HsyMerchantAuditService {
      * 查询商户详情
      */
     AppBizShop getDetails(HsyMerchantAuditRequest hsyMerchantAuditRequest);
+
+    /**
+     * 审核通过
+     */
+    void auditPass(HsyMerchantAuditRequest hsyMerchantAuditRequest);
+
+    /**
+     * 审核不通过
+     */
+    void auditNotPass(HsyMerchantAuditRequest hsyMerchantAuditRequest);
 }

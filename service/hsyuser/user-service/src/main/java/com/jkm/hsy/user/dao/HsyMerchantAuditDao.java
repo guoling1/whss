@@ -21,4 +21,14 @@ public interface HsyMerchantAuditDao {
      * 查询商户详情
      */
     AppBizShop getDetails(HsyMerchantAuditRequest hsyMerchantAuditRequest);
+
+    /**
+     * 审核通过
+     */
+    void updateAuditPass(HsyMerchantAuditRequest hsyMerchantAuditRequest);
+
+    /**
+     * 审核不通过
+     */
+    void updateAuditNotPass(HsyMerchantAuditRequest hsyMerchantAuditRequest);
 }

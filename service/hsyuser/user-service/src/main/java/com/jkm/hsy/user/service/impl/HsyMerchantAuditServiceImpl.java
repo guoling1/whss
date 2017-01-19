@@ -29,4 +29,14 @@ public class HsyMerchantAuditServiceImpl implements HsyMerchantAuditService {
         AppBizShop res = hsyMerchantAuditDao.getDetails(hsyMerchantAuditRequest);
         return res;
     }
+
+    @Override
+    public void auditPass(HsyMerchantAuditRequest hsyMerchantAuditRequest) {
+        hsyMerchantAuditDao.updateAuditPass(hsyMerchantAuditRequest);
+    }
+
+    @Override
+    public void auditNotPass(HsyMerchantAuditRequest hsyMerchantAuditRequest) {
+        hsyMerchantAuditDao.updateAuditNotPass(hsyMerchantAuditRequest);
+    }
 }

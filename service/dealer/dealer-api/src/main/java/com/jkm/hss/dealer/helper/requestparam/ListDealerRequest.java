@@ -12,6 +12,11 @@ import lombok.Data;
 public class ListDealerRequest extends PageQueryParams {
 
     /**
+     * 结算卡
+     */
+    private String settleBankCard;
+
+    /**
      * 银行预留手机号
      */
     private String bankReserveMobile;
