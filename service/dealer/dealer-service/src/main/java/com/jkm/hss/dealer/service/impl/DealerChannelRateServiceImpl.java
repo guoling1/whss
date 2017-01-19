@@ -2,11 +2,19 @@ package com.jkm.hss.dealer.service.impl;
 
 import com.google.common.base.Optional;
 import com.jkm.hss.dealer.dao.DealerChannelRateDao;
+import com.jkm.hss.dealer.entity.Dealer;
 import com.jkm.hss.dealer.entity.DealerChannelRate;
+import com.jkm.hss.dealer.enums.EnumDealerLevel;
 import com.jkm.hss.dealer.service.DealerChannelRateService;
+import com.jkm.hss.dealer.service.DealerService;
+import com.jkm.hss.product.entity.ProductChannelDetail;
+import com.jkm.hss.product.enums.EnumPayChannelSign;
+import com.jkm.hss.product.servcie.ProductChannelDetailService;
+import org.apache.commons.lang3.tuple.Triple;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -17,7 +25,10 @@ public class DealerChannelRateServiceImpl implements DealerChannelRateService{
 
     @Autowired
     private DealerChannelRateDao dealerChannelRateDao;
-
+    @Autowired
+    private ProductChannelDetailService productChannelDetailService;
+    @Autowired
+    private DealerService dealerService;
     /**
      * {@inheritDoc}
      * @param dealerChannelRate
@@ -67,5 +78,63 @@ public class DealerChannelRateServiceImpl implements DealerChannelRateService{
     @Override
     public Optional<DealerChannelRate> selectByDealerIdAndProductIdAndChannelType(long dealerId, long productId, int channelType) {
         return Optional.fromNullable(this.dealerChannelRateDao.selectByDealerIdAndProductIdAndChannelType(dealerId,productId,channelType));
+    }
+
+    /**
+     * {@inheritDoc}
+     * @param dealerId
+     * @return
+     */
+    @Override
+    public Triple<BigDecimal, BigDecimal, BigDecimal> getMerchantRateByDealerId(long dealerId, long productId) {
+
+        BigDecimal wxRate = null;
+        BigDecimal zfbRate = null;
+        BigDecimal ylRate = null;
+        if ( dealerId == 0){
+            // 没有代理商，公司直属商户
+            final List<ProductChannelDetail> productChannelDetails = this.productChannelDetailService.selectByProductId(productId);
+            for (ProductChannelDetail detail : productChannelDetails){
+
+                if (detail.getChannelTypeSign() == EnumPayChannelSign.YG_WEIXIN.getId()){
+                    wxRate = detail.getProductMerchantPayRate();
+                }else if (detail.getChannelTypeSign() == EnumPayChannelSign.YG_ZHIFUBAO.getId()){
+                    zfbRate = detail.getProductMerchantPayRate();
+                }else {
+                    ylRate = detail.getProductMerchantPayRate();
+                }
+            }
+        }else {
+            final Dealer dealer = this.dealerService.getById(dealerId).get();
+            if (dealer.getLevel() == EnumDealerLevel.FIRST.getId()) {
+                //一级代理直属商户
+                final List<DealerChannelRate> dealerChannelRates = this.dealerChannelRateDao.selectByDealerIdAndProductId(dealerId, productId);
+                for (DealerChannelRate detail : dealerChannelRates) {
+
+                    if (detail.getChannelTypeSign() == EnumPayChannelSign.YG_WEIXIN.getId()) {
+                        wxRate = detail.getDealerMerchantPayRate();
+                    } else if (detail.getChannelTypeSign() == EnumPayChannelSign.YG_ZHIFUBAO.getId()) {
+                        zfbRate = detail.getDealerMerchantPayRate();
+                    } else {
+                        ylRate = detail.getDealerMerchantPayRate();
+                    }
+                }
+            } else {
+                //二级代理直属商户
+                final List<DealerChannelRate> dealerChannelRates = this.dealerChannelRateDao.selectByDealerIdAndProductId(dealer.getFirstLevelDealerId(), productId);
+                for (DealerChannelRate detail : dealerChannelRates) {
+
+                    if (detail.getChannelTypeSign() == EnumPayChannelSign.YG_WEIXIN.getId()) {
+                        wxRate = detail.getDealerMerchantPayRate();
+                    } else if (detail.getChannelTypeSign() == EnumPayChannelSign.YG_ZHIFUBAO.getId()) {
+                        zfbRate = detail.getDealerMerchantPayRate();
+                    } else {
+                        ylRate = detail.getDealerMerchantPayRate();
+                    }
+
+                }
+            }
+        }
+        return Triple.of(wxRate, zfbRate, ylRate);
     }
 }

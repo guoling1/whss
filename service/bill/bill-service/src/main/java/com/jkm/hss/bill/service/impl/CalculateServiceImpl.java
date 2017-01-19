@@ -19,6 +19,8 @@ import com.jkm.hss.product.enums.EnumProductType;
 import com.jkm.hss.product.servcie.ProductChannelDetailService;
 import com.jkm.hss.product.servcie.ProductService;
 import com.jkm.hss.product.servcie.UpgradeRulesService;
+import com.jkm.hsy.user.dao.HsyShopDao;
+import com.jkm.hsy.user.entity.AppAuUser;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
@@ -28,6 +30,7 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -55,6 +58,8 @@ public class CalculateServiceImpl implements CalculateService {
     private ProductService productService;
     @Autowired
     private MerchantPromoteShallService merchantPromoteShallService;
+    @Autowired
+    private HsyShopDao hsyShopDao;
 
     /**
      * {@inheritDoc}
@@ -64,10 +69,26 @@ public class CalculateServiceImpl implements CalculateService {
      * @return
      */
     @Override
-    public BigDecimal getMerchantPayPoundageRate(final long merchantId, final int channelSign) {
-        final MerchantInfo merchant = this.merchantInfoService.selectById(merchantId).get();
+    public BigDecimal getMerchantPayPoundageRate(EnumProductType type,final long merchantId, final int channelSign) {
+        if (type.getId().equals( EnumProductType.HSS)){
+            //hss
+            final MerchantInfo merchant = this.merchantInfoService.selectById(merchantId).get();
+            return getMerchantRate(channelSign, merchant);
 
-        return getMerchantRate(channelSign, merchant);
+        }else{
+            //hsy
+            final List<AppAuUser> appAuUsers = this.hsyShopDao.findCorporateUserByShopID(merchantId);
+            final AppAuUser appAuUser = appAuUsers.get(0);
+            if (channelSign == EnumPayChannelSign.YG_WEIXIN.getId()){
+                return  appAuUser.getWeixinRate();
+            }else if (channelSign == EnumPayChannelSign.YG_ZHIFUBAO.getId()){
+                return appAuUser.getAlipayRate();
+            }else{
+                return appAuUser.getFastRate();
+            }
+
+        }
+
     }
 
     /**
@@ -78,15 +99,32 @@ public class CalculateServiceImpl implements CalculateService {
      * @return
      */
     @Override
-    public BigDecimal getMerchantWithdrawPoundage(final long merchantId, final int channelSign) {
-        final MerchantInfo merchant = this.merchantInfoService.selectById(merchantId).get();
-        if (0 == merchant.getDealerId()) {
-            final ProductChannelDetail productChannelDetail = this.productChannelDetailService.selectByChannelTypeSign(channelSign).get(0);
-            return productChannelDetail.getProductMerchantWithdrawFee().setScale(2);
+    public BigDecimal getMerchantWithdrawPoundage(EnumProductType type,final long merchantId, final int channelSign) {
+
+        if (type.getId() == EnumProductType.HSS.getId()){
+            //HSS
+            final MerchantInfo merchant = this.merchantInfoService.selectById(merchantId).get();
+            if (0 == merchant.getDealerId()) {
+                final ProductChannelDetail productChannelDetail = this.productChannelDetailService.selectByChannelTypeSign(channelSign).get(0);
+                return productChannelDetail.getProductMerchantWithdrawFee().setScale(2);
+            }
+            final Dealer dealer = this.dealerService.getById(merchant.getDealerId()).get();
+            final DealerChannelRate dealerChannelRate = this.dealerRateService.selectByDealerIdAndChannelId(dealer.getId(), channelSign).get(0);
+            return dealerChannelRate.getDealerMerchantWithdrawFee().setScale(2);
+
+        }else {
+            //HSY
+            final List<AppAuUser> appAuUsers = this.hsyShopDao.findCorporateUserByShopID(merchantId);
+            final AppAuUser appAuUser = appAuUsers.get(0);
+            if ( appAuUser.getDealerID() == 0){
+                final ProductChannelDetail productChannelDetail = this.productChannelDetailService.selectByChannelTypeSign(channelSign).get(0);
+                return productChannelDetail.getProductMerchantWithdrawFee().setScale(2);
+            }
+            final Dealer dealer = this.dealerService.getById(appAuUser.getDealerID()).get();
+            final DealerChannelRate dealerChannelRate = this.dealerRateService.selectByDealerIdAndChannelId(dealer.getId(), channelSign).get(0);
+            return dealerChannelRate.getDealerMerchantWithdrawFee().setScale(2);
         }
-        final Dealer dealer = this.dealerService.getById(merchant.getDealerId()).get();
-        final DealerChannelRate dealerChannelRate = this.dealerRateService.selectByDealerIdAndChannelId(dealer.getId(), channelSign).get(0);
-        return dealerChannelRate.getDealerMerchantWithdrawFee().setScale(2);
+
     }
 
     /**
