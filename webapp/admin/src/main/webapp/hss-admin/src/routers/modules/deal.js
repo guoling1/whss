@@ -34,6 +34,8 @@ const Invite = r => require.ensure([], () => r(require('../../components/Invite'
 const Upgrade = r => require.ensure([], () => r(require('../../components/Upgrade')), 'group-record');
 const CodeStatus = r => require.ensure([], () => r(require('../../components/CodeStatus')), 'group-record');
 const Test = r => require.ensure([], () => r(require('../../components/test')), 'group-record');
+const StoreAuditHSY = r => require.ensure([], () => r(require('../../components/StoreAuditHSY')), 'group-record');
+const T1Audit = r => require.ensure([], () => r(require('../../components/T1Audit')), 'group-record');
 
 const NewDealQuery = r => require.ensure([], () => r(require('../../components/newVersion/NewDealQuery')), 'group-record');
 const NewDealDet = r => require.ensure([], () => r(require('../../components/newVersion/NewDealDet')), 'group-record');
@@ -49,6 +51,16 @@ export default {
       path: 'test',
       name: 'Test',
       component: Test
+    },
+    {
+      path: 'storeAuditHSY',
+      name: 'StoreAuditHSY',
+      component: StoreAuditHSY
+    },
+    {
+      path: 't1Audit',
+      name: 'T1Audit',
+      component: T1Audit
     },
     {
       path: 'newDeal',

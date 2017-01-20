@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jkm.hsy.user.dao.HsyShopDao">
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id" parameterType="com.jkm.hsy.user.entity.AppBizShop">
+        insert into app_biz_shop(GLOBALID,NAME,SHORTNAME,INDUSTRYCODE,DISTRICTCODE,ADDRESS,LICENCEID,STOREFRONTID,COUNTERID,INDOORID,PARENTID,CONTACTNAME,CONTACTCELLPHONE,STATUS,ISPUBLIC,ACCOUNTID,CREATETIME,UPDATETIME) values(#{globalID},#{name},#{shortName},#{industryCode},#{districtCode},#{address},#{licenceID},#{storefrontID},#{counterID},#{indoorID},#{parentID},#{contactName},#{contactCellphone},#{status},#{isPublic},#{accountID},#{createTime},#{updateTime})
+    </insert>
+
+    <insert id="insertAppBizShopUserRole" useGeneratedKeys="true" keyProperty="id" parameterType="com.jkm.hsy.user.entity.AppBizShopUserRole">
+        insert into app_biz_shop_user_role(SID,UID,ROLE,STATUS,TYPE) values(#{sid},#{uid},#{role},#{status},#{type})
+    </insert>
+
+    <update id="update" parameterType="com.jkm.hsy.user.entity.AppBizShop">
+        update app_biz_shop
+        <set>
+            <if test="globalID!=null and globalID!=''">GLOBALID=#{globalID},</if>
+            <if test="name!=null and name!=''">NAME=#{name},</if>
+            <if test="shortName!=null and shortName!=''">SHORTNAME=#{shortName},</if>
+            <if test="industryCode!=null and industryCode!=''">INDUSTRYCODE=#{industryCode},</if>
+            <if test="districtCode!=null and districtCode!=''">DISTRICTCODE=#{districtCode},</if>
+            <if test="address!=null and address!=''">ADDRESS=#{address},</if>
+            <if test="licenceID!=null and licenceID!=''">LICENCEID=#{licenceID},</if>
+            <if test="storefrontID!=null and storefrontID!=''">STOREFRONTID=#{storefrontID},</if>
+            <if test="counterID!=null and counterID!=''">COUNTERID=#{counterID},</if>
+            <if test="indoorID!=null and indoorID!=''">INDOORID=#{indoorID},</if>
+            <if test="parentID!=null and parentID!=''">PARENTID=#{parentID},</if>
+            <if test="contactName!=null and contactName!=''">CONTACTNAME=#{contactName},</if>
+            <if test="contactCellphone!=null and contactCellphone!=''">CONTACTCELLPHONE=#{contactCellphone},</if>
+            <if test="status!=null">STATUS=#{status},</if>
+            <if test="isPublic!=null">ISPUBLIC=#{isPublic},</if>
+            <if test="accountID!=null">ACCOUNTID=#{accountID},</if>
+            <if test="createTime!=null">CREATETIME=#{createTime},</if>
+            <if test="updateTime!=null">UPDATETIME=#{updateTime}</if>
+        </set> where ID=#{id}
+    </update>
+
+    <insert id="insertAppBizCard" useGeneratedKeys="true" keyProperty="id" parameterType="com.jkm.hsy.user.entity.AppBizCard">
+        insert into app_biz_card(SID,CARDNO,CARDACCOUNTNAME,CARDBANK,BANKADDRESS,CARDFID,CARDCELLPHONE,IDCARDNO,STATUS,CREATETIME,UPDATETIME) values(#{sid},#{cardNO},#{cardAccountName},#{cardBank},#{bankAddress},#{cardfID},#{cardCellphone},#{idcardNO},#{status},#{createTime},#{updateTime})
+    </insert>
+
+    <select id="findAppBizCardByParam" parameterType="com.jkm.hsy.user.entity.AppBizCard" resultType="com.jkm.hsy.user.entity.AppBizCard">
+        select
+            ID,SID,CARDNO,CARDACCOUNTNAME,CARDBANK,BANKADDRESS,CARDFID,CARDCELLPHONE,IDCARDNO,STATUS,CREATETIME,UPDATETIME
+        from app_biz_card
+        where 1=1
+          <if test="cardNO!=null and cardNO!=''">and CARDNO=#{cardNO}</if>
+          <if test="sid!=null and sid!=''">and SID=#{sid}</if>
+        order by UPDATETIME desc
+    </select>
+
+    <select id="findDistrictByParentCode" parameterType="com.jkm.hsy.user.entity.AppBizDistrict" resultType="com.jkm.hsy.user.entity.AppBizDistrict">
+        select
+          CODE,ANAME,AINDEX,ATYPE,PARENTCODE,ISLEAF
+        from app_biz_district
+        where 1=1
+        <if test="parentCode!=null and parentCode!=''">and PARENTCODE=#{parentCode}</if>
+        order by CODE
+    </select>
+
+    <select id="findPrimaryAppBizShopByUserID" parameterType="com.jkm.hsy.user.entity.AppBizShop" resultType="com.jkm.hsy.user.entity.AppBizShop">
+        select
+          shop.ID,shop.GLOBALID,shop.NAME,shop.SHORTNAME,shop.INDUSTRYCODE,shop.DISTRICTCODE,shop.ADDRESS,shop.LICENCEID,shop.STOREFRONTID,shop.COUNTERID,shop.INDOORID,shop.PARENTID,shop.CONTACTNAME,shop.CONTACTCELLPHONE,shop.STATUS,shop.ISPUBLIC,shop.accountID,shop.CREATETIME,shop.UPDATETIME,
+        (select PATH from app_cm_file acf where uuid=shop.LICENCEID) LICENCEURL,
+        (select PATH from app_cm_file where uuid=shop.STOREFRONTID) STOREFRONTURL,
+        (select PATH from app_cm_file where uuid=shop.COUNTERID) COUNTERURL,
+        (select PATH from app_cm_file where uuid=shop.INDOORID) INDOORURL
+        from app_biz_shop shop left join app_biz_shop_user_role sur on shop.ID=sur.SID
+        where 1=1
+        <if test="uid!=null and uid!=''">and sur.UID=#{uid}</if>
+        <if test="type!=null and type!=''">and sur.TYPE=#{type}</if>
+        order by shop.UPDATETIME desc
+    </select>
+
+    <select id="findsurByRoleTypeSid" parameterType="java.lang.Long" resultType="com.jkm.hsy.user.entity.AppBizShopUserRole">
+      select SID,UID,ROLE,STATUS,TYPE from app_biz_shop_user_role
+      where role=1 and type=1 and sid=#{sid}
+    </select>
+
+    <select id="findShopList" parameterType="com.jkm.hsy.user.entity.AppBizShop" resultType="com.jkm.hsy.user.entity.AppBizShop">
+        select
+        shop.ID,shop.GLOBALID,shop.NAME,shop.SHORTNAME,shop.INDUSTRYCODE,shop.DISTRICTCODE,shop.ADDRESS,shop.LICENCEID,shop.STOREFRONTID,shop.COUNTERID,shop.INDOORID,shop.PARENTID,shop.CONTACTNAME,shop.CONTACTCELLPHONE,shop.STATUS,shop.ISPUBLIC,shop.accountID,shop.CREATETIME,shop.UPDATETIME,
+        (select PATH from app_cm_file acf where uuid=shop.LICENCEID) LICENCEURL,
+        (select PATH from app_cm_file where uuid=shop.STOREFRONTID) STOREFRONTURL,
+        (select PATH from app_cm_file where uuid=shop.COUNTERID) COUNTERURL,
+        (select PATH from app_cm_file where uuid=shop.INDOORID) INDOORURL,
+        (select count(*) from app_biz_shop_user_role where role=3) COUNTEMPLOYEE,
+        sur.TYPE TYPE,
+        (select COUNT(1) from tb_qr_code where merchant_id=shop.id and sys_type='hsy')  COUNTQR
+        from app_biz_shop shop left join app_biz_shop_user_role sur on shop.ID=sur.SID
+        where 1=1
+        <if test="uid!=null and uid!=''">and sur.UID=#{uid}</if>
+        order by sur.TYPE,shop.UPDATETIME desc
+    </select>
+
+    <select id="findShopDetail" parameterType="com.jkm.hsy.user.entity.AppBizShop" resultType="com.jkm.hsy.user.entity.AppBizShop">
+        select distinct
+        shop.ID,shop.GLOBALID,shop.NAME,shop.SHORTNAME,shop.INDUSTRYCODE,shop.DISTRICTCODE,shop.ADDRESS,shop.LICENCEID,shop.STOREFRONTID,shop.COUNTERID,shop.INDOORID,shop.PARENTID,shop.CONTACTNAME,shop.CONTACTCELLPHONE,shop.STATUS,shop.ISPUBLIC,shop.accountID,shop.CREATETIME,shop.UPDATETIME,
+        (select PATH from app_cm_file acf where uuid=shop.LICENCEID) LICENCEURL,
+        (select PATH from app_cm_file where uuid=shop.STOREFRONTID) STOREFRONTURL,
+        (select PATH from app_cm_file where uuid=shop.COUNTERID) COUNTERURL,
+        (select PATH from app_cm_file where uuid=shop.INDOORID) INDOORURL,
+        (select count(*) from app_biz_shop_user_role where role=3) COUNTEMPLOYEE,
+        sur.TYPE TYPE,
+        shop.CHECKERRORINFO CHECKERRORINFO,
+        (select COUNT(1) from tb_qr_code where merchant_id=shop.id and sys_type='hsy')  COUNTQR
+        from app_biz_shop shop left join app_biz_shop_user_role sur on shop.ID=sur.SID
+        where 1=1
+        <if test="id!=null and id!=''">and shop.ID=#{id}</if>
+        order by sur.TYPE,shop.UPDATETIME desc
+    </select>
+
+    <select id="findUserByShopID" parameterType="java.lang.Long" resultType="com.jkm.hsy.user.entity.AppAuUser">
+        select
+          user.ID,user.globalID,user.CELLPHONE,user.PASSWORD,user.NICKNAME,user.REALNAME,user.STATUS,
+          (select PATH from app_cm_file acf where uuid=user.PROFILE) PROFILE,
+          user.AUSTEP,user.IDCARD,user.IDCARDF,user.IDCARDB,user.IDCARDH,user.CREATETIME,user.UPDATETIME,
+         (select PATH from app_cm_file acf where uuid=user.IDCARDF) IDCARDFURL,
+         (select PATH from app_cm_file acf where uuid=user.IDCARDB) IDCARDBURL,
+         (select PATH from app_cm_file acf where uuid=user.IDCARDH) IDCARDHURL,
+        user.DEALERID DEALERID,user.PRODUCTID PRODUCTID,user.WEIXINRATE WEIXINRATE,user.ALIPAYRATE ALIPAYRATE,user.FASTRATE FASTRATE,
+         sur.ROLE ROLE,
+        (case when sur.ROLE=1 then '法人'
+         when sur.ROLE=2 then '店长'
+         when sur.ROLE=3 then '店员'
+         when sur.ROLE=4 then '财务' else '' end) ROLENAME
+        from app_au_user user left join app_biz_shop_user_role sur on user.ID=sur.UID
+        where sur.role in(2,3)
+          <if test="sid!=null and sid!=''">and sur.sid=#{sid}</if>
+        order by sur.ROLE,user.UPDATETIME desc
+    </select>
+
+    <select id="findCorporateUserByShopID" parameterType="java.lang.Long" resultType="com.jkm.hsy.user.entity.AppAuUser">
+        select
+        user.ID,user.globalID,user.CELLPHONE,user.PASSWORD,user.NICKNAME,user.REALNAME,user.STATUS,
+        (select PATH from app_cm_file acf where uuid=user.PROFILE) PROFILE,
+        user.AUSTEP,user.IDCARD,user.IDCARDF,user.IDCARDB,user.IDCARDH,user.CREATETIME,user.UPDATETIME,
+        (select PATH from app_cm_file acf where uuid=user.IDCARDF) IDCARDFURL,
+        (select PATH from app_cm_file acf where uuid=user.IDCARDB) IDCARDBURL,
+        (select PATH from app_cm_file acf where uuid=user.IDCARDH) IDCARDHURL,
+        user.DEALERID DEALERID,user.PRODUCTID PRODUCTID,user.WEIXINRATE WEIXINRATE,user.ALIPAYRATE ALIPAYRATE,user.FASTRATE FASTRATE,
+        sur.ROLE ROLE,
+        (case when sur.ROLE=1 then '法人'
+        when sur.ROLE=2 then '店长'
+        when sur.ROLE=3 then '店员'
+        when sur.ROLE=4 then '财务' else '' end) ROLENAME
+        from app_au_user user left join app_biz_shop_user_role sur on user.ID=sur.UID
+        where sur.role =1
+        <if test="sid!=null and sid!=''">and sur.sid=#{sid}</if>
+        order by sur.ROLE,user.UPDATETIME desc
+    </select>
+
+    <update id="updateAppBizCard" parameterType="com.jkm.hsy.user.entity.AppBizCard">
+        update app_biz_card
+        <set>
+            <if test="sid!=null and sid!=''">SID=#{sid},</if>
+            <if test="cardNO!=null and cardNO!=''">CARDNO=#{cardNO},</if>
+            <if test="cardAccountName!=null and cardAccountName!=''">CARDACCOUNTNAME=#{cardAccountName},</if>
+            <if test="cardBank!=null and cardBank!=''">CARDBANK=#{cardBank},</if>
+            <if test="bankAddress!=null and bankAddress!=''">BANKADDRESS=#{bankAddress},</if>
+            <if test="cardfID!=null and cardfID!=''">CARDFID=#{cardfID},</if>
+            <if test="cardCellphone!=null and cardCellphone!=''">CARDCELLPHONE=#{cardCellphone},</if>
+            <if test="idcardNO!=null and idcardNO!=''">IDCARDNO=#{idcardNO},</if>
+            <if test="status!=null and status!=''">STATUS=#{status},</if>
+            <if test="createTime!=null">CREATETIME=#{createTime},</if>
+            <if test="updateTime!=null">UPDATETIME=#{updateTime}</if>
+        </set> where ID=#{id}
+    </update>
+
+    <select id="findAppBizShopByID" parameterType="java.lang.Long" resultType="com.jkm.hsy.user.entity.AppBizShop">
+        select
+          ID,GLOBALID,NAME,SHORTNAME,INDUSTRYCODE,DISTRICTCODE,ADDRESS,LICENCEID,STOREFRONTID,COUNTERID,INDOORID,PARENTID,CONTACTNAME,CONTACTCELLPHONE,STATUS,ISPUBLIC,ACCOUNTID,CREATETIME,UPDATETIME
+        from app_biz_shop
+        where ID=#{id}
+    </select>
+
+    <select id="findAppBizShopByAccountID" parameterType="java.lang.Long" resultType="com.jkm.hsy.user.entity.AppBizShop">
+        select
+        ID,GLOBALID,NAME,SHORTNAME,INDUSTRYCODE,DISTRICTCODE,ADDRESS,LICENCEID,STOREFRONTID,COUNTERID,INDOORID,PARENTID,CONTACTNAME,CONTACTCELLPHONE,STATUS,ISPUBLIC,ACCOUNTID,CREATETIME,UPDATETIME
+        from app_biz_shop
+        where ACCOUNTID=#{accountID}
+    </select>
+
+    <select id="findShopNameByID" parameterType="java.lang.Long" resultType="java.lang.String">
+        select
+          shop.SHORTNAME
+        from app_biz_shop shop
+        where shop.ID=#{id}
+    </select>
+
+</mapper>
