@@ -26,7 +26,7 @@ public class Task {
      *
      * 周一至周五 2点0时0分
      */
-    @Scheduled(cron = "0 15 13 ? * MON-FRI")
+//    @Scheduled(cron = "0 15 13 ? * MON-FRI")
     public void handleT1SettleTask() {
         log.info("结算审核定时任务--start");
         this.accountSettleAuditRecordService.handleT1SettleTask();
