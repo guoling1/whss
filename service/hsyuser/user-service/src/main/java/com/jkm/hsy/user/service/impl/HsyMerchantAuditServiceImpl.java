@@ -26,9 +26,9 @@ public class HsyMerchantAuditServiceImpl implements HsyMerchantAuditService {
     }
 
     @Override
-    public HsyMerchantAuditResponse getDetails(HsyMerchantAuditRequest hsyMerchantAuditRequest) {
+    public HsyMerchantAuditResponse getDetails(Long id) {
 
-        HsyMerchantAuditResponse res = hsyMerchantAuditDao.getDetails(hsyMerchantAuditRequest);
+        HsyMerchantAuditResponse res = hsyMerchantAuditDao.getDetails(id);
         return res;
     }
 
