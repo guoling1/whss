@@ -9,9 +9,9 @@ import lombok.Data;
 public class StaticCodePayRequest {
 
     /**
-     * 代理商id
+     * 店铺id
      */
-    private long shopId;
+    private long merchantId;
 
     /**
      * 总金额
