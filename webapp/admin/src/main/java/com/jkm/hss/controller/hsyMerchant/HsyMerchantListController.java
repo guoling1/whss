@@ -1,5 +1,6 @@
 package com.jkm.hss.controller.hsyMerchant;
 
+import com.jkm.base.common.entity.BaseEntity;
 import com.jkm.base.common.entity.CommonResponse;
 import com.jkm.base.common.entity.PageModel;
 import com.jkm.hss.controller.BaseController;

@@ -173,7 +173,7 @@
       var content = document.getElementById('content'),
         page = document.getElementById('page');
 //      好收收
-      this.$http.post('/admin/query/getAll',this.$data.query)
+      this.$http.post('/admin/hsyMerchantList/getMerchantList',this.$data.query)
         .then(function (res) {
         this.$data.isShow = false;
         this.$data.stores = res.data.records;
@@ -225,10 +225,10 @@
         })
       })
 //      好收银
-      this.$data.post('/admin/hsyMerchantList/getMerchantList',this.$data.query)
+      /*this.$http.post('/admin/hsyMerchantList/getMerchantList',this.$data.query)
         .then(function (res) {
 
-        })
+        })*/
     },
     methods: {
       //审核
