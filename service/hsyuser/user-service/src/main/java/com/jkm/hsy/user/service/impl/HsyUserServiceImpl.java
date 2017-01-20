@@ -90,7 +90,7 @@ public class HsyUserServiceImpl implements HsyUserService {
         appBizShop.setIndustryCode(appAuUser.getIndustryCode());
         appBizShop.setCreateTime(date);
         appBizShop.setUpdateTime(date);
-        appBizShop.setStatus(AppConstant.SHOP_STATUS_NORMAL);
+        appBizShop.setStatus(AppConstant.SHOP_STATUS_NO_CHECK);
         appBizShop.setParentID(0L);
         hsyShopDao.insert(appBizShop);
         AppBizShop appBizShopUp=new AppBizShop();
@@ -161,6 +161,8 @@ public class HsyUserServiceImpl implements HsyUserService {
             appBizShop=shopList.get(0);
 //        if(AppConstant.USER_STATUS_NORMAL!=appAuUserFind.getStatus())
 //            throw new ApiHandleException(ResultCode.USER_NO_CEHCK);
+        if(appBizShop.getCheckErrorInfo()==null)
+            appBizShop.setCheckErrorInfo("");
         gson = new GsonBuilder().setExclusionStrategies(new ExclusionStrategy() {
             public boolean shouldSkipField(FieldAttributes f) {
                 return f.getName().contains("password");
