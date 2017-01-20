@@ -36,8 +36,12 @@ public class HsyMerchantListController extends BaseController {
         pageModel.setCount(count);
         pageModel.setRecords(list);
         return CommonResponse.objectResponse(1, "success", pageModel);
-
-
     }
+    @RequestMapping(value = "/getDetails",method = RequestMethod.POST)
+    public CommonResponse getDetails(@RequestBody final HsyMerchantAuditRequest hsyMerchantAuditRequest){
+        HsyMerchantAuditResponse res = hsyMerchantAuditService.getDetails(hsyMerchantAuditRequest.getId());
+        return CommonResponse.objectResponse(1, "success", res);
+    }
+
 
 }

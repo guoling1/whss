@@ -18,7 +18,7 @@ public interface HsyMerchantAuditService {
     /**
      * 查询商户详情
      */
-    HsyMerchantAuditResponse getDetails(HsyMerchantAuditRequest hsyMerchantAuditRequest);
+    HsyMerchantAuditResponse getDetails(Long id);
 
     /**
      * 审核通过
@@ -36,4 +36,6 @@ public interface HsyMerchantAuditService {
      * @return
      */
     int getCount(HsyMerchantAuditRequest hsyMerchantAuditRequest);
+
+
 }

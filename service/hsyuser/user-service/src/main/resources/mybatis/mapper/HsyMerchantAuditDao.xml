@@ -17,7 +17,7 @@
 
     <!-- 查询详情 -->
     <select id="getDetails" resultType="com.jkm.hsy.user.entity.HsyMerchantAuditResponse">
-        SELECT * FROM app_biz_shop
+        SELECT * FROM app_biz_shop WHERE ID=#{id}
     </select>
 
     <!-- 审核通过 -->
