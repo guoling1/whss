@@ -13,7 +13,7 @@
       <option :value="district" v-for="district in $$data.districts">{{district}}</option>
     </select>
 
-    <input id="indate4" type="text" placeholder="请选择"  value="" v-model="$$data.time">
+    <input class="in" type="text" placeholder="请选择" >
     <div class="btn" @click="test">打印</div>
   </div>
 </template>
@@ -41,6 +41,18 @@
           }
         }
       }
+//      document.getElementsByClassName('in')[0].setAttribute('id','in')
+      /*this.$nextTick(function(){
+        //代码
+        jeDate({
+          dateCell: '#indate4',
+          format: "YYYY-MM-DD",
+          maxDate: jeDate.now(5), //1代表明天，2代表后天，以此类推
+          choosefun:function(val) {
+            console.log(val)
+          }
+        })
+      })*/
     },
     methods:{
       test:function () {
@@ -48,15 +60,18 @@
       }
     },
     mounted:function () {
-      jeDate({
-       dateCell: '#indate4',
-       format: "YYYY-MM-DD",
-       maxDate: jeDate.now(5), //1代表明天，2代表后天，以此类推
-        choosefun:function(elem, val) {
-          console.log(elem,val)
-        }
+      console.log(document.getElementsByClassName('in')[0]);
+      if(document.getElementById("indate4")){
+        jeDate({
+          dateCell: '#indate4',
+          format: "YYYY-MM-DD",
+          maxDate: jeDate.now(5), //1代表明天，2代表后天，以此类推
+          choosefun:function(val) {
+            console.log(val)
+          }
+        })
+      }
 
-      })
     },
     watch: {
       province: function (val, oldval) {

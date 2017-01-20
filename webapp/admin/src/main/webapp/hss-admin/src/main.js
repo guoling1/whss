@@ -1,4 +1,7 @@
 import Vue from 'vue'
+import ElementUI from 'element-ui'
+import 'element-ui/lib/theme-default/index.css'
+Vue.use(ElementUI)
 // 使用 vuex
 import store from './store'
 // 使用 vue-router

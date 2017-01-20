@@ -6,138 +6,135 @@
           <h3 class="box-title">商户列表</h3>
         </div>
         <div class="box-body">
-          <div class="row">
-            <div class="col-md-2">
-              <div class="form-group">
-                <label>商户编号：</label>
-                <input type="text" class="form-control" v-model="query.markCode">
-              </div>
-              <div class="form-group">
-                <label>商户名称</label>
-                <input type="text" class="form-control" v-model="query.merchantName">
-              </div>
-            </div>
-            <div class="col-md-2">
-              <div class="form-group">
-                <label>所属一级代理：</label>
-                <input type="text" class="form-control" v-model="query.proxyName">
-              </div>
-              <div class="form-group">
-                <label>所属二级代理</label>
-                <input type="text" class="form-control" v-model="query.proxyName1">
-              </div>
-            </div>
-            <div class="col-md-3">
-              <div class="form-group">
-                <label>注册时间：</label>
-                <div class="form-control">
-                  <input type="date" style="border: none;display:inline-block;width: 45%" name="date" value="" v-model="query.startTime">至
-                  <input type="date" style="border: none;display:inline-block;width: 45%" name="date" value="" v-model="query.endTime">
+          <el-tabs class="tab" v-model="activeName2" type="card" @tab-click="handleClick">
+            <el-tab-pane label="好收收" name="first">
+              <div class="row">
+                <div class="col-md-2">
+                  <div class="form-group">
+                    <label>商户编号：</label>
+                    <input type="text" class="form-control" v-model="query.markCode">
+                  </div>
+                  <div class="form-group">
+                    <label>商户名称</label>
+                    <input type="text" class="form-control" v-model="query.merchantName">
+                  </div>
+                </div>
+                <div class="col-md-2">
+                  <div class="form-group">
+                    <label>所属一级代理：</label>
+                    <input type="text" class="form-control" v-model="query.proxyName">
+                  </div>
+                  <div class="form-group">
+                    <label>所属二级代理</label>
+                    <input type="text" class="form-control" v-model="query.proxyName1">
+                  </div>
+                </div>
+                <div class="col-md-3">
+                  <div class="form-group">
+                    <label>注册时间：</label>
+                    <div class="form-control">
+                      <input type="date" style="border: none;display:inline-block;width: 45%" name="date" value="" v-model="query.startTime">至
+                      <input type="date" style="border: none;display:inline-block;width: 45%" name="date" value="" v-model="query.endTime">
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label>认证时间：</label>
+                    <div class="form-control">
+                      <input type="date" style="border: none;display:inline-block;width: 45%" name="date" value="" v-model="query.startTime1">至
+                      <input type="date" style="border: none;display:inline-block;width: 45%" name="date" value="" v-model="query.endTime1">
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-3">
+                  <div class="form-group">
+                    <label>审核时间：</label>
+                    <div class="form-control">
+                      <input type="date" style="border: none;display:inline-block;width: 45%" name="date" value="" v-model="query.startTime2">至
+                      <input type="date" style="border: none;display:inline-block;width: 45%" name="date" value="" v-model="query.endTime2">
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label>审核状态：</label>
+                    <select class="form-control select2 select2-hidden-accessible" tabindex="-1" aria-hidden="true" v-model="query.status">
+                      <option value="">全部</option>
+                      <option value="0">已注册</option>
+                      <option value="1">已提交基本资料</option>
+                      <option value="2">待审核</option>
+                      <option value="3">审核通过</option>
+                      <option value="4">审核未通过</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="col-md-1">
+                  <div class="btn btn-primary" @click="search" style="margin-top: 85px">筛选</div>
+                  <!--<span @click="onload()" download="交易记录" class="btn btn-primary pull-right" style="float: right;color: #fff">导出</span>-->
                 </div>
               </div>
-              <div class="form-group">
-                <label>认证时间：</label>
-                <div class="form-control">
-                  <input type="date" style="border: none;display:inline-block;width: 45%" name="date" value="" v-model="query.startTime1">至
-                  <input type="date" style="border: none;display:inline-block;width: 45%" name="date" value="" v-model="query.endTime1">
+              <div id="example2_wrapper" class="dataTables_wrapper form-inline dt-bootstrap">
+                <div class="row">
+                  <div class="col-sm-12">
+                    <table id="example2" class="table table-bordered table-hover dataTable" role="grid" aria-describedby="example2_info">
+                      <thead>
+                      <tr role="row">
+                        <th class="sorting_asc" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Rendering engine: activate to sort column descending">序号</th>
+                        <th class="sorting_asc" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Rendering engine: activate to sort column descending">商户编号</th>
+                        <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="Browser: activate to sort column ascending">商户名称</th>
+                        <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="Platform(s): activate to sort column ascending">所属一级代理商</th>
+                        <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="Engine version: activate to sort column ascending">所属二级代理</th>
+                        <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">注册时间</th>
+                        <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">注册方式</th>
+                        <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">认证时间</th>
+                        <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">审核时间</th>
+                        <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">状态</th>
+                        <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">操作</th>
+                      </tr>
+                      </thead>
+                      <tbody id="content">
+                      <tr role="row" class="odd" v-for="(store,index) in $$data.stores">
+                        <td>{{(query.pageNo-1)*10+(index+1)}}</td>
+                        <td class="sorting_1">{{store.markCode}}</td>
+                        <td>{{store.merchantName}}</td>
+                        <td>{{store.proxyName}}</td>
+                        <td>{{store.proxyName1}}</td>
+                        <td>{{store.createTime|changeTime}}</td>
+                        <td>{{store.source|changeSource}}</td>
+                        <td>{{store.authenticationTime|changeTime}}</td>
+                        <td>{{store.checkedTime|changeTime}}</td>
+                        <td>{{store.status|status}}</td>
+                        <td>
+                          <a @click="audit($event,store.id,store.status)">{{store.status|operate}}</a>
+                        </td>
+                      </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+                <div v-if="isShow">
+                  <img src="http://img.jinkaimen.cn/admin/common/dist/img/ICBCLoading.gif" alt="">
+                </div>
+                <div v-if="$$data.stores.length==0&&!isShow" class="row" style="text-align: center;color: red;font-size: 16px;">
+                  <div class="col-sm-12">无此数据</div>
+                </div>
+                <div class="row">
+                  <div class="col-sm-5">
+                  </div>
+                  <div class="col-sm-7">
+                    <div class="dataTables_paginate paging_simple_numbers" id="example2_paginate">
+                      <ul class="pagination" id="page" @click="bindEvent($event)"></ul>
+                      <span class="count">共{{total}}页 {{count}}条</span>
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
-            <div class="col-md-3">
-              <div class="form-group">
-                <label>审核时间：</label>
-                <div class="form-control">
-                  <input type="date" style="border: none;display:inline-block;width: 45%" name="date" value="" v-model="query.startTime2">至
-                  <input type="date" style="border: none;display:inline-block;width: 45%" name="date" value="" v-model="query.endTime2">
-                </div>
-              </div>
-              <div class="form-group">
-                <label>审核状态：</label>
-                <select class="form-control select2 select2-hidden-accessible" tabindex="-1" aria-hidden="true" v-model="query.status">
-                  <option value="">全部</option>
-                  <option value="0">已注册</option>
-                  <option value="1">已提交基本资料</option>
-                  <option value="2">待审核</option>
-                  <option value="3">审核通过</option>
-                  <option value="4">审核未通过</option>
-                </select>
-              </div>
-            </div>
-            <div class="col-md-1">
-              <div class="btn btn-primary" @click="search" style="margin-top: 85px">筛选</div>
-              <!--<span @click="onload()" download="交易记录" class="btn btn-primary pull-right" style="float: right;color: #fff">导出</span>-->
-            </div>
-          </div>
-          <div id="example2_wrapper" class="dataTables_wrapper form-inline dt-bootstrap">
-            <div class="row">
-              <div class="col-sm-12">
-                <table id="example2" class="table table-bordered table-hover dataTable" role="grid" aria-describedby="example2_info">
-                  <thead>
-                  <tr role="row">
-                    <th class="sorting_asc" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Rendering engine: activate to sort column descending">序号</th>
-                    <th class="sorting_asc" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Rendering engine: activate to sort column descending">商户编号</th>
-                    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="Browser: activate to sort column ascending">商户名称</th>
-                    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="Platform(s): activate to sort column ascending">所属一级代理商</th>
-                    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="Engine version: activate to sort column ascending">所属二级代理</th>
-                    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">注册时间</th>
-                    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">注册方式</th>
-                    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">认证时间</th>
-                    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">审核时间</th>
-                    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">状态</th>
-                    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">操作</th>
-                  </tr>
-                  </thead>
-                  <tbody id="content">
-                  <tr role="row" class="odd" v-for="(store,index) in $$data.stores">
-                    <td>{{(query.pageNo-1)*10+(index+1)}}</td>
-                    <td class="sorting_1">{{store.markCode}}</td>
-                    <td>{{store.merchantName}}</td>
-                    <td>{{store.proxyName}}</td>
-                    <td>{{store.proxyName1}}</td>
-                    <td>{{store.createTime|changeTime}}</td>
-                    <td>{{store.source|changeSource}}</td>
-                    <td>{{store.authenticationTime|changeTime}}</td>
-                    <td>{{store.checkedTime|changeTime}}</td>
-                    <td>{{store.status|status}}</td>
-                    <td>
-                      <a @click="audit($event,store.id,store.status)">{{store.status|operate}}</a>
-                    </td>
-                  </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-            <div v-if="isShow">
-              <img src="http://img.jinkaimen.cn/admin/common/dist/img/ICBCLoading.gif" alt="">
-            </div>
-            <div v-if="$$data.stores.length==0&&!isShow" class="row" style="text-align: center;color: red;font-size: 16px;">
-              <div class="col-sm-12">无此数据</div>
-            </div>
-            <div class="row">
-              <div class="col-sm-5">
-              </div>
-              <div class="col-sm-7">
-                <div class="dataTables_paginate paging_simple_numbers" id="example2_paginate">
-                  <ul class="pagination" id="page" @click="bindEvent($event)"></ul>
-                  <span class="count">共{{total}}页 {{count}}条</span>
-                </div>
-              </div>
-            </div>
-          </div>
+            </el-tab-pane>
+            <el-tab-pane label="好收银" name="second">
+
+            </el-tab-pane>
+          </el-tabs>
         </div>
         <!-- /.box-body -->
       </div>
       <!-- /.box -->
-    </div>
-    <!--下载-->
-    <div class="box box-info mask" v-if="isMask">
-      <div class="box-body" style="text-align: center;font-size: 20px;">
-        确认下载吗？
-      </div>
-      <div class="box-footer clearfix" style="border-top: none">
-        <a :href="'http://'+$$url" @click="close()" class="btn btn-sm btn-info btn-flat pull-left">下载</a>
-        <a href="javascript:void(0)" @click="close()" class="btn btn-sm btn-default btn-flat pull-right">取消</a>
-      </div>
     </div>
   </div>
 </template>
@@ -164,8 +161,6 @@
         },
         stores: [],
         total:0,
-        isMask: false,
-        url: '',
         count:0,
         isShow: false
       }
@@ -230,25 +225,7 @@
       })
     },
     methods: {
-      onload:function () {
-        this.$data.isMask = true;
-        this.$http.post('/admin/query/downLoad',{
-          merchantName:this.$data.merchantName,
-          status: this.$data.status
-        })
-          .then(function (res) {
-            console.log(res)
-            this.$data.url = res.data.url;
-          },function (err) {
-            this.$store.commit('MESSAGE_ACCORD_SHOW', {
-              text: err.statusMessage
-            })
-            this.$data.isMask = false;
-          })
-      },
-      close: function () {
-        this.$data.isMask = false;
-      },
+      //审核
       audit: function (event, id, status) {
         this.$router.push({
           path: '/admin/record/StoreAudit', query: {
@@ -257,6 +234,7 @@
           }
         })
       },
+      //分页
       bindEvent: function (e) {
         e = e||window.event;
         var tar = e.target||e.srcElement,
@@ -264,14 +242,14 @@
           n = this.$data.query.pageNo;
         if(tarInn == '上一页'){
           if(n == 1){
-            tar.parentNode.className+=' disabled'
+            tar.parentNode.className+=' disabled';
             return;
           }
           n--;
         }
         if(tarInn == '下一页'){
           if(n == this.$data.total){
-            tar.parentNode.className+=' disabled'
+            tar.parentNode.className+=' disabled';
             return;
           }
           n++;
@@ -280,7 +258,7 @@
           if(n == Number(tarInn)){
             return;
           }
-          tar.parentNode.className+=' active'
+          tar.parentNode.className+=' active';
           n = Number(tarInn);
         }
         this.$data.query.pageNo = n;
@@ -333,6 +311,7 @@
           })
         })
       },
+      //搜索
       search: function () {
         var content = document.getElementById('content'),
           page = document.getElementById('page');
@@ -392,14 +371,14 @@
             text: err.statusMessage
           })
         })
+      },
+      handleClick: function () {
+
       }
     },
     computed:{
       $$data:function () {
         return this.$data
-      },
-      $$url: function () {
-        return this.$data.url
       }
     },
     filters: {
@@ -455,13 +434,6 @@
           return year+"-"+tod(month)+"-"+tod(date)+" "+tod(hour)+":"+tod(minute)+":"+tod(second);
         }
       },
-      changeName: function (val) {
-        if(val==null){
-          return "无"
-        }else {
-          return val
-        }
-      }
     }
   }
 </script>
