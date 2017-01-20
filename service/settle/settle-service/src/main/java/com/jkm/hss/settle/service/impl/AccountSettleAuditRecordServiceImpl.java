@@ -146,7 +146,7 @@ public class AccountSettleAuditRecordServiceImpl implements AccountSettleAuditRe
         final JSONArray result = new JSONArray();
         final long accountId = paramJo.getLongValue("accountId");
         final List<AccountSettleAuditRecord> records = this.accountSettleAuditRecordDao.selectByAccountId(accountId);
-        if (CollectionUtils.isEmpty(records)) {
+        if (!CollectionUtils.isEmpty(records)) {
             for (AccountSettleAuditRecord record : records) {
                 final JSONObject jo = new JSONObject();
                 result.add(jo);
