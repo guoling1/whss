@@ -2,6 +2,7 @@ package com.jkm.hsy.user.dao;
 
 import com.jkm.hsy.user.entity.HsyMerchantAuditRequest;
 import com.jkm.hsy.user.entity.HsyMerchantAuditResponse;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -20,7 +21,7 @@ public interface HsyMerchantAuditDao {
     /**
      * 查询商户详情
      */
-    HsyMerchantAuditResponse getDetails(HsyMerchantAuditRequest hsyMerchantAuditRequest);
+    HsyMerchantAuditResponse getDetails(@Param("id") Long id);
 
     /**
      * 审核通过
@@ -38,4 +39,6 @@ public interface HsyMerchantAuditDao {
      * @return
      */
     int getCount(HsyMerchantAuditRequest hsyMerchantAuditRequest);
+
+
 }
