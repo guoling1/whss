@@ -10,8 +10,7 @@ import com.jkm.hss.notifier.enums.EnumUserType;
 import com.jkm.hss.notifier.enums.EnumVerificationCodeType;
 import com.jkm.hss.notifier.helper.SendMessageParams;
 import com.jkm.hss.notifier.service.SendMessageService;
-import com.jkm.hss.notifier.service.SmsAuthService;
-import com.jkm.hss.product.enums.EnumProductType;
+import com.jkm.hss.notifier.service.SmsAuthService;;
 import com.jkm.hsy.user.dao.HsyShopDao;
 import com.jkm.hsy.user.entity.AppBizCard;
 import com.jkm.hsy.user.entity.AppBizShop;
@@ -23,7 +22,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
 import java.util.Map;
 
 /**
