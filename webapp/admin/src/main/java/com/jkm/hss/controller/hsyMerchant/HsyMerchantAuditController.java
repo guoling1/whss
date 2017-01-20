@@ -26,7 +26,8 @@ public class HsyMerchantAuditController extends BaseController {
     public CommonResponse throughAudit(@RequestBody final HsyMerchantAuditRequest hsyMerchantAuditRequest){
         final PageModel<HsyMerchantAuditResponse> pageModel = new PageModel<HsyMerchantAuditResponse>(hsyMerchantAuditRequest.getPageNo(), hsyMerchantAuditRequest.getPageSize());
         hsyMerchantAuditRequest.setOffset(pageModel.getFirstIndex());
-        return null;
+        hsyMerchantAuditService.auditPass(hsyMerchantAuditRequest);
+        return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE,"审核通过");
 
     }
 }
