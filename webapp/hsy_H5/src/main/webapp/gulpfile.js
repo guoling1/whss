@@ -39,8 +39,8 @@ gulp.task('replace-dealer', function () {
     .pipe(gulp.dest('WEB-INF/jsp/dealer'));
 });
 
-gulp.task('less-hss', function () {
-  return gulp.src('less/**/hss.less')
+gulp.task('less-hsy', function () {
+  return gulp.src('less/**/hsy.less')
     .pipe(less({
       paths: [path.join(__dirname, 'less', 'includes')]
     }))
@@ -48,23 +48,23 @@ gulp.task('less-hss', function () {
     .pipe(gulp.dest('css'));
 });
 
-gulp.task('js-hss', () => {
-  return gulp.src('es6/hss/*.js')
+gulp.task('js-hsy', () => {
+  return gulp.src('es6/hsy/*.js')
     .pipe(sourcemaps.init())
     .pipe(babel({
       presets: ['es2015']
     }))
     .pipe(rename({suffix: ".min"}))
     .pipe(sourcemaps.write('.'))
-    .pipe(gulp.dest('js/hss/0.1.19'));
+    .pipe(gulp.dest('js/hsy/2.0.1'));
 });
 
-gulp.task('replace-hss', function () {
+gulp.task('replace-hsy', function () {
   return gulp.src('WEB-INF/jsp/*.jsp')
-    .pipe(replace('0.1.19', '0.1.19'))
+    .pipe(replace('2.0.1', '2.0.1'))
     .pipe(gulp.dest('WEB-INF/jsp'));
 });
 
 // default 使用默认配置 开发时候使用
-gulp.task('build-hss', ['js-hss', 'less-hss', 'replace-hss']);
+gulp.task('build-hsy', ['js-hsy', 'less-hsy', 'replace-hsy']);
 gulp.task('build-dealer', ['js-dealer', 'less-dealer', 'replace-dealer']);
