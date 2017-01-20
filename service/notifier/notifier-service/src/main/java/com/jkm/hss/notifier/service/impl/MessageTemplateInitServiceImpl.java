@@ -40,6 +40,8 @@ public class MessageTemplateInitServiceImpl implements MessageTemplateInitServic
                 "好收银提现验证码${code}，5分钟有效，千万不要告诉别人哦【" + platformName + "】");
         addSmsTemplate(EnumNoticeType.WITHDRAW_CODE_DEALER,
                 "好收银提现验证码${code}，5分钟有效，千万不要告诉别人哦【" + platformName + "】");
+        addSmsTemplate(EnumNoticeType.WITHDRAW_CODE_MERCHANT,
+                "好收银提现验证码${code}，5分钟有效，千万不要告诉别人哦【" + platformName + "】");
         addSmsTemplate(EnumNoticeType.DUPLICATE_PAY_REFUND,
                 "您在${time}发生一笔重复支付，多余款项${amount}已退回至原支付账户，预计1~7个工作日到账，请注意查收【" + platformName + "】");
         addSmsTemplate(EnumNoticeType.REGISTER_MERCHANT,

@@ -13,8 +13,6 @@ import com.jkm.hss.bill.enums.EnumPaymentType;
 import com.jkm.hss.bill.service.OrderService;
 import com.jkm.hss.bill.service.PayService;
 import com.jkm.hss.controller.BaseController;
-import com.jkm.hss.dealer.entity.Dealer;
-import com.jkm.hss.dealer.enums.EnumRecommendBtn;
 import com.jkm.hss.dealer.service.DealerService;
 import com.jkm.hss.dealer.service.PartnerShallProfitDetailService;
 import com.jkm.hss.dealer.service.ShallProfitDetailService;
@@ -30,11 +28,11 @@ import com.jkm.hss.merchant.helper.WxPubUtil;
 import com.jkm.hss.merchant.service.*;
 import com.jkm.hss.product.entity.ProductChannelDetail;
 import com.jkm.hss.product.entity.UpgradePayRecord;
-import com.jkm.hss.product.helper.response.UpgradeResult;
 import com.jkm.hss.product.entity.UpgradeRules;
 import com.jkm.hss.product.enums.EnumPayChannelSign;
 import com.jkm.hss.product.enums.EnumUpgrade;
 import com.jkm.hss.product.enums.EnumUpgradePayResult;
+import com.jkm.hss.product.helper.response.UpgradeResult;
 import com.jkm.hss.product.servcie.ProductChannelDetailService;
 import com.jkm.hss.product.servcie.UpgradePayRecordService;
 import com.jkm.hss.product.servcie.UpgradeRulesService;
@@ -84,9 +82,6 @@ public class LoginController extends BaseController {
     private MerchantInfoCheckRecordService merchantInfoCheckRecordService;
 
     @Autowired
-    private OrderRecordService orderRecordService;
-
-    @Autowired
     private UpgradeRulesService upgradeRulesService;
 
     @Autowired
@@ -105,15 +100,14 @@ public class LoginController extends BaseController {
     private ShallProfitDetailService shallProfitDetailService;
 
     @Autowired
-    private DealerService dealerService;
-
-    @Autowired
     private UpgradePayRecordService upgradePayRecordService;
 
     @Autowired
     private PayService payService;
+
     @Autowired
     private PartnerShallProfitDetailService partnerShallProfitDetailService;
+
     /**
      * 扫固定码注册和微信公众号注册入口
      * @param request

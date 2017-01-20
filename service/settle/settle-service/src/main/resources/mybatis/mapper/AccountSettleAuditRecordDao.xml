@@ -15,6 +15,7 @@
           settle_amount,
           account_check_status,
           settle_status,
+          settle_date,
           status
           )
           VALUES
@@ -30,6 +31,7 @@
           #{settleAmount},
           #{accountCheckStatus},
           #{settleStatus},
+          #{settleDate},
           #{status}
           );
     </insert>
@@ -56,5 +58,53 @@
          <foreach collection="recordIds" index="index" item="item" open="(" separator="," close=")">
              #{item}
          </foreach>
+    </select>
+
+    <select id="selectByAccountId" resultType="com.jkm.hss.settle.entity.AccountSettleAuditRecord">
+        SELECT * FROM tb_account_settle_audit_record WHERE account_id = #{accountId} AND settle_status = 3
+    </select>
+
+    <select id="selectCountByParam" resultType="java.lang.Long">
+        SELECT COUNT(0) FROM tb_account_settle_audit_record
+        <where>
+            <if test="merchantNo != null">
+                AND merchant_no = #{merchantNo}
+            </if>
+            <if test="merchantName != null">
+                AND merchant_name LIKE '%'#{merchantName}'%'
+            </if>
+            <if test="startSettleDate != null">
+                AND settle_date BETWEEN #{startSettleDate} AND #{endSettleDate}
+            </if>
+            <if test="checkedStatus > 0">
+                AND account_check_status = #{checkedStatus}
+            </if>
+            <if test="settleStatus > 0">
+                AND settle_status = #{settleStatus}
+            </if>
+        </where>
+    </select>
+
+    <select id="selectByParam" resultType="com.jkm.hss.settle.entity.AccountSettleAuditRecord">
+        SELECT * FROM tb_account_settle_audit_record
+        <where>
+            <if test="merchantNo != null">
+                AND merchant_no = #{merchantNo}
+            </if>
+            <if test="merchantName != null">
+                AND merchant_name LIKE '%'#{merchantName}'%'
+            </if>
+            <if test="startSettleDate != null">
+                AND settle_date BETWEEN #{startSettleDate} AND #{endSettleDate}
+            </if>
+            <if test="checkedStatus > 0">
+                AND account_check_status = #{checkedStatus}
+            </if>
+            <if test="settleStatus > 0">
+                AND settle_status = #{settleStatus}
+            </if>
+        </where>
+        ORDER BY id DESC
+        LIMIT #{offset}, #{count}
     </select>
 </mapper>

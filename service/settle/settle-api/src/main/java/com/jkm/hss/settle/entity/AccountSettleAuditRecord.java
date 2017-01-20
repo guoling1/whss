@@ -80,6 +80,11 @@ public class AccountSettleAuditRecord extends BaseEntity {
     private int settleStatus;
 
     /**
+     * 结算日期
+     */
+    private Date settleDate;
+
+    /**
      * 是否是待对账
      *
      * @return

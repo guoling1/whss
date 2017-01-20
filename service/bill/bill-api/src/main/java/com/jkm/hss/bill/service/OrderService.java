@@ -29,7 +29,6 @@ public interface OrderService {
      *
      * @param payOrderId
      * @param merchantId
-     * @param tradePeriod
      */
     long createPlayMoneyOrderByPayOrder(long payOrderId, long merchantId, String settleType);
 

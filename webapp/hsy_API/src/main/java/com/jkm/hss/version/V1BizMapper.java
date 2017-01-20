@@ -24,8 +24,29 @@ public class V1BizMapper {
 		bizMapper.put("HSY001020", new String[]{"hsyQrCodeService","bindQrCode","绑定成功"});
 
 
-
+		/**
+		 * app收款
+		 */
 		bizMapper.put("HSY001030", new String[]{"hsyTradeService", "appReceipt"});
-		bizMapper.put("HSY001031", new String[]{"hsyTradeService", "withdraw"});
+		/**
+		 * app提现
+		 */
+		bizMapper.put("HSY001031", new String[]{"hsyTradeService", "appWithdraw"});
+		/**
+		 * app获取提现页面信息
+		 */
+		bizMapper.put("HSY001032", new String[]{"hsyTradeService", "getWithdrawInfo"});
+		/**
+		 * 账户余额信息
+		 */
+		bizMapper.put("HSY001033", new String[]{"hsyAccountService", "getAccount"});
+		/**
+		 * 获取提现验证码
+		 */
+		bizMapper.put("HSY001034", new String[]{"hsyAccountService", "getVerifyCode"});
+		/**
+		 * 结算记录
+		 */
+		bizMapper.put("HSY001035", new String[]{"accountSettleAuditRecordService", "appSettleRecordList"});
 	}
 }

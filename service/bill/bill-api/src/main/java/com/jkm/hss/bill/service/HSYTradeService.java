@@ -4,6 +4,7 @@ package com.jkm.hss.bill.service;
 import com.jkm.hss.bill.entity.Order;
 import com.jkm.hss.bill.entity.callback.PaymentSdkPayCallbackResponse;
 import com.jkm.hss.bill.entity.callback.PaymentSdkWithdrawCallbackResponse;
+import com.jkm.hss.bill.enums.EnumPlayMoneyChannel;
 import com.jkm.hsy.user.entity.AppBizShop;
 import com.jkm.hsy.user.entity.AppParam;
 import org.apache.commons.lang3.tuple.Pair;
@@ -12,6 +13,15 @@ import org.apache.commons.lang3.tuple.Pair;
  * Created by yulong.zhang on 2017/1/17.
  */
 public interface HSYTradeService {
+
+    /**
+     * 查询提现页面所需信息app
+     *
+     * @param dataParam
+     * @param appParam
+     * @return
+     */
+    String getWithdrawInfo(String dataParam, AppParam appParam);
 
     /**
      * app收款
@@ -31,7 +41,7 @@ public interface HSYTradeService {
      * @param appId
      * @return
      */
-    String receipt(String totalAmount,  final int channel, final long shopId, final String appId);
+    Pair<Integer, String> receipt(String totalAmount, final int channel, final long shopId, final String appId);
 
 
     /**
@@ -83,16 +93,25 @@ public interface HSYTradeService {
      */
     void paySplitAccount(Order order, AppBizShop shop);
 
+
+    /**
+     * app提现
+     *
+     * @param paramData
+     * @param appParam
+     * @return
+     */
+    String appWithdraw(String paramData, AppParam appParam);
+
     /**
      * 提现
      *
-     * @param shopId 店铺id
+     * @param accountId
      * @param totalAmount
      * @param channel
-     * @param settleType
      * @return
      */
-    String withdraw(long shopId, String totalAmount, int channel, String settleType);
+    Pair<Integer, String> withdraw(long accountId, String totalAmount, int channel, String appId);
 
     /**
      * 提现实现
@@ -101,7 +120,7 @@ public interface HSYTradeService {
      * @param playMoneyOrderId
      * @return
      */
-    String withdrawImpl(AppBizShop shop, long playMoneyOrderId);
+    Pair<Integer, String> withdrawImpl(AppBizShop shop, long playMoneyOrderId, EnumPlayMoneyChannel playMoneyChannel);
 
     /**
      * 提现回调

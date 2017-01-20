@@ -35,6 +35,7 @@ public class WebSkipController extends BaseController {
         model.addAttribute("secondSn", orderId.substring(orderId.length() - 6, orderId.length()));
         return "/buySuccess";
     }
+
     /**
      * 扫固定码微信支付页面
      * @param request
