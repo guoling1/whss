@@ -1,6 +1,7 @@
 package com.jkm.hss.controller.active;
 
 import com.google.gson.Gson;
+import com.jkm.base.common.spring.core.SpringContextHolder;
 import com.jkm.hss.version.VersionMapper;
 import com.jkm.hsy.user.entity.AppParam;
 import com.jkm.hsy.user.entity.AppResult;
@@ -62,7 +63,8 @@ public class ActiveController {
             return;
         }
 
-        ApplicationContext ac= WebApplicationContextUtils.getRequiredWebApplicationContext(request.getSession().getServletContext());
+        ApplicationContext ac=SpringContextHolder.getApplicationContext();
+//        ApplicationContext ac= WebApplicationContextUtils.getRequiredWebApplicationContext(request.getSession().getServletContext());
         Object obj=ac.getBean(strs[0]);
         Class<? extends Object> clazz = obj.getClass();
         Method method=null;
