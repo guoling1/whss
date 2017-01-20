@@ -179,6 +179,10 @@ public class AccountSettleAuditRecordServiceImpl implements AccountSettleAuditRe
             final HashSet<Long> accountIds = new HashSet<>();
             for (SettleAccountFlow settleAccountFlow : settleAccountFlows) {
                 accountIds.add(settleAccountFlow.getAccountId());
+                if (settleAccountFlow.getSettleAuditRecordId() > 0) {
+                    log.error("###############结算流水[{}], 已经存在结算审核记录#################", settleAccountFlow.getId());
+                    return;
+                }
             }
             final List<AppBizShop> shopList = this.hsyShopDao.findAppBizShopByAccountIDList(new ArrayList<>(accountIds));
             //accountId--shop(主)
@@ -418,11 +422,11 @@ public class AccountSettleAuditRecordServiceImpl implements AccountSettleAuditRe
         this.accountService.increaseAvailableAmount(merchantAccount.getId(), merchantIncreaseSettleAccountFlow.getIncomeAmount());
         this.accountService.decreaseSettleAmount(merchantAccount.getId(), merchantIncreaseSettleAccountFlow.getIncomeAmount());
         this.settleAccountFlowService.addSettleAccountFlow(merchantAccount.getId(), orderNo, merchantIncreaseSettleAccountFlow.getIncomeAmount(),
-                "支付", EnumAccountFlowType.DECREASE, merchantIncreaseSettleAccountFlow.getAppId(), merchantIncreaseSettleAccountFlow.getTradeDate(),
+                "支付结算", EnumAccountFlowType.DECREASE, merchantIncreaseSettleAccountFlow.getAppId(), merchantIncreaseSettleAccountFlow.getTradeDate(),
                 merchantIncreaseSettleAccountFlow.getAccountUserType());
         //可用余额流水增加
         this.accountFlowService.addAccountFlow(merchantAccount.getId(), orderNo, merchantIncreaseSettleAccountFlow.getIncomeAmount(),
-                "支付", EnumAccountFlowType.INCREASE);
+                "支付结算", EnumAccountFlowType.INCREASE);
     }
 
     /**
