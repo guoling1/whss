@@ -515,7 +515,8 @@ public class HSYTradeServiceImpl implements HSYTradeService {
             paymentSdkDaiFuRequest.setAppId(playMoneyOrder.getAppId());
             paymentSdkDaiFuRequest.setOrderNo(playMoneyOrder.getOrderNo());
             paymentSdkDaiFuRequest.setTotalAmount(playMoneyOrder.getTradeAmount().subtract(playMoneyOrder.getPoundage()).toPlainString());
-            paymentSdkDaiFuRequest.setTradeType(playMoneyOrder.getSettleType());
+            // TODO
+            paymentSdkDaiFuRequest.setTradeType("D0");
             paymentSdkDaiFuRequest.setIsCompany("0");
             paymentSdkDaiFuRequest.setMobile(appBizCard.getCardCellphone());
             paymentSdkDaiFuRequest.setBankName(appBizCard.getCardBank());
