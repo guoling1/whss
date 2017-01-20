@@ -168,11 +168,6 @@ public class AccountSettleAuditRecordServiceImpl implements AccountSettleAuditRe
         final List<Date> tradeDateList = new ArrayList<>();
         final DateTime now = DateTime.now();
         tradeDateList.add(DateFormatUtil.parse(DateFormatUtil.format(now.minusDays(1).toDate(), DateFormatUtil.yyyy_MM_dd) , DateFormatUtil.yyyy_MM_dd));
-        Preconditions.checkState(!(6 == now.dayOfWeek().get() || 7 == now.dayOfWeek().get()), "T1结算定时任务，在非法的日期启动");
-        if (1 == now.getDayOfWeek()) {
-            tradeDateList.add(DateFormatUtil.parse(DateFormatUtil.format(now.minusDays(2).toDate(), DateFormatUtil.yyyy_MM_dd) , DateFormatUtil.yyyy_MM_dd));
-            tradeDateList.add(DateFormatUtil.parse(DateFormatUtil.format(now.minusDays(3).toDate(), DateFormatUtil.yyyy_MM_dd) , DateFormatUtil.yyyy_MM_dd));
-        }
         //商户昨日待结算记录
         final List<SettleAccountFlow> settleAccountFlows = this.settleAccountFlowService.getMerchantLastWordDayRecord(tradeDateList);
         if (!CollectionUtils.isEmpty(settleAccountFlows)) {
@@ -192,27 +187,6 @@ public class AccountSettleAuditRecordServiceImpl implements AccountSettleAuditRe
                     return input.getAccountID();
                 }
             });
-//            final List<Long> shopIds = Lists.transform(shopList, new Function<AppBizShop, Long>() {
-//                @Override
-//                public Long apply(AppBizShop input) {
-//                    return input.getId();
-//                }
-//            });
-//            final List<AppAuUser> users = new ArrayList<>();
-//            final List<Long> dealerIds = Lists.transform(users, new Function<AppAuUser, Long>() {
-//                @Override
-//                public Long apply(AppAuUser input) {
-//                    return input.getDealerID();
-//                }
-//            });
-//            final List<Dealer> dealers = this.dealerService.getByIds(dealerIds);
-//            //dealerId--dealer
-//            final Map<Long, Dealer> dealerMap = Maps.uniqueIndex(dealers, new Function<Dealer, Long>() {
-//                @Override
-//                public Long apply(Dealer input) {
-//                    return input.getId();
-//                }
-//            });
             //accountId--List<SettleAccountFlow>
             final Map<Long, List<SettleAccountFlow>> accountIdFlowMap = this.getAccountIdFlowMap(accountIds, settleAccountFlows);
             if (!accountIdFlowMap.isEmpty()) {
@@ -221,15 +195,7 @@ public class AccountSettleAuditRecordServiceImpl implements AccountSettleAuditRe
                 while (keyIterator.hasNext()) {
                     final Long key = keyIterator.next();
                     final List<SettleAccountFlow> flows = accountIdFlowMap.get(key);
-                    //周一
-                    if (1 == now.getDayOfWeek()) {
-                        for (Date date : tradeDateList) {
-                            final List<SettleAccountFlow> flows1 = this.getFlows(date, flows);
-                            this.generateAuditRecord(key, flows1, shopMap);
-                        }
-                    } else if (now.getDayOfWeek() >=2 && now.getDayOfWeek() <= 5) {//
-                        this.generateAuditRecord(key, flows, shopMap);
-                    }
+                    this.generateAuditRecord(key, flows, shopMap);
                 }
             }
         }
