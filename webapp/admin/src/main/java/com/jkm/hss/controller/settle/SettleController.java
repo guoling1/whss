@@ -51,6 +51,16 @@ public class SettleController extends BaseController {
     @Qualifier("accountSettleAuditRecordService")
     private AccountSettleAuditRecordService accountSettleAuditRecordService;
 
+    @ResponseBody
+    @RequestMapping(value = "settleTest")
+    public CommonResponse settleTest() {
+        log.info("结算审核定时任务--start--test");
+        this.accountSettleAuditRecordService.handleT1SettleTask();
+        log.info("结算审核定时任务--end--test");
+        return CommonResponse.simpleResponse(0, "success");
+    }
+
+
     /**
      *  结算
      *
