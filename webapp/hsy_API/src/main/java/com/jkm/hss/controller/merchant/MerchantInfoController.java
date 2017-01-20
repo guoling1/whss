@@ -281,7 +281,7 @@ public class MerchantInfoController extends BaseController {
         meta.setContentType("image/*");
         SimpleDateFormat sdf =   new SimpleDateFormat("yyyyMMdd");
         String nowDate = sdf.format(new Date());
-        String photoName =  nowDate + "/" + ".jpeg";
+        String photoName =  nowDate + "/" + ".jpg";
         ossClient.putObject(ApplicationConsts.getApplicationConfig().ossBucke(), photoName, inputStream, meta);
         Date expiration = new Date(new Date().getTime() + 30*60*1000);
         URL url = ossClient.generatePresignedUrl(ApplicationConsts.getApplicationConfig().ossBucke(), photoName,expiration);

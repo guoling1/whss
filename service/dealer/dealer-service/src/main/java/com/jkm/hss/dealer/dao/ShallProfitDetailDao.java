@@ -24,14 +24,14 @@ public interface ShallProfitDetailDao {
      * @param profitDate
      * @return
      */
-    List<ShallProfitDetail> selectDeatailByProfitDate(String profitDate);
+    List<ShallProfitDetail> selectDetailByProfitDateToHss(String profitDate);
 
     /**
      * 查询商户id
      * @param profitDate
      * @return
      */
-    List<Long> selectMerchantIdByProfitDate(String profitDate);
+    List<Long> selectMerchantIdByProfitDateToHss(String profitDate);
 
     /**
      *
@@ -39,7 +39,7 @@ public interface ShallProfitDetailDao {
      * @param profitDate
      * @return
      */
-    BigDecimal selectSecondCollectMoneyByMerchantIdAndProfitDate(@Param("merchantId") Long merchantId, @Param("profitDate") String profitDate);
+    BigDecimal selectSecondCollectMoneyByMerchantIdAndProfitDateToHss(@Param("merchantId") Long merchantId, @Param("profitDate") String profitDate);
 
     /**
      *
@@ -47,7 +47,7 @@ public interface ShallProfitDetailDao {
      * @param profitDate
      * @return
      */
-    BigDecimal selectFirstCollectMoneyByMerchantIdAndProfitDate(@Param("merchantId") Long merchantId, @Param("profitDate") String profitDate);
+    BigDecimal selectFirstCollectMoneyByMerchantIdAndProfitDateToHss(@Param("merchantId") Long merchantId, @Param("profitDate") String profitDate);
 
     /**
      *
@@ -55,7 +55,7 @@ public interface ShallProfitDetailDao {
      * @param profitDate
      * @return
      */
-    BigDecimal selectFirstWithdrawMoneyByMerchantIdAndProfitDate(@Param("merchantId") Long merchantId, @Param("profitDate") String profitDate);
+    BigDecimal selectFirstWithdrawMoneyByMerchantIdAndProfitDateToHss(@Param("merchantId") Long merchantId, @Param("profitDate") String profitDate);
 
     /**
      *
@@ -63,14 +63,14 @@ public interface ShallProfitDetailDao {
      * @param profitDate
      * @return
      */
-    BigDecimal selectSecondWithdrawMoneyByMerchantIdAndProfitDate(@Param("merchantId") Long merchantId, @Param("profitDate") String profitDate);
+    BigDecimal selectSecondWithdrawMoneyByMerchantIdAndProfitDateToHss(@Param("merchantId") Long merchantId, @Param("profitDate") String profitDate);
 
     /**
      *
      * @param profitDate
      * @return
      */
-    List<Long> selectDealerIdByProfitDate(String profitDate);
+    List<Long> selectDealerIdByProfitDateToHss(String profitDate);
 
     /**
      *
@@ -78,7 +78,7 @@ public interface ShallProfitDetailDao {
      * @param profitDate
      * @return
      */
-    BigDecimal selectFirstCollectMoneyByDealerIdAndProfitDate(@Param("dealerId") long dealerId, @Param("profitDate") String profitDate);
+    BigDecimal selectFirstCollectMoneyByDealerIdAndProfitDateToHss(@Param("dealerId") long dealerId, @Param("profitDate") String profitDate);
 
     /**
      *
@@ -86,7 +86,7 @@ public interface ShallProfitDetailDao {
      * @param profitDate
      * @return
      */
-    BigDecimal selectFirstWithdrawMoneyByDealerIdAndProfitDate(@Param("dealerId") long dealerId, @Param("profitDate") String profitDate);
+    BigDecimal selectFirstWithdrawMoneyByDealerIdAndProfitDateToHss(@Param("dealerId") long dealerId, @Param("profitDate") String profitDate);
 
     /**
      * 查询
@@ -94,7 +94,7 @@ public interface ShallProfitDetailDao {
      * @param profitDate
      * @return
      */
-    BigDecimal selectSecondYesterdayProfitMoney(@Param("dealerId") long dealerId, @Param("profitDate") String profitDate);
+    BigDecimal selectSecondYesterdayProfitMoneyToHss(@Param("dealerId") long dealerId, @Param("profitDate") String profitDate);
 
     /**
      * 查询
@@ -102,15 +102,15 @@ public interface ShallProfitDetailDao {
      * @param profitDate
      * @return
      */
-    BigDecimal selectSecondYesterdayDealMoney(@Param("dealerId") long dealerId, @Param("profitDate") String profitDate);
+    BigDecimal selectSecondYesterdayDealMoneyToHss(@Param("dealerId") long dealerId, @Param("profitDate") String profitDate);
 
     /**
      * 查询
-     * @param dealerId
      * @param
+     * @param dealerId
      * @return
      */
-    BigDecimal selectSecondHistoryProfitMoney(@Param("dealerId") long dealerId);
+    BigDecimal selectSecondHistoryProfitMoneyToHss(@Param("dealerId") long dealerId);
 
     /**
      * 查询
@@ -118,29 +118,14 @@ public interface ShallProfitDetailDao {
      * @param profitDate
      * @return
      */
-    BigDecimal selectFirstSecondYesterdayProfitMoney(@Param("dealerId") long dealerId, @Param("profitDate") String profitDate);
+    BigDecimal selectFirstSecondYesterdayProfitMoneyToHss(@Param("dealerId") long dealerId, @Param("profitDate") String profitDate);
 
     /**
      * 查询
      * @param dealerId
      * @return
      */
-    BigDecimal selectFirstSecondHistoryProfitMoney(@Param("dealerId") long dealerId);
-
-    /**
-     * 查询
-     * @param dealerId
-     * @param profitDate
-     * @return
-     */
-    BigDecimal selectFirstMerchantYesterdayProfitMoney(@Param("dealerId") long dealerId, @Param("profitDate") String profitDate);
-
-    /**
-     * 查询
-     * @param dealerId
-     * @return
-     */
-    BigDecimal selectFirstMerchantHistoryProfitMoney(@Param("dealerId") long dealerId);
+    BigDecimal selectFirstSecondHistoryProfitMoneyToHss(@Param("dealerId") long dealerId);
 
     /**
      * 查询
@@ -148,21 +133,36 @@ public interface ShallProfitDetailDao {
      * @param profitDate
      * @return
      */
-    BigDecimal selectFirstYesterdayDealMoney(@Param("dealerId") long dealerId, @Param("profitDate") String profitDate);
+    BigDecimal selectFirstMerchantYesterdayProfitMoneyToHss(@Param("dealerId") long dealerId, @Param("profitDate") String profitDate);
+
+    /**
+     * 查询
+     * @param dealerId
+     * @return
+     */
+    BigDecimal selectFirstMerchantHistoryProfitMoneyToHss(@Param("dealerId") long dealerId);
+
+    /**
+     * 查询
+     * @param dealerId
+     * @param profitDate
+     * @return
+     */
+    BigDecimal selectFirstYesterdayDealMoneyToHss(@Param("dealerId") long dealerId, @Param("profitDate") String profitDate);
 
     /**
      * 查询
      * @param orderId
      * @return
      */
-    ShallProfitDetail selectByOrderId(@Param("orderId") String orderId);
+    ShallProfitDetail selectByOrderIdToHss(@Param("orderId") String orderId);
 
     /**
      * 查询
      * @param profitDate
      * @return
      */
-    BigDecimal selectCompanyCollectProfitByProfitDate(@Param("profitDate") String profitDate);
+    BigDecimal selectCompanyCollectProfitByProfitDateToHss(@Param("profitDate") String profitDate);
 
 
     /**
@@ -170,7 +170,7 @@ public interface ShallProfitDetailDao {
      * @param profitDate
      * @return
      */
-    BigDecimal selectCompanyWithdrawProfitByProfitDate(@Param("profitDate") String profitDate);
+    BigDecimal selectCompanyWithdrawProfitByProfitDateToHss(@Param("profitDate") String profitDate);
 
     /**
      * 查询二代每日分润详情
@@ -178,7 +178,7 @@ public interface ShallProfitDetailDao {
      * @param statisticsDate
      * @return
      */
-    List<ShallProfitDetail> selectByProfitDateAndSecondDealerId(@Param("secondDealerId") long secondDealerId, @Param("statisticsDate") String statisticsDate);
+    List<ShallProfitDetail> selectByProfitDateAndSecondDealerIdToHss(@Param("secondDealerId") long secondDealerId, @Param("statisticsDate") String statisticsDate);
 
     /**
      * 查询一代每日分润详情
@@ -186,7 +186,7 @@ public interface ShallProfitDetailDao {
      * @param statisticsDate
      * @return
      */
-    List<ShallProfitDetail> selectByProfitDateAndFirstDealerId(@Param("firstDealerId") long firstDealerId, @Param("statisticsDate") String statisticsDate);
+    List<ShallProfitDetail> selectByProfitDateAndFirstDealerIdToHss(@Param("firstDealerId") long firstDealerId, @Param("statisticsDate") String statisticsDate);
 
 
     /**
@@ -194,12 +194,12 @@ public interface ShallProfitDetailDao {
      * @param profitDate
      * @return
      */
-    List<ShallProfitDetail> selectCompanyByProfitDate(String profitDate);
+    List<ShallProfitDetail> selectCompanyByProfitDateToHss(String profitDate);
 
     /**
      *
      * @param statisticsDate
      * @return
      */
-    List<Long> getMerchantIdByProfitDate(String statisticsDate);
+    List<Long> getMerchantIdByProfitDateToHss(String statisticsDate);
 }

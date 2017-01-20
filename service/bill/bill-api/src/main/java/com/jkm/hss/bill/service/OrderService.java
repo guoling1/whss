@@ -6,6 +6,7 @@ import com.jkm.hss.bill.entity.MerchantTradeResponse;
 import com.jkm.hss.bill.entity.Order;
 import com.jkm.hss.bill.helper.requestparam.QueryMerchantPayOrdersRequestParam;
 import com.jkm.hss.merchant.helper.request.OrderTradeRequest;
+import com.jkm.hsy.user.entity.AppBizShop;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -30,7 +31,19 @@ public interface OrderService {
      * @param merchantId
      * @param tradePeriod
      */
-    long createPlayMoneyOrderByPayOrder(long payOrderId, long merchantId, String tradePeriod);
+    long createPlayMoneyOrderByPayOrder(long payOrderId, long merchantId, String settleType);
+
+    /**
+     * 创建提现单
+     *
+     * @param shop
+     * @param amount
+     * @param appId
+     * @param channel
+     * @param settleType
+     * @return
+     */
+    long createPlayMoneyOrder(AppBizShop shop, BigDecimal amount, String appId, int channel, String settleType);
 
     /**
      * 更新

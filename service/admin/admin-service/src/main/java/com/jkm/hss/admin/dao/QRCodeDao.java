@@ -4,6 +4,7 @@ import com.jkm.hss.admin.entity.CodeQueryResponse;
 import com.jkm.hss.admin.entity.QRCode;
 import com.jkm.hss.admin.helper.responseparam.ActiveCodeCount;
 import com.jkm.hss.admin.helper.responseparam.DistributeCodeCount;
+import com.jkm.hss.admin.helper.responseparam.QRCodeList;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
@@ -145,6 +146,12 @@ public interface QRCodeDao {
      * @return
      */
     QRCode selectLatestQRCodeForUpdate();
+    /**
+     *按系统类型查询最新的一个码段(新增)
+     *
+     * @return
+     */
+    QRCode selectLatestQRCodeForUpdateBySysType(String sysType);
 
     /**
      * 查询一级代理商下未分配的码段
@@ -379,4 +386,30 @@ public interface QRCodeDao {
      * @return
      */
     CodeQueryResponse getMerchantName(@Param("merchantId") long merchantId);
+
+
+    /**
+     * 按码段查询
+     *
+     * @param code
+     * @return
+     */
+    QRCode selectByCodeAndSysType(@Param("code") String code,@Param("sysType") String sysType);
+
+
+
+    /**
+     * 店铺个数
+     * @param shopId
+     * @param sysType
+     * @return
+     */
+    int bindShopCount(@Param("shopId") long shopId,@Param("sysType") String sysType);
+    /**
+     * 店铺列表
+     * @param shopId
+     * @param sysType
+     * @return
+     */
+    List<QRCodeList> bindShopList(@Param("shopId") long shopId, @Param("sysType") String sysType);
 }

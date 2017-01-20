@@ -1,9 +1,9 @@
 package com.jkm.hss.bill.service;
 
-import org.apache.commons.lang3.tuple.Triple;
+
+import com.jkm.hss.product.enums.EnumProductType;
 
 import java.math.BigDecimal;
-import java.util.Map;
 
 /**
  * Created by yulong.zhang on 2016/12/25.
@@ -17,7 +17,7 @@ public interface CalculateService {
      * @param channelSign  101,102,103
      * @return
      */
-    BigDecimal getMerchantPayPoundageRate(long merchantId, int channelSign);
+    BigDecimal getMerchantPayPoundageRate(EnumProductType type, long merchantId, int channelSign);
 
     /**
      * 查询商户提现手续
@@ -26,7 +26,7 @@ public interface CalculateService {
      * @param channelSign  101,102,103
      * @return
      */
-    BigDecimal getMerchantWithdrawPoundage(long merchantId, int channelSign);
+    BigDecimal getMerchantWithdrawPoundage(EnumProductType type,long merchantId, int channelSign);
 
     /**
      * 计算商户的支付手续费

@@ -162,6 +162,12 @@
             <if test="level > 0">
                 AND level = #{level}
             </if>
+            <if test="bankReserveMobile!=null and bankReserveMobile!=''">
+                AND bank_reserve_mobile=#{bankReserveMobile}
+            </if>
+            <if test="settleBankCard!=null and settleBankCard!=''">
+                AND settle_bank_card=#{settleBankCard}
+            </if>
             ORDER BY id DESC LIMIT #{offset},#{count}
         </where>
     </select>

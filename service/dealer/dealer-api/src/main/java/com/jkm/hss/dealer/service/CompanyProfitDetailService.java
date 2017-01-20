@@ -17,7 +17,7 @@ public interface CompanyProfitDetailService {
      * @param profitDate
      * @return
      */
-    BigDecimal selectCollectProfitByProfitDate(String profitDate);
+    BigDecimal selectCollectProfitByProfitDateToHss(String profitDate);
 
     /**
      * 查询
@@ -31,12 +31,12 @@ public interface CompanyProfitDetailService {
      * @param profitDate
      * @return
      */
-    List<CompanyProfitDetail> selectByProfitDate(String profitDate);
+    List<CompanyProfitDetail> selectByProfitDateToHss(String profitDate);
 
     /**
      * 查询商户ids
      * @param profitDate
      * @return
      */
-    List<Long> getMerchantIdByProfitDate(String profitDate);
+    List<Long> getMerchantIdByProfitDateToHss(String profitDate);
 }

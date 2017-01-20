@@ -4,6 +4,7 @@
     <insert id="init" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO tb_shall_profit_detail
         (merchant_id,
+        product_type,
         payment_sn,
         channel_type,
         total_fee,
@@ -22,6 +23,7 @@
         status
         )VALUES(
         #{merchantId},
+        #{productType},
         #{paymentSn},
         #{channelType},
         #{totalFee},
@@ -40,97 +42,97 @@
         #{status}
         )
     </insert>
-    <select id="selectDeatailByProfitDate" resultType="com.jkm.hss.dealer.entity.ShallProfitDetail">
-        SELECT * FROM tb_shall_profit_detail WHERE profit_date = #{profitDate}
+    <select id="selectDetailByProfitDateToHss" resultType="com.jkm.hss.dealer.entity.ShallProfitDetail">
+        SELECT * FROM tb_shall_profit_detail WHERE product_type = 'hss' AND profit_date = #{profitDate}
     </select>
-    <select id="selectMerchantIdByProfitDate" resultType="java.lang.Long">
-        SELECT distinct merchant_id FROM tb_shall_profit_detail WHERE profit_date = #{profitDate}
+    <select id="selectMerchantIdByProfitDateToHss" resultType="java.lang.Long">
+        SELECT distinct merchant_id FROM tb_shall_profit_detail WHERE product_type = 'hss' AND profit_date = #{profitDate}
     </select>
-    <select id="selectSecondCollectMoneyByMerchantIdAndProfitDate" resultType="java.math.BigDecimal">
+    <select id="selectSecondCollectMoneyByMerchantIdAndProfitDateToHss" resultType="java.math.BigDecimal">
         SELECT sum(second_shall_amount) FROM tb_shall_profit_detail
-        WHERE merchant_id = #{merchantId} AND profit_date = #{profitDate} AND profit_type = 1 AND is_direct = 0
+        WHERE product_type = 'hss' AND merchant_id = #{merchantId} AND profit_date = #{profitDate} AND profit_type = 1 AND is_direct = 0
     </select>
-    <select id="selectFirstCollectMoneyByMerchantIdAndProfitDate" resultType="java.math.BigDecimal">
+    <select id="selectFirstCollectMoneyByMerchantIdAndProfitDateToHss" resultType="java.math.BigDecimal">
         SELECT sum(first_shall_amount) FROM tb_shall_profit_detail
-        WHERE merchant_id = #{merchantId} AND profit_date = #{profitDate} AND profit_type = 1 AND is_direct = 1
+        WHERE product_type = 'hss' AND merchant_id = #{merchantId} AND profit_date = #{profitDate} AND profit_type = 1 AND is_direct = 1
     </select>
 
-    <select id="selectFirstWithdrawMoneyByMerchantIdAndProfitDate" resultType="java.math.BigDecimal">
+    <select id="selectFirstWithdrawMoneyByMerchantIdAndProfitDateToHss" resultType="java.math.BigDecimal">
         SELECT sum(first_shall_amount) FROM tb_shall_profit_detail
-        WHERE merchant_id = #{merchantId} AND profit_date = #{profitDate} AND profit_type = 2 AND is_direct = 1
+        WHERE product_type = 'hss' AND merchant_id = #{merchantId} AND profit_date = #{profitDate} AND profit_type = 2 AND is_direct = 1
     </select>
-    <select id="selectSecondWithdrawMoneyByMerchantIdAndProfitDate" resultType="java.math.BigDecimal">
+    <select id="selectSecondWithdrawMoneyByMerchantIdAndProfitDateToHss" resultType="java.math.BigDecimal">
         SELECT sum(second_shall_amount) FROM tb_shall_profit_detail
-        WHERE merchant_id = #{merchantId} AND profit_date = #{profitDate} AND profit_type = 2 AND is_direct = 0
+        WHERE  product_type = 'hss' AND merchant_id = #{merchantId} AND profit_date = #{profitDate} AND profit_type = 2 AND is_direct = 0
     </select>
 
-    <select id="selectDealerIdByProfitDate" resultType="java.lang.Long">
-        SELECT distinct second_dealer_id FROM tb_shall_profit_detail WHERE profit_date = #{profitDate} AND is_direct = 0
+    <select id="selectDealerIdByProfitDateToHss" resultType="java.lang.Long">
+        SELECT distinct second_dealer_id FROM tb_shall_profit_detail WHERE product_type = 'hss' AND profit_date = #{profitDate} AND is_direct = 0
     </select>
 
-    <select id="selectFirstCollectMoneyByDealerIdAndProfitDate" resultType="java.math.BigDecimal">
+    <select id="selectFirstCollectMoneyByDealerIdAndProfitDateToHss" resultType="java.math.BigDecimal">
         SELECT sum(first_shall_amount) FROM tb_shall_profit_detail
-        WHERE second_dealer_id = #{dealerId} AND is_direct = 0 AND profit_type = 1 AND profit_date = #{profitDate}
+        WHERE product_type = 'hss' AND second_dealer_id = #{dealerId} AND is_direct = 0 AND profit_type = 1 AND profit_date = #{profitDate}
     </select>
-    <select id="selectFirstWithdrawMoneyByDealerIdAndProfitDate" resultType="java.math.BigDecimal">
+    <select id="selectFirstWithdrawMoneyByDealerIdAndProfitDateToHss" resultType="java.math.BigDecimal">
         SELECT sum(first_shall_amount) FROM tb_shall_profit_detail
-        WHERE second_dealer_id = #{dealerId} AND is_direct = 0 AND profit_type = 2 AND profit_date = #{profitDate}
+        WHERE product_type = 'hss' AND second_dealer_id = #{dealerId} AND is_direct = 0 AND profit_type = 2 AND profit_date = #{profitDate}
     </select>
-    <select id="selectSecondYesterdayProfitMoney" resultType="java.math.BigDecimal">
+    <select id="selectSecondYesterdayProfitMoneyToHss" resultType="java.math.BigDecimal">
         SELECT sum(second_shall_amount) FROM tb_shall_profit_detail
-        WHERE second_dealer_id = #{dealerId} AND is_direct = 0 AND profit_date = #{profitDate}
+        WHERE product_type = 'hss' AND second_dealer_id = #{dealerId} AND is_direct = 0 AND profit_date = #{profitDate}
     </select>
-    <select id="selectSecondYesterdayDealMoney" resultType="java.math.BigDecimal">
+    <select id="selectSecondYesterdayDealMoneyToHss" resultType="java.math.BigDecimal">
         SELECT sum(total_fee) FROM tb_shall_profit_detail
-        WHERE second_dealer_id = #{dealerId} AND is_direct = 0 AND profit_type = 1 AND profit_date = #{profitDate}
+        WHERE product_type = 'hss' AND second_dealer_id = #{dealerId} AND is_direct = 0 AND profit_type = 1 AND profit_date = #{profitDate}
     </select>
-    <select id="selectSecondHistoryProfitMoney" resultType="java.math.BigDecimal">
+    <select id="selectSecondHistoryProfitMoneyToHss" resultType="java.math.BigDecimal">
         SELECT sum(second_shall_amount) FROM tb_shall_profit_detail
-        WHERE second_dealer_id = #{dealerId} AND is_direct = 0
+        WHERE product_type = 'hss' AND second_dealer_id = #{dealerId} AND is_direct = 0
     </select>
-    <select id="selectFirstSecondYesterdayProfitMoney" resultType="java.math.BigDecimal">
+    <select id="selectFirstSecondYesterdayProfitMoneyToHss" resultType="java.math.BigDecimal">
         SELECT sum(first_shall_amount)  FROM tb_shall_profit_detail
         WHERE first_dealer_id = #{dealerId} AND is_direct = 0 AND profit_date = #{profitDate}
     </select>
-    <select id="selectFirstSecondHistoryProfitMoney" resultType="java.math.BigDecimal">
+    <select id="selectFirstSecondHistoryProfitMoneyToHss" resultType="java.math.BigDecimal">
         SELECT sum(first_shall_amount)  FROM tb_shall_profit_detail
-        WHERE first_dealer_id = #{dealerId} AND is_direct = 0
+        WHERE product_type = 'hss' AND first_dealer_id = #{dealerId} AND is_direct = 0
     </select>
-    <select id="selectFirstMerchantYesterdayProfitMoney" resultType="java.math.BigDecimal">
+    <select id="selectFirstMerchantYesterdayProfitMoneyToHss" resultType="java.math.BigDecimal">
         SELECT sum(first_shall_amount)  FROM tb_shall_profit_detail
-        WHERE first_dealer_id = #{dealerId} AND is_direct = 1 AND profit_date = #{profitDate}
+        WHERE product_type = 'hss' AND first_dealer_id = #{dealerId} AND is_direct = 1 AND profit_date = #{profitDate}
     </select>
-    <select id="selectFirstMerchantHistoryProfitMoney" resultType="java.math.BigDecimal">
+    <select id="selectFirstMerchantHistoryProfitMoneyToHss" resultType="java.math.BigDecimal">
         SELECT sum(first_shall_amount)  FROM tb_shall_profit_detail
-        WHERE first_dealer_id = #{dealerId} AND is_direct = 1
+        WHERE product_type = 'hss' AND first_dealer_id = #{dealerId} AND is_direct = 1
     </select>
-    <select id="selectFirstYesterdayDealMoney" resultType="java.math.BigDecimal">
+    <select id="selectFirstYesterdayDealMoneyToHss" resultType="java.math.BigDecimal">
         SELECT sum(total_fee)  FROM tb_shall_profit_detail
-        WHERE first_dealer_id = #{dealerId} AND is_direct = 1 AND profit_type = 1 AND profit_date = #{profitDate}
+        WHERE product_type = 'hss' AND first_dealer_id = #{dealerId} AND is_direct = 1 AND profit_type = 1 AND profit_date = #{profitDate}
     </select>
-    <select id="selectByOrderId" resultType="com.jkm.hss.dealer.entity.ShallProfitDetail">
-        SELECT * FROM tb_shall_profit_detail where payment_sn = #{orderId}
+    <select id="selectByOrderIdToHss" resultType="com.jkm.hss.dealer.entity.ShallProfitDetail">
+        SELECT * FROM tb_shall_profit_detail where product_type = 'hss' AND payment_sn = #{orderId}
     </select>
-    <select id="selectCompanyCollectProfitByProfitDate" resultType="java.math.BigDecimal">
+    <select id="selectCompanyCollectProfitByProfitDateToHss" resultType="java.math.BigDecimal">
         SELECT sum(channel_shall_amount + product_shall_amount) FROM tb_shall_profit_detail
-        WHERE profit_date = #{profitDate} AND profit_type = 1
+        WHERE product_type = 'hss' AND profit_date = #{profitDate} AND profit_type = 1
     </select>
-    <select id="selectCompanyWithdrawProfitByProfitDate" resultType="java.math.BigDecimal">
+    <select id="selectCompanyWithdrawProfitByProfitDateToHss" resultType="java.math.BigDecimal">
         SELECT sum(channel_shall_amount + product_shall_amount) FROM tb_shall_profit_detail
-        WHERE profit_date = #{profitDate} AND profit_type = 2
+        WHERE product_type = 'hss' AND profit_date = #{profitDate} AND profit_type = 2
     </select>
-    <select id="selectByProfitDateAndSecondDealerId" resultType="com.jkm.hss.dealer.entity.ShallProfitDetail">
-        SELECT * FROM tb_shall_profit_detail WHERE second_dealer_id = #{secondDealerId}
+    <select id="selectByProfitDateAndSecondDealerIdToHss" resultType="com.jkm.hss.dealer.entity.ShallProfitDetail">
+        SELECT * FROM tb_shall_profit_detail WHERE product_type = 'hss' AND second_dealer_id = #{secondDealerId}
         AND profit_date = #{statisticsDate}
     </select>
-    <select id="selectByProfitDateAndFirstDealerId" resultType="com.jkm.hss.dealer.entity.ShallProfitDetail">
-        SELECT * FROM tb_shall_profit_detail WHERE first_dealer_id = #{firstDealerId}
+    <select id="selectByProfitDateAndFirstDealerIdToHss" resultType="com.jkm.hss.dealer.entity.ShallProfitDetail">
+        SELECT * FROM tb_shall_profit_detail WHERE product_type = 'hss' AND first_dealer_id = #{firstDealerId}
         AND profit_date = #{statisticsDate}
     </select>
-    <select id="selectCompanyByProfitDate" resultType="com.jkm.hss.dealer.entity.ShallProfitDetail">
-        SELECT * FROM tb_shall_profit_detail WHERE profit_date = #{profitDate}
+    <select id="selectCompanyByProfitDateToHss" resultType="com.jkm.hss.dealer.entity.ShallProfitDetail">
+        SELECT * FROM tb_shall_profit_detail WHERE product_type = 'hss' AND profit_date = #{profitDate}
     </select>
-    <select id="getMerchantIdByProfitDate" resultType="java.lang.Long">
-        SELECT distinct(merchant_id) FROM tb_shall_profit_detail WHERE profit_date = #{statisticsDate}
+    <select id="getMerchantIdByProfitDateToHss" resultType="java.lang.Long">
+        SELECT distinct(merchant_id) FROM tb_shall_profit_detail WHERE product_type = 'hss' AND profit_date = #{statisticsDate}
     </select>
 </mapper>

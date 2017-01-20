@@ -39,6 +39,8 @@ public class TradeController extends BaseController {
     @RequestMapping(value = "dcReceipt", method = RequestMethod.POST)
     public CommonResponse dynamicCodeReceipt(@RequestBody final DynamicCodeReceiptRequest dynamicCodeReceiptRequest) throws UnsupportedEncodingException {
 
+
+
         final Pair<Integer, String> resultPair = this.payService.codeReceipt(dynamicCodeReceiptRequest.getTotalFee(),
                 dynamicCodeReceiptRequest.getPayChannel(), 0, EnumAppType.HSY.getId());
         if (0 == resultPair.getLeft()) {

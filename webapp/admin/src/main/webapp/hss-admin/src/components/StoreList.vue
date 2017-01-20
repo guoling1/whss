@@ -172,6 +172,7 @@
       this.$data.count = 0;
       var content = document.getElementById('content'),
         page = document.getElementById('page');
+//      好收收
       this.$http.post('/admin/query/getAll',this.$data.query)
         .then(function (res) {
         this.$data.isShow = false;
@@ -223,6 +224,11 @@
           text: err.statusMessage
         })
       })
+//      好收银
+      this.$data.post('/admin/hsyMerchantList/getMerchantList',this.$data.query)
+        .then(function (res) {
+
+        })
     },
     methods: {
       //审核

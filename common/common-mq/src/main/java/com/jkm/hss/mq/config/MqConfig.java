@@ -27,7 +27,10 @@ public class MqConfig {
      */
     public static final String MERCHANT_WITHDRAW = "hss_merchant_withdraw";
 
-
+    // ###################hsy#######################
+    /**
+     * 批量结算
+     */
     public static final String NORMAL_SETTLE = "normal_settle";
 
     /**
