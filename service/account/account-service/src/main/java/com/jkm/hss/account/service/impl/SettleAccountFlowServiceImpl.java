@@ -86,10 +86,12 @@ public class SettleAccountFlowServiceImpl implements SettleAccountFlowService {
      * @param changeAmount  变动金额
      * @param remark  备注
      * @param type 变更方向
+     * @param accountUserType  账户类型（商户，代理商，公司）
      */
     @Override
     @Transactional
-    public void addSettleAccountFlow(long accountId, String orderNo, BigDecimal changeAmount, String remark, EnumAccountFlowType type) {
+    public void addSettleAccountFlow(long accountId, String orderNo, BigDecimal changeAmount, String remark,
+                                     EnumAccountFlowType type, String appId, Date tradeDate, int accountUserType) {
         //此时的account已经是可用余额改变的结果
         final Account account = this.accountService.getByIdWithLock(accountId).get();
         final SettleAccountFlow settleAccountFlow = new SettleAccountFlow();
@@ -110,6 +112,9 @@ public class SettleAccountFlowServiceImpl implements SettleAccountFlowService {
         }
         settleAccountFlow.setChangeTime(new Date());
         settleAccountFlow.setRemark(remark);
+        settleAccountFlow.setAppId(appId);
+        settleAccountFlow.setTradeDate(tradeDate);
+        settleAccountFlow.setAccountUserType(accountUserType);
         this.settleAccountFlowDao.insert(settleAccountFlow);
     }
 

@@ -9,7 +9,7 @@
     </parent>
 
     <artifactId>hss-service</artifactId>
-    <version>${service.version}</version>
+    <version>${user.version}</version>
     <packaging>pom</packaging>
 
     <modules>
@@ -23,6 +23,6 @@
         <module>admin</module>
         <module>bill</module>
         <module>settle</module>
-        <module>hsy-user</module>
+        <module>hsyuser</module>
     </modules>
 </project>

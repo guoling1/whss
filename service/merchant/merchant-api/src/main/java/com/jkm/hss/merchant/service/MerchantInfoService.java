@@ -79,12 +79,6 @@ public interface MerchantInfoService {
      * @param merchantInfo
      * @return
      */
-    long regByWxPub(MerchantInfo merchantInfo);
-    /**
-     * 公众号注册（新）
-     * @param merchantInfo
-     * @return
-     */
     long regByWx(MerchantInfo merchantInfo);
     /**
      * 扫固定码注册

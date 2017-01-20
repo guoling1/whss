@@ -22,7 +22,7 @@ const upgrade = document.getElementById('show_upgrade');
 
 const pxPerRem = document.documentElement.clientWidth;
 upgrade.addEventListener('click', function () {
-  if (pxPerRem > 390) {
+  if (pxPerRem >= 350) {
     window.location.href = '/sqb/upgradeMax';
   } else {
     window.location.href = '/sqb/upgradeMin';

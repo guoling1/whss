@@ -356,7 +356,7 @@ public class WxPubController extends BaseController {
                 userInfoService.insertUserInfo(uo);
             }else{
                 log.info("普通注册");
-                merchantInfoService.regByWxPub(mi);
+                merchantInfoService.regByWx(mi);
                 UserInfo uo = new UserInfo();
                 uo.setOpenId(super.getOpenId(request));
                 uo.setStatus(EnumCommonStatus.NORMAL.getId());

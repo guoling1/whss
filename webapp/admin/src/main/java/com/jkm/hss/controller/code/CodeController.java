@@ -48,7 +48,7 @@ public class CodeController extends BaseController {
     @RequestMapping(value = "downloadZip", method = RequestMethod.POST)
     public CommonResponse downloadCodeZip(@RequestBody final CodeDownloadRequest request) {
         final String fileZip = this.qrCodeService.downloadCodeZip(1, request.getCount(),
-                ApplicationConsts.getApplicationConfig().QRCodeUrl());
+                ApplicationConsts.getApplicationConfig().QRCodeUrl(),request.getProductId(),request.getSysType());
         final String fileName = getFileName(fileZip);
 
         final ObjectMetadata meta = new ObjectMetadata();
@@ -79,7 +79,7 @@ public class CodeController extends BaseController {
     @RequestMapping(value = "downloadExcel", method = RequestMethod.POST)
     public CommonResponse downloadExcel(@RequestBody final CodeDownloadRequest request) {
         final String fileZip = this.qrCodeService.downloadExcel(1, request.getCount(),
-                ApplicationConsts.getApplicationConfig().QRCodeUrl());
+                ApplicationConsts.getApplicationConfig().QRCodeUrl(),request.getProductId(),request.getSysType());
         final String fileName = getFileName(fileZip);
 
         final ObjectMetadata meta = new ObjectMetadata();

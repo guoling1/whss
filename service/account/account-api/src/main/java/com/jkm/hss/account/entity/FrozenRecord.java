@@ -22,7 +22,7 @@ public class FrozenRecord extends BaseEntity{
     private long accountId;
 
     /**
-     * 业务流水号
+     * 交易订单号
      */
     private String businessNo;
 

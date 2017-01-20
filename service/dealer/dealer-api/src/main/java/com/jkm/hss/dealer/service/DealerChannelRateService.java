@@ -2,7 +2,9 @@ package com.jkm.hss.dealer.service;
 
 import com.google.common.base.Optional;
 import com.jkm.hss.dealer.entity.DealerChannelRate;
+import org.apache.commons.lang3.tuple.Triple;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -47,4 +49,11 @@ public interface DealerChannelRateService {
      * @return
      */
     Optional<DealerChannelRate> selectByDealerIdAndProductIdAndChannelType(long dealerId, long productId, int channelType);
+
+    /**
+     * 获取app商户费率
+     * @param dealerId
+     * @return
+     */
+    Triple<BigDecimal, BigDecimal, BigDecimal> getMerchantRateByDealerId(long dealerId, long productId);
 }

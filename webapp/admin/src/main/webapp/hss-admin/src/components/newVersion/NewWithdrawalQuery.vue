@@ -38,7 +38,7 @@
                 </select>
               </div>
             </div>
-            <div class="col-md-4" style="margin-top: 20px;">
+            <div class="col-md-4" style="margin-top: 15px;">
               <div class="form-group">
                 <div class="btn btn-primary" @click="lookup">筛选</div>
                 <span @click="onload()" download="交易记录" class="btn btn-primary" style="float: right;color: #fff">导出</span>

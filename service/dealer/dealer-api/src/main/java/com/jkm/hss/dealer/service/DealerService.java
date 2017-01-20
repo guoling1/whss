@@ -16,6 +16,7 @@ import com.jkm.hss.dealer.helper.requestparam.SecondLevelDealerAddRequest;
 import com.jkm.hss.merchant.entity.MerchantInfo;
 import com.jkm.hss.merchant.entity.OrderRecord;
 import com.jkm.hss.merchant.entity.TradeRecord;
+import com.jkm.hss.product.enums.EnumProductType;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
 
@@ -33,10 +34,10 @@ public interface DealerService {
     Map<String, Pair<Long,BigDecimal>> merchantAmount(OrderRecord orderRecord);
 
     /**
-     * 分润接口
+     * 分润接口 , 好收收分润， 好收银分润
      */
-    Map<String, Triple<Long, BigDecimal, BigDecimal>> shallProfit(String orderNo, BigDecimal tradeAmount,
-                                                              int channelSign, long merchantId);
+    Map<String, Triple<Long, BigDecimal, BigDecimal>> shallProfit(EnumProductType type, String orderNo, BigDecimal tradeAmount,
+                                                                  int channelSign, long merchantId);
 
     /**
      * 添加代理商

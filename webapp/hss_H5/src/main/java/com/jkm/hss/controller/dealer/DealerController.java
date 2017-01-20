@@ -27,11 +27,9 @@ import com.jkm.hss.admin.helper.responseparam.ActiveCodeCount;
 import com.jkm.hss.admin.helper.responseparam.DistributeCodeCount;
 import com.jkm.hss.admin.service.QRCodeService;
 import com.jkm.hss.controller.BaseController;
-import com.jkm.hss.dealer.entity.DailyProfitDetail;
 import com.jkm.hss.dealer.entity.Dealer;
 import com.jkm.hss.dealer.entity.DealerChannelRate;
 import com.jkm.hss.dealer.entity.DealerPassport;
-import com.jkm.hss.dealer.enums.EnumDealerChannelRateStatus;
 import com.jkm.hss.dealer.enums.EnumDealerLevel;
 import com.jkm.hss.dealer.enums.EnumLoginStatus;
 import com.jkm.hss.dealer.enums.EnumPassportType;
@@ -43,10 +41,8 @@ import com.jkm.hss.dealer.service.DealerPassportService;
 import com.jkm.hss.dealer.service.DealerRateService;
 import com.jkm.hss.dealer.service.DealerService;
 import com.jkm.hss.helper.ApplicationConsts;
-import com.jkm.hss.dealer.helper.requestparam.SecondLevelDealerAddRequest;
 import com.jkm.hss.merchant.entity.BankCardBin;
 import com.jkm.hss.merchant.entity.MerchantInfo;
-import com.jkm.hss.merchant.entity.PastRecord;
 import com.jkm.hss.merchant.enums.EnumMerchantStatus;
 import com.jkm.hss.merchant.helper.ValidationUtil;
 import com.jkm.hss.merchant.service.BankCardBinService;
@@ -66,7 +62,6 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
-import org.apache.http.client.utils.URLEncodedUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -264,16 +259,16 @@ public class DealerController extends BaseController {
             final DealerIndexInfoResponse response = new DealerIndexInfoResponse();
             if (dealer.getLevel() == EnumDealerLevel.SECOND.getId()){
                 //昨日分润总额
-                final BigDecimal yesterdayProfitMoney = this.shallProfitDetailService.selectSecondYesterdayProfitMoney(dealer.getId(), getProfitDate(new Date()));
+                final BigDecimal yesterdayProfitMoney = this.shallProfitDetailService.selectSecondYesterdayProfitMoneyToHss(dealer.getId(), getProfitDate(new Date()));
                 //昨日店铺交易总额
-                final BigDecimal yesterdayDealMoney = this.shallProfitDetailService.selectSecondYesterdayDealMoney(dealer.getId(), getProfitDate(new Date()));
+                final BigDecimal yesterdayDealMoney = this.shallProfitDetailService.selectSecondYesterdayDealMoneyToHss(dealer.getId(), getProfitDate(new Date()));
                 //待结算分润
                 final JSONObject jsonObject = this.pastRecordService.settleMoney(dealer.getAccountId());
                 final BigDecimal waitBalanceMoney = new BigDecimal(jsonObject.getString("settleMoney"));
                 //已结分润
                 //历史分润总额
                 final BigDecimal alreadyBalanceMoney = new BigDecimal(jsonObject.getString("unSettleMoney"));
-                final BigDecimal historyProfitMoney = this.shallProfitDetailService.selectSecondHistoryProfitMoney(dealer.getId());
+                final BigDecimal historyProfitMoney = this.shallProfitDetailService.selectSecondHistoryProfitMoneyToHss(dealer.getId());
                 //查询二级代理商二维码分配情况信息
                 final SecondLevelDealerCodeInfo secondLevelDealerCodeInfo = this.qrCodeService.getSecondLevelDealerCodeInfos(dealer.getId()).get();
                 //我发展的店铺统计
@@ -288,17 +283,17 @@ public class DealerController extends BaseController {
                 response.setAlreadyBalanceMoney(alreadyBalanceMoney);
             }else{
                 //我的分润-二级代理 昨日分润金额
-                final BigDecimal secondYesterdayProfitMoney = this.shallProfitDetailService.selectFirstSecondYesterdayProfitMoney(dealer.getId(), getProfitDate(new Date()));
+                final BigDecimal secondYesterdayProfitMoney = this.shallProfitDetailService.selectFirstSecondYesterdayProfitMoneyToHss(dealer.getId(), getProfitDate(new Date()));
                 //我的分润-二级代理 历史分润总额
-                BigDecimal secondHistoryProfitMoney = this.shallProfitDetailService.selectFirstSecondHistoryProfitMoney(dealer.getId());
+                BigDecimal secondHistoryProfitMoney = this.shallProfitDetailService.selectFirstSecondHistoryProfitMoneyToHss(dealer.getId());
                 //我的分润-直管店铺 昨日分润金额
-                final BigDecimal merchantYesterdayProfitMoney = this.shallProfitDetailService.selectFirstMerchantYesterdayProfitMoney(dealer.getId(), getProfitDate(new Date()));
+                final BigDecimal merchantYesterdayProfitMoney = this.shallProfitDetailService.selectFirstMerchantYesterdayProfitMoneyToHss(dealer.getId(), getProfitDate(new Date()));
                 //我的分润-直管店铺 历史分润总额
-                final BigDecimal merchantHistoryProfitMoney = this.shallProfitDetailService.selectFirstMerchantHistoryProfitMoney(dealer.getId());
+                final BigDecimal merchantHistoryProfitMoney = this.shallProfitDetailService.selectFirstMerchantHistoryProfitMoneyToHss(dealer.getId());
                 //昨日分润总额
                 final BigDecimal yesterdayProfitMoney = secondYesterdayProfitMoney.add(merchantYesterdayProfitMoney);
                 //昨日店铺交易总额
-                final BigDecimal yesterdayDealMoney = this.shallProfitDetailService.selectFirstYesterdayDealMoney(dealer.getId(), getProfitDate(new Date()));
+                final BigDecimal yesterdayDealMoney = this.shallProfitDetailService.selectFirstYesterdayDealMoneyToHss(dealer.getId(), getProfitDate(new Date()));
                 //待结算分润
                 //已结分润
                 // 查询一级代理商二维码分配情况信息

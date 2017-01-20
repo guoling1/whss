@@ -8,6 +8,7 @@ import com.jkm.hss.admin.helper.MyMerchantCount;
 import com.jkm.hss.admin.helper.SecondLevelDealerCodeInfo;
 import com.jkm.hss.admin.helper.responseparam.ActiveCodeCount;
 import com.jkm.hss.admin.helper.responseparam.DistributeCodeCount;
+import com.jkm.hss.admin.helper.responseparam.QRCodeList;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
 
@@ -88,13 +89,8 @@ public interface QRCodeService {
      *
      * @return
      */
-    QRCode initMerchantCode(long merchantId);
-    /**
-     * 初始化商户的二维码（公众号注册）
-     *
-     * @return
-     */
-    QRCode initMerchantCode(long merchantId,long firstDealerId,long secondDealerId);
+    QRCode initMerchantCode(long merchantId,final long productId,final String sysType);
+
 
     /**
      * 按id查询
@@ -142,7 +138,7 @@ public interface QRCodeService {
      * @param merchantId
      * @return
      */
-    Optional<QRCode> getByMerchantId(long merchantId);
+//    Optional<QRCode> getByMerchantId(long merchantId);
 
     /**
      * 按商户ids查询
@@ -174,6 +170,12 @@ public interface QRCodeService {
      * @return
      */
     Optional<QRCode> getLatestQRCodeForUpdate();
+    /**
+     * 按系统类型查找最新的一个码段(新增)
+     *
+     * @return
+     */
+    Optional<QRCode> getLatestQRCodeForUpdateBySysType(String sysType);
 
     /**
      * 查询一级代理商下未分配的码段
@@ -266,14 +268,14 @@ public interface QRCodeService {
      *
      * @param count
      */
-    String downloadCodeZip(long adminId, int count, final String baseUrl);
+    String downloadCodeZip(long adminId, int count, final String baseUrl,long productId,String sysType);
 
     /**
      * 下载二维码Excel
      *
      * @param count
      */
-    String downloadExcel(long adminId, int count, final String baseUrl);
+    String downloadExcel(long adminId, int count, final String baseUrl,long productId,String sysType);
 
 
     /**
@@ -349,4 +351,31 @@ public interface QRCodeService {
      * @return
      */
     CodeQueryResponse getMerchantName(long merchantId);
+
+    //  =================以下为好收银新增部分=======================
+    /**
+     * 按码段查询
+     *
+     * @param code
+     * @return
+     */
+    Optional<QRCode> getByCode(String code,String sysType);
+
+
+
+    /**
+     * 绑定店铺个数
+     * @param shopId
+     * @param sysType
+     * @return
+     */
+    int bindShopCount(long shopId,String sysType);
+
+    /**
+     * 二维码列表
+     * @param shopId
+     * @param sysType
+     * @return
+     */
+    List<QRCodeList> bindShopList(long shopId,String sysType);
 }
