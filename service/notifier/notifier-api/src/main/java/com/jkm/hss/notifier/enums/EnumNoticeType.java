@@ -43,7 +43,12 @@ public enum EnumNoticeType {
     /**
      * 代理商提现
      */
-    WITHDRAW_CODE_DEALER(702, "提现验证码"),
+    WITHDRAW_CODE_DEALER(702, "代理商提现验证码"),
+
+    /**
+     * 商户提现
+     */
+    WITHDRAW_CODE_MERCHANT(703, "商户提现验证码"),
 
     //#############退款消息################
 

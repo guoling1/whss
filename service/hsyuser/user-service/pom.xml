@@ -14,6 +14,10 @@
     <dependencies>
         <dependency>
             <groupId>com.jkm</groupId>
+            <artifactId>hss-account-service</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.jkm</groupId>
             <artifactId>hsy-user-api</artifactId>
         </dependency>
         <dependency>
@@ -263,6 +267,14 @@
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
             <version>RELEASE</version>
+        </dependency>
+        <dependency>
+            <groupId>com.jkm</groupId>
+            <artifactId>hss-admin-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.jkm</groupId>
+            <artifactId>hss-dealer-api</artifactId>
         </dependency>
     </dependencies>
 </project>

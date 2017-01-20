@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+    <bean id="consumer" class="com.aliyun.openservices.ons.api.bean.ConsumerBean"
+          init-method="start" destroy-method="shutdown">
+        <property name="properties">
+            <map>
+                <entry key="ConsumerId" value="${mq.consumer.id}"/>
+                <entry key="AccessKey" value="${mq.access.key}"/>
+                <entry key="SecretKey" value="${mq.secret.key}"/>
+                <entry key="ONSAddr" value="${mq.onsaddr}"/>
+            </map>
+        </property>
+        <property name="subscriptionTable">
+            <map>
+                <entry value-ref="messageListener">
+                    <key>
+                        <bean class="com.aliyun.openservices.ons.api.bean.Subscription">
+                            <property name="topic" value="${mq.topic}"/>
+                            <property name="expression" value="normal_settle||poundage_settle||update_order_settle_status"/><!--MessageType名: 多个messageType 用 “||”分割-->
+                        </bean>
+                    </key>
+                </entry>
+            </map>
+
+        </property>
+    </bean>
+
+    <bean id="messageListener" class="com.jkm.hss.mq.consumer.MessageListenerImpl"/>
+</beans>

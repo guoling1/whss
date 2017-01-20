@@ -153,6 +153,7 @@ public class OrderServiceImpl implements OrderService {
         final FrozenRecord frozenRecord = new FrozenRecord();
         frozenRecord.setAccountId(account.getId());
         frozenRecord.setFrozenAmount(amount);
+        frozenRecord.setBusinessNo(playMoneyOrder.getOrderNo());
         frozenRecord.setFrozenTime(new Date());
         frozenRecord.setRemark("手动提现");
         this.frozenRecordService.add(frozenRecord);

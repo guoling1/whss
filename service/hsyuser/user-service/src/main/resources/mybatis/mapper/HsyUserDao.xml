@@ -4,25 +4,36 @@
 
     <select id="findAppAuUserByParam" parameterType="com.jkm.hsy.user.entity.AppAuUser" resultType="com.jkm.hsy.user.entity.AppAuUser">
         select
-          user.ID,user.CELLPHONE,user.PASSWORD,user.NICKNAME,user.REALNAME,user.STATUS,
+          user.ID,user.globalID,user.CELLPHONE,user.PASSWORD,user.NICKNAME,user.REALNAME,user.STATUS,
           (select PATH from app_cm_file acf where uuid=user.PROFILE) PROFILE,
           user.AUSTEP,user.IDCARD,user.IDCARDF,user.IDCARDB,user.IDCARDH,user.CREATETIME,user.UPDATETIME,
          (select PATH from app_cm_file acf where uuid=user.IDCARDF) IDCARDFURL,
          (select PATH from app_cm_file acf where uuid=user.IDCARDB) IDCARDBURL,
-         (select PATH from app_cm_file acf where uuid=user.IDCARDH) IDCARDHURL
-        from app_au_user user left join app_biz_shop_user_role sur on user.ID=sur.UID
+         (select PATH from app_cm_file acf where uuid=user.IDCARDH) IDCARDHURL,
+          user.DEALERID DEALERID,user.PRODUCTID PRODUCTID,user.WEIXINRATE WEIXINRATE,user.ALIPAYRATE ALIPAYRATE,user.FASTRATE FASTRATE
+        from app_au_user user
         where 1=1
           <if test="cellphone!=null and cellphone!=''">and CELLPHONE=#{cellphone}</if>
-        order by UPDATETIME
+        order by UPDATETIME desc
+    </select>
+
+    <select id="findAppAuUserByID" parameterType="java.lang.Long" resultType="com.jkm.hsy.user.entity.AppAuUser">
+        select
+        user.ID,user.globalID,user.CELLPHONE,user.PASSWORD,user.NICKNAME,user.REALNAME,user.STATUS,user.PROFILE,user.AUSTEP,user.IDCARD,user.IDCARDF,user.IDCARDB,user.IDCARDH,user.DEALERID,user.PRODUCTID,user.WEIXINRATE,user.ALIPAYRATE,user.FASTRATE,user.CREATETIME,user.UPDATETIME
+        from app_au_user user
+        where 1=1
+        <if test="id!=null and id!=''">and ID=#{id}</if>
+        order by UPDATETIME desc
     </select>
 
     <insert id="insert" useGeneratedKeys="true" keyProperty="id" parameterType="com.jkm.hsy.user.entity.AppAuUser">
-        insert into app_au_user(CELLPHONE,PASSWORD,NICKNAME,REALNAME,STATUS,PROFILE,AUSTEP,IDCARD,IDCARDF,IDCARDB,IDCARDH,CREATETIME,UPDATETIME) values(#{cellphone},#{password},#{nickname},#{realname},#{status},#{profile},#{auStep},#{idcard},#{idcardf},#{idcardb},#{idcardh},#{createTime},#{updateTime})
+        insert into app_au_user(GLOBALID,CELLPHONE,PASSWORD,NICKNAME,REALNAME,STATUS,PROFILE,AUSTEP,IDCARD,IDCARDF,IDCARDB,IDCARDH,DEALERID,PRODUCTID,WEIXINRATE,ALIPAYRATE,FASTRATE,CREATETIME,UPDATETIME) values(#{globalID},#{cellphone},#{password},#{nickname},#{realname},#{status},#{profile},#{auStep},#{idcard},#{idcardf},#{idcardb},#{idcardh},#{dealerID},#{productID},#{weixinRate},#{alipayRate},#{fastRate},#{createTime},#{updateTime})
     </insert>
 
     <update id="update" parameterType="com.jkm.hsy.user.entity.AppAuUser">
         update app_au_user
         <set>
+            <if test="globalID!=null and globalID!=''">GLOBALID=#{globalID},</if>
             <if test="password!=null and password!=''">PASSWORD=#{password},</if>
             <if test="nickname!=null and nickname!=''">NICKNAME=#{nickname},</if>
             <if test="realname!=null and realname!=''">REALNAME=#{realname},</if>
@@ -33,6 +44,11 @@
             <if test="idcardf!=null and idcardf!=''">IDCARDF=#{idcardf},</if>
             <if test="idcardb!=null and idcardb!=''">IDCARDB=#{idcardb},</if>
             <if test="idcardh!=null and idcardh!=''">IDCARDH=#{idcardh},</if>
+            <if test="dealerID!=null">DEALERID=#{dealerID},</if>
+            <if test="productID!=null">PRODUCTID=#{productID},</if>
+            <if test="weixinRate!=null">WEIXINRATE=#{weixinRate},</if>
+            <if test="alipayRate!=null">ALIPAYRATE=#{alipayRate},</if>
+            <if test="fastRate!=null">FASTRATE=#{fastRate},</if>
             <if test="createTime!=null">CREATETIME=#{createTime},</if>
             <if test="updateTime!=null">UPDATETIME=#{updateTime}</if>
         </set> where CELLPHONE=#{cellphone}
@@ -41,6 +57,7 @@
     <update id="updateByID" parameterType="com.jkm.hsy.user.entity.AppAuUser">
         update app_au_user
         <set>
+            <if test="globalID!=null and globalID!=''">GLOBALID=#{globalID},</if>
             <if test="cellphone!=null and cellphone!=''">CELLPHONE=#{cellphone},</if>
             <if test="password!=null and password!=''">PASSWORD=#{password},</if>
             <if test="nickname!=null and nickname!=''">NICKNAME=#{nickname},</if>
@@ -52,6 +69,11 @@
             <if test="idcardf!=null and idcardf!=''">IDCARDF=#{idcardf},</if>
             <if test="idcardb!=null and idcardb!=''">IDCARDB=#{idcardb},</if>
             <if test="idcardh!=null and idcardh!=''">IDCARDH=#{idcardh},</if>
+            <if test="dealerID!=null">DEALERID=#{dealerID},</if>
+            <if test="productID!=null">PRODUCTID=#{productID},</if>
+            <if test="weixinRate!=null">WEIXINRATE=#{weixinRate},</if>
+            <if test="alipayRate!=null">ALIPAYRATE=#{alipayRate},</if>
+            <if test="fastRate!=null">FASTRATE=#{fastRate},</if>
             <if test="createTime!=null">CREATETIME=#{createTime},</if>
             <if test="updateTime!=null">UPDATETIME=#{updateTime}</if>
         </set> where ID=#{id}

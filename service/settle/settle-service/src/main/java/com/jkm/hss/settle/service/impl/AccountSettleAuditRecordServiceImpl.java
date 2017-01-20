@@ -1,11 +1,14 @@
 package com.jkm.hss.settle.service.impl;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.jkm.base.common.entity.PageModel;
+import com.jkm.base.common.util.DateFormatUtil;
 import com.jkm.hss.account.entity.Account;
 import com.jkm.hss.account.entity.SettleAccountFlow;
 import com.jkm.hss.account.enums.EnumAccountFlowType;
@@ -22,8 +25,14 @@ import com.jkm.hss.mq.config.MqConfig;
 import com.jkm.hss.mq.producer.MqProducer;
 import com.jkm.hss.settle.dao.AccountSettleAuditRecordDao;
 import com.jkm.hss.settle.entity.AccountSettleAuditRecord;
+import com.jkm.hss.settle.enums.EnumAccountCheckStatus;
 import com.jkm.hss.settle.enums.EnumSettleStatus;
+import com.jkm.hss.settle.helper.requestparam.ListSettleAuditRecordRequest;
 import com.jkm.hss.settle.service.AccountSettleAuditRecordService;
+import com.jkm.hsy.user.dao.HsyShopDao;
+import com.jkm.hsy.user.entity.AppAuUser;
+import com.jkm.hsy.user.entity.AppBizShop;
+import com.jkm.hsy.user.entity.AppParam;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.tuple.Pair;
@@ -39,11 +48,11 @@ import java.util.*;
  * Created by yulong.zhang on 2017/1/12.
  */
 @Slf4j
-@Service
+@Service(value = "accountSettleAuditRecordService")
 public class AccountSettleAuditRecordServiceImpl implements AccountSettleAuditRecordService {
 
     @Autowired
-    private MerchantInfoService merchantInfoService;
+    private HsyShopDao hsyShopDao;
     @Autowired
     private DealerService dealerService;
     @Autowired
@@ -126,17 +135,43 @@ public class AccountSettleAuditRecordServiceImpl implements AccountSettleAuditRe
 
     /**
      * {@inheritDoc}
+     *
+     * @param dataParam
+     * @param appParam
+     * @return
+     */
+    @Override
+    public String appSettleRecordList(final String dataParam, final AppParam appParam) {
+        final JSONObject paramJo = JSONObject.parseObject(dataParam);
+        final JSONArray result = new JSONArray();
+        final long accountId = paramJo.getLongValue("accountId");
+        final List<AccountSettleAuditRecord> records = this.accountSettleAuditRecordDao.selectByAccountId(accountId);
+        if (CollectionUtils.isEmpty(records)) {
+            for (AccountSettleAuditRecord record : records) {
+                final JSONObject jo = new JSONObject();
+                result.add(jo);
+                jo.put("recordId", record.getId());
+                jo.put("settleDate", record.getSettleDate());
+                jo.put("number", record.getTradeNumber());
+                jo.put("settleAmount", record.getSettleAmount());
+            }
+        }
+        return result.toJSONString();
+    }
+
+    /**
+     * {@inheritDoc}
      */
     @Override
     @Transactional
     public void handleT1SettleTask() {
         final List<Date> tradeDateList = new ArrayList<>();
         final DateTime now = DateTime.now();
-        tradeDateList.add(now.minusDays(1).toDate());
+        tradeDateList.add(DateFormatUtil.parse(DateFormatUtil.format(now.minusDays(1).toDate(), DateFormatUtil.yyyy_MM_dd) , DateFormatUtil.yyyy_MM_dd));
         Preconditions.checkState(!(6 == now.dayOfWeek().get() || 7 == now.dayOfWeek().get()), "T1结算定时任务，在非法的日期启动");
         if (1 == now.getDayOfWeek()) {
-            tradeDateList.add(now.minusDays(2).toDate());
-            tradeDateList.add(now.minusDays(3).toDate());
+            tradeDateList.add(DateFormatUtil.parse(DateFormatUtil.format(now.minusDays(2).toDate(), DateFormatUtil.yyyy_MM_dd) , DateFormatUtil.yyyy_MM_dd));
+            tradeDateList.add(DateFormatUtil.parse(DateFormatUtil.format(now.minusDays(3).toDate(), DateFormatUtil.yyyy_MM_dd) , DateFormatUtil.yyyy_MM_dd));
         }
         //商户昨日待结算记录
         final List<SettleAccountFlow> settleAccountFlows = this.settleAccountFlowService.getMerchantLastWordDayRecord(tradeDateList);
@@ -145,29 +180,35 @@ public class AccountSettleAuditRecordServiceImpl implements AccountSettleAuditRe
             for (SettleAccountFlow settleAccountFlow : settleAccountFlows) {
                 accountIds.add(settleAccountFlow.getAccountId());
             }
-            //TODO
-            final List<MerchantInfo> merchants = this.merchantInfoService.batchGetByAccountIds(new ArrayList<>(accountIds));
-            //accountId--merchant
-            final Map<Long, MerchantInfo> merchantMap = Maps.uniqueIndex(merchants, new Function<MerchantInfo, Long>() {
+            final List<AppBizShop> shopList = this.hsyShopDao.findAppBizShopByAccountIDList(new ArrayList<>(accountIds));
+            //accountId--shop(主)
+            final Map<Long, AppBizShop> shopMap = Maps.uniqueIndex(shopList, new Function<AppBizShop, Long>() {
                 @Override
-                public Long apply(MerchantInfo input) {
-                    return input.getAccountId();
+                public Long apply(AppBizShop input) {
+                    return input.getAccountID();
                 }
             });
-            final List<Long> dealerIds = Lists.transform(merchants, new Function<MerchantInfo, Long>() {
-                @Override
-                public Long apply(MerchantInfo input) {
-                    return input.getDealerId();
-                }
-            });
-            final List<Dealer> dealers = this.dealerService.getByIds(dealerIds);
-            //dealerId--dealer
-            final Map<Long, Dealer> dealerMap = Maps.uniqueIndex(dealers, new Function<Dealer, Long>() {
-                @Override
-                public Long apply(Dealer input) {
-                    return input.getId();
-                }
-            });
+//            final List<Long> shopIds = Lists.transform(shopList, new Function<AppBizShop, Long>() {
+//                @Override
+//                public Long apply(AppBizShop input) {
+//                    return input.getId();
+//                }
+//            });
+//            final List<AppAuUser> users = new ArrayList<>();
+//            final List<Long> dealerIds = Lists.transform(users, new Function<AppAuUser, Long>() {
+//                @Override
+//                public Long apply(AppAuUser input) {
+//                    return input.getDealerID();
+//                }
+//            });
+//            final List<Dealer> dealers = this.dealerService.getByIds(dealerIds);
+//            //dealerId--dealer
+//            final Map<Long, Dealer> dealerMap = Maps.uniqueIndex(dealers, new Function<Dealer, Long>() {
+//                @Override
+//                public Long apply(Dealer input) {
+//                    return input.getId();
+//                }
+//            });
             //accountId--List<SettleAccountFlow>
             final Map<Long, List<SettleAccountFlow>> accountIdFlowMap = this.getAccountIdFlowMap(accountIds, settleAccountFlows);
             if (!accountIdFlowMap.isEmpty()) {
@@ -180,10 +221,10 @@ public class AccountSettleAuditRecordServiceImpl implements AccountSettleAuditRe
                     if (1 == now.getDayOfWeek()) {
                         for (Date date : tradeDateList) {
                             final List<SettleAccountFlow> flows1 = this.getFlows(date, flows);
-                            this.generateAuditRecord(key, flows1, merchantMap, dealerMap);
+                            this.generateAuditRecord(key, flows1, shopMap);
                         }
                     } else if (now.getDayOfWeek() >=2 && now.getDayOfWeek() <= 5) {//
-                        this.generateAuditRecord(key, flows, merchantMap, dealerMap);
+                        this.generateAuditRecord(key, flows, shopMap);
                     }
                 }
             }
@@ -414,6 +455,24 @@ public class AccountSettleAuditRecordServiceImpl implements AccountSettleAuditRe
         return Pair.of(0, "success");
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param settleAuditRecordRequest
+     * @return
+     */
+    @Override
+    public PageModel<AccountSettleAuditRecord> listByParam(final ListSettleAuditRecordRequest settleAuditRecordRequest) {
+        final PageModel<AccountSettleAuditRecord> result = new PageModel<>(settleAuditRecordRequest.getPageNo(), settleAuditRecordRequest.getPageSize());
+        settleAuditRecordRequest.setOffset(result.getFirstIndex());
+        settleAuditRecordRequest.setCount(result.getPageSize());
+        final long count = this.accountSettleAuditRecordDao.selectCountByParam(settleAuditRecordRequest);
+        final List<AccountSettleAuditRecord> records = this.accountSettleAuditRecordDao.selectByParam(settleAuditRecordRequest);
+        result.setCount(count);
+        result.setRecords(records);
+        return result;
+    }
+
     private SettleAccountFlow getMerchantSettleAccountFlow(final List<SettleAccountFlow> flows, final String orderNo) {
         for (SettleAccountFlow settleAccountFlow : flows) {
             if (EnumAccountUserType.MERCHANT.getId() == settleAccountFlow.getAccountUserType()
@@ -429,13 +488,16 @@ public class AccountSettleAuditRecordServiceImpl implements AccountSettleAuditRe
      * 生成结算审核记录
      */
     private void generateAuditRecord(final long accountId, final List<SettleAccountFlow> flows,
-                                     final Map<Long, MerchantInfo> merchantMap, final Map<Long, Dealer> dealerMap) {
+                                     final Map<Long, AppBizShop> shopMap) {
         final AccountSettleAuditRecord accountSettleAuditRecord = new AccountSettleAuditRecord();
-        final MerchantInfo merchant = merchantMap.get(accountId);
-        accountSettleAuditRecord.setMerchantNo(merchant.getMarkCode());
-        accountSettleAuditRecord.setMerchantName(merchant.getMerchantName());
-        final Dealer dealer = dealerMap.get(merchant.getDealerId());
-        if (null != dealer) {
+        final AppBizShop shop = shopMap.get(accountId);
+        final AppAuUser appAuUser = this.hsyShopDao.findCorporateUserByShopID(shop.getId()).get(0);
+        final Optional<Dealer> dealerOptional = this.dealerService.getById(appAuUser.getDealerID());
+        accountSettleAuditRecord.setMerchantNo(shop.getGlobalID());
+        accountSettleAuditRecord.setAccountId(shop.getAccountID());
+        accountSettleAuditRecord.setMerchantName(shop.getName());
+        if (dealerOptional.isPresent()) {
+            final Dealer dealer = dealerOptional.get();
             accountSettleAuditRecord.setDealerNo(dealer.getMarkCode());
             accountSettleAuditRecord.setDealerName(dealer.getProxyName());
         }
@@ -448,11 +510,13 @@ public class AccountSettleAuditRecordServiceImpl implements AccountSettleAuditRe
             totalAmount = totalAmount.add(settleAccountFlow.getIncomeAmount());
             orderNos.add(settleAccountFlow.getOrderNo());
         }
+        accountSettleAuditRecord.setAccountCheckStatus(EnumAccountCheckStatus.DUE_ACCOUNT_CHECK.getId());
+        accountSettleAuditRecord.setSettleDate(new Date());
         accountSettleAuditRecord.setSettleAmount(totalAmount);
         accountSettleAuditRecord.setSettleStatus(EnumSettleStatus.DUE_SETTLE.getId());
         this.add(accountSettleAuditRecord);
         final int updateCount = this.settleAccountFlowService.updateSettleAuditRecordIdByOrderNos(orderNos, accountSettleAuditRecord.getId());
-        log.info("商户[{}], 账户[{}],生成结算审核记录后，将其id[{}]保存到结算流水,更新记录数[{}]", merchant.getId(), accountId,
+        log.info("店铺[{}], 账户[{}],生成结算审核记录后，将其id[{}]保存到结算流水,更新记录数[{}]", shop.getId(), accountId,
                 accountSettleAuditRecord.getId(), updateCount);
     }
 

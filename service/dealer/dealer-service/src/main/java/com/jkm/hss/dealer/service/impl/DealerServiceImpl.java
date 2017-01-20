@@ -1582,12 +1582,6 @@ public class DealerServiceImpl implements DealerService {
         final PageModel<Dealer> pageModel = new PageModel<>(listDealerRequest.getPageNo(), listDealerRequest.getPageSize());
         listDealerRequest.setOffset(pageModel.getFirstIndex());
         listDealerRequest.setCount(pageModel.getPageSize());
-        if (listDealerRequest.getBankReserveMobile()!=null&&!"".equals(listDealerRequest.getBankReserveMobile())){
-            listDealerRequest.setBankReserveMobile(DealerSupport.encryptMobile(listDealerRequest.getBankReserveMobile()));
-        }
-        if (listDealerRequest.getSettleBankCard()!=null&&!"".equals(listDealerRequest.getSettleBankCard())){
-            listDealerRequest.setSettleBankCard(DealerSupport.encryptBankCard(listDealerRequest.getSettleBankCard()));
-        }
         final int count = this.dealerDao.selectDealerCountByPageParams(listDealerRequest);
         final List<Dealer> dealers = this.dealerDao.selectDealersByPageParams(listDealerRequest);
         pageModel.setCount(count);
