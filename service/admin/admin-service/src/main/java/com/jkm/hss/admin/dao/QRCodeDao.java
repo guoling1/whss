@@ -389,7 +389,7 @@ public interface QRCodeDao {
 
 
     /**
-     * 按码段查询
+     * 按码段和系统类型查询
      *
      * @param code
      * @return

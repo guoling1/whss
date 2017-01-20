@@ -18,6 +18,7 @@ import com.jkm.hsy.user.entity.AppParam;
 import com.jkm.hsy.user.exception.ApiHandleException;
 import com.jkm.hsy.user.exception.ResultCode;
 import com.jkm.hsy.user.service.HsyQrCodeService;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.Triple;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,17 +27,20 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.util.List;
 
-/**
- * Created by Thinkpad on 2017/1/17.
- */
+
+@Slf4j
 @Service("hsyQrCodeService")
 public class HsyQrCodeServiceImpl implements HsyQrCodeService{
+
     @Autowired
     private QRCodeService qrCodeService;
+
     @Autowired
     private HsyShopDao hsyShopDao;
+
     @Autowired
     private HsyUserDao hsyUserDao;
+
     @Autowired
     private DealerChannelRateService dealerChannelRateService;
 
@@ -107,8 +111,5 @@ public class HsyQrCodeServiceImpl implements HsyQrCodeService{
         saveAppAuUser.setFastRate(decimalTriple.getRight());
         hsyUserDao.updateByID(saveAppAuUser);
         return "";
-
     }
-
-
 }

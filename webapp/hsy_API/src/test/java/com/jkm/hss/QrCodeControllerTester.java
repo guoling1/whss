@@ -17,7 +17,7 @@ import java.util.Date;
  * Created by Thinkpad on 2017/1/17.
  */
 public class QrCodeControllerTester {
-    public static String url="http://localhost:8086/active/rest";
+    public static String url="http://localhost:8080/active/rest";
     @Test
     public void testInsertHsyUser()throws Exception{
         AppParam p=new AppParam();
