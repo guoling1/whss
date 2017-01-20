@@ -697,13 +697,13 @@ public class HSYTradeServiceImpl implements HSYTradeService {
             this.accountService.decreaseFrozenAmount(accountId, frozenRecord.getFrozenAmount());
             this.accountService.decreaseTotalAmount(accountId, frozenRecord.getFrozenAmount());
             //入账到手续费账户
-            final Account poundageAccount = this.accountService.getByIdWithLock(AccountConstants.POUNDAGE_ACCOUNT_ID).get();
-            this.accountService.increaseTotalAmount(poundageAccount.getId(), order.getPoundage());
-            this.accountService.increaseAvailableAmount(poundageAccount.getId(), order.getPoundage());
-            this.accountFlowService.addAccountFlow(poundageAccount.getId(), order.getOrderNo(), order.getPoundage(),
-                    "提现分润", EnumAccountFlowType.INCREASE);
-            final AppBizShop shop = this.hsyShopDao.findAppBizShopByAccountID(accountId).get(0);
-            this.withdrawSplitAccount(this.orderService.getByIdWithLock(orderId).get(), shop);
+//            final Account poundageAccount = this.accountService.getByIdWithLock(AccountConstants.POUNDAGE_ACCOUNT_ID).get();
+//            this.accountService.increaseTotalAmount(poundageAccount.getId(), order.getPoundage());
+//            this.accountService.increaseAvailableAmount(poundageAccount.getId(), order.getPoundage());
+//            this.accountFlowService.addAccountFlow(poundageAccount.getId(), order.getOrderNo(), order.getPoundage(),
+//                    "提现分润", EnumAccountFlowType.INCREASE);
+//            final AppBizShop shop = this.hsyShopDao.findAppBizShopByAccountID(accountId).get(0);
+//            this.withdrawSplitAccount(this.orderService.getByIdWithLock(orderId).get(), shop);
             //推送
 
         }
