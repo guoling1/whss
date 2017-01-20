@@ -1,8 +1,10 @@
 package com.jkm.hss.settle.service;
 
 import com.google.common.base.Optional;
+import com.jkm.base.common.entity.PageModel;
 import com.jkm.hss.account.entity.SettleAccountFlow;
 import com.jkm.hss.settle.entity.AccountSettleAuditRecord;
+import com.jkm.hss.settle.helper.requestparam.ListSettleAuditRecordRequest;
 import com.jkm.hsy.user.entity.AppParam;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -134,4 +136,12 @@ public interface AccountSettleAuditRecordService {
      * @return
      */
     Pair<Integer, String> poundageSettle(String orderNo);
+
+    /**
+     * 记录列表
+     *
+     * @param settleAuditRecordRequest
+     * @return
+     */
+    PageModel<AccountSettleAuditRecord> listByParam(ListSettleAuditRecordRequest settleAuditRecordRequest);
 }

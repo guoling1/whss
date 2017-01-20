@@ -7,6 +7,7 @@ import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.jkm.base.common.entity.PageModel;
 import com.jkm.base.common.util.DateFormatUtil;
 import com.jkm.hss.account.entity.Account;
 import com.jkm.hss.account.entity.SettleAccountFlow;
@@ -24,7 +25,9 @@ import com.jkm.hss.mq.config.MqConfig;
 import com.jkm.hss.mq.producer.MqProducer;
 import com.jkm.hss.settle.dao.AccountSettleAuditRecordDao;
 import com.jkm.hss.settle.entity.AccountSettleAuditRecord;
+import com.jkm.hss.settle.enums.EnumAccountCheckStatus;
 import com.jkm.hss.settle.enums.EnumSettleStatus;
+import com.jkm.hss.settle.helper.requestparam.ListSettleAuditRecordRequest;
 import com.jkm.hss.settle.service.AccountSettleAuditRecordService;
 import com.jkm.hsy.user.dao.HsyShopDao;
 import com.jkm.hsy.user.entity.AppAuUser;
@@ -452,6 +455,24 @@ public class AccountSettleAuditRecordServiceImpl implements AccountSettleAuditRe
         return Pair.of(0, "success");
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param settleAuditRecordRequest
+     * @return
+     */
+    @Override
+    public PageModel<AccountSettleAuditRecord> listByParam(final ListSettleAuditRecordRequest settleAuditRecordRequest) {
+        final PageModel<AccountSettleAuditRecord> result = new PageModel<>(settleAuditRecordRequest.getPageNo(), settleAuditRecordRequest.getPageSize());
+        settleAuditRecordRequest.setOffset(result.getFirstIndex());
+        settleAuditRecordRequest.setCount(result.getPageSize());
+        final long count = this.accountSettleAuditRecordDao.selectCountByParam(settleAuditRecordRequest);
+        final List<AccountSettleAuditRecord> records = this.accountSettleAuditRecordDao.selectByParam(settleAuditRecordRequest);
+        result.setCount(count);
+        result.setRecords(records);
+        return result;
+    }
+
     private SettleAccountFlow getMerchantSettleAccountFlow(final List<SettleAccountFlow> flows, final String orderNo) {
         for (SettleAccountFlow settleAccountFlow : flows) {
             if (EnumAccountUserType.MERCHANT.getId() == settleAccountFlow.getAccountUserType()
@@ -489,6 +510,7 @@ public class AccountSettleAuditRecordServiceImpl implements AccountSettleAuditRe
             totalAmount = totalAmount.add(settleAccountFlow.getIncomeAmount());
             orderNos.add(settleAccountFlow.getOrderNo());
         }
+        accountSettleAuditRecord.setAccountCheckStatus(EnumAccountCheckStatus.DUE_ACCOUNT_CHECK.getId());
         accountSettleAuditRecord.setSettleDate(new Date());
         accountSettleAuditRecord.setSettleAmount(totalAmount);
         accountSettleAuditRecord.setSettleStatus(EnumSettleStatus.DUE_SETTLE.getId());

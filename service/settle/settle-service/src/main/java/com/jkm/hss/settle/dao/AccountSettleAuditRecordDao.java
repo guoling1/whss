@@ -1,6 +1,7 @@
 package com.jkm.hss.settle.dao;
 
 import com.jkm.hss.settle.entity.AccountSettleAuditRecord;
+import com.jkm.hss.settle.helper.requestparam.ListSettleAuditRecordRequest;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
@@ -69,4 +70,20 @@ public interface AccountSettleAuditRecordDao {
      * @return
      */
     List<AccountSettleAuditRecord> selectByAccountId(@Param("accountId") long accountId);
+
+    /**
+     * 记录个数
+     *
+     * @param settleAuditRecordRequest
+     * @return
+     */
+    long selectCountByParam(ListSettleAuditRecordRequest settleAuditRecordRequest);
+
+    /**
+     * 记录列表
+     *
+     * @param settleAuditRecordRequest
+     * @return
+     */
+    List<AccountSettleAuditRecord> selectByParam(ListSettleAuditRecordRequest settleAuditRecordRequest);
 }
