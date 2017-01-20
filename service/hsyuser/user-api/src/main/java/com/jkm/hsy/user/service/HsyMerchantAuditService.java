@@ -1,5 +1,6 @@
 package com.jkm.hsy.user.service;
 
+<<<<<<< HEAD
 import com.jkm.hsy.user.entity.HsyMerchantAuditRequest;
 import com.jkm.hsy.user.entity.HsyMerchantAuditResponse;
 
@@ -38,4 +39,10 @@ public interface HsyMerchantAuditService {
     int getCount(HsyMerchantAuditRequest hsyMerchantAuditRequest);
 
 
+=======
+/**
+ * Created by Administrator on 2017/1/20.
+ */
+public interface HsyMerchantAuditService {
+>>>>>>> 13dff6f12898143d5ecd03b03ec8a12767c4f91e
 }
