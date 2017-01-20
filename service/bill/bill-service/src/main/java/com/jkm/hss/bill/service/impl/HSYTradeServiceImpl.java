@@ -463,7 +463,7 @@ public class HSYTradeServiceImpl implements HSYTradeService {
                 this.smsAuthService.checkVerifyCode(appBizCard1.getCardCellphone(), verifyCode, EnumVerificationCodeType.WITHDRAW_MERCHANT);
         if (1 == checkResult.getLeft()) {
             final Pair<Integer, String> withdrawResult = this.withdraw(accountId, totalAmount, channel, EnumProductType.HSY.getId());
-            if (0 != withdrawResult.getLeft()) {
+            if (-1 == withdrawResult.getLeft()) {
                 result.put("code", -1);
                 result.put("msg", "提现失败--" + withdrawResult.getRight());
             } else {
