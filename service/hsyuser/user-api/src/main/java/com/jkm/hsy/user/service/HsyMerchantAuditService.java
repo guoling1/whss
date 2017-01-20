@@ -1,7 +1,7 @@
 package com.jkm.hsy.user.service;
 
-import com.jkm.hsy.user.entity.AppBizShop;
 import com.jkm.hsy.user.entity.HsyMerchantAuditRequest;
+import com.jkm.hsy.user.entity.HsyMerchantAuditResponse;
 
 import java.util.List;
 
@@ -13,12 +13,12 @@ public interface HsyMerchantAuditService {
     /**
      * 查询商户列表
      */
-    List<AppBizShop> getMerchant(HsyMerchantAuditRequest hsyMerchantAuditRequest);
+    List<HsyMerchantAuditResponse> getMerchant(HsyMerchantAuditRequest hsyMerchantAuditRequest);
 
     /**
      * 查询商户详情
      */
-    AppBizShop getDetails(HsyMerchantAuditRequest hsyMerchantAuditRequest);
+    HsyMerchantAuditResponse getDetails(HsyMerchantAuditRequest hsyMerchantAuditRequest);
 
     /**
      * 审核通过
@@ -29,4 +29,11 @@ public interface HsyMerchantAuditService {
      * 审核不通过
      */
     void auditNotPass(HsyMerchantAuditRequest hsyMerchantAuditRequest);
+
+    /**
+     * 查询条总数
+     * @param hsyMerchantAuditRequest
+     * @return
+     */
+    int getCount(HsyMerchantAuditRequest hsyMerchantAuditRequest);
 }

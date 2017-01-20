@@ -1,7 +1,7 @@
 package com.jkm.hsy.user.dao;
 
-import com.jkm.hsy.user.entity.AppBizShop;
 import com.jkm.hsy.user.entity.HsyMerchantAuditRequest;
+import com.jkm.hsy.user.entity.HsyMerchantAuditResponse;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -15,12 +15,12 @@ public interface HsyMerchantAuditDao {
     /**
      * 查询商户列表
      */
-    List<AppBizShop> getMerchant(HsyMerchantAuditRequest hsyMerchantAuditRequest);
+    List<HsyMerchantAuditResponse> getMerchant(HsyMerchantAuditRequest hsyMerchantAuditRequest);
 
     /**
      * 查询商户详情
      */
-    AppBizShop getDetails(HsyMerchantAuditRequest hsyMerchantAuditRequest);
+    HsyMerchantAuditResponse getDetails(HsyMerchantAuditRequest hsyMerchantAuditRequest);
 
     /**
      * 审核通过
@@ -31,4 +31,11 @@ public interface HsyMerchantAuditDao {
      * 审核不通过
      */
     void updateAuditNotPass(HsyMerchantAuditRequest hsyMerchantAuditRequest);
+
+    /**
+     * 查询总条数
+     * @param hsyMerchantAuditRequest
+     * @return
+     */
+    int getCount(HsyMerchantAuditRequest hsyMerchantAuditRequest);
 }

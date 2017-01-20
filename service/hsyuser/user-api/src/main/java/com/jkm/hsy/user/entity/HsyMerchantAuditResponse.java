@@ -8,7 +8,7 @@ import java.util.Date;
  * Created by Administrator on 2017/1/19.
  */
 @Data
-public class HsyMerchantAuditRequest {
+public class HsyMerchantAuditResponse {
 
     private Long id;
     private String globalID;//对外ID
@@ -46,16 +46,4 @@ public class HsyMerchantAuditRequest {
 
     private Integer countEmployee;//员工个数
     private Integer countQR;//二维码个数
-    /**
-     * 条数
-     */
-    private Integer offset;
-    /**
-     * 当前页数
-     */
-    private int pageNo;
-    /**
-     * 每页显示页数
-     */
-    private int pageSize;
 }
