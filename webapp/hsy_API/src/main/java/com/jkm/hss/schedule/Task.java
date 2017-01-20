@@ -14,7 +14,6 @@ import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
-@Lazy(false)
 public class Task {
 
     @Autowired
@@ -26,7 +25,7 @@ public class Task {
      *
      * 周一至周五 2点0时0分
      */
-    @Scheduled(cron = "0 0 1 ? * MON-FRI")
+    @Scheduled(cron = "0 25 19 ? * MON-FRI")
     public void handleT1SettleTask() {
         log.info("结算审核定时任务--start");
         this.accountSettleAuditRecordService.handleT1SettleTask();

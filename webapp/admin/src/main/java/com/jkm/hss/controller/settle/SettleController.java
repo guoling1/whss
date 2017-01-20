@@ -8,6 +8,7 @@ import com.jkm.hss.account.sevice.SettleAccountFlowService;
 import com.jkm.hss.bill.service.OrderService;
 import com.jkm.hss.controller.BaseController;
 import com.jkm.hss.helper.request.BatchSettleRequest;
+import com.jkm.hss.helper.request.SettleRequest;
 import com.jkm.hss.settle.entity.AccountSettleAuditRecord;
 import com.jkm.hss.settle.enums.EnumSettleOptionType;
 import com.jkm.hss.settle.service.AccountSettleAuditRecordService;
@@ -42,83 +43,70 @@ public class SettleController extends BaseController {
     /**
      *  结算
      *
-     * @param recordId
+     * @param settleRequest
      * @return
      */
     @ResponseBody
-    @RequestMapping(value = "/${recordId}/${option}")
-    public CommonResponse normalSettle(@PathVariable final long recordId, @PathVariable final int option) {
+    @RequestMapping(value = "singleSettle", method = RequestMethod.POST)
+    public CommonResponse normalSettle(@RequestBody final SettleRequest settleRequest) {
+        final long recordId = settleRequest.getRecordId();
+        final int option = settleRequest.getOption();
         final Optional<AccountSettleAuditRecord> recordOptional = this.accountSettleAuditRecordService.getById(recordId);
         if (!recordOptional.isPresent()) {
             return CommonResponse.simpleResponse(-1, "结算审核记录不存在");
         }
         final AccountSettleAuditRecord accountSettleAuditRecord = recordOptional.get();
-        if (accountSettleAuditRecord.isDueAccountCheck()) {
-            return CommonResponse.simpleResponse(-1, "未对账");
-        }
-        if (accountSettleAuditRecord.isSideException() &&
-                !(EnumSettleOptionType.SETTLE_FORCE_ALL.getId() == option || EnumSettleOptionType.SETTLE_ACCOUNT_CHECKED.getId() == option)) {
-            return CommonResponse.simpleResponse(-1, "对账结果有单边,不能正常结算");
-        }
-        if (accountSettleAuditRecord.isSuccessAccountCheck() && EnumSettleOptionType.SETTLE_NORMAL.getId() != option) {
-            return CommonResponse.simpleResponse(-1, "对账结果无异常,只能正常结算");
-        }
-        if (accountSettleAuditRecord.isSideException()) {
-            if (EnumSettleOptionType.SETTLE_FORCE_ALL.getId() == option) {
-                final Pair<Integer, String> result = this.accountSettleAuditRecordService.forceSettleAll(recordId);
-                if (0 != result.getLeft()) {
-                    return CommonResponse.simpleResponse(-1, result.getRight());
-                }
-            } else if (EnumSettleOptionType.SETTLE_ACCOUNT_CHECKED.getId() == option) {
-                final List<SettleAccountFlow> flows = this.settleAccountFlowService.getByAuditRecordId(recordId);
-                if (CollectionUtils.isEmpty(flows)) {
-                    return CommonResponse.simpleResponse(-1, "不存在待结算流水");
-                }
-                final HashSet<String> orderNos = new HashSet<>();
-                for (SettleAccountFlow settleAccountFlow : flows) {
-                    orderNos.add(settleAccountFlow.getOrderNo());
-                    if (EnumAccountFlowType.INCREASE.getId() != settleAccountFlow.getType()) {
-                        return CommonResponse.simpleResponse(-1, "待结算流水异常");
-                    }
-                }
-                final List<String> checkedOrderNos = this.orderService.getCheckedOrderNosByOrderNos(new ArrayList<>(orderNos));
-                if (CollectionUtils.isEmpty(checkedOrderNos)) {
-                    return CommonResponse.simpleResponse(-1, "不存在已经对账的待结算流水");
-                }
-                final Pair<Integer, String> result = this.accountSettleAuditRecordService.settleCheckedPart(recordId, checkedOrderNos);
-                if (0 != result.getLeft()) {
-                    return CommonResponse.simpleResponse(-1, result.getRight());
-                }
-            } else {
-                return CommonResponse.simpleResponse(-1, "对账结果有单边");
-            }
-        } else if (accountSettleAuditRecord.isSuccessAccountCheck()) {
-            if (EnumSettleOptionType.SETTLE_NORMAL.getId() == option) {
-                final List<SettleAccountFlow> flows = this.settleAccountFlowService.getByAuditRecordId(recordId);
-                if (CollectionUtils.isEmpty(flows)) {
-                    return CommonResponse.simpleResponse(-1, "不存在待结算流水");
-                }
-                final HashSet<String> orderNos = new HashSet<>();
-                for (SettleAccountFlow settleAccountFlow : flows) {
-                    orderNos.add(settleAccountFlow.getOrderNo());
-                    if (EnumAccountFlowType.INCREASE.getId() != settleAccountFlow.getType()) {
-                        return CommonResponse.simpleResponse(-1, "待结算流水异常");
-                    }
-                }
-                final List<String> checkedOrderNos = this.orderService.getCheckedOrderNosByOrderNos(new ArrayList<>(orderNos));
-                if (flows.size() != checkedOrderNos.size() || flows.size() != accountSettleAuditRecord.getTradeNumber()) {
-                    log.error("结算审核记录[{}], 结算时，查询到未对账的交易", recordId);
-                    return CommonResponse.simpleResponse(-1, "查询到未对账的交易");
-                }
-                final Pair<Integer, String> result = this.accountSettleAuditRecordService.normalSettle(recordId);
-                if (0 != result.getLeft()) {
-                    return CommonResponse.simpleResponse(-1, result.getRight());
-                }
-            } else {
-                return CommonResponse.simpleResponse(-1, "对账结果无异常，请选择正常结算");
-            }
-        }
 
+        if (EnumSettleOptionType.SETTLE_FORCE_ALL.getId() == option) {
+            final Pair<Integer, String> result = this.accountSettleAuditRecordService.forceSettleAll(recordId);
+            if (0 != result.getLeft()) {
+                return CommonResponse.simpleResponse(-1, result.getRight());
+            }
+        } else if (EnumSettleOptionType.SETTLE_ACCOUNT_CHECKED.getId() == option && accountSettleAuditRecord.isSideException()) {
+
+            final List<SettleAccountFlow> flows = this.settleAccountFlowService.getByAuditRecordId(recordId);
+            if (CollectionUtils.isEmpty(flows)) {
+                return CommonResponse.simpleResponse(-1, "不存在待结算流水");
+            }
+            final HashSet<String> orderNos = new HashSet<>();
+            for (SettleAccountFlow settleAccountFlow : flows) {
+                orderNos.add(settleAccountFlow.getOrderNo());
+                if (EnumAccountFlowType.INCREASE.getId() != settleAccountFlow.getType()) {
+                    return CommonResponse.simpleResponse(-1, "待结算流水异常");
+                }
+            }
+            final List<String> checkedOrderNos = this.orderService.getCheckedOrderNosByOrderNos(new ArrayList<>(orderNos));
+            if (CollectionUtils.isEmpty(checkedOrderNos)) {
+                return CommonResponse.simpleResponse(-1, "不存在已经对账的待结算流水");
+            }
+            final Pair<Integer, String> result = this.accountSettleAuditRecordService.settleCheckedPart(recordId, checkedOrderNos);
+            if (0 != result.getLeft()) {
+                return CommonResponse.simpleResponse(-1, result.getRight());
+            }
+        } else if (EnumSettleOptionType.SETTLE_NORMAL.getId() == option && accountSettleAuditRecord.isSuccessAccountCheck()) {
+            final List<SettleAccountFlow> flows = this.settleAccountFlowService.getByAuditRecordId(recordId);
+            if (CollectionUtils.isEmpty(flows)) {
+                return CommonResponse.simpleResponse(-1, "不存在待结算流水");
+            }
+            final HashSet<String> orderNos = new HashSet<>();
+            for (SettleAccountFlow settleAccountFlow : flows) {
+                orderNos.add(settleAccountFlow.getOrderNo());
+                if (EnumAccountFlowType.INCREASE.getId() != settleAccountFlow.getType()) {
+                    return CommonResponse.simpleResponse(-1, "待结算流水异常");
+                }
+            }
+            final List<String> checkedOrderNos = this.orderService.getCheckedOrderNosByOrderNos(new ArrayList<>(orderNos));
+            if (flows.size() != checkedOrderNos.size() || flows.size() != accountSettleAuditRecord.getTradeNumber()) {
+                log.error("结算审核记录[{}], 结算时，查询到未对账的交易", recordId);
+                return CommonResponse.simpleResponse(-1, "查询到未对账的交易");
+            }
+            final Pair<Integer, String> result = this.accountSettleAuditRecordService.normalSettle(recordId);
+            if (0 != result.getLeft()) {
+                return CommonResponse.simpleResponse(-1, result.getRight());
+            }
+        } else {
+            return CommonResponse.simpleResponse(-1, "结算选择异常");
+        }
         return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "success");
     }
 
