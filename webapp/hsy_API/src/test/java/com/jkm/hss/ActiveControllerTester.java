@@ -211,6 +211,19 @@ public class ActiveControllerTester {
         ActiveControllerTester.testRest(p);
     }
 
+    @Test
+    public void testInsertDevice()throws Exception{
+        AppParam p=new AppParam();
+        p.setServiceCode("HSY001016");
+        p.setAccessToken("");
+        p.setAppType("android");
+        p.setTimeStamp(AppDateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
+        p.setV("v1.0");
+        String param="{\"deviceid\":\"4707D3CA-EB83-4064-81CD-21E84933F5CB\",\"clientid\":\"clientid123456\",\"imei\":\"867601020078801\",\"deviceName\":\"设备名\",\"osVersion\":\"6.0.0\",\"appCode\":\"hsy\",\"appVersion\":\"1.0\",\"appChannel\":\"MI\"}";
+        p.setRequestData(param);
+        ActiveControllerTester.testRest(p);
+    }
+
 
     @Test
     public void generateSQL()throws Exception{
