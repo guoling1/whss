@@ -299,8 +299,8 @@
     },
     methods: {
       audit: function (event) {
-       /* this.$http.post('/admin/merchantInfoCheckRecord/record', {
-          merchantId: this.$data.id
+        this.$http.post('/admin/hsyMerchantAudit/throughAudit', {
+          id: this.$data.id
         }).then(function (res) {
           this.$router.push('/admin/record/storeList')
         }, function (err) {
@@ -308,10 +308,10 @@
           this.$store.commit('MESSAGE_ACCORD_SHOW', {
             text: err.statusMessage
           })
-        })*/
+        })
       },
       unAudit: function () {
-        /*this.$http.post('/admin/merchantInfoCheckRecord/auditFailure',{merchantId: this.$data.id,descr:this.$data.reason})
+        this.$http.post('/admin/hsyMerchantAudit/rejectToExamine',{id: this.$data.id,checkErrorInfo:this.$data.reason})
           .then(function (res) {
             this.$router.push('/admin/record/storeList')
           },function (err) {
@@ -319,7 +319,7 @@
             this.$store.commit('MESSAGE_ACCORD_SHOW', {
               text: err.statusMessage
             })
-          })*/
+          })
       },
       changeBig: function (e) {
         e = e||window.event;
