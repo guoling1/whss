@@ -373,6 +373,7 @@
         AND second_level_dealer_id = 0
         AND distribute_status = 1
         AND activate_status = 1
+        And sys_type=#{sysType}
         ORDER BY id ASC
     </select>
 
@@ -392,6 +393,7 @@
         AND distribute_status = 1
         AND activate_status = 1
         AND code BETWEEN #{startCode} AND #{endCode}
+        AND sys_type=#{sysType}
     </select>
 
 

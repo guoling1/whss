@@ -69,7 +69,15 @@ public interface AccountSettleAuditRecordDao {
      * @param accountId
      * @return
      */
-    List<AccountSettleAuditRecord> selectByAccountId(@Param("accountId") long accountId);
+    long selectCountByAccountId(@Param("accountId") long accountId);
+
+    /**
+     * 按accountId查询
+     *
+     * @param accountId
+     * @return
+     */
+    List<AccountSettleAuditRecord> selectByAccountId(@Param("accountId") long accountId, @Param("offset") int offset, @Param("count") int count);
 
     /**
      * 记录个数
