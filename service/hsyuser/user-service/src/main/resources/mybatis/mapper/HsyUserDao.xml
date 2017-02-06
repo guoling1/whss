@@ -10,7 +10,7 @@
          (select PATH from app_cm_file acf where uuid=user.IDCARDF) IDCARDFURL,
          (select PATH from app_cm_file acf where uuid=user.IDCARDB) IDCARDBURL,
          (select PATH from app_cm_file acf where uuid=user.IDCARDH) IDCARDHURL,
-          user.DEALERID DEALERID,user.PRODUCTID PRODUCTID,user.WEIXINRATE WEIXINRATE,user.ALIPAYRATE ALIPAYRATE,user.FASTRATE FASTRATE
+          user.ACCOUNTID ACCOUNTID,user.DEALERID DEALERID,user.PRODUCTID PRODUCTID,user.WEIXINRATE WEIXINRATE,user.ALIPAYRATE ALIPAYRATE,user.FASTRATE FASTRATE
         from app_au_user user
         where 1=1
           <if test="cellphone!=null and cellphone!=''">and CELLPHONE=#{cellphone}</if>
@@ -19,7 +19,7 @@
 
     <select id="findAppAuUserByID" parameterType="java.lang.Long" resultType="com.jkm.hsy.user.entity.AppAuUser">
         select
-        user.ID,user.globalID,user.CELLPHONE,user.PASSWORD,user.NICKNAME,user.REALNAME,user.STATUS,user.PROFILE,user.AUSTEP,user.IDCARD,user.IDCARDF,user.IDCARDB,user.IDCARDH,user.DEALERID,user.PRODUCTID,user.WEIXINRATE,user.ALIPAYRATE,user.FASTRATE,user.CREATETIME,user.UPDATETIME
+        user.ID,user.globalID,user.CELLPHONE,user.PASSWORD,user.NICKNAME,user.REALNAME,user.STATUS,user.PROFILE,user.AUSTEP,user.IDCARD,user.IDCARDF,user.IDCARDB,user.IDCARDH,user.ACCOUNTID,user.DEALERID,user.PRODUCTID,user.WEIXINRATE,user.ALIPAYRATE,user.FASTRATE,user.CREATETIME,user.UPDATETIME
         from app_au_user user
         where 1=1
         <if test="id!=null and id!=''">and ID=#{id}</if>
@@ -27,7 +27,7 @@
     </select>
 
     <insert id="insert" useGeneratedKeys="true" keyProperty="id" parameterType="com.jkm.hsy.user.entity.AppAuUser">
-        insert into app_au_user(GLOBALID,CELLPHONE,PASSWORD,NICKNAME,REALNAME,STATUS,PROFILE,AUSTEP,IDCARD,IDCARDF,IDCARDB,IDCARDH,DEALERID,PRODUCTID,WEIXINRATE,ALIPAYRATE,FASTRATE,CREATETIME,UPDATETIME) values(#{globalID},#{cellphone},#{password},#{nickname},#{realname},#{status},#{profile},#{auStep},#{idcard},#{idcardf},#{idcardb},#{idcardh},#{dealerID},#{productID},#{weixinRate},#{alipayRate},#{fastRate},#{createTime},#{updateTime})
+        insert into app_au_user(GLOBALID,CELLPHONE,PASSWORD,NICKNAME,REALNAME,STATUS,PROFILE,AUSTEP,IDCARD,IDCARDF,IDCARDB,IDCARDH,ACCOUNTID,DEALERID,PRODUCTID,WEIXINRATE,ALIPAYRATE,FASTRATE,CREATETIME,UPDATETIME) values(#{globalID},#{cellphone},#{password},#{nickname},#{realname},#{status},#{profile},#{auStep},#{idcard},#{idcardf},#{idcardb},#{idcardh},#{accountID},#{dealerID},#{productID},#{weixinRate},#{alipayRate},#{fastRate},#{createTime},#{updateTime})
     </insert>
 
     <update id="update" parameterType="com.jkm.hsy.user.entity.AppAuUser">
@@ -44,6 +44,7 @@
             <if test="idcardf!=null and idcardf!=''">IDCARDF=#{idcardf},</if>
             <if test="idcardb!=null and idcardb!=''">IDCARDB=#{idcardb},</if>
             <if test="idcardh!=null and idcardh!=''">IDCARDH=#{idcardh},</if>
+            <if test="accountID!=null">ACCOUNTID=#{accountID},</if>
             <if test="dealerID!=null">DEALERID=#{dealerID},</if>
             <if test="productID!=null">PRODUCTID=#{productID},</if>
             <if test="weixinRate!=null">WEIXINRATE=#{weixinRate},</if>
@@ -69,11 +70,42 @@
             <if test="idcardf!=null and idcardf!=''">IDCARDF=#{idcardf},</if>
             <if test="idcardb!=null and idcardb!=''">IDCARDB=#{idcardb},</if>
             <if test="idcardh!=null and idcardh!=''">IDCARDH=#{idcardh},</if>
+            <if test="accountID!=null">ACCOUNTID=#{accountID},</if>
             <if test="dealerID!=null">DEALERID=#{dealerID},</if>
             <if test="productID!=null">PRODUCTID=#{productID},</if>
             <if test="weixinRate!=null">WEIXINRATE=#{weixinRate},</if>
             <if test="alipayRate!=null">ALIPAYRATE=#{alipayRate},</if>
             <if test="fastRate!=null">FASTRATE=#{fastRate},</if>
+            <if test="createTime!=null">CREATETIME=#{createTime},</if>
+            <if test="updateTime!=null">UPDATETIME=#{updateTime}</if>
+        </set> where ID=#{id}
+    </update>
+
+    <select id="findAppAuDeviceByDeviceID" parameterType="com.jkm.hsy.user.entity.AppAuDevice" resultType="com.jkm.hsy.user.entity.AppAuDevice">
+        select
+        ID,DEVICEID,CLIENTID,IMEI,DEVICENAME,APPTYPE,OSVERSION,APPCODE,APPVERSION,APPCHANNEL,CREATETIME,UPDATETIME
+        from app_au_device
+        where 1=1
+        <if test="deviceid!=null and deviceid!=''">and DEVICEID=#{deviceid}</if>
+        order by UPDATETIME desc
+    </select>
+
+    <insert id="insertAppAuDevice" useGeneratedKeys="true" keyProperty="id" parameterType="com.jkm.hsy.user.entity.AppAuDevice">
+        insert into app_au_device(DEVICEID,CLIENTID,IMEI,DEVICENAME,APPTYPE,OSVERSION,APPCODE,APPVERSION,APPCHANNEL,CREATETIME,UPDATETIME) values(#{deviceid},#{clientid},#{imei},#{deviceName},#{appType},#{osVersion},#{appCode},#{appVersion},#{appChannel},#{createTime},#{updateTime})
+    </insert>
+
+    <update id="updateAppAuDevice" parameterType="com.jkm.hsy.user.entity.AppAuDevice">
+        update app_au_device
+        <set>
+            <if test="deviceid!=null and deviceid!=''">DEVICEID=#{deviceid},</if>
+            <if test="clientid!=null and clientid!=''">CLIENTID=#{clientid},</if>
+            <if test="imei!=null and imei!=''">IMEI=#{imei},</if>
+            <if test="deviceName!=null and deviceName!=''">DEVICENAME=#{deviceName},</if>
+            <if test="appType!=null and appType!=''">APPTYPE=#{appType},</if>
+            <if test="osVersion!=null and osVersion!=''">OSVERSION=#{osVersion},</if>
+            <if test="appCode!=null and appCode!=''">APPCODE=#{appCode},</if>
+            <if test="appVersion!=null and appVersion!=''">APPVERSION=#{appVersion},</if>
+            <if test="appChannel!=null and appChannel!=''">APPCHANNEL=#{appChannel},</if>
             <if test="createTime!=null">CREATETIME=#{createTime},</if>
             <if test="updateTime!=null">UPDATETIME=#{updateTime}</if>
         </set> where ID=#{id}

@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.jkm.hsy.user.dao.HsyShopDao">
     <insert id="insert" useGeneratedKeys="true" keyProperty="id" parameterType="com.jkm.hsy.user.entity.AppBizShop">
-        insert into app_biz_shop(GLOBALID,NAME,SHORTNAME,INDUSTRYCODE,DISTRICTCODE,ADDRESS,LICENCEID,STOREFRONTID,COUNTERID,INDOORID,PARENTID,CONTACTNAME,CONTACTCELLPHONE,STATUS,ISPUBLIC,ACCOUNTID,CREATETIME,UPDATETIME) values(#{globalID},#{name},#{shortName},#{industryCode},#{districtCode},#{address},#{licenceID},#{storefrontID},#{counterID},#{indoorID},#{parentID},#{contactName},#{contactCellphone},#{status},#{isPublic},#{accountID},#{createTime},#{updateTime})
+        insert into app_biz_shop(GLOBALID,NAME,SHORTNAME,INDUSTRYCODE,DISTRICTCODE,ADDRESS,LICENCEID,STOREFRONTID,COUNTERID,INDOORID,PARENTID,CONTACTNAME,CONTACTCELLPHONE,STATUS,ISPUBLIC,CREATETIME,UPDATETIME) values(#{globalID},#{name},#{shortName},#{industryCode},#{districtCode},#{address},#{licenceID},#{storefrontID},#{counterID},#{indoorID},#{parentID},#{contactName},#{contactCellphone},#{status},#{isPublic},#{createTime},#{updateTime})
     </insert>
 
     <insert id="insertAppBizShopUserRole" useGeneratedKeys="true" keyProperty="id" parameterType="com.jkm.hsy.user.entity.AppBizShopUserRole">
@@ -27,7 +27,6 @@
             <if test="contactCellphone!=null and contactCellphone!=''">CONTACTCELLPHONE=#{contactCellphone},</if>
             <if test="status!=null">STATUS=#{status},</if>
             <if test="isPublic!=null">ISPUBLIC=#{isPublic},</if>
-            <if test="accountID!=null">ACCOUNTID=#{accountID},</if>
             <if test="createTime!=null">CREATETIME=#{createTime},</if>
             <if test="updateTime!=null">UPDATETIME=#{updateTime}</if>
         </set> where ID=#{id}
@@ -77,7 +76,7 @@
 
     <select id="findShopList" parameterType="com.jkm.hsy.user.entity.AppBizShop" resultType="com.jkm.hsy.user.entity.AppBizShop">
         select
-        shop.ID,shop.GLOBALID,shop.NAME,shop.SHORTNAME,shop.INDUSTRYCODE,shop.DISTRICTCODE,shop.ADDRESS,shop.LICENCEID,shop.STOREFRONTID,shop.COUNTERID,shop.INDOORID,shop.PARENTID,shop.CONTACTNAME,shop.CONTACTCELLPHONE,shop.STATUS,shop.ISPUBLIC,shop.accountID,shop.CREATETIME,shop.UPDATETIME,
+        shop.ID,shop.GLOBALID,shop.NAME,shop.SHORTNAME,shop.INDUSTRYCODE,shop.DISTRICTCODE,shop.ADDRESS,shop.LICENCEID,shop.STOREFRONTID,shop.COUNTERID,shop.INDOORID,shop.PARENTID,shop.CONTACTNAME,shop.CONTACTCELLPHONE,shop.STATUS,shop.ISPUBLIC,shop.CREATETIME,shop.UPDATETIME,
         (select PATH from app_cm_file acf where uuid=shop.LICENCEID) LICENCEURL,
         (select PATH from app_cm_file where uuid=shop.STOREFRONTID) STOREFRONTURL,
         (select PATH from app_cm_file where uuid=shop.COUNTERID) COUNTERURL,
@@ -93,7 +92,7 @@
 
     <select id="findShopDetail" parameterType="com.jkm.hsy.user.entity.AppBizShop" resultType="com.jkm.hsy.user.entity.AppBizShop">
         select distinct
-        shop.ID,shop.GLOBALID,shop.NAME,shop.SHORTNAME,shop.INDUSTRYCODE,shop.DISTRICTCODE,shop.ADDRESS,shop.LICENCEID,shop.STOREFRONTID,shop.COUNTERID,shop.INDOORID,shop.PARENTID,shop.CONTACTNAME,shop.CONTACTCELLPHONE,shop.STATUS,shop.ISPUBLIC,shop.accountID,shop.CREATETIME,shop.UPDATETIME,
+        shop.ID,shop.GLOBALID,shop.NAME,shop.SHORTNAME,shop.INDUSTRYCODE,shop.DISTRICTCODE,shop.ADDRESS,shop.LICENCEID,shop.STOREFRONTID,shop.COUNTERID,shop.INDOORID,shop.PARENTID,shop.CONTACTNAME,shop.CONTACTCELLPHONE,shop.STATUS,shop.ISPUBLIC,shop.CREATETIME,shop.UPDATETIME,
         (select PATH from app_cm_file acf where uuid=shop.LICENCEID) LICENCEURL,
         (select PATH from app_cm_file where uuid=shop.STOREFRONTID) STOREFRONTURL,
         (select PATH from app_cm_file where uuid=shop.COUNTERID) COUNTERURL,
@@ -173,31 +172,27 @@
     </select>
 
     <select id="findAppBizShopByAccountID" parameterType="java.lang.Long" resultType="com.jkm.hsy.user.entity.AppBizShop">
-        select
-        ID,GLOBALID,NAME,SHORTNAME,INDUSTRYCODE,DISTRICTCODE,ADDRESS,LICENCEID,STOREFRONTID,COUNTERID,INDOORID,PARENTID,CONTACTNAME,CONTACTCELLPHONE,STATUS,ISPUBLIC,ACCOUNTID,CREATETIME,UPDATETIME
-        from app_biz_shop
-        where ACCOUNTID=#{accountID}
+        select distinct
+        shop.ID,shop.GLOBALID,shop.NAME,shop.SHORTNAME,shop.INDUSTRYCODE,shop.DISTRICTCODE,shop.ADDRESS,shop.LICENCEID,shop.STOREFRONTID,shop.COUNTERID,shop.INDOORID,shop.PARENTID,shop.CONTACTNAME,shop.CONTACTCELLPHONE,shop.STATUS,shop.ISPUBLIC,user.ACCOUNTID,shop.CREATETIME,shop.UPDATETIME
+        from app_biz_shop shop left join app_biz_shop_user_role sur on shop.ID=sur.SID left join app_au_user user on user.ID=sur.UID
+        where user.ACCOUNTID=#{accountID}
     </select>
 
     <select id="findAppBizShopByAccountIDList" resultType="com.jkm.hsy.user.entity.AppBizShop">
-        select
-        ID,GLOBALID,NAME,SHORTNAME,INDUSTRYCODE,DISTRICTCODE,ADDRESS,LICENCEID,STOREFRONTID,COUNTERID,INDOORID,PARENTID,CONTACTNAME,CONTACTCELLPHONE,STATUS,ISPUBLIC,ACCOUNTID,CREATETIME,UPDATETIME
-        from app_biz_shop
-        where ACCOUNTID=-1
+        select distinct
+        shop.ID,shop.GLOBALID,shop.NAME,shop.SHORTNAME,shop.INDUSTRYCODE,shop.DISTRICTCODE,shop.ADDRESS,shop.LICENCEID,shop.STOREFRONTID,shop.COUNTERID,shop.INDOORID,shop.PARENTID,shop.CONTACTNAME,shop.CONTACTCELLPHONE,shop.STATUS,shop.ISPUBLIC,user.ACCOUNTID,shop.CREATETIME,shop.UPDATETIME
+        from app_biz_shop shop left join app_biz_shop_user_role sur on shop.ID=sur.SID left join app_au_user user on user.ID=sur.UID
+        where user.ACCOUNTID=-1
         <foreach collection="list" item="account" open="" separator="" close="">
-            or ACCOUNTID = #{account}
+            or user.ACCOUNTID = #{account}
         </foreach>
     </select>
 
     <select id="findPrimaryAppBizShopByAccountID" parameterType="java.lang.Long" resultType="com.jkm.hsy.user.entity.AppBizShop">
         select distinct
-        shop.ID,shop.GLOBALID,shop.NAME,shop.SHORTNAME,shop.INDUSTRYCODE,shop.DISTRICTCODE,shop.ADDRESS,shop.LICENCEID,shop.STOREFRONTID,shop.COUNTERID,shop.INDOORID,shop.PARENTID,shop.CONTACTNAME,shop.CONTACTCELLPHONE,shop.STATUS,shop.ISPUBLIC,shop.accountID,shop.CREATETIME,shop.UPDATETIME,
-        (select PATH from app_cm_file acf where uuid=shop.LICENCEID) LICENCEURL,
-        (select PATH from app_cm_file where uuid=shop.STOREFRONTID) STOREFRONTURL,
-        (select PATH from app_cm_file where uuid=shop.COUNTERID) COUNTERURL,
-        (select PATH from app_cm_file where uuid=shop.INDOORID) INDOORURL
-        from app_biz_shop shop left join app_biz_shop_user_role sur on shop.ID=sur.SID
-        where 1=1 and sur.TYPE=1 and shop.ACCOUNTID=#{accountID}
+        shop.ID,shop.GLOBALID,shop.NAME,shop.SHORTNAME,shop.INDUSTRYCODE,shop.DISTRICTCODE,shop.ADDRESS,shop.LICENCEID,shop.STOREFRONTID,shop.COUNTERID,shop.INDOORID,shop.PARENTID,shop.CONTACTNAME,shop.CONTACTCELLPHONE,shop.STATUS,shop.ISPUBLIC,user.ACCOUNTID,shop.CREATETIME,shop.UPDATETIME
+        from app_biz_shop shop left join app_biz_shop_user_role sur on shop.ID=sur.SID left join app_au_user user on user.ID=sur.UID
+        where 1=1 and sur.TYPE=1 and user.ACCOUNTID=#{accountID}
         order by shop.UPDATETIME desc
     </select>
 

@@ -276,4 +276,53 @@ public class HsyUserServiceImpl implements HsyUserService {
         hsyUserDao.update(appAuUser);
         return "";
     }
+
+    /**HSY001016 保存设备相关信息*/
+    public String insertDevice(String dataParam, AppParam appParam)throws ApiHandleException{
+        Gson gson=new GsonBuilder().setDateFormat(AppConstant.DATE_FORMAT).create();
+        /**参数转化*/
+        AppAuDevice appAuDevice=null;
+        try{
+            appAuDevice=gson.fromJson(dataParam, AppAuDevice.class);
+        } catch(Exception e){
+            throw new ApiHandleException(ResultCode.PARAM_TRANS_FAIL);
+        }
+
+        /**参数验证*/
+        if(!(appAuDevice.getDeviceid()!=null&&!appAuDevice.getDeviceid().equals("")))
+            throw new ApiHandleException(ResultCode.PARAM_LACK,"设备号");
+        if(!(appAuDevice.getClientid()!=null&&!appAuDevice.getClientid().equals("")))
+            throw new ApiHandleException(ResultCode.PARAM_LACK,"推送号");
+        if(!(appAuDevice.getImei()!=null&&!appAuDevice.getImei().equals("")))
+            throw new ApiHandleException(ResultCode.PARAM_LACK,"IMEI号");
+        if(!(appAuDevice.getDeviceName()!=null&&!appAuDevice.getDeviceName().equals("")))
+            throw new ApiHandleException(ResultCode.PARAM_LACK,"设备名");
+//        if(!(appAuDevice.getAppType()!=null&&!appAuDevice.getAppType().equals("")))
+//            throw new ApiHandleException(ResultCode.PARAM_LACK,"app类型");
+        if(!(appAuDevice.getOsVersion()!=null&&!appAuDevice.getOsVersion().equals("")))
+            throw new ApiHandleException(ResultCode.PARAM_LACK,"系统版本号");
+        if(!(appAuDevice.getAppCode()!=null&&!appAuDevice.getAppCode().equals("")))
+            throw new ApiHandleException(ResultCode.PARAM_LACK,"app编号");
+        if(!(appAuDevice.getAppVersion()!=null&&!appAuDevice.getAppVersion().equals("")))
+            throw new ApiHandleException(ResultCode.PARAM_LACK,"app版本号");
+
+        appAuDevice.setAppType(appParam.getAppType());
+        /**数据验证*/
+        List<AppAuDevice> list = hsyUserDao.findAppAuDeviceByDeviceID(appAuDevice);
+        Date date=new Date();
+        if (list != null && list.size() != 0)
+        {
+            appAuDevice.setId(list.get(0).getId());
+            appAuDevice.setUpdateTime(date);
+            hsyUserDao.updateAppAuDevice(appAuDevice);
+        }
+        else
+        {
+            appAuDevice.setCreateTime(date);
+            appAuDevice.setUpdateTime(date);
+            hsyUserDao.insertAppAuDevice(appAuDevice);
+        }
+        return "";
+    }
+
 }

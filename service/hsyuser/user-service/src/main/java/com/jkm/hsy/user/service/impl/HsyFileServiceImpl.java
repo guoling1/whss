@@ -104,7 +104,7 @@ public class HsyFileServiceImpl implements HsyFileService {
         appCmFile.setFileType(type);
         String[] strs=appCmFile.getFileName().split("\\.");
         Date date=new Date();
-        appCmFile.setPath("/"+AppConstant.FIlE_ROOT+"/"+type+"/"+ AppDateUtil.formatDate(date,AppDateUtil.DATE_FORMAT_NORMAL)+"/"+appCmFile.getUuid()+"."+strs[strs.length-1]);
+        appCmFile.setPath(AppConstant.FIlE_ROOT+"/"+type+"/"+ AppDateUtil.formatDate(date,AppDateUtil.DATE_FORMAT_NORMAL)+"/"+appCmFile.getUuid()+"."+strs[strs.length-1]);
         appCmFile.setCreateTime(date);
         appCmFile.setUpdateTime(date);
         File uploadfile=new File(appCmFile.getPath());
