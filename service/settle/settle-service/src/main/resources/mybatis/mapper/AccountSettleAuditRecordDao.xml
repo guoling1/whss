@@ -60,8 +60,16 @@
          </foreach>
     </select>
 
+    <select id="selectCountByAccountId" resultType="java.lang.Long">
+        SELECT COUNT(0) FROM tb_account_settle_audit_record WHERE account_id = #{accountId} AND settle_status = 3
+    </select>
+
     <select id="selectByAccountId" resultType="com.jkm.hss.settle.entity.AccountSettleAuditRecord">
-        SELECT * FROM tb_account_settle_audit_record WHERE account_id = #{accountId} AND settle_status = 3
+        SELECT * FROM tb_account_settle_audit_record
+        WHERE account_id = #{accountId}
+        AND settle_status = 3
+        ORDER BY id DESC
+        LIMIT #{offset}, #{count}
     </select>
 
     <select id="selectCountByParam" resultType="java.lang.Long">
