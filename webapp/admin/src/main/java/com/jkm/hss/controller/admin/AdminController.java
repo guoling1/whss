@@ -147,7 +147,7 @@ public class AdminController extends BaseController {
             return CommonResponse.simpleResponse(-1, "分配个数不可以是0");
         }
         if (StringUtils.isBlank(distributeQRCodeRequest.getSysType())) {
-            return CommonResponse.simpleResponse(-1, "请选择项目类型");
+            return CommonResponse.simpleResponse(-1, "请选择所属项目");
         }
         final Dealer dealer = dealerOptional.get();
         final Triple<Integer, String, List<Pair<QRCode, QRCode>>> resultTriple = this.adminUserService.distributeQRCode(super.getAdminUser().getId(),
@@ -188,7 +188,7 @@ public class AdminController extends BaseController {
             return CommonResponse.simpleResponse(-1, "代理商不存在");
         }
         if (StringUtils.isBlank(distributeRangeQRCodeRequest.getSysType())) {
-            return CommonResponse.simpleResponse(-1, "请选择项目类型");
+            return CommonResponse.simpleResponse(-1, "请选择所属项目");
         }
         final Dealer dealer = dealerOptional.get();
         final List<Pair<QRCode, QRCode>> pairs = this.adminUserService.distributeRangeQRCode(distributeRangeQRCodeRequest.getDealerId(),
