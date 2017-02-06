@@ -146,10 +146,12 @@ public class AdminController extends BaseController {
         if (distributeQRCodeRequest.getCount() <= 0) {
             return CommonResponse.simpleResponse(-1, "分配个数不可以是0");
         }
-
+        if (StringUtils.isBlank(distributeQRCodeRequest.getSysType())) {
+            return CommonResponse.simpleResponse(-1, "请选择项目类型");
+        }
         final Dealer dealer = dealerOptional.get();
         final Triple<Integer, String, List<Pair<QRCode, QRCode>>> resultTriple = this.adminUserService.distributeQRCode(super.getAdminUser().getId(),
-                distributeQRCodeRequest.getDealerId(), distributeQRCodeRequest.getCount());
+                distributeQRCodeRequest.getDealerId(), distributeQRCodeRequest.getCount(),distributeQRCodeRequest.getSysType());
         if (1 != resultTriple.getLeft()) {
             return CommonResponse.simpleResponse(-1, resultTriple.getMiddle());
         }
@@ -185,9 +187,12 @@ public class AdminController extends BaseController {
         if(!dealerOptional.isPresent()) {
             return CommonResponse.simpleResponse(-1, "代理商不存在");
         }
+        if (StringUtils.isBlank(distributeRangeQRCodeRequest.getSysType())) {
+            return CommonResponse.simpleResponse(-1, "请选择项目类型");
+        }
         final Dealer dealer = dealerOptional.get();
         final List<Pair<QRCode, QRCode>> pairs = this.adminUserService.distributeRangeQRCode(distributeRangeQRCodeRequest.getDealerId(),
-                distributeRangeQRCodeRequest.getStartCode(), distributeRangeQRCodeRequest.getEndCode());
+                distributeRangeQRCodeRequest.getStartCode(), distributeRangeQRCodeRequest.getEndCode(),distributeRangeQRCodeRequest.getSysType());
         if (CollectionUtils.isEmpty(pairs)) {
             return CommonResponse.simpleResponse(-1, "此范围不存在可分配的二维码");
         }

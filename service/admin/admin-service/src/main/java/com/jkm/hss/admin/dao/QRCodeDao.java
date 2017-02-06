@@ -330,7 +330,7 @@ public interface QRCodeDao {
      *
      * @return
      */
-    List<Long> getUnDistributeCode();
+    List<Long> getUnDistributeCode(@Param("sysType") String sysType);
 
     /**
      *
@@ -355,7 +355,7 @@ public interface QRCodeDao {
      * @param endCode
      * @return
      */
-    List<Long> selectUnDistributeCodeByRangeCode(@Param("startCode") String startCode, @Param("endCode") String endCode);
+    List<Long> selectUnDistributeCodeByRangeCode(@Param("startCode") String startCode, @Param("endCode") String endCode, @Param("sysType") String sysType);
 
     /**
      * 按码段查询状态

@@ -24,4 +24,8 @@ public class DistributeRangeQRCodeRequest {
      * 结束码段
      */
     private String endCode;
+    /**
+     * 所属项目（hss,hsy）
+     */
+    private String sysType;
 }

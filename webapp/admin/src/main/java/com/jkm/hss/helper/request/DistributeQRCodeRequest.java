@@ -19,4 +19,8 @@ public class DistributeQRCodeRequest {
      * 个数
      */
     private int count;
+    /**
+     * 所属项目（hss,hsy）
+     */
+    private String sysType;
 }

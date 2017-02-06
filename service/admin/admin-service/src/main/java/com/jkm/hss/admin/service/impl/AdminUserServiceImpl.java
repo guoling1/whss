@@ -143,8 +143,8 @@ public class AdminUserServiceImpl implements AdminUserService {
     @Override
     @Transactional
     synchronized public Triple<Integer, String, List<Pair<QRCode, QRCode>>> distributeQRCode(final long adminId,
-                                                                                             final long firstLevelDealerId, final int count) {
-        final List<Long> unDistributeList = this.qrCodeService.getUnDistributeCode();
+                                                                                             final long firstLevelDealerId, final int count,final String sysType) {
+        final List<Long> unDistributeList = this.qrCodeService.getUnDistributeCode(sysType);
         log.info("未分配的二维码数量[{}]", unDistributeList.size());
         if (unDistributeList.size() < count) {
             return Triple.of(0, "未分配的二维码数量[" + unDistributeList.size() + "]小于要分配的个数[" + count+ "]", null);
@@ -169,8 +169,8 @@ public class AdminUserServiceImpl implements AdminUserService {
     @Override
     @Transactional
     synchronized public List<Pair<QRCode, QRCode>> distributeRangeQRCode(final long firstLevelDealerId,
-                                                                         final String startCode, final String endCode) {
-        final List<Long> codeIds = this.qrCodeService.getUnDistributeCodeByRangeCode(startCode, endCode);
+                                                                         final String startCode, final String endCode, final String sysType) {
+        final List<Long> codeIds = this.qrCodeService.getUnDistributeCodeByRangeCode(startCode, endCode, sysType);
         if (CollectionUtils.isEmpty(codeIds)) {
             return Collections.emptyList();
         }
