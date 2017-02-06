@@ -463,7 +463,7 @@ public class HSYTradeServiceImpl implements HSYTradeService {
                 this.smsAuthService.checkVerifyCode(appBizCard1.getCardCellphone(), verifyCode, EnumVerificationCodeType.WITHDRAW_MERCHANT);
         if (1 == checkResult.getLeft()) {
             final Pair<Integer, String> withdrawResult = this.withdraw(accountId, totalAmount, channel, EnumProductType.HSY.getId());
-            if (0 != withdrawResult.getLeft()) {
+            if (-1 == withdrawResult.getLeft()) {
                 result.put("code", -1);
                 result.put("msg", "提现失败--" + withdrawResult.getRight());
             } else {
@@ -515,7 +515,8 @@ public class HSYTradeServiceImpl implements HSYTradeService {
             paymentSdkDaiFuRequest.setAppId(playMoneyOrder.getAppId());
             paymentSdkDaiFuRequest.setOrderNo(playMoneyOrder.getOrderNo());
             paymentSdkDaiFuRequest.setTotalAmount(playMoneyOrder.getTradeAmount().subtract(playMoneyOrder.getPoundage()).toPlainString());
-            paymentSdkDaiFuRequest.setTradeType(playMoneyOrder.getSettleType());
+            // TODO
+            paymentSdkDaiFuRequest.setTradeType("D0");
             paymentSdkDaiFuRequest.setIsCompany("0");
             paymentSdkDaiFuRequest.setMobile(appBizCard.getCardCellphone());
             paymentSdkDaiFuRequest.setBankName(appBizCard.getCardBank());
@@ -696,13 +697,13 @@ public class HSYTradeServiceImpl implements HSYTradeService {
             this.accountService.decreaseFrozenAmount(accountId, frozenRecord.getFrozenAmount());
             this.accountService.decreaseTotalAmount(accountId, frozenRecord.getFrozenAmount());
             //入账到手续费账户
-            final Account poundageAccount = this.accountService.getByIdWithLock(AccountConstants.POUNDAGE_ACCOUNT_ID).get();
-            this.accountService.increaseTotalAmount(poundageAccount.getId(), order.getPoundage());
-            this.accountService.increaseAvailableAmount(poundageAccount.getId(), order.getPoundage());
-            this.accountFlowService.addAccountFlow(poundageAccount.getId(), order.getOrderNo(), order.getPoundage(),
-                    "提现分润", EnumAccountFlowType.INCREASE);
-            final AppBizShop shop = this.hsyShopDao.findAppBizShopByAccountID(accountId).get(0);
-            this.withdrawSplitAccount(this.orderService.getByIdWithLock(orderId).get(), shop);
+//            final Account poundageAccount = this.accountService.getByIdWithLock(AccountConstants.POUNDAGE_ACCOUNT_ID).get();
+//            this.accountService.increaseTotalAmount(poundageAccount.getId(), order.getPoundage());
+//            this.accountService.increaseAvailableAmount(poundageAccount.getId(), order.getPoundage());
+//            this.accountFlowService.addAccountFlow(poundageAccount.getId(), order.getOrderNo(), order.getPoundage(),
+//                    "提现分润", EnumAccountFlowType.INCREASE);
+//            final AppBizShop shop = this.hsyShopDao.findAppBizShopByAccountID(accountId).get(0);
+//            this.withdrawSplitAccount(this.orderService.getByIdWithLock(orderId).get(), shop);
             //推送
 
         }

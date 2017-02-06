@@ -7,6 +7,7 @@ import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.jkm.base.common.entity.PageModel;
 import com.jkm.base.common.util.DateFormatUtil;
 import com.jkm.hss.account.entity.Account;
 import com.jkm.hss.account.entity.SettleAccountFlow;
@@ -24,7 +25,9 @@ import com.jkm.hss.mq.config.MqConfig;
 import com.jkm.hss.mq.producer.MqProducer;
 import com.jkm.hss.settle.dao.AccountSettleAuditRecordDao;
 import com.jkm.hss.settle.entity.AccountSettleAuditRecord;
+import com.jkm.hss.settle.enums.EnumAccountCheckStatus;
 import com.jkm.hss.settle.enums.EnumSettleStatus;
+import com.jkm.hss.settle.helper.requestparam.ListSettleAuditRecordRequest;
 import com.jkm.hss.settle.service.AccountSettleAuditRecordService;
 import com.jkm.hsy.user.dao.HsyShopDao;
 import com.jkm.hsy.user.entity.AppAuUser;
@@ -143,7 +146,7 @@ public class AccountSettleAuditRecordServiceImpl implements AccountSettleAuditRe
         final JSONArray result = new JSONArray();
         final long accountId = paramJo.getLongValue("accountId");
         final List<AccountSettleAuditRecord> records = this.accountSettleAuditRecordDao.selectByAccountId(accountId);
-        if (CollectionUtils.isEmpty(records)) {
+        if (!CollectionUtils.isEmpty(records)) {
             for (AccountSettleAuditRecord record : records) {
                 final JSONObject jo = new JSONObject();
                 result.add(jo);
@@ -165,17 +168,16 @@ public class AccountSettleAuditRecordServiceImpl implements AccountSettleAuditRe
         final List<Date> tradeDateList = new ArrayList<>();
         final DateTime now = DateTime.now();
         tradeDateList.add(DateFormatUtil.parse(DateFormatUtil.format(now.minusDays(1).toDate(), DateFormatUtil.yyyy_MM_dd) , DateFormatUtil.yyyy_MM_dd));
-        Preconditions.checkState(!(6 == now.dayOfWeek().get() || 7 == now.dayOfWeek().get()), "T1结算定时任务，在非法的日期启动");
-        if (1 == now.getDayOfWeek()) {
-            tradeDateList.add(DateFormatUtil.parse(DateFormatUtil.format(now.minusDays(2).toDate(), DateFormatUtil.yyyy_MM_dd) , DateFormatUtil.yyyy_MM_dd));
-            tradeDateList.add(DateFormatUtil.parse(DateFormatUtil.format(now.minusDays(3).toDate(), DateFormatUtil.yyyy_MM_dd) , DateFormatUtil.yyyy_MM_dd));
-        }
         //商户昨日待结算记录
         final List<SettleAccountFlow> settleAccountFlows = this.settleAccountFlowService.getMerchantLastWordDayRecord(tradeDateList);
         if (!CollectionUtils.isEmpty(settleAccountFlows)) {
             final HashSet<Long> accountIds = new HashSet<>();
             for (SettleAccountFlow settleAccountFlow : settleAccountFlows) {
                 accountIds.add(settleAccountFlow.getAccountId());
+                if (settleAccountFlow.getSettleAuditRecordId() > 0) {
+                    log.error("###############结算流水[{}], 已经存在结算审核记录#################", settleAccountFlow.getId());
+                    return;
+                }
             }
             final List<AppBizShop> shopList = this.hsyShopDao.findAppBizShopByAccountIDList(new ArrayList<>(accountIds));
             //accountId--shop(主)
@@ -185,27 +187,6 @@ public class AccountSettleAuditRecordServiceImpl implements AccountSettleAuditRe
                     return input.getAccountID();
                 }
             });
-//            final List<Long> shopIds = Lists.transform(shopList, new Function<AppBizShop, Long>() {
-//                @Override
-//                public Long apply(AppBizShop input) {
-//                    return input.getId();
-//                }
-//            });
-//            final List<AppAuUser> users = new ArrayList<>();
-//            final List<Long> dealerIds = Lists.transform(users, new Function<AppAuUser, Long>() {
-//                @Override
-//                public Long apply(AppAuUser input) {
-//                    return input.getDealerID();
-//                }
-//            });
-//            final List<Dealer> dealers = this.dealerService.getByIds(dealerIds);
-//            //dealerId--dealer
-//            final Map<Long, Dealer> dealerMap = Maps.uniqueIndex(dealers, new Function<Dealer, Long>() {
-//                @Override
-//                public Long apply(Dealer input) {
-//                    return input.getId();
-//                }
-//            });
             //accountId--List<SettleAccountFlow>
             final Map<Long, List<SettleAccountFlow>> accountIdFlowMap = this.getAccountIdFlowMap(accountIds, settleAccountFlows);
             if (!accountIdFlowMap.isEmpty()) {
@@ -214,15 +195,7 @@ public class AccountSettleAuditRecordServiceImpl implements AccountSettleAuditRe
                 while (keyIterator.hasNext()) {
                     final Long key = keyIterator.next();
                     final List<SettleAccountFlow> flows = accountIdFlowMap.get(key);
-                    //周一
-                    if (1 == now.getDayOfWeek()) {
-                        for (Date date : tradeDateList) {
-                            final List<SettleAccountFlow> flows1 = this.getFlows(date, flows);
-                            this.generateAuditRecord(key, flows1, shopMap);
-                        }
-                    } else if (now.getDayOfWeek() >=2 && now.getDayOfWeek() <= 5) {//
-                        this.generateAuditRecord(key, flows, shopMap);
-                    }
+                    this.generateAuditRecord(key, flows, shopMap);
                 }
             }
         }
@@ -415,11 +388,11 @@ public class AccountSettleAuditRecordServiceImpl implements AccountSettleAuditRe
         this.accountService.increaseAvailableAmount(merchantAccount.getId(), merchantIncreaseSettleAccountFlow.getIncomeAmount());
         this.accountService.decreaseSettleAmount(merchantAccount.getId(), merchantIncreaseSettleAccountFlow.getIncomeAmount());
         this.settleAccountFlowService.addSettleAccountFlow(merchantAccount.getId(), orderNo, merchantIncreaseSettleAccountFlow.getIncomeAmount(),
-                "支付", EnumAccountFlowType.DECREASE, merchantIncreaseSettleAccountFlow.getAppId(), merchantIncreaseSettleAccountFlow.getTradeDate(),
+                "支付结算", EnumAccountFlowType.DECREASE, merchantIncreaseSettleAccountFlow.getAppId(), merchantIncreaseSettleAccountFlow.getTradeDate(),
                 merchantIncreaseSettleAccountFlow.getAccountUserType());
         //可用余额流水增加
         this.accountFlowService.addAccountFlow(merchantAccount.getId(), orderNo, merchantIncreaseSettleAccountFlow.getIncomeAmount(),
-                "支付", EnumAccountFlowType.INCREASE);
+                "支付结算", EnumAccountFlowType.INCREASE);
     }
 
     /**
@@ -450,6 +423,24 @@ public class AccountSettleAuditRecordServiceImpl implements AccountSettleAuditRe
             }
         }
         return Pair.of(0, "success");
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param settleAuditRecordRequest
+     * @return
+     */
+    @Override
+    public PageModel<AccountSettleAuditRecord> listByParam(final ListSettleAuditRecordRequest settleAuditRecordRequest) {
+        final PageModel<AccountSettleAuditRecord> result = new PageModel<>(settleAuditRecordRequest.getPageNo(), settleAuditRecordRequest.getPageSize());
+        settleAuditRecordRequest.setOffset(result.getFirstIndex());
+        settleAuditRecordRequest.setCount(result.getPageSize());
+        final long count = this.accountSettleAuditRecordDao.selectCountByParam(settleAuditRecordRequest);
+        final List<AccountSettleAuditRecord> records = this.accountSettleAuditRecordDao.selectByParam(settleAuditRecordRequest);
+        result.setCount(count);
+        result.setRecords(records);
+        return result;
     }
 
     private SettleAccountFlow getMerchantSettleAccountFlow(final List<SettleAccountFlow> flows, final String orderNo) {
@@ -489,6 +480,7 @@ public class AccountSettleAuditRecordServiceImpl implements AccountSettleAuditRe
             totalAmount = totalAmount.add(settleAccountFlow.getIncomeAmount());
             orderNos.add(settleAccountFlow.getOrderNo());
         }
+        accountSettleAuditRecord.setAccountCheckStatus(EnumAccountCheckStatus.DUE_ACCOUNT_CHECK.getId());
         accountSettleAuditRecord.setSettleDate(new Date());
         accountSettleAuditRecord.setSettleAmount(totalAmount);
         accountSettleAuditRecord.setSettleStatus(EnumSettleStatus.DUE_SETTLE.getId());

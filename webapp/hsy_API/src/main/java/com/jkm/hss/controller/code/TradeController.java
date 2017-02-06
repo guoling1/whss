@@ -48,7 +48,7 @@ public class TradeController extends BaseController {
     @ResponseBody
     @RequestMapping(value = "scReceipt", method = RequestMethod.POST)
     public CommonResponse staticCodeReceipt(@RequestBody final StaticCodePayRequest payRequest) throws UnsupportedEncodingException {
-        final AppBizShop shop = this.hsyShopDao.findAppBizShopByID(payRequest.getShopId()).get(0);
+        final AppBizShop shop = this.hsyShopDao.findAppBizShopByID(payRequest.getMerchantId()).get(0);
         final Pair<Integer, String> resultPair = this.hsyTradeService.receipt(payRequest.getTotalFee(),
                 payRequest.getPayChannel(), shop.getId(), EnumAppType.HSY.getId());
         if (0 == resultPair.getLeft()) {

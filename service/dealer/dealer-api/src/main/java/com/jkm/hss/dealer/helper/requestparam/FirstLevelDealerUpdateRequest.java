@@ -82,7 +82,7 @@ public class FirstLevelDealerUpdateRequest {
         /**
          * 升级分润费率编码
          */
-        private long id;
+        private Long id;
         /**
          * 产品编码
          */

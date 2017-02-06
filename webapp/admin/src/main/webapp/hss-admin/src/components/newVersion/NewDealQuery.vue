@@ -33,8 +33,10 @@
             <div class="form-group">
               <label>交易日期：</label>
               <div class="form-control">
-                <input type="date" style="border: none;display:inline-block;width: 45%" name="date" value="" v-model="$$query.startTime">至
-                <input type="date" style="border: none;display:inline-block;width: 45%" name="date" value="" v-model="$$query.endTime">
+                <!--<input id="indate1" type="text" style="border: none;display:inline-block;width: 45%">至
+                <input id="indate2" type="text" style="border: none;display:inline-block;width: 45%" name="date" >-->
+                <input  type="date" style="border: none;display:inline-block;width: 45%" v-model="$$query.startTime">至
+                <input  type="date" style="border: none;display:inline-block;width: 45%"  v-model="$$query.endTime">
               </div>
             </div>
             <div class="form-group">
@@ -181,6 +183,8 @@
       }
     },
     created:function(){
+      this.$data.query.startTime=''
+      this.$data.query.endTime=''
       this.$data.isShow = true;
       this.$http.post('/admin/queryOrder/orderList',this.$data.query)
         .then(function (res) {
@@ -237,6 +241,24 @@
           })
         })
     },
+   /* mounted:function () {
+      jeDate({
+        dateCell: '#indate1',
+        format: "YYYY-MM-DD",
+        maxDate: jeDate.now(5), //1代表明天，2代表后天，以此类推
+        choosefun:(val)=> {
+          this.$data.query.startTime = val;
+        }
+      })
+      jeDate({
+        dateCell: '#indate2',
+        format: "YYYY-MM-DD",
+        maxDate: jeDate.now(5), //1代表明天，2代表后天，以此类推
+        choosefun:(val)=> {
+          this.$data.query.endTime = val;
+        }
+      })
+    },*/
     methods: {
       refresh: function () {
         location.reload()

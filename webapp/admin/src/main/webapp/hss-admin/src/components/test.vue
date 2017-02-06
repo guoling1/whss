@@ -13,10 +13,10 @@
       <option :value="district" v-for="district in $$data.districts">{{district}}</option>
     </select>
 
-    <input id="indate4" type="text" placeholder="请选择">
+    <input class="in" type="text" placeholder="请选择" >
+    <div class="btn" @click="test">打印</div>
   </div>
 </template>
-
 <script>
   var msg = require('../../city.json')
   export default {
@@ -28,7 +28,8 @@
         districts:'',
         province:'',
         city:'',
-        district:''
+        district:'',
+        time:''
       }
     },
     created:function () {
@@ -40,12 +41,37 @@
           }
         }
       }
-      /*jeDate({
-        dateCell: '#indate4',
-        format: "YYYY-MM-DD",
-        minDate: jeDate.now(-1), //0代表今天，-1代表昨天，-2代表前天，以此类推
-        maxDate: jeDate.now(5) //1代表明天，2代表后天，以此类推
+//      document.getElementsByClassName('in')[0].setAttribute('id','in')
+      /*this.$nextTick(function(){
+        //代码
+        jeDate({
+          dateCell: '#indate4',
+          format: "YYYY-MM-DD",
+          maxDate: jeDate.now(5), //1代表明天，2代表后天，以此类推
+          choosefun:function(val) {
+            console.log(val)
+          }
+        })
       })*/
+    },
+    methods:{
+      test:function () {
+        console.log(document.getElementById("indate4").value)
+      }
+    },
+    mounted:function () {
+      console.log(document.getElementsByClassName('in')[0]);
+      if(document.getElementById("indate4")){
+        jeDate({
+          dateCell: '#indate4',
+          format: "YYYY-MM-DD",
+          maxDate: jeDate.now(5), //1代表明天，2代表后天，以此类推
+          choosefun:function(val) {
+            console.log(val)
+          }
+        })
+      }
+
     },
     watch: {
       province: function (val, oldval) {
