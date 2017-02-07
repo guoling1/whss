@@ -21,13 +21,13 @@ public class AppBizShop {
     private Integer status;//状态：1 正常 99禁用
     private Integer isPublic;//是否对公1是 2否'
     private String checkErrorInfo;//审核错误原因
-    private Long accountID;//账户ID
     private Date createTime;
     private Date updateTime;
 
     private Long uid;//用户ID
     private Integer role;//角色 1法人 2店长 3店员  4财务
     private Integer type;//类型1主店 2分店
+    private Long accountID;//账户ID
 
     private String licenceURL;//营业执照URL
     private String storefrontURL;//店面照片URL

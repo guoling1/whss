@@ -1,5 +1,6 @@
 package com.jkm.hsy.user.dao;
 
+import com.jkm.hsy.user.entity.AppAuDevice;
 import com.jkm.hsy.user.entity.AppAuUser;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
@@ -13,4 +14,7 @@ public interface HsyUserDao {
     public void update(AppAuUser appAuUser);
     public void updateByID(AppAuUser appAuUser);
     public List<AppAuUser> findAppAuUserByID(@Param("id")Long id);
+    public List<AppAuDevice> findAppAuDeviceByDeviceID(AppAuDevice appAuDevice);
+    public void insertAppAuDevice(AppAuDevice appAuDevice);
+    public void updateAppAuDevice(AppAuDevice appAuDevice);
 }
