@@ -210,7 +210,7 @@
                         <td>{{store.industryCode}}</td>
                         <td>{{store.status|changeStatus}}</td>
                         <td>
-                          <a @click="auditHSY($event,store.id,store.status,store.uid)">{{store.status|operate}}</a>
+                          <a @click="auditHSY($event,store.id,store.status)">{{store.status|operate}}</a>
                         </td>
                       </tr>
                       </tbody>
@@ -354,7 +354,6 @@
           path: '/admin/record/StoreAuditHSY', query: {
             id: id,
             status: status,
-            uid: uid
           }
         })
       },

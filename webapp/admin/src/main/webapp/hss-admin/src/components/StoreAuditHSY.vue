@@ -306,11 +306,10 @@
     created: function () {
       this.$data.id = this.$route.query.id;
       this.$data.status = this.$route.query.status;
-      this.$data.uid = this.$route.query.uid;
       if(this.$data.status !=2){
         this.$data.isShow = false;
       }
-      this.$http.post('/admin/hsyMerchantList/getDetails',{id:this.$data.id,uid:this.$data.uid})
+      this.$http.post('/admin/hsyMerchantList/getDetails',{id:this.$data.id})
         .then(function (res) {
           this.$data.msg = res.data;
         },function (err) {
@@ -324,7 +323,7 @@
       audit: function (event) {
         this.$http.post('/admin/hsyMerchantAudit/throughAudit', {
           id: this.$data.id,
-          uid: this.$data.uid,
+          uid: this.$data.msg.uid,
         }).then(function (res) {
           /*this.$router.push('/admin/record/storeList')*/
           this.$router.go(-1)
@@ -336,7 +335,7 @@
         })
       },
       unAudit: function () {
-        this.$http.post('/admin/hsyMerchantAudit/rejectToExamine',{id: this.$data.id, uid: this.$data.uid,checkErrorInfo:this.$data.reason})
+        this.$http.post('/admin/hsyMerchantAudit/rejectToExamine',{id: this.$data.id, uid: this.$data.msg.uid,checkErrorInfo:this.$data.reason})
           .then(function (res) {
             this.$router.push('/admin/record/storeList')
           },function (err) {
