@@ -14,6 +14,14 @@
     <dependencies>
         <dependency>
             <groupId>com.jkm</groupId>
+            <artifactId>hss-push-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.jkm</groupId>
+            <artifactId>hss-common-push</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.jkm</groupId>
             <artifactId>hss-common-util</artifactId>
         </dependency>
         <dependency>
@@ -241,16 +249,6 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-tx</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.jkm</groupId>
-            <artifactId>hss-push-api</artifactId>
-            <version>${hsy.push.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.jkm</groupId>
-            <artifactId>hss-common-push</artifactId>
-            <version>${common.push.version}</version>
         </dependency>
     </dependencies>
 </project>
