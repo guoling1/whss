@@ -9,6 +9,10 @@ import java.util.Date;
  */
 @Data
 public class HsyMerchantAuditResponse {
+    private String idcard;//身份证号码
+    private String idcardf;//身份证正面照
+    private String idcardb;//身份证背面照
+    private String idcardh;//身份证手持照
 
     private Long id;
     private String globalID;//对外ID

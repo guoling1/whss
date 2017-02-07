@@ -210,7 +210,7 @@
                         <td>{{store.industryCode}}</td>
                         <td>{{store.status|changeStatus}}</td>
                         <td>
-                          <a @click="auditHSY($event,store.id,store.status)">{{store.status|operate}}</a>
+                          <a @click="auditHSY($event,store.id,store.status,store.uid)">{{store.status|operate}}</a>
                         </td>
                       </tr>
                       </tbody>
@@ -349,11 +349,12 @@
           }
         })
       },
-      auditHSY: function (event, id, status) {
+      auditHSY: function (event, id, status, uid) {
         this.$router.push({
           path: '/admin/record/StoreAuditHSY', query: {
             id: id,
-            status: status
+            status: status,
+            uid: uid
           }
         })
       },
