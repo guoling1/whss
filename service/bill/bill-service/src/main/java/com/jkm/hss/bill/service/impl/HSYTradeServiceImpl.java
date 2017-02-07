@@ -38,6 +38,7 @@ import com.jkm.hsy.user.entity.AppBizCard;
 import com.jkm.hsy.user.entity.AppBizShop;
 import com.jkm.hsy.user.entity.AppParam;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
 import org.joda.time.DateTime;
@@ -457,7 +458,18 @@ public class HSYTradeServiceImpl implements HSYTradeService {
         final int channel = paramJo.getIntValue("channel");
         final long accountId = paramJo.getLongValue("accountId");
         final String verifyCode = paramJo.getString("verifyCode");
+        if (StringUtils.isEmpty(totalAmount)) {
+            result.put("code", -1);
+            result.put("msg", "提现金额错误");
+            return result.toJSONString();
+        }
         final AppBizShop shop = this.hsyShopDao.findAppBizShopByAccountID(accountId).get(0);
+        final BigDecimal merchantWithdrawPoundage = this.calculateService.getMerchantWithdrawPoundage(EnumProductType.HSY, shop.getId(), channel);
+        if (new BigDecimal(totalAmount).compareTo(merchantWithdrawPoundage) > 0) {
+            result.put("code", -1);
+            result.put("msg", "提现金额必须大于手续费");
+            return result.toJSONString();
+        }
         final AppBizCard appBizCard = new AppBizCard();
         appBizCard.setSid(shop.getId());
         final AppBizCard appBizCard1 = this.hsyShopDao.findAppBizCardByParam(appBizCard).get(0);
