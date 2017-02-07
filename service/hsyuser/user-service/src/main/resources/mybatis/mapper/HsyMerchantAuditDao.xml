@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.jkm.hsy.user.dao.HsyMerchantAuditDao">
+
+    <!-- 根据id查商户 -->
+    <select id="selectById" resultType="com.jkm.hsy.user.entity.HsyMerchantAuditResponse">
+        SELECT * FROM app_biz_shop WHERE id = #{id}
+    </select>
     <!-- 查询总条数 -->
     <select id="getCount" resultType="java.lang.Integer">
         SELECT COUNT(1) FROM app_biz_shop
@@ -17,8 +22,38 @@
 
     <!-- 查询详情 -->
     <select id="getDetails" resultType="com.jkm.hsy.user.entity.HsyMerchantAuditResponse">
-        SELECT * FROM app_biz_shop WHERE ID=#{id}
+       SELECT
+            c.`NAME`,
+            c.SHORTNAME,
+            c.INDUSTRYCODE,
+            c.DISTRICTCODE,
+            c.ADDRESS,
+            (SELECT a.PATH FROM app_cm_file a WHERE a.UUID=c.LICENCEID) AS LICENCEID,
+            (SELECT a.PATH FROM app_cm_file a WHERE a.UUID=c.STOREFRONTID) AS STOREFRONTID,
+            (SELECT a.PATH FROM app_cm_file a WHERE a.UUID=c.COUNTERID) AS COUNTERID,
+            (SELECT a.PATH FROM app_cm_file a WHERE a.UUID=c.INDOORID) AS INDOORID,
+            c.CONTACTNAME,
+            c.CONTACTCELLPHONE,
+            c.ISPUBLIC,
+            c.CHECKERRORINFO,
+            c.CREATETIME,
+            d.UID,
+            d.SID,
+            b.IDCARD,
+            (SELECT a.PATH FROM app_cm_file a WHERE a.UUID=b.IDCARDF) AS IDCARDF,
+            (SELECT a.PATH FROM app_cm_file a WHERE a.UUID=b.IDCARDB) AS IDCARDB,
+            (SELECT a.PATH FROM app_cm_file a WHERE a.UUID=b.IDCARDH) AS IDCARDH
+        FROM
+            app_biz_shop c
+        LEFT JOIN app_biz_shop_user_role d ON d.SID=c.ID
+        LEFT JOIN app_au_user b ON b.ID=d.UID
+        WHERE c.ID=#{id}
     </select>
+
+    <!-- 更新账户id -->
+    <update id="updateAccount">
+        UPDATE app_au_user SET ACCOUNTID=#{accountID} WHERE ID=#{id}
+    </update>
 
     <!-- 审核通过 -->
     <update id="updateAuditPass">

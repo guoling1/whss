@@ -47,4 +47,15 @@ public class HsyMerchantAuditServiceImpl implements HsyMerchantAuditService {
         int count = hsyMerchantAuditDao.getCount(hsyMerchantAuditRequest);
         return count;
     }
+
+    @Override
+    public HsyMerchantAuditResponse selectById(Long id) {
+        HsyMerchantAuditResponse res=hsyMerchantAuditDao.selectById(id);
+        return res;
+    }
+
+    @Override
+    public void updateAccount(Long accountID, Long id) {
+        hsyMerchantAuditDao.updateAccount(accountID,id);
+    }
 }
