@@ -465,7 +465,7 @@ public class HSYTradeServiceImpl implements HSYTradeService {
         }
         final AppBizShop shop = this.hsyShopDao.findAppBizShopByAccountID(accountId).get(0);
         final BigDecimal merchantWithdrawPoundage = this.calculateService.getMerchantWithdrawPoundage(EnumProductType.HSY, shop.getId(), channel);
-        if (new BigDecimal(totalAmount).compareTo(merchantWithdrawPoundage) > 0) {
+        if (new BigDecimal(totalAmount).compareTo(merchantWithdrawPoundage) <= 0) {
             result.put("code", -1);
             result.put("msg", "提现金额必须大于手续费");
             return result.toJSONString();
