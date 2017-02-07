@@ -27,6 +27,13 @@
                 <input type="text" class="form-control" id="inputPassword3" name="number" placeholder="请输入分配个数" v-model="query.count"/>
               </div>
             </div>
+            <div class="form-group">
+              <label for="inputPassword3" class="col-sm-3 control-label">所属项目</label>
+              <div class="col-sm-5">
+                <el-radio class="radio" v-model="query.sysType" label="hss">好收收</el-radio>
+                <el-radio class="radio" v-model="query.sysType" label="hsy">好收银</el-radio>
+              </div>
+            </div>
           </div>
           <div class="box-footer">
             <div type="submit" class="btn btn-info"  @click="submit">分配二维码</div>
@@ -51,7 +58,8 @@
         name:'',
         query:{
           count:'',
-          dealerId:''
+          dealerId:'',
+          sysType:''
         },
         findDealers:[],
         listIsShow: false

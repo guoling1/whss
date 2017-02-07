@@ -324,7 +324,8 @@
         this.$http.post('/admin/hsyMerchantAudit/throughAudit', {
           id: this.$data.id
         }).then(function (res) {
-          this.$router.push('/admin/record/storeList')
+          /*this.$router.push('/admin/record/storeList')*/
+          this.$router.go(-1)
         }, function (err) {
           console.log(err);
           this.$store.commit('MESSAGE_ACCORD_SHOW', {
@@ -337,7 +338,6 @@
           .then(function (res) {
             this.$router.push('/admin/record/storeList')
           },function (err) {
-            console.log(err)
             this.$store.commit('MESSAGE_ACCORD_SHOW', {
               text: err.statusMessage
             })
