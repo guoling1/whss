@@ -3,7 +3,6 @@ package com.jkm.hss.controller.hsyMerchant;
 import com.jkm.base.common.entity.CommonResponse;
 import com.jkm.hss.account.sevice.AccountService;
 import com.jkm.hss.controller.BaseController;
-import com.jkm.hss.push.sevice.PushService;
 import com.jkm.hsy.user.constant.AppConstant;
 import com.jkm.hsy.user.entity.HsyMerchantAuditRequest;
 import com.jkm.hsy.user.entity.HsyMerchantAuditResponse;
@@ -28,8 +27,8 @@ public class HsyMerchantAuditController extends BaseController {
     @Autowired
     private AccountService accountService;
 
-    @Autowired
-    private PushService pushService;
+//    @Autowired
+//    private PushService pushService;
 
     @ResponseBody
     @RequestMapping(value = "/throughAudit",method = RequestMethod.POST)
