@@ -35,6 +35,7 @@ public class HsyMerchantAuditServiceImpl implements HsyMerchantAuditService {
     @Override
     public void auditPass(HsyMerchantAuditRequest hsyMerchantAuditRequest) {
         hsyMerchantAuditDao.updateAuditPass(hsyMerchantAuditRequest);
+
     }
 
     @Override

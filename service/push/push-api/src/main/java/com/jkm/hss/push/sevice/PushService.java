@@ -76,6 +76,6 @@ public interface PushService {
      *
      * @param sid
      */
-    public String selectUserAppBySidPushMsg(String sid, String setType,  String content);
+    public String selectUserAppBySidPushMsg(String sid, String setType, String content);
 
 }
