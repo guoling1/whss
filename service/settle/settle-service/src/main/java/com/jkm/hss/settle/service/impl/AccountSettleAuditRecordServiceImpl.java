@@ -1,5 +1,6 @@
 package com.jkm.hss.settle.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.base.Function;
@@ -143,9 +144,6 @@ public class AccountSettleAuditRecordServiceImpl implements AccountSettleAuditRe
     @Override
     public String appSettleRecordList(final String dataParam, final AppParam appParam) {
         final JSONObject paramJo = JSONObject.parseObject(dataParam);
-        final JSONObject result = new JSONObject();
-        result.put("code", 0);
-        result.put("msg", "success");
         final int pageNo = paramJo.getIntValue("pageNo");
         final int pageSize = paramJo.getIntValue("pageSize");
         final long accountId = paramJo.getLongValue("accountId");
@@ -167,8 +165,7 @@ public class AccountSettleAuditRecordServiceImpl implements AccountSettleAuditRe
         } else {
             pageModel.setRecords(Collections.<JSONObject>emptyList());
         }
-        result.put("result", pageModel);
-        return result.toJSONString();
+        return JSON.toJSONString(pageModel);
     }
 
     /**
