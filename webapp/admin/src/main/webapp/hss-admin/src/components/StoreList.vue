@@ -6,7 +6,7 @@
           <h3 class="box-title">商户列表</h3>
         </div>
         <div class="box-body">
-          <el-tabs class="tab" v-model="activeName2" type="card" @tab-click="handleClick">
+          <el-tabs class="tab" v-model="activeName" type="card" @tab-click="handleClick">
             <el-tab-pane label="好收收" name="first">
               <div class="row">
                 <div class="col-md-2">
@@ -114,16 +114,6 @@
                 </div>
                 <div v-if="$$data.stores.length==0&&!isShow" class="row" style="text-align: center;color: red;font-size: 16px;">
                   <div class="col-sm-12">无此数据</div>
-                </div>
-                <div class="row">
-                  <div class="col-sm-5">
-                  </div>
-                  <div class="col-sm-7">
-                    <div class="dataTables_paginate paging_simple_numbers" id="example2_paginate">
-                      <ul class="pagination" id="page" @click="bindEvent($event)"></ul>
-                      <span class="count">共{{total}}页 {{count}}条</span>
-                    </div>
-                  </div>
                 </div>
               </div>
             </el-tab-pane>
@@ -233,19 +223,19 @@
                 <div v-if="$$data.stores.length==0&&!isShow" class="row" style="text-align: center;color: red;font-size: 16px;">
                   <div class="col-sm-12">无此数据</div>
                 </div>
-                <div class="row">
-                  <div class="col-sm-5">
-                  </div>
-                  <div class="col-sm-7">
-                    <div class="dataTables_paginate paging_simple_numbers" id="example2_paginate">
-                      <ul class="pagination" id="page" @click="bindEvent($event)"></ul>
-                      <span class="count">共{{total}}页 {{count}}条</span>
-                    </div>
-                  </div>
-                </div>
               </div>
             </el-tab-pane>
           </el-tabs>
+          <div class="row">
+            <div class="col-sm-5">
+            </div>
+            <div class="col-sm-7">
+              <div class="dataTables_paginate paging_simple_numbers" id="example2_paginate">
+                <ul class="pagination" id="page" @click="bindEvent($event)"></ul>
+                <span class="count">共{{total}}页 {{count}}条</span>
+              </div>
+            </div>
+          </div>
         </div>
         <!-- /.box-body -->
       </div>
@@ -278,66 +268,75 @@
         stores: [],
         total:0,
         count:0,
-        isShow: false
+        isShow: false,
+        activeName: 'first', //选项卡选中第一个
+        fromName:''
       }
     },
-    created: function () {
-      this.$data.isShow = true;
-      this.$data.stores = '';
-      this.$data.total = 0;
-      this.$data.count = 0;
-      var content = document.getElementById('content'),
-        page = document.getElementById('page');
-      this.$http.post(this.$data.url,this.$data.query)
-        .then(function (res) {
-        this.$data.isShow = false;
-        this.$data.stores = res.data.records;
-        this.$data.total = res.data.totalPage;
-        this.$data.count = res.data.count;
-        var str='',
-          page=document.getElementById('page');
-        str+='<li class="paginate_button previous disabled" id="example2_previous"><a href="#" aria-controls="example2" data-dt-idx="0" tabindex="0">上一页</a></li>'
-        if(this.$data.total<=10){
-          for (var i = 1; i <= this.$data.total; i++){
-            if(i == this.$data.query.pageNo){
-              str+='<li class="paginate_button active"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">'+i+'</a></li></li>';
-              continue;
-            }
-            str+='<li class="paginate_button"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">'+i+'</a></li></li>'
-          }
-        }else {
-          if(this.$data.query.pageNo<6){
-            for (var i = 1; i <= 10; i++){
-              if(i == this.$data.query.pageNo){
-                str+='<li class="paginate_button active"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">'+i+'</a></li></li>';
-                continue;
+    beforeRouteEnter (to, from, next) {
+      next(vm=>{
+        vm.$data.fromName = from.name;
+        if(vm.$data.fromName=='StoreAuditHSY'){
+          vm.$data.activeName='second'
+          vm.$data.url='/admin/hsyMerchantList/getMerchantList'
+        }
+        vm.$data.isShow = true;
+        vm.$data.stores = '';
+        vm.$data.total = 0;
+        vm.$data.count = 0;
+        var content = document.getElementById('content'),
+          page = document.getElementById('page');
+        vm.$http.post(vm.$data.url,vm.$data.query)
+          .then(function (res) {
+            vm.$data.isShow = false;
+            vm.$data.stores = res.data.records;
+            vm.$data.total = res.data.totalPage;
+            vm.$data.count = res.data.count;
+            var str='',
+              page=document.getElementById('page');
+            str+='<li class="paginate_button previous disabled" id="example2_previous"><a href="#" aria-controls="example2" data-dt-idx="0" tabindex="0">上一页</a></li>'
+            if(vm.$data.total<=10){
+              for (var i = 1; i <= vm.$data.total; i++){
+                if(i == vm.$data.query.pageNo){
+                  str+='<li class="paginate_button active"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">'+i+'</a></li></li>';
+                  continue;
+                }
+                str+='<li class="paginate_button"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">'+i+'</a></li></li>'
               }
-              str+='<li class="paginate_button"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">'+i+'</a></li></li>'
-            }
-          }else if(this.$data.query.pageNo>=6&&this.$data.query.pageNo<=(this.$data.total-5)){
-            for (var i = this.$data.query.pageNo-4; i <= this.$data.query.pageNo+5; i++){
-              if(i == this.$data.query.pageNo){
-                str+='<li class="paginate_button active"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">'+i+'</a></li></li>';
-                continue;
-              }
-              str+='<li class="paginate_button"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">'+i+'</a></li></li>'
-            }
-          }else if(this.$data.query.pageNo>=6&&this.$data.query.pageNo>this.$data.total-5){
-            for (var i = this.$data.total-9; i <= this.$data.total; i++){
-              if(i == this.$data.query.pageNo){
-                str+='<li class="paginate_button active"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">'+i+'</a></li></li>';
-                continue;
-              }
-              str+='<li class="paginate_button"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">'+i+'</a></li></li>'
-            }
-          }}
-        str+='<li class="paginate_button next" id="example2_next"><a href="#" aria-controls="example2" data-dt-idx="7" tabindex="0">下一页</a></li>'
-        page.innerHTML=str;
-      }, function (err) {
-        this.$data.isShow = false;
-        this.$store.commit('MESSAGE_ACCORD_SHOW', {
-          text: err.statusMessage
-        })
+            }else {
+              if(vm.$data.query.pageNo<6){
+                for (var i = 1; i <= 10; i++){
+                  if(i == vm.$data.query.pageNo){
+                    str+='<li class="paginate_button active"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">'+i+'</a></li></li>';
+                    continue;
+                  }
+                  str+='<li class="paginate_button"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">'+i+'</a></li></li>'
+                }
+              }else if(vm.$data.query.pageNo>=6&&vm.$data.query.pageNo<=(vm.$data.total-5)){
+                for (var i = vm.$data.query.pageNo-4; i <= vm.$data.query.pageNo+5; i++){
+                  if(i == vm.$data.query.pageNo){
+                    str+='<li class="paginate_button active"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">'+i+'</a></li></li>';
+                    continue;
+                  }
+                  str+='<li class="paginate_button"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">'+i+'</a></li></li>'
+                }
+              }else if(vm.$data.query.pageNo>=6&&vm.$data.query.pageNo>vm.$data.total-5){
+                for (var i = vm.$data.total-9; i <= vm.$data.total; i++){
+                  if(i == vm.$data.query.pageNo){
+                    str+='<li class="paginate_button active"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">'+i+'</a></li></li>';
+                    continue;
+                  }
+                  str+='<li class="paginate_button"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">'+i+'</a></li></li>'
+                }
+              }}
+            str+='<li class="paginate_button next" id="example2_next"><a href="#" aria-controls="example2" data-dt-idx="7" tabindex="0">下一页</a></li>'
+            page.innerHTML=str;
+          }, function (err) {
+            vm.$data.isShow = false;
+            vm.$store.commit('MESSAGE_ACCORD_SHOW', {
+              text: err.statusMessage
+            })
+          })
       })
     },
     methods: {
@@ -625,7 +624,8 @@
         }
         return val;
       }
-    }
+    },
+
   }
 </script>
 
