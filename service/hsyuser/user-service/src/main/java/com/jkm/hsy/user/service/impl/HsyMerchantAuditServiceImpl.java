@@ -35,6 +35,7 @@ public class HsyMerchantAuditServiceImpl implements HsyMerchantAuditService {
     @Override
     public void auditPass(HsyMerchantAuditRequest hsyMerchantAuditRequest) {
         hsyMerchantAuditDao.updateAuditPass(hsyMerchantAuditRequest);
+
     }
 
     @Override
@@ -46,5 +47,16 @@ public class HsyMerchantAuditServiceImpl implements HsyMerchantAuditService {
     public int getCount(HsyMerchantAuditRequest hsyMerchantAuditRequest) {
         int count = hsyMerchantAuditDao.getCount(hsyMerchantAuditRequest);
         return count;
+    }
+
+    @Override
+    public HsyMerchantAuditResponse selectById(Long id) {
+        HsyMerchantAuditResponse res=hsyMerchantAuditDao.selectById(id);
+        return res;
+    }
+
+    @Override
+    public void updateAccount(Long accountID, Long id) {
+        hsyMerchantAuditDao.updateAccount(accountID,id);
     }
 }

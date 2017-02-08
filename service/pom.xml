@@ -24,5 +24,6 @@
         <module>bill</module>
         <module>settle</module>
         <module>hsyuser</module>
+        <module>push</module>
     </modules>
 </project>

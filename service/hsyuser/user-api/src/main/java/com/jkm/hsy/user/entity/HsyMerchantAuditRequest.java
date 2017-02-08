@@ -32,6 +32,7 @@ public class HsyMerchantAuditRequest {
     private Date updateTime;
 
     private Long uid;//用户ID
+    private Long sid;
     private Integer role;//角色 1法人 2店长 3店员  4财务
     private Integer type;//类型1主店 2分店
 

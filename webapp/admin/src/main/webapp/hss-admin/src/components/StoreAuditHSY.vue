@@ -322,9 +322,11 @@
     methods: {
       audit: function (event) {
         this.$http.post('/admin/hsyMerchantAudit/throughAudit', {
-          id: this.$data.id
+          id: this.$data.id,
+          uid: this.$data.msg.uid,
         }).then(function (res) {
-          this.$router.push('/admin/record/storeList')
+          /*this.$router.push('/admin/record/storeList')*/
+          this.$router.go(-1)
         }, function (err) {
           console.log(err);
           this.$store.commit('MESSAGE_ACCORD_SHOW', {
@@ -333,11 +335,10 @@
         })
       },
       unAudit: function () {
-        this.$http.post('/admin/hsyMerchantAudit/rejectToExamine',{id: this.$data.id,checkErrorInfo:this.$data.reason})
+        this.$http.post('/admin/hsyMerchantAudit/rejectToExamine',{id: this.$data.id, uid: this.$data.msg.uid,checkErrorInfo:this.$data.reason})
           .then(function (res) {
             this.$router.push('/admin/record/storeList')
           },function (err) {
-            console.log(err)
             this.$store.commit('MESSAGE_ACCORD_SHOW', {
               text: err.statusMessage
             })
