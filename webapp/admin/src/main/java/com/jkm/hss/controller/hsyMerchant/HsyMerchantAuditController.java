@@ -53,7 +53,7 @@ public class HsyMerchantAuditController extends BaseController {
     @RequestMapping(value = "/rejectToExamine",method = RequestMethod.POST)
     public CommonResponse rejectToExamine(@RequestBody final HsyMerchantAuditRequest hsyMerchantAuditRequest){
         hsyMerchantAuditRequest.setStatus(AppConstant.SHOP_STATUS_REJECT);
-        hsyMerchantAuditService.auditPass(hsyMerchantAuditRequest);
+        hsyMerchantAuditService.auditNotPass(hsyMerchantAuditRequest);
         pushService.pushAuditMsg(hsyMerchantAuditRequest.getUid(),false);
         return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE,"审核未通过");
 
