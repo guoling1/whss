@@ -50,5 +50,10 @@ public class V1BizMapper {
 		 * 结算记录
 		 */
 		bizMapper.put("HSY001035", new String[]{"accountSettleAuditRecordService", "appSettleRecordList"});
+		/**
+		 * 交易记录
+		 */
+		bizMapper.put("HSY001036", new String[]{"hsyTradeService", "tradeList"});
+
 	}
 }

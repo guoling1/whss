@@ -4,6 +4,8 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
+import com.jkm.base.common.entity.PageModel;
+import com.jkm.base.common.util.DateFormatUtil;
 import com.jkm.base.common.util.DateTimeUtil;
 import com.jkm.base.common.util.HttpClientPost;
 import com.jkm.base.common.util.SnGenerator;
@@ -39,6 +41,7 @@ import com.jkm.hsy.user.entity.AppBizCard;
 import com.jkm.hsy.user.entity.AppBizShop;
 import com.jkm.hsy.user.entity.AppParam;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
@@ -48,8 +51,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.util.Date;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by yulong.zhang on 2017/1/17.
@@ -113,6 +115,68 @@ public class HSYTradeServiceImpl implements HSYTradeService {
         return result.toJSONString();
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param dataParam
+     * @param appParam
+     * @return
+     */
+    @Override
+    public String tradeList(final String dataParam, final AppParam appParam) {
+        final JSONObject dataJo = JSONObject.parseObject(dataParam);
+        final long accountId = dataJo.getLongValue("accountId");
+        final int pageNo = dataJo.getIntValue("pageNo");
+        final int pageSize = dataJo.getIntValue("pageSize");
+        final String startDateStr = dataJo.getString("startDate");
+        final String endDateStr = dataJo.getString("endDate");
+        Date startDate = null;
+        Date endDate = null;
+        if (!StringUtils.isEmpty(startDateStr) && !StringUtils.isEmpty(endDateStr)) {
+            startDate = DateFormatUtil.parse(startDateStr, DateFormatUtil.yyyy_MM_dd);
+            endDate = DateFormatUtil.parse(endDateStr, DateFormatUtil.yyyy_MM_dd);
+        }
+        final PageModel<JSONObject> pageModel = new PageModel<>(pageNo, pageSize);
+        final long count = this.orderService.getPageOrdersCountByAccountId(accountId, EnumAppType.HSY.getId(), startDate, endDate);
+        final List<Order> orders = this.orderService.getPageOrdersByAccountId(accountId, EnumAppType.HSY.getId(),
+                pageModel.getFirstIndex(), pageSize, startDate, endDate);
+        pageModel.setCount(count);
+        if (!CollectionUtils.isEmpty(orders)) {
+            final List<JSONObject> recordList = new ArrayList<>();
+            pageModel.setRecords(recordList);
+            for (Order order : orders) {
+                final JSONObject jo = new JSONObject();
+                recordList.add(jo);
+                if (EnumTradeType.PAY.getId() == order.getTradeType()) {
+                    jo.put("tradeType", "收款");
+                } else if (EnumTradeType.WITHDRAW.getId() == order.getTradeType()) {
+                    jo.put("tradeType", "提现");
+                }
+
+                if (EnumPayChannelSign.YG_WEIXIN.getId() == order.getPayChannelSign()) {
+                    jo.put("channel", "微信");
+                } else if (EnumPayChannelSign.YG_ZHIFUBAO.getId() == order.getPayChannelSign()) {
+                    jo.put("channel", "支付宝");
+                } else if (EnumPayChannelSign.YG_YINLIAN.getId() == order.getPayChannelSign()) {
+                    jo.put("channel", "快捷");
+                }
+
+                if (EnumOrderStatus.PAY_SUCCESS.getId() == order.getStatus()) {
+                    jo.put("msg", "收款成功");
+                } else if (EnumOrderStatus.WITHDRAW_SUCCESS.getId() == order.getStatus()) {
+                    jo.put("msg", "提现成功");
+                }
+
+                jo.put("amount", order.getTradeAmount().toPlainString());
+                jo.put("time", order.getCreateTime());
+                jo.put("code", order.getOrderNo().substring(order.getOrderNo().length() - 4));
+            }
+        } else {
+            pageModel.setRecords(Collections.<JSONObject>emptyList());
+        }
+
+        return JSON.toJSONString(pageModel);
+    }
 
 
     /**

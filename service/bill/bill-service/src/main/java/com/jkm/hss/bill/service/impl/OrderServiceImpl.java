@@ -453,6 +453,33 @@ public class OrderServiceImpl implements OrderService {
     }
 
     /**
+     * {@inheritDoc}
+     *
+     * @param accountId
+     * @param appId
+     * @return
+     */
+    @Override
+    public long getPageOrdersCountByAccountId(final long accountId, final String appId, final Date startDate, final Date endDate) {
+        return this.orderDao.selectPageOrdersCountByAccountId(accountId, appId, startDate, endDate);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param accountId
+     * @param appId
+     * @param offset
+     * @param count
+     * @return
+     */
+    @Override
+    public List<Order> getPageOrdersByAccountId(final long accountId, final String appId, final int offset,
+                                                final int count, final Date startDate, final Date endDate) {
+        return this.orderDao.selectPageOrdersByAccountId(accountId, appId, offset, count, startDate, endDate);
+    }
+
+    /**
      * 生成ExcelVo
      * @param
      * @param baseUrl
