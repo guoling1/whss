@@ -33,6 +33,7 @@ import com.jkm.hss.notifier.service.SmsAuthService;
 import com.jkm.hss.product.enums.EnumBalanceTimeType;
 import com.jkm.hss.product.enums.EnumPayChannelSign;
 import com.jkm.hss.product.enums.EnumProductType;
+import com.jkm.hss.push.sevice.PushService;
 import com.jkm.hsy.user.dao.HsyShopDao;
 import com.jkm.hsy.user.entity.AppBizCard;
 import com.jkm.hsy.user.entity.AppBizShop;
@@ -81,6 +82,8 @@ public class HSYTradeServiceImpl implements HSYTradeService {
     private SplitAccountRecordService splitAccountRecordService;
     @Autowired
     private ShallProfitDetailService shallProfitDetailService;
+    @Autowired
+    private PushService pushService;
 
     /**
      * {@inheritDoc}
@@ -253,11 +256,15 @@ public class HSYTradeServiceImpl implements HSYTradeService {
         order.setSn(paymentSdkPayCallbackResponse.getSn());
         order.setStatus(EnumOrderStatus.PAY_SUCCESS.getId());
         int channel = 0;
+        String notifyChannelStr = "";
         if (EnumPaymentType.QUICK_APY.getId().equals(order.getPayType())) {
+            notifyChannelStr = "快捷";
             channel = EnumPayChannelSign.YG_YINLIAN.getId();
         } else if (EnumPaymentType.WECHAT_H5_CASHIER_DESK.getId().equals(order.getPayType())) {
+            notifyChannelStr = "微信";
             channel = EnumPayChannelSign.YG_WEIXIN.getId();
         } else if (EnumPaymentType.ALIPAY_SCAN_CODE.getId().equals(order.getPayType())) {
+            notifyChannelStr = "支付宝";
             channel = EnumPayChannelSign.YG_ZHIFUBAO.getId();
         }
         order.setPayChannelSign(channel);
@@ -274,7 +281,11 @@ public class HSYTradeServiceImpl implements HSYTradeService {
         //分账
         this.paySplitAccount(this.orderService.getByIdWithLock(order.getId()).get(), shop);
         //推送TODO
-
+        try {
+            this.pushService.pushCashMsg(shop.getId(), notifyChannelStr, order.getTradeAmount().doubleValue(), order.getOrderNo().substring(order.getOrderNo().length() - 4));
+        } catch (final Throwable e) {
+            log.error("订单[" + order.getOrderNo() + "]，支付成功，推送异常", e);
+        }
     }
 
     /**
@@ -716,10 +727,18 @@ public class HSYTradeServiceImpl implements HSYTradeService {
 //            this.accountService.increaseAvailableAmount(poundageAccount.getId(), order.getPoundage());
 //            this.accountFlowService.addAccountFlow(poundageAccount.getId(), order.getOrderNo(), order.getPoundage(),
 //                    "提现分润", EnumAccountFlowType.INCREASE);
-//            final AppBizShop shop = this.hsyShopDao.findAppBizShopByAccountID(accountId).get(0);
 //            this.withdrawSplitAccount(this.orderService.getByIdWithLock(orderId).get(), shop);
             //推送
-
+            try {
+                final AppBizShop shop = this.hsyShopDao.findAppBizShopByAccountID(accountId).get(0);
+                final AppBizCard appBizCard = new AppBizCard();
+                appBizCard.setSid(shop.getId());
+                final AppBizCard appBizCard1 = this.hsyShopDao.findAppBizCardByParam(appBizCard).get(0);
+                final String cardNO = appBizCard1.getCardNO();
+                this.pushService.pushCashOutMsg(shop.getUid(), appBizCard1.getCardBank(), order.getTradeAmount().doubleValue(), cardNO.substring(cardNO.length() - 4));
+            } catch (final Throwable e) {
+                log.error("订单[" + order.getOrderNo() + "]，提现成功，推送异常", e);
+            }
         }
     }
     /**
