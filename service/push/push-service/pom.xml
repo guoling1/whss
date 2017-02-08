@@ -254,5 +254,9 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-tx</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.jkm</groupId>
+            <artifactId>hss-notifier-service</artifactId>
+        </dependency>
     </dependencies>
 </project>
