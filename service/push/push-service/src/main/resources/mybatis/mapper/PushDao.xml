@@ -47,4 +47,9 @@
     </select>
 
 
+    <select id="selectUserAppByUid" resultType="Map">
+        SELECT UID, SID,CLIENTID FROM tb_user_app WHERE UID  = #{uid}
+    </select>
+
+
 </mapper>

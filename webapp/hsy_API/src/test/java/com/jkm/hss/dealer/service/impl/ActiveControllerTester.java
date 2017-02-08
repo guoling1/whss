@@ -12,7 +12,7 @@ import java.net.URL;
 public class ActiveControllerTester {
 	
 	public static Gson gson=new Gson();
-	public static String url="http://127.0.0.1:8080/user/findUserShopListById";
+	public static String url="http://192.168.1.49:8080/user/findUserShopListById";
 //	public static String url="http://hss.api.test.haodai.com/api/active/rest";
 	
 	public static final String CONSULTKEY ="12345678900987654321farv";

@@ -32,6 +32,14 @@ public interface PushDao {
     List<Map> selectUserAppBySid(String sid);
 
 
+    /**
+     * 根据用户ID查询改店铺下所有注册过的APP
+     *
+     * @param uid
+     */
+    List<Map>selectUserAppByUid(String uid);
+
+
 
 
 }
