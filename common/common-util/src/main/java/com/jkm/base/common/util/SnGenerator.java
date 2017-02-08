@@ -21,6 +21,8 @@ public final class SnGenerator {
     public static String generate() {
         return "JKM" + DateFormatUtil.format(new Date(), "yyyyMMddHHmmssSSS") + RandomStringUtils.randomNumeric(5);
     }
+
+
     /**
      * 生成升级支付单号
      * JKM + 时间戳＋5位随机数
@@ -63,5 +65,15 @@ public final class SnGenerator {
         final int minLength = 17 + prefix.length();
         Preconditions.checkArgument(length > minLength);
         return prefix + DateFormatUtil.format(new Date(), "yyyyMMddHHmmssSSS") + RandomStringUtils.randomNumeric(length - minLength);
+    }
+
+    /**
+     * 合众流水号
+     * 时间戳＋3位随机数
+     *
+     * @return
+     */
+    public static String generateFusionReqSn() {
+        return DateFormatUtil.format(new Date(), "yyyyMMddHHmmssSSS") + RandomStringUtils.randomNumeric(3);
     }
 }

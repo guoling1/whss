@@ -93,7 +93,7 @@ public class VerifyID4ElementServiceImpl implements VerifyID4ElementService {
 //        final Map<String, String> headers = new HashMap<>();
 //        headers.put("Authorization", "APPCODE 500fd8ead2e24a70a9decd3fab9450ad");
 //        final Map<String, String> queryParams = new HashMap<>();
-//        queryParams.put("bankcard", StringUtils.trim("6214680004606222"));
+//        queryParams.put("bankcard", StringUtils.trim("6226230309615043"));
 //        queryParams.put("idcard", StringUtils.trim("110102198609223010"));
 //        queryParams.put("mobile", StringUtils.trim("13911732468"));
 //        queryParams.put("realname", StringUtils.trim("傅雪林"));
