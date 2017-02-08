@@ -37,6 +37,7 @@ public class AppAuUser {
     private String idcardhURL;//身份证手持照URL
     private Long role;//角色
     private String roleName;//角色名称
+    private String deviceID;//设备号
 
     public Long getId() {
         return id;
@@ -276,5 +277,13 @@ public class AppAuUser {
 
     public void setAccountID(Long accountID) {
         this.accountID = accountID;
+    }
+
+    public String getDeviceID() {
+        return deviceID;
+    }
+
+    public void setDeviceID(String deviceID) {
+        this.deviceID = deviceID;
     }
 }
