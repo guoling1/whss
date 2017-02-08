@@ -71,12 +71,14 @@ public interface PushService {
     public List<Map> selectUserAppBySid(String sid);
 
 
+
+
     /**
      * 根据店铺ID查询改店铺下所有注册过的APP并推送消息
      *
      * @param sid
      */
-    public String selectUserAppBySidPushMsg(String sid, String setType,  String content);
+    public String selectUserAppBySidPushMsg(String sid, String setType, String content);
 
     /**
      * 审核资料消息推送

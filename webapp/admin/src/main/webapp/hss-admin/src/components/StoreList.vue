@@ -349,11 +349,11 @@
           }
         })
       },
-      auditHSY: function (event, id, status) {
+      auditHSY: function (event, id, status, uid) {
         this.$router.push({
           path: '/admin/record/StoreAuditHSY', query: {
             id: id,
-            status: status
+            status: status,
           }
         })
       },
