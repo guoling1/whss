@@ -6,9 +6,10 @@ import com.jkm.hsy.user.constant.UploadConsts;
 import com.jkm.hsy.user.service.HsyUploadService;
 import lombok.extern.slf4j.Slf4j;
 import org.joda.time.DateTime;
-import org.omg.CORBA.portable.InputStream;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.io.InputStream;
 
 /**
  * Created by Administrator on 2017/1/18.

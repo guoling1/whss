@@ -137,7 +137,8 @@ public class ActiveController {
             return;
         }
 
-        ApplicationContext ac= WebApplicationContextUtils.getRequiredWebApplicationContext(request.getSession().getServletContext());
+        ApplicationContext ac=SpringContextHolder.getApplicationContext();
+//        ApplicationContext ac= WebApplicationContextUtils.getRequiredWebApplicationContext(request.getSession().getServletContext());
         Object obj=ac.getBean(strs[0]);
         Class<? extends Object> clazz = obj.getClass();
         Method method=null;

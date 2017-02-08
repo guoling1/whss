@@ -323,8 +323,6 @@ public class HsyUserServiceImpl implements HsyUserService {
             throw new ApiHandleException(ResultCode.PARAM_LACK,"设备号");
 //        if(!(appAuToken.getClientid()!=null&&!appAuToken.getClientid().equals("")))
 //            throw new ApiHandleException(ResultCode.PARAM_LACK,"推送号");
-        if(!(appAuToken.getImei()!=null&&!appAuToken.getImei().equals("")))
-            throw new ApiHandleException(ResultCode.PARAM_LACK,"IMEI号");
         if(!(appAuToken.getDeviceName()!=null&&!appAuToken.getDeviceName().equals("")))
             throw new ApiHandleException(ResultCode.PARAM_LACK,"设备名");
 //        if(!(appAuDevice.getAppType()!=null&&!appAuDevice.getAppType().equals("")))

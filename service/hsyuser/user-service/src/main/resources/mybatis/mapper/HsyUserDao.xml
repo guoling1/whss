@@ -82,7 +82,7 @@
     </update>
 
     <insert id="insertAppAuToken" useGeneratedKeys="true" keyProperty="id" parameterType="com.jkm.hsy.user.entity.AppAuToken">
-        insert into app_au_token(ACCESSTOKEN,ENCRYPTKEY,DEVICEID,CLIENTID,IMEI,DEVICENAME,APPTYPE,OSVERSION,APPCODE,APPVERSION,APPCHANNEL,CREATETIME,UPDATETIME) values(#{accessToken},#{encryptKey},#{deviceid},#{clientid},#{imei},#{deviceName},#{appType},#{osVersion},#{appCode},#{appVersion},#{appChannel},#{createTime},#{updateTime})
+        insert into app_au_token(ACCESSTOKEN,ENCRYPTKEY,DEVICEID,CLIENTID,DEVICENAME,APPTYPE,OSVERSION,APPCODE,APPVERSION,APPCHANNEL,CREATETIME,UPDATETIME) values(#{accessToken},#{encryptKey},#{deviceid},#{clientid},#{deviceName},#{appType},#{osVersion},#{appCode},#{appVersion},#{appChannel},#{createTime},#{updateTime})
     </insert>
 
     <update id="updateAppAuToken" parameterType="com.jkm.hsy.user.entity.AppAuToken">
@@ -92,7 +92,6 @@
             <if test="encryptKey!=null and encryptKey!=''">ENCRYPTKEY=#{encryptKey},</if>
             <if test="deviceid!=null and deviceid!=''">DEVICEID=#{deviceid},</if>
             <if test="clientid!=null and clientid!=''">CLIENTID=#{clientid},</if>
-            <if test="imei!=null and imei!=''">IMEI=#{imei},</if>
             <if test="deviceName!=null and deviceName!=''">DEVICENAME=#{deviceName},</if>
             <if test="appType!=null and appType!=''">APPTYPE=#{appType},</if>
             <if test="osVersion!=null and osVersion!=''">OSVERSION=#{osVersion},</if>
@@ -106,7 +105,7 @@
 
     <select id="findAppAuTokenByAccessToken" parameterType="java.lang.String" resultType="com.jkm.hsy.user.entity.AppAuToken">
         select
-        ID,ACCESSTOKEN,ENCRYPTKEY,DEVICEID,CLIENTID,IMEI,DEVICENAME,APPTYPE,OSVERSION,APPCODE,APPVERSION,APPCHANNEL,CREATETIME,UPDATETIME
+        ID,ACCESSTOKEN,ENCRYPTKEY,DEVICEID,CLIENTID,DEVICENAME,APPTYPE,OSVERSION,APPCODE,APPVERSION,APPCHANNEL,CREATETIME,UPDATETIME
         from app_au_token
         where 1=1
         <if test="accessToken!=null and accessToken!=''">and ACCESSTOKEN=#{accessToken}</if>

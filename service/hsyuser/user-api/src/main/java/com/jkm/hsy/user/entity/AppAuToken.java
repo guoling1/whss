@@ -11,7 +11,6 @@ public class AppAuToken {
     private String encryptKey;//加密秘钥
     private String deviceid;//设备号
     private String clientid;//推送号
-    private String imei;//移动设备标识号
     private String deviceName;//设备名称
     private String appType;//APP类型
     private String osVersion;//系统版本号
@@ -59,14 +58,6 @@ public class AppAuToken {
 
     public void setClientid(String clientid) {
         this.clientid = clientid;
-    }
-
-    public String getImei() {
-        return imei;
-    }
-
-    public void setImei(String imei) {
-        this.imei = imei;
     }
 
     public String getDeviceName() {

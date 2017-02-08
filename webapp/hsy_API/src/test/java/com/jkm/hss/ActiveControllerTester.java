@@ -223,7 +223,7 @@ public class ActiveControllerTester {
         /*
             clientid可选 appChannel可选
          */
-        String param="{\"deviceid\":\"4707D3CA-EB83-4064-81CD-21E84933F5CB\",\"clientid\":\"clientid123456\",\"imei\":\"867601020078801\",\"deviceName\":\"设备名\",\"osVersion\":\"6.0.0\",\"appCode\":\"hsy\",\"appVersion\":\"1.0\",\"appChannel\":\"MI\"}";
+        String param="{\"deviceid\":\"4707D3CA-EB83-4064-81CD-21E84933F5CB\",\"deviceName\":\"设备名\",\"osVersion\":\"6.0.0\",\"appCode\":\"hsy\",\"appVersion\":\"1.0\",\"appChannel\":\"MI\"}";
 //        String param="{\"deviceid\":\"4707D3CAEB83406481CD21E84933F5CB\",\"clientid\":\"clientid654321\",\"imei\":\"867601020078802\",\"deviceName\":\"设备名\",\"osVersion\":\"6.0.0\",\"appCode\":\"hsy\",\"appVersion\":\"1.0\",\"appChannel\":\"MI\"}";
         p.setRequestData(param);
         ActiveControllerTester.testRest(p);
