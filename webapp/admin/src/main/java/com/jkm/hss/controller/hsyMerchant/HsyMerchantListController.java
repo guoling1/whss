@@ -70,32 +70,32 @@ public class HsyMerchantListController extends BaseController {
             if (photoName1!=null&&!"".equals(res.getStorefrontID())) {
                 URL url1 = ossClient.generatePresignedUrl(ApplicationConsts.getApplicationConfig().ossBucke(), photoName1,expiration);
                 String urls1 =url1.toString();
-                res.setLicenceID(urls1);
+                res.setStorefrontID(urls1);
             }
             if (photoName2!=null&&!"".equals(res.getCounterID())) {
                 URL url2 = ossClient.generatePresignedUrl(ApplicationConsts.getApplicationConfig().ossBucke(), photoName2,expiration);
                 String urls2 =url2.toString();
-                res.setLicenceID(urls2);
+                res.setCounterID(urls2);
             }
             if (photoName3!=null&&!"".equals(res.getIndoorID())) {
                 URL url3 = ossClient.generatePresignedUrl(ApplicationConsts.getApplicationConfig().ossBucke(), photoName3,expiration);
                 String urls3 =url3.toString();
-                res.setLicenceID(urls3);
+                res.setIndoorID(urls3);
             }
             if (photoName4!=null&&!"".equals(res.getIdcardf())) {
                 URL url4 = ossClient.generatePresignedUrl(ApplicationConsts.getApplicationConfig().ossBucke(), photoName4,expiration);
                 String urls4 =url4.toString();
-                res.setLicenceID(urls4);
+                res.setIdcardf(urls4);
             }
             if (photoName5!=null&&!"".equals(res.getIdcardb())) {
                 URL url5 = ossClient.generatePresignedUrl(ApplicationConsts.getApplicationConfig().ossBucke(), photoName5,expiration);
                 String urls5 =url5.toString();
-                res.setLicenceID(urls5);
+                res.setIdcardb(urls5);
             }
             if (photoName6!=null&&!"".equals(res.getIdcardh())) {
                 URL url6 = ossClient.generatePresignedUrl(ApplicationConsts.getApplicationConfig().ossBucke(), photoName6,expiration);
                 String urls6 =url6.toString();
-                res.setLicenceID(urls6);
+                res.setIdcardh(urls6);
             }
 
         }

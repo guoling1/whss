@@ -47,7 +47,7 @@
             app_biz_shop c
         LEFT JOIN app_biz_shop_user_role d ON d.SID=c.ID
         LEFT JOIN app_au_user b ON b.ID=d.UID
-        WHERE c.ID=#{id}
+        WHERE c.ID=#{id} AND d.TYPE=1
     </select>
 
     <!-- 更新账户id -->
