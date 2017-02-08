@@ -80,4 +80,34 @@ public interface PushService {
      */
     public String selectUserAppBySidPushMsg(String sid, String setType, String content);
 
+    /**
+     * 审核资料消息推送
+     *
+     * @param uid : 用户ID
+     *         isSucc: 审核是否成功
+     */
+    public String pushAuditMsg(Long uid,  Boolean isSucc);
+
+    /**
+     * 收款消息推送
+     *
+     * @param sid ：店铺ＩＤ
+     *        payChannel: 支付渠道， 直接传汉字
+     *            amount:  金额
+     *            code: 收款码
+     *
+     */
+    public String pushCashMsg(Long sid,  String payChannel,Double amount, String code );
+
+    /**
+     * 提现消息推送
+     *
+     * @param uid ：用户ＩＤ
+     *        payBank: 提现银行
+     *            amount:  金额
+     *            cardNo: 卡尾号
+     *
+     */
+    public String pushCashOutMsg(Long uid,  String payBank,Double amount, String cardNo );
+
 }
