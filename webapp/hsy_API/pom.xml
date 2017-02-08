@@ -270,6 +270,15 @@
             <groupId>com.jkm</groupId>
             <artifactId>hsy-user-api</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.jkm</groupId>
+            <artifactId>hss-push-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.jkm</groupId>
+            <artifactId>hss-push-service</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+        </dependency>
     </dependencies>
 
     <properties>

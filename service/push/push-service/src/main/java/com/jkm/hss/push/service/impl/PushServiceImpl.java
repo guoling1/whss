@@ -1,5 +1,9 @@
 package com.jkm.hss.push.service.impl;
 
+import com.jkm.base.common.util.VelocityStringTemplate;
+import com.jkm.hss.notifier.dao.MessageTemplateDao;
+import com.jkm.hss.notifier.entity.SmsTemplate;
+import com.jkm.hss.notifier.enums.EnumNoticeType;
 import com.jkm.hss.push.dao.PushDao;
 import com.jkm.hss.push.entity.Push;
 import com.jkm.hss.push.producer.PushProducer;
@@ -9,10 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Created by longwen.jiang on 2017/01/10
@@ -23,6 +24,10 @@ public class PushServiceImpl implements PushService {
 
     @Autowired
     private PushDao pushDao;
+
+
+    @Autowired
+    private MessageTemplateDao messageTemplateDao;
 
     @Override
 
@@ -154,6 +159,73 @@ public class PushServiceImpl implements PushService {
         String ret = this.pushTransmissionMsg(Integer.parseInt(setType), newContent, "2", null, clients);
         return ret;
     }
+
+    @Override
+    public String pushAuditMsg(Long uid, Boolean isSucc) {
+
+        List<Map>  list=pushDao.selectUserAppByUid(uid.toString());
+        List<String>  clients= new ArrayList<>();
+        for(Map map: list){
+            String clientid=map.get("CLIENTID").toString();
+            clients.add(clientid);
+        }
+
+        final SmsTemplate messageTemplate;
+        if(isSucc){
+             messageTemplate = messageTemplateDao.getTemplateByType(EnumNoticeType.AUDIT_PASS.getId());
+        }else{
+             messageTemplate = messageTemplateDao.getTemplateByType(EnumNoticeType.AUDIT_NOPASS.getId());
+        }
+        String newContent =messageTemplate.getMessageTemplate();
+
+        String ret = this.pushTransmissionMsg(1, newContent, "2", null, clients);
+        return ret;
+
+
+
+    }
+
+    @Override
+    public String pushCashMsg(Long sid, String payChannel, Double amount, String code) {
+        List<Map>  list=pushDao.selectUserAppBySid(sid.toString());
+        List<String>  clients= new ArrayList<>();
+        for(Map map: list){
+            String clientid=map.get("CLIENTID").toString();
+            clients.add(clientid);
+        }
+         SmsTemplate  messageTemplate = messageTemplateDao.getTemplateByType(EnumNoticeType.CASH.getId());
+
+        Map  data= new HashMap();
+        data.put("code", code);
+        data.put("payChannel",payChannel );
+        data.put("amount", amount);
+
+         String content = VelocityStringTemplate.process(messageTemplate.getMessageTemplate(), data);
+
+        String ret = this.pushTransmissionMsg(1, content, "2", null, clients);
+        return ret;
+    }
+
+    @Override
+    public String pushCashOutMsg(Long uid, String payBank, Double amount, String cardNo) {
+        List<Map>  list=pushDao.selectUserAppByUid(uid.toString());
+        List<String>  clients= new ArrayList<>();
+        for(Map map: list){
+            String clientid=map.get("CLIENTID").toString();
+            clients.add(clientid);
+        }
+         SmsTemplate  messageTemplate = messageTemplateDao.getTemplateByType(EnumNoticeType.CASH_OUT.getId());
+
+        Map  data= new HashMap();
+        data.put("bank", payBank);
+        data.put("cardNo",cardNo );
+        data.put("amount", amount);
+         String content = VelocityStringTemplate.process(messageTemplate.getMessageTemplate(), data);
+
+        String ret = this.pushTransmissionMsg(1, content, "2", null, clients);
+        return ret;
+    }
+
 
     @Override
     /**

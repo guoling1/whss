@@ -3,13 +3,14 @@ package com.jkm.hsy.user.entity;
 import java.util.Date;
 
 /**
- * Created by Allen on 2017/1/22.
+ * Created by Allen on 2017/2/8.
  */
-public class AppAuDevice {
+public class AppAuToken {
     private Long id;
+    private String accessToken;//令牌
+    private String encryptKey;//加密秘钥
     private String deviceid;//设备号
     private String clientid;//推送号
-    private String imei;//移动设备标识号
     private String deviceName;//设备名称
     private String appType;//APP类型
     private String osVersion;//系统版本号
@@ -27,6 +28,22 @@ public class AppAuDevice {
         this.id = id;
     }
 
+    public String getAccessToken() {
+        return accessToken;
+    }
+
+    public void setAccessToken(String accessToken) {
+        this.accessToken = accessToken;
+    }
+
+    public String getEncryptKey() {
+        return encryptKey;
+    }
+
+    public void setEncryptKey(String encryptKey) {
+        this.encryptKey = encryptKey;
+    }
+
     public String getDeviceid() {
         return deviceid;
     }
@@ -35,12 +52,12 @@ public class AppAuDevice {
         this.deviceid = deviceid;
     }
 
-    public String getImei() {
-        return imei;
+    public String getClientid() {
+        return clientid;
     }
 
-    public void setImei(String imei) {
-        this.imei = imei;
+    public void setClientid(String clientid) {
+        this.clientid = clientid;
     }
 
     public String getDeviceName() {
@@ -105,13 +122,5 @@ public class AppAuDevice {
 
     public void setUpdateTime(Date updateTime) {
         this.updateTime = updateTime;
-    }
-
-    public String getClientid() {
-        return clientid;
-    }
-
-    public void setClientid(String clientid) {
-        this.clientid = clientid;
     }
 }

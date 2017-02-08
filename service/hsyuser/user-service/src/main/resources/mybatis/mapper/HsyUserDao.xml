@@ -81,25 +81,17 @@
         </set> where ID=#{id}
     </update>
 
-    <select id="findAppAuDeviceByDeviceID" parameterType="com.jkm.hsy.user.entity.AppAuDevice" resultType="com.jkm.hsy.user.entity.AppAuDevice">
-        select
-        ID,DEVICEID,CLIENTID,IMEI,DEVICENAME,APPTYPE,OSVERSION,APPCODE,APPVERSION,APPCHANNEL,CREATETIME,UPDATETIME
-        from app_au_device
-        where 1=1
-        <if test="deviceid!=null and deviceid!=''">and DEVICEID=#{deviceid}</if>
-        order by UPDATETIME desc
-    </select>
-
-    <insert id="insertAppAuDevice" useGeneratedKeys="true" keyProperty="id" parameterType="com.jkm.hsy.user.entity.AppAuDevice">
-        insert into app_au_device(DEVICEID,CLIENTID,IMEI,DEVICENAME,APPTYPE,OSVERSION,APPCODE,APPVERSION,APPCHANNEL,CREATETIME,UPDATETIME) values(#{deviceid},#{clientid},#{imei},#{deviceName},#{appType},#{osVersion},#{appCode},#{appVersion},#{appChannel},#{createTime},#{updateTime})
+    <insert id="insertAppAuToken" useGeneratedKeys="true" keyProperty="id" parameterType="com.jkm.hsy.user.entity.AppAuToken">
+        insert into app_au_token(ACCESSTOKEN,ENCRYPTKEY,DEVICEID,CLIENTID,DEVICENAME,APPTYPE,OSVERSION,APPCODE,APPVERSION,APPCHANNEL,CREATETIME,UPDATETIME) values(#{accessToken},#{encryptKey},#{deviceid},#{clientid},#{deviceName},#{appType},#{osVersion},#{appCode},#{appVersion},#{appChannel},#{createTime},#{updateTime})
     </insert>
 
-    <update id="updateAppAuDevice" parameterType="com.jkm.hsy.user.entity.AppAuDevice">
-        update app_au_device
+    <update id="updateAppAuToken" parameterType="com.jkm.hsy.user.entity.AppAuToken">
+        update app_au_token
         <set>
+            <if test="accessToken!=null and accessToken!=''">ACCESSTOKEN=#{accessToken},</if>
+            <if test="encryptKey!=null and encryptKey!=''">ENCRYPTKEY=#{encryptKey},</if>
             <if test="deviceid!=null and deviceid!=''">DEVICEID=#{deviceid},</if>
             <if test="clientid!=null and clientid!=''">CLIENTID=#{clientid},</if>
-            <if test="imei!=null and imei!=''">IMEI=#{imei},</if>
             <if test="deviceName!=null and deviceName!=''">DEVICENAME=#{deviceName},</if>
             <if test="appType!=null and appType!=''">APPTYPE=#{appType},</if>
             <if test="osVersion!=null and osVersion!=''">OSVERSION=#{osVersion},</if>
@@ -110,4 +102,34 @@
             <if test="updateTime!=null">UPDATETIME=#{updateTime}</if>
         </set> where ID=#{id}
     </update>
+
+    <select id="findAppAuTokenByAccessToken" parameterType="java.lang.String" resultType="com.jkm.hsy.user.entity.AppAuToken">
+        select
+        ID,ACCESSTOKEN,ENCRYPTKEY,DEVICEID,CLIENTID,DEVICENAME,APPTYPE,OSVERSION,APPCODE,APPVERSION,APPCHANNEL,CREATETIME,UPDATETIME
+        from app_au_token
+        where 1=1
+        <if test="accessToken!=null and accessToken!=''">and ACCESSTOKEN=#{accessToken}</if>
+        order by UPDATETIME desc
+    </select>
+
+    <update id="updateAppAuUserTokenStatus" parameterType="java.lang.Long">
+        update app_au_user_token set status=2 where UID=#{uid}
+    </update>
+
+    <select id="findAppAuUserTokenByParam" parameterType="com.jkm.hsy.user.entity.AppAuUserToken" resultType="com.jkm.hsy.user.entity.AppAuUserToken">
+        select UID,TID,STATUS,LOGINTIME
+        from app_au_user_token
+        where 1=1
+        <if test="uid!=null and uid!=''">and UID=#{uid}</if>
+        <if test="tid!=null and tid!=''">and TID=#{tid}</if>
+    </select>
+
+    <insert id="insertAppAuUserToken" useGeneratedKeys="true" keyProperty="id" parameterType="com.jkm.hsy.user.entity.AppAuUserToken">
+        insert into app_au_user_token(UID,TID,STATUS,LOGINTIME) values(#{uid},#{tid},#{status},#{loginTime})
+    </insert>
+
+    <update id="updateAppAuUserTokenByUidAndTid" parameterType="com.jkm.hsy.user.entity.AppAuUserToken">
+        update app_au_user_token set STATUS=#{status} ,LOGINTIME=#{loginTime} where UID=#{uid} and TID=#{tid}
+    </update>
+
 </mapper>

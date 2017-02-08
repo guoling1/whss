@@ -52,7 +52,38 @@ public enum EnumNoticeType {
 
     //#############退款消息################
 
-    DUPLICATE_PAY_REFUND(801, "重复支付退款");
+    DUPLICATE_PAY_REFUND(801, "重复支付退款"),
+
+    /**
+     * 员工密码
+     */
+
+    EMPLOYEE_PASSWORD(901, " 员工密码"),
+
+    /**
+     * 商户资料审核通过
+     */
+
+    AUDIT_PASS(902, " 商户资料审核通过"),
+
+    /**
+     * 商户资料审核未通过
+     */
+
+    AUDIT_NOPASS(903, " 商户资料审核未通过"),
+
+
+    /**
+     * 店铺收银
+     */
+
+    CASH(904, " 店铺收银"),
+
+    /**
+     * 店铺收银
+     */
+
+    CASH_OUT(905, " 提现");
 
 
     private static final Map<Integer, EnumNoticeType> ENUM_MAP = new HashMap<>();
