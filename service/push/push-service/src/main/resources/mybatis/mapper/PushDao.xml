@@ -43,12 +43,12 @@
 
 
     <select id="selectUserAppBySid" resultType="Map">
-        SELECT UID, SID,CLIENTID FROM tb_user_app WHERE SID  = #{sid}
+        select CLIENTID from app_au_user_token aut, app_au_token aat ,app_biz_shop_user_role bsur where aut.TID=aat.ID  and bsur.UID=aut.UID and bsur.SID=#{sid}
     </select>
 
 
     <select id="selectUserAppByUid" resultType="Map">
-        SELECT UID, SID,CLIENTID FROM tb_user_app WHERE UID  = #{uid}
+       select CLIENTID from app_au_user_token aut, app_au_token aat  where aut.TID=aat.ID and aut.UID=#{uid}
     </select>
 
 

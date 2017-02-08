@@ -107,11 +107,11 @@ public class PushController extends BaseController {
         //String ret = pushService.selectUserAppBySidPushMsg(sid, setType, content);
 
 
-        //String ret =pushService.pushAuditMsg(123456L,true);
+       // String ret =pushService.pushAuditMsg(18L,true);
 
-        // String ret = pushService.pushCashMsg(123456L,"微信", 100D,"1234");
+         String ret = pushService.pushCashMsg(10L,"微信", 100D,"1234");
 
-          String ret =  pushService.pushCashOutMsg(123456L,"招商银行",100D,"123456");
+        //  String ret =  pushService.pushCashOutMsg(18L,"招商银行",100D,"123456");
 
         System.out.print(ret);
         return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, ret);
