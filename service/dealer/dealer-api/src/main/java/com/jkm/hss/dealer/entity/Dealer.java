@@ -28,6 +28,14 @@ public class Dealer extends BaseEntity {
      * 代理名称(唯一)
      */
     private String proxyName;
+    /**
+     * 所在省
+     */
+    private String belongProvince;
+    /**
+     * 所在市
+     */
+    private String belongCity;
 
     /**
      * 银行开户名称

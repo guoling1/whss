@@ -9,10 +9,7 @@ import com.jkm.hss.admin.helper.responseparam.DistributeCodeCount;
 import com.jkm.hss.dealer.entity.DailyProfitDetail;
 import com.jkm.hss.dealer.entity.Dealer;
 import com.jkm.hss.dealer.entity.DealerChannelRate;
-import com.jkm.hss.dealer.helper.requestparam.FirstLevelDealerAddRequest;
-import com.jkm.hss.dealer.helper.requestparam.FirstLevelDealerUpdateRequest;
-import com.jkm.hss.dealer.helper.requestparam.ListDealerRequest;
-import com.jkm.hss.dealer.helper.requestparam.SecondLevelDealerAddRequest;
+import com.jkm.hss.dealer.helper.requestparam.*;
 import com.jkm.hss.merchant.entity.MerchantInfo;
 import com.jkm.hss.merchant.entity.OrderRecord;
 import com.jkm.hss.merchant.entity.TradeRecord;
@@ -289,4 +286,13 @@ public interface DealerService {
      */
     int updateMarkCode(String markCode, long dealerId);
 
+    //==============================此处为对二级代理商进行重构=============================
+
+    /**
+     * 添加一级代理
+     *
+     * @param firstLevelDealerAdd2Request
+     * @return
+     */
+    long createFirstDealer2(FirstLevelDealerAdd2Request firstLevelDealerAdd2Request);
 }

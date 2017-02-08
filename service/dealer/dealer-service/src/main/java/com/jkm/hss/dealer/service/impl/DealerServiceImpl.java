@@ -21,10 +21,7 @@ import com.jkm.hss.dealer.dao.DealerDao;
 import com.jkm.hss.dealer.entity.*;
 import com.jkm.hss.dealer.enums.*;
 import com.jkm.hss.dealer.helper.DealerSupport;
-import com.jkm.hss.dealer.helper.requestparam.FirstLevelDealerAddRequest;
-import com.jkm.hss.dealer.helper.requestparam.FirstLevelDealerUpdateRequest;
-import com.jkm.hss.dealer.helper.requestparam.ListDealerRequest;
-import com.jkm.hss.dealer.helper.requestparam.SecondLevelDealerAddRequest;
+import com.jkm.hss.dealer.helper.requestparam.*;
 import com.jkm.hss.dealer.service.*;
 import com.jkm.hss.merchant.entity.MerchantInfo;
 import com.jkm.hss.merchant.entity.OrderRecord;
@@ -1667,5 +1664,36 @@ public class DealerServiceImpl implements DealerService {
     @Override
     public int updateMarkCode(String markCode, long dealerId) {
         return this.dealerDao.updateMarkCode(markCode,dealerId);
+    }
+
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param firstLevelDealerAdd2Request
+     * @return
+     */
+    @Override
+    @Transactional
+    public long createFirstDealer2(final FirstLevelDealerAdd2Request firstLevelDealerAdd2Request) {
+        final long accountId = this.accountService.initAccount(firstLevelDealerAdd2Request.getName());
+        final Dealer dealer = new Dealer();
+        dealer.setAccountId(accountId);
+        dealer.setMobile(firstLevelDealerAdd2Request.getMobile());
+        dealer.setProxyName(firstLevelDealerAdd2Request.getName());
+        dealer.setBankAccountName(firstLevelDealerAdd2Request.getBankAccountName());
+        dealer.setBankName(firstLevelDealerAdd2Request.getBankName());
+        dealer.setBelongProvince(firstLevelDealerAdd2Request.getBelongProvinceName());
+        dealer.setBelongCity(firstLevelDealerAdd2Request.getBelongCityName());
+        dealer.setBelongArea(firstLevelDealerAdd2Request.getBelongArea());
+        dealer.setLevel(EnumDealerLevel.FIRST.getId());
+        dealer.setSettleBankCard(DealerSupport.encryptBankCard(firstLevelDealerAdd2Request.getBankCard()));
+        dealer.setBankReserveMobile(DealerSupport.encryptMobile(firstLevelDealerAdd2Request.getBankReserveMobile()));
+        dealer.setIdCard(DealerSupport.encryptIdenrity(firstLevelDealerAdd2Request.getIdCard()));
+        dealer.setRecommendBtn(EnumRecommendBtn.OFF.getId());
+        dealer.setStatus(EnumDealerStatus.NORMAL.getId());
+        this.add(dealer);
+        this.updateMarkCode(GlobalID.GetGlobalID(EnumGlobalIDType.DEALER, EnumGlobalIDPro.MIN,dealer.getId()+""),dealer.getId());
+        return dealer.getId();
     }
 }
