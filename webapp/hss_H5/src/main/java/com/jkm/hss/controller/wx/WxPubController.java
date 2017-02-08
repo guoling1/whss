@@ -475,6 +475,7 @@ public class WxPubController extends BaseController {
                     mi.setWeixinRate(weixinChannelDetail.get().getProductMerchantPayRate());
                     mi.setAlipayRate(zhifubaoChannelDetail.get().getProductMerchantPayRate());
                     mi.setFastRate(yinlianChannelDetail.get().getProductMerchantPayRate());
+                    mi.setIsUpgrade(EnumIsUpgrade.CANUPGRADE.getId());
                     //判断当前代理商是否开启了推荐和我要升级功能
                     if(mi.getFirstDealerId()>0){
                         Optional<Dealer> dealerOptional = dealerService.getById(mi.getFirstDealerId());
