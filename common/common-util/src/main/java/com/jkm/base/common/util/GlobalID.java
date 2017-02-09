@@ -1,6 +1,7 @@
 package com.jkm.base.common.util;
 
 
+import com.jkm.base.common.enums.EnumGlobalDealerLevel;
 import com.jkm.base.common.enums.EnumGlobalIDPro;
 import com.jkm.base.common.enums.EnumGlobalIDType;
 import lombok.experimental.UtilityClass;
@@ -25,6 +26,24 @@ public class GlobalID {
         sb.append(enumGlobalIDType.getValue());
         sb.append(enumGlobalIDPro.getValue());
         sb.append("0000000000");
+
+        int begin = sb.length()-id.length();
+        int end = sb.length();
+        sb.replace(begin,end,id);
+
+        return sb.toString();
+    }
+
+    /**
+     * 生成代理商邀请码
+     * @param enumGlobalDealerLevel
+     * @param id
+     * @return
+     */
+    public static String GetInviteID(EnumGlobalDealerLevel enumGlobalDealerLevel, String id){
+        StringBuffer sb = new StringBuffer();
+        sb.append(enumGlobalDealerLevel.getValue());
+        sb.append("00000");
 
         int begin = sb.length()-id.length();
         int end = sb.length();
