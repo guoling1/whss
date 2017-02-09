@@ -41,23 +41,23 @@
             </el-col>
           </el-row>
           <!--表格-->
-          <el-table style="font-size: 12px;margin:15px 0" :data="records" border>
-            <el-table-column prop="proxyName" label="代理商名称" ></el-table-column>
-            <el-table-column prop="markCode" label="代理商编号" ></el-table-column>
+          <el-table v-loading.body="loading"  style="font-size: 12px;margin:15px 0" :data="records" border @cell-click="toDet">
+            <el-table-column prop="proxyName" label="代理商名称" class-name="blue"></el-table-column>
+            <el-table-column prop="markCode" label="代理商编号" class-name="blue"></el-table-column>
             <el-table-column prop="level" label="代理商级别" ></el-table-column>
             <el-table-column prop="belongProvinceName+'-'+belongCityName" label="省市" ></el-table-column>
             <el-table-column prop="createTime" label="注册时间" ></el-table-column>
             <el-table-column prop="mobile" label="联系手机号" ></el-table-column>
             <el-table-column label="好收收" width="90">
               <template scope="scope">
-                <router-link to="/admin/record/agentAddPro">开通产品</router-link>
-                <router-link to="/admin/record/agentAddPro">修改产品设置</router-link>
+                <router-link to="/admin/record/agentAddPro" v-if="hssProductId==0">开通产品</router-link>
+                <router-link to="/admin/record/agentAddPro" v-if="hssProductId!=0">修改产品设置</router-link>
               </template>
             </el-table-column>
             <el-table-column label="好收银" >
               <template scope="scope">
-                <router-link to="/admin/record/agentAddPro">开通产品</router-link>
-                <router-link to="/admin/record/agentAddPro">修改产品设置</router-link>
+                <router-link to="/admin/record/agentAddPro" v-if="hsyProductId==0">开通产品</router-link>
+                <router-link to="/admin/record/agentAddPro" v-if="hsyProductId!=0">修改产品设置</router-link>
               </template>
             </el-table-column>
           </el-table>
@@ -146,6 +146,7 @@
     name: 'agentListFir',
     data(){
       return{
+        loading:true,
         defaultProps: {
           label:'aname',
           children: 'list'
@@ -172,7 +173,6 @@
         },
         multipleSelection:[],
         currentPage4: 1,
-        loading:true,
         isShow:false,
         index:'',
       }
@@ -182,6 +182,27 @@
       this.$http.post('/admin/district/findAllDistrict')
         .then(function (res) {
           this.$data.provinces = res.data;
+          this.$data.loading = false;
+          var changeTime=function (val) {
+            if(val==''||val==null){
+              return ''
+            }else {
+              val = new Date(val)
+              var year=val.getFullYear();
+              var month=val.getMonth()+1;
+              var date=val.getDate();
+              function tod(a) {
+                if(a<10){
+                  a = "0"+a
+                }
+                return a;
+              }
+              return year+"-"+tod(month)+"-"+tod(date);
+            }
+          }
+          for(let i = 0; i < this.$data.records.length; i++){
+            this.$data.records[i].createTime = changeTime(this.$data.records[i].createTime)
+          }
         })
         .catch(function (err) {
           this.$message({
@@ -193,8 +214,20 @@
 
       this.$http.post('/admin/dealer/listFirstDealer',this.$data.query)
         .then(function (res) {
-          this.$data.records = res.data;
+          this.$data.records = res.data.records;
+          this.$data.count = res.data.count;
+          this.$data.total = res.data.totalPage;
+
         })
+    },
+    beforeUpdate :function () {
+      var aBlue = document.getElementsByClassName('blue');
+      console.log(aBlue)
+      for(var i=2;i<aBlue.length;i++){
+        console.log(1)
+        aBlue[i].style.color = "#3c8dbc";
+        aBlue[i].style.cursor = "pointer";
+      }
     },
     methods: {
       open:function () {
@@ -223,6 +256,11 @@
           }
         }
         console.log(this.$data.select1,this.$data.select2)
+      },
+      toDet:function (row,col,cell,e) {
+        if(col.label=='代理商名称'||col.label=='代理商编号'){
+          this.$router.push('/admin/record/agentAddBase?id='+row.id)
+        }
       },
       search: function () {
         this.$data.query.pageNo = 1;
@@ -402,5 +440,12 @@
     z-index: 1000;
     max-height: 250px;
     overflow: auto;
+  }
+  .blue div.cell{
+    color: #3c8dbc;
+    cursor: pointer;
+  }
+  .blue div:hover{
+    color: #72afd2;
   }
 </style>

@@ -255,7 +255,7 @@
       //若为查看详情
       if (this.$route.query.id != undefined) {
         this.$data.isShow = false;
-        this.$http.get('/admin/dealer/' + this.$route.query.id)
+        this.$http.get('/admin/dealer/findBydealerId/' + this.$route.query.id)
           .then(function (res) {
             this.$data.query.mobile = res.data.mobile;
             this.$data.query.name = res.data.name;
