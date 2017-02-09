@@ -289,6 +289,18 @@ public class OrderServiceImpl implements OrderService {
         map.put("offset",req.getOffset());
         map.put("size",req.getSize());
         List<MerchantTradeResponse> list = orderDao.selectOrderList(map);
+        if (list.size()>0){
+            for (int i=0;i<list.size();i++){
+                if (list.get(i).getAppId().equals("hss")){
+                    String hss="好收收";
+                    list.get(i).setAppId(hss);
+                }
+                if (list.get(i).getAppId().equals("hsy")){
+                    String hsy="好收银";
+                    list.get(i).setAppId(hsy);
+                }
+            }
+        }
         return list;
     }
 
