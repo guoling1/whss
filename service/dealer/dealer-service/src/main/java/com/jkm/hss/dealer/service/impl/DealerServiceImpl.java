@@ -24,6 +24,7 @@ import com.jkm.hss.dealer.enums.*;
 import com.jkm.hss.dealer.helper.DealerSupport;
 import com.jkm.hss.dealer.helper.requestparam.*;
 import com.jkm.hss.dealer.helper.response.FirstDealerResponse;
+import com.jkm.hss.dealer.helper.response.SecondDealerResponse;
 import com.jkm.hss.dealer.service.*;
 import com.jkm.hss.merchant.entity.MerchantInfo;
 import com.jkm.hss.merchant.entity.OrderRecord;
@@ -1729,6 +1730,24 @@ public class DealerServiceImpl implements DealerService {
         listFirstDealerRequest.setCount(pageModel.getPageSize());
         final int count = this.dealerDao.selectFirstDealerCountByPageParams(listFirstDealerRequest);
         final List<FirstDealerResponse> dealers = this.dealerDao.selectFirstDealersByPageParams(listFirstDealerRequest);
+        pageModel.setCount(count);
+        pageModel.setRecords(dealers);
+        return pageModel;
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param listSecondDealerRequest
+     * @return
+     */
+    @Override
+    public PageModel<SecondDealerResponse> listSecondDealer(final ListSecondDealerRequest listSecondDealerRequest) {
+        final PageModel<SecondDealerResponse> pageModel = new PageModel<>(listSecondDealerRequest.getPageNo(), listSecondDealerRequest.getPageSize());
+        listSecondDealerRequest.setOffset(pageModel.getFirstIndex());
+        listSecondDealerRequest.setCount(pageModel.getPageSize());
+        final int count = this.dealerDao.selectSecondDealerCountByPageParams(listSecondDealerRequest);
+        final List<SecondDealerResponse> dealers = this.dealerDao.selectSecondDealersByPageParams(listSecondDealerRequest);
         pageModel.setCount(count);
         pageModel.setRecords(dealers);
         return pageModel;

@@ -11,6 +11,7 @@ import com.jkm.hss.dealer.entity.Dealer;
 import com.jkm.hss.dealer.entity.DealerChannelRate;
 import com.jkm.hss.dealer.helper.requestparam.*;
 import com.jkm.hss.dealer.helper.response.FirstDealerResponse;
+import com.jkm.hss.dealer.helper.response.SecondDealerResponse;
 import com.jkm.hss.merchant.entity.MerchantInfo;
 import com.jkm.hss.merchant.entity.OrderRecord;
 import com.jkm.hss.merchant.entity.TradeRecord;
@@ -304,12 +305,19 @@ public interface DealerService {
     void add2(Dealer dealer);
 
     /**
-     * 代理商列表
+     * 一级代理商列表
      *
      * @param listFirstDealerRequest
      * @return
      */
     PageModel<FirstDealerResponse> listFirstDealer(ListFirstDealerRequest listFirstDealerRequest);
+    /**
+     * 二级代理商列表
+     *
+     * @param listSecondDealerRequest
+     * @return
+     */
+    PageModel<SecondDealerResponse> listSecondDealer(ListSecondDealerRequest listSecondDealerRequest);
 
     /**
      * 写入markCode和inviteCode
