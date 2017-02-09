@@ -10,6 +10,7 @@ import com.jkm.hss.dealer.entity.DailyProfitDetail;
 import com.jkm.hss.dealer.entity.Dealer;
 import com.jkm.hss.dealer.entity.DealerChannelRate;
 import com.jkm.hss.dealer.helper.requestparam.*;
+import com.jkm.hss.dealer.helper.response.FirstDealerResponse;
 import com.jkm.hss.merchant.entity.MerchantInfo;
 import com.jkm.hss.merchant.entity.OrderRecord;
 import com.jkm.hss.merchant.entity.TradeRecord;
@@ -286,7 +287,7 @@ public interface DealerService {
      */
     int updateMarkCode(String markCode, long dealerId);
 
-    //==============================此处为对二级代理商进行重构=============================
+    //==============================此处为对代理商进行重构=============================
 
     /**
      * 添加一级代理
@@ -295,4 +296,21 @@ public interface DealerService {
      * @return
      */
     long createFirstDealer2(FirstLevelDealerAdd2Request firstLevelDealerAdd2Request);
+
+    /**
+     * 代理商列表
+     *
+     * @param listFirstDealerRequest
+     * @return
+     */
+    PageModel<FirstDealerResponse> listFirstDealer(ListFirstDealerRequest listFirstDealerRequest);
+
+    /**
+     * 写入markCode和inviteCode
+     * @param markCode
+     * @param inviteCode
+     * @param dealerId
+     * @return
+     */
+    int updateMarkCodeAndInviteCode(String markCode, String inviteCode, long dealerId);
 }

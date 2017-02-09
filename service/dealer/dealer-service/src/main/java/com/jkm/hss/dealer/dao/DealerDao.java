@@ -2,6 +2,8 @@ package com.jkm.hss.dealer.dao;
 
 import com.jkm.hss.dealer.entity.Dealer;
 import com.jkm.hss.dealer.helper.requestparam.ListDealerRequest;
+import com.jkm.hss.dealer.helper.requestparam.ListFirstDealerRequest;
+import com.jkm.hss.dealer.helper.response.FirstDealerResponse;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
@@ -156,4 +158,31 @@ public interface DealerDao {
      * @return
      */
     int updateMarkCode(@Param("markCode") String markCode, @Param("dealerId") long dealerId);
+
+
+//==============================此处为对二级代理商进行重构=============================
+
+    /**
+     * 查询个数
+     *
+     * @param listFirstDealerRequest
+     * @return
+     */
+    int selectFirstDealerCountByPageParams(ListFirstDealerRequest listFirstDealerRequest);
+    /**
+     * 分页查询dealer
+     *
+     * @param listFirstDealerRequest
+     * @return
+     */
+    List<FirstDealerResponse> selectFirstDealersByPageParams(ListFirstDealerRequest listFirstDealerRequest);
+
+    /**
+     * 写入markCode和inviteCode
+     * @param markCode
+     * @param inviteCode
+     * @param dealerId
+     * @return
+     */
+    int updateMarkCodeAndInviteCode(@Param("markCode") String markCode, @Param("inviteCode") String inviteCode, @Param("dealerId") long dealerId);
 }
