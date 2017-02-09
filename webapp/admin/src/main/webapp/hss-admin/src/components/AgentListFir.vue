@@ -23,15 +23,12 @@
             </el-col>
             <el-col :span="5">
               <label>省市:</label>
-              <el-select clearable v-model="province" size="small" >
-                <el-option v-for="province in provinces" :label="province.aname" :value="province.aname">
-                  <span style="float: left">{{ province.aname }}</span>
-                  <el-option v-for="it in item" :label="item.label" :value="item.value">
-                    <span style="float: left">{{ item.label }}</span>
-                    <span style="float: right; color: #8492a6; font-size: 13px">{{ item.value }}</span>
-                  </el-option>
-                </el-option>
-              </el-select>
+              <div class="select" id="select" @click="open"><span>请选择</span>
+                <i class="el-icon-caret-bottom" style="float: right;margin-top: 10px"></i>
+              </div>
+              <div class="isShow" v-if="isOpen"><el-tree :data="provinces" :props="defaultProps" accordion @node-click="select"></el-tree></div>
+
+
             </el-col>
             <el-col  :span="5">
               <label>代理产品:</label>
@@ -156,6 +153,13 @@
     name: 'agentListFir',
     data(){
       return{
+        defaultProps: {
+          label:'aname',
+          children: 'list'
+        },
+        isOpen:false,
+        select1:'',
+        select2:'',
         provinces:[],//所有省份
         province: '',
         citys:[],
@@ -183,7 +187,7 @@
     },
     created: function () {
       //搜索区省市联动
-      this.$http.post('/admin/district/findAllProvinces')
+      this.$http.post('/admin/district/findAllDistrict')
         .then(function (res) {
           this.$data.provinces = res.data;
         })
@@ -197,28 +201,8 @@
             text: err.statusMessage
           })*/
         })
-      this.$http.post('/admin/district/findAllCities',{code:"110000"})
-        .then(function (res) {
-          this.$data.provinces = res.data;
-        })
-        .catch(function (err) {
-          this.$message({
-            showClose: true,
-            message: err.statusMessage,
-            type: 'error'
-          });
-        })
-      this.$http.post('/admin/district/findAllDistrict')
-        .then(function (res) {
-          this.$data.provinces = res.data;
-        })
-        .catch(function (err) {
-          this.$message({
-            showClose: true,
-            message: err.statusMessage,
-            type: 'error'
-          });
-        })
+
+
       /*this.$http.post('/admin/settle/list',this.$data.query)
         .then(function (res) {
           this.$data.records = res.data.records;
@@ -253,6 +237,26 @@
         })*/
     },
     methods: {
+      open:function () {
+        this.$data.isOpen = !this.$data.isOpen;
+        document.getElementById('select').style.borderColor = '#20a0ff'
+      },
+      select:function (val) {
+        if(val.list!=undefined){
+          this.$data.select1 = val.aname;
+          this.$data.select2 = '';
+        }else {
+          this.$data.select2 = val.aname;
+        }
+        if(this.$data.select1!=''&&this.$data.select2!=''){
+          var oCon = document.getElementById('select').getElementsByTagName('span')[0];
+          oCon.innerHTML = this.$data.select1+'-'+this.$data.select2;
+          oCon.style.color = '#1f2d3d';
+          this.$data.isOpen = !this.$data.isOpen;
+          document.getElementById('select').style.borderColor = '#bfcbd9'
+        }
+        console.log(this.$data.select1,this.$data.select2)
+      },
       search: function () {
         this.$data.query.pageNo = 1;
         this.$data.records = '';
@@ -403,5 +407,32 @@
   }
   .btn{
     font-size: 12px;
+  }
+  .select{
+    width: 100%;
+    height: 30px;
+    background-color: #fff;
+    border-radius: 4px;
+    border: 1px solid #bfcbd9;
+    color: #bfcbd9;
+    display: block;
+    font-size: 12px;
+    line-height: 30px;
+    padding: 0px 10px;
+    transition: border-color .2s cubic-bezier(.645,.045,.355,1);
+    overflow: hidden;
+    position: relative;
+  }
+  .select:hover{
+    border-color: #8391a5;
+  }
+  .isShow{
+    position: absolute;
+    width: 19%;
+    margin-top: 5px;
+    border-radius: 2px;
+    z-index: 1000;
+    max-height: 250px;
+    overflow: auto;
   }
 </style>

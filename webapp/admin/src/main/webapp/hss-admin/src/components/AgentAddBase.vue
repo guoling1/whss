@@ -60,18 +60,18 @@
                     <el-select v-model="province" placeholder="请选择" size="small">
                       <el-option
                         v-for="province in provinces"
-                        :label="province.name"
-                        :value="province.name">
+                        :label="province.aname"
+                        :value="province.aname">
                       </el-option>
                     </el-select>
                   </div>
                   省
-                  <div style="width: 40%;display: inline-block;margin-left: 10px;margin-right: 5px;">
+                  <div style="width: 39%;display: inline-block;margin-left: 10px;margin-right: 5px;">
                     <el-select v-model="city" placeholder="请选择" size="small">
                       <el-option
                         v-for="city in citys"
-                        :label="city.name"
-                        :value="city.name">
+                        :label="city.aname"
+                        :value="city.aname">
                       </el-option>
                     </el-select>
                   </div>
@@ -194,7 +194,8 @@
               <div class="btn btn-default" @click="goBack" v-if="!isShow" style="width: 45%;margin: 20px 0 100px;">
                 返回
               </div>
-              <div class="btn btn-default" @click="change" v-if="!isShow&&level==1" style="width: 45%;float: right;margin: 20px 0 100px;">
+              <div class="btn btn-default" @click="change" v-if="!isShow&&level==1"
+                   style="width: 45%;float: right;margin: 20px 0 100px;">
                 修改
               </div>
 
@@ -217,19 +218,21 @@
       return {
         provinces: '',
         citys: '',
-        province:'',
-        city:'',
+        province: '',
+        city: '',
         level: '',
-        query:{
-          mobile:'',
-          name:'',
-          province:'',
-          city:'',
-          belongArea:'',
+        query: {
+          mobile: '',
+          name: '',
+          belongProvinceCode:'',
+          belongProvinceName:'',
+          belongCityCode: '',
+          belongCityName: '',
+          belongArea: '',
           bankCard: '',
           bankAccountName: '',
-          idCard: '',
           bankReserveMobile: '',
+          idCard: '',
         },
         id: 0,
         isShow: true,
@@ -237,15 +240,18 @@
       }
     },
     created: function () {
-      //城市联动
-      this.$data.provinces = msg;
-      if (this.$data.province != '') {
-        for (var i = 0; i < this.$data.provinces.length; i++) {
-          if (this.$data.provinces[i].name == this.$data.province) {
-            this.$data.citys = this.$data.provinces[i].city
-          }
-        }
-      }
+      //获取所有省
+      this.$http.post('/admin/district/findAllDistrict')
+        .then(function (res) {
+          this.$data.provinces = res.data;
+        })
+        .catch(function (err) {
+          this.$message({
+            showClose: true,
+            message: err.statusMessage,
+            type: 'error'
+          })
+        })
       //若为查看详情
       if (this.$route.query.id != undefined) {
         this.$data.isShow = false;
@@ -269,31 +275,42 @@
         }
         if (this.$data.province != '') {
           for (var i = 0; i < this.$data.provinces.length; i++) {
-            if (this.$data.provinces[i].name == this.$data.province) {
-              this.$data.citys = this.$data.provinces[i].city
+            if (this.$data.provinces[i].aname == this.$data.province) {
+              this.$data.query.belongProvinceCode= this.$data.provinces[i].code
+              this.$data.query.belongProvinceName= this.$data.province
+              this.$data.citys = this.$data.provinces[i].list
             }
           }
         }
       },
-      city: function (val,oldval) {
+      city: function (val, oldval) {
         if (val != oldval) {
-          this.$data.query.city = this.$data.city;
+          this.$data.query.belongCityName = this.$data.city;
+          for(var i=0;i<this.$data.citys.length;i++){
+            if(this.$data.citys[i].aname == this.$data.city){
+              this.$data.query.belongCityCode = this.$data.citys[i].code;
+            }
+          }
         }
       }
     },
     methods: {
+      //创建一级代理
       create: function () {
-        console.log(this.$data.query)
-        this.$http.post('/admin/user/addFirstDealer', this.$data.query)
+        this.$http.post('/admin/user/addFirstDealer2', this.$data.query)
           .then(function (res) {
-            this.$store.commit('MESSAGE_ACCORD_SHOW', {
-              text: "添加成功"
-            })
-            this.$router.push('/admin/record/agentList')
+            this.$message({
+              showClose: true,
+              message: '创建成功',
+              type: 'success'
+            });
+            this.$router.push('/admin/record/agentListFir')
           }, function (err) {
-            this.$store.commit('MESSAGE_ACCORD_SHOW', {
-              text: err.statusMessage
-            })
+            this.$message({
+              showClose: true,
+              message: err.statusMessage,
+              type: 'error'
+            });
           })
       },
       goBack: function () {
@@ -340,7 +357,7 @@
     margin-bottom: 10px;
   }
 
-  .title2{
+  .title2 {
     margin-left: 10%;
   }
 </style>
