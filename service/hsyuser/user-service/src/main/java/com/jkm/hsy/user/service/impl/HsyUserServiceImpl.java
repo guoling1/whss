@@ -375,4 +375,19 @@ public class HsyUserServiceImpl implements HsyUserService {
         return "";
     }
 
+    /**HSY001018 登出*/
+    public String logout(String dataParam, AppParam appParam)throws ApiHandleException{
+        if(!(appParam.getAccessToken()!=null&&!appParam.getAccessToken().equals("")))
+            throw new ApiHandleException(ResultCode.PARAM_LACK,"令牌（公参）");
+
+        List<AppAuToken> tokenList=hsyUserDao.findAppAuTokenByAccessToken(appParam.getAccessToken());
+        if (tokenList != null && tokenList.size() != 0)
+        {
+            hsyUserDao.updateAppAuUserTokenStatusByTid(tokenList.get(0).getId());
+        }
+        else
+            throw new ApiHandleException(ResultCode.ACCESSTOKEN_NOT_FOUND);
+        return "";
+    }
+
 }

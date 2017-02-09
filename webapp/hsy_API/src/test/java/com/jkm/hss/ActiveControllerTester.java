@@ -42,7 +42,7 @@ public class ActiveControllerTester {
     public void testLogin()throws Exception{
         AppParam p=new AppParam();
         p.setServiceCode("HSY001002");
-        p.setAccessToken("3d9c24948b68a93a15aeae608938a508");
+        p.setAccessToken("4b2d2d3bc83625263c1b815d15bf22c1");
 //        p.setAccessToken("2cd9eafaa6193d9fb0ff9916f3941e6e");
         p.setAppType("android");
         p.setTimeStamp(AppDateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
@@ -233,11 +233,24 @@ public class ActiveControllerTester {
     public void testUpdateClientID()throws Exception{
         AppParam p=new AppParam();
         p.setServiceCode("HSY001017");
-        p.setAccessToken("2cd9eafaa6193d9fb0ff9916f3941e6e");
+        p.setAccessToken("4b2d2d3bc83625263c1b815d15bf22c1");
         p.setAppType("android");
         p.setTimeStamp(AppDateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
         p.setV("v1.0");
         String param="{\"clientid\":\"clientid12345678\"}";
+        p.setRequestData(param);
+        ActiveControllerTester.testRest(p);
+    }
+
+    @Test
+    public void testLogout()throws Exception{
+        AppParam p=new AppParam();
+        p.setServiceCode("HSY001018");
+        p.setAccessToken("4b2d2d3bc83625263c1b815d15bf22c1");
+        p.setAppType("android");
+        p.setTimeStamp(AppDateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
+        p.setV("v1.0");
+        String param="{}";
         p.setRequestData(param);
         ActiveControllerTester.testRest(p);
     }
