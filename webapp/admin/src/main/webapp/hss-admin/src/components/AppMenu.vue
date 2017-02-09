@@ -32,14 +32,14 @@
         <!-- <li class="header">HEADER</li> -->
         <!-- Optionally, you can add icons to the links -->
         <!--<li><a href="#"><i class="fa fa-link"></i> <span>Link</span></a></li>-->
-        <li :class="(url=='/admin/record/newDeal'||url=='/admin/record/payQuery'||url=='/admin/record/newWithdrawalQuery')?'treeview active':'treeview'">
+        <li :class="(url=='/admin/record/newDeal'||url=='/admin/record/payQuery'||url=='/admin/record/newWithdrawalQuery'||url=='/admin/record/t1Audit')?'treeview active':'treeview'">
           <a href="#"><span>交易管理</span>
           </a>
           <ul class="treeview-menu">
             <li :class="(url=='/admin/record/newDeal')?'treeview active':'treeview'" @click="refrash"><router-link to="/admin/record/newDeal"><span>交易查询</span> </router-link></li>
             <li :class="(url=='/admin/record/payQuery')?'treeview active':'treeview'" @click="refrash"><router-link to="/admin/record/payQuery"><span>支付查询</span> </router-link></li>
             <li :class="(url=='/admin/record/newWithdrawalQuery')?'treeview active':'treeview'" @click="refrash"><router-link to="/admin/record/newWithdrawalQuery"><span>打款查询</span> </router-link></li>
-            <li :class="(url=='/admin/record/newWithdrawalQuery')?'treeview active':'treeview'" @click="refrash"><router-link to="/admin/record/t1Audit"><span>T1结算审核</span> </router-link></li>
+            <li :class="(url=='/admin/record/t1Audit')?'treeview active':'treeview'" @click="refrash"><router-link to="/admin/record/t1Audit"><span>T1结算审核</span> </router-link></li>
           </ul>
         </li>
         <li :class="(url=='/admin/record/storeList'||url=='/admin/record/storeAuditList')?'treeview active':'treeview'">

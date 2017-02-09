@@ -84,7 +84,7 @@ public interface AdminUserService {
      * @param count
      * @return
      */
-    Triple<Integer, String, List<Pair<QRCode, QRCode>>> distributeQRCode(long adminId, long firstLevelDealerId, int count);
+    Triple<Integer, String, List<Pair<QRCode, QRCode>>> distributeQRCode(long adminId, long firstLevelDealerId, int count,String sysType);
 
     /**
      * 给一级代理商分配指定范围的码段
@@ -93,7 +93,7 @@ public interface AdminUserService {
      * @param startCode
      * @param endCode
      */
-    List<Pair<QRCode, QRCode>> distributeRangeQRCode(long dealerId, String startCode, String endCode);
+    List<Pair<QRCode, QRCode>> distributeRangeQRCode(long dealerId, String startCode, String endCode, String sysType);
 
     /**
      * 查询码段状态

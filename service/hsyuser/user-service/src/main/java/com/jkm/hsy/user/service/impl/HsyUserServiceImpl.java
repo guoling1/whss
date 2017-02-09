@@ -16,11 +16,12 @@ import com.jkm.hsy.user.exception.ApiHandleException;
 import com.jkm.hsy.user.exception.ResultCode;
 import com.jkm.hsy.user.service.HsyUserService;
 import com.jkm.hsy.user.util.AppDateUtil;
+import com.jkm.hsy.user.util.ShaUtil;
+import org.apache.commons.lang.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Type;
-import java.text.DateFormat;
 import java.util.*;
 
 @Service("hsyUserService")
@@ -144,6 +145,8 @@ public class HsyUserServiceImpl implements HsyUserService {
             throw new ApiHandleException(ResultCode.PARAM_LACK,"手机号");
         if(!(appAuUser.getPassword()!=null&&!appAuUser.getPassword().equals("")))
             throw new ApiHandleException(ResultCode.PARAM_LACK,"密码");
+        if(!(appParam.getAccessToken()!=null&&!appParam.getAccessToken().equals("")))
+            throw new ApiHandleException(ResultCode.PARAM_LACK,"令牌（公参）");
 
         /**查询用户*/
         List<AppAuUser> list = hsyUserDao.findAppAuUserByParam(appAuUser);
@@ -152,6 +155,32 @@ public class HsyUserServiceImpl implements HsyUserService {
         AppAuUser appAuUserFind=list.get(0);
         if(!appAuUserFind.getPassword().equals(appAuUser.getPassword()))
             throw new ApiHandleException(ResultCode.PASSWORD_NOT_CORRECT);
+
+        List<AppAuToken> tokenList=hsyUserDao.findAppAuTokenByAccessToken(appParam.getAccessToken());
+        if (tokenList != null && tokenList.size() != 0)
+        {
+            hsyUserDao.updateAppAuUserTokenStatus(appAuUserFind.getId());
+
+            AppAuUserToken appAuUserToken=new AppAuUserToken();
+            appAuUserToken.setUid(appAuUserFind.getId());
+            appAuUserToken.setTid(tokenList.get(0).getId());
+            List<AppAuUserToken> appAuUserTokenList=hsyUserDao.findAppAuUserTokenByParam(appAuUserToken);
+            if(appAuUserTokenList!=null&&appAuUserTokenList.size()!=0)
+            {
+                AppAuUserToken appAuUserTokenUpdate=appAuUserTokenList.get(0);
+                appAuUserTokenUpdate.setStatus(1);
+                appAuUserTokenUpdate.setLoginTime(new Date());
+                hsyUserDao.updateAppAuUserTokenByUidAndTid(appAuUserTokenUpdate);
+            }
+            else
+            {
+                appAuUserToken.setStatus(1);
+                appAuUserToken.setLoginTime(new Date());
+                hsyUserDao.insertAppAuUserToken(appAuUserToken);
+            }
+        }
+        else
+            throw new ApiHandleException(ResultCode.ACCESSTOKEN_NOT_FOUND);
 
         AppBizShop appBizShop=new AppBizShop();
         appBizShop.setUid(appAuUserFind.getId());
@@ -182,6 +211,7 @@ public class HsyUserServiceImpl implements HsyUserService {
         Map map=new HashMap();
         map.put("appAuUser",appAuUserFind);
         map.put("appBizShop",appBizShop);
+
         return gson.toJson(map);
     }
 
@@ -276,4 +306,73 @@ public class HsyUserServiceImpl implements HsyUserService {
         hsyUserDao.update(appAuUser);
         return "";
     }
+
+    /**HSY001016 保存设备相关信息并返回token*/
+    public String insertTokenDeviceClientInfoAndReturnKey(String dataParam, AppParam appParam)throws ApiHandleException{
+        Gson gson=new GsonBuilder().setDateFormat(AppConstant.DATE_FORMAT).create();
+        /**参数转化*/
+        AppAuToken appAuToken=null;
+        try{
+            appAuToken=gson.fromJson(dataParam, AppAuToken.class);
+        } catch(Exception e){
+            throw new ApiHandleException(ResultCode.PARAM_TRANS_FAIL);
+        }
+
+        /**参数验证*/
+        if(!(appAuToken.getDeviceid()!=null&&!appAuToken.getDeviceid().equals("")))
+            throw new ApiHandleException(ResultCode.PARAM_LACK,"设备号");
+//        if(!(appAuToken.getClientid()!=null&&!appAuToken.getClientid().equals("")))
+//            throw new ApiHandleException(ResultCode.PARAM_LACK,"推送号");
+        if(!(appAuToken.getDeviceName()!=null&&!appAuToken.getDeviceName().equals("")))
+            throw new ApiHandleException(ResultCode.PARAM_LACK,"设备名");
+//        if(!(appAuDevice.getAppType()!=null&&!appAuDevice.getAppType().equals("")))
+//            throw new ApiHandleException(ResultCode.PARAM_LACK,"app类型");
+        if(!(appAuToken.getOsVersion()!=null&&!appAuToken.getOsVersion().equals("")))
+            throw new ApiHandleException(ResultCode.PARAM_LACK,"系统版本号");
+        if(!(appAuToken.getAppCode()!=null&&!appAuToken.getAppCode().equals("")))
+            throw new ApiHandleException(ResultCode.PARAM_LACK,"app编号");
+        if(!(appAuToken.getAppVersion()!=null&&!appAuToken.getAppVersion().equals("")))
+            throw new ApiHandleException(ResultCode.PARAM_LACK,"app版本号");
+
+        appAuToken.setAppType(appParam.getAppType());
+        Date date=new Date();
+        appAuToken.setCreateTime(date);
+        appAuToken.setUpdateTime(date);
+        hsyUserDao.insertAppAuToken(appAuToken);
+        appAuToken.setAccessToken(ShaUtil.shaEncode(appAuToken.getId()+AppConstant.SHA_KEY).substring(0, 32));
+        appAuToken.setEncryptKey(RandomStringUtils.randomAlphanumeric(32));
+        hsyUserDao.updateAppAuToken(appAuToken);
+        return "{\"accessToken\":\""+appAuToken.getAccessToken()+"\",\"encryptKey\":\""+appAuToken.getEncryptKey()+"\"}";
+    }
+
+    /**HSY001017 更新clientid*/
+    public String updateClientID(String dataParam, AppParam appParam)throws ApiHandleException{
+        Gson gson=new GsonBuilder().setDateFormat(AppConstant.DATE_FORMAT).create();
+        /**参数转化*/
+        AppAuToken appAuToken=null;
+        try{
+            appAuToken=gson.fromJson(dataParam, AppAuToken.class);
+        } catch(Exception e){
+            throw new ApiHandleException(ResultCode.PARAM_TRANS_FAIL);
+        }
+
+        /**参数验证*/
+        if(!(appAuToken.getClientid()!=null&&!appAuToken.getClientid().equals("")))
+            throw new ApiHandleException(ResultCode.PARAM_LACK,"推送号");
+        if(!(appParam.getAccessToken()!=null&&!appParam.getAccessToken().equals("")))
+            throw new ApiHandleException(ResultCode.PARAM_LACK,"令牌（公参）");
+
+        List<AppAuToken> tokenList=hsyUserDao.findAppAuTokenByAccessToken(appParam.getAccessToken());
+        if (tokenList != null && tokenList.size() != 0)
+        {
+            AppAuToken appAuTokenUpdate=tokenList.get(0);
+            appAuTokenUpdate.setClientid(appAuToken.getClientid());
+            appAuTokenUpdate.setUpdateTime(new Date());
+            hsyUserDao.updateAppAuToken(appAuTokenUpdate);
+        }
+        else
+            throw new ApiHandleException(ResultCode.ACCESSTOKEN_NOT_FOUND);
+        return "";
+    }
+
 }

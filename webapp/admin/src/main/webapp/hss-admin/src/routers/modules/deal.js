@@ -15,8 +15,12 @@ const StoreList = r => require.ensure([], () => r(require('../../components/Stor
 const StoreAudit = r => require.ensure([], () => r(require('../../components/StoreAudit')), 'group-record');
 const StoreAuditList = r => require.ensure([], () => r(require('../../components/StoreAuditList')), 'group-record');
 const AgentList = r => require.ensure([], () => r(require('../../components/AgentList')), 'group-record');
+const AgentListSec = r => require.ensure([], () => r(require('../../components/AgentListSec')), 'group-record');
+const AgentListFir = r => require.ensure([], () => r(require('../../components/AgentListFir')), 'group-record');
 const AgentAccount = r => require.ensure([], () => r(require('../../components/AgentAccount')), 'group-record');
 const AgentAdd = r => require.ensure([], () => r(require('../../components/AgentAdd')), 'group-record');
+const AgentAddPro = r => require.ensure([], () => r(require('../../components/AgentAddPro')), 'group-record');
+const AgentAddBase = r => require.ensure([], () => r(require('../../components/AgentAddBase')), 'group-record');
 const CompanyProfit = r => require.ensure([], () => r(require('../../components/CompanyProfit')), 'group-record');
 const CompanyProfitDet = r => require.ensure([], () => r(require('../../components/CompanyProfitDet')), 'group-record');
 const FirProfit = r => require.ensure([], () => r(require('../../components/FirProfit')), 'group-record');
@@ -33,7 +37,6 @@ const IssueSuccess = r => require.ensure([], () => r(require('../../components/I
 const Invite = r => require.ensure([], () => r(require('../../components/Invite')), 'group-record');
 const Upgrade = r => require.ensure([], () => r(require('../../components/Upgrade')), 'group-record');
 const CodeStatus = r => require.ensure([], () => r(require('../../components/CodeStatus')), 'group-record');
-const Test = r => require.ensure([], () => r(require('../../components/test')), 'group-record');
 const StoreAuditHSY = r => require.ensure([], () => r(require('../../components/StoreAuditHSY')), 'group-record');
 const T1Audit = r => require.ensure([], () => r(require('../../components/T1Audit')), 'group-record');
 
@@ -47,11 +50,6 @@ export default {
   redirect: '/admin/record/deal',
   component: Crumbs,
   children: [
-    {
-      path: 'test',
-      name: 'Test',
-      component: Test
-    },
     {
       path: 'storeAuditHSY',
       name: 'StoreAuditHSY',
@@ -138,6 +136,16 @@ export default {
       component: AgentList
     },
     {
+      path: 'agentListFir',
+      name: 'AgentListFir',
+      component: AgentListFir
+    },
+    {
+      path: 'agentListSec',
+      name: 'AgentListSec',
+      component: AgentListSec
+    },
+    {
       path: 'agentAccount',
       name: 'AgentAccount',
       component: AgentAccount
@@ -146,6 +154,16 @@ export default {
       path: 'agentAdd',
       name: 'AgentAdd',
       component: AgentAdd
+    },
+    {
+      path: 'agentAddPro',
+      name: 'AgentAddPro',
+      component: AgentAddPro
+    },
+    {
+      path: 'agentAddBase',
+      name: 'AgentAddBase',
+      component: AgentAddBase
     },
     {
       path: 'companyProfit',

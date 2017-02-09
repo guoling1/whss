@@ -614,8 +614,8 @@ public class QRCodeServiceImpl implements QRCodeService {
      * @return
      */
     @Override
-    public List<Long> getUnDistributeCode() {
-        return this.qrCodeDao.getUnDistributeCode();
+    public List<Long> getUnDistributeCode(final String sysType) {
+        return this.qrCodeDao.getUnDistributeCode(sysType);
     }
 
     /**
@@ -745,8 +745,8 @@ public class QRCodeServiceImpl implements QRCodeService {
      * @return
      */
     @Override
-    public List<Long> getUnDistributeCodeByRangeCode(final String startCode, final String endCode) {
-        return this.qrCodeDao.selectUnDistributeCodeByRangeCode(startCode, endCode);
+    public List<Long> getUnDistributeCodeByRangeCode(final String startCode, final String endCode, final String sysType) {
+        return this.qrCodeDao.selectUnDistributeCodeByRangeCode(startCode, endCode, sysType);
     }
 
     @Override

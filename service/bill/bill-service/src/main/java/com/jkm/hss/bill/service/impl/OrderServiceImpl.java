@@ -140,6 +140,7 @@ public class OrderServiceImpl implements OrderService {
         playMoneyOrder.setPayee(0);
         playMoneyOrder.setAppId(appId);
         final BigDecimal merchantWithdrawPoundage = this.calculateService.getMerchantWithdrawPoundage(EnumProductType.HSY, shop.getId(), channel);
+        Preconditions.checkState(amount.compareTo(merchantWithdrawPoundage) > 0, "提现金额必须大于提现手续费");
         playMoneyOrder.setPoundage(merchantWithdrawPoundage);
         playMoneyOrder.setGoodsName(shop.getName());
         playMoneyOrder.setGoodsDescribe(shop.getName());
@@ -449,6 +450,33 @@ public class OrderServiceImpl implements OrderService {
             return Collections.emptyList();
         }
         return this.orderDao.selectCheckedOrderNosByOrderNos(orderNos);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param accountId
+     * @param appId
+     * @return
+     */
+    @Override
+    public long getPageOrdersCountByAccountId(final long accountId, final String appId, final Date startDate, final Date endDate) {
+        return this.orderDao.selectPageOrdersCountByAccountId(accountId, appId, startDate, endDate);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param accountId
+     * @param appId
+     * @param offset
+     * @param count
+     * @return
+     */
+    @Override
+    public List<Order> getPageOrdersByAccountId(final long accountId, final String appId, final int offset,
+                                                final int count, final Date startDate, final Date endDate) {
+        return this.orderDao.selectPageOrdersByAccountId(accountId, appId, offset, count, startDate, endDate);
     }
 
     /**

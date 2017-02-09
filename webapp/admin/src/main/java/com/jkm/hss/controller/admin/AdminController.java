@@ -15,6 +15,7 @@ import com.jkm.hss.controller.BaseController;
 import com.jkm.hss.dealer.entity.Dealer;
 import com.jkm.hss.dealer.enums.EnumRecommendBtn;
 import com.jkm.hss.dealer.helper.DealerConsts;
+import com.jkm.hss.dealer.helper.requestparam.FirstLevelDealerAdd2Request;
 import com.jkm.hss.dealer.helper.requestparam.FirstLevelDealerAddRequest;
 import com.jkm.hss.dealer.helper.requestparam.FirstLevelDealerUpdateRequest;
 import com.jkm.hss.dealer.service.DealerRateService;
@@ -146,10 +147,12 @@ public class AdminController extends BaseController {
         if (distributeQRCodeRequest.getCount() <= 0) {
             return CommonResponse.simpleResponse(-1, "分配个数不可以是0");
         }
-
+        if (StringUtils.isBlank(distributeQRCodeRequest.getSysType())) {
+            return CommonResponse.simpleResponse(-1, "请选择所属项目");
+        }
         final Dealer dealer = dealerOptional.get();
         final Triple<Integer, String, List<Pair<QRCode, QRCode>>> resultTriple = this.adminUserService.distributeQRCode(super.getAdminUser().getId(),
-                distributeQRCodeRequest.getDealerId(), distributeQRCodeRequest.getCount());
+                distributeQRCodeRequest.getDealerId(), distributeQRCodeRequest.getCount(),distributeQRCodeRequest.getSysType());
         if (1 != resultTriple.getLeft()) {
             return CommonResponse.simpleResponse(-1, resultTriple.getMiddle());
         }
@@ -185,9 +188,12 @@ public class AdminController extends BaseController {
         if(!dealerOptional.isPresent()) {
             return CommonResponse.simpleResponse(-1, "代理商不存在");
         }
+        if (StringUtils.isBlank(distributeRangeQRCodeRequest.getSysType())) {
+            return CommonResponse.simpleResponse(-1, "请选择所属项目");
+        }
         final Dealer dealer = dealerOptional.get();
         final List<Pair<QRCode, QRCode>> pairs = this.adminUserService.distributeRangeQRCode(distributeRangeQRCodeRequest.getDealerId(),
-                distributeRangeQRCodeRequest.getStartCode(), distributeRangeQRCodeRequest.getEndCode());
+                distributeRangeQRCodeRequest.getStartCode(), distributeRangeQRCodeRequest.getEndCode(),distributeRangeQRCodeRequest.getSysType());
         if (CollectionUtils.isEmpty(pairs)) {
             return CommonResponse.simpleResponse(-1, "此范围不存在可分配的二维码");
         }
@@ -646,4 +652,52 @@ public class AdminController extends BaseController {
         }
         return CommonResponse.simpleResponse(1, "");
     }
+
+
+    //==============================此处为对二级代理商进行重构=============================
+    /**
+     * 添加一级代理商
+     *
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/addFirstDealer2", method = RequestMethod.POST)
+    public CommonResponse addFirstDealer2(@RequestBody final FirstLevelDealerAdd2Request firstLevelDealerAdd2Request) {
+        try{
+            if(!ValidateUtils.isMobile(firstLevelDealerAdd2Request.getMobile())) {
+                return CommonResponse.simpleResponse(-1, "代理手机号格式错误");
+            }
+            if(StringUtils.isBlank(firstLevelDealerAdd2Request.getName())) {
+                return CommonResponse.simpleResponse(-1, "代理名称不能为空");
+            }
+            final long proxyNameCount = this.dealerService.getByProxyName(firstLevelDealerAdd2Request.getName());
+            if (proxyNameCount > 0) {
+                return CommonResponse.simpleResponse(-1, "代理名称已经存在");
+            }
+            final String bankCard = firstLevelDealerAdd2Request.getBankCard();
+            final Optional<BankCardBin> bankCardBinOptional = this.bankCardBinService.analyseCardNo(bankCard);
+            if (!bankCardBinOptional.isPresent()) {
+                return CommonResponse.simpleResponse(-1, "结算卡格式错误");
+            }
+            firstLevelDealerAdd2Request.setBankName(bankCardBinOptional.get().getBankName());
+            if(!ValidateUtils.isMobile(firstLevelDealerAdd2Request.getBankReserveMobile())) {
+                return CommonResponse.simpleResponse(-1, "银行预留手机号格式错误");
+            }
+            final Optional<Dealer> dealerOptional = this.dealerService.getByMobile(firstLevelDealerAdd2Request.getMobile());
+            if (dealerOptional.isPresent()) {
+                return CommonResponse.simpleResponse(-1, "代理商手机号已经注册");
+            }
+            if(!ValidationUtil.isIdCard(firstLevelDealerAdd2Request.getIdCard())){
+                return CommonResponse.simpleResponse(-1, "身份证格式不正确");
+            }
+//            final long dealerId = this.dealerService.createFirstDealer(firstLevelDealerAdd2Request);
+//            final FirstLevelDealerAddResponse firstLevelDealerAddResponse = new FirstLevelDealerAddResponse();
+//            firstLevelDealerAddResponse.setDealerId(dealerId);
+            return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "分配成功", "");
+        }catch (Exception e){
+            log.error("错误信息时",e);
+            return CommonResponse.simpleResponse(-1, e.getMessage());
+        }
+    }
+
 }

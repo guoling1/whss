@@ -37,5 +37,20 @@ public interface HsyMerchantAuditService {
      */
     int getCount(HsyMerchantAuditRequest hsyMerchantAuditRequest);
 
+    /**
+     * 根据id查询
+     * @param id
+     * @return
+     */
+    HsyMerchantAuditResponse selectById(Long id);
+
+
+
+    /**
+     * 更新账户id
+     * @param accountID
+     */
+    void updateAccount(Long accountID, Long id);
+
 
 }

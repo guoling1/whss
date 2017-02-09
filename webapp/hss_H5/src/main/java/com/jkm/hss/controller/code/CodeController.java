@@ -59,6 +59,7 @@ public class CodeController extends BaseController {
         Preconditions.checkState(qrCode.isCorrectSign(sign), "sign is not correct");
         final long merchantId = qrCode.getMerchantId();
         final String agent = request.getHeader("User-Agent");
+        log.info("User-Agent is [{}]",agent);
         String url = "";
         if (qrCode.isActivate()) {//已激活
             Optional<UserInfo> userInfoOptional = userInfoService.selectByMerchantId(merchantId);

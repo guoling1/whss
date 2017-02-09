@@ -141,36 +141,36 @@
               </td>
               <th style="text-align: right">结算卡开户名:</th>
               <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.industryCode" readonly></td>
-              <th style="text-align: right">身份证号:</th>
-              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.industryCode" readonly v-if="msg.isPublic==2"></td>
+              <th style="text-align: right" v-show="msg.isPublic==2">身份证号:</th>
+              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.industryCode" readonly v-show="msg.isPublic==2"></td>
             </tr>
             <tr>
               <th style="text-align: right">商户结算卡号:</th>
-              <td></td>
+              <td><input type="text" style="background:#efecec;padding-left:5px;" value="" readonly></td>
               <th style="text-align: right">结算卡所属银行:</th>
-              <td></td>
+              <td><input type="text" style="background:#efecec;padding-left:5px;" value="" readonly></td>
               <th style="text-align: right">支行信息:</th>
-              <td>元/笔</td>
+              <td><input type="text" style="background:#efecec;padding-left:5px;" value="" readonly></td>
             </tr>
             <tr>
               <th style="text-align: right">结算方式:</th>
               <td>
-                <!--<el-radio-group v-model="msg.isPublic">
-                  <el-radio :label="1">T1结算到卡</el-radio>
-                  <el-radio :label="2">T1结算到账户余额</el-radio>
-                </el-radio-group>-->
+                <el-radio-group>
+                  <el-radio :label="3">T1结算到卡</el-radio>
+                  <el-radio :label="4">T1结算到账户余额</el-radio>
+                </el-radio-group>
               </td>
               <th style="text-align: right"></th>
               <td></td>
               <th style="text-align: right"></th>
-              <td>s</td>
+              <td></td>
             </tr>
             </tbody></table>
         </div>
       </div>
-      <div class="box box-primary">
+      <div class="box box-primary" style="overflow: hidden">
         <p class="lead">商户费率信息</p>
-        <div class="table-responsive">
+        <!--<div class="table-responsive">
           <table class="table">
             <tbody>
             <tr>
@@ -198,7 +198,18 @@
               <td>元/笔</td>
             </tr>
             </tbody></table>
+        </div>-->
+        <div style="width: 70%;margin: 0 0 15px 15px;">
+          <template>
+            <el-table :data="tableData" border style="width: 100%">
+              <el-table-column prop="name" label="通道名称" ></el-table-column>
+              <el-table-column prop="rate" label="支付结算手续费"></el-table-column>
+              <el-table-column prop="time" label="结算时间" ></el-table-column>
+              <el-table-column prop="money" label="提现手续费" ></el-table-column>
+            </el-table>
+          </template>
         </div>
+
       </div>
       <div class="box box-primary" v-if="!isShow">
         <p class="lead">审核日志</p>
@@ -278,7 +289,18 @@
         reason:'',
         status:'',
         isShow:true,
-        res: []
+        res: [],
+        tableData:[{
+          name:'魔宝支付宝',
+          rate:'',
+          time:'',
+          money:''
+        },{
+          name:'魔宝微信',
+          rate:'',
+          time:'',
+          money:''
+        }]
       }
     },
     created: function () {
@@ -299,27 +321,28 @@
     },
     methods: {
       audit: function (event) {
-       /* this.$http.post('/admin/merchantInfoCheckRecord/record', {
-          merchantId: this.$data.id
+        this.$http.post('/admin/hsyMerchantAudit/throughAudit', {
+          id: this.$data.id,
+          uid: this.$data.msg.uid,
         }).then(function (res) {
-          this.$router.push('/admin/record/storeList')
+          /*this.$router.push('/admin/record/storeList')*/
+          this.$router.go(-1)
         }, function (err) {
           console.log(err);
           this.$store.commit('MESSAGE_ACCORD_SHOW', {
             text: err.statusMessage
           })
-        })*/
+        })
       },
       unAudit: function () {
-        /*this.$http.post('/admin/merchantInfoCheckRecord/auditFailure',{merchantId: this.$data.id,descr:this.$data.reason})
+        this.$http.post('/admin/hsyMerchantAudit/rejectToExamine',{id: this.$data.id, uid: this.$data.msg.uid,checkErrorInfo:this.$data.reason})
           .then(function (res) {
             this.$router.push('/admin/record/storeList')
           },function (err) {
-            console.log(err)
             this.$store.commit('MESSAGE_ACCORD_SHOW', {
               text: err.statusMessage
             })
-          })*/
+          })
       },
       changeBig: function (e) {
         e = e||window.event;

@@ -209,4 +209,27 @@ public interface OrderDao {
      * @return
      */
     List<String> selectCheckedOrderNosByOrderNos(@Param("orderNos") List<String> orderNos);
+
+    /**
+     * 分页查询--查询个数
+     *
+     * @param accountId
+     * @param appId
+     * @return
+     */
+    long selectPageOrdersCountByAccountId(@Param("accountId") long accountId, @Param("appId") String appId,
+                                          @Param("startDate") Date startDate, @Param("endDate") Date endDate);
+
+    /**
+     * 分页查询--查询记录
+     *
+     * @param accountId
+     * @param appId
+     * @param offset
+     * @param count
+     * @return
+     */
+    List<Order> selectPageOrdersByAccountId(@Param("accountId") long accountId, @Param("appId") String appId,
+                                            @Param("offset") int offset, @Param("count") int count,
+                                            @Param("startDate") Date startDate, @Param("endDate") Date endDate);
 }

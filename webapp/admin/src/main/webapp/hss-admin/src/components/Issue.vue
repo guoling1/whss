@@ -33,6 +33,13 @@
                 <input type="text"  class="form-control" id="inputPassword4" name="number" placeholder="请输入结束码段" v-model="query.endCode"/>
               </div>
             </div>
+            <div class="form-group">
+              <label for="inputPassword3" class="col-sm-3 control-label">所属项目</label>
+              <div class="col-sm-5">
+                <el-radio class="radio" v-model="query.sysType" label="hss">好收收</el-radio>
+                <el-radio class="radio" v-model="query.sysType" label="hsy">好收银</el-radio>
+              </div>
+            </div>
           </div>
           <div class="box-footer">
             <div type="submit" class="btn btn-info"  @click="submit">分配二维码</div>
@@ -58,7 +65,8 @@
         query:{
           dealerId:'',
           startCode:'',
-          endCode:''
+          endCode:'',
+          sysType:''
         },
         findDealers:[],
         listIsShow: false

@@ -16,5 +16,6 @@
         <module>common-util-spring</module>
         <module>common-sdk</module>
         <module>common-mq</module>
+        <module>common-push</module>
     </modules>
 </project>

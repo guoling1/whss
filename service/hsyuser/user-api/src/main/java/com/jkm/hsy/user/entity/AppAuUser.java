@@ -18,6 +18,7 @@ public class AppAuUser {
     private String idcardf;//身份证正面照
     private String idcardb;//身份证背面照
     private String idcardh;//身份证手持照
+    private Long accountID;//账户ID
     private Long dealerID;//代理商ID
     private Long productID;//产品ID
     private BigDecimal weixinRate;//微信费率
@@ -36,6 +37,7 @@ public class AppAuUser {
     private String idcardhURL;//身份证手持照URL
     private Long role;//角色
     private String roleName;//角色名称
+    private String deviceID;//设备号
 
     public Long getId() {
         return id;
@@ -267,5 +269,21 @@ public class AppAuUser {
 
     public void setFastRate(BigDecimal fastRate) {
         this.fastRate = fastRate;
+    }
+
+    public Long getAccountID() {
+        return accountID;
+    }
+
+    public void setAccountID(Long accountID) {
+        this.accountID = accountID;
+    }
+
+    public String getDeviceID() {
+        return deviceID;
+    }
+
+    public void setDeviceID(String deviceID) {
+        this.deviceID = deviceID;
     }
 }

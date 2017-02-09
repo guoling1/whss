@@ -11,12 +11,14 @@ import com.jkm.hsy.user.entity.*;
 import com.jkm.hsy.user.exception.ApiHandleException;
 import com.jkm.hsy.user.exception.ResultCode;
 import com.jkm.hsy.user.service.HsyFileService;
+import com.jkm.hsy.user.service.HsyUploadService;
 import com.jkm.hsy.user.util.AppDateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.util.*;
 
 /**
@@ -30,6 +32,8 @@ public class HsyFileServiceImpl implements HsyFileService {
     private HsyShopDao hsyShopDao;
     @Autowired
     private HsyUserDao hsyUserDao;
+    @Autowired
+    private HsyUploadService hsyUploadService;
 
     /**HSY001011 上传店铺三张照片*/
     public String insertFileShopAndUpload(String dataParam,AppParam appParam,Map<String,MultipartFile> files)throws ApiHandleException{
@@ -104,13 +108,14 @@ public class HsyFileServiceImpl implements HsyFileService {
         appCmFile.setFileType(type);
         String[] strs=appCmFile.getFileName().split("\\.");
         Date date=new Date();
-        appCmFile.setPath("/"+AppConstant.FIlE_ROOT+"/"+type+"/"+ AppDateUtil.formatDate(date,AppDateUtil.DATE_FORMAT_NORMAL)+"/"+appCmFile.getUuid()+"."+strs[strs.length-1]);
+        appCmFile.setPath(AppConstant.FIlE_ROOT+"/"+type+"/"+ AppDateUtil.formatDate(date,AppDateUtil.DATE_FORMAT_NORMAL)+"/"+appCmFile.getUuid()+"."+strs[strs.length-1]);
         appCmFile.setCreateTime(date);
         appCmFile.setUpdateTime(date);
         File uploadfile=new File(appCmFile.getPath());
         if(!uploadfile.exists())
             uploadfile.mkdirs();
         file.transferTo(uploadfile);
+        hsyUploadService.upload(new FileInputStream(uploadfile),appCmFile.getPath());
         hsyFileDao.insert(appCmFile);
         return appCmFile.getUuid();
     }

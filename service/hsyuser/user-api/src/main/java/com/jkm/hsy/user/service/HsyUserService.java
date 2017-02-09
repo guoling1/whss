@@ -8,4 +8,6 @@ public interface HsyUserService {
     public String login(String dataParam,AppParam appParam)throws ApiHandleException;
     public String insertAndSendVerificationCode(String dataParam,AppParam appParam)throws ApiHandleException;
     public String updateHsyUserForSetPassword(String dataParam, AppParam appParam)throws ApiHandleException;
+    public String insertTokenDeviceClientInfoAndReturnKey(String dataParam, AppParam appParam)throws ApiHandleException;
+    public String updateClientID(String dataParam, AppParam appParam)throws ApiHandleException;
 }

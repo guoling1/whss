@@ -4,6 +4,8 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
+import com.jkm.base.common.entity.PageModel;
+import com.jkm.base.common.util.DateFormatUtil;
 import com.jkm.base.common.util.DateTimeUtil;
 import com.jkm.base.common.util.HttpClientPost;
 import com.jkm.base.common.util.SnGenerator;
@@ -33,11 +35,14 @@ import com.jkm.hss.notifier.service.SmsAuthService;
 import com.jkm.hss.product.enums.EnumBalanceTimeType;
 import com.jkm.hss.product.enums.EnumPayChannelSign;
 import com.jkm.hss.product.enums.EnumProductType;
+import com.jkm.hss.push.sevice.PushService;
 import com.jkm.hsy.user.dao.HsyShopDao;
 import com.jkm.hsy.user.entity.AppBizCard;
 import com.jkm.hsy.user.entity.AppBizShop;
 import com.jkm.hsy.user.entity.AppParam;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
 import org.joda.time.DateTime;
@@ -46,8 +51,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.util.Date;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by yulong.zhang on 2017/1/17.
@@ -80,6 +84,8 @@ public class HSYTradeServiceImpl implements HSYTradeService {
     private SplitAccountRecordService splitAccountRecordService;
     @Autowired
     private ShallProfitDetailService shallProfitDetailService;
+    @Autowired
+    private PushService pushService;
 
     /**
      * {@inheritDoc}
@@ -98,15 +104,79 @@ public class HSYTradeServiceImpl implements HSYTradeService {
         final AppBizCard appBizCard = new AppBizCard();
         appBizCard.setSid(shop.getId());
         final AppBizCard appBizCard1 = this.hsyShopDao.findAppBizCardByParam(appBizCard).get(0);
+        final Account account = this.accountService.getById(accountId).get();
         result.put("bankName", appBizCard1.getCardBank());
         final String cardNO = appBizCard1.getCardNO();
         result.put("cardNo", cardNO.substring(cardNO.length() - 4));
         final BigDecimal merchantWithdrawPoundage = this.calculateService.getMerchantWithdrawPoundage(EnumProductType.HSY, shop.getId(), channel);
         result.put("poundage", merchantWithdrawPoundage);
         result.put("mobile", appBizCard1.getCardCellphone());
+        result.put("available", account.getAvailable());
         return result.toJSONString();
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param dataParam
+     * @param appParam
+     * @return
+     */
+    @Override
+    public String tradeList(final String dataParam, final AppParam appParam) {
+        final JSONObject dataJo = JSONObject.parseObject(dataParam);
+        final long accountId = dataJo.getLongValue("accountId");
+        final int pageNo = dataJo.getIntValue("pageNo");
+        final int pageSize = dataJo.getIntValue("pageSize");
+        final String startDateStr = dataJo.getString("startDate");
+        final String endDateStr = dataJo.getString("endDate");
+        Date startDate = null;
+        Date endDate = null;
+        if (!StringUtils.isEmpty(startDateStr) && !StringUtils.isEmpty(endDateStr)) {
+            startDate = DateFormatUtil.parse(startDateStr, DateFormatUtil.yyyy_MM_dd);
+            endDate = DateFormatUtil.parse(endDateStr, DateFormatUtil.yyyy_MM_dd);
+        }
+        final PageModel<JSONObject> pageModel = new PageModel<>(pageNo, pageSize);
+        final long count = this.orderService.getPageOrdersCountByAccountId(accountId, EnumAppType.HSY.getId(), startDate, endDate);
+        final List<Order> orders = this.orderService.getPageOrdersByAccountId(accountId, EnumAppType.HSY.getId(),
+                pageModel.getFirstIndex(), pageSize, startDate, endDate);
+        pageModel.setCount(count);
+        if (!CollectionUtils.isEmpty(orders)) {
+            final List<JSONObject> recordList = new ArrayList<>();
+            pageModel.setRecords(recordList);
+            for (Order order : orders) {
+                final JSONObject jo = new JSONObject();
+                recordList.add(jo);
+                if (EnumTradeType.PAY.getId() == order.getTradeType()) {
+                    jo.put("tradeType", "收款");
+                } else if (EnumTradeType.WITHDRAW.getId() == order.getTradeType()) {
+                    jo.put("tradeType", "提现");
+                }
+
+                if (EnumPayChannelSign.YG_WEIXIN.getId() == order.getPayChannelSign()) {
+                    jo.put("channel", "微信");
+                } else if (EnumPayChannelSign.YG_ZHIFUBAO.getId() == order.getPayChannelSign()) {
+                    jo.put("channel", "支付宝");
+                } else if (EnumPayChannelSign.YG_YINLIAN.getId() == order.getPayChannelSign()) {
+                    jo.put("channel", "快捷");
+                }
+
+                if (EnumOrderStatus.PAY_SUCCESS.getId() == order.getStatus()) {
+                    jo.put("msg", "收款成功");
+                } else if (EnumOrderStatus.WITHDRAW_SUCCESS.getId() == order.getStatus()) {
+                    jo.put("msg", "提现成功");
+                }
+
+                jo.put("amount", order.getTradeAmount().toPlainString());
+                jo.put("time", order.getCreateTime());
+                jo.put("code", order.getOrderNo().substring(order.getOrderNo().length() - 4));
+            }
+        } else {
+            pageModel.setRecords(Collections.<JSONObject>emptyList());
+        }
+
+        return JSON.toJSONString(pageModel);
+    }
 
 
     /**
@@ -250,18 +320,22 @@ public class HSYTradeServiceImpl implements HSYTradeService {
         order.setSn(paymentSdkPayCallbackResponse.getSn());
         order.setStatus(EnumOrderStatus.PAY_SUCCESS.getId());
         int channel = 0;
+        String notifyChannelStr = "";
         if (EnumPaymentType.QUICK_APY.getId().equals(order.getPayType())) {
+            notifyChannelStr = "快捷";
             channel = EnumPayChannelSign.YG_YINLIAN.getId();
         } else if (EnumPaymentType.WECHAT_H5_CASHIER_DESK.getId().equals(order.getPayType())) {
+            notifyChannelStr = "微信";
             channel = EnumPayChannelSign.YG_WEIXIN.getId();
         } else if (EnumPaymentType.ALIPAY_SCAN_CODE.getId().equals(order.getPayType())) {
+            notifyChannelStr = "支付宝";
             channel = EnumPayChannelSign.YG_ZHIFUBAO.getId();
         }
         order.setPayChannelSign(channel);
         log.info("返回的通道是[{}]", order.getPayType());
         log.info("交易订单[{}]，处理hsy支付回调业务", order.getOrderNo());
         final AppBizShop shop = this.hsyShopDao.findAppBizShopByAccountID(order.getPayee()).get(0);
-        final BigDecimal merchantPayPoundageRate = this.calculateService.getMerchantPayPoundageRate(EnumProductType.HSY, shop.getId() , channel);
+        final BigDecimal merchantPayPoundageRate = this.calculateService.getMerchantPayPoundageRate(EnumProductType.HSY, shop.getId(), channel);
         final BigDecimal merchantPayPoundage = this.calculateService.getMerchantPayPoundage(order.getTradeAmount(), merchantPayPoundageRate);
         order.setPoundage(merchantPayPoundage);
         order.setPayRate(merchantPayPoundageRate);
@@ -271,7 +345,11 @@ public class HSYTradeServiceImpl implements HSYTradeService {
         //分账
         this.paySplitAccount(this.orderService.getByIdWithLock(order.getId()).get(), shop);
         //推送TODO
-
+        try {
+            this.pushService.pushCashMsg(shop.getId(), notifyChannelStr, order.getTradeAmount().doubleValue(), order.getOrderNo().substring(order.getOrderNo().length() - 4));
+        } catch (final Throwable e) {
+            log.error("订单[" + order.getOrderNo() + "]，支付成功，推送异常", e);
+        }
     }
 
     /**
@@ -455,7 +533,18 @@ public class HSYTradeServiceImpl implements HSYTradeService {
         final int channel = paramJo.getIntValue("channel");
         final long accountId = paramJo.getLongValue("accountId");
         final String verifyCode = paramJo.getString("verifyCode");
+        if (StringUtils.isEmpty(totalAmount)) {
+            result.put("code", -1);
+            result.put("msg", "提现金额错误");
+            return result.toJSONString();
+        }
         final AppBizShop shop = this.hsyShopDao.findAppBizShopByAccountID(accountId).get(0);
+        final BigDecimal merchantWithdrawPoundage = this.calculateService.getMerchantWithdrawPoundage(EnumProductType.HSY, shop.getId(), channel);
+        if (new BigDecimal(totalAmount).compareTo(merchantWithdrawPoundage) <= 0) {
+            result.put("code", -1);
+            result.put("msg", "提现金额必须大于手续费");
+            return result.toJSONString();
+        }
         final AppBizCard appBizCard = new AppBizCard();
         appBizCard.setSid(shop.getId());
         final AppBizCard appBizCard1 = this.hsyShopDao.findAppBizCardByParam(appBizCard).get(0);
@@ -702,10 +791,18 @@ public class HSYTradeServiceImpl implements HSYTradeService {
 //            this.accountService.increaseAvailableAmount(poundageAccount.getId(), order.getPoundage());
 //            this.accountFlowService.addAccountFlow(poundageAccount.getId(), order.getOrderNo(), order.getPoundage(),
 //                    "提现分润", EnumAccountFlowType.INCREASE);
-//            final AppBizShop shop = this.hsyShopDao.findAppBizShopByAccountID(accountId).get(0);
 //            this.withdrawSplitAccount(this.orderService.getByIdWithLock(orderId).get(), shop);
             //推送
-
+            try {
+                final AppBizShop shop = this.hsyShopDao.findAppBizShopByAccountID(accountId).get(0);
+                final AppBizCard appBizCard = new AppBizCard();
+                appBizCard.setSid(shop.getId());
+                final AppBizCard appBizCard1 = this.hsyShopDao.findAppBizCardByParam(appBizCard).get(0);
+                final String cardNO = appBizCard1.getCardNO();
+                this.pushService.pushCashOutMsg(shop.getUid(), appBizCard1.getCardBank(), order.getTradeAmount().doubleValue(), cardNO.substring(cardNO.length() - 4));
+            } catch (final Throwable e) {
+                log.error("订单[" + order.getOrderNo() + "]，提现成功，推送异常", e);
+            }
         }
     }
     /**

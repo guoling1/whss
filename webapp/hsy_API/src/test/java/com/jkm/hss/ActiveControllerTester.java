@@ -42,7 +42,8 @@ public class ActiveControllerTester {
     public void testLogin()throws Exception{
         AppParam p=new AppParam();
         p.setServiceCode("HSY001002");
-        p.setAccessToken("");
+        p.setAccessToken("3d9c24948b68a93a15aeae608938a508");
+//        p.setAccessToken("2cd9eafaa6193d9fb0ff9916f3941e6e");
         p.setAppType("android");
         p.setTimeStamp(AppDateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
         p.setV("v1.0");
@@ -207,6 +208,36 @@ public class ActiveControllerTester {
         p.setTimeStamp(AppDateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
         p.setV("v1.0");
         String param="{\"id\":10}";
+        p.setRequestData(param);
+        ActiveControllerTester.testRest(p);
+    }
+
+    @Test
+    public void testInsertTokenDeviceClientInfoAndReturnKey()throws Exception{
+        AppParam p=new AppParam();
+        p.setServiceCode("HSY001016");
+        p.setAccessToken("");
+        p.setAppType("android");
+        p.setTimeStamp(AppDateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
+        p.setV("v1.0");
+        /*
+            clientid可选 appChannel可选
+         */
+        String param="{\"deviceid\":\"4707D3CA-EB83-4064-81CD-21E84933F5CB\",\"deviceName\":\"设备名\",\"osVersion\":\"6.0.0\",\"appCode\":\"hsy\",\"appVersion\":\"1.0\",\"appChannel\":\"MI\"}";
+//        String param="{\"deviceid\":\"4707D3CAEB83406481CD21E84933F5CB\",\"clientid\":\"clientid654321\",\"imei\":\"867601020078802\",\"deviceName\":\"设备名\",\"osVersion\":\"6.0.0\",\"appCode\":\"hsy\",\"appVersion\":\"1.0\",\"appChannel\":\"MI\"}";
+        p.setRequestData(param);
+        ActiveControllerTester.testRest(p);
+    }
+
+    @Test
+    public void testUpdateClientID()throws Exception{
+        AppParam p=new AppParam();
+        p.setServiceCode("HSY001017");
+        p.setAccessToken("2cd9eafaa6193d9fb0ff9916f3941e6e");
+        p.setAppType("android");
+        p.setTimeStamp(AppDateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
+        p.setV("v1.0");
+        String param="{\"clientid\":\"clientid12345678\"}";
         p.setRequestData(param);
         ActiveControllerTester.testRest(p);
     }

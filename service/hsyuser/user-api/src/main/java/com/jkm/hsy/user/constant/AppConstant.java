@@ -4,6 +4,7 @@ package com.jkm.hsy.user.constant;
  * Created by Allen on 2017/1/7.
  */
 public class AppConstant {
+    public static String SHA_KEY="excalibur";
     public static String DATE_FORMAT="yyyy-MM-dd HH:mm:ss";
     public static String FIlE_ROOT="hsy";
     public static int USER_STATUS_NORMAL=1;

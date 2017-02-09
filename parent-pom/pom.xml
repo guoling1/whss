@@ -22,6 +22,7 @@
         <common.util.version>${hss.project.version}</common.util.version>
         <common.util.spring.version>${hss.project.version}</common.util.spring.version>
         <common.mq.version>${hss.project.version}</common.mq.version>
+        <common.push.version>${hss.project.version}</common.push.version>
         <sms.sdk.version>${hss.project.version}</sms.sdk.version>
         <third.basicChannel.tongdao.version>${hss.project.version}</third.basicChannel.tongdao.version>
         <chronos.version>${hss.project.version}</chronos.version>
@@ -42,6 +43,7 @@
         <hss.admin.version>${hss.project.version}</hss.admin.version>
         <hsy.mobile.version>${hss.project.version}</hsy.mobile.version>
         <hsy.api.version>${hss.project.version}</hsy.api.version>
+        <hsy.push.version>${hss.project.version}</hsy.push.version>
     </properties>
 
     <dependencyManagement>
@@ -61,6 +63,11 @@
                 <groupId>com.jkm</groupId>
                 <artifactId>hss-common-util-spring</artifactId>
                 <version>${common.util.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.jkm</groupId>
+                <artifactId>hss-common-push</artifactId>
+                <version>${common.push.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.jkm</groupId>
@@ -186,6 +193,16 @@
                 <groupId>com.jkm</groupId>
                 <artifactId>hsy-user-service</artifactId>
                 <version>${user.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.jkm</groupId>
+                <artifactId>hss-push-api</artifactId>
+                <version>${hsy.push.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.jkm</groupId>
+                <artifactId>hss-push-service</artifactId>
+                <version>${hsy.push.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

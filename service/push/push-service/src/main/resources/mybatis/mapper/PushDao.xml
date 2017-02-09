@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jkm.hss.push.dao.PushDao">
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO tb_push_message_record
+        (
+        id,
+        title,
+        content,
+        temp_type,
+        push_type,
+        client_id,
+        targets,
+        status
+        )
+        VALUES
+        (
+        #{pid},
+        #{title},
+        #{content},
+        #{tempType},
+        #{pushType},
+        #{clientId},
+        #{targets},
+        #{status}
+        )
+    </insert>
+
+    <update id="update">
+        UPDATE tb_account
+        SET
+        user_name = #{userName},
+        total_amount = #{totalAmount},
+        available = #{available},
+        frozen_amount = #{frozenAmount},
+        due_settle_amount = #{dueSettleAmount},
+        status = #{status}
+        WHERE id = #{id}
+    </update>
+
+
+
+
+    <select id="selectUserAppBySid" resultType="Map">
+        select CLIENTID from app_au_user_token aut, app_au_token aat ,app_biz_shop_user_role bsur where aut.TID=aat.ID  and bsur.UID=aut.UID and bsur.SID=#{sid}
+    </select>
+
+
+    <select id="selectUserAppByUid" resultType="Map">
+       select CLIENTID from app_au_user_token aut, app_au_token aat  where aut.TID=aat.ID and aut.UID=#{uid}
+    </select>
+
+
+</mapper>

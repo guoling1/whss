@@ -1,5 +1,6 @@
 package com.jkm.hss.settle.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.base.Function;
@@ -143,20 +144,28 @@ public class AccountSettleAuditRecordServiceImpl implements AccountSettleAuditRe
     @Override
     public String appSettleRecordList(final String dataParam, final AppParam appParam) {
         final JSONObject paramJo = JSONObject.parseObject(dataParam);
-        final JSONArray result = new JSONArray();
+        final int pageNo = paramJo.getIntValue("pageNo");
+        final int pageSize = paramJo.getIntValue("pageSize");
         final long accountId = paramJo.getLongValue("accountId");
-        final List<AccountSettleAuditRecord> records = this.accountSettleAuditRecordDao.selectByAccountId(accountId);
+        final PageModel<JSONObject> pageModel = new PageModel<>(pageNo, pageSize);
+        final long count = this.accountSettleAuditRecordDao.selectCountByAccountId(accountId);
+        final List<AccountSettleAuditRecord> records = this.accountSettleAuditRecordDao.selectByAccountId(accountId, pageModel.getFirstIndex(), pageSize);
+        pageModel.setCount(count);
         if (!CollectionUtils.isEmpty(records)) {
+            final List<JSONObject> recordList = new ArrayList<>();
+            pageModel.setRecords(recordList);
             for (AccountSettleAuditRecord record : records) {
                 final JSONObject jo = new JSONObject();
-                result.add(jo);
+                recordList.add(jo);
                 jo.put("recordId", record.getId());
                 jo.put("settleDate", record.getSettleDate());
                 jo.put("number", record.getTradeNumber());
                 jo.put("settleAmount", record.getSettleAmount());
             }
+        } else {
+            pageModel.setRecords(Collections.<JSONObject>emptyList());
         }
-        return result.toJSONString();
+        return JSON.toJSONString(pageModel);
     }
 
     /**

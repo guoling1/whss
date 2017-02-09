@@ -294,7 +294,7 @@ public interface QRCodeService {
      *
      * @return
      */
-    List<Long> getUnDistributeCode();
+    List<Long> getUnDistributeCode(String sysType);
 
     /**
      * 校验此码段范围的二维码是否可以分配
@@ -320,7 +320,7 @@ public interface QRCodeService {
      *
      * @return
      */
-    List<Long> getUnDistributeCodeByRangeCode(String startCode, String endCode);
+    List<Long> getUnDistributeCodeByRangeCode(String startCode, String endCode, String sysType);
 
     /**
      * 按码段查询状态

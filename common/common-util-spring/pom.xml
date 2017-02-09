@@ -13,6 +13,23 @@
     <version>${common.util.spring.version}</version>
 
     <dependencies>
+        <!--合众相关jar start-->
+        <dependency>
+            <groupId>com.jkm</groupId>
+            <artifactId>bcmail-jdk15</artifactId>
+            <version>1.45</version>
+        </dependency>
+        <dependency>
+            <groupId>com.jkm</groupId>
+            <artifactId>bcprov-jdk15</artifactId>
+            <version>1.45</version>
+        </dependency>
+        <dependency>
+            <groupId>com.jkm</groupId>
+            <artifactId>iTrusCertAPI_jdk15</artifactId>
+            <version>2.9.2</version>
+        </dependency>
+        <!--合众相关jar end-->
         <dependency>
             <groupId>com.jkm</groupId>
             <artifactId>hss-common-util</artifactId>

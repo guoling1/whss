@@ -21,6 +21,8 @@ public class V1BizMapper {
 		bizMapper.put("HSY001013", new String[]{"hsyShopService","findIndustryList"});
 		bizMapper.put("HSY001014", new String[]{"hsyShopService","insertBranchShop","保存店铺信息成功"});
 		bizMapper.put("HSY001015", new String[]{"hsyShopService","findContractInfo"});
+		bizMapper.put("HSY001016", new String[]{"hsyUserService","insertTokenDeviceClientInfoAndReturnKey"});
+		bizMapper.put("HSY001017", new String[]{"hsyUserService","updateClientID"});
 		bizMapper.put("HSY001020", new String[]{"hsyQrCodeService","bindQrCode","绑定成功"});
 
 
@@ -48,5 +50,10 @@ public class V1BizMapper {
 		 * 结算记录
 		 */
 		bizMapper.put("HSY001035", new String[]{"accountSettleAuditRecordService", "appSettleRecordList"});
+		/**
+		 * 交易记录
+		 */
+		bizMapper.put("HSY001036", new String[]{"hsyTradeService", "tradeList"});
+
 	}
 }
