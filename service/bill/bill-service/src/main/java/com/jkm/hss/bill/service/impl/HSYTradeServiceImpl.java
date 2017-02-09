@@ -341,9 +341,9 @@ public class HSYTradeServiceImpl implements HSYTradeService {
         order.setPayRate(merchantPayPoundageRate);
         this.orderService.update(order);
         //入账
-        this.recorded(order.getId(), shop);
+//        this.recorded(order.getId(), shop);
         //分账
-        this.paySplitAccount(this.orderService.getByIdWithLock(order.getId()).get(), shop);
+//        this.paySplitAccount(this.orderService.getByIdWithLock(order.getId()).get(), shop);
         //推送TODO
         try {
             this.pushService.pushCashMsg(shop.getId(), notifyChannelStr, order.getTradeAmount().doubleValue(), order.getOrderNo().substring(order.getOrderNo().length() - 4));
