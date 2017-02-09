@@ -776,7 +776,7 @@ public class AdminController extends BaseController {
                 return CommonResponse.simpleResponse(-1, "开户手机号格式错误");
             }
             this.dealerService.updateDealer2(request);
-            return CommonResponse.builder4MapResult(CommonResponse.SUCCESS_CODE, "success")
+            return CommonResponse.builder4MapResult(CommonResponse.SUCCESS_CODE, "修改成功")
                     .addParam("dealerId", request.getDealerId()).build();
         }catch (Exception e){
             log.error("错误信息时",e.getStackTrace());
