@@ -3,7 +3,9 @@ package com.jkm.hss.dealer.dao;
 import com.jkm.hss.dealer.entity.Dealer;
 import com.jkm.hss.dealer.helper.requestparam.ListDealerRequest;
 import com.jkm.hss.dealer.helper.requestparam.ListFirstDealerRequest;
+import com.jkm.hss.dealer.helper.requestparam.ListSecondDealerRequest;
 import com.jkm.hss.dealer.helper.response.FirstDealerResponse;
+import com.jkm.hss.dealer.helper.response.SecondDealerResponse;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
@@ -163,19 +165,33 @@ public interface DealerDao {
 //==============================此处为对二级代理商进行重构=============================
 
     /**
-     * 查询个数
+     * 查询一级代理个数
      *
      * @param listFirstDealerRequest
      * @return
      */
     int selectFirstDealerCountByPageParams(ListFirstDealerRequest listFirstDealerRequest);
     /**
-     * 分页查询dealer
+     * 分页查询一级代理
      *
      * @param listFirstDealerRequest
      * @return
      */
     List<FirstDealerResponse> selectFirstDealersByPageParams(ListFirstDealerRequest listFirstDealerRequest);
+    /**
+     * 查询二级代理个数
+     *
+     * @param listFirstDealerRequest
+     * @return
+     */
+    int selectSecondDealerCountByPageParams(ListSecondDealerRequest listFirstDealerRequest);
+    /**
+     * 分页查询二级代理
+     *
+     * @param listFirstDealerRequest
+     * @return
+     */
+    List<SecondDealerResponse> selectSecondDealersByPageParams(ListSecondDealerRequest listFirstDealerRequest);
 
     /**
      * 写入markCode和inviteCode
