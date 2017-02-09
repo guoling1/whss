@@ -15,7 +15,9 @@ import com.jkm.hss.dealer.enums.EnumDealerLevel;
 import com.jkm.hss.dealer.helper.DealerSupport;
 import com.jkm.hss.dealer.helper.requestparam.ListDealerRequest;
 import com.jkm.hss.dealer.helper.requestparam.ListFirstDealerRequest;
+import com.jkm.hss.dealer.helper.requestparam.ListSecondDealerRequest;
 import com.jkm.hss.dealer.helper.response.FirstDealerResponse;
+import com.jkm.hss.dealer.helper.response.SecondDealerResponse;
 import com.jkm.hss.dealer.service.DealerChannelRateService;
 import com.jkm.hss.dealer.service.DealerService;
 import com.jkm.hss.dealer.service.DealerUpgerdeRateService;
@@ -206,6 +208,17 @@ public class DealerController extends BaseController {
         return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", pageModel);
     }
 
+    /**
+     * 二级代理商列表
+     *
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/secondFirstDealer", method = RequestMethod.POST)
+    public CommonResponse secondFirstDealer(@RequestBody final ListSecondDealerRequest listSecondDealerRequest) {
+        final PageModel<SecondDealerResponse> pageModel = this.dealerService.listSecondDealer(listSecondDealerRequest);
+        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", pageModel);
+    }
     /**
      * 根据代理商编码超找代理商信息
      * @param dealerId
