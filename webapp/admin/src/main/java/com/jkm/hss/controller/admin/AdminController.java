@@ -678,8 +678,14 @@ public class AdminController extends BaseController {
             if (proxyNameCount > 0) {
                 return CommonResponse.simpleResponse(-1, "代理名称已经存在");
             }
+            if(StringUtils.isBlank(firstLevelDealerAdd2Request.getBelongProvinceCode())) {
+                return CommonResponse.simpleResponse(-1, "所在省份编码不能为空");
+            }
             if(StringUtils.isBlank(firstLevelDealerAdd2Request.getBelongProvinceName())) {
                 return CommonResponse.simpleResponse(-1, "所在省份不能为空");
+            }
+            if(StringUtils.isBlank(firstLevelDealerAdd2Request.getBelongCityCode())) {
+                return CommonResponse.simpleResponse(-1, "所在市编码不能为空");
             }
             if(StringUtils.isBlank(firstLevelDealerAdd2Request.getBelongCityName())) {
                 return CommonResponse.simpleResponse(-1, "所在市不能为空");

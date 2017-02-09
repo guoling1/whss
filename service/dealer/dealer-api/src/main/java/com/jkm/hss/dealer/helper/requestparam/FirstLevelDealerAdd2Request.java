@@ -24,7 +24,7 @@ public class FirstLevelDealerAdd2Request {
     /**
      * 所在省code
      */
-    private long belongProvinceCode;
+    private String belongProvinceCode;
 
     /**
      * 所在省
@@ -34,7 +34,7 @@ public class FirstLevelDealerAdd2Request {
     /**
      * 所在市code
      */
-    private long belongCityCode;
+    private String belongCityCode;
 
     /**
      * 所在市

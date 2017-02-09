@@ -1683,8 +1683,10 @@ public class DealerServiceImpl implements DealerService {
         dealer.setProxyName(firstLevelDealerAdd2Request.getName());
         dealer.setBankAccountName(firstLevelDealerAdd2Request.getBankAccountName());
         dealer.setBankName(firstLevelDealerAdd2Request.getBankName());
-        dealer.setBelongProvince(firstLevelDealerAdd2Request.getBelongProvinceName());
-        dealer.setBelongCity(firstLevelDealerAdd2Request.getBelongCityName());
+        dealer.setBelongCityCode(firstLevelDealerAdd2Request.getBelongCityCode());
+        dealer.setBelongCityName(firstLevelDealerAdd2Request.getBelongCityName());
+        dealer.setBelongProvinceCode(firstLevelDealerAdd2Request.getBelongProvinceCode());
+        dealer.setBelongProvinceName(firstLevelDealerAdd2Request.getBelongProvinceName());
         dealer.setBelongArea(firstLevelDealerAdd2Request.getBelongArea());
         dealer.setLevel(EnumDealerLevel.FIRST.getId());
         dealer.setSettleBankCard(DealerSupport.encryptBankCard(firstLevelDealerAdd2Request.getBankCard()));

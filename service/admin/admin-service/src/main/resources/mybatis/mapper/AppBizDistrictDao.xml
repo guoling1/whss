@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jkm.hss.admin.dao.AppBizDistrictDao">
+
+    <select id="findAllProvinces" resultType="com.jkm.hss.admin.helper.responseparam.AppBizDistrictResponse">
+        SELECT CODE,ANAME FROM app_biz_district WHERE PARENTCODE = '0' ORDER BY AINDEX ASC
+    </select>
+
+    <select id="findCityByProvinceCode" resultType="com.jkm.hss.admin.helper.responseparam.AppBizDistrictResponse">
+        SELECT CODE,ANAME FROM app_biz_district WHERE PARENTCODE = #{code} ORDER BY AINDEX ASC
+    </select>
+</mapper>
