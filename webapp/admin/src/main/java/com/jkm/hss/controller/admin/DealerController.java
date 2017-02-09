@@ -20,6 +20,7 @@ import com.jkm.hss.dealer.service.DealerChannelRateService;
 import com.jkm.hss.dealer.service.DealerService;
 import com.jkm.hss.dealer.service.DealerUpgerdeRateService;
 import com.jkm.hss.helper.request.FirstLevelDealerFindRequest;
+import com.jkm.hss.helper.response.DealerDetailResponse;
 import com.jkm.hss.helper.response.FirstLevelDealerFindResponse;
 import com.jkm.hss.helper.response.FirstLevelDealerGetResponse;
 import com.jkm.hss.product.entity.Product;
@@ -204,4 +205,39 @@ public class DealerController extends BaseController {
         final PageModel<FirstDealerResponse> pageModel = this.dealerService.listFirstDealer(listFirstDealerRequest);
         return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", pageModel);
     }
+
+    /**
+     * 根据代理商编码超找代理商信息
+     * @param dealerId
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/findBydealerId/{dealerId}", method = RequestMethod.GET)
+    public CommonResponse findBydealerId(@PathVariable final long dealerId) {
+        final Optional<Dealer> dealerOptional = this.dealerService.getById(dealerId);
+        if (!dealerOptional.isPresent()) {
+            return CommonResponse.simpleResponse(-1, "代理商不存在");
+        }
+        final Dealer dealer = dealerOptional.get();
+        final DealerDetailResponse dealerDetailResponse = new DealerDetailResponse();
+        dealerDetailResponse.setId(dealer.getId());
+        dealerDetailResponse.setMobile(dealer.getMobile());
+        dealerDetailResponse.setName(dealer.getProxyName());
+        dealerDetailResponse.setMarkCode(dealer.getMarkCode());
+        dealerDetailResponse.setBelongProvinceCode(dealer.getBelongProvinceCode());
+        dealerDetailResponse.setBelongProvinceName(dealer.getBelongProvinceName());
+        dealerDetailResponse.setBelongCityCode(dealer.getBelongCityCode());
+        dealerDetailResponse.setBelongCityName(dealer.getBelongCityName());
+        dealerDetailResponse.setBelongArea(dealer.getBelongArea());
+        dealerDetailResponse.setFirstDealerName("金开门");
+        dealerDetailResponse.setFirstMarkCode("0");
+        dealerDetailResponse.setBankCard(DealerSupport.decryptBankCard(dealer.getId(), dealer.getSettleBankCard()));
+        dealerDetailResponse.setBankAccountName(dealer.getBankAccountName());
+        dealerDetailResponse.setBankReserveMobile(DealerSupport.decryptMobile(dealer.getId(), dealer.getBankReserveMobile()));
+        if (dealer.getIdCard()!=null){
+            dealerDetailResponse.setIdCard(DealerSupport.decryptIdentity(dealer.getId(),dealer.getIdCard()));
+        }
+        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", dealerDetailResponse);
+    }
+
 }

@@ -190,7 +190,7 @@
 
 
     <select id="selectFirstDealerCountByPageParams" resultType="java.lang.Integer">
-        SELECT COUNT(1) FROM tb_dealer
+        SELECT COUNT(1) FROM tb_dealer as d
         <where>
             level = 1
             <if test="mobile!=null and mobile!=''">
