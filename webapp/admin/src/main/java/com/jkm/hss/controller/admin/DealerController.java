@@ -229,8 +229,14 @@ public class DealerController extends BaseController {
         dealerDetailResponse.setBelongCityCode(dealer.getBelongCityCode());
         dealerDetailResponse.setBelongCityName(dealer.getBelongCityName());
         dealerDetailResponse.setBelongArea(dealer.getBelongArea());
-        dealerDetailResponse.setFirstDealerName("金开门");
-        dealerDetailResponse.setFirstMarkCode("0");
+        if(dealerOptional.get().getFirstLevelDealerId()>0){
+            final Optional<Dealer> firstDealerOptional = this.dealerService.getById(dealerOptional.get().getFirstLevelDealerId());
+            dealerDetailResponse.setFirstDealerName(firstDealerOptional.get().getProxyName());
+            dealerDetailResponse.setFirstMarkCode(firstDealerOptional.get().getMarkCode());
+        }else{
+            dealerDetailResponse.setFirstDealerName("金开门");
+            dealerDetailResponse.setFirstMarkCode("000000000000");
+        }
         dealerDetailResponse.setBankCard(DealerSupport.decryptBankCard(dealer.getId(), dealer.getSettleBankCard()));
         dealerDetailResponse.setBankAccountName(dealer.getBankAccountName());
         dealerDetailResponse.setBankReserveMobile(DealerSupport.decryptMobile(dealer.getId(), dealer.getBankReserveMobile()));
