@@ -124,6 +124,11 @@ public class Dealer extends BaseEntity {
      */
     private String markCode;
 
+    /**
+     * 邀请码
+     */
+    private String inviteCode;
+
 
 
     public void setLogin () {

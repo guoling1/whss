@@ -32,7 +32,7 @@ public class ListFirstDealerRequest extends PageQueryParams {
     /**
      * 省市编码
      */
-    private long ProvinceAndcityCode;
+    private String districtCode;
 
     private int offset;
 

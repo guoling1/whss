@@ -15,6 +15,7 @@ import com.jkm.hss.dealer.enums.EnumDealerLevel;
 import com.jkm.hss.dealer.helper.DealerSupport;
 import com.jkm.hss.dealer.helper.requestparam.ListDealerRequest;
 import com.jkm.hss.dealer.helper.requestparam.ListFirstDealerRequest;
+import com.jkm.hss.dealer.helper.response.FirstDealerResponse;
 import com.jkm.hss.dealer.service.DealerChannelRateService;
 import com.jkm.hss.dealer.service.DealerService;
 import com.jkm.hss.dealer.service.DealerUpgerdeRateService;
@@ -192,43 +193,15 @@ public class DealerController extends BaseController {
 
 
 //==============================此处为对代理商进行重构=============================
-//    /**
-//     * 一级代理商列表
-//     *
-//     * @return
-//     */
-//    @ResponseBody
-//    @RequestMapping(value = "/listFirstDealer", method = RequestMethod.POST)
-//    public CommonResponse listFirstDealer(@RequestBody final ListFirstDealerRequest listFirstDealerRequest) {
-//        final String mobile = listFirstDealerRequest.getMobile();
-//        if (StringUtils.isEmpty(StringUtils.trim(mobile))) {
-//            listFirstDealerRequest.setMobile(null);
-//        }
-//        final String name = listFirstDealerRequest.getName();
-//        if(StringUtils.isEmpty(StringUtils.trim(name))) {
-//            listFirstDealerRequest.setName(null);
-//        }
-//        final String markCode = listFirstDealerRequest.getMarkCode();
-//        if(StringUtils.isEmpty(StringUtils.trim(markCode))) {
-//            listFirstDealerRequest.setMarkCode(null);
-//        }
-//        final String sysType = listFirstDealerRequest.getSysType();
-//        if(StringUtils.isEmpty(StringUtils.trim(markCode))) {
-//            listFirstDealerRequest.setMarkCode(null);
-//        }
-////        final String belongArea = listFirstDealerRequest.getBelongArea();
-////        if(StringUtils.isEmpty(StringUtils.trim(belongArea))) {
-////            listDealerRequest.setBelongArea(null);
-////        }
-//
-//        final PageModel<Dealer> pageModel = this.dealerService.listDealer(listFirstDealerRequest);
-//        final List<Dealer> records = pageModel.getRecords();
-//        if (!CollectionUtils.isEmpty(records)) {
-//            for (Dealer dealer : records) {
-//                dealer.setSettleBankCard(DealerSupport.decryptBankCard(dealer.getId(), dealer.getSettleBankCard()));
-//                dealer.setBankReserveMobile(DealerSupport.decryptMobile(dealer.getId(), dealer.getBankReserveMobile()));
-//            }
-//        }
-//        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "success", pageModel);
-//    }
+    /**
+     * 一级代理商列表
+     *
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/listFirstDealer", method = RequestMethod.POST)
+    public CommonResponse listFirstDealer(@RequestBody final ListFirstDealerRequest listFirstDealerRequest) {
+        final PageModel<FirstDealerResponse> pageModel = this.dealerService.listFirstDealer(listFirstDealerRequest);
+        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", pageModel);
+    }
 }
