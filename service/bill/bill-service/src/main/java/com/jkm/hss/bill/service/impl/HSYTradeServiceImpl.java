@@ -341,10 +341,10 @@ public class HSYTradeServiceImpl implements HSYTradeService {
         order.setPayRate(merchantPayPoundageRate);
         this.orderService.update(order);
         //入账
-//        this.recorded(order.getId(), shop);
+        this.recorded(order.getId(), shop);
         //分账
-//        this.paySplitAccount(this.orderService.getByIdWithLock(order.getId()).get(), shop);
-        //推送TODO
+        this.paySplitAccount(this.orderService.getByIdWithLock(order.getId()).get(), shop);
+        //推送
         try {
             this.pushService.pushCashMsg(shop.getId(), notifyChannelStr, order.getTradeAmount().doubleValue(), order.getOrderNo().substring(order.getOrderNo().length() - 4));
         } catch (final Throwable e) {
@@ -533,6 +533,11 @@ public class HSYTradeServiceImpl implements HSYTradeService {
         final int channel = paramJo.getIntValue("channel");
         final long accountId = paramJo.getLongValue("accountId");
         final String verifyCode = paramJo.getString("verifyCode");
+        if (!this.hsyShopDao.isShopStatusCheckPass(accountId)) {
+            result.put("code", -1);
+            result.put("msg", "未审核通过");
+            return result.toJSONString();
+        }
         if (StringUtils.isEmpty(totalAmount)) {
             result.put("code", -1);
             result.put("msg", "提现金额错误");
@@ -794,6 +799,7 @@ public class HSYTradeServiceImpl implements HSYTradeService {
 //            this.withdrawSplitAccount(this.orderService.getByIdWithLock(orderId).get(), shop);
             //推送
             try {
+                log.info("订单[]，提现成功，推送", order.getOrderNo());
                 final AppBizShop shop = this.hsyShopDao.findAppBizShopByAccountID(accountId).get(0);
                 final AppBizCard appBizCard = new AppBizCard();
                 appBizCard.setSid(shop.getId());
