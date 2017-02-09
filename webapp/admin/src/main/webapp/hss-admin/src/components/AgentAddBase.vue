@@ -43,7 +43,7 @@
               </el-col>
               <el-col :span="6">
                 <div class="grid-content bg-purple-light">
-                  <el-input size="small" v-model="query.name" placeholder="请输入内容" :disabled="true"></el-input>
+                  <el-input size="small" v-model="query.markCode" placeholder="请输入内容" :disabled="true"></el-input>
                 </div>
               </el-col>
               <el-col :span="8">
@@ -101,7 +101,7 @@
               </el-col>
               <el-col :span="6">
                 <div class="grid-content bg-purple-light">
-                  <el-input size="small" v-model="query.name" placeholder="请输入内容" :disabled="true"></el-input>
+                  <el-input size="small" v-model="query.firstDealerName" placeholder="请输入内容" :disabled="true"></el-input>
                 </div>
               </el-col>
               <el-col :span="8">
@@ -114,7 +114,7 @@
               </el-col>
               <el-col :span="6">
                 <div class="grid-content bg-purple-light">
-                  <el-input size="small" v-model="query.name" placeholder="请输入内容" :disabled="true"></el-input>
+                  <el-input size="small" v-model="query.firstMarkCode" placeholder="请输入内容" :disabled="true"></el-input>
                 </div>
               </el-col>
               <el-col :span="8">
@@ -194,7 +194,7 @@
               <div class="btn btn-default" @click="goBack" v-if="!isShow" style="width: 45%;margin: 20px 0 100px;">
                 返回
               </div>
-              <div class="btn btn-default" @click="change" v-if="!isShow&&level==1"
+              <div class="btn btn-default" @click="change(query.id)" v-if="!isShow&&level==1"
                    style="width: 45%;float: right;margin: 20px 0 100px;">
                 修改
               </div>
@@ -257,12 +257,7 @@
         this.$data.isShow = false;
         this.$http.get('/admin/dealer/findBydealerId/' + this.$route.query.id)
           .then(function (res) {
-            this.$data.query.mobile = res.data.mobile;
-            this.$data.query.name = res.data.name;
-            this.$data.query.belongArea = res.data.belongArea;
-            this.$data.query.bankCard = res.data.bankCard;
-            this.$data.query.bankAccountName = res.data.bankAccountName;
-            this.$data.query.idCard = res.data.idCard;
+            this.$data.query=res.data
           })
       }
       this.$data.level = this.$route.query.level;
