@@ -11,15 +11,15 @@
           <el-row :gutter="20" style="width: 910px">
             <el-col :span="4">
               <label>手机号：</label>
-              <el-input v-model="query.merchantNo" placeholder="请输入内容" size="small"></el-input>
+              <el-input v-model="query.mobile" placeholder="请输入内容" size="small"></el-input>
             </el-col>
             <el-col :span="4">
               <label>代理商名称：</label>
-              <el-input v-model="query.merchantNo" placeholder="请输入内容" size="small"></el-input>
+              <el-input v-model="query.name" placeholder="请输入内容" size="small"></el-input>
             </el-col>
             <el-col :span="4">
               <label>代理商编号：</label>
-              <el-input v-model="query.merchantName" placeholder="请输入内容" size="small"></el-input>
+              <el-input v-model="query.markCode" placeholder="请输入内容" size="small"></el-input>
             </el-col>
             <el-col :span="5">
               <label>省市:</label>
@@ -27,15 +27,13 @@
                 <i class="el-icon-caret-bottom" style="float: right;margin-top: 10px"></i>
               </div>
               <div class="isShow" v-if="isOpen"><el-tree :data="provinces" :props="defaultProps" accordion @node-click="select"></el-tree></div>
-
-
             </el-col>
             <el-col  :span="5">
               <label>代理产品:</label>
-              <el-select clearable v-model="query.checkedStatus" size="small" >
+              <el-select clearable v-model="query.sysType" size="small" >
                 <el-option label="全部" value="">全部</el-option>
-                <el-option label="好收银" value="1">好收银</el-option>
-                <el-option label="好收收" value="2">好收收</el-option>
+                <el-option label="好收银" value="hsy">好收银</el-option>
+                <el-option label="好收收" value="hss">好收收</el-option>
               </el-select>
             </el-col>
             <el-col  :span="1" style="margin-top: 18px">
@@ -44,12 +42,12 @@
           </el-row>
           <!--表格-->
           <el-table style="font-size: 12px;margin:15px 0" :data="records" border>
-            <el-table-column prop="merchantNo" label="代理商名称" ></el-table-column>
-            <el-table-column prop="merchantName" label="代理商编号" ></el-table-column>
-            <el-table-column prop="dealerNo" label="代理商级别" ></el-table-column>
-            <el-table-column prop="dealerName" label="省市" ></el-table-column>
-            <el-table-column prop="appName" label="注册时间" ></el-table-column>
-            <el-table-column prop="tradeDate" label="联系手机号" ></el-table-column>
+            <el-table-column prop="proxyName" label="代理商名称" ></el-table-column>
+            <el-table-column prop="markCode" label="代理商编号" ></el-table-column>
+            <el-table-column prop="level" label="代理商级别" ></el-table-column>
+            <el-table-column prop="belongProvinceName+'-'+belongCityName" label="省市" ></el-table-column>
+            <el-table-column prop="createTime" label="注册时间" ></el-table-column>
+            <el-table-column prop="mobile" label="联系手机号" ></el-table-column>
             <el-table-column label="好收收" width="90">
               <template scope="scope">
                 <router-link to="/admin/record/agentAddPro">开通产品</router-link>
@@ -60,11 +58,6 @@
               <template scope="scope">
                 <router-link to="/admin/record/agentAddPro">开通产品</router-link>
                 <router-link to="/admin/record/agentAddPro">修改产品设置</router-link>
-              </template>
-            </el-table-column>
-            <el-table-column label="操作" width="70">
-              <template scope="scope">
-                <el-button @click.native.prevent="list(scope.$index)" type="text" size="small">修改</el-button>
               </template>
             </el-table-column>
           </el-table>
@@ -171,12 +164,11 @@
         query:{
           pageNo:1,
           pageSize:10,
-          merchantNo:"",//商户编号
-          merchantName:"",  //商户名字
-          startSettleDate:"",
-          endSettleDate:"",
-          checkedStatus:'',
-          settleStatus:''
+          mobile:'',
+          name:"",
+          markCode:"",  //商户名字
+          sysType:"",
+          districtCode:""
         },
         multipleSelection:[],
         currentPage4: 1,
@@ -197,44 +189,12 @@
             message: err.statusMessage,
             type: 'error'
           });
-          /*this.$store.commit('MESSAGE_ACCORD_SHOW', {
-            text: err.statusMessage
-          })*/
         })
 
-
-      /*this.$http.post('/admin/settle/list',this.$data.query)
+      this.$http.post('/admin/dealer/listFirstDealer',this.$data.query)
         .then(function (res) {
-          this.$data.records = res.data.records;
-          this.$data.count = res.data.count;
-          this.$data.total = res.data.totalPage;
-          this.$data.loading = false;
-          var changeTime=function (val) {
-            if(val==''||val==null){
-              return ''
-            }else {
-              val = new Date(val)
-              var year=val.getFullYear();
-              var month=val.getMonth()+1;
-              var date=val.getDate();
-              function tod(a) {
-                if(a<10){
-                  a = "0"+a
-                }
-                return a;
-              }
-              return year+"-"+tod(month)+"-"+tod(date);
-            }
-          }
-          for(let i = 0; i < this.$data.records.length; i++){
-            this.$data.records[i].tradeDate = changeTime(this.$data.records[i].tradeDate)
-          }
-        },function (err) {
-          this.$data.loading = false;
-          this.$store.commit('MESSAGE_ACCORD_SHOW', {
-            text: err.statusMessage
-          })
-        })*/
+          this.$data.records = res.data;
+        })
     },
     methods: {
       open:function () {
@@ -254,6 +214,13 @@
           oCon.style.color = '#1f2d3d';
           this.$data.isOpen = !this.$data.isOpen;
           document.getElementById('select').style.borderColor = '#bfcbd9'
+          for(var i=0; i<this.$data.provinces.length;i++){
+            for(var j=0; j<this.$data.provinces[i].list.length; j++){
+                if(this.$data.provinces[i].list[j].aname==this.$data.select2){
+                  this.$data.query.districtCode = this.$data.provinces[i].list[j].code;
+                }
+            }
+          }
         }
         console.log(this.$data.select1,this.$data.select2)
       },
@@ -261,7 +228,8 @@
         this.$data.query.pageNo = 1;
         this.$data.records = '';
         this.$data.loading = true;
-        this.$http.post('/admin/settle/list',this.$data.query)
+        console.log(this.$data.query);
+        /*this.$http.post('/admin/settle/list',this.$data.query)
           .then(function (res) {
             this.$data.records = res.data.records;
             this.$data.count = res.data.count;
@@ -292,7 +260,7 @@
             this.$store.commit('MESSAGE_ACCORD_SHOW', {
               text: err.statusMessage
             })
-          })
+          })*/
       },
       list: function (val) {
         this.$data.index = val;
