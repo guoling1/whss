@@ -17,6 +17,7 @@ import com.jkm.hss.dealer.enums.EnumRecommendBtn;
 import com.jkm.hss.dealer.helper.DealerConsts;
 import com.jkm.hss.dealer.helper.requestparam.FirstLevelDealerAdd2Request;
 import com.jkm.hss.dealer.helper.requestparam.FirstLevelDealerAddRequest;
+import com.jkm.hss.dealer.helper.requestparam.FirstLevelDealerUpdate2Request;
 import com.jkm.hss.dealer.helper.requestparam.FirstLevelDealerUpdateRequest;
 import com.jkm.hss.dealer.service.DealerRateService;
 import com.jkm.hss.dealer.service.DealerService;
@@ -726,71 +727,55 @@ public class AdminController extends BaseController {
      */
     @ResponseBody
     @RequestMapping(value = "updateDealer2", method = RequestMethod.POST)
-    public CommonResponse updateDealer2(@RequestBody FirstLevelDealerUpdateRequest request) {
+    public CommonResponse updateDealer2(@RequestBody FirstLevelDealerUpdate2Request request) {
         try{
             if(!ValidateUtils.isMobile(request.getMobile())) {
-                return CommonResponse.simpleResponse(-1, "代理手机号格式错误");
+                return CommonResponse.simpleResponse(-1, "代理商手机号格式错误");
+            }
+            final Optional<Dealer> dealerOptional = this.dealerService.getByMobileUnIncludeNow(request.getMobile(), request.getDealerId());
+            if (dealerOptional.isPresent()) {
+                return CommonResponse.simpleResponse(-1, "代理商手机号已经注册");
+            }
+            if(StringUtils.isBlank(request.getName())) {
+                return CommonResponse.simpleResponse(-1, "代理名称不能为空");
+            }
+            final long proxyNameCount = this.dealerService.getByProxyNameUnIncludeNow(request.getName(), request.getDealerId());
+            if (proxyNameCount > 0) {
+                return CommonResponse.simpleResponse(-1, "代理名称已经存在");
+            }
+
+            if(StringUtils.isBlank(request.getBelongProvinceCode())) {
+                return CommonResponse.simpleResponse(-1, "所在省份编码不能为空");
+            }
+            if(StringUtils.isBlank(request.getBelongProvinceName())) {
+                return CommonResponse.simpleResponse(-1, "所在省份不能为空");
+            }
+            if(StringUtils.isBlank(request.getBelongCityCode())) {
+                return CommonResponse.simpleResponse(-1, "所在市编码不能为空");
+            }
+            if(StringUtils.isBlank(request.getBelongCityName())) {
+                return CommonResponse.simpleResponse(-1, "所在市不能为空");
+            }
+            if(StringUtils.isBlank(request.getBelongArea())) {
+                return CommonResponse.simpleResponse(-1, "详细地址不能为空");
             }
             final String bankCard = request.getBankCard();
             final Optional<BankCardBin> bankCardBinOptional = this.bankCardBinService.analyseCardNo(bankCard);
             if (!bankCardBinOptional.isPresent()) {
                 return CommonResponse.simpleResponse(-1, "结算卡格式错误");
             }
-            if(!ValidateUtils.isMobile(request.getBankReserveMobile())) {
-                return CommonResponse.simpleResponse(-1, "银行预留手机号格式错误");
-            }
-            final long proxyNameCount = this.dealerService.getByProxyNameUnIncludeNow(request.getName(), request.getDealerId());
-            if (proxyNameCount > 0) {
-                return CommonResponse.simpleResponse(-1, "代理商名字已经存在");
-            }
-            final Optional<Dealer> dealerOptional = this.dealerService.getByMobileUnIncludeNow(request.getMobile(), request.getDealerId());
-            if (dealerOptional.isPresent()) {
-                return CommonResponse.simpleResponse(-1, "代理商手机号已经注册");
+            request.setBankName(bankCardBinOptional.get().getBankName());
+
+            if(StringUtils.isBlank(request.getBankAccountName())) {
+                return CommonResponse.simpleResponse(-1, "开户名称不能为空");
             }
             if(!ValidationUtil.isIdCard(request.getIdCard())){
                 return CommonResponse.simpleResponse(-1, "身份证格式不正确");
             }
-            if(request.getTotalProfitSpace()==null){
-                return CommonResponse.simpleResponse(-1, "收单总分润空间不能为空");
+            if(!ValidateUtils.isMobile(request.getBankReserveMobile())) {
+                return CommonResponse.simpleResponse(-1, "开户手机号格式错误");
             }
-            if((request.getTotalProfitSpace()).compareTo(new BigDecimal("0.002"))>0){
-                return CommonResponse.simpleResponse(-1, "总分润空间不可高于0.2%");
-            }
-            final FirstLevelDealerUpdateRequest.Product productParam = request.getProduct();
-            final long productId = productParam.getProductId();
-            final Optional<Product> productOptional = this.productService.selectById(productId);
-            if (!productOptional.isPresent()) {
-                return CommonResponse.simpleResponse(-1, "产品不存在");
-            }
-            final Product product = productOptional.get();
-            final List<ProductChannelDetail> productChannelDetails = this.productChannelDetailService.selectByProductId(productId);
-            final Map<Integer, ProductChannelDetail> integerProductChannelDetailImmutableMap =
-                    Maps.uniqueIndex(productChannelDetails, new Function<ProductChannelDetail, Integer>() {
-                        @Override
-                        public Integer apply(ProductChannelDetail input) {
-                            return input.getChannelTypeSign();
-                        }
-                    });
-            final List<FirstLevelDealerUpdateRequest.Channel> channelParams = productParam.getChannels();
-            for (FirstLevelDealerUpdateRequest.Channel channelParam : channelParams) {
-                final CommonResponse commonResponse = this.checkChannel(channelParam, integerProductChannelDetailImmutableMap, product);
-                if (1 != commonResponse.getCode()) {
-                    return commonResponse;
-                }
-            }
-
-            List<FirstLevelDealerUpdateRequest.DealerUpgerdeRate> dealerUpgerdeRateParams = request.getDealerUpgerdeRates();
-            for (FirstLevelDealerUpdateRequest.DealerUpgerdeRate dealerUpgerdeRateParam : dealerUpgerdeRateParams) {
-                final CommonResponse commonResponse = this.checkDealerUpgerdeRate(dealerUpgerdeRateParam);
-                if (1 != commonResponse.getCode()) {
-                    return commonResponse;
-                }
-            }
-            if(request.getRecommendBtn()!=EnumRecommendBtn.ON.getId()&&request.getRecommendBtn()!=EnumRecommendBtn.OFF.getId()){
-                return CommonResponse.simpleResponse(-1, "开关参数有误");
-            }
-
-            this.dealerService.updateDealer(request);
+            this.dealerService.updateDealer2(request);
             return CommonResponse.builder4MapResult(CommonResponse.SUCCESS_CODE, "success")
                     .addParam("dealerId", request.getDealerId()).build();
         }catch (Exception e){

@@ -319,4 +319,18 @@ public interface DealerService {
      * @return
      */
     int updateMarkCodeAndInviteCode(String markCode, String inviteCode, long dealerId);
+
+    /**
+     * 更新一级代理商
+     *
+     * @param request
+     */
+    void updateDealer2(FirstLevelDealerUpdate2Request request);
+    /**
+     * 更新
+     *
+     * @param dealer
+     * @return
+     */
+    int update2(Dealer dealer);
 }

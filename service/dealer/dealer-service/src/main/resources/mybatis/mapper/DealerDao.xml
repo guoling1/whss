@@ -283,4 +283,22 @@
     <update id="updateMarkCodeAndInviteCode">
         UPDATE tb_dealer SET mark_code = #{markCode},invite_code=#{inviteCode} WHERE id = #{dealerId}
     </update>
+
+    <update id="update2">
+        UPDATE tb_dealer
+        SET
+        mobile = #{mobile},
+        proxy_name = #{proxyName},
+        belong_province_code=#{belongProvinceCode},
+        belong_province_name=#{belongProvinceName},
+        belong_city_code=#{belongCityCode},
+        belong_city_name=#{belongCityName},
+        belong_area = #{belongArea},
+        settle_bank_card = #{settleBankCard},
+        bank_name = #{bankName},
+        bank_account_name = #{bankAccountName},
+        id_card = #{idCard},
+        bank_reserve_mobile = #{bankReserveMobile}
+        WHERE id = #{id}
+    </update>
 </mapper>

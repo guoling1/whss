@@ -185,4 +185,11 @@ public interface DealerDao {
      * @return
      */
     int updateMarkCodeAndInviteCode(@Param("markCode") String markCode, @Param("inviteCode") String inviteCode, @Param("dealerId") long dealerId);
+    /**
+     * 更新
+     *
+     * @param dealer
+     * @return
+     */
+    int update2(Dealer dealer);
 }
