@@ -132,4 +132,8 @@
         update app_au_user_token set STATUS=#{status} ,LOGINTIME=#{loginTime} where UID=#{uid} and TID=#{tid}
     </update>
 
+    <update id="updateAppAuUserTokenStatusByTid" parameterType="java.lang.Long">
+        update app_au_user_token set status=2 where TID=#{tid}
+    </update>
+
 </mapper>

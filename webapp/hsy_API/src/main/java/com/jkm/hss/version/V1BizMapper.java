@@ -23,6 +23,7 @@ public class V1BizMapper {
 		bizMapper.put("HSY001015", new String[]{"hsyShopService","findContractInfo"});
 		bizMapper.put("HSY001016", new String[]{"hsyUserService","insertTokenDeviceClientInfoAndReturnKey"});
 		bizMapper.put("HSY001017", new String[]{"hsyUserService","updateClientID"});
+		bizMapper.put("HSY001018", new String[]{"hsyUserService","logout","退出成功"});
 		bizMapper.put("HSY001020", new String[]{"hsyQrCodeService","bindQrCode","绑定成功"});
 
 
