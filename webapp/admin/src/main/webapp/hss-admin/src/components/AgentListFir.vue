@@ -45,7 +45,7 @@
             <el-table-column prop="proxyName" label="代理商名称" class-name="blue"></el-table-column>
             <el-table-column prop="markCode" label="代理商编号" class-name="blue"></el-table-column>
             <el-table-column prop="level" label="代理商级别" ></el-table-column>
-            <el-table-column prop="belongProvinceName+'-'+belongCityName" label="省市" ></el-table-column>
+            <el-table-column prop="belong" label="省市" ></el-table-column>
             <el-table-column prop="createTime" label="注册时间" ></el-table-column>
             <el-table-column prop="mobile" label="联系手机号" ></el-table-column>
             <el-table-column label="好收收" width="90">
@@ -63,7 +63,7 @@
           </el-table>
           <!--分页-->
           <div class="block" style="text-align: right">
-            <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage4" :page-sizes="[10, 20, 50]" :page-size="100" layout="total, sizes, prev, pager, next, jumper" :total="total">
+            <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage4" layout="total, sizes, prev, pager, next, jumper" :total="count">
             </el-pagination>
           </div>
           <!--审核-->
@@ -96,7 +96,6 @@
               </div>
             </el-dialog>
           </div>
-
         </div>
         <!--<div id="example2_wrapper" class="dataTables_wrapper form-inline dt-bootstrap">
           <div class="row">
@@ -162,6 +161,7 @@
         records:[],
         count:0,
         total:0,
+        pageSize:'',
         query:{
           pageNo:1,
           pageSize:10,
@@ -217,10 +217,16 @@
           this.$data.records = res.data.records;
           this.$data.count = res.data.count;
           this.$data.total = res.data.totalPage;
-
+          this.$data.pageSize = res.data.pageSize;
+          this.$data.loading = false;
+          for(var i=0;i<this.$data.records.length;i++){
+            if(this.$data.records[i].belongProvinceName!=null&&this.$data.records[i].belongCityName!=null){
+              this.$data.records[i].belong = this.$data.records[i].belongProvinceName+"-"+this.$data.records[i].belongCityName;
+            }
+          }
         })
     },
-    beforeUpdate :function () {
+    updated :function () {
       var aBlue = document.getElementsByClassName('blue');
       console.log(aBlue)
       for(var i=2;i<aBlue.length;i++){
@@ -255,7 +261,6 @@
             }
           }
         }
-        console.log(this.$data.select1,this.$data.select2)
       },
       toDet:function (row,col,cell,e) {
         if(col.label=='代理商名称'||col.label=='代理商编号'){
@@ -267,38 +272,18 @@
         this.$data.records = '';
         this.$data.loading = true;
         console.log(this.$data.query);
-        /*this.$http.post('/admin/settle/list',this.$data.query)
+        this.$http.post('/admin/dealer/listFirstDealer',this.$data.query)
           .then(function (res) {
             this.$data.records = res.data.records;
             this.$data.count = res.data.count;
             this.$data.total = res.data.totalPage;
             this.$data.loading = false;
-            var changeTime=function (val) {
-              if(val==''||val==null){
-                return ''
-              }else {
-                val = new Date(val)
-                var year=val.getFullYear();
-                var month=val.getMonth()+1;
-                var date=val.getDate();
-                function tod(a) {
-                  if(a<10){
-                    a = "0"+a
-                  }
-                  return a;
-                }
-                return year+"-"+tod(month)+"-"+tod(date);
+            for(var i=0;i<this.$data.records.length;i++){
+              if(this.$data.records[i].belongProvinceName!=null&&this.$data.records[i].belongCityName!=null){
+                this.$data.records[i].belong = this.$data.records[i].belongProvinceName+"-"+this.$data.records[i].belongCityName;
               }
             }
-            for(let i = 0; i < this.$data.records.length; i++){
-              this.$data.records[i].tradeDate = changeTime(this.$data.records[i].tradeDate)
-            }
-          },function (err) {
-            this.$data.loading = false;
-            this.$store.commit('MESSAGE_ACCORD_SHOW', {
-              text: err.statusMessage
-            })
-          })*/
+          })
       },
       list: function (val) {
         this.$data.index = val;
@@ -312,74 +297,37 @@
       handleSizeChange(val) {
         this.$data.query.pageSize = val;
         this.$data.loading = true;
-        this.$http.post('/admin/settle/list',this.$data.query)
+        this.$data.query.pageNo = 1;
+        this.$data.records = '';
+        this.$http.post('/admin/dealer/listFirstDealer',this.$data.query)
           .then(function (res) {
             this.$data.records = res.data.records;
             this.$data.count = res.data.count;
             this.$data.total = res.data.totalPage;
             this.$data.loading = false;
-            var changeTime=function (val) {
-              if(val==''||val==null){
-                return ''
-              }else {
-                val = new Date(val)
-                var year=val.getFullYear();
-                var month=val.getMonth()+1;
-                var date=val.getDate();
-                function tod(a) {
-                  if(a<10){
-                    a = "0"+a
-                  }
-                  return a;
-                }
-                return year+"-"+tod(month)+"-"+tod(date);
+            for(var i=0;i<this.$data.records.length;i++){
+              if(this.$data.records[i].belongProvinceName!=null&&this.$data.records[i].belongCityName!=null){
+                this.$data.records[i].belong = this.$data.records[i].belongProvinceName+"-"+this.$data.records[i].belongCityName;
               }
             }
-            for(let i = 0; i < this.$data.records.length; i++){
-              this.$data.records[i].tradeDate = changeTime(this.$data.records[i].tradeDate)
-            }
-          },function (err) {
-            this.$data.loading = false;
-            this.$store.commit('MESSAGE_ACCORD_SHOW', {
-              text: err.statusMessage
-            })
           })
       },
       //当前页改变时
       handleCurrentChange(val) {
         this.$data.query.pageNo = val;
+        this.$data.records = '';
         this.$data.loading = true;
-        this.$http.post('/admin/settle/list',this.$data.query)
+        this.$http.post('/admin/dealer/listFirstDealer',this.$data.query)
           .then(function (res) {
             this.$data.records = res.data.records;
             this.$data.count = res.data.count;
             this.$data.total = res.data.totalPage;
             this.$data.loading = false;
-            var changeTime=function (val) {
-              if(val==''||val==null){
-                return ''
-              }else {
-                val = new Date(val)
-                var year=val.getFullYear();
-                var month=val.getMonth()+1;
-                var date=val.getDate();
-                function tod(a) {
-                  if(a<10){
-                    a = "0"+a
-                  }
-                  return a;
-                }
-                return year+"-"+tod(month)+"-"+tod(date);
+            for(var i=0;i<this.$data.records.length;i++){
+              if(this.$data.records[i].belongProvinceName!=null&&this.$data.records[i].belongCityName!=null){
+                this.$data.records[i].belong = this.$data.records[i].belongProvinceName+"-"+this.$data.records[i].belongCityName;
               }
             }
-            for(let i = 0; i < this.$data.records.length; i++){
-              this.$data.records[i].tradeDate = changeTime(this.$data.records[i].tradeDate)
-            }
-          },function (err) {
-            this.$data.loading = false;
-            this.$store.commit('MESSAGE_ACCORD_SHOW', {
-              text: err.statusMessage
-            })
           })
       }
     },

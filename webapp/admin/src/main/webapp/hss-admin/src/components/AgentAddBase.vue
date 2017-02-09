@@ -194,7 +194,7 @@
               <div class="btn btn-default" @click="goBack" v-if="!isShow" style="width: 45%;margin: 20px 0 100px;">
                 返回
               </div>
-              <div class="btn btn-default" @click="change(query.id)" v-if="!isShow&&level==1"
+              <div class="btn btn-default" @click="change()" v-if="!isShow"
                    style="width: 45%;float: right;margin: 20px 0 100px;">
                 修改
               </div>
@@ -257,14 +257,16 @@
         this.$data.isShow = false;
         this.$http.get('/admin/dealer/findBydealerId/' + this.$route.query.id)
           .then(function (res) {
-            this.$data.query = res.data
+            this.$data.query = res.data;
+            this.$data.province = res.data.belongProvinceName;
+            this.$data.city = res.data.belongCityName;
           })
       }
       this.$data.level = this.$route.query.level;
     },
     watch: {
       province: function (val, oldval) {
-        if (val != oldval) {
+        if (val != oldval&&oldval!="") {
           this.$data.city = '';
           this.$data.query.province = this.$data.province;
         }
@@ -309,20 +311,25 @@
           })
       },
       goBack: function () {
-        this.$router.push('/admin/record/agentList')
+        this.$router.push('/admin/record/agentListFir')
       },
       //修改
       change: function () {
-        this.$http.post('/admin/user/updateDealer', this.$data.query)
+          console.log(this.$data.query)
+        this.$http.post('/admin/user/updateDealer2', this.$data.query)
           .then(function (res) {
-            this.$store.commit('MESSAGE_ACCORD_SHOW', {
-              text: "修改成功"
-            })
+            this.$message({
+              showClose: true,
+              message: '修改成功',
+              type: 'success'
+            });
             this.$router.push('/admin/record/agentList')
           }, function (err) {
-            this.$store.commit('MESSAGE_ACCORD_SHOW', {
-              text: err.statusMessage
-            })
+            this.$message({
+              showClose: true,
+              message: err.statusMessage,
+              type: 'error'
+            });
           })
       }
     },
