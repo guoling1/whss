@@ -718,4 +718,85 @@ public class AdminController extends BaseController {
         }
     }
 
+    /**
+     * 更新一级代理商
+     *
+     * @param request
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "updateDealer2", method = RequestMethod.POST)
+    public CommonResponse updateDealer2(@RequestBody FirstLevelDealerUpdateRequest request) {
+        try{
+            if(!ValidateUtils.isMobile(request.getMobile())) {
+                return CommonResponse.simpleResponse(-1, "代理手机号格式错误");
+            }
+            final String bankCard = request.getBankCard();
+            final Optional<BankCardBin> bankCardBinOptional = this.bankCardBinService.analyseCardNo(bankCard);
+            if (!bankCardBinOptional.isPresent()) {
+                return CommonResponse.simpleResponse(-1, "结算卡格式错误");
+            }
+            if(!ValidateUtils.isMobile(request.getBankReserveMobile())) {
+                return CommonResponse.simpleResponse(-1, "银行预留手机号格式错误");
+            }
+            final long proxyNameCount = this.dealerService.getByProxyNameUnIncludeNow(request.getName(), request.getDealerId());
+            if (proxyNameCount > 0) {
+                return CommonResponse.simpleResponse(-1, "代理商名字已经存在");
+            }
+            final Optional<Dealer> dealerOptional = this.dealerService.getByMobileUnIncludeNow(request.getMobile(), request.getDealerId());
+            if (dealerOptional.isPresent()) {
+                return CommonResponse.simpleResponse(-1, "代理商手机号已经注册");
+            }
+            if(!ValidationUtil.isIdCard(request.getIdCard())){
+                return CommonResponse.simpleResponse(-1, "身份证格式不正确");
+            }
+            if(request.getTotalProfitSpace()==null){
+                return CommonResponse.simpleResponse(-1, "收单总分润空间不能为空");
+            }
+            if((request.getTotalProfitSpace()).compareTo(new BigDecimal("0.002"))>0){
+                return CommonResponse.simpleResponse(-1, "总分润空间不可高于0.2%");
+            }
+            final FirstLevelDealerUpdateRequest.Product productParam = request.getProduct();
+            final long productId = productParam.getProductId();
+            final Optional<Product> productOptional = this.productService.selectById(productId);
+            if (!productOptional.isPresent()) {
+                return CommonResponse.simpleResponse(-1, "产品不存在");
+            }
+            final Product product = productOptional.get();
+            final List<ProductChannelDetail> productChannelDetails = this.productChannelDetailService.selectByProductId(productId);
+            final Map<Integer, ProductChannelDetail> integerProductChannelDetailImmutableMap =
+                    Maps.uniqueIndex(productChannelDetails, new Function<ProductChannelDetail, Integer>() {
+                        @Override
+                        public Integer apply(ProductChannelDetail input) {
+                            return input.getChannelTypeSign();
+                        }
+                    });
+            final List<FirstLevelDealerUpdateRequest.Channel> channelParams = productParam.getChannels();
+            for (FirstLevelDealerUpdateRequest.Channel channelParam : channelParams) {
+                final CommonResponse commonResponse = this.checkChannel(channelParam, integerProductChannelDetailImmutableMap, product);
+                if (1 != commonResponse.getCode()) {
+                    return commonResponse;
+                }
+            }
+
+            List<FirstLevelDealerUpdateRequest.DealerUpgerdeRate> dealerUpgerdeRateParams = request.getDealerUpgerdeRates();
+            for (FirstLevelDealerUpdateRequest.DealerUpgerdeRate dealerUpgerdeRateParam : dealerUpgerdeRateParams) {
+                final CommonResponse commonResponse = this.checkDealerUpgerdeRate(dealerUpgerdeRateParam);
+                if (1 != commonResponse.getCode()) {
+                    return commonResponse;
+                }
+            }
+            if(request.getRecommendBtn()!=EnumRecommendBtn.ON.getId()&&request.getRecommendBtn()!=EnumRecommendBtn.OFF.getId()){
+                return CommonResponse.simpleResponse(-1, "开关参数有误");
+            }
+
+            this.dealerService.updateDealer(request);
+            return CommonResponse.builder4MapResult(CommonResponse.SUCCESS_CODE, "success")
+                    .addParam("dealerId", request.getDealerId()).build();
+        }catch (Exception e){
+            log.error("错误信息时",e.getStackTrace());
+            return CommonResponse.simpleResponse(-1, e.getMessage());
+        }
+    }
+
 }
