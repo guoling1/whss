@@ -170,6 +170,7 @@ public class PushProducer {
         payload.setContentAvailable(1);
         payload.setSound("suc1.wav");
         payload.setAlertMsg(new APNPayload.SimpleAlertMsg(content));
+        payload.setCategory("显示的信息");
         template.setAPNInfo(payload);
         return pushTemplate(push,template,pushType,clientId,targets);
     }

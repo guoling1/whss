@@ -109,7 +109,10 @@ public class PushController extends BaseController {
 
        // String ret =pushService.pushAuditMsg(18L,true);
 
-         String ret = pushService.pushCashMsg(10L,"微信", 100D,"1234");
+        // String ret = pushService.pushCashMsg(15L,"微信", 100D,"1234");
+
+
+        String ret =pushService.pushTransmissionMsg(2,"{\"code\":1,\"msg\":\"测试信息\"}","1","3aae08e341cc2c0bbfb7a3a1a2483d66",null);
 
         //  String ret =  pushService.pushCashOutMsg(18L,"招商银行",100D,"123456");
 
