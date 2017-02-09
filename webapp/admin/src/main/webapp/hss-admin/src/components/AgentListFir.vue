@@ -23,9 +23,9 @@
             </el-col>
             <el-col :span="5">
               <label>省市:</label>
-              <el-select clearable v-model="query.checkedStatus" size="small" >
-                <el-option v-for="item in cities" :label="item.label" :value="item.value">
-                  <span style="float: left">{{ item.label }}</span>
+              <el-select clearable v-model="province" size="small" >
+                <el-option v-for="province in provinces" :label="province.aname" :value="province.aname">
+                  <span style="float: left">{{ province.aname }}</span>
                   <el-option v-for="it in item" :label="item.label" :value="item.value">
                     <span style="float: left">{{ item.label }}</span>
                     <span style="float: right; color: #8492a6; font-size: 13px">{{ item.value }}</span>
@@ -156,33 +156,10 @@
     name: 'agentListFir',
     data(){
       return{
-        pickerOptions: {
-          shortcuts: [{
-            text: '最近一周',
-            onClick(picker) {
-              const end = new Date();
-              const start = new Date();
-              start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
-              picker.$emit('pick', [start, end]);
-            }
-          }, {
-            text: '最近一个月',
-            onClick(picker) {
-              const end = new Date();
-              const start = new Date();
-              start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
-              picker.$emit('pick', [start, end]);
-            }
-          }, {
-            text: '最近三个月',
-            onClick(picker) {
-              const end = new Date();
-              const start = new Date();
-              start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
-              picker.$emit('pick', [start, end]);
-            }
-          }]
-        },
+        provinces:[],//所有省份
+        province: '',
+        citys:[],
+        city:'',
         date:'',
         records:[],
         count:0,
@@ -205,7 +182,44 @@
       }
     },
     created: function () {
-      this.$http.post('/admin/settle/list',this.$data.query)
+      //搜索区省市联动
+      this.$http.post('/admin/district/findAllProvinces')
+        .then(function (res) {
+          this.$data.provinces = res.data;
+        })
+        .catch(function (err) {
+          this.$message({
+            showClose: true,
+            message: err.statusMessage,
+            type: 'error'
+          });
+          /*this.$store.commit('MESSAGE_ACCORD_SHOW', {
+            text: err.statusMessage
+          })*/
+        })
+      this.$http.post('/admin/district/findAllCities',{code:"110000"})
+        .then(function (res) {
+          this.$data.provinces = res.data;
+        })
+        .catch(function (err) {
+          this.$message({
+            showClose: true,
+            message: err.statusMessage,
+            type: 'error'
+          });
+        })
+      this.$http.post('/admin/district/findAllDistrict')
+        .then(function (res) {
+          this.$data.provinces = res.data;
+        })
+        .catch(function (err) {
+          this.$message({
+            showClose: true,
+            message: err.statusMessage,
+            type: 'error'
+          });
+        })
+      /*this.$http.post('/admin/settle/list',this.$data.query)
         .then(function (res) {
           this.$data.records = res.data.records;
           this.$data.count = res.data.count;
@@ -236,7 +250,7 @@
           this.$store.commit('MESSAGE_ACCORD_SHOW', {
             text: err.statusMessage
           })
-        })
+        })*/
     },
     methods: {
       search: function () {
