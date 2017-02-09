@@ -74,3 +74,4 @@ crashlytics-build.properties
 webapp/hss/src/main/webapp/node_modules
 webapp/mobile/src/main/webapp/node_modules
 webapp/hss_H5/src/main/webapp/node_modules
+webapp/hsy_H5/src/main/webapp/node_modules
