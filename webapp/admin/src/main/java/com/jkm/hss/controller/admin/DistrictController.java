@@ -4,6 +4,7 @@ import com.jkm.base.common.entity.CommonResponse;
 import com.jkm.hss.admin.helper.responseparam.AppBizDistrictListResponse;
 import com.jkm.hss.admin.helper.responseparam.AppBizDistrictResponse;
 import com.jkm.hss.admin.service.AppBizDistrictService;
+import com.jkm.hss.controller.BaseController;
 import com.jkm.hss.helper.request.DistrictRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +23,7 @@ import java.util.List;
 @Slf4j
 @Controller
 @RequestMapping(value = "/admin/district")
-public class DistrictController {
+public class DistrictController extends BaseController{
     @Autowired
     private AppBizDistrictService appBizDistrictService;
 
