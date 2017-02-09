@@ -173,8 +173,6 @@ public class PushServiceImpl implements PushService {
         final SmsTemplate messageTemplate;
         if(isSucc){
              messageTemplate = messageTemplateDao.getTemplateByType(EnumNoticeType.AUDIT_PASS.getId());
-            messageTemplate.getNoticeType();
-            messageTemplate.getMessageTemplate();
         }else{
              messageTemplate = messageTemplateDao.getTemplateByType(EnumNoticeType.AUDIT_NOPASS.getId());
         }
