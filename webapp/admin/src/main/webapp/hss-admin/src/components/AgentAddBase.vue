@@ -257,7 +257,7 @@
         this.$data.isShow = false;
         this.$http.get('/admin/dealer/findBydealerId/' + this.$route.query.id)
           .then(function (res) {
-            this.$data.query=res.data
+            this.$data.query = res.data
           })
       }
       this.$data.level = this.$route.query.level;
