@@ -1745,4 +1745,41 @@ public class DealerServiceImpl implements DealerService {
     public int updateMarkCodeAndInviteCode(String markCode,String inviteCode, long dealerId) {
         return this.dealerDao.updateMarkCodeAndInviteCode(markCode,inviteCode,dealerId);
     }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param request
+     */
+    @Override
+    @Transactional
+    public void updateDealer2(final FirstLevelDealerUpdate2Request request) {
+        final Optional<Dealer> dealerOptional = this.getById(request.getDealerId());
+        Preconditions.checkState(dealerOptional.isPresent(), "代理商[{}] 不存在", request.getDealerId());
+        final Dealer dealer = dealerOptional.get();
+        dealer.setMobile(request.getMobile());
+        dealer.setProxyName(request.getName());
+        dealer.setBelongProvinceCode(request.getBelongProvinceCode());
+        dealer.setBelongProvinceName(request.getBelongProvinceName());
+        dealer.setBelongCityCode(request.getBelongCityCode());
+        dealer.setBelongCityName(request.getBelongCityName());
+        dealer.setBelongArea(request.getBelongArea());
+        dealer.setSettleBankCard(DealerSupport.encryptBankCard(request.getBankCard()));
+        dealer.setBankName(request.getBankName());
+        dealer.setBankAccountName(request.getBankAccountName());
+        dealer.setBankReserveMobile(DealerSupport.encryptMobile(request.getBankReserveMobile()));
+        dealer.setIdCard(DealerSupport.encryptIdenrity(request.getIdCard()));
+        this.update2(dealer);
+    }
+    /**
+     * {@inheritDoc}
+     *
+     * @param dealer
+     * @return
+     */
+    @Override
+    @Transactional
+    public int update2(final Dealer dealer) {
+        return this.dealerDao.update2(dealer);
+    }
 }

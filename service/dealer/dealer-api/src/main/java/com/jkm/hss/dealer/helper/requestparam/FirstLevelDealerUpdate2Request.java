@@ -54,6 +54,11 @@ public class FirstLevelDealerUpdate2Request {
     private String bankCard;
 
     /**
+     * 银行名称
+     */
+    private String bankName;
+
+    /**
      * 银行开户名称
      */
     private String bankAccountName;
