@@ -19,7 +19,12 @@
         status,
         recommend_btn,
         id_card,
-        total_profit_space
+        total_profit_space,
+        belong_province_code,
+        belong_province_name,
+        belong_city_code,
+        belong_city_name,
+        invite_code
         )
         VALUES
         (
@@ -38,7 +43,12 @@
         #{status},
         #{recommendBtn},
         #{idCard},
-        #{totalProfitSpace}
+        #{totalProfitSpace},
+        #{belongProvinceCode},
+        #{belongProvinceName},
+        #{belongCityCode},
+        #{belongCityName},
+        #{inviteCode}
         );
     </insert>
     <update id="update">

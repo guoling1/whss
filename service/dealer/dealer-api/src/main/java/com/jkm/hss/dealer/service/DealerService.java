@@ -296,6 +296,12 @@ public interface DealerService {
      * @return
      */
     long createFirstDealer2(FirstLevelDealerAdd2Request firstLevelDealerAdd2Request);
+    /**
+     * 添加代理商
+     *
+     * @param dealer
+     */
+    void add2(Dealer dealer);
 
     /**
      * 代理商列表

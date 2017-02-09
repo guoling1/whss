@@ -1698,12 +1698,23 @@ public class DealerServiceImpl implements DealerService {
         dealer.setBelongProvinceName(firstLevelDealerAdd2Request.getBelongProvinceName());
         dealer.setBelongCityCode(firstLevelDealerAdd2Request.getBelongCityCode());
         dealer.setBelongCityName(firstLevelDealerAdd2Request.getBelongCityName());
-        this.add(dealer);
+        this.add2(dealer);
         this.updateMarkCodeAndInviteCode(GlobalID.GetGlobalID(EnumGlobalIDType.DEALER, EnumGlobalIDPro.MIN,dealer.getId()+""),
                 GlobalID.GetInviteID(EnumGlobalDealerLevel.FIRSTDEALER,dealer.getId()+""),dealer.getId());
         return dealer.getId();
     }
 
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param dealer
+     */
+    @Override
+    @Transactional
+    public void add2(final Dealer dealer) {
+        this.dealerDao.insert(dealer);
+    }
 
     /**
      * {@inheritDoc}
