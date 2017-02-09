@@ -222,7 +222,7 @@ public class PushServiceImpl implements PushService {
         data.put("amount", amount);
          String content = VelocityStringTemplate.process(messageTemplate.getMessageTemplate(), data);
 
-        String ret = this.pushTransmissionMsg(2, content, "2", null, clients);
+        String ret = this.pushTransmissionMsg(1, content, "2", null, clients);
         return ret;
     }
 
