@@ -22,13 +22,24 @@ public class FirstLevelDealerAdd2Request {
     private String name;
 
     /**
+     * 所在省code
+     */
+    private String belongProvinceCode;
+
+    /**
      * 所在省
      */
-    private String belongProvince;
+    private String belongProvinceName;
+
+    /**
+     * 所在市code
+     */
+    private String belongCityCode;
+
     /**
      * 所在市
      */
-    private String belongCity;
+    private String belongCityName;
     /**
      * 详细地址
      */

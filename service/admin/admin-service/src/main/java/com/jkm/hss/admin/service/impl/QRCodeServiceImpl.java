@@ -156,7 +156,7 @@ public class QRCodeServiceImpl implements QRCodeService {
     @Override
     @Transactional
     public QRCode initMerchantCode(final long merchantId,final long productId,final String sysType) {
-        final Optional<QRCode> latestQRCode = this.getLatestQRCodeForUpdateBySysType(sysType);
+        final Optional<QRCode> latestQRCode = this.getLatestQRCodeForUpdate();
         String startCode;
         if (latestQRCode.isPresent()) {
             startCode = (Long.valueOf(latestQRCode.get().getCode()) + 1) + "";
@@ -322,16 +322,6 @@ public class QRCodeServiceImpl implements QRCodeService {
         return Optional.fromNullable(this.qrCodeDao.selectLatestQRCodeForUpdate());
     }
 
-    /**
-     * {@inheritDoc}
-     *
-     * @return
-     */
-    @Override
-    @Transactional
-    public Optional<QRCode> getLatestQRCodeForUpdateBySysType(final String sysType) {
-        return Optional.fromNullable(this.qrCodeDao.selectLatestQRCodeForUpdateBySysType(sysType));
-    }
 
     /**
      * {@inheritDoc}
@@ -652,7 +642,7 @@ public class QRCodeServiceImpl implements QRCodeService {
      */
     private List<QRCode> generateCode(final long adminId, final int count,long productId,String sysType) {
         final List<QRCode> codes = new ArrayList<>(count);
-        final Optional<QRCode> latestQRCode = this.getLatestQRCodeForUpdateBySysType(sysType);
+        final Optional<QRCode> latestQRCode = this.getLatestQRCodeForUpdate();
         String startCode = QRCodeConsts.start_code_num;
         if (latestQRCode.isPresent()) {
             startCode = latestQRCode.get().getCode();
