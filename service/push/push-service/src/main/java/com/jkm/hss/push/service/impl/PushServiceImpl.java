@@ -1,14 +1,11 @@
 package com.jkm.hss.push.service.impl;
 
-import com.alibaba.fastjson.JSON;
 import com.jkm.base.common.util.VelocityStringTemplate;
 import com.jkm.hss.notifier.dao.MessageTemplateDao;
 import com.jkm.hss.notifier.entity.SmsTemplate;
 import com.jkm.hss.notifier.enums.EnumNoticeType;
 import com.jkm.hss.push.dao.PushDao;
-import com.jkm.hss.push.entity.AppResult;
 import com.jkm.hss.push.entity.Push;
-import com.jkm.hss.push.enums.EnumCode;
 import com.jkm.hss.push.producer.PushProducer;
 import com.jkm.hss.push.sevice.PushService;
 import lombok.extern.slf4j.Slf4j;
@@ -174,18 +171,16 @@ public class PushServiceImpl implements PushService {
         }
 
         final SmsTemplate messageTemplate;
-        AppResult appResult = new AppResult();
         if(isSucc){
-            messageTemplate = messageTemplateDao.getTemplateByType(EnumNoticeType.AUDIT_PASS.getId());
-            appResult.setResultCode(EnumCode.CODESUCCESS.getId());
-
+             messageTemplate = messageTemplateDao.getTemplateByType(EnumNoticeType.AUDIT_PASS.getId());
+            messageTemplate.getNoticeType();
+            messageTemplate.getMessageTemplate();
         }else{
-            messageTemplate = messageTemplateDao.getTemplateByType(EnumNoticeType.AUDIT_NOPASS.getId());
-            appResult.setResultCode(EnumCode.CODEFAIL.getId());
+             messageTemplate = messageTemplateDao.getTemplateByType(EnumNoticeType.AUDIT_NOPASS.getId());
         }
         String newContent =messageTemplate.getMessageTemplate();
-        appResult.setResultMessage(newContent);
-        String ret = this.pushTransmissionMsg(2, JSON.toJSONString(appResult) , "2", null, clients);
+
+        String ret = this.pushTransmissionMsg(2, newContent, "2", null, clients);
         return ret;
 
 
