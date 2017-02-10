@@ -460,8 +460,8 @@ public class OrderServiceImpl implements OrderService {
      * @return
      */
     @Override
-    public long getPageOrdersCountByAccountId(final long accountId, final String appId, final Date startDate, final Date endDate) {
-        return this.orderDao.selectPageOrdersCountByAccountId(accountId, appId, startDate, endDate);
+    public long getPageOrdersCountByAccountId(final long accountId, final String appId, final Date date) {
+        return this.orderDao.selectPageOrdersCountByAccountId(accountId, appId, date);
     }
 
     /**
@@ -475,8 +475,8 @@ public class OrderServiceImpl implements OrderService {
      */
     @Override
     public List<Order> getPageOrdersByAccountId(final long accountId, final String appId, final int offset,
-                                                final int count, final Date startDate, final Date endDate) {
-        return this.orderDao.selectPageOrdersByAccountId(accountId, appId, offset, count, startDate, endDate);
+                                                final int count, final Date date) {
+        return this.orderDao.selectPageOrdersByAccountId(accountId, appId, offset, count, date);
     }
 
     /**

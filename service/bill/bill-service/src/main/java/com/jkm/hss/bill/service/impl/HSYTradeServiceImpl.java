@@ -128,18 +128,15 @@ public class HSYTradeServiceImpl implements HSYTradeService {
         final long accountId = dataJo.getLongValue("accountId");
         final int pageNo = dataJo.getIntValue("pageNo");
         final int pageSize = dataJo.getIntValue("pageSize");
-        final String startDateStr = dataJo.getString("startDate");
-        final String endDateStr = dataJo.getString("endDate");
-        Date startDate = null;
-        Date endDate = null;
-        if (!StringUtils.isEmpty(startDateStr) && !StringUtils.isEmpty(endDateStr)) {
-            startDate = DateFormatUtil.parse(startDateStr, DateFormatUtil.yyyy_MM_dd);
-            endDate = DateFormatUtil.parse(endDateStr, DateFormatUtil.yyyy_MM_dd);
+        final String dateStr = dataJo.getString("date");
+        Date date = null;
+        if (!StringUtils.isEmpty(dateStr) && !StringUtils.isEmpty(dateStr)) {
+            date = DateFormatUtil.parse(dateStr, DateFormatUtil.yyyy_MM_dd);
         }
         final PageModel<JSONObject> pageModel = new PageModel<>(pageNo, pageSize);
-        final long count = this.orderService.getPageOrdersCountByAccountId(accountId, EnumAppType.HSY.getId(), startDate, endDate);
+        final long count = this.orderService.getPageOrdersCountByAccountId(accountId, EnumAppType.HSY.getId(), date);
         final List<Order> orders = this.orderService.getPageOrdersByAccountId(accountId, EnumAppType.HSY.getId(),
-                pageModel.getFirstIndex(), pageSize, startDate, endDate);
+                pageModel.getFirstIndex(), pageSize, date);
         pageModel.setCount(count);
         if (!CollectionUtils.isEmpty(orders)) {
             final List<JSONObject> recordList = new ArrayList<>();

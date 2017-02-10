@@ -218,7 +218,7 @@ public interface OrderDao {
      * @return
      */
     long selectPageOrdersCountByAccountId(@Param("accountId") long accountId, @Param("appId") String appId,
-                                          @Param("startDate") Date startDate, @Param("endDate") Date endDate);
+                                          @Param("date") Date date);
 
     /**
      * 分页查询--查询记录
@@ -231,5 +231,5 @@ public interface OrderDao {
      */
     List<Order> selectPageOrdersByAccountId(@Param("accountId") long accountId, @Param("appId") String appId,
                                             @Param("offset") int offset, @Param("count") int count,
-                                            @Param("startDate") Date startDate, @Param("endDate") Date endDate);
+                                            @Param("date") Date date);
 }
