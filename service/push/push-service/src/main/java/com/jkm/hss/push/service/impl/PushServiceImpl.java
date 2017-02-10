@@ -173,14 +173,17 @@ public class PushServiceImpl implements PushService {
         }
 
         final SmsTemplate messageTemplate;
+        AppResult appResult = new AppResult();
         if(isSucc){
             messageTemplate = messageTemplateDao.getTemplateByType(EnumNoticeType.AUDIT_PASS.getId());
+            appResult.setResultCode(100);
         }else{
             messageTemplate = messageTemplateDao.getTemplateByType(EnumNoticeType.AUDIT_NOPASS.getId());
+            appResult.setResultCode(101);
         }
         String newContent =messageTemplate.getMessageTemplate();
-
-        String ret = this.pushTransmissionMsg(2, newContent, "2", null, clients);
+        appResult.setResultMessage(newContent);
+        String ret = this.pushTransmissionMsg(2, JSON.toJSONString(appResult), "2", null, clients);
         return ret;
 
 

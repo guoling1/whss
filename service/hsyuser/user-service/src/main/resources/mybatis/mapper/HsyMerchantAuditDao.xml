@@ -62,6 +62,6 @@
 
     <!-- 审核通过 -->
     <update id="updateAuditNotPass">
-        UPDATE app_biz_shop SET STATUS=#{status} WHERE ID=#{id}
+        UPDATE app_biz_shop SET STATUS=#{status},CHECKERRORINFO=#{checkErrorInfo} WHERE ID=#{id}
     </update>
 </mapper>
