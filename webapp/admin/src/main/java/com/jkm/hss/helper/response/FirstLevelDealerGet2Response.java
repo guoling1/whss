@@ -11,10 +11,24 @@ import java.util.List;
 @Data
 public class FirstLevelDealerGet2Response {
     /**
+     * 产品名称
+     */
+    private String productName;
+    /**
      * 合伙人推荐功能开关
      * {@link com.jkm.hss.dealer.enums.EnumRecommendBtn}
      */
     private int recommendBtn;
+    /**
+     * 邀请码
+     */
+    private String inviteCode;
+
+    /**
+     * 推广功能
+     * {@link com.jkm.hss.dealer.enums.EnumInviteBtn}
+     */
+    private int inviteBtn;
 
     /**
      * 收单总分润空间

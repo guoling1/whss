@@ -261,18 +261,25 @@ public class DealerController extends BaseController {
     }
 
     /**
-     * 查询代理商信息
+     * hss查询代理商信息
      *
      * @return
      */
     @ResponseBody
     @RequestMapping(value = "/{dealerId}/{productId}", method = RequestMethod.GET)
-    public CommonResponse getHssDealerProduct(@PathVariable final long dealerId) {
+    public CommonResponse getHssDealerProduct(@PathVariable final long dealerId,@PathVariable final long productId) {
         final Optional<Dealer> dealerOptional = this.dealerService.getById(dealerId);
         if (!dealerOptional.isPresent()) {
             return CommonResponse.simpleResponse(-1, "代理商不存在");
         }
         final Dealer dealer = dealerOptional.get();
+        if(productId>0){//修改
+
+        }else{//新增
+            final List<Product> list = this.productService.selectAll();
+
+        }
+
         final List<DealerChannelRate> channelRates = this.dealerChannelRateService.selectByDealerId(dealerId);
         if (CollectionUtils.isEmpty(channelRates)) {
             return CommonResponse.simpleResponse(-1, "代理商对应产品通道不存在");
