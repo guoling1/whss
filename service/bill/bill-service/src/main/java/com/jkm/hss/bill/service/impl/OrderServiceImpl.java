@@ -289,6 +289,18 @@ public class OrderServiceImpl implements OrderService {
         map.put("offset",req.getOffset());
         map.put("size",req.getSize());
         List<MerchantTradeResponse> list = orderDao.selectOrderList(map);
+        if (list.size()>0){
+            for (int i=0;i<list.size();i++){
+                if (list.get(i).getAppId().equals("hss")){
+                    String hss="好收收";
+                    list.get(i).setAppId(hss);
+                }
+                if (list.get(i).getAppId().equals("hsy")){
+                    String hsy="好收银";
+                    list.get(i).setAppId(hsy);
+                }
+            }
+        }
         return list;
     }
 
@@ -460,8 +472,8 @@ public class OrderServiceImpl implements OrderService {
      * @return
      */
     @Override
-    public long getPageOrdersCountByAccountId(final long accountId, final String appId, final Date startDate, final Date endDate) {
-        return this.orderDao.selectPageOrdersCountByAccountId(accountId, appId, startDate, endDate);
+    public long getPageOrdersCountByAccountId(final long accountId, final String appId, final Date date) {
+        return this.orderDao.selectPageOrdersCountByAccountId(accountId, appId, date);
     }
 
     /**
@@ -475,8 +487,8 @@ public class OrderServiceImpl implements OrderService {
      */
     @Override
     public List<Order> getPageOrdersByAccountId(final long accountId, final String appId, final int offset,
-                                                final int count, final Date startDate, final Date endDate) {
-        return this.orderDao.selectPageOrdersByAccountId(accountId, appId, offset, count, startDate, endDate);
+                                                final int count, final Date date) {
+        return this.orderDao.selectPageOrdersByAccountId(accountId, appId, offset, count, date);
     }
 
     /**
