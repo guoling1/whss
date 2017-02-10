@@ -55,9 +55,6 @@
     </bean>
     <bean id="springContextHolder" class="com.jkm.base.common.spring.core.SpringContextHolder" lazy-init="false" />
 
-    <!--<mvc:resources mapping="/apidocs/**" location="/WEB-INF/apidocs/" />-->
-
-    <!--<bean class="com.jkm.hss.swagger.SwaggerConfig"/>-->
     <mvc:interceptors>
         <mvc:interceptor>
             <mvc:mapping path="/admin/user/**"/>
