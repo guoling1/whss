@@ -214,8 +214,8 @@ public class DealerController extends BaseController {
      * @return
      */
     @ResponseBody
-    @RequestMapping(value = "/secondFirstDealer", method = RequestMethod.POST)
-    public CommonResponse secondFirstDealer(@RequestBody final ListSecondDealerRequest listSecondDealerRequest) {
+    @RequestMapping(value = "/listSecondDealer", method = RequestMethod.POST)
+    public CommonResponse listSecondDealer(@RequestBody final ListSecondDealerRequest listSecondDealerRequest) {
         final PageModel<SecondDealerResponse> pageModel = this.dealerService.listSecondDealer(listSecondDealerRequest);
         return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", pageModel);
     }
