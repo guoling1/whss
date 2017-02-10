@@ -31,7 +31,7 @@
               </el-select>
             </el-col>
             <el-col  :span="4">
-              <label>对账结果:</label>
+              <label>结算状态:</label>
               <el-select clearable v-model="query.settleStatus" size="small" >
                 <el-option label="全部" value="">全部</el-option>
                 <el-option label="待结算" value="1">待结算</el-option>

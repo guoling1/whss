@@ -309,14 +309,11 @@
           })
       },
       goBack: function () {
-
-        console.log(this.$route)
         if(this.$route.query.level==2){
           this.$router.push('/admin/record/agentListSec')
         }else {
           this.$router.push('/admin/record/agentListFir')
         }
-
       },
       //修改
       change: function () {
@@ -328,9 +325,6 @@
               message: '修改成功',
               type: 'success'
             });
-            if(this.$route.query.level==2){
-              this.$router.push('/admin/record/agentListSec')
-            }
             if(this.$route.query.level==2){
               this.$router.push('/admin/record/agentListSec')
             }else {
