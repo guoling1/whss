@@ -27,6 +27,7 @@ import com.jkm.hss.helper.response.FirstLevelDealerFindResponse;
 import com.jkm.hss.helper.response.FirstLevelDealerGet2Response;
 import com.jkm.hss.helper.response.FirstLevelDealerGetResponse;
 import com.jkm.hss.product.entity.Product;
+import com.jkm.hss.product.enums.EnumProductType;
 import com.jkm.hss.product.servcie.ProductService;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
@@ -36,6 +37,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -274,9 +276,14 @@ public class DealerController extends BaseController {
         }
         final Dealer dealer = dealerOptional.get();
         if(productId>0){//修改
+            List<DealerChannelRate> dealerChannelRateList = this.dealerChannelRateService.selectByDealerIdAndProductId(dealerId,productId);
 
         }else{//新增
-            final List<Product> list = this.productService.selectAll();
+            Optional<Product> productOptional = this.productService.selectByType(EnumProductType.HSS.getId());
+            if(!productOptional.isPresent()){
+                return CommonResponse.simpleResponse(-1, "好收收产品不存在");
+            }
+
 
         }
 
