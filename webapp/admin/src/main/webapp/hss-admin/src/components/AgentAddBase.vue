@@ -188,17 +188,15 @@
           </el-col>
           <el-col :span="6">
             <div class="grid-content bg-purple-light" style="width: 100%">
-              <div class="btn btn-default" @click="create" v-if="isShow" style="margin: 20px 0 100px;width: 100%">
-                创建代理商
-              </div>
-              <div class="btn btn-default" @click="goBack" v-if="!isShow" style="width: 45%;margin: 20px 0 100px;">
+              <div class="btn btn-default" @click="goBack" style="width: 45%;margin: 20px 0 100px;">
                 返回
               </div>
-              <div class="btn btn-default" @click="change()" v-if="!isShow"
-                   style="width: 45%;float: right;margin: 20px 0 100px;">
+              <div class="btn btn-default" @click="create" v-if="isShow" style="width: 45%;float: right;margin: 20px 0 100px;">
+                创建代理商
+              </div>
+              <div class="btn btn-default" @click="change()" v-if="!isShow" style="width: 45%;float: right;margin: 20px 0 100px;">
                 修改
               </div>
-
             </div>
           </el-col>
           <el-col :span="8">
@@ -311,11 +309,18 @@
           })
       },
       goBack: function () {
-        this.$router.push('/admin/record/agentListFir')
+
+        console.log(this.$route)
+        if(this.$route.query.level==2){
+          this.$router.push('/admin/record/agentListSec')
+        }else {
+          this.$router.push('/admin/record/agentListFir')
+        }
+
       },
       //修改
       change: function () {
-          console.log(this.$data.query)
+        this.$data.query.dealerId = this.$data.query.id;
         this.$http.post('/admin/user/updateDealer2', this.$data.query)
           .then(function (res) {
             this.$message({
@@ -323,7 +328,14 @@
               message: '修改成功',
               type: 'success'
             });
-            this.$router.push('/admin/record/agentList')
+            if(this.$route.query.level==2){
+              this.$router.push('/admin/record/agentListSec')
+            }
+            if(this.$route.query.level==2){
+              this.$router.push('/admin/record/agentListSec')
+            }else {
+              this.$router.push('/admin/record/agentListFir')
+            }
           }, function (err) {
             this.$message({
               showClose: true,

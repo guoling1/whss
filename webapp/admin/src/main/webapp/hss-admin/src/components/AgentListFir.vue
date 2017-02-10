@@ -26,7 +26,14 @@
               <div class="select" id="select" @click="open"><span>请选择</span>
                 <i class="el-icon-caret-bottom" style="float: right;margin-top: 10px"></i>
               </div>
-              <div class="isShow" v-if="isOpen"><el-tree :data="provinces" :props="defaultProps" accordion @node-click="select"></el-tree></div>
+              <ul class="isShow" v-if="isOpen">
+                <li @click="selectAll()">全部</li>
+                <li v-for="province in provinces" @mouseover="selectCity(province.code,province.aname)" @click="select(province.code,province.aname)">{{province.aname}}
+                </li>
+              </ul>
+              <ul class="isShow1" v-if="isOpen1">
+                <li :class="'cityLi'+$index" v-for="city in citys" @click="select(city.code,city.aname)">{{city.aname}}</li>
+              </ul>
             </el-col>
             <el-col  :span="5">
               <label>代理产品:</label>
@@ -41,100 +48,40 @@
             </el-col>
           </el-row>
           <!--表格-->
-          <el-table v-loading.body="loading"  style="font-size: 12px;margin:15px 0" :data="records" border @cell-click="toDet">
-            <el-table-column prop="proxyName" label="代理商名称" class-name="blue"></el-table-column>
-            <el-table-column prop="markCode" label="代理商编号" class-name="blue"></el-table-column>
+          <el-table v-loading.body="loading"  style="font-size: 12px;margin:15px 0" :data="records" border >
+            <el-table-column label="代理商名称">
+              <template scope="scope">
+                <router-link :to="'/admin/record/agentAddBase?id='+records[scope.$index].id">{{records[scope.$index].proxyName}}</router-link>
+              </template>
+            </el-table-column>
+            <el-table-column label="代理商编号">
+              <template scope="scope">
+                <router-link :to="'/admin/record/agentAddBase?id='+records[scope.$index].id">{{records[scope.$index].markCode}}</router-link>
+              </template>
+            </el-table-column>
             <el-table-column prop="level" label="代理商级别" ></el-table-column>
             <el-table-column prop="belong" label="省市" ></el-table-column>
             <el-table-column prop="createTime" label="注册时间" ></el-table-column>
             <el-table-column prop="mobile" label="联系手机号" ></el-table-column>
-            <el-table-column label="好收收" width="90">
+            <el-table-column label="好收收">
               <template scope="scope">
-                <router-link to="/admin/record/agentAddPro" v-if="hssProductId==0">开通产品</router-link>
-                <router-link to="/admin/record/agentAddPro" v-if="hssProductId!=0">修改产品设置</router-link>
+                <router-link to="/admin/record/agentAddPro" v-if="records[scope.$index].hssProductId==0">开通产品</router-link>
+                <router-link to="/admin/record/agentAddPro" v-else="records[scope.$index].hssProductId==0">修改产品设置</router-link>
               </template>
             </el-table-column>
             <el-table-column label="好收银" >
               <template scope="scope">
-                <router-link to="/admin/record/agentAddPro" v-if="hsyProductId==0">开通产品</router-link>
-                <router-link to="/admin/record/agentAddPro" v-if="hsyProductId!=0">修改产品设置</router-link>
+                <router-link to="/admin/record/agentAddPro" v-if="records[scope.$index].hsyProductId==0">开通产品</router-link>
+                <router-link to="/admin/record/agentAddPro" v-else="records[scope.$index].hsyProductId==0">修改产品设置</router-link>
               </template>
             </el-table-column>
           </el-table>
           <!--分页-->
           <div class="block" style="text-align: right">
-            <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage4" layout="total, sizes, prev, pager, next, jumper" :total="count">
+            <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage4" layout="total, prev, pager, next, jumper" :total="count">
             </el-pagination>
           </div>
-          <!--审核-->
-          <div v-if="isShow">
-            <el-dialog title="结算确认提醒" v-model="isShow">
-              <div class="maskCon">
-                <span>商户名称：</span>
-                <span>{{records[this.$data.index].merchantName}}</span>
-              </div>
-              <div class="maskCon">
-                <span>商户编号：</span>
-                <span>{{records[index].merchantNo}}</span>
-              </div>
-              <div class="maskCon">
-                <span>结算金额：</span>
-                <span>{{records[index].settleAmount}}</span>
-              </div>
-              <div class="maskCon">
-                <span>结算交易笔数：</span>
-                <span>{{records[index].tradeNumber}}笔</span>
-              </div>
-              <div class="maskCon">
-                <span>交易日期：</span>
-                <span>{{records[index].tradeDate}}</span>
-              </div>
-              <div slot="footer" class="dialog-footer" style="text-align: center;">
-                <el-button @click="isShow = false">取 消</el-button>
-                <el-button @click="isShow = false">结算已对账部分</el-button>
-                <el-button @click="isShow = false">强制结算全部</el-button>
-              </div>
-            </el-dialog>
-          </div>
         </div>
-        <!--<div id="example2_wrapper" class="dataTables_wrapper form-inline dt-bootstrap">
-          <div class="row">
-            <div class="col-sm-12">
-              <table id="example2" class="table table-bordered table-hover dataTable" role="grid"
-                     aria-describedby="example2_info">
-                <thead>
-                <tr role="row">
-
-                </tr>
-                </thead>
-                <tbody id="content">
-                <tr role="row" >
-
-                </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-          <div v-if="isShow">
-            <img src="http://img.jinkaimen.cn/admin/common/dist/img/ICBCLoading.gif" alt="">
-          </div>
-          &lt;!&ndash;<div v-if="orders.length==0&&!isShow" class="row" style="text-align: center;color: red;font-size: 16px;">
-            <div class="col-sm-12">无此数据</div>
-          </div>&ndash;&gt;
-          &lt;!&ndash;<div class="row">
-            <div class="col-sm-5">
-              <div class="dataTables_info" id="example2_info" role="status" aria-live="polite">
-              </div>
-            </div>
-            <div class="col-sm-7">
-              <div class="dataTables_paginate paging_simple_numbers" id="example2_paginate">
-                <ul class="pagination" id="page" @click="bindEvent($event)">
-                </ul>
-                <span class="count">共{{count}}条</span>
-              </div>
-            </div>
-          </div>&ndash;&gt;
-        </div>-->
       </div>
     </div>
   </div>
@@ -151,6 +98,7 @@
           children: 'list'
         },
         isOpen:false,
+        isOpen1:false,
         select1:'',
         select2:'',
         provinces:[],//所有省份
@@ -178,11 +126,11 @@
       }
     },
     created: function () {
+
       //搜索区省市联动
       this.$http.post('/admin/district/findAllDistrict')
         .then(function (res) {
           this.$data.provinces = res.data;
-          this.$data.loading = false;
           var changeTime=function (val) {
             if(val==''||val==null){
               return ''
@@ -226,52 +174,41 @@
           }
         })
     },
-    updated :function () {
-      var aBlue = document.getElementsByClassName('blue');
-      console.log(aBlue)
-      for(var i=2;i<aBlue.length;i++){
-        console.log(1)
-        aBlue[i].style.color = "#3c8dbc";
-        aBlue[i].style.cursor = "pointer";
-      }
-    },
     methods: {
+      selectCity: function (valCol,val) {
+        this.$data.province = val;
+        this.$http.post('/admin/district/findAllCities',{code:valCol})
+          .then(function (res) {
+            this.$data.citys = res.data;
+            this.$data.isOpen1 = true;
+          })
+      },
       open:function () {
         this.$data.isOpen = !this.$data.isOpen;
-        document.getElementById('select').style.borderColor = '#20a0ff'
+        this.$data.isOpen1 = false;
+        document.getElementById('select').style.borderColor = '#20a0ff';
+
       },
-      select:function (val) {
-        if(val.list!=undefined){
-          this.$data.select1 = val.aname;
-          this.$data.select2 = '';
-        }else {
-          this.$data.select2 = val.aname;
-        }
-        if(this.$data.select1!=''&&this.$data.select2!=''){
-          var oCon = document.getElementById('select').getElementsByTagName('span')[0];
-          oCon.innerHTML = this.$data.select1+'-'+this.$data.select2;
-          oCon.style.color = '#1f2d3d';
-          this.$data.isOpen = !this.$data.isOpen;
-          document.getElementById('select').style.borderColor = '#bfcbd9'
-          for(var i=0; i<this.$data.provinces.length;i++){
-            for(var j=0; j<this.$data.provinces[i].list.length; j++){
-                if(this.$data.provinces[i].list[j].aname==this.$data.select2){
-                  this.$data.query.districtCode = this.$data.provinces[i].list[j].code;
-                }
-            }
-          }
-        }
+      select:function (valCode,val) {
+        var oCon = document.getElementById('select').getElementsByTagName('span')[0];
+        oCon.innerHTML = val;
+        oCon.style.color = '#1f2d3d';
+        this.$data.query.districtCode = valCode;
+        this.$data.isOpen = !this.$data.isOpen;
+        this.$data.isOpen1 = !this.$data.isOpen1;
       },
-      toDet:function (row,col,cell,e) {
-        if(col.label=='代理商名称'||col.label=='代理商编号'){
-          this.$router.push('/admin/record/agentAddBase?id='+row.id)
-        }
+      selectAll: function () {
+        var oCon = document.getElementById('select').getElementsByTagName('span')[0];
+        oCon.innerHTML = '全部';
+        oCon.style.color = '#1f2d3d';
+        this.$data.query.districtCode = '';
+        this.$data.isOpen = !this.$data.isOpen;
+        this.$data.isOpen1 = false;
       },
       search: function () {
         this.$data.query.pageNo = 1;
         this.$data.records = '';
         this.$data.loading = true;
-        console.log(this.$data.query);
         this.$http.post('/admin/dealer/listFirstDealer',this.$data.query)
           .then(function (res) {
             this.$data.records = res.data.records;
@@ -356,9 +293,6 @@
   body{
     background-color:#ff0000;
   }
-  .maskCon{
-    margin:0 0 15px 50px
-  }
   .btn{
     font-size: 12px;
   }
@@ -383,17 +317,49 @@
   .isShow{
     position: absolute;
     width: 19%;
-    margin-top: 5px;
     border-radius: 2px;
     z-index: 1000;
     max-height: 250px;
     overflow: auto;
+    border: 1px solid #d1dbe5;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0,0,0,.12),0 0 6px rgba(0,0,0,.04);
+    box-sizing: border-box;
+    margin: 5px 0;
+    padding:5px;
+    li{
+      list-style: none;
+      height: 25px;
+      padding: 0 5px;
+      line-height: 25px;
+      &:hover{
+        background: #1c8de0;
+       }
+      }
+    }
+
+  .isShow1{
+    border: 1px solid #d1dbe5;
+    border-radius: 2px;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0,0,0,.12),0 0 6px rgba(0,0,0,.04);
+    box-sizing: border-box;
+    margin: 5px 0;
+    position: absolute;
+    left: 67%;
+    top: 0100%;
+    width: 16%;
+    padding: 5px;
+    z-index: 1000;
+    max-height: 285px;
+    overflow: auto;
+  li{
+    list-style: none;
+    padding: 0 5px;
+    line-height: 25px;
+  &:hover{
+     background: #1c8de0;
+   }
   }
-  .blue div.cell{
-    color: #3c8dbc;
-    cursor: pointer;
-  }
-  .blue div:hover{
-    color: #72afd2;
   }
 </style>
