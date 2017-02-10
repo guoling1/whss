@@ -266,7 +266,7 @@ public class DealerController extends BaseController {
      * @return
      */
     @ResponseBody
-    @RequestMapping(value = "/getHssDealerProduct/{dealerId}", method = RequestMethod.GET)
+    @RequestMapping(value = "/{dealerId}/{productId}", method = RequestMethod.GET)
     public CommonResponse getHssDealerProduct(@PathVariable final long dealerId) {
         final Optional<Dealer> dealerOptional = this.dealerService.getById(dealerId);
         if (!dealerOptional.isPresent()) {
