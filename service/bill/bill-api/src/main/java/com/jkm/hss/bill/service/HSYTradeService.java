@@ -9,6 +9,8 @@ import com.jkm.hsy.user.entity.AppBizShop;
 import com.jkm.hsy.user.entity.AppParam;
 import org.apache.commons.lang3.tuple.Pair;
 
+import java.util.List;
+
 /**
  * Created by yulong.zhang on 2017/1/17.
  */
@@ -22,6 +24,15 @@ public interface HSYTradeService {
      * @return
      */
     String getWithdrawInfo(String dataParam, AppParam appParam);
+
+    /**
+     * app交易记录
+     *
+     * @param dataParam
+     * @param appParam
+     * @return
+     */
+    String tradeList(String dataParam, AppParam appParam);
 
     /**
      * app收款
