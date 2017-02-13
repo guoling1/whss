@@ -302,7 +302,7 @@ public class DealerController extends BaseController {
             if(!productOptional.isPresent()){
                 return CommonResponse.simpleResponse(-1, "好收收产品配置有误");
             }
-            if((EnumProductType.HSS.getId()).equals(productOptional.get().getType())){
+            if(!(EnumProductType.HSS.getId()).equals(productOptional.get().getType())){
                 return CommonResponse.simpleResponse(-1, "该产品不属于好收收");
             }
             final List<ProductChannelDetail> detailList = this.productChannelDetailService.selectByProductId(productId);
@@ -477,7 +477,7 @@ public class DealerController extends BaseController {
             if(!productOptional.isPresent()){
                 return CommonResponse.simpleResponse(-1, "产品配置有误");
             }
-            if((EnumProductType.HSY.getId()).equals(productOptional.get().getType())){
+            if(!(EnumProductType.HSY.getId()).equals(productOptional.get().getType())){
                 return CommonResponse.simpleResponse(-1, "该产品不属于好收银");
             }
             final List<ProductChannelDetail> detailList = this.productChannelDetailService.selectByProductId(productId);
