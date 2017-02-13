@@ -3,11 +3,9 @@ package com.jkm.hss.controller.channel;
 import com.google.common.collect.Lists;
 import com.jkm.base.common.entity.CommonResponse;
 import com.jkm.hss.account.sevice.AccountService;
-import com.jkm.hss.helper.response.ProductListResponse;
 import com.jkm.hss.controller.BaseController;
 import com.jkm.hss.helper.request.ProductAddRequest;
-import com.jkm.hss.merchant.service.AccountInfoService;
-import com.jkm.hss.product.entity.BasicChannel;
+import com.jkm.hss.helper.response.ProductListResponse;
 import com.jkm.hss.product.entity.Product;
 import com.jkm.hss.product.entity.ProductChannelDetail;
 import com.jkm.hss.product.enums.EnumProductChannelDetailStatus;
@@ -17,7 +15,6 @@ import com.jkm.hss.product.servcie.ProductChannelDetailService;
 import com.jkm.hss.product.servcie.ProductService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cglib.core.CollectionUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -61,7 +58,12 @@ public class ProductController extends BaseController {
             product.setMerchantWithdrawType(request.getMerchantWithdrawType());
             product.setDealerBalanceType(request.getDealerBalanceType());
             product.setStatus(EnumProductStatus.USEING.getId());
-            product.setType(EnumProductType.HSS.getId());
+            if (request.getType().equals("hss")){
+                product.setType(EnumProductType.HSS.getId());
+            }
+            if (request.getType().equals("hsy")){
+                product.setType(EnumProductType.HSY.getId());
+            }
             this.productService.init(product);
             for (ProductChannelDetail detail : request.getChannels()){
                 detail.setProductTradeRate(detail.getProductTradeRate().divide(new BigDecimal(100)));

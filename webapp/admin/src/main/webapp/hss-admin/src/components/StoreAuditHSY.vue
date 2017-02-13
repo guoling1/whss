@@ -63,8 +63,10 @@
               <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.name" readonly></td>
               <th style="text-align: right">商铺简称:</th>
               <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.shortName" readonly></td>
-              <th style="text-align: right">商户营业执照号:</th>
-              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.licenceID" readonly></td>
+              <!--<th style="text-align: right">商户营业执照号:</th>
+              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.licenceID" readonly></td>-->
+              <th style="text-align: right"></th>
+              <td></td>
             </tr>
             <tr>
               <th style="text-align: right">店主（法人）实名:</th>
