@@ -208,4 +208,19 @@ public interface DealerDao {
      * @return
      */
     int update2(Dealer dealer);
+
+    /**
+     * 更新
+     *
+     * @param dealer
+     * @return
+     */
+    int updateRecommendBtnAndTotalProfitSpace(Dealer dealer);
+    /**
+     * 更新推广开关
+     *
+     * @param dealer
+     * @return
+     */
+    int updateInviteBtn(Dealer dealer);
 }
