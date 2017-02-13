@@ -24,4 +24,7 @@ public interface HsyUserDao {
     public void updateAppAuUserTokenByUidAndTid(AppAuUserToken appAuUserToken);
     public void updateAppAuUserTokenStatusByTid(@Param("tid")Long tid);
     public List<AppAuUser> findAppAuUserByIDAndParentSID(AppAuUser appAuUser);
+    public List<AppAuUser> findAppAuUserListByParentID(AppAuUser appAuUser);
+    public void deleteAppBizShopUserRole(@Param("uid")Long uid);
+    public List<AppAuUser> findAppAuUserWithRoleByID(AppAuUser appAuUser);
 }
