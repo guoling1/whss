@@ -28,6 +28,7 @@ import com.jkm.hss.dealer.helper.response.SecondDealerResponse;
 import com.jkm.hss.dealer.service.*;
 import com.jkm.hss.merchant.entity.MerchantInfo;
 import com.jkm.hss.merchant.entity.OrderRecord;
+import com.jkm.hss.merchant.helper.MerchantSupport;
 import com.jkm.hss.merchant.service.MerchantInfoService;
 import com.jkm.hss.product.entity.BasicChannel;
 import com.jkm.hss.product.entity.Product;
@@ -1700,6 +1701,9 @@ public class DealerServiceImpl implements DealerService {
         dealer.setBelongCityCode(firstLevelDealerAdd2Request.getBelongCityCode());
         dealer.setBelongCityName(firstLevelDealerAdd2Request.getBelongCityName());
         dealer.setInviteBtn(EnumInviteBtn.OFF.getId());
+        dealer.setLoginName(firstLevelDealerAdd2Request.getLoginName());
+        dealer.setLoginPwd(DealerSupport.passwordDigest(firstLevelDealerAdd2Request.getLoginPwd(),"JKM"));
+        dealer.setEmail(firstLevelDealerAdd2Request.getEmail());
         this.add2(dealer);
         this.updateMarkCodeAndInviteCode(GlobalID.GetGlobalID(EnumGlobalIDType.DEALER, EnumGlobalIDPro.MIN,dealer.getId()+""),
                 GlobalID.GetInviteID(EnumGlobalDealerLevel.FIRSTDEALER,dealer.getId()+""),dealer.getId());
