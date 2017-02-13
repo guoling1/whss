@@ -376,4 +376,12 @@ public interface DealerService {
      * @return
      */
     Optional<Dealer> getDealerByInviteCode(String inviteCode);
+
+    /**
+     * 修改密码
+     * @param loginPwd
+     * @param dealerId
+     * @return
+     */
+    int updatePwd(String loginPwd,long dealerId);
 }

@@ -8,7 +8,6 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.jkm.base.common.entity.CommonResponse;
 import com.jkm.base.common.entity.PageModel;
-import com.jkm.base.common.util.ValidateUtils;
 import com.jkm.hss.controller.BaseController;
 import com.jkm.hss.dealer.entity.Dealer;
 import com.jkm.hss.dealer.entity.DealerChannelRate;
@@ -26,8 +25,6 @@ import com.jkm.hss.dealer.service.DealerService;
 import com.jkm.hss.dealer.service.DealerUpgerdeRateService;
 import com.jkm.hss.helper.request.FirstLevelDealerFindRequest;
 import com.jkm.hss.helper.response.*;
-import com.jkm.hss.merchant.entity.BankCardBin;
-import com.jkm.hss.merchant.helper.ValidationUtil;
 import com.jkm.hss.product.entity.BasicChannel;
 import com.jkm.hss.product.entity.Product;
 import com.jkm.hss.product.entity.ProductChannelDetail;
@@ -47,7 +44,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -260,6 +256,8 @@ public class DealerController extends BaseController {
         dealerDetailResponse.setId(dealer.getId());
         dealerDetailResponse.setMobile(dealer.getMobile());
         dealerDetailResponse.setName(dealer.getProxyName());
+        dealerDetailResponse.setLoginName(dealer.getLoginName());
+        dealerDetailResponse.setEmail(dealer.getEmail());
         dealerDetailResponse.setMarkCode(dealer.getMarkCode());
         dealerDetailResponse.setBelongProvinceCode(dealer.getBelongProvinceCode());
         dealerDetailResponse.setBelongProvinceName(dealer.getBelongProvinceName());
@@ -843,5 +841,31 @@ public class DealerController extends BaseController {
             return CommonResponse.simpleResponse(-1, "金开门，一级代理，二级代理的比例之和必须等于100%");
         }
         return CommonResponse.simpleResponse(1, "");
+    }
+
+    /**
+     * 修改密码
+     *
+     * @param request
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "updatePwd", method = RequestMethod.POST)
+    public CommonResponse updatePwd(@RequestBody DealerPwdRequest request) {
+        try{
+            final Optional<Dealer> dealerOptional = this.dealerService.getById(request.getDealerId());
+            if(!dealerOptional.isPresent()){
+                return CommonResponse.simpleResponse(-1, "代理商不存在");
+            }
+            if(org.apache.commons.lang3.StringUtils.isBlank(request.getLoginPwd())) {
+                return CommonResponse.simpleResponse(-1, "登录密码不能为空");
+            }
+            this.dealerService.updatePwd(request.getLoginPwd(),request.getDealerId());
+            return CommonResponse.builder4MapResult(CommonResponse.SUCCESS_CODE, "修改成功")
+                    .addParam("dealerId", request.getDealerId()).build();
+        }catch (Exception e){
+            log.error("错误信息时",e.getStackTrace());
+            return CommonResponse.simpleResponse(-1, e.getMessage());
+        }
     }
 }

@@ -23,6 +23,14 @@ public class DealerDetailResponse {
      * 代理名称
      */
     private String name;
+    /**
+     * 登录名
+     */
+    private String loginName;
+    /**
+     * 邮箱
+     */
+    private String email;
 
     /**
      * 代理编码
