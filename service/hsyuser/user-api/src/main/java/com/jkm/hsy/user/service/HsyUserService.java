@@ -10,4 +10,7 @@ public interface HsyUserService {
     public String updateHsyUserForSetPassword(String dataParam, AppParam appParam)throws ApiHandleException;
     public String insertTokenDeviceClientInfoAndReturnKey(String dataParam, AppParam appParam)throws ApiHandleException;
     public String updateClientID(String dataParam, AppParam appParam)throws ApiHandleException;
+    public String logout(String dataParam, AppParam appParam)throws ApiHandleException;
+    public String inserHsyUserViaCorporation(String dataParam, AppParam appParam)throws ApiHandleException;
+    public String findHsyUserViaCorporation(String dataParam, AppParam appParam)throws ApiHandleException;
 }

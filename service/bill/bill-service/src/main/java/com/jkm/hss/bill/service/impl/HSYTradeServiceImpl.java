@@ -128,18 +128,15 @@ public class HSYTradeServiceImpl implements HSYTradeService {
         final long accountId = dataJo.getLongValue("accountId");
         final int pageNo = dataJo.getIntValue("pageNo");
         final int pageSize = dataJo.getIntValue("pageSize");
-        final String startDateStr = dataJo.getString("startDate");
-        final String endDateStr = dataJo.getString("endDate");
-        Date startDate = null;
-        Date endDate = null;
-        if (!StringUtils.isEmpty(startDateStr) && !StringUtils.isEmpty(endDateStr)) {
-            startDate = DateFormatUtil.parse(startDateStr, DateFormatUtil.yyyy_MM_dd);
-            endDate = DateFormatUtil.parse(endDateStr, DateFormatUtil.yyyy_MM_dd);
+        final String dateStr = dataJo.getString("date");
+        Date date = null;
+        if (!StringUtils.isEmpty(dateStr) && !StringUtils.isEmpty(dateStr)) {
+            date = DateFormatUtil.parse(dateStr, DateFormatUtil.yyyy_MM_dd);
         }
         final PageModel<JSONObject> pageModel = new PageModel<>(pageNo, pageSize);
-        final long count = this.orderService.getPageOrdersCountByAccountId(accountId, EnumAppType.HSY.getId(), startDate, endDate);
+        final long count = this.orderService.getPageOrdersCountByAccountId(accountId, EnumAppType.HSY.getId(), date);
         final List<Order> orders = this.orderService.getPageOrdersByAccountId(accountId, EnumAppType.HSY.getId(),
-                pageModel.getFirstIndex(), pageSize, startDate, endDate);
+                pageModel.getFirstIndex(), pageSize, date);
         pageModel.setCount(count);
         if (!CollectionUtils.isEmpty(orders)) {
             final List<JSONObject> recordList = new ArrayList<>();
@@ -148,9 +145,9 @@ public class HSYTradeServiceImpl implements HSYTradeService {
                 final JSONObject jo = new JSONObject();
                 recordList.add(jo);
                 if (EnumTradeType.PAY.getId() == order.getTradeType()) {
-                    jo.put("tradeType", "收款");
+                    jo.put("tradeType", "1");
                 } else if (EnumTradeType.WITHDRAW.getId() == order.getTradeType()) {
-                    jo.put("tradeType", "提现");
+                    jo.put("tradeType", "2");
                 }
 
                 if (EnumPayChannelSign.YG_WEIXIN.getId() == order.getPayChannelSign()) {
@@ -344,7 +341,7 @@ public class HSYTradeServiceImpl implements HSYTradeService {
         this.recorded(order.getId(), shop);
         //分账
         this.paySplitAccount(this.orderService.getByIdWithLock(order.getId()).get(), shop);
-        //推送TODO
+        //推送
         try {
             this.pushService.pushCashMsg(shop.getId(), notifyChannelStr, order.getTradeAmount().doubleValue(), order.getOrderNo().substring(order.getOrderNo().length() - 4));
         } catch (final Throwable e) {
@@ -533,6 +530,11 @@ public class HSYTradeServiceImpl implements HSYTradeService {
         final int channel = paramJo.getIntValue("channel");
         final long accountId = paramJo.getLongValue("accountId");
         final String verifyCode = paramJo.getString("verifyCode");
+        if (!this.hsyShopDao.isShopStatusCheckPass(accountId)) {
+            result.put("code", -1);
+            result.put("msg", "未审核通过");
+            return result.toJSONString();
+        }
         if (StringUtils.isEmpty(totalAmount)) {
             result.put("code", -1);
             result.put("msg", "提现金额错误");
@@ -794,6 +796,7 @@ public class HSYTradeServiceImpl implements HSYTradeService {
 //            this.withdrawSplitAccount(this.orderService.getByIdWithLock(orderId).get(), shop);
             //推送
             try {
+                log.info("订单[]，提现成功，推送", order.getOrderNo());
                 final AppBizShop shop = this.hsyShopDao.findAppBizShopByAccountID(accountId).get(0);
                 final AppBizCard appBizCard = new AppBizCard();
                 appBizCard.setSid(shop.getId());

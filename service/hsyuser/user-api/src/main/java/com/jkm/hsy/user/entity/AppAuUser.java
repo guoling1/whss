@@ -24,20 +24,24 @@ public class AppAuUser {
     private BigDecimal weixinRate;//微信费率
     private BigDecimal alipayRate;//支付宝费率
     private BigDecimal fastRate;//快捷费率
+    private Long parentID;
+    private Integer roleTemp;//临时角色
     private Date createTime;
     private Date updateTime;
 
     //展示字段
     private String code;//验证码
     private String shopName;//店铺名称
+    private String shopShortName;//店铺简称
     private String industryCode;//行业代码
     private String profileURL;//头像URL
     private String idcardfURL;//身份证正面照URL
     private String idcardbURL;//身份证背面照URL
     private String idcardhURL;//身份证手持照URL
-    private Long role;//角色
+    private Integer role;//角色
     private String roleName;//角色名称
     private String deviceID;//设备号
+    private Long sid;
 
     public Long getId() {
         return id;
@@ -215,11 +219,11 @@ public class AppAuUser {
         this.idcardhURL = idcardhURL;
     }
 
-    public Long getRole() {
+    public Integer getRole() {
         return role;
     }
 
-    public void setRole(Long role) {
+    public void setRole(Integer role) {
         this.role = role;
     }
 
@@ -285,5 +289,37 @@ public class AppAuUser {
 
     public void setDeviceID(String deviceID) {
         this.deviceID = deviceID;
+    }
+
+    public Long getParentID() {
+        return parentID;
+    }
+
+    public void setParentID(Long parentID) {
+        this.parentID = parentID;
+    }
+
+    public Integer getRoleTemp() {
+        return roleTemp;
+    }
+
+    public void setRoleTemp(Integer roleTemp) {
+        this.roleTemp = roleTemp;
+    }
+
+    public Long getSid() {
+        return sid;
+    }
+
+    public void setSid(Long sid) {
+        this.sid = sid;
+    }
+
+    public String getShopShortName() {
+        return shopShortName;
+    }
+
+    public void setShopShortName(String shopShortName) {
+        this.shopShortName = shopShortName;
     }
 }

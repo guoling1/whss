@@ -11,29 +11,34 @@
           <el-row :gutter="20" style="width: 910px">
             <el-col :span="4">
               <label>手机号：</label>
-              <el-input v-model="query.mobile" placeholder="请输入内容" size="small"></el-input>
+              <el-input v-model="query.merchantNo" placeholder="请输入内容" size="small"></el-input>
             </el-col>
             <el-col :span="4">
               <label>代理商名称：</label>
-              <el-input v-model="query.name" placeholder="请输入内容" size="small"></el-input>
+              <el-input v-model="query.merchantNo" placeholder="请输入内容" size="small"></el-input>
             </el-col>
             <el-col :span="4">
               <label>代理商编号：</label>
-              <el-input v-model="query.markCode" placeholder="请输入内容" size="small"></el-input>
+              <el-input v-model="query.merchantName" placeholder="请输入内容" size="small"></el-input>
             </el-col>
             <el-col :span="5">
               <label>省市:</label>
-              <div class="select" id="select" @click="open"><span>请选择</span>
-                <i class="el-icon-caret-bottom" style="float: right;margin-top: 10px"></i>
-              </div>
-              <div class="isShow" v-if="isOpen"><el-tree :data="provinces" :props="defaultProps" accordion @node-click="select"></el-tree></div>
+              <el-select clearable v-model="query.checkedStatus" size="small" >
+                <el-option v-for="item in cities" :label="item.label" :value="item.value">
+                  <span style="float: left">{{ item.label }}</span>
+                  <el-option v-for="it in item" :label="item.label" :value="item.value">
+                    <span style="float: left">{{ item.label }}</span>
+                    <span style="float: right; color: #8492a6; font-size: 13px">{{ item.value }}</span>
+                  </el-option>
+                </el-option>
+              </el-select>
             </el-col>
             <el-col  :span="5">
               <label>代理产品:</label>
-              <el-select clearable v-model="query.sysType" size="small" >
+              <el-select clearable v-model="query.checkedStatus" size="small" >
                 <el-option label="全部" value="">全部</el-option>
-                <el-option label="好收银" value="hsy">好收银</el-option>
-                <el-option label="好收收" value="hss">好收收</el-option>
+                <el-option label="好收银" value="1">好收银</el-option>
+                <el-option label="好收收" value="2">好收收</el-option>
               </el-select>
             </el-col>
             <el-col  :span="1" style="margin-top: 18px">
@@ -41,29 +46,34 @@
             </el-col>
           </el-row>
           <!--表格-->
-          <el-table v-loading.body="loading"  style="font-size: 12px;margin:15px 0" :data="records" border @cell-click="toDet">
-            <el-table-column prop="proxyName" label="代理商名称" class-name="blue"></el-table-column>
-            <el-table-column prop="markCode" label="代理商编号" class-name="blue"></el-table-column>
-            <el-table-column prop="level" label="代理商级别" ></el-table-column>
-            <el-table-column prop="belong" label="省市" ></el-table-column>
-            <el-table-column prop="createTime" label="注册时间" ></el-table-column>
-            <el-table-column prop="mobile" label="联系手机号" ></el-table-column>
+          <el-table style="font-size: 12px;margin:15px 0" :data="records" border>
+            <el-table-column prop="merchantNo" label="代理商名称" ></el-table-column>
+            <el-table-column prop="merchantName" label="代理商编号" ></el-table-column>
+            <el-table-column prop="dealerNo" label="代理商级别" ></el-table-column>
+            <el-table-column prop="dealerName" label="省市" ></el-table-column>
+            <el-table-column prop="appName" label="注册时间" ></el-table-column>
+            <el-table-column prop="tradeDate" label="联系手机号" ></el-table-column>
             <el-table-column label="好收收" width="90">
               <template scope="scope">
-                <router-link to="/admin/record/agentAddPro" v-if="hssProductId==0">开通产品</router-link>
-                <router-link to="/admin/record/agentAddPro" v-if="hssProductId!=0">修改产品设置</router-link>
+                <router-link to="/admin/record/agentAddPro">开通产品</router-link>
+                <router-link to="/admin/record/agentAddPro">修改产品设置</router-link>
               </template>
             </el-table-column>
             <el-table-column label="好收银" >
               <template scope="scope">
-                <router-link to="/admin/record/agentAddPro" v-if="hsyProductId==0">开通产品</router-link>
-                <router-link to="/admin/record/agentAddPro" v-if="hsyProductId!=0">修改产品设置</router-link>
+                <router-link to="/admin/record/agentAddPro">开通产品</router-link>
+                <router-link to="/admin/record/agentAddPro">修改产品设置</router-link>
+              </template>
+            </el-table-column>
+            <el-table-column label="操作" width="70">
+              <template scope="scope">
+                <el-button @click.native.prevent="list(scope.$index)" type="text" size="small">修改</el-button>
               </template>
             </el-table-column>
           </el-table>
           <!--分页-->
           <div class="block" style="text-align: right">
-            <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage4" layout="total, sizes, prev, pager, next, jumper" :total="count">
+            <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage4" :page-sizes="[10, 20, 50]" :page-size="100" layout="total, sizes, prev, pager, next, jumper" :total="total">
             </el-pagination>
           </div>
           <!--审核-->
@@ -96,6 +106,7 @@
               </div>
             </el-dialog>
           </div>
+
         </div>
         <!--<div id="example2_wrapper" class="dataTables_wrapper form-inline dt-bootstrap">
           <div class="row">
@@ -145,43 +156,60 @@
     name: 'agentListFir',
     data(){
       return{
-        loading:true,
-        defaultProps: {
-          label:'aname',
-          children: 'list'
+        pickerOptions: {
+          shortcuts: [{
+            text: '最近一周',
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
+              picker.$emit('pick', [start, end]);
+            }
+          }, {
+            text: '最近一个月',
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
+              picker.$emit('pick', [start, end]);
+            }
+          }, {
+            text: '最近三个月',
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
+              picker.$emit('pick', [start, end]);
+            }
+          }]
         },
-        isOpen:false,
-        select1:'',
-        select2:'',
-        provinces:[],//所有省份
-        province: '',
-        citys:[],
-        city:'',
         date:'',
         records:[],
         count:0,
         total:0,
-        pageSize:'',
         query:{
           pageNo:1,
           pageSize:10,
-          mobile:'',
-          name:"",
-          markCode:"",  //商户名字
-          sysType:"",
-          districtCode:""
+          merchantNo:"",//商户编号
+          merchantName:"",  //商户名字
+          startSettleDate:"",
+          endSettleDate:"",
+          checkedStatus:'',
+          settleStatus:''
         },
         multipleSelection:[],
         currentPage4: 1,
+        loading:true,
         isShow:false,
         index:'',
       }
     },
     created: function () {
-      //搜索区省市联动
-      this.$http.post('/admin/district/findAllDistrict')
+      this.$http.post('/admin/settle/list',this.$data.query)
         .then(function (res) {
-          this.$data.provinces = res.data;
+          this.$data.records = res.data.records;
+          this.$data.count = res.data.count;
+          this.$data.total = res.data.totalPage;
           this.$data.loading = false;
           var changeTime=function (val) {
             if(val==''||val==null){
@@ -201,88 +229,51 @@
             }
           }
           for(let i = 0; i < this.$data.records.length; i++){
-            this.$data.records[i].createTime = changeTime(this.$data.records[i].createTime)
+            this.$data.records[i].tradeDate = changeTime(this.$data.records[i].tradeDate)
           }
-        })
-        .catch(function (err) {
-          this.$message({
-            showClose: true,
-            message: err.statusMessage,
-            type: 'error'
-          });
-        })
-
-      this.$http.post('/admin/dealer/listFirstDealer',this.$data.query)
-        .then(function (res) {
-          this.$data.records = res.data.records;
-          this.$data.count = res.data.count;
-          this.$data.total = res.data.totalPage;
-          this.$data.pageSize = res.data.pageSize;
+        },function (err) {
           this.$data.loading = false;
-          for(var i=0;i<this.$data.records.length;i++){
-            if(this.$data.records[i].belongProvinceName!=null&&this.$data.records[i].belongCityName!=null){
-              this.$data.records[i].belong = this.$data.records[i].belongProvinceName+"-"+this.$data.records[i].belongCityName;
-            }
-          }
+          this.$store.commit('MESSAGE_ACCORD_SHOW', {
+            text: err.statusMessage
+          })
         })
-    },
-    updated :function () {
-      var aBlue = document.getElementsByClassName('blue');
-      console.log(aBlue)
-      for(var i=2;i<aBlue.length;i++){
-        console.log(1)
-        aBlue[i].style.color = "#3c8dbc";
-        aBlue[i].style.cursor = "pointer";
-      }
     },
     methods: {
-      open:function () {
-        this.$data.isOpen = !this.$data.isOpen;
-        document.getElementById('select').style.borderColor = '#20a0ff'
-      },
-      select:function (val) {
-        if(val.list!=undefined){
-          this.$data.select1 = val.aname;
-          this.$data.select2 = '';
-        }else {
-          this.$data.select2 = val.aname;
-        }
-        if(this.$data.select1!=''&&this.$data.select2!=''){
-          var oCon = document.getElementById('select').getElementsByTagName('span')[0];
-          oCon.innerHTML = this.$data.select1+'-'+this.$data.select2;
-          oCon.style.color = '#1f2d3d';
-          this.$data.isOpen = !this.$data.isOpen;
-          document.getElementById('select').style.borderColor = '#bfcbd9'
-          for(var i=0; i<this.$data.provinces.length;i++){
-            for(var j=0; j<this.$data.provinces[i].list.length; j++){
-                if(this.$data.provinces[i].list[j].aname==this.$data.select2){
-                  this.$data.query.districtCode = this.$data.provinces[i].list[j].code;
-                }
-            }
-          }
-        }
-      },
-      toDet:function (row,col,cell,e) {
-        if(col.label=='代理商名称'||col.label=='代理商编号'){
-          this.$router.push('/admin/record/agentAddBase?id='+row.id)
-        }
-      },
       search: function () {
         this.$data.query.pageNo = 1;
         this.$data.records = '';
         this.$data.loading = true;
-        console.log(this.$data.query);
-        this.$http.post('/admin/dealer/listFirstDealer',this.$data.query)
+        this.$http.post('/admin/settle/list',this.$data.query)
           .then(function (res) {
             this.$data.records = res.data.records;
             this.$data.count = res.data.count;
             this.$data.total = res.data.totalPage;
             this.$data.loading = false;
-            for(var i=0;i<this.$data.records.length;i++){
-              if(this.$data.records[i].belongProvinceName!=null&&this.$data.records[i].belongCityName!=null){
-                this.$data.records[i].belong = this.$data.records[i].belongProvinceName+"-"+this.$data.records[i].belongCityName;
+            var changeTime=function (val) {
+              if(val==''||val==null){
+                return ''
+              }else {
+                val = new Date(val)
+                var year=val.getFullYear();
+                var month=val.getMonth()+1;
+                var date=val.getDate();
+                function tod(a) {
+                  if(a<10){
+                    a = "0"+a
+                  }
+                  return a;
+                }
+                return year+"-"+tod(month)+"-"+tod(date);
               }
             }
+            for(let i = 0; i < this.$data.records.length; i++){
+              this.$data.records[i].tradeDate = changeTime(this.$data.records[i].tradeDate)
+            }
+          },function (err) {
+            this.$data.loading = false;
+            this.$store.commit('MESSAGE_ACCORD_SHOW', {
+              text: err.statusMessage
+            })
           })
       },
       list: function (val) {
@@ -297,37 +288,74 @@
       handleSizeChange(val) {
         this.$data.query.pageSize = val;
         this.$data.loading = true;
-        this.$data.query.pageNo = 1;
-        this.$data.records = '';
-        this.$http.post('/admin/dealer/listFirstDealer',this.$data.query)
+        this.$http.post('/admin/settle/list',this.$data.query)
           .then(function (res) {
             this.$data.records = res.data.records;
             this.$data.count = res.data.count;
             this.$data.total = res.data.totalPage;
             this.$data.loading = false;
-            for(var i=0;i<this.$data.records.length;i++){
-              if(this.$data.records[i].belongProvinceName!=null&&this.$data.records[i].belongCityName!=null){
-                this.$data.records[i].belong = this.$data.records[i].belongProvinceName+"-"+this.$data.records[i].belongCityName;
+            var changeTime=function (val) {
+              if(val==''||val==null){
+                return ''
+              }else {
+                val = new Date(val)
+                var year=val.getFullYear();
+                var month=val.getMonth()+1;
+                var date=val.getDate();
+                function tod(a) {
+                  if(a<10){
+                    a = "0"+a
+                  }
+                  return a;
+                }
+                return year+"-"+tod(month)+"-"+tod(date);
               }
             }
+            for(let i = 0; i < this.$data.records.length; i++){
+              this.$data.records[i].tradeDate = changeTime(this.$data.records[i].tradeDate)
+            }
+          },function (err) {
+            this.$data.loading = false;
+            this.$store.commit('MESSAGE_ACCORD_SHOW', {
+              text: err.statusMessage
+            })
           })
       },
       //当前页改变时
       handleCurrentChange(val) {
         this.$data.query.pageNo = val;
-        this.$data.records = '';
         this.$data.loading = true;
-        this.$http.post('/admin/dealer/listFirstDealer',this.$data.query)
+        this.$http.post('/admin/settle/list',this.$data.query)
           .then(function (res) {
             this.$data.records = res.data.records;
             this.$data.count = res.data.count;
             this.$data.total = res.data.totalPage;
             this.$data.loading = false;
-            for(var i=0;i<this.$data.records.length;i++){
-              if(this.$data.records[i].belongProvinceName!=null&&this.$data.records[i].belongCityName!=null){
-                this.$data.records[i].belong = this.$data.records[i].belongProvinceName+"-"+this.$data.records[i].belongCityName;
+            var changeTime=function (val) {
+              if(val==''||val==null){
+                return ''
+              }else {
+                val = new Date(val)
+                var year=val.getFullYear();
+                var month=val.getMonth()+1;
+                var date=val.getDate();
+                function tod(a) {
+                  if(a<10){
+                    a = "0"+a
+                  }
+                  return a;
+                }
+                return year+"-"+tod(month)+"-"+tod(date);
               }
             }
+            for(let i = 0; i < this.$data.records.length; i++){
+              this.$data.records[i].tradeDate = changeTime(this.$data.records[i].tradeDate)
+            }
+          },function (err) {
+            this.$data.loading = false;
+            this.$store.commit('MESSAGE_ACCORD_SHOW', {
+              text: err.statusMessage
+            })
           })
       }
     },
@@ -361,39 +389,5 @@
   }
   .btn{
     font-size: 12px;
-  }
-  .select{
-    width: 100%;
-    height: 30px;
-    background-color: #fff;
-    border-radius: 4px;
-    border: 1px solid #bfcbd9;
-    color: #bfcbd9;
-    display: block;
-    font-size: 12px;
-    line-height: 30px;
-    padding: 0px 10px;
-    transition: border-color .2s cubic-bezier(.645,.045,.355,1);
-    overflow: hidden;
-    position: relative;
-  }
-  .select:hover{
-    border-color: #8391a5;
-  }
-  .isShow{
-    position: absolute;
-    width: 19%;
-    margin-top: 5px;
-    border-radius: 2px;
-    z-index: 1000;
-    max-height: 250px;
-    overflow: auto;
-  }
-  .blue div.cell{
-    color: #3c8dbc;
-    cursor: pointer;
-  }
-  .blue div:hover{
-    color: #72afd2;
   }
 </style>

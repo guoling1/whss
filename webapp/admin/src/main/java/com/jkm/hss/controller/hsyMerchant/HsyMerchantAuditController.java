@@ -52,10 +52,13 @@ public class HsyMerchantAuditController extends BaseController {
     @ResponseBody
     @RequestMapping(value = "/rejectToExamine",method = RequestMethod.POST)
     public CommonResponse rejectToExamine(@RequestBody final HsyMerchantAuditRequest hsyMerchantAuditRequest){
+        if (hsyMerchantAuditRequest.getCheckErrorInfo()==null||hsyMerchantAuditRequest.getCheckErrorInfo().equals("")){
+            return CommonResponse.simpleResponse(-1,"请填写错误信息");
+        }
         hsyMerchantAuditRequest.setStatus(AppConstant.SHOP_STATUS_REJECT);
         hsyMerchantAuditService.auditNotPass(hsyMerchantAuditRequest);
         pushService.pushAuditMsg(hsyMerchantAuditRequest.getUid(),false);
-        return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE,"审核未通过");
+        return CommonResponse.simpleResponse(-1,"审核未通过");
 
     }
 }

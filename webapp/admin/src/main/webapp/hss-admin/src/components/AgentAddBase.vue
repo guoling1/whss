@@ -43,7 +43,7 @@
               </el-col>
               <el-col :span="6">
                 <div class="grid-content bg-purple-light">
-                  <el-input size="small" v-model="query.markCode" placeholder="请输入内容" :disabled="true"></el-input>
+                  <el-input size="small" v-model="query.name" placeholder="请输入内容" :disabled="true"></el-input>
                 </div>
               </el-col>
               <el-col :span="8">
@@ -60,18 +60,18 @@
                     <el-select v-model="province" placeholder="请选择" size="small">
                       <el-option
                         v-for="province in provinces"
-                        :label="province.aname"
-                        :value="province.aname">
+                        :label="province.name"
+                        :value="province.name">
                       </el-option>
                     </el-select>
                   </div>
                   省
-                  <div style="width: 39%;display: inline-block;margin-left: 10px;margin-right: 5px;">
+                  <div style="width: 40%;display: inline-block;margin-left: 10px;margin-right: 5px;">
                     <el-select v-model="city" placeholder="请选择" size="small">
                       <el-option
                         v-for="city in citys"
-                        :label="city.aname"
-                        :value="city.aname">
+                        :label="city.name"
+                        :value="city.name">
                       </el-option>
                     </el-select>
                   </div>
@@ -101,7 +101,7 @@
               </el-col>
               <el-col :span="6">
                 <div class="grid-content bg-purple-light">
-                  <el-input size="small" v-model="query.firstDealerName" placeholder="请输入内容" :disabled="true"></el-input>
+                  <el-input size="small" v-model="query.name" placeholder="请输入内容" :disabled="true"></el-input>
                 </div>
               </el-col>
               <el-col :span="8">
@@ -114,7 +114,7 @@
               </el-col>
               <el-col :span="6">
                 <div class="grid-content bg-purple-light">
-                  <el-input size="small" v-model="query.firstMarkCode" placeholder="请输入内容" :disabled="true"></el-input>
+                  <el-input size="small" v-model="query.name" placeholder="请输入内容" :disabled="true"></el-input>
                 </div>
               </el-col>
               <el-col :span="8">
@@ -194,8 +194,7 @@
               <div class="btn btn-default" @click="goBack" v-if="!isShow" style="width: 45%;margin: 20px 0 100px;">
                 返回
               </div>
-              <div class="btn btn-default" @click="change()" v-if="!isShow"
-                   style="width: 45%;float: right;margin: 20px 0 100px;">
+              <div class="btn btn-default" @click="change" v-if="!isShow&&level==1" style="width: 45%;float: right;margin: 20px 0 100px;">
                 修改
               </div>
 
@@ -218,21 +217,19 @@
       return {
         provinces: '',
         citys: '',
-        province: '',
-        city: '',
+        province:'',
+        city:'',
         level: '',
-        query: {
-          mobile: '',
-          name: '',
-          belongProvinceCode:'',
-          belongProvinceName:'',
-          belongCityCode: '',
-          belongCityName: '',
-          belongArea: '',
+        query:{
+          mobile:'',
+          name:'',
+          province:'',
+          city:'',
+          belongArea:'',
           bankCard: '',
           bankAccountName: '',
-          bankReserveMobile: '',
           idCard: '',
+          bankReserveMobile: '',
         },
         id: 0,
         isShow: true,
@@ -240,96 +237,80 @@
       }
     },
     created: function () {
-      //获取所有省
-      this.$http.post('/admin/district/findAllDistrict')
-        .then(function (res) {
-          this.$data.provinces = res.data;
-        })
-        .catch(function (err) {
-          this.$message({
-            showClose: true,
-            message: err.statusMessage,
-            type: 'error'
-          })
-        })
+      //城市联动
+      this.$data.provinces = msg;
+      if (this.$data.province != '') {
+        for (var i = 0; i < this.$data.provinces.length; i++) {
+          if (this.$data.provinces[i].name == this.$data.province) {
+            this.$data.citys = this.$data.provinces[i].city
+          }
+        }
+      }
       //若为查看详情
       if (this.$route.query.id != undefined) {
         this.$data.isShow = false;
-        this.$http.get('/admin/dealer/findBydealerId/' + this.$route.query.id)
+        this.$http.get('/admin/dealer/' + this.$route.query.id)
           .then(function (res) {
-            this.$data.query = res.data;
-            this.$data.province = res.data.belongProvinceName;
-            this.$data.city = res.data.belongCityName;
+            this.$data.query.mobile = res.data.mobile;
+            this.$data.query.name = res.data.name;
+            this.$data.query.belongArea = res.data.belongArea;
+            this.$data.query.bankCard = res.data.bankCard;
+            this.$data.query.bankAccountName = res.data.bankAccountName;
+            this.$data.query.idCard = res.data.idCard;
           })
       }
       this.$data.level = this.$route.query.level;
     },
     watch: {
       province: function (val, oldval) {
-        if (val != oldval&&oldval!="") {
+        if (val != oldval) {
           this.$data.city = '';
           this.$data.query.province = this.$data.province;
         }
         if (this.$data.province != '') {
           for (var i = 0; i < this.$data.provinces.length; i++) {
-            if (this.$data.provinces[i].aname == this.$data.province) {
-              this.$data.query.belongProvinceCode= this.$data.provinces[i].code
-              this.$data.query.belongProvinceName= this.$data.province
-              this.$data.citys = this.$data.provinces[i].list
+            if (this.$data.provinces[i].name == this.$data.province) {
+              this.$data.citys = this.$data.provinces[i].city
             }
           }
         }
       },
-      city: function (val, oldval) {
+      city: function (val,oldval) {
         if (val != oldval) {
-          this.$data.query.belongCityName = this.$data.city;
-          for(var i=0;i<this.$data.citys.length;i++){
-            if(this.$data.citys[i].aname == this.$data.city){
-              this.$data.query.belongCityCode = this.$data.citys[i].code;
-            }
-          }
+          this.$data.query.city = this.$data.city;
         }
       }
     },
     methods: {
-      //创建一级代理
       create: function () {
-        this.$http.post('/admin/user/addFirstDealer2', this.$data.query)
+        console.log(this.$data.query)
+        this.$http.post('/admin/user/addFirstDealer', this.$data.query)
           .then(function (res) {
-            this.$message({
-              showClose: true,
-              message: '创建成功',
-              type: 'success'
-            });
-            this.$router.push('/admin/record/agentListFir')
+            this.$store.commit('MESSAGE_ACCORD_SHOW', {
+              text: "添加成功"
+            })
+            this.$router.push('/admin/record/agentList')
           }, function (err) {
-            this.$message({
-              showClose: true,
-              message: err.statusMessage,
-              type: 'error'
-            });
+            this.$store.commit('MESSAGE_ACCORD_SHOW', {
+              text: err.statusMessage
+            })
           })
       },
       goBack: function () {
-        this.$router.push('/admin/record/agentListFir')
+        this.$router.push('/admin/record/agentList')
       },
       //修改
       change: function () {
-          console.log(this.$data.query)
-        this.$http.post('/admin/user/updateDealer2', this.$data.query)
+        this.$http.post('/admin/user/updateDealer', this.$data.query)
           .then(function (res) {
-            this.$message({
-              showClose: true,
-              message: '修改成功',
-              type: 'success'
-            });
+            this.$store.commit('MESSAGE_ACCORD_SHOW', {
+              text: "修改成功"
+            })
             this.$router.push('/admin/record/agentList')
           }, function (err) {
-            this.$message({
-              showClose: true,
-              message: err.statusMessage,
-              type: 'error'
-            });
+            this.$store.commit('MESSAGE_ACCORD_SHOW', {
+              text: err.statusMessage
+            })
           })
       }
     },
@@ -359,7 +340,7 @@
     margin-bottom: 10px;
   }
 
-  .title2 {
+  .title2{
     margin-left: 10%;
   }
 </style>

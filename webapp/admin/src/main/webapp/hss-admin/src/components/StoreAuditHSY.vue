@@ -101,25 +101,29 @@
             <tr class="row">
               <th class="col-md-3" style="text-align: center;">身份证正面:</th>
               <th class="col-md-3" style="text-align: center;">身份证反面:</th>
-              <th class="col-md-3" style="text-align: center;">手持身份证:</th>
-              <th class="col-md-3" style="text-align: center;">银行卡正面:</th>
-              <th class="col-md-3" style="text-align: center;">手持结算卡:</th>
+              <th class="col-md-3" style="text-align: center;">营业执照:</th>
+              <th class="col-md-3" style="text-align: center;">店面照片:</th>
+              <th class="col-md-3" style="text-align: center;">收银台:</th>
+              <th class="col-md-3" style="text-align: center;">室内照片:</th>
             </tr>
             <tr class="row">
               <td class="col-md-3" style="text-align: center;border: none;">
-                <img style="width: 200px" @click="changeBig()" :src="msg.identityFacePic" alt=""/>
+                <img style="width: 200px" @click="changeBig()" :src="msg.idcardf" alt=""/>
               </td>
               <td class="col-md-3" style="text-align: center;border: none;">
-                <img style="width: 200px"  @click="changeBig()" :src="msg.identityOppositePic" alt=""/>
+                <img style="width: 200px"  @click="changeBig()" :src="msg.idcardb" alt=""/>
               </td>
               <td class="col-md-3" style="text-align: center;border: none;">
-                <img style="width: 200px"  @click="changeBig()" :src="msg.identityHandPic" alt=""/>
+                <img style="width: 200px"  @click="changeBig()" :src="msg.licenceID" alt=""/>
               </td>
               <td class="col-md-3" style="text-align: center;border: none;">
-                <img style="width: 200px"  @click="changeBig()" :src="msg.bankPic" alt=""/>
+                <img style="width: 200px"  @click="changeBig()" :src="msg.storefrontID" alt=""/>
               </td>
               <td class="col-md-3" style="text-align: center;border: none;">
-                <img style="width: 200px"  @click="changeBig()" :src="msg.bankHandPic" alt=""/>
+                <img style="width: 200px"  @click="changeBig()" :src="msg.counterID" alt=""/>
+              </td>
+              <td class="col-md-3" style="text-align: center;border: none;">
+                <img style="width: 200px"  @click="changeBig()" :src="msg.indoorID" alt=""/>
               </td>
             </tr>
             </tbody>
