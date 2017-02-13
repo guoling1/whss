@@ -429,7 +429,7 @@
         SELECT * FROM tb_dealer WHERE invite_code = #{inviteCode}
     </select>
 
-    <update id="updateInviteBtn">
+    <update id="updatePwd">
         UPDATE tb_dealer
         SET
         login_pwd = #{loginPwd}
