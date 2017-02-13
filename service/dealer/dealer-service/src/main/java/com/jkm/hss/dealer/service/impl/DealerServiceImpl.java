@@ -1963,4 +1963,16 @@ public class DealerServiceImpl implements DealerService {
         final Dealer dealer = this.dealerDao.selectByInviteCode(inviteCode);
         return Optional.fromNullable(dealer);
     }
+
+    /**
+     * 修改密码
+     *
+     * @param loginPwd
+     * @param dealerId
+     * @return
+     */
+    @Override
+    public int updatePwd(String loginPwd, long dealerId) {
+        return this.dealerDao.updatePwd(loginPwd,dealerId);
+    }
 }
