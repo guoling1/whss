@@ -19,7 +19,7 @@
             <div class="box-body">
               <div class="form-group">
                 <div class="product">
-                  <div class="col-xs-12">
+                  <div class="col-xs-10" style="margin-left: 5%">
                         <div class="box box1">
                           <!--<div class="box-header">-->
                             <!--<h3 class="box-title">{{product.productName}}</h3>-->
@@ -66,7 +66,7 @@
               <el-radio :label="1" style="display: block;margin:10px 0 0">关</el-radio>
             </el-radio-group>
         </div>
-        <div>
+        <div v-if="records.productName=='好收收'">
           <div class="box-header" style="margin-top: 15px">
             <h3 class="box-title title2">合伙人推荐功能开关：</h3>
           </div>
@@ -77,7 +77,7 @@
             <el-radio :label="1" style="display: block;margin:10px 0 0">关</el-radio>
           </el-radio-group>
         </div>
-        <div>
+        <div v-if="records.productName=='好收收'">
           <div class="box-header" style="margin-top: 15px">
             <h3 class="box-title title2">合伙人推荐分润设置：</h3>
           </div>
@@ -127,10 +127,10 @@
             </div>
           </form>
         </div>
-        <div class="btn btn-default" @click="goBack" style="margin: 0 20px 100px 40px;">
+        <div class="btn btn-default" @click="goBack" style="margin: 20px 20px 100px 40px;">
           返回
         </div>
-        <div class="btn btn-default" @click="change" style="margin: 0 0 100px;">
+        <div class="btn btn-default" @click="change" style="margin: 20px 0 100px;" v-if="level==1">
           修改
         </div>
       </div>
@@ -148,18 +148,33 @@
         channels:'',
         dealerUpgerdeRate1:'',
         dealerUpgerdeRate2:'',
+        level:1,
+        url:''
       }
     },
     created: function () {
       if(this.$route.query.productId!=0){
           this.$data.isAdd = false;
       }
-      this.$http.get('/admin/dealer/hss/'+this.$route.query.dealerId+'/'+this.$route.query.productId)
+      if(this.$route.query.level==2){
+        this.$data.level = 2;
+      }
+      this.$http.get('/admin/dealer/'+this.$route.query.product+'/'+this.$route.query.dealerId+'/'+this.$route.query.productId)
         .then(function (res) {
           this.$data.records = res.data;
           this.$data.channels = res.data.product.channels;
-          this.$data.dealerUpgerdeRate1 = res.data.dealerUpgerdeRates[0];
-          this.$data.dealerUpgerdeRate2 = res.data.dealerUpgerdeRates[1];
+          if(this.$route.query.product == 'hss'){
+            res.data.totalProfitSpace = res.data.totalProfitSpace*100;
+            res.data.dealerUpgerdeRates[0].bossDealerShareRate = res.data.dealerUpgerdeRates[0].bossDealerShareRate*100;
+            res.data.dealerUpgerdeRates[0].firstDealerShareProfitRate = res.data.dealerUpgerdeRates[0].firstDealerShareProfitRate*100;
+            res.data.dealerUpgerdeRates[0].secondDealerShareProfitRate = res.data.dealerUpgerdeRates[0].secondDealerShareProfitRate*100;
+            res.data.dealerUpgerdeRates[1].bossDealerShareRate = res.data.dealerUpgerdeRates[1].bossDealerShareRate*100;
+            res.data.dealerUpgerdeRates[1].firstDealerShareProfitRate = res.data.dealerUpgerdeRates[1].firstDealerShareProfitRate*100;
+            res.data.dealerUpgerdeRates[1].secondDealerShareProfitRate = res.data.dealerUpgerdeRates[1].secondDealerShareProfitRate*100;
+            this.$data.dealerUpgerdeRate1 = res.data.dealerUpgerdeRates[0];
+            this.$data.dealerUpgerdeRate2 = res.data.dealerUpgerdeRates[1];
+          }
+
         })
         .catch(function (err) {
           this.$message({
@@ -170,38 +185,38 @@
         });
     },
     methods: {
-      create: function () {
-        console.log(this.$data.query)
-        this.$http.post('/admin/user/addFirstDealer', this.$data.query)
-          .then(function (res) {
-            this.$store.commit('MESSAGE_ACCORD_SHOW', {
-              text: "添加成功"
-            })
-            this.$router.push('/admin/record/agentList')
-          }, function (err) {
-            this.$store.commit('MESSAGE_ACCORD_SHOW', {
-              text: err.statusMessage
-            })
-          })
-      },
       goBack: function () {
-//        this.$router.push('/admin/record/agentList')
         this.$router.go(-1)
       },
       //修改
       change: function () {
+        if(this.$route.query.product == 'hss'){
+          this.$data.records.totalProfitSpace = this.$data.records.totalProfitSpace/100;
+          this.$data.records.dealerUpgerdeRates[0].bossDealerShareRate = this.$data.records.dealerUpgerdeRates[0].bossDealerShareRate/100;
+          this.$data.records.dealerUpgerdeRates[0].firstDealerShareProfitRate = this.$data.records.dealerUpgerdeRates[0].firstDealerShareProfitRate/100;
+          this.$data.records.dealerUpgerdeRates[0].secondDealerShareProfitRate = this.$data.records.dealerUpgerdeRates[0].secondDealerShareProfitRate/100;
+          this.$data.records.dealerUpgerdeRates[1].bossDealerShareRate = this.$data.records.dealerUpgerdeRates[1].bossDealerShareRate/100;
+          this.$data.records.dealerUpgerdeRates[1].firstDealerShareProfitRate = this.$data.records.dealerUpgerdeRates[1].firstDealerShareProfitRate/100;
+          this.$data.records.dealerUpgerdeRates[1].secondDealerShareProfitRate = this.$data.records.dealerUpgerdeRates[1].secondDealerShareProfitRate/100;
+          this.$data.records.dealerUpgerdeRates[0] = this.$data.dealerUpgerdeRate1;
+          this.$data.records.dealerUpgerdeRates[1] = this.$data.dealerUpgerdeRate2;
+        }
+
+        this.$data.records.dealerId = this.$route.query.dealerId;
         this.$data.records.product.channels = this.$data.channels;
-        this.$data.records.dealerUpgerdeRates[0] = this.$data.dealerUpgerdeRate1;
-        this.$data.records.dealerUpgerdeRates[1] = this.$data.dealerUpgerdeRate2;
-        this.$data.records.dealerId = this.$route.query.dealerId
-        this.$http.post('/admin/dealer/addOrUpdateHssDealer', this.$data.records)
+        if(this.$route.query.product == "hss"){
+          this.$data.url = '/admin/dealer/addOrUpdateHssDealer'
+        }else {
+          this.$data.url = '/admin/dealer/addOrUpdateHsyDealer'
+        }
+        this.$http.post(this.$data.url, this.$data.records)
           .then(function (res) {
             this.$message({
               showClose: true,
               message: '设置成功',
               type: 'success'
             });
-            this.$router.push('/admin/record/agentListFir')
+            this.$router.go(-1)
           }, function (err) {
             this.$message({
               showClose: true,
