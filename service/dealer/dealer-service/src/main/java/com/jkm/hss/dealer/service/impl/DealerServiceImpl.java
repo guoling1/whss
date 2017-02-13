@@ -1783,6 +1783,8 @@ public class DealerServiceImpl implements DealerService {
         final Dealer dealer = dealerOptional.get();
         dealer.setMobile(request.getMobile());
         dealer.setProxyName(request.getName());
+        dealer.setLoginName(request.getLoginName());
+        dealer.setEmail(request.getEmail());
         dealer.setBelongProvinceCode(request.getBelongProvinceCode());
         dealer.setBelongProvinceName(request.getBelongProvinceName());
         dealer.setBelongCityCode(request.getBelongCityCode());
@@ -1997,5 +1999,23 @@ public class DealerServiceImpl implements DealerService {
     @Override
     public long getByLoginNameUnIncludeNow(String loginName, long dealerId) {
         return this.dealerDao.selectByLoginNameUnIncludeNow(loginName, dealerId);
+    }
+
+    /**
+     * 【代理商后台】二级代理商列表
+     *
+     * @param secondDealerSearchRequest
+     * @return
+     */
+    @Override
+    public PageModel<SecondDealerResponse> listSecondDealer(SecondDealerSearchRequest secondDealerSearchRequest) {
+        final PageModel<SecondDealerResponse> pageModel = new PageModel<>(secondDealerSearchRequest.getPageNo(), secondDealerSearchRequest.getPageSize());
+        secondDealerSearchRequest.setOffset(pageModel.getFirstIndex());
+        secondDealerSearchRequest.setCount(pageModel.getPageSize());
+        final int count = this.dealerDao.selectSecondDealerCountByPage(secondDealerSearchRequest);
+        final List<SecondDealerResponse> dealers = this.dealerDao.selectSecondDealersByPage(secondDealerSearchRequest);
+        pageModel.setCount(count);
+        pageModel.setRecords(dealers);
+        return pageModel;
     }
 }

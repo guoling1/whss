@@ -399,4 +399,12 @@ public interface DealerService {
      * @return
      */
     long getByLoginNameUnIncludeNow(String loginName, long dealerId);
+
+    /**
+     * 【代理商后台】二级代理商列表
+     *
+     * @param secondDealerSearchRequest
+     * @return
+     */
+    PageModel<SecondDealerResponse> listSecondDealer(SecondDealerSearchRequest secondDealerSearchRequest);
 }
