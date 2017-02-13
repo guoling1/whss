@@ -66,10 +66,10 @@
             <h3 class="box-title title2">代理商推广码&推广链接：</h3>
           </div>
             <el-radio-group v-model="a" style="margin-left: 65px">
-              <el-radio :label="1" style="display: block">对公
+              <el-radio :label="1" style="display: block">开
                 <span style="font-weight: normal;margin-left: 20px">推广码：800821</span>
                 <span style="font-weight: normal;margin-left: 20px">推广链接：https://hss.qianbaojiajia.com/reg?invest=800821</span></el-radio>
-              <el-radio :label="2" style="display: block;margin:10px 0 0">对私</el-radio>
+              <el-radio :label="2" style="display: block;margin:10px 0 0">关</el-radio>
             </el-radio-group>
         </div>
         <div>
