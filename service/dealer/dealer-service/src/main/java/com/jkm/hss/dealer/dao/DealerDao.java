@@ -231,4 +231,12 @@ public interface DealerDao {
      * @return
      */
     Dealer selectByInviteCode(@Param("inviteCode") String inviteCode);
+
+    /**
+     * 修改密码
+     * @param loginPwd
+     * @param dealerId
+     * @return
+     */
+    int updatePwd(@Param("loginPwd") String loginPwd, @Param("dealerId") long dealerId);
 }

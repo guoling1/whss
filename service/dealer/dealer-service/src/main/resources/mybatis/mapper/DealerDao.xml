@@ -25,7 +25,10 @@
         belong_city_code,
         belong_city_name,
         invite_code,
-        invite_btn
+        invite_btn,
+        login_name,
+        login_pwd,
+        email
         )
         VALUES
         (
@@ -50,7 +53,10 @@
         #{belongCityCode},
         #{belongCityName},
         #{inviteCode},
-        #{inviteBtn}
+        #{inviteBtn},
+        #{loginName},
+        #{loginPwd},
+        #{email}
         );
     </insert>
     <update id="update">
@@ -388,6 +394,8 @@
         SET
         mobile = #{mobile},
         proxy_name = #{proxyName},
+        login_name = #{loginName},
+        email = #{email},
         belong_province_code=#{belongProvinceCode},
         belong_province_name=#{belongProvinceName},
         belong_city_code=#{belongCityCode},
@@ -420,4 +428,11 @@
     <select id="selectByInviteCode" resultType="com.jkm.hss.dealer.entity.Dealer">
         SELECT * FROM tb_dealer WHERE invite_code = #{inviteCode}
     </select>
+
+    <update id="updateInviteBtn">
+        UPDATE tb_dealer
+        SET
+        login_pwd = #{loginPwd}
+        WHERE id = #{dealerId}
+    </update>
 </mapper>
