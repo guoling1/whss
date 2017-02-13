@@ -8,8 +8,8 @@
         <version>1.0.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>hsy-web-mobile</artifactId>
-    <version>${hsy.mobile.version}</version>
+    <artifactId>dealer-pc</artifactId>
+    <version>${dealer.version}</version>
     <packaging>war</packaging>
 
     <dependencies>
