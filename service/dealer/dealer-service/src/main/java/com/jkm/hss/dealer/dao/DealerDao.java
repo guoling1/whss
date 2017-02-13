@@ -4,6 +4,7 @@ import com.jkm.hss.dealer.entity.Dealer;
 import com.jkm.hss.dealer.helper.requestparam.ListDealerRequest;
 import com.jkm.hss.dealer.helper.requestparam.ListFirstDealerRequest;
 import com.jkm.hss.dealer.helper.requestparam.ListSecondDealerRequest;
+import com.jkm.hss.dealer.helper.requestparam.SecondDealerSearchRequest;
 import com.jkm.hss.dealer.helper.response.FirstDealerResponse;
 import com.jkm.hss.dealer.helper.response.SecondDealerResponse;
 import org.apache.ibatis.annotations.Param;
@@ -239,4 +240,20 @@ public interface DealerDao {
      * @return
      */
     int updatePwd(@Param("loginPwd") String loginPwd, @Param("dealerId") long dealerId);
+
+
+    /**
+     * 【代理商后台】查询二级代理个数
+     *
+     * @param listFirstDealerRequest
+     * @return
+     */
+    int selectSecondDealerCountByPage(SecondDealerSearchRequest listFirstDealerRequest);
+    /**
+     * 【代理商后台】分页查询二级代理
+     *
+     * @param secondDealerSearchRequest
+     * @return
+     */
+    List<SecondDealerResponse> selectSecondDealersByPage(SecondDealerSearchRequest secondDealerSearchRequest);
 }
