@@ -1709,7 +1709,44 @@ public class DealerServiceImpl implements DealerService {
                 GlobalID.GetInviteID(EnumGlobalDealerLevel.FIRSTDEALER,dealer.getId()+""),dealer.getId());
         return dealer.getId();
     }
-
+    /**
+     * {@inheritDoc}
+     *
+     * @param secondLevelDealerAdd2Request
+     * @return
+     */
+    @Override
+    @Transactional
+    public long createSecondDealer2(final SecondLevelDealerAdd2Request secondLevelDealerAdd2Request,long dealerId) {
+        final long accountId = this.accountService.initAccount(secondLevelDealerAdd2Request.getName());
+        final Dealer dealer = new Dealer();
+        dealer.setAccountId(accountId);
+        dealer.setMobile(secondLevelDealerAdd2Request.getMobile());
+        dealer.setBankAccountName(secondLevelDealerAdd2Request.getBankAccountName());
+        dealer.setSettleBankCard(DealerSupport.encryptBankCard(secondLevelDealerAdd2Request.getBankCard()));
+        dealer.setBankName(secondLevelDealerAdd2Request.getBankName());
+        dealer.setBankReserveMobile(DealerSupport.encryptMobile(secondLevelDealerAdd2Request.getBankReserveMobile()));
+        dealer.setProxyName(secondLevelDealerAdd2Request.getName());
+        dealer.setBelongArea(secondLevelDealerAdd2Request.getBelongArea());
+        dealer.setLevel(EnumDealerLevel.SECOND.getId());
+        dealer.setFirstLevelDealerId(dealerId);
+        dealer.setSecondLevelDealerId(0);
+        dealer.setStatus(EnumDealerStatus.NORMAL.getId());
+        dealer.setRecommendBtn(EnumRecommendBtn.OFF.getId());
+        dealer.setIdCard(DealerSupport.encryptIdenrity(secondLevelDealerAdd2Request.getIdCard()));
+        dealer.setBelongProvinceCode(secondLevelDealerAdd2Request.getBelongProvinceCode());
+        dealer.setBelongProvinceName(secondLevelDealerAdd2Request.getBelongProvinceName());
+        dealer.setBelongCityCode(secondLevelDealerAdd2Request.getBelongCityCode());
+        dealer.setBelongCityName(secondLevelDealerAdd2Request.getBelongCityName());
+        dealer.setInviteBtn(EnumInviteBtn.OFF.getId());
+        dealer.setLoginName(secondLevelDealerAdd2Request.getLoginName());
+        dealer.setLoginPwd(DealerSupport.passwordDigest(secondLevelDealerAdd2Request.getLoginPwd(),"JKM"));
+        dealer.setEmail(secondLevelDealerAdd2Request.getEmail());
+        this.add2(dealer);
+        this.updateMarkCodeAndInviteCode(GlobalID.GetGlobalID(EnumGlobalIDType.DEALER, EnumGlobalIDPro.MIN,dealer.getId()+""),
+                GlobalID.GetInviteID(EnumGlobalDealerLevel.SECORDDEALER,dealer.getId()+""),dealer.getId());
+        return dealer.getId();
+    }
 
     /**
      * {@inheritDoc}
@@ -1778,6 +1815,33 @@ public class DealerServiceImpl implements DealerService {
     @Override
     @Transactional
     public void updateDealer2(final FirstLevelDealerUpdate2Request request) {
+        final Optional<Dealer> dealerOptional = this.getById(request.getDealerId());
+        Preconditions.checkState(dealerOptional.isPresent(), "代理商[{}] 不存在", request.getDealerId());
+        final Dealer dealer = dealerOptional.get();
+        dealer.setMobile(request.getMobile());
+        dealer.setProxyName(request.getName());
+        dealer.setLoginName(request.getLoginName());
+        dealer.setEmail(request.getEmail());
+        dealer.setBelongProvinceCode(request.getBelongProvinceCode());
+        dealer.setBelongProvinceName(request.getBelongProvinceName());
+        dealer.setBelongCityCode(request.getBelongCityCode());
+        dealer.setBelongCityName(request.getBelongCityName());
+        dealer.setBelongArea(request.getBelongArea());
+        dealer.setSettleBankCard(DealerSupport.encryptBankCard(request.getBankCard()));
+        dealer.setBankName(request.getBankName());
+        dealer.setBankAccountName(request.getBankAccountName());
+        dealer.setBankReserveMobile(DealerSupport.encryptMobile(request.getBankReserveMobile()));
+        dealer.setIdCard(DealerSupport.encryptIdenrity(request.getIdCard()));
+        this.update2(dealer);
+    }
+    /**
+     * {@inheritDoc}
+     *
+     * @param request
+     */
+    @Override
+    @Transactional
+    public void updateSecondDealer(final SecondLevelDealerUpdate2Request request) {
         final Optional<Dealer> dealerOptional = this.getById(request.getDealerId());
         Preconditions.checkState(dealerOptional.isPresent(), "代理商[{}] 不存在", request.getDealerId());
         final Dealer dealer = dealerOptional.get();
