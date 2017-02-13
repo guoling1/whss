@@ -6,11 +6,16 @@ import java.math.BigDecimal;
 import java.util.List;
 
 /**
- * 增加代理商 入参
+ * Created by yulong.zhang on 2016/12/9.
  */
 @Data
-public class FirstLevelDealerAdd2Request {
-    //=============基本信息========================
+public class FirstLevelDealerUpdate2Request {
+
+    /**
+     * 一级代理商id
+     */
+    private long dealerId;
+
     /**
      * 代理手机号
      */
@@ -25,39 +30,38 @@ public class FirstLevelDealerAdd2Request {
      * 所在省code
      */
     private String belongProvinceCode;
-
     /**
      * 所在省
      */
     private String belongProvinceName;
-
     /**
-     * 所在市code
+     * 所在省code
      */
     private String belongCityCode;
-
     /**
      * 所在市
      */
     private String belongCityName;
+
     /**
-     * 详细地址
+     * 所在地
      */
     private String belongArea;
-    //================结算信息设置=====================
+
     /**
      * 结算卡
      */
     private String bankCard;
 
     /**
-     * 银行开户名称
-     */
-    private String bankAccountName;
-    /**
      * 银行名称
      */
     private String bankName;
+
+    /**
+     * 银行开户名称
+     */
+    private String bankAccountName;
 
     /**
      * 银行预留手机号
@@ -67,5 +71,4 @@ public class FirstLevelDealerAdd2Request {
      * 身份证号
      */
     private String idCard;
-
 }

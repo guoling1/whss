@@ -2,6 +2,10 @@ package com.jkm.hss.dealer.dao;
 
 import com.jkm.hss.dealer.entity.Dealer;
 import com.jkm.hss.dealer.helper.requestparam.ListDealerRequest;
+import com.jkm.hss.dealer.helper.requestparam.ListFirstDealerRequest;
+import com.jkm.hss.dealer.helper.requestparam.ListSecondDealerRequest;
+import com.jkm.hss.dealer.helper.response.FirstDealerResponse;
+import com.jkm.hss.dealer.helper.response.SecondDealerResponse;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
@@ -156,4 +160,67 @@ public interface DealerDao {
      * @return
      */
     int updateMarkCode(@Param("markCode") String markCode, @Param("dealerId") long dealerId);
+
+
+//==============================此处为对二级代理商进行重构=============================
+
+    /**
+     * 查询一级代理个数
+     *
+     * @param listFirstDealerRequest
+     * @return
+     */
+    int selectFirstDealerCountByPageParams(ListFirstDealerRequest listFirstDealerRequest);
+    /**
+     * 分页查询一级代理
+     *
+     * @param listFirstDealerRequest
+     * @return
+     */
+    List<FirstDealerResponse> selectFirstDealersByPageParams(ListFirstDealerRequest listFirstDealerRequest);
+    /**
+     * 查询二级代理个数
+     *
+     * @param listFirstDealerRequest
+     * @return
+     */
+    int selectSecondDealerCountByPageParams(ListSecondDealerRequest listFirstDealerRequest);
+    /**
+     * 分页查询二级代理
+     *
+     * @param listFirstDealerRequest
+     * @return
+     */
+    List<SecondDealerResponse> selectSecondDealersByPageParams(ListSecondDealerRequest listFirstDealerRequest);
+
+    /**
+     * 写入markCode和inviteCode
+     * @param markCode
+     * @param inviteCode
+     * @param dealerId
+     * @return
+     */
+    int updateMarkCodeAndInviteCode(@Param("markCode") String markCode, @Param("inviteCode") String inviteCode, @Param("dealerId") long dealerId);
+    /**
+     * 更新
+     *
+     * @param dealer
+     * @return
+     */
+    int update2(Dealer dealer);
+
+    /**
+     * 更新
+     *
+     * @param dealer
+     * @return
+     */
+    int updateRecommendBtnAndTotalProfitSpace(Dealer dealer);
+    /**
+     * 更新推广开关
+     *
+     * @param dealer
+     * @return
+     */
+    int updateInviteBtn(Dealer dealer);
 }

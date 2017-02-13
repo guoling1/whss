@@ -17,6 +17,7 @@ import com.jkm.hss.dealer.enums.EnumRecommendBtn;
 import com.jkm.hss.dealer.helper.DealerConsts;
 import com.jkm.hss.dealer.helper.requestparam.FirstLevelDealerAdd2Request;
 import com.jkm.hss.dealer.helper.requestparam.FirstLevelDealerAddRequest;
+import com.jkm.hss.dealer.helper.requestparam.FirstLevelDealerUpdate2Request;
 import com.jkm.hss.dealer.helper.requestparam.FirstLevelDealerUpdateRequest;
 import com.jkm.hss.dealer.service.DealerRateService;
 import com.jkm.hss.dealer.service.DealerService;
@@ -654,7 +655,7 @@ public class AdminController extends BaseController {
     }
 
 
-    //==============================此处为对二级代理商进行重构=============================
+    //==============================此处为对代理商进行重构=============================
     /**
      * 添加一级代理商
      *
@@ -665,7 +666,11 @@ public class AdminController extends BaseController {
     public CommonResponse addFirstDealer2(@RequestBody final FirstLevelDealerAdd2Request firstLevelDealerAdd2Request) {
         try{
             if(!ValidateUtils.isMobile(firstLevelDealerAdd2Request.getMobile())) {
-                return CommonResponse.simpleResponse(-1, "代理手机号格式错误");
+                return CommonResponse.simpleResponse(-1, "代理商手机号格式错误");
+            }
+            final Optional<Dealer> dealerOptional = this.dealerService.getByMobile(firstLevelDealerAdd2Request.getMobile());
+            if (dealerOptional.isPresent()) {
+                return CommonResponse.simpleResponse(-1, "代理商手机号已经注册");
             }
             if(StringUtils.isBlank(firstLevelDealerAdd2Request.getName())) {
                 return CommonResponse.simpleResponse(-1, "代理名称不能为空");
@@ -674,28 +679,107 @@ public class AdminController extends BaseController {
             if (proxyNameCount > 0) {
                 return CommonResponse.simpleResponse(-1, "代理名称已经存在");
             }
+            if(StringUtils.isBlank(firstLevelDealerAdd2Request.getBelongProvinceCode())) {
+                return CommonResponse.simpleResponse(-1, "所在省份编码不能为空");
+            }
+            if(StringUtils.isBlank(firstLevelDealerAdd2Request.getBelongProvinceName())) {
+                return CommonResponse.simpleResponse(-1, "所在省份不能为空");
+            }
+            if(StringUtils.isBlank(firstLevelDealerAdd2Request.getBelongCityCode())) {
+                return CommonResponse.simpleResponse(-1, "所在市编码不能为空");
+            }
+            if(StringUtils.isBlank(firstLevelDealerAdd2Request.getBelongCityName())) {
+                return CommonResponse.simpleResponse(-1, "所在市不能为空");
+            }
+            if(StringUtils.isBlank(firstLevelDealerAdd2Request.getBelongArea())) {
+                return CommonResponse.simpleResponse(-1, "详细地址不能为空");
+            }
             final String bankCard = firstLevelDealerAdd2Request.getBankCard();
             final Optional<BankCardBin> bankCardBinOptional = this.bankCardBinService.analyseCardNo(bankCard);
             if (!bankCardBinOptional.isPresent()) {
                 return CommonResponse.simpleResponse(-1, "结算卡格式错误");
             }
             firstLevelDealerAdd2Request.setBankName(bankCardBinOptional.get().getBankName());
-            if(!ValidateUtils.isMobile(firstLevelDealerAdd2Request.getBankReserveMobile())) {
-                return CommonResponse.simpleResponse(-1, "银行预留手机号格式错误");
-            }
-            final Optional<Dealer> dealerOptional = this.dealerService.getByMobile(firstLevelDealerAdd2Request.getMobile());
-            if (dealerOptional.isPresent()) {
-                return CommonResponse.simpleResponse(-1, "代理商手机号已经注册");
+            if(StringUtils.isBlank(firstLevelDealerAdd2Request.getBankAccountName())) {
+                return CommonResponse.simpleResponse(-1, "开户名称不能为空");
             }
             if(!ValidationUtil.isIdCard(firstLevelDealerAdd2Request.getIdCard())){
                 return CommonResponse.simpleResponse(-1, "身份证格式不正确");
             }
-//            final long dealerId = this.dealerService.createFirstDealer(firstLevelDealerAdd2Request);
-//            final FirstLevelDealerAddResponse firstLevelDealerAddResponse = new FirstLevelDealerAddResponse();
-//            firstLevelDealerAddResponse.setDealerId(dealerId);
-            return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "分配成功", "");
+            if(!ValidateUtils.isMobile(firstLevelDealerAdd2Request.getBankReserveMobile())) {
+                return CommonResponse.simpleResponse(-1, "开户手机号格式错误");
+            }
+            final long dealerId = this.dealerService.createFirstDealer2(firstLevelDealerAdd2Request);
+            final FirstLevelDealerAddResponse firstLevelDealerAddResponse = new FirstLevelDealerAddResponse();
+            firstLevelDealerAddResponse.setDealerId(dealerId);
+            return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "添加成功", firstLevelDealerAddResponse);
         }catch (Exception e){
             log.error("错误信息时",e);
+            return CommonResponse.simpleResponse(-1, e.getMessage());
+        }
+    }
+
+    /**
+     * 更新一级代理商
+     *
+     * @param request
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "updateDealer2", method = RequestMethod.POST)
+    public CommonResponse updateDealer2(@RequestBody FirstLevelDealerUpdate2Request request) {
+        try{
+            if(!ValidateUtils.isMobile(request.getMobile())) {
+                return CommonResponse.simpleResponse(-1, "代理商手机号格式错误");
+            }
+            final Optional<Dealer> dealerOptional = this.dealerService.getByMobileUnIncludeNow(request.getMobile(), request.getDealerId());
+            if (dealerOptional.isPresent()) {
+                return CommonResponse.simpleResponse(-1, "代理商手机号已经注册");
+            }
+            if(StringUtils.isBlank(request.getName())) {
+                return CommonResponse.simpleResponse(-1, "代理名称不能为空");
+            }
+            final long proxyNameCount = this.dealerService.getByProxyNameUnIncludeNow(request.getName(), request.getDealerId());
+            if (proxyNameCount > 0) {
+                return CommonResponse.simpleResponse(-1, "代理名称已经存在");
+            }
+
+            if(StringUtils.isBlank(request.getBelongProvinceCode())) {
+                return CommonResponse.simpleResponse(-1, "所在省份编码不能为空");
+            }
+            if(StringUtils.isBlank(request.getBelongProvinceName())) {
+                return CommonResponse.simpleResponse(-1, "所在省份不能为空");
+            }
+            if(StringUtils.isBlank(request.getBelongCityCode())) {
+                return CommonResponse.simpleResponse(-1, "所在市编码不能为空");
+            }
+            if(StringUtils.isBlank(request.getBelongCityName())) {
+                return CommonResponse.simpleResponse(-1, "所在市不能为空");
+            }
+            if(StringUtils.isBlank(request.getBelongArea())) {
+                return CommonResponse.simpleResponse(-1, "详细地址不能为空");
+            }
+            final String bankCard = request.getBankCard();
+            final Optional<BankCardBin> bankCardBinOptional = this.bankCardBinService.analyseCardNo(bankCard);
+            if (!bankCardBinOptional.isPresent()) {
+                return CommonResponse.simpleResponse(-1, "结算卡格式错误");
+            }
+            request.setBankName(bankCardBinOptional.get().getBankName());
+
+            if(StringUtils.isBlank(request.getBankAccountName())) {
+                return CommonResponse.simpleResponse(-1, "开户名称不能为空");
+            }
+            if(!ValidationUtil.isIdCard(request.getIdCard())){
+                return CommonResponse.simpleResponse(-1, "身份证格式不正确");
+            }
+            if(!ValidateUtils.isMobile(request.getBankReserveMobile())) {
+                return CommonResponse.simpleResponse(-1, "开户手机号格式错误");
+            }
+            this.dealerService.updateDealer2(request);
+            return CommonResponse.builder4MapResult(CommonResponse.SUCCESS_CODE, "修改成功")
+                    .addParam("dealerId", request.getDealerId()).build();
+        }catch (Exception e){
+            log.error("错误信息时",e.getStackTrace());
             return CommonResponse.simpleResponse(-1, e.getMessage());
         }
     }

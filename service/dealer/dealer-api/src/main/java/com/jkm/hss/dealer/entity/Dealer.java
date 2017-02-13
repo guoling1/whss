@@ -28,6 +28,22 @@ public class Dealer extends BaseEntity {
      * 代理名称(唯一)
      */
     private String proxyName;
+    /**
+     * 所在省code
+     */
+    private String belongProvinceCode;
+    /**
+     * 所在省
+     */
+    private String belongProvinceName;
+    /**
+     * 所在省code
+     */
+    private String belongCityCode;
+    /**
+     * 所在市
+     */
+    private String belongCityName;
 
     /**
      * 银行开户名称
@@ -107,6 +123,17 @@ public class Dealer extends BaseEntity {
      * 代理商标示
      */
     private String markCode;
+
+    /**
+     * 邀请码
+     */
+    private String inviteCode;
+
+    /**
+     * 推广功能
+     * {@link com.jkm.hss.dealer.enums.EnumInviteBtn}
+     */
+    private int inviteBtn;
 
 
 

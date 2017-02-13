@@ -1,7 +1,10 @@
 package com.jkm.hss.controller.code;
 
+import com.jkm.hss.bill.entity.Order;
+import com.jkm.hss.bill.service.OrderService;
 import com.jkm.hss.controller.BaseController;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,6 +23,8 @@ import java.io.IOException;
 @Controller
 @RequestMapping(value = "/sqb")
 public class WebSkipController extends BaseController {
+    @Autowired
+    private OrderService orderService;
     /**
      * 支付升级成功页面
      * @param request
@@ -29,10 +34,11 @@ public class WebSkipController extends BaseController {
      * @throws IOException
      */
     @RequestMapping(value = "/success/{amount}/{orderId}", method = RequestMethod.GET)
-    public String buySuccess(final HttpServletRequest request, final HttpServletResponse response, final Model model, @PathVariable("amount") String amount, @PathVariable("orderId") String orderId) throws IOException {
+    public String buySuccess(final HttpServletRequest request, final HttpServletResponse response, final Model model, @PathVariable("amount") String amount, @PathVariable("orderId") long orderId) throws IOException {
         model.addAttribute("money", amount);
-        model.addAttribute("firstSn", orderId.substring(0, orderId.length() - 6));
-        model.addAttribute("secondSn", orderId.substring(orderId.length() - 6, orderId.length()));
+        final Order order = this.orderService.getById(orderId).get();
+        model.addAttribute("firstSn", order.getOrderNo().substring(0, order.getOrderNo().length() - 6));
+        model.addAttribute("secondSn", order.getOrderNo().substring(order.getOrderNo().length() - 6, order.getOrderNo().length()));
         return "/buySuccess";
     }
 

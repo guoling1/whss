@@ -170,12 +170,7 @@ public interface QRCodeService {
      * @return
      */
     Optional<QRCode> getLatestQRCodeForUpdate();
-    /**
-     * 按系统类型查找最新的一个码段(新增)
-     *
-     * @return
-     */
-    Optional<QRCode> getLatestQRCodeForUpdateBySysType(String sysType);
+
 
     /**
      * 查询一级代理商下未分配的码段

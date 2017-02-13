@@ -9,10 +9,9 @@ import com.jkm.hss.admin.helper.responseparam.DistributeCodeCount;
 import com.jkm.hss.dealer.entity.DailyProfitDetail;
 import com.jkm.hss.dealer.entity.Dealer;
 import com.jkm.hss.dealer.entity.DealerChannelRate;
-import com.jkm.hss.dealer.helper.requestparam.FirstLevelDealerAddRequest;
-import com.jkm.hss.dealer.helper.requestparam.FirstLevelDealerUpdateRequest;
-import com.jkm.hss.dealer.helper.requestparam.ListDealerRequest;
-import com.jkm.hss.dealer.helper.requestparam.SecondLevelDealerAddRequest;
+import com.jkm.hss.dealer.helper.requestparam.*;
+import com.jkm.hss.dealer.helper.response.FirstDealerResponse;
+import com.jkm.hss.dealer.helper.response.SecondDealerResponse;
 import com.jkm.hss.merchant.entity.MerchantInfo;
 import com.jkm.hss.merchant.entity.OrderRecord;
 import com.jkm.hss.merchant.entity.TradeRecord;
@@ -289,4 +288,85 @@ public interface DealerService {
      */
     int updateMarkCode(String markCode, long dealerId);
 
+    //==============================此处为对代理商进行重构=============================
+
+    /**
+     * 添加一级代理
+     *
+     * @param firstLevelDealerAdd2Request
+     * @return
+     */
+    long createFirstDealer2(FirstLevelDealerAdd2Request firstLevelDealerAdd2Request);
+    /**
+     * 添加代理商
+     *
+     * @param dealer
+     */
+    void add2(Dealer dealer);
+
+    /**
+     * 一级代理商列表
+     *
+     * @param listFirstDealerRequest
+     * @return
+     */
+    PageModel<FirstDealerResponse> listFirstDealer(ListFirstDealerRequest listFirstDealerRequest);
+    /**
+     * 二级代理商列表
+     *
+     * @param listSecondDealerRequest
+     * @return
+     */
+    PageModel<SecondDealerResponse> listSecondDealer(ListSecondDealerRequest listSecondDealerRequest);
+
+    /**
+     * 写入markCode和inviteCode
+     * @param markCode
+     * @param inviteCode
+     * @param dealerId
+     * @return
+     */
+    int updateMarkCodeAndInviteCode(String markCode, String inviteCode, long dealerId);
+
+    /**
+     * 更新一级代理商
+     *
+     * @param request
+     */
+    void updateDealer2(FirstLevelDealerUpdate2Request request);
+    /**
+     * 更新
+     *
+     * @param dealer
+     * @return
+     */
+    int update2(Dealer dealer);
+
+    /**
+     * 更新或新增好收收代理商配置信息
+     *
+     * @param request
+     */
+    void addOrUpdateHssDealer(HssDealerAddOrUpdateRequest request);
+    /**
+     * 更新或新增好收银代理商配置信息
+     *
+     * @param request
+     */
+    void addOrUpdateHsyDealer(HsyDealerAddOrUpdateRequest request);
+
+    /**
+     * 更新
+     *
+     * @param dealer
+     * @return
+     */
+    int updateRecommendBtnAndTotalProfitSpace(Dealer dealer);
+    /**
+     * 更新
+     *
+     * @param dealer
+     * @return
+     */
+    int updateInviteBtn(Dealer dealer);
 }
