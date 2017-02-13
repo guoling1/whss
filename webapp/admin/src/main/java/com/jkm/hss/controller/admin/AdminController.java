@@ -289,6 +289,18 @@ public class AdminController extends BaseController {
             if (proxyNameCount > 0) {
                 return CommonResponse.simpleResponse(-1, "代理名称已经存在");
             }
+            if(StringUtils.isBlank(firstLevelDealerAddRequest.getLoginName())) {
+                return CommonResponse.simpleResponse(-1, "登录名不能为空");
+            }
+            if(StringUtils.isBlank(firstLevelDealerAddRequest.getLoginPwd())) {
+                return CommonResponse.simpleResponse(-1, "登录密码不能为空");
+            }
+            if(StringUtils.isBlank(firstLevelDealerAddRequest.getEmail())) {
+                return CommonResponse.simpleResponse(-1, "联系邮箱不能为空");
+            }
+            if(!ValidateUtils.isEmail(firstLevelDealerAddRequest.getEmail())) {
+                return CommonResponse.simpleResponse(-1, "联系邮箱格式错误");
+            }
             final String bankCard = firstLevelDealerAddRequest.getBankCard();
             final Optional<BankCardBin> bankCardBinOptional = this.bankCardBinService.analyseCardNo(bankCard);
             if (!bankCardBinOptional.isPresent()) {

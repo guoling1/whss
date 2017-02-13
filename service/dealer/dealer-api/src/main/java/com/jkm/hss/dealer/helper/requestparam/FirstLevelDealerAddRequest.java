@@ -22,6 +22,18 @@ public class FirstLevelDealerAddRequest {
      * 代理名称
      */
     private String name;
+    /**
+     * 登录名
+     */
+    private String loginName;
+    /**
+     * 登录密码
+     */
+    private String loginPwd;
+    /**
+     * 邮箱
+     */
+    private String email;
 
     /**
      * 所在地
