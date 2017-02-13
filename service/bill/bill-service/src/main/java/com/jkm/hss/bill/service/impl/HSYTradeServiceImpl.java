@@ -145,9 +145,9 @@ public class HSYTradeServiceImpl implements HSYTradeService {
                 final JSONObject jo = new JSONObject();
                 recordList.add(jo);
                 if (EnumTradeType.PAY.getId() == order.getTradeType()) {
-                    jo.put("tradeType", "收款");
+                    jo.put("tradeType", "1");
                 } else if (EnumTradeType.WITHDRAW.getId() == order.getTradeType()) {
-                    jo.put("tradeType", "提现");
+                    jo.put("tradeType", "2");
                 }
 
                 if (EnumPayChannelSign.YG_WEIXIN.getId() == order.getPayChannelSign()) {

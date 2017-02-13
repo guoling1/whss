@@ -77,7 +77,9 @@ public class SettleController extends BaseController {
             return CommonResponse.simpleResponse(-1, "结算审核记录不存在");
         }
         final AccountSettleAuditRecord accountSettleAuditRecord = recordOptional.get();
-
+        if (accountSettleAuditRecord.isSettleSuccess()) {
+            return CommonResponse.simpleResponse(-1, "不可重复结算");
+        }
         if (EnumSettleOptionType.SETTLE_FORCE_ALL.getId() == option) {
             final Pair<Integer, String> result = this.accountSettleAuditRecordService.forceSettleAll(recordId);
             if (0 != result.getLeft()) {
