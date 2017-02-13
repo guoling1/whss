@@ -122,24 +122,28 @@
                 <div class="col-md-2">
                   <div class="form-group">
                     <label>商户编号：</label>
-                    <input type="text" class="form-control" v-model="query.markCode">
+                    <input type="text" class="form-control" v-model="query.globalID">
                   </div>
-                  <div class="form-group">
+                  <!--<div class="form-group">
                     <label>商户名称</label>
                     <input type="text" class="form-control" v-model="query.merchantName">
-                  </div>
+                  </div>-->
                 </div>
                 <div class="col-md-2">
                   <div class="form-group">
+                    <label>商户名称</label>
+                    <input type="text" class="form-control" v-model="query.shortName">
+                  </div>
+                  <!--<div class="form-group">
                     <label>所属一级代理：</label>
                     <input type="text" class="form-control" v-model="query.proxyName">
                   </div>
                   <div class="form-group">
                     <label>所属二级代理</label>
                     <input type="text" class="form-control" v-model="query.proxyName1">
-                  </div>
+                  </div>-->
                 </div>
-                <div class="col-md-3">
+                <!--<div class="col-md-3">
                   <div class="form-group">
                     <label>注册时间：</label>
                     <div class="form-control">
@@ -174,9 +178,9 @@
                       <option value="4">审核未通过</option>
                     </select>
                   </div>
-                </div>
+                </div>-->
                 <div class="col-md-1">
-                  <div class="btn btn-primary" @click="search" style="margin-top: 85px">筛选</div>
+                  <div class="btn btn-primary" @click="search" style="margin-top: 20px">筛选</div>
                   <!--<span @click="onload()" download="交易记录" class="btn btn-primary pull-right" style="float: right;color: #fff">导出</span>-->
                 </div>
               </div>
@@ -253,8 +257,8 @@
         query:{
           pageNo:1,
           pageSize:10,
-          markCode:'',
-          merchantName:'',
+          shortName:'',
+          globalID:'',
           proxyName:'',
           proxyName1:'',
           startTime:'',
