@@ -656,7 +656,7 @@ public class QRCodeServiceImpl implements QRCodeService {
             qrCode.setMerchantId(0);
             qrCode.setSalt(RandomStringUtils.randomAlphanumeric(16));
             qrCode.setSign(qrCode.getSignCode());
-            qrCode.setDistributeStatus(EnumQRCodeDistributionStatus.DISTRIBUTION.getCode());
+            qrCode.setDistributeStatus(EnumQRCodeDistributionStatus.UN_DISTRIBUTION.getCode());
             qrCode.setActivateStatus(EnumQRCodeActivateStatus.UN_ACTIVATE.getCode());
             qrCode.setType(EnumQRCodeType.SCAN_CODE.getCode());
             qrCode.setProductId(productId);
