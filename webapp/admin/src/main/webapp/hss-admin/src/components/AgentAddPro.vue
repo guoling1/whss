@@ -148,8 +148,6 @@
           </el-col>
           <el-col :span="6">
             <div class="grid-content bg-purple-light" style="width: 100%">
-
-
             </div>
           </el-col>
           <el-col :span="8">
@@ -168,10 +166,6 @@
     data () {
       return {
         a:1,
-        provinces: '',
-        citys: '',
-        province:'',
-        city:'',
         level: '',
         query:{
           mobile:'',
@@ -190,16 +184,18 @@
       }
     },
     created: function () {
-      //城市联动
-      this.$data.provinces = msg;
-      if (this.$data.province != '') {
-        for (var i = 0; i < this.$data.provinces.length; i++) {
-          if (this.$data.provinces[i].name == this.$data.province) {
-            this.$data.citys = this.$data.provinces[i].city
-          }
-        }
-      }
-      //若为查看详情
+      this.$http.post("'/admin/dealer/hss/'+this.$route.query.dealerId+'/'+this.$route.query.productId")
+        .then(function (res) {
+          this.$data.records = res.data;
+        })
+        .catch(function (err) {
+          this.$message({
+            showClose: true,
+            message: err.statusMessage,
+            type: 'error'
+          });
+        })
+      /*//若为查看详情
       if (this.$route.query.id != undefined) {
         this.$data.isShow = false;
         this.$http.get('/admin/dealer/' + this.$route.query.id)
@@ -212,27 +208,7 @@
             this.$data.query.idCard = res.data.idCard;
           })
       }
-      this.$data.level = this.$route.query.level;
-    },
-    watch: {
-      province: function (val, oldval) {
-        if (val != oldval) {
-          this.$data.city = '';
-          this.$data.query.province = this.$data.province;
-        }
-        if (this.$data.province != '') {
-          for (var i = 0; i < this.$data.provinces.length; i++) {
-            if (this.$data.provinces[i].name == this.$data.province) {
-              this.$data.citys = this.$data.provinces[i].city
-            }
-          }
-        }
-      },
-      city: function (val,oldval) {
-        if (val != oldval) {
-          this.$data.query.city = this.$data.city;
-        }
-      }
+      this.$data.level = this.$route.query.level;*/
     },
     methods: {
       create: function () {
@@ -267,18 +243,6 @@
           })
       }
     },
-    filters: {
-      changeName: function (val) {
-        if (val == 101) {
-          val = '阳光微信扫码'
-        } else if (val == 102) {
-          val = '阳光支付宝扫码'
-        } else if (val == 103) {
-          val = '阳光银联支付'
-        }
-        return val;
-      }
-    }
   }
 </script>
 

@@ -65,14 +65,14 @@
             <el-table-column prop="mobile" label="联系手机号" ></el-table-column>
             <el-table-column label="好收收">
               <template scope="scope">
-                <router-link to="/admin/record/agentAddPro" v-if="records[scope.$index].hssProductId==0">开通产品</router-link>
-                <router-link to="/admin/record/agentAddPro" v-else="records[scope.$index].hssProductId==0">修改产品设置</router-link>
+                <router-link :to="'/admin/record/agentAddPro?dealerId='+records[scope.$index].id+'&productId='+records[scope.$index].hssProductId+'&product=hss'" v-if="records[scope.$index].hssProductId==0">开通产品</router-link>
+                <router-link :to="'/admin/record/agentAddPro?dealerId='+records[scope.$index].id+'&productId='+records[scope.$index].hssProductId+'&product=hss'" v-else="records[scope.$index].hssProductId==0">修改产品设置</router-link>
               </template>
             </el-table-column>
             <el-table-column label="好收银" >
               <template scope="scope">
-                <router-link to="/admin/record/agentAddPro" v-if="records[scope.$index].hsyProductId==0">开通产品</router-link>
-                <router-link to="/admin/record/agentAddPro" v-else="records[scope.$index].hsyProductId==0">修改产品设置</router-link>
+                <router-link :to="'/admin/record/agentAddPro?dealerId='+records[scope.$index].id+'&productId='+records[scope.$index].hsyProductId+'&product=hsy'" v-if="records[scope.$index].hsyProductId==0">开通产品</router-link>
+                <router-link :to="'/admin/record/agentAddPro?dealerId='+records[scope.$index].id+'&productId='+records[scope.$index].hsyProductId+'&product=hsy'" v-else="records[scope.$index].hsyProductId==0">修改产品设置</router-link>
               </template>
             </el-table-column>
           </el-table>
