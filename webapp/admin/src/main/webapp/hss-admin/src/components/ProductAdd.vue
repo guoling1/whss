@@ -10,7 +10,7 @@
           <div class="form-group">
             <label for="productName" class="col-sm-2 control-label">项目类型</label>
             <div class="col-sm-4">
-              <select class="form-control select2 select2-hidden-accessible" tabindex="-1" aria-hidden="true" v-model="productId">
+              <select class="form-control select2 select2-hidden-accessible" tabindex="-1" aria-hidden="true" v-model="type">
                 <option value="">请选择</option>
                 <option value="hss">好收收</option>
                 <option value="hsy">好收银</option>
@@ -107,6 +107,7 @@
     name:'productAdd',
     data(){
       return{
+        type:'',
         productName:"",
         limitPayFeeRate:"",
         limitWithdrawFeeRate:"",
@@ -144,6 +145,7 @@
         this.$http.post('/admin/product/list')
           .then(function (res) {
             var data = this.$data.product = res.data[this.$route.query.id];
+            this.$data.type = data.type;
             this.$data.productName = data.productName;
             this.$data.limitPayFeeRate = data.limitPayFeeRate;
             this.$data.limitWithdrawFeeRate = data.limitWithdrawFeeRate;
@@ -169,6 +171,7 @@
     methods:{
       productAdd: function () {
         let query = {
+          type:this.$data.type,
           productName:this.$data.productName,
           limitPayFeeRate:this.$data.limitPayFeeRate,
           limitWithdrawFeeRate:this.$data.limitWithdrawFeeRate,
