@@ -369,4 +369,11 @@ public interface DealerService {
      * @return
      */
     int updateInviteBtn(Dealer dealer);
+
+    /**
+     * 根据邀请码查询代理商
+     * @param inviteCode
+     * @return
+     */
+    Optional<Dealer> getDealerByInviteCode(String inviteCode);
 }
