@@ -87,6 +87,7 @@ public class HsyShopServiceImpl implements HsyShopService {
 
         /**商铺修改*/
         Date date=new Date();
+        appBizShop.setStatus(AppConstant.SHOP_STATUS_NO_CHECK);
         appBizShop.setUpdateTime(date);
         hsyShopDao.update(appBizShop);
 

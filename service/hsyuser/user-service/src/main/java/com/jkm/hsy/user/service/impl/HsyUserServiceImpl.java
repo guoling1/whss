@@ -77,7 +77,7 @@ public class HsyUserServiceImpl implements HsyUserService {
 
         /**用户 商铺 中间表 保存*/
         Date date=new Date();
-        appAuUser.setStatus(AppConstant.USER_STATUS_NO_CHECK);
+        appAuUser.setStatus(AppConstant.USER_STATUS_NORMAL);
         appAuUser.setAuStep("0");
         appAuUser.setParentID(0L);
         appAuUser.setCreateTime(date);
@@ -155,6 +155,8 @@ public class HsyUserServiceImpl implements HsyUserService {
         AppAuUser appAuUserFind=list.get(0);
         if(!appAuUserFind.getPassword().equals(appAuUser.getPassword()))
             throw new ApiHandleException(ResultCode.PASSWORD_NOT_CORRECT);
+        if(appAuUserFind.getStatus().equals(AppConstant.USER_STATUS_FORBID))
+            throw new ApiHandleException(ResultCode.USER_FORBID);
 
         List<AppAuToken> tokenList=hsyUserDao.findAppAuTokenByAccessToken(appParam.getAccessToken());
         if (tokenList != null && tokenList.size() != 0)
@@ -404,7 +406,7 @@ public class HsyUserServiceImpl implements HsyUserService {
         /**参数验证*/
         if(!(appAuUser.getRole()!=null&&!appAuUser.getRole().equals("")))
             throw new ApiHandleException(ResultCode.PARAM_LACK,"角色类型");
-        else if(!(appAuUser.getRole()!=null&&(appAuUser.getRole()==2||appAuUser.getRole()==3)))
+        else if(!(appAuUser.getRole()!=null&&(appAuUser.getRole()==AppConstant.ROLE_MANAGER||appAuUser.getRole()==AppConstant.ROLE_EMPLOYEE)))
             throw new ApiHandleException(ResultCode.ROLE_TYPE_NOT_EXSIT);
         if(!(appAuUser.getCellphone()!=null&&!appAuUser.getCellphone().equals("")))
             throw new ApiHandleException(ResultCode.PARAM_LACK,"手机号");
@@ -422,7 +424,7 @@ public class HsyUserServiceImpl implements HsyUserService {
 
         /**用户 中间表 保存*/
         Date date=new Date();
-        appAuUser.setStatus(AppConstant.USER_STATUS_NO_CHECK);
+        appAuUser.setStatus(AppConstant.USER_STATUS_NORMAL);
         appAuUser.setCreateTime(date);
         appAuUser.setUpdateTime(date);
         appAuUser.setPassword("123456");
@@ -484,7 +486,7 @@ public class HsyUserServiceImpl implements HsyUserService {
         }
         /**参数验证*/
         if(!(appAuUser.getId()!=null&&!appAuUser.getId().equals("")))
-            throw new ApiHandleException(ResultCode.PARAM_LACK,"用户ID");
+            throw new ApiHandleException(ResultCode.PARAM_LACK,"店员ID");
         if(!(appAuUser.getSid()!=null&&!appAuUser.getSid().equals("")))
             throw new ApiHandleException(ResultCode.PARAM_LACK,"登录用户主店ID");
 
@@ -511,6 +513,185 @@ public class HsyUserServiceImpl implements HsyUserService {
         else
             map.put("appAuUser",null);
         return gson.toJson(map);
+    }
+
+    /**HSY001022 查找店员列表*/
+    public String findHsyUserListViaCorporation(String dataParam, AppParam appParam)throws ApiHandleException{
+        Gson gson=new GsonBuilder().setDateFormat(AppConstant.DATE_FORMAT).create();
+        /**参数转化*/
+        AppAuUser appAuUser=null;
+        try{
+            appAuUser=gson.fromJson(dataParam, AppAuUser.class);
+        } catch(Exception e){
+            throw new ApiHandleException(ResultCode.PARAM_TRANS_FAIL);
+        }
+
+        /**参数验证*/
+        if(!(appAuUser.getParentID()!=null&&!appAuUser.getParentID().equals("")))
+            throw new ApiHandleException(ResultCode.PARAM_LACK,"当前登录用户ID");
+        if(!(appAuUser.getSid()!=null&&!appAuUser.getSid().equals("")))
+            throw new ApiHandleException(ResultCode.PARAM_LACK,"登录用户主店ID");
+
+        List<AppAuUser> list=hsyUserDao.findAppAuUserListByParentID(appAuUser);
+        gson = new GsonBuilder().setExclusionStrategies(new ExclusionStrategy() {
+            public boolean shouldSkipField(FieldAttributes f) {
+                return f.getName().contains("password");
+            }
+            public boolean shouldSkipClass(Class<?> aClass) {
+                return false;
+            }
+        }).registerTypeAdapter(Date.class, new JsonSerializer<Date>() {
+            public JsonElement serialize(Date date, Type typeOfT, JsonSerializationContext context) throws JsonParseException {
+                return new JsonPrimitive(date.getTime());
+            }
+        }).registerTypeAdapter(Date.class, new JsonDeserializer<Date>() {
+            public Date deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+                return new java.util.Date(json.getAsJsonPrimitive().getAsLong());
+            }
+        }).create();
+        Map map=new HashMap();
+        if(list!=null&&list.size()!=0)
+            map.put("appAuUserList",list);
+        else
+            map.put("appAuUserList",null);
+        return gson.toJson(map);
+    }
+
+    /**HSY001023 更新店员*/
+    public String updateHsyUserViaCorporation(String dataParam, AppParam appParam)throws ApiHandleException{
+        Gson gson=new GsonBuilder().setDateFormat(AppConstant.DATE_FORMAT).create();
+        /**参数转化*/
+        AppAuUser appAuUser=null;
+        try{
+            appAuUser=gson.fromJson(dataParam, AppAuUser.class);
+        } catch(Exception e){
+            throw new ApiHandleException(ResultCode.PARAM_TRANS_FAIL);
+        }
+
+        /**参数验证*/
+        if(!(appAuUser.getRole()!=null&&!appAuUser.getRole().equals("")))
+            throw new ApiHandleException(ResultCode.PARAM_LACK,"角色类型");
+        else if(!(appAuUser.getRole()!=null&&(appAuUser.getRole()==2||appAuUser.getRole()==3)))
+            throw new ApiHandleException(ResultCode.ROLE_TYPE_NOT_EXSIT);
+        if(!(appAuUser.getCellphone()!=null&&!appAuUser.getCellphone().equals("")))
+            throw new ApiHandleException(ResultCode.PARAM_LACK,"手机号");
+        if (!ValidateUtils.isMobile(appAuUser.getCellphone()))
+            throw new ApiHandleException(ResultCode.CELLPHONE_NOT_CORRECT_FORMAT);
+        if(!(appAuUser.getRealname()!=null&&!appAuUser.getRealname().equals("")))
+            throw new ApiHandleException(ResultCode.PARAM_LACK,"姓名");
+        if(!(appAuUser.getParentID()!=null&&!appAuUser.getParentID().equals("")))
+            throw new ApiHandleException(ResultCode.PARAM_LACK,"登录用户ID");
+        if(!(appAuUser.getId()!=null&&!appAuUser.getId().equals("")))
+            throw new ApiHandleException(ResultCode.PARAM_LACK,"店员ID");
+        if(!(appAuUser.getOriginCellphone()!=null&&!appAuUser.getOriginCellphone().equals("")))
+            throw new ApiHandleException(ResultCode.PARAM_LACK,"更改前手机号");
+
+        /**数据验证*/
+        List<AppAuUser> list = hsyUserDao.findAppAuUserByParam(appAuUser);
+        if (list != null && list.size() != 0 && !(list.get(0).getCellphone().equals(appAuUser.getOriginCellphone())))
+            throw new ApiHandleException(ResultCode.CELLPHONE_HAS_BEEN_REGISTERED);
+
+        hsyUserDao.deleteAppBizShopUserRole(appAuUser.getId());
+        Date date=new Date();
+        if(appAuUser.getSid()!=null&&!appAuUser.getSid().equals("")) {
+            AppBizShopUserRole appBizShopUserRole = new AppBizShopUserRole();
+            appBizShopUserRole.setSid(appAuUser.getSid());
+            appBizShopUserRole.setUid(appAuUser.getId());
+            appBizShopUserRole.setRole(appAuUser.getRole());
+            appBizShopUserRole.setStatus(AppConstant.ROLE_STATUS_NORMAL);
+
+            AppBizShopUserRole absur=new AppBizShopUserRole();
+            absur.setSid(appAuUser.getSid());
+            absur.setUid(appAuUser.getParentID());
+            List<AppBizShopUserRole> surList=hsyShopDao.findAppBizShopUserRoleBySidAndUid(absur);
+            if(surList!=null&&surList.size()!=0)
+                appBizShopUserRole.setType(surList.get(0).getType());
+            else
+                appBizShopUserRole.setType(AppConstant.ROLE_TYPE_PRIMARY);
+            hsyShopDao.insertAppBizShopUserRole(appBizShopUserRole);
+        }else{
+            appAuUser.setRoleTemp(appAuUser.getRole());
+        }
+        appAuUser.setUpdateTime(date);
+        hsyUserDao.updateByID(appAuUser);
+        return "";
+    }
+
+    /**HSY001024 分配店铺*/
+    public String updateHsyShopUserViaCorporation(String dataParam, AppParam appParam)throws ApiHandleException{
+        Gson gson=new GsonBuilder().setDateFormat(AppConstant.DATE_FORMAT).create();
+        /**参数转化*/
+        AppAuUser appAuUser=null;
+        try{
+            appAuUser=gson.fromJson(dataParam, AppAuUser.class);
+        } catch(Exception e){
+            throw new ApiHandleException(ResultCode.PARAM_TRANS_FAIL);
+        }
+        /**参数验证*/
+        if(!(appAuUser.getId()!=null&&!appAuUser.getId().equals("")))
+            throw new ApiHandleException(ResultCode.PARAM_LACK,"店员ID");
+        if(!(appAuUser.getSid()!=null&&!appAuUser.getSid().equals("")))
+            throw new ApiHandleException(ResultCode.PARAM_LACK,"店铺ID");
+        if(!(appAuUser.getParentID()!=null&&!appAuUser.getParentID().equals("")))
+            throw new ApiHandleException(ResultCode.PARAM_LACK,"登录用户ID");
+
+        List<AppAuUser> originList=hsyUserDao.findAppAuUserWithRoleByID(appAuUser);
+        if(originList!=null&&originList.size()!=0)
+        {
+            if(originList.get(0).getRole()!=null)
+                appAuUser.setRole(originList.get(0).getRole());
+            else
+            {
+                if(originList.get(0).getRoleTemp()!=null)
+                    appAuUser.setRole(originList.get(0).getRoleTemp());
+                else
+                    appAuUser.setRole(AppConstant.ROLE_EMPLOYEE);
+            }
+        }
+        else
+            appAuUser.setRole(AppConstant.ROLE_EMPLOYEE);
+
+        hsyUserDao.deleteAppBizShopUserRole(appAuUser.getId());
+        AppBizShopUserRole appBizShopUserRole = new AppBizShopUserRole();
+        appBizShopUserRole.setSid(appAuUser.getSid());
+        appBizShopUserRole.setUid(appAuUser.getId());
+        appBizShopUserRole.setRole(appAuUser.getRole());
+        appBizShopUserRole.setStatus(AppConstant.ROLE_STATUS_NORMAL);
+
+        AppBizShopUserRole absur=new AppBizShopUserRole();
+        absur.setSid(appAuUser.getSid());
+        absur.setUid(appAuUser.getParentID());
+        List<AppBizShopUserRole> surList=hsyShopDao.findAppBizShopUserRoleBySidAndUid(absur);
+        if(surList!=null&&surList.size()!=0)
+            appBizShopUserRole.setType(surList.get(0).getType());
+        else
+            appBizShopUserRole.setType(AppConstant.ROLE_TYPE_PRIMARY);
+        hsyShopDao.insertAppBizShopUserRole(appBizShopUserRole);
+        return "";
+    }
+
+    /**HSY001025 启用禁用店员*/
+    public String updateHsyUserStatusViaCorporation(String dataParam, AppParam appParam)throws ApiHandleException{
+        Gson gson=new GsonBuilder().setDateFormat(AppConstant.DATE_FORMAT).create();
+        /**参数转化*/
+        AppAuUser appAuUser=null;
+        try{
+            appAuUser=gson.fromJson(dataParam, AppAuUser.class);
+        } catch(Exception e){
+            throw new ApiHandleException(ResultCode.PARAM_TRANS_FAIL);
+        }
+        /**参数验证*/
+        if(!(appAuUser.getId()!=null&&!appAuUser.getId().equals("")))
+            throw new ApiHandleException(ResultCode.PARAM_LACK,"店员ID");
+        if(!(appAuUser.getStatus()!=null&&!appAuUser.getStatus().equals("")))
+            throw new ApiHandleException(ResultCode.PARAM_LACK,"店员状态");
+        else if(!(appAuUser.getStatus()!=null&&(appAuUser.getStatus()==AppConstant.USER_STATUS_NORMAL||appAuUser.getStatus()==AppConstant.USER_STATUS_FORBID)))
+            throw new ApiHandleException(ResultCode.ROLE_STATUS_NOT_EXSIT);
+
+        Date date=new Date();
+        appAuUser.setUpdateTime(date);
+        hsyUserDao.updateByID(appAuUser);
+        return "";
     }
 
 }
