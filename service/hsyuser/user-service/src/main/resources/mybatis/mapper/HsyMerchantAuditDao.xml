@@ -8,13 +8,24 @@
     </select>
     <!-- 查询总条数 -->
     <select id="getCount" resultType="java.lang.Integer">
-        SELECT COUNT(1) FROM app_biz_shop
+        SELECT COUNT(1) FROM app_biz_shop where 1=1
+        <if test="globalID!=null and globalID!=''">
+            AND GLOBALID=#{globalID}
+        </if>
+        <if test="shortName!=null and shortName!=''">
+            AND SHORTNAME=#{shortName}
+        </if>
     </select>
 
     <!-- 查询商户列表 -->
     <select id="getMerchant" resultType="com.jkm.hsy.user.entity.HsyMerchantAuditResponse">
-        SELECT * FROM app_biz_shop
-
+        SELECT * FROM app_biz_shop where 1=1
+        <if test="globalID!=null and globalID!=''">
+            AND GLOBALID=#{globalID}
+        </if>
+        <if test="shortName!=null and shortName!=''">
+            AND SHORTNAME=#{shortName}
+        </if>
         ORDER BY
             CREATETIME DESC
         LIMIT #{offset},#{pageSize}
