@@ -256,4 +256,19 @@ public interface DealerDao {
      * @return
      */
     List<SecondDealerResponse> selectSecondDealersByPage(SecondDealerSearchRequest secondDealerSearchRequest);
+
+    /**
+     * 按登陆名称查询
+     *
+     * @param name
+     * @return
+     */
+    long selectByLoginName(@Param("name") String name);
+    /**
+     * 按登陆名称查询
+     * @param loginName
+     * @param dealerId
+     * @return
+     */
+    long selectByLoginNameUnIncludeNow(@Param("loginName") String loginName, @Param("dealerId") long dealerId);
 }

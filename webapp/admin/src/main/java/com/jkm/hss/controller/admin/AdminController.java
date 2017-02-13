@@ -682,6 +682,10 @@ public class AdminController extends BaseController {
             if(StringUtils.isBlank(firstLevelDealerAdd2Request.getLoginName())) {
                 return CommonResponse.simpleResponse(-1, "登录名不能为空");
             }
+            final long loginNameCount = this.dealerService.getByLoginName(firstLevelDealerAdd2Request.getLoginName());
+            if (loginNameCount > 0) {
+                return CommonResponse.simpleResponse(-1, "登录名已经存在");
+            }
             if(StringUtils.isBlank(firstLevelDealerAdd2Request.getLoginPwd())) {
                 return CommonResponse.simpleResponse(-1, "登录密码不能为空");
             }
@@ -758,6 +762,10 @@ public class AdminController extends BaseController {
 
             if(StringUtils.isBlank(request.getLoginName())) {
                 return CommonResponse.simpleResponse(-1, "登录名不能为空");
+            }
+            final long loginNameCount = this.dealerService.getByLoginNameUnIncludeNow(request.getLoginName(), request.getDealerId());
+            if (loginNameCount > 0) {
+                return CommonResponse.simpleResponse(-1, "登录名已经存在");
             }
             if(StringUtils.isBlank(request.getEmail())) {
                 return CommonResponse.simpleResponse(-1, "联系邮箱不能为空");

@@ -384,4 +384,19 @@ public interface DealerService {
      * @return
      */
     int updatePwd(String loginPwd,long dealerId);
+
+    /**
+     * 查询登录名称名称是否重复
+     *
+     * @param loginName
+     * @return
+     */
+    long getByLoginName(String loginName);
+    /**
+     * 查询登录名是否重复
+     *
+     * @param loginName
+     * @return
+     */
+    long getByLoginNameUnIncludeNow(String loginName, long dealerId);
 }
