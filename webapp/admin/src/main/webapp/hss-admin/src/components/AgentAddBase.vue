@@ -69,11 +69,14 @@
               </el-col>
               <el-col :span="6">
                 <div class="grid-content bg-purple-light">
-                  <el-input size="small" v-model="query.loginPwd" placeholder="最低6位"></el-input>
+                  <el-input size="small" v-model="query.loginPwd" placeholder="最低6位"  v-if="isShow"></el-input>
+                  <el-input size="small" value="******" placeholder="最低6位"  v-if="!isShow" :disabled="true"></el-input>
                 </div>
               </el-col>
               <el-col :span="8">
-                <div class="grid-content bg-purple-light">修改密码</div>
+                <div class="grid-content bg-purple-light" style="margin: 0 15px;">
+                  <el-button type="text" @click="resetPw" v-if="!isShow">修改密码</el-button>
+                </div>
               </el-col>
             </el-row>
             <el-row type="flex" class="row-bg" justify="center">
@@ -332,6 +335,35 @@
       }
     },
     methods: {
+      //修改密码
+      resetPw:function() {
+        this.$prompt('请输入新密码', '修改密码', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+        }).then(({ value }) => {
+          this.$http.post('/admin/dealer/updatePwd',{dealerId:this.$route.query.id,loginPwd:value})
+            .then(function (res) {
+              this.$message({
+                showClose: true,
+                type: 'success',
+                message: '修改成功'
+              });
+            })
+            .catch(function (err) {
+              this.$message({
+                showClose: true,
+                message: err.statusMessage,
+                type: 'error'
+              })
+            })
+
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '取消修改'
+          });
+        });
+      },
       //创建一级代理
       create: function () {
         this.$http.post('/admin/user/addFirstDealer2', this.$data.query)
