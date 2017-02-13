@@ -184,7 +184,7 @@
       }
     },
     created: function () {
-      this.$http.post("'/admin/dealer/hss/'+this.$route.query.dealerId+'/'+this.$route.query.productId")
+      this.$http.post('/admin/dealer/hss/'+this.$route.query.dealerId+'/'+this.$route.query.productId)
         .then(function (res) {
           this.$data.records = res.data;
         })
