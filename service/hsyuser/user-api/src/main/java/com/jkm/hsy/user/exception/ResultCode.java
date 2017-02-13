@@ -30,6 +30,7 @@ public enum ResultCode {
 	FILE_TYPE_NOT_EXSIT(2024,"上传类型不存在"),
 	PRIMARY_SHOP_NOT_EXSIT(2025,"主店类型不存在"),
 	ACCESSTOKEN_NOT_FOUND(2026,"找不到该令牌"),
+	ROLE_TYPE_NOT_EXSIT(2027,"角色类型不存在"),
 	RESULT_FAILE(2100,"返回结果错误"),
 	;
 

@@ -1947,4 +1947,16 @@ public class DealerServiceImpl implements DealerService {
     public int updateInviteBtn(final Dealer dealer) {
         return this.dealerDao.updateInviteBtn(dealer);
     }
+
+    /**
+     * 根据邀请码查询代理商
+     *
+     * @param inviteCode
+     * @return
+     */
+    @Override
+    public Optional<Dealer> getDealerByInviteCode(String inviteCode) {
+        final Dealer dealer = this.dealerDao.selectByInviteCode(inviteCode);
+        return Optional.fromNullable(dealer);
+    }
 }

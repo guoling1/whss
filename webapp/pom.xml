@@ -15,7 +15,7 @@
     <modules>
         <module>admin</module>
         <module>hss_H5</module>
-        <module>hsy_H5</module>
+        <module>dealer_PC</module>
         <module>hsy_API</module>
     </modules>
 </project>

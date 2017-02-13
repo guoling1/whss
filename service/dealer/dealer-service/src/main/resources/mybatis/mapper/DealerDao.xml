@@ -417,4 +417,7 @@
         WHERE id = #{id}
     </update>
 
+    <select id="selectByInviteCode" resultType="com.jkm.hss.dealer.entity.Dealer">
+        SELECT * FROM tb_dealer WHERE invite_code = #{inviteCode}
+    </select>
 </mapper>

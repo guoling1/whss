@@ -1,10 +1,12 @@
 package com.jkm.hss.push.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.jkm.base.common.util.VelocityStringTemplate;
 import com.jkm.hss.notifier.dao.MessageTemplateDao;
 import com.jkm.hss.notifier.entity.SmsTemplate;
 import com.jkm.hss.notifier.enums.EnumNoticeType;
 import com.jkm.hss.push.dao.PushDao;
+import com.jkm.hss.push.entity.AppResult;
 import com.jkm.hss.push.entity.Push;
 import com.jkm.hss.push.producer.PushProducer;
 import com.jkm.hss.push.sevice.PushService;
@@ -46,7 +48,7 @@ public class PushServiceImpl implements PushService {
     public String pushNotyPopLoadMsg(String notyTitle, String notyText, String popTitle, String popContent, String loadUrl, String pushType, String clientId, List<String> targets) {
 
         String ret= PushProducer.pushNotyPopLoadMsg(notyTitle,notyText,  popTitle,  popContent,  loadUrl,  pushType,  clientId,  targets);
-        String target= targets.toString();
+
         Push push= new Push();
         push.setPid(UUID.randomUUID().toString());
         push.setTitle(notyTitle);
@@ -54,7 +56,7 @@ public class PushServiceImpl implements PushService {
         push.setClientId(clientId);
         push.setPushType(pushType);
         push.setTempType("3");
-        push.setTargets(target);
+        push.setTargets(targets!=null?targets.toString():null);
 
         if(ret.contains("result=ok")){
             push.setStatus(1);
@@ -79,7 +81,7 @@ public class PushServiceImpl implements PushService {
      */
     public String pushLinkMsg(String title, String text, String linkUrl, String pushType, String clientId, List<String> targets) {
         String ret=  PushProducer.pushLinkMsg( title, text, linkUrl, pushType, clientId, targets);
-        String target= targets.toString();
+
         Push push= new Push();
         push.setPid(UUID.randomUUID().toString());
         push.setTitle(title);
@@ -87,7 +89,7 @@ public class PushServiceImpl implements PushService {
         push.setClientId(clientId);
         push.setPushType(pushType);
         push.setTempType("2");
-        push.setTargets(target);
+        push.setTargets(targets!=null?targets.toString():null);
 
         if(ret.contains("result=ok")){
             push.setStatus(1);
@@ -113,7 +115,7 @@ public class PushServiceImpl implements PushService {
     public String pushNotificationMsg(String title, String text, String logoUrl, String pushType, String clientId, List<String> targets) {
 
         String ret= PushProducer.pushNotificationMsg( title, text,  logoUrl,  pushType, clientId,  targets);
-        String target= targets.toString();
+
         Push push= new Push();
         push.setPid(UUID.randomUUID().toString());
         push.setTitle(title);
@@ -121,7 +123,7 @@ public class PushServiceImpl implements PushService {
         push.setClientId(clientId);
         push.setPushType(pushType);
         push.setTempType("1");
-        push.setTargets(target);
+        push.setTargets(targets!=null?targets.toString():null);
 
         if(ret.contains("result=ok")){
             push.setStatus(1);
@@ -171,14 +173,17 @@ public class PushServiceImpl implements PushService {
         }
 
         final SmsTemplate messageTemplate;
+        AppResult appResult = new AppResult();
         if(isSucc){
-             messageTemplate = messageTemplateDao.getTemplateByType(EnumNoticeType.AUDIT_PASS.getId());
+            messageTemplate = messageTemplateDao.getTemplateByType(EnumNoticeType.AUDIT_PASS.getId());
+            appResult.setResultCode(100);
         }else{
-             messageTemplate = messageTemplateDao.getTemplateByType(EnumNoticeType.AUDIT_NOPASS.getId());
+            messageTemplate = messageTemplateDao.getTemplateByType(EnumNoticeType.AUDIT_NOPASS.getId());
+            appResult.setResultCode(101);
         }
         String newContent =messageTemplate.getMessageTemplate();
-
-        String ret = this.pushTransmissionMsg(2, newContent, "2", null, clients);
+        appResult.setResultMessage(newContent);
+        String ret = this.pushTransmissionMsg(2, JSON.toJSONString(appResult), "2", null, clients);
         return ret;
 
 
@@ -201,8 +206,12 @@ public class PushServiceImpl implements PushService {
         data.put("amount", amount);
 
          String content = VelocityStringTemplate.process(messageTemplate.getMessageTemplate(), data);
+        AppResult   appResult=new AppResult() ;
+        appResult.setResultCode(200);
+        appResult.setResultMessage(content);
 
-        String ret = this.pushTransmissionMsg(2, content, "2", null, clients);
+
+        String ret = this.pushTransmissionMsg(2, JSON.toJSONString(appResult), "2", null, clients);
         return ret;
     }
 
@@ -239,7 +248,12 @@ public class PushServiceImpl implements PushService {
      */
     public String pushTransmissionMsg(Integer type, String content, String pushType, String clientId, List<String> targets) {
 
-        String target= targets.toString();
+
+        String target="";
+        if(targets!=null){
+             target= targets.toString();
+        }
+
         String ret= PushProducer.pushTransmissionMsg(type,content,pushType,clientId,targets);
 
         Push push= new Push();

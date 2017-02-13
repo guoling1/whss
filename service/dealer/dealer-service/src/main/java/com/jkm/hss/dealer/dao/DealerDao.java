@@ -223,4 +223,12 @@ public interface DealerDao {
      * @return
      */
     int updateInviteBtn(Dealer dealer);
+
+    /**
+     * 按inviteCode查询
+     *
+     * @param inviteCode
+     * @return
+     */
+    Dealer selectByInviteCode(@Param("inviteCode") String inviteCode);
 }

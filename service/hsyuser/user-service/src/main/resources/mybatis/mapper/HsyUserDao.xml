@@ -27,7 +27,7 @@
     </select>
 
     <insert id="insert" useGeneratedKeys="true" keyProperty="id" parameterType="com.jkm.hsy.user.entity.AppAuUser">
-        insert into app_au_user(GLOBALID,CELLPHONE,PASSWORD,NICKNAME,REALNAME,STATUS,PROFILE,AUSTEP,IDCARD,IDCARDF,IDCARDB,IDCARDH,ACCOUNTID,DEALERID,PRODUCTID,WEIXINRATE,ALIPAYRATE,FASTRATE,CREATETIME,UPDATETIME) values(#{globalID},#{cellphone},#{password},#{nickname},#{realname},#{status},#{profile},#{auStep},#{idcard},#{idcardf},#{idcardb},#{idcardh},#{accountID},#{dealerID},#{productID},#{weixinRate},#{alipayRate},#{fastRate},#{createTime},#{updateTime})
+        insert into app_au_user(GLOBALID,CELLPHONE,PASSWORD,NICKNAME,REALNAME,STATUS,PROFILE,AUSTEP,IDCARD,IDCARDF,IDCARDB,IDCARDH,ACCOUNTID,DEALERID,PRODUCTID,WEIXINRATE,ALIPAYRATE,FASTRATE,PARENTID,ROLETEMP,CREATETIME,UPDATETIME) values(#{globalID},#{cellphone},#{password},#{nickname},#{realname},#{status},#{profile},#{auStep},#{idcard},#{idcardf},#{idcardb},#{idcardh},#{accountID},#{dealerID},#{productID},#{weixinRate},#{alipayRate},#{fastRate},#{parentID},#{roleTemp},#{createTime},#{updateTime})
     </insert>
 
     <update id="update" parameterType="com.jkm.hsy.user.entity.AppAuUser">
@@ -50,6 +50,8 @@
             <if test="weixinRate!=null">WEIXINRATE=#{weixinRate},</if>
             <if test="alipayRate!=null">ALIPAYRATE=#{alipayRate},</if>
             <if test="fastRate!=null">FASTRATE=#{fastRate},</if>
+            <if test="parentID!=null">PARENTID=#{parentID},</if>
+            <if test="roleTemp!=null">ROLETEMP=#{roleTemp},</if>
             <if test="createTime!=null">CREATETIME=#{createTime},</if>
             <if test="updateTime!=null">UPDATETIME=#{updateTime}</if>
         </set> where CELLPHONE=#{cellphone}
@@ -76,6 +78,8 @@
             <if test="weixinRate!=null">WEIXINRATE=#{weixinRate},</if>
             <if test="alipayRate!=null">ALIPAYRATE=#{alipayRate},</if>
             <if test="fastRate!=null">FASTRATE=#{fastRate},</if>
+            <if test="parentID!=null">PARENTID=#{parentID},</if>
+            <if test="roleTemp!=null">ROLETEMP=#{roleTemp},</if>
             <if test="createTime!=null">CREATETIME=#{createTime},</if>
             <if test="updateTime!=null">UPDATETIME=#{updateTime}</if>
         </set> where ID=#{id}
@@ -131,5 +135,23 @@
     <update id="updateAppAuUserTokenByUidAndTid" parameterType="com.jkm.hsy.user.entity.AppAuUserToken">
         update app_au_user_token set STATUS=#{status} ,LOGINTIME=#{loginTime} where UID=#{uid} and TID=#{tid}
     </update>
+
+    <update id="updateAppAuUserTokenStatusByTid" parameterType="java.lang.Long">
+        update app_au_user_token set status=2 where TID=#{tid}
+    </update>
+
+    <select id="findAppAuUserByIDAndParentSID" parameterType="com.jkm.hsy.user.entity.AppAuUser" resultType="com.jkm.hsy.user.entity.AppAuUser">
+        select distinct
+        user.ID,user.globalID,user.CELLPHONE,user.PASSWORD,user.NICKNAME,user.REALNAME,user.STATUS,user.PROFILE,user.AUSTEP,user.IDCARD,user.IDCARDF,user.IDCARDB,user.IDCARDH,user.ACCOUNTID,user.DEALERID,user.PRODUCTID,user.WEIXINRATE,user.ALIPAYRATE,user.FASTRATE,user.CREATETIME,user.UPDATETIME,
+        sur.ROLE ROLE,
+        (case when sur.ROLE=1 then '法人'
+        when sur.ROLE=2 then '店长'
+        when sur.ROLE=3 then '店员'
+        when sur.ROLE=4 then '财务' else '' end) ROLENAME,
+        shop.id sid,shop.SHORTNAME shopShortName
+        from app_au_user user left join app_biz_shop_user_role sur on user.id=sur.UID left join app_biz_shop shop on shop.id=sur.SID
+        where 1=1 and user.ID=#{id} and (shop.id in(select id from app_biz_shop where parentid=#{sid})||shop.id=#{sid})
+        order by UPDATETIME desc
+    </select>
 
 </mapper>

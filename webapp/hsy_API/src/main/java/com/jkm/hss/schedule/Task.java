@@ -16,18 +16,18 @@ import org.springframework.stereotype.Component;
 @Lazy(false)
 public class Task {
 
-    @Autowired
-    private AccountSettleAuditRecordService accountSettleAuditRecordService;
+//    @Autowired
+//    private AccountSettleAuditRecordService accountSettleAuditRecordService;
 
     /**
      * 处理 T1 结算审核, 生成记录
      *
      * 周一至周五 2点0时0分
      */
-    @Scheduled(cron = "0 0 1 ? * MON-FRI")
-    public void handleT1SettleTask() {
-        log.info("结算审核定时任务--start");
-        this.accountSettleAuditRecordService.handleT1SettleTask();
-        log.info("结算审核定时任务--end");
-    }
+//    @Scheduled(cron = "0 0 1 ? * MON-FRI")
+//    public void handleT1SettleTask() {
+//        log.info("结算审核定时任务--start");
+//        this.accountSettleAuditRecordService.handleT1SettleTask();
+//        log.info("结算审核定时任务--end");
+//    }
 }

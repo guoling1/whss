@@ -44,6 +44,7 @@
         <hsy.mobile.version>${hss.project.version}</hsy.mobile.version>
         <hsy.api.version>${hss.project.version}</hsy.api.version>
         <hsy.push.version>${hss.project.version}</hsy.push.version>
+        <dealer.version>${hss.project.version}</dealer.version>
     </properties>
 
     <dependencyManagement>
