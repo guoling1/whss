@@ -400,4 +400,21 @@
         bank_reserve_mobile = #{bankReserveMobile}
         WHERE id = #{id}
     </update>
+
+    <update id="updateRecommendBtnAndTotalProfitSpace">
+        UPDATE tb_dealer
+        SET
+        recommend_btn = #{recommendBtn},
+        invite_btn = #{inviteBtn},
+        total_profit_space = #{totalProfitSpace}
+        WHERE id = #{id}
+    </update>
+
+    <update id="updateInviteBtn">
+        UPDATE tb_dealer
+        SET
+        invite_btn = #{inviteBtn}
+        WHERE id = #{id}
+    </update>
+
 </mapper>
