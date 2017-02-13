@@ -8,6 +8,17 @@
         </div>
         <div class="box-body">
           <div class="form-group">
+            <label for="productName" class="col-sm-2 control-label">项目类型</label>
+            <div class="col-sm-4">
+              <select class="form-control select2 select2-hidden-accessible" tabindex="-1" aria-hidden="true" v-model="productId">
+                <option value="">请选择</option>
+                <option value="hss">好收收</option>
+                <option value="hsy">好收银</option>
+              </select>
+            </div>
+            <div class="col-sm-6 right"></div>
+          </div>
+          <div class="form-group">
             <label for="productName" class="col-sm-2 control-label">产品名称</label>
             <div class="col-sm-4">
               <input type="text" class="form-control" id="productName" v-model="productName">

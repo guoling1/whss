@@ -131,6 +131,22 @@
       this.$http.post('/admin/district/findAllDistrict')
         .then(function (res) {
           this.$data.provinces = res.data;
+        })
+        .catch(function (err) {
+          this.$message({
+            showClose: true,
+            message: err.statusMessage,
+            type: 'error'
+          });
+        })
+
+      this.$http.post('/admin/dealer/listFirstDealer',this.$data.query)
+        .then(function (res) {
+          this.$data.records = res.data.records;
+          this.$data.count = res.data.count;
+          this.$data.total = res.data.totalPage;
+          this.$data.pageSize = res.data.pageSize;
+          this.$data.loading = false;
           var changeTime=function (val) {
             if(val==''||val==null){
               return ''
@@ -148,26 +164,8 @@
               return year+"-"+tod(month)+"-"+tod(date);
             }
           }
-          for(let i = 0; i < this.$data.records.length; i++){
-            this.$data.records[i].createTime = changeTime(this.$data.records[i].createTime)
-          }
-        })
-        .catch(function (err) {
-          this.$message({
-            showClose: true,
-            message: err.statusMessage,
-            type: 'error'
-          });
-        })
-
-      this.$http.post('/admin/dealer/listFirstDealer',this.$data.query)
-        .then(function (res) {
-          this.$data.records = res.data.records;
-          this.$data.count = res.data.count;
-          this.$data.total = res.data.totalPage;
-          this.$data.pageSize = res.data.pageSize;
-          this.$data.loading = false;
           for(var i=0;i<this.$data.records.length;i++){
+            this.$data.records[i].createTime = changeTime(this.$data.records[i].createTime)
             if(this.$data.records[i].belongProvinceName!=null&&this.$data.records[i].belongCityName!=null){
               this.$data.records[i].belong = this.$data.records[i].belongProvinceName+"-"+this.$data.records[i].belongCityName;
             }
@@ -214,8 +212,27 @@
             this.$data.records = res.data.records;
             this.$data.count = res.data.count;
             this.$data.total = res.data.totalPage;
+            this.$data.pageSize = res.data.pageSize;
             this.$data.loading = false;
+            var changeTime=function (val) {
+              if(val==''||val==null){
+                return ''
+              }else {
+                val = new Date(val)
+                var year=val.getFullYear();
+                var month=val.getMonth()+1;
+                var date=val.getDate();
+                function tod(a) {
+                  if(a<10){
+                    a = "0"+a
+                  }
+                  return a;
+                }
+                return year+"-"+tod(month)+"-"+tod(date);
+              }
+            }
             for(var i=0;i<this.$data.records.length;i++){
+              this.$data.records[i].createTime = changeTime(this.$data.records[i].createTime)
               if(this.$data.records[i].belongProvinceName!=null&&this.$data.records[i].belongCityName!=null){
                 this.$data.records[i].belong = this.$data.records[i].belongProvinceName+"-"+this.$data.records[i].belongCityName;
               }
@@ -241,8 +258,27 @@
             this.$data.records = res.data.records;
             this.$data.count = res.data.count;
             this.$data.total = res.data.totalPage;
+            this.$data.pageSize = res.data.pageSize;
             this.$data.loading = false;
+            var changeTime=function (val) {
+              if(val==''||val==null){
+                return ''
+              }else {
+                val = new Date(val)
+                var year=val.getFullYear();
+                var month=val.getMonth()+1;
+                var date=val.getDate();
+                function tod(a) {
+                  if(a<10){
+                    a = "0"+a
+                  }
+                  return a;
+                }
+                return year+"-"+tod(month)+"-"+tod(date);
+              }
+            }
             for(var i=0;i<this.$data.records.length;i++){
+              this.$data.records[i].createTime = changeTime(this.$data.records[i].createTime)
               if(this.$data.records[i].belongProvinceName!=null&&this.$data.records[i].belongCityName!=null){
                 this.$data.records[i].belong = this.$data.records[i].belongProvinceName+"-"+this.$data.records[i].belongCityName;
               }
@@ -259,8 +295,27 @@
             this.$data.records = res.data.records;
             this.$data.count = res.data.count;
             this.$data.total = res.data.totalPage;
+            this.$data.pageSize = res.data.pageSize;
             this.$data.loading = false;
+            var changeTime=function (val) {
+              if(val==''||val==null){
+                return ''
+              }else {
+                val = new Date(val)
+                var year=val.getFullYear();
+                var month=val.getMonth()+1;
+                var date=val.getDate();
+                function tod(a) {
+                  if(a<10){
+                    a = "0"+a
+                  }
+                  return a;
+                }
+                return year+"-"+tod(month)+"-"+tod(date);
+              }
+            }
             for(var i=0;i<this.$data.records.length;i++){
+              this.$data.records[i].createTime = changeTime(this.$data.records[i].createTime)
               if(this.$data.records[i].belongProvinceName!=null&&this.$data.records[i].belongCityName!=null){
                 this.$data.records[i].belong = this.$data.records[i].belongProvinceName+"-"+this.$data.records[i].belongCityName;
               }

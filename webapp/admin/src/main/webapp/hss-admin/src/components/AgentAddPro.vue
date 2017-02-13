@@ -127,10 +127,10 @@
             </div>
           </form>
         </div>
-        <div class="btn btn-default" @click="goBack" style="margin: 20px 20px 100px 40px;">
+        <div class="btn btn-primary" @click="goBack" style="margin: 20px 20px 100px 40px;">
           返回
         </div>
-        <div class="btn btn-default" @click="change" style="margin: 20px 0 100px;" v-if="level==1">
+        <div class="btn btn-primary" @click="change" style="margin: 20px 0 100px;" v-if="level==1">
           修改
         </div>
       </div>

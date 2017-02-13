@@ -52,6 +52,45 @@
             </el-row>
             <el-row type="flex" class="row-bg" justify="center">
               <el-col :span="4">
+                <div class="alignRight">登录名:</div>
+              </el-col>
+              <el-col :span="6">
+                <div class="grid-content bg-purple-light">
+                  <el-input size="small" v-model="query.loginName" placeholder="数字或字母的组合，4-20位"></el-input>
+                </div>
+              </el-col>
+              <el-col :span="8">
+                <div class="grid-content bg-purple-light"></div>
+              </el-col>
+            </el-row>
+            <el-row type="flex" class="row-bg" justify="center">
+              <el-col :span="4">
+                <div class="alignRight">登录密码:</div>
+              </el-col>
+              <el-col :span="6">
+                <div class="grid-content bg-purple-light">
+                  <el-input size="small" v-model="query.loginPwd" placeholder="最低6位"></el-input>
+                </div>
+              </el-col>
+              <el-col :span="8">
+                <div class="grid-content bg-purple-light">修改密码</div>
+              </el-col>
+            </el-row>
+            <el-row type="flex" class="row-bg" justify="center">
+              <el-col :span="4">
+                <div class="alignRight">联系邮箱:</div>
+              </el-col>
+              <el-col :span="6">
+                <div class="grid-content bg-purple-light">
+                  <el-input size="small" v-model="query.email" placeholder="请输入内容"></el-input>
+                </div>
+              </el-col>
+              <el-col :span="8">
+                <div class="grid-content bg-purple-light"></div>
+              </el-col>
+            </el-row>
+            <el-row type="flex" class="row-bg" justify="center">
+              <el-col :span="4">
                 <div class="alignRight">所在地:</div>
               </el-col>
               <el-col :span="6">
@@ -188,13 +227,13 @@
           </el-col>
           <el-col :span="6">
             <div class="grid-content bg-purple-light" style="width: 100%">
-              <div class="btn btn-default" @click="goBack" style="width: 45%;margin: 20px 0 100px;">
+              <div class="btn btn-primary" @click="goBack" style="width: 45%;margin: 20px 0 100px;">
                 返回
               </div>
-              <div class="btn btn-default" @click="create" v-if="isShow" style="width: 45%;float: right;margin: 20px 0 100px;">
+              <div class="btn btn-primary" @click="create" v-if="isShow" style="width: 45%;float: right;margin: 20px 0 100px;">
                 创建代理商
               </div>
-              <div class="btn btn-default" @click="change()" v-if="!isShow" style="width: 45%;float: right;margin: 20px 0 100px;">
+              <div class="btn btn-primary" @click="change()" v-if="!isShow" style="width: 45%;float: right;margin: 20px 0 100px;">
                 修改
               </div>
             </div>
@@ -222,6 +261,9 @@
         query: {
           mobile: '',
           name: '',
+          loginName:'',
+          loginPwd:'',
+          email:'',
           belongProvinceCode:'',
           belongProvinceName:'',
           belongCityCode: '',
