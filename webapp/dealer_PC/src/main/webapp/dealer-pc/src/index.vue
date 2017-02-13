@@ -44,7 +44,8 @@
                     </li>
                     <li>
                       <a href="#">
-                        <i class="fa fa-warning text-yellow"></i> Very long description here that may not fit into the
+                        <i class="fa fa-warning text-yellow"></i> Very long description here
+                        that may not fit into the
                         page and may cause design problems
                       </a>
                     </li>
@@ -165,8 +166,8 @@
           </li>
           <li class="treeview">
             <a href="#">
-              <i class="fa fa-files-o"></i>
-              <span>文件管理</span>
+              <i class="fa fa-money"></i>
+              <span>我的分润</span>
               <span class="pull-right-container">
                 <i class="fa fa-angle-left pull-right"></i>
                 <!-- <small class="label pull-right bg-green">new</small> -->
@@ -174,56 +175,19 @@
             </a>
             <ul class="treeview-menu">
               <li>
-                <router-link to="upload"><i class="fa fa-circle-o"></i>文件上传</router-link>
+                <router-link to="profits_detail"><i class="fa fa-circle-o"></i>分润明细</router-link>
               </li>
               <li>
-                <router-link to="file_list"><i class="fa fa-circle-o"></i>文件列表</router-link>
+                <router-link to="profits_detail"><i class="fa fa-circle-o"></i>结算记录</router-link>
               </li>
-              <!--<li><a href="pages/layout/boxed.html"><i class="fa fa-circle-o"></i> Boxed</a></li>-->
-              <!--<li><a href="pages/layout/fixed.html"><i class="fa fa-circle-o"></i> Fixed</a></li>-->
-              <!--<li><a href="pages/layout/collapsed-sidebar.html"><i class="fa fa-circle-o"></i> Collapsed Sidebar</a></li>-->
+              <li>
+                <router-link to="profits_detail"><i class="fa fa-circle-o"></i>余额提现</router-link>
+              </li>
             </ul>
           </li>
-          <!--<li class="treeview">-->
-            <!--<a href="#">-->
-              <!--<i class="fa fa-th"></i> <span>加班管理</span>-->
-              <!--<span class="pull-right-container">-->
-                <!--<i class="fa fa-angle-left pull-right"></i>-->
-                <!--&lt;!&ndash; <small class="label pull-right bg-green">new</small> &ndash;&gt;-->
-              <!--</span>-->
-            <!--</a>-->
-            <!--<ul class="treeview-menu">-->
-              <!--<li>-->
-                <!--<router-link to="overtime_record"><i class="fa fa-circle-o"></i> 加班记录</router-link>-->
-              <!--</li>-->
-              <!--<li>-->
-                <!--<router-link to="overtime_petitioner"><i class="fa fa-circle-o"></i> 加班申请</router-link>-->
-              <!--</li>-->
-              <!--<li>-->
-                <!--<router-link to="overtime_pass"><i class="fa fa-circle-o"></i> 加班审批</router-link>-->
-              <!--</li>-->
-              <!--&lt;!&ndash;<li><a href="pages/charts/morris.html"><i class="fa fa-circle-o"></i> Morris</a></li>&ndash;&gt;-->
-              <!--&lt;!&ndash;<li><a href="pages/charts/flot.html"><i class="fa fa-circle-o"></i> Flot</a></li>&ndash;&gt;-->
-              <!--&lt;!&ndash;<li><a href="pages/charts/inline.html"><i class="fa fa-circle-o"></i> Inline charts</a></li>&ndash;&gt;-->
-            <!--</ul>-->
-          <!--</li>-->
-          <!--<li class="treeview">-->
-            <!--<a href="#">-->
-              <!--<i class="fa fa-pie-chart"></i> <span>数据管理</span>-->
-              <!--<span class="pull-right-container">-->
-                <!--<i class="fa fa-angle-left pull-right"></i>-->
-                <!--&lt;!&ndash; <small class="label pull-right bg-green">new</small> &ndash;&gt;-->
-              <!--</span>-->
-            <!--</a>-->
-            <!--<ul class="treeview-menu">-->
-              <!--<li>-->
-                <!--<router-link to="import_data"><i class="fa fa-circle-o"></i> 导入数据</router-link>-->
-              <!--</li>-->
-            <!--</ul>-->
-          <!--</li>-->
           <li class="treeview">
             <a href="#">
-              <i class="fa fa-gear"></i> <span>全局管理</span>
+              <i class="fa fa-users"></i> <span>下级代理</span>
               <span class="pull-right-container">
                 <i class="fa fa-angle-left pull-right"></i>
                 <!-- <small class="label pull-right bg-green">new</small> -->
@@ -231,10 +195,81 @@
             </a>
             <ul class="treeview-menu">
               <li>
-                <router-link to="global_classification_setting"><i class="fa fa-circle-o"></i> 文件分类</router-link>
+                <router-link to="profits_detail"><i class="fa fa-circle-o"></i> 所有代理商</router-link>
               </li>
               <li>
-                <router-link to="global_encryption_setting"><i class="fa fa-circle-o"></i> 加密等级</router-link>
+                <router-link to="profits_detail"><i class="fa fa-circle-o"></i> 代理结算记录</router-link>
+              </li>
+              <li>
+                <router-link to="profits_detail"><i class="fa fa-circle-o"></i> 代理商账户</router-link>
+              </li>
+            </ul>
+          </li>
+          <li class="treeview">
+            <a href="#">
+              <i class="fa fa-bank"></i> <span>商户管理</span>
+              <span class="pull-right-container">
+                <i class="fa fa-angle-left pull-right"></i>
+                <!-- <small class="label pull-right bg-green">new</small> -->
+              </span>
+            </a>
+            <ul class="treeview-menu">
+              <li>
+                <router-link to="profits_detail"><i class="fa fa-circle-o"></i> 所有商户</router-link>
+              </li>
+              <li>
+                <router-link to="profits_detail"><i class="fa fa-circle-o"></i> 交易管理</router-link>
+              </li>
+            </ul>
+          </li>
+          <li class="treeview">
+            <a href="#">
+              <i class="fa fa-calculator"></i> <span>设备管理</span>
+              <span class="pull-right-container">
+                <i class="fa fa-angle-left pull-right"></i>
+                <!-- <small class="label pull-right bg-green">new</small> -->
+              </span>
+            </a>
+            <ul class="treeview-menu">
+              <li>
+                <router-link to="profits_detail"><i class="fa fa-circle-o"></i> 分配二维码</router-link>
+              </li>
+              <li>
+                <router-link to="profits_detail"><i class="fa fa-circle-o"></i> 所有二维码</router-link>
+              </li>
+            </ul>
+          </li>
+          <li class="treeview">
+            <a href="#">
+              <i class="fa fa-user-plus"></i> <span>员工权限管理</span>
+              <span class="pull-right-container">
+                <i class="fa fa-angle-left pull-right"></i>
+                <!-- <small class="label pull-right bg-green">new</small> -->
+              </span>
+            </a>
+            <ul class="treeview-menu">
+              <li>
+                <router-link to="profits_detail"><i class="fa fa-circle-o"></i> 员工管理</router-link>
+              </li>
+              <li>
+                <router-link to="profits_detail"><i class="fa fa-circle-o"></i> 角色管理</router-link>
+              </li>
+            </ul>
+          </li>
+          <li class="treeview">
+            <a href="#">
+              <i class="fa fa-user-secret"></i> <span>我的信息</span>
+              <span class="pull-right-container">
+                <i class="fa fa-angle-left pull-right"></i>
+                <!-- <small class="label pull-right bg-green">new</small> -->
+              </span>
+            </a>
+            <ul class="treeview-menu">
+              <li>
+                <router-link to="profits_detail"><i class="fa fa-circle-o"></i> 注册信息</router-link>
+              </li>
+              <li>
+                <router-link to="profits_detail"><i class="fa fa-circle-o"></i> 代理政策</router-link>
               </li>
             </ul>
           </li>
@@ -257,7 +292,8 @@
       <div class="pull-right hidden-xs">
         <b>Version</b> 2.3.6
       </div>
-      <strong>Copyright &copy; 2014-2016 <a href="http://almsaeedstudio.com">Almsaeed Studio</a>.</strong> All rights
+      <strong>Copyright &copy; 2014-2016 <a href="http://almsaeedstudio.com">Almsaeed Studio</a>.</strong> All
+      rights
       reserved.
     </footer>
     <!-- Control Sidebar -->
@@ -438,7 +474,8 @@
             <div class="form-group">
               <label class="control-sidebar-subheading">
                 Delete chat history
-                <a href="javascript:void(0)" class="text-red pull-right"><i class="fa fa-trash-o"></i></a>
+                <a href="javascript:void(0)" class="text-red pull-right"><i
+                        class="fa fa-trash-o"></i></a>
               </label>
             </div>
             <!-- /.form-group -->

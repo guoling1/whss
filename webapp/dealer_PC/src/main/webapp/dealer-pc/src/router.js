@@ -7,17 +7,7 @@ import index from './index'
 import login from './components/login.vue'
 import home from './components/home.vue'
 
-import upload from './components/upload.vue'
-import file_list from './components/file_list.vue'
-import global_classification_setting from './components/global_classification_setting.vue'
-import global_encryption_setting from './components/global_encryption_setting.vue'
-
-import attendance from './components/attendance.vue'
-import leave_record from './components/leave_record.vue'
-import overtime_petitioner from './components/overtime_petitioner.vue'
-import overtime_record from './components/overtime_record.vue'
-import overtime_pass from './components/overtime_pass.vue'
-import import_data from './components/import_data.vue'
+import profits_detail from './components/profits_detail.vue'
 
 import store from './store/index'
 
@@ -101,17 +91,7 @@ const routes = [
     path: '/app', redirect: '/app/home', component: index,
     children: [
       {path: 'home', name: "home", component: home},
-      {path: 'upload', name: "upload", component: upload},
-      {path: 'file_list', name: "file_list", component: file_list},
-      {path: 'global_classification_setting', name: "global_classification_setting", component: global_classification_setting},
-      {path: 'global_encryption_setting', name: "global_encryption_setting", component: global_encryption_setting},
-      // this demo
-      {path: 'attendance', component: attendance},
-      {path: 'leave_record', component: leave_record},
-      {path: 'overtime_pass', component: overtime_pass},
-      {path: 'overtime_record', component: overtime_record},
-      {path: 'overtime_petitioner', component: overtime_petitioner},
-      {path: 'import_data', component: import_data}
+      {path: 'profits_detail', name: "profits_detail", component: profits_detail}
     ]
   }
 ];

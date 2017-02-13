@@ -27,28 +27,18 @@
               <data-tables :data='tableData'
                            :tool-bar-def='toolBarDef'
                            :row-action-def='rowActionsDef'>
-                <el-table-column prop="id" label="文件编号" sortable="custom"></el-table-column>
-                <el-table-column label="文件名称" sortable="custom">
-                  <template scope="scope">
-                    <el-popover trigger="hover" placement="top">
-                      <p>地址: {{ scope.row.file_path }}</p>
-                      <div slot="reference" class="name-wrapper">
-                        <el-tag>{{ scope.row.file_name }}</el-tag>
-                      </div>
-                    </el-popover>
-                  </template>
-                </el-table-column>
-                <el-table-column prop="author" label="文件作者" sortable="custom"></el-table-column>
-                <el-table-column prop="type" label="文件分类" sortable="custom"></el-table-column>
-                <el-table-column label="加密等级" sortable="custom">
-                  <template scope="scope">
-                    {{ scope.row.level | tf_levels }}
-                  </template>
-                </el-table-column>
-                <el-table-column label="上传时间" sortable="custom" width="180">
+                <el-table-column prop="id" label="代理商名称" sortable="custom"></el-table-column>
+                <el-table-column prop="author" label="代理商编号" sortable="custom"></el-table-column>
+                <el-table-column prop="type" label="省市" sortable="custom"></el-table-column>
+                <el-table-column label="注册时间" sortable="custom" width="180">
                   <template scope="scope">
                     {{ scope.row.create_time | datetime }}
                   </template>
+                </el-table-column>
+                <el-table-column prop="type" label="联系手机号" sortable="custom"></el-table-column>
+                <el-table-column prop="type" label="产品" sortable="custom">
+                  <el-table-column prop="name" label="好收收" width="120"></el-table-column>
+                  <el-table-column prop="name" label="好收银" width="120"></el-table-column>
                 </el-table-column>
               </data-tables>
             </div>
