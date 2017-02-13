@@ -506,7 +506,7 @@ public class DealerController extends BaseController {
             firstLevelDealerGet3Response.setInviteCode(dealer.getInviteCode());
             firstLevelDealerGet3Response.setInviteBtn(dealer.getInviteBtn());
         }else{//新增
-            Optional<Product> productOptional = this.productService.selectByType(EnumProductType.HSS.getId());
+            Optional<Product> productOptional = this.productService.selectByType(EnumProductType.HSY.getId());
             if(!productOptional.isPresent()){
                 return CommonResponse.simpleResponse(-1, "好收银产品不存在");
             }
