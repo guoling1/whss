@@ -1975,4 +1975,27 @@ public class DealerServiceImpl implements DealerService {
     public int updatePwd(String loginPwd, long dealerId) {
         return this.dealerDao.updatePwd(loginPwd,dealerId);
     }
+
+    /**
+     * 查询登录名称名称是否重复
+     *
+     * @param loginMame
+     * @return
+     */
+    @Override
+    public long getByLoginName(String loginMame) {
+        return this.dealerDao.selectByLoginName(loginMame);
+    }
+
+    /**
+     * 查询登录名是否重复
+     *
+     * @param loginName
+     * @param dealerId
+     * @return
+     */
+    @Override
+    public long getByLoginNameUnIncludeNow(String loginName, long dealerId) {
+        return this.dealerDao.selectByLoginNameUnIncludeNow(loginName, dealerId);
+    }
 }

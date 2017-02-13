@@ -534,4 +534,11 @@
             ORDER BY d.create_time ASC LIMIT #{offset},#{count}
         </where>
     </select>
+
+    <select id="selectByLoginName" resultType="java.lang.Long">
+        SELECT COUNT(1) FROM tb_dealer WHERE login_name = #{name}
+    </select>
+    <select id="selectByLoginNameUnIncludeNow" resultType="java.lang.Long">
+        SELECT COUNT(1) FROM tb_dealer WHERE login_name = #{loginName} AND id != #{dealerId}
+    </select>
 </mapper>
