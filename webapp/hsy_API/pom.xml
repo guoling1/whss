@@ -260,12 +260,6 @@
             <version>1.2.5</version>
         </dependency>
 
-        <!--swagger及依赖包(jackson)-->
-        <dependency>
-            <groupId>com.mangofactory</groupId>
-            <artifactId>swagger-springmvc</artifactId>
-            <version>1.0.2</version>
-        </dependency>
         <dependency>
             <groupId>com.jkm</groupId>
             <artifactId>hsy-user-api</artifactId>

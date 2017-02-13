@@ -52,15 +52,13 @@
           </ul>
           </router-link>
         </li>
-        <li :class="(url=='/admin/record/agentListFir'||url=='/admin/record/agentListSec')?'treeview active':'treeview'">
+        <li :class="(url=='/admin/record/agentList'||url=='/admin/record/agentAdd')?'treeview active':'treeview'">
           <a href="#"><span>代理商管理</span>
           </a>
           <ul class="treeview-menu">
-            <li @click="refrash" :class="(url=='/admin/record/agentListFir')?'treeview active':'treeview'"><router-link to="/admin/record/agentListFir"><span>一级代理商</span> </router-link></li>
-            <li @click="refrash" :class="(url=='/admin/record/agentListSec')?'treeview active':'treeview'"><router-link to="/admin/record/agentListSec"><span>二级代理商</span> </router-link></li>
-            <!--<li @click="refrash" :class="(url=='/admin/record/agentList')?'treeview active':'treeview'"><router-link to="/admin/record/agentList"><span>代理商列表</span> </router-link></li>
-            &lt;!&ndash;<li @click="refrash"><router-link to="/admin/record/agentAccount"><span>代理商账户</span> </router-link></li>&ndash;&gt;
-            <li @click="refrash" :class="(url=='/admin/record/agentAdd')?'treeview active':'treeview'"><router-link to="/admin/record/agentAdd"><span>新增代理商</span> </router-link></li>-->
+            <li @click="refrash" :class="(url=='/admin/record/agentList')?'treeview active':'treeview'"><router-link to="/admin/record/agentList"><span>代理商列表</span> </router-link></li>
+            <!--<li @click="refrash"><router-link to="/admin/record/agentAccount"><span>代理商账户</span> </router-link></li>-->
+            <li @click="refrash" :class="(url=='/admin/record/agentAdd')?'treeview active':'treeview'"><router-link to="/admin/record/agentAdd"><span>新增代理商</span> </router-link></li>
           </ul>
         </li>
         <li :class="(url=='/admin/record/companyProfit'||url=='/admin/record/firProfit'||url=='/admin/record/secProfit')?'treeview active':'treeview'">

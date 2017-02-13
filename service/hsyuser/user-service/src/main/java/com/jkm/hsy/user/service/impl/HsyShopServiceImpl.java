@@ -2,6 +2,9 @@ package com.jkm.hsy.user.service.impl;
 
 import com.google.common.base.Optional;
 import com.google.gson.*;
+import com.jkm.base.common.enums.EnumGlobalIDPro;
+import com.jkm.base.common.enums.EnumGlobalIDType;
+import com.jkm.base.common.util.GlobalID;
 import com.jkm.base.common.util.ValidateUtils;
 import com.jkm.hss.admin.helper.responseparam.QRCodeList;
 import com.jkm.hss.admin.service.QRCodeService;
@@ -165,6 +168,7 @@ public class HsyShopServiceImpl implements HsyShopService {
         hsyShopDao.update(appBizShop);
         appAuUser.setUpdateTime(date);
         appAuUser.setAuStep("3");
+        appAuUser.setRealname(appBizShop.getContactName());
         hsyUserDao.updateByID(appAuUser);
         return "";
     }
@@ -389,7 +393,8 @@ public class HsyShopServiceImpl implements HsyShopService {
         appBizShop.setIndoorID(primaryAppBizShop.getIndoorID());
         appBizShop.setParentID(primaryAppBizShop.getId());
         appBizShop.setContactName(primaryAppBizShop.getContactName());
-        appBizShop.setContactCellphone(primaryAppBizShop.getContactCellphone());
+        if(!(appBizShop.getUid()!=null&&!appBizShop.getUid().equals("")))
+            appBizShop.setContactCellphone(primaryAppBizShop.getContactCellphone());
         appBizShop.setStatus(AppConstant.SHOP_STATUS_NORMAL);
         appBizShop.setIsPublic(primaryAppBizShop.getIsPublic());
         Date date=new Date();
@@ -403,6 +408,10 @@ public class HsyShopServiceImpl implements HsyShopService {
         appBizShopUserRole.setStatus(AppConstant.ROLE_STATUS_NORMAL);
         appBizShopUserRole.setType(AppConstant.ROLE_TYPE_BRANCH);
         hsyShopDao.insertAppBizShopUserRole(appBizShopUserRole);
+        AppBizShop appBizShopUp=new AppBizShop();
+        appBizShopUp.setId(appBizShop.getId());
+        appBizShopUp.setGlobalID(GlobalID.GetGlobalID(EnumGlobalIDType.MERCHANT, EnumGlobalIDPro.MAX,appBizShop.getId().toString()));
+        hsyShopDao.update(appBizShopUp);
         return "{\"id\":"+appBizShop.getId()+"}";
     }
 

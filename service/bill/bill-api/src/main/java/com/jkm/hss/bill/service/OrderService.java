@@ -186,7 +186,7 @@ public interface OrderService {
      * @param appId
      * @return
      */
-    long getPageOrdersCountByAccountId(long accountId, String appId, Date startDate, Date endDate);
+    long getPageOrdersCountByAccountId(long accountId, String appId, Date date);
 
     /**
      * 分页查询--查询记录
@@ -195,11 +195,9 @@ public interface OrderService {
      * @param appId
      * @param offset
      * @param count
-     * @param startDate
-     * @param endDate
      * @return
      */
-    List<Order> getPageOrdersByAccountId(long accountId, String appId, int offset, int count, Date startDate, Date endDate);
+    List<Order> getPageOrdersByAccountId(long accountId, String appId, int offset, int count, Date date);
 
     /**
      * 查询交易详情

@@ -3,7 +3,10 @@ package com.jkm.hss.push.producer;
 import com.alibaba.fastjson.JSONObject;
 import com.gexin.rp.sdk.base.IPushResult;
 import com.gexin.rp.sdk.base.ITemplate;
-import com.gexin.rp.sdk.base.impl.*;
+import com.gexin.rp.sdk.base.impl.AppMessage;
+import com.gexin.rp.sdk.base.impl.ListMessage;
+import com.gexin.rp.sdk.base.impl.SingleMessage;
+import com.gexin.rp.sdk.base.impl.Target;
 import com.gexin.rp.sdk.base.payload.APNPayload;
 import com.gexin.rp.sdk.exceptions.RequestException;
 import com.gexin.rp.sdk.http.IGtPush;
@@ -165,11 +168,17 @@ public class PushProducer {
         template.setTransmissionType(type);
         template.setTransmissionContent(content);
 
+        JSONObject jsonObject = JSONObject.parseObject(content);
+        String resultMessage = jsonObject.getString("resultMessage");
+
         //ios透传需要设置的内容
         APNPayload payload = new APNPayload();
-        payload.setContentAvailable(1);
+        payload.setContentAvailable(0);
         payload.setSound("suc1.wav");
-        payload.setAlertMsg(new APNPayload.SimpleAlertMsg(content));
+        payload.setAlertMsg(new APNPayload.SimpleAlertMsg(resultMessage));
+//        payload.setCategory(content);
+        payload.addCustomMsg("date",content);
+//        payload.addCustomMsg("code",100);
         template.setAPNInfo(payload);
         return pushTemplate(push,template,pushType,clientId,targets);
     }

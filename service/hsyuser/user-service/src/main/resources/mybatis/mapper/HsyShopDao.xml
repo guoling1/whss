@@ -173,7 +173,7 @@
 
     <select id="findAppBizShopByAccountID" parameterType="java.lang.Long" resultType="com.jkm.hsy.user.entity.AppBizShop">
         select distinct
-        shop.ID,shop.GLOBALID,shop.NAME,shop.SHORTNAME,shop.INDUSTRYCODE,shop.DISTRICTCODE,shop.ADDRESS,shop.LICENCEID,shop.STOREFRONTID,shop.COUNTERID,shop.INDOORID,shop.PARENTID,shop.CONTACTNAME,shop.CONTACTCELLPHONE,shop.STATUS,shop.ISPUBLIC,user.ACCOUNTID,shop.CREATETIME,shop.UPDATETIME
+        shop.ID,shop.GLOBALID,shop.NAME,shop.SHORTNAME,shop.INDUSTRYCODE,shop.DISTRICTCODE,shop.ADDRESS,shop.LICENCEID,shop.STOREFRONTID,shop.COUNTERID,shop.INDOORID,shop.PARENTID,shop.CONTACTNAME,shop.CONTACTCELLPHONE,shop.STATUS,shop.ISPUBLIC,user.ACCOUNTID,shop.CREATETIME,shop.UPDATETIME,sur.UID
         from app_biz_shop shop left join app_biz_shop_user_role sur on shop.ID=sur.SID left join app_au_user user on user.ID=sur.UID
         where user.ACCOUNTID=#{accountID}
     </select>
@@ -219,6 +219,16 @@
             or sur.sid=#{sid}
         </foreach>
         order by sur.ROLE,user.UPDATETIME desc
+    </select>
+
+    <select id="isShopStatusCheckPass" parameterType="java.lang.Long"  resultType="boolean">
+        select count(1) from (select distinct 1 from app_biz_shop shop left join app_biz_shop_user_role sur on shop.ID=sur.SID left join app_au_user user on `user`.ID=sur.UID where
+        shop.`STATUS`=1 and sur.type=1 and `user`.ACCOUNTID=#{accountID}) a
+    </select>
+
+    <select id="findAppBizShopUserRoleBySidAndUid" parameterType="com.jkm.hsy.user.entity.AppBizShopUserRole" resultType="com.jkm.hsy.user.entity.AppBizShopUserRole">
+        select SID,UID,ROLE,STATUS,TYPE from app_biz_shop_user_role
+        where SID=#{sid} and UID=#{uid}
     </select>
 
 </mapper>

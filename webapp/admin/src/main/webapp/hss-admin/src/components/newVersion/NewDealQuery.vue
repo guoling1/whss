@@ -101,6 +101,7 @@
                   <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="Platform(s): activate to sort column ascending">所属二级</th>
                   <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="Engine version: activate to sort column ascending">支付金额</th>
                   <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">手续费率</th>
+                  <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">业务方</th>
                   <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">订单状态</th>
                   <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">结算状态</th>
                   <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">支付方式</th>
@@ -119,6 +120,7 @@
                   <td>{{order.proxyName1}}</td>
                   <td style="text-align: right">{{order.tradeAmount|toFix}}</td>
                   <td>{{order.payRate}}</td>
+                  <td>{{order.appId}}</td>
                   <td>{{order.status|changeStatus}}<!--<a href="javascript:;">(补发)</a>--></td>
                   <td>{{order.settleStatus|changeSettleStatus}}</td>
                   <td>{{order.payType|changePayType}}</td>
@@ -241,6 +243,24 @@
           })
         })
     },
+   /* mounted:function () {
+      jeDate({
+        dateCell: '#indate1',
+        format: "YYYY-MM-DD",
+        maxDate: jeDate.now(5), //1代表明天，2代表后天，以此类推
+        choosefun:(val)=> {
+          this.$data.query.startTime = val;
+        }
+      })
+      jeDate({
+        dateCell: '#indate2',
+        format: "YYYY-MM-DD",
+        maxDate: jeDate.now(5), //1代表明天，2代表后天，以此类推
+        choosefun:(val)=> {
+          this.$data.query.endTime = val;
+        }
+      })
+    },*/
     methods: {
       refresh: function () {
         location.reload()

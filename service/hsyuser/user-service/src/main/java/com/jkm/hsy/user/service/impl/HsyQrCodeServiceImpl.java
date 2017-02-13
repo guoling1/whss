@@ -81,6 +81,8 @@ public class HsyQrCodeServiceImpl implements HsyQrCodeService{
         List<AppAuUser> appAuUsers = hsyUserDao.findAppAuUserByID(appBindShop.getUserId());
         if(appAuUsers==null||appAuUsers.size()==0)
             throw new ApiHandleException(ResultCode.RESULT_FAILE,"该用户不存在");
+        if(appAuUsers.get(0).getStatus()!=1)
+            throw new ApiHandleException(ResultCode.RESULT_FAILE,"该用户未审核通过");
         if(qrCodeOptional.get().getActivateStatus()== EnumQRCodeActivateStatus.ACTIVATE.getCode())
             throw new ApiHandleException(ResultCode.RESULT_FAILE,"该二维码已经被激活，不能再次绑定");
         //是否在同一代理商下，是否在同一产品下
