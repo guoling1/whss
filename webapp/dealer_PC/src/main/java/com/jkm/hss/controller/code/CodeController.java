@@ -44,7 +44,7 @@ public class CodeController extends BaseController {
     private UserInfoService userInfoService;
 
     /**
-     * 扫码
+     * 扫码.
      *
      * @param request
      * @param response
