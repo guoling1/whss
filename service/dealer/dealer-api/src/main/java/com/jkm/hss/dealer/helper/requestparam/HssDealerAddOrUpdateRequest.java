@@ -1,4 +1,4 @@
-package com.jkm.hss.helper.response;
+package com.jkm.hss.dealer.helper.requestparam;
 
 import lombok.Data;
 
@@ -9,21 +9,18 @@ import java.util.List;
  * Created by yulong.zhang on 2016/12/9.
  */
 @Data
-public class FirstLevelDealerGet2Response {
+public class HssDealerAddOrUpdateRequest {
+
     /**
-     * 产品名称
+     * 一级代理商id
      */
-    private String productName;
+    private long dealerId;
+
     /**
      * 合伙人推荐功能开关
      * {@link com.jkm.hss.dealer.enums.EnumRecommendBtn}
      */
     private int recommendBtn;
-    /**
-     * 邀请码
-     */
-    private String inviteCode;
-
     /**
      * 推广功能
      * {@link com.jkm.hss.dealer.enums.EnumInviteBtn}
@@ -34,24 +31,30 @@ public class FirstLevelDealerGet2Response {
      * 收单总分润空间
      */
     private BigDecimal totalProfitSpace;
+
+    /**
+     * 产品列表
+     */
+    private Product product;
     /**
      * 合伙人推荐分润
      */
-    private List<DealerUpgerdeRate> dealerUpgerdeRates;
+    private List<DealerUpgradeRate> dealerUpgerdeRates;
     @Data
-    public  class DealerUpgerdeRate {
+    public static class DealerUpgradeRate {
+        /**
+         * 代理商id
+         */
+        private long dealerId;
+
         /**
          * 升级分润费率编码
          */
-        private long id;
+        private Long id;
         /**
          * 产品编码
          */
         private long productId;
-        /**
-         * 代理商编码
-         */
-        private long dealerId;
         /**
          * 分润类型
          * {@link com.jkm.hss.dealer.enums.EnumDealerRateType}
@@ -74,25 +77,14 @@ public class FirstLevelDealerGet2Response {
         private String bossDealerShareRate;
     }
 
-    /**
-     * 产品列表
-     */
-    private Product product;
 
     @Data
     public class Product {
-
 
         /**
          * 产品id
          */
         private long productId;
-
-        /**
-         * 产品名称 快收银
-         */
-        private String productName;
-
 
         /**
          * 通道列表
@@ -109,11 +101,6 @@ public class FirstLevelDealerGet2Response {
          * {@link com.jkm.hss.product.enums.EnumPayChannelSign}
          */
         private int channelType;
-
-        /**
-         * 通道名称
-         */
-        private String channelName;
 
         /**
          * 支付结算手续费

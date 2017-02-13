@@ -341,4 +341,32 @@ public interface DealerService {
      * @return
      */
     int update2(Dealer dealer);
+
+    /**
+     * 更新或新增好收收代理商配置信息
+     *
+     * @param request
+     */
+    void addOrUpdateHssDealer(HssDealerAddOrUpdateRequest request);
+    /**
+     * 更新或新增好收银代理商配置信息
+     *
+     * @param request
+     */
+    void addOrUpdateHsyDealer(HsyDealerAddOrUpdateRequest request);
+
+    /**
+     * 更新
+     *
+     * @param dealer
+     * @return
+     */
+    int updateRecommendBtnAndTotalProfitSpace(Dealer dealer);
+    /**
+     * 更新
+     *
+     * @param dealer
+     * @return
+     */
+    int updateInviteBtn(Dealer dealer);
 }

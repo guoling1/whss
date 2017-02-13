@@ -1802,4 +1802,149 @@ public class DealerServiceImpl implements DealerService {
     public int update2(final Dealer dealer) {
         return this.dealerDao.update2(dealer);
     }
+
+
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param request
+     */
+    @Override
+    @Transactional
+    public void addOrUpdateHssDealer(final HssDealerAddOrUpdateRequest request) {
+        final Optional<Dealer> dealerOptional = this.getById(request.getDealerId());
+        final Dealer dealer = dealerOptional.get();
+        if(request.getRecommendBtn()>0){
+            dealer.setRecommendBtn(request.getRecommendBtn());
+        }else{
+            dealer.setRecommendBtn(EnumRecommendBtn.OFF.getId());
+        }
+        dealer.setInviteBtn(request.getInviteBtn());
+        dealer.setTotalProfitSpace(request.getTotalProfitSpace());
+        this.updateRecommendBtnAndTotalProfitSpace(dealer);
+        final HssDealerAddOrUpdateRequest.Product product = request.getProduct();
+        final long productId = product.getProductId();
+        final List<HssDealerAddOrUpdateRequest.Channel> channels = product.getChannels();
+        for (HssDealerAddOrUpdateRequest.Channel channel : channels) {
+            final Optional<DealerChannelRate> dealerChannelRateOptional =
+                    this.dealerRateService.getByDealerIdAndProductIdAndChannelType(request.getDealerId(), productId, channel.getChannelType());
+            if(dealerChannelRateOptional.isPresent()){//修改
+                final DealerChannelRate dealerChannelRate = dealerChannelRateOptional.get();
+                dealerChannelRate.setDealerTradeRate(new BigDecimal(channel.getPaymentSettleRate()).divide(new BigDecimal("100")));
+                dealerChannelRate.setDealerWithdrawFee(new BigDecimal(channel.getWithdrawSettleFee()));
+                dealerChannelRate.setDealerMerchantPayRate(new BigDecimal(channel.getMerchantSettleRate()).divide(new BigDecimal("100")));
+                dealerChannelRate.setDealerMerchantWithdrawFee(new BigDecimal(channel.getMerchantWithdrawFee()));
+                dealerChannelRate.setStatus(EnumDealerChannelRateStatus.USEING.getId());
+                this.dealerRateService.update(dealerChannelRate);
+            }else{//新增
+                final DealerChannelRate dealerChannelRate = new DealerChannelRate();
+                dealerChannelRate.setDealerId(dealer.getId());
+                dealerChannelRate.setProductId(productId);
+                dealerChannelRate.setChannelTypeSign(channel.getChannelType());
+                dealerChannelRate.setDealerTradeRate(new BigDecimal(channel.getPaymentSettleRate()).divide(new BigDecimal("100")));
+                dealerChannelRate.setDealerBalanceType(channel.getSettleType());
+                dealerChannelRate.setDealerWithdrawFee(new BigDecimal(channel.getWithdrawSettleFee()));
+                dealerChannelRate.setDealerMerchantPayRate(new BigDecimal(channel.getMerchantSettleRate()).divide(new BigDecimal("100")));
+                dealerChannelRate.setDealerMerchantWithdrawFee(new BigDecimal(channel.getMerchantWithdrawFee()));
+                dealerChannelRate.setStatus(EnumDealerChannelRateStatus.USEING.getId());
+                this.dealerRateService.init(dealerChannelRate);
+            }
+
+        }
+
+        final List<HssDealerAddOrUpdateRequest.DealerUpgradeRate> dealerUpgradeRates =request.getDealerUpgerdeRates();
+        if(dealerUpgradeRates.size()>0){
+            for(HssDealerAddOrUpdateRequest.DealerUpgradeRate dealerUpgradeRate:dealerUpgradeRates){
+                if(dealerUpgradeRate.getId()>0){//修改
+                    DealerUpgerdeRate du = new DealerUpgerdeRate();
+                    du.setId(dealerUpgradeRate.getId());
+                    du.setProductId(productId);
+                    du.setType(dealerUpgradeRate.getType());
+                    du.setDealerId(dealerUpgradeRate.getDealerId());
+                    du.setFirstDealerShareProfitRate(new BigDecimal(dealerUpgradeRate.getFirstDealerShareProfitRate()));
+                    du.setSecondDealerShareProfitRate(new BigDecimal(dealerUpgradeRate.getSecondDealerShareProfitRate()));
+                    du.setBossDealerShareRate(new BigDecimal(dealerUpgradeRate.getBossDealerShareRate()));
+                    du.setStatus(EnumDealerStatus.NORMAL.getId());
+                    this.dealerUpgerdeRateService.update(du);
+                }else{//新增
+                    DealerUpgerdeRate du = new DealerUpgerdeRate();
+                    du.setProductId(productId);
+                    du.setType(dealerUpgradeRate.getType());
+                    du.setDealerId(dealerUpgradeRate.getDealerId());
+                    du.setFirstDealerShareProfitRate(new BigDecimal(dealerUpgradeRate.getFirstDealerShareProfitRate()));
+                    du.setSecondDealerShareProfitRate(new BigDecimal(dealerUpgradeRate.getSecondDealerShareProfitRate()));
+                    du.setBossDealerShareRate(new BigDecimal(dealerUpgradeRate.getBossDealerShareRate()));
+                    du.setStatus(EnumDealerStatus.NORMAL.getId());
+                    this.dealerUpgerdeRateService.insert(du);
+                }
+            }
+        }
+
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param request
+     */
+    @Override
+    @Transactional
+    public void addOrUpdateHsyDealer(final HsyDealerAddOrUpdateRequest request) {
+        final Optional<Dealer> dealerOptional = this.getById(request.getDealerId());
+        final Dealer dealer = dealerOptional.get();
+        dealer.setInviteBtn(request.getInviteBtn());
+        this.updateInviteBtn(dealer);
+        final HsyDealerAddOrUpdateRequest.Product product = request.getProduct();
+        final long productId = product.getProductId();
+        final List<HsyDealerAddOrUpdateRequest.Channel> channels = product.getChannels();
+        for (HsyDealerAddOrUpdateRequest.Channel channel : channels) {
+            final Optional<DealerChannelRate> dealerChannelRateOptional =
+                    this.dealerRateService.getByDealerIdAndProductIdAndChannelType(request.getDealerId(), productId, channel.getChannelType());
+            if(dealerChannelRateOptional.isPresent()){//修改
+                final DealerChannelRate dealerChannelRate = dealerChannelRateOptional.get();
+                dealerChannelRate.setDealerTradeRate(new BigDecimal(channel.getPaymentSettleRate()).divide(new BigDecimal("100")));
+                dealerChannelRate.setDealerWithdrawFee(new BigDecimal(channel.getWithdrawSettleFee()));
+                dealerChannelRate.setDealerMerchantPayRate(new BigDecimal(channel.getMerchantSettleRate()).divide(new BigDecimal("100")));
+                dealerChannelRate.setDealerMerchantWithdrawFee(new BigDecimal(channel.getMerchantWithdrawFee()));
+                dealerChannelRate.setStatus(EnumDealerChannelRateStatus.USEING.getId());
+                this.dealerRateService.update(dealerChannelRate);
+            }else{//新增
+                final DealerChannelRate dealerChannelRate = new DealerChannelRate();
+                dealerChannelRate.setDealerId(dealer.getId());
+                dealerChannelRate.setProductId(productId);
+                dealerChannelRate.setChannelTypeSign(channel.getChannelType());
+                dealerChannelRate.setDealerTradeRate(new BigDecimal(channel.getPaymentSettleRate()).divide(new BigDecimal("100")));
+                dealerChannelRate.setDealerBalanceType(channel.getSettleType());
+                dealerChannelRate.setDealerWithdrawFee(new BigDecimal(channel.getWithdrawSettleFee()));
+                dealerChannelRate.setDealerMerchantPayRate(new BigDecimal(channel.getMerchantSettleRate()).divide(new BigDecimal("100")));
+                dealerChannelRate.setDealerMerchantWithdrawFee(new BigDecimal(channel.getMerchantWithdrawFee()));
+                dealerChannelRate.setStatus(EnumDealerChannelRateStatus.USEING.getId());
+                this.dealerRateService.init(dealerChannelRate);
+            }
+
+        }
+    }
+    /**
+     * {@inheritDoc}
+     *
+     * @param dealer
+     * @return
+     */
+    @Override
+    @Transactional
+    public int updateRecommendBtnAndTotalProfitSpace(final Dealer dealer) {
+        return this.dealerDao.updateRecommendBtnAndTotalProfitSpace(dealer);
+    }
+    /**
+     * {@inheritDoc}
+     *
+     * @param dealer
+     * @return
+     */
+    @Override
+    @Transactional
+    public int updateInviteBtn(final Dealer dealer) {
+        return this.dealerDao.updateInviteBtn(dealer);
+    }
 }
