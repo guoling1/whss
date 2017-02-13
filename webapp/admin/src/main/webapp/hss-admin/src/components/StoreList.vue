@@ -122,7 +122,7 @@
                 <div class="col-md-2">
                   <div class="form-group">
                     <label>商户编号：</label>
-                    <input type="text" class="form-control" v-model="query.markCode">
+                    <input type="text" class="form-control" v-model="query.globalID">
                   </div>
                   <!--<div class="form-group">
                     <label>商户名称</label>
@@ -132,7 +132,7 @@
                 <div class="col-md-2">
                   <div class="form-group">
                     <label>商户名称</label>
-                    <input type="text" class="form-control" v-model="query.merchantName">
+                    <input type="text" class="form-control" v-model="query.shortName">
                   </div>
                   <!--<div class="form-group">
                     <label>所属一级代理：</label>
@@ -257,8 +257,8 @@
         query:{
           pageNo:1,
           pageSize:10,
-          markCode:'',
-          merchantName:'',
+          shortName:'',
+          globalID:'',
           proxyName:'',
           proxyName1:'',
           startTime:'',
