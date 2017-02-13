@@ -168,6 +168,7 @@ public class HsyShopServiceImpl implements HsyShopService {
         hsyShopDao.update(appBizShop);
         appAuUser.setUpdateTime(date);
         appAuUser.setAuStep("3");
+        appAuUser.setRealname(appBizShop.getContactName());
         hsyUserDao.updateByID(appAuUser);
         return "";
     }
