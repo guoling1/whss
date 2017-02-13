@@ -1699,6 +1699,7 @@ public class DealerServiceImpl implements DealerService {
         dealer.setBelongProvinceName(firstLevelDealerAdd2Request.getBelongProvinceName());
         dealer.setBelongCityCode(firstLevelDealerAdd2Request.getBelongCityCode());
         dealer.setBelongCityName(firstLevelDealerAdd2Request.getBelongCityName());
+        dealer.setInviteBtn(EnumInviteBtn.OFF.getId());
         this.add2(dealer);
         this.updateMarkCodeAndInviteCode(GlobalID.GetGlobalID(EnumGlobalIDType.DEALER, EnumGlobalIDPro.MIN,dealer.getId()+""),
                 GlobalID.GetInviteID(EnumGlobalDealerLevel.FIRSTDEALER,dealer.getId()+""),dealer.getId());

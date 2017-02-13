@@ -129,6 +129,12 @@ public class Dealer extends BaseEntity {
      */
     private String inviteCode;
 
+    /**
+     * 推广功能
+     * {@link com.jkm.hss.dealer.enums.EnumInviteBtn}
+     */
+    private int inviteBtn;
+
 
 
     public void setLogin () {

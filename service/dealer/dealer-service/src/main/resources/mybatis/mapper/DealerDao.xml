@@ -24,7 +24,8 @@
         belong_province_name,
         belong_city_code,
         belong_city_name,
-        invite_code
+        invite_code,
+        invite_btn
         )
         VALUES
         (
@@ -48,7 +49,8 @@
         #{belongProvinceName},
         #{belongCityCode},
         #{belongCityName},
-        #{inviteCode}
+        #{inviteCode},
+        #{inviteBtn}
         );
     </insert>
     <update id="update">
@@ -192,7 +194,7 @@
     <select id="selectFirstDealerCountByPageParams" resultType="java.lang.Integer">
         SELECT COUNT(1) FROM tb_dealer as d
         <where>
-            level = 1
+            d.level = 1
             <if test="mobile!=null and mobile!=''">
                 AND d.mobile =#{mobile}
             </if>
@@ -203,7 +205,7 @@
                 AND d.mark_code = #{markCode}
             </if>
             <if test="districtCode != null and districtCode!=''">
-                OR d.belong_province_code = #{districtCode} OR d.belong_city_code=#{districtCode}
+                AND (d.belong_province_code = #{districtCode} OR d.belong_city_code=#{districtCode})
             </if>
             <if test="sysType != null and sysType!=''">
                 AND d.id IN (select distinct(dealer_id) from tb_dealer_channel_rate where product_id in (select id from tb_product where type=#{sysType}))
@@ -258,7 +260,7 @@
         d.mobile
         FROM tb_dealer as d
         <where>
-            level = 1
+            d.level = 1
             <if test="mobile!=null and mobile!=''">
                 AND d.mobile =#{mobile}
             </if>
@@ -269,7 +271,7 @@
                 AND d.mark_code = #{markCode}
             </if>
             <if test="districtCode != null and districtCode!=''">
-                OR d.belong_province_code = #{districtCode} OR d.belong_city_code=#{districtCode}
+                AND (d.belong_province_code = #{districtCode} OR d.belong_city_code=#{districtCode})
             </if>
             <if test="sysType != null and sysType!=''">
                 AND d.id IN (select distinct(dealer_id) from tb_dealer_channel_rate where product_id in (select id from tb_product where type=#{sysType}))
@@ -282,7 +284,7 @@
     <select id="selectSecondDealerCountByPageParams" resultType="java.lang.Integer">
         SELECT COUNT(1) FROM tb_dealer as d
         <where>
-            level = 2
+            d.level = 2
             <if test="mobile!=null and mobile!=''">
                 AND d.mobile =#{mobile}
             </if>
@@ -293,7 +295,7 @@
                 AND d.mark_code = #{markCode}
             </if>
             <if test="districtCode != null and districtCode!=''">
-                OR d.belong_province_code = #{districtCode} OR d.belong_city_code=#{districtCode}
+                AND (d.belong_province_code = #{districtCode} OR d.belong_city_code=#{districtCode})
             </if>
             <if test="sysType != null and sysType!=''">
                 AND d.id IN (select distinct(dealer_id) from tb_dealer_channel_rate where product_id in (select id from tb_product where type=#{sysType}))
@@ -352,7 +354,7 @@
         d.mobile
         FROM tb_dealer as d
         <where>
-            level = 2
+            d.level = 2
             <if test="mobile!=null and mobile!=''">
                 AND d.mobile =#{mobile}
             </if>
@@ -363,7 +365,7 @@
                 AND d.mark_code = #{markCode}
             </if>
             <if test="districtCode != null and districtCode!=''">
-                OR d.belong_province_code = #{districtCode} OR d.belong_city_code=#{districtCode}
+                AND (d.belong_province_code = #{districtCode} OR d.belong_city_code=#{districtCode})
             </if>
             <if test="sysType != null and sysType!=''">
                 AND d.id IN (select distinct(dealer_id) from tb_dealer_channel_rate where product_id in (select id from tb_product where type=#{sysType}))

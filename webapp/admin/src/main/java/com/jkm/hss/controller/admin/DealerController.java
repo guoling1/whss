@@ -24,8 +24,10 @@ import com.jkm.hss.dealer.service.DealerUpgerdeRateService;
 import com.jkm.hss.helper.request.FirstLevelDealerFindRequest;
 import com.jkm.hss.helper.response.DealerDetailResponse;
 import com.jkm.hss.helper.response.FirstLevelDealerFindResponse;
+import com.jkm.hss.helper.response.FirstLevelDealerGet2Response;
 import com.jkm.hss.helper.response.FirstLevelDealerGetResponse;
 import com.jkm.hss.product.entity.Product;
+import com.jkm.hss.product.enums.EnumProductType;
 import com.jkm.hss.product.servcie.ProductService;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
@@ -35,6 +37,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -257,6 +260,85 @@ public class DealerController extends BaseController {
             dealerDetailResponse.setIdCard(DealerSupport.decryptIdentity(dealer.getId(),dealer.getIdCard()));
         }
         return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", dealerDetailResponse);
+    }
+
+    /**
+     * hss查询代理商信息
+     *
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/{dealerId}/{productId}", method = RequestMethod.GET)
+    public CommonResponse getHssDealerProduct(@PathVariable final long dealerId,@PathVariable final long productId) {
+        final Optional<Dealer> dealerOptional = this.dealerService.getById(dealerId);
+        if (!dealerOptional.isPresent()) {
+            return CommonResponse.simpleResponse(-1, "代理商不存在");
+        }
+        final Dealer dealer = dealerOptional.get();
+        if(productId>0){//修改
+            List<DealerChannelRate> dealerChannelRateList = this.dealerChannelRateService.selectByDealerIdAndProductId(dealerId,productId);
+
+        }else{//新增
+            Optional<Product> productOptional = this.productService.selectByType(EnumProductType.HSS.getId());
+            if(!productOptional.isPresent()){
+                return CommonResponse.simpleResponse(-1, "好收收产品不存在");
+            }
+
+
+        }
+
+        final List<DealerChannelRate> channelRates = this.dealerChannelRateService.selectByDealerId(dealerId);
+        if (CollectionUtils.isEmpty(channelRates)) {
+            return CommonResponse.simpleResponse(-1, "代理商对应产品通道不存在");
+        }
+        final Optional<Product> productOptional = this.productService.selectById(channelRates.get(0).getProductId());
+        if (!productOptional.isPresent()) {
+            return CommonResponse.simpleResponse(-1, "代理商对应产品不存在");
+        }
+        final Product product = productOptional.get();
+
+        final FirstLevelDealerGet2Response firstLevelDealerGet2Response = new FirstLevelDealerGet2Response();
+
+        final FirstLevelDealerGet2Response.Product productResponse = firstLevelDealerGet2Response.new Product();
+        firstLevelDealerGet2Response.setProduct(productResponse);
+        firstLevelDealerGet2Response.setTotalProfitSpace(dealer.getTotalProfitSpace());
+        firstLevelDealerGet2Response.setRecommendBtn(dealer.getRecommendBtn());
+        productResponse.setProductId(product.getId());
+        productResponse.setProductName(product.getProductName());
+        productResponse.setLimitPayFeeRate(product.getLimitPayFeeRate().multiply(new BigDecimal("100")).setScale(2).toPlainString());
+        productResponse.setLimitWithdrawFeeRate(product.getLimitWithdrawFeeRate().toPlainString());
+        final List<FirstLevelDealerGet2Response.Channel> channels = new ArrayList<>();
+        productResponse.setChannels(channels);
+        for (DealerChannelRate dealerChannelRate : channelRates) {
+            final FirstLevelDealerGet2Response.Channel channel = new FirstLevelDealerGet2Response.Channel();
+            channel.setChannelType(dealerChannelRate.getChannelTypeSign());
+            channel.setPaymentSettleRate(dealerChannelRate.getDealerTradeRate().multiply(new BigDecimal("100")).setScale(2).toPlainString());
+            channel.setSettleType(dealerChannelRate.getDealerBalanceType());
+            channel.setWithdrawSettleFee(dealerChannelRate.getDealerWithdrawFee().toPlainString());
+            channel.setMerchantSettleRate(dealerChannelRate.getDealerMerchantPayRate().multiply(new BigDecimal("100")).setScale(2).toPlainString());
+            channel.setMerchantWithdrawFee(dealerChannelRate.getDealerMerchantWithdrawFee().toPlainString());
+            channels.add(channel);
+        }
+
+        final List<FirstLevelDealerGet2Response.DealerUpgerdeRate> dealerUpgerdeRates = new ArrayList<>();
+        firstLevelDealerGet2Response.setDealerUpgerdeRates(dealerUpgerdeRates);
+
+        List<DealerUpgerdeRate> upgerdeRates = dealerUpgerdeRateService.selectByDealerIdAndProductId(dealerId,product.getId());
+        if (upgerdeRates==null){
+            return CommonResponse.simpleResponse(-1,"未查到相关数据");
+        }
+        for(DealerUpgerdeRate dealerUpgerdeRate:upgerdeRates){
+            final FirstLevelDealerGet2Response.DealerUpgerdeRate du = new FirstLevelDealerGet2Response.DealerUpgerdeRate();
+            du.setId(dealerUpgerdeRate.getId());
+            du.setProductId(dealerUpgerdeRate.getProductId());
+            du.setType(dealerUpgerdeRate.getType());
+            du.setDealerId(dealerUpgerdeRate.getDealerId());
+            du.setFirstDealerShareProfitRate(dealerUpgerdeRate.getFirstDealerShareProfitRate().toString());
+            du.setSecondDealerShareProfitRate(dealerUpgerdeRate.getSecondDealerShareProfitRate().toString());
+            du.setBossDealerShareRate(dealerUpgerdeRate.getBossDealerShareRate().toString());
+            dealerUpgerdeRates.add(du);
+        }
+        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "success", firstLevelDealerGet2Response);
     }
 
 }

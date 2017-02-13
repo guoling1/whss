@@ -241,24 +241,6 @@
           })
         })
     },
-   /* mounted:function () {
-      jeDate({
-        dateCell: '#indate1',
-        format: "YYYY-MM-DD",
-        maxDate: jeDate.now(5), //1代表明天，2代表后天，以此类推
-        choosefun:(val)=> {
-          this.$data.query.startTime = val;
-        }
-      })
-      jeDate({
-        dateCell: '#indate2',
-        format: "YYYY-MM-DD",
-        maxDate: jeDate.now(5), //1代表明天，2代表后天，以此类推
-        choosefun:(val)=> {
-          this.$data.query.endTime = val;
-        }
-      })
-    },*/
     methods: {
       refresh: function () {
         location.reload()
