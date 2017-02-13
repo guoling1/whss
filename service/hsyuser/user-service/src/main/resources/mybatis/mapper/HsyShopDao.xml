@@ -226,4 +226,9 @@
         shop.`STATUS`=1 and sur.type=1 and `user`.ACCOUNTID=#{accountID}) a
     </select>
 
+    <select id="findAppBizShopUserRoleBySidAndUid" parameterType="com.jkm.hsy.user.entity.AppBizShopUserRole" resultType="com.jkm.hsy.user.entity.AppBizShopUserRole">
+        select SID,UID,ROLE,STATUS,TYPE from app_biz_shop_user_role
+        where SID=#{sid} and UID=#{uid}
+    </select>
+
 </mapper>

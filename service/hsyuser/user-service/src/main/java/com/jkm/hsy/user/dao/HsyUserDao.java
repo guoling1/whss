@@ -23,4 +23,5 @@ public interface HsyUserDao {
     public void insertAppAuUserToken(AppAuUserToken appAuUserToken);
     public void updateAppAuUserTokenByUidAndTid(AppAuUserToken appAuUserToken);
     public void updateAppAuUserTokenStatusByTid(@Param("tid")Long tid);
+    public List<AppAuUser> findAppAuUserByIDAndParentSID(AppAuUser appAuUser);
 }

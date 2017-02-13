@@ -194,7 +194,7 @@ public class ActiveControllerTester {
         p.setAppType("android");
         p.setTimeStamp(AppDateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
         p.setV("v1.0");
-        String param="{\"uid\":18,\"shortName\":\"分店简称\",\"districtCode\":\"110000\",\"address\":\"分店街道\"}";
+        String param="{\"uid\":18,\"shortName\":\"分店简称\",\"districtCode\":\"110000\",\"address\":\"分店街道\",\"contactCellphone\":\"13844256711\"}";
         p.setRequestData(param);
         ActiveControllerTester.testRest(p);
     }
@@ -255,6 +255,32 @@ public class ActiveControllerTester {
         ActiveControllerTester.testRest(p);
     }
 
+    @Test
+    public void testInserHsyUserViaCorporation()throws Exception{
+        AppParam p=new AppParam();
+        p.setServiceCode("HSY001019");
+        p.setAccessToken("");
+        p.setAppType("android");
+        p.setTimeStamp(AppDateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
+        p.setV("v1.0");
+        /*role 值：2店长，3店员  sid可选*/
+        String param="{\"role\":3,\"cellphone\":\"13521691441\",\"realname\":\"真实姓名\",\"parentID\":18,\"sid\":10}";
+        p.setRequestData(param);
+        ActiveControllerTester.testRest(p);
+    }
+
+    @Test
+    public void testFindHsyUserViaCorporation()throws Exception{
+        AppParam p=new AppParam();
+        p.setServiceCode("HSY001021");
+        p.setAccessToken("");
+        p.setAppType("android");
+        p.setTimeStamp(AppDateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
+        p.setV("v1.0");
+        String param="{\"id\":35,\"sid\":10}";
+        p.setRequestData(param);
+        ActiveControllerTester.testRest(p);
+    }
 
     @Test
     public void generateSQL()throws Exception{
