@@ -56,4 +56,12 @@ public interface DealerChannelRateService {
      * @return
      */
     Triple<BigDecimal, BigDecimal, BigDecimal> getMerchantRateByDealerId(long dealerId, long productId);
+
+    /**
+     * 查询代理商绑定的产品编码
+     * @param dealerId
+     * @param sysType
+     * @return
+     */
+    long getDealerBindProductId(long dealerId, String sysType);
 }

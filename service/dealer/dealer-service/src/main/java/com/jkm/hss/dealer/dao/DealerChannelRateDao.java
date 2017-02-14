@@ -71,4 +71,12 @@ public interface DealerChannelRateDao {
      * @return
      */
     List<DealerChannelRate> selectByDealerIdAndPayChannelSign(@Param("dealerId") long dealerId, @Param("payChannel") int payChannel);
+
+    /**
+     * 查询代理商绑定的产品编码
+     * @param dealerId
+     * @param sysType
+     * @return
+     */
+    long getDealerBindProductId(@Param("dealerId") long dealerId, @Param("sysType") String sysType);
 }

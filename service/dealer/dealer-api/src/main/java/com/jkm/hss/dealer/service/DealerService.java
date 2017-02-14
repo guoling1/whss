@@ -297,6 +297,15 @@ public interface DealerService {
      * @return
      */
     long createFirstDealer2(FirstLevelDealerAdd2Request firstLevelDealerAdd2Request);
+
+
+    /**
+     * 添加二级代理
+     *
+     * @param secondLevelDealerAdd2Request
+     * @return
+     */
+    long createSecondDealer2(SecondLevelDealerAdd2Request secondLevelDealerAdd2Request,long dealerId);
     /**
      * 添加代理商
      *
@@ -334,6 +343,12 @@ public interface DealerService {
      * @param request
      */
     void updateDealer2(FirstLevelDealerUpdate2Request request);
+    /**
+     * 更新一级代理商
+     *
+     * @param request
+     */
+    void updateSecondDealer(SecondLevelDealerUpdate2Request request);
     /**
      * 更新
      *
@@ -399,4 +414,12 @@ public interface DealerService {
      * @return
      */
     long getByLoginNameUnIncludeNow(String loginName, long dealerId);
+
+    /**
+     * 【代理商后台】二级代理商列表
+     *
+     * @param secondDealerSearchRequest
+     * @return
+     */
+    PageModel<SecondDealerResponse> listSecondDealer(SecondDealerSearchRequest secondDealerSearchRequest);
 }
