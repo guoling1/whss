@@ -7,12 +7,14 @@ import com.jkm.base.common.databind.DataBindManager;
 import com.jkm.base.common.entity.CommonResponse;
 import com.jkm.base.common.util.CookieUtil;
 import com.jkm.base.common.util.ResponseWriter;
+import com.jkm.hss.dealer.service.DealerService;
 import com.jkm.hss.helper.ApplicationConsts;
 import com.jkm.hss.dealer.entity.Dealer;
 import com.jkm.hss.merchant.entity.MerchantInfo;
 import com.jkm.hss.merchant.helper.WxConstants;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.WebDataBinder;
@@ -32,6 +34,8 @@ import java.util.Locale;
  */
 @Slf4j
 public class BaseController {
+    @Autowired
+    private DealerService dealerService;
 
     /**
      * 经销商 登录缓存
@@ -79,7 +83,9 @@ public class BaseController {
      * @return
      */
     protected Optional<Dealer> getDealer() {
-        return Optional.fromNullable(DEALER_USER_INFO_DATA_BIND.get());
+        Optional<Dealer> dealerOptional = dealerService.getById(40);
+        return Optional.fromNullable(dealerOptional.get());
+//        return Optional.fromNullable(DEALER_USER_INFO_DATA_BIND.get());
     }
 
     /**
@@ -88,11 +94,11 @@ public class BaseController {
      * @return
      */
     protected long getDealerId() {
-        final Optional<Dealer> dealerOptional = getDealer();
-        if (dealerOptional.isPresent()) {
-            return dealerOptional.get().getId();
-        }
-        return 0L;
+//        final Optional<Dealer> dealerOptional = getDealer();
+//        if (dealerOptional.isPresent()) {
+//            return dealerOptional.get().getId();
+//        }
+        return 40;
     }
 
 
