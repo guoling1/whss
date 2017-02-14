@@ -142,13 +142,13 @@
               <td>
                 <el-radio-group v-model="msg.isPublic">
                   <el-radio :label="1">对公</el-radio>
-                  <el-radio :label="2">对私</el-radio>
+                  <el-radio :label="0">对私</el-radio>
                 </el-radio-group>
               </td>
               <th style="text-align: right">结算卡开户名:</th>
               <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.cardAccountName" readonly></td>
-              <th style="text-align: right" v-show="msg.isPublic==2">身份证号:</th>
-              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.idcard" readonly v-show="msg.isPublic==2"></td>
+              <th style="text-align: right" v-show="msg.isPublic==0">身份证号:</th>
+              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.idcard" readonly v-show="msg.isPublic==0"></td>
             </tr>
             <tr>
               <th style="text-align: right">商户结算卡号:</th>

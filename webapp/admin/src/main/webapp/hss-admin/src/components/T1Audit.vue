@@ -59,7 +59,7 @@
             <el-table-column prop="settleStatusValue" label="结算状态" ></el-table-column>
             <el-table-column label="操作" width="70">
               <template scope="scope">
-                <!--<el-button @click.native.prevent="list(scope.$index)" type="text" size="small">结算</el-button>-->
+                <el-button @click.native.prevent="list(scope.$index)" type="text" size="small" v-if="records[scope.$index].settleStatusValue!='结算成功'">结算</el-button>
               </template>
             </el-table-column>
           </el-table>
@@ -93,8 +93,8 @@
               </div>
               <div slot="footer" class="dialog-footer" style="text-align: center;">
                 <el-button @click="isShow = false">取 消</el-button>
-                <el-button @click="isShow = false">结算已对账部分</el-button>
-                <el-button @click="isShow = false">强制结算全部</el-button>
+                <el-button @click="settle(2,records[index].id)">结算已对账部分</el-button>
+                <el-button @click="settle(3,records[index].id)">强制结算全部</el-button>
               </div>
             </el-dialog>
           </div>
@@ -350,25 +350,48 @@
                 text: err.statusMessage
               })
             })
+        },
+        //结算审核
+        settle(val,id) {
+          this.$http.post('/admin/settle/singleSettle',{recordId:id,option:val})
+            .then(function (res) {
+              this.$message({
+                showClose: true,
+                message: '结算成功',
+                type: 'error'
+              })
+              this.$data.isShow = false
+            })
+            .catch(function (err) {
+              this.$message({
+                showClose: true,
+                message: err.statusMessage,
+                type: 'error'
+              })
+            })
         }
       },
       watch:{
         date:function (val,oldVal) {
-          for(var j=0;j<val.length;j++){
-            var str = val[j];
-            var ary = [str.getFullYear(), str.getMonth() + 1, str.getDate()];
-            for(var i = 0, len = ary.length; i < len; i ++) {
-              if(ary[i] < 10) {
-                ary[i] = '0' + ary[i];
+            console.log(val)
+          if(val[0]!=null){
+            for(var j=0;j<val.length;j++){
+              var str = val[j];
+              var ary = [str.getFullYear(), str.getMonth() + 1, str.getDate()];
+              for(var i = 0, len = ary.length; i < len; i ++) {
+                if(ary[i] < 10) {
+                  ary[i] = '0' + ary[i];
+                }
+              }
+              str = ary[0] + '-' + ary[1] + '-' + ary[2];
+              if(j==0){
+                this.$data.query.startSettleDate = str;
+              }else {
+                this.$data.query.endSettleDate = str;
               }
             }
-            str = ary[0] + '-' + ary[1] + '-' + ary[2];
-            if(j==0){
-              this.$data.query.startSettleDate = str;
-            }else {
-              this.$data.query.endSettleDate = str;
-            }
           }
+
         }
       }
     }
