@@ -172,5 +172,14 @@ public final class ValidateUtils {
         final String _code = StringUtils.trimToEmpty(verifyCode);
         return _code.length() == 6 && StringUtils.isNumeric(_code);
     }
-
+    /**
+     * 校验邮箱
+     *
+     * @param email
+     * @return
+     */
+    public static boolean isEmail(final String email) {
+        String regex = "\\w+@\\w+\\.[a-z]+(\\.[a-z]+)?";
+        return Pattern.matches(regex, email);
+    }
 }

@@ -28,6 +28,7 @@ import com.jkm.hss.dealer.helper.response.SecondDealerResponse;
 import com.jkm.hss.dealer.service.*;
 import com.jkm.hss.merchant.entity.MerchantInfo;
 import com.jkm.hss.merchant.entity.OrderRecord;
+import com.jkm.hss.merchant.helper.MerchantSupport;
 import com.jkm.hss.merchant.service.MerchantInfoService;
 import com.jkm.hss.product.entity.BasicChannel;
 import com.jkm.hss.product.entity.Product;
@@ -1700,12 +1701,52 @@ public class DealerServiceImpl implements DealerService {
         dealer.setBelongCityCode(firstLevelDealerAdd2Request.getBelongCityCode());
         dealer.setBelongCityName(firstLevelDealerAdd2Request.getBelongCityName());
         dealer.setInviteBtn(EnumInviteBtn.OFF.getId());
+        dealer.setLoginName(firstLevelDealerAdd2Request.getLoginName());
+        dealer.setLoginPwd(DealerSupport.passwordDigest(firstLevelDealerAdd2Request.getLoginPwd(),"JKM"));
+        dealer.setEmail(firstLevelDealerAdd2Request.getEmail());
         this.add2(dealer);
         this.updateMarkCodeAndInviteCode(GlobalID.GetGlobalID(EnumGlobalIDType.DEALER, EnumGlobalIDPro.MIN,dealer.getId()+""),
                 GlobalID.GetInviteID(EnumGlobalDealerLevel.FIRSTDEALER,dealer.getId()+""),dealer.getId());
         return dealer.getId();
     }
-
+    /**
+     * {@inheritDoc}
+     *
+     * @param secondLevelDealerAdd2Request
+     * @return
+     */
+    @Override
+    @Transactional
+    public long createSecondDealer2(final SecondLevelDealerAdd2Request secondLevelDealerAdd2Request,long dealerId) {
+        final long accountId = this.accountService.initAccount(secondLevelDealerAdd2Request.getName());
+        final Dealer dealer = new Dealer();
+        dealer.setAccountId(accountId);
+        dealer.setMobile(secondLevelDealerAdd2Request.getMobile());
+        dealer.setBankAccountName(secondLevelDealerAdd2Request.getBankAccountName());
+        dealer.setSettleBankCard(DealerSupport.encryptBankCard(secondLevelDealerAdd2Request.getBankCard()));
+        dealer.setBankName(secondLevelDealerAdd2Request.getBankName());
+        dealer.setBankReserveMobile(DealerSupport.encryptMobile(secondLevelDealerAdd2Request.getBankReserveMobile()));
+        dealer.setProxyName(secondLevelDealerAdd2Request.getName());
+        dealer.setBelongArea(secondLevelDealerAdd2Request.getBelongArea());
+        dealer.setLevel(EnumDealerLevel.SECOND.getId());
+        dealer.setFirstLevelDealerId(dealerId);
+        dealer.setSecondLevelDealerId(0);
+        dealer.setStatus(EnumDealerStatus.NORMAL.getId());
+        dealer.setRecommendBtn(EnumRecommendBtn.OFF.getId());
+        dealer.setIdCard(DealerSupport.encryptIdenrity(secondLevelDealerAdd2Request.getIdCard()));
+        dealer.setBelongProvinceCode(secondLevelDealerAdd2Request.getBelongProvinceCode());
+        dealer.setBelongProvinceName(secondLevelDealerAdd2Request.getBelongProvinceName());
+        dealer.setBelongCityCode(secondLevelDealerAdd2Request.getBelongCityCode());
+        dealer.setBelongCityName(secondLevelDealerAdd2Request.getBelongCityName());
+        dealer.setInviteBtn(EnumInviteBtn.OFF.getId());
+        dealer.setLoginName(secondLevelDealerAdd2Request.getLoginName());
+        dealer.setLoginPwd(DealerSupport.passwordDigest(secondLevelDealerAdd2Request.getLoginPwd(),"JKM"));
+        dealer.setEmail(secondLevelDealerAdd2Request.getEmail());
+        this.add2(dealer);
+        this.updateMarkCodeAndInviteCode(GlobalID.GetGlobalID(EnumGlobalIDType.DEALER, EnumGlobalIDPro.MIN,dealer.getId()+""),
+                GlobalID.GetInviteID(EnumGlobalDealerLevel.SECORDDEALER,dealer.getId()+""),dealer.getId());
+        return dealer.getId();
+    }
 
     /**
      * {@inheritDoc}
@@ -1779,6 +1820,35 @@ public class DealerServiceImpl implements DealerService {
         final Dealer dealer = dealerOptional.get();
         dealer.setMobile(request.getMobile());
         dealer.setProxyName(request.getName());
+        dealer.setLoginName(request.getLoginName());
+        dealer.setEmail(request.getEmail());
+        dealer.setBelongProvinceCode(request.getBelongProvinceCode());
+        dealer.setBelongProvinceName(request.getBelongProvinceName());
+        dealer.setBelongCityCode(request.getBelongCityCode());
+        dealer.setBelongCityName(request.getBelongCityName());
+        dealer.setBelongArea(request.getBelongArea());
+        dealer.setSettleBankCard(DealerSupport.encryptBankCard(request.getBankCard()));
+        dealer.setBankName(request.getBankName());
+        dealer.setBankAccountName(request.getBankAccountName());
+        dealer.setBankReserveMobile(DealerSupport.encryptMobile(request.getBankReserveMobile()));
+        dealer.setIdCard(DealerSupport.encryptIdenrity(request.getIdCard()));
+        this.update2(dealer);
+    }
+    /**
+     * {@inheritDoc}
+     *
+     * @param request
+     */
+    @Override
+    @Transactional
+    public void updateSecondDealer(final SecondLevelDealerUpdate2Request request) {
+        final Optional<Dealer> dealerOptional = this.getById(request.getDealerId());
+        Preconditions.checkState(dealerOptional.isPresent(), "代理商[{}] 不存在", request.getDealerId());
+        final Dealer dealer = dealerOptional.get();
+        dealer.setMobile(request.getMobile());
+        dealer.setProxyName(request.getName());
+        dealer.setLoginName(request.getLoginName());
+        dealer.setEmail(request.getEmail());
         dealer.setBelongProvinceCode(request.getBelongProvinceCode());
         dealer.setBelongProvinceName(request.getBelongProvinceName());
         dealer.setBelongCityCode(request.getBelongCityCode());
@@ -1946,5 +2016,70 @@ public class DealerServiceImpl implements DealerService {
     @Transactional
     public int updateInviteBtn(final Dealer dealer) {
         return this.dealerDao.updateInviteBtn(dealer);
+    }
+
+    /**
+     * 根据邀请码查询代理商
+     *
+     * @param inviteCode
+     * @return
+     */
+    @Override
+    public Optional<Dealer> getDealerByInviteCode(String inviteCode) {
+        final Dealer dealer = this.dealerDao.selectByInviteCode(inviteCode);
+        return Optional.fromNullable(dealer);
+    }
+
+    /**
+     * 修改密码
+     *
+     * @param loginPwd
+     * @param dealerId
+     * @return
+     */
+    @Override
+    public int updatePwd(String loginPwd, long dealerId) {
+        return this.dealerDao.updatePwd(loginPwd,dealerId);
+    }
+
+    /**
+     * 查询登录名称名称是否重复
+     *
+     * @param loginMame
+     * @return
+     */
+    @Override
+    public long getByLoginName(String loginMame) {
+        return this.dealerDao.selectByLoginName(loginMame);
+    }
+
+    /**
+     * 查询登录名是否重复
+     *
+     * @param loginName
+     * @param dealerId
+     * @return
+     */
+    @Override
+    public long getByLoginNameUnIncludeNow(String loginName, long dealerId) {
+        return this.dealerDao.selectByLoginNameUnIncludeNow(loginName, dealerId);
+    }
+
+    /**
+     * 【代理商后台】二级代理商列表
+     *
+     * @param secondDealerSearchRequest
+     * @return
+     */
+    @Override
+    public PageModel<SecondDealerResponse> listSecondDealer(SecondDealerSearchRequest secondDealerSearchRequest) {
+        final PageModel<SecondDealerResponse> pageModel = new PageModel<>(secondDealerSearchRequest.getPageNo(), secondDealerSearchRequest.getPageSize());
+        secondDealerSearchRequest.setOffset(pageModel.getFirstIndex());
+        secondDealerSearchRequest.setCount(pageModel.getPageSize());
+        final int count = this.dealerDao.selectSecondDealerCountByPage(secondDealerSearchRequest);
+        final List<SecondDealerResponse> dealers = this.dealerDao.selectSecondDealersByPage(secondDealerSearchRequest);
+        pageModel.setCount(count);
+        pageModel.setRecords(dealers);
+        return pageModel;
     }
 }

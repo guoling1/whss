@@ -63,4 +63,20 @@
         SELECT * FROM tb_dealer_channel_rate
         WHERE dealer_id = #{dealerId} AND channel_type_sign = #{payChannel} AND status = 2
     </select>
+
+    <select id="getDealerBindProductId" resultType="java.lang.Long">
+        SELECT DISTINCT
+        (product_id)
+        FROM
+        tb_dealer_channel_rate
+        WHERE
+        dealer_id = #{dealerId}
+        AND product_id IN (
+        SELECT
+        id
+        FROM
+        tb_product
+        WHERE
+        type = #{sysType})
+    </select>
 </mapper>

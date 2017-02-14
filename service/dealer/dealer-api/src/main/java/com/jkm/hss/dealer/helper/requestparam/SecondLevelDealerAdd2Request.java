@@ -1,23 +1,17 @@
-package com.jkm.hss.helper.response;
+package com.jkm.hss.dealer.helper.requestparam;
 
 import lombok.Data;
 
 /**
- * Created by xingliujie on 2017/2/9.
+ * 增加代理商 入参
  */
 @Data
-public class DealerDetailResponse {
-    /**
-     * 代理商编码
-     */
-    private long id;
-
-
+public class SecondLevelDealerAdd2Request {
+    //=============基本信息========================
     /**
      * 代理手机号
      */
     private String mobile;
-
 
     /**
      * 代理名称
@@ -28,47 +22,38 @@ public class DealerDetailResponse {
      */
     private String loginName;
     /**
+     * 登录密码
+     */
+    private String loginPwd;
+    /**
      * 邮箱
      */
     private String email;
 
     /**
-     * 代理编码
-     */
-    private String markCode;
-
-    /**
      * 所在省code
      */
     private String belongProvinceCode;
+
     /**
      * 所在省
      */
     private String belongProvinceName;
+
     /**
-     * 所在省code
+     * 所在市code
      */
     private String belongCityCode;
+
     /**
      * 所在市
      */
     private String belongCityName;
-
     /**
-     * 所在地
+     * 详细地址
      */
     private String belongArea;
-
-    /**
-     * 上级代理名称
-     */
-    private String firstDealerName;
-
-    /**
-     * 上级代理编号
-     */
-    private String firstMarkCode;
-
+    //================结算信息设置=====================
     /**
      * 结算卡
      */
@@ -78,6 +63,10 @@ public class DealerDetailResponse {
      * 银行开户名称
      */
     private String bankAccountName;
+    /**
+     * 银行名称
+     */
+    private String bankName;
 
     /**
      * 银行预留手机号
