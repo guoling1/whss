@@ -428,7 +428,8 @@ public class HsyUserServiceImpl implements HsyUserService {
         appAuUser.setStatus(AppConstant.USER_STATUS_NORMAL);
         appAuUser.setCreateTime(date);
         appAuUser.setUpdateTime(date);
-        appAuUser.setPassword("123456");
+        String password=(int)((Math.random()*9+1)*10000000)+"";
+        appAuUser.setPassword(password);
         appAuUser.setAuStep("0");
         hsyUserDao.insert(appAuUser);
 
@@ -473,6 +474,17 @@ public class HsyUserServiceImpl implements HsyUserService {
         }).create();
         Map map=new HashMap();
         map.put("appAuUser",appAuUser);
+
+        /**发送密码*/
+        String sn="";
+        String content=AppConstant.SEND_PASSWORD_MESSAGE.replace("${password}",password).replace("+", "%2B").replace("%", "%25");
+        try {
+            sn = smsSendMessageService.sendMessage(appAuUser.getCellphone(), content);
+        } catch (Exception e) {
+            e.printStackTrace();
+//            throw new ApiHandleException(ResultCode.VERIFICATIONCODE_SEND_FAIL);
+        }
+
         return gson.toJson(map);
     }
 
