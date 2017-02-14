@@ -101,6 +101,12 @@ public class ProductController extends BaseController {
                 detail.setProductTradeRate(detail.getProductTradeRate().multiply(new BigDecimal(100)).setScale(2));
             }
             final ProductListResponse response = new ProductListResponse();
+            if (product.getType().equals("hss")){
+                response.setType(EnumProductType.HSS.getName());
+            }
+            if (product.getType().equals("hsy")){
+                response.setType(EnumProductType.HSY.getName());
+            }
             response.setProductId(product.getId());
             response.setProductName(product.getProductName());
             response.setAccountId(product.getAccountId());

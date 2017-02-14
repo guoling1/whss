@@ -9,6 +9,11 @@ import java.util.Date;
  */
 @Data
 public class HsyMerchantAuditResponse {
+
+    private String cardNO;//卡号
+    private String cardAccountName;//开户名
+    private String cardBank;//开户行
+    private String bankAddress;//开户行支行
     private String aName;
     private String parentCode;
     private String idcard;//身份证号码

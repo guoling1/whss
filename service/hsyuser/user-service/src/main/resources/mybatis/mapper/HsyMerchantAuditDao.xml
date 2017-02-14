@@ -52,6 +52,10 @@
             d.UID,
             d.SID,
             b.IDCARD,
+            e.CARDNO,
+            e.CARDACCOUNTNAME,
+            e.CARDBANK,
+            e.BANKADDRESS,
             (SELECT a.PATH FROM app_cm_file a WHERE a.UUID=b.IDCARDF) AS IDCARDF,
             (SELECT a.PATH FROM app_cm_file a WHERE a.UUID=b.IDCARDB) AS IDCARDB,
             (SELECT a.PATH FROM app_cm_file a WHERE a.UUID=b.IDCARDH) AS IDCARDH
@@ -59,6 +63,7 @@
             app_biz_shop c
         LEFT JOIN app_biz_shop_user_role d ON d.SID=c.ID
         LEFT JOIN app_au_user b ON b.ID=d.UID
+        LEFT JOIN app_biz_card e ON e.SID=c.ID
         WHERE c.ID=#{id} AND d.TYPE=1
     </select>
 

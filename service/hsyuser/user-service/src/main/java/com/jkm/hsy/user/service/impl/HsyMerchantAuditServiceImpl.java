@@ -31,11 +31,15 @@ public class HsyMerchantAuditServiceImpl implements HsyMerchantAuditService {
 
         HsyMerchantAuditResponse res = hsyMerchantAuditDao.getDetails(id);
         String districtCode = res.getDistrictCode();
-        HsyMerchantAuditResponse ret = hsyMerchantAuditDao.getCode(districtCode);
-        if (!ret.getParentCode().equals("0")){
-            HsyMerchantAuditResponse reu = hsyMerchantAuditDao.getCity(ret.getParentCode());
-            res.setDistrictCode(reu.getAName()+ret.getAName());
+//        System.out.println(12333);
+        if (districtCode!=null&&!districtCode.equals("")){
+            HsyMerchantAuditResponse ret = hsyMerchantAuditDao.getCode(districtCode);
+            if (!ret.getParentCode().equals("0")){
+                HsyMerchantAuditResponse reu = hsyMerchantAuditDao.getCity(ret.getParentCode());
+                res.setDistrictCode(reu.getAName()+ret.getAName());
+            }
         }
+
         int industryCode = Integer.parseInt(res.getIndustryCode());
         if (industryCode==1000){
             res.setIndustryCode(IndustryCodeType.CATERING.industryCodeValue);
