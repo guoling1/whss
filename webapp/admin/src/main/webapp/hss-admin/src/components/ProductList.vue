@@ -16,8 +16,10 @@
                 <table id="example2" class="table table-bordered table-hover dataTable" role="grid" aria-describedby="example2_info">
                   <thead>
                   <tr role="row">
-                    <th class="sorting_asc" tabindex="0" aria-controls="example2" rowspan="1" colspan="1"
-                        aria-sort="ascending" aria-label="Rendering engine: activate to sort column descending">
+                    <th class="sorting_asc" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Rendering engine: activate to sort column descending">
+                      项目类型
+                    </th>
+                    <th class="sorting_asc" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Rendering engine: activate to sort column descending">
                       产品名称
                     </th>
                     <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="Browser: activate to sort column ascending">支付手续费加价限额
@@ -34,6 +36,7 @@
                   </thead>
                   <tbody id="content">
                   <tr role="row" class="odd" v-for="(product,index) in products">
+                    <td class="sorting_1">{{product.type|changeType}}</td>
                     <td class="sorting_1">{{product.productName}}</td>
                     <td>{{product.limitPayFeeRate}}</td>
                     <td>{{product.limitWithdrawFeeRate}}</td>
@@ -159,6 +162,14 @@
       }
     },
     filters: {
+      changeType: function (val) {
+        if(val=='hss'){
+          val='好收收'
+        }else if(val=='hsy'){
+          val = '好收银'
+        }
+        return val;
+      },
       changeDrawType: function(val){
         if(val=='HAND'){
           val='手动提现'
