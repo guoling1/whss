@@ -20,27 +20,105 @@
         <div class="col-xs-12">
           <div class="box">
             <div class="box-header">
-              <h3 class="box-title">文件列表</h3>
+              <h3 class="box-title">代理商列表</h3>
             </div>
             <!-- /.box-header -->
+            <div class="box-body screen-top">
+              <div class="screen-item">
+                <span class="screen-title">代理商名称</span>
+                <el-input v-model="name" placeholder="代理商名称" size="small" style="width:180px"></el-input>
+              </div>
+              <div class="screen-item">
+                <span class="screen-title">代理商编号</span>
+                <el-input v-model="markCode" placeholder="代理商编号" size="small" style="width:180px"></el-input>
+              </div>
+              <div class="screen-item">
+                <span class="screen-title">代理商类型</span>
+                <el-select v-model="sysType" size="small" clearable placeholder="请选择">
+                  <el-option v-for="item in sysTypes"
+                             :label="item.label"
+                             :value="item.value">
+                  </el-option>
+                </el-select>
+              </div>
+              <div class="screen-item">
+                <span class="screen-title">代理商所在省份</span>
+                <el-select v-model="provinceCode" size="small" clearable placeholder="请选择" @change="province_select">
+                  <el-option v-for="item in item_province"
+                             :label="item.aname"
+                             :value="item.code">
+                  </el-option>
+                </el-select>
+              </div>
+              <div class="screen-item">
+                <span class="screen-title">代理商所在市区</span>
+                <el-select v-model="cityCode" size="small" clearable placeholder="请选择" @change="city_select">
+                  <el-option v-for="item in item_city"
+                             :label="item.aname"
+                             :value="item.code">
+                  </el-option>
+                </el-select>
+              </div>
+              <div class="screen-item">
+                <span class="screen-title"></span>
+                <el-button type="primary" size="small" @click="screen">筛选</el-button>
+              </div>
+            </div>
             <div class="box-body">
-              <data-tables :data='tableData'
-                           :tool-bar-def='toolBarDef'
-                           :row-action-def='rowActionsDef'>
-                <el-table-column prop="id" label="代理商名称" sortable="custom"></el-table-column>
-                <el-table-column prop="author" label="代理商编号" sortable="custom"></el-table-column>
-                <el-table-column prop="type" label="省市" sortable="custom"></el-table-column>
-                <el-table-column label="注册时间" sortable="custom" width="180">
+              <el-table :data="tableData" border>
+                <el-table-column prop="proxyName" label="代理商名称"></el-table-column>
+                <el-table-column prop="markCode" label="代理商编号" sortable="custom"></el-table-column>
+                <el-table-column label="省市">
                   <template scope="scope">
-                    {{ scope.row.create_time | datetime }}
+                    {{scope.row.belongProvinceName}}{{scope.row.belongCityName}}
                   </template>
                 </el-table-column>
-                <el-table-column prop="type" label="联系手机号" sortable="custom"></el-table-column>
-                <el-table-column prop="type" label="产品" sortable="custom">
-                  <el-table-column prop="name" label="好收收" width="120"></el-table-column>
-                  <el-table-column prop="name" label="好收银" width="120"></el-table-column>
+                <el-table-column label="注册时间" width="180">
+                  <template scope="scope">
+                    {{ scope.row.createTime | datetime }}
+                  </template>
                 </el-table-column>
-              </data-tables>
+                <el-table-column prop="mobile" label="联系手机号"></el-table-column>
+                <el-table-column label="产品">
+                  <el-table-column label="好收收" width="120">
+                    <template scope="scope">
+                      <span v-if="ext[0]!=0">
+                        <span v-if="scope.row.hssProductId==0">
+                          <el-button size="small" type="primary" @click="openHss">开通</el-button>
+                        </span>
+                        <span v-else>
+                          <el-button type="text">查看产品详情</el-button>
+                        </span>
+                      </span>
+                      <span v-else>未开通</span>
+                    </template>
+                  </el-table-column>
+                  <el-table-column label="好收银" width="120">
+                    <template scope="scope">
+                      <span v-if="ext[0]!=0">
+                        <span v-if="scope.row.hsyProductId==0">
+                          <el-button size="small" type="primary" @click="openHsy">开通</el-button>
+                        </span>
+                        <span v-else>
+                          <el-button type="text">查看产品详情</el-button>
+                        </span>
+                      </span>
+                      <span v-else>未开通</span>
+                    </template>
+                  </el-table-column>
+                </el-table-column>
+              </el-table>
+            </div>
+            <div class="box-body">
+              <el-pagination style="float:right"
+                             @size-change="handleSizeChange"
+                             @current-change="handleCurrentChange"
+                             :current-page="currentPage4"
+                             :page-sizes="[20, 100, 200, 500]"
+                             :page-size="pageSize"
+                             layout="total, sizes, prev, pager, next, jumper"
+                             :total="total">
+              </el-pagination>
             </div>
             <!-- /.box-body -->
           </div>
@@ -53,82 +131,93 @@
   </div>
 </template>
 <script lang="babel">
-  import DataTables from 'vue-data-tables'
   export default {
     name: 'app',
-    components: {
-      DataTables
-    },
     data() {
       return {
+        name: '',
+        markCode: '',
+        sysType: '',
+        sysTypes: [
+          {
+            value: 'hss',
+            label: '好收收'
+          },
+          {
+            value: 'hsy',
+            label: '好收银'
+          }
+        ],
+        item_province: [],
+        provinceCode: '',
+        provinceName: '',
+        item_city: [],
+        cityCode: '',
+        cityName: '',
+        total: 0,
+        pageSize: 20,
+        pageNo: 1,
         tableData: [],
-        rowActionsDef: this.getRowActionsDef(),
-        toolBarDef: this.getToolBarDef()
+        districtCode: '',
+        ext: []
       }
     },
     created() {
-      this.$http.post('/api/getFileList', {}).then(res => {
-        if (res.data.status == 0) {
-          this.tableData = res.data.result;
-        }
+      this.getData();
+      this.$http.post('/api/daili/district/findAllProvinces').then(res => {
+        this.item_province = res.data;
       }, err => {
         console.log(err);
       });
     },
     methods: {
-      getToolBarDef: function () {
-        let actions = [{
-          name: '文件上传',
-          handler: () => {
-            this.$router.push('/app/upload');
-          },
-          icon: 'plus'
-        }];
-        return {
-          actions: {
-            width: 5,
-            def: actions
-          },
-          filters: {
-            width: 14,
-            prop: 'level',
-            def: [
-              {
-                'code': '1',
-                'name': 'A'
-              },
-              {
-                'code': '2',
-                'name': 'B'
-              },
-              {
-                'code': '3',
-                'name': 'C'
-              },
-              {
-                'code': '4',
-                'name': 'S'
-              },
-              {
-                'code': '5',
-                'name': 'SS'
-              },
-              {
-                'code': '6',
-                'name': 'SSS'
-              }
-            ]
-          }
-        }
+      getData: function () {
+        this.$http.post('/api/daili/dealer/listSecondDealer', {
+          pageSize: this.pageSize,
+          pageNo: this.pageNo,
+          name: this.name,
+          markCode: this.markCode,
+          sysType: this.sysType,
+          districtCode: this.districtCode
+        }).then(res => {
+          this.total = res.data.count;
+          this.tableData = res.data.records;
+          this.ext = res.data.ext.split('|');
+        }, err => {
+          console.log(err);
+        });
       },
-      getRowActionsDef: function () {
-        return [{
-          type: 'primary',
-          handler: row => {
-            this._post_download(row.file_path);
-          },
-          tip: '下载'
-        }]
+      province_select: function (provinceCode) {
+        this.districtCode = provinceCode;
+        this.$http.post('/api/daili/district/findAllCities', {
+          code: provinceCode
+        }).then(res => {
+          this.item_city = res.data;
+          this.cityCode = '';
+          this.cityName = '';
+        }, err => {
+          console.log(err);
+        })
+      },
+      city_select: function (cityCode) {
+        this.districtCode = cityCode;
+      },
+      screen: function () {
+        this.getData();
+      },
+      openHss: function () {
+
+      },
+      openHsy: function () {
+
+      },
+      handleSizeChange(val) {
+        this.pageSize = val;
+        this.getData();
+      },
+      handleCurrentChange(val) {
+        this.pageNo = val;
+        this.getData();
       }
     }
   }

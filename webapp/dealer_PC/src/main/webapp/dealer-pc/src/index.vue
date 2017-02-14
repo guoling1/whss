@@ -195,7 +195,7 @@
             </a>
             <ul class="treeview-menu">
               <li>
-                <router-link to="profits_detail"><i class="fa fa-circle-o"></i> 所有代理商</router-link>
+                <router-link to="dealer_list"><i class="fa fa-circle-o"></i> 所有代理商</router-link>
               </li>
               <li>
                 <router-link to="profits_detail"><i class="fa fa-circle-o"></i> 代理结算记录</router-link>
