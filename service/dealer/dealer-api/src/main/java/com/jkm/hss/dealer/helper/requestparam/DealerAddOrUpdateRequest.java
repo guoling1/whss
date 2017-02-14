@@ -1,4 +1,4 @@
-package com.jkm.hss.helper.request;
+package com.jkm.hss.dealer.helper.requestparam;
 
 import lombok.Data;
 
@@ -11,7 +11,7 @@ import java.util.List;
 public class DealerAddOrUpdateRequest {
 
     /**
-     * 一级代理商id
+     * 二级代理商id
      */
     private long dealerId;
 

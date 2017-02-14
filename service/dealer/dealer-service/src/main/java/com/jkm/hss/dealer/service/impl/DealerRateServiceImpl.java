@@ -87,4 +87,14 @@ public class DealerRateServiceImpl implements DealerRateService {
     public List<DealerChannelRate> getByDealerIdAndProductId(final long dealerId, final long productId) {
         return this.dealerChannelRateDao.selectByDealerIdAndProductId(dealerId, productId);
     }
+
+    /**
+     * 二级代理修改产品费率
+     *
+     * @param dealerChannelRate
+     */
+    @Override
+    public void updateSecondDealerRate(DealerChannelRate dealerChannelRate) {
+        this.dealerChannelRateDao.updateSecondDealerRate(dealerChannelRate);
+    }
 }

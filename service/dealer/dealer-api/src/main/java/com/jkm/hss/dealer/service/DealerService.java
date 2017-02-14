@@ -422,4 +422,10 @@ public interface DealerService {
      * @return
      */
     PageModel<SecondDealerResponse> listSecondDealer(SecondDealerSearchRequest secondDealerSearchRequest);
+    /**
+     * 【代理商后台】新增或修改代理商产品
+     *
+     * @param request
+     */
+    void addOrUpdateDealerProduct(DealerAddOrUpdateRequest request,long firstLevelDealerId);
 }

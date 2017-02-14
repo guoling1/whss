@@ -2082,4 +2082,42 @@ public class DealerServiceImpl implements DealerService {
         pageModel.setRecords(dealers);
         return pageModel;
     }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param request
+     * @return
+     */
+    @Override
+    @Transactional
+    public void addOrUpdateDealerProduct(final DealerAddOrUpdateRequest request,long firstLevelDealerId) {
+        final Optional<Dealer> dealerOptional = this.getById(request.getDealerId());
+        final Dealer dealer = dealerOptional.get();
+        dealer.setInviteBtn(request.getInviteBtn());
+        this.updateInviteBtn(dealer);
+        for (DealerAddOrUpdateRequest.Channel channels : request.getProduct().getChannels()) {
+            Optional<DealerChannelRate> dealerChannelRateOptional = this.dealerRateService.getByDealerIdAndProductIdAndChannelType(firstLevelDealerId,request.getProduct().getProductId(),channels.getChannelType());
+            final Optional<DealerChannelRate> secondDealerChannelRateOptional =
+                    this.dealerRateService.getByDealerIdAndProductIdAndChannelType(request.getDealerId(), request.getProduct().getProductId(), channels.getChannelType());
+            if(secondDealerChannelRateOptional.isPresent()){//修改
+                final DealerChannelRate secondDealerChannelRate = secondDealerChannelRateOptional.get();
+                secondDealerChannelRate.setDealerTradeRate(new BigDecimal(channels.getPaymentSettleRate()).divide(new BigDecimal("100")));
+                secondDealerChannelRate.setDealerWithdrawFee(new BigDecimal(channels.getWithdrawSettleFee()));
+                this.dealerRateService.updateSecondDealerRate(secondDealerChannelRate);
+            }else{//新增
+                final DealerChannelRate dealerChannelRate = new DealerChannelRate();
+                dealerChannelRate.setDealerId(dealer.getId());
+                dealerChannelRate.setProductId(request.getProduct().getProductId());
+                dealerChannelRate.setChannelTypeSign(channels.getChannelType());
+                dealerChannelRate.setDealerTradeRate(new BigDecimal(channels.getPaymentSettleRate()).divide(new BigDecimal("100")));
+                dealerChannelRate.setDealerBalanceType(dealerChannelRateOptional.get().getDealerBalanceType());
+                dealerChannelRate.setDealerWithdrawFee(new BigDecimal(channels.getWithdrawSettleFee()));
+                dealerChannelRate.setDealerMerchantPayRate(dealerChannelRateOptional.get().getDealerMerchantPayRate());
+                dealerChannelRate.setDealerMerchantWithdrawFee(dealerChannelRateOptional.get().getDealerMerchantWithdrawFee());
+                dealerChannelRate.setStatus(EnumDealerChannelRateStatus.USEING.getId());
+                this.dealerRateService.init(dealerChannelRate);
+            }
+        }
+    }
 }
