@@ -88,7 +88,7 @@
               <th style="text-align: right">商铺详细地址:</th>
               <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.address" readonly></td>
               <th style="text-align: right">资料提交时间:</th>
-              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.updateTime" readonly></td>
+              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.updateTime|changeTime" readonly></td>
               <th style="text-align: right">资料审核状态:</th>
               <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.status" readonly></td>
             </tr>
