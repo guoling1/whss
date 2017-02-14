@@ -272,6 +272,7 @@
           this.$data.index = val;
           this.$data.isShow = true;
         },
+        //行选中
         handleSelectionChange(val) {
             console.log(val)
           this.multipleSelection = val;

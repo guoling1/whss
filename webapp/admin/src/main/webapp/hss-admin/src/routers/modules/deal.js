@@ -48,7 +48,6 @@ const NewWithdrawalDet = r => require.ensure([], () => r(require('../../componen
 const OrderQuery = r => require.ensure([], () => r(require('../../components/OrderQuery')), 'group-record');
 const OrderDetail = r => require.ensure([], () => r(require('../../components/OrderDetail')), 'group-record');
 const TradeQuery = r => require.ensure([], () => r(require('../../components/TradeQuery')), 'group-record');
-const ProfitCom = r => require.ensure([], () => r(require('../../components/ProfitCom')), 'group-record');
 
 export default {
   path: '/admin/record',
@@ -265,10 +264,5 @@ export default {
       name: 'TradeQuery',
       component: TradeQuery
     },
-    {
-      path: 'profitCom',
-      name: 'ProfitCom',
-      component: ProfitCom
-    }
   ]
 }
