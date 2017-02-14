@@ -48,6 +48,7 @@
             c.ISPUBLIC,
             c.CHECKERRORINFO,
             c.CREATETIME,
+            c.UPDATETIME,
             d.UID,
             d.SID,
             b.IDCARD,
@@ -59,6 +60,16 @@
         LEFT JOIN app_biz_shop_user_role d ON d.SID=c.ID
         LEFT JOIN app_au_user b ON b.ID=d.UID
         WHERE c.ID=#{id} AND d.TYPE=1
+    </select>
+
+    <!-- 根据districtCode查城市哪个区 -->
+    <select id="getCode" resultType="com.jkm.hsy.user.entity.HsyMerchantAuditResponse">
+        SELECT ANAME,PARENTCODE FROM app_biz_district WHERE CODE = #{districtCode}
+    </select>
+
+    <!-- 根据districtCode查城市哪个区 -->
+    <select id="getCity" resultType="com.jkm.hsy.user.entity.HsyMerchantAuditResponse">
+        SELECT ANAME,PARENTCODE FROM app_biz_district WHERE CODE = #{parentCode}
     </select>
 
     <!-- 更新账户id -->
