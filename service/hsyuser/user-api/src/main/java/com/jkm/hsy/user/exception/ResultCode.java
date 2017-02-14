@@ -31,6 +31,8 @@ public enum ResultCode {
 	PRIMARY_SHOP_NOT_EXSIT(2025,"主店类型不存在"),
 	ACCESSTOKEN_NOT_FOUND(2026,"找不到该令牌"),
 	ROLE_TYPE_NOT_EXSIT(2027,"角色类型不存在"),
+	ROLE_STATUS_NOT_EXSIT(2028,"角色状态不存在"),
+	USER_FORBID(2029,"该角色禁止登陆"),
 	RESULT_FAILE(2100,"返回结果错误"),
 	;
 

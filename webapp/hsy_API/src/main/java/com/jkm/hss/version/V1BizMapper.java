@@ -24,9 +24,13 @@ public class V1BizMapper {
 		bizMapper.put("HSY001016", new String[]{"hsyUserService","insertTokenDeviceClientInfoAndReturnKey"});
 		bizMapper.put("HSY001017", new String[]{"hsyUserService","updateClientID"});
 		bizMapper.put("HSY001018", new String[]{"hsyUserService","logout","退出成功"});
-		bizMapper.put("HSY001019", new String[]{"hsyUserService","inserHsyUserViaCorporation","保存店员成功"});
+		bizMapper.put("HSY001019", new String[]{"hsyUserService","inserHsyUserViaCorporation","保存店员信息成功"});
 		bizMapper.put("HSY001020", new String[]{"hsyQrCodeService","bindQrCode","绑定成功"});
 		bizMapper.put("HSY001021", new String[]{"hsyUserService","findHsyUserViaCorporation"});
+		bizMapper.put("HSY001022", new String[]{"hsyUserService","findHsyUserListViaCorporation"});
+		bizMapper.put("HSY001023", new String[]{"hsyUserService","updateHsyUserViaCorporation","修改店员信息成功"});
+		bizMapper.put("HSY001024", new String[]{"hsyUserService","updateHsyShopUserViaCorporation","分配店铺成功"});
+		bizMapper.put("HSY001025", new String[]{"hsyUserService","updateHsyUserStatusViaCorporation","修改状态成功"});
 
 		/**
 		 * app收款
