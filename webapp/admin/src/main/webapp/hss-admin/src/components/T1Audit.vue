@@ -373,7 +373,6 @@
       },
       watch:{
         date:function (val,oldVal) {
-            console.log(val)
           if(val[0]!=null){
             for(var j=0;j<val.length;j++){
               var str = val[j];
