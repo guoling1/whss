@@ -131,7 +131,7 @@ public class HSYTradeServiceImpl implements HSYTradeService {
         final String dateStr = dataJo.getString("date");
         Date date = null;
         if (!StringUtils.isEmpty(dateStr) && !StringUtils.isEmpty(dateStr)) {
-            date = DateFormatUtil.parse(dateStr + "23:59:59", DateFormatUtil.yyyy_MM_dd_HH_mm_ss);
+            date = DateFormatUtil.parse(dateStr + " 23:59:59", DateFormatUtil.yyyy_MM_dd_HH_mm_ss);
         }
         final PageModel<JSONObject> pageModel = new PageModel<>(pageNo, pageSize);
         final long count = this.orderService.getPageOrdersCountByAccountId(accountId, EnumAppType.HSY.getId(), date);
