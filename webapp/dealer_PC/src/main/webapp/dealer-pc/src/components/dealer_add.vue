@@ -25,8 +25,8 @@
             <!-- /.box-header -->
             <div class="box-body">
               <label class="form-label">基本信息</label>
-              <el-form ref="form" :model="form" label-width="120px">
-                <el-form-item label="代理商手机号">
+              <el-form ref="form" :model="form" :rules="rules" label-width="120px">
+                <el-form-item label="代理商手机号" prop="phone">
                   <el-input v-model="form.mobile"></el-input>
                 </el-form-item>
                 <el-form-item label="代理名称">
@@ -128,6 +128,12 @@
           bankAccountName: '',
           bankReserveMobile: '',
           idCard: ''
+        },
+        rules: {
+          phone: [
+            {required: true, message: '请输入手机号', trigger: 'blur'},
+            {min: 11, max: 11, message: '请输入正确的手机号', trigger: 'blur'}
+          ]
         },
         item_province: [],
         item_city: [],
