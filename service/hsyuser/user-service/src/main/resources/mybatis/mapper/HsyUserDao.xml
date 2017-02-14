@@ -10,7 +10,7 @@
          (select PATH from app_cm_file acf where uuid=user.IDCARDF) IDCARDFURL,
          (select PATH from app_cm_file acf where uuid=user.IDCARDB) IDCARDBURL,
          (select PATH from app_cm_file acf where uuid=user.IDCARDH) IDCARDHURL,
-          user.ACCOUNTID ACCOUNTID,user.DEALERID DEALERID,user.PRODUCTID PRODUCTID,user.WEIXINRATE WEIXINRATE,user.ALIPAYRATE ALIPAYRATE,user.FASTRATE FASTRATE
+          user.ACCOUNTID ACCOUNTID,user.DEALERID DEALERID,user.PRODUCTID PRODUCTID,user.WEIXINRATE WEIXINRATE,user.ALIPAYRATE ALIPAYRATE,user.FASTRATE FASTRATE,user.PARENTID
         from app_au_user user
         where 1=1
           <if test="cellphone!=null and cellphone!=''">and CELLPHONE=#{cellphone}</if>

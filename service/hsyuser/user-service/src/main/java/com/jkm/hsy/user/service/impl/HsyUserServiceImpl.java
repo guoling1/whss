@@ -92,7 +92,7 @@ public class HsyUserServiceImpl implements HsyUserService {
         appBizShop.setIndustryCode(appAuUser.getIndustryCode());
         appBizShop.setCreateTime(date);
         appBizShop.setUpdateTime(date);
-        appBizShop.setStatus(AppConstant.SHOP_STATUS_NO_CHECK);
+        appBizShop.setStatus(AppConstant.SHOP_STATUS_REGISTERED);
         appBizShop.setParentID(0L);
         hsyShopDao.insert(appBizShop);
         AppBizShop appBizShopUp=new AppBizShop();
@@ -186,7 +186,8 @@ public class HsyUserServiceImpl implements HsyUserService {
 
         AppBizShop appBizShop=new AppBizShop();
         appBizShop.setUid(appAuUserFind.getId());
-        appBizShop.setType(AppConstant.ROLE_TYPE_PRIMARY);
+        if(appAuUserFind.getParentID()==null||(appAuUserFind.getParentID()!=null&&appAuUserFind.getParentID()!=0L))
+            appBizShop.setType(AppConstant.ROLE_TYPE_PRIMARY);
         List<AppBizShop> shopList=hsyShopDao.findPrimaryAppBizShopByUserID(appBizShop);
         if(shopList!=null&&shopList.size()!=0)
             appBizShop=shopList.get(0);
@@ -428,6 +429,7 @@ public class HsyUserServiceImpl implements HsyUserService {
         appAuUser.setCreateTime(date);
         appAuUser.setUpdateTime(date);
         appAuUser.setPassword("123456");
+        appAuUser.setAuStep("0");
         hsyUserDao.insert(appAuUser);
 
         AppAuUser appAuUserUp=new AppAuUser();
