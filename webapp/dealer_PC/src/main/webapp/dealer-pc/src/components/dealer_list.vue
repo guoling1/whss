@@ -3,8 +3,8 @@
     <!-- Content Header (Page header) -->
     <section class="content-header">
       <h1>
-        XX管理系统
-        <small>Version 2.0</small>
+        好收收代理商系统
+        <small>Version 1.0</small>
       </h1>
       <ol class="breadcrumb">
         <li>

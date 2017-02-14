@@ -28,8 +28,8 @@
     <bean id="jspViewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
         <property name="cache" value="true"/>
         <property name="viewClass" value="org.springframework.web.servlet.view.JstlView"/>
-        <property name="prefix" value="/WEB-INF/jsp"/>
-        <property name="suffix" value=".jsp"/>
+        <property name="prefix" value="/WEB-INF/"/>
+        <property name="suffix" value=".html"/>
     </bean>
 
     <bean id="ossClient" class="com.aliyun.oss.OSSClient" destroy-method="shutdown">

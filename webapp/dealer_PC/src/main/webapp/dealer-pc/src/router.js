@@ -8,6 +8,7 @@ import login from './components/login.vue'
 import home from './components/home.vue'
 
 import profits_detail from './components/profits_detail.vue'
+import dealer_add from './components/dealer_add.vue'
 
 import store from './store/index'
 
@@ -91,7 +92,8 @@ const routes = [
     path: '/app', redirect: '/app/home', component: index,
     children: [
       {path: 'home', name: "home", component: home},
-      {path: 'profits_detail', name: "profits_detail", component: profits_detail}
+      {path: 'profits_detail', name: "profits_detail", component: profits_detail},
+      {path: 'dealer_add', name: "dealer_add", component: dealer_add},
     ]
   }
 ];
