@@ -42,13 +42,13 @@ Vue.http.interceptors.push((request, next) => {
         links.click();
         window.URL.revokeObjectURL(url);
         document.body.removeChild(links);
-      } else if (body.code != 0) {
+      } else if (body.code != 1) {
         response.status = 500;
         response.statusMessage = body.message || '系统异常';
         response.statusText = 'Internal Server Error';
         response.ok = false;
       } else {
-        response.data = body.data;
+        response.data = body.result;
       }
     } else {
       response.statusMessage = '系统异常';
