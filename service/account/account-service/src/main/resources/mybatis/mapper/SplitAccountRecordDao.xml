@@ -4,6 +4,7 @@
     <insert id="insert" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO tb_split_account_record
         (
+        business_type,
         order_no,
         split_order_no,
         total_amount,
@@ -20,6 +21,7 @@
         ) 
         VALUES 
         (
+        #{businessType},
         #{orderNo},
         #{splitOrderNo},
         #{totalAmount},
@@ -38,7 +40,8 @@
 
     <update id="update">
         UPDATE tb_split_account_record
-        SET 
+        SET
+        business_type = #{businessType},
         order_no = #{orderNo},
         split_order_no = #{splitOrderNo},
         total_amount = #{totalAmount},
@@ -57,5 +60,36 @@
 
     <select id="selectById" resultType="com.jkm.hss.account.entity.SplitAccountRecord">
         SELECT * FROM tb_split_account_record WHERE id = #{id}
+    </select>
+    <select id="selectByParam" resultType="com.jkm.hss.account.entity.SplitAccountRecord">
+        SELECT * FROM tb_split_account_record WHERE receipt_money_account_id = #{accountId}
+        <if test="orderNo != null">
+            order_no = #{orderNo}
+        </if>
+        <if test="businessType != null">
+            business_type = #{businessType}
+        </if>
+        <if test="beginDate != null">
+            begin_date = #{beginDate}
+        </if>
+        <if test="endDate != null">
+            end_date = #{endDate}
+        </if>
+        ORDER BY id DESC LIMIT #{firstIndex},#{pageSize}
+    </select>
+    <select id="selectCountByParam" resultType="java.lang.Long">
+        SELECT count(*) FROM tb_split_account_record WHERE receipt_money_account_id = #{accountId}
+        <if test="orderNo != null">
+            order_no = #{orderNo}
+        </if>
+        <if test="businessType != null">
+            business_type = #{businessType}
+        </if>
+        <if test="beginDate != null">
+            begin_date = #{beginDate}
+        </if>
+        <if test="endDate != null">
+            end_date = #{endDate}
+        </if>
     </select>
 </mapper>

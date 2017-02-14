@@ -1,6 +1,8 @@
 package com.jkm.hss.account.service.impl;
 
 import com.google.common.base.Optional;
+import com.jkm.base.common.entity.PageModel;
+import com.jkm.base.common.util.DateFormatUtil;
 import com.jkm.base.common.util.SnGenerator;
 import com.jkm.hss.account.dao.SplitAccountRecordDao;
 import com.jkm.hss.account.entity.SplitAccountRecord;
@@ -14,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by yulong.zhang on 2016/12/22.
@@ -70,11 +73,12 @@ public class SplitAccountRecordServiceImpl implements SplitAccountRecordService 
      */
     @Override
     @Transactional
-    public void addPaySplitAccountRecord(final String orderNo, final String orderNo1, final BigDecimal tradeAmount,
+    public void addPaySplitAccountRecord(final String splitBusinessType, final String orderNo, final String orderNo1, final BigDecimal tradeAmount,
                                          final BigDecimal poundage, final Triple<Long, BigDecimal, BigDecimal> triple,
                                          final String receiptMoneyUserName, final String remark) {
 
         final SplitAccountRecord splitAccountRecord = new SplitAccountRecord();
+        splitAccountRecord.setBusinessType(splitBusinessType);
         splitAccountRecord.setOrderNo(orderNo);
         splitAccountRecord.setSplitOrderNo(orderNo1);
         splitAccountRecord.setTotalAmount(tradeAmount);
@@ -104,11 +108,12 @@ public class SplitAccountRecordServiceImpl implements SplitAccountRecordService 
      */
     @Override
     @Transactional
-    public void addMerchantUpgradePaySplitAccountRecord(final String orderNo, final String orderNo1, final BigDecimal tradeAmount,
+    public void addMerchantUpgradePaySplitAccountRecord(final String splitBusinessType, final String orderNo, final String orderNo1, final BigDecimal tradeAmount,
                                          final BigDecimal poundage, final Triple<Long, BigDecimal, String> triple,
                                          final String receiptMoneyUserName, final String remark) {
 
         final SplitAccountRecord splitAccountRecord = new SplitAccountRecord();
+        splitAccountRecord.setBusinessType(splitBusinessType);
         splitAccountRecord.setOrderNo(orderNo);
         splitAccountRecord.setSplitOrderNo(orderNo1);
         splitAccountRecord.setTotalAmount(tradeAmount);
@@ -136,10 +141,11 @@ public class SplitAccountRecordServiceImpl implements SplitAccountRecordService 
      */
     @Override
     @Transactional
-    public void addWithdrawSplitAccountRecord(final String orderNo, final String orderNo1, final BigDecimal tradeAmount,
+    public void addWithdrawSplitAccountRecord(final String splitBusinessType, final String orderNo, final String orderNo1, final BigDecimal tradeAmount,
                                               final BigDecimal poundage, final Triple<Long, BigDecimal, String> triple,
                                               final String receiptMoneyUserName, final String remark) {
         final SplitAccountRecord splitAccountRecord = new SplitAccountRecord();
+        splitAccountRecord.setBusinessType(splitBusinessType);
         splitAccountRecord.setOrderNo(orderNo);
         splitAccountRecord.setSplitOrderNo(orderNo1);
         splitAccountRecord.setTotalAmount(tradeAmount);
@@ -152,5 +158,35 @@ public class SplitAccountRecordServiceImpl implements SplitAccountRecordService 
         splitAccountRecord.setRemark(remark);
         splitAccountRecord.setSplitDate(new Date());
         this.add(splitAccountRecord);
+    }
+
+    /**
+     * {@inheritDoc}
+     * @param pageNo
+     * @param pageSize
+     * @param orderNo
+     * @param businessType
+     * @param beginDate
+     * @param endDate
+     * @return
+     */
+    @Override
+    public PageModel<SplitAccountRecord> selectByParam(int pageNo, int pageSize,long accountId, String orderNo, String businessType, String beginDate, String endDate) {
+
+        PageModel<SplitAccountRecord> pageModel = new PageModel<>(pageNo, pageSize);
+
+        Date beginTime = null;
+        Date endTime = null;
+        if (beginDate != null && !beginDate.equals("")){
+            beginTime = DateFormatUtil.parse(beginDate + " 00:00:00", DateFormatUtil.yyyy_MM_dd_HH_mm_ss);
+            endTime = DateFormatUtil.parse(endDate + "23:59:59", DateFormatUtil.yyyy_MM_dd_HH_mm_ss);
+        }
+        List<SplitAccountRecord> list =
+                this.splitAccountRecordDao.selectByParam( pageModel.getFirstIndex(), pageSize, accountId, orderNo, businessType, beginTime, endTime);
+        long count = this.splitAccountRecordDao.selectCountByParam(accountId, orderNo, businessType, beginTime, endTime);
+
+        pageModel.setCount(count);
+        pageModel.setRecords(list);
+        return pageModel;
     }
 }

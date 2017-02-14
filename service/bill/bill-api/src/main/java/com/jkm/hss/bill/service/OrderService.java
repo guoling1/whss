@@ -200,6 +200,13 @@ public interface OrderService {
     List<Order> getPageOrdersByAccountId(long accountId, String appId, int offset, int count, Date date);
 
     /**
+     * 批量查询
+     * @param orderNos
+     * @return
+     */
+    List<Order> getByOrderNos(List<String> orderNos);
+
+    /**
      * 查询交易详情
      * @param orderRecord
      * @return
