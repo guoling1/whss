@@ -49,6 +49,7 @@
             c.CHECKERRORINFO,
             c.CREATETIME,
             c.UPDATETIME,
+            c.ISPUBLIC,
             d.UID,
             d.SID,
             b.IDCARD,
