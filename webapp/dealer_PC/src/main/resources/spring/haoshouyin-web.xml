@@ -28,14 +28,8 @@
     <bean id="jspViewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
         <property name="cache" value="true"/>
         <property name="viewClass" value="org.springframework.web.servlet.view.JstlView"/>
-        <property name="prefix" value="/WEB-INF/jsp"/>
-        <property name="suffix" value=".jsp"/>
-    </bean>
-
-    <bean id="ossClient" class="com.aliyun.oss.OSSClient" destroy-method="shutdown">
-        <constructor-arg name="endpoint" value="${oss_endpoint}"/>
-        <constructor-arg name="accessKeyId" value="${oss_accessKeyId}"/>
-        <constructor-arg name="secretAccessKey" value="${oss_secretAccessKey}"/>
+        <property name="prefix" value="/WEB-INF/"/>
+        <property name="suffix" value=".html"/>
     </bean>
 
     <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">

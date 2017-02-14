@@ -492,6 +492,20 @@ public class OrderServiceImpl implements OrderService {
     }
 
     /**
+     * {@inheritDoc}
+     *
+     * @param orderNos
+     * @return
+     */
+    @Override
+    public List<Order> getByOrderNos(List<String> orderNos) {
+        if(CollectionUtils.isEmpty(orderNos)){
+            return Collections.EMPTY_LIST;
+        }
+        return this.orderDao.getByOrderNos(orderNos);
+    }
+
+    /**
      * 生成ExcelVo
      * @param
      * @param baseUrl

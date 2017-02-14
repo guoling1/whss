@@ -41,20 +41,6 @@
         <property name="maxUploadSize" value="10485760"/>
     </bean>
 
-    <bean id="configProperties" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
-        <property name="locations">
-            <list>
-                <value>classpath*:*.properties</value>
-            </list>
-        </property>
-        <property name="fileEncoding" value="utf-8"/>
-    </bean>
-
-    <bean id="configurationUtils" class="com.jkm.base.common.spring.config.ConfigurationUtils">
-        <property name="properties" ref="configProperties"/>
-    </bean>
-    <bean id="springContextHolder" class="com.jkm.base.common.spring.core.SpringContextHolder" lazy-init="false" />
-
     <mvc:interceptors>
         <mvc:interceptor>
             <mvc:mapping path="/admin/user/**"/>

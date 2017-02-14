@@ -4,6 +4,9 @@ import com.jkm.hss.account.entity.SplitAccountRecord;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.Date;
+import java.util.List;
+
 /**
  * Created by yulong.zhang on 2016/12/22.
  */
@@ -32,4 +35,10 @@ public interface SplitAccountRecordDao {
      * @return
      */
     SplitAccountRecord selectById(@Param("id") long id);
+
+    List<SplitAccountRecord> selectByParam(@Param("firstIndex") Integer firstIndex, @Param("pageSize") Integer pageSize, @Param("accountId") Long accountId, @Param("orderNo") String orderNo,
+                                           @Param("businessType") String businessType, @Param("beginDate") Date beginDate, @Param("endDate") Date endDate);
+
+    long selectCountByParam(@Param("accountId") Long accountId, @Param("orderNo") String orderNo, @Param("businessType") String businessType,
+                            @Param("beginTime") Date beginTime, @Param("endTime") Date endTime);
 }

@@ -418,4 +418,10 @@
         ORDER BY id DESC
         LIMIT #{offset}, #{count}
     </select>
+    <select id="getByOrderNos" resultType="com.jkm.hss.bill.entity.Order">
+        SELECT * FROM tb_order WHERE order_no
+        in <foreach collection="orderNos" index="index" item="item" open="(" close=")" separator=",">
+                #{item}
+            </foreach>
+    </select>
 </mapper>

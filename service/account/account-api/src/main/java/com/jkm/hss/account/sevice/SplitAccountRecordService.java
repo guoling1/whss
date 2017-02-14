@@ -1,6 +1,7 @@
 package com.jkm.hss.account.sevice;
 
 import com.google.common.base.Optional;
+import com.jkm.base.common.entity.PageModel;
 import com.jkm.hss.account.entity.SplitAccountRecord;
 import org.apache.commons.lang3.tuple.Triple;
 
@@ -45,7 +46,7 @@ public interface SplitAccountRecordService {
      * @param receiptMoneyUserName  收钱人
      * @param remark
      */
-    void addPaySplitAccountRecord(String orderNo, String orderNo1, BigDecimal tradeAmount, BigDecimal poundage,
+    void addPaySplitAccountRecord(String splitBusinessType, String orderNo, String orderNo1, BigDecimal tradeAmount, BigDecimal poundage,
                                   Triple<Long, BigDecimal, BigDecimal> triple,
                                   String receiptMoneyUserName, String remark);
 
@@ -60,7 +61,7 @@ public interface SplitAccountRecordService {
      * @param receiptMoneyUserName  收钱人
      * @param remark
      */
-    void addMerchantUpgradePaySplitAccountRecord(String orderNo, String orderNo1, BigDecimal tradeAmount, BigDecimal poundage,
+    void addMerchantUpgradePaySplitAccountRecord(String splitBusinessType,String orderNo, String orderNo1, BigDecimal tradeAmount, BigDecimal poundage,
                                   Triple<Long, BigDecimal, String> triple,
                                   String receiptMoneyUserName, String remark);
 
@@ -75,7 +76,9 @@ public interface SplitAccountRecordService {
      * @param receiptMoneyUserName  收钱人
      * @param remark
      */
-    void addWithdrawSplitAccountRecord(String orderNo, String orderNo1, BigDecimal tradeAmount, BigDecimal poundage,
+    void addWithdrawSplitAccountRecord(String splitBusinessType, String orderNo, String orderNo1, BigDecimal tradeAmount, BigDecimal poundage,
                                   Triple<Long, BigDecimal, String> triple,
                                   String receiptMoneyUserName, String remark);
+
+    PageModel<SplitAccountRecord> selectByParam(int pageNo, int pageSize, long accountId, String orderNo, String businessType, String beginDate, String endDate);
 }
