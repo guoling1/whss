@@ -55,5 +55,10 @@ public interface DealerRateService {
      * @return
      */
     List<DealerChannelRate> getByDealerIdAndProductId(long dealerId, long productId);
+    /**
+     * 二级代理修改产品费率
+     * @param dealerChannelRate
+     */
+    void updateSecondDealerRate(DealerChannelRate dealerChannelRate);
 
 }

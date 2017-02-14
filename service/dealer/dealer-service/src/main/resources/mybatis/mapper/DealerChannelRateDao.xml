@@ -79,4 +79,12 @@
         WHERE
         type = #{sysType})
     </select>
+
+    <update id="updateSecondDealerRate">
+        UPDATE tb_dealer_channel_rate
+        SET
+        dealer_trade_rate = #{dealerTradeRate},
+        dealer_withdraw_fee = #{dealerWithdrawFee}
+        WHERE id = #{id}
+    </update>
 </mapper>
