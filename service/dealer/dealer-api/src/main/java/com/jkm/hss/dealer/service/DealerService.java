@@ -428,4 +428,25 @@ public interface DealerService {
      * @param request
      */
     void addOrUpdateDealerProduct(DealerAddOrUpdateRequest request,long firstLevelDealerId);
+    /**
+     * 按码段分配二维码
+     * @param type
+     * @param dealerId
+     * @param toDealerId
+     * @param startCode
+     * @param endCode
+     * @return
+     */
+    List<DistributeQRCodeRecord> distributeQRCodeByCode(int type,String sysType, long dealerId, long toDealerId, String startCode, String endCode);
+
+    /**
+     * 按个数分配
+     * @param type
+     * @param dealerId
+     * @param toDealerId
+     * @param count
+     * @return
+     */
+    List<DistributeQRCodeRecord> distributeQRCodeByCount(int type, String sysType, long dealerId, long toDealerId, int count);
+
 }
