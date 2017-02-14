@@ -228,6 +228,11 @@ public class HsyShopServiceImpl implements HsyShopService {
             user.setUpdateTime(date);
             hsyUserDao.updateByID(user);
         }
+
+        AppBizShop appBizShop=new AppBizShop();
+        appBizShop.setId(appBizCard.getSid());
+        appBizShop.setStatus(AppConstant.SHOP_STATUS_NO_CHECK);
+        hsyShopDao.update(appBizShop);
         return "{\"id\":"+appBizCard.getId()+"}";
     }
 

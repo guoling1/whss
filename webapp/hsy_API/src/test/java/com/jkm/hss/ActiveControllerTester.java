@@ -47,8 +47,8 @@ public class ActiveControllerTester {
         p.setAppType("android");
         p.setTimeStamp(AppDateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
         p.setV("v1.0");
-//        String param="{\"cellphone\": \"13521691431\",\"password\":\"123456\"}";
-        String param="{\"cellphone\": \"13521691441\",\"password\":\"123456\"}";
+        String param="{\"cellphone\": \"13521691431\",\"password\":\"123456\"}";
+//        String param="{\"cellphone\": \"13521691441\",\"password\":\"123456\"}";
         p.setRequestData(param);
         ActiveControllerTester.testRest(p);
     }
