@@ -102,10 +102,10 @@ public class ProductController extends BaseController {
             }
             final ProductListResponse response = new ProductListResponse();
             if (product.getType().equals("hss")){
-                response.setType(EnumProductType.HSS.getName());
+                response.setType(EnumProductType.HSS.getId());
             }
             if (product.getType().equals("hsy")){
-                response.setType(EnumProductType.HSY.getName());
+                response.setType(EnumProductType.HSY.getId());
             }
             response.setProductId(product.getId());
             response.setProductName(product.getProductName());
