@@ -297,6 +297,15 @@ public interface DealerService {
      * @return
      */
     long createFirstDealer2(FirstLevelDealerAdd2Request firstLevelDealerAdd2Request);
+
+
+    /**
+     * 添加二级代理
+     *
+     * @param secondLevelDealerAdd2Request
+     * @return
+     */
+    long createSecondDealer2(SecondLevelDealerAdd2Request secondLevelDealerAdd2Request,long dealerId);
     /**
      * 添加代理商
      *
@@ -335,6 +344,12 @@ public interface DealerService {
      */
     void updateDealer2(FirstLevelDealerUpdate2Request request);
     /**
+     * 更新一级代理商
+     *
+     * @param request
+     */
+    void updateSecondDealer(SecondLevelDealerUpdate2Request request);
+    /**
      * 更新
      *
      * @param dealer
@@ -369,4 +384,42 @@ public interface DealerService {
      * @return
      */
     int updateInviteBtn(Dealer dealer);
+
+    /**
+     * 根据邀请码查询代理商
+     * @param inviteCode
+     * @return
+     */
+    Optional<Dealer> getDealerByInviteCode(String inviteCode);
+
+    /**
+     * 修改密码
+     * @param loginPwd
+     * @param dealerId
+     * @return
+     */
+    int updatePwd(String loginPwd,long dealerId);
+
+    /**
+     * 查询登录名称名称是否重复
+     *
+     * @param loginName
+     * @return
+     */
+    long getByLoginName(String loginName);
+    /**
+     * 查询登录名是否重复
+     *
+     * @param loginName
+     * @return
+     */
+    long getByLoginNameUnIncludeNow(String loginName, long dealerId);
+
+    /**
+     * 【代理商后台】二级代理商列表
+     *
+     * @param secondDealerSearchRequest
+     * @return
+     */
+    PageModel<SecondDealerResponse> listSecondDealer(SecondDealerSearchRequest secondDealerSearchRequest);
 }

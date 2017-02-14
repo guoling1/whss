@@ -679,6 +679,22 @@ public class AdminController extends BaseController {
             if (proxyNameCount > 0) {
                 return CommonResponse.simpleResponse(-1, "代理名称已经存在");
             }
+            if(StringUtils.isBlank(firstLevelDealerAdd2Request.getLoginName())) {
+                return CommonResponse.simpleResponse(-1, "登录名不能为空");
+            }
+            final long loginNameCount = this.dealerService.getByLoginName(firstLevelDealerAdd2Request.getLoginName());
+            if (loginNameCount > 0) {
+                return CommonResponse.simpleResponse(-1, "登录名已经存在");
+            }
+            if(StringUtils.isBlank(firstLevelDealerAdd2Request.getLoginPwd())) {
+                return CommonResponse.simpleResponse(-1, "登录密码不能为空");
+            }
+            if(StringUtils.isBlank(firstLevelDealerAdd2Request.getEmail())) {
+                return CommonResponse.simpleResponse(-1, "联系邮箱不能为空");
+            }
+            if(!ValidateUtils.isEmail(firstLevelDealerAdd2Request.getEmail())) {
+                return CommonResponse.simpleResponse(-1, "联系邮箱格式错误");
+            }
             if(StringUtils.isBlank(firstLevelDealerAdd2Request.getBelongProvinceCode())) {
                 return CommonResponse.simpleResponse(-1, "所在省份编码不能为空");
             }
@@ -742,6 +758,20 @@ public class AdminController extends BaseController {
             final long proxyNameCount = this.dealerService.getByProxyNameUnIncludeNow(request.getName(), request.getDealerId());
             if (proxyNameCount > 0) {
                 return CommonResponse.simpleResponse(-1, "代理名称已经存在");
+            }
+
+            if(StringUtils.isBlank(request.getLoginName())) {
+                return CommonResponse.simpleResponse(-1, "登录名不能为空");
+            }
+            final long loginNameCount = this.dealerService.getByLoginNameUnIncludeNow(request.getLoginName(), request.getDealerId());
+            if (loginNameCount > 0) {
+                return CommonResponse.simpleResponse(-1, "登录名已经存在");
+            }
+            if(StringUtils.isBlank(request.getEmail())) {
+                return CommonResponse.simpleResponse(-1, "联系邮箱不能为空");
+            }
+            if(!ValidateUtils.isEmail(request.getEmail())) {
+                return CommonResponse.simpleResponse(-1, "联系邮箱格式错误");
             }
 
             if(StringUtils.isBlank(request.getBelongProvinceCode())) {

@@ -25,7 +25,10 @@
         belong_city_code,
         belong_city_name,
         invite_code,
-        invite_btn
+        invite_btn,
+        login_name,
+        login_pwd,
+        email
         )
         VALUES
         (
@@ -50,7 +53,10 @@
         #{belongCityCode},
         #{belongCityName},
         #{inviteCode},
-        #{inviteBtn}
+        #{inviteBtn},
+        #{loginName},
+        #{loginPwd},
+        #{email}
         );
     </insert>
     <update id="update">
@@ -388,6 +394,8 @@
         SET
         mobile = #{mobile},
         proxy_name = #{proxyName},
+        login_name = #{loginName},
+        email = #{email},
         belong_province_code=#{belongProvinceCode},
         belong_province_name=#{belongProvinceName},
         belong_city_code=#{belongCityCode},
@@ -417,4 +425,113 @@
         WHERE id = #{id}
     </update>
 
+    <select id="selectByInviteCode" resultType="com.jkm.hss.dealer.entity.Dealer">
+        SELECT * FROM tb_dealer WHERE invite_code = #{inviteCode}
+    </select>
+
+    <update id="updatePwd">
+        UPDATE tb_dealer
+        SET
+        login_pwd = #{loginPwd}
+        WHERE id = #{dealerId}
+    </update>
+
+
+
+
+    <select id="selectSecondDealerCountByPage" resultType="java.lang.Integer">
+        SELECT COUNT(1) FROM tb_dealer as d
+        <where>
+            d.level = 2 and d.first_level_dealer_id=#{dealerId}
+            <if test="mobile!=null and mobile!=''">
+                AND d.mobile =#{mobile}
+            </if>
+            <if test="name != null and name!=''">
+                AND d.`proxy_name` LIKE "%"#{name}"%"
+            </if>
+            <if test="markCode != null and markCode!=''">
+                AND d.mark_code = #{markCode}
+            </if>
+            <if test="districtCode != null and districtCode!=''">
+                AND (d.belong_province_code = #{districtCode} OR d.belong_city_code=#{districtCode})
+            </if>
+            <if test="sysType != null and sysType!=''">
+                AND d.id IN (select distinct(dealer_id) from tb_dealer_channel_rate where product_id in (select id from tb_product where type=#{sysType}))
+            </if>
+        </where>
+    </select>
+
+    <select id="selectSecondDealersByPage" resultType="com.jkm.hss.dealer.helper.response.SecondDealerResponse">
+        SELECT
+        d.id,
+        d.proxy_name,
+        d.mark_code,
+        d.level,
+        d.create_time,
+        d.bank_account_name,
+        d.belong_province_code,
+        d.belong_province_name,
+        d.belong_city_code,
+        d.belong_city_name,
+        (
+        SELECT DISTINCT
+        (product_id)
+        FROM
+        tb_dealer_channel_rate
+        WHERE
+        dealer_id = d.id
+        AND product_id IN (
+        SELECT
+        id
+        FROM
+        tb_product
+        WHERE
+        type = 'hss'
+        )
+        ) AS hss_product_id,
+        (
+        SELECT DISTINCT
+        (product_id)
+        FROM
+        tb_dealer_channel_rate
+        WHERE
+        dealer_id = d.id
+        AND product_id IN (
+        SELECT
+        id
+        FROM
+        tb_product
+        WHERE
+        type = 'hsy'
+        )
+        ) AS hsy_product_id,
+        d.mobile
+        FROM tb_dealer as d
+        <where>
+            d.level = 2 and d.first_level_dealer_id=#{dealerId}
+            <if test="mobile!=null and mobile!=''">
+                AND d.mobile =#{mobile}
+            </if>
+            <if test="name != null and name!=''">
+                AND d.`proxy_name` LIKE "%"#{name}"%"
+            </if>
+            <if test="markCode != null and markCode!=''">
+                AND d.mark_code = #{markCode}
+            </if>
+            <if test="districtCode != null and districtCode!=''">
+                AND (d.belong_province_code = #{districtCode} OR d.belong_city_code=#{districtCode})
+            </if>
+            <if test="sysType != null and sysType!=''">
+                AND d.id IN (select distinct(dealer_id) from tb_dealer_channel_rate where product_id in (select id from tb_product where type=#{sysType}))
+            </if>
+            ORDER BY d.create_time ASC LIMIT #{offset},#{count}
+        </where>
+    </select>
+
+    <select id="selectByLoginName" resultType="java.lang.Long">
+        SELECT COUNT(1) FROM tb_dealer WHERE login_name = #{name}
+    </select>
+    <select id="selectByLoginNameUnIncludeNow" resultType="java.lang.Long">
+        SELECT COUNT(1) FROM tb_dealer WHERE login_name = #{loginName} AND id != #{dealerId}
+    </select>
 </mapper>
