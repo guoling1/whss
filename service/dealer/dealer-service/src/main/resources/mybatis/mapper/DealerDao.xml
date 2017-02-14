@@ -442,7 +442,7 @@
     <select id="selectSecondDealerCountByPage" resultType="java.lang.Integer">
         SELECT COUNT(1) FROM tb_dealer as d
         <where>
-            d.level = 2
+            d.level = 2 and d.first_level_dealer_id=#{dealerId}
             <if test="mobile!=null and mobile!=''">
                 AND d.mobile =#{mobile}
             </if>
@@ -457,9 +457,6 @@
             </if>
             <if test="sysType != null and sysType!=''">
                 AND d.id IN (select distinct(dealer_id) from tb_dealer_channel_rate where product_id in (select id from tb_product where type=#{sysType}))
-            </if>
-            <if test="firstDealerName != null and firstDealerName!=''">
-                AND d.first_level_dealer_id IN (select id from tb_dealer where `proxy_name` LIKE "%"#{firstDealerName}"%")
             </if>
         </where>
     </select>
@@ -508,11 +505,10 @@
         type = 'hsy'
         )
         ) AS hsy_product_id,
-        (select proxy_name from tb_dealer WHERE id =d.first_level_dealer_id) as first_proxy_name,
         d.mobile
         FROM tb_dealer as d
         <where>
-            d.level = 2
+            d.level = 2 and d.first_level_dealer_id=#{dealerId}
             <if test="mobile!=null and mobile!=''">
                 AND d.mobile =#{mobile}
             </if>
@@ -527,9 +523,6 @@
             </if>
             <if test="sysType != null and sysType!=''">
                 AND d.id IN (select distinct(dealer_id) from tb_dealer_channel_rate where product_id in (select id from tb_product where type=#{sysType}))
-            </if>
-            <if test="firstDealerName != null and firstDealerName!=''">
-                AND d.first_level_dealer_id IN (select id from tb_dealer where `proxy_name` LIKE "%"#{firstDealerName}"%")
             </if>
             ORDER BY d.create_time ASC LIMIT #{offset},#{count}
         </where>

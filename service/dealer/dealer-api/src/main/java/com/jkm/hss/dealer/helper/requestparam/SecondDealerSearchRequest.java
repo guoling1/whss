@@ -11,6 +11,10 @@ import lombok.Data;
 @Data
 public class SecondDealerSearchRequest extends PageQueryParams {
     /**
+     * 一级代理商编码
+     */
+    private long dealerId;
+    /**
      * 手机号
      */
     private String mobile;

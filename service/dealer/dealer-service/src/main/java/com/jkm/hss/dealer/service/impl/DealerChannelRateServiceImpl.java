@@ -137,4 +137,16 @@ public class DealerChannelRateServiceImpl implements DealerChannelRateService{
         }
         return Triple.of(wxRate, zfbRate, ylRate);
     }
+
+    /**
+     * 查询代理商绑定的产品编码
+     *
+     * @param dealerId
+     * @param sysType
+     * @return
+     */
+    @Override
+    public long getDealerBindProductId(long dealerId, String sysType) {
+        return dealerChannelRateDao.getDealerBindProductId(dealerId,sysType);
+    }
 }
