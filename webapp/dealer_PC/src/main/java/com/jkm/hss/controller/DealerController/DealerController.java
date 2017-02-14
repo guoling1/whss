@@ -29,7 +29,7 @@ import org.springframework.web.bind.annotation.*;
  */
 @Slf4j
 @RestController
-@RequestMapping(value = "/dealer")
+@RequestMapping(value = "/daili/dealer")
 public class DealerController extends BaseController {
     @Autowired
     private DealerService dealerService;
