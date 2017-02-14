@@ -76,4 +76,15 @@ public class DealerRateServiceImpl implements DealerRateService {
     public Optional<DealerChannelRate> getByDealerIdAndProductIdAndChannelType(final long dealerId, final long productId, final int channelType) {
         return Optional.fromNullable(this.dealerChannelRateDao.selectByDealerIdAndProductIdAndChannelType(dealerId, productId, channelType));
     }
+    /**
+     * {@inheritDoc}
+     *
+     * @param dealerId
+     * @param productId
+     * @return
+     */
+    @Override
+    public List<DealerChannelRate> getByDealerIdAndProductId(final long dealerId, final long productId) {
+        return this.dealerChannelRateDao.selectByDealerIdAndProductId(dealerId, productId);
+    }
 }
