@@ -9,6 +9,8 @@ import java.util.Date;
  */
 @Data
 public class HsyMerchantAuditResponse {
+    private String aName;
+    private String parentCode;
     private String idcard;//身份证号码
     private String idcardf;//身份证正面照
     private String idcardb;//身份证背面照

@@ -1,5 +1,6 @@
 package com.jkm.hsy.user.service.impl;
 
+import com.jkm.hsy.user.constant.IndustryCodeType;
 import com.jkm.hsy.user.dao.HsyMerchantAuditDao;
 import com.jkm.hsy.user.entity.HsyMerchantAuditRequest;
 import com.jkm.hsy.user.entity.HsyMerchantAuditResponse;
@@ -29,6 +30,36 @@ public class HsyMerchantAuditServiceImpl implements HsyMerchantAuditService {
     public HsyMerchantAuditResponse getDetails(Long id) {
 
         HsyMerchantAuditResponse res = hsyMerchantAuditDao.getDetails(id);
+        String districtCode = res.getDistrictCode();
+        HsyMerchantAuditResponse ret = hsyMerchantAuditDao.getCode(districtCode);
+        if (!ret.getParentCode().equals("0")){
+            HsyMerchantAuditResponse reu = hsyMerchantAuditDao.getCity(ret.getParentCode());
+            res.setDistrictCode(reu.getAName()+ret.getAName());
+        }
+        int industryCode = Integer.parseInt(res.getIndustryCode());
+        if (industryCode==1000){
+            res.setIndustryCode(IndustryCodeType.CATERING.industryCodeValue);
+        }
+        if (industryCode==1001){
+            res.setIndustryCode(IndustryCodeType.SUPERMARKET.industryCodeValue);
+        }
+        if (industryCode==1002){
+            res.setIndustryCode(IndustryCodeType.LIFE_SERVICES.industryCodeValue);
+        }
+        if (industryCode==1003){
+            res.setIndustryCode(IndustryCodeType.SHOPPING.industryCodeValue);
+        }
+        if (industryCode==1004){
+            res.setIndustryCode(IndustryCodeType.BEAUTY.industryCodeValue);
+        }
+        if (industryCode==1005){
+            res.setIndustryCode(IndustryCodeType.EXERCISE.industryCodeValue);
+        }
+        if (industryCode==1006){
+            res.setIndustryCode(IndustryCodeType.HOTEL.industryCodeValue);
+        }
+
+
         return res;
     }
 
