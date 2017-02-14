@@ -3,7 +3,7 @@
     <!-- Content Header (Page header) -->
     <section class="content-header">
       <h1>
-        好收收代理商系统
+        钱包++代理商系统
         <small>Version 1.0</small>
       </h1>
       <ol class="breadcrumb">
@@ -23,6 +23,9 @@
               <h3 class="box-title">代理商列表</h3>
             </div>
             <!-- /.box-header -->
+            <div class="box-body screen-top">
+              <el-button type="primary" icon="plus" @click="addDealer">新增代理商</el-button>
+            </div>
             <div class="box-body screen-top">
               <div class="screen-item">
                 <span class="screen-title">代理商名称</span>
@@ -84,7 +87,7 @@
                     <template scope="scope">
                       <span v-if="ext[0]!=0">
                         <span v-if="scope.row.hssProductId==0">
-                          <el-button size="small" type="primary" @click="openHss">开通</el-button>
+                          <el-button size="small" type="primary" @click="openHss($event,scope.row.id)">开通</el-button>
                         </span>
                         <span v-else>
                           <el-button type="text">查看产品详情</el-button>
@@ -97,7 +100,7 @@
                     <template scope="scope">
                       <span v-if="ext[0]!=0">
                         <span v-if="scope.row.hsyProductId==0">
-                          <el-button size="small" type="primary" @click="openHsy">开通</el-button>
+                          <el-button size="small" type="primary" @click="openHsy($event,scope.row.id)">开通</el-button>
                         </span>
                         <span v-else>
                           <el-button type="text">查看产品详情</el-button>
@@ -171,6 +174,9 @@
       });
     },
     methods: {
+      addDealer: function () {
+        this.$router.push('/app/dealer_add');
+      },
       getData: function () {
         this.$http.post('/api/daili/dealer/listSecondDealer', {
           pageSize: this.pageSize,
@@ -205,11 +211,11 @@
       screen: function () {
         this.getData();
       },
-      openHss: function () {
-
+      openHss: function (event, id) {
+        this.$router.push({path: '/app/product_add', query: {product: '好收收', dealerId: id}});
       },
-      openHsy: function () {
-
+      openHsy: function (event, id) {
+        this.$router.push({path: '/app/product_add', query: {product: '好收银', dealerId: id}});
       },
       handleSizeChange(val) {
         this.pageSize = val;

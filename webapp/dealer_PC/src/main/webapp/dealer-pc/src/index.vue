@@ -6,9 +6,9 @@
       <!-- Logo -->
       <a href="index2.html" class="logo">
         <!-- mini logo for sidebar mini 50x50 pixels -->
-        <span class="logo-mini">A</span>
+        <span class="logo-mini">钱</span>
         <!-- logo for regular state and mobile devices -->
-        <span class="logo-lg"><b>Admin</b>Lte</span>
+        <span class="logo-lg">钱包++</span>
       </a>
 
       <!-- Header Navbar: style can be found in header.less -->
@@ -151,7 +151,7 @@
         <!-- /.search form -->
         <!-- sidebar menu: : style can be found in sidebar.less -->
         <ul class="sidebar-menu">
-          <li class="header">MAIN NAVIGATION</li>
+          <li class="header">钱包++ Version 1.0</li>
           <li class="active">
             <router-link :to="{ path:'/' }">
               <i class="glyphicon glyphicon-home"></i> <span>主页</span>

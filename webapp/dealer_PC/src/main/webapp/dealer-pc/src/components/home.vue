@@ -3,7 +3,7 @@
     <!-- Content Header (Page header) -->
     <section class="content-header">
       <h1>
-        XX管理系统
+        钱包++代理商系统
         <small>Version 2.0</small>
       </h1>
       <ol class="breadcrumb">

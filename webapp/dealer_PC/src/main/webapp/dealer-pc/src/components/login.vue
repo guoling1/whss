@@ -5,7 +5,7 @@
     </div>
     <!-- /.login-logo -->
     <div class="login-box-body">
-      <p class="login-box-msg">欢迎登录XX后台管理系统</p>
+      <p class="login-box-msg">欢迎登录钱包++代理商系统</p>
 
       <div class="form-group has-feedback">
         <input type="text" class="form-control" placeholder="账户名" v-model="username">

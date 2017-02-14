@@ -20,76 +20,31 @@
         <div class="col-xs-12">
           <div class="box">
             <div class="box-header with-border">
-              <h3 class="box-title">添加代理商</h3>
+              <h3 class="box-title">产品信息设置</h3>
             </div>
             <!-- /.box-header -->
             <div class="box-body">
-              <label class="form-label">基本信息</label>
+              <label class="form-label">产品名称：好收收</label>
+            </div>
+            <div class="box-body">
+              <label class="form-label">产品分润设置</label>
               <el-form ref="form" :model="form" :rules="rules" label-width="120px" class="demo-ruleForm">
-                <el-form-item label="代理商手机号" prop="mobile">
-                  <el-input v-model="form.mobile"></el-input>
-                </el-form-item>
-                <el-form-item label="代理名称" prop="name">
-                  <el-input v-model="form.name"></el-input>
-                </el-form-item>
-                <el-form-item label="登录名" prop="loginName">
-                  <el-input v-model="form.loginName"></el-input>
-                </el-form-item>
-                <el-form-item label="登录密码" prop="loginPwd">
-                  <el-col :span="19">
-                    <el-input type="password" v-model="form.loginPwd"></el-input>
-                  </el-col>
-                  <el-col class="line-center" :span="5">
-                    <el-button type="text">修改密码</el-button>
-                  </el-col>
-                </el-form-item>
-                <el-form-item label="联系邮箱" prop="email">
-                  <el-input v-model="form.email"></el-input>
-                </el-form-item>
-                <el-form-item label="省市区域" prop="belongCityCode">
-                  <el-col :span="10">
-                    <el-select v-model="form.belongProvinceCode" style="width:100%" placeholder="请选择"
-                               @change="province_select">
-                      <el-option v-for="item in item_province"
-                                 :label="item.aname"
-                                 :value="item.code">
-                      </el-option>
-                    </el-select>
-                  </el-col>
-                  <el-col class="line-center" :span="2">省</el-col>
-                  <el-col :span="10">
-                    <el-select v-model="form.belongCityCode" style="width:100%" placeholder="请选择"
-                               @change="city_select">
-                      <el-option v-for="item in item_city"
-                                 :label="item.aname"
-                                 :value="item.code">
-                      </el-option>
-                    </el-select>
-                  </el-col>
-                  <el-col class="line-center" :span="2">市</el-col>
-                </el-form-item>
-                <el-form-item label="详细地址" prop="belongArea">
-                  <el-input v-model="form.belongArea"></el-input>
-                </el-form-item>
-                <label class="form-label">结算卡信息</label>
-                <el-form-item label="结算卡号" prop="bankCard">
-                  <el-input v-model="form.bankCard"></el-input>
-                </el-form-item>
-                <el-form-item label="开户名称" prop="bankAccountName">
-                  <el-input v-model="form.bankAccountName"></el-input>
-                </el-form-item>
-                <el-form-item label="身份证号" prop="idCard">
-                  <el-input v-model="form.idCard"></el-input>
-                </el-form-item>
-                <el-form-item label="开户手机号" prop="bankReserveMobile">
-                  <el-input v-model="form.bankReserveMobile"></el-input>
-                </el-form-item>
-                <el-form-item>
-                  <el-button type="primary" @click="onSubmit">创建代理商</el-button>
-                </el-form-item>
+                <el-table :data="tableData" border>
+                  <el-table-column prop="id" label="通道名称"></el-table-column>
+                  <el-table-column prop="author" label="支付结算手续费"></el-table-column>
+                  <el-table-column prop="type" label="结算时间"></el-table-column>
+                  <el-table-column label="提现结算费" width="180">
+                    <template scope="scope">
+                      <el-form-item label="代理商手机号" prop="mobile">
+                        <el-input v-model="form.mobile"></el-input>
+                      </el-form-item>
+                    </template>
+                  </el-table-column>
+                  <el-table-column prop="type" label="商户支付手续费"></el-table-column>
+                  <el-table-column prop="type" label="商户提现手续费"></el-table-column>
+                </el-table>
               </el-form>
             </div>
-
             <!-- /.box-body -->
           </div>
           <!-- /.box -->
