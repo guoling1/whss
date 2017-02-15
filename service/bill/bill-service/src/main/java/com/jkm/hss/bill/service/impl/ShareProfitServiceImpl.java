@@ -29,7 +29,7 @@ public class ShareProfitServiceImpl implements ShareProfitService {
     }
 
     @Override
-    public long selectAccountListCount(JkmProfitRequest req) {
+    public int selectAccountListCount(JkmProfitRequest req) {
         return shareProfitDao.selectAccountListCount(req);
     }
 }

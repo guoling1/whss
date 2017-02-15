@@ -22,7 +22,7 @@ public interface ShareProfitService {
      * @param req
      * @return
      */
-   long selectAccountListCount(JkmProfitRequest req);
+   int selectAccountListCount(JkmProfitRequest req);
 
 
 }

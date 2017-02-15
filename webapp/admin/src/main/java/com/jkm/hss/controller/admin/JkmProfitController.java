@@ -45,7 +45,7 @@ public class JkmProfitController extends BaseController{
         req.setOffset(pageModel.getFirstIndex());
 
         List<JkmProfitResponse> orderList =  shareProfitService.selectAccountList(req);
-        long count = shareProfitService.selectAccountListCount(req);
+        int count = shareProfitService.selectAccountListCount(req);
         if (orderList.size()==0){
             return CommonResponse.simpleResponse(-1,"未查询到相关数据");
         }
