@@ -372,7 +372,10 @@ public class DealerController extends BaseController {
             }
             final Product product = productOptional.get();
             //根据产品查找产品详情
-            final List<DealerChannelRate> channelRates = this.dealerRateService.getByDealerIdAndProductId(super.getDealerId(),request.getProductId());
+            final List<DealerChannelRate> channelRates = this.dealerRateService.getByDealerIdAndProductId(super.getDealerId(),product.getId());
+            if(channelRates.size()==0){
+                return CommonResponse.simpleResponse(-1, "您的产品信息尚未完善");
+            }
             final SecondDealerProductDetailResponse.Product productResponse = secondDealerProductDetailResponse.new Product();
             productResponse.setProductId(product.getId());
             productResponse.setProductName(product.getProductName());
