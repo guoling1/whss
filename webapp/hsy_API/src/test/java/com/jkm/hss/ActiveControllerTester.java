@@ -265,7 +265,8 @@ public class ActiveControllerTester {
         p.setTimeStamp(AppDateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
         p.setV("v1.0");
         /*role 值：2店长，3店员  sid可选 parentID当前登录用户的id*/
-        String param="{\"role\":3,\"cellphone\":\"13521691441\",\"realname\":\"真实姓名\",\"parentID\":18,\"sid\":10}";
+//        String param="{\"role\":3,\"cellphone\":\"13521691441\",\"realname\":\"真实姓名\",\"parentID\":18,\"sid\":10}";
+        String param="{\"role\":2,\"cellphone\":\"13301129906\",\"realname\":\"张斌\",\"parentID\":18}";
         p.setRequestData(param);
         ActiveControllerTester.testRest(p);
     }
@@ -336,6 +337,45 @@ public class ActiveControllerTester {
         p.setV("v1.0");
         /*status 1正常 99禁用 id所需分配的店员*/
         String param="{\"id\":34,\"status\":1}";
+        p.setRequestData(param);
+        ActiveControllerTester.testRest(p);
+    }
+
+    @Test
+    public void testGetAppVersion()throws Exception{
+        AppParam p=new AppParam();
+        p.setServiceCode("HSY001026");
+        p.setAccessToken("");
+        p.setAppType("ios");
+        p.setTimeStamp(AppDateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
+        p.setV("v1.0");
+        String param="{\"versionCode\":1}";
+        p.setRequestData(param);
+        ActiveControllerTester.testRest(p);
+    }
+
+    @Test
+    public void testGetAppVersionAndroid()throws Exception{
+        AppParam p=new AppParam();
+        p.setServiceCode("HSY001027");
+        p.setAccessToken("");
+        p.setAppType("android");
+        p.setTimeStamp(AppDateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
+        p.setV("v1.0");
+        String param="{}";
+        p.setRequestData(param);
+        ActiveControllerTester.testRest(p);
+    }
+
+    @Test
+    public void testFindLoginInfo()throws Exception{
+        AppParam p=new AppParam();
+        p.setServiceCode("HSY001028");
+        p.setAccessToken("");
+        p.setAppType("android");
+        p.setTimeStamp(AppDateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
+        p.setV("v1.0");
+        String param="{\"id\":18}";
         p.setRequestData(param);
         ActiveControllerTester.testRest(p);
     }

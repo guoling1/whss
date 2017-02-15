@@ -17,4 +17,5 @@ public interface HsyUserService {
     public String updateHsyUserViaCorporation(String dataParam, AppParam appParam)throws ApiHandleException;
     public String updateHsyShopUserViaCorporation(String dataParam, AppParam appParam)throws ApiHandleException;
     public String updateHsyUserStatusViaCorporation(String dataParam, AppParam appParam)throws ApiHandleException;
+    public String findLoginInfo(String dataParam,AppParam appParam)throws ApiHandleException;
 }
