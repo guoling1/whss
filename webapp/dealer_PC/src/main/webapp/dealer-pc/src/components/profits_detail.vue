@@ -30,7 +30,7 @@
               </div>
               <div class="screen-item">
                 <span class="screen-title">业务类型</span>
-                <el-select v-model="businessType" size="small" placeholder="请选择">
+                <el-select v-model="businessType" size="small" clearable placeholder="请选择">
                   <el-option v-for="item in item_businessType"
                              :label="item.label"
                              :value="item.value">
@@ -55,20 +55,28 @@
             </div>
             <div class="box-body">
               <el-table :data="tableData" border>
-                <el-table-column prop="id" label="序号"></el-table-column>
-                <el-table-column prop="author" label="分润流水号" sortable="custom"></el-table-column>
-                <el-table-column prop="type" label="业务类型"></el-table-column>
-                <el-table-column label="分润时间" width="180">
+                <el-table-column type="index" label="序号"></el-table-column>
+                <el-table-column prop="splitOrderNo" label="分润流水号" sortable="custom"></el-table-column>
+                <el-table-column prop="businessType" label="业务类型">
                   <template scope="scope">
-                    {{ scope.row.create_time | datetime }}
+                    {{ scope.row.businessType | filter_businessType }}
                   </template>
                 </el-table-column>
-                <el-table-column prop="type" label="交易订单号"></el-table-column>
-                <el-table-column prop="type" label="分润结算周期"></el-table-column>
-                <el-table-column prop="type" label="结算时间"></el-table-column>
-                <el-table-column prop="type" label="代理商名称"></el-table-column>
-                <el-table-column prop="type" label="分润金额"></el-table-column>
-                <el-table-column prop="type" label="备注信息"></el-table-column>
+                <el-table-column label="分润时间" width="180">
+                  <template scope="scope">
+                    {{ scope.row.splitCreateTime | datetime }}
+                  </template>
+                </el-table-column>
+                <el-table-column prop="orderNo" label="交易订单号"></el-table-column>
+                <el-table-column prop="splitSettlePeriod" label="分润结算周期"></el-table-column>
+                <el-table-column label="结算时间">
+                  <template scope="scope">
+                    {{ scope.row.settleTime | datetime }}
+                  </template>
+                </el-table-column>
+                <el-table-column prop="dealerName" label="代理商名称"></el-table-column>
+                <el-table-column prop="splitAmount" label="分润金额"></el-table-column>
+                <el-table-column prop="remark" label="备注信息"></el-table-column>
               </el-table>
             </div>
             <div class="box-body">
@@ -106,19 +114,19 @@
         item_businessType: [
           {
             value: 'hssPay',
-            babel: '好收收-收款'
+            label: '好收收-收款'
           },
           {
             value: 'hssWithdraw',
-            babel: '好收收-提现'
+            label: '好收收-提现'
           },
           {
             value: 'hssPromote',
-            babel: '好收收-升级费'
+            label: '好收收-升级费'
           },
           {
             value: 'hsyPay',
-            babel: '好收银-收款'
+            label: '好收银-收款'
           }
         ],
         datetime: '',

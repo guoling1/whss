@@ -35,14 +35,12 @@ Vue.filter('datetime', function (date) {
   return format;
 });
 
-Vue.filter('tf_levels', function (value) {
+Vue.filter('filter_businessType', function (value) {
   const encryption = {
-    1: 'A',
-    2: 'B',
-    3: 'C',
-    4: 'S',
-    5: 'SS',
-    6: 'SSS',
+    hssPay: '好收收-收款',
+    hssWithdraw: '好收收-提现',
+    hssPromote: '好收收-升级费',
+    hsyPay: '好收银-收款',
   };
   return encryption[value];
 });
