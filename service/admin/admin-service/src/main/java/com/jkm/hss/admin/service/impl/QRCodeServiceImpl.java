@@ -800,4 +800,29 @@ public class QRCodeServiceImpl implements QRCodeService {
     public List<QRCodeList> bindShopList(long shopId, String sysType) {
         return this.qrCodeDao.bindShopList(shopId,sysType);
     }
+    /**
+     * {@inheritDoc}
+     *
+     * @param dealerId
+     * @param startCode
+     * @param endCode
+     * @param sysType
+     * @return
+     */
+    @Override
+    public List<QRCode> getUnDistributeCodeByDealerIdAndRangeCodeAndSysType(long dealerId, String startCode, String endCode,String sysType) {
+        return this.qrCodeDao.selectUnDistributeCodeByDealerIdAndRangeCodeAndSysType(dealerId, startCode, endCode,sysType);
+    }
+
+    /**
+     * 按产品类型查询某个代理商下的所有二维码
+     *
+     * @param dealerId
+     * @param sysType
+     * @return
+     */
+    @Override
+    public List<QRCode> getUnDistributeCodeByDealerIdAndSysType(long dealerId, String sysType) {
+        return this.qrCodeDao.getUnDistributeCodeByDealerIdAndSysType(dealerId,sysType);
+    }
 }

@@ -37,4 +37,9 @@ public class DistributeQRCodeRecord extends BaseEntity {
      * 结束码号
      */
     private String endCode;
+    /**
+     * 类型
+     * {@link com.jkm.hss.admin.enums.EnumQRCodeDistributeType}
+     */
+    private int type;
 }

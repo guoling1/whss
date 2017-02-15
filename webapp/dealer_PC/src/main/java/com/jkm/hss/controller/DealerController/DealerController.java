@@ -1,9 +1,7 @@
 package com.jkm.hss.controller.DealerController;
 
-import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
-import com.google.common.collect.Maps;
 import com.jkm.base.common.entity.CommonResponse;
 import com.jkm.base.common.entity.PageModel;
 import com.jkm.base.common.util.ValidateUtils;
@@ -40,7 +38,6 @@ import org.springframework.web.bind.annotation.*;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by xingliujie on 2017/2/13.
@@ -375,7 +372,10 @@ public class DealerController extends BaseController {
             }
             final Product product = productOptional.get();
             //根据产品查找产品详情
-            final List<DealerChannelRate> channelRates = this.dealerRateService.getByDealerIdAndProductId(super.getDealerId(),request.getProductId());
+            final List<DealerChannelRate> channelRates = this.dealerRateService.getByDealerIdAndProductId(super.getDealerId(),product.getId());
+            if(channelRates.size()==0){
+                return CommonResponse.simpleResponse(-1, "您的产品信息尚未完善");
+            }
             final SecondDealerProductDetailResponse.Product productResponse = secondDealerProductDetailResponse.new Product();
             productResponse.setProductId(product.getId());
             productResponse.setProductName(product.getProductName());
