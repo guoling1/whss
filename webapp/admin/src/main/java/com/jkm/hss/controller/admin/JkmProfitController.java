@@ -41,11 +41,14 @@ public class JkmProfitController extends BaseController{
     @ResponseBody
     @RequestMapping(value = "/accountList",method = RequestMethod.POST)
     public CommonResponse accountList(@RequestBody JkmProfitRequest req) throws ParseException {
-        final PageModel<JkmProfitResponse> pageModel = new PageModel<JkmProfitResponse>(req.getPage(), req.getSize());
+        final PageModel<JkmProfitResponse> pageModel = new PageModel<JkmProfitResponse>(req.getPageNo(), req.getPageSize());
         req.setOffset(pageModel.getFirstIndex());
 
         List<JkmProfitResponse> orderList =  shareProfitService.selectAccountList(req);
         long count = shareProfitService.selectAccountListCount(req);
+        if (orderList.size()==0){
+            return CommonResponse.simpleResponse(-1,"未查询到相关数据");
+        }
         pageModel.setCount(count);
         pageModel.setRecords(orderList);
         return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", pageModel);

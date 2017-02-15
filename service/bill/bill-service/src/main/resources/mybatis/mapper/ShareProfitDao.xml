@@ -5,7 +5,7 @@
 
     <select id="selectAccountList" resultType="com.jkm.hss.bill.entity.JkmProfitResponse">
         SELECT * FROM tb_account WHERE id in (1,2,113,114)
-        limit #{offset}, #{size}
+        limit #{offset}, #{pageSize}
     </select>
 
 
