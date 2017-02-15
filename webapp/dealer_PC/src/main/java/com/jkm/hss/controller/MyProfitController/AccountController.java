@@ -20,6 +20,7 @@ import com.jkm.hss.helper.request.DealerWithdrawRequest;
 import com.jkm.hss.helper.request.FlowDetailsSelectRequest;
 import com.jkm.hss.helper.request.ProfitDetailsSelectRequest;
 import com.jkm.hss.helper.response.AccountInfoResponse;
+import com.jkm.hss.helper.response.DealerInfoResponse;
 import com.jkm.hss.helper.response.FlowDetailsSelectResponse;
 import com.jkm.hss.notifier.enums.EnumNoticeType;
 import com.jkm.hss.notifier.enums.EnumUserType;
@@ -58,6 +59,23 @@ public class AccountController extends BaseController{
     private SmsAuthService smsAuthService;
     @Autowired
     private SendMessageService sendMessageService;
+
+    /**
+     * 獲取帳戶詳情，
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/dealerInfo", method = RequestMethod.GET)
+    public CommonResponse getDealerInfo(){
+        final Dealer dealer = this.getDealer().get();
+
+        DealerInfoResponse response = new DealerInfoResponse();
+        response.setDealerInfo(dealer.getProxyName());
+        response.setDealerLeavel(dealer.getLevel());
+
+        return CommonResponse.objectResponse(1, "success", response);
+    }
+
     /**
      * 獲取帳戶詳情，
      * @return
