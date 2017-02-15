@@ -389,8 +389,10 @@
                 this.$data.query.endSettleDate = str;
               }
             }
+          }else {
+            this.$data.query.startSettleDate = '';
+            this.$data.query.endSettleDate = '';
           }
-
         }
       }
     }

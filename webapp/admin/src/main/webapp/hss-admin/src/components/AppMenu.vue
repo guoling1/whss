@@ -68,18 +68,23 @@
           <a href="#"><span>分润管理</span>
           </a>
           <ul class="treeview-menu">
-            <li @click="refrash" :class="(url=='/admin/record/companyProfit')?'treeview active':'treeview'"><router-link to="/admin/record/companyProfit"><span>公司分润</span> </router-link></li>
+            <!--<li @click="refrash" :class="(url=='/admin/record/companyProfit')?'treeview active':'treeview'"><router-link to="/admin/record/companyProfit"><span>公司分润</span> </router-link></li>
             <li @click="refrash" :class="(url=='/admin/record/firProfit')?'treeview active':'treeview'"><router-link to="/admin/record/firProfit"><span>一级代理商分润</span> </router-link></li>
-            <li @click="refrash" :class="(url=='/admin/record/secProfit')?'treeview active':'treeview'"><router-link to="/admin/record/secProfit"><span>二级代理商分润</span> </router-link></li>
-            <!--<li :class="(url=='/admin/record/companyProfit'||url=='/admin/record/firProfit'||url=='/admin/record/secProfit'||url=='/admin/record/profitAccount')?'treeview active':'treeview'">
-              <a href="#"><span>分润统计</span></a>
-              <ul class="treeview-menu">
+            <li @click="refrash" :class="(url=='/admin/record/secProfit')?'treeview active':'treeview'"><router-link to="/admin/record/secProfit"><span>二级代理商分润</span> </router-link></li>-->
+            <li :class="(url=='/admin/record/companyProfit'||url=='/admin/record/firProfit'||url=='/admin/record/secProfit')?'treeview active':'treeview'">
+              <a href="#" @click="open"><span>分润统计</span>
+                <span class="pull-right-container">
+                  <i id="right" class="el-icon-arrow-left pull-right"></i>
+                </span>
+                <!--<i class="el-icon-arrow-left"></i>-->
+              </a>
+              <ul class="treeview-menu" style="margin-left: -8px">
                 <li @click="refrash" :class="(url=='/admin/record/companyProfit')?'treeview active':'treeview'"><router-link to="/admin/record/companyProfit"><span>公司分润</span> </router-link></li>
                 <li @click="refrash" :class="(url=='/admin/record/firProfit')?'treeview active':'treeview'"><router-link to="/admin/record/firProfit"><span>一级代理商分润</span> </router-link></li>
                 <li @click="refrash" :class="(url=='/admin/record/secProfit')?'treeview active':'treeview'"><router-link to="/admin/record/secProfit"><span>二级代理商分润</span> </router-link></li>
               </ul>
-            </li>-->
-            <!--<li @click="refrash" :class="(url=='/admin/record/profitAccount')?'treeview active':'treeview'"><router-link to="/admin/record/profitAccount"><span>公司分润账户</span> </router-link></li>-->
+            </li>
+            <li @click="refrash" :class="(url=='/admin/record/profitAccount')?'treeview active':'treeview'"><router-link to="/admin/record/profitAccount"><span>公司分润账户</span> </router-link></li>
           </ul>
         </li>
         <li :class="(url=='/admin/record/productList'||url=='/admin/record/productAdd'||url=='/admin/record/invite')?'treeview active':'treeview'">
@@ -124,11 +129,22 @@ export default {
     }
   },
   created:function () {
-    this.$data.url=location.pathname
+    this.$data.url=location.pathname;
+    /*if(document.getElementById('open').className=='treeview active'){
+      document.getElementById('right').className=''
+    }*/
   },
   methods:{
     refrash: function () {
       location.reload()
+    },
+    open: function () {
+      var obj =  document.getElementById('right');
+      if(obj.className=='el-icon-arrow-down  pull-right'){
+        obj.className='el-icon-arrow-left  pull-right'
+      }else {
+        obj.className='el-icon-arrow-down  pull-right'
+      }
     }
   }
 }
@@ -140,5 +156,9 @@ export default {
   /*}*/
   .sidebar-menu .treeview-menu>li>a{
     font-size: 12px;
+  }
+  #right{
+    width: 5px;
+    height:5px;
   }
 </style>
