@@ -26,52 +26,58 @@
             <div class="box-body screen-top">
               <div class="screen-item">
                 <span class="screen-title">交易订单号</span>
-                <el-input v-model="input3" placeholder="交易订单号" size="small" style="width:240px"></el-input>
+                <el-input v-model="orderNo" placeholder="交易订单号" size="small" style="width:240px"></el-input>
               </div>
               <div class="screen-item">
-                <span class="screen-title">分润方名称</span>
-                <el-input v-model="input4" placeholder="分润方名称" size="small" style="width:180px"></el-input>
+                <span class="screen-title">业务类型</span>
+                <el-select v-model="businessType" size="small" placeholder="请选择">
+                  <el-option v-for="item in item_businessType"
+                             :label="item.label"
+                             :value="item.value">
+                  </el-option>
+                </el-select>
               </div>
               <div class="screen-item">
                 <span class="screen-title">分润日期</span>
-                <el-date-picker
-                        size="small"
-                        v-model="value7"
-                        type="daterange"
-                        align="right"
-                        placeholder="选择日期范围"
-                        :picker-options="pickerOptions2">
+                <el-date-picker size="small"
+                                v-model="datetime"
+                                type="daterange"
+                                align="right"
+                                @change="datetimeSelect"
+                                placeholder="选择日期范围"
+                                :picker-options="pickerOptions2">
                 </el-date-picker>
               </div>
               <div class="screen-item">
                 <span class="screen-title"></span>
-                <el-button type="primary" size="small">筛选</el-button>
+                <el-button type="primary" size="small" @click="screen">筛选</el-button>
               </div>
             </div>
             <div class="box-body">
               <el-table :data="tableData" border>
-                <el-table-column prop="id" label="代理商名称"></el-table-column>
-                <el-table-column prop="author" label="代理商编号" sortable="custom"></el-table-column>
-                <el-table-column prop="type" label="省市"></el-table-column>
-                <el-table-column label="注册时间" width="180">
+                <el-table-column prop="id" label="序号"></el-table-column>
+                <el-table-column prop="author" label="分润流水号" sortable="custom"></el-table-column>
+                <el-table-column prop="type" label="业务类型"></el-table-column>
+                <el-table-column label="分润时间" width="180">
                   <template scope="scope">
                     {{ scope.row.create_time | datetime }}
                   </template>
                 </el-table-column>
-                <el-table-column prop="type" label="联系手机号"></el-table-column>
-                <el-table-column label="产品">
-                  <el-table-column prop="name" label="好收收" width="120"></el-table-column>
-                  <el-table-column prop="name" label="好收银" width="120"></el-table-column>
-                </el-table-column>
+                <el-table-column prop="type" label="交易订单号"></el-table-column>
+                <el-table-column prop="type" label="分润结算周期"></el-table-column>
+                <el-table-column prop="type" label="结算时间"></el-table-column>
+                <el-table-column prop="type" label="代理商名称"></el-table-column>
+                <el-table-column prop="type" label="分润金额"></el-table-column>
+                <el-table-column prop="type" label="备注信息"></el-table-column>
               </el-table>
             </div>
             <div class="box-body">
               <el-pagination style="float:right"
                              @size-change="handleSizeChange"
                              @current-change="handleCurrentChange"
-                             :current-page="currentPage4"
+                             :current-page="pageNo"
                              :page-sizes="[20, 100, 200, 500]"
-                             :page-size="20"
+                             :page-size="pageSize"
                              layout="total, sizes, prev, pager, next, jumper"
                              :total="total">
               </el-pagination>
@@ -91,11 +97,33 @@
     name: 'app',
     data() {
       return {
-        total: 420,
+        total: 0,
+        pageSize: 20,
+        pageNo: 1,
         tableData: [],
-        input3: '',
-        input4: '',
-        value7: '',
+        orderNo: '',
+        businessType: '',
+        item_businessType: [
+          {
+            value: 'hssPay',
+            babel: '好收收-收款'
+          },
+          {
+            value: 'hssWithdraw',
+            babel: '好收收-提现'
+          },
+          {
+            value: 'hssPromote',
+            babel: '好收收-升级费'
+          },
+          {
+            value: 'hsyPay',
+            babel: '好收银-收款'
+          }
+        ],
+        datetime: '',
+        beginDate: '',
+        endDate: '',
         pickerOptions2: {
           shortcuts: [{
             text: '最近一周',
@@ -126,21 +154,39 @@
       }
     },
     created() {
-//      this.$http.post('/api/getFileList', {}).then(res => {
-//        if (res.data.status == 0) {
-//          this.tableData = res.data.result;
-//        }
-//      }, err => {
-//        console.log(err);
-//      });
+      this.getData();
     },
     methods: {
+      datetimeSelect: function (val) {
+        let format = val.split(' - ');
+        this.beginDate = format[0];
+        this.endDate = format[1];
+      },
+      screen: function () {
+        this.getData();
+      },
+      getData: function () {
+        this.$http.post('/api/daili/profit/details', {
+          pageSize: this.pageSize,
+          pageNo: this.pageNo,
+          orderNo: this.orderNo,
+          businessType: this.businessType,
+          beginDate: this.beginDate,
+          endDate: this.endDate
+        }).then(res => {
+          this.total = res.data.count;
+          this.tableData = res.data.records;
+        }, err => {
+          console.log(err);
+        });
+      },
       handleSizeChange(val) {
-        console.log(`每页 ${val} 条`);
+        this.pageSize = val;
+        this.getData();
       },
       handleCurrentChange(val) {
-        this.currentPage = val;
-        console.log(`当前页: ${val}`);
+        this.pageNo = val;
+        this.getData();
       }
     }
   }

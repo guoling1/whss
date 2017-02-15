@@ -191,7 +191,11 @@
           }).then(res => {
             console.log(res);
           }, err => {
-            console.log(err);
+            this.$message({
+              showClose: true,
+              message: err.data.msg,
+              type: 'error'
+            });
           })
         } else {
           this.$message({

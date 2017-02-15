@@ -118,7 +118,7 @@
               <el-pagination style="float:right"
                              @size-change="handleSizeChange"
                              @current-change="handleCurrentChange"
-                             :current-page="currentPage4"
+                             :current-page="pageNo"
                              :page-sizes="[20, 100, 200, 500]"
                              :page-size="pageSize"
                              layout="total, sizes, prev, pager, next, jumper"
