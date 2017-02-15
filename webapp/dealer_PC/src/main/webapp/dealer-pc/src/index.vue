@@ -20,70 +20,69 @@
         <!-- Navbar Right Menu -->
         <div class="navbar-custom-menu">
           <ul class="nav navbar-nav">
-            <li>
-              <a href="#">
-                <span class="hidden-xs">您当前拥有0积分</span>
-              </a>
-            </li>
+            <!--<li>-->
+            <!--<a href="#">-->
+            <!--<span class="hidden-xs">您当前拥有0积分</span>-->
+            <!--</a>-->
+            <!--</li>-->
             <!-- Messages: style can be found in dropdown.less-->
             <!-- Notifications: style can be found in dropdown.less -->
-            <li class="dropdown notifications-menu">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                <i class="fa fa-bell-o"></i>
-                <span class="label label-warning">10</span>
-              </a>
-              <ul class="dropdown-menu">
-                <li class="header text-center">您有10条待办事项需要处理</li>
-                <li>
-                  <!-- inner menu: contains the actual data -->
-                  <ul class="menu">
-                    <li>
-                      <a href="#">
-                        <i class="fa fa-users text-aqua"></i> 5 new members joined today
-                      </a>
-                    </li>
-                    <li>
-                      <a href="#">
-                        <i class="fa fa-warning text-yellow"></i> Very long description here
-                        that may not fit into the
-                        page and may cause design problems
-                      </a>
-                    </li>
-                    <li>
-                      <a href="#">
-                        <i class="fa fa-users text-red"></i> 5 new members joined
-                      </a>
-                    </li>
-                    <li>
-                      <a href="#">
-                        <i class="fa fa-shopping-cart text-green"></i> 25 sales made
-                      </a>
-                    </li>
-                    <li>
-                      <a href="#">
-                        <i class="fa fa-user text-red"></i> You changed your username
-                      </a>
-                    </li>
-                  </ul>
-                </li>
-                <li class="footer"><a href="#">查看全部</a></li>
-              </ul>
-            </li>
+            <!--<li class="dropdown notifications-menu">-->
+            <!--<a href="#" class="dropdown-toggle" data-toggle="dropdown">-->
+            <!--<i class="fa fa-bell-o"></i>-->
+            <!--<span class="label label-warning">10</span>-->
+            <!--</a>-->
+            <!--<ul class="dropdown-menu">-->
+            <!--<li class="header text-center">您有10条待办事项需要处理</li>-->
+            <!--<li>-->
+            <!--&lt;!&ndash; inner menu: contains the actual data &ndash;&gt;-->
+            <!--<ul class="menu">-->
+            <!--<li>-->
+            <!--<a href="#">-->
+            <!--<i class="fa fa-users text-aqua"></i> 5 new members joined today-->
+            <!--</a>-->
+            <!--</li>-->
+            <!--<li>-->
+            <!--<a href="#">-->
+            <!--<i class="fa fa-warning text-yellow"></i> Very long description here-->
+            <!--that may not fit into the-->
+            <!--page and may cause design problems-->
+            <!--</a>-->
+            <!--</li>-->
+            <!--<li>-->
+            <!--<a href="#">-->
+            <!--<i class="fa fa-users text-red"></i> 5 new members joined-->
+            <!--</a>-->
+            <!--</li>-->
+            <!--<li>-->
+            <!--<a href="#">-->
+            <!--<i class="fa fa-shopping-cart text-green"></i> 25 sales made-->
+            <!--</a>-->
+            <!--</li>-->
+            <!--<li>-->
+            <!--<a href="#">-->
+            <!--<i class="fa fa-user text-red"></i> You changed your username-->
+            <!--</a>-->
+            <!--</li>-->
+            <!--</ul>-->
+            <!--</li>-->
+            <!--<li class="footer"><a href="#">查看全部</a></li>-->
+            <!--</ul>-->
+            <!--</li>-->
             <!-- Tasks: style can be found in dropdown.less -->
             <!-- User Account: style can be found in dropdown.less -->
             <li class="dropdown user user-menu">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                 <img src="./dist/img/user2-160x160.jpg" class="user-image" alt="User Image">
-                <span class="hidden-xs">{{realName}}</span>
+                <span class="hidden-xs">{{dealerInfo}}</span>
               </a>
               <ul class="dropdown-menu">
                 <!-- User image -->
                 <li class="user-header">
                   <img src="./dist/img/user2-160x160.jpg" class="img-circle" alt="User Image">
-
                   <p>
-                    {{realName}} - {{position}}
-                    <small>注册日期：{{lastLoginTime | datetime}}</small>
+                    {{dealerInfo}}
+                    <small>{{position}}</small>
                   </p>
                 </li>
                 <!-- Menu Body -->
@@ -106,9 +105,9 @@
                 <!-- </li> -->
                 <!-- Menu Footer-->
                 <li class="user-footer">
-                  <div class="pull-left">
-                    <a href="#" class="btn btn-default btn-flat">个人资料</a>
-                  </div>
+                  <!--<div class="pull-left">-->
+                    <!--<a href="#" class="btn btn-default btn-flat">个人资料</a>-->
+                  <!--</div>-->
                   <div class="pull-right">
                     <div class="btn btn-default btn-flat" @click="logout">退出登录</div>
                   </div>
@@ -116,9 +115,9 @@
               </ul>
             </li>
             <!-- Control Sidebar Toggle Button -->
-            <li>
-              <a href="#" data-toggle="control-sidebar"><i class="fa fa-gears"></i></a>
-            </li>
+            <!--<li>-->
+            <!--<a href="#" data-toggle="control-sidebar"><i class="fa fa-gears"></i></a>-->
+            <!--</li>-->
           </ul>
         </div>
 
@@ -134,7 +133,7 @@
             <img src="./dist/img/user2-160x160.jpg" class="img-circle" alt="User Image">
           </div>
           <div class="pull-left info">
-            <p>{{realName}}</p>
+            <p>{{dealerInfo}}</p>
             <a href="#"><i class="fa fa-circle text-success"></i>在线</a>
           </div>
         </div>
@@ -185,7 +184,7 @@
               </li>
             </ul>
           </li>
-          <li class="treeview">
+          <li class="treeview" v-show="dealerLeavel!=2">
             <a href="#">
               <i class="fa fa-users"></i> <span>下级代理</span>
               <span class="pull-right-container">
@@ -222,7 +221,7 @@
               </li>
             </ul>
           </li>
-          <li class="treeview">
+          <li class="treeview" v-show="dealerLeavel!=2">
             <a href="#">
               <i class="fa fa-calculator"></i> <span>设备管理</span>
               <span class="pull-right-container">
@@ -501,19 +500,23 @@
   export default {
     data () {
       return {
-        realName: '',
+        dealerInfo: '',
         position: '',
-        lastLoginTime: ''
+        dealerLeavel: ''
       }
     },
     components: {},
     beforeRouteEnter (to, from, next){
       store.dispatch('actions_users_getInfo').then(function (data) {
         next((vm) => {
-          if (data.status === 0) {
-            vm.realName = data.realName;
-            vm.position = data.position;
-            vm.lastLoginTime = data.lastLoginTime;
+          if (data.status === 1) {
+            vm.dealerInfo = data.dealerInfo;
+            if (data.dealerLeavel == 1) {
+              vm.position = '一级代理商'
+            } else {
+              vm.position = '二级代理商'
+            }
+            vm.dealerLeavel = data.dealerLeavel;
           }
         });
       });

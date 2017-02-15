@@ -65,7 +65,7 @@ public class AccountController extends BaseController{
      * @return
      */
     @ResponseBody
-    @RequestMapping(value = "/dealerInfo", method = RequestMethod.GET)
+    @RequestMapping(value = "/dealerInfo", method = RequestMethod.POST)
     public CommonResponse getDealerInfo(){
         final Dealer dealer = this.getDealer().get();
 

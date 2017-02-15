@@ -8,31 +8,23 @@ import * as types from '../mutation-types'
 // initial state
 const state = {
   status: -1,
-  id: '',
-  realName: '',
-  position: '',
-  createTime: '',
-  lastLoginTime: ''
+  dealerInfo: '',
+  dealerLeavel: '',
 };
 
 const getters = {
   getters_users_getInfo: state => {
     return new Promise((resolve, reject) => {
       // 如果数据已经存在 直接返回数据
-      if (state.status === 0) {
+      if (state.status === 1) {
         resolve(state);
         return;
       }
       // 不存在则去获取
-      Vue.http.post('/api/getUserInfo').then(res => {
-        if (res.data.status === 0) {
-          state.status = res.data.status;
-          state.id = res.data.result.id;
-          state.realName = res.data.result.realName;
-          state.position = res.data.result.position;
-          state.createTime = res.data.result.createTime;
-          state.lastLoginTime = res.data.result.lastLoginTime;
-        }
+      Vue.http.post('/api/daili/account/dealerInfo').then(res => {
+        state.status = 1;
+        state.dealerInfo = res.data.dealerInfo;
+        state.dealerLeavel = res.data.dealerLeavel;
         resolve(state);
       }, err => {
         resolve(err);

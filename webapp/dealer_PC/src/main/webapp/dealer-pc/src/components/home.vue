@@ -17,7 +17,7 @@
     <!-- Main content -->
     <section class="content">
       <h4 class="text-center">
-        您好，{{realName}}
+        您好，{{dealerInfo}}
       </h4>
       <h2 class="text-center">
         welcome
@@ -30,13 +30,13 @@
   export default {
     data () {
       return {
-        realName: ''
+        dealerInfo: ''
       }
     },
     mounted (){
       this.$store.dispatch('actions_users_getInfo').then(data => {
-        if (data.status === 0) {
-          this.realName = data.realName;
+        if (data.status === 1) {
+          this.dealerInfo = data.dealerInfo;
         }
       });
     },
