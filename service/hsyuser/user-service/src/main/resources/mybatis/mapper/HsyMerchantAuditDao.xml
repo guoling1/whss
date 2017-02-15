@@ -89,8 +89,20 @@
       UPDATE app_biz_shop SET STATUS=#{status} WHERE ID=#{id}
     </update>
 
-    <!-- 审核通过 -->
+    <!-- 审核不通过 -->
     <update id="updateAuditNotPass">
         UPDATE app_biz_shop SET STATUS=#{status},CHECKERRORINFO=#{checkErrorInfo} WHERE ID=#{id}
     </update>
+
+    <!-- 审核不通过更改提交资料步骤 -->
+    <update id="stepChange">
+        UPDATE app_au_user SET AUSTEP=0 WHERE ID=#{uid}
+    </update>
+
+
+    <!-- 审核不通过更改提交资料步骤 -->
+    <select id="getUid" resultType="java.lang.Integer">
+        SELECT UID FROM app_biz_shop_user_role WHERE SID=#{id}
+    </select>
+
 </mapper>

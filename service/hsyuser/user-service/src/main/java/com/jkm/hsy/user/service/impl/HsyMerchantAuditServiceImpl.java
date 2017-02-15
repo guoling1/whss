@@ -105,4 +105,14 @@ public class HsyMerchantAuditServiceImpl implements HsyMerchantAuditService {
     public void updateAccount(Long accountID, Long id) {
         hsyMerchantAuditDao.updateAccount(accountID,id);
     }
+
+    @Override
+    public void stepChange(int uid) {
+        hsyMerchantAuditDao.stepChange(uid);
+    }
+
+    @Override
+    public int getUid(Long id) {
+        return hsyMerchantAuditDao.getUid(id);
+    }
 }

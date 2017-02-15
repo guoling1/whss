@@ -65,7 +65,7 @@
           </el-table>
           <!--分页-->
           <div class="block" style="text-align: right">
-            <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage4" :page-sizes="[10, 20, 50]" :page-size="100" layout="total, sizes, prev, pager, next, jumper" :total="count">
+            <el-pagination @current-change="handleCurrentChange" :current-page="currentPage4" layout="total, prev, pager, next, jumper" :total="count">
             </el-pagination>
           </div>
           <!--审核-->
@@ -225,8 +225,10 @@
             }
           },function (err) {
             this.$data.loading = false;
-            this.$store.commit('MESSAGE_ACCORD_SHOW', {
-              text: err.statusMessage
+            this.$message({
+              showClose: true,
+              message: err.statusMessage,
+              type: 'error'
             })
           })
       },
@@ -263,8 +265,10 @@
               }
             },function (err) {
               this.$data.loading = false;
-              this.$store.commit('MESSAGE_ACCORD_SHOW', {
-                text: err.statusMessage
+              this.$message({
+                showClose: true,
+                message: err.statusMessage,
+                type: 'error'
               })
             })
         },
@@ -276,43 +280,6 @@
         handleSelectionChange(val) {
             console.log(val)
           this.multipleSelection = val;
-        },
-        //每页条数改变时
-        handleSizeChange(val) {
-          this.$data.query.pageSize = val;
-          this.$data.loading = true;
-          this.$http.post('/admin/settle/list',this.$data.query)
-            .then(function (res) {
-              this.$data.records = res.data.records;
-              this.$data.count = res.data.count;
-              this.$data.total = res.data.totalPage;
-              this.$data.loading = false;
-              var changeTime=function (val) {
-                if(val==''||val==null){
-                  return ''
-                }else {
-                  val = new Date(val)
-                  var year=val.getFullYear();
-                  var month=val.getMonth()+1;
-                  var date=val.getDate();
-                  function tod(a) {
-                    if(a<10){
-                      a = "0"+a
-                    }
-                    return a;
-                  }
-                  return year+"-"+tod(month)+"-"+tod(date);
-                }
-              }
-              for(let i = 0; i < this.$data.records.length; i++){
-                this.$data.records[i].tradeDate = changeTime(this.$data.records[i].tradeDate)
-              }
-            },function (err) {
-              this.$data.loading = false;
-              this.$store.commit('MESSAGE_ACCORD_SHOW', {
-                text: err.statusMessage
-              })
-            })
         },
         //当前页改变时
         handleCurrentChange(val) {
@@ -346,8 +313,10 @@
               }
             },function (err) {
               this.$data.loading = false;
-              this.$store.commit('MESSAGE_ACCORD_SHOW', {
-                text: err.statusMessage
+              this.$message({
+                showClose: true,
+                message: err.statusMessage,
+                type: 'error'
               })
             })
         },
@@ -358,7 +327,7 @@
               this.$message({
                 showClose: true,
                 message: '结算成功',
-                type: 'error'
+                type: 'success'
               })
               this.$data.isShow = false
             })
@@ -398,9 +367,6 @@
     }
 </script>
 <style scoped lang="less">
-  body{
-    background-color:#ff0000;
-  }
   .maskCon{
     margin:0 0 15px 50px
   }
