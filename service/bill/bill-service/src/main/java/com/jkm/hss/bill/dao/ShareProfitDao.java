@@ -1,7 +1,8 @@
 package com.jkm.hss.bill.dao;
 
-import com.jkm.hss.bill.entity.MerchantTradeResponse;
-import com.jkm.hss.merchant.helper.request.OrderTradeRequest;
+
+import com.jkm.hss.bill.entity.JkmProfitResponse;
+import com.jkm.hss.merchant.helper.request.JkmProfitRequest;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -11,17 +12,18 @@ import java.util.List;
  */
 @Repository
 public interface ShareProfitDao {
+
     /**
      * jkm利润列表
      * @param req
      * @return
      */
-    List<MerchantTradeResponse> selectAccountList(OrderTradeRequest req);
+    List<JkmProfitResponse> selectAccountList(JkmProfitRequest req);
 
     /**
      * 总条数
      * @param req
      * @return
      */
-    long selectAccountListCount(OrderTradeRequest req);
+    long selectAccountListCount(JkmProfitRequest req);
 }

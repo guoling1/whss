@@ -3,14 +3,14 @@
 <mapper namespace="com.jkm.hss.bill.dao.ShareProfitDao">
 
 
-    <select id="selectAccountList" resultType="com.jkm.hss.bill.entity.MerchantTradeResponse">
-
+    <select id="selectAccountList" resultType="com.jkm.hss.bill.entity.JkmProfitResponse">
+        SELECT * FROM tb_account WHERE id in (1,2,113,114)
         limit #{offset}, #{size}
     </select>
 
 
     <select id="selectAccountListCount"  resultType="java.lang.Integer">
-
+        SELECT COUNT(1) FROM tb_account WHERE id in (1,2,113,114)
     </select>
 
 

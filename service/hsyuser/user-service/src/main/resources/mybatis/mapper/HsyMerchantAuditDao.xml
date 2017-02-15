@@ -50,6 +50,7 @@
             c.CREATETIME,
             c.UPDATETIME,
             c.ISPUBLIC,
+            c.`STATUS`,
             d.UID,
             d.SID,
             b.IDCARD,
