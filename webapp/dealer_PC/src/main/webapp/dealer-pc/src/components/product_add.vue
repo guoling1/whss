@@ -59,8 +59,8 @@
   export default {
     name: 'app',
     created(){
-      this.$http.post('/api/daili/district/findAllProvinces').then(res => {
-        this.item_province = res.data;
+      this.$http.post('/api/daili/dealer/getDealerProduct').then(res => {
+        console.log(res);
       }, err => {
         console.log(err);
       })
