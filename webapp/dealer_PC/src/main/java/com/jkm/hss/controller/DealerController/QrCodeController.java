@@ -13,7 +13,9 @@ import com.jkm.hss.dealer.enums.EnumDealerLevel;
 import com.jkm.hss.dealer.service.DealerChannelRateService;
 import com.jkm.hss.dealer.service.DealerService;
 import com.jkm.hss.helper.request.DistributeQrCodeRequest;
+import com.jkm.hss.helper.response.ProxyProductResponse;
 import com.jkm.hss.product.entity.Product;
+import com.jkm.hss.product.enums.EnumProductType;
 import com.jkm.hss.product.servcie.ProductService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -36,8 +38,22 @@ public class QrCodeController extends BaseController {
     private DealerChannelRateService dealerChannelRateService;
     @Autowired
     private ProductService productService;
-    @Autowired
-    private AdminUserService adminUserService;
+
+    /**
+     * 判断登录代理商是否代理产品
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/proxyProduct", method = RequestMethod.POST)
+    public CommonResponse proxyProduct() {
+        long dealerId = super.getDealerId();
+        long hssProductId = dealerChannelRateService.getDealerBindProductId(dealerId, EnumProductType.HSS.getId());
+        long hsyProductId = dealerChannelRateService.getDealerBindProductId(dealerId, EnumProductType.HSY.getId());
+        ProxyProductResponse proxyProductResponse = new ProxyProductResponse();
+        proxyProductResponse.setProxyHss(hssProductId);
+        proxyProductResponse.setProxyHsy(hsyProductId);
+        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", proxyProductResponse);
+    }
 
     /**
      * 分配二维码
