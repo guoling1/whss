@@ -23,6 +23,40 @@ public class HsyMerchantAuditServiceImpl implements HsyMerchantAuditService {
     public List<HsyMerchantAuditResponse> getMerchant(HsyMerchantAuditRequest hsyMerchantAuditRequest) {
 
         List<HsyMerchantAuditResponse> list = hsyMerchantAuditDao.getMerchant(hsyMerchantAuditRequest);
+        if (list.size()>0){
+            for (int i=0;i<list.size();i++){
+                String districtCode =list.get(i).getDistrictCode();
+                if (districtCode!=null&&!districtCode.equals("")){
+                    HsyMerchantAuditResponse ret = hsyMerchantAuditDao.getCode(districtCode);
+                    if (!ret.getParentCode().equals("0")){
+                        HsyMerchantAuditResponse reu = hsyMerchantAuditDao.getCity(ret.getParentCode());
+                        list.get(i).setDistrictCode(reu.getAName()+ret.getAName());
+                    }
+                }
+                int industryCode = Integer.parseInt(list.get(i).getIndustryCode());
+                if (industryCode==1000){
+                    list.get(i).setIndustryCode(IndustryCodeType.CATERING.industryCodeValue);
+                }
+                if (industryCode==1001){
+                    list.get(i).setIndustryCode(IndustryCodeType.SUPERMARKET.industryCodeValue);
+                }
+                if (industryCode==1002){
+                    list.get(i).setIndustryCode(IndustryCodeType.LIFE_SERVICES.industryCodeValue);
+                }
+                if (industryCode==1003){
+                    list.get(i).setIndustryCode(IndustryCodeType.SHOPPING.industryCodeValue);
+                }
+                if (industryCode==1004){
+                    list.get(i).setIndustryCode(IndustryCodeType.BEAUTY.industryCodeValue);
+                }
+                if (industryCode==1005){
+                    list.get(i).setIndustryCode(IndustryCodeType.EXERCISE.industryCodeValue);
+                }
+                if (industryCode==1006){
+                    list.get(i).setIndustryCode(IndustryCodeType.HOTEL.industryCodeValue);
+                }
+            }
+        }
         return list;
     }
 
