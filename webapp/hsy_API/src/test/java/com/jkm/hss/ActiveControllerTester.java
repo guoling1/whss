@@ -342,6 +342,45 @@ public class ActiveControllerTester {
     }
 
     @Test
+    public void testGetAppVersion()throws Exception{
+        AppParam p=new AppParam();
+        p.setServiceCode("HSY001026");
+        p.setAccessToken("");
+        p.setAppType("ios");
+        p.setTimeStamp(AppDateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
+        p.setV("v1.0");
+        String param="{\"versionCode\":1}";
+        p.setRequestData(param);
+        ActiveControllerTester.testRest(p);
+    }
+
+    @Test
+    public void testGetAppVersionAndroid()throws Exception{
+        AppParam p=new AppParam();
+        p.setServiceCode("HSY001027");
+        p.setAccessToken("");
+        p.setAppType("android");
+        p.setTimeStamp(AppDateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
+        p.setV("v1.0");
+        String param="{}";
+        p.setRequestData(param);
+        ActiveControllerTester.testRest(p);
+    }
+
+    @Test
+    public void testFindLoginInfo()throws Exception{
+        AppParam p=new AppParam();
+        p.setServiceCode("HSY001028");
+        p.setAccessToken("");
+        p.setAppType("android");
+        p.setTimeStamp(AppDateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
+        p.setV("v1.0");
+        String param="{\"id\":18}";
+        p.setRequestData(param);
+        ActiveControllerTester.testRest(p);
+    }
+
+    @Test
     public void generateSQL()throws Exception{
         FileChannel channel=new FileInputStream("D:/a.txt").getChannel();
         int size=(int) channel.size();

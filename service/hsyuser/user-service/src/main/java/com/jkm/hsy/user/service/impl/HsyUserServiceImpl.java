@@ -6,6 +6,10 @@ import com.jkm.base.common.enums.EnumGlobalIDType;
 import com.jkm.base.common.util.GlobalID;
 import com.jkm.base.common.util.ValidateUtils;
 import com.jkm.base.sms.service.SmsSendMessageService;
+import com.jkm.hss.notifier.dao.MessageTemplateDao;
+import com.jkm.hss.notifier.dao.SendMessageRecordDao;
+import com.jkm.hss.notifier.entity.SendMessageRecord;
+import com.jkm.hss.notifier.entity.SmsTemplate;
 import com.jkm.hsy.user.constant.AppConstant;
 import com.jkm.hsy.user.constant.VerificationCodeType;
 import com.jkm.hsy.user.dao.HsyShopDao;
@@ -34,6 +38,10 @@ public class HsyUserServiceImpl implements HsyUserService {
     private HsyVerificationDao hsyVerificationDao;
     @Autowired
     private SmsSendMessageService smsSendMessageService;
+    @Autowired
+    private MessageTemplateDao messageTemplateDao;
+    @Autowired
+    private SendMessageRecordDao sendMessageRecordDao;
 
     /**HSY001001 注册用户*/
     public String insertHsyUser(String dataParam,AppParam appParam)throws ApiHandleException {
@@ -245,16 +253,31 @@ public class HsyUserServiceImpl implements HsyUserService {
         if(countFrequent>0)
             throw new ApiHandleException(ResultCode.VERIFICATIONCODE_FREQUENT);
 
+        SmsTemplate messageTemplate = messageTemplateDao.getTemplateByType(AppConstant.REGISTER_VERIFICATION_NOTICE_TYPE_ID);
+        String template="";
+        if(messageTemplate!=null&&messageTemplate.getMessageTemplate()!=null&&!messageTemplate.getMessageTemplate().trim().equals(""))
+            template=messageTemplate.getMessageTemplate();
+        else
+            template=AppConstant.REGISTER_VERIFICATION_MESSAGE;
         /**发送验证码*/
         String sn="";
         String code=(int)((Math.random()*9+1)*100000)+"";
-        String content=AppConstant.REGISTER_VERIFICATION_MESSAGE.replace("${code}",code).replace("${type}",VerificationCodeType.getValue(appAuVerification.getType())).replace("+", "%2B").replace("%", "%25");
+        String content=template.replace("${code}",code).replace("${type}",VerificationCodeType.getValue(appAuVerification.getType())).replace("+", "%2B").replace("%", "%25");
         try {
             sn = smsSendMessageService.sendMessage(appAuVerification.getCellphone(), content);
         } catch (Exception e) {
             e.printStackTrace();
             throw new ApiHandleException(ResultCode.VERIFICATIONCODE_SEND_FAIL);
         }
+
+        SendMessageRecord sendRecord = new SendMessageRecord();
+        sendRecord.setUserType(1);
+        sendRecord.setMobile(appAuVerification.getCellphone());
+        sendRecord.setContent(content);
+        sendRecord.setMessageTemplateId(messageTemplate.getId());
+        sendRecord.setSn(sn);
+        sendRecord.setStatus(1);
+        sendMessageRecordDao.insert(sendRecord);
 
         /**验证码保存*/
         appAuVerification.setSn(sn);
@@ -429,6 +452,30 @@ public class HsyUserServiceImpl implements HsyUserService {
         appAuUser.setCreateTime(date);
         appAuUser.setUpdateTime(date);
         String password=(int)((Math.random()*9+1)*10000000)+"";
+        SmsTemplate messageTemplate = messageTemplateDao.getTemplateByType(AppConstant.SEND_PASSWORD_NOTICE_TYPE_ID);
+        String template="";
+        if(messageTemplate!=null&&messageTemplate.getMessageTemplate()!=null&&!messageTemplate.getMessageTemplate().trim().equals(""))
+            template=messageTemplate.getMessageTemplate();
+        else
+            template=AppConstant.SEND_PASSWORD_MESSAGE;
+        /**发送密码*/
+        String sn="";
+        String content=template.replace("${password}",password).replace("+", "%2B").replace("%", "%25");
+        try {
+            sn = smsSendMessageService.sendMessage(appAuUser.getCellphone(), content);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new ApiHandleException(ResultCode.PASSWORD_SEND_FAIL);
+        }
+        SendMessageRecord sendRecord = new SendMessageRecord();
+        sendRecord.setUserType(1);
+        sendRecord.setMobile(appAuUser.getCellphone());
+        sendRecord.setContent(content);
+        sendRecord.setMessageTemplateId(messageTemplate.getId());
+        sendRecord.setSn(sn);
+        sendRecord.setStatus(1);
+        sendMessageRecordDao.insert(sendRecord);
+
         appAuUser.setPassword(password);
         appAuUser.setAuStep("0");
         hsyUserDao.insert(appAuUser);
@@ -474,17 +521,6 @@ public class HsyUserServiceImpl implements HsyUserService {
         }).create();
         Map map=new HashMap();
         map.put("appAuUser",appAuUser);
-
-        /**发送密码*/
-        String sn="";
-        String content=AppConstant.SEND_PASSWORD_MESSAGE.replace("${password}",password).replace("+", "%2B").replace("%", "%25");
-        try {
-            sn = smsSendMessageService.sendMessage(appAuUser.getCellphone(), content);
-        } catch (Exception e) {
-            e.printStackTrace();
-//            throw new ApiHandleException(ResultCode.VERIFICATIONCODE_SEND_FAIL);
-        }
-
         return gson.toJson(map);
     }
 
@@ -706,6 +742,59 @@ public class HsyUserServiceImpl implements HsyUserService {
         appAuUser.setUpdateTime(date);
         hsyUserDao.updateByID(appAuUser);
         return "";
+    }
+
+    /**HSY001028 查找*/
+    public String findLoginInfo(String dataParam,AppParam appParam)throws ApiHandleException {
+        Gson gson=new GsonBuilder().setDateFormat(AppConstant.DATE_FORMAT).create();
+        /**参数转化*/
+        AppAuUser appAuUser=null;
+        try{
+            appAuUser=gson.fromJson(dataParam, AppAuUser.class);
+        } catch(Exception e){
+            throw new ApiHandleException(ResultCode.PARAM_TRANS_FAIL);
+        }
+
+        /**参数验证*/
+        if(!(appAuUser.getId()!=null&&!appAuUser.getId().equals("")))
+            throw new ApiHandleException(ResultCode.PARAM_LACK,"查询用户ID");
+
+        /**查询用户*/
+        List<AppAuUser> list = hsyUserDao.findAppAuUserByID(appAuUser.getId());
+        if(!(list!=null&&list.size()!=0))
+            throw new ApiHandleException(ResultCode.USER_CAN_NOT_BE_FOUND);
+
+        AppAuUser appAuUserFind=list.get(0);
+        AppBizShop appBizShop=new AppBizShop();
+        appBizShop.setUid(appAuUserFind.getId());
+        if(appAuUserFind.getParentID()==null||(appAuUserFind.getParentID()!=null&&appAuUserFind.getParentID()!=0L))
+            appBizShop.setType(AppConstant.ROLE_TYPE_PRIMARY);
+        List<AppBizShop> shopList=hsyShopDao.findPrimaryAppBizShopByUserID(appBizShop);
+        if(shopList!=null&&shopList.size()!=0)
+            appBizShop=shopList.get(0);
+        if(appBizShop.getCheckErrorInfo()==null)
+            appBizShop.setCheckErrorInfo("");
+        gson = new GsonBuilder().setExclusionStrategies(new ExclusionStrategy() {
+            public boolean shouldSkipField(FieldAttributes f) {
+                return f.getName().contains("password");
+            }
+            public boolean shouldSkipClass(Class<?> aClass) {
+                return false;
+            }
+        }).registerTypeAdapter(Date.class, new JsonSerializer<Date>() {
+            public JsonElement serialize(Date date, Type typeOfT, JsonSerializationContext context) throws JsonParseException {
+                return new JsonPrimitive(date.getTime());
+            }
+        }).registerTypeAdapter(Date.class, new JsonDeserializer<Date>() {
+            public Date deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+                return new java.util.Date(json.getAsJsonPrimitive().getAsLong());
+            }
+        }).create();
+        Map map=new HashMap();
+        map.put("appAuUser",appAuUserFind);
+        map.put("appBizShop",appBizShop);
+
+        return gson.toJson(map);
     }
 
 }
