@@ -35,9 +35,12 @@
                     <el-form ref="form" :model="scope" label-width="0px" class="demo-ruleForm">
                       <el-form-item prop="row.paymentSettleRate" style="margin:10px 0 20px 0"
                                     :rules="{required:true,pattern:/^[0-9]{1,4}([.][0-9]{1,2})?$/,message:'不能为空 保留俩位小数',trigger:'blur'}">
-                        <el-input placeholder="保留俩位小数" v-model="scope.row.paymentSettleRate">
-                          <template slot="append">%</template>
-                        </el-input>
+                        <el-popover placement="top" title="提示" width="200" trigger="focus">
+                          <span>最小值：{{scope.row.minPaymentSettleRate}} <br> 最大值：{{scope.row.merchantSettleRate}}</span>
+                          <el-input slot="reference" placeholder="保留俩位小数" v-model="scope.row.paymentSettleRate">
+                            <template slot="append">%</template>
+                          </el-input>
+                        </el-popover>
                       </el-form-item>
                     </el-form>
                   </template>
@@ -48,31 +51,34 @@
                     <el-form ref="form" :model="scope" label-width="0px" class="demo-ruleForm">
                       <el-form-item prop="row.withdrawSettleFee" style="margin:10px 0 20px 0"
                                     :rules="{required:true,pattern:/^[0-9]{1,4}([.][0-9]{1,2})?$/,message:'不能为空 保留俩位小数',trigger:'blur'}">
-                        <el-input placeholder="保留俩位小数" v-model="scope.row.withdrawSettleFee">
-                          <template slot="append">元/笔</template>
-                        </el-input>
+                        <el-popover placement="top" title="提示" width="200" trigger="focus">
+                          <span>最小值：{{scope.row.minWithdrawSettleFee}} <br> 最大值：{{scope.row.merchantWithdrawFee}}</span>
+                          <el-input slot="reference" placeholder="保留俩位小数" v-model="scope.row.withdrawSettleFee">
+                            <template slot="append">元/笔</template>
+                          </el-input>
+                        </el-popover>
                       </el-form-item>
                     </el-form>
                   </template>
                 </el-table-column>
-                <el-table-column label="商户支付手续费">
+                <el-table-column label="商户支付手续费" width="180">
                   <template scope="scope">
                     <el-form ref="form" :model="scope" label-width="0px" class="demo-ruleForm">
                       <el-form-item prop="row.merchantSettleRate" style="margin:10px 0 20px 0"
                                     :rules="{required:true,pattern:/^[0-9]{1,4}([.][0-9]{1,2})?$/,message:'不能为空 保留俩位小数',trigger:'blur'}">
-                        <el-input placeholder="保留俩位小数" v-model="scope.row.merchantSettleRate">
+                        <el-input placeholder="保留俩位小数" disabled v-model="scope.row.merchantSettleRate">
                           <template slot="append">%</template>
                         </el-input>
                       </el-form-item>
                     </el-form>
                   </template>
                 </el-table-column>
-                <el-table-column label="商户提现手续费">
+                <el-table-column label="商户提现手续费" width="180">
                   <template scope="scope">
                     <el-form :model="scope" label-width="0px" class="demo-ruleForm">
                       <el-form-item prop="row.merchantWithdrawFee" style="margin:10px 0 20px 0"
                                     :rules="{required:true,pattern:/^[0-9]{1,4}([.][0-9]{1,2})?$/,message:'不能为空 保留俩位小数',trigger:'blur'}">
-                        <el-input placeholder="保留俩位小数" v-model="scope.row.merchantWithdrawFee">
+                        <el-input placeholder="保留俩位小数" disabled v-model="scope.row.merchantWithdrawFee">
                           <template slot="append">元/笔</template>
                         </el-input>
                       </el-form-item>
