@@ -10,6 +10,7 @@ import com.jkm.hss.dealer.entity.DailyProfitDetail;
 import com.jkm.hss.dealer.entity.Dealer;
 import com.jkm.hss.dealer.entity.DealerChannelRate;
 import com.jkm.hss.dealer.helper.requestparam.*;
+import com.jkm.hss.dealer.helper.response.DealerOfFirstDealerResponse;
 import com.jkm.hss.dealer.helper.response.FirstDealerResponse;
 import com.jkm.hss.dealer.helper.response.SecondDealerResponse;
 import com.jkm.hss.merchant.entity.MerchantInfo;
@@ -448,5 +449,11 @@ public interface DealerService {
      * @return
      */
     List<DistributeQRCodeRecord> distributeQRCodeByCount(int type, String sysType, long dealerId, long toDealerId, int count);
+    /**
+     * 根据产品类型和手机号或代理商名称模糊查询
+     * @param dealerOfFirstDealerRequest
+     * @return
+     */
+    List<DealerOfFirstDealerResponse> selectListOfFirstDealer(DealerOfFirstDealerRequest dealerOfFirstDealerRequest);
 
 }

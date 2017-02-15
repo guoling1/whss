@@ -435,7 +435,7 @@ public class DealerController extends BaseController {
                     return CommonResponse.simpleResponse(-1, "提现结算费不能为空");
                 }
                 Optional<DealerChannelRate> dealerChannelRateOptional = this.dealerRateService.getByDealerIdAndProductIdAndChannelType(super.getDealerId(), productId, channes.getChannelType());
-                if(dealerChannelRateOptional.isPresent()){
+                if(!dealerChannelRateOptional.isPresent()){
                     return CommonResponse.simpleResponse(-1, "上级代理信息有误");
                 }
                 DealerChannelRate dealerChannelRate = dealerChannelRateOptional.get();

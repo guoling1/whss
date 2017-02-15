@@ -11,6 +11,8 @@ import com.jkm.hss.controller.BaseController;
 import com.jkm.hss.dealer.entity.Dealer;
 import com.jkm.hss.dealer.entity.DealerChannelRate;
 import com.jkm.hss.dealer.enums.EnumDealerLevel;
+import com.jkm.hss.dealer.helper.requestparam.DealerOfFirstDealerRequest;
+import com.jkm.hss.dealer.helper.response.DealerOfFirstDealerResponse;
 import com.jkm.hss.dealer.service.DealerChannelRateService;
 import com.jkm.hss.dealer.service.DealerService;
 import com.jkm.hss.helper.request.DistributeQrCodeRequest;
@@ -54,6 +56,19 @@ public class QrCodeController extends BaseController {
         proxyProductResponse.setProxyHss(hssProductId);
         proxyProductResponse.setProxyHsy(hsyProductId);
         return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", proxyProductResponse);
+    }
+
+    /**
+     * 一级代理商下二级代理列表
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/listSecondDealer", method = RequestMethod.POST)
+    public CommonResponse listSecondDealer(@RequestBody DealerOfFirstDealerRequest dealerOfFirstDealerRequest) {
+        long dealerId = super.getDealerId();
+        dealerOfFirstDealerRequest.setDealerId(dealerId);
+        List<DealerOfFirstDealerResponse> dealerOfFirstDealerResponses = this.dealerService.selectListOfFirstDealer(dealerOfFirstDealerRequest);
+        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", dealerOfFirstDealerResponses);
     }
 
     /**
