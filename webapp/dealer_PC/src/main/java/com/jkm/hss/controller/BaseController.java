@@ -83,9 +83,8 @@ public class BaseController {
      * @return
      */
     protected Optional<Dealer> getDealer() {
-        Optional<Dealer> dealerOptional = dealerService.getById(40);
-        return Optional.fromNullable(dealerOptional.get());
-//        return Optional.fromNullable(DEALER_USER_INFO_DATA_BIND.get());
+
+      return Optional.fromNullable(DEALER_USER_INFO_DATA_BIND.get());
     }
 
     /**
@@ -94,11 +93,11 @@ public class BaseController {
      * @return
      */
     protected long getDealerId() {
-//        final Optional<Dealer> dealerOptional = getDealer();
-//        if (dealerOptional.isPresent()) {
-//            return dealerOptional.get().getId();
-//        }
-        return 40;
+        final Optional<Dealer> dealerOptional = getDealer();
+        if (dealerOptional.isPresent()) {
+           return dealerOptional.get().getId();
+        }
+        return 0L;
     }
 
 

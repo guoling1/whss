@@ -181,7 +181,7 @@ public class SplitAccountRecordServiceImpl implements SplitAccountRecordService 
         Date endTime = null;
         if (beginDate != null && !beginDate.equals("")){
             beginTime = DateFormatUtil.parse(beginDate + " 00:00:00", DateFormatUtil.yyyy_MM_dd_HH_mm_ss);
-            endTime = DateFormatUtil.parse(endDate + "23:59:59", DateFormatUtil.yyyy_MM_dd_HH_mm_ss);
+            endTime = DateFormatUtil.parse(endDate + " 23:59:59", DateFormatUtil.yyyy_MM_dd_HH_mm_ss);
         }
         List<SplitAccountRecord> list =
                 this.splitAccountRecordDao.selectByParam( pageModel.getFirstIndex(), pageSize, accountId, orderNo, businessType, beginTime, endTime);

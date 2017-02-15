@@ -456,4 +456,10 @@ public interface DealerService {
      */
     List<DealerOfFirstDealerResponse> selectListOfFirstDealer(DealerOfFirstDealerRequest dealerOfFirstDealerRequest);
 
+    /**
+     * 根据登录名获取代理商
+     * @param loginName
+     * @return
+     */
+    Dealer getDealerByLoginName(String loginName);
 }

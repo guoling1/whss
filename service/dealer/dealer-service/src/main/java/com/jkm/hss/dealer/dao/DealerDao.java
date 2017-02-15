@@ -276,4 +276,11 @@ public interface DealerDao {
      * @return
      */
     List<DealerOfFirstDealerResponse> selectListOfFirstDealer(DealerOfFirstDealerRequest dealerOfFirstDealerRequest);
+
+    /**
+     *
+     * @param loginName
+     * @return
+     */
+    Dealer getDealerByLoginName(@Param("loginName") String loginName);
 }

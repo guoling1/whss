@@ -28,8 +28,11 @@ import com.jkm.hss.notifier.helper.SendMessageParams;
 import com.jkm.hss.notifier.service.SendMessageService;
 import com.jkm.hss.notifier.service.SmsAuthService;
 import com.jkm.hss.product.enums.EnumPayChannelSign;
+import com.sun.org.apache.bcel.internal.generic.RETURN;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
+import org.apache.poi.ss.formula.functions.T;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -40,6 +43,7 @@ import java.util.Map;
 /**
  * Created by yuxiang on 2017-02-14.
  */
+@Slf4j
 @RequestMapping(value = "/daili/account")
 @RestController
 public class AccountController extends BaseController{
@@ -86,31 +90,37 @@ public class AccountController extends BaseController{
     @RequestMapping(value = "/flowDetails", method = RequestMethod.GET)
     public CommonResponse flowDetails(@RequestBody final FlowDetailsSelectRequest request){
 
-        final Dealer dealer = this.getDealer().get();
-        PageModel<AccountFlow> pageModel = this.accountFlowService.selectByParam(request.getPageNo(), request.getPageSize(),
-            dealer.getAccountId(), request.getFlowSn(), request.getType(), request.getBeginDate(), request.getEndDate());
+        try{
+            final Dealer dealer = this.getDealer().get();
+            PageModel<AccountFlow> pageModel = this.accountFlowService.selectByParam(request.getPageNo(), request.getPageSize(),
+                    dealer.getAccountId(), request.getFlowSn(), request.getType(), request.getBeginDate(), request.getEndDate());
 
-        final List<AccountFlow> records = pageModel.getRecords();
+            final List<AccountFlow> records = pageModel.getRecords();
 
-        List<FlowDetailsSelectResponse> list = Lists.transform(records, new Function<AccountFlow, FlowDetailsSelectResponse>() {
-            @Override
-            public FlowDetailsSelectResponse apply(AccountFlow input) {
-                FlowDetailsSelectResponse response = new FlowDetailsSelectResponse();
-                response.setFlowSn(input.getOrderNo());
-                response.setCreateTime(DateFormatUtil.format(input.getCreateTime(),DateFormatUtil.yyyy_MM_dd_HH_mm_ss));
-                response.setBeforeAmount(input.getBeforeAmount().toString());
-                response.setIncomeAmount(input.getIncomeAmount().toString());
-                response.setOutAmount(input.getOutAmount().toString());
-                response.setRemark("");
-                return response;
-            }
-        });
+            List<FlowDetailsSelectResponse> list = Lists.transform(records, new Function<AccountFlow, FlowDetailsSelectResponse>() {
+                @Override
+                public FlowDetailsSelectResponse apply(AccountFlow input) {
+                    FlowDetailsSelectResponse response = new FlowDetailsSelectResponse();
+                    response.setFlowSn(input.getOrderNo());
+                    response.setCreateTime(DateFormatUtil.format(input.getCreateTime(),DateFormatUtil.yyyy_MM_dd_HH_mm_ss));
+                    response.setBeforeAmount(input.getBeforeAmount().toString());
+                    response.setIncomeAmount(input.getIncomeAmount().toString());
+                    response.setOutAmount(input.getOutAmount().toString());
+                    response.setRemark("");
+                    return response;
+                }
+            });
 
-        PageModel<FlowDetailsSelectResponse> model = new PageModel<>(pageModel.getPageNO(),pageModel.getPageSize());
-        model.setCount(pageModel.getCount());
-        model.setRecords(list);
+            PageModel<FlowDetailsSelectResponse> model = new PageModel<>(pageModel.getPageNO(),pageModel.getPageSize());
+            model.setCount(pageModel.getCount());
+            model.setRecords(list);
 
-        return CommonResponse.objectResponse(1, "success", model);
+            return CommonResponse.objectResponse(1, "success", model);
+        }catch (final Throwable throwable){
+            log.error("获取账户流水异常：" + throwable.getMessage());
+        }
+
+        return CommonResponse.simpleResponse(-1 , "fail");
     }
 
     /**
@@ -123,35 +133,42 @@ public class AccountController extends BaseController{
     @RequestMapping(value = "withdraw", method = RequestMethod.POST)
     public CommonResponse withdraw(@RequestBody final DealerWithdrawRequest withdrawRequest) {
 
-        final Dealer dealer = this.getDealer().get();
-        final String mobile = DealerSupport.decryptMobile(dealer.getId(), dealer.getBankReserveMobile());
+        try{
+            final Dealer dealer = this.getDealer().get();
+            final String mobile = DealerSupport.decryptMobile(dealer.getId(), dealer.getBankReserveMobile());
 
-        final Pair<Integer, String> pair = smsAuthService.checkVerifyCode(mobile, withdrawRequest.getCode(), EnumVerificationCodeType.WITHDRAW_DEALER);
+            final Pair<Integer, String> pair = smsAuthService.checkVerifyCode(mobile, withdrawRequest.getCode(), EnumVerificationCodeType.WITHDRAW_DEALER);
 
-        if (1 != pair.getLeft()) {
-            return CommonResponse.simpleResponse(-1, pair.getRight());
+            if (1 != pair.getLeft()) {
+                return CommonResponse.simpleResponse(-1, pair.getRight());
+            }
+
+            final Optional<Account> accountOptional = this.accountService.getById(dealer.getAccountId());
+            if (!accountOptional.isPresent()) {
+                return CommonResponse.simpleResponse(-1, "账户不存在");
+            }
+            final Account account = accountOptional.get();
+            if (account.getAvailable().compareTo(new BigDecimal(withdrawRequest.getAmount())) < 0) {
+                return CommonResponse.simpleResponse(-1, "可用余额不足");
+            }
+            if (EnumPayChannelSign.YG_WEIXIN.getId() != withdrawRequest.getChannel()
+                    && EnumPayChannelSign.YG_ZHIFUBAO.getId() != withdrawRequest.getChannel()
+                    && EnumPayChannelSign.YG_YINLIAN.getId() != withdrawRequest.getChannel()) {
+                return CommonResponse.simpleResponse(-1, "提现方式错误");
+            }
+            final Pair<Integer, String> withdraw = this.dealerWithdrawService.withdraw(account.getId(), withdrawRequest.getAmount(),
+                    withdrawRequest.getChannel(), "dealerWithdraw");
+            if (0 == withdraw.getLeft()) {
+                return CommonResponse.simpleResponse(1, "提现受理成功");
+            }
+
+            return CommonResponse.simpleResponse(-1, "提现失败");
+        }catch (final Throwable throwable){
+
+            log.error("提现异常：" + throwable.getMessage());
         }
 
-        final Optional<Account> accountOptional = this.accountService.getById(dealer.getAccountId());
-        if (!accountOptional.isPresent()) {
-            return CommonResponse.simpleResponse(-1, "账户不存在");
-        }
-        final Account account = accountOptional.get();
-        if (account.getAvailable().compareTo(new BigDecimal(withdrawRequest.getAmount())) < 0) {
-            return CommonResponse.simpleResponse(-1, "可用余额不足");
-        }
-        if (EnumPayChannelSign.YG_WEIXIN.getId() != withdrawRequest.getChannel()
-                && EnumPayChannelSign.YG_ZHIFUBAO.getId() != withdrawRequest.getChannel()
-                && EnumPayChannelSign.YG_YINLIAN.getId() != withdrawRequest.getChannel()) {
-            return CommonResponse.simpleResponse(-1, "提现方式错误");
-        }
-        final Pair<Integer, String> withdraw = this.dealerWithdrawService.withdraw(account.getId(), withdrawRequest.getAmount(),
-                withdrawRequest.getChannel(), withdrawRequest.getAppId());
-        if (0 == withdraw.getLeft()) {
-            return CommonResponse.simpleResponse(1, "提现受理成功");
-        }
-
-        return CommonResponse.simpleResponse(-1, "提现失败");
+        return  CommonResponse.simpleResponse(-1, "提现失败");
     }
 
     /**

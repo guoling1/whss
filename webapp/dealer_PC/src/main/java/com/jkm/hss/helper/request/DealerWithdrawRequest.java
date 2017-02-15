@@ -20,12 +20,6 @@ public class DealerWithdrawRequest {
      */
     private int channel;
 
-    /**
-     * 业务线
-     *
-     * {@link com.jkm.hss.account.enums.EnumAppType}
-     */
-    private String appId;
 
     /**
      * 提现验证码

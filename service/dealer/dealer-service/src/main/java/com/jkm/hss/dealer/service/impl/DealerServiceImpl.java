@@ -2222,4 +2222,14 @@ public class DealerServiceImpl implements DealerService {
     public List<DealerOfFirstDealerResponse> selectListOfFirstDealer(DealerOfFirstDealerRequest dealerOfFirstDealerRequest) {
         return this.dealerDao.selectListOfFirstDealer(dealerOfFirstDealerRequest);
     }
+
+    /**
+     * {@inheritDoc}
+     * @param loginName
+     * @return
+     */
+    @Override
+    public Dealer getDealerByLoginName(String loginName) {
+        return this.dealerDao.getDealerByLoginName(loginName);
+    }
 }
