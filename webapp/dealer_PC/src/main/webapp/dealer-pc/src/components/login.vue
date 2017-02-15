@@ -1,18 +1,18 @@
 <template lang="html">
   <div class="login-box">
     <div class="login-logo">
-      <div><b>Admin</b>LTE</div>
+      <div>钱包++代理商系统</div>
     </div>
     <!-- /.login-logo -->
     <div class="login-box-body">
       <p class="login-box-msg">欢迎登录钱包++代理商系统</p>
 
       <div class="form-group has-feedback">
-        <input type="text" class="form-control" placeholder="账户名" v-model="username">
+        <input type="text" class="form-control" placeholder="账户名" v-model="loginName">
         <span class="glyphicon glyphicon-user form-control-feedback"></span>
       </div>
       <div class="form-group has-feedback">
-        <input type="password" class="form-control" placeholder="密码" v-model="password">
+        <input type="password" class="form-control" placeholder="密码" v-model="pwd">
         <span class="glyphicon glyphicon-lock form-control-feedback"></span>
       </div>
       <div class="row">
@@ -30,19 +30,6 @@
         </div>
         <!-- /.col -->
       </div>
-
-      <!-- 三方登录 -->
-      <!--<div class="social-auth-links text-center">-->
-      <!--<p>- OR -</p>-->
-      <!--<a href="#" class="btn btn-block btn-social btn-facebook btn-flat"><i class="fa fa-facebook"></i> Sign in using-->
-      <!--Facebook</a>-->
-      <!--<a href="#" class="btn btn-block btn-social btn-google btn-flat"><i class="fa fa-google-plus"></i> Sign in using-->
-      <!--Google+</a>-->
-      <!--</div>-->
-      <!-- /.social-auth-links -->
-      <br>
-      <a href="javascript:void(0)">注册新账户</a>
-      <a href="javascript:void(0)" class="f-right">忘记密码</a>
     </div>
     <!-- /.login-box-body -->
   </div>
@@ -54,8 +41,8 @@
     name: 'hello',
     data () {
       return {
-        username: '',
-        password: '',
+        loginName: '',
+        pwd: '',
         remember: false
       }
     },
@@ -64,29 +51,26 @@
       //next('/app/home');
       next(vm => {
         if (accountInfo) {
-          vm.username = accountInfo.username;
+          vm.loginName = accountInfo.loginName;
           vm.remember = accountInfo.remember;
         }
       })
     },
     methods: {
       login: function () {
-        this.$http.post('/api/login', {
-          username: this.username,
-          password: this.password
+        this.$http.post('/api/daili/login/pc', {
+          loginName: this.loginName,
+          pwd: this.pwd
         }).then(res => {
-          if (res.data.status === 0) {
-            // 如果记住我 那就存储 username remember 到 localStorage
-            if (this.remember) {
-              localStorage.setItem('accountInfo', JSON.stringify({username: this.username, remember: this.remember}));
-            } else {
-              localStorage.setItem('accountInfo', null);
-            }
-            // 跳转到 home 页
-            this.$router.push('/app/home');
+          console.log(res);
+          // 如果记住我 那就存储 username remember 到 localStorage
+          if (this.remember) {
+            localStorage.setItem('accountInfo', JSON.stringify({loginName: this.loginName, remember: this.remember}));
           } else {
-            console.log(res.data.errMessage);
+            localStorage.setItem('accountInfo', null);
           }
+          // 跳转到 home 页
+          this.$router.push('/app/home');
         }, err => {
           console.log(err);
         })

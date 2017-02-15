@@ -54,8 +54,8 @@ public class DealerLoginInterceptor extends HandlerInterceptorAdapter {
 
         final Triple<Integer, String, Dealer> checkResult = this.checkToken(token);
         if (0 != checkResult.getLeft()) {
-            response.setContentType("text/html;charset=UTF-8");
-            response.sendError(-1, "请先登录");
+            //response.setContentType("text/html;charset=UTF-8");
+            //response.sendError(-1, "请先登录");
             return false;
         }
         DEALER_USER_INFO_DATA_BIND.put(checkResult.getRight());
