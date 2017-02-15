@@ -63,4 +63,11 @@ public interface HsyMerchantAuditDao {
      * @return
      */
     HsyMerchantAuditResponse getCity(@Param("parentCode") String parentCode);
+
+    /**
+     * 审核不通过更改提交资料步骤
+     */
+    void stepChange(@Param("uid") Long uid);
+
+    Long getUid(@Param("id") Long id);
 }
