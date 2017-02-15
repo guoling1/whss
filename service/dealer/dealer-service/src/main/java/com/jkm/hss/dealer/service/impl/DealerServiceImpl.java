@@ -2234,7 +2234,7 @@ public class DealerServiceImpl implements DealerService {
     public PageModel<DistributeRecordResponse> distributeRecord(DistributeRecordRequest distributeRecordRequest, long firstLevelDealerId) {
         final PageModel<DistributeRecordResponse> pageModel = new PageModel<>(distributeRecordRequest.getPageNo(), distributeRecordRequest.getPageSize());
         final int count = distributeQRCodeRecordService.selectDistributeCountByContions(firstLevelDealerId,distributeRecordRequest.getMarkCode(),distributeRecordRequest.getName());
-        final List<DistributeQRCodeRecord> distributeQRCodeRecords = distributeQRCodeRecordService.selectDistributeRecordsByContions(firstLevelDealerId,distributeRecordRequest.getMarkCode(),distributeRecordRequest.getName(),distributeRecordRequest.getPageNo(),distributeRecordRequest.getPageSize());
+        final List<DistributeQRCodeRecord> distributeQRCodeRecords = distributeQRCodeRecordService.selectDistributeRecordsByContions(firstLevelDealerId,distributeRecordRequest.getMarkCode(),distributeRecordRequest.getName(),pageModel.getFirstIndex(),pageModel.getPageSize());
         List<DistributeRecordResponse> distributeRecordResponses = new ArrayList<DistributeRecordResponse>();
         if(distributeQRCodeRecords.size()>0){
             for(int i=0;i<distributeQRCodeRecords.size();i++){
@@ -2250,6 +2250,7 @@ public class DealerServiceImpl implements DealerService {
                 distributeRecordResponse.setEndCode(distributeRecordResponse.getEndCode());
                 distributeRecordResponse.setType(distributeRecordResponse.getType());
                 distributeRecordResponse.setOperateUser("admin");
+                distributeRecordResponses.add(distributeRecordResponse);
             }
         }
         pageModel.setCount(count);
