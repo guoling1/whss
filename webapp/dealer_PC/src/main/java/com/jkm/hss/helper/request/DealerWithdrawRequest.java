@@ -9,11 +9,6 @@ import lombok.Data;
 public class DealerWithdrawRequest {
 
     /**
-     * 账户id
-     */
-    private long accountId;
-
-    /**
      * 提现金额
      */
     private String amount;
@@ -31,4 +26,9 @@ public class DealerWithdrawRequest {
      * {@link com.jkm.hss.account.enums.EnumAppType}
      */
     private String appId;
+
+    /**
+     * 提现验证码
+     */
+    private String code;
 }

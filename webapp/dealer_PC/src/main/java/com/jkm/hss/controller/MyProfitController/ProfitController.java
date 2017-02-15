@@ -85,7 +85,7 @@ public class ProfitController extends BaseController{
         model.setCount(pageModel.getCount());
         model.setRecords(responseList);
 
-        return CommonResponse.objectResponse(0, "SUCCESS", model);
+        return CommonResponse.objectResponse(1, "SUCCESS", model);
     }
 
 
