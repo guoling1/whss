@@ -200,6 +200,9 @@ public class DealerController extends BaseController {
         dealerDetailResponse.setBelongCityName(dealer.getBelongCityName());
         dealerDetailResponse.setBelongArea(dealer.getBelongArea());
         final Optional<Dealer> firstDealerOptional = this.dealerService.getById(dealerOptional.get().getFirstLevelDealerId());
+        if(!firstDealerOptional.isPresent()){
+            return CommonResponse.simpleResponse(-1, "上级代理信息有误");
+        }
         dealerDetailResponse.setFirstDealerName(firstDealerOptional.get().getProxyName());
         dealerDetailResponse.setFirstMarkCode(firstDealerOptional.get().getMarkCode());
         dealerDetailResponse.setBankCard(DealerSupport.decryptBankCard(dealer.getId(), dealer.getSettleBankCard()));
@@ -490,5 +493,57 @@ public class DealerController extends BaseController {
             log.error("错误信息时",e.getStackTrace());
             return CommonResponse.simpleResponse(-1, e.getMessage());
         }
+    }
+
+    /**
+     * 注册信息
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/dealerDetails", method = RequestMethod.GET)
+    public CommonResponse dealerDetails() {
+        final Optional<Dealer> dealerOptional = this.dealerService.getById(super.getDealerId());
+        if (!dealerOptional.isPresent()) {
+            return CommonResponse.simpleResponse(-1, "代理商不存在");
+        }
+        final Dealer dealer = dealerOptional.get();
+        final DealerDetailResponse dealerDetailResponse = new DealerDetailResponse();
+        dealerDetailResponse.setId(dealer.getId());
+        dealerDetailResponse.setMobile(dealer.getMobile());
+        dealerDetailResponse.setName(dealer.getProxyName());
+        dealerDetailResponse.setLoginName(dealer.getLoginName());
+        dealerDetailResponse.setEmail(dealer.getEmail());
+        dealerDetailResponse.setMarkCode(dealer.getMarkCode());
+        dealerDetailResponse.setBelongProvinceCode(dealer.getBelongProvinceCode());
+        dealerDetailResponse.setBelongProvinceName(dealer.getBelongProvinceName());
+        dealerDetailResponse.setBelongCityCode(dealer.getBelongCityCode());
+        dealerDetailResponse.setBelongCityName(dealer.getBelongCityName());
+        dealerDetailResponse.setBelongArea(dealer.getBelongArea());
+        if(dealer.getFirstLevelDealerId()>0){
+            final Optional<Dealer> firstDealerOptional = this.dealerService.getById(dealerOptional.get().getFirstLevelDealerId());
+            if (!firstDealerOptional.isPresent()) {
+                return CommonResponse.simpleResponse(-1, "上级代理信息有误");
+            }
+            dealerDetailResponse.setFirstDealerName(firstDealerOptional.get().getProxyName());
+            dealerDetailResponse.setFirstMarkCode(firstDealerOptional.get().getMarkCode());
+            dealerDetailResponse.setBankCard(DealerSupport.decryptBankCard(dealer.getId(), dealer.getSettleBankCard()));
+            dealerDetailResponse.setBankAccountName(dealer.getBankAccountName());
+            dealerDetailResponse.setBankReserveMobile(DealerSupport.decryptMobile(dealer.getId(), dealer.getBankReserveMobile()));
+            if (dealer.getIdCard()!=null){
+                dealerDetailResponse.setIdCard(DealerSupport.decryptIdentity(dealer.getId(),dealer.getIdCard()));
+            }
+            return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", dealerDetailResponse);
+        }else{
+            dealerDetailResponse.setFirstDealerName("金开门");
+            dealerDetailResponse.setFirstMarkCode("000000000000");
+            dealerDetailResponse.setBankCard(DealerSupport.decryptBankCard(dealer.getId(), dealer.getSettleBankCard()));
+            dealerDetailResponse.setBankAccountName(dealer.getBankAccountName());
+            dealerDetailResponse.setBankReserveMobile(DealerSupport.decryptMobile(dealer.getId(), dealer.getBankReserveMobile()));
+            if (dealer.getIdCard()!=null){
+                dealerDetailResponse.setIdCard(DealerSupport.decryptIdentity(dealer.getId(),dealer.getIdCard()));
+            }
+            return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", dealerDetailResponse);
+        }
+
     }
 }
