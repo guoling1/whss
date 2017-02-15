@@ -31,14 +31,14 @@
     <select id="selectDistributeSelfRecords" resultType="com.jkm.hss.admin.entity.DistributeQRCodeRecord">
        SELECT * FROM tb_distribute_qr_code_record
        WHERE first_level_dealer_id = #{firstLevelDealerId}
-       AND second_level_dealer_id = 0
+       AND second_level_dealer_id = #{firstLevelDealerId}
        ORDER BY id DESC
     </select>
 
     <select id="selectDistributeSecondDealerRecords" resultType="com.jkm.hss.admin.entity.DistributeQRCodeRecord">
         SELECT * FROM tb_distribute_qr_code_record
         WHERE first_level_dealer_id = #{firstLevelDealerId}
-        AND second_level_dealer_id > 0
+        AND second_level_dealer_id !=#{firstLevelDealerId}
         ORDER BY id DESC
     </select>
 
@@ -47,5 +47,28 @@
         WHERE first_level_dealer_id = #{dealerId}
         AND second_level_dealer_id = #{secondLevelDealerId}
         ORDER BY id DESC
+    </select>
+
+    <select id="selectDistributeCountByContions" resultType="java.lang.Integer">
+        SELECT count(1) FROM tb_distribute_qr_code_record
+        WHERE first_level_dealer_id = #{firstLevelDealerId}
+        <if test="markCode != null and markCode!=''">
+            AND second_level_dealer_id in (select id from tb_dealer where mark_code = #{markCode})
+        </if>
+        <if test="name != null and name!=''">
+            AND second_level_dealer_id in (select id from tb_dealer where proxy_name LIKE "%"#{name}"%")
+        </if>
+    </select>
+
+    <select id="selectDistributeRecordsByContions" resultType="com.jkm.hss.admin.entity.DistributeQRCodeRecord">
+        SELECT * FROM tb_distribute_qr_code_record
+        WHERE first_level_dealer_id = #{firstLevelDealerId}
+        <if test="markCode != null and markCode!=''">
+            AND second_level_dealer_id in (select id from tb_dealer where mark_code = #{markCode})
+        </if>
+        <if test="name != null and name!=''">
+            AND second_level_dealer_id in (select id from tb_dealer where proxy_name LIKE "%"#{name}"%")
+        </if>
+        ORDER BY id DESC LIMIT #{offset},#{count}
     </select>
 </mapper>
