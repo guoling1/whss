@@ -42,12 +42,13 @@ public class ActiveControllerTester {
     public void testLogin()throws Exception{
         AppParam p=new AppParam();
         p.setServiceCode("HSY001002");
-        p.setAccessToken("4b2d2d3bc83625263c1b815d15bf22c1");
+        p.setAccessToken("724ffbf067e3a7d73834cd404d8cb1bc");
 //        p.setAccessToken("2cd9eafaa6193d9fb0ff9916f3941e6e");
         p.setAppType("android");
         p.setTimeStamp(AppDateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
         p.setV("v1.0");
         String param="{\"cellphone\": \"13521691431\",\"password\":\"123456\"}";
+//        String param="{\"cellphone\": \"13521691441\",\"password\":\"123456\"}";
         p.setRequestData(param);
         ActiveControllerTester.testRest(p);
     }
@@ -263,7 +264,7 @@ public class ActiveControllerTester {
         p.setAppType("android");
         p.setTimeStamp(AppDateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
         p.setV("v1.0");
-        /*role 值：2店长，3店员  sid可选*/
+        /*role 值：2店长，3店员  sid可选 parentID当前登录用户的id*/
         String param="{\"role\":3,\"cellphone\":\"13521691441\",\"realname\":\"真实姓名\",\"parentID\":18,\"sid\":10}";
         p.setRequestData(param);
         ActiveControllerTester.testRest(p);
@@ -277,7 +278,64 @@ public class ActiveControllerTester {
         p.setAppType("android");
         p.setTimeStamp(AppDateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
         p.setV("v1.0");
+        /*id为店员ID sid为当前登录用户的主店铺id */
         String param="{\"id\":35,\"sid\":10}";
+        p.setRequestData(param);
+        ActiveControllerTester.testRest(p);
+    }
+
+    @Test
+    public void testFindHsyUserListViaCorporation()throws Exception{
+        AppParam p=new AppParam();
+        p.setServiceCode("HSY001022");
+        p.setAccessToken("");
+        p.setAppType("android");
+        p.setTimeStamp(AppDateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
+        p.setV("v1.0");
+        /*parentID为当前登录用户的id sid为当前登录用户的主店铺id */
+        String param="{\"parentID\":18,\"sid\":10}";
+        p.setRequestData(param);
+        ActiveControllerTester.testRest(p);
+    }
+
+    @Test
+    public void testUpdateHsyUserViaCorporation()throws Exception{
+        AppParam p=new AppParam();
+        p.setServiceCode("HSY001023");
+        p.setAccessToken("");
+        p.setAppType("android");
+        p.setTimeStamp(AppDateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
+        p.setV("v1.0");
+        /*role 值：2店长，3店员  sid可选 parentID当前登录用户的id*/
+        String param="{\"id\":34,\"role\":2,\"originCellphone\":\"13521691441\",\"cellphone\":\"13521691441\",\"realname\":\"真实姓名\",\"parentID\":18,\"sid\":10}";
+        p.setRequestData(param);
+        ActiveControllerTester.testRest(p);
+    }
+
+    @Test
+    public void testUpdateHsyShopUserViaCorporation()throws Exception{
+        AppParam p=new AppParam();
+        p.setServiceCode("HSY001024");
+        p.setAccessToken("");
+        p.setAppType("android");
+        p.setTimeStamp(AppDateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
+        p.setV("v1.0");
+        /*sid店铺id parentID当前登录用户的id  id所需分配的店员*/
+        String param="{\"id\":34,\"parentID\":18,\"sid\":10}";
+        p.setRequestData(param);
+        ActiveControllerTester.testRest(p);
+    }
+
+    @Test
+    public void testUpdateHsyUserStatusViaCorporation()throws Exception{
+        AppParam p=new AppParam();
+        p.setServiceCode("HSY001025");
+        p.setAccessToken("");
+        p.setAppType("android");
+        p.setTimeStamp(AppDateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
+        p.setV("v1.0");
+        /*status 1正常 99禁用 id所需分配的店员*/
+        String param="{\"id\":34,\"status\":1}";
         p.setRequestData(param);
         ActiveControllerTester.testRest(p);
     }

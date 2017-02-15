@@ -33,10 +33,11 @@
         <!-- Optionally, you can add icons to the links -->
         <!--<li><a href="#"><i class="fa fa-link"></i> <span>Link</span></a></li>-->
         <li :class="(url=='/admin/record/newDeal'||url=='/admin/record/payQuery'||url=='/admin/record/newWithdrawalQuery'||url=='/admin/record/t1Audit')?'treeview active':'treeview'">
-          <a href="#"><span>交易管理</span>
-          </a>
+          <a href="#"><span>交易管理</span></a>
           <ul class="treeview-menu">
-            <li :class="(url=='/admin/record/newDeal')?'treeview active':'treeview'" @click="refrash"><router-link to="/admin/record/newDeal"><span>交易查询</span> </router-link></li>
+            <li :class="(url=='/admin/record/newDeal')?'treeview active':'treeview'" @click="refrash"><router-link to="/admin/record/newDeal"><span>交易查询</span>
+
+            </router-link></li>
             <li :class="(url=='/admin/record/payQuery')?'treeview active':'treeview'" @click="refrash"><router-link to="/admin/record/payQuery"><span>支付查询</span> </router-link></li>
             <li :class="(url=='/admin/record/newWithdrawalQuery')?'treeview active':'treeview'" @click="refrash"><router-link to="/admin/record/newWithdrawalQuery"><span>打款查询</span> </router-link></li>
             <li :class="(url=='/admin/record/t1Audit')?'treeview active':'treeview'" @click="refrash"><router-link to="/admin/record/t1Audit"><span>T1结算审核</span> </router-link></li>
@@ -52,22 +53,33 @@
           </ul>
           </router-link>
         </li>
-        <li :class="(url=='/admin/record/agentList'||url=='/admin/record/agentAdd')?'treeview active':'treeview'">
+        <li :class="(url=='/admin/record/agentListFir'||url=='/admin/record/agentListSec')?'treeview active':'treeview'">
           <a href="#"><span>代理商管理</span>
           </a>
           <ul class="treeview-menu">
-            <li @click="refrash" :class="(url=='/admin/record/agentList')?'treeview active':'treeview'"><router-link to="/admin/record/agentList"><span>代理商列表</span> </router-link></li>
-            <!--<li @click="refrash"><router-link to="/admin/record/agentAccount"><span>代理商账户</span> </router-link></li>-->
-            <li @click="refrash" :class="(url=='/admin/record/agentAdd')?'treeview active':'treeview'"><router-link to="/admin/record/agentAdd"><span>新增代理商</span> </router-link></li>
+            <li @click="refrash" :class="(url=='/admin/record/agentListFir')?'treeview active':'treeview'"><router-link to="/admin/record/agentListFir"><span>一级代理商</span> </router-link></li>
+            <li @click="refrash" :class="(url=='/admin/record/agentListSec')?'treeview active':'treeview'"><router-link to="/admin/record/agentListSec"><span>二级代理商</span> </router-link></li>
+            <!--<li @click="refrash" :class="(url=='/admin/record/agentList')?'treeview active':'treeview'"><router-link to="/admin/record/agentList"><span>代理商列表</span> </router-link></li>
+            &lt;!&ndash;<li @click="refrash"><router-link to="/admin/record/agentAccount"><span>代理商账户</span> </router-link></li>&ndash;&gt;
+            <li @click="refrash" :class="(url=='/admin/record/agentAdd')?'treeview active':'treeview'"><router-link to="/admin/record/agentAdd"><span>新增代理商</span> </router-link></li>-->
           </ul>
         </li>
-        <li :class="(url=='/admin/record/companyProfit'||url=='/admin/record/firProfit'||url=='/admin/record/secProfit')?'treeview active':'treeview'">
+        <li :class="(url=='/admin/record/companyProfit'||url=='/admin/record/firProfit'||url=='/admin/record/secProfit'||url=='/admin/record/profitAccount')?'treeview active':'treeview'">
           <a href="#"><span>分润管理</span>
           </a>
           <ul class="treeview-menu">
             <li @click="refrash" :class="(url=='/admin/record/companyProfit')?'treeview active':'treeview'"><router-link to="/admin/record/companyProfit"><span>公司分润</span> </router-link></li>
             <li @click="refrash" :class="(url=='/admin/record/firProfit')?'treeview active':'treeview'"><router-link to="/admin/record/firProfit"><span>一级代理商分润</span> </router-link></li>
             <li @click="refrash" :class="(url=='/admin/record/secProfit')?'treeview active':'treeview'"><router-link to="/admin/record/secProfit"><span>二级代理商分润</span> </router-link></li>
+            <!--<li :class="(url=='/admin/record/companyProfit'||url=='/admin/record/firProfit'||url=='/admin/record/secProfit'||url=='/admin/record/profitAccount')?'treeview active':'treeview'">
+              <a href="#"><span>分润统计</span></a>
+              <ul class="treeview-menu">
+                <li @click="refrash" :class="(url=='/admin/record/companyProfit')?'treeview active':'treeview'"><router-link to="/admin/record/companyProfit"><span>公司分润</span> </router-link></li>
+                <li @click="refrash" :class="(url=='/admin/record/firProfit')?'treeview active':'treeview'"><router-link to="/admin/record/firProfit"><span>一级代理商分润</span> </router-link></li>
+                <li @click="refrash" :class="(url=='/admin/record/secProfit')?'treeview active':'treeview'"><router-link to="/admin/record/secProfit"><span>二级代理商分润</span> </router-link></li>
+              </ul>
+            </li>-->
+            <!--<li @click="refrash" :class="(url=='/admin/record/profitAccount')?'treeview active':'treeview'"><router-link to="/admin/record/profitAccount"><span>公司分润账户</span> </router-link></li>-->
           </ul>
         </li>
         <li :class="(url=='/admin/record/productList'||url=='/admin/record/productAdd'||url=='/admin/record/invite')?'treeview active':'treeview'">

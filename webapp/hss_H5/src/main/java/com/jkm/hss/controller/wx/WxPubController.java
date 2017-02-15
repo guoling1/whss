@@ -13,6 +13,7 @@ import com.jkm.hss.admin.service.QRCodeService;
 import com.jkm.hss.controller.BaseController;
 import com.jkm.hss.dealer.entity.Dealer;
 import com.jkm.hss.dealer.entity.DealerChannelRate;
+import com.jkm.hss.dealer.enums.EnumInviteBtn;
 import com.jkm.hss.dealer.enums.EnumRecommendBtn;
 import com.jkm.hss.dealer.service.DealerChannelRateService;
 import com.jkm.hss.dealer.service.DealerService;
@@ -404,18 +405,38 @@ public class WxPubController extends BaseController {
         if ((loginRequest.getQrCode()==null||"".equals(loginRequest.getQrCode()))&&StringUtils.isBlank(loginRequest.getInviteCode())) {
             return CommonResponse.simpleResponse(-1, "邀请码不能为空");
         }
+
         if (!StringUtils.isBlank(loginRequest.getInviteCode())) {
-            Optional<UserInfo> uoOptional =  userInfoService.selectByMobile(MerchantSupport.encryptMobile(loginRequest.getInviteCode()));
-            if(!uoOptional.isPresent()){
-                return CommonResponse.simpleResponse(-1, "邀请码不存在");
+            if (loginRequest.getInviteCode().length()!=6&&loginRequest.getInviteCode().length()!=11) {
+                return CommonResponse.simpleResponse(-1, "邀请码必须是6位或11位");
             }
-            if(loginRequest.getInviteCode().equals(loginRequest.getMobile())){
-                return CommonResponse.simpleResponse(-1, "不能邀请自己");
+            if(loginRequest.getInviteCode().length()==6){
+                log.info("代理商邀请码{}",loginRequest.getInviteCode());
+                Optional<Dealer> dealerOptional = dealerService.getDealerByInviteCode(loginRequest.getInviteCode());
+                if(!dealerOptional.isPresent()){
+                    return CommonResponse.simpleResponse(-1, "邀请码不存在");
+                }
+                if(StringUtils.isBlank(dealerOptional.get().getInviteCode())){
+                    return CommonResponse.simpleResponse(-1, "邀请码不存在");
+                }
+                if(dealerOptional.get().getInviteBtn()== EnumInviteBtn.OFF.getId()){
+                    return CommonResponse.simpleResponse(-1, "邀请码不存在");
+                }
+            }else{
+                log.info("商户邀请码{}",loginRequest.getInviteCode());
+                Optional<UserInfo> uoOptional =  userInfoService.selectByMobile(MerchantSupport.encryptMobile(loginRequest.getInviteCode()));
+                if(!uoOptional.isPresent()){
+                    return CommonResponse.simpleResponse(-1, "邀请码不存在");
+                }
+                if(loginRequest.getInviteCode().equals(loginRequest.getMobile())){
+                    return CommonResponse.simpleResponse(-1, "不能邀请自己");
+                }
+                Optional<MerchantInfo> miOptional = merchantInfoService.selectByMobile(MerchantSupport.encryptMobile(loginRequest.getInviteCode()));
+                if(miOptional.isPresent()&&miOptional.get().getIsUpgrade()==EnumIsUpgrade.CANNOTUPGRADE.getId()){
+                    return CommonResponse.simpleResponse(-1, "邀请码不存在");
+                }
             }
-            Optional<MerchantInfo> miOptional = merchantInfoService.selectByMobile(MerchantSupport.encryptMobile(loginRequest.getInviteCode()));
-            if(miOptional.isPresent()&&miOptional.get().getIsUpgrade()==EnumIsUpgrade.CANNOTUPGRADE.getId()){
-                return CommonResponse.simpleResponse(-1, "邀请码不存在");
-            }
+
         }
 
         final Pair<Integer, String> checkResult =
@@ -528,61 +549,116 @@ public class WxPubController extends BaseController {
                     mi.setMdMobile(MerchantSupport.passwordDigest(mobile,"JKM"));
                     mi.setSource(EnumSource.RECOMMEND.getId());
                     mi.setProductId(productId);
-                    //初始化代理商和商户
-                    Optional<UserInfo> inviteUserOptional =  userInfoService.selectByMobile(MerchantSupport.encryptMobile(loginRequest.getInviteCode()));
-                    Optional<MerchantInfo> merchantInfoOptional = merchantInfoService.selectById(inviteUserOptional.get().getMerchantId());
-                    if(!merchantInfoOptional.isPresent()){
-                        log.info("该用户没有关联的商户");
-                        return CommonResponse.simpleResponse(-1, "该用户没有关联的商户");
+                    if(loginRequest.getInviteCode().length()==6){
+                        log.info("代理商邀请码注册");
+                        Optional<Dealer> dealerOptional = dealerService.getDealerByInviteCode(loginRequest.getInviteCode());
+                        if(dealerOptional.get().getLevel()==EnumDealerLevel.FIRST.getId()){//二级代理
+                            mi.setDealerId(dealerOptional.get().getId());
+                            mi.setFirstDealerId(dealerOptional.get().getId());
+                            mi.setSecondDealerId(0);
+                        }
+                        if(dealerOptional.get().getLevel()==EnumDealerLevel.SECOND.getId()){//二级代理
+                            mi.setDealerId(dealerOptional.get().getId());
+                            mi.setFirstDealerId(dealerOptional.get().getFirstLevelDealerId());
+                            mi.setSecondDealerId(dealerOptional.get().getId());
+                        }
+                        mi.setFirstMerchantId(0);
+                        mi.setSecondMerchantId(0);
+                        mi.setAccountId(0);
+                        mi.setLevel(EnumUpGradeType.COMMON.getId());
+                        mi.setHierarchy(0);
+                        Optional<DealerChannelRate> weixinDealerChannelRate1 = dealerChannelRateService.selectByDealerIdAndProductIdAndChannelType(dealerOptional.get().getId(), mi.getProductId(),EnumPayChannelSign.YG_WEIXIN.getId());
+                        if(!weixinDealerChannelRate1.isPresent()){
+                            return CommonResponse.simpleResponse(-1, "代理商：微信费率配置有误");
+                        }
+                        Optional<DealerChannelRate> zhifubaoDealerChannelRate = dealerChannelRateService.selectByDealerIdAndProductIdAndChannelType(dealerOptional.get().getId(), mi.getProductId(),EnumPayChannelSign.YG_ZHIFUBAO.getId());
+                        if(!zhifubaoDealerChannelRate.isPresent()){
+                            return CommonResponse.simpleResponse(-1, "代理商：支付宝费率配置有误");
+                        }
+                        Optional<DealerChannelRate> yinlianDealerChannelRate = dealerChannelRateService.selectByDealerIdAndProductIdAndChannelType(dealerOptional.get().getId(), mi.getProductId(),EnumPayChannelSign.YG_YINLIAN.getId());
+                        if(!yinlianDealerChannelRate.isPresent()){
+                            return CommonResponse.simpleResponse(-1, "代理商：快捷费率配置有误");
+                        }
+                        //初始化费率
+                        mi.setWeixinRate(weixinChannelDetail.get().getProductMerchantPayRate());
+                        mi.setAlipayRate(zhifubaoChannelDetail.get().getProductMerchantPayRate());
+                        mi.setFastRate(yinlianChannelDetail.get().getProductMerchantPayRate());
+                        mi.setIsUpgrade(EnumIsUpgrade.CANUPGRADE.getId());
+                        merchantInfoService.regByWx(mi);
+
+                        //添加用户
+                        UserInfo uo = new UserInfo();
+                        uo.setMobile(MerchantSupport.encryptMobile(mobile));
+                        uo.setPwd("");
+                        uo.setOpenId(super.getOpenId(request));
+                        Map<String, String> userMap = WxPubUtil.getUserInfo(super.getOpenId(request));
+                        uo.setNickName(userMap.get("nickname"));
+                        uo.setHeadImgUrl(userMap.get("headimgurl"));
+                        uo.setType(EnumUserInfoType.HSS.getId());
+                        uo.setRoleId(0);
+                        uo.setStatus(EnumCommonStatus.NORMAL.getId());
+                        uo.setMerchantId(mi.getId());
+                        userInfoService.insertUserInfo(uo);
+                        String tempMarkCode = GlobalID.GetGlobalID(EnumGlobalIDType.USER,EnumGlobalIDPro.MIN,uo.getId()+"");
+                        userInfoService.updatemarkCode(tempMarkCode,uo.getId());
+                        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "注册成功",mi.getId());
+                    }else{
+                        log.info("手机号推荐注册");
+                        //初始化代理商和商户
+                        Optional<UserInfo> inviteUserOptional =  userInfoService.selectByMobile(MerchantSupport.encryptMobile(loginRequest.getInviteCode()));
+                        Optional<MerchantInfo> merchantInfoOptional = merchantInfoService.selectById(inviteUserOptional.get().getMerchantId());
+                        if(!merchantInfoOptional.isPresent()){
+                            log.info("该用户没有关联的商户");
+                            return CommonResponse.simpleResponse(-1, "邀请码不存在");
+                        }
+                        mi.setDealerId(0);
+                        mi.setFirstDealerId(merchantInfoOptional.get().getFirstDealerId());
+                        mi.setSecondDealerId(merchantInfoOptional.get().getSecondDealerId());
+                        mi.setFirstMerchantId(merchantInfoOptional.get().getId());
+                        mi.setSecondMerchantId(merchantInfoOptional.get().getFirstMerchantId());
+                        mi.setAccountId(0);
+                        mi.setLevel(EnumUpGradeType.COMMON.getId());
+                        mi.setHierarchy(merchantInfoOptional.get().getHierarchy()+1);//邀请人级别加1
+                        //初始化费率
+                        mi.setWeixinRate(weixinChannelDetail.get().getProductMerchantPayRate());
+                        mi.setAlipayRate(zhifubaoChannelDetail.get().getProductMerchantPayRate());
+                        mi.setFastRate(yinlianChannelDetail.get().getProductMerchantPayRate());
+                        mi.setIsUpgrade(EnumIsUpgrade.CANUPGRADE.getId());
+                        merchantInfoService.regByWx(mi);
+                        //添加用户
+                        UserInfo uo = new UserInfo();
+                        uo.setMobile(MerchantSupport.encryptMobile(mobile));
+                        uo.setPwd("");
+                        uo.setOpenId(super.getOpenId(request));
+                        Map<String, String> userMap = WxPubUtil.getUserInfo(super.getOpenId(request));
+                        uo.setNickName(userMap.get("nickname"));
+                        uo.setHeadImgUrl(userMap.get("headimgurl"));
+                        uo.setType(EnumUserInfoType.HSS.getId());
+                        uo.setRoleId(0);
+                        uo.setStatus(EnumCommonStatus.NORMAL.getId());
+                        uo.setMerchantId(mi.getId());
+                        userInfoService.insertUserInfo(uo);
+                        String tempMarkCode = GlobalID.GetGlobalID(EnumGlobalIDType.USER,EnumGlobalIDPro.MIN,uo.getId()+"");
+                        userInfoService.updatemarkCode(tempMarkCode,uo.getId());
+                        //添加好友
+                        if(mi.getFirstMerchantId()!=0){//直接好友
+                            Recommend recommend = new Recommend();
+                            recommend.setMerchantId(mi.getId());
+                            recommend.setRecommendMerchantId(mi.getFirstMerchantId());
+                            recommend.setType(EnumRecommendType.DIRECT.getId());
+                            recommend.setStatus(1);
+                            recommendService.insert(recommend);
+                        }
+                        if(mi.getSecondMerchantId()!=0){//间接好友
+                            Recommend recommend = new Recommend();
+                            recommend.setMerchantId(mi.getId());
+                            recommend.setRecommendMerchantId(mi.getSecondMerchantId());
+                            recommend.setType(EnumRecommendType.INDIRECT.getId());
+                            recommend.setStatus(1);
+                            recommendService.insert(recommend);
+                        }
+                        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "注册成功",mi.getId());
                     }
-//                    Optional<MerchantInfo> merchantInfoOptional =  merchantInfoService.selectByMobile(MerchantSupport.encryptMobile(loginRequest.getInviteCode()));
-                    mi.setDealerId(0);
-                    mi.setFirstDealerId(merchantInfoOptional.get().getFirstDealerId());
-                    mi.setSecondDealerId(merchantInfoOptional.get().getSecondDealerId());
-                    mi.setFirstMerchantId(merchantInfoOptional.get().getId());
-                    mi.setSecondMerchantId(merchantInfoOptional.get().getFirstMerchantId());
-                    mi.setAccountId(0);
-                    mi.setLevel(EnumUpGradeType.COMMON.getId());
-                    mi.setHierarchy(merchantInfoOptional.get().getHierarchy()+1);//邀请人级别加1
-                    //初始化费率
-                    mi.setWeixinRate(weixinChannelDetail.get().getProductMerchantPayRate());
-                    mi.setAlipayRate(zhifubaoChannelDetail.get().getProductMerchantPayRate());
-                    mi.setFastRate(yinlianChannelDetail.get().getProductMerchantPayRate());
-                    mi.setIsUpgrade(EnumIsUpgrade.CANUPGRADE.getId());
-                    merchantInfoService.regByWx(mi);
-                    //添加用户
-                    UserInfo uo = new UserInfo();
-                    uo.setMobile(MerchantSupport.encryptMobile(mobile));
-                    uo.setPwd("");
-                    uo.setOpenId(super.getOpenId(request));
-                    Map<String, String> userMap = WxPubUtil.getUserInfo(super.getOpenId(request));
-                    uo.setNickName(userMap.get("nickname"));
-                    uo.setHeadImgUrl(userMap.get("headimgurl"));
-                    uo.setType(EnumUserInfoType.HSS.getId());
-                    uo.setRoleId(0);
-                    uo.setStatus(EnumCommonStatus.NORMAL.getId());
-                    uo.setMerchantId(mi.getId());
-                    userInfoService.insertUserInfo(uo);
-                    String tempMarkCode = GlobalID.GetGlobalID(EnumGlobalIDType.USER,EnumGlobalIDPro.MIN,uo.getId()+"");
-                    userInfoService.updatemarkCode(tempMarkCode,uo.getId());
-                    //添加好友
-                    if(mi.getFirstMerchantId()!=0){//直接好友
-                        Recommend recommend = new Recommend();
-                        recommend.setMerchantId(mi.getId());
-                        recommend.setRecommendMerchantId(mi.getFirstMerchantId());
-                        recommend.setType(EnumRecommendType.DIRECT.getId());
-                        recommend.setStatus(1);
-                        recommendService.insert(recommend);
-                    }
-                    if(mi.getSecondMerchantId()!=0){//间接好友
-                        Recommend recommend = new Recommend();
-                        recommend.setMerchantId(mi.getId());
-                        recommend.setRecommendMerchantId(mi.getSecondMerchantId());
-                        recommend.setType(EnumRecommendType.INDIRECT.getId());
-                        recommend.setStatus(1);
-                        recommendService.insert(recommend);
-                    }
-                    return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "注册成功",mi.getId());
                 }
             }
         }else{//该商户已注册
