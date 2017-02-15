@@ -64,7 +64,7 @@ public class DealerSupport {
     }
 
     /**
-     * 加密身份证
+     * 加密银行卡号
      *
      * @param bankCard
      * @return
@@ -74,7 +74,7 @@ public class DealerSupport {
     }
 
     /**
-     * 解密身份证
+     * 解密银行卡号
      *
      * @param encryptBankCard
      * @return

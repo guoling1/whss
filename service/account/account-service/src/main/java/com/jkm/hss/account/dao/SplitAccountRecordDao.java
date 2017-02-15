@@ -40,5 +40,5 @@ public interface SplitAccountRecordDao {
                                            @Param("businessType") String businessType, @Param("beginDate") Date beginDate, @Param("endDate") Date endDate);
 
     long selectCountByParam(@Param("accountId") Long accountId, @Param("orderNo") String orderNo, @Param("businessType") String businessType,
-                            @Param("beginTime") Date beginTime, @Param("endTime") Date endTime);
+                            @Param("beginDate") Date beginDate, @Param("endDate") Date endDate);
 }
