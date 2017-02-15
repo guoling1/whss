@@ -175,6 +175,8 @@ public class SplitAccountRecordServiceImpl implements SplitAccountRecordService 
 
         PageModel<SplitAccountRecord> pageModel = new PageModel<>(pageNo, pageSize);
 
+
+
         Date beginTime = null;
         Date endTime = null;
         if (beginDate != null && !beginDate.equals("")){
