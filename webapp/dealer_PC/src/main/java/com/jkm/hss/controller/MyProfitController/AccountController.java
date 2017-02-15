@@ -19,6 +19,7 @@ import com.jkm.hss.dealer.helper.DealerSupport;
 import com.jkm.hss.helper.request.DealerWithdrawRequest;
 import com.jkm.hss.helper.request.FlowDetailsSelectRequest;
 import com.jkm.hss.helper.request.ProfitDetailsSelectRequest;
+import com.jkm.hss.helper.response.AccountInfoResponse;
 import com.jkm.hss.helper.response.FlowDetailsSelectResponse;
 import com.jkm.hss.notifier.enums.EnumNoticeType;
 import com.jkm.hss.notifier.enums.EnumUserType;
@@ -63,7 +64,18 @@ public class AccountController extends BaseController{
 
         final Dealer dealer = this.getDealer().get();
         final Account account = this.accountService.getById(dealer.getAccountId()).get();
-        return CommonResponse.objectResponse(0, "SUCCESS", account);
+        AccountInfoResponse response = new AccountInfoResponse();
+        response.setTotalAmount(account.getTotalAmount());
+        response.setDueSettleAmount(account.getDueSettleAmount());
+        response.setAvailable(account.getAvailable());
+        response.setBankName(dealer.getBankName());
+        final String bankNo = DealerSupport.decryptBankCard(dealer.getId(), dealer.getSettleBankCard());
+        response.setBankNo("尾号" + bankNo.substring(bankNo.length() - 4 , bankNo.length()));
+        response.setFee(1);
+        response.setMobile( dealer.getPlainBankMobile( DealerSupport.decryptMobile(dealer.getId(), dealer.getBankReserveMobile())));
+
+        return CommonResponse.objectResponse(1, "SUCCESS", response);
+
     }
 
     /**
@@ -98,7 +110,7 @@ public class AccountController extends BaseController{
         model.setCount(pageModel.getCount());
         model.setRecords(list);
 
-        return CommonResponse.objectResponse(0, "success", model);
+        return CommonResponse.objectResponse(1, "success", model);
     }
 
     /**
@@ -111,7 +123,16 @@ public class AccountController extends BaseController{
     @RequestMapping(value = "withdraw", method = RequestMethod.POST)
     public CommonResponse withdraw(@RequestBody final DealerWithdrawRequest withdrawRequest) {
 
-        final Optional<Account> accountOptional = this.accountService.getById(withdrawRequest.getAccountId());
+        final Dealer dealer = this.getDealer().get();
+        final String mobile = DealerSupport.decryptMobile(dealer.getId(), dealer.getBankReserveMobile());
+
+        final Pair<Integer, String> pair = smsAuthService.checkVerifyCode(mobile, withdrawRequest.getCode(), EnumVerificationCodeType.WITHDRAW_DEALER);
+
+        if (1 != pair.getLeft()) {
+            return CommonResponse.simpleResponse(-1, pair.getRight());
+        }
+
+        final Optional<Account> accountOptional = this.accountService.getById(dealer.getAccountId());
         if (!accountOptional.isPresent()) {
             return CommonResponse.simpleResponse(-1, "账户不存在");
         }
@@ -127,7 +148,7 @@ public class AccountController extends BaseController{
         final Pair<Integer, String> withdraw = this.dealerWithdrawService.withdraw(account.getId(), withdrawRequest.getAmount(),
                 withdrawRequest.getChannel(), withdrawRequest.getAppId());
         if (0 == withdraw.getLeft()) {
-            return CommonResponse.simpleResponse(0, "提现受理成功");
+            return CommonResponse.simpleResponse(1, "提现受理成功");
         }
 
         return CommonResponse.simpleResponse(-1, "提现失败");
