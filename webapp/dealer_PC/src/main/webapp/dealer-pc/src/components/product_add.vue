@@ -28,37 +28,74 @@
             </div>
             <div class="box-body">
               <label class="form-label">产品分润设置</label>
-              <el-form ref="form" :model="form" :rules="rules" label-width="120px" class="demo-ruleForm">
-                <el-table :data="tableData" border>
-                  <el-table-column prop="id" label="通道名称"></el-table-column>
-                  <el-table-column prop="author" label="支付结算手续费"></el-table-column>
-                  <el-table-column prop="type" label="结算时间"></el-table-column>
-                  <el-table-column label="提现结算费" width="180">
-                    <template scope="scope">
-                      <el-form-item label="代理商手机号" prop="mobile">
-                        <el-input v-model="form.mobile"></el-input>
+              <el-table :data="tableData" border>
+                <el-table-column prop="channelName" label="通道名称" width="180"></el-table-column>
+                <el-table-column label="支付结算手续费">
+                  <template scope="scope">
+                    <el-form ref="form" :model="scope" label-width="0px" class="demo-ruleForm">
+                      <el-form-item prop="row.paymentSettleRate" style="margin:10px 0 20px 0"
+                                    :rules="{required:true,pattern:/^[0-9]{1,4}([.][0-9]{1,2})?$/,message:'不能为空 保留俩位小数',trigger:'blur'}">
+                        <el-input placeholder="保留俩位小数" v-model="scope.row.paymentSettleRate">
+                          <template slot="append">%</template>
+                        </el-input>
                       </el-form-item>
-                    </template>
-                  </el-table-column>
-                  <el-table-column prop="type" label="商户支付手续费"></el-table-column>
-                  <el-table-column prop="type" label="商户提现手续费"></el-table-column>
-                </el-table>
-              </el-form>
+                    </el-form>
+                  </template>
+                </el-table-column>
+                <el-table-column prop="settleType" label="结算时间" width="100"></el-table-column>
+                <el-table-column label="提现结算费">
+                  <template scope="scope">
+                    <el-form ref="form" :model="scope" label-width="0px" class="demo-ruleForm">
+                      <el-form-item prop="row.withdrawSettleFee" style="margin:10px 0 20px 0"
+                                    :rules="{required:true,pattern:/^[0-9]{1,4}([.][0-9]{1,2})?$/,message:'不能为空 保留俩位小数',trigger:'blur'}">
+                        <el-input placeholder="保留俩位小数" v-model="scope.row.withdrawSettleFee">
+                          <template slot="append">元/笔</template>
+                        </el-input>
+                      </el-form-item>
+                    </el-form>
+                  </template>
+                </el-table-column>
+                <el-table-column label="商户支付手续费">
+                  <template scope="scope">
+                    <el-form ref="form" :model="scope" label-width="0px" class="demo-ruleForm">
+                      <el-form-item prop="row.merchantSettleRate" style="margin:10px 0 20px 0"
+                                    :rules="{required:true,pattern:/^[0-9]{1,4}([.][0-9]{1,2})?$/,message:'不能为空 保留俩位小数',trigger:'blur'}">
+                        <el-input placeholder="保留俩位小数" v-model="scope.row.merchantSettleRate">
+                          <template slot="append">%</template>
+                        </el-input>
+                      </el-form-item>
+                    </el-form>
+                  </template>
+                </el-table-column>
+                <el-table-column label="商户提现手续费">
+                  <template scope="scope">
+                    <el-form :model="scope" label-width="0px" class="demo-ruleForm">
+                      <el-form-item prop="row.merchantWithdrawFee" style="margin:10px 0 20px 0"
+                                    :rules="{required:true,pattern:/^[0-9]{1,4}([.][0-9]{1,2})?$/,message:'不能为空 保留俩位小数',trigger:'blur'}">
+                        <el-input placeholder="保留俩位小数" v-model="scope.row.merchantWithdrawFee">
+                          <template slot="append">元/笔</template>
+                        </el-input>
+                      </el-form-item>
+                    </el-form>
+                  </template>
+                </el-table-column>
+              </el-table>
             </div>
             <div class="box-body">
               <label class="form-label">代理商推广码&推广链接</label>
               <br>
               <el-switch v-model="inviteBoolean" @change="switchInvite"
-                         on-text="开启"
-                         on-color="#13ce66"
-                         off-text="关闭"
-                         off-color="#ff4949">
+                         on-text="开启" on-color="#13ce66"
+                         off-text="关闭" off-color="#ff4949">
               </el-switch>
               <div class="inviteText" v-show="inviteBoolean">
                 推广码：{{inviteCode}}
                 <br>
                 推广链接：https://{{product}}.qianbaojiajia.com/reg?invest={{inviteCode}}
               </div>
+            </div>
+            <div class="box-body">
+              <el-button type="primary" @click="onSubmit">保存产品设置</el-button>
             </div>
             <!-- /.box-body -->
           </div>
@@ -80,47 +117,37 @@
         sysType: query.product,
         productId: query.productId
       }).then(res => {
+        this.dealerId = query.dealerId;
         this.product = query.product;
         this.productName = res.data.productName;
         this.inviteStatus = res.data.inviteBtn;
         this.inviteCode = res.data.inviteCode;
         this.inviteBoolean = (this.inviteStatus == 2);
+        this.tableData = res.data.product.channels;
+        this.productId = res.data.product.productId;
       }, err => {
         console.log(err);
       })
     },
     data() {
       return {
+        dealerId: '',
         product: '',
+        productId: '',
         productName: '',
         inviteBoolean: false,
         inviteStatus: 1,
         inviteCode: '',
-        form: {
-          mobile: '',
-          name: '',
-          loginName: '',
-          loginPwd: '',
-          email: '',
-          belongProvinceCode: '',
-          belongProvinceName: '',
-          belongCityCode: '',
-          belongCityName: '',
-          belongArea: '',
-          bankCard: '',
-          bankAccountName: '',
-          bankReserveMobile: '',
-          idCard: ''
-        },
-        rules: {
-          mobile: [
-            {required: true, message: '请输入手机号', trigger: 'blur'},
-            {pattern: /^1(3|4|5|7|8)\d{9}$/, message: '请输入正确的手机号', trigger: 'blur'}
-          ]
-        }
+        tableData: [],
+        formObject: []
       }
     },
     methods: {
+      createForm: function () {
+        let length = this.formObject.length;
+        this.formObject.push('form' + length);
+        return 'form' + length;
+      },
       switchInvite: function (Boole) {
         if (Boole) {
           this.inviteStatus = 2;
@@ -129,19 +156,51 @@
         }
       },
       onSubmit: function () {
-        this.$refs['form'].validate((valid) => {
-          console.log(valid);
-          if (valid) {
-            this.$http.post('/api/daili/dealer/addSecondDealer', this.form).then(res => {
-              console.log(res);
-            }, err => {
-              console.log(err);
-            })
-          } else {
-            console.log('error submit!!');
-            return false;
+        let valid = true;
+        let validMsg = '';
+        for (let m = 0; m < this.tableData.length; m++) {
+          if (!(/^[0-9]{1,4}([.][0-9]{1,2})?$/.test(this.tableData[m].paymentSettleRate))) {
+            valid = false;
+            validMsg = this.tableData[m].channelName + ' 支付结算手续费 未设置';
+            break;
           }
-        });
+          if (!(/^[0-9]{1,4}([.][0-9]{1,2})?$/.test(this.tableData[m].withdrawSettleFee))) {
+            valid = false;
+            validMsg = this.tableData[m].channelName + ' 提现结算费 未设置';
+            break;
+          }
+          if (!(/^[0-9]{1,4}([.][0-9]{1,2})?$/.test(this.tableData[m].merchantSettleRate))) {
+            valid = false;
+            validMsg = this.tableData[m].channelName + ' 商户支付手续费 未设置';
+            break;
+          }
+          if (!(/^[0-9]{1,4}([.][0-9]{1,2})?$/.test(this.tableData[m].merchantWithdrawFee))) {
+            valid = false;
+            validMsg = this.tableData[m].channelName + ' 商户提现手续费 未设置';
+            break;
+          }
+        }
+        if (valid) {
+          this.$http.post('/api/daili/dealer/addOrUpdateDealerProduct', {
+            dealerId: this.dealerId,
+            inviteBtn: this.inviteStatus,
+            product: {
+              productId: this.productId,
+              channels: this.tableData
+            }
+          }).then(res => {
+            console.log(res);
+          }, err => {
+            console.log(err);
+          })
+        } else {
+          this.$message({
+            showClose: true,
+            message: validMsg,
+            type: 'warning'
+          });
+          return false;
+        }
       }
     }
   }

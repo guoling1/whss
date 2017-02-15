@@ -197,7 +197,6 @@
       },
       onSubmit: function () {
         this.$refs['form'].validate((valid) => {
-          console.log(valid);
           if (valid) {
             this.$http.post('/api/daili/dealer/addSecondDealer', this.form).then(res => {
               console.log(res);
