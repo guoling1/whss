@@ -1,6 +1,7 @@
 package com.jkm.hss.account.sevice;
 
 import com.google.common.base.Optional;
+import com.jkm.base.common.entity.PageModel;
 import com.jkm.hss.account.entity.AccountFlow;
 import com.jkm.hss.account.enums.EnumAccountFlowType;
 
@@ -45,4 +46,16 @@ public interface AccountFlowService {
      * @param type 变更方向
      */
     void addAccountFlow(long accountId, String orderNo, BigDecimal changeAmount, String remark, EnumAccountFlowType type);
+
+    /**
+     *  分页查询
+     * @param pageNo
+     * @param pageSize
+     * @param flowSn
+     * @param type
+     * @param beginDate
+     * @param endDate
+     * @return
+     */
+    PageModel<AccountFlow> selectByParam(int pageNo, int pageSize, long accountId, String flowSn, int type, String beginDate, String endDate);
 }

@@ -70,10 +70,7 @@
             business_type = #{businessType}
         </if>
         <if test="beginDate != null">
-            begin_date = #{beginDate}
-        </if>
-        <if test="endDate != null">
-            end_date = #{endDate}
+            create_time BETWEEN #{beginDate} AND #{endDate}
         </if>
         ORDER BY id DESC LIMIT #{firstIndex},#{pageSize}
     </select>
@@ -86,10 +83,7 @@
             business_type = #{businessType}
         </if>
         <if test="beginDate != null">
-            begin_date = #{beginDate}
-        </if>
-        <if test="endDate != null">
-            end_date = #{endDate}
+            create_time BETWEEN #{beginDate} AND #{endDate}
         </if>
     </select>
 </mapper>

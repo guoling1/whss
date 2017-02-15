@@ -4,6 +4,9 @@ import com.jkm.hss.account.entity.AccountFlow;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.Date;
+import java.util.List;
+
 /**
  * Created by yulong.zhang on 2016/12/22.
  */
@@ -32,4 +35,30 @@ public interface AccountFlowDao {
      * @return
      */
     AccountFlow selectByOrderNoAndAccountIdAndType(@Param("orderNo") String orderNo, @Param("accountId") long accountId, @Param("type") int type);
+
+    /**
+     * 分业查询
+     * @param firstIndex
+     * @param pageSize
+     * @param accountId
+     * @param flowSn
+     * @param type
+     * @param beginTime
+     * @param endTime
+     * @return
+     */
+    List<AccountFlow> selectByParam(@Param("firstIndex") Integer firstIndex, @Param("pageSize") Integer pageSize, @Param("accountId") Long accountId,
+                                    @Param("flowSn") String flowSn, @Param("type") Integer type, @Param("beginTime") Date beginTime, @Param("endTime") Date endTime);
+
+    /**
+     * 分页查询
+     * @param accountId
+     * @param flowSn
+     * @param type
+     * @param beginTime
+     * @param endTime
+     * @return
+     */
+    long selectCountByParam(@Param("accountId") Long accountId, @Param("flowSn") String flowSn, @Param("type") Integer type,
+                            @Param("beginTime") Date beginTime, @Param("endTime") Date endTime);
 }
