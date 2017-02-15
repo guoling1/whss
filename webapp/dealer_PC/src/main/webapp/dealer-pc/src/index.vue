@@ -232,7 +232,7 @@
             </a>
             <ul class="treeview-menu">
               <li>
-                <router-link to="profits_detail"><i class="fa fa-circle-o"></i> 分配二维码</router-link>
+                <router-link to="distribution_qrcode"><i class="fa fa-circle-o"></i> 分配二维码</router-link>
               </li>
               <li>
                 <router-link to="profits_detail"><i class="fa fa-circle-o"></i> 所有二维码</router-link>

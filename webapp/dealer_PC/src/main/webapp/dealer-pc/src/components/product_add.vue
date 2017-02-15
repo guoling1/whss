@@ -187,22 +187,45 @@
           }
         }
         if (valid) {
-          this.$http.post('/api/daili/dealer/addOrUpdateDealerProduct', {
-            dealerId: this.dealerId,
-            inviteBtn: this.inviteStatus,
-            product: {
-              productId: this.productId,
-              channels: this.tableData
+          this.$msgbox({
+            title: '提示',
+            message: '确认修改代理商产品信息？',
+            showCancelButton: true,
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            beforeClose: (action, instance, done) => {
+              if (action === 'confirm') {
+                instance.confirmButtonLoading = true;
+                instance.confirmButtonText = '执行中...';
+                this.$http.post('/api/daili/dealer/addOrUpdateDealerProduct', {
+                  dealerId: this.dealerId,
+                  inviteBtn: this.inviteStatus,
+                  product: {
+                    productId: this.productId,
+                    channels: this.tableData
+                  }
+                }).then(res => {
+                  done();
+                  instance.confirmButtonLoading = false;
+                }, err => {
+                  this.$message({
+                    showClose: true,
+                    message: err.data.msg,
+                    type: 'error'
+                  });
+                });
+              } else {
+                done();
+              }
             }
-          }).then(res => {
-            console.log(res);
-          }, err => {
+          }).then(action => {
             this.$message({
               showClose: true,
-              message: err.data.msg,
-              type: 'error'
+              message: '保存成功',
+              type: 'success'
             });
-          })
+            this.$router.push('/app/dealer_list');
+          });
         } else {
           this.$message({
             showClose: true,

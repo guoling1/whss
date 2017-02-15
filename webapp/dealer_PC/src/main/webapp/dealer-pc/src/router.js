@@ -11,6 +11,7 @@ import profits_detail from './components/profits_detail.vue'
 import dealer_list from './components/dealer_list.vue'
 import dealer_add from './components/dealer_add.vue'
 import product_add from './components/product_add.vue'
+import distribution_qrcode from './components/distribution_qrcode.vue'
 
 import store from './store/index'
 
@@ -98,6 +99,7 @@ const routes = [
       {path: 'dealer_list', name: "dealer_list", component: dealer_list},
       {path: 'dealer_add', name: "dealer_add", component: dealer_add},
       {path: 'product_add', name: "product_add", component: product_add},
+      {path: 'distribution_qrcode', name: "distribution_qrcode", component: distribution_qrcode},
     ]
   }
 ];

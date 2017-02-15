@@ -91,7 +91,8 @@
                                      @click="openHss($event,scope.row.id,scope.row.hssProductId)">开通</el-button>
                         </span>
                         <span v-else>
-                          <el-button type="text">查看产品详情</el-button>
+                          <el-button type="text"
+                                     @click="checkHsy($event,scope.row.id,scope.row.hssProductId)">查看产品详情</el-button>
                         </span>
                       </span>
                       <span v-else>未开通</span>
@@ -105,7 +106,8 @@
                                      @click="openHsy($event,scope.row.id,scope.row.hsyProductId)">开通</el-button>
                         </span>
                         <span v-else>
-                          <el-button type="text">查看产品详情</el-button>
+                          <el-button type="text"
+                                     @click="checkHsy($event,scope.row.id,scope.row.hsyProductId)">查看产品详情</el-button>
                         </span>
                       </span>
                       <span v-else>未开通</span>
@@ -217,6 +219,12 @@
         this.$router.push({path: '/app/product_add', query: {product: 'hss', dealerId: id, productId: productId}});
       },
       openHsy: function (event, id, productId) {
+        this.$router.push({path: '/app/product_add', query: {product: 'hsy', dealerId: id, productId: productId}});
+      },
+      checkHss: function (event, id, productId) {
+        this.$router.push({path: '/app/product_add', query: {product: 'hss', dealerId: id, productId: productId}});
+      },
+      checkHsy: function (event, id, productId) {
         this.$router.push({path: '/app/product_add', query: {product: 'hsy', dealerId: id, productId: productId}});
       },
       handleSizeChange(val) {
