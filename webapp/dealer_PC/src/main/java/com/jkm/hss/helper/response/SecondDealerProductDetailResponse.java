@@ -66,6 +66,11 @@ public class SecondDealerProductDetailResponse {
          */
         private String channelName;
 
+
+        /**
+         * 最小支付结算手续费
+         */
+        private String minPaymentSettleRate;
         /**
          * 支付结算手续费
          */
@@ -77,7 +82,10 @@ public class SecondDealerProductDetailResponse {
          * {@link com.jkm.hss.product.enums.EnumBalanceTimeType}
          */
         private String settleType;
-
+        /**
+         * 最小提现结算费
+         */
+        private String minWithdrawSettleFee;
         /**
          * 提现结算费
          */

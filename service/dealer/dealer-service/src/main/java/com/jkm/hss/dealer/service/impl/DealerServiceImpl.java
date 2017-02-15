@@ -23,6 +23,7 @@ import com.jkm.hss.dealer.entity.*;
 import com.jkm.hss.dealer.enums.*;
 import com.jkm.hss.dealer.helper.DealerSupport;
 import com.jkm.hss.dealer.helper.requestparam.*;
+import com.jkm.hss.dealer.helper.response.DealerOfFirstDealerResponse;
 import com.jkm.hss.dealer.helper.response.FirstDealerResponse;
 import com.jkm.hss.dealer.helper.response.SecondDealerResponse;
 import com.jkm.hss.dealer.service.*;
@@ -2209,5 +2210,16 @@ public class DealerServiceImpl implements DealerService {
             this.distributeQRCodeRecordService.add(distributeQRCodeRecord);
         }
         return records;
+    }
+
+    /**
+     * 根据产品类型和手机号或代理商名称模糊查询
+     *
+     * @param dealerOfFirstDealerRequest
+     * @return
+     */
+    @Override
+    public List<DealerOfFirstDealerResponse> selectListOfFirstDealer(DealerOfFirstDealerRequest dealerOfFirstDealerRequest) {
+        return this.dealerDao.selectListOfFirstDealer(dealerOfFirstDealerRequest);
     }
 }

@@ -1,10 +1,8 @@
 package com.jkm.hss.dealer.dao;
 
 import com.jkm.hss.dealer.entity.Dealer;
-import com.jkm.hss.dealer.helper.requestparam.ListDealerRequest;
-import com.jkm.hss.dealer.helper.requestparam.ListFirstDealerRequest;
-import com.jkm.hss.dealer.helper.requestparam.ListSecondDealerRequest;
-import com.jkm.hss.dealer.helper.requestparam.SecondDealerSearchRequest;
+import com.jkm.hss.dealer.helper.requestparam.*;
+import com.jkm.hss.dealer.helper.response.DealerOfFirstDealerResponse;
 import com.jkm.hss.dealer.helper.response.FirstDealerResponse;
 import com.jkm.hss.dealer.helper.response.SecondDealerResponse;
 import org.apache.ibatis.annotations.Param;
@@ -271,4 +269,11 @@ public interface DealerDao {
      * @return
      */
     long selectByLoginNameUnIncludeNow(@Param("loginName") String loginName, @Param("dealerId") long dealerId);
+
+    /**
+     * 根据产品类型和手机号或代理商名称模糊查询
+     * @param dealerOfFirstDealerRequest
+     * @return
+     */
+    List<DealerOfFirstDealerResponse> selectListOfFirstDealer(DealerOfFirstDealerRequest dealerOfFirstDealerRequest);
 }

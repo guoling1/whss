@@ -348,9 +348,11 @@ public class DealerController extends BaseController {
                 if(dealerChannelRateOptional.isPresent()){
                     channel.setPaymentSettleRate(dealerChannelRateOptional.get().getDealerTradeRate().multiply(new BigDecimal("100")).setScale(2).toPlainString());
                     channel.setWithdrawSettleFee(dealerChannelRateOptional.get().getDealerWithdrawFee().toPlainString());
-                    channel.setMerchantSettleRate(dealerChannelRate.getDealerMerchantPayRate().multiply(new BigDecimal("100")).setScale(2).toPlainString());
-                    channel.setMerchantWithdrawFee(dealerChannelRate.getDealerMerchantWithdrawFee().toPlainString());
                 }
+                channel.setMerchantSettleRate(dealerChannelRate.getDealerMerchantPayRate().multiply(new BigDecimal("100")).setScale(2).toPlainString());
+                channel.setMerchantWithdrawFee(dealerChannelRate.getDealerMerchantWithdrawFee().toPlainString());
+                channel.setMinPaymentSettleRate(dealerChannelRate.getDealerTradeRate().multiply(new BigDecimal("100")).setScale(2).toPlainString());
+                channel.setMinWithdrawSettleFee(dealerChannelRate.getDealerWithdrawFee().toPlainString());
                 channel.setChannelType(dealerChannelRate.getChannelTypeSign());
                 Optional<BasicChannel> basicChannelOptional = basicChannelService.selectByChannelTypeSign(dealerChannelRate.getChannelTypeSign());
                 channel.setChannelName(basicChannelOptional.get().getChannelName());
@@ -383,11 +385,10 @@ public class DealerController extends BaseController {
             productResponse.setChannels(channels);
             for (DealerChannelRate dealerChannelRate : channelRates) {
                 final SecondDealerProductDetailResponse.Channel channel = new SecondDealerProductDetailResponse.Channel();
-                Optional<DealerChannelRate> dealerChannelRateOptional = this.dealerChannelRateService.selectByDealerIdAndProductIdAndChannelType(request.getDealerId(),request.getProductId(),dealerChannelRate.getChannelTypeSign());
-                if(dealerChannelRateOptional.isPresent()){
-                    channel.setMerchantSettleRate(dealerChannelRate.getDealerMerchantPayRate().multiply(new BigDecimal("100")).setScale(2).toPlainString());
-                    channel.setMerchantWithdrawFee(dealerChannelRate.getDealerMerchantWithdrawFee().toPlainString());
-                }
+                channel.setMerchantSettleRate(dealerChannelRate.getDealerMerchantPayRate().multiply(new BigDecimal("100")).setScale(2).toPlainString());
+                channel.setMerchantWithdrawFee(dealerChannelRate.getDealerMerchantWithdrawFee().toPlainString());
+                channel.setMinPaymentSettleRate(dealerChannelRate.getDealerTradeRate().multiply(new BigDecimal("100")).setScale(2).toPlainString());
+                channel.setMinWithdrawSettleFee(dealerChannelRate.getDealerWithdrawFee().toPlainString());
                 channel.setChannelType(dealerChannelRate.getChannelTypeSign());
                 Optional<BasicChannel> basicChannelOptional = basicChannelService.selectByChannelTypeSign(dealerChannelRate.getChannelTypeSign());
                 channel.setChannelName(basicChannelOptional.get().getChannelName());
@@ -435,7 +436,7 @@ public class DealerController extends BaseController {
                     return CommonResponse.simpleResponse(-1, "提现结算费不能为空");
                 }
                 Optional<DealerChannelRate> dealerChannelRateOptional = this.dealerRateService.getByDealerIdAndProductIdAndChannelType(super.getDealerId(), productId, channes.getChannelType());
-                if(dealerChannelRateOptional.isPresent()){
+                if(!dealerChannelRateOptional.isPresent()){
                     return CommonResponse.simpleResponse(-1, "上级代理信息有误");
                 }
                 DealerChannelRate dealerChannelRate = dealerChannelRateOptional.get();
@@ -443,39 +444,39 @@ public class DealerController extends BaseController {
                     final BigDecimal withdrawSettleFee = new BigDecimal(channes.getWithdrawSettleFee());
                     if (!(withdrawSettleFee.compareTo(dealerChannelRate.getDealerWithdrawFee()) > 0
                             && withdrawSettleFee.compareTo(dealerChannelRate.getDealerMerchantWithdrawFee()) < 0)) {
-                        return CommonResponse.simpleResponse(-1, "微信提现结算价错误");
+                        return CommonResponse.simpleResponse(-1, "微信提现结算价错误:必须大于一级的小于商户的");
                     }
                     final BigDecimal weixinSettleRate = new BigDecimal(channes.getPaymentSettleRate())
                             .divide(new BigDecimal("100"), 4, BigDecimal.ROUND_HALF_UP);
                     if (!(weixinSettleRate.compareTo(dealerChannelRate.getDealerTradeRate()) > 0
                             && weixinSettleRate.compareTo(dealerChannelRate.getDealerMerchantPayRate()) < 0)) {
-                        return CommonResponse.simpleResponse(-1, "微信结算费率错误");
+                        return CommonResponse.simpleResponse(-1, "微信结算费率错误:必须大于一级的小于商户的");
                     }
                 }
                 if(channes.getChannelType()== EnumPayChannelSign.YG_ZHIFUBAO.getId()){
                     final BigDecimal withdrawSettleFee = new BigDecimal(channes.getWithdrawSettleFee());
                     if (!(withdrawSettleFee.compareTo(dealerChannelRate.getDealerWithdrawFee()) > 0
                             && withdrawSettleFee.compareTo(dealerChannelRate.getDealerMerchantWithdrawFee()) < 0)) {
-                        return CommonResponse.simpleResponse(-1, "支付宝提现结算价错误");
+                        return CommonResponse.simpleResponse(-1, "支付宝提现结算价错误:必须大于一级的小于商户的");
                     }
                     final BigDecimal zhifubaoSettleRate = new BigDecimal(channes.getPaymentSettleRate())
                             .divide(new BigDecimal("100"), 4, BigDecimal.ROUND_HALF_UP);
                     if (!(zhifubaoSettleRate.compareTo(dealerChannelRate.getDealerTradeRate()) > 0
                             && zhifubaoSettleRate.compareTo(dealerChannelRate.getDealerMerchantPayRate()) < 0)) {
-                        return CommonResponse.simpleResponse(-1, "支付宝结算费率错误");
+                        return CommonResponse.simpleResponse(-1, "支付宝结算费率错误:必须大于一级的小于商户的");
                     }
                 }
                 if(channes.getChannelType()== EnumPayChannelSign.YG_YINLIAN.getId()){
                     final BigDecimal withdrawSettleFee = new BigDecimal(channes.getWithdrawSettleFee());
                     if (!(withdrawSettleFee.compareTo(dealerChannelRate.getDealerWithdrawFee()) > 0
                             && withdrawSettleFee.compareTo(dealerChannelRate.getDealerMerchantWithdrawFee()) < 0)) {
-                        return CommonResponse.simpleResponse(-1, "快捷提现结算价错误");
+                        return CommonResponse.simpleResponse(-1, "快捷提现结算价错误:必须大于一级的小于商户的");
                     }
                     final BigDecimal yinlianSettleRate = new BigDecimal(channes.getPaymentSettleRate())
                             .divide(new BigDecimal("100"), 4, BigDecimal.ROUND_HALF_UP);
                     if (!(yinlianSettleRate.compareTo(dealerChannelRate.getDealerTradeRate()) > 0
                             && yinlianSettleRate.compareTo(dealerChannelRate.getDealerMerchantPayRate()) < 0)) {
-                        return CommonResponse.simpleResponse(-1, "快捷结算费率错误");
+                        return CommonResponse.simpleResponse(-1, "快捷结算费率错误:必须大于一级的小于商户的");
                     }
                 }
             }

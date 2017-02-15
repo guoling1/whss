@@ -12,6 +12,10 @@ public class DistributeQrCodeRequest {
      */
     private String sysType;
     /**
+     * 是否分配给自己（0：非，1：是）
+     */
+    private int isSelf;
+    /**
      * 代理商编码
      */
     private long dealerId;
