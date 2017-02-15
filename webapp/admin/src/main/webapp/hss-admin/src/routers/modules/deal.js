@@ -54,6 +54,7 @@ const ProfitCom = r => require.ensure([], () => r(require('../../components/Prof
 const ProfitFir = r => require.ensure([], () => r(require('../../components/ProfitFir')), 'group-record');
 const ProfitSec = r => require.ensure([], () => r(require('../../components/ProfitSec')), 'group-record');
 const ProfitComDet = r => require.ensure([], () => r(require('../../components/ProfitDet')), 'group-record');
+const ProfitDet = r => require.ensure([], () => r(require('../../components/ProfitDet')), 'group-record');
 const ProfitFirDet = r => require.ensure([], () => r(require('../../components/ProfitDet')), 'group-record');
 const ProfitSecDet = r => require.ensure([], () => r(require('../../components/ProfitDet')), 'group-record');
 
@@ -296,6 +297,11 @@ export default {
       path: 'profitSec',
       name: 'ProfitSec',
       component: ProfitSec
+    },
+    {
+      path: 'profitDet',
+      name: 'ProfitDet',
+      component: ProfitDet
     },
     {
       path: 'profitComDet',

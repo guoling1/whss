@@ -33,7 +33,7 @@
           </el-table>
           <!--分页-->
           <div class="block" style="text-align: right">
-            <el-pagination @current-change="handleCurrentChange" :current-page="currentPage" layout="total, prev, pager, next, jumper" :total="total">
+            <el-pagination @current-change="handleCurrentChange" :current-page="currentPage" layout="total, prev, pager, next, jumper" :total="count">
             </el-pagination>
           </div>
         </div>

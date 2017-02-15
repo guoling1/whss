@@ -9,9 +9,12 @@
           <!--筛选-->
           <ul>
             <li class="same">
-              <label>交易日期:</label>
-              <el-date-picker v-model="date" type="daterange" align="right" placeholder="选择日期范围" :picker-options="pickerOptions" size="small">
-              </el-date-picker>
+              <label>交易订单号:</label>
+              <el-input style="width: 120px" v-model="query.firstDealerName" placeholder="请输入内容" size="small"></el-input>
+            </li>
+            <li class="same">
+              <label>分润方名称:</label>
+              <el-input style="width: 120px" v-model="query.firstDealerName" placeholder="请输入内容" size="small"></el-input>
             </li>
             <li class="same">
               <div class="btn btn-primary" @click="search">筛选</div>
@@ -19,21 +22,23 @@
           </ul>
           <!--表格-->
           <el-table v-loading.body="loading" style="font-size: 12px;margin:15px 0" :data="records" border>
-            <el-table-column type="index" width="100" label="序号"></el-table-column>
-            <el-table-column prop="statisticsDate" label="收益日期"></el-table-column>
-            <el-table-column prop="collectMoney" align="right" header-align="left" label="收单收益"></el-table-column>
-            <el-table-column prop="withdrawMoney" label="结算收益" align="right" header-align="left"></el-table-column>
-            <el-table-column prop="totalMoney" label="收益总额" align="right" header-align="left"></el-table-column>
-            <el-table-column label="操作" width="100">
-              <template scope="scope">
-                <router-link :to="{path:'/admin/record/companyProfitDet',query:{id:record.id}}" v-if="records[scope.$index].totalMoney!=0" type="text" size="small">明细
-                </router-link>
-              </template>
-            </el-table-column>
+            <el-table-column type="index" width="62" label="序号"></el-table-column>
+            <el-table-column prop="statisticsDate" label="分润流水号"></el-table-column>
+            <el-table-column prop="statisticsDate" label="业务类型"></el-table-column>
+            <el-table-column prop="statisticsDate" label="分润时间"></el-table-column>
+            <el-table-column prop="statisticsDate" label="交易订单号"></el-table-column>
+            <el-table-column prop="statisticsDate" label="结算周期"></el-table-column>
+            <el-table-column prop="statisticsDate" label="结算时间"></el-table-column>
+            <el-table-column prop="statisticsDate" label="分润总额"></el-table-column>
+            <el-table-column prop="statisticsDate" label="分润出款账户"></el-table-column>
+            <el-table-column prop="statisticsDate" label="分润方名称"></el-table-column>
+            <el-table-column prop="statisticsDate" label="分润方类型"></el-table-column>
+            <el-table-column prop="collectMoney" align="right" header-align="left" label="分润金额"></el-table-column>
+            <el-table-column prop="statisticsDate" label="备注信息"></el-table-column>
           </el-table>
           <!--分页-->
           <div class="block" style="text-align: right">
-            <el-pagination @current-change="handleCurrentChange" :current-page="currentPage" layout="total, prev, pager, next, jumper" :total="total">
+            <el-pagination @current-change="handleCurrentChange" :current-page="currentPage" layout="total, prev, pager, next, jumper" :total="count">
             </el-pagination>
           </div>
         </div>

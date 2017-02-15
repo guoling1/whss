@@ -64,13 +64,14 @@
             <li @click="refrash" :class="(url=='/admin/record/agentAdd')?'treeview active':'treeview'"><router-link to="/admin/record/agentAdd"><span>新增代理商</span> </router-link></li>-->
           </ul>
         </li>
-        <li :class="(url=='/admin/record/companyProfit'||url=='/admin/record/firProfit'||url=='/admin/record/secProfit'||url=='/admin/record/profitAccount')?'treeview active':'treeview'">
+        <li :class="(url=='/admin/record/companyProfit'||url=='/admin/record/firProfit'||url=='/admin/record/secProfit'||url=='/admin/record/profitAccount'||url=='/admin/record/profitDet')?'treeview active':'treeview'">
           <a href="#"><span>分润管理</span>
           </a>
           <ul class="treeview-menu">
             <!--<li @click="refrash" :class="(url=='/admin/record/companyProfit')?'treeview active':'treeview'"><router-link to="/admin/record/companyProfit"><span>公司分润</span> </router-link></li>
             <li @click="refrash" :class="(url=='/admin/record/firProfit')?'treeview active':'treeview'"><router-link to="/admin/record/firProfit"><span>一级代理商分润</span> </router-link></li>
             <li @click="refrash" :class="(url=='/admin/record/secProfit')?'treeview active':'treeview'"><router-link to="/admin/record/secProfit"><span>二级代理商分润</span> </router-link></li>-->
+            <li @click="refrash" :class="(url=='/admin/record/profitDet')?'treeview active':'treeview'"><router-link to="/admin/record/profitDet"><span>分润明细</span> </router-link></li>
             <li :class="(url=='/admin/record/companyProfit'||url=='/admin/record/firProfit'||url=='/admin/record/secProfit')?'treeview active':'treeview'">
               <a href="#" @click="open"><span>分润统计</span>
                 <span class="pull-right-container">
