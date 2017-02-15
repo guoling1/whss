@@ -117,7 +117,7 @@ public class AccountFlowServiceImpl implements AccountFlowService {
         Date endTime = null;
         if (beginDate != null && !beginDate.equals("")){
             beginTime = DateFormatUtil.parse(beginDate + " 00:00:00", DateFormatUtil.yyyy_MM_dd_HH_mm_ss);
-            endTime = DateFormatUtil.parse(endDate + "23:59:59", DateFormatUtil.yyyy_MM_dd_HH_mm_ss);
+            endTime = DateFormatUtil.parse(endDate + " 23:59:59", DateFormatUtil.yyyy_MM_dd_HH_mm_ss);
         }
         List<AccountFlow> list =
                 this.accountFlowDao.selectByParam( pageModel.getFirstIndex(), pageSize, accountId, flowSn, type, beginTime, endTime);

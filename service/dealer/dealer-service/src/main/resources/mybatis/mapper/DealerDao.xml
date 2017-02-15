@@ -563,4 +563,7 @@
             AND d.first_level_dealer_id = #{dealerId}
         </if>
     </select>
+    <select id="getDealerByLoginName" resultType="com.jkm.hss.dealer.entity.Dealer">
+        SELECT * FROM tb_dealer WHERE login_name = #{loginName}
+    </select>
 </mapper>

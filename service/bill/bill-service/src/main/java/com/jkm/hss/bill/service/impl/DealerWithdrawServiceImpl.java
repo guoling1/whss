@@ -8,6 +8,7 @@ import com.jkm.hss.account.entity.Account;
 import com.jkm.hss.account.entity.FrozenRecord;
 import com.jkm.hss.account.entity.UnFrozenRecord;
 import com.jkm.hss.account.enums.EnumUnfrozenType;
+import com.jkm.hss.account.helper.AccountConstants;
 import com.jkm.hss.account.sevice.AccountService;
 import com.jkm.hss.account.sevice.FrozenRecordService;
 import com.jkm.hss.account.sevice.UnfrozenRecordService;
@@ -175,6 +176,12 @@ public class DealerWithdrawServiceImpl implements DealerWithdrawService {
             Preconditions.checkState(account.getTotalAmount().compareTo(frozenRecord.getFrozenAmount()) >= 0);
             this.accountService.decreaseFrozenAmount(accountId, frozenRecord.getFrozenAmount());
             this.accountService.decreaseTotalAmount(accountId, frozenRecord.getFrozenAmount());
+            //提现手续费入账
+            final Account dealerPoundageAccount1 = this.accountService.getById(AccountConstants.DEALER_POUNDAGE_ACCOUNT_ID).get();
+            dealerPoundageAccount1.setAvailable(dealerPoundageAccount1.getAvailable().add(order.getPoundage()));
+            dealerPoundageAccount1.setTotalAmount(dealerPoundageAccount1.getTotalAmount().add(order.getPoundage()));
+            this.accountService.update(dealerPoundageAccount1);
+
             //入账到手续费账户
 //            final Account poundageAccount = this.accountService.getByIdWithLock(AccountConstants.POUNDAGE_ACCOUNT_ID).get();
 //            this.accountService.increaseTotalAmount(poundageAccount.getId(), order.getPoundage());
