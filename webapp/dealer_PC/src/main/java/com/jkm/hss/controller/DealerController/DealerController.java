@@ -348,9 +348,11 @@ public class DealerController extends BaseController {
                 if(dealerChannelRateOptional.isPresent()){
                     channel.setPaymentSettleRate(dealerChannelRateOptional.get().getDealerTradeRate().multiply(new BigDecimal("100")).setScale(2).toPlainString());
                     channel.setWithdrawSettleFee(dealerChannelRateOptional.get().getDealerWithdrawFee().toPlainString());
-                    channel.setMerchantSettleRate(dealerChannelRate.getDealerMerchantPayRate().multiply(new BigDecimal("100")).setScale(2).toPlainString());
-                    channel.setMerchantWithdrawFee(dealerChannelRate.getDealerMerchantWithdrawFee().toPlainString());
                 }
+                channel.setMerchantSettleRate(dealerChannelRate.getDealerMerchantPayRate().multiply(new BigDecimal("100")).setScale(2).toPlainString());
+                channel.setMerchantWithdrawFee(dealerChannelRate.getDealerMerchantWithdrawFee().toPlainString());
+                channel.setMinPaymentSettleRate(dealerChannelRate.getDealerTradeRate().multiply(new BigDecimal("100")).setScale(2).toPlainString());
+                channel.setMinWithdrawSettleFee(dealerChannelRate.getDealerWithdrawFee().toPlainString());
                 channel.setChannelType(dealerChannelRate.getChannelTypeSign());
                 Optional<BasicChannel> basicChannelOptional = basicChannelService.selectByChannelTypeSign(dealerChannelRate.getChannelTypeSign());
                 channel.setChannelName(basicChannelOptional.get().getChannelName());
@@ -384,10 +386,10 @@ public class DealerController extends BaseController {
             for (DealerChannelRate dealerChannelRate : channelRates) {
                 final SecondDealerProductDetailResponse.Channel channel = new SecondDealerProductDetailResponse.Channel();
                 Optional<DealerChannelRate> dealerChannelRateOptional = this.dealerChannelRateService.selectByDealerIdAndProductIdAndChannelType(request.getDealerId(),request.getProductId(),dealerChannelRate.getChannelTypeSign());
-                if(dealerChannelRateOptional.isPresent()){
-                    channel.setMerchantSettleRate(dealerChannelRate.getDealerMerchantPayRate().multiply(new BigDecimal("100")).setScale(2).toPlainString());
-                    channel.setMerchantWithdrawFee(dealerChannelRate.getDealerMerchantWithdrawFee().toPlainString());
-                }
+                channel.setMerchantSettleRate(dealerChannelRate.getDealerMerchantPayRate().multiply(new BigDecimal("100")).setScale(2).toPlainString());
+                channel.setMerchantWithdrawFee(dealerChannelRate.getDealerMerchantWithdrawFee().toPlainString());
+                channel.setMinPaymentSettleRate(dealerChannelRate.getDealerTradeRate().multiply(new BigDecimal("100")).setScale(2).toPlainString());
+                channel.setMinWithdrawSettleFee(dealerChannelRate.getDealerWithdrawFee().toPlainString());
                 channel.setChannelType(dealerChannelRate.getChannelTypeSign());
                 Optional<BasicChannel> basicChannelOptional = basicChannelService.selectByChannelTypeSign(dealerChannelRate.getChannelTypeSign());
                 channel.setChannelName(basicChannelOptional.get().getChannelName());
