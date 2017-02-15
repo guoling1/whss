@@ -10,11 +10,11 @@ public class JkmProfitRequest {
     /**
      * 页数
      */
-    private Integer page;
+    private Integer pageNo;
     /**
      * 每页条数
      */
-    private Integer size;
+    private Integer pageSize;
     /**
      * 条数
      */
