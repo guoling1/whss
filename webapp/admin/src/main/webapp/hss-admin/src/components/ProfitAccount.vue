@@ -9,10 +9,10 @@
           <!--表格-->
           <el-table v-loading.body="loading" style="font-size: 12px;margin:15px 0" :data="records" border>
             <el-table-column type="index" width="100" label="序号"></el-table-column>
-            <el-table-column prop="merchantNo" label="账户名称"></el-table-column>
-            <el-table-column prop="merchantName" label="账户总额（元）"></el-table-column>
-            <el-table-column prop="dealerNo" label="待结算金额（元）"></el-table-column>
-            <el-table-column prop="dealerName" label="可用余额（元）"></el-table-column>
+            <el-table-column prop="userName" label="账户名称"></el-table-column>
+            <el-table-column prop="totalAmount" label="账户总额（元）"></el-table-column>
+            <el-table-column prop="dueSettleAmount" label="待结算金额（元）"></el-table-column>
+            <el-table-column prop="available " label="可用余额（元）"></el-table-column>
             <el-table-column label="操作" width="70">
               <template scope="scope">
                 <router-link to="/admin/record/profitAccountDet" type="text" size="small">明细
@@ -36,15 +36,18 @@
     data(){
       return {
         records: [],
+        query:{
+          pageNo:1,
+          pageSize:10
+        },
         count: 0,
         total: 0,
         currentPage: 1,
         loading: true,
-        index: '',
       }
     },
     created: function () {
-      /*this.$http.post('/admin/settle/list', this.$data.query)
+      this.$http.post('/admin/queryJkmProfit/accountList', this.$data.query)
         .then(function (res) {
           this.$data.records = res.data.records;
           this.$data.count = res.data.count;
@@ -77,7 +80,7 @@
           this.$store.commit('MESSAGE_ACCORD_SHOW', {
             text: err.statusMessage
           })
-        })*/
+        })
     },
     methods: {
       //当前页改变时
