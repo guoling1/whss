@@ -57,8 +57,8 @@ public class HsyMerchantAuditController extends BaseController {
         }
         hsyMerchantAuditRequest.setStatus(AppConstant.SHOP_STATUS_REJECT);
         hsyMerchantAuditService.auditNotPass(hsyMerchantAuditRequest);
-        Long uid=hsyMerchantAuditService.getUid(hsyMerchantAuditRequest.getId());
-        if (uid!=0&&!uid.equals("")){
+        int uid=hsyMerchantAuditService.getUid(hsyMerchantAuditRequest.getId());
+        if (uid!=0){
             hsyMerchantAuditService.stepChange(uid);
         }
         pushService.pushAuditMsg(hsyMerchantAuditRequest.getUid(),false);

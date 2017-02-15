@@ -53,7 +53,7 @@ public interface HsyMerchantAuditService {
     void updateAccount(Long accountID, Long id);
 
 
-    void stepChange(Long uid);
+    void stepChange(int uid);
 
-    Long getUid(Long id);
+    int getUid(Long id);
 }

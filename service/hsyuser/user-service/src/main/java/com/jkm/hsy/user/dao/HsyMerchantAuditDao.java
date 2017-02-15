@@ -67,7 +67,7 @@ public interface HsyMerchantAuditDao {
     /**
      * 审核不通过更改提交资料步骤
      */
-    void stepChange(@Param("uid") Long uid);
+    void stepChange(@Param("uid") int uid);
 
-    Long getUid(@Param("id") Long id);
+    int getUid(@Param("id") Long id);
 }
