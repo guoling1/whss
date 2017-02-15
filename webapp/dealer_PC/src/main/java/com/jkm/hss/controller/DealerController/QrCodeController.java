@@ -3,6 +3,7 @@ package com.jkm.hss.controller.DealerController;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.jkm.base.common.entity.CommonResponse;
+import com.jkm.base.common.enums.EnumBoolean;
 import com.jkm.hss.admin.entity.DistributeQRCodeRecord;
 import com.jkm.hss.admin.enums.EnumQRCodeDistributeType;
 import com.jkm.hss.admin.service.AdminUserService;
@@ -61,8 +62,8 @@ public class QrCodeController extends BaseController {
      * @return
      */
     @ResponseBody
-    @RequestMapping(value = "/distributeQrCodeToSecond", method = RequestMethod.POST)
-    public CommonResponse distributeQrCodeToSecond(@RequestBody DistributeQrCodeRequest distributeQrCodeRequest) {
+    @RequestMapping(value = "/distributeQrCodeToDealer ", method = RequestMethod.POST)
+    public CommonResponse distributeQrCodeToDealer (@RequestBody DistributeQrCodeRequest distributeQrCodeRequest) {
         final Optional<Dealer> dealerOptional = this.dealerService.getById(distributeQrCodeRequest.getDealerId());
         if(!dealerOptional.isPresent()) {
             return CommonResponse.simpleResponse(-1, "代理商不存在");
@@ -85,13 +86,13 @@ public class QrCodeController extends BaseController {
             return CommonResponse.simpleResponse(-1, "未开通");
         }
         List<DistributeQRCodeRecord> distributeQRCodeRecords = new ArrayList<DistributeQRCodeRecord>();
-        if(distributeQrCodeRequest.getDistributeType()==1){//按码段
-            if (distributeQrCodeRequest.getCount() <= 0) {
-                return CommonResponse.simpleResponse(-1, "分配个数不可以是0");
-            }
-            distributeQRCodeRecords = this.dealerService.distributeQRCodeByCount(distributeQrCodeRequest.getType(),distributeQrCodeRequest.getSysType(),super.getDealerId(),
-                    distributeQrCodeRequest.getDealerId(), distributeQrCodeRequest.getCount());
 
+        if (EnumBoolean.TRUE.getCode() == distributeQrCodeRequest.getIsSelf()) {
+            distributeQrCodeRequest.setDealerId(super.getDealerId());
+        }
+        if(distributeQrCodeRequest.getDistributeType()==1){//按码段
+            distributeQRCodeRecords = this.dealerService.distributeQRCodeByCode(distributeQrCodeRequest.getType(),distributeQrCodeRequest.getSysType(),super.getDealerId(),
+                    distributeQrCodeRequest.getDealerId(), distributeQrCodeRequest.getStartCode(),distributeQrCodeRequest.getEndCode());
         }
         if(distributeQrCodeRequest.getDistributeType()==2){//按个数
             if (distributeQrCodeRequest.getCount() <= 0) {
