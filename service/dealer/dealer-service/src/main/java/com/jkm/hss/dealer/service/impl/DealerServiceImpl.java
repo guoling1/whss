@@ -2240,6 +2240,7 @@ public class DealerServiceImpl implements DealerService {
             for(int i=0;i<distributeQRCodeRecords.size();i++){
                 DistributeQRCodeRecord distributeQRCodeRecord = distributeQRCodeRecords.get(i);
                 DistributeRecordResponse distributeRecordResponse = new DistributeRecordResponse();
+                distributeRecordResponse.setId(distributeQRCodeRecord.getId());
                 distributeRecordResponse.setDistributeTime(distributeQRCodeRecord.getCreateTime());
                 Dealer dealer = dealerDao.selectById(distributeQRCodeRecord.getSecondLevelDealerId());
                 distributeRecordResponse.setProxyName(dealer.getProxyName());

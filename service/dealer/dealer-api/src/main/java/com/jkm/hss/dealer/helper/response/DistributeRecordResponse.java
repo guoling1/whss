@@ -10,6 +10,10 @@ import java.util.Date;
 @Data
 public class DistributeRecordResponse {
     /**
+     * 记录编码
+     */
+    private long id;
+    /**
      *分配时间
      */
     private Date distributeTime;
