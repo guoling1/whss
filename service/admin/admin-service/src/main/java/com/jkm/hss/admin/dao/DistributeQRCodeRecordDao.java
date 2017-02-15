@@ -52,4 +52,21 @@ public interface DistributeQRCodeRecordDao {
      */
     List<DistributeQRCodeRecord> selectRecordBySecondLevelDealerId(@Param("dealerId") long dealerId,
                                                                    @Param("secondLevelDealerId") long secondLevelDealerId);
+    /**
+     * 查询分配给二级代理商的二维码记录
+     *
+     * @param firstLevelDealerId
+     * @return
+     */
+    int selectDistributeCountByContions(@Param("firstLevelDealerId") long firstLevelDealerId,
+                                                                 @Param("markCode") String markCode,@Param("name") String name);
+    /**
+     * 查询分配给二级代理商的二维码记录
+     *
+     * @param firstLevelDealerId
+     * @return
+     */
+    List<DistributeQRCodeRecord> selectDistributeRecordsByContions(@Param("firstLevelDealerId") long firstLevelDealerId,
+                                                                 @Param("markCode") String markCode,@Param("name") String name,
+                                                                   @Param("offset") int offset,@Param("count") int count);
 }

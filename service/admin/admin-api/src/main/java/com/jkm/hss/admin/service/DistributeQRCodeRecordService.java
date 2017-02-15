@@ -49,4 +49,18 @@ public interface DistributeQRCodeRecordService {
      * @return
      */
     List<DistributeQRCodeRecord> getRecordBySecondLevelDealerId(long dealerId, long secondLevelDealerId);
+    /**
+     * 查询分配给二级代理商的二维码记录
+     *
+     * @param firstLevelDealerId
+     * @return
+     */
+    int selectDistributeCountByContions(long firstLevelDealerId,String markCode,String name);
+    /**
+     * 查询分配给二级代理商的二维码记录
+     *
+     * @param firstLevelDealerId
+     * @return
+     */
+    List<DistributeQRCodeRecord> selectDistributeRecordsByContions(long firstLevelDealerId,String markCode,String name,int offset,int count);
 }
