@@ -87,7 +87,8 @@
                     <template scope="scope">
                       <span v-if="ext[0]!=0">
                         <span v-if="scope.row.hssProductId==0">
-                          <el-button size="small" type="primary" @click="openHss($event,scope.row.id)">开通</el-button>
+                          <el-button size="small" type="primary"
+                                     @click="openHss($event,scope.row.id,scope.row.hssProductId)">开通</el-button>
                         </span>
                         <span v-else>
                           <el-button type="text">查看产品详情</el-button>
@@ -100,7 +101,8 @@
                     <template scope="scope">
                       <span v-if="ext[0]!=0">
                         <span v-if="scope.row.hsyProductId==0">
-                          <el-button size="small" type="primary" @click="openHsy($event,scope.row.id)">开通</el-button>
+                          <el-button size="small" type="primary"
+                                     @click="openHsy($event,scope.row.id,scope.row.hsyProductId)">开通</el-button>
                         </span>
                         <span v-else>
                           <el-button type="text">查看产品详情</el-button>
@@ -211,11 +213,11 @@
       screen: function () {
         this.getData();
       },
-      openHss: function (event, id) {
-        this.$router.push({path: '/app/product_add', query: {product: '好收收', dealerId: id}});
+      openHss: function (event, id, productId) {
+        this.$router.push({path: '/app/product_add', query: {product: 'hss', dealerId: id, productId: productId}});
       },
-      openHsy: function (event, id) {
-        this.$router.push({path: '/app/product_add', query: {product: '好收银', dealerId: id}});
+      openHsy: function (event, id, productId) {
+        this.$router.push({path: '/app/product_add', query: {product: 'hsy', dealerId: id, productId: productId}});
       },
       handleSizeChange(val) {
         this.pageSize = val;

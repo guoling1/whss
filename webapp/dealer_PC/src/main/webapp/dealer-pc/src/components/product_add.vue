@@ -24,7 +24,7 @@
             </div>
             <!-- /.box-header -->
             <div class="box-body">
-              <label class="form-label">产品名称：好收收</label>
+              <label class="form-label">产品名称：{{productName}}</label>
             </div>
             <div class="box-body">
               <label class="form-label">产品分润设置</label>
@@ -45,6 +45,21 @@
                 </el-table>
               </el-form>
             </div>
+            <div class="box-body">
+              <label class="form-label">代理商推广码&推广链接</label>
+              <br>
+              <el-switch v-model="inviteBoolean" @change="switchInvite"
+                         on-text="开启"
+                         on-color="#13ce66"
+                         off-text="关闭"
+                         off-color="#ff4949">
+              </el-switch>
+              <div class="inviteText" v-show="inviteBoolean">
+                推广码：{{inviteCode}}
+                <br>
+                推广链接：https://{{product}}.qianbaojiajia.com/reg?invest={{inviteCode}}
+              </div>
+            </div>
             <!-- /.box-body -->
           </div>
           <!-- /.box -->
@@ -59,14 +74,28 @@
   export default {
     name: 'app',
     created(){
-      this.$http.post('/api/daili/dealer/getDealerProduct').then(res => {
-        console.log(res);
+      let query = this.$route.query;
+      this.$http.post('/api/daili/dealer/getDealerProduct', {
+        dealerId: query.dealerId,
+        sysType: query.product,
+        productId: query.productId
+      }).then(res => {
+        this.product = query.product;
+        this.productName = res.data.productName;
+        this.inviteStatus = res.data.inviteBtn;
+        this.inviteCode = res.data.inviteCode;
+        this.inviteBoolean = (this.inviteStatus == 2);
       }, err => {
         console.log(err);
       })
     },
     data() {
       return {
+        product: '',
+        productName: '',
+        inviteBoolean: false,
+        inviteStatus: 1,
+        inviteCode: '',
         form: {
           mobile: '',
           name: '',
@@ -87,67 +116,16 @@
           mobile: [
             {required: true, message: '请输入手机号', trigger: 'blur'},
             {pattern: /^1(3|4|5|7|8)\d{9}$/, message: '请输入正确的手机号', trigger: 'blur'}
-          ],
-          name: [
-            {required: true, message: '请输入代理商名称', trigger: 'blur'}
-          ],
-          loginName: [
-            {required: true, message: '请输入代理商登录名', trigger: 'blur'}
-          ],
-          loginPwd: [
-            {required: true, message: '请输入代理商登录密码', trigger: 'blur'}
-          ],
-          belongCityCode: [
-            {required: true, message: '请选择代理商所在省市', trigger: 'blur'}
-          ],
-          belongArea: [
-            {required: true, message: '请选择代理商详细地址', trigger: 'blur'}
-          ],
-          email: [
-            {required: true, message: '请输入邮箱', trigger: 'blur'},
-            {type: 'email', message: '请输入正确的邮箱', trigger: 'blur'}
-          ],
-          bankCard: [
-            {required: true, message: '请输入结算卡号', trigger: 'blur'},
-            {min: 15, max: 19, message: '请输入正确的结算卡号', trigger: 'blur'}
-          ],
-          bankAccountName: [
-            {required: true, message: '请输入开户名称', trigger: 'blur'}
-          ],
-          idCard: [
-            {required: true, message: '请输入身份证号', trigger: 'blur'}
-          ],
-          bankReserveMobile: [
-            {required: true, message: '请输入手机号', trigger: 'blur'},
-            {pattern: /^1(3|4|5|7|8)\d{9}$/, message: '请输入正确的手机号', trigger: 'blur'}
           ]
-        },
-        item_province: [],
-        item_city: []
+        }
       }
     },
     methods: {
-      province_select: function (provinceCode) {
-        for (let m = 0; m < this.item_province.length; m++) {
-          if (this.item_province[m].code == provinceCode) {
-            this.form.belongProvinceName = this.item_province[m].aname;
-          }
-        }
-        this.$http.post('/api/daili/district/findAllCities', {
-          code: provinceCode
-        }).then(res => {
-          this.item_city = res.data;
-          this.form.belongCityCode = res.data[0].code;
-          this.form.belongCityName = res.data[0].aname;
-        }, err => {
-          console.log(err);
-        })
-      },
-      city_select: function (cityCode) {
-        for (let n = 0; n < this.item_city.length; n++) {
-          if (this.item_city[n].code == cityCode) {
-            this.form.belongCityName = this.item_city[n].aname;
-          }
+      switchInvite: function (Boole) {
+        if (Boole) {
+          this.inviteStatus = 2;
+        } else {
+          this.inviteStatus = 1;
         }
       },
       onSubmit: function () {
@@ -169,6 +147,11 @@
   }
 </script>
 <style lang="less">
+  .inviteText {
+    margin-top: 5px;
+    line-height: 30px;
+  }
+
   .form-label {
     margin-bottom: 15px;
   }
