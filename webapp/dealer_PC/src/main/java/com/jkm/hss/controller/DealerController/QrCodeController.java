@@ -77,8 +77,56 @@ public class QrCodeController extends BaseController {
      * @return
      */
     @ResponseBody
-    @RequestMapping(value = "/distributeQrCodeToDealer ", method = RequestMethod.POST)
+    @RequestMapping(value = "/distributeQrCodeToDealer", method = RequestMethod.POST)
     public CommonResponse distributeQrCodeToDealer (@RequestBody DistributeQrCodeRequest distributeQrCodeRequest) {
+        final Optional<Dealer> dealerOptional = this.dealerService.getById(distributeQrCodeRequest.getDealerId());
+        if(!dealerOptional.isPresent()) {
+            return CommonResponse.simpleResponse(-1, "代理商不存在");
+        }
+        Preconditions.checkState(dealerOptional.get().getLevel() == EnumDealerLevel.FIRST.getId(), "不是一级代理不可以分配二维码");
+        Preconditions.checkState(dealerOptional.get().getFirstLevelDealerId() == super.getDealerId(),
+                "二级代理商[{}]不是当前一级代理商[{}]的二级代理", distributeQrCodeRequest.getDealerId(), super.getDealerId());
+        if (StringUtils.isBlank(distributeQrCodeRequest.getSysType())) {
+            return CommonResponse.simpleResponse(-1, "请选择产品");
+        }
+        if(distributeQrCodeRequest.getType()!= EnumQRCodeDistributeType.ENTITYCODE.getCode()
+                &&distributeQrCodeRequest.getType()!= EnumQRCodeDistributeType.ELECTRONICCODE.getCode()){
+            return CommonResponse.simpleResponse(-1, "请选择类型");
+        }
+        //判断是否有权限
+        Optional<Product> productOptional = productService.selectByType(distributeQrCodeRequest.getSysType());
+        long productId = productOptional.get().getId();
+        List<DealerChannelRate> dealerChannelRateList = dealerChannelRateService.selectByDealerIdAndProductId(super.getDealerId(),productId);
+        if(dealerChannelRateList==null||dealerChannelRateList.size()==0){
+            return CommonResponse.simpleResponse(-1, "未开通");
+        }
+        List<DistributeQRCodeRecord> distributeQRCodeRecords = new ArrayList<DistributeQRCodeRecord>();
+
+        if (EnumBoolean.TRUE.getCode() == distributeQrCodeRequest.getIsSelf()) {
+            distributeQrCodeRequest.setDealerId(super.getDealerId());
+        }
+        if(distributeQrCodeRequest.getDistributeType()==1){//按码段
+            distributeQRCodeRecords = this.dealerService.distributeQRCodeByCode(distributeQrCodeRequest.getType(),distributeQrCodeRequest.getSysType(),super.getDealerId(),
+                    distributeQrCodeRequest.getDealerId(), distributeQrCodeRequest.getStartCode(),distributeQrCodeRequest.getEndCode());
+        }
+        if(distributeQrCodeRequest.getDistributeType()==2){//按个数
+            if (distributeQrCodeRequest.getCount() <= 0) {
+                return CommonResponse.simpleResponse(-1, "分配个数不可以是0");
+            }
+            distributeQRCodeRecords = this.dealerService.distributeQRCodeByCount(distributeQrCodeRequest.getType(),distributeQrCodeRequest.getSysType(),super.getDealerId(),
+                    distributeQrCodeRequest.getDealerId(), distributeQrCodeRequest.getCount());
+        }
+        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "分配成功", distributeQRCodeRecords);
+    }
+
+    /**
+     * 二维码分配记录
+     * @param distributeQrCodeRequest
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/distributeRecord", method = RequestMethod.POST)
+    public CommonResponse distributeRecord (@RequestBody DistributeQrCodeRequest distributeQrCodeRequest) {
         final Optional<Dealer> dealerOptional = this.dealerService.getById(distributeQrCodeRequest.getDealerId());
         if(!dealerOptional.isPresent()) {
             return CommonResponse.simpleResponse(-1, "代理商不存在");

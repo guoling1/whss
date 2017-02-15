@@ -385,7 +385,6 @@ public class DealerController extends BaseController {
             productResponse.setChannels(channels);
             for (DealerChannelRate dealerChannelRate : channelRates) {
                 final SecondDealerProductDetailResponse.Channel channel = new SecondDealerProductDetailResponse.Channel();
-                Optional<DealerChannelRate> dealerChannelRateOptional = this.dealerChannelRateService.selectByDealerIdAndProductIdAndChannelType(request.getDealerId(),request.getProductId(),dealerChannelRate.getChannelTypeSign());
                 channel.setMerchantSettleRate(dealerChannelRate.getDealerMerchantPayRate().multiply(new BigDecimal("100")).setScale(2).toPlainString());
                 channel.setMerchantWithdrawFee(dealerChannelRate.getDealerMerchantWithdrawFee().toPlainString());
                 channel.setMinPaymentSettleRate(dealerChannelRate.getDealerTradeRate().multiply(new BigDecimal("100")).setScale(2).toPlainString());

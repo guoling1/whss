@@ -39,26 +39,26 @@
     </select>
     <select id="selectByParam" resultType="com.jkm.hss.account.entity.AccountFlow">
          SELECT * FROM tb_account_flow WHERE account_id = #{accountID}
-            <if test="flowSn != null">
+            <if test="flowSn != null and flowSn != ''">
                  order_no = #{orderNo}
             </if>
-            <if test="type != null">
+            <if test="type != null and type != 0">
                 type = #{type}
             </if>
-            <if test="beginTime != null">
+            <if test="beginTime != null and beginTime != ''">
                 create_time BETWEEN #{beginTime} AND #{endTime}
             </if>
         ORDER BY id DESC limit #{firstIndex},#{pageSize}
     </select>
     <select id="selectCountByParam" resultType="java.lang.Long">
         SELECT COUNT(*) FROM tb_account_flow WHERE account_id = #{accountID}
-        <if test="flowSn != null">
+        <if test="flowSn != null and flowSn != ''">
             order_no = #{orderNo}
         </if>
-        <if test="type != null">
+        <if test="type != null and type != 0">
             type = #{type}
         </if>
-        <if test="beginTime != null">
+        <if test="beginTime != null beginTime != ''">
             create_time BETWEEN #{beginTime} AND #{endTime}
         </if>
     </select>
