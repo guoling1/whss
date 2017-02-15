@@ -16,6 +16,7 @@ import com.jkm.hss.dealer.enums.EnumDealerLevel;
 import com.jkm.hss.dealer.service.DealerService;
 import com.jkm.hss.helper.request.ProfitDetailsSelectRequest;
 import com.jkm.hss.helper.response.ProfitDetailsSelectResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,8 +26,9 @@ import java.util.Map;
 /**
  * Created by yuxiang on 2017-02-13.
  */
+@Slf4j
 @RestController
-@RequestMapping(value = "/profit")
+@RequestMapping(value = "/daili/profit")
 public class ProfitController extends BaseController{
 
     @Autowired

@@ -2120,4 +2120,94 @@ public class DealerServiceImpl implements DealerService {
             }
         }
     }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param dealerId  一级代理商id
+     * @param toDealerId  码段要分配给代理商的id
+     * @param startCode  开始二维码
+     * @param endCode  结束二维码
+     * @return
+     */
+    @Override
+    @Transactional
+    public List<DistributeQRCodeRecord> distributeQRCodeByCode(final int type, final String sysType,final long dealerId, final long toDealerId,
+                                                         final String startCode, final String endCode) {
+        final List<DistributeQRCodeRecord> records = new ArrayList<>();
+        final List<QRCode> qrCodeList = this.qrCodeService.getUnDistributeCodeByDealerIdAndRangeCodeAndSysType(dealerId, startCode, endCode,sysType);
+        if (CollectionUtils.isEmpty(qrCodeList)) {
+            return records;
+        }
+        final List<Long> qrCodeIds = Lists.transform(qrCodeList, new Function<QRCode, Long>() {
+            @Override
+            public Long apply(QRCode input) {
+                return input.getId();
+            }
+        });
+        if (dealerId == toDealerId) {
+            this.qrCodeService.markAsDistribute(qrCodeIds);
+        } else {
+            this.qrCodeService.markAsDistribute2(qrCodeIds, toDealerId);
+        }
+        final List<Pair<QRCode, QRCode>> pairQRCodeList = this.qrCodeService.getPairQRCodeList(qrCodeList);
+        for (Pair<QRCode, QRCode> pair : pairQRCodeList) {
+            final QRCode left = pair.getLeft();
+            final QRCode right = pair.getRight();
+            final DistributeQRCodeRecord distributeQRCodeRecord = new DistributeQRCodeRecord();
+            distributeQRCodeRecord.setFirstLevelDealerId(dealerId);
+            distributeQRCodeRecord.setSecondLevelDealerId(dealerId == toDealerId ? 0 : toDealerId);
+            distributeQRCodeRecord.setCount((int) (Long.valueOf(right.getCode()) - Long.valueOf(left.getCode()) + 1));
+            distributeQRCodeRecord.setStartCode(left.getCode());
+            distributeQRCodeRecord.setEndCode(right.getCode());
+            distributeQRCodeRecord.setType(type);
+            records.add(distributeQRCodeRecord);
+            this.distributeQRCodeRecordService.add(distributeQRCodeRecord);
+        }
+        return records;
+    }
+
+    /**
+     * 按个数分配
+     *
+     * @param type
+     * @param dealerId
+     * @param toDealerId
+     * @param count
+     * @return
+     */
+    @Override
+    public List<DistributeQRCodeRecord> distributeQRCodeByCount(int type, String sysType, long dealerId, long toDealerId, int count) {
+        final List<DistributeQRCodeRecord> records = new ArrayList<>();
+        final List<QRCode> qrCodeList = this.qrCodeService.getUnDistributeCodeByDealerIdAndSysType(dealerId,sysType);
+        if (CollectionUtils.isEmpty(qrCodeList)) {
+            return records;
+        }
+        final List<Long> qrCodeIds = Lists.transform(qrCodeList, new Function<QRCode, Long>() {
+            @Override
+            public Long apply(QRCode input) {
+                return input.getId();
+            }
+        });
+        if (dealerId == toDealerId) {
+            this.qrCodeService.markAsDistribute(qrCodeIds);
+        } else {
+            this.qrCodeService.markAsDistribute2(qrCodeIds, toDealerId);
+        }
+        final List<Pair<QRCode, QRCode>> pairQRCodeList = this.qrCodeService.getPairQRCodeList(qrCodeList);
+        for (Pair<QRCode, QRCode> pair : pairQRCodeList) {
+            final QRCode left = pair.getLeft();
+            final QRCode right = pair.getRight();
+            final DistributeQRCodeRecord distributeQRCodeRecord = new DistributeQRCodeRecord();
+            distributeQRCodeRecord.setFirstLevelDealerId(dealerId);
+            distributeQRCodeRecord.setSecondLevelDealerId(dealerId == toDealerId ? 0 : toDealerId);
+            distributeQRCodeRecord.setCount((int) (Long.valueOf(right.getCode()) - Long.valueOf(left.getCode()) + 1));
+            distributeQRCodeRecord.setStartCode(left.getCode());
+            distributeQRCodeRecord.setEndCode(right.getCode());
+            distributeQRCodeRecord.setType(type);
+            records.add(distributeQRCodeRecord);
+            this.distributeQRCodeRecordService.add(distributeQRCodeRecord);
+        }
+        return records;
+    }
 }

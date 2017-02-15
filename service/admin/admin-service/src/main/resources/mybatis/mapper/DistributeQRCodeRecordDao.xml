@@ -9,7 +9,8 @@
         count,
         start_code,
         end_code,
-        status
+        status,
+        type
         )
         VALUES
         (
@@ -18,7 +19,8 @@
         #{count},
         #{startCode},
         #{endCode},
-        #{status}
+        #{status},
+        #{type}
         );
     </insert>
 

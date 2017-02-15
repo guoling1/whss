@@ -406,4 +406,23 @@ public interface QRCodeDao {
      * @return
      */
     List<QRCodeList> bindShopList(@Param("shopId") long shopId, @Param("sysType") String sysType);
+
+    /**
+     * 查询代理商某一二维码范围下的未分配的二维码
+     *
+     * @param dealerId
+     * @param startCode
+     * @param endCode
+     * @return
+     */
+    List<QRCode> selectUnDistributeCodeByDealerIdAndRangeCodeAndSysType(@Param("dealerId") long dealerId,
+                                                              @Param("startCode") String startCode, @Param("endCode") String endCode,@Param("sysType") String sysType);
+
+    /**
+     * 按产品类型查询某个代理商下的所有二维码
+     * @param dealerId
+     * @param sysType
+     * @return
+     */
+    List<QRCode> getUnDistributeCodeByDealerIdAndSysType(@Param("dealerId") long dealerId,@Param("sysType") String sysType);
 }
