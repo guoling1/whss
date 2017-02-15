@@ -8,7 +8,7 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 /**
- * Created by yulong.zhang on 2016/12/22.
+ * Created by bin.zhang on 2016/12/22.
  *
  * 交易订单
  *
