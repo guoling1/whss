@@ -2201,8 +2201,10 @@ public class DealerServiceImpl implements DealerService {
                 return input.getId();
             }
         });
-        this.qrCodeService.markAsDistribute2(qrCodeIds, toDealerId);
-        final List<Pair<QRCode, QRCode>> pairQRCodeList = this.qrCodeService.getPairQRCodeList(qrCodeList);
+        final List<Long> ids = qrCodeIds.subList(0, count);
+        final List<QRCode> qrCodeList1 = qrCodeList.subList(0, count);
+        this.qrCodeService.markAsDistribute2(ids, toDealerId);
+        final List<Pair<QRCode, QRCode>> pairQRCodeList = this.qrCodeService.getPairQRCodeList(qrCodeList1);
         for (Pair<QRCode, QRCode> pair : pairQRCodeList) {
             final QRCode left = pair.getLeft();
             final QRCode right = pair.getRight();

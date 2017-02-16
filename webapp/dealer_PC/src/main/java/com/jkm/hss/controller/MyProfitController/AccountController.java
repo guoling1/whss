@@ -157,12 +157,12 @@ public class AccountController extends BaseController{
             final Dealer dealer = this.getDealer().get();
             final String mobile = DealerSupport.decryptMobile(dealer.getId(), dealer.getBankReserveMobile());
 
-            /*final Pair<Integer, String> pair = smsAuthService.checkVerifyCode(mobile, withdrawRequest.getCode(), EnumVerificationCodeType.WITHDRAW_DEALER);
+            final Pair<Integer, String> pair = smsAuthService.checkVerifyCode(mobile, withdrawRequest.getCode(), EnumVerificationCodeType.WITHDRAW_DEALER);
 
             if (1 != pair.getLeft()) {
                 return CommonResponse.simpleResponse(-1, pair.getRight());
             }
-*/
+
             if ( (new BigDecimal(withdrawRequest.getAmount()).compareTo( new BigDecimal("1.1")) == -1)){
                 return CommonResponse.simpleResponse(-1, "提现金额不得小于500");
             }
