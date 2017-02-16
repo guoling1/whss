@@ -25,6 +25,20 @@ public class HsyMerchantAuditServiceImpl implements HsyMerchantAuditService {
         List<HsyMerchantAuditResponse> list = hsyMerchantAuditDao.getMerchant(hsyMerchantAuditRequest);
         if (list.size()>0){
             for (int i=0;i<list.size();i++){
+                if (list.size()>0){
+                    if (list.get(i).getStatus()==1){
+                        list.get(i).setStat("审核已通过");
+                    }
+                    if (list.get(i).getStatus()==2){
+                        list.get(i).setStat("待审核");
+                    }
+                    if (list.get(i).getStatus()==3){
+                        list.get(i).setStat("审核未通过");
+                    }
+                    if (list.get(i).getStatus()==4){
+                        list.get(i).setStat("商户已注册");
+                    }
+                }
                 String districtCode =list.get(i).getDistrictCode();
                 if (districtCode!=null&&!districtCode.equals("")){
                     HsyMerchantAuditResponse ret = hsyMerchantAuditDao.getCode(districtCode);
