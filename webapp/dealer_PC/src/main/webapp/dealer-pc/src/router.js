@@ -14,6 +14,7 @@ import dealer_list from './components/dealer_list.vue'
 import dealer_add from './components/dealer_add.vue'
 import product_add from './components/product_add.vue'
 import distribution_qrcode from './components/distribution_qrcode.vue'
+import qrcode_distribution from './components/qrcode_distribution.vue'
 import balance_withdrawal from './components/balance_withdrawal.vue'
 import withdrawal from './components/withdrawal.vue'
 
@@ -52,6 +53,7 @@ const routes = [
       {path: 'dealer_add', name: "dealer_add", component: dealer_add},
       {path: 'product_add', name: "product_add", component: product_add},
       {path: 'distribution_qrcode', name: "distribution_qrcode", component: distribution_qrcode},
+      {path: 'qrcode_distribution', name: "qrcode_distribution", component: qrcode_distribution},
       {path: 'balance_withdrawal', name: "balance_withdrawal", component: balance_withdrawal},
       {path: 'withdrawal', name: "withdrawal", component: withdrawal},
     ]

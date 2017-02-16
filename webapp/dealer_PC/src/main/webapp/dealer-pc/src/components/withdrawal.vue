@@ -153,7 +153,12 @@
         this.$refs['form'].validate((valid) => {
           if (valid) {
             this.$http.post('/api/daili/account/withdraw', this.form).then(res => {
-              console.log(res);
+              this.$message({
+                showClose: true,
+                message: '提现申请成功',
+                type: 'success'
+              });
+              this.$router.push('/app/balance_withdrawal');
             }, err => {
               this.$message({
                 showClose: true,

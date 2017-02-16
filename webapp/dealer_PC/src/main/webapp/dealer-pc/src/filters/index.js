@@ -44,3 +44,11 @@ Vue.filter('filter_businessType', function (value) {
   };
   return encryption[value];
 });
+
+Vue.filter('filter_qrcodeType', function (value) {
+  const encryption = {
+    1: '实体码',
+    2: '电子码'
+  };
+  return encryption[value];
+});

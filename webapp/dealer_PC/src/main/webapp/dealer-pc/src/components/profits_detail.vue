@@ -84,7 +84,7 @@
                              @size-change="handleSizeChange"
                              @current-change="handleCurrentChange"
                              :current-page="pageNo"
-                             :page-sizes="[4, 100, 200, 500]"
+                             :page-sizes="[20, 100, 200, 500]"
                              :page-size="pageSize"
                              layout="total, sizes, prev, pager, next, jumper"
                              :total="total">
@@ -106,7 +106,7 @@
     data() {
       return {
         total: 0,
-        pageSize: 4,
+        pageSize: 20,
         pageNo: 1,
         tableData: [],
         orderNo: '',

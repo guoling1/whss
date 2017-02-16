@@ -251,5 +251,18 @@
   }
 </script>
 <style scoped lang="less">
+  .screen-top {
+    padding-top: 0 !important;
+  }
 
+  .screen-item {
+    float: left;
+    margin-right: 10px;
+  }
+
+  .screen-title {
+    display: block;
+    height: 24px;
+    line-height: 24px;
+  }
 </style>

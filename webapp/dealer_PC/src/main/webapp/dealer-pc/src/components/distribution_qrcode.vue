@@ -190,7 +190,12 @@
       },
       onSubmit: function () {
         this.$http.post('/api/daili/qrCode/distributeQrCodeToDealer', this.form).then(res => {
-          console.log(res);
+          this.$message({
+          showClose: true,
+          message: '二维码分配成功成功',
+          type: 'success'
+        });
+        this.$router.push('/app/qrcode_distribution');
         }, err => {
           this.$message({
             showClose: true,

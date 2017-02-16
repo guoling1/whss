@@ -234,6 +234,9 @@
                 <router-link to="distribution_qrcode"><i class="fa fa-circle-o"></i> 分配二维码</router-link>
               </li>
               <li>
+                <router-link to="qrcode_distribution"><i class="fa fa-circle-o"></i> 二维码分配记录</router-link>
+              </li>
+              <li>
                 <router-link to="development"><i class="fa fa-circle-o"></i> 所有二维码</router-link>
               </li>
             </ul>
