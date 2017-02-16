@@ -59,7 +59,6 @@
                       </el-option>
                     </el-select>
                   </el-popover>
-
                 </el-form-item>
                 <el-form-item label="代理详细信息" v-show="label.isSelf">
                   <el-table :data="label.selectDealerData" style="width: 100%">
@@ -89,7 +88,7 @@
                   <el-input v-model="form.count"></el-input>
                 </el-form-item>
                 <el-form-item>
-                  <el-button type="primary" @click="onSubmit">创建代理商</el-button>
+                  <el-button type="primary" @click="onSubmit">分配二维码</el-button>
                 </el-form-item>
               </el-form>
             </div>
