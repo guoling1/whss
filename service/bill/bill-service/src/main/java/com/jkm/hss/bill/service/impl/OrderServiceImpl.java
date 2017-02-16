@@ -189,7 +189,7 @@ public class OrderServiceImpl implements OrderService {
         playMoneyOrder.setPayee(0);
         playMoneyOrder.setAppId(appId);
         //手续费固定1元
-        playMoneyOrder.setPoundage(new BigDecimal("1"));
+        playMoneyOrder.setPoundage(new BigDecimal("1.0"));
         playMoneyOrder.setGoodsName(dealer.getProxyName());
         playMoneyOrder.setGoodsDescribe(dealer.getProxyName());
         playMoneyOrder.setSettleStatus(EnumSettleStatus.DUE_SETTLE.getId());

@@ -49,13 +49,13 @@ public class ProfitController extends BaseController{
             PageModel<SplitAccountRecord> pageModel = this.splitAccountRecordService.selectByParam(request.getPageNo(), request.getPageSize(), accountId, request.getOrderNo(),
                     request.getBusinessType(), request.getBeginDate(), request.getEndDate());
 
-            final List<SplitAccountRecord> records = pageModel.getRecords();
-            if (CollectionUtils.isEmpty(records)){
+                final List<SplitAccountRecord> records = pageModel.getRecords();
+                if (CollectionUtils.isEmpty(records)){
                 PageModel<ProfitDetailsSelectResponse> model = new PageModel<>(pageModel.getPageNO(), pageModel.getPageSize());
                 model.setCount(pageModel.getCount());
                 model.setRecords(Collections.EMPTY_LIST);
                 return CommonResponse.objectResponse(1, "SUCCESS", model);
-            }
+                }
             List<String> orderNos = Lists.transform(records, new Function<SplitAccountRecord, String>() {
                 @Override
                 public String apply(SplitAccountRecord input) {
