@@ -69,7 +69,7 @@
             localStorage.setItem('accountInfo', null);
           }
           // 跳转到 home 页
-          this.$router.push('/app/home');
+          this.$router.push('/daili/app/home');
         }, err => {
           this.$message({
             showClose: true,

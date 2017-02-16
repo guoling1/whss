@@ -194,7 +194,7 @@
           message: '二维码分配成功成功',
           type: 'success'
         });
-        this.$router.push('/app/qrcode_distribution');
+        this.$router.push('/daili/app/qrcode_distribution');
         }, err => {
           this.$message({
             showClose: true,

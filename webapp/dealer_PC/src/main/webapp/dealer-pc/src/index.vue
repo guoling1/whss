@@ -543,7 +543,7 @@
       logout: function () {
         this.$http.post('/daili/login/logout').then(() => {
           this.$store.dispatch('actions_users_clearInfo');
-          this.$router.push('/login');
+          this.$router.push('/daili/login');
         }, (err) => {
           console.log(err);
         })
