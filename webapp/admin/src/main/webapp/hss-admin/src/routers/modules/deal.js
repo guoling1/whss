@@ -58,6 +58,8 @@ const ProfitDet = r => require.ensure([], () => r(require('../../components/Prof
 const ProfitFirDet = r => require.ensure([], () => r(require('../../components/ProfitDet')), 'group-record');
 const ProfitSecDet = r => require.ensure([], () => r(require('../../components/ProfitDet')), 'group-record');
 
+const Test = r => require.ensure([], () => r(require('../../components/Test')), 'group-record');
+
 export default {
   path: '/admin/record',
   redirect: '/admin/record/deal',
@@ -317,6 +319,11 @@ export default {
       path: 'profitSecDet',
       name: 'ProfitSecDet',
       component: ProfitSecDet
+    },
+    {
+      path: 'test',
+      name: 'Test',
+      component: Test
     },
   ]
 }

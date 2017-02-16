@@ -31,7 +31,7 @@
             <el-table-column prop="totalMoney" label="收益总额" align="right" header-align="left"></el-table-column>
             <el-table-column label="操作" width="100">
               <template scope="scope">
-                <router-link :to="{path:'/admin/record/firProfitDet',query:{id:records[scope.$index].id}}" v-if="records[scope.$index].totalMoney!=0" type="text" size="small">明细
+                <router-link :to="{path:'/admin/record/profitFirDet',query:{id:records[scope.$index].id}}" v-if="records[scope.$index].totalMoney!=0" type="text" size="small">明细
                 </router-link>
               </template>
             </el-table-column>

@@ -3,7 +3,7 @@
     <div class="col-md-12">
       <div class="box" style="margin-top:15px;overflow: hidden">
         <div class="box-header">
-          <h3 class="box-title">公司分润</h3>
+          <h3 class="box-title">分润明细</h3>
         </div>
         <div class="box-body">
           <!--筛选-->
@@ -48,37 +48,9 @@
 </template>
 <script lang="babel">
   export default{
-    name: 'profitCom',
+    name: 'profitDet',
     data(){
       return {
-        pickerOptions: {
-          shortcuts: [{
-            text: '最近一周',
-            onClick(picker) {
-              const end = new Date();
-              const start = new Date();
-              start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
-              picker.$emit('pick', [start, end]);
-            }
-          }, {
-            text: '最近一个月',
-            onClick(picker) {
-              const end = new Date();
-              const start = new Date();
-              start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
-              picker.$emit('pick', [start, end]);
-            }
-          }, {
-            text: '最近三个月',
-            onClick(picker) {
-              const end = new Date();
-              const start = new Date();
-              start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
-              picker.$emit('pick', [start, end]);
-            }
-          }]
-        },
-        date:'',
         query:{
           pageNo:1,
           pageSize:10,
@@ -90,11 +62,20 @@
         total: 0,
         currentPage: 1,
         loading: true,
-        index: '',
+        path:''
       }
     },
     created: function () {
-      this.$http.post('/admin/profit/companyProfit', this.$data.query)
+      if(this.$route.path=="/admin/record/profitDet"){
+        this.$data.path = '/admin/profit/companyProfit/detail'
+      }else if(this.$route.path=="/admin/record/profitComDet"){
+        this.$data.path = '/admin/profit/companyProfit/detail'
+      }else if(this.$route.path=="/admin/record/profitFirDet"){
+        this.$data.path = '/admin/profit/firstDealer/detail'
+      }else if(this.$route.path=="/admin/record/profitSecDet"){
+        this.$data.path = '/admin/profit/secondDealer/detail'
+      }
+      this.$http.post(this.$data.path, this.$data.query)
         .then(function (res) {
           this.$data.records = res.data.records;
           this.$data.count = res.data.count;
@@ -121,7 +102,8 @@
       search(){
         this.$data.query.pageNo = 1;
         this.$data.loading = true;
-        this.$http.post('/admin/profit/companyProfit', this.$data.query)
+        this.$data.records = '';
+          this.$http.post(this.$data.path, this.$data.query)
           .then(function (res) {
             this.$data.records = res.data.records;
             this.$data.count = res.data.count;
@@ -148,7 +130,8 @@
       handleCurrentChange(val) {
         this.$data.query.pageNo = val;
         this.$data.loading = true;
-        this.$http.post('/admin/profit/companyProfit', this.$data.query)
+        this.$data.records = '';
+        this.$http.post(this.$data.path, this.$data.query)
           .then(function (res) {
             this.$data.records = res.data.records;
             this.$data.count = res.data.count;
@@ -172,28 +155,6 @@
           })
       },
     },
-    watch:{
-      date:function (val,oldVal) {
-        if(val[0]!=null){
-          for(var j=0;j<val.length;j++){
-            var str = val[j];
-            var ary = [str.getFullYear(), str.getMonth() + 1, str.getDate()];
-            for(var i = 0, len = ary.length; i < len; i ++) {
-              if(ary[i] < 10) {
-                ary[i] = '0' + ary[i];
-              }
-            }
-            str = ary[0] + '-' + ary[1] + '-' + ary[2];
-            if(j==0){
-              this.$data.query.beginProfitDate = str;
-            }else {
-              this.$data.query.endProfitDate = str;
-            }
-          }
-        }
-
-      }
-    }
   }
 </script>
 <style scoped lang="less">

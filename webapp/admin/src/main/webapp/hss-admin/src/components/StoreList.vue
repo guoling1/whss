@@ -584,7 +584,7 @@
         }else if(val == 3||val==6){
           val = "审核通过"
         }else if(val == 4){
-          val="审核未通过"
+          val = "审核未通过"
         }
         return val;
       },
