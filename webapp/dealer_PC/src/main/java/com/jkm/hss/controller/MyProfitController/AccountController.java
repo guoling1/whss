@@ -61,7 +61,7 @@ public class AccountController extends BaseController{
     private SendMessageService sendMessageService;
 
     /**
-     * 獲取帳戶詳情，
+     * 獲取代理信息，
      * @return
      */
     @ResponseBody
@@ -81,7 +81,7 @@ public class AccountController extends BaseController{
      * @return
      */
     @ResponseBody
-    @RequestMapping(value = "/info", method = RequestMethod.GET)
+    @RequestMapping(value = "/info", method = RequestMethod.POST)
     public CommonResponse withdraw(){
 
         final Dealer dealer = this.getDealer().get();
@@ -105,7 +105,7 @@ public class AccountController extends BaseController{
      * @return
      */
     @ResponseBody
-    @RequestMapping(value = "/flowDetails", method = RequestMethod.GET)
+    @RequestMapping(value = "/flowDetails", method = RequestMethod.POST)
     public CommonResponse flowDetails(@RequestBody final FlowDetailsSelectRequest request){
 
         try{

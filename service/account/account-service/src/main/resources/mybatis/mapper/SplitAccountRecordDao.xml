@@ -69,7 +69,7 @@
         <if test="businessType != null and businessType != ''">
             AND business_type = #{businessType}
         </if>
-        <if test="beginDate != null and beginDate != ''">
+        <if test="beginDate != null">
             AND create_time BETWEEN #{beginDate} AND #{endDate}
         </if>
         ORDER BY id DESC LIMIT #{firstIndex},#{pageSize}
@@ -82,7 +82,7 @@
         <if test="businessType != null and businessType != ''">
             AND business_type = #{businessType}
         </if>
-        <if test="beginDate != null and beginDate != ''">
+        <if test="beginDate != null">
             AND create_time BETWEEN #{beginDate} AND #{endDate}
         </if>
     </select>

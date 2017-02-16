@@ -85,6 +85,7 @@ public class BaseController {
     protected Optional<Dealer> getDealer() {
 
       return Optional.fromNullable(DEALER_USER_INFO_DATA_BIND.get());
+      //  return Optional.fromNullable(dealerService.getById(38).get());
     }
 
     /**
@@ -98,6 +99,7 @@ public class BaseController {
            return dealerOptional.get().getId();
         }
         return 0L;
+       // return 38;
     }
 
 

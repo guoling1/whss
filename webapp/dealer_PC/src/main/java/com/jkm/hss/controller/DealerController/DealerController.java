@@ -8,6 +8,7 @@ import com.jkm.base.common.util.ValidateUtils;
 import com.jkm.hss.controller.BaseController;
 import com.jkm.hss.dealer.entity.Dealer;
 import com.jkm.hss.dealer.entity.DealerChannelRate;
+import com.jkm.hss.dealer.entity.DealerUpgerdeRate;
 import com.jkm.hss.dealer.enums.EnumDealerLevel;
 import com.jkm.hss.dealer.enums.EnumInviteBtn;
 import com.jkm.hss.dealer.helper.DealerSupport;
@@ -16,7 +17,9 @@ import com.jkm.hss.dealer.helper.response.SecondDealerResponse;
 import com.jkm.hss.dealer.service.DealerChannelRateService;
 import com.jkm.hss.dealer.service.DealerRateService;
 import com.jkm.hss.dealer.service.DealerService;
+import com.jkm.hss.dealer.service.DealerUpgerdeRateService;
 import com.jkm.hss.helper.response.DealerDetailResponse;
+import com.jkm.hss.helper.response.DealerPolicyResponse;
 import com.jkm.hss.helper.response.SecondDealerProductDetailResponse;
 import com.jkm.hss.helper.response.SecondLevelDealerAddResponse;
 import com.jkm.hss.merchant.entity.BankCardBin;
@@ -60,6 +63,8 @@ public class DealerController extends BaseController {
     private BasicChannelService basicChannelService;
     @Autowired
     private DealerRateService dealerRateService;
+    @Autowired
+    private DealerUpgerdeRateService dealerUpgerdeRateService;
     /**
      * 二级代理商列表
      *
@@ -200,6 +205,9 @@ public class DealerController extends BaseController {
         dealerDetailResponse.setBelongCityName(dealer.getBelongCityName());
         dealerDetailResponse.setBelongArea(dealer.getBelongArea());
         final Optional<Dealer> firstDealerOptional = this.dealerService.getById(dealerOptional.get().getFirstLevelDealerId());
+        if(!firstDealerOptional.isPresent()){
+            return CommonResponse.simpleResponse(-1, "上级代理信息有误");
+        }
         dealerDetailResponse.setFirstDealerName(firstDealerOptional.get().getProxyName());
         dealerDetailResponse.setFirstMarkCode(firstDealerOptional.get().getMarkCode());
         dealerDetailResponse.setBankCard(DealerSupport.decryptBankCard(dealer.getId(), dealer.getSettleBankCard()));
@@ -490,5 +498,149 @@ public class DealerController extends BaseController {
             log.error("错误信息时",e.getStackTrace());
             return CommonResponse.simpleResponse(-1, e.getMessage());
         }
+    }
+
+    /**
+     * 注册信息
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/dealerDetails", method = RequestMethod.GET)
+    public CommonResponse dealerDetails() {
+        final Optional<Dealer> dealerOptional = this.dealerService.getById(super.getDealerId());
+        if (!dealerOptional.isPresent()) {
+            return CommonResponse.simpleResponse(-1, "代理商不存在");
+        }
+        final Dealer dealer = dealerOptional.get();
+        final DealerDetailResponse dealerDetailResponse = new DealerDetailResponse();
+        dealerDetailResponse.setId(dealer.getId());
+        dealerDetailResponse.setMobile(dealer.getMobile());
+        dealerDetailResponse.setName(dealer.getProxyName());
+        dealerDetailResponse.setLoginName(dealer.getLoginName());
+        dealerDetailResponse.setEmail(dealer.getEmail());
+        dealerDetailResponse.setMarkCode(dealer.getMarkCode());
+        dealerDetailResponse.setBelongProvinceCode(dealer.getBelongProvinceCode());
+        dealerDetailResponse.setBelongProvinceName(dealer.getBelongProvinceName());
+        dealerDetailResponse.setBelongCityCode(dealer.getBelongCityCode());
+        dealerDetailResponse.setBelongCityName(dealer.getBelongCityName());
+        dealerDetailResponse.setBelongArea(dealer.getBelongArea());
+        if(dealer.getFirstLevelDealerId()>0){
+            final Optional<Dealer> firstDealerOptional = this.dealerService.getById(dealerOptional.get().getFirstLevelDealerId());
+            if (!firstDealerOptional.isPresent()) {
+                return CommonResponse.simpleResponse(-1, "上级代理信息有误");
+            }
+            dealerDetailResponse.setFirstDealerName(firstDealerOptional.get().getProxyName());
+            dealerDetailResponse.setFirstMarkCode(firstDealerOptional.get().getMarkCode());
+            dealerDetailResponse.setBankCard(DealerSupport.decryptBankCard(dealer.getId(), dealer.getSettleBankCard()));
+            dealerDetailResponse.setBankAccountName(dealer.getBankAccountName());
+            dealerDetailResponse.setBankReserveMobile(DealerSupport.decryptMobile(dealer.getId(), dealer.getBankReserveMobile()));
+            if (dealer.getIdCard()!=null){
+                dealerDetailResponse.setIdCard(DealerSupport.decryptIdentity(dealer.getId(),dealer.getIdCard()));
+            }
+            return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", dealerDetailResponse);
+        }else{
+            dealerDetailResponse.setFirstDealerName("金开门");
+            dealerDetailResponse.setFirstMarkCode("000000000000");
+            dealerDetailResponse.setBankCard(DealerSupport.decryptBankCard(dealer.getId(), dealer.getSettleBankCard()));
+            dealerDetailResponse.setBankAccountName(dealer.getBankAccountName());
+            dealerDetailResponse.setBankReserveMobile(DealerSupport.decryptMobile(dealer.getId(), dealer.getBankReserveMobile()));
+            if (dealer.getIdCard()!=null){
+                dealerDetailResponse.setIdCard(DealerSupport.decryptIdentity(dealer.getId(),dealer.getIdCard()));
+            }
+            return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", dealerDetailResponse);
+        }
+
+    }
+
+    /**
+     * 代理商政策
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/dealerPolicy", method = RequestMethod.GET)
+    public CommonResponse dealerPolicy(@RequestBody DealerPolicyRequest request) {
+        DealerPolicyResponse dealerPolicyResponse = new DealerPolicyResponse();
+        if((request.getSysType()).equals(EnumProductType.HSS.getId())){
+            Optional<Product> productOptional = this.productService.selectByType(request.getSysType());
+            if(!productOptional.isPresent()){
+                return CommonResponse.simpleResponse(-1, "产品不存在");
+            }
+            final Optional<Dealer> dealerOptional = this.dealerService.getById(super.getDealerId());
+            if (!dealerOptional.isPresent()) {
+                return CommonResponse.simpleResponse(-1, "代理商不存在");
+            }
+            dealerPolicyResponse.setInviteBtn(dealerOptional.get().getInviteBtn());
+            dealerPolicyResponse.setInviteCode(dealerOptional.get().getInviteCode());
+            final DealerPolicyResponse.Product productResponse = dealerPolicyResponse.new Product();
+            productResponse.setProductId(productOptional.get().getId());
+            productResponse.setProductName(productOptional.get().getProductName());
+            final List<DealerPolicyResponse.Channel> channels = new ArrayList<>();
+            productResponse.setChannels(channels);
+            List<DealerChannelRate> dealerChannelRates = this.dealerChannelRateService.selectByDealerIdAndProductId(dealerOptional.get().getId(),productOptional.get().getId());
+            if(dealerChannelRates.size()>0){
+                for(int i=0;i<dealerChannelRates.size();i++){
+                    final DealerPolicyResponse.Channel channelResponse = new DealerPolicyResponse.Channel();
+                    channelResponse.setChannelType(dealerChannelRates.get(i).getChannelTypeSign());
+                    Optional<BasicChannel> basicChannelOptional = basicChannelService.selectByChannelTypeSign(dealerChannelRates.get(i).getChannelTypeSign());
+                    channelResponse.setChannelName(basicChannelOptional.get().getChannelName());
+                    channelResponse.setPaymentSettleRate(dealerChannelRates.get(i).getDealerTradeRate().multiply(new BigDecimal("100")).setScale(2).toPlainString());
+                    channelResponse.setSettleType(dealerChannelRates.get(i).getDealerBalanceType());
+                    channelResponse.setWithdrawSettleFee(dealerChannelRates.get(i).getDealerWithdrawFee().toPlainString());
+                    channelResponse.setMerchantSettleRate(dealerChannelRates.get(i).getDealerMerchantPayRate().multiply(new BigDecimal("100")).setScale(2).toPlainString());
+                    channelResponse.setMerchantWithdrawFee(dealerChannelRates.get(i).getDealerMerchantWithdrawFee().toPlainString());
+                    channels.add(channelResponse);
+                }
+            }
+            dealerPolicyResponse.setProduct(productResponse);
+            final List<DealerPolicyResponse.DealerUpgerdeRate> dealerUpgerdeRates = new ArrayList<>();
+            if(dealerOptional.get().getLevel()==EnumDealerLevel.FIRST.getId()){
+                List<DealerUpgerdeRate> upgerdeRates = dealerUpgerdeRateService.selectByDealerIdAndProductId(dealerOptional.get().getId(),productOptional.get().getId());
+                for(DealerUpgerdeRate dealerUpgerdeRate:upgerdeRates){
+                    final DealerPolicyResponse.DealerUpgerdeRate du = dealerPolicyResponse.new DealerUpgerdeRate();
+                    du.setId(dealerUpgerdeRate.getId());
+                    du.setType(dealerUpgerdeRate.getType());
+                    du.setFirstDealerShareProfitRate(dealerUpgerdeRate.getFirstDealerShareProfitRate().toString());
+                    du.setSecondDealerShareProfitRate(dealerUpgerdeRate.getSecondDealerShareProfitRate().toString());
+                    du.setBossDealerShareRate(dealerUpgerdeRate.getBossDealerShareRate().toString());
+                    dealerUpgerdeRates.add(du);
+                }
+            }
+            dealerPolicyResponse.setDealerUpgerdeRates(dealerUpgerdeRates);
+        }
+        if((request.getSysType()).equals(EnumProductType.HSY.getId())){
+            Optional<Product> productOptional = this.productService.selectByType(request.getSysType());
+            if(!productOptional.isPresent()){
+                return CommonResponse.simpleResponse(-1, "产品不存在");
+            }
+            final Optional<Dealer> dealerOptional = this.dealerService.getById(super.getDealerId());
+            if (!dealerOptional.isPresent()) {
+                return CommonResponse.simpleResponse(-1, "代理商不存在");
+            }
+            dealerPolicyResponse.setInviteBtn(dealerOptional.get().getInviteBtn());
+            dealerPolicyResponse.setInviteCode(dealerOptional.get().getInviteCode());
+            final DealerPolicyResponse.Product productResponse = dealerPolicyResponse.new Product();
+            productResponse.setProductId(productOptional.get().getId());
+            productResponse.setProductName(productOptional.get().getProductName());
+            final List<DealerPolicyResponse.Channel> channels = new ArrayList<>();
+            productResponse.setChannels(channels);
+            List<DealerChannelRate> dealerChannelRates = this.dealerChannelRateService.selectByDealerIdAndProductId(dealerOptional.get().getId(),productOptional.get().getId());
+            if(dealerChannelRates.size()>0){
+                for(int i=0;i<dealerChannelRates.size();i++){
+                    final DealerPolicyResponse.Channel channelResponse = new DealerPolicyResponse.Channel();
+                    channelResponse.setChannelType(dealerChannelRates.get(i).getChannelTypeSign());
+                    Optional<BasicChannel> basicChannelOptional = basicChannelService.selectByChannelTypeSign(dealerChannelRates.get(i).getChannelTypeSign());
+                    channelResponse.setChannelName(basicChannelOptional.get().getChannelName());
+                    channelResponse.setPaymentSettleRate(dealerChannelRates.get(i).getDealerTradeRate().multiply(new BigDecimal("100")).setScale(2).toPlainString());
+                    channelResponse.setSettleType(dealerChannelRates.get(i).getDealerBalanceType());
+                    channelResponse.setWithdrawSettleFee(dealerChannelRates.get(i).getDealerWithdrawFee().toPlainString());
+                    channelResponse.setMerchantSettleRate(dealerChannelRates.get(i).getDealerMerchantPayRate().multiply(new BigDecimal("100")).setScale(2).toPlainString());
+                    channelResponse.setMerchantWithdrawFee(dealerChannelRates.get(i).getDealerMerchantWithdrawFee().toPlainString());
+                    channels.add(channelResponse);
+                }
+            }
+            dealerPolicyResponse.setProduct(productResponse);
+        }
+        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", dealerPolicyResponse);
+
     }
 }
