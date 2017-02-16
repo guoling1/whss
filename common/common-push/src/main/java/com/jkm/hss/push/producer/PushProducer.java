@@ -183,6 +183,38 @@ public class PushProducer {
         return pushTemplate(push,template,pushType,clientId,targets);
     }
 
+    /**
+     * 审核透传
+     * @param type
+     * @param content
+     * @param pushType
+     * @param clientId
+     * @param targets
+     * @return
+     */
+    public static String pushTransmissionMsg1(Integer  type, String content, String pushType, String clientId, List<String> targets){
+        IGtPush push = new IGtPush(url, appKey, masterSecret);
+        TransmissionTemplate template = new TransmissionTemplate();
+        template.setAppId(appId);
+        template.setAppkey(appKey);
+        // 透传消息设置，1为强制启动应用，客户端接收到消息后就会立即启动应用；2为等待应用启动
+        template.setTransmissionType(type);
+        template.setTransmissionContent(content);
+
+        JSONObject jsonObject = JSONObject.parseObject(content);
+        String resultMessage = jsonObject.getString("resultMessage");
+
+        //ios透传需要设置的内容
+        APNPayload payload = new APNPayload();
+        payload.setContentAvailable(0);
+//        payload.setSound("default");
+        payload.setAlertMsg(new APNPayload.SimpleAlertMsg(resultMessage));
+//        payload.setCategory(content);
+        payload.addCustomMsg("date",content);
+//        payload.addCustomMsg("code",100);
+        template.setAPNInfo(payload);
+        return pushTemplate(push,template,pushType,clientId,targets);
+    }
 
 
     public static String pushTemplate(IGtPush push , ITemplate template , String pushType, String clientId, List<String> targets){

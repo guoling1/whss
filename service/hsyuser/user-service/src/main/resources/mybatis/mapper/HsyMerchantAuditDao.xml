@@ -71,12 +71,17 @@
 
     <!-- 根据districtCode查城市哪个区 -->
     <select id="getCode" resultType="com.jkm.hsy.user.entity.HsyMerchantAuditResponse">
-        SELECT ANAME,PARENTCODE FROM app_biz_district WHERE CODE = #{districtCode}
+        SELECT ANAME,CODE,PARENTCODE FROM app_biz_district WHERE CODE = #{districtCode}
     </select>
 
     <!-- 根据districtCode查城市哪个区 -->
     <select id="getCity" resultType="com.jkm.hsy.user.entity.HsyMerchantAuditResponse">
         SELECT ANAME,PARENTCODE FROM app_biz_district WHERE CODE = #{parentCode}
+    </select>
+
+    <!-- 根据Code查城市 -->
+    <select id="getCityOnly" resultType="com.jkm.hsy.user.entity.HsyMerchantAuditResponse">
+        SELECT ANAME FROM app_biz_district WHERE CODE = #{parentCode}
     </select>
 
     <!-- 更新账户id -->

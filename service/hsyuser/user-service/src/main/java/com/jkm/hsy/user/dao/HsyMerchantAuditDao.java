@@ -70,4 +70,11 @@ public interface HsyMerchantAuditDao {
     void stepChange(@Param("uid") int uid);
 
     int getUid(@Param("id") Long id);
+
+    /**
+     *
+     * @param parentCode
+     * @return
+     */
+    HsyMerchantAuditResponse getCityOnly(@Param("parentCode") String parentCode);
 }

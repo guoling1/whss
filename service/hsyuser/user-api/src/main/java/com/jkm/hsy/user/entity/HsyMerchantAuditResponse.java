@@ -10,6 +10,7 @@ import java.util.Date;
 @Data
 public class HsyMerchantAuditResponse {
 
+    private String code;//省市码
     private String cardNO;//卡号
     private String cardAccountName;//开户名
     private String cardBank;//开户行

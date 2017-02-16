@@ -28,9 +28,19 @@ public class HsyMerchantAuditServiceImpl implements HsyMerchantAuditService {
                 String districtCode =list.get(i).getDistrictCode();
                 if (districtCode!=null&&!districtCode.equals("")){
                     HsyMerchantAuditResponse ret = hsyMerchantAuditDao.getCode(districtCode);
+
                     if (!ret.getParentCode().equals("0")){
                         HsyMerchantAuditResponse reu = hsyMerchantAuditDao.getCity(ret.getParentCode());
-                        list.get(i).setDistrictCode(reu.getAName()+ret.getAName());
+                        if (!reu.getParentCode().equals("0")){
+                            HsyMerchantAuditResponse reu1 = hsyMerchantAuditDao.getCityOnly(reu.getParentCode());
+                            list.get(i).setDistrictCode(reu1.getAName()+reu.getAName()+ret.getAName());
+                        }else {
+                            list.get(i).setDistrictCode(reu.getAName()+ret.getAName());
+                        }
+                    }
+                    if(ret.getParentCode().equals("0")){
+                        HsyMerchantAuditResponse reu = hsyMerchantAuditDao.getCityOnly(ret.getCode());
+                        list.get(i).setDistrictCode(reu.getAName());
                     }
                 }
                 int industryCode = Integer.parseInt(list.get(i).getIndustryCode());
@@ -76,12 +86,21 @@ public class HsyMerchantAuditServiceImpl implements HsyMerchantAuditService {
             }
         }
         String districtCode = res.getDistrictCode();
-//        System.out.println(12333);
         if (districtCode!=null&&!districtCode.equals("")){
             HsyMerchantAuditResponse ret = hsyMerchantAuditDao.getCode(districtCode);
             if (!ret.getParentCode().equals("0")){
                 HsyMerchantAuditResponse reu = hsyMerchantAuditDao.getCity(ret.getParentCode());
-                res.setDistrictCode(reu.getAName()+ret.getAName());
+                if (!reu.getParentCode().equals("0")){
+                    HsyMerchantAuditResponse reu1 = hsyMerchantAuditDao.getCityOnly(reu.getParentCode());
+                    res.setDistrictCode(reu1.getAName()+reu.getAName()+ret.getAName());
+                }else {
+                    res.setDistrictCode(reu.getAName()+ret.getAName());
+                }
+
+            }
+            if(ret.getParentCode().equals("0")){
+                HsyMerchantAuditResponse reu = hsyMerchantAuditDao.getCity(ret.getParentCode());
+                res.setDistrictCode(reu.getAName());
             }
         }
 
