@@ -56,7 +56,7 @@ public class QrCodeController extends BaseController {
     @ResponseBody
     @RequestMapping(value = "/proxyProduct", method = RequestMethod.POST)
     public CommonResponse proxyProduct() {
-        long dealerId = super.getDealerId();
+        long dealerId = 24;
         long hssProductId = dealerChannelRateService.getDealerBindProductId(dealerId, EnumProductType.HSS.getId());
         long hsyProductId = dealerChannelRateService.getDealerBindProductId(dealerId, EnumProductType.HSY.getId());
         ProxyProductResponse proxyProductResponse = new ProxyProductResponse();

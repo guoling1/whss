@@ -275,8 +275,9 @@ public class AdminUserServiceImpl implements AdminUserService {
             }
         });
         final List<Long> ids = qrCodeIds.subList(0, count);
+        final List<QRCode> qrCodeList1 = qrCodeList.subList(0, count);
         this.qrCodeService.markCodeToDealer(dealerId, ids);
-        final List<Pair<QRCode, QRCode>> pairQRCodeList = this.qrCodeService.getPairQRCodeList(qrCodeList);
+        final List<Pair<QRCode, QRCode>> pairQRCodeList = this.qrCodeService.getPairQRCodeList(qrCodeList1);
         for (Pair<QRCode, QRCode> pair : pairQRCodeList) {
             final QRCode left = pair.getLeft();
             final QRCode right = pair.getRight();
