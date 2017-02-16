@@ -196,7 +196,7 @@ public class AccountController extends BaseController{
      * @return
      */
     @ResponseBody
-    @RequestMapping(value = "sendVerifyCode", method = RequestMethod.GET)
+    @RequestMapping(value = "sendVerifyCode", method = RequestMethod.POST)
     public CommonResponse sendVerifyCode() {
 
         final Dealer dealer = this.getDealer().get();
