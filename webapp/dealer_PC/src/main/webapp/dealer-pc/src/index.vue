@@ -180,7 +180,7 @@
                 <router-link to="profits_detail"><i class="fa fa-circle-o"></i>结算记录</router-link>
               </li>
               <li>
-                <router-link to="profits_detail"><i class="fa fa-circle-o"></i>余额提现</router-link>
+                <router-link to="balance_withdrawal"><i class="fa fa-circle-o"></i>余额提现</router-link>
               </li>
             </ul>
           </li>
