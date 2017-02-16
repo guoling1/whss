@@ -84,6 +84,9 @@ public class HsyMerchantAuditServiceImpl implements HsyMerchantAuditService {
             if (res.getStatus()==3){
                 res.setStat("审核未通过");
             }
+            if (res.getStatus()==4){
+                res.setStat("商户已注册");
+            }
         }
         String districtCode = res.getDistrictCode();
         if (districtCode!=null&&!districtCode.equals("")){
