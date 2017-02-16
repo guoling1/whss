@@ -45,7 +45,7 @@
             <if test="type != null and type != 0">
                 type = #{type}
             </if>
-            <if test="beginTime != null and beginTime != ''">
+            <if test="beginTime != null">
                 create_time BETWEEN #{beginTime} AND #{endTime}
             </if>
         ORDER BY id DESC limit #{firstIndex},#{pageSize}
@@ -58,7 +58,7 @@
         <if test="type != null and type != 0">
             type = #{type}
         </if>
-        <if test="beginTime != null beginTime != ''">
+        <if test="beginTime != null">
             create_time BETWEEN #{beginTime} AND #{endTime}
         </if>
     </select>
