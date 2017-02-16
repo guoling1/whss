@@ -56,20 +56,20 @@
     </bean>
     <bean id="springContextHolder" class="com.jkm.base.common.spring.core.SpringContextHolder" lazy-init="false" />
 
-    <mvc:interceptors>
-        <mvc:interceptor>
-            <mvc:mapping path="/**"/>
-            <mvc:exclude-mapping path="/callback/**"/>
-            <bean id="commonInterceptor" class="com.jkm.hss.interceptor.CommonInterceptor"/>
-        </mvc:interceptor>
+    <!--<mvc:interceptors>-->
+        <!--<mvc:interceptor>-->
+            <!--<mvc:mapping path="/**"/>-->
+            <!--<mvc:exclude-mapping path="/callback/**"/>-->
+            <!--<bean id="commonInterceptor" class="com.jkm.hss.interceptor.CommonInterceptor"/>-->
+        <!--</mvc:interceptor>-->
 
-        <mvc:interceptor>
+        <!--<mvc:interceptor>-->
             <!--<mvc:mapping path="/daili/**"/>-->
-            <mvc:exclude-mapping path="/daili/login/*"/>
-            <bean id="dealerLoginInterceptor" class="com.jkm.hss.interceptor.DealerLoginInterceptor">
-                <property name="dealerService" ref="dealerServiceImpl"/>
-                <property name="dealerPassportService" ref="dealerPassportServiceImpl"/>
-            </bean>
-        </mvc:interceptor>
-    </mvc:interceptors>
+            <!--<mvc:exclude-mapping path="/daili/login/*"/>-->
+            <!--<bean id="dealerLoginInterceptor" class="com.jkm.hss.interceptor.DealerLoginInterceptor">-->
+                <!--<property name="dealerService" ref="dealerServiceImpl"/>-->
+                <!--<property name="dealerPassportService" ref="dealerPassportServiceImpl"/>-->
+            <!--</bean>-->
+        <!--</mvc:interceptor>-->
+    <!--</mvc:interceptors>-->
 </beans>
