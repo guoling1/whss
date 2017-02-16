@@ -271,12 +271,14 @@ public class WithdrawServiceImpl implements WithdrawService {
         final Order order = this.orderService.getByIdWithLock(orderId).get();
         log.info("提现单--交易订单号[{}], 进行入账操作", order.getOrderNo());
         if (order.isWithdrawSuccess() && order.isDueSettle()) {
-            //手续费账户
+            //手续费账户入可用余额
             final Account poundageAccount = this.accountService.getByIdWithLock(AccountConstants.POUNDAGE_ACCOUNT_ID).get();
             this.accountService.increaseTotalAmount(poundageAccount.getId(), order.getPoundage());
-            this.accountService.increaseSettleAmount(poundageAccount.getId(), order.getPoundage());
-            this.settleAccountFlowService.addSettleAccountFlow(poundageAccount.getId(), order.getOrderNo(),
-                    order.getPoundage(), "提现分润", EnumAccountFlowType.INCREASE, EnumAppType.HSS.getId(), order.getPaySuccessTime(), EnumAccountUserType.COMPANY.getId());
+            this.accountService.increaseAvailableAmount(poundageAccount.getId(), order.getPoundage());
+            this.accountFlowService.addAccountFlow(poundageAccount.getId(), order.getOrderNo(), order.getPoundage(),
+                    "提现分润", EnumAccountFlowType.INCREASE);
+//            this.settleAccountFlowService.addSettleAccountFlow(poundageAccount.getId(), order.getOrderNo(),
+//                    order.getPoundage(), "提现分润", EnumAccountFlowType.INCREASE, EnumAppType.HSS.getId(), order.getPaySuccessTime(), EnumAccountUserType.COMPANY.getId());
         }
     }
 
@@ -303,17 +305,16 @@ public class WithdrawServiceImpl implements WithdrawService {
         Preconditions.checkState(order.getPoundage().compareTo(channelMoney.add(productMoney).add(firstMoney).add(secondMoney)) >= 0);
         //手续费账户结算
         final Account poundageAccount = this.accountService.getByIdWithLock(AccountConstants.POUNDAGE_ACCOUNT_ID).get();
-        Preconditions.checkState(order.getPoundage().compareTo(poundageAccount.getDueSettleAmount()) <= 0);
+        Preconditions.checkState(order.getPoundage().compareTo(poundageAccount.getAvailable()) <= 0, "该笔订单的分账手续费不可以大于手续费账户的可用余额总和");
         //待结算--可用余额
-        this.accountService.increaseAvailableAmount(poundageAccount.getId(), order.getPoundage());
-        this.accountService.decreaseSettleAmount(poundageAccount.getId(), order.getPoundage());
-        this.settleAccountFlowService.addSettleAccountFlow(poundageAccount.getId(), order.getOrderNo(), order.getPoundage(),
-                "提现分润", EnumAccountFlowType.DECREASE, EnumAppType.HSS.getId(), order.getPaySuccessTime(), EnumAccountUserType.COMPANY.getId());
-        this.accountFlowService.addAccountFlow(poundageAccount.getId(), order.getOrderNo(), order.getPoundage(),
-                "提现分润", EnumAccountFlowType.INCREASE);
+//        this.accountService.increaseAvailableAmount(poundageAccount.getId(), order.getPoundage());
+//        this.accountService.decreaseSettleAmount(poundageAccount.getId(), order.getPoundage());
+//        this.settleAccountFlowService.addSettleAccountFlow(poundageAccount.getId(), order.getOrderNo(), order.getPoundage(),
+//                "提现分润", EnumAccountFlowType.DECREASE, EnumAppType.HSS.getId(), order.getPaySuccessTime(), EnumAccountUserType.COMPANY.getId());
+//        this.accountFlowService.addAccountFlow(poundageAccount.getId(), order.getOrderNo(), order.getPoundage(),
+//        final Account poundageAccount1 = this.accountService.getByIdWithLock(AccountConstants.POUNDAGE_ACCOUNT_ID).get();
+//                "提现分润", EnumAccountFlowType.INCREASE);
         //分账
-        final Account poundageAccount1 = this.accountService.getByIdWithLock(AccountConstants.POUNDAGE_ACCOUNT_ID).get();
-        Preconditions.checkState(poundageAccount1.getAvailable().compareTo(channelMoney.add(productMoney).add(firstMoney).add(secondMoney)) >= 0);
         this.accountService.decreaseAvailableAmount(poundageAccount.getId(), order.getPoundage());
         this.accountService.decreaseTotalAmount(poundageAccount.getId(), order.getPoundage());
         this.accountFlowService.addAccountFlow(poundageAccount.getId(), order.getOrderNo(), order.getPoundage(),
