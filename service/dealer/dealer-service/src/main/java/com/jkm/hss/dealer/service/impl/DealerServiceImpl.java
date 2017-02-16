@@ -211,7 +211,7 @@ public class DealerServiceImpl implements DealerService {
 
                                                                      final int channelSign, final long merchantId) {
 
-       if (type.getId().equals( EnumProductType.HSS)){
+       if (type.getId().equals(EnumProductType.HSS.getId())){
 
            //好收收收单分润
            try{
