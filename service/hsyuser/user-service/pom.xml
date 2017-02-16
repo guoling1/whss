@@ -276,5 +276,9 @@
             <groupId>com.jkm</groupId>
             <artifactId>hss-dealer-api</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.jkm</groupId>
+            <artifactId>hss-notifier-service</artifactId>
+        </dependency>
     </dependencies>
 </project>

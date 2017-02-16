@@ -1,0 +1,209 @@
+<template>
+  <div id="profitAccountDet">
+    <div class="col-md-12">
+      <div class="box" style="margin-top:15px;overflow: hidden">
+        <div class="box-header">
+          <h3 class="box-title">账户明细</h3>
+        </div>
+        <div class="box-body">
+          <!--筛选-->
+          <ul>
+            <li class="same">
+              <label>交易日期:</label>
+              <el-date-picker
+                v-model="date"
+                type="daterange"
+                align="right"
+                placeholder="选择日期范围"
+                :picker-options="pickerOptions" size="small">
+              </el-date-picker>
+            </li>
+            <li class="same">
+              <div class="btn btn-primary" @click="search">筛选</div>
+            </li>
+          </ul>
+          <!--表格-->
+          <el-table v-loading.body="loading" style="font-size: 12px;margin:15px 0" :data="records" border>
+            <el-table-column prop="merchantNo" label="流水号"></el-table-column>
+            <el-table-column prop="merchantName" label="时间"></el-table-column>
+            <el-table-column prop="dealerNo" label="发生前余额（元）"></el-table-column>
+            <el-table-column prop="dealerName" label="收入金额（元）"></el-table-column>
+            <el-table-column prop="dealerName" label="支出金额（元）"></el-table-column>
+            <el-table-column prop="dealerName" label="发生后余额（元）"></el-table-column>
+            <el-table-column prop="dealerName" label="业务类型"></el-table-column>
+            <el-table-column prop="dealerName" label="备注"></el-table-column>
+          </el-table>
+          <!--分页-->
+          <div class="block" style="text-align: right">
+            <el-pagination @current-change="handleCurrentChange" :current-page="currentPage" layout="total, prev, pager, next, jumper" :total="total">
+            </el-pagination>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+<script lang="babel">
+  export default{
+    name: 'profitAccountDet',
+    data(){
+      return {
+        pickerOptions: {
+          shortcuts: [{
+            text: '最近一周',
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
+              picker.$emit('pick', [start, end]);
+            }
+          }, {
+            text: '最近一个月',
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
+              picker.$emit('pick', [start, end]);
+            }
+          }, {
+            text: '最近三个月',
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
+              picker.$emit('pick', [start, end]);
+            }
+          }]
+        },
+        date:'',
+        query:{
+          start:'',
+          end:''
+        },
+        records: [],
+        count: 0,
+        total: 0,
+        currentPage: 1,
+        loading: false,
+        index: '',
+      }
+    },
+    created: function () {
+      /*this.$http.post('/admin/settle/list', this.$data.query)
+        .then(function (res) {
+          this.$data.records = res.data.records;
+          this.$data.count = res.data.count;
+          this.$data.total = res.data.totalPage;
+          this.$data.loading = false;
+          var changeTime = function (val) {
+            if (val == '' || val == null) {
+              return ''
+            } else {
+              val = new Date(val)
+              var year = val.getFullYear();
+              var month = val.getMonth() + 1;
+              var date = val.getDate();
+
+              function tod(a) {
+                if (a < 10) {
+                  a = "0" + a
+                }
+                return a;
+              }
+
+              return year + "-" + tod(month) + "-" + tod(date);
+            }
+          }
+          for (let i = 0; i < this.$data.records.length; i++) {
+            this.$data.records[i].tradeDate = changeTime(this.$data.records[i].tradeDate)
+          }
+        }, function (err) {
+          this.$data.loading = false;
+          this.$store.commit('MESSAGE_ACCORD_SHOW', {
+            text: err.statusMessage
+          })
+        })*/
+    },
+    methods: {
+      search(){
+
+      },
+      //当前页改变时
+      handleCurrentChange(val) {
+        this.$data.query.pageNo = val;
+        this.$data.loading = true;
+        this.$http.post('/admin/settle/list', this.$data.query)
+          .then(function (res) {
+            this.$data.records = res.data.records;
+            this.$data.count = res.data.count;
+            this.$data.total = res.data.totalPage;
+            this.$data.loading = false;
+            var changeTime = function (val) {
+              if (val == '' || val == null) {
+                return ''
+              } else {
+                val = new Date(val)
+                var year = val.getFullYear();
+                var month = val.getMonth() + 1;
+                var date = val.getDate();
+
+                function tod(a) {
+                  if (a < 10) {
+                    a = "0" + a
+                  }
+                  return a;
+                }
+
+                return year + "-" + tod(month) + "-" + tod(date);
+              }
+            }
+            for (let i = 0; i < this.$data.records.length; i++) {
+              this.$data.records[i].tradeDate = changeTime(this.$data.records[i].tradeDate)
+            }
+          }, function (err) {
+            this.$data.loading = false;
+            this.$store.commit('MESSAGE_ACCORD_SHOW', {
+              text: err.statusMessage
+            })
+          })
+      },
+    },
+    watch:{
+      date:function (val,oldVal) {
+        if(val[0]!=null){
+          for(var j=0;j<val.length;j++){
+            var str = val[j];
+            var ary = [str.getFullYear(), str.getMonth() + 1, str.getDate()];
+            for(var i = 0, len = ary.length; i < len; i ++) {
+              if(ary[i] < 10) {
+                ary[i] = '0' + ary[i];
+              }
+            }
+            str = ary[0] + '-' + ary[1] + '-' + ary[2];
+            if(j==0){
+              this.$data.query.start = str;
+            }else {
+              this.$data.query.end = str;
+            }
+          }
+        }
+      }
+    }
+  }
+</script>
+<style scoped lang="less">
+  body {
+    background-color: #ff0000;
+  }
+  ul{
+    padding: 0;
+  }
+  .same{
+    list-style: none;
+    display: inline-block;
+    margin: 0 15px 15px 0;
+  }
+  .btn{
+    font-size: 12px;
+  }
+</style>

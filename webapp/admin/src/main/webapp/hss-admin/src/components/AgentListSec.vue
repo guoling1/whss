@@ -10,42 +10,40 @@
           <el-row :gutter="20" style="">
             <el-col :span="3">
               <label>手机号：</label>
-              <el-input v-model="query.merchantNo" placeholder="请输入内容" size="small"></el-input>
+              <el-input v-model="query.mobile" placeholder="请输入内容" size="small"></el-input>
             </el-col>
             <el-col :span="3">
               <label>代理商名称：</label>
-              <el-input v-model="query.merchantNo" placeholder="请输入内容" size="small"></el-input>
+              <el-input v-model="query.name" placeholder="请输入内容" size="small"></el-input>
             </el-col>
             <el-col :span="3">
               <label>代理商编号：</label>
-              <el-input v-model="query.merchantName" placeholder="请输入内容" size="small"></el-input>
+              <el-input v-model="query.markCode" placeholder="请输入内容" size="small"></el-input>
             </el-col>
             <el-col :span="3">
               <label>省市:</label>
-              <el-select clearable v-model="query.checkedStatus" size="small" >
-                <el-option label="全部" value="">全部</el-option>
-                <el-option label="好收银" value="1">好收银</el-option>
-                <el-option label="好收收" value="2">好收收</el-option>
-              </el-select>
-            </el-col>
-            <el-col  :span="3">
-              <label>代理商类型:</label>
-              <el-select clearable v-model="query.checkedStatus" size="small" >
-                <el-option label="全部" value="">全部</el-option>
-                <el-option label="一级代理" value="1">一级代理</el-option>
-                <el-option label="二级代理" value="2">二级代理</el-option>
-              </el-select>
+              <div class="select" id="select" @click="open"><span>请选择</span>
+                <i class="el-icon-caret-bottom" style="float: right;margin-top: 10px"></i>
+              </div>
+              <ul class="isShow" v-if="isOpen">
+                <li @click="selectAll()">全部</li>
+                <li v-for="province in provinces" @mouseover="selectCity(province.code,province.aname)" @click="select(province.code,province.aname)">{{province.aname}}
+                </li>
+              </ul>
+              <ul class="isShow1" v-if="isOpen1">
+                <li :class="'cityLi'+$index" v-for="city in citys" @click="select(city.code,city.aname)">{{city.aname}}</li>
+              </ul>
             </el-col>
             <el-col :span="3">
               <label>上级代理名称：</label>
-              <el-input v-model="query.merchantName" placeholder="请输入内容" size="small"></el-input>
+              <el-input v-model="query.firstDealerName" placeholder="请输入内容" size="small"></el-input>
             </el-col>
             <el-col  :span="3">
               <label>代理产品:</label>
-              <el-select clearable v-model="query.checkedStatus" size="small" >
+              <el-select clearable v-model="query.sysType" size="small" >
                 <el-option label="全部" value="">全部</el-option>
-                <el-option label="好收银" value="1">好收银</el-option>
-                <el-option label="好收收" value="2">好收收</el-option>
+                <el-option label="好收银" value="hsy">好收银</el-option>
+                <el-option label="好收收" value="hss">好收收</el-option>
               </el-select>
             </el-col>
             <el-col  :span="1" style="margin-top: 18px">
@@ -54,96 +52,40 @@
           </el-row>
           <!--表格-->
           <el-table style="font-size: 12px;margin:15px 0" :data="records" border>
-            <el-table-column prop="merchantNo" label="代理商名称" ></el-table-column>
-            <el-table-column prop="merchantName" label="代理商编号" ></el-table-column>
-            <el-table-column prop="dealerNo" label="代理商级别" ></el-table-column>
-            <el-table-column prop="dealerName" label="省市" ></el-table-column>
-            <el-table-column prop="appName" label="注册时间" ></el-table-column>
-            <el-table-column prop="tradeDate" label="联系手机号" ></el-table-column>
-            <el-table-column prop="tradeDate" label="上级代理名称" ></el-table-column>
-            <el-table-column prop="tradeNumber" label="好收收" width="90"></el-table-column>
-            <el-table-column prop="settleAmount" label="好收银" ></el-table-column>
-            <el-table-column label="操作" width="70">
+            <el-table-column label="代理商名称">
               <template scope="scope">
-                <el-button @click.native.prevent="list(scope.$index)" type="text" size="small">修改</el-button>
+                <router-link :to="'/admin/record/agentAddBase?level=2&id='+records[scope.$index].id">{{records[scope.$index].proxyName}}</router-link>
+              </template>
+            </el-table-column>
+            <el-table-column label="代理商编号">
+              <template scope="scope">
+                <router-link :to="'/admin/record/agentAddBase?level=2&id='+records[scope.$index].id">{{records[scope.$index].markCode}}</router-link>
+              </template>
+            </el-table-column>
+            <el-table-column prop="level" label="代理商级别" ></el-table-column>
+            <el-table-column prop="belong" label="省市" ></el-table-column>
+            <el-table-column prop="createTime" label="注册时间" ></el-table-column>
+            <el-table-column prop="mobile" label="联系手机号" ></el-table-column>
+            <el-table-column prop="firstProxyName" label="上级代理名称" ></el-table-column>
+            <el-table-column label="好收收">
+              <template scope="scope">
+                <span v-if="records[scope.$index].hssProductId==0">未开通</span>
+                <router-link :to="'/admin/record/agentAddPro?dealerId='+records[scope.$index].id+'&productId='+records[scope.$index].hssProductId+'&product=hss&level=2'" v-else="records[scope.$index].hssProductId==0">查看产品设置</router-link>
+              </template>
+            </el-table-column>
+            <el-table-column label="好收银" >
+              <template scope="scope">
+                <span v-if="records[scope.$index].hsyProductId==0">未开通</span>
+                <router-link :to="'/admin/record/agentAddPro?dealerId='+records[scope.$index].id+'&productId='+records[scope.$index].hsyProductId+'&product=hsy&level=2'" v-else="records[scope.$index].hsyProductId==0">查看产品设置</router-link>
               </template>
             </el-table-column>
           </el-table>
           <!--分页-->
           <div class="block" style="text-align: right">
-            <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage4" :page-sizes="[10, 20, 50]" :page-size="100" layout="total, sizes, prev, pager, next, jumper" :total="total">
+            <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage4" :page-sizes="[10, 20, 50]" :page-size="100" layout="total, prev, pager, next, jumper" :total="count">
             </el-pagination>
           </div>
-          <!--审核-->
-          <div v-if="isShow">
-            <el-dialog title="结算确认提醒" v-model="isShow">
-              <div class="maskCon">
-                <span>商户名称：</span>
-                <span>{{records[this.$data.index].merchantName}}</span>
-              </div>
-              <div class="maskCon">
-                <span>商户编号：</span>
-                <span>{{records[index].merchantNo}}</span>
-              </div>
-              <div class="maskCon">
-                <span>结算金额：</span>
-                <span>{{records[index].settleAmount}}</span>
-              </div>
-              <div class="maskCon">
-                <span>结算交易笔数：</span>
-                <span>{{records[index].tradeNumber}}笔</span>
-              </div>
-              <div class="maskCon">
-                <span>交易日期：</span>
-                <span>{{records[index].tradeDate}}</span>
-              </div>
-              <div slot="footer" class="dialog-footer" style="text-align: center;">
-                <el-button @click="isShow = false">取 消</el-button>
-                <el-button @click="isShow = false">结算已对账部分</el-button>
-                <el-button @click="isShow = false">强制结算全部</el-button>
-              </div>
-            </el-dialog>
-          </div>
-
         </div>
-        <!--<div id="example2_wrapper" class="dataTables_wrapper form-inline dt-bootstrap">
-          <div class="row">
-            <div class="col-sm-12">
-              <table id="example2" class="table table-bordered table-hover dataTable" role="grid"
-                     aria-describedby="example2_info">
-                <thead>
-                <tr role="row">
-
-                </tr>
-                </thead>
-                <tbody id="content">
-                <tr role="row" >
-
-                </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-          <div v-if="isShow">
-            <img src="http://img.jinkaimen.cn/admin/common/dist/img/ICBCLoading.gif" alt="">
-          </div>
-          &lt;!&ndash;<div v-if="orders.length==0&&!isShow" class="row" style="text-align: center;color: red;font-size: 16px;">
-            <div class="col-sm-12">无此数据</div>
-          </div>&ndash;&gt;
-          &lt;!&ndash;<div class="row">
-            <div class="col-sm-5">
-              <div class="dataTables_info" id="example2_info" role="status" aria-live="polite">
-              </div>
-            </div>
-            <div class="col-sm-7">
-              <div class="dataTables_paginate paging_simple_numbers" id="example2_paginate">
-                <ul class="pagination" id="page" @click="bindEvent($event)">
-                </ul>
-                <span class="count">共{{count}}条</span>
-              </div>
-            </div>
-          </div>&ndash;&gt;
-        </div>-->
       </div>
     </div>
   </div>
@@ -154,60 +96,60 @@
     name: 'agentListSec',
     data(){
       return{
-        pickerOptions: {
-          shortcuts: [{
-            text: '最近一周',
-            onClick(picker) {
-              const end = new Date();
-              const start = new Date();
-              start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
-              picker.$emit('pick', [start, end]);
-            }
-          }, {
-            text: '最近一个月',
-            onClick(picker) {
-              const end = new Date();
-              const start = new Date();
-              start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
-              picker.$emit('pick', [start, end]);
-            }
-          }, {
-            text: '最近三个月',
-            onClick(picker) {
-              const end = new Date();
-              const start = new Date();
-              start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
-              picker.$emit('pick', [start, end]);
-            }
-          }]
+        loading:true,
+        defaultProps: {
+          label:'aname',
+          children: 'list'
         },
+        isOpen:false,
+        isOpen1:false,
+        select1:'',
+        select2:'',
+        provinces:[],//所有省份
+        province: '',
+        citys:[],
+        city:'',
         date:'',
         records:[],
         count:0,
         total:0,
+        pageSize:'',
         query:{
           pageNo:1,
           pageSize:10,
-          merchantNo:"",//商户编号
-          merchantName:"",  //商户名字
-          startSettleDate:"",
-          endSettleDate:"",
-          checkedStatus:'',
-          settleStatus:''
+          mobile:"",//商户编号
+          name:"",  //商户名字
+          markCode:"",
+          sysType:"",
+          firstDealerName:'',
+          districtCode:''
         },
         multipleSelection:[],
         currentPage4: 1,
-        loading:true,
         isShow:false,
         index:'',
       }
     },
     created: function () {
-      this.$http.post('/admin/settle/list',this.$data.query)
+      //搜索区省市联动
+      this.$http.post('/admin/district/findAllDistrict')
+        .then(function (res) {
+          this.$data.provinces = res.data;
+          this.$data.loading = false;
+        })
+        .catch(function (err) {
+          this.$message({
+            showClose: true,
+            message: err.statusMessage,
+            type: 'error'
+          });
+        })
+      this.$http.post('/admin/dealer/listSecondDealer',this.$data.query)
         .then(function (res) {
           this.$data.records = res.data.records;
           this.$data.count = res.data.count;
           this.$data.total = res.data.totalPage;
+          this.$data.pageSize = res.data.pageSize;
           this.$data.loading = false;
           var changeTime=function (val) {
             if(val==''||val==null){
@@ -226,26 +168,61 @@
               return year+"-"+tod(month)+"-"+tod(date);
             }
           }
-          for(let i = 0; i < this.$data.records.length; i++){
-            this.$data.records[i].tradeDate = changeTime(this.$data.records[i].tradeDate)
+          for(var i=0;i<this.$data.records.length;i++){
+            this.$data.records[i].createTime = changeTime(this.$data.records[i].createTime)
+            if(this.$data.records[i].belongProvinceName!=null&&this.$data.records[i].belongCityName!=null){
+              this.$data.records[i].belong = this.$data.records[i].belongProvinceName+"-"+this.$data.records[i].belongCityName;
+            }
           }
-        },function (err) {
-          this.$data.loading = false;
-          this.$store.commit('MESSAGE_ACCORD_SHOW', {
-            text: err.statusMessage
-          })
+        })
+        .catch(function (err) {
+          this.$message({
+            showClose: true,
+            message: err.statusMessage,
+            type: 'error'
+          });
         })
     },
     methods: {
+      selectCity: function (valCol,val) {
+        this.$data.province = val;
+        this.$http.post('/admin/district/findAllCities',{code:valCol})
+          .then(function (res) {
+            this.$data.citys = res.data;
+            this.$data.isOpen1 = true;
+          })
+      },
+      open:function () {
+        this.$data.isOpen = !this.$data.isOpen;
+        this.$data.isOpen1 = false;
+        document.getElementById('select').style.borderColor = '#20a0ff'
+      },
+      select:function (valCode,val) {
+        var oCon = document.getElementById('select').getElementsByTagName('span')[0];
+        oCon.innerHTML = val;
+        oCon.style.color = '#1f2d3d';
+        this.$data.query.districtCode = valCode;
+        this.$data.isOpen = !this.$data.isOpen;
+        this.$data.isOpen1 = !this.$data.isOpen1;
+      },
+      selectAll: function () {
+        var oCon = document.getElementById('select').getElementsByTagName('span')[0];
+        oCon.innerHTML = '全部';
+        oCon.style.color = '#1f2d3d';
+        this.$data.query.districtCode = '';
+        this.$data.isOpen = !this.$data.isOpen;
+        this.$data.isOpen1 = false;
+      },
       search: function () {
         this.$data.query.pageNo = 1;
         this.$data.records = '';
         this.$data.loading = true;
-        this.$http.post('/admin/settle/list',this.$data.query)
+        this.$http.post('/admin/dealer/listSecondDealer',this.$data.query)
           .then(function (res) {
             this.$data.records = res.data.records;
             this.$data.count = res.data.count;
             this.$data.total = res.data.totalPage;
+            this.$data.pageSize = res.data.pageSize;
             this.$data.loading = false;
             var changeTime=function (val) {
               if(val==''||val==null){
@@ -264,14 +241,19 @@
                 return year+"-"+tod(month)+"-"+tod(date);
               }
             }
-            for(let i = 0; i < this.$data.records.length; i++){
-              this.$data.records[i].tradeDate = changeTime(this.$data.records[i].tradeDate)
+            for(var i=0;i<this.$data.records.length;i++){
+              this.$data.records[i].createTime = changeTime(this.$data.records[i].createTime)
+              if(this.$data.records[i].belongProvinceName!=null&&this.$data.records[i].belongCityName!=null){
+                this.$data.records[i].belong = this.$data.records[i].belongProvinceName+"-"+this.$data.records[i].belongCityName;
+              }
             }
-          },function (err) {
-            this.$data.loading = false;
-            this.$store.commit('MESSAGE_ACCORD_SHOW', {
-              text: err.statusMessage
-            })
+          })
+          .catch(function (err) {
+            this.$message({
+              showClose: true,
+              message: err.statusMessage,
+              type: 'error'
+            });
           })
       },
       list: function (val) {
@@ -286,11 +268,14 @@
       handleSizeChange(val) {
         this.$data.query.pageSize = val;
         this.$data.loading = true;
-        this.$http.post('/admin/settle/list',this.$data.query)
+        this.$data.query.pageNo = 1;
+        this.$data.records = '';
+        this.$http.post('/admin/dealer/listSecondDealer',this.$data.query)
           .then(function (res) {
             this.$data.records = res.data.records;
             this.$data.count = res.data.count;
             this.$data.total = res.data.totalPage;
+            this.$data.pageSize = res.data.pageSize;
             this.$data.loading = false;
             var changeTime=function (val) {
               if(val==''||val==null){
@@ -309,25 +294,32 @@
                 return year+"-"+tod(month)+"-"+tod(date);
               }
             }
-            for(let i = 0; i < this.$data.records.length; i++){
-              this.$data.records[i].tradeDate = changeTime(this.$data.records[i].tradeDate)
+            for(var i=0;i<this.$data.records.length;i++){
+              this.$data.records[i].createTime = changeTime(this.$data.records[i].createTime)
+              if(this.$data.records[i].belongProvinceName!=null&&this.$data.records[i].belongCityName!=null){
+                this.$data.records[i].belong = this.$data.records[i].belongProvinceName+"-"+this.$data.records[i].belongCityName;
+              }
             }
-          },function (err) {
-            this.$data.loading = false;
-            this.$store.commit('MESSAGE_ACCORD_SHOW', {
-              text: err.statusMessage
-            })
+          })
+          .catch(function (err) {
+            this.$message({
+              showClose: true,
+              message: err.statusMessage,
+              type: 'error'
+            });
           })
       },
       //当前页改变时
       handleCurrentChange(val) {
         this.$data.query.pageNo = val;
+        this.$data.records = '';
         this.$data.loading = true;
-        this.$http.post('/admin/settle/list',this.$data.query)
+        this.$http.post('/admin/dealer/listSecondDealer',this.$data.query)
           .then(function (res) {
             this.$data.records = res.data.records;
             this.$data.count = res.data.count;
             this.$data.total = res.data.totalPage;
+            this.$data.pageSize = res.data.pageSize;
             this.$data.loading = false;
             var changeTime=function (val) {
               if(val==''||val==null){
@@ -346,14 +338,19 @@
                 return year+"-"+tod(month)+"-"+tod(date);
               }
             }
-            for(let i = 0; i < this.$data.records.length; i++){
-              this.$data.records[i].tradeDate = changeTime(this.$data.records[i].tradeDate)
+            for(var i=0;i<this.$data.records.length;i++){
+              this.$data.records[i].createTime = changeTime(this.$data.records[i].createTime)
+              if(this.$data.records[i].belongProvinceName!=null&&this.$data.records[i].belongCityName!=null){
+                this.$data.records[i].belong = this.$data.records[i].belongProvinceName+"-"+this.$data.records[i].belongCityName;
+              }
             }
-          },function (err) {
-            this.$data.loading = false;
-            this.$store.commit('MESSAGE_ACCORD_SHOW', {
-              text: err.statusMessage
-            })
+          })
+          .catch(function (err) {
+            this.$message({
+              showClose: true,
+              message: err.statusMessage,
+              type: 'error'
+            });
           })
       }
     },
@@ -382,10 +379,73 @@
   body{
     background-color:#ff0000;
   }
-  .maskCon{
-    margin:0 0 15px 50px
-  }
   .btn{
     font-size: 12px;
+  }
+  .select{
+    width: 100%;
+    height: 30px;
+    background-color: #fff;
+    border-radius: 4px;
+    border: 1px solid #bfcbd9;
+    color: #bfcbd9;
+    display: block;
+    font-size: 12px;
+    line-height: 30px;
+    padding: 0px 10px;
+    transition: border-color .2s cubic-bezier(.645,.045,.355,1);
+    overflow: hidden;
+    position: relative;
+  }
+  .select:hover{
+    border-color: #8391a5;
+  }
+  .isShow{
+    position: absolute;
+    width: 19%;
+    border-radius: 2px;
+    z-index: 1000;
+    max-height: 250px;
+    overflow: auto;
+    border: 1px solid #d1dbe5;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0,0,0,.12),0 0 6px rgba(0,0,0,.04);
+    box-sizing: border-box;
+    margin: 5px 0;
+    padding:5px;
+  li{
+    list-style: none;
+    height: 25px;
+    padding: 0 5px;
+    line-height: 25px;
+  &:hover{
+     background: #1c8de0;
+   }
+  }
+  }
+
+  .isShow1{
+    border: 1px solid #d1dbe5;
+    border-radius: 2px;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0,0,0,.12),0 0 6px rgba(0,0,0,.04);
+    box-sizing: border-box;
+    margin: 5px 0;
+    position: absolute;
+    left: 52%;
+    top: 0100%;
+    width: 16%;
+    padding: 5px;
+    z-index: 1000;
+    max-height: 285px;
+    overflow: auto;
+  li{
+    list-style: none;
+    padding: 0 5px;
+    line-height: 25px;
+  &:hover{
+     background: #1c8de0;
+   }
+  }
   }
 </style>

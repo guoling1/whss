@@ -48,9 +48,16 @@
             c.ISPUBLIC,
             c.CHECKERRORINFO,
             c.CREATETIME,
+            c.UPDATETIME,
+            c.ISPUBLIC,
+            c.`STATUS`,
             d.UID,
             d.SID,
             b.IDCARD,
+            e.CARDNO,
+            e.CARDACCOUNTNAME,
+            e.CARDBANK,
+            e.BANKADDRESS,
             (SELECT a.PATH FROM app_cm_file a WHERE a.UUID=b.IDCARDF) AS IDCARDF,
             (SELECT a.PATH FROM app_cm_file a WHERE a.UUID=b.IDCARDB) AS IDCARDB,
             (SELECT a.PATH FROM app_cm_file a WHERE a.UUID=b.IDCARDH) AS IDCARDH
@@ -58,7 +65,18 @@
             app_biz_shop c
         LEFT JOIN app_biz_shop_user_role d ON d.SID=c.ID
         LEFT JOIN app_au_user b ON b.ID=d.UID
+        LEFT JOIN app_biz_card e ON e.SID=c.ID
         WHERE c.ID=#{id} AND d.TYPE=1
+    </select>
+
+    <!-- 根据districtCode查城市哪个区 -->
+    <select id="getCode" resultType="com.jkm.hsy.user.entity.HsyMerchantAuditResponse">
+        SELECT ANAME,PARENTCODE FROM app_biz_district WHERE CODE = #{districtCode}
+    </select>
+
+    <!-- 根据districtCode查城市哪个区 -->
+    <select id="getCity" resultType="com.jkm.hsy.user.entity.HsyMerchantAuditResponse">
+        SELECT ANAME,PARENTCODE FROM app_biz_district WHERE CODE = #{parentCode}
     </select>
 
     <!-- 更新账户id -->
@@ -71,8 +89,20 @@
       UPDATE app_biz_shop SET STATUS=#{status} WHERE ID=#{id}
     </update>
 
-    <!-- 审核通过 -->
+    <!-- 审核不通过 -->
     <update id="updateAuditNotPass">
         UPDATE app_biz_shop SET STATUS=#{status},CHECKERRORINFO=#{checkErrorInfo} WHERE ID=#{id}
     </update>
+
+    <!-- 审核不通过更改提交资料步骤 -->
+    <update id="stepChange">
+        UPDATE app_au_user SET AUSTEP=0 WHERE ID=#{uid}
+    </update>
+
+
+    <!-- 审核不通过更改提交资料步骤 -->
+    <select id="getUid" resultType="java.lang.Integer">
+        SELECT UID FROM app_biz_shop_user_role WHERE SID=#{id}
+    </select>
+
 </mapper>

@@ -31,7 +31,7 @@
               </el-select>
             </el-col>
             <el-col  :span="4">
-              <label>对账结果:</label>
+              <label>结算状态:</label>
               <el-select clearable v-model="query.settleStatus" size="small" >
                 <el-option label="全部" value="">全部</el-option>
                 <el-option label="待结算" value="1">待结算</el-option>
@@ -59,13 +59,13 @@
             <el-table-column prop="settleStatusValue" label="结算状态" ></el-table-column>
             <el-table-column label="操作" width="70">
               <template scope="scope">
-                <!--<el-button @click.native.prevent="list(scope.$index)" type="text" size="small">结算</el-button>-->
+                <el-button @click.native.prevent="list(scope.$index)" type="text" size="small" v-if="records[scope.$index].settleStatusValue!='结算成功'">结算</el-button>
               </template>
             </el-table-column>
           </el-table>
           <!--分页-->
           <div class="block" style="text-align: right">
-            <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage4" :page-sizes="[10, 20, 50]" :page-size="100" layout="total, sizes, prev, pager, next, jumper" :total="total">
+            <el-pagination @current-change="handleCurrentChange" :current-page="currentPage4" layout="total, prev, pager, next, jumper" :total="count">
             </el-pagination>
           </div>
           <!--审核-->
@@ -93,8 +93,8 @@
               </div>
               <div slot="footer" class="dialog-footer" style="text-align: center;">
                 <el-button @click="isShow = false">取 消</el-button>
-                <el-button @click="isShow = false">结算已对账部分</el-button>
-                <el-button @click="isShow = false">强制结算全部</el-button>
+                <el-button @click="settle(2,records[index].id)">结算已对账部分</el-button>
+                <el-button @click="settle(3,records[index].id)">强制结算全部</el-button>
               </div>
             </el-dialog>
           </div>
@@ -225,8 +225,10 @@
             }
           },function (err) {
             this.$data.loading = false;
-            this.$store.commit('MESSAGE_ACCORD_SHOW', {
-              text: err.statusMessage
+            this.$message({
+              showClose: true,
+              message: err.statusMessage,
+              type: 'error'
             })
           })
       },
@@ -263,8 +265,10 @@
               }
             },function (err) {
               this.$data.loading = false;
-              this.$store.commit('MESSAGE_ACCORD_SHOW', {
-                text: err.statusMessage
+              this.$message({
+                showClose: true,
+                message: err.statusMessage,
+                type: 'error'
               })
             })
         },
@@ -272,46 +276,10 @@
           this.$data.index = val;
           this.$data.isShow = true;
         },
+        //行选中
         handleSelectionChange(val) {
             console.log(val)
           this.multipleSelection = val;
-        },
-        //每页条数改变时
-        handleSizeChange(val) {
-          this.$data.query.pageSize = val;
-          this.$data.loading = true;
-          this.$http.post('/admin/settle/list',this.$data.query)
-            .then(function (res) {
-              this.$data.records = res.data.records;
-              this.$data.count = res.data.count;
-              this.$data.total = res.data.totalPage;
-              this.$data.loading = false;
-              var changeTime=function (val) {
-                if(val==''||val==null){
-                  return ''
-                }else {
-                  val = new Date(val)
-                  var year=val.getFullYear();
-                  var month=val.getMonth()+1;
-                  var date=val.getDate();
-                  function tod(a) {
-                    if(a<10){
-                      a = "0"+a
-                    }
-                    return a;
-                  }
-                  return year+"-"+tod(month)+"-"+tod(date);
-                }
-              }
-              for(let i = 0; i < this.$data.records.length; i++){
-                this.$data.records[i].tradeDate = changeTime(this.$data.records[i].tradeDate)
-              }
-            },function (err) {
-              this.$data.loading = false;
-              this.$store.commit('MESSAGE_ACCORD_SHOW', {
-                text: err.statusMessage
-              })
-            })
         },
         //当前页改变时
         handleCurrentChange(val) {
@@ -345,37 +313,60 @@
               }
             },function (err) {
               this.$data.loading = false;
-              this.$store.commit('MESSAGE_ACCORD_SHOW', {
-                text: err.statusMessage
+              this.$message({
+                showClose: true,
+                message: err.statusMessage,
+                type: 'error'
+              })
+            })
+        },
+        //结算审核
+        settle(val,id) {
+          this.$http.post('/admin/settle/singleSettle',{recordId:id,option:val})
+            .then(function (res) {
+              this.$message({
+                showClose: true,
+                message: '结算成功',
+                type: 'success'
+              })
+              this.$data.isShow = false
+            })
+            .catch(function (err) {
+              this.$message({
+                showClose: true,
+                message: err.statusMessage,
+                type: 'error'
               })
             })
         }
       },
       watch:{
         date:function (val,oldVal) {
-          for(var j=0;j<val.length;j++){
-            var str = val[j];
-            var ary = [str.getFullYear(), str.getMonth() + 1, str.getDate()];
-            for(var i = 0, len = ary.length; i < len; i ++) {
-              if(ary[i] < 10) {
-                ary[i] = '0' + ary[i];
+          if(val[0]!=null){
+            for(var j=0;j<val.length;j++){
+              var str = val[j];
+              var ary = [str.getFullYear(), str.getMonth() + 1, str.getDate()];
+              for(var i = 0, len = ary.length; i < len; i ++) {
+                if(ary[i] < 10) {
+                  ary[i] = '0' + ary[i];
+                }
+              }
+              str = ary[0] + '-' + ary[1] + '-' + ary[2];
+              if(j==0){
+                this.$data.query.startSettleDate = str;
+              }else {
+                this.$data.query.endSettleDate = str;
               }
             }
-            str = ary[0] + '-' + ary[1] + '-' + ary[2];
-            if(j==0){
-              this.$data.query.startSettleDate = str;
-            }else {
-              this.$data.query.endSettleDate = str;
-            }
+          }else {
+            this.$data.query.startSettleDate = '';
+            this.$data.query.endSettleDate = '';
           }
         }
       }
     }
 </script>
 <style scoped lang="less">
-  body{
-    background-color:#ff0000;
-  }
   .maskCon{
     margin:0 0 15px 50px
   }

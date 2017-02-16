@@ -103,6 +103,7 @@ public class MerchantPromoteShallServiceImpl implements MerchantPromoteShallServ
                 //金开门利润 = 升级费 - 直推分润 - 间推分润
                 BigDecimal productMoney = waitAmount.subtract(directMoney).subtract(inDirectMoney);
                 final PartnerShallProfitDetail detail = new PartnerShallProfitDetail();
+                detail.setProductType(EnumProductType.HSS.getId());
                 detail.setMerchantId(merchantId);
                 detail.setMerchantName(merchantInfo.getName());
                 detail.setOrderNo(orderNo);
@@ -193,6 +194,7 @@ public class MerchantPromoteShallServiceImpl implements MerchantPromoteShallServ
             BigDecimal productMoney = waitAmount.subtract(directMoney).subtract(inDirectMoney).subtract(firstMoney).subtract(secondMoney);
 
             final PartnerShallProfitDetail detail = new PartnerShallProfitDetail();
+            detail.setProductType(EnumProductType.HSS.getId());
             detail.setMerchantId(merchantId);
             detail.setMerchantName(merchantInfo.getName());
             detail.setOrderNo(orderNo);

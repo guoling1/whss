@@ -28,7 +28,7 @@ public class PartnerShallProfitDetail extends BaseEntity{
      * 产品类型 ， hss hsy
      * {@link com.jkm.hss.product.enums.EnumProductType}
      */
-    private int productType;
+    private String productType;
 
     /**
      * 商户交易流水号

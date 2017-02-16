@@ -119,6 +119,7 @@ public class ShallProfitDetailServiceImpl implements ShallProfitDetailService{
                 final BigDecimal productMoney = productChannelDetail.getProductMerchantWithdrawFee().subtract(productChannelDetail.getProductWithdrawFee());
                 final BigDecimal channelMoney = productChannelDetail.getProductWithdrawFee().subtract(basicChannel.getBasicWithdrawFee());
                 final CompanyProfitDetail companyProfitDetail = new CompanyProfitDetail();
+                companyProfitDetail.setProductType(EnumProductType.HSY.getId());
                 companyProfitDetail.setMerchantId(merchantId);
                 companyProfitDetail.setPaymentSn(orderNo);
                 companyProfitDetail.setTotalFee(tradeAmount);
@@ -155,6 +156,7 @@ public class ShallProfitDetailServiceImpl implements ShallProfitDetailService{
                 final BigDecimal productMoney = dealerChannelRate.getDealerWithdrawFee().subtract(productChannelDetail.getProductWithdrawFee());
                 final BigDecimal channelMoney = productChannelDetail.getProductWithdrawFee().subtract(basicChannel.getBasicWithdrawFee());
                 final ShallProfitDetail shallProfitDetail = new ShallProfitDetail();
+                shallProfitDetail.setProductType(EnumProductType.HSY.getId());
                 shallProfitDetail.setMerchantId(merchantId);
                 shallProfitDetail.setPaymentSn(orderNo);
                 shallProfitDetail.setTotalFee(tradeAmount);
@@ -191,6 +193,7 @@ public class ShallProfitDetailServiceImpl implements ShallProfitDetailService{
                 final BigDecimal productMoney = firstDealerChannelRate.getDealerWithdrawFee().subtract(productChannelDetail.getProductWithdrawFee());
                 final BigDecimal channelMoney = productChannelDetail.getProductWithdrawFee().subtract(basicChannel.getBasicWithdrawFee());
                 final ShallProfitDetail shallProfitDetail = new ShallProfitDetail();
+                shallProfitDetail.setProductType(EnumProductType.HSY.getId());
                 shallProfitDetail.setMerchantId(merchantId);
                 shallProfitDetail.setPaymentSn(orderNo);
                 shallProfitDetail.setChannelType(channelSign);
@@ -250,6 +253,7 @@ public class ShallProfitDetailServiceImpl implements ShallProfitDetailService{
             map.put("productMoney",Triple.of(product.getAccountId(), merchantWithdrawFee,"M1"));
             map.put("channelMoney",Triple.of(basicChannel.getAccountId(), channelMoney,"M1"));
             final CompanyProfitDetail companyProfitDetail = new CompanyProfitDetail();
+            companyProfitDetail.setProductType(EnumProductType.HSS.getId());
             companyProfitDetail.setMerchantId(merchantId);
             companyProfitDetail.setPaymentSn(orderNo);
             companyProfitDetail.setTotalFee(tradeAmount);
@@ -278,6 +282,7 @@ public class ShallProfitDetailServiceImpl implements ShallProfitDetailService{
                 final BigDecimal productMoney = productChannelDetail.getProductMerchantWithdrawFee().subtract(productChannelDetail.getProductWithdrawFee());
                 final BigDecimal channelMoney = productChannelDetail.getProductWithdrawFee().subtract(basicChannel.getBasicWithdrawFee());
                 final CompanyProfitDetail companyProfitDetail = new CompanyProfitDetail();
+                companyProfitDetail.setProductType(EnumProductType.HSS.getId());
                 companyProfitDetail.setMerchantId(merchantId);
                 companyProfitDetail.setPaymentSn(orderNo);
                 companyProfitDetail.setTotalFee(tradeAmount);
@@ -314,6 +319,7 @@ public class ShallProfitDetailServiceImpl implements ShallProfitDetailService{
                 final BigDecimal productMoney = dealerChannelRate.getDealerWithdrawFee().subtract(productChannelDetail.getProductWithdrawFee());
                 final BigDecimal channelMoney = productChannelDetail.getProductWithdrawFee().subtract(basicChannel.getBasicWithdrawFee());
                 final ShallProfitDetail shallProfitDetail = new ShallProfitDetail();
+                shallProfitDetail.setProductType(EnumProductType.HSS.getId());
                 shallProfitDetail.setMerchantId(merchantId);
                 shallProfitDetail.setPaymentSn(orderNo);
                 shallProfitDetail.setTotalFee(tradeAmount);
@@ -350,6 +356,7 @@ public class ShallProfitDetailServiceImpl implements ShallProfitDetailService{
                 final BigDecimal productMoney = firstDealerChannelRate.getDealerWithdrawFee().subtract(productChannelDetail.getProductWithdrawFee());
                 final BigDecimal channelMoney = productChannelDetail.getProductWithdrawFee().subtract(basicChannel.getBasicWithdrawFee());
                 final ShallProfitDetail shallProfitDetail = new ShallProfitDetail();
+                shallProfitDetail.setProductType(EnumProductType.HSS.getId());
                 shallProfitDetail.setMerchantId(merchantId);
                 shallProfitDetail.setPaymentSn(orderNo);
                 shallProfitDetail.setChannelType(channelSign);

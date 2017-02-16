@@ -42,6 +42,7 @@ public class AppAuUser {
     private String roleName;//角色名称
     private String deviceID;//设备号
     private Long sid;
+    private String originCellphone;//更改前密码
 
     public Long getId() {
         return id;
@@ -321,5 +322,13 @@ public class AppAuUser {
 
     public void setShopShortName(String shopShortName) {
         this.shopShortName = shopShortName;
+    }
+
+    public String getOriginCellphone() {
+        return originCellphone;
+    }
+
+    public void setOriginCellphone(String originCellphone) {
+        this.originCellphone = originCellphone;
     }
 }

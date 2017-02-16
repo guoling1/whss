@@ -48,4 +48,26 @@ public interface HsyMerchantAuditDao {
     HsyMerchantAuditResponse selectById(@Param("id") Long id);
 
     void updateAccount(@Param("accountID") Long accountID, @Param("id") Long id);
+
+    /**
+     * 查询城市(哪个区)
+     * @param districtCode
+     * @return
+     */
+    HsyMerchantAuditResponse getCode(@Param("districtCode") String districtCode);
+
+
+    /**
+     * 查询城市
+     * @param parentCode
+     * @return
+     */
+    HsyMerchantAuditResponse getCity(@Param("parentCode") String parentCode);
+
+    /**
+     * 审核不通过更改提交资料步骤
+     */
+    void stepChange(@Param("uid") int uid);
+
+    int getUid(@Param("id") Long id);
 }
