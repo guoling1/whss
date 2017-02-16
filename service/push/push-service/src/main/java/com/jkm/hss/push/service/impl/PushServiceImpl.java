@@ -183,7 +183,7 @@ public class PushServiceImpl implements PushService {
         }
         String newContent =messageTemplate.getMessageTemplate();
         appResult.setResultMessage(newContent);
-        String ret = this.pushTransmissionMsg(2, JSON.toJSONString(appResult), "2", null, clients);
+        String ret = this.pushTransmissionMsg1(2, JSON.toJSONString(appResult), "2", null, clients);
         return ret;
 
 
@@ -275,7 +275,43 @@ public class PushServiceImpl implements PushService {
         return ret;
     }
 
+    /**
+     * 审核
+     * @param type
+     * @param content
+     * @param pushType
+     * @param clientId
+     * @param targets
+     * @return
+     */
+    public String pushTransmissionMsg1(Integer type, String content, String pushType, String clientId, List<String> targets) {
 
+
+        String target="";
+        if(targets!=null){
+            target= targets.toString();
+        }
+
+        String ret= PushProducer.pushTransmissionMsg1(type,content,pushType,clientId,targets);
+
+        Push push= new Push();
+        push.setPid(UUID.randomUUID().toString());
+        push.setTitle("");
+        push.setContent(content);
+        push.setClientId(clientId);
+        push.setPushType(pushType);
+        push.setTempType("4");
+        push.setTargets(target);
+
+        if(ret.contains("result=ok")){
+            push.setStatus(1);
+        }else{
+            push.setStatus(0);
+        }
+
+        pushDao.insert(push);
+        return ret;
+    }
 
     public static void main(String[] args){
         // PushProducer  push = new PushProducer();

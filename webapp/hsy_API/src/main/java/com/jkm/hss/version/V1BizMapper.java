@@ -34,6 +34,7 @@ public class V1BizMapper {
 		bizMapper.put("HSY001026", new String[]{"hsyAppVersionService","getAppVersion"});
 		bizMapper.put("HSY001027", new String[]{"hsyAppVersionService","getAppVersionAndroid"});
 		bizMapper.put("HSY001028", new String[]{"hsyUserService","findLoginInfo"});
+		bizMapper.put("HSY001029", new String[]{"hsyUserService","findLoginInfoShort"});
 		/**app收款*/
 		bizMapper.put("HSY001030", new String[]{"hsyTradeService", "appReceipt"});
 		/**app提现*/
