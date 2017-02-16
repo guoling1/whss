@@ -381,6 +381,19 @@ public class ActiveControllerTester {
     }
 
     @Test
+    public void testFindLoginInfoShort()throws Exception{
+        AppParam p=new AppParam();
+        p.setServiceCode("HSY001029");
+        p.setAccessToken("");
+        p.setAppType("android");
+        p.setTimeStamp(AppDateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
+        p.setV("v1.0");
+        String param="{\"id\":18}";
+        p.setRequestData(param);
+        ActiveControllerTester.testRest(p);
+    }
+
+    @Test
     public void generateSQL()throws Exception{
         FileChannel channel=new FileInputStream("D:/a.txt").getChannel();
         int size=(int) channel.size();
