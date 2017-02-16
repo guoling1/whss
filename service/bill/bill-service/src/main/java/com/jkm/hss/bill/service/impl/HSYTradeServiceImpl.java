@@ -105,13 +105,14 @@ public class HSYTradeServiceImpl implements HSYTradeService {
         final AppBizCard appBizCard = new AppBizCard();
         appBizCard.setSid(shop.getId());
         final AppBizCard appBizCard1 = this.hsyShopDao.findAppBizCardByParam(appBizCard).get(0);
+        final AppAuUser appAuUser = this.hsyShopDao.findAuUserByAccountID(accountId).get(0);
         final Account account = this.accountService.getById(accountId).get();
         result.put("bankName", appBizCard1.getCardBank());
         final String cardNO = appBizCard1.getCardNO();
         result.put("cardNo", cardNO.substring(cardNO.length() - 4));
         final BigDecimal merchantWithdrawPoundage = this.calculateService.getMerchantWithdrawPoundage(EnumProductType.HSY, shop.getId(), channel);
         result.put("poundage", merchantWithdrawPoundage);
-        result.put("mobile", appBizCard1.getCardCellphone());
+        result.put("mobile", appAuUser.getCellphone());
         result.put("available", account.getAvailable());
         return result.toJSONString();
     }
