@@ -20,6 +20,6 @@ public class IndexController extends BaseController {
      */
     @RequestMapping(value = "/**", method = RequestMethod.GET)
     public String wallet(final HttpServletRequest request) {
-        return "/index";
+        return "index";
     }
 }
