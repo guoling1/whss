@@ -2,6 +2,7 @@ package com.jkm.hss.helper.response;
 
 import com.jkm.hss.product.entity.ProductChannelDetail;
 import com.jkm.hss.product.enums.EnumMerchantWithdrawType;
+import com.jkm.hss.product.enums.EnumProductType;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -52,4 +53,10 @@ public class ProductListResponse {
      * 产品通道列表
      */
     private List<ProductChannelDetail> list;
+
+    /**
+     * 类型 hss,hsy
+     * {@link EnumProductType}
+     */
+    private String type;
 }

@@ -98,7 +98,7 @@ public class HsyFileServiceImpl implements HsyFileService {
             user.setUpdateTime(date);
             hsyUserDao.updateByID(user);
         }
-        return "";
+        return "{\"auStep\":\"2\"}";
     }
 
     public String insertFileAndUpload(MultipartFile file,String type)throws Exception{

@@ -14,6 +14,11 @@ import java.util.List;
 public class ProductAddRequest {
 
     /**
+     * 产品类型
+     */
+    private String type;
+
+    /**
      * 产品名称 快收银
      */
     private String productName;
