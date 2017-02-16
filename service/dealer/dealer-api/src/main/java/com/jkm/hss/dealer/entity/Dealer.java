@@ -156,4 +156,7 @@ public class Dealer extends BaseEntity {
     public String getPlainMobile(){
         return this.mobile.substring(0,3) + "****" + this.mobile.substring(7,11);
     }
+    public String getPlainBankMobile(String phone){
+        return phone.substring(0,3) + "****" + phone.substring(7,11);
+    }
 }

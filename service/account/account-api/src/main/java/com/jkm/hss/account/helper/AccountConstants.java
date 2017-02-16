@@ -19,4 +19,9 @@ public final class AccountConstants {
      * 金开门 收钱默认账户
      */
     public static final long JKM_ACCOUNT_ID = 2;
+
+    /**
+     * 金开门 代理商提现手续费账户
+     */
+    public static final long DEALER_POUNDAGE_ACCOUNT_ID = 11;
 }

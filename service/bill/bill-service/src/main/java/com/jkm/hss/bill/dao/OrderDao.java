@@ -231,5 +231,13 @@ public interface OrderDao {
      */
     List<Order> selectPageOrdersByAccountId(@Param("accountId") long accountId, @Param("appId") String appId,
                                             @Param("offset") int offset, @Param("count") int count,
+
                                             @Param("date") Date date);
+
+    /**
+     * 批量查询
+     * @param orderNos
+     * @return
+     */
+    List<Order> getByOrderNos(@Param("orderNos") List<String> orderNos);
 }

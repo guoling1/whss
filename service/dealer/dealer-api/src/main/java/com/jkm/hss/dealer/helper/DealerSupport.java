@@ -64,7 +64,7 @@ public class DealerSupport {
     }
 
     /**
-     * 加密身份证
+     * 加密银行卡号
      *
      * @param bankCard
      * @return
@@ -74,7 +74,7 @@ public class DealerSupport {
     }
 
     /**
-     * 解密身份证
+     * 解密银行卡号
      *
      * @param encryptBankCard
      * @return
@@ -98,5 +98,8 @@ public class DealerSupport {
      */
     public static String passwordDigest(final String password, final String salt) {
         return DigestUtils.sha256Hex(password + salt);
+    }
+    public static  void main(String[] args){
+        System.out.println(passwordDigest("123456","JKM"));
     }
 }

@@ -7,10 +7,7 @@ import com.jkm.base.common.util.HttpClientPost;
 import com.jkm.hss.account.entity.Account;
 import com.jkm.hss.account.entity.FrozenRecord;
 import com.jkm.hss.account.entity.UnFrozenRecord;
-import com.jkm.hss.account.enums.EnumAccountFlowType;
-import com.jkm.hss.account.enums.EnumAccountUserType;
-import com.jkm.hss.account.enums.EnumAppType;
-import com.jkm.hss.account.enums.EnumUnfrozenType;
+import com.jkm.hss.account.enums.*;
 import com.jkm.hss.account.helper.AccountConstants;
 import com.jkm.hss.account.sevice.*;
 import com.jkm.hss.bill.entity.Order;
@@ -319,11 +316,13 @@ public class WithdrawServiceImpl implements WithdrawService {
         this.accountService.decreaseTotalAmount(poundageAccount.getId(), order.getPoundage());
         this.accountFlowService.addAccountFlow(poundageAccount.getId(), order.getOrderNo(), order.getPoundage(),
                 "提现分润", EnumAccountFlowType.DECREASE);
+        //分账业务类型
+        final String splitBusinessType = this.getSplitBusinessType(order);
 
         //增加分账记录
         //通道利润--到结算--到可用余额
         if (null != channelMoneyTriple) {
-            this.splitAccountRecordService.addWithdrawSplitAccountRecord(order.getOrderNo(), order.getOrderNo(),
+            this.splitAccountRecordService.addWithdrawSplitAccountRecord(splitBusinessType, order.getOrderNo(), order.getOrderNo(),
                     order.getTradeAmount(), order.getPoundage(), channelMoneyTriple, "通道账户", EnumTradeType.WITHDRAW.getValue());
             final Account account = this.accountService.getById(channelMoneyTriple.getLeft()).get();
             this.accountService.increaseTotalAmount(account.getId(), channelMoneyTriple.getMiddle());
@@ -341,7 +340,7 @@ public class WithdrawServiceImpl implements WithdrawService {
         }
         //产品利润--到结算--可用余额
         if (null != productMoneyTriple) {
-            this.splitAccountRecordService.addWithdrawSplitAccountRecord(order.getOrderNo(), order.getOrderNo(),
+            this.splitAccountRecordService.addWithdrawSplitAccountRecord(splitBusinessType, order.getOrderNo(), order.getOrderNo(),
                     order.getTradeAmount(), order.getPoundage(), productMoneyTriple, "产品账户", EnumTradeType.PAY.getValue());
             final Account account = this.accountService.getById(productMoneyTriple.getLeft()).get();
             this.accountService.increaseTotalAmount(account.getId(), productMoneyTriple.getMiddle());
@@ -360,7 +359,7 @@ public class WithdrawServiceImpl implements WithdrawService {
         //一级代理商利润--到结算--可用余额
         if (null != firstMoneyTriple) {
             final Dealer dealer = this.dealerService.getByAccountId(firstMoneyTriple.getLeft()).get();
-            this.splitAccountRecordService.addWithdrawSplitAccountRecord(order.getOrderNo(), order.getOrderNo(),
+            this.splitAccountRecordService.addWithdrawSplitAccountRecord(splitBusinessType, order.getOrderNo(), order.getOrderNo(),
                     order.getTradeAmount(), order.getPoundage(), firstMoneyTriple, dealer.getProxyName(), EnumTradeType.PAY.getValue());
             final Account account = this.accountService.getById(firstMoneyTriple.getLeft()).get();
             this.accountService.increaseTotalAmount(account.getId(), firstMoneyTriple.getMiddle());
@@ -380,7 +379,7 @@ public class WithdrawServiceImpl implements WithdrawService {
         if (null != secondMoneyTriple) {
             final Dealer dealer = this.dealerService.getByAccountId(secondMoneyTriple.getLeft()).get();
             final Account account = this.accountService.getById(secondMoneyTriple.getLeft()).get();
-            this.splitAccountRecordService.addWithdrawSplitAccountRecord(order.getOrderNo(), order.getOrderNo(),
+            this.splitAccountRecordService.addWithdrawSplitAccountRecord(splitBusinessType, order.getOrderNo(), order.getOrderNo(),
                     order.getTradeAmount(), order.getPoundage(), secondMoneyTriple, dealer.getProxyName(), EnumTradeType.PAY.getValue());
             this.accountService.increaseTotalAmount(account.getId(), secondMoneyTriple.getMiddle());
             this.accountService.increaseSettleAmount(account.getId(), secondMoneyTriple.getMiddle());
@@ -394,6 +393,26 @@ public class WithdrawServiceImpl implements WithdrawService {
                     "提现分润", EnumAccountFlowType.DECREASE, EnumAppType.HSS.getId(), order.getPaySuccessTime(), EnumAccountUserType.DEALER.getId());
             this.accountFlowService.addAccountFlow(account.getId(), order.getOrderNo(), secondMoneyTriple.getMiddle(),
                     "分润", EnumAccountFlowType.INCREASE);
+        }
+    }
+
+    //判断分账的业务类型
+    private String getSplitBusinessType(Order order){
+
+        if (order.getAppId().equals(EnumAppType.HSS.getId())){
+            if (order.getTradeType() == EnumTradeType.PAY.getId()){
+
+                return EnumSplitBusinessType.HSSPAY.getId();
+            }else if (order.getTradeType() == EnumTradeType.WITHDRAW.getId()){
+
+                return EnumSplitBusinessType.HSSWITHDRAW.getId();
+            }else{
+                return "";
+            }
+
+        }else{
+
+            return EnumSplitBusinessType.HSYPAY.getId();
         }
     }
 }

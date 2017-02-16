@@ -18,6 +18,13 @@ import java.util.Date;
 public class SplitAccountRecord extends BaseEntity {
 
     /**
+     * yu
+     * 业务类型
+     * {@link com.jkm.hss.account.enums.EnumSplitBusinessType}
+     */
+    private String businessType;
+
+    /**
      * 交易订单号
      */
     private String orderNo;

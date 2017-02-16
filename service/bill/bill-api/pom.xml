@@ -123,5 +123,9 @@
             <groupId>com.belerweb</groupId>
             <artifactId>pinyin4j</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.jkm</groupId>
+            <artifactId>hss-dealer-api</artifactId>
+        </dependency>
     </dependencies>
 </project>

@@ -72,4 +72,33 @@ public class DistributeQRCodeRecordServiceImpl implements DistributeQRCodeRecord
     public List<DistributeQRCodeRecord> getRecordBySecondLevelDealerId(final long dealerId, final long secondLevelDealerId) {
         return this.distributeQRCodeRecordDao.selectRecordBySecondLevelDealerId(dealerId, secondLevelDealerId);
     }
+
+    /**
+     * 查询分配给二级代理商的二维码记录
+     *
+     * @param firstLevelDealerId
+     * @param markCode
+     * @param name
+     * @return
+     */
+    @Override
+    public int selectDistributeCountByContions(long firstLevelDealerId, String markCode, String name) {
+        return this.distributeQRCodeRecordDao.selectDistributeCountByContions(firstLevelDealerId,markCode,name);
+    }
+
+    /**
+     * 查询分配给二级代理商的二维码记录
+     *
+     * @param firstLevelDealerId
+     * @param markCode
+     * @param name
+     * @param offset
+     * @param count              @return
+     */
+    @Override
+    public List<DistributeQRCodeRecord> selectDistributeRecordsByContions(long firstLevelDealerId, String markCode, String name, int offset, int count) {
+        return this.distributeQRCodeRecordDao.selectDistributeRecordsByContions(firstLevelDealerId,markCode,name,offset,count);
+    }
+
+
 }
