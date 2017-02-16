@@ -303,7 +303,6 @@ public class AdminUserServiceImpl implements AdminUserService {
      */
     @Override
     public int unDistributeCount(String sysType) {
-        final List<QRCode> qrCodeList = this.qrCodeService.getUnDistributeCodeBySysType(sysType);
-        return qrCodeList.size();
+        return this.qrCodeService.getUnDistributeCountBySysType(sysType);
     }
 }

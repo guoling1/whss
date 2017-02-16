@@ -879,18 +879,17 @@ public class AdminController extends BaseController {
         return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "分配成功", distributeQRCodeRecordResponseList);
     }
 
-//    /**
-//     * 剩余二维码个数
-//     * @param unDistributeCountRequest
-//     * @return
-//     */
-//    @ResponseBody
-//    @RequestMapping(value = "/unDistributeCount", method = RequestMethod.POST)
-//    public CommonResponse unDistributeCount (@RequestBody UnDistributeCountRequest unDistributeCountRequest) {
-//        unDistributeCountRequest.getSysType()
-//        this.qrCodeService.getUnDistributeCodeBySysType(sysType);
-//        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "分配成功", 10);
-//    }
+    /**
+     * 剩余二维码个数
+     * @param unDistributeCountRequest
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/unDistributeCount", method = RequestMethod.POST)
+    public CommonResponse unDistributeCount (@RequestBody UnDistributeCountRequest unDistributeCountRequest) {
+        int count = this.adminUserService.unDistributeCount(unDistributeCountRequest.getSysType());
+        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "分配成功", count);
+    }
     /**
      * 二维码分配记录
      * @param distributeRecordRequest

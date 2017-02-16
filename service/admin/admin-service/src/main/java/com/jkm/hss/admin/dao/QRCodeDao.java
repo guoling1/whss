@@ -433,6 +433,12 @@ public interface QRCodeDao {
      * @return
      */
     List<QRCode> getUnDistributeCodeBySysType(@Param("sysType") String sysType);
+    /**
+     * admin查询未分配的二维码个数
+     *
+     * @return
+     */
+    int getUnDistributeCountBySysType(@Param("sysType") String sysType);
 
     /**
      * admin根据二维码和产品类型查询二维码
