@@ -33,7 +33,8 @@
 
     <!-- 查询详情 -->
     <select id="getDetails" resultType="com.jkm.hsy.user.entity.HsyMerchantAuditResponse">
-       SELECT
+        SELECT
+			b.CELLPHONE,
             c.`NAME`,
             c.SHORTNAME,
             c.INDUSTRYCODE,
@@ -54,10 +55,12 @@
             d.UID,
             d.SID,
             b.IDCARD,
+						e.IDCARDNO,
             e.CARDNO,
             e.CARDACCOUNTNAME,
             e.CARDBANK,
             e.BANKADDRESS,
+						e.CREATETIME,
             (SELECT a.PATH FROM app_cm_file a WHERE a.UUID=b.IDCARDF) AS IDCARDF,
             (SELECT a.PATH FROM app_cm_file a WHERE a.UUID=b.IDCARDB) AS IDCARDB,
             (SELECT a.PATH FROM app_cm_file a WHERE a.UUID=b.IDCARDH) AS IDCARDH
@@ -71,12 +74,17 @@
 
     <!-- 根据districtCode查城市哪个区 -->
     <select id="getCode" resultType="com.jkm.hsy.user.entity.HsyMerchantAuditResponse">
-        SELECT ANAME,PARENTCODE FROM app_biz_district WHERE CODE = #{districtCode}
+        SELECT ANAME,CODE,PARENTCODE FROM app_biz_district WHERE CODE = #{districtCode}
     </select>
 
     <!-- 根据districtCode查城市哪个区 -->
     <select id="getCity" resultType="com.jkm.hsy.user.entity.HsyMerchantAuditResponse">
         SELECT ANAME,PARENTCODE FROM app_biz_district WHERE CODE = #{parentCode}
+    </select>
+
+    <!-- 根据Code查城市 -->
+    <select id="getCityOnly" resultType="com.jkm.hsy.user.entity.HsyMerchantAuditResponse">
+        SELECT ANAME FROM app_biz_district WHERE CODE = #{parentCode}
     </select>
 
     <!-- 更新账户id -->

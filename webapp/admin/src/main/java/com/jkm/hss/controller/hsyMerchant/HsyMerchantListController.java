@@ -37,8 +37,8 @@ public class HsyMerchantListController extends BaseController {
     public CommonResponse getMerchantList(@RequestBody final HsyMerchantAuditRequest hsyMerchantAuditRequest){
         final PageModel<HsyMerchantAuditResponse> pageModel = new PageModel<HsyMerchantAuditResponse>(hsyMerchantAuditRequest.getPageNo(), hsyMerchantAuditRequest.getPageSize());
         hsyMerchantAuditRequest.setOffset(pageModel.getFirstIndex());
-        int count = hsyMerchantAuditService.getCount(hsyMerchantAuditRequest);
         List<HsyMerchantAuditResponse> list = hsyMerchantAuditService.getMerchant(hsyMerchantAuditRequest);
+        int count = hsyMerchantAuditService.getCount(hsyMerchantAuditRequest);
         if (list == null){
             return CommonResponse.simpleResponse(-1,"未查到相关数据");
         }
