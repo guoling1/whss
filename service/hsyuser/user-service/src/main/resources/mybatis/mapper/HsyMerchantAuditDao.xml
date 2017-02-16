@@ -33,7 +33,8 @@
 
     <!-- 查询详情 -->
     <select id="getDetails" resultType="com.jkm.hsy.user.entity.HsyMerchantAuditResponse">
-       SELECT
+        SELECT
+			b.CELLPHONE,
             c.`NAME`,
             c.SHORTNAME,
             c.INDUSTRYCODE,
@@ -54,10 +55,12 @@
             d.UID,
             d.SID,
             b.IDCARD,
+						e.IDCARDNO,
             e.CARDNO,
             e.CARDACCOUNTNAME,
             e.CARDBANK,
             e.BANKADDRESS,
+						e.CREATETIME,
             (SELECT a.PATH FROM app_cm_file a WHERE a.UUID=b.IDCARDF) AS IDCARDF,
             (SELECT a.PATH FROM app_cm_file a WHERE a.UUID=b.IDCARDB) AS IDCARDB,
             (SELECT a.PATH FROM app_cm_file a WHERE a.UUID=b.IDCARDH) AS IDCARDH
