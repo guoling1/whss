@@ -791,8 +791,11 @@ public class HsyUserServiceImpl implements HsyUserService {
             }
         }).create();
         Map map=new HashMap();
+        AppAuUser user=new AppAuUser();
+        user.setStatus(appAuUserFind.getStatus());
+        user.setAccountID(appAuUserFind.getAccountID());
         map.put("appAuUser",appAuUserFind);
-        map.put("appBizShop",appBizShop);
+//        map.put("appBizShop",appBizShop);
 
         return gson.toJson(map);
     }
