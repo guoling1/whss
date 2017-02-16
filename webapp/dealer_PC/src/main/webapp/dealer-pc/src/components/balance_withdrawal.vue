@@ -42,12 +42,12 @@
               <label class="form-label">账户流水</label>
               <div class="screen-item">
                 <span class="screen-title">流水号</span>
-                <el-input v-model="orderNo" placeholder="流水号" size="small" style="width:240px"></el-input>
+                <el-input v-model="flowSn" placeholder="流水号" size="small" style="width:240px"></el-input>
               </div>
               <div class="screen-item">
                 <span class="screen-title">收支类别</span>
-                <el-select v-model="businessType" size="small" clearable placeholder="请选择">
-                  <el-option v-for="item in item_businessType"
+                <el-select v-model="type" size="small" clearable placeholder="请选择">
+                  <el-option v-for="item in item_type"
                              :label="item.label"
                              :value="item.value">
                   </el-option>
@@ -71,27 +71,16 @@
             </div>
             <div class="box-body">
               <el-table :data="tableData" border>
-                <el-table-column type="index" label="序号"></el-table-column>
-                <el-table-column prop="splitOrderNo" label="分润流水号" sortable="custom"></el-table-column>
-                <el-table-column prop="businessType" label="业务类型">
+                <el-table-column prop="flowSn" label="流水号" sortable="custom"></el-table-column>
+                <el-table-column label="时间" width="180" sortable="custom">
                   <template scope="scope">
-                    {{ scope.row.businessType | filter_businessType }}
+                    {{ scope.row.createTime }}
                   </template>
                 </el-table-column>
-                <el-table-column label="分润时间" width="180">
-                  <template scope="scope">
-                    {{ scope.row.splitCreateTime | datetime }}
-                  </template>
-                </el-table-column>
-                <el-table-column prop="orderNo" label="交易订单号"></el-table-column>
-                <el-table-column prop="splitSettlePeriod" label="分润结算周期"></el-table-column>
-                <el-table-column label="结算时间">
-                  <template scope="scope">
-                    {{ scope.row.settleTime | datetime }}
-                  </template>
-                </el-table-column>
-                <el-table-column prop="dealerName" label="代理商名称"></el-table-column>
-                <el-table-column prop="splitAmount" label="分润金额"></el-table-column>
+                <el-table-column prop="beforeAmount" label="发生前余额(元)"></el-table-column>
+                <el-table-column prop="incomeAmount" label="收入金额(元)"></el-table-column>
+                <el-table-column prop="outAmount" label="支出金额(元)"></el-table-column>
+                <el-table-column prop="afterAmount" label="发生后余额(元)"></el-table-column>
                 <el-table-column prop="remark" label="备注信息"></el-table-column>
               </el-table>
             </div>
@@ -126,24 +115,20 @@
         pageSize: 4,
         pageNo: 1,
         tableData: [],
-        orderNo: '',
-        businessType: '',
-        item_businessType: [
+        flowSn: '',
+        type: '',
+        item_type: [
           {
-            value: 'hssPay',
-            label: '好收收-收款'
+            value: '0',
+            label: '全部'
           },
           {
-            value: 'hssWithdraw',
-            label: '好收收-提现'
+            value: '1',
+            label: '收入'
           },
           {
-            value: 'hssPromote',
-            label: '好收收-升级费'
-          },
-          {
-            value: 'hsyPay',
-            label: '好收银-收款'
+            value: '2',
+            label: '支出'
           }
         ],
         datetime: '',
@@ -199,11 +184,11 @@
         this.getData();
       },
       getData: function () {
-        this.$http.post('/api/daili/profit/details', {
+        this.$http.post('/api/daili/account/flowDetails', {
           pageSize: this.pageSize,
           pageNo: this.pageNo,
-          orderNo: this.orderNo,
-          businessType: this.businessType,
+          flowSn: this.flowSn,
+          type: this.type,
           beginDate: this.beginDate,
           endDate: this.endDate
         }).then(res => {

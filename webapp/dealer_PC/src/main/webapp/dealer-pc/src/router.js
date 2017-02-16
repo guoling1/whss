@@ -30,59 +30,6 @@ const pop = index;
 Vue.use(VueRouter);
 Vue.use(VueResource);
 
-// ajax 请求的全局拦截器
-Vue.http.interceptors.push((request, next) => {
-  next((response) => {
-    let {status, body} = response;
-    if (status == 200) {
-      // 这里判断 header 是否设置为文件下载
-      // 如果返回的 body 为 blob 则直接下载该文件
-      if (response.headers.map['Content-Disposition']) {
-        let fileNameArray = response.headers.map['Content-Disposition'][0].split('=');
-        let fileName = decodeURIComponent(fileNameArray[1]);
-        let links = document.createElement("a");
-        document.body.appendChild(links);
-        links.style = "display: none";
-        let url = window.URL.createObjectURL(body);
-        links.href = url;
-        links.download = fileName;
-        links.click();
-        window.URL.revokeObjectURL(url);
-        document.body.removeChild(links);
-      } else if (body.code != 1) {
-        response.status = 500;
-        response.statusMessage = body.message || '系统异常';
-        response.statusText = 'Internal Server Error';
-        response.ok = false;
-      } else {
-        response.data = body.result;
-      }
-    } else {
-      response.statusMessage = '系统异常';
-    }
-    return response;
-  })
-});
-
-// 添加第三方插件
-import ElementUI from 'element-ui'
-// import 'element-ui/lib/theme-default/index.css'
-
-Vue.use(ElementUI);
-
-// 添加自定义插件
-import filePost from './plugin-vue/file-post'
-Vue.use(filePost);
-import message from './plugin-vue/message'
-Vue.use(message);
-
-/* eslint-disable no-new */
-// new Vue({
-//   el: '#app',
-//   render: h => h(App)
-// })
-
-
 // 0. 如果使用模块化机制编程， 要调用 Vue.use(VueRouter)
 
 // 1. 定义（路由）组件。
@@ -117,6 +64,58 @@ const router = new VueRouter({
   mode: 'history',
   routes // （缩写）相当于 routes: routes
 });
+
+// ajax 请求的全局拦截器
+Vue.http.interceptors.push((request, next) => {
+  next((response) => {
+    let {status, body} = response;
+    if (status == 200) {
+      // 这里判断 header 是否设置为文件下载
+      // 如果返回的 body 为 blob 则直接下载该文件
+      if (response.headers.map['Content-Disposition']) {
+        let fileNameArray = response.headers.map['Content-Disposition'][0].split('=');
+        let fileName = decodeURIComponent(fileNameArray[1]);
+        let links = document.createElement("a");
+        document.body.appendChild(links);
+        links.style = "display: none";
+        let url = window.URL.createObjectURL(body);
+        links.href = url;
+        links.download = fileName;
+        links.click();
+        window.URL.revokeObjectURL(url);
+        document.body.removeChild(links);
+      } else if (body.code == -2) {
+        router.push('/login');
+      } else if (body.code != 1) {
+        response.status = 500;
+        response.statusMessage = body.message || '系统异常';
+        response.statusText = 'Internal Server Error';
+        response.ok = false;
+      } else {
+        response.data = body.result;
+      }
+    } else {
+      response.statusMessage = '系统异常';
+    }
+    return response;
+  })
+});
+
+// 添加第三方插件
+import ElementUI from 'element-ui'
+// import 'element-ui/lib/theme-default/index.css'
+
+Vue.use(ElementUI);
+
+// 添加自定义插件
+import filePost from './plugin-vue/file-post'
+Vue.use(filePost);
+
+/* eslint-disable no-new */
+// new Vue({
+//   el: '#app',
+//   render: h => h(App)
+// })
 
 // 4. 创建和挂载根实例。
 // 记得要通过 router 配置参数注入路由，

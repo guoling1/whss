@@ -505,7 +505,6 @@
         dealerLeavel: ''
       }
     },
-    components: {},
     beforeRouteEnter (to, from, next){
       store.dispatch('actions_users_getInfo').then(function (data) {
         next((vm) => {

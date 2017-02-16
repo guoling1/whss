@@ -62,7 +62,6 @@
           loginName: this.loginName,
           pwd: this.pwd
         }).then(res => {
-          console.log(res);
           // 如果记住我 那就存储 username remember 到 localStorage
           if (this.remember) {
             localStorage.setItem('accountInfo', JSON.stringify({loginName: this.loginName, remember: this.remember}));
