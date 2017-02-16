@@ -56,12 +56,12 @@ public class QrCodeController extends BaseController {
     @ResponseBody
     @RequestMapping(value = "/proxyProduct", method = RequestMethod.POST)
     public CommonResponse proxyProduct() {
-        long dealerId = 24;
-        long hssProductId = dealerChannelRateService.getDealerBindProductId(dealerId, EnumProductType.HSS.getId());
-        long hsyProductId = dealerChannelRateService.getDealerBindProductId(dealerId, EnumProductType.HSY.getId());
+        long dealerId = super.getDealerId();
+        Long hssProductId = dealerChannelRateService.getDealerBindProductId(dealerId, EnumProductType.HSS.getId());
+        Long hsyProductId = dealerChannelRateService.getDealerBindProductId(dealerId, EnumProductType.HSY.getId());
         ProxyProductResponse proxyProductResponse = new ProxyProductResponse();
-        proxyProductResponse.setProxyHss(hssProductId);
-        proxyProductResponse.setProxyHsy(hsyProductId);
+        proxyProductResponse.setProxyHss((hssProductId==null?0:hssProductId));
+        proxyProductResponse.setProxyHsy((hsyProductId==null?0:hsyProductId));
         return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", proxyProductResponse);
     }
 

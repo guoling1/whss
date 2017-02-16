@@ -146,7 +146,7 @@ public class DealerChannelRateServiceImpl implements DealerChannelRateService{
      * @return
      */
     @Override
-    public long getDealerBindProductId(long dealerId, String sysType) {
+    public Long getDealerBindProductId(long dealerId, String sysType) {
         return dealerChannelRateDao.getDealerBindProductId(dealerId,sysType);
     }
 }
