@@ -64,7 +64,7 @@
         </mvc:interceptor>
 
         <mvc:interceptor>
-            <!--<mvc:mapping path="/daili/**"/>-->
+            <mvc:mapping path="/daili/**"/>
             <mvc:exclude-mapping path="/daili/login/*"/>
             <bean id="dealerLoginInterceptor" class="com.jkm.hss.interceptor.DealerLoginInterceptor">
                 <property name="dealerService" ref="dealerServiceImpl"/>
