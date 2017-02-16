@@ -1,14 +1,11 @@
 package com.jkm.hsy.user.service.impl;
 
-import com.google.common.base.Optional;
 import com.google.gson.*;
 import com.jkm.base.common.enums.EnumGlobalIDPro;
 import com.jkm.base.common.enums.EnumGlobalIDType;
 import com.jkm.base.common.util.GlobalID;
 import com.jkm.base.common.util.ValidateUtils;
 import com.jkm.base.sms.service.SmsSendMessageService;
-import com.jkm.hss.account.entity.Account;
-import com.jkm.hss.account.sevice.AccountService;
 import com.jkm.hss.notifier.dao.MessageTemplateDao;
 import com.jkm.hss.notifier.dao.SendMessageRecordDao;
 import com.jkm.hss.notifier.entity.SendMessageRecord;
@@ -45,8 +42,6 @@ public class HsyUserServiceImpl implements HsyUserService {
     private MessageTemplateDao messageTemplateDao;
     @Autowired
     private SendMessageRecordDao sendMessageRecordDao;
-    @Autowired
-    private AccountService accountService;
 
     /**HSY001001 注册用户*/
     public String insertHsyUser(String dataParam,AppParam appParam)throws ApiHandleException {
