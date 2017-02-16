@@ -107,7 +107,11 @@
       this.$http.post('/api/daili/district/findAllProvinces').then(res => {
         this.item_province = res.data;
       }, err => {
-        console.log(err);
+        this.$message({
+          showClose: true,
+          message: err.msg,
+          type: 'error'
+        });
       })
     },
     data() {
@@ -185,7 +189,11 @@
           this.form.belongCityCode = res.data[0].code;
           this.form.belongCityName = res.data[0].aname;
         }, err => {
-          console.log(err);
+          this.$message({
+            showClose: true,
+            message: err.data.msg,
+            type: 'error'
+          });
         })
       },
       city_select: function (cityCode) {
@@ -201,7 +209,11 @@
             this.$http.post('/api/daili/dealer/addSecondDealer', this.form).then(res => {
               console.log(res);
             }, err => {
-              console.log(err);
+              this.$message({
+                showClose: true,
+                message: err.data.msg,
+                type: 'error'
+              });
             })
           } else {
             console.log('error submit!!');

@@ -19,9 +19,7 @@
       <h4 class="text-center">
         您好，{{dealerInfo}}
       </h4>
-      <h2 class="text-center">
-        welcome
-      </h2>
+      <img class="dev" src="../assets/development.jpg">
     </section>
   </div>
 </template>
@@ -43,3 +41,9 @@
     methods: {}
   }
 </script>
+<style scoped lang="less">
+  .dev {
+    display: block;
+    margin: 50px auto;
+  }
+</style>

@@ -185,7 +185,11 @@
           this.total = res.data.count;
           this.tableData = res.data.records;
         }, err => {
-          console.log(err);
+          this.$message({
+            showClose: true,
+            message: err.data.msg,
+            type: 'error'
+          });
         });
       },
       handleSizeChange(val) {

@@ -168,7 +168,11 @@
       this.$http.post('/api/daili/account/info').then(res => {
         this.accountData[0] = res.data;
       }, err => {
-        console.log(err);
+        this.$message({
+          showClose: true,
+          message: err.data.msg,
+          type: 'error'
+        });
       });
     },
     methods: {
@@ -195,7 +199,11 @@
           this.total = res.data.count;
           this.tableData = res.data.records;
         }, err => {
-          console.log(err);
+          this.$message({
+            showClose: true,
+            message: err.data.msg,
+            type: 'error'
+          });
         });
       },
       handleSizeChange(val) {

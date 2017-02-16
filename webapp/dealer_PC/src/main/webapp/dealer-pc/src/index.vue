@@ -106,7 +106,7 @@
                 <!-- Menu Footer-->
                 <li class="user-footer">
                   <!--<div class="pull-left">-->
-                    <!--<a href="#" class="btn btn-default btn-flat">个人资料</a>-->
+                  <!--<a href="#" class="btn btn-default btn-flat">个人资料</a>-->
                   <!--</div>-->
                   <div class="pull-right">
                     <div class="btn btn-default btn-flat" @click="logout">退出登录</div>
@@ -152,7 +152,7 @@
         <ul class="sidebar-menu">
           <li class="header">钱包++ Version 1.0</li>
           <li class="active">
-            <router-link :to="{ path:'/' }">
+            <router-link :to="{path:'/app/home'}">
               <i class="glyphicon glyphicon-home"></i> <span>主页</span>
               <!--<span class="pull-right-container">-->
               <!--<i class="fa fa-angle-left pull-right"></i>-->
@@ -197,10 +197,10 @@
                 <router-link to="dealer_list"><i class="fa fa-circle-o"></i> 所有代理商</router-link>
               </li>
               <li>
-                <router-link to="profits_detail"><i class="fa fa-circle-o"></i> 代理结算记录</router-link>
+                <router-link to="development"><i class="fa fa-circle-o"></i> 代理结算记录</router-link>
               </li>
               <li>
-                <router-link to="profits_detail"><i class="fa fa-circle-o"></i> 代理商账户</router-link>
+                <router-link to="development"><i class="fa fa-circle-o"></i> 代理商账户</router-link>
               </li>
             </ul>
           </li>
@@ -214,10 +214,10 @@
             </a>
             <ul class="treeview-menu">
               <li>
-                <router-link to="profits_detail"><i class="fa fa-circle-o"></i> 所有商户</router-link>
+                <router-link to="development"><i class="fa fa-circle-o"></i> 所有商户</router-link>
               </li>
               <li>
-                <router-link to="profits_detail"><i class="fa fa-circle-o"></i> 交易管理</router-link>
+                <router-link to="development"><i class="fa fa-circle-o"></i> 交易管理</router-link>
               </li>
             </ul>
           </li>
@@ -234,7 +234,7 @@
                 <router-link to="distribution_qrcode"><i class="fa fa-circle-o"></i> 分配二维码</router-link>
               </li>
               <li>
-                <router-link to="profits_detail"><i class="fa fa-circle-o"></i> 所有二维码</router-link>
+                <router-link to="development"><i class="fa fa-circle-o"></i> 所有二维码</router-link>
               </li>
             </ul>
           </li>
@@ -248,10 +248,10 @@
             </a>
             <ul class="treeview-menu">
               <li>
-                <router-link to="profits_detail"><i class="fa fa-circle-o"></i> 员工管理</router-link>
+                <router-link to="development"><i class="fa fa-circle-o"></i> 员工管理</router-link>
               </li>
               <li>
-                <router-link to="profits_detail"><i class="fa fa-circle-o"></i> 角色管理</router-link>
+                <router-link to="development"><i class="fa fa-circle-o"></i> 角色管理</router-link>
               </li>
             </ul>
           </li>
@@ -265,10 +265,10 @@
             </a>
             <ul class="treeview-menu">
               <li>
-                <router-link to="profits_detail"><i class="fa fa-circle-o"></i> 注册信息</router-link>
+                <router-link to="development"><i class="fa fa-circle-o"></i> 注册信息</router-link>
               </li>
               <li>
-                <router-link to="profits_detail"><i class="fa fa-circle-o"></i> 代理政策</router-link>
+                <router-link to="development"><i class="fa fa-circle-o"></i> 代理政策</router-link>
               </li>
             </ul>
           </li>
@@ -507,6 +507,7 @@
     },
     beforeRouteEnter (to, from, next){
       store.dispatch('actions_users_getInfo').then(function (data) {
+        console.log(data);
         next((vm) => {
           if (data.status === 1) {
             vm.dealerInfo = data.dealerInfo;

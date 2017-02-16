@@ -71,7 +71,11 @@
           // 跳转到 home 页
           this.$router.push('/app/home');
         }, err => {
-          console.log(err);
+          this.$message({
+            showClose: true,
+            message: err.data.msg,
+            type: 'error'
+          });
         })
       }
     }

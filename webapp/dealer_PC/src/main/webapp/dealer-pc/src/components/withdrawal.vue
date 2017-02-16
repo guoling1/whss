@@ -141,7 +141,11 @@
             }, 1000);
           }, err => {
             this.canSendCode = true;
-            console.log(err);
+            this.$message({
+              showClose: true,
+              message: err.data.msg,
+              type: 'error'
+            });
           })
         }
       },
@@ -151,7 +155,11 @@
             this.$http.post('/api/daili/account/withdraw', this.form).then(res => {
               console.log(res);
             }, err => {
-              console.log(err);
+              this.$message({
+                showClose: true,
+                message: err.data.msg,
+                type: 'error'
+              });
             })
           } else {
             console.log('error submit!!');

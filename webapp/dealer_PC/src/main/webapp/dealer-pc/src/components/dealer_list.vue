@@ -174,7 +174,11 @@
       this.$http.post('/api/daili/district/findAllProvinces').then(res => {
         this.item_province = res.data;
       }, err => {
-        console.log(err);
+        this.$message({
+          showClose: true,
+          message: err.data.msg,
+          type: 'error'
+        });
       });
     },
     methods: {
@@ -194,7 +198,11 @@
           this.tableData = res.data.records;
           this.ext = res.data.ext.split('|');
         }, err => {
-          console.log(err);
+          this.$message({
+            showClose: true,
+            message: err.data.msg,
+            type: 'error'
+          });
         });
       },
       province_select: function (provinceCode) {
@@ -206,7 +214,11 @@
           this.cityCode = '';
           this.cityName = '';
         }, err => {
-          console.log(err);
+          this.$message({
+            showClose: true,
+            message: err.data.msg,
+            type: 'error'
+          });
         })
       },
       city_select: function (cityCode) {

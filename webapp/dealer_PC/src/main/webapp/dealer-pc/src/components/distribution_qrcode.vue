@@ -111,7 +111,11 @@
         this.product.proxyHss = res.data.proxyHss;
         this.product.proxyHsy = res.data.proxyHsy;
       }, err => {
-        console.log(err);
+        this.$message({
+          showClose: true,
+          message: err.data.msg,
+          type: 'error'
+        });
       })
     },
     data() {
@@ -166,7 +170,11 @@
             this.loading = false;
             this.label.dealerData = res.data;
           }, err => {
-            console.log(err);
+            this.$message({
+              showClose: true,
+              message: err.data.msg,
+              type: 'error'
+            });
           });
         } else {
           this.label.dealerDate = [];
@@ -184,7 +192,11 @@
         this.$http.post('/api/daili/qrCode/distributeQrCodeToDealer', this.form).then(res => {
           console.log(res);
         }, err => {
-          console.log(err);
+          this.$message({
+            showClose: true,
+            message: err.data.msg,
+            type: 'error'
+          });
         })
       }
     }
