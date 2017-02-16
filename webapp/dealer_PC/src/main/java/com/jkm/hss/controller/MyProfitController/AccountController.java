@@ -105,7 +105,7 @@ public class AccountController extends BaseController{
      * @return
      */
     @ResponseBody
-    @RequestMapping(value = "/flowDetails", method = RequestMethod.GET)
+    @RequestMapping(value = "/flowDetails", method = RequestMethod.POST)
     public CommonResponse flowDetails(@RequestBody final FlowDetailsSelectRequest request){
 
         try{
