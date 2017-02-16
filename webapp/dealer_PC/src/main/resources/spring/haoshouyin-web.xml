@@ -76,5 +76,5 @@
             </bean>
         </mvc:interceptor>
     </mvc:interceptors>
-</mvc:interceptors>
+
 </beans>
