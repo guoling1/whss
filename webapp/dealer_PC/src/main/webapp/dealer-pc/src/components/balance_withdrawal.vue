@@ -165,7 +165,7 @@
     },
     created() {
       this.getData();
-      this.$http.post('/api/daili/account/info').then(res => {
+      this.$http.post('/daili/account/info').then(res => {
         this.accountData[0] = res.data;
       }, err => {
         this.$message({
@@ -188,7 +188,7 @@
         this.getData();
       },
       getData: function () {
-        this.$http.post('/api/daili/account/flowDetails', {
+        this.$http.post('/daili/account/flowDetails', {
           pageSize: this.pageSize,
           pageNo: this.pageNo,
           flowSn: this.flowSn,

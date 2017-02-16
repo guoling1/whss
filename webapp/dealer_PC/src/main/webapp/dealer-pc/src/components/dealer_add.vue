@@ -104,7 +104,7 @@
   export default {
     name: 'app',
     created(){
-      this.$http.post('/api/daili/district/findAllProvinces').then(res => {
+      this.$http.post('/daili/district/findAllProvinces').then(res => {
         this.item_province = res.data;
       }, err => {
         this.$message({
@@ -182,7 +182,7 @@
             this.form.belongProvinceName = this.item_province[m].aname;
           }
         }
-        this.$http.post('/api/daili/district/findAllCities', {
+        this.$http.post('/daili/district/findAllCities', {
           code: provinceCode
         }).then(res => {
           this.item_city = res.data;
@@ -206,7 +206,7 @@
       onSubmit: function () {
         this.$refs['form'].validate((valid) => {
           if (valid) {
-            this.$http.post('/api/daili/dealer/addSecondDealer', this.form).then(res => {
+            this.$http.post('/daili/dealer/addSecondDealer', this.form).then(res => {
               console.log(res);
             }, err => {
               this.$message({

@@ -171,7 +171,7 @@
     },
     created() {
       this.getData();
-      this.$http.post('/api/daili/district/findAllProvinces').then(res => {
+      this.$http.post('/daili/district/findAllProvinces').then(res => {
         this.item_province = res.data;
       }, err => {
         this.$message({
@@ -186,7 +186,7 @@
         this.$router.push('/app/dealer_add');
       },
       getData: function () {
-        this.$http.post('/api/daili/dealer/listSecondDealer', {
+        this.$http.post('/daili/dealer/listSecondDealer', {
           pageSize: this.pageSize,
           pageNo: this.pageNo,
           name: this.name,
@@ -207,7 +207,7 @@
       },
       province_select: function (provinceCode) {
         this.districtCode = provinceCode;
-        this.$http.post('/api/daili/district/findAllCities', {
+        this.$http.post('/daili/district/findAllCities', {
           code: provinceCode
         }).then(res => {
           this.item_city = res.data;

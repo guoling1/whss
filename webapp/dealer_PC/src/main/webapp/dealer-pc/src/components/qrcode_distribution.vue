@@ -100,7 +100,7 @@
         this.getData();
       },
       getData: function () {
-        this.$http.post('/api/daili/qrCode/distributeRecord', {
+        this.$http.post('/daili/qrCode/distributeRecord', {
           pageSize: this.pageSize,
           pageNo: this.pageNo,
           markCode: this.markCode,

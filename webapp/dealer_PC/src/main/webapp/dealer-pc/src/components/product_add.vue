@@ -118,7 +118,7 @@
     name: 'app',
     created(){
       let query = this.$route.query;
-      this.$http.post('/api/daili/dealer/getDealerProduct', {
+      this.$http.post('/daili/dealer/getDealerProduct', {
         dealerId: query.dealerId,
         sysType: query.product,
         productId: query.productId
@@ -197,7 +197,7 @@
               if (action === 'confirm') {
                 instance.confirmButtonLoading = true;
                 instance.confirmButtonText = '执行中...';
-                this.$http.post('/api/daili/dealer/addOrUpdateDealerProduct', {
+                this.$http.post('/daili/dealer/addOrUpdateDealerProduct', {
                   dealerId: this.dealerId,
                   inviteBtn: this.inviteStatus,
                   product: {

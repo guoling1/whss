@@ -174,7 +174,7 @@
         this.getData();
       },
       getData: function () {
-        this.$http.post('/api/daili/profit/details', {
+        this.$http.post('/daili/profit/details', {
           pageSize: this.pageSize,
           pageNo: this.pageNo,
           orderNo: this.orderNo,
