@@ -1,9 +1,12 @@
 package com.jkm.hss.account.service.impl;
 
 import com.google.common.base.Optional;
+import com.jkm.base.common.entity.PageModel;
+import com.jkm.base.common.util.DateFormatUtil;
 import com.jkm.hss.account.dao.AccountFlowDao;
 import com.jkm.hss.account.entity.Account;
 import com.jkm.hss.account.entity.AccountFlow;
+import com.jkm.hss.account.entity.SplitAccountRecord;
 import com.jkm.hss.account.enums.EnumAccountFlowType;
 import com.jkm.hss.account.sevice.AccountFlowService;
 import com.jkm.hss.account.sevice.AccountService;
@@ -13,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by yulong.zhang on 2016/12/22.
@@ -92,5 +96,35 @@ public class AccountFlowServiceImpl implements AccountFlowService {
         accountFlow.setChangeTime(new Date());
         accountFlow.setRemark(remark);
         this.accountFlowDao.insert(accountFlow);
+    }
+
+    /**
+     * {@inheritDoc}
+     * @param pageNo
+     * @param pageSize
+     * @param flowSn
+     * @param type
+     * @param beginDate
+     * @param endDate
+     * @return
+     */
+    @Override
+    public PageModel<AccountFlow> selectByParam(int pageNo, int pageSize,long accountId, String flowSn, int type, String beginDate, String endDate) {
+
+       PageModel<AccountFlow> pageModel = new PageModel<>(pageNo, pageSize);
+
+        Date beginTime = null;
+        Date endTime = null;
+        if (beginDate != null && !beginDate.equals("")){
+            beginTime = DateFormatUtil.parse(beginDate + " 00:00:00", DateFormatUtil.yyyy_MM_dd_HH_mm_ss);
+            endTime = DateFormatUtil.parse(endDate + " 23:59:59", DateFormatUtil.yyyy_MM_dd_HH_mm_ss);
+        }
+        List<AccountFlow> list =
+                this.accountFlowDao.selectByParam( pageModel.getFirstIndex(), pageSize, accountId, flowSn, type, beginTime, endTime);
+        long count = this.accountFlowDao.selectCountByParam(accountId, flowSn, type, beginTime, endTime);
+
+        pageModel.setCount(count);
+        pageModel.setRecords(list);
+        return pageModel;
     }
 }

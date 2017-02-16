@@ -37,4 +37,29 @@
     <select id="selectByOrderNoAndAccountIdAndType" resultType="com.jkm.hss.account.entity.AccountFlow">
          SELECT * FROM tb_account_flow WHERE order_no = #{orderNo} AND account_id = #{accountId} AND type = #{type}
     </select>
+    <select id="selectByParam" resultType="com.jkm.hss.account.entity.AccountFlow">
+         SELECT * FROM tb_account_flow WHERE account_id = #{accountId}
+            <if test="flowSn != null and flowSn != ''">
+                 AND order_no = #{flowSn}
+            </if>
+            <if test="type != null and type != 0">
+                AND type = #{type}
+            </if>
+            <if test="beginTime != null">
+                AND create_time BETWEEN #{beginTime} AND #{endTime}
+            </if>
+        ORDER BY id DESC limit #{firstIndex},#{pageSize}
+    </select>
+    <select id="selectCountByParam" resultType="java.lang.Long">
+        SELECT COUNT(*) FROM tb_account_flow WHERE account_id = #{accountId}
+        <if test="flowSn != null and flowSn != ''">
+            AND order_no = #{flowSn}
+        </if>
+        <if test="type != null and type != 0">
+            AND type = #{type}
+        </if>
+        <if test="beginTime != null">
+            AND create_time BETWEEN #{beginTime} AND #{endTime}
+        </if>
+    </select>
 </mapper>

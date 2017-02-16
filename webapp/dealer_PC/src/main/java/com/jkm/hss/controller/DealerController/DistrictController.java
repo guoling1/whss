@@ -22,7 +22,7 @@ import java.util.List;
  */
 @Slf4j
 @Controller
-@RequestMapping(value = "/district")
+@RequestMapping(value = "/daili/district")
 public class DistrictController extends BaseController{
     @Autowired
     private AppBizDistrictService appBizDistrictService;

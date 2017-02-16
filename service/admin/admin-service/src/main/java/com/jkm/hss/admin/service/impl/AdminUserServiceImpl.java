@@ -1,16 +1,17 @@
 package com.jkm.hss.admin.service.impl;
 
+import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
+import com.google.common.collect.Lists;
 import com.jkm.hss.admin.dao.AdminUserDao;
-import com.jkm.hss.admin.entity.AdminUser;
-import com.jkm.hss.admin.entity.AdminUserPassport;
-import com.jkm.hss.admin.entity.CodeQueryResponse;
-import com.jkm.hss.admin.entity.QRCode;
+import com.jkm.hss.admin.entity.*;
 import com.jkm.hss.admin.enums.EnumAdminUserStatus;
+import com.jkm.hss.admin.enums.EnumQRCodeDistributeType2;
 import com.jkm.hss.admin.helper.AdminUserSupporter;
 import com.jkm.hss.admin.service.AdminUserPassportService;
 import com.jkm.hss.admin.service.AdminUserService;
+import com.jkm.hss.admin.service.DistributeQRCodeRecordService;
 import com.jkm.hss.admin.service.QRCodeService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
@@ -20,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -38,6 +40,9 @@ public class AdminUserServiceImpl implements AdminUserService {
 
     @Autowired
     private AdminUserPassportService adminUserPassportService;
+
+    @Autowired
+    private DistributeQRCodeRecordService distributeQRCodeRecordService;
 
     /**
      * {@inheritDoc}
@@ -205,4 +210,100 @@ public class AdminUserServiceImpl implements AdminUserService {
         return codeQueryResponse;
     }
 
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param dealerId  一级代理商id
+     * @param startCode  开始二维码
+     * @param endCode  结束二维码
+     * @return
+     */
+    @Override
+    @Transactional
+    public List<DistributeQRCodeRecord> distributeQRCodeByCode(final int type, final String sysType, final long dealerId,
+                                                               final String startCode, final String endCode) {
+        final List<DistributeQRCodeRecord> records = new ArrayList<>();
+        final List<QRCode> qrCodeList = this.qrCodeService.getUnDistributeCodeByCodeAndSysType(startCode, endCode,sysType);
+        if (CollectionUtils.isEmpty(qrCodeList)) {
+            return records;
+        }
+        final List<Long> qrCodeIds = Lists.transform(qrCodeList, new Function<QRCode, Long>() {
+            @Override
+            public Long apply(QRCode input) {
+                return input.getId();
+            }
+        });
+        this.qrCodeService.markCodeToDealer(dealerId, qrCodeIds);
+        final List<Pair<QRCode, QRCode>> pairQRCodeList = this.qrCodeService.getPairQRCodeList(qrCodeList);
+        for (Pair<QRCode, QRCode> pair : pairQRCodeList) {
+            final QRCode left = pair.getLeft();
+            final QRCode right = pair.getRight();
+            final DistributeQRCodeRecord distributeQRCodeRecord = new DistributeQRCodeRecord();
+            distributeQRCodeRecord.setFirstLevelDealerId(0);
+            distributeQRCodeRecord.setSecondLevelDealerId(dealerId);
+            distributeQRCodeRecord.setCount((int) (Long.valueOf(right.getCode()) - Long.valueOf(left.getCode()) + 1));
+            distributeQRCodeRecord.setStartCode(left.getCode());
+            distributeQRCodeRecord.setEndCode(right.getCode());
+            distributeQRCodeRecord.setDistributeType(EnumQRCodeDistributeType2.ADMIN.getCode());
+            distributeQRCodeRecord.setType(type);
+            records.add(distributeQRCodeRecord);
+            this.distributeQRCodeRecordService.add(distributeQRCodeRecord);
+        }
+        return records;
+    }
+
+    /**
+     * 按个数分配
+     *
+     * @param type
+     * @param dealerId
+     * @param count
+     * @return
+     */
+    @Override
+    public List<DistributeQRCodeRecord> distributeQRCodeByCount(int type, String sysType, long dealerId, int count) {
+        final List<DistributeQRCodeRecord> records = new ArrayList<>();
+        final List<QRCode> qrCodeList = this.qrCodeService.getUnDistributeCodeBySysType(sysType);
+        if (CollectionUtils.isEmpty(qrCodeList)) {
+            return records;
+        }
+        final List<Long> qrCodeIds = Lists.transform(qrCodeList, new Function<QRCode, Long>() {
+            @Override
+            public Long apply(QRCode input) {
+                return input.getId();
+            }
+        });
+        final List<Long> ids = qrCodeIds.subList(0, count);
+        final List<QRCode> qrCodeList1 = qrCodeList.subList(0, count);
+        this.qrCodeService.markCodeToDealer(dealerId, ids);
+        final List<Pair<QRCode, QRCode>> pairQRCodeList = this.qrCodeService.getPairQRCodeList(qrCodeList1);
+        for (Pair<QRCode, QRCode> pair : pairQRCodeList) {
+            final QRCode left = pair.getLeft();
+            final QRCode right = pair.getRight();
+            final DistributeQRCodeRecord distributeQRCodeRecord = new DistributeQRCodeRecord();
+            distributeQRCodeRecord.setFirstLevelDealerId(0);
+            distributeQRCodeRecord.setSecondLevelDealerId(dealerId);
+            distributeQRCodeRecord.setCount((int) (Long.valueOf(right.getCode()) - Long.valueOf(left.getCode()) + 1));
+            distributeQRCodeRecord.setStartCode(left.getCode());
+            distributeQRCodeRecord.setEndCode(right.getCode());
+            distributeQRCodeRecord.setType(type);
+            distributeQRCodeRecord.setDistributeType(EnumQRCodeDistributeType2.ADMIN.getCode());
+            records.add(distributeQRCodeRecord);
+            this.distributeQRCodeRecordService.add(distributeQRCodeRecord);
+        }
+        return records;
+    }
+
+    /**
+     * 剩余二维码个数
+     *
+     * @param sysType
+     * @return
+     */
+    @Override
+    public int unDistributeCount(String sysType) {
+        final List<QRCode> qrCodeList = this.qrCodeService.getUnDistributeCodeBySysType(sysType);
+        return qrCodeList.size();
+    }
 }

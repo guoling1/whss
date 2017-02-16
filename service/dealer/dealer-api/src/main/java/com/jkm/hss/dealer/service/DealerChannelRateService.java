@@ -63,5 +63,5 @@ public interface DealerChannelRateService {
      * @param sysType
      * @return
      */
-    long getDealerBindProductId(long dealerId, String sysType);
+    Long getDealerBindProductId(long dealerId, String sysType);
 }

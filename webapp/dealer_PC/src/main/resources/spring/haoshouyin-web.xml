@@ -28,8 +28,8 @@
     <bean id="jspViewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
         <property name="cache" value="true"/>
         <property name="viewClass" value="org.springframework.web.servlet.view.JstlView"/>
-        <property name="prefix" value="/WEB-INF/jsp"/>
-        <property name="suffix" value=".jsp"/>
+        <property name="prefix" value="/WEB-INF/"/>
+        <property name="suffix" value=".html"/>
     </bean>
 
     <bean id="ossClient" class="com.aliyun.oss.OSSClient" destroy-method="shutdown">
@@ -64,12 +64,8 @@
         </mvc:interceptor>
 
         <mvc:interceptor>
-            <mvc:mapping path="/dealer/**"/>
-            <mvc:mapping path="/dealerBank/**"/>
-            <mvc:exclude-mapping path="/dealer/sendVerifyCode"/>
-            <mvc:exclude-mapping path="/dealer/login*"/>
-            <mvc:exclude-mapping path="/dealer/ajaxLogin*"/>
-            <mvc:exclude-mapping path="/time/dailyProfit"/>
+            <mvc:mapping path="/daili/**"/>
+            <mvc:exclude-mapping path="/daili/login/*"/>
             <bean id="dealerLoginInterceptor" class="com.jkm.hss.interceptor.DealerLoginInterceptor">
                 <property name="dealerService" ref="dealerServiceImpl"/>
                 <property name="dealerPassportService" ref="dealerPassportServiceImpl"/>

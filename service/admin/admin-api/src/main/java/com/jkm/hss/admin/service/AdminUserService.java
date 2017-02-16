@@ -1,10 +1,7 @@
 package com.jkm.hss.admin.service;
 
 import com.google.common.base.Optional;
-import com.jkm.hss.admin.entity.AdminUser;
-import com.jkm.hss.admin.entity.AdminUserPassport;
-import com.jkm.hss.admin.entity.CodeQueryResponse;
-import com.jkm.hss.admin.entity.QRCode;
+import com.jkm.hss.admin.entity.*;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
 
@@ -124,4 +121,31 @@ public interface AdminUserService {
      * @return
      */
     CodeQueryResponse getMerchantName(long merchantId);
+
+
+    /**
+     * 按码段分配二维码
+     * @param type
+     * @param dealerId
+     * @param startCode
+     * @param endCode
+     * @return
+     */
+    List<DistributeQRCodeRecord> distributeQRCodeByCode(int type, String sysType, long dealerId,  String startCode, String endCode);
+
+    /**
+     * 按个数分配
+     * @param type
+     * @param dealerId
+     * @param count
+     * @return
+     */
+    List<DistributeQRCodeRecord> distributeQRCodeByCount(int type, String sysType, long dealerId, int count);
+
+    /**
+     * 剩余二维码个数
+     * @param sysType
+     * @return
+     */
+    int unDistributeCount(String sysType);
 }

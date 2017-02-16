@@ -14,6 +14,7 @@ import com.jkm.base.common.util.GlobalID;
 import com.jkm.hss.account.sevice.AccountService;
 import com.jkm.hss.admin.entity.DistributeQRCodeRecord;
 import com.jkm.hss.admin.entity.QRCode;
+import com.jkm.hss.admin.enums.EnumQRCodeDistributeType2;
 import com.jkm.hss.admin.helper.responseparam.ActiveCodeCount;
 import com.jkm.hss.admin.helper.responseparam.DistributeCodeCount;
 import com.jkm.hss.admin.service.DistributeQRCodeRecordService;
@@ -23,17 +24,18 @@ import com.jkm.hss.dealer.entity.*;
 import com.jkm.hss.dealer.enums.*;
 import com.jkm.hss.dealer.helper.DealerSupport;
 import com.jkm.hss.dealer.helper.requestparam.*;
+import com.jkm.hss.dealer.helper.response.DealerOfFirstDealerResponse;
+import com.jkm.hss.dealer.helper.response.DistributeRecordResponse;
 import com.jkm.hss.dealer.helper.response.FirstDealerResponse;
 import com.jkm.hss.dealer.helper.response.SecondDealerResponse;
 import com.jkm.hss.dealer.service.*;
 import com.jkm.hss.merchant.entity.MerchantInfo;
 import com.jkm.hss.merchant.entity.OrderRecord;
-import com.jkm.hss.merchant.helper.MerchantSupport;
 import com.jkm.hss.merchant.service.MerchantInfoService;
 import com.jkm.hss.product.entity.BasicChannel;
 import com.jkm.hss.product.entity.Product;
-import com.jkm.hss.product.enums.EnumPayChannelSign;
 import com.jkm.hss.product.entity.ProductChannelDetail;
+import com.jkm.hss.product.enums.EnumPayChannelSign;
 import com.jkm.hss.product.enums.EnumProductType;
 import com.jkm.hss.product.servcie.BasicChannelService;
 import com.jkm.hss.product.servcie.ProductChannelDetailService;
@@ -2094,4 +2096,187 @@ public class DealerServiceImpl implements DealerService {
         pageModel.setRecords(dealers);
         return pageModel;
     }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param request
+     * @return
+     */
+    @Override
+    @Transactional
+    public void addOrUpdateDealerProduct(final DealerAddOrUpdateRequest request,long firstLevelDealerId) {
+        final Optional<Dealer> dealerOptional = this.getById(request.getDealerId());
+        final Dealer dealer = dealerOptional.get();
+        dealer.setInviteBtn(request.getInviteBtn());
+        this.updateInviteBtn(dealer);
+        for (DealerAddOrUpdateRequest.Channel channels : request.getProduct().getChannels()) {
+            Optional<DealerChannelRate> dealerChannelRateOptional = this.dealerRateService.getByDealerIdAndProductIdAndChannelType(firstLevelDealerId,request.getProduct().getProductId(),channels.getChannelType());
+            final Optional<DealerChannelRate> secondDealerChannelRateOptional =
+                    this.dealerRateService.getByDealerIdAndProductIdAndChannelType(request.getDealerId(), request.getProduct().getProductId(), channels.getChannelType());
+            if(secondDealerChannelRateOptional.isPresent()){//修改
+                final DealerChannelRate secondDealerChannelRate = secondDealerChannelRateOptional.get();
+                secondDealerChannelRate.setDealerTradeRate(new BigDecimal(channels.getPaymentSettleRate()).divide(new BigDecimal("100")));
+                secondDealerChannelRate.setDealerWithdrawFee(new BigDecimal(channels.getWithdrawSettleFee()));
+                this.dealerRateService.updateSecondDealerRate(secondDealerChannelRate);
+            }else{//新增
+                final DealerChannelRate dealerChannelRate = new DealerChannelRate();
+                dealerChannelRate.setDealerId(dealer.getId());
+                dealerChannelRate.setProductId(request.getProduct().getProductId());
+                dealerChannelRate.setChannelTypeSign(channels.getChannelType());
+                dealerChannelRate.setDealerTradeRate(new BigDecimal(channels.getPaymentSettleRate()).divide(new BigDecimal("100")));
+                dealerChannelRate.setDealerBalanceType(dealerChannelRateOptional.get().getDealerBalanceType());
+                dealerChannelRate.setDealerWithdrawFee(new BigDecimal(channels.getWithdrawSettleFee()));
+                dealerChannelRate.setDealerMerchantPayRate(dealerChannelRateOptional.get().getDealerMerchantPayRate());
+                dealerChannelRate.setDealerMerchantWithdrawFee(dealerChannelRateOptional.get().getDealerMerchantWithdrawFee());
+                dealerChannelRate.setStatus(EnumDealerChannelRateStatus.USEING.getId());
+                this.dealerRateService.init(dealerChannelRate);
+            }
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param dealerId  一级代理商id
+     * @param toDealerId  码段要分配给代理商的id
+     * @param startCode  开始二维码
+     * @param endCode  结束二维码
+     * @return
+     */
+    @Override
+    @Transactional
+    public List<DistributeQRCodeRecord> distributeQRCodeByCode(final int type, final String sysType,final long dealerId, final long toDealerId,
+                                                         final String startCode, final String endCode) {
+        final List<DistributeQRCodeRecord> records = new ArrayList<>();
+        final List<QRCode> qrCodeList = this.qrCodeService.getUnDistributeCodeByDealerIdAndRangeCodeAndSysType(dealerId, startCode, endCode,sysType);
+        if (CollectionUtils.isEmpty(qrCodeList)) {
+            return records;
+        }
+        final List<Long> qrCodeIds = Lists.transform(qrCodeList, new Function<QRCode, Long>() {
+            @Override
+            public Long apply(QRCode input) {
+                return input.getId();
+            }
+        });
+        this.qrCodeService.markAsDistribute2(qrCodeIds, toDealerId);
+        final List<Pair<QRCode, QRCode>> pairQRCodeList = this.qrCodeService.getPairQRCodeList(qrCodeList);
+        for (Pair<QRCode, QRCode> pair : pairQRCodeList) {
+            final QRCode left = pair.getLeft();
+            final QRCode right = pair.getRight();
+            final DistributeQRCodeRecord distributeQRCodeRecord = new DistributeQRCodeRecord();
+            distributeQRCodeRecord.setFirstLevelDealerId(dealerId);
+            distributeQRCodeRecord.setSecondLevelDealerId(toDealerId);
+            distributeQRCodeRecord.setCount((int) (Long.valueOf(right.getCode()) - Long.valueOf(left.getCode()) + 1));
+            distributeQRCodeRecord.setStartCode(left.getCode());
+            distributeQRCodeRecord.setEndCode(right.getCode());
+            distributeQRCodeRecord.setType(type);
+            distributeQRCodeRecord.setDistributeType(EnumQRCodeDistributeType2.DEALER.getCode());
+            distributeQRCodeRecord.setDistributeType(EnumQRCodeDistributeType2.DEALER.getCode());
+            records.add(distributeQRCodeRecord);
+            this.distributeQRCodeRecordService.add(distributeQRCodeRecord);
+        }
+        return records;
+    }
+
+    /**
+     * 按个数分配
+     *
+     * @param type
+     * @param dealerId
+     * @param toDealerId
+     * @param count
+     * @return
+     */
+    @Override
+    public List<DistributeQRCodeRecord> distributeQRCodeByCount(int type, String sysType, long dealerId, long toDealerId, int count) {
+        final List<DistributeQRCodeRecord> records = new ArrayList<>();
+        final List<QRCode> qrCodeList = this.qrCodeService.getUnDistributeCodeByDealerIdAndSysType(dealerId,sysType);
+        if (CollectionUtils.isEmpty(qrCodeList)) {
+            return records;
+        }
+        final List<Long> qrCodeIds = Lists.transform(qrCodeList, new Function<QRCode, Long>() {
+            @Override
+            public Long apply(QRCode input) {
+                return input.getId();
+            }
+        });
+        final List<Long> ids = qrCodeIds.subList(0, count);
+        final List<QRCode> qrCodeList1 = qrCodeList.subList(0, count);
+        this.qrCodeService.markAsDistribute2(ids, toDealerId);
+        final List<Pair<QRCode, QRCode>> pairQRCodeList = this.qrCodeService.getPairQRCodeList(qrCodeList1);
+        for (Pair<QRCode, QRCode> pair : pairQRCodeList) {
+            final QRCode left = pair.getLeft();
+            final QRCode right = pair.getRight();
+            final DistributeQRCodeRecord distributeQRCodeRecord = new DistributeQRCodeRecord();
+            distributeQRCodeRecord.setFirstLevelDealerId(dealerId);
+            distributeQRCodeRecord.setSecondLevelDealerId(toDealerId);
+            distributeQRCodeRecord.setCount((int) (Long.valueOf(right.getCode()) - Long.valueOf(left.getCode()) + 1));
+            distributeQRCodeRecord.setStartCode(left.getCode());
+            distributeQRCodeRecord.setEndCode(right.getCode());
+            distributeQRCodeRecord.setType(type);
+            distributeQRCodeRecord.setDistributeType(EnumQRCodeDistributeType2.DEALER.getCode());
+            records.add(distributeQRCodeRecord);
+            this.distributeQRCodeRecordService.add(distributeQRCodeRecord);
+        }
+        return records;
+    }
+
+    /**
+     * 根据产品类型和手机号或代理商名称模糊查询
+     *
+     * @param dealerOfFirstDealerRequest
+     * @return
+     */
+    @Override
+    public List<DealerOfFirstDealerResponse> selectListOfFirstDealer(DealerOfFirstDealerRequest dealerOfFirstDealerRequest) {
+        return this.dealerDao.selectListOfFirstDealer(dealerOfFirstDealerRequest);
+    }
+
+    /**
+     * {@inheritDoc}
+     * @param loginName
+     * @return
+     */
+    @Override
+    public Dealer getDealerByLoginName(String loginName) {
+        return this.dealerDao.getDealerByLoginName(loginName);
+    }
+
+    /**
+     * 【代理商后台】二维码分配记录
+     *
+     * @param distributeRecordRequest
+     * @param firstLevelDealerId
+     * @return
+     */
+    @Override
+    public PageModel<DistributeRecordResponse> distributeRecord(DistributeRecordRequest distributeRecordRequest, long firstLevelDealerId) {
+        final PageModel<DistributeRecordResponse> pageModel = new PageModel<>(distributeRecordRequest.getPageNo(), distributeRecordRequest.getPageSize());
+        final int count = distributeQRCodeRecordService.selectDistributeCountByContions(firstLevelDealerId,distributeRecordRequest.getMarkCode(),distributeRecordRequest.getName());
+        final List<DistributeQRCodeRecord> distributeQRCodeRecords = distributeQRCodeRecordService.selectDistributeRecordsByContions(firstLevelDealerId,distributeRecordRequest.getMarkCode(),distributeRecordRequest.getName(),pageModel.getFirstIndex(),pageModel.getPageSize());
+        List<DistributeRecordResponse> distributeRecordResponses = new ArrayList<DistributeRecordResponse>();
+        if(distributeQRCodeRecords.size()>0){
+            for(int i=0;i<distributeQRCodeRecords.size();i++){
+                DistributeQRCodeRecord distributeQRCodeRecord = distributeQRCodeRecords.get(i);
+                DistributeRecordResponse distributeRecordResponse = new DistributeRecordResponse();
+                distributeRecordResponse.setId(distributeQRCodeRecord.getId());
+                distributeRecordResponse.setDistributeTime(distributeQRCodeRecord.getCreateTime());
+                Dealer dealer = dealerDao.selectById(distributeQRCodeRecord.getSecondLevelDealerId());
+                distributeRecordResponse.setProxyName(dealer.getProxyName());
+                distributeRecordResponse.setMarkCode(dealer.getMarkCode());
+                distributeRecordResponse.setCount(distributeQRCodeRecord.getCount());
+                distributeRecordResponse.setStartCode(distributeRecordResponse.getStartCode());
+                distributeRecordResponse.setEndCode(distributeRecordResponse.getEndCode());
+                distributeRecordResponse.setType(distributeRecordResponse.getType());
+                distributeRecordResponse.setOperateUser("admin");
+                distributeRecordResponses.add(distributeRecordResponse);
+            }
+        }
+        pageModel.setCount(count);
+        pageModel.setRecords(distributeRecordResponses);
+        return pageModel;
+    }
+
+
 }

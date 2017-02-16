@@ -6,15 +6,15 @@ import com.jkm.hss.admin.entity.DistributeQRCodeRecord;
 import com.jkm.hss.admin.entity.QRCode;
 import com.jkm.hss.admin.helper.responseparam.ActiveCodeCount;
 import com.jkm.hss.admin.helper.responseparam.DistributeCodeCount;
-import com.jkm.hss.dealer.entity.DailyProfitDetail;
 import com.jkm.hss.dealer.entity.Dealer;
 import com.jkm.hss.dealer.entity.DealerChannelRate;
 import com.jkm.hss.dealer.helper.requestparam.*;
+import com.jkm.hss.dealer.helper.response.DealerOfFirstDealerResponse;
+import com.jkm.hss.dealer.helper.response.DistributeRecordResponse;
 import com.jkm.hss.dealer.helper.response.FirstDealerResponse;
 import com.jkm.hss.dealer.helper.response.SecondDealerResponse;
 import com.jkm.hss.merchant.entity.MerchantInfo;
 import com.jkm.hss.merchant.entity.OrderRecord;
-import com.jkm.hss.merchant.entity.TradeRecord;
 import com.jkm.hss.product.enums.EnumProductType;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
@@ -422,4 +422,49 @@ public interface DealerService {
      * @return
      */
     PageModel<SecondDealerResponse> listSecondDealer(SecondDealerSearchRequest secondDealerSearchRequest);
+    /**
+     * 【代理商后台】新增或修改代理商产品
+     *
+     * @param request
+     */
+    void addOrUpdateDealerProduct(DealerAddOrUpdateRequest request,long firstLevelDealerId);
+    /**
+     * 按码段分配二维码
+     * @param type
+     * @param dealerId
+     * @param toDealerId
+     * @param startCode
+     * @param endCode
+     * @return
+     */
+    List<DistributeQRCodeRecord> distributeQRCodeByCode(int type,String sysType, long dealerId, long toDealerId, String startCode, String endCode);
+
+    /**
+     * 按个数分配
+     * @param type
+     * @param dealerId
+     * @param toDealerId
+     * @param count
+     * @return
+     */
+    List<DistributeQRCodeRecord> distributeQRCodeByCount(int type, String sysType, long dealerId, long toDealerId, int count);
+    /**
+     * 根据产品类型和手机号或代理商名称模糊查询
+     * @param dealerOfFirstDealerRequest
+     * @return
+     */
+    List<DealerOfFirstDealerResponse> selectListOfFirstDealer(DealerOfFirstDealerRequest dealerOfFirstDealerRequest);
+
+    /**
+     * 根据登录名获取代理商
+     * @param loginName
+     * @return
+     */
+    Dealer getDealerByLoginName(String loginName);
+    /**
+     * 【代理商后台】二维码分配记录
+     * @param distributeRecordRequest
+     * @return
+     */
+    PageModel<DistributeRecordResponse> distributeRecord(DistributeRecordRequest distributeRecordRequest, long firstLevelDealerId);
 }
