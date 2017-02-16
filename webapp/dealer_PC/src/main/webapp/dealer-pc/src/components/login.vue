@@ -58,7 +58,7 @@
     },
     methods: {
       login: function () {
-        this.$http.post('/api/daili/login/pc', {
+        this.$http.post('/daili/login/pc', {
           loginName: this.loginName,
           pwd: this.pwd
         }).then(res => {

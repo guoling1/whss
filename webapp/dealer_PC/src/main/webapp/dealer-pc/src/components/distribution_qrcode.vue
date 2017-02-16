@@ -106,7 +106,7 @@
   export default {
     name: 'app',
     created(){
-      this.$http.post('/api/daili/qrCode/proxyProduct').then(res => {
+      this.$http.post('/daili/qrCode/proxyProduct').then(res => {
         this.product.proxyHss = res.data.proxyHss;
         this.product.proxyHsy = res.data.proxyHsy;
       }, err => {
@@ -162,7 +162,7 @@
       remoteMethod(query) {
         if (query !== '') {
           this.loading = true;
-          this.$http.post('/api/daili/qrCode/listSecondDealer', {
+          this.$http.post('/daili/qrCode/listSecondDealer', {
             condition: query,
             sysType: this.form.sysType
           }).then(res => {
@@ -188,7 +188,7 @@
         }
       },
       onSubmit: function () {
-        this.$http.post('/api/daili/qrCode/distributeQrCodeToDealer', this.form).then(res => {
+        this.$http.post('/daili/qrCode/distributeQrCodeToDealer', this.form).then(res => {
           this.$message({
           showClose: true,
           message: '二维码分配成功成功',

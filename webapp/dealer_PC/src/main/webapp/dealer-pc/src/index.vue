@@ -541,7 +541,7 @@
     },
     methods: {
       logout: function () {
-        this.$http.post('/api/daili/login/logout').then(() => {
+        this.$http.post('/daili/login/logout').then(() => {
           this.$store.dispatch('actions_users_clearInfo');
           this.$router.push('/login');
         }, (err) => {

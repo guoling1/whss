@@ -129,7 +129,7 @@
       sendCode: function () {
         if (this.canSendCode) {
           this.canSendCode = false;
-          this.$http.post('/api/daili/account/sendVerifyCode').then(res => {
+          this.$http.post('/daili/account/sendVerifyCode').then(res => {
             this.canSendCode = true;
             let timer = setInterval(() => {
               if (this.timerNum < 0) {
@@ -152,7 +152,7 @@
       onSubmit: function () {
         this.$refs['form'].validate((valid) => {
           if (valid) {
-            this.$http.post('/api/daili/account/withdraw', this.form).then(res => {
+            this.$http.post('/daili/account/withdraw', this.form).then(res => {
               this.$message({
                 showClose: true,
                 message: '提现申请成功',

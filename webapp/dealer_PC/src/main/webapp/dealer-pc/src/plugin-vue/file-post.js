@@ -11,7 +11,7 @@ export default {
      * @param name
      */
     const postDownload = function (value, name = 'file') {
-      this.$http.post('/api/download', {
+      this.$http.post('/download', {
         [name]: value
       }).then(res => {
         // 此处为正常返回的错误结果
