@@ -122,6 +122,7 @@ public class AccountController extends BaseController{
                     response.setFlowSn(input.getOrderNo());
                     response.setCreateTime(DateFormatUtil.format(input.getCreateTime(),DateFormatUtil.yyyy_MM_dd_HH_mm_ss));
                     response.setBeforeAmount(input.getBeforeAmount().toString());
+                    response.setAfterAmount(input.getAfterAmount().toString());
                     response.setIncomeAmount(input.getIncomeAmount().toString());
                     response.setOutAmount(input.getOutAmount().toString());
                     response.setRemark("");
