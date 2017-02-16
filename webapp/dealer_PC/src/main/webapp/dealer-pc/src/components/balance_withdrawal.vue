@@ -23,7 +23,23 @@
               <h3 class="box-title">余额提现</h3>
             </div>
             <!-- /.box-header -->
+            <div class="box-body">
+              <label class="form-label">账户信息</label>
+              <el-table :data="accountData" border>
+                <el-table-column prop="totalAmount" label="总金额(元)"></el-table-column>
+                <el-table-column prop="dueSettleAmount" label="待结算余额(元)"></el-table-column>
+                <el-table-column prop="available" label="可提现余额(元)"></el-table-column>
+                <el-table-column label="操作">
+                  <template scope="scope">
+                    <el-button type="primary" size="small"
+                               @click="withdrawal($event,scope.row)">提现
+                    </el-button>
+                  </template>
+                </el-table-column>
+              </el-table>
+            </div>
             <div class="box-body screen-top">
+              <label class="form-label">账户流水</label>
               <div class="screen-item">
                 <span class="screen-title">流水号</span>
                 <el-input v-model="orderNo" placeholder="流水号" size="small" style="width:240px"></el-input>
@@ -105,6 +121,7 @@
     name: 'app',
     data() {
       return {
+        accountData: [],
         total: 0,
         pageSize: 4,
         pageNo: 1,
@@ -164,12 +181,15 @@
     created() {
       this.getData();
       this.$http.post('/api/daili/account/info').then(res => {
-        console.log(res);
+        this.accountData[0] = res.data;
       }, err => {
         console.log(err);
       });
     },
     methods: {
+      withdrawal: function (event, item) {
+        this.$router.push({path: '/app/withdrawal', query: item});
+      },
       datetimeSelect: function (val) {
         let format = val.split(' - ');
         this.beginDate = format[0];
@@ -204,7 +224,11 @@
     }
   }
 </script>
-<style lang="less">
+<style scoped lang="less">
+  .form-label {
+    display: block;
+  }
+
   .screen-top {
     padding-top: 0 !important;
   }

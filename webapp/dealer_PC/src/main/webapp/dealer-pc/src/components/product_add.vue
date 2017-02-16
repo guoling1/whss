@@ -238,7 +238,7 @@
     }
   }
 </script>
-<style lang="less">
+<style scoped lang="less">
   .inviteText {
     margin-top: 5px;
     line-height: 30px;

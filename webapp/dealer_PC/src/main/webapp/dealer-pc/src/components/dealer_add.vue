@@ -212,7 +212,7 @@
     }
   }
 </script>
-<style lang="less">
+<style scoped lang="less">
   .form-label {
     margin-bottom: 15px;
   }

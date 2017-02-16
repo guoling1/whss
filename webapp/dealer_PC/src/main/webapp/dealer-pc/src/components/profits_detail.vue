@@ -199,7 +199,7 @@
     }
   }
 </script>
-<style lang="less">
+<style scoped lang="less">
   .screen-top {
     padding-top: 0 !important;
   }
