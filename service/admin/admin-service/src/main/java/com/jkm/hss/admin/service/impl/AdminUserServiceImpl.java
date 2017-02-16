@@ -274,7 +274,8 @@ public class AdminUserServiceImpl implements AdminUserService {
                 return input.getId();
             }
         });
-        this.qrCodeService.markCodeToDealer(dealerId, qrCodeIds);
+        final List<Long> ids = qrCodeIds.subList(0, count);
+        this.qrCodeService.markCodeToDealer(dealerId, ids);
         final List<Pair<QRCode, QRCode>> pairQRCodeList = this.qrCodeService.getPairQRCodeList(qrCodeList);
         for (Pair<QRCode, QRCode> pair : pairQRCodeList) {
             final QRCode left = pair.getLeft();
@@ -291,5 +292,17 @@ public class AdminUserServiceImpl implements AdminUserService {
             this.distributeQRCodeRecordService.add(distributeQRCodeRecord);
         }
         return records;
+    }
+
+    /**
+     * 剩余二维码个数
+     *
+     * @param sysType
+     * @return
+     */
+    @Override
+    public int unDistributeCount(String sysType) {
+        final List<QRCode> qrCodeList = this.qrCodeService.getUnDistributeCodeBySysType(sysType);
+        return qrCodeList.size();
     }
 }

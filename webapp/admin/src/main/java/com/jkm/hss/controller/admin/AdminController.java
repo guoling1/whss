@@ -13,6 +13,7 @@ import com.jkm.hss.admin.entity.*;
 import com.jkm.hss.admin.enums.EnumQRCodeDistributeType;
 import com.jkm.hss.admin.helper.responseparam.DistributeQRCodeRecordResponse;
 import com.jkm.hss.admin.service.AdminUserService;
+import com.jkm.hss.admin.service.QRCodeService;
 import com.jkm.hss.controller.BaseController;
 import com.jkm.hss.dealer.entity.Dealer;
 import com.jkm.hss.dealer.entity.DealerChannelRate;
@@ -83,6 +84,9 @@ public class AdminController extends BaseController {
 
     @Autowired
     private DealerChannelRateService dealerChannelRateService;
+
+    @Autowired
+    private QRCodeService qrCodeService;
 
     /**
      * 登录
@@ -875,6 +879,18 @@ public class AdminController extends BaseController {
         return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "分配成功", distributeQRCodeRecordResponseList);
     }
 
+//    /**
+//     * 剩余二维码个数
+//     * @param unDistributeCountRequest
+//     * @return
+//     */
+//    @ResponseBody
+//    @RequestMapping(value = "/unDistributeCount", method = RequestMethod.POST)
+//    public CommonResponse unDistributeCount (@RequestBody UnDistributeCountRequest unDistributeCountRequest) {
+//        unDistributeCountRequest.getSysType()
+//        this.qrCodeService.getUnDistributeCodeBySysType(sysType);
+//        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "分配成功", 10);
+//    }
     /**
      * 二维码分配记录
      * @param distributeRecordRequest

@@ -141,4 +141,11 @@ public interface AdminUserService {
      * @return
      */
     List<DistributeQRCodeRecord> distributeQRCodeByCount(int type, String sysType, long dealerId, int count);
+
+    /**
+     * 剩余二维码个数
+     * @param sysType
+     * @return
+     */
+    int unDistributeCount(String sysType);
 }
