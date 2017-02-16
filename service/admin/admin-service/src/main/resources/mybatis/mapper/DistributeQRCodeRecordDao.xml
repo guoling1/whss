@@ -10,7 +10,8 @@
         start_code,
         end_code,
         status,
-        type
+        type,
+        distribute_type
         )
         VALUES
         (
@@ -20,7 +21,8 @@
         #{startCode},
         #{endCode},
         #{status},
-        #{type}
+        #{type},
+        #{distributeType}
         );
     </insert>
 
@@ -32,6 +34,7 @@
        SELECT * FROM tb_distribute_qr_code_record
        WHERE first_level_dealer_id = #{firstLevelDealerId}
        AND second_level_dealer_id = #{firstLevelDealerId}
+       AND distribute_type=2
        ORDER BY id DESC
     </select>
 
@@ -39,6 +42,7 @@
         SELECT * FROM tb_distribute_qr_code_record
         WHERE first_level_dealer_id = #{firstLevelDealerId}
         AND second_level_dealer_id !=#{firstLevelDealerId}
+        AND distribute_type=2
         ORDER BY id DESC
     </select>
 
@@ -52,6 +56,7 @@
     <select id="selectDistributeCountByContions" resultType="java.lang.Integer">
         SELECT count(1) FROM tb_distribute_qr_code_record
         WHERE first_level_dealer_id = #{firstLevelDealerId}
+        AND distribute_type=2
         <if test="markCode != null and markCode!=''">
             AND second_level_dealer_id in (select id from tb_dealer where mark_code = #{markCode})
         </if>
@@ -63,6 +68,7 @@
     <select id="selectDistributeRecordsByContions" resultType="com.jkm.hss.admin.entity.DistributeQRCodeRecord">
         SELECT * FROM tb_distribute_qr_code_record
         WHERE first_level_dealer_id = #{firstLevelDealerId}
+        AND distribute_type=2
         <if test="markCode != null and markCode!=''">
             AND second_level_dealer_id in (select id from tb_dealer where mark_code = #{markCode})
         </if>

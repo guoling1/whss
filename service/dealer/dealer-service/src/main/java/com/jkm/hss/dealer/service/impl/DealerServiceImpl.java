@@ -14,6 +14,7 @@ import com.jkm.base.common.util.GlobalID;
 import com.jkm.hss.account.sevice.AccountService;
 import com.jkm.hss.admin.entity.DistributeQRCodeRecord;
 import com.jkm.hss.admin.entity.QRCode;
+import com.jkm.hss.admin.enums.EnumQRCodeDistributeType2;
 import com.jkm.hss.admin.helper.responseparam.ActiveCodeCount;
 import com.jkm.hss.admin.helper.responseparam.DistributeCodeCount;
 import com.jkm.hss.admin.service.DistributeQRCodeRecordService;
@@ -2174,6 +2175,8 @@ public class DealerServiceImpl implements DealerService {
             distributeQRCodeRecord.setStartCode(left.getCode());
             distributeQRCodeRecord.setEndCode(right.getCode());
             distributeQRCodeRecord.setType(type);
+            distributeQRCodeRecord.setDistributeType(EnumQRCodeDistributeType2.DEALER.getCode());
+            distributeQRCodeRecord.setDistributeType(EnumQRCodeDistributeType2.DEALER.getCode());
             records.add(distributeQRCodeRecord);
             this.distributeQRCodeRecordService.add(distributeQRCodeRecord);
         }
@@ -2218,6 +2221,7 @@ public class DealerServiceImpl implements DealerService {
             distributeQRCodeRecord.setStartCode(left.getCode());
             distributeQRCodeRecord.setEndCode(right.getCode());
             distributeQRCodeRecord.setType(type);
+            distributeQRCodeRecord.setDistributeType(EnumQRCodeDistributeType2.DEALER.getCode());
             records.add(distributeQRCodeRecord);
             this.distributeQRCodeRecordService.add(distributeQRCodeRecord);
         }

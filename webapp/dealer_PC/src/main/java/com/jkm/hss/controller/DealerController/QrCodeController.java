@@ -2,6 +2,7 @@ package com.jkm.hss.controller.DealerController;
 
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
 import com.jkm.base.common.entity.CommonResponse;
 import com.jkm.base.common.entity.PageModel;
 import com.jkm.base.common.enums.EnumBoolean;
@@ -70,6 +71,9 @@ public class QrCodeController extends BaseController {
     @ResponseBody
     @RequestMapping(value = "/listSecondDealer", method = RequestMethod.POST)
     public CommonResponse listSecondDealer(@RequestBody DealerOfFirstDealerRequest dealerOfFirstDealerRequest) {
+        final String condition = dealerOfFirstDealerRequest.getCondition();
+        final String _condition = org.apache.commons.lang.StringUtils.trim(condition);
+        Preconditions.checkState(!Strings.isNullOrEmpty(_condition), "查询条件不能为空");
         long dealerId = super.getDealerId();
         dealerOfFirstDealerRequest.setDealerId(dealerId);
         List<DealerOfFirstDealerResponse> dealerOfFirstDealerResponses = this.dealerService.selectListOfFirstDealer(dealerOfFirstDealerRequest);
@@ -88,7 +92,7 @@ public class QrCodeController extends BaseController {
         if(!dealerOptional.isPresent()) {
             return CommonResponse.simpleResponse(-1, "代理商不存在");
         }
-        Preconditions.checkState(dealerOptional.get().getLevel() == EnumDealerLevel.FIRST.getId(), "不是一级代理不可以分配二维码");
+        Preconditions.checkState(super.getDealer().get().getLevel() == EnumDealerLevel.FIRST.getId(), "不是一级代理不可以分配二维码");
         Preconditions.checkState(dealerOptional.get().getFirstLevelDealerId() == super.getDealerId(),
                 "二级代理商[{}]不是当前一级代理商[{}]的二级代理", distributeQrCodeRequest.getDealerId(), super.getDealerId());
         if (StringUtils.isBlank(distributeQrCodeRequest.getSysType())) {
@@ -103,7 +107,7 @@ public class QrCodeController extends BaseController {
         long productId = productOptional.get().getId();
         List<DealerChannelRate> dealerChannelRateList = dealerChannelRateService.selectByDealerIdAndProductId(super.getDealerId(),productId);
         if(dealerChannelRateList==null||dealerChannelRateList.size()==0){
-            return CommonResponse.simpleResponse(-1, "未开通");
+            return CommonResponse.simpleResponse(-1, "未开通此产品");
         }
         List<DistributeQRCodeRecord> distributeQRCodeRecords = new ArrayList<DistributeQRCodeRecord>();
 
@@ -120,6 +124,9 @@ public class QrCodeController extends BaseController {
             }
             distributeQRCodeRecords = this.dealerService.distributeQRCodeByCount(distributeQrCodeRequest.getType(),distributeQrCodeRequest.getSysType(),super.getDealerId(),
                     distributeQrCodeRequest.getDealerId(), distributeQrCodeRequest.getCount());
+        }
+        if(distributeQRCodeRecords.size()<=0){
+            return CommonResponse.simpleResponse(-1, "二维码数量不足");
         }
         return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "分配成功", distributeQRCodeRecords);
     }

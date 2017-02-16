@@ -825,4 +825,28 @@ public class QRCodeServiceImpl implements QRCodeService {
     public List<QRCode> getUnDistributeCodeByDealerIdAndSysType(long dealerId, String sysType) {
         return this.qrCodeDao.getUnDistributeCodeByDealerIdAndSysType(dealerId,sysType);
     }
+
+    /**
+     * admin查询所有未分配的二维码个数
+     *
+     * @param sysType
+     * @return
+     */
+    @Override
+    public List<QRCode> getUnDistributeCodeBySysType(String sysType) {
+        return this.qrCodeDao.getUnDistributeCodeBySysType(sysType);
+    }
+
+    /**
+     * 根据码段和产品类型
+     *
+     * @param startCode
+     * @param endCode
+     * @param sysType
+     * @return
+     */
+    @Override
+    public List<QRCode> getUnDistributeCodeByCodeAndSysType(String startCode, String endCode, String sysType) {
+        return this.qrCodeDao.getUnDistributeCodeByCodeAndSysType(startCode,endCode,sysType);
+    }
 }

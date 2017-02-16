@@ -391,4 +391,21 @@ public interface QRCodeService {
      * @return
      */
     List<QRCode> getUnDistributeCodeByDealerIdAndSysType(long dealerId,String sysType);
+
+
+    /**
+     * admin查询所有未分配的二维码个数
+     *
+     * @return
+     */
+    List<QRCode> getUnDistributeCodeBySysType(String sysType);
+
+    /**
+     * 根据码段和产品类型
+     *
+     * @param startCode
+     * @param endCode
+     * @return
+     */
+    List<QRCode> getUnDistributeCodeByCodeAndSysType(String startCode, String endCode,String sysType);
 }
