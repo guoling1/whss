@@ -395,9 +395,14 @@ public class PayServiceImpl implements PayService {
             final Account poundageAccount = this.accountService.getByIdWithLock(AccountConstants.POUNDAGE_ACCOUNT_ID).get();
             this.accountService.increaseTotalAmount(poundageAccount.getId(), order.getPoundage());
             this.accountService.increaseAvailableAmount(poundageAccount.getId(), order.getPoundage());
-            this.settleAccountFlowService.addSettleAccountFlow(poundageAccount.getId(), order.getOrderNo(),
-                    order.getPoundage(), "支付分润", EnumAccountFlowType.INCREASE,
-                    EnumAppType.HSS.getId(), order.getPaySuccessTime(), EnumAccountUserType.COMPANY.getId());
+
+            //可用余额流水增加
+            this.accountFlowService.addAccountFlow(poundageAccount.getId(), order.getOrderNo(), order.getPoundage(),
+                    "支付", EnumAccountFlowType.INCREASE);
+
+//            this.settleAccountFlowService.addSettleAccountFlow(poundageAccount.getId(), order.getOrderNo(),
+//                    order.getPoundage(), "支付分润", EnumAccountFlowType.INCREASE,
+//                    EnumAppType.HSS.getId(), order.getPaySuccessTime(), EnumAccountUserType.COMPANY.getId());
         }
     }
 
@@ -424,9 +429,13 @@ public class PayServiceImpl implements PayService {
             final Account poundageAccount = this.accountService.getByIdWithLock(AccountConstants.POUNDAGE_ACCOUNT_ID).get();
             this.accountService.increaseTotalAmount(poundageAccount.getId(), order.getPoundage());
             this.accountService.increaseAvailableAmount(poundageAccount.getId(), order.getPoundage());
-            this.settleAccountFlowService.addSettleAccountFlow(poundageAccount.getId(), order.getOrderNo(),
-                    order.getPoundage(), "商户升级", EnumAccountFlowType.INCREASE,
-                    EnumAppType.HSS.getId(), order.getPaySuccessTime(), EnumAccountUserType.COMPANY.getId());
+
+            //可用余额流水增加
+            this.accountFlowService.addAccountFlow(poundageAccount.getId(), order.getOrderNo(), order.getPoundage(),
+                    "商户升级", EnumAccountFlowType.INCREASE);
+//            this.settleAccountFlowService.addSettleAccountFlow(poundageAccount.getId(), order.getOrderNo(),
+//                    order.getPoundage(), "商户升级", EnumAccountFlowType.INCREASE,
+//                    EnumAppType.HSS.getId(), order.getPaySuccessTime(), EnumAccountUserType.COMPANY.getId());
         }
 
     }
@@ -519,14 +528,14 @@ public class PayServiceImpl implements PayService {
         Preconditions.checkState(order.getPoundage().compareTo(channelMoney.add(productMoney).add(firstMoney).add(secondMoney).add(firstMerchantMoney).add(secondMerchantMoney)) >= 0, "收手续不可以小于分润总和");
         //手续费账户结算
         final Account poundageAccount = this.accountService.getByIdWithLock(AccountConstants.POUNDAGE_ACCOUNT_ID).get();
-        Preconditions.checkState(order.getPoundage().compareTo(poundageAccount.getDueSettleAmount()) <= 0, "该笔订单的手续费不可以大于手续费账户的待结算余额总和");
+        Preconditions.checkState(order.getPoundage().compareTo(poundageAccount.getAvailable()) <= 0, "该笔订单的分账手续费不可以大于手续费账户的可用余额总和");
         //待结算--可用余额
-        this.accountService.increaseAvailableAmount(poundageAccount.getId(), order.getPoundage());
-        this.accountService.decreaseSettleAmount(poundageAccount.getId(), order.getPoundage());
-        this.settleAccountFlowService.addSettleAccountFlow(poundageAccount.getId(), order.getOrderNo(), order.getPoundage(),
-                "支付分润", EnumAccountFlowType.DECREASE, EnumAppType.HSS.getId(), order.getPaySuccessTime(), EnumAccountUserType.COMPANY.getId());
-        this.accountFlowService.addAccountFlow(poundageAccount.getId(), order.getOrderNo(), order.getPoundage(),
-                "支付分润", EnumAccountFlowType.INCREASE);
+//        this.accountService.increaseAvailableAmount(poundageAccount.getId(), order.getPoundage());
+//        this.accountService.decreaseSettleAmount(poundageAccount.getId(), order.getPoundage());
+//        this.settleAccountFlowService.addSettleAccountFlow(poundageAccount.getId(), order.getOrderNo(), order.getPoundage(),
+//                "支付分润", EnumAccountFlowType.DECREASE, EnumAppType.HSS.getId(), order.getPaySuccessTime(), EnumAccountUserType.COMPANY.getId());
+//        this.accountFlowService.addAccountFlow(poundageAccount.getId(), order.getOrderNo(), order.getPoundage(),
+//                "支付分润", EnumAccountFlowType.INCREASE);
 
         //分账
         this.accountService.decreaseAvailableAmount(poundageAccount.getId(), order.getPoundage());
@@ -675,20 +684,20 @@ public class PayServiceImpl implements PayService {
         Preconditions.checkState(order.getTradeAmount().compareTo(jkmMoney.add(firstMoney).add(secondMoney).add(directMoney).add(inDirectMoney)) >= 0);
         //手续费账户结算
         final Account poundageAccount = this.accountService.getByIdWithLock(AccountConstants.POUNDAGE_ACCOUNT_ID).get();
-        Preconditions.checkState(order.getPoundage().compareTo(poundageAccount.getDueSettleAmount()) <= 0);
-        //待结算--可用余额
-        this.accountService.increaseAvailableAmount(poundageAccount.getId(), order.getPoundage());
-        this.accountService.decreaseSettleAmount(poundageAccount.getId(), order.getPoundage());
-        this.settleAccountFlowService.addSettleAccountFlow(poundageAccount.getId(), order.getOrderNo(), order.getPoundage(),
-                "商户升级", EnumAccountFlowType.DECREASE, EnumAppType.HSS.getId(), order.getPaySuccessTime(), EnumAccountUserType.COMPANY.getId());
-        this.accountFlowService.addAccountFlow(poundageAccount.getId(), order.getOrderNo(), order.getPoundage(),
-                "商户升级", EnumAccountFlowType.INCREASE);
 
-        //分账
+//        this.accountService.increaseAvailableAmount(poundageAccount.getId(), order.getPoundage());
+//        this.accountService.decreaseSettleAmount(poundageAccount.getId(), order.getPoundage());
+//        this.settleAccountFlowService.addSettleAccountFlow(poundageAccount.getId(), order.getOrderNo(), order.getPoundage(),
+//                "商户升级", EnumAccountFlowType.DECREASE, EnumAppType.HSS.getId(), order.getPaySuccessTime(), EnumAccountUserType.COMPANY.getId());
+//        this.accountFlowService.addAccountFlow(poundageAccount.getId(), order.getOrderNo(), order.getPoundage(),
+//                "商户升级", EnumAccountFlowType.INCREASE);
+
+        Preconditions.checkState(order.getPoundage().compareTo(poundageAccount.getAvailable()) <= 0, "该笔订单的分账手续费不可以大于手续费账户的可用余额总和");
         this.accountService.decreaseAvailableAmount(poundageAccount.getId(), order.getPoundage());
         this.accountService.decreaseTotalAmount(poundageAccount.getId(), order.getPoundage());
         this.accountFlowService.addAccountFlow(poundageAccount.getId(), order.getOrderNo(), order.getPoundage(),
                 "商户升级", EnumAccountFlowType.DECREASE);
+
         //增加分账记录
         //jkm利润--到结算--到可用余额
         if (null != jkmMoneyTriple) {
