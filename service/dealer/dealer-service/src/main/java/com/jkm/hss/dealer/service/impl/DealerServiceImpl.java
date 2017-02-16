@@ -2159,11 +2159,7 @@ public class DealerServiceImpl implements DealerService {
                 return input.getId();
             }
         });
-        if (dealerId == toDealerId) {
-            this.qrCodeService.markAsDistribute(qrCodeIds);
-        } else {
-            this.qrCodeService.markAsDistribute2(qrCodeIds, toDealerId);
-        }
+        this.qrCodeService.markAsDistribute2(qrCodeIds, toDealerId);
         final List<Pair<QRCode, QRCode>> pairQRCodeList = this.qrCodeService.getPairQRCodeList(qrCodeList);
         for (Pair<QRCode, QRCode> pair : pairQRCodeList) {
             final QRCode left = pair.getLeft();
@@ -2205,11 +2201,7 @@ public class DealerServiceImpl implements DealerService {
                 return input.getId();
             }
         });
-        if (dealerId == toDealerId) {
-            this.qrCodeService.markAsDistribute(qrCodeIds);
-        } else {
-            this.qrCodeService.markAsDistribute2(qrCodeIds, toDealerId);
-        }
+        this.qrCodeService.markAsDistribute2(qrCodeIds, toDealerId);
         final List<Pair<QRCode, QRCode>> pairQRCodeList = this.qrCodeService.getPairQRCodeList(qrCodeList);
         for (Pair<QRCode, QRCode> pair : pairQRCodeList) {
             final QRCode left = pair.getLeft();
