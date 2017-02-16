@@ -1,11 +1,14 @@
 package com.jkm.hsy.user.service.impl;
 
+import com.google.common.base.Optional;
 import com.google.gson.*;
 import com.jkm.base.common.enums.EnumGlobalIDPro;
 import com.jkm.base.common.enums.EnumGlobalIDType;
 import com.jkm.base.common.util.GlobalID;
 import com.jkm.base.common.util.ValidateUtils;
 import com.jkm.base.sms.service.SmsSendMessageService;
+import com.jkm.hss.account.entity.Account;
+import com.jkm.hss.account.sevice.AccountService;
 import com.jkm.hss.notifier.dao.MessageTemplateDao;
 import com.jkm.hss.notifier.dao.SendMessageRecordDao;
 import com.jkm.hss.notifier.entity.SendMessageRecord;
@@ -42,6 +45,8 @@ public class HsyUserServiceImpl implements HsyUserService {
     private MessageTemplateDao messageTemplateDao;
     @Autowired
     private SendMessageRecordDao sendMessageRecordDao;
+    @Autowired
+    private AccountService accountService;
 
     /**HSY001001 注册用户*/
     public String insertHsyUser(String dataParam,AppParam appParam)throws ApiHandleException {
@@ -790,7 +795,15 @@ public class HsyUserServiceImpl implements HsyUserService {
                 return new java.util.Date(json.getAsJsonPrimitive().getAsLong());
             }
         }).create();
+        final Optional<Account> accountOptional = this.accountService.getById(appAuUserFind.getAccountID());
         Map map=new HashMap();
+        if (accountOptional.isPresent()) {
+            final Account account = accountOptional.get();
+            map.put("totalAmount", account.getTotalAmount().toPlainString());
+            map.put("available", account.getAvailable().toPlainString());
+            map.put("dueSettleAmount", account.getDueSettleAmount().toPlainString());
+            map.put("frozenAmount", account.getFrozenAmount().toPlainString());
+        }
         map.put("appAuUser",appAuUserFind);
         map.put("appBizShop",appBizShop);
 
