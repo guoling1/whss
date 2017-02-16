@@ -3,6 +3,7 @@ package com.jkm.hss.controller.admin;
 import com.aliyun.oss.OSSClient;
 import com.jkm.base.common.entity.CommonResponse;
 import com.jkm.base.common.entity.PageModel;
+import com.jkm.hss.bill.entity.JkmProfitDetailsResponse;
 import com.jkm.hss.bill.entity.JkmProfitResponse;
 import com.jkm.hss.bill.service.ShareProfitService;
 import com.jkm.hss.controller.BaseController;
@@ -52,6 +53,22 @@ public class JkmProfitController extends BaseController{
         pageModel.setCount(count);
         pageModel.setRecords(orderList);
         return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", pageModel);
+    }
+
+    /**
+     * 分润明细
+     * @param req
+     * @return
+     * @throws ParseException
+     */
+    @ResponseBody
+    @RequestMapping(value = "/profitDetails",method = RequestMethod.POST)
+    public CommonResponse profitDetails() throws ParseException {
+
+        List<JkmProfitDetailsResponse> orderList =  shareProfitService.selectProfitDetails();
+
+
+        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", orderList);
     }
 
 

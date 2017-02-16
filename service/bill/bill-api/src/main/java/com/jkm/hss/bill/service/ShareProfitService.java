@@ -1,5 +1,6 @@
 package com.jkm.hss.bill.service;
 
+import com.jkm.hss.bill.entity.JkmProfitDetailsResponse;
 import com.jkm.hss.bill.entity.JkmProfitResponse;
 import com.jkm.hss.merchant.helper.request.JkmProfitRequest;
 
@@ -23,6 +24,13 @@ public interface ShareProfitService {
      * @return
      */
    int selectAccountListCount(JkmProfitRequest req);
+
+    /**
+     * 分润明细
+     * @param req
+     * @return
+     */
+    List<JkmProfitDetailsResponse> selectProfitDetails();
 
 
 }

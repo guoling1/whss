@@ -37,6 +37,7 @@ import com.jkm.hss.product.enums.EnumPayChannelSign;
 import com.jkm.hss.product.enums.EnumProductType;
 import com.jkm.hss.push.sevice.PushService;
 import com.jkm.hsy.user.dao.HsyShopDao;
+import com.jkm.hsy.user.entity.AppAuUser;
 import com.jkm.hsy.user.entity.AppBizCard;
 import com.jkm.hsy.user.entity.AppBizShop;
 import com.jkm.hsy.user.entity.AppParam;
@@ -547,11 +548,9 @@ public class HSYTradeServiceImpl implements HSYTradeService {
             result.put("msg", "提现金额必须大于手续费");
             return result.toJSONString();
         }
-        final AppBizCard appBizCard = new AppBizCard();
-        appBizCard.setSid(shop.getId());
-        final AppBizCard appBizCard1 = this.hsyShopDao.findAppBizCardByParam(appBizCard).get(0);
+        final AppAuUser appAuUser = this.hsyShopDao.findAuUserByAccountID(accountId).get(0);
         final Pair<Integer, String> checkResult =
-                this.smsAuthService.checkVerifyCode(appBizCard1.getCardCellphone(), verifyCode, EnumVerificationCodeType.WITHDRAW_MERCHANT);
+                this.smsAuthService.checkVerifyCode(appAuUser.getCellphone(), verifyCode, EnumVerificationCodeType.WITHDRAW_MERCHANT);
         if (1 == checkResult.getLeft()) {
             final Pair<Integer, String> withdrawResult = this.withdraw(accountId, totalAmount, channel, EnumProductType.HSY.getId());
             if (-1 == withdrawResult.getLeft()) {

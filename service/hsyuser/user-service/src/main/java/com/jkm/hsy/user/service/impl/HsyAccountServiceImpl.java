@@ -12,8 +12,7 @@ import com.jkm.hss.notifier.helper.SendMessageParams;
 import com.jkm.hss.notifier.service.SendMessageService;
 import com.jkm.hss.notifier.service.SmsAuthService;;
 import com.jkm.hsy.user.dao.HsyShopDao;
-import com.jkm.hsy.user.entity.AppBizCard;
-import com.jkm.hsy.user.entity.AppBizShop;
+import com.jkm.hsy.user.entity.AppAuUser;
 import com.jkm.hsy.user.entity.AppParam;
 import com.jkm.hsy.user.service.HsyAccountService;
 import lombok.extern.slf4j.Slf4j;
@@ -77,16 +76,13 @@ public class HsyAccountServiceImpl implements HsyAccountService {
         final JSONObject dataJo = JSONObject.parseObject(dataParam);
         final JSONObject result = new JSONObject();
         final long accountId = dataJo.getLongValue("accountId");
-        final AppBizShop shop = this.hsyShopDao.findAppBizShopByAccountID(accountId).get(0);
-        final AppBizCard appBizCard = new AppBizCard();
-        appBizCard.setSid(shop.getId());
-        final AppBizCard appBizCard1 = this.hsyShopDao.findAppBizCardByParam(appBizCard).get(0);
-        final Pair<Integer, String> verifyCode = this.smsAuthService.getVerifyCode(appBizCard1.getCardCellphone(), EnumVerificationCodeType.WITHDRAW_MERCHANT);
+        final AppAuUser appAuUser = this.hsyShopDao.findAuUserByAccountID(accountId).get(0);
+        final Pair<Integer, String> verifyCode = this.smsAuthService.getVerifyCode(appAuUser.getCellphone(), EnumVerificationCodeType.WITHDRAW_MERCHANT);
         if (1 == verifyCode.getLeft()) {
             final Map<String, String> params = ImmutableMap.of("code", verifyCode.getRight());
             this.sendMessageService.sendMessage(SendMessageParams.builder()
-                    .mobile(appBizCard1.getCardCellphone())
-                    .uid(shop.getUid() + "")
+                    .mobile(appAuUser.getCellphone())
+                    .uid(appAuUser.getId() + "")
                     .data(params)
                     .userType(EnumUserType.FOREGROUND_USER)
                     .noticeType(EnumNoticeType.WITHDRAW_CODE_MERCHANT)

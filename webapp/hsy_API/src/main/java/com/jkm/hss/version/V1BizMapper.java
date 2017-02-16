@@ -31,35 +31,22 @@ public class V1BizMapper {
 		bizMapper.put("HSY001023", new String[]{"hsyUserService","updateHsyUserViaCorporation","修改店员信息成功"});
 		bizMapper.put("HSY001024", new String[]{"hsyUserService","updateHsyShopUserViaCorporation","分配店铺成功"});
 		bizMapper.put("HSY001025", new String[]{"hsyUserService","updateHsyUserStatusViaCorporation","修改状态成功"});
-
-		/**
-		 * app收款
-		 */
+		bizMapper.put("HSY001026", new String[]{"hsyAppVersionService","getAppVersion"});
+		bizMapper.put("HSY001027", new String[]{"hsyAppVersionService","getAppVersionAndroid"});
+		bizMapper.put("HSY001028", new String[]{"hsyUserService","findLoginInfo"});
+		/**app收款*/
 		bizMapper.put("HSY001030", new String[]{"hsyTradeService", "appReceipt"});
-		/**
-		 * app提现
-		 */
+		/**app提现*/
 		bizMapper.put("HSY001031", new String[]{"hsyTradeService", "appWithdraw"});
-		/**
-		 * app获取提现页面信息
-		 */
+		/**app获取提现页面信息*/
 		bizMapper.put("HSY001032", new String[]{"hsyTradeService", "getWithdrawInfo"});
-		/**
-		 * 账户余额信息
-		 */
+		/** 账户余额信息*/
 		bizMapper.put("HSY001033", new String[]{"hsyAccountService", "getAccount"});
-		/**
-		 * 获取提现验证码
-		 */
+		/**获取提现验证码*/
 		bizMapper.put("HSY001034", new String[]{"hsyAccountService", "getVerifyCode"});
-		/**
-		 * 结算记录
-		 */
+		/**结算记录*/
 		bizMapper.put("HSY001035", new String[]{"accountSettleAuditRecordService", "appSettleRecordList"});
-		/**
-		 * 交易记录
-		 */
+		/**交易记录*/
 		bizMapper.put("HSY001036", new String[]{"hsyTradeService", "tradeList"});
-
 	}
 }
