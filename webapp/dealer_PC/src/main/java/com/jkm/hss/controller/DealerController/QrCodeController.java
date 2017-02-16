@@ -19,6 +19,7 @@ import com.jkm.hss.dealer.helper.response.DealerOfFirstDealerResponse;
 import com.jkm.hss.dealer.helper.response.DistributeRecordResponse;
 import com.jkm.hss.dealer.service.DealerChannelRateService;
 import com.jkm.hss.dealer.service.DealerService;
+import com.jkm.hss.helper.request.DistributeQRCodeRecordResponse;
 import com.jkm.hss.helper.request.DistributeQrCodeRequest;
 import com.jkm.hss.helper.response.ProxyProductResponse;
 import com.jkm.hss.product.entity.Product;
@@ -128,7 +129,19 @@ public class QrCodeController extends BaseController {
         if(distributeQRCodeRecords.size()<=0){
             return CommonResponse.simpleResponse(-1, "二维码数量不足");
         }
-        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "分配成功", distributeQRCodeRecords);
+        List<DistributeQRCodeRecordResponse> distributeQRCodeRecordResponseList = new ArrayList<DistributeQRCodeRecordResponse>();
+        for(int i=0;i<distributeQRCodeRecords.size();i++){
+            DistributeQRCodeRecordResponse distributeQRCodeRecordResponse = new DistributeQRCodeRecordResponse();
+            distributeQRCodeRecordResponse.setDealerName(dealerOptional.get().getProxyName());
+            distributeQRCodeRecordResponse.setDealerMobile(dealerOptional.get().getMobile());
+            distributeQRCodeRecordResponse.setDistributeTime(distributeQRCodeRecords.get(i).getCreateTime());
+            distributeQRCodeRecordResponse.setType(distributeQRCodeRecords.get(i).getType());
+            distributeQRCodeRecordResponse.setCount(distributeQRCodeRecords.get(i).getCount());
+            distributeQRCodeRecordResponse.setStartCode(distributeQRCodeRecords.get(i).getStartCode());
+            distributeQRCodeRecordResponse.setEndCode(distributeQRCodeRecords.get(i).getEndCode());
+            distributeQRCodeRecordResponseList.add(distributeQRCodeRecordResponse);
+        }
+        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "分配成功", distributeQRCodeRecordResponseList);
     }
 
     /**

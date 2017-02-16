@@ -5,22 +5,23 @@ import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
 import com.jkm.base.common.entity.CommonResponse;
+import com.jkm.base.common.entity.PageModel;
 import com.jkm.base.common.enums.EnumBoolean;
 import com.jkm.base.common.util.CookieUtil;
 import com.jkm.base.common.util.ValidateUtils;
 import com.jkm.hss.admin.entity.*;
 import com.jkm.hss.admin.enums.EnumQRCodeDistributeType;
+import com.jkm.hss.admin.helper.responseparam.DistributeQRCodeRecordResponse;
 import com.jkm.hss.admin.service.AdminUserService;
+import com.jkm.hss.admin.service.QRCodeService;
 import com.jkm.hss.controller.BaseController;
 import com.jkm.hss.dealer.entity.Dealer;
 import com.jkm.hss.dealer.entity.DealerChannelRate;
 import com.jkm.hss.dealer.enums.EnumDealerLevel;
 import com.jkm.hss.dealer.enums.EnumRecommendBtn;
 import com.jkm.hss.dealer.helper.DealerConsts;
-import com.jkm.hss.dealer.helper.requestparam.FirstLevelDealerAdd2Request;
-import com.jkm.hss.dealer.helper.requestparam.FirstLevelDealerAddRequest;
-import com.jkm.hss.dealer.helper.requestparam.FirstLevelDealerUpdate2Request;
-import com.jkm.hss.dealer.helper.requestparam.FirstLevelDealerUpdateRequest;
+import com.jkm.hss.dealer.helper.requestparam.*;
+import com.jkm.hss.dealer.helper.response.DistributeRecordResponse;
 import com.jkm.hss.dealer.service.DealerChannelRateService;
 import com.jkm.hss.dealer.service.DealerRateService;
 import com.jkm.hss.dealer.service.DealerService;
@@ -83,6 +84,9 @@ public class AdminController extends BaseController {
 
     @Autowired
     private DealerChannelRateService dealerChannelRateService;
+
+    @Autowired
+    private QRCodeService qrCodeService;
 
     /**
      * 登录
@@ -860,6 +864,42 @@ public class AdminController extends BaseController {
         if(distributeQRCodeRecords.size()<=0){
             return CommonResponse.simpleResponse(-1, "二维码数量不足");
         }
+        List<DistributeQRCodeRecordResponse> distributeQRCodeRecordResponseList = new ArrayList<DistributeQRCodeRecordResponse>();
+        for(int i=0;i<distributeQRCodeRecords.size();i++){
+            DistributeQRCodeRecordResponse distributeQRCodeRecordResponse = new DistributeQRCodeRecordResponse();
+            distributeQRCodeRecordResponse.setDealerName(dealerOptional.get().getProxyName());
+            distributeQRCodeRecordResponse.setDealerMobile(dealerOptional.get().getMobile());
+            distributeQRCodeRecordResponse.setDistributeTime(distributeQRCodeRecords.get(i).getCreateTime());
+            distributeQRCodeRecordResponse.setType(distributeQRCodeRecords.get(i).getType());
+            distributeQRCodeRecordResponse.setCount(distributeQRCodeRecords.get(i).getCount());
+            distributeQRCodeRecordResponse.setStartCode(distributeQRCodeRecords.get(i).getStartCode());
+            distributeQRCodeRecordResponse.setEndCode(distributeQRCodeRecords.get(i).getEndCode());
+            distributeQRCodeRecordResponseList.add(distributeQRCodeRecordResponse);
+        }
+        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "分配成功", distributeQRCodeRecordResponseList);
+    }
+
+//    /**
+//     * 剩余二维码个数
+//     * @param unDistributeCountRequest
+//     * @return
+//     */
+//    @ResponseBody
+//    @RequestMapping(value = "/unDistributeCount", method = RequestMethod.POST)
+//    public CommonResponse unDistributeCount (@RequestBody UnDistributeCountRequest unDistributeCountRequest) {
+//        unDistributeCountRequest.getSysType()
+//        this.qrCodeService.getUnDistributeCodeBySysType(sysType);
+//        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "分配成功", 10);
+//    }
+    /**
+     * 二维码分配记录
+     * @param distributeRecordRequest
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/distributeRecord", method = RequestMethod.POST)
+    public CommonResponse distributeRecord (@RequestBody DistributeRecordRequest distributeRecordRequest) {
+        PageModel<DistributeRecordResponse> distributeQRCodeRecords = this.dealerService.distributeRecord(distributeRecordRequest,1);
         return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "分配成功", distributeQRCodeRecords);
     }
 
