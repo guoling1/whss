@@ -91,14 +91,14 @@ public final class PaymentSdkConstants {
          * 支付中心下单url
          */
         @Key("payment.sdk.pay.place.order")
-        @DefaultValue("http://pay.qianbaobaojiajia.com/pay/placeOrder")
+        @DefaultValue("http://pay.qianbaojiajia.com/pay/placeOrder")
         String sdkPayPlaceOrder();
 
         /**
          * 支付中心提现url
          */
         @Key("payment.sdk.pay.withdraw.url")
-        @DefaultValue("http://pay.qianbaobaojiajia.com/daiFu/withdraw")
+        @DefaultValue("http://pay.qianbaojiajia.com/daiFu/withdraw")
         String sdkPayWithdraw();
     }
 }
