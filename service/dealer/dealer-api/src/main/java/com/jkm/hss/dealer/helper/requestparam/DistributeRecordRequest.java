@@ -16,4 +16,13 @@ public class DistributeRecordRequest extends PageQueryParams {
      * 代理商名称
      */
     private String name;
+    /**
+     * 上级代理商编号
+     */
+    private String firstMarkCode;
+    /**
+     * 上级代理商名称
+     */
+    private String firstName;
+
 }
