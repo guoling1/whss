@@ -88,6 +88,7 @@ public class HsyShopServiceImpl implements HsyShopService {
         /**商铺修改*/
         Date date=new Date();
         appBizShop.setUpdateTime(date);
+        appBizShop.setStatus(AppConstant.SHOP_STATUS_REGISTERED);
         hsyShopDao.update(appBizShop);
 
         List<AppBizShopUserRole> surList=hsyShopDao.findsurByRoleTypeSid(appBizShop.getId());
@@ -100,7 +101,7 @@ public class HsyShopServiceImpl implements HsyShopService {
             user.setUpdateTime(date);
             hsyUserDao.updateByID(user);
         }
-        return "";
+        return "{\"auStep\":\"1\"}";
     }
 
     /**HSY001006 更新店铺资料联系人*/
@@ -170,7 +171,7 @@ public class HsyShopServiceImpl implements HsyShopService {
         appAuUser.setAuStep("3");
         appAuUser.setRealname(appBizShop.getContactName());
         hsyUserDao.updateByID(appAuUser);
-        return "";
+        return "{\"auStep\":\"3\"}";
     }
 
     /**HSY001007 保存结算账户*/
@@ -227,7 +228,12 @@ public class HsyShopServiceImpl implements HsyShopService {
             user.setUpdateTime(date);
             hsyUserDao.updateByID(user);
         }
-        return "{\"id\":"+appBizCard.getId()+"}";
+
+        AppBizShop appBizShop=new AppBizShop();
+        appBizShop.setId(appBizCard.getSid());
+        appBizShop.setStatus(AppConstant.SHOP_STATUS_NO_CHECK);
+        hsyShopDao.update(appBizShop);
+        return "{\"id\":"+appBizCard.getId()+",\"auStep\":\"4\",\"status\":"+AppConstant.SHOP_STATUS_NO_CHECK+"}";
     }
 
     /**HSY001008 卡号匹配银行*/

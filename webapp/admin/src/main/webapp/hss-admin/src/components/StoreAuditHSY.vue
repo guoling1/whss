@@ -63,14 +63,16 @@
               <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.name" readonly></td>
               <th style="text-align: right">商铺简称:</th>
               <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.shortName" readonly></td>
-              <th style="text-align: right">商户营业执照号:</th>
-              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.licenceID" readonly></td>
+              <!--<th style="text-align: right">商户营业执照号:</th>
+              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.licenceID" readonly></td>-->
+              <th style="text-align: right"></th>
+              <td></td>
             </tr>
             <tr>
               <th style="text-align: right">店主（法人）实名:</th>
               <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.contactName"  readonly></td>
               <th style="text-align: right">店主身份证号:</th>
-              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.bankNo" readonly></td>
+              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.idcard" readonly></td>
               <th style="text-align: right"></th>
               <td></td>
             </tr>
@@ -86,9 +88,9 @@
               <th style="text-align: right">商铺详细地址:</th>
               <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.address" readonly></td>
               <th style="text-align: right">资料提交时间:</th>
-              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.industryCode" readonly></td>
+              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.updateTime|changeTime" readonly></td>
               <th style="text-align: right">资料审核状态:</th>
-              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.status" readonly></td>
+              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.stat" readonly></td>
             </tr>
             </tbody></table>
         </div>
@@ -140,21 +142,21 @@
               <td>
                 <el-radio-group v-model="msg.isPublic">
                   <el-radio :label="1">对公</el-radio>
-                  <el-radio :label="2">对私</el-radio>
+                  <el-radio :label="0">对私</el-radio>
                 </el-radio-group>
               </td>
               <th style="text-align: right">结算卡开户名:</th>
-              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.industryCode" readonly></td>
-              <th style="text-align: right" v-show="msg.isPublic==2">身份证号:</th>
-              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.industryCode" readonly v-show="msg.isPublic==2"></td>
+              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.cardAccountName" readonly></td>
+              <th style="text-align: right" v-show="msg.isPublic==0">身份证号:</th>
+              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.idcard" readonly v-show="msg.isPublic==0"></td>
             </tr>
             <tr>
               <th style="text-align: right">商户结算卡号:</th>
-              <td><input type="text" style="background:#efecec;padding-left:5px;" value="" readonly></td>
+              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.cardNO" readonly></td>
               <th style="text-align: right">结算卡所属银行:</th>
-              <td><input type="text" style="background:#efecec;padding-left:5px;" value="" readonly></td>
+              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.cardBank" readonly></td>
               <th style="text-align: right">支行信息:</th>
-              <td><input type="text" style="background:#efecec;padding-left:5px;" value="" readonly></td>
+              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.bankAddress" readonly></td>
             </tr>
             <tr>
               <th style="text-align: right">结算方式:</th>
@@ -262,7 +264,7 @@
           </table>
         </div>
       </div>
-  </div>
+    </div>
   </div>
 </template>
 

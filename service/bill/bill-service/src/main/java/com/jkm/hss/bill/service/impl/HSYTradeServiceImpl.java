@@ -34,6 +34,7 @@ import com.jkm.hss.product.enums.EnumPayChannelSign;
 import com.jkm.hss.product.enums.EnumProductType;
 import com.jkm.hss.push.sevice.PushService;
 import com.jkm.hsy.user.dao.HsyShopDao;
+import com.jkm.hsy.user.entity.AppAuUser;
 import com.jkm.hsy.user.entity.AppBizCard;
 import com.jkm.hsy.user.entity.AppBizShop;
 import com.jkm.hsy.user.entity.AppParam;
@@ -101,13 +102,14 @@ public class HSYTradeServiceImpl implements HSYTradeService {
         final AppBizCard appBizCard = new AppBizCard();
         appBizCard.setSid(shop.getId());
         final AppBizCard appBizCard1 = this.hsyShopDao.findAppBizCardByParam(appBizCard).get(0);
+        final AppAuUser appAuUser = this.hsyShopDao.findAuUserByAccountID(accountId).get(0);
         final Account account = this.accountService.getById(accountId).get();
         result.put("bankName", appBizCard1.getCardBank());
         final String cardNO = appBizCard1.getCardNO();
         result.put("cardNo", cardNO.substring(cardNO.length() - 4));
         final BigDecimal merchantWithdrawPoundage = this.calculateService.getMerchantWithdrawPoundage(EnumProductType.HSY, shop.getId(), channel);
         result.put("poundage", merchantWithdrawPoundage);
-        result.put("mobile", appBizCard1.getCardCellphone());
+        result.put("mobile", appAuUser.getCellphone());
         result.put("available", account.getAvailable());
         return result.toJSONString();
     }
@@ -128,7 +130,7 @@ public class HSYTradeServiceImpl implements HSYTradeService {
         final String dateStr = dataJo.getString("date");
         Date date = null;
         if (!StringUtils.isEmpty(dateStr) && !StringUtils.isEmpty(dateStr)) {
-            date = DateFormatUtil.parse(dateStr, DateFormatUtil.yyyy_MM_dd);
+            date = DateFormatUtil.parse(dateStr + " 23:59:59", DateFormatUtil.yyyy_MM_dd_HH_mm_ss);
         }
         final PageModel<JSONObject> pageModel = new PageModel<>(pageNo, pageSize);
         final long count = this.orderService.getPageOrdersCountByAccountId(accountId, EnumAppType.HSY.getId(), date);
@@ -565,11 +567,9 @@ public class HSYTradeServiceImpl implements HSYTradeService {
             result.put("msg", "提现金额必须大于手续费");
             return result.toJSONString();
         }
-        final AppBizCard appBizCard = new AppBizCard();
-        appBizCard.setSid(shop.getId());
-        final AppBizCard appBizCard1 = this.hsyShopDao.findAppBizCardByParam(appBizCard).get(0);
+        final AppAuUser appAuUser = this.hsyShopDao.findAuUserByAccountID(accountId).get(0);
         final Pair<Integer, String> checkResult =
-                this.smsAuthService.checkVerifyCode(appBizCard1.getCardCellphone(), verifyCode, EnumVerificationCodeType.WITHDRAW_MERCHANT);
+                this.smsAuthService.checkVerifyCode(appAuUser.getCellphone(), verifyCode, EnumVerificationCodeType.WITHDRAW_MERCHANT);
         if (1 == checkResult.getLeft()) {
             final Pair<Integer, String> withdrawResult = this.withdraw(accountId, totalAmount, channel, EnumProductType.HSY.getId());
             if (-1 == withdrawResult.getLeft()) {

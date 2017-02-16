@@ -231,4 +231,18 @@
         where SID=#{sid} and UID=#{uid}
     </select>
 
+    <select id="findAuUserByAccountID" parameterType="java.lang.Long" resultType="com.jkm.hsy.user.entity.AppAuUser">
+        select
+        user.ID,user.globalID,user.CELLPHONE,user.PASSWORD,user.NICKNAME,user.REALNAME,user.STATUS,
+          (select PATH from app_cm_file acf where uuid=user.PROFILE) PROFILE,
+          user.AUSTEP,user.IDCARD,user.IDCARDF,user.IDCARDB,user.IDCARDH,user.CREATETIME,user.UPDATETIME,
+         (select PATH from app_cm_file acf where uuid=user.IDCARDF) IDCARDFURL,
+         (select PATH from app_cm_file acf where uuid=user.IDCARDB) IDCARDBURL,
+         (select PATH from app_cm_file acf where uuid=user.IDCARDH) IDCARDHURL,
+          user.ACCOUNTID ACCOUNTID,user.DEALERID DEALERID,user.PRODUCTID PRODUCTID,user.WEIXINRATE WEIXINRATE,user.ALIPAYRATE ALIPAYRATE,user.FASTRATE FASTRATE,user.PARENTID
+        from app_au_user user
+        where user.ACCOUNTID=#{accountID}
+        order by user.UPDATETIME desc
+    </select>
+
 </mapper>

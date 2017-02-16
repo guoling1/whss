@@ -99,4 +99,7 @@ public class DealerSupport {
     public static String passwordDigest(final String password, final String salt) {
         return DigestUtils.sha256Hex(password + salt);
     }
+    public static  void main(String[] args){
+        System.out.println(passwordDigest("123456","JKM"));
+    }
 }

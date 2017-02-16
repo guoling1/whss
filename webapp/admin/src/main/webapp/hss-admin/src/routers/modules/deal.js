@@ -45,6 +45,12 @@ const NewDealDet = r => require.ensure([], () => r(require('../../components/new
 const NewWithdrawalQuery = r => require.ensure([], () => r(require('../../components/newVersion/NewWithdrawalQuery')), 'group-record');
 const NewWithdrawalDet = r => require.ensure([], () => r(require('../../components/newVersion/NewWithdrawalDet')), 'group-record');
 
+const OrderQuery = r => require.ensure([], () => r(require('../../components/OrderQuery')), 'group-record');
+const OrderDetail = r => require.ensure([], () => r(require('../../components/OrderDetail')), 'group-record');
+const TradeQuery = r => require.ensure([], () => r(require('../../components/TradeQuery')), 'group-record');
+const ProfitAccount = r => require.ensure([], () => r(require('../../components/ProfitAccount')), 'group-record');
+const ProfitAccountDet = r => require.ensure([], () => r(require('../../components/ProfitAccountDet')), 'group-record');
+
 export default {
   path: '/admin/record',
   redirect: '/admin/record/deal',
@@ -244,6 +250,31 @@ export default {
       path: 'codeStatus',
       name: 'CodeStatus',
       component: CodeStatus
-    }
+    },
+    {
+      path: 'orderQuery',
+      name: 'OrderQuery',
+      component: OrderQuery
+    },
+    {
+      path: 'orderDetail',
+      name: 'OrderDetail',
+      component: OrderDetail
+    },
+    {
+      path: 'tradeQuery',
+      name: 'TradeQuery',
+      component: TradeQuery
+    },
+    {
+      path: 'profitAccount',
+      name: 'ProfitAccount',
+      component: ProfitAccount
+    },
+    {
+      path: 'profitAccountDet',
+      name: 'ProfitAccountDet',
+      component: ProfitAccountDet
+    },
   ]
 }

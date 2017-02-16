@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jkm.hsy.user.dao.HsyAppVersionDao">
+    <select id="getAppVersion" parameterType="com.jkm.hsy.user.entity.AppVersion" resultType="com.jkm.hsy.user.entity.AppVersion">
+        SELECT
+        UUID,VERSIONCODE,VERSIONNAME,PACKAGENAME,APPTYPE,VERSIONURL,SIZE,ISUPGRADE,DESCRIPTION,CREATETIME,UPDATETIME
+        FROM app_version t
+        where APPTYPE=#{appType}
+        and VERSIONCODE>#{versionCode}
+        order by VERSIONCODE desc,UPDATETIME desc
+    </select>
+
+    <select id="getAppVersionAndroid" parameterType="com.jkm.hsy.user.entity.AppVersion" resultType="com.jkm.hsy.user.entity.AppVersion">
+        SELECT
+        UUID,VERSIONCODE,VERSIONNAME,PACKAGENAME,APPTYPE,VERSIONURL,SIZE,ISUPGRADE,DESCRIPTION,CREATETIME,UPDATETIME
+        FROM app_version t
+        where APPTYPE=#{appType}
+        order by VERSIONCODE desc
+    </select>
+</mapper>

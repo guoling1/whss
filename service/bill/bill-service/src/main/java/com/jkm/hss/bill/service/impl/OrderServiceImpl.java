@@ -189,7 +189,7 @@ public class OrderServiceImpl implements OrderService {
         playMoneyOrder.setPayee(0);
         playMoneyOrder.setAppId(appId);
         //手续费固定1元
-        playMoneyOrder.setPoundage(new BigDecimal("1"));
+        playMoneyOrder.setPoundage(new BigDecimal("1.0"));
         playMoneyOrder.setGoodsName(dealer.getProxyName());
         playMoneyOrder.setGoodsDescribe(dealer.getProxyName());
         playMoneyOrder.setSettleStatus(EnumSettleStatus.DUE_SETTLE.getId());
@@ -404,9 +404,9 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public MerchantTradeResponse selectOrderListByPageAll(OrderTradeRequest req) {
         MerchantTradeResponse list = orderDao.selectOrderListByPageAll(req.getOrderNo());
-        if(list != null){
-            long payee = list.getPayee();
-            MerchantTradeResponse lists = orderDao.getMerchantAll(payee);
+        long payee = list.getPayee();
+        MerchantTradeResponse lists = orderDao.getMerchantAll(payee);
+        if(list != null&&lists != null){
             list.setCreateTimes(lists.getCreateTime());
             if (lists.getMobile()!=null&&!"".equals(lists.getMobile())){
                 list.setMobile(MerchantSupport.decryptMobile(lists.getMobile()));

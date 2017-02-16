@@ -427,4 +427,24 @@
         AND  sys_type=#{sysType}
         ORDER BY code ASC
     </select>
+
+    <select id="getUnDistributeCodeBySysType" resultType="com.jkm.hss.admin.entity.QRCode">
+        SELECT * FROM tb_qr_code
+        WHERE first_level_dealer_id =0
+        AND second_level_dealer_id = 0
+        AND distribute_status = 1
+        AND activate_status = 1
+        And sys_type=#{sysType}
+        ORDER BY id ASC
+    </select>
+
+    <select id="getUnDistributeCodeByCodeAndSysType" resultType="com.jkm.hss.admin.entity.QRCode">
+        SELECT * FROM tb_qr_code
+        WHERE first_level_dealer_id = 0
+        AND second_level_dealer_id = 0
+        AND distribute_status = 1
+        AND activate_status = 1
+        AND code BETWEEN #{startCode} AND #{endCode} AND sys_type=#{sysType}
+        ORDER BY code ASC
+    </select>
 </mapper>

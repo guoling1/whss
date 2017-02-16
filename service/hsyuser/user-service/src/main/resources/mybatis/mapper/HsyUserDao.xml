@@ -10,7 +10,7 @@
          (select PATH from app_cm_file acf where uuid=user.IDCARDF) IDCARDFURL,
          (select PATH from app_cm_file acf where uuid=user.IDCARDB) IDCARDBURL,
          (select PATH from app_cm_file acf where uuid=user.IDCARDH) IDCARDHURL,
-          user.ACCOUNTID ACCOUNTID,user.DEALERID DEALERID,user.PRODUCTID PRODUCTID,user.WEIXINRATE WEIXINRATE,user.ALIPAYRATE ALIPAYRATE,user.FASTRATE FASTRATE
+          user.ACCOUNTID ACCOUNTID,user.DEALERID DEALERID,user.PRODUCTID PRODUCTID,user.WEIXINRATE WEIXINRATE,user.ALIPAYRATE ALIPAYRATE,user.FASTRATE FASTRATE,user.PARENTID
         from app_au_user user
         where 1=1
           <if test="cellphone!=null and cellphone!=''">and CELLPHONE=#{cellphone}</if>
@@ -19,7 +19,10 @@
 
     <select id="findAppAuUserByID" parameterType="java.lang.Long" resultType="com.jkm.hsy.user.entity.AppAuUser">
         select
-        user.ID,user.globalID,user.CELLPHONE,user.PASSWORD,user.NICKNAME,user.REALNAME,user.STATUS,user.PROFILE,user.AUSTEP,user.IDCARD,user.IDCARDF,user.IDCARDB,user.IDCARDH,user.ACCOUNTID,user.DEALERID,user.PRODUCTID,user.WEIXINRATE,user.ALIPAYRATE,user.FASTRATE,user.CREATETIME,user.UPDATETIME
+        user.ID,user.globalID,user.CELLPHONE,user.PASSWORD,user.NICKNAME,user.REALNAME,user.STATUS,
+        (select PATH from app_cm_file acf where uuid=user.PROFILE) PROFILE,
+        user.AUSTEP,user.IDCARD,user.IDCARDF,user.IDCARDB,user.IDCARDH,user.CREATETIME,user.UPDATETIME,
+        user.ACCOUNTID ACCOUNTID,user.DEALERID DEALERID,user.PRODUCTID PRODUCTID,user.WEIXINRATE WEIXINRATE,user.ALIPAYRATE ALIPAYRATE,user.FASTRATE FASTRATE,user.PARENTID
         from app_au_user user
         where 1=1
         <if test="id!=null and id!=''">and ID=#{id}</if>
@@ -143,14 +146,48 @@
     <select id="findAppAuUserByIDAndParentSID" parameterType="com.jkm.hsy.user.entity.AppAuUser" resultType="com.jkm.hsy.user.entity.AppAuUser">
         select distinct
         user.ID,user.globalID,user.CELLPHONE,user.PASSWORD,user.NICKNAME,user.REALNAME,user.STATUS,user.PROFILE,user.AUSTEP,user.IDCARD,user.IDCARDF,user.IDCARDB,user.IDCARDH,user.ACCOUNTID,user.DEALERID,user.PRODUCTID,user.WEIXINRATE,user.ALIPAYRATE,user.FASTRATE,user.CREATETIME,user.UPDATETIME,
-        sur.ROLE ROLE,
-        (case when sur.ROLE=1 then '法人'
-        when sur.ROLE=2 then '店长'
-        when sur.ROLE=3 then '店员'
-        when sur.ROLE=4 then '财务' else '' end) ROLENAME,
+        (case when sur.ROLE is null then user.ROLETEMP
+					else sur.role end) ROLE,
+        (case when sur.ROLE=1||user.ROLETEMP=1 then '法人'
+        when sur.ROLE=2||user.ROLETEMP=2 then '店长'
+        when sur.ROLE=3||user.ROLETEMP=3 then '店员'
+        when sur.ROLE=4||user.ROLETEMP=4 then '财务' else '' end) ROLENAME,
         shop.id sid,shop.SHORTNAME shopShortName
         from app_au_user user left join app_biz_shop_user_role sur on user.id=sur.UID left join app_biz_shop shop on shop.id=sur.SID
-        where 1=1 and user.ID=#{id} and (shop.id in(select id from app_biz_shop where parentid=#{sid})||shop.id=#{sid})
+        where 1=1 and user.ID=#{id} and (shop.id in(select id from app_biz_shop where parentid=#{sid})||shop.id=#{sid}||shop.id is null)
+        order by UPDATETIME desc
+    </select>
+
+    <select id="findAppAuUserListByParentID" parameterType="com.jkm.hsy.user.entity.AppAuUser" resultType="com.jkm.hsy.user.entity.AppAuUser">
+        select distinct
+        user.ID,user.globalID,user.CELLPHONE,user.PASSWORD,user.NICKNAME,user.REALNAME,user.STATUS,user.PROFILE,user.AUSTEP,user.IDCARD,user.IDCARDF,user.IDCARDB,user.IDCARDH,user.ACCOUNTID,user.DEALERID,user.PRODUCTID,user.WEIXINRATE,user.ALIPAYRATE,user.FASTRATE,user.CREATETIME,user.UPDATETIME,
+        (case when sur.ROLE is null then user.ROLETEMP
+					else sur.role end) ROLE,
+        (case when sur.ROLE=1||user.ROLETEMP=1 then '法人'
+        when sur.ROLE=2||user.ROLETEMP=2 then '店长'
+        when sur.ROLE=3||user.ROLETEMP=3 then '店员'
+        when sur.ROLE=4||user.ROLETEMP=4 then '财务' else '' end) ROLENAME,
+        shop.id sid,shop.SHORTNAME shopShortName
+        from app_au_user user left join app_biz_shop_user_role sur on user.id=sur.UID left join app_biz_shop shop on shop.id=sur.SID
+        where 1=1 and user.PARENTID=#{parentID} and (shop.id in(select id from app_biz_shop where parentid=#{sid})||shop.id=#{sid}||shop.id is null)
+        order by UPDATETIME desc
+    </select>
+
+    <delete id="deleteAppBizShopUserRole" parameterType="java.lang.Long">
+        delete from app_biz_shop_user_role where uid=#{uid}
+    </delete>
+
+    <select id="findAppAuUserWithRoleByID" parameterType="com.jkm.hsy.user.entity.AppAuUser" resultType="com.jkm.hsy.user.entity.AppAuUser">
+        select distinct
+        user.ID,user.globalID,user.CELLPHONE,user.PASSWORD,user.NICKNAME,user.REALNAME,user.STATUS,user.PROFILE,user.AUSTEP,user.IDCARD,user.IDCARDF,user.IDCARDB,user.IDCARDH,user.ACCOUNTID,user.DEALERID,user.PRODUCTID,user.WEIXINRATE,user.ALIPAYRATE,user.FASTRATE,user.ROLETEMP,user.CREATETIME,user.UPDATETIME,
+        (case when sur.ROLE is null then user.ROLETEMP
+        else sur.role end) ROLE,
+        (case when sur.ROLE=1||user.ROLETEMP=1 then '法人'
+        when sur.ROLE=2||user.ROLETEMP=2 then '店长'
+        when sur.ROLE=3||user.ROLETEMP=3 then '店员'
+        when sur.ROLE=4||user.ROLETEMP=4 then '财务' else '' end) ROLENAME
+        from app_au_user user left join app_biz_shop_user_role sur on user.id=sur.UID
+        where 1=1 and user.ID=#{id}
         order by UPDATETIME desc
     </select>
 
