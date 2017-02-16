@@ -1,11 +1,14 @@
 package com.jkm.hsy.user.service.impl;
 
+import com.google.common.base.Optional;
 import com.google.gson.*;
 import com.jkm.base.common.enums.EnumGlobalIDPro;
 import com.jkm.base.common.enums.EnumGlobalIDType;
 import com.jkm.base.common.util.GlobalID;
 import com.jkm.base.common.util.ValidateUtils;
 import com.jkm.base.sms.service.SmsSendMessageService;
+import com.jkm.hss.account.entity.Account;
+import com.jkm.hss.account.sevice.AccountService;
 import com.jkm.hss.notifier.dao.MessageTemplateDao;
 import com.jkm.hss.notifier.dao.SendMessageRecordDao;
 import com.jkm.hss.notifier.entity.SendMessageRecord;
@@ -42,6 +45,8 @@ public class HsyUserServiceImpl implements HsyUserService {
     private MessageTemplateDao messageTemplateDao;
     @Autowired
     private SendMessageRecordDao sendMessageRecordDao;
+    @Autowired
+    private AccountService accountService;
 
     /**HSY001001 注册用户*/
     public String insertHsyUser(String dataParam,AppParam appParam)throws ApiHandleException {
@@ -744,7 +749,7 @@ public class HsyUserServiceImpl implements HsyUserService {
         return "";
     }
 
-    /**HSY001028 查找*/
+    /**HSY001028 查找登录用户的信息*/
     public String findLoginInfo(String dataParam,AppParam appParam)throws ApiHandleException {
         Gson gson=new GsonBuilder().setDateFormat(AppConstant.DATE_FORMAT).create();
         /**参数转化*/
@@ -798,10 +803,82 @@ public class HsyUserServiceImpl implements HsyUserService {
             map.put("available", account.getAvailable().toPlainString());
             map.put("dueSettleAmount", account.getDueSettleAmount().toPlainString());
             map.put("frozenAmount", account.getFrozenAmount().toPlainString());
+        }else{
+            map.put("totalAmount", "");
+            map.put("available", "");
+            map.put("dueSettleAmount", "");
+            map.put("frozenAmount", "");
         }
         map.put("appAuUser",appAuUserFind);
         map.put("appBizShop",appBizShop);
+        return gson.toJson(map);
+    }
 
+    /**HSY001029 查找登录用户的细节*/
+    public String findLoginInfoShort(String dataParam,AppParam appParam)throws ApiHandleException{
+        Gson gson=new GsonBuilder().setDateFormat(AppConstant.DATE_FORMAT).create();
+        /**参数转化*/
+        AppAuUser appAuUser=null;
+        try{
+            appAuUser=gson.fromJson(dataParam, AppAuUser.class);
+        } catch(Exception e){
+            throw new ApiHandleException(ResultCode.PARAM_TRANS_FAIL);
+        }
+
+        /**参数验证*/
+        if(!(appAuUser.getId()!=null&&!appAuUser.getId().equals("")))
+            throw new ApiHandleException(ResultCode.PARAM_LACK,"查询用户ID");
+
+        /**查询用户*/
+        List<AppAuUser> list = hsyUserDao.findAppAuUserByID(appAuUser.getId());
+        if(!(list!=null&&list.size()!=0))
+            throw new ApiHandleException(ResultCode.USER_CAN_NOT_BE_FOUND);
+
+        AppAuUser appAuUserFind=list.get(0);
+        AppBizShop appBizShop=new AppBizShop();
+        appBizShop.setUid(appAuUserFind.getId());
+        if(appAuUserFind.getParentID()==null||(appAuUserFind.getParentID()!=null&&appAuUserFind.getParentID()!=0L))
+            appBizShop.setType(AppConstant.ROLE_TYPE_PRIMARY);
+        List<AppBizShop> shopList=hsyShopDao.findPrimaryAppBizShopByUserID(appBizShop);
+        if(shopList!=null&&shopList.size()!=0)
+            appBizShop=shopList.get(0);
+        if(appBizShop.getCheckErrorInfo()==null)
+            appBizShop.setCheckErrorInfo("");
+        gson = new GsonBuilder().setExclusionStrategies(new ExclusionStrategy() {
+            public boolean shouldSkipField(FieldAttributes f) {
+                return f.getName().contains("password");
+            }
+            public boolean shouldSkipClass(Class<?> aClass) {
+                return false;
+            }
+        }).registerTypeAdapter(Date.class, new JsonSerializer<Date>() {
+            public JsonElement serialize(Date date, Type typeOfT, JsonSerializationContext context) throws JsonParseException {
+                return new JsonPrimitive(date.getTime());
+            }
+        }).registerTypeAdapter(Date.class, new JsonDeserializer<Date>() {
+            public Date deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+                return new java.util.Date(json.getAsJsonPrimitive().getAsLong());
+            }
+        }).create();
+        final Optional<Account> accountOptional = this.accountService.getById(appAuUserFind.getAccountID());
+        Map map=new HashMap();
+        if (accountOptional.isPresent()) {
+            final Account account = accountOptional.get();
+            map.put("totalAmount", account.getTotalAmount().toPlainString());
+            map.put("available", account.getAvailable().toPlainString());
+            map.put("dueSettleAmount", account.getDueSettleAmount().toPlainString());
+            map.put("frozenAmount", account.getFrozenAmount().toPlainString());
+        }else{
+            map.put("totalAmount", "");
+            map.put("available", "");
+            map.put("dueSettleAmount", "");
+            map.put("frozenAmount", "");
+        }
+        AppAuUser user=new AppAuUser();
+        user.setStatus(appAuUserFind.getStatus());
+        user.setAccountID(appAuUserFind.getAccountID());
+        map.put("appAuUser",user);
+//        map.put("appBizShop",appBizShop);
         return gson.toJson(map);
     }
 
