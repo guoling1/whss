@@ -40,7 +40,7 @@
     <select id="selectByParam" resultType="com.jkm.hss.account.entity.AccountFlow">
          SELECT * FROM tb_account_flow WHERE account_id = #{accountId}
             <if test="flowSn != null and flowSn != ''">
-                 AND order_no = #{orderNo}
+                 AND order_no = #{flowSn}
             </if>
             <if test="type != null and type != 0">
                 AND type = #{type}
@@ -53,7 +53,7 @@
     <select id="selectCountByParam" resultType="java.lang.Long">
         SELECT COUNT(*) FROM tb_account_flow WHERE account_id = #{accountId}
         <if test="flowSn != null and flowSn != ''">
-            AND order_no = #{orderNo}
+            AND order_no = #{flowSn}
         </if>
         <if test="type != null and type != 0">
             AND type = #{type}

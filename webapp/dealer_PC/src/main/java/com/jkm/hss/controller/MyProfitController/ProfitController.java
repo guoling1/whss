@@ -76,7 +76,7 @@ public class ProfitController extends BaseController{
                     final Order order = map.get(input.getOrderNo());
 
                     ProfitDetailsSelectResponse response = new ProfitDetailsSelectResponse();
-                    response.setSplitOrderNo(input.getSplitOrderNo());
+                    response.setSplitOrderNo(input.getSplitSn());
                     response.setBusinessType(input.getBusinessType());
                     response.setSplitCreateTime(input.getCreateTime());
                     response.setOrderNo(input.getOrderNo());
