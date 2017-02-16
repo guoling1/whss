@@ -860,7 +860,7 @@ public class AdminController extends BaseController {
         if(distributeQRCodeRecords.size()<=0){
             return CommonResponse.simpleResponse(-1, "二维码数量不足");
         }
-
+        List<DistributeQRCodeRecordResponse> distributeQRCodeRecordResponseList = new ArrayList<DistributeQRCodeRecordResponse>();
         for(int i=0;i<distributeQRCodeRecords.size();i++){
             DistributeQRCodeRecordResponse distributeQRCodeRecordResponse = new DistributeQRCodeRecordResponse();
             distributeQRCodeRecordResponse.setDealerName(dealerOptional.get().getProxyName());
@@ -870,8 +870,9 @@ public class AdminController extends BaseController {
             distributeQRCodeRecordResponse.setCount(distributeQRCodeRecords.get(i).getCount());
             distributeQRCodeRecordResponse.setStartCode(distributeQRCodeRecords.get(i).getStartCode());
             distributeQRCodeRecordResponse.setEndCode(distributeQRCodeRecords.get(i).getEndCode());
+            distributeQRCodeRecordResponseList.add(distributeQRCodeRecordResponse);
         }
-        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "分配成功", distributeQRCodeRecords);
+        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "分配成功", distributeQRCodeRecordResponseList);
     }
 
     /**
