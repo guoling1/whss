@@ -809,14 +809,22 @@ public class HsyUserServiceImpl implements HsyUserService {
                 return new java.util.Date(json.getAsJsonPrimitive().getAsLong());
             }
         }).create();
-        final Optional<Account> accountOptional = this.accountService.getById(appAuUserFind.getAccountID());
-        Map map=new HashMap();
-        if (accountOptional.isPresent()) {
-            final Account account = accountOptional.get();
-            map.put("totalAmount", account.getTotalAmount().toPlainString());
-            map.put("available", account.getAvailable().toPlainString());
-            map.put("dueSettleAmount", account.getDueSettleAmount().toPlainString());
-            map.put("frozenAmount", account.getFrozenAmount().toPlainString());
+
+        Map map = new HashMap();
+        if(appAuUserFind.getAccountID()!=null) {
+            final Optional<Account> accountOptional = this.accountService.getById(appAuUserFind.getAccountID().longValue());
+            if (accountOptional.isPresent()) {
+                final Account account = accountOptional.get();
+                map.put("totalAmount", account.getTotalAmount().toPlainString());
+                map.put("available", account.getAvailable().toPlainString());
+                map.put("dueSettleAmount", account.getDueSettleAmount().toPlainString());
+                map.put("frozenAmount", account.getFrozenAmount().toPlainString());
+            } else {
+                map.put("totalAmount", "");
+                map.put("available", "");
+                map.put("dueSettleAmount", "");
+                map.put("frozenAmount", "");
+            }
         }else{
             map.put("totalAmount", "");
             map.put("available", "");
@@ -874,14 +882,21 @@ public class HsyUserServiceImpl implements HsyUserService {
                 return new java.util.Date(json.getAsJsonPrimitive().getAsLong());
             }
         }).create();
-        final Optional<Account> accountOptional = this.accountService.getById(appAuUserFind.getAccountID());
-        Map map=new HashMap();
-        if (accountOptional.isPresent()) {
-            final Account account = accountOptional.get();
-            map.put("totalAmount", account.getTotalAmount().toPlainString());
-            map.put("available", account.getAvailable().toPlainString());
-            map.put("dueSettleAmount", account.getDueSettleAmount().toPlainString());
-            map.put("frozenAmount", account.getFrozenAmount().toPlainString());
+        Map map = new HashMap();
+        if(appAuUserFind.getAccountID()!=null) {
+            final Optional<Account> accountOptional = this.accountService.getById(appAuUserFind.getAccountID().longValue());
+            if (accountOptional.isPresent()) {
+                final Account account = accountOptional.get();
+                map.put("totalAmount", account.getTotalAmount().toPlainString());
+                map.put("available", account.getAvailable().toPlainString());
+                map.put("dueSettleAmount", account.getDueSettleAmount().toPlainString());
+                map.put("frozenAmount", account.getFrozenAmount().toPlainString());
+            } else {
+                map.put("totalAmount", "");
+                map.put("available", "");
+                map.put("dueSettleAmount", "");
+                map.put("frozenAmount", "");
+            }
         }else{
             map.put("totalAmount", "");
             map.put("available", "");
