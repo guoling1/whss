@@ -41,10 +41,10 @@ Vue.use(VueResource);
 // 或者，只是一个组件配置对象。
 // 我们晚点在讨论嵌套路由。
 const routes = [
-  {path: '/', redirect: '/login'},
-  {path: '/login', name: "login", component: login},
+  {path: '/daili/', redirect: '/daili/login'},
+  {path: '/daili/login', name: "login", component: login},
   {
-    path: '/app', redirect: '/app/home', component: index,
+    path: '/daili/app', redirect: '/daili/app/home', component: index,
     children: [
       {path: 'development', name: "development", component: development},
       {path: 'home', name: "home", component: home},
@@ -87,7 +87,7 @@ Vue.http.interceptors.push((request, next) => {
         window.URL.revokeObjectURL(url);
         document.body.removeChild(links);
       } else if (body.code == -2) {
-        router.push('/login');
+        router.push('/daili/login');
       } else if (body.code != 1) {
         response.status = 500;
         response.statusMessage = body.message || '系统异常';

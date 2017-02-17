@@ -158,7 +158,7 @@
                 message: '提现申请成功',
                 type: 'success'
               });
-              this.$router.push('/app/balance_withdrawal');
+              this.$router.push('/daili/app/balance_withdrawal');
             }, err => {
               this.$message({
                 showClose: true,

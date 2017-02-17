@@ -224,7 +224,7 @@
               message: '保存成功',
               type: 'success'
             });
-            this.$router.push('/app/dealer_list');
+            this.$router.push('/daili/app/dealer_list');
           });
         } else {
           this.$message({
