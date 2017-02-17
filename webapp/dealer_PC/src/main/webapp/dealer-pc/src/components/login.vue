@@ -26,7 +26,8 @@
         </div>
         <!-- /.col -->
         <div class="col-xs-4">
-          <button type="button" class="btn btn-primary btn-block btn-flat" @click="login">登录</button>
+          <el-button type="primary" class="btn btn-primary btn-block btn-flat" @click="login" :loading="isLogin">登录
+          </el-button>
         </div>
         <!-- /.col -->
       </div>
@@ -43,7 +44,8 @@
       return {
         loginName: '',
         pwd: '',
-        remember: false
+        remember: false,
+        isLogin: false
       }
     },
     beforeRouteEnter(to, from, next) {
@@ -58,6 +60,7 @@
     },
     methods: {
       login: function () {
+        this.isLogin = true;
         this.$http.post('/daili/login/pc', {
           loginName: this.loginName,
           pwd: this.pwd
@@ -70,7 +73,9 @@
           }
           // 跳转到 home 页
           this.$router.push('/daili/app/home');
+          this.isLogin = false;
         }, err => {
+          this.isLogin = false;
           this.$message({
             showClose: true,
             message: err.data.msg,
