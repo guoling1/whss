@@ -24,29 +24,31 @@
                   <el-popover placement="top" title="提示" width="200" trigger="focus">
                     <span>最小可提现金额：1.00 元 <br> 最大可提现金额：{{accountInfo.available}} 元</span>
                     <el-input slot="reference" type="number" v-model="form.amount" placeholder="保留俩位小数"
-                              @change="counter">
+                              @change="counter" size="small">
                       <template slot="append">元</template>
                     </el-input>
                   </el-popover>
                 </el-form-item>
                 <el-form-item label="到账金额">
-                  <el-input v-model="calculate.amount" disabled placeholder="请先输入提现金额">
+                  <el-input v-model="calculate.amount" size="small" disabled placeholder="请先输入提现金额">
                     <template slot="append">元</template>
                   </el-input>
                 </el-form-item>
                 <el-form-item label="手续费">
                   {{accountInfo.fee}} 元
                 </el-form-item>
-                <el-form-item label="发送验证码" prop="code">
+                <el-form-item label="验证码" prop="code">
                   <el-col :span="19">
-                    <el-input type="text" v-model="form.code"></el-input>
+                    <el-input type="text" v-model="form.code" size="small"></el-input>
                   </el-col>
                   <el-col class="line-center" :span="5">
                     <el-button type="text" :disabled="!canSendCode" @click="sendCode">{{sendCodeText}}</el-button>
                   </el-col>
                 </el-form-item>
                 <el-form-item>
-                  <el-button type="primary" @click="onSubmit">立即提现</el-button>
+                  <el-button type="primary" size="small" @click="onSubmit" :loading="isSubmit" :disabled="isSubmit">
+                    立即提现
+                  </el-button>
                 </el-form-item>
               </el-form>
             </div>
@@ -98,7 +100,8 @@
         },
         timerNum: 60,
         canSendCode: true,
-        sendCodeText: '发送验证码'
+        sendCodeText: '发送验证码',
+        isSubmit: false
       }
     },
     methods: {
@@ -136,27 +139,32 @@
         }
       },
       onSubmit: function () {
-        this.$refs['form'].validate((valid) => {
-          if (valid) {
-            this.$http.post('/daili/account/withdraw', this.form).then(res => {
-              this.$message({
-                showClose: true,
-                message: '提现申请成功',
-                type: 'success'
-              });
-              this.$router.push('/daili/app/balance_withdrawal');
-            }, err => {
-              this.$message({
-                showClose: true,
-                message: err.data.msg,
-                type: 'error'
-              });
-            })
-          } else {
-            console.log('error submit!!');
-            return false;
-          }
-        });
+        if (!this.isSubmit) {
+          this.$refs['form'].validate((valid) => {
+            if (valid) {
+              this.isSubmit = true;
+              this.$http.post('/daili/account/withdraw', this.form).then(res => {
+                this.$message({
+                  showClose: true,
+                  message: '提现申请成功',
+                  type: 'success'
+                });
+                this.$router.push('/daili/app/balance_withdrawal');
+                this.isSubmit = false;
+              }, err => {
+                this.isSubmit = false;
+                this.$message({
+                  showClose: true,
+                  message: err.data.msg,
+                  type: 'error'
+                });
+              })
+            } else {
+              console.log('error submit!!');
+              return false;
+            }
+          });
+        }
       }
     }
   }

@@ -24,9 +24,11 @@
               </div>
             </div>
             <div class="box-body">
-              <el-table :data="tableData" border>
+              <el-table :data="tableData" border
+                        v-loading="tableLoading"
+                        element-loading-text="数据加载中">
                 <el-table-column type="index" label="序号"></el-table-column>
-                <el-table-column label="分配时间" sortable>
+                <el-table-column label="分配时间">
                   <template scope="scope">
                     {{ scope.row.distributeTime | datetime }}
                   </template>
@@ -74,6 +76,7 @@
         pageSize: 20,
         pageNo: 1,
         tableData: [],
+        tableLoading: false,
         markCode: '',
         name: ''
       }
@@ -86,15 +89,18 @@
         this.getData();
       },
       getData: function () {
+        this.tableLoading = true;
         this.$http.post('/daili/qrCode/distributeRecord', {
           pageSize: this.pageSize,
           pageNo: this.pageNo,
           markCode: this.markCode,
           name: this.name
         }).then(res => {
+          this.tableLoading = false;
           this.total = res.data.count;
           this.tableData = res.data.records;
         }, err => {
+          this.tableLoading = false;
           this.$message({
             showClose: true,
             message: err.data.msg,

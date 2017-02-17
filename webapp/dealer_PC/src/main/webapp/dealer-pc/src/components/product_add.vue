@@ -73,19 +73,19 @@
                 </el-table-column>
               </el-table>
             </div>
-            <div class="box-body">
-              <label class="form-label">代理商推广码&推广链接</label>
-              <br>
-              <el-switch v-model="inviteBoolean" @change="switchInvite"
-                         on-text="开启" on-color="#13ce66"
-                         off-text="关闭" off-color="#ff4949">
-              </el-switch>
-              <div class="inviteText" v-show="inviteBoolean">
-                推广码：{{inviteCode}}
-                <br>
-                推广链接：https://{{product}}.qianbaojiajia.com/reg?invest={{inviteCode}}
-              </div>
-            </div>
+            <!--<div class="box-body">-->
+              <!--<label class="form-label">代理商推广码&推广链接</label>-->
+              <!--<br>-->
+              <!--<el-switch v-model="inviteBoolean" @change="switchInvite"-->
+                         <!--on-text="开启" on-color="#13ce66"-->
+                         <!--off-text="关闭" off-color="#ff4949">-->
+              <!--</el-switch>-->
+              <!--<div class="inviteText" v-show="inviteBoolean">-->
+                <!--推广码：{{inviteCode}}-->
+                <!--<br>-->
+                <!--推广链接：https://{{product}}.qianbaojiajia.com/reg?invest={{inviteCode}}-->
+              <!--</div>-->
+            <!--</div>-->
             <div class="box-body">
               <el-button type="primary" @click="onSubmit">保存产品设置</el-button>
             </div>

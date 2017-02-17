@@ -40,9 +40,11 @@
               </div>
             </div>
             <div class="box-body">
-              <el-table :data="tableData" border>
+              <el-table :data="tableData" border
+                        v-loading="tableLoading"
+                        element-loading-text="数据加载中">
                 <el-table-column type="index" label="序号"></el-table-column>
-                <el-table-column prop="splitOrderNo" label="分润流水号" sortable></el-table-column>
+                <el-table-column prop="splitOrderNo" label="分润流水号"></el-table-column>
                 <el-table-column prop="businessType" label="业务类型">
                   <template scope="scope">
                     {{ scope.row.businessType | filter_businessType }}
@@ -53,7 +55,7 @@
                     {{ scope.row.splitCreateTime | datetime }}
                   </template>
                 </el-table-column>
-                <el-table-column prop="orderNo" label="交易订单号" sortable></el-table-column>
+                <el-table-column prop="orderNo" label="交易订单号"></el-table-column>
                 <el-table-column prop="splitSettlePeriod" label="分润结算周期"></el-table-column>
                 <el-table-column label="结算时间">
                   <template scope="scope">
@@ -95,6 +97,7 @@
         pageSize: 20,
         pageNo: 1,
         tableData: [],
+        tableLoading: false,
         orderNo: '',
         businessType: '',
         item_businessType: [
@@ -160,6 +163,7 @@
         this.getData();
       },
       getData: function () {
+        this.tableLoading = true;
         this.$http.post('/daili/profit/details', {
           pageSize: this.pageSize,
           pageNo: this.pageNo,
@@ -168,9 +172,11 @@
           beginDate: this.beginDate,
           endDate: this.endDate
         }).then(res => {
+          this.tableLoading = false;
           this.total = res.data.count;
           this.tableData = res.data.records;
         }, err => {
+          this.tableLoading = false;
           this.$message({
             showClose: true,
             message: err.data.msg,

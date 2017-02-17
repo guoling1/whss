@@ -2,10 +2,10 @@
   <div class="content-wrapper">
     <!-- Main content -->
     <section class="content">
-      <h4 class="text-center">
+      <h4 class="text-center top">
         您好，{{dealerInfo}}
       </h4>
-      <h2 class="text-center">
+      <h2 class="text-center bottom">
         welcome
       </h2>
     </section>
@@ -29,3 +29,12 @@
     methods: {}
   }
 </script>
+<style scoped lang="less">
+  .top {
+    margin-top: 200px;
+  }
+
+  .bottom {
+    margin-bottom: 200px;
+  }
+</style>

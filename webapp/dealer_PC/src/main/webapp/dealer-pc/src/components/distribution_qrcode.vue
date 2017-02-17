@@ -33,7 +33,7 @@
                 <el-form-item label="代理名称" v-show="label.isSelf">
                   <el-popover placement="top" title="提示" width="200" trigger="hover">
                     <span>匹配结果中不可选择的代理商表示未开通该产品</span>
-                    <el-select slot="reference" v-model="form.dealerId" filterable remote style="width:100%"
+                    <el-select slot="reference" v-model="form.dealerId" size="small" filterable remote style="width:100%"
                                @change="selectDealer"
                                placeholder="请输入代理商名称或手机号"
                                :remote-method="remoteMethod"
@@ -65,16 +65,16 @@
                   </el-radio-group>
                 </el-form-item>
                 <el-form-item label="起始码" v-show="form.distributeType==1">
-                  <el-input v-model="form.startCode"></el-input>
+                  <el-input v-model="form.startCode" size="small"></el-input>
                 </el-form-item>
                 <el-form-item label="终止码" v-show="form.distributeType==1">
-                  <el-input v-model="form.endCode"></el-input>
+                  <el-input v-model="form.endCode" size="small"></el-input>
                 </el-form-item>
                 <el-form-item label="分配数量" v-show="form.distributeType==2">
-                  <el-input v-model="form.count"></el-input>
+                  <el-input v-model="form.count" size="small"></el-input>
                 </el-form-item>
                 <el-form-item>
-                  <el-button type="primary" @click="onSubmit">分配二维码</el-button>
+                  <el-button type="primary" size="small" @click="onSubmit">分配二维码</el-button>
                 </el-form-item>
               </el-form>
             </div>
