@@ -13,4 +13,19 @@ public class ProfitDetailsRequest {
      */
     private int id;
 
+    /**
+     * 页数
+     */
+    private Integer pageNo;
+
+    /**
+     * 每页条数
+     */
+    private Integer pageSize;
+
+    /**
+     * 条数
+     */
+    private Integer offset;
+
 }

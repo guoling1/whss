@@ -1,7 +1,7 @@
 package com.jkm.hss.bill.dao;
 
 
-import com.jkm.hss.bill.entity.JkmProfitDetailsResponse;
+import com.jkm.hss.bill.entity.AccountDetailsResponse;
 import com.jkm.hss.bill.entity.JkmProfitResponse;
 import com.jkm.hss.merchant.helper.request.JkmProfitRequest;
 import com.jkm.hss.merchant.helper.request.ProfitDetailsRequest;
@@ -30,9 +30,16 @@ public interface ShareProfitDao {
     int selectAccountListCount(JkmProfitRequest req);
 
     /**
-     * 分润明细
+     * 金开门公司账户明细
      * @param req
      * @return
      */
-    List<JkmProfitDetailsResponse> selectProfitDetails(ProfitDetailsRequest req);
+    List<AccountDetailsResponse> selectAccountDetails(ProfitDetailsRequest req);
+
+    /**
+     * 公司账户明细总数
+     * @param req
+     * @return
+     */
+    int selectAccountDetailsCount(ProfitDetailsRequest req);
 }
