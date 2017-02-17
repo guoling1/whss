@@ -24,13 +24,13 @@
           </ul>
           <!--表格-->
           <el-table v-loading.body="loading" style="font-size: 12px;margin:15px 0" :data="records" border>
-            <el-table-column prop="splitSn" label="流水号"></el-table-column>
-            <el-table-column prop="splitDate" label="时间"></el-table-column>
-            <el-table-column prop="dealerNo" label="发生前余额（元）"></el-table-column>
-            <el-table-column prop="dealerName" label="收入金额（元）"></el-table-column>
-            <el-table-column prop="dealerName" label="支出金额（元）"></el-table-column>
-            <el-table-column prop="dealerName" label="发生后余额（元）"></el-table-column>
-            <el-table-column prop="businessType" label="业务类型"></el-table-column>
+            <el-table-column prop="orderNo" label="流水号"></el-table-column>
+            <el-table-column prop="changeTime" label="时间"></el-table-column>
+            <el-table-column prop="beforeAmount" label="发生前余额（元）"></el-table-column>
+            <el-table-column prop="incomeAmount" label="收入金额（元）"></el-table-column>
+            <el-table-column prop="outAmount" label="支出金额（元）"></el-table-column>
+            <el-table-column prop="afterAmount" label="发生后余额（元）"></el-table-column>
+            <el-table-column prop="appId" label="业务类型"></el-table-column>
             <el-table-column prop="remark" label="备注"></el-table-column>
           </el-table>
           <!--分页-->
@@ -92,14 +92,14 @@
       }
     },
     created: function () {
-      /*this.$data.query.id = this.$route.query.id;
-      this.$http.post('/admin/queryJkmProfit/profitDetails', this.$data.query)
+      this.$data.query.id = this.$route.query.id;
+      this.$http.post('/admin/queryJkmProfit/accountDetails', this.$data.query)
         .then(function (res) {
           this.$data.records = res.data.records;
           this.$data.count = res.data.count;
           this.$data.total = res.data.totalPage;
           this.$data.loading = false;
-          /!*var changeTime = function (val) {
+          /*var changeTime = function (val) {
             if (val == '' || val == null) {
               return ''
             } else {
@@ -120,23 +120,21 @@
           }
           for (let i = 0; i < this.$data.records.length; i++) {
             this.$data.records[i].tradeDate = changeTime(this.$data.records[i].tradeDate)
-          }*!/
+          }*/
         }, function (err) {
           this.$data.loading = false;
-          this.$store.commit('MESSAGE_ACCORD_SHOW', {
-            text: err.statusMessage
+          this.$message({
+            showClose: true,
+            message: err.statusMessage,
+            type: 'error'
           })
-        })*/
+        })
     },
     methods: {
       search(){
-
-      },
-      //当前页改变时
-      handleCurrentChange(val) {
-        this.$data.query.pageNo = val;
+        this.$data.query.pageNo = 1;
         this.$data.loading = true;
-        this.$http.post('/admin/settle/list', this.$data.query)
+        this.$http.post('/admin/queryJkmProfit/accountDetails', this.$data.query)
           .then(function (res) {
             this.$data.records = res.data.records;
             this.$data.count = res.data.count;
@@ -166,8 +164,51 @@
             }
           }, function (err) {
             this.$data.loading = false;
-            this.$store.commit('MESSAGE_ACCORD_SHOW', {
-              text: err.statusMessage
+            this.$message({
+              showClose: true,
+              message: err.statusMessage,
+              type: 'error'
+            })
+          })
+      },
+      //当前页改变时
+      handleCurrentChange(val) {
+        this.$data.query.pageNo = val;
+        this.$data.loading = true;
+        this.$http.post('/admin/queryJkmProfit/accountDetails', this.$data.query)
+          .then(function (res) {
+            this.$data.records = res.data.records;
+            this.$data.count = res.data.count;
+            this.$data.total = res.data.totalPage;
+            this.$data.loading = false;
+            var changeTime = function (val) {
+              if (val == '' || val == null) {
+                return ''
+              } else {
+                val = new Date(val)
+                var year = val.getFullYear();
+                var month = val.getMonth() + 1;
+                var date = val.getDate();
+
+                function tod(a) {
+                  if (a < 10) {
+                    a = "0" + a
+                  }
+                  return a;
+                }
+
+                return year + "-" + tod(month) + "-" + tod(date);
+              }
+            }
+            for (let i = 0; i < this.$data.records.length; i++) {
+              this.$data.records[i].tradeDate = changeTime(this.$data.records[i].tradeDate)
+            }
+          }, function (err) {
+            this.$data.loading = false;
+            this.$message({
+              showClose: true,
+              message: err.statusMessage,
+              type: 'error'
             })
           })
       },
@@ -196,9 +237,6 @@
   }
 </script>
 <style scoped lang="less">
-  body {
-    background-color: #ff0000;
-  }
   ul{
     padding: 0;
   }
