@@ -259,7 +259,7 @@ public class DealerServiceImpl implements DealerService {
         final BigDecimal totalFee = tradeAmount;
         final Map<String, Triple<Long, BigDecimal, BigDecimal>> map = new HashMap<>();
         //判断该经销商属于哪个代理, 若不属于代理, 则分润进入公司资金帐户
-        if (appAuUser.getDealerID() == 0){
+        if (appAuUser.getDealerID() == 0 || appAuUser.getDealerID() == null){
             final List<ProductChannelDetail> list = this.productChannelDetailService.selectByChannelTypeSign(channelSign);
             final ProductChannelDetail productChannelDetail = list.get(0);
             final Optional<BasicChannel> channelOptional =  this.basicChannelService.selectByChannelTypeSign(channelSign);
