@@ -76,7 +76,7 @@
       </a>
 
       <div class="group touch_gr" id="unbundling">
-        <div class="logo upgrade"></div>
+        <div class="logo unbundling"></div>
         <div class="text">解绑微信</div>
       </div>
       <%--<div class="group touch_gr">--%>

@@ -41,7 +41,7 @@ Vue.use(VueResource);
 // 或者，只是一个组件配置对象。
 // 我们晚点在讨论嵌套路由。
 const routes = [
-  {path: '/daili/', redirect: '/daili/login'},
+  {path: '/daili', redirect: '/daili/login'},
   {path: '/daili/login', name: "login", component: login},
   {
     path: '/daili/app', redirect: '/daili/app/home', component: index,
