@@ -102,7 +102,7 @@
         rules: {
           amount: [
             {required: true, type: 'number', message: '请输入提现金额', trigger: 'blur'},
-            {pattern: /^[0-9]{1,9}([.][0-9]{1,2})?$/, message: '请输入正确的提现金额', trigger: 'blur'},
+            {pattern: /^[0-9]{1,9}([.][0-9]{1,2})?$/, message: '请输入正确的提现金额,保留俩位小数', trigger: 'blur'},
             {validator: validateAmount, trigger: 'blur'}
           ],
           code: [

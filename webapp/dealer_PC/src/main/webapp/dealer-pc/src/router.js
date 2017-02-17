@@ -87,6 +87,10 @@ Vue.http.interceptors.push((request, next) => {
         window.URL.revokeObjectURL(url);
         document.body.removeChild(links);
       } else if (body.code == -2) {
+        response.status = 500;
+        response.statusMessage = body.message || '用户未登录';
+        response.statusText = 'Internal Server Error';
+        response.ok = false;
         router.push('/daili/login');
       } else if (body.code != 1) {
         response.status = 500;

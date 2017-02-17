@@ -155,9 +155,17 @@ public class AccountController extends BaseController{
         log.info(super.getDealerId() + ">>>>>申请提现， 提现金额：" + withdrawRequest.getAmount());
         try{
             final Dealer dealer = this.getDealer().get();
+
+            if (dealer.getBankName() == null || dealer.getBankName().equals("")){
+                return CommonResponse.simpleResponse(-1, "资料不全，请联系上级添加开户行身份证号后提现");
+            }
+            if (dealer.getIdCard() == null || dealer.getIdCard().equals("")){
+                return CommonResponse.simpleResponse(-1, "资料不全，请联系上级添加开户行身份证号后提现");
+            }
+
             final String mobile = DealerSupport.decryptMobile(dealer.getId(), dealer.getBankReserveMobile());
 
-            final Pair<Integer, String> pair = smsAuthService.checkVerifyCode(mobile, withdrawRequest.getCode(), EnumVerificationCodeType.WITHDRAW_DEALER);
+           final Pair<Integer, String> pair = smsAuthService.checkVerifyCode(mobile, withdrawRequest.getCode(), EnumVerificationCodeType.WITHDRAW_DEALER);
 
             if (1 != pair.getLeft()) {
                 return CommonResponse.simpleResponse(-1, pair.getRight());
