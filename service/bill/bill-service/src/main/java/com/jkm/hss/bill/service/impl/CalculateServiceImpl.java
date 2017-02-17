@@ -101,7 +101,7 @@ public class CalculateServiceImpl implements CalculateService {
     @Override
     public BigDecimal getMerchantWithdrawPoundage(EnumProductType type,final long merchantId, final int channelSign) {
 
-        if (type.getId() == EnumProductType.HSS.getId()){
+        if (type.getId().equals(EnumProductType.HSS.getId())){
             //HSS
             final MerchantInfo merchant = this.merchantInfoService.selectById(merchantId).get();
             if (0 == merchant.getDealerId()) {
