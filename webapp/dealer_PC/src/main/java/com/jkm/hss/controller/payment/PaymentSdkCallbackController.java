@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
  */
 @Slf4j
 @Controller
-@RequestMapping(value = "/callback")
+@RequestMapping(value = "/daili/callback")
 public class PaymentSdkCallbackController extends BaseController {
 
     @Autowired
