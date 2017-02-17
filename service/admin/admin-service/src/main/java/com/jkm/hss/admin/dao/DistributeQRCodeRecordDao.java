@@ -84,4 +84,18 @@ public interface DistributeQRCodeRecordDao {
      * @return
      */
     List<DistributeQRCodeRecord> selectBossDistributeRecordsByContions(DistributeQrCodeRequest distributeQrCodeRequest);
+    /**
+     * boss后台查询分配二维码记录条数
+     *
+     * @param distributeQrCodeRequest
+     * @return
+     */
+    int selectBossDistributeCountByContionsOfJKM(DistributeQrCodeRequest distributeQrCodeRequest);
+    /**
+     * boss后台二维码分配记录
+     *
+     * @param distributeQrCodeRequest
+     * @return
+     */
+    List<DistributeQRCodeRecord> selectBossDistributeRecordsByContionsOfJKM(DistributeQrCodeRequest distributeQrCodeRequest);
 }

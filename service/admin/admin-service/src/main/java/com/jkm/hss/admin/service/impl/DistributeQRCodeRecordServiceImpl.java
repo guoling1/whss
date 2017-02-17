@@ -122,5 +122,27 @@ public class DistributeQRCodeRecordServiceImpl implements DistributeQRCodeRecord
         return this.distributeQRCodeRecordDao.selectBossDistributeRecordsByContions(distributeQrCodeRequest);
     }
 
+    /**
+     * boss后台查询分配二维码记录条数
+     *
+     * @param distributeQrCodeRequest
+     * @return
+     */
+    @Override
+    public int selectBossDistributeCountByContionsOfJKM(DistributeQrCodeRequest distributeQrCodeRequest) {
+        return this.distributeQRCodeRecordDao.selectBossDistributeCountByContionsOfJKM(distributeQrCodeRequest);
+    }
+
+    /**
+     * boss后台二维码分配记录
+     *
+     * @param distributeQrCodeRequest
+     * @return
+     */
+    @Override
+    public List<DistributeQRCodeRecord> selectBossDistributeRecordsByContionsOfJKM(DistributeQrCodeRequest distributeQrCodeRequest) {
+        return this.distributeQRCodeRecordDao.selectBossDistributeRecordsByContionsOfJKM(distributeQrCodeRequest);
+    }
+
 
 }
