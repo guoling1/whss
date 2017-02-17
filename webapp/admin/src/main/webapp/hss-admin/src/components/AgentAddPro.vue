@@ -62,7 +62,7 @@
             <el-radio-group v-model="records.inviteBtn" style="margin-left: 65px">
               <el-radio :label="2" style="display: block">开
                 <span style="font-weight: normal;margin-left: 20px">推广码：{{records.inviteCode}}</span>
-                <span style="font-weight: normal;margin-left: 20px">推广链接：https://hss.qianbaojiajia.com/reg?invest={{records.inviteCode}}</span></el-radio>
+                <span style="font-weight: normal;margin-left: 20px">推广链接：https://hss.qianbaojiajia.com/reg?invite={{records.inviteCode}}</span></el-radio>
               <el-radio :label="1" style="display: block;margin:10px 0 0">关</el-radio>
             </el-radio-group>
         </div>
@@ -102,7 +102,7 @@
                             <td>金开门分润比例</td>
                             <td>一级代理商分润比例</td>
                             <td>二级代理分润比例</td>
-                            <td rowspan="3" style="width: 20%">金开门，一级代理，二级代理的比例之和必须等于100%</td>
+                            <td rowspan="3" style="width: 20%;padding: 22px;text-align: center;line-height: 28px;">金开门，一级代理，二级代理的比例之和必须等于100%</td>
                           </tr>
                           <tr>
                             <td>升级费分润</td>
@@ -174,7 +174,6 @@
             this.$data.dealerUpgerdeRate1 = res.data.dealerUpgerdeRates[0];
             this.$data.dealerUpgerdeRate2 = res.data.dealerUpgerdeRates[1];
           }
-
         })
         .catch(function (err) {
           this.$message({
@@ -201,7 +200,6 @@
           this.$data.records.dealerUpgerdeRates[0] = this.$data.dealerUpgerdeRate1;
           this.$data.records.dealerUpgerdeRates[1] = this.$data.dealerUpgerdeRate2;
         }
-
         this.$data.records.dealerId = this.$route.query.dealerId;
         this.$data.records.product.channels = this.$data.channels;
         if(this.$route.query.product == "hss"){
@@ -218,6 +216,15 @@
             });
             this.$router.go(-1)
           }, function (err) {
+            this.$data.records.totalProfitSpace = this.$data.records.totalProfitSpace*100;
+            this.$data.records.dealerUpgerdeRates[0].bossDealerShareRate = this.$data.records.dealerUpgerdeRates[0].bossDealerShareRate*100;
+            this.$data.records.dealerUpgerdeRates[0].firstDealerShareProfitRate = this.$data.records.dealerUpgerdeRates[0].firstDealerShareProfitRate*100;
+            this.$data.records.dealerUpgerdeRates[0].secondDealerShareProfitRate = this.$data.records.dealerUpgerdeRates[0].secondDealerShareProfitRate*100;
+            this.$data.records.dealerUpgerdeRates[1].bossDealerShareRate = this.$data.records.dealerUpgerdeRates[1].bossDealerShareRate*100;
+            this.$data.records.dealerUpgerdeRates[1].firstDealerShareProfitRate = this.$data.records.dealerUpgerdeRates[1].firstDealerShareProfitRate*100;
+            this.$data.records.dealerUpgerdeRates[1].secondDealerShareProfitRate = this.$data.records.dealerUpgerdeRates[1].secondDealerShareProfitRate*100;
+            this.$data.records.dealerUpgerdeRates[0] = this.$data.dealerUpgerdeRate1;
+            this.$data.records.dealerUpgerdeRates[1] = this.$data.dealerUpgerdeRate2;
             this.$message({
               showClose: true,
               message: err.statusMessage,
