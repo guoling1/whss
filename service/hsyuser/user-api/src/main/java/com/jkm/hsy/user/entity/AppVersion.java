@@ -13,7 +13,7 @@ public class AppVersion {
     private String appType;//app类型
     private String versionUrl;//版本下载地址
     private Long size;//版本大小 kb
-    private Integer isUpgrade;//0需要升级 1正常升级 2强制升级
+    private Integer isUpgrade;//0不需要 1需要升级 2强制升级
     private String description;//版本信息描述
     private Date createTime;
     private Date updateTime;

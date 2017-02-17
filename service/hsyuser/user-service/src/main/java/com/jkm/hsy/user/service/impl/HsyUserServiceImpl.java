@@ -252,11 +252,25 @@ public class HsyUserServiceImpl implements HsyUserService {
             throw new ApiHandleException(ResultCode.VERIFICATIONCODE_TYPE_NULL);
         if(!VerificationCodeType.contains(appAuVerification.getType()))
             throw new ApiHandleException(ResultCode.VERIFICATIONCODE_TYPE_NOT_EXSIT);
+
+        /**数据验证*/
         appAuVerification.setCreateTime(AppDateUtil.changeDate(date, Calendar.MINUTE,-1));
         appAuVerification.setUpdateTime(date);
         Integer countFrequent=hsyVerificationDao.findVCodeCountWithinTime(appAuVerification);
         if(countFrequent>0)
             throw new ApiHandleException(ResultCode.VERIFICATIONCODE_FREQUENT);
+
+        AppAuUser appAuUser=new AppAuUser();
+        appAuUser.setCellphone(appAuVerification.getCellphone());
+        List<AppAuUser> list = hsyUserDao.findAppAuUserByParam(appAuUser);
+        if(appAuVerification.getType()==1) {
+            if (list != null && list.size() != 0)
+                throw new ApiHandleException(ResultCode.CELLPHONE_HAS_BEEN_REGISTERED);
+        } else if(appAuVerification.getType()==2){
+            if (!(list != null && list.size() != 0))
+                throw new ApiHandleException(ResultCode.CEELLPHONE_HAS_NOT_BEEN_REGISTERED);
+        }
+
 
         SmsTemplate messageTemplate = messageTemplateDao.getTemplateByType(AppConstant.REGISTER_VERIFICATION_NOTICE_TYPE_ID);
         String template="";
@@ -875,10 +889,11 @@ public class HsyUserServiceImpl implements HsyUserService {
             map.put("frozenAmount", "");
         }
         AppAuUser user=new AppAuUser();
-        user.setStatus(appAuUserFind.getStatus());
         user.setAccountID(appAuUserFind.getAccountID());
         map.put("appAuUser",user);
-//        map.put("appBizShop",appBizShop);
+        AppBizShop shop=new AppBizShop();
+        shop.setStatus(appBizShop.getStatus());
+        map.put("appBizShop",shop);
         return gson.toJson(map);
     }
 
