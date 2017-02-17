@@ -136,7 +136,7 @@ public class DealerWithdrawServiceImpl implements DealerWithdrawService {
                 case HANDLING:
                     log.info("交易订单[{}]，提现处理中", order.getOrderNo());
                     this.orderService.updateRemark(order.getId(), response.getMessage());
-                    return Pair.of(1,  response.getMessage());
+                    return Pair.of(0,  response.getMessage());
                 default:
                     log.error("#####交易订单[{}]，返回状态异常######", order.getOrderNo());
                     break;
