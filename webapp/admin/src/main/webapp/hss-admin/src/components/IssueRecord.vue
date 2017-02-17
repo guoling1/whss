@@ -15,22 +15,22 @@
             </li>
             <li class="same">
               <label>代理商名称:</label>
-              <el-input style="width: 120px" v-model="query.merchantName" placeholder="请输入内容" size="small"></el-input>
+              <el-input style="width: 120px" v-model="query.name" placeholder="请输入内容" size="small"></el-input>
             </li>
             <li class="same">
               <label>上级代理名称:</label>
-              <el-input style="width: 120px" v-model="query.proxyName" placeholder="请输入内容" size="small"></el-input>
+              <el-input style="width: 120px" v-model="query.firstName" placeholder="请输入内容" size="small"></el-input>
             </li>
             <li class="same">
               <label>上级代理编号:</label>
-              <el-input style="width: 120px" v-model="query.proxyName1" placeholder="请输入内容" size="small"></el-input>
+              <el-input style="width: 120px" v-model="query.firstMarkCode" placeholder="请输入内容" size="small"></el-input>
             </li>
             <li class="same">
               <label>分配方:</label>
-              <el-select style="width: 160px" v-model="query.status" clearable placeholder="请选择" size="small">
-                <el-option label="全部" value="">全部</el-option>
-                <el-option label="金开门" value="0">金开门</el-option>
-                <el-option label="一级代理" value="1">一级代理</el-option>
+              <el-select style="width: 160px" v-model="query.type" clearable placeholder="请选择" size="small">
+                <el-option label="全部" value="0">全部</el-option>
+                <el-option label="金开门" value="1">金开门</el-option>
+                <el-option label="一级代理" value="2">一级代理</el-option>
               </el-select>
             </li>
             <li class="same">
@@ -40,15 +40,21 @@
           <!--表格-->
           <el-table v-loading.body="loading" style="font-size: 12px;margin:15px 0" :data="records" border>
             <el-table-column type="index" width="70" label="序号"></el-table-column>
-            <el-table-column prop="markCode" label="分配时间"></el-table-column>
-            <el-table-column prop="merchantName" label="代理名称"></el-table-column>
-            <el-table-column prop="proxyName" label="代理商编号"></el-table-column>
-            <el-table-column prop="proxyName1" label="上级名称"></el-table-column>
-            <el-table-column prop="proxyName1" label="上级编号"></el-table-column>
-            <el-table-column prop="proxyName1" label="分配个数"></el-table-column>
-            <el-table-column prop="proxyName1" label="起始码"></el-table-column>
-            <el-table-column prop="proxyName1" label="终止码"></el-table-column>
-            <el-table-column prop="proxyName1" label="操作人"></el-table-column>
+            <el-table-column prop="distributeTime" :formatter="distributeTime" label="分配时间"></el-table-column>
+            <el-table-column prop="proxyName" label="代理名称"></el-table-column>
+            <el-table-column prop="markCode" label="代理商编号"></el-table-column>
+            <el-table-column prop="fristProxyName" label="上级名称"></el-table-column>
+            <el-table-column prop="firstMarkCode" label="上级编号"></el-table-column>
+            <el-table-column prop="count" label="分配个数"></el-table-column>
+            <el-table-column prop="startCode" label="起始码"></el-table-column>
+            <el-table-column prop="endCode" label="终止码"></el-table-column>
+            <el-table-column label="类型">
+              <template scope="scope">
+                <span v-if="records[scope.$index].type==1">实体码</span>
+                <span v-if="records[scope.$index].type==2">电子码</span>
+              </template>
+            </el-table-column>
+            <el-table-column prop="operateUser" label="操作人"></el-table-column>
           </el-table>
           <!--分页-->
           <div class="block" style="text-align: right">
@@ -68,17 +74,11 @@
         query:{
           pageNo:1,
           pageSize:10,
-          shortName:'',
-          globalID:'',
-          proxyName:'',
-          proxyName1:'',
-          startTime:'',
-          endTime:'',
-          startTime1:'',
-          endTime1:'',
-          startTime2:'',
-          endTime2:'',
-          status:''
+          markCode:"",
+          name:"",
+          firstMarkCode:"",
+          firstName:"",
+          type:"0"//0全部 1boss 2代理商
         },
         records: [],
         count: 0,
@@ -88,12 +88,25 @@
       }
     },
     created: function () {
-
+      this.$http.post('/admin/user/distributeRecord',this.$data.query)
+        .then(function (res) {
+          this.$data.loading = false;
+          this.$data.records   = res.data.records;
+          this.$data.count = res.data.count;
+          this.$data.total = res.data.totalPage;
+        }, function (err) {
+          this.$data.loading = false;
+          this.$message({
+            showClose: true,
+            message: err.statusMessage,
+            type: 'error'
+          })
+        })
     },
     methods: {
-      //格式化hss创建时间
-      changeTime: function (row, column) {
-        var val=row.createTime;
+      //格式化时间
+      distributeTime: function (row, column) {
+        var val=row.distributeTime;
         if(val==''||val==null){
           return ''
         }else {
@@ -116,7 +129,7 @@
       search(){
         this.$data.query.pageNo = 1;
         this.$data.loading = true;
-        this.$http.post(this.$data.url,this.$data.query)
+        this.$http.post('/admin/user/distributeRecord',this.$data.query)
           .then(function (res) {
             this.$data.loading = false;
             this.$data.records   = res.data.records;
@@ -136,7 +149,7 @@
         this.$data.query.pageNo = val;
         this.$data.loading = true;
         this.$data.records = '';
-        this.$http.post(this.$data.url,this.$data.query)
+        this.$http.post('/admin/user/distributeRecord',this.$data.query)
           .then(function (res) {
             this.$data.loading = false;
             this.$data.records   = res.data.records;

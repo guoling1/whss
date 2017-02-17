@@ -15,7 +15,7 @@
             <el-table-column prop="available" label="可用余额（元）" align="right" header-align="left"></el-table-column>
             <el-table-column label="操作" width="70">
               <template scope="scope">
-                <router-link to="/admin/record/profitAccountDet" type="text" size="small">明细
+                <router-link :to="{path:'/admin/record/profitAccountDet',query:{id:records[scope.$index].id}}" type="text" size="small">明细
                 </router-link>
               </template>
             </el-table-column>

@@ -24,14 +24,14 @@
           </ul>
           <!--表格-->
           <el-table v-loading.body="loading" style="font-size: 12px;margin:15px 0" :data="records" border>
-            <el-table-column prop="merchantNo" label="流水号"></el-table-column>
-            <el-table-column prop="merchantName" label="时间"></el-table-column>
+            <el-table-column prop="splitSn" label="流水号"></el-table-column>
+            <el-table-column prop="splitDate" label="时间"></el-table-column>
             <el-table-column prop="dealerNo" label="发生前余额（元）"></el-table-column>
             <el-table-column prop="dealerName" label="收入金额（元）"></el-table-column>
             <el-table-column prop="dealerName" label="支出金额（元）"></el-table-column>
             <el-table-column prop="dealerName" label="发生后余额（元）"></el-table-column>
-            <el-table-column prop="dealerName" label="业务类型"></el-table-column>
-            <el-table-column prop="dealerName" label="备注"></el-table-column>
+            <el-table-column prop="businessType" label="业务类型"></el-table-column>
+            <el-table-column prop="remark" label="备注"></el-table-column>
           </el-table>
           <!--分页-->
           <div class="block" style="text-align: right">
@@ -77,8 +77,11 @@
         },
         date:'',
         query:{
-          start:'',
-          end:''
+          pageNo:1,
+          pageSize:10,
+          startTime:'',
+          endTime:'',
+          id:''
         },
         records: [],
         count: 0,
@@ -89,13 +92,14 @@
       }
     },
     created: function () {
-      /*this.$http.post('/admin/settle/list', this.$data.query)
+      /*this.$data.query.id = this.$route.query.id;
+      this.$http.post('/admin/queryJkmProfit/profitDetails', this.$data.query)
         .then(function (res) {
           this.$data.records = res.data.records;
           this.$data.count = res.data.count;
           this.$data.total = res.data.totalPage;
           this.$data.loading = false;
-          var changeTime = function (val) {
+          /!*var changeTime = function (val) {
             if (val == '' || val == null) {
               return ''
             } else {
@@ -116,7 +120,7 @@
           }
           for (let i = 0; i < this.$data.records.length; i++) {
             this.$data.records[i].tradeDate = changeTime(this.$data.records[i].tradeDate)
-          }
+          }*!/
         }, function (err) {
           this.$data.loading = false;
           this.$store.commit('MESSAGE_ACCORD_SHOW', {
@@ -181,9 +185,9 @@
             }
             str = ary[0] + '-' + ary[1] + '-' + ary[2];
             if(j==0){
-              this.$data.query.start = str;
+              this.$data.query.startTime = str;
             }else {
-              this.$data.query.end = str;
+              this.$data.query.endTime = str;
             }
           }
         }

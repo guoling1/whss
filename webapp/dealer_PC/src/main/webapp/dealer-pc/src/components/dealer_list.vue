@@ -74,7 +74,7 @@
                     <el-button type="text" @click="checkDealer($event,scope.row.id)">{{scope.row.proxyName}}</el-button>
                   </template>
                 </el-table-column>
-                <el-table-column label="代理商编号" sortable="custom">
+                <el-table-column label="代理商编号" sortable>
                   <template scope="scope">
                     <el-button type="text" @click="checkDealer($event,scope.row.id)">{{scope.row.markCode}}</el-button>
                   </template>
