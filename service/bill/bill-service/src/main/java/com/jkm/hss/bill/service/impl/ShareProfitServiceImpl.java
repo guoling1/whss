@@ -5,6 +5,7 @@ import com.jkm.hss.bill.entity.JkmProfitDetailsResponse;
 import com.jkm.hss.bill.entity.JkmProfitResponse;
 import com.jkm.hss.bill.service.ShareProfitService;
 import com.jkm.hss.merchant.helper.request.JkmProfitRequest;
+import com.jkm.hss.merchant.helper.request.ProfitDetailsRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -35,8 +36,8 @@ public class ShareProfitServiceImpl implements ShareProfitService {
     }
 
     @Override
-    public List<JkmProfitDetailsResponse> selectProfitDetails() {
-        List<JkmProfitDetailsResponse> list = shareProfitDao.selectProfitDetails();
+    public List<JkmProfitDetailsResponse> selectProfitDetails(ProfitDetailsRequest req) {
+        List<JkmProfitDetailsResponse> list = shareProfitDao.selectProfitDetails(req);
         return list;
     }
 }

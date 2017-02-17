@@ -5,6 +5,7 @@ import com.jkm.hss.account.sevice.AccountService;
 import com.jkm.hss.controller.BaseController;
 import com.jkm.hss.push.sevice.PushService;
 import com.jkm.hsy.user.constant.AppConstant;
+import com.jkm.hsy.user.entity.AppAuUser;
 import com.jkm.hsy.user.entity.HsyMerchantAuditRequest;
 import com.jkm.hsy.user.entity.HsyMerchantAuditResponse;
 import com.jkm.hsy.user.service.HsyMerchantAuditService;
@@ -38,6 +39,11 @@ public class HsyMerchantAuditController extends BaseController {
         if (hsyMerchantAudit==null) {
             return CommonResponse.simpleResponse(-1, "商户不存在");
         }
+        AppAuUser acct = this.hsyMerchantAuditService.getAccId(hsyMerchantAuditRequest.getId());
+        if (acct!=null){
+            accountService.delAcct(acct.getAccountID());
+        }
+
         final long accountId = this.accountService.initAccount(hsyMerchantAuditRequest.getName());
         hsyMerchantAuditRequest.setAccountID(accountId);
         hsyMerchantAuditService.updateAccount(hsyMerchantAuditRequest.getAccountID(),hsyMerchantAuditRequest.getUid());

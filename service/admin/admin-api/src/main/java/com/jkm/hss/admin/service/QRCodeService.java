@@ -373,4 +373,45 @@ public interface QRCodeService {
      * @return
      */
     List<QRCodeList> bindShopList(long shopId,String sysType);
+
+    /**
+     * 按码段、和产品类型查询某个代理商下的所有二维码
+     *
+     * @param dealerId
+     * @param startCode
+     * @param endCode
+     * @return
+     */
+    List<QRCode> getUnDistributeCodeByDealerIdAndRangeCodeAndSysType(long dealerId, String startCode, String endCode,String sysType);
+
+    /**
+     * 按产品类型查询某个代理商下的所有二维码
+     * @param dealerId
+     * @param sysType
+     * @return
+     */
+    List<QRCode> getUnDistributeCodeByDealerIdAndSysType(long dealerId,String sysType);
+
+
+    /**
+     * admin查询所有未分配的二维码个数
+     *
+     * @return
+     */
+    List<QRCode> getUnDistributeCodeBySysType(String sysType);
+    /**
+     * admin查询所有未分配的二维码个数
+     *
+     * @return
+     */
+    int getUnDistributeCountBySysType(String sysType);
+
+    /**
+     * 根据码段和产品类型
+     *
+     * @param startCode
+     * @param endCode
+     * @return
+     */
+    List<QRCode> getUnDistributeCodeByCodeAndSysType(String startCode, String endCode,String sysType);
 }

@@ -2,30 +2,32 @@ package com.jkm.hss.controller.admin;
 
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
+import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
 import com.jkm.base.common.entity.CommonResponse;
+import com.jkm.base.common.entity.PageModel;
 import com.jkm.base.common.util.CookieUtil;
 import com.jkm.base.common.util.ValidateUtils;
-import com.jkm.hss.admin.entity.AdminUser;
-import com.jkm.hss.admin.entity.AdminUserPassport;
-import com.jkm.hss.admin.entity.CodeQueryResponse;
-import com.jkm.hss.admin.entity.QRCode;
+import com.jkm.hss.admin.entity.*;
+import com.jkm.hss.admin.enums.EnumQRCodeDistributeType;
+import com.jkm.hss.admin.helper.requestparam.DistributeQrCodeRequest;
+import com.jkm.hss.admin.helper.responseparam.BossDistributeQRCodeRecordResponse;
+import com.jkm.hss.admin.helper.responseparam.DistributeQRCodeRecordResponse;
 import com.jkm.hss.admin.service.AdminUserService;
+import com.jkm.hss.admin.service.QRCodeService;
 import com.jkm.hss.controller.BaseController;
 import com.jkm.hss.dealer.entity.Dealer;
+import com.jkm.hss.dealer.entity.DealerChannelRate;
+import com.jkm.hss.dealer.enums.EnumDealerLevel;
 import com.jkm.hss.dealer.enums.EnumRecommendBtn;
 import com.jkm.hss.dealer.helper.DealerConsts;
-import com.jkm.hss.dealer.helper.requestparam.FirstLevelDealerAdd2Request;
-import com.jkm.hss.dealer.helper.requestparam.FirstLevelDealerAddRequest;
-import com.jkm.hss.dealer.helper.requestparam.FirstLevelDealerUpdate2Request;
-import com.jkm.hss.dealer.helper.requestparam.FirstLevelDealerUpdateRequest;
+import com.jkm.hss.dealer.helper.requestparam.*;
+import com.jkm.hss.dealer.helper.response.DistributeRecordResponse;
+import com.jkm.hss.dealer.service.DealerChannelRateService;
 import com.jkm.hss.dealer.service.DealerRateService;
 import com.jkm.hss.dealer.service.DealerService;
 import com.jkm.hss.helper.ApplicationConsts;
-import com.jkm.hss.helper.request.AdminUserLoginRequest;
-import com.jkm.hss.helper.request.CodeQueryRequest;
-import com.jkm.hss.helper.request.DistributeQRCodeRequest;
-import com.jkm.hss.helper.request.DistributeRangeQRCodeRequest;
+import com.jkm.hss.helper.request.*;
 import com.jkm.hss.helper.response.DistributeQRCodeResponse;
 import com.jkm.hss.helper.response.DistributeRangeQRCodeResponse;
 import com.jkm.hss.helper.response.FirstLevelDealerAddResponse;
@@ -80,6 +82,12 @@ public class AdminController extends BaseController {
 
     @Autowired
     private ProductChannelDetailService productChannelDetailService;
+
+    @Autowired
+    private DealerChannelRateService dealerChannelRateService;
+
+    @Autowired
+    private QRCodeService qrCodeService;
 
     /**
      * 登录
@@ -812,6 +820,88 @@ public class AdminController extends BaseController {
             log.error("错误信息时",e.getStackTrace());
             return CommonResponse.simpleResponse(-1, e.getMessage());
         }
+    }
+
+
+    /**
+     * 分配二维码
+     * @param distributeQrCodeRequest
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/distributeQrCodeToDealer", method = RequestMethod.POST)
+    public CommonResponse distributeQrCodeToDealer (@RequestBody DistributeQrCode2Request distributeQrCodeRequest) {
+        final Optional<Dealer> dealerOptional = this.dealerService.getById(distributeQrCodeRequest.getDealerId());
+        if(!dealerOptional.isPresent()) {
+            return CommonResponse.simpleResponse(-1, "代理商不存在");
+        }
+        Preconditions.checkState(dealerOptional.get().getLevel() == EnumDealerLevel.FIRST.getId(), "只能给一级代理分配二维码");
+        if (StringUtils.isBlank(distributeQrCodeRequest.getSysType())) {
+            return CommonResponse.simpleResponse(-1, "请选择产品");
+        }
+        if(distributeQrCodeRequest.getType()!= EnumQRCodeDistributeType.ENTITYCODE.getCode()
+                &&distributeQrCodeRequest.getType()!= EnumQRCodeDistributeType.ELECTRONICCODE.getCode()){
+            return CommonResponse.simpleResponse(-1, "请选择类型");
+        }
+        //判断是否有权限
+        Optional<Product> productOptional = productService.selectByType(distributeQrCodeRequest.getSysType());
+        long productId = productOptional.get().getId();
+        List<DealerChannelRate> dealerChannelRateList = dealerChannelRateService.selectByDealerIdAndProductId(dealerOptional.get().getId(),productId);
+        if(dealerChannelRateList==null||dealerChannelRateList.size()==0){
+            return CommonResponse.simpleResponse(-1, "未开通此产品");
+        }
+        List<DistributeQRCodeRecord> distributeQRCodeRecords = new ArrayList<DistributeQRCodeRecord>();
+        if(distributeQrCodeRequest.getDistributeType()==1){//按码段
+            distributeQRCodeRecords = this.adminUserService.distributeQRCodeByCode(distributeQrCodeRequest.getType(),distributeQrCodeRequest.getSysType(),
+                    distributeQrCodeRequest.getDealerId(), distributeQrCodeRequest.getStartCode(),distributeQrCodeRequest.getEndCode());
+        }
+        if(distributeQrCodeRequest.getDistributeType()==2){//按个数
+            if (distributeQrCodeRequest.getCount() <= 0) {
+                return CommonResponse.simpleResponse(-1, "分配个数不可以是0");
+            }
+            distributeQRCodeRecords = this.adminUserService.distributeQRCodeByCount(distributeQrCodeRequest.getType(),distributeQrCodeRequest.getSysType(),
+                    distributeQrCodeRequest.getDealerId(), distributeQrCodeRequest.getCount());
+        }
+        if(distributeQRCodeRecords.size()<=0){
+            return CommonResponse.simpleResponse(-1, "二维码数量不足");
+        }
+        List<DistributeQRCodeRecordResponse> distributeQRCodeRecordResponseList = new ArrayList<DistributeQRCodeRecordResponse>();
+        for(int i=0;i<distributeQRCodeRecords.size();i++){
+            DistributeQRCodeRecordResponse distributeQRCodeRecordResponse = new DistributeQRCodeRecordResponse();
+            distributeQRCodeRecordResponse.setDealerName(dealerOptional.get().getProxyName());
+            distributeQRCodeRecordResponse.setDealerMobile(dealerOptional.get().getMobile());
+            distributeQRCodeRecordResponse.setDistributeTime(distributeQRCodeRecords.get(i).getCreateTime());
+            distributeQRCodeRecordResponse.setType(distributeQRCodeRecords.get(i).getType());
+            distributeQRCodeRecordResponse.setCount(distributeQRCodeRecords.get(i).getCount());
+            distributeQRCodeRecordResponse.setStartCode(distributeQRCodeRecords.get(i).getStartCode());
+            distributeQRCodeRecordResponse.setEndCode(distributeQRCodeRecords.get(i).getEndCode());
+            distributeQRCodeRecordResponseList.add(distributeQRCodeRecordResponse);
+        }
+        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "分配成功", distributeQRCodeRecordResponseList);
+    }
+
+    /**
+     * 剩余二维码个数
+     * @param unDistributeCountRequest
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/unDistributeCount", method = RequestMethod.POST)
+    public CommonResponse unDistributeCount (@RequestBody UnDistributeCountRequest unDistributeCountRequest) {
+        int count = this.adminUserService.unDistributeCount(unDistributeCountRequest.getSysType());
+        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "分配成功", count);
+    }
+
+    /**
+     * 分配二维码记录
+     * @param distributeRecordRequest
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/distributeRecord", method = RequestMethod.POST)
+    public CommonResponse distributeRecord (@RequestBody DistributeQrCodeRequest distributeRecordRequest) {
+        PageModel<BossDistributeQRCodeRecordResponse> bossDistributeQRCodeRecordResponse = this.dealerService.distributeRecord(distributeRecordRequest);
+        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", bossDistributeQRCodeRecordResponse);
     }
 
 }

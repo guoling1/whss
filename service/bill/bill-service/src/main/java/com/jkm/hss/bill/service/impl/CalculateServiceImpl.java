@@ -70,7 +70,7 @@ public class CalculateServiceImpl implements CalculateService {
      */
     @Override
     public BigDecimal getMerchantPayPoundageRate(EnumProductType type,final long merchantId, final int channelSign) {
-        if (type.getId().equals( EnumProductType.HSS)){
+        if (type.getId().equals(EnumProductType.HSS.getId())){
             //hss
             final MerchantInfo merchant = this.merchantInfoService.selectById(merchantId).get();
             return getMerchantRate(channelSign, merchant);

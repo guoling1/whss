@@ -4,7 +4,7 @@
 
 
     <select id="selectAccountList" resultType="com.jkm.hss.bill.entity.JkmProfitResponse">
-        SELECT * FROM tb_account WHERE id in (1,2,113,114)
+        SELECT * FROM tb_account WHERE id in (1,2,11,113,114)
         limit #{offset}, #{pageSize}
     </select>
 
@@ -14,7 +14,9 @@
 
     <!-- 分润明细 -->
     <select id="selectProfitDetails"  resultType="com.jkm.hss.bill.entity.JkmProfitDetailsResponse">
-        SELECT * FROM tb_split_account_record
+        SELECT a.* FROM tb_split_account_record a
+        LEFT JOIN tb_account b ON a.receipt_money_account_id=b.id
+        WHERE b.id=#{id}
     </select>
 
 </mapper>

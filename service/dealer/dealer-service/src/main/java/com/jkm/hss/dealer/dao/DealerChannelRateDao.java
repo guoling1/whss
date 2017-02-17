@@ -78,5 +78,13 @@ public interface DealerChannelRateDao {
      * @param sysType
      * @return
      */
-    long getDealerBindProductId(@Param("dealerId") long dealerId, @Param("sysType") String sysType);
+    Long getDealerBindProductId(@Param("dealerId") long dealerId, @Param("sysType") String sysType);
+
+    /**
+     * 更新
+     *
+     * @param dealerChannelRate
+     * @return
+     */
+    int updateSecondDealerRate(DealerChannelRate dealerChannelRate);
 }

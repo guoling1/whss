@@ -9,7 +9,9 @@
         count,
         start_code,
         end_code,
-        status
+        status,
+        type,
+        distribute_type
         )
         VALUES
         (
@@ -18,7 +20,9 @@
         #{count},
         #{startCode},
         #{endCode},
-        #{status}
+        #{status},
+        #{type},
+        #{distributeType}
         );
     </insert>
 
@@ -29,14 +33,16 @@
     <select id="selectDistributeSelfRecords" resultType="com.jkm.hss.admin.entity.DistributeQRCodeRecord">
        SELECT * FROM tb_distribute_qr_code_record
        WHERE first_level_dealer_id = #{firstLevelDealerId}
-       AND second_level_dealer_id = 0
+       AND second_level_dealer_id = #{firstLevelDealerId}
+       AND distribute_type=2
        ORDER BY id DESC
     </select>
 
     <select id="selectDistributeSecondDealerRecords" resultType="com.jkm.hss.admin.entity.DistributeQRCodeRecord">
         SELECT * FROM tb_distribute_qr_code_record
         WHERE first_level_dealer_id = #{firstLevelDealerId}
-        AND second_level_dealer_id > 0
+        AND second_level_dealer_id !=#{firstLevelDealerId}
+        AND distribute_type=2
         ORDER BY id DESC
     </select>
 
@@ -45,5 +51,105 @@
         WHERE first_level_dealer_id = #{dealerId}
         AND second_level_dealer_id = #{secondLevelDealerId}
         ORDER BY id DESC
+    </select>
+
+    <select id="selectDistributeCountByContions" resultType="java.lang.Integer">
+        SELECT count(1) FROM tb_distribute_qr_code_record
+        WHERE first_level_dealer_id = #{firstLevelDealerId}
+        AND distribute_type=2
+        <if test="markCode != null and markCode!=''">
+            AND second_level_dealer_id in (select id from tb_dealer where mark_code = #{markCode})
+        </if>
+        <if test="name != null and name!=''">
+            AND second_level_dealer_id in (select id from tb_dealer where proxy_name LIKE "%"#{name}"%")
+        </if>
+    </select>
+
+    <select id="selectDistributeRecordsByContions" resultType="com.jkm.hss.admin.entity.DistributeQRCodeRecord">
+        SELECT * FROM tb_distribute_qr_code_record
+        WHERE first_level_dealer_id = #{firstLevelDealerId}
+        AND distribute_type=2
+        <if test="markCode != null and markCode!=''">
+            AND second_level_dealer_id in (select id from tb_dealer where mark_code = #{markCode})
+        </if>
+        <if test="name != null and name!=''">
+            AND second_level_dealer_id in (select id from tb_dealer where proxy_name LIKE "%"#{name}"%")
+        </if>
+        ORDER BY id DESC LIMIT #{offset},#{count}
+    </select>
+
+
+    <select id="selectBossDistributeCountByContions" resultType="java.lang.Integer">
+        SELECT count(1) FROM tb_distribute_qr_code_record
+        WHERE
+        1=1
+        <if test="firstMarkCode != null and firstMarkCode!=''">
+            AND first_level_dealer_id in (select id from tb_dealer where mark_code = #{firstMarkCode})
+        </if>
+        <if test="firstName != null and firstName!=''">
+            AND first_level_dealer_id in (select id from tb_dealer where proxy_name LIKE "%"#{firstName}"%")
+        </if>
+        <if test="markCode != null and markCode!=''">
+            AND second_level_dealer_id in (select id from tb_dealer where mark_code = #{markCode})
+        </if>
+        <if test="name != null and name!=''">
+            AND second_level_dealer_id in (select id from tb_dealer where proxy_name LIKE "%"#{name}"%")
+        </if>
+        <if test="type>0">
+            AND distribute_type =#{type}
+        </if>
+    </select>
+
+    <select id="selectBossDistributeRecordsByContions" resultType="com.jkm.hss.admin.entity.DistributeQRCodeRecord">
+        SELECT * FROM tb_distribute_qr_code_record
+        WHERE
+        1=1
+        <if test="firstMarkCode != null and firstMarkCode!=''">
+            AND first_level_dealer_id in (select id from tb_dealer where mark_code = #{firstMarkCode})
+        </if>
+        <if test="firstName != null and firstName!=''">
+            AND first_level_dealer_id in (select id from tb_dealer where proxy_name LIKE "%"#{firstName}"%")
+        </if>
+        <if test="markCode != null and markCode!=''">
+            AND second_level_dealer_id in (select id from tb_dealer where mark_code = #{markCode})
+        </if>
+        <if test="name != null and name!=''">
+            AND second_level_dealer_id in (select id from tb_dealer where proxy_name LIKE "%"#{name}"%")
+        </if>
+        <if test="type>0">
+            AND distribute_type =#{type}
+        </if>
+        ORDER BY id DESC LIMIT #{offset},#{count}
+    </select>
+
+    <select id="selectBossDistributeCountByContionsOfJKM" resultType="java.lang.Integer">
+        SELECT count(1) FROM tb_distribute_qr_code_record
+        WHERE
+        first_level_dealer_id=0
+        <if test="markCode != null and markCode!=''">
+            AND second_level_dealer_id in (select id from tb_dealer where mark_code = #{markCode})
+        </if>
+        <if test="name != null and name!=''">
+            AND second_level_dealer_id in (select id from tb_dealer where proxy_name LIKE "%"#{name}"%")
+        </if>
+        <if test="type>0">
+            AND distribute_type =#{type}
+        </if>
+    </select>
+
+    <select id="selectBossDistributeRecordsByContionsOfJKM" resultType="com.jkm.hss.admin.entity.DistributeQRCodeRecord">
+        SELECT * FROM tb_distribute_qr_code_record
+        WHERE
+        first_level_dealer_id=0
+        <if test="markCode != null and markCode!=''">
+            AND second_level_dealer_id in (select id from tb_dealer where mark_code = #{markCode})
+        </if>
+        <if test="name != null and name!=''">
+            AND second_level_dealer_id in (select id from tb_dealer where proxy_name LIKE "%"#{name}"%")
+        </if>
+        <if test="type>0">
+            AND distribute_type =#{type}
+        </if>
+        ORDER BY id DESC LIMIT #{offset},#{count}
     </select>
 </mapper>

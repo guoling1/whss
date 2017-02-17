@@ -22,6 +22,7 @@ import com.jkm.hss.bill.enums.EnumTradeType;
 import com.jkm.hss.bill.helper.requestparam.QueryMerchantPayOrdersRequestParam;
 import com.jkm.hss.bill.service.CalculateService;
 import com.jkm.hss.bill.service.OrderService;
+import com.jkm.hss.dealer.entity.Dealer;
 import com.jkm.hss.merchant.entity.MerchantInfo;
 import com.jkm.hss.merchant.helper.MerchantSupport;
 import com.jkm.hss.merchant.helper.request.OrderTradeRequest;
@@ -159,7 +160,54 @@ public class OrderServiceImpl implements OrderService {
         frozenRecord.setRemark("手动提现");
         this.frozenRecordService.add(frozenRecord);
         //添加账户流水--减少
-        this.accountFlowService.addAccountFlow(account.getId(), "", amount,
+        this.accountFlowService.addAccountFlow(account.getId(), playMoneyOrder.getOrderNo(), amount,
+                "手动提现", EnumAccountFlowType.DECREASE);
+        return playMoneyOrder.getId();
+    }
+
+    /**
+     * {@inheritDoc}
+     * @param dealer
+     * @param amount
+     * @param appId
+     * @param channel
+     * @param settleType
+     * @return
+     */
+    @Override
+    public long createDealerPlayMoneyOrder(Dealer dealer, BigDecimal amount, String appId, int channel, String settleType) {
+        final Account account = this.accountService.getByIdWithLock(dealer.getAccountId()).get();
+        Preconditions.checkState(account.getAvailable().compareTo(amount) >= 0, "余额不足");
+        final Order playMoneyOrder = new Order();
+        playMoneyOrder.setPayOrderId(0);
+        playMoneyOrder.setOrderNo(SnGenerator.generateSn(EnumTradeType.WITHDRAW.getId()));
+        playMoneyOrder.setTradeAmount(amount);
+        playMoneyOrder.setRealPayAmount(amount);
+        playMoneyOrder.setTradeType(EnumTradeType.WITHDRAW.getId());
+        playMoneyOrder.setPayChannelSign(channel);
+        playMoneyOrder.setPayer(account.getId());
+        playMoneyOrder.setPayee(0);
+        playMoneyOrder.setAppId(appId);
+        //手续费固定1元
+        playMoneyOrder.setPoundage(new BigDecimal("1.0"));
+        playMoneyOrder.setGoodsName(dealer.getProxyName());
+        playMoneyOrder.setGoodsDescribe(dealer.getProxyName());
+        playMoneyOrder.setSettleStatus(EnumSettleStatus.DUE_SETTLE.getId());
+        playMoneyOrder.setSettleTime(new Date());
+        playMoneyOrder.setSettleType(settleType);
+        playMoneyOrder.setStatus(EnumOrderStatus.WITHDRAWING.getId());
+        this.add(playMoneyOrder);
+        this.accountService.decreaseAvailableAmount(account.getId(), amount);
+        this.accountService.increaseFrozenAmount(account.getId(), amount);
+        final FrozenRecord frozenRecord = new FrozenRecord();
+        frozenRecord.setAccountId(account.getId());
+        frozenRecord.setFrozenAmount(amount);
+        frozenRecord.setBusinessNo(playMoneyOrder.getOrderNo());
+        frozenRecord.setFrozenTime(new Date());
+        frozenRecord.setRemark("手动提现");
+        this.frozenRecordService.add(frozenRecord);
+        //添加账户流水--减少
+        this.accountFlowService.addAccountFlow(account.getId(), playMoneyOrder.getOrderNo(), amount,
                 "手动提现", EnumAccountFlowType.DECREASE);
         return playMoneyOrder.getId();
     }
@@ -489,6 +537,20 @@ public class OrderServiceImpl implements OrderService {
     public List<Order> getPageOrdersByAccountId(final long accountId, final String appId, final int offset,
                                                 final int count, final Date date) {
         return this.orderDao.selectPageOrdersByAccountId(accountId, appId, offset, count, date);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param orderNos
+     * @return
+     */
+    @Override
+    public List<Order> getByOrderNos(List<String> orderNos) {
+        if(CollectionUtils.isEmpty(orderNos)){
+            return Collections.EMPTY_LIST;
+        }
+        return this.orderDao.getByOrderNos(orderNos);
     }
 
     /**

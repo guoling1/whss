@@ -120,4 +120,14 @@ public interface AccountService {
      * @return
      */
     Optional<Account> getByIdWithLock(long id);
+
+
+
+    /**
+     * 删除账户
+     * @param accountID
+     */
+    void delAcct(Long accountID);
+
+
 }

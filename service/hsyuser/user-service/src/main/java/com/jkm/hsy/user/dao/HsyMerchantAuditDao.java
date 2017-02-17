@@ -1,5 +1,6 @@
 package com.jkm.hsy.user.dao;
 
+import com.jkm.hsy.user.entity.AppAuUser;
 import com.jkm.hsy.user.entity.HsyMerchantAuditRequest;
 import com.jkm.hsy.user.entity.HsyMerchantAuditResponse;
 import org.apache.ibatis.annotations.Param;
@@ -70,4 +71,15 @@ public interface HsyMerchantAuditDao {
     void stepChange(@Param("uid") int uid);
 
     int getUid(@Param("id") Long id);
+
+    /**
+     *
+     * @param parentCode
+     * @return
+     */
+    HsyMerchantAuditResponse getCityOnly(@Param("parentCode") String parentCode);
+
+    AppAuUser getAccId(@Param("id") Long id);
+
+
 }

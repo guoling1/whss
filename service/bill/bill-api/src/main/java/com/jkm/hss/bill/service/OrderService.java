@@ -5,6 +5,7 @@ import com.jkm.base.common.entity.PageModel;
 import com.jkm.hss.bill.entity.MerchantTradeResponse;
 import com.jkm.hss.bill.entity.Order;
 import com.jkm.hss.bill.helper.requestparam.QueryMerchantPayOrdersRequestParam;
+import com.jkm.hss.dealer.entity.Dealer;
 import com.jkm.hss.merchant.helper.request.OrderTradeRequest;
 import com.jkm.hsy.user.entity.AppBizShop;
 
@@ -43,6 +44,18 @@ public interface OrderService {
      * @return
      */
     long createPlayMoneyOrder(AppBizShop shop, BigDecimal amount, String appId, int channel, String settleType);
+
+    /**
+     * 创建代理商提现单
+     *
+     * @param dealer
+     * @param amount
+     * @param appId
+     * @param channel
+     * @param settleType
+     * @return
+     */
+    long createDealerPlayMoneyOrder(Dealer dealer, BigDecimal amount, String appId, int channel, String settleType);
 
     /**
      * 更新
@@ -198,6 +211,13 @@ public interface OrderService {
      * @return
      */
     List<Order> getPageOrdersByAccountId(long accountId, String appId, int offset, int count, Date date);
+
+    /**
+     * 批量查询
+     * @param orderNos
+     * @return
+     */
+    List<Order> getByOrderNos(List<String> orderNos);
 
     /**
      * 查询交易详情

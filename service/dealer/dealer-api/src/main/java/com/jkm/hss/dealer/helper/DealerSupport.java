@@ -58,13 +58,13 @@ public class DealerSupport {
         try {
             return AESUtil.decrypt(encryptIdentity, DealerConsts.getDealerConfig().tbDealerEncryptKey());
         } catch (final Throwable e) {
-            log.error("解密经销商[{}]手机号[{}]异常", dealerId, encryptIdentity);
+            log.error("解密经销商[{}]解密身份证[{}]异常", dealerId, encryptIdentity);
             throw e;
         }
     }
 
     /**
-     * 加密身份证
+     * 加密银行卡号
      *
      * @param bankCard
      * @return
@@ -74,7 +74,7 @@ public class DealerSupport {
     }
 
     /**
-     * 解密身份证
+     * 解密银行卡号
      *
      * @param encryptBankCard
      * @return
@@ -84,7 +84,7 @@ public class DealerSupport {
         try {
             return AESUtil.decrypt(encryptBankCard, DealerConsts.getDealerConfig().tbDealerEncryptKey());
         } catch (final Throwable e) {
-            log.error("解密经销商[{}]手机号[{}]异常", dealerId, encryptBankCard);
+            log.error("解密经销商[{}]解密银行卡号[{}]异常", dealerId, encryptBankCard);
             throw e;
         }
     }
@@ -98,5 +98,8 @@ public class DealerSupport {
      */
     public static String passwordDigest(final String password, final String salt) {
         return DigestUtils.sha256Hex(password + salt);
+    }
+    public static  void main(String[] args){
+        System.out.println(passwordDigest("123456","JKM"));
     }
 }

@@ -58,7 +58,7 @@
     <select id="selectMerchantLastWordDayRecord" resultType="com.jkm.hss.account.entity.SettleAccountFlow">
         SELECT * FROM tb_settle_account_flow
         WHERE account_user_type = 2
-        AND app_id != 'hss'
+        AND app_id = 'hsy'
         AND type = 1
         AND trade_date IN
         <foreach collection="tradeDateList" item="item" index="index" open="(" separator="," close=")">
