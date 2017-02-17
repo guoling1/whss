@@ -9,7 +9,7 @@
     </select>
 
     <select id="selectAccountListCount"  resultType="java.lang.Integer">
-        SELECT COUNT(1) FROM tb_account WHERE id in (1,2,11,113,114)
+        SELECT COUNT(1) FROM tb_account WHERE id in (1,2,11,48,49)
     </select>
 
 

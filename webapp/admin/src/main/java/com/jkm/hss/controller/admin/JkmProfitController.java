@@ -68,6 +68,9 @@ public class JkmProfitController extends BaseController{
         final PageModel<AccountDetailsResponse> pageModel = new PageModel<AccountDetailsResponse>(req.getPageNo(), req.getPageSize());
         req.setOffset(pageModel.getFirstIndex());
         List<AccountDetailsResponse> orderList =  shareProfitService.selectAccountDetails(req);
+        if (orderList==null){
+            return CommonResponse.simpleResponse(-1,"未查询到相关数据");
+        }
         int count = shareProfitService.selectAccountDetailsCount(req);
         pageModel.setCount(count);
         pageModel.setRecords(orderList);
