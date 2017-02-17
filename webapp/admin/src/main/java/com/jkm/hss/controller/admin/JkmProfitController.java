@@ -64,7 +64,7 @@ public class JkmProfitController extends BaseController{
      */
     @ResponseBody
     @RequestMapping(value = "/accountDetails",method = RequestMethod.POST)
-    public CommonResponse accountDetails(ProfitDetailsRequest req) throws ParseException {
+    public CommonResponse accountDetails(@RequestBody ProfitDetailsRequest req) throws ParseException {
         final PageModel<AccountDetailsResponse> pageModel = new PageModel<AccountDetailsResponse>(req.getPageNo(), req.getPageSize());
         req.setOffset(pageModel.getFirstIndex());
         List<AccountDetailsResponse> orderList =  shareProfitService.selectAccountDetails(req);
