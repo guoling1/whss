@@ -137,10 +137,13 @@
             </el-pagination>
           </div>
         </div>
+        <!-- /.box-body -->
       </div>
+      <!-- /.box -->
     </div>
   </div>
 </template>
+
 <script lang="babel">
   export default{
     name: 'storeList',
@@ -211,6 +214,8 @@
         vm.$data.records = '';
         vm.$data.total = 0;
         vm.$data.count = 0;
+        var content = document.getElementById('content'),
+          page = document.getElementById('page');
         vm.$http.post(vm.$data.url,vm.$data.query)
           .then(function (res) {
             vm.$data.loading = false;
