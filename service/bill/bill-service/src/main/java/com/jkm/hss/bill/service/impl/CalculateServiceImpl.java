@@ -116,7 +116,7 @@ public class CalculateServiceImpl implements CalculateService {
             //HSY
             final List<AppAuUser> appAuUsers = this.hsyShopDao.findCorporateUserByShopID(merchantId);
             final AppAuUser appAuUser = appAuUsers.get(0);
-            if ( appAuUser.getDealerID() == 0 || appAuUser.getDealerID() == null){
+            if ( appAuUser.getDealerID() == 0){
                 final ProductChannelDetail productChannelDetail = this.productChannelDetailService.selectByChannelTypeSign(channelSign).get(0);
                 return productChannelDetail.getProductMerchantWithdrawFee().setScale(2);
             }
