@@ -3,6 +3,7 @@ package com.jkm.hss.bill.service;
 import com.jkm.hss.bill.entity.JkmProfitDetailsResponse;
 import com.jkm.hss.bill.entity.JkmProfitResponse;
 import com.jkm.hss.merchant.helper.request.JkmProfitRequest;
+import com.jkm.hss.merchant.helper.request.ProfitDetailsRequest;
 
 import java.util.List;
 
@@ -30,7 +31,7 @@ public interface ShareProfitService {
      * @param req
      * @return
      */
-    List<JkmProfitDetailsResponse> selectProfitDetails();
+    List<JkmProfitDetailsResponse> selectProfitDetails(ProfitDetailsRequest req);
 
 
 }
