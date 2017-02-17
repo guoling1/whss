@@ -211,7 +211,6 @@ public class PushProducer {
         payload.setAlertMsg(new APNPayload.SimpleAlertMsg(resultMessage));
 //        payload.setCategory(content);
         payload.addCustomMsg("date",content);
-//        payload.addCustomMsg("code",100);
         template.setAPNInfo(payload);
         return pushTemplate(push,template,pushType,clientId,targets);
     }

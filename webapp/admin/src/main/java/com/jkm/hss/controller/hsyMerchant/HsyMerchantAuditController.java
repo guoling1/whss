@@ -1,11 +1,11 @@
 package com.jkm.hss.controller.hsyMerchant;
 
 import com.jkm.base.common.entity.CommonResponse;
-import com.jkm.hss.account.entity.Account;
 import com.jkm.hss.account.sevice.AccountService;
 import com.jkm.hss.controller.BaseController;
 import com.jkm.hss.push.sevice.PushService;
 import com.jkm.hsy.user.constant.AppConstant;
+import com.jkm.hsy.user.entity.AppAuUser;
 import com.jkm.hsy.user.entity.HsyMerchantAuditRequest;
 import com.jkm.hsy.user.entity.HsyMerchantAuditResponse;
 import com.jkm.hsy.user.service.HsyMerchantAuditService;
@@ -39,9 +39,9 @@ public class HsyMerchantAuditController extends BaseController {
         if (hsyMerchantAudit==null) {
             return CommonResponse.simpleResponse(-1, "商户不存在");
         }
-        Account acct = this.accountService.getAccId(hsyMerchantAuditRequest.getAccountID());
+        AppAuUser acct = this.hsyMerchantAuditService.getAccId(hsyMerchantAuditRequest.getId());
         if (acct!=null){
-            accountService.delAcct(hsyMerchantAuditRequest.getAccountID());
+            accountService.delAcct(acct.getAccountID());
         }
 
         final long accountId = this.accountService.initAccount(hsyMerchantAuditRequest.getName());
