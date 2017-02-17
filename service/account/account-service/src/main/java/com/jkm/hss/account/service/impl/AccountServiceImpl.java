@@ -177,10 +177,6 @@ public class AccountServiceImpl implements AccountService {
         return Optional.fromNullable(this.accountDao.selectByIdWithLock(id));
     }
 
-    @Override
-    public Account getAccId(Long accountID) {
-        return this.accountDao.getAccId(accountID);
-    }
 
     @Override
     public void delAcct(Long accountID) {

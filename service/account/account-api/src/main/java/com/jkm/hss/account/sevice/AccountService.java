@@ -121,11 +121,13 @@ public interface AccountService {
      */
     Optional<Account> getByIdWithLock(long id);
 
-    Account getAccId(Long accountID);
+
 
     /**
      * 删除账户
      * @param accountID
      */
     void delAcct(Long accountID);
+
+
 }

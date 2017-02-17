@@ -1,5 +1,6 @@
 package com.jkm.hsy.user.service;
 
+import com.jkm.hsy.user.entity.AppAuUser;
 import com.jkm.hsy.user.entity.HsyMerchantAuditRequest;
 import com.jkm.hsy.user.entity.HsyMerchantAuditResponse;
 
@@ -51,9 +52,11 @@ public interface HsyMerchantAuditService {
      * @param accountID
      */
     void updateAccount(Long accountID, Long id);
-
-
+    
     void stepChange(int uid);
 
     int getUid(Long id);
+
+    AppAuUser getAccId(Long id);
+
 }

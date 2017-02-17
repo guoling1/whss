@@ -124,12 +124,7 @@ public interface AccountDao {
      */
     Account selectByIdWithLock(@Param("id") long id);
 
-    /**
-     *
-     * @param accountID
-     * @return
-     */
-    Account getAccId(@Param("accountID") Long accountID);
+
 
     /**
      * 删除账户
