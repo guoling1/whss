@@ -56,7 +56,7 @@
             <div class="box-body">
               <el-table :data="tableData" border>
                 <el-table-column type="index" label="序号"></el-table-column>
-                <el-table-column prop="splitOrderNo" label="分润流水号" sortable="custom"></el-table-column>
+                <el-table-column prop="splitOrderNo" label="分润流水号" sortable></el-table-column>
                 <el-table-column prop="businessType" label="业务类型">
                   <template scope="scope">
                     {{ scope.row.businessType | filter_businessType }}
@@ -67,7 +67,7 @@
                     {{ scope.row.splitCreateTime | datetime }}
                   </template>
                 </el-table-column>
-                <el-table-column prop="orderNo" label="交易订单号" sortable="custom"></el-table-column>
+                <el-table-column prop="orderNo" label="交易订单号" sortable></el-table-column>
                 <el-table-column prop="splitSettlePeriod" label="分润结算周期"></el-table-column>
                 <el-table-column label="结算时间">
                   <template scope="scope">
