@@ -41,7 +41,7 @@
             ID,SID,CARDNO,CARDACCOUNTNAME,CARDBANK,BANKADDRESS,CARDFID,CARDCELLPHONE,IDCARDNO,STATUS,CREATETIME,UPDATETIME
         from app_biz_card
         where 1=1
-          <if test="cardNO!=null and cardNO!=''">and CARDNO=#{cardNO}</if>
+          <!--<if test="cardNO!=null and cardNO!=''">and CARDNO=#{cardNO}</if>-->
           <if test="sid!=null and sid!=''">and SID=#{sid}</if>
         order by UPDATETIME desc
     </select>
