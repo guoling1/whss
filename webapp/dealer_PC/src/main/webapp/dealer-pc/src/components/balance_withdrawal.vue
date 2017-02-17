@@ -177,7 +177,7 @@
     },
     methods: {
       withdrawal: function (event, item) {
-        this.$router.push({path: '/app/withdrawal', query: item});
+        this.$router.push({path: '/daili/app/withdrawal', query: item});
       },
       datetimeSelect: function (val) {
         let format = val.split(' - ');

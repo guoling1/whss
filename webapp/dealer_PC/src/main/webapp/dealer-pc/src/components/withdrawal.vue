@@ -130,9 +130,9 @@
         if (this.canSendCode) {
           this.canSendCode = false;
           this.$http.post('/daili/account/sendVerifyCode').then(res => {
-            this.canSendCode = true;
             let timer = setInterval(() => {
               if (this.timerNum < 0) {
+                this.canSendCode = true;
                 this.sendCodeText = '重新发送';
                 clearInterval(timer);
                 return;
