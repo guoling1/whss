@@ -87,7 +87,7 @@ Vue.http.interceptors.push((request, next) => {
         window.URL.revokeObjectURL(url);
         document.body.removeChild(links);
       } else if (body.code == -2) {
-        router.push('/login');
+        router.push('/daili/login');
       } else if (body.code != 1) {
         response.status = 500;
         response.statusMessage = body.message || '系统异常';
