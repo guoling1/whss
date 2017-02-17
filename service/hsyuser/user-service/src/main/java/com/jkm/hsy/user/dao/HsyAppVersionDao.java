@@ -12,4 +12,5 @@ import java.util.List;
 public interface HsyAppVersionDao {
     public List<AppVersion> getAppVersion(AppVersion appVersion);
     public List<AppVersion> getAppVersionAndroid(AppVersion appVersion);
+    public List<AppVersion> findVersionDetailByVersionCode(AppVersion appVersion);
 }

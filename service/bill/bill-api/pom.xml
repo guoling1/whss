@@ -127,5 +127,9 @@
             <groupId>com.jkm</groupId>
             <artifactId>hss-dealer-api</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.jkm</groupId>
+            <artifactId>hss-dealer-api</artifactId>
+        </dependency>
     </dependencies>
 </project>

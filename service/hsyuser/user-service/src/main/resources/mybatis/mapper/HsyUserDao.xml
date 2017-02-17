@@ -3,27 +3,42 @@
 <mapper namespace="com.jkm.hsy.user.dao.HsyUserDao">
 
     <select id="findAppAuUserByParam" parameterType="com.jkm.hsy.user.entity.AppAuUser" resultType="com.jkm.hsy.user.entity.AppAuUser">
-        select
+        select distinct
           user.ID,user.globalID,user.CELLPHONE,user.PASSWORD,user.NICKNAME,user.REALNAME,user.STATUS,
           (select PATH from app_cm_file acf where uuid=user.PROFILE) PROFILE,
           user.AUSTEP,user.IDCARD,user.IDCARDF,user.IDCARDB,user.IDCARDH,user.CREATETIME,user.UPDATETIME,
          (select PATH from app_cm_file acf where uuid=user.IDCARDF) IDCARDFURL,
          (select PATH from app_cm_file acf where uuid=user.IDCARDB) IDCARDBURL,
          (select PATH from app_cm_file acf where uuid=user.IDCARDH) IDCARDHURL,
-          user.ACCOUNTID ACCOUNTID,user.DEALERID DEALERID,user.PRODUCTID PRODUCTID,user.WEIXINRATE WEIXINRATE,user.ALIPAYRATE ALIPAYRATE,user.FASTRATE FASTRATE,user.PARENTID
-        from app_au_user user
+          user.ACCOUNTID ACCOUNTID,user.DEALERID DEALERID,user.PRODUCTID PRODUCTID,user.WEIXINRATE WEIXINRATE,user.ALIPAYRATE ALIPAYRATE,user.FASTRATE FASTRATE,user.PARENTID,
+        (case when sur.ROLE is null then user.ROLETEMP
+        else sur.role end) ROLE,
+        (case when sur.ROLE=1||user.ROLETEMP=1 then '法人'
+        when sur.ROLE=2||user.ROLETEMP=2 then '店长'
+        when sur.ROLE=3||user.ROLETEMP=3 then '店员'
+        when sur.ROLE=4||user.ROLETEMP=4 then '财务' else '' end) ROLENAME
+        from app_au_user user left join app_biz_shop_user_role sur on user.id=sur.UID
         where 1=1
           <if test="cellphone!=null and cellphone!=''">and CELLPHONE=#{cellphone}</if>
         order by UPDATETIME desc
     </select>
 
     <select id="findAppAuUserByID" parameterType="java.lang.Long" resultType="com.jkm.hsy.user.entity.AppAuUser">
-        select
+        select distinct
         user.ID,user.globalID,user.CELLPHONE,user.PASSWORD,user.NICKNAME,user.REALNAME,user.STATUS,
         (select PATH from app_cm_file acf where uuid=user.PROFILE) PROFILE,
         user.AUSTEP,user.IDCARD,user.IDCARDF,user.IDCARDB,user.IDCARDH,user.CREATETIME,user.UPDATETIME,
-        user.ACCOUNTID ACCOUNTID,user.DEALERID DEALERID,user.PRODUCTID PRODUCTID,user.WEIXINRATE WEIXINRATE,user.ALIPAYRATE ALIPAYRATE,user.FASTRATE FASTRATE,user.PARENTID
-        from app_au_user user
+        (select PATH from app_cm_file acf where uuid=user.IDCARDF) IDCARDFURL,
+        (select PATH from app_cm_file acf where uuid=user.IDCARDB) IDCARDBURL,
+        (select PATH from app_cm_file acf where uuid=user.IDCARDH) IDCARDHURL,
+        user.ACCOUNTID ACCOUNTID,user.DEALERID DEALERID,user.PRODUCTID PRODUCTID,user.WEIXINRATE WEIXINRATE,user.ALIPAYRATE ALIPAYRATE,user.FASTRATE FASTRATE,user.PARENTID,
+        (case when sur.ROLE is null then user.ROLETEMP
+        else sur.role end) ROLE,
+        (case when sur.ROLE=1||user.ROLETEMP=1 then '法人'
+        when sur.ROLE=2||user.ROLETEMP=2 then '店长'
+        when sur.ROLE=3||user.ROLETEMP=3 then '店员'
+        when sur.ROLE=4||user.ROLETEMP=4 then '财务' else '' end) ROLENAME
+        from app_au_user user left join app_biz_shop_user_role sur on user.id=sur.UID
         where 1=1
         <if test="id!=null and id!=''">and ID=#{id}</if>
         order by UPDATETIME desc

@@ -71,8 +71,8 @@
             </div>
             <div class="box-body">
               <el-table :data="tableData" border>
-                <el-table-column prop="flowSn" label="流水号" sortable="custom"></el-table-column>
-                <el-table-column label="时间" width="180" sortable="custom">
+                <el-table-column prop="flowSn" label="流水号" sortable></el-table-column>
+                <el-table-column label="时间" width="180" sortable>
                   <template scope="scope">
                     {{ scope.row.createTime }}
                   </template>
