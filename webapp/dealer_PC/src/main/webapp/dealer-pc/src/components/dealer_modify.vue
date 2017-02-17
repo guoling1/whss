@@ -209,6 +209,7 @@
       modify: function () {
         if (!this.modify_pwd) {
           this.modify_pwd = true;
+          this.update.loginPwd = '';
         } else {
           this.$http.post('/daili/dealer/updatePwd', this.update).then(res => {
             this.$message({
