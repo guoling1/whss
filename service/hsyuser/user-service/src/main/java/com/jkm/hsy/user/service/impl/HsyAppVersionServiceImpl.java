@@ -85,4 +85,37 @@ public class HsyAppVersionServiceImpl implements HsyAppVersionService {
         }).create();
         return gson.toJson(appVersion);
     }
+
+    /**HSY001037 获得ios审核版本*/
+    public String findVersionDetailByVersionCode(String dataParam,AppParam appParam)throws ApiHandleException{
+        Gson gson=new GsonBuilder().setDateFormat(AppConstant.DATE_FORMAT).create();
+
+        /**参数转化*/
+        AppVersion appVersion=null;
+        try{
+            appVersion=gson.fromJson(dataParam, AppVersion.class);
+        } catch(Exception e){
+            throw new ApiHandleException(ResultCode.PARAM_TRANS_FAIL);
+        }
+
+        /**参数验证*/
+        if(!(appVersion.getVersionCode()!=null&&!appVersion.getVersionCode().equals("")))
+            throw new ApiHandleException(ResultCode.PARAM_LACK,"当前版本号");
+        appVersion.setAppType(appParam.getAppType());
+
+        List<AppVersion> versionList=hsyAppVersionDao.findVersionDetailByVersionCode(appVersion);
+        gson = new GsonBuilder().registerTypeAdapter(Date.class, new JsonSerializer<Date>() {
+            public JsonElement serialize(Date date, Type typeOfT, JsonSerializationContext context) throws JsonParseException {
+                return new JsonPrimitive(date.getTime());
+            }
+        }).registerTypeAdapter(Date.class, new JsonDeserializer<Date>() {
+            public Date deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+                return new java.util.Date(json.getAsJsonPrimitive().getAsLong());
+            }
+        }).create();
+        if(versionList!=null&&versionList.size()!=0)
+            return gson.toJson(versionList.get(0));
+        else
+            return gson.toJson(appVersion);
+    }
 }

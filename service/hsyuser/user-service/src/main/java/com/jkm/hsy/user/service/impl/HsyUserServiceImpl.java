@@ -199,8 +199,14 @@ public class HsyUserServiceImpl implements HsyUserService {
 
         AppBizShop appBizShop=new AppBizShop();
         appBizShop.setUid(appAuUserFind.getId());
-        if(appAuUserFind.getParentID()==null||(appAuUserFind.getParentID()!=null&&appAuUserFind.getParentID()!=0L))
+        if(appAuUserFind.getParentID()==null||(appAuUserFind.getParentID()!=null&&appAuUserFind.getParentID()==0L))
             appBizShop.setType(AppConstant.ROLE_TYPE_PRIMARY);
+        else
+        {
+            List<AppAuUser> parentList=hsyUserDao.findAppAuUserByID(appAuUserFind.getParentID());
+            if(parentList!=null&&parentList.size()!=0)
+                appAuUserFind.setAccountID(parentList.get(0).getAccountID());
+        }
         List<AppBizShop> shopList=hsyShopDao.findPrimaryAppBizShopByUserID(appBizShop);
         if(shopList!=null&&shopList.size()!=0)
             appBizShop=shopList.get(0);

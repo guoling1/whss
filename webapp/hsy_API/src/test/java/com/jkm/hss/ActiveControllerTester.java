@@ -21,8 +21,8 @@ import java.util.*;
  * Created by Allen on 2017/1/7.
  */
 public class ActiveControllerTester {
-//    public static String url="http://192.168.1.99:8080/hsy/active/rest";
-    public static String url="http://localhost:8080/hsy/active/rest";
+    public static String url="http://192.168.1.99:8080/hsy/active/rest";
+//    public static String url="http://localhost:8080/hsy/active/rest";
 
     @Test
     public void testInsertHsyUser()throws Exception{
@@ -42,13 +42,13 @@ public class ActiveControllerTester {
     public void testLogin()throws Exception{
         AppParam p=new AppParam();
         p.setServiceCode("HSY001002");
-        p.setAccessToken("724ffbf067e3a7d73834cd404d8cb1bc");
+        p.setAccessToken("76b2bf0a5b08edda6b02047f49b14016");
 //        p.setAccessToken("2cd9eafaa6193d9fb0ff9916f3941e6e");
         p.setAppType("android");
         p.setTimeStamp(AppDateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
         p.setV("v1.0");
-        String param="{\"cellphone\": \"13521691431\",\"password\":\"123456\"}";
-//        String param="{\"cellphone\": \"13521691441\",\"password\":\"123456\"}";
+//        String param="{\"cellphone\": \"13521691431\",\"password\":\"123456\"}";
+        String param="{\"cellphone\": \"15010607970\",\"password\":\"54730132\"}";
         p.setRequestData(param);
         ActiveControllerTester.testRest(p);
     }
@@ -389,6 +389,19 @@ public class ActiveControllerTester {
         p.setTimeStamp(AppDateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
         p.setV("v1.0");
         String param="{\"id\":18}";
+        p.setRequestData(param);
+        ActiveControllerTester.testRest(p);
+    }
+
+    @Test
+    public void testFindVersionDetailByVersionCode()throws Exception{
+        AppParam p=new AppParam();
+        p.setServiceCode("HSY001037");
+        p.setAccessToken("");
+        p.setAppType("ios");
+        p.setTimeStamp(AppDateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
+        p.setV("v1.0");
+        String param="{\"versionCode\":2}";
         p.setRequestData(param);
         ActiveControllerTester.testRest(p);
     }

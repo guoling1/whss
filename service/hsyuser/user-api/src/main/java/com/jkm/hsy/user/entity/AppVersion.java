@@ -15,6 +15,7 @@ public class AppVersion {
     private Long size;//版本大小 kb
     private Integer isUpgrade;//0不需要 1需要升级 2强制升级
     private String description;//版本信息描述
+    private String isReview;//ios审核0 不审核 1审核
     private Date createTime;
     private Date updateTime;
 
@@ -104,5 +105,13 @@ public class AppVersion {
 
     public void setUpdateTime(Date updateTime) {
         this.updateTime = updateTime;
+    }
+
+    public String getIsReview() {
+        return isReview;
+    }
+
+    public void setIsReview(String isReview) {
+        this.isReview = isReview;
     }
 }
