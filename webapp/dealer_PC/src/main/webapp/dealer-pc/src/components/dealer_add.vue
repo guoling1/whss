@@ -36,12 +36,7 @@
                   <el-input v-model="form.loginName"></el-input>
                 </el-form-item>
                 <el-form-item label="登录密码" prop="loginPwd">
-                  <el-col :span="19">
-                    <el-input type="password" v-model="form.loginPwd"></el-input>
-                  </el-col>
-                  <el-col class="line-center" :span="5">
-                    <el-button type="text">修改密码</el-button>
-                  </el-col>
+                  <el-input type="password" v-model="form.loginPwd"></el-input>
                 </el-form-item>
                 <el-form-item label="联系邮箱" prop="email">
                   <el-input v-model="form.email"></el-input>
@@ -109,7 +104,7 @@
       }, err => {
         this.$message({
           showClose: true,
-          message: err.msg,
+          message: err.data.msg,
           type: 'error'
         });
       })
@@ -207,7 +202,12 @@
         this.$refs['form'].validate((valid) => {
           if (valid) {
             this.$http.post('/daili/dealer/addSecondDealer', this.form).then(res => {
-              console.log(res);
+              this.$router.push('/daili/app/dealer_list');
+              this.$message({
+                showClose: true,
+                message: '创建代理商成功',
+                type: 'success'
+              });
             }, err => {
               this.$message({
                 showClose: true,

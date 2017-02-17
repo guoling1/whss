@@ -152,7 +152,7 @@
         <ul class="sidebar-menu">
           <li class="header">钱包++ Version 1.0</li>
           <li class="active">
-            <router-link :to="{path:'/app/home'}">
+            <router-link :to="{path:'/daili/app/home'}">
               <i class="glyphicon glyphicon-home"></i> <span>主页</span>
               <!--<span class="pull-right-container">-->
               <!--<i class="fa fa-angle-left pull-right"></i>-->

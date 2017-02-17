@@ -14,7 +14,9 @@
 
     <!-- 分润明细 -->
     <select id="selectProfitDetails"  resultType="com.jkm.hss.bill.entity.JkmProfitDetailsResponse">
-        SELECT * FROM tb_split_account_record
+        SELECT a.* FROM tb_split_account_record a
+        LEFT JOIN tb_account b ON a.receipt_money_account_id=b.id
+        WHERE b.id=#{id}
     </select>
 
 </mapper>
