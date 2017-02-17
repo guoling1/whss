@@ -118,9 +118,9 @@ public class DealerController extends BaseController {
             if(StringUtils.isBlank(secondLevelDealerAdd2Request.getEmail())) {
                 return CommonResponse.simpleResponse(-1, "联系邮箱不能为空");
             }
-            if(!ValidateUtils.isEmail(secondLevelDealerAdd2Request.getEmail())) {
-                return CommonResponse.simpleResponse(-1, "联系邮箱格式错误");
-            }
+//            if(!ValidateUtils.isEmail(secondLevelDealerAdd2Request.getEmail())) {
+//                return CommonResponse.simpleResponse(-1, "联系邮箱格式错误");
+//            }
             if(StringUtils.isBlank(secondLevelDealerAdd2Request.getBelongProvinceCode())) {
                 return CommonResponse.simpleResponse(-1, "所在省份编码不能为空");
             }
@@ -254,9 +254,9 @@ public class DealerController extends BaseController {
             if(StringUtils.isBlank(request.getEmail())) {
                 return CommonResponse.simpleResponse(-1, "联系邮箱不能为空");
             }
-            if(!ValidateUtils.isEmail(request.getEmail())) {
-                return CommonResponse.simpleResponse(-1, "联系邮箱格式错误");
-            }
+//            if(!ValidateUtils.isEmail(request.getEmail())) {
+//                return CommonResponse.simpleResponse(-1, "联系邮箱格式错误");
+//            }
 
             if(StringUtils.isBlank(request.getBelongProvinceCode())) {
                 return CommonResponse.simpleResponse(-1, "所在省份编码不能为空");
