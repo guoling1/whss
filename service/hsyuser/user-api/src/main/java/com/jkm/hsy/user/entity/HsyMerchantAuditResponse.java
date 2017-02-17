@@ -21,7 +21,7 @@ public class HsyMerchantAuditResponse {
     private String idcardf;//身份证正面照
     private String idcardb;//身份证背面照
     private String idcardh;//身份证手持照
-
+    private String idcardNO;//身份证号
     private Long id;
     private String globalID;//对外ID
     private String name;//店铺名称

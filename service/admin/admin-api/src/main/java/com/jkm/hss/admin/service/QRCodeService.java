@@ -399,6 +399,12 @@ public interface QRCodeService {
      * @return
      */
     List<QRCode> getUnDistributeCodeBySysType(String sysType);
+    /**
+     * admin查询所有未分配的二维码个数
+     *
+     * @return
+     */
+    int getUnDistributeCountBySysType(String sysType);
 
     /**
      * 根据码段和产品类型

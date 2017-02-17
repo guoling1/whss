@@ -15,8 +15,11 @@ import com.jkm.hss.account.sevice.AccountService;
 import com.jkm.hss.admin.entity.DistributeQRCodeRecord;
 import com.jkm.hss.admin.entity.QRCode;
 import com.jkm.hss.admin.enums.EnumQRCodeDistributeType2;
+import com.jkm.hss.admin.helper.requestparam.DistributeQrCodeRequest;
 import com.jkm.hss.admin.helper.responseparam.ActiveCodeCount;
+import com.jkm.hss.admin.helper.responseparam.BossDistributeQRCodeRecordResponse;
 import com.jkm.hss.admin.helper.responseparam.DistributeCodeCount;
+import com.jkm.hss.admin.helper.responseparam.DistributeQRCodeRecordResponse;
 import com.jkm.hss.admin.service.DistributeQRCodeRecordService;
 import com.jkm.hss.admin.service.QRCodeService;
 import com.jkm.hss.dealer.dao.DealerDao;
@@ -2278,5 +2281,53 @@ public class DealerServiceImpl implements DealerService {
         return pageModel;
     }
 
+    /**
+     * 【boss后台】二维码分配记录
+     *
+     * @param distributeRecordRequest
+     * @return
+     */
+    @Override
+    public PageModel<BossDistributeQRCodeRecordResponse> distributeRecord(DistributeQrCodeRequest distributeRecordRequest) {
+        if("000000000000".equals(distributeRecordRequest.getFirstMarkCode())){
 
+        }
+        if("金开门".equals(distributeRecordRequest.getFirstName())){
+
+        }
+        final PageModel<BossDistributeQRCodeRecordResponse> pageModel = new PageModel<>(distributeRecordRequest.getPageNo(), distributeRecordRequest.getPageSize());
+        distributeRecordRequest.setOffset(pageModel.getFirstIndex());
+        distributeRecordRequest.setCount(pageModel.getPageSize());
+        final int count = distributeQRCodeRecordService.selectDistributeCountByContions(distributeRecordRequest);
+        final List<DistributeQRCodeRecord> distributeQRCodeRecords = distributeQRCodeRecordService.selectDistributeRecordsByContions(distributeRecordRequest);
+        List<BossDistributeQRCodeRecordResponse> bossDistributeQRCodeRecordResponses = new ArrayList<BossDistributeQRCodeRecordResponse>();
+        if(distributeQRCodeRecords.size()>0){
+            for(int i=0;i<distributeQRCodeRecords.size();i++){
+                DistributeQRCodeRecord distributeQRCodeRecord = distributeQRCodeRecords.get(i);
+                BossDistributeQRCodeRecordResponse bossDistributeQRCodeRecordResponse = new BossDistributeQRCodeRecordResponse();
+                bossDistributeQRCodeRecordResponse.setId(distributeQRCodeRecord.getId());
+                bossDistributeQRCodeRecordResponse.setDistributeTime(distributeQRCodeRecord.getCreateTime());
+                Dealer dealer = dealerDao.selectById(distributeQRCodeRecord.getSecondLevelDealerId());
+                bossDistributeQRCodeRecordResponse.setProxyName(dealer.getProxyName());
+                bossDistributeQRCodeRecordResponse.setMarkCode(dealer.getMarkCode());
+                if(distributeQRCodeRecord.getFirstLevelDealerId()==0){
+                    bossDistributeQRCodeRecordResponse.setFristProxyName("金开门");
+                    bossDistributeQRCodeRecordResponse.setFirstMarkCode("000000000000");
+                }else{
+                    Dealer firstDealer = dealerDao.selectById(distributeQRCodeRecord.getFirstLevelDealerId());
+                    bossDistributeQRCodeRecordResponse.setFristProxyName(firstDealer.getProxyName());
+                    bossDistributeQRCodeRecordResponse.setFirstMarkCode(firstDealer.getMarkCode());
+                }
+                bossDistributeQRCodeRecordResponse.setCount(distributeQRCodeRecord.getCount());
+                bossDistributeQRCodeRecordResponse.setStartCode(distributeQRCodeRecord.getStartCode());
+                bossDistributeQRCodeRecordResponse.setEndCode(distributeQRCodeRecord.getEndCode());
+                bossDistributeQRCodeRecordResponse.setType(distributeQRCodeRecord.getType());
+                bossDistributeQRCodeRecordResponse.setOperateUser("admin");
+                bossDistributeQRCodeRecordResponses.add(bossDistributeQRCodeRecordResponse);
+            }
+        }
+        pageModel.setCount(count);
+        pageModel.setRecords(bossDistributeQRCodeRecordResponses);
+        return pageModel;
+    }
 }

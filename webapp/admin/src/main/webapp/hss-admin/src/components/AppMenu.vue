@@ -99,11 +99,12 @@
             <li @click="refrash" :class="(url=='/admin/record/passAdd')?'treeview active':'treeview'"><router-link to="/admin/record/passAdd"> <span>新增通道</span> </router-link></li>
           </ul>
         </li>
-        <li :class="(url=='/admin/record/issue1'||url=='/admin/record/issue'||url=='/admin/record/codeStatus')?'treeview active':'treeview'">
-          <a href="#"><span>分配二维码</span></a>
+        <li :class="(url=='/admin/record/issueRecord'||url=='/admin/record/issue'||url=='/admin/record/codeStatus')?'treeview active':'treeview'">
+          <a href="#"><span>设备管理</span></a>
           <ul class="treeview-menu">
-            <li :class="(url=='/admin/record/issue1')?'active':''" @click="refrash"><router-link to="/admin/record/issue1"><span>按个数分配</span> </router-link></li>
-            <li :class="(url=='/admin/record/issue')?'active':''" @click="refrash"><router-link to="/admin/record/issue"><span>按码段分配</span> </router-link></li>
+            <!--<li :class="(url=='/admin/record/issue1')?'active':''" @click="refrash"><router-link to="/admin/record/issue1"><span>按个数分配</span> </router-link></li>-->
+            <li :class="(url=='/admin/record/issue')?'active':''" @click="refrash"><router-link to="/admin/record/issue"><span>分配二维码</span> </router-link></li>
+            <li :class="(url=='/admin/record/issueRecord')?'active':''" @click="refrash"><router-link to="/admin/record/issueRecord"><span>二维码分配记录</span> </router-link></li>
             <li :class="(url=='/admin/record/codeStatus')?'active':''" @click="refrash"><router-link to="/admin/record/codeStatus"><span>二维码状态查询</span> </router-link></li>
           </ul>
         </li>

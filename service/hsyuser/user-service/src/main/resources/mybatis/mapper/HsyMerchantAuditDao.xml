@@ -55,7 +55,7 @@
             d.UID,
             d.SID,
             b.IDCARD,
-						e.IDCARDNO,
+			e.IDCARDNO,
             e.CARDNO,
             e.CARDACCOUNTNAME,
             e.CARDBANK,
@@ -112,5 +112,14 @@
     <select id="getUid" resultType="java.lang.Integer">
         SELECT UID FROM app_biz_shop_user_role WHERE SID=#{id}
     </select>
+
+
+    <select id="getAccId" resultType="com.jkm.hsy.user.entity.AppAuUser">
+        SELECT a.* FROM app_au_user a
+        LEFT JOIN tb_account b ON a.ACCOUNTID=b.id
+        LEFT JOIN app_biz_shop_user_role c ON c.UID=a.ID
+        WHERE c.SID=#{id}
+    </select>
+
 
 </mapper>

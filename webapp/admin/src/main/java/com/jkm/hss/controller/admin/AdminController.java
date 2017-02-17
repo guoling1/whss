@@ -6,11 +6,12 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
 import com.jkm.base.common.entity.CommonResponse;
 import com.jkm.base.common.entity.PageModel;
-import com.jkm.base.common.enums.EnumBoolean;
 import com.jkm.base.common.util.CookieUtil;
 import com.jkm.base.common.util.ValidateUtils;
 import com.jkm.hss.admin.entity.*;
 import com.jkm.hss.admin.enums.EnumQRCodeDistributeType;
+import com.jkm.hss.admin.helper.requestparam.DistributeQrCodeRequest;
+import com.jkm.hss.admin.helper.responseparam.BossDistributeQRCodeRecordResponse;
 import com.jkm.hss.admin.helper.responseparam.DistributeQRCodeRecordResponse;
 import com.jkm.hss.admin.service.AdminUserService;
 import com.jkm.hss.admin.service.QRCodeService;
@@ -879,28 +880,28 @@ public class AdminController extends BaseController {
         return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "分配成功", distributeQRCodeRecordResponseList);
     }
 
-//    /**
-//     * 剩余二维码个数
-//     * @param unDistributeCountRequest
-//     * @return
-//     */
-//    @ResponseBody
-//    @RequestMapping(value = "/unDistributeCount", method = RequestMethod.POST)
-//    public CommonResponse unDistributeCount (@RequestBody UnDistributeCountRequest unDistributeCountRequest) {
-//        unDistributeCountRequest.getSysType()
-//        this.qrCodeService.getUnDistributeCodeBySysType(sysType);
-//        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "分配成功", 10);
-//    }
     /**
-     * 二维码分配记录
+     * 剩余二维码个数
+     * @param unDistributeCountRequest
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/unDistributeCount", method = RequestMethod.POST)
+    public CommonResponse unDistributeCount (@RequestBody UnDistributeCountRequest unDistributeCountRequest) {
+        int count = this.adminUserService.unDistributeCount(unDistributeCountRequest.getSysType());
+        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "分配成功", count);
+    }
+
+    /**
+     * 分配二维码记录
      * @param distributeRecordRequest
      * @return
      */
     @ResponseBody
     @RequestMapping(value = "/distributeRecord", method = RequestMethod.POST)
-    public CommonResponse distributeRecord (@RequestBody DistributeRecordRequest distributeRecordRequest) {
-        PageModel<DistributeRecordResponse> distributeQRCodeRecords = this.dealerService.distributeRecord(distributeRecordRequest,1);
-        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "分配成功", distributeQRCodeRecords);
+    public CommonResponse distributeRecord (@RequestBody DistributeQrCodeRequest distributeRecordRequest) {
+        PageModel<BossDistributeQRCodeRecordResponse> bossDistributeQRCodeRecordResponse = this.dealerService.distributeRecord(distributeRecordRequest);
+        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", bossDistributeQRCodeRecordResponse);
     }
 
 }

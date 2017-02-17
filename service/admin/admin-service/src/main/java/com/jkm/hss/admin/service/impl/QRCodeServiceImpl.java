@@ -827,7 +827,7 @@ public class QRCodeServiceImpl implements QRCodeService {
     }
 
     /**
-     * admin查询所有未分配的二维码个数
+     * admin查询所有未分配的二维码L列表
      *
      * @param sysType
      * @return
@@ -835,6 +835,16 @@ public class QRCodeServiceImpl implements QRCodeService {
     @Override
     public List<QRCode> getUnDistributeCodeBySysType(String sysType) {
         return this.qrCodeDao.getUnDistributeCodeBySysType(sysType);
+    }
+    /**
+     * admin查询所有未分配的二维码个数
+     *
+     * @param sysType
+     * @return
+     */
+    @Override
+    public int getUnDistributeCountBySysType(String sysType) {
+        return this.qrCodeDao.getUnDistributeCountBySysType(sysType);
     }
 
     /**
