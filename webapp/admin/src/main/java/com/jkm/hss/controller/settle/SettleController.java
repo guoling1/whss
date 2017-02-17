@@ -237,6 +237,7 @@ public class SettleController extends BaseController {
                 return response;
             }
         });
+        result.setCount(page.getCount());
         result.setRecords(responses);
         return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "success", result);
     }
