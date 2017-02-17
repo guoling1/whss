@@ -183,7 +183,7 @@
     },
     methods: {
       addDealer: function () {
-        this.$router.push('/app/dealer_add');
+        this.$router.push('/daili/app/dealer_add');
       },
       getData: function () {
         this.$http.post('/daili/dealer/listSecondDealer', {
