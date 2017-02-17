@@ -72,7 +72,7 @@
               <th style="text-align: right">店主（法人）实名:</th>
               <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.contactName"  readonly></td>
               <th style="text-align: right">店主身份证号:</th>
-              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.idcard" readonly></td>
+              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.idcardNO" readonly></td>
               <th style="text-align: right"></th>
               <td></td>
             </tr>
