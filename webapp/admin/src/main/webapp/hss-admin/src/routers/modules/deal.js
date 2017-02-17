@@ -32,7 +32,7 @@ const PassList = r => require.ensure([], () => r(require('../../components/PassL
 const ProductAdd = r => require.ensure([], () => r(require('../../components/ProductAdd')), 'group-record');
 const ProductList = r => require.ensure([], () => r(require('../../components/ProductList')), 'group-record');
 const Issue = r => require.ensure([], () => r(require('../../components/Issue')), 'group-record');
-const Issue1 = r => require.ensure([], () => r(require('../../components/Issue1')), 'group-record');
+const IssueRecord = r => require.ensure([], () => r(require('../../components/IssueRecord')), 'group-record');
 const IssueSuccess = r => require.ensure([], () => r(require('../../components/IssueSuccess')), 'group-record');
 const Invite = r => require.ensure([], () => r(require('../../components/Invite')), 'group-record');
 const Upgrade = r => require.ensure([], () => r(require('../../components/Upgrade')), 'group-record');
@@ -227,9 +227,9 @@ export default {
       component: Issue
     },
     {
-      path: 'issue1',
-      name: 'Issue1',
-      component: Issue1
+      path: 'issueRecord',
+      name: 'IssueRecord',
+      component: IssueRecord
     },
     {
       path: 'issueSuccess',

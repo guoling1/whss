@@ -89,13 +89,22 @@ public class QrCodeController extends BaseController {
     @ResponseBody
     @RequestMapping(value = "/distributeQrCodeToDealer", method = RequestMethod.POST)
     public CommonResponse distributeQrCodeToDealer (@RequestBody DistributeQrCodeRequest distributeQrCodeRequest) {
-        final Optional<Dealer> dealerOptional = this.dealerService.getById(distributeQrCodeRequest.getDealerId());
-        if(!dealerOptional.isPresent()) {
-            return CommonResponse.simpleResponse(-1, "代理商不存在");
+        long todealerId = 0;
+        Dealer dealer = null;
+        if(distributeQrCodeRequest.getIsSelf()==EnumBoolean.FALSE.getCode()){//分配给别人
+            final Optional<Dealer> dealerOptional = this.dealerService.getById(distributeQrCodeRequest.getDealerId());
+            if(!dealerOptional.isPresent()) {
+                return CommonResponse.simpleResponse(-1, "代理商不存在");
+            }
+            Preconditions.checkState(super.getDealer().get().getLevel() == EnumDealerLevel.FIRST.getId(), "不是一级代理不可以分配二维码");
+            Preconditions.checkState(dealerOptional.get().getFirstLevelDealerId() == super.getDealerId(),
+                    "二级代理商[{}]不是当前一级代理商[{}]的二级代理", distributeQrCodeRequest.getDealerId(), super.getDealerId());
+            todealerId = dealerOptional.get().getId();
+            dealer = dealerOptional.get();
+        }else{
+            todealerId = super.getDealerId();
+            dealer = super.getDealer().get();
         }
-        Preconditions.checkState(super.getDealer().get().getLevel() == EnumDealerLevel.FIRST.getId(), "不是一级代理不可以分配二维码");
-        Preconditions.checkState(dealerOptional.get().getFirstLevelDealerId() == super.getDealerId(),
-                "二级代理商[{}]不是当前一级代理商[{}]的二级代理", distributeQrCodeRequest.getDealerId(), super.getDealerId());
         if (StringUtils.isBlank(distributeQrCodeRequest.getSysType())) {
             return CommonResponse.simpleResponse(-1, "请选择产品");
         }
@@ -108,23 +117,20 @@ public class QrCodeController extends BaseController {
         long productId = productOptional.get().getId();
         List<DealerChannelRate> dealerChannelRateList = dealerChannelRateService.selectByDealerIdAndProductId(super.getDealerId(),productId);
         if(dealerChannelRateList==null||dealerChannelRateList.size()==0){
-            return CommonResponse.simpleResponse(-1, "未开通此产品");
+            return CommonResponse.simpleResponse(-1, "您未开通此产品");
         }
         List<DistributeQRCodeRecord> distributeQRCodeRecords = new ArrayList<DistributeQRCodeRecord>();
 
-        if (EnumBoolean.TRUE.getCode() == distributeQrCodeRequest.getIsSelf()) {
-            distributeQrCodeRequest.setDealerId(super.getDealerId());
-        }
         if(distributeQrCodeRequest.getDistributeType()==1){//按码段
             distributeQRCodeRecords = this.dealerService.distributeQRCodeByCode(distributeQrCodeRequest.getType(),distributeQrCodeRequest.getSysType(),super.getDealerId(),
-                    distributeQrCodeRequest.getDealerId(), distributeQrCodeRequest.getStartCode(),distributeQrCodeRequest.getEndCode());
+                    todealerId, distributeQrCodeRequest.getStartCode(),distributeQrCodeRequest.getEndCode());
         }
         if(distributeQrCodeRequest.getDistributeType()==2){//按个数
             if (distributeQrCodeRequest.getCount() <= 0) {
                 return CommonResponse.simpleResponse(-1, "分配个数不可以是0");
             }
             distributeQRCodeRecords = this.dealerService.distributeQRCodeByCount(distributeQrCodeRequest.getType(),distributeQrCodeRequest.getSysType(),super.getDealerId(),
-                    distributeQrCodeRequest.getDealerId(), distributeQrCodeRequest.getCount());
+                    todealerId, distributeQrCodeRequest.getCount());
         }
         if(distributeQRCodeRecords.size()<=0){
             return CommonResponse.simpleResponse(-1, "二维码数量不足");
@@ -132,8 +138,8 @@ public class QrCodeController extends BaseController {
         List<DistributeQRCodeRecordResponse> distributeQRCodeRecordResponseList = new ArrayList<DistributeQRCodeRecordResponse>();
         for(int i=0;i<distributeQRCodeRecords.size();i++){
             DistributeQRCodeRecordResponse distributeQRCodeRecordResponse = new DistributeQRCodeRecordResponse();
-            distributeQRCodeRecordResponse.setDealerName(dealerOptional.get().getProxyName());
-            distributeQRCodeRecordResponse.setDealerMobile(dealerOptional.get().getMobile());
+            distributeQRCodeRecordResponse.setDealerName(dealer.getProxyName());
+            distributeQRCodeRecordResponse.setDealerMobile(dealer.getMobile());
             distributeQRCodeRecordResponse.setDistributeTime(distributeQRCodeRecords.get(i).getCreateTime());
             distributeQRCodeRecordResponse.setType(distributeQRCodeRecords.get(i).getType());
             distributeQRCodeRecordResponse.setCount(distributeQRCodeRecords.get(i).getCount());

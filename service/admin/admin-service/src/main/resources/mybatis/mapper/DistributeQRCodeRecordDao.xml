@@ -77,4 +77,37 @@
         </if>
         ORDER BY id DESC LIMIT #{offset},#{count}
     </select>
+
+
+    <select id="selectBossDistributeCountByContions" resultType="java.lang.Integer">
+        SELECT count(1) FROM tb_distribute_qr_code_record
+        WHERE
+        1=1
+        <if test="markCode != null and markCode!=''">
+            AND second_level_dealer_id in (select id from tb_dealer where mark_code = #{markCode})
+        </if>
+        <if test="name != null and name!=''">
+            AND second_level_dealer_id in (select id from tb_dealer where proxy_name LIKE "%"#{name}"%")
+        </if>
+        <if test="type>0">
+            AND distribute_type =#{type}
+        </if>
+    </select>
+
+    <select id="selectBossDistributeRecordsByContions" resultType="com.jkm.hss.admin.entity.DistributeQRCodeRecord">
+        SELECT * FROM tb_distribute_qr_code_record
+        WHERE
+        1=1
+
+        <if test="markCode != null and markCode!=''">
+            AND second_level_dealer_id in (select id from tb_dealer where mark_code = #{markCode})
+        </if>
+        <if test="name != null and name!=''">
+            AND second_level_dealer_id in (select id from tb_dealer where proxy_name LIKE "%"#{name}"%")
+        </if>
+        <if test="type>0">
+            AND distribute_type =#{type}
+        </if>
+        ORDER BY id DESC LIMIT #{offset},#{count}
+    </select>
 </mapper>

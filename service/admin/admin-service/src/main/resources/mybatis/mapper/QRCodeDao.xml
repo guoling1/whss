@@ -438,6 +438,15 @@
         ORDER BY id ASC
     </select>
 
+    <select id="getUnDistributeCountBySysType" resultType="java.lang.Integer">
+        SELECT count(1) FROM tb_qr_code
+        WHERE first_level_dealer_id =0
+        AND second_level_dealer_id = 0
+        AND distribute_status = 1
+        AND activate_status = 1
+        And sys_type=#{sysType}
+    </select>
+
     <select id="getUnDistributeCodeByCodeAndSysType" resultType="com.jkm.hss.admin.entity.QRCode">
         SELECT * FROM tb_qr_code
         WHERE first_level_dealer_id = 0

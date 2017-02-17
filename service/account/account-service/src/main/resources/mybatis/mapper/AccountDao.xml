@@ -96,10 +96,6 @@
         SELECT * FROM tb_account WHERE id = #{id} FOR UPDATE
     </select>
 
-    <select id="getAccId" resultType="com.jkm.hss.account.entity.Account">
-        SELECT * FROM tb_account WHERE id = #{accountID}
-    </select>
-
     <delete id="delAcct">
         DELETE FROM tb_account WHERE id=#{accountID}
     </delete>

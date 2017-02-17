@@ -2,6 +2,7 @@ package com.jkm.hsy.user.service.impl;
 
 import com.jkm.hsy.user.constant.IndustryCodeType;
 import com.jkm.hsy.user.dao.HsyMerchantAuditDao;
+import com.jkm.hsy.user.entity.AppAuUser;
 import com.jkm.hsy.user.entity.HsyMerchantAuditRequest;
 import com.jkm.hsy.user.entity.HsyMerchantAuditResponse;
 import com.jkm.hsy.user.service.HsyMerchantAuditService;
@@ -185,4 +186,12 @@ public class HsyMerchantAuditServiceImpl implements HsyMerchantAuditService {
     public int getUid(Long id) {
         return hsyMerchantAuditDao.getUid(id);
     }
+
+    @Override
+    public AppAuUser getAccId(Long id) {
+        AppAuUser res=hsyMerchantAuditDao.getAccId(id);
+        return res;
+    }
+
+
 }

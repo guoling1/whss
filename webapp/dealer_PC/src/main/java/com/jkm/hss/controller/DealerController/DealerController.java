@@ -76,8 +76,8 @@ public class DealerController extends BaseController {
         long dealerId = super.getDealerId();
         secondDealerSearchRequest.setDealerId(dealerId);
         final PageModel<SecondDealerResponse> pageModel = this.dealerService.listSecondDealer(secondDealerSearchRequest);
-        long hssProductId = dealerChannelRateService.getDealerBindProductId(dealerId, EnumProductType.HSS.getId());
-        long hsyProductId = dealerChannelRateService.getDealerBindProductId(dealerId, EnumProductType.HSY.getId());
+        Long hssProductId = dealerChannelRateService.getDealerBindProductId(dealerId, EnumProductType.HSS.getId());
+        Long hsyProductId = dealerChannelRateService.getDealerBindProductId(dealerId, EnumProductType.HSY.getId());
         pageModel.setExt(hssProductId+"|"+hsyProductId);
         return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", pageModel);
     }
