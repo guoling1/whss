@@ -37,10 +37,7 @@ public class BossDistributeQRCodeRecordResponse {
      * 上级代理商编码
      */
     private String firstMarkCode;
-    /**
-     * 代理商手机号
-     */
-    private String dealerMobile;
+
 
     /**
      * 类型
