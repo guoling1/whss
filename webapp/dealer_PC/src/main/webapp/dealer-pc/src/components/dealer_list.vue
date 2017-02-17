@@ -69,8 +69,16 @@
             </div>
             <div class="box-body">
               <el-table :data="tableData" border>
-                <el-table-column prop="proxyName" label="代理商名称"></el-table-column>
-                <el-table-column prop="markCode" label="代理商编号" sortable="custom"></el-table-column>
+                <el-table-column label="代理商名称">
+                  <template scope="scope">
+                    <el-button type="text" @click="checkDealer($event,scope.row.id)">{{scope.row.proxyName}}</el-button>
+                  </template>
+                </el-table-column>
+                <el-table-column label="代理商编号" sortable="custom">
+                  <template scope="scope">
+                    <el-button type="text" @click="checkDealer($event,scope.row.id)">{{scope.row.markCode}}</el-button>
+                  </template>
+                </el-table-column>
                 <el-table-column label="省市">
                   <template scope="scope">
                     {{scope.row.belongProvinceName}}{{scope.row.belongCityName}}
@@ -227,17 +235,20 @@
       screen: function () {
         this.getData();
       },
+      checkDealer: function (event, id) {
+        this.$router.push({path: '/daili/app/dealer_modify', query: {dealerId: id}});
+      },
       openHss: function (event, id, productId) {
-        this.$router.push({path: '/app/product_add', query: {product: 'hss', dealerId: id, productId: productId}});
+        this.$router.push({path: '/daili/app/product_add', query: {product: 'hss', dealerId: id, productId: productId}});
       },
       openHsy: function (event, id, productId) {
-        this.$router.push({path: '/app/product_add', query: {product: 'hsy', dealerId: id, productId: productId}});
+        this.$router.push({path: '/daili/app/product_add', query: {product: 'hsy', dealerId: id, productId: productId}});
       },
       checkHss: function (event, id, productId) {
-        this.$router.push({path: '/app/product_add', query: {product: 'hss', dealerId: id, productId: productId}});
+        this.$router.push({path: '/daili/app/product_add', query: {product: 'hss', dealerId: id, productId: productId}});
       },
       checkHsy: function (event, id, productId) {
-        this.$router.push({path: '/app/product_add', query: {product: 'hsy', dealerId: id, productId: productId}});
+        this.$router.push({path: '/daili/app/product_add', query: {product: 'hsy', dealerId: id, productId: productId}});
       },
       handleSizeChange(val) {
         this.pageSize = val;

@@ -35,8 +35,13 @@
                 <el-form-item label="登录名" prop="loginName">
                   <el-input v-model="form.loginName"></el-input>
                 </el-form-item>
-                <el-form-item label="登录密码" prop="loginPwd">
-                  <el-input type="password" v-model="form.loginPwd"></el-input>
+                <el-form-item label="登录密码">
+                  <el-col :span="19">
+                    <el-input type="password" v-model="update.loginPwd" :disabled="!modify_pwd"></el-input>
+                  </el-col>
+                  <el-col class="line-center" :span="5">
+                    <el-button type="text" @click="modify">修改密码</el-button>
+                  </el-col>
                 </el-form-item>
                 <el-form-item label="联系邮箱" prop="email">
                   <el-input v-model="form.email"></el-input>
@@ -99,6 +104,32 @@
   export default {
     name: 'app',
     created(){
+      let query = this.$route.query;
+      this.update.dealerId = query.dealerId;
+      this.update.loginPwd = '123456';
+      if (query.dealerId) {
+        this.$http.get('/daili/dealer/' + query.dealerId).then(res => {
+          this.form.mobile = res.data.mobile;
+          this.form.name = res.data.name;
+          this.form.loginName = res.data.loginName;
+          this.form.email = res.data.email;
+          this.form.belongProvinceCode = res.data.belongProvinceCode;
+          this.form.belongProvinceName = res.data.belongProvinceName;
+          this.form.belongCityCode = res.data.belongCityCode;
+          this.form.belongCityName = res.data.belongCityName;
+          this.form.belongArea = res.data.belongArea;
+          this.form.bankCard = res.data.bankCard;
+          this.form.bankAccountName = res.data.bankAccountName;
+          this.form.bankReserveMobile = res.data.bankReserveMobile;
+          this.form.idCard = res.data.idCard;
+        }, err => {
+          this.$message({
+            showClose: true,
+            message: err.data.msg,
+            type: 'error'
+          });
+        })
+      }
       this.$http.post('/daili/district/findAllProvinces').then(res => {
         this.item_province = res.data;
       }, err => {
@@ -111,11 +142,15 @@
     },
     data() {
       return {
+        modify_pwd: false,
+        update: {
+          loginPwd: '',
+          dealerId: ''
+        },
         form: {
           mobile: '',
           name: '',
           loginName: '',
-          loginPwd: '',
           email: '',
           belongProvinceCode: '',
           belongProvinceName: '',
@@ -171,6 +206,26 @@
       }
     },
     methods: {
+      modify: function () {
+        if (!this.modify_pwd) {
+          this.modify_pwd = true;
+        } else {
+          this.$http.post('/daili/dealer/updatePwd', this.update).then(res => {
+            this.$message({
+              showClose: true,
+              message: '密码修改成功',
+              type: 'success'
+            });
+            this.modify_pwd = false;
+          }, err => {
+            this.$message({
+              showClose: true,
+              message: err.data.msg,
+              type: 'error'
+            });
+          })
+        }
+      },
       province_select: function (provinceCode) {
         for (let m = 0; m < this.item_province.length; m++) {
           if (this.item_province[m].code == provinceCode) {
@@ -201,11 +256,11 @@
       onSubmit: function () {
         this.$refs['form'].validate((valid) => {
           if (valid) {
-            this.$http.post('/daili/dealer/addSecondDealer', this.form).then(res => {
+            this.$http.post('/daili/dealer/updateDealer', this.form).then(res => {
               this.$router.push('/daili/app/dealer_list');
               this.$message({
                 showClose: true,
-                message: '创建代理商成功',
+                message: '修改代理商成功',
                 type: 'success'
               });
             }, err => {
