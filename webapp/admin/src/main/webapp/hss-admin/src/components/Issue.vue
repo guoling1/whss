@@ -47,11 +47,12 @@
                 <div class="alignRight" style="line-height: 42px">类型:</div>
               </el-col>
               <el-col :span="6">
-                <div class="grid-content bg-purple-light">
-                  <el-radio class="radio" v-model="query.type" label="1">实体码</el-radio>
-                  <el-radio class="radio" v-model="query.type" label="2">电子码</el-radio>
+                <div class="grid-content bg-purple-light" style="height: 100%;line-height: 40px;font-weight: bold;}">
+                  实体码
+                  <!--<el-radio class="radio" v-model="type" label="1">实体码</el-radio>
+                  <el-radio class="radio" v-model="type" label="2">电子码</el-radio>-->
                 </div>
-                <div>未分配二维码：98个</div>
+                <!--<div>未分配二维码：{{surplus}}个</div>-->
               </el-col>
               <el-col :span="8">
                 <div class="grid-content bg-purple-light"></div>
@@ -177,12 +178,13 @@
         query: {
           sysType: "",//hss或hsy
           dealerId:'',//一级代理商编码
-          type:'',//1实体码 2电子码
+          type:'1',//1实体码 2电子码
           distributeType:"1",//分配方式(1按码段 2按个数)
           startCode:"",//开始码段
           endCode:"",//终止码段
           count:''//分配数量
         },
+        type:'',
         name:'',
         mobile:'',
         totalCount:'',
@@ -190,14 +192,27 @@
         findDealers:'',
         isShow:false,
         issueSuss:'',
+        surplus:''
       }
     },
     created: function () {
 
     },
-    watch: {
-
-    },
+    /*watch: {
+      //根据码类型查询剩余个数
+      type:function (val,oldval) {
+        this.$http.post('/admin/user/unDistributeCount',{type:val})
+          .then(function (res) {
+            this.$data.surplus = res.data;
+          },function (err) {
+            this.$message({
+              showClose: true,
+              message: err.statusMessage,
+              type: 'error'
+            });
+          })
+      }
+    },*/
     filter:{
       changeTime: function (val) {
         if(val==''||val==null){
@@ -221,6 +236,7 @@
       }
     },
     methods: {
+      //代理模糊查询
       find: function () {
         if(this.$data.name!=''){
           this.$http.post('/admin/dealer/find',{condition:this.$data.name})
@@ -251,7 +267,6 @@
       },
       //创建
       create: function () {
-        console.log(this.$data.query)
         this.$http.post('/admin/user/distributeQrCodeToDealer', this.$data.query)
           .then(function (res) {
             this.$data.issueSuss= res.data;
