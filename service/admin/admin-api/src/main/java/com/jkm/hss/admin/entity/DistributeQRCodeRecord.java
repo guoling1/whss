@@ -44,7 +44,7 @@ public class DistributeQRCodeRecord extends BaseEntity {
     private int type;
 
     /**
-     * 粉配方
+     * 分配方
      * {@link com.jkm.hss.admin.enums.EnumQRCodeDistributeType2}
      */
     private int distributeType;
