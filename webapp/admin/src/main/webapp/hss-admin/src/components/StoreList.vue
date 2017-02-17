@@ -180,7 +180,7 @@
         date:'',
         date1:'',
         date2:'',
-        url:'/admin/query/getAll',
+        url:'',
         fromName:'',
         query:{
           pageNo:1,
@@ -210,19 +210,19 @@
         if(vm.$data.fromName=='StoreAuditHSY'){
           vm.$data.activeName='second';
           vm.$data.url='/admin/hsyMerchantList/getMerchantList'
+        }else {
+          vm.$data.activeName='first';
+          vm.$data.url='/admin/query/getAll'
         }
         vm.$data.records = '';
         vm.$data.total = 0;
         vm.$data.count = 0;
-        var content = document.getElementById('content'),
-          page = document.getElementById('page');
         vm.$http.post(vm.$data.url,vm.$data.query)
           .then(function (res) {
             vm.$data.loading = false;
             vm.$data.records = res.data.records;
             vm.$data.total = res.data.totalPage;
             vm.$data.count = res.data.count;
-            //转换时间
           }, function (err) {
             vm.$data.loading = false;
             vm.$message({
@@ -233,7 +233,31 @@
           })
       })
     },
+    /*created:function () {
+      if(this.$data.activeName=='second'){
+        this.$data.url='/admin/hsyMerchantList/getMerchantList'
+      }else {
+        this.$data.url='/admin/query/getAll'
+      }
+      this.$http.post(this.$data.url,this.$data.query)
+        .then(function (res) {
+          this.$data.loading = false;
+          this.$data.records   = res.data.records;
+          this.$data.count = res.data.count;
+          this.$data.total = res.data.totalPage;
+        }, function (err) {
+          this.$data.loading = false;
+          this.$message({
+            showClose: true,
+            message: err.statusMessage,
+            type: 'error'
+          })
+        })
+    },*/
     methods: {
+      toDet: function (val) {
+
+      },
       //格式化hss创建时间
       changeTime: function (row, column) {
         var val=row.createTime;
@@ -272,7 +296,7 @@
           startTime2:'',
           endTime2:'',
           status:''
-        }
+        };
         if(event.target.innerHTML=="好收收"){
           this.$data.url='/admin/query/getAll'
         }else if(event.target.innerHTML=="好收银"){

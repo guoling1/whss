@@ -293,7 +293,6 @@
           proxyNameYQ1:'',
         },
         reason:'',
-        status:'',
         isShow:true,
         res: [],
         tableData:[{
@@ -311,16 +310,17 @@
     },
     created: function () {
       this.$data.id = this.$route.query.id;
-      this.$data.status = this.$route.query.status;
-      if(this.$data.status !=2){
+      if(this.$route.query.status !=2){
         this.$data.isShow = false;
       }
       this.$http.post('/admin/hsyMerchantList/getDetails',{id:this.$data.id})
         .then(function (res) {
           this.$data.msg = res.data;
         },function (err) {
-          this.$store.commit('MESSAGE_ACCORD_SHOW', {
-            text: err.statusMessage
+          this.$message({
+            showClose: true,
+            message: err.statusMessage,
+            type: 'error'
           })
         })
 
@@ -334,9 +334,10 @@
           /*this.$router.push('/admin/record/storeList')*/
           this.$router.go(-1)
         }, function (err) {
-          console.log(err);
-          this.$store.commit('MESSAGE_ACCORD_SHOW', {
-            text: err.statusMessage
+          this.$message({
+            showClose: true,
+            message: err.statusMessage,
+            type: 'error'
           })
         })
       },
@@ -345,8 +346,10 @@
           .then(function (res) {
             this.$router.push('/admin/record/storeList')
           },function (err) {
-            this.$store.commit('MESSAGE_ACCORD_SHOW', {
-              text: err.statusMessage
+            this.$message({
+              showClose: true,
+              message: err.statusMessage,
+              type: 'error'
             })
           })
       },
