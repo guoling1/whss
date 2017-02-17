@@ -47,8 +47,15 @@ public class CodeController extends BaseController {
     @ResponseBody
     @RequestMapping(value = "downloadZip", method = RequestMethod.POST)
     public CommonResponse downloadCodeZip(@RequestBody final CodeDownloadRequest request) {
-        final String fileZip = this.qrCodeService.downloadCodeZip(1, request.getCount(),
-                ApplicationConsts.getApplicationConfig().QRCodeUrl(),request.getProductId(),request.getSysType());
+        String fileZip = "";
+        if("hss".equals(request.getSysType())){
+            fileZip = this.qrCodeService.downloadCodeZip(1, request.getCount(),
+                    "http://hss.qianbaojiajia.com/code/scanCode",request.getProductId(),request.getSysType());
+        }
+        if("hsy".equals(request.getSysType())){
+            fileZip = this.qrCodeService.downloadCodeZip(1, request.getCount(),
+                    "http://hsy.qianbaojiajia.com/code/scanCode",request.getProductId(),request.getSysType());
+        }
         final String fileName = getFileName(fileZip);
 
         final ObjectMetadata meta = new ObjectMetadata();
@@ -78,8 +85,16 @@ public class CodeController extends BaseController {
     @ResponseBody
     @RequestMapping(value = "downloadExcel", method = RequestMethod.POST)
     public CommonResponse downloadExcel(@RequestBody final CodeDownloadRequest request) {
-        final String fileZip = this.qrCodeService.downloadExcel(1, request.getCount(),
-                ApplicationConsts.getApplicationConfig().QRCodeUrl(),request.getProductId(),request.getSysType());
+        String fileZip = "";
+        if("hss".equals(request.getSysType())){
+            fileZip = this.qrCodeService.downloadExcel(1, request.getCount(),
+                    "http://hss.qianbaojiajia.com/code/scanCode",request.getProductId(),request.getSysType());
+        }
+        if("hsy".equals(request.getSysType())){
+            fileZip = this.qrCodeService.downloadExcel(1, request.getCount(),
+                    "http://hsy.qianbaojiajia.com/code/scanCode",request.getProductId(),request.getSysType());
+        }
+
         final String fileName = getFileName(fileZip);
 
         final ObjectMetadata meta = new ObjectMetadata();
