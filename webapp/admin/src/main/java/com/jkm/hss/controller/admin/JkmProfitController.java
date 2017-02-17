@@ -8,6 +8,7 @@ import com.jkm.hss.bill.entity.JkmProfitResponse;
 import com.jkm.hss.bill.service.ShareProfitService;
 import com.jkm.hss.controller.BaseController;
 import com.jkm.hss.merchant.helper.request.JkmProfitRequest;
+import com.jkm.hss.merchant.helper.request.ProfitDetailsRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -63,9 +64,9 @@ public class JkmProfitController extends BaseController{
      */
     @ResponseBody
     @RequestMapping(value = "/profitDetails",method = RequestMethod.POST)
-    public CommonResponse profitDetails() throws ParseException {
+    public CommonResponse profitDetails(ProfitDetailsRequest req) throws ParseException {
 
-        List<JkmProfitDetailsResponse> orderList =  shareProfitService.selectProfitDetails();
+        List<JkmProfitDetailsResponse> orderList =  shareProfitService.selectProfitDetails(req);
 
 
         return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", orderList);
