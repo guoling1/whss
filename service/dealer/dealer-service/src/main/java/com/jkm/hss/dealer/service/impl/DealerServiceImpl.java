@@ -2289,17 +2289,28 @@ public class DealerServiceImpl implements DealerService {
      */
     @Override
     public PageModel<BossDistributeQRCodeRecordResponse> distributeRecord(DistributeQrCodeRequest distributeRecordRequest) {
-        if("000000000000".equals(distributeRecordRequest.getFirstMarkCode())){
 
-        }
-        if("金开门".equals(distributeRecordRequest.getFirstName())){
-
-        }
         final PageModel<BossDistributeQRCodeRecordResponse> pageModel = new PageModel<>(distributeRecordRequest.getPageNo(), distributeRecordRequest.getPageSize());
         distributeRecordRequest.setOffset(pageModel.getFirstIndex());
         distributeRecordRequest.setCount(pageModel.getPageSize());
-        final int count = distributeQRCodeRecordService.selectDistributeCountByContions(distributeRecordRequest);
-        final List<DistributeQRCodeRecord> distributeQRCodeRecords = distributeQRCodeRecordService.selectDistributeRecordsByContions(distributeRecordRequest);
+
+        boolean isJkm = false;
+        if("000000000000".equals(distributeRecordRequest.getFirstMarkCode())){
+            isJkm=true;
+        }
+        if("金开门".equals(distributeRecordRequest.getFirstName())){
+            isJkm=true;
+        }
+        int count = 0;
+        List<DistributeQRCodeRecord> distributeQRCodeRecords = new ArrayList<DistributeQRCodeRecord>();
+        if(isJkm==true){
+            count = distributeQRCodeRecordService.selectDistributeCountByContions(distributeRecordRequest);
+            distributeQRCodeRecords = distributeQRCodeRecordService.selectDistributeRecordsByContions(distributeRecordRequest);
+
+        }else{
+            count = distributeQRCodeRecordService.selectBossDistributeCountByContionsOfJKM(distributeRecordRequest);
+            distributeQRCodeRecords = distributeQRCodeRecordService.selectBossDistributeRecordsByContionsOfJKM(distributeRecordRequest);
+        }
         List<BossDistributeQRCodeRecordResponse> bossDistributeQRCodeRecordResponses = new ArrayList<BossDistributeQRCodeRecordResponse>();
         if(distributeQRCodeRecords.size()>0){
             for(int i=0;i<distributeQRCodeRecords.size();i++){
