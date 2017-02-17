@@ -21,7 +21,7 @@ const getters = {
         return;
       }
       // 不存在则去获取
-      Vue.http.post('/api/daili/account/dealerInfo').then(res => {
+      Vue.http.post('/daili/account/dealerInfo').then(res => {
         state.status = 1;
         state.dealerInfo = res.data.dealerInfo;
         state.dealerLeavel = res.data.dealerLeavel;
