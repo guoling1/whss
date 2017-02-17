@@ -77,10 +77,10 @@
                     {{ scope.row.createTime }}
                   </template>
                 </el-table-column>
-                <el-table-column prop="beforeAmount" label="发生前余额(元)"></el-table-column>
-                <el-table-column prop="incomeAmount" label="收入金额(元)"></el-table-column>
-                <el-table-column prop="outAmount" label="支出金额(元)"></el-table-column>
-                <el-table-column prop="afterAmount" label="发生后余额(元)"></el-table-column>
+                <el-table-column prop="beforeAmount" label="发生前余额(元)" align="right"></el-table-column>
+                <el-table-column prop="incomeAmount" label="收入金额(元)" align="right"></el-table-column>
+                <el-table-column prop="outAmount" label="支出金额(元)" align="right"></el-table-column>
+                <el-table-column prop="afterAmount" label="发生后余额(元)" align="right"></el-table-column>
                 <el-table-column prop="remark" label="备注信息"></el-table-column>
               </el-table>
             </div>
