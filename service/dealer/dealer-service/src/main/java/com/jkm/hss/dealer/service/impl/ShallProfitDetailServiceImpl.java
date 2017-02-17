@@ -108,7 +108,7 @@ public class ShallProfitDetailServiceImpl implements ShallProfitDetailService{
         try{
             //提现分润
             final Map<String, Triple<Long, BigDecimal, String>> map = new HashMap<>();
-            if (appAuUser.getDealerID() == 0 || appAuUser.getDealerID() == null){
+            if (appAuUser.getDealerID() == 0){
                 final List<ProductChannelDetail> list = this.productChannelDetailService.selectByChannelTypeSign(channelSign);
                 final ProductChannelDetail productChannelDetail = list.get(0);
                 final Optional<BasicChannel> channelOptional =  this.basicChannelService.selectByChannelTypeSign(channelSign);
