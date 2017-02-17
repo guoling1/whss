@@ -40,7 +40,7 @@
             <div class="box-body">
               <el-table :data="tableData" border>
                 <el-table-column type="index" label="序号"></el-table-column>
-                <el-table-column label="分配时间" sortable="custom">
+                <el-table-column label="分配时间" sortable>
                   <template scope="scope">
                     {{ scope.row.distributeTime | datetime }}
                   </template>
