@@ -96,7 +96,7 @@
                   </el-table-column>
                   <el-table-column label="好收银" width="120">
                     <template scope="scope">
-                      <span v-if="ext[0]!=0">
+                      <span v-if="ext[1]!=0">
                         <span v-if="scope.row.hsyProductId==0">
                           <el-button size="small" type="primary"
                                      @click="openHsy($event,scope.row.id,scope.row.hsyProductId)">开通</el-button>
