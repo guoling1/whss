@@ -292,6 +292,12 @@ public class MerchantInfoController extends BaseController {
         return pair;
     }
 
+    /**
+     * 查询合伙人分润
+     * @param request
+     * @param shallRequest
+     * @return
+     */
     @ResponseBody
     @RequestMapping(value = "/queryShall", method = RequestMethod.POST)
     public CommonResponse queryShall(final HttpServletRequest request, @RequestBody final PartnerShallRequest shallRequest){
