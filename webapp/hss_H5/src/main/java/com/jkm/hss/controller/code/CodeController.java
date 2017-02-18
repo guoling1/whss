@@ -202,7 +202,7 @@ public class CodeController extends BaseController {
                 if (agent.indexOf("micromessenger") > -1) {//weixin
                     url = "/sqb/paymentWx";
                 }
-                if (agent.indexOf("AliApp") > -1) {// AliApp
+                if (agent.indexOf("aliapp") > -1) {// AliApp
                     url = "/sqb/paymentZfb";
                 }
             }else if (EnumMerchantStatus.LOGIN.getId() == merchantInfo.getStatus()) {//注册
