@@ -3,7 +3,7 @@ package com.jkm.hss.controller.admin;
 import com.aliyun.oss.OSSClient;
 import com.jkm.base.common.entity.CommonResponse;
 import com.jkm.base.common.entity.PageModel;
-import com.jkm.hss.bill.entity.JkmProfitDetailsResponse;
+import com.jkm.hss.bill.entity.AccountDetailsResponse;
 import com.jkm.hss.bill.entity.JkmProfitResponse;
 import com.jkm.hss.bill.service.ShareProfitService;
 import com.jkm.hss.controller.BaseController;
@@ -36,7 +36,7 @@ public class JkmProfitController extends BaseController{
     private OSSClient ossClient;
 
     /**
-     * 金开门分润
+     * 金开门账户
      * @param req
      * @return
      */
@@ -57,20 +57,45 @@ public class JkmProfitController extends BaseController{
     }
 
     /**
-     * 分润明细
+     * 金开门账户明细
      * @param req
      * @return
      * @throws ParseException
      */
     @ResponseBody
-    @RequestMapping(value = "/profitDetails",method = RequestMethod.POST)
-    public CommonResponse profitDetails(ProfitDetailsRequest req) throws ParseException {
-
-        List<JkmProfitDetailsResponse> orderList =  shareProfitService.selectProfitDetails(req);
-
-
-        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", orderList);
+    @RequestMapping(value = "/accountDetails",method = RequestMethod.POST)
+    public CommonResponse accountDetails(@RequestBody ProfitDetailsRequest req) throws ParseException {
+        final PageModel<AccountDetailsResponse> pageModel = new PageModel<AccountDetailsResponse>(req.getPageNo(), req.getPageSize());
+        req.setOffset(pageModel.getFirstIndex());
+        List<AccountDetailsResponse> orderList =  shareProfitService.selectAccountDetails(req);
+        if (orderList==null){
+            return CommonResponse.simpleResponse(-1,"未查询到相关数据");
+        }
+        int count = shareProfitService.selectAccountDetailsCount(req);
+        pageModel.setCount(count);
+        pageModel.setRecords(orderList);
+        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", pageModel);
     }
+
+
+//    /**
+//     * 分润明细
+//     * @param req
+//     * @return
+//     * @throws ParseException
+//     */
+//    @ResponseBody
+//    @RequestMapping(value = "/profitDetails",method = RequestMethod.POST)
+//    public CommonResponse profitDetails(ProfitDetailsRequest req) throws ParseException {
+//        final PageModel<JkmProfitDetailsResponse> pageModel = new PageModel<JkmProfitDetailsResponse>(req.getPageNo(), req.getPageSize());
+//        req.setOffset(pageModel.getFirstIndex());
+//        List<JkmProfitDetailsResponse> orderList =  shareProfitService.selectProfitDetails(req);
+//        int count = shareProfitService.selectProfitDetailsCount(req);
+//        pageModel.setCount(count);
+//        pageModel.setRecords(orderList);
+//
+//        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", pageModel);
+//    }
 
 
 

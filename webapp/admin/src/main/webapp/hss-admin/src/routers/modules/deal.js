@@ -50,6 +50,15 @@ const OrderDetail = r => require.ensure([], () => r(require('../../components/Or
 const TradeQuery = r => require.ensure([], () => r(require('../../components/TradeQuery')), 'group-record');
 const ProfitAccount = r => require.ensure([], () => r(require('../../components/ProfitAccount')), 'group-record');
 const ProfitAccountDet = r => require.ensure([], () => r(require('../../components/ProfitAccountDet')), 'group-record');
+const ProfitCom = r => require.ensure([], () => r(require('../../components/ProfitCom')), 'group-record');
+const ProfitFir = r => require.ensure([], () => r(require('../../components/ProfitFir')), 'group-record');
+const ProfitSec = r => require.ensure([], () => r(require('../../components/ProfitSec')), 'group-record');
+const ProfitComDet = r => require.ensure([], () => r(require('../../components/ProfitDet')), 'group-record');
+const ProfitDet = r => require.ensure([], () => r(require('../../components/ProfitDet')), 'group-record');
+const ProfitFirDet = r => require.ensure([], () => r(require('../../components/ProfitDet')), 'group-record');
+const ProfitSecDet = r => require.ensure([], () => r(require('../../components/ProfitDet')), 'group-record');
+
+const Test = r => require.ensure([], () => r(require('../../components/Test')), 'group-record');
 
 export default {
   path: '/admin/record',
@@ -275,6 +284,46 @@ export default {
       path: 'profitAccountDet',
       name: 'ProfitAccountDet',
       component: ProfitAccountDet
+    },
+    {
+      path: 'profitCom',
+      name: 'ProfitCom',
+      component: ProfitCom
+    },
+    {
+      path: 'profitFir',
+      name: 'ProfitFir',
+      component: ProfitFir
+    },
+    {
+      path: 'profitSec',
+      name: 'ProfitSec',
+      component: ProfitSec
+    },
+    {
+      path: 'profitDet',
+      name: 'ProfitDet',
+      component: ProfitDet
+    },
+    {
+      path: 'profitComDet',
+      name: 'ProfitComDet',
+      component: ProfitComDet
+    },
+    {
+      path: 'profitFirDet',
+      name: 'ProfitFirDet',
+      component: ProfitFirDet
+    },
+    {
+      path: 'profitSecDet',
+      name: 'ProfitSecDet',
+      component: ProfitSecDet
+    },
+    {
+      path: 'test',
+      name: 'Test',
+      component: Test
     },
   ]
 }

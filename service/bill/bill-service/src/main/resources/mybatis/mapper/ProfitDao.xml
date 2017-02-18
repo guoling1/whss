@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jkm.hss.bill.dao.ProfitDao">
+
+
+    <select id="selectProfitDetails" resultType="com.jkm.hss.bill.entity.JkmProfitDetailsResponse">
+        SELECT * FROM tb_split_account_record WHERE 1=1
+        <if test="orderNo!=null and orderNo!=''">
+            AND order_no = #{orderNo}
+        </if>
+        <if test="receiptMoneyUserName!=null and receiptMoneyUserName!=''">
+            AND receipt_money_user_name = #{receiptMoneyUserName}
+        </if>
+        ORDER BY create_time DESC
+        limit #{offset}, #{pageSize}
+    </select>
+
+    <select id="selectAccountListCount"  resultType="java.lang.Integer">
+        SELECT COUNT(1) FROM tb_split_account_record
+    </select>
+
+
+
+
+</mapper>

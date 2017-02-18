@@ -101,11 +101,12 @@ public class CalculateServiceImpl implements CalculateService {
     @Override
     public BigDecimal getMerchantWithdrawPoundage(EnumProductType type,final long merchantId, final int channelSign) {
 
-        if (type.getId() == EnumProductType.HSS.getId()){
+        if (type.getId().equals(EnumProductType.HSS.getId())){
             //HSS
             final MerchantInfo merchant = this.merchantInfoService.selectById(merchantId).get();
             if (0 == merchant.getDealerId()) {
-                final ProductChannelDetail productChannelDetail = this.productChannelDetailService.selectByChannelTypeSign(channelSign).get(0);
+                final Product product = this.productService.selectByType(type.getId()).get();
+                final ProductChannelDetail productChannelDetail = this.productChannelDetailService.selectByProductId(product.getId()).get(0);
                 return productChannelDetail.getProductMerchantWithdrawFee().setScale(2);
             }
             final Dealer dealer = this.dealerService.getById(merchant.getDealerId()).get();
@@ -117,7 +118,8 @@ public class CalculateServiceImpl implements CalculateService {
             final List<AppAuUser> appAuUsers = this.hsyShopDao.findCorporateUserByShopID(merchantId);
             final AppAuUser appAuUser = appAuUsers.get(0);
             if ( appAuUser.getDealerID() == 0){
-                final ProductChannelDetail productChannelDetail = this.productChannelDetailService.selectByChannelTypeSign(channelSign).get(0);
+                final Product product = this.productService.selectByType(type.getId()).get();
+                final ProductChannelDetail productChannelDetail = this.productChannelDetailService.selectByProductId(product.getId()).get(0);
                 return productChannelDetail.getProductMerchantWithdrawFee().setScale(2);
             }
             final Dealer dealer = this.dealerService.getById(appAuUser.getDealerID()).get();

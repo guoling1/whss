@@ -4,19 +4,34 @@
 
 
     <select id="selectAccountList" resultType="com.jkm.hss.bill.entity.JkmProfitResponse">
-        SELECT * FROM tb_account WHERE id in (1,2,11,113,114)
+        SELECT * FROM tb_account WHERE id in (1,2,11,48,49)
         limit #{offset}, #{pageSize}
     </select>
 
     <select id="selectAccountListCount"  resultType="java.lang.Integer">
-        SELECT COUNT(1) FROM tb_account WHERE id in (1,2,113,114)
+        SELECT COUNT(1) FROM tb_account WHERE id in (1,2,11,48,49)
     </select>
 
-    <!-- 分润明细 -->
-    <select id="selectProfitDetails"  resultType="com.jkm.hss.bill.entity.JkmProfitDetailsResponse">
-        SELECT a.* FROM tb_split_account_record a
-        LEFT JOIN tb_account b ON a.receipt_money_account_id=b.id
+
+    <select id="selectAccountDetailsCount"  resultType="java.lang.Integer">
+        SELECT COUNT(a.id) FROM tb_settle_account_flow a
+        LEFT JOIN tb_account b ON a.account_id=b.id
         WHERE b.id=#{id}
+    </select>
+
+    <!-- 金开门公司账户明细 -->
+    <select id="selectAccountDetails"  resultType="com.jkm.hss.bill.entity.AccountDetailsResponse">
+        SELECT a.* FROM tb_settle_account_flow a
+        LEFT JOIN tb_account b ON a.account_id=b.id
+        WHERE b.id=#{id}
+        <if test="startTime!=null and startTime!=''">
+            AND a.create_time <![CDATA[ >= ]]> #{startTime}
+        </if>
+        <if test="endTime!=null and endTime!=''">
+            AND a.create_time <![CDATA[ <= ]]> #{endTime}
+        </if>
+        ORDER BY create_time DESC
+        limit #{offset}, #{pageSize}
     </select>
 
 </mapper>

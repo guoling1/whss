@@ -199,8 +199,14 @@ public class HsyUserServiceImpl implements HsyUserService {
 
         AppBizShop appBizShop=new AppBizShop();
         appBizShop.setUid(appAuUserFind.getId());
-        if(appAuUserFind.getParentID()==null||(appAuUserFind.getParentID()!=null&&appAuUserFind.getParentID()!=0L))
+        if(appAuUserFind.getParentID()==null||(appAuUserFind.getParentID()!=null&&appAuUserFind.getParentID()==0L))
             appBizShop.setType(AppConstant.ROLE_TYPE_PRIMARY);
+        else
+        {
+            List<AppAuUser> parentList=hsyUserDao.findAppAuUserByID(appAuUserFind.getParentID());
+            if(parentList!=null&&parentList.size()!=0)
+                appAuUserFind.setAccountID(parentList.get(0).getAccountID());
+        }
         List<AppBizShop> shopList=hsyShopDao.findPrimaryAppBizShopByUserID(appBizShop);
         if(shopList!=null&&shopList.size()!=0)
             appBizShop=shopList.get(0);
@@ -252,11 +258,25 @@ public class HsyUserServiceImpl implements HsyUserService {
             throw new ApiHandleException(ResultCode.VERIFICATIONCODE_TYPE_NULL);
         if(!VerificationCodeType.contains(appAuVerification.getType()))
             throw new ApiHandleException(ResultCode.VERIFICATIONCODE_TYPE_NOT_EXSIT);
+
+        /**数据验证*/
         appAuVerification.setCreateTime(AppDateUtil.changeDate(date, Calendar.MINUTE,-1));
         appAuVerification.setUpdateTime(date);
         Integer countFrequent=hsyVerificationDao.findVCodeCountWithinTime(appAuVerification);
         if(countFrequent>0)
             throw new ApiHandleException(ResultCode.VERIFICATIONCODE_FREQUENT);
+
+        AppAuUser appAuUser=new AppAuUser();
+        appAuUser.setCellphone(appAuVerification.getCellphone());
+        List<AppAuUser> list = hsyUserDao.findAppAuUserByParam(appAuUser);
+        if(appAuVerification.getType()==1) {
+            if (list != null && list.size() != 0)
+                throw new ApiHandleException(ResultCode.CELLPHONE_HAS_BEEN_REGISTERED);
+        } else if(appAuVerification.getType()==2){
+            if (!(list != null && list.size() != 0))
+                throw new ApiHandleException(ResultCode.CEELLPHONE_HAS_NOT_BEEN_REGISTERED);
+        }
+
 
         SmsTemplate messageTemplate = messageTemplateDao.getTemplateByType(AppConstant.REGISTER_VERIFICATION_NOTICE_TYPE_ID);
         String template="";
@@ -772,8 +792,14 @@ public class HsyUserServiceImpl implements HsyUserService {
         AppAuUser appAuUserFind=list.get(0);
         AppBizShop appBizShop=new AppBizShop();
         appBizShop.setUid(appAuUserFind.getId());
-        if(appAuUserFind.getParentID()==null||(appAuUserFind.getParentID()!=null&&appAuUserFind.getParentID()!=0L))
+        if(appAuUserFind.getParentID()==null||(appAuUserFind.getParentID()!=null&&appAuUserFind.getParentID()==0L))
             appBizShop.setType(AppConstant.ROLE_TYPE_PRIMARY);
+        else
+        {
+            List<AppAuUser> parentList=hsyUserDao.findAppAuUserByID(appAuUserFind.getParentID());
+            if(parentList!=null&&parentList.size()!=0)
+                appAuUserFind.setAccountID(parentList.get(0).getAccountID());
+        }
         List<AppBizShop> shopList=hsyShopDao.findPrimaryAppBizShopByUserID(appBizShop);
         if(shopList!=null&&shopList.size()!=0)
             appBizShop=shopList.get(0);
@@ -795,14 +821,22 @@ public class HsyUserServiceImpl implements HsyUserService {
                 return new java.util.Date(json.getAsJsonPrimitive().getAsLong());
             }
         }).create();
-        final Optional<Account> accountOptional = this.accountService.getById(appAuUserFind.getAccountID());
-        Map map=new HashMap();
-        if (accountOptional.isPresent()) {
-            final Account account = accountOptional.get();
-            map.put("totalAmount", account.getTotalAmount().toPlainString());
-            map.put("available", account.getAvailable().toPlainString());
-            map.put("dueSettleAmount", account.getDueSettleAmount().toPlainString());
-            map.put("frozenAmount", account.getFrozenAmount().toPlainString());
+
+        Map map = new HashMap();
+        if(appAuUserFind.getAccountID()!=null) {
+            final Optional<Account> accountOptional = this.accountService.getById(appAuUserFind.getAccountID().longValue());
+            if (accountOptional.isPresent()) {
+                final Account account = accountOptional.get();
+                map.put("totalAmount", account.getTotalAmount().toPlainString());
+                map.put("available", account.getAvailable().toPlainString());
+                map.put("dueSettleAmount", account.getDueSettleAmount().toPlainString());
+                map.put("frozenAmount", account.getFrozenAmount().toPlainString());
+            } else {
+                map.put("totalAmount", "");
+                map.put("available", "");
+                map.put("dueSettleAmount", "");
+                map.put("frozenAmount", "");
+            }
         }else{
             map.put("totalAmount", "");
             map.put("available", "");
@@ -837,8 +871,14 @@ public class HsyUserServiceImpl implements HsyUserService {
         AppAuUser appAuUserFind=list.get(0);
         AppBizShop appBizShop=new AppBizShop();
         appBizShop.setUid(appAuUserFind.getId());
-        if(appAuUserFind.getParentID()==null||(appAuUserFind.getParentID()!=null&&appAuUserFind.getParentID()!=0L))
+        if(appAuUserFind.getParentID()==null||(appAuUserFind.getParentID()!=null&&appAuUserFind.getParentID()==0L))
             appBizShop.setType(AppConstant.ROLE_TYPE_PRIMARY);
+        else
+        {
+            List<AppAuUser> parentList=hsyUserDao.findAppAuUserByID(appAuUserFind.getParentID());
+            if(parentList!=null&&parentList.size()!=0)
+                appAuUserFind.setAccountID(parentList.get(0).getAccountID());
+        }
         List<AppBizShop> shopList=hsyShopDao.findPrimaryAppBizShopByUserID(appBizShop);
         if(shopList!=null&&shopList.size()!=0)
             appBizShop=shopList.get(0);
@@ -860,14 +900,21 @@ public class HsyUserServiceImpl implements HsyUserService {
                 return new java.util.Date(json.getAsJsonPrimitive().getAsLong());
             }
         }).create();
-        final Optional<Account> accountOptional = this.accountService.getById(appAuUserFind.getAccountID());
-        Map map=new HashMap();
-        if (accountOptional.isPresent()) {
-            final Account account = accountOptional.get();
-            map.put("totalAmount", account.getTotalAmount().toPlainString());
-            map.put("available", account.getAvailable().toPlainString());
-            map.put("dueSettleAmount", account.getDueSettleAmount().toPlainString());
-            map.put("frozenAmount", account.getFrozenAmount().toPlainString());
+        Map map = new HashMap();
+        if(appAuUserFind.getAccountID()!=null) {
+            final Optional<Account> accountOptional = this.accountService.getById(appAuUserFind.getAccountID().longValue());
+            if (accountOptional.isPresent()) {
+                final Account account = accountOptional.get();
+                map.put("totalAmount", account.getTotalAmount().toPlainString());
+                map.put("available", account.getAvailable().toPlainString());
+                map.put("dueSettleAmount", account.getDueSettleAmount().toPlainString());
+                map.put("frozenAmount", account.getFrozenAmount().toPlainString());
+            } else {
+                map.put("totalAmount", "");
+                map.put("available", "");
+                map.put("dueSettleAmount", "");
+                map.put("frozenAmount", "");
+            }
         }else{
             map.put("totalAmount", "");
             map.put("available", "");
@@ -875,10 +922,11 @@ public class HsyUserServiceImpl implements HsyUserService {
             map.put("frozenAmount", "");
         }
         AppAuUser user=new AppAuUser();
-        user.setStatus(appAuUserFind.getStatus());
         user.setAccountID(appAuUserFind.getAccountID());
         map.put("appAuUser",user);
-//        map.put("appBizShop",appBizShop);
+        AppBizShop shop=new AppBizShop();
+        shop.setStatus(appBizShop.getStatus());
+        map.put("appBizShop",shop);
         return gson.toJson(map);
     }
 

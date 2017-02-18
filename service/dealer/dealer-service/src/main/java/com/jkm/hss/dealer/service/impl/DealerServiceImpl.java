@@ -2269,9 +2269,9 @@ public class DealerServiceImpl implements DealerService {
                 distributeRecordResponse.setProxyName(dealer.getProxyName());
                 distributeRecordResponse.setMarkCode(dealer.getMarkCode());
                 distributeRecordResponse.setCount(distributeQRCodeRecord.getCount());
-                distributeRecordResponse.setStartCode(distributeRecordResponse.getStartCode());
-                distributeRecordResponse.setEndCode(distributeRecordResponse.getEndCode());
-                distributeRecordResponse.setType(distributeRecordResponse.getType());
+                distributeRecordResponse.setStartCode(distributeQRCodeRecord.getStartCode());
+                distributeRecordResponse.setEndCode(distributeQRCodeRecord.getEndCode());
+                distributeRecordResponse.setType(distributeQRCodeRecord.getType());
                 distributeRecordResponse.setOperateUser("admin");
                 distributeRecordResponses.add(distributeRecordResponse);
             }
@@ -2303,7 +2303,7 @@ public class DealerServiceImpl implements DealerService {
         }
         int count = 0;
         List<DistributeQRCodeRecord> distributeQRCodeRecords = new ArrayList<DistributeQRCodeRecord>();
-        if(isJkm==true){
+        if(isJkm==false){
             count = distributeQRCodeRecordService.selectDistributeCountByContions(distributeRecordRequest);
             distributeQRCodeRecords = distributeQRCodeRecordService.selectDistributeRecordsByContions(distributeRecordRequest);
 

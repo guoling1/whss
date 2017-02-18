@@ -49,17 +49,5 @@ public class InitAccountServiceImpl implements InitAccountService {
             jkmAccount.setDueSettleAmount(new BigDecimal("0.00"));
             this.accountDao.initPoundageAccount(jkmAccount);
         }
-
-        final Account dealerPoundageAccount1 = this.accountDao.selectById(AccountConstants.DEALER_POUNDAGE_ACCOUNT_ID);
-        if (null == dealerPoundageAccount1) {
-            final Account jkmAccount = new Account();
-            jkmAccount.setId(AccountConstants.DEALER_POUNDAGE_ACCOUNT_ID);
-            jkmAccount.setUserName("代理商提现手续费账户");
-            jkmAccount.setTotalAmount(new BigDecimal("0.00"));
-            jkmAccount.setAvailable(new BigDecimal("0.00"));
-            jkmAccount.setFrozenAmount(new BigDecimal("0.00"));
-            jkmAccount.setDueSettleAmount(new BigDecimal("0.00"));
-            this.accountDao.initPoundageAccount(jkmAccount);
-        }
     }
 }

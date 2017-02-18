@@ -203,7 +203,7 @@
 
 <script lang="babel">
   export default {
-    name: 'dale',
+    name: 'storeAudit',
     data () {
       return {
         id: '',
@@ -233,8 +233,7 @@
     },
     created: function () {
       this.$data.id = this.$route.query.id;
-      this.$data.status = this.$route.query.status;
-      if(this.$data.status !=2){
+      if(this.$route.query.status !=2){
         this.$data.isShow = false;
       }
       this.$http.post('/admin/QueryMerchantInfoRecord/getAll',{id:this.$data.id})
@@ -242,24 +241,24 @@
           this.$data.msg = res.data.list[0];
           this.$data.res = res.data.res;
         },function (err) {
-          this.$store.commit('MESSAGE_ACCORD_SHOW', {
-            text: err.statusMessage
+          this.$message({
+            showClose: true,
+            message: err.statusMessage,
+            type: 'error'
           })
         })
-
     },
     methods: {
       audit: function (event) {
         this.$http.post('/admin/merchantInfoCheckRecord/record', {
           merchantId: this.$data.id
         }).then(function (res) {
-          console.log(res)
-
           this.$router.push('/admin/record/storeList')
         }, function (err) {
-          console.log(err);
-          this.$store.commit('MESSAGE_ACCORD_SHOW', {
-            text: err.statusMessage
+          this.$message({
+            showClose: true,
+            message: err.statusMessage,
+            type: 'error'
           })
         })
       },
@@ -268,9 +267,10 @@
           .then(function (res) {
             this.$router.push('/admin/record/storeList')
           },function (err) {
-            console.log(err)
-            this.$store.commit('MESSAGE_ACCORD_SHOW', {
-              text: err.statusMessage
+            this.$message({
+              showClose: true,
+              message: err.statusMessage,
+              type: 'error'
             })
           })
       },

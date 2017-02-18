@@ -251,7 +251,6 @@
 </template>
 
 <script lang="babel">
-  var msg = require('../../city.json')
   export default {
     name: 'agentAddBase',
     data () {

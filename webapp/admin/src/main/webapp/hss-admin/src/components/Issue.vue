@@ -213,7 +213,7 @@
           })
       }
     },*/
-    filter:{
+    filters:{
       changeTime: function (val) {
         if(val==''||val==null){
           return ''

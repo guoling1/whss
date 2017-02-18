@@ -11,7 +11,7 @@ public enum EnumSplitBusinessType {
 
     HSSWITHDRAW("hssWithdraw", "好收收-提现"),
 
-    HSSPROMOTE("hssPromote", "好收收-升级费"),
+    HSSPROMOTE("hssUpgrade", "好收收-升级费"),
 
     HSYPAY("hsyPay", "好收银-收款");
     @Getter
