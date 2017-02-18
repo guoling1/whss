@@ -270,7 +270,7 @@
         }).then(({ value }) => {
           this.$http.post('/admin/changeMerchantName/change',{id:this.$route.query.id,merchantChangeName:value})
             .then(function (res) {
-              this.$data.msg.merchantChangeName = res.data.merchantChangeName;
+              this.$data.msg.merchantChangeName = value;
               this.$message({
                 showClose: true,
                 type: 'success',
