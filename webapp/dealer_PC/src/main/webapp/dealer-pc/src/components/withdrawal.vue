@@ -22,7 +22,7 @@
                 </el-form-item>
                 <el-form-item label="提现金额" prop="amount">
                   <el-popover placement="top" title="提示" width="200" trigger="focus">
-                    <span>最小可提现金额：1.00 元 <br> 最大可提现金额：{{accountInfo.available}} 元</span>
+                    <span>最小可提现金额：500.00 元 <br> 当前最大可提现金额：{{accountInfo.available}} 元</span>
                     <el-input slot="reference" type="number" v-model="form.amount" placeholder="保留俩位小数"
                               @change="counter" size="small">
                       <template slot="append">元</template>
@@ -71,10 +71,10 @@
     },
     data() {
       let validateAmount = (rule, value, callback) => {
-        if (value >= 1 && value <= this.accountInfo.available) {
+        if (value >= 500 && value <= this.accountInfo.available) {
           callback();
         } else {
-          callback(new Error('最小可提现金额1.00元 最大可提现金额' + this.accountInfo.available + '元'));
+          callback(new Error('最小可提现金额500.00元 当前最大可提现金额' + this.accountInfo.available + '元'));
         }
       };
       return {
