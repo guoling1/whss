@@ -22,7 +22,7 @@
 
   <p>${message}</p>
 
-  <div class="btn" onclick="history.go(-1)">返回</div>
+  <div class="btn" onclick="WeixinJSBridge.call('closeWindow')">返回</div>
 </div>
 
 </body>
