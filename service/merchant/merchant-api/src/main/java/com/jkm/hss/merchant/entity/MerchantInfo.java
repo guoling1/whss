@@ -128,6 +128,12 @@ public class MerchantInfo extends BaseEntity{
      * 商户标示码
      */
     private String markCode;
+
+    /**
+     * 商户更改商户名
+     */
+    private String merchantChangeName;
+
     /**
      * 合伙人级别
      *

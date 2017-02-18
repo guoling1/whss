@@ -224,12 +224,17 @@ public class PushServiceImpl implements PushService {
             clients.add(clientid);
         }
          SmsTemplate  messageTemplate = messageTemplateDao.getTemplateByType(EnumNoticeType.CASH_OUT.getId());
-
         Map  data= new HashMap();
         data.put("bank", payBank);
         data.put("cardNo",cardNo );
         data.put("amount", amount);
-         String content = VelocityStringTemplate.process(messageTemplate.getMessageTemplate(), data);
+
+        String content = VelocityStringTemplate.process(messageTemplate.getMessageTemplate(), data);
+
+        AppResult   appResult=new AppResult() ;
+        appResult.setResultCode(200);
+        appResult.setResultMessage(content);
+
 
         String ret = this.pushTransmissionMsg(2, content, "2", null, clients);
         return ret;

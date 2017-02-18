@@ -64,7 +64,10 @@
               <th style="text-align: right">身份证号:</th>
               <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.identity" readonly></td>
               <th style="text-align: right">商户名称:</th>
-              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.merchantName" readonly></td>
+              <td>
+                <input type="text" style="background:#efecec;padding-left:5px;" :value="msg.merchantName" readonly>
+                <!--<el-button type="text" @click="reset" v-if="isShow">修改名称</el-button>-->
+              </td>
             </tr>
             <tr>
               <th style="text-align: right">经营种类:</th>
@@ -249,6 +252,35 @@
         })
     },
     methods: {
+      //修改名称
+      reset:function() {
+        this.$prompt('请输入新名称', '修改名称', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+        }).then(({ value }) => {
+          this.$http.post('/admin/dealer/updatePwd',{dealerId:this.$route.query.id,loginPwd:value})
+            .then(function (res) {
+              this.$message({
+                showClose: true,
+                type: 'success',
+                message: '修改成功'
+              });
+            })
+            .catch(function (err) {
+              this.$message({
+                showClose: true,
+                message: err.statusMessage,
+                type: 'error'
+              })
+            })
+
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '取消修改'
+          });
+        });
+      },
       audit: function (event) {
         this.$http.post('/admin/merchantInfoCheckRecord/record', {
           merchantId: this.$data.id
