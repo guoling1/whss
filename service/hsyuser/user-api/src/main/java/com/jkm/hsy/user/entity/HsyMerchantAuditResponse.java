@@ -36,7 +36,7 @@ public class HsyMerchantAuditResponse {
     private Long parentID;//父ID
     private String contactName;//联系人姓名
     private String contactCellphone;//联系人手机号
-    private String cellphone;//手机号
+    private String cellphone;//注册手机号
     private Integer status;//状态：1 正常 99禁用
     private String stat;
     private Integer isPublic;//是否对公1是 2否'
