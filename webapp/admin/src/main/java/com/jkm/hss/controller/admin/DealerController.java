@@ -860,6 +860,7 @@ public class DealerController extends BaseController {
             if(org.apache.commons.lang3.StringUtils.isBlank(request.getLoginPwd())) {
                 return CommonResponse.simpleResponse(-1, "登录密码不能为空");
             }
+            request.setLoginPwd(DealerSupport.passwordDigest(request.getLoginPwd(),"JKM"));
             this.dealerService.updatePwd(request.getLoginPwd(),request.getDealerId());
             return CommonResponse.builder4MapResult(CommonResponse.SUCCESS_CODE, "修改成功")
                     .addParam("dealerId", request.getDealerId()).build();
