@@ -55,16 +55,19 @@
             </div>
           </form>
         </div>
-        <div>
+        <div style="position: relative">
           <div class="box-header" style="margin-top: 15px">
             <h3 class="box-title title2">代理商推广码&推广链接：</h3>
           </div>
             <el-radio-group v-model="records.inviteBtn" style="margin-left: 65px">
-              <el-radio :label="2" style="display: block">开
-                <span style="font-weight: normal;margin-left: 20px">推广码：{{records.inviteCode}}</span>
-                <span style="font-weight: normal;margin-left: 20px">推广链接：https://hss.qianbaojiajia.com/reg?invite={{records.inviteCode}}</span></el-radio>
+              <el-radio :label="2" style="display: block">开</el-radio>
               <el-radio :label="1" style="display: block;margin:10px 0 0">关</el-radio>
             </el-radio-group>
+          <div style="position: absolute;top: 41px;left: 108px">
+            <span style="font-weight: normal;margin-left: 20px">推广码：{{records.inviteCode}}</span>
+            <span style="font-weight: normal;margin-left: 20px">推广链接：http://hss.qianbaojiajia.com/reg?invite={{records.inviteCode}}</span>
+          </div>
+
         </div>
         <div v-if="records.productName=='好收收'">
           <div class="box-header" style="margin-top: 15px">
