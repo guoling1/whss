@@ -12,7 +12,7 @@
             <tbody>
             <tr>
               <th style="text-align: right">注册手机:</th>
-              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.contactCellphone" readonly></td>
+              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.cellphone" readonly></td>
               <th style="text-align: right">注册时间:</th>
               <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.createTime|changeTime" readonly></td>
               <th style="text-align: right">注册方式:</th>

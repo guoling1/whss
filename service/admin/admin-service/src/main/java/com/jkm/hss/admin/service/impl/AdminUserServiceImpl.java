@@ -23,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -245,6 +246,7 @@ public class AdminUserServiceImpl implements AdminUserService {
             distributeQRCodeRecord.setCount((int) (Long.valueOf(right.getCode()) - Long.valueOf(left.getCode()) + 1));
             distributeQRCodeRecord.setStartCode(left.getCode());
             distributeQRCodeRecord.setEndCode(right.getCode());
+            distributeQRCodeRecord.setCreateTime(new Date());
             distributeQRCodeRecord.setDistributeType(EnumQRCodeDistributeType2.ADMIN.getCode());
             distributeQRCodeRecord.setType(type);
             records.add(distributeQRCodeRecord);
@@ -282,6 +284,7 @@ public class AdminUserServiceImpl implements AdminUserService {
             final QRCode left = pair.getLeft();
             final QRCode right = pair.getRight();
             final DistributeQRCodeRecord distributeQRCodeRecord = new DistributeQRCodeRecord();
+            distributeQRCodeRecord.setCreateTime(new Date());
             distributeQRCodeRecord.setFirstLevelDealerId(0);
             distributeQRCodeRecord.setSecondLevelDealerId(dealerId);
             distributeQRCodeRecord.setCount((int) (Long.valueOf(right.getCode()) - Long.valueOf(left.getCode()) + 1));
