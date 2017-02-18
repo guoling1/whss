@@ -547,7 +547,7 @@ public class DealerController extends BaseController {
             if(!dealerOptional.isPresent()){
                 return CommonResponse.simpleResponse(-1, "代理商不存在");
             }
-            if(dealerOptional.get().getLevel()==1){
+            if(dealerOptional.get().getLevel()==1&&request.getRecommendBtn()==EnumRecommendBtn.ON.getId()){
                 if(request.getTotalProfitSpace()==null){
                     return CommonResponse.simpleResponse(-1, "收单总分润空间不能为空");
                 }
@@ -577,7 +577,7 @@ public class DealerController extends BaseController {
                     return commonResponse;
                 }
             }
-            if(dealerOptional.get().getLevel()==1){
+            if(dealerOptional.get().getLevel()==1&&request.getRecommendBtn()==EnumRecommendBtn.ON.getId()){
                 List<HssDealerAddOrUpdateRequest.DealerUpgradeRate> dealerUpgradeRateParams = request.getDealerUpgerdeRates();
                 for (HssDealerAddOrUpdateRequest.DealerUpgradeRate dealerUpgradeRateParam : dealerUpgradeRateParams) {
                     final CommonResponse commonResponse = this.checkDealerUpgerdeRate(dealerUpgradeRateParam);
