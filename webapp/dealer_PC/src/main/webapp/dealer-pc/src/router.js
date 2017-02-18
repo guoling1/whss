@@ -18,6 +18,16 @@ import distribution_qrcode from './components/distribution_qrcode.vue'
 import qrcode_distribution from './components/qrcode_distribution.vue'
 import balance_withdrawal from './components/balance_withdrawal.vue'
 import withdrawal from './components/withdrawal.vue'
+import settlement from './components/settlement.vue'
+import dealer_settlement from './components/dealer_settlement.vue'
+import dealer_account from './components/dealer_account.vue'
+import merchants from './components/merchants.vue'
+import transaction from './components/transaction.vue'
+import qrcode from './components/qrcode.vue'
+import employees from './components/employees.vue'
+import roles from './components/roles.vue'
+import information from './components/information.vue'
+import policy from './components/policy.vue'
 
 import store from './store/index'
 
@@ -58,6 +68,16 @@ const routes = [
       {path: 'qrcode_distribution', name: "qrcode_distribution", component: qrcode_distribution},
       {path: 'balance_withdrawal', name: "balance_withdrawal", component: balance_withdrawal},
       {path: 'withdrawal', name: "withdrawal", component: withdrawal},
+      {path: 'settlement', name: "settlement", component: settlement},
+      {path: 'dealer_settlement', name: "dealer_settlement", component: dealer_settlement},
+      {path: 'dealer_account', name: "dealer_account", component: dealer_account},
+      {path: 'merchants', name: "merchants", component: merchants},
+      {path: 'transaction', name: "transaction", component: transaction},
+      {path: 'qrcode', name: "qrcode", component: qrcode},
+      {path: 'employees', name: "employees", component: employees},
+      {path: 'roles', name: "roles", component: roles},
+      {path: 'information', name: "information", component: information},
+      {path: 'policy', name: "policy", component: policy},
     ]
   }
 ];

@@ -167,7 +167,7 @@
                 <router-link to="profits_detail"><i class="fa fa-circle-o"></i>分润明细</router-link>
               </li>
               <li>
-                <router-link to="development"><i class="fa fa-circle-o"></i>结算记录</router-link>
+                <router-link to="settlement"><i class="fa fa-circle-o"></i>结算记录</router-link>
               </li>
               <li>
                 <router-link to="balance_withdrawal"><i class="fa fa-circle-o"></i>余额提现</router-link>
@@ -187,10 +187,10 @@
                 <router-link to="dealer_list"><i class="fa fa-circle-o"></i> 所有代理商</router-link>
               </li>
               <li>
-                <router-link to="development"><i class="fa fa-circle-o"></i> 代理结算记录</router-link>
+                <router-link to="dealer_settlement"><i class="fa fa-circle-o"></i> 代理结算记录</router-link>
               </li>
               <li>
-                <router-link to="development"><i class="fa fa-circle-o"></i> 代理商账户</router-link>
+                <router-link to="dealer_account"><i class="fa fa-circle-o"></i> 代理商账户</router-link>
               </li>
             </ul>
           </li>
@@ -204,10 +204,10 @@
             </a>
             <ul class="treeview-menu">
               <li>
-                <router-link to="development"><i class="fa fa-circle-o"></i> 所有商户</router-link>
+                <router-link to="merchants"><i class="fa fa-circle-o"></i> 所有商户</router-link>
               </li>
               <li>
-                <router-link to="development"><i class="fa fa-circle-o"></i> 交易管理</router-link>
+                <router-link to="transaction"><i class="fa fa-circle-o"></i> 交易管理</router-link>
               </li>
             </ul>
           </li>
@@ -227,7 +227,7 @@
                 <router-link to="qrcode_distribution"><i class="fa fa-circle-o"></i> 二维码分配记录</router-link>
               </li>
               <li>
-                <router-link to="development"><i class="fa fa-circle-o"></i> 所有二维码</router-link>
+                <router-link to="qrcode"><i class="fa fa-circle-o"></i> 所有二维码</router-link>
               </li>
             </ul>
           </li>
@@ -241,10 +241,10 @@
             </a>
             <ul class="treeview-menu">
               <li>
-                <router-link to="development"><i class="fa fa-circle-o"></i> 员工管理</router-link>
+                <router-link to="employees"><i class="fa fa-circle-o"></i> 员工管理</router-link>
               </li>
               <li>
-                <router-link to="development"><i class="fa fa-circle-o"></i> 角色管理</router-link>
+                <router-link to="roles"><i class="fa fa-circle-o"></i> 角色管理</router-link>
               </li>
             </ul>
           </li>
@@ -258,10 +258,10 @@
             </a>
             <ul class="treeview-menu">
               <li>
-                <router-link to="development"><i class="fa fa-circle-o"></i> 注册信息</router-link>
+                <router-link to="information"><i class="fa fa-circle-o"></i> 注册信息</router-link>
               </li>
               <li>
-                <router-link to="development"><i class="fa fa-circle-o"></i> 代理政策</router-link>
+                <router-link to="policy"><i class="fa fa-circle-o"></i> 代理政策</router-link>
               </li>
             </ul>
           </li>

@@ -6,7 +6,7 @@
         您好，{{dealerInfo}}
       </h4>
       <h2 class="text-center bottom">
-        该功能正在开发中,敬请期待
+        注册信息 正在开发中,敬请期待
       </h2>
     </section>
   </div>
