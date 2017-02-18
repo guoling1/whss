@@ -21,6 +21,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -73,6 +74,10 @@ public class ProfitController extends BaseController{
             List<ProfitDetailsSelectResponse> responseList = Lists.transform(records, new Function<SplitAccountRecord, ProfitDetailsSelectResponse>() {
                 @Override
                 public ProfitDetailsSelectResponse apply(SplitAccountRecord input) {
+                    if (input.getSplitAmount().equals( new BigDecimal("0"))){
+                        return null;
+                    }
+
                     final Order order = map.get(input.getOrderNo());
 
                     ProfitDetailsSelectResponse response = new ProfitDetailsSelectResponse();
