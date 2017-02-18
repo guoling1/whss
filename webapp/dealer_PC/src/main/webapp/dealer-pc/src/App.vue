@@ -32,6 +32,10 @@
     margin-left: 150px;
   }
 
+  #app .el-form-item__error {
+    top: auto !important;
+  }
+
   .sidebar-collapse #app .content-wrapper, .sidebar-collapse #app .main-header .navbar {
     margin-left: 50px;
   }

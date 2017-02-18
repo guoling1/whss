@@ -5,7 +5,7 @@ import lombok.Getter;
 /**
  * Created by yuxiang on 2017-02-13.
  */
-public enum EnumSplitBusinessType {
+public enum EnumBusinessType {
 
     HSSPAY("hssPay", "好收收- 收款"),
 
@@ -19,7 +19,7 @@ public enum EnumSplitBusinessType {
     @Getter
     private String value;
 
-    EnumSplitBusinessType(final String id, final String value) {
+    EnumBusinessType(final String id, final String value) {
         this.id = id;
         this.value = value;
     }

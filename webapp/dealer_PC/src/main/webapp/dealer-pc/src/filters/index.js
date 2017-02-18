@@ -52,3 +52,10 @@ Vue.filter('filter_qrcodeType', function (value) {
   };
   return encryption[value];
 });
+
+Vue.filter('filter_amount', function (value) {
+  if (value == 0) {
+    return '--'
+  }
+  return value;
+});
