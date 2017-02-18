@@ -176,35 +176,6 @@
       </div>
       <div class="box box-primary" style="overflow: hidden">
         <p class="lead">商户费率信息</p>
-        <!--<div class="table-responsive">
-          <table class="table">
-            <tbody>
-            <tr>
-              <th style="text-align: right">阳光万维微信:</th>
-              <td></td>
-              <th style="text-align: right">收款结算方式:</th>
-              <td></td>
-              <th style="text-align: right">提现费:</th>
-              <td>元/笔</td>
-            </tr>
-            <tr>
-              <th style="text-align: right">阳光万维支付宝:</th>
-              <td></td>
-              <th style="text-align: right">收款结算方式:</th>
-              <td></td>
-              <th style="text-align: right">提现费:</th>
-              <td>元/笔</td>
-            </tr>
-            <tr>
-              <th style="text-align: right">阳光万维无卡快捷:</th>
-              <td></td>
-              <th style="text-align: right">收款结算方式:</th>
-              <td></td>
-              <th style="text-align: right">提现费:</th>
-              <td>元/笔</td>
-            </tr>
-            </tbody></table>
-        </div>-->
         <div style="width: 70%;margin: 0 0 15px 15px;">
           <template>
             <el-table :data="tableData" border style="width: 100%">

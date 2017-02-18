@@ -723,9 +723,7 @@
                 <el-col :span="5">
                   <div class="label">一级代理名称：<span>{{msg.proxyName}}</span></div>
                 </el-col>
-                <el-col :span="5">
-                  <div class="label"><span></span></div>
-                </el-col>
+                <el-col :span="5"><div class="label"><span></span></div></el-col>
               </el-row>
               <el-row type="flex" class="row-bg" justify="space-around" style="margin-bottom: 15px">
                 <el-col :span="5">
@@ -734,9 +732,7 @@
                 <el-col :span="5">
                   <div class="label">二级代理名称：<span>{{msg.proxyName1}}</span></div>
                 </el-col>
-                <el-col :span="5">
-                  <div class="label"><span></span></div>
-                </el-col>
+                <el-col :span="5"><div class="label"><span></span></div></el-col>
               </el-row>
               <el-row type="flex" class="row-bg" justify="space-around" style="margin-bottom: 15px">
                 <el-col :span="5">
@@ -756,9 +752,7 @@
                 <el-col :span="5">
                   <div class="label">推荐所属二级代理名：<span>{{msg.proxyNameYq1}}</span></div>
                 </el-col>
-                <el-col :span="5">
-                  <div class="label"><span></span></div>
-                </el-col>
+                <el-col :span="5"></el-col>
               </el-row>
             </el-tab-pane>
             <el-tab-pane label="商户认证信息" name="second">
@@ -780,31 +774,21 @@
                 <el-col :span="5">
                   <div class="label">店主身份证号：<span>——</span></div>
                 </el-col>
-                <el-col :span="5">
-                  <div class="label"><span></span></div>
-                </el-col>
+                <el-col :span="5"></el-col>
               </el-row>
               <el-row type="flex" class="row-bg" justify="space-around" style="margin-bottom: 15px">
                 <el-col :span="5">
                   <div class="label">商铺上报名称：<span>——</span></div>
                 </el-col>
-                <el-col :span="5">
-                  <div class="label"><span></span></div>
-                </el-col>
-                <el-col :span="5">
-                  <div class="label"><span></span></div>
-                </el-col>
+                <el-col :span="5"></el-col>
+                <el-col :span="5"></el-col>
               </el-row>
               <el-row type="flex" class="row-bg" justify="space-around" style="margin-bottom: 15px">
                 <el-col :span="5">
                   <div class="label">经营种类：<span>——</span></div>
                 </el-col>
-                <el-col :span="5">
-                  <div class="label"><span></span></div>
-                </el-col>
-                <el-col :span="5">
-                  <div class="label"><span></span></div>
-                </el-col>
+                <el-col :span="5"></el-col>
+                <el-col :span="5"></el-col>
               </el-row>
               <el-row type="flex" class="row-bg" justify="space-around" style="margin-bottom: 15px">
                 <el-col :span="5">
@@ -862,10 +846,87 @@
               </div>
             </el-tab-pane>
             <el-tab-pane label="商户结算信息" name="fourth">
-
+              <el-row type="flex" class="row-bg" justify="space-around" style="margin-bottom: 15px">
+                <el-col :span="5">
+                  <div class="label">结算卡类型：<span><el-radio-group v-model="msg.isPublic">
+                        <el-radio :label="1">对公</el-radio>
+                        <el-radio :label="0">对私</el-radio>
+                      </el-radio-group></span></div>
+                </el-col>
+                <el-col :span="5">
+                </el-col>
+                <el-col :span="5">
+                </el-col>
+              </el-row>
+              <el-row type="flex" class="row-bg" justify="space-around" style="margin-bottom: 15px">
+                <el-col :span="5">
+                  <div class="label">结算卡开户名：<span>{{msg.cardAccountName}}</span></div>
+                </el-col>
+                <el-col :span="5">
+                </el-col>
+                <el-col :span="5">
+                </el-col>
+              </el-row>
+              <el-row type="flex" class="row-bg" justify="space-around" style="margin-bottom: 15px" v-if="msg.isPublic==0">
+                <el-col :span="5">
+                  <div class="label">身份证号：<span>——</span></div>
+                </el-col>
+                <el-col :span="5">
+                </el-col>
+                <el-col :span="5">
+                </el-col>
+              </el-row>
+              <el-row type="flex" class="row-bg" justify="space-around" style="margin-bottom: 15px">
+                <el-col :span="5">
+                  <div class="label">商户结算卡号：<span>{{msg.cardNO}}</span></div>
+                </el-col>
+                <el-col :span="5">
+                </el-col>
+                <el-col :span="5">
+                </el-col>
+              </el-row>
+              <el-row type="flex" class="row-bg" justify="space-around" style="margin-bottom: 15px">
+                <el-col :span="5">
+                  <div class="label">结算卡所属银行：<span>{{msg.cardBank}}</span></div>
+                </el-col>
+                <el-col :span="5">
+                </el-col>
+                <el-col :span="5">
+                </el-col>
+              </el-row>
+              <el-row type="flex" class="row-bg" justify="space-around" style="margin-bottom: 15px">
+                <el-col :span="5">
+                  <div class="label">支行信息：<span>{{msg.bankAddress}}</span></div>
+                </el-col>
+                <el-col :span="5">
+                </el-col>
+                <el-col :span="5">
+                </el-col>
+              </el-row>
+              <el-row type="flex" class="row-bg" justify="space-around" style="margin-bottom: 15px">
+                <el-col :span="5">
+                  <div class="label">结算方式：<span><el-radio-group>
+                        <el-radio :label="3">T1结算到卡</el-radio>
+                        <el-radio :label="4">T1结算到账户余额</el-radio>
+                      </el-radio-group></span></div>
+                </el-col>
+                <el-col :span="5">
+                </el-col>
+                <el-col :span="5">
+                </el-col>
+              </el-row>
             </el-tab-pane>
             <el-tab-pane label="商户费率信息" name="fifth">
-
+              <div style="width: 70%;margin: 0 0 15px 15px;overflow: hidden;">
+                <template>
+                  <el-table :data="tableData" border style="width: 100%">
+                    <el-table-column prop="name" label="通道名称" ></el-table-column>
+                    <el-table-column prop="rate" label="支付结算手续费"></el-table-column>
+                    <el-table-column prop="time" label="结算时间" ></el-table-column>
+                    <el-table-column prop="money" label="提现手续费" ></el-table-column>
+                  </el-table>
+                </template>
+              </div>
             </el-tab-pane>
             <el-tab-pane label="商户审核信息" name="sixth">
               <div class="table-responsive">
@@ -898,22 +959,35 @@
           <p @click="isNo">×</p>
           <img src="" alt="">
         </div>
-        <div class="box box-primary" v-if="isShow">
-          <p class="lead">审核</p>
-
+        <div class="" v-if="isShow" style="padding-top: 30px">
           <div class="table-responsive">
-            <table class="table">
-              <tbody>
-              <tr>
-                <th style="text-align: right;height: 35px;line-height: 35px;">审核意见:</th>
-                <td><input type="text" name="name" placeholder="不通过必填" v-model="reason" style="height: 35px;line-height: 35px;width: 50%;"></td>
-              </tr>
-              <tr>
-                <th style="text-align: right"><div class="btn btn-danger" @click="unAudit">不 通 过</div></th>
-                <td><div class="btn btn-success" @click="audit($event)">通 过</div></td>
-              </tr>
-              </tbody>
-            </table>
+            <el-row type="flex" class="row-bg" justify="space-around" style="margin-bottom: 15px">
+              <el-col :span="2">
+                <div class="label"><span></span></div>
+              </el-col>
+              <el-col :span="12">
+                <div class="label">审核意见：<span>
+                  <el-input style="height: 35px;line-height: 35px;width: 50%;" v-model="reason" placeholder="不通过必填" ></el-input>
+                  </span></div>
+              </el-col>
+              <el-col :span="1">
+                <div class="label"><span></span></div>
+              </el-col>
+            </el-row>
+            <el-row type="flex" class="row-bg" justify="space-around" style="margin-bottom: 15px">
+              <el-col :span="3">
+                <div class="label"><span></span></div>
+              </el-col>
+              <el-col :span="8">
+                <div class="label"><span>
+                  <div style="margin-right: 30px" class="btn btn-danger" @click="unAudit">不 通 过</div>
+                  <div class="btn btn-success" @click="audit($event)">通 过</div>
+                  </span></div>
+              </el-col>
+              <el-col :span="1">
+                <div class="label"><span></span></div>
+              </el-col>
+            </el-row>
           </div>
         </div>
       </div>
@@ -950,7 +1024,23 @@
         status:'',
         isShow:true,
         res: [],
-        activeName:'first'
+        activeName:'first',
+        tableData:[{
+          name:'支付宝',
+          rate:'',
+          time:'',
+          money:''
+        },{
+          name:'微信',
+          rate:'',
+          time:'',
+          money:''
+        },{
+          name:'快捷',
+          rate:'',
+          time:'',
+          money:''
+        }]
       }
     },
     created:function () {
@@ -962,6 +1052,9 @@
         .then(function (res) {
           this.$data.msg = res.data.list[0];
           this.$data.res = res.data.res;
+          this.$data.tableData[0].rate = res.data.weixinRate;
+          this.$data.tableData[1].rate = res.data.alipayRate;
+          this.$data.tableData[2].rate = res.data.fastRate;
         },function (err) {
           this.$message({
             showClose: true,
@@ -1057,11 +1150,6 @@
   ul{
     padding: 0;
   }
-  .same{
-    list-style: none;
-    display: inline-block;
-    margin: 0 15px 15px 0;
-  }
   .btn{
     font-size: 12px;
   }
@@ -1094,6 +1182,14 @@
     display: inherit;
     height: 100%;
     margin: 0 auto;
+  }
+  }
+  .label {
+    font-weight: bold;
+    color: #333;
+
+  span {
+    font-weight: normal;
   }
   }
 </style>
