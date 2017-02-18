@@ -30,7 +30,7 @@
     </li>
     <li class="bottom flexBox" id="invite" style="display:none;">
       <div class="logo invite"></div>
-      <input style="height:49px;" type="text" placeholder="邀请人注册手机号" id="inviteCode" value="${inviteCode}">
+      <input style="height:49px;" type="text" placeholder="邀请人注册手机号或邀请码" id="inviteCode" value="${inviteCode}">
     </li>
   </ul>
   <div class="reg">
