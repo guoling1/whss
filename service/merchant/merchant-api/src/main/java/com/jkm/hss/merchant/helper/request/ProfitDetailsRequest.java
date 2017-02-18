@@ -9,6 +9,16 @@ import lombok.Data;
 public class ProfitDetailsRequest {
 
     /**
+     * 交易单号
+     */
+    private String orderNo;
+
+    /**
+     * 收款用户名
+     */
+    private String receiptMoneyUserName;
+
+    /**
      * 账户id
      */
     private int id;
