@@ -22,7 +22,7 @@ import java.util.List;
 @Slf4j
 
 @Controller
-@RequestMapping(value = "/admin/queryJkmProfit")
+@RequestMapping(value = "/admin/queryProfit")
 public class ProfitDetailsController extends BaseController{
 
     @Autowired
