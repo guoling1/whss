@@ -38,7 +38,7 @@
          SELECT * FROM tb_account_flow WHERE order_no = #{orderNo} AND account_id = #{accountId} AND type = #{type}
     </select>
     <select id="selectByParam" resultType="com.jkm.hss.account.entity.AccountFlow">
-         SELECT * FROM tb_account_flow WHERE account_id = #{accountId}
+         SELECT * FROM tb_account_flow WHERE account_id = #{accountId} AND (out_amount+income_amount) &gt; 0.00
             <if test="flowSn != null and flowSn != ''">
                  AND order_no = #{flowSn}
             </if>
@@ -51,7 +51,7 @@
         ORDER BY id DESC limit #{firstIndex},#{pageSize}
     </select>
     <select id="selectCountByParam" resultType="java.lang.Long">
-        SELECT COUNT(*) FROM tb_account_flow WHERE account_id = #{accountId}
+        SELECT COUNT(*) FROM tb_account_flow WHERE account_id = #{accountId} AND (out_amount+income_amount) &gt; 0.00
         <if test="flowSn != null and flowSn != ''">
             AND order_no = #{flowSn}
         </if>

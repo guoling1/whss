@@ -58,7 +58,7 @@ public class CodeController extends BaseController {
         final QRCode qrCode = qrCodeOptional.get();
         Preconditions.checkState(qrCode.isCorrectSign(sign), "sign is not correct");
         final long merchantId = qrCode.getMerchantId();
-        final String agent = request.getHeader("User-Agent");
+        final String agent = request.getHeader("User-Agent").toLowerCase();
         log.info("User-Agent is [{}]",agent);
         String url = "";
         if (qrCode.isActivate()) {//已激活
@@ -72,7 +72,7 @@ public class CodeController extends BaseController {
             final MerchantInfo merchantInfo = merchantInfoOptional.get();
             model.addAttribute("merchantId", merchantId);
             if (EnumMerchantStatus.INIT.getId() == merchantInfo.getStatus()) { // 初始化-->填资料
-                if (agent.indexOf("MicroMessenger") > -1) {//weixin
+                if (agent.indexOf("micromessenger") > -1) {//weixin
                     log.info("初始化-->填资料,扫码openId{}",openId);
                     //如何没有openId跳授权页面
                     if(openId==null||"".equals(openId)){
@@ -103,7 +103,7 @@ public class CodeController extends BaseController {
                     url = "/sqb/unFinishedPrompt";
                 }
             } else if (EnumMerchantStatus.ONESTEP.getId() == merchantInfo.getStatus()) { // 初始化-->图片
-                if (agent.indexOf("MicroMessenger") > -1) {//weixin
+                if (agent.indexOf("micromessenger") > -1) {//weixin
                     log.info("初始化-->图片,扫码openId{}",openId);
                     //如何没有openId跳授权页面
                     if(openId==null||"".equals(openId)){
@@ -135,7 +135,7 @@ public class CodeController extends BaseController {
                 }
 
             } else if (EnumMerchantStatus.REVIEW.getId() == merchantInfo.getStatus()) {//待审核
-                if (agent.indexOf("MicroMessenger") > -1) {//weixin
+                if (agent.indexOf("micromessenger") > -1) {//weixin
                     log.info("初始化-->图片,扫码openId{}",openId);
                     //如何没有openId跳授权页面
                     if(openId==null||"".equals(openId)){
@@ -166,7 +166,7 @@ public class CodeController extends BaseController {
                     url = "/sqb/unFinishedPrompt";
                 }
             } else if (EnumMerchantStatus.UNPASSED.getId() == merchantInfo.getStatus()) {//审核未通过
-                if (agent.indexOf("MicroMessenger") > -1) {//weixin
+                if (agent.indexOf("micromessenger") > -1) {//weixin
                     log.info("初始化-->图片,扫码openId{}",openId);
                     //如何没有openId跳授权页面
                     if(openId==null||"".equals(openId)){
@@ -212,7 +212,7 @@ public class CodeController extends BaseController {
                 log.error("code[{}] is activate, but merchant[{}] is disabled", code, merchantId);
             }
         } else {//注册
-            Preconditions.checkState(agent.indexOf("MicroMessenger") > -1, "please register in weixin");
+            Preconditions.checkState(agent.indexOf("micromessenger") > -1, "please register in weixin");
             model.addAttribute("code", code);
             url =  "/sqb/reg";
         }
