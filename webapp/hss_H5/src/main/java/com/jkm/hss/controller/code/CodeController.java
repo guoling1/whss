@@ -198,11 +198,11 @@ public class CodeController extends BaseController {
                 }
             } else if (EnumMerchantStatus.PASSED.getId() == merchantInfo.getStatus()||EnumMerchantStatus.FRIEND.getId() == merchantInfo.getStatus()) {//审核通过
                 model.addAttribute("name", merchantInfo.getMerchantName());
-                log.info("设备标示{}",agent.indexOf("MicroMessenger"));
-                if (agent.indexOf("MicroMessenger") > -1) {//weixin
+                log.info("设备标示{}",agent.indexOf("micromessenger"));
+                if (agent.indexOf("micromessenger") > -1) {//weixin
                     url = "/sqb/paymentWx";
                 }
-                if (agent.indexOf("AliApp") > -1) {// AliApp
+                if (agent.indexOf("aliapp") > -1) {// AliApp
                     url = "/sqb/paymentZfb";
                 }
             }else if (EnumMerchantStatus.LOGIN.getId() == merchantInfo.getStatus()) {//注册

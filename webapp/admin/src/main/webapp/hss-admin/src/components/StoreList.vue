@@ -64,6 +64,7 @@
                 <el-table-column prop="proxyName" label="所属一级代理商"></el-table-column>
                 <el-table-column prop="proxyName1" label="所属二级代理"></el-table-column>
                 <el-table-column prop="createTime" :formatter="changeTime" label="注册时间"></el-table-column>
+                <el-table-column prop="mobile" label="注册手机号"></el-table-column>
                 <el-table-column label="注册方式">
                   <template scope="scope">
                     <span v-if="records[scope.$index].source==0">扫码注册</span>

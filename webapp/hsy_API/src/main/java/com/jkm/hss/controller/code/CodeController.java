@@ -56,7 +56,7 @@ public class CodeController extends BaseController {
         final QRCode qrCode = qrCodeOptional.get();
         Preconditions.checkState(qrCode.isCorrectSign(sign), "sign is not correct");
         final long merchantId = qrCode.getMerchantId();
-        final String agent = request.getHeader("User-Agent");
+        final String agent = request.getHeader("User-Agent").toLowerCase();
         log.info("User-Agent is [{}]",agent);
         String url = "";
         if (qrCode.isActivate()) {//已激活
@@ -66,11 +66,11 @@ public class CodeController extends BaseController {
             String merchantName = hsyShopDao.findShopNameByID(merchantId);
             model.addAttribute("merchantId", merchantId);
             model.addAttribute("name", merchantName);
-            log.info("设备标示{}",agent.indexOf("MicroMessenger"));
-            if (agent.indexOf("MicroMessenger") > -1) {
+            log.info("设备标示{}",agent.indexOf("micromessenger"));
+            if (agent.indexOf("micromessenger") > -1) {
                 url = "/sqb/paymentWx";
             }
-            if (agent.indexOf("AliApp") > -1) {
+            if (agent.indexOf("aliapp") > -1) {
                 url = "/sqb/paymentZfb";
             }
         } else {

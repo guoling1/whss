@@ -440,6 +440,7 @@ public class HSYTradeServiceImpl implements HSYTradeService {
 
         //判断业务类型
         final String splitBusinessType = this.getSplitBusinessType(order);
+        log.info(">>>orderNo:" + order.getOrderNo() + "<<<<<<该笔订单的业务类型：" + splitBusinessType);
         //通道利润--到结算
         if (null != channelMoneyTriple) {
             this.splitAccountRecordService.addPaySplitAccountRecord(splitBusinessType, order.getOrderNo(), order.getOrderNo(),

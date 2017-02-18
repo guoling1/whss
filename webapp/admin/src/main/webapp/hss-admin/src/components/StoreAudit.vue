@@ -118,36 +118,17 @@
           </table>
         </div>
       </div>
-      <div class="box box-primary">
+      <div class="box box-primary" style="overflow: hidden">
         <p class="lead">商户结算信息(好收收)</p>
-        <div class="table-responsive">
-          <table class="table">
-            <tbody>
-            <tr>
-              <th style="text-align: right">阳光万维微信:</th>
-              <td></td>
-              <th style="text-align: right">收款结算方式:</th>
-              <td></td>
-              <th style="text-align: right">提现费:</th>
-              <td>元/笔</td>
-            </tr>
-            <tr>
-              <th style="text-align: right">阳光万维支付宝:</th>
-              <td></td>
-              <th style="text-align: right">收款结算方式:</th>
-              <td></td>
-              <th style="text-align: right">提现费:</th>
-              <td>元/笔</td>
-            </tr>
-            <tr>
-              <th style="text-align: right">阳光万维无卡快捷:</th>
-              <td></td>
-              <th style="text-align: right">收款结算方式:</th>
-              <td></td>
-              <th style="text-align: right">提现费:</th>
-              <td>元/笔</td>
-            </tr>
-            </tbody></table>
+        <div style="width: 70%;margin: 0 0 15px 15px;">
+          <template>
+            <el-table :data="tableData" border style="width: 100%">
+              <el-table-column prop="name" label="通道名称" ></el-table-column>
+              <el-table-column prop="rate" label="支付结算手续费"></el-table-column>
+              <el-table-column prop="time" label="结算时间" ></el-table-column>
+              <el-table-column prop="money" label="提现手续费" ></el-table-column>
+            </el-table>
+          </template>
         </div>
       </div>
       <div class="box box-primary" v-if="!isShow">
@@ -228,7 +209,23 @@
         reason:'',
         status:'',
         isShow:true,
-        res: []
+        res: [],
+        tableData:[{
+          name:'支付宝',
+          rate:'',
+          time:'',
+          money:''
+        },{
+          name:'微信',
+          rate:'',
+          time:'',
+          money:''
+        },{
+          name:'快捷',
+          rate:'',
+          time:'',
+          money:''
+        }]
       }
     },
     created: function () {
@@ -240,6 +237,9 @@
         .then(function (res) {
           this.$data.msg = res.data.list[0];
           this.$data.res = res.data.res;
+          this.$data.tableData[0].rate = res.data.weixinRate;
+          this.$data.tableData[1].rate = res.data.alipayRate;
+          this.$data.tableData[2].rate = res.data.fastRate;
         },function (err) {
           this.$message({
             showClose: true,
