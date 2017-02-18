@@ -3,20 +3,20 @@
 <mapper namespace="com.jkm.hss.bill.dao.ProfitDao">
 
 
-    <select id="selectAccountList" resultType="com.jkm.hss.bill.entity.JkmProfitDetailsResponse">
-        SELECT * FROM tb_account WHERE 1=1
-        <if test="startTime!=null and startTime!=''">
-            AND a.create_time <![CDATA[ >= ]]> #{startTime}
+    <select id="selectProfitDetails" resultType="com.jkm.hss.bill.entity.JkmProfitDetailsResponse">
+        SELECT * FROM tb_split_account_record WHERE 1=1
+        <if test="orderNo!=null and orderNo!=''">
+            AND order_no = #{orderNo}
         </if>
-        <if test="endTime!=null and endTime!=''">
-            AND a.create_time <![CDATA[ <= ]]> #{endTime}
+        <if test="receiptMoneyUserName!=null and receiptMoneyUserName!=''">
+            AND receipt_money_user_name = #{receiptMoneyUserName}
         </if>
         ORDER BY create_time DESC
         limit #{offset}, #{pageSize}
     </select>
 
     <select id="selectAccountListCount"  resultType="java.lang.Integer">
-        SELECT COUNT(1) FROM tb_account
+        SELECT COUNT(1) FROM tb_split_account_record
     </select>
 
 

@@ -40,6 +40,9 @@ public class ProfitDetailsController extends BaseController{
         final PageModel<JkmProfitDetailsResponse> pageModel = new PageModel<JkmProfitDetailsResponse>(req.getPageNo(), req.getPageSize());
         req.setOffset(pageModel.getFirstIndex());
         List<JkmProfitDetailsResponse> orderList =  profitService.selectProfitDetails(req);
+        if (orderList==null){
+            return  CommonResponse.simpleResponse(-1,"未查询到相关数据");
+        }
         int count = profitService.selectProfitDetailsCount(req);
         pageModel.setCount(count);
         pageModel.setRecords(orderList);
