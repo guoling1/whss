@@ -2306,7 +2306,6 @@ public class DealerServiceImpl implements DealerService {
         if(isJkm==false){
             count = distributeQRCodeRecordService.selectDistributeCountByContions(distributeRecordRequest);
             distributeQRCodeRecords = distributeQRCodeRecordService.selectDistributeRecordsByContions(distributeRecordRequest);
-
         }else{
             count = distributeQRCodeRecordService.selectBossDistributeCountByContionsOfJKM(distributeRecordRequest);
             distributeQRCodeRecords = distributeQRCodeRecordService.selectBossDistributeRecordsByContionsOfJKM(distributeRecordRequest);
