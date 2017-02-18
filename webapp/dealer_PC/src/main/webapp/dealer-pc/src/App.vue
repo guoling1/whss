@@ -24,7 +24,7 @@
     width: 150px !important;
   }
 
-  .sidebar-collapse #app .main-sidebar,.sidebar-collapse  #app .main-header .logo {
+  .sidebar-collapse #app .main-sidebar, .sidebar-collapse #app .main-header .logo {
     width: 50px !important;
   }
 
@@ -32,16 +32,25 @@
     margin-left: 150px;
   }
 
-  .sidebar-collapse #app .content-wrapper,.sidebar-collapse #app .main-header .navbar {
+  .sidebar-collapse #app .content-wrapper, .sidebar-collapse #app .main-header .navbar {
     margin-left: 50px;
   }
 
-  #app .col-xs-12 {
+  #app .col-xs-13 {
     width: 60%;
+    position: relative;
+    min-height: 1px;
+    padding-right: 15px;
+    padding-left: 15px;
+    float: left;
+  }
+
+  #app .el-form-item {
+    margin-bottom: 12px;
   }
 
   @media ( max-width: 767px ) {
-    #app .col-xs-12 {
+    #app .col-xs-13 {
       width: 100%;
     }
 

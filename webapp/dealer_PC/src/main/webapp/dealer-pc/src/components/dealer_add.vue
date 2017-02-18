@@ -3,7 +3,7 @@
     <!-- Main content -->
     <section class="content">
       <div class="row">
-        <div class="col-xs-12">
+        <div class="col-xs-13">
           <div class="box">
             <div class="box-header with-border">
               <h3 class="box-title">添加代理商</h3>
@@ -11,7 +11,7 @@
             <!-- /.box-header -->
             <div class="box-body">
               <label class="form-label">基本信息</label>
-              <el-form ref="form" :model="form" :rules="rules" label-width="120px" class="demo-ruleForm">
+              <el-form ref="form" :model="form" :rules="rules" label-width="100px" class="demo-ruleForm">
                 <el-form-item label="代理商手机号" prop="mobile">
                   <el-input v-model="form.mobile" size="small"></el-input>
                 </el-form-item>

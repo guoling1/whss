@@ -3,14 +3,14 @@
     <!-- Main content -->
     <section class="content">
       <div class="row">
-        <div class="col-xs-12">
+        <div class="col-xs-13">
           <div class="box">
             <div class="box-header with-border">
               <h3 class="box-title">分配二维码</h3>
             </div>
             <!-- /.box-header -->
             <div class="box-body">
-              <el-form ref="form" :model="form" :rules="rules" label-width="120px" class="demo-ruleForm">
+              <el-form ref="form" :model="form" :rules="rules" label-width="80px" class="demo-ruleForm">
                 <el-form-item label="产品">
                   <el-radio-group v-model="label.sysType" @change="sysTypeChange">
                     <el-popover placement="top" title="提示" width="200" trigger="hover" :disabled="product.proxyHss!=0"
@@ -46,7 +46,7 @@
                     </el-select>
                   </el-popover>
                 </el-form-item>
-                <el-form-item label="代理详细信息" v-show="label.isSelf">
+                <el-form-item label="代理商信息" v-show="label.isSelf">
                   <el-table :data="label.selectDealerData" style="width: 100%">
                     <el-table-column prop="proxyName" label="姓名"></el-table-column>
                     <el-table-column prop="mobile" label="手机号"></el-table-column>
