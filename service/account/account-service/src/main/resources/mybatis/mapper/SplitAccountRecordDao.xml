@@ -62,7 +62,7 @@
         SELECT * FROM tb_split_account_record WHERE id = #{id}
     </select>
     <select id="selectByParam" resultType="com.jkm.hss.account.entity.SplitAccountRecord">
-        SELECT * FROM tb_split_account_record WHERE receipt_money_account_id = #{accountId}
+        SELECT * FROM tb_split_account_record WHERE receipt_money_account_id = #{accountId} AND split_amount &gt; 0.00
         <if test="orderNo != null and orderNo != ''">
             AND order_no = #{orderNo}
         </if>
