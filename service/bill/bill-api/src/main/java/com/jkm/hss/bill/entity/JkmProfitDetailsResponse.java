@@ -14,6 +14,11 @@ import java.util.Date;
 public class JkmProfitDetailsResponse {
 
     /**
+     * 业务类型
+     */
+    private String appId;
+
+    /**
      * id
      */
     private long id;

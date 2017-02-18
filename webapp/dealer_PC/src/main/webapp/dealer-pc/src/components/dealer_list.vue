@@ -1,19 +1,5 @@
 <template lang="html">
   <div class="content-wrapper">
-    <!-- Content Header (Page header) -->
-    <section class="content-header">
-      <h1>
-        钱包++代理商系统
-        <small>Version 1.0</small>
-      </h1>
-      <ol class="breadcrumb">
-        <li>
-          <router-link to="/app/home"><i class="glyphicon glyphicon-home"></i> 主页</router-link>
-        </li>
-        <!--<li class="active">Dashboard</li>-->
-      </ol>
-    </section>
-
     <!-- Main content -->
     <section class="content">
       <div class="row">
@@ -24,7 +10,7 @@
             </div>
             <!-- /.box-header -->
             <div class="box-body screen-top">
-              <el-button type="primary" icon="plus" @click="addDealer">新增代理商</el-button>
+              <el-button type="primary" icon="plus" size="small" @click="addDealer">新增代理商</el-button>
             </div>
             <div class="box-body screen-top">
               <div class="screen-item">
@@ -68,13 +54,15 @@
               </div>
             </div>
             <div class="box-body">
-              <el-table :data="tableData" border>
+              <el-table :data="tableData" border
+                        v-loading="tableLoading"
+                        element-loading-text="数据加载中">
                 <el-table-column label="代理商名称">
                   <template scope="scope">
                     <el-button type="text" @click="checkDealer($event,scope.row.id)">{{scope.row.proxyName}}</el-button>
                   </template>
                 </el-table-column>
-                <el-table-column label="代理商编号" sortable>
+                <el-table-column label="代理商编号">
                   <template scope="scope">
                     <el-button type="text" @click="checkDealer($event,scope.row.id)">{{scope.row.markCode}}</el-button>
                   </template>
@@ -173,6 +161,7 @@
         pageSize: 20,
         pageNo: 1,
         tableData: [],
+        tableLoading: false,
         districtCode: '',
         ext: []
       }
@@ -194,6 +183,7 @@
         this.$router.push('/daili/app/dealer_add');
       },
       getData: function () {
+        this.tableLoading = true;
         this.$http.post('/daili/dealer/listSecondDealer', {
           pageSize: this.pageSize,
           pageNo: this.pageNo,
@@ -202,10 +192,12 @@
           sysType: this.sysType,
           districtCode: this.districtCode
         }).then(res => {
+          this.tableLoading = false;
           this.total = res.data.count;
           this.tableData = res.data.records;
           this.ext = res.data.ext.split('|');
         }, err => {
+          this.tableLoading = false;
           this.$message({
             showClose: true,
             message: err.data.msg,

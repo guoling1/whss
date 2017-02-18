@@ -1,23 +1,9 @@
 <template lang="html">
   <div class="content-wrapper">
-    <!-- Content Header (Page header) -->
-    <section class="content-header">
-      <h1>
-        钱包++代理商系统
-        <small>Version 1.0</small>
-      </h1>
-      <ol class="breadcrumb">
-        <li>
-          <router-link to="/app/home"><i class="glyphicon glyphicon-home"></i> 主页</router-link>
-        </li>
-        <!--<li class="active">Dashboard</li>-->
-      </ol>
-    </section>
-
     <!-- Main content -->
     <section class="content">
       <div class="row">
-        <div class="col-xs-12">
+        <div class="col-xs-13">
           <div class="box">
             <div class="box-header with-border">
               <h3 class="box-title">添加代理商</h3>
@@ -25,25 +11,25 @@
             <!-- /.box-header -->
             <div class="box-body">
               <label class="form-label">基本信息</label>
-              <el-form ref="form" :model="form" :rules="rules" label-width="120px" class="demo-ruleForm">
+              <el-form ref="form" :model="form" :rules="rules" label-width="100px" class="demo-ruleForm">
                 <el-form-item label="代理商手机号" prop="mobile">
-                  <el-input v-model="form.mobile"></el-input>
+                  <el-input v-model="form.mobile" size="small"></el-input>
                 </el-form-item>
                 <el-form-item label="代理名称" prop="name">
-                  <el-input v-model="form.name"></el-input>
+                  <el-input v-model="form.name" size="small"></el-input>
                 </el-form-item>
                 <el-form-item label="登录名" prop="loginName">
-                  <el-input v-model="form.loginName"></el-input>
+                  <el-input v-model="form.loginName" size="small"></el-input>
                 </el-form-item>
                 <el-form-item label="登录密码" prop="loginPwd">
-                  <el-input type="password" v-model="form.loginPwd"></el-input>
+                  <el-input type="password" v-model="form.loginPwd" size="small"></el-input>
                 </el-form-item>
                 <el-form-item label="联系邮箱" prop="email">
-                  <el-input v-model="form.email"></el-input>
+                  <el-input v-model="form.email" size="small"></el-input>
                 </el-form-item>
                 <el-form-item label="省市区域" prop="belongCityCode">
                   <el-col :span="10">
-                    <el-select v-model="form.belongProvinceCode" style="width:100%" placeholder="请选择"
+                    <el-select v-model="form.belongProvinceCode" size="small" style="width:100%" placeholder="请选择"
                                @change="province_select">
                       <el-option v-for="item in item_province"
                                  :label="item.aname"
@@ -53,7 +39,7 @@
                   </el-col>
                   <el-col class="line-center" :span="2">省</el-col>
                   <el-col :span="10">
-                    <el-select v-model="form.belongCityCode" style="width:100%" placeholder="请选择"
+                    <el-select v-model="form.belongCityCode" size="small" style="width:100%" placeholder="请选择"
                                @change="city_select">
                       <el-option v-for="item in item_city"
                                  :label="item.aname"
@@ -64,23 +50,23 @@
                   <el-col class="line-center" :span="2">市</el-col>
                 </el-form-item>
                 <el-form-item label="详细地址" prop="belongArea">
-                  <el-input v-model="form.belongArea"></el-input>
+                  <el-input v-model="form.belongArea" size="small"></el-input>
                 </el-form-item>
                 <label class="form-label">结算卡信息</label>
                 <el-form-item label="结算卡号" prop="bankCard">
-                  <el-input v-model="form.bankCard"></el-input>
+                  <el-input v-model="form.bankCard" size="small"></el-input>
                 </el-form-item>
                 <el-form-item label="开户名称" prop="bankAccountName">
-                  <el-input v-model="form.bankAccountName"></el-input>
+                  <el-input v-model="form.bankAccountName" size="small"></el-input>
                 </el-form-item>
                 <el-form-item label="身份证号" prop="idCard">
-                  <el-input v-model="form.idCard"></el-input>
+                  <el-input v-model="form.idCard" size="small"></el-input>
                 </el-form-item>
                 <el-form-item label="开户手机号" prop="bankReserveMobile">
-                  <el-input v-model="form.bankReserveMobile"></el-input>
+                  <el-input v-model="form.bankReserveMobile" size="small"></el-input>
                 </el-form-item>
                 <el-form-item>
-                  <el-button type="primary" @click="onSubmit">创建代理商</el-button>
+                  <el-button type="primary" size="small" @click="onSubmit">创建代理商</el-button>
                 </el-form-item>
               </el-form>
             </div>

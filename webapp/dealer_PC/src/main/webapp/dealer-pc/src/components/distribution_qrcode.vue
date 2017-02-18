@@ -1,30 +1,16 @@
 <template lang="html">
   <div class="content-wrapper">
-    <!-- Content Header (Page header) -->
-    <section class="content-header">
-      <h1>
-        钱包++代理商系统
-        <small>Version 1.0</small>
-      </h1>
-      <ol class="breadcrumb">
-        <li>
-          <router-link to="/app/home"><i class="glyphicon glyphicon-home"></i> 主页</router-link>
-        </li>
-        <!--<li class="active">Dashboard</li>-->
-      </ol>
-    </section>
-
     <!-- Main content -->
     <section class="content">
       <div class="row">
-        <div class="col-xs-12">
+        <div class="col-xs-13">
           <div class="box">
             <div class="box-header with-border">
               <h3 class="box-title">分配二维码</h3>
             </div>
             <!-- /.box-header -->
             <div class="box-body">
-              <el-form ref="form" :model="form" :rules="rules" label-width="120px" class="demo-ruleForm">
+              <el-form ref="form" :model="form" :rules="rules" label-width="80px" class="demo-ruleForm">
                 <el-form-item label="产品">
                   <el-radio-group v-model="label.sysType" @change="sysTypeChange">
                     <el-popover placement="top" title="提示" width="200" trigger="hover" :disabled="product.proxyHss!=0"
@@ -47,7 +33,7 @@
                 <el-form-item label="代理名称" v-show="label.isSelf">
                   <el-popover placement="top" title="提示" width="200" trigger="hover">
                     <span>匹配结果中不可选择的代理商表示未开通该产品</span>
-                    <el-select slot="reference" v-model="form.dealerId" filterable remote style="width:100%"
+                    <el-select slot="reference" v-model="form.dealerId" size="small" filterable remote style="width:100%"
                                @change="selectDealer"
                                placeholder="请输入代理商名称或手机号"
                                :remote-method="remoteMethod"
@@ -60,7 +46,7 @@
                     </el-select>
                   </el-popover>
                 </el-form-item>
-                <el-form-item label="代理详细信息" v-show="label.isSelf">
+                <el-form-item label="代理商信息" v-show="label.isSelf">
                   <el-table :data="label.selectDealerData" style="width: 100%">
                     <el-table-column prop="proxyName" label="姓名"></el-table-column>
                     <el-table-column prop="mobile" label="手机号"></el-table-column>
@@ -79,16 +65,16 @@
                   </el-radio-group>
                 </el-form-item>
                 <el-form-item label="起始码" v-show="form.distributeType==1">
-                  <el-input v-model="form.startCode"></el-input>
+                  <el-input v-model="form.startCode" size="small"></el-input>
                 </el-form-item>
                 <el-form-item label="终止码" v-show="form.distributeType==1">
-                  <el-input v-model="form.endCode"></el-input>
+                  <el-input v-model="form.endCode" size="small"></el-input>
                 </el-form-item>
                 <el-form-item label="分配数量" v-show="form.distributeType==2">
-                  <el-input v-model="form.count"></el-input>
+                  <el-input v-model="form.count" size="small"></el-input>
                 </el-form-item>
                 <el-form-item>
-                  <el-button type="primary" @click="onSubmit">分配二维码</el-button>
+                  <el-button type="primary" size="small" @click="onSubmit">分配二维码</el-button>
                 </el-form-item>
               </el-form>
             </div>

@@ -1,19 +1,5 @@
 <template lang="html">
   <div class="content-wrapper">
-    <!-- Content Header (Page header) -->
-    <section class="content-header">
-      <h1>
-        钱包++代理商系统
-        <small>Version 1.0</small>
-      </h1>
-      <ol class="breadcrumb">
-        <li>
-          <router-link to="/app/home"><i class="glyphicon glyphicon-home"></i> 主页</router-link>
-        </li>
-        <!--<li class="active">Dashboard</li>-->
-      </ol>
-    </section>
-
     <!-- Main content -->
     <section class="content">
       <div class="row">
@@ -37,7 +23,7 @@
                                     :rules="{required:true,pattern:/^[0-9]{1,4}([.][0-9]{1,2})?$/,message:'不能为空 保留俩位小数',trigger:'blur'}">
                         <el-popover placement="top" title="提示" width="200" trigger="focus">
                           <span>最小值：{{scope.row.minPaymentSettleRate}} <br> 最大值：{{scope.row.merchantSettleRate}}</span>
-                          <el-input slot="reference" placeholder="保留俩位小数" v-model="scope.row.paymentSettleRate">
+                          <el-input slot="reference" size="small" placeholder="保留俩位小数" v-model="scope.row.paymentSettleRate">
                             <template slot="append">%</template>
                           </el-input>
                         </el-popover>
@@ -53,7 +39,7 @@
                                     :rules="{required:true,pattern:/^[0-9]{1,4}([.][0-9]{1,2})?$/,message:'不能为空 保留俩位小数',trigger:'blur'}">
                         <el-popover placement="top" title="提示" width="200" trigger="focus">
                           <span>最小值：{{scope.row.minWithdrawSettleFee}} <br> 最大值：{{scope.row.merchantWithdrawFee}}</span>
-                          <el-input slot="reference" placeholder="保留俩位小数" v-model="scope.row.withdrawSettleFee">
+                          <el-input slot="reference" size="small" placeholder="保留俩位小数" v-model="scope.row.withdrawSettleFee">
                             <template slot="append">元/笔</template>
                           </el-input>
                         </el-popover>
@@ -66,7 +52,7 @@
                     <el-form ref="form" :model="scope" label-width="0px" class="demo-ruleForm">
                       <el-form-item prop="row.merchantSettleRate" style="margin:10px 0 20px 0"
                                     :rules="{required:true,pattern:/^[0-9]{1,4}([.][0-9]{1,2})?$/,message:'不能为空 保留俩位小数',trigger:'blur'}">
-                        <el-input placeholder="保留俩位小数" disabled v-model="scope.row.merchantSettleRate">
+                        <el-input placeholder="保留俩位小数" size="small" disabled v-model="scope.row.merchantSettleRate">
                           <template slot="append">%</template>
                         </el-input>
                       </el-form-item>
@@ -78,7 +64,7 @@
                     <el-form :model="scope" label-width="0px" class="demo-ruleForm">
                       <el-form-item prop="row.merchantWithdrawFee" style="margin:10px 0 20px 0"
                                     :rules="{required:true,pattern:/^[0-9]{1,4}([.][0-9]{1,2})?$/,message:'不能为空 保留俩位小数',trigger:'blur'}">
-                        <el-input placeholder="保留俩位小数" disabled v-model="scope.row.merchantWithdrawFee">
+                        <el-input placeholder="保留俩位小数" size="small" disabled v-model="scope.row.merchantWithdrawFee">
                           <template slot="append">元/笔</template>
                         </el-input>
                       </el-form-item>
@@ -87,21 +73,21 @@
                 </el-table-column>
               </el-table>
             </div>
+            <!--<div class="box-body">-->
+              <!--<label class="form-label">代理商推广码&推广链接</label>-->
+              <!--<br>-->
+              <!--<el-switch v-model="inviteBoolean" @change="switchInvite"-->
+                         <!--on-text="开启" on-color="#13ce66"-->
+                         <!--off-text="关闭" off-color="#ff4949">-->
+              <!--</el-switch>-->
+              <!--<div class="inviteText" v-show="inviteBoolean">-->
+                <!--推广码：{{inviteCode}}-->
+                <!--<br>-->
+                <!--推广链接：https://{{product}}.qianbaojiajia.com/reg?invest={{inviteCode}}-->
+              <!--</div>-->
+            <!--</div>-->
             <div class="box-body">
-              <label class="form-label">代理商推广码&推广链接</label>
-              <br>
-              <el-switch v-model="inviteBoolean" @change="switchInvite"
-                         on-text="开启" on-color="#13ce66"
-                         off-text="关闭" off-color="#ff4949">
-              </el-switch>
-              <div class="inviteText" v-show="inviteBoolean">
-                推广码：{{inviteCode}}
-                <br>
-                推广链接：https://{{product}}.qianbaojiajia.com/reg?invest={{inviteCode}}
-              </div>
-            </div>
-            <div class="box-body">
-              <el-button type="primary" @click="onSubmit">保存产品设置</el-button>
+              <el-button type="primary" size="small" @click="onSubmit">保存产品设置</el-button>
             </div>
             <!-- /.box-body -->
           </div>

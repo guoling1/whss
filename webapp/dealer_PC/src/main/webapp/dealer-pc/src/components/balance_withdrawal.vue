@@ -1,19 +1,5 @@
 <template lang="html">
   <div class="content-wrapper">
-    <!-- Content Header (Page header) -->
-    <section class="content-header">
-      <h1>
-        钱包++代理商系统
-        <small>Version 1.0</small>
-      </h1>
-      <ol class="breadcrumb">
-        <li>
-          <router-link to="/app/home"><i class="glyphicon glyphicon-home"></i> 主页</router-link>
-        </li>
-        <!--<li class="active">Dashboard</li>-->
-      </ol>
-    </section>
-
     <!-- Main content -->
     <section class="content">
       <div class="row">
@@ -24,22 +10,12 @@
             </div>
             <!-- /.box-header -->
             <div class="box-body">
-              <label class="form-label">账户信息</label>
-              <el-table :data="accountData" border>
-                <el-table-column prop="totalAmount" label="总金额(元)"></el-table-column>
-                <el-table-column prop="dueSettleAmount" label="待结算余额(元)"></el-table-column>
-                <el-table-column prop="available" label="可提现余额(元)"></el-table-column>
-                <el-table-column label="操作">
-                  <template scope="scope">
-                    <el-button type="primary" size="small"
-                               @click="withdrawal($event,scope.row)">提现
-                    </el-button>
-                  </template>
-                </el-table-column>
-              </el-table>
+              <span style="font-size:14px">总金额:{{accountData.totalAmount}}元&nbsp;&nbsp;
+                待结算余额:{{accountData.dueSettleAmount}}元&nbsp;&nbsp;
+                可提现余额:{{accountData.available}}元&nbsp;&nbsp;</span>
+              <el-button type="primary" size="small" @click="withdrawal($event)">提现</el-button>
             </div>
             <div class="box-body screen-top">
-              <label class="form-label">账户流水</label>
               <div class="screen-item">
                 <span class="screen-title">流水号</span>
                 <el-input v-model="flowSn" placeholder="流水号" size="small" style="width:240px"></el-input>
@@ -70,9 +46,11 @@
               </div>
             </div>
             <div class="box-body">
-              <el-table :data="tableData" border>
-                <el-table-column prop="flowSn" label="流水号" sortable></el-table-column>
-                <el-table-column label="时间" width="180" sortable>
+              <el-table :data="tableData" border
+                        v-loading="tableLoading"
+                        element-loading-text="数据加载中">
+                <el-table-column prop="flowSn" label="流水号"></el-table-column>
+                <el-table-column label="时间" width="180">
                   <template scope="scope">
                     {{ scope.row.createTime }}
                   </template>
@@ -110,11 +88,12 @@
     name: 'app',
     data() {
       return {
-        accountData: [],
+        accountData: {},
         total: 0,
         pageSize: 20,
         pageNo: 1,
         tableData: [],
+        tableLoading: false,
         flowSn: '',
         type: '',
         item_type: [
@@ -166,7 +145,7 @@
     created() {
       this.getData();
       this.$http.post('/daili/account/info').then(res => {
-        this.accountData[0] = res.data;
+        this.accountData = res.data;
       }, err => {
         this.$message({
           showClose: true,
@@ -176,8 +155,8 @@
       });
     },
     methods: {
-      withdrawal: function (event, item) {
-        this.$router.push({path: '/daili/app/withdrawal', query: item});
+      withdrawal: function () {
+        this.$router.push({path: '/daili/app/withdrawal', query: this.accountData});
       },
       datetimeSelect: function (val) {
         let format = val.split(' - ');
@@ -188,6 +167,7 @@
         this.getData();
       },
       getData: function () {
+        this.tableLoading = true;
         this.$http.post('/daili/account/flowDetails', {
           pageSize: this.pageSize,
           pageNo: this.pageNo,
@@ -196,9 +176,11 @@
           beginDate: this.beginDate,
           endDate: this.endDate
         }).then(res => {
+          this.tableLoading = false;
           this.total = res.data.count;
           this.tableData = res.data.records;
         }, err => {
+          this.tableLoading = false;
           this.$message({
             showClose: true,
             message: err.data.msg,

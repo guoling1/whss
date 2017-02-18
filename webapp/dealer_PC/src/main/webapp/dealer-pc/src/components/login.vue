@@ -26,7 +26,8 @@
         </div>
         <!-- /.col -->
         <div class="col-xs-4">
-          <el-button type="primary" class="btn btn-primary btn-block btn-flat" @click="login" :loading="isLogin">登录
+          <el-button type="primary" class="btn btn-primary btn-block btn-flat" @click="login" :loading="isLogin"
+                     :disabled="isLogin">登录
           </el-button>
         </div>
         <!-- /.col -->
@@ -60,28 +61,30 @@
     },
     methods: {
       login: function () {
-        this.isLogin = true;
-        this.$http.post('/daili/login/pc', {
-          loginName: this.loginName,
-          pwd: this.pwd
-        }).then(res => {
-          // 如果记住我 那就存储 username remember 到 localStorage
-          if (this.remember) {
-            localStorage.setItem('accountInfo', JSON.stringify({loginName: this.loginName, remember: this.remember}));
-          } else {
-            localStorage.setItem('accountInfo', null);
-          }
-          // 跳转到 home 页
-          this.$router.push('/daili/app/home');
-          this.isLogin = false;
-        }, err => {
-          this.isLogin = false;
-          this.$message({
-            showClose: true,
-            message: err.data.msg,
-            type: 'error'
-          });
-        })
+        if (!this.isLogin) {
+          this.isLogin = true;
+          this.$http.post('/daili/login/pc', {
+            loginName: this.loginName,
+            pwd: this.pwd
+          }).then(res => {
+            // 如果记住我 那就存储 username remember 到 localStorage
+            if (this.remember) {
+              localStorage.setItem('accountInfo', JSON.stringify({loginName: this.loginName, remember: this.remember}));
+            } else {
+              localStorage.setItem('accountInfo', null);
+            }
+            // 跳转到 home 页
+            this.$router.push('/daili/app/home');
+            this.isLogin = false;
+          }, err => {
+            this.isLogin = false;
+            this.$message({
+              showClose: true,
+              message: err.data.msg,
+              type: 'error'
+            });
+          })
+        }
       }
     }
   }

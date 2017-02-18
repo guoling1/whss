@@ -65,7 +65,7 @@ login.addEventListener('click', function () {
 submit.addEventListener('click', ()=> {
   if (!pageData.qrCode || pageData.qrCode == '') {
     if (validate.joint({
-        phone: [mobile.value, inviteCode.value],
+        phone: mobile.value,
         code: code.value
       })) {
       http.post('/wx/login', {

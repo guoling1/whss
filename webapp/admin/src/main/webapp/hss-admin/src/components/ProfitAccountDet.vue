@@ -25,12 +25,17 @@
           <!--表格-->
           <el-table v-loading.body="loading" style="font-size: 12px;margin:15px 0" :data="records" border>
             <el-table-column prop="orderNo" label="流水号"></el-table-column>
-            <el-table-column prop="changeTime" label="时间"></el-table-column>
+            <el-table-column prop="changeTime" :formatter="changeTime" label="时间"></el-table-column>
             <el-table-column prop="beforeAmount" label="发生前余额（元）"></el-table-column>
             <el-table-column prop="incomeAmount" label="收入金额（元）"></el-table-column>
             <el-table-column prop="outAmount" label="支出金额（元）"></el-table-column>
             <el-table-column prop="afterAmount" label="发生后余额（元）"></el-table-column>
-            <el-table-column prop="appId" label="业务类型"></el-table-column>
+            <el-table-column label="业务类型">
+              <template scope="scope">
+                <span v-if="records[scope.$index].appId=='hss'">好收收</span>
+                <span v-if="records[scope.$index].appId=='hsy'">好收银</span>
+              </template>
+            </el-table-column>
             <el-table-column prop="remark" label="备注"></el-table-column>
           </el-table>
           <!--分页-->
@@ -131,6 +136,28 @@
         })
     },
     methods: {
+      //格式化时间
+      changeTime: function (row, column) {
+        var val=row.createTime;
+        if(val==''||val==null){
+          return ''
+        }else {
+          val = new Date(val)
+          var year=val.getFullYear();
+          var month=val.getMonth()+1;
+          var date=val.getDate();
+          var hour=val.getHours();
+          var minute=val.getMinutes();
+          var second=val.getSeconds();
+          function tod(a) {
+            if(a<10){
+              a = "0"+a
+            }
+            return a;
+          }
+          return year+"-"+tod(month)+"-"+tod(date)+" "+tod(hour)+":"+tod(minute)+":"+tod(second);
+        }
+      },
       search(){
         this.$data.query.pageNo = 1;
         this.$data.loading = true;
