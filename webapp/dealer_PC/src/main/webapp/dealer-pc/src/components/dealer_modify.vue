@@ -71,7 +71,7 @@
                   <el-input v-model="form.bankReserveMobile"></el-input>
                 </el-form-item>
                 <el-form-item>
-                  <el-button type="primary" @click="onSubmit">创建代理商</el-button>
+                  <el-button type="primary" @click="onSubmit">修改代理商</el-button>
                 </el-form-item>
               </el-form>
             </div>
@@ -92,6 +92,7 @@
     created(){
       let query = this.$route.query;
       this.update.dealerId = query.dealerId;
+      this.form.dealerId = query.dealerId;
       this.update.loginPwd = '123456';
       if (query.dealerId) {
         this.$http.get('/daili/dealer/' + query.dealerId).then(res => {
@@ -134,6 +135,7 @@
           dealerId: ''
         },
         form: {
+          dealerId: '',
           mobile: '',
           name: '',
           loginName: '',
