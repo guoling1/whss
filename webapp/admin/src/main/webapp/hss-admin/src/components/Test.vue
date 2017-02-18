@@ -540,7 +540,7 @@
 </style>-->
 
 <!--产码记录-->
-<template>
+<!--<template>
   <div id="issueProRecord">
     <div class="col-md-12">
       <div class="box" style="margin-top:15px;overflow: hidden">
@@ -549,7 +549,7 @@
 
         </div>
         <div class="box-body">
-          <!--筛选-->
+          &lt;!&ndash;筛选&ndash;&gt;
           <ul>
             <li class="same">
               <label>产品类型:</label>
@@ -571,7 +571,7 @@
               <div class="btn btn-primary" @click="search">筛选</div>
             </li>
           </ul>
-          <!--表格-->
+          &lt;!&ndash;表格&ndash;&gt;
           <el-table v-loading.body="loading" style="font-size: 12px;margin:15px 0" :data="records" border>
             <el-table-column type="index" width="70" label="序号"></el-table-column>
             <el-table-column prop="markCode" label="产生时间"></el-table-column>
@@ -582,7 +582,7 @@
             <el-table-column prop="proxyName1" label="产品名称"></el-table-column>
             <el-table-column prop="proxyName1" label="操作人"></el-table-column>
           </el-table>
-          <!--分页-->
+          &lt;!&ndash;分页&ndash;&gt;
           <div class="block" style="text-align: right">
             <el-pagination @current-change="handleCurrentChange" :current-page="currentPage" layout="total, prev, pager, next, jumper" :total="count">
             </el-pagination>
@@ -691,5 +691,409 @@
   }
   .btn{
     font-size: 12px;
+  }
+</style>-->
+
+<!--hss商户详情-->
+<template>
+  <div id="storeList">
+    <div class="col-md-12">
+      <div class="box" style="margin-top:15px;overflow: hidden">
+        <div class="box-header">
+          <h3 class="box-title">商户详情</h3>
+        </div>
+        <div class="box-body">
+          <el-tabs class="tab" v-model="activeName" type="card" @tab-click="handleClick">
+            <el-tab-pane label="商户注册信息" name="first">
+              <el-row type="flex" class="row-bg" justify="space-around" style="margin-bottom: 15px">
+                <el-col :span="5">
+                  <div class="label">注册手机：<span>{{msg.mobile}}</span></div>
+                </el-col>
+                <el-col :span="5">
+                  <div class="label">注册时间：<span>{{msg.createTime|changeTime}}</span></div>
+                </el-col>
+                <el-col :span="5">
+                  <div class="label">注册方式：<span>{{msg.registered}}</span></div>
+                </el-col>
+              </el-row>
+              <el-row type="flex" class="row-bg" justify="space-around" style="margin-bottom: 15px">
+                <el-col :span="5">
+                  <div class="label">一级代理编号：<span>{{msg.firstDealerId}}</span></div>
+                </el-col>
+                <el-col :span="5">
+                  <div class="label">一级代理名称：<span>{{msg.proxyName}}</span></div>
+                </el-col>
+                <el-col :span="5">
+                  <div class="label"><span></span></div>
+                </el-col>
+              </el-row>
+              <el-row type="flex" class="row-bg" justify="space-around" style="margin-bottom: 15px">
+                <el-col :span="5">
+                  <div class="label">二级代理编号：<span>{{msg.secondDealerId}}</span></div>
+                </el-col>
+                <el-col :span="5">
+                  <div class="label">二级代理名称：<span>{{msg.proxyName1}}</span></div>
+                </el-col>
+                <el-col :span="5">
+                  <div class="label"><span></span></div>
+                </el-col>
+              </el-row>
+              <el-row type="flex" class="row-bg" justify="space-around" style="margin-bottom: 15px">
+                <el-col :span="5">
+                  <div class="label">推荐人编号：<span>——</span></div>
+                </el-col>
+                <el-col :span="5">
+                  <div class="label">推荐人名称：<span>——</span></div>
+                </el-col>
+                <el-col :span="5">
+                  <div class="label">推荐人注册手机号<span>——</span></div>
+                </el-col>
+              </el-row>
+              <el-row type="flex" class="row-bg" justify="space-around" style="margin-bottom: 15px">
+                <el-col :span="5">
+                  <div class="label">推荐所属一级代理名：<span>{{msg.proxyNameYq}}</span></div>
+                </el-col>
+                <el-col :span="5">
+                  <div class="label">推荐所属二级代理名：<span>{{msg.proxyNameYq1}}</span></div>
+                </el-col>
+                <el-col :span="5">
+                  <div class="label"><span></span></div>
+                </el-col>
+              </el-row>
+            </el-tab-pane>
+            <el-tab-pane label="商户认证信息" name="second">
+              <el-row type="flex" class="row-bg" justify="space-around" style="margin-bottom: 15px">
+                <el-col :span="5">
+                  <div class="label">商铺名称（全称）：<span>——</span></div>
+                </el-col>
+                <el-col :span="5">
+                  <div class="label">商铺简称：<span>——</span></div>
+                </el-col>
+                <el-col :span="5">
+                  <div class="label">商户营业执照号：<span>——</span></div>
+                </el-col>
+              </el-row>
+              <el-row type="flex" class="row-bg" justify="space-around" style="margin-bottom: 15px">
+                <el-col :span="5">
+                  <div class="label">店主（法人）实名：<span>——</span></div>
+                </el-col>
+                <el-col :span="5">
+                  <div class="label">店主身份证号：<span>——</span></div>
+                </el-col>
+                <el-col :span="5">
+                  <div class="label"><span></span></div>
+                </el-col>
+              </el-row>
+              <el-row type="flex" class="row-bg" justify="space-around" style="margin-bottom: 15px">
+                <el-col :span="5">
+                  <div class="label">商铺上报名称：<span>——</span></div>
+                </el-col>
+                <el-col :span="5">
+                  <div class="label"><span></span></div>
+                </el-col>
+                <el-col :span="5">
+                  <div class="label"><span></span></div>
+                </el-col>
+              </el-row>
+              <el-row type="flex" class="row-bg" justify="space-around" style="margin-bottom: 15px">
+                <el-col :span="5">
+                  <div class="label">经营种类：<span>——</span></div>
+                </el-col>
+                <el-col :span="5">
+                  <div class="label"><span></span></div>
+                </el-col>
+                <el-col :span="5">
+                  <div class="label"><span></span></div>
+                </el-col>
+              </el-row>
+              <el-row type="flex" class="row-bg" justify="space-around" style="margin-bottom: 15px">
+                <el-col :span="5">
+                  <div class="label">省市区：<span>——</span></div>
+                </el-col>
+                <el-col :span="5">
+                  <div class="label">商铺详细地址：<span></span></div>
+                </el-col>
+                <el-col :span="5">
+                  <div class="label"><span></span></div>
+                </el-col>
+              </el-row>
+              <el-row type="flex" class="row-bg" justify="space-around" style="margin-bottom: 15px">
+                <el-col :span="5">
+                  <div class="label">资料提交时间：<span>——</span></div>
+                </el-col>
+                <el-col :span="5">
+                  <div class="label">资料审核状态：<span>——</span></div>
+                </el-col>
+                <el-col :span="5">
+                  <div class="label"><span></span></div>
+                </el-col>
+              </el-row>
+            </el-tab-pane>
+            <el-tab-pane label="商户认证资料" name="third">
+              <div class="table-responsive">
+                <table class="table">
+                  <tbody>
+                  <tr class="row">
+                    <th class="col-md-3" style="text-align: center;">身份证正面:</th>
+                    <th class="col-md-3" style="text-align: center;">身份证反面:</th>
+                    <th class="col-md-3" style="text-align: center;">手持身份证:</th>
+                    <th class="col-md-3" style="text-align: center;">银行卡正面:</th>
+                    <th class="col-md-3" style="text-align: center;">手持结算卡:</th>
+                  </tr>
+                  <tr class="row">
+                    <td class="col-md-3" style="text-align: center;border: none;">
+                      <img style="width: 200px" @click="changeBig()" :src="msg.identityFacePic" alt=""/>
+                    </td>
+                    <td class="col-md-3" style="text-align: center;border: none;">
+                      <img style="width: 200px"  @click="changeBig()" :src="msg.identityOppositePic" alt=""/>
+                    </td>
+                    <td class="col-md-3" style="text-align: center;border: none;">
+                      <img style="width: 200px"  @click="changeBig()" :src="msg.identityHandPic" alt=""/>
+                    </td>
+                    <td class="col-md-3" style="text-align: center;border: none;">
+                      <img style="width: 200px"  @click="changeBig()" :src="msg.bankPic" alt=""/>
+                    </td>
+                    <td class="col-md-3" style="text-align: center;border: none;">
+                      <img style="width: 200px"  @click="changeBig()" :src="msg.bankHandPic" alt=""/>
+                    </td>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+            </el-tab-pane>
+            <el-tab-pane label="商户结算信息" name="fourth">
+
+            </el-tab-pane>
+            <el-tab-pane label="商户费率信息" name="fifth">
+
+            </el-tab-pane>
+            <el-tab-pane label="商户审核信息" name="sixth">
+              <div class="table-responsive">
+                <div class="col-sm-12">
+                  <table id="example2" class="table table-bordered table-hover dataTable" role="grid" aria-describedby="example2_info">
+                    <thead>
+                    <tr role="row">
+                      <th class="sorting_asc" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Rendering engine: activate to sort column descending">资料审核状态</th>
+                      <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="Browser: activate to sort column ascending">审核时间</th>
+                      <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="Platform(s): activate to sort column ascending">审核人</th>
+                      <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="Engine version: activate to sort column ascending">批复信息</th>
+                    </tr>
+                    </thead>
+                    <tbody id="content">
+                    <tr role="row" class="odd" v-for="re in this.$data.res">
+                      <td class="sorting_1">{{re.status|status}}</td>
+                      <td>{{re.createTime|changeTime}}</td>
+                      <td>—</td>
+                      <td>{{re.descr}}</td>
+                    </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </el-tab-pane>
+          </el-tabs>
+        </div>
+        <!-- /.box-body -->
+        <div class="mask" id="mask" style="display: none" @click="isNo()">
+          <p @click="isNo">×</p>
+          <img src="" alt="">
+        </div>
+        <div class="box box-primary" v-if="isShow">
+          <p class="lead">审核</p>
+
+          <div class="table-responsive">
+            <table class="table">
+              <tbody>
+              <tr>
+                <th style="text-align: right;height: 35px;line-height: 35px;">审核意见:</th>
+                <td><input type="text" name="name" placeholder="不通过必填" v-model="reason" style="height: 35px;line-height: 35px;width: 50%;"></td>
+              </tr>
+              <tr>
+                <th style="text-align: right"><div class="btn btn-danger" @click="unAudit">不 通 过</div></th>
+                <td><div class="btn btn-success" @click="audit($event)">通 过</div></td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <!-- /.box -->
+    </div>
+  </div>
+</template>
+
+<script lang="babel">
+  export default{
+    name: 'storeList',
+    data(){
+      return {
+        id: '',
+        msg:{
+          id:'',
+          merchantName:'',
+          identity:'',
+          address:'',
+          bankNo:'',
+          mobile:'',
+          identityFacePic: '',
+          identityOppositePic: '',
+          identityHandPic: '',
+          bankHandPic: '',
+          proxyName1:'',
+          proxyName: '',
+          reserveMobile:'',
+          createTime:'',
+          proxyNameYQ:'',
+          proxyNameYQ1:'',
+        },
+        reason:'',
+        status:'',
+        isShow:true,
+        res: [],
+        activeName:'first'
+      }
+    },
+    created:function () {
+      this.$data.id = this.$route.query.id;
+      if(this.$route.query.status !=2){
+        this.$data.isShow = false;
+      }
+      this.$http.post('/admin/QueryMerchantInfoRecord/getAll',{id:this.$data.id})
+        .then(function (res) {
+          this.$data.msg = res.data.list[0];
+          this.$data.res = res.data.res;
+        },function (err) {
+          this.$message({
+            showClose: true,
+            message: err.statusMessage,
+            type: 'error'
+          })
+        })
+     },
+    methods: {
+      handleClick(tab, event) {
+        console.log(tab, event);
+      },
+      audit: function (event) {
+        this.$http.post('/admin/merchantInfoCheckRecord/record', {
+          merchantId: this.$data.id
+        }).then(function (res) {
+          this.$router.push('/admin/record/storeList')
+        }, function (err) {
+          this.$message({
+            showClose: true,
+            message: err.statusMessage,
+            type: 'error'
+          })
+        })
+      },
+      unAudit: function () {
+        this.$http.post('/admin/merchantInfoCheckRecord/auditFailure',{merchantId: this.$data.id,descr:this.$data.reason})
+          .then(function (res) {
+            this.$router.push('/admin/record/storeList')
+          },function (err) {
+            this.$message({
+              showClose: true,
+              message: err.statusMessage,
+              type: 'error'
+            })
+          })
+      },
+      changeBig: function (e) {
+        e = e||window.event;
+        var obj = e.srcElement||e.target;
+        var mask = document.getElementById('mask'),
+          img = mask.getElementsByTagName('img')[0];
+        img.src = obj.src;
+        mask.style.display= 'block'
+      },
+      isNo: function () {
+        document.getElementById('mask').style.display='none'
+      }
+    },
+    filters: {
+      status: function (val) {
+        val = Number(val)
+        if(val == 0){
+          val = "已注册"
+        }else if(val == 1){
+          val = "已提交基本资料"
+        }else if(val == 2){
+          val = "待审核"
+        }else if(val == 3){
+          val = "审核通过"
+        }else if(val == 4){
+          val="审核未通过"
+        }
+        return val;
+      },
+      changeTime: function (val) {
+        if(val==''||val==null){
+          return ''
+        }else {
+          val = new Date(val)
+          var year=val.getFullYear();
+          var month=val.getMonth()+1;
+          var date=val.getDate();
+          var hour=val.getHours();
+          var minute=val.getMinutes();
+          var second=val.getSeconds();
+          function tod(a) {
+            if(a<10){
+              a = "0"+a
+            }
+            return a;
+          }
+          return year+"-"+tod(month)+"-"+tod(date)+" "+tod(hour)+":"+tod(minute)+":"+tod(second);
+        }
+      },
+      changeDeal: function (val) {
+        return val=val?val:'无'
+      }
+    }
+  }
+</script>
+<style scoped lang="less">
+  ul{
+    padding: 0;
+  }
+  .same{
+    list-style: none;
+    display: inline-block;
+    margin: 0 15px 15px 0;
+  }
+  .btn{
+    font-size: 12px;
+  }
+  .mask{
+    background: rgba(0,0,0,0.8);
+    z-index: 1100;
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    top:0;
+    left: 0;
+  p{
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    z-index: 1200;
+    width: 65px;
+    height: 65px;
+    line-height: 55px;
+    font-size: 65px;
+    color: #d2d1d1;
+    text-align: center;
+    border: 6px solid #adaaaa;
+    border-radius: 50%;
+    box-shadow: 0 0 16px #000;
+    text-shadow: 0 0 16px #000;
+  }
+
+  img{
+    display: inherit;
+    height: 100%;
+    margin: 0 auto;
+  }
   }
 </style>
