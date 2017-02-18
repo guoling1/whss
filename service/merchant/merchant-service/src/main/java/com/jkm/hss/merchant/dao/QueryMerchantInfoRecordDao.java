@@ -3,6 +3,7 @@ package com.jkm.hss.merchant.dao;
 import com.jkm.hss.merchant.entity.LogResponse;
 import com.jkm.hss.merchant.entity.MerchantInfoResponse;
 import com.jkm.hss.merchant.entity.ReferralResponse;
+import com.jkm.hss.merchant.entity.SettleResponse;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
@@ -34,4 +35,11 @@ public interface QueryMerchantInfoRecordDao {
      * @return
      */
     ReferralResponse getRefInformation(@Param("id") long id);
+
+    /**
+     * 查询商户费率
+     * @param id
+     * @return
+     */
+    SettleResponse getSettle(@Param("id") long id);
 }

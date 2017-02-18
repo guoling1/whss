@@ -8,6 +8,7 @@ import com.jkm.hss.helper.ApplicationConsts;
 import com.jkm.hss.merchant.entity.LogResponse;
 import com.jkm.hss.merchant.entity.MerchantInfoResponse;
 import com.jkm.hss.merchant.entity.ReferralResponse;
+import com.jkm.hss.merchant.entity.SettleResponse;
 import com.jkm.hss.merchant.service.QueryMerchantInfoRecordService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -58,6 +59,7 @@ public class QueryMerchantInfoRecordController extends BaseController {
 
             }
         }
+        SettleResponse lst = this.queryMerchantInfoRecordService.getSettle(merchantInfo.getId());
 
         List<LogResponse> lists = this.queryMerchantInfoRecordService.getLog(merchantInfo);
         if (list!=null&&list.size()>0){
@@ -111,6 +113,9 @@ public class QueryMerchantInfoRecordController extends BaseController {
                 JSONObject jo = new JSONObject();
                 jo.put("list",list);
                 jo.put("res",lists);
+                jo.put("weixinRate",lst.getWeixinRate());
+                jo.put("alipayRate",lst.getAlipayRate());
+                jo.put("fastRate",lst.getFastRate());
                 jsonObject.put("result",jo);
 
                 return jsonObject;
