@@ -125,6 +125,11 @@ public class MerchantInfoResponse {
     private String reserveMobile;
 
     /**
+     * 商户更改商户名
+     */
+    private String merchantChangeName;
+
+    /**
      * 商户名称
      */
     private String merchantName;
