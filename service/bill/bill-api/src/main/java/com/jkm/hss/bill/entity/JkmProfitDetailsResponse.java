@@ -1,6 +1,5 @@
 package com.jkm.hss.bill.entity;
 
-import com.jkm.hss.bill.enums.EnumBusinessType;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -17,7 +16,7 @@ public class JkmProfitDetailsResponse {
     /**
      * yu
      * 业务类型
-     * {@link EnumBusinessType}
+     * {@link com.jkm.hss.account.enums.EnumSplitBusinessType}
      */
     private String businessType;
 
