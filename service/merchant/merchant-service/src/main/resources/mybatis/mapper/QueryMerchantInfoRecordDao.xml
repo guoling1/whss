@@ -53,5 +53,10 @@
     </select>
 
 
+    <select id="getSettle" resultType="com.jkm.hss.merchant.entity.SettleResponse">
+        SELECT weixin_rate,alipay_rate,fast_rate FROM tb_merchant_info WHERE id=#{id}
+    </select>
+
+
 
 </mapper>

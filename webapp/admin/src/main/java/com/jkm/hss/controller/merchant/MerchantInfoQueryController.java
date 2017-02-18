@@ -6,6 +6,7 @@ import com.jkm.base.common.entity.PageModel;
 import com.jkm.hss.controller.BaseController;
 import com.jkm.hss.merchant.entity.MerchantInfoRequest;
 import com.jkm.hss.merchant.entity.MerchantInfoResponse;
+import com.jkm.hss.merchant.helper.MerchantSupport;
 import com.jkm.hss.merchant.service.MerchantInfoQueryService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,6 +66,10 @@ public class MerchantInfoQueryController extends BaseController {
         List<MerchantInfoResponse> list = this.merchantInfoQueryService.getAll(req);
         if (list == null){
             return CommonResponse.simpleResponse(-1,"未查到相关数据");
+        }else {
+            for (int i=0;i<list.size();i++){
+                list.get(i).setMobile(MerchantSupport.decryptMobile(list.get(i).getMobile()));
+            }
         }
 
         pageModel.setCount(count);

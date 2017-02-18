@@ -3,6 +3,7 @@ package com.jkm.hss.merchant.service;
 import com.jkm.hss.merchant.entity.LogResponse;
 import com.jkm.hss.merchant.entity.MerchantInfoResponse;
 import com.jkm.hss.merchant.entity.ReferralResponse;
+import com.jkm.hss.merchant.entity.SettleResponse;
 
 import java.text.ParseException;
 import java.util.List;
@@ -35,4 +36,11 @@ public interface QueryMerchantInfoRecordService {
      * @return
      */
     ReferralResponse getRefInformation(long id);
+
+    /**
+     * 查询手续费率
+     * @param id
+     * @return
+     */
+    SettleResponse getSettle(long id);
 }

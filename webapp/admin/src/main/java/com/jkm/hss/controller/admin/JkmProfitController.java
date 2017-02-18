@@ -3,8 +3,8 @@ package com.jkm.hss.controller.admin;
 import com.aliyun.oss.OSSClient;
 import com.jkm.base.common.entity.CommonResponse;
 import com.jkm.base.common.entity.PageModel;
+import com.jkm.hss.account.entity.Account;
 import com.jkm.hss.bill.entity.AccountDetailsResponse;
-import com.jkm.hss.bill.entity.JkmProfitResponse;
 import com.jkm.hss.bill.service.ShareProfitService;
 import com.jkm.hss.controller.BaseController;
 import com.jkm.hss.merchant.helper.request.JkmProfitRequest;
@@ -43,10 +43,10 @@ public class JkmProfitController extends BaseController{
     @ResponseBody
     @RequestMapping(value = "/accountList",method = RequestMethod.POST)
     public CommonResponse accountList(@RequestBody JkmProfitRequest req) throws ParseException {
-        final PageModel<JkmProfitResponse> pageModel = new PageModel<JkmProfitResponse>(req.getPageNo(), req.getPageSize());
+        final PageModel<Account> pageModel = new PageModel<Account>(req.getPageNo(), req.getPageSize());
         req.setOffset(pageModel.getFirstIndex());
 
-        List<JkmProfitResponse> orderList =  shareProfitService.selectAccountList(req);
+        List<Account> orderList =  shareProfitService.selectAccountList(req);
         int count = shareProfitService.selectAccountListCount(req);
         if (orderList.size()==0){
             return CommonResponse.simpleResponse(-1,"未查询到相关数据");

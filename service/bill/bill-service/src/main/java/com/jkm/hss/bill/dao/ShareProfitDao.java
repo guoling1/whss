@@ -1,8 +1,8 @@
 package com.jkm.hss.bill.dao;
 
 
+import com.jkm.hss.account.entity.Account;
 import com.jkm.hss.bill.entity.AccountDetailsResponse;
-import com.jkm.hss.bill.entity.JkmProfitResponse;
 import com.jkm.hss.merchant.helper.request.JkmProfitRequest;
 import com.jkm.hss.merchant.helper.request.ProfitDetailsRequest;
 import org.springframework.stereotype.Repository;
@@ -20,7 +20,7 @@ public interface ShareProfitDao {
      * @param req
      * @return
      */
-    List<JkmProfitResponse> selectAccountList(JkmProfitRequest req);
+    List<Account> selectAccountList(JkmProfitRequest req);
 
     /**
      * 总条数
