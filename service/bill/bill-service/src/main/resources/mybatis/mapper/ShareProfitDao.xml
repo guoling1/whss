@@ -20,7 +20,7 @@
     </select>
 
     <!-- 金开门公司账户明细 -->
-    <select id="selectAccountDetails"  resultType="com.jkm.hss.bill.entity.JkmProfitDetailsResponse">
+    <select id="selectAccountDetails"  resultType="com.jkm.hss.bill.entity.AccountDetailsResponse">
         SELECT a.* FROM tb_settle_account_flow a
         LEFT JOIN tb_account b ON a.account_id=b.id
         WHERE b.id=#{id}
