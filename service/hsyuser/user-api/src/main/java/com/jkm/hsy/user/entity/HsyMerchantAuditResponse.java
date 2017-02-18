@@ -2,6 +2,7 @@ package com.jkm.hsy.user.entity;
 
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -44,7 +45,9 @@ public class HsyMerchantAuditResponse {
     private Long accountID;//账户ID
     private Date createTime;
     private Date updateTime;
-
+    private BigDecimal weixinRate;//微信费率
+    private BigDecimal alipayRate;//支付宝费率
+    private BigDecimal fastRate;//快捷费率
     private Long uid;//用户ID
     private Integer role;//角色 1法人 2店长 3店员  4财务
     private Integer type;//类型1主店 2分店
