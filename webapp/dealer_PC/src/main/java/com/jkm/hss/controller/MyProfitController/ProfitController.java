@@ -74,7 +74,7 @@ public class ProfitController extends BaseController{
             List<ProfitDetailsSelectResponse> responseList = Lists.transform(records, new Function<SplitAccountRecord, ProfitDetailsSelectResponse>() {
                 @Override
                 public ProfitDetailsSelectResponse apply(SplitAccountRecord input) {
-                    if (input.getSplitAmount().equals( new BigDecimal("0"))){
+                    if (input.getSplitAmount().compareTo( new BigDecimal("0")) == 0){
                         return null;
                     }
 
