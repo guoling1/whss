@@ -75,7 +75,7 @@
         ORDER BY id DESC LIMIT #{firstIndex},#{pageSize}
     </select>
     <select id="selectCountByParam" resultType="java.lang.Long">
-        SELECT count(*) FROM tb_split_account_record WHERE receipt_money_account_id = #{accountId}
+        SELECT count(*) FROM tb_split_account_record WHERE receipt_money_account_id = #{accountId} AND split_amount &gt; 0.00
         <if test="orderNo != null and orderNo != ''">
             AND order_no = #{orderNo}
         </if>

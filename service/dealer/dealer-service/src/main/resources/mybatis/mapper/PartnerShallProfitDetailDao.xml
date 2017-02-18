@@ -51,10 +51,12 @@
         )
     </insert>
     <select id="selectCountByMerchantId" resultType="java.lang.Long">
-        SELECT count(*) FROM tb_partner_shall_profit_detail WHERE first_merchant_id = #{merchantId} OR second_merchant_id = #{mechantId}
+        SELECT count(*) FROM tb_partner_shall_profit_detail WHERE
+        (first_merchant_id = #{merchantId} OR second_merchant_id = #{mechantId}) AND (first_merchant_shall_amount + second_merchant_shall_amount) &gt; 0.00
     </select>
     <select id="selectByMerchantIdAndId" resultType="com.jkm.hss.dealer.entity.PartnerShallProfitDetail">
         SELECT * FROM tb_partner_shall_profit_detail  WHERE (first_merchant_id = #{merchantId} OR second_merchant_id = #{merchantId})
+        AND (first_merchant_shall_amount + second_merchant_shall_amount) &gt; 0.00
         <if test="id != 0">
             AND id &lt; #{id}
         </if>
