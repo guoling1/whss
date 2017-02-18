@@ -15,7 +15,7 @@
         limit #{offset}, #{pageSize}
     </select>
 
-    <select id="selectAccountListCount"  resultType="java.lang.Integer">
+    <select id="selectProfitDetailsCount"  resultType="java.lang.Integer">
         SELECT COUNT(1) FROM tb_split_account_record
     </select>
 
