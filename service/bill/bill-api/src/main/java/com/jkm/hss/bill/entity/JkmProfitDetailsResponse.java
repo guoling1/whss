@@ -6,7 +6,7 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 /**
- * 公司分润
+ * 分润明细
  */
 
 
@@ -14,29 +14,11 @@ import java.util.Date;
 public class JkmProfitDetailsResponse {
 
     /**
+     * yu
      * 业务类型
+     * {@link com.jkm.hss.bill.enums.EnumSplitBusinessType}
      */
-    private String appId;
-
-    /**
-     * id
-     */
-    private long id;
-
-    /**
-     * 状态
-     */
-    private int status;
-
-    /**
-     * 创建时间
-     */
-    private Date createTime;
-
-    /**
-     * 更新时间
-     */
-    private Date updateTime;
+    private String businessType;
 
     /**
      * 交易订单号

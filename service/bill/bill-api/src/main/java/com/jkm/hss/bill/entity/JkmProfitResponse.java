@@ -14,47 +14,69 @@ import java.util.Date;
 public class JkmProfitResponse {
 
     /**
-     * 账户id
+     * yu
+     * 业务类型
+     * {@link com.jkm.hss.account.enums.EnumSplitBusinessType}
      */
-    private long id;
+    private String businessType;
 
     /**
-     * 账户状态
+     * 交易订单号
      */
-    private int status;
+    private String orderNo;
 
     /**
-     * 创建时间
+     * 分账单号（为了支持多次分账， 现在可以和交易单号保持一致）
      */
-    private Date createTime;
+    private String splitOrderNo;
 
     /**
-     * 更新时间
-     */
-    private Date updateTime;
-
-    /**
-     * 用户名字
-     */
-    private String userName;
-
-    /**
-     * 总金额
+     * 交易总额
      */
     private BigDecimal totalAmount;
 
     /**
-     * 可用余额
+     * 分账总额
      */
-    private BigDecimal available;
+    private BigDecimal splitTotalAmount;
 
     /**
-     * 冻结金额
+     * 分账流水号（唯一）
      */
-    private BigDecimal frozenAmount;
+    private String splitSn;
 
     /**
-     * 待结算金额
+     * 出款账户id(hss的手续费账户，内部账户)
      */
-    private BigDecimal dueSettleAmount;
+    private long outMoneyAccountId;
+
+    /**
+     * 收款账户id
+     */
+    private long receiptMoneyAccountId;
+
+    /**
+     * 收款用户名
+     */
+    private String receiptMoneyUserName;
+
+    /**
+     * 分账所得金额
+     */
+    private BigDecimal splitAmount;
+
+    /**
+     * 分账费率
+     */
+    private BigDecimal splitRate;
+
+    /**
+     * 备注
+     */
+    private String remark;
+
+    /**
+     * 分账日期
+     */
+    private Date splitDate;
 }
