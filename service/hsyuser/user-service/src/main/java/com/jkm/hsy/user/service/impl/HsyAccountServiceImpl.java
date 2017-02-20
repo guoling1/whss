@@ -62,7 +62,7 @@ public class HsyAccountServiceImpl implements HsyAccountService {
             result.put("available", account.getAvailable().toPlainString());
             result.put("dueSettleAmount", account.getDueSettleAmount().toPlainString());
             result.put("frozenAmount", account.getFrozenAmount().toPlainString());
-            result.put("isBindCode", !StringUtils.isEmpty(appAuUser.getDealerID().toString()));
+            result.put("isBindCode", !StringUtils.isEmpty(appAuUser.getDealerID() + ""));
         }
         return result.toJSONString();
     }
