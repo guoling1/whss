@@ -89,15 +89,22 @@ public class QrCodeController extends BaseController {
 
         ProductionQrCodeResponse productionQrCodeResponse = new ProductionQrCodeResponse();
         if((EnumQRCodeSysType.HSS.getId()).equals(productionQrCodeRecord.getSysType())){
-            productionQrCodeResponse.setProductName(EnumQRCodeSysType.HSS.getValue());
+            productionQrCodeResponse.setProductName("好收收");
         }
         if((EnumQRCodeSysType.HSY.getId()).equals(productionQrCodeRecord.getSysType())){
-            productionQrCodeResponse.setProductName(EnumQRCodeSysType.HSY.getValue());
+            productionQrCodeResponse.setProductName("好收银");
         }
-//        if(EnumQRCodeDistributeType.ENTITYCODE.getCode()==productionQrCodeRecord.getQrType()){
-//            productionQrCodeResponse.setProductName(EnumQRCodeSysType.HSS.getValue());
-//        }
-//        productionQrCodeResponse.setQrType();
+        if(EnumQRCodeDistributeType.ENTITYCODE.getCode()==productionQrCodeRecord.getQrType()){
+            productionQrCodeResponse.setQrType("实体码");
+        }
+        if(EnumQRCodeDistributeType.ELECTRONICCODE.getCode()==productionQrCodeRecord.getQrType()){
+            productionQrCodeResponse.setQrType("电子码");
+        }
+        productionQrCodeResponse.setCount(productionQrCodeRecord.getCount());
+        productionQrCodeResponse.setProductionTime(productionQrCodeRecord.getCreateTime());
+        productionQrCodeResponse.setStartCode(productionQrCodeRecord.getStartCode());
+        productionQrCodeResponse.setEndCode(productionQrCodeRecord.getEndCode());
+        productionQrCodeResponse.setDownloadUrl(productionQrCodeRecord.getDownloadUrl());
         return CommonResponse.builder4MapResult(CommonResponse.SUCCESS_CODE, "产码成功")
                 .addParam("url", url.getHost() + url.getFile()).addParam("productionQrCodeRecord",productionQrCodeRecord).build();
     }

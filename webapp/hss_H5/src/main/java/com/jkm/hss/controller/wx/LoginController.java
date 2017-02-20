@@ -342,7 +342,7 @@ public class LoginController extends BaseController {
                 model.addAttribute("id",result.get().getId());
                 return "/prompt";
             }if (result.get().getStatus()==EnumMerchantStatus.REVIEW.getId()){
-                model.addAttribute("res","您的资料正在审核中，请耐心等待");
+                model.addAttribute("res","您的资料已经提交，我们将在一个工作日内处理");
                 return "/prompt1";
             }
 
@@ -1407,6 +1407,15 @@ public class LoginController extends BaseController {
      */
     @RequestMapping(value = "/buySuccess/{amount}/{orderId}", method = RequestMethod.GET)
     public String buySuccess(final HttpServletRequest request, final HttpServletResponse response, final Model model, @PathVariable("amount") String amount, @PathVariable("orderId") String orderId) throws IOException {
+        model.addAttribute("money", amount);
+        model.addAttribute("firstSn", orderId.substring(0, orderId.length() - 6));
+        model.addAttribute("secondSn", orderId.substring(orderId.length() - 6, orderId.length()));
+        return "/buySuccess";
+    }
+
+
+    @RequestMapping(value = "/weixinreg", method = RequestMethod.GET)
+    public String weixinreg(final HttpServletRequest request, final HttpServletResponse response, final Model model, @PathVariable("amount") String amount, @PathVariable("orderId") String orderId) throws IOException {
         model.addAttribute("money", amount);
         model.addAttribute("firstSn", orderId.substring(0, orderId.length() - 6));
         model.addAttribute("secondSn", orderId.substring(orderId.length() - 6, orderId.length()));
