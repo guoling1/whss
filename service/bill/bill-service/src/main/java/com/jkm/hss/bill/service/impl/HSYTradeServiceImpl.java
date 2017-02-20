@@ -643,7 +643,7 @@ public class HSYTradeServiceImpl implements HSYTradeService {
             try {
                 final String content = HttpClientPost.postJson(PaymentSdkConstants.SDK_PAY_WITHDRAW,
                         SdkSerializeUtil.convertObjToMap(paymentSdkDaiFuRequest));
-                log.info("订单[{}]，向网关发起代付，返回[{}]", playMoneyOrder.getOrderNo(), content);
+                log.info("订单[{}]，向网关发起代付[{}]，返回[{}]", playMoneyOrder.getOrderNo(), paymentSdkDaiFuRequest, content);
                 response = JSON.parseObject(content, PaymentSdkDaiFuResponse.class);
             } catch (final Throwable e) {
                 log.error("交易订单[" + playMoneyOrder.getOrderNo() + "], 请求网关支付异常", e);
