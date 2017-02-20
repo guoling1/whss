@@ -8,7 +8,25 @@
     </select>
     <!-- 查询总条数 -->
     <select id="getCount" resultType="java.lang.Integer">
-        SELECT COUNT(1) FROM app_biz_shop where 1=1
+        SELECT COUNT(a.ID) FROM app_biz_shop a
+        LEFT JOIN app_biz_shop_user_role b ON a.ID=b.SID
+        LEFT JOIN app_au_user c ON c.ID=b.UID
+        where b.ROLE=1
+        <if test="globalID!=null and globalID!=''">
+            AND GLOBALID=#{globalID}
+        </if>
+        <if test="shortName!=null and shortName!=''">
+            AND SHORTNAME=#{shortName}
+        </if>
+    </select>
+
+
+    <!-- 查询hsy待审核总条数 -->
+    <select id="getCheckPendingCount" resultType="java.lang.Integer">
+        SELECT COUNT(a.ID) FROM app_biz_shop a
+        LEFT JOIN app_biz_shop_user_role b ON a.ID=b.SID
+        LEFT JOIN app_au_user c ON c.ID=b.UID
+        where b.ROLE=1 AND a.`STATUS`=2
         <if test="globalID!=null and globalID!=''">
             AND GLOBALID=#{globalID}
         </if>
@@ -31,6 +49,23 @@
         </if>
         ORDER BY
             CREATETIME DESC
+        LIMIT #{offset},#{pageSize}
+    </select>
+
+    <!-- 查询商户待审核列表 -->
+    <select id="getMerchant" resultType="com.jkm.hsy.user.entity.HsyMerchantAuditResponse">
+        SELECT a.*,c.CELLPHONE FROM app_biz_shop a
+        LEFT JOIN app_biz_shop_user_role b ON a.ID=b.SID
+        LEFT JOIN app_au_user c ON c.ID=b.UID
+        where b.ROLE=1 AND a.`STATUS`=2
+        <if test="globalID!=null and globalID!=''">
+            AND GLOBALID=#{globalID}
+        </if>
+        <if test="shortName!=null and shortName!=''">
+            AND SHORTNAME=#{shortName}
+        </if>
+        ORDER BY
+        CREATETIME DESC
         LIMIT #{offset},#{pageSize}
     </select>
 

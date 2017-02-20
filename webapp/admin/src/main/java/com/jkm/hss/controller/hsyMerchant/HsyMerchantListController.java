@@ -101,4 +101,21 @@ public class HsyMerchantListController extends BaseController {
         }
         return CommonResponse.objectResponse(1, "success", res);
     }
+
+
+
+    @ResponseBody
+    @RequestMapping(value = "/getCheckPending",method = RequestMethod.POST)
+    public CommonResponse getCheckPending(@RequestBody final HsyMerchantAuditRequest hsyMerchantAuditRequest){
+        final PageModel<HsyMerchantAuditResponse> pageModel = new PageModel<HsyMerchantAuditResponse>(hsyMerchantAuditRequest.getPageNo(), hsyMerchantAuditRequest.getPageSize());
+        hsyMerchantAuditRequest.setOffset(pageModel.getFirstIndex());
+        List<HsyMerchantAuditResponse> list = hsyMerchantAuditService.getCheckPending(hsyMerchantAuditRequest);
+        int count = hsyMerchantAuditService.getCheckPendingCount(hsyMerchantAuditRequest);
+        if (list == null){
+            return CommonResponse.simpleResponse(-1,"未查到相关数据");
+        }
+        pageModel.setCount(count);
+        pageModel.setRecords(list);
+        return CommonResponse.objectResponse(1, "success", pageModel);
+    }
 }

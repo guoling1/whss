@@ -59,4 +59,17 @@ public interface HsyMerchantAuditService {
 
     AppAuUser getAccId(Long id);
 
+    /**
+     * hsy待审核商户列表
+     * @param hsyMerchantAuditRequest
+     * @return
+     */
+    List<HsyMerchantAuditResponse> getCheckPending(HsyMerchantAuditRequest hsyMerchantAuditRequest);
+
+    /**
+     * hsy待审核商户总数
+     * @param hsyMerchantAuditRequest
+     * @return
+     */
+    int getCheckPendingCount(HsyMerchantAuditRequest hsyMerchantAuditRequest);
 }

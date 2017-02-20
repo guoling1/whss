@@ -81,5 +81,17 @@ public interface HsyMerchantAuditDao {
 
     AppAuUser getAccId(@Param("id") Long id);
 
+    /**
+     * hsy查询待审商户
+     * @param hsyMerchantAuditRequest
+     * @return
+     */
+    List<HsyMerchantAuditResponse> getCheckPending(HsyMerchantAuditRequest hsyMerchantAuditRequest);
 
+    /**
+     * hsy待审核总数
+     * @param hsyMerchantAuditRequest
+     * @return
+     */
+    int getCheckPendingCount(HsyMerchantAuditRequest hsyMerchantAuditRequest);
 }
