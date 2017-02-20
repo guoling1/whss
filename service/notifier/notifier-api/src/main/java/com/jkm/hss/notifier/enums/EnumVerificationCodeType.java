@@ -47,6 +47,16 @@ public enum EnumVerificationCodeType {
     WITHDRAW_MERCHANT(8, EnumNoticeType.WITHDRAW_CODE_MERCHANT, 100),
 
     /**
+     * 商户审核通过hss
+     */
+    MERCHANT_AUDIT(9,EnumNoticeType.MERCHANT_AUDIT,100),
+
+    /**
+     * 商户审核不通过hss
+     */
+    MERCHANT_NO_AUDIT(9,EnumNoticeType.MERCHANT_NO_AUDIT,100),
+
+    /**
      * 商户登录验证码
      */
     LOGIN_MERCHANT(7, EnumNoticeType.LOGIN_MERCHANT, 100);
