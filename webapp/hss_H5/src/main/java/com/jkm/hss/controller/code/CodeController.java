@@ -216,7 +216,7 @@ public class CodeController extends BaseController {
                 model.addAttribute("code", code);
                 url =  "/sqb/reg";
             }else{
-                model.addAttribute("message", "请用微信注册");
+                model.addAttribute("message", "注册收款商户请使用“微信”扫码");
                 return "/message";
             }
         }
