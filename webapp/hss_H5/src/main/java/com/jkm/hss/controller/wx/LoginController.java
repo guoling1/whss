@@ -416,7 +416,19 @@ public class LoginController extends BaseController {
      */
     @RequestMapping(value = "/follow", method = RequestMethod.GET)
     public String follow(final HttpServletRequest request, final HttpServletResponse response, final Model model) throws IOException {
-        return "/follow";
+        if(!super.isLogin(request)){
+            return "redirect:"+ WxConstants.WEIXIN_USERINFO+request.getRequestURI()+ WxConstants.WEIXIN_USERINFO_REDIRECT;
+        }else {
+            Map<String, String> map = WxPubUtil.getUserInfo(super.getOpenId(request));
+            if("".equals(map.get("subscribe"))){
+                return "/follow";
+            }
+            if("0".equals(map.get("subscribe"))){
+                return "/follow";
+            }else{
+                return "redirect:/sqb/prompt";
+            }
+        }
     }
 
     /**
