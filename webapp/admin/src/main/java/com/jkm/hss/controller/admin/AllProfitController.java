@@ -53,7 +53,7 @@ public class AllProfitController extends BaseController {
      * @return
      */
     @ResponseBody
-    @RequestMapping(value = "/companyProfit/detail", method = RequestMethod.POST)
+    @RequestMapping(value = "/companyProfitDetail", method = RequestMethod.POST)
     public CommonResponse getCompanyProfitDeatail(@RequestBody final CompanyPrifitRequest req){
 
         CompanyProfitResponse res = allProfitService.selectCompanyProfitDetails(req.getAccId());
@@ -89,7 +89,7 @@ public class AllProfitController extends BaseController {
      * @return
      */
     @ResponseBody
-    @RequestMapping(value = "/firstDealer/detail", method = RequestMethod.POST)
+    @RequestMapping(value = "/firstDealerDetail", method = RequestMethod.POST)
     public CommonResponse getFirstDealerDeatail(@RequestBody final CompanyPrifitRequest req){
 
         CompanyProfitResponse res = allProfitService.selectOneProfitDetails(req.getReceiptMoneyAccountId());
@@ -125,7 +125,7 @@ public class AllProfitController extends BaseController {
      * @return
      */
     @ResponseBody
-    @RequestMapping(value = "/secondDealer/detail", method = RequestMethod.POST)
+    @RequestMapping(value = "/secondDealerDetail", method = RequestMethod.POST)
     public CommonResponse getSecondDealerDeatail(@RequestBody final CompanyPrifitRequest req){
 
         CompanyProfitResponse res = allProfitService.selectTwoProfitDetails(req.getReceiptMoneyAccountId());
