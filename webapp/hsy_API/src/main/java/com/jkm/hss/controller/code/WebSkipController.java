@@ -39,7 +39,7 @@ public class WebSkipController extends BaseController {
         final Order order = this.orderService.getById(orderId).get();
         model.addAttribute("firstSn", order.getOrderNo().substring(0, order.getOrderNo().length() - 6));
         model.addAttribute("secondSn", order.getOrderNo().substring(order.getOrderNo().length() - 6, order.getOrderNo().length()));
-        return "/buySuccess";
+        return "/success";
     }
 
     /**
