@@ -425,5 +425,5 @@ public interface QRCodeService {
      * @param sysType
      * @return
      */
-    ProductionQrCodeRecord productionQrCode(long adminId, int count, final String baseUrl, long productId, String sysType, int type);
+//    ProductionQrCodeRecord productionQrCode(long adminId, int count, final String baseUrl, long productId, String sysType, int type);
 }

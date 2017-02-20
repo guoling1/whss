@@ -87,12 +87,12 @@ public class QRCode extends BaseEntity {
      * 二维码类型
      * {@link com.jkm.hss.admin.enums.EnumQRCodeDistributeType}
      */
-    private int qrType;
+//    private int qrType;
 
     /**
      * 激活时间
      */
-    private Date activateTime;
+//    private Date activateTime;
 
     /**
      * 获取签名

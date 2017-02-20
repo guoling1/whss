@@ -875,48 +875,48 @@ public class QRCodeServiceImpl implements QRCodeService {
      * @param sysType
      * @return
      */
-    @Override
-    public ProductionQrCodeRecord productionQrCode(long adminId, int count, String baseUrl, long productId, String sysType,int type) {
-        final List<QRCode> codes = generateCode(adminId, count,productId,sysType,type);
-        //下载二维码
-        final String tempDir = QRCodeUtil.getTempDir();
-        final File excelFile = new File(tempDir + File.separator + codes.get(0).getCode() + "-" +
-                codes.get(count - 1).getCode() + ".xls");
-
-        final ExcelSheetVO excelSheet = generateCodeExcelSheet(codes, baseUrl);
-        final List<ExcelSheetVO> excelSheets = new ArrayList<>();
-        excelSheets.add(excelSheet);
-        FileOutputStream fileOutputStream = null;
-        try {
-            fileOutputStream = new FileOutputStream(excelFile);
-            ExcelUtil.exportExcel(excelSheets, fileOutputStream);
-            //生成二维码记录
-            ProductionQrCodeRecord productionQrCodeRecord = new ProductionQrCodeRecord();
-            productionQrCodeRecord.setStartCode(codes.get(0).getCode());
-            productionQrCodeRecord.setStartCode(codes.get(count - 1).getCode());
-            productionQrCodeRecord.setCount(codes.size());
-            productionQrCodeRecord.setQrType(type);
-            productionQrCodeRecord.setProductId(productId);
-            productionQrCodeRecord.setSysType(sysType);
-            productionQrCodeRecord.setOperatorId(adminId);
-            productionQrCodeRecord.setDownloadUrl(excelFile.getAbsolutePath());
-            productionQrCodeRecordService.add(productionQrCodeRecord);
-            return productionQrCodeRecord;
-        } catch (final Exception e) {
-            log.error("download code zip error", e);
-            e.printStackTrace();
-        }  finally {
-            if (fileOutputStream != null) {
-                try {
-                    fileOutputStream.close();
-                } catch (final IOException e) {
-                    log.error("close fileOutputStream error", e);
-                    e.printStackTrace();
-                }
-            }
-        }
-        return null;
-    }
+//    @Override
+//    public ProductionQrCodeRecord productionQrCode(long adminId, int count, String baseUrl, long productId, String sysType,int type) {
+//        final List<QRCode> codes = generateCode(adminId, count,productId,sysType,type);
+//        //下载二维码
+//        final String tempDir = QRCodeUtil.getTempDir();
+//        final File excelFile = new File(tempDir + File.separator + codes.get(0).getCode() + "-" +
+//                codes.get(count - 1).getCode() + ".xls");
+//
+//        final ExcelSheetVO excelSheet = generateCodeExcelSheet(codes, baseUrl);
+//        final List<ExcelSheetVO> excelSheets = new ArrayList<>();
+//        excelSheets.add(excelSheet);
+//        FileOutputStream fileOutputStream = null;
+//        try {
+//            fileOutputStream = new FileOutputStream(excelFile);
+//            ExcelUtil.exportExcel(excelSheets, fileOutputStream);
+//            //生成二维码记录
+//            ProductionQrCodeRecord productionQrCodeRecord = new ProductionQrCodeRecord();
+//            productionQrCodeRecord.setStartCode(codes.get(0).getCode());
+//            productionQrCodeRecord.setStartCode(codes.get(count - 1).getCode());
+//            productionQrCodeRecord.setCount(codes.size());
+//            productionQrCodeRecord.setQrType(type);
+//            productionQrCodeRecord.setProductId(productId);
+//            productionQrCodeRecord.setSysType(sysType);
+//            productionQrCodeRecord.setOperatorId(adminId);
+//            productionQrCodeRecord.setDownloadUrl(excelFile.getAbsolutePath());
+//            productionQrCodeRecordService.add(productionQrCodeRecord);
+//            return productionQrCodeRecord;
+//        } catch (final Exception e) {
+//            log.error("download code zip error", e);
+//            e.printStackTrace();
+//        }  finally {
+//            if (fileOutputStream != null) {
+//                try {
+//                    fileOutputStream.close();
+//                } catch (final IOException e) {
+//                    log.error("close fileOutputStream error", e);
+//                    e.printStackTrace();
+//                }
+//            }
+//        }
+//        return null;
+//    }
 
     /**
      * 生成二维码
@@ -927,32 +927,32 @@ public class QRCodeServiceImpl implements QRCodeService {
      * @param qrType
      * @return
      */
-    private List<QRCode> generateCode(final long adminId, final int count,long productId,String sysType,int qrType) {
-        final List<QRCode> codes = new ArrayList<>(count);
-        final Optional<QRCode> latestQRCode = this.getLatestQRCodeForUpdate();
-        String startCode = QRCodeConsts.start_code_num;
-        if (latestQRCode.isPresent()) {
-            startCode = latestQRCode.get().getCode();
-        }
-        for (int i = 1; i <= count; i++) {
-            final QRCode qrCode = new QRCode();
-            qrCode.setCode(String.valueOf(Long.valueOf(startCode) + i));
-            qrCode.setAdminId(adminId);
-            qrCode.setFirstLevelDealerId(0);
-            qrCode.setSecondLevelDealerId(0);
-            qrCode.setMerchantId(0);
-            qrCode.setSalt(RandomStringUtils.randomAlphanumeric(16));
-            qrCode.setSign(qrCode.getSignCode());
-            qrCode.setDistributeStatus(EnumQRCodeDistributionStatus.UN_DISTRIBUTION.getCode());
-            qrCode.setActivateStatus(EnumQRCodeActivateStatus.UN_ACTIVATE.getCode());
-            qrCode.setType(EnumQRCodeType.SCAN_CODE.getCode());
-            qrCode.setProductId(productId);
-            qrCode.setSysType(sysType);
-            qrCode.setQrType(qrType);
-            this.add(qrCode);
-            codes.add(qrCode);
-        }
-        return codes;
-    }
+//    private List<QRCode> generateCode(final long adminId, final int count,long productId,String sysType,int qrType) {
+//        final List<QRCode> codes = new ArrayList<>(count);
+//        final Optional<QRCode> latestQRCode = this.getLatestQRCodeForUpdate();
+//        String startCode = QRCodeConsts.start_code_num;
+//        if (latestQRCode.isPresent()) {
+//            startCode = latestQRCode.get().getCode();
+//        }
+//        for (int i = 1; i <= count; i++) {
+//            final QRCode qrCode = new QRCode();
+//            qrCode.setCode(String.valueOf(Long.valueOf(startCode) + i));
+//            qrCode.setAdminId(adminId);
+//            qrCode.setFirstLevelDealerId(0);
+//            qrCode.setSecondLevelDealerId(0);
+//            qrCode.setMerchantId(0);
+//            qrCode.setSalt(RandomStringUtils.randomAlphanumeric(16));
+//            qrCode.setSign(qrCode.getSignCode());
+//            qrCode.setDistributeStatus(EnumQRCodeDistributionStatus.UN_DISTRIBUTION.getCode());
+//            qrCode.setActivateStatus(EnumQRCodeActivateStatus.UN_ACTIVATE.getCode());
+//            qrCode.setType(EnumQRCodeType.SCAN_CODE.getCode());
+//            qrCode.setProductId(productId);
+//            qrCode.setSysType(sysType);
+//            qrCode.setQrType(qrType);
+//            this.add(qrCode);
+//            codes.add(qrCode);
+//        }
+//        return codes;
+//    }
 
 }
