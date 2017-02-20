@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jkm.hss.admin.dao.ProductionQrCodeRecordDao">
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO tb_production_qr_code_record
+        (
+        start_code,
+        end_code,
+        count,
+        qr_type,
+        product_id,
+        sys_type,
+        operator_id,
+        download_url,
+        status
+        )
+        VALUES
+        (
+        #{startCode},
+        #{endCode},
+        #{count},
+        #{qrType},
+        #{productId},
+        #{sysType},
+        #{operatorId},
+        #{downloadUrl},
+        #{status}
+        );
+    </insert>
+</mapper>
