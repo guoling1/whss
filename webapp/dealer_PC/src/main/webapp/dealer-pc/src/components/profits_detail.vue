@@ -45,7 +45,7 @@
                         element-loading-text="数据加载中">
                 <el-table-column type="index" label="序号"></el-table-column>
                 <el-table-column prop="splitOrderNo" label="分润流水号"></el-table-column>
-                <el-table-column prop="businessType" label="业务类型">
+                <el-table-column label="业务类型">
                   <template scope="scope">
                     {{ scope.row.businessType | filter_businessType }}
                   </template>

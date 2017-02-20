@@ -27,7 +27,7 @@
               <el-table :data="tableData" border
                         v-loading="tableLoading"
                         element-loading-text="数据加载中">
-                <el-table-column type="index" label="代理商编号"></el-table-column>
+                <el-table-column prop="splitOrderNo" label="代理商编号"></el-table-column>
                 <el-table-column prop="splitOrderNo" label="代理商名称"></el-table-column>
                 <el-table-column prop="businessType" label="账户总额(元)"></el-table-column>
                 <el-table-column prop="businessType" label="可用余额(元)"></el-table-column>
