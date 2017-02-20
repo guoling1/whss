@@ -8,6 +8,7 @@ import com.jkm.base.common.util.ExcelUtil;
 import com.jkm.base.common.util.QRCodeUtil;
 import com.jkm.hss.admin.dao.QRCodeDao;
 import com.jkm.hss.admin.entity.CodeQueryResponse;
+import com.jkm.hss.admin.entity.ProductionQrCodeRecord;
 import com.jkm.hss.admin.entity.QRCode;
 import com.jkm.hss.admin.enums.EnumQRCodeActivateStatus;
 import com.jkm.hss.admin.enums.EnumQRCodeDistributionStatus;
@@ -19,6 +20,7 @@ import com.jkm.hss.admin.helper.SecondLevelDealerCodeInfo;
 import com.jkm.hss.admin.helper.responseparam.ActiveCodeCount;
 import com.jkm.hss.admin.helper.responseparam.DistributeCodeCount;
 import com.jkm.hss.admin.helper.responseparam.QRCodeList;
+import com.jkm.hss.admin.service.ProductionQrCodeRecordService;
 import com.jkm.hss.admin.service.QRCodeService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
@@ -46,6 +48,9 @@ public class QRCodeServiceImpl implements QRCodeService {
 
     @Autowired
     private QRCodeDao qrCodeDao;
+
+    @Autowired
+    private ProductionQrCodeRecordService productionQrCodeRecordService;
 
     /**
      * {@inheritDoc}
@@ -859,4 +864,95 @@ public class QRCodeServiceImpl implements QRCodeService {
     public List<QRCode> getUnDistributeCodeByCodeAndSysType(String startCode, String endCode, String sysType) {
         return this.qrCodeDao.getUnDistributeCodeByCodeAndSysType(startCode,endCode,sysType);
     }
+
+    /**
+     * 生产二维码
+     *
+     * @param adminId
+     * @param count
+     * @param baseUrl
+     * @param productId
+     * @param sysType
+     * @return
+     */
+    @Override
+    public ProductionQrCodeRecord productionQrCode(long adminId, int count, String baseUrl, long productId, String sysType,int type) {
+        final List<QRCode> codes = generateCode(adminId, count,productId,sysType,type);
+        //下载二维码
+        final String tempDir = QRCodeUtil.getTempDir();
+        final File excelFile = new File(tempDir + File.separator + codes.get(0).getCode() + "-" +
+                codes.get(count - 1).getCode() + ".xls");
+
+        final ExcelSheetVO excelSheet = generateCodeExcelSheet(codes, baseUrl);
+        final List<ExcelSheetVO> excelSheets = new ArrayList<>();
+        excelSheets.add(excelSheet);
+        FileOutputStream fileOutputStream = null;
+        try {
+            fileOutputStream = new FileOutputStream(excelFile);
+            ExcelUtil.exportExcel(excelSheets, fileOutputStream);
+            //生成二维码记录
+            ProductionQrCodeRecord productionQrCodeRecord = new ProductionQrCodeRecord();
+            productionQrCodeRecord.setStartCode(codes.get(0).getCode());
+            productionQrCodeRecord.setStartCode(codes.get(count - 1).getCode());
+            productionQrCodeRecord.setCount(codes.size());
+            productionQrCodeRecord.setQrType(type);
+            productionQrCodeRecord.setProductId(productId);
+            productionQrCodeRecord.setSysType(sysType);
+            productionQrCodeRecord.setOperatorId(adminId);
+            productionQrCodeRecord.setDownloadUrl(excelFile.getAbsolutePath());
+            productionQrCodeRecordService.add(productionQrCodeRecord);
+            return productionQrCodeRecord;
+        } catch (final Exception e) {
+            log.error("download code zip error", e);
+            e.printStackTrace();
+        }  finally {
+            if (fileOutputStream != null) {
+                try {
+                    fileOutputStream.close();
+                } catch (final IOException e) {
+                    log.error("close fileOutputStream error", e);
+                    e.printStackTrace();
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * 生成二维码
+     * @param adminId
+     * @param count
+     * @param productId
+     * @param sysType
+     * @param qrType
+     * @return
+     */
+    private List<QRCode> generateCode(final long adminId, final int count,long productId,String sysType,int qrType) {
+        final List<QRCode> codes = new ArrayList<>(count);
+        final Optional<QRCode> latestQRCode = this.getLatestQRCodeForUpdate();
+        String startCode = QRCodeConsts.start_code_num;
+        if (latestQRCode.isPresent()) {
+            startCode = latestQRCode.get().getCode();
+        }
+        for (int i = 1; i <= count; i++) {
+            final QRCode qrCode = new QRCode();
+            qrCode.setCode(String.valueOf(Long.valueOf(startCode) + i));
+            qrCode.setAdminId(adminId);
+            qrCode.setFirstLevelDealerId(0);
+            qrCode.setSecondLevelDealerId(0);
+            qrCode.setMerchantId(0);
+            qrCode.setSalt(RandomStringUtils.randomAlphanumeric(16));
+            qrCode.setSign(qrCode.getSignCode());
+            qrCode.setDistributeStatus(EnumQRCodeDistributionStatus.UN_DISTRIBUTION.getCode());
+            qrCode.setActivateStatus(EnumQRCodeActivateStatus.UN_ACTIVATE.getCode());
+            qrCode.setType(EnumQRCodeType.SCAN_CODE.getCode());
+            qrCode.setProductId(productId);
+            qrCode.setSysType(sysType);
+            qrCode.setQrType(qrType);
+            this.add(qrCode);
+            codes.add(qrCode);
+        }
+        return codes;
+    }
+
 }

@@ -2,6 +2,7 @@ package com.jkm.hss.admin.service;
 
 import com.google.common.base.Optional;
 import com.jkm.hss.admin.entity.CodeQueryResponse;
+import com.jkm.hss.admin.entity.ProductionQrCodeRecord;
 import com.jkm.hss.admin.entity.QRCode;
 import com.jkm.hss.admin.helper.FirstLevelDealerCodeInfo;
 import com.jkm.hss.admin.helper.MyMerchantCount;
@@ -414,4 +415,15 @@ public interface QRCodeService {
      * @return
      */
     List<QRCode> getUnDistributeCodeByCodeAndSysType(String startCode, String endCode,String sysType);
+
+    /**
+     * 生产二维码
+     * @param adminId
+     * @param count
+     * @param baseUrl
+     * @param productId
+     * @param sysType
+     * @return
+     */
+    ProductionQrCodeRecord productionQrCode(long adminId, int count, final String baseUrl, long productId, String sysType, int type);
 }

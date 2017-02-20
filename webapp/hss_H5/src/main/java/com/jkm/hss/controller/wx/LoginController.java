@@ -131,9 +131,40 @@ public class LoginController extends BaseController {
             Optional<UserInfo> userInfoOptional = userInfoService.selectByOpenId(super.getOpenId(request));
             if (userInfoOptional.isPresent()) {
                 if(code!=null&&!"".equals(code)){
-                    model.addAttribute("message","您的微信已经绑定了好收收账号\n" +
-                            "请使用其他微信账号扫码");
-                    url = "/message";
+                    Long merchantId = userInfoOptional.get().getMerchantId();
+                    if (merchantId != null && merchantId != 0){
+                        Optional<MerchantInfo> result = merchantInfoService.selectById(merchantId);
+                        if (result.get().getStatus()== EnumMerchantStatus.LOGIN.getId()){//登录
+                            if(code!=null&&!"".equals(code)){
+                                model.addAttribute("code",code);
+                            }
+                            model.addAttribute("openId",userInfoOptional.get().getOpenId());
+                            url = "/reg";
+                        }else if(result.get().getStatus()== EnumMerchantStatus.INIT.getId()){
+                            url = "/sqb/addInfo";
+                            isRedirect= true;
+                        }else if(result.get().getStatus()== EnumMerchantStatus.ONESTEP.getId()){
+                            url = "/sqb/addNext";
+                            isRedirect= true;
+                        }else if(result.get().getStatus()== EnumMerchantStatus.REVIEW.getId()||
+                                result.get().getStatus()== EnumMerchantStatus.UNPASSED.getId()||
+                                result.get().getStatus()== EnumMerchantStatus.DISABLE.getId()){
+                            url = "/sqb/prompt";
+                            isRedirect= true;
+                        }else if(result.get().getStatus()== EnumMerchantStatus.PASSED.getId()||result.get().getStatus()== EnumMerchantStatus.FRIEND.getId()){//跳首页
+                            model.addAttribute("message","您的微信已经绑定了好收收账号\n" +
+                                    "请使用其他微信账号扫码");
+                            url = "/message";
+                        }else{
+                            log.info("商户状态不合法，状态为{}",result.get().getStatus());
+                            model.addAttribute("message","非法操作");
+                            url = "/message";
+                        }
+                    }else {
+                        log.info("二维码绑定错误，码{}，用户编码{}，商户编码{},openId[{}]",code,userInfoOptional.get().getId(),merchantId,super.getOpenId(request));
+                        model.addAttribute("message","您的注册信息有误");
+                        url = "/message";
+                    }
                 }else{
                     Long merchantId = userInfoOptional.get().getMerchantId();
                     if (merchantId != null && merchantId != 0){
@@ -342,10 +373,9 @@ public class LoginController extends BaseController {
                 model.addAttribute("id",result.get().getId());
                 return "/prompt";
             }if (result.get().getStatus()==EnumMerchantStatus.REVIEW.getId()){
-                model.addAttribute("res","您的资料正在审核中，请耐心等待");
+                model.addAttribute("res","您的资料已经提交，我们将在一个工作日内处理");
                 return "/prompt1";
             }
-
         }
         return null;
     }
@@ -386,7 +416,19 @@ public class LoginController extends BaseController {
      */
     @RequestMapping(value = "/follow", method = RequestMethod.GET)
     public String follow(final HttpServletRequest request, final HttpServletResponse response, final Model model) throws IOException {
-        return "/follow";
+        if(!super.isLogin(request)){
+            return "redirect:"+ WxConstants.WEIXIN_USERINFO+request.getRequestURI()+ WxConstants.WEIXIN_USERINFO_REDIRECT;
+        }else {
+            Map<String, String> map = WxPubUtil.getUserInfo(super.getOpenId(request));
+            if("".equals(map.get("subscribe"))){
+                return "/follow";
+            }
+            if("0".equals(map.get("subscribe"))){
+                return "/follow";
+            }else{
+                return "redirect:/sqb/prompt";
+            }
+        }
     }
 
     /**
@@ -1407,6 +1449,15 @@ public class LoginController extends BaseController {
      */
     @RequestMapping(value = "/buySuccess/{amount}/{orderId}", method = RequestMethod.GET)
     public String buySuccess(final HttpServletRequest request, final HttpServletResponse response, final Model model, @PathVariable("amount") String amount, @PathVariable("orderId") String orderId) throws IOException {
+        model.addAttribute("money", amount);
+        model.addAttribute("firstSn", orderId.substring(0, orderId.length() - 6));
+        model.addAttribute("secondSn", orderId.substring(orderId.length() - 6, orderId.length()));
+        return "/buySuccess";
+    }
+
+
+    @RequestMapping(value = "/weixinreg", method = RequestMethod.GET)
+    public String weixinreg(final HttpServletRequest request, final HttpServletResponse response, final Model model, @PathVariable("amount") String amount, @PathVariable("orderId") String orderId) throws IOException {
         model.addAttribute("money", amount);
         model.addAttribute("firstSn", orderId.substring(0, orderId.length() - 6));
         model.addAttribute("secondSn", orderId.substring(orderId.length() - 6, orderId.length()));

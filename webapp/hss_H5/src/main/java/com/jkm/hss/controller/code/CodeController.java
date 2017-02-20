@@ -212,9 +212,13 @@ public class CodeController extends BaseController {
                 log.error("code[{}] is activate, but merchant[{}] is disabled", code, merchantId);
             }
         } else {//注册
-            Preconditions.checkState(agent.indexOf("micromessenger") > -1, "please register in weixin");
-            model.addAttribute("code", code);
-            url =  "/sqb/reg";
+            if(agent.indexOf("micromessenger") > -1){
+                model.addAttribute("code", code);
+                url =  "/sqb/reg";
+            }else{
+                model.addAttribute("message", "注册收款商户请使用“微信”扫码");
+                return "/message";
+            }
         }
         return "redirect:"+url;
     }

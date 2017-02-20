@@ -15,7 +15,8 @@
       activate_status,
       type,
       product_id,
-      sys_type
+      sys_type,
+      qr_type
       )
       VALUES
       (
@@ -30,7 +31,8 @@
       #{activateStatus},
       #{type},
       #{productId},
-      #{sysType}
+      #{sysType},
+      #{qrType}
       );
     </insert>
 

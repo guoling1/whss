@@ -13,7 +13,7 @@
 	</select>
 
 	<!-- 查询公司分润总数 -->
-	<select id="selectCompanyProfitCount" resultType="com.jkm.hss.merchant.helper.response.CompanyProfitResponse">
+	<select id="selectCompanyProfitCount" resultType="java.lang.Integer">
 		SELECT COUNT(a.receipt_money_account_id) FROM tb_split_account_record a
 		LEFT JOIN tb_account b ON a.receipt_money_account_id=b.id
 		WHERE b.id in (1,2,11,48,49)
@@ -27,7 +27,7 @@
 	</select>
 
 	<!-- 查询一级代理商分润总数 -->
-	<select id="selectOneProfitCount" resultType="com.jkm.hss.merchant.helper.response.CompanyProfitResponse">
+	<select id="selectOneProfitCount" resultType="java.lang.Integer">
 		SELECT COUNT(a.id) FROM tb_split_account_record a
 		LEFT JOIN tb_dealer b ON a.receipt_money_account_id=b.account_id
 		WHERE b.`level`=1
@@ -41,7 +41,7 @@
 	</select>
 
 	<!-- 查询二级代理商分润总数 -->
-	<select id="selectTwoProfitCount" resultType="com.jkm.hss.merchant.helper.response.CompanyProfitResponse">
+	<select id="selectTwoProfitCount" resultType="java.lang.Integer">
 		SELECT COUNT(a.id) FROM tb_split_account_record a
 		LEFT JOIN tb_dealer b ON a.receipt_money_account_id=b.account_id
 		WHERE b.`level`=2
