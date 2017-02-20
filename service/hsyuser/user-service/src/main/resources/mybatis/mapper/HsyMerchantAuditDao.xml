@@ -53,7 +53,7 @@
     </select>
 
     <!-- 查询商户待审核列表 -->
-    <select id="getMerchant" resultType="com.jkm.hsy.user.entity.HsyMerchantAuditResponse">
+    <select id="getCheckPending" resultType="com.jkm.hsy.user.entity.HsyMerchantAuditResponse">
         SELECT a.*,c.CELLPHONE FROM app_biz_shop a
         LEFT JOIN app_biz_shop_user_role b ON a.ID=b.SID
         LEFT JOIN app_au_user c ON c.ID=b.UID
