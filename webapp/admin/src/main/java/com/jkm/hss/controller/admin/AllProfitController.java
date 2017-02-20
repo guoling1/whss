@@ -60,7 +60,7 @@ public class AllProfitController extends BaseController {
         if (res==null){
             return CommonResponse.simpleResponse(-1,"未查询到相关数据");
         }
-            return CommonResponse.simpleResponse(-1, "查询公司分润明细异常");
+        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", res);
         }
     /**
      * 一级代理商分润
@@ -79,7 +79,7 @@ public class AllProfitController extends BaseController {
         int count = allProfitService.selectOneProfitCount(req);
         pageModel.setCount(count);
         pageModel.setRecords(list);
-        return CommonResponse.simpleResponse(-1, "查询一级代理商分润异常");
+        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", pageModel);
 
     }
 
@@ -96,7 +96,7 @@ public class AllProfitController extends BaseController {
         if (res==null){
             return CommonResponse.simpleResponse(-1,"未查询到相关数据");
         }
-        return CommonResponse.simpleResponse(-1, "查询一代分润明细异常");
+        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", res);
     }
 
     /**
@@ -116,7 +116,7 @@ public class AllProfitController extends BaseController {
         int count = allProfitService.selectTwoProfitCount(req);
         pageModel.setCount(count);
         pageModel.setRecords(list);
-        return CommonResponse.simpleResponse(-1, "查询二级代理商分润异常");
+        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", pageModel);
     }
 
     /**
@@ -132,6 +132,6 @@ public class AllProfitController extends BaseController {
         if (res==null){
             return CommonResponse.simpleResponse(-1,"未查询到相关数据");
         }
-        return CommonResponse.simpleResponse(-1, "查询二代分润明细异常");
+        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", res);
     }
 }
