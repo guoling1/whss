@@ -53,6 +53,10 @@ public class HsyAppVersionServiceImpl implements HsyAppVersionService {
                     appVersion.setIsUpgrade(2);
             }
         }
+        else
+        {
+            appVersion=null;
+        }
         gson = new GsonBuilder().registerTypeAdapter(Date.class, new JsonSerializer<Date>() {
             public JsonElement serialize(Date date, Type typeOfT, JsonSerializationContext context) throws JsonParseException {
                 return new JsonPrimitive(date.getTime());
