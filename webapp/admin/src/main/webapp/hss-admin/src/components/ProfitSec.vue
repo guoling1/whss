@@ -50,7 +50,7 @@
             <el-table-column prop="proxyName1" label="二级代理商名称"></el-table-column>
             <el-table-column prop="markCode" label="代理编号"></el-table-column>
             <el-table-column prop="splitDate" :formatter="changeTime" label="收益日期"></el-table-column>
-            <el-table-column prop="businessType" label="收益类型" align="right" header-align="left"></el-table-column>
+            <el-table-column prop="businessType" label="收益类型"></el-table-column>
             <el-table-column prop="splitTotalAmount" label="收益金额" align="right" header-align="left"></el-table-column>
             <el-table-column label="操作" width="100">
               <template scope="scope">
