@@ -42,7 +42,7 @@ public class AdminUser extends BaseEntity {
     /**
      * 公司编码
      */
-    private String companyId;
+    private Long companyId;
     /**
      * 部门编码
      */
