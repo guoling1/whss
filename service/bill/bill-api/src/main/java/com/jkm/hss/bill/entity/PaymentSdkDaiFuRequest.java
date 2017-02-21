@@ -1,6 +1,6 @@
 package com.jkm.hss.bill.entity;
 
-import com.jkm.hss.bill.enums.EnumUpperChannel;
+import com.jkm.hss.product.enums.EnumUpperChannel;
 import lombok.Data;
 
 /**

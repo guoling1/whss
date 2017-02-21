@@ -1,4 +1,4 @@
-package com.jkm.hss.bill.enums;
+package com.jkm.hss.product.enums;
 
 import lombok.Getter;
 

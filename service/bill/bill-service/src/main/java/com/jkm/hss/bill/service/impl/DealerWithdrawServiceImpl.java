@@ -18,7 +18,7 @@ import com.jkm.hss.bill.entity.PaymentSdkDaiFuResponse;
 import com.jkm.hss.bill.entity.callback.PaymentSdkWithdrawCallbackResponse;
 import com.jkm.hss.bill.enums.EnumBasicStatus;
 import com.jkm.hss.bill.enums.EnumOrderStatus;
-import com.jkm.hss.bill.enums.EnumUpperChannel;
+import com.jkm.hss.product.enums.EnumUpperChannel;
 import com.jkm.hss.bill.enums.EnumTradeType;
 import com.jkm.hss.bill.helper.PaymentSdkConstants;
 import com.jkm.hss.bill.helper.SdkSerializeUtil;

@@ -4,7 +4,7 @@ package com.jkm.hss.bill.service;
 import com.jkm.hss.bill.entity.Order;
 import com.jkm.hss.bill.entity.callback.PaymentSdkPayCallbackResponse;
 import com.jkm.hss.bill.entity.callback.PaymentSdkWithdrawCallbackResponse;
-import com.jkm.hss.bill.enums.EnumUpperChannel;
+import com.jkm.hss.product.enums.EnumUpperChannel;
 import com.jkm.hsy.user.entity.AppBizShop;
 import com.jkm.hsy.user.entity.AppParam;
 import org.apache.commons.lang3.tuple.Pair;
