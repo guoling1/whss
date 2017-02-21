@@ -69,11 +69,14 @@
       if(this.$route.path=="/admin/record/profitDet"){
         this.$data.path = '/admin/queryProfit/profitDetails'
       }else if(this.$route.path=="/admin/record/profitComDet"){
-        this.$data.path = '/admin/profit/companyProfit/detail'
+        this.$data.path = '/admin/allProfit/companyProfitDetail'
+        this.$data.query.accId = this.$route.query.id;
       }else if(this.$route.path=="/admin/record/profitFirDet"){
-        this.$data.path = '/admin/profit/firstDealer/detail'
+        this.$data.path = '/admin/allProfit/firstDealerDetail'
+        this.$data.query.aeceiptMoneyAccountId = this.$route.query.id;
       }else if(this.$route.path=="/admin/record/profitSecDet"){
-        this.$data.path = '/admin/profit/secondDealer/detail'
+        this.$data.path = '/admin/allProfit/secondDealerDetail'
+        this.$data.query.aeceiptMoneyAccountId = this.$route.query.id;
       }
       this.$http.post(this.$data.path, this.$data.query)
         .then(function (res) {

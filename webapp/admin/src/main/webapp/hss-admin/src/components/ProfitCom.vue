@@ -14,26 +14,45 @@
               </el-date-picker>
             </li>
             <li class="same">
+              <label>收益类型:</label>
+              <el-select style="width: 120px" clearable v-model="query.businessType" size="small" >
+                <el-option label="全部" value="">全部</el-option>
+                <el-option label="好收银" value="hssPay">好收收-收款</el-option>
+                <el-option label="好收收" value="hssWithdraw">好收收-提现</el-option>
+                <el-option label="好收收" value="hssUpgrade">好收收-升级费</el-option>
+                <el-option label="好收收" value="hsyPay">好收银-收款</el-option>
+              </el-select>
+            </li>
+            <li class="same">
               <div class="btn btn-primary" @click="search">筛选</div>
             </li>
           </ul>
           <!--表格-->
           <el-table v-loading.body="loading" style="font-size: 12px;margin:15px 0" :data="records" border>
-            <el-table-column type="index" width="100" label="序号"></el-table-column>
-            <el-table-column prop="statisticsDate" label="收益日期"></el-table-column>
-            <el-table-column prop="collectMoney" align="right" header-align="left" label="收单收益"></el-table-column>
-            <el-table-column prop="withdrawMoney" label="结算收益" align="right" header-align="left"></el-table-column>
-            <el-table-column prop="totalMoney" label="收益总额" align="right" header-align="left"></el-table-column>
+            <el-table-column   width="100" label="序号">
+              <template scope="scope">
+                <div v-if="records[scope.$index].businessType!='总额'">{{scope.$index+1}}</div>
+              </template>
+            </el-table-column>
+            <el-table-column prop="splitDate" :formatter="changeTime" label="收益日期"></el-table-column>
+            <el-table-column prop="businessType" label="收益类型" align="right" header-align="left"></el-table-column>
+            <el-table-column prop="splitTotalAmount" label="收益金额" align="right" header-align="left"></el-table-column>
             <el-table-column label="操作" width="100">
               <template scope="scope">
-                <router-link :to="{path:'/admin/record/profitComDet',query:{id:records[scope.$index].id}}" v-if="records[scope.$index].totalMoney!=0" type="text" size="small">明细
+                <router-link :to="{path:'/admin/record/profitComDet',query:{id:records[scope.$index].accId}}" v-if="records[scope.$index].totalMoney!=0&&records[scope.$index].businessType!='总额'" type="text" size="small">明细
                 </router-link>
               </template>
             </el-table-column>
           </el-table>
           <!--分页-->
           <div class="block" style="text-align: right">
-            <el-pagination @current-change="handleCurrentChange" :current-page="currentPage" layout="total, prev, pager, next, jumper" :total="count">
+            <el-pagination @size-change="handleSizeChange"
+                           @current-change="handleCurrentChange"
+                           :current-page="query.pageNo"
+                           :page-sizes="[10, 20, 50]"
+                           :page-size="query.pageSize"
+                           layout="total, sizes, prev, pager, next, jumper"
+                           :total="count">
             </el-pagination>
           </div>
         </div>
@@ -77,45 +96,23 @@
         query:{
           pageNo:1,
           pageSize:10,
-          beginProfitDate:'',
-          endProfitDate:''
+          startTime:'',
+          endTime:'',
+          businessType:''
         },
         records: [],
         count: 0,
         total: 0,
-        currentPage: 1,
         loading: true
       }
     },
     created: function () {
-      this.$http.post('/admin/profit/companyProfit', this.$data.query)
-        .then(function (res) {
-          this.$data.records = res.data.records;
-          this.$data.count = res.data.count;
-          this.$data.total = res.data.totalPage;
-          this.$data.loading = false;
-          var toFix = function (val) {
-            return parseFloat(val).toFixed(2)
-          }
-          for (let i = 0; i < this.$data.records.length; i++) {
-            this.$data.records[i].collectMoney = toFix(this.$data.records[i].collectMoney)
-            this.$data.records[i].withdrawMoney = toFix(this.$data.records[i].withdrawMoney)
-            this.$data.records[i].totalMoney = toFix(this.$data.records[i].totalMoney)
-          }
-        }, function (err) {
-          this.$data.loading = false;
-          this.$message({
-            showClose: true,
-            message: err.statusMessage,
-            type: 'error'
-          });
-        })
+      this.getData()
     },
     methods: {
-      search(){
-        this.$data.query.pageNo = 1;
+      getData:function () {
         this.$data.loading = true;
-        this.$http.post('/admin/profit/companyProfit', this.$data.query)
+        this.$http.post('/admin/allProfit/companyProfit', this.$data.query)
           .then(function (res) {
             this.$data.records = res.data.records;
             this.$data.count = res.data.count;
@@ -123,12 +120,16 @@
             this.$data.loading = false;
             var toFix = function (val) {
               return parseFloat(val).toFixed(2)
-            }
+            };
+            var total=0;
             for (let i = 0; i < this.$data.records.length; i++) {
-              this.$data.records[i].collectMoney = toFix(this.$data.records[i].collectMoney)
-              this.$data.records[i].withdrawMoney = toFix(this.$data.records[i].withdrawMoney)
-              this.$data.records[i].totalMoney = toFix(this.$data.records[i].totalMoney)
+              this.$data.records[i].splitTotalAmount = toFix(this.$data.records[i].splitTotalAmount);
+              total = toFix(parseFloat(total)+parseFloat(this.$data.records[i].splitTotalAmount))
             }
+            this.records.push({
+              businessType:"总额",
+              splitTotalAmount:total
+            })
           }, function (err) {
             this.$data.loading = false;
             this.$message({
@@ -138,32 +139,42 @@
             });
           })
       },
+      //格式化时间
+      changeTime: function (row, column) {
+        var val=row.splitDate;
+        if(val==''||val==null){
+          return ''
+        }else {
+          val = new Date(val)
+          var year=val.getFullYear();
+          var month=val.getMonth()+1;
+          var date=val.getDate();
+          var hour=val.getHours();
+          var minute=val.getMinutes();
+          var second=val.getSeconds();
+          function tod(a) {
+            if(a<10){
+              a = "0"+a
+            }
+            return a;
+          }
+          return year+"-"+tod(month)+"-"+tod(date)+" "+tod(hour)+":"+tod(minute)+":"+tod(second);
+        }
+      },
+      search(){
+        this.$data.query.pageNo = 1;
+        this.getData()
+      },
+      //每页条数改变
+      handleSizeChange(val) {
+        this.$data.query.pageNo = 1;
+        this.$data.query.pageSize = val;
+        this.getData()
+      },
       //当前页改变时
       handleCurrentChange(val) {
         this.$data.query.pageNo = val;
-        this.$data.loading = true;
-        this.$http.post('/admin/profit/companyProfit', this.$data.query)
-          .then(function (res) {
-            this.$data.records = res.data.records;
-            this.$data.count = res.data.count;
-            this.$data.total = res.data.totalPage;
-            this.$data.loading = false;
-            var toFix = function (val) {
-              return parseFloat(val).toFixed(2)
-            }
-            for (let i = 0; i < this.$data.records.length; i++) {
-              this.$data.records[i].collectMoney = toFix(this.$data.records[i].collectMoney)
-              this.$data.records[i].withdrawMoney = toFix(this.$data.records[i].withdrawMoney)
-              this.$data.records[i].totalMoney = toFix(this.$data.records[i].totalMoney)
-            }
-          }, function (err) {
-            this.$data.loading = false;
-            this.$message({
-              showClose: true,
-              message: err.statusMessage,
-              type: 'error'
-            });
-          })
+        this.getData()
       },
     },
     watch:{
@@ -179,14 +190,14 @@
             }
             str = ary[0] + '-' + ary[1] + '-' + ary[2];
             if(j==0){
-              this.$data.query.beginProfitDate = str;
+              this.$data.query.startTime = str;
             }else {
-              this.$data.query.endProfitDate = str;
+              this.$data.query.endTime = str;
             }
           }
         }else {
-          this.$data.query.beginProfitDate = '';
-          this.$data.query.endProfitDate = '';
+          this.$data.query.startTime = '';
+          this.$data.query.endTime = '';
         }
       }
     }
