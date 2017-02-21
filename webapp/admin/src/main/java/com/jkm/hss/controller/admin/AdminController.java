@@ -13,6 +13,7 @@ import com.jkm.hss.admin.enums.EnumQRCodeDistributeType;
 import com.jkm.hss.admin.helper.requestparam.AdminUserListRequest;
 import com.jkm.hss.admin.helper.requestparam.AdminUserRequest;
 import com.jkm.hss.admin.helper.requestparam.DistributeQrCodeRequest;
+import com.jkm.hss.admin.helper.responseparam.AdminUserListResponse;
 import com.jkm.hss.admin.helper.responseparam.BossDistributeQRCodeRecordResponse;
 import com.jkm.hss.admin.helper.responseparam.DistributeQRCodeRecordResponse;
 import com.jkm.hss.admin.service.AdminUserService;
@@ -933,8 +934,8 @@ public class AdminController extends BaseController {
         adminUser.setMobile(adminUserRequest.getMobile());
         adminUser.setEmail(adminUserRequest.getEmail());
         adminUser.setRoleId(adminUserRequest.getRoleId());
-        this.adminUserService.createUser(adminUser);
-        return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "新增成功");
+        long userId = this.adminUserService.createUser(adminUser);
+        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "新增成功",userId);
     }
     /**
      * 禁用用户
@@ -1003,7 +1004,7 @@ public class AdminController extends BaseController {
     @ResponseBody
     @RequestMapping(value = "/userList", method = RequestMethod.POST)
     public CommonResponse userList (@RequestBody AdminUserListRequest adminUserListRequest) {
-        PageModel<AdminUser> adminUserPageModel = adminUserService.userList(adminUserListRequest);
+        PageModel<AdminUserListResponse> adminUserPageModel = adminUserService.userList(adminUserListRequest);
         return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "修改成功",adminUserPageModel);
     }
 }

@@ -4,6 +4,7 @@ import com.google.common.base.Optional;
 import com.jkm.base.common.entity.PageModel;
 import com.jkm.hss.admin.entity.*;
 import com.jkm.hss.admin.helper.requestparam.AdminUserListRequest;
+import com.jkm.hss.admin.helper.responseparam.AdminUserListResponse;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
 
@@ -19,7 +20,7 @@ public interface AdminUserService {
      * @param adminUser
      * @return
      */
-    void createUser(AdminUser adminUser);
+    long createUser(AdminUser adminUser);
 
     /**
      *
@@ -164,5 +165,5 @@ public interface AdminUserService {
      * @param adminUserListRequest
      * @return
      */
-    PageModel<AdminUser> userList(AdminUserListRequest adminUserListRequest);
+    PageModel<AdminUserListResponse> userList(AdminUserListRequest adminUserListRequest);
 }

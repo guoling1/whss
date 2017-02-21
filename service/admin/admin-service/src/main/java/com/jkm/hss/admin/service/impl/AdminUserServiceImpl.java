@@ -16,6 +16,7 @@ import com.jkm.hss.admin.enums.EnumAdminUserStatus;
 import com.jkm.hss.admin.enums.EnumQRCodeDistributeType2;
 import com.jkm.hss.admin.helper.AdminUserSupporter;
 import com.jkm.hss.admin.helper.requestparam.AdminUserListRequest;
+import com.jkm.hss.admin.helper.responseparam.AdminUserListResponse;
 import com.jkm.hss.admin.service.AdminUserPassportService;
 import com.jkm.hss.admin.service.AdminUserService;
 import com.jkm.hss.admin.service.DistributeQRCodeRecordService;
@@ -59,7 +60,7 @@ public class AdminUserServiceImpl implements AdminUserService {
      * @param adminUser
      */
     @Override
-    public void createUser(final AdminUser adminUser) {
+    public long createUser(final AdminUser adminUser) {
         final String salt = AdminUserSupporter.generateSalt();
         final String password = AdminUserSupporter.encryptPassword(salt, adminUser.getPassword());
         adminUser.setSalt(salt);
@@ -69,6 +70,7 @@ public class AdminUserServiceImpl implements AdminUserService {
         adminUser.setIdCard(AdminUserSupporter.encryptIdenrity(adminUser.getIdCard()));
         this.adminUserDao.insert(adminUser);
         this.adminUserDao.updateMarkCode(GlobalID.GetAdminUserID(EnumGlobalAdminUserLevel.BOSS,adminUser.getId()+""),adminUser.getId());
+        return adminUser.getId();
     }
 
     /**
@@ -345,8 +347,8 @@ public class AdminUserServiceImpl implements AdminUserService {
      * @return
      */
     @Override
-    public PageModel<AdminUser> userList(AdminUserListRequest adminUserListRequest) {
-        final PageModel<AdminUser> pageModel = new PageModel<>(adminUserListRequest.getPageNo(), adminUserListRequest.getPageSize());
+    public PageModel<AdminUserListResponse> userList(AdminUserListRequest adminUserListRequest) {
+        final PageModel<AdminUserListResponse> pageModel = new PageModel<>(adminUserListRequest.getPageNo(), adminUserListRequest.getPageSize());
         adminUserListRequest.setOffset(pageModel.getFirstIndex());
         adminUserListRequest.setCount(pageModel.getPageSize());
         if(!StringUtil.isNullOrEmpty(adminUserListRequest.getMobile())){
@@ -354,16 +356,27 @@ public class AdminUserServiceImpl implements AdminUserService {
         }
         final int count = this.adminUserDao.selectAdminUserCountByPageParams(adminUserListRequest);
         final List<AdminUser> adminUsers = this.adminUserDao.selectAdminUserListByPageParams(adminUserListRequest);
+        List<AdminUserListResponse> list = new ArrayList<AdminUserListResponse>();
         if(adminUsers.size()>0){
             for(int i=0;i<adminUsers.size();i++){
+                AdminUserListResponse adminUserListResponse = new AdminUserListResponse();
+                adminUserListResponse.setId(adminUsers.get(i).getId());
+                adminUserListResponse.setMarkCode(adminUsers.get(i).getMarkCode());
+                adminUserListResponse.setUsername(adminUsers.get(i).getUsername());
+                adminUserListResponse.setRealname(adminUsers.get(i).getRealname());
+                adminUserListResponse.setCompanyName("");
+                adminUserListResponse.setDeptName("");
                 if(adminUsers.get(i).getMobile()!=null||!"".equals(adminUsers.get(i).getMobile())){
-                    adminUsers.get(i).setMobile(AdminUserSupporter.encryptMobile(adminUsers.get(i).getMobile()));
+                    adminUserListResponse.setMobile(AdminUserSupporter.encryptMobile(adminUsers.get(i).getMobile()));
                 }
-
+                adminUserListResponse.setEmail(adminUsers.get(i).getEmail());
+                adminUserListResponse.setRoleName("管理员");
+                adminUserListResponse.setCreateTime(adminUsers.get(i).getCreateTime());
+                adminUserListResponse.setStatus(adminUsers.get(i).getStatus());
             }
         }
         pageModel.setCount(count);
-        pageModel.setRecords(adminUsers);
+        pageModel.setRecords(list);
         return pageModel;
     }
 }
