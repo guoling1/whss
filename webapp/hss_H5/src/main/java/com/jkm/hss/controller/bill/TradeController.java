@@ -9,7 +9,6 @@ import com.jkm.base.common.util.DateFormatUtil;
 import com.jkm.hss.account.enums.EnumAppType;
 import com.jkm.hss.bill.entity.Order;
 import com.jkm.hss.bill.enums.EnumOrderStatus;
-import com.jkm.hss.bill.enums.EnumPaymentType;
 import com.jkm.hss.bill.enums.EnumSettleStatus;
 import com.jkm.hss.bill.helper.requestparam.QueryMerchantPayOrdersRequestParam;
 import com.jkm.hss.bill.service.OrderService;
@@ -25,10 +24,8 @@ import com.jkm.hss.helper.response.QueryOrderByIdResponse;
 import com.jkm.hss.merchant.entity.MerchantInfo;
 import com.jkm.hss.merchant.entity.UserInfo;
 import com.jkm.hss.merchant.enums.EnumMerchantStatus;
-import com.jkm.hss.merchant.helper.MerchantSupport;
 import com.jkm.hss.merchant.service.MerchantInfoService;
 import com.jkm.hss.merchant.service.UserInfoService;
-import com.jkm.hss.notifier.enums.EnumVerificationCodeType;
 import com.jkm.hss.notifier.service.SmsAuthService;
 import com.jkm.hss.product.enums.EnumPayChannelSign;
 import org.apache.commons.collections.CollectionUtils;
@@ -103,7 +100,7 @@ public class TradeController extends BaseController {
         }
         if (EnumPayChannelSign.YG_WEIXIN.getId() != payRequest.getPayChannel()
                 && EnumPayChannelSign.YG_ZHIFUBAO.getId() != payRequest.getPayChannel()
-                && EnumPayChannelSign.YG_YINLIAN.getId() != payRequest.getPayChannel()) {
+                && EnumPayChannelSign.YG_UNIONPAY.getId() != payRequest.getPayChannel()) {
             return CommonResponse.simpleResponse(-1, "支付方式错误");
         }
         final Pair<Integer, String> resultPair = this.payService.codeReceipt(payRequest.getTotalFee(),
@@ -233,9 +230,7 @@ public class TradeController extends BaseController {
         }
         for (int i = 0; i < payTypeList.size(); i++) {
             final String payType = payTypeList.get(i);
-            if (!EnumPaymentType.WECHAT_H5_CASHIER_DESK.getId().equals(payType)
-                    && !EnumPaymentType.QUICK_APY.getId().equals(payType)
-                    && !EnumPaymentType.ALIPAY_SCAN_CODE.getId().equals(payType)) {
+            if (!EnumPayChannelSign.isExist(payType)) {
                 return CommonResponse.simpleResponse(-1, "不存在的支付方式");
             }
         }

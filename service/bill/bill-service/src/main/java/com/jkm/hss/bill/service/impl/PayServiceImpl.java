@@ -248,15 +248,8 @@ public class PayServiceImpl implements PayService {
         order.setRemark(paymentSdkPayCallbackResponse.getMessage());
         order.setSn(paymentSdkPayCallbackResponse.getSn());
         order.setStatus(EnumOrderStatus.PAY_SUCCESS.getId());
-        int channel = 0;
-        if (EnumPaymentType.QUICK_APY.getId().equals(order.getPayType())) {
-            channel = EnumPayChannelSign.YG_YINLIAN.getId();
-        } else if (EnumPaymentType.WECHAT_H5_CASHIER_DESK.getId().equals(order.getPayType())) {
-            channel = EnumPayChannelSign.YG_WEIXIN.getId();
-        } else if (EnumPaymentType.ALIPAY_SCAN_CODE.getId().equals(order.getPayType())) {
-            channel = EnumPayChannelSign.YG_ZHIFUBAO.getId();
-        }
-        order.setPayChannelSign(channel);
+        final EnumPayChannelSign enumPayChannelSign = EnumPayChannelSign.codeOf(order.getPayType());
+        order.setPayChannelSign(enumPayChannelSign.getId());
         log.info("返回的通道是[{}]", order.getPayType());
         //处理商户升级的支付单(此时商户自己付款给金开门)
         if (order.getPayer() > 0 && order.getPayee() == AccountConstants.JKM_ACCOUNT_ID) {
@@ -292,7 +285,7 @@ public class PayServiceImpl implements PayService {
         log.info("交易订单[{}]，处理普通支付回调业务", order.getOrderNo());
         final MerchantInfo merchant = this.merchantInfoService.getByAccountId(order.getPayee()).get();
         //手续费， 费率
-        final BigDecimal merchantPayPoundageRate = this.calculateService.getMerchantPayPoundageRate(EnumProductType.HSS, merchant.getId(), channel);
+        final BigDecimal merchantPayPoundageRate = this.calculateService.getMerchantPayPoundageRate(EnumProductType.HSS, merchant.getId(), enumPayChannelSign.getId());
         final BigDecimal merchantPayPoundage = this.calculateService.getMerchantPayPoundage(order.getTradeAmount(), merchantPayPoundageRate);
         order.setPoundage(merchantPayPoundage);
         order.setPayRate(merchantPayPoundageRate);
@@ -843,7 +836,7 @@ public class PayServiceImpl implements PayService {
         if (EnumPayChannelSign.YG_WEIXIN.getId() == channel
                 || EnumPayChannelSign.YG_ZHIFUBAO.getId() == channel) {
             placeOrderRequest.setTradeType("JSAPI");
-        } else if (EnumPayChannelSign.YG_YINLIAN.getId() == channel) {
+        } else if (EnumPayChannelSign.YG_UNIONPAY.getId() == channel) {
             placeOrderRequest.setTradeType("EPOS");
         }
 

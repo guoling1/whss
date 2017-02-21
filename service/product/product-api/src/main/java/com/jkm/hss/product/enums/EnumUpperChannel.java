@@ -21,7 +21,17 @@ public enum EnumUpperChannel {
     /**
      * 卡盟
      */
-    KAMENG(3, "卡盟")
+    KAMENG(3, "卡盟"),
+
+    /**
+     * 合众易宝
+     */
+    HEZONG_YIBAO(4, "合众易宝"),
+
+    /**
+     * 溢+
+     */
+    YIJIA(5, "溢+")
     ;
 
     @Getter

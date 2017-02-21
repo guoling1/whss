@@ -74,7 +74,7 @@ public class UpgradeController extends BaseController {
                 BigDecimal b1 = new BigDecimal(100);
                 upgradeRules.setAlipayRate(alipayRate.multiply(b1));
             }
-            if(EnumPayChannelSign.YG_YINLIAN.getId()==productChannelDetails.get(i).getChannelTypeSign()){
+            if(EnumPayChannelSign.YG_UNIONPAY.getId()==productChannelDetails.get(i).getChannelTypeSign()){
                 BigDecimal fastRate = productChannelDetails.get(i).getProductMerchantPayRate();
                 BigDecimal b1 = new BigDecimal(100);
                 upgradeRules.setFastRate(fastRate.multiply(b1));

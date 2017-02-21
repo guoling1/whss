@@ -81,7 +81,7 @@ public class TradeController extends BaseController {
         }
         if (EnumPayChannelSign.YG_WEIXIN.getId() != withdrawRequest.getChannel()
                 && EnumPayChannelSign.YG_ZHIFUBAO.getId() != withdrawRequest.getChannel()
-                && EnumPayChannelSign.YG_YINLIAN.getId() != withdrawRequest.getChannel()) {
+                && EnumPayChannelSign.YG_UNIONPAY.getId() != withdrawRequest.getChannel()) {
             return CommonResponse.simpleResponse(-1, "提现方式错误");
         }
         final Pair<Integer, String> withdraw = this.hsyTradeService.withdraw(account.getId(), withdrawRequest.getAmount(),

@@ -142,7 +142,7 @@ public class DealerController extends BaseController {
             } else if (channelRate.getChannelTypeSign() == EnumPayChannelSign.YG_ZHIFUBAO.getId()) {
                 model.addAttribute("alipaySettleRate", channelRate.getDealerTradeRate().multiply(new BigDecimal("100")).setScale(2));
                 model.addAttribute("alipayMerchantSettleRate", channelRate.getDealerMerchantPayRate().multiply(new BigDecimal("100")).setScale(2));
-            } else if (channelRate.getChannelTypeSign() == EnumPayChannelSign.YG_YINLIAN.getId()) {
+            } else if (channelRate.getChannelTypeSign() == EnumPayChannelSign.YG_UNIONPAY.getId()) {
                 model.addAttribute("quickSettleRate", channelRate.getDealerTradeRate().multiply(new BigDecimal("100")).setScale(2));
                 model.addAttribute("quickMerchantSettleRate", channelRate.getDealerMerchantPayRate().multiply(new BigDecimal("100")).setScale(2));
                 model.addAttribute("withdrawSettleFee", channelRate.getDealerWithdrawFee());
@@ -446,7 +446,7 @@ public class DealerController extends BaseController {
                         && alipaySettleRate.compareTo(channelRate.getDealerMerchantPayRate()) < 0)) {
                     return CommonResponse.simpleResponse(-1, "支付宝结算费率错误");
                 }
-            } else if (channelRate.getChannelTypeSign() == EnumPayChannelSign.YG_YINLIAN.getId()) {
+            } else if (channelRate.getChannelTypeSign() == EnumPayChannelSign.YG_UNIONPAY.getId()) {
                 final BigDecimal quickSettleRate = new BigDecimal(secondLevelDealerAddRequest.getQuickSettleRate())
                         .divide(new BigDecimal("100"), 4, BigDecimal.ROUND_HALF_UP);
                 if (!(quickSettleRate.compareTo(channelRate.getDealerTradeRate()) > 0
@@ -492,7 +492,7 @@ public class DealerController extends BaseController {
                 dealerGetResponse.setWithdrawSettleFee(channelRate.getDealerWithdrawFee().toPlainString());
             } else if (channelRate.getChannelTypeSign() == EnumPayChannelSign.YG_ZHIFUBAO.getId()) {
                 dealerGetResponse.setAlipaySettleRate(channelRate.getDealerTradeRate().multiply(new BigDecimal(100)).setScale(2).toPlainString());
-            } else if (channelRate.getChannelTypeSign() == EnumPayChannelSign.YG_YINLIAN.getId()) {
+            } else if (channelRate.getChannelTypeSign() == EnumPayChannelSign.YG_UNIONPAY.getId()) {
                 dealerGetResponse.setQuickSettleRate(channelRate.getDealerTradeRate().multiply(new BigDecimal(100)).setScale(2).toPlainString());
             }
         }
@@ -758,7 +758,7 @@ public class DealerController extends BaseController {
             } else if (channelRate.getChannelTypeSign() == EnumPayChannelSign.YG_ZHIFUBAO.getId()) {
                 myDealerDetailResponse.setAlipaySettleRate(channelRate.getDealerTradeRate().toPlainString());
                 myDealerDetailResponse.setWithdrawSettleFee(channelRate.getDealerWithdrawFee().toPlainString());
-            } else if (channelRate.getChannelTypeSign() == EnumPayChannelSign.YG_YINLIAN.getId()) {
+            } else if (channelRate.getChannelTypeSign() == EnumPayChannelSign.YG_UNIONPAY.getId()) {
                 myDealerDetailResponse.setQuickSettleRate(channelRate.getDealerTradeRate().toPlainString());
             }
         }

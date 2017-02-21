@@ -483,7 +483,7 @@ public class DealerController extends BaseController {
                         return CommonResponse.simpleResponse(-1, "支付宝结算费率错误:必须大于一级的小于商户的");
                     }
                 }
-                if(channes.getChannelType()== EnumPayChannelSign.YG_YINLIAN.getId()){
+                if(channes.getChannelType()== EnumPayChannelSign.YG_UNIONPAY.getId()){
                     final BigDecimal withdrawSettleFee = new BigDecimal(channes.getWithdrawSettleFee());
                     if (!(withdrawSettleFee.compareTo(dealerChannelRate.getDealerWithdrawFee()) >= 0
                             && withdrawSettleFee.compareTo(dealerChannelRate.getDealerMerchantWithdrawFee()) <= 0)) {

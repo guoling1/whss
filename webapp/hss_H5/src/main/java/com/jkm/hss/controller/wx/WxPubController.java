@@ -39,11 +39,9 @@ import com.jkm.hss.notifier.service.SendMessageService;
 import com.jkm.hss.notifier.service.SmsAuthService;
 import com.jkm.hss.product.entity.Product;
 import com.jkm.hss.product.entity.ProductChannelDetail;
-import com.jkm.hss.product.entity.UpgradePayRecord;
 import com.jkm.hss.product.enums.EnumPayChannelSign;
 import com.jkm.hss.product.enums.EnumProductType;
 import com.jkm.hss.product.enums.EnumUpGradeType;
-import com.jkm.hss.product.enums.EnumUpgradePayResult;
 import com.jkm.hss.product.servcie.ProductChannelDetailService;
 import com.jkm.hss.product.servcie.ProductService;
 import com.jkm.hss.product.servcie.UpgradePayRecordService;
@@ -499,7 +497,7 @@ public class WxPubController extends BaseController {
         if(!zhifubaoChannelDetail.isPresent()){
             return CommonResponse.simpleResponse(-1, "产品：支付宝率配置有误");
         }
-        Optional<ProductChannelDetail> yinlianChannelDetail = productChannelDetailService.selectByProductIdAndChannelId(productId,EnumPayChannelSign.YG_YINLIAN.getId());
+        Optional<ProductChannelDetail> yinlianChannelDetail = productChannelDetailService.selectByProductIdAndChannelId(productId,EnumPayChannelSign.YG_UNIONPAY.getId());
         if(!yinlianChannelDetail.isPresent()){
             return CommonResponse.simpleResponse(-1, "产品：银联率配置有误");
         }
@@ -550,7 +548,7 @@ public class WxPubController extends BaseController {
                                 if(!zhifubaoDealerChannelRate.isPresent()){
                                     return CommonResponse.simpleResponse(-1, "代理商：支付宝费率配置有误");
                                 }
-                                Optional<DealerChannelRate> yinlianDealerChannelRate = dealerChannelRateService.selectByDealerIdAndProductIdAndChannelType(mi.getFirstDealerId(), mi.getProductId(),EnumPayChannelSign.YG_YINLIAN.getId());
+                                Optional<DealerChannelRate> yinlianDealerChannelRate = dealerChannelRateService.selectByDealerIdAndProductIdAndChannelType(mi.getFirstDealerId(), mi.getProductId(),EnumPayChannelSign.YG_UNIONPAY.getId());
                                 if(!yinlianDealerChannelRate.isPresent()){
                                     return CommonResponse.simpleResponse(-1, "代理商：快捷费率配置有误");
                                 }
@@ -614,7 +612,7 @@ public class WxPubController extends BaseController {
                         if(!zhifubaoDealerChannelRate.isPresent()){
                             return CommonResponse.simpleResponse(-1, "代理商：支付宝费率配置有误");
                         }
-                        Optional<DealerChannelRate> yinlianDealerChannelRate = dealerChannelRateService.selectByDealerIdAndProductIdAndChannelType(dealerOptional.get().getId(), mi.getProductId(),EnumPayChannelSign.YG_YINLIAN.getId());
+                        Optional<DealerChannelRate> yinlianDealerChannelRate = dealerChannelRateService.selectByDealerIdAndProductIdAndChannelType(dealerOptional.get().getId(), mi.getProductId(),EnumPayChannelSign.YG_UNIONPAY.getId());
                         if(!yinlianDealerChannelRate.isPresent()){
                             return CommonResponse.simpleResponse(-1, "代理商：快捷费率配置有误");
                         }
@@ -985,7 +983,7 @@ public class WxPubController extends BaseController {
 
                             Optional<DealerChannelRate> zhifubaoDealerChannelRate = dealerChannelRateService.selectByDealerIdAndProductIdAndChannelType(dealerOptional.get().getId(), productOptional.get().getId(),EnumPayChannelSign.YG_ZHIFUBAO.getId());
 
-                            Optional<DealerChannelRate> yinlianDealerChannelRate = dealerChannelRateService.selectByDealerIdAndProductIdAndChannelType(dealerOptional.get().getId(), productOptional.get().getId(),EnumPayChannelSign.YG_YINLIAN.getId());
+                            Optional<DealerChannelRate> yinlianDealerChannelRate = dealerChannelRateService.selectByDealerIdAndProductIdAndChannelType(dealerOptional.get().getId(), productOptional.get().getId(),EnumPayChannelSign.YG_UNIONPAY.getId());
                             MerchantInfo merchantInfo = new MerchantInfo();
                             merchantInfo.setId(merchantInfos.get(i).getId());
                             merchantInfo.setFirstDealerId(dealerOptional.get().getId());
@@ -1001,7 +999,7 @@ public class WxPubController extends BaseController {
 
                             Optional<DealerChannelRate> zhifubaoDealerChannelRate = dealerChannelRateService.selectByDealerIdAndProductIdAndChannelType(dealerOptional.get().getFirstLevelDealerId(), productOptional.get().getId(),EnumPayChannelSign.YG_ZHIFUBAO.getId());
 
-                            Optional<DealerChannelRate> yinlianDealerChannelRate = dealerChannelRateService.selectByDealerIdAndProductIdAndChannelType(dealerOptional.get().getFirstLevelDealerId(), productOptional.get().getId(),EnumPayChannelSign.YG_YINLIAN.getId());
+                            Optional<DealerChannelRate> yinlianDealerChannelRate = dealerChannelRateService.selectByDealerIdAndProductIdAndChannelType(dealerOptional.get().getFirstLevelDealerId(), productOptional.get().getId(),EnumPayChannelSign.YG_UNIONPAY.getId());
 
                             MerchantInfo merchantInfo = new MerchantInfo();
                             merchantInfo.setId(merchantInfos.get(i).getId());
@@ -1020,7 +1018,7 @@ public class WxPubController extends BaseController {
 
                     Optional<ProductChannelDetail> zhifubaoChannelDetail = productChannelDetailService.selectByProductIdAndChannelId(productOptional.get().getId(),EnumPayChannelSign.YG_ZHIFUBAO.getId());
 
-                    Optional<ProductChannelDetail> yinlianChannelDetail = productChannelDetailService.selectByProductIdAndChannelId(productOptional.get().getId(),EnumPayChannelSign.YG_YINLIAN.getId());
+                    Optional<ProductChannelDetail> yinlianChannelDetail = productChannelDetailService.selectByProductIdAndChannelId(productOptional.get().getId(),EnumPayChannelSign.YG_UNIONPAY.getId());
                     MerchantInfo merchantInfo = new MerchantInfo();
                     merchantInfo.setId(merchantInfos.get(i).getId());
                     merchantInfo.setFirstDealerId(0);

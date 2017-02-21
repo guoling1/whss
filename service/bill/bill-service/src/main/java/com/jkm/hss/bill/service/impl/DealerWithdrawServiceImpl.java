@@ -69,7 +69,7 @@ public class DealerWithdrawServiceImpl implements DealerWithdrawService {
     public Pair<Integer, String> withdraw(long accountId, String totalAmount, int channel, String appId) {
         Preconditions.checkState(EnumPayChannelSign.YG_WEIXIN.getId() == channel
                 || EnumPayChannelSign.YG_ZHIFUBAO.getId() == channel
-                || EnumPayChannelSign.YG_YINLIAN.getId() == channel, "渠道选择错误[{}]", channel);
+                || EnumPayChannelSign.YG_UNIONPAY.getId() == channel, "渠道选择错误[{}]", channel);
 
         final Optional<Dealer> dealerOptional = this.dealerService.getByAccountId(accountId);
         Preconditions.checkArgument(dealerOptional.isPresent(), "代理商不存在");

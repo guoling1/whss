@@ -19,7 +19,6 @@ import com.jkm.hss.admin.helper.requestparam.DistributeQrCodeRequest;
 import com.jkm.hss.admin.helper.responseparam.ActiveCodeCount;
 import com.jkm.hss.admin.helper.responseparam.BossDistributeQRCodeRecordResponse;
 import com.jkm.hss.admin.helper.responseparam.DistributeCodeCount;
-import com.jkm.hss.admin.helper.responseparam.DistributeQRCodeRecordResponse;
 import com.jkm.hss.admin.service.DistributeQRCodeRecordService;
 import com.jkm.hss.admin.service.QRCodeService;
 import com.jkm.hss.dealer.dao.DealerDao;
@@ -1165,7 +1164,7 @@ public class DealerServiceImpl implements DealerService {
                 dealerChannelRate.setDealerTradeRate(new BigDecimal(request.getWeixinSettleRate()).divide(new BigDecimal("100")));
             } else if (channelRate.getChannelTypeSign() == EnumPayChannelSign.YG_ZHIFUBAO.getId()) {
                 dealerChannelRate.setDealerTradeRate(new BigDecimal(request.getAlipaySettleRate()).divide(new BigDecimal("100")));
-            } else if (channelRate.getChannelTypeSign() == EnumPayChannelSign.YG_YINLIAN.getId()) {
+            } else if (channelRate.getChannelTypeSign() == EnumPayChannelSign.YG_UNIONPAY.getId()) {
                 dealerChannelRate.setDealerTradeRate(new BigDecimal(request.getQuickSettleRate()).divide(new BigDecimal("100")));
             }
             dealerChannelRate.setDealerBalanceType(channelRate.getDealerBalanceType());
