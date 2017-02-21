@@ -605,11 +605,11 @@ input:focus {
   padding-top: 15px;
 }
 #material .bottom {
-  box-flex: 1;
-  -webkit-box-flex: 1;
-  -webkit-flex: 1;
-  -ms-flex: 1;
-  flex: 1;
+  box-flex: auto;
+  -webkit-box-flex: auto;
+  -webkit-flex: auto;
+  -ms-flex: auto;
+  flex: auto;
   width: 100%;
   border-top: 8px solid #f4f5f8;
 }
@@ -645,11 +645,11 @@ input:focus {
 }
 #material .group .file {
   display: inline-block;
-  box-flex: 1;
-  -webkit-box-flex: 1;
-  -webkit-flex: 1;
-  -ms-flex: 1;
-  flex: 1;
+  box-flex: auto;
+  -webkit-box-flex: auto;
+  -webkit-flex: auto;
+  -ms-flex: auto;
+  flex: auto;
   width: 1px;
   line-height: 50px;
   text-align: left;
@@ -666,11 +666,11 @@ input:focus {
   top: 0;
 }
 #material .group .ipt {
-  box-flex: 1;
-  -webkit-box-flex: 1;
-  -webkit-flex: 1;
-  -ms-flex: 1;
-  flex: 1;
+  box-flex: auto;
+  -webkit-box-flex: auto;
+  -webkit-flex: auto;
+  -ms-flex: auto;
+  flex: auto;
   border: none;
   color: #4a5171;
 }

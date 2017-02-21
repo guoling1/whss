@@ -13,6 +13,23 @@
   flex-direction: column;
 }
 
+//.flexBox {
+//  display: -webkit-flex; /* 新版本语法: Chrome 21+ */
+//  display: flex; /* 新版本语法: Opera 12.1, Firefox 22+ */
+//  display: -webkit-box; /* 老版本语法: Safari, iOS, Android browser, older WebKit browsers. */
+//  display: -moz-box; /* 老版本语法: Firefox (buggy) */
+//  display: -ms-flexbox; /* 混合版本语法: IE 10 */
+//  display: box;
+//}
+//
+//.flexItem(@val) {
+//  -webkit-flex: @val; /* Chrome */
+//  -ms-flex: @val; /* IE 10 */
+//  flex: @val; /* NEW, Spec - Opera 12.1, Firefox 20+ */
+//  -webkit-box-flex: @val; /* OLD - iOS 6-, Safari 3.1-6 */
+//  -moz-box-flex: @val; /* OLD - Firefox 19- */
+//}
+
 .flexBox {
   display: box;
   display: -webkit-box;
@@ -80,6 +97,33 @@ input:focus {
   border: none;
 }
 
+// 双飞翼布局 (圣杯布局的改造)
+.fly_wing(@leftWidth,@rightWidth,@height,@innerMinWidth:0) {
+  .left {
+    width: @leftWidth;
+    height: @height;
+    float: left;
+    margin-left: -100%;
+  }
+  .main {
+    width: 100%;
+    height: @height;
+    float: left;
+  }
+  .right {
+    width: @rightWidth;
+    height: @height;
+    float: left;
+    margin-left: -@rightWidth;
+  }
+  .inner {
+    min-width: @innerMinWidth;
+    height: @height;
+    margin-left: @leftWidth;
+    margin-right: @rightWidth;
+  }
+}
+
 // 商户 注册 reg
 #reg, #login {
   overflow: auto;
@@ -104,7 +148,7 @@ input:focus {
       border-bottom: 1px solid #edeef5;
       padding: 25px 15px 0 20px;
       input {
-        .flexItem(1);
+        .flexItem(auto);
         border: none;
         float: left;
         font-size: 16px;
@@ -154,6 +198,12 @@ input:focus {
         width: 100%;
         height: 50px;
         padding: 0 15px;
+      }
+      &.fly_wing_item {
+        .fly_wing(35px, 70px, 49px);
+      }
+      &.fly_wing_item_nr {
+        .fly_wing(35px, 0px, 49px, 200px);
       }
     }
   }
@@ -328,7 +378,7 @@ input:focus {
   }
 
   .bottom {
-    .flexItem(1);
+    .flexItem(auto);
     width: 100%;
     border-top: 8px solid #f4f5f8;
     .skip {
@@ -360,7 +410,7 @@ input:focus {
     }
     .file {
       display: inline-block;
-      .flexItem(1);
+      .flexItem(auto);
       width: 1px;
       line-height: 50px;
       text-align: left;
@@ -377,7 +427,7 @@ input:focus {
       }
     }
     .ipt {
-      .flexItem(1);
+      .flexItem(auto);
       border: none;
       color: #4a5171;
     }
@@ -645,7 +695,6 @@ input:focus {
   }
 
   .application {
-    .flexItem(1);
     width: 100%;
     height: auto;
     overflow: auto;
@@ -1205,6 +1254,8 @@ input:focus {
     }
     .bottom {
       .qr {
+        position: relative;
+        z-index: 10;
         display: block;
         margin: 48px auto 0;
         width: 180px;

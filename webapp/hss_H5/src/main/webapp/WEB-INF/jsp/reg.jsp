@@ -8,7 +8,7 @@
   <meta name="viewport"
         content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
   <title>好收收-注册</title>
-  <link rel="stylesheet" href="http://static.jinkaimen.cn/hss/css/style.2.0.1.css">
+  <link rel="stylesheet" href="http://static.jinkaimen.cn/hss/css/style.2.1.1.css">
   <link rel="stylesheet" href="http://static.jinkaimen.cn/weui/weui.css">
 </head>
 <body>
@@ -18,19 +18,25 @@
 
   <h2>HAOSHOUSHOU</h2>
   <ul>
-    <li class="top flexBox">
-      <div class="logo phone"></div>
-      <input type="number" placeholder="请输入手机号" id="mobile">
+    <li class="top fly_wing_item">
+      <div class="main">
+        <input class="inner" type="number" placeholder="请输入手机号" id="mobile">
+      </div>
+      <div class="logo phone left"></div>
 
-      <div class="btn" id="sendCode">发送验证码</div>
+      <div class="btn right" id="sendCode">发送验证码</div>
     </li>
-    <li class="bottom flexBox">
-      <div class="logo message"></div>
-      <input type="number" placeholder="请输入验证码" id="code">
+    <li class="bottom fly_wing_item_nr">
+      <div class="main">
+        <input class="inner" type="number" placeholder="请输入验证码" id="code">
+      </div>
+      <div class="logo message left"></div>
     </li>
-    <li class="bottom flexBox" id="invite" style="display:none;">
-      <div class="logo invite"></div>
-      <input style="height:49px;" type="text" placeholder="邀请人注册手机号或邀请码" id="inviteCode" value="${inviteCode}">
+    <li class="bottom fly_wing_item_nr" id="invite" style="display:none;">
+      <div class="main">
+        <input class="inner" type="text" placeholder="邀请人注册手机号或邀请码" id="inviteCode" value="${inviteCode}">
+      </div>
+      <div class="logo invite left"></div>
     </li>
   </ul>
   <div class="reg">
