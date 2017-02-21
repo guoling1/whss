@@ -28,7 +28,7 @@ public interface SendMsgService {
     void sendAuditThroughMessage(String result, Date TransitTime,String touser);
 
     /**
-     * 审核通过推送
+     * 审核不通过推送
      */
     void sendAuditNoThroughMessage(String name, Date TransitTime, String toUsers);
 }

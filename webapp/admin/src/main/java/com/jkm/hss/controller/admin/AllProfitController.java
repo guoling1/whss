@@ -49,7 +49,7 @@ public class AllProfitController extends BaseController {
             req.setEndTime(sdf.format(rightNow.getTime()));
         }
         List<CompanyProfitResponse> list = allProfitService.selectCompanyProfit(req);
-        if (list==null){
+        if (list.size()==0){
             return CommonResponse.simpleResponse(-1,"未查询到相关数据");
         }
         int count = allProfitService.selectCompanyProfitCount(req);
@@ -69,11 +69,14 @@ public class AllProfitController extends BaseController {
     public CommonResponse getCompanyProfitDeatail(@RequestBody final CompanyPrifitRequest req){
         final PageModel<CompanyProfitResponse> pageModel = new PageModel<CompanyProfitResponse>(req.getPageNo(), req.getPageSize());
         req.setOffset(pageModel.getFirstIndex());
-        List<CompanyProfitResponse> res = allProfitService.selectCompanyProfitDetails(req);
-        if (res==null){
+        List<CompanyProfitResponse> list = allProfitService.selectCompanyProfitDetails(req);
+        if (list.size()==0){
             return CommonResponse.simpleResponse(-1,"未查询到相关数据");
         }
-        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", res);
+        int count = allProfitService.selectCompanyProfitDetailsCount(req);
+        pageModel.setCount(count);
+        pageModel.setRecords(list);
+        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", pageModel);
         }
     /**
      * 一级代理商分润
@@ -94,7 +97,7 @@ public class AllProfitController extends BaseController {
             req.setEndTime(sdf.format(rightNow.getTime()));
         }
         List<CompanyProfitResponse> list = allProfitService.selectOneProfit(req);
-        if (list==null){
+        if (list.size()==0){
             return CommonResponse.simpleResponse(-1,"未查询到相关数据");
         }
         int count = allProfitService.selectOneProfitCount(req);
@@ -111,13 +114,17 @@ public class AllProfitController extends BaseController {
      */
     @ResponseBody
     @RequestMapping(value = "/firstDealerDetail", method = RequestMethod.POST)
-    public CommonResponse getFirstDealerDeatail(@RequestBody final CompanyPrifitRequest req){
-
-        CompanyProfitResponse res = allProfitService.selectOneProfitDetails(req.getReceiptMoneyAccountId());
-        if (res==null){
+    public CommonResponse getFirstDealerDeatail(@RequestBody final CompanyPrifitRequest req) throws ParseException {
+        final PageModel<CompanyProfitResponse> pageModel = new PageModel<CompanyProfitResponse>(req.getPageNo(), req.getPageSize());
+        req.setOffset(pageModel.getFirstIndex());
+        List<CompanyProfitResponse> list = allProfitService.selectOneProfitDetails(req);
+        if (list.size()==0){
             return CommonResponse.simpleResponse(-1,"未查询到相关数据");
         }
-        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", res);
+        int count = allProfitService.selectOneProfitDetailsCount(req);
+        pageModel.setCount(count);
+        pageModel.setRecords(list);
+        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", pageModel);
     }
 
     /**
@@ -139,7 +146,7 @@ public class AllProfitController extends BaseController {
             req.setEndTime(sdf.format(rightNow.getTime()));
         }
         List<CompanyProfitResponse> list = allProfitService.selectTwoProfit(req);
-        if (list==null){
+        if (list.size()==0){
             return CommonResponse.simpleResponse(-1,"未查询到相关数据");
         }
         int count = allProfitService.selectTwoProfitCount(req);
@@ -155,12 +162,23 @@ public class AllProfitController extends BaseController {
      */
     @ResponseBody
     @RequestMapping(value = "/secondDealerDetail", method = RequestMethod.POST)
-    public CommonResponse getSecondDealerDeatail(@RequestBody final CompanyPrifitRequest req){
-
-        CompanyProfitResponse res = allProfitService.selectTwoProfitDetails(req.getReceiptMoneyAccountId());
-        if (res==null){
+    public CommonResponse getSecondDealerDeatail(@RequestBody final CompanyPrifitRequest req) throws ParseException {
+        final PageModel<CompanyProfitResponse> pageModel = new PageModel<CompanyProfitResponse>(req.getPageNo(), req.getPageSize());
+        req.setOffset(pageModel.getFirstIndex());
+        if(req.getEndTime()!=null&&!"".equals(req.getEndTime())){
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            Date dt = sdf.parse(req.getEndTime());
+            Calendar rightNow = Calendar.getInstance();
+            rightNow.setTime(dt);
+            rightNow.add(Calendar.DATE, 1);
+            req.setEndTime(sdf.format(rightNow.getTime()));
+        }
+        List<CompanyProfitResponse> list = allProfitService.selectTwoProfitDetails(req);
+        if (list.size()==0){
             return CommonResponse.simpleResponse(-1,"未查询到相关数据");
         }
-        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", res);
+//        pageModel.setCount(count);
+        pageModel.setRecords(list);
+        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", pageModel);
     }
 }

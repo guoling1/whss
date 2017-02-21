@@ -9,6 +9,11 @@ import lombok.Data;
 public class CompanyPrifitRequest {
 
     /**
+     * 账户id
+     */
+    private long aeceiptMoneyAccountId;
+
+    /**
      * 交易订单号
      */
     private String orderNo;

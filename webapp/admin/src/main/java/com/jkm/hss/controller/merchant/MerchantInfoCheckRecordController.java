@@ -112,7 +112,7 @@ public class MerchantInfoCheckRecordController extends BaseController {
             String toUsers = toUer.get().getOpenId();
             Date date = new Date();
             sendMsgService.sendAuditNoThroughMessage(EnumMerchantStatus.UNPASSED.getName(),date,toUsers);
-            sendMsgService.sendAuditThroughMessage(EnumMerchantStatus.PASSED.getName(),date,toUsers);
+            sendMsgService.sendAuditNoThroughMessage(EnumMerchantStatus.PASSED.getName(),date,toUsers);
             final Pair<Integer, String> verifyCode = this.smsAuthService.getVerifyCode(merchantInfo.getMobile(), EnumVerificationCodeType.MERCHANT_NO_AUDIT);
             if (1 == verifyCode.getLeft()) {
                 final Map<String, String> params = ImmutableMap.of("code", verifyCode.getRight());
@@ -130,6 +130,23 @@ public class MerchantInfoCheckRecordController extends BaseController {
         }
 
 
-
+//    @ResponseBody
+//    @RequestMapping(value = "/test",method = RequestMethod.POST)
+//    public CommonResponse<BaseEntity> test(){
+//        String mobile="13301129906";
+//        final Pair<Integer, String> verifyCode = this.smsAuthService.getVerifyCode(mobile, EnumVerificationCodeType.MERCHANT_NO_AUDIT);
+//        if (1 == verifyCode.getLeft()) {
+//            final Map<String, String> params = ImmutableMap.of("code", verifyCode.getRight());
+//            this.sendMessageService.sendMessage(SendMessageParams.builder()
+//                    .mobile(mobile)
+//                    .uid("")
+//                    .data(params)
+//                    .userType(EnumUserType.BACKGROUND_USER)
+//                    .noticeType(EnumNoticeType.MERCHANT_NO_AUDIT)
+//                    .build()
+//            );
+//        }
+//        return null;
+//    }
 
 }

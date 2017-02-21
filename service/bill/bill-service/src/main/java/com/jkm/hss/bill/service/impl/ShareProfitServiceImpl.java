@@ -3,7 +3,7 @@ package com.jkm.hss.bill.service.impl;
 import com.jkm.hss.account.entity.Account;
 import com.jkm.hss.bill.dao.ShareProfitDao;
 import com.jkm.hss.bill.entity.AccountDetailsResponse;
-import com.jkm.hss.bill.entity.JkmProfitResponse;
+import com.jkm.hss.bill.entity.JkmProfitDetailsResponse;
 import com.jkm.hss.bill.service.ShareProfitService;
 import com.jkm.hss.merchant.helper.request.JkmProfitRequest;
 import com.jkm.hss.merchant.helper.request.ProfitDetailsRequest;
@@ -46,4 +46,6 @@ public class ShareProfitServiceImpl implements ShareProfitService {
     public int selectAccountDetailsCount(ProfitDetailsRequest req) {
         return shareProfitDao.selectAccountDetailsCount(req);
     }
+
+
 }

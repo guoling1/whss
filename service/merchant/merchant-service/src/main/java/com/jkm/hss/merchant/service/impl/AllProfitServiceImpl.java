@@ -52,6 +52,22 @@ public class AllProfitServiceImpl implements AllProfitService {
     @Override
     public List<CompanyProfitResponse> selectOneProfit(CompanyPrifitRequest req) {
         List<CompanyProfitResponse> list = allProfitDao.selectOneProfit(req);
+        if (list!=null){
+            for (int i=0;i<list.size();i++){
+                if (list.get(i).getBusinessType().equals("hssPay")){
+                    list.get(i).setBusinessType(EnumSplitBusinessType.HSSPAY.getValue());
+                }
+                if (list.get(i).getBusinessType().equals("hssWithdraw")){
+                    list.get(i).setBusinessType(EnumSplitBusinessType.HSSWITHDRAW.getValue());
+                }
+                if (list.get(i).getBusinessType().equals("hssUpgrade")){
+                    list.get(i).setBusinessType(EnumSplitBusinessType.HSSPROMOTE.getValue());
+                }
+                if (list.get(i).getBusinessType().equals("hsyPay")){
+                    list.get(i).setBusinessType(EnumSplitBusinessType.HSYPAY.getValue());
+                }
+            }
+        }
         return list;
     }
 
@@ -78,12 +94,24 @@ public class AllProfitServiceImpl implements AllProfitService {
     }
 
     @Override
-    public CompanyProfitResponse selectOneProfitDetails(long receiptMoneyAccountId) {
-        return allProfitDao.selectOneProfitDetails(receiptMoneyAccountId);
+    public List<CompanyProfitResponse> selectOneProfitDetails(CompanyPrifitRequest req) {
+        List<CompanyProfitResponse> list = allProfitDao.selectOneProfitDetails(req);
+        return list;
     }
 
     @Override
-    public CompanyProfitResponse selectTwoProfitDetails(long receiptMoneyAccountId) {
-        return allProfitDao.selectTwoProfitDetails(receiptMoneyAccountId);
+    public List<CompanyProfitResponse> selectTwoProfitDetails(CompanyPrifitRequest req) {
+        List<CompanyProfitResponse> list = allProfitDao.selectTwoProfitDetails(req);
+        return list;
+    }
+
+    @Override
+    public int selectCompanyProfitDetailsCount(CompanyPrifitRequest req) {
+        return allProfitDao.selectCompanyProfitDetailsCount(req);
+    }
+
+    @Override
+    public int selectOneProfitDetailsCount(CompanyPrifitRequest req) {
+        return allProfitDao.selectOneProfitDetailsCount(req);
     }
 }
