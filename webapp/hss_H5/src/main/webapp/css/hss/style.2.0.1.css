@@ -1879,7 +1879,7 @@ input:focus {
 #transaction .list .group .bottom .right {
   float: right;
   font-size: 10px;
-  color: #f94949;
+  color: #333333;
 }
 #transactionDetail {
   width: 100%;

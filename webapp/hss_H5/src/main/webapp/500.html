@@ -1,11 +1,11 @@
-<!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <link rel="stylesheet" href="/css/not-fund.css">
-    <title>500</title>
+    <title>好收收</title>
+    <link rel="stylesheet" href="http://static.jinkaimen.cn/hss/css/style.2.0.1.css">
+    <link rel="stylesheet" href="http://static.jinkaimen.cn/weui/weui.css">
     <script>
         var _hmt = _hmt || [];
         (function () {
@@ -17,13 +17,16 @@
     </script>
 </head>
 <body>
-<div class="not-fund-wrap">
-    <div class="not-fund-img">
-        <span>${errorMsg}</span>
-        <img src="/imgs/404.png">
-    </div>
-    <p>您访问的页面出现了问题</p>
-    <a href="/index" class="go-index">去首页看看</a>
+
+<div id="prompt">
+    <img src="http://static.jinkaimen.cn/hss/assets/hss-prompt.png" alt="">
+
+    <p>${errorMsg}</p>
+
+    <div class="btn" onclick="WeixinJSBridge.call('closeWindow')">返回</div>
 </div>
+
 </body>
+<script src="http://static.jinkaimen.cn/vendor/vendor.1.0.1.min.js"></script>
+<script src="http://static.jinkaimen.cn/hss/2.0.1/common.min.js"></script>
 </html>

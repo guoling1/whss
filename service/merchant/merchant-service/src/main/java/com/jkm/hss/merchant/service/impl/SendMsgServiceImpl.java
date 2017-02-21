@@ -197,5 +197,105 @@ public class SendMsgServiceImpl implements SendMsgService {
         }
     }
 
+    @Override
+    public void sendAuditThroughMessage(String result, Date TransitTime,String touser) {
+
+        Map<String, String> ret = new HashMap<String, String>();
+        String turl = "https://api.weixin.qq.com/cgi-bin/message/template/send?access_token="+ WxPubUtil.getToken();
+
+        final HttpClient client = new DefaultHttpClient();
+        final HttpPost method = new HttpPost(turl);
+        JsonParser jsonparer = new JsonParser();// 初始化解析json格式的对象
+        try {
+            final DateFormat format=new SimpleDateFormat("yyyy/MM/dd HH:mm");
+            JSONObject jsonParam = new JSONObject();
+            JSONObject jo = new JSONObject();
+            final JSONObject first =new JSONObject();
+            first.put("value", "恭喜您，商户资料审核通过，您可以直接扫描收款牌上的二维码收款，也可以从“好收收”公众号发起收款。");
+            jo.put("first", first);
+            final JSONObject keyword1 =new JSONObject();
+            keyword1.put("value", result);
+            jo.put("keyword1", keyword1);
+            final JSONObject keyword2 =new JSONObject();
+            keyword2.put("value", format.format(TransitTime));
+            jo.put("keyword2", keyword2);
+            JSONObject remark = new JSONObject();
+            remark.put("value", "点击收款");
+            jo.put("remark", remark);
+            jsonParam.put("touser", touser);
+            jsonParam.put("template_id", "ATdpk_M-d_PVbSE3IFIA5qso4L7z03S_45ewPNHBcFI");
+            jsonParam.put("data", jo);
+            method.setEntity(new StringEntity(jsonParam.toString(), "UTF-8"));
+            HttpResponse res = client.execute(method);
+            String responseContent = null; // 响应内容
+            HttpEntity entity = res.getEntity();
+            responseContent = EntityUtils.toString(entity, "UTF-8");
+            JsonObject json = jsonparer.parse(responseContent).getAsJsonObject();
+            if (res.getStatusLine().getStatusCode() == HttpStatus.SC_OK)
+            {
+                log.info("审核成功推送:{}",json.toString());
+            }
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        finally
+        {
+            // 关闭连接 ,释放资源
+            client.getConnectionManager().shutdown();
+        }
+    }
+
+
+    @Override
+    public void sendAuditNoThroughMessage(String result, Date TransitTime,String touser) {
+
+        Map<String, String> ret = new HashMap<String, String>();
+        String turl = "https://api.weixin.qq.com/cgi-bin/message/template/send?access_token="+ WxPubUtil.getToken();
+
+        final HttpClient client = new DefaultHttpClient();
+        final HttpPost method = new HttpPost(turl);
+        JsonParser jsonparer = new JsonParser();// 初始化解析json格式的对象
+        try {
+            final DateFormat format=new SimpleDateFormat("yyyy/MM/dd HH:mm");
+            JSONObject jsonParam = new JSONObject();
+            JSONObject jo = new JSONObject();
+            final JSONObject first =new JSONObject();
+            first.put("value", "抱歉，您的资料审核未通过。");
+            jo.put("first", first);
+            final JSONObject keyword1 =new JSONObject();
+            keyword1.put("value", result);
+            jo.put("keyword1", keyword1);
+            final JSONObject keyword2 =new JSONObject();
+            keyword2.put("value", format.format(TransitTime));
+            jo.put("keyword2", keyword2);
+            JSONObject remark = new JSONObject();
+            remark.put("value", "点击重新提交资料");
+            jo.put("remark", remark);
+            jsonParam.put("touser", touser);
+            jsonParam.put("template_id", "IDgr-Nr_ADa5yo0bLAPyn6wteVJnWNcVHNeIK-gvfI75Y");
+            jsonParam.put("data", jo);
+            method.setEntity(new StringEntity(jsonParam.toString(), "UTF-8"));
+            HttpResponse res = client.execute(method);
+            String responseContent = null; // 响应内容
+            HttpEntity entity = res.getEntity();
+            responseContent = EntityUtils.toString(entity, "UTF-8");
+            JsonObject json = jsonparer.parse(responseContent).getAsJsonObject();
+            if (res.getStatusLine().getStatusCode() == HttpStatus.SC_OK)
+            {
+                log.info("审核不成功推送:{}",json.toString());
+            }
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        finally
+        {
+            // 关闭连接 ,释放资源
+            client.getConnectionManager().shutdown();
+        }
+    }
 
 }

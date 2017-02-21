@@ -210,7 +210,7 @@
         vm.$data.fromName = from.name;
         if(vm.$data.fromName=='StoreAuditHSY'){
           vm.$data.activeName='second';
-          vm.$data.url='/admin/hsyMerchantList/getMerchantList'
+          vm.$data.url='/admin/hsyMerchantList/getCheckPending'
         }else {
           vm.$data.activeName='first';
           vm.$data.url='/admin/query/getAll'
@@ -301,7 +301,7 @@
         if(event.target.innerHTML=="好收收"){
           this.$data.url='/admin/query/getAll'
         }else if(event.target.innerHTML=="好收银"){
-          this.$data.url='/admin/hsyMerchantList/getMerchantList'
+          this.$data.url='/admin/hsyMerchantList/getCheckPending'
         }
         this.$http.post(this.$data.url,this.$data.query)
           .then(function (res) {

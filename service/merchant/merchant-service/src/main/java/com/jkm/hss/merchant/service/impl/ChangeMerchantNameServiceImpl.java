@@ -1,6 +1,7 @@
 package com.jkm.hss.merchant.service.impl;
 
 import com.jkm.hss.merchant.dao.ChangeMerchantNameDao;
+import com.jkm.hss.merchant.entity.MerchantInfo;
 import com.jkm.hss.merchant.service.ChangeMerchantNameService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,11 @@ public class ChangeMerchantNameServiceImpl implements ChangeMerchantNameService 
     @Override
     public void updatChangeName(long id,String merchantChangeName) {
         changeMerchantNameDao.updatChangeName(id,merchantChangeName);
+    }
+
+    @Override
+    public MerchantInfo selectChangeName(long id) {
+        return changeMerchantNameDao.selectChangeName(id);
     }
 
 }

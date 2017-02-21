@@ -7,4 +7,7 @@
 		set merchant_change_name = #{merchantChangeName} WHERE id = #{id}
 	</update>
 
+	<select id="selectChangeName" resultType="com.jkm.hss.merchant.entity.MerchantInfo">
+		SELECT merchant_change_name from tb_merchant_info where id=#{id}
+	</select>
 </mapper>

@@ -132,7 +132,7 @@ public class MerchantInfo extends BaseEntity{
     /**
      * 商户更改商户名
      */
-    private String merchantChangeName;
+//    private String merchantChangeName;
 
     /**
      * 合伙人级别

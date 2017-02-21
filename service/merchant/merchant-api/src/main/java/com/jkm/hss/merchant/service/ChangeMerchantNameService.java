@@ -1,5 +1,7 @@
 package com.jkm.hss.merchant.service;
 
+import com.jkm.hss.merchant.entity.MerchantInfo;
+
 /**
  * Created by Administrator on 2017/2/18.
  */
@@ -11,5 +13,10 @@ public interface ChangeMerchantNameService {
      */
     void updatChangeName(long id,String merchantChangeName);
 
-
+    /**
+     * 查询更改后的名称
+     * @param id
+     * @return
+     */
+    MerchantInfo selectChangeName(long id);
 }

@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jkm.hss.merchant.dao.AllProfitDao">
+
+
+	<!-- 查询公司分润 -->
+	<select id="selectCompanyProfit" resultType="com.jkm.hss.merchant.helper.response.CompanyProfitResponse">
+		SELECT a.*,b.id AS accId FROM tb_split_account_record a
+		LEFT JOIN tb_account b ON a.receipt_money_account_id=b.id
+		WHERE b.id in (1,2,11,48,49)
+	<if test="startTime!=null and startTime!=''">
+		AND a.split_date <![CDATA[ >= ]]> #{startTime}
+	</if>
+
+	<if test="endTime!=null and endTime!=''">
+		AND a.split_date <![CDATA[ <= ]]> #{endTime}
+	</if>
+
+	<if test="businessType != null and businessType != ''">
+		AND a.business_type = #{businessType}
+	</if>
+		ORDER BY a.split_date DESC LIMIT #{offset},#{pageSize}
+	</select>
+
+	<!-- 查询公司分润总数 -->
+	<select id="selectCompanyProfitCount" resultType="java.lang.Integer">
+		SELECT COUNT(a.receipt_money_account_id) FROM tb_split_account_record a
+		LEFT JOIN tb_account b ON a.receipt_money_account_id=b.id
+		WHERE b.id in (1,2,11,48,49)
+		<if test="startTime!=null and startTime!=''">
+			AND a.split_date <![CDATA[ >= ]]> #{startTime}
+		</if>
+
+		<if test="endTime!=null and endTime!=''">
+			AND a.split_date <![CDATA[ <= ]]> #{endTime}
+		</if>
+
+		<if test="businessType != null and businessType != ''">
+			AND a.business_type = #{businessType}
+		</if>
+	</select>
+
+	<!-- 查询一级代理商分润 -->
+	<select id="selectOneProfit" resultType="com.jkm.hss.merchant.helper.response.CompanyProfitResponse">
+		SELECT a.*,b.proxy_name,b.mark_code FROM tb_split_account_record a
+		LEFT JOIN tb_dealer b ON a.receipt_money_account_id=b.account_id
+		WHERE b.`level`=1 ORDER BY a.split_date DESC LIMIT #{offset},#{pageSize}
+	</select>
+
+	<!-- 查询一级代理商分润总数 -->
+	<select id="selectOneProfitCount" resultType="java.lang.Integer">
+		SELECT COUNT(a.id) FROM tb_split_account_record a
+		LEFT JOIN tb_dealer b ON a.receipt_money_account_id=b.account_id
+		WHERE b.`level`=1
+	</select>
+
+	<!-- 查询二级代理商分润-->
+	<select id="selectTwoProfit" resultType="com.jkm.hss.merchant.helper.response.CompanyProfitResponse">
+		SELECT a.* FROM tb_split_account_record a
+		LEFT JOIN tb_dealer b ON a.receipt_money_account_id=b.account_id
+		WHERE b.`level`=2 ORDER BY a.split_date DESC LIMIT #{offset},#{pageSize}
+	</select>
+
+	<!-- 查询二级代理商分润总数 -->
+	<select id="selectTwoProfitCount" resultType="java.lang.Integer">
+		SELECT COUNT(a.id) FROM tb_split_account_record a
+		LEFT JOIN tb_dealer b ON a.receipt_money_account_id=b.account_id
+		WHERE b.`level`=2
+	</select>
+
+	<!-- 查询公司分润详情 -->
+	<select id="selectCompanyProfitDetails" resultType="com.jkm.hss.merchant.helper.response.CompanyProfitResponse">
+		SELECT a.*,b.id AS accId FROM tb_split_account_record a
+		LEFT JOIN tb_account b ON a.receipt_money_account_id=b.id
+		WHERE b.id=#{accId}
+	</select>
+
+	<!-- 查询一级代理商分润详情 -->
+	<select id="selectOneProfitDetails" resultType="com.jkm.hss.merchant.helper.response.CompanyProfitResponse">
+		SELECT a.* FROM tb_split_account_record a
+		LEFT JOIN tb_dealer b ON a.receipt_money_account_id=b.account_id
+		WHERE b.`level`=1 AND a.receipt_money_account_id=#{receiptMoneyAccountId}
+	</select>
+
+	<!-- 查询二级代理商分润详情 -->
+	<select id="selectTwoProfitDetails" resultType="com.jkm.hss.merchant.helper.response.CompanyProfitResponse">
+		SELECT a.* FROM tb_split_account_record a
+		LEFT JOIN tb_dealer b ON a.receipt_money_account_id=b.account_id
+		WHERE b.`level`=2 AND a.receipt_money_account_id=#{receiptMoneyAccountId}
+	</select>
+
+</mapper>

@@ -35,6 +35,7 @@
     <div class="cont">
       <ul class="window" id="windows">
         <li id="profits">
+          <div class="total">只有您的费率比邀请的好友低的时候才有分润哦</div>
           <%-- 以下列表内容动态添加 --%>
         </li>
         <li id="friends">

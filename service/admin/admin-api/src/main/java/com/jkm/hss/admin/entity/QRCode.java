@@ -6,6 +6,8 @@ import com.jkm.hss.admin.enums.EnumQRCodeDistributionStatus;
 import lombok.Data;
 import org.apache.commons.codec.digest.DigestUtils;
 
+import java.util.Date;
+
 /**
  * Created by yulong.zhang on 2016/11/25.
  *
@@ -81,6 +83,16 @@ public class QRCode extends BaseEntity {
      * {@link com.jkm.hss.admin.enums.EnumQRCodeSysType}
      */
     private String sysType;
+    /**
+     * 二维码类型
+     * {@link com.jkm.hss.admin.enums.EnumQRCodeDistributeType}
+     */
+//    private int qrType;
+
+    /**
+     * 激活时间
+     */
+//    private Date activateTime;
 
     /**
      * 获取签名

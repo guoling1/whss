@@ -54,9 +54,9 @@ public class CodeController extends BaseController {
         final String sign = request.getParameter("sign");
         log.info("scan code[{}], sign is [{}]", code, sign);
         final Optional<QRCode> qrCodeOptional = this.qrCodeService.getByCode(code);
-        Preconditions.checkState(qrCodeOptional.isPresent(), "QRCode not exist");
+        Preconditions.checkState(qrCodeOptional.isPresent(), "二维码不存在");
         final QRCode qrCode = qrCodeOptional.get();
-        Preconditions.checkState(qrCode.isCorrectSign(sign), "sign is not correct");
+        Preconditions.checkState(qrCode.isCorrectSign(sign), "非法参数");
         final long merchantId = qrCode.getMerchantId();
         final String agent = request.getHeader("User-Agent").toLowerCase();
         log.info("User-Agent is [{}]",agent);
@@ -91,16 +91,17 @@ public class CodeController extends BaseController {
                         }
                     }else{
                         if(openId.equals(openIdTemp)){
+                            log.info("同一个人填第一步资料");
                             log.info("code[{}], merchant is in init; go to fill profile", code);
                             url = "/sqb/addInfo";
                         }else{
-                            log.info("code[{}], merchant is not pass", code);
-                            url = "/sqb/unFinishedPrompt";
+                            model.addAttribute("message", "该商户未提交审核资料\n请使用其他方式向商户付款");
+                            return "/message";
                         }
                     }
                 }else{
-                    log.info("code[{}], merchant is not pass", code);
-                    url = "/sqb/unFinishedPrompt";
+                    model.addAttribute("message", "注册收款商户请使用“微信”扫码");
+                    return "/message";
                 }
             } else if (EnumMerchantStatus.ONESTEP.getId() == merchantInfo.getStatus()) { // 初始化-->图片
                 if (agent.indexOf("micromessenger") > -1) {//weixin
@@ -122,16 +123,17 @@ public class CodeController extends BaseController {
                         }
                     }else{
                         if(openId.equals(openIdTemp)){
+                            log.info("同一个人填第二步资料");
                             log.info("code[{}], merchant is in one step; go to fill pic", code);
                             url = "/sqb/addNext";
                         }else{
-                            log.info("code[{}], merchant is not pass", code);
-                            url = "/sqb/unFinishedPrompt";
+                            model.addAttribute("message", "该商户未提交审核资料\n请使用其他方式向商户付款");
+                            return "/message";
                         }
                     }
                 }else{
-                    log.info("code[{}], merchant is not pass", code);
-                    url = "/sqb/unFinishedPrompt";
+                    model.addAttribute("message", "注册收款商户请使用“微信”扫码");
+                    return "/message";
                 }
 
             } else if (EnumMerchantStatus.REVIEW.getId() == merchantInfo.getStatus()) {//待审核
@@ -154,16 +156,17 @@ public class CodeController extends BaseController {
                         }
                     }else{
                         if(openId.equals(openIdTemp)){
+                            log.info("同一个人资料待审核");
                             log.info("code[{}], merchant is in due audit", code);
                             url = "/sqb/prompt";
                         }else{
-                            log.info("code[{}], merchant is not pass", code);
-                            url = "/sqb/unFinishedPrompt";
+                            model.addAttribute("message", "该商户未提交审核资料\n请使用其他方式向商户付款");
+                            return "/message";
                         }
                     }
                 }else{
-                    log.info("code[{}], merchant is not pass", code);
-                    url = "/sqb/unFinishedPrompt";
+                    model.addAttribute("message", "注册收款商户请使用“微信”扫码");
+                    return "/message";
                 }
             } else if (EnumMerchantStatus.UNPASSED.getId() == merchantInfo.getStatus()) {//审核未通过
                 if (agent.indexOf("micromessenger") > -1) {//weixin
@@ -185,16 +188,17 @@ public class CodeController extends BaseController {
                         }
                     }else{
                         if(openId.equals(openIdTemp)){
+                            log.info("同一个人资料未审核通过");
                             log.info("code[{}], merchant is not pass", code);
                             url = "/sqb/prompt";
                         }else{
-                            log.info("code[{}], merchant is not pass", code);
-                            url = "/sqb/unFinishedPrompt";
+                            model.addAttribute("message", "该商户未提交审核资料\n请使用其他方式向商户付款");
+                            return "/message";
                         }
                     }
                 }else{
-                    log.info("code[{}], merchant is not pass", code);
-                    url = "/sqb/unFinishedPrompt";
+                    model.addAttribute("message", "注册收款商户请使用“微信”扫码");
+                    return "/message";
                 }
             } else if (EnumMerchantStatus.PASSED.getId() == merchantInfo.getStatus()||EnumMerchantStatus.FRIEND.getId() == merchantInfo.getStatus()) {//审核通过
                 model.addAttribute("name", merchantInfo.getMerchantName());
@@ -212,9 +216,13 @@ public class CodeController extends BaseController {
                 log.error("code[{}] is activate, but merchant[{}] is disabled", code, merchantId);
             }
         } else {//注册
-            Preconditions.checkState(agent.indexOf("micromessenger") > -1, "please register in weixin");
-            model.addAttribute("code", code);
-            url =  "/sqb/reg";
+            if(agent.indexOf("micromessenger") > -1){
+                model.addAttribute("code", code);
+                url =  "/sqb/reg";
+            }else{
+                model.addAttribute("message", "注册收款商户请使用“微信”扫码");
+                return "/message";
+            }
         }
         return "redirect:"+url;
     }
