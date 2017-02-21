@@ -10,6 +10,7 @@ import com.jkm.base.common.util.CookieUtil;
 import com.jkm.base.common.util.ValidateUtils;
 import com.jkm.hss.admin.entity.*;
 import com.jkm.hss.admin.enums.EnumQRCodeDistributeType;
+import com.jkm.hss.admin.helper.requestparam.AdminUserListRequest;
 import com.jkm.hss.admin.helper.requestparam.AdminUserRequest;
 import com.jkm.hss.admin.helper.requestparam.DistributeQrCodeRequest;
 import com.jkm.hss.admin.helper.responseparam.BossDistributeQRCodeRecordResponse;
@@ -996,20 +997,13 @@ public class AdminController extends BaseController {
     }
     /**
      * 用户列表
-     * @param adminUser
+     * @param adminUserListRequest
      * @return
      */
     @ResponseBody
     @RequestMapping(value = "/userList", method = RequestMethod.POST)
-    public CommonResponse userList (@RequestBody AdminUser adminUser) {
-        if(adminUser.getId()<=0){
-            return CommonResponse.simpleResponse(-1, "该用户不存在");
-        }
-        Optional<AdminUser> adminUserOptional = this.adminUserService.getAdminUserById(adminUser.getId());
-        if(!adminUserOptional.isPresent()){
-            return CommonResponse.simpleResponse(-1, "该用户不存在");
-        }
-        adminUserService.update(adminUser);
-        return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "修改成功");
+    public CommonResponse userList (@RequestBody AdminUserListRequest adminUserListRequest) {
+        PageModel<AdminUser> adminUserPageModel = adminUserService.userList(adminUserListRequest);
+        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "修改成功",adminUserPageModel);
     }
 }
