@@ -14,12 +14,12 @@ public enum EnumPayChannelSign {
     /**
      * 微信扫码
      */
-    YG_WEIXIN(101, "sm_wechat", "微信", "阳光微信", EnumUpperChannel.SAOMI),
+    YG_WECHAT(101, "sm_wechat", "微信", "阳光微信", EnumUpperChannel.SAOMI),
 
     /**
      * 支付宝扫码
      */
-    YG_ZHIFUBAO(102, "sm_alipay", "支付宝", "阳光支付宝", EnumUpperChannel.SAOMI),
+    YG_ALIPAY(102, "sm_alipay", "支付宝", "阳光支付宝", EnumUpperChannel.SAOMI),
 
     /**
      * 快捷支付

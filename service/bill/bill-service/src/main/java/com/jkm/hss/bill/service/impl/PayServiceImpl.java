@@ -120,7 +120,7 @@ public class PayServiceImpl implements PayService {
         order.setAppId(EnumAppType.HSS.getId());
         order.setTradeType(EnumTradeType.PAY.getId());
         order.setServiceType(EnumServiceType.APPRECIATION_PAY.getId());
-        order.setPayChannelSign(EnumPayChannelSign.YG_WEIXIN.getId());
+        order.setPayChannelSign(EnumPayChannelSign.YG_WECHAT.getId());
         order.setPayer(merchant.getAccountId());
         order.setPayee(AccountConstants.JKM_ACCOUNT_ID);
         order.setGoodsName(merchant.getMerchantName());
@@ -132,7 +132,7 @@ public class PayServiceImpl implements PayService {
         this.orderService.add(order);
         //请求支付中心下单
         final PaymentSdkPlaceOrderResponse placeOrderResponse = this.requestPlaceOrder(order,
-                EnumPayChannelSign.YG_WEIXIN.getId(), merchant, businessReturnUrl);
+                EnumPayChannelSign.YG_WECHAT.getId(), merchant, businessReturnUrl);
         return this.handlePlaceOrder(placeOrderResponse, order);
     }
 
@@ -833,8 +833,8 @@ public class PayServiceImpl implements PayService {
         placeOrderRequest.setMerName(merchant.getMerchantName());
         placeOrderRequest.setMerNo(merchant.getMarkCode());
         placeOrderRequest.setTotalAmount(order.getTradeAmount().toPlainString());
-        if (EnumPayChannelSign.YG_WEIXIN.getId() == channel
-                || EnumPayChannelSign.YG_ZHIFUBAO.getId() == channel) {
+        if (EnumPayChannelSign.YG_WECHAT.getId() == channel
+                || EnumPayChannelSign.YG_ALIPAY.getId() == channel) {
             placeOrderRequest.setTradeType("JSAPI");
         } else if (EnumPayChannelSign.YG_UNIONPAY.getId() == channel) {
             placeOrderRequest.setTradeType("EPOS");

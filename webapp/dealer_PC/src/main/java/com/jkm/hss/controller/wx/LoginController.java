@@ -741,7 +741,7 @@ public class LoginController extends BaseController {
             model.addAttribute("createTime",time.format(orderRecord.getCreateTime()));
             Pair<String,String> pair = payOf(0,orderRecord.getPayResult());
             model.addAttribute("status",pair.getRight());
-            if(orderRecord.getPayChannel()== EnumPayChannelSign.YG_WEIXIN.getId()||orderRecord.getPayChannel()==EnumPayChannelSign.YG_ZHIFUBAO.getId()){
+            if(orderRecord.getPayChannel()== EnumPayChannelSign.YG_WECHAT.getId()||orderRecord.getPayChannel()==EnumPayChannelSign.YG_ALIPAY.getId()){
                 model.addAttribute("payWay","扫码支付");
             }
             if(orderRecord.getPayChannel()==EnumPayChannelSign.YG_UNIONPAY.getId()){

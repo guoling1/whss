@@ -64,12 +64,12 @@ public class UpgradeController extends BaseController {
         List<UpgradeRules> upgradeRulesList = new ArrayList<UpgradeRules>();
         UpgradeRules upgradeRules = new UpgradeRules();
         for(int i=0;i<productChannelDetails.size();i++){
-            if(EnumPayChannelSign.YG_WEIXIN.getId()==productChannelDetails.get(i).getChannelTypeSign()){
+            if(EnumPayChannelSign.YG_WECHAT.getId()==productChannelDetails.get(i).getChannelTypeSign()){
                 BigDecimal weixinRate = productChannelDetails.get(i).getProductMerchantPayRate();
                 BigDecimal b1 = new BigDecimal(100);
                 upgradeRules.setWeixinRate(weixinRate.multiply(b1));
             }
-            if(EnumPayChannelSign.YG_ZHIFUBAO.getId()==productChannelDetails.get(i).getChannelTypeSign()){
+            if(EnumPayChannelSign.YG_ALIPAY.getId()==productChannelDetails.get(i).getChannelTypeSign()){
                 BigDecimal alipayRate = productChannelDetails.get(i).getProductMerchantPayRate();
                 BigDecimal b1 = new BigDecimal(100);
                 upgradeRules.setAlipayRate(alipayRate.multiply(b1));

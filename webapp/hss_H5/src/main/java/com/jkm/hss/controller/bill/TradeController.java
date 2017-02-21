@@ -98,8 +98,8 @@ public class TradeController extends BaseController {
         if(StringUtils.isBlank(merchantInfo.get().getMerchantName())){
             return CommonResponse.simpleResponse(-1, "缺失商户名称");
         }
-        if (EnumPayChannelSign.YG_WEIXIN.getId() != payRequest.getPayChannel()
-                && EnumPayChannelSign.YG_ZHIFUBAO.getId() != payRequest.getPayChannel()
+        if (EnumPayChannelSign.YG_WECHAT.getId() != payRequest.getPayChannel()
+                && EnumPayChannelSign.YG_ALIPAY.getId() != payRequest.getPayChannel()
                 && EnumPayChannelSign.YG_UNIONPAY.getId() != payRequest.getPayChannel()) {
             return CommonResponse.simpleResponse(-1, "支付方式错误");
         }

@@ -79,8 +79,8 @@ public class TradeController extends BaseController {
         if (account.getAvailable().compareTo(new BigDecimal(withdrawRequest.getAmount())) < 0) {
             return CommonResponse.simpleResponse(-1, "可用余额不足");
         }
-        if (EnumPayChannelSign.YG_WEIXIN.getId() != withdrawRequest.getChannel()
-                && EnumPayChannelSign.YG_ZHIFUBAO.getId() != withdrawRequest.getChannel()
+        if (EnumPayChannelSign.YG_WECHAT.getId() != withdrawRequest.getChannel()
+                && EnumPayChannelSign.YG_ALIPAY.getId() != withdrawRequest.getChannel()
                 && EnumPayChannelSign.YG_UNIONPAY.getId() != withdrawRequest.getChannel()) {
             return CommonResponse.simpleResponse(-1, "提现方式错误");
         }

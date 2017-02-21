@@ -680,7 +680,7 @@ public class OrderRecordServiceImpl implements OrderRecordService {
         paramsMap.put("subMerNo", req.getSubMerNo());       //下游商户号
         paramsMap.put("appId","wap_hss");
         paramsMap.put("totalFee", orderRecord.getTotalFee().toString());         //总金额
-        if(req.getPayChannel()==EnumPayChannelSign.YG_WEIXIN.getId()||req.getPayChannel()==EnumPayChannelSign.YG_ZHIFUBAO.getId()){
+        if(req.getPayChannel()==EnumPayChannelSign.YG_WECHAT.getId()||req.getPayChannel()==EnumPayChannelSign.YG_ALIPAY.getId()){
             paramsMap.put("tradeType", "JSAPI");       //交易类型   JSAPI，NATIVE，APP，WAP,EPOS
         }
         if(req.getPayChannel()==EnumPayChannelSign.YG_UNIONPAY.getId()){

@@ -457,7 +457,7 @@ public class DealerController extends BaseController {
                     return CommonResponse.simpleResponse(-1, "上级代理信息有误");
                 }
                 DealerChannelRate dealerChannelRate = dealerChannelRateOptional.get();
-                if(channes.getChannelType()== EnumPayChannelSign.YG_WEIXIN.getId()){
+                if(channes.getChannelType()== EnumPayChannelSign.YG_WECHAT.getId()){
                     final BigDecimal withdrawSettleFee = new BigDecimal(channes.getWithdrawSettleFee());
                     if (!(withdrawSettleFee.compareTo(dealerChannelRate.getDealerWithdrawFee()) >= 0
                             && withdrawSettleFee.compareTo(dealerChannelRate.getDealerMerchantWithdrawFee()) <= 0)) {
@@ -470,7 +470,7 @@ public class DealerController extends BaseController {
                         return CommonResponse.simpleResponse(-1, "微信结算费率错误:必须大于一级的小于商户的");
                     }
                 }
-                if(channes.getChannelType()== EnumPayChannelSign.YG_ZHIFUBAO.getId()){
+                if(channes.getChannelType()== EnumPayChannelSign.YG_ALIPAY.getId()){
                     final BigDecimal withdrawSettleFee = new BigDecimal(channes.getWithdrawSettleFee());
                     if (!(withdrawSettleFee.compareTo(dealerChannelRate.getDealerWithdrawFee()) >= 0
                             && withdrawSettleFee.compareTo(dealerChannelRate.getDealerMerchantWithdrawFee()) <= 0)) {
