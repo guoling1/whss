@@ -58,6 +58,7 @@ public class AdminUserServiceImpl implements AdminUserService {
         adminUser.setPassword(password);
         adminUser.setStatus(EnumAdminUserStatus.NORMAL.getCode());
         adminUser.setMobile(AdminUserSupporter.encryptMobile(adminUser.getMobile()));
+        adminUser.setIdCard(AdminUserSupporter.encryptIdenrity(adminUser.getIdCard()));
         this.adminUserDao.insert(adminUser);
     }
 

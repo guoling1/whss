@@ -41,4 +41,19 @@ public interface AdminUserDao {
      */
     AdminUser selectByUsername(@Param("username") String username);
 
+    /**
+     * 修改密码
+     *
+     * @param adminUser
+     * @return
+     */
+    int updatePwd(AdminUser adminUser);
+    /**
+     * 禁用或启用
+     *
+     * @param adminUser
+     * @return
+     */
+    int enableOrDisable(AdminUser adminUser);
+
 }
