@@ -12,6 +12,16 @@ import java.util.Date;
 public class CompanyProfitResponse {
 
     /**
+     * 代理商编号
+     */
+    private String markCode;
+
+    /**
+     * 一级代理商名称
+     */
+    private String proxyName;
+
+    /**
      * 账户id
      */
     private long accId;

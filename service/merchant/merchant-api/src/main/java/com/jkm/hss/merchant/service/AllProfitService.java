@@ -54,10 +54,10 @@ public interface AllProfitService {
 
     /**
      * 公司分润详情
-     * @param accId
+     * @param req
      * @return
      */
-    CompanyProfitResponse selectCompanyProfitDetails(long accId);
+    List<CompanyProfitResponse> selectCompanyProfitDetails(CompanyPrifitRequest req);
 
     /**
      * 一级代理商分润详情

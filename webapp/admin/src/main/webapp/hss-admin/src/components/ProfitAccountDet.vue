@@ -138,7 +138,7 @@
     methods: {
       //格式化时间
       changeTime: function (row, column) {
-        var val=row.createTime;
+        var val=row.changeTime;
         if(val==''||val==null){
           return ''
         }else {
@@ -159,6 +159,7 @@
         }
       },
       search(){
+          this.currentPage = 1;
         this.$data.query.pageNo = 1;
         this.$data.loading = true;
         this.$http.post('/admin/queryJkmProfit/accountDetails', this.$data.query)
@@ -258,6 +259,9 @@
               this.$data.query.endTime = str;
             }
           }
+        }else {
+          this.$data.query.startTime = '';
+          this.$data.query.endTime = '';
         }
       }
     }

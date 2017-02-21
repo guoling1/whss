@@ -75,10 +75,24 @@
               </el-col>
               <el-col :span="8">
                 <div class="grid-content bg-purple-light" style="margin: 0 15px;">
-                  <el-button type="text" @click="resetPw" v-if="!isShow">修改密码</el-button>
+                  <!--<el-button type="text" @click="resetPw" v-if="!isShow">修改密码</el-button>-->
+                  <el-button type="text" @click="dialogFormVisible = true">修改密码</el-button>
                 </div>
               </el-col>
             </el-row>
+            <!--修改密码-->
+            <el-dialog title="修改密码" v-model="dialogFormVisible">
+              <el-form>
+                <el-form-item label="新密码" width="120">
+                  <el-input type="password" v-model="password" auto-complete="off"></el-input>
+                </el-form-item>
+              </el-form>
+              <div slot="footer" class="dialog-footer">
+                <el-button @click="dialogFormVisible = false">取 消</el-button>
+                <el-button type="primary" @click="resetPw">确 定</el-button>
+              </div>
+            </el-dialog>
+
             <el-row type="flex" class="row-bg" justify="center">
               <el-col :span="4">
                 <div class="alignRight">联系邮箱:</div>
@@ -255,6 +269,8 @@
     name: 'agentAddBase',
     data () {
       return {
+        dialogFormVisible: false,
+        password:'',
         provinces: '',
         citys: '',
         province: '',
@@ -336,7 +352,24 @@
     methods: {
       //修改密码
       resetPw:function() {
-        this.$prompt('请输入新密码', '修改密码', {
+        this.$http.post('/admin/dealer/updatePwd',{dealerId:this.$route.query.id,loginPwd:this.$data.password})
+          .then(function (res) {
+            this.$data.dialogFormVisible = false;
+            this.$data.password = '';
+            this.$message({
+              showClose: true,
+              type: 'success',
+              message: '修改成功'
+            });
+          })
+          .catch(function (err) {
+            this.$message({
+              showClose: true,
+              message: err.statusMessage,
+              type: 'error'
+            })
+          })
+        /*this.$prompt('请输入新密码', '修改密码', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
         }).then(({ value }) => {
@@ -361,7 +394,7 @@
             type: 'info',
             message: '取消修改'
           });
-        });
+        });*/
       },
       //创建一级代理
       create: function () {
