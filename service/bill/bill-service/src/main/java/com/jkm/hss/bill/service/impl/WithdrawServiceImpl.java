@@ -129,7 +129,7 @@ public class WithdrawServiceImpl implements WithdrawService {
         paymentSdkDaiFuRequest.setAccountName(merchant.getName());
         paymentSdkDaiFuRequest.setAccountNumber(MerchantSupport.decryptBankCard(merchant.getBankNo()));
         paymentSdkDaiFuRequest.setIdCard(MerchantSupport.decryptIdentity(merchant.getIdentity()));
-        paymentSdkDaiFuRequest.setPlayMoneyChannel(EnumPlayMoneyChannel.SAOMI.getId());
+        paymentSdkDaiFuRequest.setPlayMoneyChannel(EnumUpperChannel.SAOMI.getId());
         paymentSdkDaiFuRequest.setNote(merchant.getMerchantName());
         paymentSdkDaiFuRequest.setSystemCode(playMoneyOrder.getAppId());
         paymentSdkDaiFuRequest.setNotifyUrl(PaymentSdkConstants.SDK_PAY_WITHDRAW_NOTIFY_URL);

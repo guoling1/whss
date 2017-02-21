@@ -603,7 +603,7 @@ public class HSYTradeServiceImpl implements HSYTradeService {
         final AppBizShop shop = this.hsyShopDao.findAppBizShopByAccountID(accountId).get(0);
         final long playMoneyOrderId = this.orderService.createPlayMoneyOrder(shop, new BigDecimal(totalAmount),
                 appId, channel, EnumBalanceTimeType.T1.getType());
-        return this.withdrawImpl(shop, playMoneyOrderId, EnumPlayMoneyChannel.SAOMI);
+        return this.withdrawImpl(shop, playMoneyOrderId, EnumUpperChannel.SAOMI);
     }
 
     /**
@@ -615,7 +615,7 @@ public class HSYTradeServiceImpl implements HSYTradeService {
      */
     @Override
     @Transactional
-    public Pair<Integer, String> withdrawImpl(final AppBizShop shop, final long playMoneyOrderId, final EnumPlayMoneyChannel playMoneyChannel) {
+    public Pair<Integer, String> withdrawImpl(final AppBizShop shop, final long playMoneyOrderId, final EnumUpperChannel playMoneyChannel) {
         final AppBizCard paramAppBizCard = new AppBizCard();
         paramAppBizCard.setSid(shop.getId());
         final AppBizCard appBizCard = this.hsyShopDao.findAppBizCardByParam(paramAppBizCard).get(0);
