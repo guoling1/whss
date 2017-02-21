@@ -917,11 +917,11 @@ public class AdminController extends BaseController {
     @RequestMapping(value = "/addUser", method = RequestMethod.POST)
     public CommonResponse addUser (@RequestBody AdminUserRequest adminUserRequest) {
         AdminUser adminUser = new AdminUser();
-        adminUser.setUsername(adminUserRequest.getUsername());
         final Optional<AdminUser> adminUserOptional = this.adminUserService.getAdminUserByName(adminUserRequest.getUsername());
         if(!adminUserOptional.isPresent()) {
-            return CommonResponse.simpleResponse(-1, "代理商不存在");
+            return CommonResponse.simpleResponse(-1, "登录名已存在");
         }
+        adminUser.setUsername(adminUserRequest.getUsername());
         adminUser.setPassword(adminUserRequest.getPassword());
         adminUser.setCompanyId(adminUserRequest.getCompanyId());
         adminUser.setDeptId(adminUserRequest.getDeptId());
@@ -935,5 +935,81 @@ public class AdminController extends BaseController {
         this.adminUserService.createUser(adminUser);
         return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "新增成功");
     }
+    /**
+     * 禁用用户
+     * @param adminUserRequest
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/disableUser", method = RequestMethod.POST)
+    public CommonResponse disableUser (@RequestBody AdminUserRequest adminUserRequest) {
+        adminUserService.disableUser(adminUserRequest.getId());
+        return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "禁用成功");
+    }
+    /**
+     * 启用用户
+     * @param adminUserRequest
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/activeUser", method = RequestMethod.POST)
+    public CommonResponse activeUser (@RequestBody AdminUserRequest adminUserRequest) {
+        adminUserService.activeUser(adminUserRequest.getId());
+        return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "启用成功");
+    }
+    /**
+     * 修改密码
+     * @param adminUserRequest
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/updatePwd", method = RequestMethod.POST)
+    public CommonResponse updatePwd (@RequestBody AdminUserRequest adminUserRequest) {
+        if(adminUserRequest.getId()<=0){
+            return CommonResponse.simpleResponse(-1, "该用户不存在");
+        }
+        Optional<AdminUser> adminUserOptional = this.adminUserService.getAdminUserById(adminUserRequest.getId());
+        if(!adminUserOptional.isPresent()){
+            return CommonResponse.simpleResponse(-1, "该用户不存在");
+        }
+        adminUserService.updatePwd(adminUserRequest.getPassword(),adminUserRequest.getId());
+        return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "修改成功");
+    }
 
+    /**
+     * 编辑用户
+     * @param adminUser
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/updateUser", method = RequestMethod.POST)
+    public CommonResponse updateUser (@RequestBody AdminUser adminUser) {
+        if(adminUser.getId()<=0){
+            return CommonResponse.simpleResponse(-1, "该用户不存在");
+        }
+        Optional<AdminUser> adminUserOptional = this.adminUserService.getAdminUserById(adminUser.getId());
+        if(!adminUserOptional.isPresent()){
+            return CommonResponse.simpleResponse(-1, "该用户不存在");
+        }
+        adminUserService.update(adminUser);
+        return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "修改成功");
+    }
+    /**
+     * 用户列表
+     * @param adminUser
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/userList", method = RequestMethod.POST)
+    public CommonResponse userList (@RequestBody AdminUser adminUser) {
+        if(adminUser.getId()<=0){
+            return CommonResponse.simpleResponse(-1, "该用户不存在");
+        }
+        Optional<AdminUser> adminUserOptional = this.adminUserService.getAdminUserById(adminUser.getId());
+        if(!adminUserOptional.isPresent()){
+            return CommonResponse.simpleResponse(-1, "该用户不存在");
+        }
+        adminUserService.update(adminUser);
+        return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "修改成功");
+    }
 }

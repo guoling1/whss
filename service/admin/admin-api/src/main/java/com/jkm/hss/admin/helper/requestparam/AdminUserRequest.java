@@ -13,6 +13,10 @@ import java.util.Date;
  */
 @Data
 public class AdminUserRequest{
+    /**
+     * 编码
+     */
+    private long id;
 
     /**
      * 登录名

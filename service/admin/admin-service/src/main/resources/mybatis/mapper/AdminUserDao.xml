@@ -3,7 +3,7 @@
 <mapper namespace="com.jkm.hss.admin.dao.AdminUserDao">
 
     <sql id="Base_Column_List">
-        id,username,password,salt,realname,email,mobile,status,company_id,
+        id,username,realname,email,mobile,status,company_id,
         dept_id,id_card,last_login_date,role_id,mark_code,identity_face_pic,identity_opposite_pic
     </sql>
 
@@ -49,12 +49,15 @@
     <update id="update">
         UPDATE tb_admin_user
         SET
-        username = #{username},
-        password = #{password},
-        salt = #{salt},
+        company_id= #{companyId},
+        dept_id= #{deptId},
         realname = #{realname},
+        id_card = #{idCard},
+        identity_face_pic= #{identityFacePic},
+        identity_opposite_pic=#{identityOppositePic}
         email = #{email},
         mobile = #{mobile},
+        role_id = #{roleId},
         status = #{status}
         WHERE id = #{id}
     </update>
@@ -70,6 +73,7 @@
     <update id="updatePwd">
         UPDATE tb_admin_user
         SET
+        salt = #{salt},
         password = #{password}
         WHERE id = #{id}
     </update>
@@ -80,4 +84,41 @@
         status = #{status}
         WHERE id = #{id}
     </update>
+
+    <update id="updateMarkCode">
+        UPDATE tb_admin_user
+        SET
+        mark_code = #{markCode}
+        WHERE id = #{id}
+    </update>
+
+    <select id="selectAdminUserCountByPageParams" resultType="java.lang.Integer">
+        SELECT COUNT(1) FROM tb_admin_user
+        <where>
+            <if test="realname != null">
+                AND `realname` LIKE "%"#{realname}"%"
+            </if>
+            <if test="markCode != null">
+                AND mark_code = #{markCode}
+            </if>
+            <if test="mobile != null">
+                AND mobile = #{mobile}
+            </if>
+        </where>
+    </select>
+    <select id="selectAdminUserListByPageParams" resultType="com.jkm.hss.admin.entity.AdminUser">
+        SELECT * FROM tb_dealer
+        <where>
+            <if test="realname != null">
+                AND `realname` LIKE "%"#{realname}"%"
+            </if>
+            <if test="markCode != null">
+                AND mark_code = #{markCode}
+            </if>
+            <if test="mobile != null">
+                AND mobile = #{mobile}
+            </if>
+            ORDER BY create_time DESC LIMIT #{offset},#{count}
+        </where>
+    </select>
 </mapper>
