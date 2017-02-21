@@ -14,6 +14,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -33,9 +37,17 @@ public class AllProfitController extends BaseController {
      */
     @ResponseBody
     @RequestMapping(value = "/companyProfit", method = RequestMethod.POST)
-    public CommonResponse getCompanyProfit(@RequestBody final CompanyPrifitRequest req){
+    public CommonResponse getCompanyProfit(@RequestBody final CompanyPrifitRequest req) throws ParseException {
         final PageModel<CompanyProfitResponse> pageModel = new PageModel<CompanyProfitResponse>(req.getPageNo(), req.getPageSize());
         req.setOffset(pageModel.getFirstIndex());
+        if(req.getEndTime()!=null&&!"".equals(req.getEndTime())){
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            Date dt = sdf.parse(req.getEndTime());
+            Calendar rightNow = Calendar.getInstance();
+            rightNow.setTime(dt);
+            rightNow.add(Calendar.DATE, 1);
+            req.setEndTime(sdf.format(rightNow.getTime()));
+        }
         List<CompanyProfitResponse> list = allProfitService.selectCompanyProfit(req);
         if (list==null){
             return CommonResponse.simpleResponse(-1,"未查询到相关数据");
@@ -55,8 +67,9 @@ public class AllProfitController extends BaseController {
     @ResponseBody
     @RequestMapping(value = "/companyProfitDetail", method = RequestMethod.POST)
     public CommonResponse getCompanyProfitDeatail(@RequestBody final CompanyPrifitRequest req){
-
-        CompanyProfitResponse res = allProfitService.selectCompanyProfitDetails(req.getAccId());
+        final PageModel<CompanyProfitResponse> pageModel = new PageModel<CompanyProfitResponse>(req.getPageNo(), req.getPageSize());
+        req.setOffset(pageModel.getFirstIndex());
+        List<CompanyProfitResponse> res = allProfitService.selectCompanyProfitDetails(req);
         if (res==null){
             return CommonResponse.simpleResponse(-1,"未查询到相关数据");
         }
@@ -69,9 +82,17 @@ public class AllProfitController extends BaseController {
      */
     @ResponseBody
     @RequestMapping(value = "/firstProfit", method = RequestMethod.POST)
-    public CommonResponse getFirstProfit(@RequestBody final CompanyPrifitRequest req){
+    public CommonResponse getFirstProfit(@RequestBody final CompanyPrifitRequest req) throws ParseException {
         final PageModel<CompanyProfitResponse> pageModel = new PageModel<CompanyProfitResponse>(req.getPageNo(), req.getPageSize());
         req.setOffset(pageModel.getFirstIndex());
+        if(req.getEndTime()!=null&&!"".equals(req.getEndTime())){
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            Date dt = sdf.parse(req.getEndTime());
+            Calendar rightNow = Calendar.getInstance();
+            rightNow.setTime(dt);
+            rightNow.add(Calendar.DATE, 1);
+            req.setEndTime(sdf.format(rightNow.getTime()));
+        }
         List<CompanyProfitResponse> list = allProfitService.selectOneProfit(req);
         if (list==null){
             return CommonResponse.simpleResponse(-1,"未查询到相关数据");
@@ -106,9 +127,17 @@ public class AllProfitController extends BaseController {
      */
     @ResponseBody
     @RequestMapping(value = "/secondProfit", method = RequestMethod.POST)
-    public CommonResponse getSecondProfit(@RequestBody final CompanyPrifitRequest req){
+    public CommonResponse getSecondProfit(@RequestBody final CompanyPrifitRequest req) throws ParseException {
         final PageModel<CompanyProfitResponse> pageModel = new PageModel<CompanyProfitResponse>(req.getPageNo(), req.getPageSize());
         req.setOffset(pageModel.getFirstIndex());
+        if(req.getEndTime()!=null&&!"".equals(req.getEndTime())){
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            Date dt = sdf.parse(req.getEndTime());
+            Calendar rightNow = Calendar.getInstance();
+            rightNow.setTime(dt);
+            rightNow.add(Calendar.DATE, 1);
+            req.setEndTime(sdf.format(rightNow.getTime()));
+        }
         List<CompanyProfitResponse> list = allProfitService.selectTwoProfit(req);
         if (list==null){
             return CommonResponse.simpleResponse(-1,"未查询到相关数据");

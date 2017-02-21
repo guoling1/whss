@@ -9,8 +9,167 @@
   <meta name="viewport"
         content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
   <title>好收收</title>
-  <link rel="stylesheet" href="http://static.jinkaimen.cn/hss/css/style.2.0.1.css">
   <link rel="stylesheet" href="http://static.jinkaimen.cn/weui/weui.css">
+  <style>
+    {
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+    }
+
+    .main {
+      padding-bottom: 20px;
+    }
+
+    .process {
+      height: 47px;
+      padding: 0 15px;
+      background-color: #61729c;
+    }
+
+    .steps {
+      float: left;
+      width: 33.33%;
+      height: 47px;
+      line-height: 47px;
+      font-size: 16px;
+      color: #a7b0d3;
+      text-align: center;
+    }
+
+    .steps span {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      line-height: 16px;
+      font-size: 11px;
+      color: #a7b0d3;
+      text-align: center;
+      border: 1px solid #a7b0d3;
+      border-radius: 50%;
+      margin-right: 9px;
+    }
+
+    .steps.active {
+      color: #FFF;
+    }
+
+    .steps.active span {
+      background-color: #FFF;
+      color: #61729c;
+      border: none;
+    }
+
+    .top {
+      width: 100%;
+      height: auto;
+      background-color: #FFF;
+      padding-top: 15px;
+    }
+
+    .bottom {
+      width: 100%;
+      border-top: 8px solid #f4f5f8;
+    }
+
+    .group {
+      height: 50px;
+      line-height: 50px;
+      border-bottom: 1px solid #edeef5;
+      padding: 0 15px;
+    }
+
+    .group .name {
+      display: inline-block;
+      width: 50px;
+      line-height: 50px;
+      margin-right: 15px;
+      font-size: 15px;
+      color: #4a5171;
+      text-align: left;
+    }
+
+    .group .file {
+      width: 1px;
+      line-height: 50px;
+      text-align: left;
+      font-size: 15px;
+      color: #7079a0;
+      position: relative;
+    }
+
+    .group .file div {
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      position: absolute;
+      left: 0;
+      top: 0;
+    }
+
+    .group .ipt {
+      border: none;
+      color: #4a5171;
+    }
+
+    .group ::-webkit-input-placeholder {
+      color: #aab2d2;
+    }
+
+    .group :-moz-placeholder {
+      color: #aab2d2;
+    }
+
+    .group ::-moz-placeholder {
+      color: #aab2d2;
+    }
+
+    .group :-ms-input-placeholder {
+      color: #aab2d2;
+    }
+
+    .group .btn {
+      display: inline-block;
+      float: right;
+      line-height: 50px;
+      font-size: 12px;
+      color: #7079a0;
+    }
+
+    .next {
+      padding: 26px 15px 0;
+    }
+
+    .next div {
+      width: 100%;
+      height: 50px;
+      line-height: 50px;
+      font-size: 16px;
+      color: #FFF;
+      text-align: center;
+      background-color: #7086bd;
+      border-radius: 5px;
+    }
+
+    .sample {
+      display: none;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 89;
+    }
+
+    .sample img {
+      position: absolute;
+      top: 45%;
+      left: 50%;
+      width: 90%;
+      transform: translate3d(-50%, -50%, 0);
+    }
+  </style>
 </head>
 <body>
 
@@ -26,7 +185,7 @@
       <span>3</span>开始使用
     </div>
   </div>
-  <div class="main flexBox flex-box-column">
+  <div class="main">
     <div class="top">
       <div class="group">
         <div class="name">店铺名</div>

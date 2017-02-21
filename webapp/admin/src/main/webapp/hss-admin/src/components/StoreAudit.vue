@@ -240,9 +240,9 @@
         .then(function (res) {
           this.$data.msg = res.data.list[0];
           this.$data.res = res.data.res;
-          this.$data.tableData[0].rate = res.data.weixinRate;
-          this.$data.tableData[1].rate = res.data.alipayRate;
-          this.$data.tableData[2].rate = res.data.fastRate;
+          this.$data.tableData[0].rate = parseFloat(res.data.weixinRate*100).toFixed(2)+'%';
+          this.$data.tableData[1].rate = parseFloat(res.data.alipayRate*100).toFixed(2)+'%';
+          this.$data.tableData[2].rate = parseFloat(res.data.fastRate*100).toFixed(2)+'%';
         },function (err) {
           this.$message({
             showClose: true,

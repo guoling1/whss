@@ -44,7 +44,7 @@
     <a href="/sqb/authentication" class="group touch_gr"><span class="user"></span>用户认证</a>
     <a href="http://mp.weixin.qq.com/s/-GYEGM7PAboICupcETBPhw" class="group touch_gr"><span class="help"></span>使用帮助</a>
   </div>
-  <div class="flexBox flex-box-column">
+  <div>
     <div class="advertisement">
       <img src="http://static.jinkaimen.cn/hss/assets/banner.png" alt="">
     </div>
