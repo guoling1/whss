@@ -9,6 +9,16 @@ import lombok.Data;
 public class CompanyPrifitRequest {
 
     /**
+     * 交易订单号
+     */
+    private String orderNo;
+
+    /**
+     * 分润方名称
+     */
+    private String receiptMoneyUserName;
+
+    /**
      * 代理商编号
      */
     private String markCode;
