@@ -19,7 +19,7 @@
             </li>
             <li class="same">
               <label>代理商名称:</label>
-              <el-input style="width: 120px" v-model="query.dealerName" placeholder="请输入内容" size="small"></el-input>
+              <el-input style="width: 120px" v-model="query.dealerName1" placeholder="请输入内容" size="small"></el-input>
             </li>
             <li class="same">
               <label>代理商编号:</label>
@@ -27,12 +27,12 @@
             </li>
             <li class="same">
               <label>收益类型:</label>
-              <el-select style="width: 120px" clearable v-model="query.sysType" size="small" >
+              <el-select style="width: 140px" clearable v-model="query.businessType" size="small" >
                 <el-option label="全部" value="">全部</el-option>
-                <el-option label="好收银" value="hsy">好收收-收款</el-option>
-                <el-option label="好收收" value="hss">好收收-提现</el-option>
-                <el-option label="好收收" value="hss">好收收-升级费</el-option>
-                <el-option label="好收收" value="hss">好收银-收款</el-option>
+                <el-option label="好收收-收款" value="hssPay">好收收-收款</el-option>
+                <el-option label="好收收-提现" value="hssWithdraw">好收收-提现</el-option>
+                <el-option label="好收收-升级费" value="hssUpgrade">好收收-升级费</el-option>
+                <el-option label="好收银-收款" value="hsyPay">好收银-收款</el-option>
               </el-select>
             </li>
             <li class="same">
@@ -147,10 +147,12 @@
               this.$data.records[i].splitTotalAmount = toFix(this.$data.records[i].splitTotalAmount);
               total = toFix(parseFloat(total)+parseFloat(this.$data.records[i].splitTotalAmount))
             }
-            this.records.push({
-              businessType:"总额",
-              splitTotalAmount:total
-            })
+            if(this.records.length!=0){
+              this.records.push({
+                businessType:"总额",
+                splitTotalAmount:total
+              })
+            }
           }, function (err) {
             this.$data.loading = false;
             this.$message({
@@ -195,6 +197,7 @@
       },
       //每页条数改变
       handleSizeChange(val) {
+        this.$data.query.pageNo = 1;
         this.$data.query.pageSize = val;
         this.getData()
       },
