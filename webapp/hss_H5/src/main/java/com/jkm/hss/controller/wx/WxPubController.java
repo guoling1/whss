@@ -215,6 +215,45 @@ public class WxPubController extends BaseController {
     }
 
     /**
+     * 代理商邀请注册跳转
+     * @param request
+     * @param response
+     * @param model
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value = "toDealerSkip", method = RequestMethod.GET)
+    public String  toDealerSkip(final HttpServletRequest request, final HttpServletResponse response,final Model model) throws Exception{
+        String getQueryString = "";
+        if(request.getQueryString() == null){
+            getQueryString="";
+        }else{
+            getQueryString = request.getQueryString();
+        }
+        String[] arr = getQueryString.split("&");
+        String code="";
+        String state="";
+        for(int i =0;i<arr.length;i++){
+            if("code".equals(arr[i].split("=")[0])){
+                code = arr[i].split("=")[1];
+            }
+            if("state".equals(arr[i].split("=")[0])){
+                state = arr[i].split("=")[1];
+            }
+        }
+        Map<String,String> ret = WxPubUtil.getOpenid(code);
+        CookieUtil.setPersistentCookie(response, ApplicationConsts.MERCHANT_COOKIE_KEY, ret.get("openid"),
+                ApplicationConsts.getApplicationConfig().domain());
+        String tempUrl = URLDecoder.decode(state, "UTF-8");
+        log.info("tempUrl是：{}",tempUrl);
+        String redirectUrl = URLDecoder.decode(tempUrl,"UTF-8");
+        log.info("redirectUrl是：{}",redirectUrl);
+        String finalRedirectUrl = "http://"+ApplicationConsts.getApplicationConfig().domain()+"/reg?"+redirectUrl;
+        log.info("跳转地址是：{}",finalRedirectUrl);
+        return "redirect:"+finalRedirectUrl;
+    }
+
+    /**
      * 获取注册验证码
      * @param codeRequest
      * @return

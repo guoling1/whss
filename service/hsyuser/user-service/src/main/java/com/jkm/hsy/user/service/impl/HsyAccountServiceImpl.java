@@ -16,6 +16,7 @@ import com.jkm.hsy.user.entity.AppAuUser;
 import com.jkm.hsy.user.entity.AppParam;
 import com.jkm.hsy.user.service.HsyAccountService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -53,6 +54,7 @@ public class HsyAccountServiceImpl implements HsyAccountService {
         final JSONObject result = new JSONObject();
         final long accountId = dataJo.getLongValue("accountId");
         final Optional<Account> accountOptional = this.accountService.getById(accountId);
+        final AppAuUser appAuUser = this.hsyShopDao.findAuUserByAccountID(accountId).get(0);
         if (accountOptional.isPresent()) {
             final Account account = accountOptional.get();
             result.put("accountId", account.getId());
@@ -60,6 +62,7 @@ public class HsyAccountServiceImpl implements HsyAccountService {
             result.put("available", account.getAvailable().toPlainString());
             result.put("dueSettleAmount", account.getDueSettleAmount().toPlainString());
             result.put("frozenAmount", account.getFrozenAmount().toPlainString());
+            result.put("isBindCode", !StringUtils.isEmpty(appAuUser.getDealerID() + ""));
         }
         return result.toJSONString();
     }

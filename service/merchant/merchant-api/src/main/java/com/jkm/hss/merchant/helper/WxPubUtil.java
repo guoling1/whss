@@ -126,9 +126,15 @@ public class WxPubUtil {
                 }
                 else
                 {// 正常情况下{"access_token":"ACCESS_TOKEN","expires_in":7200}
-                    ret.put("nickname", json.get("nickname").getAsString());
-                    ret.put("headimgurl",json.get("headimgurl").getAsString());
-                    ret.put("subscribe",json.get("subscribe").getAsInt()+"");
+                    if(json.get("subscribe").getAsInt()==1){//
+                        ret.put("nickname", json.get("nickname").getAsString());
+                        ret.put("headimgurl",json.get("headimgurl").getAsString());
+                        ret.put("subscribe",json.get("subscribe").getAsInt()+"");
+                    }else{
+                        ret.put("nickname", "");
+                        ret.put("headimgurl","");
+                        ret.put("subscribe",json.get("subscribe").getAsInt()+"");
+                    }
                 }
             }
         }
