@@ -1,8 +1,11 @@
 package com.jkm.hss.admin.entity;
 
+import lombok.Data;
+
 /**
  * Created by xingliujie on 2017/2/21.
  */
+@Data
 public class DataDictionary {
     /**
      * 编码
