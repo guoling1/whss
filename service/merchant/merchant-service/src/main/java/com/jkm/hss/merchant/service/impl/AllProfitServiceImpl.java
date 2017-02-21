@@ -72,8 +72,9 @@ public class AllProfitServiceImpl implements AllProfitService {
     }
 
     @Override
-    public CompanyProfitResponse selectCompanyProfitDetails(long accId) {
-        return allProfitDao.selectCompanyProfitDetails(accId);
+    public List<CompanyProfitResponse> selectCompanyProfitDetails(CompanyPrifitRequest req) {
+        List<CompanyProfitResponse> list = allProfitDao.selectCompanyProfitDetails(req);
+        return list;
     }
 
     @Override

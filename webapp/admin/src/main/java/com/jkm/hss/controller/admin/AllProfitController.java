@@ -67,8 +67,9 @@ public class AllProfitController extends BaseController {
     @ResponseBody
     @RequestMapping(value = "/companyProfitDetail", method = RequestMethod.POST)
     public CommonResponse getCompanyProfitDeatail(@RequestBody final CompanyPrifitRequest req){
-
-        CompanyProfitResponse res = allProfitService.selectCompanyProfitDetails(req.getAccId());
+        final PageModel<CompanyProfitResponse> pageModel = new PageModel<CompanyProfitResponse>(req.getPageNo(), req.getPageSize());
+        req.setOffset(pageModel.getFirstIndex());
+        List<CompanyProfitResponse> res = allProfitService.selectCompanyProfitDetails(req);
         if (res==null){
             return CommonResponse.simpleResponse(-1,"未查询到相关数据");
         }
