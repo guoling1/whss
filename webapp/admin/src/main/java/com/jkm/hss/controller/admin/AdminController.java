@@ -10,6 +10,7 @@ import com.jkm.base.common.util.CookieUtil;
 import com.jkm.base.common.util.ValidateUtils;
 import com.jkm.hss.admin.entity.*;
 import com.jkm.hss.admin.enums.EnumQRCodeDistributeType;
+import com.jkm.hss.admin.helper.AdminUserSupporter;
 import com.jkm.hss.admin.helper.requestparam.AdminUserListRequest;
 import com.jkm.hss.admin.helper.requestparam.AdminUserRequest;
 import com.jkm.hss.admin.helper.requestparam.DistributeQrCodeRequest;
@@ -1029,6 +1030,12 @@ public class AdminController extends BaseController {
         Optional<AdminUser> adminUserOptional = adminUserService.getAdminUserById(userId);
         if(!adminUserOptional.isPresent()){
             return  CommonResponse.simpleResponse(-1,"该员工不存在");
+        }
+        if(adminUserOptional.get().getMobile()!=null&&!"".equals(adminUserOptional.get().getMobile())){
+            adminUserOptional.get().setMobile(AdminUserSupporter.decryptMobile(userId,adminUserOptional.get().getMobile()));
+        }
+        if(adminUserOptional.get().getIdCard()!=null&&!"".equals(adminUserOptional.get().getIdCard())){
+            adminUserOptional.get().setIdCard(AdminUserSupporter.decryptIdentity(adminUserOptional.get().getIdCard()));
         }
         return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功",adminUserOptional.get());
     }

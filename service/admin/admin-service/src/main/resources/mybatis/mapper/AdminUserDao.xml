@@ -4,7 +4,7 @@
 
     <sql id="Base_Column_List">
         id,username,realname,email,mobile,status,company_id,
-        dept_id,id_card,last_login_date,role_id,mark_code,identity_face_pic,identity_opposite_pic
+        dept_id,id_card,last_login_date,role_id,mark_code,identity_face_pic,identity_opposite_pic,create_time,update_time
     </sql>
 
     <insert id="insert" useGeneratedKeys="true" keyProperty="id">
