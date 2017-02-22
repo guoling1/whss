@@ -1024,7 +1024,7 @@ public class AdminController extends BaseController {
      * @return
      */
     @ResponseBody
-    @RequestMapping(value = "/userDetail/{userId}", method = RequestMethod.POST)
+    @RequestMapping(value = "/userDetail/{userId}", method = RequestMethod.GET)
     public CommonResponse userDetail (@PathVariable final long userId) {
         Optional<AdminUser> adminUserOptional = adminUserService.getAdminUserById(userId);
         if(!adminUserOptional.isPresent()){
