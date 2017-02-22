@@ -1274,29 +1274,31 @@
             </li>
           </ul>
           <!--表格-->
-          <el-table v-loading.body="loading" style="font-size: 12px;margin:15px 0" :data="records" border>
+          <el-table v-loading.body="loading" height="640" style="font-size: 12px;margin:15px 0" :data="records" border>
             <el-table-column type="index" width="62" label="序号"></el-table-column>
-            <!--<el-table-column label="订单号" width="212">
+            <el-table-column  label="订单号" min-width="112">
               <template scope="scope">
-                <router-link :to="{path:'/admin/record/newDealDet',query:{orderNo:records[scope.$index].orderNo}}" type="text" size="small">{{records[scope.$index].orderNo}}
-                </router-link>
+                <span class="td" :data-clipboard-text="records[scope.$index].orderNo" type="text" size="small">{{records[scope.$index].orderNo|changeHide}}</span>
               </template>
-            </el-table-column>-->
-            <el-table-column :data-clipboard-text="orderNo" prop="orderNo" label="订单号" :formatter="changeHide1" width="100"></el-table-column>
-            <el-table-column :data-clipboard-text="sn" prop="sn" label="交易流水号" :formatter="changeHide" width="100"></el-table-column>
+            </el-table-column>
+            <el-table-column  label="交易流水号" min-width="112">
+              <template scope="scope">
+                <span class="td" :data-clipboard-text="records[scope.$index].sn" type="text" size="small">{{records[scope.$index].sn|changeHide}}</span>
+              </template>
+            </el-table-column>
             <el-table-column prop="createTime" :formatter="changeTime" label="交易日期" width="162"></el-table-column>
             <el-table-column prop="merchantName" label="商户名称" min-width="90"></el-table-column>
             <el-table-column prop="proxyName" label="所属一级" min-width="90"></el-table-column>
             <el-table-column prop="proxyName1" label="所属二级" min-width="90"></el-table-column>
-            <el-table-column prop="tradeAmount" :formatter="changeNum" label="支付金额" min-width="90"></el-table-column>
-            <el-table-column prop="payRate" label="手续费率" min-width="90"></el-table-column>
+            <el-table-column prop="tradeAmount" :formatter="changeNum" label="支付金额" min-width="90" align="right"></el-table-column>
+            <el-table-column prop="payRate" label="手续费率" min-width="90" align="right"></el-table-column>
             <el-table-column prop="appId" label="业务方" min-width="85"></el-table-column>
             <el-table-column prop="status" :formatter="changeStatus" label="订单状态" min-width="90"></el-table-column>
             <el-table-column prop="settleStatus" :formatter="changeSettleStatus" label="结算状态" min-width="90"></el-table-column>
             <el-table-column prop="payType" :formatter="changePayType" label="支付方式" min-width="90"></el-table-column>
             <el-table-column prop="payChannelSign" :formatter="changePayChannel" label="支付渠道" min-width="90"></el-table-column>
             <el-table-column prop="remark" label="渠道信息" min-width="90"></el-table-column>
-            <el-table-column label="操作" width="62" fixed="right">
+            <el-table-column label="操作" width="90" fixed="right">
               <template scope="scope">
                 <router-link :to="{path:'/admin/record/newDealDet',query:{orderNo:records[scope.$index].orderNo}}" type="text" size="small">详情
                 </router-link>
@@ -1353,9 +1355,11 @@
       var clipboard = new Clipboard('.td');
       //复制成功执行的回调，可选
       clipboard.on('success', (e)=> {
-        this.$store.commit('MESSAGE_ACCORD_SHOW', {
-          text: "复制成功  内容为："+e.text
-        })
+        this.$message({
+          showClose: true,
+          message: "复制成功  内容为："+e.text,
+          type: 'success'
+        });
       });
       this.getData()
     },
@@ -1369,6 +1373,11 @@
             this.$data.total=res.data.totalPage;
             this.$data.url=res.data.ext;
             this.$data.count = res.data.count;
+            for(var i=0;i<this.records.length;i++){
+              if(this.records[i].payRate!=null){
+                this.records[i].payRate = (parseFloat(this.records[i].payRate)*100).toFixed(2)+'%';
+              }
+            }
           },function (err) {
             this.$data.loading = false;
             this.$message({
@@ -1510,6 +1519,14 @@
         }
       }
     },
+    filters: {
+      changeHide: function (val) {
+        if(val!=""&&val!=null){
+          val = val.replace(val.substring(3,val.length-6),"…");
+        }
+        return val
+      },
+    }
   }
 </script>
 <style scoped lang="less" rel="stylesheet/less">
