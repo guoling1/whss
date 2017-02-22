@@ -12,6 +12,7 @@ import com.jkm.base.common.enums.EnumGlobalIDType;
 import com.jkm.base.common.util.GlobalID;
 import com.jkm.hss.admin.dao.AdminUserDao;
 import com.jkm.hss.admin.entity.*;
+import com.jkm.hss.admin.enums.EnumAdminType;
 import com.jkm.hss.admin.enums.EnumAdminUserStatus;
 import com.jkm.hss.admin.enums.EnumDataDictionaryType;
 import com.jkm.hss.admin.enums.EnumQRCodeDistributeType2;
@@ -69,6 +70,7 @@ public class AdminUserServiceImpl implements AdminUserService {
         adminUser.setStatus(EnumAdminUserStatus.NORMAL.getCode());
         adminUser.setMobile(AdminUserSupporter.encryptMobile(adminUser.getMobile()));
         adminUser.setIdCard(AdminUserSupporter.encryptIdenrity(adminUser.getIdCard()));
+        adminUser.setType(EnumAdminType.BOSS.getCode());
         this.adminUserDao.insert(adminUser);
         this.adminUserDao.updateMarkCode(GlobalID.GetAdminUserID(EnumGlobalAdminUserLevel.BOSS,adminUser.getId()+""),adminUser.getId());
         return adminUser.getId();

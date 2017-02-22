@@ -71,6 +71,11 @@ public class AdminUser extends BaseEntity {
      * 身份证背面照
      */
     private String identityOppositePic;
+    /**
+     *员工类型
+     * {@link com.jkm.hss.admin.enums.EnumAdminType}
+     */
+    private int type;
 
     /**
      * 用户是否被激活
