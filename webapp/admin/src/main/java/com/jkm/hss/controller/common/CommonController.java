@@ -42,7 +42,12 @@ public class CommonController extends BaseController {
     private static boolean isImage(final MultipartFile file) {
         List<String> allowType =
                 Arrays.asList("image/png; charset=UTF-8", "image/gif; charset=UTF-8", "image/jpg; charset=UTF-8", "image/jpeg; charset=UTF-8", "image/x-png; charset=UTF-8", "image/pjpeg; charset=UTF-8");
-        return allowType.contains(file.getContentType());
+        for(String temp : allowType){
+            if (temp.contains(file.getContentType())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
