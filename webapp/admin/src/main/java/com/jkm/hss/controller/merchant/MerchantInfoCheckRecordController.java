@@ -81,11 +81,11 @@ public class MerchantInfoCheckRecordController extends BaseController {
         String toUsers = toUer.get().getOpenId();
         Date date = new Date();
         sendMsgService.sendAuditThroughMessage(EnumMerchantStatus.PASSED.getName(),date,toUsers);
-        final Pair<Integer, String> verifyCode = this.smsAuthService.getVerifyCode(merchantInfo.getMobile(), EnumVerificationCodeType.MERCHANT_AUDIT);
+        final Pair<Integer, String> verifyCode = this.smsAuthService.getVerifyCode(MerchantSupport.decryptMobile(merchantInfo.getMobile()), EnumVerificationCodeType.MERCHANT_AUDIT);
         if (1 == verifyCode.getLeft()) {
             final Map<String, String> params = ImmutableMap.of("code", verifyCode.getRight());
             this.sendMessageService.sendMessage(SendMessageParams.builder()
-                    .mobile(merchantInfo.getMobile())
+                    .mobile(MerchantSupport.decryptMobile(merchantInfo.getMobile()))
                     .uid("")
                     .data(params)
                     .userType(EnumUserType.BACKGROUND_USER)
@@ -113,11 +113,11 @@ public class MerchantInfoCheckRecordController extends BaseController {
             Date date = new Date();
             sendMsgService.sendAuditNoThroughMessage(EnumMerchantStatus.UNPASSED.getName(),date,toUsers);
             sendMsgService.sendAuditNoThroughMessage(EnumMerchantStatus.PASSED.getName(),date,toUsers);
-            final Pair<Integer, String> verifyCode = this.smsAuthService.getVerifyCode(merchantInfo.getMobile(), EnumVerificationCodeType.MERCHANT_NO_AUDIT);
+            final Pair<Integer, String> verifyCode = this.smsAuthService.getVerifyCode(MerchantSupport.decryptMobile(merchantInfo.getMobile()), EnumVerificationCodeType.MERCHANT_NO_AUDIT);
             if (1 == verifyCode.getLeft()) {
                 final Map<String, String> params = ImmutableMap.of("code", verifyCode.getRight());
                 this.sendMessageService.sendMessage(SendMessageParams.builder()
-                        .mobile(merchantInfo.getMobile())
+                        .mobile(MerchantSupport.decryptMobile(merchantInfo.getMobile()))
                         .uid("")
                         .data(params)
                         .userType(EnumUserType.BACKGROUND_USER)
