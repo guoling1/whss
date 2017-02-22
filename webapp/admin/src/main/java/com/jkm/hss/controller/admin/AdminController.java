@@ -1014,6 +1014,6 @@ public class AdminController extends BaseController {
     @RequestMapping(value = "/userList", method = RequestMethod.POST)
     public CommonResponse userList (@RequestBody AdminUserListRequest adminUserListRequest) {
         PageModel<AdminUserListResponse> adminUserPageModel = adminUserService.userList(adminUserListRequest);
-        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "修改成功",adminUserPageModel);
+        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功",adminUserPageModel);
     }
 }
