@@ -2,7 +2,7 @@
   <div id="personnelAdd">
     <div style="margin: 15px 15px 150px;">
       <div class="box tableTop">
-        <div class="box-header with-border">
+        <div class="box-header with-border" style="margin-bottom: 20px">
           <h3 class="box-title" v-if="isShow">新增员工</h3>
           <h3 class="box-title" v-if="!isShow">员工详情</h3>
         </div>
@@ -27,7 +27,9 @@
               </el-col>
               <el-col :span="6">
                 <div class="grid-content bg-purple-light">
-                  <el-input type="password" size="small" v-model="query.password" placeholder="8位以上，数字字母混合"></el-input>
+                  <el-input type="password" size="small" v-model="query.password" v-if="isShow"
+                            placeholder="8位以上，数字字母混合"></el-input>
+                  <el-input type="password" size="small" value="******" v-if="!isShow" :disabled="true"></el-input>
                 </div>
               </el-col>
               <el-col :span="8">
@@ -40,7 +42,7 @@
             <el-dialog title="修改密码" v-model="dialogFormVisible">
               <el-form>
                 <el-form-item label="新密码" width="120">
-                  <el-input type="password" v-model="password" auto-complete="off"></el-input>
+                  <el-input type="password" placeholder="8位以上，数字字母混合" v-model="password" auto-complete="off"></el-input>
                 </el-form-item>
               </el-form>
               <div slot="footer" class="dialog-footer">
@@ -112,7 +114,7 @@
               </el-col>
               <el-col :span="6">
                 <div class="grid-content bg-purple-light" id="phone">
-                  <el-upload id="upload" style="position: relative" action="/common/picUpload"
+                  <el-upload id="upload" style="position: relative" action="/upload/picUpload"
                              type="drag" :thumbnail-mode="true"
                              :on-preview="handlePreview"
                              :on-remove="handleRemove"
@@ -139,9 +141,9 @@
               </el-col>
               <el-col :span="6">
                 <div class="grid-content bg-purple-light" id="phone1">
-                  <el-upload id="upload" style="position: relative" action="/common/picUpload" type="drag"
+                  <el-upload id="upload" style="position: relative" action="/upload/picUpload" type="drag"
                              :thumbnail-mode="true"
-                             :on-progress="handleProgress" :on-preview="handlePreview" :on-remove="handleRemove"
+                             :on-progress="handleProgress" :on-preview="handlePreview" :on-remove="handleRemove1"
                              :on-success="handleSuccess1" :default-file-list="fileList1">
                     <i class="el-icon-upload"></i>
                     <div class="el-dragger__text">将文件拖到此处，或<em>点击上传</em></div>
@@ -190,7 +192,7 @@
               <el-col :span="6">
                 <div class="grid-content bg-purple-light">
                   <el-select style="width: 100%" v-model="query.roleId" clearable placeholder="请选择" size="small">
-                    <el-option label="管理员" value="1">管理员</el-option>
+                    <el-option label="管理员" :value="query.roleId">管理员</el-option>
                   </el-select>
                 </div>
               </el-col>
@@ -253,7 +255,7 @@
           identityOppositePic: "",
           mobile: "",
           email:"",
-          roleId:""
+          roleId: 1
         },
         id: 0,
         isShow: true,
@@ -273,7 +275,7 @@
       //若为查看详情
       if (this.$route.query.id != undefined) {
         this.$data.isShow = false;
-        this.$http.get('/admin/user/addUser/' + this.$route.query.id)
+        this.$http.get('/admin/user/userDetail/' + this.$route.query.id)
           .then(function (res) {
             this.$data.query = res.data;
             this.fileList[0].url = res.data.identityFacePic;
@@ -303,8 +305,18 @@
           }
         }, 300)
       },
+      handleRemove: function () {
+        this.query.identityFacePic = ''
+      },
+      handleRemove1: function () {
+        this.query.identityOppositePic = ''
+      },
       handleErr:function (err) {
-        console.log(err)
+        this.$message({
+          showClose: true,
+          message: err.statusMessage,
+          type: 'error'
+        });
       },
       //查看照片
       handlePreview: function (file) {
@@ -315,40 +327,65 @@
       },
       //修改密码
       resetPw: function () {
-        this.$http.post('/admin/user/updatePwd', {id: this.$route.query.id, password: this.$data.password})
-          .then(function (res) {
-            this.$data.dialogFormVisible = false;
-            this.$data.password = '';
-            this.$message({
-              showClose: true,
-              type: 'success',
-              message: '修改成功'
-            });
-          })
-          .catch(function (err) {
-            this.$message({
-              showClose: true,
-              message: err.statusMessage,
-              type: 'error'
+        var reg = /(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{8,}/;
+        if (!reg.test(this.password)) {
+          this.$message({
+            showClose: true,
+            message: '请设置8位以上，数字字母混合密码',
+            type: 'error'
+          });
+        } else {
+          this.$http.post('/admin/user/updatePwd', {id: this.$route.query.id, password: this.$data.password})
+            .then(function (res) {
+              this.$data.dialogFormVisible = false;
+              this.$data.password = '';
+              this.$message({
+                showClose: true,
+                type: 'success',
+                message: '修改成功'
+              });
             })
-          })
+            .catch(function (err) {
+              this.$message({
+                showClose: true,
+                message: err.statusMessage,
+                type: 'error'
+              })
+            })
+        }
       },
       create: function () {
-        this.$http.post('/admin/user/addUser', this.query)
-          .then(function (res) {
-            this.$message({
-              showClose: true,
-              message: '创建成功',
-              type: 'success'
-            });
-            this.$router.push('/admin/record/personnelList')
-          }, function (err) {
-            this.$message({
-              showClose: true,
-              message: err.statusMessage,
-              type: 'error'
-            });
-          })
+        var reg = /(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{8,}/;
+        if (this.query.username.length > 16 || this.query.username.length < 4) {
+          this.$message({
+            showClose: true,
+            message: '请设置4-16位登录名',
+            type: 'error'
+          });
+        } else if (!reg.test(this.query.password)) {
+          this.$message({
+            showClose: true,
+            message: '请设置8位以上，数字字母混合密码',
+            type: 'error'
+          });
+        } else {
+          this.$http.post('/admin/user/addUser', this.query)
+            .then(function (res) {
+              this.$message({
+                showClose: true,
+                message: '创建成功',
+                type: 'success'
+              });
+              this.$router.push('/admin/record/personnelList')
+            }, function (err) {
+              this.$message({
+                showClose: true,
+                message: err.statusMessage,
+                type: 'error'
+              });
+            })
+        }
+
       },
       goBack: function () {
         this.$router.push('/admin/record/personnelList')
@@ -356,21 +393,30 @@
       //修改
       upDate: function () {
         this.$data.query.roleId = this.$data.query.id;
-        this.$http.post('/admin/user/updateUser', this.$data.query)
-          .then(function (res) {
-            this.$message({
-              showClose: true,
-              message: '修改成功',
-              type: 'success'
-            });
-            this.$router.push('/admin/record/personnelList')
-          }, function (err) {
-            this.$message({
-              showClose: true,
-              message: err.statusMessage,
-              type: 'error'
-            });
-          })
+        var reg = /(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{8,}/;
+        if (this.query.username.length > 16 || this.query.username.length < 4) {
+          this.$message({
+            showClose: true,
+            message: '请设置4-16位登录名',
+            type: 'error'
+          });
+        } else {
+          this.$http.post('/admin/user/updateUser', this.$data.query)
+            .then(function (res) {
+              this.$message({
+                showClose: true,
+                message: '修改成功',
+                type: 'success'
+              });
+              this.$router.push('/admin/record/personnelList')
+            }, function (err) {
+              this.$message({
+                showClose: true,
+                message: err.statusMessage,
+                type: 'error'
+              });
+            })
+        }
       }
     },
   }

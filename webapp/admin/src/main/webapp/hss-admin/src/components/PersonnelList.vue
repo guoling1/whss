@@ -4,7 +4,7 @@
       <div class="box" style="margin-top:15px;overflow: hidden">
         <div class="box-header">
           <h3 class="box-title">员工管理</h3>
-          <router-link to="/admin/record/personnelAdd" class="btn btn-primary" style="float: right;">新增</router-link>
+          <router-link to="/admin/record/personnelAdd" class="btn btn-primary" style="float: right;">新增员工</router-link>
         </div>
         <div class="box-body">
           <!--筛选-->
@@ -36,15 +36,21 @@
             <el-table-column prop="mobile" label="手机号"></el-table-column>
             <el-table-column prop="email" label="邮箱"></el-table-column>
             <el-table-column prop="roleName" label="角色"></el-table-column>
-            <el-table-column prop="createTime" label="注册日期"></el-table-column>
-            <el-table-column prop="status" label="状态"></el-table-column>
+            <el-table-column prop="createTime" label="注册日期" :formatter="changeTime"></el-table-column>
+            <el-table-column prop="status" label="状态">
+              <template scope="scope">
+                <span v-if="records[scope.$index].status==2" type="text" size="small">禁用</span>
+                <span v-if="records[scope.$index].status==1" type="text" size="small">正常</span>
+              </template>
+            </el-table-column>
+            </el-table-column>
             <el-table-column label="操作" width="100">
               <template scope="scope">
-                <router-link :to="{path:'/admin/record/profitComDet',query:{id:records[scope.$index].id}}" type="text"
+                <router-link :to="{path:'/admin/record/personnelAdd',query:{id:records[scope.$index].id}}" type="text"
                              size="small">编辑
                 </router-link>
-                <router-link @click="open(records[scope.$index].id)" v-if="records[scope.$index].status==2" type="text" size="small">开启</router-link>
-                <router-link v-if="records[scope.$index].status==1" type="text" size="small">禁用</router-link>
+                <a @click="open(records[scope.$index].id)" v-if="records[scope.$index].status==2" type="text" size="small">开启</a>
+                <a @click="close(records[scope.$index].id)" v-if="records[scope.$index].status==1" type="text" size="small">禁用</a>
               </template>
             </el-table-column>
           </el-table>
@@ -94,7 +100,6 @@
             this.loading = false;
             this.$data.records = res.data.records;
             this.$data.total = res.data.totalPage;
-            this.$data.url = res.data.ext;
             this.$data.count = res.data.count;
           }, function (err) {
             this.$data.loading = false;
@@ -105,7 +110,6 @@
             });
           })
       },
-      //格式化hss创建时间
       changeTime: function (row, column) {
         var val=row.createTime;
         if(val==''||val==null){
@@ -129,8 +133,13 @@
       },
       open: function (val) {
         this.loading = true;
-        this.$http.post('/admin/user/activeUser')
+        this.$http.post('/admin/user/activeUser',{id:val})
           .then((res)=>{
+            for(var i=0;i<this.records.length;i++){
+              if(this.records[i].id == val){
+                this.records[i].status = '1'
+              }
+            }
             this.loading = false;
             this.$message({
               showClose: true,
@@ -148,8 +157,13 @@
       },
       close: function (val) {
         this.loading = true;
-        this.$http.post('/admin/user/disableUser')
+        this.$http.post('/admin/user/disableUser',{id:val})
           .then((res)=>{
+            for(var i=0;i<this.records.length;i++){
+              if(this.records[i].id == val){
+                this.records[i].status = '2'
+              }
+            }
             this.loading = false;
             this.$message({
               showClose: true,
