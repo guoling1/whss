@@ -112,7 +112,7 @@ public class MerchantInfoCheckRecordController extends BaseController {
             String toUsers = toUer.get().getOpenId();
             Date date = new Date();
             sendMsgService.sendAuditNoThroughMessage(EnumMerchantStatus.UNPASSED.getName(),date,toUsers);
-            sendMsgService.sendAuditNoThroughMessage(EnumMerchantStatus.PASSED.getName(),date,toUsers);
+//            sendMsgService.sendAuditNoThroughMessage(EnumMerchantStatus.PASSED.getName(),date,toUsers);
             final Pair<Integer, String> verifyCode = this.smsAuthService.getVerifyCode(MerchantSupport.decryptMobile(merchantInfo.getMobile()), EnumVerificationCodeType.MERCHANT_NO_AUDIT);
             if (1 == verifyCode.getLeft()) {
                 final Map<String, String> params = ImmutableMap.of("code", verifyCode.getRight());
