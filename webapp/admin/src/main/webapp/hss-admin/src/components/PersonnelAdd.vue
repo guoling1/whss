@@ -14,7 +14,7 @@
               </el-col>
               <el-col :span="6">
                 <div class="grid-content bg-purple-light">
-                  <el-input size="small" v-model="query.mobile" placeholder="请输入内容"></el-input>
+                  <el-input size="small" v-model="query.username" placeholder="请输入内容"></el-input>
                 </div>
               </el-col>
               <el-col :span="8">
@@ -27,7 +27,7 @@
               </el-col>
               <el-col :span="6">
                 <div class="grid-content bg-purple-light">
-                  <el-input size="small" v-model="query.name" placeholder="8位以上，数字字母混合"></el-input>
+                  <el-input size="small" v-model="query.password" placeholder="8位以上，数字字母混合"></el-input>
                 </div>
               </el-col>
               <el-col :span="8">
@@ -40,7 +40,7 @@
               </el-col>
               <el-col :span="6">
                 <div class="grid-content bg-purple-light">
-                  <el-select style="width: 100%" v-model="query.sysType" clearable placeholder="请选择" size="small">
+                  <el-select style="width: 100%" v-model="query.companyId" clearable placeholder="请选择" size="small">
                     <el-option label="总部" value="hss">总部</el-option>
                   </el-select>
                 </div>
@@ -55,7 +55,7 @@
               </el-col>
               <el-col :span="6">
                 <div class="grid-content bg-purple-light">
-                  <el-select style="width: 100%" v-model="query.sysType" clearable placeholder="请选择" size="small">
+                  <el-select style="width: 100%" v-model="query.deptId" clearable placeholder="请选择" size="small">
                     <el-option label="技术部" value="hss">技术部</el-option>
                     <el-option label="市场部" value="hsy">市场部</el-option>
                     <el-option label="运营部" value="hsy">运营部</el-option>
@@ -73,7 +73,7 @@
               </el-col>
               <el-col :span="6">
                 <div class="grid-content bg-purple-light">
-                  <el-input size="small" v-model="query.mobile" placeholder="请输入内容"></el-input>
+                  <el-input size="small" v-model="query.realname" placeholder="请输入内容"></el-input>
                 </div>
               </el-col>
               <el-col :span="8">
@@ -86,7 +86,7 @@
               </el-col>
               <el-col :span="6">
                 <div class="grid-content bg-purple-light">
-                  <el-input size="small" v-model="query.mobile" placeholder="请输入内容"></el-input>
+                  <el-input size="small" v-model="query.idCard" placeholder="请输入内容"></el-input>
                 </div>
               </el-col>
               <el-col :span="8">
@@ -100,8 +100,11 @@
               <el-col :span="6">
                 <div class="grid-content bg-purple-light" id="phone">
                   <el-upload id="upload" style="position: relative" action="//jsonplaceholder.typicode.com/posts/"
-                             type="drag" :thumbnail-mode="true" :on-progress="handleProgress"
-                             :on-preview="handlePreview" :on-remove="handleRemove" :on-success="handleSuccess"
+                             type="drag" :thumbnail-mode="true"
+                             :on-preview="handlePreview"
+                             :on-remove="handleRemove"
+                             :on-success="handleSuccess"
+                             :on-error="handleErr"
                              :default-file-list="fileList">
                     <i class="el-icon-upload"></i>
                     <div class="el-dragger__text">将文件拖到此处，或<em>点击上传</em></div>
@@ -123,8 +126,8 @@
               </el-col>
               <el-col :span="6">
                 <div class="grid-content bg-purple-light" id="phone1">
-                  <el-upload id="upload" style="position: relative" width="100%"
-                             action="//jsonplaceholder.typicode.com/posts/" type="drag" :thumbnail-mode="true"
+                  <el-upload id="upload" style="position: relative" action="/common/picUpload" type="drag"
+                             :thumbnail-mode="true"
                              :on-progress="handleProgress" :on-preview="handlePreview" :on-remove="handleRemove"
                              :on-success="handleSuccess1" :default-file-list="fileList1">
                     <i class="el-icon-upload"></i>
@@ -160,7 +163,7 @@
               </el-col>
               <el-col :span="6">
                 <div class="grid-content bg-purple-light">
-                  <el-input size="small" v-model="query.mobile" placeholder="请输入内容"></el-input>
+                  <el-input size="small" v-model="query.email" placeholder="请输入内容"></el-input>
                 </div>
               </el-col>
               <el-col :span="8">
@@ -173,7 +176,7 @@
               </el-col>
               <el-col :span="6">
                 <div class="grid-content bg-purple-light">
-                  <el-select style="width: 100%" v-model="query.sysType" clearable placeholder="请选择" size="small">
+                  <el-select style="width: 100%" v-model="query.roleId" clearable placeholder="请选择" size="small">
                     <el-option label="技术部" value="hss">技术部</el-option>
                     <el-option label="市场部" value="hsy">市场部</el-option>
                     <el-option label="运营部" value="hsy">运营部</el-option>
@@ -210,8 +213,8 @@
             <div class="grid-content bg-purple-light"></div>
           </el-col>
         </el-row>
-        <div class="mask" id="mask" style="display: none" @click="isNo()">
-          <p @click="isNo">×</p>
+        <div class="mask" id="mask" v-show="isMask" @click="isMask = false">
+          <p @click="isMask = false">×</p>
           <img src="" alt="">
         </div>
       </div>
@@ -230,23 +233,21 @@
         dialogFormVisible: false,
         password: '',
         query: {
-          mobile: '',
-          name: '',
-          loginName: '',
-          loginPwd: '',
-          email: '',
-          belongProvinceCode: '',
-          belongProvinceName: '',
-          belongCityCode: '',
-          belongCityName: '',
-          belongArea: '',
-          bankCard: '',
-          bankAccountName: '',
-          bankReserveMobile: '',
-          idCard: '',
+          username: "",
+          password: "",
+          companyId:"",
+          deptId:"",
+          realname:"",
+          idCard: "",
+          identityFacePic: "",
+          identityOppositePic: "",
+          mobile: "",
+          email:"",
+          roleId:""
         },
         id: 0,
         isShow: true,
+        isMask: false,
         productId: '',
         images: [],
         fileList: [],
@@ -268,7 +269,8 @@
     },
     methods: {
       //传成功
-      handleSuccess: function () {
+      handleSuccess: function (response, file, fileList) {
+        this.query.identityFacePic = response.result.url;
         //移除继续上传按钮
         setTimeout(function () {
           var aSpan = document.getElementById('phone').getElementsByTagName('span')[0];
@@ -276,6 +278,7 @@
         }, 300)
       },
       handleSuccess1: function (response, file, fileList) {
+        this.query.identityOppositePic = response.result.url
         //移除继续上传按钮
         setTimeout(function () {
           var aSpan = document.getElementById('phone1').getElementsByTagName('span')[0];
@@ -284,21 +287,17 @@
           } else {
             document.getElementsByClassName('el-draggeer__cover__btns')[1].removeChild(aSpan)
           }
-
         }, 300)
+      },
+      handleErr:function (err) {
+        console.log(err)
       },
       //查看照片
       handlePreview: function (file) {
-        console.log(file)
-
         var mask = document.getElementById('mask'),
           img = mask.getElementsByTagName('img')[0];
         img.src = file.url;
-        mask.style.display = 'block'
-
-      },
-      isNo: function () {
-        document.getElementById('mask').style.display = 'none'
+        this.isMask = true
       },
       //修改密码
       resetPw: function () {
@@ -346,16 +345,15 @@
          });
          });*/
       },
-      //创建一级代理
       create: function () {
-        this.$http.post('/admin/user/addFirstDealer2', this.$data.query)
+        this.$http.post('/admin/user/addUser', this.query)
           .then(function (res) {
             this.$message({
               showClose: true,
               message: '创建成功',
               type: 'success'
             });
-            this.$router.push('/admin/record/agentListFir')
+            this.$router.push('/admin/record/personnelList')
           }, function (err) {
             this.$message({
               showClose: true,
@@ -365,27 +363,19 @@
           })
       },
       goBack: function () {
-        if (this.$route.query.level == 2) {
-          this.$router.push('/admin/record/agentListSec')
-        } else {
-          this.$router.push('/admin/record/agentListFir')
-        }
+        this.$router.push('/admin/record/personnelList')
       },
       //修改
       change: function () {
         this.$data.query.dealerId = this.$data.query.id;
-        this.$http.post('/admin/user/updateDealer2', this.$data.query)
+        this.$http.post('/admin/user/addUser', this.$data.query)
           .then(function (res) {
             this.$message({
               showClose: true,
               message: '修改成功',
               type: 'success'
             });
-            if (this.$route.query.level == 2) {
-              this.$router.push('/admin/record/agentListSec')
-            } else {
-              this.$router.push('/admin/record/agentListFir')
-            }
+            this.$router.push('/admin/record/personnelList')
           }, function (err) {
             this.$message({
               showClose: true,
