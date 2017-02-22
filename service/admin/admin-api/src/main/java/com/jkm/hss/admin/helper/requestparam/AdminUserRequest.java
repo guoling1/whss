@@ -29,11 +29,11 @@ public class AdminUserRequest{
     /**
      * 公司编码
      */
-    private Long companyId;
+    private String companyId;
     /**
      * 部门编码
      */
-    private Long deptId;
+    private String deptId;
     /**
      * 用户姓名
      */

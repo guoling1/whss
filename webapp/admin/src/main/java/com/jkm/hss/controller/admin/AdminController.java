@@ -920,7 +920,7 @@ public class AdminController extends BaseController {
     public CommonResponse addUser (@RequestBody AdminUserRequest adminUserRequest) {
         AdminUser adminUser = new AdminUser();
         final Optional<AdminUser> adminUserOptional = this.adminUserService.getAdminUserByName(adminUserRequest.getUsername());
-        if(!adminUserOptional.isPresent()) {
+        if(adminUserOptional.isPresent()) {
             return CommonResponse.simpleResponse(-1, "登录名已存在");
         }
         adminUser.setUsername(adminUserRequest.getUsername());
