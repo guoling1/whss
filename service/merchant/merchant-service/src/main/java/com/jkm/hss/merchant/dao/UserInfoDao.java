@@ -1,5 +1,6 @@
 package com.jkm.hss.merchant.dao;
 
+import com.jkm.hss.merchant.entity.MerchantInfoCheckRecord;
 import com.jkm.hss.merchant.entity.UserInfo;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
@@ -74,4 +75,10 @@ public interface UserInfoDao {
      */
     int bindOpenId(@Param("id") long id,@Param("openId") String openId);
 
+    /**
+     * 查询审核失败原因
+     * @param merchantId
+     * @return
+     */
+    MerchantInfoCheckRecord selectDesr(@Param("merchantId") long merchantId);
 }

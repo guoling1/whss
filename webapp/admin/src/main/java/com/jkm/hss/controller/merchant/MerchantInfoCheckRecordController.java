@@ -7,6 +7,7 @@ import com.jkm.base.common.entity.CommonResponse;
 import com.jkm.hss.account.sevice.AccountService;
 import com.jkm.hss.controller.BaseController;
 import com.jkm.hss.merchant.entity.MerchantInfo;
+import com.jkm.hss.merchant.entity.MerchantInfoCheckRecord;
 import com.jkm.hss.merchant.entity.UserInfo;
 import com.jkm.hss.merchant.enums.EnumMerchantStatus;
 import com.jkm.hss.merchant.helper.MerchantSupport;
@@ -110,8 +111,8 @@ public class MerchantInfoCheckRecordController extends BaseController {
             this.verifyIdService.markToIneffective(MerchantSupport.decryptMobile(merchantInfo.getMobile()));
             Optional<UserInfo> toUer = userInfoService.selectByMerchantId(requestMerchantInfo.getMerchantId());
             String toUsers = toUer.get().getOpenId();
-            Date date = new Date();
-            sendMsgService.sendAuditNoThroughMessage(EnumMerchantStatus.UNPASSED.getName(),date,toUsers);
+            MerchantInfoCheckRecord desr = userInfoService.selectDesr(requestMerchantInfo.getMerchantId());
+            sendMsgService.sendAuditNoThroughMessage(EnumMerchantStatus.UNPASSED.getName(),desr.getDescr(),toUsers);
             final Pair<Integer, String> verifyCode = this.smsAuthService.getVerifyCode(MerchantSupport.decryptMobile(merchantInfo.getMobile()), EnumVerificationCodeType.MERCHANT_NO_AUDIT);
             if (1 == verifyCode.getLeft()) {
                 final Map<String, String> params = ImmutableMap.of("code", verifyCode.getRight());
