@@ -42,6 +42,30 @@ public class AdminUserSupporter {
     }
 
     /**
+     * 加密身份证
+     *
+     * @param identity
+     * @return
+     */
+    public static String encryptIdenrity(final String identity) {
+        return AESUtil.encrypt(identity, AdminConsts.getAdminConfig().tbAdminEncryptKey());
+    }
+    /**
+     * 解密身份证
+     *
+     * @param encryptIdentity
+     * @return
+     */
+    public static String decryptIdentity(final String encryptIdentity) {
+        try {
+            return AESUtil.decrypt(encryptIdentity, AdminConsts.getAdminConfig().tbAdminEncryptKey());
+        } catch (final Throwable e) {
+            log.error("解密[{}]异常",  encryptIdentity);
+            throw e;
+        }
+    }
+
+    /**
      * 密码是否正确
      *
      * @param adminUser

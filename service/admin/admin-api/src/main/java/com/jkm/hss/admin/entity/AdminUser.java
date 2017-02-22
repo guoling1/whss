@@ -6,6 +6,8 @@ import lombok.Data;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.Date;
+
 /**
  * Created by yulong.zhang on 2016/11/23.
  */
@@ -36,6 +38,39 @@ public class AdminUser extends BaseEntity {
      * 手机号
      */
     private String mobile;
+
+    /**
+     * 公司编码
+     */
+    private Long companyId;
+    /**
+     * 部门编码
+     */
+    private Long deptId;
+    /**
+     * 身份证号
+     */
+    private String idCard;
+    /**
+     * 上次登录时间
+     */
+    private Date lastLoginDate;
+    /**
+     * 角色编码
+     */
+    private Long roleId;
+    /**
+     * 员工编码
+     */
+    private String markCode;
+    /**
+     * 身份证正面照
+     */
+    private String identityFacePic;
+    /**
+     * 身份证背面照
+     */
+    private String identityOppositePic;
 
     /**
      * 用户是否被激活

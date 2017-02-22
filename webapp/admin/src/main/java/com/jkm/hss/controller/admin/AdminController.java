@@ -10,7 +10,10 @@ import com.jkm.base.common.util.CookieUtil;
 import com.jkm.base.common.util.ValidateUtils;
 import com.jkm.hss.admin.entity.*;
 import com.jkm.hss.admin.enums.EnumQRCodeDistributeType;
+import com.jkm.hss.admin.helper.requestparam.AdminUserListRequest;
+import com.jkm.hss.admin.helper.requestparam.AdminUserRequest;
 import com.jkm.hss.admin.helper.requestparam.DistributeQrCodeRequest;
+import com.jkm.hss.admin.helper.responseparam.AdminUserListResponse;
 import com.jkm.hss.admin.helper.responseparam.BossDistributeQRCodeRecordResponse;
 import com.jkm.hss.admin.helper.responseparam.DistributeQRCodeRecordResponse;
 import com.jkm.hss.admin.service.AdminUserService;
@@ -904,4 +907,104 @@ public class AdminController extends BaseController {
         return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", bossDistributeQRCodeRecordResponse);
     }
 
+
+    //    员工管理
+
+    /**
+     * 新增员工
+     * @param adminUserRequest
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/addUser", method = RequestMethod.POST)
+    public CommonResponse addUser (@RequestBody AdminUserRequest adminUserRequest) {
+        AdminUser adminUser = new AdminUser();
+        final Optional<AdminUser> adminUserOptional = this.adminUserService.getAdminUserByName(adminUserRequest.getUsername());
+        if(!adminUserOptional.isPresent()) {
+            return CommonResponse.simpleResponse(-1, "登录名已存在");
+        }
+        adminUser.setUsername(adminUserRequest.getUsername());
+        adminUser.setPassword(adminUserRequest.getPassword());
+        adminUser.setCompanyId(adminUserRequest.getCompanyId());
+        adminUser.setDeptId(adminUserRequest.getDeptId());
+        adminUser.setRealname(adminUserRequest.getRealname());
+        adminUser.setIdCard(adminUserRequest.getIdCard());
+        adminUser.setIdentityFacePic(adminUserRequest.getIdentityFacePic());
+        adminUser.setIdentityOppositePic(adminUserRequest.getIdentityOppositePic());
+        adminUser.setMobile(adminUserRequest.getMobile());
+        adminUser.setEmail(adminUserRequest.getEmail());
+        adminUser.setRoleId(adminUserRequest.getRoleId());
+        long userId = this.adminUserService.createUser(adminUser);
+        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "新增成功",userId);
+    }
+    /**
+     * 禁用用户
+     * @param adminUserRequest
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/disableUser", method = RequestMethod.POST)
+    public CommonResponse disableUser (@RequestBody AdminUserRequest adminUserRequest) {
+        adminUserService.disableUser(adminUserRequest.getId());
+        return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "禁用成功");
+    }
+    /**
+     * 启用用户
+     * @param adminUserRequest
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/activeUser", method = RequestMethod.POST)
+    public CommonResponse activeUser (@RequestBody AdminUserRequest adminUserRequest) {
+        adminUserService.activeUser(adminUserRequest.getId());
+        return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "启用成功");
+    }
+    /**
+     * 修改密码
+     * @param adminUserRequest
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/updatePwd", method = RequestMethod.POST)
+    public CommonResponse updatePwd (@RequestBody AdminUserRequest adminUserRequest) {
+        if(adminUserRequest.getId()<=0){
+            return CommonResponse.simpleResponse(-1, "该用户不存在");
+        }
+        Optional<AdminUser> adminUserOptional = this.adminUserService.getAdminUserById(adminUserRequest.getId());
+        if(!adminUserOptional.isPresent()){
+            return CommonResponse.simpleResponse(-1, "该用户不存在");
+        }
+        adminUserService.updatePwd(adminUserRequest.getPassword(),adminUserRequest.getId());
+        return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "修改成功");
+    }
+
+    /**
+     * 编辑用户
+     * @param adminUser
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/updateUser", method = RequestMethod.POST)
+    public CommonResponse updateUser (@RequestBody AdminUser adminUser) {
+        if(adminUser.getId()<=0){
+            return CommonResponse.simpleResponse(-1, "该用户不存在");
+        }
+        Optional<AdminUser> adminUserOptional = this.adminUserService.getAdminUserById(adminUser.getId());
+        if(!adminUserOptional.isPresent()){
+            return CommonResponse.simpleResponse(-1, "该用户不存在");
+        }
+        adminUserService.update(adminUser);
+        return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "修改成功");
+    }
+    /**
+     * 用户列表
+     * @param adminUserListRequest
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/userList", method = RequestMethod.POST)
+    public CommonResponse userList (@RequestBody AdminUserListRequest adminUserListRequest) {
+        PageModel<AdminUserListResponse> adminUserPageModel = adminUserService.userList(adminUserListRequest);
+        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "修改成功",adminUserPageModel);
+    }
 }

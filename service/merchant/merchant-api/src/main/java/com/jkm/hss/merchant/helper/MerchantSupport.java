@@ -142,6 +142,6 @@ public class MerchantSupport {
         return DigestUtils.sha256Hex(password + salt);
     }
     public static void main(String[] args ){
-        System.out.print(decryptMobile("nDH8wadv8j75Hop1ZXi8Bw"));
+        System.out.print(encryptMobile("13567723379"));
     }
 }
