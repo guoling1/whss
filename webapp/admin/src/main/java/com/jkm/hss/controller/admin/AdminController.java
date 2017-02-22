@@ -49,10 +49,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import java.math.BigDecimal;
@@ -1019,5 +1016,20 @@ public class AdminController extends BaseController {
     public CommonResponse userList (@RequestBody AdminUserListRequest adminUserListRequest) {
         PageModel<AdminUserListResponse> adminUserPageModel = adminUserService.userList(adminUserListRequest);
         return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功",adminUserPageModel);
+    }
+
+    /**
+     * 员工详情
+     * @param userId
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/userDetail/{userId}", method = RequestMethod.POST)
+    public CommonResponse userDetail (@PathVariable final long userId) {
+        Optional<AdminUser> adminUserOptional = adminUserService.getAdminUserById(userId);
+        if(!adminUserOptional.isPresent()){
+            return  CommonResponse.simpleResponse(-1,"该员工不存在");
+        }
+        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功",adminUserOptional.get());
     }
 }
