@@ -1053,8 +1053,4 @@ public class AdminController extends BaseController {
         return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功",adminUserOptional.get());
     }
 
-    @RequestMapping(value = "/test", method = RequestMethod.GET)
-    public void test(HttpServletRequest request,final HttpServletResponse response) throws IOException {
-        response.sendRedirect("https://qr.alipay.com/bax05098lx5xroue95mv8087");
-    };
 }
