@@ -102,7 +102,7 @@ public class AdminController extends BaseController {
         final String _username = StringUtils.trimToEmpty(adminUserLoginRequest.getUsername());
         final String _password = StringUtils.trimToEmpty(adminUserLoginRequest.getPassword());
         if (!(_username.length() >= 4 && _username.length() <= 16)) {
-            return CommonResponse.simpleResponse(-1, "用户名长度4-16位");
+            return CommonResponse.simpleResponse(-1, "登录名长度4-16位");
         }
         if (!(_password.length() >= 6 && _password.length() <= 32)) {
             return CommonResponse.simpleResponse(-1, "密码长度6-32位");
@@ -110,7 +110,7 @@ public class AdminController extends BaseController {
 
         final Optional<AdminUser> userOptional = this.adminUserService.getAdminUserByName(_username);
         if (!userOptional.isPresent()) {
-            return CommonResponse.simpleResponse(-1, "用户名不存在");
+            return CommonResponse.simpleResponse(-1, "登陆用户不存在");
         }
 
         if (!userOptional.get().isActive()) {
@@ -119,7 +119,7 @@ public class AdminController extends BaseController {
 
         final Optional<AdminUserPassport> tokenOptional = this.adminUserService.login(_username, _password);
         if (!tokenOptional.isPresent()) {
-            return CommonResponse.simpleResponse(-1, "用户名或密码错误");
+            return CommonResponse.simpleResponse(-1, "登录名或密码错误");
         }
 
         CookieUtil.setSessionCookie(response, ApplicationConsts.ADMIN_COOKIE_KEY, tokenOptional.get().getToken(),
@@ -930,6 +930,12 @@ public class AdminController extends BaseController {
         if (!ValidateUtils.isEmail(adminUserRequest.getEmail())) {
             return CommonResponse.simpleResponse(-1, "邮箱格式错误");
         }
+        if (!(adminUserRequest.getUsername().length() >= 4 && adminUserRequest.getUsername().length() <= 16)) {
+            return CommonResponse.simpleResponse(-1, "用户名长度4-16位");
+        }
+        if (!(adminUserRequest.getPassword().length() >= 6 && adminUserRequest.getPassword().length() <= 32)) {
+            return CommonResponse.simpleResponse(-1, "密码长度6-32位");
+        }
         adminUser.setUsername(adminUserRequest.getUsername());
         adminUser.setPassword(adminUserRequest.getPassword());
         adminUser.setCompanyId(adminUserRequest.getCompanyId());
@@ -974,12 +980,15 @@ public class AdminController extends BaseController {
     @ResponseBody
     @RequestMapping(value = "/updatePwd", method = RequestMethod.POST)
     public CommonResponse updatePwd (@RequestBody AdminUserRequest adminUserRequest) {
+        if (!(adminUserRequest.getUsername().length() >= 4 && adminUserRequest.getUsername().length() <= 16)) {
+            return CommonResponse.simpleResponse(-1, "登录名长度4-16位");
+        }
         if(adminUserRequest.getId()<=0){
-            return CommonResponse.simpleResponse(-1, "该用户不存在");
+            return CommonResponse.simpleResponse(-1, "登录名不存在");
         }
         Optional<AdminUser> adminUserOptional = this.adminUserService.getAdminUserById(adminUserRequest.getId());
         if(!adminUserOptional.isPresent()){
-            return CommonResponse.simpleResponse(-1, "该用户不存在");
+            return CommonResponse.simpleResponse(-1, "登录名不存在");
         }
         adminUserService.updatePwd(adminUserRequest.getPassword(),adminUserRequest.getId());
         return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "修改成功");
@@ -994,15 +1003,15 @@ public class AdminController extends BaseController {
     @RequestMapping(value = "/updateUser", method = RequestMethod.POST)
     public CommonResponse updateUser (@RequestBody AdminUser adminUser) {
         if(adminUser.getId()<=0){
-            return CommonResponse.simpleResponse(-1, "该用户不存在");
+            return CommonResponse.simpleResponse(-1, "登录名不存在");
         }
         Optional<AdminUser> adminUserOptional = this.adminUserService.getAdminUserById(adminUser.getId());
         if(!adminUserOptional.isPresent()){
-            return CommonResponse.simpleResponse(-1, "该用户不存在");
+            return CommonResponse.simpleResponse(-1, "登录名不存在");
         }
         final long proxyNameCount = this.adminUserService.selectByUsernameUnIncludeNow(adminUser.getUsername(), adminUser.getId());
         if (proxyNameCount > 0) {
-            return CommonResponse.simpleResponse(-1, "该用户已经存在");
+            return CommonResponse.simpleResponse(-1, "登录名已经存在");
         }
         adminUserService.update(adminUser);
         return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "修改成功");
