@@ -224,6 +224,7 @@ public class SendMsgServiceImpl implements SendMsgService {
             jo.put("remark", remark);
             jsonParam.put("touser", touser);
             jsonParam.put("template_id", "ATdpk_M-d_PVbSE3IFIA5qso4L7z03S_45ewPNHBcFI");
+            jsonParam.put("url","http://hss.qianbaojiajia.com/sqb/collection");
             jsonParam.put("data", jo);
             method.setEntity(new StringEntity(jsonParam.toString(), "UTF-8"));
             HttpResponse res = client.execute(method);
@@ -249,7 +250,7 @@ public class SendMsgServiceImpl implements SendMsgService {
 
 
     @Override
-    public void sendAuditNoThroughMessage(String result, Date TransitTime,String touser) {
+    public void sendAuditNoThroughMessage(String name, Date TransitTime,String touser) {
 
         Map<String, String> ret = new HashMap<String, String>();
         String turl = "https://api.weixin.qq.com/cgi-bin/message/template/send?access_token="+ WxPubUtil.getToken();
@@ -265,7 +266,7 @@ public class SendMsgServiceImpl implements SendMsgService {
             first.put("value", "抱歉，您的资料审核未通过。");
             jo.put("first", first);
             final JSONObject keyword1 =new JSONObject();
-            keyword1.put("value", result);
+            keyword1.put("value", name);
             jo.put("keyword1", keyword1);
             final JSONObject keyword2 =new JSONObject();
             keyword2.put("value", format.format(TransitTime));
@@ -274,7 +275,8 @@ public class SendMsgServiceImpl implements SendMsgService {
             remark.put("value", "点击重新提交资料");
             jo.put("remark", remark);
             jsonParam.put("touser", touser);
-            jsonParam.put("template_id", "IDgr-Nr_ADa5yo0bLAPyn6wteVJnWNcVHNeIK-gvfI75Y");
+            jsonParam.put("template_id", "gr-Nr_ADa5yo0bLAPyn6wteVJnWNcVHNeIK-gvfI75Y");
+            jsonParam.put("url","http://hss.qianbaojiajia.com/sqb/prompt");
             jsonParam.put("data", jo);
             method.setEntity(new StringEntity(jsonParam.toString(), "UTF-8"));
             HttpResponse res = client.execute(method);
