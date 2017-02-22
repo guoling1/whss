@@ -391,4 +391,15 @@ public class AdminUserServiceImpl implements AdminUserService {
     public Long selectByUsernameUnIncludeNow(String username, long id) {
         return adminUserDao.selectByUsernameUnIncludeNow(username,id);
     }
+
+    /**
+     * 最后一次登陆时间
+     *
+     * @param id
+     * @return
+     */
+    @Override
+    public void updateLastLoginDate(long id) {
+        adminUserDao.updateLastLoginDate(id);
+    }
 }

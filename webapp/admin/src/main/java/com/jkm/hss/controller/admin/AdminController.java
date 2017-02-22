@@ -25,8 +25,10 @@ import com.jkm.hss.dealer.entity.DealerChannelRate;
 import com.jkm.hss.dealer.enums.EnumDealerLevel;
 import com.jkm.hss.dealer.enums.EnumRecommendBtn;
 import com.jkm.hss.dealer.helper.DealerConsts;
-import com.jkm.hss.dealer.helper.requestparam.*;
-import com.jkm.hss.dealer.helper.response.DistributeRecordResponse;
+import com.jkm.hss.dealer.helper.requestparam.FirstLevelDealerAdd2Request;
+import com.jkm.hss.dealer.helper.requestparam.FirstLevelDealerAddRequest;
+import com.jkm.hss.dealer.helper.requestparam.FirstLevelDealerUpdate2Request;
+import com.jkm.hss.dealer.helper.requestparam.FirstLevelDealerUpdateRequest;
 import com.jkm.hss.dealer.service.DealerChannelRateService;
 import com.jkm.hss.dealer.service.DealerRateService;
 import com.jkm.hss.dealer.service.DealerService;
@@ -52,7 +54,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
@@ -121,7 +125,7 @@ public class AdminController extends BaseController {
         if (!tokenOptional.isPresent()) {
             return CommonResponse.simpleResponse(-1, "登录名或密码错误");
         }
-
+        this.adminUserService.updateLastLoginDate(tokenOptional.get().getId());
         CookieUtil.setSessionCookie(response, ApplicationConsts.ADMIN_COOKIE_KEY, tokenOptional.get().getToken(),
                 ApplicationConsts.getApplicationConfig().domain(), (int)(DealerConsts.TOKEN_EXPIRE_MILLIS / 1000));
         return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "登录成功");
@@ -1048,4 +1052,9 @@ public class AdminController extends BaseController {
         }
         return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功",adminUserOptional.get());
     }
+
+    @RequestMapping(value = "/test", method = RequestMethod.GET)
+    public void test(HttpServletRequest request,final HttpServletResponse response) throws IOException {
+        response.sendRedirect("https://qr.alipay.com/bax05098lx5xroue95mv8087");
+    };
 }
