@@ -78,10 +78,10 @@
         this.$data.query.accId = this.$route.query.id;
       }else if(this.$route.path=="/admin/record/profitFirDet"){
         this.$data.path = '/admin/allProfit/firstDealerDetail';
-        this.$data.query.aeceiptMoneyAccountId = this.$route.query.id;
+        this.$data.query.receiptMoneyAccountId = this.$route.query.id;
       }else if(this.$route.path=="/admin/record/profitSecDet"){
         this.$data.path = '/admin/allProfit/secondDealerDetail';
-        this.$data.query.aeceiptMoneyAccountId = this.$route.query.id;
+        this.$data.query.receiptMoneyAccountId = this.$route.query.id;
       }
       this.getData();
     },
