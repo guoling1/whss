@@ -8,6 +8,7 @@ import com.jkm.base.common.entity.CommonResponse;
 import com.jkm.hss.controller.BaseController;
 import com.jkm.hss.helper.ApplicationConsts;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -17,18 +18,19 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
 /**
- * Created by huangwei on 5/11/16.
+ * Created by xingliujie on 2017/2/22.
  */
 @Slf4j
 @Controller
-@RequestMapping("/common")
-public class CommonController extends BaseController {
-
+@RequestMapping("/upload")
+public class OssController extends BaseController {
     @Autowired
     private OSSClient ossClient;
     /**
@@ -39,7 +41,12 @@ public class CommonController extends BaseController {
     private static boolean isImage(final MultipartFile file) {
         List<String> allowType =
                 Arrays.asList("image/png; charset=UTF-8", "image/gif; charset=UTF-8", "image/jpg; charset=UTF-8", "image/jpeg; charset=UTF-8", "image/x-png; charset=UTF-8", "image/pjpeg; charset=UTF-8");
-        return allowType.contains(file.getContentType());
+        for(String temp : allowType){
+            if (temp.contains(file.getContentType())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -53,14 +60,11 @@ public class CommonController extends BaseController {
     public CommonResponse<BaseEntity> picUpload(@RequestParam("file") MultipartFile file) {
         Preconditions.checkArgument(!file.isEmpty(), "图片不能为空");
         Preconditions.checkArgument(isImage(file), "图片格式不正确");
-
-        final String fileName = getFileName(file.getOriginalFilename());
-
+        final String fileName = getOrginFileName(file.getOriginalFilename());
         final ObjectMetadata meta = new ObjectMetadata();
         meta.setCacheControl("public, max-age=31536000");
         meta.setExpirationTime(new DateTime().plusYears(1).toDate());
         meta.setContentType(file.getContentType());
-
         try {
             ossClient.putObject(ApplicationConsts.getApplicationConfig().ossBucke(), fileName, file.getInputStream(), meta);
         } catch (IOException e) {
@@ -84,4 +88,18 @@ public class CommonController extends BaseController {
         return randomFileName + extName;
     }
 
+    /**
+     * 获取随机文件名
+     * @param originalFilename
+     * @return
+     */
+    private String getOrginFileName(final String originalFilename) {
+        SimpleDateFormat sdf =   new SimpleDateFormat("yyyyMMdd");
+        final String extName = originalFilename.substring(originalFilename.lastIndexOf("."));
+        String nowDate = sdf.format(new Date());
+        Date date = new Date();
+        long nousedate =  date.getTime();
+        String fileName ="admin/"+  nowDate + "/" + nousedate + RandomStringUtils.randomNumeric(5) +extName;
+        return fileName;
+    }
 }
