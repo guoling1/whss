@@ -28,7 +28,7 @@
               <el-col :span="6">
                 <div class="grid-content bg-purple-light">
                   <el-input type="password" size="small" v-model="query.password" v-if="isShow"
-                            placeholder="8位以上，数字字母混合"></el-input>
+                            placeholder="6-32位以上，数字字母混合"></el-input>
                   <el-input type="password" size="small" value="******" v-if="!isShow" :disabled="true"></el-input>
                 </div>
               </el-col>
@@ -42,7 +42,8 @@
             <el-dialog title="修改密码" v-model="dialogFormVisible">
               <el-form>
                 <el-form-item label="新密码" width="120">
-                  <el-input type="password" placeholder="8位以上，数字字母混合" v-model="password" auto-complete="off"></el-input>
+                  <el-input type="password" placeholder="6-32位以上，数字字母混合" v-model="password"
+                            auto-complete="off"></el-input>
                 </el-form-item>
               </el-form>
               <div slot="footer" class="dialog-footer">
@@ -278,8 +279,28 @@
         this.$http.get('/admin/user/userDetail/' + this.$route.query.id)
           .then(function (res) {
             this.$data.query = res.data;
-            this.fileList[0].url = res.data.identityFacePic;
-            this.fileList[1].url = res.data.identityOppositePic;
+            if (res.data.identityFacePic != null) {
+              this.fileList.push({
+                url: res.data.identityFacePic
+              });
+              setTimeout(function () {
+                var aSpan = document.getElementById('phone').getElementsByTagName('span')[0];
+                document.getElementsByClassName('el-draggeer__cover__btns')[0].removeChild(aSpan)
+              }, 300)
+            }
+            if (res.data.identityOppositePic != null) {
+              this.fileList1.push({
+                url: res.data.identityOppositePic
+              })
+              setTimeout(function () {
+                var aSpan = document.getElementById('phone1').getElementsByTagName('span')[0];
+                if (document.getElementsByClassName('el-draggeer__cover__btns').length == 1) {
+                  document.getElementsByClassName('el-draggeer__cover__btns')[0].removeChild(aSpan)
+                } else {
+                  document.getElementsByClassName('el-draggeer__cover__btns')[1].removeChild(aSpan)
+                }
+              }, 300)
+            }
           })
       }
     },
@@ -327,11 +348,11 @@
       },
       //修改密码
       resetPw: function () {
-        var reg = /(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{8,}/;
+        var reg = /(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,32}/;
         if (!reg.test(this.password)) {
           this.$message({
             showClose: true,
-            message: '请设置8位以上，数字字母混合密码',
+            message: '请设置6-32位，数字字母混合密码',
             type: 'error'
           });
         } else {
@@ -355,7 +376,7 @@
         }
       },
       create: function () {
-        var reg = /(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{8,}/;
+        var reg = /(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,32}/;
         if (this.query.username.length > 16 || this.query.username.length < 4) {
           this.$message({
             showClose: true,
@@ -365,7 +386,7 @@
         } else if (!reg.test(this.query.password)) {
           this.$message({
             showClose: true,
-            message: '请设置8位以上，数字字母混合密码',
+            message: '请设置6-32位以上，数字字母混合密码',
             type: 'error'
           });
         } else {
@@ -393,7 +414,6 @@
       //修改
       upDate: function () {
         this.$data.query.roleId = this.$data.query.id;
-        var reg = /(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{8,}/;
         if (this.query.username.length > 16 || this.query.username.length < 4) {
           this.$message({
             showClose: true,
