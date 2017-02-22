@@ -86,4 +86,11 @@ public interface AllProfitService {
      * @return
      */
     int selectOneProfitDetailsCount(CompanyPrifitRequest req);
+
+    /**
+     * 二级代理商分润详情总数
+     * @param req
+     * @return
+     */
+    int selectTwoProfitDetailsCount(CompanyPrifitRequest req);
 }

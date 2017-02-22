@@ -436,7 +436,9 @@
         WHERE id = #{dealerId}
     </update>
 
-
+    <select id="selectProxyName" resultType="java.lang.String">
+        SELECT proxy_name FROM tb_dealer WHERE id = #{firstLevelDealerId}
+    </select>
 
 
     <select id="selectSecondDealerCountByPage" resultType="java.lang.Integer">
