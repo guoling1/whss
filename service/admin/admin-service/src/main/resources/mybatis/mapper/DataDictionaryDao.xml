@@ -24,4 +24,8 @@
     <select id="selectAllByType" resultType="com.jkm.hss.admin.entity.DataDictionary">
         SELECT  <include refid="Base_Column_List" /> FROM tb_data_dictionary WHERE dict_type=#{dictType} and status=1 ORDER BY dict_sn ASC;
     </select>
+
+    <select id="selectDictNameByDictTypeAndDictValue" resultType="java.lang.String">
+        SELECT  dict_name FROM tb_data_dictionary WHERE dict_type=#{dictType} and status=1 and dict_value=#{dictValue} limit0,1;
+    </select>
 </mapper>

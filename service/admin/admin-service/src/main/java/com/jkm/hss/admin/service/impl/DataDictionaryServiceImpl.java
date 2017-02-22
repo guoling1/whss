@@ -37,4 +37,16 @@ public class DataDictionaryServiceImpl implements DataDictionaryService{
     public List<DataDictionary> selectAllByType(String dictType) {
         return dataDictionaryDao.selectAllByType(dictType);
     }
+
+    /**
+     * 根据类型查询列表
+     *
+     * @param dictType
+     * @param dictValue
+     * @return
+     */
+    @Override
+    public String selectDictNameByDictTypeAndDictValue(String dictType, String dictValue) {
+        return dataDictionaryDao.selectDictNameByDictTypeAndDictValue(dictType,dictValue);
+    }
 }

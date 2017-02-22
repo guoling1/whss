@@ -20,4 +20,11 @@ public interface DataDictionaryService {
      * @return
      */
     List<DataDictionary> selectAllByType(String dictType);
+
+    /**
+     * 根据类型查询列表
+     * @param dictType
+     * @return
+     */
+    String selectDictNameByDictTypeAndDictValue(String dictType,String dictValue);
 }

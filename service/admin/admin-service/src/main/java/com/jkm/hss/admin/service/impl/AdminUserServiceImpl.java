@@ -13,14 +13,12 @@ import com.jkm.base.common.util.GlobalID;
 import com.jkm.hss.admin.dao.AdminUserDao;
 import com.jkm.hss.admin.entity.*;
 import com.jkm.hss.admin.enums.EnumAdminUserStatus;
+import com.jkm.hss.admin.enums.EnumDataDictionaryType;
 import com.jkm.hss.admin.enums.EnumQRCodeDistributeType2;
 import com.jkm.hss.admin.helper.AdminUserSupporter;
 import com.jkm.hss.admin.helper.requestparam.AdminUserListRequest;
 import com.jkm.hss.admin.helper.responseparam.AdminUserListResponse;
-import com.jkm.hss.admin.service.AdminUserPassportService;
-import com.jkm.hss.admin.service.AdminUserService;
-import com.jkm.hss.admin.service.DistributeQRCodeRecordService;
-import com.jkm.hss.admin.service.QRCodeService;
+import com.jkm.hss.admin.service.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.tuple.Pair;
@@ -53,6 +51,9 @@ public class AdminUserServiceImpl implements AdminUserService {
 
     @Autowired
     private DistributeQRCodeRecordService distributeQRCodeRecordService;
+
+    @Autowired
+    private DataDictionaryService dataDictionaryService;
 
     /**
      * {@inheritDoc}
@@ -364,8 +365,8 @@ public class AdminUserServiceImpl implements AdminUserService {
                 adminUserListResponse.setMarkCode(adminUsers.get(i).getMarkCode());
                 adminUserListResponse.setUsername(adminUsers.get(i).getUsername());
                 adminUserListResponse.setRealname(adminUsers.get(i).getRealname());
-                adminUserListResponse.setCompanyName("");
-                adminUserListResponse.setDeptName("");
+                adminUserListResponse.setCompanyName(dataDictionaryService.selectDictNameByDictTypeAndDictValue(EnumDataDictionaryType.COMPANY.getId(),adminUsers.get(i).getCompanyId()));
+                adminUserListResponse.setDeptName(dataDictionaryService.selectDictNameByDictTypeAndDictValue(EnumDataDictionaryType.DEPT.getId(),adminUsers.get(i).getDeptId()));
                 if(adminUsers.get(i).getMobile()!=null||!"".equals(adminUsers.get(i).getMobile())){
                     adminUserListResponse.setMobile(AdminUserSupporter.encryptMobile(adminUsers.get(i).getMobile()));
                 }

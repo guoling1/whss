@@ -23,4 +23,10 @@ public interface DataDictionaryDao {
      * @return
      */
     List<DataDictionary> selectAllByType(@Param("dictType") String dictType);
+    /**
+     * 根据类型查询列表
+     * @param dictType
+     * @return
+     */
+    String selectDictNameByDictTypeAndDictValue(@Param("dictType") String dictType,@Param("dictValue") String dictValue);
 }
