@@ -41,7 +41,7 @@
               <el-col :span="6">
                 <div class="grid-content bg-purple-light">
                   <el-select style="width: 100%" v-model="query.companyId" clearable placeholder="请选择" size="small">
-                    <el-option label="总部" value="hss">总部</el-option>
+                    <el-option :label="com.dictName" :value="com.dictValue" v-for="com in company">{{com.dictName}}</el-option>
                   </el-select>
                 </div>
               </el-col>
@@ -56,9 +56,7 @@
               <el-col :span="6">
                 <div class="grid-content bg-purple-light">
                   <el-select style="width: 100%" v-model="query.deptId" clearable placeholder="请选择" size="small">
-                    <el-option label="技术部" value="hss">技术部</el-option>
-                    <el-option label="市场部" value="hsy">市场部</el-option>
-                    <el-option label="运营部" value="hsy">运营部</el-option>
+                    <el-option :label="com.dictName" :value="com.dictValue" v-for="com in dept">{{com.dictName}}</el-option>
                   </el-select>
                 </div>
               </el-col>
@@ -71,8 +69,8 @@
               <el-col :span="4">
                 <div class="alignRight">真实姓名:</div>
               </el-col>
-              <el-col :span="6">
-                <div class="grid-content bg-purple-light">
+              <el-col :span="6" >
+                <div class="grid-content bg-purple-light" >
                   <el-input size="small" v-model="query.realname" placeholder="请输入内容"></el-input>
                 </div>
               </el-col>
@@ -99,7 +97,7 @@
               </el-col>
               <el-col :span="6">
                 <div class="grid-content bg-purple-light" id="phone">
-                  <el-upload id="upload" style="position: relative" action="//jsonplaceholder.typicode.com/posts/"
+                  <el-upload id="upload" style="position: relative" action="/common/picUpload"
                              type="drag" :thumbnail-mode="true"
                              :on-preview="handlePreview"
                              :on-remove="handleRemove"
@@ -177,9 +175,7 @@
               <el-col :span="6">
                 <div class="grid-content bg-purple-light">
                   <el-select style="width: 100%" v-model="query.roleId" clearable placeholder="请选择" size="small">
-                    <el-option label="技术部" value="hss">技术部</el-option>
-                    <el-option label="市场部" value="hsy">市场部</el-option>
-                    <el-option label="运营部" value="hsy">运营部</el-option>
+                    <el-option label="管理员" value="1">管理员</el-option>
                   </el-select>
                 </div>
               </el-col>
@@ -228,6 +224,8 @@
     name: 'personnelAdd',
     data () {
       return {
+        company:[],
+        dept:[],
         ishas: true,
         ishas1: true,
         dialogFormVisible: false,
@@ -255,6 +253,12 @@
       }
     },
     created: function () {
+      this.$http.post('/admin/dict/selectAllByType',{dictType:"user_company"}).then((res)=>{
+        this.company = res.data;
+      });
+      this.$http.post('/admin/dict/selectAllByType',{dictType:"user_dept"}).then((res)=>{
+        this.dept = res.data;
+      });
       //若为查看详情
       if (this.$route.query.id != undefined) {
         this.$data.isShow = false;
