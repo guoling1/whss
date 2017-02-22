@@ -125,7 +125,7 @@ public class AdminController extends BaseController {
         if (!tokenOptional.isPresent()) {
             return CommonResponse.simpleResponse(-1, "登录名或密码错误");
         }
-        this.adminUserService.updateLastLoginDate(tokenOptional.get().getId());
+        this.adminUserService.updateLastLoginDate(tokenOptional.get().getAuid());
         CookieUtil.setSessionCookie(response, ApplicationConsts.ADMIN_COOKIE_KEY, tokenOptional.get().getToken(),
                 ApplicationConsts.getApplicationConfig().domain(), (int)(DealerConsts.TOKEN_EXPIRE_MILLIS / 1000));
         return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "登录成功");
