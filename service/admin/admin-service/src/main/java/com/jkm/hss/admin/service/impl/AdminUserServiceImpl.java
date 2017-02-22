@@ -374,6 +374,7 @@ public class AdminUserServiceImpl implements AdminUserService {
                 adminUserListResponse.setRoleName("管理员");
                 adminUserListResponse.setCreateTime(adminUsers.get(i).getCreateTime());
                 adminUserListResponse.setStatus(adminUsers.get(i).getStatus());
+                list.add(adminUserListResponse);
             }
         }
         pageModel.setCount(count);

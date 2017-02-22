@@ -26,6 +26,6 @@
     </select>
 
     <select id="selectDictNameByDictTypeAndDictValue" resultType="java.lang.String">
-        SELECT  dict_name FROM tb_data_dictionary WHERE dict_type=#{dictType} and status=1 and dict_value=#{dictValue} limit0,1;
+        SELECT dict_name FROM tb_data_dictionary WHERE dict_type=#{dictType} and status=1 and dict_value=#{dictValue} limit 0,1;
     </select>
 </mapper>
