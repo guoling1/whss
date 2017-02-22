@@ -923,6 +923,15 @@ public class AdminController extends BaseController {
         if(adminUserOptional.isPresent()) {
             return CommonResponse.simpleResponse(-1, "登录名已存在");
         }
+        if (!ValidateUtils.isMobile(adminUserRequest.getMobile())) {
+            return CommonResponse.simpleResponse(-1, "手机号格式错误");
+        }
+        if (!ValidateUtils.isIDCard(adminUserRequest.getIdCard())) {
+            return CommonResponse.simpleResponse(-1, "身份证号格式错误");
+        }
+        if (!ValidateUtils.isEmail(adminUserRequest.getEmail())) {
+            return CommonResponse.simpleResponse(-1, "邮箱格式错误");
+        }
         adminUser.setUsername(adminUserRequest.getUsername());
         adminUser.setPassword(adminUserRequest.getPassword());
         adminUser.setCompanyId(adminUserRequest.getCompanyId());
