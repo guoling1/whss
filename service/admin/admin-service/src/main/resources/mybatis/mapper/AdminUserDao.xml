@@ -49,6 +49,7 @@
     <update id="update">
         UPDATE tb_admin_user
         SET
+        username = #{username},
         company_id= #{companyId},
         dept_id= #{deptId},
         realname = #{realname},
