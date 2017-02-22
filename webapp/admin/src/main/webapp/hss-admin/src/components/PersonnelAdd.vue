@@ -27,13 +27,28 @@
               </el-col>
               <el-col :span="6">
                 <div class="grid-content bg-purple-light">
-                  <el-input size="small" v-model="query.password" placeholder="8位以上，数字字母混合"></el-input>
+                  <el-input type="password" size="small" v-model="query.password" placeholder="8位以上，数字字母混合"></el-input>
                 </div>
               </el-col>
               <el-col :span="8">
-                <div class="grid-content bg-purple-light"></div>
+                <div class="grid-content bg-purple-light">
+                  <el-button v-if="!isShow" type="text" @click="dialogFormVisible = true" style="margin-left: 15px">修改密码</el-button>
+                </div>
               </el-col>
             </el-row>
+            <!--修改密码-->
+            <el-dialog title="修改密码" v-model="dialogFormVisible">
+              <el-form>
+                <el-form-item label="新密码" width="120">
+                  <el-input type="password" v-model="password" auto-complete="off"></el-input>
+                </el-form-item>
+              </el-form>
+              <div slot="footer" class="dialog-footer">
+                <el-button @click="dialogFormVisible = false">取 消</el-button>
+                <el-button type="primary" @click="resetPw">确 定</el-button>
+              </div>
+            </el-dialog>
+
             <el-row type="flex" class="row-bg" justify="center">
               <el-col :span="4">
                 <div class="alignRight">所属分公司:</div>
@@ -199,7 +214,7 @@
                    style="width: 45%;float: right;margin: 20px 0 100px;">
                 创建员工
               </div>
-              <div class="btn btn-primary" @click="change()" v-if="!isShow"
+              <div class="btn btn-primary" @click="upDate" v-if="!isShow"
                    style="width: 45%;float: right;margin: 20px 0 100px;">
                 修改
               </div>
@@ -214,7 +229,6 @@
           <img src="" alt="">
         </div>
       </div>
-
     </div>
   </div>
 </template>
@@ -226,8 +240,6 @@
       return {
         company:[],
         dept:[],
-        ishas: true,
-        ishas1: true,
         dialogFormVisible: false,
         password: '',
         query: {
@@ -247,7 +259,6 @@
         isShow: true,
         isMask: false,
         productId: '',
-        images: [],
         fileList: [],
         fileList1: []
       }
@@ -262,14 +273,13 @@
       //若为查看详情
       if (this.$route.query.id != undefined) {
         this.$data.isShow = false;
-        this.$http.get('/admin/dealer/findBydealerId/' + this.$route.query.id)
+        this.$http.get('/admin/user/addUser/' + this.$route.query.id)
           .then(function (res) {
             this.$data.query = res.data;
-            this.$data.province = res.data.belongProvinceName;
-            this.$data.city = res.data.belongCityName;
+            this.fileList[0].url = res.data.identityFacePic;
+            this.fileList[1].url = res.data.identityOppositePic;
           })
       }
-      this.$data.level = this.$route.query.level;
     },
     methods: {
       //传成功
@@ -305,7 +315,7 @@
       },
       //修改密码
       resetPw: function () {
-        this.$http.post('/admin/dealer/updatePwd', {dealerId: this.$route.query.id, loginPwd: this.$data.password})
+        this.$http.post('/admin/user/updatePwd', {id: this.$route.query.id, password: this.$data.password})
           .then(function (res) {
             this.$data.dialogFormVisible = false;
             this.$data.password = '';
@@ -322,32 +332,6 @@
               type: 'error'
             })
           })
-        /*this.$prompt('请输入新密码', '修改密码', {
-         confirmButtonText: '确定',
-         cancelButtonText: '取消',
-         }).then(({ value }) => {
-         this.$http.post('/admin/dealer/updatePwd',{dealerId:this.$route.query.id,loginPwd:value})
-         .then(function (res) {
-         this.$message({
-         showClose: true,
-         type: 'success',
-         message: '修改成功'
-         });
-         })
-         .catch(function (err) {
-         this.$message({
-         showClose: true,
-         message: err.statusMessage,
-         type: 'error'
-         })
-         })
-
-         }).catch(() => {
-         this.$message({
-         type: 'info',
-         message: '取消修改'
-         });
-         });*/
       },
       create: function () {
         this.$http.post('/admin/user/addUser', this.query)
@@ -370,9 +354,9 @@
         this.$router.push('/admin/record/personnelList')
       },
       //修改
-      change: function () {
-        this.$data.query.dealerId = this.$data.query.id;
-        this.$http.post('/admin/user/addUser', this.$data.query)
+      upDate: function () {
+        this.$data.query.roleId = this.$data.query.id;
+        this.$http.post('/admin/user/updateUser', this.$data.query)
           .then(function (res) {
             this.$message({
               showClose: true,
