@@ -80,4 +80,13 @@ public interface AdminUserDao {
      * @return
      */
     List<AdminUser> selectAdminUserListByPageParams(AdminUserListRequest adminUserListRequest);
+
+    /**
+     *
+     * @param username
+     * @param id
+     * @return
+     */
+    Long selectByUsernameUnIncludeNow(@Param("username") String username,@Param("id") long id);
+
 }

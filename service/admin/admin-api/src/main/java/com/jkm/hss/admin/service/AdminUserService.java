@@ -166,4 +166,12 @@ public interface AdminUserService {
      * @return
      */
     PageModel<AdminUserListResponse> userList(AdminUserListRequest adminUserListRequest);
+
+    /**
+     *
+     * @param username
+     * @param id
+     * @return
+     */
+    Long selectByUsernameUnIncludeNow(String username,long id);
 }

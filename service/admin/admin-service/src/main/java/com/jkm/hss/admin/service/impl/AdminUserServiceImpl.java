@@ -380,4 +380,14 @@ public class AdminUserServiceImpl implements AdminUserService {
         pageModel.setRecords(list);
         return pageModel;
     }
+
+    /**
+     * @param username
+     * @param id
+     * @return
+     */
+    @Override
+    public Long selectByUsernameUnIncludeNow(String username, long id) {
+        return adminUserDao.selectByUsernameUnIncludeNow(username,id);
+    }
 }

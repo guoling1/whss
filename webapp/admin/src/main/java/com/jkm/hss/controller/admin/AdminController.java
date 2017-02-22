@@ -1002,6 +1002,10 @@ public class AdminController extends BaseController {
         if(!adminUserOptional.isPresent()){
             return CommonResponse.simpleResponse(-1, "该用户不存在");
         }
+        final long proxyNameCount = this.adminUserService.selectByUsernameUnIncludeNow(adminUser.getUsername(), adminUser.getId());
+        if (proxyNameCount > 0) {
+            return CommonResponse.simpleResponse(-1, "该用户已经存在");
+        }
         adminUserService.update(adminUser);
         return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "修改成功");
     }

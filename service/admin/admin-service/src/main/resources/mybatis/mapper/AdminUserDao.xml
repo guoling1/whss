@@ -107,7 +107,7 @@
         </where>
     </select>
     <select id="selectAdminUserListByPageParams" resultType="com.jkm.hss.admin.entity.AdminUser">
-        SELECT * FROM tb_dealer
+        SELECT <include refid="Base_Column_List" /> FROM tb_admin_user
         <where>
             <if test="realname != null">
                 AND `realname` LIKE "%"#{realname}"%"
@@ -120,5 +120,9 @@
             </if>
             ORDER BY create_time DESC LIMIT #{offset},#{count}
         </where>
+    </select>
+
+    <select id="selectByUsernameUnIncludeNow" resultType="java.lang.Long">
+        SELECT COUNT(1) FROM tb_admin_user WHERE username = #{username} AND id != #{id}
     </select>
 </mapper>
