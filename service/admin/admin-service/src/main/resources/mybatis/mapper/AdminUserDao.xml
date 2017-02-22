@@ -67,7 +67,7 @@
     </select>
 
     <select id="selectByUsername" resultType="com.jkm.hss.admin.entity.AdminUser">
-        SELECT <include refid="Base_Column_List" /> FROM tb_admin_user WHERE username = #{username}
+        SELECT * FROM tb_admin_user WHERE username = #{username}
     </select>
 
     <update id="updatePwd">
@@ -95,13 +95,13 @@
     <select id="selectAdminUserCountByPageParams" resultType="java.lang.Integer">
         SELECT COUNT(1) FROM tb_admin_user
         <where>
-            <if test="realname != null">
+            <if test="realname != null and realname!=''">
                 AND `realname` LIKE "%"#{realname}"%"
             </if>
-            <if test="markCode != null">
+            <if test="markCode != null and markCode!=''">
                 AND mark_code = #{markCode}
             </if>
-            <if test="mobile != null">
+            <if test="mobile != null and mobile!=''">
                 AND mobile = #{mobile}
             </if>
         </where>
@@ -109,13 +109,13 @@
     <select id="selectAdminUserListByPageParams" resultType="com.jkm.hss.admin.entity.AdminUser">
         SELECT <include refid="Base_Column_List" /> FROM tb_admin_user
         <where>
-            <if test="realname != null">
+            <if test="realname != null and realname!=''">
                 AND `realname` LIKE "%"#{realname}"%"
             </if>
-            <if test="markCode != null">
+            <if test="markCode != null and markCode!=''">
                 AND mark_code = #{markCode}
             </if>
-            <if test="mobile != null">
+            <if test="mobile != null and mobile!=''">
                 AND mobile = #{mobile}
             </if>
             ORDER BY create_time DESC LIMIT #{offset},#{count}

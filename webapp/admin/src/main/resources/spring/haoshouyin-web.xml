@@ -55,26 +55,26 @@
     </bean>
     <bean id="springContextHolder" class="com.jkm.base.common.spring.core.SpringContextHolder" lazy-init="false" />
 
-    <!--<mvc:interceptors>-->
-        <!--<mvc:interceptor>-->
-            <!--&lt;!&ndash;<mvc:mapping path="/admin/user/**"/>&ndash;&gt;-->
-            <!--<mvc:mapping path="/admin/dealer/**"/>-->
-            <!--<mvc:mapping path="/admin/profit/**"/>-->
-            <!--<mvc:mapping path="/admin/channel/**"/>-->
-            <!--<mvc:mapping path="/admin/product/**"/>-->
-            <!--<mvc:mapping path="/admin/merchantInfoCheckRecord/**"/>-->
-            <!--<mvc:mapping path="/admin/query/**"/>-->
-            <!--<mvc:mapping path="/admin/QueryMerchantInfoRecord/**"/>-->
-            <!--<mvc:mapping path="/admin/export/**"/>-->
-            <!--<mvc:mapping path="/admin/queryOrderRecord/**"/>-->
-            <!--<mvc:mapping path="/admin/withdraw/**"/>-->
-            <!--<mvc:mapping path="/admin/code/**"/>-->
-            <!--<mvc:exclude-mapping path="/admin/user/login*"/>-->
-            <!--<mvc:exclude-mapping path="/admin/qrcode/**"/>-->
-            <!--<bean id="adminLoginInterceptor" class="com.jkm.hss.interceptor.AdminLoginInterceptor">-->
-                <!--<property name="adminUserService" ref="adminUserServiceImpl"/>-->
-                <!--<property name="adminUserPassportService" ref="adminUserPassportServiceImpl"/>-->
-            <!--</bean>-->
-        <!--</mvc:interceptor>-->
-    <!--</mvc:interceptors>-->
+    <mvc:interceptors>
+        <mvc:interceptor>
+            <!--<mvc:mapping path="/admin/user/**"/>-->
+            <mvc:mapping path="/admin/dealer/**"/>
+            <mvc:mapping path="/admin/profit/**"/>
+            <mvc:mapping path="/admin/channel/**"/>
+            <mvc:mapping path="/admin/product/**"/>
+            <mvc:mapping path="/admin/merchantInfoCheckRecord/**"/>
+            <mvc:mapping path="/admin/query/**"/>
+            <mvc:mapping path="/admin/QueryMerchantInfoRecord/**"/>
+            <mvc:mapping path="/admin/export/**"/>
+            <mvc:mapping path="/admin/queryOrderRecord/**"/>
+            <mvc:mapping path="/admin/withdraw/**"/>
+            <mvc:mapping path="/admin/code/**"/>
+            <mvc:exclude-mapping path="/admin/user/login*"/>
+            <mvc:exclude-mapping path="/admin/qrcode/**"/>
+            <bean id="adminLoginInterceptor" class="com.jkm.hss.interceptor.AdminLoginInterceptor">
+                <property name="adminUserService" ref="adminUserServiceImpl"/>
+                <property name="adminUserPassportService" ref="adminUserPassportServiceImpl"/>
+            </bean>
+        </mvc:interceptor>
+    </mvc:interceptors>
 </beans>
