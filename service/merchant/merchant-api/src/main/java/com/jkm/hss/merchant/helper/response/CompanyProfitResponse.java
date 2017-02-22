@@ -12,6 +12,11 @@ import java.util.Date;
 public class CompanyProfitResponse {
 
     /**
+     * 代理商级别
+     */
+    private int level;
+
+    /**
      * 代理商编号
      */
     private String markCode;
