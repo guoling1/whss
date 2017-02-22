@@ -22,8 +22,6 @@ public class QueryMerchantPayOrdersResponse {
 
     /**
      * 支付方式
-     *
-     * {@link com.jkm.hss.bill.enums.EnumPaymentType}
      */
     private String payType;
 

@@ -67,26 +67,24 @@ public enum EnumPayChannelSign {
 
     ;
 
-    /**
-     * id enum map
-     */
     private static final ImmutableMap<String, EnumPayChannelSign> STATUS_IMMUTABLE_MAP;
 
-    /**
-     * id enum map
-     */
-    private static final ImmutableMap<String, EnumPayChannelSign> INIT_MAP;
+    private static final ImmutableMap<String, EnumPayChannelSign> CODE_INIT_MAP;
 
+    private static final ImmutableMap<Integer, EnumPayChannelSign> ID_INIT_MAP;
 
     static {
         final ImmutableMap.Builder<String, EnumPayChannelSign> builder = new ImmutableMap.Builder<>();
         final ImmutableMap.Builder<String, EnumPayChannelSign> builder2 = new ImmutableMap.Builder<>();
+        final ImmutableMap.Builder<Integer, EnumPayChannelSign> builder3 = new ImmutableMap.Builder<>();
         for (final EnumPayChannelSign status : EnumPayChannelSign.values()) {
             builder.put(status.getName(), status);
             builder2.put(status.getCode(), status);
+            builder3.put(status.getId(), status);
         }
         STATUS_IMMUTABLE_MAP = builder.build();
-        INIT_MAP = builder2.build();
+        CODE_INIT_MAP = builder2.build();
+        ID_INIT_MAP = builder3.build();
     }
 
     @Getter
@@ -127,11 +125,20 @@ public enum EnumPayChannelSign {
      * @return enum
      */
     public static EnumPayChannelSign codeOf(final String code) {
-        return INIT_MAP.get(code);
+        return CODE_INIT_MAP.get(code);
     }
 
 
-    public static boolean isExist(final String code) {
-        return INIT_MAP.containsKey(code);
+    public static EnumPayChannelSign idOf(final int id) {
+        return ID_INIT_MAP.get(id);
+    }
+
+
+    public static boolean isExistByCode(final String code) {
+        return CODE_INIT_MAP.containsKey(code);
+    }
+
+    public static boolean isExistById(final int id) {
+        return ID_INIT_MAP.containsKey(id);
     }
 }

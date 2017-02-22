@@ -15,7 +15,6 @@ import com.jkm.hss.bill.service.OrderService;
 import com.jkm.hss.bill.service.PayService;
 import com.jkm.hss.bill.service.WithdrawService;
 import com.jkm.hss.controller.BaseController;
-import com.jkm.hss.dealer.service.DealerService;
 import com.jkm.hss.helper.request.DynamicCodePayRequest;
 import com.jkm.hss.helper.request.StaticCodePayRequest;
 import com.jkm.hss.helper.request.WithdrawRequest;
@@ -26,7 +25,6 @@ import com.jkm.hss.merchant.entity.UserInfo;
 import com.jkm.hss.merchant.enums.EnumMerchantStatus;
 import com.jkm.hss.merchant.service.MerchantInfoService;
 import com.jkm.hss.merchant.service.UserInfoService;
-import com.jkm.hss.notifier.service.SmsAuthService;
 import com.jkm.hss.product.enums.EnumPayChannelSign;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -53,11 +51,7 @@ public class TradeController extends BaseController {
     @Autowired
     private PayService payService;
     @Autowired
-    private SmsAuthService smsAuthService;
-    @Autowired
     private OrderService orderService;
-    @Autowired
-    private DealerService dealerService;
     @Autowired
     private UserInfoService userInfoService;
     @Autowired
@@ -98,16 +92,15 @@ public class TradeController extends BaseController {
         if(StringUtils.isBlank(merchantInfo.get().getMerchantName())){
             return CommonResponse.simpleResponse(-1, "缺失商户名称");
         }
-        if (EnumPayChannelSign.YG_WECHAT.getId() != payRequest.getPayChannel()
-                && EnumPayChannelSign.YG_ALIPAY.getId() != payRequest.getPayChannel()
-                && EnumPayChannelSign.YG_UNIONPAY.getId() != payRequest.getPayChannel()) {
+        if (!EnumPayChannelSign.isExistById(payRequest.getPayChannel())) {
             return CommonResponse.simpleResponse(-1, "支付方式错误");
         }
         final Pair<Integer, String> resultPair = this.payService.codeReceipt(payRequest.getTotalFee(),
                 payRequest.getPayChannel(), merchantInfo.get().getId(), EnumAppType.HSS.getId());
         if (0 == resultPair.getLeft()) {
             return CommonResponse.builder4MapResult(CommonResponse.SUCCESS_CODE, "收款成功")
-                    .addParam("payUrl", URLDecoder.decode(resultPair.getRight(), "UTF-8")).addParam("subMerName", merchantInfo.get().getMerchantName())
+                    .addParam("payUrl", URLDecoder.decode(resultPair.getRight(), "UTF-8"))
+                    .addParam("subMerName", merchantInfo.get().getMerchantName())
                     .addParam("amount", totalFee).build();
         }
         return CommonResponse.simpleResponse(-1, resultPair.getRight());
@@ -141,11 +134,15 @@ public class TradeController extends BaseController {
             return CommonResponse.simpleResponse(-1, "缺失商户名称");
         }
 
+        if (!EnumPayChannelSign.isExistById(payRequest.getPayChannel())) {
+            return CommonResponse.simpleResponse(-1, "支付方式错误");
+        }
         final Pair<Integer, String> resultPair = this.payService.codeReceipt(payRequest.getTotalFee(),
                 payRequest.getPayChannel(), merchantInfo.get().getId(), EnumAppType.HSS.getId());
         if (0 == resultPair.getLeft()) {
             return CommonResponse.builder4MapResult(CommonResponse.SUCCESS_CODE, "收款成功")
-                    .addParam("payUrl", URLDecoder.decode(resultPair.getRight(), "UTF-8")).addParam("subMerName", merchantInfo.get().getMerchantName())
+                    .addParam("payUrl", URLDecoder.decode(resultPair.getRight(), "UTF-8"))
+                    .addParam("subMerName", merchantInfo.get().getMerchantName())
                     .addParam("amount", totalAmount).build();
         }
         return CommonResponse.simpleResponse(-1, resultPair.getRight());
@@ -230,7 +227,7 @@ public class TradeController extends BaseController {
         }
         for (int i = 0; i < payTypeList.size(); i++) {
             final String payType = payTypeList.get(i);
-            if (!EnumPayChannelSign.isExist(payType)) {
+            if (!EnumPayChannelSign.isExistByCode(payType)) {
                 return CommonResponse.simpleResponse(-1, "不存在的支付方式");
             }
         }
