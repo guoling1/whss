@@ -55,7 +55,7 @@
         realname = #{realname},
         id_card = #{idCard},
         identity_face_pic= #{identityFacePic},
-        identity_opposite_pic=#{identityOppositePic}
+        identity_opposite_pic=#{identityOppositePic},
         email = #{email},
         mobile = #{mobile},
         role_id = #{roleId},
