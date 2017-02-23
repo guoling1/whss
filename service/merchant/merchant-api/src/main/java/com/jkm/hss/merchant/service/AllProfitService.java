@@ -61,15 +61,36 @@ public interface AllProfitService {
 
     /**
      * 一级代理商分润详情
-     * @param receiptMoneyAccountId
+     * @param req
      * @return
      */
-    CompanyProfitResponse selectOneProfitDetails(long receiptMoneyAccountId);
+    List<CompanyProfitResponse> selectOneProfitDetails(CompanyPrifitRequest req);
 
     /**
      * 二级代理商分润详情
-     * @param receiptMoneyAccountId
+     * @param req
      * @return
      */
-    CompanyProfitResponse selectTwoProfitDetails(long receiptMoneyAccountId);
+    List<CompanyProfitResponse> selectTwoProfitDetails(CompanyPrifitRequest req);
+
+    /**
+     * 公司分润详情总数
+     * @param req
+     * @return
+     */
+    int selectCompanyProfitDetailsCount(CompanyPrifitRequest req);
+
+    /**
+     * 一级代理商分润详情总数
+     * @param req
+     * @return
+     */
+    int selectOneProfitDetailsCount(CompanyPrifitRequest req);
+
+    /**
+     * 二级代理商分润详情总数
+     * @param req
+     * @return
+     */
+    int selectTwoProfitDetailsCount(CompanyPrifitRequest req);
 }

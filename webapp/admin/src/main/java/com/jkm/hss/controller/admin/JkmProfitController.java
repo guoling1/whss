@@ -89,26 +89,5 @@ public class JkmProfitController extends BaseController{
     }
 
 
-//    /**
-//     * 分润明细
-//     * @param req
-//     * @return
-//     * @throws ParseException
-//     */
-//    @ResponseBody
-//    @RequestMapping(value = "/profitDetails",method = RequestMethod.POST)
-//    public CommonResponse profitDetails(ProfitDetailsRequest req) throws ParseException {
-//        final PageModel<JkmProfitDetailsResponse> pageModel = new PageModel<JkmProfitDetailsResponse>(req.getPageNo(), req.getPageSize());
-//        req.setOffset(pageModel.getFirstIndex());
-//        List<JkmProfitDetailsResponse> orderList =  shareProfitService.selectProfitDetails(req);
-//        int count = shareProfitService.selectProfitDetailsCount(req);
-//        pageModel.setCount(count);
-//        pageModel.setRecords(orderList);
-//
-//        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", pageModel);
-//    }
-
-
-
 }
 

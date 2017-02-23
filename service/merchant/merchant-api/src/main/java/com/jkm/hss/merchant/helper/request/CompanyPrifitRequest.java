@@ -9,6 +9,11 @@ import lombok.Data;
 public class CompanyPrifitRequest {
 
     /**
+     * 账户id
+     */
+    private long aeceiptMoneyAccountId;
+
+    /**
      * 交易订单号
      */
     private String orderNo;
@@ -27,6 +32,11 @@ public class CompanyPrifitRequest {
      * 一级代理商名称
      */
     private String proxyName;
+
+    /**
+     * 一级代理商名称
+     */
+    private String proxyName1;
 
     /**
      * 查询条件：开始时间

@@ -123,6 +123,13 @@
         WHERE mobile = #{mobile} and status=0 and type=0 limit 0,1
     </select>
 
+    <select id="selectDesr" resultType="com.jkm.hss.merchant.entity.MerchantInfoCheckRecord">
+        SELECT
+        descr,create_time
+        FROM tb_merchant_info_check_record
+        WHERE merchant_id = #{merchantId} ORDER BY create_time DESC limit 0,1
+    </select>
+
     <update id="cleanOpenId">
         UPDATE tb_user_info
         SET

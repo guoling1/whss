@@ -9,6 +9,12 @@ import lombok.Data;
 public class ProfitDetailsRequest {
 
     /**
+     * 收益类型
+     * {@link com.jkm.hss.account.enums.EnumSplitBusinessType}
+     */
+    private String businessType;
+
+    /**
      * 交易单号
      */
     private String orderNo;

@@ -16,7 +16,7 @@
               <th style="text-align: right">注册时间:</th>
               <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.createTime|changeTime" readonly></td>
               <th style="text-align: right">注册方式:</th>
-              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.registered" readonly></td>
+              <td><input type="text" v-if="msg.source==0" style="background:#efecec;padding-left:5px;" value="扫码注册" readonly><input type="text" v-if="msg.source==1" style="background:#efecec;padding-left:5px;" value="商户推荐注册" readonly><input type="text" v-if="msg.source==2" style="background:#efecec;padding-left:5px;" value="代理商推荐注册" readonly></td>
             </tr>
             <tr>
               <th style="text-align: right">一级代理编号:</th>

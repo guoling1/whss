@@ -1,5 +1,6 @@
 package com.jkm.hss.bill.entity;
 
+import com.jkm.hss.product.enums.EnumUpperChannel;
 import lombok.Data;
 
 /**
@@ -69,7 +70,7 @@ public class PaymentSdkDaiFuRequest {
     /**
      * 打款渠道
      *
-     * {@link com.jkm.hss.bill.enums.EnumPlayMoneyChannel}
+     * {@link EnumUpperChannel}
      */
     private int playMoneyChannel;
 

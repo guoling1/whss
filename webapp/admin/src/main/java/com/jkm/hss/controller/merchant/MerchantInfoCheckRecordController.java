@@ -7,6 +7,7 @@ import com.jkm.base.common.entity.CommonResponse;
 import com.jkm.hss.account.sevice.AccountService;
 import com.jkm.hss.controller.BaseController;
 import com.jkm.hss.merchant.entity.MerchantInfo;
+import com.jkm.hss.merchant.entity.MerchantInfoCheckRecord;
 import com.jkm.hss.merchant.entity.UserInfo;
 import com.jkm.hss.merchant.enums.EnumMerchantStatus;
 import com.jkm.hss.merchant.helper.MerchantSupport;
@@ -81,11 +82,11 @@ public class MerchantInfoCheckRecordController extends BaseController {
         String toUsers = toUer.get().getOpenId();
         Date date = new Date();
         sendMsgService.sendAuditThroughMessage(EnumMerchantStatus.PASSED.getName(),date,toUsers);
-        final Pair<Integer, String> verifyCode = this.smsAuthService.getVerifyCode(merchantInfo.getMobile(), EnumVerificationCodeType.MERCHANT_AUDIT);
+        final Pair<Integer, String> verifyCode = this.smsAuthService.getVerifyCode(MerchantSupport.decryptMobile(merchantInfo.getMobile()), EnumVerificationCodeType.MERCHANT_AUDIT);
         if (1 == verifyCode.getLeft()) {
             final Map<String, String> params = ImmutableMap.of("code", verifyCode.getRight());
             this.sendMessageService.sendMessage(SendMessageParams.builder()
-                    .mobile(merchantInfo.getMobile())
+                    .mobile(MerchantSupport.decryptMobile(merchantInfo.getMobile()))
                     .uid("")
                     .data(params)
                     .userType(EnumUserType.BACKGROUND_USER)
@@ -110,14 +111,13 @@ public class MerchantInfoCheckRecordController extends BaseController {
             this.verifyIdService.markToIneffective(MerchantSupport.decryptMobile(merchantInfo.getMobile()));
             Optional<UserInfo> toUer = userInfoService.selectByMerchantId(requestMerchantInfo.getMerchantId());
             String toUsers = toUer.get().getOpenId();
-            Date date = new Date();
-            sendMsgService.sendAuditNoThroughMessage(EnumMerchantStatus.UNPASSED.getName(),date,toUsers);
-            sendMsgService.sendAuditThroughMessage(EnumMerchantStatus.PASSED.getName(),date,toUsers);
-            final Pair<Integer, String> verifyCode = this.smsAuthService.getVerifyCode(merchantInfo.getMobile(), EnumVerificationCodeType.MERCHANT_NO_AUDIT);
+            MerchantInfoCheckRecord desr = userInfoService.selectDesr(requestMerchantInfo.getMerchantId());
+            sendMsgService.sendAuditNoThroughMessage(EnumMerchantStatus.UNPASSED.getName(),desr.getDescr(),toUsers);
+            final Pair<Integer, String> verifyCode = this.smsAuthService.getVerifyCode(MerchantSupport.decryptMobile(merchantInfo.getMobile()), EnumVerificationCodeType.MERCHANT_NO_AUDIT);
             if (1 == verifyCode.getLeft()) {
                 final Map<String, String> params = ImmutableMap.of("code", verifyCode.getRight());
                 this.sendMessageService.sendMessage(SendMessageParams.builder()
-                        .mobile(merchantInfo.getMobile())
+                        .mobile(MerchantSupport.decryptMobile(merchantInfo.getMobile()))
                         .uid("")
                         .data(params)
                         .userType(EnumUserType.BACKGROUND_USER)
@@ -130,6 +130,23 @@ public class MerchantInfoCheckRecordController extends BaseController {
         }
 
 
-
+//    @ResponseBody
+//    @RequestMapping(value = "/test",method = RequestMethod.POST)
+//    public CommonResponse<BaseEntity> test(){
+//        String mobile="13301129906";
+//        final Pair<Integer, String> verifyCode = this.smsAuthService.getVerifyCode(mobile, EnumVerificationCodeType.MERCHANT_NO_AUDIT);
+//        if (1 == verifyCode.getLeft()) {
+//            final Map<String, String> params = ImmutableMap.of("code", verifyCode.getRight());
+//            this.sendMessageService.sendMessage(SendMessageParams.builder()
+//                    .mobile(mobile)
+//                    .uid("")
+//                    .data(params)
+//                    .userType(EnumUserType.BACKGROUND_USER)
+//                    .noticeType(EnumNoticeType.MERCHANT_NO_AUDIT)
+//                    .build()
+//            );
+//        }
+//        return null;
+//    }
 
 }

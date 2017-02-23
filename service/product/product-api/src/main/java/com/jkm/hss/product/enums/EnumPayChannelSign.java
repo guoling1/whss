@@ -14,17 +14,29 @@ public enum EnumPayChannelSign {
     /**
      * 微信扫码
      */
-    YG_WEIXIN(101, "阳光微信扫码"),
+    YG_WEIXIN(101, "sm_wechat", "微信", "阳光微信", EnumUpperChannel.SAOMI),
 
     /**
      * 支付宝扫码
      */
-    YG_ZHIFUBAO(102, "阳光支付宝扫码"),
+    YG_ZHIFUBAO(102, "sm_alipay", "支付宝", "阳光支付宝", EnumUpperChannel.SAOMI),
 
     /**
      * 银联支付
      */
-    YG_YINLIAN(103, "阳光银联支付");
+    YG_YINLIAN(103, "sm_unionpay", "银联", "阳光银联", EnumUpperChannel.SAOMI),
+
+
+    /**
+     * 卡盟微信支付
+     */
+    KM_WECHAT(201, "km_wechat", "微信", "卡盟微信", EnumUpperChannel.KAMENG),
+
+    /**
+     * 卡盟支付宝
+     */
+    KM_ALIPAY(202, "km_alipay", "支付宝", "卡盟支付宝", EnumUpperChannel.KAMENG)
+    ;
 
     /**
      * id enum map
@@ -42,11 +54,21 @@ public enum EnumPayChannelSign {
     @Getter
     private int id;
     @Getter
+    private String code;
+    @Getter
+    private String channelName;
+    @Getter
     private String name;
+    @Getter
+    private EnumUpperChannel upperChannel;
 
-    EnumPayChannelSign(final int id, final String name) {
+    EnumPayChannelSign(final int id, final String code, final String channelName,
+                       final String name, final EnumUpperChannel upperChannel) {
         this.id = id;
+        this.code = code;
+        this.channelName = channelName;
         this.name = name;
+        this.upperChannel = upperChannel;
     }
 
     /**

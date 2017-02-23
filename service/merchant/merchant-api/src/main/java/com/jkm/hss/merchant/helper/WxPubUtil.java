@@ -114,6 +114,7 @@ public class WxPubUtil {
             HttpEntity entity = res.getEntity();
             responseContent = EntityUtils.toString(entity, "UTF-8");
             JsonObject json = jsonparer.parse(responseContent).getAsJsonObject();
+            System.out.print("返回数据为:"+json.toString());
             // 将json字符串转换为json对象
             if (res.getStatusLine().getStatusCode() == HttpStatus.SC_OK)
             {

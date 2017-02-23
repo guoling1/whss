@@ -4,12 +4,10 @@ package com.jkm.hss.bill.service;
 import com.jkm.hss.bill.entity.Order;
 import com.jkm.hss.bill.entity.callback.PaymentSdkPayCallbackResponse;
 import com.jkm.hss.bill.entity.callback.PaymentSdkWithdrawCallbackResponse;
-import com.jkm.hss.bill.enums.EnumPlayMoneyChannel;
+import com.jkm.hss.product.enums.EnumUpperChannel;
 import com.jkm.hsy.user.entity.AppBizShop;
 import com.jkm.hsy.user.entity.AppParam;
 import org.apache.commons.lang3.tuple.Pair;
-
-import java.util.List;
 
 /**
  * Created by yulong.zhang on 2017/1/17.
@@ -131,7 +129,7 @@ public interface HSYTradeService {
      * @param playMoneyOrderId
      * @return
      */
-    Pair<Integer, String> withdrawImpl(AppBizShop shop, long playMoneyOrderId, EnumPlayMoneyChannel playMoneyChannel);
+    Pair<Integer, String> withdrawImpl(AppBizShop shop, long playMoneyOrderId, EnumUpperChannel playMoneyChannel);
 
     /**
      * 提现回调

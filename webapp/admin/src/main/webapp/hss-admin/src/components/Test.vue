@@ -1194,6 +1194,7 @@
   }
 </style>-->
 
+<<<<<<< HEAD
 <!--新增通道-->
 <!--<template lang="html">
   <div id="agentAddBase">
@@ -2306,4 +2307,6 @@
   }
 
 </style>
+=======
+>>>>>>> b3ba7b643832d2bad144eda6b356400875216729
 

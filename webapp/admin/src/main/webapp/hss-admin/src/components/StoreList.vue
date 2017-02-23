@@ -71,7 +71,8 @@
                 <el-table-column label="注册方式">
                   <template scope="scope">
                     <span v-if="records[scope.$index].source==0">扫码注册</span>
-                    <span v-if="records[scope.$index].source==1">推荐注册</span>
+                    <span v-if="records[scope.$index].source==1">商户推荐注册</span>
+                    <span v-if="records[scope.$index].source==2">代理商推荐注册</span>
                   </template>
                 </el-table-column>
                 <el-table-column prop="authenticationTime" label="认证时间"></el-table-column>

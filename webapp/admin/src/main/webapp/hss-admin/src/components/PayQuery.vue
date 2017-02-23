@@ -158,13 +158,8 @@
     created: function () {
       var clipboard = new Clipboard('.td');
       //复制成功执行的回调，可选
-      clipboard.on('success', (e) => {
-        this.$message({
-        showClose: true,
-        message: "复制成功  内容为：" + e.text,
-        type: 'success'
-      });
-    });
+
+
       this.getData()
     },
     methods: {

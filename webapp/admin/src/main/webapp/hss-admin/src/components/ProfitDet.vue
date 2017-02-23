@@ -17,6 +17,16 @@
               <el-input style="width: 120px" v-model="query.receiptMoneyUserName" placeholder="请输入内容" size="small"></el-input>
             </li>
             <li class="same">
+              <label>业务类型:</label>
+              <el-select style="width: 140px" clearable v-model="query.businessType" size="small" >
+                <el-option label="全部" value="">全部</el-option>
+                <el-option label="好收收-收款" value="hssPay">好收收-收款</el-option>
+                <el-option label="好收收-提现" value="hssWithdraw">好收收-提现</el-option>
+                <el-option label="好收收-升级费" value="hssUpgrade">好收收-升级费</el-option>
+                <el-option label="好收银-收款" value="hsyPay">好收银-收款</el-option>
+              </el-select>
+            </li>
+            <li class="same">
               <div class="btn btn-primary" @click="search">筛选</div>
             </li>
           </ul>
@@ -61,7 +71,8 @@
           pageNo:1,
           pageSize:10,
           orderNo:'',
-          receiptMoneyUserName:''
+          receiptMoneyUserName:'',
+          businessType:''
         },
         records: [],
         count: 0,
@@ -78,10 +89,10 @@
         this.$data.query.accId = this.$route.query.id;
       }else if(this.$route.path=="/admin/record/profitFirDet"){
         this.$data.path = '/admin/allProfit/firstDealerDetail';
-        this.$data.query.aeceiptMoneyAccountId = this.$route.query.id;
+        this.$data.query.receiptMoneyAccountId = this.$route.query.id;
       }else if(this.$route.path=="/admin/record/profitSecDet"){
         this.$data.path = '/admin/allProfit/secondDealerDetail';
-        this.$data.query.aeceiptMoneyAccountId = this.$route.query.id;
+        this.$data.query.receiptMoneyAccountId = this.$route.query.id;
       }
       this.getData();
     },

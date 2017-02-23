@@ -45,7 +45,7 @@ gulp.task('less-hss', function () {
     .pipe(less({
       paths: [path.join(__dirname, 'less', 'includes')]
     }))
-    .pipe(rename({basename: "style.2.0.1"}))
+    .pipe(rename({basename: "style.2.1.1"}))
     .pipe(gulp.dest('css'));
 });
 

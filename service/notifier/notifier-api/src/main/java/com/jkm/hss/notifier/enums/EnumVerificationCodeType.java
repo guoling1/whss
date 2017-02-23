@@ -54,7 +54,7 @@ public enum EnumVerificationCodeType {
     /**
      * 商户审核不通过hss
      */
-    MERCHANT_NO_AUDIT(9,EnumNoticeType.MERCHANT_NO_AUDIT,100),
+    MERCHANT_NO_AUDIT(10,EnumNoticeType.MERCHANT_NO_AUDIT,100),
 
     /**
      * 商户登录验证码
