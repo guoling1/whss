@@ -250,7 +250,7 @@ public class SendMsgServiceImpl implements SendMsgService {
 
 
     @Override
-    public void sendAuditNoThroughMessage(String name, Date TransitTime,String touser) {
+    public void sendAuditNoThroughMessage(String name, String desr,String touser) {
 
         Map<String, String> ret = new HashMap<String, String>();
         String turl = "https://api.weixin.qq.com/cgi-bin/message/template/send?access_token="+ WxPubUtil.getToken();
@@ -269,7 +269,7 @@ public class SendMsgServiceImpl implements SendMsgService {
             keyword1.put("value", name);
             jo.put("keyword1", keyword1);
             final JSONObject keyword2 =new JSONObject();
-            keyword2.put("value", format.format(TransitTime));
+            keyword2.put("value", desr);
             jo.put("keyword2", keyword2);
             JSONObject remark = new JSONObject();
             remark.put("value", "点击重新提交资料");

@@ -18,4 +18,5 @@ public class MerchantInfoCheckRecord extends BaseEntity {
      * 原因描述
      */
     private String descr;
+
 }

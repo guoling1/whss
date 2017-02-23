@@ -30,5 +30,5 @@ public interface SendMsgService {
     /**
      * 审核不通过推送
      */
-    void sendAuditNoThroughMessage(String name, Date TransitTime, String toUsers);
+    void sendAuditNoThroughMessage(String name, String desr, String toUsers);
 }

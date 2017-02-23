@@ -8,7 +8,9 @@ import lombok.Getter;
 public enum EnumSource {
     SCAN(0, "扫码注册"),
 
-    RECOMMEND(1, "推荐注册");
+    RECOMMEND(1, "邀请注册"),
+
+    DEALERRECOMMEND(2, "代理商邀请注册");
 
     @Getter
     private int id;
