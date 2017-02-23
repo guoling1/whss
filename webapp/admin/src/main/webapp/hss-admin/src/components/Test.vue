@@ -1194,3 +1194,405 @@
   }
 </style>-->
 
+<!--新增通道-->
+<template lang="html">
+  <div id="agentAddBase">
+    <div style="margin: 15px 15px 150px;">
+      <div class="box tableTop">
+        <div class="box-header with-border">
+          <h3 class="box-title" v-if="isShow">新增通道</h3>
+          <h3 class="box-title" v-if="!isShow">通道详情</h3>
+        </div>
+        <div class="">
+          <div class="table-responsive">
+            <el-row type="flex" class="row-bg" justify="center">
+              <el-col :span="4">
+                <div class="alignRight">通道名称:</div>
+              </el-col>
+              <el-col :span="6">
+                <div class="grid-content bg-purple-light">
+                  <el-input size="small" v-model="query.mobile" placeholder="请输入内容"></el-input>
+                </div>
+              </el-col>
+              <el-col :span="8">
+                <div class="grid-content bg-purple-light">例如：华有支付宝</div>
+              </el-col>
+            </el-row>
+            <el-row type="flex" class="row-bg" justify="center">
+              <el-col :span="4">
+                <div class="alignRight">通道编码:</div>
+              </el-col>
+              <el-col :span="6">
+                <div class="grid-content bg-purple-light">
+                  <el-input size="small" v-model="query.name" placeholder="请输入内容"></el-input>
+                </div>
+              </el-col>
+              <el-col :span="8">
+                <div class="grid-content bg-purple-light">例如：SM_Alipay</div>
+              </el-col>
+            </el-row>
+            <el-row type="flex" class="row-bg" justify="center" v-if="!isShow">
+              <el-col :span="4">
+                <div class="alignRight">收单机构:</div>
+              </el-col>
+              <el-col :span="6">
+                <div class="grid-content bg-purple-light">
+                  <el-input size="small" v-model="query.markCode" placeholder="请输入内容" :disabled="true"></el-input>
+                </div>
+              </el-col>
+              <el-col :span="8">
+                <div class="grid-content bg-purple-light">例如：支付宝、微信、京东钱包、百度钱包</div>
+              </el-col>
+            </el-row>
+            <el-row type="flex" class="row-bg" justify="center">
+              <el-col :span="4">
+                <div class="alignRight">渠道来源:</div>
+              </el-col>
+              <el-col :span="6">
+                <div class="grid-content bg-purple-light">
+                  <el-input size="small" v-model="query.loginName" placeholder="数字或字母的组合，4-20位"></el-input>
+                </div>
+              </el-col>
+              <el-col :span="8">
+                <div class="grid-content bg-purple-light">例如：华有，显示给用户</div>
+              </el-col>
+            </el-row>
+            <el-row type="flex" class="row-bg" justify="center">
+              <el-col :span="4">
+                <div class="alignRight">支付费率:</div>
+              </el-col>
+              <el-col :span="6">
+                <div class="grid-content bg-purple-light">
+                  <el-input size="small" v-model="query.email" placeholder="请输入内容"></el-input>
+                </div>
+              </el-col>
+              <el-col :span="8">
+                <div class="grid-content bg-purple-light">例如：0.3%</div>
+              </el-col>
+            </el-row>
+            <el-row type="flex" class="row-bg" justify="center" v-if="!isShow">
+              <el-col :span="4">
+                <div class="alignRight">上级代理名称:</div>
+              </el-col>
+              <el-col :span="6">
+                <div class="grid-content bg-purple-light">
+                  <el-radio class="radio" v-model="query.distributeType" label="1">按码段</el-radio>
+                  <el-radio class="radio" v-model="query.distributeType" label="2">按个数</el-radio>
+                </div>
+              </el-col>
+              <el-col :span="8">
+                <div class="grid-content bg-purple-light"></div>
+              </el-col>
+            </el-row>
+            <el-row type="flex" class="row-bg" justify="center" v-if="!isShow">
+              <el-col :span="4">
+                <div class="alignRight">上级代理编号:</div>
+              </el-col>
+              <el-col :span="6">
+                <div class="grid-content bg-purple-light">
+                  <el-input size="small" v-model="query.firstMarkCode" placeholder="请输入内容" :disabled="true"></el-input>
+                </div>
+              </el-col>
+              <el-col :span="8">
+                <div class="grid-content bg-purple-light"></div>
+              </el-col>
+            </el-row>
+          </div>
+        </div>
+        <div>
+          <div class="box-header">
+            <h3 class="box-title title2">结算信息设置：</h3>
+          </div>
+          <div class="table-responsive">
+            <el-row type="flex" class="row-bg" justify="center">
+              <el-col :span="4">
+                <div class="alignRight">结算卡:</div>
+              </el-col>
+              <el-col :span="6">
+                <div class="grid-content bg-purple-light">
+                  <el-input size="small" v-model="query.bankCard" placeholder="请输入内容"></el-input>
+                </div>
+              </el-col>
+              <el-col :span="8">
+                <div class="grid-content bg-purple-light"></div>
+              </el-col>
+            </el-row>
+            <el-row type="flex" class="row-bg" justify="center">
+              <el-col :span="4">
+                <div class="alignRight">开户名称:</div>
+              </el-col>
+              <el-col :span="6">
+                <div class="grid-content bg-purple-light">
+                  <el-input size="small" v-model="query.bankAccountName" placeholder="请输入内容"></el-input>
+                </div>
+              </el-col>
+              <el-col :span="8">
+                <div class="grid-content bg-purple-light"></div>
+              </el-col>
+            </el-row>
+            <el-row type="flex" class="row-bg" justify="center">
+              <el-col :span="4">
+                <div class="alignRight">身份证号:</div>
+              </el-col>
+              <el-col :span="6">
+                <div class="grid-content bg-purple-light">
+                  <el-input size="small" v-model="query.idCard" placeholder="请输入内容"></el-input>
+                </div>
+              </el-col>
+              <el-col :span="8">
+                <div class="grid-content bg-purple-light"></div>
+              </el-col>
+            </el-row>
+            <el-row type="flex" class="row-bg" justify="center">
+              <el-col :span="4">
+                <div class="alignRight">开户手机号:</div>
+              </el-col>
+              <el-col :span="6">
+                <div class="grid-content bg-purple-light">
+                  <el-input size="small" v-model="query.bankReserveMobile" placeholder="请输入内容"></el-input>
+                </div>
+              </el-col>
+              <el-col :span="8">
+                <div class="grid-content bg-purple-light"></div>
+              </el-col>
+            </el-row>
+          </div>
+        </div>
+        <el-row type="flex" class="row-bg" justify="center">
+          <el-col :span="4">
+            <div class="alignRight"></div>
+          </el-col>
+          <el-col :span="6">
+            <div class="grid-content bg-purple-light" style="width: 100%">
+              <div class="btn btn-primary" @click="goBack" style="width: 45%;margin: 20px 0 100px;">
+                返回
+              </div>
+              <div class="btn btn-primary" @click="create" v-if="isShow" style="width: 45%;float: right;margin: 20px 0 100px;">
+                创建代理商
+              </div>
+              <div class="btn btn-primary" @click="change()" v-if="!isShow" style="width: 45%;float: right;margin: 20px 0 100px;">
+                修改
+              </div>
+            </div>
+          </el-col>
+          <el-col :span="8">
+            <div class="grid-content bg-purple-light"></div>
+          </el-col>
+        </el-row>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script lang="babel">
+  export default {
+    name: 'agentAddBase',
+    data () {
+      return {
+        dialogFormVisible: false,
+        password:'',
+        provinces: '',
+        citys: '',
+        province: '',
+        city: '',
+        level: '',
+        query: {
+          mobile: '',
+          name: '',
+          loginName:'',
+          loginPwd:'',
+          email:'',
+          belongProvinceCode:'',
+          belongProvinceName:'',
+          belongCityCode: '',
+          belongCityName: '',
+          belongArea: '',
+          bankCard: '',
+          bankAccountName: '',
+          bankReserveMobile: '',
+          idCard: '',
+        },
+        id: 0,
+        isShow: true,
+        productId: ''
+      }
+    },
+    created: function () {
+      //获取所有省
+      this.$http.post('/admin/district/findAllDistrict')
+        .then(function (res) {
+          this.$data.provinces = res.data;
+        })
+        .catch(function (err) {
+          this.$message({
+            showClose: true,
+            message: err.statusMessage,
+            type: 'error'
+          })
+        })
+      //若为查看详情
+      if (this.$route.query.id != undefined) {
+        this.$data.isShow = false;
+        this.$http.get('/admin/dealer/findBydealerId/' + this.$route.query.id)
+          .then(function (res) {
+            this.$data.query = res.data;
+            this.$data.province = res.data.belongProvinceName;
+            this.$data.city = res.data.belongCityName;
+          })
+      }
+      this.$data.level = this.$route.query.level;
+    },
+    watch: {
+      province: function (val, oldval) {
+        if (val != oldval&&oldval!="") {
+          this.$data.city = '';
+          this.$data.query.province = this.$data.province;
+        }
+        if (this.$data.province != '') {
+          for (var i = 0; i < this.$data.provinces.length; i++) {
+            if (this.$data.provinces[i].aname == this.$data.province) {
+              this.$data.query.belongProvinceCode= this.$data.provinces[i].code
+              this.$data.query.belongProvinceName= this.$data.province
+              this.$data.citys = this.$data.provinces[i].list
+            }
+          }
+        }
+      },
+      city: function (val, oldval) {
+        if (val != oldval) {
+          this.$data.query.belongCityName = this.$data.city;
+          for(var i=0;i<this.$data.citys.length;i++){
+            if(this.$data.citys[i].aname == this.$data.city){
+              this.$data.query.belongCityCode = this.$data.citys[i].code;
+            }
+          }
+        }
+      }
+    },
+    methods: {
+      //修改密码
+      resetPw:function() {
+        this.$http.post('/admin/dealer/updatePwd',{dealerId:this.$route.query.id,loginPwd:this.$data.password})
+          .then(function (res) {
+            this.$data.dialogFormVisible = false;
+            this.$data.password = '';
+            this.$message({
+              showClose: true,
+              type: 'success',
+              message: '修改成功'
+            });
+          })
+          .catch(function (err) {
+            this.$message({
+              showClose: true,
+              message: err.statusMessage,
+              type: 'error'
+            })
+          })
+        /*this.$prompt('请输入新密码', '修改密码', {
+         confirmButtonText: '确定',
+         cancelButtonText: '取消',
+         }).then(({ value }) => {
+         this.$http.post('/admin/dealer/updatePwd',{dealerId:this.$route.query.id,loginPwd:value})
+         .then(function (res) {
+         this.$message({
+         showClose: true,
+         type: 'success',
+         message: '修改成功'
+         });
+         })
+         .catch(function (err) {
+         this.$message({
+         showClose: true,
+         message: err.statusMessage,
+         type: 'error'
+         })
+         })
+
+         }).catch(() => {
+         this.$message({
+         type: 'info',
+         message: '取消修改'
+         });
+         });*/
+      },
+      //创建一级代理
+      create: function () {
+        this.$http.post('/admin/user/addFirstDealer2', this.$data.query)
+          .then(function (res) {
+            this.$message({
+              showClose: true,
+              message: '创建成功',
+              type: 'success'
+            });
+            this.$router.push('/admin/record/agentListFir')
+          }, function (err) {
+            this.$message({
+              showClose: true,
+              message: err.statusMessage,
+              type: 'error'
+            });
+          })
+      },
+      goBack: function () {
+        if(this.$route.query.level==2){
+          this.$router.push('/admin/record/agentListSec')
+        }else {
+          this.$router.push('/admin/record/agentListFir')
+        }
+      },
+      //修改
+      change: function () {
+        this.$data.query.dealerId = this.$data.query.id;
+        this.$http.post('/admin/user/updateDealer2', this.$data.query)
+          .then(function (res) {
+            this.$message({
+              showClose: true,
+              message: '修改成功',
+              type: 'success'
+            });
+            if(this.$route.query.level==2){
+              this.$router.push('/admin/record/agentListSec')
+            }else {
+              this.$router.push('/admin/record/agentListFir')
+            }
+          }, function (err) {
+            this.$message({
+              showClose: true,
+              message: err.statusMessage,
+              type: 'error'
+            });
+          })
+      }
+    },
+    filters: {
+      changeName: function (val) {
+        if (val == 101) {
+          val = '阳光微信扫码'
+        } else if (val == 102) {
+          val = '阳光支付宝扫码'
+        } else if (val == 103) {
+          val = '阳光银联支付'
+        }
+        return val;
+      }
+    }
+  }
+</script>
+
+<!-- Add "scoped" attribute to limit CSS to this component only -->
+<style scoped lang="less">
+  .alignRight {
+    margin-right: 15px;
+    text-align: right;
+    height: 30px;
+    line-height: 30px;
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+
+  .title2 {
+    margin-left: 10%;
+  }
+</style>
+
