@@ -107,8 +107,9 @@ public class DealerServiceImpl implements DealerService {
         final Map<String, Pair<Long,BigDecimal>> map = new HashMap<>();
         //判断该经销商属于哪个代理, 若不属于代理, 则分润进入公司资金帐户
         if (merchantInfo.getDealerId() == 0){
-            final List<ProductChannelDetail> list = this.productChannelDetailService.selectByChannelTypeSign(orderRecord.getPayChannel());
-            final ProductChannelDetail productChannelDetail = list.get(0);
+            final ProductChannelDetail productChannelDetail =
+                    this.productChannelDetailService.selectByProductIdAndChannelId(merchantInfo.getProductId(), orderRecord.getPayChannel()).get();
+
             final Optional<BasicChannel> channelOptional =  this.basicChannelService.selectByChannelTypeSign(orderRecord.getPayChannel());
             final BasicChannel basicChannel = channelOptional.get();
             final BigDecimal waitOriginMoney = totalFee.multiply(productChannelDetail.getProductMerchantPayRate());
@@ -260,8 +261,8 @@ public class DealerServiceImpl implements DealerService {
         final Map<String, Triple<Long, BigDecimal, BigDecimal>> map = new HashMap<>();
         //判断该经销商属于哪个代理, 若不属于代理, 则分润进入公司资金帐户
         if (appAuUser.getDealerID() == 0){
-            final List<ProductChannelDetail> list = this.productChannelDetailService.selectByChannelTypeSign(channelSign);
-            final ProductChannelDetail productChannelDetail = list.get(0);
+            final ProductChannelDetail productChannelDetail =
+                    this.productChannelDetailService.selectByProductIdAndChannelId(appAuUser.getId(), channelSign).get();
             final Optional<BasicChannel> channelOptional =  this.basicChannelService.selectByChannelTypeSign(channelSign);
             final BasicChannel basicChannel = channelOptional.get();
             //商户手续费
@@ -289,7 +290,7 @@ public class DealerServiceImpl implements DealerService {
             }
 
             //获取产品的信息, 产品通道的费率
-            final Optional<Product> productOptional = this.productService.selectById(productChannelDetail.getProductId());
+            final Optional<Product> productOptional = this.productService.selectById(appAuUser.getProductID());
             final  Product product = productOptional.get();
 
             //通道成本
@@ -871,8 +872,9 @@ public class DealerServiceImpl implements DealerService {
         final Map<String, Triple<Long, BigDecimal, BigDecimal>> map = new HashMap<>();
         //判断该经销商属于哪个代理, 若不属于代理, 则分润进入公司资金帐户
         if (merchantInfo.getDealerId() == 0){
-            final List<ProductChannelDetail> list = this.productChannelDetailService.selectByChannelTypeSign(channelSign);
-            final ProductChannelDetail productChannelDetail = list.get(0);
+            //final List<ProductChannelDetail> list = this.productChannelDetailService.selectByChannelTypeSign(channelSign);
+            final ProductChannelDetail productChannelDetail =
+                    this.productChannelDetailService.selectByProductIdAndChannelId(merchantInfo.getProductId(),channelSign).get();
             final Optional<BasicChannel> channelOptional =  this.basicChannelService.selectByChannelTypeSign(channelSign);
             final BasicChannel basicChannel = channelOptional.get();
             //商户手续费
@@ -900,7 +902,7 @@ public class DealerServiceImpl implements DealerService {
             }
 
             //获取产品的信息, 产品通道的费率
-            final Optional<Product> productOptional = this.productService.selectById(productChannelDetail.getProductId());
+            final Optional<Product> productOptional = this.productService.selectById(merchantInfo.getProductId());
             final  Product product = productOptional.get();
 
             //通道成本
