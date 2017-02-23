@@ -279,18 +279,18 @@
         this.$http.get('/admin/user/userDetail/' + this.$route.query.id)
           .then(function (res) {
             this.$data.query = res.data;
-            if (res.data.identityFacePic != null) {
+            if (res.data.realIdentityFacePic != null) {
               this.fileList.push({
-                url: res.data.identityFacePic
+                url: res.data.realIdentityFacePic
               });
               setTimeout(function () {
                 var aSpan = document.getElementById('phone').getElementsByTagName('span')[0];
                 document.getElementsByClassName('el-draggeer__cover__btns')[0].removeChild(aSpan)
               }, 300)
             }
-            if (res.data.identityOppositePic != null) {
+            if (res.data.realIdentityOppositePic != null) {
               this.fileList1.push({
-                url: res.data.identityOppositePic
+                url: res.data.realIdentityOppositePic
               })
               setTimeout(function () {
                 var aSpan = document.getElementById('phone1').getElementsByTagName('span')[0];
