@@ -21,6 +21,15 @@ public interface SettleAccountFlowService {
     void add(SettleAccountFlow accountFlow);
 
     /**
+     * 保存结算单id
+     *
+     * @param id
+     * @param settlementRecordId
+     * @return
+     */
+    int updateSettlementRecordIdById(long id, long settlementRecordId);
+
+    /**
      * 保存结算审核记录
      *
      * @param orderNos
@@ -56,7 +65,7 @@ public interface SettleAccountFlowService {
      * @param remark  备注
      * @param type 变更方向
      */
-    void addSettleAccountFlow(long accountId, String orderNo, BigDecimal changeAmount, String remark, EnumAccountFlowType type,
+    long addSettleAccountFlow(long accountId, String orderNo, BigDecimal changeAmount, String remark, EnumAccountFlowType type,
             String appId, Date tradeDate, int accountUserType);
 
     /**
@@ -84,4 +93,12 @@ public interface SettleAccountFlowService {
      * @return
      */
     List<SettleAccountFlow> getDealerOrCompanyFlowByOrderNo(String orderNo);
+
+    /**
+     * 按结算单id查询
+     *
+     * @param settlementRecordId
+     * @return
+     */
+    List<SettleAccountFlow> getBySettlementRecordId(long settlementRecordId);
 }

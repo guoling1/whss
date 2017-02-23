@@ -6,6 +6,7 @@ import com.google.common.base.Preconditions;
 import com.jkm.base.common.util.HttpClientPost;
 import com.jkm.hss.account.entity.Account;
 import com.jkm.hss.account.entity.FrozenRecord;
+import com.jkm.hss.account.entity.SettleAccountFlow;
 import com.jkm.hss.account.entity.UnFrozenRecord;
 import com.jkm.hss.account.enums.*;
 import com.jkm.hss.account.helper.AccountConstants;
@@ -13,12 +14,14 @@ import com.jkm.hss.account.sevice.*;
 import com.jkm.hss.bill.entity.Order;
 import com.jkm.hss.bill.entity.PaymentSdkDaiFuRequest;
 import com.jkm.hss.bill.entity.PaymentSdkDaiFuResponse;
+import com.jkm.hss.bill.entity.SettlementRecord;
 import com.jkm.hss.bill.entity.callback.PaymentSdkWithdrawCallbackResponse;
 import com.jkm.hss.bill.enums.*;
 import com.jkm.hss.bill.helper.PaymentSdkConstants;
 import com.jkm.hss.bill.helper.SdkSerializeUtil;
 import com.jkm.hss.bill.service.CalculateService;
 import com.jkm.hss.bill.service.OrderService;
+import com.jkm.hss.bill.service.SettlementRecordService;
 import com.jkm.hss.bill.service.WithdrawService;
 import com.jkm.hss.dealer.entity.Dealer;
 import com.jkm.hss.dealer.service.DealerService;
@@ -29,8 +32,9 @@ import com.jkm.hss.merchant.helper.MerchantSupport;
 import com.jkm.hss.merchant.service.MerchantInfoService;
 import com.jkm.hss.merchant.service.SendMsgService;
 import com.jkm.hss.merchant.service.UserInfoService;
+import com.jkm.hss.product.enums.EnumBalanceTimeType;
+import com.jkm.hss.product.enums.EnumPayChannelSign;
 import com.jkm.hss.product.enums.EnumProductType;
-import com.jkm.hss.product.enums.EnumUpperChannel;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
@@ -40,6 +44,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -64,89 +69,70 @@ public class WithdrawServiceImpl implements WithdrawService {
     @Autowired
     private UnfrozenRecordService unfrozenRecordService;
     @Autowired
-    private CalculateService calculateService;
-    @Autowired
     private ShallProfitDetailService shallProfitDetailService;
     @Autowired
     private SplitAccountRecordService splitAccountRecordService;
+    @Autowired
+    private CalculateService calculateService;
     @Autowired
     private DealerService dealerService;
     @Autowired
     private SendMsgService sendMsgService;
     @Autowired
     private UserInfoService userInfoService;
+    @Autowired
+    private SettlementRecordService settlementRecordService;
 
     /**
      * {@inheritDoc}
      *
      * @param merchantId
-     * @param payOrderId 交易单（支付单）id
+     * @param settlementRecordId 交易单（支付单）id
      * @param payOrderSn 支付中心支付流水号
-     * @param tradePeriod 结算周期
-     * @return
-     */
-    @Override
-    public Pair<Integer, String> merchantWithdrawByOrder(final long merchantId, final long payOrderId, final String payOrderSn, final String tradePeriod) {
-        log.info("商户[{}]，对支付交易订单[{}],进行提现", merchantId, payOrderId);
-        final long playMoneyOrderId = this.orderService.createPlayMoneyOrderByPayOrder(payOrderId, merchantId, tradePeriod);
-        return this.withdrawByOrder(merchantId, playMoneyOrderId, payOrderSn, tradePeriod);
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @param merchantId merchantId
-     * @param playMoneyOrderId
-     * @param tradePeriod
+     * @param payChannelSign 结算周期
      * @return
      */
     @Override
     @Transactional
-    public Pair<Integer, String> withdrawByOrder(final long merchantId, final long playMoneyOrderId,  final String payOrderSn, final String tradePeriod) {
+    public Pair<Integer, String> merchantWithdrawBySettlementRecord(final long merchantId, final long settlementRecordId, final String payOrderSn, final int payChannelSign) {
+        log.info("商户[{}]，对结算单[{}], 进行提现", merchantId, settlementRecordId);
         final MerchantInfo merchant = this.merchantInfoService.selectById(merchantId).get();
-        final Account account = this.accountService.getByIdWithLock(merchant.getAccountId()).get();
-        final Order playMoneyOrder = this.orderService.getByIdWithLock(playMoneyOrderId).get();
-        this.accountService.decreaseAvailableAmount(account.getId(), playMoneyOrder.getTradeAmount());
-        this.accountService.increaseFrozenAmount(account.getId(), playMoneyOrder.getTradeAmount());
-        final FrozenRecord frozenRecord = new FrozenRecord();
-        frozenRecord.setAccountId(account.getId());
-        frozenRecord.setBusinessNo(playMoneyOrder.getOrderNo());
-        frozenRecord.setFrozenAmount(playMoneyOrder.getTradeAmount());
-        frozenRecord.setFrozenTime(new Date());
-        frozenRecord.setRemark("提现");
-        this.frozenRecordService.add(frozenRecord);
-        //添加账户流水--减少
-        this.accountFlowService.addAccountFlow(account.getId(), playMoneyOrder.getOrderNo(), playMoneyOrder.getTradeAmount(),
-                "提现", EnumAccountFlowType.DECREASE);
-
-        final PaymentSdkDaiFuRequest paymentSdkDaiFuRequest = new PaymentSdkDaiFuRequest();
-        paymentSdkDaiFuRequest.setAppId(playMoneyOrder.getAppId());
-        paymentSdkDaiFuRequest.setOrderNo(playMoneyOrder.getOrderNo());
-        paymentSdkDaiFuRequest.setTotalAmount(playMoneyOrder.getTradeAmount().subtract(playMoneyOrder.getPoundage()).toPlainString());
-        paymentSdkDaiFuRequest.setTradeType(tradePeriod);
-        paymentSdkDaiFuRequest.setIsCompany("0");
-        paymentSdkDaiFuRequest.setMobile(MerchantSupport.decryptMobile(merchant.getMobile()));
-        paymentSdkDaiFuRequest.setBankName(merchant.getBankName());
-        paymentSdkDaiFuRequest.setAccountName(merchant.getName());
-        paymentSdkDaiFuRequest.setAccountNumber(MerchantSupport.decryptBankCard(merchant.getBankNo()));
-        paymentSdkDaiFuRequest.setIdCard(MerchantSupport.decryptIdentity(merchant.getIdentity()));
-        paymentSdkDaiFuRequest.setPlayMoneyChannel(EnumUpperChannel.SAOMI.getId());
-        paymentSdkDaiFuRequest.setNote(merchant.getMerchantName());
-        paymentSdkDaiFuRequest.setSystemCode(playMoneyOrder.getAppId());
-        paymentSdkDaiFuRequest.setNotifyUrl(PaymentSdkConstants.SDK_PAY_WITHDRAW_NOTIFY_URL);
-        paymentSdkDaiFuRequest.setPayOrderSn(payOrderSn);
-        //请求网关
-        PaymentSdkDaiFuResponse response;
-        try {
-            final String content = HttpClientPost.postJson(PaymentSdkConstants.SDK_PAY_WITHDRAW,
-                    SdkSerializeUtil.convertObjToMap(paymentSdkDaiFuRequest));
-            response = JSON.parseObject(content, PaymentSdkDaiFuResponse.class);
-        } catch (final Throwable e) {
-            log.error("交易订单[" + playMoneyOrder.getOrderNo() + "], 请求网关支付异常", e);
-            return Pair.of(-1, "请求网关异常， 提现失败");
+        final SettlementRecord settlementRecord = this.settlementRecordService.getById(settlementRecordId).get();
+        if (settlementRecord.isWaitWithdraw()) {
+            final BigDecimal merchantWithdrawPoundage = this.calculateService.getMerchantWithdrawPoundage(EnumProductType.HSS, merchantId, payChannelSign);
+            final PaymentSdkDaiFuRequest paymentSdkDaiFuRequest = new PaymentSdkDaiFuRequest();
+            paymentSdkDaiFuRequest.setAppId(settlementRecord.getAppId());
+            paymentSdkDaiFuRequest.setOrderNo(settlementRecord.getSettleNo());
+            paymentSdkDaiFuRequest.setTotalAmount(settlementRecord.getSettleAmount().subtract(merchantWithdrawPoundage).toPlainString());
+            paymentSdkDaiFuRequest.setTradeType(EnumBalanceTimeType.D0.getType());
+            paymentSdkDaiFuRequest.setIsCompany("0");
+            paymentSdkDaiFuRequest.setMobile(MerchantSupport.decryptMobile(merchant.getMobile()));
+            paymentSdkDaiFuRequest.setBankName(merchant.getBankName());
+            paymentSdkDaiFuRequest.setAccountName(merchant.getName());
+            paymentSdkDaiFuRequest.setAccountNumber(MerchantSupport.decryptBankCard(merchant.getBankNo()));
+            paymentSdkDaiFuRequest.setIdCard(MerchantSupport.decryptIdentity(merchant.getIdentity()));
+            paymentSdkDaiFuRequest.setPlayMoneyChannel(EnumPayChannelSign.idOf(payChannelSign).getUpperChannel().getId());
+            paymentSdkDaiFuRequest.setNote(merchant.getMerchantName());
+            paymentSdkDaiFuRequest.setSystemCode(settlementRecord.getAppId());
+            paymentSdkDaiFuRequest.setNotifyUrl(PaymentSdkConstants.SDK_PAY_WITHDRAW_NOTIFY_URL);
+            paymentSdkDaiFuRequest.setPayOrderSn(payOrderSn);
+            //请求网关
+            PaymentSdkDaiFuResponse response;
+            try {
+                final String content = HttpClientPost.postJson(PaymentSdkConstants.SDK_PAY_WITHDRAW,
+                        SdkSerializeUtil.convertObjToMap(paymentSdkDaiFuRequest));
+                response = JSON.parseObject(content, PaymentSdkDaiFuResponse.class);
+            } catch (final Throwable e) {
+                log.error("结算单[" + settlementRecord.getSettleNo() + "], 请求网关支付异常", e);
+                return Pair.of(-1, "请求网关异常， 提现失败");
+            }
+            this.settlementRecordService.updateStatus(settlementRecordId, EnumSettlementRecordStatus.WITHDRAWING.getId());
+            return this.handleWithdrawResult(settlementRecordId, response);
         }
-        return this.handleWithdrawResult(playMoneyOrder.getId(), merchant.getAccountId(), response);
+        log.error("商户[{}]，结算单[{}]不可以提现, 状态[{}]", merchantId, settlementRecordId, settlementRecord.getStatus());
+        return Pair.of(-1, "当前结算单不可以提现");
     }
+
 
     /**
      * {@inheritDoc}
@@ -156,10 +142,9 @@ public class WithdrawServiceImpl implements WithdrawService {
     @Override
     @Transactional
     public void handleWithdrawCallbackMsg(final PaymentSdkWithdrawCallbackResponse paymentSdkWithdrawCallbackResponse) {
-        final Order order = this.orderService.getByOrderNoAndTradeType(paymentSdkWithdrawCallbackResponse.getOrderNo(), EnumTradeType.WITHDRAW.getId()).get();
-//        final MerchantInfo merchant = this.merchantInfoService.getByAccountId().get();
-        if (order.isWithDrawing()) {
-            this.handleWithdrawResult(order.getId(), order.getPayer(), paymentSdkWithdrawCallbackResponse);
+        final SettlementRecord settlementRecord = this.settlementRecordService.getBySettleNo(paymentSdkWithdrawCallbackResponse.getOrderNo()).get();
+        if (settlementRecord.isWithdrawing()) {
+            this.handleWithdrawResult(settlementRecord.getId(), paymentSdkWithdrawCallbackResponse);
         }
     }
 
@@ -167,30 +152,27 @@ public class WithdrawServiceImpl implements WithdrawService {
     /**
      * 处理提现结果
      *
-     * @param orderId
-     * @param accountId
+     * @param settlementRecordId 结算单id
      * @param response
      * @return
      */
-    private Pair<Integer, String> handleWithdrawResult(final long orderId, final long accountId,
-                                                       final PaymentSdkDaiFuResponse response) {
-        final Order order = this.orderService.getByIdWithLock(orderId).get();
-        if (order.isWithDrawing()) {
+    private Pair<Integer, String> handleWithdrawResult(final long settlementRecordId, final PaymentSdkDaiFuResponse response) {
+        final SettlementRecord settlementRecord = this.settlementRecordService.getByIdWithLock(settlementRecordId).get();
+        if (settlementRecord.isWithdrawing()) {
             final EnumBasicStatus status = EnumBasicStatus.of(response.getStatus());
             switch (status) {
                 case SUCCESS:
-                    this.markWithdrawSuccess(orderId, accountId, response);
+                    this.markWithdrawSuccess(settlementRecord.getId(), response);
                     return Pair.of(0, response.getMessage());
                 case FAIL:
-                    log.info("交易订单[{}]，提现失败", order.getOrderNo());
-                    this.markWithdrawFail(orderId, accountId, response);
+                    log.info("结算单号[{}]，提现失败", settlementRecord.getSettleNo());
+//                    this.markWithdrawFail(settlementRecord.getId(), response);
                     return Pair.of(-1, response.getMessage());
                 case HANDLING:
-                    log.info("交易订单[{}]，提现处理中", order.getOrderNo());
-                    this.orderService.updateRemark(order.getId(), response.getMessage());
+                    log.info("结算单号[{}]，提现处理中", settlementRecord.getSettleNo());
                     return Pair.of(1,  response.getMessage());
                 default:
-                    log.error("#####交易订单[{}]，返回状态异常######", order.getOrderNo());
+                    log.error("#####结算单号[{}]，返回状态异常######", settlementRecord.getSettleNo());
                     break;
             }
         }
@@ -200,51 +182,33 @@ public class WithdrawServiceImpl implements WithdrawService {
     /**
      * 提现成功
      *
-     * @param orderId
-     * @param accountId
+     * @param settlementRecordId
      * @param response
      */
-    private void markWithdrawSuccess(final long orderId, final long accountId,
-                                     final PaymentSdkDaiFuResponse response) {
-        final Order order = this.orderService.getByIdWithLock(orderId).get();
-        if (order.isWithDrawing()) {
-            final Account account = this.accountService.getByIdWithLock(accountId).get();
-            order.setStatus(EnumOrderStatus.WITHDRAW_SUCCESS.getId());
-            order.setRemark(response.getMessage());
-            order.setSn(response.getSn());
-            this.orderService.update(order);
-            final FrozenRecord frozenRecord = this.frozenRecordService.getByBusinessNo(response.getOrderNo()).get();
-            //解冻金额
-            final UnFrozenRecord unFrozenRecord = new UnFrozenRecord();
-            unFrozenRecord.setAccountId(account.getId());
-            unFrozenRecord.setFrozenRecordId(frozenRecord.getId());
-            unFrozenRecord.setBusinessNo(order.getOrderNo());
-            unFrozenRecord.setUnfrozenType(EnumUnfrozenType.CONSUME.getId());
-            unFrozenRecord.setUnfrozenAmount(frozenRecord.getFrozenAmount());
-            unFrozenRecord.setUnfrozenTime(new Date());
-            unFrozenRecord.setRemark("提现成功");
-            this.unfrozenRecordService.add(unFrozenRecord);
-            //减少总金额,减少冻结金额
-            Preconditions.checkState(account.getFrozenAmount().compareTo(frozenRecord.getFrozenAmount()) >= 0);
-            Preconditions.checkState(account.getTotalAmount().compareTo(frozenRecord.getFrozenAmount()) >= 0);
-            this.accountService.decreaseFrozenAmount(accountId, frozenRecord.getFrozenAmount());
-            this.accountService.decreaseTotalAmount(accountId, frozenRecord.getFrozenAmount());
-            //入账到手续费账户
-            this.merchantPoundageRecorded(orderId);
-            final Optional<Order> orderOptional = this.orderService.getByIdWithLock(order.getId());
-            if (orderOptional.get().isWithdrawSuccess() && (orderOptional.get().isDueSettle() || orderOptional.get().isSettleing())) {
-                //将交易单标记为结算中
-                log.info("交易订单[{}], 提现分润--结算", order.getOrderNo());
-                this.orderService.updateSettleStatus(orderOptional.get().getId(), EnumSettleStatus.SETTLE_ING.getId());
-                this.merchantPoundageSettle(orderOptional.get(), order.getPayer());
-                //结算完毕
-                this.orderService.updateSettleStatus(orderOptional.get().getId(), EnumSettleStatus.SETTLED.getId());
-            }
-            final MerchantInfo merchant= this.merchantInfoService.getByAccountId(order.getPayer()).get();
+    private void markWithdrawSuccess(final long settlementRecordId, final PaymentSdkDaiFuResponse response) {
+        final SettlementRecord settlementRecord = this.settlementRecordService.getByIdWithLock(settlementRecordId).get();
+        if (settlementRecord.isWithdrawing()) {
+            final List<SettleAccountFlow> settleAccountFlows = this.settleAccountFlowService.getBySettlementRecordId(settlementRecordId);
+            final SettleAccountFlow settleAccountFlow = settleAccountFlows.get(0);
+            final MerchantInfo merchant = this.merchantInfoService.getByAccountId(settleAccountFlow.getAccountId()).get();
+            final Order payOrder = this.orderService.getByOrderNo(settleAccountFlow.getOrderNo()).get();
+            final BigDecimal merchantWithdrawPoundage = this.calculateService.getMerchantWithdrawPoundage(EnumProductType.HSS, merchant.getId(), payOrder.getPayChannelSign());
+
+            //手续费账户入可用余额
+            final Account poundageAccount = this.accountService.getByIdWithLock(AccountConstants.POUNDAGE_ACCOUNT_ID).get();
+            this.accountService.increaseTotalAmount(poundageAccount.getId(), merchantWithdrawPoundage);
+            this.accountService.increaseAvailableAmount(poundageAccount.getId(), merchantWithdrawPoundage);
+            this.accountFlowService.addAccountFlow(poundageAccount.getId(), settlementRecord.getSettleNo(), merchantWithdrawPoundage,
+                    "D0提现分润", EnumAccountFlowType.INCREASE);
+            log.info("结算单[{}], 提现分润--结算", settlementRecord.getSettleNo());
+//            this.merchantPoundageSettle(orderOptional.get(), order.getPayer());
+            //结算完毕
+            this.orderService.updateSettleStatus(payOrder.getId(), EnumSettleStatus.SETTLED.getId());
+            this.settlementRecordService.updateSettleStatus(settlementRecordId, EnumSettleStatus.SETTLED.getId());
             final UserInfo user = userInfoService.selectByMerchantId(merchant.getId()).get();
-            log.info("商户[{}], 提现单[{}], 提现成功", merchant.getId(), order.getOrderNo());
-            this.sendMsgService.sendPushMessage(order.getTradeAmount(), orderOptional.get().getCreateTime(),
-                    orderOptional.get().getPoundage(), merchant.getBankNoShort(), user.getOpenId());
+            log.info("商户[{}], 结算单[{}], 提现成功", merchant.getId(), settlementRecord.getSettleNo());
+            this.sendMsgService.sendPushMessage(settlementRecord.getSettleAmount(), settlementRecord.getCreateTime(),
+                    merchantWithdrawPoundage, merchant.getBankNoShort(), user.getOpenId());
         }
     }
 
@@ -258,26 +222,6 @@ public class WithdrawServiceImpl implements WithdrawService {
     private void  markWithdrawFail(final long orderId, final long accountId,
                                   final PaymentSdkDaiFuResponse response) {
         log.error("###########【Impossible】#########提现单[{}]出现--好收收暂时不会出现的一种情况：打款最终结果，上游返回失败，不可以再次补发提现####################", orderId);
-    }
-
-    /**
-     * 提现入账到手续费账户
-     *
-     * @param orderId
-     */
-    private void merchantPoundageRecorded(final long orderId) {
-        final Order order = this.orderService.getByIdWithLock(orderId).get();
-        log.info("提现单--交易订单号[{}], 进行入账操作", order.getOrderNo());
-        if (order.isWithdrawSuccess() && order.isDueSettle()) {
-            //手续费账户入可用余额
-            final Account poundageAccount = this.accountService.getByIdWithLock(AccountConstants.POUNDAGE_ACCOUNT_ID).get();
-            this.accountService.increaseTotalAmount(poundageAccount.getId(), order.getPoundage());
-            this.accountService.increaseAvailableAmount(poundageAccount.getId(), order.getPoundage());
-            this.accountFlowService.addAccountFlow(poundageAccount.getId(), order.getOrderNo(), order.getPoundage(),
-                    "提现分润", EnumAccountFlowType.INCREASE);
-//            this.settleAccountFlowService.addSettleAccountFlow(poundageAccount.getId(), order.getOrderNo(),
-//                    order.getPoundage(), "提现分润", EnumAccountFlowType.INCREASE, EnumAppType.HSS.getId(), order.getPaySuccessTime(), EnumAccountUserType.COMPANY.getId());
-        }
     }
 
     /**
@@ -304,14 +248,6 @@ public class WithdrawServiceImpl implements WithdrawService {
         //手续费账户结算
         final Account poundageAccount = this.accountService.getByIdWithLock(AccountConstants.POUNDAGE_ACCOUNT_ID).get();
         Preconditions.checkState(order.getPoundage().compareTo(poundageAccount.getAvailable()) <= 0, "该笔订单的分账手续费不可以大于手续费账户的可用余额总和");
-        //待结算--可用余额
-//        this.accountService.increaseAvailableAmount(poundageAccount.getId(), order.getPoundage());
-//        this.accountService.decreaseSettleAmount(poundageAccount.getId(), order.getPoundage());
-//        this.settleAccountFlowService.addSettleAccountFlow(poundageAccount.getId(), order.getOrderNo(), order.getPoundage(),
-//                "提现分润", EnumAccountFlowType.DECREASE, EnumAppType.HSS.getId(), order.getPaySuccessTime(), EnumAccountUserType.COMPANY.getId());
-//        this.accountFlowService.addAccountFlow(poundageAccount.getId(), order.getOrderNo(), order.getPoundage(),
-//        final Account poundageAccount1 = this.accountService.getByIdWithLock(AccountConstants.POUNDAGE_ACCOUNT_ID).get();
-//                "提现分润", EnumAccountFlowType.INCREASE);
         //分账
         this.accountService.decreaseAvailableAmount(poundageAccount.getId(), order.getPoundage());
         this.accountService.decreaseTotalAmount(poundageAccount.getId(), order.getPoundage());

@@ -1,6 +1,7 @@
 package com.jkm.hss.account.service.impl;
 
 import com.google.common.base.Optional;
+import com.jkm.base.common.util.SnGenerator;
 import com.jkm.hss.account.dao.SettleAccountFlowDao;
 import com.jkm.hss.account.entity.Account;
 import com.jkm.hss.account.entity.SettleAccountFlow;
@@ -42,11 +43,25 @@ public class SettleAccountFlowServiceImpl implements SettleAccountFlowService {
     /**
      * {@inheritDoc}
      *
+     * @param id
+     * @param settlementRecordId
+     * @return
+     */
+    @Override
+    @Transactional
+    public int updateSettlementRecordIdById(final long id, final long settlementRecordId) {
+        return this.settleAccountFlowDao.updateSettlementRecordIdById(id, settlementRecordId);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
      * @param orderNos
      * @param settleAuditRecordId
      * @return
      */
     @Override
+    @Transactional
     public int updateSettleAuditRecordIdByOrderNos(final List<String> orderNos, final long settleAuditRecordId) {
         if (CollectionUtils.isEmpty(orderNos)) {
             return 0;
@@ -90,11 +105,12 @@ public class SettleAccountFlowServiceImpl implements SettleAccountFlowService {
      */
     @Override
     @Transactional
-    public void addSettleAccountFlow(long accountId, String orderNo, BigDecimal changeAmount, String remark,
+    public long addSettleAccountFlow(long accountId, String orderNo, BigDecimal changeAmount, String remark,
                                      EnumAccountFlowType type, String appId, Date tradeDate, int accountUserType) {
         //此时的account已经是可用余额改变的结果
         final Account account = this.accountService.getByIdWithLock(accountId).get();
         final SettleAccountFlow settleAccountFlow = new SettleAccountFlow();
+        settleAccountFlow.setFlowNo(SnGenerator.generate());
         settleAccountFlow.setAccountId(account.getId());
         settleAccountFlow.setOrderNo(orderNo);
         settleAccountFlow.setType(type.getId());
@@ -116,6 +132,7 @@ public class SettleAccountFlowServiceImpl implements SettleAccountFlowService {
         settleAccountFlow.setTradeDate(tradeDate);
         settleAccountFlow.setAccountUserType(accountUserType);
         this.settleAccountFlowDao.insert(settleAccountFlow);
+        return settleAccountFlow.getId();
     }
 
     /**
@@ -150,5 +167,17 @@ public class SettleAccountFlowServiceImpl implements SettleAccountFlowService {
     @Transactional
     public List<SettleAccountFlow> getDealerOrCompanyFlowByOrderNo(final String orderNo) {
         return this.settleAccountFlowDao.selectDealerOrCompanyFlowByOrderNo(orderNo);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param settlementRecordId
+     * @return
+     */
+    @Override
+    @Transactional
+    public List<SettleAccountFlow> getBySettlementRecordId(final long settlementRecordId) {
+        return this.settleAccountFlowDao.selectBySettlementRecordId(settlementRecordId);
     }
 }

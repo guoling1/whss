@@ -21,6 +21,14 @@ public interface SettleAccountFlowDao {
     void insert(SettleAccountFlow settleAccountFlow);
 
     /**
+     * 保存结算单id
+     *
+     * @param id
+     * @return
+     */
+    int updateSettlementRecordIdById(@Param("id") long id, @Param("settlementRecordId") long settlementRecordId);
+
+    /**
      * 保存结算审核记录
      *
      * @param orderNos
@@ -70,4 +78,12 @@ public interface SettleAccountFlowDao {
      * @return
      */
     List<SettleAccountFlow> selectDealerOrCompanyFlowByOrderNo(@Param("orderNo") String orderNo);
+
+    /**
+     * 按结算单id查询
+     *
+     * @param settlementRecordId
+     * @return
+     */
+    List<SettleAccountFlow> selectBySettlementRecordId(@Param("settlementRecordId") long settlementRecordId);
 }
