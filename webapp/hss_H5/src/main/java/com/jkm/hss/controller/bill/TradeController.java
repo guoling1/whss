@@ -240,6 +240,7 @@ public class TradeController extends BaseController {
                 return CommonResponse.simpleResponse(-1, "不存在的支付方式");
             }
         }
+        payTypeList.add("N");
         if (StringUtils.isEmpty(requestParam.getOrderNo())) {
             requestParam.setOrderNo(null);
         }

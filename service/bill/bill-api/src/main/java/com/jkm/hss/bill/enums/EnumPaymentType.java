@@ -25,7 +25,10 @@ public enum EnumPaymentType {
     /**
      * 支付宝扫码
      */
-    ALIPAY_SCAN_CODE("Z", "支付宝扫码")
+    ALIPAY_SCAN_CODE("Z", "支付宝扫码"),
+
+
+    WECHAT_SCAN_CODE("N", "微信扫码")
     ;
 
 
