@@ -1877,70 +1877,57 @@
 
 </style>-->
 
-<!--支付查询-->
+<!--打款查询-->
 <template>
-  <div id="deal">
+  <div id="withDrawal">
     <div class="col-md-12">
       <div class="box" style="margin-top:15px;overflow: hidden">
         <div class="box-header">
-          <h3 class="box-title">支付查询</h3>
-          <span @click="onload()" download="交易记录" class="btn btn-primary" style="float: right;color: #fff">导出</span>
+          <h3 class="box-title">打款查询</h3>
+          <router-link to="/admin/record/withdrawal" class="  pull-right" style="margin-left: 20px">切换旧版</router-link>
         </div>
         <div class="box-body">
           <!--筛选-->
           <ul>
             <li class="same">
-              <label>支付创建日期:</label>
-              <el-date-picker
-                v-model="date"
-                type="daterange"
-                align="right"
-                placeholder="选择日期范围"
-                :picker-options="pickerOptions2" size="small">
-              </el-date-picker>
-            </li>
-            <li class="same">
-              <label>支付完成日期:</label>
-              <el-date-picker
-                v-model="date1"
-                type="daterange"
-                align="right"
-                placeholder="选择日期范围"
-                :picker-options="pickerOptions2" size="small">
-              </el-date-picker>
-            </li>
-            <li class="same">
-              <label>支付流水号:</label>
+              <label>打款流水号:</label>
               <el-input style="width: 130px" v-model="query.sn" placeholder="请输入内容" size="small"></el-input>
             </li>
             <li class="same">
-              <label>订单号:</label>
+              <label>交易单号:</label>
               <el-input style="width: 130px" v-model="query.orderNo" placeholder="请输入内容" size="small"></el-input>
             </li>
             <li class="same">
-              <label>支付状态:</label>
+              <label>收款账户名:</label>
+              <el-input style="width: 130px" v-model="query.userName" placeholder="请输入内容" size="small"></el-input>
+            </li>
+            <li class="same">
+              <label>状态:</label>
               <el-select style="width: 120px" clearable v-model="query.status" size="small">
                 <el-option label="全部" value="">全部</el-option>
-                <el-option label="待支付" value="1">待支付</el-option>
-                <el-option label="支付中" value="2">支付中</el-option>
-                <el-option label="支付成功" value="4">支付成功</el-option>
-                <el-option label="支付失败" value="5">支付失败</el-option>
+                <el-option label="待提现" value="1">待提现</el-option>
+                <el-option label="打款中" value="2">打款中</el-option>
+                <el-option label="打款成功" value="4">打款成功</el-option>
+                <el-option label="打款失败" value="5">打款失败</el-option>
               </el-select>
             </li>
             <li class="same">
               <div class="btn btn-primary" @click="search">筛选</div>
             </li>
+            <li class="same" style="float: right">
+              <span @click="onload()" download="打款记录" class="btn btn-primary" style="color: #fff">导出</span>
+            </li>
           </ul>
           <!--表格-->
-          <el-table v-loading.body="loading" max-height="652" style="font-size: 12px;" :data="records" border>
+          <el-table v-loading.body="loading" max-height="637" style="font-size: 12px;margin-bottom: 15px" :data="records" border>
             <el-table-column type="index" width="62" label="序号" fixed="left"></el-table-column>
-            <el-table-column label="支付流水号" min-width="112">
+            <el-table-column label="打款流水号" min-width="112">
               <template scope="scope">
                 <span class="td" :data-clipboard-text="records[scope.$index].sn" type="text" size="small"
                       style="cursor: pointer" title="点击复制">{{records[scope.$index].sn|changeHide}}</span>
               </template>
             </el-table-column>
-            <el-table-column label="订单号" min-width="112">
+            <el-table-column label="交易单号" min-width="112">
               <template scope="scope">
                 <span class="td" :data-clipboard-text="records[scope.$index].orderNo" type="text" size="small"
                       style="cursor: pointer" title="点击复制">{{records[scope.$index].orderNo|changeHide}}</span>
@@ -2001,7 +1988,7 @@
 <script lang="babel">
   import Clipboard from "clipboard"
   export default{
-    name: 'deal',
+    name: 'withDrawal',
     data(){
       return {
         isMask:false,
@@ -2026,13 +2013,13 @@
         loading: true,
         url:'',
         //正式
-        queryUrl:'http://pay.qianbaojiajia.com/order/pay/listOrder',
+        /*queryUrl:'http://pay.qianbaojiajia.com/order/pay/listOrder',
         excelUrl:'http://pay.qianbaojiajia.com/order/pay/exportExcel',
-        syncUrl:'http://pay.qianbaojiajia.com/order/syncPayOrder',
+        syncUrl:'http://pay.qianbaojiajia.com/order/syncPayOrder',*/
         //测试
-        /*queryUrl:'http://192.168.1.20:8076/order/pay/listOrder',
+        queryUrl:'http://192.168.1.20:8076/order/pay/listOrder',
          excelUrl:'http://192.168.1.20:8076/order/pay/exportExcel',
-         syncUrl:'http://192.168.1.20:8076/order/syncPayOrder',*/
+         syncUrl:'http://192.168.1.20:8076/order/syncPayOrder',
       }
     },
     created: function () {
