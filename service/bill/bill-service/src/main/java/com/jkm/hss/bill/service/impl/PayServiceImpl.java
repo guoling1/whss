@@ -846,7 +846,7 @@ public class PayServiceImpl implements PayService {
             placeOrderRequest.setTradeType("JSAPI");
         } else if (EnumPayChannelSign.YG_ZHIFUBAO.getId() == channel) {
             //TODO
-            placeOrderRequest.setTradeType("ZFBNATIVE");
+            placeOrderRequest.setTradeType("NATIVE");
         } else if (EnumPayChannelSign.YG_YINLIAN.getId() == channel) {
             placeOrderRequest.setTradeType("EPOS");
         }
