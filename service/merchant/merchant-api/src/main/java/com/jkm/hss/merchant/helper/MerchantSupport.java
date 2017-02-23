@@ -142,6 +142,18 @@ public class MerchantSupport {
         return DigestUtils.sha256Hex(password + salt);
     }
     public static void main(String[] args ){
-        System.out.print(encryptMobile("13567723379"));
+        System.out.println(decryptMobile("13567723379"));
+        System.out.println(decryptBankCard("13567723379"));
+        System.out.println(decryptIdentity("13567723379"));
+        System.out.println("=============================================");
+        String mobile = encryptMobile("13567723379");
+        String bankCard = encryptBankCard("13567723379");
+        String Identity = encryptIdenrity("13567723379");
+        System.out.println(mobile);
+        System.out.println(bankCard);
+        System.out.println(Identity);
+        String sql = "update tb_merchant_info set reserve_mobile='"+mobile+"',identity='"+Identity+"',bank_no='"+bankCard+"',bank_no_short='?',bank_bin='?',bank_name='?' where id=?";
+        System.out.println("sql="+sql);
+
     }
 }
