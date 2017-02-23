@@ -218,10 +218,13 @@ public class HSYTradeServiceImpl implements HSYTradeService {
     public Pair<Integer, String> receipt(final String totalAmount, final int channel, final long shopId, final String appId) {
         log.info("店铺[{}] 通过动态扫码， 支付一笔资金[{}]", shopId, totalAmount);
         final AppBizShop shop = this.hsyShopDao.findAppBizShopByID(shopId).get(0);
+        final EnumPayChannelSign payChannelSign = EnumPayChannelSign.idOf(channel);
         final Order order = new Order();
         order.setOrderNo(SnGenerator.generateSn(EnumTradeType.PAY.getId()));
         order.setTradeAmount(new BigDecimal(totalAmount));
         order.setRealPayAmount(new BigDecimal(totalAmount));
+        order.setSettleMode(payChannelSign.getAutoSettle() ? EnumSettleModeType.CHANNEL_SETTLE.getId() : EnumSettleModeType.SELF_SETTLE.getId());
+        order.setSettleDestination(payChannelSign.getAutoSettle() ? EnumSettleDestinationType.TO_CARD.getId() : EnumSettleDestinationType.TO_ACCOUNT.getId());
         order.setAppId(appId);
         order.setTradeType(EnumTradeType.PAY.getId());
         order.setServiceType(EnumServiceType.RECEIVE_MONEY.getId());
@@ -229,6 +232,8 @@ public class HSYTradeServiceImpl implements HSYTradeService {
         order.setPayee(shop.getAccountID());
         order.setGoodsName(shop.getShortName());
         order.setGoodsDescribe(shop.getShortName());
+        order.setPayType(payChannelSign.getCode());
+        order.setPayChannelSign(channel);
         order.setSettleStatus(EnumSettleStatus.DUE_SETTLE.getId());
         order.setSettleType(EnumBalanceTimeType.T1.getType());
         order.setSettleTime(DateTimeUtil.getSettleDate());
@@ -515,12 +520,7 @@ public class HSYTradeServiceImpl implements HSYTradeService {
         placeOrderRequest.setMerName(shop.getShortName());
         placeOrderRequest.setMerNo(shop.getGlobalID());
         placeOrderRequest.setTotalAmount(order.getTradeAmount().toPlainString());
-        if (EnumPayChannelSign.YG_WECHAT.getId() == channel
-                || EnumPayChannelSign.YG_ALIPAY.getId() == channel) {
-            placeOrderRequest.setTradeType("JSAPI");
-        } else if (EnumPayChannelSign.YG_UNIONPAY.getId() == channel) {
-            placeOrderRequest.setTradeType("EPOS");
-        }
+        placeOrderRequest.setChannel(EnumPayChannelSign.idOf(channel).getCode());
 
         final String content = HttpClientPost.postJson(PaymentSdkConstants.SDK_PAY_PLACE_ORDER, SdkSerializeUtil.convertObjToMap(placeOrderRequest));
         return JSON.parseObject(content, PaymentSdkPlaceOrderResponse.class);

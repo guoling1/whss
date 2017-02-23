@@ -14,56 +14,56 @@ public enum EnumPayChannelSign {
     /**
      * 微信扫码
      */
-    YG_WECHAT(101, "sm_wechat", "微信", "阳光微信", EnumUpperChannel.SAOMI),
+    YG_WECHAT(101, "sm_wechat", "微信", "阳光微信", EnumUpperChannel.SAOMI, false),
 
     /**
      * 支付宝扫码
      */
-    YG_ALIPAY(102, "sm_alipay", "支付宝", "阳光支付宝", EnumUpperChannel.SAOMI),
+    YG_ALIPAY(102, "sm_alipay", "支付宝", "阳光支付宝", EnumUpperChannel.SAOMI, false),
 
     /**
      * 快捷支付
      */
-    YG_UNIONPAY(103, "sm_unionpay", "快捷", "阳光快捷", EnumUpperChannel.SAOMI),
+    YG_UNIONPAY(103, "sm_unionpay", "快捷", "阳光快捷", EnumUpperChannel.SAOMI, false),
 
     //#################################卡盟############################################
     /**
      * 卡盟微信支付
      */
-    KM_WECHAT(201, "km_wechat", "微信", "卡盟微信", EnumUpperChannel.KAMENG),
+    KM_WECHAT(201, "km_wechat", "微信", "卡盟微信", EnumUpperChannel.KAMENG, true),
 
     /**
      * 卡盟支付宝
      */
-    KM_ALIPAY(202, "km_alipay", "支付宝", "卡盟支付宝", EnumUpperChannel.KAMENG),
+    KM_ALIPAY(202, "km_alipay", "支付宝", "卡盟支付宝", EnumUpperChannel.KAMENG, true),
 
     //#################################摩宝#############################################
     /**
      * 摩宝快捷
      */
-    MB_UNIONPAY(301, "mb_unionpay", "快捷", "摩宝快捷", EnumUpperChannel.MOBAO),
+    MB_UNIONPAY(301, "mb_unionpay", "快捷", "摩宝快捷", EnumUpperChannel.MOBAO, false),
 
     //#################################合众易宝#########################################
     /**
      * 合众易宝微信
      */
-    HZYB_WECHAT(401, "hzyb_wechat", "微信", "合众易宝微信", EnumUpperChannel.HEZONG_YIBAO),
+    HZYB_WECHAT(401, "hzyb_wechat", "微信", "合众易宝微信", EnumUpperChannel.HEZONG_YIBAO, false),
 
     /**
      * 合众易宝支付宝
      */
-    HZYB_ALIPAY(402, "hzyb_alipay", "支付宝", "合众易宝支付宝", EnumUpperChannel.HEZONG_YIBAO),
+    HZYB_ALIPAY(402, "hzyb_alipay", "支付宝", "合众易宝支付宝", EnumUpperChannel.HEZONG_YIBAO, false),
 
     //#################################溢+#############################################
     /**
      * 溢+微信
      */
-    YIJIA_WECHAT(501, "yijia_wechat", "微信", "溢+微信", EnumUpperChannel.YIJIA),
+    YIJIA_WECHAT(501, "yijia_wechat", "微信", "溢+微信", EnumUpperChannel.YIJIA, false),
 
     /**
      * 溢+支付宝
      */
-    YIJIA_ALIPAY(502, "yijia_alipay", "支付宝", "溢+支付宝", EnumUpperChannel.YIJIA)
+    YIJIA_ALIPAY(502, "yijia_alipay", "支付宝", "溢+支付宝", EnumUpperChannel.YIJIA, false)
 
     ;
 
@@ -97,14 +97,17 @@ public enum EnumPayChannelSign {
     private String name;
     @Getter
     private EnumUpperChannel upperChannel;
+    @Getter
+    private Boolean autoSettle;
 
     EnumPayChannelSign(final int id, final String code, final String channelName,
-                       final String name, final EnumUpperChannel upperChannel) {
+                       final String name, final EnumUpperChannel upperChannel, final boolean autoSettle) {
         this.id = id;
         this.code = code;
         this.channelName = channelName;
         this.name = name;
         this.upperChannel = upperChannel;
+        this.autoSettle = autoSettle;
     }
 
     /**

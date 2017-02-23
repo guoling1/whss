@@ -65,6 +65,20 @@ public class Order extends BaseEntity {
     private BigDecimal realPayAmount;
 
     /**
+     * 结算目的地
+     *
+     * {@link com.jkm.hss.bill.enums.EnumSettleDestinationType}
+     */
+    private int settleDestination;
+
+    /**
+     * 结算方式
+     *
+     * {@link com.jkm.hss.bill.enums.EnumSettleModeType}
+     */
+    private int settleMode;
+
+    /**
      * 交易类型
      *
      * {@link com.jkm.hss.bill.enums.EnumTradeType}
