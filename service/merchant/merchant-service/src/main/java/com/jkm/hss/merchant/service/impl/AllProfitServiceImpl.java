@@ -114,18 +114,80 @@ public class AllProfitServiceImpl implements AllProfitService {
     @Override
     public List<CompanyProfitResponse> selectCompanyProfitDetails(CompanyPrifitRequest req) {
         List<CompanyProfitResponse> list = allProfitDao.selectCompanyProfitDetails(req);
+        if (list.size()>0){
+            for (int i=0;i<list.size();i++){
+                if (list.get(i).getLevel()==2){
+                    String  proxy = dealerService.selectProxyName(list.get(i).getFirstLevelDealerId());
+                    list.get(i).setProxyName(proxy);
+                }
+                if (list.get(i).getBusinessType().equals("hssPay")){
+                    list.get(i).setBusinessType(EnumSplitBusinessType.HSSPAY.getValue());
+                }
+                if (list.get(i).getBusinessType().equals("hssWithdraw")){
+                    list.get(i).setBusinessType(EnumSplitBusinessType.HSSWITHDRAW.getValue());
+                }
+                if (list.get(i).getBusinessType().equals("hssUpgrade")){
+                    list.get(i).setBusinessType(EnumSplitBusinessType.HSSPROMOTE.getValue());
+                }
+                if (list.get(i).getBusinessType().equals("hsyPay")){
+                    list.get(i).setBusinessType(EnumSplitBusinessType.HSYPAY.getValue());
+                }
+            }
+        }
+
         return list;
     }
 
     @Override
     public List<CompanyProfitResponse> selectOneProfitDetails(CompanyPrifitRequest req) {
         List<CompanyProfitResponse> list = allProfitDao.selectOneProfitDetails(req);
+        if (list.size()>0){
+            for (int i=0;i<list.size();i++){
+                if (list.get(i).getLevel()==2){
+                    String  proxy = dealerService.selectProxyName(list.get(i).getFirstLevelDealerId());
+                    list.get(i).setProxyName(proxy);
+                }
+                if (list.get(i).getBusinessType().equals("hssPay")){
+                    list.get(i).setBusinessType(EnumSplitBusinessType.HSSPAY.getValue());
+                }
+                if (list.get(i).getBusinessType().equals("hssWithdraw")){
+                    list.get(i).setBusinessType(EnumSplitBusinessType.HSSWITHDRAW.getValue());
+                }
+                if (list.get(i).getBusinessType().equals("hssUpgrade")){
+                    list.get(i).setBusinessType(EnumSplitBusinessType.HSSPROMOTE.getValue());
+                }
+                if (list.get(i).getBusinessType().equals("hsyPay")){
+                    list.get(i).setBusinessType(EnumSplitBusinessType.HSYPAY.getValue());
+                }
+            }
+        }
+
         return list;
     }
 
     @Override
     public List<CompanyProfitResponse> selectTwoProfitDetails(CompanyPrifitRequest req) {
         List<CompanyProfitResponse> list = allProfitDao.selectTwoProfitDetails(req);
+        if (list.size()>0){
+            for (int i=0;i<list.size();i++){
+                if (list.get(i).getLevel()==2){
+                    String  proxy = dealerService.selectProxyName(list.get(i).getFirstLevelDealerId());
+                    list.get(i).setProxyName(proxy);
+                }
+                if (list.get(i).getBusinessType().equals("hssPay")){
+                    list.get(i).setBusinessType(EnumSplitBusinessType.HSSPAY.getValue());
+                }
+                if (list.get(i).getBusinessType().equals("hssWithdraw")){
+                    list.get(i).setBusinessType(EnumSplitBusinessType.HSSWITHDRAW.getValue());
+                }
+                if (list.get(i).getBusinessType().equals("hssUpgrade")){
+                    list.get(i).setBusinessType(EnumSplitBusinessType.HSSPROMOTE.getValue());
+                }
+                if (list.get(i).getBusinessType().equals("hsyPay")){
+                    list.get(i).setBusinessType(EnumSplitBusinessType.HSYPAY.getValue());
+                }
+            }
+        }
         return list;
     }
 

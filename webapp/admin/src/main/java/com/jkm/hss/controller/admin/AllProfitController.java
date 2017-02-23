@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -49,9 +50,9 @@ public class AllProfitController extends BaseController {
             req.setEndTime(sdf.format(rightNow.getTime()));
         }
         List<CompanyProfitResponse> list = allProfitService.selectCompanyProfit(req);
-        if (list.size()==0){
-            return CommonResponse.simpleResponse(-1,"未查询到相关数据");
-        }
+//        if (list.size()==0){
+//            return CommonResponse.simpleResponse(-1,"未查询到相关数据");
+//        }
         int count = allProfitService.selectCompanyProfitCount(req);
         pageModel.setCount(count);
         pageModel.setRecords(list);
@@ -70,9 +71,9 @@ public class AllProfitController extends BaseController {
         final PageModel<CompanyProfitResponse> pageModel = new PageModel<CompanyProfitResponse>(req.getPageNo(), req.getPageSize());
         req.setOffset(pageModel.getFirstIndex());
         List<CompanyProfitResponse> list = allProfitService.selectCompanyProfitDetails(req);
-        if (list.size()==0){
-            return CommonResponse.simpleResponse(-1,"未查询到相关数据");
-        }
+//        if (list.size()==0){
+//            return CommonResponse.simpleResponse(-1,"未查询到相关数据");
+//        }
         int count = allProfitService.selectCompanyProfitDetailsCount(req);
         pageModel.setCount(count);
         pageModel.setRecords(list);
@@ -97,9 +98,9 @@ public class AllProfitController extends BaseController {
             req.setEndTime(sdf.format(rightNow.getTime()));
         }
         List<CompanyProfitResponse> list = allProfitService.selectOneProfit(req);
-        if (list.size()==0){
-            return CommonResponse.simpleResponse(-1,"未查询到相关数据");
-        }
+//        if (list.size()==0){
+//            return CommonResponse.simpleResponse(-1,"未查询到相关数据");
+//        }
         int count = allProfitService.selectOneProfitCount(req);
         pageModel.setCount(count);
         pageModel.setRecords(list);
@@ -118,9 +119,9 @@ public class AllProfitController extends BaseController {
         final PageModel<CompanyProfitResponse> pageModel = new PageModel<CompanyProfitResponse>(req.getPageNo(), req.getPageSize());
         req.setOffset(pageModel.getFirstIndex());
         List<CompanyProfitResponse> list = allProfitService.selectOneProfitDetails(req);
-        if (list.size()==0){
-            return CommonResponse.simpleResponse(-1,"未查询到相关数据");
-        }
+//        if (list.size()==0){
+//            return CommonResponse.simpleResponse(-1,"未查询到相关数据");
+//        }
         int count = allProfitService.selectOneProfitDetailsCount(req);
         pageModel.setCount(count);
         pageModel.setRecords(list);
@@ -146,12 +147,29 @@ public class AllProfitController extends BaseController {
             req.setEndTime(sdf.format(rightNow.getTime()));
         }
         List<CompanyProfitResponse> list = allProfitService.selectTwoProfit(req);
-        if (list.size()==0){
-            return CommonResponse.simpleResponse(-1,"未查询到相关数据");
-        }
         int count = allProfitService.selectTwoProfitCount(req);
         pageModel.setCount(count);
         pageModel.setRecords(list);
+        List<CompanyProfitResponse> list1 = new ArrayList<>();
+
+//        if (list.size()==0){
+//            return CommonResponse.simpleResponse(-1,"未查询到相关数据");
+//        }
+        if(list.size()>0){
+            for (int i=0;i<list.size();i++){
+                if (req.getProxyName()!=null&&!req.getProxyName().equals("")){
+                    if (req.getProxyName().equals(list.get(i).getProxyName())){
+                        list1.add(list.get(i));
+                    }
+                    pageModel.setCount(list1.size());
+                    pageModel.setRecords(list1);
+
+                }
+
+            }
+        }
+
+
         return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", pageModel);
     }
 
@@ -166,9 +184,9 @@ public class AllProfitController extends BaseController {
         final PageModel<CompanyProfitResponse> pageModel = new PageModel<CompanyProfitResponse>(req.getPageNo(), req.getPageSize());
         req.setOffset(pageModel.getFirstIndex());
         List<CompanyProfitResponse> list = allProfitService.selectTwoProfitDetails(req);
-        if (list.size()==0){
-            return CommonResponse.simpleResponse(-1,"未查询到相关数据");
-        }
+//        if (list.size()==0){
+//            return CommonResponse.simpleResponse(-1,"未查询到相关数据");
+//        }
         int count = allProfitService.selectTwoProfitDetailsCount(req);
         pageModel.setCount(count);
         pageModel.setRecords(list);

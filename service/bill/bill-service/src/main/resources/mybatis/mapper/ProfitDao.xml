@@ -11,6 +11,9 @@
         <if test="receiptMoneyUserName!=null and receiptMoneyUserName!=''">
             AND receipt_money_user_name = #{receiptMoneyUserName}
         </if>
+        <if test="businessType != null and businessType != ''">
+            AND business_type = #{businessType}
+        </if>
         ORDER BY create_time DESC
         limit #{offset}, #{pageSize}
     </select>
@@ -22,6 +25,9 @@
         </if>
         <if test="receiptMoneyUserName!=null and receiptMoneyUserName!=''">
             AND receipt_money_user_name = #{receiptMoneyUserName}
+        </if>
+        <if test="businessType != null and businessType != ''">
+            AND business_type = #{businessType}
         </if>
     </select>
 

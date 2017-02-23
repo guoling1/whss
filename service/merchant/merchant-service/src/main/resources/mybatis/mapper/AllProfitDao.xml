@@ -109,10 +109,6 @@
 		AND a.split_date <![CDATA[ <= ]]> #{endTime}
 	</if>
 
-	<if test="proxyName != null and proxyName != ''">
-		AND b.first_level_dealer_id = #{firstLevelDealerId}
-	</if>
-
 	<if test="proxyName1 != null and proxyName1 != ''">
 		AND b.proxy_name = #{proxyName1}
 	</if>
@@ -169,6 +165,9 @@
 	<if test="receiptMoneyUserName != null and receiptMoneyUserName != ''">
 		AND a.receipt_money_user_name = #{receiptMoneyUserName}
 	</if>
+	<if test="businessType != null and businessType != ''">
+		AND a.business_type = #{businessType}
+	</if>
 		ORDER BY a.split_date DESC LIMIT #{offset},#{pageSize}
 	</select>
 
@@ -183,6 +182,9 @@
 		<if test="receiptMoneyUserName != null and receiptMoneyUserName != ''">
 			AND a.receipt_money_user_name = #{receiptMoneyUserName}
 		</if>
+		<if test="businessType != null and businessType != ''">
+			AND a.business_type = #{businessType}
+		</if>
 	</select>
 
 	<!-- 查询一级代理商分润详情 -->
@@ -196,7 +198,9 @@
 		<if test="receiptMoneyUserName != null and receiptMoneyUserName != ''">
 			AND a.receipt_money_user_name = #{receiptMoneyUserName}
 		</if>
-
+		<if test="businessType != null and businessType != ''">
+			AND a.business_type = #{businessType}
+		</if>
 		ORDER BY a.split_date DESC LIMIT #{offset},#{pageSize}
 	</select>
 
@@ -211,7 +215,9 @@
 		<if test="receiptMoneyUserName != null and receiptMoneyUserName != ''">
 			AND a.receipt_money_user_name = #{receiptMoneyUserName}
 		</if>
-
+		<if test="businessType != null and businessType != ''">
+			AND a.business_type = #{businessType}
+		</if>
 		ORDER BY a.split_date DESC LIMIT #{offset},#{pageSize}
 	</select>
 
@@ -226,6 +232,9 @@
 		<if test="receiptMoneyUserName != null and receiptMoneyUserName != ''">
 			AND a.receipt_money_user_name = #{receiptMoneyUserName}
 		</if>
+		<if test="businessType != null and businessType != ''">
+			AND a.business_type = #{businessType}
+		</if>
 		ORDER BY a.split_date DESC LIMIT #{offset},#{pageSize}
 	</select>
 
@@ -239,6 +248,9 @@
 		</if>
 		<if test="receiptMoneyUserName != null and receiptMoneyUserName != ''">
 			AND a.receipt_money_user_name = #{receiptMoneyUserName}
+		</if>
+		<if test="businessType != null and businessType != ''">
+			AND a.business_type = #{businessType}
 		</if>
 	</select>
 
