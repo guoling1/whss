@@ -106,6 +106,7 @@ public class TradeController extends BaseController {
                 && EnumPayChannelSign.YG_YINLIAN.getId() != payRequest.getPayChannel()) {
             return CommonResponse.simpleResponse(-1, "支付方式错误");
         }
+        payRequest.setPayChannel(EnumPayChannelSign.YG_ZHIFUBAO.getId());
         final Pair<Integer, String> resultPair = this.payService.codeReceipt(payRequest.getTotalFee(),
                 payRequest.getPayChannel(), merchantInfo.get().getId(), EnumAppType.HSS.getId());
         if (0 == resultPair.getLeft()) {

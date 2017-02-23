@@ -840,9 +840,11 @@ public class PayServiceImpl implements PayService {
         placeOrderRequest.setMerName(merchant.getMerchantName());
         placeOrderRequest.setMerNo(merchant.getMarkCode());
         placeOrderRequest.setTotalAmount(order.getTradeAmount().toPlainString());
-        if (EnumPayChannelSign.YG_WEIXIN.getId() == channel
-                || EnumPayChannelSign.YG_ZHIFUBAO.getId() == channel) {
+        if (EnumPayChannelSign.YG_WEIXIN.getId() == channel) {
             placeOrderRequest.setTradeType("JSAPI");
+        } else if (EnumPayChannelSign.YG_ZHIFUBAO.getId() == channel) {
+            //TODO
+            placeOrderRequest.setTradeType("NATIVE");
         } else if (EnumPayChannelSign.YG_YINLIAN.getId() == channel) {
             placeOrderRequest.setTradeType("EPOS");
         }
