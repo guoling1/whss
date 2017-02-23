@@ -16,7 +16,7 @@
               <th style="text-align: right">注册时间:</th>
               <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.createTime|changeTime" readonly></td>
               <th style="text-align: right">注册方式:</th>
-              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.registered" readonly></td>
+              <td><input type="text" v-if="msg.source==0" style="background:#efecec;padding-left:5px;" value="扫码注册" readonly><input type="text" v-if="msg.source==1" style="background:#efecec;padding-left:5px;" value="商户推荐注册" readonly><input type="text" v-if="msg.source==2" style="background:#efecec;padding-left:5px;" value="代理商推荐注册" readonly></td>
             </tr>
             <tr>
               <th style="text-align: right">一级代理编号:</th>
@@ -240,9 +240,9 @@
         .then(function (res) {
           this.$data.msg = res.data.list[0];
           this.$data.res = res.data.res;
-          this.$data.tableData[0].rate = res.data.weixinRate;
-          this.$data.tableData[1].rate = res.data.alipayRate;
-          this.$data.tableData[2].rate = res.data.fastRate;
+          this.$data.tableData[0].rate = parseFloat(res.data.weixinRate*100).toFixed(2)+'%';
+          this.$data.tableData[1].rate = parseFloat(res.data.alipayRate*100).toFixed(2)+'%';
+          this.$data.tableData[2].rate = parseFloat(res.data.fastRate*100).toFixed(2)+'%';
         },function (err) {
           this.$message({
             showClose: true,

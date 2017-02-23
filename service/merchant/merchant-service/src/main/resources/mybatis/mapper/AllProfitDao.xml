@@ -9,42 +9,149 @@
 		SELECT a.*,b.id AS accId FROM tb_split_account_record a
 		LEFT JOIN tb_account b ON a.receipt_money_account_id=b.id
 		WHERE b.id in (1,2,11,48,49)
+	<if test="startTime!=null and startTime!=''">
+		AND a.split_date <![CDATA[ >= ]]> #{startTime}
+	</if>
+
+	<if test="endTime!=null and endTime!=''">
+		AND a.split_date <![CDATA[ <= ]]> #{endTime}
+	</if>
+
+	<if test="businessType != null and businessType != ''">
+		AND a.business_type = #{businessType}
+	</if>
 		ORDER BY a.split_date DESC LIMIT #{offset},#{pageSize}
 	</select>
 
 	<!-- 查询公司分润总数 -->
-	<select id="selectCompanyProfitCount" resultType="com.jkm.hss.merchant.helper.response.CompanyProfitResponse">
+	<select id="selectCompanyProfitCount" resultType="java.lang.Integer">
 		SELECT COUNT(a.receipt_money_account_id) FROM tb_split_account_record a
 		LEFT JOIN tb_account b ON a.receipt_money_account_id=b.id
 		WHERE b.id in (1,2,11,48,49)
+		<if test="startTime!=null and startTime!=''">
+			AND a.split_date <![CDATA[ >= ]]> #{startTime}
+		</if>
+
+		<if test="endTime!=null and endTime!=''">
+			AND a.split_date <![CDATA[ <= ]]> #{endTime}
+		</if>
+
+		<if test="businessType != null and businessType != ''">
+			AND a.business_type = #{businessType}
+		</if>
 	</select>
+
+
 
 	<!-- 查询一级代理商分润 -->
 	<select id="selectOneProfit" resultType="com.jkm.hss.merchant.helper.response.CompanyProfitResponse">
-		SELECT a.* FROM tb_split_account_record a
+		SELECT a.*,b.proxy_name,b.mark_code FROM tb_split_account_record a
 		LEFT JOIN tb_dealer b ON a.receipt_money_account_id=b.account_id
-		WHERE b.`level`=1 ORDER BY a.split_date DESC LIMIT #{offset},#{pageSize}
+		WHERE b.`level`=1
+	<if test="startTime!=null and startTime!=''">
+		AND a.split_date <![CDATA[ >= ]]> #{startTime}
+	</if>
+
+	<if test="endTime!=null and endTime!=''">
+		AND a.split_date <![CDATA[ <= ]]> #{endTime}
+	</if>
+
+	<if test="businessType != null and businessType != ''">
+		AND a.business_type = #{businessType}
+	</if>
+
+	<if test="proxyName != null and proxyName != ''">
+		AND b.proxy_name = #{proxyName}
+	</if>
+
+	<if test="markCode != null and markCode != ''">
+		AND b.mark_code = #{markCode}
+	</if>
+		ORDER BY a.split_date DESC LIMIT #{offset},#{pageSize}
 	</select>
 
 	<!-- 查询一级代理商分润总数 -->
-	<select id="selectOneProfitCount" resultType="com.jkm.hss.merchant.helper.response.CompanyProfitResponse">
+	<select id="selectOneProfitCount" resultType="java.lang.Integer">
 		SELECT COUNT(a.id) FROM tb_split_account_record a
 		LEFT JOIN tb_dealer b ON a.receipt_money_account_id=b.account_id
 		WHERE b.`level`=1
+	<if test="startTime!=null and startTime!=''">
+		AND a.split_date <![CDATA[ >= ]]> #{startTime}
+	</if>
+
+	<if test="endTime!=null and endTime!=''">
+		AND a.split_date <![CDATA[ <= ]]> #{endTime}
+	</if>
+
+	<if test="businessType != null and businessType != ''">
+		AND a.business_type = #{businessType}
+	</if>
+
+	<if test="proxyName != null and proxyName != ''">
+		AND b.proxy_name = #{proxyName}
+	</if>
+
+	<if test="markCode != null and markCode != ''">
+		AND b.mark_code = #{markCode}
+	</if>
 	</select>
 
 	<!-- 查询二级代理商分润-->
 	<select id="selectTwoProfit" resultType="com.jkm.hss.merchant.helper.response.CompanyProfitResponse">
-		SELECT a.* FROM tb_split_account_record a
+		SELECT a.*,b.`level`,b.first_level_dealer_id,b.proxy_name AS proxy_name1,b.mark_code FROM tb_split_account_record a
 		LEFT JOIN tb_dealer b ON a.receipt_money_account_id=b.account_id
-		WHERE b.`level`=2 ORDER BY a.split_date DESC LIMIT #{offset},#{pageSize}
+		WHERE b.`level`=2
+	<if test="startTime!=null and startTime!=''">
+		AND a.split_date <![CDATA[ >= ]]> #{startTime}
+	</if>
+
+	<if test="endTime!=null and endTime!=''">
+		AND a.split_date <![CDATA[ <= ]]> #{endTime}
+	</if>
+
+	<if test="proxyName1 != null and proxyName1 != ''">
+		AND b.proxy_name = #{proxyName1}
+	</if>
+
+	<if test="markCode != null and markCode != ''">
+		AND b.mark_code = #{markCode}
+	</if>
+
+	<if test="businessType != null and businessType != ''">
+		AND a.business_type = #{businessType}
+	</if>
+
+		ORDER BY a.split_date DESC LIMIT #{offset},#{pageSize}
 	</select>
 
 	<!-- 查询二级代理商分润总数 -->
-	<select id="selectTwoProfitCount" resultType="com.jkm.hss.merchant.helper.response.CompanyProfitResponse">
+	<select id="selectTwoProfitCount" resultType="java.lang.Integer">
 		SELECT COUNT(a.id) FROM tb_split_account_record a
 		LEFT JOIN tb_dealer b ON a.receipt_money_account_id=b.account_id
 		WHERE b.`level`=2
+	<if test="startTime!=null and startTime!=''">
+		AND a.split_date <![CDATA[ >= ]]> #{startTime}
+	</if>
+
+	<if test="endTime!=null and endTime!=''">
+		AND a.split_date <![CDATA[ <= ]]> #{endTime}
+	</if>
+
+	<if test="proxyName != null and proxyName != ''">
+		AND b.proxy_name = #{proxyName}
+	</if>
+
+	<if test="proxyName1 != null and proxyName1 != ''">
+		AND b.proxy_name = #{proxyName1}
+	</if>
+
+	<if test="markCode != null and markCode != ''">
+		AND b.mark_code = #{markCode}
+	</if>
+
+	<if test="businessType != null and businessType != ''">
+		AND a.business_type = #{businessType}
+	</if>
 	</select>
 
 	<!-- 查询公司分润详情 -->
@@ -52,6 +159,32 @@
 		SELECT a.*,b.id AS accId FROM tb_split_account_record a
 		LEFT JOIN tb_account b ON a.receipt_money_account_id=b.id
 		WHERE b.id=#{accId}
+	<if test="orderNo != null and orderNo != ''">
+		AND a.order_no = #{orderNo}
+	</if>
+	<if test="receiptMoneyUserName != null and receiptMoneyUserName != ''">
+		AND a.receipt_money_user_name = #{receiptMoneyUserName}
+	</if>
+	<if test="businessType != null and businessType != ''">
+		AND a.business_type = #{businessType}
+	</if>
+		ORDER BY a.split_date DESC LIMIT #{offset},#{pageSize}
+	</select>
+
+	<!-- 查询公司分润详情总数 -->
+	<select id="selectCompanyProfitDetailsCount" resultType="java.lang.Integer">
+		SELECT COUNT(a.id) FROM tb_split_account_record a
+		LEFT JOIN tb_account b ON a.receipt_money_account_id=b.id
+		WHERE b.id=#{accId}
+		<if test="orderNo != null and orderNo != ''">
+			AND a.order_no = #{orderNo}
+		</if>
+		<if test="receiptMoneyUserName != null and receiptMoneyUserName != ''">
+			AND a.receipt_money_user_name = #{receiptMoneyUserName}
+		</if>
+		<if test="businessType != null and businessType != ''">
+			AND a.business_type = #{businessType}
+		</if>
 	</select>
 
 	<!-- 查询一级代理商分润详情 -->
@@ -59,13 +192,66 @@
 		SELECT a.* FROM tb_split_account_record a
 		LEFT JOIN tb_dealer b ON a.receipt_money_account_id=b.account_id
 		WHERE b.`level`=1 AND a.receipt_money_account_id=#{receiptMoneyAccountId}
+		<if test="orderNo != null and orderNo != ''">
+			AND a.order_no = #{orderNo}
+		</if>
+		<if test="receiptMoneyUserName != null and receiptMoneyUserName != ''">
+			AND a.receipt_money_user_name = #{receiptMoneyUserName}
+		</if>
+		<if test="businessType != null and businessType != ''">
+			AND a.business_type = #{businessType}
+		</if>
+		ORDER BY a.split_date DESC LIMIT #{offset},#{pageSize}
+	</select>
+
+	<!-- 查询一级代理商分润详情总数 -->
+	<select id="selectOneProfitDetailsCount" resultType="java.lang.Integer">
+		SELECT COUNT(a.id) FROM tb_split_account_record a
+		LEFT JOIN tb_dealer b ON a.receipt_money_account_id=b.account_id
+		WHERE b.`level`=1 AND a.receipt_money_account_id=#{receiptMoneyAccountId}
+		<if test="orderNo != null and orderNo != ''">
+			AND a.order_no = #{orderNo}
+		</if>
+		<if test="receiptMoneyUserName != null and receiptMoneyUserName != ''">
+			AND a.receipt_money_user_name = #{receiptMoneyUserName}
+		</if>
+		<if test="businessType != null and businessType != ''">
+			AND a.business_type = #{businessType}
+		</if>
+		ORDER BY a.split_date DESC LIMIT #{offset},#{pageSize}
 	</select>
 
 	<!-- 查询二级代理商分润详情 -->
 	<select id="selectTwoProfitDetails" resultType="com.jkm.hss.merchant.helper.response.CompanyProfitResponse">
-		SELECT a.* FROM tb_split_account_record a
+		SELECT a.*,b.first_level_dealer_id,b.`level` FROM tb_split_account_record a
 		LEFT JOIN tb_dealer b ON a.receipt_money_account_id=b.account_id
 		WHERE b.`level`=2 AND a.receipt_money_account_id=#{receiptMoneyAccountId}
+		<if test="orderNo != null and orderNo != ''">
+			AND a.order_no = #{orderNo}
+		</if>
+		<if test="receiptMoneyUserName != null and receiptMoneyUserName != ''">
+			AND a.receipt_money_user_name = #{receiptMoneyUserName}
+		</if>
+		<if test="businessType != null and businessType != ''">
+			AND a.business_type = #{businessType}
+		</if>
+		ORDER BY a.split_date DESC LIMIT #{offset},#{pageSize}
+	</select>
+
+	<!-- 查询二级代理商分润详情总数 -->
+	<select id="selectTwoProfitDetailsCount" resultType="java.lang.Integer">
+		SELECT COUNT(a.id) FROM tb_split_account_record a
+		LEFT JOIN tb_dealer b ON a.receipt_money_account_id=b.account_id
+		WHERE b.`level`=2 AND a.receipt_money_account_id=#{receiptMoneyAccountId}
+		<if test="orderNo != null and orderNo != ''">
+			AND a.order_no = #{orderNo}
+		</if>
+		<if test="receiptMoneyUserName != null and receiptMoneyUserName != ''">
+			AND a.receipt_money_user_name = #{receiptMoneyUserName}
+		</if>
+		<if test="businessType != null and businessType != ''">
+			AND a.business_type = #{businessType}
+		</if>
 	</select>
 
 </mapper>

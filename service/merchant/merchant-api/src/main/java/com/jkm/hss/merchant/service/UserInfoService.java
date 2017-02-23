@@ -1,6 +1,7 @@
 package com.jkm.hss.merchant.service;
 
 import com.google.common.base.Optional;
+import com.jkm.hss.merchant.entity.MerchantInfoCheckRecord;
 import com.jkm.hss.merchant.entity.UserInfo;
 
 /**
@@ -70,5 +71,10 @@ public interface UserInfoService {
      */
     int bindOpenId(long id,String openId);
 
-
+    /**
+     * 查询审核原因
+     * @param merchantId
+     * @return
+     */
+    MerchantInfoCheckRecord selectDesr(long merchantId);
 }

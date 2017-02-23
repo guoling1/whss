@@ -83,7 +83,17 @@ public enum EnumNoticeType {
      * 店铺收银
      */
 
-    CASH_OUT(905, " 提现");
+    CASH_OUT(905, " 提现"),
+
+    /**
+     * 商户审核成功hss
+     */
+    MERCHANT_AUDIT(906, "审核通过"),
+
+    /**
+     * 商户审核成功hss
+     */
+    MERCHANT_NO_AUDIT(907, "审核通过");
 
 
     private static final Map<Integer, EnumNoticeType> ENUM_MAP = new HashMap<>();

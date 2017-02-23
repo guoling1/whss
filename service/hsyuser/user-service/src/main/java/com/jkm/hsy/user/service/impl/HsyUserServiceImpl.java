@@ -204,8 +204,10 @@ public class HsyUserServiceImpl implements HsyUserService {
         else
         {
             List<AppAuUser> parentList=hsyUserDao.findAppAuUserByID(appAuUserFind.getParentID());
-            if(parentList!=null&&parentList.size()!=0)
+            if(parentList!=null&&parentList.size()!=0) {
                 appAuUserFind.setAccountID(parentList.get(0).getAccountID());
+                appAuUserFind.setDealerID(parentList.get(0).getDealerID());
+            }
         }
         List<AppBizShop> shopList=hsyShopDao.findPrimaryAppBizShopByUserID(appBizShop);
         if(shopList!=null&&shopList.size()!=0)
@@ -797,8 +799,10 @@ public class HsyUserServiceImpl implements HsyUserService {
         else
         {
             List<AppAuUser> parentList=hsyUserDao.findAppAuUserByID(appAuUserFind.getParentID());
-            if(parentList!=null&&parentList.size()!=0)
+            if(parentList!=null&&parentList.size()!=0) {
                 appAuUserFind.setAccountID(parentList.get(0).getAccountID());
+                appAuUserFind.setDealerID(parentList.get(0).getDealerID());
+            }
         }
         List<AppBizShop> shopList=hsyShopDao.findPrimaryAppBizShopByUserID(appBizShop);
         if(shopList!=null&&shopList.size()!=0)

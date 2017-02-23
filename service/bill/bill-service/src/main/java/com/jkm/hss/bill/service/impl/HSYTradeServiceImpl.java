@@ -32,6 +32,7 @@ import com.jkm.hss.notifier.service.SmsAuthService;
 import com.jkm.hss.product.enums.EnumBalanceTimeType;
 import com.jkm.hss.product.enums.EnumPayChannelSign;
 import com.jkm.hss.product.enums.EnumProductType;
+import com.jkm.hss.product.enums.EnumUpperChannel;
 import com.jkm.hss.push.sevice.PushService;
 import com.jkm.hsy.user.dao.HsyShopDao;
 import com.jkm.hsy.user.entity.AppAuUser;
@@ -603,7 +604,7 @@ public class HSYTradeServiceImpl implements HSYTradeService {
         final AppBizShop shop = this.hsyShopDao.findAppBizShopByAccountID(accountId).get(0);
         final long playMoneyOrderId = this.orderService.createPlayMoneyOrder(shop, new BigDecimal(totalAmount),
                 appId, channel, EnumBalanceTimeType.T1.getType());
-        return this.withdrawImpl(shop, playMoneyOrderId, EnumPlayMoneyChannel.SAOMI);
+        return this.withdrawImpl(shop, playMoneyOrderId, EnumUpperChannel.SAOMI);
     }
 
     /**
@@ -615,7 +616,7 @@ public class HSYTradeServiceImpl implements HSYTradeService {
      */
     @Override
     @Transactional
-    public Pair<Integer, String> withdrawImpl(final AppBizShop shop, final long playMoneyOrderId, final EnumPlayMoneyChannel playMoneyChannel) {
+    public Pair<Integer, String> withdrawImpl(final AppBizShop shop, final long playMoneyOrderId, final EnumUpperChannel playMoneyChannel) {
         final AppBizCard paramAppBizCard = new AppBizCard();
         paramAppBizCard.setSid(shop.getId());
         final AppBizCard appBizCard = this.hsyShopDao.findAppBizCardByParam(paramAppBizCard).get(0);
@@ -643,6 +644,7 @@ public class HSYTradeServiceImpl implements HSYTradeService {
             try {
                 final String content = HttpClientPost.postJson(PaymentSdkConstants.SDK_PAY_WITHDRAW,
                         SdkSerializeUtil.convertObjToMap(paymentSdkDaiFuRequest));
+                log.info("订单[{}]，向网关发起代付[{}]，返回[{}]", playMoneyOrder.getOrderNo(), paymentSdkDaiFuRequest, content);
                 response = JSON.parseObject(content, PaymentSdkDaiFuResponse.class);
             } catch (final Throwable e) {
                 log.error("交易订单[" + playMoneyOrder.getOrderNo() + "], 请求网关支付异常", e);

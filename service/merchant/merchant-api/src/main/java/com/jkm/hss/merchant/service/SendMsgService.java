@@ -21,4 +21,14 @@ public interface SendMsgService {
      * 充值升级成功推送
      */
     void sendChargeMessage(String money,String typeName,String touser);
+
+    /**
+     * 审核通过推送
+     */
+    void sendAuditThroughMessage(String result, Date TransitTime,String touser);
+
+    /**
+     * 审核不通过推送
+     */
+    void sendAuditNoThroughMessage(String name, String desr, String toUsers);
 }

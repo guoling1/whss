@@ -17,6 +17,16 @@
               <el-input style="width: 120px" v-model="query.receiptMoneyUserName" placeholder="请输入内容" size="small"></el-input>
             </li>
             <li class="same">
+              <label>业务类型:</label>
+              <el-select style="width: 140px" clearable v-model="query.businessType" size="small" >
+                <el-option label="全部" value="">全部</el-option>
+                <el-option label="好收收-收款" value="hssPay">好收收-收款</el-option>
+                <el-option label="好收收-提现" value="hssWithdraw">好收收-提现</el-option>
+                <el-option label="好收收-升级费" value="hssUpgrade">好收收-升级费</el-option>
+                <el-option label="好收银-收款" value="hsyPay">好收银-收款</el-option>
+              </el-select>
+            </li>
+            <li class="same">
               <div class="btn btn-primary" @click="search">筛选</div>
             </li>
           </ul>
@@ -38,7 +48,13 @@
           </el-table>
           <!--分页-->
           <div class="block" style="text-align: right">
-            <el-pagination @current-change="handleCurrentChange" :current-page="currentPage" layout="total, prev, pager, next, jumper" :total="count">
+            <el-pagination @size-change="handleSizeChange"
+                           @current-change="handleCurrentChange"
+                           :current-page="query.pageNo"
+                           :page-sizes="[10, 20, 50]"
+                           :page-size="query.pageSize"
+                           layout="total, sizes, prev, pager, next, jumper"
+                           :total="count">
             </el-pagination>
           </div>
         </div>
@@ -55,12 +71,12 @@
           pageNo:1,
           pageSize:10,
           orderNo:'',
-          receiptMoneyUserName:''
+          receiptMoneyUserName:'',
+          businessType:''
         },
         records: [],
         count: 0,
         total: 0,
-        currentPage: 1,
         loading: true,
         path:''
       }
@@ -69,36 +85,43 @@
       if(this.$route.path=="/admin/record/profitDet"){
         this.$data.path = '/admin/queryProfit/profitDetails'
       }else if(this.$route.path=="/admin/record/profitComDet"){
-        this.$data.path = '/admin/profit/companyProfit/detail'
+        this.$data.path = '/admin/allProfit/companyProfitDetail';
+        this.$data.query.accId = this.$route.query.id;
       }else if(this.$route.path=="/admin/record/profitFirDet"){
-        this.$data.path = '/admin/profit/firstDealer/detail'
+        this.$data.path = '/admin/allProfit/firstDealerDetail';
+        this.$data.query.receiptMoneyAccountId = this.$route.query.id;
       }else if(this.$route.path=="/admin/record/profitSecDet"){
-        this.$data.path = '/admin/profit/secondDealer/detail'
+        this.$data.path = '/admin/allProfit/secondDealerDetail';
+        this.$data.query.receiptMoneyAccountId = this.$route.query.id;
       }
-      this.$http.post(this.$data.path, this.$data.query)
-        .then(function (res) {
-          this.$data.records = res.data.records;
-          this.$data.count = res.data.count;
-          this.$data.total = res.data.totalPage;
-          this.$data.loading = false;
-          /*var toFix = function (val) {
-            return parseFloat(val).toFixed(2)
-          }
-          for (let i = 0; i < this.$data.records.length; i++) {
-            this.$data.records[i].collectMoney = toFix(this.$data.records[i].collectMoney)
-            this.$data.records[i].withdrawMoney = toFix(this.$data.records[i].withdrawMoney)
-            this.$data.records[i].totalMoney = toFix(this.$data.records[i].totalMoney)
-          }*/
-        }, function (err) {
-          this.$data.loading = false;
-          this.$message({
-            showClose: true,
-            message: err.statusMessage,
-            type: 'error'
-          });
-        })
+      this.getData();
     },
     methods: {
+      getData: function () {
+        this.loading = true;
+        this.$http.post(this.$data.path, this.$data.query)
+          .then(function (res) {
+            this.$data.records = res.data.records;
+            this.$data.count = res.data.count;
+            this.$data.total = res.data.totalPage;
+            this.$data.loading = false;
+            /*var toFix = function (val) {
+             return parseFloat(val).toFixed(2)
+             }
+             for (let i = 0; i < this.$data.records.length; i++) {
+             this.$data.records[i].collectMoney = toFix(this.$data.records[i].collectMoney)
+             this.$data.records[i].withdrawMoney = toFix(this.$data.records[i].withdrawMoney)
+             this.$data.records[i].totalMoney = toFix(this.$data.records[i].totalMoney)
+             }*/
+          }, function (err) {
+            this.$data.loading = false;
+            this.$message({
+              showClose: true,
+              message: err.statusMessage,
+              type: 'error'
+            });
+          })
+      },
       //格式化时间
       changeTime: function (row, column) {
         var val=row.splitDate;
@@ -132,58 +155,18 @@
       },
       search(){
         this.$data.query.pageNo = 1;
-        this.$data.loading = true;
-        this.$data.records = '';
-          this.$http.post(this.$data.path, this.$data.query)
-          .then(function (res) {
-            this.$data.records = res.data.records;
-            this.$data.count = res.data.count;
-            this.$data.total = res.data.totalPage;
-            this.$data.loading = false;
-            var toFix = function (val) {
-              return parseFloat(val).toFixed(2)
-            }
-            for (let i = 0; i < this.$data.records.length; i++) {
-              this.$data.records[i].collectMoney = toFix(this.$data.records[i].collectMoney)
-              this.$data.records[i].withdrawMoney = toFix(this.$data.records[i].withdrawMoney)
-              this.$data.records[i].totalMoney = toFix(this.$data.records[i].totalMoney)
-            }
-          }, function (err) {
-            this.$data.loading = false;
-            this.$message({
-              showClose: true,
-              message: err.statusMessage,
-              type: 'error'
-            });
-          })
+        this.getData();
       },
       //当前页改变时
       handleCurrentChange(val) {
         this.$data.query.pageNo = val;
-        this.$data.loading = true;
-        this.$data.records = '';
-        this.$http.post(this.$data.path, this.$data.query)
-          .then(function (res) {
-            this.$data.records = res.data.records;
-            this.$data.count = res.data.count;
-            this.$data.total = res.data.totalPage;
-            this.$data.loading = false;
-            var toFix = function (val) {
-              return parseFloat(val).toFixed(2)
-            }
-            for (let i = 0; i < this.$data.records.length; i++) {
-              this.$data.records[i].collectMoney = toFix(this.$data.records[i].collectMoney)
-              this.$data.records[i].withdrawMoney = toFix(this.$data.records[i].withdrawMoney)
-              this.$data.records[i].totalMoney = toFix(this.$data.records[i].totalMoney)
-            }
-          }, function (err) {
-            this.$data.loading = false;
-            this.$message({
-              showClose: true,
-              message: err.statusMessage,
-              type: 'error'
-            });
-          })
+        this.getData();
+      },
+      //每页条数改变
+      handleSizeChange(val) {
+        this.$data.query.pageNo = 1;
+        this.$data.query.pageSize = val;
+        this.getData()
       },
     },
   }

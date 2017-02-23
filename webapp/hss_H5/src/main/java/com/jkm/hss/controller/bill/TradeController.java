@@ -233,9 +233,7 @@ public class TradeController extends BaseController {
         }
         for (int i = 0; i < payTypeList.size(); i++) {
             final String payType = payTypeList.get(i);
-            if (!EnumPaymentType.WECHAT_SCAN_CODE.getId().equals(payType)
-                    && !EnumPaymentType.WECHAT_QR_CODE.getId().equals(payType)
-                    && !EnumPaymentType.WECHAT_H5_CASHIER_DESK.getId().equals(payType)
+            if (!EnumPaymentType.WECHAT_H5_CASHIER_DESK.getId().equals(payType)
                     && !EnumPaymentType.QUICK_APY.getId().equals(payType)
                     && !EnumPaymentType.ALIPAY_SCAN_CODE.getId().equals(payType)) {
                 return CommonResponse.simpleResponse(-1, "不存在的支付方式");

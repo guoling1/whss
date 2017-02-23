@@ -114,6 +114,7 @@ public class WxPubUtil {
             HttpEntity entity = res.getEntity();
             responseContent = EntityUtils.toString(entity, "UTF-8");
             JsonObject json = jsonparer.parse(responseContent).getAsJsonObject();
+            System.out.print("返回数据为:"+json.toString());
             // 将json字符串转换为json对象
             if (res.getStatusLine().getStatusCode() == HttpStatus.SC_OK)
             {
@@ -122,11 +123,19 @@ public class WxPubUtil {
                     System.out.print("获取微信用户信息错误，错误信息是:"+json.get("errmsg").getAsString());
                     ret.put("nickname", "");
                     ret.put("headimgurl","");
+                    ret.put("subscribe","");
                 }
                 else
                 {// 正常情况下{"access_token":"ACCESS_TOKEN","expires_in":7200}
-                    ret.put("nickname", json.get("nickname").getAsString());
-                    ret.put("headimgurl",json.get("headimgurl").getAsString());
+                    if(json.get("subscribe").getAsInt()==1){//
+                        ret.put("nickname", json.get("nickname").getAsString());
+                        ret.put("headimgurl",json.get("headimgurl").getAsString());
+                        ret.put("subscribe",json.get("subscribe").getAsInt()+"");
+                    }else{
+                        ret.put("nickname", "");
+                        ret.put("headimgurl","");
+                        ret.put("subscribe",json.get("subscribe").getAsInt()+"");
+                    }
                 }
             }
         }
@@ -135,6 +144,7 @@ public class WxPubUtil {
             System.out.print("获取微信用户信息异常:"+e);
             ret.put("nickname", "");
             ret.put("headimgurl","");
+            ret.put("subscribe","");
         }
         finally
         {

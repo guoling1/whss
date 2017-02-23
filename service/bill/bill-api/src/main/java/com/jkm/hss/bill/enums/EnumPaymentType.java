@@ -2,6 +2,7 @@ package com.jkm.hss.bill.enums;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
+import com.jkm.hss.product.enums.EnumUpperChannel;
 import lombok.Getter;
 
 /**
@@ -10,16 +11,6 @@ import lombok.Getter;
  * 支付方式
  */
 public enum EnumPaymentType {
-
-    /**
-     * 微信扫码
-     */
-    WECHAT_SCAN_CODE("S", "微信扫码"),
-
-    /**微信二维码
-     *
-     */
-    WECHAT_QR_CODE("N", "微信二维码"),
 
     /**
      * 微信H5收银台

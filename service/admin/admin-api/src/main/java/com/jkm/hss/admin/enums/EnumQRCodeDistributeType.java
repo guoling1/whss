@@ -4,7 +4,7 @@ import com.google.common.collect.ImmutableMap;
 import lombok.Getter;
 
 /**
- * Created by yulong.zhang on 2016/11/30.
+ * Created by xingliujie on 2016/11/30.
  */
 public enum EnumQRCodeDistributeType {
 

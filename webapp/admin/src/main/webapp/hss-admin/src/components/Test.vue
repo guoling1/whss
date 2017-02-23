@@ -695,7 +695,7 @@
 </style>-->
 
 <!--hss商户详情-->
-<template>
+<!--<template>
   <div id="storeList">
     <div class="col-md-12">
       <div class="box" style="margin-top:15px;overflow: hidden">
@@ -954,7 +954,7 @@
             </el-tab-pane>
           </el-tabs>
         </div>
-        <!-- /.box-body -->
+        &lt;!&ndash; /.box-body &ndash;&gt;
         <div class="mask" id="mask" style="display: none" @click="isNo()">
           <p @click="isNo">×</p>
           <img src="" alt="">
@@ -991,7 +991,7 @@
           </div>
         </div>
       </div>
-      <!-- /.box -->
+      &lt;!&ndash; /.box &ndash;&gt;
     </div>
   </div>
 </template>
@@ -1192,4 +1192,6 @@
     font-weight: normal;
   }
   }
-</style>
+</style>-->
+
+

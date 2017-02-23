@@ -19,7 +19,6 @@ import com.jkm.hss.admin.helper.requestparam.DistributeQrCodeRequest;
 import com.jkm.hss.admin.helper.responseparam.ActiveCodeCount;
 import com.jkm.hss.admin.helper.responseparam.BossDistributeQRCodeRecordResponse;
 import com.jkm.hss.admin.helper.responseparam.DistributeCodeCount;
-import com.jkm.hss.admin.helper.responseparam.DistributeQRCodeRecordResponse;
 import com.jkm.hss.admin.service.DistributeQRCodeRecordService;
 import com.jkm.hss.admin.service.QRCodeService;
 import com.jkm.hss.dealer.dao.DealerDao;
@@ -2341,5 +2340,11 @@ public class DealerServiceImpl implements DealerService {
         pageModel.setCount(count);
         pageModel.setRecords(bossDistributeQRCodeRecordResponses);
         return pageModel;
+    }
+
+    @Override
+    public String selectProxyName(int firstLevelDealerId) {
+        String proxyName = dealerDao.selectProxyName(firstLevelDealerId);
+        return proxyName;
     }
 }
