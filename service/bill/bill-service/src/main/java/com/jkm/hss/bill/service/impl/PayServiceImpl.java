@@ -132,7 +132,7 @@ public class PayServiceImpl implements PayService {
         this.orderService.add(order);
         //请求支付中心下单
         final PaymentSdkPlaceOrderResponse placeOrderResponse = this.requestPlaceOrder(order,
-                EnumPayChannelSign.YG_WEIXIN.getId(), merchant, businessReturnUrl);
+                EnumPayChannelSign.YG_WEIXIN.getId(), merchant, businessReturnUrl, false);
         return this.handlePlaceOrder(placeOrderResponse, order);
     }
 
@@ -146,7 +146,7 @@ public class PayServiceImpl implements PayService {
      */
     @Override
     @Transactional
-    public Pair<Integer, String> codeReceipt(final String totalAmount, final int channel, final long merchantId, final String appId) {
+    public Pair<Integer, String> codeReceipt(final String totalAmount, final int channel, final long merchantId, final String appId, final boolean isDCode) {
         log.info("商户[{}] 通过动态扫码， 支付一笔资金[{}]", merchantId, totalAmount);
         final MerchantInfo merchant = this.merchantInfoService.selectById(merchantId).get();
 
@@ -168,7 +168,7 @@ public class PayServiceImpl implements PayService {
         this.orderService.add(order);
         //请求支付中心下单
         final PaymentSdkPlaceOrderResponse placeOrderResponse = this.requestPlaceOrder(order, channel, merchant,
-                PaymentSdkConstants.SDK_PAY_RETURN_URL + order.getTradeAmount() + "/" + order.getId());
+                PaymentSdkConstants.SDK_PAY_RETURN_URL + order.getTradeAmount() + "/" + order.getId(), isDCode);
         return this.handlePlaceOrder(placeOrderResponse, order);
     }
 
@@ -255,8 +255,9 @@ public class PayServiceImpl implements PayService {
             channel = EnumPayChannelSign.YG_WEIXIN.getId();
         } else if (EnumPaymentType.ALIPAY_SCAN_CODE.getId().equals(order.getPayType())) {
             channel = EnumPayChannelSign.YG_ZHIFUBAO.getId();
-        } else {
-            channel = EnumPayChannelSign.YG_ZHIFUBAO.getId();
+
+        } else if (EnumPaymentType.WECHAT_QR_CODE.getId().equals(order.getPayType())) {
+            channel = EnumPayChannelSign.YG_WEIXIN.getId();
         }
         order.setPayChannelSign(channel);
         log.info("返回的通道是[{}]", order.getPayType());
@@ -832,7 +833,7 @@ public class PayServiceImpl implements PayService {
      * @param returnUrl 前端回调地址
      */
     private PaymentSdkPlaceOrderResponse requestPlaceOrder(final Order order, final int channel,
-                                                           final MerchantInfo merchant, final String returnUrl) {
+                                                           final MerchantInfo merchant, final String returnUrl, final boolean isDCode) {
         final PaymentSdkPlaceOrderRequest placeOrderRequest = new PaymentSdkPlaceOrderRequest();
         placeOrderRequest.setAppId(PaymentSdkConstants.APP_ID);
         placeOrderRequest.setOrderNo(order.getOrderNo());
@@ -842,14 +843,22 @@ public class PayServiceImpl implements PayService {
         placeOrderRequest.setMerName(merchant.getMerchantName());
         placeOrderRequest.setMerNo(merchant.getMarkCode());
         placeOrderRequest.setTotalAmount(order.getTradeAmount().toPlainString());
-        if (EnumPayChannelSign.YG_WEIXIN.getId() == channel) {
-            placeOrderRequest.setTradeType("JSAPI");
-        } else if (EnumPayChannelSign.YG_ZHIFUBAO.getId() == channel) {
-            //TODO
-            placeOrderRequest.setTradeType("NATIVE");
-        } else if (EnumPayChannelSign.YG_YINLIAN.getId() == channel) {
-            placeOrderRequest.setTradeType("EPOS");
+        if (isDCode) {
+            if (EnumPayChannelSign.YG_WEIXIN.getId() == channel) {
+                placeOrderRequest.setTradeType("NATIVE");
+            } else if (EnumPayChannelSign.YG_ZHIFUBAO.getId() == channel) {
+                placeOrderRequest.setTradeType("ZFBNATIVE");
+            } else if (EnumPayChannelSign.YG_YINLIAN.getId() == channel) {
+                placeOrderRequest.setTradeType("EPOS");
+            }
+        } else {
+            if (EnumPayChannelSign.YG_WEIXIN.getId() == channel) {
+                placeOrderRequest.setTradeType("JSAPI");
+            } else if (EnumPayChannelSign.YG_YINLIAN.getId() == channel) {
+                placeOrderRequest.setTradeType("EPOS");
+            }
         }
+
 
         final String content = HttpClientPost.postJson(PaymentSdkConstants.SDK_PAY_PLACE_ORDER, SdkSerializeUtil.convertObjToMap(placeOrderRequest));
         return JSON.parseObject(content, PaymentSdkPlaceOrderResponse.class);

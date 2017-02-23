@@ -106,9 +106,8 @@ public class TradeController extends BaseController {
                 && EnumPayChannelSign.YG_YINLIAN.getId() != payRequest.getPayChannel()) {
             return CommonResponse.simpleResponse(-1, "支付方式错误");
         }
-        payRequest.setPayChannel(EnumPayChannelSign.YG_ZHIFUBAO.getId());
         final Pair<Integer, String> resultPair = this.payService.codeReceipt(payRequest.getTotalFee(),
-                payRequest.getPayChannel(), merchantInfo.get().getId(), EnumAppType.HSS.getId());
+                payRequest.getPayChannel(), merchantInfo.get().getId(), EnumAppType.HSS.getId(), true);
         if (0 == resultPair.getLeft()) {
             return CommonResponse.builder4MapResult(CommonResponse.SUCCESS_CODE, "收款成功")
                     .addParam("payUrl", URLDecoder.decode(resultPair.getRight(), "UTF-8")).addParam("subMerName", merchantInfo.get().getMerchantName())
@@ -146,7 +145,7 @@ public class TradeController extends BaseController {
         }
 
         final Pair<Integer, String> resultPair = this.payService.codeReceipt(payRequest.getTotalFee(),
-                payRequest.getPayChannel(), merchantInfo.get().getId(), EnumAppType.HSS.getId());
+                payRequest.getPayChannel(), merchantInfo.get().getId(), EnumAppType.HSS.getId(), false);
         if (0 == resultPair.getLeft()) {
             return CommonResponse.builder4MapResult(CommonResponse.SUCCESS_CODE, "收款成功")
                     .addParam("payUrl", URLDecoder.decode(resultPair.getRight(), "UTF-8")).addParam("subMerName", merchantInfo.get().getMerchantName())
@@ -232,14 +231,14 @@ public class TradeController extends BaseController {
                 return CommonResponse.simpleResponse(-1, "不存在的支付状态");
             }
         }
-        for (int i = 0; i < payTypeList.size(); i++) {
-            final String payType = payTypeList.get(i);
-            if (!EnumPaymentType.WECHAT_H5_CASHIER_DESK.getId().equals(payType)
-                    && !EnumPaymentType.QUICK_APY.getId().equals(payType)
-                    && !EnumPaymentType.ALIPAY_SCAN_CODE.getId().equals(payType)) {
-                return CommonResponse.simpleResponse(-1, "不存在的支付方式");
-            }
-        }
+//        for (int i = 0; i < payTypeList.size(); i++) {
+//            final String payType = payTypeList.get(i);
+//            if (!EnumPaymentType.WECHAT_H5_CASHIER_DESK.getId().equals(payType)
+//                    && !EnumPaymentType.QUICK_APY.getId().equals(payType)
+//                    && !EnumPaymentType.ALIPAY_SCAN_CODE.getId().equals(payType)) {
+//                return CommonResponse.simpleResponse(-1, "不存在的支付方式");
+//            }
+//        }
         payTypeList.add("N");
         if (StringUtils.isEmpty(requestParam.getOrderNo())) {
             requestParam.setOrderNo(null);
