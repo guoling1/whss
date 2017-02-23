@@ -1441,7 +1441,7 @@ input:focus {
   height: 26px;
   margin: 9px auto 4px;
   background: url("../assets/wxb.png") no-repeat center;
-  background-size: 26px 60px;
+  background-size: 26px 26px;
 }
 #collection .keyboard .keys .qr .wx-pay .date,
 #payment-wx .keyboard .keys .qr .wx-pay .date,
@@ -1465,7 +1465,7 @@ input:focus {
   height: 26px;
   margin: 9px auto 4px;
   background: url("../assets/zfbb.png") no-repeat center;
-  background-size: 26px 60px;
+  background-size: 26px 26px;
 }
 #collection .keyboard .keys .qr .ali-pay .date,
 #payment-wx .keyboard .keys .qr .ali-pay .date,
