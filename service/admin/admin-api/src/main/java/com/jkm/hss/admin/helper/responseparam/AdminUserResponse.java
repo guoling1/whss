@@ -1,4 +1,4 @@
-package com.jkm.hss.admin.entity;
+package com.jkm.hss.admin.helper.responseparam;
 
 import com.jkm.base.common.entity.BaseEntity;
 import com.jkm.hss.admin.enums.EnumAdminUserStatus;
@@ -12,20 +12,21 @@ import java.util.Date;
  * Created by yulong.zhang on 2016/11/23.
  */
 @Data
-public class AdminUser extends BaseEntity {
+public class AdminUserResponse {
+    /**
+     * 主键id
+     */
+    protected long id;
+    /**
+     * 状态
+     * tinyint
+     */
+    protected int status;
 
     /**
      * 登录名
      */
     private String username;
-    /**
-     * 密码
-     */
-    private String password;
-    /**
-     * 密码hash salt
-     */
-    private String salt;
     /**
      * 用户姓名
      */
@@ -52,17 +53,10 @@ public class AdminUser extends BaseEntity {
      */
     private String idCard;
     /**
-     * 上次登录时间
-     */
-    private Date lastLoginDate;
-    /**
      * 角色编码
      */
     private Long roleId;
-    /**
-     * 员工编码
-     */
-    private String markCode;
+
     /**
      * 身份证正面照
      */
@@ -71,22 +65,14 @@ public class AdminUser extends BaseEntity {
      * 身份证背面照
      */
     private String identityOppositePic;
-    /**
-     *员工类型
-     * {@link com.jkm.hss.admin.enums.EnumAdminType}
-     */
-    private int type;
 
     /**
-     * 用户是否被激活
-     *
-     * @return
+     * 真实身份证背面
      */
-    public boolean isActive() {
-        return this.status == EnumAdminUserStatus.NORMAL.getCode();
-    }
+    private String realIdentityOppositePic;
+    /**
+     * 真实身份证正面
+     */
+    private String realIdentityFacePic;
 
-    public boolean checkPassword(final String password) {
-        return StringUtils.equals(DigestUtils.sha256Hex(password + this.getSalt()), this.password);
-    }
 }

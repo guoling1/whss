@@ -89,4 +89,11 @@ public interface AdminUserDao {
      */
     Long selectByUsernameUnIncludeNow(@Param("username") String username,@Param("id") long id);
 
+    /**
+     * 最后一次登陆时间
+     * @param id
+     * @return
+     */
+    void updateLastLoginDate(@Param("id") long id);
+
 }

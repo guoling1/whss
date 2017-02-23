@@ -1,5 +1,6 @@
 package com.jkm.hss.controller.admin;
 
+import com.aliyun.oss.OSSClient;
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
@@ -15,6 +16,7 @@ import com.jkm.hss.admin.helper.requestparam.AdminUserListRequest;
 import com.jkm.hss.admin.helper.requestparam.AdminUserRequest;
 import com.jkm.hss.admin.helper.requestparam.DistributeQrCodeRequest;
 import com.jkm.hss.admin.helper.responseparam.AdminUserListResponse;
+import com.jkm.hss.admin.helper.responseparam.AdminUserResponse;
 import com.jkm.hss.admin.helper.responseparam.BossDistributeQRCodeRecordResponse;
 import com.jkm.hss.admin.helper.responseparam.DistributeQRCodeRecordResponse;
 import com.jkm.hss.admin.service.AdminUserService;
@@ -25,8 +27,10 @@ import com.jkm.hss.dealer.entity.DealerChannelRate;
 import com.jkm.hss.dealer.enums.EnumDealerLevel;
 import com.jkm.hss.dealer.enums.EnumRecommendBtn;
 import com.jkm.hss.dealer.helper.DealerConsts;
-import com.jkm.hss.dealer.helper.requestparam.*;
-import com.jkm.hss.dealer.helper.response.DistributeRecordResponse;
+import com.jkm.hss.dealer.helper.requestparam.FirstLevelDealerAdd2Request;
+import com.jkm.hss.dealer.helper.requestparam.FirstLevelDealerAddRequest;
+import com.jkm.hss.dealer.helper.requestparam.FirstLevelDealerUpdate2Request;
+import com.jkm.hss.dealer.helper.requestparam.FirstLevelDealerUpdateRequest;
 import com.jkm.hss.dealer.service.DealerChannelRateService;
 import com.jkm.hss.dealer.service.DealerRateService;
 import com.jkm.hss.dealer.service.DealerService;
@@ -52,8 +56,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.math.BigDecimal;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -90,6 +97,9 @@ public class AdminController extends BaseController {
     @Autowired
     private QRCodeService qrCodeService;
 
+    @Autowired
+    private OSSClient ossClient;
+
     /**
      * 登录
      *
@@ -121,7 +131,7 @@ public class AdminController extends BaseController {
         if (!tokenOptional.isPresent()) {
             return CommonResponse.simpleResponse(-1, "登录名或密码错误");
         }
-
+        this.adminUserService.updateLastLoginDate(tokenOptional.get().getAuid());
         CookieUtil.setSessionCookie(response, ApplicationConsts.ADMIN_COOKIE_KEY, tokenOptional.get().getToken(),
                 ApplicationConsts.getApplicationConfig().domain(), (int)(DealerConsts.TOKEN_EXPIRE_MILLIS / 1000));
         return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "登录成功");
@@ -1040,12 +1050,33 @@ public class AdminController extends BaseController {
         if(!adminUserOptional.isPresent()){
             return  CommonResponse.simpleResponse(-1,"该员工不存在");
         }
+        Date expiration = new Date(new Date().getTime() + 30*60*1000);
+        AdminUserResponse adminUserResponse = new AdminUserResponse();
         if(adminUserOptional.get().getMobile()!=null&&!"".equals(adminUserOptional.get().getMobile())){
-            adminUserOptional.get().setMobile(AdminUserSupporter.decryptMobile(userId,adminUserOptional.get().getMobile()));
+            adminUserResponse.setMobile(AdminUserSupporter.decryptMobile(userId,adminUserOptional.get().getMobile()));
         }
         if(adminUserOptional.get().getIdCard()!=null&&!"".equals(adminUserOptional.get().getIdCard())){
-            adminUserOptional.get().setIdCard(AdminUserSupporter.decryptIdentity(adminUserOptional.get().getIdCard()));
+            adminUserResponse.setIdCard(AdminUserSupporter.decryptIdentity(adminUserOptional.get().getIdCard()));
         }
-        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功",adminUserOptional.get());
+        if(adminUserOptional.get().getIdentityFacePic()!=null&&!"".equals(adminUserOptional.get().getIdentityFacePic())){
+            adminUserResponse.setIdentityFacePic(adminUserOptional.get().getIdentityFacePic());
+            URL url = ossClient.generatePresignedUrl(ApplicationConsts.getApplicationConfig().ossBucke(), adminUserResponse.getIdentityFacePic(),expiration);
+            adminUserResponse.setRealIdentityFacePic(url.toString());
+        }
+        if(adminUserOptional.get().getIdentityOppositePic()!=null&&!"".equals(adminUserOptional.get().getIdentityOppositePic())){
+            adminUserResponse.setIdentityOppositePic(adminUserOptional.get().getIdentityOppositePic());
+            URL url = ossClient.generatePresignedUrl(ApplicationConsts.getApplicationConfig().ossBucke(), adminUserResponse.getIdentityOppositePic(),expiration);
+            adminUserResponse.setRealIdentityOppositePic(url.toString());
+        }
+        adminUserResponse.setId(adminUserOptional.get().getId());
+        adminUserResponse.setStatus(adminUserOptional.get().getStatus());
+        adminUserResponse.setUsername(adminUserOptional.get().getUsername());
+        adminUserResponse.setRealname(adminUserOptional.get().getRealname());
+        adminUserResponse.setEmail(adminUserOptional.get().getEmail());
+        adminUserResponse.setCompanyId(adminUserOptional.get().getCompanyId());
+        adminUserResponse.setDeptId(adminUserOptional.get().getDeptId());
+        adminUserResponse.setRoleId(adminUserOptional.get().getRoleId());
+        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功",adminUserResponse);
     }
+
 }

@@ -16,6 +16,7 @@
         realname,
         email,
         mobile,
+        type,
         status,
         company_id,
         dept_id,
@@ -34,6 +35,7 @@
         #{realname},
         #{email},
         #{mobile},
+        #{type},
         #{status},
         #{companyId},
         #{deptId},
@@ -68,7 +70,7 @@
     </select>
 
     <select id="selectByUsername" resultType="com.jkm.hss.admin.entity.AdminUser">
-        SELECT * FROM tb_admin_user WHERE username = #{username}
+        SELECT * FROM tb_admin_user WHERE username = #{username} and type=1 and status=1
     </select>
 
     <update id="updatePwd">
@@ -96,7 +98,7 @@
     <select id="selectAdminUserCountByPageParams" resultType="java.lang.Integer">
         SELECT COUNT(1) FROM tb_admin_user
         <where>
-            1=1
+            type=1 and status=1
             <if test="realname != null and realname!=''">
                 AND `realname` LIKE "%"#{realname}"%"
             </if>
@@ -111,7 +113,7 @@
     <select id="selectAdminUserListByPageParams" resultType="com.jkm.hss.admin.entity.AdminUser">
         SELECT <include refid="Base_Column_List" /> FROM tb_admin_user
         <where>
-            1=1
+            type=1 and status=1
             <if test="realname != null and realname!=''">
                 AND `realname` LIKE "%"#{realname}"%"
             </if>
@@ -126,6 +128,13 @@
     </select>
 
     <select id="selectByUsernameUnIncludeNow" resultType="java.lang.Long">
-        SELECT COUNT(1) FROM tb_admin_user WHERE username = #{username} AND id != #{id}
+        SELECT COUNT(1) FROM tb_admin_user WHERE username = #{username} AND id != #{id} and type=1 and status=1
     </select>
+
+    <update id="updateLastLoginDate">
+        UPDATE tb_admin_user
+        SET
+        last_login_date = now()
+        WHERE id = #{id}
+    </update>
 </mapper>

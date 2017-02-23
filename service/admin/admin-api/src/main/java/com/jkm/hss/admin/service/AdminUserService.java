@@ -174,4 +174,11 @@ public interface AdminUserService {
      * @return
      */
     Long selectByUsernameUnIncludeNow(String username,long id);
+
+    /**
+     * 最后一次登陆时间
+     * @param id
+     * @return
+     */
+    void updateLastLoginDate(long id);
 }

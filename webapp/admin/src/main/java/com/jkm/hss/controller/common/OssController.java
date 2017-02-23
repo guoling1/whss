@@ -73,7 +73,7 @@ public class OssController extends BaseController {
         }
 
         return CommonResponse.builder4MapResult(0, "success")
-                .addParam("url", ApplicationConsts.getApplicationConfig().ossBindHost() + "/" + fileName).build();
+                .addParam("url", fileName).build();
     }
 
     /**
