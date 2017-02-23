@@ -255,6 +255,8 @@ public class PayServiceImpl implements PayService {
             channel = EnumPayChannelSign.YG_WEIXIN.getId();
         } else if (EnumPaymentType.ALIPAY_SCAN_CODE.getId().equals(order.getPayType())) {
             channel = EnumPayChannelSign.YG_ZHIFUBAO.getId();
+        } else {
+            channel = EnumPayChannelSign.YG_ZHIFUBAO.getId();
         }
         order.setPayChannelSign(channel);
         log.info("返回的通道是[{}]", order.getPayType());
@@ -844,7 +846,7 @@ public class PayServiceImpl implements PayService {
             placeOrderRequest.setTradeType("JSAPI");
         } else if (EnumPayChannelSign.YG_ZHIFUBAO.getId() == channel) {
             //TODO
-            placeOrderRequest.setTradeType("NATIVE");
+            placeOrderRequest.setTradeType("ZFBNATIVE");
         } else if (EnumPayChannelSign.YG_YINLIAN.getId() == channel) {
             placeOrderRequest.setTradeType("EPOS");
         }
