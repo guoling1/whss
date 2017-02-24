@@ -6,6 +6,7 @@ import com.jkm.hss.account.dao.SettleAccountFlowDao;
 import com.jkm.hss.account.entity.Account;
 import com.jkm.hss.account.entity.SettleAccountFlow;
 import com.jkm.hss.account.enums.EnumAccountFlowType;
+import com.jkm.hss.account.helper.selectresponse.SettleAccountFlowStatistics;
 import com.jkm.hss.account.sevice.AccountService;
 import com.jkm.hss.account.sevice.SettleAccountFlowService;
 import lombok.extern.slf4j.Slf4j;
@@ -138,12 +139,12 @@ public class SettleAccountFlowServiceImpl implements SettleAccountFlowService {
     /**
      * {@inheritDoc}
      *
-     * @param tradeDateList
+     * @param tradeDate
      * @return
      */
     @Override
-    public List<SettleAccountFlow> getMerchantLastWordDayRecord(final List<Date> tradeDateList) {
-        return this.settleAccountFlowDao.selectMerchantLastWordDayRecord(tradeDateList);
+    public List<SettleAccountFlowStatistics> statisticsYesterdayFlow(final Date tradeDate) {
+        return this.settleAccountFlowDao.statisticsYesterdayFlow(tradeDate);
     }
 
     /**
@@ -164,7 +165,6 @@ public class SettleAccountFlowServiceImpl implements SettleAccountFlowService {
      * @return
      */
     @Override
-    @Transactional
     public List<SettleAccountFlow> getDealerOrCompanyFlowByOrderNo(final String orderNo) {
         return this.settleAccountFlowDao.selectDealerOrCompanyFlowByOrderNo(orderNo);
     }
@@ -176,8 +176,18 @@ public class SettleAccountFlowServiceImpl implements SettleAccountFlowService {
      * @return
      */
     @Override
-    @Transactional
     public List<SettleAccountFlow> getBySettlementRecordId(final long settlementRecordId) {
         return this.settleAccountFlowDao.selectBySettlementRecordId(settlementRecordId);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param tradeDate
+     * @return
+     */
+    @Override
+    public int getYesterdayDecreaseFlowCount(final Date tradeDate) {
+        return this.settleAccountFlowDao.selectYesterdayDecreaseFlowCount(tradeDate);
     }
 }

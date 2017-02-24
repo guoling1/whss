@@ -1,6 +1,7 @@
 package com.jkm.hss.account.dao;
 
 import com.jkm.hss.account.entity.SettleAccountFlow;
+import com.jkm.hss.account.helper.selectresponse.SettleAccountFlowStatistics;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
@@ -54,14 +55,12 @@ public interface SettleAccountFlowDao {
     SettleAccountFlow selectByOrderNoAndAccountIdAndType(@Param("orderNo") String orderNo, @Param("accountId") long accountId, @Param("type") int type);
 
     /**
-     * 查询上一个工作日的结算流水（未结算）
+     * 统计上一日的结算流水（未结算）
      *
-     * 如果今日是周一查询的是（周五至周日）的；
-     *
-     * @param tradeDateList
+     * @param tradeDate
      * @return
      */
-    List<SettleAccountFlow> selectMerchantLastWordDayRecord(@Param("tradeDateList") List<Date> tradeDateList);
+    List<SettleAccountFlowStatistics> statisticsYesterdayFlow(@Param("tradeDate") Date tradeDate);
 
     /**
      * 按审核记录id查询
@@ -86,4 +85,12 @@ public interface SettleAccountFlowDao {
      * @return
      */
     List<SettleAccountFlow> selectBySettlementRecordId(@Param("settlementRecordId") long settlementRecordId);
+
+    /**
+     * 查询昨日出账流水个数
+     *
+     * @param tradeDate
+     * @return
+     */
+    int selectYesterdayDecreaseFlowCount(@Param("tradeDate") Date tradeDate);
 }
