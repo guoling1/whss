@@ -17,7 +17,12 @@ public enum EnumSettleDestinationType {
     /**
      * 结算到余额
      */
-    TO_ACCOUNT(2, "结算到余额")
+    TO_ACCOUNT(2, "结算到余额"),
+
+    /**
+     * 渠道结算
+     */
+    CHANNEL_SETTLE(3, "渠道结算")
     ;
 
     @Getter

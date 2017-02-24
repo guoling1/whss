@@ -480,7 +480,6 @@ public class AccountSettleAuditRecordServiceImpl implements AccountSettleAuditRe
             accountSettleAuditRecord.setDealerNo(dealer.getMarkCode());
             accountSettleAuditRecord.setDealerName(dealer.getProxyName());
         }
-        accountSettleAuditRecord.setAppId(flows.get(0).getAppId());
         accountSettleAuditRecord.setTradeDate(flows.get(0).getTradeDate());
         accountSettleAuditRecord.setTradeNumber(flows.size());
         BigDecimal totalAmount = new BigDecimal("0.00");

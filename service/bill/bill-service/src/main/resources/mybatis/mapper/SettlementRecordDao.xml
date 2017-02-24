@@ -7,14 +7,14 @@
         settle_no,
         settle_audit_record_id,
         account_id,
-        merchant_no,
-        merchant_name,
+        user_no,
+        user_name,
+        account_user_type,
         app_id,
-        dealer_no,
-        dealer_name,
         settle_date,
         trade_number,
         settle_amount,
+        settle_mode,
         settle_destination,
         bank_no,
         bank_name,
@@ -26,14 +26,14 @@
         #{settleNo},
         #{settleAuditRecordId},
         #{accountId},
-        #{merchantNo},
-        #{merchantName},
+        #{userNo},
+        #{userName},
+        #{accountUserType},
         #{appId},
-        #{dealerNo},
-        #{dealerName},
         #{settleDate},
         #{tradeNumber},
         #{settleAmount},
+        #{settleMode},
         #{settleDestination},
         #{bankNo},
         #{bankName},
@@ -53,20 +53,17 @@
             <if test="accountId > 0">
                 account_id = #{accountId},
             </if>
-            <if test="merchantNo != null">
-                merchant_no = #{merchantNo},
+            <if test="userNo != null">
+                user_no = #{userNo},
             </if>
-            <if test="merchantName != null">
-                merchant_name = #{merchantName},
+            <if test="userName != null">
+                user_name = #{userName},
+            </if>
+            <if test="accountUserType > 0">
+                account_user_type = #{accountUserType},
             </if>
             <if test="appId != null">
                 app_id = #{appId},
-            </if>
-            <if test="dealerNo != null">
-                dealer_no = #{dealerNo},
-            </if>
-            <if test="dealerName != null">
-                dealer_name = #{dealerName},
             </if>
             <if test="settleDate != null">
                 settle_date = #{settleDate},

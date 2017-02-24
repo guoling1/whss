@@ -117,8 +117,6 @@ public class PayServiceImpl implements PayService {
         order.setOrderNo(SnGenerator.generateSn(EnumTradeType.PAY.getId()));
         order.setTradeAmount(amount);
         order.setRealPayAmount(amount);
-        order.setSettleMode(EnumPayChannelSign.YG_WECHAT.getAutoSettle() ? EnumSettleModeType.CHANNEL_SETTLE.getId() : EnumSettleModeType.SELF_SETTLE.getId());
-        order.setSettleDestination(EnumPayChannelSign.YG_WECHAT.getAutoSettle() ? EnumSettleDestinationType.TO_CARD.getId() : EnumSettleDestinationType.TO_ACCOUNT.getId());
         order.setAppId(EnumAppType.HSS.getId());
         order.setTradeType(EnumTradeType.PAY.getId());
         order.setServiceType(EnumServiceType.APPRECIATION_PAY.getId());
@@ -157,8 +155,6 @@ public class PayServiceImpl implements PayService {
         order.setOrderNo(SnGenerator.generateSn(EnumTradeType.PAY.getId()));
         order.setTradeAmount(new BigDecimal(totalAmount));
         order.setRealPayAmount(new BigDecimal(totalAmount));
-        order.setSettleMode(payChannelSign.getAutoSettle() ? EnumSettleModeType.CHANNEL_SETTLE.getId() : EnumSettleModeType.SELF_SETTLE.getId());
-        order.setSettleDestination(payChannelSign.getAutoSettle() ? EnumSettleDestinationType.TO_CARD.getId() : EnumSettleDestinationType.TO_ACCOUNT.getId());
         order.setAppId(appId);
         order.setTradeType(EnumTradeType.PAY.getId());
         order.setServiceType(EnumServiceType.RECEIVE_MONEY.getId());
@@ -393,19 +389,21 @@ public class PayServiceImpl implements PayService {
             final SettlementRecord settlementRecord = new SettlementRecord();
             settlementRecord.setSettleNo(SnGenerator.generate());
             settlementRecord.setAccountId(merchantAccount.getId());
-            settlementRecord.setMerchantNo(merchant.getMarkCode());
-            settlementRecord.setMerchantName(merchant.getMerchantName());
+            settlementRecord.setUserNo(merchant.getMarkCode());
+            settlementRecord.setUserName(merchant.getMerchantName());
+            settlementRecord.setAccountUserType(EnumAccountUserType.MERCHANT.getId());
             settlementRecord.setAppId(EnumAppType.HSS.getId());
             settlementRecord.setSettleDate(order.getSettleTime());
             settlementRecord.setTradeNumber(1);
             settlementRecord.setSettleAmount(order.getTradeAmount().subtract(order.getPoundage()));
-            settlementRecord.setSettleDestination(EnumSettleDestinationType.TO_CARD.getId());
-            settlementRecord.setBankNo(merchant.getBankNo());
-            settlementRecord.setBankName(merchant.getBankName());
             settlementRecord.setSettleStatus(EnumSettleStatus.DUE_SETTLE.getId());
             if (payChannelSign.getAutoSettle()) {
+                settlementRecord.setSettleMode(EnumSettleModeType.CHANNEL_SETTLE.getId());
+                settlementRecord.setSettleDestination(EnumSettleDestinationType.CHANNEL_SETTLE.getId());
                 settlementRecord.setStatus(EnumSettlementRecordStatus.WITHDRAWING.getId());
             } else {
+                settlementRecord.setSettleMode(EnumSettleModeType.SELF_SETTLE.getId());
+                settlementRecord.setSettleDestination(EnumSettleDestinationType.TO_CARD.getId());
                 settlementRecord.setStatus(EnumSettlementRecordStatus.WAIT_WITHDRAW.getId());
             }
             final long settlementRecordId = this.settlementRecordService.add(settlementRecord);
@@ -580,8 +578,9 @@ public class PayServiceImpl implements PayService {
             final SettlementRecord settlementRecord = new SettlementRecord();
             settlementRecord.setSettleNo(SnGenerator.generate());
             settlementRecord.setAccountId(account.getId());
-            settlementRecord.setDealerNo(dealer.getMarkCode());
-            settlementRecord.setDealerName(dealer.getProxyName());
+            settlementRecord.setUserNo(dealer.getMarkCode());
+            settlementRecord.setUserName(dealer.getProxyName());
+            settlementRecord.setAccountUserType(EnumAccountUserType.DEALER.getId());
             settlementRecord.setAppId(EnumAppType.HSS.getId());
             settlementRecord.setSettleDate(order.getSettleTime());
             settlementRecord.setTradeNumber(1);
@@ -616,8 +615,9 @@ public class PayServiceImpl implements PayService {
             final SettlementRecord settlementRecord = new SettlementRecord();
             settlementRecord.setSettleNo(SnGenerator.generate());
             settlementRecord.setAccountId(account.getId());
-            settlementRecord.setDealerNo(dealer.getMarkCode());
-            settlementRecord.setDealerName(dealer.getProxyName());
+            settlementRecord.setUserNo(dealer.getMarkCode());
+            settlementRecord.setUserName(dealer.getProxyName());
+            settlementRecord.setAccountUserType(EnumAccountUserType.DEALER.getId());
             settlementRecord.setAppId(EnumAppType.HSS.getId());
             settlementRecord.setSettleDate(order.getSettleTime());
             settlementRecord.setTradeNumber(1);
@@ -651,8 +651,9 @@ public class PayServiceImpl implements PayService {
             final SettlementRecord settlementRecord = new SettlementRecord();
             settlementRecord.setSettleNo(SnGenerator.generate());
             settlementRecord.setAccountId(account.getId());
-            settlementRecord.setMerchantNo(merchant.getMarkCode());
-            settlementRecord.setMerchantName(merchant.getMerchantName());
+            settlementRecord.setUserNo(merchant.getMarkCode());
+            settlementRecord.setUserName(merchant.getMerchantName());
+            settlementRecord.setAccountUserType(EnumAccountUserType.MERCHANT.getId());
             settlementRecord.setAppId(EnumAppType.HSS.getId());
             settlementRecord.setSettleDate(order.getSettleTime());
             settlementRecord.setTradeNumber(1);
@@ -686,8 +687,9 @@ public class PayServiceImpl implements PayService {
             final SettlementRecord settlementRecord = new SettlementRecord();
             settlementRecord.setSettleNo(SnGenerator.generate());
             settlementRecord.setAccountId(account.getId());
-            settlementRecord.setMerchantNo(merchant.getMarkCode());
-            settlementRecord.setMerchantName(merchant.getMerchantName());
+            settlementRecord.setUserNo(merchant.getMarkCode());
+            settlementRecord.setUserName(merchant.getMerchantName());
+            settlementRecord.setAccountUserType(EnumAccountUserType.MERCHANT.getId());
             settlementRecord.setAppId(EnumAppType.HSS.getId());
             settlementRecord.setSettleDate(order.getSettleTime());
             settlementRecord.setTradeNumber(1);
@@ -771,8 +773,9 @@ public class PayServiceImpl implements PayService {
             final SettlementRecord settlementRecord = new SettlementRecord();
             settlementRecord.setSettleNo(SnGenerator.generate());
             settlementRecord.setAccountId(account.getId());
-            settlementRecord.setDealerNo(dealer.getMarkCode());
-            settlementRecord.setDealerName(dealer.getProxyName());
+            settlementRecord.setUserNo(dealer.getMarkCode());
+            settlementRecord.setUserName(dealer.getProxyName());
+            settlementRecord.setAccountUserType(EnumAccountUserType.DEALER.getId());
             settlementRecord.setAppId(EnumAppType.HSS.getId());
             settlementRecord.setSettleDate(order.getSettleTime());
             settlementRecord.setTradeNumber(1);
@@ -806,8 +809,9 @@ public class PayServiceImpl implements PayService {
             final SettlementRecord settlementRecord = new SettlementRecord();
             settlementRecord.setSettleNo(SnGenerator.generate());
             settlementRecord.setAccountId(account.getId());
-            settlementRecord.setDealerNo(dealer.getMarkCode());
-            settlementRecord.setDealerName(dealer.getProxyName());
+            settlementRecord.setUserNo(dealer.getMarkCode());
+            settlementRecord.setUserName(dealer.getProxyName());
+            settlementRecord.setAccountUserType(EnumAccountUserType.DEALER.getId());
             settlementRecord.setAppId(EnumAppType.HSS.getId());
             settlementRecord.setSettleDate(order.getSettleTime());
             settlementRecord.setTradeNumber(1);
@@ -841,8 +845,9 @@ public class PayServiceImpl implements PayService {
             final SettlementRecord settlementRecord = new SettlementRecord();
             settlementRecord.setSettleNo(SnGenerator.generate());
             settlementRecord.setAccountId(account.getId());
-            settlementRecord.setMerchantNo(merchant.getMarkCode());
-            settlementRecord.setMerchantName(merchant.getMerchantName());
+            settlementRecord.setUserNo(merchant.getMarkCode());
+            settlementRecord.setUserName(merchant.getMerchantName());
+            settlementRecord.setAccountUserType(EnumAccountUserType.MERCHANT.getId());
             settlementRecord.setAppId(EnumAppType.HSS.getId());
             settlementRecord.setSettleDate(order.getSettleTime());
             settlementRecord.setTradeNumber(1);
@@ -876,8 +881,9 @@ public class PayServiceImpl implements PayService {
             final SettlementRecord settlementRecord = new SettlementRecord();
             settlementRecord.setSettleNo(SnGenerator.generate());
             settlementRecord.setAccountId(account.getId());
-            settlementRecord.setMerchantNo(merchant.getMarkCode());
-            settlementRecord.setMerchantName(merchant.getMerchantName());
+            settlementRecord.setUserNo(merchant.getMarkCode());
+            settlementRecord.setUserName(merchant.getMerchantName());
+            settlementRecord.setAccountUserType(EnumAccountUserType.MERCHANT.getId());
             settlementRecord.setAppId(EnumAppType.HSS.getId());
             settlementRecord.setSettleDate(order.getSettleTime());
             settlementRecord.setTradeNumber(1);

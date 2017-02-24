@@ -35,29 +35,26 @@ public class SettlementRecord extends BaseEntity {
     private long accountId;
 
     /**
-     * 商户编号
+     * 账户所属用户类型
+     *
+     * {@link com.jkm.hss.account.enums.EnumAccountUserType}
      */
-    private String merchantNo;
+    private int accountUserType;
 
     /**
-     * 商户名
+     * 编号
      */
-    private String merchantName;
+    private String userNo;
+
+    /**
+     * 名称
+     */
+    private String userName;
 
     /**
      * 业务线（hss,hsy）
      */
     private String appId;
-
-    /**
-     * 代理商编号
-     */
-    private String dealerNo;
-
-    /**
-     * 代理商名
-     */
-    private String dealerName;
 
     /**
      * 结算日期
@@ -82,15 +79,11 @@ public class SettlementRecord extends BaseEntity {
     private int settleDestination;
 
     /**
-     * 银行账户号
+     * 结算方式
+     *
+     * {@link com.jkm.hss.bill.enums.EnumSettleModeType}
      */
-    private String bankNo;
-
-    /**
-     * 银行开户名
-     */
-    private String bankName;
-
+    private int settleMode;
     /**
      * 结算状态
      *

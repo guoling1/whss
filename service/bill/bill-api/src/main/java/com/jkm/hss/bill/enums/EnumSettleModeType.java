@@ -12,13 +12,13 @@ import lombok.Getter;
 public enum EnumSettleModeType {
 
     /**
-     * 自主结算
+     * 自主打款
      */
-    SELF_SETTLE(1, "自主结算"),
+    SELF_SETTLE(1, "自主打款"),
     /**
      * 渠道结算
      */
-    CHANNEL_SETTLE(2, "渠道结算")
+    CHANNEL_SETTLE(2, "渠道自动打款")
     ;
 
 

@@ -223,8 +223,6 @@ public class HSYTradeServiceImpl implements HSYTradeService {
         order.setOrderNo(SnGenerator.generateSn(EnumTradeType.PAY.getId()));
         order.setTradeAmount(new BigDecimal(totalAmount));
         order.setRealPayAmount(new BigDecimal(totalAmount));
-        order.setSettleMode(payChannelSign.getAutoSettle() ? EnumSettleModeType.CHANNEL_SETTLE.getId() : EnumSettleModeType.SELF_SETTLE.getId());
-        order.setSettleDestination(payChannelSign.getAutoSettle() ? EnumSettleDestinationType.TO_CARD.getId() : EnumSettleDestinationType.TO_ACCOUNT.getId());
         order.setAppId(appId);
         order.setTradeType(EnumTradeType.PAY.getId());
         order.setServiceType(EnumServiceType.RECEIVE_MONEY.getId());
