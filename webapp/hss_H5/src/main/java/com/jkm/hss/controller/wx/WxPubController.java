@@ -1071,7 +1071,7 @@ public class WxPubController extends BaseController {
     }
 
     /**
-     * 信用卡认证
+     * 支行信息
      *
      * @return
      */
