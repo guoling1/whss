@@ -238,11 +238,11 @@ public class MerchantInfoController extends BaseController {
             return CommonResponse.simpleResponse(-1, "手机号格式错误");
         }
         //校验身份4要素
-        final Pair<Integer, String> verifyPair =
-                this.verifyID4Element(MerchantSupport.decryptMobile(merchantInfoOptional.get().getMobile()), merchantInfo);
-        if (0 != verifyPair.getLeft()) {
-            return CommonResponse.simpleResponse(-1, verifyPair.getRight());
-        }
+//        final Pair<Integer, String> verifyPair =
+//                this.verifyID4Element(MerchantSupport.decryptMobile(merchantInfoOptional.get().getMobile()), merchantInfo);
+//        if (0 != verifyPair.getLeft()) {
+//            return CommonResponse.simpleResponse(-1, verifyPair.getRight());
+//        }
 
         final Pair<Integer, String> verifyCode = this.smsAuthService.getVerifyCode(reserveMobile, EnumVerificationCodeType.BIND_CARD_MERCHANT);
         if (1 == verifyCode.getLeft()) {
