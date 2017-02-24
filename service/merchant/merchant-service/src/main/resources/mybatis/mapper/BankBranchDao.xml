@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jkm.hss.merchant.dao.BankBranchDao">
+
+    <select id="findByBankName" resultType="com.jkm.hss.merchant.entity.BankBranch">
+        SELECT
+        bank_code,bank_branch
+        from tb_bank_branch
+        where id in (select id from tb_bank_branch where bank_branch=#{bankName})
+        <if test="contions != null and contions != ''">
+            AND bank_branch LIKE CONCAT('%',#{contions},'%')
+        </if>
+    </select>
+
+</mapper>

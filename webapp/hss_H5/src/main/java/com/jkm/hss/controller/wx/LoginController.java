@@ -777,6 +777,60 @@ public class LoginController extends BaseController {
         }
     }
 
+    /**
+     * 所属分行
+     * @param request
+     * @param response
+     * @param model
+     * @return
+     * @throws IOException
+     */
+    @RequestMapping(value = "/bankBranch", method = RequestMethod.GET)
+    public String bankBranch(final HttpServletRequest request, final HttpServletResponse response,final Model model) throws IOException {
+        boolean isRedirect = false;
+        if(!super.isLogin(request)){
+            return "redirect:"+ WxConstants.WEIXIN_USERINFO+request.getRequestURI()+ WxConstants.WEIXIN_USERINFO_REDIRECT;
+        }else {
+            String url = "";
+            Optional<UserInfo> userInfoOptional = userInfoService.selectByOpenId(super.getOpenId(request));
+            if (userInfoOptional.isPresent()) {
+                Long merchantId = userInfoOptional.get().getMerchantId();
+                if (merchantId != null && merchantId != 0){
+                    Optional<MerchantInfo> result = merchantInfoService.selectById(merchantId);
+                    if (result.get().getStatus()== EnumMerchantStatus.LOGIN.getId()){//登录
+                        url = "/sqb/reg";
+                        isRedirect= true;
+                    }else if(result.get().getStatus()== EnumMerchantStatus.INIT.getId()){
+                        url = "/sqb/addInfo";
+                        isRedirect= true;
+                    }else if(result.get().getStatus()== EnumMerchantStatus.ONESTEP.getId()){
+                        url = "/sqb/addNext";
+                        isRedirect= true;
+                    }else if(result.get().getStatus()== EnumMerchantStatus.REVIEW.getId()||
+                            result.get().getStatus()== EnumMerchantStatus.UNPASSED.getId()||
+                            result.get().getStatus()== EnumMerchantStatus.DISABLE.getId()){
+                        url = "/sqb/prompt";
+                        isRedirect= true;
+                    }else if(result.get().getStatus()== EnumMerchantStatus.PASSED.getId()||result.get().getStatus()== EnumMerchantStatus.FRIEND.getId()){//跳提现页面
+                        url = "/bankBranch";
+                    }
+                }else{
+                    CookieUtil.deleteCookie(response,ApplicationConsts.MERCHANT_COOKIE_KEY,ApplicationConsts.getApplicationConfig().domain());
+                    isRedirect= true;
+                    url = "/sqb/reg";
+                }
+            }else{
+                CookieUtil.deleteCookie(response,ApplicationConsts.MERCHANT_COOKIE_KEY,ApplicationConsts.getApplicationConfig().domain());
+                isRedirect= true;
+                url = "/sqb/reg";
+            }
+            if(isRedirect){
+                return "redirect:"+url;
+            }else{
+                return url;
+            }
+        }
+    }
 
     private  Pair<String,String> payOf(int payWay,String status) {
         String result="";
