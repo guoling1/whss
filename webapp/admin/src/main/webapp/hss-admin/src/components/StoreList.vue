@@ -154,7 +154,7 @@
               </div>
               <div class="foot">
                 <a href="javascript:void(0)" @click="isMask=false" class="el-button el-button--default">取消</a>
-                <a :href="'http://'+url" @click="isMask=false" class="el-button el-button-default el-button--primary ">下载</a>
+                <a :href="'http://'+loadUrl" @click="isMask=false" class="el-button el-button-default el-button--primary ">下载</a>
               </div>
             </div>
 
@@ -205,6 +205,8 @@
         date1:'',
         date2:'',
         url:'',
+        loadUrl:'',
+        loadUrl1:'',
         fromName:'',
         query:{
           pageNo:1,
@@ -247,6 +249,7 @@
             vm.$data.records = res.data.records;
             vm.$data.total = res.data.totalPage;
             vm.$data.count = res.data.count;
+            vm.$data.loadUrl1 = res.data.ext;
           }, function (err) {
             vm.$data.loading = false;
             vm.$message({
@@ -259,18 +262,20 @@
     },
     methods: {
       onload: function () {
-        this.$http.post(this.$data.excelUrl, this.$data.query)
-          .then(function (res) {
-            this.$data.isMask = true;
-            this.$data.url = res.data.url;
-          }, function (err) {
-            this.$message({
-              showClose: true,
-              message: err.statusMessage,
-              type: 'error'
-            });
-            this.$data.isMask = false;
-          })
+         this.$data.loadUrl = this.loadUrl1;
+         this.$data.isMask = true;
+//        this.$http.post(this.$data.excelUrl, this.$data.query)
+//          .then(function (res) {
+//            this.$data.isMask = true;
+//            this.$data.url = res.data.url;
+//          }, function (err) {
+//            this.$message({
+//              showClose: true,
+//              message: err.statusMessage,
+//              type: 'error'
+//            });
+//            this.$data.isMask = false;
+//          })
       },
       //格式化hss创建时间
       changeTime: function (row, column) {
@@ -322,6 +327,7 @@
             this.$data.records   = res.data.records;
             this.$data.count = res.data.count;
             this.$data.total = res.data.totalPage;
+            this.$data.loadUrl1 = res.data.ext;
           }, function (err) {
             this.$data.loading = false;
             this.$message({

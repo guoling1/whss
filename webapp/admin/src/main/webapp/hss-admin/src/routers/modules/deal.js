@@ -64,7 +64,7 @@ const Test = r => require.ensure([], () => r(require('../../components/Test')), 
 
 export default {
   path: '/admin/record',
-  redirect: '/admin/record/deal',
+  redirect: '/admin/record/newDeal',
   component: Crumbs,
   children: [
     {
