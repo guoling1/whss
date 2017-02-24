@@ -26,17 +26,15 @@ import java.util.List;
 public class DistrictController extends BaseController{
     @Autowired
     private AppBizDistrictService appBizDistrictService;
-
     /**
-     * 查询省对应下的市
-     * @param districtRequest
+     * 查询所有地区
      * @param response
      * @return
      */
     @ResponseBody
-    @RequestMapping(value = "/findAllCities", method = RequestMethod.POST)
-    public CommonResponse findAllCities(@RequestBody final DistrictRequest districtRequest, final HttpServletResponse response) {
-        List<AppBizDistrictResponse> list =  this.appBizDistrictService.findCityByProvinceCode(districtRequest.getCode());
+    @RequestMapping(value = "/findAllDistrict", method = RequestMethod.POST)
+    public CommonResponse findAllDistrict(final HttpServletResponse response) {
+        List<AppBizDistrictListResponse> list =  this.appBizDistrictService.findAllDistrict();
         return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功",list);
     }
 
