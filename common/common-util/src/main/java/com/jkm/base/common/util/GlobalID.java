@@ -1,6 +1,7 @@
 package com.jkm.base.common.util;
 
 
+import com.jkm.base.common.enums.EnumGlobalAdminUserLevel;
 import com.jkm.base.common.enums.EnumGlobalDealerLevel;
 import com.jkm.base.common.enums.EnumGlobalIDPro;
 import com.jkm.base.common.enums.EnumGlobalIDType;
@@ -49,6 +50,22 @@ public class GlobalID {
         int end = sb.length();
         sb.replace(begin,end,id);
 
+        return sb.toString();
+    }
+
+    /**
+     * 生成员工编码
+     * @param enumGlobalAdminUserLevel
+     * @param id
+     * @return
+     */
+    public static String GetAdminUserID(EnumGlobalAdminUserLevel enumGlobalAdminUserLevel, String id){
+        StringBuffer sb = new StringBuffer();
+        sb.append(enumGlobalAdminUserLevel.getValue());
+        sb.append("00000");
+        int begin = sb.length()-id.length();
+        int end = sb.length();
+        sb.replace(begin,end,id);
         return sb.toString();
     }
 }

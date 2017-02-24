@@ -109,8 +109,8 @@ public class ShallProfitDetailServiceImpl implements ShallProfitDetailService{
             //提现分润
             final Map<String, Triple<Long, BigDecimal, String>> map = new HashMap<>();
             if (appAuUser.getDealerID() == 0){
-                final List<ProductChannelDetail> list = this.productChannelDetailService.selectByChannelTypeSign(channelSign);
-                final ProductChannelDetail productChannelDetail = list.get(0);
+                final ProductChannelDetail productChannelDetail = this.productChannelDetailService.selectByProductIdAndChannelId(appAuUser.getId(), channelSign).get();
+                //final ProductChannelDetail productChannelDetail = list.get(0);
                 final Optional<BasicChannel> channelOptional =  this.basicChannelService.selectByChannelTypeSign(channelSign);
                 final BasicChannel basicChannel = channelOptional.get();
                 //获取产品的信息, 产品通道的费率
@@ -139,8 +139,8 @@ public class ShallProfitDetailServiceImpl implements ShallProfitDetailService{
             Preconditions.checkNotNull(dealerOptional.isPresent(), "代理商不存在");
             final Dealer dealer = dealerOptional.get();
             //根据代理商id查询其产品通道费率,产品费率,通道成本费率
-            List<ProductChannelDetail> list = this.productChannelDetailService.selectByChannelTypeSign(channelSign);
-            final ProductChannelDetail productChannelDetail = list.get(0);
+            final ProductChannelDetail productChannelDetail = this.productChannelDetailService.selectByProductIdAndChannelId(appAuUser.getProductID(), channelSign).get();
+            //final ProductChannelDetail productChannelDetail = list.get(0);
             final Optional<BasicChannel> basicChannelOptional = this.basicChannelService.selectByChannelTypeSign(productChannelDetail.getChannelTypeSign());
             final BasicChannel basicChannel = basicChannelOptional.get();
             final Product product = this.productService.selectById(productChannelDetail.getProductId()).get();
@@ -239,8 +239,9 @@ public class ShallProfitDetailServiceImpl implements ShallProfitDetailService{
         if (merchantInfo.getFirstMerchantId() != 0){
             log.info("商户[" + merchantId + "]请求进行提现分润，由于该商户是间接商户，不参与分润，直接进入公司账户，交易订单号:" + orderNo);
 
-            final List<ProductChannelDetail> list = this.productChannelDetailService.selectByChannelTypeSign(channelSign);
-            final ProductChannelDetail productChannelDetail = list.get(0);
+            //final List<ProductChannelDetail> list = this.productChannelDetailService.selectByChannelTypeSign(channelSign);
+            //final ProductChannelDetail productChannelDetail = list.get(0);
+            final ProductChannelDetail productChannelDetail = this.productChannelDetailService.selectByProductIdAndChannelId(merchantInfo.getId(), channelSign).get();
             final Optional<BasicChannel> channelOptional =  this.basicChannelService.selectByChannelTypeSign(channelSign);
             final BasicChannel basicChannel = channelOptional.get();
             final BigDecimal channelMoney = productChannelDetail.getProductWithdrawFee().subtract(basicChannel.getBasicWithdrawFee());
@@ -272,8 +273,8 @@ public class ShallProfitDetailServiceImpl implements ShallProfitDetailService{
             //提现分润
             final Map<String, Triple<Long, BigDecimal, String>> map = new HashMap<>();
             if (merchantInfo.getDealerId() == 0){
-                final List<ProductChannelDetail> list = this.productChannelDetailService.selectByChannelTypeSign(channelSign);
-                final ProductChannelDetail productChannelDetail = list.get(0);
+                final ProductChannelDetail productChannelDetail = this.productChannelDetailService.selectByProductIdAndChannelId(merchantInfo.getProductId(), channelSign).get();
+                //final ProductChannelDetail productChannelDetail = list.get(0);
                 final Optional<BasicChannel> channelOptional =  this.basicChannelService.selectByChannelTypeSign(channelSign);
                 final BasicChannel basicChannel = channelOptional.get();
                 //获取产品的信息, 产品通道的费率
@@ -302,8 +303,9 @@ public class ShallProfitDetailServiceImpl implements ShallProfitDetailService{
             Preconditions.checkNotNull(dealerOptional.isPresent(), "代理商不存在");
             final Dealer dealer = dealerOptional.get();
             //根据代理商id查询其产品通道费率,产品费率,通道成本费率
-            List<ProductChannelDetail> list = this.productChannelDetailService.selectByChannelTypeSign(channelSign);
-            final ProductChannelDetail productChannelDetail = list.get(0);
+            final ProductChannelDetail productChannelDetail =
+                    this.productChannelDetailService.selectByProductIdAndChannelId(merchantInfo.getProductId(), channelSign).get();
+            //final ProductChannelDetail productChannelDetail = list.get(0);
             final Optional<BasicChannel> basicChannelOptional = this.basicChannelService.selectByChannelTypeSign(productChannelDetail.getChannelTypeSign());
             final BasicChannel basicChannel = basicChannelOptional.get();
             final Product product = this.productService.selectById(productChannelDetail.getProductId()).get();
@@ -392,7 +394,9 @@ public class ShallProfitDetailServiceImpl implements ShallProfitDetailService{
     private BigDecimal getMerchantWithdrawFee(final long merchantId, final int channelSign) {
         final MerchantInfo merchant = this.merchantInfoService.selectById(merchantId).get();
         if (0 == merchant.getDealerId()) {
-            final ProductChannelDetail productChannelDetail = this.productChannelDetailService.selectByChannelTypeSign(channelSign).get(0);
+            //final ProductChannelDetail productChannelDetail = this.productChannelDetailService.selectByChannelTypeSign(channelSign).get(0);
+            final ProductChannelDetail productChannelDetail =
+                    this.productChannelDetailService.selectByProductIdAndChannelId(merchant.getProductId(), channelSign).get();
             return productChannelDetail.getProductMerchantWithdrawFee().setScale(2);
         }
         final Dealer dealer = this.dealerService.getById(merchant.getDealerId()).get();
@@ -414,8 +418,10 @@ public class ShallProfitDetailServiceImpl implements ShallProfitDetailService{
             if (merchantInfo.getDealerId() == 0){
                 //jkm直属商户
                 final BasicChannel basicChannel = this.basicChannelService.selectByChannelTypeSign(payChannel).get();
-                final List<ProductChannelDetail> list = this.productChannelDetailService.selectByChannelTypeSign(payChannel);
-                return Pair.of(list.get(0).getProductMerchantWithdrawFee().setScale(2), basicChannel.getBasicWithdrawFee().setScale(2));
+                //final List<ProductChannelDetail> list = this.productChannelDetailService.selectByChannelTypeSign(payChannel);
+                final ProductChannelDetail productChannelDetail =
+                        this.productChannelDetailService.selectByProductIdAndChannelId(merchantInfo.getProductId(), payChannel).get();
+                return Pair.of(productChannelDetail.getProductMerchantWithdrawFee().setScale(2), basicChannel.getBasicWithdrawFee().setScale(2));
             }
             final Optional<Dealer> dealerOptional = this.dealerService.getById(merchantInfo.getDealerId());
             Preconditions.checkNotNull(dealerOptional.isPresent(), "代理商不存在");

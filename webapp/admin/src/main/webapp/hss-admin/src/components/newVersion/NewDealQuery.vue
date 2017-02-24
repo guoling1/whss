@@ -1,166 +1,143 @@
-<template lang="html">
-  <div id="dale">
+<template>
+  <div id="deal">
     <div class="col-md-12">
-
       <div class="box" style="margin-top:15px;overflow: hidden">
         <div class="box-header">
           <h3 class="box-title">交易查询</h3>
-          <router-link to="/admin/record/deal" class="pull-right" style="margin-left: 20px">切换旧版</router-link>
+          <router-link to="/admin/record/deal" class="pull-right btn btn-primary" style="margin-left: 20px">切换旧版
+          </router-link>
+          <a :href="'http://'+this.$data.url" download="交易记录" class="btn btn-primary" style="float: right;color: #fff">导出</a>
         </div>
-      <div class="box-body">
-        <div class="row">
-          <div class="col-md-2">
-            <div class="form-group">
-              <label>订单号：</label>
-              <input type="text" class="form-control" v-model="$$query.orderNo">
-            </div>
-            <div class="form-group">
-              <label>商户名称</label>
-              <input type="text" class="form-control" v-model="$$query.merchantName">
-            </div>
-          </div>
-          <div class="col-md-2">
-            <div class="form-group">
-              <label>所属一级代理：</label>
-              <input type="text" class="form-control" v-model="$$query.proxyName">
-            </div>
-            <div class="form-group">
-              <label>所属二级代理</label>
-              <input type="text" class="form-control" v-model="$$query.proxyName1">
-            </div>
-          </div>
-          <div class="col-md-3">
-            <div class="form-group">
-              <label>交易日期：</label>
-              <div class="form-control">
-                <!--<input id="indate1" type="text" style="border: none;display:inline-block;width: 45%">至
-                <input id="indate2" type="text" style="border: none;display:inline-block;width: 45%" name="date" >-->
-                <input  type="date" style="border: none;display:inline-block;width: 45%" v-model="$$query.startTime">至
-                <input  type="date" style="border: none;display:inline-block;width: 45%"  v-model="$$query.endTime">
+        <div class="box-body">
+          <!--筛选-->
+          <ul>
+            <li class="same">
+              <label>订单号:</label>
+              <el-input style="width: 130px" v-model="query.orderNo" placeholder="请输入内容" size="small"></el-input>
+            </li>
+            <li class="same">
+              <label>商户名称:</label>
+              <el-input style="width: 130px" v-model="query.merchantName" placeholder="请输入内容" size="small"></el-input>
+            </li>
+            <li class="same">
+              <label>所属一级代理:</label>
+              <el-input style="width: 130px" v-model="query.proxyName" placeholder="请输入内容" size="small"></el-input>
+            </li>
+            <li class="same">
+              <label>所属二级代理:</label>
+              <el-input style="width: 130px" v-model="query.proxyName1" placeholder="请输入内容" size="small"></el-input>
+            </li>
+            <li class="same">
+              <label>交易日期:</label>
+              <el-date-picker
+                v-model="date"
+                type="daterange"
+                align="right"
+                placeholder="选择日期范围"
+                :picker-options="pickerOptions2" size="small">
+              </el-date-picker>
+            </li>
+            <li class="same">
+              <label>交易金额:</label>
+              <div class="form-control price">
+                <input type="text" name="date" value="" v-model="query.lessTotalFee">至
+                <input type="text" name="date" value="" v-model="query.moreTotalFee">
               </div>
-            </div>
-            <div class="form-group">
-              <label>交易金额：</label>
-              <div class="form-control">
-                <input type="text" style="border: none;display:inline-block;width: 45%" name="date" value="" v-model="$$query.lessTotalFee">至
-                <input type="text" style="border: none;display:inline-block;width: 45%" name="date" value="" v-model="$$query.moreTotalFee">
-              </div>
-            </div>
-          </div>
-          <div class="col-md-2">
-            <div class="form-group">
-              <label>订单状态：</label>
-              <select class="form-control select2 select2-hidden-accessible" style="width: 100%;" tabindex="-1" aria-hidden="true" v-model="$$query.status">
-                <option value="">全部</option>
-                <option value="1">待支付</option>
-                <option value="4">支付成功</option>
-                <option value="3">支付失败</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label>结算状态：</label>
-              <select class="form-control select2 select2-hidden-accessible" style="width: 100%;" tabindex="-1" aria-hidden="true" v-model="$$query.settleStatus">
-                <option value="">全部</option>
-                <option value="1">未结算</option>
-                <option value="2">结算中</option>
-                <option value="3">已结算</option>
-              </select>
-              </select>
-            </div>
-          </div>
-          <div class="col-md-2">
-            <div class="form-group">
+            </li>
+            <li class="same">
+              <label>订单状态:</label>
+              <el-select style="width: 120px" clearable v-model="query.status" size="small">
+                <el-option label="全部" value="">全部</el-option>
+                <el-option label="待支付" value="1">待支付</el-option>
+                <el-option label="支付成功" value="4">支付成功</el-option>
+                <el-option label="支付失败" value="3">支付失败</el-option>
+              </el-select>
+            </li>
+            <li class="same">
+              <label>结算状态:</label>
+              <el-select style="width: 120px" clearable v-model="query.settleStatus" size="small">
+                <el-option label="全部" value="">全部</el-option>
+                <el-option label="待结算" value="1">待结算</el-option>
+                <el-option label="结算中" value="2">结算中</el-option>
+                <el-option label="已结算" value="3">已结算</el-option>
+              </el-select>
+            </li>
+            <li class="same">
               <label>支付方式：</label>
-              <select class="form-control select2 select2-hidden-accessible" style="width: 100%;" tabindex="-1" aria-hidden="true" v-model="$$query.payType">
-                <option value="">全部</option>
-                <option value="S">微信扫码</option>
-                <option value="N">微信二维码</option>
-                <option value="H">微信H5收银台</option>
-                <option value="B">快捷收款</option>
-                <option value="Z">支付宝扫码</option>
-              </select>
-            </div>
-            <div class="form-group" style="overflow: hidden;margin: 0;margin-top: 36px;">
-              <a :href="'http://'+this.$data.url" download="交易记录" class="btn btn-primary" style="float: right;color: #fff">导出</a>
-              <div class="btn btn-primary" @click="lookup" style="margin-right:15px;float: right">筛选</div>
-            </div>
-          </div>
-        </div>
-        <div id="example2_wrapper" class="dataTables_wrapper form-inline dt-bootstrap">
-          <div class="row">
-            <div class="col-sm-12">
-              <table id="example2" class="table table-bordered table-hover dataTable" role="grid" aria-describedby="example2_info">
-                <thead>
-                <tr role="row">
-                  <th class="sorting_asc" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Rendering engine: activate to sort column descending">序号</th>
-                  <th class="sorting_asc" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Rendering engine: activate to sort column descending">订单号</th>
-                  <th class="sorting_asc" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Rendering engine: activate to sort column descending">交易流水号</th>
-                  <th class="sorting_asc" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Rendering engine: activate to sort column descending">交易日期</th>
-                  <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="Platform(s): activate to sort column ascending">商户名称</th>
-                  <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="Platform(s): activate to sort column ascending">所属一级</th>
-                  <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="Platform(s): activate to sort column ascending">所属二级</th>
-                  <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="Engine version: activate to sort column ascending">支付金额</th>
-                  <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">手续费率</th>
-                  <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">业务方</th>
-                  <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">订单状态</th>
-                  <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">结算状态</th>
-                  <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">支付方式</th>
-                  <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">支付渠道</th>
-                  <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">渠道信息</th>
-                </tr>
-                </thead>
-                <tbody id="content">
-                <tr role="row" v-for="(order,index) in orders">
-                  <td>{{(query.page-1)*10+(index+1)}}</td>
-                  <td><router-link :to="{ path: '/admin/record/newDealDet', query: {orderNo: order.orderNo}}">{{order.orderNo|changeHide}}</router-link></td>
-                  <td>{{order.sn|changeHide}}</td>
-                  <td>{{order.createTime|changeTime}}</td>
-                  <td>{{order.merchantName}}</td>
-                  <td>{{order.proxyName}}</td>
-                  <td>{{order.proxyName1}}</td>
-                  <td style="text-align: right">{{order.tradeAmount|toFix}}</td>
-                  <td>{{order.payRate}}</td>
-                  <td>{{order.appId}}</td>
-                  <td>{{order.status|changeStatus}}<!--<a href="javascript:;">(补发)</a>--></td>
-                  <td>{{order.settleStatus|changeSettleStatus}}</td>
-                  <td>{{order.payType|changePayType}}</td>
-                  <td>{{order.payChannelSign|changePayChannel}}</td>
-                  <td>{{order.remark}}</td>
-                </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-          <div v-if="isShow">
-            <img src="http://img.jinkaimen.cn/admin/common/dist/img/ICBCLoading.gif" alt="">
-          </div>
-          <div v-if="orders.length==0&&!isShow" class="row" style="text-align: center;color: red;font-size: 16px;">
-            <div class="col-sm-12">无此数据</div>
-          </div>
-          <div class="row">
-            <div class="col-sm-5">
-              <div class="dataTables_info" id="example2_info" role="status" aria-live="polite">
-              </div>
-            </div>
-            <div class="col-sm-7">
-              <div class="dataTables_paginate paging_simple_numbers" id="example2_paginate">
-                <ul class="pagination" id="page" @click="bindEvent($event)">
-                </ul>
-                <span class="count">共{{count}}条</span>
-              </div>
-            </div>
+              <el-select style="width: 140px" clearable v-model="query.payType" size="small">
+                <el-option label="全部" value="">全部</el-option>
+                <el-option label="微信扫码" value="S">微信扫码</el-option>
+                <el-option label="微信二维码" value="N">微信二维码</el-option>
+                <el-option label="微信H5收银台" value="H">微信H5收银台</el-option>
+                <el-option label="快捷收款" value="B">快捷收款</el-option>
+                <el-option label="支付宝扫码" value="Z">支付宝扫码</el-option>
+              </el-select>
+            </li>
+            <li class="same">
+              <div class="btn btn-primary" @click="search">筛选</div>
+            </li>
+          </ul>
+          <!--表格-->
+          <el-table v-loading.body="loading" height="583" style="font-size: 12px;margin:15px 0" :data="records" border>
+            <el-table-column type="index" width="62" label="序号" fixed="left"></el-table-column>
+            <el-table-column label="订单号" min-width="112">
+              <template scope="scope">
+                <span class="td" :data-clipboard-text="records[scope.$index].orderNo" type="text" size="small"
+                      style="cursor: pointer" title="点击复制">{{records[scope.$index].orderNo|changeHide}}</span>
+              </template>
+            </el-table-column>
+            <el-table-column label="交易流水号" min-width="112">
+              <template scope="scope">
+                <span class="td" :data-clipboard-text="records[scope.$index].sn" type="text" size="small"
+                      style="cursor: pointer" title="点击复制">{{records[scope.$index].sn|changeHide}}</span>
+              </template>
+            </el-table-column>
+            <el-table-column prop="createTime" :formatter="changeTime" label="交易日期" width="162"></el-table-column>
+            <el-table-column prop="merchantName" label="商户名称" min-width="90"></el-table-column>
+            <el-table-column prop="proxyName" label="所属一级" min-width="90"></el-table-column>
+            <el-table-column prop="proxyName1" label="所属二级" min-width="90"></el-table-column>
+            <el-table-column prop="tradeAmount" :formatter="changeNum" label="支付金额" min-width="90"
+                             align="right"></el-table-column>
+            <el-table-column prop="payRate" label="手续费率" min-width="90" align="right"></el-table-column>
+            <el-table-column prop="appId" label="业务方" min-width="85"></el-table-column>
+            <el-table-column prop="status" :formatter="changeStatus" label="订单状态" min-width="90"></el-table-column>
+            <el-table-column prop="settleStatus" :formatter="changeSettleStatus" label="结算状态"
+                             min-width="90"></el-table-column>
+            <el-table-column prop="payType" :formatter="changePayType" label="支付方式" min-width="115"></el-table-column>
+            <el-table-column prop="payChannelSign" :formatter="changePayChannel" label="支付渠道"
+                             min-width="115"></el-table-column>
+            <el-table-column prop="remark" label="渠道信息" min-width="90"></el-table-column>
+            <el-table-column label="操作" width="90" fixed="right">
+              <template scope="scope">
+                <router-link :to="{path:'/admin/record/newDealDet',query:{orderNo:records[scope.$index].orderNo}}"
+                             type="text" size="small">详情
+                </router-link>
+              </template>
+            </el-table-column>
+          </el-table>
+          </el-table>
+          <!--分页-->
+          <div class="block" style="text-align: right">
+            <el-pagination @size-change="handleSizeChange"
+                           @current-change="handleCurrentChange"
+                           :current-page="query.page"
+                           :page-sizes="[10, 20, 50]"
+                           :page-size="query.size"
+                           layout="total, sizes, prev, pager, next, jumper"
+                           :total="count">
+            </el-pagination>
           </div>
         </div>
       </div>
-    </div>
     </div>
   </div>
 </template>
 
 <script lang="babel">
-  export default {
+  import Clipboard from "clipboard"
+  export default{
     name: 'deal',
-    data () {
+    data(){
       return {
         query:{
           page:1,
@@ -177,246 +154,80 @@
           proxyName:'',
           proxyName1:''
         },
-        orders:[],
-        total:'',
-        url:'',
-        count:0,
-        isShow:false
+        date: '',
+        records: [],
+        count: 0,
+        total: 0,
+        loading: true,
+        url: ''
       }
     },
-    created:function(){
-      this.$data.query.startTime=''
-      this.$data.query.endTime=''
-      this.$data.isShow = true;
-      this.$http.post('/admin/queryOrder/orderList',this.$data.query)
-        .then(function (res) {
-          this.$data.isShow = false;
-          this.$data.orders=res.data.records;
-          this.$data.total=res.data.totalPage;
-          this.$data.url=res.data.ext;
-          this.$data.count = res.data.count;
-          var str='',
-            page=document.getElementById('page');
-          str+='<li class="paginate_button previous" id="example2_previous"><a href="#" aria-controls="example2" data-dt-idx="0" tabindex="0">上一页</a></li>'
-          if(this.$data.total<=10){
-            for (var i = 1; i <= this.$data.total; i++){
-              if(i == this.$data.query.page){
-                str+='<li class="paginate_button active"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">'+i+'</a></li></li>';
-                continue;
-              }
-              str+='<li class="paginate_button"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">'+i+'</a></li></li>'
-            }
-          }else {
-            if(this.$data.query.page<6){
-              for (var i = 1; i <= 10; i++){
-                if(i == this.$data.query.page){
-                  str+='<li class="paginate_button active"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">'+i+'</a></li></li>';
-                  continue;
-                }
-                str+='<li class="paginate_button"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">'+i+'</a></li></li>'
-              }
-            }else if(this.$data.query.page>=6&&this.$data.query.page<=(this.$data.total-5)){
-              console.log(this.$data.query.page)
-              for (var i = this.$data.query.page-4; i <= this.$data.query.page+5; i++){
-                if(i == this.$data.query.page){
-                  str+='<li class="paginate_button active"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">'+i+'</a></li></li>';
-                  continue;
-                }
-                str+='<li class="paginate_button"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">'+i+'</a></li></li>'
-              }
-            }else if(this.$data.query.page>=6&&this.$data.query.page>this.$data.total-5){
-              console.log(2)
-              for (var i = this.$data.total-9; i <= this.$data.total; i++){
-                if(i == this.$data.query.page){
-                  str+='<li class="paginate_button active"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">'+i+'</a></li></li>';
-                  continue;
-                }
-                str+='<li class="paginate_button"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">'+i+'</a></li></li>'
-              }
-            }}
-          str+='<li class="paginate_button next" id="example2_next"><a href="#" aria-controls="example2" data-dt-idx="7" tabindex="0">下一页</a></li>'
-          page.innerHTML=str;
-        },function (err) {
-          this.$data.isShow = false;
-          this.$store.commit('MESSAGE_ACCORD_SHOW', {
-            text: err.statusMessage
-          })
-        })
+    created: function () {
+      var clipboard = new Clipboard('.td');
+      //复制成功执行的回调，可选
+      clipboard.on('success', (e) => {
+        this.$message({
+          showClose: true,
+          message: "复制成功  内容为：" + e.text,
+          type: 'success'
+        });
+      });
+      this.getData()
     },
-   /* mounted:function () {
-      jeDate({
-        dateCell: '#indate1',
-        format: "YYYY-MM-DD",
-        maxDate: jeDate.now(5), //1代表明天，2代表后天，以此类推
-        choosefun:(val)=> {
-          this.$data.query.startTime = val;
-        }
-      })
-      jeDate({
-        dateCell: '#indate2',
-        format: "YYYY-MM-DD",
-        maxDate: jeDate.now(5), //1代表明天，2代表后天，以此类推
-        choosefun:(val)=> {
-          this.$data.query.endTime = val;
-        }
-      })
-    },*/
     methods: {
-      refresh: function () {
-        location.reload()
-      },
-      //分页器
-      bindEvent: function (e) {
-        e = e||window.event;
-        var tar = e.target||e.srcElement,
-          tarInn = tar.innerHTML,
-          n = this.$data.query.page;
-        if(tarInn == '上一页'){
-          if(n == 1){
-            tar.parentNode.className+=' disabled'
-            return;
-          }
-          n--;
-        }
-        if(tarInn == '下一页'){
-          if(n == this.$data.total){
-            tar.parentNode.className+=' disabled'
-            return;
-          }
-          n++;
-        }
-        if(Number(tarInn)){
-          if(n == Number(tarInn)){
-            return;
-          }
-          tar.parentNode.className+=' active'
-          n = Number(tarInn);
-        }
-        this.$data.query.page = n;
-        this.$data.orders='';
+      getData: function () {
+        this.loading = true;
         this.$http.post('/admin/queryOrder/orderList',this.$data.query)
           .then(function (res) {
-            this.$data.orders=res.data.records;
+            this.loading = false;
+            this.$data.records = res.data.records;
             this.$data.total=res.data.totalPage;
             this.$data.url=res.data.ext;
             this.$data.count = res.data.count;
-            var str='',
-              page=document.getElementById('page');
-            str+='<li class="paginate_button previous" id="example2_previous"><a href="#" aria-controls="example2" data-dt-idx="0" tabindex="0">上一页</a></li>'
-            if(this.$data.total<=10){
-              for (var i = 1; i <= this.$data.total; i++){
-                if(i == this.$data.query.page){
-                  str+='<li class="paginate_button active"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">'+i+'</a></li></li>';
-                  continue;
-                }
-                str+='<li class="paginate_button"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">'+i+'</a></li></li>'
+            for (var i = 0; i < this.records.length; i++) {
+              if (this.records[i].payRate != null) {
+                this.records[i].payRate = (parseFloat(this.records[i].payRate) * 100).toFixed(2) + '%';
               }
-            }else {
-              if(this.$data.query.page<6){
-                for (var i = 1; i <= 10; i++){
-                  if(i == this.$data.query.page){
-                    str+='<li class="paginate_button active"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">'+i+'</a></li></li>';
-                    continue;
-                  }
-                  str+='<li class="paginate_button"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">'+i+'</a></li></li>'
-                }
-              }else if(this.$data.query.page>=6&&this.$data.query.page<=(this.$data.total-5)){
-                console.log(this.$data.query.page)
-                for (var i = this.$data.query.page-4; i <= this.$data.query.page+5; i++){
-                  if(i == this.$data.query.page){
-                    str+='<li class="paginate_button active"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">'+i+'</a></li></li>';
-                    continue;
-                  }
-                  str+='<li class="paginate_button"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">'+i+'</a></li></li>'
-                }
-              }else if(this.$data.query.page>=6&&this.$data.query.page>this.$data.total-5){
-                console.log(2)
-                for (var i = this.$data.total-9; i <= this.$data.total; i++){
-                  if(i == this.$data.query.page){
-                    str+='<li class="paginate_button active"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">'+i+'</a></li></li>';
-                    continue;
-                  }
-                  str+='<li class="paginate_button"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">'+i+'</a></li></li>'
-                }
-              }}
-            str+='<li class="paginate_button next" id="example2_next"><a href="#" aria-controls="example2" data-dt-idx="7" tabindex="0">下一页</a></li>'
-            page.innerHTML=str;
+            }
           },function (err) {
-            this.$store.commit('MESSAGE_ACCORD_SHOW', {
-              text: err.statusMessage
-            })
+            this.$data.loading = false;
+            this.$message({
+              showClose: true,
+              message: err.statusMessage,
+              type: 'error'
+            });
           })
       },
-      //筛选
-      lookup: function () {
-        this.$data.query.page = 1;
-        this.$data.isShow = true;
-        this.$data.orders='';
-        this.$data.total=0;
-        this.$data.count = 0;
-        this.$http.post('/admin/queryOrder/orderList',this.$data.query)
-          .then(function (res) {
-            this.$data.isShow = false;
-            this.$data.orders=res.data.records;
-            this.$data.total=res.data.totalPage;
-            this.$data.url=res.data.ext;
-            this.$data.count = res.data.count;
-            var str='',
-              page=document.getElementById('page');
-            str+='<li class="paginate_button previous" id="example2_previous"><a href="#" aria-controls="example2" data-dt-idx="0" tabindex="0">上一页</a></li>'
-            if(this.$data.total<=10){
-              for (var i = 1; i <= this.$data.total; i++){
-                if(i == this.$data.query.page){
-                  str+='<li class="paginate_button active"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">'+i+'</a></li></li>';
-                  continue;
-                }
-                str+='<li class="paginate_button"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">'+i+'</a></li></li>'
-              }
-            }else {
-              if(this.$data.query.page<6){
-                for (var i = 1; i <= 10; i++){
-                  if(i == this.$data.query.page){
-                    str+='<li class="paginate_button active"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">'+i+'</a></li></li>';
-                    continue;
-                  }
-                  str+='<li class="paginate_button"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">'+i+'</a></li></li>'
-                }
-              }else if(this.$data.query.page>=6&&this.$data.query.page<=(this.$data.total-5)){
-                console.log(this.$data.query.page)
-                for (var i = this.$data.query.page-4; i <= this.$data.query.page+5; i++){
-                  if(i == this.$data.query.page){
-                    str+='<li class="paginate_button active"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">'+i+'</a></li></li>';
-                    continue;
-                  }
-                  str+='<li class="paginate_button"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">'+i+'</a></li></li>'
-                }
-              }else if(this.$data.query.page>=6&&this.$data.query.page>this.$data.total-5){
-                console.log(2)
-                for (var i = this.$data.total-9; i <= this.$data.total; i++){
-                  if(i == this.$data.query.page){
-                    str+='<li class="paginate_button active"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">'+i+'</a></li></li>';
-                    continue;
-                  }
-                  str+='<li class="paginate_button"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">'+i+'</a></li></li>'
-                }
-              }}
-            str+='<li class="paginate_button next" id="example2_next"><a href="#" aria-controls="example2" data-dt-idx="7" tabindex="0">下一页</a></li>'
-            page.innerHTML=str;
-          },function (err) {
-            this.$data.isShow = false;
-            this.$store.commit('MESSAGE_ACCORD_SHOW', {
-              text: err.statusMessage
-            })
-          })
-      }
-    },
-    computed: {
-      $$query: function () {
-        return this.$data.query
-      }
-    },
-    filters: {
-      changePayType: function (val) {
+      //格式化hss创建时间
+      changeTime: function (row, column) {
+        var val = row.createTime;
+        if (val == '' || val == null) {
+          return ''
+        } else {
+          val = new Date(val)
+          var year = val.getFullYear();
+          var month = val.getMonth() + 1;
+          var date = val.getDate();
+          var hour = val.getHours();
+          var minute = val.getMinutes();
+          var second = val.getSeconds();
+
+          function tod(a) {
+            if (a < 10) {
+              a = "0" + a
+            }
+            return a;
+          }
+
+          return year + "-" + tod(month) + "-" + tod(date) + " " + tod(hour) + ":" + tod(minute) + ":" + tod(second);
+        }
+      },
+      changeNum: function (row, column) {
+        var val = row.tradeAmount;
+        return parseFloat(val).toFixed(2);
+      },
+      changePayType: function (row, column) {
+        var val = row.payType;
         if(val == "S"){
           return "微信扫码"
         }else if(val == "N"){
@@ -429,7 +240,8 @@
           return "支付宝扫码"
         }
       },
-      changeStatus: function (val) {
+      changeStatus: function (row, column) {
+        var val = row.status;
         if(val == 1){
           return "待支付"
         }else if(val == 3){
@@ -446,7 +258,8 @@
           return "充值失败"
         }
       },
-      changeSettleStatus: function (val) {
+      changeSettleStatus: function (row, column) {
+        var val = row.settleStatus;
         if(val == 2){
           return '结算中'
         }else if(val == 1){
@@ -455,7 +268,8 @@
           return '已结算'
         }
       },
-      changePayChannel: function (val) {
+      changePayChannel: function (row, column) {
+        var val = row.payChannelSign;
         if(val == 101){
           return '阳光微信扫码'
         }else if(val == 102){
@@ -464,111 +278,91 @@
           return '阳光银联支付'
         }
       },
-      changeTime: function (val) {
-        if(val==''||val==null){
-          return ''
-        }else {
-          val = new Date(val)
-          var year=val.getFullYear();
-          var month=val.getMonth()+1;
-          var date=val.getDate();
-          var hour=val.getHours();
-          var minute=val.getMinutes();
-          var second=val.getSeconds();
-          function tod(a) {
-            if(a<10){
-              a = "0"+a
-            }
-            return a;
-          }
-          return year+"-"+tod(month)+"-"+tod(date)+" "+tod(hour)+":"+tod(minute)+":"+tod(second);
-        }
+      search(){
+        this.$data.query.page = 1;
+        this.getData()
       },
+      //每页条数改变
+      handleSizeChange(val) {
+        this.$data.query.page = 1;
+        this.$data.query.size = val;
+        this.getData()
+      },
+      //当前页改变时
+      handleCurrentChange(val) {
+        this.$data.query.page = val;
+        this.getData()
+      },
+    },
+    watch: {
+      date: function (val, oldVal) {
+        if (val[0] != null) {
+          for (var j = 0; j < val.length; j++) {
+            var str = val[j];
+            var ary = [str.getFullYear(), str.getMonth() + 1, str.getDate()];
+            for (var i = 0, len = ary.length; i < len; i++) {
+              if (ary[i] < 10) {
+                ary[i] = '0' + ary[i];
+              }
+            }
+            str = ary[0] + '-' + ary[1] + '-' + ary[2];
+            if (j == 0) {
+              this.$data.query.startTime = str;
+            } else {
+              this.$data.query.endTime = str;
+            }
+          }
+        } else {
+          this.$data.query.startTime = '';
+          this.$data.query.endTime = '';
+        }
+      }
+    },
+    filters: {
       changeHide: function (val) {
         if(val!=""&&val!=null){
           val = val.replace(val.substring(3,val.length-6),"…");
         }
         return val
       },
-      toFix: function (val) {
-        return parseFloat(val).toFixed(2);
-      },
-      changeName: function (val) {
-        if(val==null){
-          return "无"
-        }else {
-          return val
-        }
-      }
     }
   }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped lang="less">
+<style scoped lang="less" rel="stylesheet/less">
   ul {
-    list-style-type: none;
     padding: 0;
   }
 
-  li {
+  .same {
+    list-style: none;
     display: inline-block;
-    margin: 0 10px;
-  }
-
-  .login {
-    z-index: 1000;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: #fff;
-
-  form {
-    margin: 0 auto;
-    margin-top: 200px;
-    padding: 50px;
-    width: 450px;
-    height: 400px;
-    border: 2px solid #ccc;
-
-  label {
-    font-size: 18px;
-    height: 50px;
-    line-height: 30px;
-  }
-
-  }
-  .sub {
-    margin-top: 50px;
-    width: 100%;
-    height: 50px;
-    line-height: 35px;
-    font-size: 20px;
-  }
-
-  }
-  .form-control{
-    height: 29px;
-    line-height: 25px;
-    font-size: 12px;
-    padding: 0 6px;
-  }
-  .count{
-    display: inline-block;
-    vertical-align: top;
-    margin: 28px 10px;
-  }
-  .table td[data-v-497723e2], .table th[data-v-497723e2]{
-    width: inherit;
+    margin: 0 15px 15px 0;
   }
   .btn{
     font-size: 12px;
   }
-  img{
-    width: 8%;
-    margin: 0 auto;
-    display: inherit;
+
+  .price {
+    display: inline-block;
+    width: 210px;
+    height: 30px;
+    border-radius: 4px;
+    border-color: #bfcbd9;
+    position: relative;
+    top: 6px;
+    input {
+      border: none;
+      display: inline-block;
+      width: 45%;
+      height: 25px;
+      position: relative;
+      top: -3px;
+    }
   }
+
+  .price:hover {
+    border-color: #20a0ff;
+  }
+
 </style>
