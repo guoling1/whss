@@ -123,13 +123,6 @@
                 <el-table-column prop="districtCode" label="省市"></el-table-column>
                 <el-table-column prop="industryCode" label="行业"></el-table-column>
                 <el-table-column prop="stat" label="状态"></el-table-column>
-                <!--<el-table-column label="状态">
-                  <template scope="scope">
-                    <span v-if="records[scope.$index].status==1">正常</span>
-                    <span v-if="records[scope.$index].status==2">待审核</span>
-                    <span v-if="records[scope.$index].status==3">审核未通过</span>
-                  </template>
-                </el-table-column>-->
                 <el-table-column label="操作" width="100">
                   <template scope="scope">
                     <router-link :to="{path:'/admin/record/StoreAuditHSY',query:{id:records[scope.$index].id,status:records[scope.$index].status}}" v-if="records[scope.$index].stat=='待审核'" type="text" size="small">审核</router-link>
@@ -141,7 +134,13 @@
           </el-tabs>
           <!--分页-->
           <div class="block" style="text-align: right">
-            <el-pagination @current-change="handleCurrentChange" :current-page="currentPage" layout="total, prev, pager, next, jumper" :total="count">
+            <el-pagination @size-change="handleSizeChange"
+                           @current-change="handleCurrentChange"
+                           :current-page="query.pageNo"
+                           :page-sizes="[10, 20, 50]"
+                           :page-size="query.pageSize"
+                           layout="total, sizes, prev, pager, next, jumper"
+                           :total="count">
             </el-pagination>
           </div>
           <div class="box box-info mask el-message-box" v-if="isMask">
@@ -370,6 +369,25 @@
             })
           })
       },
+      handleSizeChange: function (val) {
+        this.query.pageNo = 1;
+        this.query.pageSize = val;
+        this.loading = true;
+        this.$http.post(this.$data.url,this.$data.query)
+          .then(function (res) {
+            this.$data.loading = false;
+            this.$data.records   = res.data.records;
+            this.$data.count = res.data.count;
+            this.$data.total = res.data.totalPage;
+          }, function (err) {
+            this.$data.loading = false;
+            this.$message({
+              showClose: true,
+              message: err.statusMessage,
+              type: 'error'
+            })
+          })
+      }
     },
     watch:{
       date:function (val,oldVal) {

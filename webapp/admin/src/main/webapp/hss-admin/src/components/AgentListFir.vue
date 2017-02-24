@@ -78,7 +78,13 @@
           </el-table>
           <!--分页-->
           <div class="block" style="text-align: right">
-            <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage4" layout="total, prev, pager, next, jumper" :total="count">
+            <el-pagination @size-change="handleSizeChange"
+                           @current-change="handleCurrentChange"
+                           :current-page="query.pageNo"
+                           :page-sizes="[10, 20, 50]"
+                           :page-size="query.pageSize"
+                           layout="total, sizes, prev, pager, next, jumper"
+                           :total="count">
             </el-pagination>
           </div>
         </div>
@@ -109,7 +115,6 @@
         records:[],
         count:0,
         total:0,
-        pageSize:'',
         query:{
           pageNo:1,
           pageSize:10,
@@ -119,14 +124,11 @@
           sysType:"",
           districtCode:""
         },
-        multipleSelection:[],
-        currentPage4: 1,
         isShow:false,
         index:'',
       }
     },
     created: function () {
-
       //搜索区省市联动
       this.$http.post('/admin/district/findAllDistrict')
         .then(function (res) {
@@ -138,54 +140,72 @@
             message: err.statusMessage,
             type: 'error'
           });
-        })
-
-      this.$http.post('/admin/dealer/listFirstDealer',this.$data.query)
-        .then(function (res) {
-          this.$data.records = res.data.records;
-          this.$data.count = res.data.count;
-          this.$data.total = res.data.totalPage;
-          this.$data.pageSize = res.data.pageSize;
-          this.$data.loading = false;
-          var changeTime=function (val) {
-            if(val==''||val==null){
-              return ''
-            }else {
-              val = new Date(val)
-              var year=val.getFullYear();
-              var month=val.getMonth()+1;
-              var date=val.getDate();
-              function tod(a) {
-                if(a<10){
-                  a = "0"+a
-                }
-                return a;
-              }
-              return year+"-"+tod(month)+"-"+tod(date);
-            }
-          }
-          for(var i=0;i<this.$data.records.length;i++){
-            this.$data.records[i].createTime = changeTime(this.$data.records[i].createTime)
-            if(this.$data.records[i].belongProvinceName!=null&&this.$data.records[i].belongCityName!=null){
-              this.$data.records[i].belong = this.$data.records[i].belongProvinceName+"-"+this.$data.records[i].belongCityName;
-            }
-          }
-        })
+        });
+      this.getData()
     },
     methods: {
+      getData: function () {
+        this.$data.loading = true;
+        this.$http.post('/admin/dealer/listFirstDealer', this.$data.query)
+          .then(function (res) {
+            this.$data.records = res.data.records;
+            this.$data.count = res.data.count;
+            this.$data.total = res.data.totalPage;
+            this.$data.pageSize = res.data.pageSize;
+            this.$data.loading = false;
+            var changeTime = function (val) {
+              if (val == '' || val == null) {
+                return ''
+              } else {
+                val = new Date(val)
+                var year = val.getFullYear();
+                var month = val.getMonth() + 1;
+                var date = val.getDate();
+
+                function tod(a) {
+                  if (a < 10) {
+                    a = "0" + a
+                  }
+                  return a;
+                }
+
+                return year + "-" + tod(month) + "-" + tod(date);
+              }
+            }
+            for (var i = 0; i < this.$data.records.length; i++) {
+              this.$data.records[i].createTime = changeTime(this.$data.records[i].createTime)
+              if (this.$data.records[i].belongProvinceName != null && this.$data.records[i].belongCityName != null) {
+                this.$data.records[i].belong = this.$data.records[i].belongProvinceName + "-" + this.$data.records[i].belongCityName;
+              }
+            }
+          }, function (err) {
+            this.$data.loading = false;
+            this.$message({
+              showClose: true,
+              message: err.statusMessage,
+              type: 'error'
+            });
+          })
+      },
       selectCity: function (valCol,val) {
         this.$data.province = val;
         this.$http.post('/admin/district/findAllCities',{code:valCol})
           .then(function (res) {
             this.$data.citys = res.data;
             this.$data.isOpen1 = true;
+          }, function (err) {
+            this.$data.loading = false;
+            this.$message({
+              showClose: true,
+              message: err.statusMessage,
+              type: 'error'
+            });
           })
       },
       open:function () {
         this.$data.isOpen = !this.$data.isOpen;
         this.$data.isOpen1 = false;
         document.getElementById('select').style.borderColor = '#20a0ff';
-
       },
       select:function (valCode,val) {
         var oCon = document.getElementById('select').getElementsByTagName('span')[0];
@@ -206,148 +226,51 @@
       search: function () {
         this.$data.query.pageNo = 1;
         this.$data.records = '';
-        this.$data.loading = true;
-        this.$http.post('/admin/dealer/listFirstDealer',this.$data.query)
-          .then(function (res) {
-            this.$data.records = res.data.records;
-            this.$data.count = res.data.count;
-            this.$data.total = res.data.totalPage;
-            this.$data.pageSize = res.data.pageSize;
-            this.$data.loading = false;
-            var changeTime=function (val) {
-              if(val==''||val==null){
-                return ''
-              }else {
-                val = new Date(val)
-                var year=val.getFullYear();
-                var month=val.getMonth()+1;
-                var date=val.getDate();
-                function tod(a) {
-                  if(a<10){
-                    a = "0"+a
-                  }
-                  return a;
-                }
-                return year+"-"+tod(month)+"-"+tod(date);
-              }
-            }
-            for(var i=0;i<this.$data.records.length;i++){
-              this.$data.records[i].createTime = changeTime(this.$data.records[i].createTime)
-              if(this.$data.records[i].belongProvinceName!=null&&this.$data.records[i].belongCityName!=null){
-                this.$data.records[i].belong = this.$data.records[i].belongProvinceName+"-"+this.$data.records[i].belongCityName;
-              }
-            }
-          })
+        this.getData()
       },
       list: function (val) {
         this.$data.index = val;
         this.$data.isShow = true;
       },
-      handleSelectionChange(val) {
-        console.log(val)
-        this.multipleSelection = val;
-      },
-      //每页条数改变时
+      //每页条数改变
       handleSizeChange(val) {
-        this.$data.query.pageSize = val;
-        this.$data.loading = true;
         this.$data.query.pageNo = 1;
-        this.$data.records = '';
-        this.$http.post('/admin/dealer/listFirstDealer',this.$data.query)
-          .then(function (res) {
-            this.$data.records = res.data.records;
-            this.$data.count = res.data.count;
-            this.$data.total = res.data.totalPage;
-            this.$data.pageSize = res.data.pageSize;
-            this.$data.loading = false;
-            var changeTime=function (val) {
-              if(val==''||val==null){
-                return ''
-              }else {
-                val = new Date(val)
-                var year=val.getFullYear();
-                var month=val.getMonth()+1;
-                var date=val.getDate();
-                function tod(a) {
-                  if(a<10){
-                    a = "0"+a
-                  }
-                  return a;
-                }
-                return year+"-"+tod(month)+"-"+tod(date);
-              }
-            }
-            for(var i=0;i<this.$data.records.length;i++){
-              this.$data.records[i].createTime = changeTime(this.$data.records[i].createTime)
-              if(this.$data.records[i].belongProvinceName!=null&&this.$data.records[i].belongCityName!=null){
-                this.$data.records[i].belong = this.$data.records[i].belongProvinceName+"-"+this.$data.records[i].belongCityName;
-              }
-            }
-          })
+        this.$data.query.pageSize = val;
+        this.getData()
       },
       //当前页改变时
       handleCurrentChange(val) {
         this.$data.query.pageNo = val;
-        this.$data.records = '';
-        this.$data.loading = true;
-        this.$http.post('/admin/dealer/listFirstDealer',this.$data.query)
-          .then(function (res) {
-            this.$data.records = res.data.records;
-            this.$data.count = res.data.count;
-            this.$data.total = res.data.totalPage;
-            this.$data.pageSize = res.data.pageSize;
-            this.$data.loading = false;
-            var changeTime=function (val) {
-              if(val==''||val==null){
-                return ''
-              }else {
-                val = new Date(val)
-                var year=val.getFullYear();
-                var month=val.getMonth()+1;
-                var date=val.getDate();
-                function tod(a) {
-                  if(a<10){
-                    a = "0"+a
-                  }
-                  return a;
-                }
-                return year+"-"+tod(month)+"-"+tod(date);
-              }
-            }
-            for(var i=0;i<this.$data.records.length;i++){
-              this.$data.records[i].createTime = changeTime(this.$data.records[i].createTime)
-              if(this.$data.records[i].belongProvinceName!=null&&this.$data.records[i].belongCityName!=null){
-                this.$data.records[i].belong = this.$data.records[i].belongProvinceName+"-"+this.$data.records[i].belongCityName;
-              }
-            }
-          })
-      }
+        this.getData()
+      },
     },
     watch:{
       date:function (val,oldVal) {
-        for(var j=0;j<val.length;j++){
-          var str = val[j];
-          var ary = [str.getFullYear(), str.getMonth() + 1, str.getDate()];
-          for(var i = 0, len = ary.length; i < len; i ++) {
-            if(ary[i] < 10) {
-              ary[i] = '0' + ary[i];
+        if (val[0] != null) {
+          for (var j = 0; j < val.length; j++) {
+            var str = val[j];
+            var ary = [str.getFullYear(), str.getMonth() + 1, str.getDate()];
+            for (var i = 0, len = ary.length; i < len; i++) {
+              if (ary[i] < 10) {
+                ary[i] = '0' + ary[i];
+              }
+            }
+            str = ary[0] + '-' + ary[1] + '-' + ary[2];
+            if (j == 0) {
+              this.$data.query.startSettleDate = str;
+            } else {
+              this.$data.query.endSettleDate = str;
             }
           }
-          str = ary[0] + '-' + ary[1] + '-' + ary[2];
-          if(j==0){
-            this.$data.query.startSettleDate = str;
-          }else {
-            this.$data.query.endSettleDate = str;
-          }
+        } else {
+          this.$data.query.startSettleDate = '';
+          this.$data.query.endSettleDate = '';
         }
       }
     }
   }
 </script>
-<style scoped lang="less">
-  body{
-    background-color:#ff0000;
-  }
+<style scoped lang="less" rel="stylesheet/less">
   .btn{
     font-size: 12px;
   }
@@ -408,13 +331,13 @@
     z-index: 1000;
     max-height: 285px;
     overflow: auto;
-  li{
-    list-style: none;
-    padding: 0 5px;
-    line-height: 25px;
-  &:hover{
-     background: #1c8de0;
-   }
-  }
+    li{
+      list-style: none;
+      padding: 0 5px;
+      line-height: 25px;
+      &:hover{
+         background: #1c8de0;
+       }
+    }
   }
 </style>
