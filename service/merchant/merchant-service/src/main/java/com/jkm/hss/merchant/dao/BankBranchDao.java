@@ -17,5 +17,5 @@ public interface BankBranchDao {
      * @param contions
      * @return
      */
-    List<BankBranch> findByBankName(@Param("bankName") String bankName,@Param("contions") String contions);
+    List<BankBranch> findByBankName(@Param("bankName") String bankName,@Param("contions") String contions,@Param("district") String district);
 }

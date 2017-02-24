@@ -3,6 +3,7 @@ package com.jkm.hss.controller.common;
 import com.google.common.base.Optional;
 import com.jkm.base.common.entity.CommonResponse;
 import com.jkm.hss.controller.BaseController;
+import com.jkm.hss.helper.request.MerchantLoginCodeRequest;
 import com.jkm.hss.merchant.entity.BankBranch;
 import com.jkm.hss.merchant.entity.MerchantInfo;
 import com.jkm.hss.merchant.entity.UserInfo;
@@ -20,7 +21,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by xingliujie on 2017/2/23.
@@ -39,18 +42,17 @@ public class BankBranchController extends BaseController {
     private MerchantInfoService merchantInfoService;
 
     /**
-     * 模糊查询支行信息
-     * @param request
-     * @param response
-     * @param bankBranchRequest
+     * 获取商户银行卡信息
+     *
      * @return
      */
     @ResponseBody
-    @RequestMapping(value = "getBankBranch",method = RequestMethod.POST)
-    public CommonResponse getBankBranch(final HttpServletRequest request, final HttpServletResponse response, @RequestBody BankBranchRequest bankBranchRequest){
-        if(!super.isLogin(request)){
-            return CommonResponse.simpleResponse(-2, "未登录");
-        }
+    @RequestMapping(value = "/getBankBranch", method = RequestMethod.POST)
+    public CommonResponse getBankBranch(final HttpServletRequest request, final HttpServletResponse response,@RequestBody BankBranchRequest bankBranchRequest) {
+        bankBranchRequest.setDistrict("");
+//        if(!super.isLogin(request)){
+//            return CommonResponse.simpleResponse(-2, "未登录");
+//        }
         Optional<UserInfo> userInfoOptional = userInfoService.selectByOpenId(super.getOpenId(request));
         if(!userInfoOptional.isPresent()){
             return CommonResponse.simpleResponse(-2, "未登录");
@@ -59,14 +61,14 @@ public class BankBranchController extends BaseController {
         if(!merchantInfo.isPresent()){
             return CommonResponse.simpleResponse(-2, "未登录");
         }
-        if(merchantInfo.get().getBankNo()!=null&&!"".equals(merchantInfo.get().getBankNo())){
+        if(merchantInfo.get().getBankNo()==null||"".equals(merchantInfo.get().getBankNo())){
             return CommonResponse.simpleResponse(-2, "银行卡号不完善");
         }
-        if(merchantInfo.get().getBankName()!=null&&!"".equals(merchantInfo.get().getBankName())){
+        if(merchantInfo.get().getBankName()==null||"".equals(merchantInfo.get().getBankName())){
             return CommonResponse.simpleResponse(-2, "银行名称不完善");
         }
-        List<BankBranch> bankBranchList = bankBranchService.findByBankName(merchantInfo.get().getBankName(),bankBranchRequest.getContions());
-        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE,"查询成功",bankBranchList);
+        List<BankBranch> bankBranchList = bankBranchService.findByBankName(merchantInfo.get().getBankName(),bankBranchRequest.getContions(),bankBranchRequest.getDistrict());
+        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", bankBranchList);
     }
 
 }

@@ -170,5 +170,30 @@ public class MerchantInfo extends BaseEntity{
      */
     private int isUpgrade;
 
+    /**
+     * 支行编码
+     */
+    private String branchCode;
+    /**
+     * 支行名称
+     */
+    private String branchName;
+    /**
+     * 所在省份编码
+     */
+    private String provinceCode;
+    /**
+     * 所在省份名称
+     */
+    private String provinceName;
+    /**
+     * 所在城市编码
+     */
+    private String cityCode;
+    /**
+     * 所在城市名称
+     */
+    private String cityName;
+
 
 }

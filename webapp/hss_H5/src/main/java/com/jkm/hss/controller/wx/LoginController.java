@@ -753,9 +753,22 @@ public class LoginController extends BaseController {
                         url = "/sqb/prompt";
                         isRedirect= true;
                     }else if(result.get().getStatus()== EnumMerchantStatus.PASSED.getId()||result.get().getStatus()== EnumMerchantStatus.FRIEND.getId()){//跳提现页面
-                        String bankNo = MerchantSupport.decryptBankCard(result.get().getBankNo());
+                        if(result.get().getBankNo()!=null&&!"".equals(result.get().getBankNo())){
+                            String bankNo = MerchantSupport.decryptBankCard(result.get().getBankNo());
+                            model.addAttribute("bankNo",bankNo.substring(bankNo.length()-4,bankNo.length()));
+                        }else{
+                            model.addAttribute("bankNo","");
+                        }
+                        if(result.get().getMobile()!=null&&!"".equals(result.get().getMobile())){
+                            String mobile = MerchantSupport.decryptMobile(result.get().getMobile());
+                            model.addAttribute("mobile",mobile.substring(0,3)+"******"+mobile.substring(mobile.length()-2,mobile.length()));
+                        }else{
+                            model.addAttribute("mobile","");
+                        }
+//                        if(){
+//
+//                        }
                         model.addAttribute("bankName", result.get().getBankName());
-                        model.addAttribute("bankNo",bankNo.substring(bankNo.length()-4,bankNo.length()));
                         model.addAttribute("bankBin",result.get().getBankBin());
                         url = "/bank";
                     }
