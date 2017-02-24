@@ -14,51 +14,49 @@ public enum EnumPayChannelSign {
     /**
      * 微信公众号
      */
-    YG_WEIXIN(101, "sm_wechat", "微信公众号", "阳光微信公众号", EnumUpperChannel.SAOMI),
+    YG_WECHAT_PUBLIC(101, "sm_wechat_public", "微信", "阳光微信公众号", EnumUpperChannel.SAOMI, false),
 
     /**
      * 支付宝公众号
      */
-    YG_ZHIFUBAO(102, "sm_alipay", "支付宝公众号", "阳光支付宝公众号", EnumUpperChannel.SAOMI),
+    YG_ALIPAY_PUBLIC(102, "sm_alipay_public", "支付宝", "阳光支付宝公众号", EnumUpperChannel.SAOMI, false),
 
     /**
      * 快捷支付
      */
     YG_UNIONPAY(103, "sm_unionpay", "快捷", "阳光快捷", EnumUpperChannel.SAOMI, false),
 
-    //#################################卡盟############################################
     /**
      * 微信 扫码
      */
-    YG_WEIXIN_CODE(104, "sm_wechat_code", "微信扫码", "阳光微信扫码", EnumUpperChannel.SAOMI),
+    YG_WECHAT_CODE(104, "sm_wechat_code", "微信", "阳光微信扫码", EnumUpperChannel.SAOMI, false),
 
     /**
-     * 支付宝 扫码
+     * 阳光支付宝扫码
      */
-    YG_ZHIFUBAO_CODE(105, "sm_alipay_code", "支付宝扫码", "阳光支付宝扫码", EnumUpperChannel.SAOMI),
+    YG_ALIPAY_CODE(105, "sm_alipay_code", "支付宝", "阳光支付宝扫码", EnumUpperChannel.SAOMI, false),
 
-
-    ////////****卡盟*******/////////
-    /**
-     * 卡盟微信支付
-     */
-    KM_WECHAT(201, "km_wechat", "微信", "卡盟微信", EnumUpperChannel.KAMENG),
+    //#################################卡盟############################################
 
     /**
-     * 卡盟支付宝
+     * 卡盟微信扫码
      */
-    KM_ALIPAY(202, "km_alipay", "支付宝", "卡盟支付宝", EnumUpperChannel.KAMENG),
+    KM_WECHAT_CODE(201, "km_wechat_code", "微信", "卡盟微信扫码", EnumUpperChannel.KAMENG, true),
 
     /**
-     * 卡盟微信支付
+     * 卡盟支付宝扫码
      */
-    KM_WECHAT_JSAPI(203, "km_wechat_jsapi", "微信公众号", "卡盟微信公众号", EnumUpperChannel.KAMENG),
+    KM_ALIPAY_CODE(202, "km_alipay_code", "支付宝", "卡盟支付宝扫码", EnumUpperChannel.KAMENG, true),
 
     /**
-     * 卡盟支付宝
+     * 卡盟微信公众号
      */
-    KM_ALIPAY_JSAPI(204, "km_alipay_jsapi", "支付宝公众号", "卡盟支付宝公众号", EnumUpperChannel.KAMENG)
-    ;
+    KM_WECHAT_PUBLIC(203, "km_wechat_public", "微信", "卡盟微信公众号", EnumUpperChannel.KAMENG, true),
+
+    /**
+     * 卡盟支付宝公众号
+     */
+    KM_ALIPAY_PUBLIC(204, "km_alipay_public", "支付宝", "卡盟支付宝公众号", EnumUpperChannel.KAMENG, true),
 
     //#################################摩宝#############################################
     /**
@@ -70,23 +68,23 @@ public enum EnumPayChannelSign {
     /**
      * 合众易宝微信
      */
-    HZYB_WECHAT(401, "hzyb_wechat", "微信", "合众易宝微信", EnumUpperChannel.HEZONG_YIBAO, false),
+//    HZYB_WECHAT(401, "hzyb_wechat", "微信", "合众易宝微信", EnumUpperChannel.HEZONG_YIBAO, false),
 
     /**
      * 合众易宝支付宝
      */
-    HZYB_ALIPAY(402, "hzyb_alipay", "支付宝", "合众易宝支付宝", EnumUpperChannel.HEZONG_YIBAO, false),
+//    HZYB_ALIPAY(402, "hzyb_alipay", "支付宝", "合众易宝支付宝", EnumUpperChannel.HEZONG_YIBAO, false),
 
     //#################################溢+#############################################
     /**
      * 溢+微信
      */
-    YIJIA_WECHAT(501, "yijia_wechat", "微信", "溢+微信", EnumUpperChannel.YIJIA, false),
+//    YIJIA_WECHAT(501, "yijia_wechat", "微信", "溢+微信", EnumUpperChannel.YIJIA, false),
 
     /**
      * 溢+支付宝
      */
-    YIJIA_ALIPAY(502, "yijia_alipay", "支付宝", "溢+支付宝", EnumUpperChannel.YIJIA, false)
+//    YIJIA_ALIPAY(502, "yijia_alipay", "支付宝", "溢+支付宝", EnumUpperChannel.YIJIA, false)
 
     ;
 
