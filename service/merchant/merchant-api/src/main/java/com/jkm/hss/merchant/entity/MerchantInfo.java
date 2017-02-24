@@ -194,6 +194,18 @@ public class MerchantInfo extends BaseEntity{
      * 所在城市名称
      */
     private String cityName;
+    /**
+     * 信用卡号
+     */
+    private String creditCard;
+    /**
+     * 信用卡银行名称
+     */
+    private String creditCardName;
+    /**
+     * 银行卡后四位
+     */
+    private String creditCardShort;
 
 
 }
