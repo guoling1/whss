@@ -765,9 +765,11 @@ public class LoginController extends BaseController {
                         }else{
                             model.addAttribute("mobile","");
                         }
-//                        if(){
-//
-//                        }
+                        if(result.get().getBranchName()!=null&&!"".equals(result.get().getBranchName())){//有支行信息
+                            model.addAttribute("hasBranch",1);
+                        }else{
+                            model.addAttribute("hasBranch",0);//没有支行信息
+                        }
                         model.addAttribute("bankName", result.get().getBankName());
                         model.addAttribute("bankBin",result.get().getBankBin());
                         url = "/bank";
