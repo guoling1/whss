@@ -65,7 +65,7 @@ public class MerchantInfoResponse {
     /**
      * 代理商级别
      */
-    private long firstLevelDealerId;
+    private int firstLevelDealerId;
 
 
 
