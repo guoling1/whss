@@ -7,6 +7,15 @@ import java.util.Date;
 
 @Data
 public class MerchantInfoRequest {
+    /**
+     * 所属1代理商名称
+     */
+    private String proxyName;
+
+    /**
+     * 所属2代理商名称
+     */
+    private String proxyName1;
 
     /**
      * 商户编号
