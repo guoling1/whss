@@ -542,7 +542,7 @@ public class PayServiceImpl implements PayService {
         this.accountFlowService.addAccountFlow(poundageAccount.getId(), order.getOrderNo(), order.getPoundage(),
                 "支付分润", EnumAccountFlowType.DECREASE);
         //判断分账的业务类型
-        final String splitBusinessType = this.getSplitBusinessType(order);
+        final String splitBusinessType = EnumSplitBusinessType.HSSPAY.getId();
 
         //增加分账记录
         //通道利润--到可用余额

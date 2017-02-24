@@ -1,8 +1,12 @@
 package com.jkm.hss.bill.service;
 
 import com.jkm.hss.bill.entity.Order;
+import com.jkm.hss.bill.entity.SettlementRecord;
 import com.jkm.hss.bill.entity.callback.PaymentSdkWithdrawCallbackResponse;
+import com.jkm.hss.merchant.entity.MerchantInfo;
 import org.apache.commons.lang3.tuple.Pair;
+
+import java.math.BigDecimal;
 
 /**
  * Created by yulong.zhang on 2016/12/25.
@@ -31,8 +35,8 @@ public interface WithdrawService {
     /**
      * 商户提现结算
      *
-     * @param order
-     * @param accountId
+     * @param settlementRecord
+     * @param payChannelSign
      */
-    void merchantPoundageSettle(Order order, long accountId);
+    void merchantPoundageSettle(SettlementRecord settlementRecord, int payChannelSign, BigDecimal poundage, MerchantInfo merchant);
 }

@@ -162,7 +162,7 @@ public class WithdrawServiceImpl implements WithdrawService {
             final EnumBasicStatus status = EnumBasicStatus.of(response.getStatus());
             switch (status) {
                 case SUCCESS:
-                    this.markWithdrawSuccess(settlementRecord.getId(), response);
+                    this.markWithdrawSuccess(settlementRecord.getId());
                     return Pair.of(0, response.getMessage());
                 case FAIL:
                     log.info("结算单号[{}]，提现失败", settlementRecord.getSettleNo());
@@ -183,9 +183,8 @@ public class WithdrawServiceImpl implements WithdrawService {
      * 提现成功
      *
      * @param settlementRecordId
-     * @param response
      */
-    private void markWithdrawSuccess(final long settlementRecordId, final PaymentSdkDaiFuResponse response) {
+    private void markWithdrawSuccess(final long settlementRecordId) {
         final SettlementRecord settlementRecord = this.settlementRecordService.getByIdWithLock(settlementRecordId).get();
         if (settlementRecord.isWithdrawing()) {
             final List<SettleAccountFlow> settleAccountFlows = this.settleAccountFlowService.getBySettlementRecordId(settlementRecordId);
@@ -201,7 +200,8 @@ public class WithdrawServiceImpl implements WithdrawService {
             this.accountFlowService.addAccountFlow(poundageAccount.getId(), settlementRecord.getSettleNo(), merchantWithdrawPoundage,
                     "D0提现分润", EnumAccountFlowType.INCREASE);
             log.info("结算单[{}], 提现分润--结算", settlementRecord.getSettleNo());
-//            this.merchantPoundageSettle(orderOptional.get(), order.getPayer());
+            //手续费结算
+            this.merchantPoundageSettle(settlementRecord, payOrder.getPayChannelSign(), merchantWithdrawPoundage, merchant);
             //结算完毕
             this.orderService.updateSettleStatus(payOrder.getId(), EnumSettleStatus.SETTLED.getId());
             this.settlementRecordService.updateSettleStatus(settlementRecordId, EnumSettleStatus.SETTLED.getId());
@@ -227,15 +227,14 @@ public class WithdrawServiceImpl implements WithdrawService {
     /**
      * 商户提现结算
      *
-     * @param order
-     * @param accountId
+     * @param settlementRecord
+     * @param payChannelSign
      */
     @Override
     @Transactional
-    public void merchantPoundageSettle(final Order order, final long accountId) {
-        final MerchantInfo merchant = this.merchantInfoService.getByAccountId(accountId).get();
+    public void merchantPoundageSettle(final SettlementRecord settlementRecord, final int payChannelSign, final BigDecimal poundage, final MerchantInfo merchant) {
         final Map<String, Triple<Long, BigDecimal, String>> shallProfitMap =
-                this.shallProfitDetailService.withdrawProfitCount(EnumProductType.HSS, order.getOrderNo(), order.getTradeAmount(), order.getPayChannelSign(), merchant.getId());
+                this.shallProfitDetailService.withdrawProfitCount(EnumProductType.HSS, settlementRecord.getSettleNo(), settlementRecord.getSettleAmount(), payChannelSign, merchant.getId());
         final Triple<Long, BigDecimal, String> channelMoneyTriple = shallProfitMap.get("channelMoney");
         final Triple<Long, BigDecimal, String> productMoneyTriple = shallProfitMap.get("productMoney");
         final Triple<Long, BigDecimal, String> firstMoneyTriple = shallProfitMap.get("firstMoney");
@@ -244,93 +243,77 @@ public class WithdrawServiceImpl implements WithdrawService {
         final BigDecimal productMoney = null == productMoneyTriple ? new BigDecimal("0") : productMoneyTriple.getMiddle();
         final BigDecimal firstMoney = null == firstMoneyTriple ? new BigDecimal("0") : firstMoneyTriple.getMiddle();
         final BigDecimal secondMoney = null == secondMoneyTriple ? new BigDecimal("0") : secondMoneyTriple.getMiddle();
-        Preconditions.checkState(order.getPoundage().compareTo(channelMoney.add(productMoney).add(firstMoney).add(secondMoney)) >= 0);
+        Preconditions.checkState(poundage.compareTo(channelMoney.add(productMoney).add(firstMoney).add(secondMoney)) >= 0);
         //手续费账户结算
         final Account poundageAccount = this.accountService.getByIdWithLock(AccountConstants.POUNDAGE_ACCOUNT_ID).get();
-        Preconditions.checkState(order.getPoundage().compareTo(poundageAccount.getAvailable()) <= 0, "该笔订单的分账手续费不可以大于手续费账户的可用余额总和");
+        Preconditions.checkState(poundage.compareTo(poundageAccount.getAvailable()) <= 0, "该笔订单的分账手续费不可以大于手续费账户的可用余额总和");
         //分账
-        this.accountService.decreaseAvailableAmount(poundageAccount.getId(), order.getPoundage());
-        this.accountService.decreaseTotalAmount(poundageAccount.getId(), order.getPoundage());
-        this.accountFlowService.addAccountFlow(poundageAccount.getId(), order.getOrderNo(), order.getPoundage(),
+        this.accountService.decreaseAvailableAmount(poundageAccount.getId(), poundage);
+        this.accountService.decreaseTotalAmount(poundageAccount.getId(), poundage);
+        this.accountFlowService.addAccountFlow(poundageAccount.getId(), settlementRecord.getSettleNo(), poundage,
                 "提现分润", EnumAccountFlowType.DECREASE);
         //分账业务类型
-        final String splitBusinessType = this.getSplitBusinessType(order);
+        final String splitBusinessType = EnumSplitBusinessType.HSSWITHDRAW.getId();
 
         //增加分账记录
         //通道利润--到结算--到可用余额
         if (null != channelMoneyTriple) {
-            this.splitAccountRecordService.addWithdrawSplitAccountRecord(splitBusinessType, order.getOrderNo(), order.getOrderNo(),
-                    order.getTradeAmount(), order.getPoundage(), channelMoneyTriple, "通道账户", EnumTradeType.WITHDRAW.getValue());
+            this.splitAccountRecordService.addWithdrawSplitAccountRecord(splitBusinessType, settlementRecord.getSettleNo(), settlementRecord.getSettleNo(),
+                    settlementRecord.getSettleAmount(), poundage, channelMoneyTriple, "通道账户", EnumTradeType.WITHDRAW.getValue());
             final Account account = this.accountService.getById(channelMoneyTriple.getLeft()).get();
             this.accountService.increaseTotalAmount(account.getId(), channelMoneyTriple.getMiddle());
-            this.accountService.increaseSettleAmount(account.getId(), channelMoneyTriple.getMiddle());
-            this.settleAccountFlowService.addSettleAccountFlow(account.getId(), order.getOrderNo(), channelMoneyTriple.getMiddle(),
-                    "提现分润", EnumAccountFlowType.INCREASE, EnumAppType.HSS.getId(), order.getPaySuccessTime(), EnumAccountUserType.COMPANY.getId());
-
-            //待结算--可用余额
             this.accountService.increaseAvailableAmount(account.getId(), channelMoneyTriple.getMiddle());
-            this.accountService.decreaseSettleAmount(account.getId(), channelMoneyTriple.getMiddle());
-            this.settleAccountFlowService.addSettleAccountFlow(account.getId(), order.getOrderNo(), channelMoneyTriple.getMiddle(),
-                    "提现分润", EnumAccountFlowType.DECREASE, EnumAppType.HSS.getId(), order.getPaySuccessTime(), EnumAccountUserType.COMPANY.getId());
-            this.accountFlowService.addAccountFlow(account.getId(), order.getOrderNo(), channelMoneyTriple.getMiddle(),
+            this.accountFlowService.addAccountFlow(account.getId(), settlementRecord.getSettleNo(), channelMoneyTriple.getMiddle(),
                     "提现分润", EnumAccountFlowType.INCREASE);
         }
         //产品利润--到结算--可用余额
         if (null != productMoneyTriple) {
-            this.splitAccountRecordService.addWithdrawSplitAccountRecord(splitBusinessType, order.getOrderNo(), order.getOrderNo(),
-                    order.getTradeAmount(), order.getPoundage(), productMoneyTriple, "产品账户", EnumTradeType.PAY.getValue());
+            this.splitAccountRecordService.addWithdrawSplitAccountRecord(splitBusinessType, settlementRecord.getSettleNo(), settlementRecord.getSettleNo(),
+                    settlementRecord.getSettleAmount(), poundage, productMoneyTriple, "产品账户", EnumTradeType.PAY.getValue());
             final Account account = this.accountService.getById(productMoneyTriple.getLeft()).get();
             this.accountService.increaseTotalAmount(account.getId(), productMoneyTriple.getMiddle());
-            this.accountService.increaseSettleAmount(account.getId(), productMoneyTriple.getMiddle());
-            this.settleAccountFlowService.addSettleAccountFlow(account.getId(), order.getOrderNo(), productMoneyTriple.getMiddle(),
-                    "提现分润", EnumAccountFlowType.INCREASE, EnumAppType.HSS.getId(), order.getPaySuccessTime(), EnumAccountUserType.COMPANY.getId());
-
-            //待结算--可用余额
             this.accountService.increaseAvailableAmount(account.getId(), productMoneyTriple.getMiddle());
-            this.accountService.decreaseSettleAmount(account.getId(), productMoneyTriple.getMiddle());
-            this.settleAccountFlowService.addSettleAccountFlow(account.getId(), order.getOrderNo(), productMoneyTriple.getMiddle(),
-                    "提现分润", EnumAccountFlowType.DECREASE, EnumAppType.HSS.getId(), order.getPaySuccessTime(), EnumAccountUserType.COMPANY.getId());
-            this.accountFlowService.addAccountFlow(account.getId(), order.getOrderNo(), productMoneyTriple.getMiddle(),
+            this.accountFlowService.addAccountFlow(account.getId(), settlementRecord.getSettleNo(), productMoneyTriple.getMiddle(),
                     "提现分润", EnumAccountFlowType.INCREASE);
         }
         //一级代理商利润--到结算--可用余额
-        if (null != firstMoneyTriple) {
-            final Dealer dealer = this.dealerService.getByAccountId(firstMoneyTriple.getLeft()).get();
-            this.splitAccountRecordService.addWithdrawSplitAccountRecord(splitBusinessType, order.getOrderNo(), order.getOrderNo(),
-                    order.getTradeAmount(), order.getPoundage(), firstMoneyTriple, dealer.getProxyName(), EnumTradeType.PAY.getValue());
-            final Account account = this.accountService.getById(firstMoneyTriple.getLeft()).get();
-            this.accountService.increaseTotalAmount(account.getId(), firstMoneyTriple.getMiddle());
-            this.accountService.increaseSettleAmount(account.getId(), firstMoneyTriple.getMiddle());
-            this.settleAccountFlowService.addSettleAccountFlow(account.getId(), order.getOrderNo(), firstMoneyTriple.getMiddle(),
-                    "提现分润", EnumAccountFlowType.INCREASE, EnumAppType.HSS.getId(), order.getPaySuccessTime(), EnumAccountUserType.DEALER.getId());
-
-            //待结算--可用余额
-            this.accountService.increaseAvailableAmount(account.getId(), firstMoneyTriple.getMiddle());
-            this.accountService.decreaseSettleAmount(account.getId(), firstMoneyTriple.getMiddle());
-            this.settleAccountFlowService.addSettleAccountFlow(account.getId(), order.getOrderNo(), firstMoneyTriple.getMiddle(),
-                    "提现分润", EnumAccountFlowType.DECREASE, EnumAppType.HSS.getId(), order.getPaySuccessTime(), EnumAccountUserType.DEALER.getId());
-            this.accountFlowService.addAccountFlow(account.getId(), order.getOrderNo(), firstMoneyTriple.getMiddle(),
-                    "提现分润", EnumAccountFlowType.INCREASE);
-        }
-        //二级代理商利润--到结算--可用余额
-        if (null != secondMoneyTriple) {
-            final Dealer dealer = this.dealerService.getByAccountId(secondMoneyTriple.getLeft()).get();
-            final Account account = this.accountService.getById(secondMoneyTriple.getLeft()).get();
-            this.splitAccountRecordService.addWithdrawSplitAccountRecord(splitBusinessType, order.getOrderNo(), order.getOrderNo(),
-                    order.getTradeAmount(), order.getPoundage(), secondMoneyTriple, dealer.getProxyName(), EnumTradeType.PAY.getValue());
-            this.accountService.increaseTotalAmount(account.getId(), secondMoneyTriple.getMiddle());
-            this.accountService.increaseSettleAmount(account.getId(), secondMoneyTriple.getMiddle());
-            this.settleAccountFlowService.addSettleAccountFlow(account.getId(), order.getOrderNo(), secondMoneyTriple.getMiddle(),
-                    "提现分润", EnumAccountFlowType.INCREASE, EnumAppType.HSS.getId(), order.getPaySuccessTime(), EnumAccountUserType.DEALER.getId());
-
-            //待结算--可用余额
-            this.accountService.increaseAvailableAmount(account.getId(), secondMoneyTriple.getMiddle());
-            this.accountService.decreaseSettleAmount(account.getId(), secondMoneyTriple.getMiddle());
-            this.settleAccountFlowService.addSettleAccountFlow(account.getId(), order.getOrderNo(), secondMoneyTriple.getMiddle(),
-                    "提现分润", EnumAccountFlowType.DECREASE, EnumAppType.HSS.getId(), order.getPaySuccessTime(), EnumAccountUserType.DEALER.getId());
-            this.accountFlowService.addAccountFlow(account.getId(), order.getOrderNo(), secondMoneyTriple.getMiddle(),
-                    "分润", EnumAccountFlowType.INCREASE);
-        }
+//        if (null != firstMoneyTriple) {
+//            final Dealer dealer = this.dealerService.getByAccountId(firstMoneyTriple.getLeft()).get();
+//            this.splitAccountRecordService.addWithdrawSplitAccountRecord(splitBusinessType, settlementRecord.getSettleNo(), order.getOrderNo(),
+//                    order.getTradeAmount(), order.getPoundage(), firstMoneyTriple, dealer.getProxyName(), EnumTradeType.PAY.getValue());
+//            final Account account = this.accountService.getById(firstMoneyTriple.getLeft()).get();
+//            this.accountService.increaseTotalAmount(account.getId(), firstMoneyTriple.getMiddle());
+//            this.accountService.increaseSettleAmount(account.getId(), firstMoneyTriple.getMiddle());
+//            this.settleAccountFlowService.addSettleAccountFlow(account.getId(), order.getOrderNo(), firstMoneyTriple.getMiddle(),
+//                    "提现分润", EnumAccountFlowType.INCREASE, EnumAppType.HSS.getId(), order.getPaySuccessTime(), EnumAccountUserType.DEALER.getId());
+//
+//            //待结算--可用余额
+//            this.accountService.increaseAvailableAmount(account.getId(), firstMoneyTriple.getMiddle());
+//            this.accountService.decreaseSettleAmount(account.getId(), firstMoneyTriple.getMiddle());
+//            this.settleAccountFlowService.addSettleAccountFlow(account.getId(), order.getOrderNo(), firstMoneyTriple.getMiddle(),
+//                    "提现分润", EnumAccountFlowType.DECREASE, EnumAppType.HSS.getId(), order.getPaySuccessTime(), EnumAccountUserType.DEALER.getId());
+//            this.accountFlowService.addAccountFlow(account.getId(), order.getOrderNo(), firstMoneyTriple.getMiddle(),
+//                    "提现分润", EnumAccountFlowType.INCREASE);
+//        }
+//        //二级代理商利润--到结算--可用余额
+//        if (null != secondMoneyTriple) {
+//            final Dealer dealer = this.dealerService.getByAccountId(secondMoneyTriple.getLeft()).get();
+//            final Account account = this.accountService.getById(secondMoneyTriple.getLeft()).get();
+//            this.splitAccountRecordService.addWithdrawSplitAccountRecord(splitBusinessType, order.getOrderNo(), order.getOrderNo(),
+//                    order.getTradeAmount(), order.getPoundage(), secondMoneyTriple, dealer.getProxyName(), EnumTradeType.PAY.getValue());
+//            this.accountService.increaseTotalAmount(account.getId(), secondMoneyTriple.getMiddle());
+//            this.accountService.increaseSettleAmount(account.getId(), secondMoneyTriple.getMiddle());
+//            this.settleAccountFlowService.addSettleAccountFlow(account.getId(), order.getOrderNo(), secondMoneyTriple.getMiddle(),
+//                    "提现分润", EnumAccountFlowType.INCREASE, EnumAppType.HSS.getId(), order.getPaySuccessTime(), EnumAccountUserType.DEALER.getId());
+//
+//            //待结算--可用余额
+//            this.accountService.increaseAvailableAmount(account.getId(), secondMoneyTriple.getMiddle());
+//            this.accountService.decreaseSettleAmount(account.getId(), secondMoneyTriple.getMiddle());
+//            this.settleAccountFlowService.addSettleAccountFlow(account.getId(), order.getOrderNo(), secondMoneyTriple.getMiddle(),
+//                    "提现分润", EnumAccountFlowType.DECREASE, EnumAppType.HSS.getId(), order.getPaySuccessTime(), EnumAccountUserType.DEALER.getId());
+//            this.accountFlowService.addAccountFlow(account.getId(), order.getOrderNo(), secondMoneyTriple.getMiddle(),
+//                    "分润", EnumAccountFlowType.INCREASE);
+//        }
     }
 
     //判断分账的业务类型
