@@ -66,6 +66,21 @@ public class MerchantInfoQueryServiceImpl implements MerchantInfoQueryService {
     public List<MerchantInfoResponse> getRecord(MerchantInfoRequest req) {
 
         List<MerchantInfoResponse> list = this.merchantInfoQueryDao.getRecord(req);
+        if (list.size()>0){
+            for (int i=0;i<list.size();i++){
+                if(list.get(i).getMobile()!=null&&!list.get(i).getMobile().equals("")){
+                    list.get(i).setMobile(MerchantSupport.decryptMobile(list.get(i).getId(),list.get(i).getMobile()));
+                }
+                if (list.get(i).getLevel()==1){
+                    list.get(i).setProxyName(list.get(i).getProxyName());
+                }if (list.get(i).getLevel()==2){
+                    list.get(i).setProxyName1(list.get(i).getProxyName());
+                    String proxyName = dealerService.selectProxyName(list.get(i).getFirstLevelDealerId());
+                    list.get(i).setProxyName(proxyName);
+                }
+            }
+        }
+
         return list;
     }
 
