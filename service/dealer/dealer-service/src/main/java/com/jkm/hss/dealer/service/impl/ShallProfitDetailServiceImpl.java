@@ -400,7 +400,7 @@ public class ShallProfitDetailServiceImpl implements ShallProfitDetailService{
             return productChannelDetail.getProductMerchantWithdrawFee().setScale(2);
         }
         final Dealer dealer = this.dealerService.getById(merchant.getDealerId()).get();
-        final DealerChannelRate dealerChannelRate = this.dealerRateService.selectByDealerIdAndChannelId(dealer.getId(), channelSign).get(0);
+        final DealerChannelRate dealerChannelRate = this.dealerRateService.getByDealerIdAndProductIdAndChannelType(dealer.getId(), merchant.getProductId(),channelSign).get();
         return dealerChannelRate.getDealerMerchantWithdrawFee().setScale(2);
     }
     /**

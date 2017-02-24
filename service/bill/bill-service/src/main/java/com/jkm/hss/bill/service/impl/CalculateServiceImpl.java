@@ -103,27 +103,28 @@ public class CalculateServiceImpl implements CalculateService {
 
         if (type.getId().equals(EnumProductType.HSS.getId())){
             //HSS
+            final Product product = this.productService.selectByType(type.getId()).get();
             final MerchantInfo merchant = this.merchantInfoService.selectById(merchantId).get();
             if (0 == merchant.getDealerId()) {
-                final Product product = this.productService.selectByType(type.getId()).get();
-                final ProductChannelDetail productChannelDetail = this.productChannelDetailService.selectByProductId(product.getId()).get(0);
+                final ProductChannelDetail productChannelDetail = this.productChannelDetailService.selectByProductIdAndChannelId(product.getId(),channelSign).get();
                 return productChannelDetail.getProductMerchantWithdrawFee().setScale(2);
             }
             final Dealer dealer = this.dealerService.getById(merchant.getDealerId()).get();
-            final DealerChannelRate dealerChannelRate = this.dealerRateService.selectByDealerIdAndChannelId(dealer.getId(), channelSign).get(0);
+            final DealerChannelRate dealerChannelRate = this.dealerRateService.getByDealerIdAndProductIdAndChannelType(dealer.getId(),product.getId() ,channelSign).get();
             return dealerChannelRate.getDealerMerchantWithdrawFee().setScale(2);
 
         }else {
             //HSY
+            final Product product = this.productService.selectByType(type.getId()).get();
             final List<AppAuUser> appAuUsers = this.hsyShopDao.findCorporateUserByShopID(merchantId);
             final AppAuUser appAuUser = appAuUsers.get(0);
             if ( appAuUser.getDealerID() == 0){
-                final Product product = this.productService.selectByType(type.getId()).get();
-                final ProductChannelDetail productChannelDetail = this.productChannelDetailService.selectByProductId(product.getId()).get(0);
+
+                final ProductChannelDetail productChannelDetail = this.productChannelDetailService.selectByProductIdAndChannelId(product.getId(), channelSign).get();
                 return productChannelDetail.getProductMerchantWithdrawFee().setScale(2);
             }
             final Dealer dealer = this.dealerService.getById(appAuUser.getDealerID()).get();
-            final DealerChannelRate dealerChannelRate = this.dealerRateService.selectByDealerIdAndChannelId(dealer.getId(), channelSign).get(0);
+            final DealerChannelRate dealerChannelRate = this.dealerRateService.getByDealerIdAndProductIdAndChannelType(dealer.getId(), product.getId(),channelSign).get();
             return dealerChannelRate.getDealerMerchantWithdrawFee().setScale(2);
         }
 
