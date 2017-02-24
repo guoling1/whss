@@ -162,13 +162,13 @@
         count:0,
         isShow:false,
         //正式
-        queryUrl:'http://pay.qianbaojiajia.com/order/pay/listOrder',
+        /*queryUrl:'http://pay.qianbaojiajia.com/order/pay/listOrder',
         excelUrl:'http://pay.qianbaojiajia.com/order/pay/exportExcel',
-        syncUrl:'http://pay.qianbaojiajia.com/order/syncPayOrder',
+        syncUrl:'http://pay.qianbaojiajia.com/order/syncPayOrder',*/
         //测试
-        /*queryUrl:'http://192.168.1.20:8076/order/pay/listOrder',
+        queryUrl:'http://192.168.1.20:8076/order/pay/listOrder',
         excelUrl:'http://192.168.1.20:8076/order/pay/exportExcel',
-        syncUrl:'http://192.168.1.20:8076/order/syncPayOrder',*/
+        syncUrl:'http://192.168.1.20:8076/order/syncPayOrder',
       }
     },
     created:function(){
