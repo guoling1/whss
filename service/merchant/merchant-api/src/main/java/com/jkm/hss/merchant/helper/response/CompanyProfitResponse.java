@@ -12,6 +12,16 @@ import java.util.Date;
 public class CompanyProfitResponse {
 
     /**
+     * 一级代理商id
+     */
+    private int firstLevelDealerId;
+
+    /**
+     * 代理商级别
+     */
+    private int level;
+
+    /**
      * 代理商编号
      */
     private String markCode;
@@ -20,6 +30,11 @@ public class CompanyProfitResponse {
      * 一级代理商名称
      */
     private String proxyName;
+
+    /**
+     * 二级级代理商名称
+     */
+    private String proxyName1;
 
     /**
      * 账户id

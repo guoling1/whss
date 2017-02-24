@@ -109,6 +109,7 @@
 
     .group .ipt {
       border: none;
+      font-size: 16px;
       color: #4a5171;
     }
 

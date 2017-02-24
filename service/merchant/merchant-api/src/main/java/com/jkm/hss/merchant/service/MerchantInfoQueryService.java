@@ -36,4 +36,17 @@ public interface MerchantInfoQueryService {
      */
     int getCountRecord(MerchantInfoRequest req);
 
+    /**
+     * 查询所有
+     * @return
+     */
+    List<MerchantInfoResponse> seletAll();
+
+    /**
+     * 导出所有商户
+     * @param req
+     * @param baseUrl
+     * @return
+     */
+    String downloadExcel(MerchantInfoRequest req, String baseUrl);
 }

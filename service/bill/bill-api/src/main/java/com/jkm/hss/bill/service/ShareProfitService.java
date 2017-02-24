@@ -39,4 +39,6 @@ public interface ShareProfitService {
      * @return
      */
     int selectAccountDetailsCount(ProfitDetailsRequest req);
+
+
 }

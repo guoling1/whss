@@ -15,15 +15,15 @@
             </li>
             <li class="same">
               <label>上级代理名称:</label>
-              <el-input style="width: 120px" v-model="query.dealerName" placeholder="请输入内容" size="small"></el-input>
+              <el-input style="width: 120px" v-model="query.proxyName" placeholder="请输入内容" size="small"></el-input>
             </li>
             <li class="same">
               <label>代理商名称:</label>
-              <el-input style="width: 120px" v-model="query.dealerName1" placeholder="请输入内容" size="small"></el-input>
+              <el-input style="width: 120px" v-model="query.proxyName1" placeholder="请输入内容" size="small"></el-input>
             </li>
             <li class="same">
               <label>代理商编号:</label>
-              <el-input style="width: 120px" v-model="query.firstDealerName" placeholder="请输入内容" size="small"></el-input>
+              <el-input style="width: 120px" v-model="query.markCode" placeholder="请输入内容" size="small"></el-input>
             </li>
             <li class="same">
               <label>收益类型:</label>

@@ -42,4 +42,5 @@ public interface ShareProfitDao {
      * @return
      */
     int selectAccountDetailsCount(ProfitDetailsRequest req);
+
 }

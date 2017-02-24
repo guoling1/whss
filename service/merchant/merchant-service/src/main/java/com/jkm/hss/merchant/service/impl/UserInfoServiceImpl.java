@@ -2,6 +2,7 @@ package com.jkm.hss.merchant.service.impl;
 
 import com.google.common.base.Optional;
 import com.jkm.hss.merchant.dao.UserInfoDao;
+import com.jkm.hss.merchant.entity.MerchantInfoCheckRecord;
 import com.jkm.hss.merchant.entity.UserInfo;
 import com.jkm.hss.merchant.service.UserInfoService;
 import lombok.extern.slf4j.Slf4j;
@@ -83,6 +84,12 @@ public class UserInfoServiceImpl implements UserInfoService{
     @Override
     public int bindOpenId(long id,String openId) {
         return userInfoDao.bindOpenId(id,openId);
+    }
+
+    @Override
+    public MerchantInfoCheckRecord selectDesr(long merchantId) {
+        MerchantInfoCheckRecord desrc=userInfoDao.selectDesr(merchantId);
+        return desrc;
     }
 
     @Override

@@ -584,9 +584,9 @@ public class WxPubController extends BaseController {
                     mi.setStatus(EnumMerchantStatus.INIT.getId());
                     mi.setMobile(MerchantSupport.encryptMobile(mobile));
                     mi.setMdMobile(MerchantSupport.passwordDigest(mobile,"JKM"));
-                    mi.setSource(EnumSource.RECOMMEND.getId());
                     mi.setProductId(productId);
                     if(loginRequest.getInviteCode().length()==6){
+                        mi.setSource(EnumSource.DEALERRECOMMEND.getId());
                         log.info("代理商邀请码注册");
                         Optional<Dealer> dealerOptional = dealerService.getDealerByInviteCode(loginRequest.getInviteCode());
                         if(dealerOptional.get().getLevel()==EnumDealerLevel.FIRST.getId()){//二级代理
@@ -640,6 +640,7 @@ public class WxPubController extends BaseController {
                         userInfoService.updatemarkCode(tempMarkCode,uo.getId());
                         return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "注册成功",mi.getId());
                     }else{
+                        mi.setSource(EnumSource.RECOMMEND.getId());
                         log.info("手机号推荐注册");
                         //初始化代理商和商户
                         Optional<UserInfo> inviteUserOptional =  userInfoService.selectByMobile(MerchantSupport.encryptMobile(loginRequest.getInviteCode()));
