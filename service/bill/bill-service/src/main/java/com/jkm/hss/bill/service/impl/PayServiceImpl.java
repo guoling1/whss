@@ -852,7 +852,8 @@ public class PayServiceImpl implements PayService {
                 placeOrderRequest.setTradeType("EPOS");
             }
         } else {
-            if (EnumPayChannelSign.YG_WEIXIN.getId() == channel) {
+            if (EnumPayChannelSign.YG_WEIXIN.getId() == channel
+                    || EnumPayChannelSign.YG_ZHIFUBAO.getId() == channel) {
                 placeOrderRequest.setTradeType("JSAPI");
             } else if (EnumPayChannelSign.YG_YINLIAN.getId() == channel) {
                 placeOrderRequest.setTradeType("EPOS");
