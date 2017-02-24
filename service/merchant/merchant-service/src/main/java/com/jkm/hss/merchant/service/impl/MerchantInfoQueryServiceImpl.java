@@ -209,9 +209,17 @@ public class MerchantInfoQueryServiceImpl implements MerchantInfoQueryService {
                 if (list.get(i).getSource()==2){
                     columns.add(EnumSource.DEALERRECOMMEND.getValue());
                 }
-                columns.add(list.get(i).getAuthenticationTime());
+                if (list.get(i).getAuthenticationTime()!=null&&!list.get(i).getAuthenticationTime().equals("")){
+                    columns.add(list.get(i).getAuthenticationTime().substring(0,list.get(i).getAuthenticationTime().length()-2));
+                }else {
+                    columns.add("");
+                }
+                if (list.get(i).getCheckedTime()!=null&&!list.get(i).getCheckedTime().equals("")){
+                    columns.add(list.get(i).getCheckedTime().substring(0,list.get(i).getCheckedTime().length()-2));
+                }else {
+                    columns.add("");
+                }
 
-                columns.add(list.get(i).getCheckedTime());
                 if (list.get(i).getStatus()==0){
                     columns.add(EnumMerchantStatus.INIT.getName());
                 }
@@ -224,7 +232,7 @@ public class MerchantInfoQueryServiceImpl implements MerchantInfoQueryService {
                 if (list.get(i).getStatus()==3){
                     columns.add(EnumMerchantStatus.PASSED.getName());
                 }
-                if (list.get(i).getStatus()==0){
+                if (list.get(i).getStatus()==4){
                     columns.add(EnumMerchantStatus.UNPASSED.getName());
                 }
                 datas.add(columns);
