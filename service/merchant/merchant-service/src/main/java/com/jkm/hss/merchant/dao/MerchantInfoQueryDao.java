@@ -39,6 +39,9 @@ public interface MerchantInfoQueryDao {
      */
     int getCountRecord(MerchantInfoRequest req);
 
-
-
+    /**
+     * 查询所有
+     * @return
+     */
+    List<MerchantInfoResponse> seletAll();
 }
