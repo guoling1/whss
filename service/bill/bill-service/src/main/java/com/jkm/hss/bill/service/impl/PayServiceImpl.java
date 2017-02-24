@@ -234,9 +234,6 @@ public class PayServiceImpl implements PayService {
             case HANDLING:
                 this.markPayHandling(paymentSdkPayCallbackResponse, order);
                 break;
-            default:
-                this.markPayHandling(paymentSdkPayCallbackResponse, order);
-                break;
         }
 
     }
@@ -250,9 +247,7 @@ public class PayServiceImpl implements PayService {
     @Override
     @Transactional
     public void markPaySuccess(final PaymentSdkPayCallbackResponse paymentSdkPayCallbackResponse, final Order order) {
-        if (!StringUtils.isEmpty(paymentSdkPayCallbackResponse.getPayType())) {
-            order.setPayType(paymentSdkPayCallbackResponse.getPayType());
-        }
+        order.setPayType(paymentSdkPayCallbackResponse.getPayType());
         order.setPaySuccessTime(new DateTime(Long.valueOf(paymentSdkPayCallbackResponse.getPaySuccessTime())).toDate());
         order.setRemark(paymentSdkPayCallbackResponse.getMessage());
         order.setSn(paymentSdkPayCallbackResponse.getSn());
@@ -272,7 +267,7 @@ public class PayServiceImpl implements PayService {
             this.companyRecorded(order.getId());
             //结算
             final Optional<Order> orderOptional = this.orderService.getByIdWithLock(order.getId());
-            if (orderOptional.get().isPaySuccess() && (orderOptional.get().isDueSettle() || orderOptional.get().isSettleing())) {
+            if (orderOptional.get().isPaySuccess() && orderOptional.get().isDueSettle()) {
                 this.orderService.updateSettleStatus(orderOptional.get().getId(), EnumSettleStatus.SETTLE_ING.getId());
                 log.info("商户升级-交易订单号[{}], 进行手续费结算操作", order.getOrderNo());
                 this.merchantUpgradePoundageSettle(orderOptional.get(), merchant.getId());
@@ -393,6 +388,7 @@ public class PayServiceImpl implements PayService {
             final long settleAccountFlowIncreaseId = this.settleAccountFlowService.addSettleAccountFlow(merchantAccount.getId(), order.getOrderNo(),
                     order.getTradeAmount().subtract(order.getPoundage()), "支付结算", EnumAccountFlowType.INCREASE,
                     EnumAppType.HSS.getId(), order.getPaySuccessTime(), EnumAccountUserType.MERCHANT.getId());
+            final EnumPayChannelSign payChannelSign = EnumPayChannelSign.idOf(order.getPayChannelSign());
             //生成结算单
             final SettlementRecord settlementRecord = new SettlementRecord();
             settlementRecord.setSettleNo(SnGenerator.generate());
@@ -407,7 +403,11 @@ public class PayServiceImpl implements PayService {
             settlementRecord.setBankNo(merchant.getBankNo());
             settlementRecord.setBankName(merchant.getBankName());
             settlementRecord.setSettleStatus(EnumSettleStatus.DUE_SETTLE.getId());
-            settlementRecord.setStatus(EnumSettlementRecordStatus.WAIT_WITHDRAW.getId());
+            if (payChannelSign.getAutoSettle()) {
+                settlementRecord.setStatus(EnumSettlementRecordStatus.WITHDRAWING.getId());
+            } else {
+                settlementRecord.setStatus(EnumSettlementRecordStatus.WAIT_WITHDRAW.getId());
+            }
             final long settlementRecordId = this.settlementRecordService.add(settlementRecord);
             this.settleAccountFlowService.updateSettlementRecordIdById(settleAccountFlowIncreaseId, settlementRecordId);
             return settlementRecordId;

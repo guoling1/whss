@@ -34,7 +34,7 @@ public class MessageListenerImpl implements MessageListener {
         try {
             final JSONObject body = JSONObject.parseObject(new String(message.getBody(),"UTF-8"));
             if (MqConfig.MERCHANT_WITHDRAW.equals(message.getTag())) {
-                log.info("消费消息--提现单[{}]， 向网关发送提现请求", body.getLong("payOrderId"));
+                log.info("消费消息--结算单[{}]， 向网关发送提现请求", body.getLongValue("settlementRecordId"));
                 final long merchantId = body.getLongValue("merchantId");
                 final long settlementRecordId = body.getLongValue("settlementRecordId");
                 final String payOrderSn = body.getString("payOrderSn");
