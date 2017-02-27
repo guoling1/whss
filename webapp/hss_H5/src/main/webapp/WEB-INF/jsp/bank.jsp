@@ -13,7 +13,7 @@
   <meta name="viewport"
         content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
   <title>好收收</title>
-  <link rel="stylesheet" href="http://static.jinkaimen.cn/hss/css/style.2.0.1.css">
+  <link rel="stylesheet" href="/css/hss/style.2.1.1.css">
   <link rel="stylesheet" href="http://static.jinkaimen.cn/weui/weui.css">
 </head>
 <body>
@@ -24,8 +24,9 @@
       <div class="logo" id="logo"></div>
       <div class="info">
         <div class="name">${bankName}</div>
-        <div class="type">储蓄卡</div>
+        <div class="type">储蓄卡 | xx支行</div>
       </div>
+      <div class="btn red" id="btn">补充支行信息</div>
     </div>
     <div class="bottom">
       <div class="p">
@@ -49,6 +50,10 @@
       <div class="p">
         <div class="word">${bankNo}</div>
       </div>
+      <div class="s">130******21</div>
+    </div>
+    <div class="small">
+      该卡用于收款后的自动结算与余额提现
     </div>
   </div>
 </div>

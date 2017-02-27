@@ -7,6 +7,7 @@ const browser = _require('browser');
 browser.elastic_touch();
 // 定义变量
 const color = document.getElementById('color');
+const btn = document.getElementById('btn');
 const logo = document.getElementById('logo');
 
 // 卡bin和颜色一一对应
@@ -26,8 +27,10 @@ let index = HasBank();
 
 if (index != -1) {
   color.className = 'group ' + bankLogoColor[index];
+  btn.className = 'group ' + bankLogoColor[index];
   logo.className = 'logo ' + pageData.bin;
 } else {
   color.className = 'group red';
+  btn.className = 'btn red';
   logo.className = 'logo DEFAULT';
 }

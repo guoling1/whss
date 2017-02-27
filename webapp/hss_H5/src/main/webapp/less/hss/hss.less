@@ -1673,14 +1673,13 @@ input:focus {
 #bankList {
   width: 100%;
   height: auto;
-  background-color: #f0eff5;
   padding: 18px 10px 0;
   .group {
     width: 100%;
-    height: 120px;
+    height: auto;
     border-radius: 5px;
     margin-bottom: 15px;
-    padding: 20px 0 20px 25px;
+    padding: 20px 15px 15px 25px;
     &.blue {
       background: -webkit-linear-gradient(left, #5c9ada, #4b84da);
       background: -o-linear-gradient(left, #5c9ada, #4b84da);
@@ -1785,6 +1784,22 @@ input:focus {
           color: #FFF;
         }
       }
+      .btn {
+        border-radius: 3px;
+        float: right;
+        width: auto;
+        height: 21px;
+        line-height: 21px;
+        font-size: 12px;
+        color: #FFF;
+        padding: 0 5px;
+        &.red {
+          background-color: #c64b4b;
+        }
+        &.blue {
+          background-color: #406eae;
+        }
+      }
     }
 
     .bottom {
@@ -1808,6 +1823,19 @@ input:focus {
           font-weight: bold;
         }
       }
+      .s {
+        line-height: 30px;
+        float: right;
+        font-size: 12px;
+        color: #d4d4d4;
+      }
+    }
+
+    .small {
+      line-height: 20px;
+      text-align: left;
+      font-size: 12px;
+      color: #d4d4d4;
     }
   }
 }
