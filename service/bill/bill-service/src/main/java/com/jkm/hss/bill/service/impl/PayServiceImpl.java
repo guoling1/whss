@@ -37,7 +37,6 @@ import com.jkm.hss.product.enums.EnumProductType;
 import com.jkm.hss.product.servcie.ProductService;
 import com.jkm.hss.product.servcie.UpgradeRecommendRulesService;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
 import org.joda.time.DateTime;
@@ -120,8 +119,8 @@ public class PayServiceImpl implements PayService {
         order.setAppId(EnumAppType.HSS.getId());
         order.setTradeType(EnumTradeType.PAY.getId());
         order.setServiceType(EnumServiceType.APPRECIATION_PAY.getId());
-        order.setPayType(EnumPayChannelSign.YG_WECHAT_PUBLIC.getCode());
-        order.setPayChannelSign(EnumPayChannelSign.YG_WECHAT_PUBLIC.getId());
+        order.setPayType(EnumPayChannelSign.YG_WECHAT.getCode());
+        order.setPayChannelSign(EnumPayChannelSign.YG_WECHAT.getId());
         order.setPayer(merchant.getAccountId());
         order.setPayee(AccountConstants.JKM_ACCOUNT_ID);
         order.setGoodsName(merchant.getMerchantName());
@@ -133,7 +132,7 @@ public class PayServiceImpl implements PayService {
         this.orderService.add(order);
         //请求支付中心下单
         final PaymentSdkPlaceOrderResponse placeOrderResponse = this.requestPlaceOrder(order,
-                EnumPayChannelSign.YG_WECHAT_PUBLIC.getId(), merchant, businessReturnUrl);
+                EnumPayChannelSign.YG_WECHAT.getId(), merchant, businessReturnUrl);
         return this.handlePlaceOrder(placeOrderResponse, order);
     }
 
