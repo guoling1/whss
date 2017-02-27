@@ -25,17 +25,25 @@
       width: 100%;
       height: 50px;
       background-color: #FFF;
+      border-bottom: 1px solid #eaecf3;
+    }
+
+    .name {
+
     }
   </style>
 </head>
 <body>
 
 <div id="branchInfo">
-
   <div class="ipt-space">
-
+    <div class="name">信用卡号</div>
+    <input type="text" placeholder="输入本人名下信用卡号">
   </div>
 
+  <div class="small">
+    部分通道的使用必须进行该认证
+  </div>
 </div>
 
 </body>
