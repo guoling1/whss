@@ -37,6 +37,26 @@
     <div class="name">认证日期</div>
     <div class="value">${authenticationTime}</div>
   </div>
+  <div class="group">
+    <div class="name">店铺所在地</div>
+    <div class="value">${district}</div>
+  </div>
+  <div class="group">
+    <div class="name">身份证号</div>
+    <div class="value">${idCard}</div>
+  </div>
+  <div class="group">
+    <div class="name">是否认证</div>
+    <div class="value">${isAuthen}</div>
+  </div>
+  <div class="group">
+    <div class="name">信用卡号所属银行</div>
+    <div class="value">${creditCardName}</div>
+  </div>
+  <div class="group">
+    <div class="name">信用卡后四位</div>
+    <div class="value">${creditCardShort}</div>
+  </div>
 </div>
 </body>
 </html>

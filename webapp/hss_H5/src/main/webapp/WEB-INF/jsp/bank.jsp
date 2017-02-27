@@ -56,7 +56,8 @@
 </body>
 <script>
   var pageData = {
-    bin: '${bankBin}'
+    bin: '${bankBin}',
+    hasBranch:'${hasBranch}'
   }
 </script>
 <script src="http://static.jinkaimen.cn/vendor/vendor.1.0.1.min.js"></script>
