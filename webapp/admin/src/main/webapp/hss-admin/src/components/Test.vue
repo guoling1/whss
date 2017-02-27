@@ -1809,6 +1809,38 @@
                 <div class="grid-content bg-purple-light right">例如：快收银2.0</div>
               </el-col>
             </el-row>
+            <el-row type="flex" class="row-bg" justify="center">
+              <el-col :span="4">
+                <div class="alignRight">添加通道:</div>
+              </el-col>
+              <el-col :span="12">
+                <div class="grid-content bg-purple-light">
+                  <el-table :data="tableData" @selection-change="handleSelectionChange" border v-if="tableHas">
+                    <el-table-column property="date" label="日期" width="150"></el-table-column>
+                    <el-table-column property="name" label="姓名" width="200"></el-table-column>
+                    <el-table-column property="address" label="地址"></el-table-column>
+                  </el-table>
+                  <span class="btn btn-primary" style="margin: 15px 0" @click="dialogTableVisible = true" >添加通道</span>
+                </div>
+              </el-col>
+              <el-col :span="2"></el-col>
+            </el-row>
+
+            <el-dialog title="选择通道" v-model="dialogTableVisible">
+              <el-table :data="gridData" @selection-change="handleSelectionChange" border>
+                <el-table-column
+                  type="selection"
+                  width="55">
+                </el-table-column>
+                <el-table-column property="date" label="日期" width="150"></el-table-column>
+                <el-table-column property="name" label="姓名" width="200"></el-table-column>
+                <el-table-column property="address" label="地址"></el-table-column>
+              </el-table>
+              <div slot="footer" class="dialog-footer">
+                <el-button @click="dialogTableVisible = false">取 消</el-button>
+                <el-button type="primary" @click="dialogTableVisible = false">确 定</el-button>
+              </div>
+            </el-dialog>
 
             <el-row type="flex" class="row-bg" justify="center">
               <el-col :span="4">
@@ -1900,7 +1932,9 @@
     name: 'productAdd',
     data () {
       return {
-        dialogFormVisible: false,
+        tableHas:false,
+        dialogTableVisible: false,
+        multipleSelection:'',
         password:'',
         query: {
           mobile: '',
@@ -1918,12 +1952,18 @@
           bankReserveMobile: '',
           idCard: '',
         },
+        tableData:[],
         id: 0,
         isShow: true,
         productId: ''
       }
     },
     created: function () {
+      if(this.tableData.length == 0){
+          this.tableHas = false;
+      }else {
+          this.tableHas = true;
+      }
       //若为查看详情
       if (this.$route.query.id != undefined) {
         this.$data.isShow = false;
@@ -1936,6 +1976,10 @@
       }
     },
     methods: {
+      handleSelectionChange(val) {
+        this.multipleSelection = val;
+        console.log(this.multipleSelection)
+      },
       //修改密码
       resetPw:function() {
         this.$http.post('/admin/dealer/updatePwd',{dealerId:this.$route.query.id,loginPwd:this.$data.password})
