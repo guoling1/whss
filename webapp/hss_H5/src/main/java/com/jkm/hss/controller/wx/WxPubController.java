@@ -1116,10 +1116,6 @@ public class WxPubController extends BaseController {
         if(!merchantInfo.isPresent()){
             return CommonResponse.simpleResponse(-2, "未登录");
         }
-        if("110000,120000,310000,500000".contains(continueBankInfoRequest.getProvinceCode())){
-            continueBankInfoRequest.setCityCode(continueBankInfoRequest.getProvinceCode());
-            continueBankInfoRequest.setCityName(continueBankInfoRequest.getCityName());
-        }
         continueBankInfoRequest.setId(merchantInfo.get().getId());
         merchantInfoService.updateBranchInfo(continueBankInfoRequest);
         return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "操作成功");

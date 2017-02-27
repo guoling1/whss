@@ -841,6 +841,12 @@ public class LoginController extends BaseController {
                         }
                         model.addAttribute("bankName", result.get().getBankName());
                         model.addAttribute("bankBin",result.get().getBankBin());
+                        model.addAttribute("provinceCode",result.get().getProvinceCode());
+                        model.addAttribute("provinceName",result.get().getProvinceName());
+                        model.addAttribute("cityCode",result.get().getCityCode());
+                        model.addAttribute("cityName",result.get().getCityName());
+                        model.addAttribute("countyCode",result.get().getCountyCode());
+                        model.addAttribute("countyName",result.get().getCountyName());
                         url = "/bankBranch";
                     }
                 }else{

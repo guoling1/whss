@@ -75,4 +75,15 @@ public class AppBizDistrictServiceImpl implements AppBizDistrictService{
         }
         return list;
     }
+
+    /**
+     * 查询记录
+     *
+     * @return
+     */
+    @Override
+    public List<AppBizDistrictResponse> findByCode(String code) {
+        List<AppBizDistrictResponse> appBizDistrictResponseList = appBizDistrictDao.findByCode(code);
+        return appBizDistrictResponseList;
+    }
 }
