@@ -1194,190 +1194,20 @@
   }
 </style>-->
 
-<!--员工管理-->
-<!--<template>
-  <div id="personnelList">
-    <div class="col-md-12">
-      <div class="box" style="margin-top:15px;overflow: hidden">
-        <div class="box-header">
-          <h3 class="box-title">员工管理</h3>
-        </div>
-        <div class="box-body">
-          &lt;!&ndash;筛选&ndash;&gt;
-          <ul>
-            <li class="same">
-              <label>员工编号:</label>
-              <el-input style="width: 120px" v-model="query.markCode" placeholder="请输入内容" size="small"></el-input>
-            </li>
-            <li class="same">
-              <label>姓名:</label>
-              <el-input style="width: 120px" v-model="query.merchantName" placeholder="请输入内容" size="small"></el-input>
-            </li>
-            <li class="same">
-              <label>手机号:</label>
-              <el-input style="width: 120px" v-model="query.proxyName" placeholder="请输入内容" size="small"></el-input>
-            </li>
-            <li class="same">
-              <div class="btn btn-primary" @click="search">筛选</div>
-            </li>
-          </ul>
-          &lt;!&ndash;表格&ndash;&gt;
-          <el-table v-loading.body="loading" style="font-size: 12px;margin:15px 0" :data="records" border>
-            <el-table-column type="index" width="70" label="序号"></el-table-column>
-            <el-table-column prop="markCode" label="员工编号"></el-table-column>
-            <el-table-column prop="merchantName" label="登录名"></el-table-column>
-            <el-table-column prop="proxyName" label="姓名"></el-table-column>
-            <el-table-column prop="proxyName1" label="所属分公司"></el-table-column>
-            <el-table-column prop="proxyName1" label="所属部门"></el-table-column>
-            <el-table-column prop="proxyName1" label="手机号"></el-table-column>
-            <el-table-column prop="proxyName1" label="邮箱"></el-table-column>
-            <el-table-column prop="proxyName1" label="角色"></el-table-column>
-            <el-table-column prop="proxyName1" label="注册日期"></el-table-column>
-            <el-table-column prop="proxyName1" label="状态"></el-table-column>
-            <el-table-column prop="proxyName1" label="操作"></el-table-column>
-            <el-table-column label="操作" width="100">
-              <template scope="scope">
-                <router-link :to="{path:'/admin/record/profitComDet',query:{id:records[scope.$index].id}}" v-if="records[scope.$index].totalMoney!=0" type="text" size="small">编辑</router-link>
-                <router-link :to="{path:'/admin/record/profitComDet',query:{id:records[scope.$index].id}}" v-if="records[scope.$index].totalMoney!=0" type="text" size="small">开启</router-link>
-              </template>
-            </el-table-column>
-          </el-table>
-          </el-table>
-          &lt;!&ndash;分页&ndash;&gt;
-          <div class="block" style="text-align: right">
-            <el-pagination @current-change="handleCurrentChange" :current-page="currentPage" layout="total, prev, pager, next, jumper" :total="count">
-            </el-pagination>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</template>
-<script lang="babel">
-  export default{
-    name: 'personnelList',
-    data(){
-      return {
-        query:{
-          pageNo:1,
-          pageSize:10,
-          shortName:'',
-          globalID:'',
-          proxyName:'',
-          proxyName1:'',
-          startTime:'',
-          endTime:'',
-          startTime1:'',
-          endTime1:'',
-          startTime2:'',
-          endTime2:'',
-          status:''
-        },
-        records: [],
-        count: 0,
-        total: 0,
-        currentPage: 1,
-        loading: true,
-      }
-    },
-    created: function () {
-
-    },
-    methods: {
-      //格式化hss创建时间
-      changeTime: function (row, column) {
-        var val=row.createTime;
-        if(val==''||val==null){
-          return ''
-        }else {
-          val = new Date(val)
-          var year=val.getFullYear();
-          var month=val.getMonth()+1;
-          var date=val.getDate();
-          var hour=val.getHours();
-          var minute=val.getMinutes();
-          var second=val.getSeconds();
-          function tod(a) {
-            if(a<10){
-              a = "0"+a
-            }
-            return a;
-          }
-          return year+"-"+tod(month)+"-"+tod(date)+" "+tod(hour)+":"+tod(minute)+":"+tod(second);
-        }
-      },
-      search(){
-        this.$data.query.pageNo = 1;
-        this.$data.loading = true;
-        this.$http.post(this.$data.url,this.$data.query)
-          .then(function (res) {
-            this.$data.loading = false;
-            this.$data.records   = res.data.records;
-            this.$data.count = res.data.count;
-            this.$data.total = res.data.totalPage;
-          }, function (err) {
-            this.$data.loading = false;
-            this.$message({
-              showClose: true,
-              message: err.statusMessage,
-              type: 'error'
-            })
-          })
-      },
-      //当前页改变时
-      handleCurrentChange(val) {
-        this.$data.query.pageNo = val;
-        this.$data.loading = true;
-        this.$data.records = '';
-        this.$http.post(this.$data.url,this.$data.query)
-          .then(function (res) {
-            this.$data.loading = false;
-            this.$data.records   = res.data.records;
-            this.$data.count = res.data.count;
-            this.$data.total = res.data.totalPage;
-          }, function (err) {
-            this.$data.loading = false;
-            this.$message({
-              showClose: true,
-              message: err.statusMessage,
-              type: 'error'
-            })
-          })
-      },
-    },
-    watch:{
-
-    },
-  }
-</script>
-<style scoped lang="less">
-  ul{
-    padding: 0;
-  }
-  .same{
-    list-style: none;
-    display: inline-block;
-    margin: 0 15px 15px 0;
-  }
-  .btn{
-    font-size: 12px;
-  }
-</style>-->
-
-<!--新增员工-->
-<template lang="html">
+<!--新增通道-->
+<!--<template lang="html">
   <div id="agentAddBase">
     <div style="margin: 15px 15px 150px;">
       <div class="box tableTop">
         <div class="box-header with-border">
-          <h3 class="box-title" v-if="isShow">新增员工</h3>
-          <h3 class="box-title" v-if="!isShow">员工详情</h3>
+          <h3 class="box-title" v-if="isShow">新增通道</h3>
+          <h3 class="box-title" v-if="!isShow">通道详情</h3>
         </div>
         <div class="">
           <div class="table-responsive">
             <el-row type="flex" class="row-bg" justify="center">
               <el-col :span="4">
-                <div class="alignRight">登录名:</div>
+                <div class="alignRight">通道名称:</div>
               </el-col>
               <el-col :span="6">
                 <div class="grid-content bg-purple-light">
@@ -1385,16 +1215,70 @@
                 </div>
               </el-col>
               <el-col :span="8">
-                <div class="grid-content bg-purple-light"></div>
+                <div class="grid-content bg-purple-light right">例如：华有支付宝</div>
               </el-col>
             </el-row>
             <el-row type="flex" class="row-bg" justify="center">
               <el-col :span="4">
-                <div class="alignRight">登录密码:</div>
+                <div class="alignRight">通道编码:</div>
               </el-col>
               <el-col :span="6">
                 <div class="grid-content bg-purple-light">
-                  <el-input size="small" v-model="query.name" placeholder="8位以上，数字字母混合"></el-input>
+                  <el-input size="small" v-model="query.name" placeholder="请输入内容"></el-input>
+                </div>
+              </el-col>
+              <el-col :span="8">
+                <div class="grid-content bg-purple-light right">例如：SM_Alipay</div>
+              </el-col>
+            </el-row>
+            <el-row type="flex" class="row-bg" justify="center" v-if="!isShow">
+              <el-col :span="4">
+                <div class="alignRight">收单机构:</div>
+              </el-col>
+              <el-col :span="6">
+                <div class="grid-content bg-purple-light">
+                  <el-input size="small" v-model="query.markCode" placeholder="请输入内容" :disabled="true"></el-input>
+                </div>
+              </el-col>
+              <el-col :span="8">
+                <div class="grid-content bg-purple-light right">例如：支付宝、微信、京东钱包、百度钱包</div>
+              </el-col>
+            </el-row>
+            <el-row type="flex" class="row-bg" justify="center">
+              <el-col :span="4">
+                <div class="alignRight">渠道来源:</div>
+              </el-col>
+              <el-col :span="6">
+                <div class="grid-content bg-purple-light">
+                  <el-input size="small" v-model="query.loginName" placeholder="数字或字母的组合，4-20位"></el-input>
+                </div>
+              </el-col>
+              <el-col :span="8">
+                <div class="grid-content bg-purple-light right">例如：华有，显示给用户</div>
+              </el-col>
+            </el-row>
+            <el-row type="flex" class="row-bg" justify="center">
+              <el-col :span="4">
+                <div class="alignRight">支付费率:</div>
+              </el-col>
+              <el-col :span="6">
+                <div class="grid-content bg-purple-light" style="position: relative">
+                  <el-input size="small" v-model="query.email" placeholder="请输入内容"></el-input>
+                  <b>%</b>
+                </div>
+              </el-col>
+              <el-col :span="8">
+                <div class="grid-content bg-purple-light right">例如：0.3%</div>
+              </el-col>
+            </el-row>
+            <el-row type="flex" class="row-bg" justify="center">
+              <el-col :span="4">
+                <div class="alignRight">自主打款:</div>
+              </el-col>
+              <el-col :span="6">
+                <div class="grid-content bg-purple-light">
+                  <el-radio class="radio" v-model="query.distributeType" label="1">支持</el-radio>
+                  <el-radio class="radio" v-model="query.distributeType" label="2">不支持</el-radio>
                 </div>
               </el-col>
               <el-col :span="8">
@@ -1403,29 +1287,46 @@
             </el-row>
             <el-row type="flex" class="row-bg" justify="center">
               <el-col :span="4">
-                <div class="alignRight">所属分公司:</div>
+                <div class="alignRight">打款费用:</div>
+              </el-col>
+              <el-col :span="6">
+                <div class="grid-content bg-purple-light" style="position: relative">
+                  <el-input size="small" v-model="query.firstMarkCode" placeholder="请输入内容"></el-input>
+                  <b>元/笔</b>
+                </div>
+              </el-col>
+              <el-col :span="8">
+                <div class="grid-content bg-purple-light right">例如：0.5元/笔</div>
+              </el-col>
+            </el-row>
+            <el-row type="flex" class="row-bg" justify="center">
+              <el-col :span="4">
+                <div class="alignRight">结算时间:</div>
               </el-col>
               <el-col :span="6">
                 <div class="grid-content bg-purple-light">
-                  <el-select style="width: 100%" v-model="query.sysType" clearable placeholder="请选择" size="small">
-                    <el-option label="总部" value="hss">总部</el-option>
+                  <el-select style="width: 100%" v-model="query.roleId" clearable placeholder="请选择" size="small">
+                    <el-option label="D0" value="D0">D0</el-option>
+                    <el-option label="D1" value="D1">D1</el-option>
+                    <el-option label="T0" value="T0">T0</el-option>
+                    <el-option label="T1" value="T1">T1</el-option>
                   </el-select>
                 </div>
               </el-col>
               <el-col :span="8">
-                <div class="grid-content bg-purple-light"></div>
+                <div class="grid-content bg-purple-light" style="margin: 0 15px;">
+                </div>
               </el-col>
             </el-row>
             <el-row type="flex" class="row-bg" justify="center">
               <el-col :span="4">
-                <div class="alignRight">所属部门:</div>
+                <div class="alignRight">结算方式:</div>
               </el-col>
               <el-col :span="6">
                 <div class="grid-content bg-purple-light">
-                  <el-select style="width: 100%" v-model="query.sysType" clearable placeholder="请选择" size="small">
-                    <el-option label="技术部" value="hss">技术部</el-option>
-                    <el-option label="市场部" value="hsy">市场部</el-option>
-                    <el-option label="运营部" value="hsy">运营部</el-option>
+                  <el-select style="width: 100%" v-model="query.roleId" clearable placeholder="请选择" size="small">
+                    <el-option label="通道自动结算" value="D0">通道自动结算</el-option>
+                    <el-option label="自主打款结算" value="D1">自主打款结算</el-option>
                   </el-select>
                 </div>
               </el-col>
@@ -1436,11 +1337,26 @@
             </el-row>
             <el-row type="flex" class="row-bg" justify="center">
               <el-col :span="4">
-                <div class="alignRight">真实姓名:</div>
+                <div class="alignRight">预估额度:</div>
+              </el-col>
+              <el-col :span="6">
+                <div class="grid-content bg-purple-light" style="position: relative">
+                  <el-input size="small" v-model="query.email" placeholder="请输入内容"></el-input>
+                  <b>元/笔</b>
+                </div>
+              </el-col>
+              <el-col :span="8">
+                <div class="grid-content bg-purple-light"></div>
+              </el-col>
+            </el-row>
+            <el-row type="flex" class="row-bg" justify="center">
+              <el-col :span="4">
+                <div class="alignRight">一户一报:</div>
               </el-col>
               <el-col :span="6">
                 <div class="grid-content bg-purple-light">
-                  <el-input size="small" v-model="query.mobile" placeholder="请输入内容"></el-input>
+                  <el-radio class="radio" v-model="query.distributeType" label="1">支持</el-radio>
+                  <el-radio class="radio" v-model="query.distributeType" label="2">不支持</el-radio>
                 </div>
               </el-col>
               <el-col :span="8">
@@ -1449,111 +1365,20 @@
             </el-row>
             <el-row type="flex" class="row-bg" justify="center">
               <el-col :span="4">
-                <div class="alignRight">身份证号:</div>
+                <div class="alignRight">备注信息:</div>
               </el-col>
               <el-col :span="6">
                 <div class="grid-content bg-purple-light">
-                  <el-input size="small" v-model="query.mobile" placeholder="请输入内容"></el-input>
+                  <el-input type="textarea" :autosize="{ minRows: 2, maxRows: 4}" size="small" v-model="query.email" placeholder="请输入内容"></el-input>
                 </div>
               </el-col>
               <el-col :span="8">
                 <div class="grid-content bg-purple-light"></div>
-              </el-col>
-            </el-row>
-            <el-row type="flex" class="row-bg" justify="center">
-              <el-col :span="4">
-                <div class="alignRight">身份证正面照:</div>
-              </el-col>
-              <el-col :span="6">
-                <div class="grid-content bg-purple-light" id="phone">
-                  <el-upload id="upload" style="position: relative" action="//jsonplaceholder.typicode.com/posts/"
-                             type="drag" :thumbnail-mode="true" :on-progress="handleProgress"
-                             :on-preview="handlePreview" :on-remove="handleRemove" :on-success="handleSuccess"
-                             :default-file-list="fileList">
-                    <i class="el-icon-upload"></i>
-                    <div class="el-dragger__text">将文件拖到此处，或<em>点击上传</em></div>
-                    <!--<div class="el-upload__tip" slot="tip">只能上传jpg/png文件，且不超过500kb</div>-->
-                  </el-upload>
-                  <div
-                    style="position: absolute;top: 127px;margin-left:1px;width: 200px;height: 30px;background: #fbfdff"></div>
-                  <div
-                    style="position: absolute;top: 3px;margin-left:1px;width: 200px;height: 30px;background: #fbfdff"></div>
-                </div>
-              </el-col>
-              <el-col :span="8">
-                <div class="grid-content bg-purple-light"></div>
-              </el-col>
-            </el-row>
-            <el-row type="flex" class="row-bg" justify="center">
-              <el-col :span="4">
-                <div class="alignRight">身份证背面照:</div>
-              </el-col>
-              <el-col :span="6">
-                <div class="grid-content bg-purple-light" id="phone1">
-                  <el-upload id="upload" style="position: relative" width="100%"
-                             action="//jsonplaceholder.typicode.com/posts/" type="drag" :thumbnail-mode="true"
-                             :on-progress="handleProgress" :on-preview="handlePreview" :on-remove="handleRemove"
-                             :on-success="handleSuccess1" :default-file-list="fileList1">
-                    <i class="el-icon-upload"></i>
-                    <div class="el-dragger__text">将文件拖到此处，或<em>点击上传</em></div>
-                    <!--<div class="el-upload__tip" slot="tip">只能上传jpg/png文件，且不超过500kb</div>-->
-                  </el-upload>
-                  <div
-                    style="position: absolute;top: 127px;margin-left:1px;width: 200px;height: 30px;background: #fbfdff"></div>
-                  <div
-                    style="position: absolute;top: 3px;margin-left:1px;width: 200px;height: 30px;background: #fbfdff"></div>
-                </div>
-              </el-col>
-              <el-col :span="8">
-                <div class="grid-content bg-purple-light"></div>
-              </el-col>
-            </el-row>
-            <el-row type="flex" class="row-bg" justify="center">
-              <el-col :span="4">
-                <div class="alignRight">手机号:</div>
-              </el-col>
-              <el-col :span="6">
-                <div class="grid-content bg-purple-light">
-                  <el-input size="small" v-model="query.mobile" placeholder="请输入内容"></el-input>
-                </div>
-              </el-col>
-              <el-col :span="8">
-                <div class="grid-content bg-purple-light"></div>
-              </el-col>
-            </el-row>
-            <el-row type="flex" class="row-bg" justify="center">
-              <el-col :span="4">
-                <div class="alignRight">邮箱:</div>
-              </el-col>
-              <el-col :span="6">
-                <div class="grid-content bg-purple-light">
-                  <el-input size="small" v-model="query.mobile" placeholder="请输入内容"></el-input>
-                </div>
-              </el-col>
-              <el-col :span="8">
-                <div class="grid-content bg-purple-light"></div>
-              </el-col>
-            </el-row>
-            <el-row type="flex" class="row-bg" justify="center">
-              <el-col :span="4">
-                <div class="alignRight">角色:</div>
-              </el-col>
-              <el-col :span="6">
-                <div class="grid-content bg-purple-light">
-                  <el-select style="width: 100%" v-model="query.sysType" clearable placeholder="请选择" size="small">
-                    <el-option label="技术部" value="hss">技术部</el-option>
-                    <el-option label="市场部" value="hsy">市场部</el-option>
-                    <el-option label="运营部" value="hsy">运营部</el-option>
-                  </el-select>
-                </div>
-              </el-col>
-              <el-col :span="8">
-                <div class="grid-content bg-purple-light" style="margin: 0 15px;">
-                </div>
               </el-col>
             </el-row>
           </div>
         </div>
+
         <el-row type="flex" class="row-bg" justify="center">
           <el-col :span="4">
             <div class="alignRight"></div>
@@ -1563,12 +1388,10 @@
               <div class="btn btn-primary" @click="goBack" style="width: 45%;margin: 20px 0 100px;">
                 返回
               </div>
-              <div class="btn btn-primary" @click="create" v-if="isShow"
-                   style="width: 45%;float: right;margin: 20px 0 100px;">
-                创建员工
+              <div class="btn btn-primary" @click="create" v-if="isShow" style="width: 45%;float: right;margin: 20px 0 100px;">
+                创建代理商
               </div>
-              <div class="btn btn-primary" @click="change()" v-if="!isShow"
-                   style="width: 45%;float: right;margin: 20px 0 100px;">
+              <div class="btn btn-primary" @click="change()" v-if="!isShow" style="width: 45%;float: right;margin: 20px 0 100px;">
                 修改
               </div>
             </div>
@@ -1577,12 +1400,7 @@
             <div class="grid-content bg-purple-light"></div>
           </el-col>
         </el-row>
-        <div class="mask" id="mask" style="display: none" @click="isNo()">
-          <p @click="isNo">×</p>
-          <img src="" alt="">
-        </div>
       </div>
-
     </div>
   </div>
 </template>
@@ -1592,18 +1410,21 @@
     name: 'agentAddBase',
     data () {
       return {
-        ishas: true,
-        ishas1: true,
         dialogFormVisible: false,
-        password: '',
+        password:'',
+        provinces: '',
+        citys: '',
+        province: '',
+        city: '',
+        level: '',
         query: {
           mobile: '',
           name: '',
-          loginName: '',
-          loginPwd: '',
-          email: '',
-          belongProvinceCode: '',
-          belongProvinceName: '',
+          loginName:'',
+          loginPwd:'',
+          email:'',
+          belongProvinceCode:'',
+          belongProvinceName:'',
           belongCityCode: '',
           belongCityName: '',
           belongArea: '',
@@ -1614,13 +1435,22 @@
         },
         id: 0,
         isShow: true,
-        productId: '',
-        images: [],
-        fileList: [],
-        fileList1: []
+        productId: ''
       }
     },
     created: function () {
+      //获取所有省
+      this.$http.post('/admin/district/findAllDistrict')
+        .then(function (res) {
+          this.$data.provinces = res.data;
+        })
+        .catch(function (err) {
+          this.$message({
+            showClose: true,
+            message: err.statusMessage,
+            type: 'error'
+          })
+        })
       //若为查看详情
       if (this.$route.query.id != undefined) {
         this.$data.isShow = false;
@@ -1633,43 +1463,37 @@
       }
       this.$data.level = this.$route.query.level;
     },
-    methods: {
-      //传成功
-      handleSuccess: function () {
-        //移除继续上传按钮
-        setTimeout(function () {
-          var aSpan = document.getElementById('phone').getElementsByTagName('span')[0];
-          document.getElementsByClassName('el-draggeer__cover__btns')[0].removeChild(aSpan)
-        }, 300)
-      },
-      handleSuccess1: function (response, file, fileList) {
-        //移除继续上传按钮
-        setTimeout(function () {
-          var aSpan = document.getElementById('phone1').getElementsByTagName('span')[0];
-          if (document.getElementsByClassName('el-draggeer__cover__btns').length == 1) {
-            document.getElementsByClassName('el-draggeer__cover__btns')[0].removeChild(aSpan)
-          } else {
-            document.getElementsByClassName('el-draggeer__cover__btns')[1].removeChild(aSpan)
+    watch: {
+      province: function (val, oldval) {
+        if (val != oldval&&oldval!="") {
+          this.$data.city = '';
+          this.$data.query.province = this.$data.province;
+        }
+        if (this.$data.province != '') {
+          for (var i = 0; i < this.$data.provinces.length; i++) {
+            if (this.$data.provinces[i].aname == this.$data.province) {
+              this.$data.query.belongProvinceCode= this.$data.provinces[i].code
+              this.$data.query.belongProvinceName= this.$data.province
+              this.$data.citys = this.$data.provinces[i].list
+            }
           }
-
-        }, 300)
+        }
       },
-      //查看照片
-      handlePreview: function (file) {
-        console.log(file)
-
-        var mask = document.getElementById('mask'),
-          img = mask.getElementsByTagName('img')[0];
-        img.src = file.url;
-        mask.style.display = 'block'
-
-      },
-      isNo: function () {
-        document.getElementById('mask').style.display = 'none'
-      },
+      city: function (val, oldval) {
+        if (val != oldval) {
+          this.$data.query.belongCityName = this.$data.city;
+          for(var i=0;i<this.$data.citys.length;i++){
+            if(this.$data.citys[i].aname == this.$data.city){
+              this.$data.query.belongCityCode = this.$data.citys[i].code;
+            }
+          }
+        }
+      }
+    },
+    methods: {
       //修改密码
-      resetPw: function () {
-        this.$http.post('/admin/dealer/updatePwd', {dealerId: this.$route.query.id, loginPwd: this.$data.password})
+      resetPw:function() {
+        this.$http.post('/admin/dealer/updatePwd',{dealerId:this.$route.query.id,loginPwd:this.$data.password})
           .then(function (res) {
             this.$data.dialogFormVisible = false;
             this.$data.password = '';
@@ -1732,9 +1556,9 @@
           })
       },
       goBack: function () {
-        if (this.$route.query.level == 2) {
+        if(this.$route.query.level==2){
           this.$router.push('/admin/record/agentListSec')
-        } else {
+        }else {
           this.$router.push('/admin/record/agentListFir')
         }
       },
@@ -1748,9 +1572,9 @@
               message: '修改成功',
               type: 'success'
             });
-            if (this.$route.query.level == 2) {
+            if(this.$route.query.level==2){
               this.$router.push('/admin/record/agentListSec')
-            } else {
+            }else {
               this.$router.push('/admin/record/agentListFir')
             }
           }, function (err) {
@@ -1762,11 +1586,23 @@
           })
       }
     },
+    filters: {
+      changeName: function (val) {
+        if (val == 101) {
+          val = '阳光微信扫码'
+        } else if (val == 102) {
+          val = '阳光支付宝扫码'
+        } else if (val == 103) {
+          val = '阳光银联支付'
+        }
+        return val;
+      }
+    }
   }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped lang="less" rel="stylesheet/less">
+&lt;!&ndash; Add "scoped" attribute to limit CSS to this component only &ndash;&gt;
+<style scoped lang="less">
   .alignRight {
     margin-right: 15px;
     text-align: right;
@@ -1776,152 +1612,80 @@
     margin-bottom: 10px;
   }
 
-  .mask {
-    background: rgba(0, 0, 0, 0.8);
-    z-index: 1100;
-    width: 100%;
-    height: 100%;
-    position: fixed;
-    top: 0;
-    left: 0;
-    p {
-      position: absolute;
-      top: 20px;
-      right: 20px;
-      z-index: 1200;
-      width: 65px;
-      height: 65px;
-      line-height: 55px;
-      font-size: 65px;
-      color: #d2d1d1;
-      text-align: center;
-      border: 6px solid #adaaaa;
-      border-radius: 50%;
-      box-shadow: 0 0 16px #000;
-      text-shadow: 0 0 16px #000;
-    }
-
-    img {
-      display: inherit;
-      max-height: 100%;
-      max-width: 100%;
-      margin: 0 auto;
-    }
+  .right{
+    height: 30px;
+    line-height: 30px;
+    margin-left: 15px;
+    color: #999999;
   }
-</style>
+  b{
+    height: 30px;
+    line-height: 30px;
+    margin-right: 15px;
+    position: absolute;
+    top:0;
+    right: 0;
+  }
+</style>-->
 
-<!--交易查询-->
+<!--通道列表-->
 <!--<template>
-  <div id="personnelList">
+  <div id="deal">
     <div class="col-md-12">
       <div class="box" style="margin-top:15px;overflow: hidden">
         <div class="box-header">
-          <h3 class="box-title">交易查询</h3>
+          <h3 class="box-title">通道列表</h3>
+          <router-link to="/admin/record/deal" class="pull-right btn btn-primary" style="margin-left: 20px">新增通道
+          </router-link>
         </div>
         <div class="box-body">
           &lt;!&ndash;筛选&ndash;&gt;
           <ul>
             <li class="same">
-              <label>订单号:</label>
-              <el-input style="width: 120px" v-model="query.markCode" placeholder="请输入内容" size="small"></el-input>
+              <label>通道名称:</label>
+              <el-input style="width: 130px" v-model="query.orderNo" placeholder="请输入内容" size="small"></el-input>
             </li>
             <li class="same">
-              <label>商户名称:</label>
-              <el-input style="width: 120px" v-model="query.merchantName" placeholder="请输入内容" size="small"></el-input>
-            </li>
-            <li class="same">
-              <label>所属一级代理:</label>
-              <el-input style="width: 120px" v-model="query.proxyName" placeholder="请输入内容" size="small"></el-input>
-            </li>
-            <li class="same">
-              <label>所属二级代理:</label>
-              <el-input style="width: 120px" v-model="query.proxyName" placeholder="请输入内容" size="small"></el-input>
-            </li>
-            <li class="same">
-              <label>交易日期:</label>
-              <el-date-picker
-                v-model="value7"
-                type="daterange"
-                align="right"
-                placeholder="选择日期范围"
-                :picker-options="pickerOptions2" size="small">
-              </el-date-picker>
-            </li>
-            <li class="same">
-              <label>交易日期:</label>
-              <el-date-picker
-                v-model="value7"
-                type="daterange"
-                align="right"
-                placeholder="选择日期范围"
-                :picker-options="pickerOptions2" size="small">
-              </el-date-picker>
-            </li>
-            <li class="same">
-              <label>交易金额:</label>
-              <div class="form-control">
-                <input type="text" style="border: none;display:inline-block;width: 45%" name="date" value="" v-model="$$query.lessTotalFee">至
-                <input type="text" style="border: none;display:inline-block;width: 45%" name="date" value="" v-model="$$query.moreTotalFee">
-              </div>
-            </li>
-            <li class="same">
-              <label>订单状态:</label>
-              <el-select style="width: 120px" clearable v-model="query.sysType" size="small" >
-                <el-option label="全部" value="">全部</el-option>
-                <el-option label="好收银" value="hsy">待支付</el-option>
-                <el-option label="好收收" value="hss">支付成功</el-option>
-                <el-option label="好收收" value="hss">支付失败</el-option>
-              </el-select>
-            </li>
-            <li class="same">
-              <label>结算状态:</label>
-              <el-select style="width: 120px" clearable v-model="query.sysType" size="small" >
-                <el-option label="全部" value="">全部</el-option>
-                <el-option label="好收银" value="hsy">待结算</el-option>
-                <el-option label="好收收" value="hss">结算中</el-option>
-                <el-option label="好收收" value="hss">已结算</el-option>
-              </el-select>
-            </li>
-            <li class="same">
-              <label>支付方式：</label>
-              <el-select style="width: 120px" clearable v-model="query.sysType" size="small" >
-                <el-option label="全部" value="">全部</el-option>
-                <el-option label="好收银" value="hsy">微信扫码</el-option>
-                <el-option label="好收收" value="hss">微信二维码</el-option>
-                <el-option label="好收收" value="hss">微信H5收银台</el-option>
-                <el-option label="好收收" value="hss">快捷收款</el-option>
-                <el-option label="好收收" value="hss">支付宝扫码</el-option>
-              </el-select>
+              <label>通道编码:</label>
+              <el-input style="width: 130px" v-model="query.merchantName" placeholder="请输入内容" size="small"></el-input>
             </li>
             <li class="same">
               <div class="btn btn-primary" @click="search">筛选</div>
             </li>
           </ul>
           &lt;!&ndash;表格&ndash;&gt;
-          <el-table v-loading.body="loading" style="font-size: 12px;margin:15px 0" :data="records" border>
-            <el-table-column type="index" width="70" label="序号"></el-table-column>
-            <el-table-column prop="markCode" label="员工编号"></el-table-column>
-            <el-table-column prop="merchantName" label="登录名"></el-table-column>
-            <el-table-column prop="proxyName" label="姓名"></el-table-column>
-            <el-table-column prop="proxyName1" label="所属分公司"></el-table-column>
-            <el-table-column prop="proxyName1" label="所属部门"></el-table-column>
-            <el-table-column prop="proxyName1" label="手机号"></el-table-column>
-            <el-table-column prop="proxyName1" label="邮箱"></el-table-column>
-            <el-table-column prop="proxyName1" label="角色"></el-table-column>
-            <el-table-column prop="proxyName1" label="注册日期"></el-table-column>
-            <el-table-column prop="proxyName1" label="状态"></el-table-column>
-            <el-table-column prop="proxyName1" label="操作"></el-table-column>
-            <el-table-column label="操作" width="100">
+          <el-table v-loading.body="loading" height="583" style="font-size: 12px;margin:15px 0" :data="records" border>
+            <el-table-column label="通道名称" min-width="112">
               <template scope="scope">
-                <router-link :to="{path:'/admin/record/profitComDet',query:{id:records[scope.$index].id}}" v-if="records[scope.$index].totalMoney!=0" type="text" size="small">编辑</router-link>
-                <router-link :to="{path:'/admin/record/profitComDet',query:{id:records[scope.$index].id}}" v-if="records[scope.$index].totalMoney!=0" type="text" size="small">开启</router-link>
+                <router-link :to="{path:'/admin/record/newDealDet',query:{orderNo:records[scope.$index].orderNo}}"
+                             type="text" size="small">{{records[scope.$index].sn}}
+                </router-link>
               </template>
             </el-table-column>
+            <el-table-column label="通道编码" min-width="112">
+              <template scope="scope">
+                <span class="td" :data-clipboard-text="records[scope.$index].sn" type="text" size="small"
+                      style="cursor: pointer" title="点击复制">{{records[scope.$index].sn|changeHide}}</span>
+              </template>
+            </el-table-column>
+            <el-table-column prop="createTime" label="收单机构" width="162"></el-table-column>
+            <el-table-column prop="merchantName" label="渠道来源" min-width="90"></el-table-column>
+            <el-table-column prop="proxyName" label="支付费率" min-width="90"></el-table-column>
+            <el-table-column prop="proxyName1" :formatter="changeTime" label="结算时间" min-width="90"></el-table-column>
+            <el-table-column prop="tradeAmount" :formatter="changeNum" label="结算类型" min-width="90"
+                             align="right"></el-table-column>
+            <el-table-column prop="payRate" label="备注信息" min-width="90" align="right"></el-table-column>
           </el-table>
           </el-table>
           &lt;!&ndash;分页&ndash;&gt;
           <div class="block" style="text-align: right">
-            <el-pagination @current-change="handleCurrentChange" :current-page="currentPage" layout="total, prev, pager, next, jumper" :total="count">
+            <el-pagination @size-change="handleSizeChange"
+                           @current-change="handleCurrentChange"
+                           :current-page="query.page"
+                           :page-sizes="[10, 20, 50]"
+                           :page-size="query.size"
+                           layout="total, sizes, prev, pager, next, jumper"
+                           :total="count">
             </el-pagination>
           </div>
         </div>
@@ -1929,114 +1693,189 @@
     </div>
   </div>
 </template>
+
 <script lang="babel">
+  import Clipboard from "clipboard"
   export default{
-    name: 'personnelList',
+    name: 'deal',
     data(){
       return {
-        query:{
-          pageNo:1,
-          pageSize:10,
-          shortName:'',
-          globalID:'',
-          proxyName:'',
-          proxyName1:'',
-          startTime:'',
-          endTime:'',
-          startTime1:'',
-          endTime1:'',
-          startTime2:'',
-          endTime2:'',
-          status:''
+        query: {
+          page: 1,
+          size: 10,
+          orderNo: '',
+          merchantName: '',
+          startTime: '',
+          endTime: '',
+          lessTotalFee: '',
+          moreTotalFee: '',
+          status: '',
+          settleStatus: '',
+          payType: '',
+          proxyName: '',
+          proxyName1: ''
         },
+        date: '',
         records: [],
         count: 0,
         total: 0,
-        currentPage: 1,
         loading: true,
+        url: ''
       }
     },
     created: function () {
-
+      var clipboard = new Clipboard('.td');
+      //复制成功执行的回调，可选
+      clipboard.on('success', (e) => {
+        this.$message({
+          showClose: true,
+          message: "复制成功  内容为：" + e.text,
+          type: 'success'
+        });
+      });
+      this.getData()
     },
     methods: {
+      getData: function () {
+        this.loading = true;
+        this.$http.post('/admin/queryOrder/orderList', this.$data.query)
+          .then(function (res) {
+            this.loading = false;
+            this.$data.records = res.data.records;
+            this.$data.total = res.data.totalPage;
+            this.$data.url = res.data.ext;
+            this.$data.count = res.data.count;
+            for (var i = 0; i < this.records.length; i++) {
+              if (this.records[i].payRate != null) {
+                this.records[i].payRate = (parseFloat(this.records[i].payRate) * 100).toFixed(2) + '%';
+              }
+            }
+          }, function (err) {
+            this.$data.loading = false;
+            this.$message({
+              showClose: true,
+              message: err.statusMessage,
+              type: 'error'
+            });
+          })
+      },
       //格式化hss创建时间
       changeTime: function (row, column) {
-        var val=row.createTime;
-        if(val==''||val==null){
+        var val = row.createTime;
+        if (val == '' || val == null) {
           return ''
-        }else {
+        } else {
           val = new Date(val)
-          var year=val.getFullYear();
-          var month=val.getMonth()+1;
-          var date=val.getDate();
-          var hour=val.getHours();
-          var minute=val.getMinutes();
-          var second=val.getSeconds();
+          var year = val.getFullYear();
+          var month = val.getMonth() + 1;
+          var date = val.getDate();
+          var hour = val.getHours();
+          var minute = val.getMinutes();
+          var second = val.getSeconds();
+
           function tod(a) {
-            if(a<10){
-              a = "0"+a
+            if (a < 10) {
+              a = "0" + a
             }
             return a;
           }
-          return year+"-"+tod(month)+"-"+tod(date)+" "+tod(hour)+":"+tod(minute)+":"+tod(second);
+
+          return year + "-" + tod(month) + "-" + tod(date) + " " + tod(hour) + ":" + tod(minute) + ":" + tod(second);
         }
       },
+      changeNum: function (row, column) {
+        var val = row.tradeAmount;
+        return parseFloat(val).toFixed(2);
+      },
       search(){
-        this.$data.query.pageNo = 1;
-        this.$data.loading = true;
-        this.$http.post(this.$data.url,this.$data.query)
-          .then(function (res) {
-            this.$data.loading = false;
-            this.$data.records   = res.data.records;
-            this.$data.count = res.data.count;
-            this.$data.total = res.data.totalPage;
-          }, function (err) {
-            this.$data.loading = false;
-            this.$message({
-              showClose: true,
-              message: err.statusMessage,
-              type: 'error'
-            })
-          })
+        this.$data.query.page = 1;
+        this.getData()
+      },
+      //每页条数改变
+      handleSizeChange(val) {
+        this.$data.query.page = 1;
+        this.$data.query.size = val;
+        this.getData()
       },
       //当前页改变时
       handleCurrentChange(val) {
-        this.$data.query.pageNo = val;
-        this.$data.loading = true;
-        this.$data.records = '';
-        this.$http.post(this.$data.url,this.$data.query)
-          .then(function (res) {
-            this.$data.loading = false;
-            this.$data.records   = res.data.records;
-            this.$data.count = res.data.count;
-            this.$data.total = res.data.totalPage;
-          }, function (err) {
-            this.$data.loading = false;
-            this.$message({
-              showClose: true,
-              message: err.statusMessage,
-              type: 'error'
-            })
-          })
+        this.$data.query.page = val;
+        this.getData()
       },
     },
-    watch:{
-
+    watch: {
+      date: function (val, oldVal) {
+        if (val[0] != null) {
+          for (var j = 0; j < val.length; j++) {
+            var str = val[j];
+            var ary = [str.getFullYear(), str.getMonth() + 1, str.getDate()];
+            for (var i = 0, len = ary.length; i < len; i++) {
+              if (ary[i] < 10) {
+                ary[i] = '0' + ary[i];
+              }
+            }
+            str = ary[0] + '-' + ary[1] + '-' + ary[2];
+            if (j == 0) {
+              this.$data.query.startTime = str;
+            } else {
+              this.$data.query.endTime = str;
+            }
+          }
+        } else {
+          this.$data.query.startTime = '';
+          this.$data.query.endTime = '';
+        }
+      }
     },
+    filters: {
+      changeHide: function (val) {
+        if (val != "" && val != null) {
+          val = val.replace(val.substring(3, val.length - 6), "…");
+        }
+        return val
+      },
+    }
   }
 </script>
-<style scoped lang="less">
-  ul{
+
+<style scoped lang="less" rel="stylesheet/less">
+  ul {
     padding: 0;
   }
-  .same{
+
+  .same {
     list-style: none;
     display: inline-block;
     margin: 0 15px 15px 0;
   }
-  .btn{
+
+  .btn {
     font-size: 12px;
   }
+
+  .price {
+    display: inline-block;
+    width: 210px;
+    height: 30px;
+    border-radius: 4px;
+    border-color: #bfcbd9;
+    position: relative;
+    top: 6px;
+    input {
+      border: none;
+      display: inline-block;
+      width: 45%;
+      height: 25px;
+      position: relative;
+      top: -3px;
+    }
+  }
+
+  .price:hover {
+    border-color: #20a0ff;
+  }
+
 </style>-->
+
+
 

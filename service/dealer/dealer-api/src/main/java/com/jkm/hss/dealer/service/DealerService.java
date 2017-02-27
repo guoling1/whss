@@ -8,7 +8,6 @@ import com.jkm.hss.admin.helper.requestparam.DistributeQrCodeRequest;
 import com.jkm.hss.admin.helper.responseparam.ActiveCodeCount;
 import com.jkm.hss.admin.helper.responseparam.BossDistributeQRCodeRecordResponse;
 import com.jkm.hss.admin.helper.responseparam.DistributeCodeCount;
-import com.jkm.hss.admin.helper.responseparam.DistributeQRCodeRecordResponse;
 import com.jkm.hss.dealer.entity.Dealer;
 import com.jkm.hss.dealer.entity.DealerChannelRate;
 import com.jkm.hss.dealer.helper.requestparam.*;
@@ -476,4 +475,11 @@ public interface DealerService {
      * @return
      */
     PageModel<BossDistributeQRCodeRecordResponse> distributeRecord(DistributeQrCodeRequest distributeRecordRequest);
+
+    /**
+     * 根据一级代理商id查询代理商名称
+     * @param firstLevelDealerId
+     * @return
+     */
+    String selectProxyName(int firstLevelDealerId);
 }

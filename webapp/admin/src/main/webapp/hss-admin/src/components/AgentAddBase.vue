@@ -69,8 +69,8 @@
               </el-col>
               <el-col :span="6">
                 <div class="grid-content bg-purple-light">
-                  <el-input size="small" v-model="query.loginPwd" placeholder="最低6位"  v-if="isShow"></el-input>
-                  <el-input size="small" value="******" placeholder="最低6位"  v-if="!isShow" :disabled="true"></el-input>
+                  <el-input type="password" size="small" v-model="query.loginPwd" placeholder="最低6位"  v-if="isShow"></el-input>
+                  <el-input type="password" size="small" value="******" placeholder="最低6位"  v-if="!isShow" :disabled="true"></el-input>
                 </div>
               </el-col>
               <el-col :span="8">

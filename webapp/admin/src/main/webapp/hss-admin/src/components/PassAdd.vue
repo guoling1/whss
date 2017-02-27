@@ -1,45 +1,5 @@
 <template lang="html">
     <div id="passAdd">
-
-      <!--<form action="" style="margin: 0 15px">
-        <label>
-          通道名称：
-          <input type="text" v-model="channelName" value="">
-          <span>例如：华有支付宝</span>
-        </label>
-        <label>
-          收单机构：
-          <input type="text" v-model="thirdCompany">
-          <span>例如：支付宝、微信、京东钱包、百度钱包</span>
-        </label>
-        <label>
-          渠道来源：
-          <input type="text" v-model="channelSource">
-          <span>例如：华有</span>
-        </label>
-        <label>
-          支付费率：
-          <input type="text" v-model="basicTradeRate">
-          <i>%</i>
-          <span class="left">例如：0.3%</span>
-        </label>
-        <label>
-          提现费用：
-          <input type="text" v-model="basicWithdrawFee">
-          <i>元/笔</i>
-          <span class="left">例如：0.5元/笔</span>
-        </label>
-        <label>
-          结算时间：
-          <select name="" id="" v-model="basicBalanceType">
-            <option value="">请选择</option>
-            <option value="D0">D0</option>
-            <option value="D1">D1</option>
-            <option value="T0">T0</option>
-            <option value="T1">T1</option>
-          </select>
-        </label>
-      </form>-->
       <div style="margin: 15px;width: inherit" class="box">
         <form class="form-horizontal">
           <div class="box-header">

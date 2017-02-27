@@ -34,6 +34,11 @@ public class CompanyPrifitRequest {
     private String proxyName;
 
     /**
+     * 一级代理商名称
+     */
+    private String proxyName1;
+
+    /**
      * 查询条件：开始时间
      */
     private String startTime;

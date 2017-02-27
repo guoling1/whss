@@ -9,4 +9,8 @@
     <select id="findCityByProvinceCode" resultType="com.jkm.hss.admin.helper.responseparam.AppBizDistrictResponse">
         SELECT CODE,ANAME FROM app_biz_district WHERE PARENTCODE = #{code} ORDER BY AINDEX ASC
     </select>
+
+    <select id="findByCode" resultType="com.jkm.hss.admin.helper.responseparam.AppBizDistrictResponse">
+        SELECT CODE,ANAME FROM app_biz_district WHERE CODE = #{code}
+    </select>
 </mapper>

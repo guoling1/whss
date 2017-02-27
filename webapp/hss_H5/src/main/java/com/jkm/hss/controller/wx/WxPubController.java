@@ -19,14 +19,12 @@ import com.jkm.hss.dealer.service.DealerChannelRateService;
 import com.jkm.hss.dealer.service.DealerService;
 import com.jkm.hss.dealer.service.ShallProfitDetailService;
 import com.jkm.hss.helper.ApplicationConsts;
-import com.jkm.hss.helper.request.DirectLoginRequest;
-import com.jkm.hss.helper.request.MerchantLoginCodeRequest;
-import com.jkm.hss.helper.request.MerchantLoginRequest;
-import com.jkm.hss.helper.request.OtherPayRequest;
+import com.jkm.hss.helper.request.*;
 import com.jkm.hss.merchant.entity.*;
 import com.jkm.hss.merchant.enums.*;
 import com.jkm.hss.merchant.helper.MerchantSupport;
 import com.jkm.hss.merchant.helper.WxPubUtil;
+import com.jkm.hss.merchant.helper.request.ContinueBankInfoRequest;
 import com.jkm.hss.merchant.helper.request.RecommendRequest;
 import com.jkm.hss.merchant.helper.request.RequestOrderRecord;
 import com.jkm.hss.merchant.helper.request.TradeRequest;
@@ -107,6 +105,8 @@ public class WxPubController extends BaseController {
     private UpgradePayRecordService upgradePayRecordService;
     @Autowired
     private ProductService productService;
+    @Autowired
+    private BankCardBinService bankCardBinService;
 
 
 
@@ -586,9 +586,9 @@ public class WxPubController extends BaseController {
                     mi.setStatus(EnumMerchantStatus.INIT.getId());
                     mi.setMobile(MerchantSupport.encryptMobile(mobile));
                     mi.setMdMobile(MerchantSupport.passwordDigest(mobile,"JKM"));
-                    mi.setSource(EnumSource.RECOMMEND.getId());
                     mi.setProductId(productId);
                     if(loginRequest.getInviteCode().length()==6){
+                        mi.setSource(EnumSource.DEALERRECOMMEND.getId());
                         log.info("代理商邀请码注册");
                         Optional<Dealer> dealerOptional = dealerService.getDealerByInviteCode(loginRequest.getInviteCode());
                         if(dealerOptional.get().getLevel()==EnumDealerLevel.FIRST.getId()){//二级代理
@@ -642,6 +642,7 @@ public class WxPubController extends BaseController {
                         userInfoService.updatemarkCode(tempMarkCode,uo.getId());
                         return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "注册成功",mi.getId());
                     }else{
+                        mi.setSource(EnumSource.RECOMMEND.getId());
                         log.info("手机号推荐注册");
                         //初始化代理商和商户
                         Optional<UserInfo> inviteUserOptional =  userInfoService.selectByMobile(MerchantSupport.encryptMobile(loginRequest.getInviteCode()));
@@ -1034,6 +1035,90 @@ public class WxPubController extends BaseController {
             }
         }
 
+    }
+
+
+    /**
+     * 信用卡认证
+     *
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/creditCardAuthen", method = RequestMethod.POST)
+    public CommonResponse creditCardAuthen(final HttpServletRequest request, final HttpServletResponse response,@RequestBody final CreditCardAuthenRequest creditCardAuthenRequest) {
+        if(StringUtils.isBlank(creditCardAuthenRequest.getCreditCard())){
+            return CommonResponse.simpleResponse(-1, "请输入信用卡号");
+        }
+        final Optional<BankCardBin> bankCardBinOptional = this.bankCardBinService.analyseCardNo(creditCardAuthenRequest.getCreditCard());
+        if(!bankCardBinOptional.isPresent()){
+            return CommonResponse.simpleResponse(-1, "信用卡号错误");
+        }
+        if(Integer.parseInt(bankCardBinOptional.get().getCardTypeCode())!=1){
+            return CommonResponse.simpleResponse(-1, "只能输入信用卡");
+        }
+        if(!super.isLogin(request)){
+            return CommonResponse.simpleResponse(-2, "未登录");
+        }
+        Optional<UserInfo> userInfoOptional = userInfoService.selectByOpenId(super.getOpenId(request));
+        if(!userInfoOptional.isPresent()){
+            return CommonResponse.simpleResponse(-2, "未登录");
+        }
+        Optional<MerchantInfo> merchantInfo = merchantInfoService.selectById(userInfoOptional.get().getMerchantId());
+        if(!merchantInfo.isPresent()){
+            return CommonResponse.simpleResponse(-2, "未登录");
+        }
+        String creditCardNo = creditCardAuthenRequest.getCreditCard();
+        String creditCardShort = creditCardNo.substring(creditCardNo.length()-4,creditCardNo.length());
+        merchantInfoService.updateCreditCard(MerchantSupport.encryptBankCard(creditCardAuthenRequest.getCreditCard()),bankCardBinOptional.get().getBankName(),creditCardShort,merchantInfo.get().getId());
+        return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "操作成功");
+    }
+
+    /**
+     * 支行信息
+     *
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "branchInfo", method = RequestMethod.POST)
+    public CommonResponse branchInfo(final HttpServletRequest request, final HttpServletResponse response,@RequestBody final ContinueBankInfoRequest continueBankInfoRequest) {
+        if(StringUtils.isBlank(continueBankInfoRequest.getProvinceCode())){
+            return CommonResponse.simpleResponse(-1, "请选择省份");
+        }
+        if(StringUtils.isBlank(continueBankInfoRequest.getProvinceName())){
+            return CommonResponse.simpleResponse(-1, "请选择省份");
+        }
+        if(StringUtils.isBlank(continueBankInfoRequest.getCityCode())){
+            return CommonResponse.simpleResponse(-1, "请选择城市");
+        }
+        if(StringUtils.isBlank(continueBankInfoRequest.getCityName())){
+            return CommonResponse.simpleResponse(-1, "请选择城市");
+        }
+        if(StringUtils.isBlank(continueBankInfoRequest.getCountyCode())){
+            return CommonResponse.simpleResponse(-1, "请选择县");
+        }
+        if(StringUtils.isBlank(continueBankInfoRequest.getCountyName())){
+            return CommonResponse.simpleResponse(-1, "请选择县");
+        }
+        if(StringUtils.isBlank(continueBankInfoRequest.getBranchCode())){
+            return CommonResponse.simpleResponse(-1, "请选择支行");
+        }
+        if(StringUtils.isBlank(continueBankInfoRequest.getBranchName())){
+            return CommonResponse.simpleResponse(-1, "请选择支行");
+        }
+        if(!super.isLogin(request)){
+            return CommonResponse.simpleResponse(-2, "未登录");
+        }
+        Optional<UserInfo> userInfoOptional = userInfoService.selectByOpenId(super.getOpenId(request));
+        if(!userInfoOptional.isPresent()){
+            return CommonResponse.simpleResponse(-2, "未登录");
+        }
+        Optional<MerchantInfo> merchantInfo = merchantInfoService.selectById(userInfoOptional.get().getMerchantId());
+        if(!merchantInfo.isPresent()){
+            return CommonResponse.simpleResponse(-2, "未登录");
+        }
+        continueBankInfoRequest.setId(merchantInfo.get().getId());
+        merchantInfoService.updateBranchInfo(continueBankInfoRequest);
+        return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "操作成功");
     }
 
 }

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jkm.hss.admin.dao.DataDictionaryDao">
+    <sql id="Base_Column_List">
+        id,dict_type,dict_value,dict_name,status,dict_sn
+    </sql>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO `tb_data_dictionary` (
+        dict_type,
+        dict_value,
+        dict_name,
+        dict_sn,
+        status
+        ) VALUES (
+        #{dictType},
+        #{dictValue},
+        #{dictName},
+        #{dictSn},
+        #{status}
+        )
+    </insert>
+
+    <select id="selectAllByType" resultType="com.jkm.hss.admin.entity.DataDictionary">
+        SELECT  <include refid="Base_Column_List" /> FROM tb_data_dictionary WHERE dict_type=#{dictType} and status=1 ORDER BY dict_sn ASC;
+    </select>
+
+    <select id="selectDictNameByDictTypeAndDictValue" resultType="java.lang.String">
+        SELECT dict_name FROM tb_data_dictionary WHERE dict_type=#{dictType} and status=1 and dict_value=#{dictValue} limit 0,1;
+    </select>
+</mapper>

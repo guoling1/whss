@@ -93,10 +93,10 @@ public class VerifyID4ElementServiceImpl implements VerifyID4ElementService {
 //        final Map<String, String> headers = new HashMap<>();
 //        headers.put("Authorization", "APPCODE 500fd8ead2e24a70a9decd3fab9450ad");
 //        final Map<String, String> queryParams = new HashMap<>();
-//        queryParams.put("bankcard", StringUtils.trim("6226230309615043"));
-//        queryParams.put("idcard", StringUtils.trim("110102198609223010"));
-//        queryParams.put("mobile", StringUtils.trim("13911732468"));
-//        queryParams.put("realname", StringUtils.trim("傅雪林"));
+//        queryParams.put("bankcard", StringUtils.trim("6212260200059789657"));
+//        queryParams.put("idcard", StringUtils.trim("110105198602103314"));
+//        queryParams.put("mobile", StringUtils.trim("18612555955"));
+//        queryParams.put("realname", StringUtils.trim("刘晓凡"));
 //        try {
 //            final HttpResponse response = HttpUtils.doGet("http://jisubank4.market.alicloudapi.com", "/bankcardverify4/verify", "GET", headers, queryParams);
 //            final String resultString = EntityUtils.toString(response.getEntity());

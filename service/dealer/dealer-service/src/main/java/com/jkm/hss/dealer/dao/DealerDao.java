@@ -283,4 +283,6 @@ public interface DealerDao {
      * @return
      */
     Dealer getDealerByLoginName(@Param("loginName") String loginName);
+
+    String selectProxyName(@Param("firstLevelDealerId") int firstLevelDealerId);
 }

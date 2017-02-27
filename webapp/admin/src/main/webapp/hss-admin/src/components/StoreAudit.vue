@@ -16,7 +16,7 @@
               <th style="text-align: right">注册时间:</th>
               <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.createTime|changeTime" readonly></td>
               <th style="text-align: right">注册方式:</th>
-              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.registered" readonly></td>
+              <td><input type="text" v-if="msg.source==0" style="background:#efecec;padding-left:5px;" value="扫码注册" readonly><input type="text" v-if="msg.source==1" style="background:#efecec;padding-left:5px;" value="商户推荐注册" readonly><input type="text" v-if="msg.source==2" style="background:#efecec;padding-left:5px;" value="代理商推荐注册" readonly></td>
             </tr>
             <tr>
               <th style="text-align: right">一级代理编号:</th>
@@ -66,7 +66,6 @@
               <th style="text-align: right">商户名称:</th>
               <td>
                 <input type="text" style="background:#efecec;padding-left:5px;" :value="msg.merchantName" readonly>
-                <!--<el-button type="text" @click="reset" v-if="isShow">修改名称</el-button>-->
               </td>
             </tr>
             <tr>
@@ -84,6 +83,17 @@
               <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.reserveMobile" readonly></td>
               <th style="text-align: right">实名认证时间:</th>
               <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.authenticationTime" readonly></td>
+            </tr>
+            <tr>
+              <th style="text-align: right">店铺上报名称:</th>
+              <td>
+                <input type="text" style="background:#efecec;padding-left:5px;" :value="msg.merchantChangeName" readonly>
+                <el-button type="text" @click="reset" v-if="!isShow">修改上报名称</el-button>
+              </td>
+              <th style="text-align: right"></th>
+              <td></td>
+              <th style="text-align: right"></th>
+              <td></td>
             </tr>
             </tbody></table>
         </div>
@@ -254,12 +264,13 @@
     methods: {
       //修改名称
       reset:function() {
-        this.$prompt('请输入新名称', '修改名称', {
+        this.$prompt('请输入新名称', '修改上报名称', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
         }).then(({ value }) => {
-          this.$http.post('/admin/dealer/updatePwd',{dealerId:this.$route.query.id,loginPwd:value})
+          this.$http.post('/admin/changeMerchantName/change',{id:this.$route.query.id,merchantChangeName:value})
             .then(function (res) {
+              this.$data.msg.merchantChangeName = value;
               this.$message({
                 showClose: true,
                 type: 'success',

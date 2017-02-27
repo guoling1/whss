@@ -1,149 +1,126 @@
-<template lang="html">
+<template>
   <div id="withDrawal">
-    <div style="margin: 15px">
-      <div class="box" style="overflow-x: hidden;">
+    <div class="col-md-12">
+      <div class="box" style="margin-top:15px;overflow: hidden">
         <div class="box-header">
           <h3 class="box-title">打款查询</h3>
           <router-link to="/admin/record/withdrawal" class="  pull-right" style="margin-left: 20px">切换旧版</router-link>
         </div>
         <div class="box-body">
-          <div class="row">
-            <div class="col-md-2">
-              <div class="form-group">
-                <label for="date">打款流水号：</label>
-                <input type="text" class="form-control" name="date" value="" v-model="$$data.query.sn">
-              </div>
-            </div>
-            <div class="col-md-2">
-              <div class="form-group">
-                <label for="number">交易单号：</label>
-                <input type="text" class="form-control" name="number" v-model="$$data.query.orderNo">
-              </div>
-            </div>
-            <div class="col-md-2">
-              <div class="form-group">
-                <label for="codeNumber">收款账户名：</label>
-                <input type="text" name="codeNumber" class="form-control" v-model="$$data.query.userName">
-              </div>
-            </div>
-            <div class="col-md-2">
-              <div class="form-group">
-                <label>状态：</label>
-                <select class="form-control select2 select2-hidden-accessible" style="width: 100%;" tabindex="-1" aria-hidden="true" v-model="$$data.query.status">
-                  <option value="">全部</option>
-                  <option value="1">待提现</option>
-                  <option value="2">打款中</option>
-                  <option value="4">打款成功</option>
-                  <option value="5">打款失败</option>
-                </select>
-              </div>
-            </div>
-            <div class="col-md-4" style="margin-top: 15px;">
-              <div class="form-group">
-                <div class="btn btn-primary" @click="lookup">筛选</div>
-                <span @click="onload()" download="交易记录" class="btn btn-primary" style="float: right;color: #fff">导出</span>
-              </div>
-            </div>
-          </div>
-          <div id="example2_wrapper" class="dataTables_wrapper form-inline dt-bootstrap">
-            <div class="row">
-              <div class="col-sm-12">
-                <table id="example2" class="table table-bordered table-hover dataTable" role="grid" aria-describedby="example2_info">
-                  <thead>
-                  <tr role="row">
-                    <th class="sorting_asc" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Rendering engine: activate to sort column descending">序号</th>
-                    <th class="sorting_asc" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Rendering engine: activate to sort column descending">打款流水号</th>
-                    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="Browser: activate to sort column ascending">交易单号</th>
-                    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="Platform(s): activate to sort column ascending">打款时间</th>
-                    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="Platform(s): activate to sort column ascending">用户名</th>
-                    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="Engine version: activate to sort column ascending">收款银行账号</th>
-                    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">打款金额</th>
-                    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">支付状态</th>
-                    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">打款通道</th>
-                    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">渠道信息</th>
-                    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">备注信息</th>
-                    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">操作</th>
-                  </tr>
-                  </thead>
-                  <tbody>
-                  <tr role="row" v-for="(record,index) in $$records">
-                    <td>{{(query.pageNo-1)*10+(index+1)}}</td>
-                    <td class="td" :data-clipboard-text="record.sn">{{record.sn|changeHide}}</td>
-                    <td class="td" :data-clipboard-text="record.orderNo">{{record.orderNo|changeHide}}</td>
-                    <td>{{record.requestTime|changeTime}}</td>
-                    <td>{{record.receiptUserName}}</td>
-                    <td>{{record.bankCard|changeHide}}</td>
-                    <td style="text-align: right;">{{record.amount}}</td>
-                    <td>{{record.statusValue}}</td>
-                    <td>{{record.playMoneyChannel}}</td>
-                    <td>{{record.message}}</td>
-                    <td>{{record.remark|changeHide}}</td>
-                    <td>
-                      <router-link :to="{path:'/admin/record/withdrawalAudit',query:{orderNo:record.orderNo,sn:record.sn,requestTime:record.requestTime,amount:record.amount,receiptUserName:record.receiptUserName,playMoneyChannel:record.playMoneyChannel,status:record.status,bankCard:record.bankCard,message:record.message}}" id="audit" v-if="(record.status=='2'||record.status=='3'||record.status=='5')&&record.auditStatus==0" >审核</router-link>
-                      <span v-if="record.status=='5'&&record.auditStatus!=0">{{record.auditStatusValue}}</span>
-                      <a href="javascript:;" @click="updata(record.sn)">同步</a>
-                    </td>
-                  </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-            <div v-if="isShow">
-              <img src="http://img.jinkaimen.cn/admin/common/dist/img/ICBCLoading.gif" alt="">
-            </div>
-            <div v-if="records.length==0&&!isShow" class="row" style="text-align: center;color: red;font-size: 16px;">
-              <div class="col-sm-12">无此数据</div>
-            </div>
-            <div class="row">
-              <div class="col-sm-5">
-                <div class="dataTables_info" id="example2_info" role="status" aria-live="polite">
-                </div>
-              </div>
-              <div class="col-sm-7">
-                <div class="dataTables_paginate paging_simple_numbers" id="example2_paginate">
-                  <ul class="pagination" id="page" @click="bindEvent($event)">
-                  </ul>
-                  <span class="count">共{{total}}页 {{count}}条</span>
-                </div>
-              </div>
-            </div>
+          <!--筛选-->
+          <ul>
+            <li class="same">
+              <label>打款流水号:</label>
+              <el-input style="width: 130px" v-model="query.sn" placeholder="请输入内容" size="small"></el-input>
+            </li>
+            <li class="same">
+              <label>交易单号:</label>
+              <el-input style="width: 130px" v-model="query.orderNo" placeholder="请输入内容" size="small"></el-input>
+            </li>
+            <li class="same">
+              <label>收款账户名:</label>
+              <el-input style="width: 130px" v-model="query.userName" placeholder="请输入内容" size="small"></el-input>
+            </li>
+            <li class="same">
+              <label>状态:</label>
+              <el-select style="width: 120px" clearable v-model="query.status" size="small">
+                <el-option label="全部" value="">全部</el-option>
+                <el-option label="待提现" value="1">待提现</el-option>
+                <el-option label="打款中" value="2">打款中</el-option>
+                <el-option label="打款成功" value="4">打款成功</el-option>
+                <el-option label="打款失败" value="5">打款失败</el-option>
+              </el-select>
+            </li>
+            <li class="same">
+              <div class="btn btn-primary" @click="search">筛选</div>
+            </li>
+            <li class="same" style="float: right">
+              <span @click="onload()" download="打款记录" class="btn btn-primary" style="color: #fff">导出</span>
+            </li>
+          </ul>
+          <!--表格-->
+          <el-table v-loading.body="loading" max-height="637" style="font-size: 12px;margin-bottom: 15px" :data="records" border>
+            <el-table-column type="index" width="62" label="序号" fixed="left"></el-table-column>
+            <el-table-column label="打款流水号" min-width="100">
+              <template scope="scope">
+                <span class="td" :data-clipboard-text="records[scope.$index].sn" type="text" size="small"
+                      style="cursor: pointer" title="点击复制">{{records[scope.$index].sn|changeHide}}</span>
+              </template>
+            </el-table-column>
+            <el-table-column label="交易单号" min-width="100">
+              <template scope="scope">
+                <span class="td" :data-clipboard-text="records[scope.$index].orderNo" type="text" size="small"
+                      style="cursor: pointer" title="点击复制">{{records[scope.$index].orderNo|changeHide}}</span>
+              </template>
+            </el-table-column>
+            <el-table-column prop="requestTime" :formatter="changeTime" label="打款时间" width="160"></el-table-column>
+            <el-table-column prop="receiptUserName" label="用户名" min-width="100"></el-table-column>
+            <el-table-column label="收款银行账号" min-width="100">
+              <template scope="scope">
+                <span class="td" :data-clipboard-text="records[scope.$index].bankCard" type="text" size="small"
+                      style="cursor: pointer" title="点击复制">{{records[scope.$index].bankCard|changeHide}}</span>
+              </template>
+            </el-table-column>
+            <el-table-column prop="amount" align="right" label="打款金额" min-width="90"></el-table-column>
+            <el-table-column prop="statusValue" label="支付状态" min-width="90"></el-table-column>
+            <el-table-column prop="playMoneyChannel" label="打款通道" min-width="120"></el-table-column>
+            <el-table-column prop="message" label="渠道信息" min-width="85"></el-table-column>
+            <el-table-column label="备注信息" min-width="90">
+              <template scope="scope">
+                <span class="td" :data-clipboard-text="records[scope.$index].remark" type="text" size="small"
+                      style="cursor: pointer" title="点击复制">{{records[scope.$index].remark|changeHide}}</span>
+              </template>
+            </el-table-column>
+            <el-table-column label="操作" min-width="80" fixed="right">
+              <template scope="scope">
+                <router-link :to="{path:'/admin/record/withdrawalAudit',query:{orderNo:records[scope.$index].orderNo,sn:records[scope.$index].sn,requestTime:records[scope.$index].requestTime,amount:records[scope.$index].amount,receiptUserName:records[scope.$index].receiptUserName,playMoneyChannel:records[scope.$index].playMoneyChannel,status:records[scope.$index].status,bankCard:records[scope.$index].bankCard,message:records[scope.$index].message}}" id="audit" v-if="(records[scope.$index].status=='2'||records[scope.$index].status=='3'||records[scope.$index].status=='5')&&records[scope.$index].auditStatus==0" >审核</router-link>
+                <span v-if="records[scope.$index].status=='5'&&records[scope.$index].auditStatus!=0">{{records[scope.$index].auditStatusValue}}</span>
+                <a href="javascript:;" @click="updata(records[scope.$index].sn)">同步</a>
+              </template>
+            </el-table-column>
+          </el-table>
+          </el-table>
+          <!--分页-->
+          <div class="block" style="text-align: right">
+            <el-pagination @size-change="handleSizeChange"
+                           @current-change="handleCurrentChange"
+                           :current-page="query.pageNo"
+                           :page-sizes="[10, 20, 50]"
+                           :page-size="query.pageSize"
+                           layout="total, sizes, prev, pager, next, jumper"
+                           :total="count">
+            </el-pagination>
           </div>
         </div>
       </div>
     </div>
     <!--下载-->
-    <div class="box box-info mask" v-if="isMask">
-      <div class="box-body" style="text-align: center;font-size: 20px;">
-        确认下载吗？
+    <div class="box box-info mask el-message-box" v-if="isMask">
+      <div class="maskCon">
+        <div class="head">
+          <div class="title">消息</div>
+          <i class="el-icon-close" @click="isMask=false"></i>
+        </div>
+        <div class="body">
+          <div>确定导出列表吗？</div>
+        </div>
+        <div class="foot">
+          <a href="javascript:void(0)" @click="isMask=false" class="el-button el-button--default">取消</a>
+          <a :href="'http://'+url" @click="isMask=false" class="el-button el-button-default el-button--primary ">下载</a>
+        </div>
       </div>
-      <div class="box-footer clearfix" style="border-top: none">
-        <a :href="'http://'+$$url" @click="close()" class="btn btn-sm btn-info btn-flat pull-left">下载</a>
-        <a href="javascript:void(0)" @click="close()" class="btn btn-sm btn-default btn-flat pull-right">取消</a>
-      </div>
+
     </div>
   </div>
 </template>
 
 <script lang="babel">
   import Clipboard from "clipboard"
-  export default {
+  export default{
     name: 'withDrawal',
-    data () {
+    data(){
       return {
-        msg:{
-          page:1,//页数
-          size:10,//条数
-          name:'',
-          orderId:'',//流水号
-          bankNoShort:'',
-          payResult:'',//支付状态
-          merchantId:'',
-          mobile:'',
-          startDate:'',
-          endDate:'',
-          payStartDate:'',
-          payEndDate:''
-        },
+        isMask:false,
         query:{
           pageNo:"1",
           pageSize:"10",
@@ -152,89 +129,74 @@
           userName:'',
           status:''
         },
-        total:'',
-        records:[],
-        isShow:false,
-        index:0,
-        remark:'',
-        isMask: false,
-        url: '',
-        count:0,
+        records: [],
+        count: 0,
+        total: 0,
+        loading: true,
+        url:'',
         //正式
-        queryUrl:'http://pay.qianbaojiajia.com/order/withdraw/listOrder',
+        /*queryUrl:'http://pay.qianbaojiajia.com/order/withdraw/listOrder',
          excelUrl:'http://pay.qianbaojiajia.com/order/withdraw/exportExcel',
-         syncUrl:'http://pay.qianbaojiajia.com/order/syncWithdrawOrder',
+         syncUrl:'http://pay.qianbaojiajia.com/order/syncWithdrawOrder',*/
         //测试
-        /*queryUrl:'http://192.168.1.20:8076/order/withdraw/listOrder',
+        queryUrl:'http://192.168.1.20:8076/order/withdraw/listOrder',
         excelUrl:'http://192.168.1.20:8076/order/withdraw/exportExcel',
-        syncUrl:'http://192.168.1.20:8076/order/syncWithdrawOrder'*/
+        syncUrl:'http://192.168.1.20:8076/order/syncWithdrawOrder'
       }
     },
-    created:function () {
-      this.$data.isShow = true;
-      this.$http.post(this.$data.queryUrl,this.$data.query)
-        .then(function (res) {
-          this.$data.isShow = false;
-          this.$data.records=res.data.records;
-          this.$data.total=res.data.totalPage;
-          this.$data.url=res.data.ext;
-          this.$data.count = res.data.count;
-
-          var clipboard = new Clipboard('.td');
-          //复制成功执行的回调，可选
-          clipboard.on('success', (e)=> {
-            this.$store.commit('MESSAGE_ACCORD_SHOW', {
-              text: "复制成功  内容为："+e.text
-            })
-          });
-
-          var str='',
-            page=document.getElementById('page');
-          str+='<li class="paginate_button previous" id="example2_previous"><a href="#" aria-controls="example2" data-dt-idx="0" tabindex="0">上一页</a></li>'
-          if(this.$data.total<=10){
-            for (var i = 1; i <= this.$data.total; i++){
-              if(i == this.$data.query.pageNo){
-                str+='<li class="paginate_button active"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">'+i+'</a></li></li>';
-                continue;
-              }
-              str+='<li class="paginate_button"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">'+i+'</a></li></li>'
-            }
-          }else {
-            if(this.$data.query.pageNo<6){
-              for (var i = 1; i <= 10; i++){
-                if(i == this.$data.query.pageNo){
-                  str+='<li class="paginate_button active"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">'+i+'</a></li></li>';
-                  continue;
-                }
-                str+='<li class="paginate_button"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">'+i+'</a></li></li>'
-              }
-            }else if(this.$data.query.pageNo>=6&&this.$data.query.pageNo<=(this.$data.total-5)){
-              for (var i = this.$data.query.pageNo-4; i <= this.$data.query.pageNo+5; i++){
-                if(i == this.$data.query.pageNo){
-                  str+='<li class="paginate_button active"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">'+i+'</a></li></li>';
-                  continue;
-                }
-                str+='<li class="paginate_button"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">'+i+'</a></li></li>'
-              }
-            }else if(this.$data.query.pageNo>=6&&this.$data.query.pageNo>this.$data.total-5){
-              for (var i = this.$data.total-9; i <= this.$data.total; i++){
-                if(i == this.$data.query.pageNo){
-                  str+='<li class="paginate_button active"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">'+i+'</a></li></li>';
-                  continue;
-                }
-                str+='<li class="paginate_button"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">'+i+'</a></li></li>'
-              }
-            }}
-          str+='<li class="paginate_button next" id="example2_next"><a href="#" aria-controls="example2" data-dt-idx="7" tabindex="0">下一页</a></li>'
-          page.innerHTML=str;
-        },function (err) {
-          this.$data.isShow = false;
-          this.$store.commit('MESSAGE_ACCORD_SHOW', {
-            text: err.statusMessage
-          })
-        })
+    created: function () {
+      var clipboard = new Clipboard('.td');
+      //复制成功执行的回调，可选
+      clipboard.on('success', (e) => {
+        this.$message({
+          showClose: true,
+          message: "复制成功  内容为：" + e.text,
+          type: 'success'
+        });
+      });
+      this.getData()
     },
     methods: {
+      getData: function () {
+        this.loading = true;
+        this.$http.post(this.queryUrl,this.$data.query)
+          .then(function (res) {
+            this.loading = false;
+            this.$data.records = res.data.records;
+            this.$data.total=res.data.totalPage;
+            this.$data.url=res.data.ext;
+            this.$data.count = res.data.count;
+          },function (err) {
+            this.$data.loading = false;
+            this.$message({
+              showClose: true,
+              message: err.statusMessage,
+              type: 'error'
+            });
+          })
+      },
+      //格式化时间
+      changeTime: function (row, column) {
+        var val = row.requestTime;
+        if (val == '' || val == null) {
+          return ''
+        } else {
+          val = new Date(val)
+          var year = val.getFullYear();
+          var month = val.getMonth() + 1;
+          var date = val.getDate();
+          var hour = val.getHours();
+          var minute = val.getMinutes();
+          var second = val.getSeconds();
+          function tod(a) {
+            if (a < 10) {
+              a = "0" + a
+            }
+            return a;
+          }
+          return year + "-" + tod(month) + "-" + tod(date) + " " + tod(hour) + ":" + tod(minute) + ":" + tod(second);
+        }
+      },
       onload:function () {
         this.$data.isMask = true;
         this.$http.post(this.$data.excelUrl,this.$data.query)
@@ -247,226 +209,88 @@
             this.$data.isMask = false;
           })
       },
-      close: function () {
-        this.$data.isMask = false;
-      },
-      refresh: function () {
-        location.reload()
-      },
-      //分页器
-      bindEvent: function (e) {
-        e = e||window.event;
-        var tar = e.target||e.srcElement,
-          tarInn = tar.innerHTML,
-          n = this.$data.query.pageNo;
-        if(tarInn == '上一页'){
-          if(n == 1){
-            tar.parentNode.className+=' disabled'
-            return;
-          }
-          n--;
-        }
-        if(tarInn == '下一页'){
-          if(n == this.$data.total){
-            tar.parentNode.className+=' disabled'
-            return;
-          }
-          n++;
-        }
-        if(Number(tarInn)){
-          if(n == Number(tarInn)){
-            return;
-          }
-          tar.parentNode.className+=' active'
-          n = Number(tarInn);
-        }
-        this.$data.query.pageNo = n;
-        this.$http.post(this.$data.queryUrl,this.$data.query)
-          .then(function (res) {
-            this.$data.isShow = false;
-            this.$data.records=res.data.records;
-            this.$data.total=res.data.totalPage;
-            this.$data.url=res.data.ext;
-            this.$data.count = res.data.count;
-            var str='',
-              page=document.getElementById('page');
-            str+='<li class="paginate_button previous" id="example2_previous"><a href="#" aria-controls="example2" data-dt-idx="0" tabindex="0">上一页</a></li>'
-            if(this.$data.total<=10){
-              for (var i = 1; i <= this.$data.total; i++){
-                if(i == this.$data.query.pageNo){
-                  str+='<li class="paginate_button active"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">'+i+'</a></li></li>';
-                  continue;
-                }
-                str+='<li class="paginate_button"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">'+i+'</a></li></li>'
-              }
-            }else {
-              if(this.$data.query.pageNo<6){
-                for (var i = 1; i <= 10; i++){
-                  if(i == this.$data.query.pageNo){
-                    str+='<li class="paginate_button active"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">'+i+'</a></li></li>';
-                    continue;
-                  }
-                  str+='<li class="paginate_button"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">'+i+'</a></li></li>'
-                }
-              }else if(this.$data.query.pageNo>=6&&this.$data.query.pageNo<=(this.$data.total-5)){
-                for (var i = this.$data.query.pageNo-4; i <= this.$data.query.pageNo+5; i++){
-                  if(i == this.$data.query.pageNo){
-                    str+='<li class="paginate_button active"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">'+i+'</a></li></li>';
-                    continue;
-                  }
-                  str+='<li class="paginate_button"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">'+i+'</a></li></li>'
-                }
-              }else if(this.$data.query.pageNo>=6&&this.$data.query.pageNo>this.$data.total-5){
-                for (var i = this.$data.total-9; i <= this.$data.total; i++){
-                  if(i == this.$data.query.pageNo){
-                    str+='<li class="paginate_button active"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">'+i+'</a></li></li>';
-                    continue;
-                  }
-                  str+='<li class="paginate_button"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">'+i+'</a></li></li>'
-                }
-              }}
-            str+='<li class="paginate_button next" id="example2_next"><a href="#" aria-controls="example2" data-dt-idx="7" tabindex="0">下一页</a></li>'
-            page.innerHTML=str;
-          },function (err) {
-            this.$store.commit('MESSAGE_ACCORD_SHOW', {
-              text: err.statusMessage
-            })
-          })
-      },
-      //筛选
-      lookup: function () {
-        this.$data.records="";
-        this.$data.total=0;
-        this.$data.count = 0;
-        this.$data.isShow = true;
-        this.$data.query.pageNo = 1;
-        this.$http.post(this.$data.queryUrl,this.$data.query)
-          .then(function (res) {
-            this.$data.isShow = false;
-            this.$data.records=res.data.records;
-            this.$data.total=res.data.totalPage;
-            this.$data.url=res.data.ext;
-            this.$data.count = res.data.count;
-            var str='',
-              page=document.getElementById('page');
-            str+='<li class="paginate_button previous" id="example2_previous"><a href="#" aria-controls="example2" data-dt-idx="0" tabindex="0">上一页</a></li>'
-            if(this.$data.total<=10){
-              for (var i = 1; i <= this.$data.total; i++){
-                if(i == this.$data.query.pageNo){
-                  str+='<li class="paginate_button active"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">'+i+'</a></li></li>';
-                  continue;
-                }
-                str+='<li class="paginate_button"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">'+i+'</a></li></li>'
-              }
-            }else {
-              if(this.$data.query.pageNo<6){
-                for (var i = 1; i <= 10; i++){
-                  if(i == this.$data.query.pageNo){
-                    str+='<li class="paginate_button active"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">'+i+'</a></li></li>';
-                    continue;
-                  }
-                  str+='<li class="paginate_button"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">'+i+'</a></li></li>'
-                }
-              }else if(this.$data.query.pageNo>=6&&this.$data.query.pageNo<=(this.$data.total-5)){
-                for (var i = this.$data.query.pageNo-4; i <= this.$data.query.pageNo+5; i++){
-                  if(i == this.$data.query.pageNo){
-                    str+='<li class="paginate_button active"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">'+i+'</a></li></li>';
-                    continue;
-                  }
-                  str+='<li class="paginate_button"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">'+i+'</a></li></li>'
-                }
-              }else if(this.$data.query.pageNo>=6&&this.$data.query.pageNo>this.$data.total-5){
-                for (var i = this.$data.total-9; i <= this.$data.total; i++){
-                  if(i == this.$data.query.pageNo){
-                    str+='<li class="paginate_button active"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">'+i+'</a></li></li>';
-                    continue;
-                  }
-                  str+='<li class="paginate_button"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">'+i+'</a></li></li>'
-                }
-              }}
-            str+='<li class="paginate_button next" id="example2_next"><a href="#" aria-controls="example2" data-dt-idx="7" tabindex="0">下一页</a></li>'
-            page.innerHTML=str;
-          },function (err) {
-            this.$data.isShow = false;
-            this.$store.commit('MESSAGE_ACCORD_SHOW', {
-              text: err.statusMessage
-            })
-          })
-      },
       updata: function (val) {
+        this.$data.loading = true;
         this.$http.post(this.$data.syncUrl,{sn:val})
           .then(function (res) {
-            this.$store.commit('MESSAGE_DELAY_SHOW', {
-              text: "同步成功"
-            })
+            this.$data.loading = false;
+            this.$message({
+              showClose: true,
+              message: '同步成功',
+              type: 'success'
+            });
           },function (err) {
-            this.$store.commit('MESSAGE_DELAY_SHOW', {
-              text: err.statusMessage
-            })
+            this.$data.loading = false;
+            this.$message({
+              showClose: true,
+              message: err.statusMessage,
+              type: 'error'
+            });
           })
-      }
+      },
+      search(){
+        this.$data.query.pageNo = 1;
+        this.getData()
+      },
+      //每页条数改变
+      handleSizeChange(val) {
+        this.$data.query.pageNo = 1;
+        this.$data.query.pageSize = val;
+        this.getData()
+      },
+      //当前页改变时
+      handleCurrentChange(val) {
+        this.$data.query.pageNo = val;
+        this.getData()
+      },
     },
-    computed:{
-      $$data:function () {
-        return this.$data
+    watch: {
+      date: function (val, oldVal) {
+        if (val[0] != null) {
+          for (var j = 0; j < val.length; j++) {
+            var str = val[j];
+            var ary = [str.getFullYear(), str.getMonth() + 1, str.getDate()];
+            for (var i = 0, len = ary.length; i < len; i++) {
+              if (ary[i] < 10) {
+                ary[i] = '0' + ary[i];
+              }
+            }
+            str = ary[0] + '-' + ary[1] + '-' + ary[2];
+            if (j == 0) {
+              this.$data.query.startCreateTime = str;
+            } else {
+              this.$data.query.endCreateTime = str;
+            }
+          }
+        } else {
+          this.$data.query.startCreateTime = '';
+          this.$data.query.endCreateTime = '';
+        }
       },
-      $$records: function () {
-        return this.$data.records
+      date1: function (val, oldVal) {
+        if (val[0] != null) {
+          for (var j = 0; j < val.length; j++) {
+            var str = val[j];
+            var ary = [str.getFullYear(), str.getMonth() + 1, str.getDate()];
+            for (var i = 0, len = ary.length; i < len; i++) {
+              if (ary[i] < 10) {
+                ary[i] = '0' + ary[i];
+              }
+            }
+            str = ary[0] + '-' + ary[1] + '-' + ary[2];
+            if (j == 0) {
+              this.$data.query.startFinishTime = str;
+            } else {
+              this.$data.query.endFinishTime = str;
+            }
+          }
+        } else {
+          this.$data.query.startFinishTime = '';
+          this.$data.query.endFinishTime = '';
+        }
       },
-      $$url: function () {
-        return this.$data.url
-      }
     },
     filters: {
-      changeStatus: function (val) {
-        if(val == "1"){
-          return '待提现'
-        }else if(val == "2"){
-          return '准备打款'
-        }else if(val == "3"){
-          return '请求成功'
-        }else if(val == "4"){
-          return '打款成功'
-        }else if(val == "5"){
-          return '打款失败'
-        }
-      },
-      changeChannel: function (val) {
-        if(val == 101){
-          return '微信'
-        }else if(val == 102){
-          return '支付宝'
-        }else if(val == 103){
-          return '快捷'
-        }
-      },
-      changeTime: function (val) {
-        if(val==''||val==null){
-          return ''
-        }else {
-          val = new Date(val)
-          var year=val.getFullYear();
-          var month=val.getMonth()+1;
-          var date=val.getDate();
-          var hour=val.getHours();
-          var minute=val.getMinutes();
-          var second=val.getSeconds();
-          function tod(a) {
-            if(a<10){
-              a = "0"+a
-            }
-            return a;
-          }
-          return year+"-"+tod(month)+"-"+tod(date)+" "+tod(hour)+":"+tod(minute)+":"+tod(second);
-        }
-      },
-      changeType: function (val) {
-        if(val==0){
-          return '商户'
-        }else if(val==1){
-          return '代理商'
-        }
-      },
       changeHide: function (val) {
         if(val!=""&&val!=null){
           val = val.replace(val.substring(3,val.length-6),"…");
@@ -477,55 +301,87 @@
   }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped lang="less">
-  h1, h2 {
-    font-weight: normal;
-    color: #337ab7;
-    font-weight: bold;
-    border-bottom: 2px solid #ccc;
-    padding-bottom: 10px;
-  }
-
+<style scoped lang="less" rel="stylesheet/less">
   ul {
-    list-style-type: none;
     padding: 0;
   }
 
-  li {
+  .same {
+    list-style: none;
     display: inline-block;
-    margin: 0 10px;
-  }
-  .mask{
-    width: 20%;
-    position: fixed;
-    top: 30%;
-    left: 46%;
-    box-shadow: 0 0 15px #000;
-  }
-  .form-control{
-    height: 29px;
-    line-height: 25px;
-    font-size: 12px;
-    padding: 0 6px;
-  }
-  .table td[data-v-497723e2], .table th[data-v-497723e2]{
-    width: inherit;
-  }
-  .count{
-    display: inline-block;
-    vertical-align: top;
-    margin: 28px 10px;
-  }
-  img{
-    width: 8%;
-    margin: 0 auto;
-    display: inherit;
-  }
-  .td{
-    cursor: pointer;
+    margin: 0 15px 15px 0;
   }
   .btn{
     font-size: 12px;
   }
+  .mask{
+    z-index: 2020;
+    position: fixed;
+    top:0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.45);
+    .maskCon{
+      margin: 250px auto;
+      text-align: left;
+      vertical-align: middle;
+      background-color: #fff;
+      width: 420px;
+      border-radius: 3px;
+      font-size: 16px;
+      overflow: hidden;
+      -webkit-backface-visibility: hidden;
+      backface-visibility: hidden;
+      .head{
+        position: relative;
+        padding: 20px 20px 0;
+        .title{
+          padding-left: 0;
+          margin-bottom: 0;
+          font-size: 16px;
+          font-weight: 700;
+          height: 18px;
+          color: #333;
+        }
+        i{
+          font-family: element-icons!important;
+          speak: none;
+          font-style: normal;
+          font-weight: 400;
+          font-variant: normal;
+          text-transform: none;
+          vertical-align: baseline;
+          display: inline-block;
+          -webkit-font-smoothing: antialiased;
+          position: absolute;
+          top: 19px;
+          right: 20px;
+          color: #999;
+          cursor: pointer;
+          line-height: 20px;
+          text-align: center;
+        }
+      }
+      .body{
+        padding: 30px 20px;
+        color: #48576a;
+        font-size: 14px;
+        position: relative;
+        div{
+          margin: 0;
+          line-height: 1.4;
+          font-size: 14px;
+          color: #48576a;
+          font-weight: 400;
+        }
+      }
+      .foot{
+        padding: 10px 20px 15px;
+        text-align: right;
+      }
+    }
+
+  }
+
 </style>
