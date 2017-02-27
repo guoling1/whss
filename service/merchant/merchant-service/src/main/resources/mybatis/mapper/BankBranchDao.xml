@@ -5,14 +5,17 @@
     <select id="findByBankName" resultType="com.jkm.hss.merchant.entity.BankBranch">
         SELECT
         id,
-        bank_code,bank_branch
+        branch_code,branch_name
         from tb_bank_branch
-        where id in (select id from tb_bank_branch where bank_branch LIKE CONCAT('%',#{bankName},'%'))
+        where id in (select id from tb_bank_branch where bank_name LIKE CONCAT('%',#{bankName},'%'))
         <if test="contions != null and contions != ''">
-            AND bank_branch LIKE CONCAT('%',#{contions},'%')
+            AND branch_name LIKE CONCAT('%',#{contions},'%')
         </if>
-        <if test="district != null and district != ''">
-            AND bank_branch LIKE CONCAT('%',#{district},'%')
+        <if test="provinceName != null and provinceName != ''">
+            AND province_name LIKE CONCAT('%',#{provinceName},'%')
+        </if>
+        <if test="cityName != null and cityName != ''">
+            AND city_name LIKE CONCAT('%',#{cityName},'%')
         </if>
     </select>
 

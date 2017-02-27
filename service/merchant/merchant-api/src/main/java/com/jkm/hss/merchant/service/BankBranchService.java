@@ -14,5 +14,5 @@ public interface BankBranchService {
      * @param contions
      * @return
      */
-    List<BankBranch> findByBankName(String bankName,String contions,String district);
+    List<BankBranch> findByBankName(String bankName,String contions,String provinceName,String cityName);
 }

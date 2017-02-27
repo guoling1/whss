@@ -1042,7 +1042,7 @@ public class WxPubController extends BaseController {
      * @return
      */
     @ResponseBody
-    @RequestMapping(value = "creditCardAuthen", method = RequestMethod.POST)
+    @RequestMapping(value = "/creditCardAuthen", method = RequestMethod.POST)
     public CommonResponse creditCardAuthen(final HttpServletRequest request, final HttpServletResponse response,@RequestBody final CreditCardAuthenRequest creditCardAuthenRequest) {
         if(StringUtils.isBlank(creditCardAuthenRequest.getCreditCard())){
             return CommonResponse.simpleResponse(-1, "请输入信用卡号");
@@ -1050,6 +1050,9 @@ public class WxPubController extends BaseController {
         final Optional<BankCardBin> bankCardBinOptional = this.bankCardBinService.analyseCardNo(creditCardAuthenRequest.getCreditCard());
         if(!bankCardBinOptional.isPresent()){
             return CommonResponse.simpleResponse(-1, "信用卡号错误");
+        }
+        if(Integer.parseInt(bankCardBinOptional.get().getCardTypeCode())!=1){
+            return CommonResponse.simpleResponse(-1, "只能输入信用卡");
         }
         if(!super.isLogin(request)){
             return CommonResponse.simpleResponse(-2, "未登录");
@@ -1087,6 +1090,12 @@ public class WxPubController extends BaseController {
         }
         if(StringUtils.isBlank(continueBankInfoRequest.getCityName())){
             return CommonResponse.simpleResponse(-1, "请选择城市");
+        }
+        if(StringUtils.isBlank(continueBankInfoRequest.getCountyCode())){
+            return CommonResponse.simpleResponse(-1, "请选择县");
+        }
+        if(StringUtils.isBlank(continueBankInfoRequest.getCountyName())){
+            return CommonResponse.simpleResponse(-1, "请选择县");
         }
         if(StringUtils.isBlank(continueBankInfoRequest.getBranchCode())){
             return CommonResponse.simpleResponse(-1, "请选择支行");

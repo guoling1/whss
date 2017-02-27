@@ -12,7 +12,12 @@ public class BankBranchRequest {
      */
     private String contions;
     /**
-     * 地区
+     * 省份名称
      */
-    private String district;
+    private String provinceName;
+    /**
+     * 市名称
+     */
+    private String cityName;
+
 }

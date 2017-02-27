@@ -105,7 +105,7 @@ public class BaseController {
     protected String getOpenId(HttpServletRequest request) {
         String cookie = CookieUtil.getCookie(request,ApplicationConsts.MERCHANT_COOKIE_KEY);
         log.info("获取id cookie是{}",cookie);
-        return "ou2YpwZYsLc80lCRXF4vj6FFanvs";
+        return cookie;
     }
 
     /**
