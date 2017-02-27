@@ -49,8 +49,6 @@ public class BankBranchController extends BaseController {
     @ResponseBody
     @RequestMapping(value = "/getBankBranch", method = RequestMethod.POST)
     public CommonResponse getBankBranch(final HttpServletRequest request, final HttpServletResponse response,@RequestBody BankBranchRequest bankBranchRequest) {
-        bankBranchRequest.setProvinceName("");
-        bankBranchRequest.setCityName("");
         if(!super.isLogin(request)){
             return CommonResponse.simpleResponse(-2, "未登录");
         }
