@@ -14,12 +14,12 @@ public enum EnumPayChannelSign {
     /**
      * 阳光微信
      */
-    YG_WECHAT_PUBLIC(101, "sm_wechat", "微信", "阳光微信", EnumUpperChannel.SAOMI, false),
+    YG_WECHAT(101, "sm_wechat", "微信", "阳光微信", EnumUpperChannel.SAOMI, false),
 
     /**
      * 阳光支付宝
      */
-    YG_ALIPAY_PUBLIC(102, "sm_alipay", "支付宝", "阳光支付宝", EnumUpperChannel.SAOMI, false),
+    YG_ALIPAY(102, "sm_alipay", "支付宝", "阳光支付宝", EnumUpperChannel.SAOMI, false),
 
     /**
      * 快捷支付
@@ -41,12 +41,12 @@ public enum EnumPayChannelSign {
     /**
      * 卡盟微信
      */
-    KM_WECHAT_CODE(201, "km_wechat", "微信", "卡盟微信", EnumUpperChannel.KAMENG, true),
+    KM_WECHAT(201, "km_wechat", "微信", "卡盟微信", EnumUpperChannel.KAMENG, true),
 
     /**
      * 卡盟支付宝
      */
-    KM_ALIPAY_CODE(202, "km_alipay", "支付宝", "卡盟支付宝", EnumUpperChannel.KAMENG, true),
+    KM_ALIPAY(202, "km_alipay", "支付宝", "卡盟支付宝", EnumUpperChannel.KAMENG, true),
 
     /**
      * 卡盟微信公众号
