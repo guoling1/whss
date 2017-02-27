@@ -67,7 +67,7 @@ public class AllProfitController extends BaseController {
      */
     @ResponseBody
     @RequestMapping(value = "/companyProfitDetail", method = RequestMethod.POST)
-    public CommonResponse getCompanyProfitDeatail(@RequestBody final CompanyPrifitRequest req){
+    public CommonResponse getCompanyProfitDeatail(@RequestBody final CompanyPrifitRequest req) throws ParseException {
         final PageModel<CompanyProfitResponse> pageModel = new PageModel<CompanyProfitResponse>(req.getPageNo(), req.getPageSize());
         req.setOffset(pageModel.getFirstIndex());
         List<CompanyProfitResponse> list = allProfitService.selectCompanyProfitDetails(req);
@@ -118,6 +118,7 @@ public class AllProfitController extends BaseController {
     public CommonResponse getFirstDealerDeatail(@RequestBody final CompanyPrifitRequest req) throws ParseException {
         final PageModel<CompanyProfitResponse> pageModel = new PageModel<CompanyProfitResponse>(req.getPageNo(), req.getPageSize());
         req.setOffset(pageModel.getFirstIndex());
+
         List<CompanyProfitResponse> list = allProfitService.selectOneProfitDetails(req);
 //        if (list.size()==0){
 //            return CommonResponse.simpleResponse(-1,"未查询到相关数据");
@@ -148,18 +149,15 @@ public class AllProfitController extends BaseController {
         }
         List<CompanyProfitResponse> list = allProfitService.selectTwoProfit(req);
         int count = allProfitService.selectTwoProfitCount(req);
+        List<CompanyProfitResponse> lists = allProfitService.selectTwoAll(req);
         pageModel.setCount(count);
         pageModel.setRecords(list);
         List<CompanyProfitResponse> list1 = new ArrayList<>();
-
-//        if (list.size()==0){
-//            return CommonResponse.simpleResponse(-1,"未查询到相关数据");
-//        }
-        if(list.size()>0){
-            for (int i=0;i<list.size();i++){
+        if(lists.size()>0){
+            for (int i=0;i<lists.size();i++){
                 if (req.getProxyName()!=null&&!req.getProxyName().equals("")){
-                    if (req.getProxyName().equals(list.get(i).getProxyName())){
-                        list1.add(list.get(i));
+                    if (req.getProxyName().equals(lists.get(i).getProxyName())){
+                        list1.add(lists.get(i));
                     }
                     pageModel.setCount(list1.size());
                     pageModel.setRecords(list1);

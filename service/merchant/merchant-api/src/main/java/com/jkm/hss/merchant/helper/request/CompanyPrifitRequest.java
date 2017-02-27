@@ -2,11 +2,23 @@ package com.jkm.hss.merchant.helper.request;
 
 import lombok.Data;
 
+import java.util.Date;
+
 /**
  *
  */
 @Data
 public class CompanyPrifitRequest {
+
+    /**
+     * 分账日期
+     */
+    private Date splitDate;
+
+    /**
+     * 分账日期
+     */
+    private Date splitDate1;
 
     /**
      * 账户id

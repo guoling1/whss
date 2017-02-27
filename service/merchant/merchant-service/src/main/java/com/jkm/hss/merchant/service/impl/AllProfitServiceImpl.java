@@ -10,6 +10,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -111,9 +115,40 @@ public class AllProfitServiceImpl implements AllProfitService {
         return allProfitDao.selectTwoProfitCount(req);
     }
 
+    private CompanyPrifitRequest getTime(CompanyPrifitRequest req) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+
+        Date dt= null;
+        try {
+            String d = sdf.format(req.getSplitDate());
+            dt = sdf.parse(d);
+            Calendar rightNow = Calendar.getInstance();
+            rightNow.setTime(dt);
+            rightNow.add(Calendar.DATE, 1);
+            req.setSplitDate1(rightNow.getTime());
+            req.setSplitDate(dt);
+
+        } catch (ParseException e) {
+            log.debug("时间转换异常");
+        }
+        return req;
+    }
+
+
+
+
     @Override
-    public List<CompanyProfitResponse> selectCompanyProfitDetails(CompanyPrifitRequest req) {
-        List<CompanyProfitResponse> list = allProfitDao.selectCompanyProfitDetails(req);
+    public List<CompanyProfitResponse> selectCompanyProfitDetails(CompanyPrifitRequest req) throws ParseException {
+//        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+//        String d = sdf.format(req.getSplitDate());
+//        Date dt=sdf.parse(d);
+//        Calendar rightNow = Calendar.getInstance();
+//        rightNow.setTime(dt);
+//        rightNow.add(Calendar.DATE, 1);
+//        req.setSplitDate1(rightNow.getTime());
+//        req.setSplitDate(dt);
+        final CompanyPrifitRequest request =getTime(req);
+        List<CompanyProfitResponse> list = allProfitDao.selectCompanyProfitDetails(request);
         if (list.size()>0){
             for (int i=0;i<list.size();i++){
                 if (list.get(i).getLevel()==2){
@@ -140,7 +175,8 @@ public class AllProfitServiceImpl implements AllProfitService {
 
     @Override
     public List<CompanyProfitResponse> selectOneProfitDetails(CompanyPrifitRequest req) {
-        List<CompanyProfitResponse> list = allProfitDao.selectOneProfitDetails(req);
+        final CompanyPrifitRequest request =getTime(req);
+        List<CompanyProfitResponse> list = allProfitDao.selectOneProfitDetails(request);
         if (list.size()>0){
             for (int i=0;i<list.size();i++){
                 if (list.get(i).getLevel()==2){
@@ -167,7 +203,8 @@ public class AllProfitServiceImpl implements AllProfitService {
 
     @Override
     public List<CompanyProfitResponse> selectTwoProfitDetails(CompanyPrifitRequest req) {
-        List<CompanyProfitResponse> list = allProfitDao.selectTwoProfitDetails(req);
+        final CompanyPrifitRequest request =getTime(req);
+        List<CompanyProfitResponse> list = allProfitDao.selectTwoProfitDetails(request);
         if (list.size()>0){
             for (int i=0;i<list.size();i++){
                 if (list.get(i).getLevel()==2){
@@ -193,7 +230,8 @@ public class AllProfitServiceImpl implements AllProfitService {
 
     @Override
     public int selectCompanyProfitDetailsCount(CompanyPrifitRequest req) {
-        return allProfitDao.selectCompanyProfitDetailsCount(req);
+        final CompanyPrifitRequest request =getTime(req);
+        return allProfitDao.selectCompanyProfitDetailsCount(request);
     }
 
     @Override
@@ -204,5 +242,31 @@ public class AllProfitServiceImpl implements AllProfitService {
     @Override
     public int selectTwoProfitDetailsCount(CompanyPrifitRequest req) {
         return allProfitDao.selectTwoProfitDetailsCount(req);
+    }
+
+    @Override
+    public List<CompanyProfitResponse> selectTwoAll(CompanyPrifitRequest req) {
+        List<CompanyProfitResponse> list = allProfitDao.selectTwoAll(req);
+        if (list.size()>0){
+            for (int i=0;i<list.size();i++){
+                if (list.get(i).getLevel()==2){
+                    String  proxy = dealerService.selectProxyName(list.get(i).getFirstLevelDealerId());
+                    list.get(i).setProxyName(proxy);
+                }
+                if (list.get(i).getBusinessType().equals("hssPay")){
+                    list.get(i).setBusinessType(EnumSplitBusinessType.HSSPAY.getValue());
+                }
+                if (list.get(i).getBusinessType().equals("hssWithdraw")){
+                    list.get(i).setBusinessType(EnumSplitBusinessType.HSSWITHDRAW.getValue());
+                }
+                if (list.get(i).getBusinessType().equals("hssUpgrade")){
+                    list.get(i).setBusinessType(EnumSplitBusinessType.HSSPROMOTE.getValue());
+                }
+                if (list.get(i).getBusinessType().equals("hsyPay")){
+                    list.get(i).setBusinessType(EnumSplitBusinessType.HSYPAY.getValue());
+                }
+            }
+        }
+        return list;
     }
 }

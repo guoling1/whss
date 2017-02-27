@@ -124,6 +124,14 @@
 		ORDER BY a.split_date DESC LIMIT #{offset},#{pageSize}
 	</select>
 
+	<!-- 查询二级代理商分润无分页-->
+	<select id="selectTwoAll" resultType="com.jkm.hss.merchant.helper.response.CompanyProfitResponse">
+		SELECT a.*,b.`level`,b.first_level_dealer_id,b.proxy_name AS proxy_name1,b.mark_code FROM tb_split_account_record a
+		LEFT JOIN tb_dealer b ON a.receipt_money_account_id=b.account_id
+		WHERE b.`level`=2
+		ORDER BY a.split_date DESC
+	</select>
+
 	<!-- 查询二级代理商分润总数 -->
 	<select id="selectTwoProfitCount" resultType="java.lang.Integer">
 		SELECT COUNT(a.id) FROM tb_split_account_record a
@@ -156,9 +164,15 @@
 
 	<!-- 查询公司分润详情 -->
 	<select id="selectCompanyProfitDetails" resultType="com.jkm.hss.merchant.helper.response.CompanyProfitResponse">
-		SELECT a.*,b.id AS accId FROM tb_split_account_record a
-		LEFT JOIN tb_account b ON a.receipt_money_account_id=b.id
-		WHERE b.id=#{accId}
+		SELECT
+		a.*, b.id AS accId,
+		c.settle_type
+		FROM
+		tb_split_account_record a
+		LEFT JOIN tb_account b ON a.receipt_money_account_id = b.id
+		LEFT JOIN tb_order c ON c.order_no = a.order_no
+		WHERE
+		b.id=#{accId} AND a.split_date between #{splitDate} and #{splitDate1}
 	<if test="orderNo != null and orderNo != ''">
 		AND a.order_no = #{orderNo}
 	</if>
@@ -175,7 +189,7 @@
 	<select id="selectCompanyProfitDetailsCount" resultType="java.lang.Integer">
 		SELECT COUNT(a.id) FROM tb_split_account_record a
 		LEFT JOIN tb_account b ON a.receipt_money_account_id=b.id
-		WHERE b.id=#{accId}
+		WHERE b.id=#{accId} AND a.split_date between #{splitDate} and #{splitDate1}
 		<if test="orderNo != null and orderNo != ''">
 			AND a.order_no = #{orderNo}
 		</if>
@@ -189,9 +203,15 @@
 
 	<!-- 查询一级代理商分润详情 -->
 	<select id="selectOneProfitDetails" resultType="com.jkm.hss.merchant.helper.response.CompanyProfitResponse">
-		SELECT a.* FROM tb_split_account_record a
-		LEFT JOIN tb_dealer b ON a.receipt_money_account_id=b.account_id
-		WHERE b.`level`=1 AND a.receipt_money_account_id=#{receiptMoneyAccountId}
+		SELECT
+		a.*, c.settle_type
+		FROM
+		tb_split_account_record a
+		LEFT JOIN tb_dealer b ON a.receipt_money_account_id = b.account_id
+		LEFT JOIN tb_order c ON c.order_no = a.order_no
+		WHERE
+		b.`level` = 1 AND a.split_date between #{splitDate} and #{splitDate1}
+		AND a.receipt_money_account_id=#{receiptMoneyAccountId}
 		<if test="orderNo != null and orderNo != ''">
 			AND a.order_no = #{orderNo}
 		</if>
@@ -209,6 +229,7 @@
 		SELECT COUNT(a.id) FROM tb_split_account_record a
 		LEFT JOIN tb_dealer b ON a.receipt_money_account_id=b.account_id
 		WHERE b.`level`=1 AND a.receipt_money_account_id=#{receiptMoneyAccountId}
+		AND a.split_date between #{splitDate} and #{splitDate1}
 		<if test="orderNo != null and orderNo != ''">
 			AND a.order_no = #{orderNo}
 		</if>
@@ -223,9 +244,17 @@
 
 	<!-- 查询二级代理商分润详情 -->
 	<select id="selectTwoProfitDetails" resultType="com.jkm.hss.merchant.helper.response.CompanyProfitResponse">
-		SELECT a.*,b.first_level_dealer_id,b.`level` FROM tb_split_account_record a
-		LEFT JOIN tb_dealer b ON a.receipt_money_account_id=b.account_id
-		WHERE b.`level`=2 AND a.receipt_money_account_id=#{receiptMoneyAccountId}
+		SELECT
+		a.*, b.first_level_dealer_id,
+		b.`level`,
+		c.settle_type
+		FROM
+		tb_split_account_record a
+		LEFT JOIN tb_dealer b ON a.receipt_money_account_id = b.account_id
+		LEFT JOIN tb_order c ON c.order_no = a.order_no
+		WHERE
+		b.`level` = 2 AND a.split_date between #{splitDate} and #{splitDate1}
+		AND a.receipt_money_account_id =#{receiptMoneyAccountId}
 		<if test="orderNo != null and orderNo != ''">
 			AND a.order_no = #{orderNo}
 		</if>
@@ -243,6 +272,7 @@
 		SELECT COUNT(a.id) FROM tb_split_account_record a
 		LEFT JOIN tb_dealer b ON a.receipt_money_account_id=b.account_id
 		WHERE b.`level`=2 AND a.receipt_money_account_id=#{receiptMoneyAccountId}
+		AND a.split_date between #{splitDate} and #{splitDate1}
 		<if test="orderNo != null and orderNo != ''">
 			AND a.order_no = #{orderNo}
 		</if>

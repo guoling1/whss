@@ -3,6 +3,7 @@ package com.jkm.hss.merchant.service;
 import com.jkm.hss.merchant.helper.request.CompanyPrifitRequest;
 import com.jkm.hss.merchant.helper.response.CompanyProfitResponse;
 
+import java.text.ParseException;
 import java.util.List;
 
 /**
@@ -57,7 +58,7 @@ public interface AllProfitService {
      * @param req
      * @return
      */
-    List<CompanyProfitResponse> selectCompanyProfitDetails(CompanyPrifitRequest req);
+    List<CompanyProfitResponse> selectCompanyProfitDetails(CompanyPrifitRequest req) throws ParseException;
 
     /**
      * 一级代理商分润详情
@@ -93,4 +94,11 @@ public interface AllProfitService {
      * @return
      */
     int selectTwoProfitDetailsCount(CompanyPrifitRequest req);
+
+    /**
+     * 二级代理商分润所有无分页
+     * @param req
+     * @return
+     */
+    List<CompanyProfitResponse> selectTwoAll(CompanyPrifitRequest req);
 }

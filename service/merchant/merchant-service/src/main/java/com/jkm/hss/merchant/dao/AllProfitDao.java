@@ -95,4 +95,11 @@ public interface AllProfitDao {
      * @return
      */
     int selectTwoProfitDetailsCount(CompanyPrifitRequest req);
+
+    /**
+     * 二级代理商分润无分页
+     * @param req
+     * @return
+     */
+    List<CompanyProfitResponse> selectTwoAll(CompanyPrifitRequest req);
 }
