@@ -71,7 +71,8 @@
           pageSize:10,
           orderNo:'',
           receiptMoneyUserName:'',
-          businessType:''
+          businessType:'',
+          splitDate:''
         },
         records: [],
         count: 0,
@@ -87,14 +88,17 @@
       }else if(this.$route.path=="/admin/record/profitComDet"){
         this.$data.path = '/admin/allProfit/companyProfitDetail';
         this.$data.query.accId = this.$route.query.id;
+        this.$data.query.splitDate = this.$route.query.time;
         this.isShow =false
       }else if(this.$route.path=="/admin/record/profitFirDet"){
         this.$data.path = '/admin/allProfit/firstDealerDetail';
         this.isShow =false
         this.$data.query.receiptMoneyAccountId = this.$route.query.id;
+        this.$data.query.splitDate = this.$route.query.time;
       }else if(this.$route.path=="/admin/record/profitSecDet"){
         this.$data.path = '/admin/allProfit/secondDealerDetail';
         this.$data.query.receiptMoneyAccountId = this.$route.query.id;
+        this.$data.query.splitDate = this.$route.query.time;
         this.isShow =false
       }
       this.getData();
