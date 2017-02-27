@@ -39,6 +39,14 @@ public class BasicChannel extends BaseEntity{
      * {@link EnumPayChannelSign}
      */
     private int channelTypeSign;
+
+    /**
+     * 支持的支付方式， 扫码，公众号， 或者两者都支持
+     *
+     * {@link com.jkm.hss.product.enums.EnumChannelSupportWay}
+     */
+    private String supportWay;
+
     /**
      * 收单公司(支付宝,微信)
      */
