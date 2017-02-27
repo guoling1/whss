@@ -77,9 +77,9 @@ public class CalculateServiceImpl implements CalculateService {
             //hsy
             final List<AppAuUser> appAuUsers = this.hsyShopDao.findCorporateUserByShopID(merchantId);
             final AppAuUser appAuUser = appAuUsers.get(0);
-            if (channelSign == EnumPayChannelSign.YG_WECHAT.getId()){
+            if (channelSign == EnumPayChannelSign.YG_WECHAT_PUBLIC.getId()){
                 return  appAuUser.getWeixinRate();
-            }else if (channelSign == EnumPayChannelSign.YG_ALIPAY.getId()){
+            }else if (channelSign == EnumPayChannelSign.YG_ALIPAY_PUBLIC.getId()){
                 return appAuUser.getAlipayRate();
             }else{
                 return appAuUser.getFastRate();
@@ -297,9 +297,9 @@ public class CalculateServiceImpl implements CalculateService {
     private BigDecimal getMerchantRate(int channelSign, final MerchantInfo merchantInfo){
 
         final BigDecimal merchantRate;
-        if (channelSign == EnumPayChannelSign.YG_WECHAT.getId()){
+        if (channelSign == EnumPayChannelSign.YG_WECHAT_PUBLIC.getId()){
             return  merchantInfo.getWeixinRate();
-        }else if (channelSign == EnumPayChannelSign.YG_ALIPAY.getId()){
+        }else if (channelSign == EnumPayChannelSign.YG_ALIPAY_PUBLIC.getId()){
             return merchantInfo.getAlipayRate();
         }else{
             return merchantInfo.getFastRate();

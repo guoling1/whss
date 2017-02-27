@@ -120,8 +120,8 @@ public class PayServiceImpl implements PayService {
         order.setAppId(EnumAppType.HSS.getId());
         order.setTradeType(EnumTradeType.PAY.getId());
         order.setServiceType(EnumServiceType.APPRECIATION_PAY.getId());
-        order.setPayType(EnumPayChannelSign.YG_WECHAT.getCode());
-        order.setPayChannelSign(EnumPayChannelSign.YG_WECHAT.getId());
+        order.setPayType(EnumPayChannelSign.YG_WECHAT_PUBLIC.getCode());
+        order.setPayChannelSign(EnumPayChannelSign.YG_WECHAT_PUBLIC.getId());
         order.setPayer(merchant.getAccountId());
         order.setPayee(AccountConstants.JKM_ACCOUNT_ID);
         order.setGoodsName(merchant.getMerchantName());
@@ -133,7 +133,7 @@ public class PayServiceImpl implements PayService {
         this.orderService.add(order);
         //请求支付中心下单
         final PaymentSdkPlaceOrderResponse placeOrderResponse = this.requestPlaceOrder(order,
-                EnumPayChannelSign.YG_WECHAT.getId(), merchant, businessReturnUrl);
+                EnumPayChannelSign.YG_WECHAT_PUBLIC.getId(), merchant, businessReturnUrl);
         return this.handlePlaceOrder(placeOrderResponse, order);
     }
 

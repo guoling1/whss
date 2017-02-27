@@ -136,10 +136,10 @@ public class DealerController extends BaseController {
         Preconditions.checkState(dealerOptional.get().getLevel() == EnumDealerLevel.FIRST.getId(), "不是一级代理不可以添加二级代理");
         final List<DealerChannelRate> channelRates = this.dealerRateService.getByDealerId(dealerOptional.get().getId());
         for (DealerChannelRate channelRate : channelRates) {
-            if (channelRate.getChannelTypeSign() == EnumPayChannelSign.YG_WECHAT.getId()) {
+            if (channelRate.getChannelTypeSign() == EnumPayChannelSign.YG_WECHAT_PUBLIC.getId()) {
                 model.addAttribute("weixinSettleRate", channelRate.getDealerTradeRate().multiply(new BigDecimal("100")).setScale(2));
                 model.addAttribute("weixinMerchantSettleRate", channelRate.getDealerMerchantPayRate().multiply(new BigDecimal("100")).setScale(2));
-            } else if (channelRate.getChannelTypeSign() == EnumPayChannelSign.YG_ALIPAY.getId()) {
+            } else if (channelRate.getChannelTypeSign() == EnumPayChannelSign.YG_ALIPAY_PUBLIC.getId()) {
                 model.addAttribute("alipaySettleRate", channelRate.getDealerTradeRate().multiply(new BigDecimal("100")).setScale(2));
                 model.addAttribute("alipayMerchantSettleRate", channelRate.getDealerMerchantPayRate().multiply(new BigDecimal("100")).setScale(2));
             } else if (channelRate.getChannelTypeSign() == EnumPayChannelSign.YG_UNIONPAY.getId()) {
@@ -425,7 +425,7 @@ public class DealerController extends BaseController {
         }
         final List<DealerChannelRate> channelRates = this.dealerRateService.getByDealerId(super.getDealerId());
         for (DealerChannelRate channelRate : channelRates) {
-            if (channelRate.getChannelTypeSign() == EnumPayChannelSign.YG_WECHAT.getId()) {
+            if (channelRate.getChannelTypeSign() == EnumPayChannelSign.YG_WECHAT_PUBLIC.getId()) {
 
                 final BigDecimal withdrawSettleFee = new BigDecimal(secondLevelDealerAddRequest.getWithdrawSettleFee());
                 if (!(withdrawSettleFee.compareTo(channelRate.getDealerWithdrawFee()) > 0
@@ -439,7 +439,7 @@ public class DealerController extends BaseController {
                         && weixinSettleRate.compareTo(channelRate.getDealerMerchantPayRate()) < 0)) {
                     return CommonResponse.simpleResponse(-1, "微信结算费率错误");
                 }
-            } else if (channelRate.getChannelTypeSign() == EnumPayChannelSign.YG_ALIPAY.getId()) {
+            } else if (channelRate.getChannelTypeSign() == EnumPayChannelSign.YG_ALIPAY_PUBLIC.getId()) {
                 final BigDecimal alipaySettleRate = new BigDecimal(secondLevelDealerAddRequest.getAlipaySettleRate())
                         .divide(new BigDecimal("100"), 4, BigDecimal.ROUND_HALF_UP);
                 if (!(alipaySettleRate.compareTo(channelRate.getDealerTradeRate()) > 0
@@ -487,10 +487,10 @@ public class DealerController extends BaseController {
         for (DealerChannelRate channelRate : channelRates) {
             dealerGetResponse.setMerchantSettleRate(channelRate.getDealerMerchantWithdrawFee().toString());
             dealerGetResponse.setMerchantWithdrawSettleFee(channelRate.getDealerMerchantWithdrawFee().toString());
-            if (channelRate.getChannelTypeSign() == EnumPayChannelSign.YG_WECHAT.getId()) {
+            if (channelRate.getChannelTypeSign() == EnumPayChannelSign.YG_WECHAT_PUBLIC.getId()) {
                 dealerGetResponse.setWeixinSettleRate(channelRate.getDealerTradeRate().multiply(new BigDecimal(100)).setScale(2).toPlainString());
                 dealerGetResponse.setWithdrawSettleFee(channelRate.getDealerWithdrawFee().toPlainString());
-            } else if (channelRate.getChannelTypeSign() == EnumPayChannelSign.YG_ALIPAY.getId()) {
+            } else if (channelRate.getChannelTypeSign() == EnumPayChannelSign.YG_ALIPAY_PUBLIC.getId()) {
                 dealerGetResponse.setAlipaySettleRate(channelRate.getDealerTradeRate().multiply(new BigDecimal(100)).setScale(2).toPlainString());
             } else if (channelRate.getChannelTypeSign() == EnumPayChannelSign.YG_UNIONPAY.getId()) {
                 dealerGetResponse.setQuickSettleRate(channelRate.getDealerTradeRate().multiply(new BigDecimal(100)).setScale(2).toPlainString());
@@ -753,9 +753,9 @@ public class DealerController extends BaseController {
         myDealerDetailResponse.setProxyName(dealer.getProxyName());
         Preconditions.checkState(!CollectionUtils.isEmpty(channelRates), "代理商费率不存在");
         for (DealerChannelRate channelRate : channelRates) {
-            if (channelRate.getChannelTypeSign() == EnumPayChannelSign.YG_WECHAT.getId()) {
+            if (channelRate.getChannelTypeSign() == EnumPayChannelSign.YG_WECHAT_PUBLIC.getId()) {
                 myDealerDetailResponse.setWeixinSettleRate(channelRate.getDealerTradeRate().toPlainString());
-            } else if (channelRate.getChannelTypeSign() == EnumPayChannelSign.YG_ALIPAY.getId()) {
+            } else if (channelRate.getChannelTypeSign() == EnumPayChannelSign.YG_ALIPAY_PUBLIC.getId()) {
                 myDealerDetailResponse.setAlipaySettleRate(channelRate.getDealerTradeRate().toPlainString());
                 myDealerDetailResponse.setWithdrawSettleFee(channelRate.getDealerWithdrawFee().toPlainString());
             } else if (channelRate.getChannelTypeSign() == EnumPayChannelSign.YG_UNIONPAY.getId()) {

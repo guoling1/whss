@@ -438,7 +438,7 @@ public class WxPubController extends BaseController {
         }
         tradeRequest.setSubMerName(merchantInfo.get().getMerchantName());
         tradeRequest.setSubMerNo(merchantInfo.get().getId()+"");
-        tradeRequest.setPayChannel(EnumPayChannelSign.YG_WECHAT.getId());
+        tradeRequest.setPayChannel(EnumPayChannelSign.YG_WECHAT_PUBLIC.getId());
         JSONObject jo = orderRecordService.PayOrder(tradeRequest);
         if(jo.getInt("code")==1){
             return CommonResponse.objectResponse(1,"收款成功",jo.getJSONObject("data"));

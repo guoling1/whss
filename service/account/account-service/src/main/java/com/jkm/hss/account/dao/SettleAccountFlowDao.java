@@ -30,13 +30,23 @@ public interface SettleAccountFlowDao {
     int updateSettlementRecordIdById(@Param("id") long id, @Param("settlementRecordId") long settlementRecordId);
 
     /**
+     * 保存结算单id
+     *
+     * @param settleAuditRecordId
+     * @param settlementRecordId
+     * @return
+     */
+    int updateSettlementRecordIdBySettleAuditRecordId(@Param("settleAuditRecordId") long settleAuditRecordId, @Param("settlementRecordId") long settlementRecordId);
+
+    /**
      * 保存结算审核记录
      *
-     * @param orderNos
+     * @param tradeDate
+     * @param accountId
      * @param settleAuditRecordId
      * @return
      */
-    int updateSettleAuditRecordIdByOrderNos(@Param("orderNos") List<String> orderNos, @Param("settleAuditRecordId") long settleAuditRecordId);
+    int updateSettleAuditRecordIdByTradeDateAndAccountId(@Param("tradeDate") Date tradeDate, @Param("accountId") long accountId, @Param("settleAuditRecordId") long settleAuditRecordId);
 
     /**
      * 按id查询

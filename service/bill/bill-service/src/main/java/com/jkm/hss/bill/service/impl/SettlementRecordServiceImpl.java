@@ -99,4 +99,15 @@ public class SettlementRecordServiceImpl implements SettlementRecordService {
     public Optional<SettlementRecord> getBySettleNo(final String settleNo) {
         return Optional.fromNullable(this.settlementRecordDao.selectBySettleNo(settleNo));
     }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param settleAuditRecordId
+     * @return
+     */
+    @Override
+    public Optional<SettlementRecord> getBySettleAuditRecordId(final long settleAuditRecordId) {
+        return Optional.fromNullable(this.settlementRecordDao.selectBySettleAuditRecordId(settleAuditRecordId));
+    }
 }

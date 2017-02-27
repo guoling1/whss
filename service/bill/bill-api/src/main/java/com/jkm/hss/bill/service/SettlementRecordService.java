@@ -63,4 +63,12 @@ public interface SettlementRecordService {
      * @return
      */
     Optional<SettlementRecord> getBySettleNo(String settleNo);
+
+    /**
+     * 按结算审核记录id查找结算单
+     *
+     * @param settleAuditRecordId
+     * @return
+     */
+    Optional<SettlementRecord> getBySettleAuditRecordId(long settleAuditRecordId);
 }

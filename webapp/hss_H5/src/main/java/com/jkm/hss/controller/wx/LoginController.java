@@ -1050,10 +1050,10 @@ public class LoginController extends BaseController {
                         upgradeResult.setType(0);
                         upgradeResult.setIsUpgrade(1);
                         for(int i=0;i<productChannelDetails.size();i++){
-                            if(EnumPayChannelSign.YG_WECHAT.getId()==productChannelDetails.get(i).getChannelTypeSign()){
+                            if(EnumPayChannelSign.YG_WECHAT_PUBLIC.getId()==productChannelDetails.get(i).getChannelTypeSign()){
                                 upgradeResult.setWeixinRate(productChannelDetails.get(i).getProductMerchantPayRate());
                             }
-                            if(EnumPayChannelSign.YG_ALIPAY.getId()==productChannelDetails.get(i).getChannelTypeSign()){
+                            if(EnumPayChannelSign.YG_ALIPAY_PUBLIC.getId()==productChannelDetails.get(i).getChannelTypeSign()){
                                 upgradeResult.setAlipayRate(productChannelDetails.get(i).getProductMerchantPayRate());
                             }
                             if(EnumPayChannelSign.YG_UNIONPAY.getId()==productChannelDetails.get(i).getChannelTypeSign()){
@@ -1145,10 +1145,10 @@ public class LoginController extends BaseController {
                         upgradeResult.setType(0);
                         upgradeResult.setIsUpgrade(1);
                         for(int i=0;i<productChannelDetails.size();i++){
-                            if(EnumPayChannelSign.YG_WECHAT.getId()==productChannelDetails.get(i).getChannelTypeSign()){
+                            if(EnumPayChannelSign.YG_WECHAT_PUBLIC.getId()==productChannelDetails.get(i).getChannelTypeSign()){
                                 upgradeResult.setWeixinRate(productChannelDetails.get(i).getProductMerchantPayRate());
                             }
-                            if(EnumPayChannelSign.YG_ALIPAY.getId()==productChannelDetails.get(i).getChannelTypeSign()){
+                            if(EnumPayChannelSign.YG_ALIPAY_PUBLIC.getId()==productChannelDetails.get(i).getChannelTypeSign()){
                                 upgradeResult.setAlipayRate(productChannelDetails.get(i).getProductMerchantPayRate());
                             }
                             if(EnumPayChannelSign.YG_UNIONPAY.getId()==productChannelDetails.get(i).getChannelTypeSign()){

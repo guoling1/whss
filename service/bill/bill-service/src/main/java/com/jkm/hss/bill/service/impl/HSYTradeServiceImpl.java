@@ -150,9 +150,9 @@ public class HSYTradeServiceImpl implements HSYTradeService {
                     jo.put("tradeType", "2");
                 }
 
-                if (EnumPayChannelSign.YG_WECHAT.getId() == order.getPayChannelSign()) {
+                if (EnumPayChannelSign.YG_WECHAT_PUBLIC.getId() == order.getPayChannelSign()) {
                     jo.put("channel", "微信");
-                } else if (EnumPayChannelSign.YG_ALIPAY.getId() == order.getPayChannelSign()) {
+                } else if (EnumPayChannelSign.YG_ALIPAY_PUBLIC.getId() == order.getPayChannelSign()) {
                     jo.put("channel", "支付宝");
                 } else if (EnumPayChannelSign.YG_UNIONPAY.getId() == order.getPayChannelSign()) {
                     jo.put("channel", "快捷");
@@ -234,7 +234,7 @@ public class HSYTradeServiceImpl implements HSYTradeService {
         order.setPayChannelSign(channel);
         order.setSettleStatus(EnumSettleStatus.DUE_SETTLE.getId());
         order.setSettleType(EnumBalanceTimeType.T1.getType());
-        order.setSettleTime(DateTimeUtil.getSettleDate());
+        order.setSettleTime(DateTimeUtil.generateT1SettleDate(new Date()));
         order.setStatus(EnumOrderStatus.DUE_PAY.getId());
         this.orderService.add(order);
         //请求支付中心下单
@@ -433,7 +433,7 @@ public class HSYTradeServiceImpl implements HSYTradeService {
 
         //判断业务类型
         final String splitBusinessType = this.getSplitBusinessType(order);
-        log.info(">>>orderNo:" + order.getOrderNo() + "<<<<<<该笔订单的业务类型：" + splitBusinessType);
+        log.info(">>>orderNo:" + order.getOrderNo() + "该笔订单的业务类型：" + splitBusinessType);
         //通道利润--到结算
         if (null != channelMoneyTriple) {
             this.splitAccountRecordService.addPaySplitAccountRecord(splitBusinessType, order.getOrderNo(), order.getOrderNo(),
@@ -585,8 +585,8 @@ public class HSYTradeServiceImpl implements HSYTradeService {
      */
     @Override
     public Pair<Integer, String> withdraw(final long accountId, final String totalAmount, final int channel, final String appId) {
-        Preconditions.checkState(EnumPayChannelSign.YG_WECHAT.getId() == channel
-                || EnumPayChannelSign.YG_ALIPAY.getId() == channel
+        Preconditions.checkState(EnumPayChannelSign.YG_WECHAT_PUBLIC.getId() == channel
+                || EnumPayChannelSign.YG_ALIPAY_PUBLIC.getId() == channel
                 || EnumPayChannelSign.YG_UNIONPAY.getId() == channel, "渠道选择错误[{}]", channel);
         final AppBizShop shop = this.hsyShopDao.findAppBizShopByAccountID(accountId).get(0);
         final long playMoneyOrderId = this.orderService.createPlayMoneyOrder(shop, new BigDecimal(totalAmount),

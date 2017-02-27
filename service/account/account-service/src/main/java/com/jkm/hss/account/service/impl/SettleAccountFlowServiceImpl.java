@@ -57,17 +57,28 @@ public class SettleAccountFlowServiceImpl implements SettleAccountFlowService {
     /**
      * {@inheritDoc}
      *
-     * @param orderNos
+     * @param settleAuditRecordId  结算审核记录id
+     * @param settlementRecordId  结算单id
+     * @return
+     */
+    @Override
+    @Transactional
+    public int updateSettlementRecordIdBySettleAuditRecordId(final long settleAuditRecordId, final long settlementRecordId) {
+        return this.settleAccountFlowDao.updateSettlementRecordIdBySettleAuditRecordId(settleAuditRecordId, settlementRecordId);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param tradeDate
+     * @param accountId
      * @param settleAuditRecordId
      * @return
      */
     @Override
     @Transactional
-    public int updateSettleAuditRecordIdByOrderNos(final List<String> orderNos, final long settleAuditRecordId) {
-        if (CollectionUtils.isEmpty(orderNos)) {
-            return 0;
-        }
-        return this.settleAccountFlowDao.updateSettleAuditRecordIdByOrderNos(orderNos, settleAuditRecordId);
+    public int updateSettleAuditRecordIdByTradeDateAndAccountId(final Date tradeDate, final long accountId, final long settleAuditRecordId) {
+        return this.settleAccountFlowDao.updateSettleAuditRecordIdByTradeDateAndAccountId(tradeDate, accountId, settleAuditRecordId);
     }
 
     /**

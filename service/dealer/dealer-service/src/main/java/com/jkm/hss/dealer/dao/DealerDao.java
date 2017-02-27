@@ -55,6 +55,14 @@ public interface DealerDao {
     Dealer selectByAccountId(@Param("accountId") long accountId);
 
     /**
+     * 按accountIds查询
+     *
+     * @param accountIds
+     * @return
+     */
+    List<Dealer> selectByAccountIds(@Param("accountIds") List<Long> accountIds);
+
+    /**
      * 按ids查询
      *
      * @param ids

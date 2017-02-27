@@ -266,9 +266,9 @@ public class DealerServiceImpl implements DealerService {
             final BasicChannel basicChannel = channelOptional.get();
             //商户手续费
             BigDecimal merchantRate;
-            if (channelSign == EnumPayChannelSign.YG_WECHAT.getId()){
+            if (channelSign == EnumPayChannelSign.YG_WECHAT_PUBLIC.getId()){
                 merchantRate = appAuUser.getWeixinRate();
-            }else if (channelSign == EnumPayChannelSign.YG_ALIPAY.getId()){
+            }else if (channelSign == EnumPayChannelSign.YG_ALIPAY_PUBLIC.getId()){
                 merchantRate = appAuUser.getAlipayRate();
             }else{
                 merchantRate = appAuUser.getFastRate();
@@ -352,9 +352,9 @@ public class DealerServiceImpl implements DealerService {
         final BasicChannel basicChannel = channelOptional.get();
         //商户手续费
         BigDecimal merchantRate;
-        if (channelSign == EnumPayChannelSign.YG_WECHAT.getId()){
+        if (channelSign == EnumPayChannelSign.YG_WECHAT_PUBLIC.getId()){
             merchantRate = appAuUser.getWeixinRate();
-        }else if (channelSign == EnumPayChannelSign.YG_ALIPAY.getId()){
+        }else if (channelSign == EnumPayChannelSign.YG_ALIPAY_PUBLIC.getId()){
             merchantRate = appAuUser.getAlipayRate();
         }else{
             merchantRate = appAuUser.getFastRate();
@@ -846,9 +846,9 @@ public class DealerServiceImpl implements DealerService {
     private BigDecimal getMerchantRate(int channelSign, final MerchantInfo merchantInfo){
 
         final BigDecimal merchantRate;
-        if (channelSign == EnumPayChannelSign.YG_WECHAT.getId()){
+        if (channelSign == EnumPayChannelSign.YG_WECHAT_PUBLIC.getId()){
            return  merchantRate = merchantInfo.getWeixinRate();
-        }else if (channelSign == EnumPayChannelSign.YG_ALIPAY.getId()){
+        }else if (channelSign == EnumPayChannelSign.YG_ALIPAY_PUBLIC.getId()){
             return merchantRate = merchantInfo.getAlipayRate();
         }else{
             return merchantRate = merchantInfo.getFastRate();
@@ -878,9 +878,9 @@ public class DealerServiceImpl implements DealerService {
             final BasicChannel basicChannel = channelOptional.get();
             //商户手续费
             BigDecimal merchantRate;
-            if (channelSign == EnumPayChannelSign.YG_WECHAT.getId()){
+            if (channelSign == EnumPayChannelSign.YG_WECHAT_PUBLIC.getId()){
                 merchantRate = merchantInfo.getWeixinRate();
-            }else if (channelSign == EnumPayChannelSign.YG_ALIPAY.getId()){
+            }else if (channelSign == EnumPayChannelSign.YG_ALIPAY_PUBLIC.getId()){
                 merchantRate = merchantInfo.getAlipayRate();
             }else{
                 merchantRate = merchantInfo.getFastRate();
@@ -964,9 +964,9 @@ public class DealerServiceImpl implements DealerService {
         final BasicChannel basicChannel = channelOptional.get();
         //商户手续费
         BigDecimal merchantRate;
-        if (channelSign == EnumPayChannelSign.YG_WECHAT.getId()){
+        if (channelSign == EnumPayChannelSign.YG_WECHAT_PUBLIC.getId()){
             merchantRate = merchantInfo.getWeixinRate();
-        }else if (channelSign == EnumPayChannelSign.YG_ALIPAY.getId()){
+        }else if (channelSign == EnumPayChannelSign.YG_ALIPAY_PUBLIC.getId()){
             merchantRate = merchantInfo.getAlipayRate();
         }else{
             merchantRate = merchantInfo.getFastRate();
@@ -1162,9 +1162,9 @@ public class DealerServiceImpl implements DealerService {
             dealerChannelRate.setDealerId(dealer.getId());
             dealerChannelRate.setProductId(channelRate.getProductId());
             dealerChannelRate.setChannelTypeSign(channelRate.getChannelTypeSign());
-            if (channelRate.getChannelTypeSign() == EnumPayChannelSign.YG_WECHAT.getId()) {
+            if (channelRate.getChannelTypeSign() == EnumPayChannelSign.YG_WECHAT_PUBLIC.getId()) {
                 dealerChannelRate.setDealerTradeRate(new BigDecimal(request.getWeixinSettleRate()).divide(new BigDecimal("100")));
-            } else if (channelRate.getChannelTypeSign() == EnumPayChannelSign.YG_ALIPAY.getId()) {
+            } else if (channelRate.getChannelTypeSign() == EnumPayChannelSign.YG_ALIPAY_PUBLIC.getId()) {
                 dealerChannelRate.setDealerTradeRate(new BigDecimal(request.getAlipaySettleRate()).divide(new BigDecimal("100")));
             } else if (channelRate.getChannelTypeSign() == EnumPayChannelSign.YG_UNIONPAY.getId()) {
                 dealerChannelRate.setDealerTradeRate(new BigDecimal(request.getQuickSettleRate()).divide(new BigDecimal("100")));
@@ -1225,6 +1225,20 @@ public class DealerServiceImpl implements DealerService {
     @Override
     public Optional<Dealer> getByAccountId(final long accountId) {
         return Optional.fromNullable(this.dealerDao.selectByAccountId(accountId));
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param accountIds
+     * @return
+     */
+    @Override
+    public List<Dealer> getByAccountIds(final List<Long> accountIds) {
+        if (CollectionUtils.isEmpty(accountIds)) {
+            return Collections.emptyList();
+        }
+        return this.dealerDao.selectByAccountIds(accountIds);
     }
 
     /**

@@ -72,8 +72,8 @@ public class DealerWithdrawServiceImpl implements DealerWithdrawService {
     @Transactional
     @Override
     public Pair<Integer, String> withdraw(long accountId, String totalAmount, int channel, String appId) {
-        Preconditions.checkState(EnumPayChannelSign.YG_WECHAT.getId() == channel
-                || EnumPayChannelSign.YG_ALIPAY.getId() == channel
+        Preconditions.checkState(EnumPayChannelSign.YG_WECHAT_PUBLIC.getId() == channel
+                || EnumPayChannelSign.YG_ALIPAY_PUBLIC.getId() == channel
                 || EnumPayChannelSign.YG_UNIONPAY.getId() == channel, "渠道选择错误[{}]", channel);
 
         final Optional<Dealer> dealerOptional = this.dealerService.getByAccountId(accountId);

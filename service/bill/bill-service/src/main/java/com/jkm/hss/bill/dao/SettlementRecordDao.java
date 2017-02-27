@@ -66,4 +66,12 @@ public interface SettlementRecordDao {
      * @return
      */
     int updateSettleStatus(@Param("id") long id, @Param("settleStatus") int settleStatus);
+
+    /**
+     * 按结算审核记录id查找结算单
+     *
+     * @param settleAuditRecordId
+     * @return
+     */
+    SettlementRecord selectBySettleAuditRecordId(@Param("settleAuditRecordId") long settleAuditRecordId);
 }
