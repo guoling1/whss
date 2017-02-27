@@ -49,9 +49,9 @@ public class BankBranchController extends BaseController {
     @ResponseBody
     @RequestMapping(value = "/getBankBranch", method = RequestMethod.POST)
     public CommonResponse getBankBranch(final HttpServletRequest request, final HttpServletResponse response,@RequestBody BankBranchRequest bankBranchRequest) {
-//        if(!super.isLogin(request)){
-//            return CommonResponse.simpleResponse(-2, "未登录");
-//        }
+        if(!super.isLogin(request)){
+            return CommonResponse.simpleResponse(-2, "未登录");
+        }
         Optional<UserInfo> userInfoOptional = userInfoService.selectByOpenId(super.getOpenId(request));
         if(!userInfoOptional.isPresent()){
             return CommonResponse.simpleResponse(-2, "未登录");
