@@ -14,9 +14,22 @@ public class BankBranch {
     /**
      * 支行编码
      */
-    private String bankCode;
+    private String branchCode;
+    /**
+     * 银行名称
+     */
+    private String bankName;
     /**
      * 支行名称
      */
-    private String bankBranch;
+    private String branchName;
+    /**
+     * 支行所属省
+     */
+    private String provinceName;
+    /**
+     * 支行所属市
+     */
+    private String cityName;
+
 }
