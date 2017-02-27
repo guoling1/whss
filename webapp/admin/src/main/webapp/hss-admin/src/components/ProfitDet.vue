@@ -41,7 +41,7 @@
             <el-table-column prop="splitTotalAmount" label="分润总额" align="right" :formatter="changeTotal"></el-table-column>
             <el-table-column prop="outMoneyAccountId" label="分润出款账户"></el-table-column>
             <el-table-column prop="receiptMoneyUserName" label="分润方名称"></el-table-column>
-            <el-table-column prop="statisticsDate" label="分润方类型" v-if="isShow"></el-table-column>
+            <el-table-column prop="profitType" label="分润方类型" v-if="isShow"></el-table-column>
             <el-table-column prop="splitAmount" align="right" header-align="left" label="分润金额" :formatter="changePrice"></el-table-column>
             <el-table-column prop="remark" label="备注信息"></el-table-column>
           </el-table>
