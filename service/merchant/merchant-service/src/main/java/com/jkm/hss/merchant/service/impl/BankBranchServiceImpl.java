@@ -25,7 +25,7 @@ public class BankBranchServiceImpl implements BankBranchService{
      * @return
      */
     @Override
-    public List<BankBranch> findByBankName(String bankName, String contions,String district) {
-        return bankBranchDao.findByBankName(bankName,contions,district);
+    public List<BankBranch> findByBankName(String bankName, String contions,String provinceName,String cityName) {
+        return bankBranchDao.findByBankName(bankName,contions,provinceName,cityName);
     }
 }

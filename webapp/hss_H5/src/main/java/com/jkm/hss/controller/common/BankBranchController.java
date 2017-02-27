@@ -49,10 +49,11 @@ public class BankBranchController extends BaseController {
     @ResponseBody
     @RequestMapping(value = "/getBankBranch", method = RequestMethod.POST)
     public CommonResponse getBankBranch(final HttpServletRequest request, final HttpServletResponse response,@RequestBody BankBranchRequest bankBranchRequest) {
-        bankBranchRequest.setDistrict("");
-//        if(!super.isLogin(request)){
-//            return CommonResponse.simpleResponse(-2, "未登录");
-//        }
+        bankBranchRequest.setProvinceName("");
+        bankBranchRequest.setCityName("");
+        if(!super.isLogin(request)){
+            return CommonResponse.simpleResponse(-2, "未登录");
+        }
         Optional<UserInfo> userInfoOptional = userInfoService.selectByOpenId(super.getOpenId(request));
         if(!userInfoOptional.isPresent()){
             return CommonResponse.simpleResponse(-2, "未登录");
@@ -67,7 +68,7 @@ public class BankBranchController extends BaseController {
         if(merchantInfo.get().getBankName()==null||"".equals(merchantInfo.get().getBankName())){
             return CommonResponse.simpleResponse(-2, "银行名称不完善");
         }
-        List<BankBranch> bankBranchList = bankBranchService.findByBankName(merchantInfo.get().getBankName(),bankBranchRequest.getContions(),bankBranchRequest.getDistrict());
+        List<BankBranch> bankBranchList = bankBranchService.findByBankName(merchantInfo.get().getBankName(),bankBranchRequest.getContions(),bankBranchRequest.getProvinceName(),bankBranchRequest.getCityName());
         return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", bankBranchList);
     }
 
