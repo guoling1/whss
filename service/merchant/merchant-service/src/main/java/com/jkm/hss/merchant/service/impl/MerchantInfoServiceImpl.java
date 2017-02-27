@@ -15,6 +15,7 @@ import com.jkm.hss.merchant.entity.UserInfo;
 import com.jkm.hss.merchant.enums.EnumMerchantStatus;
 import com.jkm.hss.merchant.enums.EnumStatus;
 import com.jkm.hss.merchant.enums.EnumUpgradeRecordType;
+import com.jkm.hss.merchant.helper.request.ContinueBankInfoRequest;
 import com.jkm.hss.merchant.helper.request.MerchantInfoAddRequest;
 import com.jkm.hss.merchant.service.*;
 import com.jkm.hss.product.entity.UpgradePayRecord;
@@ -397,6 +398,31 @@ public class MerchantInfoServiceImpl implements MerchantInfoService {
             return Collections.emptyList();
         }
         return this.merchantInfoDao.batchSelectByAccountIds(accountIds);
+    }
+
+    /**
+     * 修改信用卡信息
+     *
+     * @param creditCard
+     * @param creditCardName
+     * @param creditCardShort
+     * @param id
+     * @return
+     */
+    @Override
+    public int updateCreditCard(String creditCard, String creditCardName, String creditCardShort, long id) {
+        return merchantInfoDao.updateCreditCard(creditCard,creditCardName,creditCardShort,id);
+    }
+
+    /**
+     * 完善支行信息
+     *
+     * @param continueBankInfoRequest
+     * @return
+     */
+    @Override
+    public int updateBranchInfo(ContinueBankInfoRequest continueBankInfoRequest) {
+        return merchantInfoDao.updateBranchInfo(continueBankInfoRequest);
     }
 
 }
