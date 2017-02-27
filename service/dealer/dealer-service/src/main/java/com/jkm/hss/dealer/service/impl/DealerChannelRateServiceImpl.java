@@ -96,9 +96,9 @@ public class DealerChannelRateServiceImpl implements DealerChannelRateService{
             final List<ProductChannelDetail> productChannelDetails = this.productChannelDetailService.selectByProductId(productId);
             for (ProductChannelDetail detail : productChannelDetails){
 
-                if (detail.getChannelTypeSign() == EnumPayChannelSign.YG_WECHAT_PUBLIC.getId()){
+                if (detail.getChannelTypeSign() == EnumPayChannelSign.YG_WECHAT.getId()){
                     wxRate = detail.getProductMerchantPayRate();
-                }else if (detail.getChannelTypeSign() == EnumPayChannelSign.YG_ALIPAY_PUBLIC.getId()){
+                }else if (detail.getChannelTypeSign() == EnumPayChannelSign.YG_ALIPAY.getId()){
                     zfbRate = detail.getProductMerchantPayRate();
                 }else {
                     ylRate = detail.getProductMerchantPayRate();
@@ -111,9 +111,9 @@ public class DealerChannelRateServiceImpl implements DealerChannelRateService{
                 final List<DealerChannelRate> dealerChannelRates = this.dealerChannelRateDao.selectByDealerIdAndProductId(dealerId, productId);
                 for (DealerChannelRate detail : dealerChannelRates) {
 
-                    if (detail.getChannelTypeSign() == EnumPayChannelSign.YG_WECHAT_PUBLIC.getId()) {
+                    if (detail.getChannelTypeSign() == EnumPayChannelSign.YG_WECHAT.getId()) {
                         wxRate = detail.getDealerMerchantPayRate();
-                    } else if (detail.getChannelTypeSign() == EnumPayChannelSign.YG_ALIPAY_PUBLIC.getId()) {
+                    } else if (detail.getChannelTypeSign() == EnumPayChannelSign.YG_ALIPAY.getId()) {
                         zfbRate = detail.getDealerMerchantPayRate();
                     } else {
                         ylRate = detail.getDealerMerchantPayRate();
@@ -124,9 +124,9 @@ public class DealerChannelRateServiceImpl implements DealerChannelRateService{
                 final List<DealerChannelRate> dealerChannelRates = this.dealerChannelRateDao.selectByDealerIdAndProductId(dealer.getFirstLevelDealerId(), productId);
                 for (DealerChannelRate detail : dealerChannelRates) {
 
-                    if (detail.getChannelTypeSign() == EnumPayChannelSign.YG_WECHAT_PUBLIC.getId()) {
+                    if (detail.getChannelTypeSign() == EnumPayChannelSign.YG_WECHAT.getId()) {
                         wxRate = detail.getDealerMerchantPayRate();
-                    } else if (detail.getChannelTypeSign() == EnumPayChannelSign.YG_ALIPAY_PUBLIC.getId()) {
+                    } else if (detail.getChannelTypeSign() == EnumPayChannelSign.YG_ALIPAY.getId()) {
                         zfbRate = detail.getDealerMerchantPayRate();
                     } else {
                         ylRate = detail.getDealerMerchantPayRate();
