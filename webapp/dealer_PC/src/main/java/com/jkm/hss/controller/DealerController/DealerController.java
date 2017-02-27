@@ -457,44 +457,21 @@ public class DealerController extends BaseController {
                     return CommonResponse.simpleResponse(-1, "上级代理信息有误");
                 }
                 DealerChannelRate dealerChannelRate = dealerChannelRateOptional.get();
-                if(channes.getChannelType()== EnumPayChannelSign.YG_WEIXIN.getId()){
-                    final BigDecimal withdrawSettleFee = new BigDecimal(channes.getWithdrawSettleFee());
-                    if (!(withdrawSettleFee.compareTo(dealerChannelRate.getDealerWithdrawFee()) >= 0
-                            && withdrawSettleFee.compareTo(dealerChannelRate.getDealerMerchantWithdrawFee()) <= 0)) {
-                        return CommonResponse.simpleResponse(-1, "微信提现结算价错误:必须大于一级的小于商户的");
-                    }
-                    final BigDecimal weixinSettleRate = new BigDecimal(channes.getPaymentSettleRate())
-                            .divide(new BigDecimal("100"), 4, BigDecimal.ROUND_HALF_UP);
-                    if (!(weixinSettleRate.compareTo(dealerChannelRate.getDealerTradeRate()) >= 0
-                            && weixinSettleRate.compareTo(dealerChannelRate.getDealerMerchantPayRate()) <= 0)) {
-                        return CommonResponse.simpleResponse(-1, "微信结算费率错误:必须大于一级的小于商户的");
-                    }
+
+                Optional<BasicChannel> basicChannelOptional = basicChannelService.selectByChannelTypeSign(channes.getChannelType());
+                if(!basicChannelOptional.isPresent()){
+                    return CommonResponse.simpleResponse(-1, "没有"+channes.getChannelType()+"通道基础配置");
                 }
-                if(channes.getChannelType()== EnumPayChannelSign.YG_ZHIFUBAO.getId()){
-                    final BigDecimal withdrawSettleFee = new BigDecimal(channes.getWithdrawSettleFee());
-                    if (!(withdrawSettleFee.compareTo(dealerChannelRate.getDealerWithdrawFee()) >= 0
-                            && withdrawSettleFee.compareTo(dealerChannelRate.getDealerMerchantWithdrawFee()) <= 0)) {
-                        return CommonResponse.simpleResponse(-1, "支付宝提现结算价错误:必须大于一级的小于商户的");
-                    }
-                    final BigDecimal zhifubaoSettleRate = new BigDecimal(channes.getPaymentSettleRate())
-                            .divide(new BigDecimal("100"), 4, BigDecimal.ROUND_HALF_UP);
-                    if (!(zhifubaoSettleRate.compareTo(dealerChannelRate.getDealerTradeRate()) >= 0
-                            && zhifubaoSettleRate.compareTo(dealerChannelRate.getDealerMerchantPayRate()) <= 0)) {
-                        return CommonResponse.simpleResponse(-1, "支付宝结算费率错误:必须大于一级的小于商户的");
-                    }
+                final BigDecimal withdrawSettleFee = new BigDecimal(channes.getWithdrawSettleFee());
+                if (!(withdrawSettleFee.compareTo(dealerChannelRate.getDealerWithdrawFee()) >= 0
+                        && withdrawSettleFee.compareTo(dealerChannelRate.getDealerMerchantWithdrawFee()) <= 0)) {
+                    return CommonResponse.simpleResponse(-1, basicChannelOptional.get().getChannelName()+"提现结算价错误:必须大于一级的小于商户的");
                 }
-                if(channes.getChannelType()== EnumPayChannelSign.YG_YINLIAN.getId()){
-                    final BigDecimal withdrawSettleFee = new BigDecimal(channes.getWithdrawSettleFee());
-                    if (!(withdrawSettleFee.compareTo(dealerChannelRate.getDealerWithdrawFee()) >= 0
-                            && withdrawSettleFee.compareTo(dealerChannelRate.getDealerMerchantWithdrawFee()) <= 0)) {
-                        return CommonResponse.simpleResponse(-1, "快捷提现结算价错误:必须大于一级的小于商户的");
-                    }
-                    final BigDecimal yinlianSettleRate = new BigDecimal(channes.getPaymentSettleRate())
-                            .divide(new BigDecimal("100"), 4, BigDecimal.ROUND_HALF_UP);
-                    if (!(yinlianSettleRate.compareTo(dealerChannelRate.getDealerTradeRate()) >= 0
-                            && yinlianSettleRate.compareTo(dealerChannelRate.getDealerMerchantPayRate()) <= 0)) {
-                        return CommonResponse.simpleResponse(-1, "快捷结算费率错误:必须大于一级的小于商户的");
-                    }
+                final BigDecimal paymentSettleRate = new BigDecimal(channes.getPaymentSettleRate())
+                        .divide(new BigDecimal("100"), 4, BigDecimal.ROUND_HALF_UP);
+                if (!(paymentSettleRate.compareTo(dealerChannelRate.getDealerTradeRate()) >= 0
+                        && paymentSettleRate.compareTo(dealerChannelRate.getDealerMerchantPayRate()) <= 0)) {
+                    return CommonResponse.simpleResponse(-1, basicChannelOptional.get().getChannelName()+"结算费率错误:必须大于一级的小于商户的");
                 }
             }
             if(request.getInviteBtn()!= EnumInviteBtn.ON.getId()&&request.getInviteBtn()!=EnumInviteBtn.OFF.getId()){
