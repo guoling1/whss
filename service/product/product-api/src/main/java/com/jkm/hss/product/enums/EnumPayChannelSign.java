@@ -12,14 +12,14 @@ public enum EnumPayChannelSign {
 
     //#################################阳光万维########################################
     /**
-     * 微信公众号
+     * 阳光微信
      */
-    YG_WECHAT_PUBLIC(101, "sm_wechat_public", "微信", "阳光微信公众号", EnumUpperChannel.SAOMI, false),
+    YG_WECHAT_PUBLIC(101, "sm_wechat", "微信", "阳光微信", EnumUpperChannel.SAOMI, false),
 
     /**
-     * 支付宝公众号
+     * 阳光支付宝
      */
-    YG_ALIPAY_PUBLIC(102, "sm_alipay_public", "支付宝", "阳光支付宝公众号", EnumUpperChannel.SAOMI, false),
+    YG_ALIPAY_PUBLIC(102, "sm_alipay", "支付宝", "阳光支付宝", EnumUpperChannel.SAOMI, false),
 
     /**
      * 快捷支付
@@ -29,34 +29,34 @@ public enum EnumPayChannelSign {
     /**
      * 微信 扫码
      */
-    YG_WECHAT_CODE(104, "sm_wechat_code", "微信", "阳光微信扫码", EnumUpperChannel.SAOMI, false),
+   // YG_WECHAT_CODE(104, "sm_wechat_code", "微信", "阳光微信扫码", EnumUpperChannel.SAOMI, false),
 
     /**
      * 阳光支付宝扫码
      */
-    YG_ALIPAY_CODE(105, "sm_alipay_code", "支付宝", "阳光支付宝扫码", EnumUpperChannel.SAOMI, false),
+    //YG_ALIPAY_CODE(105, "sm_alipay_code", "支付宝", "阳光支付宝扫码", EnumUpperChannel.SAOMI, false),
 
     //#################################卡盟############################################
 
     /**
-     * 卡盟微信扫码
+     * 卡盟微信
      */
-    KM_WECHAT_CODE(201, "km_wechat_code", "微信", "卡盟微信扫码", EnumUpperChannel.KAMENG, true),
+    KM_WECHAT_CODE(201, "km_wechat", "微信", "卡盟微信", EnumUpperChannel.KAMENG, true),
 
     /**
-     * 卡盟支付宝扫码
+     * 卡盟支付宝
      */
-    KM_ALIPAY_CODE(202, "km_alipay_code", "支付宝", "卡盟支付宝扫码", EnumUpperChannel.KAMENG, true),
+    KM_ALIPAY_CODE(202, "km_alipay", "支付宝", "卡盟支付宝", EnumUpperChannel.KAMENG, true),
 
     /**
      * 卡盟微信公众号
      */
-    KM_WECHAT_PUBLIC(203, "km_wechat_public", "微信", "卡盟微信公众号", EnumUpperChannel.KAMENG, true),
+   // KM_WECHAT_PUBLIC(203, "km_wechat_public", "微信", "卡盟微信公众号", EnumUpperChannel.KAMENG, true),
 
     /**
      * 卡盟支付宝公众号
      */
-    KM_ALIPAY_PUBLIC(204, "km_alipay_public", "支付宝", "卡盟支付宝公众号", EnumUpperChannel.KAMENG, true),
+  //  KM_ALIPAY_PUBLIC(204, "km_alipay_public", "支付宝", "卡盟支付宝公众号", EnumUpperChannel.KAMENG, true),
 
     //#################################摩宝#############################################
     /**
