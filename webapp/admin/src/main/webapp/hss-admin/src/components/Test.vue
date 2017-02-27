@@ -1769,7 +1769,7 @@
 </style>-->
 
 <!--新增产品-->
-<template lang="html">
+<!--<template lang="html">
   <div id="productAdd">
     <div style="margin: 15px 15px 150px;">
       <div class="box tableTop">
@@ -2052,7 +2052,7 @@
   }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
+&lt;!&ndash; Add "scoped" attribute to limit CSS to this component only &ndash;&gt;
 <style scoped lang="less">
   .alignRight {
     margin-right: 15px;
@@ -2077,4 +2077,66 @@
     top:0;
     right: 0;
   }
+</style>-->
+
+<!--产品列表-->
+<template>
+  <div id="productList">
+    <div class="col-md-12">
+      <div class="box" style="margin-top:15px;overflow: hidden">
+        <div class="box-header">
+          <h3 class="box-title">产品列表</h3>
+          <router-link to="/admin/record/productAdd" class="pull-right btn btn-primary" style="margin-left: 20px">新增产品</router-link>
+        </div>
+        <div class="box-body" style="width: 50%;margin-left: 5%;margin-bottom: 200px">
+          <!--表格-->
+          <el-table style="font-size: 12px;" :data="records" border>
+            <el-table-column label="产品名称" prop="name"></el-table-column>
+            <el-table-column label="操作" min-width="112">
+              <template scope="scope">
+                <router-link :to="{path:'/admin/record/newDealDet',query:{orderNo:records[scope.$index].type}}" type="text" size="small">查看详情
+                </router-link>
+              </template>
+            </el-table-column>
+
+          </el-table>
+          </el-table>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script lang="babel">
+  export default{
+    name: 'passList',
+    data(){
+      return {
+        records: [{
+          name:'好收收',
+          type:'hss'
+        },{
+          name:'好收银',
+          type:'hsy'
+        }],
+        count: 0,
+        total: 0,
+        loading: true,
+        url: ''
+      }
+    },
+    created: function () {
+
+    },
+  }
+</script>
+
+<style scoped lang="less" rel="stylesheet/less">
+  ul {
+    padding: 0;
+  }
+  .btn {
+    font-size: 12px;
+  }
+
 </style>
