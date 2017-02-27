@@ -2,6 +2,7 @@ package com.jkm.hss.product.servcie;
 
 import com.google.common.base.Optional;
 import com.jkm.hss.product.entity.BasicChannel;
+import com.jkm.hss.product.enums.EnumMerchantPayType;
 
 import java.util.List;
 
@@ -49,4 +50,13 @@ public interface BasicChannelService {
     void update(BasicChannel basicChannel);
 
     BasicChannel selectById(long id);
+
+    /**
+     *  根据通道，扫码方式选择 传给支付中心的 code
+     *
+     * @param channelSign
+     * @param type
+     * @return
+     */
+    String selectCodeByChannelSign(int channelSign, EnumMerchantPayType type);
 }

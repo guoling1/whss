@@ -1,6 +1,5 @@
 package com.jkm.hss.bill.service.impl;
 
-import com.jkm.base.common.util.DateFormatUtil;
 import com.jkm.hss.account.helper.AccountConstants;
 import com.jkm.hss.bill.service.CalculateService;
 import com.jkm.hss.dealer.entity.Dealer;
@@ -28,7 +27,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -79,9 +77,9 @@ public class CalculateServiceImpl implements CalculateService {
             //hsy
             final List<AppAuUser> appAuUsers = this.hsyShopDao.findCorporateUserByShopID(merchantId);
             final AppAuUser appAuUser = appAuUsers.get(0);
-            if (channelSign == EnumPayChannelSign.YG_WEIXIN.getId()){
+            if (channelSign == EnumPayChannelSign.YG_WECHAT.getId()){
                 return  appAuUser.getWeixinRate();
-            }else if (channelSign == EnumPayChannelSign.YG_ZHIFUBAO.getId()){
+            }else if (channelSign == EnumPayChannelSign.YG_ALIPAY.getId()){
                 return appAuUser.getAlipayRate();
             }else{
                 return appAuUser.getFastRate();
@@ -299,9 +297,9 @@ public class CalculateServiceImpl implements CalculateService {
     private BigDecimal getMerchantRate(int channelSign, final MerchantInfo merchantInfo){
 
         final BigDecimal merchantRate;
-        if (channelSign == EnumPayChannelSign.YG_WEIXIN.getId()){
+        if (channelSign == EnumPayChannelSign.YG_WECHAT.getId()){
             return  merchantInfo.getWeixinRate();
-        }else if (channelSign == EnumPayChannelSign.YG_ZHIFUBAO.getId()){
+        }else if (channelSign == EnumPayChannelSign.YG_ALIPAY.getId()){
             return merchantInfo.getAlipayRate();
         }else{
             return merchantInfo.getFastRate();

@@ -21,6 +21,13 @@ public class PaymentSdkPlaceOrderRequest {
     private String orderNo;
 
     /**
+     * 支付通道
+     *
+     * {@link com.jkm.hss.product.enums.EnumPayChannelSign}
+     */
+    private String channel;
+
+    /**
      * 商品描述
      */
     private String goodsDescribe;
@@ -51,7 +58,7 @@ public class PaymentSdkPlaceOrderRequest {
     private String totalAmount;
 
     /**
-     * 交易类型(jsapi,epos等)
+     *
      */
     private String tradeType;
 }

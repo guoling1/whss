@@ -18,7 +18,6 @@ import com.jkm.hss.dealer.entity.Dealer;
 import com.jkm.hss.dealer.helper.DealerSupport;
 import com.jkm.hss.helper.request.DealerWithdrawRequest;
 import com.jkm.hss.helper.request.FlowDetailsSelectRequest;
-import com.jkm.hss.helper.request.ProfitDetailsSelectRequest;
 import com.jkm.hss.helper.response.AccountInfoResponse;
 import com.jkm.hss.helper.response.DealerInfoResponse;
 import com.jkm.hss.helper.response.FlowDetailsSelectResponse;
@@ -29,11 +28,9 @@ import com.jkm.hss.notifier.helper.SendMessageParams;
 import com.jkm.hss.notifier.service.SendMessageService;
 import com.jkm.hss.notifier.service.SmsAuthService;
 import com.jkm.hss.product.enums.EnumPayChannelSign;
-import com.sun.org.apache.bcel.internal.generic.RETURN;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
-import org.apache.poi.ss.formula.functions.T;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -183,9 +180,9 @@ public class AccountController extends BaseController{
             if (account.getAvailable().compareTo(new BigDecimal(withdrawRequest.getAmount())) < 0) {
                 return CommonResponse.simpleResponse(-1, "可用余额不足");
             }
-            if (EnumPayChannelSign.YG_WEIXIN.getId() != withdrawRequest.getChannel()
-                    && EnumPayChannelSign.YG_ZHIFUBAO.getId() != withdrawRequest.getChannel()
-                    && EnumPayChannelSign.YG_YINLIAN.getId() != withdrawRequest.getChannel()) {
+            if (EnumPayChannelSign.YG_WECHAT.getId() != withdrawRequest.getChannel()
+                    && EnumPayChannelSign.YG_ALIPAY.getId() != withdrawRequest.getChannel()
+                    && EnumPayChannelSign.YG_UNIONPAY.getId() != withdrawRequest.getChannel()) {
                 return CommonResponse.simpleResponse(-1, "提现方式错误");
             }
             final Pair<Integer, String> withdraw = this.dealerWithdrawService.withdraw(account.getId(), withdrawRequest.getAmount(),

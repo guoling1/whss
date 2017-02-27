@@ -19,36 +19,26 @@ import java.util.Date;
 public class AccountSettleAuditRecord extends BaseEntity {
 
     /**
-     * 商户编号
+     * 编号
      */
-    private String merchantNo;
+    private String userNo;
+
+    /**
+     * 名称
+     */
+    private String userName;
+
+    /**
+     * 账户类型
+     *
+     * {@link com.jkm.hss.account.enums.EnumAccountUserType}
+     */
+    private int accountUserType;
 
     /**
      * 账户id
      */
     private long accountId;
-
-    /**
-     * 商户名称
-     */
-    private String merchantName;
-
-    /**
-     * 上级代理编号
-     */
-    private String dealerNo;
-
-    /**
-     * 上级代理名称
-     */
-    private String dealerName;
-
-    /**
-     * 业务线（结算产品）
-     *
-     * {@link com.jkm.hss.account.enums.EnumAppType}
-     */
-    private String appId;
 
     /**
      * 交易日期

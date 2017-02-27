@@ -15,6 +15,7 @@ import com.jkm.hss.account.entity.SettleAccountFlow;
 import com.jkm.hss.account.enums.EnumAccountFlowType;
 import com.jkm.hss.account.enums.EnumAccountUserType;
 import com.jkm.hss.account.enums.EnumAppType;
+import com.jkm.hss.account.helper.selectresponse.SettleAccountFlowStatistics;
 import com.jkm.hss.account.sevice.AccountFlowService;
 import com.jkm.hss.account.sevice.AccountService;
 import com.jkm.hss.account.sevice.SettleAccountFlowService;
@@ -174,21 +175,23 @@ public class AccountSettleAuditRecordServiceImpl implements AccountSettleAuditRe
     @Override
     @Transactional
     public void handleT1SettleTask() {
-        final List<Date> tradeDateList = new ArrayList<>();
-        final DateTime now = DateTime.now();
-        tradeDateList.add(DateFormatUtil.parse(DateFormatUtil.format(now.minusDays(1).toDate(), DateFormatUtil.yyyy_MM_dd) , DateFormatUtil.yyyy_MM_dd));
+        final Date tradeDate = DateFormatUtil.parse(DateFormatUtil.format(DateTime.now().minusDays(1).toDate(), DateFormatUtil.yyyy_MM_dd) , DateFormatUtil.yyyy_MM_dd);
         //商户昨日待结算记录
-        final List<SettleAccountFlow> settleAccountFlows = this.settleAccountFlowService.getMerchantLastWordDayRecord(tradeDateList);
-        if (!CollectionUtils.isEmpty(settleAccountFlows)) {
-            final HashSet<Long> accountIds = new HashSet<>();
-            for (SettleAccountFlow settleAccountFlow : settleAccountFlows) {
-                accountIds.add(settleAccountFlow.getAccountId());
-                if (settleAccountFlow.getSettleAuditRecordId() > 0) {
-                    log.error("###############结算流水[{}], 已经存在结算审核记录#################", settleAccountFlow.getId());
-                    return;
+        final int count = this.settleAccountFlowService.getYesterdayDecreaseFlowCount(tradeDate);
+        if (count > 0) {
+            log.error("###############存在已经结算的待结算流水#################");
+        }
+        final List<SettleAccountFlowStatistics> settleAccountFlowStatisticses = this.settleAccountFlowService.statisticsYesterdayFlow(tradeDate);
+        log.info("今日[{}]的待结算流水统计是[{}]", settleAccountFlowStatisticses);
+        if (!CollectionUtils.isEmpty(settleAccountFlowStatisticses)) {
+            final List<Long> accountIds = Lists.transform(settleAccountFlowStatisticses, new Function<SettleAccountFlowStatistics, Long>() {
+                @Override
+                public Long apply(SettleAccountFlowStatistics input) {
+                    return input.getAccountId();
                 }
-            }
+            });
             final List<AppBizShop> shopList = this.hsyShopDao.findAppBizShopByAccountIDList(new ArrayList<>(accountIds));
+            Preconditions.checkState(accountIds.size() == shopList.size(), "通过账户查询店铺出现异常");
             //accountId--shop(主)
             final Map<Long, AppBizShop> shopMap = Maps.uniqueIndex(shopList, new Function<AppBizShop, Long>() {
                 @Override
@@ -197,16 +200,16 @@ public class AccountSettleAuditRecordServiceImpl implements AccountSettleAuditRe
                 }
             });
             //accountId--List<SettleAccountFlow>
-            final Map<Long, List<SettleAccountFlow>> accountIdFlowMap = this.getAccountIdFlowMap(accountIds, settleAccountFlows);
-            if (!accountIdFlowMap.isEmpty()) {
-                final Set<Long> keySet = accountIdFlowMap.keySet();
-                final Iterator<Long> keyIterator = keySet.iterator();
-                while (keyIterator.hasNext()) {
-                    final Long key = keyIterator.next();
-                    final List<SettleAccountFlow> flows = accountIdFlowMap.get(key);
-                    this.generateAuditRecord(key, flows, shopMap);
-                }
-            }
+//            final Map<Long, List<SettleAccountFlow>> accountIdFlowMap = this.getAccountIdFlowMap(accountIds, settleAccountFlows);
+//            if (!accountIdFlowMap.isEmpty()) {
+//                final Set<Long> keySet = accountIdFlowMap.keySet();
+//                final Iterator<Long> keyIterator = keySet.iterator();
+//                while (keyIterator.hasNext()) {
+//                    final Long key = keyIterator.next();
+//                    final List<SettleAccountFlow> flows = accountIdFlowMap.get(key);
+//                    this.generateAuditRecord(key, flows, shopMap);
+//                }
+//            }
         }
     }
 
@@ -220,20 +223,20 @@ public class AccountSettleAuditRecordServiceImpl implements AccountSettleAuditRe
     @Transactional
     public Pair<Integer, String> normalSettle(final long recordId) {
         final AccountSettleAuditRecord accountSettleAuditRecord = this.getByIdWithLock(recordId).get();
-        log.info("商户[{}]， 结算交易", accountSettleAuditRecord.getMerchantNo());
-        if (accountSettleAuditRecord.isSuccessAccountCheck() && accountSettleAuditRecord.isDueSettle()) {
-            final List<SettleAccountFlow> flows = this.settleAccountFlowService.getByAuditRecordId(recordId);
-            if (!CollectionUtils.isEmpty(flows)) {
-                final Pair<Integer, String> checkResult = this.checkFlowIsIncrease(flows);
-                if (0 != checkResult.getLeft()) {
-                    return checkResult;
-                }
-                this.updateSettleStatus(recordId, EnumSettleStatus.SETTLE_ING.getId());
-                this.merchantSettle(flows, accountSettleAuditRecord.getMerchantNo(), accountSettleAuditRecord.getAccountId());
-                this.updateSettleStatus(recordId, EnumSettleStatus.SETTLED_ALL.getId());
-            }
-            return Pair.of(0, "结算处理成功");
-        }
+//        log.info("商户[{}]， 结算交易", accountSettleAuditRecord.getMerchantNo());
+//        if (accountSettleAuditRecord.isSuccessAccountCheck() && accountSettleAuditRecord.isDueSettle()) {
+//            final List<SettleAccountFlow> flows = this.settleAccountFlowService.getByAuditRecordId(recordId);
+//            if (!CollectionUtils.isEmpty(flows)) {
+//                final Pair<Integer, String> checkResult = this.checkFlowIsIncrease(flows);
+//                if (0 != checkResult.getLeft()) {
+//                    return checkResult;
+//                }
+//                this.updateSettleStatus(recordId, EnumSettleStatus.SETTLE_ING.getId());
+//                this.merchantSettle(flows, accountSettleAuditRecord.getMerchantNo(), accountSettleAuditRecord.getAccountId());
+//                this.updateSettleStatus(recordId, EnumSettleStatus.SETTLED_ALL.getId());
+//            }
+//            return Pair.of(0, "结算处理成功");
+//        }
 
         return Pair.of(-1, "非法操作");
     }
@@ -250,26 +253,26 @@ public class AccountSettleAuditRecordServiceImpl implements AccountSettleAuditRe
     @Transactional
     public Pair<Integer, String> settleCheckedPart(final long recordId, final List<String> checkedOrderNos) {
         final AccountSettleAuditRecord accountSettleAuditRecord = this.getByIdWithLock(recordId).get();
-        log.info("商户[{}]， 结算已经对账的交易[{}]", accountSettleAuditRecord.getMerchantNo(), checkedOrderNos);
-        if (accountSettleAuditRecord.isDueSettle()) {
-            final List<SettleAccountFlow> flows = this.settleAccountFlowService.getByAuditRecordId(recordId);
-            if (!CollectionUtils.isEmpty(flows)) {
-                final List<SettleAccountFlow> checkedFlows = new ArrayList<>();
-                for (SettleAccountFlow settleAccountFlow : flows) {
-                    if (checkedOrderNos.contains(settleAccountFlow.getOrderNo())) {
-                        checkedFlows.add(settleAccountFlow);
-                    }
-                }
-                final Pair<Integer, String> checkResult = this.checkFlowIsIncrease(checkedFlows);
-                if (0 != checkResult.getLeft()) {
-                    return checkResult;
-                }
-                this.updateSettleStatus(recordId, EnumSettleStatus.SETTLE_ING.getId());
-                this.merchantSettle(checkedFlows, accountSettleAuditRecord.getMerchantNo(), accountSettleAuditRecord.getAccountId());
-                this.updateSettleStatus(recordId, EnumSettleStatus.SETTLE_PART.getId());
-                return Pair.of(0, "结算处理成功");
-            }
-        }
+//        log.info("商户[{}]， 结算已经对账的交易[{}]", accountSettleAuditRecord.getMerchantNo(), checkedOrderNos);
+//        if (accountSettleAuditRecord.isDueSettle()) {
+//            final List<SettleAccountFlow> flows = this.settleAccountFlowService.getByAuditRecordId(recordId);
+//            if (!CollectionUtils.isEmpty(flows)) {
+//                final List<SettleAccountFlow> checkedFlows = new ArrayList<>();
+//                for (SettleAccountFlow settleAccountFlow : flows) {
+//                    if (checkedOrderNos.contains(settleAccountFlow.getOrderNo())) {
+//                        checkedFlows.add(settleAccountFlow);
+//                    }
+//                }
+//                final Pair<Integer, String> checkResult = this.checkFlowIsIncrease(checkedFlows);
+//                if (0 != checkResult.getLeft()) {
+//                    return checkResult;
+//                }
+//                this.updateSettleStatus(recordId, EnumSettleStatus.SETTLE_ING.getId());
+//                this.merchantSettle(checkedFlows, accountSettleAuditRecord.getMerchantNo(), accountSettleAuditRecord.getAccountId());
+//                this.updateSettleStatus(recordId, EnumSettleStatus.SETTLE_PART.getId());
+//                return Pair.of(0, "结算处理成功");
+//            }
+//        }
         return Pair.of(-1, "非法操作");
     }
 
@@ -283,20 +286,20 @@ public class AccountSettleAuditRecordServiceImpl implements AccountSettleAuditRe
     @Transactional
     public Pair<Integer, String> forceSettleAll(final long recordId) {
         final AccountSettleAuditRecord accountSettleAuditRecord = this.getById(recordId).get();
-        log.info("商户[{}]， 强制结算所有交易[{}]", accountSettleAuditRecord.getMerchantNo());
-        if (accountSettleAuditRecord.isDueSettle()) {
-            final List<SettleAccountFlow> flows = this.settleAccountFlowService.getByAuditRecordId(recordId);
-            if (!CollectionUtils.isEmpty(flows)) {
-                final Pair<Integer, String> checkResult = this.checkFlowIsIncrease(flows);
-                if (0 == checkResult.getLeft()) {
-                    this.updateSettleStatus(recordId, EnumSettleStatus.SETTLE_ING.getId());
-                    this.merchantSettle(flows, accountSettleAuditRecord.getMerchantNo(), accountSettleAuditRecord.getAccountId());
-                    this.updateSettleStatus(recordId, EnumSettleStatus.SETTLED_ALL.getId());
-                    return Pair.of(0, "强制结算处理成功");
-                }
-                return checkResult;
-            }
-        }
+//        log.info("商户[{}]， 强制结算所有交易[{}]", accountSettleAuditRecord.getMerchantNo());
+//        if (accountSettleAuditRecord.isDueSettle()) {
+//            final List<SettleAccountFlow> flows = this.settleAccountFlowService.getByAuditRecordId(recordId);
+//            if (!CollectionUtils.isEmpty(flows)) {
+//                final Pair<Integer, String> checkResult = this.checkFlowIsIncrease(flows);
+//                if (0 == checkResult.getLeft()) {
+//                    this.updateSettleStatus(recordId, EnumSettleStatus.SETTLE_ING.getId());
+//                    this.merchantSettle(flows, accountSettleAuditRecord.getMerchantNo(), accountSettleAuditRecord.getAccountId());
+//                    this.updateSettleStatus(recordId, EnumSettleStatus.SETTLED_ALL.getId());
+//                    return Pair.of(0, "强制结算处理成功");
+//                }
+//                return checkResult;
+//            }
+//        }
         return Pair.of(-1, "非法操作");
     }
 
@@ -472,15 +475,14 @@ public class AccountSettleAuditRecordServiceImpl implements AccountSettleAuditRe
         final AppBizShop shop = shopMap.get(accountId);
         final AppAuUser appAuUser = this.hsyShopDao.findCorporateUserByShopID(shop.getId()).get(0);
         final Optional<Dealer> dealerOptional = this.dealerService.getById(appAuUser.getDealerID());
-        accountSettleAuditRecord.setMerchantNo(shop.getGlobalID());
-        accountSettleAuditRecord.setAccountId(shop.getAccountID());
-        accountSettleAuditRecord.setMerchantName(shop.getName());
-        if (dealerOptional.isPresent()) {
-            final Dealer dealer = dealerOptional.get();
-            accountSettleAuditRecord.setDealerNo(dealer.getMarkCode());
-            accountSettleAuditRecord.setDealerName(dealer.getProxyName());
-        }
-        accountSettleAuditRecord.setAppId(flows.get(0).getAppId());
+//        accountSettleAuditRecord.setMerchantNo(shop.getGlobalID());
+//        accountSettleAuditRecord.setAccountId(shop.getAccountID());
+//        accountSettleAuditRecord.setMerchantName(shop.getName());
+//        if (dealerOptional.isPresent()) {
+//            final Dealer dealer = dealerOptional.get();
+//            accountSettleAuditRecord.setDealerNo(dealer.getMarkCode());
+//            accountSettleAuditRecord.setDealerName(dealer.getProxyName());
+//        }
         accountSettleAuditRecord.setTradeDate(flows.get(0).getTradeDate());
         accountSettleAuditRecord.setTradeNumber(flows.size());
         BigDecimal totalAmount = new BigDecimal("0.00");

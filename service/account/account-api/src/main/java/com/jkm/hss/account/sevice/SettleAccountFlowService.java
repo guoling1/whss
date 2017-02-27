@@ -3,6 +3,7 @@ package com.jkm.hss.account.sevice;
 import com.google.common.base.Optional;
 import com.jkm.hss.account.entity.SettleAccountFlow;
 import com.jkm.hss.account.enums.EnumAccountFlowType;
+import com.jkm.hss.account.helper.selectresponse.SettleAccountFlowStatistics;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -19,6 +20,15 @@ public interface SettleAccountFlowService {
      * @param accountFlow
      */
     void add(SettleAccountFlow accountFlow);
+
+    /**
+     * 保存结算单id
+     *
+     * @param id
+     * @param settlementRecordId
+     * @return
+     */
+    int updateSettlementRecordIdById(long id, long settlementRecordId);
 
     /**
      * 保存结算审核记录
@@ -56,18 +66,16 @@ public interface SettleAccountFlowService {
      * @param remark  备注
      * @param type 变更方向
      */
-    void addSettleAccountFlow(long accountId, String orderNo, BigDecimal changeAmount, String remark, EnumAccountFlowType type,
+    long addSettleAccountFlow(long accountId, String orderNo, BigDecimal changeAmount, String remark, EnumAccountFlowType type,
             String appId, Date tradeDate, int accountUserType);
 
     /**
-     * 查询上一个工作日的结算流水（未结算）
+     * 统计上一日的结算流水（未结算）
      *
-     * 如果今日是周一查询的是（周五至周日）的；
-     *
-     * @param tradeDateList
+     * @param tradeDate
      * @return
      */
-    List<SettleAccountFlow> getMerchantLastWordDayRecord(List<Date> tradeDateList);
+    List<SettleAccountFlowStatistics> statisticsYesterdayFlow(Date tradeDate);
 
     /**
      * 按审核记录id查询
@@ -84,4 +92,20 @@ public interface SettleAccountFlowService {
      * @return
      */
     List<SettleAccountFlow> getDealerOrCompanyFlowByOrderNo(String orderNo);
+
+    /**
+     * 按结算单id查询
+     *
+     * @param settlementRecordId
+     * @return
+     */
+    List<SettleAccountFlow> getBySettlementRecordId(long settlementRecordId);
+
+    /**
+     * 查询昨日出账流水个数
+     *
+     * @param tradeDate
+     * @return
+     */
+    int getYesterdayDecreaseFlowCount(Date tradeDate);
 }
