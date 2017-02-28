@@ -121,7 +121,7 @@ public class UpgradeController extends BaseController {
             upgradeRulesAndRateResponse.setUpgradeRate(upgradeRate.multiply(b1));
             upgradeRulesAndRateResponse.setTradeRate(tradeRate.multiply(b1));
             upgradeRulesAndRateResponse.setStandard(upgradeRecommendRulesOptional.get().getInviteStandard());
-    }
+        }
         return CommonResponse.objectResponse(1, "success", upgradeRulesAndRateResponse);
     }
 

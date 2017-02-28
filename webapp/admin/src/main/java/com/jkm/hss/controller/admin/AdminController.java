@@ -31,7 +31,6 @@ import com.jkm.hss.dealer.helper.requestparam.FirstLevelDealerAdd2Request;
 import com.jkm.hss.dealer.helper.requestparam.FirstLevelDealerAddRequest;
 import com.jkm.hss.dealer.helper.requestparam.FirstLevelDealerUpdate2Request;
 import com.jkm.hss.dealer.helper.requestparam.FirstLevelDealerUpdateRequest;
-import com.jkm.hss.dealer.helper.requestparam.*;
 import com.jkm.hss.dealer.service.DealerChannelRateService;
 import com.jkm.hss.dealer.service.DealerRateService;
 import com.jkm.hss.dealer.service.DealerService;
@@ -968,8 +967,12 @@ public class AdminController extends BaseController {
      */
     @ResponseBody
     @RequestMapping(value = "/disableUser", method = RequestMethod.POST)
-    public CommonResponse disableUser (@RequestBody AdminUserRequest adminUserRequest) {
+    public CommonResponse disableUser (final HttpServletResponse response,@RequestBody AdminUserRequest adminUserRequest) {
         adminUserService.disableUser(adminUserRequest.getId());
+        if(super.getAdminUser().getId()==adminUserRequest.getId()){//禁用自己登出
+            this.adminUserService.logout(getAdminUser().getId());
+            CookieUtil.deleteCookie(response, ApplicationConsts.ADMIN_COOKIE_KEY, ApplicationConsts.getApplicationConfig().domain());
+        }
         return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "禁用成功");
     }
     /**

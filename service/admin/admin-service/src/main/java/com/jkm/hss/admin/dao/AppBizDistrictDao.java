@@ -23,6 +23,11 @@ public interface AppBizDistrictDao {
      * @return
      */
     List<AppBizDistrictResponse> findCityByProvinceCode(@Param("code") String code);
+    /**
+     * 查询记录
+     * @return
+     */
+    List<AppBizDistrictResponse> findByCode(@Param("code") String code);
 
 
 }

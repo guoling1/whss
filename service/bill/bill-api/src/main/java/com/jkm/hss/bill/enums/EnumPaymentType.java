@@ -13,9 +13,19 @@ import lombok.Getter;
 public enum EnumPaymentType {
 
     /**
+     * 微信扫码
+     */
+    WECHAT_SCAN_CODE("S", "微信扫码"),
+
+    /**微信二维码
+     *
+     */
+    WECHAT_QR_CODE("N", "微信二维码"),
+
+    /**
      * 微信H5收银台
      */
-    WECHAT_H5_CASHIER_DESK("H", "微信扫码"),
+    WECHAT_H5_CASHIER_DESK("H", "微信H5收银台"),
 
     /**
      * 无卡快捷支付
@@ -26,6 +36,8 @@ public enum EnumPaymentType {
      * 支付宝扫码
      */
     ALIPAY_SCAN_CODE("Z", "支付宝扫码")
+
+
     ;
 
 

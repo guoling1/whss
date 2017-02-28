@@ -195,12 +195,15 @@ public class TradeController extends BaseController {
                 return CommonResponse.simpleResponse(-1, "不存在的支付状态");
             }
         }
-        for (int i = 0; i < payTypeList.size(); i++) {
-            final String payType = payTypeList.get(i);
-            if (!EnumPayChannelSign.isExistByCode(payType)) {
-                return CommonResponse.simpleResponse(-1, "不存在的支付方式");
-            }
-        }
+//        for (int i = 0; i < payTypeList.size(); i++) {
+//            final String payType = payTypeList.get(i);
+//            if (!EnumPaymentType.WECHAT_H5_CASHIER_DESK.getId().equals(payType)
+//                    && !EnumPaymentType.QUICK_APY.getId().equals(payType)
+//                    && !EnumPaymentType.ALIPAY_SCAN_CODE.getId().equals(payType)) {
+//                return CommonResponse.simpleResponse(-1, "不存在的支付方式");
+//            }
+//        }
+        payTypeList.add("N");
         if (StringUtils.isEmpty(requestParam.getOrderNo())) {
             requestParam.setOrderNo(null);
         }

@@ -35,4 +35,12 @@ public class ContinueBankInfoRequest {
      * 所在城市名称
      */
     private String cityName;
+    /**
+     * 所在县编码
+     */
+    private String countyCode;
+    /**
+     * 所在县名称
+     */
+    private String countyName;
 }

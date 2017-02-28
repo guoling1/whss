@@ -10,7 +10,25 @@
     <link rel="stylesheet" href="http://static.jinkaimen.cn/weui/weui.css">
 </head>
 <body>
+银行卡名称：${bankName}
+<br>
+银行卡号：${bankNo}
+<br>
+手机号：${mobile}
+<br>
+卡宾：${bankBin}
+<br>
+省份编码：${provinceCode}
+<br>
+省份名称：${provinceName}
+<br>
+市编码：${cityCode}
+<br>
+市名称：${cityName}
+<br>
+县编码：${countyCode}
+<br>
+县名称：${countyName}
 </body>
 <script src="http://static.jinkaimen.cn/vendor/vendor.1.0.1.min.js"></script>
-<script src="http://static.jinkaimen.cn/hss/2.0.1/bank.min.js"></script>
 </html>

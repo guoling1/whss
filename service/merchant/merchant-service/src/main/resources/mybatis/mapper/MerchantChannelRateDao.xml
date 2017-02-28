@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jkm.hss.merchant.dao.MerchantChannelRateDao">
+
+    <!-- 通用查询结果列-->
+    <sql id="Base_Column_List">
+        id,merchant_id,product_id,channel_type_sign,merchant_balance_type,merchant_pay_rate,merchant_withdraw_fee,
+        enter_net,status,create_time,update_time
+    </sql>
+
+    <!--根据商户编码、通道标示、产品编码查询商户费用-->
+    <select id="selectByChannelTypeSignAndProductIdAndMerchantId" resultType="com.jkm.hss.merchant.entity.MerchantChannelRate">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM tb_merchant_channel_rate
+        WHERE
+        merchant_id=#{merchantId} and product_id=#{productId} and channel_type_sign=#{channel_type_sign} and status=1
+    </select>
+    <select id="selectIngMerchantInfo" resultType="com.jkm.hss.merchant.entity.MerchantChannelRate">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM tb_merchant_channel_rate
+        WHERE
+        enter_net = #{entId}
+    </select>
+
+    <!--费率初始化-->
+    <insert id="initMerchantChannelRate" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO tb_merchant_channel_rate
+        (
+        merchant_id,
+        product_id,
+        channel_type_sign,
+        merchant_balance_type,
+        merchant_pay_rate,
+        merchant_withdraw_fee,
+        enter_net,
+        status
+        )
+        VALUES
+        (
+        #{merchantId},
+        #{productId},
+        #{channelTypeSign},
+        #{merchantBalanceType},
+        #{merchantPayRate},
+        #{merchantWithdrawFee},
+        #{enterNet},
+        #{status}
+        )
+    </insert>
+
+</mapper>

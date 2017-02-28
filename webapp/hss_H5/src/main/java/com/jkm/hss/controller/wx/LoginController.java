@@ -839,6 +839,12 @@ public class LoginController extends BaseController {
                         }
                         model.addAttribute("bankName", result.get().getBankName());
                         model.addAttribute("bankBin",result.get().getBankBin());
+                        model.addAttribute("provinceCode",result.get().getProvinceCode());
+                        model.addAttribute("provinceName",result.get().getProvinceName());
+                        model.addAttribute("cityCode",result.get().getCityCode());
+                        model.addAttribute("cityName",result.get().getCityName());
+                        model.addAttribute("countyCode",result.get().getCountyCode());
+                        model.addAttribute("countyName",result.get().getCountyName());
                         url = "/bankBranch";
                     }
                 }else{
@@ -1465,7 +1471,7 @@ public class LoginController extends BaseController {
                         isRedirect= true;
                     }else if(result.get().getStatus()== EnumMerchantStatus.PASSED.getId()||result.get().getStatus()== EnumMerchantStatus.FRIEND.getId()){//跳首页
                         model.addAttribute("merchantName",result.get().getMerchantName());
-                        model.addAttribute("district",result.get().getProvinceName()+result.get().getCityName());
+                        model.addAttribute("district",(result.get().getProvinceName()==null?"":result.get().getProvinceName())+(result.get().getCityName()==null?"":result.get().getCityName()));
                         model.addAttribute("address",result.get().getAddress());
                         model.addAttribute("createTime",result.get().getCreateTime()==null?"":DateFormatUtil.format(result.get().getCreateTime(), DateFormatUtil.yyyy_MM_dd_HH_mm_ss));
                         String name = result.get().getName();
