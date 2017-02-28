@@ -50,11 +50,8 @@ public class AllProfitController extends BaseController {
             req.setEndTime(sdf.format(rightNow.getTime()));
         }
         List<CompanyProfitResponse> list = allProfitService.selectCompanyProfit(req);
-//        if (list.size()==0){
-//            return CommonResponse.simpleResponse(-1,"未查询到相关数据");
-//        }
         int count = allProfitService.selectCompanyProfitCount(req);
-        pageModel.setCount(count);
+        pageModel.setCount(list.size());
         pageModel.setRecords(list);
         return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", pageModel);
 
@@ -71,9 +68,6 @@ public class AllProfitController extends BaseController {
         final PageModel<CompanyProfitResponse> pageModel = new PageModel<CompanyProfitResponse>(req.getPageNo(), req.getPageSize());
         req.setOffset(pageModel.getFirstIndex());
         List<CompanyProfitResponse> list = allProfitService.selectCompanyProfitDetails(req);
-//        if (list.size()==0){
-//            return CommonResponse.simpleResponse(-1,"未查询到相关数据");
-//        }
         int count = allProfitService.selectCompanyProfitDetailsCount(req);
         pageModel.setCount(count);
         pageModel.setRecords(list);

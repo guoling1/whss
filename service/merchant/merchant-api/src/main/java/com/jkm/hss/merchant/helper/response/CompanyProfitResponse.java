@@ -113,4 +113,8 @@ public class CompanyProfitResponse {
      */
     private Date splitDate;
 
+
+
+
+
 }

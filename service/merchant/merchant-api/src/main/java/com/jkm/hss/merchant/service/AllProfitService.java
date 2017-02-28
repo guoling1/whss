@@ -16,7 +16,7 @@ public interface AllProfitService {
      * @param req
      * @return
      */
-    List<CompanyProfitResponse> selectCompanyProfit(CompanyPrifitRequest req);
+    List<CompanyProfitResponse> selectCompanyProfit(CompanyPrifitRequest req) throws ParseException;
 
     /**
      * 查询总数

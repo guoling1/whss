@@ -30,13 +30,14 @@ public class AllProfitServiceImpl implements AllProfitService {
     private DealerService dealerService;
 
     @Override
-    public List<CompanyProfitResponse> selectCompanyProfit(CompanyPrifitRequest req) {
+    public List<CompanyProfitResponse> selectCompanyProfit(CompanyPrifitRequest req) throws ParseException {
 
         List<CompanyProfitResponse> list = allProfitDao.selectCompanyProfit(req);
         if (list!=null){
             for (int i=0;i<list.size();i++){
                 if (list.get(i).getBusinessType().equals("hssPay")){
                     list.get(i).setBusinessType(EnumSplitBusinessType.HSSPAY.getValue());
+
                 }
                 if (list.get(i).getBusinessType().equals("hssWithdraw")){
                     list.get(i).setBusinessType(EnumSplitBusinessType.HSSWITHDRAW.getValue());

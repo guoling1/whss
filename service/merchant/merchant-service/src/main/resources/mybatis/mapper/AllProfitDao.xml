@@ -6,9 +6,17 @@
 
 	<!-- 查询公司分润 -->
 	<select id="selectCompanyProfit" resultType="com.jkm.hss.merchant.helper.response.CompanyProfitResponse">
-		SELECT a.*,b.id AS accId FROM tb_split_account_record a
-		LEFT JOIN tb_account b ON a.receipt_money_account_id=b.id
-		WHERE b.id in (1,2,11,48,49)
+		SELECT
+		a.business_type,
+		sum(a.split_total_amount) AS splitTotalAmount,
+		DATE_FORMAT(a.split_date, '%Y-%m-%d') AS splitDate
+		FROM
+		tb_split_account_record a
+		LEFT JOIN tb_account b ON a.receipt_money_account_id = b.id
+		WHERE
+		b.id IN (1, 2, 11, 48, 49)
+
+
 	<if test="startTime!=null and startTime!=''">
 		AND a.split_date <![CDATA[ >= ]]> #{startTime}
 	</if>
@@ -20,7 +28,11 @@
 	<if test="businessType != null and businessType != ''">
 		AND a.business_type = #{businessType}
 	</if>
-		ORDER BY a.split_date DESC LIMIT #{offset},#{pageSize}
+		GROUP BY
+		business_type,
+		splitDate
+		ORDER BY
+		splitDate DESC LIMIT #{offset},#{pageSize}
 	</select>
 
 	<!-- 查询公司分润总数 -->
@@ -172,7 +184,7 @@
 		LEFT JOIN tb_account b ON a.receipt_money_account_id = b.id
 		LEFT JOIN tb_order c ON c.order_no = a.order_no
 		WHERE
-		b.id=#{accId} AND a.split_date between #{splitDate} and #{splitDate1}
+		b.id in (1,2,11,48,49) AND a.split_date between #{splitDate} and #{splitDate1} AND a.business_type=#{businessType}
 	<if test="orderNo != null and orderNo != ''">
 		AND a.order_no = #{orderNo}
 	</if>
@@ -189,7 +201,7 @@
 	<select id="selectCompanyProfitDetailsCount" resultType="java.lang.Integer">
 		SELECT COUNT(a.id) FROM tb_split_account_record a
 		LEFT JOIN tb_account b ON a.receipt_money_account_id=b.id
-		WHERE b.id=#{accId} AND a.split_date between #{splitDate} and #{splitDate1}
+		WHERE b.id in (1,2,11,48,49) AND a.split_date between #{splitDate} and #{splitDate1} AND a.business_type=#{businessType}
 		<if test="orderNo != null and orderNo != ''">
 			AND a.order_no = #{orderNo}
 		</if>
