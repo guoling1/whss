@@ -28,6 +28,7 @@ import com.jkm.hss.merchant.helper.MerchantSupport;
 import com.jkm.hss.merchant.helper.SmPost;
 import com.jkm.hss.merchant.helper.WxPubUtil;
 import com.jkm.hss.merchant.helper.request.*;
+import com.jkm.hss.merchant.helper.response.MerchantChannelRateResponse;
 import com.jkm.hss.merchant.service.*;
 import com.jkm.hss.notifier.enums.EnumNoticeType;
 import com.jkm.hss.notifier.enums.EnumUserType;
@@ -1115,13 +1116,19 @@ public class WxPubController extends BaseController {
          * 3.是否填写信用卡信息
          * 4.入网状态
          */
+        MerchantChannelRateResponse merchantChannelRateResponse = new MerchantChannelRateResponse();
         if(basicChannelOptional.get().getIsNeed()== EnumIsNet.NEED.getId()){//需入网
             log.info("商户需入网");
             if(StringUtils.isEmpty(merchantInfo.get().getBranchCode())){
-                return CommonResponse.simpleResponse(-3, "支行信息不完善");
+                merchantChannelRateResponse.setIsBranch(2);
+                merchantChannelRateResponse.setMessage("支行信息不完善");
+                return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "支行信息不完善",merchantChannelRateResponse);
             }
             if(StringUtils.isEmpty(merchantInfo.get().getCreditCard())){
-                return CommonResponse.simpleResponse(-3, "信用卡信息不完善");
+                merchantChannelRateResponse.setIsBranch(1);
+                merchantChannelRateResponse.setIsCreditCard(2);
+                merchantChannelRateResponse.setMessage("信用卡信息不完善");
+                return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "信用卡信息不完善",merchantChannelRateResponse);
             }
             MerchantChannelRateRequest merchantChannelRateRequest = new MerchantChannelRateRequest();
             merchantChannelRateRequest.setChannelTypeSign(checkMerchantInfoRequest.getChannelTypeSign());
@@ -1176,13 +1183,17 @@ public class WxPubController extends BaseController {
                     if(jo.getInt("code")==1){
                         List<Integer> signIdList = new ArrayList<Integer>();
                         int count = merchantChannelRateService.batchCheck(signIdList);
-                        if(count==signIdList.size()){
-                            return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "校验成功");
-                        }else{
-                            return CommonResponse.simpleResponse(-1, "校验异常");
-                        }
+                        merchantChannelRateResponse.setIsBranch(1);
+                        merchantChannelRateResponse.setIsCreditCard(1);
+                        merchantChannelRateResponse.setIsNet(1);
+                        merchantChannelRateResponse.setMessage("入网成功");
+                        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "校验成功",merchantChannelRateResponse);
                     }else{
-                        return CommonResponse.simpleResponse(-1, jo.getString("msg"));
+                        merchantChannelRateResponse.setIsBranch(1);
+                        merchantChannelRateResponse.setIsCreditCard(1);
+                        merchantChannelRateResponse.setIsNet(2);
+                        merchantChannelRateResponse.setMessage(jo.getString("msg"));
+                        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, jo.getString("msg"), jo.getString("msg"));
                     }
 
                 }else{
@@ -1192,7 +1203,11 @@ public class WxPubController extends BaseController {
             return null;
         }else{//否
             log.info("商户无需入网");
-            return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "校验成功");
+            merchantChannelRateResponse.setIsBranch(1);
+            merchantChannelRateResponse.setIsCreditCard(1);
+            merchantChannelRateResponse.setIsNet(1);
+            merchantChannelRateResponse.setMessage("无需入网");
+            return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "校验成功",merchantChannelRateResponse);
         }
     }
 
