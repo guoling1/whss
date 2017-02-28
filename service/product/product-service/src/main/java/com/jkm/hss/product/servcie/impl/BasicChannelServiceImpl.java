@@ -6,6 +6,7 @@ import com.jkm.hss.product.entity.BasicChannel;
 import com.jkm.hss.product.enums.EnumMerchantPayType;
 import com.jkm.hss.product.enums.EnumPayChannelSign;
 import com.jkm.hss.product.servcie.BasicChannelService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +15,7 @@ import java.util.List;
 /**
  * Created by yuxiang on 2016-11-24.
  */
+@Slf4j
 @Service
 public class BasicChannelServiceImpl implements BasicChannelService {
 
@@ -105,5 +107,20 @@ public class BasicChannelServiceImpl implements BasicChannelService {
         return "";
     }
 
-
+    /**
+     * {@inheritDoc}
+     *
+     * @param payType
+     * @return
+     */
+    @Override
+    public EnumPayChannelSign getEnumPayChannelSignByCode(final String payType) {
+        if (payType.contains("_code")) {
+            return EnumPayChannelSign.codeOf(payType.substring(0, payType.indexOf("_code")));
+        } else if (payType.contains("_jsapi")) {
+            return EnumPayChannelSign.codeOf(payType.substring(0, payType.indexOf("_jsapi")));
+        }
+        log.error("支付方式[{}]，异常", payType);
+        return null;
+    }
 }

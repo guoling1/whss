@@ -108,7 +108,7 @@ public class PayServiceImpl implements PayService {
             return Pair.of(-1, "订单号重复");
         }
         final MerchantInfo merchant = this.merchantInfoService.selectById(merchantId).get();
-
+        final String channelCode = this.basicChannelService.selectCodeByChannelSign(EnumPayChannelSign.YG_WECHAT.getId(), EnumMerchantPayType.MERCHANT_JSAPI);
         final Order order = new Order();
         order.setBusinessOrderNo(businessOrderNo);
         order.setOrderNo(SnGenerator.generateSn(EnumTradeType.PAY.getId()));
@@ -117,7 +117,7 @@ public class PayServiceImpl implements PayService {
         order.setAppId(EnumAppType.HSS.getId());
         order.setTradeType(EnumTradeType.PAY.getId());
         order.setServiceType(EnumServiceType.APPRECIATION_PAY.getId());
-        order.setPayType(EnumPayChannelSign.YG_WECHAT.getCode());
+        order.setPayType(channelCode);
         order.setPayChannelSign(EnumPayChannelSign.YG_WECHAT.getId());
         order.setPayer(merchant.getAccountId());
         order.setPayee(AccountConstants.JKM_ACCOUNT_ID);
@@ -130,7 +130,7 @@ public class PayServiceImpl implements PayService {
         this.orderService.add(order);
         //请求支付中心下单
         final PaymentSdkPlaceOrderResponse placeOrderResponse = this.requestPlaceOrder(order,
-                "", merchant, businessReturnUrl);
+                channelCode, merchant, businessReturnUrl);
         return this.handlePlaceOrder(placeOrderResponse, order);
     }
 
@@ -169,7 +169,7 @@ public class PayServiceImpl implements PayService {
         order.setStatus(EnumOrderStatus.DUE_PAY.getId());
         this.orderService.add(order);
         //请求支付中心下单
-        final PaymentSdkPlaceOrderResponse placeOrderResponse = this.requestPlaceOrder(order, "", merchant,
+        final PaymentSdkPlaceOrderResponse placeOrderResponse = this.requestPlaceOrder(order, channelCode, merchant,
                 PaymentSdkConstants.SDK_PAY_RETURN_URL + order.getTradeAmount() + "/" + order.getId());
         return this.handlePlaceOrder(placeOrderResponse, order);
     }
@@ -247,7 +247,7 @@ public class PayServiceImpl implements PayService {
         order.setRemark(paymentSdkPayCallbackResponse.getMessage());
         order.setSn(paymentSdkPayCallbackResponse.getSn());
         order.setStatus(EnumOrderStatus.PAY_SUCCESS.getId());
-        final EnumPayChannelSign enumPayChannelSign = EnumPayChannelSign.codeOf(order.getPayType());
+        final EnumPayChannelSign enumPayChannelSign = this.basicChannelService.getEnumPayChannelSignByCode(paymentSdkPayCallbackResponse.getPayType());
         order.setPayChannelSign(enumPayChannelSign.getId());
         log.info("返回的通道是[{}]", order.getPayType());
         //处理商户升级的支付单(此时商户自己付款给金开门)

@@ -254,11 +254,11 @@ public class WithdrawServiceImpl implements WithdrawService {
         final Triple<Long, BigDecimal, String> productMoneyTriple = shallProfitMap.get("productMoney");
         final Triple<Long, BigDecimal, String> firstMoneyTriple = shallProfitMap.get("firstMoney");
         final Triple<Long, BigDecimal, String> secondMoneyTriple = shallProfitMap.get("secondMoney");
-        final BigDecimal channelMoney = null == channelMoneyTriple ? new BigDecimal("0") : channelMoneyTriple.getMiddle();
-        final BigDecimal productMoney = null == productMoneyTriple ? new BigDecimal("0") : productMoneyTriple.getMiddle();
-        final BigDecimal firstMoney = null == firstMoneyTriple ? new BigDecimal("0") : firstMoneyTriple.getMiddle();
-        final BigDecimal secondMoney = null == secondMoneyTriple ? new BigDecimal("0") : secondMoneyTriple.getMiddle();
-        Preconditions.checkState(poundage.compareTo(channelMoney.add(productMoney).add(firstMoney).add(secondMoney)) >= 0);
+        final BigDecimal channelMoney = null == channelMoneyTriple ? new BigDecimal("0.00") : channelMoneyTriple.getMiddle();
+        final BigDecimal productMoney = null == productMoneyTriple ? new BigDecimal("0.00") : productMoneyTriple.getMiddle();
+        final BigDecimal firstMoney = null == firstMoneyTriple ? new BigDecimal("0.00") : firstMoneyTriple.getMiddle();
+        final BigDecimal secondMoney = null == secondMoneyTriple ? new BigDecimal("0.00") : secondMoneyTriple.getMiddle();
+        Preconditions.checkState(poundage.compareTo(channelMoney.add(productMoney).add(firstMoney).add(secondMoney)) >= 0, "分账金额错误");
         //手续费账户结算
         final Account poundageAccount = this.accountService.getByIdWithLock(AccountConstants.POUNDAGE_ACCOUNT_ID).get();
         Preconditions.checkState(poundage.compareTo(poundageAccount.getAvailable()) <= 0, "该笔订单的分账手续费不可以大于手续费账户的可用余额总和");
