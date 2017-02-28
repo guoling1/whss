@@ -37,7 +37,7 @@ public interface MerchantChannelRateService {
      * @param merchantId
      * @param enumEnterNet
      */
-    void updateEnterNetStatus(long merchantId, EnumEnterNet enumEnterNet);
+    void updateEnterNetStatus(long merchantId, EnumEnterNet enumEnterNet, String msg);
 
     /**
      *  更新商户入网状态

@@ -60,8 +60,8 @@ public class MerchantChannelRateServiceImpl implements MerchantChannelRateServic
      * @param enumEnterNet
      */
     @Override
-    public void updateEnterNetStatus(long merchantId, EnumEnterNet enumEnterNet) {
-            this.merchantChannelRateDao.updateEnterNetStatus(merchantId, enumEnterNet.getId());
+    public void updateEnterNetStatus(long merchantId, EnumEnterNet enumEnterNet, String msg) {
+            this.merchantChannelRateDao.updateEnterNetStatus(merchantId, enumEnterNet.getId(), msg);
 
     }
 
