@@ -23,7 +23,7 @@ public interface AllProfitService {
      * @param req
      * @return
      */
-    int selectCompanyProfitCount(CompanyPrifitRequest req);
+    List<CompanyProfitResponse> selectCompanyProfitCount(CompanyPrifitRequest req);
 
     /**
      * 一级代理商分润
@@ -37,7 +37,7 @@ public interface AllProfitService {
      * @param req
      * @return
      */
-    int selectOneProfitCount(CompanyPrifitRequest req);
+    List<CompanyProfitResponse> selectOneProfitCount(CompanyPrifitRequest req);
 
     /**
      * 二级代理商分润
@@ -79,7 +79,7 @@ public interface AllProfitService {
      * @param req
      * @return
      */
-    int selectCompanyProfitDetailsCount(CompanyPrifitRequest req);
+    List<CompanyProfitResponse> selectCompanyProfitDetailsCount(CompanyPrifitRequest req);
 
     /**
      * 一级代理商分润详情总数

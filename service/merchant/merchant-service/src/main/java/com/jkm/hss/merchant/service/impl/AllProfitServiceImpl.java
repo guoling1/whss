@@ -54,8 +54,9 @@ public class AllProfitServiceImpl implements AllProfitService {
     }
 
     @Override
-    public int selectCompanyProfitCount(CompanyPrifitRequest req) {
-        return allProfitDao.selectCompanyProfitCount(req);
+    public List<CompanyProfitResponse> selectCompanyProfitCount(CompanyPrifitRequest req) {
+        List<CompanyProfitResponse> list = allProfitDao.selectCompanyProfitCount(req);
+        return list;
     }
 
     @Override
@@ -81,8 +82,9 @@ public class AllProfitServiceImpl implements AllProfitService {
     }
 
     @Override
-    public int selectOneProfitCount(CompanyPrifitRequest req) {
-        return allProfitDao.selectOneProfitCount(req);
+    public List<CompanyProfitResponse> selectOneProfitCount(CompanyPrifitRequest req) {
+        List<CompanyProfitResponse> list = allProfitDao.selectOneProfitCount(req);
+        return list;
     }
 
     @Override
@@ -149,6 +151,18 @@ public class AllProfitServiceImpl implements AllProfitService {
 //        req.setSplitDate1(rightNow.getTime());
 //        req.setSplitDate(dt);
         final CompanyPrifitRequest request =getTime(req);
+        if (request.getBusinessType().equals("好收收- 收款")){
+            request.setBusinessType(EnumSplitBusinessType.HSSPAY.getId());
+        }
+        if (request.getBusinessType().equals("好收收-提现")){
+            request.setBusinessType(EnumSplitBusinessType.HSSWITHDRAW.getId());
+        }
+        if (request.getBusinessType().equals("好收收-升级费")){
+            request.setBusinessType(EnumSplitBusinessType.HSSPROMOTE.getId());
+        }
+        if (request.getBusinessType().equals("好收银-收款")){
+            request.setBusinessType(EnumSplitBusinessType.HSYPAY.getId());
+        }
         List<CompanyProfitResponse> list = allProfitDao.selectCompanyProfitDetails(request);
         if (list.size()>0){
             for (int i=0;i<list.size();i++){
@@ -230,9 +244,10 @@ public class AllProfitServiceImpl implements AllProfitService {
     }
 
     @Override
-    public int selectCompanyProfitDetailsCount(CompanyPrifitRequest req) {
+    public List<CompanyProfitResponse> selectCompanyProfitDetailsCount(CompanyPrifitRequest req) {
         final CompanyPrifitRequest request =getTime(req);
-        return allProfitDao.selectCompanyProfitDetailsCount(request);
+        List<CompanyProfitResponse> list = allProfitDao.selectCompanyProfitDetailsCount(request);
+        return list;
     }
 
     @Override

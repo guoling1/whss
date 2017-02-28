@@ -36,10 +36,16 @@
 	</select>
 
 	<!-- 查询公司分润总数 -->
-	<select id="selectCompanyProfitCount" resultType="java.lang.Integer">
-		SELECT COUNT(a.receipt_money_account_id) FROM tb_split_account_record a
-		LEFT JOIN tb_account b ON a.receipt_money_account_id=b.id
-		WHERE b.id in (1,2,11,48,49)
+	<select id="selectCompanyProfitCount" resultType="com.jkm.hss.merchant.helper.response.CompanyProfitResponse">
+		SELECT
+		a.business_type,
+		sum(a.split_total_amount) AS splitTotalAmount,
+		DATE_FORMAT(a.split_date, '%Y-%m-%d') AS splitDate
+		FROM
+		tb_split_account_record a
+		LEFT JOIN tb_account b ON a.receipt_money_account_id = b.id
+		WHERE
+		b.id IN (1, 2, 11, 48, 49)
 		<if test="startTime!=null and startTime!=''">
 			AND a.split_date <![CDATA[ >= ]]> #{startTime}
 		</if>
@@ -51,15 +57,29 @@
 		<if test="businessType != null and businessType != ''">
 			AND a.business_type = #{businessType}
 		</if>
+		GROUP BY
+		business_type,
+		splitDate
+		ORDER BY
+		splitDate DESC
 	</select>
 
 
 
 	<!-- 查询一级代理商分润 -->
 	<select id="selectOneProfit" resultType="com.jkm.hss.merchant.helper.response.CompanyProfitResponse">
-		SELECT a.*,b.proxy_name,b.mark_code FROM tb_split_account_record a
-		LEFT JOIN tb_dealer b ON a.receipt_money_account_id=b.account_id
-		WHERE b.`level`=1
+		SELECT
+		a.business_type,
+		sum(a.split_total_amount) AS splitTotalAmount,
+		DATE_FORMAT(a.split_date, '%Y-%m-%d') AS splitDate,
+		b.proxy_name,
+		b.mark_code
+		FROM
+		tb_split_account_record a
+		LEFT JOIN tb_dealer b ON a.receipt_money_account_id = b.account_id
+		WHERE
+		b.`level` = 1
+
 	<if test="startTime!=null and startTime!=''">
 		AND a.split_date <![CDATA[ >= ]]> #{startTime}
 	</if>
@@ -79,14 +99,28 @@
 	<if test="markCode != null and markCode != ''">
 		AND b.mark_code = #{markCode}
 	</if>
-		ORDER BY a.split_date DESC LIMIT #{offset},#{pageSize}
+		GROUP BY
+		a.business_type,
+		splitDate,
+		b.mark_code,
+		b.proxy_name
+		ORDER BY
+		splitDate DESC LIMIT #{offset},#{pageSize}
 	</select>
 
 	<!-- 查询一级代理商分润总数 -->
-	<select id="selectOneProfitCount" resultType="java.lang.Integer">
-		SELECT COUNT(a.id) FROM tb_split_account_record a
-		LEFT JOIN tb_dealer b ON a.receipt_money_account_id=b.account_id
-		WHERE b.`level`=1
+	<select id="selectOneProfitCount" resultType="com.jkm.hss.merchant.helper.response.CompanyProfitResponse">
+		SELECT
+		a.business_type,
+		sum(a.split_total_amount) AS splitTotalAmount,
+		DATE_FORMAT(a.split_date, '%Y-%m-%d') AS splitDate,
+		b.proxy_name,
+		b.mark_code
+		FROM
+		tb_split_account_record a
+		LEFT JOIN tb_dealer b ON a.receipt_money_account_id = b.account_id
+		WHERE
+		b.`level` = 1
 	<if test="startTime!=null and startTime!=''">
 		AND a.split_date <![CDATA[ >= ]]> #{startTime}
 	</if>
@@ -106,6 +140,13 @@
 	<if test="markCode != null and markCode != ''">
 		AND b.mark_code = #{markCode}
 	</if>
+		GROUP BY
+		a.business_type,
+		splitDate,
+		b.mark_code,
+		b.proxy_name
+		ORDER BY
+		splitDate DESC
 	</select>
 
 	<!-- 查询二级代理商分润-->
@@ -198,10 +239,16 @@
 	</select>
 
 	<!-- 查询公司分润详情总数 -->
-	<select id="selectCompanyProfitDetailsCount" resultType="java.lang.Integer">
-		SELECT COUNT(a.id) FROM tb_split_account_record a
-		LEFT JOIN tb_account b ON a.receipt_money_account_id=b.id
-		WHERE b.id in (1,2,11,48,49) AND a.split_date between #{splitDate} and #{splitDate1} AND a.business_type=#{businessType}
+	<select id="selectCompanyProfitDetailsCount" resultType="com.jkm.hss.merchant.helper.response.CompanyProfitResponse">
+		SELECT
+		a.*, b.id AS accId,
+		c.settle_type
+		FROM
+		tb_split_account_record a
+		LEFT JOIN tb_account b ON a.receipt_money_account_id = b.id
+		LEFT JOIN tb_order c ON c.order_no = a.order_no
+		WHERE
+		b.id in (1,2,11,48,49) AND a.split_date between #{splitDate} and #{splitDate1} AND a.business_type=#{businessType}
 		<if test="orderNo != null and orderNo != ''">
 			AND a.order_no = #{orderNo}
 		</if>
@@ -211,6 +258,7 @@
 		<if test="businessType != null and businessType != ''">
 			AND a.business_type = #{businessType}
 		</if>
+		ORDER BY a.split_date DESC
 	</select>
 
 	<!-- 查询一级代理商分润详情 -->
