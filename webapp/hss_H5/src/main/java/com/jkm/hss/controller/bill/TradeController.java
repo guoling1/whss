@@ -96,7 +96,7 @@ public class TradeController extends BaseController {
             return CommonResponse.simpleResponse(-1, "支付方式错误");
         }
         final Pair<Integer, String> resultPair = this.payService.codeReceipt(payRequest.getTotalFee(),
-                payRequest.getPayChannel(), merchantInfo.get().getId(), EnumAppType.HSS.getId());
+                payRequest.getPayChannel(), merchantInfo.get().getId(), EnumAppType.HSS.getId(), true);
         if (0 == resultPair.getLeft()) {
             return CommonResponse.builder4MapResult(CommonResponse.SUCCESS_CODE, "收款成功")
                     .addParam("payUrl", URLDecoder.decode(resultPair.getRight(), "UTF-8"))
@@ -138,7 +138,7 @@ public class TradeController extends BaseController {
             return CommonResponse.simpleResponse(-1, "支付方式错误");
         }
         final Pair<Integer, String> resultPair = this.payService.codeReceipt(payRequest.getTotalFee(),
-                payRequest.getPayChannel(), merchantInfo.get().getId(), EnumAppType.HSS.getId());
+                payRequest.getPayChannel(), merchantInfo.get().getId(), EnumAppType.HSS.getId(), false);
         if (0 == resultPair.getLeft()) {
             return CommonResponse.builder4MapResult(CommonResponse.SUCCESS_CODE, "收款成功")
                     .addParam("payUrl", URLDecoder.decode(resultPair.getRight(), "UTF-8"))
@@ -189,12 +189,24 @@ public class TradeController extends BaseController {
                 return CommonResponse.simpleResponse(-1, "不存在的支付状态");
             }
         }
+<<<<<<< HEAD
+//        for (int i = 0; i < payTypeList.size(); i++) {
+//            final String payType = payTypeList.get(i);
+//            if (!EnumPaymentType.WECHAT_H5_CASHIER_DESK.getId().equals(payType)
+//                    && !EnumPaymentType.QUICK_APY.getId().equals(payType)
+//                    && !EnumPaymentType.ALIPAY_SCAN_CODE.getId().equals(payType)) {
+//                return CommonResponse.simpleResponse(-1, "不存在的支付方式");
+//            }
+//        }
+        payTypeList.add("N");
+=======
         for (int i = 0; i < payTypeList.size(); i++) {
             final String payType = payTypeList.get(i);
             if (!EnumPayChannelSign.isExistByCode(payType)) {
                 return CommonResponse.simpleResponse(-1, "不存在的支付方式");
             }
         }
+>>>>>>> 00475536f1948e4ec8646ab9ec7d4a1fa45c9a3c
         if (StringUtils.isEmpty(requestParam.getOrderNo())) {
             requestParam.setOrderNo(null);
         }

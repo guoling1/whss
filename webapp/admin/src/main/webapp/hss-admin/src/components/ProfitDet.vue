@@ -37,12 +37,11 @@
             <el-table-column prop="businessType" label="业务类型"></el-table-column>
             <el-table-column prop="splitDate" label="分润时间" :formatter="changeTime" width="152"></el-table-column>
             <el-table-column prop="orderNo" label="交易订单号" width="218"></el-table-column>
-            <el-table-column prop="statisticsDate" label="结算周期"></el-table-column>
-            <el-table-column prop="statisticsDate" label="结算时间"></el-table-column>
+            <el-table-column prop="settleType" label="结算周期"></el-table-column>
             <el-table-column prop="splitTotalAmount" label="分润总额" align="right" :formatter="changeTotal"></el-table-column>
             <el-table-column prop="outMoneyAccountId" label="分润出款账户"></el-table-column>
             <el-table-column prop="receiptMoneyUserName" label="分润方名称"></el-table-column>
-            <el-table-column prop="statisticsDate" label="分润方类型"></el-table-column>
+            <el-table-column prop="statisticsDate" label="分润方类型" v-if="isShow"></el-table-column>
             <el-table-column prop="splitAmount" align="right" header-align="left" label="分润金额" :formatter="changePrice"></el-table-column>
             <el-table-column prop="remark" label="备注信息"></el-table-column>
           </el-table>
@@ -78,7 +77,8 @@
         count: 0,
         total: 0,
         loading: true,
-        path:''
+        path:'',
+        isShow:true
       }
     },
     created: function () {
@@ -87,12 +87,15 @@
       }else if(this.$route.path=="/admin/record/profitComDet"){
         this.$data.path = '/admin/allProfit/companyProfitDetail';
         this.$data.query.accId = this.$route.query.id;
+        this.isShow =false
       }else if(this.$route.path=="/admin/record/profitFirDet"){
         this.$data.path = '/admin/allProfit/firstDealerDetail';
+        this.isShow =false
         this.$data.query.receiptMoneyAccountId = this.$route.query.id;
       }else if(this.$route.path=="/admin/record/profitSecDet"){
         this.$data.path = '/admin/allProfit/secondDealerDetail';
         this.$data.query.receiptMoneyAccountId = this.$route.query.id;
+        this.isShow =false
       }
       this.getData();
     },
