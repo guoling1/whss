@@ -61,4 +61,29 @@ public class PaymentSdkPlaceOrderRequest {
      *
      */
     private String tradeType;
+
+
+    //////**卡盟通道所需参数**//////////
+
+    /**
+     * 收款行联行号
+     */
+    private String bankCode;
+
+    /**
+     * 入账卡号 DES加密
+     */
+    private String cardNo;
+
+    /**
+     *入帐卡对应姓名
+     *
+     */
+    private String payerName;
+
+    /**
+     *入帐卡对应身份证号 DES加密
+     *
+     */
+    private String idCardNo;
 }

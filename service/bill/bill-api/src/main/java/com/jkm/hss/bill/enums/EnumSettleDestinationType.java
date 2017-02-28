@@ -10,14 +10,14 @@ import lombok.Getter;
 public enum EnumSettleDestinationType {
 
     /**
-     * 结算到卡
-     */
-    TO_CARD(1, "结算到卡"),
-
-    /**
      * 结算到余额
      */
-    TO_ACCOUNT(2, "结算到余额"),
+    TO_ACCOUNT(1, "结算到余额"),
+
+    /**
+     * 结算到卡
+     */
+    TO_CARD(2, "结算到卡"),
 
     /**
      * 渠道结算

@@ -14,34 +14,28 @@ public class ListSettleAuditRecordResponse {
 
     private long id;
     /**
-     * 商户编号
+     * 编号
      */
-    private String merchantNo;
+    private String userNo;
 
     /**
-     * 商户名称
+     * 名称
      */
-    private String merchantName;
+    private String userName;
 
     /**
-     * 上级代理编号
-     */
-    private String dealerNo;
-
-    /**
-     * 上级代理名称
-     */
-    private String dealerName;
-
-    /**
-     * 业务线（结算产品）
+     * 账户类型id
      *
-     * {@link com.jkm.hss.account.enums.EnumAppType}
+     * {@link com.jkm.hss.account.enums.EnumAccountUserType}
      */
-    private String appId;
+    private int userType;
 
-
-    private String appName;
+    /**
+     * 账户类型
+     *
+     * {@link com.jkm.hss.account.enums.EnumAccountUserType}
+     */
+    private String userTypeValue;
 
     /**
      * 交易日期

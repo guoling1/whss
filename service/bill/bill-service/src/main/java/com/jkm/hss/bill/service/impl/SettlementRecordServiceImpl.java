@@ -1,6 +1,7 @@
 package com.jkm.hss.bill.service.impl;
 
 import com.google.common.base.Optional;
+import com.jkm.base.common.util.SnGenerator;
 import com.jkm.hss.bill.dao.SettlementRecordDao;
 import com.jkm.hss.bill.entity.SettlementRecord;
 import com.jkm.hss.bill.service.SettlementRecordService;
@@ -98,5 +99,44 @@ public class SettlementRecordServiceImpl implements SettlementRecordService {
     @Override
     public Optional<SettlementRecord> getBySettleNo(final String settleNo) {
         return Optional.fromNullable(this.settlementRecordDao.selectBySettleNo(settleNo));
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param settleAuditRecordId
+     * @return
+     */
+    @Override
+    public Optional<SettlementRecord> getBySettleAuditRecordId(final long settleAuditRecordId) {
+        return Optional.fromNullable(this.settlementRecordDao.selectBySettleAuditRecordId(settleAuditRecordId));
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param settleNo
+     * @return
+     */
+    @Override
+    public boolean checkExistBySettleNo(final String settleNo) {
+        final int count = this.settlementRecordDao.selectCountBySettleNo(settleNo);
+        return count == 0;
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param settleObject  结算单号
+     * @param settleDestination  结算目的地
+     * @return
+     */
+    public String getSettleNo(final int settleObject, final int settleDestination) {
+        final String settleNo = SnGenerator.generateSettlementRecordSn(settleObject, settleDestination);
+        final boolean check = this.checkExistBySettleNo(settleNo);
+        if (!check) {
+            return this.getSettleNo(settleObject, settleDestination);
+        }
+        return settleNo;
     }
 }

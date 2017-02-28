@@ -112,4 +112,12 @@
     <select id="selectBySettleNo" resultType="com.jkm.hss.bill.entity.SettlementRecord">
         SELECT * FROM tb_settlement_record WHERE settle_no = #{settleNo}
     </select>
+
+    <select id="selectBySettleAuditRecordId" resultType="com.jkm.hss.bill.entity.SettlementRecord">
+        SELECT * FROM tb_settlement_record WHERE settle_audit_record_id = #{settleAuditRecordId}
+    </select>
+
+    <select id="selectCountBySettleNo" resultType="java.lang.Integer">
+        SELECT * FROM tb_settlement_record WHERE settle_no = #{settleNo}
+    </select>
 </mapper>
