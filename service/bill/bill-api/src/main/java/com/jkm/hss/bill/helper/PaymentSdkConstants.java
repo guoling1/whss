@@ -39,6 +39,11 @@ public final class PaymentSdkConstants {
      */
     public static final String SDK_PAY_WITHDRAW;
 
+    /**
+     * 商户入网结果查询接口
+     */
+    public static final String SDK_PAY_QUERYIN;
+
     static {
         final PaymentSdkConfig config = getConfig();
         APP_ID= config.appId();
@@ -53,6 +58,8 @@ public final class PaymentSdkConstants {
         Preconditions.checkState(!StringUtils.isEmpty(SDK_PAY_PLACE_ORDER), "加载支付中心下单url失败");
         SDK_PAY_WITHDRAW= config.sdkPayWithdraw();
         Preconditions.checkState(!StringUtils.isEmpty(SDK_PAY_WITHDRAW), "加载支付中心提现url失败");
+        SDK_PAY_QUERYIN= config.sdkPayQueryIn();
+        Preconditions.checkState(!StringUtils.isEmpty(SDK_PAY_QUERYIN), "加载支付中心查询商户入网url失败");
     }
 
     private static PaymentSdkConfig getConfig() {
@@ -100,5 +107,12 @@ public final class PaymentSdkConstants {
         @Key("payment.sdk.pay.withdraw.url")
         @DefaultValue("http://pay.qianbaojiajia.com/daiFu/withdraw")
         String sdkPayWithdraw();
+
+        /**
+         * 支付中心 查询商户入网url
+         */
+        @Key("payment.sdk.pay.queryIn.url")
+        @DefaultValue("http://pay.qianbaojiajia.com/km/merchant/query")
+        String sdkPayQueryIn();
     }
 }
