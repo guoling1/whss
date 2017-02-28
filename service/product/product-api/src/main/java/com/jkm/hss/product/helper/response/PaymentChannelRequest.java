@@ -1,22 +1,16 @@
-package com.jkm.hss.product.entity;
+package com.jkm.hss.product.helper.response;
 
-import com.jkm.base.common.entity.BaseEntity;
 import com.jkm.hss.product.enums.EnumBalanceTimeType;
-import com.jkm.hss.product.enums.EnumBasicChannelStatus;
 import com.jkm.hss.product.enums.EnumPayChannelSign;
 import lombok.Data;
 
 import java.math.BigDecimal;
 
 /**
- * Created by yuxiang on 2016-11-23.
- *
- * 基础通道设置
- *{@link EnumBasicChannelStatus}
- * tb_basic_channel
+ * Created by yuxiang on 2016-11-29.
  */
 @Data
-public class BasicChannel extends BaseEntity{
+public class PaymentChannelRequest {
 
     //通道名称，通道类型，收单公司，渠道来源，原始交易费率，原始结算费率（按笔收，最低手续费
     /**
@@ -88,4 +82,9 @@ public class BasicChannel extends BaseEntity{
      * 备注
      */
     private String remarks;
+
+    /**
+     * 状态
+     */
+    private int status;
 }
