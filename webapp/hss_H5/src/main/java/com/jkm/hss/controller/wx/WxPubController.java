@@ -1120,13 +1120,13 @@ public class WxPubController extends BaseController {
         if(basicChannelOptional.get().getIsNeed()== EnumIsNet.NEED.getId()){//需入网
             log.info("商户需入网");
             if(StringUtils.isEmpty(merchantInfo.get().getBranchCode())){
-                merchantChannelRateResponse.setIsBranch(2);
+                merchantChannelRateResponse.setIsBranch(EnumCheck.HASNOT.getId());
                 merchantChannelRateResponse.setMessage("支行信息不完善");
                 return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "支行信息不完善",merchantChannelRateResponse);
             }
             if(StringUtils.isEmpty(merchantInfo.get().getCreditCard())){
-                merchantChannelRateResponse.setIsBranch(1);
-                merchantChannelRateResponse.setIsCreditCard(2);
+                merchantChannelRateResponse.setIsBranch(EnumCheck.HAS.getId());
+                merchantChannelRateResponse.setIsCreditCard(EnumCheck.HASNOT.getId());
                 merchantChannelRateResponse.setMessage("信用卡信息不完善");
                 return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "信用卡信息不完善",merchantChannelRateResponse);
             }
@@ -1183,15 +1183,15 @@ public class WxPubController extends BaseController {
                     if(jo.getInt("code")==1){
                         List<Integer> signIdList = new ArrayList<Integer>();
                         int count = merchantChannelRateService.batchCheck(signIdList);
-                        merchantChannelRateResponse.setIsBranch(1);
-                        merchantChannelRateResponse.setIsCreditCard(1);
-                        merchantChannelRateResponse.setIsNet(1);
+                        merchantChannelRateResponse.setIsBranch(EnumCheck.HAS.getId());
+                        merchantChannelRateResponse.setIsCreditCard(EnumCheck.HAS.getId());
+                        merchantChannelRateResponse.setIsNet(EnumCheck.HAS.getId());
                         merchantChannelRateResponse.setMessage("入网成功");
                         return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "校验成功",merchantChannelRateResponse);
                     }else{
-                        merchantChannelRateResponse.setIsBranch(1);
-                        merchantChannelRateResponse.setIsCreditCard(1);
-                        merchantChannelRateResponse.setIsNet(2);
+                        merchantChannelRateResponse.setIsBranch(EnumCheck.HAS.getId());
+                        merchantChannelRateResponse.setIsCreditCard(EnumCheck.HAS.getId());
+                        merchantChannelRateResponse.setIsNet(EnumCheck.HASNOT.getId());
                         merchantChannelRateResponse.setMessage(jo.getString("msg"));
                         return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, jo.getString("msg"), jo.getString("msg"));
                     }
@@ -1203,9 +1203,9 @@ public class WxPubController extends BaseController {
             return null;
         }else{//否
             log.info("商户无需入网");
-            merchantChannelRateResponse.setIsBranch(1);
-            merchantChannelRateResponse.setIsCreditCard(1);
-            merchantChannelRateResponse.setIsNet(1);
+            merchantChannelRateResponse.setIsBranch(EnumCheck.HAS.getId());
+            merchantChannelRateResponse.setIsCreditCard(EnumCheck.HAS.getId());
+            merchantChannelRateResponse.setIsNet(EnumCheck.HAS.getId());
             merchantChannelRateResponse.setMessage("无需入网");
             return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "校验成功",merchantChannelRateResponse);
         }
