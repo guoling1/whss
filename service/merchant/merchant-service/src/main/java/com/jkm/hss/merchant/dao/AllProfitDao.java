@@ -102,4 +102,25 @@ public interface AllProfitDao {
      * @return
      */
     List<CompanyProfitResponse> selectTwoAll(CompanyPrifitRequest req);
+
+    /**
+     * 公司导出
+     * @param request
+     * @return
+     */
+    List<CompanyProfitResponse> selectCompanyProfitDc(CompanyPrifitRequest request);
+
+    /**
+     * 一级代理分润导出
+     * @param request
+     * @return
+     */
+    List<CompanyProfitResponse> selectOneProfitDc(CompanyPrifitRequest request);
+
+    /**
+     * 二级代理分润导出
+     * @param request
+     * @return
+     */
+    List<CompanyProfitResponse> selectTwoProfitDc(CompanyPrifitRequest request);
 }

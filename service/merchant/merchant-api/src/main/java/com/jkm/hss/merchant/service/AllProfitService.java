@@ -101,4 +101,30 @@ public interface AllProfitService {
      * @return
      */
     List<CompanyProfitResponse> selectTwoAll(CompanyPrifitRequest req);
+
+    /**
+     * 导出公司分润
+     * @param req
+     * @param baseUrl
+     * @return
+     * @throws ParseException
+     */
+    String downloadExcel(CompanyPrifitRequest req, String baseUrl) throws ParseException;
+
+    /**
+     * 导出一级代理分润
+     * @param req
+     * @param baseUrl
+     * @return
+     * @throws ParseException
+     */
+    String downloadExcelOneDealer(CompanyPrifitRequest req, String baseUrl) throws ParseException;
+
+    /**
+     * 导出二级代理分润
+     * @param req
+     * @param baseUrl
+     * @return
+     */
+    String downloadExcelTwoDealer(CompanyPrifitRequest req, String baseUrl) throws ParseException;
 }
