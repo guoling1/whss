@@ -1,5 +1,7 @@
 package com.jkm.hss.bill.service.impl;
 
+import com.google.common.base.Optional;
+import com.google.common.base.Preconditions;
 import com.jkm.hss.account.helper.AccountConstants;
 import com.jkm.hss.bill.service.CalculateService;
 import com.jkm.hss.dealer.entity.Dealer;
@@ -8,7 +10,10 @@ import com.jkm.hss.dealer.entity.DealerUpgerdeRate;
 import com.jkm.hss.dealer.entity.PartnerShallProfitDetail;
 import com.jkm.hss.dealer.enums.EnumDealerRateType;
 import com.jkm.hss.dealer.service.*;
+import com.jkm.hss.merchant.entity.MerchantChannelRate;
 import com.jkm.hss.merchant.entity.MerchantInfo;
+import com.jkm.hss.merchant.helper.request.MerchantChannelRateRequest;
+import com.jkm.hss.merchant.service.MerchantChannelRateService;
 import com.jkm.hss.merchant.service.MerchantInfoService;
 import com.jkm.hss.merchant.service.MerchantPromoteShallService;
 import com.jkm.hss.product.entity.Product;
@@ -58,6 +63,8 @@ public class CalculateServiceImpl implements CalculateService {
     private MerchantPromoteShallService merchantPromoteShallService;
     @Autowired
     private HsyShopDao hsyShopDao;
+    @Autowired
+    private MerchantChannelRateService merchantChannelRateService;
 
     /**
      * {@inheritDoc}
@@ -102,14 +109,13 @@ public class CalculateServiceImpl implements CalculateService {
         if (type.getId().equals(EnumProductType.HSS.getId())){
             //HSS
             final MerchantInfo merchant = this.merchantInfoService.selectById(merchantId).get();
+            final Product product = this.productService.selectByType(type.getId()).get();
             if (0 == merchant.getDealerId()) {
-                final Product product = this.productService.selectByType(type.getId()).get();
-                final ProductChannelDetail productChannelDetail = this.productChannelDetailService.selectByProductId(product.getId()).get(0);
+
+                final ProductChannelDetail productChannelDetail = this.productChannelDetailService.selectByProductIdAndChannelId(product.getId(), channelSign).get();
                 return productChannelDetail.getProductMerchantWithdrawFee().setScale(2);
             }
-            final Dealer dealer = this.dealerService.getById(merchant.getDealerId()).get();
-            final DealerChannelRate dealerChannelRate = this.dealerRateService.selectByDealerIdAndChannelId(dealer.getId(), channelSign).get(0);
-            return dealerChannelRate.getDealerMerchantWithdrawFee().setScale(2);
+            return this.getMerchantWithdrawFee(merchant, channelSign);
 
         }else {
             //HSY
@@ -117,14 +123,27 @@ public class CalculateServiceImpl implements CalculateService {
             final AppAuUser appAuUser = appAuUsers.get(0);
             if ( appAuUser.getDealerID() == 0){
                 final Product product = this.productService.selectByType(type.getId()).get();
-                final ProductChannelDetail productChannelDetail = this.productChannelDetailService.selectByProductId(product.getId()).get(0);
+                final ProductChannelDetail productChannelDetail =
+                        this.productChannelDetailService.selectByProductIdAndChannelId(product.getId(),channelSign).get();
                 return productChannelDetail.getProductMerchantWithdrawFee().setScale(2);
             }
             final Dealer dealer = this.dealerService.getById(appAuUser.getDealerID()).get();
-            final DealerChannelRate dealerChannelRate = this.dealerRateService.selectByDealerIdAndChannelId(dealer.getId(), channelSign).get(0);
+            final DealerChannelRate dealerChannelRate = this.dealerRateService.getByDealerIdAndProductIdAndChannelType(dealer.getId(), appAuUser.getProductID(),channelSign).get();
             return dealerChannelRate.getDealerMerchantWithdrawFee().setScale(2);
         }
 
+    }
+
+    private BigDecimal getMerchantWithdrawFee(MerchantInfo merchant, int channelSign) {
+
+        final MerchantChannelRateRequest request = new MerchantChannelRateRequest();
+        request.setMerchantId(merchant.getId());
+        request.setProductId(merchant.getProductId());
+        request.setChannelTypeSign(channelSign);
+        final Optional<MerchantChannelRate> merchantChannelRateOptional = this.merchantChannelRateService.selectByChannelTypeSignAndProductIdAndMerchantId(request);
+        Preconditions.checkArgument(merchantChannelRateOptional.isPresent(), merchant.getId() + "《《《商户对应的通道费率不存在！");
+
+        return merchantChannelRateOptional.get().getMerchantWithdrawFee();
     }
 
     /**
@@ -296,13 +315,15 @@ public class CalculateServiceImpl implements CalculateService {
 
     private BigDecimal getMerchantRate(int channelSign, final MerchantInfo merchantInfo){
 
-        final BigDecimal merchantRate;
-        if (channelSign == EnumPayChannelSign.YG_WECHAT.getId()){
-            return  merchantInfo.getWeixinRate();
-        }else if (channelSign == EnumPayChannelSign.YG_ALIPAY.getId()){
-            return merchantInfo.getAlipayRate();
-        }else{
-            return merchantInfo.getFastRate();
-        }
+        final MerchantChannelRateRequest request = new MerchantChannelRateRequest();
+        request.setMerchantId(merchantInfo.getId());
+        request.setProductId(merchantInfo.getProductId());
+        request.setChannelTypeSign(channelSign);
+
+        final Optional<MerchantChannelRate> merchantChannelRateOptional =
+                this.merchantChannelRateService.selectByChannelTypeSignAndProductIdAndMerchantId(request);
+        Preconditions.checkArgument(merchantChannelRateOptional.isPresent(), merchantInfo.getId() + "《《《商户对应的通道费率不存在！");
+
+        return merchantChannelRateOptional.get().getMerchantPayRate();
     }
 }

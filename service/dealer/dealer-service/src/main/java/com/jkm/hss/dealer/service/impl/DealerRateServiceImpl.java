@@ -40,19 +40,6 @@ public class DealerRateServiceImpl implements DealerRateService {
         return this.dealerChannelRateDao.update(dealerChannelRate);
     }
 
-
-    /**
-     * {@inheritDoc}
-     *
-     * @param dealerId
-     * @param channelSignId
-     * @return
-     */
-    @Override
-    public List<DealerChannelRate> selectByDealerIdAndChannelId(long dealerId, int channelSignId) {
-        return this.dealerChannelRateDao.selectByDealerIdAndChannelId(dealerId, channelSignId);
-    }
-
     /**
      * {@inheritDoc}
      *

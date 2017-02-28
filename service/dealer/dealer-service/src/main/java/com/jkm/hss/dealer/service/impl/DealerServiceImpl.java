@@ -235,8 +235,6 @@ public class DealerServiceImpl implements DealerService {
             companyProfitDetail.setChannelShallAmount(channelMoney);
             companyProfitDetail.setProfitDate(DateFormatUtil.format(new Date(), DateFormatUtil.yyyy_MM_dd));
             this.companyProfitDetailService.add(companyProfitDetail);
-//            map.put("merchant", Triple.of(merchantInfo.getAccountId(), merchantMoney, "D0"));
-//            map.put("merchantAndProfit", Triple.of(merchantInfo.getAccountId(), totalFee.subtract(basicMoney), "D0"));
             map.put("channelMoney",Triple.of(basicChannel.getAccountId(), channelMoney, basicChannel.getBasicTradeRate()));
             map.put("productMoney",Triple.of(product.getAccountId(), productMoney, productChannelDetail.getProductTradeRate()));
             return map;
@@ -244,8 +242,8 @@ public class DealerServiceImpl implements DealerService {
 
         final Dealer dealer = this.dealerDao.selectById(appAuUser.getDealerID());
         //查询该代理商的收单利率
-        final List<DealerChannelRate> dealerChannelRateList =  this.dealerRateService.selectByDealerIdAndChannelId(dealer.getId(), channelSign);
-        final DealerChannelRate dealerChannelRate = dealerChannelRateList.get(0);
+        final DealerChannelRate dealerChannelRate =
+                this.dealerRateService.getByDealerIdAndProductIdAndChannelType(dealer.getId(), appAuUser.getProductID(),channelSign).get();
         //获取产品的信息, 产品通道的费率
         final Optional<Product> productOptional = this.productService.selectById(dealerChannelRate.getProductId());
         final  Product product = productOptional.get();
@@ -278,7 +276,6 @@ public class DealerServiceImpl implements DealerService {
             //收手续费,进一位,保留两位有效数字
             waitMoney = waitOriginMoney.setScale(2,BigDecimal.ROUND_UP);
         }
-        final BigDecimal merchantMoney = totalFee.subtract(waitMoney);
         //判断代理商等级
         if (dealer.getLevel() == EnumDealerLevel.FIRST.getId()){
             //一级
@@ -327,8 +324,6 @@ public class DealerServiceImpl implements DealerService {
             shallProfitDetail.setSecondShallAmount(new BigDecimal(0));
             shallProfitDetail.setProfitDate(DateFormatUtil.format(new Date(), DateFormatUtil.yyyy_MM_dd));
             this.shallProfitDetailService.init(shallProfitDetail);
-//            map.put("merchant", Triple.of(merchantInfo.getAccountId(), merchantMoney,"D0"));
-//            map.put("merchantAndProfit", Triple.of(merchantInfo.getAccountId(), totalFee.subtract(basicMoney), "D0"));
             map.put("firstMoney", Triple.of(dealer.getAccountId(), firstMoney, dealerChannelRate.getDealerTradeRate()));
             map.put("channelMoney",Triple.of(basicChannel.getAccountId(), channelMoney, basicChannel.getBasicTradeRate()));
             map.put("productMoney",Triple.of(product.getAccountId(), productMoney, productChannelDetail.getProductTradeRate()));
@@ -338,8 +333,8 @@ public class DealerServiceImpl implements DealerService {
             //获取二级的一级dealer信息
             final Dealer firstDealer = this.dealerDao.selectById(dealer.getFirstLevelDealerId());
             //查询二级的一级dealer 收单费率
-            final List<DealerChannelRate> firstDealerChannelRateList =  this.dealerRateService.selectByDealerIdAndChannelId(firstDealer.getId(), channelSign);
-            final DealerChannelRate firstDealerChannelRate = firstDealerChannelRateList.get(0);
+            final DealerChannelRate firstDealerChannelRate =
+                    this.dealerRateService.getByDealerIdAndProductIdAndChannelType(firstDealer.getId(), appAuUser.getProductID(),channelSign).get();
             //一级分润
             final BigDecimal firstMoney = totalFee.multiply(dealerChannelRate.getDealerTradeRate().
                     subtract(firstDealerChannelRate.getDealerTradeRate())).setScale(2,BigDecimal.ROUND_DOWN);
@@ -389,8 +384,6 @@ public class DealerServiceImpl implements DealerService {
             shallProfitDetail.setSecondShallAmount(secondMoney);
             shallProfitDetail.setProfitDate(DateFormatUtil.format(new Date(), DateFormatUtil.yyyy_MM_dd));
             this.shallProfitDetailService.init(shallProfitDetail);
-//            map.put("merchant", Triple.of(merchantInfo.getAccountId(), merchantMoney, "D0"));
-//            map.put("merchantAndProfit", Triple.of(merchantInfo.getAccountId(), totalFee.subtract(basicMoney), "D0"));
             map.put("firstMoney", Triple.of(firstDealer.getAccountId(), firstMoney, firstDealerChannelRate.getDealerTradeRate()));
             map.put("secondMoney", Triple.of(dealer.getAccountId(),secondMoney, dealerChannelRate.getDealerTradeRate()));
             map.put("channelMoney",Triple.of(basicChannel.getAccountId(), channelMoney, basicChannel.getBasicTradeRate()));
@@ -848,8 +841,8 @@ public class DealerServiceImpl implements DealerService {
 
         final Dealer dealer = this.dealerDao.selectById(merchantInfo.getDealerId());
         //查询该代理商的收单利率
-        final List<DealerChannelRate> dealerChannelRateList =  this.dealerRateService.selectByDealerIdAndChannelId(dealer.getId(), channelSign);
-        final DealerChannelRate dealerChannelRate = dealerChannelRateList.get(0);
+        final DealerChannelRate dealerChannelRate =
+                this.dealerRateService.getByDealerIdAndProductIdAndChannelType(dealer.getId(), merchantInfo.getProductId(),channelSign).get();
         //获取产品的信息, 产品通道的费率
         final Optional<Product> productOptional = this.productService.selectById(dealerChannelRate.getProductId());
         final  Product product = productOptional.get();
@@ -932,8 +925,8 @@ public class DealerServiceImpl implements DealerService {
             //获取二级的一级dealer信息
             final Dealer firstDealer = this.dealerDao.selectById(dealer.getFirstLevelDealerId());
             //查询二级的一级dealer 收单费率
-            final List<DealerChannelRate> firstDealerChannelRateList =  this.dealerRateService.selectByDealerIdAndChannelId(firstDealer.getId(), channelSign);
-            final DealerChannelRate firstDealerChannelRate = firstDealerChannelRateList.get(0);
+            final DealerChannelRate firstDealerChannelRate =
+                    this.dealerRateService.getByDealerIdAndProductIdAndChannelType(firstDealer.getId(), merchantInfo.getProductId(),channelSign).get();
             //一级分润
             final BigDecimal firstMoney = totalFee.multiply(dealerChannelRate.getDealerTradeRate().
                     subtract(firstDealerChannelRate.getDealerTradeRate())).setScale(2,BigDecimal.ROUND_DOWN);

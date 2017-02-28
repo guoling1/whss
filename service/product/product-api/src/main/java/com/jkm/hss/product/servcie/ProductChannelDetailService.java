@@ -24,7 +24,7 @@ public interface ProductChannelDetailService {
     Optional<ProductChannelDetail> selectByProductIdAndChannelId(long productId, int channelSignId);
 
     /**
-     * 根据产品id查询
+     * 根据产品id查询 ？？？
      * @param productId
      * @return
      */
