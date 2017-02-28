@@ -36,10 +36,10 @@
             </el-table-column>
             <el-table-column prop="splitDate" :formatter="changeTime" label="收益日期"></el-table-column>
             <el-table-column prop="businessType" label="收益类型"></el-table-column>
-            <el-table-column prop="splitTotalAmount" label="收益金额" align="right" header-align="left"></el-table-column>
+            <el-table-column prop="splitAmount" label="收益金额" align="right" header-align="left"></el-table-column>
             <el-table-column label="操作" width="100">
               <template scope="scope">
-                <router-link :to="{path:'/admin/record/profitComDet',query:{type:records[scope.$index].businessType,time:records[scope.$index].splitDate}}" v-if="records[scope.$index].totalMoney!=0&&records[scope.$index].businessType!='总额'" type="text" size="small">明细
+                <router-link :to="{path:'/admin/record/profitComDet',query:{type:records[scope.$index].businessType,time:records[scope.$index].splitDate}}" v-if="records[scope.$index].splitAmount!=0&&records[scope.$index].businessType!='总额'" type="text" size="small">明细
                 </router-link>
               </template>
             </el-table-column>
@@ -123,13 +123,13 @@
             };
             var total=0;
             for (let i = 0; i < this.$data.records.length; i++) {
-              this.$data.records[i].splitTotalAmount = toFix(this.$data.records[i].splitTotalAmount);
-              total = toFix(parseFloat(total)+parseFloat(this.$data.records[i].splitTotalAmount))
+              this.$data.records[i].splitAmount = toFix(this.$data.records[i].splitAmount);
+              total = toFix(parseFloat(total)+parseFloat(this.$data.records[i].splitAmount))
             }
             if(this.records.length!=0){
               this.records.push({
                 businessType:"总额",
-                splitTotalAmount:total
+                splitAmount:total
               })
             }
           }, function (err) {
