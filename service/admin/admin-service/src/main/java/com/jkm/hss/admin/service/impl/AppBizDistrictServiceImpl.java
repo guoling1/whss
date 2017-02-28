@@ -55,11 +55,35 @@ public class AppBizDistrictServiceImpl implements AppBizDistrictService{
             for(int i=0;i<listProvinces.size();i++){
                 AppBizDistrictListResponse appBizDistrictListResponse = new AppBizDistrictListResponse();
                 appBizDistrictListResponse.setCode(listProvinces.get(i).getCode());
-                appBizDistrictListResponse.setAname(listProvinces.get(i).getAname());
-                appBizDistrictListResponse.setList(appBizDistrictDao.findCityByProvinceCode(appBizDistrictListResponse.getCode()));
+                appBizDistrictListResponse.setName(listProvinces.get(i).getAname());
+                //查二级
+                List<AppBizDistrictResponse> appCityResponse = appBizDistrictDao.findCityByProvinceCode(appBizDistrictListResponse.getCode());
+                if(appCityResponse.size()>0){
+                    List<AppBizDistrictListResponse.CityListResponse> cityListResponseList= new ArrayList<>();
+                    for(int j=0;j<appCityResponse.size();j++){
+                        AppBizDistrictListResponse.CityListResponse cityListResponse = new AppBizDistrictListResponse.CityListResponse();
+                        cityListResponse.setCode(appCityResponse.get(j).getCode());
+                        cityListResponse.setName(appCityResponse.get(j).getAname());
+                        List<AppBizDistrictResponse> countryResponse = appBizDistrictDao.findCityByProvinceCode(appCityResponse.get(j).getCode());
+                        cityListResponse.setCountryList(countryResponse);
+                        cityListResponseList.add(cityListResponse);
+                    }
+                    appBizDistrictListResponse.setCityList(cityListResponseList);
+                }
                 list.add(appBizDistrictListResponse);
             }
         }
         return list;
+    }
+
+    /**
+     * 查询记录
+     *
+     * @return
+     */
+    @Override
+    public List<AppBizDistrictResponse> findByCode(String code) {
+        List<AppBizDistrictResponse> appBizDistrictResponseList = appBizDistrictDao.findByCode(code);
+        return appBizDistrictResponseList;
     }
 }

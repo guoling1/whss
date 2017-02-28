@@ -27,4 +27,9 @@ public interface AppBizDistrictService {
      * @return
      */
     List<AppBizDistrictListResponse> findAllDistrict();
+    /**
+     * 查询记录
+     * @return
+     */
+    List<AppBizDistrictResponse> findByCode(String code);
 }

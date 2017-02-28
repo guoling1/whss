@@ -10,6 +10,13 @@ import java.util.List;
 @Data
 public class AppBizDistrictListResponse {
     private String code;
-    private String aname;
-    private List<AppBizDistrictResponse> list;
+    private String name;
+    private List<CityListResponse> cityList;
+
+    @Data
+    public static class CityListResponse{
+        private String code;
+        private String name;
+        private List<AppBizDistrictResponse> countryList;
+    }
 }
