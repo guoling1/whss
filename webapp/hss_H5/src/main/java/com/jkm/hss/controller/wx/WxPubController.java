@@ -556,7 +556,16 @@ public class WxPubController extends BaseController {
                                         merchantChannelRate.setMerchantBalanceType(dealerChannelRateList.get(i).getDealerBalanceType());
                                         merchantChannelRate.setMerchantPayRate(dealerChannelRateList.get(i).getDealerMerchantPayRate());
                                         merchantChannelRate.setMerchantWithdrawFee(dealerChannelRateList.get(i).getDealerMerchantWithdrawFee());
-                                        merchantChannelRate.setEnterNet(EnumEnterNet.UNENT.getId());
+
+                                        Optional<BasicChannel> basicChannelOptionalTemp = basicChannelService.selectByChannelTypeSign(dealerChannelRateList.get(i).getChannelTypeSign());
+                                        if(!basicChannelOptionalTemp.isPresent()){
+                                            log.info("基本通道配置{}有误",dealerChannelRateList.get(i).getChannelTypeSign());
+                                        }
+                                        if(basicChannelOptionalTemp.get().getIsNeed()==1){//需要入网
+                                            merchantChannelRate.setEnterNet(EnumEnterNet.UNENT.getId());
+                                        }else{
+                                            merchantChannelRate.setEnterNet(EnumEnterNet.UNSUPPORT.getId());
+                                        }
                                         merchantChannelRate.setStatus(EnumCommonStatus.NORMAL.getId());
                                         merchantChannelRateService.initMerchantChannelRate(merchantChannelRate);
                                     }
@@ -580,7 +589,15 @@ public class WxPubController extends BaseController {
                                 merchantChannelRate.setMerchantBalanceType(productChannelDetailList.get(i).getProductBalanceType());
                                 merchantChannelRate.setMerchantPayRate(productChannelDetailList.get(i).getProductMerchantPayRate());
                                 merchantChannelRate.setMerchantWithdrawFee(productChannelDetailList.get(i).getProductMerchantWithdrawFee());
-                                merchantChannelRate.setEnterNet(EnumEnterNet.UNENT.getId());
+                                Optional<BasicChannel> basicChannelOptionalTemp = basicChannelService.selectByChannelTypeSign(productChannelDetailList.get(i).getChannelTypeSign());
+                                if(!basicChannelOptionalTemp.isPresent()){
+                                    log.info("基本通道配置{}有误",productChannelDetailList.get(i).getChannelTypeSign());
+                                }
+                                if(basicChannelOptionalTemp.get().getIsNeed()==1){//需要入网
+                                    merchantChannelRate.setEnterNet(EnumEnterNet.UNENT.getId());
+                                }else{
+                                    merchantChannelRate.setEnterNet(EnumEnterNet.UNSUPPORT.getId());
+                                }
                                 merchantChannelRate.setStatus(EnumCommonStatus.NORMAL.getId());
                                 merchantChannelRateService.initMerchantChannelRate(merchantChannelRate);
                             }
@@ -648,7 +665,15 @@ public class WxPubController extends BaseController {
                                 merchantChannelRate.setMerchantBalanceType(dealerChannelRateList.get(i).getDealerBalanceType());
                                 merchantChannelRate.setMerchantPayRate(dealerChannelRateList.get(i).getDealerMerchantPayRate());
                                 merchantChannelRate.setMerchantWithdrawFee(dealerChannelRateList.get(i).getDealerMerchantWithdrawFee());
-                                merchantChannelRate.setEnterNet(EnumEnterNet.UNENT.getId());
+                                Optional<BasicChannel> basicChannelOptionalTemp = basicChannelService.selectByChannelTypeSign(dealerChannelRateList.get(i).getChannelTypeSign());
+                                if(!basicChannelOptionalTemp.isPresent()){
+                                    log.info("基本通道配置{}有误",dealerChannelRateList.get(i).getChannelTypeSign());
+                                }
+                                if(basicChannelOptionalTemp.get().getIsNeed()==1){//需要入网
+                                    merchantChannelRate.setEnterNet(EnumEnterNet.UNENT.getId());
+                                }else{
+                                    merchantChannelRate.setEnterNet(EnumEnterNet.UNSUPPORT.getId());
+                                }
                                 merchantChannelRate.setStatus(EnumCommonStatus.NORMAL.getId());
                                 merchantChannelRateService.initMerchantChannelRate(merchantChannelRate);
                             }
@@ -702,7 +727,15 @@ public class WxPubController extends BaseController {
                                 merchantChannelRate.setMerchantBalanceType(productChannelDetailList.get(i).getProductBalanceType());
                                 merchantChannelRate.setMerchantPayRate(productChannelDetailList.get(i).getProductMerchantPayRate());
                                 merchantChannelRate.setMerchantWithdrawFee(productChannelDetailList.get(i).getProductMerchantWithdrawFee());
-                                merchantChannelRate.setEnterNet(EnumEnterNet.UNENT.getId());
+                                Optional<BasicChannel> basicChannelOptionalTemp = basicChannelService.selectByChannelTypeSign(productChannelDetailList.get(i).getChannelTypeSign());
+                                if(!basicChannelOptionalTemp.isPresent()){
+                                    log.info("基本通道配置{}有误",productChannelDetailList.get(i).getChannelTypeSign());
+                                }
+                                if(basicChannelOptionalTemp.get().getIsNeed()==1){//需要入网
+                                    merchantChannelRate.setEnterNet(EnumEnterNet.UNENT.getId());
+                                }else{
+                                    merchantChannelRate.setEnterNet(EnumEnterNet.UNSUPPORT.getId());
+                                }
                                 merchantChannelRate.setStatus(EnumCommonStatus.NORMAL.getId());
                                 merchantChannelRateService.initMerchantChannelRate(merchantChannelRate);
                             }

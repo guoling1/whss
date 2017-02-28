@@ -59,5 +59,6 @@ public class MerchantChannelRate extends BaseEntity{
      * 入网信息
      */
     private String remarks;
+
 }
 
