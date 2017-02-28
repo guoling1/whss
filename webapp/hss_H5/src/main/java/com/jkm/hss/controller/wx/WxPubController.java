@@ -24,10 +24,7 @@ import com.jkm.hss.merchant.entity.*;
 import com.jkm.hss.merchant.enums.*;
 import com.jkm.hss.merchant.helper.MerchantSupport;
 import com.jkm.hss.merchant.helper.WxPubUtil;
-import com.jkm.hss.merchant.helper.request.ContinueBankInfoRequest;
-import com.jkm.hss.merchant.helper.request.RecommendRequest;
-import com.jkm.hss.merchant.helper.request.RequestOrderRecord;
-import com.jkm.hss.merchant.helper.request.TradeRequest;
+import com.jkm.hss.merchant.helper.request.*;
 import com.jkm.hss.merchant.service.*;
 import com.jkm.hss.notifier.enums.EnumNoticeType;
 import com.jkm.hss.notifier.enums.EnumUserType;
@@ -35,13 +32,11 @@ import com.jkm.hss.notifier.enums.EnumVerificationCodeType;
 import com.jkm.hss.notifier.helper.SendMessageParams;
 import com.jkm.hss.notifier.service.SendMessageService;
 import com.jkm.hss.notifier.service.SmsAuthService;
+import com.jkm.hss.product.entity.BasicChannel;
 import com.jkm.hss.product.entity.Product;
 import com.jkm.hss.product.entity.ProductChannelDetail;
-import com.jkm.hss.product.entity.UpgradePayRecord;
-import com.jkm.hss.product.enums.EnumPayChannelSign;
-import com.jkm.hss.product.enums.EnumProductType;
-import com.jkm.hss.product.enums.EnumUpGradeType;
-import com.jkm.hss.product.enums.EnumUpgradePayResult;
+import com.jkm.hss.product.enums.*;
+import com.jkm.hss.product.servcie.BasicChannelService;
 import com.jkm.hss.product.servcie.ProductChannelDetailService;
 import com.jkm.hss.product.servcie.ProductService;
 import com.jkm.hss.product.servcie.UpgradePayRecordService;
@@ -109,6 +104,8 @@ public class WxPubController extends BaseController {
     private BankCardBinService bankCardBinService;
     @Autowired
     private MerchantChannelRateService merchantChannelRateService;
+    @Autowired
+    private BasicChannelService basicChannelService;
 
 
 
@@ -1078,6 +1075,66 @@ public class WxPubController extends BaseController {
         continueBankInfoRequest.setId(merchantInfo.get().getId());
         merchantInfoService.updateBranchInfo(continueBankInfoRequest);
         return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "操作成功");
+    }
+
+    /**
+     * 查询通道是否可用
+     * @param request
+     * @param response
+     * @param checkMerchantInfoRequest
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "checkMerchantInfo", method = RequestMethod.POST)
+    public CommonResponse checkMerchantInfo(final HttpServletRequest request, final HttpServletResponse response,@RequestBody final CheckMerchantInfoRequest checkMerchantInfoRequest) {
+        if(!super.isLogin(request)){
+            return CommonResponse.simpleResponse(-2, "未登录");
+        }
+        Optional<UserInfo> userInfoOptional = userInfoService.selectByOpenId(super.getOpenId(request));
+        if(!userInfoOptional.isPresent()){
+            return CommonResponse.simpleResponse(-2, "未登录");
+        }
+        Optional<MerchantInfo> merchantInfo = merchantInfoService.selectById(userInfoOptional.get().getMerchantId());
+        if(!merchantInfo.isPresent()){
+            return CommonResponse.simpleResponse(-2, "未登录");
+        }
+        Optional<BasicChannel> basicChannelOptional = basicChannelService.selectByChannelTypeSign(checkMerchantInfoRequest.getChannelTypeSign());
+        if(!basicChannelOptional.isPresent()){
+            return CommonResponse.simpleResponse(-1, "该通道不存在");
+        }
+        if(basicChannelOptional.get().getStatus()!= EnumBasicChannelStatus.USEING.getId()){//通道被禁用
+            return CommonResponse.simpleResponse(-1, "该通道不存在");
+        }
+        /**
+         * 1.是否需要入网
+         * 2.是否填写支行信息
+         * 3.是否填写信用卡信息
+         * 4.入网状态
+         */
+        if(basicChannelOptional.get().getIsNeed()== EnumIsNet.NEED.getId()){//需入网
+            log.info("商户需入网");
+            if(StringUtils.isEmpty(merchantInfo.get().getBranchCode())){
+                return CommonResponse.simpleResponse(-3, "支行信息不完善");
+            }
+            if(StringUtils.isEmpty(merchantInfo.get().getCreditCard())){
+                return CommonResponse.simpleResponse(-3, "信用卡信息不完善");
+            }
+            MerchantChannelRateRequest merchantChannelRateRequest = new MerchantChannelRateRequest();
+            merchantChannelRateRequest.setChannelTypeSign(checkMerchantInfoRequest.getChannelTypeSign());
+            merchantChannelRateRequest.setMerchantId(merchantInfo.get().getId());
+            merchantChannelRateRequest.setProductId(merchantInfo.get().getProductId());
+            Optional<MerchantChannelRate> merchantChannelRateOptional = merchantChannelRateService.selectByChannelTypeSignAndProductIdAndMerchantId(merchantChannelRateRequest);
+            if(!merchantChannelRateOptional.isPresent()){
+                return CommonResponse.simpleResponse(-1, "该通道不存在");
+            }
+//            if(){
+//
+//            }
+            return null;
+        }else{//否
+            log.info("商户无需入网");
+            return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "校验成功");
+        }
     }
 
 }
