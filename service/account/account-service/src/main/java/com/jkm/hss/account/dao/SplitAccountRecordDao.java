@@ -41,4 +41,12 @@ public interface SplitAccountRecordDao {
 
     long selectCountByParam(@Param("accountId") Long accountId, @Param("orderNo") String orderNo, @Param("businessType") String businessType,
                             @Param("beginDate") Date beginDate, @Param("endDate") Date endDate);
+
+    /**
+     * 按分账单流水号查询
+     *
+     * @param splitSn
+     * @return
+     */
+    int selectCountBySplitSn(@Param("splitSn") String splitSn);
 }

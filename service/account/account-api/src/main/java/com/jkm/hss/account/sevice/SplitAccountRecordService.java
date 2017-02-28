@@ -81,4 +81,12 @@ public interface SplitAccountRecordService {
                                   String receiptMoneyUserName, String remark);
 
     PageModel<SplitAccountRecord> selectByParam(int pageNo, int pageSize, long accountId, String orderNo, String businessType, String beginDate, String endDate);
+
+    /**
+     * 校验分账单流水号
+     *
+     * @param splitSn
+     * @return
+     */
+    boolean checkExistBySplitSn(String splitSn);
 }

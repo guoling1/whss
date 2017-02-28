@@ -260,7 +260,7 @@ public class AccountSettleAuditRecordServiceImpl implements AccountSettleAuditRe
 
                 //生成结算单
                 final SettlementRecord settlementRecord = new SettlementRecord();
-                settlementRecord.setSettleNo(SnGenerator.generate());
+                settlementRecord.setSettleNo(this.settlementRecordService.getSettleNo(accountUserType.getId(), EnumSettleDestinationType.TO_ACCOUNT.getId()));
                 settlementRecord.setSettleAuditRecordId(accountSettleAuditRecord.getId());
                 settlementRecord.setAccountId(statistics.getAccountId());
                 settlementRecord.setUserNo(accountSettleAuditRecord.getUserNo());
@@ -437,11 +437,12 @@ public class AccountSettleAuditRecordServiceImpl implements AccountSettleAuditRe
                 //可用余额流水增加
                 this.accountFlowService.addAccountFlow(account.getId(), settleAccountFlow.getOrderNo(), merchantIncreaseSettleAccountFlow.getIncomeAmount(),
                         "支付结算", EnumAccountFlowType.INCREASE);
-
-                final Optional<Order> orderOptional = this.orderService.getByOrderNo(settleAccountFlow.getOrderNo());
-                Preconditions.checkState(orderOptional.isPresent(), "结算成功，更新交易结算状态， 没有查询到交易记录[{}]", settleAccountFlow.getOrderNo());
-                if (this.orderService.getByIdWithLock(orderOptional.get().getId()).get().isDueSettle()) {
-                    this.orderService.updateSettleStatus(orderOptional.get().getId(), EnumSettleStatus.SETTLED_ALL.getId());
+                if (EnumAccountUserType.MERCHANT.getId() == settleAccountFlow.getAccountUserType()) {
+                    final Optional<Order> orderOptional = this.orderService.getByOrderNo(settleAccountFlow.getOrderNo());
+                    Preconditions.checkState(orderOptional.isPresent(), "结算成功，更新交易结算状态， 没有查询到交易记录[{}]", settleAccountFlow.getOrderNo());
+                    if (this.orderService.getByIdWithLock(orderOptional.get().getId()).get().isDueSettle()) {
+                        this.orderService.updateSettleStatus(orderOptional.get().getId(), EnumSettleStatus.SETTLED_ALL.getId());
+                    }
                 }
             }
         }

@@ -71,4 +71,21 @@ public interface SettlementRecordService {
      * @return
      */
     Optional<SettlementRecord> getBySettleAuditRecordId(long settleAuditRecordId);
+
+    /**
+     * 校验结算单号
+     *
+     * @param settleNo
+     * @return
+     */
+    boolean checkExistBySettleNo(String settleNo);
+
+    /**
+     * 获取结算单号
+     *
+     * @param settleObject  结算单号
+     * @param settleDestination  结算目的地
+     * @return
+     */
+    public String getSettleNo(int settleObject, int settleDestination);
 }

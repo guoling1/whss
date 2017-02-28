@@ -74,4 +74,12 @@ public interface SettlementRecordDao {
      * @return
      */
     SettlementRecord selectBySettleAuditRecordId(@Param("settleAuditRecordId") long settleAuditRecordId);
+
+    /**
+     * 按结算单号查询个数
+     *
+     * @param settleNo
+     * @return
+     */
+    int selectCountBySettleNo(@Param("settleNo") String settleNo);
 }

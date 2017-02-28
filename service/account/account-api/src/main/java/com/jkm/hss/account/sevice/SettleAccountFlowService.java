@@ -118,4 +118,7 @@ public interface SettleAccountFlowService {
      * @return
      */
     int getYesterdayDecreaseFlowCount(Date tradeDate);
+
+
+    boolean checkExistByFlowNo(String flowNo);
 }

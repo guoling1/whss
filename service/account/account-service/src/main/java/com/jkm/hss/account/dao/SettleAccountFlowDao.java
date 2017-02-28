@@ -103,4 +103,12 @@ public interface SettleAccountFlowDao {
      * @return
      */
     int selectYesterdayDecreaseFlowCount(@Param("tradeDate") Date tradeDate);
+
+    /**
+     * 按流水号查询个数
+     *
+     * @param flowNo
+     * @return
+     */
+    int selectCountByFlowNo(@Param("flowNo") String flowNo);
 }

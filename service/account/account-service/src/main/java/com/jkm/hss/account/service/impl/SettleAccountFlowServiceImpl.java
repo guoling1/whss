@@ -122,7 +122,7 @@ public class SettleAccountFlowServiceImpl implements SettleAccountFlowService {
         //此时的account已经是可用余额改变的结果
         final Account account = this.accountService.getByIdWithLock(accountId).get();
         final SettleAccountFlow settleAccountFlow = new SettleAccountFlow();
-        settleAccountFlow.setFlowNo(SnGenerator.generate());
+        settleAccountFlow.setFlowNo(this.getSettleAccountFlowNo());
         settleAccountFlow.setAccountId(account.getId());
         settleAccountFlow.setOrderNo(orderNo);
         settleAccountFlow.setType(type.getId());
@@ -200,5 +200,31 @@ public class SettleAccountFlowServiceImpl implements SettleAccountFlowService {
     @Override
     public int getYesterdayDecreaseFlowCount(final Date tradeDate) {
         return this.settleAccountFlowDao.selectYesterdayDecreaseFlowCount(tradeDate);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param flowNo
+     * @return
+     */
+    @Override
+    public boolean checkExistByFlowNo(final String flowNo) {
+        final int count = this.settleAccountFlowDao.selectCountByFlowNo(flowNo);
+        return count == 0;
+    }
+
+    /**
+     * 获取流水号
+     *
+     * @return
+     */
+    private String getSettleAccountFlowNo() {
+        final String flowNo = SnGenerator.generateFlowSn();
+        final boolean check = this.checkExistByFlowNo(flowNo);
+        if (!check) {
+            return this.getSettleAccountFlowNo();
+        }
+        return flowNo;
     }
 }
