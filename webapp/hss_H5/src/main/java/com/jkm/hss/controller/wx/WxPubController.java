@@ -24,10 +24,7 @@ import com.jkm.hss.merchant.entity.*;
 import com.jkm.hss.merchant.enums.*;
 import com.jkm.hss.merchant.helper.MerchantSupport;
 import com.jkm.hss.merchant.helper.WxPubUtil;
-import com.jkm.hss.merchant.helper.request.ContinueBankInfoRequest;
-import com.jkm.hss.merchant.helper.request.RecommendRequest;
-import com.jkm.hss.merchant.helper.request.RequestOrderRecord;
-import com.jkm.hss.merchant.helper.request.TradeRequest;
+import com.jkm.hss.merchant.helper.request.*;
 import com.jkm.hss.merchant.service.*;
 import com.jkm.hss.notifier.enums.EnumNoticeType;
 import com.jkm.hss.notifier.enums.EnumUserType;
@@ -1077,6 +1074,35 @@ public class WxPubController extends BaseController {
         }
         continueBankInfoRequest.setId(merchantInfo.get().getId());
         merchantInfoService.updateBranchInfo(continueBankInfoRequest);
+        return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "操作成功");
+    }
+
+    /**
+     * 查询通道是否可用
+     * @param request
+     * @param response
+     * @param checkMerchantInfoRequest
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "checkMerchantInfo", method = RequestMethod.POST)
+    public CommonResponse checkMerchantInfo(final HttpServletRequest request, final HttpServletResponse response,@RequestBody final CheckMerchantInfoRequest checkMerchantInfoRequest) {
+        if(!super.isLogin(request)){
+            return CommonResponse.simpleResponse(-2, "未登录");
+        }
+        Optional<UserInfo> userInfoOptional = userInfoService.selectByOpenId(super.getOpenId(request));
+        if(!userInfoOptional.isPresent()){
+            return CommonResponse.simpleResponse(-2, "未登录");
+        }
+        Optional<MerchantInfo> merchantInfo = merchantInfoService.selectById(userInfoOptional.get().getMerchantId());
+        if(!merchantInfo.isPresent()){
+            return CommonResponse.simpleResponse(-2, "未登录");
+        }
+        Optional<ProductChannelDetail> productChannelDetailOptional = productChannelDetailService.selectByProductIdAndChannelId(merchantInfo.get().getProductId(),checkMerchantInfoRequest.getChannelTypeSign());
+        if(!productChannelDetailOptional.isPresent()){
+            return CommonResponse.simpleResponse(-1, "该通道不存在");
+        }
+//        productChannelDetailOptional.get().
         return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "操作成功");
     }
 
