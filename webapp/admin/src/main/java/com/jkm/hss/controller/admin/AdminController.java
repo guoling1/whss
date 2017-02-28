@@ -471,8 +471,8 @@ public class AdminController extends BaseController {
             return CommonResponse.simpleResponse(-1, "提现结算费不能为空");
         }
 
-        if (paramChannel.getChannelType() == EnumPayChannelSign.YG_WEIXIN.getId()) {
-            final ProductChannelDetail productChannelDetail = integerProductChannelDetailImmutableMap.get(EnumPayChannelSign.YG_WEIXIN.getId());
+        if (paramChannel.getChannelType() == EnumPayChannelSign.YG_WECHAT.getId()) {
+            final ProductChannelDetail productChannelDetail = integerProductChannelDetailImmutableMap.get(EnumPayChannelSign.YG_WECHAT.getId());
             final BigDecimal weixinMerchantSettleRate = new BigDecimal(paramChannel.getMerchantSettleRate())
                     .divide(new BigDecimal("100"), 4, BigDecimal.ROUND_HALF_UP);
             if (weixinMerchantSettleRate.compareTo(productChannelDetail.getProductMerchantPayRate().add(product.getLimitPayFeeRate())) > 0) {
@@ -493,8 +493,8 @@ public class AdminController extends BaseController {
                     || weixinWithdrawFee.compareTo(weixinMerchantWithdrawFee) > 0) {
                 return CommonResponse.simpleResponse(-1, "微信通道的提现结算费用：一级代理商的必须大于等于产品的, 小于等于商户的");
             }
-        } else if (paramChannel.getChannelType() == EnumPayChannelSign.YG_ZHIFUBAO.getId()) {
-            final ProductChannelDetail productChannelDetail = integerProductChannelDetailImmutableMap.get(EnumPayChannelSign.YG_ZHIFUBAO.getId());
+        } else if (paramChannel.getChannelType() == EnumPayChannelSign.YG_ALIPAY.getId()) {
+            final ProductChannelDetail productChannelDetail = integerProductChannelDetailImmutableMap.get(EnumPayChannelSign.YG_ALIPAY.getId());
             final BigDecimal alipayMerchantSettleRate = new BigDecimal(paramChannel.getMerchantSettleRate())
                     .divide(new BigDecimal("100"), 4, BigDecimal.ROUND_HALF_UP);
             if (alipayMerchantSettleRate.compareTo(productChannelDetail.getProductMerchantPayRate().add(product.getLimitPayFeeRate())) > 0) {
@@ -517,8 +517,8 @@ public class AdminController extends BaseController {
                 return CommonResponse.simpleResponse(-1, "支付宝通道的提现结算费用：一级代理商的必须大于等于产品的, 小于等于商户的");
             }
 
-        } else if (paramChannel.getChannelType() == EnumPayChannelSign.YG_YINLIAN.getId()) {
-            final ProductChannelDetail productChannelDetail = integerProductChannelDetailImmutableMap.get(EnumPayChannelSign.YG_YINLIAN.getId());
+        } else if (paramChannel.getChannelType() == EnumPayChannelSign.YG_UNIONPAY.getId()) {
+            final ProductChannelDetail productChannelDetail = integerProductChannelDetailImmutableMap.get(EnumPayChannelSign.YG_UNIONPAY.getId());
             final BigDecimal quickPayMerchantSettleRate = new BigDecimal(paramChannel.getMerchantSettleRate())
                     .divide(new BigDecimal("100"), 4, BigDecimal.ROUND_HALF_UP);
             if (quickPayMerchantSettleRate.compareTo(productChannelDetail.getProductMerchantPayRate().add(product.getLimitPayFeeRate())) > 0) {
@@ -560,8 +560,8 @@ public class AdminController extends BaseController {
             return CommonResponse.simpleResponse(-1, "提现结算费不能为空");
         }
 
-        if (paramChannel.getChannelType() == EnumPayChannelSign.YG_WEIXIN.getId()) {
-            final ProductChannelDetail productChannelDetail = integerProductChannelDetailImmutableMap.get(EnumPayChannelSign.YG_WEIXIN.getId());
+        if (paramChannel.getChannelType() == EnumPayChannelSign.YG_WECHAT.getId()) {
+            final ProductChannelDetail productChannelDetail = integerProductChannelDetailImmutableMap.get(EnumPayChannelSign.YG_WECHAT.getId());
             final BigDecimal weixinMerchantSettleRate = new BigDecimal(paramChannel.getMerchantSettleRate())
                     .divide(new BigDecimal("100"), 4, BigDecimal.ROUND_HALF_UP);
             if (weixinMerchantSettleRate.compareTo(productChannelDetail.getProductMerchantPayRate().add(product.getLimitPayFeeRate())) > 0) {
@@ -582,8 +582,8 @@ public class AdminController extends BaseController {
                     || weixinWithdrawFee.compareTo(weixinMerchantWithdrawFee) > 0) {
                 return CommonResponse.simpleResponse(-1, "微信通道的提现结算费用：一级代理商的必须大于等于产品的, 小于等于商户的");
             }
-        } else if (paramChannel.getChannelType() == EnumPayChannelSign.YG_ZHIFUBAO.getId()) {
-            final ProductChannelDetail productChannelDetail = integerProductChannelDetailImmutableMap.get(EnumPayChannelSign.YG_ZHIFUBAO.getId());
+        } else if (paramChannel.getChannelType() == EnumPayChannelSign.YG_ALIPAY.getId()) {
+            final ProductChannelDetail productChannelDetail = integerProductChannelDetailImmutableMap.get(EnumPayChannelSign.YG_ALIPAY.getId());
             final BigDecimal alipayMerchantSettleRate = new BigDecimal(paramChannel.getMerchantSettleRate())
                     .divide(new BigDecimal("100"), 4, BigDecimal.ROUND_HALF_UP);
             if (alipayMerchantSettleRate.compareTo(productChannelDetail.getProductMerchantPayRate().add(product.getLimitPayFeeRate())) > 0) {
@@ -606,8 +606,8 @@ public class AdminController extends BaseController {
                 return CommonResponse.simpleResponse(-1, "支付宝通道的提现结算费用：一级代理商的必须大于等于产品的, 小于等于商户的");
             }
 
-        } else if (paramChannel.getChannelType() == EnumPayChannelSign.YG_YINLIAN.getId()) {
-            final ProductChannelDetail productChannelDetail = integerProductChannelDetailImmutableMap.get(EnumPayChannelSign.YG_YINLIAN.getId());
+        } else if (paramChannel.getChannelType() == EnumPayChannelSign.YG_UNIONPAY.getId()) {
+            final ProductChannelDetail productChannelDetail = integerProductChannelDetailImmutableMap.get(EnumPayChannelSign.YG_UNIONPAY.getId());
             final BigDecimal quickPayMerchantSettleRate = new BigDecimal(paramChannel.getMerchantSettleRate())
                     .divide(new BigDecimal("100"), 4, BigDecimal.ROUND_HALF_UP);
             if (quickPayMerchantSettleRate.compareTo(productChannelDetail.getProductMerchantPayRate().add(product.getLimitPayFeeRate())) > 0) {
