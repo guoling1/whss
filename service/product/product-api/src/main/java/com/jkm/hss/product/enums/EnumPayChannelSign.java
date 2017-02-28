@@ -101,4 +101,5 @@ public enum EnumPayChannelSign {
     public static EnumPayChannelSign of(final String name) {
         return STATUS_IMMUTABLE_MAP.get(name);
     }
+
 }
