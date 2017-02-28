@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -71,6 +72,17 @@ public class AllProfitController extends BaseController {
         List<CompanyProfitResponse> count = allProfitService.selectCompanyProfitDetailsCount(req);
         pageModel.setCount(count.size());
         pageModel.setRecords(list);
+        List<CompanyProfitResponse> list1 = new ArrayList<>();
+        if(list.size()>0){
+            for (int i=0;i<list.size();i++){
+                BigDecimal a=BigDecimal.valueOf(0.00);
+                if (list.get(i).getSplitAmount().compareTo(a)!=0){
+                    list1.add(list.get(i));
+                }
+                pageModel.setCount(list1.size());
+                pageModel.setRecords(list1);
+            }
+        }
         return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", pageModel);
         }
     /**
@@ -95,6 +107,7 @@ public class AllProfitController extends BaseController {
         List<CompanyProfitResponse> count = allProfitService.selectOneProfitCount(req);
         pageModel.setCount(count.size());
         pageModel.setRecords(list);
+
         return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", pageModel);
 
     }
@@ -115,6 +128,17 @@ public class AllProfitController extends BaseController {
         int count = allProfitService.selectOneProfitDetailsCount(req);
         pageModel.setCount(count);
         pageModel.setRecords(list);
+        List<CompanyProfitResponse> list1 = new ArrayList<>();
+        if(list.size()>0){
+            for (int i=0;i<list.size();i++){
+                BigDecimal a=BigDecimal.valueOf(0.00);
+                if (list.get(i).getSplitAmount().compareTo(a)!=0){
+                    list1.add(list.get(i));
+                }
+                pageModel.setCount(list1.size());
+                pageModel.setRecords(list1);
+            }
+        }
         return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", pageModel);
     }
 
@@ -137,9 +161,9 @@ public class AllProfitController extends BaseController {
             req.setEndTime(sdf.format(rightNow.getTime()));
         }
         List<CompanyProfitResponse> list = allProfitService.selectTwoProfit(req);
-        int count = allProfitService.selectTwoProfitCount(req);
+        List<CompanyProfitResponse> count = allProfitService.selectTwoProfitCount(req);
         List<CompanyProfitResponse> lists = allProfitService.selectTwoAll(req);
-        pageModel.setCount(count);
+        pageModel.setCount(count.size());
         pageModel.setRecords(list);
         List<CompanyProfitResponse> list1 = new ArrayList<>();
         if(lists.size()>0){
@@ -171,12 +195,20 @@ public class AllProfitController extends BaseController {
         final PageModel<CompanyProfitResponse> pageModel = new PageModel<CompanyProfitResponse>(req.getPageNo(), req.getPageSize());
         req.setOffset(pageModel.getFirstIndex());
         List<CompanyProfitResponse> list = allProfitService.selectTwoProfitDetails(req);
-//        if (list.size()==0){
-//            return CommonResponse.simpleResponse(-1,"未查询到相关数据");
-//        }
         int count = allProfitService.selectTwoProfitDetailsCount(req);
         pageModel.setCount(count);
         pageModel.setRecords(list);
+        List<CompanyProfitResponse> list1 = new ArrayList<>();
+        if(list.size()>0){
+            for (int i=0;i<list.size();i++){
+                BigDecimal a=BigDecimal.valueOf(0.00);
+                if (list.get(i).getSplitAmount().compareTo(a)!=0){
+                    list1.add(list.get(i));
+                }
+                pageModel.setCount(list1.size());
+                pageModel.setRecords(list1);
+            }
+        }
         return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", pageModel);
     }
 }

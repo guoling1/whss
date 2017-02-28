@@ -51,7 +51,7 @@ public interface AllProfitService {
      * @param req
      * @return
      */
-    int selectTwoProfitCount(CompanyPrifitRequest req);
+    List<CompanyProfitResponse> selectTwoProfitCount(CompanyPrifitRequest req);
 
     /**
      * 公司分润详情

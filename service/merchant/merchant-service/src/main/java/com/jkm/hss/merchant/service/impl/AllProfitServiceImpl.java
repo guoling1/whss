@@ -114,8 +114,9 @@ public class AllProfitServiceImpl implements AllProfitService {
     }
 
     @Override
-    public int selectTwoProfitCount(CompanyPrifitRequest req) {
-        return allProfitDao.selectTwoProfitCount(req);
+    public List<CompanyProfitResponse> selectTwoProfitCount(CompanyPrifitRequest req) {
+        List<CompanyProfitResponse> list = allProfitDao.selectTwoProfitCount(req);
+        return list;
     }
 
     private CompanyPrifitRequest getTime(CompanyPrifitRequest req) {
@@ -191,6 +192,18 @@ public class AllProfitServiceImpl implements AllProfitService {
     @Override
     public List<CompanyProfitResponse> selectOneProfitDetails(CompanyPrifitRequest req) {
         final CompanyPrifitRequest request =getTime(req);
+        if (request.getBusinessType().equals("好收收- 收款")){
+            request.setBusinessType(EnumSplitBusinessType.HSSPAY.getId());
+        }
+        if (request.getBusinessType().equals("好收收-提现")){
+            request.setBusinessType(EnumSplitBusinessType.HSSWITHDRAW.getId());
+        }
+        if (request.getBusinessType().equals("好收收-升级费")){
+            request.setBusinessType(EnumSplitBusinessType.HSSPROMOTE.getId());
+        }
+        if (request.getBusinessType().equals("好收银-收款")){
+            request.setBusinessType(EnumSplitBusinessType.HSYPAY.getId());
+        }
         List<CompanyProfitResponse> list = allProfitDao.selectOneProfitDetails(request);
         if (list.size()>0){
             for (int i=0;i<list.size();i++){
@@ -219,6 +232,18 @@ public class AllProfitServiceImpl implements AllProfitService {
     @Override
     public List<CompanyProfitResponse> selectTwoProfitDetails(CompanyPrifitRequest req) {
         final CompanyPrifitRequest request =getTime(req);
+        if (request.getBusinessType().equals("好收收- 收款")){
+            request.setBusinessType(EnumSplitBusinessType.HSSPAY.getId());
+        }
+        if (request.getBusinessType().equals("好收收-提现")){
+            request.setBusinessType(EnumSplitBusinessType.HSSWITHDRAW.getId());
+        }
+        if (request.getBusinessType().equals("好收收-升级费")){
+            request.setBusinessType(EnumSplitBusinessType.HSSPROMOTE.getId());
+        }
+        if (request.getBusinessType().equals("好收银-收款")){
+            request.setBusinessType(EnumSplitBusinessType.HSYPAY.getId());
+        }
         List<CompanyProfitResponse> list = allProfitDao.selectTwoProfitDetails(request);
         if (list.size()>0){
             for (int i=0;i<list.size();i++){
