@@ -9,11 +9,9 @@ import com.jkm.hss.account.entity.Account;
 import com.jkm.hss.account.sevice.AccountService;
 import com.jkm.hss.bill.entity.Order;
 import com.jkm.hss.bill.enums.EnumOrderStatus;
-import com.jkm.hss.bill.enums.EnumPaymentType;
 import com.jkm.hss.bill.service.OrderService;
 import com.jkm.hss.bill.service.PayService;
 import com.jkm.hss.controller.BaseController;
-import com.jkm.hss.dealer.service.DealerService;
 import com.jkm.hss.dealer.service.PartnerShallProfitDetailService;
 import com.jkm.hss.dealer.service.ShallProfitDetailService;
 import com.jkm.hss.helper.ApplicationConsts;
@@ -621,7 +619,7 @@ public class LoginController extends BaseController {
                             model.addAttribute("avaMoney", "0.00");
                             model.addAttribute("realMoney","0.00");
                         }else{
-                            Pair<BigDecimal, BigDecimal> pair = shallProfitDetailService.withdrawParams(merchantId,EnumPayChannelSign.YG_YINLIAN.getId());
+                            Pair<BigDecimal, BigDecimal> pair = shallProfitDetailService.withdrawParams(merchantId,EnumPayChannelSign.YG_UNIONPAY.getId());
                             model.addAttribute("avaMoney", accountInfo.getAvailable()==null?"0.00":decimalFormat.format(accountInfo.getAvailable()));
                             int compareResult = accountInfo.getAvailable().compareTo(pair.getLeft());
                             if(compareResult!=1){//提现金额小于手续费
@@ -847,6 +845,8 @@ public class LoginController extends BaseController {
                         model.addAttribute("cityName",result.get().getCityName());
                         model.addAttribute("countyCode",result.get().getCountyCode());
                         model.addAttribute("countyName",result.get().getCountyName());
+                        model.addAttribute("branchCode",result.get().getBranchCode());
+                        model.addAttribute("branchName",result.get().getBranchName());
                         url = "/bankBranch";
                     }
                 }else{
@@ -996,7 +996,7 @@ public class LoginController extends BaseController {
             model.addAttribute("createTime", DateFormatUtil.format(order.getCreateTime(), DateFormatUtil.yyyy_MM_dd_HH_mm_ss));
 //            Pair<String,String> pair = payOf(0,orderRecord.getPayResult());
             model.addAttribute("status", EnumOrderStatus.of(order.getStatus()).getValue());
-            model.addAttribute("payType", StringUtils.isEmpty(order.getPayType()) ? "" : EnumPaymentType.of(order.getPayType()).getValue());
+            model.addAttribute("payType", StringUtils.isEmpty(order.getPayType()) ? "" : EnumPayChannelSign.codeOf(order.getPayType()));
             final MerchantInfo merchantInfo = this.merchantInfoService.getByAccountId(order.getPayee()).get();
             model.addAttribute("merchantName", merchantInfo.getMerchantName());
             model.addAttribute("orderNo", order.getOrderNo());
@@ -1196,13 +1196,13 @@ public class LoginController extends BaseController {
                         upgradeResult.setType(0);
                         upgradeResult.setIsUpgrade(1);
                         for(int i=0;i<productChannelDetails.size();i++){
-                            if(EnumPayChannelSign.YG_WEIXIN.getId()==productChannelDetails.get(i).getChannelTypeSign()){
+                            if(EnumPayChannelSign.YG_WECHAT.getId()==productChannelDetails.get(i).getChannelTypeSign()){
                                 upgradeResult.setWeixinRate(productChannelDetails.get(i).getProductMerchantPayRate());
                             }
-                            if(EnumPayChannelSign.YG_ZHIFUBAO.getId()==productChannelDetails.get(i).getChannelTypeSign()){
+                            if(EnumPayChannelSign.YG_ALIPAY.getId()==productChannelDetails.get(i).getChannelTypeSign()){
                                 upgradeResult.setAlipayRate(productChannelDetails.get(i).getProductMerchantPayRate());
                             }
-                            if(EnumPayChannelSign.YG_YINLIAN.getId()==productChannelDetails.get(i).getChannelTypeSign()){
+                            if(EnumPayChannelSign.YG_UNIONPAY.getId()==productChannelDetails.get(i).getChannelTypeSign()){
                                 upgradeResult.setFastRate(productChannelDetails.get(i).getProductMerchantPayRate());
                             }
                         }
@@ -1291,13 +1291,13 @@ public class LoginController extends BaseController {
                         upgradeResult.setType(0);
                         upgradeResult.setIsUpgrade(1);
                         for(int i=0;i<productChannelDetails.size();i++){
-                            if(EnumPayChannelSign.YG_WEIXIN.getId()==productChannelDetails.get(i).getChannelTypeSign()){
+                            if(EnumPayChannelSign.YG_WECHAT.getId()==productChannelDetails.get(i).getChannelTypeSign()){
                                 upgradeResult.setWeixinRate(productChannelDetails.get(i).getProductMerchantPayRate());
                             }
-                            if(EnumPayChannelSign.YG_ZHIFUBAO.getId()==productChannelDetails.get(i).getChannelTypeSign()){
+                            if(EnumPayChannelSign.YG_ALIPAY.getId()==productChannelDetails.get(i).getChannelTypeSign()){
                                 upgradeResult.setAlipayRate(productChannelDetails.get(i).getProductMerchantPayRate());
                             }
-                            if(EnumPayChannelSign.YG_YINLIAN.getId()==productChannelDetails.get(i).getChannelTypeSign()){
+                            if(EnumPayChannelSign.YG_UNIONPAY.getId()==productChannelDetails.get(i).getChannelTypeSign()){
                                 upgradeResult.setFastRate(productChannelDetails.get(i).getProductMerchantPayRate());
                             }
                         }

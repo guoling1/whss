@@ -12,6 +12,27 @@ public final class SnGenerator {
     private SnGenerator() {
     }
 
+
+    /**
+     * 生成流水号（待结算流水，可用余额流水，分账记录流水）
+     *
+     * @return
+     */
+    public static String generateFlowSn() {
+        return DateFormatUtil.format(new Date(), "yyyyMMdd") + RandomStringUtils.randomNumeric(8);
+    }
+
+    /**
+     * 生成结算单号
+     *
+     * @param settleObject  结算对象
+     * @param settleDestination   结算目的地
+     * @return
+     */
+    public static String generateSettlementRecordSn(final int settleObject, final int settleDestination) {
+        return settleObject + settleDestination + DateFormatUtil.format(new Date(), "yyyyMMdd") + RandomStringUtils.randomNumeric(8);
+    }
+
     /**
      * 生成订单号
      * JKM + 时间戳＋5位随机数
@@ -19,7 +40,7 @@ public final class SnGenerator {
      * @return
      */
     public static String generate() {
-        return "JKM" + DateFormatUtil.format(new Date(), "yyyyMMddHHmmssSSS") + RandomStringUtils.randomNumeric(5);
+        return DateFormatUtil.format(new Date(), "yyyyMMddHHmmssSSS") + RandomStringUtils.randomNumeric(6);
     }
 
 

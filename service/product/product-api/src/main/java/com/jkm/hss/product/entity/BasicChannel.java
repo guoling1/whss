@@ -45,7 +45,7 @@ public class BasicChannel extends BaseEntity{
      *
      * {@link com.jkm.hss.product.enums.EnumChannelSupportWay}
      */
-    private String supportWay;
+    private int supportWay;
 
     /**
      * 收单公司(支付宝,微信)
@@ -70,19 +70,19 @@ public class BasicChannel extends BaseEntity{
     private String basicBalanceType;
 
     /**
-     * 结算时间
+     * 结算方式
      * {@link com.jkm.hss.product.enums.EnumBasicSettleType}
      */
     private String basicSettleType;
     /**
      * 预估额度
      */
-    private String limitAmount;
+    private BigDecimal limitAmount;
 
     /**
      * 是否需要商户入网
      */
-    private String isNeed;
+    private int isNeed;
 
     /**
      * 备注

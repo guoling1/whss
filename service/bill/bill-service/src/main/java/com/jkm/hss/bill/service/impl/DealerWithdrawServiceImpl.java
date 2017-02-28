@@ -5,10 +5,13 @@ import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.jkm.base.common.util.HttpClientPost;
 import com.jkm.hss.account.entity.Account;
+import com.jkm.hss.account.entity.AccountFlow;
 import com.jkm.hss.account.entity.FrozenRecord;
 import com.jkm.hss.account.entity.UnFrozenRecord;
+import com.jkm.hss.account.enums.EnumAccountFlowType;
 import com.jkm.hss.account.enums.EnumUnfrozenType;
 import com.jkm.hss.account.helper.AccountConstants;
+import com.jkm.hss.account.sevice.AccountFlowService;
 import com.jkm.hss.account.sevice.AccountService;
 import com.jkm.hss.account.sevice.FrozenRecordService;
 import com.jkm.hss.account.sevice.UnfrozenRecordService;
@@ -55,6 +58,8 @@ public class DealerWithdrawServiceImpl implements DealerWithdrawService {
     private FrozenRecordService frozenRecordService;
     @Autowired
     private UnfrozenRecordService unfrozenRecordService;
+    @Autowired
+    private AccountFlowService accountFlowService;
 
     /**
      * {@inheritDoc}
@@ -67,9 +72,9 @@ public class DealerWithdrawServiceImpl implements DealerWithdrawService {
     @Transactional
     @Override
     public Pair<Integer, String> withdraw(long accountId, String totalAmount, int channel, String appId) {
-        Preconditions.checkState(EnumPayChannelSign.YG_WEIXIN.getId() == channel
-                || EnumPayChannelSign.YG_ZHIFUBAO.getId() == channel
-                || EnumPayChannelSign.YG_YINLIAN.getId() == channel, "渠道选择错误[{}]", channel);
+        Preconditions.checkState(EnumPayChannelSign.YG_WECHAT.getId() == channel
+                || EnumPayChannelSign.YG_ALIPAY.getId() == channel
+                || EnumPayChannelSign.YG_UNIONPAY.getId() == channel, "渠道选择错误[{}]", channel);
 
         final Optional<Dealer> dealerOptional = this.dealerService.getByAccountId(accountId);
         Preconditions.checkArgument(dealerOptional.isPresent(), "代理商不存在");
@@ -174,8 +179,22 @@ public class DealerWithdrawServiceImpl implements DealerWithdrawService {
             Preconditions.checkState(account.getTotalAmount().compareTo(frozenRecord.getFrozenAmount()) >= 0);
             this.accountService.decreaseFrozenAmount(accountId, frozenRecord.getFrozenAmount());
             this.accountService.decreaseTotalAmount(accountId, frozenRecord.getFrozenAmount());
+
             //提现手续费入账
             final Account dealerPoundageAccount1 = this.accountService.getById(AccountConstants.DEALER_POUNDAGE_ACCOUNT_ID).get();
+            //入账流水
+            final AccountFlow accountFlow = new AccountFlow();
+            accountFlow.setAccountId(accountId);
+            accountFlow.setOrderNo(order.getOrderNo());
+            accountFlow.setBeforeAmount(dealerPoundageAccount1.getAvailable());
+            accountFlow.setAfterAmount(dealerPoundageAccount1.getAvailable().add(order.getPoundage()));
+            accountFlow.setIncomeAmount(order.getPoundage());
+            accountFlow.setOutAmount(new BigDecimal(0));
+            accountFlow.setChangeTime(new Date());
+            accountFlow.setType(EnumAccountFlowType.INCREASE.getId());
+            accountFlow.setRemark("代理商提现费用");
+            this.accountFlowService.add(accountFlow);
+
             dealerPoundageAccount1.setAvailable(dealerPoundageAccount1.getAvailable().add(order.getPoundage()));
             dealerPoundageAccount1.setTotalAmount(dealerPoundageAccount1.getTotalAmount().add(order.getPoundage()));
             this.accountService.update(dealerPoundageAccount1);

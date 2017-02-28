@@ -4,12 +4,10 @@
     <insert id="insert" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO tb_account_settle_audit_record
           (
-          merchant_no,
+          user_no,
+          user_name,
           account_id,
-          merchant_name,
-          dealer_no,
-          dealer_name,
-          app_id,
+          account_user_type,
           trade_date,
           trade_number,
           settle_amount,
@@ -20,12 +18,10 @@
           )
           VALUES
           (
-          #{merchantNo},
+          #{userNo},
+          #{userName},
           #{accountId},
-          #{merchantName},
-          #{dealerNo},
-          #{dealerName},
-          #{appId},
+          #{accountUserType},
           #{tradeDate},
           #{tradeNumber},
           #{settleAmount},

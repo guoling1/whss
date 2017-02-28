@@ -21,6 +21,13 @@ public class PaymentSdkPlaceOrderRequest {
     private String orderNo;
 
     /**
+     * 支付通道
+     *
+     * {@link com.jkm.hss.product.enums.EnumPayChannelSign}
+     */
+    private String channel;
+
+    /**
      * 商品描述
      */
     private String goodsDescribe;
@@ -51,7 +58,32 @@ public class PaymentSdkPlaceOrderRequest {
     private String totalAmount;
 
     /**
-     * 交易类型(jsapi,epos等)
+     *
      */
     private String tradeType;
+
+
+    //////**卡盟通道所需参数**//////////
+
+    /**
+     * 收款行联行号
+     */
+    private String bankCode;
+
+    /**
+     * 入账卡号 DES加密
+     */
+    private String cardNo;
+
+    /**
+     *入帐卡对应姓名
+     *
+     */
+    private String payerName;
+
+    /**
+     *入帐卡对应身份证号 DES加密
+     *
+     */
+    private String idCardNo;
 }

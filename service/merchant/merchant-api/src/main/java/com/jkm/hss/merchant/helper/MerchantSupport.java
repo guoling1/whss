@@ -146,10 +146,10 @@ public class MerchantSupport {
 //        System.out.println(decryptBankCard("6212260200059789657"));
 //        System.out.println(decryptIdentity("110105198602103314"));
 //        System.out.println("=============================================");
-        String mobile = encryptMobile("18861436153");
-//        String bankCard = encryptBankCard("6212260200059789657");
+//        String mobile = encryptMobile("13597634925");
+        String bankCard = encryptBankCard("6222620130005705891");
 //        String Identity = encryptIdenrity("110105198602103314");
-        System.out.println(mobile);
+        System.out.println(bankCard);
 //        System.out.println(bankCard);
 //        System.out.println(Identity);
 //        String sql = "update tb_merchant_info set reserve_mobile='"+mobile+"',identity='"+Identity+"',bank_no='"+bankCard+"',bank_no_short='?',bank_bin='ICBC',bank_name='工商银行' where id=?";

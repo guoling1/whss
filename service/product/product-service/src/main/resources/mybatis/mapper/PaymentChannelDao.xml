@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jkm.hss.product.dao.PaymentChannelDao">
+
+    <insert id="addPaymentChannel" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO tb_basic_channel
+        (account_id,
+        channel_name,
+        channel_type_sign,
+        support_way,
+        third_company,
+        channel_source,
+        basic_trade_rate,
+        basic_withdraw_fee,
+        basic_balance_type,
+        basic_settle_type,
+        limit_amount,
+        is_need,
+        status
+        )VALUES(
+        #{accountId},
+        #{channelName},
+        #{channelTypeSign},
+        #{supportWay},
+        #{thirdCompany},
+        #{channelSource},
+        #{basicTradeRate},
+        #{basicWithdrawFee},
+        #{basicBalanceType},
+        #{basicSettleType},
+        #{limitAmount},
+        #{isNeed},
+        #{status}
+        )
+    </insert>
+
+
+
+</mapper>

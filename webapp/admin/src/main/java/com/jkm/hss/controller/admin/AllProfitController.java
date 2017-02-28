@@ -50,9 +50,6 @@ public class AllProfitController extends BaseController {
             req.setEndTime(sdf.format(rightNow.getTime()));
         }
         List<CompanyProfitResponse> list = allProfitService.selectCompanyProfit(req);
-//        if (list.size()==0){
-//            return CommonResponse.simpleResponse(-1,"未查询到相关数据");
-//        }
         int count = allProfitService.selectCompanyProfitCount(req);
         pageModel.setCount(count);
         pageModel.setRecords(list);
@@ -71,9 +68,7 @@ public class AllProfitController extends BaseController {
         final PageModel<CompanyProfitResponse> pageModel = new PageModel<CompanyProfitResponse>(req.getPageNo(), req.getPageSize());
         req.setOffset(pageModel.getFirstIndex());
         List<CompanyProfitResponse> list = allProfitService.selectCompanyProfitDetails(req);
-//        if (list.size()==0){
-//            return CommonResponse.simpleResponse(-1,"未查询到相关数据");
-//        }
+
         int count = allProfitService.selectCompanyProfitDetailsCount(req);
         pageModel.setCount(count);
         pageModel.setRecords(list);
@@ -98,9 +93,7 @@ public class AllProfitController extends BaseController {
             req.setEndTime(sdf.format(rightNow.getTime()));
         }
         List<CompanyProfitResponse> list = allProfitService.selectOneProfit(req);
-//        if (list.size()==0){
-//            return CommonResponse.simpleResponse(-1,"未查询到相关数据");
-//        }
+
         int count = allProfitService.selectOneProfitCount(req);
         pageModel.setCount(count);
         pageModel.setRecords(list);
@@ -152,9 +145,6 @@ public class AllProfitController extends BaseController {
         pageModel.setRecords(list);
         List<CompanyProfitResponse> list1 = new ArrayList<>();
 
-//        if (list.size()==0){
-//            return CommonResponse.simpleResponse(-1,"未查询到相关数据");
-//        }
         if(list.size()>0){
             for (int i=0;i<list.size();i++){
                 if (req.getProxyName()!=null&&!req.getProxyName().equals("")){

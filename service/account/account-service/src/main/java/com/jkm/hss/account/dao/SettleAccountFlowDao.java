@@ -1,6 +1,7 @@
 package com.jkm.hss.account.dao;
 
 import com.jkm.hss.account.entity.SettleAccountFlow;
+import com.jkm.hss.account.helper.selectresponse.SettleAccountFlowStatistics;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
@@ -21,13 +22,31 @@ public interface SettleAccountFlowDao {
     void insert(SettleAccountFlow settleAccountFlow);
 
     /**
+     * 保存结算单id
+     *
+     * @param id
+     * @return
+     */
+    int updateSettlementRecordIdById(@Param("id") long id, @Param("settlementRecordId") long settlementRecordId);
+
+    /**
+     * 保存结算单id
+     *
+     * @param settleAuditRecordId
+     * @param settlementRecordId
+     * @return
+     */
+    int updateSettlementRecordIdBySettleAuditRecordId(@Param("settleAuditRecordId") long settleAuditRecordId, @Param("settlementRecordId") long settlementRecordId);
+
+    /**
      * 保存结算审核记录
      *
-     * @param orderNos
+     * @param tradeDate
+     * @param accountId
      * @param settleAuditRecordId
      * @return
      */
-    int updateSettleAuditRecordIdByOrderNos(@Param("orderNos") List<String> orderNos, @Param("settleAuditRecordId") long settleAuditRecordId);
+    int updateSettleAuditRecordIdByTradeDateAndAccountId(@Param("tradeDate") Date tradeDate, @Param("accountId") long accountId, @Param("settleAuditRecordId") long settleAuditRecordId);
 
     /**
      * 按id查询
@@ -46,14 +65,12 @@ public interface SettleAccountFlowDao {
     SettleAccountFlow selectByOrderNoAndAccountIdAndType(@Param("orderNo") String orderNo, @Param("accountId") long accountId, @Param("type") int type);
 
     /**
-     * 查询上一个工作日的结算流水（未结算）
+     * 统计上一日的结算流水（未结算）
      *
-     * 如果今日是周一查询的是（周五至周日）的；
-     *
-     * @param tradeDateList
+     * @param tradeDate
      * @return
      */
-    List<SettleAccountFlow> selectMerchantLastWordDayRecord(@Param("tradeDateList") List<Date> tradeDateList);
+    List<SettleAccountFlowStatistics> statisticsYesterdayFlow(@Param("tradeDate") Date tradeDate);
 
     /**
      * 按审核记录id查询
@@ -70,4 +87,28 @@ public interface SettleAccountFlowDao {
      * @return
      */
     List<SettleAccountFlow> selectDealerOrCompanyFlowByOrderNo(@Param("orderNo") String orderNo);
+
+    /**
+     * 按结算单id查询
+     *
+     * @param settlementRecordId
+     * @return
+     */
+    List<SettleAccountFlow> selectBySettlementRecordId(@Param("settlementRecordId") long settlementRecordId);
+
+    /**
+     * 查询昨日出账流水个数
+     *
+     * @param tradeDate
+     * @return
+     */
+    int selectYesterdayDecreaseFlowCount(@Param("tradeDate") Date tradeDate);
+
+    /**
+     * 按流水号查询个数
+     *
+     * @param flowNo
+     * @return
+     */
+    int selectCountByFlowNo(@Param("flowNo") String flowNo);
 }

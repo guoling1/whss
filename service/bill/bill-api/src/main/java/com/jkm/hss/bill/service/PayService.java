@@ -29,9 +29,10 @@ public interface PayService {
      * @param totalAmount
      * @param channel  通道
      * @param merchantId
+     * @param isDynamicCode 是否是动态码付款
      * @return
      */
-    Pair<Integer, String> codeReceipt(String totalAmount, int channel, long merchantId, String appId);
+    Pair<Integer, String> codeReceipt(String totalAmount, int channel, long merchantId, String appId, boolean isDynamicCode);
 
 
     /**
@@ -75,7 +76,7 @@ public interface PayService {
      * @param orderId
      * @param merchant
      */
-    void merchantRecorded(long orderId, MerchantInfo merchant);
+    long merchantRecorded(long orderId, MerchantInfo merchant);
 
     /**
      * 商户升级，商户付款，公司入账

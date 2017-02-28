@@ -64,17 +64,17 @@ public class UpgradeController extends BaseController {
         List<UpgradeRules> upgradeRulesList = new ArrayList<UpgradeRules>();
         UpgradeRules upgradeRules = new UpgradeRules();
         for(int i=0;i<productChannelDetails.size();i++){
-            if(EnumPayChannelSign.YG_WEIXIN.getId()==productChannelDetails.get(i).getChannelTypeSign()){
+            if(EnumPayChannelSign.YG_WECHAT.getId()==productChannelDetails.get(i).getChannelTypeSign()){
                 BigDecimal weixinRate = productChannelDetails.get(i).getProductMerchantPayRate();
                 BigDecimal b1 = new BigDecimal(100);
                 upgradeRules.setWeixinRate(weixinRate.multiply(b1));
             }
-            if(EnumPayChannelSign.YG_ZHIFUBAO.getId()==productChannelDetails.get(i).getChannelTypeSign()){
+            if(EnumPayChannelSign.YG_ALIPAY.getId()==productChannelDetails.get(i).getChannelTypeSign()){
                 BigDecimal alipayRate = productChannelDetails.get(i).getProductMerchantPayRate();
                 BigDecimal b1 = new BigDecimal(100);
                 upgradeRules.setAlipayRate(alipayRate.multiply(b1));
             }
-            if(EnumPayChannelSign.YG_YINLIAN.getId()==productChannelDetails.get(i).getChannelTypeSign()){
+            if(EnumPayChannelSign.YG_UNIONPAY.getId()==productChannelDetails.get(i).getChannelTypeSign()){
                 BigDecimal fastRate = productChannelDetails.get(i).getProductMerchantPayRate();
                 BigDecimal b1 = new BigDecimal(100);
                 upgradeRules.setFastRate(fastRate.multiply(b1));
@@ -121,7 +121,7 @@ public class UpgradeController extends BaseController {
             upgradeRulesAndRateResponse.setUpgradeRate(upgradeRate.multiply(b1));
             upgradeRulesAndRateResponse.setTradeRate(tradeRate.multiply(b1));
             upgradeRulesAndRateResponse.setStandard(upgradeRecommendRulesOptional.get().getInviteStandard());
-    }
+        }
         return CommonResponse.objectResponse(1, "success", upgradeRulesAndRateResponse);
     }
 
