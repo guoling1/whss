@@ -107,6 +107,8 @@ public class WxPubController extends BaseController {
     private ProductService productService;
     @Autowired
     private BankCardBinService bankCardBinService;
+    @Autowired
+    private MerchantChannelRateService merchantChannelRateService;
 
 
 
@@ -491,18 +493,18 @@ public class WxPubController extends BaseController {
             return CommonResponse.simpleResponse(-1, "产品信息有误");
         }
         long productId = productOptional.get().getId();
-        Optional<ProductChannelDetail> weixinChannelDetail = productChannelDetailService.selectByProductIdAndChannelId(productId,EnumPayChannelSign.YG_WEIXIN.getId());
-        if(!weixinChannelDetail.isPresent()){
-            return CommonResponse.simpleResponse(-1, "产品：微信费率配置有误");
-        }
-        Optional<ProductChannelDetail> zhifubaoChannelDetail = productChannelDetailService.selectByProductIdAndChannelId(productId,EnumPayChannelSign.YG_ZHIFUBAO.getId());
-        if(!zhifubaoChannelDetail.isPresent()){
-            return CommonResponse.simpleResponse(-1, "产品：支付宝率配置有误");
-        }
-        Optional<ProductChannelDetail> yinlianChannelDetail = productChannelDetailService.selectByProductIdAndChannelId(productId,EnumPayChannelSign.YG_YINLIAN.getId());
-        if(!yinlianChannelDetail.isPresent()){
-            return CommonResponse.simpleResponse(-1, "产品：银联率配置有误");
-        }
+//        Optional<ProductChannelDetail> weixinChannelDetail = productChannelDetailService.selectByProductIdAndChannelId(productId,EnumPayChannelSign.YG_WEIXIN.getId());
+//        if(!weixinChannelDetail.isPresent()){
+//            return CommonResponse.simpleResponse(-1, "产品：微信费率配置有误");
+//        }
+//        Optional<ProductChannelDetail> zhifubaoChannelDetail = productChannelDetailService.selectByProductIdAndChannelId(productId,EnumPayChannelSign.YG_ZHIFUBAO.getId());
+//        if(!zhifubaoChannelDetail.isPresent()){
+//            return CommonResponse.simpleResponse(-1, "产品：支付宝率配置有误");
+//        }
+//        Optional<ProductChannelDetail> yinlianChannelDetail = productChannelDetailService.selectByProductIdAndChannelId(productId,EnumPayChannelSign.YG_YINLIAN.getId());
+//        if(!yinlianChannelDetail.isPresent()){
+//            return CommonResponse.simpleResponse(-1, "产品：银联率配置有误");
+//        }
         //①根据openId判断有没有用户
         Optional<UserInfo> ui = userInfoService.selectByOpenId(super.getOpenId(request));
         if(!ui.isPresent()){//根据openId找不到商户
@@ -532,10 +534,10 @@ public class WxPubController extends BaseController {
                     mi.setLevel(EnumUpGradeType.COMMON.getId());
                     mi.setHierarchy(0);
                     //初始化费率
-                    mi.setWeixinRate(weixinChannelDetail.get().getProductMerchantPayRate());
-                    mi.setAlipayRate(zhifubaoChannelDetail.get().getProductMerchantPayRate());
-                    mi.setFastRate(yinlianChannelDetail.get().getProductMerchantPayRate());
-                    mi.setIsUpgrade(EnumIsUpgrade.CANUPGRADE.getId());
+//                    mi.setWeixinRate(weixinChannelDetail.get().getProductMerchantPayRate());
+//                    mi.setAlipayRate(zhifubaoChannelDetail.get().getProductMerchantPayRate());
+//                    mi.setFastRate(yinlianChannelDetail.get().getProductMerchantPayRate());
+//                    mi.setIsUpgrade(EnumIsUpgrade.CANUPGRADE.getId());
                     //判断当前代理商是否开启了推荐和我要升级功能
                     if(mi.getFirstDealerId()>0){
                         Optional<Dealer> dealerOptional = dealerService.getById(mi.getFirstDealerId());
@@ -564,6 +566,26 @@ public class WxPubController extends BaseController {
                         }
                     }
                     merchantInfoService.regByCode(mi);
+                    //初始化费率
+                    List<ProductChannelDetail> productChannelDetailList = productChannelDetailService.selectByProductId(productId);
+                    if(productChannelDetailList.size()>0){
+                        for(int i=0;i<productChannelDetailList.size();i++){
+                            MerchantChannelRate merchantChannelRate = new MerchantChannelRate();
+                            merchantChannelRate.setMerchantId(mi.getId());
+                            merchantChannelRate.setProductId(productId);
+                            merchantChannelRate.setChannelTypeSign(productChannelDetailList.get(i).getChannelTypeSign());
+                            merchantChannelRate.setMerchantBalanceType(productChannelDetailList.get(i).getProductBalanceType());
+                            merchantChannelRate.setMerchantPayRate(productChannelDetailList.get(i).getProductMerchantPayRate());
+                            merchantChannelRate.setMerchantWithdrawFee(productChannelDetailList.get(i).getProductMerchantWithdrawFee());
+                            merchantChannelRate.setEnterNet(EnumEnterNet.UNENT.getId());
+                            merchantChannelRate.setStatus(EnumCommonStatus.NORMAL.getId());
+                            merchantChannelRateService.initMerchantChannelRate(merchantChannelRate);
+                        }
+                    }else{
+                        log.info("产品费率配置有误");
+                        return CommonResponse.simpleResponse(-1, "产品费率配置有误");
+                    }
+
                     //添加用户
                     UserInfo uo = new UserInfo();
                     uo.setMobile(MerchantSupport.encryptMobile(mobile));
@@ -619,9 +641,9 @@ public class WxPubController extends BaseController {
                             return CommonResponse.simpleResponse(-1, "代理商：快捷费率配置有误");
                         }
                         //初始化费率
-                        mi.setWeixinRate(weixinChannelDetail.get().getProductMerchantPayRate());
-                        mi.setAlipayRate(zhifubaoChannelDetail.get().getProductMerchantPayRate());
-                        mi.setFastRate(yinlianChannelDetail.get().getProductMerchantPayRate());
+//                        mi.setWeixinRate(weixinChannelDetail.get().getProductMerchantPayRate());
+//                        mi.setAlipayRate(zhifubaoChannelDetail.get().getProductMerchantPayRate());
+//                        mi.setFastRate(yinlianChannelDetail.get().getProductMerchantPayRate());
                         mi.setIsUpgrade(EnumIsUpgrade.CANUPGRADE.getId());
                         merchantInfoService.regByWx(mi);
 
@@ -660,9 +682,9 @@ public class WxPubController extends BaseController {
                         mi.setLevel(EnumUpGradeType.COMMON.getId());
                         mi.setHierarchy(merchantInfoOptional.get().getHierarchy()+1);//邀请人级别加1
                         //初始化费率
-                        mi.setWeixinRate(weixinChannelDetail.get().getProductMerchantPayRate());
-                        mi.setAlipayRate(zhifubaoChannelDetail.get().getProductMerchantPayRate());
-                        mi.setFastRate(yinlianChannelDetail.get().getProductMerchantPayRate());
+//                        mi.setWeixinRate(weixinChannelDetail.get().getProductMerchantPayRate());
+//                        mi.setAlipayRate(zhifubaoChannelDetail.get().getProductMerchantPayRate());
+//                        mi.setFastRate(yinlianChannelDetail.get().getProductMerchantPayRate());
                         mi.setIsUpgrade(EnumIsUpgrade.CANUPGRADE.getId());
                         merchantInfoService.regByWx(mi);
                         //添加用户
