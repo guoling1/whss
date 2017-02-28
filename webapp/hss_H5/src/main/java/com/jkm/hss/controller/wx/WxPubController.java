@@ -15,6 +15,7 @@ import com.jkm.hss.dealer.entity.Dealer;
 import com.jkm.hss.dealer.entity.DealerChannelRate;
 import com.jkm.hss.dealer.enums.EnumInviteBtn;
 import com.jkm.hss.dealer.enums.EnumRecommendBtn;
+import com.jkm.hss.dealer.enums.EnumSettlementPeriodType;
 import com.jkm.hss.dealer.service.DealerChannelRateService;
 import com.jkm.hss.dealer.service.DealerService;
 import com.jkm.hss.dealer.service.ShallProfitDetailService;
@@ -22,7 +23,9 @@ import com.jkm.hss.helper.ApplicationConsts;
 import com.jkm.hss.helper.request.*;
 import com.jkm.hss.merchant.entity.*;
 import com.jkm.hss.merchant.enums.*;
+import com.jkm.hss.merchant.helper.MerchantConsts;
 import com.jkm.hss.merchant.helper.MerchantSupport;
+import com.jkm.hss.merchant.helper.SmPost;
 import com.jkm.hss.merchant.helper.WxPubUtil;
 import com.jkm.hss.merchant.helper.request.*;
 import com.jkm.hss.merchant.service.*;
@@ -58,6 +61,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.URLDecoder;
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -1127,9 +1131,59 @@ public class WxPubController extends BaseController {
             if(!merchantChannelRateOptional.isPresent()){
                 return CommonResponse.simpleResponse(-1, "该通道不存在");
             }
-//            if(){
-//
-//            }
+            if(merchantChannelRateOptional.get().getEnterNet()!=EnumEnterNet.UNENT.getId()){//未入网
+                Pair<Integer,Integer> payChannelSign = EnumPayChannelSign.getPayChannelSign(checkMerchantInfoRequest.getChannelTypeSign());
+
+                MerchantChannelRateRequest merchantChannelRateRequest1 = new MerchantChannelRateRequest();
+                merchantChannelRateRequest1.setChannelTypeSign(payChannelSign.getLeft());
+                merchantChannelRateRequest1.setMerchantId(merchantInfo.get().getId());
+                merchantChannelRateRequest1.setProductId(merchantInfo.get().getProductId());
+                Optional<MerchantChannelRate> weixinMerchantChannelRateOptional = merchantChannelRateService.selectByChannelTypeSignAndProductIdAndMerchantId(merchantChannelRateRequest1);
+                if(!weixinMerchantChannelRateOptional.isPresent()){
+                    return CommonResponse.simpleResponse(-1, "微信通道"+payChannelSign.getLeft()+"不存在");
+                }
+
+                MerchantChannelRateRequest merchantChannelRateRequest2 = new MerchantChannelRateRequest();
+                merchantChannelRateRequest2.setChannelTypeSign(payChannelSign.getRight());
+                merchantChannelRateRequest2.setMerchantId(merchantInfo.get().getId());
+                merchantChannelRateRequest2.setProductId(merchantInfo.get().getProductId());
+                Optional<MerchantChannelRate> zhifubaoMerchantChannelRateOptional = merchantChannelRateService.selectByChannelTypeSignAndProductIdAndMerchantId(merchantChannelRateRequest2);
+                if(!zhifubaoMerchantChannelRateOptional.isPresent()){
+                    return CommonResponse.simpleResponse(-1, "微信通道"+payChannelSign.getRight()+"不存在");
+                }
+
+                merchantChannelRateOptional.get().getChannelTypeSign();
+                Map<String, String> paramsMap = new HashMap<String, String>();
+                paramsMap.put("merchantName", merchantInfo.get().getMerchantName());
+                paramsMap.put("merchantNo", merchantInfo.get().getMarkCode());
+                paramsMap.put("address",merchantInfo.get().getAddress());
+                paramsMap.put("personName", merchantInfo.get().getName());
+                paramsMap.put("idCard", merchantInfo.get().getIdentity());
+                paramsMap.put("bankNo", merchantInfo.get().getBankNo());
+
+                paramsMap.put("wxRate", weixinMerchantChannelRateOptional.get().getMerchantPayRate().toString());
+                paramsMap.put("zfbRate", zhifubaoMerchantChannelRateOptional.get().getMerchantPayRate().toString());
+                paramsMap.put("bankName",merchantInfo.get().getBankName());
+                paramsMap.put("prov",merchantInfo.get().getProvinceName());
+                paramsMap.put("city", merchantInfo.get().getCityName());     //后台通知url
+                paramsMap.put("country", merchantInfo.get().getCountyName());
+                paramsMap.put("bankBranch",merchantInfo.get().getBranchName());
+                paramsMap.put("bankCode",merchantInfo.get().getBranchCode());
+                paramsMap.put("creditCardNo",merchantInfo.get().getCreditCard());
+                String result = SmPost.post(MerchantConsts.getMerchantConfig().merchantIN(),paramsMap);
+                if(result!=null&&!"".equals(result)){
+                    JSONObject jo = JSONObject.fromObject(result);
+                    if(jo.getInt("code")==1){
+
+                        return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "校验成功");
+                    }else{
+                        return CommonResponse.simpleResponse(-1, jo.getString("msg"));
+                    }
+
+                }else{
+                    return CommonResponse.simpleResponse(-1, "入网异常");
+                }
+            }
             return null;
         }else{//否
             log.info("商户无需入网");
