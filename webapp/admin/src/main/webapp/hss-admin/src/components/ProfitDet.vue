@@ -41,7 +41,7 @@
             <el-table-column prop="splitTotalAmount" label="分润总额" align="right" :formatter="changeTotal"></el-table-column>
             <el-table-column prop="outMoneyAccountId" label="分润出款账户"></el-table-column>
             <el-table-column prop="receiptMoneyUserName" label="分润方名称"></el-table-column>
-            <el-table-column prop="statisticsDate" label="分润方类型" v-if="isShow"></el-table-column>
+            <el-table-column prop="profitType" label="分润方类型" v-if="isShow"></el-table-column>
             <el-table-column prop="splitAmount" align="right" header-align="left" label="分润金额" :formatter="changePrice"></el-table-column>
             <el-table-column prop="remark" label="备注信息"></el-table-column>
           </el-table>
@@ -71,7 +71,8 @@
           pageSize:10,
           orderNo:'',
           receiptMoneyUserName:'',
-          businessType:''
+          businessType:'',
+          splitDate:''
         },
         records: [],
         count: 0,
@@ -87,14 +88,17 @@
       }else if(this.$route.path=="/admin/record/profitComDet"){
         this.$data.path = '/admin/allProfit/companyProfitDetail';
         this.$data.query.accId = this.$route.query.id;
+        this.$data.query.splitDate = this.$route.query.time;
         this.isShow =false
       }else if(this.$route.path=="/admin/record/profitFirDet"){
         this.$data.path = '/admin/allProfit/firstDealerDetail';
         this.isShow =false
         this.$data.query.receiptMoneyAccountId = this.$route.query.id;
+        this.$data.query.splitDate = this.$route.query.time;
       }else if(this.$route.path=="/admin/record/profitSecDet"){
         this.$data.path = '/admin/allProfit/secondDealerDetail';
         this.$data.query.receiptMoneyAccountId = this.$route.query.id;
+        this.$data.query.splitDate = this.$route.query.time;
         this.isShow =false
       }
       this.getData();

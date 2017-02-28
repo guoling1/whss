@@ -39,7 +39,7 @@
             <el-table-column prop="splitTotalAmount" label="收益金额" align="right" header-align="left"></el-table-column>
             <el-table-column label="操作" width="100">
               <template scope="scope">
-                <router-link :to="{path:'/admin/record/profitComDet',query:{id:records[scope.$index].accId}}" v-if="records[scope.$index].totalMoney!=0&&records[scope.$index].businessType!='总额'" type="text" size="small">明细
+                <router-link :to="{path:'/admin/record/profitComDet',query:{id:records[scope.$index].accId,time:records[scope.$index].splitDate}}" v-if="records[scope.$index].totalMoney!=0&&records[scope.$index].businessType!='总额'" type="text" size="small">明细
                 </router-link>
               </template>
             </el-table-column>
