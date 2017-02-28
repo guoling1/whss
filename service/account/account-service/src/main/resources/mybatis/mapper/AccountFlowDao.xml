@@ -4,6 +4,7 @@
     <insert id="insert" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO tb_account_flow
         (
+        flow_no,
         account_id,
         order_no,
         before_amount,
@@ -17,6 +18,7 @@
         )
         VALUES
         (
+        #{flowNo},
         #{accountId},
         #{orderNo},
         #{beforeAmount},
@@ -61,5 +63,9 @@
         <if test="beginTime != null">
             AND create_time BETWEEN #{beginTime} AND #{endTime}
         </if>
+    </select>
+
+    <select id="selectCountByFlowNo" resultType="java.lang.Integer">
+        SELECT COUNT(0) FROM tb_account_flow WHERE flow_no = #{flowNo}
     </select>
 </mapper>

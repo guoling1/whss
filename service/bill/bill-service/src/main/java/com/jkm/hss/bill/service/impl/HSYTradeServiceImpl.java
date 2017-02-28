@@ -234,7 +234,7 @@ public class HSYTradeServiceImpl implements HSYTradeService {
         order.setPayChannelSign(channel);
         order.setSettleStatus(EnumSettleStatus.DUE_SETTLE.getId());
         order.setSettleType(EnumBalanceTimeType.T1.getType());
-        order.setSettleTime(DateTimeUtil.getSettleDate());
+        order.setSettleTime(DateTimeUtil.generateT1SettleDate(new Date()));
         order.setStatus(EnumOrderStatus.DUE_PAY.getId());
         this.orderService.add(order);
         //请求支付中心下单
@@ -433,7 +433,7 @@ public class HSYTradeServiceImpl implements HSYTradeService {
 
         //判断业务类型
         final String splitBusinessType = this.getSplitBusinessType(order);
-        log.info(">>>orderNo:" + order.getOrderNo() + "<<<<<<该笔订单的业务类型：" + splitBusinessType);
+        log.info(">>>orderNo:" + order.getOrderNo() + "该笔订单的业务类型：" + splitBusinessType);
         //通道利润--到结算
         if (null != channelMoneyTriple) {
             this.splitAccountRecordService.addPaySplitAccountRecord(splitBusinessType, order.getOrderNo(), order.getOrderNo(),

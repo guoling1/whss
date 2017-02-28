@@ -51,17 +51,18 @@ public class DateTimeUtil {
      * 获取T1的结算时间
      *
      * @return
+     * @param tradeDate
      */
-    public static Date getSettleDate() {
-        final DateTime now = DateTime.now();
-        if (now.getDayOfWeek() >= 1 && now.getDayOfWeek() <= 4) {
-            return now.plusDays(1).toDate();
-        } else if (now.getDayOfWeek() == 5) {
-            return now.plusDays(3).toDate();
-        } else if (now.getDayOfWeek() == 6) {
-            return now.plusDays(2).toDate();
-        } else if (now.getDayOfWeek() == 7) {
-            return now.plusDays(1).toDate();
+    public static Date generateT1SettleDate(Date tradeDate) {
+        final DateTime dateTime = new DateTime(tradeDate);
+        if (dateTime.getDayOfWeek() >= 1 && dateTime.getDayOfWeek() <= 4) {
+            return dateTime.plusDays(1).toDate();
+        } else if (dateTime.getDayOfWeek() == 5) {
+            return dateTime.plusDays(3).toDate();
+        } else if (dateTime.getDayOfWeek() == 6) {
+            return dateTime.plusDays(2).toDate();
+        } else if (dateTime.getDayOfWeek() == 7) {
+            return dateTime.plusDays(1).toDate();
         }
         throw new RuntimeException("can not be here");
     }

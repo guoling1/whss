@@ -48,13 +48,19 @@
         WHERE id = #{id}
     </update>
 
-    <update id="updateSettleAuditRecordIdByOrderNos">
+    <update id="updateSettlementRecordIdBySettleAuditRecordId">
+        UPDATE tb_settle_account_flow
+        SET settlement_record_id = #{settlementRecordId}
+        WHERE settle_audit_record_id = #{settleAuditRecordId}
+    </update>
+
+    <update id="updateSettleAuditRecordIdByTradeDateAndAccountId">
         UPDATE tb_settle_account_flow
         SET settle_audit_record_id = #{settleAuditRecordId}
-        WHERE order_no IN
-        <foreach collection="orderNos" index="index" item="item" open="(" separator="," close=")">
-            #{item}
-        </foreach>
+        WHERE app_id = 'hsy'
+        AND trade_date = #{tradeDate}
+        AND account_id = #{accountId}
+        AND type = 1
     </update>
 
     <select id="selectById" resultType="com.jkm.hss.account.entity.SettleAccountFlow">
@@ -92,6 +98,10 @@
         WHERE app_id = 'hsy'
         AND trade_date = #{tradeDate}
         AND type = 2
+    </select>
+
+    <select id="selectCountByFlowNo" resultType="java.lang.Integer">
+        SELECT count(0) FROM tb_settle_account_flow WHERE flow_no = #{flowNo}
     </select>
 
 </mapper>
