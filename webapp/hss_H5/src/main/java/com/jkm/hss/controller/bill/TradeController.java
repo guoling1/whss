@@ -96,7 +96,7 @@ public class TradeController extends BaseController {
             return CommonResponse.simpleResponse(-1, "支付方式错误");
         }
         final Pair<Integer, String> resultPair = this.payService.codeReceipt(payRequest.getTotalFee(),
-                payRequest.getPayChannel(), merchantInfo.get().getId(), EnumAppType.HSS.getId());
+                payRequest.getPayChannel(), merchantInfo.get().getId(), EnumAppType.HSS.getId(), true);
         if (0 == resultPair.getLeft()) {
             return CommonResponse.builder4MapResult(CommonResponse.SUCCESS_CODE, "收款成功")
                     .addParam("payUrl", URLDecoder.decode(resultPair.getRight(), "UTF-8"))
@@ -138,7 +138,7 @@ public class TradeController extends BaseController {
             return CommonResponse.simpleResponse(-1, "支付方式错误");
         }
         final Pair<Integer, String> resultPair = this.payService.codeReceipt(payRequest.getTotalFee(),
-                payRequest.getPayChannel(), merchantInfo.get().getId(), EnumAppType.HSS.getId());
+                payRequest.getPayChannel(), merchantInfo.get().getId(), EnumAppType.HSS.getId(), false);
         if (0 == resultPair.getLeft()) {
             return CommonResponse.builder4MapResult(CommonResponse.SUCCESS_CODE, "收款成功")
                     .addParam("payUrl", URLDecoder.decode(resultPair.getRight(), "UTF-8"))
