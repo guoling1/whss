@@ -38,4 +38,11 @@ public interface MerchantChannelRateService {
      * @param enumEnterNet
      */
     void updateEnterNetStatus(long merchantId, EnumEnterNet enumEnterNet);
+
+    /**
+     *  更新商户入网状态
+     * @param signIdList
+     */
+    int batchCheck(List<Integer> signIdList);
+
 }

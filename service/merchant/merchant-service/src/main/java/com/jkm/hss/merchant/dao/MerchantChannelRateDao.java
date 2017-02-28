@@ -39,4 +39,10 @@ public interface MerchantChannelRateDao {
      * @param id
      */
     void updateEnterNetStatus(@Param("merchantId") long merchantId, @Param("id") int id);
+
+    /**
+     *  更新商户入网状态
+     * @param signIdList
+     */
+    int batchCheck(@Param("signIdList") List<Integer> signIdList);
 }

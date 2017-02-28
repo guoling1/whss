@@ -1174,8 +1174,13 @@ public class WxPubController extends BaseController {
                 if(result!=null&&!"".equals(result)){
                     JSONObject jo = JSONObject.fromObject(result);
                     if(jo.getInt("code")==1){
-
-                        return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "校验成功");
+                        List<Integer> signIdList = new ArrayList<Integer>();
+                        int count = merchantChannelRateService.batchCheck(signIdList);
+                        if(count==signIdList.size()){
+                            return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "校验成功");
+                        }else{
+                            return CommonResponse.simpleResponse(-1, "校验异常");
+                        }
                     }else{
                         return CommonResponse.simpleResponse(-1, jo.getString("msg"));
                     }

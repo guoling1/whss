@@ -64,4 +64,14 @@ public class MerchantChannelRateServiceImpl implements MerchantChannelRateServic
             this.merchantChannelRateDao.updateEnterNetStatus(merchantId, enumEnterNet.getId());
 
     }
+
+    /**
+     * 更新商户入网状态
+     *
+     * @param signIdList
+     */
+    @Override
+    public int batchCheck(List<Integer> signIdList) {
+        return merchantChannelRateDao.batchCheck(signIdList);
+    }
 }

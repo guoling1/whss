@@ -56,4 +56,13 @@
         )
     </insert>
 
+    <update id="batchCheck">
+        UPDATE tb_merchant_channel_rate
+        SET enter_net = 3
+        WHERE
+        channel_type_sign in
+        <foreach collection="signIdList" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </update>
 </mapper>
