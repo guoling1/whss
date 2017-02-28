@@ -16,7 +16,7 @@
               <label>分润方名称:</label>
               <el-input style="width: 120px" v-model="query.receiptMoneyUserName" placeholder="请输入内容" size="small"></el-input>
             </li>
-            <li class="same">
+            <li class="same" v-if="isShow">
               <label>业务类型:</label>
               <el-select style="width: 140px" clearable v-model="query.businessType" size="small" >
                 <el-option label="全部" value="">全部</el-option>
@@ -72,7 +72,7 @@
           orderNo:'',
           receiptMoneyUserName:'',
           businessType:'',
-          splitDate:''
+          splitDate:'',
         },
         records: [],
         count: 0,
@@ -89,16 +89,19 @@
         this.$data.path = '/admin/allProfit/companyProfitDetail';
         this.$data.query.accId = this.$route.query.id;
         this.$data.query.splitDate = this.$route.query.time;
+        this.$data.query.businessType = this.$route.query.type;
         this.isShow =false
       }else if(this.$route.path=="/admin/record/profitFirDet"){
         this.$data.path = '/admin/allProfit/firstDealerDetail';
         this.isShow =false
         this.$data.query.receiptMoneyAccountId = this.$route.query.id;
+        this.$data.query.businessType = this.$route.query.type;
         this.$data.query.splitDate = this.$route.query.time;
       }else if(this.$route.path=="/admin/record/profitSecDet"){
         this.$data.path = '/admin/allProfit/secondDealerDetail';
         this.$data.query.receiptMoneyAccountId = this.$route.query.id;
         this.$data.query.splitDate = this.$route.query.time;
+        this.$data.query.businessType = this.$route.query.type;
         this.isShow =false
       }
       this.getData();
