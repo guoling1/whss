@@ -146,7 +146,7 @@ public class OrderServiceImpl implements OrderService {
         playMoneyOrder.setGoodsName(shop.getName());
         playMoneyOrder.setGoodsDescribe(shop.getName());
         playMoneyOrder.setSettleStatus(EnumSettleStatus.DUE_SETTLE.getId());
-        playMoneyOrder.setSettleTime(DateTimeUtil.getSettleDate());
+        playMoneyOrder.setSettleTime(DateTimeUtil.generateT1SettleDate(new Date()));
         playMoneyOrder.setSettleType(settleType);
         playMoneyOrder.setStatus(EnumOrderStatus.WITHDRAWING.getId());
         this.add(playMoneyOrder);

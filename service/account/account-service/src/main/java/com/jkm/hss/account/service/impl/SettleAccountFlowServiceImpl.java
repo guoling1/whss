@@ -57,17 +57,28 @@ public class SettleAccountFlowServiceImpl implements SettleAccountFlowService {
     /**
      * {@inheritDoc}
      *
-     * @param orderNos
+     * @param settleAuditRecordId  结算审核记录id
+     * @param settlementRecordId  结算单id
+     * @return
+     */
+    @Override
+    @Transactional
+    public int updateSettlementRecordIdBySettleAuditRecordId(final long settleAuditRecordId, final long settlementRecordId) {
+        return this.settleAccountFlowDao.updateSettlementRecordIdBySettleAuditRecordId(settleAuditRecordId, settlementRecordId);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param tradeDate
+     * @param accountId
      * @param settleAuditRecordId
      * @return
      */
     @Override
     @Transactional
-    public int updateSettleAuditRecordIdByOrderNos(final List<String> orderNos, final long settleAuditRecordId) {
-        if (CollectionUtils.isEmpty(orderNos)) {
-            return 0;
-        }
-        return this.settleAccountFlowDao.updateSettleAuditRecordIdByOrderNos(orderNos, settleAuditRecordId);
+    public int updateSettleAuditRecordIdByTradeDateAndAccountId(final Date tradeDate, final long accountId, final long settleAuditRecordId) {
+        return this.settleAccountFlowDao.updateSettleAuditRecordIdByTradeDateAndAccountId(tradeDate, accountId, settleAuditRecordId);
     }
 
     /**
@@ -111,7 +122,7 @@ public class SettleAccountFlowServiceImpl implements SettleAccountFlowService {
         //此时的account已经是可用余额改变的结果
         final Account account = this.accountService.getByIdWithLock(accountId).get();
         final SettleAccountFlow settleAccountFlow = new SettleAccountFlow();
-        settleAccountFlow.setFlowNo(SnGenerator.generate());
+        settleAccountFlow.setFlowNo(this.getSettleAccountFlowNo());
         settleAccountFlow.setAccountId(account.getId());
         settleAccountFlow.setOrderNo(orderNo);
         settleAccountFlow.setType(type.getId());
@@ -189,5 +200,31 @@ public class SettleAccountFlowServiceImpl implements SettleAccountFlowService {
     @Override
     public int getYesterdayDecreaseFlowCount(final Date tradeDate) {
         return this.settleAccountFlowDao.selectYesterdayDecreaseFlowCount(tradeDate);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param flowNo
+     * @return
+     */
+    @Override
+    public boolean checkExistByFlowNo(final String flowNo) {
+        final int count = this.settleAccountFlowDao.selectCountByFlowNo(flowNo);
+        return count == 0;
+    }
+
+    /**
+     * 获取流水号
+     *
+     * @return
+     */
+    private String getSettleAccountFlowNo() {
+        final String flowNo = SnGenerator.generateFlowSn();
+        final boolean check = this.checkExistByFlowNo(flowNo);
+        if (!check) {
+            return this.getSettleAccountFlowNo();
+        }
+        return flowNo;
     }
 }

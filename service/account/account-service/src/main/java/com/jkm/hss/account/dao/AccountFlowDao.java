@@ -61,4 +61,12 @@ public interface AccountFlowDao {
      */
     long selectCountByParam(@Param("accountId") Long accountId, @Param("flowSn") String flowSn, @Param("type") Integer type,
                             @Param("beginTime") Date beginTime, @Param("endTime") Date endTime);
+
+    /**
+     * 按流水号查询
+     *
+     * @param flowNo
+     * @return
+     */
+    int selectCountByFlowNo(@Param("flowNo") String flowNo);
 }

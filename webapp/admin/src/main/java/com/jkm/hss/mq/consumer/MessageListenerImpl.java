@@ -40,11 +40,7 @@ public class MessageListenerImpl implements MessageListener {
                 message.getTag(), message.getMsgID());
         try {
             final JSONObject body = JSONObject.parseObject(new String(message.getBody(),"UTF-8"));
-            if (MqConfig.POUNDAGE_SETTLE.equals(message.getTag())) {
-                log.info("消费消息--订单[{}]， 手续费结算", body.getString("orderNo"));
-                final String orderNo = body.getString("orderNo");
-                this.accountSettleAuditRecordService.poundageSettle(orderNo);
-            } else if (MqConfig.UPDATE_ORDER_SETTLE_STATUS.equals(message.getTag())) {
+            if (MqConfig.UPDATE_ORDER_SETTLE_STATUS.equals(message.getTag())) {
                 log.info("消费消息--订单[{}]， 更新结算状态", body.getString("orderNo"));
                 final String orderNo = body.getString("orderNo");
                 final Optional<Order> orderOptional = this.orderService.getByOrderNo(orderNo);

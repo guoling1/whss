@@ -96,6 +96,13 @@ public interface DealerService {
     Optional<Dealer> getByAccountId(long accountId);
 
     /**
+     * 按账户id查询
+     *
+     * @param accountIds
+     */
+    List<Dealer> getByAccountIds(List<Long> accountIds);
+
+    /**
      * 按mobile查询
      *
      * @param mobile

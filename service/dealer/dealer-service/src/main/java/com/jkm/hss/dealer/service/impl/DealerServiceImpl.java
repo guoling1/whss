@@ -1107,6 +1107,20 @@ public class DealerServiceImpl implements DealerService {
     /**
      * {@inheritDoc}
      *
+     * @param accountIds
+     * @return
+     */
+    @Override
+    public List<Dealer> getByAccountIds(final List<Long> accountIds) {
+        if (CollectionUtils.isEmpty(accountIds)) {
+            return Collections.emptyList();
+        }
+        return this.dealerDao.selectByAccountIds(accountIds);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
      * @param mobile 已加密
      * @return
      */

@@ -58,4 +58,12 @@ public interface AccountFlowService {
      * @return
      */
     PageModel<AccountFlow> selectByParam(int pageNo, int pageSize, long accountId, String flowSn, int type, String beginDate, String endDate);
+
+    /**
+     * 校验流水号是否重复
+     *
+     * @param flowNo
+     * @return
+     */
+    boolean checkExistByFlowNo(String flowNo);
 }
