@@ -8,13 +8,13 @@
 	<select id="selectCompanyProfit" resultType="com.jkm.hss.merchant.helper.response.CompanyProfitResponse">
 		SELECT
 		a.business_type,
-		sum(a.split_total_amount) AS splitTotalAmount,
+		sum(a.split_amount) AS splitAmount,
 		DATE_FORMAT(a.split_date, '%Y-%m-%d') AS splitDate
 		FROM
 		tb_split_account_record a
 		LEFT JOIN tb_account b ON a.receipt_money_account_id = b.id
 		WHERE
-		b.id IN (1, 2, 11, 48, 49)
+		b.id IN (1, 2, 11, 48, 49) AND a.split_date <![CDATA[ <= ]]>#{splitDate}
 
 
 	<if test="startTime!=null and startTime!=''">
@@ -39,13 +39,13 @@
 	<select id="selectCompanyProfitCount" resultType="com.jkm.hss.merchant.helper.response.CompanyProfitResponse">
 		SELECT
 		a.business_type,
-		sum(a.split_total_amount) AS splitTotalAmount,
+		sum(a.split_amount) AS splitAmount,
 		DATE_FORMAT(a.split_date, '%Y-%m-%d') AS splitDate
 		FROM
 		tb_split_account_record a
 		LEFT JOIN tb_account b ON a.receipt_money_account_id = b.id
 		WHERE
-		b.id IN (1, 2, 11, 48, 49)
+		b.id IN (1, 2, 11, 48, 49) AND a.split_date <![CDATA[ <= ]]>#{splitDate}
 		<if test="startTime!=null and startTime!=''">
 			AND a.split_date <![CDATA[ >= ]]> #{startTime}
 		</if>
@@ -71,7 +71,7 @@
 		SELECT
 		a.receipt_money_account_id,
 		a.business_type,
-		sum(a.split_total_amount) AS splitTotalAmount,
+		sum(a.split_amount) AS splitAmount,
 		DATE_FORMAT(a.split_date, '%Y-%m-%d') AS splitDate,
 		b.proxy_name,
 		b.mark_code
@@ -79,7 +79,7 @@
 		tb_split_account_record a
 		LEFT JOIN tb_dealer b ON a.receipt_money_account_id = b.account_id
 		WHERE
-		b.`level` = 1
+		b.`level` = 1 AND a.split_date <![CDATA[ <= ]]>#{splitDate}
 
 	<if test="startTime!=null and startTime!=''">
 		AND a.split_date <![CDATA[ >= ]]> #{startTime}
@@ -114,7 +114,7 @@
 	<select id="selectOneProfitCount" resultType="com.jkm.hss.merchant.helper.response.CompanyProfitResponse">
 		SELECT
 		a.business_type,
-		sum(a.split_total_amount) AS splitTotalAmount,
+		sum(a.split_amount) AS splitAmount,
 		DATE_FORMAT(a.split_date, '%Y-%m-%d') AS splitDate,
 		b.proxy_name,
 		b.mark_code
@@ -122,7 +122,7 @@
 		tb_split_account_record a
 		LEFT JOIN tb_dealer b ON a.receipt_money_account_id = b.account_id
 		WHERE
-		b.`level` = 1
+		b.`level` = 1 AND a.split_date <![CDATA[ <= ]]>#{splitDate}
 	<if test="startTime!=null and startTime!=''">
 		AND a.split_date <![CDATA[ >= ]]> #{startTime}
 	</if>
@@ -156,7 +156,7 @@
 		SELECT
 		a.receipt_money_account_id,
 		a.business_type,
-		sum(a.split_total_amount) AS splitTotalAmount,
+		sum(a.split_amount) AS splitAmount,
 		DATE_FORMAT(a.split_date, '%Y-%m-%d') AS splitDate,
 		b.proxy_name AS proxy_name1,
 		b.mark_code,
@@ -166,7 +166,7 @@
 		tb_split_account_record a
 		LEFT JOIN tb_dealer b ON a.receipt_money_account_id = b.account_id
 		WHERE
-		b.`level` = 2
+		b.`level` = 2 AND a.split_date <![CDATA[ <= ]]>#{splitDate}
 
 	<if test="startTime!=null and startTime!=''">
 		AND a.split_date <![CDATA[ >= ]]> #{startTime}
@@ -205,7 +205,7 @@
 		SELECT
 			a.receipt_money_account_id,
 			a.business_type,
-			sum(a.split_total_amount) AS splitTotalAmount,
+			sum(a.split_amount) AS splitAmount,
 			DATE_FORMAT(a.split_date, '%Y-%m-%d') AS splitDate,
 			b.proxy_name AS proxy_name1,
 			b.mark_code,
@@ -233,7 +233,7 @@
 		SELECT
 		a.receipt_money_account_id,
 		a.business_type,
-		sum(a.split_total_amount) AS splitTotalAmount,
+		sum(a.split_amount) AS splitAmount,
 		DATE_FORMAT(a.split_date, '%Y-%m-%d') AS splitDate,
 		b.proxy_name AS proxy_name1,
 		b.mark_code,
@@ -243,7 +243,7 @@
 		tb_split_account_record a
 		LEFT JOIN tb_dealer b ON a.receipt_money_account_id = b.account_id
 		WHERE
-		b.`level` = 2
+		b.`level` = 2 AND a.split_date <![CDATA[ <= ]]>#{splitDate}
 
 	<if test="startTime!=null and startTime!=''">
 		AND a.split_date <![CDATA[ >= ]]> #{startTime}

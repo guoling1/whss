@@ -31,8 +31,8 @@ public class AllProfitServiceImpl implements AllProfitService {
 
     @Override
     public List<CompanyProfitResponse> selectCompanyProfit(CompanyPrifitRequest req) throws ParseException {
-
-        List<CompanyProfitResponse> list = allProfitDao.selectCompanyProfit(req);
+        CompanyPrifitRequest request =selectTime(req);
+        List<CompanyProfitResponse> list = allProfitDao.selectCompanyProfit(request);
         if (list!=null){
             for (int i=0;i<list.size();i++){
                 if (list.get(i).getBusinessType().equals("hssPay")){
@@ -61,7 +61,8 @@ public class AllProfitServiceImpl implements AllProfitService {
 
     @Override
     public List<CompanyProfitResponse> selectOneProfit(CompanyPrifitRequest req) {
-        List<CompanyProfitResponse> list = allProfitDao.selectOneProfit(req);
+        CompanyPrifitRequest request =selectTime(req);
+        List<CompanyProfitResponse> list = allProfitDao.selectOneProfit(request);
         if (list!=null){
             for (int i=0;i<list.size();i++){
                 if (list.get(i).getBusinessType().equals("hssPay")){
@@ -83,13 +84,15 @@ public class AllProfitServiceImpl implements AllProfitService {
 
     @Override
     public List<CompanyProfitResponse> selectOneProfitCount(CompanyPrifitRequest req) {
-        List<CompanyProfitResponse> list = allProfitDao.selectOneProfitCount(req);
+        CompanyPrifitRequest request =selectTime(req);
+        List<CompanyProfitResponse> list = allProfitDao.selectOneProfitCount(request);
         return list;
     }
 
     @Override
     public List<CompanyProfitResponse> selectTwoProfit(CompanyPrifitRequest req) {
-        List<CompanyProfitResponse> list = allProfitDao.selectTwoProfit(req);
+        CompanyPrifitRequest request =selectTime(req);
+        List<CompanyProfitResponse> list = allProfitDao.selectTwoProfit(request);
         if (list.size()>0){
             for (int i=0;i<list.size();i++){
                 if (list.get(i).getLevel()==2){
@@ -115,8 +118,25 @@ public class AllProfitServiceImpl implements AllProfitService {
 
     @Override
     public List<CompanyProfitResponse> selectTwoProfitCount(CompanyPrifitRequest req) {
-        List<CompanyProfitResponse> list = allProfitDao.selectTwoProfitCount(req);
+        CompanyPrifitRequest request =selectTime(req);
+        List<CompanyProfitResponse> list = allProfitDao.selectTwoProfitCount(request);
         return list;
+    }
+
+
+    private CompanyPrifitRequest selectTime(CompanyPrifitRequest req) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        Date dt= new Date();
+
+        try {
+            String d = sdf.format(dt);
+            dt = sdf.parse(d);
+            req.setSplitDate(dt);
+        } catch (ParseException e) {
+            log.debug("时间转换异常");
+            e.printStackTrace();
+        }
+        return req;
     }
 
     private CompanyPrifitRequest getTime(CompanyPrifitRequest req) {
