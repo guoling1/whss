@@ -1,269 +1,250 @@
-package com.jkm.hss.controller.bill;
+package com.jkm.hss.controller.channel;
 
-import com.google.common.base.Function;
 import com.google.common.base.Optional;
-import com.google.common.collect.Lists;
 import com.jkm.base.common.entity.CommonResponse;
-import com.jkm.base.common.entity.PageModel;
-import com.jkm.base.common.util.DateFormatUtil;
-import com.jkm.hss.account.enums.EnumAppType;
-import com.jkm.hss.bill.entity.Order;
-import com.jkm.hss.bill.enums.EnumOrderStatus;
-import com.jkm.hss.bill.enums.EnumSettleStatus;
-import com.jkm.hss.bill.helper.requestparam.QueryMerchantPayOrdersRequestParam;
-import com.jkm.hss.bill.service.OrderService;
-import com.jkm.hss.bill.service.PayService;
-import com.jkm.hss.bill.service.WithdrawService;
 import com.jkm.hss.controller.BaseController;
-import com.jkm.hss.helper.request.DynamicCodePayRequest;
-import com.jkm.hss.helper.request.StaticCodePayRequest;
-import com.jkm.hss.helper.request.WithdrawRequest;
-import com.jkm.hss.helper.response.QueryMerchantPayOrdersResponse;
-import com.jkm.hss.helper.response.QueryOrderByIdResponse;
-import com.jkm.hss.merchant.entity.MerchantInfo;
-import com.jkm.hss.merchant.entity.UserInfo;
-import com.jkm.hss.merchant.enums.EnumMerchantStatus;
-import com.jkm.hss.merchant.service.MerchantInfoService;
-import com.jkm.hss.merchant.service.UserInfoService;
+import com.jkm.hss.helper.request.UpgradeAndRecommendRequest;
+import com.jkm.hss.helper.request.UpgradeRequest;
+import com.jkm.hss.helper.response.UpgradeRulesAndRateResponse;
+import com.jkm.hss.product.entity.Product;
+import com.jkm.hss.product.entity.ProductChannelDetail;
+import com.jkm.hss.product.entity.UpgradeRecommendRules;
+import com.jkm.hss.product.entity.UpgradeRules;
 import com.jkm.hss.product.enums.EnumPayChannelSign;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.tuple.Pair;
+import com.jkm.hss.product.enums.EnumUpgrade;
+import com.jkm.hss.product.servcie.ProductChannelDetailService;
+import com.jkm.hss.product.servcie.ProductService;
+import com.jkm.hss.product.servcie.UpgradeRecommendRulesService;
+import com.jkm.hss.product.servcie.UpgradeRulesService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.servlet.http.HttpServletRequest;
-import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
-import java.net.URLDecoder;
-import java.util.Collections;
-import java.util.Date;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by yulong.zhang on 2016/12/23.
+ * Created by Thinkpad on 2016/12/30.
  */
 @Controller
-@RequestMapping(value = "/trade")
-public class TradeController extends BaseController {
-
+@RequestMapping(value = "/admin/upgrade")
+@Slf4j
+public class UpgradeController extends BaseController {
     @Autowired
-    private PayService payService;
+    private UpgradeRulesService upgradeRulesService;
     @Autowired
-    private OrderService orderService;
+    private ProductService productService;
     @Autowired
-    private UserInfoService userInfoService;
+    private ProductChannelDetailService productChannelDetailService;
     @Autowired
-    private WithdrawService withdrawService;
-    @Autowired
-    private MerchantInfoService merchantInfoService;
+    private UpgradeRecommendRulesService upgradeRecommendRulesService;
 
     /**
-     * 动态码支付
+     * 升级推荐设置
      *
      * @return
      */
     @ResponseBody
-    @RequestMapping(value = "dcReceipt", method = RequestMethod.POST)
-    public CommonResponse dynamicCodeReceipt(@RequestBody final DynamicCodePayRequest payRequest,
-                                             final HttpServletRequest request) throws UnsupportedEncodingException {
-        if(!super.isLogin(request)){
-            return CommonResponse.simpleResponse(-2, "未登录");
+    @RequestMapping(value = "init", method = RequestMethod.POST)
+    public CommonResponse add(@RequestBody final UpgradeRequest req) {
+        Optional<Product> productOptional = productService.selectById(req.getProductId());
+        if(!productOptional.isPresent()){
+            return CommonResponse.simpleResponse(-1,"该产品不存在");
         }
-        Optional<UserInfo> userInfoOptional = userInfoService.selectByOpenId(super.getOpenId(request));
-        if(!userInfoOptional.isPresent()){
-            return CommonResponse.simpleResponse(-2, "未登录");
+        List<ProductChannelDetail> productChannelDetails = productChannelDetailService.selectByProductId(req.getProductId());
+        if(productChannelDetails.size()==0){
+            return CommonResponse.simpleResponse(-1,"该产品商户基础费率不存在");
         }
-        Optional<MerchantInfo> merchantInfo = merchantInfoService.selectById(userInfoOptional.get().getMerchantId());
-        if(!merchantInfo.isPresent()){
-            return CommonResponse.simpleResponse(-2, "未登录");
-        }
-        if(merchantInfo.get().getStatus()!= EnumMerchantStatus.PASSED.getId()&&merchantInfo.get().getStatus()!= EnumMerchantStatus.FRIEND.getId()){
-            return CommonResponse.simpleResponse(-2, "未审核通过");
-        }
-        final String totalFee = payRequest.getTotalFee();
-        if (StringUtils.isBlank(totalFee)) {
-            return CommonResponse.simpleResponse(-1, "请输入收款金额");
-        }
-        if(new BigDecimal(totalFee).compareTo(new BigDecimal("5.00")) < 0){
-            return CommonResponse.simpleResponse(-1, "支付金额至少5.00元");
-        }
-        if(StringUtils.isBlank(merchantInfo.get().getMerchantName())){
-            return CommonResponse.simpleResponse(-1, "缺失商户名称");
-        }
-        if (!EnumPayChannelSign.isExistById(payRequest.getPayChannel())) {
-            return CommonResponse.simpleResponse(-1, "支付方式错误");
-        }
-        final Pair<Integer, String> resultPair = this.payService.codeReceipt(payRequest.getTotalFee(),
-                payRequest.getPayChannel(), merchantInfo.get().getId(), EnumAppType.HSS.getId());
-        if (0 == resultPair.getLeft()) {
-            return CommonResponse.builder4MapResult(CommonResponse.SUCCESS_CODE, "收款成功")
-                    .addParam("payUrl", URLDecoder.decode(resultPair.getRight(), "UTF-8"))
-                    .addParam("subMerName", merchantInfo.get().getMerchantName())
-                    .addParam("amount", totalFee).build();
-        }
-        return CommonResponse.simpleResponse(-1, resultPair.getRight());
-    }
-
-    /**
-     * 静态码支付
-     *
-     * @param payRequest
-     * @param request
-     * @return
-     */
-    @ResponseBody
-    @RequestMapping(value = "scReceipt", method = RequestMethod.POST)
-    public CommonResponse staticCodeReceipt(@RequestBody final StaticCodePayRequest payRequest,
-                                            final HttpServletRequest request) throws UnsupportedEncodingException {
-        final Optional<MerchantInfo> merchantInfo = this.merchantInfoService.selectById(payRequest.getMerchantId());
-        if(merchantInfo.get().getStatus()!=EnumMerchantStatus.PASSED.getId()&&merchantInfo.get().getStatus()!=EnumMerchantStatus.FRIEND.getId()){
-            return CommonResponse.simpleResponse(-2, "未审核通过");
-        }
-        final String totalAmount = payRequest.getTotalFee();
-        if (StringUtils.isBlank(totalAmount)) {
-            return CommonResponse.simpleResponse(-1, "请输入收款金额");
-        }
-
-        if(new BigDecimal(totalAmount).compareTo(new BigDecimal("5.00")) < 0){
-            return CommonResponse.simpleResponse(-1, "支付金额至少5.00元");
-        }
-
-        if(StringUtils.isBlank(merchantInfo.get().getMerchantName())){
-            return CommonResponse.simpleResponse(-1, "缺失商户名称");
-        }
-
-        if (!EnumPayChannelSign.isExistById(payRequest.getPayChannel())) {
-            return CommonResponse.simpleResponse(-1, "支付方式错误");
-        }
-        final Pair<Integer, String> resultPair = this.payService.codeReceipt(payRequest.getTotalFee(),
-                payRequest.getPayChannel(), merchantInfo.get().getId(), EnumAppType.HSS.getId());
-        if (0 == resultPair.getLeft()) {
-            return CommonResponse.builder4MapResult(CommonResponse.SUCCESS_CODE, "收款成功")
-                    .addParam("payUrl", URLDecoder.decode(resultPair.getRight(), "UTF-8"))
-                    .addParam("subMerName", merchantInfo.get().getMerchantName())
-                    .addParam("amount", totalAmount).build();
-        }
-        return CommonResponse.simpleResponse(-1, resultPair.getRight());
-    }
-
-    /**
-     * 查询商户的支付单列表
-     *
-     * @return
-     */
-    @ResponseBody
-    @RequestMapping(value = "queryMerchantPayOrders", method = RequestMethod.POST)
-    public CommonResponse queryMerchantPayOrders(@RequestBody QueryMerchantPayOrdersRequestParam requestParam, final HttpServletRequest request) {
-        if(!super.isLogin(request)){
-            return CommonResponse.simpleResponse(-2, "未登录");
-        }
-        Optional<UserInfo> userInfoOptional = userInfoService.selectByOpenId(super.getOpenId(request));
-        if(!userInfoOptional.isPresent()){
-            return CommonResponse.simpleResponse(-2, "未登录");
-        }
-        Optional<MerchantInfo> merchantInfo = merchantInfoService.selectById(userInfoOptional.get().getMerchantId());
-        if(!merchantInfo.isPresent()){
-            return CommonResponse.simpleResponse(-2, "未登录");
-        }
-        if(merchantInfo.get().getStatus()!= EnumMerchantStatus.PASSED.getId()&&merchantInfo.get().getStatus()!= EnumMerchantStatus.FRIEND.getId()){
-            return CommonResponse.simpleResponse(-2, "未审核通过");
-        }
-        requestParam.setAccountId(merchantInfo.get().getAccountId());
-        final PageModel<QueryMerchantPayOrdersResponse> result = new PageModel<>(requestParam.getPageNo(), requestParam.getPageSize());
-        final List<Integer> payStatusList = requestParam.getPayStatus();
-        final List<String> payTypeList = requestParam.getPayType();
-        if (CollectionUtils.isEmpty(payStatusList)) {
-            return CommonResponse.simpleResponse(-1, "支付状态不可以为空");
-        }
-        if (CollectionUtils.isEmpty(payTypeList)) {
-            return CommonResponse.simpleResponse(-1, "支付方式不可以为空");
-        }
-
-        for (int i = 0; i < payStatusList.size(); i++) {
-            final Integer payStatus = payStatusList.get(i);
-            if (EnumOrderStatus.DUE_PAY.getId() != payStatus
-                    && EnumOrderStatus.PAY_FAIL.getId() != payStatus
-                    && EnumOrderStatus.PAY_SUCCESS.getId() != payStatus) {
-                return CommonResponse.simpleResponse(-1, "不存在的支付状态");
+        //商户升级规则设置
+        List<UpgradeRules> upgradeRulesList = new ArrayList<UpgradeRules>();
+        UpgradeRules upgradeRules = new UpgradeRules();
+        for(int i=0;i<productChannelDetails.size();i++){
+            if(EnumPayChannelSign.YG_WECHAT.getId()==productChannelDetails.get(i).getChannelTypeSign()){
+                BigDecimal weixinRate = productChannelDetails.get(i).getProductMerchantPayRate();
+                BigDecimal b1 = new BigDecimal(100);
+                upgradeRules.setWeixinRate(weixinRate.multiply(b1));
+            }
+            if(EnumPayChannelSign.YG_ALIPAY.getId()==productChannelDetails.get(i).getChannelTypeSign()){
+                BigDecimal alipayRate = productChannelDetails.get(i).getProductMerchantPayRate();
+                BigDecimal b1 = new BigDecimal(100);
+                upgradeRules.setAlipayRate(alipayRate.multiply(b1));
+            }
+            if(EnumPayChannelSign.YG_UNIONPAY.getId()==productChannelDetails.get(i).getChannelTypeSign()){
+                BigDecimal fastRate = productChannelDetails.get(i).getProductMerchantPayRate();
+                BigDecimal b1 = new BigDecimal(100);
+                upgradeRules.setFastRate(fastRate.multiply(b1));
             }
         }
-        for (int i = 0; i < payTypeList.size(); i++) {
-            final String payType = payTypeList.get(i);
-            if (!EnumPayChannelSign.isExistByCode(payType)) {
-                return CommonResponse.simpleResponse(-1, "不存在的支付方式");
+        upgradeRulesList.add(upgradeRules);
+        List<UpgradeRules> upgradeRulesArr =  upgradeRulesService.selectAll(req.getProductId());//升级规则
+
+        if (upgradeRulesArr.size()==0){
+            for(int i=1;i<4;i++){
+                UpgradeRules upgradeRulesTemp = new UpgradeRules();
+                upgradeRulesTemp.setType(i);
+                upgradeRulesList.add(upgradeRulesTemp);
             }
-        }
-        if (StringUtils.isEmpty(requestParam.getOrderNo())) {
-            requestParam.setOrderNo(null);
-        }
-        if ("".equals(requestParam.getStartDate()) || null == requestParam.getStartDate()) {
-            //TODO
-            requestParam.setStartDate("2016-01-01 00:00:01");
-//            requestParam.setStartDate(null);
-        } else {
-            requestParam.setStartDate(requestParam.getStartDate() + " 00:00:01");
-        }
-        if ("".equals(requestParam.getEndDate()) || null == requestParam.getEndDate()) {
-            //TODO
-            requestParam.setEndDate(DateFormatUtil.format(new Date(), DateFormatUtil.yyyy_MM_dd) + " 23:59:59");
-//            requestParam.setEndDate(null);
-        } else {
-            requestParam.setEndDate(requestParam.getEndDate() + " 23:59:59");
-        }
-        final PageModel<Order> pageModel = this.orderService.queryMerchantPayOrders(requestParam);
-        final List<Order> records = pageModel.getRecords();
-        if (CollectionUtils.isEmpty(records)) {
-            result.setCount(0);
-            result.setRecords(Collections.<QueryMerchantPayOrdersResponse>emptyList());
-            return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "success", result);
-        }
-        final List<QueryMerchantPayOrdersResponse> ordersResponses = Lists.transform(records, new Function<Order, QueryMerchantPayOrdersResponse>() {
-            @Override
-            public QueryMerchantPayOrdersResponse apply(Order input) {
-                final QueryMerchantPayOrdersResponse queryMerchantPayOrdersResponse = new QueryMerchantPayOrdersResponse();
-                queryMerchantPayOrdersResponse.setOrderId(input.getId());
-                queryMerchantPayOrdersResponse.setAmount(input.getTradeAmount().toPlainString());
-                queryMerchantPayOrdersResponse.setPayType(input.getPayType());
-                queryMerchantPayOrdersResponse.setPayStatus(input.getStatus());
-                queryMerchantPayOrdersResponse.setPayStatusValue(EnumOrderStatus.of(input.getStatus()).getValue());
-                queryMerchantPayOrdersResponse.setDatetime(input.getCreateTime());
-                return queryMerchantPayOrdersResponse;
+        }else {
+            for (int i=0;i<upgradeRulesArr.size();i++){
+                if(upgradeRulesArr.get(i).getType()==1||upgradeRulesArr.get(i).getType()==2||upgradeRulesArr.get(i).getType()==3){
+//                    final CommonResponse commonResponse = this.rewardJudge(upgradeRulesArr);
+//                    if (1 != commonResponse.getCode()) {
+//                        return commonResponse;
+//                    }
+                    BigDecimal weixinRate = upgradeRulesArr.get(i).getWeixinRate();
+                    BigDecimal alipayRate = upgradeRulesArr.get(i).getAlipayRate();
+                    BigDecimal fastRate = upgradeRulesArr.get(i).getFastRate();
+                    BigDecimal b1 = new BigDecimal(100);
+                    upgradeRulesArr.get(i).setWeixinRate(weixinRate.multiply(b1));
+                    upgradeRulesArr.get(i).setAlipayRate(alipayRate.multiply(b1));
+                    upgradeRulesArr.get(i).setFastRate(fastRate.multiply(b1));
+                }
             }
-        });
-        result.setCount(pageModel.getCount());
-        result.setRecords(ordersResponses);
-        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "success", result);
+
+        }
+
+
+        upgradeRulesList.addAll(upgradeRulesArr);
+        UpgradeRulesAndRateResponse upgradeRulesAndRateResponse = new  UpgradeRulesAndRateResponse();
+        upgradeRulesAndRateResponse.setUpgradeRulesList(upgradeRulesList);
+        //升级推荐分润设置及达标标准设置
+        Optional<UpgradeRecommendRules> upgradeRecommendRulesOptional = upgradeRecommendRulesService.selectByProductId(req.getProductId());
+        if(upgradeRecommendRulesOptional.isPresent()){
+            BigDecimal upgradeRate = upgradeRecommendRulesOptional.get().getUpgradeRate();
+            BigDecimal tradeRate = upgradeRecommendRulesOptional.get().getTradeRate();
+            BigDecimal b1 = new BigDecimal(100);
+            upgradeRulesAndRateResponse.setUpgradeRate(upgradeRate.multiply(b1));
+            upgradeRulesAndRateResponse.setTradeRate(tradeRate.multiply(b1));
+            upgradeRulesAndRateResponse.setStandard(upgradeRecommendRulesOptional.get().getInviteStandard());
+        }
+        return CommonResponse.objectResponse(1, "success", upgradeRulesAndRateResponse);
     }
 
     /**
-     * 查询商户的支付单
      *
+     * 判断直接奖励+间接奖励是否小于升级费
+     * @param req
+     * @param req
+     */
+    private CommonResponse rewardJudge(UpgradeAndRecommendRequest req){
+        if (req!=null){
+            if (req.getUpgradeRulesList().size()>0){
+                for (int i=0;i<req.getUpgradeRulesList().size();i++){
+                    BigDecimal directPromoteShall = req.getUpgradeRulesList().get(i).getDirectPromoteShall();
+                    BigDecimal inDirectPromoteShall = req.getUpgradeRulesList().get(i).getInDirectPromoteShall();
+                    BigDecimal upgradeCost = req.getUpgradeRulesList().get(i).getUpgradeCost();
+                    int res = upgradeCost.compareTo(directPromoteShall.add(inDirectPromoteShall));
+                    if (res==-1){
+                        return CommonResponse.simpleResponse(-1, "升级费必须大于等于直接奖励加间接奖励");
+                    }
+                }
+
+            }
+        }
+
+
+        return CommonResponse.simpleResponse(1, "");
+    }
+
+
+    /**
+     * 添加或修改
+     * @param req
      * @return
      */
     @ResponseBody
-    @RequestMapping(value = "{orderId}")
-    public CommonResponse queryById(@PathVariable long orderId) {
-        final Optional<Order> orderOptional = this.orderService.getById(orderId);
-        if (!orderOptional.isPresent()) {
-            return CommonResponse.simpleResponse(-1, "交易订单不存在");
+    @RequestMapping(value = "addOrUpdate", method = RequestMethod.POST)
+    public CommonResponse addOrUpdate(@RequestBody final UpgradeAndRecommendRequest req) {
+        if(req.getUpgradeRulesList()==null||req.getUpgradeRulesList().size()==0){
+            return CommonResponse.simpleResponse(-1,"商户升级规则设置不能为空");
         }
-        final Order order = orderOptional.get();
-        final MerchantInfo merchantInfo = this.merchantInfoService.getByAccountId(order.getPayee()).get();
-        final QueryOrderByIdResponse response = new QueryOrderByIdResponse();
-        response.setOrderId(order.getId());
-        response.setAmount(order.getTradeAmount().toPlainString());
-        response.setOrderNo(order.getOrderNo());
-        response.setGoodsName(order.getGoodsName());
-        response.setGoodsDescribe(order.getGoodsDescribe());
-        response.setDateTime(order.getCreateTime());
-        response.setPayStatus(order.getStatus());
-        response.setPayStatusValue(EnumOrderStatus.of(order.getStatus()).getValue());
-        response.setPayType(order.getPayType());
-        response.setMerchantName(merchantInfo.getMerchantName());
-        response.setSettleStatus(order.getSettleStatus());
-        response.setSettleStatusValue(EnumSettleStatus.of(order.getSettleStatus()).getValue());
-        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "success", response);
+        Optional<Product> productOptional = productService.selectById(req.getProductId());
+        if(!productOptional.isPresent()){
+            return CommonResponse.simpleResponse(-1,"该产品不存在");
+        }
+        final CommonResponse commonResponse = this.rewardJudge(req);
+        if (1 != commonResponse.getCode()) {
+            return commonResponse;
+        }
+        //商户升级规则设置不能为空
+        List<UpgradeRules> upgradeRulesList =  upgradeRulesService.selectAll(req.getProductId());//升级规则
+        if(upgradeRulesList.size()>0){//修改
+            for(int i=0;i<req.getUpgradeRulesList().size();i++){
+                Optional<UpgradeRules> upgradeRulesOptional = upgradeRulesService.selectByProductIdAndType(req.getProductId(),req.getUpgradeRulesList().get(i).getType());
+                if(upgradeRulesOptional.isPresent()){//存在修改
+                    UpgradeRules upgradeRules = new UpgradeRules();
+                    BigDecimal weixinRate = req.getUpgradeRulesList().get(i).getWeixinRate();
+                    BigDecimal alipayRate = req.getUpgradeRulesList().get(i).getAlipayRate();
+                    BigDecimal fastRate = req.getUpgradeRulesList().get(i).getFastRate();
+                    BigDecimal b1 = new BigDecimal(100);
+                    upgradeRules.setId(upgradeRulesOptional.get().getId());
+                    upgradeRules.setProductId(req.getProductId());
+                    upgradeRules.setName(req.getUpgradeRulesList().get(i).getName());
+                    upgradeRules.setType(req.getUpgradeRulesList().get(i).getType());
+                    upgradeRules.setPromotionNum(req.getUpgradeRulesList().get(i).getPromotionNum());
+                    upgradeRules.setUpgradeCost(req.getUpgradeRulesList().get(i).getUpgradeCost());
+                    upgradeRules.setWeixinRate(weixinRate.divide(b1));
+                    upgradeRules.setAlipayRate(alipayRate.divide(b1));
+                    upgradeRules.setFastRate(fastRate.divide(b1));
+                    upgradeRules.setDirectPromoteShall(req.getUpgradeRulesList().get(i).getDirectPromoteShall());
+                    upgradeRules.setInDirectPromoteShall(req.getUpgradeRulesList().get(i).getInDirectPromoteShall());
+                    upgradeRules.setStatus(EnumUpgrade.NORMAL.getId());
+                    upgradeRulesService.update(upgradeRules);
+                }else{//不存在新增
+                    BigDecimal weixinRate = req.getUpgradeRulesList().get(i).getWeixinRate();
+                    BigDecimal alipayRate = req.getUpgradeRulesList().get(i).getAlipayRate();
+                    BigDecimal fastRate = req.getUpgradeRulesList().get(i).getFastRate();
+                    BigDecimal b1 = new BigDecimal(100);
+                    req.getUpgradeRulesList().get(i).setStatus(EnumUpgrade.NORMAL.getId());
+                    req.getUpgradeRulesList().get(i).setProductId(req.getProductId());
+                    req.getUpgradeRulesList().get(i).setProductId(req.getProductId());
+                    req.getUpgradeRulesList().get(i).setWeixinRate(weixinRate.divide(b1));
+                    req.getUpgradeRulesList().get(i).setAlipayRate(alipayRate.divide(b1));
+                    req.getUpgradeRulesList().get(i).setFastRate(fastRate.divide(b1));
+                    upgradeRulesService.insert(req.getUpgradeRulesList().get(i));
+                }
+            }
+        }else{//新增
+            for(int i=0;i<req.getUpgradeRulesList().size();i++){
+                BigDecimal weixinRate = req.getUpgradeRulesList().get(i).getWeixinRate();
+                BigDecimal alipayRate = req.getUpgradeRulesList().get(i).getAlipayRate();
+                BigDecimal fastRate = req.getUpgradeRulesList().get(i).getFastRate();
+                BigDecimal b1 = new BigDecimal(100);
+                req.getUpgradeRulesList().get(i).setStatus(EnumUpgrade.NORMAL.getId());
+                req.getUpgradeRulesList().get(i).setProductId(req.getProductId());
+                req.getUpgradeRulesList().get(i).setWeixinRate(weixinRate.divide(b1));
+                req.getUpgradeRulesList().get(i).setAlipayRate(alipayRate.divide(b1));
+                req.getUpgradeRulesList().get(i).setFastRate(fastRate.divide(b1));
+                upgradeRulesService.insert(req.getUpgradeRulesList().get(i));
+            }
+        }
+        //升级推荐分润设置及达标标准设置
+        Optional<UpgradeRecommendRules> upgradeRecommendRulesOptional = upgradeRecommendRulesService.selectByProductId(req.getProductId());
+        BigDecimal upgradeRate = req.getUpgradeRate();
+        BigDecimal tradeRate = req.getTradeRate();
+        BigDecimal rewardRate = req.getRewardRate();
+        BigDecimal b1 = new BigDecimal(100);
+        if(upgradeRecommendRulesOptional.isPresent()){//修改
+            upgradeRecommendRulesOptional.get().setInviteStandard(req.getStandard());
+            upgradeRecommendRulesOptional.get().setUpgradeRate(upgradeRate.divide(b1));
+            upgradeRecommendRulesOptional.get().setTradeRate(tradeRate.divide(b1));
+            upgradeRecommendRulesService.update(upgradeRecommendRulesOptional.get());
+        }else{//新增
+            UpgradeRecommendRules upgradeRecommendRules = new UpgradeRecommendRules();
+            upgradeRecommendRules.setStatus(EnumUpgrade.NORMAL.getId());
+            upgradeRecommendRules.setProductId(req.getProductId());
+            upgradeRecommendRules.setInviteStandard(req.getStandard());
+            upgradeRecommendRules.setUpgradeRate(upgradeRate.divide(b1));
+            upgradeRecommendRules.setTradeRate(tradeRate.divide(b1));
+            upgradeRecommendRulesService.insert(upgradeRecommendRules);
+        }
+        return CommonResponse.simpleResponse(1, "操作成功");
     }
+
+
 }

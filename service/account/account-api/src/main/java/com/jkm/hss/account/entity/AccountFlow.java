@@ -24,6 +24,11 @@ public class AccountFlow extends BaseEntity {
     private long accountId;
 
     /**
+     * 流水号
+     */
+    private String flowNo;
+
+    /**
      * 业务号（交易号）
      */
     private String orderNo;

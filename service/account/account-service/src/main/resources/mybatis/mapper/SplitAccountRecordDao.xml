@@ -86,4 +86,8 @@
             AND create_time BETWEEN #{beginDate} AND #{endDate}
         </if>
     </select>
+
+    <select id="selectCountBySplitSn" resultType="java.lang.Integer">
+        SELECT COUNT(0) FROM tb_split_account_record WHERE split_sn = #{splitSn}
+    </select>
 </mapper>

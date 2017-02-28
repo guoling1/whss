@@ -31,13 +31,23 @@ public interface SettleAccountFlowService {
     int updateSettlementRecordIdById(long id, long settlementRecordId);
 
     /**
-     * 保存结算审核记录
+     * 保存结算单id
      *
-     * @param orderNos
-     * @param settleAuditRecordId
+     * @param settleAuditRecordId  结算审核记录id
+     * @param settlementRecordId  结算单id
      * @return
      */
-    int updateSettleAuditRecordIdByOrderNos(List<String> orderNos, long settleAuditRecordId);
+    int updateSettlementRecordIdBySettleAuditRecordId(long settleAuditRecordId, long settlementRecordId);
+
+    /**
+     * 保存结算审核记录
+     *
+     * @param tradeDate
+     * @param settleAuditRecordId
+     * @param accountId
+     * @return
+     */
+    int updateSettleAuditRecordIdByTradeDateAndAccountId(Date tradeDate, long accountId, long settleAuditRecordId);
 
     /**
      * 按id查询
@@ -108,4 +118,7 @@ public interface SettleAccountFlowService {
      * @return
      */
     int getYesterdayDecreaseFlowCount(Date tradeDate);
+
+
+    boolean checkExistByFlowNo(String flowNo);
 }

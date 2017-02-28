@@ -51,16 +51,6 @@ public class ProductChannelDetailServiceImpl implements ProductChannelDetailServ
         return this.productChannelDao.selectByProductId(productId);
     }
 
-    /**
-     * {@inheritDoc}
-     *
-     * @param payChannel
-     * @return
-     */
-    @Override
-    public List<ProductChannelDetail> selectByChannelTypeSign(int payChannel) {
-        return this.productChannelDao.selectByChannelTypeSign(payChannel);
-    }
 
     /**
      * {@inheritDoc}

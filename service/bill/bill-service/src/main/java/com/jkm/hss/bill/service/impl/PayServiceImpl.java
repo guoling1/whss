@@ -32,12 +32,13 @@ import com.jkm.hss.merchant.service.UserInfoService;
 import com.jkm.hss.mq.config.MqConfig;
 import com.jkm.hss.mq.producer.MqProducer;
 import com.jkm.hss.product.enums.EnumBalanceTimeType;
+import com.jkm.hss.product.enums.EnumMerchantPayType;
 import com.jkm.hss.product.enums.EnumPayChannelSign;
 import com.jkm.hss.product.enums.EnumProductType;
+import com.jkm.hss.product.servcie.BasicChannelService;
 import com.jkm.hss.product.servcie.ProductService;
 import com.jkm.hss.product.servcie.UpgradeRecommendRulesService;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
 import org.joda.time.DateTime;
@@ -59,8 +60,6 @@ public class PayServiceImpl implements PayService {
     @Autowired
     private OrderService orderService;
     @Autowired
-    private HttpClientFacade httpClientFacade;
-    @Autowired
     private MerchantInfoService merchantInfoService;
     @Autowired
     private AccountService accountService;
@@ -70,10 +69,6 @@ public class PayServiceImpl implements PayService {
     private SettleAccountFlowService settleAccountFlowService;
     @Autowired
     private CalculateService calculateService;
-    @Autowired
-    private WithdrawService withdrawService;
-    @Autowired
-    private ProductService productService;
     @Autowired
     private UpgradeRecommendRulesService upgradeRecommendRulesService;
     @Autowired
@@ -88,6 +83,8 @@ public class PayServiceImpl implements PayService {
     private SplitAccountRecordService splitAccountRecordService;
     @Autowired
     private SettlementRecordService settlementRecordService;
+    @Autowired
+    private BasicChannelService basicChannelService;
 
     /**
      * {@inheritDoc}
@@ -133,7 +130,7 @@ public class PayServiceImpl implements PayService {
         this.orderService.add(order);
         //请求支付中心下单
         final PaymentSdkPlaceOrderResponse placeOrderResponse = this.requestPlaceOrder(order,
-                EnumPayChannelSign.YG_WECHAT.getId(), merchant, businessReturnUrl);
+                "", merchant, businessReturnUrl);
         return this.handlePlaceOrder(placeOrderResponse, order);
     }
 
@@ -143,14 +140,16 @@ public class PayServiceImpl implements PayService {
      * @param totalAmount
      * @param channel  通道
      * @param merchantId
+     * @param isDynamicCode
      * @return
      */
     @Override
     @Transactional
-    public Pair<Integer, String> codeReceipt(final String totalAmount, final int channel, final long merchantId, final String appId) {
+    public Pair<Integer, String> codeReceipt(final String totalAmount, final int channel, final long merchantId,
+                                             final String appId, final boolean isDynamicCode) {
         log.info("商户[{}] 通过动态扫码， 支付一笔资金[{}]", merchantId, totalAmount);
         final MerchantInfo merchant = this.merchantInfoService.selectById(merchantId).get();
-        final EnumPayChannelSign payChannelSign = EnumPayChannelSign.idOf(channel);
+        final String channelCode = this.basicChannelService.selectCodeByChannelSign(channel, isDynamicCode ? EnumMerchantPayType.MERCHANT_CODE : EnumMerchantPayType.MERCHANT_JSAPI);
         final Order order = new Order();
         order.setOrderNo(SnGenerator.generateSn(EnumTradeType.PAY.getId()));
         order.setTradeAmount(new BigDecimal(totalAmount));
@@ -162,7 +161,7 @@ public class PayServiceImpl implements PayService {
         order.setPayee(merchant.getAccountId());
         order.setGoodsName(merchant.getMerchantName());
         order.setGoodsDescribe(merchant.getMerchantName());
-        order.setPayType(payChannelSign.getCode());
+        order.setPayType(channelCode);
         order.setPayChannelSign(channel);
         order.setSettleStatus(EnumSettleStatus.DUE_SETTLE.getId());
         order.setSettleTime(new Date());
@@ -170,7 +169,7 @@ public class PayServiceImpl implements PayService {
         order.setStatus(EnumOrderStatus.DUE_PAY.getId());
         this.orderService.add(order);
         //请求支付中心下单
-        final PaymentSdkPlaceOrderResponse placeOrderResponse = this.requestPlaceOrder(order, channel, merchant,
+        final PaymentSdkPlaceOrderResponse placeOrderResponse = this.requestPlaceOrder(order, "", merchant,
                 PaymentSdkConstants.SDK_PAY_RETURN_URL + order.getTradeAmount() + "/" + order.getId());
         return this.handlePlaceOrder(placeOrderResponse, order);
     }
@@ -387,7 +386,6 @@ public class PayServiceImpl implements PayService {
             final EnumPayChannelSign payChannelSign = EnumPayChannelSign.idOf(order.getPayChannelSign());
             //生成结算单
             final SettlementRecord settlementRecord = new SettlementRecord();
-            settlementRecord.setSettleNo(SnGenerator.generate());
             settlementRecord.setAccountId(merchantAccount.getId());
             settlementRecord.setUserNo(merchant.getMarkCode());
             settlementRecord.setUserName(merchant.getMerchantName());
@@ -401,10 +399,12 @@ public class PayServiceImpl implements PayService {
                 settlementRecord.setSettleMode(EnumSettleModeType.CHANNEL_SETTLE.getId());
                 settlementRecord.setSettleDestination(EnumSettleDestinationType.CHANNEL_SETTLE.getId());
                 settlementRecord.setStatus(EnumSettlementRecordStatus.WITHDRAWING.getId());
+                settlementRecord.setSettleNo(this.settlementRecordService.getSettleNo(EnumAccountUserType.MERCHANT.getId(), EnumSettleDestinationType.CHANNEL_SETTLE.getId()));
             } else {
                 settlementRecord.setSettleMode(EnumSettleModeType.SELF_SETTLE.getId());
                 settlementRecord.setSettleDestination(EnumSettleDestinationType.TO_CARD.getId());
                 settlementRecord.setStatus(EnumSettlementRecordStatus.WAIT_WITHDRAW.getId());
+                settlementRecord.setSettleNo(this.settlementRecordService.getSettleNo(EnumAccountUserType.MERCHANT.getId(), EnumSettleDestinationType.TO_CARD.getId()));
             }
             final long settlementRecordId = this.settlementRecordService.add(settlementRecord);
             this.settleAccountFlowService.updateSettlementRecordIdById(settleAccountFlowIncreaseId, settlementRecordId);
@@ -576,7 +576,7 @@ public class PayServiceImpl implements PayService {
 
             //生成结算单
             final SettlementRecord settlementRecord = new SettlementRecord();
-            settlementRecord.setSettleNo(SnGenerator.generate());
+            settlementRecord.setSettleNo(this.settlementRecordService.getSettleNo(EnumAccountUserType.DEALER.getId(), EnumSettleDestinationType.TO_ACCOUNT.getId()));
             settlementRecord.setAccountId(account.getId());
             settlementRecord.setUserNo(dealer.getMarkCode());
             settlementRecord.setUserName(dealer.getProxyName());
@@ -613,7 +613,7 @@ public class PayServiceImpl implements PayService {
 
             //生成结算单
             final SettlementRecord settlementRecord = new SettlementRecord();
-            settlementRecord.setSettleNo(SnGenerator.generate());
+            settlementRecord.setSettleNo(this.settlementRecordService.getSettleNo(EnumAccountUserType.DEALER.getId(), EnumSettleDestinationType.TO_ACCOUNT.getId()));
             settlementRecord.setAccountId(account.getId());
             settlementRecord.setUserNo(dealer.getMarkCode());
             settlementRecord.setUserName(dealer.getProxyName());
@@ -649,7 +649,7 @@ public class PayServiceImpl implements PayService {
 
             //生成结算单
             final SettlementRecord settlementRecord = new SettlementRecord();
-            settlementRecord.setSettleNo(SnGenerator.generate());
+            settlementRecord.setSettleNo(this.settlementRecordService.getSettleNo(EnumAccountUserType.MERCHANT.getId(), EnumSettleDestinationType.TO_ACCOUNT.getId()));
             settlementRecord.setAccountId(account.getId());
             settlementRecord.setUserNo(merchant.getMarkCode());
             settlementRecord.setUserName(merchant.getMerchantName());
@@ -685,7 +685,7 @@ public class PayServiceImpl implements PayService {
 
             //生成结算单
             final SettlementRecord settlementRecord = new SettlementRecord();
-            settlementRecord.setSettleNo(SnGenerator.generate());
+            settlementRecord.setSettleNo(this.settlementRecordService.getSettleNo(EnumAccountUserType.MERCHANT.getId(), EnumSettleDestinationType.TO_ACCOUNT.getId()));
             settlementRecord.setAccountId(account.getId());
             settlementRecord.setUserNo(merchant.getMarkCode());
             settlementRecord.setUserName(merchant.getMerchantName());
@@ -771,7 +771,7 @@ public class PayServiceImpl implements PayService {
 
             //生成结算单
             final SettlementRecord settlementRecord = new SettlementRecord();
-            settlementRecord.setSettleNo(SnGenerator.generate());
+            settlementRecord.setSettleNo(this.settlementRecordService.getSettleNo(EnumAccountUserType.DEALER.getId(), EnumSettleDestinationType.TO_ACCOUNT.getId()));
             settlementRecord.setAccountId(account.getId());
             settlementRecord.setUserNo(dealer.getMarkCode());
             settlementRecord.setUserName(dealer.getProxyName());
@@ -807,7 +807,7 @@ public class PayServiceImpl implements PayService {
 
             //生成结算单
             final SettlementRecord settlementRecord = new SettlementRecord();
-            settlementRecord.setSettleNo(SnGenerator.generate());
+            settlementRecord.setSettleNo(this.settlementRecordService.getSettleNo(EnumAccountUserType.DEALER.getId(), EnumSettleDestinationType.TO_ACCOUNT.getId()));
             settlementRecord.setAccountId(account.getId());
             settlementRecord.setUserNo(dealer.getMarkCode());
             settlementRecord.setUserName(dealer.getProxyName());
@@ -843,7 +843,7 @@ public class PayServiceImpl implements PayService {
 
             //生成结算单
             final SettlementRecord settlementRecord = new SettlementRecord();
-            settlementRecord.setSettleNo(SnGenerator.generate());
+            settlementRecord.setSettleNo(this.settlementRecordService.getSettleNo(EnumAccountUserType.MERCHANT.getId(), EnumSettleDestinationType.TO_ACCOUNT.getId()));
             settlementRecord.setAccountId(account.getId());
             settlementRecord.setUserNo(merchant.getMarkCode());
             settlementRecord.setUserName(merchant.getMerchantName());
@@ -879,7 +879,7 @@ public class PayServiceImpl implements PayService {
 
             //生成结算单
             final SettlementRecord settlementRecord = new SettlementRecord();
-            settlementRecord.setSettleNo(SnGenerator.generate());
+            settlementRecord.setSettleNo(this.settlementRecordService.getSettleNo(EnumAccountUserType.MERCHANT.getId(), EnumSettleDestinationType.TO_ACCOUNT.getId()));
             settlementRecord.setAccountId(account.getId());
             settlementRecord.setUserNo(merchant.getMarkCode());
             settlementRecord.setUserName(merchant.getMerchantName());
@@ -908,13 +908,12 @@ public class PayServiceImpl implements PayService {
     /**
      * 请求支付中心下单
      *
-     *  交易类型   JSAPI，NATIVE，APP，WAP,EPOS
      *
      * @param order
      * @param merchant
      * @param returnUrl 前端回调地址
      */
-    private PaymentSdkPlaceOrderResponse requestPlaceOrder(final Order order, final int channel,
+    private PaymentSdkPlaceOrderResponse requestPlaceOrder(final Order order, final String channel,
                                                            final MerchantInfo merchant, final String returnUrl) {
         final PaymentSdkPlaceOrderRequest placeOrderRequest = new PaymentSdkPlaceOrderRequest();
         placeOrderRequest.setAppId(PaymentSdkConstants.APP_ID);
@@ -925,8 +924,15 @@ public class PayServiceImpl implements PayService {
         placeOrderRequest.setMerName(merchant.getMerchantName());
         placeOrderRequest.setMerNo(merchant.getMarkCode());
         placeOrderRequest.setTotalAmount(order.getTradeAmount().toPlainString());
-        placeOrderRequest.setChannel(EnumPayChannelSign.idOf(channel).getCode());
+        placeOrderRequest.setChannel(channel);
+
+        placeOrderRequest.setBankCode(merchant.getCode());
+        placeOrderRequest.setCardNo(merchant.getBankNo());
+        placeOrderRequest.setPayerName(merchant.getName());
+        placeOrderRequest.setIdCardNo(merchant.getIdentity());
         final String content = HttpClientPost.postJson(PaymentSdkConstants.SDK_PAY_PLACE_ORDER, SdkSerializeUtil.convertObjToMap(placeOrderRequest));
         return JSON.parseObject(content, PaymentSdkPlaceOrderResponse.class);
     }
+
+
 }

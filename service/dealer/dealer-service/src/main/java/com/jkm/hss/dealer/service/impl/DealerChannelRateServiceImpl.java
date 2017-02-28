@@ -55,17 +55,6 @@ public class DealerChannelRateServiceImpl implements DealerChannelRateService{
         return this.dealerChannelRateDao.selectByDealerId(dealerId);
     }
 
-    /**
-     * {@inheritDoc}
-     *
-     * @param dealerId
-     * @param payChannel
-     * @return
-     */
-    @Override
-    public List<DealerChannelRate> selectByDealerIdAndPayChannelSign(long dealerId, int payChannel) {
-        return this.dealerChannelRateDao.selectByDealerIdAndPayChannelSign(dealerId, payChannel);
-    }
 
     /**
      * 根据代理商id、产品id与通道标识查询代理商费率
