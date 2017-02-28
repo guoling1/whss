@@ -293,6 +293,7 @@
 		LEFT JOIN tb_dealer b ON a.receipt_money_account_id=b.account_id
 		WHERE b.`level`=1 AND a.receipt_money_account_id=#{receiptMoneyAccountId}
 		AND a.split_date between #{splitDate} and #{splitDate1}
+		AND a.business_type=#{businessType}
 		<if test="orderNo != null and orderNo != ''">
 			AND a.order_no = #{orderNo}
 		</if>

@@ -111,9 +111,7 @@ public class AllProfitController extends BaseController {
         req.setOffset(pageModel.getFirstIndex());
 
         List<CompanyProfitResponse> list = allProfitService.selectOneProfitDetails(req);
-//        if (list.size()==0){
-//            return CommonResponse.simpleResponse(-1,"未查询到相关数据");
-//        }
+
         int count = allProfitService.selectOneProfitDetailsCount(req);
         pageModel.setCount(count);
         pageModel.setRecords(list);
