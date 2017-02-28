@@ -751,9 +751,24 @@ public class LoginController extends BaseController {
                         url = "/sqb/prompt";
                         isRedirect= true;
                     }else if(result.get().getStatus()== EnumMerchantStatus.PASSED.getId()||result.get().getStatus()== EnumMerchantStatus.FRIEND.getId()){//跳提现页面
-                        String bankNo = MerchantSupport.decryptBankCard(result.get().getBankNo());
+                        if(result.get().getBankNo()!=null&&!"".equals(result.get().getBankNo())){
+                            String bankNo = MerchantSupport.decryptBankCard(result.get().getBankNo());
+                            model.addAttribute("bankNo",bankNo.substring(bankNo.length()-4,bankNo.length()));
+                        }else{
+                            model.addAttribute("bankNo","");
+                        }
+                        if(result.get().getMobile()!=null&&!"".equals(result.get().getMobile())){
+                            String mobile = MerchantSupport.decryptMobile(result.get().getMobile());
+                            model.addAttribute("mobile",mobile.substring(0,3)+"******"+mobile.substring(mobile.length()-2,mobile.length()));
+                        }else{
+                            model.addAttribute("mobile","");
+                        }
+                        if(result.get().getBranchName()!=null&&!"".equals(result.get().getBranchName())){//有支行信息
+                            model.addAttribute("hasBranch",1);
+                        }else{
+                            model.addAttribute("hasBranch",0);//没有支行信息
+                        }
                         model.addAttribute("bankName", result.get().getBankName());
-                        model.addAttribute("bankNo",bankNo.substring(bankNo.length()-4,bankNo.length()));
                         model.addAttribute("bankBin",result.get().getBankBin());
                         url = "/bank";
                     }
@@ -775,6 +790,129 @@ public class LoginController extends BaseController {
         }
     }
 
+    /**
+     * 所属分行
+     * @param request
+     * @param response
+     * @param model
+     * @return
+     * @throws IOException
+     */
+    @RequestMapping(value = "/bankBranch", method = RequestMethod.GET)
+    public String bankBranch(final HttpServletRequest request, final HttpServletResponse response,final Model model) throws IOException {
+        boolean isRedirect = false;
+        if(!super.isLogin(request)){
+            return "redirect:"+ WxConstants.WEIXIN_USERINFO+request.getRequestURI()+ WxConstants.WEIXIN_USERINFO_REDIRECT;
+        }else {
+            String url = "";
+            Optional<UserInfo> userInfoOptional = userInfoService.selectByOpenId(super.getOpenId(request));
+            if (userInfoOptional.isPresent()) {
+                Long merchantId = userInfoOptional.get().getMerchantId();
+                if (merchantId != null && merchantId != 0){
+                    Optional<MerchantInfo> result = merchantInfoService.selectById(merchantId);
+                    if (result.get().getStatus()== EnumMerchantStatus.LOGIN.getId()){//登录
+                        url = "/sqb/reg";
+                        isRedirect= true;
+                    }else if(result.get().getStatus()== EnumMerchantStatus.INIT.getId()){
+                        url = "/sqb/addInfo";
+                        isRedirect= true;
+                    }else if(result.get().getStatus()== EnumMerchantStatus.ONESTEP.getId()){
+                        url = "/sqb/addNext";
+                        isRedirect= true;
+                    }else if(result.get().getStatus()== EnumMerchantStatus.REVIEW.getId()||
+                            result.get().getStatus()== EnumMerchantStatus.UNPASSED.getId()||
+                            result.get().getStatus()== EnumMerchantStatus.DISABLE.getId()){
+                        url = "/sqb/prompt";
+                        isRedirect= true;
+                    }else if(result.get().getStatus()== EnumMerchantStatus.PASSED.getId()||result.get().getStatus()== EnumMerchantStatus.FRIEND.getId()){//跳提现页面
+                        if(result.get().getBankNo()!=null&&!"".equals(result.get().getBankNo())){
+                            String bankNo = MerchantSupport.decryptBankCard(result.get().getBankNo());
+                            model.addAttribute("bankNo",bankNo.substring(bankNo.length()-4,bankNo.length()));
+                        }else{
+                            model.addAttribute("bankNo","");
+                        }
+                        if(result.get().getMobile()!=null&&!"".equals(result.get().getMobile())){
+                            String mobile = MerchantSupport.decryptMobile(result.get().getMobile());
+                            model.addAttribute("mobile",mobile.substring(0,3)+"******"+mobile.substring(mobile.length()-2,mobile.length()));
+                        }else{
+                            model.addAttribute("mobile","");
+                        }
+                        model.addAttribute("bankName", result.get().getBankName());
+                        model.addAttribute("bankBin",result.get().getBankBin());
+                        url = "/bankBranch";
+                    }
+                }else{
+                    CookieUtil.deleteCookie(response,ApplicationConsts.MERCHANT_COOKIE_KEY,ApplicationConsts.getApplicationConfig().domain());
+                    isRedirect= true;
+                    url = "/sqb/reg";
+                }
+            }else{
+                CookieUtil.deleteCookie(response,ApplicationConsts.MERCHANT_COOKIE_KEY,ApplicationConsts.getApplicationConfig().domain());
+                isRedirect= true;
+                url = "/sqb/reg";
+            }
+            if(isRedirect){
+                return "redirect:"+url;
+            }else{
+                return url;
+            }
+        }
+    }
+
+    /**
+     * 信用卡认证
+     * @param request
+     * @param response
+     * @param model
+     * @return
+     * @throws IOException
+     */
+    @RequestMapping(value = "/creditCardAuthen", method = RequestMethod.GET)
+    public String creditCardAuthen(final HttpServletRequest request, final HttpServletResponse response,final Model model) throws IOException {
+        boolean isRedirect = false;
+        if(!super.isLogin(request)){
+            return "redirect:"+ WxConstants.WEIXIN_USERINFO+request.getRequestURI()+ WxConstants.WEIXIN_USERINFO_REDIRECT;
+        }else {
+            String url = "";
+            Optional<UserInfo> userInfoOptional = userInfoService.selectByOpenId(super.getOpenId(request));
+            if (userInfoOptional.isPresent()) {
+                Long merchantId = userInfoOptional.get().getMerchantId();
+                if (merchantId != null && merchantId != 0){
+                    Optional<MerchantInfo> result = merchantInfoService.selectById(merchantId);
+                    if (result.get().getStatus()== EnumMerchantStatus.LOGIN.getId()){//登录
+                        url = "/sqb/reg";
+                        isRedirect= true;
+                    }else if(result.get().getStatus()== EnumMerchantStatus.INIT.getId()){
+                        url = "/sqb/addInfo";
+                        isRedirect= true;
+                    }else if(result.get().getStatus()== EnumMerchantStatus.ONESTEP.getId()){
+                        url = "/sqb/addNext";
+                        isRedirect= true;
+                    }else if(result.get().getStatus()== EnumMerchantStatus.REVIEW.getId()||
+                            result.get().getStatus()== EnumMerchantStatus.UNPASSED.getId()||
+                            result.get().getStatus()== EnumMerchantStatus.DISABLE.getId()){
+                        url = "/sqb/prompt";
+                        isRedirect= true;
+                    }else if(result.get().getStatus()== EnumMerchantStatus.PASSED.getId()||result.get().getStatus()== EnumMerchantStatus.FRIEND.getId()){//跳提现页面
+                        url = "/creditCardAuthen";
+                    }
+                }else{
+                    CookieUtil.deleteCookie(response,ApplicationConsts.MERCHANT_COOKIE_KEY,ApplicationConsts.getApplicationConfig().domain());
+                    isRedirect= true;
+                    url = "/sqb/reg";
+                }
+            }else{
+                CookieUtil.deleteCookie(response,ApplicationConsts.MERCHANT_COOKIE_KEY,ApplicationConsts.getApplicationConfig().domain());
+                isRedirect= true;
+                url = "/sqb/reg";
+            }
+            if(isRedirect){
+                return "redirect:"+url;
+            }else{
+                return url;
+            }
+        }
+    }
 
     private  Pair<String,String> payOf(int payWay,String status) {
         String result="";
@@ -1327,10 +1465,31 @@ public class LoginController extends BaseController {
                         isRedirect= true;
                     }else if(result.get().getStatus()== EnumMerchantStatus.PASSED.getId()||result.get().getStatus()== EnumMerchantStatus.FRIEND.getId()){//跳首页
                         model.addAttribute("merchantName",result.get().getMerchantName());
+                        model.addAttribute("district",result.get().getProvinceName()+result.get().getCityName());
                         model.addAttribute("address",result.get().getAddress());
                         model.addAttribute("createTime",result.get().getCreateTime()==null?"":DateFormatUtil.format(result.get().getCreateTime(), DateFormatUtil.yyyy_MM_dd_HH_mm_ss));
-                        model.addAttribute("name",result.get().getName());
-                        model.addAttribute("authenticationTime",result.get().getAuthenticationTime()==null?"":DateFormatUtil.format(result.get().getAuthenticationTime(), DateFormatUtil.yyyy_MM_dd_HH_mm_ss));
+                        String name = result.get().getName();
+                        String tempName = "";
+                        if(name!=null&&!"".equals(name)){
+                            for(int i=0;i<name.length()-1;i++){
+                                tempName+="*";
+                            }
+                            tempName+=name.substring(name.length()-1,name.length());
+                        }
+                        model.addAttribute("name",tempName);
+                        if(result.get().getIdentity()!=null&&!"".equals(result.get().getIdentity())){
+                            String idCard = MerchantSupport.decryptIdentity(result.get().getIdentity());
+                            model.addAttribute("idCard",idCard.substring(0,3)+"*************"+idCard.substring(idCard.length()-2,idCard.length()));
+                        }else{
+                            model.addAttribute("idCard","");
+                        }
+                        if(result.get().getCreditCard()!=null&&!"".equals(result.get().getCreditCard())){
+                            model.addAttribute("isAuthen",1);//已认证
+                        }else{
+                            model.addAttribute("isAuthen",0);//未认证
+                        }
+                        model.addAttribute("creditCardName",result.get().getCreditCardName());
+                        model.addAttribute("creditCardShort",result.get().getCreditCardShort());
                         url = "/authentication";
                     }
                 }else{

@@ -1,5 +1,6 @@
 package com.jkm.hss.controller.admin;
 
+import com.aliyun.oss.OSSClient;
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
@@ -10,7 +11,12 @@ import com.jkm.base.common.util.CookieUtil;
 import com.jkm.base.common.util.ValidateUtils;
 import com.jkm.hss.admin.entity.*;
 import com.jkm.hss.admin.enums.EnumQRCodeDistributeType;
+import com.jkm.hss.admin.helper.AdminUserSupporter;
+import com.jkm.hss.admin.helper.requestparam.AdminUserListRequest;
+import com.jkm.hss.admin.helper.requestparam.AdminUserRequest;
 import com.jkm.hss.admin.helper.requestparam.DistributeQrCodeRequest;
+import com.jkm.hss.admin.helper.responseparam.AdminUserListResponse;
+import com.jkm.hss.admin.helper.responseparam.AdminUserResponse;
 import com.jkm.hss.admin.helper.responseparam.BossDistributeQRCodeRecordResponse;
 import com.jkm.hss.admin.helper.responseparam.DistributeQRCodeRecordResponse;
 import com.jkm.hss.admin.service.AdminUserService;
@@ -21,6 +27,10 @@ import com.jkm.hss.dealer.entity.DealerChannelRate;
 import com.jkm.hss.dealer.enums.EnumDealerLevel;
 import com.jkm.hss.dealer.enums.EnumRecommendBtn;
 import com.jkm.hss.dealer.helper.DealerConsts;
+import com.jkm.hss.dealer.helper.requestparam.FirstLevelDealerAdd2Request;
+import com.jkm.hss.dealer.helper.requestparam.FirstLevelDealerAddRequest;
+import com.jkm.hss.dealer.helper.requestparam.FirstLevelDealerUpdate2Request;
+import com.jkm.hss.dealer.helper.requestparam.FirstLevelDealerUpdateRequest;
 import com.jkm.hss.dealer.helper.requestparam.*;
 import com.jkm.hss.dealer.service.DealerChannelRateService;
 import com.jkm.hss.dealer.service.DealerRateService;
@@ -45,13 +55,13 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.math.BigDecimal;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -88,6 +98,9 @@ public class AdminController extends BaseController {
     @Autowired
     private QRCodeService qrCodeService;
 
+    @Autowired
+    private OSSClient ossClient;
+
     /**
      * 登录
      *
@@ -100,7 +113,7 @@ public class AdminController extends BaseController {
         final String _username = StringUtils.trimToEmpty(adminUserLoginRequest.getUsername());
         final String _password = StringUtils.trimToEmpty(adminUserLoginRequest.getPassword());
         if (!(_username.length() >= 4 && _username.length() <= 16)) {
-            return CommonResponse.simpleResponse(-1, "用户名长度4-16位");
+            return CommonResponse.simpleResponse(-1, "登录名长度4-16位");
         }
         if (!(_password.length() >= 6 && _password.length() <= 32)) {
             return CommonResponse.simpleResponse(-1, "密码长度6-32位");
@@ -108,7 +121,7 @@ public class AdminController extends BaseController {
 
         final Optional<AdminUser> userOptional = this.adminUserService.getAdminUserByName(_username);
         if (!userOptional.isPresent()) {
-            return CommonResponse.simpleResponse(-1, "用户名不存在");
+            return CommonResponse.simpleResponse(-1, "登陆用户不存在");
         }
 
         if (!userOptional.get().isActive()) {
@@ -117,9 +130,9 @@ public class AdminController extends BaseController {
 
         final Optional<AdminUserPassport> tokenOptional = this.adminUserService.login(_username, _password);
         if (!tokenOptional.isPresent()) {
-            return CommonResponse.simpleResponse(-1, "用户名或密码错误");
+            return CommonResponse.simpleResponse(-1, "登录名或密码错误");
         }
-
+        this.adminUserService.updateLastLoginDate(tokenOptional.get().getAuid());
         CookieUtil.setSessionCookie(response, ApplicationConsts.ADMIN_COOKIE_KEY, tokenOptional.get().getToken(),
                 ApplicationConsts.getApplicationConfig().domain(), (int)(DealerConsts.TOKEN_EXPIRE_MILLIS / 1000));
         return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "登录成功");
@@ -901,6 +914,170 @@ public class AdminController extends BaseController {
     public CommonResponse distributeRecord (@RequestBody DistributeQrCodeRequest distributeRecordRequest) {
         PageModel<BossDistributeQRCodeRecordResponse> bossDistributeQRCodeRecordResponse = this.dealerService.distributeRecord(distributeRecordRequest);
         return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", bossDistributeQRCodeRecordResponse);
+    }
+
+
+    //    员工管理
+
+    /**
+     * 新增员工
+     * @param adminUserRequest
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/addUser", method = RequestMethod.POST)
+    public CommonResponse addUser (@RequestBody AdminUserRequest adminUserRequest) {
+        AdminUser adminUser = new AdminUser();
+        final Optional<AdminUser> adminUserOptional = this.adminUserService.getAdminUserByName(adminUserRequest.getUsername());
+        if(adminUserOptional.isPresent()) {
+            return CommonResponse.simpleResponse(-1, "登录名已存在");
+        }
+        if (!ValidateUtils.isMobile(adminUserRequest.getMobile())) {
+            return CommonResponse.simpleResponse(-1, "手机号格式错误");
+        }
+        if (!ValidateUtils.isIDCard(adminUserRequest.getIdCard())) {
+            return CommonResponse.simpleResponse(-1, "身份证号格式错误");
+        }
+        if (!ValidateUtils.isEmail(adminUserRequest.getEmail())) {
+            return CommonResponse.simpleResponse(-1, "邮箱格式错误");
+        }
+        if (!(adminUserRequest.getUsername().length() >= 4 && adminUserRequest.getUsername().length() <= 16)) {
+            return CommonResponse.simpleResponse(-1, "用户名长度4-16位");
+        }
+        if (!(adminUserRequest.getPassword().length() >= 6 && adminUserRequest.getPassword().length() <= 32)) {
+            return CommonResponse.simpleResponse(-1, "密码长度6-32位");
+        }
+        adminUser.setUsername(adminUserRequest.getUsername());
+        adminUser.setPassword(adminUserRequest.getPassword());
+        adminUser.setCompanyId(adminUserRequest.getCompanyId());
+        adminUser.setDeptId(adminUserRequest.getDeptId());
+        adminUser.setRealname(adminUserRequest.getRealname());
+        adminUser.setIdCard(adminUserRequest.getIdCard());
+        adminUser.setIdentityFacePic(adminUserRequest.getIdentityFacePic());
+        adminUser.setIdentityOppositePic(adminUserRequest.getIdentityOppositePic());
+        adminUser.setMobile(adminUserRequest.getMobile());
+        adminUser.setEmail(adminUserRequest.getEmail());
+        adminUser.setRoleId(adminUserRequest.getRoleId());
+        long userId = this.adminUserService.createUser(adminUser);
+        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "新增成功",userId);
+    }
+    /**
+     * 禁用用户
+     * @param adminUserRequest
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/disableUser", method = RequestMethod.POST)
+    public CommonResponse disableUser (@RequestBody AdminUserRequest adminUserRequest) {
+        adminUserService.disableUser(adminUserRequest.getId());
+        return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "禁用成功");
+    }
+    /**
+     * 启用用户
+     * @param adminUserRequest
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/activeUser", method = RequestMethod.POST)
+    public CommonResponse activeUser (@RequestBody AdminUserRequest adminUserRequest) {
+        adminUserService.activeUser(adminUserRequest.getId());
+        return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "启用成功");
+    }
+    /**
+     * 修改密码
+     * @param adminUserRequest
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/updatePwd", method = RequestMethod.POST)
+    public CommonResponse updatePwd (@RequestBody AdminUserRequest adminUserRequest) {
+        if (!(adminUserRequest.getUsername().length() >= 4 && adminUserRequest.getUsername().length() <= 16)) {
+            return CommonResponse.simpleResponse(-1, "登录名长度4-16位");
+        }
+        if(adminUserRequest.getId()<=0){
+            return CommonResponse.simpleResponse(-1, "登录名不存在");
+        }
+        Optional<AdminUser> adminUserOptional = this.adminUserService.getAdminUserById(adminUserRequest.getId());
+        if(!adminUserOptional.isPresent()){
+            return CommonResponse.simpleResponse(-1, "登录名不存在");
+        }
+        adminUserService.updatePwd(adminUserRequest.getPassword(),adminUserRequest.getId());
+        return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "修改成功");
+    }
+
+    /**
+     * 编辑用户
+     * @param adminUser
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/updateUser", method = RequestMethod.POST)
+    public CommonResponse updateUser (@RequestBody AdminUser adminUser) {
+        if(adminUser.getId()<=0){
+            return CommonResponse.simpleResponse(-1, "登录名不存在");
+        }
+        Optional<AdminUser> adminUserOptional = this.adminUserService.getAdminUserById(adminUser.getId());
+        if(!adminUserOptional.isPresent()){
+            return CommonResponse.simpleResponse(-1, "登录名不存在");
+        }
+        final long proxyNameCount = this.adminUserService.selectByUsernameUnIncludeNow(adminUser.getUsername(), adminUser.getId());
+        if (proxyNameCount > 0) {
+            return CommonResponse.simpleResponse(-1, "登录名已经存在");
+        }
+        adminUserService.update(adminUser);
+        return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "修改成功");
+    }
+    /**
+     * 用户列表
+     * @param adminUserListRequest
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/userList", method = RequestMethod.POST)
+    public CommonResponse userList (@RequestBody AdminUserListRequest adminUserListRequest) {
+        PageModel<AdminUserListResponse> adminUserPageModel = adminUserService.userList(adminUserListRequest);
+        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功",adminUserPageModel);
+    }
+
+    /**
+     * 员工详情
+     * @param userId
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/userDetail/{userId}", method = RequestMethod.GET)
+    public CommonResponse userDetail (@PathVariable final long userId) {
+        Optional<AdminUser> adminUserOptional = adminUserService.getAdminUserById(userId);
+        if(!adminUserOptional.isPresent()){
+            return  CommonResponse.simpleResponse(-1,"该员工不存在");
+        }
+        Date expiration = new Date(new Date().getTime() + 30*60*1000);
+        AdminUserResponse adminUserResponse = new AdminUserResponse();
+        if(adminUserOptional.get().getMobile()!=null&&!"".equals(adminUserOptional.get().getMobile())){
+            adminUserResponse.setMobile(AdminUserSupporter.decryptMobile(userId,adminUserOptional.get().getMobile()));
+        }
+        if(adminUserOptional.get().getIdCard()!=null&&!"".equals(adminUserOptional.get().getIdCard())){
+            adminUserResponse.setIdCard(AdminUserSupporter.decryptIdentity(adminUserOptional.get().getIdCard()));
+        }
+        if(adminUserOptional.get().getIdentityFacePic()!=null&&!"".equals(adminUserOptional.get().getIdentityFacePic())){
+            adminUserResponse.setIdentityFacePic(adminUserOptional.get().getIdentityFacePic());
+            URL url = ossClient.generatePresignedUrl(ApplicationConsts.getApplicationConfig().ossBucke(), adminUserResponse.getIdentityFacePic(),expiration);
+            adminUserResponse.setRealIdentityFacePic(url.toString());
+        }
+        if(adminUserOptional.get().getIdentityOppositePic()!=null&&!"".equals(adminUserOptional.get().getIdentityOppositePic())){
+            adminUserResponse.setIdentityOppositePic(adminUserOptional.get().getIdentityOppositePic());
+            URL url = ossClient.generatePresignedUrl(ApplicationConsts.getApplicationConfig().ossBucke(), adminUserResponse.getIdentityOppositePic(),expiration);
+            adminUserResponse.setRealIdentityOppositePic(url.toString());
+        }
+        adminUserResponse.setId(adminUserOptional.get().getId());
+        adminUserResponse.setStatus(adminUserOptional.get().getStatus());
+        adminUserResponse.setUsername(adminUserOptional.get().getUsername());
+        adminUserResponse.setRealname(adminUserOptional.get().getRealname());
+        adminUserResponse.setEmail(adminUserOptional.get().getEmail());
+        adminUserResponse.setCompanyId(adminUserOptional.get().getCompanyId());
+        adminUserResponse.setDeptId(adminUserOptional.get().getDeptId());
+        adminUserResponse.setRoleId(adminUserOptional.get().getRoleId());
+        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功",adminUserResponse);
     }
 
 }

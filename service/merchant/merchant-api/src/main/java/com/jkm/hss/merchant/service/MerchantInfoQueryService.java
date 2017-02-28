@@ -18,7 +18,7 @@ public interface MerchantInfoQueryService {
     List<MerchantInfoResponse> getAll(MerchantInfoRequest req);
 
     /**
-     * 查询总数
+     * 查询 总数
      * @return
      */
     int getCount(MerchantInfoRequest req);

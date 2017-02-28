@@ -39,6 +39,8 @@ const Upgrade = r => require.ensure([], () => r(require('../../components/Upgrad
 const CodeStatus = r => require.ensure([], () => r(require('../../components/CodeStatus')), 'group-record');
 const StoreAuditHSY = r => require.ensure([], () => r(require('../../components/StoreAuditHSY')), 'group-record');
 const T1Audit = r => require.ensure([], () => r(require('../../components/T1Audit')), 'group-record');
+const PersonnelList = r => require.ensure([], () => r(require('../../components/PersonnelList')), 'group-record');
+const PersonnelAdd = r => require.ensure([], () => r(require('../../components/PersonnelAdd')), 'group-record');
 
 const NewDealQuery = r => require.ensure([], () => r(require('../../components/newVersion/NewDealQuery')), 'group-record');
 const NewDealDet = r => require.ensure([], () => r(require('../../components/newVersion/NewDealDet')), 'group-record');
@@ -62,7 +64,7 @@ const Test = r => require.ensure([], () => r(require('../../components/Test')), 
 
 export default {
   path: '/admin/record',
-  redirect: '/admin/record/deal',
+  redirect: '/admin/record/newDeal',
   component: Crumbs,
   children: [
     {
@@ -319,6 +321,16 @@ export default {
       path: 'profitSecDet',
       name: 'ProfitSecDet',
       component: ProfitSecDet
+    },
+    {
+      path: 'personnelList',
+      name: 'PersonnelList',
+      component: PersonnelList
+    },
+    {
+      path: 'personnelAdd',
+      name: 'PersonnelAdd',
+      component: PersonnelAdd
     },
     {
       path: 'test',

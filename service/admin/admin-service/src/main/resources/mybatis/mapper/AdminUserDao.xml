@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.jkm.hss.admin.dao.AdminUserDao">
+
+    <sql id="Base_Column_List">
+        id,username,realname,email,mobile,status,company_id,
+        dept_id,id_card,last_login_date,role_id,mark_code,identity_face_pic,identity_opposite_pic,create_time,update_time
+    </sql>
+
     <insert id="insert" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO tb_admin_user
         (
@@ -10,7 +16,16 @@
         realname,
         email,
         mobile,
-        status
+        type,
+        status,
+        company_id,
+        dept_id,
+        id_card,
+        last_login_date,
+        role_id,
+        mark_code,
+        identity_face_pic,
+        identity_opposite_pic
         )
         VALUES
         (
@@ -20,27 +35,106 @@
         #{realname},
         #{email},
         #{mobile},
-        #{status}
+        #{type},
+        #{status},
+        #{companyId},
+        #{deptId},
+        #{idCard},
+        #{lastLoginDate},
+        #{roleId},
+        #{markCode},
+        #{identityFacePic},
+        #{identityOppositePic}
         );
     </insert>
+
     <update id="update">
         UPDATE tb_admin_user
         SET
         username = #{username},
-        password = #{password},
-        salt = #{salt},
+        company_id= #{companyId},
+        dept_id= #{deptId},
         realname = #{realname},
+        id_card = #{idCard},
+        identity_face_pic= #{identityFacePic},
+        identity_opposite_pic=#{identityOppositePic},
         email = #{email},
         mobile = #{mobile},
+        role_id = #{roleId},
         status = #{status}
         WHERE id = #{id}
     </update>
 
     <select id="selectById" resultType="com.jkm.hss.admin.entity.AdminUser">
-        SELECT * FROM tb_admin_user WHERE id = #{id}
+        SELECT <include refid="Base_Column_List" /> FROM tb_admin_user WHERE id = #{id}
     </select>
 
     <select id="selectByUsername" resultType="com.jkm.hss.admin.entity.AdminUser">
-        SELECT * FROM tb_admin_user WHERE username = #{username}
+        SELECT * FROM tb_admin_user WHERE username = #{username} and type=1 and status=1
     </select>
+
+    <update id="updatePwd">
+        UPDATE tb_admin_user
+        SET
+        salt = #{salt},
+        password = #{password}
+        WHERE id = #{id}
+    </update>
+
+    <update id="enableOrDisable">
+        UPDATE tb_admin_user
+        SET
+        status = #{status}
+        WHERE id = #{id}
+    </update>
+
+    <update id="updateMarkCode">
+        UPDATE tb_admin_user
+        SET
+        mark_code = #{markCode}
+        WHERE id = #{id}
+    </update>
+
+    <select id="selectAdminUserCountByPageParams" resultType="java.lang.Integer">
+        SELECT COUNT(1) FROM tb_admin_user
+        <where>
+            type=1 and status=1
+            <if test="realname != null and realname!=''">
+                AND `realname` LIKE "%"#{realname}"%"
+            </if>
+            <if test="markCode != null and markCode!=''">
+                AND mark_code = #{markCode}
+            </if>
+            <if test="mobile != null and mobile!=''">
+                AND mobile = #{mobile}
+            </if>
+        </where>
+    </select>
+    <select id="selectAdminUserListByPageParams" resultType="com.jkm.hss.admin.entity.AdminUser">
+        SELECT <include refid="Base_Column_List" /> FROM tb_admin_user
+        <where>
+            type=1 and status=1
+            <if test="realname != null and realname!=''">
+                AND `realname` LIKE "%"#{realname}"%"
+            </if>
+            <if test="markCode != null and markCode!=''">
+                AND mark_code = #{markCode}
+            </if>
+            <if test="mobile != null and mobile!=''">
+                AND mobile = #{mobile}
+            </if>
+            ORDER BY create_time DESC LIMIT #{offset},#{count}
+        </where>
+    </select>
+
+    <select id="selectByUsernameUnIncludeNow" resultType="java.lang.Long">
+        SELECT COUNT(1) FROM tb_admin_user WHERE username = #{username} AND id != #{id} and type=1 and status=1
+    </select>
+
+    <update id="updateLastLoginDate">
+        UPDATE tb_admin_user
+        SET
+        last_login_date = now()
+        WHERE id = #{id}
+    </update>
 </mapper>

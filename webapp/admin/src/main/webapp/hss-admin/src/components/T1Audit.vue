@@ -45,7 +45,7 @@
           </el-row>
           <!--表格-->
           <el-table v-loading.body="loading" style="font-size: 12px;margin:15px 0" :data="records" border @selection-change="handleSelectionChange">
-            <el-table-column type="selection" width="55"></el-table-column>
+            <!--<el-table-column type="selection" width="55"></el-table-column>-->
             <el-table-column prop="merchantNo" label="商户编号" ></el-table-column>
             <el-table-column prop="merchantName" label="商户名称" ></el-table-column>
             <el-table-column prop="dealerNo" label="上级代理编号" ></el-table-column>
@@ -65,7 +65,13 @@
           </el-table>
           <!--分页-->
           <div class="block" style="text-align: right">
-            <el-pagination @current-change="handleCurrentChange" :current-page="currentPage4" layout="total, prev, pager, next, jumper" :total="count">
+            <el-pagination @size-change="handleSizeChange"
+                           @current-change="handleCurrentChange"
+                           :current-page="query.pageNo"
+                           :page-sizes="[10, 20, 50]"
+                           :page-size="query.pageSize"
+                           layout="total, sizes, prev, pager, next, jumper"
+                           :total="count">
             </el-pagination>
           </div>
           <!--审核-->
@@ -98,46 +104,7 @@
               </div>
             </el-dialog>
           </div>
-
         </div>
-          <!--<div id="example2_wrapper" class="dataTables_wrapper form-inline dt-bootstrap">
-            <div class="row">
-              <div class="col-sm-12">
-                <table id="example2" class="table table-bordered table-hover dataTable" role="grid"
-                       aria-describedby="example2_info">
-                  <thead>
-                  <tr role="row">
-
-                  </tr>
-                  </thead>
-                  <tbody id="content">
-                  <tr role="row" >
-
-                  </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-            <div v-if="isShow">
-              <img src="http://img.jinkaimen.cn/admin/common/dist/img/ICBCLoading.gif" alt="">
-            </div>
-            &lt;!&ndash;<div v-if="orders.length==0&&!isShow" class="row" style="text-align: center;color: red;font-size: 16px;">
-              <div class="col-sm-12">无此数据</div>
-            </div>&ndash;&gt;
-            &lt;!&ndash;<div class="row">
-              <div class="col-sm-5">
-                <div class="dataTables_info" id="example2_info" role="status" aria-live="polite">
-                </div>
-              </div>
-              <div class="col-sm-7">
-                <div class="dataTables_paginate paging_simple_numbers" id="example2_paginate">
-                  <ul class="pagination" id="page" @click="bindEvent($event)">
-                  </ul>
-                  <span class="count">共{{count}}条</span>
-                </div>
-              </div>
-            </div>&ndash;&gt;
-          </div>-->
         </div>
       </div>
     </div>
@@ -197,46 +164,11 @@
             }
         },
       created: function () {
-        this.$http.post('/admin/settle/list',this.$data.query)
-          .then(function (res) {
-            this.$data.records = res.data.records;
-            this.$data.count = res.data.count;
-            this.$data.total = res.data.totalPage;
-            this.$data.loading = false;
-            var changeTime=function (val) {
-              if(val==''||val==null){
-                return ''
-              }else {
-                val = new Date(val)
-                var year=val.getFullYear();
-                var month=val.getMonth()+1;
-                var date=val.getDate();
-                function tod(a) {
-                  if(a<10){
-                    a = "0"+a
-                  }
-                  return a;
-                }
-                return year+"-"+tod(month)+"-"+tod(date);
-              }
-            }
-            for(let i = 0; i < this.$data.records.length; i++){
-              this.$data.records[i].tradeDate = changeTime(this.$data.records[i].tradeDate)
-            }
-          },function (err) {
-            this.$data.loading = false;
-            this.$message({
-              showClose: true,
-              message: err.statusMessage,
-              type: 'error'
-            })
-          })
+        this.getData()
       },
       methods: {
-        search: function () {
-          this.$data.query.pageNo = 1;
-          this.$data.records = '';
-          this.$data.loading = true;
+        getData: function () {
+          this.loading = true;
           this.$http.post('/admin/settle/list',this.$data.query)
             .then(function (res) {
               this.$data.records = res.data.records;
@@ -271,6 +203,10 @@
                 type: 'error'
               })
             })
+        },
+        search: function () {
+          this.$data.query.pageNo = 1;
+          this.getData()
         },
         list: function (val) {
           this.$data.index = val;
@@ -281,44 +217,16 @@
             console.log(val)
           this.multipleSelection = val;
         },
+        //每页条数改变
+        handleSizeChange(val) {
+          this.$data.query.pageNo = 1;
+          this.$data.query.pageSize = val;
+          this.getData()
+        },
         //当前页改变时
         handleCurrentChange(val) {
           this.$data.query.pageNo = val;
-          this.$data.loading = true;
-          this.$http.post('/admin/settle/list',this.$data.query)
-            .then(function (res) {
-              this.$data.records = res.data.records;
-              this.$data.count = res.data.count;
-              this.$data.total = res.data.totalPage;
-              this.$data.loading = false;
-              var changeTime=function (val) {
-                if(val==''||val==null){
-                  return ''
-                }else {
-                  val = new Date(val)
-                  var year=val.getFullYear();
-                  var month=val.getMonth()+1;
-                  var date=val.getDate();
-                  function tod(a) {
-                    if(a<10){
-                      a = "0"+a
-                    }
-                    return a;
-                  }
-                  return year+"-"+tod(month)+"-"+tod(date);
-                }
-              }
-              for(let i = 0; i < this.$data.records.length; i++){
-                this.$data.records[i].tradeDate = changeTime(this.$data.records[i].tradeDate)
-              }
-            },function (err) {
-              this.$data.loading = false;
-              this.$message({
-                showClose: true,
-                message: err.statusMessage,
-                type: 'error'
-              })
-            })
+          this.getData()
         },
         //结算审核
         settle(val,id) {

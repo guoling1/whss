@@ -2,6 +2,7 @@ package com.jkm.hss.merchant.service;
 
 import com.google.common.base.Optional;
 import com.jkm.hss.merchant.entity.MerchantInfo;
+import com.jkm.hss.merchant.helper.request.ContinueBankInfoRequest;
 import com.jkm.hss.merchant.helper.request.MerchantInfoAddRequest;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -166,4 +167,23 @@ public interface MerchantInfoService {
      * @return
      */
     List<MerchantInfo> batchGetByAccountIds(List<Long> accountIds);
+
+
+    /**
+     * 修改信用卡信息
+     * @param creditCard
+     * @param creditCardName
+     * @param creditCardShort
+     * @param id
+     * @return
+     */
+    int updateCreditCard(String creditCard,String creditCardName,String creditCardShort,long id);
+
+    /**
+     * 完善支行信息
+     * @param continueBankInfoRequest
+     * @return
+     */
+    int updateBranchInfo(ContinueBankInfoRequest continueBankInfoRequest);
+
 }
