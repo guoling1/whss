@@ -146,7 +146,7 @@ public class MerchantSupport {
 //        System.out.println(decryptBankCard("6212260200059789657"));
 //        System.out.println(decryptIdentity("110105198602103314"));
 //        System.out.println("=============================================");
-        String mobile = encryptMobile("18861436153");
+        String mobile = encryptMobile("13597634925");
 //        String bankCard = encryptBankCard("6212260200059789657");
 //        String Identity = encryptIdenrity("110105198602103314");
         System.out.println(mobile);
