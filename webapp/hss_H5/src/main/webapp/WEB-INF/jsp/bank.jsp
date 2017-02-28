@@ -26,7 +26,7 @@
         <div class="name">${bankName}</div>
         <div class="type">储蓄卡 | xx支行</div>
       </div>
-      <div class="btn red" id="btn">补充支行信息</div>
+      <a href="/sqb/bankBranch" class="btn red" id="btn">补充支行信息</a>
     </div>
     <div class="bottom">
       <div class="p">

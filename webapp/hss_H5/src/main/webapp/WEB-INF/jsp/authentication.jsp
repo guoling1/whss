@@ -143,7 +143,7 @@
     <div class="list">
       <div class="left">信用卡号:</div>
       <%--<div class="right">招商银行 尾号9098</div>--%>
-      <div class="btn">立即认证</div>
+      <a href="/sqb/creditCardAuthen" class="btn">立即认证</a>
     </div>
     <div class="list">
       <span class="small">认证通过后可使用大额收款</span>
