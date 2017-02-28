@@ -55,7 +55,7 @@
             <el-table-column label="操作" width="100">
               <template scope="scope">
                 <router-link
-                  :to="{path:'/admin/record/profitSecDet',query:{id:records[scope.$index].receiptMoneyAccountId,time:records[scope.$index].splitDate}}"
+                  :to="{path:'/admin/record/profitSecDet',query:{type:records[scope.$index].businessType,id:records[scope.$index].receiptMoneyAccountId,time:records[scope.$index].splitDate}}"
                   v-if="records[scope.$index].totalMoney!=0&&records[scope.$index].businessType!='总额'" type="text" size="small">明细
                 </router-link>
               </template>
@@ -183,7 +183,7 @@
             return a;
           }
 
-          return year + "-" + tod(month) + "-" + tod(date) + " " + tod(hour) + ":" + tod(minute) + ":" + tod(second);
+          return year + "-" + tod(month) + "-" + tod(date);
         }
       },
       search(){
