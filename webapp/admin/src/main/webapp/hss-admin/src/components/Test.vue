@@ -1195,7 +1195,7 @@
 </style>-->
 
 <!--新增通道-->
-<!--<template lang="html">
+<template lang="html">
   <div id="passAdd">
     <div style="margin: 15px 15px 150px;">
       <div class="box tableTop">
@@ -1211,7 +1211,7 @@
               </el-col>
               <el-col :span="6">
                 <div class="grid-content bg-purple-light">
-                  <el-input size="small" v-model="query.mobile" placeholder="请输入内容"></el-input>
+                  <el-input size="small" v-model="query.channelName" placeholder="请输入内容"></el-input>
                 </div>
               </el-col>
               <el-col :span="8">
@@ -1224,7 +1224,7 @@
               </el-col>
               <el-col :span="6">
                 <div class="grid-content bg-purple-light">
-                  <el-input size="small" v-model="query.name" placeholder="请输入内容"></el-input>
+                  <el-input size="small" v-model="query.channelCode" placeholder="请输入内容"></el-input>
                 </div>
               </el-col>
               <el-col :span="8">
@@ -1237,7 +1237,7 @@
               </el-col>
               <el-col :span="6">
                 <div class="grid-content bg-purple-light">
-                  <el-checkbox-group v-model="query.checkList">
+                  <el-checkbox-group v-model="query.supportWay">
                     <el-checkbox label="微信公众号"></el-checkbox>
                     <el-checkbox label="微信扫码"></el-checkbox>
                     <el-checkbox label="支付宝公众号"></el-checkbox>
@@ -1253,7 +1253,7 @@
               </el-col>
               <el-col :span="6">
                 <div class="grid-content bg-purple-light">
-                  <el-select style="width: 100%" v-model="query.roleId" clearable placeholder="请选择" size="small">
+                  <el-select style="width: 100%" v-model="query.thirdCompany" clearable placeholder="请选择" size="small">
                     <el-option label="微信" value="微信">微信</el-option>
                     <el-option label="支付宝" value="支付宝">支付宝</el-option>
                     <el-option label="京东钱包" value="京东钱包">京东钱包</el-option>
@@ -1271,7 +1271,7 @@
               </el-col>
               <el-col :span="6">
                 <div class="grid-content bg-purple-light">
-                  <el-input size="small" v-model="query.loginName" placeholder="数字或字母的组合，4-20位"></el-input>
+                  <el-input size="small" v-model="query.channelSource" placeholder="数字或字母的组合，4-20位"></el-input>
                 </div>
               </el-col>
               <el-col :span="8">
@@ -1284,7 +1284,7 @@
               </el-col>
               <el-col :span="6">
                 <div class="grid-content bg-purple-light" style="position: relative">
-                  <el-input size="small" v-model="query.email" placeholder="请输入内容"></el-input>
+                  <el-input size="small" v-model="query.basicTradeRate" placeholder="请输入内容"></el-input>
                   <b>%</b>
                 </div>
               </el-col>
@@ -1298,7 +1298,7 @@
               </el-col>
               <el-col :span="6">
                 <div class="grid-content bg-purple-light" style="position: relative">
-                  <el-input size="small" v-model="query.firstMarkCode" placeholder="请输入内容"></el-input>
+                  <el-input size="small" v-model="query.basicWithdrawFee" placeholder="请输入内容"></el-input>
                   <b>元/笔</b>
                 </div>
               </el-col>
@@ -1312,7 +1312,7 @@
               </el-col>
               <el-col :span="6">
                 <div class="grid-content bg-purple-light">
-                  <el-select style="width: 100%" v-model="query.roleId" clearable placeholder="请选择" size="small">
+                  <el-select style="width: 100%" v-model="query.basicBalanceType" clearable placeholder="请选择" size="small">
                     <el-option label="D0" value="D0">D0</el-option>
                     <el-option label="D1" value="D1">D1</el-option>
                     <el-option label="T0" value="T0">T0</el-option>
@@ -1331,7 +1331,7 @@
               </el-col>
               <el-col :span="6">
                 <div class="grid-content bg-purple-light">
-                  <el-select style="width: 100%" v-model="query.roleId" clearable placeholder="请选择" size="small">
+                  <el-select style="width: 100%" v-model="query.basicSettleType" clearable placeholder="请选择" size="small">
                     <el-option label="通道自动结算" value="D0">通道自动结算</el-option>
                     <el-option label="自主打款结算" value="D1">自主打款结算</el-option>
                   </el-select>
@@ -1348,7 +1348,7 @@
               </el-col>
               <el-col :span="6">
                 <div class="grid-content bg-purple-light" style="position: relative">
-                  <el-input size="small" v-model="query.email" placeholder="请输入内容"></el-input>
+                  <el-input size="small" v-model="query.limitAmount" placeholder="请输入内容"></el-input>
                   <b>元/笔</b>
                 </div>
               </el-col>
@@ -1362,8 +1362,8 @@
               </el-col>
               <el-col :span="6">
                 <div class="grid-content bg-purple-light">
-                  <el-radio class="radio" v-model="query.distributeType" label="1">支持</el-radio>
-                  <el-radio class="radio" v-model="query.distributeType" label="2">不支持</el-radio>
+                  <el-radio class="radio" v-model="query.isNeed" label="1">支持</el-radio>
+                  <el-radio class="radio" v-model="query.isNeed" label="2">不支持</el-radio>
                 </div>
               </el-col>
               <el-col :span="8">
@@ -1376,7 +1376,7 @@
               </el-col>
               <el-col :span="6">
                 <div class="grid-content bg-purple-light">
-                  <el-input type="textarea" :autosize="{ minRows: 2, maxRows: 4}" size="small" v-model="query.email" placeholder="请输入内容"></el-input>
+                  <el-input type="textarea" :autosize="{ minRows: 2, maxRows: 4}" size="small" v-model="query.remarks" placeholder="请输入内容"></el-input>
                 </div>
               </el-col>
               <el-col :span="8">
@@ -1416,27 +1416,22 @@
     name: 'passAdd',
     data () {
       return {
-        dialogFormVisible: false,
-        password:'',
         query: {
-          mobile: '',
-          name: '',
-          loginName:'',
-          loginPwd:'',
-          email:'',
-          belongProvinceCode:'',
-          belongProvinceName:'',
-          belongCityCode: '',
-          belongCityName: '',
-          belongArea: '',
-          bankCard: '',
-          bankAccountName: '',
-          bankReserveMobile: '',
-          idCard: '',
+          channelName: '',
+          channelCode: '',
+          supportWay:[],
+          thirdCompany:'',
+          channelSource:'',
+          basicTradeRate:'',
+          basicWithdrawFee:'',
+          basicBalanceType: '',
+          basicSettleType: '',
+          limitAmount: '',
+          isNeed: '',
+          remarks: ''
         },
         id: 0,
-        isShow: true,
-        productId: ''
+        isShow: true
       }
     },
     created: function () {
@@ -1452,29 +1447,9 @@
       }
     },
     methods: {
-      //修改密码
-      resetPw:function() {
-        this.$http.post('/admin/dealer/updatePwd',{dealerId:this.$route.query.id,loginPwd:this.$data.password})
-          .then(function (res) {
-            this.$data.dialogFormVisible = false;
-            this.$data.password = '';
-            this.$message({
-              showClose: true,
-              type: 'success',
-              message: '修改成功'
-            });
-          })
-          .catch(function (err) {
-            this.$message({
-              showClose: true,
-              message: err.statusMessage,
-              type: 'error'
-            })
-          })
-      },
       //创建一级代理
       create: function () {
-        this.$http.post('/admin/user/addFirstDealer2', this.$data.query)
+        this.$http.post('/admin/paymentChannel/add', this.$data.query)
           .then(function (res) {
             this.$message({
               showClose: true,
@@ -1524,7 +1499,7 @@
   }
 </script>
 
-&lt;!&ndash; Add "scoped" attribute to limit CSS to this component only &ndash;&gt;
+<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="less">
   .alignRight {
     margin-right: 15px;
@@ -1549,7 +1524,7 @@
     top:0;
     right: 0;
   }
-</style>-->
+</style>
 
 <!--通道列表-->
 <!--<template>
@@ -2080,7 +2055,7 @@
 </style>-->
 
 <!--产品列表-->
-<template>
+<!--<template>
   <div id="productList">
     <div class="col-md-12">
       <div class="box" style="margin-top:15px;overflow: hidden">
@@ -2089,7 +2064,7 @@
           <router-link to="/admin/record/productAdd" class="pull-right btn btn-primary" style="margin-left: 20px">新增产品</router-link>
         </div>
         <div class="box-body" style="width: 50%;margin-left: 5%;margin-bottom: 200px">
-          <!--表格-->
+          &lt;!&ndash;表格&ndash;&gt;
           <el-table style="font-size: 12px;" :data="records" border>
             <el-table-column label="产品名称" prop="name"></el-table-column>
             <el-table-column label="操作" min-width="112">
@@ -2139,4 +2114,4 @@
     font-size: 12px;
   }
 
-</style>
+</style>-->
