@@ -76,7 +76,7 @@ public interface PayService {
      * @param orderId
      * @param merchant
      */
-    void merchantRecorded(long orderId, MerchantInfo merchant);
+    long merchantRecorded(long orderId, MerchantInfo merchant);
 
     /**
      * 商户升级，商户付款，公司入账

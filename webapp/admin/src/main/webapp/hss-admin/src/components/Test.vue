@@ -1419,7 +1419,7 @@
         query: {
           channelName: '',
           channelCode: '',
-          supportWay:[],
+          supportWay:'',
           thirdCompany:'',
           channelSource:'',
           basicTradeRate:'',
@@ -1449,7 +1449,7 @@
     methods: {
       //创建一级代理
       create: function () {
-        this.$http.post('/admin/paymentChannel/add', this.$data.query)
+        this.$http.post('/admin/user/addFirstDealer2', this.$data.query)
           .then(function (res) {
             this.$message({
               showClose: true,

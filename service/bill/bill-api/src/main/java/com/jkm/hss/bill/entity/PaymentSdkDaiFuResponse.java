@@ -8,7 +8,7 @@ import lombok.Data;
 @Data
 public class PaymentSdkDaiFuResponse {
     /**
-     * 交易订单号
+     * 交易订单号（结算单号，支付流水号号）
      */
     private String orderNo;
 
@@ -38,4 +38,9 @@ public class PaymentSdkDaiFuResponse {
      * 错误信息
      */
     private String message;
+
+    /**
+     * 上游游自动结算
+     */
+    private Boolean autoSettle;
 }

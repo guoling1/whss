@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jkm.hss.bill.dao.SettlementRecordDao">
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO tb_settlement_record
+        (
+        settle_no,
+        settle_audit_record_id,
+        account_id,
+        user_no,
+        user_name,
+        account_user_type,
+        app_id,
+        settle_date,
+        trade_number,
+        settle_amount,
+        settle_mode,
+        settle_destination,
+        bank_no,
+        bank_name,
+        settle_status,
+        status
+        )
+        VALUES
+        (
+        #{settleNo},
+        #{settleAuditRecordId},
+        #{accountId},
+        #{userNo},
+        #{userName},
+        #{accountUserType},
+        #{appId},
+        #{settleDate},
+        #{tradeNumber},
+        #{settleAmount},
+        #{settleMode},
+        #{settleDestination},
+        #{bankNo},
+        #{bankName},
+        #{settleStatus},
+        #{status}
+        );
+    </insert>
+    <update id="update">
+        UPDATE tb_settlement_record
+        <set>
+            <if test="settleNo != null">
+                settle_no = #{settleNo},
+            </if>
+            <if test="settleAuditRecordId > 0">
+                settle_audit_record_id = #{settleAuditRecordId},
+            </if>
+            <if test="accountId > 0">
+                account_id = #{accountId},
+            </if>
+            <if test="userNo != null">
+                user_no = #{userNo},
+            </if>
+            <if test="userName != null">
+                user_name = #{userName},
+            </if>
+            <if test="accountUserType > 0">
+                account_user_type = #{accountUserType},
+            </if>
+            <if test="appId != null">
+                app_id = #{appId},
+            </if>
+            <if test="settleDate != null">
+                settle_date = #{settleDate},
+            </if>
+            <if test="tradeNumber > 0">
+                trade_number = #{tradeNumber},
+            </if>
+            <if test="settleAmount != null">
+                settle_amount = #{settleAmount},
+            </if>
+            <if test="settleDestination > 0">
+                settle_destination = #{settleDestination},
+            </if>
+            <if test="bankNo != null">
+                bank_no = #{bankNo},
+            </if>
+            <if test="bankName != null">
+                bank_name = #{bankName},
+            </if>
+            <if test="settleStatus > 0">
+                settle_status = #{settleStatus},
+            </if>
+            <if test="status > 0">
+                status = #{status},
+            </if>
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <update id="updateStatus">
+        UPDATE tb_settlement_record SET status = #{status} WHERE id = #{id}
+    </update>
+
+    <update id="updateSettleStatus">
+        UPDATE tb_settlement_record SET settle_status = #{settleStatus} WHERE id = #{id}
+    </update>
+
+    <select id="selectById" resultType="com.jkm.hss.bill.entity.SettlementRecord">
+        SELECT * FROM tb_settlement_record WHERE id = #{id}
+    </select>
+
+    <select id="selectByIdWithLock" resultType="com.jkm.hss.bill.entity.SettlementRecord">
+        SELECT * FROM tb_settlement_record WHERE id = #{id} FOR UPDATE
+    </select>
+
+    <select id="selectBySettleNo" resultType="com.jkm.hss.bill.entity.SettlementRecord">
+        SELECT * FROM tb_settlement_record WHERE settle_no = #{settleNo}
+    </select>
+</mapper>

@@ -9,14 +9,12 @@ import com.jkm.base.common.util.DateFormatUtil;
 import com.jkm.hss.account.enums.EnumAppType;
 import com.jkm.hss.bill.entity.Order;
 import com.jkm.hss.bill.enums.EnumOrderStatus;
-import com.jkm.hss.bill.enums.EnumPaymentType;
 import com.jkm.hss.bill.enums.EnumSettleStatus;
 import com.jkm.hss.bill.helper.requestparam.QueryMerchantPayOrdersRequestParam;
 import com.jkm.hss.bill.service.OrderService;
 import com.jkm.hss.bill.service.PayService;
 import com.jkm.hss.bill.service.WithdrawService;
 import com.jkm.hss.controller.BaseController;
-import com.jkm.hss.dealer.service.DealerService;
 import com.jkm.hss.helper.request.DynamicCodePayRequest;
 import com.jkm.hss.helper.request.StaticCodePayRequest;
 import com.jkm.hss.helper.request.WithdrawRequest;
@@ -25,11 +23,8 @@ import com.jkm.hss.helper.response.QueryOrderByIdResponse;
 import com.jkm.hss.merchant.entity.MerchantInfo;
 import com.jkm.hss.merchant.entity.UserInfo;
 import com.jkm.hss.merchant.enums.EnumMerchantStatus;
-import com.jkm.hss.merchant.helper.MerchantSupport;
 import com.jkm.hss.merchant.service.MerchantInfoService;
 import com.jkm.hss.merchant.service.UserInfoService;
-import com.jkm.hss.notifier.enums.EnumVerificationCodeType;
-import com.jkm.hss.notifier.service.SmsAuthService;
 import com.jkm.hss.product.enums.EnumPayChannelSign;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -56,11 +51,7 @@ public class TradeController extends BaseController {
     @Autowired
     private PayService payService;
     @Autowired
-    private SmsAuthService smsAuthService;
-    @Autowired
     private OrderService orderService;
-    @Autowired
-    private DealerService dealerService;
     @Autowired
     private UserInfoService userInfoService;
     @Autowired
@@ -101,16 +92,15 @@ public class TradeController extends BaseController {
         if(StringUtils.isBlank(merchantInfo.get().getMerchantName())){
             return CommonResponse.simpleResponse(-1, "缺失商户名称");
         }
-        if (EnumPayChannelSign.YG_WEIXIN.getId() != payRequest.getPayChannel()
-                && EnumPayChannelSign.YG_ZHIFUBAO.getId() != payRequest.getPayChannel()
-                && EnumPayChannelSign.YG_YINLIAN.getId() != payRequest.getPayChannel()) {
+        if (!EnumPayChannelSign.isExistById(payRequest.getPayChannel())) {
             return CommonResponse.simpleResponse(-1, "支付方式错误");
         }
         final Pair<Integer, String> resultPair = this.payService.codeReceipt(payRequest.getTotalFee(),
                 payRequest.getPayChannel(), merchantInfo.get().getId(), EnumAppType.HSS.getId(), true);
         if (0 == resultPair.getLeft()) {
             return CommonResponse.builder4MapResult(CommonResponse.SUCCESS_CODE, "收款成功")
-                    .addParam("payUrl", URLDecoder.decode(resultPair.getRight(), "UTF-8")).addParam("subMerName", merchantInfo.get().getMerchantName())
+                    .addParam("payUrl", URLDecoder.decode(resultPair.getRight(), "UTF-8"))
+                    .addParam("subMerName", merchantInfo.get().getMerchantName())
                     .addParam("amount", totalFee).build();
         }
         return CommonResponse.simpleResponse(-1, resultPair.getRight());
@@ -144,48 +134,16 @@ public class TradeController extends BaseController {
             return CommonResponse.simpleResponse(-1, "缺失商户名称");
         }
 
+        if (!EnumPayChannelSign.isExistById(payRequest.getPayChannel())) {
+            return CommonResponse.simpleResponse(-1, "支付方式错误");
+        }
         final Pair<Integer, String> resultPair = this.payService.codeReceipt(payRequest.getTotalFee(),
                 payRequest.getPayChannel(), merchantInfo.get().getId(), EnumAppType.HSS.getId(), false);
         if (0 == resultPair.getLeft()) {
             return CommonResponse.builder4MapResult(CommonResponse.SUCCESS_CODE, "收款成功")
-                    .addParam("payUrl", URLDecoder.decode(resultPair.getRight(), "UTF-8")).addParam("subMerName", merchantInfo.get().getMerchantName())
+                    .addParam("payUrl", URLDecoder.decode(resultPair.getRight(), "UTF-8"))
+                    .addParam("subMerName", merchantInfo.get().getMerchantName())
                     .addParam("amount", totalAmount).build();
-        }
-        return CommonResponse.simpleResponse(-1, resultPair.getRight());
-    }
-
-
-    /**
-     * 提现
-     *
-     * @return
-     */
-    @ResponseBody
-    @RequestMapping(value = "withdraw", method = RequestMethod.POST)
-    public CommonResponse withdraw(@RequestBody final WithdrawRequest withdrawRequest, final HttpServletRequest request) {
-//        final String verifiedCode = withdrawRequest.getCode();
-//        if (!super.isLogin(request)) {
-//            return CommonResponse.simpleResponse(-2, "未登录");
-//        }+
-//        Optional<UserInfo> userInfoOptional = userInfoService.selectByOpenId(super.getOpenId(request));
-//        if (!userInfoOptional.isPresent()) {
-//            return CommonResponse.simpleResponse(-2, "未登录");
-//        }
-//        Optional<MerchantInfo> merchantInfo = merchantInfoService.selectById(userInfoOptional.get().getMerchantId());
-//        if (!merchantInfo.isPresent()) {
-//            return CommonResponse.simpleResponse(-2, "未登录");
-//        }
-//        if (merchantInfo.get().getStatus() != EnumMerchantStatus.PASSED.getId()) {
-//            return CommonResponse.simpleResponse(-2, "未审核通过");
-//        }
-//        final Pair<Integer, String> checkResult =
-//                this.smsAuthService.checkVerifyCode(MerchantSupport.decryptMobile(merchantInfo.get().getReserveMobile()), verifiedCode, EnumVerificationCodeType.WITH_DRAW);
-//        if (1 != checkResult.getLeft()) {
-//            return CommonResponse.simpleResponse(-1, checkResult.getRight());
-//        }
-        final Pair<Integer, String> resultPair = this.withdrawService.merchantWithdrawByOrder(withdrawRequest.getMerchantId(), withdrawRequest.getPayOrderId(), withdrawRequest.getPayOrderSn(), "D0");
-        if (0 == resultPair.getLeft()) {
-            return CommonResponse.simpleResponse(1, "受理成功");
         }
         return CommonResponse.simpleResponse(-1, resultPair.getRight());
     }
@@ -231,6 +189,7 @@ public class TradeController extends BaseController {
                 return CommonResponse.simpleResponse(-1, "不存在的支付状态");
             }
         }
+<<<<<<< HEAD
 //        for (int i = 0; i < payTypeList.size(); i++) {
 //            final String payType = payTypeList.get(i);
 //            if (!EnumPaymentType.WECHAT_H5_CASHIER_DESK.getId().equals(payType)
@@ -240,6 +199,14 @@ public class TradeController extends BaseController {
 //            }
 //        }
         payTypeList.add("N");
+=======
+        for (int i = 0; i < payTypeList.size(); i++) {
+            final String payType = payTypeList.get(i);
+            if (!EnumPayChannelSign.isExistByCode(payType)) {
+                return CommonResponse.simpleResponse(-1, "不存在的支付方式");
+            }
+        }
+>>>>>>> 00475536f1948e4ec8646ab9ec7d4a1fa45c9a3c
         if (StringUtils.isEmpty(requestParam.getOrderNo())) {
             requestParam.setOrderNo(null);
         }

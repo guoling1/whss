@@ -19,7 +19,7 @@ public final class SnGenerator {
      * @return
      */
     public static String generate() {
-        return "JKM" + DateFormatUtil.format(new Date(), "yyyyMMddHHmmssSSS") + RandomStringUtils.randomNumeric(5);
+        return DateFormatUtil.format(new Date(), "yyyyMMddHHmmssSSS") + RandomStringUtils.randomNumeric(6);
     }
 
 
