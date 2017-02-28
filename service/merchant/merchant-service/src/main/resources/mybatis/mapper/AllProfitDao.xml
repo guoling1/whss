@@ -69,6 +69,7 @@
 	<!-- 查询一级代理商分润 -->
 	<select id="selectOneProfit" resultType="com.jkm.hss.merchant.helper.response.CompanyProfitResponse">
 		SELECT
+		a.receipt_money_account_id,
 		a.business_type,
 		sum(a.split_total_amount) AS splitTotalAmount,
 		DATE_FORMAT(a.split_date, '%Y-%m-%d') AS splitDate,
@@ -100,6 +101,7 @@
 		AND b.mark_code = #{markCode}
 	</if>
 		GROUP BY
+		a.receipt_money_account_id,
 		a.business_type,
 		splitDate,
 		b.mark_code,
@@ -272,6 +274,7 @@
 		WHERE
 		b.`level` = 1 AND a.split_date between #{splitDate} and #{splitDate1}
 		AND a.receipt_money_account_id=#{receiptMoneyAccountId}
+		AND a.business_type=#{businessType}
 		<if test="orderNo != null and orderNo != ''">
 			AND a.order_no = #{orderNo}
 		</if>
