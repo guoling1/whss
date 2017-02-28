@@ -21,4 +21,6 @@ public interface MerchantChannelRateService {
      * @return
      */
     Optional<MerchantChannelRate> selectByChannelTypeSignAndProductIdAndMerchantId(MerchantChannelRateRequest merchantChannelRateRequest);
+
+
 }

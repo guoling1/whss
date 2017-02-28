@@ -31,13 +31,6 @@ public interface ProductChannelDetailService {
     List<ProductChannelDetail> selectByProductId(long productId);
 
     /**
-     * 根据通道标识查询产品通道信息
-     * @param payChannel
-     * @return
-     */
-    List<ProductChannelDetail> selectByChannelTypeSign(int payChannel);
-
-    /**
      * 更新
      * @param detail
      */

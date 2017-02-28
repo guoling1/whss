@@ -10,7 +10,7 @@ import java.math.BigDecimal;
  *
  * 代理商通道费率表
  *
- * tb_dealer_channel_rate
+ * tb_merchant_channel_rate
  */
 @Data
 public class MerchantChannelRate extends BaseEntity{

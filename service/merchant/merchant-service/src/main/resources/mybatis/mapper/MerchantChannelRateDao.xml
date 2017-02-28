@@ -9,7 +9,7 @@
     </sql>
 
     <!--根据商户编码、通道标示、产品编码查询商户费用-->
-    <select id="selectByChannelTypeSignAndProductIdAndMerchantId" resultType="com.jkm.hss.merchant.entity.MerchantInfo">
+    <select id="selectByChannelTypeSignAndProductIdAndMerchantId" resultType="com.jkm.hss.merchant.entity.MerchantChannelRate">
         SELECT
         <include refid="Base_Column_List" />
         FROM tb_merchant_channel_rate
