@@ -16,7 +16,15 @@ public enum EnumEnterNet {
     /**
      * 2 已入网
      */
-    HASENT(2);
+    HASENT(2),
+    /**
+     * 3 入网中
+     */
+    ENTING(3),
+    /**
+     * 4 入网失败
+     */
+    ENT_FAIL(4);
 
     @Getter
     private int id;

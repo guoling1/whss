@@ -2,7 +2,11 @@ package com.jkm.hss.merchant.dao;
 
 import com.jkm.hss.merchant.entity.MerchantChannelRate;
 import com.jkm.hss.merchant.helper.request.MerchantChannelRateRequest;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
+import java.util.Set;
 
 /**
  * Created by xingliujie on 2017/2/27.
@@ -22,4 +26,10 @@ public interface MerchantChannelRateDao {
      * @return
      */
     MerchantChannelRate selectByChannelTypeSignAndProductIdAndMerchantId(MerchantChannelRateRequest merchantChannelRateRequest);
+
+    /**
+     * 查询入网中的商户信息
+     * @return
+     */
+    Set<MerchantChannelRate> selectIngMerchantInfo(@Param("entId") int entId);
 }
