@@ -67,6 +67,7 @@
         UPDATE tb_merchant_channel_rate
         SET enter_net = #{enterNet}
         WHERE
+        merchant_id = #{merchantId} and
         channel_type_sign in
         <foreach collection="signIdList" index="index" item="item" open="(" separator="," close=")">
             #{item}
