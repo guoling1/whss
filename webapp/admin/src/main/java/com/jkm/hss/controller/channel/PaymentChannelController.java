@@ -72,6 +72,7 @@ public class PaymentChannelController extends BaseController {
             request.setBasicBalanceType(EnumBalanceTimeType.of(request.getBasicBalanceType()).getType());
             request.setBasicSettleType(EnumBasicSettleType.of(request.getBasicSettleType()).getId());
             request.setStatus(EnumBasicChannelStatus.USEING.getId());
+            request.setChannelCompany(EnumPayChannelSign.of(request.getChannelName()).getUpperChannel().getValue());
             this.paymentChannelService.addPaymentChannel(request);
             return CommonResponse.simpleResponse(1,"success");
         }catch (final Throwable throwable){

@@ -16,6 +16,7 @@
         basic_settle_type,
         limit_amount,
         is_need,
+        channel_company,
         status
         )VALUES(
         #{accountId},
@@ -30,6 +31,7 @@
         #{basicSettleType},
         #{limitAmount},
         #{isNeed},
+        #{channelCompany},
         #{status}
         )
     </insert>
