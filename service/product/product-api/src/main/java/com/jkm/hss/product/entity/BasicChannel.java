@@ -85,6 +85,11 @@ public class BasicChannel extends BaseEntity{
     private int isNeed;
 
     /**
+     * 公司
+     */
+    private String channelCompany;
+
+    /**
      * 备注
      */
     private String remarks;

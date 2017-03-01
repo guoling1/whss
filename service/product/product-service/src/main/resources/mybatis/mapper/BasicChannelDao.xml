@@ -6,21 +6,29 @@
         (account_id,
         channel_name,
         channel_type_sign,
+        support_way,
         third_company,
         channel_source,
         basic_trade_rate,
         basic_withdraw_fee,
         basic_balance_type,
+        basic_settle_type,
+        limit_amount,
+        is_need,
         status
         )VALUES(
         #{accountId},
         #{channelName},
         #{channelTypeSign},
+        #{supportWay},
         #{thirdCompany},
         #{channelSource},
         #{basicTradeRate},
         #{basicWithdrawFee},
         #{basicBalanceType},
+        #{basicSettleType},
+        #{limitAmount},
+        #{isNeed},
         #{status}
         )
     </insert>
