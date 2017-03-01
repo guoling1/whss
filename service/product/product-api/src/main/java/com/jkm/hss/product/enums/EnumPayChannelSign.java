@@ -4,6 +4,9 @@ import com.google.common.collect.ImmutableMap;
 import lombok.Getter;
 import org.apache.commons.lang3.tuple.Pair;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by yuxiang on 2016-11-24.
  *
@@ -141,6 +144,24 @@ public enum EnumPayChannelSign {
     }
 
 
+    /**
+     * 按渠道获取支付方式列表
+     *
+     * @param paymentChannelId
+     * @return
+     */
+    public static List<Integer> getIdListByPaymentChannel(final int paymentChannelId) {
+        final EnumPaymentChannel paymentChannel = EnumPaymentChannel.of(paymentChannelId);
+        final ArrayList<Integer> idList = new ArrayList<>();
+        for (final EnumPayChannelSign status : EnumPayChannelSign.values()) {
+            if (status.getPaymentChannel().equals(paymentChannel)) {
+                idList.add(status.getId());
+            }
+        }
+        return idList;
+    }
+
+
     public static boolean isExistByCode(final String code) {
         return CODE_INIT_MAP.containsKey(code);
     }
@@ -165,4 +186,6 @@ public enum EnumPayChannelSign {
         }
         return Pair.of(weixin,zhifubao);
     }
+
+//    public
 }

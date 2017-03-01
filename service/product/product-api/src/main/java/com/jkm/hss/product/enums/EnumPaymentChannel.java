@@ -23,9 +23,9 @@ public enum EnumPaymentChannel {
     ALIPAY(2, "支付宝"),
 
     /**
-     * 银联
+     * 快捷
      */
-    UNIONPAY(3, "银联");
+    UNIONPAY(3, "快捷");
 
     @Getter
     private int id;

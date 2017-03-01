@@ -339,7 +339,7 @@
             AND order_no = #{orderNo}
         </if>
         <if test="payType != null">
-            AND pay_type IN
+            AND pay_channel_sign IN
             <foreach collection="payType" index="index" item="item" open="(" close=")" separator=",">
                 #{item}
             </foreach>
@@ -364,7 +364,7 @@
             AND order_no = #{orderNo}
         </if>
         <if test="payType != null">
-            AND pay_type IN
+            AND pay_channel_sign IN
             <foreach collection="payType" index="index" item="item" open="(" close=")" separator=",">
                 #{item}
             </foreach>

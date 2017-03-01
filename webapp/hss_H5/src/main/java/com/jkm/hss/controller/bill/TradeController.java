@@ -13,13 +13,10 @@ import com.jkm.hss.bill.enums.EnumSettleStatus;
 import com.jkm.hss.bill.helper.requestparam.QueryMerchantPayOrdersRequestParam;
 import com.jkm.hss.bill.service.OrderService;
 import com.jkm.hss.bill.service.PayService;
-import com.jkm.hss.bill.service.WithdrawService;
 import com.jkm.hss.controller.BaseController;
 import com.jkm.hss.helper.request.DynamicCodePayRequest;
 import com.jkm.hss.helper.request.StaticCodePayRequest;
-import com.jkm.hss.helper.request.WithdrawRequest;
 import com.jkm.hss.helper.response.QueryMerchantPayOrdersResponse;
-import com.jkm.hss.helper.response.QueryOrderByIdResponse;
 import com.jkm.hss.merchant.entity.MerchantInfo;
 import com.jkm.hss.merchant.entity.UserInfo;
 import com.jkm.hss.merchant.enums.EnumMerchantStatus;
@@ -31,12 +28,15 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.net.URLDecoder;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -55,15 +55,7 @@ public class TradeController extends BaseController {
     @Autowired
     private UserInfoService userInfoService;
     @Autowired
-    private WithdrawService withdrawService;
-    @Autowired
     private MerchantInfoService merchantInfoService;
-
-    @RequestMapping(value = "test")
-    public void test() {
-        this.withdrawService.merchantWithdrawBySettlementRecord(79, 1, "1120170228152908929305627" , 101);
-    }
-
 
     /**
      * 动态码支付
@@ -179,7 +171,8 @@ public class TradeController extends BaseController {
         requestParam.setAccountId(merchantInfo.get().getAccountId());
         final PageModel<QueryMerchantPayOrdersResponse> result = new PageModel<>(requestParam.getPageNo(), requestParam.getPageSize());
         final List<Integer> payStatusList = requestParam.getPayStatus();
-        final List<String> payTypeList = requestParam.getPayType();
+        final List<Integer> payTypeList = requestParam.getPayType();
+        final ArrayList<Integer> payChannelIds = new ArrayList<>();
         if (CollectionUtils.isEmpty(payStatusList)) {
             return CommonResponse.simpleResponse(-1, "支付状态不可以为空");
         }
@@ -195,7 +188,11 @@ public class TradeController extends BaseController {
                 return CommonResponse.simpleResponse(-1, "不存在的支付状态");
             }
         }
-        payTypeList.add("N");
+        for (int i = 0; i < payTypeList.size(); i++) {
+            payChannelIds.addAll(EnumPayChannelSign.getIdListByPaymentChannel(payTypeList.get(i)));
+        }
+        //重写值
+        requestParam.setPayType(payChannelIds);
         if (StringUtils.isEmpty(requestParam.getOrderNo())) {
             requestParam.setOrderNo(null);
         }
@@ -226,7 +223,7 @@ public class TradeController extends BaseController {
                 final QueryMerchantPayOrdersResponse queryMerchantPayOrdersResponse = new QueryMerchantPayOrdersResponse();
                 queryMerchantPayOrdersResponse.setOrderId(input.getId());
                 queryMerchantPayOrdersResponse.setAmount(input.getTradeAmount().toPlainString());
-                queryMerchantPayOrdersResponse.setPayType(input.getPayType());
+                queryMerchantPayOrdersResponse.setPayType(input.getPayChannelSign() > 0 ? EnumPayChannelSign.idOf(input.getPayChannelSign()).getPaymentChannel().getValue() : "");
                 queryMerchantPayOrdersResponse.setPayStatus(input.getStatus());
                 queryMerchantPayOrdersResponse.setPayStatusValue(EnumOrderStatus.of(input.getStatus()).getValue());
                 queryMerchantPayOrdersResponse.setDatetime(input.getCreateTime());
@@ -239,32 +236,33 @@ public class TradeController extends BaseController {
     }
 
     /**
-     * 查询商户的支付单
+     * 交易单详情
      *
+     * @param model
+     * @param id
      * @return
+     * @throws IOException
      */
-    @ResponseBody
-    @RequestMapping(value = "{orderId}")
-    public CommonResponse queryById(@PathVariable long orderId) {
-        final Optional<Order> orderOptional = this.orderService.getById(orderId);
-        if (!orderOptional.isPresent()) {
-            return CommonResponse.simpleResponse(-1, "交易订单不存在");
+    @RequestMapping(value = "/detail/{id}", method = RequestMethod.GET)
+    public String tradeDetail(final Model model, @PathVariable("id") long id) throws IOException {
+        final Optional<Order> orderOptional = this.orderService.getById(id);
+
+        if(!orderOptional.isPresent()){
+            return "/500.jsp";
+        }else{
+            final Order order = orderOptional.get();
+            model.addAttribute("totalMoney", order.getTradeAmount().toPlainString());
+            model.addAttribute("goodsName", order.getGoodsName());
+            model.addAttribute("goodsDescribe", order.getGoodsDescribe());
+            model.addAttribute("createTime", DateFormatUtil.format(order.getCreateTime(), DateFormatUtil.yyyy_MM_dd_HH_mm_ss));
+            model.addAttribute("status", EnumOrderStatus.of(order.getStatus()).getValue());
+            model.addAttribute("payType", order.getPayChannelSign() > 0 ? EnumPayChannelSign.idOf(order.getPayChannelSign()).getPaymentChannel().getValue() : "");
+            final MerchantInfo merchantInfo = this.merchantInfoService.getByAccountId(order.getPayee()).get();
+            model.addAttribute("merchantName", merchantInfo.getMerchantName());
+            model.addAttribute("orderNo", order.getOrderNo());
+            model.addAttribute("sn", order.getSn());
+            model.addAttribute("settleStatus", EnumSettleStatus.of(order.getSettleStatus()).getValue());
+            return "/tradeRecordDetail";
         }
-        final Order order = orderOptional.get();
-        final MerchantInfo merchantInfo = this.merchantInfoService.getByAccountId(order.getPayee()).get();
-        final QueryOrderByIdResponse response = new QueryOrderByIdResponse();
-        response.setOrderId(order.getId());
-        response.setAmount(order.getTradeAmount().toPlainString());
-        response.setOrderNo(order.getOrderNo());
-        response.setGoodsName(order.getGoodsName());
-        response.setGoodsDescribe(order.getGoodsDescribe());
-        response.setDateTime(order.getCreateTime());
-        response.setPayStatus(order.getStatus());
-        response.setPayStatusValue(EnumOrderStatus.of(order.getStatus()).getValue());
-        response.setPayType(order.getPayType());
-        response.setMerchantName(merchantInfo.getMerchantName());
-        response.setSettleStatus(order.getSettleStatus());
-        response.setSettleStatusValue(EnumSettleStatus.of(order.getSettleStatus()).getValue());
-        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "success", response);
     }
 }
