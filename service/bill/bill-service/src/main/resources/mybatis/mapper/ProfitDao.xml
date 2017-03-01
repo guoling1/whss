@@ -14,7 +14,7 @@
         LEFT JOIN tb_dealer c ON c.account_id = a.receipt_money_account_id
         LEFT JOIN tb_order d ON d.order_no = a.order_no
         WHERE
-        1 = 1
+        1 = 1 a.split_date <![CDATA[ <= ]]>#{splitDate}
         <if test="orderNo!=null and orderNo!=''">
             AND a.order_no = #{orderNo}
         </if>
