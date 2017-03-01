@@ -10,13 +10,25 @@ import lombok.Getter;
  */
 public enum EnumEnterNet {
     /**
+     * 1 不支持
+     */
+    UNSUPPORT(0),
+    /**
      * 1 未入网
      */
     UNENT(1),
     /**
      * 2 已入网
      */
-    HASENT(2);
+    HASENT(2),
+    /**
+     * 3 入网中
+     */
+    ENTING(3),
+    /**
+     * 4 入网失败
+     */
+    ENT_FAIL(4);
 
     @Getter
     private int id;

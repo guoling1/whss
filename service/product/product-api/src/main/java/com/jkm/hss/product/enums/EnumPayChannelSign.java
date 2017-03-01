@@ -2,6 +2,7 @@ package com.jkm.hss.product.enums;
 
 import com.google.common.collect.ImmutableMap;
 import lombok.Getter;
+import org.apache.commons.lang3.tuple.Pair;
 
 /**
  * Created by yuxiang on 2016-11-24.
@@ -146,5 +147,22 @@ public enum EnumPayChannelSign {
 
     public static boolean isExistById(final int id) {
         return ID_INIT_MAP.containsKey(id);
+    }
+
+    public static Pair<Integer,Integer> getPayChannelSign(final int id){
+        int weixin = 0;
+        int zhifubao = 0;
+        EnumUpperChannel tempEnumUpperChannel = ID_INIT_MAP.get(id).getUpperChannel();
+        for (final EnumPayChannelSign status : EnumPayChannelSign.values()) {
+            if(status.getUpperChannel().getId()==tempEnumUpperChannel.getId()){
+                if("微信".equals(status.getChannelName())){
+                    weixin = status.getId();
+                }
+                if("支付宝".equals(status.getChannelName())){
+                    zhifubao = status.getId();
+                }
+            }
+        }
+        return Pair.of(weixin,zhifubao);
     }
 }

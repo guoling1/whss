@@ -5,8 +5,14 @@
     <!-- 通用查询结果列-->
     <sql id="Base_Column_List">
         id,merchant_id,product_id,channel_type_sign,merchant_balance_type,merchant_pay_rate,merchant_withdraw_fee,
-        enter_net,status,create_time,update_time
+        enter_net,remarks,status,create_time,update_time
     </sql>
+    <update id="updateEnterNetStatus">
+        UPDATE tb_merchant_channel_rate
+        SET enter_net = #{id}
+        WHERE merchant_id = #{merchantId} AND enter_net = 3
+
+    </update>
 
     <!--根据商户编码、通道标示、产品编码查询商户费用-->
     <select id="selectByChannelTypeSignAndProductIdAndMerchantId" resultType="com.jkm.hss.merchant.entity.MerchantChannelRate">
@@ -15,6 +21,13 @@
         FROM tb_merchant_channel_rate
         WHERE
         merchant_id=#{merchantId} and product_id=#{productId} and channel_type_sign=#{channel_type_sign} and status=1
+    </select>
+    <select id="selectIngMerchantInfo" resultType="java.lang.Long">
+        SELECT
+        distinct(merchant_id)
+        FROM tb_merchant_channel_rate
+        WHERE
+        enter_net = #{entId}
     </select>
 
     <!--费率初始化-->
@@ -43,4 +56,13 @@
         )
     </insert>
 
+    <update id="batchCheck">
+        UPDATE tb_merchant_channel_rate
+        SET enter_net = 3
+        WHERE
+        channel_type_sign in
+        <foreach collection="signIdList" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </update>
 </mapper>
