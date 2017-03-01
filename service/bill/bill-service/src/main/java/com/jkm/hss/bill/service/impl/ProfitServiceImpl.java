@@ -64,6 +64,7 @@ public class ProfitServiceImpl implements ProfitService {
 
     @Override
     public int selectProfitDetailsCount(ProfitDetailsRequest req) {
-        return  profitDao.selectProfitDetailsCount(req);
+        ProfitDetailsRequest request =selectTime(req);
+        return  profitDao.selectProfitDetailsCount(request);
     }
 }

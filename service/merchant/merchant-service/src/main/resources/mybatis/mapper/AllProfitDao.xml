@@ -428,7 +428,7 @@
 	</select>
 
 	<!-- 查询公司分润详情总数 -->
-	<select id="selectCompanyProfitDetailsCount" resultType="com.jkm.hss.merchant.helper.response.CompanyProfitResponse">
+	<select id="selectCompanyProfitDetailsCount" resultType="java.lang.Integer">
 		SELECT
 		COUNT(a.`id`)
 		FROM
