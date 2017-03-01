@@ -372,10 +372,10 @@ public class AllProfitServiceImpl implements AllProfitService {
     }
 
     @Override
-    public List<CompanyProfitResponse> selectCompanyProfitDetailsCount(CompanyPrifitRequest req) {
+    public int selectCompanyProfitDetailsCount(CompanyPrifitRequest req) {
         final CompanyPrifitRequest request =getTime(req);
-        List<CompanyProfitResponse> list = allProfitDao.selectCompanyProfitDetailsCount(request);
-        return list;
+        return allProfitDao.selectCompanyProfitDetailsCount(request);
+
     }
 
     @Override

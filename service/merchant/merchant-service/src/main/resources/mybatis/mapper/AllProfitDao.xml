@@ -430,8 +430,7 @@
 	<!-- 查询公司分润详情总数 -->
 	<select id="selectCompanyProfitDetailsCount" resultType="com.jkm.hss.merchant.helper.response.CompanyProfitResponse">
 		SELECT
-		a.*, b.id AS accId,
-		c.settle_type
+		COUNT(a.`id`)
 		FROM
 		tb_split_account_record a
 		LEFT JOIN tb_account b ON a.receipt_money_account_id = b.id

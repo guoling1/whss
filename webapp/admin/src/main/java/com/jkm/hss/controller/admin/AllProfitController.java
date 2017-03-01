@@ -109,8 +109,8 @@ public class AllProfitController extends BaseController {
         final PageModel<CompanyProfitResponse> pageModel = new PageModel<CompanyProfitResponse>(req.getPageNo(), req.getPageSize());
         req.setOffset(pageModel.getFirstIndex());
         List<CompanyProfitResponse> list = allProfitService.selectCompanyProfitDetails(req);
-        List<CompanyProfitResponse> count = allProfitService.selectCompanyProfitDetailsCount(req);
-        pageModel.setCount(count.size());
+        int count = allProfitService.selectCompanyProfitDetailsCount(req);
+        pageModel.setCount(count);
         pageModel.setRecords(list);
         List<CompanyProfitResponse> list1 = new ArrayList<>();
         if(list.size()>0){
