@@ -8,9 +8,23 @@ const message = _require('message');
 const browser = _require('browser');
 browser.elastic_touch();
 
+function getQueryString(name) {
+  let reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
+  let r = window.location.search.substr(1).match(reg);
+  if (r != null) return unescape(r[2]);
+  return null;
+}
+
 // 定义变量
 let ipt = document.getElementById('ipt');
 let submit = document.getElementById('submit');
+
+let layer = document.getElementById('layer');
+let cancel = document.getElementById('cancel');
+
+cancel.addEventListener('click', function () {
+  window.location.href = '/sqb/wallet';
+});
 
 submit.addEventListener('click', function () {
   if (ipt.value.length >= 15 && ipt.value.length <= 20) {
@@ -20,8 +34,12 @@ submit.addEventListener('click', function () {
       } else {
         http.post('/wx/creditCardAuthen', {
           creditCard: ipt.value
-        }, function (data) {
-          console.log(data);
+        }, function () {
+          if (getQueryString('card')) {
+            layer.style.display = 'block';
+          } else {
+            window.location.href = '/sqb/authentication';
+          }
         })
       }
     })

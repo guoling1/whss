@@ -69,6 +69,72 @@
       border-radius: 3px;
       background-color: #4ecea2;
     }
+
+    .layer {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 99;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+    }
+
+    .space {
+      width: 95%;
+      height: auto;
+      border-radius: 3px;
+      background-color: #FFF;
+      position: absolute;
+      top: 45%;
+      left: 50%;
+      padding: 0;
+      transform: translate3d(-50%, -50%, 0);
+      overflow: hidden;
+    }
+
+    .space-title {
+      width: 100%;
+      height: 65px;
+      line-height: 65px;
+      background-color: #f4f5f8;
+      text-align: left;
+      padding-left: 15px;
+    }
+
+    .xx {
+      float: right;
+      width: 65px;
+      height: 65px;
+      background: url("../assets/xx.png") no-repeat center;
+      background-size: 18px 18px;
+    }
+
+    .space-cont {
+      padding: 0 15px 10px;
+    }
+
+    .cont-detail {
+      padding: 20px 0;
+      line-height: 40px;
+    }
+
+    .operation {
+      width: 100%;
+      height: 50px;
+    }
+
+    .layer-submit {
+      margin: auto;
+      width: 45%;
+      height: 50px;
+      line-height: 50px;
+      background-color: #7086bd;
+      font-size: 16px;
+      color: #FFF;
+      border-radius: 5px;
+    }
   </style>
 </head>
 <body>
@@ -87,6 +153,19 @@
     <div id="submit" class="submit">确定</div>
   </div>
 
+  <div class="layer" id="layer">
+    <div class="space">
+      <div class="space-title">
+        提示
+      </div>
+      <div class="space-cont">
+        <div class="cont-detail">该通道正在支付公司注册中<br>请明天再使用该通道</div>
+        <div class="operation">
+          <div class="layer-submit" id="cancel">确定</div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 
 </body>

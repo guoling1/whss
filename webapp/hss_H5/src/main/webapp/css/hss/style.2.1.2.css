@@ -1527,6 +1527,105 @@ input:focus {
   margin-left: 15px;
   line-height: 50px;
 }
+#collection .layer,
+#payment-wx .layer,
+#payment-zfb .layer {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 99;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+}
+#collection .layer .space,
+#payment-wx .layer .space,
+#payment-zfb .layer .space {
+  width: 95%;
+  height: auto;
+  border-radius: 3px;
+  background-color: #FFF;
+  position: absolute;
+  top: 45%;
+  left: 50%;
+  padding: 0;
+  transform: translate3d(-50%, -50%, 0);
+  overflow: hidden;
+}
+#collection .layer .space .space-title,
+#payment-wx .layer .space .space-title,
+#payment-zfb .layer .space .space-title {
+  width: 100%;
+  height: 65px;
+  line-height: 65px;
+  background-color: #f4f5f8;
+  text-align: left;
+  padding-left: 15px;
+}
+#collection .layer .space .space-title .xx,
+#payment-wx .layer .space .space-title .xx,
+#payment-zfb .layer .space .space-title .xx {
+  float: right;
+  width: 65px;
+  height: 65px;
+  background: url("../assets/xx.png") no-repeat center;
+  background-size: 18px 18px;
+}
+#collection .layer .space .space-cont,
+#payment-wx .layer .space .space-cont,
+#payment-zfb .layer .space .space-cont {
+  padding: 0 15px 10px;
+}
+#collection .layer .space .space-cont .cont-detail,
+#payment-wx .layer .space .space-cont .cont-detail,
+#payment-zfb .layer .space .space-cont .cont-detail {
+  padding: 20px 0;
+  line-height: 40px;
+}
+#collection .layer .space .space-cont .operation,
+#payment-wx .layer .space .space-cont .operation,
+#payment-zfb .layer .space .space-cont .operation {
+  width: 100%;
+  height: 50px;
+}
+#collection .layer .space .space-cont .operation .cancel,
+#payment-wx .layer .space .space-cont .operation .cancel,
+#payment-zfb .layer .space .space-cont .operation .cancel {
+  float: left;
+  width: 45%;
+  height: 50px;
+  line-height: 50px;
+  background-color: #FFF;
+  font-size: 16px;
+  color: #111;
+  border-radius: 5px;
+  border: 1px solid #eee;
+}
+#collection .layer .space .space-cont .operation .layer-submit,
+#payment-wx .layer .space .space-cont .operation .layer-submit,
+#payment-zfb .layer .space .space-cont .operation .layer-submit {
+  margin: auto;
+  width: 45%;
+  height: 50px;
+  line-height: 50px;
+  background-color: #7086bd;
+  font-size: 16px;
+  color: #FFF;
+  border-radius: 5px;
+}
+#collection .layer .space .space-cont .operation .submit,
+#payment-wx .layer .space .space-cont .operation .submit,
+#payment-zfb .layer .space .space-cont .operation .submit {
+  float: right;
+  width: 45%;
+  height: 50px;
+  line-height: 50px;
+  background-color: #7086bd;
+  font-size: 16px;
+  color: #FFF;
+  border-radius: 5px;
+}
 #chargeCode {
   padding: 20px 0;
   width: 100%;
@@ -2003,15 +2102,14 @@ input:focus {
 #bankList {
   width: 100%;
   height: auto;
-  background-color: #f0eff5;
   padding: 18px 10px 0;
 }
 #bankList .group {
   width: 100%;
-  height: 120px;
+  height: auto;
   border-radius: 5px;
   margin-bottom: 15px;
-  padding: 20px 0 20px 25px;
+  padding: 20px 15px 15px 25px;
 }
 #bankList .group.blue {
   background: -webkit-linear-gradient(left, #5c9ada, #4b84da);
@@ -2117,6 +2215,22 @@ input:focus {
   font-size: 12px;
   color: #FFF;
 }
+#bankList .group .top .btn {
+  border-radius: 3px;
+  float: right;
+  width: auto;
+  height: 21px;
+  line-height: 21px;
+  font-size: 12px;
+  color: #FFF;
+  padding: 0 5px;
+}
+#bankList .group .top .btn.red {
+  background-color: #c64b4b;
+}
+#bankList .group .top .btn.blue {
+  background-color: #406eae;
+}
 #bankList .group .bottom {
   overflow: hidden;
   margin-top: 5px;
@@ -2138,6 +2252,201 @@ input:focus {
   font-size: 19px;
   color: #FFF;
   font-weight: bold;
+}
+#bankList .group .bottom .s {
+  line-height: 30px;
+  float: right;
+  font-size: 12px;
+  color: #d4d4d4;
+}
+#bankList .group .small {
+  line-height: 20px;
+  text-align: left;
+  font-size: 12px;
+  color: #d4d4d4;
+}
+#branchInfo .branch .list {
+  width: 100%;
+  height: 50px;
+  line-height: 50px;
+  border-bottom: 1px solid #edeef5;
+  padding: 0 15px;
+  position: relative;
+}
+#branchInfo .branch .list .name {
+  text-align: left;
+  min-width: 75px;
+  float: left;
+  font-size: 15px;
+  color: #5a5a5a;
+  margin-right: 20px;
+}
+#branchInfo .branch .list .ipt {
+  float: left;
+  height: 49px;
+  line-height: 49px;
+  font-size: 15px;
+  width: calc(100% - 100px);
+}
+#branchInfo .branch .list .layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 99;
+  background-color: #FFF;
+  display: none;
+}
+#branchInfo .branch .list .layer .name {
+  padding: 0 15px;
+  text-align: left;
+  min-width: 75px;
+  float: left;
+  font-size: 15px;
+  color: #5a5a5a;
+  width: 100%;
+  height: 50px;
+  border-top: 1px solid #efefef;
+  box-shadow: 0 3px 8px #e8eaf0;
+}
+#branchInfo .branch .list .layer .match {
+  padding: 0 15px;
+  width: 100%;
+  height: 50px;
+  border-top: 1px solid #efefef;
+  box-shadow: 0 3px 8px #e8eaf0;
+}
+#branchInfo .branch .list .layer .match .match_name {
+  text-align: left;
+  min-width: 75px;
+  float: left;
+  font-size: 15px;
+  color: #5a5a5a;
+  margin-right: 20px;
+}
+#branchInfo .branch .list .layer .match .match_ipt {
+  float: left;
+  height: 49px;
+  line-height: 49px;
+  font-size: 15px;
+}
+#branchInfo .branch .list .search.top {
+  margin-top: 50px;
+}
+#branchInfo .branch .list .search .search-result {
+  width: 100%;
+  height: 50px;
+  line-height: 50px;
+  border-bottom: 1px solid #efefef;
+  padding: 0 15px;
+}
+#branchInfo .branch .list .search .search-result div {
+  height: 49px;
+  display: inline-block;
+  float: left;
+  text-align: left;
+  font-size: 14px;
+  color: #5a5a5a;
+  margin-right: 20px;
+}
+#branchInfo .branch .list .search .search-result div.choose {
+  color: #4ecea2;
+  border-bottom: 2px solid #4ecea2;
+}
+#branchInfo .branch .list .search .search-list {
+  width: 100%;
+  overflow: auto;
+}
+#branchInfo .branch .list .search .search-list div {
+  width: 100%;
+  height: 50px;
+  line-height: 50px;
+  font-size: 14px;
+  color: #5a5a5a;
+  text-align: left;
+  padding: 0 15px;
+}
+#branchInfo .branch .list .search .search-list div.t {
+  background: url("../../assets/choose.png") no-repeat center right 15px;
+  background-size: 8px 8px;
+}
+#branchInfo .branch .small {
+  padding: 10px 15px;
+  text-align: left;
+  font-size: 12px;
+  color: #d0d0d0;
+}
+#branchInfo .branch .submit-space {
+  width: 100%;
+  margin-top: 20px;
+  padding: 0 15px;
+}
+#branchInfo .branch .submit-space .submit {
+  width: 100%;
+  height: 45px;
+  line-height: 45px;
+  font-size: 16px;
+  color: #FFF;
+  border-radius: 3px;
+  background-color: #4ecea2;
+}
+#branchInfo .layer {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 99;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+}
+#branchInfo .layer .space {
+  width: 95%;
+  height: auto;
+  border-radius: 3px;
+  background-color: #FFF;
+  position: absolute;
+  top: 45%;
+  left: 50%;
+  padding: 0;
+  transform: translate3d(-50%, -50%, 0);
+  overflow: hidden;
+}
+#branchInfo .layer .space .space-title {
+  width: 100%;
+  height: 65px;
+  line-height: 65px;
+  background-color: #f4f5f8;
+  text-align: left;
+  padding-left: 15px;
+}
+#branchInfo .layer .space .space-title .xx {
+  float: right;
+  width: 65px;
+  height: 65px;
+  background: url("../assets/xx.png") no-repeat center;
+  background-size: 18px 18px;
+}
+#branchInfo .layer .space .space-cont {
+  padding: 0 15px 10px;
+}
+#branchInfo .layer .space .space-cont .cont-detail {
+  padding: 20px 0;
+  line-height: 40px;
+}
+#branchInfo .layer .space .space-cont .operation {
+  width: 100%;
+  height: 50px;
+}
+#branchInfo .layer .space .space-cont .operation .submit {
+  margin: auto;
+  width: 45%;
+  height: 50px;
+  line-height: 50px;
+  background-color: #7086bd;
+  font-size: 16px;
+  color: #FFF;
+  border-radius: 5px;
 }
 #promote {
   width: 100%;

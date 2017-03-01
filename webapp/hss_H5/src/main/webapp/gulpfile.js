@@ -50,7 +50,7 @@ gulp.task('less-hss', function () {
 });
 
 gulp.task('replace-hss-calc', ['build-hss'], function () {
-  return gulp.src('css/hss/style.2.1.1.css')
+  return gulp.src('css/hss/style.2.1.2.css')
     .pipe(replace('calc(0%)', 'calc(100% - 100px)'))
     .pipe(gulp.dest('css/hss'));
 });

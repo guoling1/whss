@@ -30,6 +30,27 @@ let Provinces = false;
 let Citys = false;
 let Countrys = false;
 
+let layer = document.getElementById('layer');
+let cancel = document.getElementById('cancel');
+
+cancel.addEventListener('click', function () {
+  window.location.href = '/sqb/bank?card=true';
+});
+
+let layerC = document.getElementById('layerC');
+let cancelcC = document.getElementById('cancelC');
+
+cancelcC.addEventListener('click', function () {
+  window.location.href = '/sqb/wallet';
+});
+
+function getQueryString(name) {
+  let reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
+  let r = window.location.search.substr(1).match(reg);
+  if (r != null) return unescape(r[2]);
+  return null;
+}
+
 // 处理 初始化 的过程
 if (pageData.provinceCode != '' &&
   pageData.provinceName != '' &&
@@ -43,6 +64,7 @@ if (pageData.provinceCode != '' &&
   branch.value = pageData.branchName;
 }
 
+
 submit.onclick = function () {
   http.post('/wx/branchInfo', {
     branchCode: pageData.branchCode,
@@ -53,8 +75,14 @@ submit.onclick = function () {
     cityName: pageData.cityName,
     countyCode: pageData.countyCode,
     countyName: pageData.countyName
-  }, function (data) {
-    console.log(data);
+  }, function () {
+    if (getQueryString('card')) {
+      layerC.style.display = 'block';
+    } else if (getQueryString('branch')) {
+      layer.style.display = 'block';
+    } else {
+      window.location.href = '/sqb/bank';
+    }
   })
 };
 
