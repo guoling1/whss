@@ -45,7 +45,7 @@
         basic_trade_rate = #{basicTradeRate},
         basic_withdraw_fee = #{basicWithdrawFee},
         basic_balance_type = #{basicBalanceType},
-        basic_settle_type = #{},
+        basic_settle_type = #{basicSettleType},
         status = #{status}
         WHERE id = #{id}
     </update>
