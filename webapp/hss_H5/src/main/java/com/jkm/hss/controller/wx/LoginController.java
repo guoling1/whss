@@ -976,43 +976,6 @@ public class LoginController extends BaseController {
     }
 
     /**
-     * 交易单详情
-     * @param request
-     * @param response
-     * @param model
-     * @param id
-     * @return
-     * @throws IOException
-     */
-    @RequestMapping(value = "/tradeDetail/{id}", method = RequestMethod.GET)
-    public String tradeDetail(final HttpServletRequest request, final HttpServletResponse response,final Model model,@PathVariable("id") long id) throws IOException {
-//        Optional<OrderRecord> orderRecordOptional = orderRecordService.selectByPrimaryKey(id);
-        final Optional<Order> orderOptional = this.orderService.getById(id);
-
-        if(!orderOptional.isPresent()){
-            return "/500";
-        }else{
-//            DecimalFormat decimalFormat=new DecimalFormat("0.00");//构造方法的字符格式这里如果小数不足2位,会以0补足.
-            final Order order = orderOptional.get();
-            model.addAttribute("totalMoney", order.getTradeAmount().toPlainString());
-//            model.addAttribute("realMoney", decimalFormat.format(orderRecord.getRealFee()));
-//            SimpleDateFormat time=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            model.addAttribute("goodsName", order.getGoodsName());
-            model.addAttribute("goodsDescribe", order.getGoodsDescribe());
-            model.addAttribute("createTime", DateFormatUtil.format(order.getCreateTime(), DateFormatUtil.yyyy_MM_dd_HH_mm_ss));
-//            Pair<String,String> pair = payOf(0,orderRecord.getPayResult());
-            model.addAttribute("status", EnumOrderStatus.of(order.getStatus()).getValue());
-            model.addAttribute("payType", StringUtils.isEmpty(order.getPayType()) ? "" : EnumPayChannelSign.codeOf(order.getPayType()));
-            final MerchantInfo merchantInfo = this.merchantInfoService.getByAccountId(order.getPayee()).get();
-            model.addAttribute("merchantName", merchantInfo.getMerchantName());
-            model.addAttribute("orderNo", order.getOrderNo());
-            model.addAttribute("sn", NumberUtils.isNumber(order.getRemark()) ? order.getRemark() : "");
-            model.addAttribute("settleStatus", com.jkm.hss.bill.enums.EnumSettleStatus.of(order.getSettleStatus()).getValue());
-            return "/tradeRecordDetail";
-        }
-    }
-
-    /**
      * 登录页面
      * @param request
      * @param response
