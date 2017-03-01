@@ -168,8 +168,15 @@ public class AccountController extends BaseController{
                 return CommonResponse.simpleResponse(-1, pair.getRight());
             }
 
-            if ( (new BigDecimal(withdrawRequest.getAmount()).compareTo( new BigDecimal("1.1")) == -1)){
-                return CommonResponse.simpleResponse(-1, "提现金额不得小于500");
+            if ( (new BigDecimal(withdrawRequest.getAmount()).compareTo( new BigDecimal("2")) == -1)){
+                return CommonResponse.simpleResponse(-1, "提现金额不得小于2元");
+            }
+            // 提现金额 2 —— 500 手续费2元 500以上不收手续费
+            final BigDecimal withdrawFee;
+            if ( (new BigDecimal(withdrawRequest.getAmount()).compareTo( new BigDecimal("500")) == -1)){
+                withdrawFee = new BigDecimal(2);
+            }else{
+                withdrawFee = new BigDecimal(0);
             }
 
             final Optional<Account> accountOptional = this.accountService.getById(dealer.getAccountId());
@@ -186,7 +193,7 @@ public class AccountController extends BaseController{
                 return CommonResponse.simpleResponse(-1, "提现方式错误");
             }
             final Pair<Integer, String> withdraw = this.dealerWithdrawService.withdraw(account.getId(), withdrawRequest.getAmount(),
-                    withdrawRequest.getChannel(), "dealerWithdraw");
+                    withdrawRequest.getChannel(), "dealerWithdraw", withdrawFee);
             if (0 == withdraw.getLeft()) {
                 return CommonResponse.simpleResponse(1, "提现受理成功");
             }

@@ -55,7 +55,7 @@ public interface OrderService {
      * @param settleType
      * @return
      */
-    long createDealerPlayMoneyOrder(Dealer dealer, BigDecimal amount, String appId, int channel, String settleType);
+    long createDealerPlayMoneyOrder(Dealer dealer, BigDecimal amount, String appId, int channel, String settleType, BigDecimal withdrawFee);
 
     /**
      * 更新
