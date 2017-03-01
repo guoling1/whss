@@ -8,6 +8,7 @@ import com.jkm.hss.helper.request.ProductAddRequest;
 import com.jkm.hss.helper.response.ProductListResponse;
 import com.jkm.hss.product.entity.Product;
 import com.jkm.hss.product.entity.ProductChannelDetail;
+import com.jkm.hss.product.enums.EnumPayChannelSign;
 import com.jkm.hss.product.enums.EnumProductChannelDetailStatus;
 import com.jkm.hss.product.enums.EnumProductStatus;
 import com.jkm.hss.product.enums.EnumProductType;
@@ -73,6 +74,7 @@ public class ProductController extends BaseController {
                 detail.setProductMerchantPayRate(detail.getProductMerchantPayRate().divide(new BigDecimal(100)));
                 detail.setProductId(product.getId());
                 detail.setStatus(EnumProductChannelDetailStatus.USEING.getId());
+                detail.setChannelType(EnumPayChannelSign.idOf(detail.getChannelTypeSign()).getPaymentChannel().getId());
                 this.productChannelDetailService.init(detail);
             }
             return CommonResponse.simpleResponse(1,"success");
@@ -143,6 +145,7 @@ public class ProductController extends BaseController {
                 detail.setProductTradeRate(detail.getProductTradeRate().divide(new BigDecimal(100)));
                 detail.setProductMerchantPayRate(detail.getProductMerchantPayRate().divide(new BigDecimal(100)));
                 detail.setProductId(request.getProductId());
+                detail.setChannelType(EnumPayChannelSign.idOf(detail.getChannelTypeSign()).getPaymentChannel().getId());
                 this.productChannelDetailService.update(detail);
             }
             return  CommonResponse.simpleResponse(1, "success");

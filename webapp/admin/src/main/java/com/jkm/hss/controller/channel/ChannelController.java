@@ -86,7 +86,6 @@ public class ChannelController extends BaseController {
                 for (int i=0;i<list.size();i++){
                     BigDecimal basicTradeRate = list.get(i).getBasicTradeRate();
                     BigDecimal res = new BigDecimal(100);
-//                    basicTradeRate.multiply(res).doubleValue();
                     list.get(i).setBasicTradeRate(basicTradeRate.multiply(res));
                 }
             }
@@ -106,6 +105,7 @@ public class ChannelController extends BaseController {
     public CommonResponse update(@RequestBody final BasicChannel request) {
         try{
             final BasicChannel basicChannel = this.basicChannelService.selectById(request.getId());
+            request.setBasicTradeRate(request.getBasicTradeRate().divide(new BigDecimal(100)));
             request.setChannelTypeSign(basicChannel.getChannelTypeSign());
             this.basicChannelService.update(request);
             return  CommonResponse.simpleResponse(1, "success");

@@ -123,4 +123,15 @@ public class BasicChannelServiceImpl implements BasicChannelService {
         log.error("支付方式[{}]，异常", payType);
         return null;
     }
+//    @Override
+//    public List<BasicChannel> selectListChannel() {
+//        return this.basicChannelDao.selectListChannel();
+//    }
+
+//    @Override
+//    public BasicChannel selectChannel(int channelTypeSign) {
+//        return this.basicChannelDao.selectChannel(channelTypeSign);
+//    }
+
+
 }

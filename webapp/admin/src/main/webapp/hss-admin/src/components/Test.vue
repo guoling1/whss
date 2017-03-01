@@ -1194,223 +1194,6 @@
   }
 </style>-->
 
-<!--通道列表-->
-<!--<template>
-  <div id="passList">
-    <div class="col-md-12">
-      <div class="box" style="margin-top:15px;overflow: hidden">
-        <div class="box-header">
-          <h3 class="box-title">通道列表</h3>
-          <router-link to="/admin/record/passAdd" class="pull-right btn btn-primary" style="margin-left: 20px">新增通道
-          </router-link>
-        </div>
-        <div class="box-body">
-          &lt;!&ndash;筛选&ndash;&gt;
-          <ul>
-            <li class="same">
-              <label>通道名称:</label>
-              <el-input style="width: 130px" v-model="query.orderNo" placeholder="请输入内容" size="small"></el-input>
-            </li>
-            <li class="same">
-              <label>通道编码:</label>
-              <el-input style="width: 130px" v-model="query.merchantName" placeholder="请输入内容" size="small"></el-input>
-            </li>
-            <li class="same">
-              <div class="btn btn-primary" @click="search">筛选</div>
-            </li>
-          </ul>
-          &lt;!&ndash;表格&ndash;&gt;
-          <el-table v-loading.body="loading" height="583" style="font-size: 12px;margin-bottom:15px" :data="records" border>
-            <el-table-column label="通道名称" min-width="112">
-              <template scope="scope">
-                <router-link :to="{path:'/admin/record/newDealDet',query:{orderNo:records[scope.$index].orderNo}}"
-                             type="text" size="small">{{records[scope.$index].sn}}
-                </router-link>
-              </template>
-            </el-table-column>
-            <el-table-column label="通道编码" min-width="112">
-              <template scope="scope">
-                <span class="td" :data-clipboard-text="records[scope.$index].sn" type="text" size="small"
-                      style="cursor: pointer" title="点击复制">{{records[scope.$index].sn|changeHide}}</span>
-              </template>
-            </el-table-column>
-            <el-table-column prop="createTime" label="收单机构" width="162"></el-table-column>
-            <el-table-column prop="merchantName" label="渠道来源" min-width="90"></el-table-column>
-            <el-table-column prop="proxyName" label="支付费率" min-width="90"></el-table-column>
-            <el-table-column prop="proxyName1" :formatter="changeTime" label="结算时间" min-width="90"></el-table-column>
-            <el-table-column prop="tradeAmount" :formatter="changeNum" label="结算类型" min-width="90"></el-table-column>
-            <el-table-column prop="tradeAmount" :formatter="changeNum" label="支付方式" min-width="90"></el-table-column>
-            <el-table-column prop="payRate" label="备注信息" min-width="90" align="right"></el-table-column>
-          </el-table>
-          </el-table>
-          &lt;!&ndash;分页&ndash;&gt;
-          <div class="block" style="text-align: right">
-            <el-pagination @size-change="handleSizeChange"
-                           @current-change="handleCurrentChange"
-                           :current-page="query.page"
-                           :page-sizes="[10, 20, 50]"
-                           :page-size="query.size"
-                           layout="total, sizes, prev, pager, next, jumper"
-                           :total="count">
-            </el-pagination>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</template>
-
-<script lang="babel">
-  import Clipboard from "clipboard"
-  export default{
-    name: 'passList',
-    data(){
-      return {
-        query: {
-          page: 1,
-          size: 10,
-          orderNo: '',
-          merchantName: '',
-          startTime: '',
-          endTime: '',
-          lessTotalFee: '',
-          moreTotalFee: '',
-          status: '',
-          settleStatus: '',
-          payType: '',
-          proxyName: '',
-          proxyName1: ''
-        },
-        date: '',
-        records: [],
-        count: 0,
-        total: 0,
-        loading: true,
-        url: ''
-      }
-    },
-    created: function () {
-      var clipboard = new Clipboard('.td');
-      //复制成功执行的回调，可选
-      clipboard.on('success', (e) => {
-        this.$message({
-          showClose: true,
-          message: "复制成功  内容为：" + e.text,
-          type: 'success'
-        });
-      });
-      this.getData()
-    },
-    methods: {
-      getData: function () {
-        this.loading = true;
-        this.$http.post('/admin/queryOrder/orderList', this.$data.query)
-          .then(function (res) {
-            this.loading = false;
-            this.$data.records = res.data.records;
-            this.$data.total = res.data.totalPage;
-            this.$data.url = res.data.ext;
-            this.$data.count = res.data.count;
-            for (var i = 0; i < this.records.length; i++) {
-              if (this.records[i].payRate != null) {
-                this.records[i].payRate = (parseFloat(this.records[i].payRate) * 100).toFixed(2) + '%';
-              }
-            }
-          }, function (err) {
-            this.$data.loading = false;
-            this.$message({
-              showClose: true,
-              message: err.statusMessage,
-              type: 'error'
-            });
-          })
-      },
-      //格式化hss创建时间
-      changeTime: function (row, column) {
-        var val = row.createTime;
-        if (val == '' || val == null) {
-          return ''
-        } else {
-          val = new Date(val)
-          var year = val.getFullYear();
-          var month = val.getMonth() + 1;
-          var date = val.getDate();
-          var hour = val.getHours();
-          var minute = val.getMinutes();
-          var second = val.getSeconds();
-
-          function tod(a) {
-            if (a < 10) {
-              a = "0" + a
-            }
-            return a;
-          }
-
-          return year + "-" + tod(month) + "-" + tod(date) + " " + tod(hour) + ":" + tod(minute) + ":" + tod(second);
-        }
-      },
-      changeNum: function (row, column) {
-        var val = row.tradeAmount;
-        return parseFloat(val).toFixed(2);
-      },
-      search(){
-        this.$data.query.page = 1;
-        this.getData()
-      },
-      //每页条数改变
-      handleSizeChange(val) {
-        this.$data.query.page = 1;
-        this.$data.query.size = val;
-        this.getData()
-      },
-      //当前页改变时
-      handleCurrentChange(val) {
-        this.$data.query.page = val;
-        this.getData()
-      },
-    },
-  }
-</script>
-
-<style scoped lang="less" rel="stylesheet/less">
-  ul {
-    padding: 0;
-  }
-
-  .same {
-    list-style: none;
-    display: inline-block;
-    margin: 0 15px 15px 0;
-  }
-
-  .btn {
-    font-size: 12px;
-  }
-
-  .price {
-    display: inline-block;
-    width: 210px;
-    height: 30px;
-    border-radius: 4px;
-    border-color: #bfcbd9;
-    position: relative;
-    top: 6px;
-    input {
-      border: none;
-      display: inline-block;
-      width: 45%;
-      height: 25px;
-      position: relative;
-      top: -3px;
-    }
-  }
-
-  .price:hover {
-    border-color: #20a0ff;
-  }
-
-</style>-->
-
 <!--新增产品-->
 <template lang="html">
   <div id="productAdd">
@@ -1457,11 +1240,25 @@
                 <div class="alignRight">添加通道:</div>
               </el-col>
               <el-col :span="12">
-                <div class="grid-content bg-purple-light">
+                <div class="grid-content bg-purple-light" style="width: 80%">
                   <el-table :data="tableData" @selection-change="handleSelectionChange" border v-if="tableHas">
-                    <el-table-column property="date" label="日期" width="150"></el-table-column>
-                    <el-table-column property="name" label="姓名" width="200"></el-table-column>
-                    <el-table-column property="address" label="地址"></el-table-column>
+                    <el-table-column label="通道名称">
+                      <template scope="scope">
+                        <span >{{tableData[scope.$index].channelName}}</span>
+                      </template>
+                    </el-table-column>
+                    <el-table-column prop="channelCode" label="通道编码"></el-table-column>
+                    <el-table-column prop="productTradeRate" label="支付结算手续费"></el-table-column>
+                    <el-table-column prop="channelSource" label="结算时间"></el-table-column>
+                    <el-table-column label="支付费率">
+                      <template scope="scope">
+                        <span>{{gridData[scope.$index].productWithdrawFee}}%</span>
+                      </template>
+                    </el-table-column>
+                    <el-table-column prop="basicBalanceType" label="提现结算费"></el-table-column>
+                    <el-table-column prop="basicBalanceType" label="产品支付手续费"></el-table-column>
+                    <el-table-column prop="basicBalanceType" label="商户提现手续费"></el-table-column>
+                    <el-table-column prop="basicBalanceType" label="操作"></el-table-column>
                   </el-table>
                   <span class="btn btn-primary" style="margin: 15px 0" @click="passSelect">添加通道</span>
                 </div>
@@ -1472,11 +1269,38 @@
             <el-dialog title="选择通道" v-model="dialogTableVisible">
               <el-table :data="gridData" @selection-change="handleSelectionChange" border>
                 <el-table-column type="selection" width="55"></el-table-column>
-                <el-table-column property="address" label="通道名称"></el-table-column>
+                <el-table-column label="通道名称">
+                  <template scope="scope">
+                    <span >{{gridData[scope.$index].channelName}}</span>
+                  </template>
+                </el-table-column>
+                <el-table-column prop="channelCode" label="通道编码"></el-table-column>
+                <el-table-column prop="thirdCompany" label="收单机构"></el-table-column>
+                <el-table-column prop="channelSource" label="渠道来源"></el-table-column>
+                <el-table-column label="支付费率">
+                  <template scope="scope">
+                    <span>{{gridData[scope.$index].basicTradeRate}}%</span>
+                  </template>
+                </el-table-column>
+                <el-table-column prop="basicBalanceType" label="结算时间"></el-table-column>
+                <el-table-column label="结算类型">
+                  <template scope="scope">
+                    <span v-if="gridData[scope.$index].basicSettleType=='AUTO'">通道自动结算</span>
+                    <span v-if="gridData[scope.$index].basicSettleType=='SELF'">自主打款结算</span>
+                  </template>
+                </el-table-column>
+                <el-table-column prop="supportWay" label="支付方式">
+                  <template scope="scope">
+                    <span v-if="gridData[scope.$index].supportWay=='1'">公众号</span>
+                    <span v-if="gridData[scope.$index].supportWay=='2'">扫码</span>
+                    <span v-if="gridData[scope.$index].supportWay=='3'">公众号、扫码</span>
+                  </template>
+                </el-table-column>
+                <el-table-column prop="remarks" label="备注信息"></el-table-column>
               </el-table>
               <div slot="footer" class="dialog-footer">
                 <el-button @click="dialogTableVisible = false">取 消</el-button>
-                <el-button type="primary" @click="dialogTableVisible = false">确 定</el-button>
+                <el-button type="primary" @click="select">确 定</el-button>
               </div>
             </el-dialog>
 
@@ -1591,7 +1415,7 @@
           bankReserveMobile: '',
           idCard: '',
         },
-        tableData:[],
+        channels:[],
         id: 0,
         isShow: true,
         productId: ''
@@ -1617,22 +1441,26 @@
     methods: {
       // 添加通道
       passSelect: function () {
-        this.$http.get('/admin/product/listChannel')
-          .then(res => {
-            this.gridData = res.data;
+        this.dialogTableVisible = true;
+        this.$http.post('/admin/channel/list')
+          .then(function (res) {
+            this.loading = false;
             this.dialogTableVisible = true;
-          })
-          .catch(err =>{
+            this.$data.gridData = res.data;
+          }, function (err) {
+            this.$data.loading = false;
             this.$message({
               showClose: true,
               message: err.statusMessage,
               type: 'error'
-            })
+            });
           })
       },
       handleSelectionChange(val) {
         this.multipleSelection = val;
-        console.log(this.multipleSelection)
+      },
+      select: function () {
+        this.tableData=this.tableData.concat(this.multipleSelection);
       },
       //修改密码
       resetPw:function() {

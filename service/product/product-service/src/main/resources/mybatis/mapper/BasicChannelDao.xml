@@ -4,6 +4,7 @@
     <insert id="init" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO tb_basic_channel
         (account_id,
+        channel_code,
         channel_name,
         channel_type_sign,
         support_way,
@@ -19,6 +20,7 @@
         status
         )VALUES(
         #{accountId},
+        #{channelCode},
         #{channelName},
         #{channelTypeSign},
         #{supportWay},
@@ -49,7 +51,9 @@
         limit_amount=#{limitAmount},
         is_need=#{isNeed},
         channel_company=#{channelCompany},
-        status = #{status}
+        status = #{status},
+        channel_code = #{channelCode},
+        remarks = #{remarks}
         WHERE id = #{id}
     </update>
     <select id="selectByChannelTypeSign" resultType="com.jkm.hss.product.entity.BasicChannel">
