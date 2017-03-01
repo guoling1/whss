@@ -59,4 +59,17 @@ public interface BasicChannelService {
      * @return
      */
     String selectCodeByChannelSign(int channelSign, EnumMerchantPayType type);
+
+    /**
+     * 查询产品中添加通道列表
+     * @return
+     */
+//    List<BasicChannel> selectListChannel();
+
+    /**
+     * 查询通道
+     * @param channelTypeSign
+     * @return
+     */
+//    BasicChannel selectChannel(int channelTypeSign);
 }
