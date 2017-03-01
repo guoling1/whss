@@ -105,5 +105,15 @@ public class BasicChannelServiceImpl implements BasicChannelService {
         return "";
     }
 
+//    @Override
+//    public List<BasicChannel> selectListChannel() {
+//        return this.basicChannelDao.selectListChannel();
+//    }
+
+//    @Override
+//    public BasicChannel selectChannel(int channelTypeSign) {
+//        return this.basicChannelDao.selectChannel(channelTypeSign);
+//    }
+
 
 }

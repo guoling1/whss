@@ -3,6 +3,7 @@ package com.jkm.hss.merchant.service.impl;
 import com.google.common.base.Optional;
 import com.jkm.base.common.entity.CommonResponse;
 import com.jkm.hss.merchant.dao.MerchantChannelRateDao;
+import com.jkm.hss.merchant.dao.MerchantInfoDao;
 import com.jkm.hss.merchant.entity.MerchantChannelRate;
 import com.jkm.hss.merchant.entity.MerchantInfo;
 import com.jkm.hss.merchant.enums.EnumCheck;
@@ -10,6 +11,7 @@ import com.jkm.hss.merchant.enums.EnumEnterNet;
 import com.jkm.hss.merchant.helper.MerchantConsts;
 import com.jkm.hss.merchant.helper.SmPost;
 import com.jkm.hss.merchant.helper.request.MerchantChannelRateRequest;
+import com.jkm.hss.merchant.helper.request.MerchantEnterInRequest;
 import com.jkm.hss.merchant.helper.request.MerchantGetRateRequest;
 import com.jkm.hss.merchant.service.MerchantChannelRateService;
 import com.jkm.hss.product.enums.EnumPayChannelSign;
@@ -19,6 +21,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.*;
 
 /**
@@ -29,7 +32,8 @@ import java.util.*;
 public class MerchantChannelRateServiceImpl implements MerchantChannelRateService {
     @Autowired
     private MerchantChannelRateDao merchantChannelRateDao;
-
+    @Autowired
+    private MerchantInfoDao merchantInfoDao;
     /**
      * 费率初始化
      *
@@ -73,15 +77,6 @@ public class MerchantChannelRateServiceImpl implements MerchantChannelRateServic
 
     }
 
-    /**
-     * 更新商户入网状态
-     *
-     * @param signIdList
-     */
-    @Override
-    public int batchCheck(List<Integer> signIdList) {
-        return merchantChannelRateDao.batchCheck(signIdList);
-    }
 
     /**
      * {@inheritDoc}
@@ -104,67 +99,84 @@ public class MerchantChannelRateServiceImpl implements MerchantChannelRateServic
         return Optional.fromNullable(this.merchantChannelRateDao.selectByThirdCompanyAndProductIdAndMerchantId(merchantGetRateRequest));
     }
 
-//    @Override
-//    public Pair<Integer,String> enterInterNet(MerchantInfo merchantInfo) {
-//        merchantChannelRateDao.selectByChannelTypeSignAndProductIdAndMerchantId();
-//        Pair<Integer,Integer> payChannelSign = EnumPayChannelSign.getPayChannelSign(checkMerchantInfoRequest.getChannelTypeSign());
-//
-//        MerchantChannelRateRequest merchantChannelRateRequest1 = new MerchantChannelRateRequest();
-//        merchantChannelRateRequest1.setChannelTypeSign(payChannelSign.getLeft());
-//        merchantChannelRateRequest1.setMerchantId(merchantInfo.get().getId());
-//        merchantChannelRateRequest1.setProductId(merchantInfo.get().getProductId());
-//        Optional<MerchantChannelRate> weixinMerchantChannelRateOptional = merchantChannelRateService.selectByChannelTypeSignAndProductIdAndMerchantId(merchantChannelRateRequest1);
-//        if(!weixinMerchantChannelRateOptional.isPresent()){
-//            return CommonResponse.simpleResponse(-1, "微信通道"+payChannelSign.getLeft()+"不存在");
-//        }
-//
-//        MerchantChannelRateRequest merchantChannelRateRequest2 = new MerchantChannelRateRequest();
-//        merchantChannelRateRequest2.setChannelTypeSign(payChannelSign.getRight());
-//        merchantChannelRateRequest2.setMerchantId(merchantInfo.get().getId());
-//        merchantChannelRateRequest2.setProductId(merchantInfo.get().getProductId());
-//        Optional<MerchantChannelRate> zhifubaoMerchantChannelRateOptional = merchantChannelRateService.selectByChannelTypeSignAndProductIdAndMerchantId(merchantChannelRateRequest2);
-//        if(!zhifubaoMerchantChannelRateOptional.isPresent()){
-//            return CommonResponse.simpleResponse(-1, "微信通道"+payChannelSign.getRight()+"不存在");
-//        }
-//
-//        merchantChannelRateOptional.get().getChannelTypeSign();
-//        Map<String, String> paramsMap = new HashMap<String, String>();
-//        paramsMap.put("merchantName", merchantInfo.get().getMerchantName());
-//        paramsMap.put("merchantNo", merchantInfo.get().getMarkCode());
-//        paramsMap.put("address", merchantInfo.get().getAddress());
-//        paramsMap.put("personName", merchantInfo.get().getName());
-//        paramsMap.put("idCard", merchantInfo.get().getIdentity());
-//        paramsMap.put("bankNo", merchantInfo.get().getBankNo());
-//
-//        paramsMap.put("wxRate", weixinMerchantChannelRateOptional.get().getMerchantPayRate().toString());
-//        paramsMap.put("zfbRate", zhifubaoMerchantChannelRateOptional.get().getMerchantPayRate().toString());
-//        paramsMap.put("bankName", merchantInfo.get().getBankName());
-//        paramsMap.put("prov", merchantInfo.get().getProvinceName());
-//        paramsMap.put("city", merchantInfo.get().getCityName());     //后台通知url
-//        paramsMap.put("country", merchantInfo.get().getCountyName());
-//        paramsMap.put("bankBranch", merchantInfo.get().getBranchName());
-//        paramsMap.put("bankCode", merchantInfo.get().getBranchCode());
-//        paramsMap.put("creditCardNo", merchantInfo.get().getCreditCard());
-//        String result = SmPost.post(MerchantConsts.getMerchantConfig().merchantIN(), paramsMap);
-//        if (result != null && !"".equals(result)) {
-//            JSONObject jo = JSONObject.fromObject(result);
-//            if (jo.getInt("code") == 1) {
-//                List<Integer> signIdList = new ArrayList<Integer>();
-//                merchantChannelRateService.batchCheck(signIdList);
-//                merchantChannelRateResponse.setIsBranch(EnumCheck.HAS.getId());
-//                merchantChannelRateResponse.setIsCreditCard(EnumCheck.HAS.getId());
-//                merchantChannelRateResponse.setIsNet(EnumEnterNet.ENTING.getId());
-//                merchantChannelRateResponse.setMessage("商户入网中");
-//                return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "校验成功", merchantChannelRateResponse);
-//            } else {
-//                merchantChannelRateResponse.setIsBranch(EnumCheck.HAS.getId());
-//                merchantChannelRateResponse.setIsCreditCard(EnumCheck.HAS.getId());
-//                merchantChannelRateResponse.setIsNet(EnumEnterNet.ENT_FAIL.getId());
-//                merchantChannelRateResponse.setMessage(jo.getString("msg"));
-//                return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, jo.getString("msg"), merchantChannelRateResponse);
-//            }
-//        } else {
-//            return CommonResponse.simpleResponse(-1, "入网异常");
-//        }
-//    }
+    /**
+     * 根据商户编码、通道标示、产品编码查询商户费用
+     *
+     * @param merchantEnterInRequest
+     * @return
+     */
+    @Override
+    public List<MerchantChannelRate> selectByChannelCompanyAndProductIdAndMerchantId(MerchantEnterInRequest merchantEnterInRequest) {
+        return this.merchantChannelRateDao.selectByChannelCompanyAndProductIdAndMerchantId(merchantEnterInRequest);
+    }
+    /**
+     * 商户入网
+     */
+    @Override
+    public void enterInterNet(long productId,long merchantId,String channelCompany) {
+        MerchantEnterInRequest merchantEnterInRequest = new MerchantEnterInRequest();
+        merchantEnterInRequest.setProductId(productId);
+        merchantEnterInRequest.setMerchantId(merchantId);
+        merchantEnterInRequest.setChannelCompany(channelCompany);
+        List<MerchantChannelRate> list = this.merchantChannelRateDao.selectByChannelCompanyAndProductIdAndMerchantId(merchantEnterInRequest);
+        if(list.size()>0){
+            BigDecimal weixinMerchantPayRate=null;
+            BigDecimal zhifubaoMerchantPayRate=null;
+            List<Integer> signIdList = new ArrayList<Integer>();
+            for(int i=0;i<list.size();i++){
+                if(list.get(i).getEnterNet()==EnumEnterNet.UNENT.getId()||list.get(i).getEnterNet()==EnumEnterNet.ENT_FAIL.getId()){
+                    if("微信".equals(list.get(i).getThirdCompany())){
+                        weixinMerchantPayRate = list.get(i).getMerchantPayRate();
+                        signIdList.add(list.get(i).getChannelTypeSign());
+                    }
+                    if("支付宝".equals(list.get(i).getThirdCompany())){
+                        zhifubaoMerchantPayRate = list.get(i).getMerchantPayRate();
+                        signIdList.add(list.get(i).getChannelTypeSign());
+                    }
+                }
+            }
+            if(weixinMerchantPayRate!=null&&zhifubaoMerchantPayRate!=null){
+                MerchantInfo merchantInfo = merchantInfoDao.selectById(merchantId);
+                if(merchantInfo!=null){
+                    if(weixinMerchantPayRate!=null&&zhifubaoMerchantPayRate!=null){
+                        Map<String, String> paramsMap = new HashMap<String, String>();
+                        paramsMap.put("merchantName", merchantInfo.getMerchantName());
+                        paramsMap.put("merchantNo", merchantInfo.getMarkCode());
+                        paramsMap.put("address", merchantInfo.getAddress());
+                        paramsMap.put("personName", merchantInfo.getName());
+                        paramsMap.put("idCard", merchantInfo.getIdentity());
+                        paramsMap.put("bankNo", merchantInfo.getBankNo());
+                        paramsMap.put("wxRate", weixinMerchantPayRate.toString());
+                        paramsMap.put("zfbRate", zhifubaoMerchantPayRate.toString());
+                        paramsMap.put("bankName", merchantInfo.getBankName());
+                        paramsMap.put("prov", merchantInfo.getProvinceName());
+                        paramsMap.put("city", merchantInfo.getCityName());     //后台通知url
+                        paramsMap.put("country", merchantInfo.getCountyName());
+                        paramsMap.put("bankBranch", merchantInfo.getBranchName());
+                        paramsMap.put("bankCode", merchantInfo.getBranchCode());
+                        paramsMap.put("creditCardNo", merchantInfo.getCreditCard());
+                        String result = SmPost.post(MerchantConsts.getMerchantConfig().merchantIN(), paramsMap);
+                        if (result != null && !"".equals(result)) {
+                            JSONObject jo = JSONObject.fromObject(result);
+                            if (jo.getInt("code") == 1) {
+                                merchantChannelRateDao.batchCheck(signIdList,EnumEnterNet.ENTING.getId(),merchantId);
+                            } else {
+                                merchantChannelRateDao.batchCheck(signIdList,EnumEnterNet.ENT_FAIL.getId(),merchantId);
+                            }
+                        } else {
+                            merchantChannelRateDao.batchCheck(signIdList,EnumEnterNet.ENT_FAIL.getId(),merchantId);
+                        }
+                    }else{
+                        log.info("商户已入网");
+                    }
+                }else{
+                    log.info("商户{}不存在",merchantId);
+                }
+            }else{
+                log.info("微信费率为空，两种情况，一种是商户已入网或不需入网，二种是商户信息有误，查询不到微信或支付宝的费率");
+            }
+
+
+        }
+    }
 }

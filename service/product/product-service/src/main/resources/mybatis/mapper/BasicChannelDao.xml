@@ -65,6 +65,17 @@
     <select id="selectAll" resultType="com.jkm.hss.product.entity.BasicChannel">
         SELECT * FROM tb_basic_channel WHERE status = 2;
     </select>
+
+    <!-- 新增产品中添加通道 -->
+    <!--<select id="selectListChannel" resultType="com.jkm.hss.product.entity.BasicChannel">-->
+        <!--SELECT * FROM tb_basic_channel WHERE status = 2;-->
+    <!--</select>-->
+
+    <!-- 查询通道 -->
+    <!--<select id="selectChannel" resultType="com.jkm.hss.product.entity.BasicChannel">-->
+        <!--SELECT * FROM tb_basic_channel WHERE channel_type_sign=#{channelTypeSign} AND status = 2;-->
+    <!--</select>-->
+
     <select id="selectById" resultType="com.jkm.hss.product.entity.BasicChannel">
         SELECT * FROM tb_basic_channel WHERE id = #{id};
     </select>

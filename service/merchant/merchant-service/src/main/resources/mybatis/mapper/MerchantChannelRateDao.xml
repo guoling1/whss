@@ -65,8 +65,9 @@
 
     <update id="batchCheck">
         UPDATE tb_merchant_channel_rate
-        SET enter_net = 3
+        SET enter_net = #{enterNet}
         WHERE
+        merchant_id = #{merchantId} and
         channel_type_sign in
         <foreach collection="signIdList" index="index" item="item" open="(" separator="," close=")">
             #{item}
@@ -79,5 +80,13 @@
         FROM tb_merchant_channel_rate
         WHERE
         merchant_id=#{merchantId} and product_id=#{productId} and third_company=#{thirdCompany} and status=1
+    </select>
+    <!--根据商户编码、通道标示、产品编码查询商户费用-->
+    <select id="selectByChannelCompanyAndProductIdAndMerchantId" resultType="com.jkm.hss.merchant.entity.MerchantChannelRate">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM tb_merchant_channel_rate
+        WHERE
+        merchant_id=#{merchantId} and product_id=#{productId} and channel_company=#{channelCompany} and status=1
     </select>
 </mapper>

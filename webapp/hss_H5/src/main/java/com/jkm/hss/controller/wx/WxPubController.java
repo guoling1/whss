@@ -1046,7 +1046,7 @@ public class WxPubController extends BaseController {
      * @return
      */
     @ResponseBody
-    @RequestMapping(value = "/creditCardAuthen", method = RequestMethod.POST)
+    @RequestMapping(value = "creditCardAuthen", method = RequestMethod.POST)
     public CommonResponse creditCardAuthen(final HttpServletRequest request, final HttpServletResponse response,@RequestBody final CreditCardAuthenRequest creditCardAuthenRequest) {
         if(StringUtils.isBlank(creditCardAuthenRequest.getCreditCard())){
             return CommonResponse.simpleResponse(-1, "请输入信用卡号");
@@ -1072,6 +1072,11 @@ public class WxPubController extends BaseController {
         String creditCardNo = creditCardAuthenRequest.getCreditCard();
         String creditCardShort = creditCardNo.substring(creditCardNo.length()-4,creditCardNo.length());
         merchantInfoService.updateCreditCard(MerchantSupport.encryptBankCard(creditCardAuthenRequest.getCreditCard()),bankCardBinOptional.get().getBankName(),creditCardShort,merchantInfo.get().getId());
+        Optional<MerchantInfo> merchantInfo1 = merchantInfoService.selectById(userInfoOptional.get().getMerchantId());
+        if(merchantInfo1.get().getBranchName()!=null&&!"".equals(merchantInfo1.get().getBranchName())
+                &&merchantInfo1.get().getCreditCard()!=null&&!"".equals(merchantInfo1.get().getCreditCard())){
+            merchantChannelRateService.enterInterNet(merchantInfo.get().getProductId(),merchantInfo.get().getId(),EnumUpperChannel.KAMENG.getValue());
+        }
         return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "操作成功");
     }
 
@@ -1120,6 +1125,11 @@ public class WxPubController extends BaseController {
         }
         continueBankInfoRequest.setId(merchantInfo.get().getId());
         merchantInfoService.updateBranchInfo(continueBankInfoRequest);
+        Optional<MerchantInfo> merchantInfo1 = merchantInfoService.selectById(userInfoOptional.get().getMerchantId());
+        if(merchantInfo1.get().getBranchName()!=null&&!"".equals(merchantInfo1.get().getBranchName())
+                &&merchantInfo1.get().getCreditCard()!=null&&!"".equals(merchantInfo1.get().getCreditCard())){
+            merchantChannelRateService.enterInterNet(merchantInfo.get().getProductId(),merchantInfo.get().getId(),EnumUpperChannel.KAMENG.getValue());
+        }
         return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "操作成功");
     }
 
@@ -1191,18 +1201,27 @@ public class WxPubController extends BaseController {
             log.info("商户需入网");
             if (StringUtils.isEmpty(merchantInfo.get().getBranchCode())) {
                 merchantChannelRateResponse.setIsBranch(EnumCheck.HASNOT.getId());
-                merchantChannelRateResponse.setMessage("支行信息不完善");
-                return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "支行信息不完善", merchantChannelRateResponse);
-            }
-            if (StringUtils.isEmpty(merchantInfo.get().getCreditCard())) {
+                if(StringUtils.isEmpty(merchantInfo.get().getCreditCard())){
+                    merchantChannelRateResponse.setIsCreditCard(EnumCheck.HASNOT.getId());
+                }else{
+                    merchantChannelRateResponse.setIsCreditCard(EnumCheck.HAS.getId());
+                }
+                merchantChannelRateResponse.setIsNet(EnumEnterNet.UNENT.getId());
+                merchantChannelRateResponse.setMessage("商户信息不完善");
+                return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "商户信息不完善", merchantChannelRateResponse);
+            }else{
                 merchantChannelRateResponse.setIsBranch(EnumCheck.HAS.getId());
-                merchantChannelRateResponse.setIsCreditCard(EnumCheck.HASNOT.getId());
-                merchantChannelRateResponse.setMessage("信用卡信息不完善");
-                return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "信用卡信息不完善", merchantChannelRateResponse);
+                if(StringUtils.isEmpty(merchantInfo.get().getCreditCard())){
+                    merchantChannelRateResponse.setIsCreditCard(EnumCheck.HASNOT.getId());
+                }else{
+                    merchantChannelRateResponse.setIsCreditCard(EnumCheck.HAS.getId());
+                }
+                merchantChannelRateResponse.setIsNet(EnumEnterNet.UNENT.getId());
+                merchantChannelRateResponse.setMessage("商户信息不完善");
+                return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "商户信息不完善", merchantChannelRateResponse);
             }
-
         }
-        return CommonResponse.simpleResponse(-1, "信息有误");
+        return null;
     }
 
 }
