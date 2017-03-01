@@ -46,6 +46,9 @@
         basic_withdraw_fee = #{basicWithdrawFee},
         basic_balance_type = #{basicBalanceType},
         basic_settle_type = #{basicSettleType},
+        limit_amount=#{limitAmount},
+        is_need=#{isNeed},
+        channel_company=#{channelCompany},
         status = #{status}
         WHERE id = #{id}
     </update>
