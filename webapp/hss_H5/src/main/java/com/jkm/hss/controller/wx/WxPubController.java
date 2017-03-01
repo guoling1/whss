@@ -566,6 +566,7 @@ public class WxPubController extends BaseController {
                                         }else{
                                             merchantChannelRate.setEnterNet(EnumEnterNet.UNSUPPORT.getId());
                                         }
+                                        merchantChannelRate.setChannelCompany(basicChannelOptionalTemp.get().getChannelCompany());
                                         merchantChannelRate.setThirdCompany(basicChannelOptionalTemp.get().getThirdCompany());
                                         merchantChannelRate.setStatus(EnumCommonStatus.NORMAL.getId());
                                         merchantChannelRateService.initMerchantChannelRate(merchantChannelRate);
@@ -599,6 +600,7 @@ public class WxPubController extends BaseController {
                                 }else{
                                     merchantChannelRate.setEnterNet(EnumEnterNet.UNSUPPORT.getId());
                                 }
+                                merchantChannelRate.setChannelCompany(basicChannelOptionalTemp.get().getChannelCompany());
                                 merchantChannelRate.setThirdCompany(basicChannelOptionalTemp.get().getThirdCompany());
                                 merchantChannelRate.setStatus(EnumCommonStatus.NORMAL.getId());
                                 merchantChannelRateService.initMerchantChannelRate(merchantChannelRate);
@@ -676,6 +678,7 @@ public class WxPubController extends BaseController {
                                 }else{
                                     merchantChannelRate.setEnterNet(EnumEnterNet.UNSUPPORT.getId());
                                 }
+                                merchantChannelRate.setChannelCompany(basicChannelOptionalTemp.get().getChannelCompany());
                                 merchantChannelRate.setThirdCompany(basicChannelOptionalTemp.get().getThirdCompany());
                                 merchantChannelRate.setStatus(EnumCommonStatus.NORMAL.getId());
                                 merchantChannelRateService.initMerchantChannelRate(merchantChannelRate);
@@ -739,6 +742,7 @@ public class WxPubController extends BaseController {
                                 }else{
                                     merchantChannelRate.setEnterNet(EnumEnterNet.UNSUPPORT.getId());
                                 }
+                                merchantChannelRate.setChannelCompany(basicChannelOptionalTemp.get().getChannelCompany());
                                 merchantChannelRate.setThirdCompany(basicChannelOptionalTemp.get().getThirdCompany());
                                 merchantChannelRate.setStatus(EnumCommonStatus.NORMAL.getId());
                                 merchantChannelRateService.initMerchantChannelRate(merchantChannelRate);
@@ -1129,9 +1133,9 @@ public class WxPubController extends BaseController {
     @ResponseBody
     @RequestMapping(value = "checkMerchantInfo", method = RequestMethod.POST)
     public CommonResponse checkMerchantInfo(final HttpServletRequest request, final HttpServletResponse response,@RequestBody final CheckMerchantInfoRequest checkMerchantInfoRequest) {
-        if(!super.isLogin(request)){
-            return CommonResponse.simpleResponse(-2, "未登录");
-        }
+//        if(!super.isLogin(request)){
+//            return CommonResponse.simpleResponse(-2, "未登录");
+//        }
         Optional<UserInfo> userInfoOptional = userInfoService.selectByOpenId("ou2YpwZYsLc80lCRXF4vj6FFanvs");
         if(!userInfoOptional.isPresent()){
             return CommonResponse.simpleResponse(-2, "未登录");
@@ -1157,14 +1161,6 @@ public class WxPubController extends BaseController {
             merchantChannelRateResponse.setIsCreditCard(EnumCheck.HAS.getId());
             merchantChannelRateResponse.setIsNet(EnumEnterNet.UNSUPPORT.getId());
             merchantChannelRateResponse.setMessage("无需入网");
-            return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "校验成功",merchantChannelRateResponse);
-        }
-        if(merchantChannelRate.getEnterNet()==EnumEnterNet.HASENT.getId()){
-            log.info("商户已入网");
-            merchantChannelRateResponse.setIsBranch(EnumCheck.HAS.getId());
-            merchantChannelRateResponse.setIsCreditCard(EnumCheck.HAS.getId());
-            merchantChannelRateResponse.setIsNet(EnumEnterNet.HASENT.getId());
-            merchantChannelRateResponse.setMessage("商户已入网");
             return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "校验成功",merchantChannelRateResponse);
         }
         if(merchantChannelRate.getEnterNet()==EnumEnterNet.ENTING.getId()){
@@ -1196,6 +1192,14 @@ public class WxPubController extends BaseController {
                 merchantChannelRateResponse.setMessage("信用卡信息不完善");
                 return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "信用卡信息不完善", merchantChannelRateResponse);
             }
+        }
+        if(merchantChannelRate.getEnterNet()==EnumEnterNet.HASENT.getId()){
+            log.info("商户已入网");
+            merchantChannelRateResponse.setIsBranch(EnumCheck.HAS.getId());
+            merchantChannelRateResponse.setIsCreditCard(EnumCheck.HAS.getId());
+            merchantChannelRateResponse.setIsNet(EnumEnterNet.HASENT.getId());
+            merchantChannelRateResponse.setMessage("商户已入网");
+            return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "校验成功",merchantChannelRateResponse);
         }
         return null;
     }

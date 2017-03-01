@@ -61,5 +61,5 @@ public interface MerchantChannelRateService {
      */
     Optional<MerchantChannelRate> selectByThirdCompanyAndProductIdAndMerchantId(MerchantGetRateRequest merchantGetRateRequest);
 
-//    Pair<Integer,String> enterInterNet(MerchantInfo merchantInfo);
+//    Pair<Integer,String> enterInterNet();
 }
