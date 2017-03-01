@@ -74,35 +74,35 @@ public class TradeController extends BaseController {
     @RequestMapping(value = "dcReceipt", method = RequestMethod.POST)
     public CommonResponse dynamicCodeReceipt(@RequestBody final DynamicCodePayRequest payRequest,
                                              final HttpServletRequest request) throws UnsupportedEncodingException {
-//        if(!super.isLogin(request)){
-//            return CommonResponse.simpleResponse(-2, "未登录");
-//        }
-//        Optional<UserInfo> userInfoOptional = userInfoService.selectByOpenId(super.getOpenId(request));
-//        if(!userInfoOptional.isPresent()){
-//            return CommonResponse.simpleResponse(-2, "未登录");
-//        }
-//        Optional<MerchantInfo> merchantInfo = merchantInfoService.selectById(userInfoOptional.get().getMerchantId());
-//        if(!merchantInfo.isPresent()){
-//            return CommonResponse.simpleResponse(-2, "未登录");
-//        }
-//        if(merchantInfo.get().getStatus()!= EnumMerchantStatus.PASSED.getId()&&merchantInfo.get().getStatus()!= EnumMerchantStatus.FRIEND.getId()){
-//            return CommonResponse.simpleResponse(-2, "未审核通过");
-//        }
+        if(!super.isLogin(request)){
+            return CommonResponse.simpleResponse(-2, "未登录");
+        }
+        Optional<UserInfo> userInfoOptional = userInfoService.selectByOpenId(super.getOpenId(request));
+        if(!userInfoOptional.isPresent()){
+            return CommonResponse.simpleResponse(-2, "未登录");
+        }
+        Optional<MerchantInfo> merchantInfo = merchantInfoService.selectById(userInfoOptional.get().getMerchantId());
+        if(!merchantInfo.isPresent()){
+            return CommonResponse.simpleResponse(-2, "未登录");
+        }
+        if(merchantInfo.get().getStatus()!= EnumMerchantStatus.PASSED.getId()&&merchantInfo.get().getStatus()!= EnumMerchantStatus.FRIEND.getId()){
+            return CommonResponse.simpleResponse(-2, "未审核通过");
+        }
         final String totalFee = payRequest.getTotalFee();
-//        if (StringUtils.isBlank(totalFee)) {
-//            return CommonResponse.simpleResponse(-1, "请输入收款金额");
-//        }
-//        if(new BigDecimal(totalFee).compareTo(new BigDecimal("5.00")) < 0){
-//            return CommonResponse.simpleResponse(-1, "支付金额至少5.00元");
-//        }
-//        if(StringUtils.isBlank(merchantInfo.get().getMerchantName())){
-//            return CommonResponse.simpleResponse(-1, "缺失商户名称");
-//        }
-//        if (!EnumPayChannelSign.isExistById(payRequest.getPayChannel())) {
-//            return CommonResponse.simpleResponse(-1, "支付方式错误");
-//        }
+        if (StringUtils.isBlank(totalFee)) {
+            return CommonResponse.simpleResponse(-1, "请输入收款金额");
+        }
+        if(new BigDecimal(totalFee).compareTo(new BigDecimal("5.00")) < 0){
+            return CommonResponse.simpleResponse(-1, "支付金额至少5.00元");
+        }
+        if(StringUtils.isBlank(merchantInfo.get().getMerchantName())){
+            return CommonResponse.simpleResponse(-1, "缺失商户名称");
+        }
+        if (!EnumPayChannelSign.isExistById(payRequest.getPayChannel())) {
+            return CommonResponse.simpleResponse(-1, "支付方式错误");
+        }
         final Pair<Integer, String> resultPair = this.payService.codeReceipt(payRequest.getTotalFee(),
-                payRequest.getPayChannel(), 79, EnumAppType.HSS.getId(), true);
+                payRequest.getPayChannel(), merchantInfo.get().getId(), EnumAppType.HSS.getId(), true);
         if (0 == resultPair.getLeft()) {
             return CommonResponse.builder4MapResult(CommonResponse.SUCCESS_CODE, "success")
                     .addParam("payUrl", URLDecoder.decode(resultPair.getRight(), "UTF-8"))
