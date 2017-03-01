@@ -5,6 +5,7 @@
     <insert id="addPaymentChannel" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO tb_basic_channel
         (account_id,
+        channel_code,
         channel_name,
         channel_type_sign,
         support_way,
@@ -20,6 +21,7 @@
         status
         )VALUES(
         #{accountId},
+        #{channelCode},
         #{channelName},
         #{channelTypeSign},
         #{supportWay},
