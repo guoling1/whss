@@ -10,6 +10,10 @@ import lombok.Getter;
  */
 public enum EnumEnterNet {
     /**
+     * 1 不支持
+     */
+    UNSUPPORT(0),
+    /**
      * 1 未入网
      */
     UNENT(1),
