@@ -1211,7 +1211,7 @@
               </el-col>
               <el-col :span="6">
                 <div class="grid-content bg-purple-light">
-                  <el-input size="small" v-model="query.channelName" placeholder="请输入内容"></el-input>
+                  <el-input size="small" v-model="name" placeholder="请输入内容"></el-input>
                 </div>
               </el-col>
               <el-col :span="8">
@@ -1237,11 +1237,15 @@
               </el-col>
               <el-col :span="6">
                 <div class="grid-content bg-purple-light">
-                  <el-checkbox-group v-model="query.supportWay">
-                    <el-checkbox label="微信公众号"></el-checkbox>
-                    <el-checkbox label="微信扫码"></el-checkbox>
-                    <el-checkbox label="支付宝公众号"></el-checkbox>
-                    <el-checkbox label="支付宝扫码"></el-checkbox>
+                  <el-checkbox-group v-model="payWay">
+                    <el-checkbox label="微信公众号" v-if="nameType=='wx'||nameType==''"></el-checkbox>
+                    <el-checkbox label="微信公众号" v-if="nameType=='zfb'" disabled></el-checkbox>
+                    <el-checkbox label="微信扫码" v-if="nameType=='wx'||nameType==''"></el-checkbox>
+                    <el-checkbox label="微信扫码" v-if="nameType=='zfb'" disabled></el-checkbox>
+                    <el-checkbox label="支付宝公众号" v-if="nameType=='zfb'||nameType==''"></el-checkbox>
+                    <el-checkbox label="支付宝公众号" v-if="nameType=='wx'" disabled></el-checkbox>
+                    <el-checkbox label="支付宝扫码" v-if="nameType=='zfb'||nameType==''"></el-checkbox>
+                    <el-checkbox label="支付宝扫码" v-if="nameType=='wx'" disabled></el-checkbox>
                   </el-checkbox-group>
                 </div>
               </el-col>
@@ -1332,8 +1336,8 @@
               <el-col :span="6">
                 <div class="grid-content bg-purple-light">
                   <el-select style="width: 100%" v-model="query.basicSettleType" clearable placeholder="请选择" size="small">
-                    <el-option label="通道自动结算" value="D0">通道自动结算</el-option>
-                    <el-option label="自主打款结算" value="D1">自主打款结算</el-option>
+                    <el-option label="通道自动结算" value="AUTO">通道自动结算</el-option>
+                    <el-option label="自主打款结算" value="SELF">自主打款结算</el-option>
                   </el-select>
                 </div>
               </el-col>
@@ -1431,7 +1435,10 @@
           remarks: ''
         },
         id: 0,
-        isShow: true
+        isShow: true,
+        name:'',
+        payWay:[],
+        nameType:''
       }
     },
     created: function () {
@@ -1449,14 +1456,24 @@
     methods: {
       //创建一级代理
       create: function () {
-        this.$http.post('/admin/user/addFirstDealer2', this.$data.query)
+        this.query.channelName = this.name;
+        if(this.payWay.length == 2){
+          this.query.supportWay = 3;
+        }else if(this.payWay.length == 1){
+          if(/公众号/.test(this.payWay[0])){
+            this.query.supportWay = 2;
+          }else if(/扫码/.test(this.payWay[0])){
+            this.query.supportWay = 1;
+          }
+        }
+        this.$http.post('/admin/paymentChannel/add', this.$data.query)
           .then(function (res) {
             this.$message({
               showClose: true,
               message: '创建成功',
               type: 'success'
             });
-            this.$router.push('/admin/record/agentListFir')
+            this.$router.push('/admin/record/passList')
           }, function (err) {
             this.$message({
               showClose: true,
@@ -1466,11 +1483,7 @@
           })
       },
       goBack: function () {
-        if(this.$route.query.level==2){
-          this.$router.push('/admin/record/agentListSec')
-        }else {
-          this.$router.push('/admin/record/agentListFir')
-        }
+        this.$router.push('/admin/record/passList')
       },
       //修改
       change: function () {
@@ -1496,6 +1509,20 @@
           })
       }
     },
+    watch:{
+      name: function (val) {
+        if(/微信/.test(val)){
+          this.payWay = []
+          this.nameType = 'wx'
+        }else if(/支付宝/.test(val)){
+          this.payWay = []
+          this.nameType = 'zfb'
+        }else {
+          this.payWay = []
+          this.nameType = ''
+        }
+      }
+    }
   }
 </script>
 
