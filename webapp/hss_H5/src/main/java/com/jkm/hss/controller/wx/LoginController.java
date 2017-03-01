@@ -845,6 +845,8 @@ public class LoginController extends BaseController {
                         model.addAttribute("cityName",result.get().getCityName());
                         model.addAttribute("countyCode",result.get().getCountyCode());
                         model.addAttribute("countyName",result.get().getCountyName());
+                        model.addAttribute("branchCode",result.get().getBranchCode());
+                        model.addAttribute("branchName",result.get().getBranchName());
                         url = "/bankBranch";
                     }
                 }else{

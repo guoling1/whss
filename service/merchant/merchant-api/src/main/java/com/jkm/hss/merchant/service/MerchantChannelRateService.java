@@ -2,6 +2,7 @@ package com.jkm.hss.merchant.service;
 
 import com.google.common.base.Optional;
 import com.jkm.hss.merchant.entity.MerchantChannelRate;
+import com.jkm.hss.merchant.enums.EnumEnterNet;
 import com.jkm.hss.merchant.helper.request.MerchantChannelRateRequest;
 
 import java.util.List;
@@ -29,6 +30,25 @@ public interface MerchantChannelRateService {
      * 查询入网中商户的信息
      * @return
      */
-    Set<MerchantChannelRate> selectIngMerchantInfo();
+    List<Long> selectIngMerchantInfo();
 
+    /**
+     * 更新商户入网状态
+     * @param merchantId
+     * @param enumEnterNet
+     */
+    void updateEnterNetStatus(long merchantId, EnumEnterNet enumEnterNet, String msg);
+
+    /**
+     *  更新商户入网状态
+     * @param signIdList
+     */
+    int batchCheck(List<Integer> signIdList);
+
+    /**
+     * 根据商户id查询 通道列表
+     * @param merchantId
+     * @return
+     */
+    List<MerchantChannelRate> selectByMerchantId(long merchantId);
 }

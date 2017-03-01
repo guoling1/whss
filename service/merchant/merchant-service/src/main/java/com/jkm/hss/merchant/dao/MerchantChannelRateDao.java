@@ -31,5 +31,25 @@ public interface MerchantChannelRateDao {
      * 查询入网中的商户信息
      * @return
      */
-    Set<MerchantChannelRate> selectIngMerchantInfo(@Param("entId") int entId);
+    List<Long> selectIngMerchantInfo(@Param("entId") int entId);
+
+    /**
+     *  更新商户入网状态
+     * @param merchantId
+     * @param id
+     */
+    void updateEnterNetStatus(@Param("merchantId") long merchantId, @Param("id") int id, @Param("msg") String msg);
+
+    /**
+     *  更新商户入网状态
+     * @param signIdList
+     */
+    int batchCheck(@Param("signIdList") List<Integer> signIdList);
+
+    /**
+     * 查询
+     * @param merchantId
+     * @return
+     */
+    List<MerchantChannelRate> selectByMerchantId(@Param("merchantId") long merchantId);
 }
