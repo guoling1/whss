@@ -52,7 +52,7 @@ public class HsyFileServiceImpl implements HsyFileService {
         for (String fileKey : files.keySet()) {
             MultipartFile file=files.get(fileKey);
             if(file==null||(file!=null&&file.getSize()==0))
-                throw new ApiHandleException(ResultCode.UPLOADFILE_NOT_EXSITS);
+                throw new ApiHandleException(ResultCode.UPLOADFILE_NOT_EXSITS,fileKey);
         }
 
         Set<String> set=files.keySet();

@@ -23,6 +23,9 @@ public class AppBizShop {
     private String checkErrorInfo;//审核错误原因
     private Date createTime;
     private Date updateTime;
+    private String licenceNO;//营业执照号
+    private Date licenceStartDate;//营业执照起期
+    private Date licenceEndDate;//营业执照止期
 
     private Long uid;//用户ID
     private Integer role;//角色 1法人 2店长 3店员  4财务
@@ -295,5 +298,29 @@ public class AppBizShop {
 
     public void setCountQR(Integer countQR) {
         this.countQR = countQR;
+    }
+
+    public String getLicenceNO() {
+        return licenceNO;
+    }
+
+    public void setLicenceNO(String licenceNO) {
+        this.licenceNO = licenceNO;
+    }
+
+    public Date getLicenceStartDate() {
+        return licenceStartDate;
+    }
+
+    public void setLicenceStartDate(Date licenceStartDate) {
+        this.licenceStartDate = licenceStartDate;
+    }
+
+    public Date getLicenceEndDate() {
+        return licenceEndDate;
+    }
+
+    public void setLicenceEndDate(Date licenceEndDate) {
+        this.licenceEndDate = licenceEndDate;
     }
 }
