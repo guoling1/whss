@@ -37,11 +37,10 @@ public class MerchantInController extends BaseController{
      * 同步商户入网结果
      *
      * @return
-     * @throws ParseException
      */
     @ResponseBody
-    @RequestMapping(value = "/getAll",method = RequestMethod.GET)
-    public CommonResponse merchantIn() throws ParseException {
+    @RequestMapping(value = "/update",method = RequestMethod.GET)
+    public CommonResponse merchantIn(){
 
         //查询商户入网中的id
         List<Long> idList = this.merchantChannelRateService.selectIngMerchantInfo();
@@ -57,13 +56,13 @@ public class MerchantInController extends BaseController{
             final JSONObject jsonObject = JSON.parseObject(jsonStr);
             if (jsonObject.getString("code").equals("1")){
                 //成功
-                this.merchantChannelRateService.updateEnterNetStatus(merchantInfo.getId(), EnumEnterNet.HASENT);
+                this.merchantChannelRateService.updateEnterNetStatus(merchantInfo.getId(), EnumEnterNet.HASENT, jsonObject.getString("message"));
             }else if (jsonObject.getString("code").equals("-1")){
                 //失败 -1
-
+                this.merchantChannelRateService.updateEnterNetStatus(merchantInfo.getId(), EnumEnterNet.ENT_FAIL, jsonObject.getString("message"));
             }else if (jsonObject.getString("code").equals("2")){
                 //ing 稍后再查
-
+                this.merchantChannelRateService.updateEnterNetStatus(merchantInfo.getId(), EnumEnterNet.ENTING, jsonObject.getString("message"));
             }
 
         }

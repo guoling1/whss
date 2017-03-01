@@ -60,8 +60,8 @@ public class MerchantChannelRateServiceImpl implements MerchantChannelRateServic
      * @param enumEnterNet
      */
     @Override
-    public void updateEnterNetStatus(long merchantId, EnumEnterNet enumEnterNet) {
-            this.merchantChannelRateDao.updateEnterNetStatus(merchantId, enumEnterNet.getId());
+    public void updateEnterNetStatus(long merchantId, EnumEnterNet enumEnterNet, String msg) {
+            this.merchantChannelRateDao.updateEnterNetStatus(merchantId, enumEnterNet.getId(), msg);
 
     }
 
@@ -73,5 +73,15 @@ public class MerchantChannelRateServiceImpl implements MerchantChannelRateServic
     @Override
     public int batchCheck(List<Integer> signIdList) {
         return merchantChannelRateDao.batchCheck(signIdList);
+    }
+
+    /**
+     * {@inheritDoc}
+     * @param merchantId
+     * @return
+     */
+    @Override
+    public List<MerchantChannelRate> selectByMerchantId(long merchantId) {
+        return this.merchantChannelRateDao.selectByMerchantId(merchantId);
     }
 }

@@ -9,7 +9,7 @@
     </sql>
     <update id="updateEnterNetStatus">
         UPDATE tb_merchant_channel_rate
-        SET enter_net = #{id}
+        SET enter_net = #{id} , remarks = #{msg}
         WHERE merchant_id = #{merchantId} AND enter_net = 3
 
     </update>
@@ -28,6 +28,9 @@
         FROM tb_merchant_channel_rate
         WHERE
         enter_net = #{entId}
+    </select>
+    <select id="selectByMerchantId" resultType="com.jkm.hss.merchant.entity.MerchantChannelRate">
+        SELECT * FROM tb_merchant_channel_rate WHERE merchant_id = #{merchantId}
     </select>
 
     <!--费率初始化-->
