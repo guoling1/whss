@@ -70,4 +70,12 @@
             #{item}
         </foreach>
     </update>
+    <!--根据商户编码、通道标示、产品编码查询商户费用-->
+    <select id="selectByThirdCompanyAndProductIdAndMerchantId" resultType="com.jkm.hss.merchant.entity.MerchantChannelRate">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM tb_merchant_channel_rate
+        WHERE
+        merchant_id=#{merchantId} and product_id=#{productId} and third_company=#{thirdCompany} and status=1
+    </select>
 </mapper>

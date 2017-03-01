@@ -20,9 +20,11 @@ import com.jkm.hss.merchant.entity.MerchantInfo;
 import com.jkm.hss.merchant.entity.UserInfo;
 import com.jkm.hss.merchant.enums.EnumIsUpgrade;
 import com.jkm.hss.merchant.enums.EnumMerchantStatus;
+import com.jkm.hss.merchant.enums.EnumPayMethod;
 import com.jkm.hss.merchant.helper.MerchantSupport;
 import com.jkm.hss.merchant.helper.WxConstants;
 import com.jkm.hss.merchant.helper.WxPubUtil;
+import com.jkm.hss.merchant.helper.request.MerchantGetRateRequest;
 import com.jkm.hss.merchant.service.*;
 import com.jkm.hss.product.entity.ProductChannelDetail;
 import com.jkm.hss.product.entity.UpgradePayRecord;
@@ -105,6 +107,9 @@ public class LoginController extends BaseController {
 
     @Autowired
     private PartnerShallProfitDetailService partnerShallProfitDetailService;
+
+    @Autowired
+    private MerchantChannelRateService merchantChannelRateService;
 
     /**
      * 扫固定码注册和微信公众号注册入口
@@ -1179,6 +1184,13 @@ public class LoginController extends BaseController {
                         model.addAttribute("mobile",phone);
                         model.addAttribute("name",getNameByLevel(result.get().getLevel()));
                         model.addAttribute("level",result.get().getLevel());
+
+//                        MerchantGetRateRequest weixinMerchantGetRateRequest = new MerchantGetRateRequest();
+//                        weixinMerchantGetRateRequest.setProductId(result.get().getProductId());
+//                        weixinMerchantGetRateRequest.setMerchantId(result.get().getId());
+//                        weixinMerchantGetRateRequest.setThirdCompany(EnumPayMethod.WEIXIN.getId());
+//                        merchantChannelRateService.selectByThirdCompanyAndProductIdAndMerchantId(weixinMerchantGetRateRequest);
+
                         model.addAttribute("weixinRate",result.get().getWeixinRate());
                         model.addAttribute("alipayRate",result.get().getAlipayRate());
                         model.addAttribute("fastRate",result.get().getFastRate());

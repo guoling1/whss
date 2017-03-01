@@ -2,8 +2,11 @@ package com.jkm.hss.merchant.service;
 
 import com.google.common.base.Optional;
 import com.jkm.hss.merchant.entity.MerchantChannelRate;
+import com.jkm.hss.merchant.entity.MerchantInfo;
 import com.jkm.hss.merchant.enums.EnumEnterNet;
 import com.jkm.hss.merchant.helper.request.MerchantChannelRateRequest;
+import com.jkm.hss.merchant.helper.request.MerchantGetRateRequest;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.List;
 import java.util.Set;
@@ -51,4 +54,12 @@ public interface MerchantChannelRateService {
      * @return
      */
     List<MerchantChannelRate> selectByMerchantId(long merchantId);
+    /**
+     *根据商户编码、通道标示、产品编码查询商户费用
+     * @param merchantGetRateRequest
+     * @return
+     */
+    Optional<MerchantChannelRate> selectByThirdCompanyAndProductIdAndMerchantId(MerchantGetRateRequest merchantGetRateRequest);
+
+//    Pair<Integer,String> enterInterNet(MerchantInfo merchantInfo);
 }

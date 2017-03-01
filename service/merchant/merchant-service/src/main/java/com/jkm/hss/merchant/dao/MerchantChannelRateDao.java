@@ -1,7 +1,9 @@
 package com.jkm.hss.merchant.dao;
 
+import com.google.common.base.Optional;
 import com.jkm.hss.merchant.entity.MerchantChannelRate;
 import com.jkm.hss.merchant.helper.request.MerchantChannelRateRequest;
+import com.jkm.hss.merchant.helper.request.MerchantGetRateRequest;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
@@ -52,4 +54,10 @@ public interface MerchantChannelRateDao {
      * @return
      */
     List<MerchantChannelRate> selectByMerchantId(@Param("merchantId") long merchantId);
+    /**
+     *根据三方公司名字、通道标示、产品编码查询商户费用
+     * @param merchantGetRateRequest
+     * @return
+     */
+    MerchantChannelRate selectByThirdCompanyAndProductIdAndMerchantId(MerchantGetRateRequest merchantGetRateRequest);
 }
