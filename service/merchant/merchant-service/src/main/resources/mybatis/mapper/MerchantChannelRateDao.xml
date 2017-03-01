@@ -89,4 +89,9 @@
         WHERE
         merchant_id=#{merchantId} and product_id=#{productId} and channel_company=#{channelCompany} and status=1
     </select>
+    <update id="toUpgrade">
+        UPDATE tb_merchant_channel_rate
+        SET merchant_pay_rate = #{rate}
+        WHERE merchant_id = #{merchantId} and product_id=#{productId} and third_company=#{thirdCompany} and status=1
+    </update>
 </mapper>

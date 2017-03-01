@@ -7,8 +7,10 @@ import com.jkm.hss.merchant.enums.EnumEnterNet;
 import com.jkm.hss.merchant.helper.request.MerchantChannelRateRequest;
 import com.jkm.hss.merchant.helper.request.MerchantEnterInRequest;
 import com.jkm.hss.merchant.helper.request.MerchantGetRateRequest;
+import com.jkm.hss.merchant.helper.request.MerchantUpgradeRequest;
 import org.apache.commons.lang3.tuple.Pair;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Set;
 
@@ -55,7 +57,7 @@ public interface MerchantChannelRateService {
      * @param merchantGetRateRequest
      * @return
      */
-    Optional<MerchantChannelRate> selectByThirdCompanyAndProductIdAndMerchantId(MerchantGetRateRequest merchantGetRateRequest);
+    List<MerchantChannelRate> selectByThirdCompanyAndProductIdAndMerchantId(MerchantGetRateRequest merchantGetRateRequest);
 
     /**
      *根据公司名、通道标示、产品编码查询商户费用
@@ -68,4 +70,10 @@ public interface MerchantChannelRateService {
      * 商户入网
      */
     void enterInterNet(long productId,long merchantId,String channelCompany);
+
+    /**
+     * 升级降费率
+     * @param merchantUpgradeRequest
+     */
+    void toUpgrade(MerchantUpgradeRequest merchantUpgradeRequest);
 }

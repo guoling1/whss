@@ -433,7 +433,7 @@
 
     <update id="toUpgrade">
         UPDATE tb_merchant_info
-        SET level = #{level},weixin_rate = #{weixinRate},alipay_rate = #{alipayRate},fast_rate = #{fastRate}
+        SET level = #{level}
         WHERE id = #{merchantId}
     </update>
 
