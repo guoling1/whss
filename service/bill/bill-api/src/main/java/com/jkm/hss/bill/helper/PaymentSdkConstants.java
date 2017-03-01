@@ -111,7 +111,7 @@ public final class PaymentSdkConstants {
         /**
          * 支付中心 查询商户入网url
          */
-        @Key("payment.sdk.pay.queryIn.url")
+        @Key("payment.sdk.pay.query.url")
         @DefaultValue("http://pay.qianbaojiajia.com/km/merchant/query")
         String sdkPayQueryIn();
     }
