@@ -1201,18 +1201,27 @@ public class WxPubController extends BaseController {
             log.info("商户需入网");
             if (StringUtils.isEmpty(merchantInfo.get().getBranchCode())) {
                 merchantChannelRateResponse.setIsBranch(EnumCheck.HASNOT.getId());
-                merchantChannelRateResponse.setMessage("支行信息不完善");
-                return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "支行信息不完善", merchantChannelRateResponse);
-            }
-            if (StringUtils.isEmpty(merchantInfo.get().getCreditCard())) {
+                if(StringUtils.isEmpty(merchantInfo.get().getCreditCard())){
+                    merchantChannelRateResponse.setIsCreditCard(EnumCheck.HASNOT.getId());
+                }else{
+                    merchantChannelRateResponse.setIsCreditCard(EnumCheck.HAS.getId());
+                }
+                merchantChannelRateResponse.setIsNet(EnumEnterNet.UNENT.getId());
+                merchantChannelRateResponse.setMessage("商户信息不完善");
+                return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "商户信息不完善", merchantChannelRateResponse);
+            }else{
                 merchantChannelRateResponse.setIsBranch(EnumCheck.HAS.getId());
-                merchantChannelRateResponse.setIsCreditCard(EnumCheck.HASNOT.getId());
-                merchantChannelRateResponse.setMessage("信用卡信息不完善");
-                return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "信用卡信息不完善", merchantChannelRateResponse);
+                if(StringUtils.isEmpty(merchantInfo.get().getCreditCard())){
+                    merchantChannelRateResponse.setIsCreditCard(EnumCheck.HASNOT.getId());
+                }else{
+                    merchantChannelRateResponse.setIsCreditCard(EnumCheck.HAS.getId());
+                }
+                merchantChannelRateResponse.setIsNet(EnumEnterNet.UNENT.getId());
+                merchantChannelRateResponse.setMessage("商户信息不完善");
+                return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "商户信息不完善", merchantChannelRateResponse);
             }
-
         }
-        return CommonResponse.simpleResponse(-1, "信息有误");
+        return null;
     }
 
 }
