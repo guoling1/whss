@@ -84,6 +84,11 @@ public class PaymentChannelRequest {
     private String remarks;
 
     /**
+     * 公司
+     */
+    private String channelCompany;
+
+    /**
      * 状态
      */
     private int status;
