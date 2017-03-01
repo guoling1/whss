@@ -7,6 +7,11 @@ import lombok.Getter;
  */
 public enum EnumCheck {
     /**
+     * 1 无需入网
+     */
+    UNSUPPORT(0),
+
+    /**
      * 有
      */
     HAS(1),

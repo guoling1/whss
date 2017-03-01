@@ -5,7 +5,7 @@
     <!-- 通用查询结果列-->
     <sql id="Base_Column_List">
         id,merchant_id,product_id,channel_type_sign,merchant_balance_type,merchant_pay_rate,merchant_withdraw_fee,
-        enter_net,remarks,status,create_time,update_time
+        enter_net,remarks,third_company,status,create_time,update_time
     </sql>
     <update id="updateEnterNetStatus">
         UPDATE tb_merchant_channel_rate
@@ -44,6 +44,7 @@
         merchant_pay_rate,
         merchant_withdraw_fee,
         enter_net,
+        third_company,
         status
         )
         VALUES
@@ -55,6 +56,7 @@
         #{merchantPayRate},
         #{merchantWithdrawFee},
         #{enterNet},
+        #{thirdCompany},
         #{status}
         )
     </insert>
