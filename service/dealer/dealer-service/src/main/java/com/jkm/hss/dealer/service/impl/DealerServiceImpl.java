@@ -144,8 +144,7 @@ public class DealerServiceImpl implements DealerService {
 
         final Dealer dealer = this.dealerDao.selectById(merchantInfo.getDealerId());
         //查询该代理商的收单利率
-        final List<DealerChannelRate> dealerChannelRateList =  this.dealerRateService.selectByDealerIdAndChannelId(dealer.getId(), orderRecord.getPayChannel());
-        final DealerChannelRate dealerChannelRate = dealerChannelRateList.get(0);
+        final DealerChannelRate dealerChannelRate =  this.dealerRateService.getByDealerIdAndProductIdAndChannelType(dealer.getId(), merchantInfo.getProductId(),orderRecord.getPayChannel()).get();
         final Optional<BasicChannel> channelOptional =  this.basicChannelService.selectByChannelTypeSign(orderRecord.getPayChannel());
         final BasicChannel basicChannel = channelOptional.get();
         //待分润金额
@@ -340,8 +339,7 @@ public class DealerServiceImpl implements DealerService {
 
         final Dealer dealer = this.dealerDao.selectById(appAuUser.getDealerID());
         //查询该代理商的收单利率
-        final List<DealerChannelRate> dealerChannelRateList =  this.dealerRateService.selectByDealerIdAndChannelId(dealer.getId(), channelSign);
-        final DealerChannelRate dealerChannelRate = dealerChannelRateList.get(0);
+        final DealerChannelRate dealerChannelRate =  this.dealerRateService.getByDealerIdAndProductIdAndChannelType(dealer.getId(), appAuUser.getProductID(),channelSign).get();
         //获取产品的信息, 产品通道的费率
         final Optional<Product> productOptional = this.productService.selectById(dealerChannelRate.getProductId());
         final  Product product = productOptional.get();
@@ -434,8 +432,7 @@ public class DealerServiceImpl implements DealerService {
             //获取二级的一级dealer信息
             final Dealer firstDealer = this.dealerDao.selectById(dealer.getFirstLevelDealerId());
             //查询二级的一级dealer 收单费率
-            final List<DealerChannelRate> firstDealerChannelRateList =  this.dealerRateService.selectByDealerIdAndChannelId(firstDealer.getId(), channelSign);
-            final DealerChannelRate firstDealerChannelRate = firstDealerChannelRateList.get(0);
+            final DealerChannelRate firstDealerChannelRate =  this.dealerRateService.getByDealerIdAndProductIdAndChannelType(firstDealer.getId(), appAuUser.getProductID(), channelSign).get();
             //一级分润
             final BigDecimal firstMoney = totalFee.multiply(dealerChannelRate.getDealerTradeRate().
                     subtract(firstDealerChannelRate.getDealerTradeRate())).setScale(2,BigDecimal.ROUND_DOWN);
@@ -952,8 +949,7 @@ public class DealerServiceImpl implements DealerService {
 
         final Dealer dealer = this.dealerDao.selectById(merchantInfo.getDealerId());
         //查询该代理商的收单利率
-        final List<DealerChannelRate> dealerChannelRateList =  this.dealerRateService.selectByDealerIdAndChannelId(dealer.getId(), channelSign);
-        final DealerChannelRate dealerChannelRate = dealerChannelRateList.get(0);
+        final DealerChannelRate dealerChannelRate  =  this.dealerRateService.getByDealerIdAndProductIdAndChannelType(dealer.getId(), merchantInfo.getProductId(),channelSign).get();
         //获取产品的信息, 产品通道的费率
         final Optional<Product> productOptional = this.productService.selectById(dealerChannelRate.getProductId());
         final  Product product = productOptional.get();
@@ -1046,8 +1042,7 @@ public class DealerServiceImpl implements DealerService {
             //获取二级的一级dealer信息
             final Dealer firstDealer = this.dealerDao.selectById(dealer.getFirstLevelDealerId());
             //查询二级的一级dealer 收单费率
-            final List<DealerChannelRate> firstDealerChannelRateList =  this.dealerRateService.selectByDealerIdAndChannelId(firstDealer.getId(), channelSign);
-            final DealerChannelRate firstDealerChannelRate = firstDealerChannelRateList.get(0);
+            final DealerChannelRate firstDealerChannelRate =  this.dealerRateService.getByDealerIdAndProductIdAndChannelType(firstDealer.getId(), merchantInfo.getProductId(),channelSign).get();
             //一级分润
             final BigDecimal firstMoney = totalFee.multiply(dealerChannelRate.getDealerTradeRate().
                     subtract(firstDealerChannelRate.getDealerTradeRate())).setScale(2,BigDecimal.ROUND_DOWN);

@@ -145,9 +145,8 @@ public class ShallProfitDetailServiceImpl implements ShallProfitDetailService{
             final BasicChannel basicChannel = basicChannelOptional.get();
             final Product product = this.productService.selectById(productChannelDetail.getProductId()).get();
             //获取代理商通道费率
-            final List<DealerChannelRate> dealerChannelList =
-                    this.dealerChannelRateService.selectByDealerIdAndPayChannelSign(dealer.getId(), channelSign);
-            final DealerChannelRate dealerChannelRate = dealerChannelList.get(0);
+            final DealerChannelRate dealerChannelRate =
+                    this.dealerChannelRateService.selectByDealerIdAndProductIdAndChannelType(dealer.getId(), product.getId(),channelSign).get();
             //判断是几级代理
             if (dealer.getLevel() == EnumDealerLevel.FIRST.getId()){
                 //商户体现手续费
@@ -183,9 +182,8 @@ public class ShallProfitDetailServiceImpl implements ShallProfitDetailService{
                 Preconditions.checkNotNull(firstDealerOptional.isPresent(), "一级代理信息不存在");
                 final Dealer firstDealer = firstDealerOptional.get();
                 //获取一级代理商通道费率
-                final List<DealerChannelRate> firstDealerChannelList =
-                        this.dealerChannelRateService.selectByDealerIdAndPayChannelSign(firstDealer.getId(), channelSign);
-                final DealerChannelRate firstDealerChannelRate = firstDealerChannelList.get(0);
+                final DealerChannelRate firstDealerChannelRate =
+                        this.dealerChannelRateService.selectByDealerIdAndProductIdAndChannelType(firstDealer.getId(), product.getId(),channelSign).get();
                 //商户体现手续费
                 final BigDecimal withdrawMoney = dealerChannelRate.getDealerMerchantWithdrawFee();
                 final BigDecimal secondMoney = withdrawMoney.subtract(dealerChannelRate.getDealerWithdrawFee());
@@ -310,9 +308,8 @@ public class ShallProfitDetailServiceImpl implements ShallProfitDetailService{
             final BasicChannel basicChannel = basicChannelOptional.get();
             final Product product = this.productService.selectById(productChannelDetail.getProductId()).get();
             //获取代理商通道费率
-            final List<DealerChannelRate> dealerChannelList =
-                    this.dealerChannelRateService.selectByDealerIdAndPayChannelSign(dealer.getId(), channelSign);
-            final DealerChannelRate dealerChannelRate = dealerChannelList.get(0);
+            final DealerChannelRate dealerChannelRate =
+                    this.dealerChannelRateService.selectByDealerIdAndProductIdAndChannelType(dealer.getId(), merchantInfo.getProductId(),channelSign).get();
             //判断是几级代理
             if (dealer.getLevel() == EnumDealerLevel.FIRST.getId()){
                 //商户体现手续费
@@ -348,9 +345,8 @@ public class ShallProfitDetailServiceImpl implements ShallProfitDetailService{
                 Preconditions.checkNotNull(firstDealerOptional.isPresent(), "一级代理信息不存在");
                 final Dealer firstDealer = firstDealerOptional.get();
                 //获取一级代理商通道费率
-                final List<DealerChannelRate> firstDealerChannelList =
-                        this.dealerChannelRateService.selectByDealerIdAndPayChannelSign(firstDealer.getId(), channelSign);
-                final DealerChannelRate firstDealerChannelRate = firstDealerChannelList.get(0);
+                final DealerChannelRate firstDealerChannelRate =
+                        this.dealerChannelRateService.selectByDealerIdAndProductIdAndChannelType(firstDealer.getId(), merchantInfo.getProductId(),channelSign).get();
                 //商户体现手续费
                 final BigDecimal withdrawMoney = dealerChannelRate.getDealerMerchantWithdrawFee();
                 final BigDecimal secondMoney = withdrawMoney.subtract(dealerChannelRate.getDealerWithdrawFee());
@@ -400,7 +396,7 @@ public class ShallProfitDetailServiceImpl implements ShallProfitDetailService{
             return productChannelDetail.getProductMerchantWithdrawFee().setScale(2);
         }
         final Dealer dealer = this.dealerService.getById(merchant.getDealerId()).get();
-        final DealerChannelRate dealerChannelRate = this.dealerRateService.selectByDealerIdAndChannelId(dealer.getId(), channelSign).get(0);
+        final DealerChannelRate dealerChannelRate = this.dealerRateService.getByDealerIdAndProductIdAndChannelType(dealer.getId(), merchant.getProductId(),channelSign).get();
         return dealerChannelRate.getDealerMerchantWithdrawFee().setScale(2);
     }
     /**
@@ -427,9 +423,8 @@ public class ShallProfitDetailServiceImpl implements ShallProfitDetailService{
             Preconditions.checkNotNull(dealerOptional.isPresent(), "代理商不存在");
             final Dealer dealer = dealerOptional.get();
             //获取代理商通道费率
-            final List<DealerChannelRate> dealerChannelList =
-                    this.dealerChannelRateService.selectByDealerIdAndPayChannelSign(dealer.getId(), payChannel);
-            final DealerChannelRate dealerChannelRate = dealerChannelList.get(0);
+            final DealerChannelRate dealerChannelRate =
+                    this.dealerChannelRateService.selectByDealerIdAndProductIdAndChannelType(dealer.getId(), merchantInfo.getProductId(),payChannel).get();
             final BasicChannel basicChannel = this.basicChannelService.selectByChannelTypeSign(dealerChannelRate.getChannelTypeSign()).get();
             //判断是几级代理
             if (dealer.getLevel() == EnumDealerLevel.FIRST.getId()){

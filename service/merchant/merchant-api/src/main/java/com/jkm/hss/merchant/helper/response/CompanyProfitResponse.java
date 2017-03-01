@@ -12,6 +12,11 @@ import java.util.Date;
 public class CompanyProfitResponse {
 
     /**
+     * 结算周期
+     */
+    private String settleType;
+
+    /**
      * 一级代理商id
      */
     private int firstLevelDealerId;
@@ -107,5 +112,9 @@ public class CompanyProfitResponse {
      * 分账日期
      */
     private Date splitDate;
+
+
+
+
 
 }
