@@ -29,7 +29,7 @@
     </select>
 
     <select id="selectProfitDetailsCount"  resultType="java.lang.Integer">
-        SELECT COUNT(1) FROM tb_split_account_record WHERE 1=1 AND a.split_date <![CDATA[ <= ]]>#{splitDate}
+        SELECT COUNT(1) FROM tb_split_account_record WHERE 1=1 AND split_date <![CDATA[ <= ]]>#{splitDate}
         <if test="orderNo!=null and orderNo!=''">
             AND order_no = #{orderNo}
         </if>

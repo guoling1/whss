@@ -77,6 +77,7 @@
 		LEFT JOIN tb_account b ON a.receipt_money_account_id = b.id
 		WHERE
 		b.id IN (1, 2, 11, 48, 49) AND a.split_date <![CDATA[ <= ]]>#{splitDate}
+
 		<if test="startTime!=null and startTime!=''">
 			AND a.split_date <![CDATA[ >= ]]> #{startTime}
 		</if>
@@ -414,7 +415,9 @@
 		LEFT JOIN tb_account b ON a.receipt_money_account_id = b.id
 		LEFT JOIN tb_order c ON c.order_no = a.order_no
 		WHERE
-		b.id in (1,2,11,48,49) AND a.split_date between #{splitDate} and #{splitDate1} AND a.business_type=#{businessType}
+		b.id in (1,2,11,48,49) AND a.split_date between #{splitDate} and #{splitDate1}
+		AND a.business_type=#{businessType}
+		and a.`split_amount` <![CDATA[ > ]]> 0
 	<if test="orderNo != null and orderNo != ''">
 		AND a.order_no = #{orderNo}
 	</if>
@@ -436,7 +439,9 @@
 		LEFT JOIN tb_account b ON a.receipt_money_account_id = b.id
 		LEFT JOIN tb_order c ON c.order_no = a.order_no
 		WHERE
-		b.id in (1,2,11,48,49) AND a.split_date between #{splitDate} and #{splitDate1} AND a.business_type=#{businessType}
+		b.id in (1,2,11,48,49) AND a.split_date between #{splitDate} and #{splitDate1}
+		AND a.business_type=#{businessType}
+		and a.`split_amount` <![CDATA[ > ]]> 0
 		<if test="orderNo != null and orderNo != ''">
 			AND a.order_no = #{orderNo}
 		</if>
@@ -461,6 +466,7 @@
 		b.`level` = 1 AND a.split_date between #{splitDate} and #{splitDate1}
 		AND a.receipt_money_account_id=#{receiptMoneyAccountId}
 		AND a.business_type=#{businessType}
+		and a.`split_amount` <![CDATA[ > ]]> 0
 		<if test="orderNo != null and orderNo != ''">
 			AND a.order_no = #{orderNo}
 		</if>
@@ -480,6 +486,7 @@
 		WHERE b.`level`=1 AND a.receipt_money_account_id=#{receiptMoneyAccountId}
 		AND a.split_date between #{splitDate} and #{splitDate1}
 		AND a.business_type=#{businessType}
+		and a.`split_amount` <![CDATA[ > ]]> 0
 		<if test="orderNo != null and orderNo != ''">
 			AND a.order_no = #{orderNo}
 		</if>
@@ -505,6 +512,7 @@
 		WHERE
 		b.`level` = 2 AND a.split_date between #{splitDate} and #{splitDate1}
 		AND a.receipt_money_account_id =#{receiptMoneyAccountId}
+		and a.`split_amount` <![CDATA[ > ]]> 0
 		<if test="orderNo != null and orderNo != ''">
 			AND a.order_no = #{orderNo}
 		</if>
@@ -523,6 +531,7 @@
 		LEFT JOIN tb_dealer b ON a.receipt_money_account_id=b.account_id
 		WHERE b.`level`=2 AND a.receipt_money_account_id=#{receiptMoneyAccountId}
 		AND a.split_date between #{splitDate} and #{splitDate1}
+		and a.`split_amount` <![CDATA[ > ]]> 0
 		<if test="orderNo != null and orderNo != ''">
 			AND a.order_no = #{orderNo}
 		</if>

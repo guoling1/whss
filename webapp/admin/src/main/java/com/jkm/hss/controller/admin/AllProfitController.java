@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -112,17 +111,7 @@ public class AllProfitController extends BaseController {
         int count = allProfitService.selectCompanyProfitDetailsCount(req);
         pageModel.setCount(count);
         pageModel.setRecords(list);
-        List<CompanyProfitResponse> list1 = new ArrayList<>();
-        if(list.size()>0){
-            for (int i=0;i<list.size();i++){
-                BigDecimal a=BigDecimal.valueOf(0.00);
-                if (list.get(i).getSplitAmount().compareTo(a)!=0){
-                    list1.add(list.get(i));
-                }
-                pageModel.setCount(list1.size());
-                pageModel.setRecords(list1);
-            }
-        }
+
         return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", pageModel);
         }
     /**
@@ -195,17 +184,7 @@ public class AllProfitController extends BaseController {
         int count = allProfitService.selectOneProfitDetailsCount(req);
         pageModel.setCount(count);
         pageModel.setRecords(list);
-        List<CompanyProfitResponse> list1 = new ArrayList<>();
-        if(list.size()>0){
-            for (int i=0;i<list.size();i++){
-                BigDecimal a=BigDecimal.valueOf(0.00);
-                if (list.get(i).getSplitAmount().compareTo(a)!=0){
-                    list1.add(list.get(i));
-                }
-                pageModel.setCount(list1.size());
-                pageModel.setRecords(list1);
-            }
-        }
+
         return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", pageModel);
     }
 
@@ -293,17 +272,7 @@ public class AllProfitController extends BaseController {
         int count = allProfitService.selectTwoProfitDetailsCount(req);
         pageModel.setCount(count);
         pageModel.setRecords(list);
-        List<CompanyProfitResponse> list1 = new ArrayList<>();
-        if(list.size()>0){
-            for (int i=0;i<list.size();i++){
-                BigDecimal a=BigDecimal.valueOf(0.00);
-                if (list.get(i).getSplitAmount().compareTo(a)!=0){
-                    list1.add(list.get(i));
-                }
-                pageModel.setCount(list1.size());
-                pageModel.setRecords(list1);
-            }
-        }
+
         return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", pageModel);
     }
 }
