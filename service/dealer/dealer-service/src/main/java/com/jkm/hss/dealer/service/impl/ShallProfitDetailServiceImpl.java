@@ -315,7 +315,7 @@ public class ShallProfitDetailServiceImpl implements ShallProfitDetailService{
             //判断是几级代理
             if (dealer.getLevel() == EnumDealerLevel.FIRST.getId()){
                 //商户体现手续费
-                final BigDecimal withdrawMoney = dealerChannelRate.getDealerMerchantWithdrawFee();
+                final BigDecimal withdrawMoney = this.getMerchantWithdrawFee(merchantInfo, channelSign);
                 final BigDecimal firstMoney = withdrawMoney.subtract(dealerChannelRate.getDealerWithdrawFee());
                 final BigDecimal productMoney = dealerChannelRate.getDealerWithdrawFee().subtract(productChannelDetail.getProductWithdrawFee());
                 final BigDecimal channelMoney = productChannelDetail.getProductWithdrawFee().subtract(basicChannel.getBasicWithdrawFee());
@@ -350,7 +350,7 @@ public class ShallProfitDetailServiceImpl implements ShallProfitDetailService{
                 final DealerChannelRate firstDealerChannelRate =
                         this.dealerChannelRateService.selectByDealerIdAndProductIdAndChannelType(firstDealer.getId(), product.getId(),channelSign).get();
                 //商户体现手续费
-                final BigDecimal withdrawMoney = dealerChannelRate.getDealerMerchantWithdrawFee();
+                final BigDecimal withdrawMoney = this.getMerchantWithdrawFee(merchantInfo, channelSign);
                 final BigDecimal secondMoney = withdrawMoney.subtract(dealerChannelRate.getDealerWithdrawFee());
                 final BigDecimal firstMoney = dealerChannelRate.getDealerWithdrawFee().subtract(firstDealerChannelRate.getDealerWithdrawFee());
                 final BigDecimal productMoney = firstDealerChannelRate.getDealerWithdrawFee().subtract(productChannelDetail.getProductWithdrawFee());
