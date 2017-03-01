@@ -135,13 +135,13 @@
         loading: true,
         url:'',
         //正式
-        /*queryUrl:'http://pay.qianbaojiajia.com/order/withdraw/listOrder',
+        queryUrl:'http://pay.qianbaojiajia.com/order/withdraw/listOrder',
          excelUrl:'http://pay.qianbaojiajia.com/order/withdraw/exportExcel',
-         syncUrl:'http://pay.qianbaojiajia.com/order/syncWithdrawOrder',*/
+         syncUrl:'http://pay.qianbaojiajia.com/order/syncWithdrawOrder',
         //测试
-        queryUrl:'http://192.168.1.20:8076/order/withdraw/listOrder',
+       /* queryUrl:'http://192.168.1.20:8076/order/withdraw/listOrder',
         excelUrl:'http://192.168.1.20:8076/order/withdraw/exportExcel',
-        syncUrl:'http://192.168.1.20:8076/order/syncWithdrawOrder'
+        syncUrl:'http://192.168.1.20:8076/order/syncWithdrawOrder'*/
       }
     },
     created: function () {
