@@ -666,30 +666,21 @@
              isFalse = false
            }
         }
-        if(isFalse === false){
-          this.$http.post('/admin/paymentChannel/add', this.$data.query)
-            .then(function (res) {
-              this.$message({
-                showClose: true,
-                message: '创建成功',
-                type: 'success'
-              });
-              this.$router.push('/admin/record/passList')
-            }, function (err) {
-              this.$message({
-                showClose: true,
-                message: err.statusMessage,
-                type: 'error'
-              });
-            })
-        }else {
-          this.$message({
-            showClose: true,
-            message: '请补全所有信息',
-            type: 'error'
-          });
-        }
-
+        this.$http.post('/admin/paymentChannel/add', this.$data.query)
+          .then(function (res) {
+            this.$message({
+              showClose: true,
+              message: '创建成功',
+              type: 'success'
+            });
+            this.$router.push('/admin/record/passList')
+          }, function (err) {
+            this.$message({
+              showClose: true,
+              message: err.statusMessage,
+              type: 'error'
+            });
+          })
       },
       goBack: function () {
         this.$router.push('/admin/record/passList')
