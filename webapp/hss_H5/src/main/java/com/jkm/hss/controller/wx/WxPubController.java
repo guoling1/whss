@@ -1143,10 +1143,10 @@ public class WxPubController extends BaseController {
     @ResponseBody
     @RequestMapping(value = "checkMerchantInfo", method = RequestMethod.POST)
     public CommonResponse checkMerchantInfo(final HttpServletRequest request, final HttpServletResponse response,@RequestBody final CheckMerchantInfoRequest checkMerchantInfoRequest) {
-//        if(!super.isLogin(request)){
-//            return CommonResponse.simpleResponse(-2, "未登录");
-//        }
-        Optional<UserInfo> userInfoOptional = userInfoService.selectByOpenId("ou2YpwZYsLc80lCRXF4vj6FFanvs");
+        if(!super.isLogin(request)){
+            return CommonResponse.simpleResponse(-2, "未登录");
+        }
+        Optional<UserInfo> userInfoOptional = userInfoService.selectByOpenId(super.getOpenId(request));
         if(!userInfoOptional.isPresent()){
             return CommonResponse.simpleResponse(-2, "未登录");
         }
