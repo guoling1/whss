@@ -16,8 +16,6 @@
         settle_amount,
         settle_mode,
         settle_destination,
-        bank_no,
-        bank_name,
         settle_status,
         status
         )
@@ -35,8 +33,6 @@
         #{settleAmount},
         #{settleMode},
         #{settleDestination},
-        #{bankNo},
-        #{bankName},
         #{settleStatus},
         #{status}
         );
@@ -77,12 +73,6 @@
             <if test="settleDestination > 0">
                 settle_destination = #{settleDestination},
             </if>
-            <if test="bankNo != null">
-                bank_no = #{bankNo},
-            </if>
-            <if test="bankName != null">
-                bank_name = #{bankName},
-            </if>
             <if test="settleStatus > 0">
                 settle_status = #{settleStatus},
             </if>
@@ -118,6 +108,6 @@
     </select>
 
     <select id="selectCountBySettleNo" resultType="java.lang.Integer">
-        SELECT * FROM tb_settlement_record WHERE settle_no = #{settleNo}
+        SELECT COUNT(0)FROM tb_settlement_record WHERE settle_no = #{settleNo}
     </select>
 </mapper>

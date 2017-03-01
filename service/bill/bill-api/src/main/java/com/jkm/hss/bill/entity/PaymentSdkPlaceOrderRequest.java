@@ -57,11 +57,6 @@ public class PaymentSdkPlaceOrderRequest {
      */
     private String totalAmount;
 
-    /**
-     *
-     */
-    private String tradeType;
-
 
     //////**卡盟通道所需参数**//////////
 
@@ -86,4 +81,9 @@ public class PaymentSdkPlaceOrderRequest {
      *
      */
     private String idCardNo;
+
+    /**
+     * 结算成功，回调url
+     */
+    private String settleNotifyUrl;
 }

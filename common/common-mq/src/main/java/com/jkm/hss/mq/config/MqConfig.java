@@ -33,16 +33,6 @@ public class MqConfig {
      */
     public static final String NORMAL_SETTLE = "normal_settle";
 
-    /**
-     * 手续费结算
-     */
-    public static final String POUNDAGE_SETTLE = "poundage_settle";
-
-    /**
-     * 更新交易状态
-     */
-    public static final String UPDATE_ORDER_SETTLE_STATUS = "update_order_settle_status";
-
     static {
         final MqConfigs mqConfigs = getMqConfigs();
         TOPIC = mqConfigs.topic();

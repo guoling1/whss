@@ -79,28 +79,6 @@ public interface PayService {
     long merchantRecorded(long orderId, MerchantInfo merchant);
 
     /**
-     * 商户升级，商户付款，公司入账
-     *
-     * @param orderId
-     */
-    void companyRecorded(long orderId);
-
-    /**
-     * 商户结算进入到可用余额
-     *
-     * @param order
-     * @param merchantId
-     */
-    void merchantSettle(Order order, long merchantId);
-
-    /**
-     * 公司账户结算
-     *
-     * @param order
-     */
-    void companySettle(Order order);
-
-    /**
      * 支付手续费结算 到 代理商等 待结算账户
      *
      * @param order

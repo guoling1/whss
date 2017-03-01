@@ -4,6 +4,9 @@ import com.google.common.collect.ImmutableMap;
 import lombok.Getter;
 import org.apache.commons.lang3.tuple.Pair;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by yuxiang on 2016-11-24.
  *
@@ -15,17 +18,17 @@ public enum EnumPayChannelSign {
     /**
      * 阳光微信
      */
-    YG_WECHAT(101, "sm_wechat", "微信", "阳光微信", EnumUpperChannel.SAOMI, false),
+    YG_WECHAT(101, "sm_wechat", EnumPaymentChannel.WECHAT_PAY, "阳光微信", EnumUpperChannel.SAOMI, false),
 
     /**
      * 阳光支付宝
      */
-    YG_ALIPAY(102, "sm_alipay", "支付宝", "阳光支付宝", EnumUpperChannel.SAOMI, false),
+    YG_ALIPAY(102, "sm_alipay", EnumPaymentChannel.ALIPAY, "阳光支付宝", EnumUpperChannel.SAOMI, false),
 
     /**
      * 快捷支付
      */
-    YG_UNIONPAY(103, "sm_unionpay", "快捷", "阳光快捷", EnumUpperChannel.SAOMI, false),
+    YG_UNIONPAY(103, "sm_unionpay", EnumPaymentChannel.UNIONPAY, "阳光快捷", EnumUpperChannel.SAOMI, false),
 
 
     //#################################卡盟############################################
@@ -33,19 +36,19 @@ public enum EnumPayChannelSign {
     /**
      * 卡盟微信
      */
-    KM_WECHAT(201, "km_wechat", "微信", "卡盟微信", EnumUpperChannel.KAMENG, true),
+    KM_WECHAT(201, "km_wechat", EnumPaymentChannel.WECHAT_PAY, "卡盟微信", EnumUpperChannel.KAMENG, true),
 
     /**
      * 卡盟支付宝
      */
-    KM_ALIPAY(202, "km_alipay", "支付宝", "卡盟支付宝", EnumUpperChannel.KAMENG, true),
+    KM_ALIPAY(202, "km_alipay", EnumPaymentChannel.ALIPAY, "卡盟支付宝", EnumUpperChannel.KAMENG, true),
 
 
     //#################################摩宝#############################################
     /**
      * 摩宝快捷
      */
-    MB_UNIONPAY(301, "mb_unionpay", "快捷", "摩宝快捷", EnumUpperChannel.MOBAO, false),
+    MB_UNIONPAY(301, "mb_unionpay", EnumPaymentChannel.UNIONPAY, "摩宝快捷", EnumUpperChannel.MOBAO, false),
 
     //#################################合众易宝#########################################
     /**
@@ -96,7 +99,7 @@ public enum EnumPayChannelSign {
     @Getter
     private String code;
     @Getter
-    private String channelName;
+    private EnumPaymentChannel paymentChannel;
     @Getter
     private String name;
     @Getter
@@ -104,11 +107,11 @@ public enum EnumPayChannelSign {
     @Getter
     private Boolean autoSettle;
 
-    EnumPayChannelSign(final int id, final String code, final String channelName,
+    EnumPayChannelSign(final int id, final String code, final EnumPaymentChannel paymentChannel,
                        final String name, final EnumUpperChannel upperChannel, final boolean autoSettle) {
         this.id = id;
         this.code = code;
-        this.channelName = channelName;
+        this.paymentChannel = paymentChannel;
         this.name = name;
         this.upperChannel = upperChannel;
         this.autoSettle = autoSettle;
@@ -141,6 +144,24 @@ public enum EnumPayChannelSign {
     }
 
 
+    /**
+     * 按渠道获取支付方式列表
+     *
+     * @param paymentChannelId
+     * @return
+     */
+    public static List<Integer> getIdListByPaymentChannel(final int paymentChannelId) {
+        final EnumPaymentChannel paymentChannel = EnumPaymentChannel.of(paymentChannelId);
+        final ArrayList<Integer> idList = new ArrayList<>();
+        for (final EnumPayChannelSign status : EnumPayChannelSign.values()) {
+            if (status.getPaymentChannel().equals(paymentChannel)) {
+                idList.add(status.getId());
+            }
+        }
+        return idList;
+    }
+
+
     public static boolean isExistByCode(final String code) {
         return CODE_INIT_MAP.containsKey(code);
     }
@@ -155,14 +176,16 @@ public enum EnumPayChannelSign {
         EnumUpperChannel tempEnumUpperChannel = ID_INIT_MAP.get(id).getUpperChannel();
         for (final EnumPayChannelSign status : EnumPayChannelSign.values()) {
             if(status.getUpperChannel().getId()==tempEnumUpperChannel.getId()){
-                if("微信".equals(status.getChannelName())){
+                if("微信".equals(status.getPaymentChannel().getValue())){
                     weixin = status.getId();
                 }
-                if("支付宝".equals(status.getChannelName())){
+                if("支付宝".equals(status.getPaymentChannel().getValue())){
                     zhifubao = status.getId();
                 }
             }
         }
         return Pair.of(weixin,zhifubao);
     }
+
+//    public
 }

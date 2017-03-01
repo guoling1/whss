@@ -108,7 +108,7 @@ public class PayServiceImpl implements PayService {
             return Pair.of(-1, "订单号重复");
         }
         final MerchantInfo merchant = this.merchantInfoService.selectById(merchantId).get();
-
+        final String channelCode = this.basicChannelService.selectCodeByChannelSign(EnumPayChannelSign.YG_WECHAT.getId(), EnumMerchantPayType.MERCHANT_JSAPI);
         final Order order = new Order();
         order.setBusinessOrderNo(businessOrderNo);
         order.setOrderNo(SnGenerator.generateSn(EnumTradeType.PAY.getId()));
@@ -117,7 +117,7 @@ public class PayServiceImpl implements PayService {
         order.setAppId(EnumAppType.HSS.getId());
         order.setTradeType(EnumTradeType.PAY.getId());
         order.setServiceType(EnumServiceType.APPRECIATION_PAY.getId());
-        order.setPayType(EnumPayChannelSign.YG_WECHAT.getCode());
+        order.setPayType(channelCode);
         order.setPayChannelSign(EnumPayChannelSign.YG_WECHAT.getId());
         order.setPayer(merchant.getAccountId());
         order.setPayee(AccountConstants.JKM_ACCOUNT_ID);
@@ -130,7 +130,7 @@ public class PayServiceImpl implements PayService {
         this.orderService.add(order);
         //请求支付中心下单
         final PaymentSdkPlaceOrderResponse placeOrderResponse = this.requestPlaceOrder(order,
-                "", merchant, businessReturnUrl);
+                channelCode, merchant, businessReturnUrl);
         return this.handlePlaceOrder(placeOrderResponse, order);
     }
 
@@ -169,7 +169,7 @@ public class PayServiceImpl implements PayService {
         order.setStatus(EnumOrderStatus.DUE_PAY.getId());
         this.orderService.add(order);
         //请求支付中心下单
-        final PaymentSdkPlaceOrderResponse placeOrderResponse = this.requestPlaceOrder(order, "", merchant,
+        final PaymentSdkPlaceOrderResponse placeOrderResponse = this.requestPlaceOrder(order, channelCode, merchant,
                 PaymentSdkConstants.SDK_PAY_RETURN_URL + order.getTradeAmount() + "/" + order.getId());
         return this.handlePlaceOrder(placeOrderResponse, order);
     }
@@ -247,20 +247,14 @@ public class PayServiceImpl implements PayService {
         order.setRemark(paymentSdkPayCallbackResponse.getMessage());
         order.setSn(paymentSdkPayCallbackResponse.getSn());
         order.setStatus(EnumOrderStatus.PAY_SUCCESS.getId());
-        final EnumPayChannelSign enumPayChannelSign = EnumPayChannelSign.codeOf(order.getPayType());
+        final EnumPayChannelSign enumPayChannelSign = this.basicChannelService.getEnumPayChannelSignByCode(paymentSdkPayCallbackResponse.getPayType());
         order.setPayChannelSign(enumPayChannelSign.getId());
         log.info("返回的通道是[{}]", order.getPayType());
         //处理商户升级的支付单(此时商户自己付款给金开门)
         if (order.getPayer() > 0 && order.getPayee() == AccountConstants.JKM_ACCOUNT_ID) {
             log.info("交易订单[{}]，处理商户升级支付回调业务", order.getOrderNo());
-            final MerchantInfo merchant = this.merchantInfoService.getByAccountId(order.getPayer()).get();
-            //手续费， 费率
-            final BigDecimal merchantUpgradePoundage = this.calculateService.getMerchantUpgradePoundage(merchant.getId(),order.getOrderNo(), order.getTradeAmount(), order.getBusinessOrderNo());
-            order.setPoundage(merchantUpgradePoundage);
             this.orderService.update(order);
-            //公司利润账户，手续费入账
-            this.companyRecorded(order.getId());
-            //结算
+            final MerchantInfo merchant = this.merchantInfoService.getByAccountId(order.getPayer()).get();
             final Optional<Order> orderOptional = this.orderService.getByIdWithLock(order.getId());
             if (orderOptional.get().isPaySuccess() && orderOptional.get().isDueSettle()) {
                 this.orderService.updateSettleStatus(orderOptional.get().getId(), EnumSettleStatus.SETTLE_ING.getId());
@@ -411,98 +405,6 @@ public class PayServiceImpl implements PayService {
             return settlementRecordId;
         }
         return 0;
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @param orderId
-     */
-    @Override
-    @Transactional
-    public void companyRecorded(final long orderId) {
-        final Order order = this.orderService.getByIdWithLock(orderId).get();
-        log.info("交易订单号[{}], 进行入账操作", order.getOrderNo());
-        if (order.isPaySuccess() && order.isDueSettle()) {
-            //公司账户待结算增加
-            final Account jkmAccount = this.accountService.getByIdWithLock(AccountConstants.JKM_ACCOUNT_ID).get();
-            this.accountService.increaseTotalAmount(jkmAccount.getId(), order.getTradeAmount().subtract(order.getPoundage()));
-            this.accountService.increaseAvailableAmount(jkmAccount.getId(), order.getTradeAmount().subtract(order.getPoundage()));
-            //可用余额流水增加
-            this.accountFlowService.addAccountFlow(jkmAccount.getId(), order.getOrderNo(), order.getTradeAmount().subtract(order.getPoundage()),
-                    "商户升级-反润", EnumAccountFlowType.INCREASE);
-
-            //手续费账户
-            final Account poundageAccount = this.accountService.getByIdWithLock(AccountConstants.POUNDAGE_ACCOUNT_ID).get();
-            this.accountService.increaseTotalAmount(poundageAccount.getId(), order.getPoundage());
-            this.accountService.increaseAvailableAmount(poundageAccount.getId(), order.getPoundage());
-
-            //可用余额流水增加
-            this.accountFlowService.addAccountFlow(poundageAccount.getId(), order.getOrderNo(), order.getPoundage(),
-                    "商户升级-反润", EnumAccountFlowType.INCREASE);
-        }
-
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @param order
-     * @param merchantId
-     */
-    @Override
-    @Transactional
-    public void merchantSettle(final Order order, final long merchantId) {
-        final MerchantInfo merchant = this.merchantInfoService.selectById(merchantId).get();
-        //商户结算
-        final Optional<SettleAccountFlow> optional = this.settleAccountFlowService.getByOrderNoAndAccountIdAndType(order.getOrderNo(),
-                merchant.getAccountId(), EnumAccountFlowType.DECREASE.getId());
-        if (!optional.isPresent() && !order.isSettled()) {
-            final Account merchantAccount = this.accountService.getByIdWithLock(merchant.getAccountId()).get();
-            final SettleAccountFlow merchantIncreaseSettleAccountFlow =
-                    this.settleAccountFlowService.getByOrderNoAndAccountIdAndType(order.getOrderNo(), merchant.getAccountId(),
-                            EnumAccountFlowType.INCREASE.getId()).get();
-            //待结算金额减少
-            Preconditions.checkState(order.getTradeAmount().subtract(order.getPoundage()).compareTo(merchantAccount.getDueSettleAmount()) <= 0);
-            Preconditions.checkState(order.getTradeAmount().subtract(order.getPoundage()).compareTo(merchantIncreaseSettleAccountFlow.getIncomeAmount()) == 0);
-            this.accountService.increaseAvailableAmount(merchantAccount.getId(), merchantIncreaseSettleAccountFlow.getIncomeAmount());
-            this.accountService.decreaseSettleAmount(merchantAccount.getId(), merchantIncreaseSettleAccountFlow.getIncomeAmount());
-            this.settleAccountFlowService.addSettleAccountFlow(merchantAccount.getId(), order.getOrderNo(), merchantIncreaseSettleAccountFlow.getIncomeAmount(),
-                    "支付结算", EnumAccountFlowType.DECREASE,
-                    EnumAppType.HSS.getId(), order.getPaySuccessTime(), EnumAccountUserType.MERCHANT.getId());
-            //可用余额流水增加
-            this.accountFlowService.addAccountFlow(merchantAccount.getId(), order.getOrderNo(), merchantIncreaseSettleAccountFlow.getIncomeAmount(),
-                    "支付", EnumAccountFlowType.INCREASE);
-        }
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @param order
-     */
-    @Override
-    @Transactional
-    public void companySettle(Order order) {
-        //公司账户结算
-        final Optional<SettleAccountFlow> optional = this.settleAccountFlowService.getByOrderNoAndAccountIdAndType(order.getOrderNo(),
-                AccountConstants.JKM_ACCOUNT_ID, EnumAccountFlowType.DECREASE.getId());
-        if (!optional.isPresent() && !order.isSettled()) {
-            final Account jkmAccount = this.accountService.getByIdWithLock(AccountConstants.JKM_ACCOUNT_ID).get();
-            final SettleAccountFlow jkmIncreaseSettleAccountFlow =
-                    this.settleAccountFlowService.getByOrderNoAndAccountIdAndType(order.getOrderNo(), jkmAccount.getId(),
-                            EnumAccountFlowType.INCREASE.getId()).get();
-            //待结算金额减少
-            Preconditions.checkState(order.getTradeAmount().subtract(order.getPoundage()).compareTo(jkmAccount.getDueSettleAmount()) <= 0);
-            Preconditions.checkState(order.getTradeAmount().subtract(order.getPoundage()).compareTo(jkmIncreaseSettleAccountFlow.getIncomeAmount()) == 0);
-            this.accountService.increaseAvailableAmount(jkmAccount.getId(), jkmIncreaseSettleAccountFlow.getIncomeAmount());
-            this.accountService.decreaseSettleAmount(jkmAccount.getId(), jkmIncreaseSettleAccountFlow.getIncomeAmount());
-            this.settleAccountFlowService.addSettleAccountFlow(jkmAccount.getId(), order.getOrderNo(), jkmIncreaseSettleAccountFlow.getIncomeAmount(),
-                    "商户升级", EnumAccountFlowType.DECREASE, EnumAppType.HSS.getId(), order.getPaySuccessTime(), EnumAccountUserType.COMPANY.getId());
-            //可用余额流水增加
-            this.accountFlowService.addAccountFlow(jkmAccount.getId(), order.getOrderNo(), jkmIncreaseSettleAccountFlow.getIncomeAmount(),
-                    "商户升级", EnumAccountFlowType.INCREASE);
-        }
     }
 
     /**
@@ -742,27 +644,32 @@ public class PayServiceImpl implements PayService {
     public void merchantUpgradePoundageSettle(final Order order, final long merchantId) {
         final Map<String, Triple<Long, BigDecimal, String>> promoteShallMap =
                 this.merchantPromoteShallService.merchantPromoteShall(merchantId, order.getOrderNo(), order.getBusinessOrderNo(), order.getTradeAmount());
+        final Triple<Long, BigDecimal, String> companyMoneyTriple = promoteShallMap.get("companyMoney");
         final Triple<Long, BigDecimal, String> firstMoneyTriple = promoteShallMap.get("firstMoney");
         final Triple<Long, BigDecimal, String> secondMoneyTriple = promoteShallMap.get("secondMoney");
         final Triple<Long, BigDecimal, String> directMoneyTriple = promoteShallMap.get("directMoney");
         final Triple<Long, BigDecimal, String> inDirectMoneyTriple = promoteShallMap.get("inDirectMoney");
-        final BigDecimal firstMoney = null == firstMoneyTriple ? new BigDecimal("0") : firstMoneyTriple.getMiddle();
-        final BigDecimal secondMoney = null == secondMoneyTriple ? new BigDecimal("0") : secondMoneyTriple.getMiddle();
-        final BigDecimal directMoney = null == directMoneyTriple ? new BigDecimal("0") : directMoneyTriple.getMiddle();
-        final BigDecimal inDirectMoney = null == inDirectMoneyTriple ? new BigDecimal("0") : inDirectMoneyTriple.getMiddle();
-        Preconditions.checkState(order.getPoundage().compareTo(firstMoney.add(secondMoney).add(directMoney).add(inDirectMoney)) >= 0);
+        final BigDecimal companyMoney = null == companyMoneyTriple ? new BigDecimal("0.00") : companyMoneyTriple.getMiddle();
+        final BigDecimal firstMoney = null == firstMoneyTriple ? new BigDecimal("0.00") : firstMoneyTriple.getMiddle();
+        final BigDecimal secondMoney = null == secondMoneyTriple ? new BigDecimal("0.00") : secondMoneyTriple.getMiddle();
+        final BigDecimal directMoney = null == directMoneyTriple ? new BigDecimal("0.00") : directMoneyTriple.getMiddle();
+        final BigDecimal inDirectMoney = null == inDirectMoneyTriple ? new BigDecimal("0.00") : inDirectMoneyTriple.getMiddle();
+        Preconditions.checkState(order.getRealPayAmount().compareTo(companyMoney.add(firstMoney).add(secondMoney).add(directMoney).add(inDirectMoney)) >= 0);
         //手续费账户结算
-        final Account poundageAccount = this.accountService.getByIdWithLock(AccountConstants.POUNDAGE_ACCOUNT_ID).get();
-        Preconditions.checkState(order.getPoundage().compareTo(poundageAccount.getAvailable()) <= 0, "该笔订单的分账手续费不可以大于手续费账户的可用余额总和");
-        this.accountService.decreaseAvailableAmount(poundageAccount.getId(), order.getPoundage());
-        this.accountService.decreaseTotalAmount(poundageAccount.getId(), order.getPoundage());
-        this.accountFlowService.addAccountFlow(poundageAccount.getId(), order.getOrderNo(), order.getPoundage(),
-                "商户升级-反润", EnumAccountFlowType.DECREASE);
+        if (null != companyMoneyTriple) {
+            this.splitAccountRecordService.addMerchantUpgradePaySplitAccountRecord(EnumSplitBusinessType.HSSPROMOTE.getId(), order.getOrderNo(), order.getOrderNo(),
+                    order.getTradeAmount(), order.getRealPayAmount(), firstMoneyTriple, "金开门利润账户", "商户升级-反润");
+            final Account jkmAccount = this.accountService.getByIdWithLock(AccountConstants.JKM_ACCOUNT_ID).get();;
+            this.accountService.increaseTotalAmount(jkmAccount.getId(), companyMoneyTriple.getMiddle());
+            this.accountService.increaseAvailableAmount(jkmAccount.getId(), companyMoneyTriple.getMiddle());
+            this.accountFlowService.addAccountFlow(jkmAccount.getId(), order.getOrderNo(), companyMoneyTriple.getMiddle(),
+                    "商户升级", EnumAccountFlowType.INCREASE);
+        }
         //一级代理商利润--到结算--可用余额
         if (null != firstMoneyTriple) {
             final Dealer dealer = this.dealerService.getByAccountId(firstMoneyTriple.getLeft()).get();
             this.splitAccountRecordService.addMerchantUpgradePaySplitAccountRecord(EnumSplitBusinessType.HSSPROMOTE.getId(), order.getOrderNo(), order.getOrderNo(),
-                    order.getTradeAmount(), order.getPoundage(), firstMoneyTriple, dealer.getProxyName(), "商户升级-反润");
+                    order.getTradeAmount(), order.getRealPayAmount(), firstMoneyTriple, dealer.getProxyName(), "商户升级-反润");
             final Account account = this.accountService.getById(firstMoneyTriple.getLeft()).get();
             this.accountService.increaseTotalAmount(account.getId(), firstMoneyTriple.getMiddle());
             this.accountService.increaseSettleAmount(account.getId(), firstMoneyTriple.getMiddle());
@@ -799,7 +706,7 @@ public class PayServiceImpl implements PayService {
             final Dealer dealer = this.dealerService.getByAccountId(secondMoneyTriple.getLeft()).get();
             final Account account = this.accountService.getById(secondMoneyTriple.getLeft()).get();
             this.splitAccountRecordService.addMerchantUpgradePaySplitAccountRecord(EnumSplitBusinessType.HSSPROMOTE.getId(), order.getOrderNo(), order.getOrderNo(),
-                    order.getTradeAmount(), order.getPoundage(), secondMoneyTriple, dealer.getProxyName(), "商户升级-反润");
+                    order.getTradeAmount(), order.getRealPayAmount(), secondMoneyTriple, dealer.getProxyName(), "商户升级-反润");
             this.accountService.increaseTotalAmount(account.getId(), secondMoneyTriple.getMiddle());
             this.accountService.increaseSettleAmount(account.getId(), secondMoneyTriple.getMiddle());
             final long settleAccountFlowIncreaseId = this.settleAccountFlowService.addSettleAccountFlow(account.getId(), order.getOrderNo(), secondMoneyTriple.getMiddle(),
@@ -834,7 +741,7 @@ public class PayServiceImpl implements PayService {
         if (null != directMoneyTriple) {
             final MerchantInfo merchant = this.merchantInfoService.getByAccountId(directMoneyTriple.getLeft()).get();
             this.splitAccountRecordService.addMerchantUpgradePaySplitAccountRecord(EnumSplitBusinessType.HSSPROMOTE.getId(), order.getOrderNo(), order.getOrderNo(),
-                    order.getTradeAmount(), order.getPoundage(), directMoneyTriple, merchant.getMerchantName(), "商户升级-直推");
+                    order.getTradeAmount(), order.getRealPayAmount(), directMoneyTriple, merchant.getMerchantName(), "商户升级-直推");
             final Account account = this.accountService.getById(directMoneyTriple.getLeft()).get();
             this.accountService.increaseTotalAmount(account.getId(), directMoneyTriple.getMiddle());
             this.accountService.increaseSettleAmount(account.getId(), directMoneyTriple.getMiddle());
@@ -871,7 +778,7 @@ public class PayServiceImpl implements PayService {
             final MerchantInfo merchant = this.merchantInfoService.getByAccountId(inDirectMoneyTriple.getLeft()).get();
             final Account account = this.accountService.getById(inDirectMoneyTriple.getLeft()).get();
             this.splitAccountRecordService.addMerchantUpgradePaySplitAccountRecord(EnumSplitBusinessType.HSSPROMOTE.getId(), order.getOrderNo(), order.getOrderNo(),
-                    order.getTradeAmount(), order.getPoundage(), inDirectMoneyTriple, merchant.getMerchantName(), "商户升级-间推");
+                    order.getTradeAmount(), order.getRealPayAmount(), inDirectMoneyTriple, merchant.getMerchantName(), "商户升级-间推");
             this.accountService.increaseTotalAmount(account.getId(), inDirectMoneyTriple.getMiddle());
             this.accountService.increaseSettleAmount(account.getId(), inDirectMoneyTriple.getMiddle());
             final long settleAccountFlowIncreaseId = this.settleAccountFlowService.addSettleAccountFlow(account.getId(), order.getOrderNo(), inDirectMoneyTriple.getMiddle(),
@@ -921,11 +828,11 @@ public class PayServiceImpl implements PayService {
         placeOrderRequest.setGoodsDescribe(order.getGoodsDescribe());
         placeOrderRequest.setReturnUrl(returnUrl);
         placeOrderRequest.setNotifyUrl(PaymentSdkConstants.SDK_PAY_NOTIFY_URL);
-        placeOrderRequest.setMerName(merchant.getMerchantName());
+        placeOrderRequest.setMerName(merchant.getMerchantChangeName());
         placeOrderRequest.setMerNo(merchant.getMarkCode());
         placeOrderRequest.setTotalAmount(order.getTradeAmount().toPlainString());
         placeOrderRequest.setChannel(channel);
-
+        placeOrderRequest.setSettleNotifyUrl(PaymentSdkConstants.SDK_PAY_WITHDRAW_NOTIFY_URL);
         placeOrderRequest.setBankCode(merchant.getCode());
         placeOrderRequest.setCardNo(merchant.getBankNo());
         placeOrderRequest.setPayerName(merchant.getName());
