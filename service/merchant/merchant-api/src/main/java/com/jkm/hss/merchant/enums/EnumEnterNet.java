@@ -25,7 +25,7 @@ public enum EnumEnterNet {
     /**
      * 3 入网中
      */
-    ENTING(3, "已入网"),
+    ENTING(3, "入网中"),
     /**
      * 4 入网失败
      */

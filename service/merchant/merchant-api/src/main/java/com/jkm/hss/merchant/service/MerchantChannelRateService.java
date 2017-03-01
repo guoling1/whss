@@ -5,6 +5,7 @@ import com.jkm.hss.merchant.entity.MerchantChannelRate;
 import com.jkm.hss.merchant.entity.MerchantInfo;
 import com.jkm.hss.merchant.enums.EnumEnterNet;
 import com.jkm.hss.merchant.helper.request.MerchantChannelRateRequest;
+import com.jkm.hss.merchant.helper.request.MerchantEnterInRequest;
 import com.jkm.hss.merchant.helper.request.MerchantGetRateRequest;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -42,11 +43,6 @@ public interface MerchantChannelRateService {
      */
     void updateEnterNetStatus(long merchantId, EnumEnterNet enumEnterNet, String msg);
 
-    /**
-     *  更新商户入网状态
-     * @param signIdList
-     */
-    int batchCheck(List<Integer> signIdList);
 
     /**
      * 根据商户id查询 通道列表
@@ -61,5 +57,15 @@ public interface MerchantChannelRateService {
      */
     Optional<MerchantChannelRate> selectByThirdCompanyAndProductIdAndMerchantId(MerchantGetRateRequest merchantGetRateRequest);
 
-//    Pair<Integer,String> enterInterNet();
+    /**
+     *根据公司名、通道标示、产品编码查询商户费用
+     * @param merchantEnterInRequest
+     * @return
+     */
+    List<MerchantChannelRate> selectByChannelCompanyAndProductIdAndMerchantId(MerchantEnterInRequest merchantEnterInRequest);
+
+    /**
+     * 商户入网
+     */
+    void enterInterNet(long productId,long merchantId,String channelCompany);
 }
