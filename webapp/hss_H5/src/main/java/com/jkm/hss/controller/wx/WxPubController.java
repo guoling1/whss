@@ -1136,7 +1136,7 @@ public class WxPubController extends BaseController {
         if(!userInfoOptional.isPresent()){
             return CommonResponse.simpleResponse(-2, "未登录");
         }
-        Optional<MerchantInfo> merchantInfo = merchantInfoService.selectById(userInfoOptional.get().getMerchantId());
+        Optional<MerchantInfo> merchantInfo = merchantInfoService.selectById(93);
         if(!merchantInfo.isPresent()){
             return CommonResponse.simpleResponse(-2, "未登录");
         }
