@@ -197,15 +197,19 @@ public class AccountSettleAuditRecordServiceImpl implements AccountSettleAuditRe
         }
         final List<SettleAccountFlowStatistics> settleAccountFlowStatisticses = this.settleAccountFlowService.statisticsYesterdayFlow(tradeDate);
         log.info("今日[{}]的待结算流水统计是[{}]", settleAccountFlowStatisticses);
+        final ArrayList<Long> dealerAccountIds = new ArrayList<>();
+        final ArrayList<Long> shopAccountIds = new ArrayList<>();
         if (!CollectionUtils.isEmpty(settleAccountFlowStatisticses)) {
-            final List<Long> accountIds = Lists.transform(settleAccountFlowStatisticses, new Function<SettleAccountFlowStatistics, Long>() {
-                @Override
-                public Long apply(SettleAccountFlowStatistics input) {
-                    return input.getAccountId();
+            for (SettleAccountFlowStatistics statistics : settleAccountFlowStatisticses) {
+                if (EnumAccountUserType.DEALER.getId() == statistics.getAccountUserType()) {
+                    dealerAccountIds.add(statistics.getAccountId());
                 }
-            });
-            final List<AppBizShop> shopList = this.hsyShopDao.findAppBizShopByAccountIDList(accountIds);
-            Preconditions.checkState(accountIds.size() == shopList.size(), "通过账户查询店铺出现异常，数量不一致");
+                if (EnumAccountUserType.MERCHANT.getId() == statistics.getAccountUserType()) {
+                    shopAccountIds.add(statistics.getAccountId());
+                }
+            }
+            final List<AppBizShop> shopList = this.hsyShopDao.findAppBizShopByAccountIDList(shopAccountIds);
+            Preconditions.checkState(shopAccountIds.size() == shopList.size(), "通过账户查询店铺出现异常，数量不一致");
             //accountId--shop(主)
             final Map<Long, AppBizShop> shopMap = Maps.uniqueIndex(shopList, new Function<AppBizShop, Long>() {
                 @Override
@@ -213,7 +217,7 @@ public class AccountSettleAuditRecordServiceImpl implements AccountSettleAuditRe
                     return input.getAccountID();
                 }
             });
-            final List<Dealer> dealers = this.dealerService.getByAccountIds(accountIds);
+            final List<Dealer> dealers = this.dealerService.getByAccountIds(dealerAccountIds);
             final Map<Long, Dealer> dealerMap = Maps.uniqueIndex(dealers, new Function<Dealer, Long>() {
                 @Override
                 public Long apply(Dealer input) {
@@ -387,10 +391,11 @@ public class AccountSettleAuditRecordServiceImpl implements AccountSettleAuditRe
     @Transactional
     public Pair<Integer, String> batchSettle(final List<Long> recordIds) {
         final List<AccountSettleAuditRecord> records = this.getByIds(recordIds);
-        for (AccountSettleAuditRecord record : records) {
+        for (int i = 0; i < records.size(); i++) {
+            final AccountSettleAuditRecord record = records.get(i);
             final JSONObject requestParam = new JSONObject();
             requestParam.put("recordId", record.getId());
-            MqProducer.produce(requestParam, MqConfig.NORMAL_SETTLE, 0);
+            MqProducer.produce(requestParam, MqConfig.NORMAL_SETTLE, 10 * i);
         }
         return Pair.of(0, "success");
     }

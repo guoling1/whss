@@ -59,6 +59,12 @@ public class TradeController extends BaseController {
     @Autowired
     private MerchantInfoService merchantInfoService;
 
+    @RequestMapping(value = "test")
+    public void test() {
+        this.withdrawService.merchantWithdrawBySettlementRecord(79, 1, "1120170228152908929305627" , 101);
+    }
+
+
     /**
      * 动态码支付
      *
@@ -98,9 +104,9 @@ public class TradeController extends BaseController {
         final Pair<Integer, String> resultPair = this.payService.codeReceipt(payRequest.getTotalFee(),
                 payRequest.getPayChannel(), merchantInfo.get().getId(), EnumAppType.HSS.getId(), true);
         if (0 == resultPair.getLeft()) {
-            return CommonResponse.builder4MapResult(CommonResponse.SUCCESS_CODE, "收款成功")
+            return CommonResponse.builder4MapResult(CommonResponse.SUCCESS_CODE, "success")
                     .addParam("payUrl", URLDecoder.decode(resultPair.getRight(), "UTF-8"))
-                    .addParam("subMerName", merchantInfo.get().getMerchantName())
+                    .addParam("subMerName", "")
                     .addParam("amount", totalFee).build();
         }
         return CommonResponse.simpleResponse(-1, resultPair.getRight());
@@ -140,7 +146,7 @@ public class TradeController extends BaseController {
         final Pair<Integer, String> resultPair = this.payService.codeReceipt(payRequest.getTotalFee(),
                 payRequest.getPayChannel(), merchantInfo.get().getId(), EnumAppType.HSS.getId(), false);
         if (0 == resultPair.getLeft()) {
-            return CommonResponse.builder4MapResult(CommonResponse.SUCCESS_CODE, "收款成功")
+            return CommonResponse.builder4MapResult(CommonResponse.SUCCESS_CODE, "success")
                     .addParam("payUrl", URLDecoder.decode(resultPair.getRight(), "UTF-8"))
                     .addParam("subMerName", merchantInfo.get().getMerchantName())
                     .addParam("amount", totalAmount).build();
@@ -189,14 +195,6 @@ public class TradeController extends BaseController {
                 return CommonResponse.simpleResponse(-1, "不存在的支付状态");
             }
         }
-//        for (int i = 0; i < payTypeList.size(); i++) {
-//            final String payType = payTypeList.get(i);
-//            if (!EnumPaymentType.WECHAT_H5_CASHIER_DESK.getId().equals(payType)
-//                    && !EnumPaymentType.QUICK_APY.getId().equals(payType)
-//                    && !EnumPaymentType.ALIPAY_SCAN_CODE.getId().equals(payType)) {
-//                return CommonResponse.simpleResponse(-1, "不存在的支付方式");
-//            }
-//        }
         payTypeList.add("N");
         if (StringUtils.isEmpty(requestParam.getOrderNo())) {
             requestParam.setOrderNo(null);
