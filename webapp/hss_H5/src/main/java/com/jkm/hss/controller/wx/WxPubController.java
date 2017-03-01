@@ -1058,10 +1058,10 @@ public class WxPubController extends BaseController {
         if(Integer.parseInt(bankCardBinOptional.get().getCardTypeCode())!=1){
             return CommonResponse.simpleResponse(-1, "只能输入信用卡");
         }
-//        if(!super.isLogin(request)){
-//            return CommonResponse.simpleResponse(-2, "未登录");
-//        }
-        Optional<UserInfo> userInfoOptional = userInfoService.selectByOpenId("ou2YpwZYsLc80lCRXF4vj6FFanvs");
+        if(!super.isLogin(request)){
+            return CommonResponse.simpleResponse(-2, "未登录");
+        }
+        Optional<UserInfo> userInfoOptional = userInfoService.selectByOpenId(super.getOpenId(request));
         if(!userInfoOptional.isPresent()){
             return CommonResponse.simpleResponse(-2, "未登录");
         }
