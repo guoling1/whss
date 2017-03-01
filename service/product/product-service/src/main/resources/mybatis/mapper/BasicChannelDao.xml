@@ -6,21 +6,31 @@
         (account_id,
         channel_name,
         channel_type_sign,
+        support_way,
         third_company,
         channel_source,
         basic_trade_rate,
         basic_withdraw_fee,
         basic_balance_type,
+        basic_settle_type,
+        limit_amount,
+        is_need,
+        channel_company,
         status
         )VALUES(
         #{accountId},
         #{channelName},
         #{channelTypeSign},
+        #{supportWay},
         #{thirdCompany},
         #{channelSource},
         #{basicTradeRate},
         #{basicWithdrawFee},
         #{basicBalanceType},
+        #{basicSettleType},
+        #{limitAmount},
+        #{isNeed},
+        #{channelCompany},
         #{status}
         )
     </insert>
@@ -29,11 +39,13 @@
         SET account_id = #{accountId},
         channel_name = #{channelName},
         channel_type_sign = #{channelTypeSign},
+        support_way = #{supportWay},
         third_company = #{thirdCompany},
         channel_source = #{channelSource},
         basic_trade_rate = #{basicTradeRate},
         basic_withdraw_fee = #{basicWithdrawFee},
         basic_balance_type = #{basicBalanceType},
+        basic_settle_type = #{},
         status = #{status}
         WHERE id = #{id}
     </update>
