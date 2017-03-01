@@ -2163,7 +2163,7 @@ input:focus {
   height: 49px;
   line-height: 49px;
   font-size: 15px;
-  width: calc(100% - 100px);
+  width: calc(0%);
 }
 #branchInfo .branch .list .layer {
   position: absolute;

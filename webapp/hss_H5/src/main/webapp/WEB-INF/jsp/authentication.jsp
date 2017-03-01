@@ -142,8 +142,14 @@
     <div class="mark green"><span class="icard"></span>信用卡</div>
     <div class="list">
       <div class="left">信用卡号:</div>
-      <%--<div class="right">招商银行 尾号9098</div>--%>
-      <a href="/sqb/creditCardAuthen" class="btn">立即认证</a>
+      <c:choose>
+        <c:when test="${isAuthen == '1'}">
+          <div class="right">${creditCardName} 尾号${creditCardShort}</div>
+        </c:when>
+        <c:otherwise>
+          <a href="/sqb/creditCardAuthen" class="btn">立即认证</a>
+        </c:otherwise>
+      </c:choose>
     </div>
     <div class="list">
       <span class="small">认证通过后可使用大额收款</span>

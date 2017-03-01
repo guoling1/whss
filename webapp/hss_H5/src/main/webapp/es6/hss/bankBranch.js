@@ -25,9 +25,6 @@ let match_ipt = document.getElementById('match_ipt');
 let p = document.getElementById('p');
 let c = document.getElementById('c');
 let ct = document.getElementById('ct');
-// 定义要提交的变量
-let branchCode = '';
-let branchName = '';
 
 let Provinces = false;
 let Citys = false;
@@ -39,15 +36,17 @@ if (pageData.provinceCode != '' &&
   pageData.cityCode != '' &&
   pageData.cityName != '' &&
   pageData.countyCode != '' &&
-  pageData.countyName != '') {
+  pageData.countyName != '' &&
+  pageData.branchCode != '' &&
+  pageData.branchName != '') {
   world.value = pageData.provinceName + pageData.cityName + pageData.countyName;
-  branch.value = '';
+  branch.value = pageData.branchName;
 }
 
 submit.onclick = function () {
   http.post('/wx/branchInfo', {
-    branchCode: branchCode,
-    branchName: branchName,
+    branchCode: pageData.branchCode,
+    branchName: pageData.branchName,
     provinceCode: pageData.provinceCode,
     provinceName: pageData.provinceName,
     cityCode: pageData.cityCode,
@@ -87,8 +86,8 @@ match_ipt.addEventListener('input', function (e) {
         div_branch.innerHTML = data[i].branchName;
         div_branch.onclick = function () {
           branch.value = data[i].branchName;
-          branchCode = data[i].branchCode;
-          branchName = data[i].branchName;
+          pageData.branchCode = data[i].branchCode;
+          pageData.branchName = data[i].branchName;
           layer_b.style.display = 'none';
         };
         layer_b_list.appendChild(div_branch);
@@ -107,6 +106,8 @@ world.onclick = function () {
   } else {
     ProvincesSet();
   }
+  branch.value = '';
+  layer_b_list.innerHTML = '';
   layer_w.style.display = 'block';
   let rect_w = layer_w.getBoundingClientRect();
   layer_w.style.height = (client_h - rect_w.top) + 'px';

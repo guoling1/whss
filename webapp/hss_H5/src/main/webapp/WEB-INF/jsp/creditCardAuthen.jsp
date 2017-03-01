@@ -45,7 +45,6 @@
       line-height: 49px;
       float: left;
       font-size: 15px;
-      color: #aab2d2;
     }
 
     .small {
@@ -77,7 +76,7 @@
 <div id="branchInfo">
   <div class="ipt-space">
     <div class="name">信用卡号</div>
-    <input class="ipt" type="text" placeholder="输入本人名下信用卡号">
+    <input id="ipt" class="ipt" type="text" placeholder="输入本人名下信用卡号">
   </div>
 
   <div class="small">
@@ -85,12 +84,12 @@
   </div>
 
   <div class="submit-space">
-    <div class="submit">确定</div>
+    <div id="submit" class="submit">确定</div>
   </div>
 
 </div>
 
 </body>
 <script src="http://static.jinkaimen.cn/vendor/vendor.1.0.1.min.js"></script>
-<script src="http://static.jinkaimen.cn/hss/2.0.1/common.min.js"></script>
+<script src="/js/hss/2.0.1/creditCardAuthen.min.js"></script>
 </html>
