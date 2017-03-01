@@ -13,3 +13,13 @@ new Keyboard({
   inputId: 'key-input',
   keyboardId: 'keyboard'
 });
+
+// 定义变量
+let layerB = document.getElementById('layerB');
+let xxB = document.getElementById('xxB');
+let toB = document.getElementById('toB');
+let cancel = document.getElementById('cancel');
+
+layerB.addEventListener('click', function () {
+  layerB.style.display = 'block';
+});

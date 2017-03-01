@@ -13,7 +13,7 @@
         content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
   <meta name="format-detection" content="telephone=no"/>
   <title>好收收</title>
-  <link rel="stylesheet" href="http://static.jinkaimen.cn/hss/css/style.2.1.2.css">
+  <link rel="stylesheet" href="/css/hss/style.2.1.1.css">
   <link rel="stylesheet" href="http://static.jinkaimen.cn/weui/weui.css">
 </head>
 <body>
@@ -68,9 +68,25 @@
       </div>
     </div>
   </div>
+
+  <div class="layer" id="layerB">
+    <div class="space">
+      <div class="space-title">
+        提示
+        <div class="xx" id="xxB"></div>
+      </div>
+      <div class="space-cont">
+        <div class="cont-detail">使用该通道前，您需要补全结算卡的支行信息</div>
+        <div class="operation">
+          <div class="cancel" id="cancel">待会儿再说</div>
+          <div class="submit" id="toB">去补全</div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 
 </body>
 <script src="http://static.jinkaimen.cn/vendor/vendor.1.0.3.min.js"></script>
-<script src="http://static.jinkaimen.cn/hss/2.0.1/collection.min.js"></script>
+<script src="/js/hss/2.0.1/collection.min.js"></script>
 </html>
