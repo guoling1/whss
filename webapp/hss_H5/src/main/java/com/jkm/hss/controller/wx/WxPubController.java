@@ -566,6 +566,7 @@ public class WxPubController extends BaseController {
                                         }else{
                                             merchantChannelRate.setEnterNet(EnumEnterNet.UNSUPPORT.getId());
                                         }
+                                        merchantChannelRate.setChannelCompany(basicChannelOptionalTemp.get().getChannelCompany());
                                         merchantChannelRate.setThirdCompany(basicChannelOptionalTemp.get().getThirdCompany());
                                         merchantChannelRate.setStatus(EnumCommonStatus.NORMAL.getId());
                                         merchantChannelRateService.initMerchantChannelRate(merchantChannelRate);
@@ -599,6 +600,7 @@ public class WxPubController extends BaseController {
                                 }else{
                                     merchantChannelRate.setEnterNet(EnumEnterNet.UNSUPPORT.getId());
                                 }
+                                merchantChannelRate.setChannelCompany(basicChannelOptionalTemp.get().getChannelCompany());
                                 merchantChannelRate.setThirdCompany(basicChannelOptionalTemp.get().getThirdCompany());
                                 merchantChannelRate.setStatus(EnumCommonStatus.NORMAL.getId());
                                 merchantChannelRateService.initMerchantChannelRate(merchantChannelRate);
@@ -676,6 +678,7 @@ public class WxPubController extends BaseController {
                                 }else{
                                     merchantChannelRate.setEnterNet(EnumEnterNet.UNSUPPORT.getId());
                                 }
+                                merchantChannelRate.setChannelCompany(basicChannelOptionalTemp.get().getChannelCompany());
                                 merchantChannelRate.setThirdCompany(basicChannelOptionalTemp.get().getThirdCompany());
                                 merchantChannelRate.setStatus(EnumCommonStatus.NORMAL.getId());
                                 merchantChannelRateService.initMerchantChannelRate(merchantChannelRate);
@@ -739,6 +742,7 @@ public class WxPubController extends BaseController {
                                 }else{
                                     merchantChannelRate.setEnterNet(EnumEnterNet.UNSUPPORT.getId());
                                 }
+                                merchantChannelRate.setChannelCompany(basicChannelOptionalTemp.get().getChannelCompany());
                                 merchantChannelRate.setThirdCompany(basicChannelOptionalTemp.get().getThirdCompany());
                                 merchantChannelRate.setStatus(EnumCommonStatus.NORMAL.getId());
                                 merchantChannelRateService.initMerchantChannelRate(merchantChannelRate);
