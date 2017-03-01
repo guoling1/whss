@@ -29,6 +29,9 @@
         WHERE
         enter_net = #{entId}
     </select>
+    <select id="selectByMerchantId" resultType="com.jkm.hss.merchant.entity.MerchantChannelRate">
+        SELECT * FROM tb_merchant_channel_rate WHERE merchant_id = #{merchantId}
+    </select>
 
     <!--费率初始化-->
     <insert id="initMerchantChannelRate" useGeneratedKeys="true" keyProperty="id">

@@ -45,4 +45,10 @@ public interface MerchantChannelRateService {
      */
     int batchCheck(List<Integer> signIdList);
 
+    /**
+     * 根据商户id查询 通道列表
+     * @param merchantId
+     * @return
+     */
+    List<MerchantChannelRate> selectByMerchantId(long merchantId);
 }

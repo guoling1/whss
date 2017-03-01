@@ -74,4 +74,14 @@ public class MerchantChannelRateServiceImpl implements MerchantChannelRateServic
     public int batchCheck(List<Integer> signIdList) {
         return merchantChannelRateDao.batchCheck(signIdList);
     }
+
+    /**
+     * {@inheritDoc}
+     * @param merchantId
+     * @return
+     */
+    @Override
+    public List<MerchantChannelRate> selectByMerchantId(long merchantId) {
+        return this.merchantChannelRateDao.selectByMerchantId(merchantId);
+    }
 }

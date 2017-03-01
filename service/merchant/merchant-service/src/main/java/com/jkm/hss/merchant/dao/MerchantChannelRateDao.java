@@ -45,4 +45,11 @@ public interface MerchantChannelRateDao {
      * @param signIdList
      */
     int batchCheck(@Param("signIdList") List<Integer> signIdList);
+
+    /**
+     * 查询
+     * @param merchantId
+     * @return
+     */
+    List<MerchantChannelRate> selectByMerchantId(@Param("merchantId") long merchantId);
 }
