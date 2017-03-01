@@ -50,7 +50,7 @@ public class MerchantChannelRate extends BaseEntity{
     private BigDecimal merchantWithdrawFee;
 
     /**
-     * 三方支付公司
+     * 支付方式
      * {@link com.jkm.hss.merchant.enums.EnumPayMethod}
      *
      */

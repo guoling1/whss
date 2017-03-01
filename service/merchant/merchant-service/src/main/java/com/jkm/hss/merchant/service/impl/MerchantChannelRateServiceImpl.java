@@ -13,6 +13,7 @@ import com.jkm.hss.merchant.helper.SmPost;
 import com.jkm.hss.merchant.helper.request.MerchantChannelRateRequest;
 import com.jkm.hss.merchant.helper.request.MerchantEnterInRequest;
 import com.jkm.hss.merchant.helper.request.MerchantGetRateRequest;
+import com.jkm.hss.merchant.helper.request.MerchantUpgradeRequest;
 import com.jkm.hss.merchant.service.MerchantChannelRateService;
 import com.jkm.hss.product.enums.EnumPayChannelSign;
 import lombok.extern.slf4j.Slf4j;
@@ -95,8 +96,8 @@ public class MerchantChannelRateServiceImpl implements MerchantChannelRateServic
      * @return
      */
     @Override
-    public Optional<MerchantChannelRate> selectByThirdCompanyAndProductIdAndMerchantId(MerchantGetRateRequest merchantGetRateRequest) {
-        return Optional.fromNullable(this.merchantChannelRateDao.selectByThirdCompanyAndProductIdAndMerchantId(merchantGetRateRequest));
+    public List<MerchantChannelRate> selectByThirdCompanyAndProductIdAndMerchantId(MerchantGetRateRequest merchantGetRateRequest) {
+        return this.merchantChannelRateDao.selectByThirdCompanyAndProductIdAndMerchantId(merchantGetRateRequest);
     }
 
     /**
@@ -178,5 +179,15 @@ public class MerchantChannelRateServiceImpl implements MerchantChannelRateServic
 
 
         }
+    }
+
+    /**
+     * 升级降费率
+     *
+     * @param merchantUpgradeRequest
+     */
+    @Override
+    public void toUpgrade(MerchantUpgradeRequest merchantUpgradeRequest) {
+            merchantChannelRateDao.toUpgrade(merchantUpgradeRequest);
     }
 }

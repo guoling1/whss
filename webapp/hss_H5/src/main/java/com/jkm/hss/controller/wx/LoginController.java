@@ -16,6 +16,7 @@ import com.jkm.hss.dealer.service.PartnerShallProfitDetailService;
 import com.jkm.hss.dealer.service.ShallProfitDetailService;
 import com.jkm.hss.helper.ApplicationConsts;
 import com.jkm.hss.merchant.entity.AccountInfo;
+import com.jkm.hss.merchant.entity.MerchantChannelRate;
 import com.jkm.hss.merchant.entity.MerchantInfo;
 import com.jkm.hss.merchant.entity.UserInfo;
 import com.jkm.hss.merchant.enums.EnumIsUpgrade;
@@ -1185,15 +1186,24 @@ public class LoginController extends BaseController {
                         model.addAttribute("name",getNameByLevel(result.get().getLevel()));
                         model.addAttribute("level",result.get().getLevel());
 
-//                        MerchantGetRateRequest weixinMerchantGetRateRequest = new MerchantGetRateRequest();
-//                        weixinMerchantGetRateRequest.setProductId(result.get().getProductId());
-//                        weixinMerchantGetRateRequest.setMerchantId(result.get().getId());
-//                        weixinMerchantGetRateRequest.setThirdCompany(EnumPayMethod.WEIXIN.getId());
-//                        merchantChannelRateService.selectByThirdCompanyAndProductIdAndMerchantId(weixinMerchantGetRateRequest);
-
-                        model.addAttribute("weixinRate",result.get().getWeixinRate());
-                        model.addAttribute("alipayRate",result.get().getAlipayRate());
-                        model.addAttribute("fastRate",result.get().getFastRate());
+                        MerchantGetRateRequest weixinMerchantGetRateRequest = new MerchantGetRateRequest();
+                        weixinMerchantGetRateRequest.setProductId(result.get().getProductId());
+                        weixinMerchantGetRateRequest.setMerchantId(result.get().getId());
+                        weixinMerchantGetRateRequest.setThirdCompany(EnumPayMethod.WEIXIN.getId());
+                        List<MerchantChannelRate> weixinMerchantChannelRateList = merchantChannelRateService.selectByThirdCompanyAndProductIdAndMerchantId(weixinMerchantGetRateRequest);
+                        model.addAttribute("weixinRate",weixinMerchantChannelRateList.get(0).getMerchantPayRate());
+                        MerchantGetRateRequest zhifubaoMerchantGetRateRequest = new MerchantGetRateRequest();
+                        zhifubaoMerchantGetRateRequest.setProductId(result.get().getProductId());
+                        zhifubaoMerchantGetRateRequest.setMerchantId(result.get().getId());
+                        zhifubaoMerchantGetRateRequest.setThirdCompany(EnumPayMethod.WEIXIN.getId());
+                        List<MerchantChannelRate> zhifubaoMerchantChannelRateList = merchantChannelRateService.selectByThirdCompanyAndProductIdAndMerchantId(zhifubaoMerchantGetRateRequest);
+                        model.addAttribute("alipayRate",zhifubaoMerchantChannelRateList.get(0).getMerchantPayRate());
+                        MerchantGetRateRequest fastPayMerchantGetRateRequest = new MerchantGetRateRequest();
+                        fastPayMerchantGetRateRequest.setProductId(result.get().getProductId());
+                        fastPayMerchantGetRateRequest.setMerchantId(result.get().getId());
+                        fastPayMerchantGetRateRequest.setThirdCompany(EnumPayMethod.FASTPAY.getId());
+                        List<MerchantChannelRate> fastPayMerchantChannelRateList = merchantChannelRateService.selectByThirdCompanyAndProductIdAndMerchantId(fastPayMerchantGetRateRequest);
+                        model.addAttribute("fastRate",fastPayMerchantChannelRateList.get(0).getMerchantPayRate());
 
                         List<ProductChannelDetail> productChannelDetails = productChannelDetailService.selectByProductId(result.get().getProductId());
                         if(productChannelDetails.size()==0){
@@ -1286,9 +1296,25 @@ public class LoginController extends BaseController {
                         model.addAttribute("mobile",phone);
                         model.addAttribute("name",getNameByLevel(result.get().getLevel()));
                         model.addAttribute("level",result.get().getLevel());
-                        model.addAttribute("weixinRate",result.get().getWeixinRate());
-                        model.addAttribute("alipayRate",result.get().getAlipayRate());
-                        model.addAttribute("fastRate",result.get().getFastRate());
+
+                        MerchantGetRateRequest weixinMerchantGetRateRequest = new MerchantGetRateRequest();
+                        weixinMerchantGetRateRequest.setProductId(result.get().getProductId());
+                        weixinMerchantGetRateRequest.setMerchantId(result.get().getId());
+                        weixinMerchantGetRateRequest.setThirdCompany(EnumPayMethod.WEIXIN.getId());
+                        List<MerchantChannelRate> weixinMerchantChannelRateList = merchantChannelRateService.selectByThirdCompanyAndProductIdAndMerchantId(weixinMerchantGetRateRequest);
+                        model.addAttribute("weixinRate",weixinMerchantChannelRateList.get(0).getMerchantPayRate());
+                        MerchantGetRateRequest zhifubaoMerchantGetRateRequest = new MerchantGetRateRequest();
+                        zhifubaoMerchantGetRateRequest.setProductId(result.get().getProductId());
+                        zhifubaoMerchantGetRateRequest.setMerchantId(result.get().getId());
+                        zhifubaoMerchantGetRateRequest.setThirdCompany(EnumPayMethod.WEIXIN.getId());
+                        List<MerchantChannelRate> zhifubaoMerchantChannelRateList = merchantChannelRateService.selectByThirdCompanyAndProductIdAndMerchantId(zhifubaoMerchantGetRateRequest);
+                        model.addAttribute("alipayRate",zhifubaoMerchantChannelRateList.get(0).getMerchantPayRate());
+                        MerchantGetRateRequest fastPayMerchantGetRateRequest = new MerchantGetRateRequest();
+                        fastPayMerchantGetRateRequest.setProductId(result.get().getProductId());
+                        fastPayMerchantGetRateRequest.setMerchantId(result.get().getId());
+                        fastPayMerchantGetRateRequest.setThirdCompany(EnumPayMethod.FASTPAY.getId());
+                        List<MerchantChannelRate> fastPayMerchantChannelRateList = merchantChannelRateService.selectByThirdCompanyAndProductIdAndMerchantId(fastPayMerchantGetRateRequest);
+                        model.addAttribute("fastRate",fastPayMerchantChannelRateList.get(0).getMerchantPayRate());
 
                         List<ProductChannelDetail> productChannelDetails = productChannelDetailService.selectByProductId(result.get().getProductId());
                         if(productChannelDetails.size()==0){

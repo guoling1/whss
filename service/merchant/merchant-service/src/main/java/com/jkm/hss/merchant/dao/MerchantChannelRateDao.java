@@ -5,9 +5,11 @@ import com.jkm.hss.merchant.entity.MerchantChannelRate;
 import com.jkm.hss.merchant.helper.request.MerchantChannelRateRequest;
 import com.jkm.hss.merchant.helper.request.MerchantEnterInRequest;
 import com.jkm.hss.merchant.helper.request.MerchantGetRateRequest;
+import com.jkm.hss.merchant.helper.request.MerchantUpgradeRequest;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Set;
 
@@ -60,7 +62,7 @@ public interface MerchantChannelRateDao {
      * @param merchantGetRateRequest
      * @return
      */
-    MerchantChannelRate selectByThirdCompanyAndProductIdAndMerchantId(MerchantGetRateRequest merchantGetRateRequest);
+    List<MerchantChannelRate> selectByThirdCompanyAndProductIdAndMerchantId(MerchantGetRateRequest merchantGetRateRequest);
 
     /**
      *根据三方公司名字、通道标示、产品编码查询商户费用
@@ -68,4 +70,11 @@ public interface MerchantChannelRateDao {
      * @return
      */
     List<MerchantChannelRate> selectByChannelCompanyAndProductIdAndMerchantId(MerchantEnterInRequest merchantEnterInRequest);
+
+    /**
+     * 升级降费率
+     * @param merchantUpgradeRequest
+     */
+    void toUpgrade(MerchantUpgradeRequest merchantUpgradeRequest);
+
 }

@@ -209,7 +209,7 @@
         </div>
         <div class="box-body">
           <!--筛选-->
-          <ul>
+          <!--<ul>
             <li class="same">
               <label>通道名称:</label>
               <el-input style="width: 130px" v-model="query.orderNo" placeholder="请输入内容" size="small"></el-input>
@@ -221,7 +221,7 @@
             <li class="same">
               <div class="btn btn-primary" @click="search">筛选</div>
             </li>
-          </ul>
+          </ul>-->
           <!--表格-->
           <el-table v-loading.body="loading" height="583" style="font-size: 12px;margin-bottom:15px" :data="records" border>
             <el-table-column label="通道名称">
@@ -254,7 +254,6 @@
               </template>
             </el-table-column>
             <el-table-column prop="remarks" label="备注信息"></el-table-column>
-          </el-table>
           </el-table>
           <!--分页
           <div class="block" style="text-align: right">

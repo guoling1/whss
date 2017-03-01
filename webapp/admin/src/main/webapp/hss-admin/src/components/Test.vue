@@ -1194,11 +1194,8 @@
   }
 </style>-->
 
-<!--通道列表-->
-
-
 <!--新增产品-->
-<!--<template lang="html">
+<template lang="html">
   <div id="productAdd">
     <div style="margin: 15px 15px 150px;">
       <div class="box tableTop">
@@ -1243,11 +1240,25 @@
                 <div class="alignRight">添加通道:</div>
               </el-col>
               <el-col :span="12">
-                <div class="grid-content bg-purple-light">
+                <div class="grid-content bg-purple-light" style="width: 80%">
                   <el-table :data="tableData" @selection-change="handleSelectionChange" border v-if="tableHas">
-                    <el-table-column property="date" label="日期" width="150"></el-table-column>
-                    <el-table-column property="name" label="姓名" width="200"></el-table-column>
-                    <el-table-column property="address" label="地址"></el-table-column>
+                    <el-table-column label="通道名称">
+                      <template scope="scope">
+                        <span >{{tableData[scope.$index].channelName}}</span>
+                      </template>
+                    </el-table-column>
+                    <el-table-column prop="channelCode" label="通道编码"></el-table-column>
+                    <el-table-column prop="productTradeRate" label="支付结算手续费"></el-table-column>
+                    <el-table-column prop="channelSource" label="结算时间"></el-table-column>
+                    <el-table-column label="支付费率">
+                      <template scope="scope">
+                        <span>{{gridData[scope.$index].productWithdrawFee}}%</span>
+                      </template>
+                    </el-table-column>
+                    <el-table-column prop="basicBalanceType" label="提现结算费"></el-table-column>
+                    <el-table-column prop="basicBalanceType" label="产品支付手续费"></el-table-column>
+                    <el-table-column prop="basicBalanceType" label="商户提现手续费"></el-table-column>
+                    <el-table-column prop="basicBalanceType" label="操作"></el-table-column>
                   </el-table>
                   <span class="btn btn-primary" style="margin: 15px 0" @click="passSelect">添加通道</span>
                 </div>
@@ -1258,11 +1269,38 @@
             <el-dialog title="选择通道" v-model="dialogTableVisible">
               <el-table :data="gridData" @selection-change="handleSelectionChange" border>
                 <el-table-column type="selection" width="55"></el-table-column>
-                <el-table-column property="address" label="通道名称"></el-table-column>
+                <el-table-column label="通道名称">
+                  <template scope="scope">
+                    <span >{{gridData[scope.$index].channelName}}</span>
+                  </template>
+                </el-table-column>
+                <el-table-column prop="channelCode" label="通道编码"></el-table-column>
+                <el-table-column prop="thirdCompany" label="收单机构"></el-table-column>
+                <el-table-column prop="channelSource" label="渠道来源"></el-table-column>
+                <el-table-column label="支付费率">
+                  <template scope="scope">
+                    <span>{{gridData[scope.$index].basicTradeRate}}%</span>
+                  </template>
+                </el-table-column>
+                <el-table-column prop="basicBalanceType" label="结算时间"></el-table-column>
+                <el-table-column label="结算类型">
+                  <template scope="scope">
+                    <span v-if="gridData[scope.$index].basicSettleType=='AUTO'">通道自动结算</span>
+                    <span v-if="gridData[scope.$index].basicSettleType=='SELF'">自主打款结算</span>
+                  </template>
+                </el-table-column>
+                <el-table-column prop="supportWay" label="支付方式">
+                  <template scope="scope">
+                    <span v-if="gridData[scope.$index].supportWay=='1'">公众号</span>
+                    <span v-if="gridData[scope.$index].supportWay=='2'">扫码</span>
+                    <span v-if="gridData[scope.$index].supportWay=='3'">公众号、扫码</span>
+                  </template>
+                </el-table-column>
+                <el-table-column prop="remarks" label="备注信息"></el-table-column>
               </el-table>
               <div slot="footer" class="dialog-footer">
                 <el-button @click="dialogTableVisible = false">取 消</el-button>
-                <el-button type="primary" @click="dialogTableVisible = false">确 定</el-button>
+                <el-button type="primary" @click="select">确 定</el-button>
               </div>
             </el-dialog>
 
@@ -1377,7 +1415,7 @@
           bankReserveMobile: '',
           idCard: '',
         },
-        tableData:[],
+        channels:[],
         id: 0,
         isShow: true,
         productId: ''
@@ -1403,22 +1441,26 @@
     methods: {
       // 添加通道
       passSelect: function () {
-        this.$http.get('/admin/product/listChannel')
-          .then(res => {
-            this.gridData = res.data;
+        this.dialogTableVisible = true;
+        this.$http.post('/admin/channel/list')
+          .then(function (res) {
+            this.loading = false;
             this.dialogTableVisible = true;
-          })
-          .catch(err =>{
+            this.$data.gridData = res.data;
+          }, function (err) {
+            this.$data.loading = false;
             this.$message({
               showClose: true,
               message: err.statusMessage,
               type: 'error'
-            })
+            });
           })
       },
       handleSelectionChange(val) {
         this.multipleSelection = val;
-        console.log(this.multipleSelection)
+      },
+      select: function () {
+        this.tableData=this.tableData.concat(this.multipleSelection);
       },
       //修改密码
       resetPw:function() {
@@ -1492,7 +1534,7 @@
   }
 </script>
 
-&lt;!&ndash; Add "scoped" attribute to limit CSS to this component only &ndash;&gt;
+<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="less">
   .alignRight {
     margin-right: 15px;
@@ -1517,7 +1559,7 @@
     top:0;
     right: 0;
   }
-</style>-->
+</style>
 
 <!--产品列表-->
 <!--<template>
