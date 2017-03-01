@@ -61,6 +61,10 @@ public class MerchantChannelRate extends BaseEntity{
      * {@link com.jkm.hss.merchant.enums.EnumEnterNet}
      */
     private int enterNet;
+    /**
+     * 公司
+     */
+    private String channelCompany;
 
     /**
      * 入网信息
