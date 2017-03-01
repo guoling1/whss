@@ -80,7 +80,7 @@ public interface AllProfitDao {
      * @param req
      * @return
      */
-    List<CompanyProfitResponse> selectCompanyProfitDetailsCount(CompanyPrifitRequest req);
+    int selectCompanyProfitDetailsCount(CompanyPrifitRequest req);
 
     /**
      * 一级代理商分润详情总数
