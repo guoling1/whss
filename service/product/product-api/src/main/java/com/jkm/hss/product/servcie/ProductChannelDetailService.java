@@ -35,4 +35,11 @@ public interface ProductChannelDetailService {
      * @param detail
      */
     void update(ProductChannelDetail detail);
+    /**
+     * 查询某支付方式下的费率
+     * @param productId
+     * @param channelType
+     * @return
+     */
+    Optional<ProductChannelDetail> selectRateByProductIdAndChannelType(long productId,int channelType);
 }

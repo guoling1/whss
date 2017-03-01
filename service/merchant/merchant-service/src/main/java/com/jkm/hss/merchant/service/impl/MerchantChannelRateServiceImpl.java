@@ -160,12 +160,12 @@ public class MerchantChannelRateServiceImpl implements MerchantChannelRateServic
                         if (result != null && !"".equals(result)) {
                             JSONObject jo = JSONObject.fromObject(result);
                             if (jo.getInt("code") == 1) {
-                                merchantChannelRateDao.batchCheck(signIdList,EnumEnterNet.ENTING.getId(),merchantId);
+                                merchantChannelRateDao.batchCheck(signIdList,EnumEnterNet.ENTING.getId(),merchantId,jo.getString("msg"));
                             } else {
-                                merchantChannelRateDao.batchCheck(signIdList,EnumEnterNet.ENT_FAIL.getId(),merchantId);
+                                merchantChannelRateDao.batchCheck(signIdList,EnumEnterNet.ENT_FAIL.getId(),merchantId,jo.getString("msg"));
                             }
                         } else {
-                            merchantChannelRateDao.batchCheck(signIdList,EnumEnterNet.ENT_FAIL.getId(),merchantId);
+                            merchantChannelRateDao.batchCheck(signIdList,EnumEnterNet.ENT_FAIL.getId(),merchantId,"入网超时");
                         }
                     }else{
                         log.info("商户已入网");
