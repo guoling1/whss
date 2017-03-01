@@ -15,6 +15,7 @@
         basic_settle_type,
         limit_amount,
         is_need,
+        channel_company,
         status
         )VALUES(
         #{accountId},
@@ -29,6 +30,7 @@
         #{basicSettleType},
         #{limitAmount},
         #{isNeed},
+        #{channelCompany},
         #{status}
         )
     </insert>
@@ -37,11 +39,13 @@
         SET account_id = #{accountId},
         channel_name = #{channelName},
         channel_type_sign = #{channelTypeSign},
+        support_way = #{supportWay},
         third_company = #{thirdCompany},
         channel_source = #{channelSource},
         basic_trade_rate = #{basicTradeRate},
         basic_withdraw_fee = #{basicWithdrawFee},
         basic_balance_type = #{basicBalanceType},
+        basic_settle_type = #{},
         status = #{status}
         WHERE id = #{id}
     </update>
