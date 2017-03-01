@@ -3,13 +3,16 @@ package com.jkm.hss.controller.merchant;
 
 import com.alibaba.fastjson.JSONObject;
 import com.aliyun.oss.OSSClient;
+import com.google.common.base.Function;
+import com.google.common.collect.Lists;
 import com.jkm.hss.controller.BaseController;
 import com.jkm.hss.helper.ApplicationConsts;
-import com.jkm.hss.merchant.entity.LogResponse;
-import com.jkm.hss.merchant.entity.MerchantInfoResponse;
-import com.jkm.hss.merchant.entity.ReferralResponse;
-import com.jkm.hss.merchant.entity.SettleResponse;
+import com.jkm.hss.helper.response.MerchantRateResponse;
+import com.jkm.hss.merchant.entity.*;
+import com.jkm.hss.merchant.enums.EnumEnterNet;
+import com.jkm.hss.merchant.service.MerchantChannelRateService;
 import com.jkm.hss.merchant.service.QueryMerchantInfoRecordService;
+import com.jkm.hss.product.enums.EnumPayChannelSign;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -36,6 +39,8 @@ public class QueryMerchantInfoRecordController extends BaseController {
     @Autowired
     private OSSClient ossClient;
 
+    @Autowired
+    private MerchantChannelRateService merchantChannelRateService;
     @ResponseBody
     @RequestMapping(value = "/getAll",method = RequestMethod.POST)
     public JSONObject getAll(@RequestBody final MerchantInfoResponse merchantInfo) throws ParseException {
@@ -113,9 +118,24 @@ public class QueryMerchantInfoRecordController extends BaseController {
                 JSONObject jo = new JSONObject();
                 jo.put("list",list);
                 jo.put("res",lists);
-                jo.put("weixinRate",lst.getWeixinRate());
+                /*jo.put("weixinRate",lst.getWeixinRate());
                 jo.put("alipayRate",lst.getAlipayRate());
-                jo.put("fastRate",lst.getFastRate());
+                jo.put("fastRate",lst.getFastRate());*/
+                List<MerchantChannelRate> rateList =
+                        this.merchantChannelRateService.selectByMerchantId(merchantInfo.getId());
+                List<MerchantRateResponse> listResponse = Lists.transform(rateList, new Function<MerchantChannelRate, MerchantRateResponse>() {
+                    @Override
+                    public MerchantRateResponse apply(MerchantChannelRate input) {
+                        MerchantRateResponse mechantRateResponse = new MerchantRateResponse();
+                        mechantRateResponse.setChannelName(EnumPayChannelSign.idOf(input.getChannelTypeSign()).getName());
+                        mechantRateResponse.setMerchantRate(input.getMerchantPayRate().toString());
+                        mechantRateResponse.setWithdrawMoney(input.getMerchantWithdrawFee().setScale(2).toString());
+                        mechantRateResponse.setEntNet(EnumEnterNet.idOf(input.getEnterNet()).getMsg());
+                        mechantRateResponse.setRemarks(input.getRemarks());
+                        return mechantRateResponse;
+                    }
+                });
+                jo.put("rateInfo", listResponse);
                 jsonObject.put("result",jo);
 
                 return jsonObject;
