@@ -509,8 +509,10 @@
               </el-col>
               <el-col :span="6">
                 <div class="grid-content bg-purple-light">
-                  <el-radio class="radio" v-model="query.isNeed" label="1">支持</el-radio>
-                  <el-radio class="radio" v-model="query.isNeed" label="2">不支持</el-radio>
+                  <el-radio-group v-model="query.isNeed">
+                    <el-radio :label="1">支持</el-radio>
+                    <el-radio :label="2">不支持</el-radio>
+                  </el-radio-group>
                 </div>
               </el-col>
               <el-col :span="8">
@@ -578,7 +580,10 @@
           basicSettleType: '',
           limitAmount: '',
           isNeed: '',
-          remarks: ''
+          remarks: '',
+          id: '',
+          status: '',
+          accountId: ''
         },
         id: 0,
         isShow: true,
@@ -591,11 +596,41 @@
       //若为查看详情
       if (this.$route.query.id != undefined) {
         this.$data.isShow = false;
-        this.$http.get('/admin/dealer/findBydealerId/' + this.$route.query.id)
+        this.$http.post('/admin/channel/list')
           .then(function (res) {
-            this.$data.query = res.data;
-            this.$data.province = res.data.belongProvinceName;
-            this.$data.city = res.data.belongCityName;
+            this.query = res.data[this.$route.query.id];
+            this.name = res.data[this.$route.query.id].channelName;
+            this.query.isNeed = res.data[this.$route.query.id].isNeed;
+            if (/微信/.test(this.name)) {
+              this.nameType = 'wx';
+              if (this.query.supportWay == 3) {
+                this.payWay = ['微信公众号', '微信扫码']
+              } else if (this.query.supportWay == 2) {
+                this.payWay = ['微信公众号']
+              } else if (this.query.supportWay == 1) {
+                this.payWay = ['微信扫码']
+              }
+            } else if (/支付宝/.test(this.name)) {
+              this.nameType = 'zfb';
+              console.log(this.query.supportWay)
+              if (this.query.supportWay == 3) {
+                this.payWay = ['支付宝公众号','支付宝扫码']
+              } else if (this.query.supportWay == 2) {
+                this.payWay = ['支付宝公众号']
+              } else if (this.query.supportWay == 1) {
+                this.payWay = ['支付宝扫码']
+              }
+            }
+            this.query.id = res.data[this.$route.query.id].id;
+            this.query.status = res.data[this.$route.query.id].status;
+            this.query.accountId = res.data[this.$route.query.id].accountId;
+          })
+          .catch(err => {
+            this.$message({
+              showClose: true,
+              message: err.statusMessage,
+              type: 'error'
+            });
           })
       }
     },
@@ -661,19 +696,15 @@
       },
       //修改
       change: function () {
-        this.$data.query.dealerId = this.$data.query.id;
-        this.$http.post('/admin/user/updateDealer2', this.$data.query)
+          console.log(this.query);
+        this.$http.post('/admin/channel/update', this.$data.query)
           .then(function (res) {
             this.$message({
               showClose: true,
               message: '修改成功',
               type: 'success'
             });
-            if (this.$route.query.level == 2) {
-              this.$router.push('/admin/record/agentListSec')
-            } else {
-              this.$router.push('/admin/record/agentListFir')
-            }
+            this.$router.push('/admin/record/passList')
           }, function (err) {
             this.$message({
               showClose: true,
@@ -686,13 +717,10 @@
     watch: {
       name: function (val) {
         if (/微信/.test(val)) {
-          this.payWay = []
           this.nameType = 'wx'
         } else if (/支付宝/.test(val)) {
-          this.payWay = []
           this.nameType = 'zfb'
         } else {
-          this.payWay = []
           this.nameType = ''
         }
       }
