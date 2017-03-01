@@ -14,7 +14,7 @@
         <include refid="Base_Column_List" />
         FROM tb_merchant_channel_rate
         WHERE
-        merchant_id=#{merchantId} and product_id=#{productId} and channel_type_sign=#{channel_type_sign} and status=1
+        merchant_id=#{merchantId} and product_id=#{productId} and channel_type_sign=#{channelTypeSign} and status=1
     </select>
     <select id="selectIngMerchantInfo" resultType="com.jkm.hss.merchant.entity.MerchantChannelRate">
         SELECT

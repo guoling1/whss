@@ -29,10 +29,8 @@ import com.jkm.hss.dealer.service.DealerService;
 import com.jkm.hss.dealer.service.ShallProfitDetailService;
 import com.jkm.hss.notifier.enums.EnumVerificationCodeType;
 import com.jkm.hss.notifier.service.SmsAuthService;
-import com.jkm.hss.product.enums.EnumBalanceTimeType;
-import com.jkm.hss.product.enums.EnumPayChannelSign;
-import com.jkm.hss.product.enums.EnumProductType;
-import com.jkm.hss.product.enums.EnumUpperChannel;
+import com.jkm.hss.product.enums.*;
+import com.jkm.hss.product.servcie.BasicChannelService;
 import com.jkm.hss.push.sevice.PushService;
 import com.jkm.hsy.user.dao.HsyShopDao;
 import com.jkm.hsy.user.entity.AppAuUser;
@@ -85,6 +83,8 @@ public class HSYTradeServiceImpl implements HSYTradeService {
     private ShallProfitDetailService shallProfitDetailService;
     @Autowired
     private PushService pushService;
+    @Autowired
+    private BasicChannelService basicChannelService;
 
     /**
      * {@inheritDoc}
@@ -218,7 +218,7 @@ public class HSYTradeServiceImpl implements HSYTradeService {
     public Pair<Integer, String> receipt(final String totalAmount, final int channel, final long shopId, final String appId) {
         log.info("店铺[{}] 通过动态扫码， 支付一笔资金[{}]", shopId, totalAmount);
         final AppBizShop shop = this.hsyShopDao.findAppBizShopByID(shopId).get(0);
-        final EnumPayChannelSign payChannelSign = EnumPayChannelSign.idOf(channel);
+        final String channelCode = this.basicChannelService.selectCodeByChannelSign(channel, EnumMerchantPayType.MERCHANT_JSAPI);
         final Order order = new Order();
         order.setOrderNo(SnGenerator.generateSn(EnumTradeType.PAY.getId()));
         order.setTradeAmount(new BigDecimal(totalAmount));
@@ -230,7 +230,7 @@ public class HSYTradeServiceImpl implements HSYTradeService {
         order.setPayee(shop.getAccountID());
         order.setGoodsName(shop.getShortName());
         order.setGoodsDescribe(shop.getShortName());
-        order.setPayType(payChannelSign.getCode());
+        order.setPayType(channelCode);
         order.setPayChannelSign(channel);
         order.setSettleStatus(EnumSettleStatus.DUE_SETTLE.getId());
         order.setSettleType(EnumBalanceTimeType.T1.getType());
@@ -238,7 +238,7 @@ public class HSYTradeServiceImpl implements HSYTradeService {
         order.setStatus(EnumOrderStatus.DUE_PAY.getId());
         this.orderService.add(order);
         //请求支付中心下单
-        final PaymentSdkPlaceOrderResponse placeOrderResponse = this.requestPlaceOrder(order, channel, shop,
+        final PaymentSdkPlaceOrderResponse placeOrderResponse = this.requestPlaceOrder(order, channelCode, shop,
                 PaymentSdkConstants.SDK_PAY_RETURN_URL + order.getTradeAmount() + "/" + order.getId());
         return this.handlePlaceOrder(placeOrderResponse, order);
     }
@@ -319,7 +319,7 @@ public class HSYTradeServiceImpl implements HSYTradeService {
         order.setRemark(paymentSdkPayCallbackResponse.getMessage());
         order.setSn(paymentSdkPayCallbackResponse.getSn());
         order.setStatus(EnumOrderStatus.PAY_SUCCESS.getId());
-        final EnumPayChannelSign enumPayChannelSign = EnumPayChannelSign.codeOf(order.getPayType());
+        final EnumPayChannelSign enumPayChannelSign = this.basicChannelService.getEnumPayChannelSignByCode(paymentSdkPayCallbackResponse.getPayType());
         order.setPayChannelSign(enumPayChannelSign.getId());
         log.info("返回的通道是[{}]", order.getPayType());
         log.info("交易订单[{}]，处理hsy支付回调业务", order.getOrderNo());
@@ -432,7 +432,7 @@ public class HSYTradeServiceImpl implements HSYTradeService {
                 "支付分润", EnumAccountFlowType.DECREASE);
 
         //判断业务类型
-        final String splitBusinessType = this.getSplitBusinessType(order);
+        final String splitBusinessType = EnumSplitBusinessType.HSYPAY.getId();
         log.info(">>>orderNo:" + order.getOrderNo() + "该笔订单的业务类型：" + splitBusinessType);
         //通道利润--到结算
         if (null != channelMoneyTriple) {
@@ -507,7 +507,7 @@ public class HSYTradeServiceImpl implements HSYTradeService {
      * @param shop
      * @param returnUrl 前端回调地址
      */
-    private PaymentSdkPlaceOrderResponse requestPlaceOrder(final Order order, final int channel,
+    private PaymentSdkPlaceOrderResponse requestPlaceOrder(final Order order, final String channel,
                                                            final AppBizShop shop, final String returnUrl) {
         final PaymentSdkPlaceOrderRequest placeOrderRequest = new PaymentSdkPlaceOrderRequest();
         placeOrderRequest.setAppId(EnumAppType.HSY.getId());
@@ -518,7 +518,7 @@ public class HSYTradeServiceImpl implements HSYTradeService {
         placeOrderRequest.setMerName(shop.getShortName());
         placeOrderRequest.setMerNo(shop.getGlobalID());
         placeOrderRequest.setTotalAmount(order.getTradeAmount().toPlainString());
-        placeOrderRequest.setChannel(EnumPayChannelSign.idOf(channel).getCode());
+        placeOrderRequest.setChannel(channel);
 
         final String content = HttpClientPost.postJson(PaymentSdkConstants.SDK_PAY_PLACE_ORDER, SdkSerializeUtil.convertObjToMap(placeOrderRequest));
         return JSON.parseObject(content, PaymentSdkPlaceOrderResponse.class);

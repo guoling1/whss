@@ -198,31 +198,33 @@ public class WithdrawServiceImpl implements WithdrawService {
             final SettleAccountFlow settleAccountFlow = settleAccountFlows.get(0);
             final MerchantInfo merchant = this.merchantInfoService.getByAccountId(settleAccountFlow.getAccountId()).get();
             final Order payOrder = this.orderService.getByOrderNo(settleAccountFlow.getOrderNo()).get();
-            final BigDecimal merchantWithdrawPoundage = this.calculateService.getMerchantWithdrawPoundage(EnumProductType.HSS, merchant.getId(), payOrder.getPayChannelSign());
 
             //商户结算（对待结算单）
             final Account merchantAccount = this.accountService.getByIdWithLock(merchant.getAccountId()).get();
             this.accountService.decreaseTotalAmount(merchantAccount.getId(), settleAccountFlow.getIncomeAmount());
             this.accountService.decreaseSettleAmount(merchantAccount.getId(), settleAccountFlow.getIncomeAmount());
-            this.settleAccountFlowService.addSettleAccountFlow(merchantAccount.getId(), settleAccountFlow.getOrderNo(),
-                    settleAccountFlow.getIncomeAmount(), "支付结算", EnumAccountFlowType.DECREASE,
+            final long settleAccountFlowDecreaseId = this.settleAccountFlowService.addSettleAccountFlow(merchantAccount.getId(), settleAccountFlow.getOrderNo(),
+                    settleAccountFlow.getIncomeAmount(), "提现结算", EnumAccountFlowType.DECREASE,
                     EnumAppType.HSS.getId(), settleAccountFlow.getTradeDate(), EnumAccountUserType.MERCHANT.getId());
+            this.settleAccountFlowService.updateSettlementRecordIdById(settleAccountFlowDecreaseId, settlementRecordId);
             this.orderService.updateSettleStatus(payOrder.getId(), EnumSettleStatus.SETTLED.getId());
             this.settlementRecordService.updateSettleStatus(settlementRecordId, EnumSettleStatus.SETTLED.getId());
             this.settlementRecordService.updateStatus(settlementRecordId, EnumSettlementRecordStatus.WITHDRAW_SUCCESS.getId());
 
-            //手续费账户入可用余额
-            final Account poundageAccount = this.accountService.getByIdWithLock(AccountConstants.POUNDAGE_ACCOUNT_ID).get();
-            this.accountService.increaseTotalAmount(poundageAccount.getId(), merchantWithdrawPoundage);
-            this.accountService.increaseAvailableAmount(poundageAccount.getId(), merchantWithdrawPoundage);
-            this.accountFlowService.addAccountFlow(poundageAccount.getId(), settlementRecord.getSettleNo(), merchantWithdrawPoundage,
-                    "D0提现分润", EnumAccountFlowType.INCREASE);
-            log.info("结算单[{}], 提现分润--结算", settlementRecord.getSettleNo());
-            //手续费结算
-            this.merchantPoundageSettle(settlementRecord, payOrder.getPayChannelSign(), merchantWithdrawPoundage, merchant);
-            //结算完毕
-            this.orderService.updateSettleStatus(payOrder.getId(), EnumSettleStatus.SETTLED.getId());
-            this.settlementRecordService.updateSettleStatus(settlementRecordId, EnumSettleStatus.SETTLED.getId());
+            BigDecimal merchantWithdrawPoundage = new BigDecimal("0.00");
+            if (EnumSettleModeType.CHANNEL_SETTLE.getId() != settlementRecord.getSettleMode()) {
+                merchantWithdrawPoundage = this.calculateService.getMerchantWithdrawPoundage(EnumProductType.HSS, merchant.getId(), payOrder.getPayChannelSign());
+                //手续费账户入可用余额
+                final Account poundageAccount = this.accountService.getByIdWithLock(AccountConstants.POUNDAGE_ACCOUNT_ID).get();
+                this.accountService.increaseTotalAmount(poundageAccount.getId(), merchantWithdrawPoundage);
+                this.accountService.increaseAvailableAmount(poundageAccount.getId(), merchantWithdrawPoundage);
+                this.accountFlowService.addAccountFlow(poundageAccount.getId(), settlementRecord.getSettleNo(), merchantWithdrawPoundage,
+                        "提现分润", EnumAccountFlowType.INCREASE);
+                log.info("结算单[{}], 提现分润--结算", settlementRecord.getSettleNo());
+                //手续费结算
+                this.merchantPoundageSettle(settlementRecord, payOrder.getPayChannelSign(), merchantWithdrawPoundage, merchant);
+            }
+
             final UserInfo user = userInfoService.selectByMerchantId(merchant.getId()).get();
             log.info("商户[{}], 结算单[{}], 提现成功", merchant.getId(), settlementRecord.getSettleNo());
             this.sendMsgService.sendPushMessage(settlementRecord.getSettleAmount(), settlementRecord.getCreateTime(),
@@ -258,7 +260,7 @@ public class WithdrawServiceImpl implements WithdrawService {
         final BigDecimal productMoney = null == productMoneyTriple ? new BigDecimal("0.00") : productMoneyTriple.getMiddle();
         final BigDecimal firstMoney = null == firstMoneyTriple ? new BigDecimal("0.00") : firstMoneyTriple.getMiddle();
         final BigDecimal secondMoney = null == secondMoneyTriple ? new BigDecimal("0.00") : secondMoneyTriple.getMiddle();
-        Preconditions.checkState(poundage.compareTo(channelMoney.add(productMoney).add(firstMoney).add(secondMoney)) >= 0, "分账金额错误");
+        Preconditions.checkState(poundage.compareTo(channelMoney.add(productMoney).add(firstMoney).add(secondMoney)) >= 0, "分账金额[{}]错误", poundage);
         //手续费账户结算
         final Account poundageAccount = this.accountService.getByIdWithLock(AccountConstants.POUNDAGE_ACCOUNT_ID).get();
         Preconditions.checkState(poundage.compareTo(poundageAccount.getAvailable()) <= 0, "该笔订单的分账手续费不可以大于手续费账户的可用余额总和");

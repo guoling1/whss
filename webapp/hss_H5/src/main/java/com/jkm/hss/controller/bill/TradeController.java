@@ -104,7 +104,7 @@ public class TradeController extends BaseController {
         final Pair<Integer, String> resultPair = this.payService.codeReceipt(payRequest.getTotalFee(),
                 payRequest.getPayChannel(), 79, EnumAppType.HSS.getId(), true);
         if (0 == resultPair.getLeft()) {
-            return CommonResponse.builder4MapResult(CommonResponse.SUCCESS_CODE, "收款成功")
+            return CommonResponse.builder4MapResult(CommonResponse.SUCCESS_CODE, "success")
                     .addParam("payUrl", URLDecoder.decode(resultPair.getRight(), "UTF-8"))
                     .addParam("subMerName", "")
                     .addParam("amount", totalFee).build();
@@ -146,7 +146,7 @@ public class TradeController extends BaseController {
         final Pair<Integer, String> resultPair = this.payService.codeReceipt(payRequest.getTotalFee(),
                 payRequest.getPayChannel(), merchantInfo.get().getId(), EnumAppType.HSS.getId(), false);
         if (0 == resultPair.getLeft()) {
-            return CommonResponse.builder4MapResult(CommonResponse.SUCCESS_CODE, "收款成功")
+            return CommonResponse.builder4MapResult(CommonResponse.SUCCESS_CODE, "success")
                     .addParam("payUrl", URLDecoder.decode(resultPair.getRight(), "UTF-8"))
                     .addParam("subMerName", merchantInfo.get().getMerchantName())
                     .addParam("amount", totalAmount).build();
