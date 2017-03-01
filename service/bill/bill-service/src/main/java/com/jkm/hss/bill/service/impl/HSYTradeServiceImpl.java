@@ -335,7 +335,7 @@ public class HSYTradeServiceImpl implements HSYTradeService {
         this.paySplitAccount(this.orderService.getByIdWithLock(order.getId()).get(), shop);
         //推送
         try {
-            this.pushService.pushCashMsg(shop.getId(), enumPayChannelSign.getChannelName(), order.getTradeAmount().doubleValue(), order.getOrderNo().substring(order.getOrderNo().length() - 4));
+            this.pushService.pushCashMsg(shop.getId(), enumPayChannelSign.getPaymentChannel().getValue(), order.getTradeAmount().doubleValue(), order.getOrderNo().substring(order.getOrderNo().length() - 4));
         } catch (final Throwable e) {
             log.error("订单[" + order.getOrderNo() + "]，支付成功，推送异常", e);
         }

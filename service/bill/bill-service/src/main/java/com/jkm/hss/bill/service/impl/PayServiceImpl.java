@@ -828,7 +828,7 @@ public class PayServiceImpl implements PayService {
         placeOrderRequest.setGoodsDescribe(order.getGoodsDescribe());
         placeOrderRequest.setReturnUrl(returnUrl);
         placeOrderRequest.setNotifyUrl(PaymentSdkConstants.SDK_PAY_NOTIFY_URL);
-        placeOrderRequest.setMerName(merchant.getMerchantName());
+        placeOrderRequest.setMerName(merchant.getMerchantChangeName());
         placeOrderRequest.setMerNo(merchant.getMarkCode());
         placeOrderRequest.setTotalAmount(order.getTradeAmount().toPlainString());
         placeOrderRequest.setChannel(channel);
