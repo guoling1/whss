@@ -1,8 +1,11 @@
 package com.jkm.hss.bill.dao;
 
 import com.jkm.hss.bill.entity.SettlementRecord;
+import com.jkm.hss.bill.helper.requestparam.QuerySettlementRecordParams;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 /**
  * Created by yulong.zhang on 2017/2/22.
@@ -82,4 +85,20 @@ public interface SettlementRecordDao {
      * @return
      */
     int selectCountBySettleNo(@Param("settleNo") String settleNo);
+
+    /**
+     * 列表-查询个数
+     *
+     * @param querySettlementRecordParams
+     * @return
+     */
+    int selectCountByParam(QuerySettlementRecordParams querySettlementRecordParams);
+
+    /**
+     * 列表-查询记录
+     *
+     * @param querySettlementRecordParams
+     * @return
+     */
+    List<SettlementRecord> selectByParam(QuerySettlementRecordParams querySettlementRecordParams);
 }

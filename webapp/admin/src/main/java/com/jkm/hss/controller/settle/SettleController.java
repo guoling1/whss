@@ -189,11 +189,11 @@ public class SettleController extends BaseController {
     @RequestMapping(value = "list", method = RequestMethod.POST)
     public CommonResponse listSettleAuditRecord(@RequestBody ListSettleAuditRecordRequest settleAuditRecordRequest) {
         final PageModel<ListSettleAuditRecordResponse> result = new PageModel<>(settleAuditRecordRequest.getPageNo(), settleAuditRecordRequest.getPageSize());
-        if (StringUtils.isEmpty(settleAuditRecordRequest.getMerchantNo())) {
-            settleAuditRecordRequest.setMerchantNo(null);
+        if (StringUtils.isEmpty(settleAuditRecordRequest.getUserNo())) {
+            settleAuditRecordRequest.setUserNo(null);
         }
-        if (StringUtils.isEmpty(settleAuditRecordRequest.getMerchantName())) {
-            settleAuditRecordRequest.setMerchantName(null);
+        if (StringUtils.isEmpty(settleAuditRecordRequest.getUserName())) {
+            settleAuditRecordRequest.setUserName(null);
         }
         if (StringUtils.isEmpty(settleAuditRecordRequest.getStartSettleDate()) || StringUtils.isEmpty(settleAuditRecordRequest.getEndSettleDate())) {
             settleAuditRecordRequest.setStartSettleDate(null);
