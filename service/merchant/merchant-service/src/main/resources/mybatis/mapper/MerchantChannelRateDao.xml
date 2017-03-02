@@ -65,7 +65,7 @@
 
     <update id="batchCheck">
         UPDATE tb_merchant_channel_rate
-        SET enter_net = #{enterNet}
+        SET enter_net = #{enterNet},remarks=#{remarks}
         WHERE
         merchant_id = #{merchantId} and
         channel_type_sign in
