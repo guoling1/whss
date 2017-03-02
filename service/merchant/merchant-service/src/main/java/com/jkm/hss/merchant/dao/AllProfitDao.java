@@ -24,7 +24,7 @@ public interface AllProfitDao {
      * @param req
      * @return
      */
-    int selectCompanyProfitCount(CompanyPrifitRequest req);
+    List<CompanyProfitResponse> selectCompanyProfitCount(CompanyPrifitRequest req);
 
     /**
      * 一级代理商分润
@@ -38,7 +38,7 @@ public interface AllProfitDao {
      * @param req
      * @return
      */
-    int selectOneProfitCount(CompanyPrifitRequest req);
+    List<CompanyProfitResponse> selectOneProfitCount(CompanyPrifitRequest req);
 
     /**
      * 二级代理商分润
@@ -52,7 +52,7 @@ public interface AllProfitDao {
      * @param req
      * @return
      */
-    int selectTwoProfitCount(CompanyPrifitRequest req);
+    List<CompanyProfitResponse> selectTwoProfitCount(CompanyPrifitRequest req);
 
     /**
      * 公司分润详情
@@ -95,4 +95,32 @@ public interface AllProfitDao {
      * @return
      */
     int selectTwoProfitDetailsCount(CompanyPrifitRequest req);
+
+    /**
+     * 二级代理商分润无分页
+     * @param req
+     * @return
+     */
+    List<CompanyProfitResponse> selectTwoAll(CompanyPrifitRequest req);
+
+    /**
+     * 公司导出
+     * @param request
+     * @return
+     */
+    List<CompanyProfitResponse> selectCompanyProfitDc(CompanyPrifitRequest request);
+
+    /**
+     * 一级代理分润导出
+     * @param request
+     * @return
+     */
+    List<CompanyProfitResponse> selectOneProfitDc(CompanyPrifitRequest request);
+
+    /**
+     * 二级代理分润导出
+     * @param request
+     * @return
+     */
+    List<CompanyProfitResponse> selectTwoProfitDc(CompanyPrifitRequest request);
 }

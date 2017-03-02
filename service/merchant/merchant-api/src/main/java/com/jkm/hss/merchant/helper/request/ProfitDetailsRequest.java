@@ -2,6 +2,8 @@ package com.jkm.hss.merchant.helper.request;
 
 import lombok.Data;
 
+import java.util.Date;
+
 /**
  * Created by zhangbin on 2016/12/20.
  */
@@ -13,6 +15,11 @@ public class ProfitDetailsRequest {
      * {@link com.jkm.hss.account.enums.EnumSplitBusinessType}
      */
     private String businessType;
+
+    /**
+     * 分账日期
+     */
+    private Date splitDate;
 
     /**
      * 交易单号

@@ -41,6 +41,18 @@ public class ProfitDetailsController extends BaseController{
         final PageModel<JkmProfitDetailsResponse> pageModel = new PageModel<JkmProfitDetailsResponse>(req.getPageNo(), req.getPageSize());
         req.setOffset(pageModel.getFirstIndex());
         List<JkmProfitDetailsResponse> orderList =  profitService.selectProfitDetails(req);
+        if (orderList.size()>0){
+            for (int i=0;i<orderList.size();i++){
+                if (orderList.get(i).getLevel()==1){
+                    orderList.get(i).setProfitType("一级代理商");
+                }
+                if (orderList.get(i).getLevel()==2){
+                    orderList.get(i).setProfitType("二级代理商");
+                }if (orderList.get(i).getLevel()==0){
+                    orderList.get(i).setProfitType("金开门");
+                }
+            }
+        }
         if (orderList==null){
             return  CommonResponse.simpleResponse(-1,"未查询到相关数据");
         }
