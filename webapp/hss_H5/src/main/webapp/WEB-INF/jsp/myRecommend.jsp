@@ -16,7 +16,7 @@
         content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
   <meta name="format-detection" content="telephone=no"/>
   <title>我的推广</title>
-  <link rel="stylesheet" href="http://static.jinkaimen.cn/hss/css/style.2.0.1.css">
+  <link rel="stylesheet" href="http://static.jinkaimen.cn/hss/css/style.2.1.2.css">
   <link rel="stylesheet" href="http://static.jinkaimen.cn/weui/weui.css">
 </head>
 <body>
@@ -92,6 +92,6 @@
   }
 </script>
 <script src="http://static.jinkaimen.cn/qrcode/qrcode.min.js"></script>
-<script src="http://static.jinkaimen.cn/vendor/vendor.1.0.1.min.js"></script>
-<script src="http://static.jinkaimen.cn/hss/2.0.1/myRecommend.min.js"></script>
+<script src="http://static.jinkaimen.cn/vendor/vendor.1.0.3.min.js"></script>
+<script src="http://static.jinkaimen.cn/hss/2.1.1/myRecommend.min.js"></script>
 </html>

@@ -82,13 +82,13 @@ gulp.task('js-hss', () => {
     }))
     .pipe(rename({suffix: ".min"}))
     .pipe(sourcemaps.write('.'))
-    .pipe(gulp.dest('js/hss/2.0.1'));
+    .pipe(gulp.dest('js/hss/2.1.1'));
 });
 
 gulp.task('replace-hss', function () {
   return gulp.src('WEB-INF/jsp/*.jsp')
     .pipe(replace('style.css', 'style.2.0.1.css'))
-    .pipe(replace('0.1.19', '2.0.1'))
+    .pipe(replace('2.0.1', '2.1.1'))
     .pipe(gulp.dest('WEB-INF/jsp'));
 });
 
