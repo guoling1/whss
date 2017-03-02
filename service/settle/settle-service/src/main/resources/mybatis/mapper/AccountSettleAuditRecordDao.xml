@@ -74,7 +74,7 @@
             <if test="userNo != null">
                 AND user_no = #{userNo}
             </if>
-            <if test="merchantName != null">
+            <if test="userName != null">
                 AND user_name LIKE '%'#{userName}'%'
             </if>
             <if test="userType > 0">
