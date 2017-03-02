@@ -24,7 +24,7 @@ let submit = document.getElementById('submit');
 // 定义初始变量
 let nowPage = 1;
 let payStatusCode = ['4'];
-let payTypeCode = ['H', 'Z', 'B'];
+let payTypeCode = ['1', '2', '3'];
 // 定义加载更多
 let content = document.getElementById('content');
 let list = document.createElement('div');
@@ -55,11 +55,9 @@ const payStatus = {
 };
 // 定义支付方式
 const payType = {
-  S: '微信扫码',
-  N: '微信二维码',
-  H: '微信扫码', //微信H5收银台
-  B: '快捷收款',
-  Z: '支付宝扫码'
+  1: '微信',
+  2: '支付宝',
+  3: '快捷'
 };
 // 定义ajax事件
 let getData = function (e, page) {
@@ -86,7 +84,7 @@ let getData = function (e, page) {
       let topLeft = document.createElement('div');
       topLeft.className = 'left';
       if (res.records[i].payStatus == '4') {
-        topLeft.innerHTML = payStatus[res.records[i].payStatus] + '-' + payType[res.records[i].payType]
+        topLeft.innerHTML = payStatus[res.records[i].payStatus] + '-' + res.records[i].payType;
       } else {
         topLeft.innerHTML = payStatus[res.records[i].payStatus];
       }
@@ -136,28 +134,34 @@ cancel.addEventListener('click', function () {
 // 定义筛选条件
 let payVariable = {
   paySuccess: {
+    type: 'payStatusCode',
     status: true,
     value: 4
   },
   payError: {
+    type: 'payStatusCode',
     status: false,
     value: 3
   },
   payWait: {
+    type: 'payStatusCode',
     status: false,
     value: 1
   },
   payWx: {
+    type: 'payTypeCode',
     status: true,
-    value: 'H'
+    value: 1
   },
   payAli: {
+    type: 'payTypeCode',
     status: true,
-    value: 'Z'
+    value: 2
   },
   payQuick: {
+    type: 'payTypeCode',
     status: true,
-    value: 'B'
+    value: 3
   }
 };
 let li = document.getElementsByClassName('li');
@@ -191,9 +195,9 @@ submit.addEventListener('click', function () {
   payTypeCode = [];
   for (let i in payVariable) {
     if (payVariable[i]['status']) {
-      if (typeof (payVariable[i]['value']) == 'number') {
+      if (payVariable[i]['type'] == 'payStatusCode') {
         payStatusCode.push(payVariable[i]['value'])
-      } else if (typeof (payVariable[i]['value']) == 'string') {
+      } else if (payVariable[i]['type'] == 'payTypeCode') {
         payTypeCode.push(payVariable[i]['value'])
       }
     }

@@ -1406,7 +1406,7 @@ input:focus {
 #payment-wx .keyboard .keys .qr .quick,
 #payment-zfb .keyboard .keys .qr .quick {
   width: 100%;
-  height: 93px;
+  height: 70px;
   overflow: hidden;
   background-color: #ffae44;
 }
@@ -1426,26 +1426,50 @@ input:focus {
   color: #fff;
   margin-top: -6px;
 }
-#collection .keyboard .keys .qr .wx-zfb,
-#payment-wx .keyboard .keys .qr .wx-zfb,
-#payment-zfb .keyboard .keys .qr .wx-zfb {
+#collection .keyboard .keys .qr .wx-pay,
+#payment-wx .keyboard .keys .qr .wx-pay,
+#payment-zfb .keyboard .keys .qr .wx-pay {
   width: 100%;
-  height: 118px;
+  height: 70px;
   overflow: hidden;
   background-color: #2dc767;
 }
-#collection .keyboard .keys .qr .wx-zfb .wx-zfb,
-#payment-wx .keyboard .keys .qr .wx-zfb .wx-zfb,
-#payment-zfb .keyboard .keys .qr .wx-zfb .wx-zfb {
+#collection .keyboard .keys .qr .wx-pay .wx-logo,
+#payment-wx .keyboard .keys .qr .wx-pay .wx-logo,
+#payment-zfb .keyboard .keys .qr .wx-pay .wx-logo {
   width: 26px;
-  height: 60px;
+  height: 26px;
   margin: 9px auto 4px;
-  background: url("../assets/wx&zfb.png") no-repeat center;
+  background: url("../assets/wxb.png") no-repeat center;
   background-size: 26px 60px;
 }
-#collection .keyboard .keys .qr .wx-zfb .date,
-#payment-wx .keyboard .keys .qr .wx-zfb .date,
-#payment-zfb .keyboard .keys .qr .wx-zfb .date {
+#collection .keyboard .keys .qr .wx-pay .date,
+#payment-wx .keyboard .keys .qr .wx-pay .date,
+#payment-zfb .keyboard .keys .qr .wx-pay .date {
+  font-size: 10px;
+  color: #fff;
+  margin-top: -6px;
+}
+#collection .keyboard .keys .qr .ali-pay,
+#payment-wx .keyboard .keys .qr .ali-pay,
+#payment-zfb .keyboard .keys .qr .ali-pay {
+  width: 100%;
+  height: 71px;
+  overflow: hidden;
+  background-color: #4e9bf9;
+}
+#collection .keyboard .keys .qr .ali-pay .ali-logo,
+#payment-wx .keyboard .keys .qr .ali-pay .ali-logo,
+#payment-zfb .keyboard .keys .qr .ali-pay .ali-logo {
+  width: 26px;
+  height: 26px;
+  margin: 9px auto 4px;
+  background: url("../assets/zfbb.png") no-repeat center;
+  background-size: 26px 60px;
+}
+#collection .keyboard .keys .qr .ali-pay .date,
+#payment-wx .keyboard .keys .qr .ali-pay .date,
+#payment-zfb .keyboard .keys .qr .ali-pay .date {
   font-size: 10px;
   color: #fff;
   margin-top: -6px;
@@ -1502,6 +1526,104 @@ input:focus {
   text-align: left;
   margin-left: 15px;
   line-height: 50px;
+}
+#collection .layer,
+#payment-wx .layer,
+#payment-zfb .layer {
+  display: none;
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 99;
+  background: #575757;
+  padding: 25px 15px;
+  transition: all 0.4s;
+  -webkit-transition: all 0.4s;
+}
+#collection .layer.active,
+#payment-wx .layer.active,
+#payment-zfb .layer.active {
+  display: block;
+}
+#collection .layer .space,
+#payment-wx .layer .space,
+#payment-zfb .layer .space {
+  width: 100%;
+  height: 100%;
+  background-color: #FFF;
+  box-shadow: 0 5px 7px #424242;
+}
+#collection .layer .space .content,
+#payment-wx .layer .space .content,
+#payment-zfb .layer .space .content {
+  box-flex: 1;
+  -webkit-box-flex: 1;
+  -webkit-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
+  width: 100%;
+}
+#collection .layer .space .content .logo,
+#payment-wx .layer .space .content .logo,
+#payment-zfb .layer .space .content .logo {
+  width: 100px;
+  height: 31px;
+  background: url("../assets/hss-logo.png") no-repeat center;
+  background-size: 100px 31px;
+  margin: 40px auto;
+}
+#collection .layer .space .content .qr-code,
+#payment-wx .layer .space .content .qr-code,
+#payment-zfb .layer .space .content .qr-code {
+  box-flex: 1;
+  -webkit-box-flex: 1;
+  -webkit-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
+  width: 100%;
+  position: relative;
+}
+#collection .layer .space .content .qr-code div,
+#payment-wx .layer .space .content .qr-code div,
+#payment-zfb .layer .space .content .qr-code div {
+  width: 210px;
+  height: 210px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate3d(-50%, -50%, 0);
+}
+#collection .layer .space .content .word,
+#payment-wx .layer .space .content .word,
+#payment-zfb .layer .space .content .word {
+  margin: 40px auto;
+  font-size: 12px;
+  color: #2b2b2b;
+}
+#collection .layer .space .divider,
+#payment-wx .layer .space .divider,
+#payment-zfb .layer .space .divider {
+  width: 100%;
+  height: 18px;
+  background: url('../assets/hss-divider.png') no-repeat center;
+  background-size: 100% 18px;
+}
+#collection .layer .space .describe,
+#payment-wx .layer .space .describe,
+#payment-zfb .layer .space .describe {
+  width: 100%;
+  height: 90px;
+}
+#collection .layer .space .describe p,
+#payment-wx .layer .space .describe p,
+#payment-zfb .layer .space .describe p {
+  font-size: 12px;
+  color: #989898;
+  text-align: left;
+  padding-left: 15px;
+  line-height: 26px;
 }
 #chargeCode {
   padding: 20px 0;
@@ -1979,15 +2101,14 @@ input:focus {
 #bankList {
   width: 100%;
   height: auto;
-  background-color: #f0eff5;
   padding: 18px 10px 0;
 }
 #bankList .group {
   width: 100%;
-  height: 120px;
+  height: auto;
   border-radius: 5px;
   margin-bottom: 15px;
-  padding: 20px 0 20px 25px;
+  padding: 20px 15px 15px 25px;
 }
 #bankList .group.blue {
   background: -webkit-linear-gradient(left, #5c9ada, #4b84da);
@@ -2093,6 +2214,22 @@ input:focus {
   font-size: 12px;
   color: #FFF;
 }
+#bankList .group .top .btn {
+  border-radius: 3px;
+  float: right;
+  width: auto;
+  height: 21px;
+  line-height: 21px;
+  font-size: 12px;
+  color: #FFF;
+  padding: 0 5px;
+}
+#bankList .group .top .btn.red {
+  background-color: #c64b4b;
+}
+#bankList .group .top .btn.blue {
+  background-color: #406eae;
+}
 #bankList .group .bottom {
   overflow: hidden;
   margin-top: 5px;
@@ -2114,6 +2251,143 @@ input:focus {
   font-size: 19px;
   color: #FFF;
   font-weight: bold;
+}
+#bankList .group .bottom .s {
+  line-height: 30px;
+  float: right;
+  font-size: 12px;
+  color: #d4d4d4;
+}
+#bankList .group .small {
+  line-height: 20px;
+  text-align: left;
+  font-size: 12px;
+  color: #d4d4d4;
+}
+#branchInfo .branch .list {
+  width: 100%;
+  height: 50px;
+  line-height: 50px;
+  border-bottom: 1px solid #edeef5;
+  padding: 0 15px;
+  position: relative;
+}
+#branchInfo .branch .list .name {
+  text-align: left;
+  min-width: 75px;
+  float: left;
+  font-size: 15px;
+  color: #5a5a5a;
+  margin-right: 20px;
+}
+#branchInfo .branch .list .ipt {
+  float: left;
+  height: 49px;
+  line-height: 49px;
+  font-size: 15px;
+  width: calc(100% - 100px);
+}
+#branchInfo .branch .list .layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 99;
+  background-color: #FFF;
+  display: none;
+}
+#branchInfo .branch .list .layer .name {
+  padding: 0 15px;
+  text-align: left;
+  min-width: 75px;
+  float: left;
+  font-size: 15px;
+  color: #5a5a5a;
+  width: 100%;
+  height: 50px;
+  border-top: 1px solid #efefef;
+  box-shadow: 0 3px 8px #e8eaf0;
+}
+#branchInfo .branch .list .layer .match {
+  padding: 0 15px;
+  width: 100%;
+  height: 50px;
+  border-top: 1px solid #efefef;
+  box-shadow: 0 3px 8px #e8eaf0;
+}
+#branchInfo .branch .list .layer .match .match_name {
+  text-align: left;
+  min-width: 75px;
+  float: left;
+  font-size: 15px;
+  color: #5a5a5a;
+  margin-right: 20px;
+}
+#branchInfo .branch .list .layer .match .match_ipt {
+  float: left;
+  height: 49px;
+  line-height: 49px;
+  font-size: 15px;
+}
+#branchInfo .branch .list .search.top {
+  margin-top: 50px;
+}
+#branchInfo .branch .list .search .search-result {
+  width: 100%;
+  height: 50px;
+  line-height: 50px;
+  border-bottom: 1px solid #efefef;
+  padding: 0 15px;
+}
+#branchInfo .branch .list .search .search-result div {
+  height: 49px;
+  display: inline-block;
+  float: left;
+  text-align: left;
+  font-size: 14px;
+  color: #5a5a5a;
+  margin-right: 20px;
+}
+#branchInfo .branch .list .search .search-result div.choose {
+  color: #4ecea2;
+  border-bottom: 2px solid #4ecea2;
+}
+#branchInfo .branch .list .search .search-list {
+  width: 100%;
+  overflow: auto;
+}
+#branchInfo .branch .list .search .search-list div {
+  width: 100%;
+  height: 50px;
+  line-height: 50px;
+  font-size: 14px;
+  color: #5a5a5a;
+  text-align: left;
+  padding: 0 15px;
+}
+#branchInfo .branch .list .search .search-list div.t {
+  background: url("../../assets/choose.png") no-repeat center right 15px;
+  background-size: 8px 8px;
+}
+#branchInfo .branch .small {
+  padding: 10px 15px;
+  text-align: left;
+  font-size: 12px;
+  color: #d0d0d0;
+}
+#branchInfo .branch .submit-space {
+  width: 100%;
+  margin-top: 20px;
+  padding: 0 15px;
+}
+#branchInfo .branch .submit-space .submit {
+  width: 100%;
+  height: 45px;
+  line-height: 45px;
+  font-size: 16px;
+  color: #FFF;
+  border-radius: 3px;
+  background-color: #4ecea2;
 }
 #promote {
   width: 100%;

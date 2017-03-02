@@ -9,7 +9,10 @@ import com.jkm.hss.dealer.entity.*;
 import com.jkm.hss.dealer.enums.EnumDealerLevel;
 import com.jkm.hss.dealer.enums.EnumProfitType;
 import com.jkm.hss.dealer.service.*;
+import com.jkm.hss.merchant.entity.MerchantChannelRate;
 import com.jkm.hss.merchant.entity.MerchantInfo;
+import com.jkm.hss.merchant.helper.request.MerchantChannelRateRequest;
+import com.jkm.hss.merchant.service.MerchantChannelRateService;
 import com.jkm.hss.merchant.service.MerchantInfoService;
 import com.jkm.hss.product.entity.BasicChannel;
 import com.jkm.hss.product.entity.Product;
@@ -62,6 +65,8 @@ public class ShallProfitDetailServiceImpl implements ShallProfitDetailService{
     private DealerRateService dealerRateService;
     @Autowired
     private HsyShopDao hsyShopDao;
+    @Autowired
+    private MerchantChannelRateService merchantChannelRateService;
     /**
      * {@inheritDoc}
      *
@@ -237,8 +242,6 @@ public class ShallProfitDetailServiceImpl implements ShallProfitDetailService{
         if (merchantInfo.getFirstMerchantId() != 0){
             log.info("商户[" + merchantId + "]请求进行提现分润，由于该商户是间接商户，不参与分润，直接进入公司账户，交易订单号:" + orderNo);
 
-            //final List<ProductChannelDetail> list = this.productChannelDetailService.selectByChannelTypeSign(channelSign);
-            //final ProductChannelDetail productChannelDetail = list.get(0);
             final ProductChannelDetail productChannelDetail = this.productChannelDetailService.selectByProductIdAndChannelId(merchantInfo.getId(), channelSign).get();
             final Optional<BasicChannel> channelOptional =  this.basicChannelService.selectByChannelTypeSign(channelSign);
             final BasicChannel basicChannel = channelOptional.get();
@@ -246,7 +249,7 @@ public class ShallProfitDetailServiceImpl implements ShallProfitDetailService{
             //获取产品的信息, 产品通道的费率
             final Optional<Product> productOptional = this.productService.selectById(productChannelDetail.getProductId());
             final  Product product = productOptional.get();
-            final BigDecimal merchantWithdrawFee = this.getMerchantWithdrawFee(merchantId, channelSign);
+            final BigDecimal merchantWithdrawFee = this.getMerchantWithdrawFee(merchantInfo, channelSign);
             final BigDecimal productMoney = merchantWithdrawFee.subtract(productChannelDetail.getProductWithdrawFee());
             Map<String, Triple<Long, BigDecimal, String>> map = new HashMap<>();
             map.put("productMoney",Triple.of(product.getAccountId(), merchantWithdrawFee,"M1"));
@@ -256,8 +259,8 @@ public class ShallProfitDetailServiceImpl implements ShallProfitDetailService{
             companyProfitDetail.setMerchantId(merchantId);
             companyProfitDetail.setPaymentSn(orderNo);
             companyProfitDetail.setTotalFee(tradeAmount);
-            companyProfitDetail.setWaitShallAmount(productChannelDetail.getProductMerchantWithdrawFee());
-            companyProfitDetail.setWaitShallOriginAmount(productChannelDetail.getProductMerchantWithdrawFee());
+            companyProfitDetail.setWaitShallAmount(merchantWithdrawFee);
+            companyProfitDetail.setWaitShallOriginAmount(merchantWithdrawFee);
             companyProfitDetail.setProfitType(EnumProfitType.INDIRECTWITHDRAW.getId());
             companyProfitDetail.setProductShallAmount(productMoney);
             companyProfitDetail.setChannelShallAmount(channelMoney);
@@ -272,21 +275,21 @@ public class ShallProfitDetailServiceImpl implements ShallProfitDetailService{
             final Map<String, Triple<Long, BigDecimal, String>> map = new HashMap<>();
             if (merchantInfo.getDealerId() == 0){
                 final ProductChannelDetail productChannelDetail = this.productChannelDetailService.selectByProductIdAndChannelId(merchantInfo.getProductId(), channelSign).get();
-                //final ProductChannelDetail productChannelDetail = list.get(0);
                 final Optional<BasicChannel> channelOptional =  this.basicChannelService.selectByChannelTypeSign(channelSign);
                 final BasicChannel basicChannel = channelOptional.get();
                 //获取产品的信息, 产品通道的费率
                 final Optional<Product> productOptional = this.productService.selectById(productChannelDetail.getProductId());
                 final  Product product = productOptional.get();
-                final BigDecimal productMoney = productChannelDetail.getProductMerchantWithdrawFee().subtract(productChannelDetail.getProductWithdrawFee());
+                final BigDecimal merchantWithdrawFee = this.getMerchantWithdrawFee(merchantInfo, channelSign);
+                final BigDecimal productMoney = merchantWithdrawFee.subtract(productChannelDetail.getProductWithdrawFee());
                 final BigDecimal channelMoney = productChannelDetail.getProductWithdrawFee().subtract(basicChannel.getBasicWithdrawFee());
                 final CompanyProfitDetail companyProfitDetail = new CompanyProfitDetail();
                 companyProfitDetail.setProductType(EnumProductType.HSS.getId());
                 companyProfitDetail.setMerchantId(merchantId);
                 companyProfitDetail.setPaymentSn(orderNo);
                 companyProfitDetail.setTotalFee(tradeAmount);
-                companyProfitDetail.setWaitShallAmount(productChannelDetail.getProductMerchantWithdrawFee());
-                companyProfitDetail.setWaitShallOriginAmount(productChannelDetail.getProductMerchantWithdrawFee());
+                companyProfitDetail.setWaitShallAmount(merchantWithdrawFee);
+                companyProfitDetail.setWaitShallOriginAmount(merchantWithdrawFee);
                 companyProfitDetail.setProfitType(EnumProfitType.WITHDRAW.getId());
                 companyProfitDetail.setProductShallAmount(productMoney);
                 companyProfitDetail.setChannelShallAmount(channelMoney);
@@ -303,17 +306,16 @@ public class ShallProfitDetailServiceImpl implements ShallProfitDetailService{
             //根据代理商id查询其产品通道费率,产品费率,通道成本费率
             final ProductChannelDetail productChannelDetail =
                     this.productChannelDetailService.selectByProductIdAndChannelId(merchantInfo.getProductId(), channelSign).get();
-            //final ProductChannelDetail productChannelDetail = list.get(0);
             final Optional<BasicChannel> basicChannelOptional = this.basicChannelService.selectByChannelTypeSign(productChannelDetail.getChannelTypeSign());
             final BasicChannel basicChannel = basicChannelOptional.get();
             final Product product = this.productService.selectById(productChannelDetail.getProductId()).get();
             //获取代理商通道费率
             final DealerChannelRate dealerChannelRate =
-                    this.dealerChannelRateService.selectByDealerIdAndProductIdAndChannelType(dealer.getId(), merchantInfo.getProductId(),channelSign).get();
+                    this.dealerChannelRateService.selectByDealerIdAndProductIdAndChannelType(dealer.getId(), product.getId(),channelSign).get();
             //判断是几级代理
             if (dealer.getLevel() == EnumDealerLevel.FIRST.getId()){
                 //商户体现手续费
-                final BigDecimal withdrawMoney = dealerChannelRate.getDealerMerchantWithdrawFee();
+                final BigDecimal withdrawMoney = this.getMerchantWithdrawFee(merchantInfo, channelSign);
                 final BigDecimal firstMoney = withdrawMoney.subtract(dealerChannelRate.getDealerWithdrawFee());
                 final BigDecimal productMoney = dealerChannelRate.getDealerWithdrawFee().subtract(productChannelDetail.getProductWithdrawFee());
                 final BigDecimal channelMoney = productChannelDetail.getProductWithdrawFee().subtract(basicChannel.getBasicWithdrawFee());
@@ -346,9 +348,9 @@ public class ShallProfitDetailServiceImpl implements ShallProfitDetailService{
                 final Dealer firstDealer = firstDealerOptional.get();
                 //获取一级代理商通道费率
                 final DealerChannelRate firstDealerChannelRate =
-                        this.dealerChannelRateService.selectByDealerIdAndProductIdAndChannelType(firstDealer.getId(), merchantInfo.getProductId(),channelSign).get();
+                        this.dealerChannelRateService.selectByDealerIdAndProductIdAndChannelType(firstDealer.getId(), product.getId(),channelSign).get();
                 //商户体现手续费
-                final BigDecimal withdrawMoney = dealerChannelRate.getDealerMerchantWithdrawFee();
+                final BigDecimal withdrawMoney = this.getMerchantWithdrawFee(merchantInfo, channelSign);
                 final BigDecimal secondMoney = withdrawMoney.subtract(dealerChannelRate.getDealerWithdrawFee());
                 final BigDecimal firstMoney = dealerChannelRate.getDealerWithdrawFee().subtract(firstDealerChannelRate.getDealerWithdrawFee());
                 final BigDecimal productMoney = firstDealerChannelRate.getDealerWithdrawFee().subtract(productChannelDetail.getProductWithdrawFee());
@@ -387,17 +389,23 @@ public class ShallProfitDetailServiceImpl implements ShallProfitDetailService{
 
     }
 
-    private BigDecimal getMerchantWithdrawFee(final long merchantId, final int channelSign) {
-        final MerchantInfo merchant = this.merchantInfoService.selectById(merchantId).get();
-        if (0 == merchant.getDealerId()) {
-            //final ProductChannelDetail productChannelDetail = this.productChannelDetailService.selectByChannelTypeSign(channelSign).get(0);
+    private BigDecimal getMerchantWithdrawFee(final MerchantInfo merchantInfo, final int channelSign) {
+        if (0 == merchantInfo.getDealerId()) {
             final ProductChannelDetail productChannelDetail =
-                    this.productChannelDetailService.selectByProductIdAndChannelId(merchant.getProductId(), channelSign).get();
+                    this.productChannelDetailService.selectByProductIdAndChannelId(merchantInfo.getProductId(), channelSign).get();
             return productChannelDetail.getProductMerchantWithdrawFee().setScale(2);
         }
-        final Dealer dealer = this.dealerService.getById(merchant.getDealerId()).get();
-        final DealerChannelRate dealerChannelRate = this.dealerRateService.getByDealerIdAndProductIdAndChannelType(dealer.getId(), merchant.getProductId(),channelSign).get();
-        return dealerChannelRate.getDealerMerchantWithdrawFee().setScale(2);
+
+        final MerchantChannelRateRequest request = new MerchantChannelRateRequest();
+        request.setMerchantId(merchantInfo.getId());
+        request.setProductId(merchantInfo.getProductId());
+        request.setChannelTypeSign(channelSign);
+        final Optional<MerchantChannelRate> merchantChannelRateOptional =
+                this.merchantChannelRateService.selectByChannelTypeSignAndProductIdAndMerchantId(request);
+        Preconditions.checkArgument(merchantChannelRateOptional.isPresent(), merchantInfo.getId() + "《《《商户对应的通道费率不存在");
+        final MerchantChannelRate merchantChannelRate = merchantChannelRateOptional.get();
+
+        return merchantChannelRate.getMerchantWithdrawFee();
     }
     /**
      *
@@ -414,7 +422,6 @@ public class ShallProfitDetailServiceImpl implements ShallProfitDetailService{
             if (merchantInfo.getDealerId() == 0){
                 //jkm直属商户
                 final BasicChannel basicChannel = this.basicChannelService.selectByChannelTypeSign(payChannel).get();
-                //final List<ProductChannelDetail> list = this.productChannelDetailService.selectByChannelTypeSign(payChannel);
                 final ProductChannelDetail productChannelDetail =
                         this.productChannelDetailService.selectByProductIdAndChannelId(merchantInfo.getProductId(), payChannel).get();
                 return Pair.of(productChannelDetail.getProductMerchantWithdrawFee().setScale(2), basicChannel.getBasicWithdrawFee().setScale(2));
@@ -424,7 +431,7 @@ public class ShallProfitDetailServiceImpl implements ShallProfitDetailService{
             final Dealer dealer = dealerOptional.get();
             //获取代理商通道费率
             final DealerChannelRate dealerChannelRate =
-                    this.dealerChannelRateService.selectByDealerIdAndProductIdAndChannelType(dealer.getId(), merchantInfo.getProductId(),payChannel).get();
+                    this.dealerChannelRateService.selectByDealerIdAndProductIdAndChannelType(dealer.getId(), merchantInfo.getProductId(), payChannel).get();
             final BasicChannel basicChannel = this.basicChannelService.selectByChannelTypeSign(dealerChannelRate.getChannelTypeSign()).get();
             //判断是几级代理
             if (dealer.getLevel() == EnumDealerLevel.FIRST.getId()){

@@ -26,20 +26,33 @@ public class BasicChannel extends BaseEntity{
     private long accountId;
 
     /**
-     * 通道名称(支付宝,微信)
+     * 通道名称(华友支付宝,卡盟微信)
      */
     private String channelName;
+
+    /**
+     * 通道编码
+     */
+    private String channelCode;
     /**
      * 通道唯一标识...
      * {@link EnumPayChannelSign}
      */
     private int channelTypeSign;
+
+    /**
+     * 支持的支付方式， 扫码，公众号， 或者两者都支持
+     *
+     * {@link com.jkm.hss.product.enums.EnumChannelSupportWay}
+     */
+    private int supportWay;
+
     /**
      * 收单公司(支付宝,微信)
      */
     private String thirdCompany;
     /**
-     * 渠道来源(供应商名字:华友)
+     * 渠道来源(供应商名字:华友， 卡盟)
      */
     private String channelSource;
     /**
@@ -55,4 +68,29 @@ public class BasicChannel extends BaseEntity{
      * {@link EnumBalanceTimeType}
      */
     private String basicBalanceType;
+
+    /**
+     * 结算方式
+     * {@link com.jkm.hss.product.enums.EnumBasicSettleType}
+     */
+    private String basicSettleType;
+    /**
+     * 预估额度
+     */
+    private BigDecimal limitAmount;
+
+    /**
+     * 是否需要商户入网
+     */
+    private int isNeed;
+
+    /**
+     * 公司
+     */
+    private String channelCompany;
+
+    /**
+     * 备注
+     */
+    private String remarks;
 }

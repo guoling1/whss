@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jkm.hss.merchant.dao.MerchantChannelRateDao">
+
+    <!-- 通用查询结果列-->
+    <sql id="Base_Column_List">
+        id,merchant_id,product_id,channel_type_sign,merchant_balance_type,merchant_pay_rate,merchant_withdraw_fee,
+        enter_net,remarks,third_company,channel_company,status,create_time,update_time
+    </sql>
+    <update id="updateEnterNetStatus">
+        UPDATE tb_merchant_channel_rate
+        SET enter_net = #{id} , remarks = #{msg}
+        WHERE merchant_id = #{merchantId} AND enter_net = 3
+
+    </update>
+
+    <!--根据商户编码、通道标示、产品编码查询商户费用-->
+    <select id="selectByChannelTypeSignAndProductIdAndMerchantId" resultType="com.jkm.hss.merchant.entity.MerchantChannelRate">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM tb_merchant_channel_rate
+        WHERE
+        merchant_id=#{merchantId} and product_id=#{productId} and channel_type_sign=#{channelTypeSign} and status=1
+    </select>
+    <select id="selectIngMerchantInfo" resultType="java.lang.Long">
+        SELECT
+        distinct(merchant_id)
+        FROM tb_merchant_channel_rate
+        WHERE
+        enter_net = #{entId}
+    </select>
+    <select id="selectByMerchantId" resultType="com.jkm.hss.merchant.entity.MerchantChannelRate">
+        SELECT * FROM tb_merchant_channel_rate WHERE merchant_id = #{merchantId}
+    </select>
+
+    <!--费率初始化-->
+    <insert id="initMerchantChannelRate" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO tb_merchant_channel_rate
+        (
+        merchant_id,
+        product_id,
+        channel_type_sign,
+        merchant_balance_type,
+        merchant_pay_rate,
+        merchant_withdraw_fee,
+        enter_net,
+        third_company,
+        channel_company,
+        status
+        )
+        VALUES
+        (
+        #{merchantId},
+        #{productId},
+        #{channelTypeSign},
+        #{merchantBalanceType},
+        #{merchantPayRate},
+        #{merchantWithdrawFee},
+        #{enterNet},
+        #{thirdCompany},
+        #{channelCompany},
+        #{status}
+        )
+    </insert>
+
+    <update id="batchCheck">
+        UPDATE tb_merchant_channel_rate
+        SET enter_net = #{enterNet},remarks=#{remarks}
+        WHERE
+        merchant_id = #{merchantId} and
+        channel_type_sign in
+        <foreach collection="signIdList" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </update>
+    <!--根据商户编码、通道标示、产品编码查询商户费用-->
+    <select id="selectByThirdCompanyAndProductIdAndMerchantId" resultType="com.jkm.hss.merchant.entity.MerchantChannelRate">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM tb_merchant_channel_rate
+        WHERE
+        merchant_id=#{merchantId} and product_id=#{productId} and third_company=#{thirdCompany} and status=1
+    </select>
+    <!--根据商户编码、通道标示、产品编码查询商户费用-->
+    <select id="selectByChannelCompanyAndProductIdAndMerchantId" resultType="com.jkm.hss.merchant.entity.MerchantChannelRate">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM tb_merchant_channel_rate
+        WHERE
+        merchant_id=#{merchantId} and product_id=#{productId} and channel_company=#{channelCompany} and status=1
+    </select>
+    <update id="toUpgrade">
+        UPDATE tb_merchant_channel_rate
+        SET merchant_pay_rate = #{rate}
+        WHERE merchant_id = #{merchantId} and product_id=#{productId} and third_company=#{thirdCompany} and status=1
+    </update>
+</mapper>

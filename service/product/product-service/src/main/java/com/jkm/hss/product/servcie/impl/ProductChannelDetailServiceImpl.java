@@ -51,16 +51,6 @@ public class ProductChannelDetailServiceImpl implements ProductChannelDetailServ
         return this.productChannelDao.selectByProductId(productId);
     }
 
-    /**
-     * {@inheritDoc}
-     *
-     * @param payChannel
-     * @return
-     */
-    @Override
-    public List<ProductChannelDetail> selectByChannelTypeSign(int payChannel) {
-        return this.productChannelDao.selectByChannelTypeSign(payChannel);
-    }
 
     /**
      * {@inheritDoc}
@@ -69,5 +59,17 @@ public class ProductChannelDetailServiceImpl implements ProductChannelDetailServ
     @Override
     public void update(ProductChannelDetail detail) {
         this.productChannelDao.update(detail);
+    }
+
+    /**
+     * 查询某支付方式下的费率
+     *
+     * @param productId
+     * @param channelType
+     * @return
+     */
+    @Override
+    public Optional<ProductChannelDetail> selectRateByProductIdAndChannelType(long productId, int channelType) {
+        return Optional.fromNullable(this.productChannelDao.selectRateByProductIdAndChannelType(productId,channelType));
     }
 }

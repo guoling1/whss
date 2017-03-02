@@ -1194,20 +1194,37 @@
   }
 </style>-->
 
-<!--新增通道-->
-<!--<template lang="html">
-  <div id="agentAddBase">
+<!--新增产品-->
+<template lang="html">
+  <div id="productAdd">
     <div style="margin: 15px 15px 150px;">
       <div class="box tableTop">
-        <div class="box-header with-border">
-          <h3 class="box-title" v-if="isShow">新增通道</h3>
-          <h3 class="box-title" v-if="!isShow">通道详情</h3>
+        <div class="box-header with-border" style="margin-bottom: 15px">
+          <h3 class="box-title" v-if="isShow">新增产品</h3>
+          <h3 class="box-title" v-if="!isShow">产品详情</h3>
         </div>
         <div class="">
           <div class="table-responsive">
             <el-row type="flex" class="row-bg" justify="center">
               <el-col :span="4">
-                <div class="alignRight">通道名称:</div>
+                <div class="alignRight">项目类型:</div>
+              </el-col>
+              <el-col :span="6">
+                <div class="grid-content bg-purple-light">
+                  <el-select style="width: 100%" v-model="query.roleId" clearable placeholder="请选择" size="small">
+                    <el-option label="好收收" value="hss">好收收</el-option>
+                    <el-option label="好收银" value="hsy">好收银</el-option>
+                  </el-select>
+                </div>
+              </el-col>
+              <el-col :span="8">
+                <div class="grid-content bg-purple-light" style="margin: 0 15px;">
+                </div>
+              </el-col>
+            </el-row>
+            <el-row type="flex" class="row-bg" justify="center">
+              <el-col :span="4">
+                <div class="alignRight">产品名称:</div>
               </el-col>
               <el-col :span="6">
                 <div class="grid-content bg-purple-light">
@@ -1215,51 +1232,81 @@
                 </div>
               </el-col>
               <el-col :span="8">
-                <div class="grid-content bg-purple-light right">例如：华有支付宝</div>
+                <div class="grid-content bg-purple-light right">例如：快收银2.0</div>
               </el-col>
             </el-row>
             <el-row type="flex" class="row-bg" justify="center">
               <el-col :span="4">
-                <div class="alignRight">通道编码:</div>
+                <div class="alignRight">添加通道:</div>
               </el-col>
-              <el-col :span="6">
-                <div class="grid-content bg-purple-light">
-                  <el-input size="small" v-model="query.name" placeholder="请输入内容"></el-input>
+              <el-col :span="12">
+                <div class="grid-content bg-purple-light" style="width: 80%">
+                  <el-table :data="tableData" @selection-change="handleSelectionChange" border v-if="tableHas">
+                    <el-table-column label="通道名称">
+                      <template scope="scope">
+                        <span >{{tableData[scope.$index].channelName}}</span>
+                      </template>
+                    </el-table-column>
+                    <el-table-column prop="channelCode" label="通道编码"></el-table-column>
+                    <el-table-column prop="productTradeRate" label="支付结算手续费"></el-table-column>
+                    <el-table-column prop="channelSource" label="结算时间"></el-table-column>
+                    <el-table-column label="支付费率">
+                      <template scope="scope">
+                        <span>{{gridData[scope.$index].productWithdrawFee}}%</span>
+                      </template>
+                    </el-table-column>
+                    <el-table-column prop="basicBalanceType" label="提现结算费"></el-table-column>
+                    <el-table-column prop="basicBalanceType" label="产品支付手续费"></el-table-column>
+                    <el-table-column prop="basicBalanceType" label="商户提现手续费"></el-table-column>
+                    <el-table-column prop="basicBalanceType" label="操作"></el-table-column>
+                  </el-table>
+                  <span class="btn btn-primary" style="margin: 15px 0" @click="passSelect">添加通道</span>
                 </div>
               </el-col>
-              <el-col :span="8">
-                <div class="grid-content bg-purple-light right">例如：SM_Alipay</div>
-              </el-col>
+              <el-col :span="2"></el-col>
             </el-row>
-            <el-row type="flex" class="row-bg" justify="center" v-if="!isShow">
-              <el-col :span="4">
-                <div class="alignRight">收单机构:</div>
-              </el-col>
-              <el-col :span="6">
-                <div class="grid-content bg-purple-light">
-                  <el-input size="small" v-model="query.markCode" placeholder="请输入内容" :disabled="true"></el-input>
-                </div>
-              </el-col>
-              <el-col :span="8">
-                <div class="grid-content bg-purple-light right">例如：支付宝、微信、京东钱包、百度钱包</div>
-              </el-col>
-            </el-row>
+
+            <el-dialog title="选择通道" v-model="dialogTableVisible">
+              <el-table :data="gridData" @selection-change="handleSelectionChange" border>
+                <el-table-column type="selection" width="55"></el-table-column>
+                <el-table-column label="通道名称">
+                  <template scope="scope">
+                    <span >{{gridData[scope.$index].channelName}}</span>
+                  </template>
+                </el-table-column>
+                <el-table-column prop="channelCode" label="通道编码"></el-table-column>
+                <el-table-column prop="thirdCompany" label="收单机构"></el-table-column>
+                <el-table-column prop="channelSource" label="渠道来源"></el-table-column>
+                <el-table-column label="支付费率">
+                  <template scope="scope">
+                    <span>{{gridData[scope.$index].basicTradeRate}}%</span>
+                  </template>
+                </el-table-column>
+                <el-table-column prop="basicBalanceType" label="结算时间"></el-table-column>
+                <el-table-column label="结算类型">
+                  <template scope="scope">
+                    <span v-if="gridData[scope.$index].basicSettleType=='AUTO'">通道自动结算</span>
+                    <span v-if="gridData[scope.$index].basicSettleType=='SELF'">自主打款结算</span>
+                  </template>
+                </el-table-column>
+                <el-table-column prop="supportWay" label="支付方式">
+                  <template scope="scope">
+                    <span v-if="gridData[scope.$index].supportWay=='1'">公众号</span>
+                    <span v-if="gridData[scope.$index].supportWay=='2'">扫码</span>
+                    <span v-if="gridData[scope.$index].supportWay=='3'">公众号、扫码</span>
+                  </template>
+                </el-table-column>
+                <el-table-column prop="remarks" label="备注信息"></el-table-column>
+              </el-table>
+              <div slot="footer" class="dialog-footer">
+                <el-button @click="dialogTableVisible = false">取 消</el-button>
+                <el-button type="primary" @click="select">确 定</el-button>
+              </div>
+            </el-dialog>
+
             <el-row type="flex" class="row-bg" justify="center">
               <el-col :span="4">
-                <div class="alignRight">渠道来源:</div>
-              </el-col>
-              <el-col :span="6">
-                <div class="grid-content bg-purple-light">
-                  <el-input size="small" v-model="query.loginName" placeholder="数字或字母的组合，4-20位"></el-input>
-                </div>
-              </el-col>
-              <el-col :span="8">
-                <div class="grid-content bg-purple-light right">例如：华有，显示给用户</div>
-              </el-col>
-            </el-row>
-            <el-row type="flex" class="row-bg" justify="center">
-              <el-col :span="4">
-                <div class="alignRight">支付费率:</div>
+                <div class="alignRight">支付手续费加价额:</div>
               </el-col>
               <el-col :span="6">
                 <div class="grid-content bg-purple-light" style="position: relative">
@@ -1268,26 +1315,12 @@
                 </div>
               </el-col>
               <el-col :span="8">
-                <div class="grid-content bg-purple-light right">例如：0.3%</div>
+                <div class="grid-content bg-purple-light right">允许一级代理商提高商户的手续费最高限制，例如：0.05%</div>
               </el-col>
             </el-row>
             <el-row type="flex" class="row-bg" justify="center">
               <el-col :span="4">
-                <div class="alignRight">自主打款:</div>
-              </el-col>
-              <el-col :span="6">
-                <div class="grid-content bg-purple-light">
-                  <el-radio class="radio" v-model="query.distributeType" label="1">支持</el-radio>
-                  <el-radio class="radio" v-model="query.distributeType" label="2">不支持</el-radio>
-                </div>
-              </el-col>
-              <el-col :span="8">
-                <div class="grid-content bg-purple-light"></div>
-              </el-col>
-            </el-row>
-            <el-row type="flex" class="row-bg" justify="center">
-              <el-col :span="4">
-                <div class="alignRight">打款费用:</div>
+                <div class="alignRight">提现手续费加价限额:</div>
               </el-col>
               <el-col :span="6">
                 <div class="grid-content bg-purple-light" style="position: relative">
@@ -1296,53 +1329,17 @@
                 </div>
               </el-col>
               <el-col :span="8">
-                <div class="grid-content bg-purple-light right">例如：0.5元/笔</div>
+                <div class="grid-content bg-purple-light right">允许一级代理商提高商户的手续费最高限制，例如：0.5元／笔</div>
               </el-col>
             </el-row>
             <el-row type="flex" class="row-bg" justify="center">
               <el-col :span="4">
-                <div class="alignRight">结算时间:</div>
+                <div class="alignRight">商户提现模式:</div>
               </el-col>
               <el-col :span="6">
                 <div class="grid-content bg-purple-light">
-                  <el-select style="width: 100%" v-model="query.roleId" clearable placeholder="请选择" size="small">
-                    <el-option label="D0" value="D0">D0</el-option>
-                    <el-option label="D1" value="D1">D1</el-option>
-                    <el-option label="T0" value="T0">T0</el-option>
-                    <el-option label="T1" value="T1">T1</el-option>
-                  </el-select>
-                </div>
-              </el-col>
-              <el-col :span="8">
-                <div class="grid-content bg-purple-light" style="margin: 0 15px;">
-                </div>
-              </el-col>
-            </el-row>
-            <el-row type="flex" class="row-bg" justify="center">
-              <el-col :span="4">
-                <div class="alignRight">结算方式:</div>
-              </el-col>
-              <el-col :span="6">
-                <div class="grid-content bg-purple-light">
-                  <el-select style="width: 100%" v-model="query.roleId" clearable placeholder="请选择" size="small">
-                    <el-option label="通道自动结算" value="D0">通道自动结算</el-option>
-                    <el-option label="自主打款结算" value="D1">自主打款结算</el-option>
-                  </el-select>
-                </div>
-              </el-col>
-              <el-col :span="8">
-                <div class="grid-content bg-purple-light" style="margin: 0 15px;">
-                </div>
-              </el-col>
-            </el-row>
-            <el-row type="flex" class="row-bg" justify="center">
-              <el-col :span="4">
-                <div class="alignRight">预估额度:</div>
-              </el-col>
-              <el-col :span="6">
-                <div class="grid-content bg-purple-light" style="position: relative">
-                  <el-input size="small" v-model="query.email" placeholder="请输入内容"></el-input>
-                  <b>元/笔</b>
+                  <el-radio class="radio" v-model="query.distributeType" label="1">手动提现</el-radio>
+                  <el-radio class="radio" v-model="query.distributeType" label="2">逐笔自动提现</el-radio>
                 </div>
               </el-col>
               <el-col :span="8">
@@ -1351,25 +1348,13 @@
             </el-row>
             <el-row type="flex" class="row-bg" justify="center">
               <el-col :span="4">
-                <div class="alignRight">一户一报:</div>
+                <div class="alignRight">代理商结算模式:</div>
               </el-col>
               <el-col :span="6">
                 <div class="grid-content bg-purple-light">
-                  <el-radio class="radio" v-model="query.distributeType" label="1">支持</el-radio>
-                  <el-radio class="radio" v-model="query.distributeType" label="2">不支持</el-radio>
-                </div>
-              </el-col>
-              <el-col :span="8">
-                <div class="grid-content bg-purple-light"></div>
-              </el-col>
-            </el-row>
-            <el-row type="flex" class="row-bg" justify="center">
-              <el-col :span="4">
-                <div class="alignRight">备注信息:</div>
-              </el-col>
-              <el-col :span="6">
-                <div class="grid-content bg-purple-light">
-                  <el-input type="textarea" :autosize="{ minRows: 2, maxRows: 4}" size="small" v-model="query.email" placeholder="请输入内容"></el-input>
+                  <el-radio class="radio" v-model="query.distributeType" label="1">D0</el-radio>
+                  <el-radio class="radio" v-model="query.distributeType" label="2">日结</el-radio>
+                  <el-radio class="radio" v-model="query.distributeType" label="2">月结</el-radio>
                 </div>
               </el-col>
               <el-col :span="8">
@@ -1378,7 +1363,6 @@
             </el-row>
           </div>
         </div>
-
         <el-row type="flex" class="row-bg" justify="center">
           <el-col :span="4">
             <div class="alignRight"></div>
@@ -1407,16 +1391,14 @@
 
 <script lang="babel">
   export default {
-    name: 'agentAddBase',
+    name: 'productAdd',
     data () {
       return {
-        dialogFormVisible: false,
+        tableHas:false,
+        dialogTableVisible: false, // 选择通道层
+        gridData: [], //选择通道时的列表
+        multipleSelection:'',
         password:'',
-        provinces: '',
-        citys: '',
-        province: '',
-        city: '',
-        level: '',
         query: {
           mobile: '',
           name: '',
@@ -1433,24 +1415,18 @@
           bankReserveMobile: '',
           idCard: '',
         },
+        channels:[],
         id: 0,
         isShow: true,
         productId: ''
       }
     },
     created: function () {
-      //获取所有省
-      this.$http.post('/admin/district/findAllDistrict')
-        .then(function (res) {
-          this.$data.provinces = res.data;
-        })
-        .catch(function (err) {
-          this.$message({
-            showClose: true,
-            message: err.statusMessage,
-            type: 'error'
-          })
-        })
+      if(this.tableData.length == 0){
+          this.tableHas = false;
+      }else {
+          this.tableHas = true;
+      }
       //若为查看详情
       if (this.$route.query.id != undefined) {
         this.$data.isShow = false;
@@ -1461,36 +1437,31 @@
             this.$data.city = res.data.belongCityName;
           })
       }
-      this.$data.level = this.$route.query.level;
-    },
-    watch: {
-      province: function (val, oldval) {
-        if (val != oldval&&oldval!="") {
-          this.$data.city = '';
-          this.$data.query.province = this.$data.province;
-        }
-        if (this.$data.province != '') {
-          for (var i = 0; i < this.$data.provinces.length; i++) {
-            if (this.$data.provinces[i].aname == this.$data.province) {
-              this.$data.query.belongProvinceCode= this.$data.provinces[i].code
-              this.$data.query.belongProvinceName= this.$data.province
-              this.$data.citys = this.$data.provinces[i].list
-            }
-          }
-        }
-      },
-      city: function (val, oldval) {
-        if (val != oldval) {
-          this.$data.query.belongCityName = this.$data.city;
-          for(var i=0;i<this.$data.citys.length;i++){
-            if(this.$data.citys[i].aname == this.$data.city){
-              this.$data.query.belongCityCode = this.$data.citys[i].code;
-            }
-          }
-        }
-      }
     },
     methods: {
+      // 添加通道
+      passSelect: function () {
+        this.dialogTableVisible = true;
+        this.$http.post('/admin/channel/list')
+          .then(function (res) {
+            this.loading = false;
+            this.dialogTableVisible = true;
+            this.$data.gridData = res.data;
+          }, function (err) {
+            this.$data.loading = false;
+            this.$message({
+              showClose: true,
+              message: err.statusMessage,
+              type: 'error'
+            });
+          })
+      },
+      handleSelectionChange(val) {
+        this.multipleSelection = val;
+      },
+      select: function () {
+        this.tableData=this.tableData.concat(this.multipleSelection);
+      },
       //修改密码
       resetPw:function() {
         this.$http.post('/admin/dealer/updatePwd',{dealerId:this.$route.query.id,loginPwd:this.$data.password})
@@ -1510,32 +1481,6 @@
               type: 'error'
             })
           })
-        /*this.$prompt('请输入新密码', '修改密码', {
-         confirmButtonText: '确定',
-         cancelButtonText: '取消',
-         }).then(({ value }) => {
-         this.$http.post('/admin/dealer/updatePwd',{dealerId:this.$route.query.id,loginPwd:value})
-         .then(function (res) {
-         this.$message({
-         showClose: true,
-         type: 'success',
-         message: '修改成功'
-         });
-         })
-         .catch(function (err) {
-         this.$message({
-         showClose: true,
-         message: err.statusMessage,
-         type: 'error'
-         })
-         })
-
-         }).catch(() => {
-         this.$message({
-         type: 'info',
-         message: '取消修改'
-         });
-         });*/
       },
       //创建一级代理
       create: function () {
@@ -1586,22 +1531,10 @@
           })
       }
     },
-    filters: {
-      changeName: function (val) {
-        if (val == 101) {
-          val = '阳光微信扫码'
-        } else if (val == 102) {
-          val = '阳光支付宝扫码'
-        } else if (val == 103) {
-          val = '阳光银联支付'
-        }
-        return val;
-      }
-    }
   }
 </script>
 
-&lt;!&ndash; Add "scoped" attribute to limit CSS to this component only &ndash;&gt;
+<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="less">
   .alignRight {
     margin-right: 15px;
@@ -1626,68 +1559,30 @@
     top:0;
     right: 0;
   }
-</style>-->
+</style>
 
-<!--通道列表-->
+<!--产品列表-->
 <!--<template>
-  <div id="deal">
+  <div id="productList">
     <div class="col-md-12">
       <div class="box" style="margin-top:15px;overflow: hidden">
         <div class="box-header">
-          <h3 class="box-title">通道列表</h3>
-          <router-link to="/admin/record/deal" class="pull-right btn btn-primary" style="margin-left: 20px">新增通道
-          </router-link>
+          <h3 class="box-title">产品列表</h3>
+          <router-link to="/admin/record/productAdd" class="pull-right btn btn-primary" style="margin-left: 20px">新增产品</router-link>
         </div>
-        <div class="box-body">
-          &lt;!&ndash;筛选&ndash;&gt;
-          <ul>
-            <li class="same">
-              <label>通道名称:</label>
-              <el-input style="width: 130px" v-model="query.orderNo" placeholder="请输入内容" size="small"></el-input>
-            </li>
-            <li class="same">
-              <label>通道编码:</label>
-              <el-input style="width: 130px" v-model="query.merchantName" placeholder="请输入内容" size="small"></el-input>
-            </li>
-            <li class="same">
-              <div class="btn btn-primary" @click="search">筛选</div>
-            </li>
-          </ul>
+        <div class="box-body" style="width: 50%;margin-left: 5%;margin-bottom: 200px">
           &lt;!&ndash;表格&ndash;&gt;
-          <el-table v-loading.body="loading" height="583" style="font-size: 12px;margin:15px 0" :data="records" border>
-            <el-table-column label="通道名称" min-width="112">
+          <el-table style="font-size: 12px;" :data="records" border>
+            <el-table-column label="产品名称" prop="name"></el-table-column>
+            <el-table-column label="操作" min-width="112">
               <template scope="scope">
-                <router-link :to="{path:'/admin/record/newDealDet',query:{orderNo:records[scope.$index].orderNo}}"
-                             type="text" size="small">{{records[scope.$index].sn}}
+                <router-link :to="{path:'/admin/record/newDealDet',query:{orderNo:records[scope.$index].type}}" type="text" size="small">查看详情
                 </router-link>
               </template>
             </el-table-column>
-            <el-table-column label="通道编码" min-width="112">
-              <template scope="scope">
-                <span class="td" :data-clipboard-text="records[scope.$index].sn" type="text" size="small"
-                      style="cursor: pointer" title="点击复制">{{records[scope.$index].sn|changeHide}}</span>
-              </template>
-            </el-table-column>
-            <el-table-column prop="createTime" label="收单机构" width="162"></el-table-column>
-            <el-table-column prop="merchantName" label="渠道来源" min-width="90"></el-table-column>
-            <el-table-column prop="proxyName" label="支付费率" min-width="90"></el-table-column>
-            <el-table-column prop="proxyName1" :formatter="changeTime" label="结算时间" min-width="90"></el-table-column>
-            <el-table-column prop="tradeAmount" :formatter="changeNum" label="结算类型" min-width="90"
-                             align="right"></el-table-column>
-            <el-table-column prop="payRate" label="备注信息" min-width="90" align="right"></el-table-column>
+
           </el-table>
           </el-table>
-          &lt;!&ndash;分页&ndash;&gt;
-          <div class="block" style="text-align: right">
-            <el-pagination @size-change="handleSizeChange"
-                           @current-change="handleCurrentChange"
-                           :current-page="query.page"
-                           :page-sizes="[10, 20, 50]"
-                           :page-size="query.size"
-                           layout="total, sizes, prev, pager, next, jumper"
-                           :total="count">
-            </el-pagination>
-          </div>
         </div>
       </div>
     </div>
@@ -1695,28 +1590,17 @@
 </template>
 
 <script lang="babel">
-  import Clipboard from "clipboard"
   export default{
-    name: 'deal',
+    name: 'passList',
     data(){
       return {
-        query: {
-          page: 1,
-          size: 10,
-          orderNo: '',
-          merchantName: '',
-          startTime: '',
-          endTime: '',
-          lessTotalFee: '',
-          moreTotalFee: '',
-          status: '',
-          settleStatus: '',
-          payType: '',
-          proxyName: '',
-          proxyName1: ''
-        },
-        date: '',
-        records: [],
+        records: [{
+          name:'好收收',
+          type:'hss'
+        },{
+          name:'好收银',
+          type:'hsy'
+        }],
         count: 0,
         total: 0,
         loading: true,
@@ -1724,117 +1608,8 @@
       }
     },
     created: function () {
-      var clipboard = new Clipboard('.td');
-      //复制成功执行的回调，可选
-      clipboard.on('success', (e) => {
-        this.$message({
-          showClose: true,
-          message: "复制成功  内容为：" + e.text,
-          type: 'success'
-        });
-      });
-      this.getData()
-    },
-    methods: {
-      getData: function () {
-        this.loading = true;
-        this.$http.post('/admin/queryOrder/orderList', this.$data.query)
-          .then(function (res) {
-            this.loading = false;
-            this.$data.records = res.data.records;
-            this.$data.total = res.data.totalPage;
-            this.$data.url = res.data.ext;
-            this.$data.count = res.data.count;
-            for (var i = 0; i < this.records.length; i++) {
-              if (this.records[i].payRate != null) {
-                this.records[i].payRate = (parseFloat(this.records[i].payRate) * 100).toFixed(2) + '%';
-              }
-            }
-          }, function (err) {
-            this.$data.loading = false;
-            this.$message({
-              showClose: true,
-              message: err.statusMessage,
-              type: 'error'
-            });
-          })
-      },
-      //格式化hss创建时间
-      changeTime: function (row, column) {
-        var val = row.createTime;
-        if (val == '' || val == null) {
-          return ''
-        } else {
-          val = new Date(val)
-          var year = val.getFullYear();
-          var month = val.getMonth() + 1;
-          var date = val.getDate();
-          var hour = val.getHours();
-          var minute = val.getMinutes();
-          var second = val.getSeconds();
 
-          function tod(a) {
-            if (a < 10) {
-              a = "0" + a
-            }
-            return a;
-          }
-
-          return year + "-" + tod(month) + "-" + tod(date) + " " + tod(hour) + ":" + tod(minute) + ":" + tod(second);
-        }
-      },
-      changeNum: function (row, column) {
-        var val = row.tradeAmount;
-        return parseFloat(val).toFixed(2);
-      },
-      search(){
-        this.$data.query.page = 1;
-        this.getData()
-      },
-      //每页条数改变
-      handleSizeChange(val) {
-        this.$data.query.page = 1;
-        this.$data.query.size = val;
-        this.getData()
-      },
-      //当前页改变时
-      handleCurrentChange(val) {
-        this.$data.query.page = val;
-        this.getData()
-      },
     },
-    watch: {
-      date: function (val, oldVal) {
-        if (val[0] != null) {
-          for (var j = 0; j < val.length; j++) {
-            var str = val[j];
-            var ary = [str.getFullYear(), str.getMonth() + 1, str.getDate()];
-            for (var i = 0, len = ary.length; i < len; i++) {
-              if (ary[i] < 10) {
-                ary[i] = '0' + ary[i];
-              }
-            }
-            str = ary[0] + '-' + ary[1] + '-' + ary[2];
-            if (j == 0) {
-              this.$data.query.startTime = str;
-            } else {
-              this.$data.query.endTime = str;
-            }
-          }
-        } else {
-          this.$data.query.startTime = '';
-          this.$data.query.endTime = '';
-        }
-      }
-    },
-    filters: {
-      changeHide: function (val) {
-        if (val != "" && val != null) {
-          val = val.replace(val.substring(3, val.length - 6), "…");
-        }
-        return val
-      },
-    }
   }
 </script>
 
@@ -1842,40 +1617,8 @@
   ul {
     padding: 0;
   }
-
-  .same {
-    list-style: none;
-    display: inline-block;
-    margin: 0 15px 15px 0;
-  }
-
   .btn {
     font-size: 12px;
   }
 
-  .price {
-    display: inline-block;
-    width: 210px;
-    height: 30px;
-    border-radius: 4px;
-    border-color: #bfcbd9;
-    position: relative;
-    top: 6px;
-    input {
-      border: none;
-      display: inline-block;
-      width: 45%;
-      height: 25px;
-      position: relative;
-      top: -3px;
-    }
-  }
-
-  .price:hover {
-    border-color: #20a0ff;
-  }
-
 </style>-->
-
-
-

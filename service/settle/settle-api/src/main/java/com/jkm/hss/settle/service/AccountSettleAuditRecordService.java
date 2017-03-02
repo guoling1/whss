@@ -111,31 +111,11 @@ public interface AccountSettleAuditRecordService {
     Pair<Integer,String> batchSettle(List<Long> recordIds);
 
     /**
-     * 商户结算
+     * 结算
      *
      * @param flows
-     * @param merchantNo
-     * @param accountId
      */
-    void merchantSettle(List<SettleAccountFlow> flows, String merchantNo, long accountId);
-
-    /**
-     * 单笔结算
-     *
-     * @param flow
-     * @param orderNo
-     * @param merchantNo
-     * @param accountId
-     */
-    void merchantSettleImpl(SettleAccountFlow flow, String orderNo, String merchantNo, long accountId);
-
-    /**
-     * 手续费结算(发消息实现)
-     *
-     * @param orderNo
-     * @return
-     */
-    Pair<Integer, String> poundageSettle(String orderNo);
+    void settleImpl(List<SettleAccountFlow> flows);
 
     /**
      * 记录列表

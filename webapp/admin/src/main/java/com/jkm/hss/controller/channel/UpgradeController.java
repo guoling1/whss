@@ -11,6 +11,7 @@ import com.jkm.hss.product.entity.ProductChannelDetail;
 import com.jkm.hss.product.entity.UpgradeRecommendRules;
 import com.jkm.hss.product.entity.UpgradeRules;
 import com.jkm.hss.product.enums.EnumPayChannelSign;
+import com.jkm.hss.product.enums.EnumPaymentChannel;
 import com.jkm.hss.product.enums.EnumUpgrade;
 import com.jkm.hss.product.servcie.ProductChannelDetailService;
 import com.jkm.hss.product.servcie.ProductService;
@@ -56,30 +57,55 @@ public class UpgradeController extends BaseController {
         if(!productOptional.isPresent()){
             return CommonResponse.simpleResponse(-1,"该产品不存在");
         }
-        List<ProductChannelDetail> productChannelDetails = productChannelDetailService.selectByProductId(req.getProductId());
-        if(productChannelDetails.size()==0){
-            return CommonResponse.simpleResponse(-1,"该产品商户基础费率不存在");
+//        List<ProductChannelDetail> productChannelDetails = productChannelDetailService.selectByProductId(req.getProductId());
+//        if(productChannelDetails.size()==0){
+//            return CommonResponse.simpleResponse(-1,"该产品商户基础费率不存在");
+//        }
+        Optional<ProductChannelDetail> weixinProductChannelDetail = productChannelDetailService.selectRateByProductIdAndChannelType(req.getProductId(), EnumPaymentChannel.WECHAT_PAY.getId());
+        if(!weixinProductChannelDetail.isPresent()){
+            return CommonResponse.simpleResponse(-1,"微信基础费率不存在");
+        }
+        Optional<ProductChannelDetail> zhifubaoProductChannelDetail = productChannelDetailService.selectRateByProductIdAndChannelType(req.getProductId(), EnumPaymentChannel.ALIPAY.getId());
+        if(!zhifubaoProductChannelDetail.isPresent()){
+            return CommonResponse.simpleResponse(-1,"支付宝基础费率不存在");
+        }
+        Optional<ProductChannelDetail> fastPayProductChannelDetail = productChannelDetailService.selectRateByProductIdAndChannelType(req.getProductId(), EnumPaymentChannel.UNIONPAY.getId());
+        if(!fastPayProductChannelDetail.isPresent()){
+            return CommonResponse.simpleResponse(-1,"快捷基础费率不存在");
         }
         //商户升级规则设置
         List<UpgradeRules> upgradeRulesList = new ArrayList<UpgradeRules>();
         UpgradeRules upgradeRules = new UpgradeRules();
-        for(int i=0;i<productChannelDetails.size();i++){
-            if(EnumPayChannelSign.YG_WEIXIN.getId()==productChannelDetails.get(i).getChannelTypeSign()){
-                BigDecimal weixinRate = productChannelDetails.get(i).getProductMerchantPayRate();
-                BigDecimal b1 = new BigDecimal(100);
-                upgradeRules.setWeixinRate(weixinRate.multiply(b1));
-            }
-            if(EnumPayChannelSign.YG_ZHIFUBAO.getId()==productChannelDetails.get(i).getChannelTypeSign()){
-                BigDecimal alipayRate = productChannelDetails.get(i).getProductMerchantPayRate();
-                BigDecimal b1 = new BigDecimal(100);
-                upgradeRules.setAlipayRate(alipayRate.multiply(b1));
-            }
-            if(EnumPayChannelSign.YG_YINLIAN.getId()==productChannelDetails.get(i).getChannelTypeSign()){
-                BigDecimal fastRate = productChannelDetails.get(i).getProductMerchantPayRate();
-                BigDecimal b1 = new BigDecimal(100);
-                upgradeRules.setFastRate(fastRate.multiply(b1));
-            }
-        }
+//        for(int i=0;i<productChannelDetails.size();i++){
+//            if(EnumPayChannelSign.YG_WECHAT.getId()==productChannelDetails.get(i).getChannelTypeSign()){
+//                BigDecimal weixinRate = productChannelDetails.get(i).getProductMerchantPayRate();
+//                BigDecimal b1 = new BigDecimal(100);
+//                upgradeRules.setWeixinRate(weixinRate.multiply(b1));
+//            }
+//            if(EnumPayChannelSign.YG_ALIPAY.getId()==productChannelDetails.get(i).getChannelTypeSign()){
+//                BigDecimal alipayRate = productChannelDetails.get(i).getProductMerchantPayRate();
+//                BigDecimal b1 = new BigDecimal(100);
+//                upgradeRules.setAlipayRate(alipayRate.multiply(b1));
+//            }
+//            if(EnumPayChannelSign.YG_UNIONPAY.getId()==productChannelDetails.get(i).getChannelTypeSign()){
+//                BigDecimal fastRate = productChannelDetails.get(i).getProductMerchantPayRate();
+//                BigDecimal b1 = new BigDecimal(100);
+//                upgradeRules.setFastRate(fastRate.multiply(b1));
+//            }
+//        }
+
+        BigDecimal weixinRate1 = weixinProductChannelDetail.get().getProductMerchantPayRate();
+        BigDecimal a1 = new BigDecimal(100);
+        upgradeRules.setWeixinRate(weixinRate1.multiply(a1));
+
+        BigDecimal alipayRate1 = zhifubaoProductChannelDetail.get().getProductMerchantPayRate();
+        BigDecimal a2 = new BigDecimal(100);
+        upgradeRules.setAlipayRate(alipayRate1.multiply(a2));
+
+        BigDecimal fastRate1 = fastPayProductChannelDetail.get().getProductMerchantPayRate();
+        BigDecimal a3 = new BigDecimal(100);
+        upgradeRules.setFastRate(fastRate1.multiply(a3));
+
         upgradeRulesList.add(upgradeRules);
         List<UpgradeRules> upgradeRulesArr =  upgradeRulesService.selectAll(req.getProductId());//升级规则
 
@@ -121,7 +147,7 @@ public class UpgradeController extends BaseController {
             upgradeRulesAndRateResponse.setUpgradeRate(upgradeRate.multiply(b1));
             upgradeRulesAndRateResponse.setTradeRate(tradeRate.multiply(b1));
             upgradeRulesAndRateResponse.setStandard(upgradeRecommendRulesOptional.get().getInviteStandard());
-    }
+        }
         return CommonResponse.objectResponse(1, "success", upgradeRulesAndRateResponse);
     }
 

@@ -7,6 +7,7 @@ import com.jkm.base.common.entity.CommonResponse;
 import com.jkm.base.common.entity.PageModel;
 import com.jkm.hss.account.entity.SettleAccountFlow;
 import com.jkm.hss.account.enums.EnumAccountFlowType;
+import com.jkm.hss.account.enums.EnumAccountUserType;
 import com.jkm.hss.account.sevice.SettleAccountFlowService;
 import com.jkm.hss.bill.service.OrderService;
 import com.jkm.hss.controller.BaseController;
@@ -188,11 +189,11 @@ public class SettleController extends BaseController {
     @RequestMapping(value = "list", method = RequestMethod.POST)
     public CommonResponse listSettleAuditRecord(@RequestBody ListSettleAuditRecordRequest settleAuditRecordRequest) {
         final PageModel<ListSettleAuditRecordResponse> result = new PageModel<>(settleAuditRecordRequest.getPageNo(), settleAuditRecordRequest.getPageSize());
-        if (StringUtils.isEmpty(settleAuditRecordRequest.getMerchantNo())) {
-            settleAuditRecordRequest.setMerchantNo(null);
+        if (StringUtils.isEmpty(settleAuditRecordRequest.getUserNo())) {
+            settleAuditRecordRequest.setUserNo(null);
         }
-        if (StringUtils.isEmpty(settleAuditRecordRequest.getMerchantName())) {
-            settleAuditRecordRequest.setMerchantName(null);
+        if (StringUtils.isEmpty(settleAuditRecordRequest.getUserName())) {
+            settleAuditRecordRequest.setUserName(null);
         }
         if (StringUtils.isEmpty(settleAuditRecordRequest.getStartSettleDate()) || StringUtils.isEmpty(settleAuditRecordRequest.getEndSettleDate())) {
             settleAuditRecordRequest.setStartSettleDate(null);
@@ -220,12 +221,10 @@ public class SettleController extends BaseController {
             public ListSettleAuditRecordResponse apply(AccountSettleAuditRecord input) {
                 final ListSettleAuditRecordResponse response = new ListSettleAuditRecordResponse();
                 response.setId(input.getId());
-                response.setMerchantNo(input.getMerchantNo());
-                response.setMerchantName(input.getMerchantName());
-                response.setDealerNo(input.getDealerNo());
-                response.setDealerName(input.getDealerName());
-                response.setAppId(input.getAppId());
-                response.setAppName(StringUtils.isEmpty(input.getAppId()) ? "" : EnumProductType.of(input.getAppId()).getName());
+                response.setUserNo(input.getUserNo());
+                response.setUserName(input.getUserName());
+                response.setUserType(input.getAccountUserType());
+                response.setUserTypeValue(input.getAccountUserType() > 0 ? EnumAccountUserType.of(input.getAccountUserType()).getValue() : "");
                 response.setTradeDate(input.getTradeDate());
                 response.setTradeNumber(input.getTradeNumber());
                 response.setSettleAmount(input.getSettleAmount());

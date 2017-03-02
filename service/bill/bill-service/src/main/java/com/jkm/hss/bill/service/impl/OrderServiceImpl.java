@@ -146,7 +146,7 @@ public class OrderServiceImpl implements OrderService {
         playMoneyOrder.setGoodsName(shop.getName());
         playMoneyOrder.setGoodsDescribe(shop.getName());
         playMoneyOrder.setSettleStatus(EnumSettleStatus.DUE_SETTLE.getId());
-        playMoneyOrder.setSettleTime(DateTimeUtil.getSettleDate());
+        playMoneyOrder.setSettleTime(DateTimeUtil.generateT1SettleDate(new Date()));
         playMoneyOrder.setSettleType(settleType);
         playMoneyOrder.setStatus(EnumOrderStatus.WITHDRAWING.getId());
         this.add(playMoneyOrder);
@@ -175,7 +175,7 @@ public class OrderServiceImpl implements OrderService {
      * @return
      */
     @Override
-    public long createDealerPlayMoneyOrder(Dealer dealer, BigDecimal amount, String appId, int channel, String settleType) {
+    public long createDealerPlayMoneyOrder(Dealer dealer, BigDecimal amount, String appId, int channel, String settleType, BigDecimal withdrawFee) {
         final Account account = this.accountService.getByIdWithLock(dealer.getAccountId()).get();
         Preconditions.checkState(account.getAvailable().compareTo(amount) >= 0, "余额不足");
         final Order playMoneyOrder = new Order();
@@ -188,8 +188,8 @@ public class OrderServiceImpl implements OrderService {
         playMoneyOrder.setPayer(account.getId());
         playMoneyOrder.setPayee(0);
         playMoneyOrder.setAppId(appId);
-        //手续费固定1元
-        playMoneyOrder.setPoundage(new BigDecimal("1.0"));
+        //手续费
+        playMoneyOrder.setPoundage(withdrawFee);
         playMoneyOrder.setGoodsName(dealer.getProxyName());
         playMoneyOrder.setGoodsDescribe(dealer.getProxyName());
         playMoneyOrder.setSettleStatus(EnumSettleStatus.DUE_SETTLE.getId());

@@ -2,6 +2,7 @@ package com.jkm.hss.merchant.dao;
 
 import com.google.common.base.Optional;
 import com.jkm.hss.merchant.entity.MerchantInfo;
+import com.jkm.hss.merchant.helper.request.ContinueBankInfoRequest;
 import com.jkm.hss.merchant.helper.request.MerchantInfoAddRequest;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
@@ -135,12 +136,10 @@ public interface MerchantInfoDao {
      * 去升级
      * @param merchantId
      * @param level
-     * @param weixinRate
-     * @param alipayRate
-     * @param fastRate
      * @return
      */
-    int toUpgrade(@Param("merchantId") long merchantId, @Param("level") int level, @Param("weixinRate") BigDecimal weixinRate, @Param("alipayRate") BigDecimal alipayRate, @Param("fastRate") BigDecimal fastRate);
+    int toUpgrade(@Param("merchantId") long merchantId, @Param("level") int level);
+
     /**
      * 初始化推荐版本数据
      * @param merchantInfo
@@ -154,4 +153,19 @@ public interface MerchantInfoDao {
      * @return
      */
     List<MerchantInfo> batchSelectByAccountIds(@Param("accountIds") List<Long> accountIds);
+    /**
+     * 修改信用卡信息
+     * @param creditCard
+     * @param creditCardName
+     * @param creditCardShort
+     * @param id
+     * @return
+     */
+    int updateCreditCard(@Param("creditCard") String creditCard,@Param("creditCardName") String creditCardName,@Param("creditCardShort") String creditCardShort,@Param("id") long id);
+    /**
+     * 完善支行信息
+     * @param continueBankInfoRequest
+     * @return
+     */
+    int updateBranchInfo(ContinueBankInfoRequest continueBankInfoRequest);
 }

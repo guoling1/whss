@@ -132,7 +132,7 @@ public class MerchantInfo extends BaseEntity{
     /**
      * 商户更改商户名
      */
-//    private String merchantChangeName;
+    private String merchantChangeName;
 
     /**
      * 合伙人级别
@@ -169,6 +169,51 @@ public class MerchantInfo extends BaseEntity{
      * {@link com.jkm.hss.merchant.enums.EnumIsUpgrade}
      */
     private int isUpgrade;
+
+    /**
+     * 支行编码
+     */
+    private String branchCode;
+    /**
+     * 支行名称
+     */
+    private String branchName;
+    /**
+     * 所在省份编码
+     */
+    private String provinceCode;
+    /**
+     * 所在省份名称
+     */
+    private String provinceName;
+    /**
+     * 所在城市编码
+     */
+    private String cityCode;
+    /**
+     * 所在城市名称
+     */
+    private String cityName;
+    /**
+     * 所在县编码
+     */
+    private String countyCode;
+    /**
+     * 所在县名称
+     */
+    private String countyName;
+    /**
+     * 信用卡号
+     */
+    private String creditCard;
+    /**
+     * 信用卡银行名称
+     */
+    private String creditCardName;
+    /**
+     * 银行卡后四位
+     */
+    private String creditCardShort;
 
 
 }

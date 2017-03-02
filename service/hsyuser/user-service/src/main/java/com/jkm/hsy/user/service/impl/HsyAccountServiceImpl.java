@@ -92,7 +92,7 @@ public class HsyAccountServiceImpl implements HsyAccountService {
                     .build()
             );
             result.put("code", 0);
-            result.put("verifyCode", verifyCode.getValue());
+//            result.put("verifyCode", verifyCode.getValue());
             result.put("msg", "发送成功");
         } else {
             result.put("code", -1);

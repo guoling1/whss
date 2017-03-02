@@ -11,7 +11,6 @@ import com.jkm.hss.merchant.entity.MerchantInfo;
 import com.jkm.hss.merchant.entity.OrderRecord;
 import com.jkm.hss.merchant.entity.UserInfo;
 import com.jkm.hss.merchant.enums.EnumMerchantStatus;
-import com.jkm.hss.merchant.enums.EnumSettlePeriodType;
 import com.jkm.hss.merchant.enums.EnumSettleStatus;
 import com.jkm.hss.merchant.enums.EnumTradeType;
 import com.jkm.hss.merchant.helper.MerchantSupport;
@@ -32,7 +31,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.net.URLDecoder;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
@@ -743,10 +741,10 @@ public class LoginController extends BaseController {
             model.addAttribute("createTime",time.format(orderRecord.getCreateTime()));
             Pair<String,String> pair = payOf(0,orderRecord.getPayResult());
             model.addAttribute("status",pair.getRight());
-            if(orderRecord.getPayChannel()== EnumPayChannelSign.YG_WEIXIN.getId()||orderRecord.getPayChannel()==EnumPayChannelSign.YG_ZHIFUBAO.getId()){
+            if(orderRecord.getPayChannel()== EnumPayChannelSign.YG_WECHAT.getId()||orderRecord.getPayChannel()==EnumPayChannelSign.YG_ALIPAY.getId()){
                 model.addAttribute("payWay","扫码支付");
             }
-            if(orderRecord.getPayChannel()==EnumPayChannelSign.YG_YINLIAN.getId()){
+            if(orderRecord.getPayChannel()==EnumPayChannelSign.YG_UNIONPAY.getId()){
                 model.addAttribute("payWay","快捷支付");
             }
             Optional<MerchantInfo> merchantInfoOptional = merchantInfoService.selectById(orderRecord.getMerchantId());

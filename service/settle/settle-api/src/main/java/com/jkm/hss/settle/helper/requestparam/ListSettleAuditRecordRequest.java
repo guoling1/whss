@@ -11,14 +11,20 @@ import lombok.Data;
 public class ListSettleAuditRecordRequest extends PageQueryParams {
 
     /**
-     * 商户编号
+     * 编号
      */
-    private String merchantNo;
+    private String userNo;
 
     /**
      * 商户名称
      */
-    private String merchantName;
+    private String userName;
+
+    /**
+     *
+     * {@link com.jkm.hss.account.enums.EnumAccountUserType}
+     */
+    private int userType;
 
     /**
      * 开始日期

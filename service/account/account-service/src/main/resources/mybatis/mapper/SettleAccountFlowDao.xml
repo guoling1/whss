@@ -4,6 +4,8 @@
     <insert id="insert" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO tb_settle_account_flow
         (
+        flow_no,
+        settlement_record_id,
         account_id,
         settle_audit_record_id,
         account_user_type,
@@ -21,6 +23,8 @@
         )
         VALUES
         (
+        #{flowNo},
+        #{settlementRecordId},
         #{accountId},
         #{settleAuditRecordId},
         #{accountUserType},
@@ -38,13 +42,25 @@
         );
     </insert>
 
-    <update id="updateSettleAuditRecordIdByOrderNos">
+    <update id="updateSettlementRecordIdById">
+        UPDATE tb_settle_account_flow
+        SET settlement_record_id = #{settlementRecordId}
+        WHERE id = #{id}
+    </update>
+
+    <update id="updateSettlementRecordIdBySettleAuditRecordId">
+        UPDATE tb_settle_account_flow
+        SET settlement_record_id = #{settlementRecordId}
+        WHERE settle_audit_record_id = #{settleAuditRecordId}
+    </update>
+
+    <update id="updateSettleAuditRecordIdByTradeDateAndAccountId">
         UPDATE tb_settle_account_flow
         SET settle_audit_record_id = #{settleAuditRecordId}
-        WHERE order_no IN
-        <foreach collection="orderNos" index="index" item="item" open="(" separator="," close=")">
-            #{item}
-        </foreach>
+        WHERE app_id = 'hsy'
+        AND trade_date = #{tradeDate}
+        AND account_id = #{accountId}
+        AND type = 1
     </update>
 
     <select id="selectById" resultType="com.jkm.hss.account.entity.SettleAccountFlow">
@@ -55,15 +71,13 @@
         SELECT * FROM tb_settle_account_flow WHERE order_no = #{orderNo} AND account_id = #{accountId} AND type = #{type}
     </select>
 
-    <select id="selectMerchantLastWordDayRecord" resultType="com.jkm.hss.account.entity.SettleAccountFlow">
-        SELECT * FROM tb_settle_account_flow
-        WHERE account_user_type = 2
-        AND app_id = 'hsy'
+    <select id="statisticsYesterdayFlow" resultType="com.jkm.hss.account.helper.selectresponse.SettleAccountFlowStatistics">
+        SELECT account_user_type, account_id, count(id) as count, SUM(income_amount) as amount
+        FROM tb_settle_account_flow
+        WHERE app_id = 'hsy'
+        AND trade_date = #{tradeDate}
         AND type = 1
-        AND trade_date IN
-        <foreach collection="tradeDateList" item="item" index="index" open="(" separator="," close=")">
-            #{item}
-        </foreach>
+        GROUP BY account_user_type, account_id;
     </select>
 
     <select id="selectByAuditRecordId" resultType="com.jkm.hss.account.entity.SettleAccountFlow">
@@ -72,6 +86,22 @@
 
     <select id="selectDealerOrCompanyFlowByOrderNo" resultType="com.jkm.hss.account.entity.SettleAccountFlow">
         SELECT * FROM tb_settle_account_flow WHERE order_no = #{orderNo} AND account_user_type != 2
+    </select>
+
+    <select id="selectBySettlementRecordId" resultType="com.jkm.hss.account.entity.SettleAccountFlow">
+        SELECT * FROM tb_settle_account_flow WHERE settlement_record_id = #{settlementRecordId}
+    </select>
+
+    <select id="selectYesterdayDecreaseFlowCount" resultType="java.lang.Integer">
+        SELECT count(0)
+        FROM tb_settle_account_flow
+        WHERE app_id = 'hsy'
+        AND trade_date = #{tradeDate}
+        AND type = 2
+    </select>
+
+    <select id="selectCountByFlowNo" resultType="java.lang.Integer">
+        SELECT count(0) FROM tb_settle_account_flow WHERE flow_no = #{flowNo}
     </select>
 
 </mapper>

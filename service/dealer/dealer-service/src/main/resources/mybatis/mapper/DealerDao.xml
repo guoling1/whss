@@ -100,6 +100,14 @@
         SELECT * FROM tb_dealer WHERE account_id = #{accountId}
     </select>
 
+    <select id="selectByAccountIds" resultType="com.jkm.hss.dealer.entity.Dealer">
+        SELECT * FROM tb_dealer
+        WHERE account_id IN
+        <foreach collection="accountIds" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+
     <select id="selectByMobile" resultType="com.jkm.hss.dealer.entity.Dealer">
         SELECT * FROM tb_dealer WHERE mobile = #{mobile}
     </select>

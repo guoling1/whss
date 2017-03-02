@@ -22,7 +22,12 @@ public enum EnumSettleStatus {
     /**
      *已结算
      */
-    SETTLED(3, "已结算")
+    SETTLED(3, "结算成功"),
+
+    /**
+     * 部分结算
+     */
+    SETTLE_PART(4, "部分结算")
     ;
 
 

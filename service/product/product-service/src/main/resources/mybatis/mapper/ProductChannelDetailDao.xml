@@ -7,6 +7,7 @@
         (product_id,
         basic_channel_id,
         channel_type_sign,
+        channel_type,
         product_trade_rate,
         product_balance_type,
         product_withdraw_fee,
@@ -17,6 +18,7 @@
         #{productId},
         #{basicChannelId},
         #{channelTypeSign},
+        #{channelType},
         #{productTradeRate},
         #{productBalanceType},
         #{productWithdrawFee},
@@ -30,6 +32,7 @@
         SET product_id = #{productId},
         basic_channel_id = #{basicChannelId},
         channel_type_sign = #{channelTypeSign},
+        channel_type = #{channelType},
         product_trade_rate = #{productTradeRate},
         product_balance_type = #{productBalanceType},
         product_withdraw_fee = #{productWithdrawFee},
@@ -47,5 +50,8 @@
     </select>
     <select id="selectByChannelTypeSign" resultType="com.jkm.hss.product.entity.ProductChannelDetail">
         SELECT * FROM tb_product_channel_detail WHERE channel_type_sign = #{payChannel} AND status = 2
+    </select>
+    <select id="selectRateByProductIdAndChannelType" resultType="com.jkm.hss.product.entity.ProductChannelDetail">
+        SELECT * FROM tb_product_channel_detail WHERE product_id = #{productId} and channel_type=#{channelType} and status = 2 limit 0,1
     </select>
 </mapper>
