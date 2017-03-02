@@ -568,12 +568,11 @@
               for (var j=0;j<this.gridData.length;j++){
                 if(this.query.list[i].basicChannelId==this.gridData[j].id){
                   this.gridData[j].basicChannelId = this.gridData[j].id;
-                  this.gridData[j].productTradeRate = this.query.list[i].productTradeRate
-                  this.gridData[j].productBalanceType = this.query.list[i].productBalanceType
-                  this.gridData[j].productWithdrawFee = this.query.list[i].productTradeRate
-                  this.gridData[j].productMerchantPayRate = this.query.list[i].productTradeRate
-                  this.gridData[j].productMerchantWithdrawFee = this.query.list[i].productTradeRate
-                  this.gridData[j].productMerchantWithdrawFee = this.query.list[i].productTradeRate
+                  this.gridData[j].productTradeRate = this.query.list[i].productTradeRate;
+                  this.gridData[j].productBalanceType = this.query.list[i].productBalanceType;
+                  this.gridData[j].productWithdrawFee = this.query.list[i].productWithdrawFee;
+                  this.gridData[j].productMerchantPayRate = this.query.list[i].productMerchantPayRate;
+                  this.gridData[j].productMerchantWithdrawFee = this.query.list[i].productMerchantWithdrawFee;
                   this.gridData[j].id1 = this.query.list[i].id
 
                   this.channels.push(this.gridData[j]);
