@@ -58,4 +58,10 @@ public interface BasicChannelDao {
      * @return
      */
 //    BasicChannel selectChannel(@Param("channelTypeSign") int channelTypeSign);
+
+    /**
+     * 初始化数据时使用，无其他
+     * @return
+     */
+    List<BasicChannel> selectNewAll();
 }
