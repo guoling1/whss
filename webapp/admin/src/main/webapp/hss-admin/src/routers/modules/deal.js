@@ -39,6 +39,8 @@ const Upgrade = r => require.ensure([], () => r(require('../../components/Upgrad
 const CodeStatus = r => require.ensure([], () => r(require('../../components/CodeStatus')), 'group-record');
 const StoreAuditHSY = r => require.ensure([], () => r(require('../../components/StoreAuditHSY')), 'group-record');
 const T1Audit = r => require.ensure([], () => r(require('../../components/T1Audit')), 'group-record');
+const TAuditDealer = r => require.ensure([], () => r(require('../../components/TAuditDealer')), 'group-record');
+const TAuditStore = r => require.ensure([], () => r(require('../../components/TAuditStore')), 'group-record');
 const PersonnelList = r => require.ensure([], () => r(require('../../components/PersonnelList')), 'group-record');
 const PersonnelAdd = r => require.ensure([], () => r(require('../../components/PersonnelAdd')), 'group-record');
 
@@ -76,6 +78,16 @@ export default {
       path: 't1Audit',
       name: 'T1Audit',
       component: T1Audit
+    },
+    {
+      path: 'tAuditDealer',
+      name: 'TAuditDealer',
+      component: TAuditDealer
+    },
+    {
+      path: 'tAuditStore',
+      name: 'TAuditStore',
+      component: TAuditStore
     },
     {
       path: 'newDeal',
