@@ -252,7 +252,7 @@ public class ShallProfitDetailServiceImpl implements ShallProfitDetailService{
             final BigDecimal merchantWithdrawFee = this.getMerchantWithdrawFee(merchantInfo, channelSign);
             final BigDecimal productMoney = merchantWithdrawFee.subtract(productChannelDetail.getProductWithdrawFee());
             Map<String, Triple<Long, BigDecimal, String>> map = new HashMap<>();
-            map.put("productMoney",Triple.of(product.getAccountId(), merchantWithdrawFee,"M1"));
+            map.put("productMoney",Triple.of(product.getAccountId(), productMoney,"M1"));
             map.put("channelMoney",Triple.of(basicChannel.getAccountId(), channelMoney,"M1"));
             final CompanyProfitDetail companyProfitDetail = new CompanyProfitDetail();
             companyProfitDetail.setProductType(EnumProductType.HSS.getId());
