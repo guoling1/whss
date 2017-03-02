@@ -265,7 +265,7 @@
       //同步
       synchro: function () {
         this.loading = true;
-        this.$http.get('/merchantIn/update')
+        this.$http.get('/admin/merchantIn/update')
           .then(res => {
             this.loading = false;
             this.$message({
