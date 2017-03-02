@@ -45,12 +45,12 @@ gulp.task('less-hss', function () {
     .pipe(less({
       paths: [path.join(__dirname, 'less', 'includes')]
     }))
-    .pipe(rename({basename: "style.2.1.2"}))
+    .pipe(rename({basename: "style.2.1.3"}))
     .pipe(gulp.dest('css'));
 });
 
 gulp.task('replace-hss-calc', ['build-hss'], function () {
-  return gulp.src('css/hss/style.2.1.2.css')
+  return gulp.src('css/hss/style.2.1.3.css')
     .pipe(replace('calc(0%)', 'calc(100% - 100px)'))
     .pipe(gulp.dest('css/hss'));
 });
@@ -87,7 +87,7 @@ gulp.task('js-hss', () => {
 
 gulp.task('replace-hss', function () {
   return gulp.src('WEB-INF/jsp/*.jsp')
-    .pipe(replace('style.css', 'style.2.0.1.css'))
+    .pipe(replace('style.2.1.2.css', 'style.2.1.3.css'))
     .pipe(replace('2.0.1', '2.1.1'))
     .pipe(gulp.dest('WEB-INF/jsp'));
 });
