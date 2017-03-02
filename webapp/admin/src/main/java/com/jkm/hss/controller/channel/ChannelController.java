@@ -107,6 +107,7 @@ public class ChannelController extends BaseController {
             final BasicChannel basicChannel = this.basicChannelService.selectById(request.getId());
             request.setBasicTradeRate(request.getBasicTradeRate().divide(new BigDecimal(100)));
             request.setChannelTypeSign(basicChannel.getChannelTypeSign());
+            request.setChannelCompany(EnumPayChannelSign.of(request.getChannelName()).getUpperChannel().getValue());
             this.basicChannelService.update(request);
             return  CommonResponse.simpleResponse(1, "success");
         }catch (final Throwable throwable){
