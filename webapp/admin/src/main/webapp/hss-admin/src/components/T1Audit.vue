@@ -8,20 +8,29 @@
         </div>
         <div class="box-body">
           <!--筛选-->
-          <el-row :gutter="20" style="width: 910px">
-            <el-col :span="4">
-              <label>商户编号：</label>
-              <el-input v-model="query.merchantNo" placeholder="请输入内容" size="small"></el-input>
-            </el-col>
-            <el-col :span="4">
-              <label>商户名称：</label>
-              <el-input v-model="query.merchantName" placeholder="请输入内容" size="small"></el-input>
-            </el-col>
-            <el-col :span="6">
-              <label style="display: block">结算日期：</label>
+          <ul>
+            <li class="same">
+              <label>结算对象编号:</label>
+              <el-input style="width: 130px" v-model="query.userNo" placeholder="请输入内容" size="small"></el-input>
+            </li>
+            <li class="same">
+              <label>名称:</label>
+              <el-input style="width: 130px" v-model="query.userName" placeholder="请输入内容" size="small"></el-input>
+            </li>
+            <li class="same">
+              <label>类型:</label>
+              <el-select clearable v-model="query.userType" size="small" >
+                <el-option label="全部" value="">全部</el-option>
+                <el-option label="商户" value="2">商户</el-option>
+                <el-option label="代理商" value="3">代理商</el-option>
+                <el-option label="金开门" value="1">金开门</el-option>
+              </el-select>
+            </li>
+            <li class="same">
+              <label>结算日期:</label>
               <el-date-picker v-model="date" size="small" type="daterange" align="right" placeholder="选择日期范围" :picker-options="pickerOptions"></el-date-picker>
-            </el-col>
-            <el-col  :span="5">
+            </li>
+            <li class="same">
               <label>对账结果:</label>
               <el-select clearable v-model="query.checkedStatus" size="small" >
                 <el-option label="全部" value="">全部</el-option>
@@ -29,8 +38,8 @@
                 <el-option label="对账完成无异常" value="2">对账完成无异常</el-option>
                 <el-option label="有单边" value="3">有单边</el-option>
               </el-select>
-            </el-col>
-            <el-col  :span="4">
+            </li>
+            <li class="same">
               <label>结算状态:</label>
               <el-select clearable v-model="query.settleStatus" size="small" >
                 <el-option label="全部" value="">全部</el-option>
@@ -38,23 +47,26 @@
                 <el-option label="部分结算" value="4">部分结算</el-option>
                 <el-option label="结算成功" value="3">结算成功</el-option>
               </el-select>
-            </el-col>
-            <el-col  :span="1" style="margin-top: 18px">
+            </li>
+            <li class="same">
               <div class="btn btn-primary" @click="search">筛选</div>
-            </el-col>
-          </el-row>
+            </li>
+          </ul>
           <!--表格-->
           <el-table v-loading.body="loading" style="font-size: 12px;margin:15px 0" :data="records" border @selection-change="handleSelectionChange">
             <!--<el-table-column type="selection" width="55"></el-table-column>-->
-            <el-table-column prop="merchantNo" label="商户编号" ></el-table-column>
-            <el-table-column prop="merchantName" label="商户名称" ></el-table-column>
-            <el-table-column prop="dealerNo" label="上级代理编号" ></el-table-column>
-            <el-table-column prop="dealerName" label="上级代理名称" ></el-table-column>
-            <el-table-column prop="appName" label="结算产品" ></el-table-column>
-            <el-table-column prop="tradeDate" label="交易日期
-" ></el-table-column>
+            <el-table-column prop="userNo" label="结算对象编号" ></el-table-column>
+            <el-table-column prop="userName" label="结算对象名称" ></el-table-column>
+            <el-table-column label="结算对象类型" >
+              <template scope="scope">
+                <span v-if="records[scope.$index].userType==2">商户</span>
+                <span v-if="records[scope.$index].userType==1">金开门</span>
+                <span v-if="records[scope.$index].userType==3">代理商</span>
+              </template>
+            </el-table-column>
+            <el-table-column prop="tradeDate" :formatter="changeTime" label="交易日期"></el-table-column>
             <el-table-column prop="tradeNumber" label="交易笔数" align="right" width="90"></el-table-column>
-            <el-table-column prop="settleAmount" label="结算金额" align="right"></el-table-column>
+            <el-table-column prop="settleAmount" label="结算金额" align="right" :formatter="changeNum"></el-table-column>
             <el-table-column prop="checkedStatusValue" label="对账结果" ></el-table-column>
             <el-table-column prop="settleStatusValue" label="结算状态" ></el-table-column>
             <el-table-column label="操作" width="70">
@@ -79,11 +91,11 @@
             <el-dialog title="结算确认提醒" v-model="isShow">
               <div class="maskCon">
                 <span>商户名称：</span>
-                <span>{{records[this.$data.index].merchantName}}</span>
+                <span>{{records[this.$data.index].userName}}</span>
               </div>
               <div class="maskCon">
                 <span>商户编号：</span>
-                <span>{{records[index].merchantNo}}</span>
+                <span>{{records[index].userNo}}</span>
               </div>
               <div class="maskCon">
                 <span>结算金额：</span>
@@ -149,8 +161,9 @@
               query:{
                 pageNo:1,
                 pageSize:10,
-                merchantNo:"",//商户编号
-                merchantName:"",  //商户名字
+                userNo:"",//商户编号
+                userName:"",  //商户名字
+                userType:'',
                 startSettleDate:"",
                 endSettleDate:"",
                 checkedStatus:'',
@@ -167,6 +180,33 @@
         this.getData()
       },
       methods: {
+        changeTime: function (row, column) {
+          var val = row.tradeDate;
+          if (val == '' || val == null) {
+            return ''
+          } else {
+            val = new Date(val)
+            var year = val.getFullYear();
+            var month = val.getMonth() + 1;
+            var date = val.getDate();
+            var hour = val.getHours();
+            var minute = val.getMinutes();
+            var second = val.getSeconds();
+
+            function tod(a) {
+              if (a < 10) {
+                a = "0" + a
+              }
+              return a;
+            }
+
+            return year + "-" + tod(month) + "-" + tod(date) + " " + tod(hour) + ":" + tod(minute) + ":" + tod(second);
+          }
+        },
+        changeNum: function (row, column) {
+          var val = row.settleAmount;
+          return parseFloat(val).toFixed(2);
+        },
         getData: function () {
           this.loading = true;
           this.$http.post('/admin/settle/list',this.$data.query)
@@ -277,5 +317,16 @@
 <style scoped lang="less">
   .maskCon{
     margin:0 0 15px 50px
+  }
+  ul{
+    padding: 0;
+  }
+  .same{
+    list-style: none;
+    display: inline-block;
+    margin: 0 15px 15px 0;
+  }
+  .btn{
+    font-size: 12px;
   }
 </style>
