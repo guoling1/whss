@@ -51,4 +51,7 @@
     <select id="selectByChannelTypeSign" resultType="com.jkm.hss.product.entity.ProductChannelDetail">
         SELECT * FROM tb_product_channel_detail WHERE channel_type_sign = #{payChannel} AND status = 2
     </select>
+    <select id="selectRateByProductIdAndChannelType" resultType="com.jkm.hss.product.entity.ProductChannelDetail">
+        SELECT * FROM tb_product_channel_detail WHERE product_id = #{productId} and channel_type=#{channelType} and status = 2 limit 0,1
+    </select>
 </mapper>
