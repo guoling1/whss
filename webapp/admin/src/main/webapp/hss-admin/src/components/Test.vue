@@ -1211,7 +1211,7 @@
               </el-col>
               <el-col :span="6">
                 <div class="grid-content bg-purple-light">
-                  <el-select style="width: 100%" v-model="query.roleId" clearable placeholder="请选择" size="small">
+                  <el-select style="width: 100%" v-model="query.type" clearable placeholder="请选择" size="small">
                     <el-option label="好收收" value="hss">好收收</el-option>
                     <el-option label="好收银" value="hsy">好收银</el-option>
                   </el-select>
@@ -1228,7 +1228,7 @@
               </el-col>
               <el-col :span="6">
                 <div class="grid-content bg-purple-light">
-                  <el-input size="small" v-model="query.mobile" placeholder="请输入内容"></el-input>
+                  <el-input size="small" v-model="query.productName" placeholder="请输入内容"></el-input>
                 </div>
               </el-col>
               <el-col :span="8">
@@ -1240,25 +1240,61 @@
                 <div class="alignRight">添加通道:</div>
               </el-col>
               <el-col :span="12">
-                <div class="grid-content bg-purple-light" style="width: 80%">
-                  <el-table :data="tableData" @selection-change="handleSelectionChange" border v-if="tableHas">
+                <div class="grid-content bg-purple-light tableSel">
+                  <el-table :data="channels" @selection-change="handleSelectionChange" border v-if="tableHas"
+                            style="font-size: 12px">
                     <el-table-column label="通道名称">
                       <template scope="scope">
-                        <span >{{tableData[scope.$index].channelName}}</span>
+                        <span>{{channels[scope.$index].channelName}}</span>
                       </template>
                     </el-table-column>
-                    <el-table-column prop="channelCode" label="通道编码"></el-table-column>
-                    <el-table-column prop="productTradeRate" label="支付结算手续费"></el-table-column>
-                    <el-table-column prop="channelSource" label="结算时间"></el-table-column>
-                    <el-table-column label="支付费率">
+                    <el-table-column label="通道编码">
                       <template scope="scope">
-                        <span>{{gridData[scope.$index].productWithdrawFee}}%</span>
+                        <span>{{channels[scope.$index].channelName}}</span>
                       </template>
                     </el-table-column>
-                    <el-table-column prop="basicBalanceType" label="提现结算费"></el-table-column>
-                    <el-table-column prop="basicBalanceType" label="产品支付手续费"></el-table-column>
-                    <el-table-column prop="basicBalanceType" label="商户提现手续费"></el-table-column>
-                    <el-table-column prop="basicBalanceType" label="操作"></el-table-column>
+                    <el-table-column label="支付结算手续费">
+                      <template scope="scope">
+                        <input type="text" v-model="channels[scope.$index].productTradeRate">
+                        <b>%</b>
+                      </template>
+                    </el-table-column>
+                    <el-table-column label="结算时间">
+                      <template scope="scope">
+                        <!--<el-select style="width: 100%" v-model="channels[scope.$index].productBalanceType" clearable placeholder="请选择" size="small">
+                          <el-option label="D0" value="D0">D0</el-option>
+                          <el-option label="T1" value="T1">T1</el-option>
+                        </el-select>-->
+                        <select class="form-control select2 select2-hidden-accessible" tabindex="-1" aria-hidden="true" v-model="channels[scope.$index].productBalanceType">
+                          <option value="">请选择</option>
+                          <option value="D0">D0</option>
+                          <option value="T1">T1</option>
+                        </select>
+                      </template>
+                    </el-table-column>
+                    <el-table-column label="提现结算费">
+                      <template scope="scope">
+                        <input type="text" v-model="channels[scope.$index].productWithdrawFee">
+                        <b>元/笔</b>
+                      </template>
+                    </el-table-column>
+                    <el-table-column prop="basicBalanceType" label="商户支付手续费">
+                      <template scope="scope">
+                        <input type="text" v-model="channels[scope.$index].productMerchantPayRate">
+                        <b>%</b>
+                      </template>
+                    </el-table-column>
+                    <el-table-column prop="basicBalanceType" label="商户提现手续费">
+                      <template scope="scope">
+                        <input type="text" v-model="channels[scope.$index].productMerchantWithdrawFee">
+                        <b>元/笔</b>
+                      </template>
+                    </el-table-column>
+                    <el-table-column label="操作" width="72">
+                      <template scope="scope">
+                        <el-button @click.native.prevent="deleteRow(scope.$index, channels)" type="text" size="small">移除</el-button>
+                      </template>
+                    </el-table-column>
                   </el-table>
                   <span class="btn btn-primary" style="margin: 15px 0" @click="passSelect">添加通道</span>
                 </div>
@@ -1267,7 +1303,7 @@
             </el-row>
 
             <el-dialog title="选择通道" v-model="dialogTableVisible">
-              <el-table :data="gridData" @selection-change="handleSelectionChange" border>
+              <el-table :data="gridData" @selection-change="handleSelectionChange" border style="font-size: 12px">
                 <el-table-column type="selection" width="55"></el-table-column>
                 <el-table-column label="通道名称">
                   <template scope="scope">
@@ -1296,7 +1332,6 @@
                     <span v-if="gridData[scope.$index].supportWay=='3'">公众号、扫码</span>
                   </template>
                 </el-table-column>
-                <el-table-column prop="remarks" label="备注信息"></el-table-column>
               </el-table>
               <div slot="footer" class="dialog-footer">
                 <el-button @click="dialogTableVisible = false">取 消</el-button>
@@ -1310,7 +1345,7 @@
               </el-col>
               <el-col :span="6">
                 <div class="grid-content bg-purple-light" style="position: relative">
-                  <el-input size="small" v-model="query.email" placeholder="请输入内容"></el-input>
+                  <el-input size="small" v-model="query.limitPayFeeRate" placeholder="请输入内容"></el-input>
                   <b>%</b>
                 </div>
               </el-col>
@@ -1324,7 +1359,7 @@
               </el-col>
               <el-col :span="6">
                 <div class="grid-content bg-purple-light" style="position: relative">
-                  <el-input size="small" v-model="query.firstMarkCode" placeholder="请输入内容"></el-input>
+                  <el-input size="small" v-model="query.limitWithdrawFeeRate" placeholder="请输入内容"></el-input>
                   <b>元/笔</b>
                 </div>
               </el-col>
@@ -1338,8 +1373,8 @@
               </el-col>
               <el-col :span="6">
                 <div class="grid-content bg-purple-light">
-                  <el-radio class="radio" v-model="query.distributeType" label="1">手动提现</el-radio>
-                  <el-radio class="radio" v-model="query.distributeType" label="2">逐笔自动提现</el-radio>
+                  <el-radio class="radio" v-model="query.merchantWithdrawType" label="HAND">手动提现</el-radio>
+                  <el-radio class="radio" v-model="query.merchantWithdrawType" label="AUTO">逐笔自动提现</el-radio>
                 </div>
               </el-col>
               <el-col :span="8">
@@ -1352,9 +1387,9 @@
               </el-col>
               <el-col :span="6">
                 <div class="grid-content bg-purple-light">
-                  <el-radio class="radio" v-model="query.distributeType" label="1">D0</el-radio>
-                  <el-radio class="radio" v-model="query.distributeType" label="2">日结</el-radio>
-                  <el-radio class="radio" v-model="query.distributeType" label="2">月结</el-radio>
+                  <el-radio class="radio" v-model="query.dealerBalanceType" label="D0">D0</el-radio>
+                  <el-radio class="radio" v-model="query.dealerBalanceType" label="D1">日结</el-radio>
+                  <el-radio class="radio" v-model="query.dealerBalanceType" label="M1">月结</el-radio>
                 </div>
               </el-col>
               <el-col :span="8">
@@ -1373,7 +1408,7 @@
                 返回
               </div>
               <div class="btn btn-primary" @click="create" v-if="isShow" style="width: 45%;float: right;margin: 20px 0 100px;">
-                创建代理商
+                创建产品
               </div>
               <div class="btn btn-primary" @click="change()" v-if="!isShow" style="width: 45%;float: right;margin: 20px 0 100px;">
                 修改
@@ -1400,20 +1435,13 @@
         multipleSelection:'',
         password:'',
         query: {
-          mobile: '',
-          name: '',
-          loginName:'',
-          loginPwd:'',
-          email:'',
-          belongProvinceCode:'',
-          belongProvinceName:'',
-          belongCityCode: '',
-          belongCityName: '',
-          belongArea: '',
-          bankCard: '',
-          bankAccountName: '',
-          bankReserveMobile: '',
-          idCard: '',
+          type: '',
+          productName: '',
+          limitPayFeeRate:'',
+          limitWithdrawFeeRate:'',
+          merchantWithdrawType:'',
+          dealerBalanceType:'',
+          channels:[]
         },
         channels:[],
         id: 0,
@@ -1422,11 +1450,23 @@
       }
     },
     created: function () {
-      if(this.tableData.length == 0){
+      if (this.channels.length == 0) {
           this.tableHas = false;
       }else {
           this.tableHas = true;
       }
+      this.$http.post('/admin/channel/list')
+        .then(function (res) {
+          this.loading = false;
+          this.$data.gridData = res.data;
+        }, function (err) {
+          this.$data.loading = false;
+          this.$message({
+            showClose: true,
+            message: err.statusMessage,
+            type: 'error'
+          });
+        })
       //若为查看详情
       if (this.$route.query.id != undefined) {
         this.$data.isShow = false;
@@ -1439,66 +1479,64 @@
       }
     },
     methods: {
+      deleteRow(index, rows) {
+        rows.splice(index, 1);
+      },
       // 添加通道
       passSelect: function () {
         this.dialogTableVisible = true;
-        this.$http.post('/admin/channel/list')
-          .then(function (res) {
-            this.loading = false;
-            this.dialogTableVisible = true;
-            this.$data.gridData = res.data;
-          }, function (err) {
-            this.$data.loading = false;
-            this.$message({
-              showClose: true,
-              message: err.statusMessage,
-              type: 'error'
-            });
-          })
       },
       handleSelectionChange(val) {
         this.multipleSelection = val;
       },
       select: function () {
-        this.tableData=this.tableData.concat(this.multipleSelection);
-      },
-      //修改密码
-      resetPw:function() {
-        this.$http.post('/admin/dealer/updatePwd',{dealerId:this.$route.query.id,loginPwd:this.$data.password})
-          .then(function (res) {
-            this.$data.dialogFormVisible = false;
-            this.$data.password = '';
-            this.$message({
-              showClose: true,
-              type: 'success',
-              message: '修改成功'
-            });
-          })
-          .catch(function (err) {
-            this.$message({
-              showClose: true,
-              message: err.statusMessage,
-              type: 'error'
-            })
-          })
+        this.channels = this.multipleSelection;
+        for (let i = 0; i < this.channels.length; i++) {
+          this.channels[i].productTradeRate = '';
+          this.channels[i].productBalanceType = '';
+          this.channels[i].productWithdrawFee = '';
+          this.channels[i].productMerchantPayRate = '';
+          this.channels[i].productMerchantWithdrawFee = '';
+        }
+        this.dialogTableVisible = false
+        this.tableHas = true;
       },
       //创建一级代理
       create: function () {
-        this.$http.post('/admin/user/addFirstDealer2', this.$data.query)
-          .then(function (res) {
-            this.$message({
-              showClose: true,
-              message: '创建成功',
-              type: 'success'
-            });
-            this.$router.push('/admin/record/agentListFir')
-          }, function (err) {
-            this.$message({
-              showClose: true,
-              message: err.statusMessage,
-              type: 'error'
-            });
-          })
+          console.log(this.channels)
+        for(let i= 0;i<this.$data.channels.length;i++){
+          this.channels[i].basicChannelId = this.$data.channels[i].id;
+          this.channels[i].productBalanceType = this.$data.channels[i].basicBalanceType;
+        }
+        this.query.channels = this.channels;
+        if(this.$data.isShow==true){
+          this.$http.post('/admin/product/add',this.query)
+            .then(function(res){
+              this.$store.commit('MESSAGE_ACCORD_SHOW', {
+                text: '创建成功'
+              })
+              this.$router.push('/admin/record/productList')
+            },function(err){
+              this.$store.commit('MESSAGE_ACCORD_SHOW', {
+                text: err.statusMessage
+              })
+            })
+        }else {
+          query.productId=this.$data.productId;
+          query.accountId = this.$data.accountId;
+          query.list=query.channels
+          this.$http.post('/admin/product/update',query)
+            .then(function(res){
+              this.$store.commit('MESSAGE_ACCORD_SHOW', {
+                text: '修改成功'
+              })
+              this.$router.push('/admin/record/productList')
+            },function(err){
+              this.$store.commit('MESSAGE_ACCORD_SHOW', {
+                text: err.statusMessage
+              })
+            })
+        }
       },
       goBack: function () {
         if(this.$route.query.level==2){
@@ -1535,7 +1573,7 @@
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped lang="less">
+<style scoped lang="less" rel="stylesheet/less">
   .alignRight {
     margin-right: 15px;
     text-align: right;
@@ -1558,6 +1596,19 @@
     position: absolute;
     top:0;
     right: 0;
+  }
+
+  .tableSel {
+    input {
+      width: 100%;
+      position: relative;
+      border: none;
+    }
+    b{
+      position: absolute;
+      top:7px;
+      right: 0;
+    }
   }
 </style>
 
