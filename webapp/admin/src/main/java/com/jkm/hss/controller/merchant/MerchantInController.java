@@ -56,13 +56,13 @@ public class MerchantInController extends BaseController{
             final JSONObject jsonObject = JSON.parseObject(jsonStr);
             if (jsonObject.getString("code").equals("1")){
                 //成功
-                this.merchantChannelRateService.updateEnterNetStatus(merchantInfo.getId(), EnumEnterNet.HASENT, jsonObject.getString("message"));
+                this.merchantChannelRateService.updateEnterNetStatus(merchantInfo.getId(), EnumEnterNet.HASENT, jsonObject.getString("msg"));
             }else if (jsonObject.getString("code").equals("-1")){
                 //失败 -1
-                this.merchantChannelRateService.updateEnterNetStatus(merchantInfo.getId(), EnumEnterNet.ENT_FAIL, jsonObject.getString("message"));
+                this.merchantChannelRateService.updateEnterNetStatus(merchantInfo.getId(), EnumEnterNet.ENT_FAIL, jsonObject.getString("msg"));
             }else if (jsonObject.getString("code").equals("2")){
                 //ing 稍后再查
-                this.merchantChannelRateService.updateEnterNetStatus(merchantInfo.getId(), EnumEnterNet.ENTING, jsonObject.getString("message"));
+                this.merchantChannelRateService.updateEnterNetStatus(merchantInfo.getId(), EnumEnterNet.ENTING, jsonObject.getString("msg"));
             }
 
         }
