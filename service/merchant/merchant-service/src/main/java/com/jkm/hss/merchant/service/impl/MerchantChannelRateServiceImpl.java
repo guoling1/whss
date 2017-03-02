@@ -144,6 +144,7 @@ public class MerchantChannelRateServiceImpl implements MerchantChannelRateServic
                         Map<String, String> paramsMap = new HashMap<String, String>();
                         paramsMap.put("phone", MerchantSupport.decryptMobile(merchantId,merchantInfo.getMobile()));
                         paramsMap.put("merchantName", merchantInfo.getMerchantName());
+                        paramsMap.put("phone", MerchantSupport.decryptMobile(merchantId,merchantInfo.getMobile()));
                         paramsMap.put("merchantNo", merchantInfo.getMarkCode());
                         paramsMap.put("address", merchantInfo.getAddress());
                         paramsMap.put("personName", merchantInfo.getName());

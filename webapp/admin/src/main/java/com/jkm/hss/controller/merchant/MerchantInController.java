@@ -11,6 +11,7 @@ import com.jkm.hss.merchant.entity.MerchantInfo;
 import com.jkm.hss.merchant.enums.EnumEnterNet;
 import com.jkm.hss.merchant.service.MerchantChannelRateService;
 import com.jkm.hss.merchant.service.MerchantInfoService;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.text.ParseException;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -47,6 +49,9 @@ public class MerchantInController extends BaseController{
 
         final List<MerchantInfo> merchantInfos = this.merchantInfoService.batchGetMerchantInfo(idList);
 
+        if (CollectionUtils.isEmpty(merchantInfos)){
+            return CommonResponse.simpleResponse(1, "success");
+        }
         for (MerchantInfo merchantInfo : merchantInfos){
 
             //请求支付中心查询商户入网结果
