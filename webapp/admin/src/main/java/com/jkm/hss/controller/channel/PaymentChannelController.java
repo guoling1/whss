@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.math.BigDecimal;
+
 /**
  * Created by zhangbin on 2017/2/27.
  */
@@ -50,14 +52,14 @@ public class PaymentChannelController extends BaseController {
             //判断该通道的渠道来源是否同属一个,若一个则使用同一个人资金帐号,若不同,则为该渠道创建新的资金帐号
             final Optional<BasicChannel> basicChannelOptional =
                     this.basicChannelService.selectByChannelSource(request.getChannelSource());
-            final BasicChannel basicChannel = new BasicChannel();
+
             if (basicChannelOptional.isPresent()){
                 //如果已经有了
-                basicChannel.setAccountId(basicChannelOptional.get().getAccountId());
+                request.setAccountId(basicChannelOptional.get().getAccountId());
             }else{
                 //没有,则创建
                 final long accountId = this.accountService.initAccount("基本通道账户");
-                basicChannel.setAccountId(accountId);
+                request.setAccountId(accountId);
             }
             request.setChannelTypeSign(EnumPayChannelSign.of(request.getChannelName()).getId());
             if (request.getSupportWay()==1){
@@ -72,6 +74,8 @@ public class PaymentChannelController extends BaseController {
             request.setBasicBalanceType(EnumBalanceTimeType.of(request.getBasicBalanceType()).getType());
             request.setBasicSettleType(EnumBasicSettleType.of(request.getBasicSettleType()).getId());
             request.setStatus(EnumBasicChannelStatus.USEING.getId());
+            request.setBasicTradeRate(request.getBasicTradeRate().divide(new BigDecimal(100)));
+            request.setChannelCompany(EnumPayChannelSign.of(request.getChannelName()).getUpperChannel().getValue());
             this.paymentChannelService.addPaymentChannel(request);
             return CommonResponse.simpleResponse(1,"success");
         }catch (final Throwable throwable){

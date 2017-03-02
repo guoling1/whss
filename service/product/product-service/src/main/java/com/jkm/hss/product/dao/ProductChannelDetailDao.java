@@ -45,4 +45,12 @@ public interface ProductChannelDetailDao {
      * @param detail
      */
     void update(ProductChannelDetail detail);
+
+    /**
+     * 查询某支付方式下的费率
+     * @param productId
+     * @param channelType
+     * @return
+     */
+    ProductChannelDetail selectRateByProductIdAndChannelType(@Param("productId") long productId, @Param("channelType") int channelType);
 }

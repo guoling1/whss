@@ -60,4 +60,16 @@ public class ProductChannelDetailServiceImpl implements ProductChannelDetailServ
     public void update(ProductChannelDetail detail) {
         this.productChannelDao.update(detail);
     }
+
+    /**
+     * 查询某支付方式下的费率
+     *
+     * @param productId
+     * @param channelType
+     * @return
+     */
+    @Override
+    public Optional<ProductChannelDetail> selectRateByProductIdAndChannelType(long productId, int channelType) {
+        return Optional.fromNullable(this.productChannelDao.selectRateByProductIdAndChannelType(productId,channelType));
+    }
 }

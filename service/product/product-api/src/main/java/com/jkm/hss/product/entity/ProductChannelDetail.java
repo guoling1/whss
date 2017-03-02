@@ -35,6 +35,12 @@ public class ProductChannelDetail extends BaseEntity{
     private int channelTypeSign;
 
     /**
+     * 通道类型
+     * {@link com.jkm.hss.product.enums.EnumPaymentChannel}
+     */
+    private int channelType;
+
+    /**
      * 产品支付结算手续费率
      */
     private BigDecimal productTradeRate;

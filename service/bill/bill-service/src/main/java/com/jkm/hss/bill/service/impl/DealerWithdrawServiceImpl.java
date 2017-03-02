@@ -71,7 +71,7 @@ public class DealerWithdrawServiceImpl implements DealerWithdrawService {
      */
     @Transactional
     @Override
-    public Pair<Integer, String> withdraw(long accountId, String totalAmount, int channel, String appId) {
+    public Pair<Integer, String> withdraw(long accountId, String totalAmount, int channel, String appId, BigDecimal withdrawFee) {
         Preconditions.checkState(EnumPayChannelSign.YG_WECHAT.getId() == channel
                 || EnumPayChannelSign.YG_ALIPAY.getId() == channel
                 || EnumPayChannelSign.YG_UNIONPAY.getId() == channel, "渠道选择错误[{}]", channel);
@@ -80,7 +80,7 @@ public class DealerWithdrawServiceImpl implements DealerWithdrawService {
         Preconditions.checkArgument(dealerOptional.isPresent(), "代理商不存在");
         final Dealer dealer = dealerOptional.get();
         final long playMoneyOrderId = this.orderService.createDealerPlayMoneyOrder(dealer, new BigDecimal(totalAmount),
-                appId, channel, EnumBalanceTimeType.D0.getType());
+                appId, channel, EnumBalanceTimeType.D0.getType(), withdrawFee);
         final Order playMoneyOrder = this.orderService.getByIdWithLock(playMoneyOrderId).get();
         if (playMoneyOrder.isWithDrawing()) {
             final PaymentSdkDaiFuRequest paymentSdkDaiFuRequest = new PaymentSdkDaiFuRequest();
