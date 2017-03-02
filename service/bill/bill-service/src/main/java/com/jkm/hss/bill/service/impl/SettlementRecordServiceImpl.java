@@ -1,14 +1,18 @@
 package com.jkm.hss.bill.service.impl;
 
 import com.google.common.base.Optional;
+import com.jkm.base.common.entity.PageModel;
 import com.jkm.base.common.util.SnGenerator;
 import com.jkm.hss.bill.dao.SettlementRecordDao;
 import com.jkm.hss.bill.entity.SettlementRecord;
+import com.jkm.hss.bill.helper.requestparam.QuerySettlementRecordParams;
 import com.jkm.hss.bill.service.SettlementRecordService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 /**
  * Created by yulong.zhang on 2017/2/22.
@@ -138,5 +142,24 @@ public class SettlementRecordServiceImpl implements SettlementRecordService {
             return this.getSettleNo(settleObject, settleDestination);
         }
         return settleNo;
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param querySettlementRecordParams
+     * @return
+     */
+    @Override
+    public PageModel<SettlementRecord> listSettlementRecordByParam(final QuerySettlementRecordParams querySettlementRecordParams) {
+
+        final PageModel<SettlementRecord> result = new PageModel<>(querySettlementRecordParams.getPageNo(), querySettlementRecordParams.getPageSize());
+        querySettlementRecordParams.setOffset(result.getFirstIndex());
+        querySettlementRecordParams.setCount(result.getPageSize());
+        final int count = this.settlementRecordDao.selectCountByParam(querySettlementRecordParams);
+        final List<SettlementRecord> records = this.settlementRecordDao.selectByParam(querySettlementRecordParams);
+        result.setCount(count);
+        result.setRecords(records);
+        return result;
     }
 }

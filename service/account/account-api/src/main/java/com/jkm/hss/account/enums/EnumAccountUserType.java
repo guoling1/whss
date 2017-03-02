@@ -12,7 +12,7 @@ import lombok.Getter;
 public enum EnumAccountUserType {
 
 
-    COMPANY(1, "公司账户"),
+    COMPANY(1, "金开门"),
 
     MERCHANT(2, "商户"),
 
