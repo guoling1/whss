@@ -9,6 +9,7 @@ import com.jkm.hss.merchant.entity.MerchantInfo;
 import com.jkm.hss.merchant.enums.EnumCheck;
 import com.jkm.hss.merchant.enums.EnumEnterNet;
 import com.jkm.hss.merchant.helper.MerchantConsts;
+import com.jkm.hss.merchant.helper.MerchantSupport;
 import com.jkm.hss.merchant.helper.SmPost;
 import com.jkm.hss.merchant.helper.request.MerchantChannelRateRequest;
 import com.jkm.hss.merchant.helper.request.MerchantEnterInRequest;
@@ -141,6 +142,7 @@ public class MerchantChannelRateServiceImpl implements MerchantChannelRateServic
                 if(merchantInfo!=null){
                     if(weixinMerchantPayRate!=null&&zhifubaoMerchantPayRate!=null){
                         Map<String, String> paramsMap = new HashMap<String, String>();
+                        paramsMap.put("phone", MerchantSupport.decryptMobile(merchantId,merchantInfo.getMobile()));
                         paramsMap.put("merchantName", merchantInfo.getMerchantName());
                         paramsMap.put("merchantNo", merchantInfo.getMarkCode());
                         paramsMap.put("address", merchantInfo.getAddress());
