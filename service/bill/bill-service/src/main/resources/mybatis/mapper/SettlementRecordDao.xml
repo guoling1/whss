@@ -115,19 +115,19 @@
         SELECT COUNT(0) FROM tb_settlement_record
         <where>
             <if test="userNo != null">
-                AND user_no = #{userNo},
+                AND user_no = #{userNo}
             </if>
             <if test="userName != null">
-                AND user_name like '%'#{userName}'%',
+                AND user_name like '%'#{userName}'%'
             </if>
             <if test="userType > 0">
-                AND account_user_type = #{userType},
+                AND account_user_type = #{userType}
             </if>
             <if test="settleNo != null">
-                AND settle_no = #{settleNo},
+                AND settle_no = #{settleNo}
             </if>
             <if test="settleStatus > 0">
-                AND settle_status = #{settleStatus},
+                AND settle_status = #{settleStatus}
             </if>
             <if test="startDate != null">
                 AND settle_date BETWEEN #{startDate} AND #{endDate}
@@ -139,19 +139,19 @@
         SELECT * FROM tb_settlement_record
         <where>
             <if test="userNo != null">
-                AND user_no = #{userNo},
+                AND user_no = #{userNo}
             </if>
             <if test="userName != null">
-                AND user_name like '%'#{userName}'%',
+                AND user_name like '%'#{userName}'%'
             </if>
             <if test="userType > 0">
-                AND account_user_type = #{userType},
+                AND account_user_type = #{userType}
             </if>
             <if test="settleNo != null">
-                AND settle_no = #{settleNo},
+                AND settle_no = #{settleNo}
             </if>
             <if test="settleStatus > 0">
-                AND settle_status = #{settleStatus},
+                AND settle_status = #{settleStatus}
             </if>
             <if test="startDate != null">
                 AND settle_date BETWEEN #{startDate} AND #{endDate}

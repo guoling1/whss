@@ -78,7 +78,7 @@ public class SettlementRecordController extends BaseController {
                 listSettlementRecordResponse.setId(input.getId());
                 listSettlementRecordResponse.setSettleNo(input.getSettleNo());
                 listSettlementRecordResponse.setUserNo(input.getUserNo());
-                listSettlementRecordResponse.setUserNo(input.getUserName());
+                listSettlementRecordResponse.setUserName(input.getUserName());
                 listSettlementRecordResponse.setAppId(input.getAppId());
                 listSettlementRecordResponse.setSettleDate(input.getSettleDate());
                 listSettlementRecordResponse.setTradeNumber(input.getTradeNumber());
