@@ -87,4 +87,7 @@
         dealer_withdraw_fee = #{dealerWithdrawFee}
         WHERE id = #{id}
     </update>
+    <select id="initDealerData" resultType="java.lang.Long">
+        SELECT DISTINCT(dealer_id) as dealerId  FROM tb_dealer_channel_rate where product_id=6
+    </select>
 </mapper>

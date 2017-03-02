@@ -79,5 +79,7 @@
     <select id="selectById" resultType="com.jkm.hss.product.entity.BasicChannel">
         SELECT * FROM tb_basic_channel WHERE id = #{id};
     </select>
-
+    <select id="selectNewAll" resultType="com.jkm.hss.product.entity.BasicChannel">
+        SELECT * FROM tb_basic_channel WHERE channel_type_sign not in(101,102,103)
+    </select>
 </mapper>
