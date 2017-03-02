@@ -1,7 +1,9 @@
 package com.jkm.hss.bill.service;
 
 import com.google.common.base.Optional;
+import com.jkm.base.common.entity.PageModel;
 import com.jkm.hss.bill.entity.SettlementRecord;
+import com.jkm.hss.bill.helper.requestparam.QuerySettlementRecordParams;
 
 /**
  * Created by yulong.zhang on 2017/2/22.
@@ -87,5 +89,13 @@ public interface SettlementRecordService {
      * @param settleDestination  结算目的地
      * @return
      */
-    public String getSettleNo(int settleObject, int settleDestination);
+    String getSettleNo(int settleObject, int settleDestination);
+
+    /**
+     * 结算单列表
+     *
+     * @param querySettlementRecordParams
+     * @return
+     */
+    PageModel<SettlementRecord> listSettlementRecordByParam(QuerySettlementRecordParams querySettlementRecordParams);
 }
