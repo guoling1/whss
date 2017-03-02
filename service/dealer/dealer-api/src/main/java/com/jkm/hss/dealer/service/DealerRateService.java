@@ -23,14 +23,6 @@ public interface DealerRateService {
     int update(DealerChannelRate dealerChannelRate);
 
     /**
-     * 根据
-     * @param dealerId
-     * @param channelSignId
-     * @return
-     */
-    List<DealerChannelRate> selectByDealerIdAndChannelId(long dealerId, int channelSignId);
-
-    /**
      * 根据代理商id 查询所有
      *
      * @param dealerId

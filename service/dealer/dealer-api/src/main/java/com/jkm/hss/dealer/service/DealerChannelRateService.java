@@ -34,14 +34,6 @@ public interface DealerChannelRateService {
     List<DealerChannelRate> selectByDealerId(long dealerId);
 
     /**
-     * 根据代理商id与通道标识查询代理商费率
-     * @param dealerId
-     * @param payChannel
-     * @return
-     */
-    List<DealerChannelRate> selectByDealerIdAndPayChannelSign(long dealerId, int payChannel);
-
-    /**
      * 根据代理商id、产品id与通道标识查询代理商费率
      * @param dealerId
      * @param productId

@@ -21,9 +21,9 @@ public class QueryMerchantPayOrdersRequestParam extends PageQueryParams {
     /**
      * 支付方式
      *
-     * {@link com.jkm.hss.bill.enums.EnumPaymentType}
+     * {@link com.jkm.hss.product.enums.EnumPaymentChannel}
      */
-    private List<String> payType;
+    private List<Integer> payType;
 
     /**
      * 交易订单号

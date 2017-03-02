@@ -9,27 +9,29 @@ import com.jkm.hss.account.entity.Account;
 import com.jkm.hss.account.sevice.AccountService;
 import com.jkm.hss.bill.entity.Order;
 import com.jkm.hss.bill.enums.EnumOrderStatus;
-import com.jkm.hss.bill.enums.EnumPaymentType;
 import com.jkm.hss.bill.service.OrderService;
 import com.jkm.hss.bill.service.PayService;
 import com.jkm.hss.controller.BaseController;
-import com.jkm.hss.dealer.service.DealerService;
 import com.jkm.hss.dealer.service.PartnerShallProfitDetailService;
 import com.jkm.hss.dealer.service.ShallProfitDetailService;
 import com.jkm.hss.helper.ApplicationConsts;
 import com.jkm.hss.merchant.entity.AccountInfo;
+import com.jkm.hss.merchant.entity.MerchantChannelRate;
 import com.jkm.hss.merchant.entity.MerchantInfo;
 import com.jkm.hss.merchant.entity.UserInfo;
 import com.jkm.hss.merchant.enums.EnumIsUpgrade;
 import com.jkm.hss.merchant.enums.EnumMerchantStatus;
+import com.jkm.hss.merchant.enums.EnumPayMethod;
 import com.jkm.hss.merchant.helper.MerchantSupport;
 import com.jkm.hss.merchant.helper.WxConstants;
 import com.jkm.hss.merchant.helper.WxPubUtil;
+import com.jkm.hss.merchant.helper.request.MerchantGetRateRequest;
 import com.jkm.hss.merchant.service.*;
 import com.jkm.hss.product.entity.ProductChannelDetail;
 import com.jkm.hss.product.entity.UpgradePayRecord;
 import com.jkm.hss.product.entity.UpgradeRules;
 import com.jkm.hss.product.enums.EnumPayChannelSign;
+import com.jkm.hss.product.enums.EnumPaymentChannel;
 import com.jkm.hss.product.enums.EnumUpgrade;
 import com.jkm.hss.product.enums.EnumUpgradePayResult;
 import com.jkm.hss.product.helper.response.UpgradeResult;
@@ -107,6 +109,9 @@ public class LoginController extends BaseController {
 
     @Autowired
     private PartnerShallProfitDetailService partnerShallProfitDetailService;
+
+    @Autowired
+    private MerchantChannelRateService merchantChannelRateService;
 
     /**
      * 扫固定码注册和微信公众号注册入口
@@ -621,7 +626,7 @@ public class LoginController extends BaseController {
                             model.addAttribute("avaMoney", "0.00");
                             model.addAttribute("realMoney","0.00");
                         }else{
-                            Pair<BigDecimal, BigDecimal> pair = shallProfitDetailService.withdrawParams(merchantId,EnumPayChannelSign.YG_YINLIAN.getId());
+                            Pair<BigDecimal, BigDecimal> pair = shallProfitDetailService.withdrawParams(merchantId,EnumPayChannelSign.YG_UNIONPAY.getId());
                             model.addAttribute("avaMoney", accountInfo.getAvailable()==null?"0.00":decimalFormat.format(accountInfo.getAvailable()));
                             int compareResult = accountInfo.getAvailable().compareTo(pair.getLeft());
                             if(compareResult!=1){//提现金额小于手续费
@@ -753,9 +758,24 @@ public class LoginController extends BaseController {
                         url = "/sqb/prompt";
                         isRedirect= true;
                     }else if(result.get().getStatus()== EnumMerchantStatus.PASSED.getId()||result.get().getStatus()== EnumMerchantStatus.FRIEND.getId()){//跳提现页面
-                        String bankNo = MerchantSupport.decryptBankCard(result.get().getBankNo());
+                        if(result.get().getBankNo()!=null&&!"".equals(result.get().getBankNo())){
+                            String bankNo = MerchantSupport.decryptBankCard(result.get().getBankNo());
+                            model.addAttribute("bankNo",bankNo.substring(bankNo.length()-4,bankNo.length()));
+                        }else{
+                            model.addAttribute("bankNo","");
+                        }
+                        if(result.get().getMobile()!=null&&!"".equals(result.get().getMobile())){
+                            String mobile = MerchantSupport.decryptMobile(result.get().getMobile());
+                            model.addAttribute("mobile",mobile.substring(0,3)+"******"+mobile.substring(mobile.length()-2,mobile.length()));
+                        }else{
+                            model.addAttribute("mobile","");
+                        }
+                        if(result.get().getBranchName()!=null&&!"".equals(result.get().getBranchName())){//有支行信息
+                            model.addAttribute("hasBranch",1);
+                        }else{
+                            model.addAttribute("hasBranch",0);//没有支行信息
+                        }
                         model.addAttribute("bankName", result.get().getBankName());
-                        model.addAttribute("bankNo",bankNo.substring(bankNo.length()-4,bankNo.length()));
                         model.addAttribute("bankBin",result.get().getBankBin());
                         url = "/bank";
                     }
@@ -777,6 +797,137 @@ public class LoginController extends BaseController {
         }
     }
 
+    /**
+     * 所属分行
+     * @param request
+     * @param response
+     * @param model
+     * @return
+     * @throws IOException
+     */
+    @RequestMapping(value = "/bankBranch", method = RequestMethod.GET)
+    public String bankBranch(final HttpServletRequest request, final HttpServletResponse response,final Model model) throws IOException {
+        boolean isRedirect = false;
+        if(!super.isLogin(request)){
+            return "redirect:"+ WxConstants.WEIXIN_USERINFO+request.getRequestURI()+ WxConstants.WEIXIN_USERINFO_REDIRECT;
+        }else {
+            String url = "";
+            Optional<UserInfo> userInfoOptional = userInfoService.selectByOpenId(super.getOpenId(request));
+            if (userInfoOptional.isPresent()) {
+                Long merchantId = userInfoOptional.get().getMerchantId();
+                if (merchantId != null && merchantId != 0){
+                    Optional<MerchantInfo> result = merchantInfoService.selectById(merchantId);
+                    if (result.get().getStatus()== EnumMerchantStatus.LOGIN.getId()){//登录
+                        url = "/sqb/reg";
+                        isRedirect= true;
+                    }else if(result.get().getStatus()== EnumMerchantStatus.INIT.getId()){
+                        url = "/sqb/addInfo";
+                        isRedirect= true;
+                    }else if(result.get().getStatus()== EnumMerchantStatus.ONESTEP.getId()){
+                        url = "/sqb/addNext";
+                        isRedirect= true;
+                    }else if(result.get().getStatus()== EnumMerchantStatus.REVIEW.getId()||
+                            result.get().getStatus()== EnumMerchantStatus.UNPASSED.getId()||
+                            result.get().getStatus()== EnumMerchantStatus.DISABLE.getId()){
+                        url = "/sqb/prompt";
+                        isRedirect= true;
+                    }else if(result.get().getStatus()== EnumMerchantStatus.PASSED.getId()||result.get().getStatus()== EnumMerchantStatus.FRIEND.getId()){//跳提现页面
+                        if(result.get().getBankNo()!=null&&!"".equals(result.get().getBankNo())){
+                            String bankNo = MerchantSupport.decryptBankCard(result.get().getBankNo());
+                            model.addAttribute("bankNo",bankNo.substring(bankNo.length()-4,bankNo.length()));
+                        }else{
+                            model.addAttribute("bankNo","");
+                        }
+                        if(result.get().getMobile()!=null&&!"".equals(result.get().getMobile())){
+                            String mobile = MerchantSupport.decryptMobile(result.get().getMobile());
+                            model.addAttribute("mobile",mobile.substring(0,3)+"******"+mobile.substring(mobile.length()-2,mobile.length()));
+                        }else{
+                            model.addAttribute("mobile","");
+                        }
+                        model.addAttribute("bankName", result.get().getBankName());
+                        model.addAttribute("bankBin",result.get().getBankBin());
+                        model.addAttribute("provinceCode",result.get().getProvinceCode());
+                        model.addAttribute("provinceName",result.get().getProvinceName());
+                        model.addAttribute("cityCode",result.get().getCityCode());
+                        model.addAttribute("cityName",result.get().getCityName());
+                        model.addAttribute("countyCode",result.get().getCountyCode());
+                        model.addAttribute("countyName",result.get().getCountyName());
+                        model.addAttribute("branchCode",result.get().getBranchCode());
+                        model.addAttribute("branchName",result.get().getBranchName());
+                        url = "/bankBranch";
+                    }
+                }else{
+                    CookieUtil.deleteCookie(response,ApplicationConsts.MERCHANT_COOKIE_KEY,ApplicationConsts.getApplicationConfig().domain());
+                    isRedirect= true;
+                    url = "/sqb/reg";
+                }
+            }else{
+                CookieUtil.deleteCookie(response,ApplicationConsts.MERCHANT_COOKIE_KEY,ApplicationConsts.getApplicationConfig().domain());
+                isRedirect= true;
+                url = "/sqb/reg";
+            }
+            if(isRedirect){
+                return "redirect:"+url;
+            }else{
+                return url;
+            }
+        }
+    }
+
+    /**
+     * 信用卡认证
+     * @param request
+     * @param response
+     * @param model
+     * @return
+     * @throws IOException
+     */
+    @RequestMapping(value = "/creditCardAuthen", method = RequestMethod.GET)
+    public String creditCardAuthen(final HttpServletRequest request, final HttpServletResponse response,final Model model) throws IOException {
+        boolean isRedirect = false;
+        if(!super.isLogin(request)){
+            return "redirect:"+ WxConstants.WEIXIN_USERINFO+request.getRequestURI()+ WxConstants.WEIXIN_USERINFO_REDIRECT;
+        }else {
+            String url = "";
+            Optional<UserInfo> userInfoOptional = userInfoService.selectByOpenId(super.getOpenId(request));
+            if (userInfoOptional.isPresent()) {
+                Long merchantId = userInfoOptional.get().getMerchantId();
+                if (merchantId != null && merchantId != 0){
+                    Optional<MerchantInfo> result = merchantInfoService.selectById(merchantId);
+                    if (result.get().getStatus()== EnumMerchantStatus.LOGIN.getId()){//登录
+                        url = "/sqb/reg";
+                        isRedirect= true;
+                    }else if(result.get().getStatus()== EnumMerchantStatus.INIT.getId()){
+                        url = "/sqb/addInfo";
+                        isRedirect= true;
+                    }else if(result.get().getStatus()== EnumMerchantStatus.ONESTEP.getId()){
+                        url = "/sqb/addNext";
+                        isRedirect= true;
+                    }else if(result.get().getStatus()== EnumMerchantStatus.REVIEW.getId()||
+                            result.get().getStatus()== EnumMerchantStatus.UNPASSED.getId()||
+                            result.get().getStatus()== EnumMerchantStatus.DISABLE.getId()){
+                        url = "/sqb/prompt";
+                        isRedirect= true;
+                    }else if(result.get().getStatus()== EnumMerchantStatus.PASSED.getId()||result.get().getStatus()== EnumMerchantStatus.FRIEND.getId()){//跳提现页面
+                        url = "/creditCardAuthen";
+                    }
+                }else{
+                    CookieUtil.deleteCookie(response,ApplicationConsts.MERCHANT_COOKIE_KEY,ApplicationConsts.getApplicationConfig().domain());
+                    isRedirect= true;
+                    url = "/sqb/reg";
+                }
+            }else{
+                CookieUtil.deleteCookie(response,ApplicationConsts.MERCHANT_COOKIE_KEY,ApplicationConsts.getApplicationConfig().domain());
+                isRedirect= true;
+                url = "/sqb/reg";
+            }
+            if(isRedirect){
+                return "redirect:"+url;
+            }else{
+                return url;
+            }
+        }
+    }
 
     private  Pair<String,String> payOf(int payWay,String status) {
         String result="";
@@ -823,43 +974,6 @@ public class LoginController extends BaseController {
         }
 
         return Pair.of(result,message);
-    }
-
-    /**
-     * 交易单详情
-     * @param request
-     * @param response
-     * @param model
-     * @param id
-     * @return
-     * @throws IOException
-     */
-    @RequestMapping(value = "/tradeDetail/{id}", method = RequestMethod.GET)
-    public String tradeDetail(final HttpServletRequest request, final HttpServletResponse response,final Model model,@PathVariable("id") long id) throws IOException {
-//        Optional<OrderRecord> orderRecordOptional = orderRecordService.selectByPrimaryKey(id);
-        final Optional<Order> orderOptional = this.orderService.getById(id);
-
-        if(!orderOptional.isPresent()){
-            return "/500";
-        }else{
-//            DecimalFormat decimalFormat=new DecimalFormat("0.00");//构造方法的字符格式这里如果小数不足2位,会以0补足.
-            final Order order = orderOptional.get();
-            model.addAttribute("totalMoney", order.getTradeAmount().toPlainString());
-//            model.addAttribute("realMoney", decimalFormat.format(orderRecord.getRealFee()));
-//            SimpleDateFormat time=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            model.addAttribute("goodsName", order.getGoodsName());
-            model.addAttribute("goodsDescribe", order.getGoodsDescribe());
-            model.addAttribute("createTime", DateFormatUtil.format(order.getCreateTime(), DateFormatUtil.yyyy_MM_dd_HH_mm_ss));
-//            Pair<String,String> pair = payOf(0,orderRecord.getPayResult());
-            model.addAttribute("status", EnumOrderStatus.of(order.getStatus()).getValue());
-            model.addAttribute("payType", StringUtils.isEmpty(order.getPayType()) ? "" : EnumPaymentType.of(order.getPayType()).getValue());
-            final MerchantInfo merchantInfo = this.merchantInfoService.getByAccountId(order.getPayee()).get();
-            model.addAttribute("merchantName", merchantInfo.getMerchantName());
-            model.addAttribute("orderNo", order.getOrderNo());
-            model.addAttribute("sn", NumberUtils.isNumber(order.getRemark()) ? order.getRemark() : "");
-            model.addAttribute("settleStatus", com.jkm.hss.bill.enums.EnumSettleStatus.of(order.getSettleStatus()).getValue());
-            return "/tradeRecordDetail";
-        }
     }
 
     /**
@@ -1035,13 +1149,45 @@ public class LoginController extends BaseController {
                         model.addAttribute("mobile",phone);
                         model.addAttribute("name",getNameByLevel(result.get().getLevel()));
                         model.addAttribute("level",result.get().getLevel());
-                        model.addAttribute("weixinRate",result.get().getWeixinRate());
-                        model.addAttribute("alipayRate",result.get().getAlipayRate());
-                        model.addAttribute("fastRate",result.get().getFastRate());
 
-                        List<ProductChannelDetail> productChannelDetails = productChannelDetailService.selectByProductId(result.get().getProductId());
-                        if(productChannelDetails.size()==0){
-                            model.addAttribute("message","该产品商户基础费率不存在");
+                        MerchantGetRateRequest weixinMerchantGetRateRequest = new MerchantGetRateRequest();
+                        weixinMerchantGetRateRequest.setProductId(result.get().getProductId());
+                        weixinMerchantGetRateRequest.setMerchantId(result.get().getId());
+                        weixinMerchantGetRateRequest.setThirdCompany(EnumPayMethod.WEIXIN.getId());
+                        List<MerchantChannelRate> weixinMerchantChannelRateList = merchantChannelRateService.selectByThirdCompanyAndProductIdAndMerchantId(weixinMerchantGetRateRequest);
+                        model.addAttribute("weixinRate",weixinMerchantChannelRateList.get(0).getMerchantPayRate());
+                        MerchantGetRateRequest zhifubaoMerchantGetRateRequest = new MerchantGetRateRequest();
+                        zhifubaoMerchantGetRateRequest.setProductId(result.get().getProductId());
+                        zhifubaoMerchantGetRateRequest.setMerchantId(result.get().getId());
+                        zhifubaoMerchantGetRateRequest.setThirdCompany(EnumPayMethod.WEIXIN.getId());
+                        List<MerchantChannelRate> zhifubaoMerchantChannelRateList = merchantChannelRateService.selectByThirdCompanyAndProductIdAndMerchantId(zhifubaoMerchantGetRateRequest);
+                        model.addAttribute("alipayRate",zhifubaoMerchantChannelRateList.get(0).getMerchantPayRate());
+                        MerchantGetRateRequest fastPayMerchantGetRateRequest = new MerchantGetRateRequest();
+                        fastPayMerchantGetRateRequest.setProductId(result.get().getProductId());
+                        fastPayMerchantGetRateRequest.setMerchantId(result.get().getId());
+                        fastPayMerchantGetRateRequest.setThirdCompany(EnumPayMethod.FASTPAY.getId());
+                        List<MerchantChannelRate> fastPayMerchantChannelRateList = merchantChannelRateService.selectByThirdCompanyAndProductIdAndMerchantId(fastPayMerchantGetRateRequest);
+                        model.addAttribute("fastRate",fastPayMerchantChannelRateList.get(0).getMerchantPayRate());
+
+//                        Optional<ProductChannelDetail> weixinProductChannelDetail = productChannelDetailService.selectRateByProductIdAndChannelType(result.get().getProductId(), EnumPaymentChannel.WECHAT_PAY.getId());
+//                        List<ProductChannelDetail> productChannelDetails = productChannelDetailService.selectByProductId(result.get().getProductId());
+//                        if(productChannelDetails.size()==0){
+//                            model.addAttribute("message","该产品商户基础费率不存在");
+//                            return "/500";
+//                        }
+                        Optional<ProductChannelDetail> weixinProductChannelDetail = productChannelDetailService.selectRateByProductIdAndChannelType(result.get().getProductId(), EnumPaymentChannel.WECHAT_PAY.getId());
+                        if(!weixinProductChannelDetail.isPresent()){
+                            model.addAttribute("message","微信基础费率不存在");
+                            return "/500";
+                        }
+                        Optional<ProductChannelDetail> zhifubaoProductChannelDetail = productChannelDetailService.selectRateByProductIdAndChannelType(result.get().getProductId(), EnumPaymentChannel.ALIPAY.getId());
+                        if(!zhifubaoProductChannelDetail.isPresent()){
+                            model.addAttribute("message","支付宝基础费率不存在");
+                            return "/500";
+                        }
+                        Optional<ProductChannelDetail> fastPayProductChannelDetail = productChannelDetailService.selectRateByProductIdAndChannelType(result.get().getProductId(), EnumPaymentChannel.UNIONPAY.getId());
+                        if(!fastPayProductChannelDetail.isPresent()){
+                            model.addAttribute("message","快捷基础费率不存在");
                             return "/500";
                         }
                         //商户升级规则设置
@@ -1051,17 +1197,20 @@ public class LoginController extends BaseController {
                         upgradeResult.setName("普通");
                         upgradeResult.setType(0);
                         upgradeResult.setIsUpgrade(1);
-                        for(int i=0;i<productChannelDetails.size();i++){
-                            if(EnumPayChannelSign.YG_WEIXIN.getId()==productChannelDetails.get(i).getChannelTypeSign()){
-                                upgradeResult.setWeixinRate(productChannelDetails.get(i).getProductMerchantPayRate());
-                            }
-                            if(EnumPayChannelSign.YG_ZHIFUBAO.getId()==productChannelDetails.get(i).getChannelTypeSign()){
-                                upgradeResult.setAlipayRate(productChannelDetails.get(i).getProductMerchantPayRate());
-                            }
-                            if(EnumPayChannelSign.YG_YINLIAN.getId()==productChannelDetails.get(i).getChannelTypeSign()){
-                                upgradeResult.setFastRate(productChannelDetails.get(i).getProductMerchantPayRate());
-                            }
-                        }
+                        upgradeResult.setWeixinRate(weixinProductChannelDetail.get().getProductMerchantPayRate());
+                        upgradeResult.setAlipayRate(zhifubaoProductChannelDetail.get().getProductMerchantPayRate());
+                        upgradeResult.setFastRate(fastPayProductChannelDetail.get().getProductMerchantPayRate());
+//                        for(int i=0;i<productChannelDetails.size();i++){
+//                            if(EnumPayChannelSign.YG_WECHAT.getId()==productChannelDetails.get(i).getChannelTypeSign()){
+//                                upgradeResult.setWeixinRate(productChannelDetails.get(i).getProductMerchantPayRate());
+//                            }
+//                            if(EnumPayChannelSign.YG_ALIPAY.getId()==productChannelDetails.get(i).getChannelTypeSign()){
+//                                upgradeResult.setAlipayRate(productChannelDetails.get(i).getProductMerchantPayRate());
+//                            }
+//                            if(EnumPayChannelSign.YG_UNIONPAY.getId()==productChannelDetails.get(i).getChannelTypeSign()){
+//                                upgradeResult.setFastRate(productChannelDetails.get(i).getProductMerchantPayRate());
+//                            }
+//                        }
                         list.add(upgradeResult);
                         List<UpgradeResult> list1 =  upgradeRulesService.selectUpgradeList(result.get().getProductId(),result.get().getLevel());
                         list.addAll(list1);
@@ -1130,13 +1279,44 @@ public class LoginController extends BaseController {
                         model.addAttribute("mobile",phone);
                         model.addAttribute("name",getNameByLevel(result.get().getLevel()));
                         model.addAttribute("level",result.get().getLevel());
-                        model.addAttribute("weixinRate",result.get().getWeixinRate());
-                        model.addAttribute("alipayRate",result.get().getAlipayRate());
-                        model.addAttribute("fastRate",result.get().getFastRate());
 
-                        List<ProductChannelDetail> productChannelDetails = productChannelDetailService.selectByProductId(result.get().getProductId());
-                        if(productChannelDetails.size()==0){
-                            model.addAttribute("message","该产品商户基础费率不存在");
+                        MerchantGetRateRequest weixinMerchantGetRateRequest = new MerchantGetRateRequest();
+                        weixinMerchantGetRateRequest.setProductId(result.get().getProductId());
+                        weixinMerchantGetRateRequest.setMerchantId(result.get().getId());
+                        weixinMerchantGetRateRequest.setThirdCompany(EnumPayMethod.WEIXIN.getId());
+                        List<MerchantChannelRate> weixinMerchantChannelRateList = merchantChannelRateService.selectByThirdCompanyAndProductIdAndMerchantId(weixinMerchantGetRateRequest);
+                        model.addAttribute("weixinRate",weixinMerchantChannelRateList.get(0).getMerchantPayRate());
+                        MerchantGetRateRequest zhifubaoMerchantGetRateRequest = new MerchantGetRateRequest();
+                        zhifubaoMerchantGetRateRequest.setProductId(result.get().getProductId());
+                        zhifubaoMerchantGetRateRequest.setMerchantId(result.get().getId());
+                        zhifubaoMerchantGetRateRequest.setThirdCompany(EnumPayMethod.WEIXIN.getId());
+                        List<MerchantChannelRate> zhifubaoMerchantChannelRateList = merchantChannelRateService.selectByThirdCompanyAndProductIdAndMerchantId(zhifubaoMerchantGetRateRequest);
+                        model.addAttribute("alipayRate",zhifubaoMerchantChannelRateList.get(0).getMerchantPayRate());
+                        MerchantGetRateRequest fastPayMerchantGetRateRequest = new MerchantGetRateRequest();
+                        fastPayMerchantGetRateRequest.setProductId(result.get().getProductId());
+                        fastPayMerchantGetRateRequest.setMerchantId(result.get().getId());
+                        fastPayMerchantGetRateRequest.setThirdCompany(EnumPayMethod.FASTPAY.getId());
+                        List<MerchantChannelRate> fastPayMerchantChannelRateList = merchantChannelRateService.selectByThirdCompanyAndProductIdAndMerchantId(fastPayMerchantGetRateRequest);
+                        model.addAttribute("fastRate",fastPayMerchantChannelRateList.get(0).getMerchantPayRate());
+
+//                        List<ProductChannelDetail> productChannelDetails = productChannelDetailService.selectByProductId(result.get().getProductId());
+//                        if(productChannelDetails.size()==0){
+//                            model.addAttribute("message","该产品商户基础费率不存在");
+//                            return "/500";
+//                        }
+                        Optional<ProductChannelDetail> weixinProductChannelDetail = productChannelDetailService.selectRateByProductIdAndChannelType(result.get().getProductId(), EnumPaymentChannel.WECHAT_PAY.getId());
+                        if(!weixinProductChannelDetail.isPresent()){
+                            model.addAttribute("message","微信基础费率不存在");
+                            return "/500";
+                        }
+                        Optional<ProductChannelDetail> zhifubaoProductChannelDetail = productChannelDetailService.selectRateByProductIdAndChannelType(result.get().getProductId(), EnumPaymentChannel.ALIPAY.getId());
+                        if(!zhifubaoProductChannelDetail.isPresent()){
+                            model.addAttribute("message","支付宝基础费率不存在");
+                            return "/500";
+                        }
+                        Optional<ProductChannelDetail> fastPayProductChannelDetail = productChannelDetailService.selectRateByProductIdAndChannelType(result.get().getProductId(), EnumPaymentChannel.UNIONPAY.getId());
+                        if(!fastPayProductChannelDetail.isPresent()){
+                            model.addAttribute("message","快捷基础费率不存在");
                             return "/500";
                         }
                         //商户升级规则设置
@@ -1146,17 +1326,20 @@ public class LoginController extends BaseController {
                         upgradeResult.setName("普通");
                         upgradeResult.setType(0);
                         upgradeResult.setIsUpgrade(1);
-                        for(int i=0;i<productChannelDetails.size();i++){
-                            if(EnumPayChannelSign.YG_WEIXIN.getId()==productChannelDetails.get(i).getChannelTypeSign()){
-                                upgradeResult.setWeixinRate(productChannelDetails.get(i).getProductMerchantPayRate());
-                            }
-                            if(EnumPayChannelSign.YG_ZHIFUBAO.getId()==productChannelDetails.get(i).getChannelTypeSign()){
-                                upgradeResult.setAlipayRate(productChannelDetails.get(i).getProductMerchantPayRate());
-                            }
-                            if(EnumPayChannelSign.YG_YINLIAN.getId()==productChannelDetails.get(i).getChannelTypeSign()){
-                                upgradeResult.setFastRate(productChannelDetails.get(i).getProductMerchantPayRate());
-                            }
-                        }
+                        upgradeResult.setWeixinRate(weixinProductChannelDetail.get().getProductMerchantPayRate());
+                        upgradeResult.setAlipayRate(zhifubaoProductChannelDetail.get().getProductMerchantPayRate());
+                        upgradeResult.setFastRate(fastPayProductChannelDetail.get().getProductMerchantPayRate());
+//                        for(int i=0;i<productChannelDetails.size();i++){
+//                            if(EnumPayChannelSign.YG_WECHAT.getId()==productChannelDetails.get(i).getChannelTypeSign()){
+//                                upgradeResult.setWeixinRate(productChannelDetails.get(i).getProductMerchantPayRate());
+//                            }
+//                            if(EnumPayChannelSign.YG_ALIPAY.getId()==productChannelDetails.get(i).getChannelTypeSign()){
+//                                upgradeResult.setAlipayRate(productChannelDetails.get(i).getProductMerchantPayRate());
+//                            }
+//                            if(EnumPayChannelSign.YG_UNIONPAY.getId()==productChannelDetails.get(i).getChannelTypeSign()){
+//                                upgradeResult.setFastRate(productChannelDetails.get(i).getProductMerchantPayRate());
+//                            }
+//                        }
                         list.add(upgradeResult);
                         List<UpgradeResult> list1 =  upgradeRulesService.selectUpgradeList(result.get().getProductId(),result.get().getLevel());
                         list.addAll(list1);
@@ -1329,10 +1512,31 @@ public class LoginController extends BaseController {
                         isRedirect= true;
                     }else if(result.get().getStatus()== EnumMerchantStatus.PASSED.getId()||result.get().getStatus()== EnumMerchantStatus.FRIEND.getId()){//跳首页
                         model.addAttribute("merchantName",result.get().getMerchantName());
+                        model.addAttribute("district",(result.get().getProvinceName()==null?"":result.get().getProvinceName())+(result.get().getCityName()==null?"":result.get().getCityName()));
                         model.addAttribute("address",result.get().getAddress());
                         model.addAttribute("createTime",result.get().getCreateTime()==null?"":DateFormatUtil.format(result.get().getCreateTime(), DateFormatUtil.yyyy_MM_dd_HH_mm_ss));
-                        model.addAttribute("name",result.get().getName());
-                        model.addAttribute("authenticationTime",result.get().getAuthenticationTime()==null?"":DateFormatUtil.format(result.get().getAuthenticationTime(), DateFormatUtil.yyyy_MM_dd_HH_mm_ss));
+                        String name = result.get().getName();
+                        String tempName = "";
+                        if(name!=null&&!"".equals(name)){
+                            for(int i=0;i<name.length()-1;i++){
+                                tempName+="*";
+                            }
+                            tempName+=name.substring(name.length()-1,name.length());
+                        }
+                        model.addAttribute("name",tempName);
+                        if(result.get().getIdentity()!=null&&!"".equals(result.get().getIdentity())){
+                            String idCard = MerchantSupport.decryptIdentity(result.get().getIdentity());
+                            model.addAttribute("idCard",idCard.substring(0,3)+"*************"+idCard.substring(idCard.length()-2,idCard.length()));
+                        }else{
+                            model.addAttribute("idCard","");
+                        }
+                        if(result.get().getCreditCard()!=null&&!"".equals(result.get().getCreditCard())){
+                            model.addAttribute("isAuthen",1);//已认证
+                        }else{
+                            model.addAttribute("isAuthen",0);//未认证
+                        }
+                        model.addAttribute("creditCardName",result.get().getCreditCardName());
+                        model.addAttribute("creditCardShort",result.get().getCreditCardShort());
                         url = "/authentication";
                     }
                 }else{

@@ -29,10 +29,10 @@ public interface PayService {
      * @param totalAmount
      * @param channel  通道
      * @param merchantId
-     * @param isDCode 是否是动态码
+     * @param isDynamicCode 是否是动态码付款
      * @return
      */
-    Pair<Integer, String> codeReceipt(String totalAmount, int channel, long merchantId, String appId, boolean isDCode);
+    Pair<Integer, String> codeReceipt(String totalAmount, int channel, long merchantId, String appId, boolean isDynamicCode);
 
 
     /**
@@ -76,29 +76,7 @@ public interface PayService {
      * @param orderId
      * @param merchant
      */
-    void merchantRecorded(long orderId, MerchantInfo merchant);
-
-    /**
-     * 商户升级，商户付款，公司入账
-     *
-     * @param orderId
-     */
-    void companyRecorded(long orderId);
-
-    /**
-     * 商户结算进入到可用余额
-     *
-     * @param order
-     * @param merchantId
-     */
-    void merchantSettle(Order order, long merchantId);
-
-    /**
-     * 公司账户结算
-     *
-     * @param order
-     */
-    void companySettle(Order order);
+    long merchantRecorded(long orderId, MerchantInfo merchant);
 
     /**
      * 支付手续费结算 到 代理商等 待结算账户

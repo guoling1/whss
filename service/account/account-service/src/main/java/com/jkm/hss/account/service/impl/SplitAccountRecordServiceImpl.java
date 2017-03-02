@@ -82,7 +82,7 @@ public class SplitAccountRecordServiceImpl implements SplitAccountRecordService 
         splitAccountRecord.setOrderNo(orderNo);
         splitAccountRecord.setSplitOrderNo(orderNo1);
         splitAccountRecord.setTotalAmount(tradeAmount);
-        splitAccountRecord.setSplitSn(SnGenerator.generate());
+        splitAccountRecord.setSplitSn(this.getSplitSn());
         splitAccountRecord.setOutMoneyAccountId(AccountConstants.POUNDAGE_ACCOUNT_ID);
         splitAccountRecord.setReceiptMoneyAccountId(triple.getLeft());
         splitAccountRecord.setReceiptMoneyUserName(receiptMoneyUserName);
@@ -117,7 +117,7 @@ public class SplitAccountRecordServiceImpl implements SplitAccountRecordService 
         splitAccountRecord.setOrderNo(orderNo);
         splitAccountRecord.setSplitOrderNo(orderNo1);
         splitAccountRecord.setTotalAmount(tradeAmount);
-        splitAccountRecord.setSplitSn(SnGenerator.generate());
+        splitAccountRecord.setSplitSn(this.getSplitSn());
         splitAccountRecord.setOutMoneyAccountId(AccountConstants.POUNDAGE_ACCOUNT_ID);
         splitAccountRecord.setReceiptMoneyAccountId(triple.getLeft());
         splitAccountRecord.setReceiptMoneyUserName(receiptMoneyUserName);
@@ -149,7 +149,7 @@ public class SplitAccountRecordServiceImpl implements SplitAccountRecordService 
         splitAccountRecord.setOrderNo(orderNo);
         splitAccountRecord.setSplitOrderNo(orderNo1);
         splitAccountRecord.setTotalAmount(tradeAmount);
-        splitAccountRecord.setSplitSn(SnGenerator.generate());
+        splitAccountRecord.setSplitSn(this.getSplitSn());
         splitAccountRecord.setOutMoneyAccountId(AccountConstants.POUNDAGE_ACCOUNT_ID);
         splitAccountRecord.setReceiptMoneyAccountId(triple.getLeft());
         splitAccountRecord.setReceiptMoneyUserName(receiptMoneyUserName);
@@ -190,5 +190,32 @@ public class SplitAccountRecordServiceImpl implements SplitAccountRecordService 
         pageModel.setCount(count);
         pageModel.setRecords(list);
         return pageModel;
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param splitSn
+     * @return
+     */
+    @Override
+    public boolean checkExistBySplitSn(final String splitSn) {
+        final int count = this.splitAccountRecordDao.selectCountBySplitSn(splitSn);
+        return count == 0;
+    }
+
+
+    /**
+     * 获取分账单流水号
+     *
+     * @return
+     */
+    private String getSplitSn() {
+        final String splitSn = SnGenerator.generateFlowSn();
+        final boolean check = this.checkExistBySplitSn(splitSn);
+        if (!check) {
+            return this.getSplitSn();
+        }
+        return splitSn;
     }
 }

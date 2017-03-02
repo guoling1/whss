@@ -83,5 +83,9 @@ public class MerchantConsts {
         @Key("pay.trade.orderQuery")
         @DefaultValue("")
         String orderQuery();
+
+        @Key("merchant.in")
+        @DefaultValue("")
+        String merchantIN();
     }
 }

@@ -1,8 +1,12 @@
 package com.jkm.hss.bill.service;
 
 import com.jkm.hss.bill.entity.Order;
+import com.jkm.hss.bill.entity.SettlementRecord;
 import com.jkm.hss.bill.entity.callback.PaymentSdkWithdrawCallbackResponse;
+import com.jkm.hss.merchant.entity.MerchantInfo;
 import org.apache.commons.lang3.tuple.Pair;
+
+import java.math.BigDecimal;
 
 /**
  * Created by yulong.zhang on 2016/12/25.
@@ -11,27 +15,15 @@ public interface WithdrawService {
 
 
     /**
-     * 代理商提现
+     * 代理商按结算单提现
      *
      * @param merchantId
-     * @param payOrderId 交易单（支付单）id
+     * @param settlementRecordId 结算单id
      * @param payOrderSn 支付中心支付流水号
-     * @param tradePeriod 结算周期
+     * @param payChannelSign 结算周期
      * @return
      */
-    Pair<Integer, String> merchantWithdrawByOrder(long merchantId, long payOrderId, String payOrderSn, String tradePeriod);
-
-    /**
-     * 按账单提现
-     *
-     * @param merchantId
-     * @param playMoneyOrderId
-     * @param payOrderSn 支付中心支付流水号
-     * @param tradePeriod
-     * @return
-     */
-    Pair<Integer, String> withdrawByOrder(long merchantId, long playMoneyOrderId, String payOrderSn, String tradePeriod);
-
+    Pair<Integer, String> merchantWithdrawBySettlementRecord(long merchantId, long settlementRecordId, String payOrderSn, int payChannelSign);
 
     /**
      * 提现回调
@@ -43,8 +35,8 @@ public interface WithdrawService {
     /**
      * 商户提现结算
      *
-     * @param order
-     * @param accountId
+     * @param settlementRecord
+     * @param payChannelSign
      */
-    void merchantPoundageSettle(Order order, long accountId);
+    void merchantPoundageSettle(SettlementRecord settlementRecord, int payChannelSign, BigDecimal poundage, MerchantInfo merchant);
 }

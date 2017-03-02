@@ -188,7 +188,7 @@ public class OrderRecordServiceImpl implements OrderRecordService {
         orderRecord.setMerchantType(EnumMerchantType.AGENT.getId());
         orderRecord.setProductName("提现");
         orderRecord.setSubName(req.getAccountName());
-        orderRecord.setPayChannel(EnumPayChannelSign.YG_YINLIAN.getId());
+        orderRecord.setPayChannel(EnumPayChannelSign.YG_UNIONPAY.getId());
         orderRecord.setTotalFee(accountInfo.getAvailable());
         orderRecord.setRealFee(accountInfo.getAvailable().subtract(serviceFeeTemp));
         orderRecord.setServiceFee(serviceFeeTemp);
@@ -278,7 +278,7 @@ public class OrderRecordServiceImpl implements OrderRecordService {
 //        orderRecord.setMerchantType(EnumMerchantType.MERCHANT.getId());
 //        orderRecord.setProductName("提现");
 //        orderRecord.setSubName(merchantInfo.getMerchantName());
-//        orderRecord.setPayChannel(EnumPayChannelSign.YG_YINLIAN.getId());
+
 //        orderRecord.setTotalFee(availableAccount);
 //        orderRecord.setRealFee(availableAccount.subtract(serviceFeeTemp));
 //        orderRecord.setServiceFee(serviceFeeTemp);
@@ -680,10 +680,10 @@ public class OrderRecordServiceImpl implements OrderRecordService {
         paramsMap.put("subMerNo", req.getSubMerNo());       //下游商户号
         paramsMap.put("appId","wap_hss");
         paramsMap.put("totalFee", orderRecord.getTotalFee().toString());         //总金额
-        if(req.getPayChannel()==EnumPayChannelSign.YG_WEIXIN.getId()||req.getPayChannel()==EnumPayChannelSign.YG_ZHIFUBAO.getId()){
+        if(req.getPayChannel()==EnumPayChannelSign.YG_WECHAT.getId()||req.getPayChannel()==EnumPayChannelSign.YG_ALIPAY.getId()){
             paramsMap.put("tradeType", "JSAPI");       //交易类型   JSAPI，NATIVE，APP，WAP,EPOS
         }
-        if(req.getPayChannel()==EnumPayChannelSign.YG_YINLIAN.getId()){
+        if(req.getPayChannel()==EnumPayChannelSign.YG_UNIONPAY.getId()){
             paramsMap.put("tradeType", "EPOS");       //交易类型   JSAPI，NATIVE，APP，WAP,EPOS
         }
         log.info("组装数据结束。。。,数据为{}"+JSONObject.fromObject(paramsMap).toString());

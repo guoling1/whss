@@ -19,6 +19,16 @@ import java.util.Date;
 public class SettleAccountFlow extends BaseEntity {
 
     /**
+     * 流水号
+     */
+    private String flowNo;
+
+    /**
+     * 结算单记录id
+     */
+    private long settlementRecordId;
+
+    /**
      * 账户id
      */
     private long accountId;

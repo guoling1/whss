@@ -3,6 +3,7 @@ package com.jkm.hss.account.service.impl;
 import com.google.common.base.Optional;
 import com.jkm.base.common.entity.PageModel;
 import com.jkm.base.common.util.DateFormatUtil;
+import com.jkm.base.common.util.SnGenerator;
 import com.jkm.hss.account.dao.AccountFlowDao;
 import com.jkm.hss.account.entity.Account;
 import com.jkm.hss.account.entity.AccountFlow;
@@ -78,6 +79,7 @@ public class AccountFlowServiceImpl implements AccountFlowService {
         //此时的account已经是可用余额改变的结果
         final Account account = this.accountService.getByIdWithLock(accountId).get();
         final AccountFlow accountFlow = new AccountFlow();
+        accountFlow.setFlowNo(this.getFlowNo());
         accountFlow.setAccountId(account.getId());
         accountFlow.setOrderNo(orderNo);
         accountFlow.setType(type.getId());
@@ -126,5 +128,31 @@ public class AccountFlowServiceImpl implements AccountFlowService {
         pageModel.setCount(count);
         pageModel.setRecords(list);
         return pageModel;
+    }
+
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param flowNo
+     * @return
+     */
+    public boolean checkExistByFlowNo(final String flowNo) {
+        final int count = this.accountFlowDao.selectCountByFlowNo(flowNo);
+        return count == 0;
+    }
+
+    /**
+     * 获取流水号
+     *
+     * @return
+     */
+    private String getFlowNo() {
+        final String flowNo = SnGenerator.generateFlowSn();
+        final boolean check = this.checkExistByFlowNo(flowNo);
+        if (!check) {
+            return this.getFlowNo();
+        }
+        return flowNo;
     }
 }
