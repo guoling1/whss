@@ -59,12 +59,12 @@
         <div class="box-body">
           <el-row type="flex" class="row-bg" justify="left">
             <el-col :span="2">
-              <div class="alignRight" style="line-height: 42px">项目类型:</div>
+              <div class="alignRight" style="line-height: 42px">产品:</div>
             </el-col>
             <el-col :span="10">
               <div class="grid-content bg-purple-light">
                 <el-radio class="radio" v-model="query.productName" label="好收收">好收收</el-radio>
-                <el-radio class="radio" v-model="query.productName" label="好收银">好收银</el-radio>
+                <el-radio class="radio" v-model="query.productName" label="好收银" disabled>好收银</el-radio>
               </div>
             </el-col>
             <el-col :span="6">
@@ -74,7 +74,7 @@
           </el-row>
           <el-row type="flex" class="row-bg" justify="left" style="margin-bottom: 10px">
             <el-col :span="2">
-              <div class="alignRight" style="line-height: 30px">产品名称:</div>
+              <div class="alignRight" style="line-height: 30px">标题:</div>
             </el-col>
             <el-col :span="10">
               <div class="grid-content bg-purple-light">
@@ -87,7 +87,7 @@
           </el-row>
           <el-row type="flex" class="row-bg" justify="left">
             <el-col :span="2">
-              <div class="alignRight">添加通道:</div>
+              <div class="alignRight">正文:</div>
             </el-col>
             <el-col :span="18">
               <div class="grid-content bg-purple-light tableSel">
@@ -95,7 +95,7 @@
                   <v-editor
                     :input-content="inputContent"
                     v-model="query.text"></v-editor>
-                  <input type="button" class="btn btn-primary" name="name" value="立即发布" style="margin: 15px 0 100px" @click="submit">
+                  <input type="button" class="btn btn-primary" name="name" value="立即发布" style="margin: 15px 0 100px" @click="open">
                 </div>
               </div>
             </el-col>
@@ -116,7 +116,7 @@
       return {
         query:{
           productId:6,
-          productName:"",
+          productName:"好收收",
           productType:'',
           title:'',
           text:'',
@@ -129,13 +129,54 @@
         outputContent: '',
       }
     },
-    computed: {},
-    ready() {},
+    created: function () {
+      if(this.query.productName == '好收收'){
+        this.query.productType = 'hss'
+      }else if(this.query.productName == '好收银'){
+        this.query.productType = 'hsy'
+      }
+    },
     attached() {},
     methods: {
+      open() {
+        if(this.query.title==''||this.query.text==''){
+          this.$message({
+            type: 'warning',
+            message: '请输入内容!'
+          });
+        }else {
+          this.$confirm('确认发布这条消息吗?', '提醒', {
+            confirmButtonText: '确认发布',
+            cancelButtonText: '取消',
+            type: 'info'
+          }).then(() => {
+            this.$http.post('/admin/pushNotice/notice',this.query)
+              .then(res=>{
+                this.$message({
+                  type: 'success',
+                  message: '发布成功!'
+                });
+              })
+              .catch(err=>{
+                this.$message({
+                  showClose: true,
+                  message: err.statusMessage,
+                  type: 'error'
+                })
+              })
+          })
+            .catch(() => {
+              this.$message({
+                type: 'info',
+                message: '已取消发布'
+              });
+            });
+        }
+
+      },
       submit() {
         console.log(this.inputContent)
-        console.log(this.text)
+        console.log(this.query)
       }
     },
     components: {
