@@ -27,7 +27,7 @@
               </div>
               <ul class="isShow" v-if="isOpen">
                 <li @click="selectAll()">全部</li>
-                <li v-for="province in provinces" @mouseover="selectCity(province.code,province.aname)" @click="select(province.code,province.aname)">{{province.aname}}
+                <li v-for="province in provinces" @mouseover="selectCity(province.code,province.name)" @click="select(province.code,province.name)">{{province.name}}
                 </li>
               </ul>
               <ul class="isShow1" v-if="isOpen1">
@@ -104,7 +104,7 @@
       return{
         loading:true,
         defaultProps: {
-          label:'aname',
+          label:'name',
           children: 'list'
         },
         isOpen:false,
