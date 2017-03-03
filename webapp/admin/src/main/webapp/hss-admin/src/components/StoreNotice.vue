@@ -27,7 +27,7 @@
           <el-table v-loading.body="loading" height="583" style="font-size: 12px;margin:15px 0" :data="records" border>
             <el-table-column type="index" width="62" label="序号"></el-table-column>
              <!--:formatter="changeTime"-->
-            <el-table-column prop="createTime" label="发布时间"></el-table-column>
+            <el-table-column prop="dates" label="发布时间"></el-table-column>
             <el-table-column label="标题" min-width="160">
               <template scope="scope">
                 <router-link :to="{path:'/admin/record/StoreNoticeDet',query:{id:records[scope.$index].id}}"

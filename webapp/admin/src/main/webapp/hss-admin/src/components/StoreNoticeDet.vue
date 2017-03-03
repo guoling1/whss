@@ -129,7 +129,12 @@
         outputContent: '',
       }
     },
+    http: {
+      headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+    },
+
     created: function () {
+
       if(this.query.productName == '好收收'){
         this.query.productType = 'hss'
       }else if(this.query.productName == '好收银'){
