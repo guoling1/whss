@@ -186,4 +186,12 @@ public interface MerchantInfoService {
      */
     int updateBranchInfo(ContinueBankInfoRequest continueBankInfoRequest);
 
+    /**
+     * 修改认证状态
+     * @param isAuthen
+     * @param id
+     * @return
+     */
+    int toAuthen(String isAuthen,long id);
+
 }
