@@ -129,7 +129,7 @@ public class PushNoticeController extends BaseController {
     @RequestMapping(value = "/updateNotice",method = RequestMethod.POST)
     public CommonResponse updateNotice(@RequestBody NoticeRequest request){
         try{
-            pushNoticeService.updateNotice(request.getTitle(),request.getText());
+            pushNoticeService.updateNotice(request.getTitle(),request.getText(),request.getId());
 
             return CommonResponse.simpleResponse(1, "发布成功");
         }catch (final Throwable throwable){
