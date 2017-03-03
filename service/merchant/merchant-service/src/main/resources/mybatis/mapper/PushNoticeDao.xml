@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jkm.hss.merchant.dao.PushNoticeDao">
+
+    <!-- 插入公告信息 -->
+    <insert id="add" useGeneratedKeys="true" keyProperty="id" >
+        INSERT INTO tb_notice (
+            product_id,
+            product_name,
+            product_type,
+            title,
+            text,
+            expiration_time
+            )
+        VALUES
+            (
+            #{productId},
+            #{productName},
+            #{productType},
+            #{title},
+            #{text},
+            #{expirationTime})
+    </insert>
+
+    <!-- 查询公告列表 -->
+    <select id="selectList" resultType="com.jkm.hss.merchant.entity.NoticeResponse">
+        SELECT
+            *
+        FROM
+            tb_notice
+        WHERE
+            1 = 1
+    <if test="startTime!=null and startTime!=''">
+        AND create_time <![CDATA[ >= ]]> #{startTime}
+    </if>
+
+    <if test="endTime!=null and endTime!=''">
+        AND create_time <![CDATA[ <= ]]> #{endTime}
+    </if>
+        ORDER BY
+            create_time DESC
+        LIMIT #{offset},#{pageSize}
+    </select>
+
+    <!-- 查询微信公告列表 -->
+    <select id="list" resultType="com.jkm.hss.merchant.entity.NoticeResponse">
+        SELECT
+        *
+        FROM
+        tb_notice
+    </select>
+
+    <!-- 公告列表总数 -->
+    <select id="selectListCount" resultType="java.lang.Integer">
+        SELECT
+          COUNT(*)
+        FROM
+          tb_notice
+        WHERE
+          1 = 1
+    <if test="startTime!=null and startTime!=''">
+        AND create_time <![CDATA[ >= ]]> #{startTime}
+    </if>
+
+    <if test="endTime!=null and endTime!=''">
+        AND create_time <![CDATA[ <= ]]> #{endTime}
+    </if>
+        ORDER BY
+          create_time DESC
+    </select>
+
+    <!-- 查询公告列表 -->
+    <select id="noticeDetails" resultType="com.jkm.hss.merchant.entity.NoticeResponse">
+        SELECT
+          *
+        FROM
+          tb_notice
+        WHERE
+          id=#{id}
+    </select>
+    
+    <!-- 修改公告 -->
+    <update id="updateNotice">
+        <set>
+            <if test="title!=null and title!=''">
+                title = #{title},
+            </if>
+
+            <if test="text!=null and text!=''">
+                text = #{text},
+            </if>
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <!-- 删除公告 -->
+    <delete id="deleteNotice">
+        DELETE FROM
+            tb_notice
+        WHERE
+            id = #{id}
+    </delete>
+
+    <!-- 微信端公告显示 -->
+    <select id="pageAnnouncement" resultType="com.jkm.hss.merchant.entity.NoticeResponse">
+        SELECT
+            *
+        FROM
+            tb_notice
+        WHERE
+            DATE_ADD(create_time, INTERVAL 5 DAY) <![CDATA[ >= ]]>#{dates}
+        ORDER BY
+            create_time DESC LIMIT 0,1
+
+    </select>
+
+</mapper>
