@@ -28,7 +28,7 @@ import java.util.Map;
  * Created by yuxiang on 2017-02-28.
  */
 @Controller
-@RequestMapping(value = "/merchantIn")
+@RequestMapping(value = "/admin/merchantIn")
 public class MerchantInController extends BaseController{
 
     @Autowired
