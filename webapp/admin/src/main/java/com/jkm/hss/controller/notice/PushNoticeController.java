@@ -5,6 +5,7 @@ import com.jkm.base.common.entity.PageModel;
 import com.jkm.hss.controller.BaseController;
 import com.jkm.hss.merchant.entity.NoticeRequest;
 import com.jkm.hss.merchant.entity.NoticeResponse;
+import com.jkm.hss.merchant.enums.EnumNotice;
 import com.jkm.hss.merchant.service.PushNoticeService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -60,6 +61,7 @@ public class PushNoticeController extends BaseController {
         if (StringUtils.isBlank(publisher)) {
             return CommonResponse.simpleResponse(-1, "发布人不能为空");
         }
+        request.setPublisher(super.getAdminUser().getRealname());
         pushNoticeService.add(request);
         return CommonResponse.simpleResponse(1, "发布成功");
     }
@@ -75,6 +77,13 @@ public class PushNoticeController extends BaseController {
         final PageModel<NoticeResponse> pageModel = new PageModel<NoticeResponse>(request.getPageNo(), request.getPageSize());
         request.setOffset(pageModel.getFirstIndex());
         List<NoticeResponse> list = pushNoticeService.selectList(request);
+        if(list.size()>0){
+            for (int i=0;i<list.size();i++){
+                if (list.get(i).getStatus()==1){
+                    list.get(i).setPushStatus(EnumNotice.PUBLISHED.getValue());
+                }
+            }
+        }
         int count = pushNoticeService.selectListCount(request);
         pageModel.setCount(count);
         pageModel.setRecords(list);
