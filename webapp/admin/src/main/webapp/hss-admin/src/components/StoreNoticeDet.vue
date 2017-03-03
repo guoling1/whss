@@ -176,6 +176,7 @@
                   type: 'success',
                   message: '发布成功!'
                 });
+                this.$router.push('/admin/record/storeNotice')
               })
               .catch(err=>{
                 this.$message({
@@ -200,13 +201,14 @@
           cancelButtonText: '取消',
           type: 'info'
         }).then(() => {
-          this.$http.post('/admin/pushNotice/updateNotice', {id: this.$route.query.id})
+          this.$http.post('/admin/pushNotice/deleteNotice', {id: this.$route.query.id})
             .then(function (res) {
               this.$message({
                 showClose: true,
                 message: '删除成功',
                 type: 'error'
               })
+              this.$router.push('/admin/record/storeNotice')
             }, function (err) {
               this.$message({
                 showClose: true,
@@ -241,6 +243,7 @@
                   type: 'success',
                   message: '修改成功!'
                 });
+                this.$router.push('/admin/record/storeNotice')
               })
               .catch(err => {
                 this.$message({
