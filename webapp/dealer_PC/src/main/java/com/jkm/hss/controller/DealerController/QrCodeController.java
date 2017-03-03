@@ -102,7 +102,7 @@ public class QrCodeController extends BaseController {
             todealerId = dealerOptional.get().getId();
             dealer = dealerOptional.get();
         }else{
-            todealerId = super.getDealerId();
+            todealerId = 0;
             dealer = super.getDealer().get();
         }
         if (StringUtils.isBlank(distributeQrCodeRequest.getSysType())) {

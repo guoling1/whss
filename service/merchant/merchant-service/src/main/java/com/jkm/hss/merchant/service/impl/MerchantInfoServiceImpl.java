@@ -511,4 +511,16 @@ public class MerchantInfoServiceImpl implements MerchantInfoService {
         return merchantInfoDao.updateBranchInfo(continueBankInfoRequest);
     }
 
+    /**
+     * 修改认证状态
+     *
+     * @param isAuthen
+     * @param id
+     * @return
+     */
+    @Override
+    public int toAuthen(String isAuthen, long id) {
+        return merchantInfoDao.toAuthen(isAuthen,id);
+    }
+
 }

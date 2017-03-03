@@ -168,4 +168,12 @@ public interface MerchantInfoDao {
      * @return
      */
     int updateBranchInfo(ContinueBankInfoRequest continueBankInfoRequest);
+
+    /**
+     * 修改认证状态
+     * @param isAuthen
+     * @param id
+     * @return
+     */
+    int toAuthen(@Param("isAuthen") String isAuthen, @Param("id") long id);
 }
