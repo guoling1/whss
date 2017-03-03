@@ -10,7 +10,7 @@
             product_type,
             title,
             text,
-            expiration_time
+            publisher
             )
         VALUES
             (
@@ -19,7 +19,7 @@
             #{productType},
             #{title},
             #{text},
-            #{expirationTime})
+            #{publisher})
     </insert>
 
     <!-- 查询公告列表 -->
