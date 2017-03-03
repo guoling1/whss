@@ -85,7 +85,7 @@
     </update>
 
     <!-- 删除公告 -->
-    <delete id="deleteNotice">
+    <delete id="deleteNotice" >
         DELETE FROM
             tb_notice
         WHERE
