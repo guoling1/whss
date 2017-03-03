@@ -129,16 +129,24 @@
         outputContent: '',
       }
     },
-    http: {
-      headers: {'Content-Type': 'application/x-www-form-urlencoded'}
-    },
-
     created: function () {
-
       if(this.query.productName == '好收收'){
         this.query.productType = 'hss'
       }else if(this.query.productName == '好收银'){
         this.query.productType = 'hsy'
+      }
+      if(this.$route.query.id != undefined){
+        this.$http.post('/admin/pushNotice/noticeDetails',{id:this.$route.query.id})
+          .then(res=>{
+            this.query = res.data;
+          })
+          .catch(err=>{
+            this.$message({
+              showClose: true,
+              message: err.statusMessage,
+              type: 'error'
+            })
+          })
       }
     },
     attached() {},
