@@ -61,7 +61,7 @@
             <li @click="refrash" :class="(url=='/admin/record/profitAccount')?'treeview active':'treeview'"><router-link to="/admin/record/profitAccount"><span>公司分润账户</span> </router-link></li>
           </ul>
         </li>
-        <li :class="(url=='/admin/record/t1Audit'||url=='/admin/record/tAuditStore'||url=='/admin/record/t1AuditDealer')?'treeview active':'treeview'">
+        <li :class="(url=='/admin/record/t1Audit'||url=='/admin/record/tAuditStore'||url=='/admin/record/tAuditDealer')?'treeview active':'treeview'">
           <a href="#"><span>结算管理</span></a>
           <ul class="treeview-menu">
             <li :class="(url=='/admin/record/t1Audit')?'treeview active':'treeview'" @click="refrash">
