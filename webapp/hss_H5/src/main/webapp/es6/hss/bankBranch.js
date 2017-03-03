@@ -34,14 +34,14 @@ let layer = document.getElementById('layer');
 let cancel = document.getElementById('cancel');
 
 cancel.addEventListener('click', function () {
-  window.location.href = '/sqb/bank?card=true';
+  window.location.href = '/sqb/wallet';
 });
 
 let layerC = document.getElementById('layerC');
 let cancelcC = document.getElementById('cancelC');
 
 cancelcC.addEventListener('click', function () {
-  window.location.href = '/sqb/wallet';
+  window.location.href = '/sqb/creditCardAuthen?card=true';
 });
 
 function getQueryString(name) {

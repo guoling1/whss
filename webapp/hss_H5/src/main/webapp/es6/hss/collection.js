@@ -63,7 +63,7 @@ cancelC.addEventListener('click', function () {
 });
 
 toC.addEventListener('click', function () {
-  window.location.href = '/sqb/bank?card=true';
+  window.location.href = '/sqb/creditCardAuthen?card=true';
 });
 
 let layer = document.getElementById('layer');
