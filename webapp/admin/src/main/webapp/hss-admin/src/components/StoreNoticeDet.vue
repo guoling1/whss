@@ -95,7 +95,12 @@
                   <v-editor
                     :input-content="inputContent"
                     v-model="query.text"></v-editor>
-                  <input type="button" class="btn btn-primary" name="name" value="立即发布" style="margin: 15px 0 100px" @click="open">
+                  <input type="button" class="btn btn-primary" value="立即发布" v-if="!isShow" style="margin: 15px 0 100px"
+                         @click="open">
+                  <input type="button" class="btn btn-primary" value="修 改" v-if="isShow"
+                         style="margin: 15px 30px 100px 0" @click="change">
+                  <input type="button" class="btn btn-primary" value="删 除" v-if="isShow" style="margin: 15px 0 100px"
+                         @click="del">
                 </div>
               </div>
             </el-col>
@@ -114,13 +119,13 @@
   export default {
     data() {
       return {
+        isShow: false,
         query:{
           productId:6,
           productName:"好收收",
           productType:'',
           title:'',
           text:'',
-          publisher:''
         },
         name:'',
         // input content to editor
@@ -136,11 +141,13 @@
         this.query.productType = 'hsy'
       }
       if(this.$route.query.id != undefined){
+        this.isShow = true;
         this.$http.post('/admin/pushNotice/noticeDetails',{id:this.$route.query.id})
-          .then(res=>{
+          .then(function (res) {
             this.query = res.data;
+            this.inputContent = res.data.text;
           })
-          .catch(err=>{
+          .catch(function (err) {
             this.$message({
               showClose: true,
               message: err.statusMessage,
@@ -186,6 +193,70 @@
             });
         }
 
+      },
+      del(){
+        this.$confirm('确认删除这条消息吗?', '提醒', {
+          confirmButtonText: '确认删除',
+          cancelButtonText: '取消',
+          type: 'info'
+        }).then(() => {
+          this.$http.post('/admin/pushNotice/updateNotice', {id: this.$route.id})
+            .then(function (res) {
+              this.$message({
+                showClose: true,
+                message: '删除成功',
+                type: 'error'
+              })
+            }, function (err) {
+              this.$message({
+                showClose: true,
+                message: err.statusMessage,
+                type: 'error'
+              })
+            })
+        })
+          .catch(() => {
+            this.$message({
+              type: 'info',
+              message: '已取消删除'
+            });
+          });
+      },
+      change(){
+        this.query.id = this.$route.query.id;
+        if (this.query.title == '' || this.query.text == '') {
+          this.$message({
+            type: 'warning',
+            message: '请输入内容!'
+          });
+        } else {
+          this.$confirm('确认修改这条消息吗?', '提醒', {
+            confirmButtonText: '确认修改',
+            cancelButtonText: '取消',
+            type: 'info'
+          }).then(() => {
+            this.$http.post('/admin/pushNotice/updateNotice', this.query)
+              .then(res => {
+                this.$message({
+                  type: 'success',
+                  message: '修改成功!'
+                });
+              })
+              .catch(err => {
+                this.$message({
+                  showClose: true,
+                  message: err.statusMessage,
+                  type: 'error'
+                })
+              })
+          })
+            .catch(() => {
+              this.$message({
+                type: 'info',
+                message: '已取消修改'
+              });
+            });
+        }
       },
       submit() {
         console.log(this.inputContent)
