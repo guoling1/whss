@@ -4,7 +4,7 @@
 
     <!-- 通用查询结果列-->
     <sql id="Base_Column_List">
-        id,merchant_id,product_id,channel_type_sign,merchant_balance_type,merchant_pay_rate,merchant_withdraw_fee,
+        id,merchant_id,mark_code,product_id,sys_type,channel_type_sign,merchant_balance_type,merchant_pay_rate,merchant_withdraw_fee,
         enter_net,remarks,third_company,channel_company,status,create_time,update_time
     </sql>
     <update id="updateEnterNetStatus">
@@ -38,7 +38,9 @@
         INSERT INTO tb_merchant_channel_rate
         (
         merchant_id,
+        mark_code,
         product_id,
+        sys_type,
         channel_type_sign,
         merchant_balance_type,
         merchant_pay_rate,
@@ -51,7 +53,9 @@
         VALUES
         (
         #{merchantId},
+        #{markCode},
         #{productId},
+        #{sysType},
         #{channelTypeSign},
         #{merchantBalanceType},
         #{merchantPayRate},

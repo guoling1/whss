@@ -215,5 +215,11 @@ public class MerchantInfo extends BaseEntity{
      */
     private String creditCardShort;
 
+    /**
+     * 是否认证 1认证 其他未认证
+     */
+    private String isAuthen;
+
+
 
 }

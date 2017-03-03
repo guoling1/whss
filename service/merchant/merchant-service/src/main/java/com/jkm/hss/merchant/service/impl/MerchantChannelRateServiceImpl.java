@@ -124,6 +124,7 @@ public class MerchantChannelRateServiceImpl implements MerchantChannelRateServic
         if(list.size()>0){
             BigDecimal weixinMerchantPayRate=null;
             BigDecimal zhifubaoMerchantPayRate=null;
+            int isNet = list.get(0).getEnterNet();
             List<Integer> signIdList = new ArrayList<Integer>();
             for(int i=0;i<list.size();i++){
                 if(list.get(i).getEnterNet()==EnumEnterNet.UNENT.getId()||list.get(i).getEnterNet()==EnumEnterNet.ENT_FAIL.getId()){
@@ -139,7 +140,7 @@ public class MerchantChannelRateServiceImpl implements MerchantChannelRateServic
             }
             if(weixinMerchantPayRate!=null&&zhifubaoMerchantPayRate!=null){
                 MerchantInfo merchantInfo = merchantInfoDao.selectById(merchantId);
-                if(merchantInfo!=null){
+                if(merchantInfo!=null&&isNet==1){
                     if(weixinMerchantPayRate!=null&&zhifubaoMerchantPayRate!=null){
                         Map<String, String> paramsMap = new HashMap<String, String>();
                         paramsMap.put("merchantName", merchantInfo.getMerchantName());
