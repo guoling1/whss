@@ -42,7 +42,7 @@ public class PushNoticeController extends BaseController {
         String productType = request.getProductType();
         String title = request.getTitle();
         String text = request.getText();
-        String publisher = request.getPublisher();
+        String publisher = super.getAdminUser().getRealname();
         if (productId==0) {
             return CommonResponse.simpleResponse(-1, "产品id不能为空");
         }
