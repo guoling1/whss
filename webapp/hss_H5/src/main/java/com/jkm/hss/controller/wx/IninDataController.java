@@ -17,6 +17,7 @@ import com.jkm.hss.merchant.service.MerchantInfoService;
 import com.jkm.hss.product.dao.BasicChannelDao;
 import com.jkm.hss.product.entity.BasicChannel;
 import com.jkm.hss.product.entity.ProductChannelDetail;
+import com.jkm.hss.product.enums.EnumProductType;
 import com.jkm.hss.product.servcie.BasicChannelService;
 import com.jkm.hss.product.servcie.ProductChannelDetailService;
 import lombok.extern.slf4j.Slf4j;
@@ -117,7 +118,7 @@ public class IninDataController extends BaseController{
     }
 
     /**
-     * 初始化代理商数据
+     * 初始化商户数据
      */
     @ResponseBody
     @RequestMapping(value = "initMerchant", method = RequestMethod.GET)
@@ -141,6 +142,8 @@ public class IninDataController extends BaseController{
                             MerchantChannelRate merchantChannelRate = new MerchantChannelRate();
                             merchantChannelRate.setMerchantId(merchantInfoList.get(i).getId());
                             merchantChannelRate.setProductId(merchantInfoList.get(i).getProductId());
+                            merchantChannelRate.setMarkCode(merchantInfoList.get(i).getMarkCode());
+                            merchantChannelRate.setSysType(EnumProductType.HSS.getId());
                             merchantChannelRate.setChannelTypeSign(dealerChannelRateList.get(j).getChannelTypeSign());
                             merchantChannelRate.setMerchantBalanceType(dealerChannelRateList.get(j).getDealerBalanceType());
                             merchantChannelRate.setMerchantWithdrawFee(dealerChannelRateList.get(j).getDealerMerchantWithdrawFee());
@@ -180,6 +183,8 @@ public class IninDataController extends BaseController{
                         MerchantChannelRate merchantChannelRate = new MerchantChannelRate();
                         merchantChannelRate.setMerchantId(merchantInfoList.get(i).getId());
                         merchantChannelRate.setProductId(merchantInfoList.get(i).getProductId());
+                        merchantChannelRate.setMarkCode(merchantInfoList.get(i).getMarkCode());
+                        merchantChannelRate.setSysType(EnumProductType.HSS.getId());
                         merchantChannelRate.setChannelTypeSign(productChannelDetailList.get(j).getChannelTypeSign());
                         merchantChannelRate.setMerchantBalanceType(productChannelDetailList.get(j).getProductBalanceType());
                         merchantChannelRate.setMerchantWithdrawFee(productChannelDetailList.get(j).getProductMerchantWithdrawFee());
