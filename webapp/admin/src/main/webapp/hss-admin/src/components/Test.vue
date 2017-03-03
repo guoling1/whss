@@ -1194,472 +1194,178 @@
   }
 </style>-->
 
-<!--新增通道-->
-<template lang="html">
-  <div id="passAdd">
-    <div style="margin: 15px 15px 150px;">
-      <div class="box tableTop">
-        <div class="box-header with-border" style="margin-bottom: 15px">
-          <h3 class="box-title" v-if="isShow">新增通道</h3>
-          <h3 class="box-title" v-if="!isShow">通道详情</h3>
-        </div>
-        <div class="">
-          <div class="table-responsive">
-            <el-row type="flex" class="row-bg" justify="center">
-              <el-col :span="4">
-                <div class="alignRight">通道名称:</div>
-              </el-col>
-              <el-col :span="6">
-                <div class="grid-content bg-purple-light">
-                  <el-input size="small" v-model="query.channelName" placeholder="请输入内容"></el-input>
-                </div>
-              </el-col>
-              <el-col :span="8">
-                <div class="grid-content bg-purple-light right">例如：华有支付宝</div>
-              </el-col>
-            </el-row>
-            <el-row type="flex" class="row-bg" justify="center">
-              <el-col :span="4">
-                <div class="alignRight">通道编码:</div>
-              </el-col>
-              <el-col :span="6">
-                <div class="grid-content bg-purple-light">
-                  <el-input size="small" v-model="query.channelCode" placeholder="请输入内容"></el-input>
-                </div>
-              </el-col>
-              <el-col :span="8">
-                <div class="grid-content bg-purple-light right">例如：SM_Alipay</div>
-              </el-col>
-            </el-row>
-            <el-row type="flex" class="row-bg" justify="center">
-              <el-col :span="4">
-                <div class="alignRight">支付方式:</div>
-              </el-col>
-              <el-col :span="6">
-                <div class="grid-content bg-purple-light">
-                  <el-checkbox-group v-model="query.supportWay">
-                    <el-checkbox label="微信公众号"></el-checkbox>
-                    <el-checkbox label="微信扫码"></el-checkbox>
-                    <el-checkbox label="支付宝公众号"></el-checkbox>
-                    <el-checkbox label="支付宝扫码"></el-checkbox>
-                  </el-checkbox-group>
-                </div>
-              </el-col>
-              <el-col :span="8"></el-col>
-            </el-row>
-            <el-row type="flex" class="row-bg" justify="center">
-              <el-col :span="4">
-                <div class="alignRight">收单机构:</div>
-              </el-col>
-              <el-col :span="6">
-                <div class="grid-content bg-purple-light">
-                  <el-select style="width: 100%" v-model="query.thirdCompany" clearable placeholder="请选择" size="small">
-                    <el-option label="微信" value="微信">微信</el-option>
-                    <el-option label="支付宝" value="支付宝">支付宝</el-option>
-                    <el-option label="京东钱包" value="京东钱包">京东钱包</el-option>
-                    <el-option label="百度钱包" value="百度钱包">百度钱包</el-option>
-                  </el-select>
-                </div>
-              </el-col>
-              <el-col :span="8">
-                <div class="grid-content bg-purple-light right">例如：支付宝、微信、京东钱包、百度钱包</div>
-              </el-col>
-            </el-row>
-            <el-row type="flex" class="row-bg" justify="center">
-              <el-col :span="4">
-                <div class="alignRight">渠道来源:</div>
-              </el-col>
-              <el-col :span="6">
-                <div class="grid-content bg-purple-light">
-                  <el-input size="small" v-model="query.channelSource" placeholder="数字或字母的组合，4-20位"></el-input>
-                </div>
-              </el-col>
-              <el-col :span="8">
-                <div class="grid-content bg-purple-light right">例如：华有，显示给用户</div>
-              </el-col>
-            </el-row>
-            <el-row type="flex" class="row-bg" justify="center">
-              <el-col :span="4">
-                <div class="alignRight">支付费率:</div>
-              </el-col>
-              <el-col :span="6">
-                <div class="grid-content bg-purple-light" style="position: relative">
-                  <el-input size="small" v-model="query.basicTradeRate" placeholder="请输入内容"></el-input>
-                  <b>%</b>
-                </div>
-              </el-col>
-              <el-col :span="8">
-                <div class="grid-content bg-purple-light right">例如：0.3%</div>
-              </el-col>
-            </el-row>
-            <el-row type="flex" class="row-bg" justify="center">
-              <el-col :span="4">
-                <div class="alignRight">打款费用:</div>
-              </el-col>
-              <el-col :span="6">
-                <div class="grid-content bg-purple-light" style="position: relative">
-                  <el-input size="small" v-model="query.basicWithdrawFee" placeholder="请输入内容"></el-input>
-                  <b>元/笔</b>
-                </div>
-              </el-col>
-              <el-col :span="8">
-                <div class="grid-content bg-purple-light right">例如：0.5元/笔</div>
-              </el-col>
-            </el-row>
-            <el-row type="flex" class="row-bg" justify="center">
-              <el-col :span="4">
-                <div class="alignRight">结算时间:</div>
-              </el-col>
-              <el-col :span="6">
-                <div class="grid-content bg-purple-light">
-                  <el-select style="width: 100%" v-model="query.basicBalanceType" clearable placeholder="请选择" size="small">
-                    <el-option label="D0" value="D0">D0</el-option>
-                    <el-option label="D1" value="D1">D1</el-option>
-                    <el-option label="T0" value="T0">T0</el-option>
-                    <el-option label="T1" value="T1">T1</el-option>
-                  </el-select>
-                </div>
-              </el-col>
-              <el-col :span="8">
-                <div class="grid-content bg-purple-light" style="margin: 0 15px;">
-                </div>
-              </el-col>
-            </el-row>
-            <el-row type="flex" class="row-bg" justify="center">
-              <el-col :span="4">
-                <div class="alignRight">结算方式:</div>
-              </el-col>
-              <el-col :span="6">
-                <div class="grid-content bg-purple-light">
-                  <el-select style="width: 100%" v-model="query.basicSettleType" clearable placeholder="请选择" size="small">
-                    <el-option label="通道自动结算" value="D0">通道自动结算</el-option>
-                    <el-option label="自主打款结算" value="D1">自主打款结算</el-option>
-                  </el-select>
-                </div>
-              </el-col>
-              <el-col :span="8">
-                <div class="grid-content bg-purple-light" style="margin: 0 15px;">
-                </div>
-              </el-col>
-            </el-row>
-            <el-row type="flex" class="row-bg" justify="center">
-              <el-col :span="4">
-                <div class="alignRight">预估额度:</div>
-              </el-col>
-              <el-col :span="6">
-                <div class="grid-content bg-purple-light" style="position: relative">
-                  <el-input size="small" v-model="query.limitAmount" placeholder="请输入内容"></el-input>
-                  <b>元/笔</b>
-                </div>
-              </el-col>
-              <el-col :span="8">
-                <div class="grid-content bg-purple-light"></div>
-              </el-col>
-            </el-row>
-            <el-row type="flex" class="row-bg" justify="center">
-              <el-col :span="4">
-                <div class="alignRight">一户一报:</div>
-              </el-col>
-              <el-col :span="6">
-                <div class="grid-content bg-purple-light">
-                  <el-radio class="radio" v-model="query.isNeed" label="1">支持</el-radio>
-                  <el-radio class="radio" v-model="query.isNeed" label="2">不支持</el-radio>
-                </div>
-              </el-col>
-              <el-col :span="8">
-                <div class="grid-content bg-purple-light"></div>
-              </el-col>
-            </el-row>
-            <el-row type="flex" class="row-bg" justify="center">
-              <el-col :span="4">
-                <div class="alignRight">备注信息:</div>
-              </el-col>
-              <el-col :span="6">
-                <div class="grid-content bg-purple-light">
-                  <el-input type="textarea" :autosize="{ minRows: 2, maxRows: 4}" size="small" v-model="query.remarks" placeholder="请输入内容"></el-input>
-                </div>
-              </el-col>
-              <el-col :span="8">
-                <div class="grid-content bg-purple-light"></div>
-              </el-col>
-            </el-row>
-          </div>
-        </div>
-        <el-row type="flex" class="row-bg" justify="center">
-          <el-col :span="4">
-            <div class="alignRight"></div>
-          </el-col>
-          <el-col :span="6">
-            <div class="grid-content bg-purple-light" style="width: 100%">
-              <div class="btn btn-primary" @click="goBack" style="width: 45%;margin: 20px 0 100px;">
-                返回
-              </div>
-              <div class="btn btn-primary" @click="create" v-if="isShow" style="width: 45%;float: right;margin: 20px 0 100px;">
-                创建代理商
-              </div>
-              <div class="btn btn-primary" @click="change()" v-if="!isShow" style="width: 45%;float: right;margin: 20px 0 100px;">
-                修改
-              </div>
-            </div>
-          </el-col>
-          <el-col :span="8">
-            <div class="grid-content bg-purple-light"></div>
-          </el-col>
-        </el-row>
-      </div>
-    </div>
-  </div>
-</template>
-
-<script lang="babel">
-  export default {
-    name: 'passAdd',
-    data () {
-      return {
-        query: {
-          channelName: '',
-          channelCode: '',
-          supportWay:'',
-          thirdCompany:'',
-          channelSource:'',
-          basicTradeRate:'',
-          basicWithdrawFee:'',
-          basicBalanceType: '',
-          basicSettleType: '',
-          limitAmount: '',
-          isNeed: '',
-          remarks: ''
-        },
-        id: 0,
-        isShow: true
-      }
-    },
-    created: function () {
-      //若为查看详情
-      if (this.$route.query.id != undefined) {
-        this.$data.isShow = false;
-        this.$http.get('/admin/dealer/findBydealerId/' + this.$route.query.id)
-          .then(function (res) {
-            this.$data.query = res.data;
-            this.$data.province = res.data.belongProvinceName;
-            this.$data.city = res.data.belongCityName;
-          })
-      }
-    },
-    methods: {
-      //创建一级代理
-      create: function () {
-        this.$http.post('/admin/user/addFirstDealer2', this.$data.query)
-          .then(function (res) {
-            this.$message({
-              showClose: true,
-              message: '创建成功',
-              type: 'success'
-            });
-            this.$router.push('/admin/record/agentListFir')
-          }, function (err) {
-            this.$message({
-              showClose: true,
-              message: err.statusMessage,
-              type: 'error'
-            });
-          })
-      },
-      goBack: function () {
-        if(this.$route.query.level==2){
-          this.$router.push('/admin/record/agentListSec')
-        }else {
-          this.$router.push('/admin/record/agentListFir')
-        }
-      },
-      //修改
-      change: function () {
-        this.$data.query.dealerId = this.$data.query.id;
-        this.$http.post('/admin/user/updateDealer2', this.$data.query)
-          .then(function (res) {
-            this.$message({
-              showClose: true,
-              message: '修改成功',
-              type: 'success'
-            });
-            if(this.$route.query.level==2){
-              this.$router.push('/admin/record/agentListSec')
-            }else {
-              this.$router.push('/admin/record/agentListFir')
-            }
-          }, function (err) {
-            this.$message({
-              showClose: true,
-              message: err.statusMessage,
-              type: 'error'
-            });
-          })
-      }
-    },
-  }
-</script>
-
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped lang="less">
-  .alignRight {
-    margin-right: 15px;
-    text-align: right;
-    height: 30px;
-    line-height: 30px;
-    font-weight: bold;
-    margin-bottom: 10px;
-  }
-
-  .right{
-    height: 30px;
-    line-height: 30px;
-    margin-left: 15px;
-    color: #999999;
-  }
-  b{
-    height: 30px;
-    line-height: 30px;
-    margin-right: 15px;
-    position: absolute;
-    top:0;
-    right: 0;
-  }
-</style>
-
-<!--通道列表-->
+<!--结算记录-->
 <!--<template>
-  <div id="passList">
+  <div>
     <div class="col-md-12">
       <div class="box" style="margin-top:15px;overflow: hidden">
         <div class="box-header">
-          <h3 class="box-title">通道列表</h3>
-          <router-link to="/admin/record/passAdd" class="pull-right btn btn-primary" style="margin-left: 20px">新增通道
-          </router-link>
+          <h3 class="box-title">商户结算记录</h3>
         </div>
         <div class="box-body">
           &lt;!&ndash;筛选&ndash;&gt;
           <ul>
             <li class="same">
-              <label>通道名称:</label>
-              <el-input style="width: 130px" v-model="query.orderNo" placeholder="请输入内容" size="small"></el-input>
+              <label>结算日期:</label>
+              <el-date-picker v-model="date" size="small" type="daterange" align="right" placeholder="选择日期范围" :picker-options="pickerOptions"></el-date-picker>
             </li>
             <li class="same">
-              <label>通道编码:</label>
-              <el-input style="width: 130px" v-model="query.merchantName" placeholder="请输入内容" size="small"></el-input>
+              <label>结算单号:</label>
+              <el-input style="width: 130px" v-model="query.settleNo" placeholder="请输入内容" size="small"></el-input>
+            </li>
+            <li class="same">
+              <label>结算状态:</label>
+              <el-select clearable v-model="query.settleStatus" size="small" >
+                <el-option label="全部" value="">全部</el-option>
+                <el-option label="待结算" value="1">待结算</el-option>
+                <el-option label="部分结算" value="4">部分结算</el-option>
+                <el-option label="结算成功" value="3">结算成功</el-option>
+              </el-select>
+            </li>
+            <li class="same">
+              <label>商户名称:</label>
+              <el-input style="width: 130px" v-model="query.userName" placeholder="请输入内容" size="small"></el-input>
+            </li>
+            <li class="same">
+              <label>商户编号:</label>
+              <el-input style="width: 130px" v-model="query.userNo" placeholder="请输入内容" size="small"></el-input>
             </li>
             <li class="same">
               <div class="btn btn-primary" @click="search">筛选</div>
             </li>
           </ul>
           &lt;!&ndash;表格&ndash;&gt;
-          <el-table v-loading.body="loading" height="583" style="font-size: 12px;margin-bottom:15px" :data="records" border>
-            <el-table-column label="通道名称" min-width="112">
+          <el-table v-loading.body="loading" style="font-size: 12px;margin:15px 0" :data="records" border @selection-change="handleSelectionChange">
+            <el-table-column type="index" width="62" label="序号" fixed="left"></el-table-column>
+            &lt;!&ndash;<el-table-column type="selection" width="55"></el-table-column>&ndash;&gt;
+            <el-table-column prop="userName" label="商户名称" ></el-table-column>
+            <el-table-column prop="userNo" label="商户编号" ></el-table-column>
+            <el-table-column label="业务线" >
               <template scope="scope">
-                <router-link :to="{path:'/admin/record/newDealDet',query:{orderNo:records[scope.$index].orderNo}}"
-                             type="text" size="small">{{records[scope.$index].sn}}
-                </router-link>
+                <span v-if="records[scope.$index].appId=='hss'">好收收</span>
+                <span v-if="records[scope.$index].appId=='hsy'">好收银</span>
               </template>
             </el-table-column>
-            <el-table-column label="通道编码" min-width="112">
+            <el-table-column prop="settleNo" label="结算单号" ></el-table-column>
+            <el-table-column prop="settleDate" label="结算日期" :formatter="changeTime"></el-table-column>
+            <el-table-column prop="settleAmount" label="结算金额" :formatter="changeNum" align="right"></el-table-column>
+            <el-table-column prop="settleModeValue" label="结算方式" ></el-table-column>
+            <el-table-column prop="settleDestinationValue" label="结算类型" ></el-table-column>
+            <el-table-column prop="settleStatusValue" label="结算状态" ></el-table-column>
+
+            &lt;!&ndash;<el-table-column label="操作" width="70">
               <template scope="scope">
-                <span class="td" :data-clipboard-text="records[scope.$index].sn" type="text" size="small"
-                      style="cursor: pointer" title="点击复制">{{records[scope.$index].sn|changeHide}}</span>
-              </template>
+                <el-button @click.native.prevent="list(scope.$index)" type="text" size="small" v-if="records[scope.$index].settleStatusValue!='结算成功'">结算</el-button>
+              </template>&ndash;&gt;
             </el-table-column>
-            <el-table-column prop="createTime" label="收单机构" width="162"></el-table-column>
-            <el-table-column prop="merchantName" label="渠道来源" min-width="90"></el-table-column>
-            <el-table-column prop="proxyName" label="支付费率" min-width="90"></el-table-column>
-            <el-table-column prop="proxyName1" :formatter="changeTime" label="结算时间" min-width="90"></el-table-column>
-            <el-table-column prop="tradeAmount" :formatter="changeNum" label="结算类型" min-width="90"></el-table-column>
-            <el-table-column prop="tradeAmount" :formatter="changeNum" label="支付方式" min-width="90"></el-table-column>
-            <el-table-column prop="payRate" label="备注信息" min-width="90" align="right"></el-table-column>
-          </el-table>
           </el-table>
           &lt;!&ndash;分页&ndash;&gt;
           <div class="block" style="text-align: right">
             <el-pagination @size-change="handleSizeChange"
                            @current-change="handleCurrentChange"
-                           :current-page="query.page"
+                           :current-page="query.pageNo"
                            :page-sizes="[10, 20, 50]"
-                           :page-size="query.size"
+                           :page-size="query.pageSize"
                            layout="total, sizes, prev, pager, next, jumper"
                            :total="count">
             </el-pagination>
+          </div>
+          &lt;!&ndash;审核&ndash;&gt;
+          <div v-if="isShow">
+            <el-dialog title="结算确认提醒" v-model="isShow">
+              <div class="maskCon">
+                <span>商户名称：</span>
+                <span>{{records[this.$data.index].userName}}</span>
+              </div>
+              <div class="maskCon">
+                <span>商户编号：</span>
+                <span>{{records[index].userNo}}</span>
+              </div>
+              <div class="maskCon">
+                <span>结算金额：</span>
+                <span>{{records[index].settleAmount}}</span>
+              </div>
+              <div class="maskCon">
+                <span>结算交易笔数：</span>
+                <span>{{records[index].tradeNumber}}笔</span>
+              </div>
+              <div class="maskCon">
+                <span>交易日期：</span>
+                <span>{{records[index].tradeDate}}</span>
+              </div>
+              <div slot="footer" class="dialog-footer" style="text-align: center;">
+                <el-button @click="isShow = false">取 消</el-button>
+                <el-button @click="settle(2,records[index].id)">结算已对账部分</el-button>
+                <el-button @click="settle(3,records[index].id)">强制结算全部</el-button>
+              </div>
+            </el-dialog>
           </div>
         </div>
       </div>
     </div>
   </div>
+  </div>
 </template>
-
 <script lang="babel">
-  import Clipboard from "clipboard"
   export default{
-    name: 'passList',
+    name: 'tAuditStore',
     data(){
-      return {
-        query: {
-          page: 1,
-          size: 10,
-          orderNo: '',
-          merchantName: '',
-          startTime: '',
-          endTime: '',
-          lessTotalFee: '',
-          moreTotalFee: '',
-          status: '',
-          settleStatus: '',
-          payType: '',
-          proxyName: '',
-          proxyName1: ''
+      return{
+        pickerOptions: {
+          shortcuts: [{
+            text: '最近一周',
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
+              picker.$emit('pick', [start, end]);
+            }
+          }, {
+            text: '最近一个月',
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
+              picker.$emit('pick', [start, end]);
+            }
+          }, {
+            text: '最近三个月',
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
+              picker.$emit('pick', [start, end]);
+            }
+          }]
         },
-        date: '',
-        records: [],
-        count: 0,
-        total: 0,
-        loading: true,
-        url: ''
+        date:'',
+        records:[],
+        count:0,
+        total:0,
+        query:{
+          pageNo:1,
+          pageSize:10,
+          userNo:"",//编号
+          userName:"",  //名字
+          settleNo:"",//结算单号
+          userType:2,//(2：商户，3：代理商)
+          starDate:"", // 开始
+          endDate:"", //结束
+          settleStatus:''
+        },
+        multipleSelection:[],
+        currentPage4: 1,
+        loading:true,
+        isShow:false,
+        index:'',
       }
     },
     created: function () {
-      var clipboard = new Clipboard('.td');
-      //复制成功执行的回调，可选
-      clipboard.on('success', (e) => {
-        this.$message({
-          showClose: true,
-          message: "复制成功  内容为：" + e.text,
-          type: 'success'
-        });
-      });
       this.getData()
     },
     methods: {
-      getData: function () {
-        this.loading = true;
-        this.$http.post('/admin/queryOrder/orderList', this.$data.query)
-          .then(function (res) {
-            this.loading = false;
-            this.$data.records = res.data.records;
-            this.$data.total = res.data.totalPage;
-            this.$data.url = res.data.ext;
-            this.$data.count = res.data.count;
-            for (var i = 0; i < this.records.length; i++) {
-              if (this.records[i].payRate != null) {
-                this.records[i].payRate = (parseFloat(this.records[i].payRate) * 100).toFixed(2) + '%';
-              }
-            }
-          }, function (err) {
-            this.$data.loading = false;
-            this.$message({
-              showClose: true,
-              message: err.statusMessage,
-              type: 'error'
-            });
-          })
-      },
-      //格式化hss创建时间
       changeTime: function (row, column) {
-        var val = row.createTime;
+        var val = row.settleDate;
         if (val == '' || val == null) {
           return ''
         } else {
@@ -1678,294 +1384,84 @@
             return a;
           }
 
-          return year + "-" + tod(month) + "-" + tod(date) + " " + tod(hour) + ":" + tod(minute) + ":" + tod(second);
+          return year + "-" + tod(month) + "-" + tod(date);
         }
       },
       changeNum: function (row, column) {
-        var val = row.tradeAmount;
+        var val = row.settleAmount;
         return parseFloat(val).toFixed(2);
       },
-      search(){
-        this.$data.query.page = 1;
+      getData: function () {
+        this.loading = true;
+        this.$http.post('/admin/settlementRecord/list',this.$data.query)
+          .then(function (res) {
+            this.$data.records = res.data.records;
+            this.$data.count = res.data.count;
+            this.$data.total = res.data.totalPage;
+            this.$data.loading = false;
+            var changeTime=function (val) {
+              if(val==''||val==null){
+                return ''
+              }else {
+                val = new Date(val)
+                var year=val.getFullYear();
+                var month=val.getMonth()+1;
+                var date=val.getDate();
+                function tod(a) {
+                  if(a<10){
+                    a = "0"+a
+                  }
+                  return a;
+                }
+                return year+"-"+tod(month)+"-"+tod(date);
+              }
+            }
+            for(let i = 0; i < this.$data.records.length; i++){
+              this.$data.records[i].tradeDate = changeTime(this.$data.records[i].tradeDate)
+            }
+          },function (err) {
+            this.$data.loading = false;
+            this.$message({
+              showClose: true,
+              message: err.statusMessage,
+              type: 'error'
+            })
+          })
+      },
+      search: function () {
+        this.$data.query.pageNo = 1;
         this.getData()
+      },
+      list: function (val) {
+        this.$data.index = val;
+        this.$data.isShow = true;
+      },
+      //行选中
+      handleSelectionChange(val) {
+        console.log(val)
+        this.multipleSelection = val;
       },
       //每页条数改变
       handleSizeChange(val) {
-        this.$data.query.page = 1;
-        this.$data.query.size = val;
+        this.$data.query.pageNo = 1;
+        this.$data.query.pageSize = val;
         this.getData()
       },
       //当前页改变时
       handleCurrentChange(val) {
-        this.$data.query.page = val;
+        this.$data.query.pageNo = val;
         this.getData()
       },
-    },
-  }
-</script>
-
-<style scoped lang="less" rel="stylesheet/less">
-  ul {
-    padding: 0;
-  }
-
-  .same {
-    list-style: none;
-    display: inline-block;
-    margin: 0 15px 15px 0;
-  }
-
-  .btn {
-    font-size: 12px;
-  }
-
-  .price {
-    display: inline-block;
-    width: 210px;
-    height: 30px;
-    border-radius: 4px;
-    border-color: #bfcbd9;
-    position: relative;
-    top: 6px;
-    input {
-      border: none;
-      display: inline-block;
-      width: 45%;
-      height: 25px;
-      position: relative;
-      top: -3px;
-    }
-  }
-
-  .price:hover {
-    border-color: #20a0ff;
-  }
-
-</style>-->
-
-<!--新增产品-->
-<!--<template lang="html">
-  <div id="productAdd">
-    <div style="margin: 15px 15px 150px;">
-      <div class="box tableTop">
-        <div class="box-header with-border" style="margin-bottom: 15px">
-          <h3 class="box-title" v-if="isShow">新增产品</h3>
-          <h3 class="box-title" v-if="!isShow">产品详情</h3>
-        </div>
-        <div class="">
-          <div class="table-responsive">
-            <el-row type="flex" class="row-bg" justify="center">
-              <el-col :span="4">
-                <div class="alignRight">项目类型:</div>
-              </el-col>
-              <el-col :span="6">
-                <div class="grid-content bg-purple-light">
-                  <el-select style="width: 100%" v-model="query.roleId" clearable placeholder="请选择" size="small">
-                    <el-option label="好收收" value="hss">好收收</el-option>
-                    <el-option label="好收银" value="hsy">好收银</el-option>
-                  </el-select>
-                </div>
-              </el-col>
-              <el-col :span="8">
-                <div class="grid-content bg-purple-light" style="margin: 0 15px;">
-                </div>
-              </el-col>
-            </el-row>
-            <el-row type="flex" class="row-bg" justify="center">
-              <el-col :span="4">
-                <div class="alignRight">产品名称:</div>
-              </el-col>
-              <el-col :span="6">
-                <div class="grid-content bg-purple-light">
-                  <el-input size="small" v-model="query.mobile" placeholder="请输入内容"></el-input>
-                </div>
-              </el-col>
-              <el-col :span="8">
-                <div class="grid-content bg-purple-light right">例如：快收银2.0</div>
-              </el-col>
-            </el-row>
-            <el-row type="flex" class="row-bg" justify="center">
-              <el-col :span="4">
-                <div class="alignRight">添加通道:</div>
-              </el-col>
-              <el-col :span="12">
-                <div class="grid-content bg-purple-light">
-                  <el-table :data="tableData" @selection-change="handleSelectionChange" border v-if="tableHas">
-                    <el-table-column property="date" label="日期" width="150"></el-table-column>
-                    <el-table-column property="name" label="姓名" width="200"></el-table-column>
-                    <el-table-column property="address" label="地址"></el-table-column>
-                  </el-table>
-                  <span class="btn btn-primary" style="margin: 15px 0" @click="dialogTableVisible = true" >添加通道</span>
-                </div>
-              </el-col>
-              <el-col :span="2"></el-col>
-            </el-row>
-
-            <el-dialog title="选择通道" v-model="dialogTableVisible">
-              <el-table :data="gridData" @selection-change="handleSelectionChange" border>
-                <el-table-column
-                  type="selection"
-                  width="55">
-                </el-table-column>
-                <el-table-column property="date" label="日期" width="150"></el-table-column>
-                <el-table-column property="name" label="姓名" width="200"></el-table-column>
-                <el-table-column property="address" label="地址"></el-table-column>
-              </el-table>
-              <div slot="footer" class="dialog-footer">
-                <el-button @click="dialogTableVisible = false">取 消</el-button>
-                <el-button type="primary" @click="dialogTableVisible = false">确 定</el-button>
-              </div>
-            </el-dialog>
-
-            <el-row type="flex" class="row-bg" justify="center">
-              <el-col :span="4">
-                <div class="alignRight">支付手续费加价额:</div>
-              </el-col>
-              <el-col :span="6">
-                <div class="grid-content bg-purple-light" style="position: relative">
-                  <el-input size="small" v-model="query.email" placeholder="请输入内容"></el-input>
-                  <b>%</b>
-                </div>
-              </el-col>
-              <el-col :span="8">
-                <div class="grid-content bg-purple-light right">允许一级代理商提高商户的手续费最高限制，例如：0.05%</div>
-              </el-col>
-            </el-row>
-            <el-row type="flex" class="row-bg" justify="center">
-              <el-col :span="4">
-                <div class="alignRight">提现手续费加价限额:</div>
-              </el-col>
-              <el-col :span="6">
-                <div class="grid-content bg-purple-light" style="position: relative">
-                  <el-input size="small" v-model="query.firstMarkCode" placeholder="请输入内容"></el-input>
-                  <b>元/笔</b>
-                </div>
-              </el-col>
-              <el-col :span="8">
-                <div class="grid-content bg-purple-light right">允许一级代理商提高商户的手续费最高限制，例如：0.5元／笔</div>
-              </el-col>
-            </el-row>
-            <el-row type="flex" class="row-bg" justify="center">
-              <el-col :span="4">
-                <div class="alignRight">商户提现模式:</div>
-              </el-col>
-              <el-col :span="6">
-                <div class="grid-content bg-purple-light">
-                  <el-radio class="radio" v-model="query.distributeType" label="1">手动提现</el-radio>
-                  <el-radio class="radio" v-model="query.distributeType" label="2">逐笔自动提现</el-radio>
-                </div>
-              </el-col>
-              <el-col :span="8">
-                <div class="grid-content bg-purple-light"></div>
-              </el-col>
-            </el-row>
-            <el-row type="flex" class="row-bg" justify="center">
-              <el-col :span="4">
-                <div class="alignRight">代理商结算模式:</div>
-              </el-col>
-              <el-col :span="6">
-                <div class="grid-content bg-purple-light">
-                  <el-radio class="radio" v-model="query.distributeType" label="1">D0</el-radio>
-                  <el-radio class="radio" v-model="query.distributeType" label="2">日结</el-radio>
-                  <el-radio class="radio" v-model="query.distributeType" label="2">月结</el-radio>
-                </div>
-              </el-col>
-              <el-col :span="8">
-                <div class="grid-content bg-purple-light"></div>
-              </el-col>
-            </el-row>
-          </div>
-        </div>
-        <el-row type="flex" class="row-bg" justify="center">
-          <el-col :span="4">
-            <div class="alignRight"></div>
-          </el-col>
-          <el-col :span="6">
-            <div class="grid-content bg-purple-light" style="width: 100%">
-              <div class="btn btn-primary" @click="goBack" style="width: 45%;margin: 20px 0 100px;">
-                返回
-              </div>
-              <div class="btn btn-primary" @click="create" v-if="isShow" style="width: 45%;float: right;margin: 20px 0 100px;">
-                创建代理商
-              </div>
-              <div class="btn btn-primary" @click="change()" v-if="!isShow" style="width: 45%;float: right;margin: 20px 0 100px;">
-                修改
-              </div>
-            </div>
-          </el-col>
-          <el-col :span="8">
-            <div class="grid-content bg-purple-light"></div>
-          </el-col>
-        </el-row>
-      </div>
-    </div>
-  </div>
-</template>
-
-<script lang="babel">
-  export default {
-    name: 'productAdd',
-    data () {
-      return {
-        tableHas:false,
-        dialogTableVisible: false,
-        multipleSelection:'',
-        password:'',
-        query: {
-          mobile: '',
-          name: '',
-          loginName:'',
-          loginPwd:'',
-          email:'',
-          belongProvinceCode:'',
-          belongProvinceName:'',
-          belongCityCode: '',
-          belongCityName: '',
-          belongArea: '',
-          bankCard: '',
-          bankAccountName: '',
-          bankReserveMobile: '',
-          idCard: '',
-        },
-        tableData:[],
-        id: 0,
-        isShow: true,
-        productId: ''
-      }
-    },
-    created: function () {
-      if(this.tableData.length == 0){
-          this.tableHas = false;
-      }else {
-          this.tableHas = true;
-      }
-      //若为查看详情
-      if (this.$route.query.id != undefined) {
-        this.$data.isShow = false;
-        this.$http.get('/admin/dealer/findBydealerId/' + this.$route.query.id)
+      //结算审核
+      settle(val,id) {
+        this.$http.post('/admin/settle/singleSettle',{recordId:id,option:val})
           .then(function (res) {
-            this.$data.query = res.data;
-            this.$data.province = res.data.belongProvinceName;
-            this.$data.city = res.data.belongCityName;
-          })
-      }
-    },
-    methods: {
-      handleSelectionChange(val) {
-        this.multipleSelection = val;
-        console.log(this.multipleSelection)
-      },
-      //修改密码
-      resetPw:function() {
-        this.$http.post('/admin/dealer/updatePwd',{dealerId:this.$route.query.id,loginPwd:this.$data.password})
-          .then(function (res) {
-            this.$data.dialogFormVisible = false;
-            this.$data.password = '';
             this.$message({
               showClose: true,
-              type: 'success',
-              message: '修改成功'
-            });
+              message: '结算成功',
+              type: 'success'
+            })
+            this.$data.isShow = false
           })
           .catch(function (err) {
             this.$message({
@@ -1974,144 +1470,367 @@
               type: 'error'
             })
           })
-      },
-      //创建一级代理
-      create: function () {
-        this.$http.post('/admin/user/addFirstDealer2', this.$data.query)
-          .then(function (res) {
-            this.$message({
-              showClose: true,
-              message: '创建成功',
-              type: 'success'
-            });
-            this.$router.push('/admin/record/agentListFir')
-          }, function (err) {
-            this.$message({
-              showClose: true,
-              message: err.statusMessage,
-              type: 'error'
-            });
-          })
-      },
-      goBack: function () {
-        if(this.$route.query.level==2){
-          this.$router.push('/admin/record/agentListSec')
-        }else {
-          this.$router.push('/admin/record/agentListFir')
-        }
-      },
-      //修改
-      change: function () {
-        this.$data.query.dealerId = this.$data.query.id;
-        this.$http.post('/admin/user/updateDealer2', this.$data.query)
-          .then(function (res) {
-            this.$message({
-              showClose: true,
-              message: '修改成功',
-              type: 'success'
-            });
-            if(this.$route.query.level==2){
-              this.$router.push('/admin/record/agentListSec')
-            }else {
-              this.$router.push('/admin/record/agentListFir')
-            }
-          }, function (err) {
-            this.$message({
-              showClose: true,
-              message: err.statusMessage,
-              type: 'error'
-            });
-          })
       }
     },
+    watch:{
+      date:function (val,oldVal) {
+        if(val[0]!=null){
+          for(var j=0;j<val.length;j++){
+            var str = val[j];
+            var ary = [str.getFullYear(), str.getMonth() + 1, str.getDate()];
+            for(var i = 0, len = ary.length; i < len; i ++) {
+              if(ary[i] < 10) {
+                ary[i] = '0' + ary[i];
+              }
+            }
+            str = ary[0] + '-' + ary[1] + '-' + ary[2];
+            if(j==0){
+              this.$data.query.starDate = str;
+            }else {
+              this.$data.query.starDate = str;
+            }
+          }
+        }else {
+          this.$data.query.starDate = '';
+          this.$data.query.starDate = '';
+        }
+      }
+    }
   }
 </script>
-
-&lt;!&ndash; Add "scoped" attribute to limit CSS to this component only &ndash;&gt;
 <style scoped lang="less">
-  .alignRight {
-    margin-right: 15px;
-    text-align: right;
-    height: 30px;
-    line-height: 30px;
-    font-weight: bold;
-    margin-bottom: 10px;
+  .maskCon{
+    margin:0 0 15px 50px
   }
-
-  .right{
-    height: 30px;
-    line-height: 30px;
-    margin-left: 15px;
-    color: #999999;
+  ul{
+    padding: 0;
   }
-  b{
-    height: 30px;
-    line-height: 30px;
-    margin-right: 15px;
-    position: absolute;
-    top:0;
-    right: 0;
+  .same{
+    list-style: none;
+    display: inline-block;
+    margin: 0 15px 15px 0;
+  }
+  .btn{
+    font-size: 12px;
   }
 </style>-->
 
-<!--产品列表-->
-<!--<template>
-  <div id="productList">
+<template>
+  <div>
     <div class="col-md-12">
       <div class="box" style="margin-top:15px;overflow: hidden">
         <div class="box-header">
-          <h3 class="box-title">产品列表</h3>
-          <router-link to="/admin/record/productAdd" class="pull-right btn btn-primary" style="margin-left: 20px">新增产品</router-link>
+          <h3 class="box-title">代理商结算记录</h3>
         </div>
-        <div class="box-body" style="width: 50%;margin-left: 5%;margin-bottom: 200px">
-          &lt;!&ndash;表格&ndash;&gt;
-          <el-table style="font-size: 12px;" :data="records" border>
-            <el-table-column label="产品名称" prop="name"></el-table-column>
-            <el-table-column label="操作" min-width="112">
+        <div class="box-body">
+          <!--筛选-->
+          <ul>
+            <li class="same">
+              <label>结算日期:</label>
+              <el-date-picker v-model="date" size="small" type="daterange" align="right" placeholder="选择日期范围" :picker-options="pickerOptions"></el-date-picker>
+            </li>
+            <li class="same">
+              <label>结算单号:</label>
+              <el-input style="width: 130px" v-model="query.settleNo" placeholder="请输入内容" size="small"></el-input>
+            </li>
+            <li class="same">
+              <label>结算状态:</label>
+              <el-select clearable v-model="query.settleStatus" size="small" >
+                <el-option label="全部" value="">全部</el-option>
+                <el-option label="待结算" value="1">待结算</el-option>
+                <el-option label="部分结算" value="4">部分结算</el-option>
+                <el-option label="结算成功" value="3">结算成功</el-option>
+              </el-select>
+            </li>
+            <li class="same">
+              <label>代理商名称:</label>
+              <el-input style="width: 130px" v-model="query.userName" placeholder="请输入内容" size="small"></el-input>
+            </li>
+            <li class="same">
+              <label>代理商编号:</label>
+              <el-input style="width: 130px" v-model="query.userNo" placeholder="请输入内容" size="small"></el-input>
+            </li>
+            <li class="same">
+              <div class="btn btn-primary" @click="search">筛选</div>
+            </li>
+          </ul>
+          <!--表格-->
+          <el-table v-loading.body="loading" style="font-size: 12px;margin:15px 0" :data="records" border @selection-change="handleSelectionChange">
+            <el-table-column type="index" width="62" label="序号" fixed="left"></el-table-column>
+            <!--<el-table-column type="selection" width="55"></el-table-column>-->
+            <el-table-column prop="userName" label="代理商名称" ></el-table-column>
+            <el-table-column prop="userNo" label="代理商编号" ></el-table-column>
+            <el-table-column label="业务线" >
               <template scope="scope">
-                <router-link :to="{path:'/admin/record/newDealDet',query:{orderNo:records[scope.$index].type}}" type="text" size="small">查看详情
-                </router-link>
+                <span v-if="records[scope.$index].appId=='hss'">好收收</span>
+                <span v-if="records[scope.$index].appId=='hsy'">好收银</span>
               </template>
             </el-table-column>
+            <el-table-column prop="settleNo" label="结算单号" ></el-table-column>
+            <el-table-column prop="settleDate" label="结算日期" :formatter="changeTime"></el-table-column>
+            <el-table-column prop="settleAmount" label="结算金额" :formatter="changeNum" align="right"></el-table-column>
+            <el-table-column prop="settleModeValue" label="结算方式" ></el-table-column>
+            <el-table-column prop="settleDestinationValue" label="结算类型" ></el-table-column>
+            <el-table-column prop="settleStatusValue" label="结算状态" ></el-table-column>
 
+            <!--<el-table-column label="操作" width="70">
+              <template scope="scope">
+                <el-button @click.native.prevent="list(scope.$index)" type="text" size="small" v-if="records[scope.$index].settleStatusValue!='结算成功'">结算</el-button>
+              </template>-->
+            </el-table-column>
           </el-table>
-          </el-table>
+          <!--分页-->
+          <div class="block" style="text-align: right">
+            <el-pagination @size-change="handleSizeChange"
+                           @current-change="handleCurrentChange"
+                           :current-page="query.pageNo"
+                           :page-sizes="[10, 20, 50]"
+                           :page-size="query.pageSize"
+                           layout="total, sizes, prev, pager, next, jumper"
+                           :total="count">
+            </el-pagination>
+          </div>
+          <!--审核-->
+          <div v-if="isShow">
+            <el-dialog title="结算确认提醒" v-model="isShow">
+              <div class="maskCon">
+                <span>商户名称：</span>
+                <span>{{records[this.$data.index].userName}}</span>
+              </div>
+              <div class="maskCon">
+                <span>商户编号：</span>
+                <span>{{records[index].userNo}}</span>
+              </div>
+              <div class="maskCon">
+                <span>结算金额：</span>
+                <span>{{records[index].settleAmount}}</span>
+              </div>
+              <div class="maskCon">
+                <span>结算交易笔数：</span>
+                <span>{{records[index].tradeNumber}}笔</span>
+              </div>
+              <div class="maskCon">
+                <span>交易日期：</span>
+                <span>{{records[index].tradeDate}}</span>
+              </div>
+              <div slot="footer" class="dialog-footer" style="text-align: center;">
+                <el-button @click="isShow = false">取 消</el-button>
+                <el-button @click="settle(2,records[index].id)">结算已对账部分</el-button>
+                <el-button @click="settle(3,records[index].id)">强制结算全部</el-button>
+              </div>
+            </el-dialog>
+          </div>
         </div>
       </div>
     </div>
   </div>
+  </div>
 </template>
-
 <script lang="babel">
   export default{
-    name: 'passList',
+    name: 'tAuditStore',
     data(){
-      return {
-        records: [{
-          name:'好收收',
-          type:'hss'
-        },{
-          name:'好收银',
-          type:'hsy'
-        }],
-        count: 0,
-        total: 0,
-        loading: true,
-        url: ''
+      return{
+        pickerOptions: {
+          shortcuts: [{
+            text: '最近一周',
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
+              picker.$emit('pick', [start, end]);
+            }
+          }, {
+            text: '最近一个月',
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
+              picker.$emit('pick', [start, end]);
+            }
+          }, {
+            text: '最近三个月',
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
+              picker.$emit('pick', [start, end]);
+            }
+          }]
+        },
+        date:'',
+        records:[],
+        count:0,
+        total:0,
+        query:{
+          pageNo:1,
+          pageSize:10,
+          userNo:"",//编号
+          userName:"",  //名字
+          settleNo:"",//结算单号
+          userType:3,//(2：商户，3：代理商)
+          starDate:"", // 开始
+          endDate:"", //结束
+          settleStatus:''
+        },
+        multipleSelection:[],
+        currentPage4: 1,
+        loading:true,
+        isShow:false,
+        index:'',
       }
     },
     created: function () {
-
+      this.getData()
     },
+    methods: {
+      changeTime: function (row, column) {
+        var val = row.settleDate;
+        if (val == '' || val == null) {
+          return ''
+        } else {
+          val = new Date(val)
+          var year = val.getFullYear();
+          var month = val.getMonth() + 1;
+          var date = val.getDate();
+          var hour = val.getHours();
+          var minute = val.getMinutes();
+          var second = val.getSeconds();
+
+          function tod(a) {
+            if (a < 10) {
+              a = "0" + a
+            }
+            return a;
+          }
+
+          return year + "-" + tod(month) + "-" + tod(date);
+        }
+      },
+      changeNum: function (row, column) {
+        var val = row.settleAmount;
+        return parseFloat(val).toFixed(2);
+      },
+      getData: function () {
+        this.loading = true;
+        this.$http.post('/admin/settlementRecord/list',this.$data.query)
+          .then(function (res) {
+            this.$data.records = res.data.records;
+            this.$data.count = res.data.count;
+            this.$data.total = res.data.totalPage;
+            this.$data.loading = false;
+            var changeTime=function (val) {
+              if(val==''||val==null){
+                return ''
+              }else {
+                val = new Date(val)
+                var year=val.getFullYear();
+                var month=val.getMonth()+1;
+                var date=val.getDate();
+                function tod(a) {
+                  if(a<10){
+                    a = "0"+a
+                  }
+                  return a;
+                }
+                return year+"-"+tod(month)+"-"+tod(date);
+              }
+            }
+            for(let i = 0; i < this.$data.records.length; i++){
+              this.$data.records[i].tradeDate = changeTime(this.$data.records[i].tradeDate)
+            }
+          },function (err) {
+            this.$data.loading = false;
+            this.$message({
+              showClose: true,
+              message: err.statusMessage,
+              type: 'error'
+            })
+          })
+      },
+      search: function () {
+        this.$data.query.pageNo = 1;
+        this.getData()
+      },
+      list: function (val) {
+        this.$data.index = val;
+        this.$data.isShow = true;
+      },
+      //行选中
+      handleSelectionChange(val) {
+        console.log(val)
+        this.multipleSelection = val;
+      },
+      //每页条数改变
+      handleSizeChange(val) {
+        this.$data.query.pageNo = 1;
+        this.$data.query.pageSize = val;
+        this.getData()
+      },
+      //当前页改变时
+      handleCurrentChange(val) {
+        this.$data.query.pageNo = val;
+        this.getData()
+      },
+      //结算审核
+      settle(val,id) {
+        this.$http.post('/admin/settle/singleSettle',{recordId:id,option:val})
+          .then(function (res) {
+            this.$message({
+              showClose: true,
+              message: '结算成功',
+              type: 'success'
+            })
+            this.$data.isShow = false
+          })
+          .catch(function (err) {
+            this.$message({
+              showClose: true,
+              message: err.statusMessage,
+              type: 'error'
+            })
+          })
+      }
+    },
+    watch:{
+      date:function (val,oldVal) {
+        if(val[0]!=null){
+          for(var j=0;j<val.length;j++){
+            var str = val[j];
+            var ary = [str.getFullYear(), str.getMonth() + 1, str.getDate()];
+            for(var i = 0, len = ary.length; i < len; i ++) {
+              if(ary[i] < 10) {
+                ary[i] = '0' + ary[i];
+              }
+            }
+            str = ary[0] + '-' + ary[1] + '-' + ary[2];
+            if(j==0){
+              this.$data.query.starDate = str;
+            }else {
+              this.$data.query.starDate = str;
+            }
+          }
+        }else {
+          this.$data.query.starDate = '';
+          this.$data.query.starDate = '';
+        }
+      }
+    }
   }
 </script>
-
-<style scoped lang="less" rel="stylesheet/less">
-  ul {
+<style scoped lang="less">
+  .maskCon{
+    margin:0 0 15px 50px
+  }
+  ul{
     padding: 0;
   }
-  .btn {
+  .same{
+    list-style: none;
+    display: inline-block;
+    margin: 0 15px 15px 0;
+  }
+  .btn{
     font-size: 12px;
   }
-
-</style>-->
+</style>

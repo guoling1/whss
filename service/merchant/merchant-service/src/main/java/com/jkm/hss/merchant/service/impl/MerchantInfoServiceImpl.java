@@ -13,10 +13,12 @@ import com.jkm.hss.merchant.entity.Recommend;
 import com.jkm.hss.merchant.entity.UpgradeRecord;
 import com.jkm.hss.merchant.entity.UserInfo;
 import com.jkm.hss.merchant.enums.EnumMerchantStatus;
+import com.jkm.hss.merchant.enums.EnumPayMethod;
 import com.jkm.hss.merchant.enums.EnumStatus;
 import com.jkm.hss.merchant.enums.EnumUpgradeRecordType;
 import com.jkm.hss.merchant.helper.request.ContinueBankInfoRequest;
 import com.jkm.hss.merchant.helper.request.MerchantInfoAddRequest;
+import com.jkm.hss.merchant.helper.request.MerchantUpgradeRequest;
 import com.jkm.hss.merchant.service.*;
 import com.jkm.hss.product.entity.UpgradePayRecord;
 import com.jkm.hss.product.entity.UpgradeRecommendRules;
@@ -66,6 +68,8 @@ public class MerchantInfoServiceImpl implements MerchantInfoService {
     private SendMsgService sendMsgService;
     @Autowired
     private UserInfoService userInfoService;
+    @Autowired
+    private MerchantChannelRateService merchantChannelRateService;
 
 
 //    @Override
@@ -247,8 +251,28 @@ public class MerchantInfoServiceImpl implements MerchantInfoService {
                                     if(friendCount>=needNum){
                                         Optional<UpgradeRules> upgradeRulesOptional = upgradeRulesService.selectByProductIdAndType(merchantInfo.getProductId(),EnumUpGradeType.CLERK.getId());
                                         if(upgradeRulesOptional.isPresent()){
-                                            merchantInfoDao.toUpgrade(recommends.get(i).getRecommendMerchantId(),upgradeRulesOptional.get().getType(),
-                                                    upgradeRulesOptional.get().getWeixinRate(),upgradeRulesOptional.get().getAlipayRate(),upgradeRulesOptional.get().getFastRate());
+                                            merchantInfoDao.toUpgrade(recommends.get(i).getRecommendMerchantId(),upgradeRulesOptional.get().getType());
+                                            //全部升级微信费率
+                                            MerchantUpgradeRequest merchantUpgradeRequest = new MerchantUpgradeRequest();
+                                            merchantUpgradeRequest.setProductId(merchantInfo.getProductId());
+                                            merchantUpgradeRequest.setMerchantId(merchantInfo.getId());
+                                            merchantUpgradeRequest.setThirdCompany(EnumPayMethod.WEIXIN.getId());
+                                            merchantUpgradeRequest.setRate(upgradeRulesOptional.get().getWeixinRate());
+                                            merchantChannelRateService.toUpgrade(merchantUpgradeRequest);
+                                            //全部升级支付宝费率
+                                            MerchantUpgradeRequest zhifubaoMerchantUpgradeRequest = new MerchantUpgradeRequest();
+                                            zhifubaoMerchantUpgradeRequest.setProductId(merchantInfo.getProductId());
+                                            zhifubaoMerchantUpgradeRequest.setMerchantId(merchantInfo.getId());
+                                            zhifubaoMerchantUpgradeRequest.setThirdCompany(EnumPayMethod.ALIPAY.getId());
+                                            zhifubaoMerchantUpgradeRequest.setRate(upgradeRulesOptional.get().getAlipayRate());
+                                            merchantChannelRateService.toUpgrade(zhifubaoMerchantUpgradeRequest);
+                                            //全部升级快捷支付费率
+                                            MerchantUpgradeRequest fastPayMerchantUpgradeRequest = new MerchantUpgradeRequest();
+                                            fastPayMerchantUpgradeRequest.setProductId(merchantInfo.getProductId());
+                                            fastPayMerchantUpgradeRequest.setMerchantId(merchantInfo.getId());
+                                            fastPayMerchantUpgradeRequest.setThirdCompany(EnumPayMethod.FASTPAY.getId());
+                                            fastPayMerchantUpgradeRequest.setRate(upgradeRulesOptional.get().getFastRate());
+                                            merchantChannelRateService.toUpgrade(merchantUpgradeRequest);
                                         }
                                     }
                                 }
@@ -258,8 +282,28 @@ public class MerchantInfoServiceImpl implements MerchantInfoService {
                                     if(friendCount>=needNum){
                                         Optional<UpgradeRules> upgradeRulesOptional = upgradeRulesService.selectByProductIdAndType(merchantInfo.getProductId(),EnumUpGradeType.SHOPOWNER.getId());
                                         if(upgradeRulesOptional.isPresent()){
-                                            merchantInfoDao.toUpgrade(recommends.get(i).getRecommendMerchantId(),upgradeRulesOptional.get().getType(),
-                                                    upgradeRulesOptional.get().getWeixinRate(),upgradeRulesOptional.get().getAlipayRate(),upgradeRulesOptional.get().getFastRate());
+                                            merchantInfoDao.toUpgrade(recommends.get(i).getRecommendMerchantId(),upgradeRulesOptional.get().getType());
+                                            //全部升级微信费率
+                                            MerchantUpgradeRequest merchantUpgradeRequest = new MerchantUpgradeRequest();
+                                            merchantUpgradeRequest.setProductId(merchantInfo.getProductId());
+                                            merchantUpgradeRequest.setMerchantId(merchantInfo.getId());
+                                            merchantUpgradeRequest.setThirdCompany(EnumPayMethod.WEIXIN.getId());
+                                            merchantUpgradeRequest.setRate(upgradeRulesOptional.get().getWeixinRate());
+                                            merchantChannelRateService.toUpgrade(merchantUpgradeRequest);
+                                            //全部升级支付宝费率
+                                            MerchantUpgradeRequest zhifubaoMerchantUpgradeRequest = new MerchantUpgradeRequest();
+                                            zhifubaoMerchantUpgradeRequest.setProductId(merchantInfo.getProductId());
+                                            zhifubaoMerchantUpgradeRequest.setMerchantId(merchantInfo.getId());
+                                            zhifubaoMerchantUpgradeRequest.setThirdCompany(EnumPayMethod.ALIPAY.getId());
+                                            zhifubaoMerchantUpgradeRequest.setRate(upgradeRulesOptional.get().getAlipayRate());
+                                            merchantChannelRateService.toUpgrade(zhifubaoMerchantUpgradeRequest);
+                                            //全部升级快捷支付费率
+                                            MerchantUpgradeRequest fastPayMerchantUpgradeRequest = new MerchantUpgradeRequest();
+                                            fastPayMerchantUpgradeRequest.setProductId(merchantInfo.getProductId());
+                                            fastPayMerchantUpgradeRequest.setMerchantId(merchantInfo.getId());
+                                            fastPayMerchantUpgradeRequest.setThirdCompany(EnumPayMethod.FASTPAY.getId());
+                                            fastPayMerchantUpgradeRequest.setRate(upgradeRulesOptional.get().getFastRate());
+                                            merchantChannelRateService.toUpgrade(merchantUpgradeRequest);
                                         }
                                     }
                                 }
@@ -269,8 +313,28 @@ public class MerchantInfoServiceImpl implements MerchantInfoService {
                                     if(friendCount>=needNum){
                                         Optional<UpgradeRules> upgradeRulesOptional = upgradeRulesService.selectByProductIdAndType(merchantInfo.getProductId(),EnumUpGradeType.BOSS.getId());
                                         if(upgradeRulesOptional.isPresent()){
-                                            merchantInfoDao.toUpgrade(recommends.get(i).getRecommendMerchantId(),upgradeRulesOptional.get().getType(),
-                                                    upgradeRulesOptional.get().getWeixinRate(),upgradeRulesOptional.get().getAlipayRate(),upgradeRulesOptional.get().getFastRate());
+                                            merchantInfoDao.toUpgrade(recommends.get(i).getRecommendMerchantId(),upgradeRulesOptional.get().getType());
+                                            //全部升级微信费率
+                                            MerchantUpgradeRequest merchantUpgradeRequest = new MerchantUpgradeRequest();
+                                            merchantUpgradeRequest.setProductId(merchantInfo.getProductId());
+                                            merchantUpgradeRequest.setMerchantId(merchantInfo.getId());
+                                            merchantUpgradeRequest.setThirdCompany(EnumPayMethod.WEIXIN.getId());
+                                            merchantUpgradeRequest.setRate(upgradeRulesOptional.get().getWeixinRate());
+                                            merchantChannelRateService.toUpgrade(merchantUpgradeRequest);
+                                            //全部升级支付宝费率
+                                            MerchantUpgradeRequest zhifubaoMerchantUpgradeRequest = new MerchantUpgradeRequest();
+                                            zhifubaoMerchantUpgradeRequest.setProductId(merchantInfo.getProductId());
+                                            zhifubaoMerchantUpgradeRequest.setMerchantId(merchantInfo.getId());
+                                            zhifubaoMerchantUpgradeRequest.setThirdCompany(EnumPayMethod.ALIPAY.getId());
+                                            zhifubaoMerchantUpgradeRequest.setRate(upgradeRulesOptional.get().getAlipayRate());
+                                            merchantChannelRateService.toUpgrade(zhifubaoMerchantUpgradeRequest);
+                                            //全部升级快捷支付费率
+                                            MerchantUpgradeRequest fastPayMerchantUpgradeRequest = new MerchantUpgradeRequest();
+                                            fastPayMerchantUpgradeRequest.setProductId(merchantInfo.getProductId());
+                                            fastPayMerchantUpgradeRequest.setMerchantId(merchantInfo.getId());
+                                            fastPayMerchantUpgradeRequest.setThirdCompany(EnumPayMethod.FASTPAY.getId());
+                                            fastPayMerchantUpgradeRequest.setRate(upgradeRulesOptional.get().getFastRate());
+                                            merchantChannelRateService.toUpgrade(merchantUpgradeRequest);
                                         }
                                     }
                                 }
@@ -324,7 +388,29 @@ public class MerchantInfoServiceImpl implements MerchantInfoService {
                 upgradePayRecordService.updatePayResult(result,reqSn);
                 Optional<UpgradeRules> upgradeRulesOptional = upgradeRulesService.selectById(upgradePayRecord.getUpgradeRulesId());
                 if(upgradeRulesOptional.isPresent()){
-                    merchantInfoDao.toUpgrade(upgradePayRecord.getMerchantId(),upgradeRulesOptional.get().getType(),upgradeRulesOptional.get().getWeixinRate(),upgradeRulesOptional.get().getAlipayRate(),upgradeRulesOptional.get().getFastRate());
+                    merchantInfoDao.toUpgrade(upgradePayRecord.getMerchantId(),upgradeRulesOptional.get().getType());
+                    //全部升级微信费率
+                    MerchantInfo merchantInfo = merchantInfoDao.selectById(upgradePayRecord.getMerchantId());
+                    MerchantUpgradeRequest merchantUpgradeRequest = new MerchantUpgradeRequest();
+                    merchantUpgradeRequest.setProductId(merchantInfo.getProductId());
+                    merchantUpgradeRequest.setMerchantId(merchantInfo.getId());
+                    merchantUpgradeRequest.setThirdCompany(EnumPayMethod.WEIXIN.getId());
+                    merchantUpgradeRequest.setRate(upgradeRulesOptional.get().getWeixinRate());
+                    merchantChannelRateService.toUpgrade(merchantUpgradeRequest);
+                    //全部升级支付宝费率
+                    MerchantUpgradeRequest zhifubaoMerchantUpgradeRequest = new MerchantUpgradeRequest();
+                    zhifubaoMerchantUpgradeRequest.setProductId(merchantInfo.getProductId());
+                    zhifubaoMerchantUpgradeRequest.setMerchantId(merchantInfo.getId());
+                    zhifubaoMerchantUpgradeRequest.setThirdCompany(EnumPayMethod.ALIPAY.getId());
+                    zhifubaoMerchantUpgradeRequest.setRate(upgradeRulesOptional.get().getAlipayRate());
+                    merchantChannelRateService.toUpgrade(zhifubaoMerchantUpgradeRequest);
+                    //全部升级快捷支付费率
+                    MerchantUpgradeRequest fastPayMerchantUpgradeRequest = new MerchantUpgradeRequest();
+                    fastPayMerchantUpgradeRequest.setProductId(merchantInfo.getProductId());
+                    fastPayMerchantUpgradeRequest.setMerchantId(merchantInfo.getId());
+                    fastPayMerchantUpgradeRequest.setThirdCompany(EnumPayMethod.FASTPAY.getId());
+                    fastPayMerchantUpgradeRequest.setRate(upgradeRulesOptional.get().getFastRate());
+                    merchantChannelRateService.toUpgrade(merchantUpgradeRequest);
                     //判断直接好友或间接好友是否需要升级
                     UpgradeRecord upgradeRecord = new UpgradeRecord();
                     upgradeRecord.setMerchantId(upgradePayRecord.getMerchantId());
@@ -423,6 +509,18 @@ public class MerchantInfoServiceImpl implements MerchantInfoService {
     @Override
     public int updateBranchInfo(ContinueBankInfoRequest continueBankInfoRequest) {
         return merchantInfoDao.updateBranchInfo(continueBankInfoRequest);
+    }
+
+    /**
+     * 修改认证状态
+     *
+     * @param isAuthen
+     * @param id
+     * @return
+     */
+    @Override
+    public int toAuthen(String isAuthen, long id) {
+        return merchantInfoDao.toAuthen(isAuthen,id);
     }
 
 }

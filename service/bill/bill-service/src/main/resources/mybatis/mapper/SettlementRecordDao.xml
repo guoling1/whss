@@ -108,6 +108,56 @@
     </select>
 
     <select id="selectCountBySettleNo" resultType="java.lang.Integer">
-        SELECT COUNT(0)FROM tb_settlement_record WHERE settle_no = #{settleNo}
+        SELECT COUNT(0) FROM tb_settlement_record WHERE settle_no = #{settleNo}
+    </select>
+
+    <select id="selectCountByParam" resultType="java.lang.Integer">
+        SELECT COUNT(0) FROM tb_settlement_record
+        <where>
+            <if test="userNo != null">
+                AND user_no = #{userNo}
+            </if>
+            <if test="userName != null">
+                AND user_name like "%"#{userName}"%"
+            </if>
+            <if test="userType > 0">
+                AND account_user_type = #{userType}
+            </if>
+            <if test="settleNo != null">
+                AND settle_no = #{settleNo}
+            </if>
+            <if test="settleStatus > 0">
+                AND settle_status = #{settleStatus}
+            </if>
+            <if test="startDate != null">
+                AND settle_date BETWEEN #{startDate} AND #{endDate}
+            </if>
+        </where>
+    </select>
+
+    <select id="selectByParam" resultType="com.jkm.hss.bill.entity.SettlementRecord">
+        SELECT * FROM tb_settlement_record
+        <where>
+            <if test="userNo != null">
+                AND user_no = #{userNo}
+            </if>
+            <if test="userName != null">
+                AND user_name like "%"#{userName}"%"
+            </if>
+            <if test="userType > 0">
+                AND account_user_type = #{userType}
+            </if>
+            <if test="settleNo != null">
+                AND settle_no = #{settleNo}
+            </if>
+            <if test="settleStatus > 0">
+                AND settle_status = #{settleStatus}
+            </if>
+            <if test="startDate != null">
+                AND settle_date BETWEEN #{startDate} AND #{endDate}
+            </if>
+        </where>
+        ORDER BY id DESC
+        LIMIT #{offset}, #{count}
     </select>
 </mapper>

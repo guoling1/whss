@@ -8,7 +8,7 @@
         	reserve_mobile,	merchant_name,	address,	name,	identity,	bank_bin,	bank_name,	bank_no,dealer_id,code,account_id,
         	checked_time,authentication_time,status,	create_time,	update_time,first_dealer_id,second_dealer_id,first_merchant_id,
         	second_merchant_id,mark_code,level,weixin_rate,alipay_rate,fast_rate,hierarchy,product_id,source,is_upgrade,branch_code,branch_name,
-        	province_code,province_name,city_code,city_name,county_code,county_name,credit_card,credit_card_name,credit_card_short
+        	province_code,province_name,city_code,city_name,county_code,county_name,credit_card,credit_card_name,credit_card_short,is_authen
     </sql>
 
     <update id="update" parameterType="com.jkm.hss.merchant.entity.MerchantInfo">
@@ -434,7 +434,7 @@
 
     <update id="toUpgrade">
         UPDATE tb_merchant_info
-        SET level = #{level},weixin_rate = #{weixinRate},alipay_rate = #{alipayRate},fast_rate = #{fastRate}
+        SET level = #{level}
         WHERE id = #{merchantId}
     </update>
 
@@ -465,6 +465,13 @@
         city_name=#{cityName},
         county_code=#{countyCode},
         county_name=#{countyName}
+        WHERE id = #{id}
+    </update>
+
+    <update id="toAuthen">
+        UPDATE tb_merchant_info
+        SET
+        is_authen=#{isAuthen}
         WHERE id = #{id}
     </update>
 </mapper>

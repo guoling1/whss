@@ -4,23 +4,35 @@
     <insert id="init" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO tb_basic_channel
         (account_id,
+        channel_code,
         channel_name,
         channel_type_sign,
+        support_way,
         third_company,
         channel_source,
         basic_trade_rate,
         basic_withdraw_fee,
         basic_balance_type,
+        basic_settle_type,
+        limit_amount,
+        is_need,
+        channel_company,
         status
         )VALUES(
         #{accountId},
+        #{channelCode},
         #{channelName},
         #{channelTypeSign},
+        #{supportWay},
         #{thirdCompany},
         #{channelSource},
         #{basicTradeRate},
         #{basicWithdrawFee},
         #{basicBalanceType},
+        #{basicSettleType},
+        #{limitAmount},
+        #{isNeed},
+        #{channelCompany},
         #{status}
         )
     </insert>
@@ -29,12 +41,19 @@
         SET account_id = #{accountId},
         channel_name = #{channelName},
         channel_type_sign = #{channelTypeSign},
+        support_way = #{supportWay},
         third_company = #{thirdCompany},
         channel_source = #{channelSource},
         basic_trade_rate = #{basicTradeRate},
         basic_withdraw_fee = #{basicWithdrawFee},
         basic_balance_type = #{basicBalanceType},
-        status = #{status}
+        basic_settle_type = #{basicSettleType},
+        limit_amount=#{limitAmount},
+        is_need=#{isNeed},
+        channel_company=#{channelCompany},
+        status = #{status},
+        channel_code = #{channelCode},
+        remarks = #{remarks}
         WHERE id = #{id}
     </update>
     <select id="selectByChannelTypeSign" resultType="com.jkm.hss.product.entity.BasicChannel">
@@ -46,8 +65,21 @@
     <select id="selectAll" resultType="com.jkm.hss.product.entity.BasicChannel">
         SELECT * FROM tb_basic_channel WHERE status = 2;
     </select>
+
+    <!-- 新增产品中添加通道 -->
+    <!--<select id="selectListChannel" resultType="com.jkm.hss.product.entity.BasicChannel">-->
+        <!--SELECT * FROM tb_basic_channel WHERE status = 2;-->
+    <!--</select>-->
+
+    <!-- 查询通道 -->
+    <!--<select id="selectChannel" resultType="com.jkm.hss.product.entity.BasicChannel">-->
+        <!--SELECT * FROM tb_basic_channel WHERE channel_type_sign=#{channelTypeSign} AND status = 2;-->
+    <!--</select>-->
+
     <select id="selectById" resultType="com.jkm.hss.product.entity.BasicChannel">
         SELECT * FROM tb_basic_channel WHERE id = #{id};
     </select>
-
+    <select id="selectNewAll" resultType="com.jkm.hss.product.entity.BasicChannel">
+        SELECT * FROM tb_basic_channel WHERE channel_type_sign not in(101,102,103)
+    </select>
 </mapper>

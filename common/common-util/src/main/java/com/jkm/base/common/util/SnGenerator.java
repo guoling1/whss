@@ -30,7 +30,7 @@ public final class SnGenerator {
      * @return
      */
     public static String generateSettlementRecordSn(final int settleObject, final int settleDestination) {
-        return settleObject + settleDestination + DateFormatUtil.format(new Date(), "yyyyMMdd") + RandomStringUtils.randomNumeric(8);
+        return settleObject + "" + settleDestination + DateFormatUtil.format(new Date(), "yyyyMMdd") + RandomStringUtils.randomNumeric(8);
     }
 
     /**

@@ -3,6 +3,7 @@ package com.jkm.hss.merchant.service;
 import com.jkm.hss.merchant.helper.request.CompanyPrifitRequest;
 import com.jkm.hss.merchant.helper.response.CompanyProfitResponse;
 
+import java.text.ParseException;
 import java.util.List;
 
 /**
@@ -15,14 +16,14 @@ public interface AllProfitService {
      * @param req
      * @return
      */
-    List<CompanyProfitResponse> selectCompanyProfit(CompanyPrifitRequest req);
+    List<CompanyProfitResponse> selectCompanyProfit(CompanyPrifitRequest req) throws ParseException;
 
     /**
      * 查询总数
      * @param req
      * @return
      */
-    int selectCompanyProfitCount(CompanyPrifitRequest req);
+    List<CompanyProfitResponse> selectCompanyProfitCount(CompanyPrifitRequest req);
 
     /**
      * 一级代理商分润
@@ -36,7 +37,7 @@ public interface AllProfitService {
      * @param req
      * @return
      */
-    int selectOneProfitCount(CompanyPrifitRequest req);
+    List<CompanyProfitResponse> selectOneProfitCount(CompanyPrifitRequest req);
 
     /**
      * 二级代理商分润
@@ -50,14 +51,14 @@ public interface AllProfitService {
      * @param req
      * @return
      */
-    int selectTwoProfitCount(CompanyPrifitRequest req);
+    List<CompanyProfitResponse> selectTwoProfitCount(CompanyPrifitRequest req);
 
     /**
      * 公司分润详情
      * @param req
      * @return
      */
-    List<CompanyProfitResponse> selectCompanyProfitDetails(CompanyPrifitRequest req);
+    List<CompanyProfitResponse> selectCompanyProfitDetails(CompanyPrifitRequest req) throws ParseException;
 
     /**
      * 一级代理商分润详情
@@ -93,4 +94,37 @@ public interface AllProfitService {
      * @return
      */
     int selectTwoProfitDetailsCount(CompanyPrifitRequest req);
+
+    /**
+     * 二级代理商分润所有无分页
+     * @param req
+     * @return
+     */
+    List<CompanyProfitResponse> selectTwoAll(CompanyPrifitRequest req);
+
+    /**
+     * 导出公司分润
+     * @param req
+     * @param baseUrl
+     * @return
+     * @throws ParseException
+     */
+    String downloadExcel(CompanyPrifitRequest req, String baseUrl) throws ParseException;
+
+    /**
+     * 导出一级代理分润
+     * @param req
+     * @param baseUrl
+     * @return
+     * @throws ParseException
+     */
+    String downloadExcelOneDealer(CompanyPrifitRequest req, String baseUrl) throws ParseException;
+
+    /**
+     * 导出二级代理分润
+     * @param req
+     * @param baseUrl
+     * @return
+     */
+    String downloadExcelTwoDealer(CompanyPrifitRequest req, String baseUrl) throws ParseException;
 }

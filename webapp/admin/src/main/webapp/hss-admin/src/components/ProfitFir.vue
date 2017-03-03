@@ -4,6 +4,7 @@
       <div class="box" style="margin-top:15px;overflow: hidden">
         <div class="box-header">
           <h3 class="box-title">一级代理商分润</h3>
+          <span @click="onload()" download="公司分润" class="btn btn-primary" style="color: #fff;float: right">导出</span>
         </div>
         <div class="box-body">
           <!--筛选-->
@@ -46,10 +47,10 @@
             <el-table-column prop="markCode" label="代理商编号"></el-table-column>
             <el-table-column prop="splitDate" :formatter="changeTime" label="收益日期"></el-table-column>
             <el-table-column prop="businessType" label="收益类型"></el-table-column>
-            <el-table-column prop="splitTotalAmount" label="收益金额" align="right" header-align="left"></el-table-column>
+            <el-table-column prop="splitAmount" label="收益金额" align="right" header-align="left"></el-table-column>
             <el-table-column label="操作" width="100">
               <template scope="scope">
-                <router-link :to="{path:'/admin/record/profitFirDet',query:{id:records[scope.$index].receiptMoneyAccountId}}" v-if="records[scope.$index].totalMoney!=0&&records[scope.$index].businessType!='总额'" type="text" size="small">明细
+                <router-link :to="{path:'/admin/record/profitFirDet',query:{type:records[scope.$index].businessType,id:records[scope.$index].receiptMoneyAccountId,time:records[scope.$index].splitDate}}" v-if="records[scope.$index].splitAmount!=0&&records[scope.$index].businessType!='总额'" type="text" size="small">明细
                 </router-link>
               </template>
             </el-table-column>
@@ -64,6 +65,23 @@
                            layout="total, sizes, prev, pager, next, jumper"
                            :total="count">
             </el-pagination>
+          </div>
+          <div class="box box-info mask el-message-box" v-if="isMask">
+            <div class="maskCon">
+              <div class="head">
+                <div class="title">消息</div>
+                <i class="el-icon-close" @click="isMask=false"></i>
+              </div>
+              <div class="body">
+                <div>确定导出列表吗？</div>
+              </div>
+              <div class="foot">
+                <a href="javascript:void(0)" @click="isMask=false" class="el-button el-button--default">取消</a>
+                <a :href="'http://'+loadUrl" @click="isMask=false"
+                   class="el-button el-button-default el-button--primary ">下载</a>
+              </div>
+            </div>
+
           </div>
         </div>
       </div>
@@ -116,12 +134,19 @@
         count: 0,
         total: 0,
         loading: true,
+        isMask: false,
+        loadUrl: '',
+        loadUrl1: '',
       }
     },
     created: function () {
       this.getData()
     },
     methods: {
+      onload: function () {
+        this.$data.loadUrl = this.loadUrl1;
+        this.$data.isMask = true;
+      },
       getData: function () {
         this.$data.loading = true;
         this.$http.post('/admin/allProfit/firstProfit', this.$data.query)
@@ -129,19 +154,20 @@
             this.$data.records = res.data.records;
             this.$data.count = res.data.count;
             this.$data.total = res.data.totalPage;
+            this.$data.loadUrl1 = res.data.ext;
             this.$data.loading = false;
             var toFix = function (val) {
               return parseFloat(val).toFixed(2)
             }
             var total=0;
             for (let i = 0; i < this.$data.records.length; i++) {
-              this.$data.records[i].splitTotalAmount = toFix(this.$data.records[i].splitTotalAmount);
-              total = toFix(parseFloat(total)+parseFloat(this.$data.records[i].splitTotalAmount))
+              this.$data.records[i].splitAmount = toFix(this.$data.records[i].splitAmount);
+              total = toFix(parseFloat(total)+parseFloat(this.$data.records[i].splitAmount))
             }
             if(this.records.length!=0){
               this.records.push({
                 businessType:"总额",
-                splitTotalAmount:total
+                splitAmount:total
               })
             }
           }, function (err) {
@@ -172,7 +198,7 @@
             }
             return a;
           }
-          return year+"-"+tod(month)+"-"+tod(date)+" "+tod(hour)+":"+tod(minute)+":"+tod(second);
+          return year+"-"+tod(month)+"-"+tod(date);
         }
       },
       search(){
@@ -217,7 +243,7 @@
     }
   }
 </script>
-<style scoped lang="less">
+<style scoped lang="less" rel="stylesheet/less">
   ul{
     padding: 0;
   }
@@ -228,5 +254,74 @@
   }
   .btn{
     font-size: 12px;
+  }
+  .mask {
+    z-index: 2020;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.45);
+  .maskCon {
+    margin: 250px auto;
+    text-align: left;
+    vertical-align: middle;
+    background-color: #fff;
+    width: 420px;
+    border-radius: 3px;
+    font-size: 16px;
+    overflow: hidden;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+  .head {
+    position: relative;
+    padding: 20px 20px 0;
+  .title {
+    padding-left: 0;
+    margin-bottom: 0;
+    font-size: 16px;
+    font-weight: 700;
+    height: 18px;
+    color: #333;
+  }
+  i {
+    font-family: element-icons !important;
+    speak: none;
+    font-style: normal;
+    font-weight: 400;
+    font-variant: normal;
+    text-transform: none;
+    vertical-align: baseline;
+    display: inline-block;
+    -webkit-font-smoothing: antialiased;
+    position: absolute;
+    top: 19px;
+    right: 20px;
+    color: #999;
+    cursor: pointer;
+    line-height: 20px;
+    text-align: center;
+  }
+  }
+  .body {
+    padding: 30px 20px;
+    color: #48576a;
+    font-size: 14px;
+    position: relative;
+  div {
+    margin: 0;
+    line-height: 1.4;
+    font-size: 14px;
+    color: #48576a;
+    font-weight: 400;
+  }
+  }
+  .foot {
+    padding: 10px 20px 15px;
+    text-align: right;
+  }
+  }
+
   }
 </style>

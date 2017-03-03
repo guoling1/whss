@@ -11,6 +11,7 @@ import com.jkm.hss.merchant.entity.MerchantInfo;
 import com.jkm.hss.merchant.enums.EnumEnterNet;
 import com.jkm.hss.merchant.service.MerchantChannelRateService;
 import com.jkm.hss.merchant.service.MerchantInfoService;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.text.ParseException;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,7 +28,7 @@ import java.util.Map;
  * Created by yuxiang on 2017-02-28.
  */
 @Controller
-@RequestMapping(value = "/merchantIn")
+@RequestMapping(value = "/admin/merchantIn")
 public class MerchantInController extends BaseController{
 
     @Autowired
@@ -47,6 +49,9 @@ public class MerchantInController extends BaseController{
 
         final List<MerchantInfo> merchantInfos = this.merchantInfoService.batchGetMerchantInfo(idList);
 
+        if (CollectionUtils.isEmpty(merchantInfos)){
+            return CommonResponse.simpleResponse(1, "success");
+        }
         for (MerchantInfo merchantInfo : merchantInfos){
 
             //请求支付中心查询商户入网结果
@@ -56,13 +61,13 @@ public class MerchantInController extends BaseController{
             final JSONObject jsonObject = JSON.parseObject(jsonStr);
             if (jsonObject.getString("code").equals("1")){
                 //成功
-                this.merchantChannelRateService.updateEnterNetStatus(merchantInfo.getId(), EnumEnterNet.HASENT, jsonObject.getString("message"));
+                this.merchantChannelRateService.updateEnterNetStatus(merchantInfo.getId(), EnumEnterNet.HASENT, jsonObject.getString("msg"));
             }else if (jsonObject.getString("code").equals("-1")){
                 //失败 -1
-                this.merchantChannelRateService.updateEnterNetStatus(merchantInfo.getId(), EnumEnterNet.ENT_FAIL, jsonObject.getString("message"));
+                this.merchantChannelRateService.updateEnterNetStatus(merchantInfo.getId(), EnumEnterNet.ENT_FAIL, jsonObject.getString("msg"));
             }else if (jsonObject.getString("code").equals("2")){
                 //ing 稍后再查
-                this.merchantChannelRateService.updateEnterNetStatus(merchantInfo.getId(), EnumEnterNet.ENTING, jsonObject.getString("message"));
+                this.merchantChannelRateService.updateEnterNetStatus(merchantInfo.getId(), EnumEnterNet.ENTING, jsonObject.getString("msg"));
             }
 
         }

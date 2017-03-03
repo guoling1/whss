@@ -87,4 +87,6 @@ public interface DealerChannelRateDao {
      * @return
      */
     int updateSecondDealerRate(DealerChannelRate dealerChannelRate);
+
+    List<Long> initDealerData();
 }

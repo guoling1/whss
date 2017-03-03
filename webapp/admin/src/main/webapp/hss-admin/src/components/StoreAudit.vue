@@ -133,13 +133,15 @@
       </div>
       <div class="box box-primary" style="overflow: hidden">
         <p class="lead">商户结算信息(好收收)</p>
-        <div style="width: 70%;margin: 0 0 15px 15px;">
+        <div style="width: 80%;margin: 0 0 15px 15px;">
           <template>
-            <el-table :data="tableData" border style="width: 100%">
-              <el-table-column prop="name" label="通道名称" ></el-table-column>
-              <el-table-column prop="rate" label="支付结算手续费"></el-table-column>
+            <el-table :data="rateInfo" border style="width: 100%">
+              <el-table-column prop="channelName" label="通道名称" ></el-table-column>
+              <el-table-column prop="merchantRate" label="支付结算手续费"></el-table-column>
               <el-table-column prop="time" label="结算时间" ></el-table-column>
-              <el-table-column prop="money" label="提现手续费" ></el-table-column>
+              <el-table-column prop="withdrawMoney" label="提现手续费" ></el-table-column>
+              <el-table-column prop="entNet" label="商户入网状态" ></el-table-column>
+              <el-table-column prop="remarks" label="商户入网备注信息" ></el-table-column>
             </el-table>
           </template>
         </div>
@@ -223,22 +225,7 @@
         status:'',
         isShow:true,
         res: [],
-        tableData:[{
-          name:'支付宝',
-          rate:'',
-          time:'',
-          money:''
-        },{
-          name:'微信',
-          rate:'',
-          time:'',
-          money:''
-        },{
-          name:'快捷',
-          rate:'',
-          time:'',
-          money:''
-        }]
+        rateInfo:[]
       }
     },
     created: function () {
@@ -250,9 +237,11 @@
         .then(function (res) {
           this.$data.msg = res.data.list[0];
           this.$data.res = res.data.res;
-          this.$data.tableData[0].rate = parseFloat(res.data.weixinRate*100).toFixed(2)+'%';
-          this.$data.tableData[1].rate = parseFloat(res.data.alipayRate*100).toFixed(2)+'%';
-          this.$data.tableData[2].rate = parseFloat(res.data.fastRate*100).toFixed(2)+'%';
+          this.$data.rateInfo = res.data.rateInfo;
+          for(let i=0;i<this.rateInfo.length;i++){
+            this.rateInfo[i].merchantRate = parseFloat(this.rateInfo[i].merchantRate*100).toFixed(2)+'%'
+            this.rateInfo[i].withdrawMoney = this.rateInfo[i].withdrawMoney+'元/笔'
+          }
         },function (err) {
           this.$message({
             showClose: true,

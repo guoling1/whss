@@ -136,12 +136,10 @@ public interface MerchantInfoDao {
      * 去升级
      * @param merchantId
      * @param level
-     * @param weixinRate
-     * @param alipayRate
-     * @param fastRate
      * @return
      */
-    int toUpgrade(@Param("merchantId") long merchantId, @Param("level") int level, @Param("weixinRate") BigDecimal weixinRate, @Param("alipayRate") BigDecimal alipayRate, @Param("fastRate") BigDecimal fastRate);
+    int toUpgrade(@Param("merchantId") long merchantId, @Param("level") int level);
+
     /**
      * 初始化推荐版本数据
      * @param merchantInfo
@@ -170,4 +168,12 @@ public interface MerchantInfoDao {
      * @return
      */
     int updateBranchInfo(ContinueBankInfoRequest continueBankInfoRequest);
+
+    /**
+     * 修改认证状态
+     * @param isAuthen
+     * @param id
+     * @return
+     */
+    int toAuthen(@Param("isAuthen") String isAuthen, @Param("id") long id);
 }

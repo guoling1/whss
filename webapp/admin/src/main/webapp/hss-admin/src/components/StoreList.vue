@@ -4,6 +4,7 @@
       <div class="box" style="margin-top:15px;overflow: hidden">
         <div class="box-header">
           <h3 class="box-title">商户列表</h3>
+          <span @click="synchro" class="btn btn-primary" style="color: #fff;float: right;" v-if="activeName=='first'">同步商户报备状态</span>
         </div>
         <div class="box-body">
           <el-tabs class="tab" v-model="activeName" type="card" @tab-click="handleClick">
@@ -261,6 +262,27 @@
       })
     },
     methods: {
+      //同步
+      synchro: function () {
+        this.loading = true;
+        this.$http.get('/admin/merchantIn/update')
+          .then(res => {
+            this.loading = false;
+            this.$message({
+              showClose: true,
+              message: '同步成功',
+              type: 'success'
+            });
+          })
+          .catch(err => {
+            this.loading = false;
+            this.$message({
+              showClose: true,
+              message: err.statusMessage,
+              type: 'error'
+            });
+          })
+      },
       onload: function () {
          this.$data.loadUrl = this.loadUrl1;
          this.$data.isMask = true;

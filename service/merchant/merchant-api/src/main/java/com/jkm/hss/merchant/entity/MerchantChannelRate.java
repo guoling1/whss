@@ -20,11 +20,20 @@ public class MerchantChannelRate extends BaseEntity{
      * 商户id
      */
     private long merchantId;
+    /**
+     * 商户标示
+     */
+    private String markCode;
 
     /**
      * 产品id
      */
     private long productId;
+
+    /**
+     * hss或hsy
+     */
+    private String sysType;
 
     /**
      * 通道唯一标识
@@ -50,14 +59,26 @@ public class MerchantChannelRate extends BaseEntity{
     private BigDecimal merchantWithdrawFee;
 
     /**
+     * 支付方式
+     * {@link com.jkm.hss.merchant.enums.EnumPayMethod}
+     *
+     */
+    private String thirdCompany;
+
+    /**
      *是否已入网
      * {@link com.jkm.hss.merchant.enums.EnumEnterNet}
      */
     private int enterNet;
+    /**
+     * 公司
+     */
+    private String channelCompany;
 
     /**
      * 入网信息
      */
     private String remarks;
+
 }
 

@@ -42,35 +42,7 @@ public class ChannelController extends BaseController {
     @ResponseBody
     @RequestMapping(value = "add", method = RequestMethod.POST)
     public CommonResponse add(@RequestBody final ChannelAddRequest request) {
-        try{
-            final Optional<BasicChannel> basicChannelOptional1 = this.basicChannelService.selectByChannelTypeSign(EnumPayChannelSign.of(request.getChannelName()).getId());
-            Preconditions.checkNotNull(!basicChannelOptional1.isPresent(), "该通道已经存在");
-            //判断该通道的渠道来源是否同属一个,若一个则使用同一个人资金帐号,若不同,则为该渠道创建新的资金帐号
-            final Optional<BasicChannel> basicChannelOptional =
-                    this.basicChannelService.selectByChannelSource(request.getChannelSource());
-            final BasicChannel basicChannel = new BasicChannel();
-            if (basicChannelOptional.isPresent()){
-                //如果已经有了
-                basicChannel.setAccountId(basicChannelOptional.get().getAccountId());
-            }else{
-                //没有,则创建
-                final long accountId = this.accountService.initAccount("基本通道账户");
-                basicChannel.setAccountId(accountId);
-            }
-            basicChannel.setChannelTypeSign(EnumPayChannelSign.of(request.getChannelName()).getId());
-            basicChannel.setChannelName(request.getChannelName());
-            basicChannel.setThirdCompany(request.getThirdCompany());
-            basicChannel.setChannelSource(request.getChannelSource());
-            basicChannel.setBasicTradeRate(request.getBasicTradeRate().divide(new BigDecimal(100)));
-            basicChannel.setBasicWithdrawFee(request.getBasicWithdrawFee());
-            basicChannel.setBasicBalanceType(request.getBasicBalanceType());
-            basicChannel.setStatus(EnumBasicChannelStatus.USEING.getId());
-            this.basicChannelService.add(basicChannel);
-            return CommonResponse.simpleResponse(1,"success");
-         }catch(final Throwable throwable){
-            log.error("添加通道失败,异常信息:" + throwable.getMessage());
-        }
-        return  CommonResponse.simpleResponse(-1, "fail");
+        return null;
     }
 
     /**
@@ -86,7 +58,6 @@ public class ChannelController extends BaseController {
                 for (int i=0;i<list.size();i++){
                     BigDecimal basicTradeRate = list.get(i).getBasicTradeRate();
                     BigDecimal res = new BigDecimal(100);
-//                    basicTradeRate.multiply(res).doubleValue();
                     list.get(i).setBasicTradeRate(basicTradeRate.multiply(res));
                 }
             }
@@ -106,7 +77,9 @@ public class ChannelController extends BaseController {
     public CommonResponse update(@RequestBody final BasicChannel request) {
         try{
             final BasicChannel basicChannel = this.basicChannelService.selectById(request.getId());
+            request.setBasicTradeRate(request.getBasicTradeRate().divide(new BigDecimal(100)));
             request.setChannelTypeSign(basicChannel.getChannelTypeSign());
+            request.setChannelCompany(EnumPayChannelSign.of(request.getChannelName()).getUpperChannel().getValue());
             this.basicChannelService.update(request);
             return  CommonResponse.simpleResponse(1, "success");
         }catch (final Throwable throwable){
@@ -114,4 +87,6 @@ public class ChannelController extends BaseController {
         }
         return CommonResponse.simpleResponse(-1, "fail");
     }
+
+
 }

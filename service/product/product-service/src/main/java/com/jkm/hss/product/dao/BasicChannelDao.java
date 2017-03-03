@@ -45,4 +45,23 @@ public interface BasicChannelDao {
     void update(BasicChannel basicChannel);
 
     BasicChannel selectById(long id);
+
+    /**
+     * 添加产品中添加通道列表
+     * @return
+     */
+//    List<BasicChannel> selectListChannel();
+
+    /**
+     * 查询通道
+     * @param channelTypeSign
+     * @return
+     */
+//    BasicChannel selectChannel(@Param("channelTypeSign") int channelTypeSign);
+
+    /**
+     * 初始化数据时使用，无其他
+     * @return
+     */
+    List<BasicChannel> selectNewAll();
 }

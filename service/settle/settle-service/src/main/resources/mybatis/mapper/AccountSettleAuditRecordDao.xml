@@ -71,11 +71,14 @@
     <select id="selectCountByParam" resultType="java.lang.Long">
         SELECT COUNT(0) FROM tb_account_settle_audit_record
         <where>
-            <if test="merchantNo != null">
-                AND merchant_no = #{merchantNo}
+            <if test="userNo != null">
+                AND user_no = #{userNo}
             </if>
-            <if test="merchantName != null">
-                AND merchant_name LIKE '%'#{merchantName}'%'
+            <if test="userName != null">
+                AND user_name LIKE '%'#{userName}'%'
+            </if>
+            <if test="userType > 0">
+                AND account_user_type = #{userType}
             </if>
             <if test="startSettleDate != null">
                 AND settle_date BETWEEN #{startSettleDate} AND #{endSettleDate}
@@ -92,11 +95,14 @@
     <select id="selectByParam" resultType="com.jkm.hss.settle.entity.AccountSettleAuditRecord">
         SELECT * FROM tb_account_settle_audit_record
         <where>
-            <if test="merchantNo != null">
-                AND merchant_no = #{merchantNo}
+            <if test="userNo != null">
+                AND user_no = #{userNo}
             </if>
-            <if test="merchantName != null">
-                AND merchant_name LIKE '%'#{merchantName}'%'
+            <if test="userName != null">
+                AND user_name LIKE '%'#{userName}'%'
+            </if>
+            <if test="userType > 0">
+                AND account_user_type = #{userType}
             </if>
             <if test="startSettleDate != null">
                 AND settle_date BETWEEN #{startSettleDate} AND #{endSettleDate}
