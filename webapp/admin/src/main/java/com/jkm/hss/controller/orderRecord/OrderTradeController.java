@@ -95,8 +95,8 @@ public class OrderTradeController extends BaseController{
         meta.setContentType("application/x-xls");
         SimpleDateFormat sdf =   new SimpleDateFormat("yyyyMMdd");
         String nowDate = sdf.format(new Date());
-        Date date = new Date();
-        long nousedate =  date.getTime();
+//        Date date = new Date();
+//        long nousedate =  date.getTime();
         String fileName = "hss/"+  nowDate + "/" + "trade.xls";
         final Date expireDate = new Date(new Date().getTime() + 30 * 60 * 1000);
         URL url = null;
