@@ -491,7 +491,7 @@ input:focus {
 #reg .layer .space .space-cont .cont-detail,
 #login .layer .space .space-cont .cont-detail {
   padding: 20px 0;
-  line-height: 40px;
+  line-height: 30px;
 }
 #reg .layer .space .space-cont .operation,
 #login .layer .space .space-cont .operation {
@@ -1038,7 +1038,7 @@ input:focus {
 }
 #wallet .layer .space .space-cont .cont-detail {
   padding: 20px 0;
-  line-height: 40px;
+  line-height: 30px;
 }
 #wallet .layer .space .space-cont .operation {
   width: 100%;
@@ -1581,7 +1581,7 @@ input:focus {
 #payment-wx .layer .space .space-cont .cont-detail,
 #payment-zfb .layer .space .space-cont .cont-detail {
   padding: 20px 0;
-  line-height: 40px;
+  line-height: 30px;
 }
 #collection .layer .space .space-cont .operation,
 #payment-wx .layer .space .space-cont .operation,
@@ -1606,7 +1606,7 @@ input:focus {
 #payment-wx .layer .space .space-cont .operation .layer-submit,
 #payment-zfb .layer .space .space-cont .operation .layer-submit {
   margin: auto;
-  width: 45%;
+  width: 100%;
   height: 50px;
   line-height: 50px;
   background-color: #7086bd;
@@ -2432,7 +2432,7 @@ input:focus {
 }
 #branchInfo .layer .space .space-cont .cont-detail {
   padding: 20px 0;
-  line-height: 40px;
+  line-height: 30px;
 }
 #branchInfo .layer .space .space-cont .operation {
   width: 100%;
@@ -2440,7 +2440,7 @@ input:focus {
 }
 #branchInfo .layer .space .space-cont .operation .submit {
   margin: auto;
-  width: 45%;
+  width: 100%;
   height: 50px;
   line-height: 50px;
   background-color: #7086bd;

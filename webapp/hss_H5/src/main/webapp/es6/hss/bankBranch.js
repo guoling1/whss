@@ -125,6 +125,7 @@ match_ipt.addEventListener('input', function (e) {
 });
 
 world.onclick = function () {
+  layer_b.style.display = 'none';
   if (!Provinces) {
     // 如果不存在 则去获取数据
     http.post('/district/findAllProvinces', {}, function (data) {
