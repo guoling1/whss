@@ -551,6 +551,8 @@ public class WxPubController extends BaseController {
                                     for(int i=0;i<dealerChannelRateList.size();i++){
                                         MerchantChannelRate merchantChannelRate = new MerchantChannelRate();
                                         merchantChannelRate.setMerchantId(mi.getId());
+                                        merchantChannelRate.setMarkCode(mi.getMarkCode());
+                                        merchantChannelRate.setSysType(EnumProductType.HSS.getId());
                                         merchantChannelRate.setProductId(productId);
                                         merchantChannelRate.setChannelTypeSign(dealerChannelRateList.get(i).getChannelTypeSign());
                                         merchantChannelRate.setMerchantBalanceType(dealerChannelRateList.get(i).getDealerBalanceType());
@@ -587,6 +589,8 @@ public class WxPubController extends BaseController {
                                 MerchantChannelRate merchantChannelRate = new MerchantChannelRate();
                                 merchantChannelRate.setMerchantId(mi.getId());
                                 merchantChannelRate.setProductId(productId);
+                                merchantChannelRate.setMarkCode(mi.getMarkCode());
+                                merchantChannelRate.setSysType(EnumProductType.HSS.getId());
                                 merchantChannelRate.setChannelTypeSign(productChannelDetailList.get(i).getChannelTypeSign());
                                 merchantChannelRate.setMerchantBalanceType(productChannelDetailList.get(i).getProductBalanceType());
                                 merchantChannelRate.setMerchantPayRate(productChannelDetailList.get(i).getProductMerchantPayRate());
@@ -665,6 +669,8 @@ public class WxPubController extends BaseController {
                                 MerchantChannelRate merchantChannelRate = new MerchantChannelRate();
                                 merchantChannelRate.setMerchantId(mi.getId());
                                 merchantChannelRate.setProductId(productId);
+                                merchantChannelRate.setMarkCode(mi.getMarkCode());
+                                merchantChannelRate.setSysType(EnumProductType.HSS.getId());
                                 merchantChannelRate.setChannelTypeSign(dealerChannelRateList.get(i).getChannelTypeSign());
                                 merchantChannelRate.setMerchantBalanceType(dealerChannelRateList.get(i).getDealerBalanceType());
                                 merchantChannelRate.setMerchantPayRate(dealerChannelRateList.get(i).getDealerMerchantPayRate());
@@ -729,6 +735,8 @@ public class WxPubController extends BaseController {
                                 MerchantChannelRate merchantChannelRate = new MerchantChannelRate();
                                 merchantChannelRate.setMerchantId(mi.getId());
                                 merchantChannelRate.setProductId(productId);
+                                merchantChannelRate.setMarkCode(mi.getMarkCode());
+                                merchantChannelRate.setSysType(EnumProductType.HSS.getId());
                                 merchantChannelRate.setChannelTypeSign(productChannelDetailList.get(i).getChannelTypeSign());
                                 merchantChannelRate.setMerchantBalanceType(productChannelDetailList.get(i).getProductBalanceType());
                                 merchantChannelRate.setMerchantPayRate(productChannelDetailList.get(i).getProductMerchantPayRate());

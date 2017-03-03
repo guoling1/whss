@@ -20,11 +20,20 @@ public class MerchantChannelRate extends BaseEntity{
      * 商户id
      */
     private long merchantId;
+    /**
+     * 商户标示
+     */
+    private String markCode;
 
     /**
      * 产品id
      */
     private long productId;
+
+    /**
+     * hss或hsy
+     */
+    private String sysType;
 
     /**
      * 通道唯一标识
