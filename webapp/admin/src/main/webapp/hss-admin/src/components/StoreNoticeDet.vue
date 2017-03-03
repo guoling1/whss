@@ -200,7 +200,7 @@
           cancelButtonText: '取消',
           type: 'info'
         }).then(() => {
-          this.$http.post('/admin/pushNotice/updateNotice', {id: this.$route.id})
+          this.$http.post('/admin/pushNotice/updateNotice', {id: this.$route.query.id})
             .then(function (res) {
               this.$message({
                 showClose: true,
