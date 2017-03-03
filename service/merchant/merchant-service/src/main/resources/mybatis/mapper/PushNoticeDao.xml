@@ -81,16 +81,7 @@
     
     <!-- 修改公告 -->
     <update id="updateNotice">
-        <set>
-            <if test="title!=null and title!=''">
-                title = #{title},
-            </if>
-
-            <if test="text!=null and text!=''">
-                text = #{text},
-            </if>
-        </set>
-        WHERE id = #{id}
+        UPDATE tb_notice SET title = #{title},text = #{text} WHERE id = #{id}
     </update>
 
     <!-- 删除公告 -->
