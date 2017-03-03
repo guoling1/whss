@@ -66,6 +66,7 @@ public class PushNoticeController extends BaseController {
         return CommonResponse.simpleResponse(1, "发布成功");
     }
 
+
     /**
      * 发布公告列表
      * @param request
