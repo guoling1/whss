@@ -6,10 +6,10 @@
 
         SELECT id,identity_face_pic,identity_opposite_pic,identity_hand_pic
         ,bank_hand_pic,bank_pic,reserve_mobile,merchant_name,address,source
-        ,name,identity,bank_no,dealer_id,status,bank_name,first_dealer_id
+        ,name,identity,bank_no,dealer_id,status,bank_name,first_dealer_id,is_authen
         ,create_time,mobile,authentication_time,checked_time,second_dealer_id,
         (select d.proxy_name from tb_dealer as d where d.id=first_dealer_id) as proxy_name,
-        (select d.proxy_name from tb_dealer as d where d.id=second_dealer_id) as proxy_name1,source
+        (select d.proxy_name from tb_dealer as d where d.id=second_dealer_id) as proxy_name1
 
         FROM tb_merchant_info a
         WHERE

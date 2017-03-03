@@ -9,6 +9,10 @@ import java.util.Date;
 @Data
 public class MerchantInfoResponse {
 
+    /**
+     * 是否认证 1认证 其他未认证
+     */
+    private String isAuthen;
 
     /**
      * 注册方式标识
