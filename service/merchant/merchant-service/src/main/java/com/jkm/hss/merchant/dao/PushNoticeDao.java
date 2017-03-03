@@ -46,7 +46,7 @@ public interface PushNoticeDao {
      * @param text
      * @return
      */
-    NoticeResponse updateNotice(@Param("title") String title,@Param("text") String text);
+    NoticeResponse updateNotice(@Param("title") String title,@Param("text") String text,@Param("id") int id);
 
     /**
      * 删除公告

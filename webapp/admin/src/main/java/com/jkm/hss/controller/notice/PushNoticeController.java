@@ -42,7 +42,7 @@ public class PushNoticeController extends BaseController {
         String productType = request.getProductType();
         String title = request.getTitle();
         String text = request.getText();
-        String publisher = request.getPublisher();
+        String publisher = super.getAdminUser().getRealname();
         if (productId==0) {
             return CommonResponse.simpleResponse(-1, "产品id不能为空");
         }
@@ -129,7 +129,7 @@ public class PushNoticeController extends BaseController {
     @RequestMapping(value = "/updateNotice",method = RequestMethod.POST)
     public CommonResponse updateNotice(@RequestBody NoticeRequest request){
         try{
-            pushNoticeService.updateNotice(request.getTitle(),request.getText());
+            pushNoticeService.updateNotice(request.getTitle(),request.getText(),request.getId());
 
             return CommonResponse.simpleResponse(1, "发布成功");
         }catch (final Throwable throwable){
