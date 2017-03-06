@@ -2,6 +2,8 @@ package com.jkm.hss.merchant.service;
 
 import com.jkm.hss.merchant.entity.AccountBank;
 
+import java.util.List;
+
 /**
  * Created by xingliujie on 2017/3/6.
  */
@@ -51,4 +53,10 @@ public interface AccountBankService {
      * @return
      */
     int isHasCreditCard(long accountId);
+    /**
+     * 查询银行卡列表
+     * @param accountId
+     * @return
+     */
+    List<AccountBank> selectAllByAccountId(long accountId);
 }

@@ -106,4 +106,9 @@
         WHERE account_id = #{accountId} and status=0 and card_type=1
     </select>
 
+    <!-- 查询银行卡列表 -->
+    <select id="selectAllByAccountId" resultType="com.jkm.hss.merchant.entity.AccountBank">
+        SELECT <include refid="Base_Column_List" /> FROM tb_account_bank
+        WHERE account_id = #{accountId}
+    </select>
 </mapper>

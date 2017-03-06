@@ -4,6 +4,8 @@ import com.jkm.hss.merchant.entity.AccountBank;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 /**
  * Created by xingliujie on 2017/3/6.
  */
@@ -54,5 +56,11 @@ public interface AccountBankDao {
      * @return
      */
     int isHasCreditCard(@Param("accountId") long accountId);
+    /**
+     * 查询银行卡列表
+     * @param accountId
+     * @return
+     */
+    List<AccountBank> selectAllByAccountId(@Param("accountId") long accountId);
 
 }

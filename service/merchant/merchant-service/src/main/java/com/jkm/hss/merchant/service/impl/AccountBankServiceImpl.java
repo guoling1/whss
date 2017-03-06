@@ -7,6 +7,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * Created by xingliujie on 2017/3/6.
  */
@@ -90,5 +92,16 @@ public class AccountBankServiceImpl implements AccountBankService{
     @Override
     public int isHasCreditCard(long accountId) {
         return accountBankDao.isHasCreditCard(accountId);
+    }
+
+    /**
+     * 查询银行卡列表
+     *
+     * @param accountId
+     * @return
+     */
+    @Override
+    public List<AccountBank> selectAllByAccountId(long accountId) {
+        return accountBankDao.selectAllByAccountId(accountId);
     }
 }
