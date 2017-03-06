@@ -2,6 +2,7 @@ package com.jkm.hss.merchant.entity;
 
 import com.jkm.base.common.entity.BaseEntity;
 import com.jkm.hss.merchant.enums.EnumAccountBank;
+import com.jkm.hss.merchant.enums.EnumBankDefault;
 import lombok.Data;
 
 /**
@@ -62,6 +63,9 @@ public class AccountBank extends BaseEntity {
      * 是否认证通过
      */
     private String isAuthen;
-
-
+    /**
+     * 是否为默认银行卡
+     * {@link EnumBankDefault}
+     */
+    private int isDefault;
 }
