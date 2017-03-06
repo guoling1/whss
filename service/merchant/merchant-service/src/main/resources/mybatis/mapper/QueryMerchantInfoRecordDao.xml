@@ -4,16 +4,41 @@
 
     <select id="getAll" resultType="com.jkm.hss.merchant.entity.MerchantInfoResponse">
 
-        SELECT id,identity_face_pic,identity_opposite_pic,identity_hand_pic
-        ,bank_hand_pic,bank_pic,reserve_mobile,merchant_name,address,source
-        ,name,identity,bank_no,dealer_id,status,bank_name,first_dealer_id
-        ,create_time,mobile,authentication_time,checked_time,second_dealer_id,
-        (select d.proxy_name from tb_dealer as d where d.id=first_dealer_id) as proxy_name,
-        (select d.proxy_name from tb_dealer as d where d.id=second_dealer_id) as proxy_name1,source
-
-        FROM tb_merchant_info a
+        SELECT
+            a.id,
+            a.identity_face_pic,
+            a.identity_opposite_pic,
+            a.identity_hand_pic,
+            a.bank_hand_pic,
+            a.bank_pic,
+            a.reserve_mobile,
+            a.merchant_name,
+            a.merchant_change_name,
+            a.address,
+            a.source,
+            a.NAME,
+            a.identity,
+            a.bank_no,
+            a.dealer_id,
+            a.STATUS,
+            a.bank_name,
+            a.first_dealer_id,
+            a.is_authen,
+            a.create_time,
+            a.mobile,
+            a.authentication_time,
+            a.checked_time,
+            a.second_dealer_id,
+            b.`level`,
+            b.first_level_dealer_id,
+            b.proxy_name,
+            b.mark_code AS markCode1
+        FROM
+            tb_merchant_info a
+        LEFT JOIN
+            tb_dealer b ON a.dealer_id=b.id
         WHERE
-				a.id=#{id}
+			a.id=#{id}
     </select>
 
     <!--查询推荐信息-->
@@ -22,6 +47,26 @@
             (select d.proxy_name from tb_dealer as d where d.id=first_dealer_id) as proxy_name_yq,
             (select d.proxy_name from tb_dealer as d where d.id=second_dealer_id) as proxy_name_yq1
         FROM tb_merchant_info WHERE id=#{id}
+    </select>
+
+    <!--查询所属一级代理商名称-->
+    <select id="selectProxyNameYq" resultType="com.jkm.hss.merchant.entity.MerchantInfoResponse">
+        SELECT
+          proxy_name
+        FROM
+          tb_dealer
+        WHERE
+          id=#{firstDealerId}
+    </select>
+
+    <!--查询所属二级代理商名称-->
+    <select id="selectProxyNameYq1" resultType="com.jkm.hss.merchant.entity.MerchantInfoResponse">
+        SELECT
+          proxy_name
+        FROM
+          tb_dealer
+        WHERE
+          id=#{secondDealerId}
     </select>
 
     <!--审核日志-->
