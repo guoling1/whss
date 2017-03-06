@@ -69,79 +69,81 @@
     </div>
   </div>
 
-  <div class="layer" id="layerBK">
-    <div class="space">
-      <div class="space-title">
-        提示
-        <div class="xx" id="xxBK"></div>
+  <div class="message-space" id="layerBK">
+    <div class="message-box">
+      <div class="message-box-head">提示</div>
+      <div class="message-box-body">
+        使用该通道前<br>您需要补全结算卡的支行信息
       </div>
-      <div class="space-cont">
-        <div class="cont-detail">使用该通道前<br>您需要补全结算卡的支行信息</div>
-        <div class="operation">
-          <div class="cancel" id="cancelBK">待会儿再说</div>
-          <div class="submit" id="toBK">去补全</div>
+      <div class="message-box-foot">
+        <div class="message-cancel" id="cancelBK">
+          待会儿再说
+        </div>
+        <div class="message-line"></div>
+        <div class="message-submit" id="toBK">
+          去补全
         </div>
       </div>
     </div>
   </div>
 
-  <div class="layer" id="layerB">
-    <div class="space">
-      <div class="space-title">
-        提示
-        <div class="xx" id="xxB"></div>
+  <div class="message-space" id="layerB">
+    <div class="message-box">
+      <div class="message-box-head">提示</div>
+      <div class="message-box-body">
+        使用该通道前<br>您需要补全结算卡的支行信息
       </div>
-      <div class="space-cont">
-        <div class="cont-detail">使用该通道前<br>您需要补全结算卡的支行信息</div>
-        <div class="operation">
-          <div class="cancel" id="cancelB">待会儿再说</div>
-          <div class="submit" id="toB">去补全</div>
+      <div class="message-box-foot">
+        <div class="message-cancel" id="cancelB">
+          待会儿再说
+        </div>
+        <div class="message-line"></div>
+        <div class="message-submit" id="toB">
+          去补全
         </div>
       </div>
     </div>
   </div>
 
-  <div class="layer" id="layerC">
-    <div class="space">
-      <div class="space-title">
-        提示
-        <div class="xx" id="xxC"></div>
+  <div class="message-space" id="layerC">
+    <div class="message-box">
+      <div class="message-box-head">提示</div>
+      <div class="message-box-body">
+        补全信用卡信息可以提高您的支付额度
       </div>
-      <div class="space-cont">
-        <div class="cont-detail">补全信用卡信息可以提高您的支付额度</div>
-        <div class="operation">
-          <div class="cancel" id="cancelC">待会儿再说</div>
-          <div class="submit" id="toC">去补全</div>
+      <div class="message-box-foot">
+        <div class="message-cancel" id="cancelC">
+          待会儿再说
+        </div>
+        <div class="message-line"></div>
+        <div class="message-submit" id="toC">
+          去补全
         </div>
       </div>
     </div>
   </div>
 
-  <div class="layer" id="layer">
-    <div class="space">
-      <div class="space-title">
-        提示
-        <div class="xx" id="xx"></div>
+  <div class="message-space" id="layer">
+    <div class="message-box">
+      <div class="message-box-head">提示</div>
+      <div class="message-box-body">
+        该通道正在支付公司注册中<br>请明天再使用该通道
       </div>
-      <div class="space-cont">
-        <div class="cont-detail">该通道正在支付公司注册中<br>请明天再使用该通道</div>
-        <div class="operation">
-          <div class="layer-submit" id="cancel">确定</div>
+      <div class="message-box-foot">
+        <div class="message-enter" id="cancel">
+          确定
         </div>
       </div>
     </div>
   </div>
 
-  <div class="layer" id="layerE">
-    <div class="space">
-      <div class="space-title">
-        提示
-        <div class="xx" id="xxE"></div>
-      </div>
-      <div class="space-cont">
-        <div class="cont-detail" id="textE"></div>
-        <div class="operation">
-          <div class="layer-submit" id="cancelE">确定</div>
+  <div class="message-space" id="layerE">
+    <div class="message-box">
+      <div class="message-box-head">提示</div>
+      <div class="message-box-body" id="textE"></div>
+      <div class="message-box-foot">
+        <div class="message-enter" id="cancelE">
+          确定
         </div>
       </div>
     </div>
