@@ -22,7 +22,6 @@ public class MerchantController extends BaseController {
     @ResponseBody
     @RequestMapping(value = "/merchantList", method = RequestMethod.POST)
     public CommonResponse merchantList(final HttpServletResponse response,@RequestBody final MerchantListRequest merchantListRequest) {
-
         long dealerId = super.getDealerId();
         return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", "");
     }
