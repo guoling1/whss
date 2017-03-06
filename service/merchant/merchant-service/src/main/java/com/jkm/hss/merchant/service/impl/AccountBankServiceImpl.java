@@ -1,8 +1,14 @@
 package com.jkm.hss.merchant.service.impl;
 
+import com.google.common.base.Optional;
 import com.jkm.hss.merchant.dao.AccountBankDao;
+import com.jkm.hss.merchant.dao.MerchantInfoDao;
 import com.jkm.hss.merchant.entity.AccountBank;
+import com.jkm.hss.merchant.entity.MerchantInfo;
+import com.jkm.hss.merchant.enums.EnumAccountBank;
+import com.jkm.hss.merchant.enums.EnumBankDefault;
 import com.jkm.hss.merchant.service.AccountBankService;
+import com.jkm.hss.merchant.service.MerchantInfoService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,6 +23,55 @@ import java.util.List;
 public class AccountBankServiceImpl implements AccountBankService{
     @Autowired
     private AccountBankDao accountBankDao;
+    @Autowired
+    private MerchantInfoService merchantInfoService;
+
+    /**
+     * 是否有银行卡信息
+     *
+     * @param accountId
+     * @return
+     */
+    @Override
+    public int isHasAccountBank(long accountId) {
+        return accountBankDao.isHasAccountBank(accountId);
+    }
+
+    /**
+     * 初始化银行卡账户
+     *
+     * @return
+     */
+    @Override
+    public int initAccountBank(long merchantId,long accountId) {
+        int count = this.isHasAccountBank(accountId);
+        if(count>0){
+            log.info("已有账户无需初始化，账户编码{},商户编码{}",accountId,merchantId);
+            return 0;
+        }
+        Optional<MerchantInfo> merchantInfoOptional =  merchantInfoService.selectById(merchantId);
+        if(!merchantInfoOptional.isPresent()){
+            log.info("初始化银行账户时找不到商户{}",merchantId);
+        }
+        MerchantInfo merchantInfo = merchantInfoOptional.get();
+        AccountBank accountBank = new AccountBank();
+        accountBank.setAccountId(accountId);
+        accountBank.setBankNo(merchantInfo.getBankNo());
+        accountBank.setBankName(merchantInfo.getBankName());
+        accountBank.setBranchCode(merchantInfo.getBranchCode());
+        accountBank.setBranchName(merchantInfo.getBranchName());
+        accountBank.setBranchProvinceCode(merchantInfo.getProvinceCode());
+        accountBank.setBranchProvinceName(merchantInfo.getProvinceName());
+        accountBank.setBranchCityCode(merchantInfo.getCityCode());
+        accountBank.setBranchCityName(merchantInfo.getCityName());
+        accountBank.setBranchCountyCode(merchantInfo.getCountyCode());
+        accountBank.setBranchCountyName(merchantInfo.getCountyName());
+        accountBank.setCardType(EnumAccountBank.DEBITCARD.getId());
+        accountBank.setIsAuthen(merchantInfo.getIsAuthen());
+        accountBank.setIsDefault(EnumBankDefault.DEFAULT.getId());
+        return this.insert(accountBank);
+    }
+
     /**
      * 新增
      *

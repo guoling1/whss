@@ -9,6 +9,17 @@ import java.util.List;
  */
 public interface AccountBankService {
     /**
+     * 是否有银行卡信息
+     * @param accountId
+     * @return
+     */
+    int isHasAccountBank(long accountId);
+    /**
+     * 初始化银行卡账户
+     * @return
+     */
+    int initAccountBank(long merchantId,long accountId);
+    /**
      * 新增
      * @param accountBank
      * @return

@@ -12,6 +12,12 @@ import java.util.List;
 @Repository
 public interface AccountBankDao {
     /**
+     * 是否有银行卡信息
+     * @param accountId
+     * @return
+     */
+    int isHasAccountBank(@Param("accountId") long accountId);
+    /**
      * 新增
      * @param accountBank
      * @return

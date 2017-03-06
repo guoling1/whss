@@ -15,10 +15,7 @@ import com.jkm.hss.controller.BaseController;
 import com.jkm.hss.dealer.service.PartnerShallProfitDetailService;
 import com.jkm.hss.dealer.service.ShallProfitDetailService;
 import com.jkm.hss.helper.ApplicationConsts;
-import com.jkm.hss.merchant.entity.AccountInfo;
-import com.jkm.hss.merchant.entity.MerchantChannelRate;
-import com.jkm.hss.merchant.entity.MerchantInfo;
-import com.jkm.hss.merchant.entity.UserInfo;
+import com.jkm.hss.merchant.entity.*;
 import com.jkm.hss.merchant.enums.EnumIsUpgrade;
 import com.jkm.hss.merchant.enums.EnumMerchantStatus;
 import com.jkm.hss.merchant.enums.EnumPayMethod;
@@ -112,6 +109,9 @@ public class LoginController extends BaseController {
 
     @Autowired
     private MerchantChannelRateService merchantChannelRateService;
+
+    @Autowired
+    private AccountBankService accountBankService;
 
     /**
      * 扫固定码注册和微信公众号注册入口
@@ -613,8 +613,13 @@ public class LoginController extends BaseController {
                         url = "/sqb/prompt";
                         isRedirect= true;
                     }else if(result.get().getStatus()== EnumMerchantStatus.PASSED.getId()||result.get().getStatus()== EnumMerchantStatus.FRIEND.getId()){//跳提现页面
+                        AccountBank accountBank = accountBankService.getDefault(result.get().getAccountId());
+                        if(accountBank==null){
+                            model.addAttribute("message","查询不到默认银行卡信息");
+                            url = "/message";
+                        }
                         String phone = MerchantSupport.decryptMobile(result.get().getReserveMobile());
-                        String bankNo = MerchantSupport.decryptBankCard(result.get().getBankNo());
+                        String bankNo = MerchantSupport.decryptBankCard(accountBank.getBankNo());
                         model.addAttribute("phone_01", phone.substring(0,3));
                         model.addAttribute("phone_02", phone.substring(phone.length()-4,phone.length()));
                         model.addAttribute("bankNo", bankNo.substring(bankNo.length()-4,bankNo.length()));
