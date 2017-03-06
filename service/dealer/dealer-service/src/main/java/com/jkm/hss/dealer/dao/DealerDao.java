@@ -5,6 +5,7 @@ import com.jkm.hss.dealer.helper.requestparam.*;
 import com.jkm.hss.dealer.helper.response.DealerOfFirstDealerResponse;
 import com.jkm.hss.dealer.helper.response.FirstDealerResponse;
 import com.jkm.hss.dealer.helper.response.SecondDealerResponse;
+import com.jkm.hss.merchant.entity.MerchantInfoResponse;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
@@ -293,4 +294,11 @@ public interface DealerDao {
     Dealer getDealerByLoginName(@Param("loginName") String loginName);
 
     String selectProxyName(@Param("firstLevelDealerId") int firstLevelDealerId);
+
+    /**
+     * 查询代理商名称和编码
+     * @param firstLevelDealerId
+     * @return
+     */
+    MerchantInfoResponse getProxyName(int firstLevelDealerId);
 }

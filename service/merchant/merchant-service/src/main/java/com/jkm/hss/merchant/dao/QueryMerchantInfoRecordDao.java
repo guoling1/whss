@@ -42,4 +42,18 @@ public interface QueryMerchantInfoRecordDao {
      * @return
      */
     SettleResponse getSettle(@Param("id") long id);
+
+    /**
+     * 查询推荐所属1代理商名称
+     * @param firstDealerId
+     * @return
+     */
+    MerchantInfoResponse selectProxyNameYq(@Param("firstDealerId") long firstDealerId);
+
+    /**
+     * 查询推荐所属1代理商名称
+     * @param secondDealerId
+     * @return
+     */
+    MerchantInfoResponse selectProxyNameYq1(@Param("secondDealerId") long secondDealerId);
 }

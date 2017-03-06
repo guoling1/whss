@@ -33,6 +33,7 @@ import com.jkm.hss.dealer.helper.response.SecondDealerResponse;
 import com.jkm.hss.dealer.service.*;
 import com.jkm.hss.merchant.entity.MerchantChannelRate;
 import com.jkm.hss.merchant.entity.MerchantInfo;
+import com.jkm.hss.merchant.entity.MerchantInfoResponse;
 import com.jkm.hss.merchant.entity.OrderRecord;
 import com.jkm.hss.merchant.helper.request.MerchantChannelRateRequest;
 import com.jkm.hss.merchant.service.MerchantChannelRateService;
@@ -2243,5 +2244,11 @@ public class DealerServiceImpl implements DealerService {
     public String selectProxyName(int firstLevelDealerId) {
         String proxyName = dealerDao.selectProxyName(firstLevelDealerId);
         return proxyName;
+    }
+
+    @Override
+    public MerchantInfoResponse getProxyName(int firstLevelDealerId) {
+        MerchantInfoResponse response = dealerDao.getProxyName(firstLevelDealerId);
+        return response;
     }
 }
