@@ -2162,15 +2162,9 @@ public class DealerServiceImpl implements DealerService {
                 DistributeRecordResponse distributeRecordResponse = new DistributeRecordResponse();
                 distributeRecordResponse.setId(distributeQRCodeRecord.getId());
                 distributeRecordResponse.setDistributeTime(distributeQRCodeRecord.getCreateTime());
-                if(distributeQRCodeRecord.getSecondLevelDealerId()==0){
-                    Dealer dealer = dealerDao.selectById(distributeQRCodeRecord.getFirstLevelDealerId());
-                    distributeRecordResponse.setProxyName(dealer.getProxyName());
-                    distributeRecordResponse.setMarkCode(dealer.getMarkCode());
-                }else{
-                    Dealer dealer = dealerDao.selectById(distributeQRCodeRecord.getSecondLevelDealerId());
-                    distributeRecordResponse.setProxyName(dealer.getProxyName());
-                    distributeRecordResponse.setMarkCode(dealer.getMarkCode());
-                }
+                Dealer dealer = dealerDao.selectById(distributeQRCodeRecord.getSecondLevelDealerId());
+                distributeRecordResponse.setProxyName(dealer.getProxyName());
+                distributeRecordResponse.setMarkCode(dealer.getMarkCode());
                 distributeRecordResponse.setCount(distributeQRCodeRecord.getCount());
                 distributeRecordResponse.setStartCode(distributeQRCodeRecord.getStartCode());
                 distributeRecordResponse.setEndCode(distributeQRCodeRecord.getEndCode());
