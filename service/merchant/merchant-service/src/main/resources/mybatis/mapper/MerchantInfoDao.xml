@@ -15,6 +15,7 @@
         UPDATE tb_merchant_info
         SET
         merchant_name=#{merchantName},
+        merchant_change_name=#{merchantName},
         address=#{address},
         bank_no=#{bankNo},
         bank_no_short=#{bankNoShort},
