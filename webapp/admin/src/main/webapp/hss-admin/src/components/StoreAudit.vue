@@ -20,7 +20,7 @@
             </tr>
             <tr>
               <th style="text-align: right">一级代理编号:</th>
-              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.firstDealerId==0?'':msg.firstDealerId" readonly></td>
+              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.markCode1==0?'':msg.markCode1" readonly></td>
               <th style="text-align: right">一级代理名称:</th>
               <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.proxyName" readonly></td>
               <th></th>
@@ -28,7 +28,7 @@
             </tr>
             <tr>
               <th style="text-align: right">二级代理编号:</th>
-              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.secondDealerId==0?'':msg.secondDealerId" readonly></td>
+              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.markCode2==0?'':msg.markCode2" readonly></td>
               <th style="text-align: right">二级代理名称:</th>
               <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.proxyName1" readonly></td>
               <th></th>
@@ -36,11 +36,11 @@
             </tr>
             <tr>
               <th style="text-align: right">推荐人编号:</th>
-              <td><input type="text" style="background:#efecec;padding-left:5px;" value="—" readonly></td>
+              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.recommenderCode" readonly></td>
               <th style="text-align: right">推荐人名称:</th>
-              <td><input type="text" style="background:#efecec;padding-left:5px;" value="—" readonly></td>
+              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.recommenderName" readonly></td>
               <th style="text-align: right">推荐人注册手机号:</th>
-              <td><input type="text" style="background:#efecec;padding-left:5px;" value="—" readonly></td>
+              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.recommenderPhone" readonly></td>
             </tr>
             <tr>
               <th style="text-align: right">推荐所属一级代理名:</th>

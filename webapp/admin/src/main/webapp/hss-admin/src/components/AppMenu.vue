@@ -29,9 +29,9 @@
       <!-- /.search form -->
       <!-- Sidebar Menu -->
       <ul class="sidebar-menu nav nav-pills nav-stacked">
-        <!-- <li class="header">HEADER</li> -->
-        <!-- Optionally, you can add icons to the links -->
-        <!--<li><a href="#"><i class="fa fa-link"></i> <span>Link</span></a></li>-->
+        <!-- <li class="header">HEADER</li>
+         Optionally, you can add icons to the links
+        <li><a href="#"><i class="fa fa-link"></i> <span>Link</span></a></li>-->
         <li :class="(url=='/admin/record/newDeal')?'treeview active':'treeview'">
           <a href="#"><span>交易查询</span></a>
           <ul class="treeview-menu">
