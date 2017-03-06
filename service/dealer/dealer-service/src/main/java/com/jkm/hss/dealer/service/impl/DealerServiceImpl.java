@@ -2062,7 +2062,11 @@ public class DealerServiceImpl implements DealerService {
             final QRCode right = pair.getRight();
             final DistributeQRCodeRecord distributeQRCodeRecord = new DistributeQRCodeRecord();
             distributeQRCodeRecord.setFirstLevelDealerId(dealerId);
-            distributeQRCodeRecord.setSecondLevelDealerId(toDealerId);
+            if(toDealerId==0){
+                distributeQRCodeRecord.setSecondLevelDealerId(dealerId);
+            }else{
+                distributeQRCodeRecord.setSecondLevelDealerId(toDealerId);
+            }
             distributeQRCodeRecord.setCount((int) (Long.valueOf(right.getCode()) - Long.valueOf(left.getCode()) + 1));
             distributeQRCodeRecord.setStartCode(left.getCode());
             distributeQRCodeRecord.setEndCode(right.getCode());
