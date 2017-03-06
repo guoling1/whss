@@ -62,6 +62,11 @@ public class QueryMerchantInfoRecordServiceImpl implements QueryMerchantInfoReco
                 if (list.get(i).getSource()==1){
                     list.get(i).setRegistered("推荐注册");
                 }
+                if (list.get(i).getIsAuthen().equals("1")){
+                    list.get(i).setIsAuthen("认证通过");
+                }else {
+                    list.get(i).setIsAuthen("认证未通过");
+                }
 
             }
         }
