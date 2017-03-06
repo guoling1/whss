@@ -22,18 +22,18 @@
               <el-input style="width: 130px" v-model="query.userName" placeholder="请输入内容" size="small"></el-input>
             </li>
             <li class="same">
-              <label>状态:</label>
+              <label>打款状态:</label>
               <el-select style="width: 120px" clearable v-model="query.status" size="small">
                 <el-option label="全部" value="">全部</el-option>
                 <el-option label="待提现" value="1">待提现</el-option>
-                <el-option label="打款中" value="2">打款中</el-option>
+                <el-option label="请求成功" value="3">请求成功</el-option>
                 <el-option label="打款成功" value="4">打款成功</el-option>
                 <el-option label="打款失败" value="5">打款失败</el-option>
               </el-select>
             </li>
             <li class="same">
               <div class="btn btn-primary" @click="search">筛选</div>
-            </li>
+              </li>
             <li class="same" style="float: right">
               <span @click="onload()" download="打款记录" class="btn btn-primary" style="color: #fff">导出</span>
             </li>
