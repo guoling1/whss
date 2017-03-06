@@ -2062,7 +2062,11 @@ public class DealerServiceImpl implements DealerService {
             final QRCode right = pair.getRight();
             final DistributeQRCodeRecord distributeQRCodeRecord = new DistributeQRCodeRecord();
             distributeQRCodeRecord.setFirstLevelDealerId(dealerId);
-            distributeQRCodeRecord.setSecondLevelDealerId(toDealerId);
+            if(toDealerId==0){
+                distributeQRCodeRecord.setSecondLevelDealerId(dealerId);
+            }else{
+                distributeQRCodeRecord.setSecondLevelDealerId(toDealerId);
+            }
             distributeQRCodeRecord.setCount((int) (Long.valueOf(right.getCode()) - Long.valueOf(left.getCode()) + 1));
             distributeQRCodeRecord.setStartCode(left.getCode());
             distributeQRCodeRecord.setEndCode(right.getCode());
@@ -2158,15 +2162,9 @@ public class DealerServiceImpl implements DealerService {
                 DistributeRecordResponse distributeRecordResponse = new DistributeRecordResponse();
                 distributeRecordResponse.setId(distributeQRCodeRecord.getId());
                 distributeRecordResponse.setDistributeTime(distributeQRCodeRecord.getCreateTime());
-                if(distributeQRCodeRecord.getSecondLevelDealerId()==0){
-                    Dealer dealer = dealerDao.selectById(distributeQRCodeRecord.getFirstLevelDealerId());
-                    distributeRecordResponse.setProxyName(dealer.getProxyName());
-                    distributeRecordResponse.setMarkCode(dealer.getMarkCode());
-                }else{
-                    Dealer dealer = dealerDao.selectById(distributeQRCodeRecord.getSecondLevelDealerId());
-                    distributeRecordResponse.setProxyName(dealer.getProxyName());
-                    distributeRecordResponse.setMarkCode(dealer.getMarkCode());
-                }
+                Dealer dealer = dealerDao.selectById(distributeQRCodeRecord.getSecondLevelDealerId());
+                distributeRecordResponse.setProxyName(dealer.getProxyName());
+                distributeRecordResponse.setMarkCode(dealer.getMarkCode());
                 distributeRecordResponse.setCount(distributeQRCodeRecord.getCount());
                 distributeRecordResponse.setStartCode(distributeQRCodeRecord.getStartCode());
                 distributeRecordResponse.setEndCode(distributeQRCodeRecord.getEndCode());
