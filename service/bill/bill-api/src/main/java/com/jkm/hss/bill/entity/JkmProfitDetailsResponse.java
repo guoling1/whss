@@ -71,6 +71,11 @@ public class JkmProfitDetailsResponse {
     private long outMoneyAccountId;
 
     /**
+     * 出款账户名称
+     */
+    private String outMoneyAccountName;
+
+    /**
      * 收款账户id
      */
     private long receiptMoneyAccountId;

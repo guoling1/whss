@@ -6,6 +6,7 @@ import com.aliyun.oss.OSSClient;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import com.jkm.hss.controller.BaseController;
+import com.jkm.hss.dealer.service.DealerService;
 import com.jkm.hss.helper.ApplicationConsts;
 import com.jkm.hss.helper.response.MerchantRateResponse;
 import com.jkm.hss.merchant.entity.*;
@@ -40,6 +41,9 @@ public class QueryMerchantInfoRecordController extends BaseController {
     private OSSClient ossClient;
 
     @Autowired
+    private DealerService dealerService;
+
+    @Autowired
     private MerchantChannelRateService merchantChannelRateService;
     @ResponseBody
     @RequestMapping(value = "/getAll",method = RequestMethod.POST)
@@ -60,6 +64,14 @@ public class QueryMerchantInfoRecordController extends BaseController {
                         list.get(i).setProxyNameYq1(res.getProxyNameYq1());
                     }
 
+                }
+                if (list.get(i).getLevel()==1){
+                    list.get(i).setProxyName(list.get(i).getProxyName());
+                }
+                if (list.get(i).getLevel()==2){
+                    list.get(i).setProxyName1(list.get(i).getProxyName());
+                    String proxyNames = dealerService.selectProxyName(list.get(i).getFirstLevelDealerId());
+                    list.get(i).setProxyName(proxyNames);
                 }
 
             }
