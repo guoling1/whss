@@ -448,6 +448,9 @@
         SELECT proxy_name FROM tb_dealer WHERE id = #{firstLevelDealerId}
     </select>
 
+    <select id="getProxyName" resultType="com.jkm.hss.merchant.entity.MerchantInfoResponse">
+        SELECT proxy_name,mark_code FROM tb_dealer WHERE id = #{firstLevelDealerId}
+    </select>
 
     <select id="selectSecondDealerCountByPage" resultType="java.lang.Integer">
         SELECT COUNT(1) FROM tb_dealer as d

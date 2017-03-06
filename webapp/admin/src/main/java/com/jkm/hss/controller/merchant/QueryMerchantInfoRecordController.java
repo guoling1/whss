@@ -49,29 +49,22 @@ public class QueryMerchantInfoRecordController extends BaseController {
     @RequestMapping(value = "/getAll",method = RequestMethod.POST)
     public JSONObject getAll(@RequestBody final MerchantInfoResponse merchantInfo) throws ParseException {
         JSONObject jsonObject = new JSONObject();
-        ReferralResponse res = this.queryMerchantInfoRecordService.getRefInformation(merchantInfo.getId());
+//        ReferralResponse res = this.queryMerchantInfoRecordService.getRefInformation(merchantInfo.getId());
         List<MerchantInfoResponse> list = this.queryMerchantInfoRecordService.getAll(merchantInfo);
         if (list.size()>0){
             for (int i=0;i<list.size();i++){
-                int source = list.get(i).getSource();
-                String proxyName = "";
-                String proxyName1 = "";
-                if (source==1){
-                    list.get(i).setProxyName(proxyName);
-                    list.get(i).setProxyName1(proxyName1);
-                    if (res!=null){
-                        list.get(i).setProxyNameYq(res.getProxyNameYq());
-                        list.get(i).setProxyNameYq1(res.getProxyNameYq1());
-                    }
-
-                }
                 if (list.get(i).getLevel()==1){
                     list.get(i).setProxyName(list.get(i).getProxyName());
+
                 }
                 if (list.get(i).getLevel()==2){
                     list.get(i).setProxyName1(list.get(i).getProxyName());
-                    String proxyNames = dealerService.selectProxyName(list.get(i).getFirstLevelDealerId());
-                    list.get(i).setProxyName(proxyNames);
+                    MerchantInfoResponse proxyNames = dealerService.getProxyName(list.get(i).getFirstLevelDealerId());
+                    list.get(i).setProxyName(proxyNames.getProxyName());
+                    list.get(i).setMarkCode1(proxyNames.getMarkCode());
+                    if (list.get(i).getMarkCode1()!=null&&!list.get(i).getMarkCode1().equals("")){
+                        list.get(i).setMarkCode2(list.get(i).getMarkCode1());
+                    }
                 }
 
             }

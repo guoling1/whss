@@ -40,6 +40,16 @@ public class MerchantInfoResponse {
     private String markCode;
 
     /**
+     * 一级代理商编号（正确的）
+     */
+    private String markCode1;
+
+    /**
+     * 二级代理商编号（正确的）
+     */
+    private String markCode2;
+
+    /**
      * 条数
      */
     private Integer offset;
