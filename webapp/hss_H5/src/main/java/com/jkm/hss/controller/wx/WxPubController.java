@@ -373,6 +373,9 @@ public class WxPubController extends BaseController {
         if(!merchantInfo.isPresent()){
             return CommonResponse.simpleResponse(-2, "未登录");
         }
+        if(merchantInfo.get().getStatus()!= EnumMerchantStatus.PASSED.getId()&&merchantInfo.get().getStatus()!= EnumMerchantStatus.FRIEND.getId()){
+            return CommonResponse.simpleResponse(-2, "信息未完善或待审核");
+        }
         Map map = new HashMap();
         map.put("bankBin",merchantInfo.get().getBankBin());
         map.put("bankNo",merchantInfo.get().getBankNo());
@@ -402,7 +405,7 @@ public class WxPubController extends BaseController {
             return CommonResponse.simpleResponse(-2, "未登录");
         }
         if(merchantInfo.get().getStatus()!= EnumMerchantStatus.PASSED.getId()&&merchantInfo.get().getStatus()!= EnumMerchantStatus.FRIEND.getId()){
-            return CommonResponse.simpleResponse(-2, "未审核通过");
+            return CommonResponse.simpleResponse(-2, "信息未完善或待审核");
         }
         req.setMerchantId(merchantInfo.get().getId());
         final PageModel<OrderRecord> pageModel = new PageModel<>(req.getPage(), req.getSize());
@@ -900,8 +903,8 @@ public class WxPubController extends BaseController {
         if(!merchantInfo.isPresent()){
             return CommonResponse.simpleResponse(-2, "未登录");
         }
-        if(merchantInfo.get().getStatus()!=EnumMerchantStatus.PASSED.getId()&&merchantInfo.get().getStatus()!=EnumMerchantStatus.FRIEND.getId()){
-            return CommonResponse.simpleResponse(-2, "未审核通过");
+        if(merchantInfo.get().getStatus()!= EnumMerchantStatus.PASSED.getId()&&merchantInfo.get().getStatus()!= EnumMerchantStatus.FRIEND.getId()){
+            return CommonResponse.simpleResponse(-2, "信息未完善或待审核");
         }
         final String totalFee = tradeRequest.getTotalFee();
         if (StringUtils.isBlank(totalFee)) {
@@ -933,8 +936,8 @@ public class WxPubController extends BaseController {
     @RequestMapping(value = "receiptByCode", method = RequestMethod.POST)
     public CommonResponse receiptByCode(final HttpServletRequest request, final HttpServletResponse response, @RequestBody final TradeRequest tradeRequest) {
         Optional<MerchantInfo> merchantInfo = merchantInfoService.selectById(tradeRequest.getMerchantId());
-        if(merchantInfo.get().getStatus()!=EnumMerchantStatus.PASSED.getId()&&merchantInfo.get().getStatus()!=EnumMerchantStatus.FRIEND.getId()){
-            return CommonResponse.simpleResponse(-2, "未审核通过");
+        if(merchantInfo.get().getStatus()!= EnumMerchantStatus.PASSED.getId()&&merchantInfo.get().getStatus()!= EnumMerchantStatus.FRIEND.getId()){
+            return CommonResponse.simpleResponse(-2, "信息未完善或待审核");
         }
         final String totalFee = tradeRequest.getTotalFee();
         if (StringUtils.isBlank(totalFee)) {
@@ -978,8 +981,8 @@ public class WxPubController extends BaseController {
         if(!merchantInfo.isPresent()){
             return CommonResponse.simpleResponse(-2, "未登录");
         }
-        if(merchantInfo.get().getStatus()!=EnumMerchantStatus.PASSED.getId()&&merchantInfo.get().getStatus()!=EnumMerchantStatus.FRIEND.getId()){
-            return CommonResponse.simpleResponse(-2, "未审核通过");
+        if(merchantInfo.get().getStatus()!= EnumMerchantStatus.PASSED.getId()&&merchantInfo.get().getStatus()!= EnumMerchantStatus.FRIEND.getId()){
+            return CommonResponse.simpleResponse(-2, "信息未完善或待审核");
         }
         final Pair<Integer, String> checkResult =
                 this.smsAuthService.checkVerifyCode(MerchantSupport.decryptMobile(merchantInfo.get().getReserveMobile()), verifyCode, EnumVerificationCodeType.WITH_DRAW);
@@ -1040,8 +1043,8 @@ public class WxPubController extends BaseController {
         if(!merchantInfo.isPresent()){
             return CommonResponse.simpleResponse(-2, "未登录");
         }
-        if(merchantInfo.get().getStatus()!=EnumMerchantStatus.PASSED.getId()&&merchantInfo.get().getStatus()!=EnumMerchantStatus.FRIEND.getId()){
-            return CommonResponse.simpleResponse(-2, "未审核通过");
+        if(merchantInfo.get().getStatus()!= EnumMerchantStatus.PASSED.getId()&&merchantInfo.get().getStatus()!= EnumMerchantStatus.FRIEND.getId()){
+            return CommonResponse.simpleResponse(-2, "信息未完善或待审核");
         }
         recommendRequest.setMerchantId(merchantInfo.get().getId());
         RecommendAndMerchant recommendAndMerchant = recommendService.selectRecommend(recommendRequest);
@@ -1076,6 +1079,9 @@ public class WxPubController extends BaseController {
         Optional<MerchantInfo> merchantInfo = merchantInfoService.selectById(userInfoOptional.get().getMerchantId());
         if(!merchantInfo.isPresent()){
             return CommonResponse.simpleResponse(-2, "未登录");
+        }
+        if(merchantInfo.get().getStatus()!= EnumMerchantStatus.PASSED.getId()&&merchantInfo.get().getStatus()!= EnumMerchantStatus.FRIEND.getId()){
+            return CommonResponse.simpleResponse(-2, "信息未完善或待审核");
         }
         String creditCardNo = creditCardAuthenRequest.getCreditCard();
         String creditCardShort = creditCardNo.substring(creditCardNo.length()-4,creditCardNo.length());
@@ -1131,6 +1137,9 @@ public class WxPubController extends BaseController {
         if(!merchantInfo.isPresent()){
             return CommonResponse.simpleResponse(-2, "未登录");
         }
+        if(merchantInfo.get().getStatus()!= EnumMerchantStatus.PASSED.getId()&&merchantInfo.get().getStatus()!= EnumMerchantStatus.FRIEND.getId()){
+            return CommonResponse.simpleResponse(-2, "信息未完善或待审核");
+        }
         continueBankInfoRequest.setId(merchantInfo.get().getId());
         merchantInfoService.updateBranchInfo(continueBankInfoRequest);
         Optional<MerchantInfo> merchantInfo1 = merchantInfoService.selectById(userInfoOptional.get().getMerchantId());
@@ -1161,6 +1170,9 @@ public class WxPubController extends BaseController {
         Optional<MerchantInfo> merchantInfo = merchantInfoService.selectById(userInfoOptional.get().getMerchantId());
         if(!merchantInfo.isPresent()){
             return CommonResponse.simpleResponse(-2, "未登录");
+        }
+        if(merchantInfo.get().getStatus()!= EnumMerchantStatus.PASSED.getId()&&merchantInfo.get().getStatus()!= EnumMerchantStatus.FRIEND.getId()){
+            return CommonResponse.simpleResponse(-2, "信息未完善或待审核");
         }
         MerchantChannelRateRequest merchantChannelRateRequest = new MerchantChannelRateRequest();
         merchantChannelRateRequest.setMerchantId(merchantInfo.get().getId());

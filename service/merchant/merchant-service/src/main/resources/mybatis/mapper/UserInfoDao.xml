@@ -44,9 +44,9 @@
             <if test="openId != null">
                 open_id,
             </if>
-            <if test="nickName != null">
-                nick_name,
-            </if>
+            <!--<if test="nickName != null">-->
+                <!--nick_name,-->
+            <!--</if>-->
             <if test="headImgUrl != null">
                 head_img_url,
             </if>
@@ -76,9 +76,9 @@
             <if test="openId!=null">
                 #{openId},
             </if>
-            <if test="nickName!=null">
-                #{nickName},
-            </if>
+            <!--<if test="nickName!=null">-->
+                <!--#{nickName},-->
+            <!--</if>-->
             <if test="headImgUrl!=null">
                 #{headImgUrl},
             </if>

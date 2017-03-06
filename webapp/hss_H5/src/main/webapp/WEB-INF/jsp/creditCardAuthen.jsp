@@ -153,15 +153,15 @@
     <div id="submit" class="submit">确定</div>
   </div>
 
-  <div class="layer" id="layer">
-    <div class="space">
-      <div class="space-title">
-        提示
+  <div class="message-space" id="layer">
+    <div class="message-box">
+      <div class="message-box-head">提示</div>
+      <div class="message-box-body">
+        该通道正在支付公司注册中<br>请明天再使用该通道
       </div>
-      <div class="space-cont">
-        <div class="cont-detail">该通道正在支付公司注册中<br>请明天再使用该通道</div>
-        <div class="operation">
-          <div class="layer-submit" id="cancel">确定</div>
+      <div class="message-box-foot">
+        <div class="message-enter" id="cancel">
+          确定
         </div>
       </div>
     </div>
