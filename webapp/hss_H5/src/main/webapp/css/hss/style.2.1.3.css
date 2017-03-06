@@ -271,6 +271,71 @@ span {
 input:focus {
   border: none;
 }
+.message-space {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 99;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+}
+.message-space .message-box {
+  width: 85%;
+  height: auto;
+  border-radius: 10px;
+  background-color: #FFF;
+  position: absolute;
+  top: 45%;
+  left: 50%;
+  transform: translate3d(-50%, -50%, 0);
+  overflow: hidden;
+}
+.message-space .message-box .message-box-head {
+  height: 45px;
+  line-height: 45px;
+  font-size: 16px;
+  color: #5a5a5a;
+  font-weight: bold;
+}
+.message-space .message-box .message-box-body {
+  font-size: 16px;
+  color: #5a5a5a;
+  padding: 5px 0 25px 0;
+  line-height: 28px;
+}
+.message-space .message-box .message-box-foot {
+  height: 50px;
+  line-height: 50px;
+  border-top: 1px solid #e6e8f1;
+  position: relative;
+}
+.message-space .message-box .message-box-foot .message-enter {
+  font-size: 16px;
+  color: #036ad1;
+}
+.message-space .message-box .message-box-foot .message-cancel {
+  width: 50%;
+  float: left;
+  font-size: 16px;
+  color: #036ad1;
+}
+.message-space .message-box .message-box-foot .message-line {
+  width: 1px;
+  height: 30px;
+  background-color: #e6e8f1;
+  position: absolute;
+  top: 10px;
+  left: 50%;
+}
+.message-space .message-box .message-box-foot .message-submit {
+  width: 50%;
+  float: left;
+  font-size: 16px;
+  color: #036ad1;
+  font-weight: bold;
+}
 #reg,
 #login {
   overflow: auto;

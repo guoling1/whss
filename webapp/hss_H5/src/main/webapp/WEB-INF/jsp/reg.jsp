@@ -44,17 +44,19 @@
   </div>
   <a class="login" href="/sqb/login">已有账号，直接登录</a>
 
-  <div class="layer" id="layer">
-    <div class="space">
-      <div class="space-title">
-        手机号已注册
-        <div class="xx" id="xx"></div>
+  <div class="message-space" id="layer">
+    <div class="message-box">
+      <div class="message-box-head">手机号已注册</div>
+      <div class="message-box-body">
+        手机号已经注册<br>确认使用该手机号登录？
       </div>
-      <div class="space-cont">
-        <div class="cont-detail">手机号已经注册，确认使用该手机号登录？</div>
-        <div class="operation">
-          <div class="cancel" id="cancel">取消</div>
-          <div class="submit" id="login">登录</div>
+      <div class="message-box-foot">
+        <div class="message-cancel" id="cancel">
+          待会儿再说
+        </div>
+        <div class="message-line"></div>
+        <div class="message-submit" id="login">
+          去补全
         </div>
       </div>
     </div>

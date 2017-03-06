@@ -17,7 +17,6 @@ const submit = document.getElementById('submit');
 const invite = document.getElementById('invite');
 const inviteCode = document.getElementById('inviteCode');
 const layer = document.getElementById('layer');
-const xx = document.getElementById('xx');
 const cancel = document.getElementById('cancel');
 const login = document.getElementById('login');
 // 引入浏览器特性处理
@@ -47,10 +46,6 @@ sendCode.addEventListener('click', function () {
       })
     }
   }
-});
-
-xx.addEventListener('click', function () {
-  layer.style.display = 'none';
 });
 
 cancel.addEventListener('click', function () {
