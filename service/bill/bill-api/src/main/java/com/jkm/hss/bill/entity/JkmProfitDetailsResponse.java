@@ -14,6 +14,26 @@ import java.util.Date;
 public class JkmProfitDetailsResponse {
 
     /**
+     * 结算周期
+     */
+    private String settleType;
+
+    /**
+     * 账户id
+     */
+    private long ids;
+
+    /**
+     * 代理商级别
+     */
+    private int level;
+
+    /**
+     * 分润方类型
+     */
+    private String profitType;
+
+    /**
      * yu
      * 业务类型
      * {@link com.jkm.hss.account.enums.EnumSplitBusinessType}

@@ -9,6 +9,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -23,7 +26,8 @@ public class ProfitServiceImpl implements ProfitService {
 
     @Override
     public List<JkmProfitDetailsResponse> selectProfitDetails(ProfitDetailsRequest req) {
-        List<JkmProfitDetailsResponse> list = profitDao.selectProfitDetails(req);
+        ProfitDetailsRequest request =selectTime(req);
+        List<JkmProfitDetailsResponse> list = profitDao.selectProfitDetails(request);
         if (list!=null){
             for (int i=0;i<list.size();i++){
                 if (list.get(i).getBusinessType().equals("hssPay")){
@@ -43,8 +47,24 @@ public class ProfitServiceImpl implements ProfitService {
         return list;
     }
 
+    private ProfitDetailsRequest selectTime(ProfitDetailsRequest req) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        Date dt= new Date();
+
+        try {
+            String d = sdf.format(dt);
+            dt = sdf.parse(d);
+            req.setSplitDate(dt);
+        } catch (ParseException e) {
+            log.debug("时间转换异常");
+            e.printStackTrace();
+        }
+        return req;
+    }
+
     @Override
     public int selectProfitDetailsCount(ProfitDetailsRequest req) {
-        return  profitDao.selectProfitDetailsCount(req);
+        ProfitDetailsRequest request =selectTime(req);
+        return  profitDao.selectProfitDetailsCount(request);
     }
 }
