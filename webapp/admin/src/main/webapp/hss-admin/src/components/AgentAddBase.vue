@@ -116,8 +116,8 @@
                     <el-select v-model="province" placeholder="请选择" size="small">
                       <el-option
                         v-for="province in provinces"
-                        :label="province.aname"
-                        :value="province.aname">
+                        :label="province.name"
+                        :value="province.name">
                       </el-option>
                     </el-select>
                   </div>
@@ -126,8 +126,8 @@
                     <el-select v-model="city" placeholder="请选择" size="small">
                       <el-option
                         v-for="city in citys"
-                        :label="city.aname"
-                        :value="city.aname">
+                        :label="city.name"
+                        :value="city.name">
                       </el-option>
                     </el-select>
                   </div>
@@ -330,10 +330,10 @@
         }
         if (this.$data.province != '') {
           for (var i = 0; i < this.$data.provinces.length; i++) {
-            if (this.$data.provinces[i].aname == this.$data.province) {
+            if (this.$data.provinces[i].name == this.$data.province) {
               this.$data.query.belongProvinceCode= this.$data.provinces[i].code
               this.$data.query.belongProvinceName= this.$data.province
-              this.$data.citys = this.$data.provinces[i].list
+              this.$data.citys = this.$data.provinces[i].cityList
             }
           }
         }
@@ -342,7 +342,7 @@
         if (val != oldval) {
           this.$data.query.belongCityName = this.$data.city;
           for(var i=0;i<this.$data.citys.length;i++){
-            if(this.$data.citys[i].aname == this.$data.city){
+            if(this.$data.citys[i].name == this.$data.city){
               this.$data.query.belongCityCode = this.$data.citys[i].code;
             }
           }
