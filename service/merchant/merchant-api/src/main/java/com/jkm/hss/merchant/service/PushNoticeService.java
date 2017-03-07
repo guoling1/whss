@@ -43,7 +43,7 @@ public interface PushNoticeService {
      * @param text
      * @return
      */
-    void updateNotice(String title,String text,int id);
+    int updateNotice(String title,String text,int id);
 
     /**
      * 删除公告
