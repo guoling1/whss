@@ -25,6 +25,7 @@ import com.jkm.hss.merchant.enums.*;
 import com.jkm.hss.merchant.helper.MerchantSupport;
 import com.jkm.hss.merchant.helper.WxPubUtil;
 import com.jkm.hss.merchant.helper.request.*;
+import com.jkm.hss.merchant.helper.response.BankListResponse;
 import com.jkm.hss.merchant.helper.response.MerchantChannelRateResponse;
 import com.jkm.hss.merchant.service.*;
 import com.jkm.hss.notifier.enums.EnumNoticeType;
@@ -1249,8 +1250,38 @@ public class WxPubController extends BaseController {
         if(merchantInfo.get().getStatus()!= EnumMerchantStatus.PASSED.getId()&&merchantInfo.get().getStatus()!= EnumMerchantStatus.FRIEND.getId()){
             return CommonResponse.simpleResponse(-2, "信息未完善或待审核");
         }
-        List<AccountBank> accountBankList = accountBankService.selectAll(merchantInfo.get().getAccountId());
+        List<BankListResponse> accountBankList = accountBankService.selectAll(merchantInfo.get().getAccountId());
         return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", accountBankList);
     }
 
+    /**
+     * 删除信用卡
+     * @param request
+     * @param response
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "deleteCreditCard", method = RequestMethod.POST)
+    public CommonResponse deleteCreditCard(final HttpServletRequest request, final HttpServletResponse response,@RequestBody final DeleteCreditCardRequest deleteCreditCardRequest) {
+        if(!super.isLogin(request)){
+            return CommonResponse.simpleResponse(-2, "未登录");
+        }
+        Optional<UserInfo> userInfoOptional = userInfoService.selectByOpenId(super.getOpenId(request));
+        if(!userInfoOptional.isPresent()){
+            return CommonResponse.simpleResponse(-2, "未登录");
+        }
+        Optional<MerchantInfo> merchantInfo = merchantInfoService.selectById(userInfoOptional.get().getMerchantId());
+        if(!merchantInfo.isPresent()){
+            return CommonResponse.simpleResponse(-2, "未登录");
+        }
+        if(merchantInfo.get().getStatus()!= EnumMerchantStatus.PASSED.getId()&&merchantInfo.get().getStatus()!= EnumMerchantStatus.FRIEND.getId()){
+            return CommonResponse.simpleResponse(-2, "信息未完善或待审核");
+        }
+        Optional<AccountBank> accountBankOptional = accountBankService.selectById(deleteCreditCardRequest.getBankId());
+        if(accountBankOptional.isPresent()&&accountBankOptional.get().getCardType()!=EnumAccountBank.CREDIT.getId()){
+            return CommonResponse.simpleResponse(-1, "只能删除信用卡");
+        }
+        accountBankService.deleteCreditCard(deleteCreditCardRequest.getBankId());
+        return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "删除成功");
+    }
 }

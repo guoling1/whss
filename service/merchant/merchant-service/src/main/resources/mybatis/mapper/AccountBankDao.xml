@@ -141,4 +141,12 @@
         branch_county_name=#{countyName}
         WHERE id = #{bankId}
     </update>
+
+    <!-- 删除信用卡-->
+    <update id="deleteCreditCard">
+        UPDATE tb_account_bank
+        set
+        status=1
+        WHERE id = #{id}
+    </update>
 </mapper>

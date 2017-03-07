@@ -3,6 +3,7 @@ package com.jkm.hss.merchant.service;
 import com.google.common.base.Optional;
 import com.jkm.hss.merchant.entity.AccountBank;
 import com.jkm.hss.merchant.helper.request.ContinueBankInfoRequest;
+import com.jkm.hss.merchant.helper.response.BankListResponse;
 
 import java.util.List;
 
@@ -80,7 +81,7 @@ public interface AccountBankService {
      * @param accountId
      * @return
      */
-    List<AccountBank> selectAll(long accountId);
+    List<BankListResponse> selectAll(long accountId);
 
     /**
      * 修改支行信息
@@ -88,4 +89,10 @@ public interface AccountBankService {
      * @return
      */
     int updateBranchInfo(ContinueBankInfoRequest continueBankInfoRequest);
+    /**
+     * 删除信用卡
+     * @param id
+     * @return
+     */
+    int deleteCreditCard(long id);
 }

@@ -7,13 +7,16 @@ import com.jkm.hss.merchant.entity.AccountBank;
 import com.jkm.hss.merchant.entity.MerchantInfo;
 import com.jkm.hss.merchant.enums.EnumAccountBank;
 import com.jkm.hss.merchant.enums.EnumBankDefault;
+import com.jkm.hss.merchant.helper.MerchantSupport;
 import com.jkm.hss.merchant.helper.request.ContinueBankInfoRequest;
+import com.jkm.hss.merchant.helper.response.BankListResponse;
 import com.jkm.hss.merchant.service.AccountBankService;
 import com.jkm.hss.merchant.service.MerchantInfoService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -172,13 +175,40 @@ public class AccountBankServiceImpl implements AccountBankService{
      * @return
      */
     @Override
-    public List<AccountBank> selectAll(long accountId) {
-        List<AccountBank> accountBankList = this.selectCreditCardList(accountId);
+    public List<BankListResponse> selectAll(long accountId) {
+        List<AccountBank> accountBankList = new ArrayList<AccountBank>();
+        accountBankList = this.selectCreditCardList(accountId);
         AccountBank accountBank = this.getDefault(accountId);
         if(accountBank!=null){
             accountBankList.add(accountBank);
         }
-        return accountBankList;
+        List<BankListResponse> bankListResponseList = new ArrayList<BankListResponse>();
+        if(accountBankList.size()>0){
+            for(int i=0;i<accountBankList.size();i++){
+                AccountBank accountBank1 = accountBankList.get(i);
+                BankListResponse bankListResponse = new BankListResponse();
+                bankListResponse.setBankId(accountBank1.getId());
+                if(accountBank1.getBankNo()!=null&&!"".equals(accountBank1.getBankNo())){
+                    String bankNo = MerchantSupport.decryptBankCard(accountBank1.getBankNo());
+                    bankListResponse.setBankNo(bankNo.substring(bankNo.length()-4,bankNo.length()));
+                }
+                bankListResponse.setBankName(accountBank1.getBankName());
+                if(accountBank1.getReserveMobile()!=null&&!"".equals(accountBank1.getReserveMobile())){
+                    String mobile = MerchantSupport.decryptBankCard(accountBank1.getReserveMobile());
+                    bankListResponse.setReserveMobile(mobile.substring(0,3)+"******"+mobile.substring(mobile.length()-2,mobile.length()));
+                }
+                bankListResponse.setBankBin(accountBank1.getBankBin());
+                bankListResponse.setBranchName(accountBank1.getBranchName());
+                bankListResponse.setCardType(accountBank1.getCardType());
+                if(accountBank1.getBranchCode()!=null&&!"".equals(accountBank1.getBranchCode())){
+                    bankListResponse.setHasBranch(1);
+                }else{
+                    bankListResponse.setHasBranch(0);
+                }
+                bankListResponseList.add(bankListResponse);
+            }
+        }
+        return bankListResponseList;
     }
 
     /**
@@ -190,5 +220,16 @@ public class AccountBankServiceImpl implements AccountBankService{
     @Override
     public int updateBranchInfo(ContinueBankInfoRequest continueBankInfoRequest) {
         return accountBankDao.updateBranchInfo(continueBankInfoRequest);
+    }
+
+    /**
+     * 删除信用卡
+     *
+     * @param id
+     * @return
+     */
+    @Override
+    public int deleteCreditCard(long id) {
+        return accountBankDao.deleteCreditCard(id);
     }
 }

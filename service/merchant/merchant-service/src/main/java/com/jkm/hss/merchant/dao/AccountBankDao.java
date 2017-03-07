@@ -79,4 +79,12 @@ public interface AccountBankDao {
      */
     int updateBranchInfo(ContinueBankInfoRequest continueBankInfoRequest);
 
+    /**
+     * 删除信用卡
+     * @param id
+     * @return
+     */
+    int deleteCreditCard(@Param("id") long id);
+
+
 }
