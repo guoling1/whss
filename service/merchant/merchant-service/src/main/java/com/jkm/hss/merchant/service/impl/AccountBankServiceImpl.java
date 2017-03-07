@@ -232,4 +232,35 @@ public class AccountBankServiceImpl implements AccountBankService{
     public int deleteCreditCard(long id) {
         return accountBankDao.deleteCreditCard(id);
     }
+
+    /**
+     * 更改默认银行卡
+     *
+     * @param accountId
+     * @param bankNo
+     * @param reserveMobile
+     * @return
+     */
+    @Override
+    public int changeBankCard(long accountId, String bankNo, String reserveMobile) {
+        this.reset(accountId);
+        AccountBank accountBank = new AccountBank();
+        accountBank.setAccountId(accountId);
+//        accountBank.setBankNo(merchantInfo.getBankNo());
+//        accountBank.setBankName(merchantInfo.getBankName());
+//        accountBank.setReserveMobile(merchantInfo.getReserveMobile());
+//        accountBank.setBranchCode(merchantInfo.getBranchCode());
+//        accountBank.setBranchName(merchantInfo.getBranchName());
+//        accountBank.setBranchProvinceCode(merchantInfo.getProvinceCode());
+//        accountBank.setBranchProvinceName(merchantInfo.getProvinceName());
+//        accountBank.setBranchCityCode(merchantInfo.getCityCode());
+//        accountBank.setBranchCityName(merchantInfo.getCityName());
+//        accountBank.setBranchCountyCode(merchantInfo.getCountyCode());
+//        accountBank.setBranchCountyName(merchantInfo.getCountyName());
+//        accountBank.setCardType(EnumAccountBank.DEBITCARD.getId());
+//        accountBank.setIsAuthen(merchantInfo.getIsAuthen());
+//        accountBank.setIsDefault(EnumBankDefault.DEFAULT.getId());
+//        accountBank.setBankBin(merchantInfo.getBankBin());
+        return this.insert(accountBank);
+    }
 }
