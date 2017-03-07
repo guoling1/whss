@@ -43,4 +43,11 @@ public interface QueryMerchantInfoRecordService {
      * @return
      */
     SettleResponse getSettle(long id);
+
+    /**
+     * 查询推荐信息
+     * @param id
+     * @return
+     */
+    MerchantInfoResponse getrecommenderInfo(long id);
 }
