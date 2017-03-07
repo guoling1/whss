@@ -116,7 +116,7 @@
     <!-- 是否有银行卡信息 -->
     <select id="isHasAccountBank" resultType="com.jkm.hss.merchant.entity.AccountBank">
         SELECT count(id) FROM tb_account_bank
-        WHERE account_id = #{accountId} and status=0
+        WHERE account_id = #{accountId} and status=0 and card_type=0
     </select>
 
     <!-- 根据主键id查询 -->

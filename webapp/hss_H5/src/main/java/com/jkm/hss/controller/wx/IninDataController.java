@@ -12,6 +12,7 @@ import com.jkm.hss.merchant.entity.MerchantChannelRate;
 import com.jkm.hss.merchant.entity.MerchantInfo;
 import com.jkm.hss.merchant.enums.EnumCommonStatus;
 import com.jkm.hss.merchant.enums.EnumEnterNet;
+import com.jkm.hss.merchant.service.AccountBankService;
 import com.jkm.hss.merchant.service.MerchantChannelRateService;
 import com.jkm.hss.merchant.service.MerchantInfoService;
 import com.jkm.hss.product.dao.BasicChannelDao;
@@ -55,6 +56,8 @@ public class IninDataController extends BaseController{
     private MerchantChannelRateService merchantChannelRateService;
     @Autowired
     private ProductChannelDetailService productChannelDetailService;
+    @Autowired
+    private AccountBankService accountBankService;
 
     /**
      * 初始化代理商数据
@@ -216,6 +219,20 @@ public class IninDataController extends BaseController{
                 }
             }
             log.info("第"+i+"数据初始化end，商户编号"+merchantInfoList.get(i).getId());
+        }
+    }
+
+    /**
+     * 初始化默认银行卡
+     */
+    @ResponseBody
+    @RequestMapping(value = "initBank", method = RequestMethod.GET)
+    public void initBank(final HttpServletRequest request, final HttpServletResponse response) {
+        log.info("开始初始化默认银行卡数据");
+        List<MerchantInfo> merchantInfoList = merchantInfoService.getAll();
+        for(int i=0;i<merchantInfoList.size();i++){
+            log.info("第"+i+"银行卡数据初始化start，商户编号"+merchantInfoList.get(i).getId());
+            accountBankService.initAccountBank(merchantInfoList.get(i).getId(),merchantInfoList.get(i).getAccountId());
         }
     }
 }
