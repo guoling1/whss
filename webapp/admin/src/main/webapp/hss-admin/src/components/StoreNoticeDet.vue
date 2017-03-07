@@ -1,54 +1,3 @@
-<!--<template>
-  <div id="StoreNoticeDet">
-    <div class="col-md-12">
-      <div class="box" style="margin-top:15px;overflow: hidden">
-        <div class="box-header">
-          <h3 class="box-title">发布消息</h3>
-        </div>
-        <div class="box-body">
-          <textarea id="textarea1">
-            <p>请输入内容...</p>
-          </textarea>
-        </div>
-      </div>
-    </div>
-  </div>
-</template>
-
-<script lang="babel">
-  export default{
-    name: 'deal',
-    data(){
-      return {
-        query: {
-          pageNo: 1,
-          pageSize: 10,
-          startTime: '',
-          endTime: '',
-        },
-        date: '',
-        records: [],
-        count: 0,
-        total: 0,
-        loading: true,
-        url: ''
-      }
-    },
-    created: function () {
-      // 获取元素
-      var textarea = document.getElementById('textarea1');
-      // 生成编辑器
-      var editor = new wangEditor(textarea);
-      editor.create();
-    },
-    methods: {},
-  }
-</script>
-
-<style scoped lang="less" rel="stylesheet/less">
-
-
-</style>-->
 <template lang="html">
   <div id="StoreNoticeDet">
     <div class="col-md-12">
@@ -85,6 +34,23 @@
               <div class="grid-content bg-purple-light right"></div>
             </el-col>
           </el-row>
+          <!--<el-row type="flex" class="row-bg" justify="left">
+            <el-col :span="2">
+              <div class="alignRight" style="line-height: 42px">类型:</div>
+            </el-col>
+            <el-col :span="10">
+              <div class="grid-content bg-purple-light">
+                <el-select v-model="query.xx" placeholder="请选择">
+                  <el-option label="维护" value="维护"></el-option>
+                  <el-option label="通知" value="通知"></el-option>
+                </el-select>
+              </div>
+            </el-col>
+            <el-col :span="6">
+              <div class="grid-content bg-purple-light" style="margin: 0 15px;">
+              </div>
+            </el-col>
+          </el-row>-->
           <el-row type="flex" class="row-bg" justify="left">
             <el-col :span="2">
               <div class="alignRight">正文:</div>
