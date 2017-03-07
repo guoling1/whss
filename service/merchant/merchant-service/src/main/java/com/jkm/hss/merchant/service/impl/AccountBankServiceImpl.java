@@ -1,9 +1,11 @@
 package com.jkm.hss.merchant.service.impl;
 
 import com.google.common.base.Optional;
+import com.jkm.base.common.entity.CommonResponse;
 import com.jkm.hss.merchant.dao.AccountBankDao;
 import com.jkm.hss.merchant.dao.MerchantInfoDao;
 import com.jkm.hss.merchant.entity.AccountBank;
+import com.jkm.hss.merchant.entity.BankCardBin;
 import com.jkm.hss.merchant.entity.MerchantInfo;
 import com.jkm.hss.merchant.enums.EnumAccountBank;
 import com.jkm.hss.merchant.enums.EnumBankDefault;
@@ -11,8 +13,11 @@ import com.jkm.hss.merchant.helper.MerchantSupport;
 import com.jkm.hss.merchant.helper.request.ContinueBankInfoRequest;
 import com.jkm.hss.merchant.helper.response.BankListResponse;
 import com.jkm.hss.merchant.service.AccountBankService;
+import com.jkm.hss.merchant.service.BankCardBinService;
 import com.jkm.hss.merchant.service.MerchantInfoService;
+import com.jkm.hss.merchant.service.VerifyIdService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -29,6 +34,10 @@ public class AccountBankServiceImpl implements AccountBankService{
     private AccountBankDao accountBankDao;
     @Autowired
     private MerchantInfoService merchantInfoService;
+    @Autowired
+    private BankCardBinService bankCardBinService;
+    @Autowired
+    private VerifyIdService verifyIdService;
 
     /**
      * 是否有银行卡信息
@@ -236,31 +245,34 @@ public class AccountBankServiceImpl implements AccountBankService{
     /**
      * 更改默认银行卡
      *
-     * @param accountId
+     * @param merchantId
      * @param bankNo
      * @param reserveMobile
      * @return
      */
     @Override
-    public int changeBankCard(long accountId, String bankNo, String reserveMobile) {
-        this.reset(accountId);
+    public int changeBankCard(long merchantId, String bankNo, String reserveMobile) {
+        Optional<MerchantInfo> merchantInfoOptional = merchantInfoService.selectById(merchantId);
+        this.reset(merchantInfoOptional.get().getAccountId());
         AccountBank accountBank = new AccountBank();
-        accountBank.setAccountId(accountId);
-//        accountBank.setBankNo(merchantInfo.getBankNo());
-//        accountBank.setBankName(merchantInfo.getBankName());
-//        accountBank.setReserveMobile(merchantInfo.getReserveMobile());
-//        accountBank.setBranchCode(merchantInfo.getBranchCode());
-//        accountBank.setBranchName(merchantInfo.getBranchName());
-//        accountBank.setBranchProvinceCode(merchantInfo.getProvinceCode());
-//        accountBank.setBranchProvinceName(merchantInfo.getProvinceName());
-//        accountBank.setBranchCityCode(merchantInfo.getCityCode());
-//        accountBank.setBranchCityName(merchantInfo.getCityName());
-//        accountBank.setBranchCountyCode(merchantInfo.getCountyCode());
-//        accountBank.setBranchCountyName(merchantInfo.getCountyName());
-//        accountBank.setCardType(EnumAccountBank.DEBITCARD.getId());
-//        accountBank.setIsAuthen(merchantInfo.getIsAuthen());
-//        accountBank.setIsDefault(EnumBankDefault.DEFAULT.getId());
-//        accountBank.setBankBin(merchantInfo.getBankBin());
+        //校验身份4要素
+        final String mobile = MerchantSupport.decryptMobile(merchantInfoOptional.get().getMobile());
+        final String bankcard = MerchantSupport.encryptBankCard(bankNo);
+        final String idCard = merchantInfoOptional.get().getIdentity();
+        final String bankReserveMobile = MerchantSupport.encryptMobile(reserveMobile);
+        final String realName = merchantInfoOptional.get().getName();
+        final Pair<Integer, String> pair = this.verifyIdService.verifyID(mobile, bankcard, idCard, bankReserveMobile, realName);
+        if (0 == pair.getLeft()) {
+            accountBank.setIsAuthen("1");
+        }
+        accountBank.setAccountId(merchantInfoOptional.get().getAccountId());
+        accountBank.setBankNo(bankcard);
+        final Optional<BankCardBin> bankCardBinOptional = this.bankCardBinService.analyseCardNo(bankNo);
+        accountBank.setBankName(bankCardBinOptional.get().getBankName());
+        accountBank.setReserveMobile(bankReserveMobile);
+        accountBank.setCardType(EnumAccountBank.DEBITCARD.getId());
+        accountBank.setIsDefault(EnumBankDefault.DEFAULT.getId());
+        accountBank.setBankBin(bankCardBinOptional.get().getShorthand());
         return this.insert(accountBank);
     }
 }
