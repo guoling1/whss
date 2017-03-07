@@ -23,6 +23,10 @@ public class AccountBank extends BaseEntity {
      */
     private String bankName;
     /**
+     * 预留手机号
+     */
+    private String reserveMobile;
+    /**
      * 支行编码
      */
     private String branchCode;
