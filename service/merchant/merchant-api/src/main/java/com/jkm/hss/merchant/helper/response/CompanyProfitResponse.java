@@ -19,7 +19,7 @@ public class CompanyProfitResponse {
     /**
      * 一级代理商id
      */
-    private int firstLevelDealerId;
+    private long firstLevelDealerId;
 
     /**
      * 代理商级别

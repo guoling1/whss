@@ -189,6 +189,11 @@ public class MerchantTradeResponse {
     private int payChannelSign;
 
     /**
+     * 支付渠道名
+     */
+    private String payChannelSigns;
+
+    /**
      * 绑卡姓名
      */
     private String name;
