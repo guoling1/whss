@@ -9,168 +9,8 @@
   <meta name="viewport"
         content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
   <title>好收收</title>
+  <link rel="stylesheet" href="/css/hss/style.2.1.3.css">
   <link rel="stylesheet" href="http://static.jinkaimen.cn/weui/weui.css">
-  <style>
-    {
-      width: 100%;
-      height: 100%;
-      overflow: auto;
-    }
-
-    .main {
-      padding-bottom: 20px;
-    }
-
-    .process {
-      height: 47px;
-      padding: 0 15px;
-      background-color: #61729c;
-    }
-
-    .steps {
-      float: left;
-      width: 33.33%;
-      height: 47px;
-      line-height: 47px;
-      font-size: 16px;
-      color: #a7b0d3;
-      text-align: center;
-    }
-
-    .steps span {
-      display: inline-block;
-      width: 16px;
-      height: 16px;
-      line-height: 16px;
-      font-size: 11px;
-      color: #a7b0d3;
-      text-align: center;
-      border: 1px solid #a7b0d3;
-      border-radius: 50%;
-      margin-right: 9px;
-    }
-
-    .steps.active {
-      color: #FFF;
-    }
-
-    .steps.active span {
-      background-color: #FFF;
-      color: #61729c;
-      border: none;
-    }
-
-    .top {
-      width: 100%;
-      height: auto;
-      background-color: #FFF;
-      padding-top: 15px;
-    }
-
-    .bottom {
-      width: 100%;
-      border-top: 8px solid #f4f5f8;
-    }
-
-    .group {
-      height: 50px;
-      line-height: 50px;
-      border-bottom: 1px solid #edeef5;
-      padding: 0 15px;
-    }
-
-    .group .name {
-      display: inline-block;
-      width: 50px;
-      line-height: 50px;
-      margin-right: 15px;
-      font-size: 15px;
-      color: #4a5171;
-      text-align: left;
-    }
-
-    .group .file {
-      width: 1px;
-      line-height: 50px;
-      text-align: left;
-      font-size: 15px;
-      color: #7079a0;
-      position: relative;
-    }
-
-    .group .file div {
-      width: 100%;
-      height: 100%;
-      opacity: 0;
-      position: absolute;
-      left: 0;
-      top: 0;
-    }
-
-    .group .ipt {
-      border: none;
-      font-size: 16px;
-      color: #4a5171;
-    }
-
-    .group ::-webkit-input-placeholder {
-      color: #aab2d2;
-    }
-
-    .group :-moz-placeholder {
-      color: #aab2d2;
-    }
-
-    .group ::-moz-placeholder {
-      color: #aab2d2;
-    }
-
-    .group :-ms-input-placeholder {
-      color: #aab2d2;
-    }
-
-    .group .btn {
-      display: inline-block;
-      float: right;
-      line-height: 50px;
-      font-size: 12px;
-      color: #7079a0;
-    }
-
-    .next {
-      padding: 26px 15px 0;
-    }
-
-    .next div {
-      width: 100%;
-      height: 50px;
-      line-height: 50px;
-      font-size: 16px;
-      color: #FFF;
-      text-align: center;
-      background-color: #7086bd;
-      border-radius: 5px;
-    }
-
-    .sample {
-      display: none;
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.5);
-      z-index: 89;
-    }
-
-    .sample img {
-      position: absolute;
-      top: 45%;
-      left: 50%;
-      width: 90%;
-      transform: translate3d(-50%, -50%, 0);
-    }
-  </style>
 </head>
 <body>
 
@@ -187,23 +27,28 @@
     </div>
   </div>
   <div class="main">
-    <div class="top">
+    <div class="space">
       <div class="group">
         <div class="name">店铺名</div>
         <input type="text" class="ipt" placeholder="例如某某小卖部" id="merchantName">
       </div>
       <div class="group">
-        <div class="name">地址</div>
-        <input type="text" class="ipt" placeholder="输入店铺地址" id="address">
+        <div class="name">所在地区</div>
+        <input type="text" class="ipt" placeholder="点击选择" readonly>
+      </div>
+      <div class="group">
+        <div class="name">详细地址</div>
+        <input type="text" class="ipt" placeholder="店铺详细地址" id="address">
       </div>
     </div>
-    <div class="bottom">
+    <div class="space">
       <div class="group">
         <div class="name">结算卡</div>
         <input type="number" class="ipt" placeholder="输入本人名下借记卡号" id="bankNo">
+        <div class="btn" id="bankShow">支持的银行</div>
       </div>
       <div class="group">
-        <div class="name">上传</div>
+        <div class="name">照片</div>
         <a href="javascript:void(0);" class="file" id="chooseImage">
           <span id="bankText">点击上传结算卡正面照</span>
 
@@ -212,6 +57,8 @@
 
         <div class="btn" id="sampleShow">查看示例</div>
       </div>
+    </div>
+    <div class="space">
       <div class="group">
         <div class="name">开户名</div>
         <input type="text" class="ipt" placeholder="本人银行卡开户姓名" id="username">
@@ -230,15 +77,31 @@
         <div class="name">验证码</div>
         <input type="number" class="ipt" placeholder="输入短信验证码" id="code">
       </div>
-      <div class="next" id="submit">
-        <div>下一步</div>
+    </div>
+    <div class="next" id="submit">
+      <div>下一步</div>
+    </div>
+    <div class="skip">
+      跳过 >
+    </div>
+    <input type="hidden" id="bankPic"/>
+  </div>
+
+  <div class="sample" id="bank">
+    <div class="sample-box">
+      <div class="sample-box-head">
+        结算卡支持银行
+        <span class="sample-xx" id="bankHide"></span>
       </div>
-      <input type="hidden" id="bankPic"/>
+      <img class="sample-box-body" src="../../assets/zcbank.png" alt="">
+      <div class="sample-box-foot" id="bankEnter">
+        确定
+      </div>
     </div>
   </div>
 
   <div class="sample" id="sampleHide">
-    <img src="http://static.jinkaimen.cn/hss/assets/card-sample.png" alt="">
+    <img class="img" src="http://static.jinkaimen.cn/hss/assets/card-sample.png" alt="">
   </div>
 </div>
 </div>
@@ -269,6 +132,7 @@
   });
 </script>
 <script src="http://static.jinkaimen.cn/vendor/vendor.1.0.3.min.js"></script>
-<script src="http://static.jinkaimen.cn/hss/2.1.1/material.min.js"></script>
+<%--<script src="http://static.jinkaimen.cn/hss/2.1.1/material.min.js"></script>--%>
+<script src="/js/hss/2.1.1/material.min.js"></script>
 
 </html>
