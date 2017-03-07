@@ -1,6 +1,7 @@
 package com.jkm.hss.merchant.dao;
 
 import com.jkm.hss.merchant.entity.AccountBank;
+import com.jkm.hss.merchant.helper.request.ContinueBankInfoRequest;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
@@ -50,23 +51,32 @@ public interface AccountBankDao {
      */
     AccountBank getDefault(@Param("accountId") long accountId);
     /**
-     * 获取信用卡信息
+     * 获取最新信用卡信息
      * @param accountId
      * @return
      */
     AccountBank getCreditCard(@Param("accountId") long accountId);
 
     /**
-     * 是否有信用卡
+     * 查询信用卡列表
      * @param accountId
      * @return
      */
-    int isHasCreditCard(@Param("accountId") long accountId);
+    List<AccountBank> selectCreditCardList(@Param("accountId") long accountId);
+
+
     /**
-     * 查询银行卡列表
-     * @param accountId
+     * 根据主键查询
+     * @param id
      * @return
      */
-    List<AccountBank> selectAllByAccountId(@Param("accountId") long accountId);
+    AccountBank selectById(@Param("id") long id);
+
+    /**
+     * 修改支行信息
+     * @param continueBankInfoRequest
+     * @return
+     */
+    int updateBranchInfo(ContinueBankInfoRequest continueBankInfoRequest);
 
 }

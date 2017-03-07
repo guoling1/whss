@@ -1,6 +1,8 @@
 package com.jkm.hss.merchant.service;
 
+import com.google.common.base.Optional;
 import com.jkm.hss.merchant.entity.AccountBank;
+import com.jkm.hss.merchant.helper.request.ContinueBankInfoRequest;
 
 import java.util.List;
 
@@ -52,22 +54,38 @@ public interface AccountBankService {
      */
     AccountBank getDefault(long accountId);
     /**
-     * 获取信用卡信息
+     * 获取最新信用卡信息
      * @param accountId
      * @return
      */
     AccountBank getCreditCard(long accountId);
 
     /**
-     * 是否有信用卡
+     * 查询信用卡列表
      * @param accountId
      * @return
      */
-    int isHasCreditCard(long accountId);
+    List<AccountBank> selectCreditCardList(long accountId);
+
+
     /**
-     * 查询银行卡列表
+     * 根据主键id查询
+     * @param id
+     * @return
+     */
+    Optional<AccountBank> selectById(long id);
+
+    /**
+     * 我的银行卡列表
      * @param accountId
      * @return
      */
-    List<AccountBank> selectAllByAccountId(long accountId);
+    List<AccountBank> selectAll(long accountId);
+
+    /**
+     * 修改支行信息
+     * @param continueBankInfoRequest
+     * @return
+     */
+    int updateBranchInfo(ContinueBankInfoRequest continueBankInfoRequest);
 }

@@ -4,7 +4,7 @@
 <mapper namespace="com.jkm.hss.merchant.dao.AccountBankDao">
     <!-- 通用查询结果列-->
     <sql id="Base_Column_List">
-        id,	account_id,	bank_no,bank_name,branch_code,branch_name,branch_province_code,branch_province_name,
+        id,	account_id,	bank_no,bank_name,bank_bin,reserve_mobile,branch_code,branch_name,branch_province_code,branch_province_name,
         branch_city_code,branch_city_name,branch_county_code,branch_county_name,card_type,is_authen,is_default,
         status,create_time,	update_time
     </sql>
@@ -14,9 +14,11 @@
         INSERT INTO tb_account_bank (
             account_id,
             bank_no,
+            bank_bin,
             bank_name,
             branch_code,
             branch_name,
+            reserve_mobile,
             branch_province_code,
             branch_province_name,
             branch_city_code,
@@ -30,9 +32,11 @@
         )VALUES (
             #{accountId},
             #{bankNo},
+            #{bankBin},
             #{bankName},
             #{branchCode},
             #{branchName},
+            #{reserveMobile},
             #{branchProvinceCode},
             #{branchProvinceName},
             #{branchCityCode},
@@ -92,24 +96,21 @@
         WHERE account_id = #{accountId} and status=0 and card_type=0 and is_default=1
     </select>
 
-    <!-- 获取默认银行卡信息 -->
+    <!-- 获取最新信用卡信息 -->
     <select id="getCreditCard" resultType="com.jkm.hss.merchant.entity.AccountBank">
         SELECT
         <include refid="Base_Column_List" />
         FROM tb_account_bank
-        WHERE account_id = #{accountId} and status=0 and card_type=1
+        WHERE account_id = #{accountId} and status=0 and card_type=1 ORDER BY create_time limit 0,1
     </select>
 
-    <!-- 是否有信用卡 -->
-    <select id="isHasCreditCard" resultType="com.jkm.hss.merchant.entity.AccountBank">
-        SELECT count(id) FROM tb_account_bank
-        WHERE account_id = #{accountId} and status=0 and card_type=1
-    </select>
 
-    <!-- 查询银行卡列表 -->
-    <select id="selectAllByAccountId" resultType="com.jkm.hss.merchant.entity.AccountBank">
-        SELECT <include refid="Base_Column_List" /> FROM tb_account_bank
-        WHERE account_id = #{accountId}
+    <!-- 查询信用卡列表 -->
+    <select id="selectCreditCardList" resultType="com.jkm.hss.merchant.entity.AccountBank">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM tb_account_bank
+        WHERE account_id = #{accountId} and status=0 and card_type=1
     </select>
 
     <!-- 是否有银行卡信息 -->
@@ -117,4 +118,27 @@
         SELECT count(id) FROM tb_account_bank
         WHERE account_id = #{accountId} and status=0
     </select>
+
+    <!-- 根据主键id查询 -->
+    <select id="selectById" resultType="com.jkm.hss.merchant.entity.AccountBank">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM tb_account_bank
+        WHERE id = #{id} and status=0
+    </select>
+
+    <!-- 修改支行信息-->
+    <update id="updateBranchInfo">
+        UPDATE tb_account_bank
+        set
+        branch_code=#{branchCode},
+        branch_name=#{branchName},
+        branch_province_code=#{provinceCode},
+        branch_province_name=#{provinceName},
+        branch_city_code=#{cityCode},
+        branch_city_name=#{cityName},
+        branch_county_code=#{countyCode},
+        branch_county_name=#{countyName}
+        WHERE id = #{bankId}
+    </update>
 </mapper>

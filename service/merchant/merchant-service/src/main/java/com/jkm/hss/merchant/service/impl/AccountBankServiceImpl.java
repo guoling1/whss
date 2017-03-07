@@ -7,6 +7,7 @@ import com.jkm.hss.merchant.entity.AccountBank;
 import com.jkm.hss.merchant.entity.MerchantInfo;
 import com.jkm.hss.merchant.enums.EnumAccountBank;
 import com.jkm.hss.merchant.enums.EnumBankDefault;
+import com.jkm.hss.merchant.helper.request.ContinueBankInfoRequest;
 import com.jkm.hss.merchant.service.AccountBankService;
 import com.jkm.hss.merchant.service.MerchantInfoService;
 import lombok.extern.slf4j.Slf4j;
@@ -58,6 +59,7 @@ public class AccountBankServiceImpl implements AccountBankService{
         accountBank.setAccountId(accountId);
         accountBank.setBankNo(merchantInfo.getBankNo());
         accountBank.setBankName(merchantInfo.getBankName());
+        accountBank.setReserveMobile(merchantInfo.getReserveMobile());
         accountBank.setBranchCode(merchantInfo.getBranchCode());
         accountBank.setBranchName(merchantInfo.getBranchName());
         accountBank.setBranchProvinceCode(merchantInfo.getProvinceCode());
@@ -69,6 +71,7 @@ public class AccountBankServiceImpl implements AccountBankService{
         accountBank.setCardType(EnumAccountBank.DEBITCARD.getId());
         accountBank.setIsAuthen(merchantInfo.getIsAuthen());
         accountBank.setIsDefault(EnumBankDefault.DEFAULT.getId());
+        accountBank.setBankBin(merchantInfo.getBankBin());
         return this.insert(accountBank);
     }
 
@@ -128,7 +131,7 @@ public class AccountBankServiceImpl implements AccountBankService{
     }
 
     /**
-     * 获取信用卡信息
+     * 获取最新信用卡信息
      *
      * @param accountId
      * @return
@@ -138,25 +141,54 @@ public class AccountBankServiceImpl implements AccountBankService{
         return accountBankDao.getCreditCard(accountId);
     }
 
+
     /**
-     * 是否有信用卡
+     * 查询信用卡列表
      *
      * @param accountId
      * @return
      */
     @Override
-    public int isHasCreditCard(long accountId) {
-        return accountBankDao.isHasCreditCard(accountId);
+    public List<AccountBank> selectCreditCardList(long accountId) {
+        return accountBankDao.selectCreditCardList(accountId);
+    }
+
+
+    /**
+     * 根据主键id查询
+     *
+     * @param id
+     * @return
+     */
+    @Override
+    public Optional<AccountBank> selectById(long id) {
+        return Optional.fromNullable(accountBankDao.selectById(id));
     }
 
     /**
-     * 查询银行卡列表
+     * 我的银行卡列表
      *
      * @param accountId
      * @return
      */
     @Override
-    public List<AccountBank> selectAllByAccountId(long accountId) {
-        return accountBankDao.selectAllByAccountId(accountId);
+    public List<AccountBank> selectAll(long accountId) {
+        List<AccountBank> accountBankList = this.selectCreditCardList(accountId);
+        AccountBank accountBank = this.getDefault(accountId);
+        if(accountBank!=null){
+            accountBankList.add(accountBank);
+        }
+        return accountBankList;
+    }
+
+    /**
+     * 修改支行信息
+     *
+     * @param continueBankInfoRequest
+     * @return
+     */
+    @Override
+    public int updateBranchInfo(ContinueBankInfoRequest continueBankInfoRequest) {
+        return accountBankDao.updateBranchInfo(continueBankInfoRequest);
     }
 }

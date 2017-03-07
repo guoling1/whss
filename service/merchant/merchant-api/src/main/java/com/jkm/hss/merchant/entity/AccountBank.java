@@ -72,4 +72,9 @@ public class AccountBank extends BaseEntity {
      * {@link EnumBankDefault}
      */
     private int isDefault;
+
+    /**
+     * 卡宾
+     */
+    private String bankBin;
 }
