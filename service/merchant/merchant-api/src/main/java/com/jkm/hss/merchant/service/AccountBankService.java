@@ -95,4 +95,13 @@ public interface AccountBankService {
      * @return
      */
     int deleteCreditCard(long id);
+
+    /**
+     * 更改默认银行卡
+     * @param accountId
+     * @param bankNo
+     * @param reserveMobile
+     * @return
+     */
+    int changeBankCard(long accountId,String bankNo,String reserveMobile);
 }

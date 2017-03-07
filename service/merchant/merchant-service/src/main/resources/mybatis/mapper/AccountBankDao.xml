@@ -73,7 +73,7 @@
     </update>
 
     <!-- 设置为默认银行卡-->
-    <update id="reset">
+    <update id="setDefault">
         UPDATE tb_account_bank
         set
         is_default=1
@@ -85,7 +85,7 @@
         UPDATE tb_account_bank
         set
         is_default=0
-        WHERE account_id = #{accountId}
+        WHERE account_id = #{accountId} and card_type=0
     </update>
 
     <!-- 获取默认银行卡信息 -->
