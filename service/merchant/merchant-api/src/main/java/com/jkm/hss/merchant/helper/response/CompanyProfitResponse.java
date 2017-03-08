@@ -19,7 +19,7 @@ public class CompanyProfitResponse {
     /**
      * 一级代理商id
      */
-    private int firstLevelDealerId;
+    private long firstLevelDealerId;
 
     /**
      * 代理商级别
@@ -82,6 +82,11 @@ public class CompanyProfitResponse {
      * 出款账户id(hss的手续费账户，内部账户)
      */
     private long outMoneyAccountId;
+
+    /**
+     * 出款账户名称
+     */
+    private String outMoneyAccountName;
 
     /**
      * 收款账户id

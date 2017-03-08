@@ -94,28 +94,28 @@
       <div id="submit" class="submit">确认修改</div>
     </div>
   </div>
-  <div class="layer" id="layer">
-    <div class="space">
-      <div class="space-title">
-        提示
+  <div class="message-space" id="layer">
+    <div class="message-box">
+      <div class="message-box-head">提示</div>
+      <div class="message-box-body">
+        该通道正在支付公司注册中<br>请明天再使用该通道
       </div>
-      <div class="space-cont">
-        <div class="cont-detail">该通道正在支付公司注册中<br>请明天再使用该通道</div>
-        <div class="operation">
-          <div class="submit" id="cancel">确定</div>
+      <div class="message-box-foot">
+        <div class="message-enter" id="cancel">
+          确定
         </div>
       </div>
     </div>
   </div>
-  <div class="layer" id="layerC">
-    <div class="space">
-      <div class="space-title">
-        提示
+  <div class="message-space" id="layerC">
+    <div class="message-box">
+      <div class="message-box-head">提示</div>
+      <div class="message-box-body">
+        补全信用卡信息可以提高您的支付额度
       </div>
-      <div class="space-cont">
-        <div class="cont-detail">补全信用卡信息可以提高您的支付额度</div>
-        <div class="operation">
-          <div class="submit" id="cancelC">去补充</div>
+      <div class="message-box-foot">
+        <div class="message-enter" id="cancelC">
+          去补充
         </div>
       </div>
     </div>

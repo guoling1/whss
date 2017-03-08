@@ -286,6 +286,21 @@ public class AllProfitServiceImpl implements AllProfitService {
                 if (list.get(i).getBusinessType().equals("hsyPay")){
                     list.get(i).setBusinessType(EnumSplitBusinessType.HSYPAY.getValue());
                 }
+                if (list.get(i).getOutMoneyAccountId()==1){
+                    list.get(i).setOutMoneyAccountName("好收收手续费账户");
+                }
+                if (list.get(i).getOutMoneyAccountId()==2){
+                    list.get(i).setOutMoneyAccountName("金开门收费账户");
+                }
+                if (list.get(i).getOutMoneyAccountId()==11){
+                    list.get(i).setOutMoneyAccountName("代理商提现手续费账户");
+                }
+                if (list.get(i).getOutMoneyAccountId()==48){
+                    list.get(i).setOutMoneyAccountName("通道账户");
+                }
+                if (list.get(i).getOutMoneyAccountId()==49){
+                    list.get(i).setOutMoneyAccountName("产品账户");
+                }
             }
         }
 
@@ -326,6 +341,21 @@ public class AllProfitServiceImpl implements AllProfitService {
                 if (list.get(i).getBusinessType().equals("hsyPay")){
                     list.get(i).setBusinessType(EnumSplitBusinessType.HSYPAY.getValue());
                 }
+                if (list.get(i).getOutMoneyAccountId()==1){
+                    list.get(i).setOutMoneyAccountName("好收收手续费账户");
+                }
+                if (list.get(i).getOutMoneyAccountId()==2){
+                    list.get(i).setOutMoneyAccountName("金开门收费账户");
+                }
+                if (list.get(i).getOutMoneyAccountId()==11){
+                    list.get(i).setOutMoneyAccountName("代理商提现手续费账户");
+                }
+                if (list.get(i).getOutMoneyAccountId()==48){
+                    list.get(i).setOutMoneyAccountName("通道账户");
+                }
+                if (list.get(i).getOutMoneyAccountId()==49){
+                    list.get(i).setOutMoneyAccountName("产品账户");
+                }
             }
         }
 
@@ -365,6 +395,21 @@ public class AllProfitServiceImpl implements AllProfitService {
                 }
                 if (list.get(i).getBusinessType().equals("hsyPay")){
                     list.get(i).setBusinessType(EnumSplitBusinessType.HSYPAY.getValue());
+                }
+                if (list.get(i).getOutMoneyAccountId()==1){
+                    list.get(i).setOutMoneyAccountName("好收收手续费账户");
+                }
+                if (list.get(i).getOutMoneyAccountId()==2){
+                    list.get(i).setOutMoneyAccountName("金开门收费账户");
+                }
+                if (list.get(i).getOutMoneyAccountId()==11){
+                    list.get(i).setOutMoneyAccountName("代理商提现手续费账户");
+                }
+                if (list.get(i).getOutMoneyAccountId()==48){
+                    list.get(i).setOutMoneyAccountName("通道账户");
+                }
+                if (list.get(i).getOutMoneyAccountId()==49){
+                    list.get(i).setOutMoneyAccountName("产品账户");
                 }
             }
         }

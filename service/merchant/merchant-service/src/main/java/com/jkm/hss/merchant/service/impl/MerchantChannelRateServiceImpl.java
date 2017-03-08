@@ -143,8 +143,8 @@ public class MerchantChannelRateServiceImpl implements MerchantChannelRateServic
                 if(merchantInfo!=null&&isNet==1){
                     if(weixinMerchantPayRate!=null&&zhifubaoMerchantPayRate!=null){
                         Map<String, String> paramsMap = new HashMap<String, String>();
+                        paramsMap.put("phone", MerchantSupport.decryptMobile(merchantId,merchantInfo.getReserveMobile()));
                         paramsMap.put("merchantName", merchantInfo.getMerchantName());
-                        paramsMap.put("phone", MerchantSupport.decryptMobile(merchantId,merchantInfo.getMobile()));
                         paramsMap.put("merchantNo", merchantInfo.getMarkCode());
                         paramsMap.put("address", merchantInfo.getAddress());
                         paramsMap.put("personName", merchantInfo.getName());

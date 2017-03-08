@@ -29,9 +29,9 @@
       <!-- /.search form -->
       <!-- Sidebar Menu -->
       <ul class="sidebar-menu nav nav-pills nav-stacked">
-        <!-- <li class="header">HEADER</li> -->
-        <!-- Optionally, you can add icons to the links -->
-        <!--<li><a href="#"><i class="fa fa-link"></i> <span>Link</span></a></li>-->
+        <!-- <li class="header">HEADER</li>
+         Optionally, you can add icons to the links
+        <li><a href="#"><i class="fa fa-link"></i> <span>Link</span></a></li>-->
         <li :class="(url=='/admin/record/newDeal')?'treeview active':'treeview'">
           <a href="#"><span>交易查询</span></a>
           <ul class="treeview-menu">
@@ -61,7 +61,7 @@
             <li @click="refrash" :class="(url=='/admin/record/profitAccount')?'treeview active':'treeview'"><router-link to="/admin/record/profitAccount"><span>公司分润账户</span> </router-link></li>
           </ul>
         </li>
-        <li :class="(url=='/admin/record/t1Audit'||url=='/admin/record/tAuditStore'||url=='/admin/record/t1AuditDealer')?'treeview active':'treeview'">
+        <li :class="(url=='/admin/record/t1Audit'||url=='/admin/record/tAuditStore'||url=='/admin/record/tAuditDealer')?'treeview active':'treeview'">
           <a href="#"><span>结算管理</span></a>
           <ul class="treeview-menu">
             <li :class="(url=='/admin/record/t1Audit')?'treeview active':'treeview'" @click="refrash">
@@ -86,7 +86,7 @@
             </li>
           </ul>
         </li>
-        <li :class="(url=='/admin/record/storeList'||url=='/admin/record/storeAuditList')?'treeview active':'treeview'">
+        <li :class="(url=='/admin/record/storeList'||url=='/admin/record/storeAuditList'||url=='/admin/record/storeNotice')?'treeview active':'treeview'">
           <a href="#"><span>商户管理</span>
           </a>
           <ul class="treeview-menu">
@@ -97,6 +97,9 @@
             <li :class="(url=='/admin/record/storeAuditList')?'treeview active':'treeview'" @click="refrash">
               <router-link to="/admin/record/storeAuditList"><span>待审核商户</span></router-link>
             </li>
+            <!--<li :class="(url=='/admin/record/storeNotice')?'treeview active':'treeview'" @click="refrash">
+              <router-link to="/admin/record/storeNotice"><span>商户公告</span></router-link>
+            </li>-->
           </ul>
           </router-link>
         </li>

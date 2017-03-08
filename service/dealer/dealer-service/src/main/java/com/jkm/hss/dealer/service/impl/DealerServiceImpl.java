@@ -33,6 +33,7 @@ import com.jkm.hss.dealer.helper.response.SecondDealerResponse;
 import com.jkm.hss.dealer.service.*;
 import com.jkm.hss.merchant.entity.MerchantChannelRate;
 import com.jkm.hss.merchant.entity.MerchantInfo;
+import com.jkm.hss.merchant.entity.MerchantInfoResponse;
 import com.jkm.hss.merchant.entity.OrderRecord;
 import com.jkm.hss.merchant.helper.request.MerchantChannelRateRequest;
 import com.jkm.hss.merchant.service.MerchantChannelRateService;
@@ -165,7 +166,7 @@ public class DealerServiceImpl implements DealerService {
         //判断该经销商属于哪个代理, 若不属于代理, 则分润进入公司资金帐户
         if (appAuUser.getDealerID() == 0){
             final ProductChannelDetail productChannelDetail =
-                    this.productChannelDetailService.selectByProductIdAndChannelId(appAuUser.getId(), channelSign).get();
+                    this.productChannelDetailService.selectByProductIdAndChannelId(appAuUser.getProductID(), channelSign).get();
             final Optional<BasicChannel> channelOptional =  this.basicChannelService.selectByChannelTypeSign(channelSign);
             final BasicChannel basicChannel = channelOptional.get();
             //商户手续费
@@ -2061,7 +2062,11 @@ public class DealerServiceImpl implements DealerService {
             final QRCode right = pair.getRight();
             final DistributeQRCodeRecord distributeQRCodeRecord = new DistributeQRCodeRecord();
             distributeQRCodeRecord.setFirstLevelDealerId(dealerId);
-            distributeQRCodeRecord.setSecondLevelDealerId(toDealerId);
+            if(toDealerId==0){
+                distributeQRCodeRecord.setSecondLevelDealerId(dealerId);
+            }else{
+                distributeQRCodeRecord.setSecondLevelDealerId(toDealerId);
+            }
             distributeQRCodeRecord.setCount((int) (Long.valueOf(right.getCode()) - Long.valueOf(left.getCode()) + 1));
             distributeQRCodeRecord.setStartCode(left.getCode());
             distributeQRCodeRecord.setEndCode(right.getCode());
@@ -2234,8 +2239,14 @@ public class DealerServiceImpl implements DealerService {
     }
 
     @Override
-    public String selectProxyName(int firstLevelDealerId) {
+    public String selectProxyName(long firstLevelDealerId) {
         String proxyName = dealerDao.selectProxyName(firstLevelDealerId);
         return proxyName;
+    }
+
+    @Override
+    public MerchantInfoResponse getProxyName(int firstLevelDealerId) {
+        MerchantInfoResponse response = dealerDao.getProxyName(firstLevelDealerId);
+        return response;
     }
 }

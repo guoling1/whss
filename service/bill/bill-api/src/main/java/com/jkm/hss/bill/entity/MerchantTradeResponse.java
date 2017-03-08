@@ -20,6 +20,11 @@ import java.util.Date;
 public class MerchantTradeResponse {
 
     /**
+     * 商户编码
+     */
+    private String markCode;
+
+    /**
      * 产品
      */
     private String appId;
@@ -188,6 +193,12 @@ public class MerchantTradeResponse {
      */
     private int payChannelSign;
 
+
+    /**
+     * 支付渠道名
+     */
+    private String payChannelSigns;
+
     /**
      * 绑卡姓名
      */
@@ -212,5 +223,10 @@ public class MerchantTradeResponse {
      * 注册时间
      */
     private Date createTimes;
+
+    /**
+     * 结算周期
+     */
+    private String settleType;
 
 }

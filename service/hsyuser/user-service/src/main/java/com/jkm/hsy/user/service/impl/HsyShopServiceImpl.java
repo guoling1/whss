@@ -253,7 +253,10 @@ public class HsyShopServiceImpl implements HsyShopService {
             throw new ApiHandleException(ResultCode.PARAM_LACK,"银行卡号");
 
         Optional<BankCardBin> bankCardBinOptional=bankCardBinService.analyseCardNo(appBizCard.getCardNO());
-        return gson.toJson(bankCardBinOptional.get());
+        if(bankCardBinOptional.isPresent())
+            return gson.toJson(bankCardBinOptional.get());
+        else
+            return gson.toJson(bankCardBinOptional.absent());
     }
 
     /**HSY001009 读取地区下拉列表*/

@@ -576,7 +576,8 @@
                   this.gridData[j].id1 = this.query.list[i].id
 
                   this.channels.push(this.gridData[j]);
-                  this.gridData.splice(i, 1);
+                  this.gridData.splice(j, 1);
+                  j--;
                 }
               }
             }

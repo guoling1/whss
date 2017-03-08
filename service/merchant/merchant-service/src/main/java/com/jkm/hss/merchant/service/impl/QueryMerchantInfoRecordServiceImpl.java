@@ -32,6 +32,14 @@ public class QueryMerchantInfoRecordServiceImpl implements QueryMerchantInfoReco
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         if(list!=null&&list.size()>0){
             for(int i=0;i<list.size();i++){
+                if (list.get(i).getFirstDealerId()>0){
+                    MerchantInfoResponse response = queryMerchantInfoRecordDao.selectProxyNameYq(list.get(i).getFirstDealerId());
+                    list.get(i).setProxyNameYq(response.getProxyName());
+                }
+                if (list.get(i).getSecondDealerId()>0){
+                    MerchantInfoResponse response1 = queryMerchantInfoRecordDao.selectProxyNameYq1(list.get(i).getSecondDealerId());
+                    list.get(i).setProxyNameYq1(response1.getProxyName());
+                }
                 if (list.get(i).getMobile()!=null&&!"".equals(list.get(i).getMobile())){
                     list.get(i).setMobile(MerchantSupport.decryptMobile(list.get(i).getMobile()));
                 }
@@ -62,6 +70,16 @@ public class QueryMerchantInfoRecordServiceImpl implements QueryMerchantInfoReco
                 if (list.get(i).getSource()==1){
                     list.get(i).setRegistered("推荐注册");
                 }
+                if (list.get(i).getIsAuthen()!=null&&!list.get(i).getIsAuthen().equals("")){
+                    if (list.get(i).getIsAuthen().equals("1")){
+                        list.get(i).setIsAuthen("认证通过");
+                    }else {
+                        list.get(i).setIsAuthen("认证未通过");
+                    }
+                }else {
+                    list.get(i).setIsAuthen("认证未通过");
+                }
+
 
             }
         }
@@ -96,5 +114,11 @@ public class QueryMerchantInfoRecordServiceImpl implements QueryMerchantInfoReco
     public SettleResponse getSettle(long id) {
         SettleResponse lst = this.queryMerchantInfoRecordDao.getSettle(id);
         return lst;
+    }
+
+    @Override
+    public MerchantInfoResponse getrecommenderInfo(long id) {
+        MerchantInfoResponse response = this.queryMerchantInfoRecordDao.getrecommenderInfo(id);
+        return response;
     }
 }

@@ -38,6 +38,8 @@ const Invite = r => require.ensure([], () => r(require('../../components/Invite'
 const Upgrade = r => require.ensure([], () => r(require('../../components/Upgrade')), 'group-record');
 const CodeStatus = r => require.ensure([], () => r(require('../../components/CodeStatus')), 'group-record');
 const StoreAuditHSY = r => require.ensure([], () => r(require('../../components/StoreAuditHSY')), 'group-record');
+const StoreNotice = r => require.ensure([], () => r(require('../../components/StoreNotice')), 'group-record');
+const StoreNoticeDet = r => require.ensure([], () => r(require('../../components/StoreNoticeDet')), 'group-record');
 const T1Audit = r => require.ensure([], () => r(require('../../components/T1Audit')), 'group-record');
 const TAuditDealer = r => require.ensure([], () => r(require('../../components/TAuditDealer')), 'group-record');
 const TAuditStore = r => require.ensure([], () => r(require('../../components/TAuditStore')), 'group-record');
@@ -148,6 +150,16 @@ export default {
       path: 'storeList',
       name: 'StoreList',
       component: StoreList
+    },
+    {
+      path: 'storeNotice',
+      name: 'StoreNotice',
+      component: StoreNotice
+    },
+    {
+      path: 'storeNoticeDet',
+      name: 'StoreNoticeDet',
+      component: StoreNoticeDet
     },
     {
       path: 'storeAuditList',
