@@ -6,6 +6,7 @@ import com.jkm.hss.bill.entity.MerchantTradeResponse;
 import com.jkm.hss.bill.entity.Order;
 import com.jkm.hss.bill.helper.requestparam.QueryMerchantPayOrdersRequestParam;
 import com.jkm.hss.dealer.entity.Dealer;
+import com.jkm.hss.merchant.entity.MerchantInfo;
 import com.jkm.hss.merchant.helper.request.OrderTradeRequest;
 import com.jkm.hsy.user.entity.AppBizShop;
 
@@ -56,6 +57,18 @@ public interface OrderService {
      * @return
      */
     long createDealerPlayMoneyOrder(Dealer dealer, BigDecimal amount, String appId, int channel, String settleType, BigDecimal withdrawFee);
+
+    /**
+     * 创建商户提现单
+     *
+     * @param merchantInfo
+     * @param amount
+     * @param appId
+     * @param channel
+     * @param settleType
+     * @return
+     */
+    long createMerchantPlayMoneyOrder(MerchantInfo merchantInfo, BigDecimal amount, String appId, int channel, String settleType, BigDecimal withdrawFee);
 
     /**
      * 更新

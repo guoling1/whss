@@ -220,6 +220,54 @@ public class OrderServiceImpl implements OrderService {
     /**
      * {@inheritDoc}
      *
+     * @param merchantInfo
+     * @param amount
+     * @param appId
+     * @param channel
+     * @param settleType
+     * @return
+     */
+    @Override
+    public long createMerchantPlayMoneyOrder(MerchantInfo merchantInfo, BigDecimal amount, String appId, int channel, String settleType, BigDecimal withdrawFee) {
+        final Account account = this.accountService.getByIdWithLock(merchantInfo.getAccountId()).get();
+        Preconditions.checkState(account.getAvailable().compareTo(amount) >= 0, "余额不足");
+        final Order playMoneyOrder = new Order();
+        playMoneyOrder.setPayOrderId(0);
+        playMoneyOrder.setOrderNo(SnGenerator.generateSn(EnumTradeType.WITHDRAW.getId()));
+        playMoneyOrder.setTradeAmount(amount);
+        playMoneyOrder.setRealPayAmount(amount);
+        playMoneyOrder.setTradeType(EnumTradeType.WITHDRAW.getId());
+        playMoneyOrder.setPayChannelSign(channel);
+        playMoneyOrder.setPayer(account.getId());
+        playMoneyOrder.setPayee(0);
+        playMoneyOrder.setAppId(appId);
+        //手续费
+        playMoneyOrder.setPoundage(withdrawFee);
+        playMoneyOrder.setGoodsName(merchantInfo.getMerchantName());
+        playMoneyOrder.setGoodsDescribe(merchantInfo.getMerchantName());
+        playMoneyOrder.setSettleStatus(EnumSettleStatus.DUE_SETTLE.getId());
+        playMoneyOrder.setSettleTime(new Date());
+        playMoneyOrder.setSettleType(settleType);
+        playMoneyOrder.setStatus(EnumOrderStatus.WITHDRAWING.getId());
+        this.add(playMoneyOrder);
+        this.accountService.decreaseAvailableAmount(account.getId(), amount);
+        this.accountService.increaseFrozenAmount(account.getId(), amount);
+        final FrozenRecord frozenRecord = new FrozenRecord();
+        frozenRecord.setAccountId(account.getId());
+        frozenRecord.setFrozenAmount(amount);
+        frozenRecord.setBusinessNo(playMoneyOrder.getOrderNo());
+        frozenRecord.setFrozenTime(new Date());
+        frozenRecord.setRemark("手动提现");
+        this.frozenRecordService.add(frozenRecord);
+        //添加账户流水--减少
+        this.accountFlowService.addAccountFlow(account.getId(), playMoneyOrder.getOrderNo(), amount,
+                "手动提现", EnumAccountFlowType.DECREASE);
+        return playMoneyOrder.getId();
+    }
+
+    /**
+     * {@inheritDoc}
+     *
      * @param order
      * @return
      */
