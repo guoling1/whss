@@ -14,12 +14,11 @@
 </head>
 <body>
 <div id="noticeList">
-  <img src="http://static.jinkaimen.cn/hss/assets/book.png" alt="">
-
-  <p>公告列表</p>
-
-  <p class="small">${res}</p>
-  <a href="/sqb/repeatAddInfo/${id}" class="btn">重新提交资料</a>
+  <div class="list-box">
+    <div class="list-li">
+      <div class="list-icon"></div>
+    </div>
+  </div>
 </div>
 </body>
 <script src="http://static.jinkaimen.cn/vendor/vendor.1.0.3.min.js"></script>
