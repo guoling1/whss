@@ -34,6 +34,11 @@ if (pageData.showRecommend == 2) {
   document.getElementById('show_upgrade').style.display = "none";
 }
 
+// 获取公告数据
+http.post('/notice/pageAnnouncement', {}, function (data) {
+  console.log(data);
+});
+
 // 解绑微信
 unbundling.addEventListener('click', function () {
   layer.style.display = 'block';

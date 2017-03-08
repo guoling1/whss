@@ -25,7 +25,9 @@
 <div id="wallet">
   <div class="announcement" id="announcement">
     <span class="announcement-icon"></span>
-    <span></span>
+    <div class="announcement-text-box">
+      <span class="announcement-text">这是公告这是公告这是公告这是公告这是公告这是公告这是公告这是公告这是公告这是公告这是公告这是公告这是公告</span>
+    </div>
   </div>
   <div class="wallet">
     <a class="operation touch_op" href="/sqb/collection">
@@ -113,5 +115,6 @@
   };
 </script>
 <script src="http://static.jinkaimen.cn/vendor/vendor.1.0.3.min.js"></script>
-<script src="http://static.jinkaimen.cn/hss/2.1.1/wallet.min.js"></script>
+<%--<script src="http://static.jinkaimen.cn/hss/2.1.1/wallet.min.js"></script>--%>
+<script src="/js/hss/2.1.1/wallet.min.js"></script>
 </html>
