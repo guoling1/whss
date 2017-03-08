@@ -16,12 +16,17 @@
         content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
   <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
   <title>好收收</title>
-  <link rel="stylesheet" href="http://static.jinkaimen.cn/hss/css/style.2.1.3.css">
+  <%--<link rel="stylesheet" href="http://static.jinkaimen.cn/hss/css/style.2.1.3.css">--%>
+  <link rel="stylesheet" href="/css/hss/style.2.1.3.css">
   <link rel="stylesheet" href="http://static.jinkaimen.cn/weui/weui.css">
 </head>
 <body>
 
 <div id="wallet">
+  <div class="announcement" id="announcement">
+    <span class="announcement-icon"></span>
+    <span></span>
+  </div>
   <div class="wallet">
     <a class="operation touch_op" href="/sqb/collection">
       <div class="logo collection"></div>
