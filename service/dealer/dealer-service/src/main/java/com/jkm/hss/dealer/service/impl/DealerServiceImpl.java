@@ -2239,7 +2239,7 @@ public class DealerServiceImpl implements DealerService {
     }
 
     @Override
-    public String selectProxyName(int firstLevelDealerId) {
+    public String selectProxyName(long firstLevelDealerId) {
         String proxyName = dealerDao.selectProxyName(firstLevelDealerId);
         return proxyName;
     }

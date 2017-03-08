@@ -54,8 +54,8 @@ public class PushNoticeServiceImpl implements PushNoticeService {
     }
 
     @Override
-    public void updateNotice(String title,String text,int id) {
-        this.pushNoticeDao.updateNotice(title,text,id);
+    public int updateNotice(String title,String text,int id) {
+        return this.pushNoticeDao.updateNotice(title,text,id);
 
     }
 

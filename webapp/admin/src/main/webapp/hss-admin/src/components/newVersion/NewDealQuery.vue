@@ -103,9 +103,8 @@
             <el-table-column prop="status" :formatter="changeStatus" label="订单状态" min-width="90"></el-table-column>
             <el-table-column prop="settleStatus" :formatter="changeSettleStatus" label="结算状态"
                              min-width="90"></el-table-column>
-            <el-table-column prop="payType" :formatter="changePayType" label="支付方式" min-width="115"></el-table-column>
-            <el-table-column prop="payChannelSign" :formatter="changePayChannel" label="支付渠道"
-                             min-width="115"></el-table-column>
+            <el-table-column prop="payType" label="支付方式" min-width="115"></el-table-column>
+            <el-table-column prop="payChannelSigns" label="支付渠道" min-width="115"></el-table-column>
             <el-table-column prop="remark" label="渠道信息" min-width="90"></el-table-column>
             <el-table-column label="操作" width="90" fixed="right">
               <template scope="scope">
@@ -226,20 +225,6 @@
         var val = row.tradeAmount;
         return parseFloat(val).toFixed(2);
       },
-      changePayType: function (row, column) {
-        var val = row.payType;
-        if(val == "S"){
-          return "微信扫码"
-        }else if(val == "N"){
-          return "微信二维码"
-        }else if(val == "H"){
-          return "微信H5收银台"
-        }else if(val == "B"){
-          return "快捷收款"
-        }else if(val == "Z"){
-          return "支付宝扫码"
-        }
-      },
       changeStatus: function (row, column) {
         var val = row.status;
         if(val == 1){
@@ -266,16 +251,6 @@
           return '待结算'
         }else if(val == 3){
           return '已结算'
-        }
-      },
-      changePayChannel: function (row, column) {
-        var val = row.payChannelSign;
-        if(val == 101){
-          return '阳光微信扫码'
-        }else if(val == 102){
-          return '阳光支付宝扫码'
-        }else if(val == 103){
-          return '阳光银联支付'
         }
       },
       search(){

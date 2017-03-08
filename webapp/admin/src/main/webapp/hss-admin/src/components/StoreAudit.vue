@@ -20,15 +20,43 @@
             </tr>
             <tr>
               <th style="text-align: right">一级代理编号:</th>
-              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.firstDealerId==0?'':msg.firstDealerId" readonly></td>
+              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.markCode1==0?'':msg.markCode1" readonly></td>
               <th style="text-align: right">一级代理名称:</th>
-              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.proxyName" readonly></td>
+              <td>
+                <input type="text" style="background:#efecec;padding-left:5px;" :value="msg.proxyName" readonly>
+                <!--<a href="javascript:;" @click="dealerMask=true">修改代理商归属</a>-->
+              </td>
               <th></th>
               <td></td>
             </tr>
+            <el-dialog title="修改商户归属信息" v-model="dealerMask">
+              <el-form :label-position="right" label-width="150px">
+                <el-form-item label="当前一级代理：" width="120">
+                  {{msg.proxyName}}
+                </el-form-item>
+                <el-form-item label="当前二级代理：" width="120">
+                  {{msg.proxyName1}}
+                </el-form-item>
+                <el-form-item label="切换类型：" width="120">
+                  <el-select size="small" placeholder="请选择">
+                    <el-option label="切换金开门直属" value="shanghai"></el-option>
+                    <el-option label="切换为一级直属" value="beijing"></el-option>
+                    <el-option label="切换到二级" value="beijing"></el-option>
+                  </el-select>
+                </el-form-item>
+                <el-form-item label="切换类型：" width="120">
+                  <el-input style="width: 70%" size="small" placeholder="请输入代理商编号，切换为金开门直属无需输入"></el-input>
+                </el-form-item>
+              </el-form>
+              <div slot="footer" class="dialog-footer" style="text-align: center">
+                <!--<el-button @click="dealerMask = false" >取 消</el-button>-->
+                <el-button type="primary" style="width: 200px;margin-top: -50px;position: relative;top: -30px;">确 定</el-button>
+                <div style="text-align: center;margin-bottom: 10px">切换成功后，新产生的收款立即生效</div>
+              </div>
+            </el-dialog>
             <tr>
               <th style="text-align: right">二级代理编号:</th>
-              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.secondDealerId==0?'':msg.secondDealerId" readonly></td>
+              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.markCode2==0?'':msg.markCode2" readonly></td>
               <th style="text-align: right">二级代理名称:</th>
               <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.proxyName1" readonly></td>
               <th></th>
@@ -36,11 +64,11 @@
             </tr>
             <tr>
               <th style="text-align: right">推荐人编号:</th>
-              <td><input type="text" style="background:#efecec;padding-left:5px;" value="—" readonly></td>
+              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.recommenderCode" readonly></td>
               <th style="text-align: right">推荐人名称:</th>
-              <td><input type="text" style="background:#efecec;padding-left:5px;" value="—" readonly></td>
+              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.recommenderName" readonly></td>
               <th style="text-align: right">推荐人注册手机号:</th>
-              <td><input type="text" style="background:#efecec;padding-left:5px;" value="—" readonly></td>
+              <td><input type="text" style="background:#efecec;padding-left:5px;" :value="msg.recommenderPhone" readonly></td>
             </tr>
             <tr>
               <th style="text-align: right">推荐所属一级代理名:</th>
@@ -202,6 +230,7 @@
     name: 'storeAudit',
     data () {
       return {
+        dealerMask:false,
         id: '',
         msg:{
           id:'',

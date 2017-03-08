@@ -102,6 +102,14 @@
         SELECT weixin_rate,alipay_rate,fast_rate FROM tb_merchant_info WHERE id=#{id}
     </select>
 
-
+    <!-- 查询推荐信息 -->
+    <select id="getrecommenderInfo" resultType="com.jkm.hss.merchant.entity.MerchantInfoResponse">
+      SELECT
+        mobile,mark_code,merchant_name
+      FROM
+        tb_merchant_info
+      WHERE
+	    id = (SELECT recommend_merchant_id FROM tb_recommend WHERE merchant_id=#{id} AND type=1);
+    </select>
 
 </mapper>

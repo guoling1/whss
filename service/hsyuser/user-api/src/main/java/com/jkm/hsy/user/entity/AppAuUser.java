@@ -28,6 +28,7 @@ public class AppAuUser {
     private Integer roleTemp;//临时角色
     private Date createTime;
     private Date updateTime;
+    private String contractID;//签约合同照id
 
     //展示字段
     private String code;//验证码
@@ -43,6 +44,7 @@ public class AppAuUser {
     private String deviceID;//设备号
     private Long sid;
     private String originCellphone;//更改前密码
+    private Long auid;
 
     public Long getId() {
         return id;
@@ -330,5 +332,21 @@ public class AppAuUser {
 
     public void setOriginCellphone(String originCellphone) {
         this.originCellphone = originCellphone;
+    }
+
+    public String getContractID() {
+        return contractID;
+    }
+
+    public void setContractID(String contractID) {
+        this.contractID = contractID;
+    }
+
+    public Long getAuid() {
+        return auid;
+    }
+
+    public void setAuid(Long auid) {
+        this.auid = auid;
     }
 }

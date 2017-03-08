@@ -110,4 +110,10 @@ public class QueryMerchantInfoRecordServiceImpl implements QueryMerchantInfoReco
         SettleResponse lst = this.queryMerchantInfoRecordDao.getSettle(id);
         return lst;
     }
+
+    @Override
+    public MerchantInfoResponse getrecommenderInfo(long id) {
+        MerchantInfoResponse response = this.queryMerchantInfoRecordDao.getrecommenderInfo(id);
+        return response;
+    }
 }
