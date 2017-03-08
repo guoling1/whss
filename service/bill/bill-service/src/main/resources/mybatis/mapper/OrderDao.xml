@@ -258,6 +258,7 @@
             b.mark_code,
             a.sn,
             a.app_id,
+            a.settle_type,
             c.`level`,
             c.first_level_dealer_id,
             c.proxy_name

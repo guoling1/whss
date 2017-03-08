@@ -224,4 +224,9 @@ public class MerchantTradeResponse {
      */
     private Date createTimes;
 
+    /**
+     * 结算周期
+     */
+    private String settleType;
+
 }
