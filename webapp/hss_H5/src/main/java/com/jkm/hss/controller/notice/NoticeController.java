@@ -39,19 +39,20 @@ public class NoticeController extends BaseController {
      * @return
      */
 
-    @RequestMapping(value = "/noticeListJSP",method = RequestMethod.POST)
+    @RequestMapping(value = "/noticeListJSP",method = RequestMethod.GET)
     public String noticeListJSP() {
-        return "noticeList";
+        String url="/notisList";
+        return url;
     }
 
     /**
      * 发布详情
      * @param
      */
-    @ResponseBody
     @RequestMapping(value = "/noticeDetailsJSP",method = RequestMethod.POST)
     public String noticeDetailsJSP(){
-        return "noticeDetails";
+        String url="/notisDetails";
+        return url;
     }
 
     /**
