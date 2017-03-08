@@ -4,6 +4,9 @@
 
 import Crumbs from '../../Crumbs.vue';
 // 后台管理 交易 流水 组件
+// 订单
+const OrderQuery = r => require.ensure([], () => r(require('../../components/OrderQuery')), 'group-record');
+const OrderDetail = r => require.ensure([], () => r(require('../../components/OrderDetail')), 'group-record');
 // 交易
 const DealQuery = r => require.ensure([], () => r(require('../../components/DealQuery')), 'group-record');
 const DealDet = r => require.ensure([], () => r(require('../../components/DealDet')), 'group-record');
@@ -33,43 +36,29 @@ const WithdrawalAudit = r => require.ensure([], () => r(require('../../component
 const StoreList = r => require.ensure([], () => r(require('../../components/StoreList')), 'group-record');
 const StoreAuditList = r => require.ensure([], () => r(require('../../components/StoreAuditList')),'group-record');
 const StoreAudit = r => require.ensure([], () => r(require('../../components/StoreAudit')), 'group-record');
+const StoreNotice = r => require.ensure([], () => r(require('../../components/StoreNotice')), 'group-record');
+const StoreNoticeDet = r => require.ensure([], () => r(require('../../components/StoreNoticeDet')), 'group-record');
+const StoreAuditHSY = r => require.ensure([], () => r(require('../../components/StoreAuditHSY')), 'group-record');
 //代理
 const AgentListSec = r => require.ensure([], () => r(require('../../components/AgentListSec')), 'group-record');
 const AgentListFir = r => require.ensure([], () => r(require('../../components/AgentListFir')), 'group-record');
-const AgentAccount = r => require.ensure([], () => r(require('../../components/AgentAccount')), 'group-record');
 const AgentAdd = r => require.ensure([], () => r(require('../../components/AgentAdd')), 'group-record');
 const AgentAddPro = r => require.ensure([], () => r(require('../../components/AgentAddPro')), 'group-record');
 const AgentAddBase = r => require.ensure([], () => r(require('../../components/AgentAddBase')), 'group-record');
-
-const CompanyProfit = r => require.ensure([], () => r(require('../../components/CompanyProfit')), 'group-record');
-const CompanyProfitDet = r => require.ensure([], () => r(require('../../components/CompanyProfitDet')), 'group-record');
-const FirProfit = r => require.ensure([], () => r(require('../../components/FirProfit')), 'group-record');
-const FirProfitDet = r => require.ensure([], () => r(require('../../components/CompanyProfitDet')), 'group-record');
-const SecProfit = r => require.ensure([], () => r(require('../../components/SecProfit')), 'group-record');
-const SecProfitDet = r => require.ensure([], () => r(require('../../components/CompanyProfitDet')), 'group-record');
-
-const PassAdd = r => require.ensure([], () => r(require('../../components/PassAdd')), 'group-record');
-const PassList = r => require.ensure([], () => r(require('../../components/PassList')), 'group-record');
-const ProductAdd = r => require.ensure([], () => r(require('../../components/ProductAdd')), 'group-record');
-const ProductList = r => require.ensure([], () => r(require('../../components/ProductList')), 'group-record');
+//设备
 const Issue = r => require.ensure([], () => r(require('../../components/Issue')), 'group-record');
 const IssueRecord = r => require.ensure([], () => r(require('../../components/IssueRecord')), 'group-record');
-const Invite = r => require.ensure([], () => r(require('../../components/Invite')), 'group-record');
-const Upgrade = r => require.ensure([], () => r(require('../../components/Upgrade')), 'group-record');
 const CodeStatus = r => require.ensure([], () => r(require('../../components/CodeStatus')), 'group-record');
-const StoreAuditHSY = r => require.ensure([], () => r(require('../../components/StoreAuditHSY')), 'group-record');
-const StoreNotice = r => require.ensure([], () => r(require('../../components/StoreNotice')), 'group-record');
-const StoreNoticeDet = r => require.ensure([], () => r(require('../../components/StoreNoticeDet')), 'group-record');
-
+//产品
+const ProductAdd = r => require.ensure([], () => r(require('../../components/ProductAdd')), 'group-record');
+const ProductList = r => require.ensure([], () => r(require('../../components/ProductList')), 'group-record');
+const Invite = r => require.ensure([], () => r(require('../../components/Invite')), 'group-record');
+//通道
+const PassAdd = r => require.ensure([], () => r(require('../../components/PassAdd')), 'group-record');
+const PassList = r => require.ensure([], () => r(require('../../components/PassList')), 'group-record');
+//员工
 const PersonnelList = r => require.ensure([], () => r(require('../../components/PersonnelList')), 'group-record');
 const PersonnelAdd = r => require.ensure([], () => r(require('../../components/PersonnelAdd')), 'group-record');
-
-
-
-
-const OrderQuery = r => require.ensure([], () => r(require('../../components/OrderQuery')), 'group-record');
-const OrderDetail = r => require.ensure([], () => r(require('../../components/OrderDetail')), 'group-record');
-const TradeQuery = r => require.ensure([], () => r(require('../../components/TradeQuery')), 'group-record');
 
 const Test = r => require.ensure([], () => r(require('../../components/Test')), 'group-record');
 
@@ -179,11 +168,6 @@ export default {
       component: AgentListSec
     },
     {
-      path: 'agentAccount',
-      name: 'AgentAccount',
-      component: AgentAccount
-    },
-    {
       path: 'agentAdd',
       name: 'AgentAdd',
       component: AgentAdd
@@ -197,36 +181,6 @@ export default {
       path: 'agentAddBase',
       name: 'AgentAddBase',
       component: AgentAddBase
-    },
-    {
-      path: 'companyProfit',
-      name: 'CompanyProfit',
-      component: CompanyProfit
-    },
-    {
-      path: 'companyProfitDet',
-      name: 'CompanyProfitDet',
-      component: CompanyProfitDet
-    },
-    {
-      path: 'firProfit',
-      name: 'FirProfit',
-      component: FirProfit
-    },
-    {
-      path: 'firProfitDet',
-      name: 'FirProfitDet',
-      component: FirProfitDet
-    },
-    {
-      path: 'secProfit',
-      name: 'SecProfit',
-      component: SecProfit
-    },
-    {
-      path: 'secProfitDet',
-      name: 'SecProfitDet',
-      component: SecProfitDet
     },
     {
       path: 'passAdd',
@@ -264,11 +218,6 @@ export default {
       component: Invite
     },
     {
-      path: 'upgrade',
-      name: 'Upgrade',
-      component: Upgrade
-    },
-    {
       path: 'codeStatus',
       name: 'CodeStatus',
       component: CodeStatus
@@ -282,11 +231,6 @@ export default {
       path: 'orderDetail',
       name: 'OrderDetail',
       component: OrderDetail
-    },
-    {
-      path: 'tradeQuery',
-      name: 'TradeQuery',
-      component: TradeQuery
     },
     {
       path: 'profitAccount',
