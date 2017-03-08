@@ -36,7 +36,7 @@ if (pageData.showRecommend == 2) {
 
 // 获取公告数据
 http.post('/notice/pageAnnouncement', {}, function (data) {
-  console.log(data);
+  console.log(data.text.replace(/<[^>]+>/g, ""));
 });
 
 // 解绑微信

@@ -1080,6 +1080,10 @@ input:focus {
   background: url("../assets/unbundling.png") no-repeat center;
   background-size: 30px 26px;
 }
+#wallet .application .group .logo.announcement {
+  background: url("../../assets/announcement-logo.png") no-repeat center;
+  background-size: 27px 30px;
+}
 #wallet .application .group .logo.more {
   background: url("../assets/more.png") no-repeat center;
   background-size: 22px 22px;

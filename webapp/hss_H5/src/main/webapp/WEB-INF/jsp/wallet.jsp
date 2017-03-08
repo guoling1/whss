@@ -81,7 +81,10 @@
         <div class="logo credit"></div>
         <div class="text">信用卡申请</div>
       </a>
-
+      <div class="group touch_gr" id="announcement">
+        <div class="logo announcement"></div>
+        <div class="text">公告信息</div>
+      </div>
       <div class="group touch_gr" id="unbundling">
         <div class="logo unbundling"></div>
         <div class="text">解绑微信</div>
