@@ -34,15 +34,15 @@
               <div class="grid-content bg-purple-light right"></div>
             </el-col>
           </el-row>
-          <!--<el-row type="flex" class="row-bg" justify="left">
+          <el-row type="flex" class="row-bg" justify="left">
             <el-col :span="2">
               <div class="alignRight" style="line-height: 42px">类型:</div>
             </el-col>
             <el-col :span="10">
               <div class="grid-content bg-purple-light">
-                <el-select v-model="query.xx" placeholder="请选择">
-                  <el-option label="维护" value="维护"></el-option>
-                  <el-option label="通知" value="通知"></el-option>
+                <el-select v-model="query.type" placeholder="请选择">
+                  <el-option label="维护" value="1"></el-option>
+                  <el-option label="通知" value="2"></el-option>
                 </el-select>
               </div>
             </el-col>
@@ -50,7 +50,7 @@
               <div class="grid-content bg-purple-light" style="margin: 0 15px;">
               </div>
             </el-col>
-          </el-row>-->
+          </el-row>
           <el-row type="flex" class="row-bg" justify="left">
             <el-col :span="2">
               <div class="alignRight">正文:</div>
@@ -91,6 +91,7 @@
           productName:"好收收",
           productType:'',
           title:'',
+          type:'',
           text:'',
         },
         name:'',
@@ -227,10 +228,6 @@
             });
         }
       },
-      submit() {
-        console.log(this.inputContent)
-        console.log(this.query)
-      }
     },
     components: {
       'v-editor': Editor
