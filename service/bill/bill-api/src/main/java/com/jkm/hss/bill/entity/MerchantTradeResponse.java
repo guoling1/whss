@@ -20,6 +20,11 @@ import java.util.Date;
 public class MerchantTradeResponse {
 
     /**
+     * 商户编码
+     */
+    private String markCode;
+
+    /**
      * 产品
      */
     private String appId;
@@ -187,6 +192,7 @@ public class MerchantTradeResponse {
      * {@link com.jkm.hss.product.enums.EnumPayChannelSign}
      */
     private int payChannelSign;
+
 
     /**
      * 支付渠道名

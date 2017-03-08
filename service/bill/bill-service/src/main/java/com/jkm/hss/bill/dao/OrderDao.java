@@ -240,4 +240,11 @@ public interface OrderDao {
      * @return
      */
     List<Order> getByOrderNos(@Param("orderNos") List<String> orderNos);
+
+    /**
+     * 一二级筛选用
+     * @param req
+     * @return
+     */
+    List<MerchantTradeResponse> getOrderList(OrderTradeRequest req);
 }
