@@ -35,6 +35,27 @@ public class NoticeController extends BaseController {
 
     /**
      * 发布公告列表
+     * @param
+     * @return
+     */
+
+    @RequestMapping(value = "/noticeListJSP",method = RequestMethod.POST)
+    public String noticeListJSP() {
+        return "noticeList";
+    }
+
+    /**
+     * 发布详情
+     * @param
+     */
+    @ResponseBody
+    @RequestMapping(value = "/noticeDetailsJSP",method = RequestMethod.POST)
+    public String noticeDetailsJSP(){
+        return "noticeDetails";
+    }
+
+    /**
+     * 发布公告列表
      * @param request
      * @return
      */
