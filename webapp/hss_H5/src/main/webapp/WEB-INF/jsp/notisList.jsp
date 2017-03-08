@@ -13,7 +13,7 @@
   <link rel="stylesheet" href="http://static.jinkaimen.cn/weui/weui.css">
 </head>
 <body>
-<div id="notice">
+<div id="noticeList">
   <img src="http://static.jinkaimen.cn/hss/assets/book.png" alt="">
 
   <p>公告列表</p>

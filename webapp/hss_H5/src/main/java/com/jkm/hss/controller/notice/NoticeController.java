@@ -39,7 +39,7 @@ public class NoticeController extends BaseController {
      * @return
      */
 
-    @RequestMapping(value = "/noticeListJSP",method = RequestMethod.GET)
+    @RequestMapping(value = "/noticeListJSP",method = RequestMethod.POST)
     public String noticeListJSP() {
         return "noticeList";
     }
