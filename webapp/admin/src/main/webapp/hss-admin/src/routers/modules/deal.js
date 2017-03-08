@@ -23,11 +23,14 @@ const ProfitAccountDet = r => require.ensure([], () => r(require('../../componen
 const T1Audit = r => require.ensure([], () => r(require('../../components/T1Audit')), 'group-record');
 const TAuditDealer = r => require.ensure([], () => r(require('../../components/TAuditDealer')), 'group-record');
 const TAuditStore = r => require.ensure([], () => r(require('../../components/TAuditStore')), 'group-record');
-
+// 渠道交易
+const PayQuery = r => require.ensure([], () => r(require('../../components/PayQuery')), 'group-record');
 const WithdrawalQuery = r => require.ensure([], () => r(require('../../components/WithdrawalQuery')), 'group-record');
 const WithdrawalDet = r => require.ensure([], () => r(require('../../components/WithdrawalDet')), 'group-record');
 const WithdrawalAudit = r => require.ensure([], () => r(require('../../components/WithdrawalAudit')), 'group-record');
-const PayQuery = r => require.ensure([], () => r(require('../../components/PayQuery')), 'group-record');
+const NewWithdrawalQuery = r => require.ensure([], () => r(require('../../components/newVersion/NewWithdrawalQuery')), 'group-record');
+
+
 const StoreAccount = r => require.ensure([], () => r(require('../../components/StoreAccount')), 'group-record');
 const StoreList = r => require.ensure([], () => r(require('../../components/StoreList')), 'group-record');
 const StoreAudit = r => require.ensure([], () => r(require('../../components/StoreAudit')), 'group-record');
@@ -64,8 +67,7 @@ const PersonnelList = r => require.ensure([], () => r(require('../../components/
 const PersonnelAdd = r => require.ensure([], () => r(require('../../components/PersonnelAdd')), 'group-record');
 
 
-const NewWithdrawalQuery = r => require.ensure([], () => r(require('../../components/newVersion/NewWithdrawalQuery')), 'group-record');
-const NewWithdrawalDet = r => require.ensure([], () => r(require('../../components/newVersion/NewWithdrawalDet')), 'group-record');
+
 
 const OrderQuery = r => require.ensure([], () => r(require('../../components/OrderQuery')), 'group-record');
 const OrderDetail = r => require.ensure([], () => r(require('../../components/OrderDetail')), 'group-record');
@@ -112,11 +114,6 @@ export default {
       path: 'newWithdrawalQuery',
       name: 'NewWithdrawalQuery',
       component: NewWithdrawalQuery
-    },
-    {
-      path: 'newWithdrawalDet',
-      name: 'NewWithdrawalDet',
-      component: NewWithdrawalDet
     },
     {
       path: 'deal',
