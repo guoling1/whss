@@ -76,6 +76,8 @@ public class QueryMerchantInfoRecordServiceImpl implements QueryMerchantInfoReco
                     }else {
                         list.get(i).setIsAuthen("认证未通过");
                     }
+                }else {
+                    list.get(i).setIsAuthen("认证未通过");
                 }
 
 
