@@ -19,6 +19,10 @@ const cancel = document.getElementById('cancel');
 const unbundling = document.getElementById('unbundling');
 const unbundlingSubmit = document.getElementById('unbundlingSubmit');
 const upgrade = document.getElementById('show_upgrade');
+const announcement_link = document.getElementById('announcement-link');
+announcement_link.addEventListener('click', function () {
+  window.location.href = "/notice/noticeListJSP";
+});
 
 const pxPerRem = document.documentElement.clientWidth;
 upgrade.addEventListener('click', function () {

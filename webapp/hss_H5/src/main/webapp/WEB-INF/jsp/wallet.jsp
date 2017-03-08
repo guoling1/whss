@@ -81,7 +81,7 @@
         <div class="logo credit"></div>
         <div class="text">信用卡申请</div>
       </a>
-      <div class="group touch_gr" id="announcement">
+      <div class="group touch_gr" id="announcement-link">
         <div class="logo announcement"></div>
         <div class="text">公告信息</div>
       </div>
