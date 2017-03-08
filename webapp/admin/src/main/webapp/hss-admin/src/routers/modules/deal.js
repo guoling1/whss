@@ -25,17 +25,15 @@ const TAuditDealer = r => require.ensure([], () => r(require('../../components/T
 const TAuditStore = r => require.ensure([], () => r(require('../../components/TAuditStore')), 'group-record');
 // 渠道交易
 const PayQuery = r => require.ensure([], () => r(require('../../components/PayQuery')), 'group-record');
+const NewWithdrawalQuery = r => require.ensure([], () => r(require('../../components/newVersion/NewWithdrawalQuery')), 'group-record');
 const WithdrawalQuery = r => require.ensure([], () => r(require('../../components/WithdrawalQuery')), 'group-record');
 const WithdrawalDet = r => require.ensure([], () => r(require('../../components/WithdrawalDet')), 'group-record');
 const WithdrawalAudit = r => require.ensure([], () => r(require('../../components/WithdrawalAudit')), 'group-record');
-const NewWithdrawalQuery = r => require.ensure([], () => r(require('../../components/newVersion/NewWithdrawalQuery')), 'group-record');
-
-
-const StoreAccount = r => require.ensure([], () => r(require('../../components/StoreAccount')), 'group-record');
+// 商户
 const StoreList = r => require.ensure([], () => r(require('../../components/StoreList')), 'group-record');
+const StoreAuditList = r => require.ensure([], () => r(require('../../components/StoreAuditList')),'group-record');
 const StoreAudit = r => require.ensure([], () => r(require('../../components/StoreAudit')), 'group-record');
-const StoreAuditList = r => require.ensure([], () => r(require('../../components/StoreAuditList')), 'group-record');
-const AgentList = r => require.ensure([], () => r(require('../../components/AgentList')), 'group-record');
+//代理
 const AgentListSec = r => require.ensure([], () => r(require('../../components/AgentListSec')), 'group-record');
 const AgentListFir = r => require.ensure([], () => r(require('../../components/AgentListFir')), 'group-record');
 const AgentAccount = r => require.ensure([], () => r(require('../../components/AgentAccount')), 'group-record');
@@ -146,11 +144,6 @@ export default {
       component: PayQuery
     },
     {
-      path: 'storeAccount',
-      name: 'StoreAccount',
-      component: StoreAccount
-    },
-    {
       path: 'storeList',
       name: 'StoreList',
       component: StoreList
@@ -174,11 +167,6 @@ export default {
       path: 'storeAudit',
       name: 'StoreAudit',
       component: StoreAudit
-    },
-    {
-      path: 'agentList',
-      name: 'AgentList',
-      component: AgentList
     },
     {
       path: 'agentListFir',

@@ -122,8 +122,8 @@
       return {
         isMask:false,
         query:{
-          pageNo:"1",
-          pageSize:"10",
+          pageNo:1,
+          pageSize:10,
           orderNo:'',
           sn:'',
           userName:'',
