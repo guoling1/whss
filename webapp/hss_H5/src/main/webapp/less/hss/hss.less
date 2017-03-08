@@ -408,6 +408,92 @@ input:focus {
     padding-bottom: 20px;
   }
 
+  .layer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 99;
+    background-color: #FFF;
+    display: none;
+    .layer-name {
+      padding: 0 15px;
+      text-align: left;
+      min-width: 75px;
+      float: left;
+      font-size: 15px;
+      color: #5a5a5a;
+      width: 100%;
+      height: 50px;
+      border-top: 1px solid #efefef;
+      box-shadow: 0 3px 8px #e8eaf0;
+    }
+    .match {
+      padding: 0 15px;
+      width: 100%;
+      height: 50px;
+      border-top: 1px solid #efefef;
+      box-shadow: 0 3px 8px #e8eaf0;
+      .match_name {
+        text-align: left;
+        min-width: 75px;
+        float: left;
+        font-size: 15px;
+        color: #5a5a5a;
+        margin-right: 20px;
+      }
+      .match_ipt {
+        float: left;
+        height: 49px;
+        line-height: 49px;
+        font-size: 15px;
+      }
+    }
+  }
+  .search {
+    &.top {
+      margin-top: 50px;
+    }
+    .search-result {
+      width: 100%;
+      height: 50px;
+      line-height: 50px;
+      border-bottom: 1px solid #efefef;
+      padding: 0 15px;
+      div {
+        height: 49px;
+        display: inline-block;
+        float: left;
+        text-align: left;
+        font-size: 14px;
+        color: #5a5a5a;
+        margin-right: 20px;
+        &.choose {
+          color: #4ecea2;
+          border-bottom: 2px solid #4ecea2;
+        }
+      }
+    }
+    .search-list {
+      width: 100%;
+      overflow: auto;
+      div {
+        width: 100%;
+        height: 50px;
+        line-height: 50px;
+        font-size: 14px;
+        color: #5a5a5a;
+        text-align: left;
+        padding: 0 15px;
+        overflow: hidden;
+        &.t {
+          background: url("../assets/choose.png") no-repeat center right 15px;
+          background-size: 8px 8px;
+        }
+      }
+    }
+  }
+
   .process {
     width: 100%;
     height: 47px;
@@ -464,6 +550,7 @@ input:focus {
     line-height: 50px;
     border-bottom: 1px solid #edeef5;
     padding: 0 15px;
+    position: relative;
     .name {
       display: inline-block;
       float: left;

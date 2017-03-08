@@ -34,7 +34,21 @@
       </div>
       <div class="group">
         <div class="name">所在地区</div>
-        <input type="text" class="ipt" placeholder="点击选择" readonly>
+        <input id="world" type="text" class="ipt" placeholder="点击选择" readonly>
+
+        <div class="layer" id="layer-w">
+          <div class="layer-name">所在地区</div>
+          <div class="search top">
+            <div class="search-result">
+              <div id="p" style="display:none;">请选择</div>
+              <div id="c" style="display:none;">请选择</div>
+              <div id="ct" style="display:none;">请选择</div>
+            </div>
+            <div class="search-list" id="layer-w-list">
+              <%-- 动态添加 --%>
+            </div>
+          </div>
+        </div>
       </div>
       <div class="group">
         <div class="name">详细地址</div>
@@ -81,7 +95,7 @@
     <div class="next" id="submit">
       <div>下一步</div>
     </div>
-    <div class="skip">
+    <div class="skip" id="skip">
       跳过 >
     </div>
     <input type="hidden" id="bankPic"/>
