@@ -163,7 +163,7 @@
     },
     created: function () {
       var clipboard = new Clipboard('.td');
-      //复制成功执行的回调，可选
+      // 复制成功执行的回调，可选
       clipboard.on('success', (e) => {
         this.$message({
           showClose: true,
@@ -171,6 +171,23 @@
           type: 'success'
         });
       });
+      let time = new Date();
+      this.date = [time,time];
+      for (var j = 0; j < this.date.length; j++) {
+        var str = this.date[j];
+        var ary = [str.getFullYear(), str.getMonth() + 1, str.getDate()];
+        for (var i = 0, len = ary.length; i < len; i++) {
+          if (ary[i] < 10) {
+            ary[i] = '0' + ary[i];
+          }
+        }
+        str = ary[0] + '-' + ary[1] + '-' + ary[2];
+        if (j == 0) {
+          this.$data.query.startTime = str;
+        } else {
+          this.$data.query.endTime = str;
+        }
+      }
       this.getData()
     },
     methods: {
@@ -271,7 +288,7 @@
     },
     watch: {
       date: function (val, oldVal) {
-        if (val[0] != null) {
+        if (val!=undefined&&val[0] != null) {
           for (var j = 0; j < val.length; j++) {
             var str = val[j];
             var ary = [str.getFullYear(), str.getMonth() + 1, str.getDate()];
