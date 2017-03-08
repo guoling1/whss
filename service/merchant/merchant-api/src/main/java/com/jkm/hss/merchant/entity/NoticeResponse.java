@@ -9,6 +9,12 @@ import java.util.Date;
  */
 @Data
 public class NoticeResponse {
+
+    /**
+     * 公告类型
+     */
+    private String type;
+
     /**
      * 公告id
      */
