@@ -17,16 +17,19 @@ import com.jkm.hss.bill.dao.OrderDao;
 import com.jkm.hss.bill.entity.MerchantTradeResponse;
 import com.jkm.hss.bill.entity.Order;
 import com.jkm.hss.bill.enums.EnumOrderStatus;
+import com.jkm.hss.bill.enums.EnumPayType;
 import com.jkm.hss.bill.enums.EnumSettleStatus;
 import com.jkm.hss.bill.enums.EnumTradeType;
 import com.jkm.hss.bill.helper.requestparam.QueryMerchantPayOrdersRequestParam;
 import com.jkm.hss.bill.service.CalculateService;
 import com.jkm.hss.bill.service.OrderService;
 import com.jkm.hss.dealer.entity.Dealer;
+import com.jkm.hss.dealer.service.DealerService;
 import com.jkm.hss.merchant.entity.MerchantInfo;
 import com.jkm.hss.merchant.helper.MerchantSupport;
 import com.jkm.hss.merchant.helper.request.OrderTradeRequest;
 import com.jkm.hss.merchant.service.MerchantInfoService;
+import com.jkm.hss.product.enums.EnumPayChannelSign;
 import com.jkm.hss.product.enums.EnumProductType;
 import com.jkm.hsy.user.entity.AppBizShop;
 import lombok.extern.slf4j.Slf4j;
@@ -62,6 +65,8 @@ public class OrderServiceImpl implements OrderService {
     private MerchantInfoService merchantInfoService;
     @Autowired
     private AccountService accountService;
+    @Autowired
+    private DealerService dealerService;
     /**
      * {@inheritDoc}
      *
@@ -347,6 +352,77 @@ public class OrderServiceImpl implements OrderService {
                     String hsy="好收银";
                     list.get(i).setAppId(hsy);
                 }
+                if (list.get(i).getPayChannelSign()==101){
+                    list.get(i).setPayChannelSigns(EnumPayChannelSign.YG_WECHAT.getName());
+                }
+                if (list.get(i).getPayChannelSign()==102){
+                    list.get(i).setPayChannelSigns(EnumPayChannelSign.YG_ALIPAY.getName());
+                }
+                if (list.get(i).getPayChannelSign()==103){
+                    list.get(i).setPayChannelSigns(EnumPayChannelSign.YG_UNIONPAY.getName());
+                }
+                if (list.get(i).getPayChannelSign()==201){
+                    list.get(i).setPayChannelSigns(EnumPayChannelSign.KM_WECHAT.getName());
+                }
+                if (list.get(i).getPayChannelSign()==202){
+                    list.get(i).setPayChannelSigns(EnumPayChannelSign.KM_ALIPAY.getName());
+                }
+                if (list.get(i).getPayChannelSign()==301){
+                    list.get(i).setPayChannelSigns(EnumPayChannelSign.MB_UNIONPAY.getName());
+                }
+                if (list.get(i).getPayType()!=null&&!list.get(i).getPayType().equals("")){
+                    if (list.get(i).getPayType().equals("sm_wechat_jsapi")){
+                        list.get(i).setPayType(EnumPayType.YG_WECHAT_JSAPI.getValue());
+                    }
+                    if (list.get(i).getPayType().equals("sm_alipay_jsapi")){
+                        list.get(i).setPayType(EnumPayType.YG_ALIPAY_JSAPI.getValue());
+                    }
+                    if (list.get(i).getPayType().equals("sm_wechat_code")){
+                        list.get(i).setPayType(EnumPayType.YG_WECHAT_CODE.getValue());
+                    }
+                    if (list.get(i).getPayType().equals("sm_alipay_code")){
+                        list.get(i).setPayType(EnumPayType.YG_ALIPAY_CODE.getValue());
+                    }
+                    if (list.get(i).getPayType().equals("sm_unionpay")){
+                        list.get(i).setPayType(EnumPayType.YG_UNIONPAY.getValue());
+                    }
+                    if (list.get(i).getPayType().equals("km_wechat_jsapi")){
+                        list.get(i).setPayType(EnumPayType.KM_WECHAT_JSAPI.getValue());
+                    }
+                    if (list.get(i).getPayType().equals("km_alipay_jsapi")){
+                        list.get(i).setPayType(EnumPayType.KM_ALIPAY_JSAPI.getValue());
+                    }
+                    if (list.get(i).getPayType().equals("km_wechat_code")){
+                        list.get(i).setPayType(EnumPayType.KM_WECHAT_CODE.getValue());
+                    }
+                    if (list.get(i).getPayType().equals("km_alipay_code")){
+                        list.get(i).setPayType(EnumPayType.KM_ALIPAY_CODE.getValue());
+                    }
+                    if (list.get(i).getPayType().equals("mb_unionpay")){
+                        list.get(i).setPayType(EnumPayType.MB_UNIONPAY.getValue());
+                    }
+                    if (list.get(i).getPayType().equals("hzyb_wechat")){
+                        list.get(i).setPayType(EnumPayType.HZYB_WECHAT.getValue());
+                    }
+                    if (list.get(i).getPayType().equals("hzyb_alipay")){
+                        list.get(i).setPayType(EnumPayType.HZYB_ALIPAY.getValue());
+                    }
+                    if (list.get(i).getPayType().equals("yijia_wechat")){
+                        list.get(i).setPayType(EnumPayType.YIJIA_WECHAT.getValue());
+                    }
+                    if (list.get(i).getPayType().equals("yijia_alipay")){
+                        list.get(i).setPayType(EnumPayType.YIJIA_ALIPAY.getValue());
+                    }
+                }
+                if (list.get(i).getLevel()==1){
+                    list.get(i).setProxyName(list.get(i).getProxyName());
+                }
+                if (list.get(i).getLevel()==2){
+                    list.get(i).setProxyName1(list.get(i).getProxyName());
+                    String proxyName = dealerService.selectProxyName(list.get(i).getFirstLevelDealerId());
+                    list.get(i).setProxyName(proxyName);
+                }
+
             }
         }
         return list;
@@ -430,7 +506,7 @@ public class OrderServiceImpl implements OrderService {
                         if (result.getLevel()==1){
                             list.setProxyName(result.getProxyName());
                         }
-                        if (result.getLevel()==1){
+                        if (result.getLevel()==2){
                             MerchantTradeResponse res = orderDao.getProxyName1(result.getFirstLevelDealerId());
                             if (res!=null){
                                 list.setProxyName1(res.getProxyName());

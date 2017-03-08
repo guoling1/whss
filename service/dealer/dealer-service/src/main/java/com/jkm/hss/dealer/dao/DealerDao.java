@@ -293,7 +293,7 @@ public interface DealerDao {
      */
     Dealer getDealerByLoginName(@Param("loginName") String loginName);
 
-    String selectProxyName(@Param("firstLevelDealerId") int firstLevelDealerId);
+    String selectProxyName(@Param("firstLevelDealerId") long firstLevelDealerId);
 
     /**
      * 查询代理商名称和编码

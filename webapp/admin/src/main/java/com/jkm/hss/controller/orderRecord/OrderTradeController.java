@@ -62,6 +62,19 @@ public class OrderTradeController extends BaseController{
             req.setEndTime(sdf.format(rightNow.getTime()));
         }
         List<MerchantTradeResponse> orderList =  orderService.selectOrderListByPage(req);
+//        if(orderList.size()>0){
+//            for (int i=0;i<orderList.size();i++){
+//                if (req.getProxyName()!=null&&!req.getProxyName().equals("")){
+//                    if (req.getProxyName().equals(lists.get(i).getProxyName())){
+//                        list1.add(lists.get(i));
+//                    }
+//                    pageModel.setCount(list1.size());
+//                    pageModel.setRecords(list1);
+//
+//                }
+//
+//            }
+//        }
         long count = orderService.selectOrderListCount(req);
         pageModel.setCount(count);
         pageModel.setRecords(orderList);

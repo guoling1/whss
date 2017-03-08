@@ -695,7 +695,7 @@
 </style>-->
 
 <!--hss商户详情-->
-<!--<template>
+<template>
   <div id="storeList">
     <div class="col-md-12">
       <div class="box" style="margin-top:15px;overflow: hidden">
@@ -954,7 +954,7 @@
             </el-tab-pane>
           </el-tabs>
         </div>
-        &lt;!&ndash; /.box-body &ndash;&gt;
+        <!-- /.box-body -->
         <div class="mask" id="mask" style="display: none" @click="isNo()">
           <p @click="isNo">×</p>
           <img src="" alt="">
@@ -991,7 +991,7 @@
           </div>
         </div>
       </div>
-      &lt;!&ndash; /.box &ndash;&gt;
+      <!-- /.box -->
     </div>
   </div>
 </template>
@@ -1192,7 +1192,7 @@
     font-weight: normal;
   }
   }
-</style>-->
+</style>
 
 <!--结算记录-->
 <!--<template>
@@ -1515,7 +1515,7 @@
   }
 </style>-->
 
-<template>
+<!--<template>
   <div>
     <div class="col-md-12">
       <div class="box" style="margin-top:15px;overflow: hidden">
@@ -1523,7 +1523,7 @@
           <h3 class="box-title">代理商结算记录</h3>
         </div>
         <div class="box-body">
-          <!--筛选-->
+          &lt;!&ndash;筛选&ndash;&gt;
           <ul>
             <li class="same">
               <label>结算日期:</label>
@@ -1554,10 +1554,10 @@
               <div class="btn btn-primary" @click="search">筛选</div>
             </li>
           </ul>
-          <!--表格-->
+          &lt;!&ndash;表格&ndash;&gt;
           <el-table v-loading.body="loading" style="font-size: 12px;margin:15px 0" :data="records" border @selection-change="handleSelectionChange">
             <el-table-column type="index" width="62" label="序号" fixed="left"></el-table-column>
-            <!--<el-table-column type="selection" width="55"></el-table-column>-->
+            &lt;!&ndash;<el-table-column type="selection" width="55"></el-table-column>&ndash;&gt;
             <el-table-column prop="userName" label="代理商名称" ></el-table-column>
             <el-table-column prop="userNo" label="代理商编号" ></el-table-column>
             <el-table-column label="业务线" >
@@ -1573,13 +1573,13 @@
             <el-table-column prop="settleDestinationValue" label="结算类型" ></el-table-column>
             <el-table-column prop="settleStatusValue" label="结算状态" ></el-table-column>
 
-            <!--<el-table-column label="操作" width="70">
+            &lt;!&ndash;<el-table-column label="操作" width="70">
               <template scope="scope">
                 <el-button @click.native.prevent="list(scope.$index)" type="text" size="small" v-if="records[scope.$index].settleStatusValue!='结算成功'">结算</el-button>
-              </template>-->
+              </template>&ndash;&gt;
             </el-table-column>
           </el-table>
-          <!--分页-->
+          &lt;!&ndash;分页&ndash;&gt;
           <div class="block" style="text-align: right">
             <el-pagination @size-change="handleSizeChange"
                            @current-change="handleCurrentChange"
@@ -1590,7 +1590,7 @@
                            :total="count">
             </el-pagination>
           </div>
-          <!--审核-->
+          &lt;!&ndash;审核&ndash;&gt;
           <div v-if="isShow">
             <el-dialog title="结算确认提醒" v-model="isShow">
               <div class="maskCon">
@@ -1833,4 +1833,4 @@
   .btn{
     font-size: 12px;
   }
-</style>
+</style>-->

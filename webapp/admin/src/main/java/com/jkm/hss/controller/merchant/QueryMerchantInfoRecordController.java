@@ -9,8 +9,12 @@ import com.jkm.hss.controller.BaseController;
 import com.jkm.hss.dealer.service.DealerService;
 import com.jkm.hss.helper.ApplicationConsts;
 import com.jkm.hss.helper.response.MerchantRateResponse;
-import com.jkm.hss.merchant.entity.*;
+import com.jkm.hss.merchant.entity.LogResponse;
+import com.jkm.hss.merchant.entity.MerchantChannelRate;
+import com.jkm.hss.merchant.entity.MerchantInfoResponse;
+import com.jkm.hss.merchant.entity.SettleResponse;
 import com.jkm.hss.merchant.enums.EnumEnterNet;
+import com.jkm.hss.merchant.helper.MerchantSupport;
 import com.jkm.hss.merchant.service.MerchantChannelRateService;
 import com.jkm.hss.merchant.service.QueryMerchantInfoRecordService;
 import com.jkm.hss.product.enums.EnumPayChannelSign;
@@ -51,11 +55,12 @@ public class QueryMerchantInfoRecordController extends BaseController {
         JSONObject jsonObject = new JSONObject();
 //        ReferralResponse res = this.queryMerchantInfoRecordService.getRefInformation(merchantInfo.getId());
         List<MerchantInfoResponse> list = this.queryMerchantInfoRecordService.getAll(merchantInfo);
-        if (list.size()>0){
+        MerchantInfoResponse response = this.queryMerchantInfoRecordService.getrecommenderInfo(merchantInfo.getId());
+
+        if (list.size()>0 || response!=null){
             for (int i=0;i<list.size();i++){
                 if (list.get(i).getLevel()==1){
                     list.get(i).setProxyName(list.get(i).getProxyName());
-
                 }
                 if (list.get(i).getLevel()==2){
                     list.get(i).setProxyName1(list.get(i).getProxyName());
@@ -66,6 +71,18 @@ public class QueryMerchantInfoRecordController extends BaseController {
                         list.get(i).setMarkCode1(proxyNames.getMarkCode());
                     }
                 }
+                if (response!=null){
+                    if(response.getMarkCode()!=null&&!response.getMarkCode().equals("")){
+                        list.get(i).setRecommenderCode(response.getMarkCode());
+                    }
+                    if(response.getMerchantName()!=null&&!response.getMerchantName().equals("")){
+                        list.get(i).setRecommenderName(response.getMerchantName());
+                    }
+                    if(response.getMobile()!=null&&!response.getMobile().equals("")){
+                        list.get(i).setRecommenderPhone(MerchantSupport.decryptMobile(response.getMobile()));
+                    }
+                }
+
 
             }
         }
@@ -111,8 +128,8 @@ public class QueryMerchantInfoRecordController extends BaseController {
                     list.get(i).setIdentityHandPic(urls);
 
                 }
-                list.get(i).setProxyName(list.get(i).getProxyName());
-               list.get(i).setProxyName1(list.get(i).getProxyName1());
+//                list.get(i).setProxyName(list.get(i).getProxyName());
+//               list.get(i).setProxyName1(list.get(i).getProxyName1());
 //                if (list.get(i).getDealerId()==0){
 //                    String ProxyName = "金开门";
 //                    list.get(i).setProxyName(ProxyName);

@@ -68,7 +68,6 @@
             </el-table-column>
             <el-table-column prop="payAmount" align="right" label="支付金额" width="90"></el-table-column>
             <el-table-column prop="createTime" :formatter="changeTime" label="创建时间" min-width="155"></el-table-column>
-            <el-table-column prop="requestTime" :formatter="changeTime1" label="支付发起时间" min-width="155"></el-table-column>
             <el-table-column prop="finishTime" :formatter="changeTime2" label="支付完成时间" min-width="155"></el-table-column>
             <el-table-column prop="payChannel" label="支付渠道" min-width="90"></el-table-column>
             <el-table-column prop="payType" label="支付方式" min-width="120"></el-table-column>
@@ -189,27 +188,6 @@
       //格式化时间
       changeTime: function (row, column) {
         var val = row.createTime;
-        if (val == '' || val == null) {
-          return ''
-        } else {
-          val = new Date(val)
-          var year = val.getFullYear();
-          var month = val.getMonth() + 1;
-          var date = val.getDate();
-          var hour = val.getHours();
-          var minute = val.getMinutes();
-          var second = val.getSeconds();
-          function tod(a) {
-            if (a < 10) {
-              a = "0" + a
-            }
-            return a;
-          }
-          return year + "-" + tod(month) + "-" + tod(date) + " " + tod(hour) + ":" + tod(minute) + ":" + tod(second);
-        }
-      },
-      changeTime1: function (row, column) {
-        var val = row.requestTime;
         if (val == '' || val == null) {
           return ''
         } else {
