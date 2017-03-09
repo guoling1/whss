@@ -17,7 +17,7 @@
       <div class="logo" id="logo"></div>
       <div class="info">
         <div class="name">${bankName}</div>
-        <div class="type">储蓄卡 | xx支行</div>
+        <div class="type">储蓄卡 | ${branchName}</div>
       </div>
     </div>
     <div class="bottom">
