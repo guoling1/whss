@@ -13,7 +13,7 @@
   <meta name="viewport"
         content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
   <title>好收收</title>
-  <link rel="stylesheet" href="http://static.jinkaimen.cn/hss/css/style.2.1.3.css">
+  <link rel="stylesheet" href="http://static.jinkaimen.cn/hss/css/style.2.1.5.css">
   <link rel="stylesheet" href="http://static.jinkaimen.cn/weui/weui.css">
 </head>
 <body>
@@ -23,10 +23,12 @@
     <div class="top">
       <div class="logo" id="logo"></div>
       <div class="info">
-        <div class="name">${bankName}</div>
-        <div class="type">储蓄卡 | xx支行</div>
+        <div class="name">
+          ${bankName}
+          <a href="/sqb/bankBranch" class="btn red" id="btn">补充支行信息</a></div>
+        <div class="type">储蓄卡 | ${branchName}</div>
       </div>
-      <a href="/sqb/bankBranch" class="btn red" id="btn">补充支行信息</a>
+
     </div>
     <div class="bottom">
       <div class="p">
@@ -50,7 +52,7 @@
       <div class="p">
         <div class="word">${bankNo}</div>
       </div>
-      <div class="s">130******21</div>
+      <div class="s">${mobile}</div>
     </div>
     <div class="small">
       该卡用于收款后的自动结算与余额提现
@@ -66,5 +68,5 @@
   }
 </script>
 <script src="http://static.jinkaimen.cn/vendor/vendor.1.0.3.min.js"></script>
-<script src="http://static.jinkaimen.cn/hss/2.1.1/bank.min.js"></script>
+<script src="http://static.jinkaimen.cn/hss/2.1.3/bank.min.js"></script>
 </html>
