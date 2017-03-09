@@ -67,6 +67,7 @@ public class OrderServiceImpl implements OrderService {
     private AccountService accountService;
     @Autowired
     private DealerService dealerService;
+
     /**
      * {@inheritDoc}
      *
@@ -691,6 +692,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public List<MerchantTradeResponse> getOrderList(OrderTradeRequest req) {
         List<MerchantTradeResponse> list = orderDao.getOrderList(req);
+//        List<MerchantTradeResponse> list2 = orderService.getOrderList(req);
         if (list.size()>0){
             for (int i=0;i<list.size();i++){
                 if (list.get(i).getAppId().equals("hss")){
@@ -775,6 +777,7 @@ public class OrderServiceImpl implements OrderService {
             }
         }
 
+
         return list;
     }
 
@@ -785,7 +788,7 @@ public class OrderServiceImpl implements OrderService {
      * @return
      */
     private ExcelSheetVO generateCodeExcelSheet(OrderTradeRequest req,String baseUrl) {
-        List<MerchantTradeResponse> list = orderDao.selectOrderListTrade(req);
+        List<MerchantTradeResponse> list = getOrderList(req);
         final ExcelSheetVO excelSheetVO = new ExcelSheetVO();
         final List<List<String>> datas = new ArrayList<List<String>>();
         final ArrayList<String> heads = new ArrayList<>();
