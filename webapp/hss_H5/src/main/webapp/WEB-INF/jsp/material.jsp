@@ -107,7 +107,7 @@
         结算卡支持银行
         <span class="sample-xx" id="bankHide"></span>
       </div>
-      <img class="sample-box-body" src="../../assets/zcbank.png" alt="">
+      <img class="sample-box-body" src="http://static.jinkaimen.cn/hss/assets/zcbank.png" alt="">
       <div class="sample-box-foot" id="bankEnter">
         确定
       </div>
