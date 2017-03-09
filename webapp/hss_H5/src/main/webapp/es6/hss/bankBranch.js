@@ -6,7 +6,8 @@
 const http = _require('http');
 const message = _require('message');
 const browser = _require('browser');
-browser.elastic_touch();
+browser.elastic_touch('layer-w-list');
+browser.elastic_touch('layer-b-list');
 // 定义变量
 const color = document.getElementById('color');
 const logo = document.getElementById('logo');
@@ -208,6 +209,21 @@ let CountrysSet = function (code) {
   }
   ct.className = 'choose';
   ct.style.display = 'inline-block';
+};
+
+p.onclick = function () {
+  c.style.display = 'none';
+  ct.style.display = 'none';
+  ProvincesSet();
+};
+
+c.onclick = function () {
+  ct.style.display = 'none';
+  CitysSet(pageData.provinceCode);
+};
+
+ct.onclick = function () {
+  CitysSet(pageData.cityCode);
 };
 
 // 卡bin和颜色一一对应

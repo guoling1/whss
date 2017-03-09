@@ -74,7 +74,7 @@
       transform: translate3d(0, 2px, 0);
     }
 
-    .icard.green{
+    .icard.green {
       background: url("../../assets/icard-green.png") center;
       background-size: 14px 12px;
     }
@@ -110,7 +110,6 @@
 </head>
 <body>
 <div id="authentication">
-
   <div class="space">
     <div class="mark"><span class="store"></span>已认证</div>
     <div class="list">
@@ -119,7 +118,14 @@
     </div>
     <div class="list">
       <div class="left">店铺所在地:</div>
-      <div class="right">${address}</div>
+      <c:choose>
+        <c:when test="${address == ''}">
+          <div class="right">--</div>
+        </c:when>
+        <c:otherwise>
+          <div class="right">${address}</div>
+        </c:otherwise>
+      </c:choose>
     </div>
     <div class="list">
       <div class="left">详细地址:</div>
