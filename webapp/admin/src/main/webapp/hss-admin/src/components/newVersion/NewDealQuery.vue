@@ -302,6 +302,7 @@
         this.$data.query.page = 1;
         this.getData()
       },
+
       //每页条数改变
       handleSizeChange(val) {
         this.$data.query.page = 1;
