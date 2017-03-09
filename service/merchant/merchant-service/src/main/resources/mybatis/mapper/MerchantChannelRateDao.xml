@@ -93,6 +93,13 @@
         WHERE
         merchant_id=#{merchantId} and product_id=#{productId} and channel_company=#{channelCompany} and status=0
     </select>
+    <select id="selectFailMerchantInfo" resultType="java.lang.Long">
+        SELECT
+        distinct(merchant_id)
+        FROM tb_merchant_channel_rate
+        WHERE
+        enter_net = #{entId}
+    </select>
     <update id="toUpgrade">
         UPDATE tb_merchant_channel_rate
         SET merchant_pay_rate = #{rate}

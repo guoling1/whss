@@ -193,4 +193,14 @@ public class MerchantChannelRateServiceImpl implements MerchantChannelRateServic
     public void toUpgrade(MerchantUpgradeRequest merchantUpgradeRequest) {
             merchantChannelRateDao.toUpgrade(merchantUpgradeRequest);
     }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @return
+     */
+    @Override
+    public List<Long> selectFailMerchantInfo() {
+        return this.merchantChannelRateDao.selectFailMerchantInfo(EnumEnterNet.ENT_FAIL.getId());
+    }
 }

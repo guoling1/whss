@@ -67,4 +67,24 @@ public class MerchantInTask {
         }
         log.info("商户入网同步定时任务--end");
     }
+
+    /**
+     * 每隔5分钟检查入网结果
+     */
+    @Scheduled(cron = "0 0/5 * * * ?")
+    public void handleMerchantTask() {
+
+        log.info("商户入网提交定时任务--start");
+        //查询商户入网中的id
+        List<Long> idList = this.merchantChannelRateService.selectFailMerchantInfo();
+        if (CollectionUtils.isEmpty(idList)){
+            return ;
+        }
+
+        final List<MerchantInfo> merchantInfos = this.merchantInfoService.batchGetMerchantInfo(idList);
+        for (MerchantInfo merchantInfo : merchantInfos){
+
+
+        }
+    }
 }
