@@ -2408,6 +2408,9 @@ input:focus {
 #bankList .group .top .btn.red {
   background-color: #c64b4b;
 }
+#bankList .group .top .btn.green {
+  background-color: #3d9a63;
+}
 #bankList .group .top .btn.blue {
   background-color: #406eae;
 }
