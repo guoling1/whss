@@ -114,7 +114,7 @@ public class ShallProfitDetailServiceImpl implements ShallProfitDetailService{
             //提现分润
             final Map<String, Triple<Long, BigDecimal, String>> map = new HashMap<>();
             if (appAuUser.getDealerID() == 0){
-                final ProductChannelDetail productChannelDetail = this.productChannelDetailService.selectByProductIdAndChannelId(appAuUser.getId(), channelSign).get();
+                final ProductChannelDetail productChannelDetail = this.productChannelDetailService.selectByProductIdAndChannelId(appAuUser.getProductID(), channelSign).get();
                 //final ProductChannelDetail productChannelDetail = list.get(0);
                 final Optional<BasicChannel> channelOptional =  this.basicChannelService.selectByChannelTypeSign(channelSign);
                 final BasicChannel basicChannel = channelOptional.get();
@@ -242,7 +242,7 @@ public class ShallProfitDetailServiceImpl implements ShallProfitDetailService{
         if (merchantInfo.getFirstMerchantId() != 0){
             log.info("商户[" + merchantId + "]请求进行提现分润，由于该商户是间接商户，不参与分润，直接进入公司账户，交易订单号:" + orderNo);
 
-            final ProductChannelDetail productChannelDetail = this.productChannelDetailService.selectByProductIdAndChannelId(merchantInfo.getId(), channelSign).get();
+            final ProductChannelDetail productChannelDetail = this.productChannelDetailService.selectByProductIdAndChannelId(merchantInfo.getProductId(), channelSign).get();
             final Optional<BasicChannel> channelOptional =  this.basicChannelService.selectByChannelTypeSign(channelSign);
             final BasicChannel basicChannel = channelOptional.get();
             final BigDecimal channelMoney = productChannelDetail.getProductWithdrawFee().subtract(basicChannel.getBasicWithdrawFee());
