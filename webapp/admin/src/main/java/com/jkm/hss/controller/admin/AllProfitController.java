@@ -233,7 +233,7 @@ public class AllProfitController extends BaseController {
     }
 
     /**
-     * 导出一级代理分润
+     * 导出二级代理分润
      * @return
      */
     private String downLoadTwoDealer(@RequestBody CompanyPrifitRequest req) throws ParseException {

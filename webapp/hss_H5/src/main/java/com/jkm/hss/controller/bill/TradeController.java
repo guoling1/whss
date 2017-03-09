@@ -98,7 +98,7 @@ public class TradeController extends BaseController {
         if (0 == resultPair.getLeft()) {
             return CommonResponse.builder4MapResult(CommonResponse.SUCCESS_CODE, "success")
                     .addParam("payUrl", URLDecoder.decode(resultPair.getRight(), "UTF-8"))
-                    .addParam("subMerName", "")
+                    .addParam("subMerName", merchantInfo.get().getMerchantName())
                     .addParam("amount", totalFee).build();
         }
         return CommonResponse.simpleResponse(-1, resultPair.getRight());

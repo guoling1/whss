@@ -10,6 +10,7 @@
             product_type,
             title,
             text,
+            type,
             publisher
             )
         VALUES
@@ -19,6 +20,7 @@
             #{productType},
             #{title},
             #{text},
+            #{type},
             #{publisher})
     </insert>
 
