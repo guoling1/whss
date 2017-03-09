@@ -98,7 +98,7 @@
         distinct(merchant_id)
         FROM tb_merchant_channel_rate
         WHERE
-        enter_net = #{entId}
+        enter_net = #{entId} AND remarks like '%异常%'
     </select>
     <update id="toUpgrade">
         UPDATE tb_merchant_channel_rate
