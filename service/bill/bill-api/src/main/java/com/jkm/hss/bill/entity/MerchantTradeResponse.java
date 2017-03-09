@@ -20,6 +20,11 @@ import java.util.Date;
 public class MerchantTradeResponse {
 
     /**
+     * 支付流水号
+     */
+    private String businessOrderNo;
+
+    /**
      * 商户编码
      */
     private String markCode;
