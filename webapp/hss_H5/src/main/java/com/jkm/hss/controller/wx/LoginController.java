@@ -774,7 +774,11 @@ public class LoginController extends BaseController {
                         }
                         if(result.get().getBranchName()!=null&&!"".equals(result.get().getBranchName())){//有支行信息
                             model.addAttribute("hasBranch",1);
-                            model.addAttribute("branchName",result.get().getBranchName());
+                            String tempBranchName = result.get().getBranchName();
+                            if(tempBranchName.length()>12){
+                                tempBranchName = "***"+tempBranchName.substring(tempBranchName.length()-12,tempBranchName.length());
+                            }
+                            model.addAttribute("branchName",tempBranchName);
                         }else{
                             model.addAttribute("hasBranch",0);//没有支行信息
                             model.addAttribute("branchName","");
@@ -842,8 +846,8 @@ public class LoginController extends BaseController {
                         }else{
                             model.addAttribute("bankNo","");
                         }
-                        if(result.get().getMobile()!=null&&!"".equals(result.get().getMobile())){
-                            String mobile = MerchantSupport.decryptMobile(result.get().getMobile());
+                        if(result.get().getReserveMobile()!=null&&!"".equals(result.get().getReserveMobile())){
+                            String mobile = MerchantSupport.decryptMobile(result.get().getReserveMobile());
                             model.addAttribute("mobile",mobile.substring(0,3)+"******"+mobile.substring(mobile.length()-2,mobile.length()));
                         }else{
                             model.addAttribute("mobile","");
