@@ -208,7 +208,33 @@ input:focus {
       height: 50px;
       border-bottom: 1px solid #e6e8f1;
       .list-icon {
-
+        width: 35px;
+        height: 35px;
+        float: left;
+        &.notice1 {
+          background: url("../../assets/notice-icon-1.png") no-repeat center;
+          background-size: 35px 35px;
+        }
+        &.notice2 {
+          background: url("../../assets/notice-icon-2.png") no-repeat center;
+          background-size: 35px 35px;
+        }
+      }
+      .list-info {
+        .top {
+          font-size: 14px;
+          color: #5a5a5a;
+        }
+        .bottom {
+          font-size: 12px;
+          color: #c1c1c1;
+        }
+      }
+      .list-right {
+        width: 6px;
+        height: 10px;
+        background: url("../../assets/list-right.png") no-repeat center;
+        background-size: 6px 10px;
       }
     }
   }

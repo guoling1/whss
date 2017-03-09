@@ -17,6 +17,11 @@
   <div class="list-box">
     <div class="list-li">
       <div class="list-icon"></div>
+      <div class="list-info">
+        <div class="top">限额提醒</div>
+        <div class="bottom">2017-02-17</div>
+      </div>
+      <div class="list-right"></div>
     </div>
   </div>
 </div>
