@@ -1,12 +1,10 @@
-package com.jkm.hss.controller.merchant;
+package com.jkm.hss.schedule;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.jkm.base.common.entity.BaseEntity;
 import com.jkm.base.common.entity.CommonResponse;
 import com.jkm.base.common.util.HttpClientPost;
 import com.jkm.hss.bill.helper.PaymentSdkConstants;
-import com.jkm.hss.controller.BaseController;
 import com.jkm.hss.merchant.entity.MerchantInfo;
 import com.jkm.hss.merchant.enums.EnumEnterNet;
 import com.jkm.hss.merchant.service.MerchantChannelRateService;
@@ -14,46 +12,40 @@ import com.jkm.hss.merchant.service.MerchantInfoService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
 
-import java.text.ParseException;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 /**
- * Created by yuxiang on 2017-02-28.
+ * Created by yuxiang on 2017-03-09.
  */
 @Slf4j
-@Controller
-@RequestMapping(value = "/admin/merchantIn")
-public class MerchantInController extends BaseController{
+@Component
+@Lazy(false)
+public class MerchantInTask {
 
     @Autowired
     private MerchantChannelRateService merchantChannelRateService;
     @Autowired
     private MerchantInfoService merchantInfoService;
-    /**
-     * 同步商户入网结果
-     *
-     * @return
-     */
-    @ResponseBody
-    @RequestMapping(value = "/update",method = RequestMethod.GET)
-    public CommonResponse merchantIn(){
 
-        log.info("同步商户入网结果开始:");
+    /**
+     * 每隔五分钟同步商户入网结果
+     */
+    @Scheduled(cron = "0 0/5 * * * ?")
+    public void handleMerchantInTask() {
+        log.info("商户入网同步定时任务--start");
         //查询商户入网中的id
         List<Long> idList = this.merchantChannelRateService.selectIngMerchantInfo();
         if (CollectionUtils.isEmpty(idList)){
-            return CommonResponse.simpleResponse(1, "success");
+            return ;
         }
-        final List<MerchantInfo> merchantInfos = this.merchantInfoService.batchGetMerchantInfo(idList);
 
+        final List<MerchantInfo> merchantInfos = this.merchantInfoService.batchGetMerchantInfo(idList);
         for (MerchantInfo merchantInfo : merchantInfos){
 
             //请求支付中心查询商户入网结果
@@ -73,8 +65,6 @@ public class MerchantInController extends BaseController{
             }
 
         }
-
-
-        return CommonResponse.simpleResponse(1, "success");
+        log.info("商户入网同步定时任务--end");
     }
 }
