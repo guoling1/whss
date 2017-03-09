@@ -128,7 +128,7 @@
       }
     },
     created: function () {
-      let time = new Date();
+      let time = new Date(new Date().getTime()-86400000);
       this.date = [time,time];
       for (var j = 0; j < this.date.length; j++) {
         var str = this.date[j];

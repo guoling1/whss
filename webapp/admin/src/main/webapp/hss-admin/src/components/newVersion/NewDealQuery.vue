@@ -12,11 +12,19 @@
           <!--筛选-->
           <ul>
             <li class="same">
-              <label>订单号:</label>
+              <label>业务订单号:</label>
+              <el-input style="width: 130px" v-model="query.businessOrderNo" placeholder="请输入内容" size="small"></el-input>
+            </li>
+            <li class="same">
+              <label>交易订单号:</label>
               <el-input style="width: 130px" v-model="query.orderNo" placeholder="请输入内容" size="small"></el-input>
             </li>
             <li class="same">
-              <label>商户名称:</label>
+              <label>支付流水号:</label>
+              <el-input style="width: 130px" v-model="query.sn" placeholder="请输入内容" size="small"></el-input>
+            </li>
+            <li class="same">
+              <label>收款商户名称:</label>
               <el-input style="width: 130px" v-model="query.merchantName" placeholder="请输入内容" size="small"></el-input>
             </li>
             <li class="same">
@@ -45,7 +53,7 @@
               </div>
             </li>
             <li class="same">
-              <label>订单状态:</label>
+              <label>交易状态:</label>
               <el-select style="width: 120px" clearable v-model="query.status" size="small">
                 <el-option label="全部" value="">全部</el-option>
                 <el-option label="待支付" value="1">待支付</el-option>
@@ -78,38 +86,45 @@
             </li>
           </ul>
           <!--表格-->
-          <el-table v-loading.body="loading" height="583" style="font-size: 12px;margin:15px 0" :data="records" border>
-            <el-table-column type="index" width="62" label="序号" fixed="left"></el-table-column>
-            <el-table-column label="订单号" min-width="112">
+          <el-table v-loading.body="loading" height="583" style="font-size: 12px;margin:15px 0" :data="records" border :row-class-name="tableRowClassName">
+            <el-table-column   width="100" label="序号">
+              <template scope="scope">
+                <div v-if="records[scope.$index].proxyName1!='总额'">{{scope.$index+1}}</div>
+              </template>
+            </el-table-column>
+            <el-table-column prop="appId" label="业务方" min-width="85"></el-table-column>
+            <el-table-column label="业务订单号" min-width="112">
+              <template scope="scope">
+                <span class="td" :data-clipboard-text="records[scope.$index].businessOrderNo" type="text" size="small"
+                      style="cursor: pointer" title="点击复制">{{records[scope.$index].businessOrderNo|changeHide}}</span>
+              </template>
+            </el-table-column>
+            <el-table-column label="交易订单号" min-width="112">
               <template scope="scope">
                 <span class="td" :data-clipboard-text="records[scope.$index].orderNo" type="text" size="small"
                       style="cursor: pointer" title="点击复制">{{records[scope.$index].orderNo|changeHide}}</span>
               </template>
             </el-table-column>
-            <el-table-column label="交易流水号" min-width="112">
+            <el-table-column label="支付流水号" min-width="112">
               <template scope="scope">
                 <span class="td" :data-clipboard-text="records[scope.$index].sn" type="text" size="small"
                       style="cursor: pointer" title="点击复制">{{records[scope.$index].sn|changeHide}}</span>
               </template>
             </el-table-column>
             <el-table-column prop="createTime" :formatter="changeTime" label="交易日期" width="162"></el-table-column>
-            <el-table-column prop="merchantName" label="商户名称" min-width="90"></el-table-column>
+            <el-table-column prop="merchantName" label="收款商户名称" min-width="120"></el-table-column>
             <el-table-column prop="proxyName" label="所属一级" min-width="90"></el-table-column>
             <el-table-column prop="proxyName1" label="所属二级" min-width="90"></el-table-column>
-            <el-table-column prop="tradeAmount" :formatter="changeNum" label="支付金额" min-width="90"
-                             align="right"></el-table-column>
+            <el-table-column prop="tradeAmount" :formatter="changeNum" label="支付金额" min-width="90" align="right"></el-table-column>
             <el-table-column prop="payRate" label="手续费率" min-width="90" align="right"></el-table-column>
-            <el-table-column prop="appId" label="业务方" min-width="85"></el-table-column>
             <el-table-column prop="status" :formatter="changeStatus" label="订单状态" min-width="90"></el-table-column>
-            <el-table-column prop="settleStatus" :formatter="changeSettleStatus" label="结算状态"
-                             min-width="90"></el-table-column>
+            <el-table-column prop="settleStatus" :formatter="changeSettleStatus" label="结算状态" min-width="90"></el-table-column>
             <el-table-column prop="payType" label="支付方式" min-width="115"></el-table-column>
             <el-table-column prop="payChannelSigns" label="支付渠道" min-width="115"></el-table-column>
             <el-table-column prop="remark" label="渠道信息" min-width="90"></el-table-column>
             <el-table-column label="操作" width="90" fixed="right">
               <template scope="scope">
-                <router-link :to="{path:'/admin/record/newDealDet',query:{orderNo:records[scope.$index].orderNo}}"
-                             type="text" size="small">详情
+                <router-link :to="{path:'/admin/record/newDealDet',query:{orderNo:records[scope.$index].orderNo}}" v-if="records[scope.$index].proxyName1!='总额'" type="text" size="small">详情
                 </router-link>
               </template>
             </el-table-column>
@@ -142,6 +157,8 @@
           page:1,
           size:10,
           orderNo:'',
+          businessOrderNo:'',
+          sn:'',
           merchantName: '',
           startTime: '',
           endTime: '',
@@ -200,10 +217,21 @@
             this.$data.total=res.data.totalPage;
             this.$data.url=res.data.ext;
             this.$data.count = res.data.count;
+            var price=0,rate;
+            var toFix = function (val) {
+              return parseFloat(val).toFixed(2)
+            };
             for (var i = 0; i < this.records.length; i++) {
+              price = toFix(parseFloat(price)+parseFloat(this.records[i].tradeAmount))
               if (this.records[i].payRate != null) {
                 this.records[i].payRate = (parseFloat(this.records[i].payRate) * 100).toFixed(2) + '%';
               }
+            }
+            if(this.records.length!=0){
+              this.records.push({
+                proxyName1:"总额",
+                tradeAmount:price
+              })
             }
           },function (err) {
             this.$data.loading = false;
@@ -285,6 +313,12 @@
         this.$data.query.page = val;
         this.getData()
       },
+      tableRowClassName(row, index) {
+        if (row.proxyName1 === '总额') {
+          return 'info-row';
+        }
+        return '';
+      }
     },
     watch: {
       date: function (val, oldVal) {
@@ -322,6 +356,10 @@
 </script>
 
 <style scoped lang="less" rel="stylesheet/less">
+  .el-table .info-row {
+    background: #eef1f6;
+  }
+
   ul {
     padding: 0;
   }
