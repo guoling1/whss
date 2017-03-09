@@ -276,7 +276,8 @@ public class WithdrawServiceImpl implements WithdrawService {
         //通道利润--到结算--到可用余额
         if (null != channelMoneyTriple) {
             this.splitAccountRecordService.addWithdrawSplitAccountRecord(splitBusinessType, settlementRecord.getSettleNo(), settlementRecord.getSettleNo(),
-                    settlementRecord.getSettleAmount(), poundage, channelMoneyTriple, "通道账户", EnumTradeType.WITHDRAW.getValue());
+                    settlementRecord.getSettleAmount(), poundage, channelMoneyTriple, "通道账户",
+                    EnumTradeType.WITHDRAW.getValue(), EnumSplitAccountUserType.JKM.getId());
             final Account account = this.accountService.getById(channelMoneyTriple.getLeft()).get();
             this.accountService.increaseTotalAmount(account.getId(), channelMoneyTriple.getMiddle());
             this.accountService.increaseAvailableAmount(account.getId(), channelMoneyTriple.getMiddle());
@@ -286,7 +287,8 @@ public class WithdrawServiceImpl implements WithdrawService {
         //产品利润--到结算--可用余额
         if (null != productMoneyTriple) {
             this.splitAccountRecordService.addWithdrawSplitAccountRecord(splitBusinessType, settlementRecord.getSettleNo(), settlementRecord.getSettleNo(),
-                    settlementRecord.getSettleAmount(), poundage, productMoneyTriple, "产品账户", EnumTradeType.WITHDRAW.getValue());
+                    settlementRecord.getSettleAmount(), poundage, productMoneyTriple, "产品账户",
+                    EnumTradeType.WITHDRAW.getValue(), EnumSplitAccountUserType.JKM.getId());
             final Account account = this.accountService.getById(productMoneyTriple.getLeft()).get();
             this.accountService.increaseTotalAmount(account.getId(), productMoneyTriple.getMiddle());
             this.accountService.increaseAvailableAmount(account.getId(), productMoneyTriple.getMiddle());
@@ -297,7 +299,8 @@ public class WithdrawServiceImpl implements WithdrawService {
         if (null != firstMoneyTriple) {
             final Dealer dealer = this.dealerService.getByAccountId(firstMoneyTriple.getLeft()).get();
             this.splitAccountRecordService.addWithdrawSplitAccountRecord(splitBusinessType, settlementRecord.getSettleNo(), settlementRecord.getSettleNo(),
-                    settlementRecord.getSettleAmount(), poundage, firstMoneyTriple, dealer.getProxyName(), EnumTradeType.WITHDRAW.getValue());
+                    settlementRecord.getSettleAmount(), poundage, firstMoneyTriple, dealer.getProxyName(),
+                    EnumTradeType.WITHDRAW.getValue(), EnumSplitAccountUserType.FIRST_DEALER.getId());
             final Account account = this.accountService.getById(firstMoneyTriple.getLeft()).get();
             this.accountService.increaseTotalAmount(account.getId(), firstMoneyTriple.getMiddle());
             this.accountService.increaseAvailableAmount(account.getId(), firstMoneyTriple.getMiddle());
@@ -309,7 +312,8 @@ public class WithdrawServiceImpl implements WithdrawService {
             final Dealer dealer = this.dealerService.getByAccountId(secondMoneyTriple.getLeft()).get();
             final Account account = this.accountService.getById(secondMoneyTriple.getLeft()).get();
             this.splitAccountRecordService.addWithdrawSplitAccountRecord(splitBusinessType, settlementRecord.getSettleNo(), settlementRecord.getSettleNo(),
-                    settlementRecord.getSettleAmount(), poundage, secondMoneyTriple, dealer.getProxyName(), EnumTradeType.WITHDRAW.getValue());
+                    settlementRecord.getSettleAmount(), poundage, secondMoneyTriple, dealer.getProxyName(),
+                    EnumTradeType.WITHDRAW.getValue(), EnumSplitAccountUserType.SECOND_DEALER.getId());
             this.accountService.increaseTotalAmount(account.getId(), secondMoneyTriple.getMiddle());
             this.accountService.increaseAvailableAmount(account.getId(), secondMoneyTriple.getMiddle());
             this.accountFlowService.addAccountFlow(account.getId(), settlementRecord.getSettleNo(), secondMoneyTriple.getMiddle(),
