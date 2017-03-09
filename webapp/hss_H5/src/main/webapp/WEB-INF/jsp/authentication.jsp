@@ -119,17 +119,17 @@
     <div class="list">
       <div class="left">店铺所在地:</div>
       <c:choose>
-        <c:when test="${address == ''}">
+        <c:when test="${district == ''}">
           <div class="right">--</div>
         </c:when>
         <c:otherwise>
-          <div class="right">${address}</div>
+          <div class="right">${district}</div>
         </c:otherwise>
       </c:choose>
     </div>
     <div class="list">
       <div class="left">详细地址:</div>
-      <div class="right">东城区********7号</div>
+      <div class="right">${address}</div>
     </div>
     <div class="list">
       <div class="left">注册时间:</div>
@@ -145,7 +145,7 @@
     </div>
     <div class="list">
       <div class="left">身份证号:</div>
-      <div class="right">420*************01</div>
+      <div class="right">${idCard}</div>
     </div>
   </div>
 
