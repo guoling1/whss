@@ -128,6 +128,7 @@
     <select id="selectOrderList" resultType="com.jkm.hss.bill.entity.MerchantTradeResponse">
         SELECT
         a.pay_order_id,
+        a.business_order_no,
         a.order_no,
         a.trade_amount,
         a.real_pay_amount,
@@ -170,6 +171,12 @@
         </if>
         <if test="merchantName != null and merchantName!=''">
             AND b.merchant_name LIKE CONCAT('%',#{merchantName},'%')
+        </if>
+        <if test="businessOrderNo != null and businessOrderNo!=''">
+            AND a.business_order_no = #{businessOrderNo}
+        </if>
+        <if test="sn != null and sn!=''">
+            AND a.sn = #{sn}
         </if>
         <if test="status != null and status!=''">
             AND a.status=#{status}
