@@ -233,6 +233,13 @@ public interface OrderService {
     List<Order> getByOrderNos(List<String> orderNos);
 
     /**
+     * 一二级筛选用
+     * @param req
+     * @return
+     */
+    List<MerchantTradeResponse> getOrderList(OrderTradeRequest req);
+
+    /**
      * 查询交易详情
      * @param orderRecord
      * @return

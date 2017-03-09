@@ -128,6 +128,7 @@
     <select id="selectOrderList" resultType="com.jkm.hss.bill.entity.MerchantTradeResponse">
         SELECT
         a.pay_order_id,
+        a.business_order_no,
         a.order_no,
         a.trade_amount,
         a.real_pay_amount,
@@ -171,6 +172,12 @@
         <if test="merchantName != null and merchantName!=''">
             AND b.merchant_name LIKE CONCAT('%',#{merchantName},'%')
         </if>
+        <if test="businessOrderNo != null and businessOrderNo!=''">
+            AND a.business_order_no = #{businessOrderNo}
+        </if>
+        <if test="sn != null and sn!=''">
+            AND a.sn = #{sn}
+        </if>
         <if test="status != null and status!=''">
             AND a.status=#{status}
         </if>
@@ -190,35 +197,114 @@
         limit #{offset}, #{size}
     </select>
 
+    <select id="getOrderList" resultType="com.jkm.hss.bill.entity.MerchantTradeResponse">
+        SELECT
+            a.pay_order_id,
+            a.order_no,
+            a.trade_amount,
+            a.real_pay_amount,
+            a.trade_type,
+            a.payer,
+            a.payee,
+            a.pay_account,
+            a.pay_account_type,
+            a.pay_type,
+            a.pay_success_time,
+            a.poundage,
+            a.pay_rate,
+            a.settle_status,
+            a.settle_time,
+            a.success_settle_time,
+            a.pay_channel_sign,
+            a.remark,
+            a. STATUS,
+            a.create_time,
+            b.merchant_name,
+            a.sn,
+            a.app_id,
+            c.`level`,
+            c.first_level_dealer_id,
+            c.proxy_name
+        FROM
+          tb_order a
+        LEFT JOIN tb_merchant_info b ON a.payee = b.account_id
+        LEFT JOIN tb_dealer c ON b.dealer_id=c.id
+        WHERE
+          a.trade_type = 1
+        <if test="startTime!=null and startTime!=''">
+            AND a.create_time <![CDATA[ >= ]]> #{startTime}
+        </if>
+        <if test="endTime!=null and endTime!=''">
+            AND a.create_time <![CDATA[ <= ]]> #{endTime}
+        </if>
+        <if test="orderNo != null and orderNo!=''">
+            AND a.order_no LIKE CONCAT('%',#{orderNo})
+        </if>
+        <if test="merchantName != null and merchantName!=''">
+            AND b.merchant_name LIKE CONCAT('%',#{merchantName},'%')
+        </if>
+        <if test="status != null and status!=''">
+            AND a.status=#{status}
+        </if>
+        <if test="payType != null and payType!=''">
+            AND a.pay_type =  #{payType}
+        </if>
+        <if test="lessTotalFee != null and lessTotalFee!=''">
+            AND a.real_pay_amount <![CDATA[ >= ]]> #{lessTotalFee}
+        </if>
+        <if test="moreTotalFee != null and moreTotalFee!=''">
+            AND a.real_pay_amount <![CDATA[ <= ]]> #{moreTotalFee}
+        </if>
+        <if test="settleStatus != null">
+            AND a.settle_status = #{settleStatus}
+        </if>
+        ORDER BY a.create_time DESC
+    </select>
+
     <!-- 交易详情 -->
     <select id="selectOrderListByPageAll" resultType="com.jkm.hss.bill.entity.MerchantTradeResponse">
         SELECT
-            pay_order_id,
-            order_no,
-            trade_amount,
-            real_pay_amount,
-            trade_type,
-            payer,
-            payee,
-            pay_account,
-            pay_account_type,
-            pay_type,
-            pay_success_time,
-            poundage,
-            pay_rate,
-            settle_status,
-            settle_time,
-            success_settle_time,
-            pay_channel_sign,
-            remark,
-            status,
-            create_time
+            a.pay_order_id,
+            a.order_no,
+            a.trade_amount,
+            a.real_pay_amount,
+            a.trade_type,
+            a.payer,
+            a.payee,
+            a.pay_account,
+            a.pay_account_type,
+            a.pay_type,
+            a.pay_success_time,
+            a.poundage,
+            a.pay_rate,
+            a.settle_status,
+            a.settle_time,
+            a.success_settle_time,
+            a.pay_channel_sign,
+            a.remark,
+            a. STATUS,
+            a.create_time,
+            b.merchant_name,
+            b.mark_code,
+            b.mobile,
+            b.bank_no,
+            b.reserve_mobile,
+            b.mark_code,
+            a.sn,
+            a.app_id,
+            a.settle_type,
+            a.goods_describe,
+            a.goods_name,
+            c.`level`,
+            c.first_level_dealer_id,
+            c.proxy_name
         FROM
-            tb_order
+            tb_order a
+        LEFT JOIN tb_merchant_info b ON a.payee = b.account_id
+        LEFT JOIN tb_dealer c ON b.dealer_id=c.id
         WHERE
-            order_no = #{orderNo}
-        ORDER BY
-            create_time DESC
+            a.trade_type = 1 AND a.order_no=#{orderNo}
+
     </select>
 
     <!--查询生成ExcelVo 导出excel-->
