@@ -78,9 +78,9 @@ public class MerchantInTask {
     }
 
     /**
-     * 每隔5分钟检查入网结果
+     * 每隔2分钟检查入网结果
      */
-    @Scheduled(cron = "0 0/5 * * * ?")
+    @Scheduled(cron = "0 0/2 * * * ?")
     public void handleMerchantTask() {
 
         log.info("商户入网提交定时任务--start");
