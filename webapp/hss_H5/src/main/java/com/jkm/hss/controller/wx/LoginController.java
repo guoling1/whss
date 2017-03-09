@@ -2,11 +2,13 @@ package com.jkm.hss.controller.wx;
 
 
 import com.google.common.base.Optional;
+import com.jkm.base.common.entity.CommonResponse;
 import com.jkm.base.common.util.CookieUtil;
 import com.jkm.base.common.util.DateFormatUtil;
 import com.jkm.base.common.util.SnGenerator;
 import com.jkm.hss.account.entity.Account;
 import com.jkm.hss.account.sevice.AccountService;
+import com.jkm.hss.admin.helper.responseparam.AppBizDistrictResponse;
 import com.jkm.hss.bill.entity.Order;
 import com.jkm.hss.bill.enums.EnumOrderStatus;
 import com.jkm.hss.bill.service.OrderService;
@@ -764,16 +766,18 @@ public class LoginController extends BaseController {
                         }else{
                             model.addAttribute("bankNo","");
                         }
-                        if(result.get().getMobile()!=null&&!"".equals(result.get().getMobile())){
-                            String mobile = MerchantSupport.decryptMobile(result.get().getMobile());
+                        if(result.get().getReserveMobile()!=null&&!"".equals(result.get().getReserveMobile())){
+                            String mobile = MerchantSupport.decryptMobile(result.get().getReserveMobile());
                             model.addAttribute("mobile",mobile.substring(0,3)+"******"+mobile.substring(mobile.length()-2,mobile.length()));
                         }else{
                             model.addAttribute("mobile","");
                         }
                         if(result.get().getBranchName()!=null&&!"".equals(result.get().getBranchName())){//有支行信息
                             model.addAttribute("hasBranch",1);
+                            model.addAttribute("branchName",result.get().getBranchName());
                         }else{
                             model.addAttribute("hasBranch",0);//没有支行信息
+                            model.addAttribute("branchName","");
                         }
                         model.addAttribute("bankName", result.get().getBankName());
                         model.addAttribute("bankBin",result.get().getBankBin());
@@ -1512,7 +1516,15 @@ public class LoginController extends BaseController {
                         isRedirect= true;
                     }else if(result.get().getStatus()== EnumMerchantStatus.PASSED.getId()||result.get().getStatus()== EnumMerchantStatus.FRIEND.getId()){//跳首页
                         model.addAttribute("merchantName",result.get().getMerchantName());
-                        model.addAttribute("district",(result.get().getProvinceName()==null?"":result.get().getProvinceName())+(result.get().getCityName()==null?"":result.get().getCityName()));
+                        if(result.get().getProvinceName()==null||"".equals(result.get().getProvinceName())){
+                            model.addAttribute("district","");
+                        }else{
+                            if("110000,120000,310000,500000".contains(result.get().getCityCode())){
+                                model.addAttribute("district",(result.get().getProvinceName()==null?"":result.get().getProvinceName())+(result.get().getCountyName()==null?"":result.get().getCountyName()));
+                            }else{
+                                model.addAttribute("district",(result.get().getProvinceName()==null?"":result.get().getProvinceName())+(result.get().getCityName()==null?"":result.get().getCityName()));
+                            }
+                        }
                         model.addAttribute("address",result.get().getAddress());
                         model.addAttribute("createTime",result.get().getCreateTime()==null?"":DateFormatUtil.format(result.get().getCreateTime(), DateFormatUtil.yyyy_MM_dd_HH_mm_ss));
                         String name = result.get().getName();
