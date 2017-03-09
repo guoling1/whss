@@ -159,6 +159,7 @@ public class MerchantChannelRateServiceImpl implements MerchantChannelRateServic
                         paramsMap.put("bankBranch", merchantInfo.getBranchName());
                         paramsMap.put("bankCode", merchantInfo.getBranchCode());
                         paramsMap.put("creditCardNo", merchantInfo.getCreditCard());
+                        log.info("入网参数为："+JSONObject.fromObject(paramsMap).toString());
                         String result = SmPost.post(MerchantConsts.getMerchantConfig().merchantIN(), paramsMap);
                         if (result != null && !"".equals(result)) {
                             JSONObject jo = JSONObject.fromObject(result);
