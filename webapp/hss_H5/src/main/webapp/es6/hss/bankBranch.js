@@ -37,13 +37,6 @@ cancel.addEventListener('click', function () {
   window.location.href = '/sqb/wallet';
 });
 
-let layerC = document.getElementById('layerC');
-let cancelcC = document.getElementById('cancelC');
-
-cancelcC.addEventListener('click', function () {
-  window.location.href = '/sqb/creditCardAuthen?card=true';
-});
-
 function getQueryString(name) {
   let reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
   let r = window.location.search.substr(1).match(reg);
@@ -77,7 +70,7 @@ submit.onclick = function () {
     countyName: pageData.countyName
   }, function () {
     if (getQueryString('card')) {
-      layerC.style.display = 'block';
+      window.location.href = '/sqb/creditCardAuthen?card=true';
     } else if (getQueryString('branch')) {
       layer.style.display = 'block';
     } else {

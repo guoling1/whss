@@ -7,7 +7,7 @@
   <meta charset="UTF-8">
   <meta name="viewport"
         content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-  <title>我的推广</title>
+  <title>用户认证</title>
   <link rel="stylesheet" href="http://static.jinkaimen.cn/weui/weui.css">
 
   <style>
@@ -72,6 +72,11 @@
       background-size: 14px 12px;
       margin-right: 5px;
       transform: translate3d(0, 2px, 0);
+    }
+
+    .icard.green{
+      background: url("../../assets/icard-green.png") center;
+      background-size: 14px 12px;
     }
 
     .list {
@@ -139,7 +144,14 @@
   </div>
 
   <div class="space">
-    <div class="mark green"><span class="icard"></span>信用卡</div>
+    <c:choose>
+      <c:when test="${isAuthen == '1'}">
+        <div class="mark"><span class="icard"></span>已认证</div>
+      </c:when>
+      <c:otherwise>
+        <div class="mark green"><span class="icard green"></span>信用卡</div>
+      </c:otherwise>
+    </c:choose>
     <div class="list">
       <div class="left">信用卡号:</div>
       <c:choose>

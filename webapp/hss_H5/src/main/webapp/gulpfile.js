@@ -52,6 +52,7 @@ gulp.task('less-hss', function () {
 gulp.task('replace-hss-calc', ['build-hss'], function () {
   return gulp.src('css/hss/style.2.1.3.css')
     .pipe(replace('calc(0%)', 'calc(100% - 100px)'))
+    .pipe(replace('calc(38%)', 'calc(100% - 62px)'))
     .pipe(gulp.dest('css/hss'));
 });
 
@@ -82,13 +83,13 @@ gulp.task('js-hss', () => {
     }))
     .pipe(rename({suffix: ".min"}))
     .pipe(sourcemaps.write('.'))
-    .pipe(gulp.dest('js/hss/2.1.1'));
+    .pipe(gulp.dest('js/hss/2.1.3'));
 });
 
 gulp.task('replace-hss', function () {
   return gulp.src('WEB-INF/jsp/*.jsp')
     .pipe(replace('style.2.1.2.css', 'style.2.1.3.css'))
-    .pipe(replace('2.0.1', '2.1.1'))
+    .pipe(replace('2.1.1', '2.1.3'))
     .pipe(gulp.dest('WEB-INF/jsp'));
 });
 

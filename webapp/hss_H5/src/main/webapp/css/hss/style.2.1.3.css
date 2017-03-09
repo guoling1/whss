@@ -300,7 +300,7 @@ input:focus {
   font-weight: bold;
 }
 .message-space .message-box .message-box-body {
-  font-size: 16px;
+  font-size: 15px;
   color: #5a5a5a;
   padding: 5px 0 25px 0;
   line-height: 28px;
@@ -2380,6 +2380,7 @@ input:focus {
 }
 #bankList .group .top .info {
   float: left;
+  width: calc(100% - 62px);
 }
 #bankList .group .top .info .name {
   text-align: left;
@@ -2402,6 +2403,7 @@ input:focus {
   font-size: 12px;
   color: #FFF;
   padding: 0 5px;
+  margin-top: 5px;
 }
 #bankList .group .top .btn.red {
   background-color: #c64b4b;
