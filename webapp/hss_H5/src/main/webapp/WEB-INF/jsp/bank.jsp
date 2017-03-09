@@ -6,6 +6,8 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -26,7 +28,7 @@
         <div class="name">
           ${bankName}
           <a href="/sqb/bankBranch" class="btn red" id="btn">补充支行信息</a></div>
-        <div class="type">储蓄卡 | ${branchName}</div>
+        <div class="type">储蓄卡 <c:if test="${branchName!=''}">| ${branchName}</c:if></div>
       </div>
 
     </div>
