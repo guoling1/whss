@@ -101,9 +101,9 @@ public class MerchantInTask {
                     this.merchantChannelRateDao.selectByChannelTypeSignAndProductIdAndMerchantId(request);
 
             final MerchantChannelRateRequest request1 = new MerchantChannelRateRequest();
-            request.setMerchantId(merchantInfo.getId());
-            request.setProductId(merchantInfo.getProductId());
-            request.setChannelTypeSign(EnumPayChannelSign.KM_ALIPAY.getId());
+            request1.setMerchantId(merchantInfo.getId());
+            request1.setProductId(merchantInfo.getProductId());
+            request1.setChannelTypeSign(EnumPayChannelSign.KM_ALIPAY.getId());
             final MerchantChannelRate merchantChannelRate1 =
                     this.merchantChannelRateDao.selectByChannelTypeSignAndProductIdAndMerchantId(request1);
 
