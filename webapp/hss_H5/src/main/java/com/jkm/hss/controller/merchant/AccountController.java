@@ -81,7 +81,7 @@ public class AccountController extends BaseController{
     @RequestMapping(value = "/toWithdraw", method = RequestMethod.POST)
     public String toWithdrawJsp(HttpServletRequest request){
 
-        return "withdraw";
+        return "/withdraw";
     }
 
     /**
@@ -91,7 +91,7 @@ public class AccountController extends BaseController{
     @RequestMapping(value = "/toHssAccount", method = RequestMethod.POST)
     public String toHssAccount(HttpServletRequest request){
 
-        return "hssAccount";
+        return "/hssAccount";
     }
 
     /**
@@ -101,7 +101,7 @@ public class AccountController extends BaseController{
     @RequestMapping(value = "/toHssAccountFlow", method = RequestMethod.POST)
     public String toHssAccountFlow(HttpServletRequest request){
 
-        return "hssAccountFlow";
+        return "/hssAccountFlow";
     }
 
     /**
@@ -111,7 +111,7 @@ public class AccountController extends BaseController{
     @RequestMapping(value = "/toHssWithdrawSuccess", method = RequestMethod.POST)
     public String toHssWithdrawSuccess(HttpServletRequest request){
 
-        return "hssWithdrawSuccess";
+        return "/hssWithdrawSuccess";
     }
 
     /**
