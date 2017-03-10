@@ -218,8 +218,9 @@ public class MerchantInfoController extends BaseController {
 
         String bankNo = merchantInfo.getBankNo();
         final Optional<BankCardBin> bankCardBinOptional = this.bankCardBinService.analyseCardNo(bankNo);
-
-
+        if(!bankCardBinOptional.isPresent()){
+            return CommonResponse.simpleResponse(-1,"银行卡号格式错误");
+        }
         return CommonResponse.objectResponse(1,"success",bankCardBinOptional.get().getCardTypeCode());
     }
 

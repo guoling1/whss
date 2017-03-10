@@ -11,6 +11,7 @@ import com.jkm.hss.merchant.entity.MerchantInfo;
 import com.jkm.hss.merchant.enums.EnumEnterNet;
 import com.jkm.hss.merchant.service.MerchantChannelRateService;
 import com.jkm.hss.merchant.service.MerchantInfoService;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -27,6 +28,7 @@ import java.util.Map;
 /**
  * Created by yuxiang on 2017-02-28.
  */
+@Slf4j
 @Controller
 @RequestMapping(value = "/admin/merchantIn")
 public class MerchantInController extends BaseController{
@@ -44,14 +46,14 @@ public class MerchantInController extends BaseController{
     @RequestMapping(value = "/update",method = RequestMethod.GET)
     public CommonResponse merchantIn(){
 
+        log.info("同步商户入网结果开始:");
         //查询商户入网中的id
         List<Long> idList = this.merchantChannelRateService.selectIngMerchantInfo();
-
-        final List<MerchantInfo> merchantInfos = this.merchantInfoService.batchGetMerchantInfo(idList);
-
-        if (CollectionUtils.isEmpty(merchantInfos)){
+        if (CollectionUtils.isEmpty(idList)){
             return CommonResponse.simpleResponse(1, "success");
         }
+        final List<MerchantInfo> merchantInfos = this.merchantInfoService.batchGetMerchantInfo(idList);
+
         for (MerchantInfo merchantInfo : merchantInfos){
 
             //请求支付中心查询商户入网结果
