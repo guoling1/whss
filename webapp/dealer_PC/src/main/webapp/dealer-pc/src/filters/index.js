@@ -7,7 +7,10 @@ import Vue from 'vue'
 Vue.filter('datetime', function (date) {
   let format = 'YYYY-MM-DD HH:mm:ss';
   // 若时间为空,则返回当前时间
-  date = date ? new Date(date) : new Date();
+  if (!date || date == '') {
+    return '--';
+  }
+  date = new Date(date);
   // 匹配年份
   if (/(Y+)/i.test(format)) {
     format = format.replace(RegExp.$1, (date.getFullYear() + '').substr(4 - RegExp.$1.length));
