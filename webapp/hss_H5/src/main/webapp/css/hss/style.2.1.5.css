@@ -885,7 +885,7 @@ input:focus {
   right: 20px;
   width: 9px;
   height: 9px;
-  background: url("../../assets/sample-xx.png") no-repeat center;
+  background: url("../assets/sample-xx.png") no-repeat center;
   background-size: 9px 9px;
 }
 #material .sample .sample-box .sample-box-body {
