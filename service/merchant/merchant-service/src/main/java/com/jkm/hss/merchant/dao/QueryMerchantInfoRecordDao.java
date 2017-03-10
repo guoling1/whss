@@ -56,4 +56,11 @@ public interface QueryMerchantInfoRecordDao {
      * @return
      */
     MerchantInfoResponse selectProxyNameYq1(@Param("secondDealerId") long secondDealerId);
+
+    /**
+     * 查询推荐信息
+     * @param id
+     * @return
+     */
+    MerchantInfoResponse getrecommenderInfo(@Param("id") long id);
 }

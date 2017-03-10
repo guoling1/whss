@@ -146,7 +146,7 @@ public class ProductController extends BaseController {
                 detail.setProductMerchantPayRate(detail.getProductMerchantPayRate().divide(new BigDecimal(100)));
                 detail.setProductId(request.getProductId());
                 detail.setChannelType(EnumPayChannelSign.idOf(detail.getChannelTypeSign()).getPaymentChannel().getId());
-                this.productChannelDetailService.update(detail);
+                this.productChannelDetailService.updateOrAdd(detail);
             }
             return  CommonResponse.simpleResponse(1, "success");
         }catch (final Throwable throwable){

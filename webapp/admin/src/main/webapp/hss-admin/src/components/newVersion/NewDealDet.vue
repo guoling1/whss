@@ -61,7 +61,7 @@
             </tr>
             <tr>
               <th style="text-align: right">通道名称:</th>
-              <td>{{record.payChannelSign|changePayChannel}}</td>
+              <td>{{record.payChannelSigns}}</td>
               <th style="text-align: right">通道费:</th>
               <td>—</td>
               <th style="text-align: right">手续费:</th>
@@ -69,7 +69,7 @@
             </tr>
             <tr>
               <th style="text-align: right">支付方式:</th>
-              <td>{{record.payType|changePayType}}</td>
+              <td>{{record.payType}}</td>
               <th style="text-align: right">交易类型:</th>
               <td>{{record.tradeType|changeTradeType}}</td>
               <th style="text-align: right">交易状态:</th>
@@ -79,7 +79,7 @@
               <th style="text-align: right">结算状态:</th>
               <td>{{record.settleStatus|changeSettleStatus}}</td>
               <th style="text-align: right">结算周期:</th>
-              <td>—</td>
+              <td>{{record.settleType}}</td>
               <th style="text-align: right">交易时间:</th>
               <td>{{record.createTime|changeTime}}</td>
             </tr>
@@ -174,19 +174,6 @@
           return year+"-"+tod(month)+"-"+tod(date)+" "+tod(hour)+":"+tod(minute)+":"+tod(second);
         }
       },
-      changePayType: function (val) {
-        if(val == "S"){
-          return "微信扫码"
-        }else if(val == "N"){
-          return "微信二维码"
-        }else if(val == "H"){
-          return "微信H5收银台"
-        }else if(val == "B"){
-          return "快捷收款"
-        }else if(val == "Z"){
-          return "支付宝扫码"
-        }
-      },
       changeStatus: function (val) {
         if(val == 1){
           return "待支付"
@@ -211,15 +198,6 @@
           return '待结算'
         }else if(val == 3){
           return '已结算'
-        }
-      },
-      changePayChannel: function (val) {
-        if(val == 101){
-          return '阳光微信扫码'
-        }else if(val == 102){
-          return '阳光支付宝扫码'
-        }else if(val == 103){
-          return '阳光银联支付'
         }
       },
       changeTradeType: function (val) {

@@ -15,7 +15,10 @@ import com.jkm.hss.controller.BaseController;
 import com.jkm.hss.dealer.service.PartnerShallProfitDetailService;
 import com.jkm.hss.dealer.service.ShallProfitDetailService;
 import com.jkm.hss.helper.ApplicationConsts;
-import com.jkm.hss.merchant.entity.*;
+import com.jkm.hss.merchant.entity.AccountInfo;
+import com.jkm.hss.merchant.entity.MerchantChannelRate;
+import com.jkm.hss.merchant.entity.MerchantInfo;
+import com.jkm.hss.merchant.entity.UserInfo;
 import com.jkm.hss.merchant.enums.EnumIsUpgrade;
 import com.jkm.hss.merchant.enums.EnumMerchantStatus;
 import com.jkm.hss.merchant.enums.EnumPayMethod;
@@ -109,9 +112,6 @@ public class LoginController extends BaseController {
 
     @Autowired
     private MerchantChannelRateService merchantChannelRateService;
-
-    @Autowired
-    private AccountBankService accountBankService;
 
     /**
      * 扫固定码注册和微信公众号注册入口
@@ -613,17 +613,12 @@ public class LoginController extends BaseController {
                         url = "/sqb/prompt";
                         isRedirect= true;
                     }else if(result.get().getStatus()== EnumMerchantStatus.PASSED.getId()||result.get().getStatus()== EnumMerchantStatus.FRIEND.getId()){//跳提现页面
-                        AccountBank accountBank = accountBankService.getDefault(result.get().getAccountId());
-                        if(accountBank==null){
-                            model.addAttribute("message","查询不到默认银行卡信息");
-                            url = "/message";
-                        }
-                        String phone = MerchantSupport.decryptMobile(accountBank.getReserveMobile());
-                        String bankNo = MerchantSupport.decryptBankCard(accountBank.getBankNo());
+                        String phone = MerchantSupport.decryptMobile(result.get().getReserveMobile());
+                        String bankNo = MerchantSupport.decryptBankCard(result.get().getBankNo());
                         model.addAttribute("phone_01", phone.substring(0,3));
                         model.addAttribute("phone_02", phone.substring(phone.length()-4,phone.length()));
                         model.addAttribute("bankNo", bankNo.substring(bankNo.length()-4,bankNo.length()));
-                        model.addAttribute("bankName",accountBank.getBankName());
+                        model.addAttribute("bankName",result.get().getBankName());
                         AccountInfo accountInfo = accountInfoService.selectByPrimaryKey(result.get().getAccountId());
                         DecimalFormat decimalFormat=new DecimalFormat("0.00");//构造方法的字符格式这里如果小数不足2位,会以0补足.
                         if(accountInfo==null){//没有账户
@@ -791,8 +786,8 @@ public class LoginController extends BaseController {
      * @return
      * @throws IOException
      */
-    @RequestMapping(value = "/bankBranch/{bankId}", method = RequestMethod.GET)
-    public String bankBranch(final HttpServletRequest request, final HttpServletResponse response,final Model model,@PathVariable("bankId") Long bankId) throws IOException {
+    @RequestMapping(value = "/bankBranch", method = RequestMethod.GET)
+    public String bankBranch(final HttpServletRequest request, final HttpServletResponse response,final Model model) throws IOException {
         boolean isRedirect = false;
         if(!super.isLogin(request)){
             return "redirect:"+ WxConstants.WEIXIN_USERINFO+request.getRequestURI()+ WxConstants.WEIXIN_USERINFO_REDIRECT;
@@ -1503,7 +1498,15 @@ public class LoginController extends BaseController {
                         isRedirect= true;
                     }else if(result.get().getStatus()== EnumMerchantStatus.PASSED.getId()||result.get().getStatus()== EnumMerchantStatus.FRIEND.getId()){//跳首页
                         model.addAttribute("merchantName",result.get().getMerchantName());
-                        model.addAttribute("district",(result.get().getProvinceName()==null?"":result.get().getProvinceName())+(result.get().getCityName()==null?"":result.get().getCityName()));
+                        if(result.get().getProvinceName()==null||"".equals(result.get().getProvinceName())){
+                            model.addAttribute("district","");
+                        }else{
+                            if("110000,120000,310000,500000".contains(result.get().getCityCode())){
+                                model.addAttribute("district",(result.get().getProvinceName()==null?"":result.get().getProvinceName())+(result.get().getCountyName()==null?"":result.get().getCountyName()));
+                            }else{
+                                model.addAttribute("district",(result.get().getProvinceName()==null?"":result.get().getProvinceName())+(result.get().getCityName()==null?"":result.get().getCityName()));
+                            }
+                        }
                         model.addAttribute("address",result.get().getAddress());
                         model.addAttribute("createTime",result.get().getCreateTime()==null?"":DateFormatUtil.format(result.get().getCreateTime(), DateFormatUtil.yyyy_MM_dd_HH_mm_ss));
                         String name = result.get().getName();

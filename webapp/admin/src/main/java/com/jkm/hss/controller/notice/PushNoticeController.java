@@ -6,6 +6,7 @@ import com.jkm.hss.controller.BaseController;
 import com.jkm.hss.merchant.entity.NoticeRequest;
 import com.jkm.hss.merchant.entity.NoticeResponse;
 import com.jkm.hss.merchant.enums.EnumNotice;
+import com.jkm.hss.merchant.enums.EnumType;
 import com.jkm.hss.merchant.service.PushNoticeService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -46,6 +47,7 @@ public class PushNoticeController extends BaseController {
         String productType = request.getProductType();
         String title = request.getTitle();
         String text = request.getText();
+        String type = request.getType();
         String publisher = super.getAdminUser().getRealname();
         if (productId==0) {
             return CommonResponse.simpleResponse(-1, "产品id不能为空");
@@ -61,6 +63,9 @@ public class PushNoticeController extends BaseController {
         }
         if (StringUtils.isBlank(text)) {
             return CommonResponse.simpleResponse(-1, "公告正文不能为空");
+        }
+        if (StringUtils.isBlank(type)) {
+            return CommonResponse.simpleResponse(-1, "公告类型不能为空");
         }
         if (StringUtils.isBlank(publisher)) {
             return CommonResponse.simpleResponse(-1, "发布人不能为空");
@@ -95,6 +100,12 @@ public class PushNoticeController extends BaseController {
                 if (list.get(i).getStatus()==1){
                     list.get(i).setPushStatus(EnumNotice.PUBLISHED.getValue());
                 }
+                if (list.get(i).getType().equals("1")){
+                    list.get(i).setType(EnumType.MAINTAIN.getValue());
+                }
+                if (list.get(i).getType().equals("2")){
+                    list.get(i).setType(EnumType.NOTICE.getValue());
+                }
             }
         }
         int count = pushNoticeService.selectListCount(request);
@@ -103,17 +114,17 @@ public class PushNoticeController extends BaseController {
         return CommonResponse.objectResponse(1, "success", pageModel);
     }
 
-    /**
-     * 发布公告微信显示列表
-     * @param
-     * @return
-     */
-    @ResponseBody
-    @RequestMapping(value = "/list",method = RequestMethod.POST)
-    public CommonResponse list(){
-        List<NoticeResponse> list = pushNoticeService.list();
-        return CommonResponse.objectResponse(1, "success", list);
-    }
+//    /**
+//     * 发布公告微信显示列表
+//     * @param
+//     * @return
+//     */
+//    @ResponseBody
+//    @RequestMapping(value = "/list",method = RequestMethod.POST)
+//    public CommonResponse list(){
+//        List<NoticeResponse> list = pushNoticeService.list();
+//        return CommonResponse.objectResponse(1, "success", list);
+//    }
 
     /**
      * 发布详情
@@ -125,7 +136,12 @@ public class PushNoticeController extends BaseController {
     public CommonResponse noticeDetails(@RequestBody NoticeRequest request){
         try{
             final NoticeResponse result = this.pushNoticeService.noticeDetails(request.getId());
-
+            if (result.getType().equals("1")){
+                result.setType(EnumType.MAINTAIN.getValue());
+            }
+            if (result.getType().equals("2")){
+                result.setType(EnumType.NOTICE.getValue());
+            }
             return  CommonResponse.objectResponse(1, "success", result);
         }catch (final Throwable throwable){
             log.error("获取详情信息异常:" + throwable.getMessage());

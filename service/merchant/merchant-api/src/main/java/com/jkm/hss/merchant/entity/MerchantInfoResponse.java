@@ -15,6 +15,21 @@ public class MerchantInfoResponse {
     private String isAuthen;
 
     /**
+     * 推荐人编码
+     */
+    private String recommenderCode;
+
+    /**
+     * 推荐人名称
+     */
+    private String recommenderName;
+
+    /**
+     * 推荐人注册手机号
+     */
+    private String recommenderPhone;
+
+    /**
      * 注册方式标识
      */
     private int source;

@@ -42,4 +42,10 @@ public interface ProductChannelDetailService {
      * @return
      */
     Optional<ProductChannelDetail> selectRateByProductIdAndChannelType(long productId,int channelType);
+
+    /**
+     *
+     * @param detail
+     */
+    void updateOrAdd(ProductChannelDetail detail);
 }

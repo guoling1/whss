@@ -50,7 +50,7 @@ public class Order extends BaseEntity {
     private String orderNo;
 
     /**
-     * 流水好
+     * 流水号
      */
     private String sn;
 

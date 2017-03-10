@@ -10,7 +10,8 @@
             product_type,
             title,
             text,
-            expiration_time
+            type,
+            publisher
             )
         VALUES
             (
@@ -19,7 +20,8 @@
             #{productType},
             #{title},
             #{text},
-            #{expirationTime})
+            #{type},
+            #{publisher})
     </insert>
 
     <!-- 查询公告列表 -->
@@ -85,7 +87,7 @@
     </update>
 
     <!-- 删除公告 -->
-    <delete id="deleteNotice">
+    <delete id="deleteNotice" >
         DELETE FROM
             tb_notice
         WHERE

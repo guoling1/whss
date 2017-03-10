@@ -72,4 +72,18 @@ public class ProductChannelDetailServiceImpl implements ProductChannelDetailServ
     public Optional<ProductChannelDetail> selectRateByProductIdAndChannelType(long productId, int channelType) {
         return Optional.fromNullable(this.productChannelDao.selectRateByProductIdAndChannelType(productId,channelType));
     }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param detail
+     */
+    @Override
+    public void updateOrAdd(ProductChannelDetail detail) {
+
+        if (detail.getId() == 0){
+            this.productChannelDao.init(detail);
+        }
+        this.productChannelDao.update(detail);
+    }
 }

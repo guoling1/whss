@@ -489,7 +489,7 @@ public interface DealerService {
      * @param firstLevelDealerId
      * @return
      */
-    String selectProxyName(int firstLevelDealerId);
+    String selectProxyName(long firstLevelDealerId);
 
     /**
      * 根据一级代理商id查询名称

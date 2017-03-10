@@ -7,6 +7,17 @@ import lombok.Data;
  */
 @Data
 public class OrderTradeRequest {
+
+    /**
+     * 所属一级代理商
+     */
+    private String proxyName;
+
+    /**
+     * 所属二级代理商
+     */
+    private String proxyName1;
+
     /**
      * 页数
      */
