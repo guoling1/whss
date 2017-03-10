@@ -19,7 +19,7 @@
       <div class="logo" id="logo"></div>
       <div class="info">
         <div class="name">${bankName}</div>
-        <div class="type">储蓄卡 <c:if test="${branchName!=''}">| ${branchName}</c:if></div>
+        <div class="type">储蓄卡 <c:if test="${branchShortName!=''}">| ${branchShortName}</c:if></div>
       </div>
     </div>
     <div class="bottom">

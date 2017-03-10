@@ -864,8 +864,10 @@ public class LoginController extends BaseController {
                             if(tempBranchName.length()>12){
                                 tempBranchName = "***"+tempBranchName.substring(tempBranchName.length()-12,tempBranchName.length());
                             }
-                            model.addAttribute("branchName",tempBranchName);
+                            model.addAttribute("branchShortName",tempBranchName);
+                            model.addAttribute("branchName",result.get().getBranchName());
                         }else{
+                            model.addAttribute("branchShortName","");
                             model.addAttribute("branchName","");
                         }
                         url = "/bankBranch";
