@@ -663,7 +663,7 @@ public class PayServiceImpl implements PayService {
             this.splitAccountRecordService.addMerchantUpgradePaySplitAccountRecord(EnumSplitBusinessType.HSSPROMOTE.getId(), order.getOrderNo(), order.getOrderNo(),
                     order.getTradeAmount(), order.getRealPayAmount(), companyMoneyTriple, "金开门利润账户",
                     "商户升级-反润", EnumSplitAccountUserType.JKM.getId());
-            final Account jkmAccount = this.accountService.getByIdWithLock(AccountConstants.JKM_ACCOUNT_ID).get();;
+            final Account jkmAccount = this.accountService.getByIdWithLock(AccountConstants.JKM_ACCOUNT_ID).get();
             this.accountService.increaseTotalAmount(jkmAccount.getId(), companyMoneyTriple.getMiddle());
             this.accountService.increaseAvailableAmount(jkmAccount.getId(), companyMoneyTriple.getMiddle());
             this.accountFlowService.addAccountFlow(jkmAccount.getId(), order.getOrderNo(), companyMoneyTriple.getMiddle(),
