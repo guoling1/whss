@@ -15,7 +15,6 @@ import com.jkm.hss.account.sevice.AccountService;
 import com.jkm.hss.bill.service.DealerWithdrawService;
 import com.jkm.hss.bill.service.MerchantWithdrawService;
 import com.jkm.hss.controller.BaseController;
-import com.jkm.hss.dealer.entity.Dealer;
 import com.jkm.hss.dealer.helper.DealerSupport;
 import com.jkm.hss.helper.request.MerchantWithdrawRequest;
 import com.jkm.hss.helper.response.AccountInfoResponse;
@@ -40,6 +39,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -52,7 +52,7 @@ import java.util.Map;
  */
 @Slf4j
 @RequestMapping(value = "/daili/account")
-@RestController
+@Controller
 public class AccountController extends BaseController{
 
     @Autowired
