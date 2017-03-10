@@ -78,40 +78,40 @@ public class AccountController extends BaseController{
      * 跳到提现页面
      * @return
      */
-    @RequestMapping(value = "/toWithdraw", method = RequestMethod.POST)
+    @RequestMapping(value = "/toWithdraw", method = RequestMethod.GET)
     public String toWithdrawJsp(HttpServletRequest request){
 
-        return "withdraw";
+        return "/withdraw";
     }
 
     /**
      * 跳到余额页面
      * @return
      */
-    @RequestMapping(value = "/toHssAccount", method = RequestMethod.POST)
+    @RequestMapping(value = "/toHssAccount", method = RequestMethod.GET)
     public String toHssAccount(HttpServletRequest request){
 
-        return "hssAccount";
+        return "/hssAccount";
     }
 
     /**
      * 跳到余额流水详情
      * @return
      */
-    @RequestMapping(value = "/toHssAccountFlow", method = RequestMethod.POST)
+    @RequestMapping(value = "/toHssAccountFlow", method = RequestMethod.GET)
     public String toHssAccountFlow(HttpServletRequest request){
 
-        return "hssAccountFlow";
+        return "/hssAccountFlow";
     }
 
     /**
      * 跳到提现页面
      * @return
      */
-    @RequestMapping(value = "/toHssWithdrawSuccess", method = RequestMethod.POST)
+    @RequestMapping(value = "/toHssWithdrawSuccess", method = RequestMethod.GET)
     public String toHssWithdrawSuccess(HttpServletRequest request){
 
-        return "hssWithdrawSuccess";
+        return "/hssWithdrawSuccess";
     }
 
     /**

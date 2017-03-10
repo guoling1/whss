@@ -4,7 +4,7 @@
 <mapper namespace="com.jkm.hss.merchant.dao.AccountBankDao">
     <!-- 通用查询结果列-->
     <sql id="Base_Column_List">
-        id,	account_id,	bank_no,bank_name,bank_bin,reserve_mobile,branch_code,branch_name,branch_province_code,branch_province_name,
+        id,	account_id,	expiry_time,bank_no,bank_name,bank_bin,reserve_mobile,branch_code,branch_name,branch_province_code,branch_province_name,
         branch_city_code,branch_city_name,branch_county_code,branch_county_name,card_type,is_authen,is_default,
         status,create_time,	update_time
     </sql>
@@ -25,6 +25,7 @@
             branch_city_name,
             branch_county_code,
             branch_county_name,
+            expiry_time,
             card_type,
             is_authen,
             is_default,
@@ -43,6 +44,7 @@
             #{branchCityName},
             #{branchCountyCode},
             #{branchCountyName},
+            #{expiryTime},
             #{cardType},
             #{isAuthen},
             #{isDefault},
@@ -114,9 +116,9 @@
     </select>
 
     <!-- 是否有银行卡信息 -->
-    <select id="isHasAccountBank" resultType="com.jkm.hss.merchant.entity.AccountBank">
+    <select id="isHasAccountBank" resultType="java.lang.Integer">
         SELECT count(id) FROM tb_account_bank
-        WHERE account_id = #{accountId} and status=0
+        WHERE account_id = #{accountId} and status=0 and card_type=0
     </select>
 
     <!-- 根据主键id查询 -->
