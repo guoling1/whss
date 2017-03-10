@@ -859,7 +859,15 @@ public class LoginController extends BaseController {
                         model.addAttribute("countyCode",result.get().getCountyCode());
                         model.addAttribute("countyName",result.get().getCountyName());
                         model.addAttribute("branchCode",result.get().getBranchCode());
-                        model.addAttribute("branchName",result.get().getBranchName());
+                        if(result.get().getBranchName()!=null&&!"".equals(result.get().getBranchName())){//有支行信息
+                            String tempBranchName = result.get().getBranchName();
+                            if(tempBranchName.length()>12){
+                                tempBranchName = "***"+tempBranchName.substring(tempBranchName.length()-12,tempBranchName.length());
+                            }
+                            model.addAttribute("branchName",tempBranchName);
+                        }else{
+                            model.addAttribute("branchName","");
+                        }
                         url = "/bankBranch";
                     }
                 }else{
