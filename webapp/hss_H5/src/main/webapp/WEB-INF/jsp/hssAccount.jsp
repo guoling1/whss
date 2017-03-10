@@ -14,7 +14,9 @@
 <body>
 
 <div id="account">
-
+  <div class="account">
+    <div class="logo"></div>
+  </div>
 </div>
 
 </body>
