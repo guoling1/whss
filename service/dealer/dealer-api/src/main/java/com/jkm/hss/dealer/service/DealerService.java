@@ -18,6 +18,7 @@ import com.jkm.hss.dealer.helper.response.SecondDealerResponse;
 import com.jkm.hss.merchant.entity.MerchantInfo;
 import com.jkm.hss.merchant.entity.MerchantInfoResponse;
 import com.jkm.hss.merchant.entity.OrderRecord;
+import com.jkm.hss.merchant.helper.request.OrderTradeRequest;
 import com.jkm.hss.product.enums.EnumProductType;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
@@ -496,4 +497,6 @@ public interface DealerService {
      * @param firstLevelDealerId
      */
     MerchantInfoResponse getProxyName(int firstLevelDealerId);
+
+
 }

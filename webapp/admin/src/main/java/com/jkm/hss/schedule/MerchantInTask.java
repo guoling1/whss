@@ -43,9 +43,9 @@ public class MerchantInTask {
     @Autowired
     private MerchantChannelRateDao merchantChannelRateDao;
     /**
-     * 每隔五分钟同步商户入网结果
+     * 每隔五S同步商户入网结果
      */
-    @Scheduled(cron = "0 0/5 * * * ?")
+    @Scheduled(cron = "*/5 * * * * ?")
     public void handleMerchantInTask() {
         log.info("商户入网同步定时任务--start");
         //查询商户入网中的id
@@ -78,9 +78,9 @@ public class MerchantInTask {
     }
 
     /**
-     * 每隔2分钟检查入网结果
+     * 每隔5S检查入网结果
      */
-    @Scheduled(cron = "0 0/2 * * * ?")
+    @Scheduled(cron = "*/5 * * * * ?")
     public void handleMerchantTask() {
 
         log.info("商户入网提交定时任务--start");
