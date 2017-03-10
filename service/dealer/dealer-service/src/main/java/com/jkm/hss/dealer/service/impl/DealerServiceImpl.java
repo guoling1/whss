@@ -166,7 +166,7 @@ public class DealerServiceImpl implements DealerService {
         //判断该经销商属于哪个代理, 若不属于代理, 则分润进入公司资金帐户
         if (appAuUser.getDealerID() == 0){
             final ProductChannelDetail productChannelDetail =
-                    this.productChannelDetailService.selectByProductIdAndChannelId(appAuUser.getId(), channelSign).get();
+                    this.productChannelDetailService.selectByProductIdAndChannelId(appAuUser.getProductID(), channelSign).get();
             final Optional<BasicChannel> channelOptional =  this.basicChannelService.selectByChannelTypeSign(channelSign);
             final BasicChannel basicChannel = channelOptional.get();
             //商户手续费

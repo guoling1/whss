@@ -11,6 +11,11 @@ import java.util.Date;
 public class NoticeRequest {
 
     /**
+     * 公告类型
+     */
+    private String type;
+
+    /**
      * 公告id
      */
     private int id;
