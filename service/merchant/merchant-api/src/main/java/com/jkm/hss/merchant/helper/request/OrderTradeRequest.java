@@ -9,6 +9,16 @@ import lombok.Data;
 public class OrderTradeRequest {
 
     /**
+     * 业务订单号
+     */
+    private String businessOrderNo;
+
+    /**
+     * 支付流水号
+     */
+    private String sn;
+
+    /**
      * 所属一级代理商
      */
     private String proxyName;

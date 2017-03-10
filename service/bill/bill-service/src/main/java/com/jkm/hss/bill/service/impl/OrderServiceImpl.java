@@ -67,6 +67,7 @@ public class OrderServiceImpl implements OrderService {
     private AccountService accountService;
     @Autowired
     private DealerService dealerService;
+
     /**
      * {@inheritDoc}
      *
@@ -341,6 +342,10 @@ public class OrderServiceImpl implements OrderService {
         map.put("moreTotalFee",req.getMoreTotalFee());
         map.put("offset",req.getOffset());
         map.put("size",req.getSize());
+        map.put("sn",req.getSn());
+        map.put("proxyName",req.getProxyName());
+        map.put("proxyName1",req.getProxyName1());
+        map.put("businessOrderNo",req.getBusinessOrderNo());
         List<MerchantTradeResponse> list = orderDao.selectOrderList(map);
         if (list.size()>0){
             for (int i=0;i<list.size();i++){
@@ -414,14 +419,14 @@ public class OrderServiceImpl implements OrderService {
                         list.get(i).setPayType(EnumPayType.YIJIA_ALIPAY.getValue());
                     }
                 }
-                if (list.get(i).getLevel()==1){
-                    list.get(i).setProxyName(list.get(i).getProxyName());
-                }
-                if (list.get(i).getLevel()==2){
-                    list.get(i).setProxyName1(list.get(i).getProxyName());
-                    String proxyName = dealerService.selectProxyName(list.get(i).getFirstLevelDealerId());
-                    list.get(i).setProxyName(proxyName);
-                }
+//                if (list.get(i).getLevel()==1){
+//                    list.get(i).setProxyName(list.get(i).getProxyName());
+//                }
+//                if (list.get(i).getLevel()==2){
+//                    list.get(i).setProxyName1(list.get(i).getProxyName());
+//                    String proxyName = dealerService.selectProxyName(list.get(i).getFirstLevelDealerId());
+//                    list.get(i).setProxyName(proxyName);
+//                }
 
             }
         }
@@ -691,6 +696,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public List<MerchantTradeResponse> getOrderList(OrderTradeRequest req) {
         List<MerchantTradeResponse> list = orderDao.getOrderList(req);
+//        List<MerchantTradeResponse> list2 = orderService.getOrderList(req);
         if (list.size()>0){
             for (int i=0;i<list.size();i++){
                 if (list.get(i).getAppId().equals("hss")){
@@ -775,7 +781,14 @@ public class OrderServiceImpl implements OrderService {
             }
         }
 
+
         return list;
+    }
+
+    @Override
+    public String  amountCount(OrderTradeRequest req) {
+        String res = this.orderDao.amountCount(req);
+        return res;
     }
 
     /**
@@ -785,7 +798,7 @@ public class OrderServiceImpl implements OrderService {
      * @return
      */
     private ExcelSheetVO generateCodeExcelSheet(OrderTradeRequest req,String baseUrl) {
-        List<MerchantTradeResponse> list = orderDao.selectOrderListTrade(req);
+        List<MerchantTradeResponse> list = getOrderList(req);
         final ExcelSheetVO excelSheetVO = new ExcelSheetVO();
         final List<List<String>> datas = new ArrayList<List<String>>();
         final ArrayList<String> heads = new ArrayList<>();
@@ -912,6 +925,10 @@ public class OrderServiceImpl implements OrderService {
         map.put("moreTotalFee",req.getMoreTotalFee());
         map.put("offset",req.getOffset());
         map.put("size",req.getSize());
+        map.put("sn",req.getSn());
+        map.put("proxyName",req.getProxyName());
+        map.put("proxyName1",req.getProxyName1());
+        map.put("businessOrderNo",req.getBusinessOrderNo());
         return orderDao.selectOrderListCount(map);
     }
 
