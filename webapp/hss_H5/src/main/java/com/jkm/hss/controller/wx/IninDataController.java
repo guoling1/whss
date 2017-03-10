@@ -158,10 +158,10 @@ public class IninDataController extends BaseController{
                                 merchantChannelRate.setMerchantPayRate(weixinRate);
                             }
                             if("支付宝".equals(basicChannelOptionalTemp.get().getThirdCompany())){
-                                merchantChannelRate.setMerchantPayRate(weixinRate);
+                                merchantChannelRate.setMerchantPayRate(zhifubaoRate);
                             }
                             if("银行".equals(basicChannelOptionalTemp.get().getThirdCompany())){
-                                merchantChannelRate.setMerchantPayRate(weixinRate);
+                                merchantChannelRate.setMerchantPayRate(fastPayRate);
                             }
                             if(basicChannelOptionalTemp.get().getIsNeed()==1){//需要入网
                                 merchantChannelRate.setEnterNet(EnumEnterNet.UNENT.getId());
@@ -199,10 +199,10 @@ public class IninDataController extends BaseController{
                             merchantChannelRate.setMerchantPayRate(weixinRate);
                         }
                         if("支付宝".equals(basicChannelOptionalTemp.get().getThirdCompany())){
-                            merchantChannelRate.setMerchantPayRate(weixinRate);
+                            merchantChannelRate.setMerchantPayRate(zhifubaoRate);
                         }
                         if("银行".equals(basicChannelOptionalTemp.get().getThirdCompany())){
-                            merchantChannelRate.setMerchantPayRate(weixinRate);
+                            merchantChannelRate.setMerchantPayRate(fastPayRate);
                         }
                         if(basicChannelOptionalTemp.get().getIsNeed()==1){//需要入网
                             merchantChannelRate.setEnterNet(EnumEnterNet.UNENT.getId());
