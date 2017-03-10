@@ -73,6 +73,47 @@ public class AccountController extends BaseController{
     private MerchantInfoService merchantInfoService;
     @Autowired
     private MerchantWithdrawService merchantWithdrawService;
+
+    /**
+     * 跳到提现页面
+     * @return
+     */
+    @RequestMapping(value = "/toWithdraw", method = RequestMethod.POST)
+    public String toWithdrawJsp(HttpServletRequest request){
+
+        return "withdraw";
+    }
+
+    /**
+     * 跳到余额页面
+     * @return
+     */
+    @RequestMapping(value = "/toHssAccount", method = RequestMethod.POST)
+    public String toHssAccount(HttpServletRequest request){
+
+        return "hssAccount";
+    }
+
+    /**
+     * 跳到余额流水详情
+     * @return
+     */
+    @RequestMapping(value = "/toHssAccountFlow", method = RequestMethod.POST)
+    public String toHssAccountFlow(HttpServletRequest request){
+
+        return "hssAccountFlow";
+    }
+
+    /**
+     * 跳到提现页面
+     * @return
+     */
+    @RequestMapping(value = "/toHssWithdrawSuccess", method = RequestMethod.POST)
+    public String toHssWithdrawSuccess(HttpServletRequest request){
+
+        return "hssWithdrawSuccess";
+    }
+
     /**
      * 獲取帳戶詳情，
      * @return
@@ -171,13 +212,13 @@ public class AccountController extends BaseController{
             //final UserInfo userInfo = userInfoService.selectByOpenId("ou2YpwfghecQNYYUpIQ-kbqGY7Hc").get();
             final MerchantInfo merchantInfo = this.merchantInfoService.selectById(userInfo.getMerchantId()).get();
 
-            /*final String mobile = DealerSupport.decryptMobile(merchantInfo.getId(), merchantInfo.getReserveMobile());
+            final String mobile = DealerSupport.decryptMobile(merchantInfo.getId(), merchantInfo.getReserveMobile());
 
            final Pair<Integer, String> pair = smsAuthService.checkVerifyCode(mobile, withdrawRequest.getCode(), EnumVerificationCodeType.WITH_DRAW);
 
             if (1 != pair.getLeft()) {
                 return CommonResponse.simpleResponse(-1, pair.getRight());
-            }*/
+            }
             final MerchantChannelRateRequest channelRateRequest = new MerchantChannelRateRequest();
             channelRateRequest.setChannelTypeSign(EnumPayChannelSign.YG_WECHAT.getId());
             channelRateRequest.setProductId(merchantInfo.getProductId());
