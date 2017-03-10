@@ -80,7 +80,7 @@ public class MerchantInTask {
     /**
      * 每隔5S检查入网结果
      */
-    @Scheduled(cron = "*/5 * * * * ?")
+    @Scheduled(cron = "*/59 * * * * ?")
     public void handleMerchantTask() {
 
         log.info("商户入网提交定时任务--start");
