@@ -163,6 +163,7 @@ public class MerchantChannelRateServiceImpl implements MerchantChannelRateServic
                         String result = SmPost.post(MerchantConsts.getMerchantConfig().merchantIN(), paramsMap);
                         if (result != null && !"".equals(result)) {
                             JSONObject jo = JSONObject.fromObject(result);
+                            log.info("入网返回参数为："+jo.toString());
                             if (jo.getInt("code") == 1) {
                                 merchantChannelRateDao.batchCheck(signIdList,EnumEnterNet.ENTING.getId(),merchantId,jo.getString("msg"));
                             } else {
