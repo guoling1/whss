@@ -207,7 +207,11 @@ public class AccountBankServiceImpl implements AccountBankService{
                     bankListResponse.setReserveMobile(mobile.substring(0,3)+"******"+mobile.substring(mobile.length()-2,mobile.length()));
                 }
                 bankListResponse.setBankBin(accountBank1.getBankBin());
-                bankListResponse.setBranchName(accountBank1.getBranchName());
+                String tempBranchName = accountBank1.getBranchName();
+                if(tempBranchName.length()>12){
+                    tempBranchName = "***"+tempBranchName.substring(tempBranchName.length()-12,tempBranchName.length());
+                }
+                bankListResponse.setBranchName(tempBranchName);
                 bankListResponse.setCardType(accountBank1.getCardType());
                 if(accountBank1.getBranchCode()!=null&&!"".equals(accountBank1.getBranchCode())){
                     bankListResponse.setHasBranch(1);
