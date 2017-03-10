@@ -61,6 +61,9 @@ public class MerchantInfoCheckRecordController extends BaseController {
     @Autowired
     private SmsAuthService smsAuthService;
 
+    @Autowired
+    private AccountBankService accountBankService;
+
     @ResponseBody
     @RequestMapping(value = "/record",method = RequestMethod.POST)
     public CommonResponse<BaseEntity> record(@RequestBody final RequestMerchantInfo requestMerchantInfo){
@@ -78,6 +81,8 @@ public class MerchantInfoCheckRecordController extends BaseController {
         merchant.setStatus(EnumMerchantStatus.PASSED.getId());
         merchant.setCheckedTime(new Date());
         this.merchantInfoService.addAccountId(accountId, EnumMerchantStatus.PASSED.getId(), merchant.getId(),merchant.getCheckedTime());
+        //插入银行卡账户表
+        accountBankService.initAccountBank(merchant.getId(),accountId);
         Optional<UserInfo> toUer = userInfoService.selectByMerchantId(requestMerchantInfo.getMerchantId());
         String toUsers = toUer.get().getOpenId();
         Date date = new Date();

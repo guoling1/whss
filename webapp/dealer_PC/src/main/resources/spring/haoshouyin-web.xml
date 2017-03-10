@@ -65,6 +65,7 @@
 
         <mvc:interceptor>
             <mvc:mapping path="/daili/dealer/**"/>
+            <mvc:mapping path="/daili/merchant/**"/>
             <mvc:mapping path="/daili/district/**"/>
             <mvc:mapping path="/daili/qrCode/**"/>
             <mvc:mapping path="/daili/account/**"/>

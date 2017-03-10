@@ -66,6 +66,10 @@ public class BankBranchController extends BaseController {
         if(merchantInfo.get().getBankName()==null||"".equals(merchantInfo.get().getBankName())){
             return CommonResponse.simpleResponse(-2, "银行名称不完善");
         }
+        if("建设银行".equals(merchantInfo.get().getBankName())){
+            bankBranchRequest.setCityName("");
+            bankBranchRequest.setProvinceName("");
+        }
         List<BankBranch> bankBranchList = bankBranchService.findByBankName(merchantInfo.get().getBankName(),bankBranchRequest.getContions(),bankBranchRequest.getProvinceName(),bankBranchRequest.getCityName());
         return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", bankBranchList);
     }

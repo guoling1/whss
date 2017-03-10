@@ -7,7 +7,7 @@
   <meta charset="UTF-8">
   <meta name="viewport"
         content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-  <title>我的推广</title>
+  <title>用户认证</title>
   <link rel="stylesheet" href="http://static.jinkaimen.cn/weui/weui.css">
 
   <style>
@@ -74,6 +74,11 @@
       transform: translate3d(0, 2px, 0);
     }
 
+    .icard.green {
+      background: url("../../assets/icard-green.png") center;
+      background-size: 14px 12px;
+    }
+
     .list {
       overflow: hidden;
       line-height: 35px;
@@ -105,7 +110,6 @@
 </head>
 <body>
 <div id="authentication">
-
   <div class="space">
     <div class="mark"><span class="store"></span>已认证</div>
     <div class="list">
@@ -114,11 +118,18 @@
     </div>
     <div class="list">
       <div class="left">店铺所在地:</div>
-      <div class="right">${address}</div>
+      <c:choose>
+        <c:when test="${district == ''}">
+          <div class="right">--</div>
+        </c:when>
+        <c:otherwise>
+          <div class="right">${district}</div>
+        </c:otherwise>
+      </c:choose>
     </div>
     <div class="list">
       <div class="left">详细地址:</div>
-      <div class="right">东城区********7号</div>
+      <div class="right">${address}</div>
     </div>
     <div class="list">
       <div class="left">注册时间:</div>
@@ -134,12 +145,19 @@
     </div>
     <div class="list">
       <div class="left">身份证号:</div>
-      <div class="right">420*************01</div>
+      <div class="right">${idCard}</div>
     </div>
   </div>
 
   <div class="space">
-    <div class="mark green"><span class="icard"></span>信用卡</div>
+    <c:choose>
+      <c:when test="${isAuthen == '1'}">
+        <div class="mark"><span class="icard"></span>已认证</div>
+      </c:when>
+      <c:otherwise>
+        <div class="mark green"><span class="icard green"></span>信用卡</div>
+      </c:otherwise>
+    </c:choose>
     <div class="list">
       <div class="left">信用卡号:</div>
       <c:choose>
