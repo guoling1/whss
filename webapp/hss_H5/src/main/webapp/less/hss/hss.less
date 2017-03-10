@@ -194,6 +194,88 @@ input:focus {
 
 // 好收收样式调整 end
 
+// 公告列表
+#noticeList {
+  width: 100%;
+  height: 100%;
+  background: #f4f5f8;
+  .list-box {
+    width: 100%;
+    height: auto;
+    background-color: #FFF;
+    .list-li {
+      width: 100%;
+      height: 50px;
+      padding: 6px 15px;
+      border-bottom: 1px solid #e6e8f1;
+      .list-icon {
+        width: 35px;
+        height: 35px;
+        float: left;
+        margin-right: 10px;
+        &.notice1 {
+          background: url("../assets/notice-icon-1.png") no-repeat center;
+          background-size: 35px 35px;
+        }
+        &.notice2 {
+          background: url("../assets/notice-icon-2.png") no-repeat center;
+          background-size: 35px 35px;
+        }
+      }
+      .list-info {
+        float: left;
+        .top {
+          font-size: 14px;
+          color: #5a5a5a;
+          text-align: left;
+        }
+        .bottom {
+          font-size: 12px;
+          color: #c1c1c1;
+          text-align: left;
+        }
+      }
+      .list-right {
+        float: right;
+        width: 6px;
+        height: 10px;
+        background: url("../assets/list-right.png") no-repeat center;
+        background-size: 6px 10px;
+        margin-top: 13px;
+      }
+    }
+  }
+}
+
+// 公告详情
+#noticeDetails {
+  width: 100%;
+  height: 100%;
+  background: #f4f5f8;
+  padding: 0 15px;
+  .title-box {
+    width: 100%;
+    height: auto;
+    border-bottom: 1px solid #e6e8f1;
+    padding: 5px 0;
+    .title {
+      font-size: 18px;
+      color: #222222;
+      text-align: left;
+    }
+    .date {
+      font-size: 12px;
+      color: #c1c1c1;
+      text-align: left;
+    }
+  }
+  .content-box {
+    color: #5a5a5a;
+    padding: 10px 0;
+    text-align: left;
+  }
+}
+
 // 商户 注册 reg
 #reg, #login {
   overflow: auto;
@@ -681,6 +763,39 @@ input:focus {
 // 钱包首页
 
 #wallet {
+  .announcement {
+    width: 100%;
+    height: 25px;
+    background-color: #3c5186;
+    padding: 0 15px 0 30px;
+    position: relative;
+    display: none;
+    .announcement-icon {
+      display: block;
+      position: absolute;
+      top: 6px;
+      left: 15px;
+      width: 13px;
+      height: 12px;
+      background: url("../assets/announcement.png") no-repeat center;
+      background-size: 13px 12px;
+    }
+    .announcement-text-box {
+      width: 100%;
+      height: 25px;
+      position: relative;
+      overflow: hidden;
+    }
+    .announcement-text {
+      line-height: 25px;
+      font-size: 12px;
+      color: #d0d0d0;
+      white-space: nowrap;
+      text-align: left;
+      position: absolute;
+      top: 0;
+    }
+  }
   .wallet {
     width: 100%;
     height: 130px;
@@ -820,6 +935,10 @@ input:focus {
         &.unbundling {
           background: url("../assets/unbundling.png") no-repeat center;
           background-size: 30px 26px;
+        }
+        &.announcement1 {
+          background: url("../assets/announcement-logo.png") no-repeat center;
+          background-size: 27px 30px;
         }
         &.more {
           background: url("../assets/more.png") no-repeat center;
@@ -2109,7 +2228,7 @@ input:focus {
             text-align: left;
             padding: 0 15px;
             &.t {
-              background: url("../../assets/choose.png") no-repeat center right 15px;
+              background: url("../assets/choose.png") no-repeat center right 15px;
               background-size: 8px 8px;
             }
           }
