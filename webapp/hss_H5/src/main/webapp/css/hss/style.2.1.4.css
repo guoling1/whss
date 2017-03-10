@@ -300,7 +300,7 @@ input:focus {
   font-weight: bold;
 }
 .message-space .message-box .message-box-body {
-  font-size: 16px;
+  font-size: 15px;
   color: #5a5a5a;
   padding: 5px 0 25px 0;
   line-height: 28px;
@@ -705,9 +705,93 @@ input:focus {
   width: 100%;
   height: 100%;
   overflow: auto;
+  background-color: #f4f5f8;
 }
 #material .main {
   padding-bottom: 20px;
+}
+#material .layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 99;
+  background-color: #FFF;
+  display: none;
+}
+#material .layer .layer-name {
+  padding: 0 15px;
+  text-align: left;
+  min-width: 75px;
+  float: left;
+  font-size: 15px;
+  color: #5a5a5a;
+  width: 100%;
+  height: 50px;
+  border-top: 1px solid #efefef;
+  box-shadow: 0 3px 8px #e8eaf0;
+}
+#material .layer .match {
+  padding: 0 15px;
+  width: 100%;
+  height: 50px;
+  border-top: 1px solid #efefef;
+  box-shadow: 0 3px 8px #e8eaf0;
+}
+#material .layer .match .match_name {
+  text-align: left;
+  min-width: 75px;
+  float: left;
+  font-size: 15px;
+  color: #5a5a5a;
+  margin-right: 20px;
+}
+#material .layer .match .match_ipt {
+  float: left;
+  height: 49px;
+  line-height: 49px;
+  font-size: 15px;
+}
+#material .search.top {
+  margin-top: 50px;
+}
+#material .search .search-result {
+  width: 100%;
+  height: 50px;
+  line-height: 50px;
+  border-bottom: 1px solid #efefef;
+  padding: 0 15px;
+}
+#material .search .search-result div {
+  height: 49px;
+  display: inline-block;
+  float: left;
+  text-align: left;
+  font-size: 14px;
+  color: #5a5a5a;
+  margin-right: 20px;
+}
+#material .search .search-result div.choose {
+  color: #4ecea2;
+  border-bottom: 2px solid #4ecea2;
+}
+#material .search .search-list {
+  width: 100%;
+  overflow: auto;
+}
+#material .search .search-list div {
+  width: 100%;
+  height: 50px;
+  line-height: 50px;
+  font-size: 14px;
+  color: #5a5a5a;
+  text-align: left;
+  padding: 0 15px;
+  overflow: hidden;
+}
+#material .search .search-list div.t {
+  background: url("../assets/choose.png") no-repeat center right 15px;
+  background-size: 8px 8px;
 }
 #material .process {
   width: 100%;
@@ -741,22 +825,13 @@ input:focus {
   color: #61729c;
   border: none;
 }
-#material .top {
+#material .space {
   width: 100%;
   height: auto;
+  margin-bottom: 8px;
   background-color: #FFF;
-  padding-top: 15px;
 }
-#material .bottom {
-  box-flex: auto;
-  -webkit-box-flex: auto;
-  -webkit-flex: auto;
-  -ms-flex: auto;
-  flex: auto;
-  width: 100%;
-  border-top: 8px solid #f4f5f8;
-}
-#material .bottom .skip {
+#material .space .skip {
   height: 56px;
   line-height: 56px;
   background: url(../assets/skip.png) no-repeat 39px 23px;
@@ -767,37 +842,29 @@ input:focus {
   color: #aab2d3;
 }
 #material .group {
-  display: box;
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  display: -webkit-flex;
   width: 100%;
   height: 50px;
   line-height: 50px;
   border-bottom: 1px solid #edeef5;
   padding: 0 15px;
+  position: relative;
 }
 #material .group .name {
-  width: 50px;
+  display: inline-block;
+  float: left;
+  width: 75px;
   line-height: 50px;
-  margin-right: 15px;
-  font-size: 15px;
-  color: #4a5171;
+  font-size: 14px;
+  color: #5a5a5a;
   text-align: left;
 }
 #material .group .file {
   display: inline-block;
-  box-flex: auto;
-  -webkit-box-flex: auto;
-  -webkit-flex: auto;
-  -ms-flex: auto;
-  flex: auto;
-  width: 1px;
+  float: left;
   line-height: 50px;
   text-align: left;
-  font-size: 15px;
-  color: #7079a0;
+  font-size: 14px;
+  color: #d0d0d0;
   position: relative;
 }
 #material .group .file div {
@@ -809,33 +876,32 @@ input:focus {
   top: 0;
 }
 #material .group .ipt {
-  box-flex: auto;
-  -webkit-box-flex: auto;
-  -webkit-flex: auto;
-  -ms-flex: auto;
-  flex: auto;
   border: none;
+  float: left;
+  height: 49px;
+  font-size: 14px;
   color: #4a5171;
 }
 #material .group ::-webkit-input-placeholder {
-  color: #aab2d2;
+  color: #d0d0d0;
 }
 #material .group :-moz-placeholder {
-  color: #aab2d2;
+  color: #d0d0d0;
 }
 #material .group ::-moz-placeholder {
-  color: #aab2d2;
+  color: #d0d0d0;
 }
 #material .group :-ms-input-placeholder {
-  color: #aab2d2;
+  color: #d0d0d0;
 }
 #material .group .btn {
+  float: right;
   line-height: 50px;
-  font-size: 12px;
-  color: #7079a0;
+  font-size: 14px;
+  color: #036ad1;
 }
 #material .next {
-  padding: 26px 15px 0;
+  padding: 5px 15px 0;
 }
 #material .next div {
   width: 100%;
@@ -847,6 +913,12 @@ input:focus {
   background-color: #7086bd;
   border-radius: 5px;
 }
+#material .skip {
+  height: 50px;
+  line-height: 50px;
+  font-size: 15px;
+  color: #b0b0b0;
+}
 #material .sample {
   display: none;
   position: absolute;
@@ -857,12 +929,53 @@ input:focus {
   background: rgba(0, 0, 0, 0.5);
   z-index: 89;
 }
-#material .sample img {
+#material .sample .img {
   position: absolute;
   top: 45%;
   left: 50%;
   width: 90%;
   transform: translate3d(-50%, -50%, 0);
+}
+#material .sample .sample-box {
+  width: 85%;
+  height: auto;
+  border-radius: 10px;
+  background-color: #FFF;
+  position: absolute;
+  top: 45%;
+  left: 50%;
+  transform: translate3d(-50%, -50%, 0);
+  overflow: hidden;
+}
+#material .sample .sample-box .sample-box-head {
+  width: 100%;
+  height: 50px;
+  line-height: 50px;
+  font-size: 16px;
+  font-weight: bold;
+  color: #5a5a5a;
+  position: relative;
+}
+#material .sample .sample-box .sample-box-head .sample-xx {
+  position: absolute;
+  display: block;
+  top: 20px;
+  right: 20px;
+  width: 9px;
+  height: 9px;
+  background: url("../assets/sample-xx.png") no-repeat center;
+  background-size: 9px 9px;
+}
+#material .sample .sample-box .sample-box-body {
+  width: 100%;
+}
+#material .sample .sample-box .sample-box-foot {
+  width: 100%;
+  height: 50px;
+  line-height: 50px;
+  border-top: 1px solid #e6e8f1;
+  font-size: 16px;
+  color: #036ad1;
 }
 #upload {
   width: 100%;
@@ -2382,6 +2495,7 @@ input:focus {
 }
 #bankList .group .top .info {
   float: left;
+  width: calc(38%);
 }
 #bankList .group .top .info .name {
   text-align: left;
@@ -2404,9 +2518,13 @@ input:focus {
   font-size: 12px;
   color: #FFF;
   padding: 0 5px;
+  margin-top: 5px;
 }
 #bankList .group .top .btn.red {
   background-color: #c64b4b;
+}
+#bankList .group .top .btn.green {
+  background-color: #3d9a63;
 }
 #bankList .group .top .btn.blue {
   background-color: #406eae;
@@ -2545,6 +2663,7 @@ input:focus {
   color: #5a5a5a;
   text-align: left;
   padding: 0 15px;
+  overflow: hidden;
 }
 #branchInfo .branch .list .search .search-list div.t {
   background: url("../assets/choose.png") no-repeat center right 15px;
