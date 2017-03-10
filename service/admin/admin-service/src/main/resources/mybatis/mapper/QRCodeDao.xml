@@ -13,6 +13,8 @@
       sign,
       distribute_status,
       activate_status,
+      qr_type,
+      activate_time,
       type,
       product_id,
       sys_type
@@ -28,6 +30,8 @@
       #{sign},
       #{distributeStatus},
       #{activateStatus},
+      #{qrType},
+      #{activateTime},
       #{type},
       #{productId},
       #{sysType}
