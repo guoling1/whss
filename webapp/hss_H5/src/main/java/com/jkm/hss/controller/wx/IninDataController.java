@@ -231,8 +231,10 @@ public class IninDataController extends BaseController{
         log.info("开始初始化默认银行卡数据");
         List<MerchantInfo> merchantInfoList = merchantInfoService.getAll();
         for(int i=0;i<merchantInfoList.size();i++){
-            log.info("第"+i+"银行卡数据初始化start，商户编号"+merchantInfoList.get(i).getId());
-            accountBankService.initAccountBank(merchantInfoList.get(i).getId(),merchantInfoList.get(i).getAccountId());
+            if(merchantInfoList.get(i).getAccountId()>0){
+                log.info("第"+i+"银行卡数据初始化start，商户编号"+merchantInfoList.get(i).getId());
+                accountBankService.initAccountBank(merchantInfoList.get(i).getId(),merchantInfoList.get(i).getAccountId());
+            }
         }
     }
 }
