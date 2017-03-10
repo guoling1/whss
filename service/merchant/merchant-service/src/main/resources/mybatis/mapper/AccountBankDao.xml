@@ -114,7 +114,7 @@
     </select>
 
     <!-- 是否有银行卡信息 -->
-    <select id="isHasAccountBank" resultType="com.jkm.hss.merchant.entity.AccountBank">
+    <select id="isHasAccountBank">
         SELECT count(id) FROM tb_account_bank
         WHERE account_id = #{accountId} and status=0 and card_type=0
     </select>
