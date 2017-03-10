@@ -77,4 +77,9 @@ public interface MerchantChannelRateDao {
      */
     void toUpgrade(MerchantUpgradeRequest merchantUpgradeRequest);
 
+    /**
+     * 查询
+     * @return
+     */
+    List<Long> selectFailMerchantInfo(@Param("entId") int entId);
 }

@@ -7,7 +7,6 @@ import com.jkm.hss.account.sevice.AccountService;
 import com.jkm.hss.controller.BaseController;
 import com.jkm.hss.helper.request.ChannelAddRequest;
 import com.jkm.hss.product.entity.BasicChannel;
-import com.jkm.hss.product.enums.EnumBasicChannelStatus;
 import com.jkm.hss.product.enums.EnumPayChannelSign;
 import com.jkm.hss.product.servcie.BasicChannelService;
 import lombok.extern.slf4j.Slf4j;
@@ -83,7 +82,7 @@ public class ChannelController extends BaseController {
             this.basicChannelService.update(request);
             return  CommonResponse.simpleResponse(1, "success");
         }catch (final Throwable throwable){
-            log.error("获取通道列表异常,异常信息:" + throwable.getMessage());
+            log.error("修改通道,异常信息:" + throwable.getMessage());
         }
         return CommonResponse.simpleResponse(-1, "fail");
     }
