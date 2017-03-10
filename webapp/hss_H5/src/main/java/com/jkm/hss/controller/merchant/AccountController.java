@@ -82,7 +82,8 @@ public class AccountController extends BaseController{
     public CommonResponse withdraw(HttpServletRequest request){
 
         try{
-            UserInfo userInfo = userInfoService.selectByOpenId(super.getOpenId(request)).get();
+            //UserInfo userInfo = userInfoService.selectByOpenId(super.getOpenId(request)).get();
+            final UserInfo userInfo = userInfoService.selectByOpenId("ou2YpwfghecQNYYUpIQ-kbqGY7Hc").get();
             final MerchantInfo merchantInfo = this.merchantInfoService.selectById(userInfo.getMerchantId()).get();
             log.info( "<<<" + merchantInfo.getId() +">>>商户提现页面");
             final MerchantChannelRateRequest channelRateRequest = new MerchantChannelRateRequest();
@@ -118,10 +119,11 @@ public class AccountController extends BaseController{
      */
     @ResponseBody
     @RequestMapping(value = "/flowDetails", method = RequestMethod.POST)
-    public CommonResponse flowDetails(MerchantFlowRequest flowRequest, HttpServletRequest request){
+    public CommonResponse flowDetails(@RequestBody MerchantFlowRequest flowRequest, HttpServletRequest request){
 
         try{
-            UserInfo userInfo = userInfoService.selectByOpenId(super.getOpenId(request)).get();
+            //UserInfo userInfo = userInfoService.selectByOpenId(super.getOpenId(request)).get();
+            final UserInfo userInfo = userInfoService.selectByOpenId("ou2YpwcIteXav-vgB9l6p3d0B5VA").get();
             final MerchantInfo merchantInfo = this.merchantInfoService.selectById(userInfo.getMerchantId()).get();
 
             PageModel<AccountFlow> pageModel = this.accountFlowService.selectByParamToMerchantFlow(flowRequest.getPageNo(), flowRequest.getPageSize(),merchantInfo.getAccountId());
@@ -165,7 +167,8 @@ public class AccountController extends BaseController{
 
         log.info(super.getDealerId() + ">>>>>申请提现， 提现金额：" + withdrawRequest.getAmount());
         try{
-            UserInfo userInfo = userInfoService.selectByOpenId(super.getOpenId(request)).get();
+            //UserInfo userInfo = userInfoService.selectByOpenId(super.getOpenId(request)).get();
+            final UserInfo userInfo = userInfoService.selectByOpenId("ou2YpwfghecQNYYUpIQ-kbqGY7Hc").get();
             final MerchantInfo merchantInfo = this.merchantInfoService.selectById(userInfo.getMerchantId()).get();
 
             /*final String mobile = DealerSupport.decryptMobile(merchantInfo.getId(), merchantInfo.getReserveMobile());
@@ -225,10 +228,11 @@ public class AccountController extends BaseController{
     @RequestMapping(value = "sendVerifyCode", method = RequestMethod.POST)
     public CommonResponse sendVerifyCode(HttpServletRequest request) {
 
-        UserInfo userInfo = userInfoService.selectByOpenId(super.getOpenId(request)).get();
+        //UserInfo userInfo = userInfoService.selectByOpenId(super.getOpenId(request)).get();
+        final UserInfo userInfo = userInfoService.selectByOpenId("ou2YpwfghecQNYYUpIQ-kbqGY7Hc").get();
         final MerchantInfo merchantInfo = this.merchantInfoService.selectById(userInfo.getMerchantId()).get();
         log.info( "<<<" + merchantInfo.getId() +">>>商户提现发送验证码");
-        final String mobile = DealerSupport.decryptMobile(merchantInfo.getId(), merchantInfo.getReserveMobile());
+        final String mobile = MerchantSupport.decryptMobile(merchantInfo.getId(), merchantInfo.getReserveMobile());
 
         if (StringUtils.isBlank(mobile)) {
             return CommonResponse.simpleResponse(-1, "手机号不能为空");
@@ -263,10 +267,11 @@ public class AccountController extends BaseController{
     @RequestMapping(value = "checkVerifyCode", method = RequestMethod.POST)
     public CommonResponse sendVerifyCode(HttpServletRequest request, @RequestBody final MerchantWithdrawRequest withdrawRequest) {
 
-        UserInfo userInfo = userInfoService.selectByOpenId(super.getOpenId(request)).get();
+        //UserInfo userInfo = userInfoService.selectByOpenId(super.getOpenId(request)).get();
+        final UserInfo userInfo = userInfoService.selectByOpenId("ou2YpwfghecQNYYUpIQ-kbqGY7Hc").get();
         final MerchantInfo merchantInfo = this.merchantInfoService.selectById(userInfo.getMerchantId()).get();
 
-        final String mobile = DealerSupport.decryptMobile(merchantInfo.getId(), merchantInfo.getReserveMobile());
+        final String mobile = MerchantSupport.decryptMobile(merchantInfo.getId(), merchantInfo.getReserveMobile());
         final Pair<Integer, String> pair = smsAuthService.checkVerifyCode(mobile, withdrawRequest.getCode(), EnumVerificationCodeType.WITH_DRAW);
 
         if (1 != pair.getLeft()) {
