@@ -6,7 +6,8 @@
 const http = _require('http');
 const message = _require('message');
 const browser = _require('browser');
-browser.elastic_touch();
+browser.elastic_touch('layer-w-list');
+browser.elastic_touch('layer-b-list');
 // 定义变量
 const color = document.getElementById('color');
 const logo = document.getElementById('logo');
@@ -35,13 +36,6 @@ let cancel = document.getElementById('cancel');
 
 cancel.addEventListener('click', function () {
   window.location.href = '/sqb/wallet';
-});
-
-let layerC = document.getElementById('layerC');
-let cancelcC = document.getElementById('cancelC');
-
-cancelcC.addEventListener('click', function () {
-  window.location.href = '/sqb/creditCardAuthen?card=true';
 });
 
 function getQueryString(name) {
@@ -77,7 +71,7 @@ submit.onclick = function () {
     countyName: pageData.countyName
   }, function () {
     if (getQueryString('card')) {
-      layerC.style.display = 'block';
+      window.location.href = '/sqb/creditCardAuthen?card=true';
     } else if (getQueryString('branch')) {
       layer.style.display = 'block';
     } else {
@@ -215,6 +209,21 @@ let CountrysSet = function (code) {
   }
   ct.className = 'choose';
   ct.style.display = 'inline-block';
+};
+
+p.onclick = function () {
+  c.style.display = 'none';
+  ct.style.display = 'none';
+  ProvincesSet();
+};
+
+c.onclick = function () {
+  ct.style.display = 'none';
+  CitysSet(pageData.provinceCode);
+};
+
+ct.onclick = function () {
+  CitysSet(pageData.cityCode);
 };
 
 // 卡bin和颜色一一对应
