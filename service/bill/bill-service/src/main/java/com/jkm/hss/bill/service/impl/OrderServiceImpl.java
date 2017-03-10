@@ -342,6 +342,10 @@ public class OrderServiceImpl implements OrderService {
         map.put("moreTotalFee",req.getMoreTotalFee());
         map.put("offset",req.getOffset());
         map.put("size",req.getSize());
+        map.put("sn",req.getSn());
+        map.put("proxyName",req.getProxyName());
+        map.put("proxyName1",req.getProxyName1());
+        map.put("businessOrderNo",req.getBusinessOrderNo());
         List<MerchantTradeResponse> list = orderDao.selectOrderList(map);
         if (list.size()>0){
             for (int i=0;i<list.size();i++){
@@ -415,14 +419,14 @@ public class OrderServiceImpl implements OrderService {
                         list.get(i).setPayType(EnumPayType.YIJIA_ALIPAY.getValue());
                     }
                 }
-                if (list.get(i).getLevel()==1){
-                    list.get(i).setProxyName(list.get(i).getProxyName());
-                }
-                if (list.get(i).getLevel()==2){
-                    list.get(i).setProxyName1(list.get(i).getProxyName());
-                    String proxyName = dealerService.selectProxyName(list.get(i).getFirstLevelDealerId());
-                    list.get(i).setProxyName(proxyName);
-                }
+//                if (list.get(i).getLevel()==1){
+//                    list.get(i).setProxyName(list.get(i).getProxyName());
+//                }
+//                if (list.get(i).getLevel()==2){
+//                    list.get(i).setProxyName1(list.get(i).getProxyName());
+//                    String proxyName = dealerService.selectProxyName(list.get(i).getFirstLevelDealerId());
+//                    list.get(i).setProxyName(proxyName);
+//                }
 
             }
         }
@@ -781,6 +785,12 @@ public class OrderServiceImpl implements OrderService {
         return list;
     }
 
+    @Override
+    public String  amountCount(OrderTradeRequest req) {
+        String res = this.orderDao.amountCount(req);
+        return res;
+    }
+
     /**
      * 生成ExcelVo
      * @param
@@ -915,6 +925,10 @@ public class OrderServiceImpl implements OrderService {
         map.put("moreTotalFee",req.getMoreTotalFee());
         map.put("offset",req.getOffset());
         map.put("size",req.getSize());
+        map.put("sn",req.getSn());
+        map.put("proxyName",req.getProxyName());
+        map.put("proxyName1",req.getProxyName1());
+        map.put("businessOrderNo",req.getBusinessOrderNo());
         return orderDao.selectOrderListCount(map);
     }
 
