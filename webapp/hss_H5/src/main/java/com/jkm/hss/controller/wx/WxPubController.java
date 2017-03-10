@@ -15,7 +15,6 @@ import com.jkm.hss.dealer.entity.Dealer;
 import com.jkm.hss.dealer.entity.DealerChannelRate;
 import com.jkm.hss.dealer.enums.EnumInviteBtn;
 import com.jkm.hss.dealer.enums.EnumRecommendBtn;
-import com.jkm.hss.dealer.enums.EnumSettlementPeriodType;
 import com.jkm.hss.dealer.service.DealerChannelRateService;
 import com.jkm.hss.dealer.service.DealerService;
 import com.jkm.hss.dealer.service.ShallProfitDetailService;
@@ -23,11 +22,10 @@ import com.jkm.hss.helper.ApplicationConsts;
 import com.jkm.hss.helper.request.*;
 import com.jkm.hss.merchant.entity.*;
 import com.jkm.hss.merchant.enums.*;
-import com.jkm.hss.merchant.helper.MerchantConsts;
 import com.jkm.hss.merchant.helper.MerchantSupport;
-import com.jkm.hss.merchant.helper.SmPost;
 import com.jkm.hss.merchant.helper.WxPubUtil;
 import com.jkm.hss.merchant.helper.request.*;
+import com.jkm.hss.merchant.helper.response.BankListResponse;
 import com.jkm.hss.merchant.helper.response.MerchantChannelRateResponse;
 import com.jkm.hss.merchant.service.*;
 import com.jkm.hss.notifier.enums.EnumNoticeType;
@@ -39,7 +37,10 @@ import com.jkm.hss.notifier.service.SmsAuthService;
 import com.jkm.hss.product.entity.BasicChannel;
 import com.jkm.hss.product.entity.Product;
 import com.jkm.hss.product.entity.ProductChannelDetail;
-import com.jkm.hss.product.enums.*;
+import com.jkm.hss.product.enums.EnumPayChannelSign;
+import com.jkm.hss.product.enums.EnumProductType;
+import com.jkm.hss.product.enums.EnumUpGradeType;
+import com.jkm.hss.product.enums.EnumUpperChannel;
 import com.jkm.hss.product.servcie.BasicChannelService;
 import com.jkm.hss.product.servcie.ProductChannelDetailService;
 import com.jkm.hss.product.servcie.ProductService;
@@ -62,7 +63,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.URLDecoder;
-import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -102,8 +102,6 @@ public class WxPubController extends BaseController {
     @Autowired
     private DealerChannelRateService dealerChannelRateService;
     @Autowired
-    private UpgradePayRecordService upgradePayRecordService;
-    @Autowired
     private ProductService productService;
     @Autowired
     private BankCardBinService bankCardBinService;
@@ -111,6 +109,9 @@ public class WxPubController extends BaseController {
     private MerchantChannelRateService merchantChannelRateService;
     @Autowired
     private BasicChannelService basicChannelService;
+    @Autowired
+    private AccountBankService accountBankService;
+
 
 
 
@@ -353,36 +354,6 @@ public class WxPubController extends BaseController {
         }
         return CommonResponse.simpleResponse(-1, verifyCode.getRight());
     }
-
-    /**
-     * 获取商户银行卡信息
-     *
-     * @return
-     */
-    @ResponseBody
-    @RequestMapping(value = "geBankInfo", method = RequestMethod.POST)
-    public CommonResponse geBankInfo(final HttpServletRequest request, final HttpServletResponse response) {
-        if(!super.isLogin(request)){
-            return CommonResponse.simpleResponse(-2, "未登录");
-        }
-        Optional<UserInfo> userInfoOptional = userInfoService.selectByOpenId(super.getOpenId(request));
-        if(!userInfoOptional.isPresent()){
-            return CommonResponse.simpleResponse(-2, "未登录");
-        }
-        Optional<MerchantInfo> merchantInfo = merchantInfoService.selectById(userInfoOptional.get().getMerchantId());
-        if(!merchantInfo.isPresent()){
-            return CommonResponse.simpleResponse(-2, "未登录");
-        }
-        if(merchantInfo.get().getStatus()!= EnumMerchantStatus.PASSED.getId()&&merchantInfo.get().getStatus()!= EnumMerchantStatus.FRIEND.getId()){
-            return CommonResponse.simpleResponse(-2, "信息未完善或待审核");
-        }
-        Map map = new HashMap();
-        map.put("bankBin",merchantInfo.get().getBankBin());
-        map.put("bankNo",merchantInfo.get().getBankNo());
-        map.put("bankName",merchantInfo.get().getBankName());
-        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", map);
-    }
-
 
 
     /**
@@ -1087,7 +1058,11 @@ public class WxPubController extends BaseController {
         String creditCardShort = creditCardNo.substring(creditCardNo.length()-4,creditCardNo.length());
         merchantInfoService.updateCreditCard(MerchantSupport.encryptBankCard(creditCardAuthenRequest.getCreditCard()),bankCardBinOptional.get().getBankName(),creditCardShort,merchantInfo.get().getId());
         Optional<MerchantInfo> merchantInfo1 = merchantInfoService.selectById(userInfoOptional.get().getMerchantId());
-        if(merchantInfo1.get().getBranchName()!=null&&!"".equals(merchantInfo1.get().getBranchName())
+        AccountBank accountBank = accountBankService.getDefault(merchantInfo1.get().getAccountId());
+        if(accountBank==null){
+            return CommonResponse.simpleResponse(-1, "您暂未设置默认银行卡");
+        }
+        if(accountBank.getBranchName()!=null&&!"".equals(accountBank.getBranchName())
                 &&merchantInfo1.get().getCreditCard()!=null&&!"".equals(merchantInfo1.get().getCreditCard())){
             merchantChannelRateService.enterInterNet(merchantInfo.get().getProductId(),merchantInfo.get().getId(),EnumUpperChannel.KAMENG.getValue());
         }
@@ -1126,6 +1101,9 @@ public class WxPubController extends BaseController {
         if(StringUtils.isBlank(continueBankInfoRequest.getBranchName())){
             return CommonResponse.simpleResponse(-1, "请选择支行");
         }
+        if(continueBankInfoRequest.getBankId()<=0){
+            return CommonResponse.simpleResponse(-1, "银行卡参数输入有误");
+        }
         if(!super.isLogin(request)){
             return CommonResponse.simpleResponse(-2, "未登录");
         }
@@ -1140,11 +1118,15 @@ public class WxPubController extends BaseController {
         if(merchantInfo.get().getStatus()!= EnumMerchantStatus.PASSED.getId()&&merchantInfo.get().getStatus()!= EnumMerchantStatus.FRIEND.getId()){
             return CommonResponse.simpleResponse(-2, "信息未完善或待审核");
         }
+        AccountBank accountBank = accountBankService.getDefault(merchantInfo.get().getAccountId());
+        if(accountBank==null){
+            return CommonResponse.simpleResponse(-1, "您暂未设置默认银行卡");
+        }
         continueBankInfoRequest.setId(merchantInfo.get().getId());
         merchantInfoService.updateBranchInfo(continueBankInfoRequest);
-        Optional<MerchantInfo> merchantInfo1 = merchantInfoService.selectById(userInfoOptional.get().getMerchantId());
-        if(merchantInfo1.get().getBranchName()!=null&&!"".equals(merchantInfo1.get().getBranchName())
-                &&merchantInfo1.get().getCreditCard()!=null&&!"".equals(merchantInfo1.get().getCreditCard())){
+        accountBankService.updateBranchInfo(continueBankInfoRequest);
+        if(accountBank.getBranchName()!=null&&!"".equals(accountBank.getBranchName())
+                &&merchantInfo.get().getCreditCard()!=null&&!"".equals(merchantInfo.get().getCreditCard())){
             merchantChannelRateService.enterInterNet(merchantInfo.get().getProductId(),merchantInfo.get().getId(),EnumUpperChannel.KAMENG.getValue());
         }
         return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "操作成功");
@@ -1218,8 +1200,9 @@ public class WxPubController extends BaseController {
             return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "校验成功",merchantChannelRateResponse);
         }
         if(merchantChannelRate.getEnterNet()==EnumEnterNet.UNENT.getId()) {
+            AccountBank accountBank = accountBankService.getDefault(merchantInfo.get().getAccountId());
             log.info("商户需入网");
-            if (StringUtils.isEmpty(merchantInfo.get().getBranchCode())) {
+            if (StringUtils.isEmpty(accountBank.getBranchCode())) {
                 merchantChannelRateResponse.setIsBranch(EnumCheck.HASNOT.getId());
                 if(StringUtils.isEmpty(merchantInfo.get().getCreditCard())){
                     merchantChannelRateResponse.setIsCreditCard(EnumCheck.HASNOT.getId());
@@ -1244,4 +1227,61 @@ public class WxPubController extends BaseController {
         return null;
     }
 
+    /**
+     * 我的银行卡列表
+     * @param request
+     * @param response
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "myCardList", method = RequestMethod.POST)
+    public CommonResponse myCardList(final HttpServletRequest request, final HttpServletResponse response) {
+        if(!super.isLogin(request)){
+            return CommonResponse.simpleResponse(-2, "未登录");
+        }
+        Optional<UserInfo> userInfoOptional = userInfoService.selectByOpenId(super.getOpenId(request));
+        if(!userInfoOptional.isPresent()){
+            return CommonResponse.simpleResponse(-2, "未登录");
+        }
+        Optional<MerchantInfo> merchantInfo = merchantInfoService.selectById(userInfoOptional.get().getMerchantId());
+        if(!merchantInfo.isPresent()){
+            return CommonResponse.simpleResponse(-2, "未登录");
+        }
+        if(merchantInfo.get().getStatus()!= EnumMerchantStatus.PASSED.getId()&&merchantInfo.get().getStatus()!= EnumMerchantStatus.FRIEND.getId()){
+            return CommonResponse.simpleResponse(-2, "信息未完善或待审核");
+        }
+        List<BankListResponse> accountBankList = accountBankService.selectAll(merchantInfo.get().getAccountId());
+        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", accountBankList);
+    }
+
+    /**
+     * 删除信用卡
+     * @param request
+     * @param response
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "deleteCreditCard", method = RequestMethod.POST)
+    public CommonResponse deleteCreditCard(final HttpServletRequest request, final HttpServletResponse response,@RequestBody final DeleteCreditCardRequest deleteCreditCardRequest) {
+        if(!super.isLogin(request)){
+            return CommonResponse.simpleResponse(-2, "未登录");
+        }
+        Optional<UserInfo> userInfoOptional = userInfoService.selectByOpenId(super.getOpenId(request));
+        if(!userInfoOptional.isPresent()){
+            return CommonResponse.simpleResponse(-2, "未登录");
+        }
+        Optional<MerchantInfo> merchantInfo = merchantInfoService.selectById(userInfoOptional.get().getMerchantId());
+        if(!merchantInfo.isPresent()){
+            return CommonResponse.simpleResponse(-2, "未登录");
+        }
+        if(merchantInfo.get().getStatus()!= EnumMerchantStatus.PASSED.getId()&&merchantInfo.get().getStatus()!= EnumMerchantStatus.FRIEND.getId()){
+            return CommonResponse.simpleResponse(-2, "信息未完善或待审核");
+        }
+        Optional<AccountBank> accountBankOptional = accountBankService.selectById(deleteCreditCardRequest.getBankId());
+        if(accountBankOptional.isPresent()&&accountBankOptional.get().getCardType()!=EnumAccountBank.CREDIT.getId()){
+            return CommonResponse.simpleResponse(-1, "只能删除信用卡");
+        }
+        accountBankService.deleteCreditCard(deleteCreditCardRequest.getBankId());
+        return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "删除成功");
+    }
 }

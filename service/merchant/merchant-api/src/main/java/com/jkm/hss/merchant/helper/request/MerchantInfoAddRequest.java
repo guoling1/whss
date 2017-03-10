@@ -11,6 +11,31 @@ import java.util.Date;
 public class MerchantInfoAddRequest {
 
     /**
+     * 所在省份编码
+     */
+    private String provinceCode;
+    /**
+     * 所在省份名称
+     */
+    private String provinceName;
+    /**
+     * 所在城市编码
+     */
+    private String cityCode;
+    /**
+     * 所在城市名称
+     */
+    private String cityName;
+    /**
+     * 所在县编码
+     */
+    private String countyCode;
+    /**
+     * 所在县名称
+     */
+    private String countyName;
+
+    /**
      * 认证时间
      */
     private Date authenticationTime;

@@ -508,6 +508,12 @@ public class MerchantInfoServiceImpl implements MerchantInfoService {
      */
     @Override
     public int updateBranchInfo(ContinueBankInfoRequest continueBankInfoRequest) {
+        MerchantInfo merchantInfo = merchantInfoDao.selectById(continueBankInfoRequest.getId());
+        if(merchantInfo.getProvinceCode()!=null&&!"".equals(merchantInfo.getProvinceCode())
+                &&merchantInfo.getCityCode()!=null&&!"".equals(merchantInfo.getCityCode())
+                &&merchantInfo.getCountyCode()!=null&&!"".equals(merchantInfo.getCountyCode())){
+            return 0;
+        }
         return merchantInfoDao.updateBranchInfo(continueBankInfoRequest);
     }
 

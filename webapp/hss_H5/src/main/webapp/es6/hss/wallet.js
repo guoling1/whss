@@ -19,6 +19,15 @@ const cancel = document.getElementById('cancel');
 const unbundling = document.getElementById('unbundling');
 const unbundlingSubmit = document.getElementById('unbundlingSubmit');
 const upgrade = document.getElementById('show_upgrade');
+const announcement_link = document.getElementById('announcement-link');
+announcement_link.addEventListener('click', function () {
+  window.location.href = "/notice/noticeListJSP";
+});
+
+// 公告横向的滚动
+let announcement = document.getElementById('announcement');
+let announcement_text_box = document.getElementById('announcement-text-box');
+let announcement_text = document.getElementById('announcement-text');
 
 const pxPerRem = document.documentElement.clientWidth;
 upgrade.addEventListener('click', function () {
@@ -33,6 +42,28 @@ if (pageData.showRecommend == 2) {
   document.getElementById('show_recommend').style.display = "none";
   document.getElementById('show_upgrade').style.display = "none";
 }
+
+// 获取公告数据
+http.post('/notice/pageAnnouncement', {}, function (data) {
+  if (data) {
+    announcement.style.display = 'block';
+    announcement_text.innerHTML = data.text.replace(/<[^>]+>/g, "");
+    let announcement_text_box_ClientRect = announcement_text_box.getBoundingClientRect();
+    let initLeft = announcement_text_box_ClientRect.width;
+    let announcement_text_ClientRect = announcement_text.getBoundingClientRect();
+    let runLeft = announcement_text_ClientRect.width;
+    setInterval(function () {
+      let nowLeft = initLeft--;
+      announcement_text.style.left = nowLeft + 'px';
+      if (nowLeft <= -runLeft) {
+        initLeft = announcement_text_box_ClientRect.width;
+      }
+    }, 15);
+    announcement.onclick = function () {
+      window.location.href = '/notice/noticeDetailsJSP?id=' + data.id;
+    };
+  }
+});
 
 // 解绑微信
 unbundling.addEventListener('click', function () {

@@ -76,4 +76,10 @@ public interface MerchantChannelRateService {
      * @param merchantUpgradeRequest
      */
     void toUpgrade(MerchantUpgradeRequest merchantUpgradeRequest);
+
+    /**
+     * 查询失败
+     * @return
+     */
+    List<Long> selectFailMerchantInfo();
 }
