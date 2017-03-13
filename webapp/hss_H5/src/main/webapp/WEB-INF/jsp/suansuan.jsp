@@ -24,5 +24,5 @@
 
 </body>
 
-<script src="http://static.jinkaimen.cn/vendor/vendor.1.0.3.min.js"></script>
+<script src="http://static.jinkaimen.cn/vendor/vendor.1.0.5.min.js"></script>
 </html>

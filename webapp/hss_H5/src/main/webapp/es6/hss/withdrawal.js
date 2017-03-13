@@ -38,7 +38,7 @@ http.post('/account/info', {}, function (data) {
   bank.innerHTML = data.bankName + '(' + data.bankNo + ')';
   fee.innerHTML = data.withdrawFee.toFixed(2);
   mobile.innerHTML = data.mobile;
-  toBank = data.bankName + data.bankNo;
+  toBank = data.bankName + ' ' + data.bankNo;
   reFee = data.withdrawFee;
   reAcconut = data.available;
   if (data.available <= data.withdrawFee) {
@@ -50,9 +50,9 @@ ipt.addEventListener('input', function (e) {
   let ev = e.target;
   let val = ev.value;
   come.innerHTML = (val - reFee) > 0 ? (val - reFee).toFixed(2) : '0.00';
-  toFee = reFee.toFixed(2) + '元'
-  toAmount = val.toFixed(2) + '元';
-  toCome = (val - reFee).toFixed(2) + '元';
+  toFee = reFee.toFixed(2);
+  toAmount = (val / 1).toFixed(2);
+  toCome = (val - reFee).toFixed(2);
 });
 
 // 定义验证码
@@ -84,7 +84,7 @@ submit.addEventListener('click', function () {
       code: code.value
     }, function () {
       message.load_hide();
-      window.location.replace('/account/toHssWithdrawSuccess?toFee=' + toFee + '&toBank=' + toBank + '&toAmount=' + toAmount + '&toCome=' + toCome);
+      window.location.replace('/account/toHssWithdrawSuccess?toFee=' + toFee + '&toBank=' + encodeURIComponent(toBank) + '&toAmount=' + toAmount + '&toCome=' + toCome);
     })
   }
 });
