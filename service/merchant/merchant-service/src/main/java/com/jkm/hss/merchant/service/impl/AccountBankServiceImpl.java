@@ -104,8 +104,8 @@ public class AccountBankServiceImpl implements AccountBankService{
      * @return
      */
     @Override
-    public int initCreditBankCard(long accountId,String bankNo,String bankName,String reserveMobile,String bankBin,String expiryTime) {
-        Integer backId = this.isExistBankNo(accountId,MerchantSupport.encryptBankCard(bankNo),EnumAccountBank.CREDIT.getId());
+    public long initCreditBankCard(long accountId,String bankNo,String bankName,String reserveMobile,String bankBin,String expiryTime) {
+        Long backId = this.isExistBankNo(accountId,MerchantSupport.encryptBankCard(bankNo),EnumAccountBank.CREDIT.getId());
         if(backId==null){
             log.info("不存在该账号{}",bankNo);
             this.reset(accountId,EnumAccountBank.CREDIT.getId());
@@ -118,7 +118,8 @@ public class AccountBankServiceImpl implements AccountBankService{
             accountBank.setIsDefault(EnumBankDefault.DEFAULT.getId());
             accountBank.setBankBin(bankBin);
             accountBank.setExpiryTime(expiryTime);
-            return this.insert(accountBank);
+            this.insert(accountBank);
+            return accountBank.getId();
         }else{
             log.info("已经存在该账号{}",bankNo);
             this.reset(accountId,EnumAccountBank.CREDIT.getId());
@@ -372,7 +373,7 @@ public class AccountBankServiceImpl implements AccountBankService{
      * @return
      */
     @Override
-    public Integer isExistBankNo(long accountId, String bankNo, int cardType) {
-        return this.isExistBankNo(accountId,bankNo,cardType);
+    public Long isExistBankNo(long accountId, String bankNo, int cardType) {
+        return accountBankDao.isExistBankNo(accountId,bankNo,cardType);
     }
 }
