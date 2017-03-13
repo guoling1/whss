@@ -1,5 +1,6 @@
 package com.jkm.hss.helper.request;
 
+import com.jkm.hss.admin.enums.EnumQRCodeDistributeType;
 import lombok.Data;
 
 /**
@@ -13,6 +14,7 @@ public class ProductionQrCodeRequest {
     private String sysType;
     /**
      * 二维码类型
+     * {@link EnumQRCodeDistributeType}
      */
     private int type;
     /**
