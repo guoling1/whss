@@ -7,7 +7,6 @@ import com.jkm.base.common.entity.CommonResponse;
 import com.jkm.base.common.entity.PageModel;
 import com.jkm.base.common.util.DateFormatUtil;
 import com.jkm.hss.account.enums.EnumAppType;
-import com.jkm.hss.account.sevice.AccountService;
 import com.jkm.hss.bill.entity.Order;
 import com.jkm.hss.bill.enums.EnumOrderStatus;
 import com.jkm.hss.bill.enums.EnumSettleStatus;
@@ -21,6 +20,7 @@ import com.jkm.hss.helper.response.QueryMerchantPayOrdersResponse;
 import com.jkm.hss.merchant.entity.MerchantInfo;
 import com.jkm.hss.merchant.entity.UserInfo;
 import com.jkm.hss.merchant.enums.EnumMerchantStatus;
+import com.jkm.hss.merchant.service.AccountBankService;
 import com.jkm.hss.merchant.service.MerchantInfoService;
 import com.jkm.hss.merchant.service.UserInfoService;
 import com.jkm.hss.product.enums.EnumPayChannelSign;
@@ -58,7 +58,7 @@ public class TradeController extends BaseController {
     @Autowired
     private MerchantInfoService merchantInfoService;
     @Autowired
-    private AccountService accountService;
+    private AccountBankService accountBankService;
 
     /**
      * 动态码支付
@@ -68,7 +68,8 @@ public class TradeController extends BaseController {
     @ResponseBody
     @RequestMapping(value = "dcReceipt", method = RequestMethod.POST)
     public CommonResponse dynamicCodeReceipt(@RequestBody final DynamicCodePayRequest payRequest,
-                                             final HttpServletRequest request) throws UnsupportedEncodingException {
+                                             final HttpServletRequest request,
+                                             final Model model) throws UnsupportedEncodingException {
         if(!super.isLogin(request)){
             return CommonResponse.simpleResponse(-2, "未登录");
         }
@@ -98,9 +99,17 @@ public class TradeController extends BaseController {
         }
         if (EnumPayChannelSign.isUnionPay(payRequest.getPayChannel())) {
             //快捷支付
-//            this.accountService.
+
+            if (true) {
+
+                model.addAttribute("bankAccountName", merchantInfo.get().getName());
+                model.addAttribute("idCard", "");
 
 
+
+            } else {
+
+            }
         }
 
         final Pair<Integer, String> resultPair = this.payService.codeReceipt(payRequest.getTotalFee(),
