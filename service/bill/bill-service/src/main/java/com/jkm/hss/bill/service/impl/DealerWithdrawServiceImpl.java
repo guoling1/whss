@@ -184,7 +184,7 @@ public class DealerWithdrawServiceImpl implements DealerWithdrawService {
             final Account dealerPoundageAccount1 = this.accountService.getById(AccountConstants.DEALER_POUNDAGE_ACCOUNT_ID).get();
             //入账流水
             final AccountFlow accountFlow = new AccountFlow();
-            accountFlow.setAccountId(accountId);
+            accountFlow.setAccountId(AccountConstants.DEALER_POUNDAGE_ACCOUNT_ID);
             accountFlow.setOrderNo(order.getOrderNo());
             accountFlow.setBeforeAmount(dealerPoundageAccount1.getAvailable());
             accountFlow.setAfterAmount(dealerPoundageAccount1.getAvailable().add(order.getPoundage()));
