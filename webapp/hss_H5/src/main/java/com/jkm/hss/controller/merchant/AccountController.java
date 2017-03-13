@@ -212,7 +212,7 @@ public class AccountController extends BaseController{
             //final UserInfo userInfo = userInfoService.selectByOpenId("ou2YpwfghecQNYYUpIQ-kbqGY7Hc").get();
             final MerchantInfo merchantInfo = this.merchantInfoService.selectById(userInfo.getMerchantId()).get();
 
-            final String mobile = DealerSupport.decryptMobile(merchantInfo.getId(), merchantInfo.getReserveMobile());
+            final String mobile = MerchantSupport.decryptMobile(merchantInfo.getId(), merchantInfo.getReserveMobile());
 
            final Pair<Integer, String> pair = smsAuthService.checkVerifyCode(mobile, withdrawRequest.getCode(), EnumVerificationCodeType.WITH_DRAW);
 
