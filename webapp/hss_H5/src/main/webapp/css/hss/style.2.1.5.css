@@ -336,6 +336,224 @@ input:focus {
   color: #036ad1;
   font-weight: bold;
 }
+#accountFlow {
+  width: 100%;
+  height: auto;
+  min-height: 100%;
+  background-color: #f4f5f8;
+}
+#accountFlow .flow-group {
+  width: 100%;
+  height: 50px;
+  background-color: #FFF;
+  border-bottom: 1px solid #e6e8f1;
+  padding: 0 15px;
+}
+#accountFlow .flow-group .flow-left {
+  float: left;
+}
+#accountFlow .flow-group .flow-left .flow-top {
+  font-size: 14px;
+  color: #222222;
+  margin-top: 3px;
+  text-align: left;
+}
+#accountFlow .flow-group .flow-left .flow-top .s {
+  font-size: 12px;
+  color: #c1c1c1;
+  margin-left: 5px;
+}
+#accountFlow .flow-group .flow-left .flow-bottom {
+  font-size: 12px;
+  color: #c1c1c1;
+  text-align: left;
+}
+#accountFlow .flow-group .flow-right {
+  float: right;
+  height: 50px;
+  line-height: 50px;
+  font-size: 15px;
+}
+#accountFlow .flow-group .flow-right.green {
+  color: #36c493;
+}
+#accountFlow .flow-group .flow-right.red {
+  color: #e94444;
+}
+#account {
+  width: 100%;
+  height: auto;
+  background-color: #f4f5f8;
+}
+#account .account {
+  width: 100%;
+  background-color: #FFF;
+  padding: 50px;
+}
+#account .account .logo {
+  width: 60px;
+  height: 60px;
+  margin: auto;
+  background: url("../../assets/account.png") no-repeat center;
+  background-size: 60px 60px;
+}
+#account .account .amount {
+  font-size: 36px;
+  color: #222222;
+  margin-top: 20px;
+}
+#account .account .amount .s {
+  font-size: 20px;
+  margin-right: 5px;
+}
+#account .account .useAmount {
+  font-size: 15px;
+  color: #5a5a5a;
+}
+#account .account .btn {
+  display: block;
+  width: 100%;
+  height: 46px;
+  margin: 30px 0 25px 0;
+  line-height: 46px;
+  border-radius: 5px;
+  background-color: #4ecea2;
+  font-size: 16px;
+  color: #FFF;
+}
+#account .account .check {
+  font-size: 12px;
+  color: #036ad1;
+}
+#account .account .check span {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  margin-right: 5px;
+  background: url("../../assets/amount_detail.png") no-repeat center;
+  background-size: 10px 10px;
+}
+#account .qa {
+  width: 100%;
+  height: auto;
+  margin-top: 8px;
+  background-color: #FFF;
+  padding: 25px 15px 50px 15px;
+}
+#account .qa .qa-title {
+  font-size: 12px;
+  color: #5a5a5a;
+  text-align: left;
+}
+#account .qa .qa-title span {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  margin-right: 5px;
+  background: url("../../assets/qa.png") no-repeat center;
+  background-size: 12px 12px;
+}
+#account .qa .qa-group {
+  margin-top: 15px;
+}
+#account .qa .qa-group .q {
+  text-align: left;
+  font-size: 12px;
+  color: #5a5a5a;
+}
+#account .qa .qa-group .q span {
+  display: inline-block;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background-color: #b0b0b0;
+  transform: translate3d(0, -3px, 0);
+  margin-right: 5px;
+}
+#account .qa .qa-group .a {
+  text-align: left;
+  font-size: 12px;
+  color: #b0b0b0;
+  padding-left: 9px;
+}
+#noticeList {
+  width: 100%;
+  height: 100%;
+  background: #f4f5f8;
+}
+#noticeList .list-box {
+  width: 100%;
+  height: auto;
+  background-color: #FFF;
+}
+#noticeList .list-box .list-li {
+  width: 100%;
+  height: 50px;
+  padding: 6px 15px;
+  border-bottom: 1px solid #e6e8f1;
+}
+#noticeList .list-box .list-li .list-icon {
+  width: 35px;
+  height: 35px;
+  float: left;
+  margin-right: 10px;
+}
+#noticeList .list-box .list-li .list-icon.notice1 {
+  background: url("../assets/notice-icon-1.png") no-repeat center;
+  background-size: 35px 35px;
+}
+#noticeList .list-box .list-li .list-icon.notice2 {
+  background: url("../assets/notice-icon-2.png") no-repeat center;
+  background-size: 35px 35px;
+}
+#noticeList .list-box .list-li .list-info {
+  float: left;
+}
+#noticeList .list-box .list-li .list-info .top {
+  font-size: 14px;
+  color: #5a5a5a;
+  text-align: left;
+}
+#noticeList .list-box .list-li .list-info .bottom {
+  font-size: 12px;
+  color: #c1c1c1;
+  text-align: left;
+}
+#noticeList .list-box .list-li .list-right {
+  float: right;
+  width: 6px;
+  height: 10px;
+  background: url("../assets/list-right.png") no-repeat center;
+  background-size: 6px 10px;
+  margin-top: 13px;
+}
+#noticeDetails {
+  width: 100%;
+  height: 100%;
+  background: #f4f5f8;
+  padding: 0 15px;
+}
+#noticeDetails .title-box {
+  width: 100%;
+  height: auto;
+  border-bottom: 1px solid #e6e8f1;
+  padding: 5px 0;
+}
+#noticeDetails .title-box .title {
+  font-size: 18px;
+  color: #222222;
+  text-align: left;
+}
+#noticeDetails .title-box .date {
+  font-size: 12px;
+  color: #c1c1c1;
+  text-align: left;
+}
+#noticeDetails .content-box {
+  color: #5a5a5a;
+  padding: 10px 0;
+  text-align: left;
+}
 #reg,
 #login {
   overflow: auto;
@@ -803,6 +1021,7 @@ input:focus {
   height: 49px;
   font-size: 14px;
   color: #4a5171;
+  max-width: 140px;
 }
 #material .group ::-webkit-input-placeholder {
   color: #d0d0d0;
@@ -1026,6 +1245,39 @@ input:focus {
   background-color: #7086bd;
   border-radius: 5px;
 }
+#wallet .announcement {
+  width: 100%;
+  height: 25px;
+  background-color: #3c5186;
+  padding: 0 15px 0 30px;
+  position: relative;
+  display: none;
+}
+#wallet .announcement .announcement-icon {
+  display: block;
+  position: absolute;
+  top: 6px;
+  left: 15px;
+  width: 13px;
+  height: 12px;
+  background: url("../assets/announcement.png") no-repeat center;
+  background-size: 13px 12px;
+}
+#wallet .announcement .announcement-text-box {
+  width: 100%;
+  height: 25px;
+  position: relative;
+  overflow: hidden;
+}
+#wallet .announcement .announcement-text {
+  line-height: 25px;
+  font-size: 12px;
+  color: #d0d0d0;
+  white-space: nowrap;
+  text-align: left;
+  position: absolute;
+  top: 0;
+}
 #wallet .wallet {
   width: 100%;
   height: 130px;
@@ -1165,6 +1417,10 @@ input:focus {
 #wallet .application .group .logo.unbundling {
   background: url("../assets/unbundling.png") no-repeat center;
   background-size: 30px 26px;
+}
+#wallet .application .group .logo.announcement1 {
+  background: url("../assets/announcement-logo.png") no-repeat center;
+  background-size: 27px 30px;
 }
 #wallet .application .group .logo.more {
   background: url("../assets/more.png") no-repeat center;
@@ -1926,16 +2182,16 @@ input:focus {
   height: 40px;
   line-height: 40px;
   font-size: 12px;
-  color: #8c93b2;
+  color: #5a5a5a;
 }
 #withdrawal .info .amount {
   height: 50px;
   line-height: 50px;
   font-size: 36px;
-  color: #202335;
+  color: #222222;
   margin-bottom: 30px;
 }
-#withdrawal .info .amount span {
+#withdrawal .info .amount .s {
   font-size: 24px;
 }
 #withdrawal .info .group {

@@ -1021,6 +1021,7 @@ input:focus {
   height: 49px;
   font-size: 14px;
   color: #4a5171;
+  max-width: 140px;
 }
 #material .group ::-webkit-input-placeholder {
   color: #d0d0d0;
