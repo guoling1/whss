@@ -9,10 +9,6 @@
   <meta name="viewport"
         content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
   <title>好收收</title>
-<<<<<<< HEAD
-=======
-  <link rel="stylesheet" href="http://static.jinkaimen.cn/hss/css/style.2.1.5.css">
->>>>>>> developer
   <link rel="stylesheet" href="http://static.jinkaimen.cn/weui/weui.css">
   <style>
     {
@@ -197,31 +193,8 @@
         <input type="text" class="ipt" placeholder="例如某某小卖部" id="merchantName">
       </div>
       <div class="group">
-<<<<<<< HEAD
         <div class="name">地址</div>
         <input type="text" class="ipt" placeholder="输入店铺地址" id="address">
-=======
-        <div class="name">所在地区</div>
-        <input id="world" type="text" class="ipt" placeholder="点击选择" readonly>
-
-        <div class="layer" id="layer-w">
-          <div class="layer-name">所在地区</div>
-          <div class="search top">
-            <div class="search-result">
-              <div id="p" style="display:none;">请选择</div>
-              <div id="c" style="display:none;">请选择</div>
-              <div id="ct" style="display:none;">请选择</div>
-            </div>
-            <div class="search-list" id="layer-w-list">
-              <%-- 动态添加 --%>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="group">
-        <div class="name">详细地址</div>
-        <input type="text" class="ipt" placeholder="店铺详细地址" id="address">
->>>>>>> developer
       </div>
     </div>
     <div class="bottom">
@@ -257,30 +230,8 @@
         <div class="name">验证码</div>
         <input type="number" class="ipt" placeholder="输入短信验证码" id="code">
       </div>
-<<<<<<< HEAD
       <div class="next" id="submit">
         <div>下一步</div>
-=======
-    </div>
-    <div class="next" id="submit">
-      <div>下一步</div>
-    </div>
-    <div class="skip" id="skip">
-      跳过 >
-    </div>
-    <input type="hidden" id="bankPic"/>
-  </div>
-
-  <div class="sample" id="bank">
-    <div class="sample-box">
-      <div class="sample-box-head">
-        结算卡支持银行
-        <span class="sample-xx" id="bankHide"></span>
-      </div>
-      <img class="sample-box-body" src="http://static.jinkaimen.cn/hss/assets/zcbank.png" alt="">
-      <div class="sample-box-foot" id="bankEnter">
-        确定
->>>>>>> developer
       </div>
       <input type="hidden" id="bankPic"/>
     </div>
@@ -318,10 +269,6 @@
   });
 </script>
 <script src="http://static.jinkaimen.cn/vendor/vendor.1.0.3.min.js"></script>
-<<<<<<< HEAD
 <script src="http://static.jinkaimen.cn/hss/2.1.4/material.min.js"></script>
-=======
-<script src="http://static.jinkaimen.cn/hss/2.1.3/material.min.js"></script>
->>>>>>> developer
 
 </html>

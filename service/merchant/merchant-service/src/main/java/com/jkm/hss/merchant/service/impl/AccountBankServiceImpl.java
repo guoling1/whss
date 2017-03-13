@@ -51,6 +51,17 @@ public class AccountBankServiceImpl implements AccountBankService{
     }
 
     /**
+     * 是否有信用卡信息
+     *
+     * @param accountId
+     * @return
+     */
+    @Override
+    public int isHasCreditBank(long accountId) {
+        return accountBankDao.isHasCreditBank(accountId);
+    }
+
+    /**
      * 初始化银行卡账户
      *
      * @return
@@ -88,6 +99,26 @@ public class AccountBankServiceImpl implements AccountBankService{
     }
 
     /**
+     * 初始化信用卡账户
+     *
+     * @return
+     */
+    @Override
+    public int initCreditBankCard(long accountId,String bankNo,String bankName,String reserveMobile,String bankBin,String expiryTime) {
+        this.reset(accountId,EnumAccountBank.CREDIT.getId());
+        AccountBank accountBank = new AccountBank();
+        accountBank.setAccountId(accountId);
+        accountBank.setBankNo(MerchantSupport.decryptBankCard(accountId,bankNo));
+        accountBank.setBankName(bankName);
+        accountBank.setReserveMobile(MerchantSupport.encryptMobile(reserveMobile));
+        accountBank.setCardType(EnumAccountBank.CREDIT.getId());
+        accountBank.setIsDefault(EnumBankDefault.DEFAULT.getId());
+        accountBank.setBankBin(bankBin);
+        accountBank.setExpiryTime(expiryTime);
+        return this.insert(accountBank);
+    }
+
+    /**
      * 新增
      *
      * @param accountBank
@@ -121,14 +152,29 @@ public class AccountBankServiceImpl implements AccountBankService{
     }
 
     /**
+     * 设置为默认信用卡
+     *
+     * @param id
+     * @return
+     */
+    @Override
+    public int setDefaultCreditCard(long id) {
+        AccountBank accountBank = accountBankDao.getById(id);
+        if(accountBank!=null){
+            this.reset(accountBank.getAccountId(),EnumAccountBank.CREDIT.getId());
+        }
+        return accountBankDao.setDefaultCreditCard(id);
+    }
+
+    /**
      * 全部设置为不是默认银行卡
      *
      * @param accountId
      * @return
      */
     @Override
-    public int reset(long accountId) {
-        return accountBankDao.reset(accountId);
+    public int reset(long accountId,int cardType) {
+        return accountBankDao.reset(accountId,cardType);
     }
 
     /**
@@ -139,18 +185,42 @@ public class AccountBankServiceImpl implements AccountBankService{
      */
     @Override
     public AccountBank getDefault(long accountId) {
-        return accountBankDao.getDefault(accountId);
+        AccountBank accountBank = accountBankDao.getDefault(accountId);
+        accountBank.setBankNo(MerchantSupport.decryptBankCard(accountId,accountBank.getBankNo()));
+        accountBank.setReserveMobile(MerchantSupport.decryptMobile(accountId,accountBank.getReserveMobile()));
+        return accountBank;
     }
 
     /**
-     * 获取最新信用卡信息
+     * 获取默认信用卡信息
      *
      * @param accountId
      * @return
      */
     @Override
-    public AccountBank getCreditCard(long accountId) {
-        return accountBankDao.getCreditCard(accountId);
+    public AccountBank getDefaultCreditCard(long accountId) {
+        AccountBank accountBank = accountBankDao.getDefaultCreditCard(accountId);
+        accountBank.setBankNo(MerchantSupport.decryptBankCard(accountId,accountBank.getBankNo()));
+        accountBank.setReserveMobile(MerchantSupport.decryptMobile(accountId,accountBank.getReserveMobile()));
+        return accountBank;
+    }
+
+    /**
+     * 查询解密过的信用卡列表
+     *
+     * @param accountId
+     * @return
+     */
+    @Override
+    public List<AccountBank> selectCreditList(long accountId) {
+        List<AccountBank> accountBankList = this.selectCreditCardList(accountId);
+        if(accountBankList.size()>0){
+            for(int i=0;i<accountBankList.size();i++){
+                accountBankList.get(i).setBankNo(MerchantSupport.decryptBankCard(accountId,accountBankList.get(i).getBankNo()));
+                accountBankList.get(i).setReserveMobile(MerchantSupport.decryptMobile(accountId,accountBankList.get(i).getReserveMobile()));
+            }
+        }
+        return accountBankList;
     }
 
 
@@ -186,10 +256,13 @@ public class AccountBankServiceImpl implements AccountBankService{
     @Override
     public List<BankListResponse> selectAll(long accountId) {
         List<AccountBank> accountBankList = new ArrayList<AccountBank>();
-        accountBankList = this.selectCreditCardList(accountId);
         AccountBank accountBank = this.getDefault(accountId);
         if(accountBank!=null){
             accountBankList.add(accountBank);
+        }
+        List<AccountBank> creditCardList = this.selectCreditCardList(accountId);
+        if(creditCardList.size()>0){
+            accountBankList.addAll(creditCardList);
         }
         List<BankListResponse> bankListResponseList = new ArrayList<BankListResponse>();
         if(accountBankList.size()>0){
@@ -257,7 +330,7 @@ public class AccountBankServiceImpl implements AccountBankService{
     @Override
     public int changeBankCard(long merchantId, String bankNo, String reserveMobile) {
         Optional<MerchantInfo> merchantInfoOptional = merchantInfoService.selectById(merchantId);
-        this.reset(merchantInfoOptional.get().getAccountId());
+        this.reset(merchantInfoOptional.get().getAccountId(),EnumAccountBank.DEBITCARD.getId());
         AccountBank accountBank = new AccountBank();
         //校验身份4要素
         final String mobile = MerchantSupport.decryptMobile(merchantInfoOptional.get().getMobile());
