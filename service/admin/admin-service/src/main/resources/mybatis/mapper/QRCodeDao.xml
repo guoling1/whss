@@ -17,7 +17,10 @@
       activate_time,
       type,
       product_id,
-      sys_type
+      sys_type,
+      qr_type,
+      activate_time,
+      distribute_time
       )
       VALUES
       (
@@ -34,7 +37,10 @@
       #{activateTime},
       #{type},
       #{productId},
-      #{sysType}
+      #{sysType},
+      #{qrType},
+      #{activateTime},
+      #{distributeTime}
       );
     </insert>
 
@@ -104,6 +110,7 @@
     <update id="markAsDistribute2">
         UPDATE tb_qr_code
         SET distribute_status = 2,
+        distribute_time=now(),
         second_level_dealer_id = #{toDealerId}
         WHERE id IN
         <foreach collection="codeIds" index="index" item="item" open="(" separator="," close=")">
@@ -115,6 +122,7 @@
         UPDATE tb_qr_code
         SET
         merchant_id = #{merchantId},
+        activate_time=now(),
         distribute_status = 2,
         activate_status = 2
         WHERE code = #{code}

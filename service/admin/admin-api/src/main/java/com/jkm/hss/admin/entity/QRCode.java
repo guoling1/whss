@@ -95,6 +95,11 @@ public class QRCode extends BaseEntity {
     private Date activateTime;
 
     /**
+     * 分配时间
+     */
+    private Date distributeTime;
+
+    /**
      * 获取签名
      *
      * @return
