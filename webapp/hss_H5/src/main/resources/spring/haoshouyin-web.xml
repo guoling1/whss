@@ -56,7 +56,7 @@
     </bean>
     <bean id="springContextHolder" class="com.jkm.base.common.spring.core.SpringContextHolder" lazy-init="false" />
 
-    <mvc:interceptors>
+    <!--<mvc:interceptors>
         <mvc:interceptor>
             <mvc:mapping path="/**"/>
             <mvc:exclude-mapping path="/callback/**"/>
@@ -75,5 +75,5 @@
                 <property name="dealerPassportService" ref="dealerPassportServiceImpl"/>
             </bean>
         </mvc:interceptor>
-    </mvc:interceptors>
+    </mvc:interceptors>-->
 </beans>

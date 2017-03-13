@@ -20,10 +20,7 @@ import com.jkm.hss.bill.entity.callback.PaymentSdkWithdrawCallbackResponse;
 import com.jkm.hss.bill.enums.*;
 import com.jkm.hss.bill.helper.PaymentSdkConstants;
 import com.jkm.hss.bill.helper.SdkSerializeUtil;
-import com.jkm.hss.bill.service.CalculateService;
-import com.jkm.hss.bill.service.OrderService;
-import com.jkm.hss.bill.service.SettlementRecordService;
-import com.jkm.hss.bill.service.WithdrawService;
+import com.jkm.hss.bill.service.*;
 import com.jkm.hss.dealer.entity.Dealer;
 import com.jkm.hss.dealer.service.DealerService;
 import com.jkm.hss.dealer.service.ShallProfitDetailService;
@@ -80,6 +77,8 @@ public class WithdrawServiceImpl implements WithdrawService {
     private UserInfoService userInfoService;
     @Autowired
     private SettlementRecordService settlementRecordService;
+    @Autowired
+    private MerchantWithdrawService merchantWithdrawService;
 
     /**
      * {@inheritDoc}
@@ -140,18 +139,23 @@ public class WithdrawServiceImpl implements WithdrawService {
     @Override
     @Transactional
     public void handleWithdrawCallbackMsg(final PaymentSdkWithdrawCallbackResponse paymentSdkWithdrawCallbackResponse) {
-        SettlementRecord settlementRecord;
+        Optional<SettlementRecord> settlementRecordOptional;
         if (paymentSdkWithdrawCallbackResponse.getAutoSettle()) {
             //渠道结算
             final Order payOrder = this.orderService.getByOrderNo(paymentSdkWithdrawCallbackResponse.getOrderNo()).get();
             final SettleAccountFlow settleAccountFlow = this.settleAccountFlowService.getByOrderNoAndAccountIdAndType(payOrder.getOrderNo(),
                     payOrder.getPayee(), EnumAccountFlowType.INCREASE.getId()).get();
-            settlementRecord = this.settlementRecordService.getById(settleAccountFlow.getSettlementRecordId()).get();
+            settlementRecordOptional = this.settlementRecordService.getById(settleAccountFlow.getSettlementRecordId());
         } else {
-            settlementRecord = this.settlementRecordService.getBySettleNo(paymentSdkWithdrawCallbackResponse.getOrderNo()).get();
+            settlementRecordOptional = this.settlementRecordService.getBySettleNo(paymentSdkWithdrawCallbackResponse.getOrderNo());
+
+            if (!settlementRecordOptional.isPresent()){
+                //结算单不存在，属于商户提现
+                this.merchantWithdrawService.handleMerchantWithdrawCallbackMsg(paymentSdkWithdrawCallbackResponse);
+            }
         }
-        if (settlementRecord.isWithdrawing()) {
-            this.handleWithdrawResult(settlementRecord.getId(), paymentSdkWithdrawCallbackResponse);
+        if (settlementRecordOptional.get().isWithdrawing()) {
+            this.handleWithdrawResult(settlementRecordOptional.get().getId(), paymentSdkWithdrawCallbackResponse);
         }
     }
 
