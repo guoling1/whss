@@ -20,6 +20,10 @@ const address = document.getElementById('address');
 const bankNo = document.getElementById('bankNo');
 const sampleShow = document.getElementById('sampleShow');
 const sampleHide = document.getElementById('sampleHide');
+const bank = document.getElementById('bank');
+const bankShow = document.getElementById('bankShow');
+const bankHide = document.getElementById('bankHide');
+const bankEnter = document.getElementById('bankEnter');
 const username = document.getElementById('username');
 const identity = document.getElementById('identity');
 const reserveMobile = document.getElementById('reserveMobile');
@@ -51,6 +55,18 @@ sampleShow.addEventListener('click', function () {
 
 sampleHide.addEventListener('click', function () {
   sampleHide.style.display = 'none';
+});
+
+bankShow.addEventListener('click', function () {
+  bank.style.display = 'block';
+});
+
+bankHide.addEventListener('click', function () {
+  bank.style.display = 'none';
+});
+
+bankEnter.addEventListener('click', function () {
+  bank.style.display = 'none';
 });
 
 bankNo.addEventListener('blur', function () {

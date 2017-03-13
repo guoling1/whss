@@ -67,6 +67,7 @@ public class OrderServiceImpl implements OrderService {
     private AccountService accountService;
     @Autowired
     private DealerService dealerService;
+
     /**
      * {@inheritDoc}
      *
@@ -220,6 +221,54 @@ public class OrderServiceImpl implements OrderService {
     /**
      * {@inheritDoc}
      *
+     * @param merchantInfo
+     * @param amount
+     * @param appId
+     * @param channel
+     * @param settleType
+     * @return
+     */
+    @Override
+    public long createMerchantPlayMoneyOrder(MerchantInfo merchantInfo, BigDecimal amount, String appId, int channel, String settleType, BigDecimal withdrawFee) {
+        final Account account = this.accountService.getByIdWithLock(merchantInfo.getAccountId()).get();
+        Preconditions.checkState(account.getAvailable().compareTo(amount) >= 0, "余额不足");
+        final Order playMoneyOrder = new Order();
+        playMoneyOrder.setPayOrderId(0);
+        playMoneyOrder.setOrderNo(SnGenerator.generateSn(EnumTradeType.WITHDRAW.getId()));
+        playMoneyOrder.setTradeAmount(amount);
+        playMoneyOrder.setRealPayAmount(amount);
+        playMoneyOrder.setTradeType(EnumTradeType.WITHDRAW.getId());
+        playMoneyOrder.setPayChannelSign(channel);
+        playMoneyOrder.setPayer(account.getId());
+        playMoneyOrder.setPayee(0);
+        playMoneyOrder.setAppId(appId);
+        //手续费
+        playMoneyOrder.setPoundage(withdrawFee);
+        playMoneyOrder.setGoodsName(merchantInfo.getMerchantName());
+        playMoneyOrder.setGoodsDescribe(merchantInfo.getMerchantName());
+        playMoneyOrder.setSettleStatus(EnumSettleStatus.DUE_SETTLE.getId());
+        playMoneyOrder.setSettleTime(new Date());
+        playMoneyOrder.setSettleType(settleType);
+        playMoneyOrder.setStatus(EnumOrderStatus.WITHDRAWING.getId());
+        this.add(playMoneyOrder);
+        this.accountService.decreaseAvailableAmount(account.getId(), amount);
+        this.accountService.increaseFrozenAmount(account.getId(), amount);
+        final FrozenRecord frozenRecord = new FrozenRecord();
+        frozenRecord.setAccountId(account.getId());
+        frozenRecord.setFrozenAmount(amount);
+        frozenRecord.setBusinessNo(playMoneyOrder.getOrderNo());
+        frozenRecord.setFrozenTime(new Date());
+        frozenRecord.setRemark("手动提现");
+        this.frozenRecordService.add(frozenRecord);
+        //添加账户流水--减少
+        this.accountFlowService.addAccountFlow(account.getId(), playMoneyOrder.getOrderNo(), amount,
+                "手动提现", EnumAccountFlowType.DECREASE);
+        return playMoneyOrder.getId();
+    }
+
+    /**
+     * {@inheritDoc}
+     *
      * @param order
      * @return
      */
@@ -341,6 +390,10 @@ public class OrderServiceImpl implements OrderService {
         map.put("moreTotalFee",req.getMoreTotalFee());
         map.put("offset",req.getOffset());
         map.put("size",req.getSize());
+        map.put("sn",req.getSn());
+        map.put("proxyName",req.getProxyName());
+        map.put("proxyName1",req.getProxyName1());
+        map.put("businessOrderNo",req.getBusinessOrderNo());
         List<MerchantTradeResponse> list = orderDao.selectOrderList(map);
         if (list.size()>0){
             for (int i=0;i<list.size();i++){
@@ -413,14 +466,6 @@ public class OrderServiceImpl implements OrderService {
                     if (list.get(i).getPayType().equals("yijia_alipay")){
                         list.get(i).setPayType(EnumPayType.YIJIA_ALIPAY.getValue());
                     }
-                }
-                if (list.get(i).getLevel()==1){
-                    list.get(i).setProxyName(list.get(i).getProxyName());
-                }
-                if (list.get(i).getLevel()==2){
-                    list.get(i).setProxyName1(list.get(i).getProxyName());
-                    String proxyName = dealerService.selectProxyName(list.get(i).getFirstLevelDealerId());
-                    list.get(i).setProxyName(proxyName);
                 }
 
             }
@@ -691,6 +736,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public List<MerchantTradeResponse> getOrderList(OrderTradeRequest req) {
         List<MerchantTradeResponse> list = orderDao.getOrderList(req);
+//        List<MerchantTradeResponse> list2 = orderService.getOrderList(req);
         if (list.size()>0){
             for (int i=0;i<list.size();i++){
                 if (list.get(i).getAppId().equals("hss")){
@@ -763,19 +809,26 @@ public class OrderServiceImpl implements OrderService {
                         list.get(i).setPayType(EnumPayType.YIJIA_ALIPAY.getValue());
                     }
                 }
-                if (list.get(i).getLevel()==1){
-                    list.get(i).setProxyName(list.get(i).getProxyName());
-                }
-                if (list.get(i).getLevel()==2){
-                    list.get(i).setProxyName1(list.get(i).getProxyName());
-                    String proxyName = dealerService.selectProxyName(list.get(i).getFirstLevelDealerId());
-                    list.get(i).setProxyName(proxyName);
-                }
+//                if (list.get(i).getLevel()==1){
+//                    list.get(i).setProxyName(list.get(i).getProxyName());
+//                }
+//                if (list.get(i).getLevel()==2){
+//                    list.get(i).setProxyName1(list.get(i).getProxyName());
+//                    String proxyName = dealerService.selectProxyName(list.get(i).getFirstLevelDealerId());
+//                    list.get(i).setProxyName(proxyName);
+//                }
 
             }
         }
 
+
         return list;
+    }
+
+    @Override
+    public String  amountCount(OrderTradeRequest req) {
+        String res = this.orderDao.amountCount(req);
+        return res;
     }
 
     /**
@@ -785,29 +838,35 @@ public class OrderServiceImpl implements OrderService {
      * @return
      */
     private ExcelSheetVO generateCodeExcelSheet(OrderTradeRequest req,String baseUrl) {
-        List<MerchantTradeResponse> list = orderDao.selectOrderListTrade(req);
+        List<MerchantTradeResponse> list = selectOrderListByPage(req);
         final ExcelSheetVO excelSheetVO = new ExcelSheetVO();
         final List<List<String>> datas = new ArrayList<List<String>>();
         final ArrayList<String> heads = new ArrayList<>();
         excelSheetVO.setName("trade");
-        heads.add("订单号");
+        heads.add("业务方");
+        heads.add("业务订单号");
+        heads.add("交易订单号");
+        heads.add("支付流水号");
         heads.add("交易日期");
-        heads.add("商户名称");
-        heads.add("所属一级代理");
-        heads.add("所属二级代理");
+        heads.add("收款商户名称");
+        heads.add("所属一级");
+        heads.add("所属二级");
         heads.add("支付金额");
         heads.add("手续费率");
-        heads.add("手续费");
+//        heads.add("手续费");
         heads.add("订单状态");
         heads.add("结算状态");
         heads.add("支付方式");
         heads.add("支付渠道");
-        heads.add("备注信息");
+        heads.add("渠道信息");
         datas.add(heads);
         if(list.size()>0){
             for(int i=0;i<list.size();i++){
                 ArrayList<String> columns = new ArrayList<>();
+                columns.add(list.get(i).getAppId());
+                columns.add(list.get(i).getBusinessOrderNo());
                 columns.add(list.get(i).getOrderNo());
+                columns.add(list.get(i).getSn());
                 if (list.get(i).getCreateTime()!= null && !"".equals(list.get(i).getCreateTime())){
                     DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                     String st = df.format(list.get(i).getCreateTime());
@@ -820,12 +879,13 @@ public class OrderServiceImpl implements OrderService {
                 columns.add(list.get(i).getProxyName());
                 columns.add(list.get(i).getProxyName1());
                 columns.add(String.valueOf(list.get(i).getTradeAmount()));
-                if (list.get(i).getPayRate()==null){
-                    String x = " ";
-                    columns.add(x);
-                }else {
-                    columns.add(String.valueOf(list.get(i).getPayRate()));
-                }
+                columns.add(String.valueOf(list.get(i).getPayRate()));
+//                if (list.get(i).getPayRate()==null){
+//                    String x = "";
+//                    columns.add(x);
+//                }else {
+//                    columns.add(String.valueOf(list.get(i).getPayRate()));
+//                }
                 if (list.get(i).getPoundage()==null){
                     String x = " ";
                     columns.add(x);
@@ -853,6 +913,7 @@ public class OrderServiceImpl implements OrderService {
                 if (list.get(i).getStatus()==8){
                     columns.add("充值失败");
                 }
+
                 if (list.get(i).getSettleStatus()==1){
                     columns.add("未结算");
                 }
@@ -862,31 +923,94 @@ public class OrderServiceImpl implements OrderService {
                 if (list.get(i).getSettleStatus()==3){
                     columns.add("已结算");
                 }
-
-                if ("S".equals(list.get(i).getPayType())){
-                    columns.add("微信扫码");
+                if (list.get(i).getPayType()!=null&&!list.get(i).getPayType().equals("")){
+                    if (list.get(i).getPayType().equals(EnumPayType.YG_WECHAT_JSAPI.getValue())){
+                        columns.add(EnumPayType.YG_WECHAT_JSAPI.getValue());
+                    }
+                    if (list.get(i).getPayType().equals(EnumPayType.YG_ALIPAY_JSAPI.getValue())){
+                        columns.add(EnumPayType.YG_ALIPAY_JSAPI.getValue());
+                    }
+                    if (list.get(i).getPayType().equals(EnumPayType.YG_WECHAT_CODE.getValue())){
+                        columns.add(EnumPayType.YG_WECHAT_CODE.getValue());
+                    }
+                    if (list.get(i).getPayType().equals(EnumPayType.YG_ALIPAY_CODE.getValue())){
+                        columns.add(EnumPayType.YG_ALIPAY_CODE.getValue());
+                    }
+                    if (list.get(i).getPayType().equals(EnumPayType.YG_UNIONPAY.getValue())){
+                        columns.add(EnumPayType.YG_UNIONPAY.getValue());
+                    }
+                    if (list.get(i).getPayType().equals(EnumPayType.KM_WECHAT_JSAPI.getValue())){
+                        columns.add(EnumPayType.KM_WECHAT_JSAPI.getValue());
+                    }
+                    if (list.get(i).getPayType().equals(EnumPayType.KM_ALIPAY_JSAPI.getValue())){
+                        columns.add(EnumPayType.KM_ALIPAY_JSAPI.getValue());
+                    }
+                    if (list.get(i).getPayType().equals(EnumPayType.KM_WECHAT_CODE.getValue())){
+                        columns.add(EnumPayType.KM_WECHAT_CODE.getValue());
+                    }
+                    if (list.get(i).getPayType().equals(EnumPayType.KM_ALIPAY_CODE.getValue())){
+                        columns.add(EnumPayType.KM_ALIPAY_CODE.getValue());
+                    }
+                    if (list.get(i).getPayType().equals(EnumPayType.MB_UNIONPAY.getValue())){
+                        columns.add(EnumPayType.MB_UNIONPAY.getValue());
+                    }
+                    if (list.get(i).getPayType().equals(EnumPayType.HZYB_WECHAT.getValue())){
+                        columns.add(EnumPayType.HZYB_WECHAT.getValue());
+                    }
+                    if (list.get(i).getPayType().equals(EnumPayType.HZYB_ALIPAY.getValue())){
+                        columns.add(EnumPayType.HZYB_ALIPAY.getValue());
+                    }
+                    if (list.get(i).getPayType().equals(EnumPayType.YIJIA_WECHAT.getValue())){
+                        columns.add(EnumPayType.YIJIA_WECHAT.getValue());
+                    }
+                    if (list.get(i).getPayType().equals(EnumPayType.YIJIA_ALIPAY.getValue())){
+                        columns.add(EnumPayType.YIJIA_ALIPAY.getValue());
+                    }
+                }else {
+                    columns.add("");
                 }
-                if ("N".equals(list.get(i).getPayType())){
-                    columns.add("微信二维码");
-
-                }
-                if ("H".equals(list.get(i).getPayType())){
-                    columns.add("微信H5收银台");
-                }
-                if ("B".equals(list.get(i).getPayType())){
-                    columns.add("快捷收款");
-                }
-                if ("Z".equals(list.get(i).getPayType())){
-                    columns.add("支付宝扫码");
-                }
+//                if ("S".equals(list.get(i).getPayType())){
+//                    columns.add("微信扫码");
+//                }
+//                if ("N".equals(list.get(i).getPayType())){
+//                    columns.add("微信二维码");
+//
+//                }
+//                if ("H".equals(list.get(i).getPayType())){
+//                    columns.add("微信H5收银台");
+//                }
+//                if ("B".equals(list.get(i).getPayType())){
+//                    columns.add("快捷收款");
+//                }
+//                if ("Z".equals(list.get(i).getPayType())){
+//                    columns.add("支付宝扫码");
+//                }
+//                if (list.get(i).getPayChannelSign()==101){
+//                    columns.add("阳光微信扫码");
+//                }
+//                if (list.get(i).getPayChannelSign()==102){
+//                    columns.add("阳光支付宝扫码");
+//                }
+//                if (list.get(i).getPayChannelSign()==103){
+//                    columns.add("阳光银联支付");
+//                }
                 if (list.get(i).getPayChannelSign()==101){
-                    columns.add("阳光微信扫码");
+                    columns.add(EnumPayChannelSign.YG_WECHAT.getName());
                 }
                 if (list.get(i).getPayChannelSign()==102){
-                    columns.add("阳光支付宝扫码");
+                    columns.add(EnumPayChannelSign.YG_ALIPAY.getName());
                 }
                 if (list.get(i).getPayChannelSign()==103){
-                    columns.add("阳光银联支付");
+                    columns.add(EnumPayChannelSign.YG_UNIONPAY.getName());
+                }
+                if (list.get(i).getPayChannelSign()==201){
+                    columns.add(EnumPayChannelSign.KM_WECHAT.getName());
+                }
+                if (list.get(i).getPayChannelSign()==202){
+                    columns.add(EnumPayChannelSign.KM_ALIPAY.getName());
+                }
+                if (list.get(i).getPayChannelSign()==301){
+                    columns.add(EnumPayChannelSign.MB_UNIONPAY.getName());
                 }
                 columns.add(list.get(i).getRemark());
                 datas.add(columns);
@@ -912,6 +1036,10 @@ public class OrderServiceImpl implements OrderService {
         map.put("moreTotalFee",req.getMoreTotalFee());
         map.put("offset",req.getOffset());
         map.put("size",req.getSize());
+        map.put("sn",req.getSn());
+        map.put("proxyName",req.getProxyName());
+        map.put("proxyName1",req.getProxyName1());
+        map.put("businessOrderNo",req.getBusinessOrderNo());
         return orderDao.selectOrderListCount(map);
     }
 
