@@ -10,7 +10,12 @@ const validate = _require('validate');
 const message = _require('message');
 const http = _require('http');
 
+// 定义变量
+let amount = document.getElementById('amount');
+let available = document.getElementById('available');
+
 // 获取数据
-http.post('/daili/account/info', {}, function (data) {
-  console.log(data);
+http.post('/account/info', {}, function (data) {
+  amount.innerHTML = data.totalAmount.toFixed(2);
+  available.innerHTML = data.available.toFixed(2);
 });

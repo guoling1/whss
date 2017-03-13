@@ -39,10 +39,10 @@
       <div class="operation-title">余额</div>
       <div class="operation-small">${avaliable}</div>
     </a>
-    <div class="operation">
+    <a class="operation" href="/account/toWithdraw">
       <div class="logo card"></div>
       <div class="operation-title">提现</div>
-    </div>
+    </a>
   </div>
   <div class="record">
     <a href="/sqb/tradeRecord" class="group touch_gr"><span class="record"></span>收款记录</a>

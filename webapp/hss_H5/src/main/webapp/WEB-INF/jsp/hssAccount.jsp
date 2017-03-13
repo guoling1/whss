@@ -17,10 +17,10 @@
 <div id="account">
   <div class="account">
     <div class="logo"></div>
-    <div class="amount"><span>¥</span>99.00</div>
-    <div class="useAmount">可提现金额: ¥9.99</div>
-    <div class="btn">提现</div>
-    <div class="check"><span></span>查看余额明细</div>
+    <div class="amount"><span class="s">¥</span><span id="amount"></span></div>
+    <div class="useAmount">可提现金额: ¥<span id="available"></span></div>
+    <a class="btn" href="/account/toWithdraw">提现</a>
+    <a class="check" href="/account/toHssAccountFlow"><span></span>查看余额明细</a>
   </div>
   <div class="qa">
     <div class="qa-title"><span></span>常见问题</div>
