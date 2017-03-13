@@ -112,6 +112,6 @@ public interface AccountBankDao {
      * @param bankNo
      * @return
      */
-    Integer isExistBankNo(@Param("accountId") long accountId,@Param("bankNo") String bankNo,@Param("cardType") int cardType);
+    Long isExistBankNo(@Param("accountId") long accountId,@Param("bankNo") String bankNo,@Param("cardType") int cardType);
 
 }
