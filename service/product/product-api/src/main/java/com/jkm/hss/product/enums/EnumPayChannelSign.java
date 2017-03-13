@@ -187,5 +187,13 @@ public enum EnumPayChannelSign {
         return Pair.of(weixin,zhifubao);
     }
 
-//    public
+    /**
+     * 是否是快捷支付渠道(只针对，需要系统对信用卡做处理的，有些是渠道直接处理，在此不算在内，比如阳光快捷)
+     *
+     * @param channelSign
+     * @return
+     */
+    public static boolean isUnionPay(final int channelSign) {
+        return MB_UNIONPAY.getId() == channelSign;
+    }
 }

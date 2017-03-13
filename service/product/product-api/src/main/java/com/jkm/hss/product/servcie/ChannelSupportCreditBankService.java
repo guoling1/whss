@@ -1,0 +1,19 @@
+package com.jkm.hss.product.servcie;
+
+import com.jkm.hss.product.entity.ChannelSupportCreditBank;
+
+import java.util.List;
+
+/**
+ * Created by yulong.zhang on 2017/3/10.
+ */
+public interface ChannelSupportCreditBankService {
+
+    /**
+     * 按通道标志查询
+     *
+     * @param channelSign
+     * @return
+     */
+    List<ChannelSupportCreditBank> getByChannelSign(int channelSign);
+}

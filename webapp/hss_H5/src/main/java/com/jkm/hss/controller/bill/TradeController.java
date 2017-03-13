@@ -7,6 +7,7 @@ import com.jkm.base.common.entity.CommonResponse;
 import com.jkm.base.common.entity.PageModel;
 import com.jkm.base.common.util.DateFormatUtil;
 import com.jkm.hss.account.enums.EnumAppType;
+import com.jkm.hss.account.sevice.AccountService;
 import com.jkm.hss.bill.entity.Order;
 import com.jkm.hss.bill.enums.EnumOrderStatus;
 import com.jkm.hss.bill.enums.EnumSettleStatus;
@@ -56,6 +57,8 @@ public class TradeController extends BaseController {
     private UserInfoService userInfoService;
     @Autowired
     private MerchantInfoService merchantInfoService;
+    @Autowired
+    private AccountService accountService;
 
     /**
      * 动态码支付
@@ -93,6 +96,13 @@ public class TradeController extends BaseController {
         if (!EnumPayChannelSign.isExistById(payRequest.getPayChannel())) {
             return CommonResponse.simpleResponse(-1, "支付方式错误");
         }
+        if (EnumPayChannelSign.isUnionPay(payRequest.getPayChannel())) {
+            //快捷支付
+//            this.accountService.
+
+
+        }
+
         final Pair<Integer, String> resultPair = this.payService.codeReceipt(payRequest.getTotalFee(),
                 payRequest.getPayChannel(), merchantInfo.get().getId(), EnumAppType.HSS.getId(), true);
         if (0 == resultPair.getLeft()) {
@@ -265,4 +275,17 @@ public class TradeController extends BaseController {
             return "/tradeRecordDetail";
         }
     }
+
+
+
+    @RequestMapping(value = "/detail/{id}", method = RequestMethod.GET)
+    public String unionPay(final HttpServletRequest httpServletRequest) {
+
+
+
+
+        return "";
+    }
+
+
 }
