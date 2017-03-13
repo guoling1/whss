@@ -298,28 +298,4 @@ public class AccountController extends BaseController{
         return CommonResponse.simpleResponse(-1, verifyCode.getRight());
     }
 
-    /**
-     * 校验提现验证码
-     *
-     * @param
-     * @return
-     */
-    @ResponseBody
-    @RequestMapping(value = "checkVerifyCode", method = RequestMethod.POST)
-    public CommonResponse sendVerifyCode(HttpServletRequest request, @RequestBody final MerchantWithdrawRequest withdrawRequest) {
-
-        UserInfo userInfo = userInfoService.selectByOpenId(super.getOpenId(request)).get();
-        //final UserInfo userInfo = userInfoService.selectByOpenId("ou2YpwfghecQNYYUpIQ-kbqGY7Hc").get();
-        final MerchantInfo merchantInfo = this.merchantInfoService.selectById(userInfo.getMerchantId()).get();
-
-        final String mobile = MerchantSupport.decryptMobile(merchantInfo.getId(), merchantInfo.getReserveMobile());
-        final Pair<Integer, String> pair = smsAuthService.checkVerifyCode(mobile, withdrawRequest.getCode(), EnumVerificationCodeType.WITH_DRAW);
-
-        if (1 != pair.getLeft()) {
-            return CommonResponse.simpleResponse(-1, pair.getRight());
-        }
-
-        return CommonResponse.simpleResponse(1, pair.getRight());
-    }
-
 }
