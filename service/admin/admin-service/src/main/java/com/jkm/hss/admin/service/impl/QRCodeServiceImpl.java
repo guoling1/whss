@@ -11,10 +11,7 @@ import com.jkm.hss.admin.dao.QRCodeDao;
 import com.jkm.hss.admin.entity.CodeQueryResponse;
 import com.jkm.hss.admin.entity.ProductionQrCodeRecord;
 import com.jkm.hss.admin.entity.QRCode;
-import com.jkm.hss.admin.enums.EnumQRCodeActivateStatus;
-import com.jkm.hss.admin.enums.EnumQRCodeDistributeType;
-import com.jkm.hss.admin.enums.EnumQRCodeDistributionStatus;
-import com.jkm.hss.admin.enums.EnumQRCodeType;
+import com.jkm.hss.admin.enums.*;
 import com.jkm.hss.admin.helper.FirstLevelDealerCodeInfo;
 import com.jkm.hss.admin.helper.MyMerchantCount;
 import com.jkm.hss.admin.helper.QRCodeConsts;
@@ -938,8 +935,15 @@ public class QRCodeServiceImpl implements QRCodeService {
         final PageModel<QrCodeListResponse> pageModel = new PageModel<>(qrCodeListRequest.getPageNo(), qrCodeListRequest.getPageSize());
         qrCodeListRequest.setOffset(pageModel.getFirstIndex());
         qrCodeListRequest.setCount(pageModel.getPageSize());
-        final Long count = 0l;
-        final List<QrCodeListResponse> qrCodeList = null;
+        long count = 0l;
+        List<QrCodeListResponse> qrCodeList = null;
+        if((EnumQRCodeSysType.HSS.getId()).equals(qrCodeListRequest.getSysType())){
+            count=qrCodeDao.getHSSQrCodeCount(qrCodeListRequest);
+            qrCodeList=qrCodeDao.getHSSQrCodeList(qrCodeListRequest);
+        }else{
+            count=qrCodeDao.getHSYQrCodeCount(qrCodeListRequest);
+            qrCodeList=qrCodeDao.getHSYQrCodeList(qrCodeListRequest);
+        }
         pageModel.setCount(count);
         pageModel.setRecords(qrCodeList);
         return pageModel;
