@@ -51,7 +51,7 @@ import java.util.Map;
  * Created by yuxiang on 2017-02-14.
  */
 @Slf4j
-@RequestMapping(value = "/daili/account")
+@RequestMapping(value = "/account")
 @Controller
 public class AccountController extends BaseController{
 

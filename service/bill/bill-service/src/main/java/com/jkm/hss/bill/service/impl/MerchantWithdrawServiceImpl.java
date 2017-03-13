@@ -181,7 +181,7 @@ public class MerchantWithdrawServiceImpl implements MerchantWithdrawService {
             this.accountService.decreaseTotalAmount(accountId, frozenRecord.getFrozenAmount());
 
             //提现手续费入账
-            final Account dealerPoundageAccount1 = this.accountService.getById(AccountConstants.DEALER_POUNDAGE_ACCOUNT_ID).get();
+            final Account dealerPoundageAccount1 = this.accountService.getById(AccountConstants.POUNDAGE_ACCOUNT_ID).get();
             //入账流水
             final AccountFlow accountFlow = new AccountFlow();
             accountFlow.setAccountId(accountId);
@@ -192,7 +192,7 @@ public class MerchantWithdrawServiceImpl implements MerchantWithdrawService {
             accountFlow.setOutAmount(new BigDecimal(0));
             accountFlow.setChangeTime(new Date());
             accountFlow.setType(EnumAccountFlowType.INCREASE.getId());
-            accountFlow.setRemark("代理商提现费用");
+            accountFlow.setRemark("hss商户提现费用");
             this.accountFlowService.add(accountFlow);
 
             dealerPoundageAccount1.setAvailable(dealerPoundageAccount1.getAvailable().add(order.getPoundage()));
@@ -226,7 +226,7 @@ public class MerchantWithdrawServiceImpl implements MerchantWithdrawService {
      */
     @Transactional
     @Override
-    public void handleDealerWithdrawCallbackMsg(PaymentSdkWithdrawCallbackResponse paymentSdkWithdrawCallbackResponse) {
+    public void handleMerchantWithdrawCallbackMsg(PaymentSdkWithdrawCallbackResponse paymentSdkWithdrawCallbackResponse) {
 
         final Order order = this.orderService.getByOrderNoAndTradeType(paymentSdkWithdrawCallbackResponse.getOrderNo(), EnumTradeType.WITHDRAW.getId()).get();
         if (order.isWithDrawing()) {
