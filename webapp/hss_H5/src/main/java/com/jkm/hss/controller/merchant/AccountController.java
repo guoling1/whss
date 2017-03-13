@@ -15,7 +15,6 @@ import com.jkm.hss.account.sevice.AccountService;
 import com.jkm.hss.bill.service.DealerWithdrawService;
 import com.jkm.hss.bill.service.MerchantWithdrawService;
 import com.jkm.hss.controller.BaseController;
-import com.jkm.hss.dealer.entity.Dealer;
 import com.jkm.hss.dealer.helper.DealerSupport;
 import com.jkm.hss.helper.request.MerchantWithdrawRequest;
 import com.jkm.hss.helper.response.AccountInfoResponse;
@@ -40,6 +39,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -51,8 +51,8 @@ import java.util.Map;
  * Created by yuxiang on 2017-02-14.
  */
 @Slf4j
-@RequestMapping(value = "/daili/account")
-@RestController
+@RequestMapping(value = "/account")
+@Controller
 public class AccountController extends BaseController{
 
     @Autowired
@@ -78,40 +78,40 @@ public class AccountController extends BaseController{
      * 跳到提现页面
      * @return
      */
-    @RequestMapping(value = "/toWithdraw", method = RequestMethod.POST)
+    @RequestMapping(value = "/toWithdraw", method = RequestMethod.GET)
     public String toWithdrawJsp(HttpServletRequest request){
 
-        return "withdraw";
+        return "/withdraw";
     }
 
     /**
      * 跳到余额页面
      * @return
      */
-    @RequestMapping(value = "/toHssAccount", method = RequestMethod.POST)
+    @RequestMapping(value = "/toHssAccount", method = RequestMethod.GET)
     public String toHssAccount(HttpServletRequest request){
 
-        return "hssAccount";
+        return "/hssAccount";
     }
 
     /**
      * 跳到余额流水详情
      * @return
      */
-    @RequestMapping(value = "/toHssAccountFlow", method = RequestMethod.POST)
+    @RequestMapping(value = "/toHssAccountFlow", method = RequestMethod.GET)
     public String toHssAccountFlow(HttpServletRequest request){
 
-        return "hssAccountFlow";
+        return "/hssAccountFlow";
     }
 
     /**
      * 跳到提现页面
      * @return
      */
-    @RequestMapping(value = "/toHssWithdrawSuccess", method = RequestMethod.POST)
+    @RequestMapping(value = "/toHssWithdrawSuccess", method = RequestMethod.GET)
     public String toHssWithdrawSuccess(HttpServletRequest request){
 
-        return "hssWithdrawSuccess";
+        return "/hssWithdrawSuccess";
     }
 
     /**

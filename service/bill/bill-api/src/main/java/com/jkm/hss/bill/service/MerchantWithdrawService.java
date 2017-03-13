@@ -27,5 +27,5 @@ public interface MerchantWithdrawService {
      *
      * @param paymentSdkWithdrawCallbackResponse
      */
-    void handleDealerWithdrawCallbackMsg(PaymentSdkWithdrawCallbackResponse paymentSdkWithdrawCallbackResponse);
+    void handleMerchantWithdrawCallbackMsg(PaymentSdkWithdrawCallbackResponse paymentSdkWithdrawCallbackResponse);
 }
