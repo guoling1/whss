@@ -162,7 +162,7 @@ public class AccountController extends BaseController{
 
             final String mobile = DealerSupport.decryptMobile(dealer.getId(), dealer.getBankReserveMobile());
 
-           final Pair<Integer, String> pair = smsAuthService.checkVerifyCode(mobile, withdrawRequest.getCode(), EnumVerificationCodeType.WITHDRAW_DEALER);
+           final Pair<Integer, String> pair = smsAuthService.checkVerifyCode(mobile, withdrawRequest.getCode(), EnumVerificationCodeType.WITH_DRAW);
 
             if (1 != pair.getLeft()) {
                 return CommonResponse.simpleResponse(-1, pair.getRight());
@@ -227,7 +227,7 @@ public class AccountController extends BaseController{
             return CommonResponse.simpleResponse(-1, "手机号格式错误");
         }
 
-        final Pair<Integer, String> verifyCode = this.smsAuthService.getVerifyCode(mobile, EnumVerificationCodeType.WITHDRAW_DEALER);
+        final Pair<Integer, String> verifyCode = this.smsAuthService.getVerifyCode(mobile, EnumVerificationCodeType.WITH_DRAW);
         if (1 == verifyCode.getLeft()) {
             final Map<String, String> params = ImmutableMap.of("code", verifyCode.getRight());
             this.sendMessageService.sendMessage(SendMessageParams.builder()
