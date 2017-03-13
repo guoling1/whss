@@ -27,6 +27,10 @@ let fee = document.getElementById('fee');
 let come = document.getElementById('come');
 let mobile = document.getElementById('mobile');
 let reFee = '';
+let toFee = '';
+let toBank = '';
+let toAmount = '';
+let toCome = '';
 let reAcconut = '';
 // 获取数据
 http.post('/account/info', {}, function (data) {
@@ -34,6 +38,7 @@ http.post('/account/info', {}, function (data) {
   bank.innerHTML = data.bankName + '(' + data.bankNo + ')';
   fee.innerHTML = data.withdrawFee.toFixed(2);
   mobile.innerHTML = data.mobile;
+  toBank = data.bankName + data.bankNo;
   reFee = data.withdrawFee;
   reAcconut = data.available;
   if (data.available <= data.withdrawFee) {
@@ -45,6 +50,9 @@ ipt.addEventListener('input', function (e) {
   let ev = e.target;
   let val = ev.value;
   come.innerHTML = (val - reFee) > 0 ? (val - reFee).toFixed(2) : '0.00';
+  toFee = reFee.toFixed(2) + '元'
+  toAmount = val.toFixed(2) + '元';
+  toCome = (val - reFee).toFixed(2) + '元';
 });
 
 // 定义验证码
@@ -76,7 +84,7 @@ submit.addEventListener('click', function () {
       code: code.value
     }, function () {
       message.load_hide();
-      window.location.replace('/account/toHssWithdrawSuccess');
+      window.location.replace('/account/toHssWithdrawSuccess?toFee=' + toFee + '&toBank=' + toBank + '&toAmount=' + toAmount + '&toCome=' + toCome);
     })
   }
 });
