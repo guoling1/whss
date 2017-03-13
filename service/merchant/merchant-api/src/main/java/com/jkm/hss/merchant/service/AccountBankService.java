@@ -138,4 +138,11 @@ public interface AccountBankService {
      * @return
      */
     int changeBankCard(long merchantId,String bankNo,String reserveMobile);
+    /**
+     * 是否有银行卡
+     * @param accountId
+     * @param bankNo
+     * @return
+     */
+    Integer isExistBankNo(long accountId,String bankNo,int cardType);
 }

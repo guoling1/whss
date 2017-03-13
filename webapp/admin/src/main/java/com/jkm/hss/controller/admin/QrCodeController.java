@@ -7,10 +7,13 @@ import com.jkm.base.common.entity.CommonResponse;
 import com.jkm.base.common.entity.PageModel;
 import com.jkm.base.common.util.DateFormatUtil;
 import com.jkm.hss.admin.entity.ProductionQrCodeRecord;
+import com.jkm.hss.admin.entity.QRCode;
 import com.jkm.hss.admin.enums.EnumQRCodeDistributeType;
 import com.jkm.hss.admin.enums.EnumQRCodeSysType;
 import com.jkm.hss.admin.helper.requestparam.ProductionRequest;
+import com.jkm.hss.admin.helper.requestparam.QrCodeListRequest;
 import com.jkm.hss.admin.helper.responseparam.ProductionListResponse;
+import com.jkm.hss.admin.helper.responseparam.QrCodeListResponse;
 import com.jkm.hss.admin.service.ProductionQrCodeRecordService;
 import com.jkm.hss.admin.service.QRCodeService;
 import com.jkm.hss.controller.BaseController;
@@ -138,6 +141,18 @@ public class QrCodeController extends BaseController {
     @RequestMapping(value = "/productionList", method = RequestMethod.POST)
     public CommonResponse productionList(@RequestBody final ProductionRequest productionRequest) {
         final PageModel<ProductionListResponse> pageModel = this.productionQrCodeRecordService.selectList(productionRequest);
+        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", pageModel);
+    }
+
+    /**
+     * 所有二维码
+     * @param qrCodeListRequest
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/selectQrCodeList", method = RequestMethod.POST)
+    public CommonResponse selectQrCodeList(@RequestBody final QrCodeListRequest qrCodeListRequest) {
+        final PageModel<QrCodeListResponse> pageModel = this.qrCodeService.selectQrCodeList(qrCodeListRequest);
         return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", pageModel);
     }
 }

@@ -1,15 +1,18 @@
 package com.jkm.hss.admin.service;
 
 import com.google.common.base.Optional;
+import com.jkm.base.common.entity.PageModel;
 import com.jkm.hss.admin.entity.CodeQueryResponse;
 import com.jkm.hss.admin.entity.ProductionQrCodeRecord;
 import com.jkm.hss.admin.entity.QRCode;
 import com.jkm.hss.admin.helper.FirstLevelDealerCodeInfo;
 import com.jkm.hss.admin.helper.MyMerchantCount;
 import com.jkm.hss.admin.helper.SecondLevelDealerCodeInfo;
+import com.jkm.hss.admin.helper.requestparam.QrCodeListRequest;
 import com.jkm.hss.admin.helper.responseparam.ActiveCodeCount;
 import com.jkm.hss.admin.helper.responseparam.DistributeCodeCount;
 import com.jkm.hss.admin.helper.responseparam.QRCodeList;
+import com.jkm.hss.admin.helper.responseparam.QrCodeListResponse;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
 
@@ -426,4 +429,11 @@ public interface QRCodeService {
      * @return
      */
     ProductionQrCodeRecord productionQrCode(long adminId, int count, final String baseUrl, long productId, String sysType, int type);
+
+    /**
+     * 所有二维码
+     * @param qrCodeListRequest
+     * @return
+     */
+    PageModel<QrCodeListResponse> selectQrCodeList(QrCodeListRequest qrCodeListRequest);
 }

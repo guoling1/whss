@@ -105,17 +105,27 @@ public class AccountBankServiceImpl implements AccountBankService{
      */
     @Override
     public int initCreditBankCard(long accountId,String bankNo,String bankName,String reserveMobile,String bankBin,String expiryTime) {
-        this.reset(accountId,EnumAccountBank.CREDIT.getId());
-        AccountBank accountBank = new AccountBank();
-        accountBank.setAccountId(accountId);
-        accountBank.setBankNo(MerchantSupport.decryptBankCard(accountId,bankNo));
-        accountBank.setBankName(bankName);
-        accountBank.setReserveMobile(MerchantSupport.encryptMobile(reserveMobile));
-        accountBank.setCardType(EnumAccountBank.CREDIT.getId());
-        accountBank.setIsDefault(EnumBankDefault.DEFAULT.getId());
-        accountBank.setBankBin(bankBin);
-        accountBank.setExpiryTime(expiryTime);
-        return this.insert(accountBank);
+        Integer backId = this.isExistBankNo(accountId,MerchantSupport.encryptBankCard(bankNo),EnumAccountBank.CREDIT.getId());
+        if(backId==null){
+            log.info("不存在该账号{}",bankNo);
+            this.reset(accountId,EnumAccountBank.CREDIT.getId());
+            AccountBank accountBank = new AccountBank();
+            accountBank.setAccountId(accountId);
+            accountBank.setBankNo(MerchantSupport.encryptBankCard(bankNo));
+            accountBank.setBankName(bankName);
+            accountBank.setReserveMobile(MerchantSupport.encryptMobile(reserveMobile));
+            accountBank.setCardType(EnumAccountBank.CREDIT.getId());
+            accountBank.setIsDefault(EnumBankDefault.DEFAULT.getId());
+            accountBank.setBankBin(bankBin);
+            accountBank.setExpiryTime(expiryTime);
+            return this.insert(accountBank);
+        }else{
+            log.info("已经存在该账号{}",bankNo);
+            this.reset(accountId,EnumAccountBank.CREDIT.getId());
+            this.setDefaultCreditCard(backId);
+            return backId;
+        }
+
     }
 
     /**
@@ -351,5 +361,18 @@ public class AccountBankServiceImpl implements AccountBankService{
         accountBank.setIsDefault(EnumBankDefault.DEFAULT.getId());
         accountBank.setBankBin(bankCardBinOptional.get().getShorthand());
         return this.insert(accountBank);
+    }
+
+    /**
+     * 是否有银行卡
+     *
+     * @param accountId
+     * @param bankNo
+     * @param cardType
+     * @return
+     */
+    @Override
+    public Integer isExistBankNo(long accountId, String bankNo, int cardType) {
+        return this.isExistBankNo(accountId,bankNo,cardType);
     }
 }
