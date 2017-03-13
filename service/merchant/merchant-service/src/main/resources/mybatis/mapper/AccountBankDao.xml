@@ -79,7 +79,15 @@
         UPDATE tb_account_bank
         set
         is_default=1
-        WHERE id = #{id}
+        WHERE id = #{id}  and status=0 and card_type=0
+    </update>
+
+    <!-- 设置为默认信用卡-->
+    <update id="setDefaultCreditCard">
+        UPDATE tb_account_bank
+        set
+        is_default=1
+        WHERE id = #{id}  and status=0 and card_type=1
     </update>
 
     <!-- 全部设置为不是默认银行卡-->
@@ -87,10 +95,10 @@
         UPDATE tb_account_bank
         set
         is_default=0
-        WHERE account_id = #{accountId} and card_type=0
+        WHERE account_id = #{accountId} and status=0 and card_type=#{cardType}
     </update>
 
-    <!-- 获取默认银行卡信息 -->
+    <!-- 获取默认储蓄卡 -->
     <select id="getDefault" resultType="com.jkm.hss.merchant.entity.AccountBank">
         SELECT
         <include refid="Base_Column_List" />
@@ -98,12 +106,12 @@
         WHERE account_id = #{accountId} and status=0 and card_type=0 and is_default=1
     </select>
 
-    <!-- 获取最新信用卡信息 -->
-    <select id="getCreditCard" resultType="com.jkm.hss.merchant.entity.AccountBank">
+    <!-- 获取默认信用卡 -->
+    <select id="getDefaultCreditCard" resultType="com.jkm.hss.merchant.entity.AccountBank">
         SELECT
         <include refid="Base_Column_List" />
         FROM tb_account_bank
-        WHERE account_id = #{accountId} and status=0 and card_type=1 ORDER BY create_time limit 0,1
+        WHERE account_id = #{accountId} and status=0 and card_type=1 and is_default=1
     </select>
 
 
@@ -119,6 +127,12 @@
     <select id="isHasAccountBank" resultType="java.lang.Integer">
         SELECT count(id) FROM tb_account_bank
         WHERE account_id = #{accountId} and status=0 and card_type=0
+    </select>
+
+    <!-- 是否有信用卡 -->
+    <select id="isHasCreditBank" resultType="java.lang.Integer">
+        SELECT count(id) FROM tb_account_bank
+        WHERE account_id = #{accountId} and status=0 and card_type=1
     </select>
 
     <!-- 根据主键id查询 -->

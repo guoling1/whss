@@ -39,7 +39,7 @@ public class NoticeController extends BaseController {
      * @return
      */
 
-    @RequestMapping(value = "/noticeListJSP",method = RequestMethod.POST)
+    @RequestMapping(value = "/noticeListJSP",method = RequestMethod.GET)
     public String noticeListJSP() {
         String url="/notisList";
         return url;
@@ -49,7 +49,7 @@ public class NoticeController extends BaseController {
      * 发布详情
      * @param
      */
-    @RequestMapping(value = "/noticeDetailsJSP",method = RequestMethod.POST)
+    @RequestMapping(value = "/noticeDetailsJSP",method = RequestMethod.GET)
     public String noticeDetailsJSP(){
         String url="/notisDetails";
         return url;
@@ -78,12 +78,6 @@ public class NoticeController extends BaseController {
             for (int i=0;i<list.size();i++){
                 if (list.get(i).getStatus()==1){
                     list.get(i).setPushStatus(EnumNotice.PUBLISHED.getValue());
-                }
-                if (list.get(i).getType().equals("1")){
-                    list.get(i).setType(EnumType.MAINTAIN.getValue());
-                }
-                if (list.get(i).getType().equals("2")){
-                    list.get(i).setType(EnumType.NOTICE.getValue());
                 }
             }
         }

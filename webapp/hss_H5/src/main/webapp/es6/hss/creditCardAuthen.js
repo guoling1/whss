@@ -67,9 +67,9 @@ let test = function (cardNo) {
 };
 
 submit.addEventListener('click', function () {
-  if (ipt.value.length >= 13 && ipt.value.length <= 24) {
+  if (ipt.value.length >= 13 && ipt.value.length <= 24 && test(ipt.value)) {
     http.post('/merchantInfo/queryBank', {bankNo: ipt.value}, function (data) {
-      if (data != 1 || !test(ipt.value)) {
+      if (data != 1) {
         message.prompt_show('请输入正确的信用卡号');
       } else {
         http.post('/wx/creditCardAuthen', {
