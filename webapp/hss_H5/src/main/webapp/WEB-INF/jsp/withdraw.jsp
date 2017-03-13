@@ -12,7 +12,8 @@
   <meta name="viewport"
         content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
   <title>好收收</title>
-  <link rel="stylesheet" href="http://static.jinkaimen.cn/hss/css/style.2.1.6.css">
+  <%--<link rel="stylesheet" href="http://static.jinkaimen.cn/hss/css/style.2.1.6.css">--%>
+  <link rel="stylesheet" href="/css/hss/style.2.1.6.css">
   <link rel="stylesheet" href="http://static.jinkaimen.cn/weui/weui.css">
 </head>
 <body>
@@ -20,15 +21,17 @@
 <div id="withdrawal">
   <div class="info">
     <div class="small">可提现金额</div>
-    <div class="amount"><span>￥</span>${avaMoney}</div>
+    <div class="amount"><span class="s">￥</span><span id="amount"></span></div>
     <div class="group">
       <span class="label">到账银行</span>
-      <span class="important">${bankName} (${bankNo})</span>
+      <span class="important" id="bank"></span>
     </div>
     <div class="group">
-      <span class="label">到账金额</span>
-      <span class="important">${realMoney}元</span>
-      <span class="small">(手续费:${channelFee}元/笔)</span>
+      <span class="label">提现金额</span>
+      ¥ <input type="text" placeholder="请输入提现金额">
+    </div>
+    <div class="group">
+      <div>手续费: <span></span>元 到账金额: 0.00元</div>
     </div>
   </div>
   <div class="detail">实时到账</div>
@@ -59,5 +62,6 @@
   }
 </script>
 <script src="http://static.jinkaimen.cn/vendor/vendor.1.0.3.min.js"></script>
-<script src="http://static.jinkaimen.cn/hss/2.1.4/withdrawal.min.js"></script>
+<%--<script src="http://static.jinkaimen.cn/hss/2.1.4/withdrawal.min.js"></script>--%>
+<script src="/js/hss/2.1.4/withdrawal.min.js"></script>
 </html>
