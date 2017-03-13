@@ -28,28 +28,27 @@
     </div>
     <div class="group">
       <span class="label">提现金额</span>
-      ¥ <input type="text" placeholder="请输入提现金额">
+      ¥ <input type="text" id="ipt" placeholder="请输入提现金额">
     </div>
     <div class="group">
-      <div>手续费: <span></span>元 到账金额: 0.00元</div>
+      <div class="mpt">手续费: <span id="fee"></span>元 到账金额: <span id="come">0.00</span>元</div>
     </div>
   </div>
-  <div class="detail">实时到账</div>
+  <div class="detail">提现申请成功后，将在2小时内到账，请注意查收</div>
   <button class="btn" id="next">立即提现</button>
 
-  <div class="layer" id="layer">
-    <div class="space">
-      <div class="space-title">
-        短信已发送至 ${phone_01}****${phone_02}
-        <div class="xx" id="xx"></div>
+  <div class="message-space" id="layer">
+    <div class="message-box">
+      <div class="message-box-head">短信已发送至 <span id="mobile"></span></div>
+      <div class="message-box-body">
+        <div class="code-title">验证码</div>
+        <input type="text" class="code-ipt" id="code" placeholder="输入短信验证码">
+        <div class="code-re" id="sendCode">重新获取</div>
       </div>
-      <div class="space-cont">
-        <div class="input flexBox">
-          <div>验证码</div>
-          <input type="text" id="code" placeholder="输入短信验证码">
-          <div class="re" id="sendCode">重新获取</div>
+      <div class="message-box-foot">
+        <div class="message-enter" id="submit">
+          确认提现
         </div>
-        <div class="submit" id="submit">确认提现</div>
       </div>
     </div>
   </div>

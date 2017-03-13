@@ -1921,92 +1921,45 @@ input:focus {
         font-size: 16px;
         color: #8c93b2;
       }
-      .pormpt {
-        
+      .mpt {
+        font-size: 12px;
+        color: #5a5a5a;
       }
     }
   }
   .detail {
     height: 40px;
     line-height: 40px;
-    font-size: 14px;
-    color: #8c93b2;
+    font-size: 12px;
+    color: #d0d0d0;
   }
   .btn {
     width: 100%;
     height: 50px;
     line-height: 50px;
-    background-color: #7086bd;
+    background-color: #4ecea2;
     font-size: 16px;
     color: #FFF;
     border-radius: 5px;
   }
   .btn:disabled {
-    background-color: #b0c3f2;
+    background-color: #a6e5d4;
   }
-
-  .layer {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    z-index: 99;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    .space {
-      width: 95%;
-      height: auto;
-      border-radius: 3px;
-      background-color: #FFF;
-      position: absolute;
-      top: 45%;
-      left: 50%;
-      transform: translate3d(-50%, -50%, 0);
-      overflow: hidden;
-      .space-title {
-        width: 100%;
-        height: 65px;
-        line-height: 65px;
-        background-color: #f4f5f8;
-        text-align: left;
-        padding-left: 15px;
-        .xx {
-          float: right;
-          width: 65px;
-          height: 65px;
-          background: url("../assets/xx.png") no-repeat center;
-          background-size: 18px 18px;
-        }
-      }
-      .space-cont {
-        padding: 0 15px 10px;
-        .input {
-          width: 100%;
-          height: 50px;
-          line-height: 50px;
-          border-bottom: 1px solid #f4f5f8;
-          margin: 10px 0;
-          input {
-            .flexItem(1);
-            padding-left: 15px;
-          }
-          .re {
-            color: #9b9fb4;
-          }
-        }
-        .submit {
-          width: 100%;
-          height: 50px;
-          line-height: 50px;
-          background-color: #7086bd;
-          font-size: 16px;
-          color: #FFF;
-          border-radius: 5px;
-        }
-      }
+  .message-space {
+    .code-title {
+      font-size: 16px;
+      color: #202335;
+    }
+    .code-ipt {
+      text-align: center;
+      margin: 5px 0;
+    }
+    .code-re {
+      font-size: 16px;
+      color: #d0d0d0;
     }
   }
+
 }
 
 #transaction {
