@@ -212,7 +212,7 @@ public class AccountController extends BaseController{
             //final UserInfo userInfo = userInfoService.selectByOpenId("ou2YpwfghecQNYYUpIQ-kbqGY7Hc").get();
             final MerchantInfo merchantInfo = this.merchantInfoService.selectById(userInfo.getMerchantId()).get();
 
-            final String mobile = MerchantSupport.decryptMobile(merchantInfo.getId(), merchantInfo.getReserveMobile());
+            final String mobile = MerchantSupport.decryptMobile(merchantInfo.getReserveMobile());
 
            final Pair<Integer, String> pair = smsAuthService.checkVerifyCode(mobile, withdrawRequest.getCode(), EnumVerificationCodeType.WITH_DRAW);
 
@@ -273,7 +273,7 @@ public class AccountController extends BaseController{
         //final UserInfo userInfo = userInfoService.selectByOpenId("ou2YpwfghecQNYYUpIQ-kbqGY7Hc").get();
         final MerchantInfo merchantInfo = this.merchantInfoService.selectById(userInfo.getMerchantId()).get();
         log.info( "<<<" + merchantInfo.getId() +">>>商户提现发送验证码");
-        final String mobile = MerchantSupport.decryptMobile(merchantInfo.getId(), merchantInfo.getReserveMobile());
+        final String mobile = MerchantSupport.decryptMobile(merchantInfo.getReserveMobile());
 
         if (StringUtils.isBlank(mobile)) {
             return CommonResponse.simpleResponse(-1, "手机号不能为空");
