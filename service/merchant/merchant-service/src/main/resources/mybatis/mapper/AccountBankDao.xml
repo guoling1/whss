@@ -165,4 +165,12 @@
         status=1
         WHERE id = #{id}
     </update>
+
+    <!-- 是否已存在卡号 -->
+    <select id="isExistBankNo" resultType="java.lang.Integer">
+        SELECT
+        id
+        FROM tb_account_bank
+        WHERE account_id = #{accountId} and status=0 and card_type=#{cardType} and bank_no=#{bankNo}
+    </select>
 </mapper>

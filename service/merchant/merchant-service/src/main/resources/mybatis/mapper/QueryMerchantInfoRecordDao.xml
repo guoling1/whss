@@ -3,7 +3,6 @@
 <mapper namespace="com.jkm.hss.merchant.dao.QueryMerchantInfoRecordDao">
 
     <select id="getAll" resultType="com.jkm.hss.merchant.entity.MerchantInfoResponse">
-
         SELECT
             a.id,
             a.identity_face_pic,
@@ -16,11 +15,11 @@
             a.merchant_change_name,
             a.address,
             a.source,
-            a.NAME,
+            a. NAME,
             a.identity,
             a.bank_no,
             a.dealer_id,
-            a.STATUS,
+            a. STATUS,
             a.bank_name,
             a.first_dealer_id,
             a.is_authen,
@@ -29,14 +28,30 @@
             a.authentication_time,
             a.checked_time,
             a.second_dealer_id,
-            b.`level`,
+            a.account_id,
+            a.branch_name,
+            (
+                SELECT
+                    proxy_name
+                FROM
+                    tb_dealer
+                WHERE
+                    id = a.first_dealer_id
+            ) AS proxyName,
+            (
+                SELECT
+                    proxy_name
+                FROM
+                    tb_dealer
+                WHERE
+                    id = a.second_dealer_id
+            ) AS proxyName1,
+            b.mark_code AS markCode1,
             b.first_level_dealer_id,
-            b.proxy_name,
-            b.mark_code AS markCode1
+            b.`level`
         FROM
             tb_merchant_info a
-        LEFT JOIN
-            tb_dealer b ON a.dealer_id=b.id
+        LEFT JOIN tb_dealer b ON a.dealer_id = b.id
         WHERE
 			a.id=#{id}
     </select>
