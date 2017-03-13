@@ -247,4 +247,11 @@ public interface OrderDao {
      * @return
      */
     List<MerchantTradeResponse> getOrderList(OrderTradeRequest req);
+
+    /**
+     * 统计
+     * @param req
+     * @return
+     */
+    String amountCount(OrderTradeRequest req);
 }

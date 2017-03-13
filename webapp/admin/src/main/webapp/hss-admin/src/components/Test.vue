@@ -820,7 +820,7 @@
             <div class="label">资料提交时间：<span>——</span></div>
           </el-col>
           <el-col :span="5">
-            <div class="label">资料审核状态：<span>{{msg.isAuthen}}</span></div>
+            <div class="label">资料审核状态：<span></span></div>
           </el-col>
           <el-col :span="5">
             <div class="label"><span></span></div>
@@ -873,7 +873,7 @@
         </el-row>
         <el-row type="flex" class="row-bg" justify="space-around" style="margin-bottom: 15px">
           <el-col :span="5">
-            <div class="label">身份证号：<span>——</span></div>
+            <div class="label">身份证号：<span>{{msg.identity}}</span></div>
           </el-col>
           <el-col :span="5">
           </el-col>
@@ -891,7 +891,7 @@
         </el-row>
         <el-row type="flex" class="row-bg" justify="space-around" style="margin-bottom: 15px">
           <el-col :span="5">
-            <div class="label">结算卡所属银行：<span>{{msg.cardBank}}</span></div>
+            <div class="label">结算卡所属银行：<span>{{msg.bankName}}</span></div>
           </el-col>
           <el-col :span="5">
           </el-col>
@@ -909,7 +909,7 @@
         </el-row>
         <el-row type="flex" class="row-bg" justify="space-around" style="margin-bottom: 15px">
           <el-col :span="5">
-            <div class="label">认证状态：<span>{{msg.cardAccountName}}</span></div>
+            <div class="label">认证状态：<span>{{msg.isAuthen}}</span></div>
           </el-col>
           <el-col :span="5">
           </el-col>
@@ -918,7 +918,7 @@
         </el-row>
       </div>
       <div class="box box-primary" style="overflow: hidden">
-        <p class="lead">商户结算信息(好收收)</p>
+        <p class="lead">费率信息</p>
         <div style="width: 80%;margin: 0 0 15px 15px;">
           <template>
             <el-table :data="rateInfo" border style="width: 100%">
