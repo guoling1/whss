@@ -11,7 +11,7 @@ const btn = document.getElementById('btn');
 const logo = document.getElementById('logo');
 
 // 是否 支行信息
-if (pageData.hasBranch == 2) {
+if (pageData.hasBranch == 0) {
   btn.innerHTML = '补充支行信息';
 } else {
   btn.innerHTML = '修改支行信息';

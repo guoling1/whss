@@ -153,7 +153,7 @@ input:focus {
       font-weight: bold;
     }
     .message-box-body {
-      font-size: 16px;
+      font-size: 15px;
       color: #5a5a5a;
       padding: 5px 0 25px 0;
       line-height: 28px;
@@ -193,6 +193,88 @@ input:focus {
 }
 
 // 好收收样式调整 end
+
+// 公告列表
+#noticeList {
+  width: 100%;
+  height: 100%;
+  background: #f4f5f8;
+  .list-box {
+    width: 100%;
+    height: auto;
+    background-color: #FFF;
+    .list-li {
+      width: 100%;
+      height: 50px;
+      padding: 6px 15px;
+      border-bottom: 1px solid #e6e8f1;
+      .list-icon {
+        width: 35px;
+        height: 35px;
+        float: left;
+        margin-right: 10px;
+        &.notice1 {
+          background: url("../assets/notice-icon-1.png") no-repeat center;
+          background-size: 35px 35px;
+        }
+        &.notice2 {
+          background: url("../assets/notice-icon-2.png") no-repeat center;
+          background-size: 35px 35px;
+        }
+      }
+      .list-info {
+        float: left;
+        .top {
+          font-size: 14px;
+          color: #5a5a5a;
+          text-align: left;
+        }
+        .bottom {
+          font-size: 12px;
+          color: #c1c1c1;
+          text-align: left;
+        }
+      }
+      .list-right {
+        float: right;
+        width: 6px;
+        height: 10px;
+        background: url("../assets/list-right.png") no-repeat center;
+        background-size: 6px 10px;
+        margin-top: 13px;
+      }
+    }
+  }
+}
+
+// 公告详情
+#noticeDetails {
+  width: 100%;
+  height: 100%;
+  background: #f4f5f8;
+  padding: 0 15px;
+  .title-box {
+    width: 100%;
+    height: auto;
+    border-bottom: 1px solid #e6e8f1;
+    padding: 5px 0;
+    .title {
+      font-size: 18px;
+      color: #222222;
+      text-align: left;
+    }
+    .date {
+      font-size: 12px;
+      color: #c1c1c1;
+      text-align: left;
+    }
+  }
+  .content-box {
+    color: #5a5a5a;
+    padding: 10px 0;
+    text-align: left;
+  }
+}
 
 // 商户 注册 reg
 #reg, #login {
@@ -408,6 +490,92 @@ input:focus {
     padding-bottom: 20px;
   }
 
+  .layer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 99;
+    background-color: #FFF;
+    display: none;
+    .layer-name {
+      padding: 0 15px;
+      text-align: left;
+      min-width: 75px;
+      float: left;
+      font-size: 15px;
+      color: #5a5a5a;
+      width: 100%;
+      height: 50px;
+      border-top: 1px solid #efefef;
+      box-shadow: 0 3px 8px #e8eaf0;
+    }
+    .match {
+      padding: 0 15px;
+      width: 100%;
+      height: 50px;
+      border-top: 1px solid #efefef;
+      box-shadow: 0 3px 8px #e8eaf0;
+      .match_name {
+        text-align: left;
+        min-width: 75px;
+        float: left;
+        font-size: 15px;
+        color: #5a5a5a;
+        margin-right: 20px;
+      }
+      .match_ipt {
+        float: left;
+        height: 49px;
+        line-height: 49px;
+        font-size: 15px;
+      }
+    }
+  }
+  .search {
+    &.top {
+      margin-top: 50px;
+    }
+    .search-result {
+      width: 100%;
+      height: 50px;
+      line-height: 50px;
+      border-bottom: 1px solid #efefef;
+      padding: 0 15px;
+      div {
+        height: 49px;
+        display: inline-block;
+        float: left;
+        text-align: left;
+        font-size: 14px;
+        color: #5a5a5a;
+        margin-right: 20px;
+        &.choose {
+          color: #4ecea2;
+          border-bottom: 2px solid #4ecea2;
+        }
+      }
+    }
+    .search-list {
+      width: 100%;
+      overflow: auto;
+      div {
+        width: 100%;
+        height: 50px;
+        line-height: 50px;
+        font-size: 14px;
+        color: #5a5a5a;
+        text-align: left;
+        padding: 0 15px;
+        overflow: hidden;
+        &.t {
+          background: url("../assets/choose.png") no-repeat center right 15px;
+          background-size: 8px 8px;
+        }
+      }
+    }
+  }
+
   .process {
     width: 100%;
     height: 47px;
@@ -464,6 +632,7 @@ input:focus {
     line-height: 50px;
     border-bottom: 1px solid #edeef5;
     padding: 0 15px;
+    position: relative;
     .name {
       display: inline-block;
       float: left;
@@ -579,7 +748,7 @@ input:focus {
           right: 20px;
           width: 9px;
           height: 9px;
-          background: url("../../assets/sample-xx.png") no-repeat center;
+          background: url("../assets/sample-xx.png") no-repeat center;
           background-size: 9px 9px;
         }
       }
@@ -726,6 +895,39 @@ input:focus {
 // 钱包首页
 
 #wallet {
+  .announcement {
+    width: 100%;
+    height: 25px;
+    background-color: #3c5186;
+    padding: 0 15px 0 30px;
+    position: relative;
+    display: none;
+    .announcement-icon {
+      display: block;
+      position: absolute;
+      top: 6px;
+      left: 15px;
+      width: 13px;
+      height: 12px;
+      background: url("../assets/announcement.png") no-repeat center;
+      background-size: 13px 12px;
+    }
+    .announcement-text-box {
+      width: 100%;
+      height: 25px;
+      position: relative;
+      overflow: hidden;
+    }
+    .announcement-text {
+      line-height: 25px;
+      font-size: 12px;
+      color: #d0d0d0;
+      white-space: nowrap;
+      text-align: left;
+      position: absolute;
+      top: 0;
+    }
+  }
   .wallet {
     width: 100%;
     height: 130px;
@@ -865,6 +1067,10 @@ input:focus {
         &.unbundling {
           background: url("../assets/unbundling.png") no-repeat center;
           background-size: 30px 26px;
+        }
+        &.announcement1 {
+          background: url("../assets/announcement-logo.png") no-repeat center;
+          background-size: 27px 30px;
         }
         &.more {
           background: url("../assets/more.png") no-repeat center;
@@ -1983,6 +2189,7 @@ input:focus {
       }
       .info {
         float: left;
+        width: calc(100% - 62px);
         .name {
           text-align: left;
           font-size: 18px;
@@ -2005,8 +2212,12 @@ input:focus {
         font-size: 12px;
         color: #FFF;
         padding: 0 5px;
+        margin-top: 5px;
         &.red {
           background-color: #c64b4b;
+        }
+        &.green {
+          background-color: #3d9a63;
         }
         &.blue {
           background-color: #406eae;
