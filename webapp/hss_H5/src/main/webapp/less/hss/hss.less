@@ -194,6 +194,151 @@ input:focus {
 
 // 好收收样式调整 end
 
+// 账户流水 余额明细
+
+#accountFlow {
+  width: 100%;
+  height: auto;
+  min-height: 100%;
+  background-color: #f4f5f8;
+  .flow-group {
+    width: 100%;
+    height: 50px;
+    background-color: #FFF;
+    border-bottom: 1px solid #e6e8f1;
+    padding: 0 15px;
+    .flow-left {
+      float: left;
+      .flow-top {
+        font-size: 14px;
+        color: #222222;
+        margin-top: 3px;
+        text-align: left;
+        .s {
+          font-size: 12px;
+          color: #c1c1c1;
+          margin-left: 5px;
+        }
+      }
+      .flow-bottom {
+        font-size: 12px;
+        color: #c1c1c1;
+        text-align: left;
+      }
+    }
+    .flow-right {
+      float: right;
+      height: 50px;
+      line-height: 50px;
+      font-size: 15px;
+      &.green {
+        color: #36c493;
+      }
+      &.red {
+        color: #e94444;
+      }
+    }
+  }
+}
+
+// 账户 余额
+#account {
+  width: 100%;
+  height: auto;
+  background-color: #f4f5f8;
+  .account {
+    width: 100%;
+    background-color: #FFF;
+    padding: 50px;
+    .logo {
+      width: 60px;
+      height: 60px;
+      margin: auto;
+      background: url("../assets/account.png") no-repeat center;
+      background-size: 60px 60px;
+    }
+    .amount {
+      font-size: 36px;
+      color: #222222;
+      margin-top: 20px;
+      .s {
+        font-size: 20px;
+        margin-right: 5px;
+      }
+    }
+    .useAmount {
+      font-size: 15px;
+      color: #5a5a5a;
+    }
+    .btn {
+      display: block;
+      width: 100%;
+      height: 46px;
+      margin: 30px 0 25px 0;
+      line-height: 46px;
+      border-radius: 5px;
+      background-color: #4ecea2;
+      font-size: 16px;
+      color: #FFF;
+    }
+    .check {
+      font-size: 12px;
+      color: #036ad1;
+      span {
+        display: inline-block;
+        width: 10px;
+        height: 10px;
+        margin-right: 5px;
+        background: url("../assets/amount_detail.png") no-repeat center;
+        background-size: 10px 10px;
+      }
+    }
+  }
+  .qa {
+    width: 100%;
+    height: auto;
+    margin-top: 8px;
+    background-color: #FFF;
+    padding: 25px 15px 50px 15px;
+    .qa-title {
+      font-size: 12px;
+      color: #5a5a5a;
+      text-align: left;
+      span {
+        display: inline-block;
+        width: 12px;
+        height: 12px;
+        margin-right: 5px;
+        background: url("../assets/qa.png") no-repeat center;
+        background-size: 12px 12px;
+      }
+    }
+    .qa-group {
+      margin-top: 15px;
+      .q {
+        text-align: left;
+        font-size: 12px;
+        color: #5a5a5a;
+        span {
+          display: inline-block;
+          width: 4px;
+          height: 4px;
+          border-radius: 50%;
+          background-color: #b0b0b0;
+          transform: translate3d(0, -3px, 0);
+          margin-right: 5px;
+        }
+      }
+      .a {
+        text-align: left;
+        font-size: 12px;
+        color: #b0b0b0;
+        padding-left: 9px;
+      }
+    }
+  }
+}
+
 // 公告列表
 #noticeList {
   width: 100%;
@@ -665,6 +810,7 @@ input:focus {
       height: 49px;
       font-size: 14px;
       color: #4a5171;
+      max-width: 140px;
     }
     ::-webkit-input-placeholder {
       color: #d0d0d0;
@@ -1726,6 +1872,69 @@ input:focus {
   }
 }
 
+// 提现成功
+#withdrawSuccess {
+  width: 100%;
+  height: auto;
+  background-color: #f4f5f8;
+  .cont {
+    width: 100%;
+    height: auto;
+    background-color: #FFF;
+    .detail {
+      .logo {
+        margin: 35px auto 25px;
+        width: 87px;
+        height: 87px;
+        background: url("../assets/withdrawSuccess.png") no-repeat center;
+        background-size: 87px 87px;
+      }
+      .text {
+        font-size: 19px;
+        color: #222222;
+      }
+      .small {
+        font-size: 14px;
+        color: #5a5a5a;
+        margin-bottom: 40px;
+      }
+    }
+    .list-box {
+      .list-group {
+        width: 100%;
+        height: 47px;
+        line-height: 47px;
+        border-bottom: 1px solid #e8eaf3;
+        padding: 0 15px;
+        .left {
+          float: left;
+          font-size: 15px;
+          color: #5a5a5a;
+        }
+        .right {
+          float: right;
+          font-size: 15px;
+          color: #222222;
+        }
+      }
+    }
+  }
+  .btn-box {
+    width: 100%;
+    margin-top: 20px;
+    padding: 0 15px;
+    .box {
+      width: 100%;
+      height: 45px;
+      line-height: 45px;
+      border-radius: 5px;
+      background-color: #4ecea2;
+      font-size: 16px;
+      color: #FFF;
+    }
+  }
+}
+
 // 提现页面
 #withdrawal {
   width: 100%;
@@ -1742,15 +1951,15 @@ input:focus {
       height: 40px;
       line-height: 40px;
       font-size: 12px;
-      color: #8c93b2;
+      color: #5a5a5a;
     }
     .amount {
       height: 50px;
       line-height: 50px;
       font-size: 36px;
-      color: #202335;
+      color: #222222;
       margin-bottom: 30px;
-      span {
+      .s {
         font-size: 24px;
       }
     }
@@ -1775,89 +1984,45 @@ input:focus {
         font-size: 16px;
         color: #8c93b2;
       }
+      .mpt {
+        font-size: 12px;
+        color: #5a5a5a;
+      }
     }
   }
   .detail {
     height: 40px;
     line-height: 40px;
-    font-size: 14px;
-    color: #8c93b2;
+    font-size: 12px;
+    color: #d0d0d0;
   }
   .btn {
     width: 100%;
     height: 50px;
     line-height: 50px;
-    background-color: #7086bd;
+    background-color: #4ecea2;
     font-size: 16px;
     color: #FFF;
     border-radius: 5px;
   }
   .btn:disabled {
-    background-color: #b0c3f2;
+    background-color: #a6e5d4;
   }
-
-  .layer {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    z-index: 99;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    .space {
-      width: 95%;
-      height: auto;
-      border-radius: 3px;
-      background-color: #FFF;
-      position: absolute;
-      top: 45%;
-      left: 50%;
-      transform: translate3d(-50%, -50%, 0);
-      overflow: hidden;
-      .space-title {
-        width: 100%;
-        height: 65px;
-        line-height: 65px;
-        background-color: #f4f5f8;
-        text-align: left;
-        padding-left: 15px;
-        .xx {
-          float: right;
-          width: 65px;
-          height: 65px;
-          background: url("../assets/xx.png") no-repeat center;
-          background-size: 18px 18px;
-        }
-      }
-      .space-cont {
-        padding: 0 15px 10px;
-        .input {
-          width: 100%;
-          height: 50px;
-          line-height: 50px;
-          border-bottom: 1px solid #f4f5f8;
-          margin: 10px 0;
-          input {
-            .flexItem(1);
-            padding-left: 15px;
-          }
-          .re {
-            color: #9b9fb4;
-          }
-        }
-        .submit {
-          width: 100%;
-          height: 50px;
-          line-height: 50px;
-          background-color: #7086bd;
-          font-size: 16px;
-          color: #FFF;
-          border-radius: 5px;
-        }
-      }
+  .message-space {
+    .code-title {
+      font-size: 16px;
+      color: #202335;
+    }
+    .code-ipt {
+      text-align: center;
+      margin: 5px 0;
+    }
+    .code-re {
+      font-size: 16px;
+      color: #d0d0d0;
     }
   }
+
 }
 
 #transaction {

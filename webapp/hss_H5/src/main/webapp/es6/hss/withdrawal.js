@@ -12,44 +12,79 @@ const http = _require('http');
 // 定义变量
 const next = document.getElementById('next');
 const layer = document.getElementById('layer');
-const xx = document.getElementById('xx');
 const submit = document.getElementById('submit');
 const sendCode = document.getElementById('sendCode');
 const code = document.getElementById('code');
 // 引入浏览器特性处理
 const browser = _require('browser');
 browser.elastic_touch();
-// 判断按钮是否可以点击
-if (pageData.bookValue == 0) {
-  next.setAttribute('disabled', 'true');
-}
+
+// 定义变量
+let amount = document.getElementById('amount');
+let bank = document.getElementById('bank');
+let ipt = document.getElementById('ipt');
+let fee = document.getElementById('fee');
+let come = document.getElementById('come');
+let mobile = document.getElementById('mobile');
+let reFee = '';
+let toFee = '';
+let toBank = '';
+let toAmount = '';
+let toCome = '';
+let reAcconut = '';
+// 获取数据
+http.post('/account/info', {}, function (data) {
+  amount.innerHTML = data.available.toFixed(2);
+  bank.innerHTML = data.bankName + '(' + data.bankNo + ')';
+  fee.innerHTML = data.withdrawFee.toFixed(2);
+  mobile.innerHTML = data.mobile;
+  toBank = data.bankName + data.bankNo;
+  reFee = data.withdrawFee;
+  reAcconut = data.available;
+  if (data.available <= data.withdrawFee) {
+    next.setAttribute('disabled', 'true');
+  }
+});
+
+ipt.addEventListener('input', function (e) {
+  let ev = e.target;
+  let val = ev.value;
+  come.innerHTML = (val - reFee) > 0 ? (val - reFee).toFixed(2) : '0.00';
+  toFee = reFee.toFixed(2) + '元'
+  toAmount = val.toFixed(2) + '元';
+  toCome = (val - reFee).toFixed(2) + '元';
+});
 
 // 定义验证码
 animation.sendcode({
-  url: '/wx/getWithDrawCode',
+  url: '/account/sendVerifyCode',
   btn: 'sendCode'
 });
 
 next.addEventListener('click', function () {
+  // 校验输入的值是否合法
+  if (ipt.value > reAcconut) {
+    message.prompt_show('可提现金额不足');
+    return;
+  }
+  if (ipt.value <= reFee) {
+    message.prompt_show('提现金额必须大于手续费');
+    return;
+  }
   layer.style.display = 'block';
   sendCode.click();
-});
-
-xx.addEventListener('click', function () {
-  layer.style.display = 'none';
 });
 
 submit.addEventListener('click', function () {
   if (validate.code(code.value)) {
     message.load_show('正在校验');
-    http.post('/wx/withdraw', {
+    http.post('/account/withdraw', {
+      amount: ipt.value,
+      channel: 101,
       code: code.value
     }, function () {
       message.load_hide();
-      message.toast_show('提现成功');
-      setTimeout(function () {
-        window.location.replace('/sqb/wallet');
-      }, 1000);
+      window.location.replace('/account/toHssWithdrawSuccess?toFee=' + toFee + '&toBank=' + toBank + '&toAmount=' + toAmount + '&toCome=' + toCome);
     })
   }
 });

@@ -1,14 +1,15 @@
 /**
- * Created by administrator on 2016/12/13.
+ * Created by administrator on 2016/12/8.
  */
 
-// 引入 message http
+// 引入动画模版 处理验证码
+const AnimationCountdown = _require('art-countdown');
+let countdown = new AnimationCountdown('sendCode', '重新获取');
+// 引入http message
+const validate = _require('validate');
 const message = _require('message');
 const http = _require('http');
-const tools = _require('tools');
-// 引入浏览器特性处理
-const browser = _require('browser');
-browser.elastic_touch('list');
+
 // 定义ajax事件
 let content = document.getElementById('content');
 let list = document.createElement('list');
@@ -39,37 +40,43 @@ let getData = function (e, page) {
   if (nowPage == 1) {
     list.innerHTML = '';
   }
-  http.post('/notice/noticeList', {
+  http.post('/account/flowDetails', {
     pageNo: nowPage,
-    pageSize: 20
+    pageSize: 5
   }, function (res) {
     console.log(res.records);
     for (let i = 0; i < res.records.length; i++) {
       let div_list = document.createElement('div');
-      div_list.className = 'list-li';
-      div_list.onclick = function () {
-        window.location.href = '/notice/noticeDetailsJSP?id=' + res.records[i].id;
-      };
-      let div_icon = document.createElement('div');
-      if (res.records[i].type == 1) {
-        div_icon.className = 'list-icon notice1';
-      } else {
-        div_icon.className = 'list-icon notice2';
-      }
-      let div_info = document.createElement('div');
-      div_info.className = 'list-info';
+      div_list.className = 'flow-group';
+      let div_left = document.createElement('div');
+      div_left.className = 'flow-left';
       let div_top = document.createElement('div');
-      div_top.className = 'top';
-      div_top.innerHTML = res.records[i].title;
+      div_top.className = 'flow-top';
+      let div_span = document.createElement('span');
+      if (res.records[i].incomeAmount > 0) {
+        div_span.innerHTML = '收入';
+      } else {
+        div_span.innerHTML = '提现';
+      }
+      let div_spanS = document.createElement('span');
+      div_spanS.className = 's';
+      div_spanS.innerHTML = res.records[i].remark;
+      div_top.appendChild(div_span);
+      div_top.appendChild(div_spanS);
       let div_bottom = document.createElement('div');
-      div_bottom.className = 'bottom';
-      div_bottom.innerHTML = res.records[i].dates;
-      div_info.appendChild(div_top);
-      div_info.appendChild(div_bottom);
+      div_bottom.className = 'flow-bottom';
+      div_bottom.innerHTML = res.records[i].createTime;
+      div_left.appendChild(div_top);
+      div_left.appendChild(div_bottom);
       let div_right = document.createElement('div');
-      div_right.className = 'list-right';
-      div_list.appendChild(div_icon);
-      div_list.appendChild(div_info);
+      if (res.records[i].incomeAmount > 0) {
+        div_right.className = 'flow-right green';
+        div_right.innerHTML = '+' + res.records[i].incomeAmount;
+      } else {
+        div_right.className = 'flow-right red';
+        div_right.innerHTML = '-' + res.records[i].outAmount;
+      }
+      div_list.appendChild(div_left);
       div_list.appendChild(div_right);
       list.appendChild(div_list);
     }
