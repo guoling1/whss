@@ -40,7 +40,7 @@ public interface AccountBankService {
      * @param expiryTime
      * @return
      */
-    int initCreditBankCard(long accountId,String bankNo,String bankName,String reserveMobile,String bankBin,String expiryTime);
+    long initCreditBankCard(long accountId,String bankNo,String bankName,String reserveMobile,String bankBin,String expiryTime);
     /**
      * 新增
      * @param accountBank
@@ -144,5 +144,5 @@ public interface AccountBankService {
      * @param bankNo
      * @return
      */
-    Integer isExistBankNo(long accountId,String bankNo,int cardType);
+    Long isExistBankNo(long accountId,String bankNo,int cardType);
 }
