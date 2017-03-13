@@ -240,6 +240,13 @@ public interface OrderService {
     List<MerchantTradeResponse> getOrderList(OrderTradeRequest req);
 
     /**
+     * 统计
+     * @param req
+     * @return
+     */
+    String amountCount(OrderTradeRequest req);
+
+    /**
      * 查询交易详情
      * @param orderRecord
      * @return

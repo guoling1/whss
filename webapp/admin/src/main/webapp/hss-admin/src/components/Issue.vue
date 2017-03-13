@@ -160,8 +160,6 @@
             </div>
             <div slot="footer" class="dialog-footer" style="text-align: center;">
               <el-button @click="goBack">返回</el-button>
-              <!--<el-button @click="settle(2,records[index].id)">结算已对账部分</el-button>-->
-              <!--<el-button @click="settle(3,records[index].id)">强制结算全部</el-button>-->
             </div>
           </el-dialog>
         </div>

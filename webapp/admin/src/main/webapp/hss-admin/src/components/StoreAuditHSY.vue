@@ -301,8 +301,8 @@
         this.$http.post('/admin/hsyMerchantAudit/throughAudit', {
           id: this.$data.id,
           uid: this.$data.msg.uid,
+          name: this.msg.name
         }).then(function (res) {
-          /*this.$router.push('/admin/record/storeList')*/
           this.$router.go(-1)
         }, function (err) {
           this.$message({

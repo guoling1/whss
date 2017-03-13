@@ -15,7 +15,6 @@ import com.jkm.hss.account.sevice.AccountService;
 import com.jkm.hss.bill.service.DealerWithdrawService;
 import com.jkm.hss.bill.service.MerchantWithdrawService;
 import com.jkm.hss.controller.BaseController;
-import com.jkm.hss.dealer.entity.Dealer;
 import com.jkm.hss.dealer.helper.DealerSupport;
 import com.jkm.hss.helper.request.MerchantWithdrawRequest;
 import com.jkm.hss.helper.response.AccountInfoResponse;
@@ -52,7 +51,7 @@ import java.util.Map;
  * Created by yuxiang on 2017-02-14.
  */
 @Slf4j
-@RequestMapping(value = "/daili/account")
+@RequestMapping(value = "/account")
 @Controller
 public class AccountController extends BaseController{
 
