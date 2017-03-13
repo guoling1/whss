@@ -8,7 +8,7 @@ public class ChangeBankCardRequest{
     /**
      * 账户编码
      */
-    private long accountId;
+    private long merchantId;
     /**
      * 银行卡号
      */

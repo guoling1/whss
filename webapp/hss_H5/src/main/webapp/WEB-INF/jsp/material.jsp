@@ -9,7 +9,7 @@
   <meta name="viewport"
         content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
   <title>好收收</title>
-  <link rel="stylesheet" href="/css/hss/style.2.1.3.css">
+  <link rel="stylesheet" href="http://static.jinkaimen.cn/hss/css/style.2.1.5.css">
   <link rel="stylesheet" href="http://static.jinkaimen.cn/weui/weui.css">
 </head>
 <body>
@@ -107,7 +107,7 @@
         结算卡支持银行
         <span class="sample-xx" id="bankHide"></span>
       </div>
-      <img class="sample-box-body" src="../../assets/zcbank.png" alt="">
+      <img class="sample-box-body" src="http://static.jinkaimen.cn/hss/assets/zcbank.png" alt="">
       <div class="sample-box-foot" id="bankEnter">
         确定
       </div>
@@ -146,7 +146,6 @@
   });
 </script>
 <script src="http://static.jinkaimen.cn/vendor/vendor.1.0.3.min.js"></script>
-<%--<script src="http://static.jinkaimen.cn/hss/2.1.3/material.min.js"></script>--%>
-<script src="/js/hss/2.1.3/material.min.js"></script>
+<script src="http://static.jinkaimen.cn/hss/2.1.3/material.min.js"></script>
 
 </html>

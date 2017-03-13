@@ -145,13 +145,13 @@
         loading: true,
         url:'',
         //正式
-        /*queryUrl:'http://pay.qianbaojiajia.com/order/pay/listOrder',
+        queryUrl:'http://pay.qianbaojiajia.com/order/pay/listOrder',
          excelUrl:'http://pay.qianbaojiajia.com/order/pay/exportExcel',
-         syncUrl:'http://pay.qianbaojiajia.com/order/syncPayOrder',*/
+         syncUrl:'http://pay.qianbaojiajia.com/order/syncPayOrder',
         //测试
-        queryUrl:'http://192.168.1.20:8076/order/pay/listOrder',
+        /*queryUrl:'http://192.168.1.20:8076/order/pay/listOrder',
         excelUrl:'http://192.168.1.20:8076/order/pay/exportExcel',
-        syncUrl:'http://192.168.1.20:8076/order/syncPayOrder',
+        syncUrl:'http://192.168.1.20:8076/order/syncPayOrder',*/
       }
     },
     created: function () {
@@ -164,6 +164,26 @@
           type: 'success'
         });
       });
+      let time = new Date();
+      this.date = [time,time];
+      this.date1 = [time,time];
+      for (var j = 0; j < this.date.length; j++) {
+        var str = this.date[j];
+        var ary = [str.getFullYear(), str.getMonth() + 1, str.getDate()];
+        for (var i = 0, len = ary.length; i < len; i++) {
+          if (ary[i] < 10) {
+            ary[i] = '0' + ary[i];
+          }
+        }
+        str = ary[0] + '-' + ary[1] + '-' + ary[2];
+        if (j == 0) {
+          this.$data.query.startCreateTime = str;
+          this.$data.query.startFinishTime = str;
+        } else {
+          this.$data.query.endCreateTime = str;
+          this.$data.query.endFinishTime = str;
+        }
+      }
       this.getData()
     },
     methods: {
@@ -278,7 +298,7 @@
     },
     watch: {
       date: function (val, oldVal) {
-        if (val[0] != null) {
+        if (val!=undefined&&val[0] != null) {
           for (var j = 0; j < val.length; j++) {
             var str = val[j];
             var ary = [str.getFullYear(), str.getMonth() + 1, str.getDate()];
@@ -300,7 +320,7 @@
         }
       },
       date1: function (val, oldVal) {
-        if (val[0] != null) {
+        if (val!=undefined&&val[0] != null) {
           for (var j = 0; j < val.length; j++) {
             var str = val[j];
             var ary = [str.getFullYear(), str.getMonth() + 1, str.getDate()];

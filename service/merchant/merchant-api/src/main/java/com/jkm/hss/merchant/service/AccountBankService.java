@@ -98,10 +98,10 @@ public interface AccountBankService {
 
     /**
      * 更改默认银行卡
-     * @param accountId
+     * @param merchantId
      * @param bankNo
      * @param reserveMobile
      * @return
      */
-    int changeBankCard(long accountId,String bankNo,String reserveMobile);
+    int changeBankCard(long merchantId,String bankNo,String reserveMobile);
 }

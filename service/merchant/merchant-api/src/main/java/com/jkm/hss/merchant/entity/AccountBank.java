@@ -77,4 +77,9 @@ public class AccountBank extends BaseEntity {
      * 卡宾
      */
     private String bankBin;
+
+    /**
+     * 有效期
+     */
+    private String expiryTime;
 }

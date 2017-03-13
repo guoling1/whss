@@ -20,7 +20,7 @@ import java.util.Date;
 public class MerchantTradeResponse {
 
     /**
-     * 支付流水号
+     * 业务订单号
      */
     private String businessOrderNo;
 
