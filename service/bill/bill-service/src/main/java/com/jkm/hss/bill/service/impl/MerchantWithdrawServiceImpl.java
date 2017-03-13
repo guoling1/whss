@@ -94,8 +94,8 @@ public class MerchantWithdrawServiceImpl implements MerchantWithdrawService {
             paymentSdkDaiFuRequest.setMobile(MerchantSupport.decryptMobile(merchantInfo.getId() , merchantInfo.getReserveMobile()));
             paymentSdkDaiFuRequest.setBankName(merchantInfo.getBankName());
             paymentSdkDaiFuRequest.setAccountName(merchantInfo.getName());
-            paymentSdkDaiFuRequest.setAccountNumber(DealerSupport.decryptBankCard(merchantInfo.getId(),merchantInfo.getBankNo()));
-            paymentSdkDaiFuRequest.setIdCard(DealerSupport.decryptIdentity(merchantInfo.getId(), merchantInfo.getIdentity()));
+            paymentSdkDaiFuRequest.setAccountNumber(MerchantSupport.decryptBankCard(merchantInfo.getId(),merchantInfo.getBankNo()));
+            paymentSdkDaiFuRequest.setIdCard(MerchantSupport.decryptIdentity(merchantInfo.getId(), merchantInfo.getIdentity()));
             paymentSdkDaiFuRequest.setPlayMoneyChannel(EnumUpperChannel.SAOMI.getId());
             paymentSdkDaiFuRequest.setNote(merchantInfo.getMerchantName());
             paymentSdkDaiFuRequest.setSystemCode(playMoneyOrder.getAppId());
