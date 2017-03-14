@@ -127,7 +127,7 @@
         this.$data.query.splitDate = this.$route.query.time;
       }else if(this.$route.path=="/admin/record/profitSecDet"){
         this.$data.path = '/admin/allProfit/secondDealerDetail';
-        this.$data.totalUrl = '/admin/allProfit/secondDealerDetail';
+        this.$data.totalUrl = '/admin/allProfit/secondDetailAmount';
         this.$data.query.receiptMoneyAccountId = this.$route.query.id;
         this.$data.query.splitDate = this.$route.query.time;
         this.$data.query.businessType = this.$route.query.type;
