@@ -25,7 +25,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -72,30 +71,9 @@ public class MerchantInfoQueryController extends BaseController {
             req.setEndTime2(sdf.format(rightNow.getTime()));
         }
         List<MerchantInfoResponse> list = this.merchantInfoQueryService.getAll(req);
-        List<MerchantInfoResponse> list2 = this.merchantInfoQueryService.seletAll();
-        long count = this.merchantInfoQueryService.getCount(req);
-        pageModel.setCount(count);
+//        long count = this.merchantInfoQueryService.getCount(req);
+        pageModel.setCount(list.size());
         pageModel.setRecords(list);
-        List<MerchantInfoResponse> list1 = new ArrayList();
-        if (list2.size()>0){
-            for (int i=0;i<list2.size();i++){
-                if (req.getProxyName()!=null&&!req.getProxyName().equals("")){
-                    if (req.getProxyName().equals((list2.get(i).getProxyName()))){
-                        list1.add(list2.get(i));
-                    }
-                    pageModel.setCount(list1.size());
-                    pageModel.setRecords(list1);
-                }
-                if (req.getProxyName1()!=null&&!req.getProxyName1().equals("")){
-                    if (req.getProxyName1().equals((list2.get(i).getProxyName1()))){
-                        list1.add(list2.get(i));
-                    }
-                    pageModel.setCount(list1.size());
-                    pageModel.setRecords(list1);
-                }
-
-            }
-        }
         String downLoadExcel = downLoad(req);
         pageModel.setExt(downLoadExcel);
         return CommonResponse.objectResponse(1, "success", pageModel);

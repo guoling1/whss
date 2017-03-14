@@ -30,6 +30,7 @@ import com.jkm.hss.dealer.entity.Dealer;
 import com.jkm.hss.dealer.helper.DealerSupport;
 import com.jkm.hss.dealer.service.DealerService;
 import com.jkm.hss.merchant.entity.MerchantInfo;
+import com.jkm.hss.merchant.helper.MerchantSupport;
 import com.jkm.hss.merchant.service.MerchantInfoService;
 import com.jkm.hss.product.enums.EnumBalanceTimeType;
 import com.jkm.hss.product.enums.EnumPayChannelSign;
@@ -90,11 +91,11 @@ public class MerchantWithdrawServiceImpl implements MerchantWithdrawService {
             // TODO
             paymentSdkDaiFuRequest.setTradeType("D0");
             paymentSdkDaiFuRequest.setIsCompany("0");
-            paymentSdkDaiFuRequest.setMobile(DealerSupport.decryptMobile(merchantInfo.getId() , merchantInfo.getReserveMobile()));
+            paymentSdkDaiFuRequest.setMobile(MerchantSupport.decryptMobile(merchantInfo.getId() , merchantInfo.getReserveMobile()));
             paymentSdkDaiFuRequest.setBankName(merchantInfo.getBankName());
             paymentSdkDaiFuRequest.setAccountName(merchantInfo.getName());
-            paymentSdkDaiFuRequest.setAccountNumber(DealerSupport.decryptBankCard(merchantInfo.getId(),merchantInfo.getBankNo()));
-            paymentSdkDaiFuRequest.setIdCard(DealerSupport.decryptIdentity(merchantInfo.getId(), merchantInfo.getIdentity()));
+            paymentSdkDaiFuRequest.setAccountNumber(MerchantSupport.decryptBankCard(merchantInfo.getId(),merchantInfo.getBankNo()));
+            paymentSdkDaiFuRequest.setIdCard(MerchantSupport.decryptIdentity(merchantInfo.getId(), merchantInfo.getIdentity()));
             paymentSdkDaiFuRequest.setPlayMoneyChannel(EnumUpperChannel.SAOMI.getId());
             paymentSdkDaiFuRequest.setNote(merchantInfo.getMerchantName());
             paymentSdkDaiFuRequest.setSystemCode(playMoneyOrder.getAppId());

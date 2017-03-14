@@ -142,7 +142,7 @@ public class MerchantSupport {
         return DigestUtils.sha256Hex(password + salt);
     }
     public static void main(String[] args ){
-        System.out.println(decryptMobile("MrtacVVec3fXRfxmoFXUtw"));
+        System.out.println(decryptMobile("B3sItZYv_xR2FGOBZqzPpg"));
 //        System.out.println(decryptBankCard("6212260200059789657"));
 //        System.out.println(decryptIdentity("110105198602103314"));
 //        System.out.println("=============================================");
