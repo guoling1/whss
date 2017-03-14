@@ -1,4 +1,4 @@
-package com.jkm.hss.merchant.helper.request;
+package com.jkm.hss.merchant.entity;
 
 import lombok.Data;
 
