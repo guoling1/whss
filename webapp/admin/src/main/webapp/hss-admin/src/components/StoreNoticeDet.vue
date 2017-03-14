@@ -112,7 +112,7 @@
         this.$http.post('/admin/pushNotice/noticeDetails',{id:this.$route.query.id})
           .then(function (res) {
             this.query = res.data;
-            this.inputContent = res.data.text;
+            this.query.text = this.inputContent = res.data.text;
           })
           .catch(function (err) {
             this.$message({
