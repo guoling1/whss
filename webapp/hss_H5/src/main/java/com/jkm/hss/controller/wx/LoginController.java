@@ -846,7 +846,6 @@ public class LoginController extends BaseController {
                         model.addAttribute("countyCode",accountBankOptional.get().getBranchCountyCode());
                         model.addAttribute("countyName",accountBankOptional.get().getBranchCountyName());
                         model.addAttribute("branchCode",accountBankOptional.get().getBranchCode());
-                        model.addAttribute("branchName",accountBankOptional.get().getBranchName());
                         if(accountBankOptional.get().getBranchName()!=null&&!"".equals(accountBankOptional.get().getBranchName())){//有支行信息
                             String tempBranchName = accountBankOptional.get().getBranchName();
                             if(tempBranchName.length()>12){
