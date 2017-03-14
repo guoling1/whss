@@ -1002,7 +1002,7 @@ public class QRCodeServiceImpl implements QRCodeService {
      */
     @Override
     public int getFirstUnActivateCount(long firstLevelDealerId) {
-        return this.getFirstUnActivateCount(firstLevelDealerId);
+        return qrCodeDao.getFirstUnActivateCount(firstLevelDealerId);
     }
 
     /**
@@ -1013,7 +1013,18 @@ public class QRCodeServiceImpl implements QRCodeService {
      */
     @Override
     public int getFirstActivateCount(long firstLevelDealerId) {
-        return this.getFirstActivateCount(firstLevelDealerId);
+        return qrCodeDao.getFirstActivateCount(firstLevelDealerId);
+    }
+
+    /**
+     * 查询二级代理商未激活二维码数
+     *
+     * @param secondLevelDealerId
+     * @return
+     */
+    @Override
+    public int getSecondUnActivateCount(long secondLevelDealerId) {
+        return qrCodeDao.getSecondUnActivateCount(secondLevelDealerId);
     }
 
     /**
