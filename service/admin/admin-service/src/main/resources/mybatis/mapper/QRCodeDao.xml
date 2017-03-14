@@ -514,7 +514,7 @@
         FROM
 	    tb_qr_code as c
         LEFT JOIN tb_merchant_info AS i ON c.merchant_id = i.id
-        WHERE 1=1
+        WHERE  sys_type='hss'
         <if test="code != null and code!=''">
             and c.code = #{code}
         </if>
@@ -556,7 +556,7 @@
 
     <select id="getHSSQrCodeCount" resultType="java.lang.Long">
         SELECT count(1) from tb_qr_code
-        WHERE 1=1
+        WHERE sys_type='hss'
         <if test="code != null and code!=''">
             and code = #{code}
         </if>
@@ -637,7 +637,7 @@
         FROM
         tb_qr_code as c
         LEFT JOIN app_biz_shop as i ON c.merchant_id = i.id
-        WHERE 1=1
+        WHERE sys_type='hsy'
         <if test="code != null and code!=''">
             and c.code = #{code}
         </if>
@@ -646,9 +646,9 @@
             SELECT
             id
             FROM
-            tb_merchant_info
+            app_biz_shop
             WHERE
-            merchant_name LIKE "%"#{merchantName}"%"
+            NAME LIKE "%"#{merchantName}"%"
             )
         </if>
         <if test="firstDealerName != null and firstDealerName!=''">
@@ -679,7 +679,7 @@
 
     <select id="getHSYQrCodeCount" resultType="java.lang.Long">
         SELECT count(1) from tb_qr_code
-        WHERE 1=1
+        WHERE sys_type='hsy'
         <if test="code != null and code!=''">
             and code = #{code}
         </if>
@@ -688,9 +688,9 @@
             SELECT
             id
             FROM
-            tb_merchant_info
+            app_biz_shop
             WHERE
-            merchant_name LIKE "%"#{merchantName}"%"
+            NAME LIKE "%"#{merchantName}"%"
             )
         </if>
         <if test="firstDealerName != null and firstDealerName!=''">
