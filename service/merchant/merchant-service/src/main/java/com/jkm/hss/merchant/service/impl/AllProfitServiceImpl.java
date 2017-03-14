@@ -553,6 +553,24 @@ public class AllProfitServiceImpl implements AllProfitService {
         return this.allProfitDao.secondAmount(request);
     }
 
+    @Override
+    public CompanyProfitResponse ProfitDetailAmount(CompanyPrifitRequest req) {
+        final CompanyPrifitRequest request =getTime(req);
+        return this.allProfitDao.ProfitDetailAmount(request);
+    }
+
+    @Override
+    public CompanyProfitResponse firstDetailAmount(CompanyPrifitRequest req) {
+        final CompanyPrifitRequest request =getTime(req);
+        return this.allProfitDao.firstDetailAmount(request);
+    }
+
+    @Override
+    public CompanyProfitResponse secondDetailAmount(CompanyPrifitRequest req) {
+        final CompanyPrifitRequest request =getTime(req);
+        return this.allProfitDao.secondDetailAmount(request);
+    }
+
     /**
      * 获取临时路径
      *

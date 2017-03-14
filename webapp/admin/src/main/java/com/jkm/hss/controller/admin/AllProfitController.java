@@ -87,7 +87,7 @@ public class AllProfitController extends BaseController {
             req.setEndTime(sdf.format(rightNow.getTime()));
         }
         String result = allProfitService.companyAmount(req);
-        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", result);
+        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "统计完成", result);
 
     }
 
@@ -132,7 +132,19 @@ public class AllProfitController extends BaseController {
         pageModel.setCount(count);
         pageModel.setRecords(list);
 
-        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "统计完成", pageModel);
+        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询完成", pageModel);
+    }
+
+    /**
+     * 公司分润详情统计
+     * @param req
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/ProfitDetailAmount", method = RequestMethod.POST)
+    public CommonResponse ProfitDetailAmount(@RequestBody final CompanyPrifitRequest req) throws ParseException {
+        CompanyProfitResponse result = allProfitService.ProfitDetailAmount(req);
+        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "统计完成", result);
     }
 
     /**
@@ -232,6 +244,19 @@ public class AllProfitController extends BaseController {
     }
 
     /**
+     * 一级代理分润详情统计
+     * @param req
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/firstDetailAmount", method = RequestMethod.POST)
+    public CommonResponse firstDetailAmount(@RequestBody final CompanyPrifitRequest req) throws ParseException {
+
+        CompanyProfitResponse result = allProfitService.firstDetailAmount(req);
+        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "统计完成", result);
+    }
+
+    /**
      * 二级代理商分润
      * @param req
      * @return
@@ -277,7 +302,7 @@ public class AllProfitController extends BaseController {
         }
         String result = allProfitService.secondAmount(req);
 
-        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", result);
+        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "统计完成", result);
     }
 
     /**
@@ -312,7 +337,7 @@ public class AllProfitController extends BaseController {
      * @return
      */
     @ResponseBody
-    @RequestMapping(value = "/secondDealerDetail", method = RequestMethod.POST)
+    @RequestMapping(value = "/ secondDealerDetail", method = RequestMethod.POST)
     public CommonResponse getSecondDealerDeatail(@RequestBody final CompanyPrifitRequest req) throws ParseException {
         final PageModel<CompanyProfitResponse> pageModel = new PageModel<CompanyProfitResponse>(req.getPageNo(), req.getPageSize());
         req.setOffset(pageModel.getFirstIndex());
@@ -322,5 +347,18 @@ public class AllProfitController extends BaseController {
         pageModel.setRecords(list);
 
         return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", pageModel);
+    }
+
+    /**
+     * 二级代理分润详情统计
+     * @param req
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/secondDetailAmount", method = RequestMethod.POST)
+    public CommonResponse secondDetailAmount(@RequestBody final CompanyPrifitRequest req) throws ParseException {
+        CompanyProfitResponse result = allProfitService.secondDetailAmount(req);
+
+        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "统计完成", result);
     }
 }

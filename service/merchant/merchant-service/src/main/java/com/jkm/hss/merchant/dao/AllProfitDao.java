@@ -139,4 +139,25 @@ public interface AllProfitDao {
      * @return
      */
     String secondAmount(CompanyPrifitRequest req);
+
+    /**
+     * 公司分润详情统计
+     * @param request
+     * @return
+     */
+    CompanyProfitResponse ProfitDetailAmount(CompanyPrifitRequest request);
+
+    /**
+     * 一级代理商分润详情统计
+     * @param request
+     * @return
+     */
+    CompanyProfitResponse firstDetailAmount(CompanyPrifitRequest request);
+
+    /**
+     * 二级代理商分润详情统计
+     * @param request
+     * @return
+     */
+    CompanyProfitResponse secondDetailAmount(CompanyPrifitRequest request);
 }

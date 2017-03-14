@@ -141,4 +141,25 @@ public interface AllProfitService {
      * @return
      */
     String secondAmount(CompanyPrifitRequest req);
+
+    /**
+     * 公司分润详情统计
+     * @param req
+     * @return
+     */
+    CompanyProfitResponse ProfitDetailAmount(CompanyPrifitRequest req);
+
+    /**
+     * 一级代理商分润详情统计
+     * @param req
+     * @return
+     */
+    CompanyProfitResponse firstDetailAmount(CompanyPrifitRequest req);
+
+    /**
+     * 二级代理商分润详情统计
+     * @param req
+     * @return
+     */
+    CompanyProfitResponse secondDetailAmount(CompanyPrifitRequest req);
 }

@@ -474,6 +474,30 @@
 		ORDER BY a.split_date DESC LIMIT #{offset},#{pageSize}
 	</select>
 
+    <!-- 查询公司分润详情统计 -->
+    <select id="ProfitDetailAmount" resultType="com.jkm.hss.merchant.helper.response.CompanyProfitResponse">
+        SELECT
+            SUM(a.split_total_amount) AS split_total_amount,
+            SUM(a.split_amount) AS split_amount
+        FROM
+        tb_split_account_record a
+        LEFT JOIN tb_account b ON a.receipt_money_account_id = b.id
+        LEFT JOIN tb_order c ON c.order_no = a.order_no
+        WHERE
+        b.id in (1,2,11,48,49) AND a.split_date between #{splitDate} and #{splitDate1}
+        AND a.business_type=#{businessType}
+        and a.`split_amount` <![CDATA[ > ]]> 0
+        <if test="orderNo != null and orderNo != ''">
+            AND a.order_no = #{orderNo}
+        </if>
+        <if test="receiptMoneyUserName != null and receiptMoneyUserName != ''">
+            AND a.receipt_money_user_name = #{receiptMoneyUserName}
+        </if>
+        <if test="businessType != null and businessType != ''">
+            AND a.business_type = #{businessType}
+        </if>
+    </select>
+
 	<!-- 查询公司分润详情总数 -->
 	<select id="selectCompanyProfitDetailsCount" resultType="java.lang.Integer">
 		SELECT
@@ -523,6 +547,31 @@
 		ORDER BY a.split_date DESC LIMIT #{offset},#{pageSize}
 	</select>
 
+    <!-- 查询一级代理商分润详情统计 -->
+    <select id="firstDetailAmount" resultType="com.jkm.hss.merchant.helper.response.CompanyProfitResponse">
+        SELECT
+            SUM(a.split_total_amount) AS split_total_amount,
+            SUM(a.split_amount) AS split_amount
+        FROM
+        tb_split_account_record a
+        LEFT JOIN tb_dealer b ON a.receipt_money_account_id = b.account_id
+        LEFT JOIN tb_order c ON c.order_no = a.order_no
+        WHERE
+        b.`level` = 1 AND a.split_date between #{splitDate} and #{splitDate1}
+        AND a.receipt_money_account_id=#{receiptMoneyAccountId}
+        AND a.business_type=#{businessType}
+        and a.`split_amount` <![CDATA[ > ]]> 0
+        <if test="orderNo != null and orderNo != ''">
+            AND a.order_no = #{orderNo}
+        </if>
+        <if test="receiptMoneyUserName != null and receiptMoneyUserName != ''">
+            AND a.receipt_money_user_name = #{receiptMoneyUserName}
+        </if>
+        <if test="businessType != null and businessType != ''">
+            AND a.business_type = #{businessType}
+        </if>
+    </select>
+
 	<!-- 查询一级代理商分润详情总数 -->
 	<select id="selectOneProfitDetailsCount" resultType="java.lang.Integer">
 		SELECT COUNT(a.id) FROM tb_split_account_record a
@@ -568,6 +617,31 @@
 		</if>
 		ORDER BY a.split_date DESC LIMIT #{offset},#{pageSize}
 	</select>
+
+    <!-- 查询二级代理商分润详情统计 -->
+    <select id="secondDetailAmount" resultType="com.jkm.hss.merchant.helper.response.CompanyProfitResponse">
+        SELECT
+            SUM(a.split_total_amount) AS split_total_amount,
+            SUM(a.split_amount) AS split_amount
+        FROM
+        tb_split_account_record a
+        LEFT JOIN tb_dealer b ON a.receipt_money_account_id = b.account_id
+        LEFT JOIN tb_order c ON c.order_no = a.order_no
+        WHERE
+        b.`level` = 2 AND a.split_date between #{splitDate} and #{splitDate1}
+        AND a.receipt_money_account_id =#{receiptMoneyAccountId}
+        and a.`split_amount` <![CDATA[ > ]]> 0
+        <if test="orderNo != null and orderNo != ''">
+            AND a.order_no = #{orderNo}
+        </if>
+        <if test="receiptMoneyUserName != null and receiptMoneyUserName != ''">
+            AND a.receipt_money_user_name = #{receiptMoneyUserName}
+        </if>
+        <if test="businessType != null and businessType != ''">
+            AND a.business_type = #{businessType}
+        </if>
+        ORDER BY a.split_date DESC LIMIT #{offset},#{pageSize}
+    </select>
 
 	<!-- 查询二级代理商分润详情总数 -->
 	<select id="selectTwoProfitDetailsCount" resultType="java.lang.Integer">
