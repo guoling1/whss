@@ -13,7 +13,7 @@
         content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
   <meta name="format-detection" content="telephone=no"/>
   <title>好收收</title>
-  <link rel="stylesheet" href="http://static.jinkaimen.cn/hss/css/style.2.1.5.css">
+  <link rel="stylesheet" href="http://static.jinkaimen.cn/hss/css/style.2.1.7.css">
   <link rel="stylesheet" href="http://static.jinkaimen.cn/weui/weui.css">
 </head>
 <body>
@@ -29,7 +29,7 @@
       <input type="hidden" id="key-input" value="">
     </div>
   </div>
-  <div class="prompt-deep">支付宝收款限额8千，微信收款限额1万</div>
+  <div class="prompt-deep">收款实时到账;无卡快捷单笔限额2万</div>
   <div class="keyboard" id="keyboard">
     <div class="copyright flexBox">
       <span class="line"></span>
@@ -73,9 +73,7 @@
     <div class="message-box">
       <div class="message-box-head">提示</div>
       <div class="message-box-body">
-        使用该通道前，您需要补全结算卡的支行信息<br>
-        以及提供一张您本人的信用卡号增加收款额度<br>
-        信息报备有大约1个工作日的审核时间
+        使用该通道前<br>您需要补全结算卡的支行信息
       </div>
       <div class="message-box-foot">
         <div class="message-cancel" id="cancelBK">
@@ -93,9 +91,7 @@
     <div class="message-box">
       <div class="message-box-head">提示</div>
       <div class="message-box-body">
-        使用该通道前，您需要补全结算卡的支行信息<br>
-        以及提供一张您本人的信用卡号增加收款额度<br>
-        信息报备有大约1个工作日的审核时间
+        使用该通道前<br>您需要补全结算卡的支行信息
       </div>
       <div class="message-box-foot">
         <div class="message-cancel" id="cancelB">
@@ -113,9 +109,7 @@
     <div class="message-box">
       <div class="message-box-head">提示</div>
       <div class="message-box-body">
-        使用该通道前，您需要<br>
-        提供一张您本人的信用卡号增加收款额度<br>
-        信息报备有大约1个工作日的审核时间
+        补全信用卡信息可以提高您的支付额度
       </div>
       <div class="message-box-foot">
         <div class="message-cancel" id="cancelC">
@@ -133,7 +127,7 @@
     <div class="message-box">
       <div class="message-box-head">提示</div>
       <div class="message-box-body">
-        商户信息报备中，大约1个工作日完成<br>请耐心等待
+        该通道正在支付公司注册中<br>请明天再使用该通道
       </div>
       <div class="message-box-foot">
         <div class="message-enter" id="cancel">
@@ -157,6 +151,6 @@
 </div>
 
 </body>
-<script src="http://static.jinkaimen.cn/vendor/vendor.1.0.3.min.js"></script>
-<script src="http://static.jinkaimen.cn/hss/2.1.3/collection.min.js"></script>
+<script src="http://static.jinkaimen.cn/vendor/vendor.1.0.5.min.js"></script>
+<script src="http://static.jinkaimen.cn/hss/2.1.4/collection.min.js"></script>
 </html>

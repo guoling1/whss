@@ -56,12 +56,12 @@
                   </template>
                 </el-table-column>
                 <el-table-column prop="orderNo" label="交易订单号"></el-table-column>
-                <el-table-column prop="splitSettlePeriod" label="分润结算周期"></el-table-column>
-                <el-table-column label="结算时间">
-                  <template scope="scope">
-                    {{ scope.row.settleTime | datetime }}
-                  </template>
-                </el-table-column>
+                <!--<el-table-column prop="splitSettlePeriod" label="分润结算周期"></el-table-column>-->
+                <!--<el-table-column label="结算时间">-->
+                  <!--<template scope="scope">-->
+                    <!--{{ scope.row.settleTime | datetime }}-->
+                  <!--</template>-->
+                <!--</el-table-column>-->
                 <el-table-column prop="dealerName" label="代理商名称"></el-table-column>
                 <el-table-column prop="splitAmount" label="分润金额" align="right"></el-table-column>
                 <el-table-column prop="remark" label="备注信息"></el-table-column>

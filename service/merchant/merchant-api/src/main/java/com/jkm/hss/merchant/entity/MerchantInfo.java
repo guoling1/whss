@@ -220,6 +220,8 @@ public class MerchantInfo extends BaseEntity{
      */
     private String isAuthen;
 
-
+    public String getPlainBankMobile(String phone){
+        return phone.substring(0,3) + "****" + phone.substring(7,11);
+    }
 
 }

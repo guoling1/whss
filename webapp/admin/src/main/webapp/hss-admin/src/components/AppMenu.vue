@@ -97,9 +97,9 @@
             <li :class="(url=='/admin/record/storeAuditList')?'treeview active':'treeview'" @click="refrash">
               <router-link to="/admin/record/storeAuditList"><span>待审核商户</span></router-link>
             </li>
-            <!--<li :class="(url=='/admin/record/storeNotice')?'treeview active':'treeview'" @click="refrash">
+            <li :class="(url=='/admin/record/storeNotice')?'treeview active':'treeview'" @click="refrash">
               <router-link to="/admin/record/storeNotice"><span>商户公告</span></router-link>
-            </li>-->
+            </li>
           </ul>
           </router-link>
         </li>

@@ -267,7 +267,7 @@ public class AccountBankServiceImpl implements AccountBankService{
     @Override
     public List<BankListResponse> selectAll(long accountId) {
         List<AccountBank> accountBankList = new ArrayList<AccountBank>();
-        AccountBank accountBank = this.getDefault(accountId);
+        AccountBank accountBank = accountBankDao.getDefault(accountId);
         if(accountBank!=null){
             accountBankList.add(accountBank);
         }
