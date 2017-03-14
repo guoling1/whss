@@ -440,4 +440,32 @@ public interface QRCodeService {
      * @return
      */
     PageModel<MyQrCodeListResponse> selectDealerQrCodeList(MyQrCodeListRequest myQrCodeListRequest);
+
+    /**
+     * 未分配个数
+     * @param firstLevelDealerId
+     * @return
+     */
+    int getFirstResidueCount(long firstLevelDealerId);
+
+    /**
+     * 已分配个数
+     * @param firstLevelDealerId
+     * @return
+     */
+    int getFirstDistributeCount(long firstLevelDealerId);
+
+    /**
+     * 未激活个数
+     * @param firstLevelDealerId
+     * @return
+     */
+    int getFirstUnActivateCount(long firstLevelDealerId);
+
+    /**
+     * 已激活个数
+     * @param firstLevelDealerId
+     * @return
+     */
+    int getFirstActivateCount(long firstLevelDealerId);
 }

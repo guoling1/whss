@@ -10,6 +10,7 @@ import com.jkm.hss.admin.entity.DistributeQRCodeRecord;
 import com.jkm.hss.admin.enums.EnumQRCodeDistributeType;
 import com.jkm.hss.admin.helper.requestparam.MyQrCodeListRequest;
 import com.jkm.hss.admin.helper.responseparam.MyQrCodeListResponse;
+import com.jkm.hss.admin.helper.responseparam.QrCodeListPageResponse;
 import com.jkm.hss.admin.helper.responseparam.QrCodeListResponse;
 import com.jkm.hss.admin.service.DistributeQRCodeRecordService;
 import com.jkm.hss.admin.service.QRCodeService;
@@ -176,7 +177,28 @@ public class QrCodeController extends BaseController {
     @ResponseBody
     @RequestMapping(value = "/myQrCodeList", method = RequestMethod.POST)
     public CommonResponse myQrCodeList (@RequestBody MyQrCodeListRequest myQrCodeListRequest) {
+        QrCodeListPageResponse<MyQrCodeListResponse> qrCodeListPageResponse = new QrCodeListPageResponse<MyQrCodeListResponse>();
+        if(super.getDealer().get().getLevel() == EnumDealerLevel.FIRST.getId()){
+            myQrCodeListRequest.setFirstDealerId(super.getDealer().get().getId());
+            int unDistributeCount = this.qrCodeService.getFirstResidueCount(super.getDealer().get().getId());
+            qrCodeListPageResponse.setUnDistributeCount(unDistributeCount);
+            int distributeCount = this.qrCodeService.getFirstResidueCount(super.getDealer().get().getId());
+            qrCodeListPageResponse.setDistributeCount(distributeCount);
+            int unActivateCount = this.qrCodeService.getFirstUnActivateCount(super.getDealer().get().getId());
+            qrCodeListPageResponse.setUnActivateCount(unActivateCount);
+            int activateCount = this.qrCodeService.getFirstActivateCount(super.getDealer().get().getId());
+            qrCodeListPageResponse.setActivateCount(activateCount);
+        }
+        if(super.getDealer().get().getLevel() == EnumDealerLevel.SECOND.getId()){
+            myQrCodeListRequest.setSecondDealerId(super.getDealer().get().getId());
+            qrCodeListPageResponse.setUnDistributeCount(0);
+            qrCodeListPageResponse.setDistributeCount(0);
+
+
+        }
+
         final PageModel<MyQrCodeListResponse> pageModel = this.qrCodeService.selectDealerQrCodeList(myQrCodeListRequest);
+        qrCodeListPageResponse.setPageModel(pageModel);
         return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", pageModel);
     }
 }

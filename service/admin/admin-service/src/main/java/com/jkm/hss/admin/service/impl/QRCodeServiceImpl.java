@@ -973,6 +973,50 @@ public class QRCodeServiceImpl implements QRCodeService {
     }
 
     /**
+     * 未分配个数
+     *
+     * @param firstLevelDealerId
+     * @return
+     */
+    @Override
+    public int getFirstResidueCount(long firstLevelDealerId) {
+        return qrCodeDao.getFirstResidueCount(firstLevelDealerId);
+    }
+
+    /**
+     * 已分配个数
+     *
+     * @param firstLevelDealerId
+     * @return
+     */
+    @Override
+    public int getFirstDistributeCount(long firstLevelDealerId) {
+        return qrCodeDao.getFirstDistributeCount(firstLevelDealerId);
+    }
+
+    /**
+     * 未激活个数
+     *
+     * @param firstLevelDealerId
+     * @return
+     */
+    @Override
+    public int getFirstUnActivateCount(long firstLevelDealerId) {
+        return this.getFirstUnActivateCount(firstLevelDealerId);
+    }
+
+    /**
+     * 已激活个数
+     *
+     * @param firstLevelDealerId
+     * @return
+     */
+    @Override
+    public int getFirstActivateCount(long firstLevelDealerId) {
+        return this.getFirstActivateCount(firstLevelDealerId);
+    }
+
+    /**
      * 生成二维码
      * @param adminId
      * @param count

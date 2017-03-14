@@ -10,9 +10,13 @@ import lombok.Data;
 @Data
 public class MyQrCodeListRequest extends PageQueryParams {
     /**
-     * 代理商编码
+     * 一级代理商编码
      */
-    private long dealerId;
+    private long firstDealerId;
+    /**
+     * 二级代理商编码
+     */
+    private long secondDealerId;
     /**
      * 二维码编号
      */
