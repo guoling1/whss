@@ -613,8 +613,8 @@
         WHERE
         id = c.second_level_dealer_id
         ) as secondDealerName,
-        i.merchant_name,
-        i.mark_code as merchantMarkCode,
+        i.NAME,
+        i.GLOBALID as merchantMarkCode,
         CASE
         WHEN i.`status` = 0 THEN
         '待填写资料'
@@ -633,10 +633,10 @@
         ELSE
         NULL
         END as merchantStatus,
-        NULL as shopName
+        i.SHORTNAME as shopName
         FROM
         tb_qr_code as c
-        LEFT JOIN tb_merchant_info AS i ON c.merchant_id = i.id
+        LEFT JOIN app_biz_shop as i ON c.merchant_id = i.id
         WHERE 1=1
         <if test="code != null and code!=''">
             and c.code = #{code}
