@@ -26,7 +26,7 @@
               <div class="alignRight" style="line-height: 30px">标题:</div>
             </el-col>
             <el-col :span="10">
-              <div class="grid-content bg-purple-light">
+              <div class="grid-content bg-purple-light" id="inp">
                 <el-input size="small" v-model="query.title" placeholder="请输入内容"></el-input>
               </div>
             </el-col>
@@ -60,7 +60,7 @@
                 <div class="">
                   <v-editor
                     :input-content="inputContent"
-                    v-model="query.text"></v-editor>
+                    v-model="outputContent"></v-editor>
                   <input type="button" class="btn btn-primary" value="立即发布" v-if="!isShow" style="margin: 15px 0 100px"
                          @click="open">
                   <input type="button" class="btn btn-primary" value="修 改" v-if="isShow"
@@ -112,7 +112,10 @@
         this.$http.post('/admin/pushNotice/noticeDetails',{id:this.$route.query.id})
           .then(function (res) {
             this.query = res.data;
-            this.inputContent = res.data.text;
+            this.query.text = this.inputContent = res.data.text;
+            console.log(this.inputContent)
+            console.log(this.outputContent)
+            console.log(this.query.text)
           })
           .catch(function (err) {
             this.$message({
@@ -123,9 +126,16 @@
           })
       }
     },
+    compiled(){
+
+      document.getElementById('inp').getElementsByTagName('input')[0].focus()
+    },
     attached() {},
     methods: {
       open() {
+        console.log(this.inputContent);
+        console.log(this.outputContent);
+        console.log(this.query.text);
         if(this.query.title==''||this.query.text==''){
           this.$message({
             type: 'warning',
@@ -137,6 +147,7 @@
             cancelButtonText: '取消',
             type: 'info'
           }).then(() => {
+            this.query.text = this.outputContent;
             this.$http.post('/admin/pushNotice/notice',this.query)
               .then(res=>{
                 this.$message({
@@ -193,42 +204,52 @@
       },
       change(){
         this.query.id = this.$route.query.id;
-        if (this.query.title == '' || this.query.text == '') {
+        console.log(this.inputContent);
+        console.log(this.outputContent);
+
+        this.query.text = this.outputContent;
+        console.log(this.query.text);
+        if(this.inputContent!=''&&this.outputContent==''){
           this.$message({
             type: 'warning',
-            message: '请输入内容!'
+            message: '内容无修改!'
           });
-        } else {
-          this.$confirm('确认修改这条消息吗?', '提醒', {
-            confirmButtonText: '确认修改',
-            cancelButtonText: '取消',
-            type: 'info'
-          }).then(() => {
-            this.$http.post('/admin/pushNotice/updateNotice', this.query)
-              .then(res => {
-                this.$message({
-                  type: 'success',
-                  message: '修改成功!'
-                });
-                this.$router.push('/admin/record/storeNotice')
-              })
-              .catch(err => {
-                this.$message({
-                  showClose: true,
-                  message: err.statusMessage,
-                  type: 'error'
-                })
-              })
-          })
-            .catch(() => {
-              this.$message({
-                type: 'info',
-                message: '已取消修改'
-              });
+        }else if (this.query.title == '' || this.query.text == '') {
+            this.$message({
+              type: 'warning',
+              message: '请输入内容!'
             });
+          } else {
+            this.$confirm('确认修改这条消息吗?', '提醒', {
+              confirmButtonText: '确认修改',
+              cancelButtonText: '取消',
+              type: 'info'
+            }).then(() => {
+              this.$http.post('/admin/pushNotice/updateNotice', this.query)
+                .then(res => {
+                  this.$message({
+                    type: 'success',
+                    message: '修改成功!'
+                  });
+                  this.$router.push('/admin/record/storeNotice')
+                })
+                .catch(err => {
+                  this.$message({
+                    showClose: true,
+                    message: err.statusMessage,
+                    type: 'error'
+                  })
+                })
+            })
+              .catch(() => {
+                this.$message({
+                  type: 'info',
+                  message: '已取消修改'
+                });
+              });
+          }
         }
       },
-    },
     components: {
       'v-editor': Editor
     }
