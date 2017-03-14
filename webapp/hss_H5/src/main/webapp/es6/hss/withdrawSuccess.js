@@ -20,7 +20,6 @@ let bank = document.getElementById('bank');
 let amount = document.getElementById('amount');
 let fee = document.getElementById('fee');
 let come = document.getElementById('come');
-console.log(query.toBank);
 bank.innerHTML = decodeURIComponent(query.toBank);
 amount.innerHTML = query.toAmount + '元';
 fee.innerHTML = query.toFee + '元';
