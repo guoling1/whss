@@ -720,6 +720,7 @@
 
     <select id="getDealerHSSQrCodeList" resultType="com.jkm.hss.admin.helper.responseparam.MyQrCodeListResponse">
         SELECT
+        c.id,
         '好收收' as sysTypeName,
         c.code,
         c.distribute_time,
@@ -835,6 +836,7 @@
 
     <select id="getDealerHSYQrCodeList" resultType="com.jkm.hss.admin.helper.responseparam.MyQrCodeListResponse">
         SELECT
+        c.id,
         '好收银' as sysTypeName,
         c.code,
         c.distribute_time,

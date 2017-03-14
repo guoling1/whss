@@ -9,6 +9,7 @@ import java.util.Date;
  */
 @Data
 public class MyQrCodeListResponse {
+    private long id;
     /**
      * 产品类型
      */

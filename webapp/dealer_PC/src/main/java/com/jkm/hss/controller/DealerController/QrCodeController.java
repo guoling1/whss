@@ -7,9 +7,13 @@ import com.jkm.base.common.entity.CommonResponse;
 import com.jkm.base.common.entity.PageModel;
 import com.jkm.base.common.enums.EnumBoolean;
 import com.jkm.hss.admin.entity.DistributeQRCodeRecord;
+import com.jkm.hss.admin.entity.QRCode;
 import com.jkm.hss.admin.enums.EnumQRCodeDistributeType;
+import com.jkm.hss.admin.enums.EnumQRCodeSysType;
 import com.jkm.hss.admin.helper.requestparam.MyQrCodeListRequest;
+import com.jkm.hss.admin.helper.requestparam.QrCodeDetailRequest;
 import com.jkm.hss.admin.helper.responseparam.MyQrCodeListResponse;
+import com.jkm.hss.admin.helper.responseparam.QrCodeDetailResponse;
 import com.jkm.hss.admin.helper.responseparam.QrCodeListPageResponse;
 import com.jkm.hss.admin.helper.responseparam.QrCodeListResponse;
 import com.jkm.hss.admin.service.DistributeQRCodeRecordService;
@@ -201,5 +205,32 @@ public class QrCodeController extends BaseController {
         final PageModel<MyQrCodeListResponse> pageModel = this.qrCodeService.selectDealerQrCodeList(myQrCodeListRequest);
         qrCodeListPageResponse.setPageModel(pageModel);
         return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", pageModel);
+    }
+
+    /**
+     * 二维码详情
+     * @param qrCodeDetailRequest
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/qrCodeDetail", method = RequestMethod.POST)
+    public CommonResponse qrCodeDetail (@RequestBody QrCodeDetailRequest qrCodeDetailRequest) {
+        Optional<QRCode> qrCodeOptional = this.qrCodeService.getById(qrCodeDetailRequest.getId());
+        if(!qrCodeOptional.isPresent()){
+            return CommonResponse.simpleResponse(-1, "二维码不存在");
+        }
+        QrCodeDetailResponse qrCodeDetailResponse = new QrCodeDetailResponse();
+        if((EnumQRCodeSysType.HSS.getId()).equals(qrCodeOptional.get().getSysType())){
+            qrCodeDetailResponse.setProductName("好收收");
+            String url = "http://hss.qianbaojiajia.com/code/scanCode?code="+qrCodeOptional.get().getCode()+"&sign="+qrCodeOptional.get().getSign();
+            qrCodeDetailResponse.setQrUrl(url);
+        }
+        if((EnumQRCodeSysType.HSY.getId()).equals(qrCodeOptional.get().getSysType())){
+            qrCodeDetailResponse.setProductName("好收银");
+            String url = "http://hsy.qianbaojiajia.com/code/scanCode?code="+qrCodeOptional.get().getCode()+"&sign="+qrCodeOptional.get().getSign();
+            qrCodeDetailResponse.setQrUrl(url);
+        }
+        qrCodeDetailResponse.setCode(qrCodeOptional.get().getCode());
+        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", qrCodeDetailResponse);
     }
 }
