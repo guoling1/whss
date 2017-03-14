@@ -51,6 +51,7 @@ const IssueRecord = r => require.ensure([], () => r(require('../../components/Is
 const CodeStatus = r => require.ensure([], () => r(require('../../components/CodeStatus')), 'group-record');
 const CodeProRecord = r => require.ensure([], () => r(require('../../components/CodeProRecord')), 'group-record');
 const CodeProduct = r => require.ensure([], () => r(require('../../components/CodeProduct')), 'group-record');
+const CodeAll = r => require.ensure([], () => r(require('../../components/CodeAll')), 'group-record');
 //产品
 const ProductAdd = r => require.ensure([], () => r(require('../../components/ProductAdd')), 'group-record');
 const ProductList = r => require.ensure([], () => r(require('../../components/ProductList')), 'group-record');
@@ -228,6 +229,11 @@ export default {
       path: 'codeStatus',
       name: 'CodeStatus',
       component: CodeStatus
+    },
+    {
+      path: 'codeAll',
+      name: 'CodeAll',
+      component: CodeAll
     },
     {
       path: 'codeProduct',
