@@ -47,4 +47,39 @@ if (index != -1) {
 // 获取银行卡列表
 http.post('/wx/myCardList', {}, function (data) {
   console.log(data);
+  for (let i = 0; i < data.length; i++) {
+    let group = document.createElement('div');
+    // group top-start
+    let top = document.createElement('div');
+    let logo = document.createElement('div');
+    let info = document.createElement('div');
+    // group top-end
+    // group bottom-start
+    let bottom = document.createElement('div');
+    let XP = document.createElement('div');
+    let xp = document.createElement('div');
+    xp.className = 'bank_x';
+    XP.appendChild(xp);
+    XP.appendChild(xp);
+    XP.appendChild(xp);
+    XP.appendChild(xp);
+    let p = document.createElement('div');
+    let word = document.createElement('div');
+    word.innerHTML = '123';
+    p.appendChild(word);
+    let s = document.createElement('div');
+    bottom.appendChild(XP);
+    bottom.appendChild(XP);
+    bottom.appendChild(XP);
+    bottom.appendChild(p);
+    bottom.appendChild(s);
+    // group bottom-end
+    // group small-start
+    let small = document.createElement('div');
+    small.innerHTML = '该卡用于收款后的自动结算与余额提现';
+    // group small-end
+    group.appendChild(top);
+    group.appendChild(bottom);
+    group.appendChild(small);
+  }
 });
