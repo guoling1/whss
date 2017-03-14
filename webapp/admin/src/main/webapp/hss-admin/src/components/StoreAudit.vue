@@ -164,7 +164,8 @@
         </div>
       </div>
       <div class="box box-primary">
-        <p class="lead">默认结算卡</p>
+        <span class="lead" style="display: inline-block">默认结算卡</span>
+        <a href="javascript:;" @click="changeBank = true" v-if="!isShow">修改默认结算卡</a>
         <el-row type="flex" class="row-bg" justify="space-around" style="margin-bottom: 15px">
           <el-col :span="5">
             <div class="label">结算卡开户名：<span>{{msg.name}}</span></div>
@@ -235,6 +236,19 @@
           </template>
         </div>
       </div>
+      <el-dialog title="修改默认结算卡" v-model="changeBank">
+        <el-form :label-position="right" label-width="150px">
+          <el-form-item label="结算卡号：" width="120">
+            <el-input style="width: 70%" size="small" v-model="bankQuery.bankNo"></el-input>
+          </el-form-item>
+          <el-form-item label="银行绑定手机号：" width="120">
+            <el-input style="width: 70%" size="small" v-model="bankQuery.reserveMobile"></el-input>
+          </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer" style="text-align: center">
+          <el-button type="primary" style="width: 200px;margin-top: -50px;position: relative;top: -30px;" @click="changeBankNo">确 定</el-button>
+        </div>
+      </el-dialog>
       <div class="box box-primary" v-if="!isShow">
         <p class="lead">审核日志</p>
         <div class="table-responsive">
@@ -329,11 +343,18 @@
         status: '',
         isShow: true,
         res: [],
-        rateInfo: []
+        rateInfo: [],
+        changeBank: false,
+        bankQuery:{
+          merchantId:'',
+          bankNo:'',
+          reserveMobile:''
+        }
       }
     },
     created: function () {
       this.$data.id = this.$route.query.id;
+      this.bankQuery.merchantId = this.$route.query.id;
       if (this.$route.query.status != 2) {
         this.$data.isShow = false;
       }
@@ -413,6 +434,25 @@
             })
           })
       },
+      // 修改结算卡
+      changeBankNo: function () {
+        this.$http.post('/admin/accountBank/changeBankCard',this.bankQuery)
+          .then(res=>{
+            this.$message({
+              showClose: true,
+              type: 'success',
+              message: '修改成功'
+            });
+            this.changeBank = false;
+          })
+          .catch(err=>{
+            this.$message({
+              showClose: true,
+              message: err.statusMessage,
+              type: 'error'
+            })
+          })
+      },
       changeBig: function (e) {
         e = e || window.event;
         var obj = e.srcElement || e.target;
@@ -481,11 +521,10 @@
     span, a {
       font-weight: normal;
     }
-    a {
-      color: #20a0ff;
-    }
   }
-
+  a {
+    color: #20a0ff;
+  }
   .mask {
     background: rgba(0, 0, 0, 0.8);
     z-index: 1100;
