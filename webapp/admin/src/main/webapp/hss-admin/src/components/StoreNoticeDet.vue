@@ -194,7 +194,10 @@
       },
       change(){
         this.query.id = this.$route.query.id;
+        console.log(this.inputContent)
+        console.log(this.outputContent)
         this.query.text = this.outputContent;
+        console.log(this.query.text)
         if(this.inputContent!=''&&this.outputContent==''){
           this.$message({
             type: 'warning',
