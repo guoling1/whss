@@ -103,6 +103,12 @@
         AND a.status=#{status}
     </if>
 
+    <if test="proxyName != null and proxyName!=''">
+        AND a.first_dealer_id in (select id from tb_dealer where proxy_name LIKE CONCAT('%',#{proxyName},'%'))
+    </if>
+    <if test="proxyName1 != null and proxyName1!=''">
+        AND a.second_dealer_id in (select id from tb_dealer where proxy_name LIKE CONCAT('%',#{proxyName1},'%'))
+    </if>
     <if test="startTime!=null and startTime!=''">
         AND a.create_time <![CDATA[ >= ]]> #{startTime}
     </if>
