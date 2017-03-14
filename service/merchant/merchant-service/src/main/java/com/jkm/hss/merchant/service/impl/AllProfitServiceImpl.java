@@ -537,17 +537,20 @@ public class AllProfitServiceImpl implements AllProfitService {
 
     @Override
     public String companyAmount(CompanyPrifitRequest req) {
-        return this.allProfitDao.companyAmount(req);
+        CompanyPrifitRequest request =selectTime(req);
+        return this.allProfitDao.companyAmount(request);
     }
 
     @Override
     public String getFirstAmount(CompanyPrifitRequest req) {
-        return this.allProfitDao.getFirstAmount(req);
+        CompanyPrifitRequest request =selectTime(req);
+        return this.allProfitDao.getFirstAmount(request);
     }
 
     @Override
     public String secondAmount(CompanyPrifitRequest req) {
-        return this.allProfitDao.secondAmount(req);
+        CompanyPrifitRequest request =selectTime(req);
+        return this.allProfitDao.secondAmount(request);
     }
 
     /**

@@ -84,6 +84,14 @@ public class ProfitDetailsController extends BaseController{
     @ResponseBody
     @RequestMapping(value = "/profitAmount",method = RequestMethod.POST)
     public CommonResponse profitAmount(@RequestBody ProfitDetailsRequest req) throws ParseException {
+        if(req.getEndTime()!=null&&!"".equals(req.getEndTime())){
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            Date dt = sdf.parse(req.getEndTime());
+            Calendar rightNow = Calendar.getInstance();
+            rightNow.setTime(dt);
+            rightNow.add(Calendar.DATE, 1);
+            req.setEndTime(sdf.format(rightNow.getTime()));
+        }
         JkmProfitDetailsResponse profitAmount =  profitService.profitAmount(req);
         return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "统计完成", profitAmount);
     }

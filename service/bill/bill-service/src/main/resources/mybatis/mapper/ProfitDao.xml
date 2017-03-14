@@ -67,6 +67,13 @@
 
     <select id="selectProfitDetailsCount"  resultType="java.lang.Integer">
         SELECT COUNT(1) FROM tb_split_account_record WHERE 1=1 AND split_date <![CDATA[ <= ]]>#{splitDate}
+        <if test="startTime!=null and startTime!=''">
+            AND split_date <![CDATA[ >= ]]> #{startTime}
+        </if>
+
+        <if test="endTime!=null and endTime!=''">
+            AND split_date <![CDATA[ <= ]]> #{endTime}
+        </if>
         <if test="orderNo!=null and orderNo!=''">
             AND order_no = #{orderNo}
         </if>
