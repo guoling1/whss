@@ -26,6 +26,16 @@
                 <el-option label="好收银-收款" value="hsyPay">好收银-收款</el-option>
               </el-select>
             </li>
+            <li class="same" v-if="isShow">
+              <label>分润日期:</label>
+              <el-date-picker
+                v-model="date"
+                type="daterange"
+                align="right"
+                placeholder="选择日期范围"
+                :picker-options="pickerOptions2" size="small">
+              </el-date-picker>
+            </li>
             <li class="same">
               <div class="btn btn-primary" @click="search">筛选</div>
             </li>
@@ -73,7 +83,10 @@
           receiptMoneyUserName:'',
           businessType:'',
           splitDate:'',
+          startTime:'',
+          endTime:''
         },
+        date:'',
         records: [],
         count: 0,
         total: 0,
@@ -103,6 +116,23 @@
         this.$data.query.splitDate = this.$route.query.time;
         this.$data.query.businessType = this.$route.query.type;
         this.isShow =false
+      }
+      let time = new Date();
+      this.date = [time,time];
+      for (var j = 0; j < this.date.length; j++) {
+        var str = this.date[j];
+        var ary = [str.getFullYear(), str.getMonth() + 1, str.getDate()];
+        for (var i = 0, len = ary.length; i < len; i++) {
+          if (ary[i] < 10) {
+            ary[i] = '0' + ary[i];
+          }
+        }
+        str = ary[0] + '-' + ary[1] + '-' + ary[2];
+        if (j == 0) {
+          this.$data.query.startTime = str;
+        } else {
+          this.$data.query.endTime = str;
+        }
       }
       this.getData();
     },
@@ -179,6 +209,30 @@
         this.getData()
       },
     },
+    watch: {
+      date: function (val, oldVal) {
+        if (val!=undefined&&val[0] != null) {
+          for (var j = 0; j < val.length; j++) {
+            var str = val[j];
+            var ary = [str.getFullYear(), str.getMonth() + 1, str.getDate()];
+            for (var i = 0, len = ary.length; i < len; i++) {
+              if (ary[i] < 10) {
+                ary[i] = '0' + ary[i];
+              }
+            }
+            str = ary[0] + '-' + ary[1] + '-' + ary[2];
+            if (j == 0) {
+              this.$data.query.startTime = str;
+            } else {
+              this.$data.query.endTime = str;
+            }
+          }
+        } else {
+          this.$data.query.startTime = '';
+          this.$data.query.endTime = '';
+        }
+      }
+    }
   }
 </script>
 <style scoped lang="less">

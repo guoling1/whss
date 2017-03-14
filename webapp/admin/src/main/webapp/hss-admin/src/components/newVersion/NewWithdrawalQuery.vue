@@ -18,6 +18,10 @@
               <el-input style="width: 130px" v-model="query.orderNo" placeholder="请输入内容" size="small"></el-input>
             </li>
             <li class="same">
+              <label>备注:</label>
+              <el-input style="width: 130px" v-model="query.remark" placeholder="请输入内容" size="small"></el-input>
+            </li>
+            <li class="same">
               <label>收款账户名:</label>
               <el-input style="width: 130px" v-model="query.userName" placeholder="请输入内容" size="small"></el-input>
             </li>
@@ -77,8 +81,7 @@
             <el-table-column prop="message" label="渠道信息" min-width="85"></el-table-column>
             <el-table-column label="备注信息" min-width="90">
               <template scope="scope">
-                <span class="td" :data-clipboard-text="records[scope.$index].remark" type="text" size="small"
-                      style="cursor: pointer" title="点击复制">{{records[scope.$index].remark|changeHide}}</span>
+                <span class="td" :data-clipboard-text="records[scope.$index].remark" type="text" size="small" style="cursor: pointer" title="点击复制">{{records[scope.$index].remark|changeHide}}</span>
               </template>
             </el-table-column>
             <el-table-column label="操作" min-width="80" fixed="right">
@@ -135,6 +138,7 @@
           pageNo:1,
           pageSize:10,
           orderNo:'',
+          remark:'',
           sn:'',
           userName:'',
           status:''
@@ -147,11 +151,13 @@
         //正式
         /*queryUrl:'http://pay.qianbaojiajia.com/order/withdraw/listOrder',
          excelUrl:'http://pay.qianbaojiajia.com/order/withdraw/exportExcel',
-         syncUrl:'http://pay.qianbaojiajia.com/order/syncWithdrawOrder',*/
+         syncUrl:'http://pay.qianbaojiajia.com/order/syncWithdrawOrder',
+         addUrl:'http://pay.qianbaojiajia.com/order/withdraw/countAmount',*/
         //测试
-        queryUrl:'http://192.168.1.20:8076/order/withdraw/listOrder',
+        queryUrl:'http://192.168.1.25:8240/order/withdraw/listOrder',
         excelUrl:'http://192.168.1.20:8076/order/withdraw/exportExcel',
-        syncUrl:'http://192.168.1.20:8076/order/syncWithdrawOrder'
+        syncUrl:'http://192.168.1.20:8076/order/syncWithdrawOrder',
+        addUrl:'http://192.168.1.25:8240/order/withdraw/countAmount',
       }
     },
     created: function () {
@@ -203,7 +209,7 @@
       },
       add(){
         this.$data.loading = true;
-        this.$http.post('/admin/queryOrder/amountCount',this.query)
+        this.$http.post(this.addUrl,this.query)
           .then(res=>{
             this.$data.loading = false;
             this.records[this.records.length-1].amount = this.total = res.data;
