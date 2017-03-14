@@ -113,9 +113,6 @@
           .then(function (res) {
             this.query = res.data;
             this.query.text = this.inputContent = res.data.text;
-            console.log(this.inputContent)
-            console.log(this.outputContent)
-            console.log(this.query.text)
           })
           .catch(function (err) {
             this.$message({
@@ -126,16 +123,10 @@
           })
       }
     },
-    compiled(){
-
-      document.getElementById('inp').getElementsByTagName('input')[0].focus()
-    },
     attached() {},
     methods: {
       open() {
-        console.log(this.inputContent);
-        console.log(this.outputContent);
-        console.log(this.query.text);
+        this.query.text = this.outputContent;
         if(this.query.title==''||this.query.text==''){
           this.$message({
             type: 'warning',
@@ -147,7 +138,6 @@
             cancelButtonText: '取消',
             type: 'info'
           }).then(() => {
-            this.query.text = this.outputContent;
             this.$http.post('/admin/pushNotice/notice',this.query)
               .then(res=>{
                 this.$message({
@@ -204,11 +194,7 @@
       },
       change(){
         this.query.id = this.$route.query.id;
-        console.log(this.inputContent);
-        console.log(this.outputContent);
-
         this.query.text = this.outputContent;
-        console.log(this.query.text);
         if(this.inputContent!=''&&this.outputContent==''){
           this.$message({
             type: 'warning',
