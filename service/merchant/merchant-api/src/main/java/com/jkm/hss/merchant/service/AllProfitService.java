@@ -47,13 +47,6 @@ public interface AllProfitService {
     List<CompanyProfitResponse> selectTwoProfit(CompanyPrifitRequest req);
 
     /**
-     * 二级代理商分润总数
-     * @param req
-     * @return
-     */
-    List<CompanyProfitResponse> selectTwoProfitCount(CompanyPrifitRequest req);
-
-    /**
      * 公司分润详情
      * @param req
      * @return
@@ -127,4 +120,46 @@ public interface AllProfitService {
      * @return
      */
     String downloadExcelTwoDealer(CompanyPrifitRequest req, String baseUrl) throws ParseException;
+
+    /**
+     * 公司分润统计
+     * @param req
+     * @return
+     */
+    String companyAmount(CompanyPrifitRequest req);
+
+    /**
+     * 一级分润统计
+     * @param req
+     * @return
+     */
+    String getFirstAmount(CompanyPrifitRequest req);
+
+    /**
+     * 二级分润统计
+     * @param req
+     * @return
+     */
+    String secondAmount(CompanyPrifitRequest req);
+
+    /**
+     * 公司分润详情统计
+     * @param req
+     * @return
+     */
+    CompanyProfitResponse ProfitDetailAmount(CompanyPrifitRequest req);
+
+    /**
+     * 一级代理商分润详情统计
+     * @param req
+     * @return
+     */
+    CompanyProfitResponse firstDetailAmount(CompanyPrifitRequest req);
+
+    /**
+     * 二级代理商分润详情统计
+     * @param req
+     * @return
+     */
+    CompanyProfitResponse secondDetailAmount(CompanyPrifitRequest req);
 }
