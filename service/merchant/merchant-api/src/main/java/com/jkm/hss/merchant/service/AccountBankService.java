@@ -2,6 +2,7 @@ package com.jkm.hss.merchant.service;
 
 import com.google.common.base.Optional;
 import com.jkm.hss.merchant.entity.AccountBank;
+import com.jkm.hss.merchant.entity.MerchantInfo;
 import com.jkm.hss.merchant.helper.request.ContinueBankInfoRequest;
 import com.jkm.hss.merchant.helper.response.BankListResponse;
 
@@ -40,7 +41,7 @@ public interface AccountBankService {
      * @param expiryTime
      * @return
      */
-    int initCreditBankCard(long accountId,String bankNo,String bankName,String reserveMobile,String bankBin,String expiryTime);
+    long initCreditBankCard(long accountId,String bankNo,String bankName,String reserveMobile,String bankBin,String expiryTime);
     /**
      * 新增
      * @param accountBank
@@ -132,10 +133,17 @@ public interface AccountBankService {
 
     /**
      * 更改默认银行卡
-     * @param merchantId
+     * @param merchantInfo
      * @param bankNo
      * @param reserveMobile
      * @return
      */
-    int changeBankCard(long merchantId,String bankNo,String reserveMobile);
+    int changeBankCard(MerchantInfo merchantInfo, String bankNo, String reserveMobile);
+    /**
+     * 是否有银行卡
+     * @param accountId
+     * @param bankNo
+     * @return
+     */
+    Long isExistBankNo(long accountId,String bankNo,int cardType);
 }

@@ -106,4 +106,12 @@ public interface AccountBankDao {
     AccountBank getById(@Param("id") long id);
 
 
+    /**
+     * 是否有银行卡
+     * @param accountId
+     * @param bankNo
+     * @return
+     */
+    Long isExistBankNo(@Param("accountId") long accountId,@Param("bankNo") String bankNo,@Param("cardType") int cardType);
+
 }

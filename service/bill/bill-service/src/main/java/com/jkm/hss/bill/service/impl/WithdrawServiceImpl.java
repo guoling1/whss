@@ -157,6 +157,7 @@ public class WithdrawServiceImpl implements WithdrawService {
             if (!settlementRecordOptional.isPresent()){
                 //结算单不存在，属于商户提现
                 this.merchantWithdrawService.handleMerchantWithdrawCallbackMsg(paymentSdkWithdrawCallbackResponse);
+                return;
             }
         }
         if (settlementRecordOptional.get().isWithdrawing()) {

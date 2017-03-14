@@ -3,6 +3,7 @@ package com.jkm.hss.admin.service.impl;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.jkm.base.common.entity.ExcelSheetVO;
+import com.jkm.base.common.entity.PageModel;
 import com.jkm.base.common.util.DateFormatUtil;
 import com.jkm.base.common.util.ExcelUtil;
 import com.jkm.base.common.util.QRCodeUtil;
@@ -10,16 +11,14 @@ import com.jkm.hss.admin.dao.QRCodeDao;
 import com.jkm.hss.admin.entity.CodeQueryResponse;
 import com.jkm.hss.admin.entity.ProductionQrCodeRecord;
 import com.jkm.hss.admin.entity.QRCode;
-import com.jkm.hss.admin.enums.EnumQRCodeActivateStatus;
-import com.jkm.hss.admin.enums.EnumQRCodeDistributionStatus;
-import com.jkm.hss.admin.enums.EnumQRCodeType;
+import com.jkm.hss.admin.enums.*;
 import com.jkm.hss.admin.helper.FirstLevelDealerCodeInfo;
 import com.jkm.hss.admin.helper.MyMerchantCount;
 import com.jkm.hss.admin.helper.QRCodeConsts;
 import com.jkm.hss.admin.helper.SecondLevelDealerCodeInfo;
-import com.jkm.hss.admin.helper.responseparam.ActiveCodeCount;
-import com.jkm.hss.admin.helper.responseparam.DistributeCodeCount;
-import com.jkm.hss.admin.helper.responseparam.QRCodeList;
+import com.jkm.hss.admin.helper.requestparam.MyQrCodeListRequest;
+import com.jkm.hss.admin.helper.requestparam.QrCodeListRequest;
+import com.jkm.hss.admin.helper.responseparam.*;
 import com.jkm.hss.admin.service.ProductionQrCodeRecordService;
 import com.jkm.hss.admin.service.QRCodeService;
 import lombok.extern.slf4j.Slf4j;
@@ -35,6 +34,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -181,6 +181,9 @@ public class QRCodeServiceImpl implements QRCodeService {
         qrCode.setType(EnumQRCodeType.PUBLIC.getCode());
         qrCode.setProductId(productId);
         qrCode.setSysType(sysType);
+        qrCode.setQrType(EnumQRCodeDistributeType.ELECTRONICCODE.getCode());
+        qrCode.setActivateTime(new Date());
+        qrCode.setDistributeTime(new Date());
         this.add(qrCode);
         return qrCode;
     }
@@ -666,6 +669,7 @@ public class QRCodeServiceImpl implements QRCodeService {
             qrCode.setType(EnumQRCodeType.SCAN_CODE.getCode());
             qrCode.setProductId(productId);
             qrCode.setSysType(sysType);
+            qrCode.setQrType(EnumQRCodeDistributeType.ENTITYCODE.getCode());
             this.add(qrCode);
             codes.add(qrCode);
         }
@@ -916,6 +920,111 @@ public class QRCodeServiceImpl implements QRCodeService {
             }
         }
         return null;
+    }
+
+    /**
+     * 所有二维码
+     *
+     * @param qrCodeListRequest
+     * @return
+     */
+    @Override
+    public PageModel<QrCodeListResponse> selectQrCodeList(QrCodeListRequest qrCodeListRequest) {
+        final PageModel<QrCodeListResponse> pageModel = new PageModel<>(qrCodeListRequest.getPageNo(), qrCodeListRequest.getPageSize());
+        qrCodeListRequest.setOffset(pageModel.getFirstIndex());
+        qrCodeListRequest.setCount(pageModel.getPageSize());
+        long count = 0l;
+        List<QrCodeListResponse> qrCodeList = null;
+        if((EnumQRCodeSysType.HSS.getId()).equals(qrCodeListRequest.getSysType())){
+            count=qrCodeDao.getHSSQrCodeCount(qrCodeListRequest);
+            qrCodeList=qrCodeDao.getHSSQrCodeList(qrCodeListRequest);
+        }else{
+            count=qrCodeDao.getHSYQrCodeCount(qrCodeListRequest);
+            qrCodeList=qrCodeDao.getHSYQrCodeList(qrCodeListRequest);
+        }
+        pageModel.setCount(count);
+        pageModel.setRecords(qrCodeList);
+        return pageModel;
+    }
+
+    /**
+     * 所有二维码[dealer]
+     *
+     * @param myQrCodeListRequest
+     * @return
+     */
+    @Override
+    public PageModel<MyQrCodeListResponse> selectDealerQrCodeList(MyQrCodeListRequest myQrCodeListRequest) {
+        final PageModel<MyQrCodeListResponse> pageModel = new PageModel<>(myQrCodeListRequest.getPageNo(), myQrCodeListRequest.getPageSize());
+        myQrCodeListRequest.setOffset(pageModel.getFirstIndex());
+        myQrCodeListRequest.setCount(pageModel.getPageSize());
+        long count = 0l;
+        List<MyQrCodeListResponse> qrCodeList = null;
+        if((EnumQRCodeSysType.HSS.getId()).equals(myQrCodeListRequest.getSysType())){
+            count=qrCodeDao.getDealerHSSQrCodeCount(myQrCodeListRequest);
+            qrCodeList=qrCodeDao.getDealerHSSQrCodeList(myQrCodeListRequest);
+        }else{
+            count=qrCodeDao.getDealerHSYQrCodeCount(myQrCodeListRequest);
+            qrCodeList=qrCodeDao.getDealerHSYQrCodeList(myQrCodeListRequest);
+        }
+        pageModel.setCount(count);
+        pageModel.setRecords(qrCodeList);
+        return pageModel;
+    }
+
+    /**
+     * 未分配个数
+     *
+     * @param firstLevelDealerId
+     * @return
+     */
+    @Override
+    public int getFirstResidueCount(long firstLevelDealerId) {
+        return qrCodeDao.getFirstResidueCount(firstLevelDealerId);
+    }
+
+    /**
+     * 已分配个数
+     *
+     * @param firstLevelDealerId
+     * @return
+     */
+    @Override
+    public int getFirstDistributeCount(long firstLevelDealerId) {
+        return qrCodeDao.getFirstDistributeCount(firstLevelDealerId);
+    }
+
+    /**
+     * 未激活个数
+     *
+     * @param firstLevelDealerId
+     * @return
+     */
+    @Override
+    public int getFirstUnActivateCount(long firstLevelDealerId) {
+        return qrCodeDao.getFirstUnActivateCount(firstLevelDealerId);
+    }
+
+    /**
+     * 已激活个数
+     *
+     * @param firstLevelDealerId
+     * @return
+     */
+    @Override
+    public int getFirstActivateCount(long firstLevelDealerId) {
+        return qrCodeDao.getFirstActivateCount(firstLevelDealerId);
+    }
+
+    /**
+     * 查询二级代理商未激活二维码数
+     *
+     * @param secondLevelDealerId
+     * @return
+     */
+    @Override
+    public int getSecondUnActivateCount(long secondLevelDealerId) {
+        return qrCodeDao.getSecondUnActivateCount(secondLevelDealerId);
     }
 
     /**

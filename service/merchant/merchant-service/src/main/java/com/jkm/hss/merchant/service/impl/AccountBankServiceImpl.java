@@ -104,18 +104,29 @@ public class AccountBankServiceImpl implements AccountBankService{
      * @return
      */
     @Override
-    public int initCreditBankCard(long accountId,String bankNo,String bankName,String reserveMobile,String bankBin,String expiryTime) {
-        this.reset(accountId,EnumAccountBank.CREDIT.getId());
-        AccountBank accountBank = new AccountBank();
-        accountBank.setAccountId(accountId);
-        accountBank.setBankNo(MerchantSupport.decryptBankCard(accountId,bankNo));
-        accountBank.setBankName(bankName);
-        accountBank.setReserveMobile(MerchantSupport.encryptMobile(reserveMobile));
-        accountBank.setCardType(EnumAccountBank.CREDIT.getId());
-        accountBank.setIsDefault(EnumBankDefault.DEFAULT.getId());
-        accountBank.setBankBin(bankBin);
-        accountBank.setExpiryTime(expiryTime);
-        return this.insert(accountBank);
+    public long initCreditBankCard(long accountId,String bankNo,String bankName,String reserveMobile,String bankBin,String expiryTime) {
+        Long backId = this.isExistBankNo(accountId,MerchantSupport.encryptBankCard(bankNo),EnumAccountBank.CREDIT.getId());
+        if(backId==null){
+            log.info("不存在该账号{}",bankNo);
+            this.reset(accountId,EnumAccountBank.CREDIT.getId());
+            AccountBank accountBank = new AccountBank();
+            accountBank.setAccountId(accountId);
+            accountBank.setBankNo(MerchantSupport.encryptBankCard(bankNo));
+            accountBank.setBankName(bankName);
+            accountBank.setReserveMobile(MerchantSupport.encryptMobile(reserveMobile));
+            accountBank.setCardType(EnumAccountBank.CREDIT.getId());
+            accountBank.setIsDefault(EnumBankDefault.DEFAULT.getId());
+            accountBank.setBankBin(bankBin);
+            accountBank.setExpiryTime(expiryTime);
+            this.insert(accountBank);
+            return accountBank.getId();
+        }else{
+            log.info("已经存在该账号{}",bankNo);
+            this.reset(accountId,EnumAccountBank.CREDIT.getId());
+            this.setDefaultCreditCard(backId);
+            return backId;
+        }
+
     }
 
     /**
@@ -256,7 +267,7 @@ public class AccountBankServiceImpl implements AccountBankService{
     @Override
     public List<BankListResponse> selectAll(long accountId) {
         List<AccountBank> accountBankList = new ArrayList<AccountBank>();
-        AccountBank accountBank = this.getDefault(accountId);
+        AccountBank accountBank = accountBankDao.getDefault(accountId);
         if(accountBank!=null){
             accountBankList.add(accountBank);
         }
@@ -281,7 +292,7 @@ public class AccountBankServiceImpl implements AccountBankService{
                 }
                 bankListResponse.setBankBin(accountBank1.getBankBin());
                 String tempBranchName = accountBank1.getBranchName();
-                if(tempBranchName.length()>12){
+                if(!"".equals(tempBranchName)&&tempBranchName!=null&&tempBranchName.length()>12){
                     tempBranchName = "***"+tempBranchName.substring(tempBranchName.length()-12,tempBranchName.length());
                 }
                 bankListResponse.setBranchName(tempBranchName);
@@ -322,27 +333,27 @@ public class AccountBankServiceImpl implements AccountBankService{
     /**
      * 更改默认银行卡
      *
-     * @param merchantId
+     * @param merchantInfo
      * @param bankNo
      * @param reserveMobile
      * @return
      */
     @Override
-    public int changeBankCard(long merchantId, String bankNo, String reserveMobile) {
-        Optional<MerchantInfo> merchantInfoOptional = merchantInfoService.selectById(merchantId);
-        this.reset(merchantInfoOptional.get().getAccountId(),EnumAccountBank.DEBITCARD.getId());
+    public int changeBankCard(MerchantInfo merchantInfo, String bankNo, String reserveMobile) {
+
+        this.reset(merchantInfo.getAccountId(),EnumAccountBank.DEBITCARD.getId());
         AccountBank accountBank = new AccountBank();
         //校验身份4要素
-        final String mobile = MerchantSupport.decryptMobile(merchantInfoOptional.get().getMobile());
+        final String mobile = MerchantSupport.decryptMobile(merchantInfo.getMobile());
         final String bankcard = MerchantSupport.encryptBankCard(bankNo);
-        final String idCard = merchantInfoOptional.get().getIdentity();
+        final String idCard = merchantInfo.getIdentity();
         final String bankReserveMobile = MerchantSupport.encryptMobile(reserveMobile);
-        final String realName = merchantInfoOptional.get().getName();
+        final String realName = merchantInfo.getName();
         final Pair<Integer, String> pair = this.verifyIdService.verifyID(mobile, bankcard, idCard, bankReserveMobile, realName);
         if (0 == pair.getLeft()) {
             accountBank.setIsAuthen("1");
         }
-        accountBank.setAccountId(merchantInfoOptional.get().getAccountId());
+        accountBank.setAccountId(merchantInfo.getAccountId());
         accountBank.setBankNo(bankcard);
         final Optional<BankCardBin> bankCardBinOptional = this.bankCardBinService.analyseCardNo(bankNo);
         accountBank.setBankName(bankCardBinOptional.get().getBankName());
@@ -351,5 +362,18 @@ public class AccountBankServiceImpl implements AccountBankService{
         accountBank.setIsDefault(EnumBankDefault.DEFAULT.getId());
         accountBank.setBankBin(bankCardBinOptional.get().getShorthand());
         return this.insert(accountBank);
+    }
+
+    /**
+     * 是否有银行卡
+     *
+     * @param accountId
+     * @param bankNo
+     * @param cardType
+     * @return
+     */
+    @Override
+    public Long isExistBankNo(long accountId, String bankNo, int cardType) {
+        return accountBankDao.isExistBankNo(accountId,bankNo,cardType);
     }
 }
