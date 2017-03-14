@@ -640,7 +640,6 @@
         <if test="businessType != null and businessType != ''">
             AND a.business_type = #{businessType}
         </if>
-        ORDER BY a.split_date DESC LIMIT #{offset},#{pageSize}
     </select>
 
 	<!-- 查询二级代理商分润详情总数 -->

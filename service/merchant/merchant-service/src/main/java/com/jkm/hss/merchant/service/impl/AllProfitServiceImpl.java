@@ -556,19 +556,58 @@ public class AllProfitServiceImpl implements AllProfitService {
     @Override
     public CompanyProfitResponse ProfitDetailAmount(CompanyPrifitRequest req) {
         final CompanyPrifitRequest request =getTime(req);
-        return this.allProfitDao.ProfitDetailAmount(request);
+        if (request.getBusinessType().equals("好收收- 收款")){
+            request.setBusinessType(EnumSplitBusinessType.HSSPAY.getId());
+        }
+        if (request.getBusinessType().equals("好收收-提现")){
+            request.setBusinessType(EnumSplitBusinessType.HSSWITHDRAW.getId());
+        }
+        if (request.getBusinessType().equals("好收收-升级费")){
+            request.setBusinessType(EnumSplitBusinessType.HSSPROMOTE.getId());
+        }
+        if (request.getBusinessType().equals("好收银-收款")){
+            request.setBusinessType(EnumSplitBusinessType.HSYPAY.getId());
+        }
+        CompanyProfitResponse res = this.allProfitDao.ProfitDetailAmount(request);
+        return res;
     }
 
     @Override
     public CompanyProfitResponse firstDetailAmount(CompanyPrifitRequest req) {
         final CompanyPrifitRequest request =getTime(req);
-        return this.allProfitDao.firstDetailAmount(request);
+        if (request.getBusinessType().equals("好收收- 收款")){
+            request.setBusinessType(EnumSplitBusinessType.HSSPAY.getId());
+        }
+        if (request.getBusinessType().equals("好收收-提现")){
+            request.setBusinessType(EnumSplitBusinessType.HSSWITHDRAW.getId());
+        }
+        if (request.getBusinessType().equals("好收收-升级费")){
+            request.setBusinessType(EnumSplitBusinessType.HSSPROMOTE.getId());
+        }
+        if (request.getBusinessType().equals("好收银-收款")){
+            request.setBusinessType(EnumSplitBusinessType.HSYPAY.getId());
+        }
+        CompanyProfitResponse res = this.allProfitDao.firstDetailAmount(request);
+        return res;
     }
 
     @Override
     public CompanyProfitResponse secondDetailAmount(CompanyPrifitRequest req) {
         final CompanyPrifitRequest request =getTime(req);
-        return this.allProfitDao.secondDetailAmount(request);
+        if (request.getBusinessType().equals("好收收- 收款")){
+            request.setBusinessType(EnumSplitBusinessType.HSSPAY.getId());
+        }
+        if (request.getBusinessType().equals("好收收-提现")){
+            request.setBusinessType(EnumSplitBusinessType.HSSWITHDRAW.getId());
+        }
+        if (request.getBusinessType().equals("好收收-升级费")){
+            request.setBusinessType(EnumSplitBusinessType.HSSPROMOTE.getId());
+        }
+        if (request.getBusinessType().equals("好收银-收款")){
+            request.setBusinessType(EnumSplitBusinessType.HSYPAY.getId());
+        }
+        CompanyProfitResponse res = this.allProfitDao.secondDetailAmount(request);
+        return res;
     }
 
     /**
