@@ -48,9 +48,13 @@ public class PaymentSdkUnionPayRequest {
     private String totalAmount;
 
     /**
+     * 持卡人姓名
+     */
+    private String cardByName;
+    /**
      * 信用卡号
      */
-    private String creditCardNo;
+    private String cardByNo;
 
     /**
      * 有效期
@@ -60,7 +64,12 @@ public class PaymentSdkUnionPayRequest {
     /**
      * cvv2
      */
-    private String cvv2;
+    private String cardCvv;
+
+    /**
+     * 证件号码
+     */
+    private String cerNumber;
 
     /**
      * 手机号

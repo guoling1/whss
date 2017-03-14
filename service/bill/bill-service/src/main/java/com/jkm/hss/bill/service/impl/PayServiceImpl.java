@@ -882,9 +882,11 @@ public class PayServiceImpl implements PayService {
         paymentSdkUnionPayRequest.setNotifyUrl(PaymentSdkConstants.SDK_PAY_NOTIFY_URL);
         paymentSdkUnionPayRequest.setMerName(merchant.getName());
         paymentSdkUnionPayRequest.setTotalAmount(order.getRealPayAmount().toPlainString());
-        paymentSdkUnionPayRequest.setCreditCardNo(MerchantSupport.decryptBankCard(merchant.getAccountId(), accountBank.getBankNo()));
+        paymentSdkUnionPayRequest.setCardByName(merchant.getName());
+        paymentSdkUnionPayRequest.setCardByNo(MerchantSupport.decryptBankCard(merchant.getAccountId(), accountBank.getBankNo()));
         paymentSdkUnionPayRequest.setExpireDate(accountBank.getExpiryTime());
-        paymentSdkUnionPayRequest.setCvv2(cvv2);
+        paymentSdkUnionPayRequest.setCardCvv(cvv2);
+        paymentSdkUnionPayRequest.setCerNumber(MerchantSupport.decryptIdentity(merchant.getIdentity()));
         paymentSdkUnionPayRequest.setMobile(MerchantSupport.decryptMobile(merchant.getAccountId(), accountBank.getReserveMobile()));
         final String resultStr = this.httpClientFacade.jsonPost(PaymentSdkConstants.SDK_PAY_UNIONPAY_PREPARE, SdkSerializeUtil.convertObjToMap(paymentSdkUnionPayRequest));
         log.info("商户[{}], 订单号[{}],  快捷预下单结果[{}]", merchantId, order.getOrderNo(), resultStr);
