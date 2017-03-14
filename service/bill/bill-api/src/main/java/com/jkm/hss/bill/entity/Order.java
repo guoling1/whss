@@ -175,6 +175,15 @@ public class Order extends BaseEntity {
     }
 
     /**
+     * 是否支付中
+     *
+     * @return
+     */
+    public boolean isPaying() {
+        return EnumOrderStatus.PAYING.getId() == this.status;
+    }
+
+    /**
      * 是否待支付成功
      *
      * @return

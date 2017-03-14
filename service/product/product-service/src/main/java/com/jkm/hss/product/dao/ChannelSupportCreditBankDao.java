@@ -12,5 +12,20 @@ import java.util.List;
 @Repository
 public interface ChannelSupportCreditBankDao {
 
+    /**
+     * 查询当前通道支持的银行
+     *
+     * @param channelSign
+     * @return
+     */
     List<ChannelSupportCreditBank> selectByChannelSign(@Param("channelSign") int channelSign);
+
+    /**
+     * 查询当前通道，是否支持当前银行
+     *
+     * @param channel
+     * @param bankName
+     * @return
+     */
+    int selectByChannelSignAndBankName(@Param("channel") int channel, @Param("bankName") String bankName);
 }

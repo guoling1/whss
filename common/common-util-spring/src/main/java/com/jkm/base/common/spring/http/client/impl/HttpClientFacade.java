@@ -1,9 +1,7 @@
-package com.jkm.base.common.spring.http.client;
+package com.jkm.base.common.spring.http.client.impl;
 
 import com.google.common.util.concurrent.FutureCallback;
-import org.apache.commons.lang3.tuple.Pair;
 
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Future;
 
@@ -28,7 +26,7 @@ public interface HttpClientFacade {
      * @param parameters
      * @return
      */
-    String post(final String uri, final List<Pair<String, String>> parameters);
+    String jsonPost(final String uri, final Map<String, String> parameters);
 
     /**
      * 同步发送post http请求
@@ -37,17 +35,7 @@ public interface HttpClientFacade {
      * @param parameters
      * @return
      */
-    String post(final String uri, final Map<String, String> parameters);
-
-    /**
-     * 同步发送post http请求
-     *
-     * @param uri
-     * @param parameters
-     * @param isUserJson 是否用application/json
-     * @return
-     */
-    String post(final String uri, final Map<String, String> parameters, final String charset, final boolean isUserJson);
+    String formPost(final String uri, final Map<String, String> parameters);
 
     /**
      * 异步发送post http请求

@@ -176,8 +176,8 @@ public class SettleAccountFlowServiceImpl implements SettleAccountFlowService {
      * @return
      */
     @Override
-    public List<SettleAccountFlow> getDealerOrCompanyFlowByOrderNo(final String orderNo) {
-        return this.settleAccountFlowDao.selectDealerOrCompanyFlowByOrderNo(orderNo);
+    public List<SettleAccountFlow> getByOrderNo(final String orderNo) {
+        return this.settleAccountFlowDao.selectByOrderNo(orderNo);
     }
 
     /**

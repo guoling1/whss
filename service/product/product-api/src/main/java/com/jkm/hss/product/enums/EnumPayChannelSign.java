@@ -196,4 +196,14 @@ public enum EnumPayChannelSign {
     public static boolean isUnionPay(final int channelSign) {
         return MB_UNIONPAY.getId() == channelSign;
     }
+
+    /**
+     *  渠道是否是 T+1 结算
+     *
+     * @param channelSign
+     * @return
+     */
+    public static boolean isT1Settlement(final int channelSign) {
+        return MB_UNIONPAY.getId() == channelSign;
+    }
 }

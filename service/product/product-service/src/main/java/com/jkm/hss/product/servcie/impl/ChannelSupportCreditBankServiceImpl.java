@@ -27,4 +27,16 @@ public class ChannelSupportCreditBankServiceImpl implements ChannelSupportCredit
     public List<ChannelSupportCreditBank> getByChannelSign(final int channelSign) {
         return this.channelSupportCreditBankDao.selectByChannelSign(channelSign);
     }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param channel
+     * @param bankName
+     * @return
+     */
+    @Override
+    public boolean isExistByChannelSignAndBankName(final int channel, final String bankName) {
+        return this.channelSupportCreditBankDao.selectByChannelSignAndBankName(channel, bankName) > 0;
+    }
 }

@@ -16,4 +16,12 @@ public interface ChannelSupportCreditBankService {
      * @return
      */
     List<ChannelSupportCreditBank> getByChannelSign(int channelSign);
+
+    /**
+     * 当前渠道是否支持，当前银行
+     *
+     * @param channel
+     * @param bankName
+     */
+    boolean isExistByChannelSignAndBankName(int channel, String bankName);
 }

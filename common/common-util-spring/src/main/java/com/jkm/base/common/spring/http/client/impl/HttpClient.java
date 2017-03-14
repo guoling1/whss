@@ -1,10 +1,9 @@
-package com.jkm.base.common.spring.http.client;
+package com.jkm.base.common.spring.http.client.impl;
 
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.base.Throwables;
 import com.jkm.base.common.spring.http.client.factory.HttpClientAbstractFactory;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.tuple.Pair;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
@@ -20,8 +19,8 @@ import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
 
 import java.io.Closeable;
+import java.io.IOException;
 import java.nio.charset.Charset;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -29,11 +28,7 @@ import java.util.Map;
  * 下午4:02
  */
 @Slf4j
-public class HttpClient implements Closeable {
-    /**
-     * apache http client辅助抽象工厂
-     */
-    private final HttpClientAbstractFactory httpClientAbstractFactory;
+public class HttpClient implements Closeable{
     /**
      * apache http client
      */
@@ -43,7 +38,6 @@ public class HttpClient implements Closeable {
      * CONSTRUCTOR
      */
     public HttpClient(final HttpClientAbstractFactory httpClientAbstractFactory) {
-        this.httpClientAbstractFactory = httpClientAbstractFactory;
         this.closeableHttpClient = httpClientAbstractFactory.createHttpClient();
     }
 
@@ -56,7 +50,6 @@ public class HttpClient implements Closeable {
      */
     public String post(final String uri, final String content) {
         final HttpPost postRequest = new HttpPost(uri);
-        postRequest.setConfig(httpClientAbstractFactory.createRequestConfig());
         final ByteArrayEntity entity = new ByteArrayEntity(content.getBytes());
         entity.setContentEncoding("UTF-8");
         postRequest.setEntity(entity);
@@ -69,35 +62,20 @@ public class HttpClient implements Closeable {
     }
 
     /**
-     * 发送post报文
+     * application/json post
      *
      * @param uri        URI
-     * @param parameters 内容
+     * @param paramMap 内容
      * @return 返回报文
      */
-    public String post(final String uri, final List<Pair<String, String>> parameters) {
-        return post(uri, parameters, "UTF-8");
-    }
-
-    /**
-     * 发送post报文
-     *
-     * @param uri        URI
-     * @param parameters 内容
-     * @return 返回报文
-     */
-    public String post(final String uri,
-                       final List<Pair<String, String>> parameters,
-                       final String charset) {
-        final HttpPost postRequest = new HttpPost(uri);
-        postRequest.setConfig(httpClientAbstractFactory.createRequestConfig());
+    public String jsonPost(final String uri,
+                       final Map<String, String> paramMap) {
         final RequestBuilder requestBuilder = RequestBuilder.post()
                 .setUri(uri)
-                .setConfig(httpClientAbstractFactory.createRequestConfig())
-                .setHeader(new BasicHeader(HTTP.CONTENT_ENCODING, charset));
-        for (final Pair<String, String> parameter : parameters) {
-            requestBuilder.addParameter(parameter.getKey(), parameter.getValue());
-        }
+                .addHeader(new BasicHeader(HTTP.CONTENT_ENCODING, "UTF-8"));
+        requestBuilder.addHeader(new BasicHeader(HTTP.CONTENT_TYPE, "application/json"));
+        requestBuilder.setEntity(new StringEntity(JSONObject.toJSONString(paramMap),
+                Charset.forName("UTF-8")));
         try (final CloseableHttpResponse closeableHttpResponse = closeableHttpClient.execute(requestBuilder.build())) {
             return EntityUtils.toString(getResponseEntity(closeableHttpResponse));
         } catch (Exception e) {
@@ -107,43 +85,23 @@ public class HttpClient implements Closeable {
     }
 
     /**
-     * 发送post报文
+     * form 表单 post
      *
-     * @param uri        URI
-     * @param parameters 内容
-     * @return 返回报文
+     * @param uri
+     * @param paramMap
+     * @return
      */
-    public String post(final String uri, final Map<String, String> parameters) {
-        return post(uri, parameters, "UTF-8", false);
-    }
+    public String formPost(final String uri,
+                           final Map<String, String> paramMap) {
 
-    /**
-     * 发送post报文
-     *
-     * @param uri        URI
-     * @param parameters 内容
-     * @param isUseJson 是否用application/json
-     * @return 返回报文
-     */
-    public String post(final String uri,
-                       final Map<String, String> parameters,
-                       final String charset,
-                       final boolean isUseJson) {
         final RequestBuilder requestBuilder = RequestBuilder.post()
                 .setUri(uri)
-                .setConfig(httpClientAbstractFactory.createRequestConfig())
-                .addHeader(new BasicHeader(HTTP.CONTENT_ENCODING, charset));
-        if (isUseJson) {
-            requestBuilder.addHeader(new BasicHeader(HTTP.CONTENT_TYPE, "application/json"));
-            requestBuilder.setEntity(new StringEntity(JSONObject.toJSONString(parameters),
-                    Charset.forName(charset)));
-        } else {
-            for (final Map.Entry<String, String> entry : parameters.entrySet()) {
-                requestBuilder.addParameter(entry.getKey(), entry.getValue());
-            }
-            requestBuilder.setEntity(new UrlEncodedFormEntity(requestBuilder.getParameters(),
-                    Charset.forName(charset)));
+                .addHeader(new BasicHeader(HTTP.CONTENT_ENCODING, "UTF-8"));
+        for (final Map.Entry<String, String> entry : paramMap.entrySet()) {
+            requestBuilder.addParameter(entry.getKey(), entry.getValue());
         }
+        requestBuilder.setEntity(new UrlEncodedFormEntity(requestBuilder.getParameters(),
+                Charset.forName("UTF-8")));
         try (final CloseableHttpResponse closeableHttpResponse = closeableHttpClient.execute(requestBuilder.build())) {
             return EntityUtils.toString(getResponseEntity(closeableHttpResponse));
         } catch (Exception e) {
@@ -151,6 +109,10 @@ public class HttpClient implements Closeable {
         }
         throw new RuntimeException("should not be there");
     }
+
+
+
+
 
     private HttpEntity getResponseEntity(final CloseableHttpResponse closeableHttpResponse) {
         final int statusCode = closeableHttpResponse.getStatusLine().getStatusCode();
@@ -168,7 +130,6 @@ public class HttpClient implements Closeable {
      */
     public String get(final String uri) {
         final HttpGet getRequest = new HttpGet(uri);
-        getRequest.setConfig(httpClientAbstractFactory.createRequestConfig());
         try (final CloseableHttpResponse closeableHttpResponse = closeableHttpClient.execute(getRequest)) {
             return EntityUtils.toString(getResponseEntity(closeableHttpResponse));
         } catch (Exception e) {
@@ -177,15 +138,15 @@ public class HttpClient implements Closeable {
         throw new RuntimeException("should not be there");
     }
 
-    /**
-     * 回收apache http client
-     */
+
+
     @Override
     public void close() {
         try {
-            httpClientAbstractFactory.recycleHttpClient(closeableHttpClient);
-        } catch (Exception ignore) {
-            log.debug("close error:", ignore);
+            closeableHttpClient.close();
+        } catch (final IOException e) {
+            log.error("shutdown closeable httpClient error", e);
         }
     }
 }
+

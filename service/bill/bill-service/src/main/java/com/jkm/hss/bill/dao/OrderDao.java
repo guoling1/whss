@@ -254,4 +254,13 @@ public interface OrderDao {
      * @return
      */
     String amountCount(OrderTradeRequest req);
+
+    /**
+     * 查询指定结算日期，指定业务线，T1的支付成功的待结算的订单IDS
+     *
+     * @param settleDate
+     * @param appId
+     * @return
+     */
+    List<Long> selectT1PaySuccessAndUnSettleOrderIds(@Param("settleDate") Date settleDate, @Param("appId") String appId);
 }

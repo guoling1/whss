@@ -1,15 +1,14 @@
-package com.jkm.base.common.spring.http.client;
+package com.jkm.base.common.spring.http.client.impl;
 
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.common.util.concurrent.MoreExecutors;
 import com.jkm.base.common.spring.http.client.factory.HttpClientAbstractFactory;
-import org.apache.commons.lang3.tuple.Pair;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Executors;
@@ -19,6 +18,7 @@ import java.util.concurrent.Future;
  * Created by hutao on 15/6/23.
  * 下午5:12
  */
+@Slf4j
 @Component
 public class HttpClientFacadeImpl implements HttpClientFacade {
     /**
@@ -46,14 +46,15 @@ public class HttpClientFacadeImpl implements HttpClientFacade {
         }
     }
 
+
     /**
      * {@inheritDoc}
      */
     @Override
-    public String post(final String uri,
-                       final List<Pair<String, String>> parameters) {
+    public String jsonPost(final String uri,
+                       final Map<String, String> parameters) {
         try (final HttpClient httpClient = createHttpClient()) {
-            return httpClient.post(uri, parameters);
+            return httpClient.jsonPost(uri, parameters);
         }
     }
 
@@ -61,22 +62,10 @@ public class HttpClientFacadeImpl implements HttpClientFacade {
      * {@inheritDoc}
      */
     @Override
-    public String post(final String uri, final Map<String, String> parameters) {
+    public String formPost(final String uri,
+                           final Map<String, String> parameters) {
         try (final HttpClient httpClient = createHttpClient()) {
-            return httpClient.post(uri, parameters);
-        }
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public String post(final String uri,
-                       final Map<String, String> parameters,
-                       final String charset,
-                       final boolean isUserJson) {
-        try (final HttpClient httpClient = createHttpClient()) {
-            return httpClient.post(uri, parameters, charset, isUserJson);
+            return httpClient.formPost(uri, parameters);
         }
     }
 

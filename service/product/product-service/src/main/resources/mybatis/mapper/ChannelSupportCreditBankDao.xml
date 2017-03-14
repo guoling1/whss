@@ -6,4 +6,8 @@
         SELECT * FROM tb_channel_support_credit_bank WHERE channel_sign = #{channelSign};
     </select>
 
+    <select id="selectByChannelSignAndBankName" resultType="java.lang.Integer">
+        SELECT COUNT(0) FROM tb_channel_support_credit_bank WHERE channel_sign = #{channelSign} AND bank_name = #{bankName};
+    </select>
+
 </mapper>
