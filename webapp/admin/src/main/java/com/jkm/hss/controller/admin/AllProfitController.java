@@ -24,7 +24,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -72,6 +71,27 @@ public class AllProfitController extends BaseController {
     }
 
     /**
+     * 公司分润统计
+     * @param req
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/companyAmount", method = RequestMethod.POST)
+    public CommonResponse companyAmount(@RequestBody final CompanyPrifitRequest req) throws ParseException {
+        if(req.getEndTime()!=null&&!"".equals(req.getEndTime())){
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            Date dt = sdf.parse(req.getEndTime());
+            Calendar rightNow = Calendar.getInstance();
+            rightNow.setTime(dt);
+            rightNow.add(Calendar.DATE, 1);
+            req.setEndTime(sdf.format(rightNow.getTime()));
+        }
+        String result = allProfitService.companyAmount(req);
+        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", result);
+
+    }
+
+    /**
      * 导出公司分润
      * @return
      */
@@ -112,8 +132,9 @@ public class AllProfitController extends BaseController {
         pageModel.setCount(count);
         pageModel.setRecords(list);
 
-        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", pageModel);
-        }
+        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "统计完成", pageModel);
+    }
+
     /**
      * 一级代理商分润
      * @param req
@@ -139,6 +160,28 @@ public class AllProfitController extends BaseController {
         String downLoadExcel = downLoadOneDealer(req);
         pageModel.setExt(downLoadExcel);
         return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", pageModel);
+
+    }
+
+    /**
+     * 一级代理商分润统计
+     * @param req
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/firstAmount", method = RequestMethod.POST)
+    public CommonResponse getFirstAmount(@RequestBody final CompanyPrifitRequest req) throws ParseException {
+        if(req.getEndTime()!=null&&!"".equals(req.getEndTime())){
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            Date dt = sdf.parse(req.getEndTime());
+            Calendar rightNow = Calendar.getInstance();
+            rightNow.setTime(dt);
+            rightNow.add(Calendar.DATE, 1);
+            req.setEndTime(sdf.format(rightNow.getTime()));
+        }
+        String result = allProfitService.getFirstAmount(req);
+
+        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "统计完成", result);
 
     }
 
@@ -207,29 +250,34 @@ public class AllProfitController extends BaseController {
             req.setEndTime(sdf.format(rightNow.getTime()));
         }
         List<CompanyProfitResponse> list = allProfitService.selectTwoProfit(req);
-        List<CompanyProfitResponse> count = allProfitService.selectTwoProfitCount(req);
-        List<CompanyProfitResponse> lists = allProfitService.selectTwoAll(req);
-        pageModel.setCount(count.size());
+        pageModel.setCount(list.size());
         pageModel.setRecords(list);
-        List<CompanyProfitResponse> list1 = new ArrayList<>();
-        if(lists.size()>0){
-            for (int i=0;i<lists.size();i++){
-                if (req.getProxyName()!=null&&!req.getProxyName().equals("")){
-                    if (req.getProxyName().equals(lists.get(i).getProxyName())){
-                        list1.add(lists.get(i));
-                    }
-                    pageModel.setCount(list1.size());
-                    pageModel.setRecords(list1);
-
-                }
-
-            }
-        }
         String downLoadExcel = downLoadTwoDealer(req);
         pageModel.setExt(downLoadExcel);
 
 
         return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", pageModel);
+    }
+
+    /**
+     * 二级代理商分润统计
+     * @param req
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/secondAmount", method = RequestMethod.POST)
+    public CommonResponse secondAmount(@RequestBody final CompanyPrifitRequest req) throws ParseException {
+        if(req.getEndTime()!=null&&!"".equals(req.getEndTime())){
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            Date dt = sdf.parse(req.getEndTime());
+            Calendar rightNow = Calendar.getInstance();
+            rightNow.setTime(dt);
+            rightNow.add(Calendar.DATE, 1);
+            req.setEndTime(sdf.format(rightNow.getTime()));
+        }
+        String result = allProfitService.secondAmount(req);
+
+        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", result);
     }
 
     /**

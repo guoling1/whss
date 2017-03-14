@@ -199,14 +199,6 @@ public class AllProfitServiceImpl implements AllProfitService {
         return list;
     }
 
-    @Override
-    public List<CompanyProfitResponse> selectTwoProfitCount(CompanyPrifitRequest req) {
-        CompanyPrifitRequest request =selectTime(req);
-        List<CompanyProfitResponse> list = allProfitDao.selectTwoProfitCount(request);
-        return list;
-    }
-
-
     private CompanyPrifitRequest selectTime(CompanyPrifitRequest req) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         Date dt= new Date();
@@ -541,6 +533,21 @@ public class AllProfitServiceImpl implements AllProfitService {
             }
         }
         return "";
+    }
+
+    @Override
+    public String companyAmount(CompanyPrifitRequest req) {
+        return this.allProfitDao.companyAmount(req);
+    }
+
+    @Override
+    public String getFirstAmount(CompanyPrifitRequest req) {
+        return this.allProfitDao.getFirstAmount(req);
+    }
+
+    @Override
+    public String secondAmount(CompanyPrifitRequest req) {
+        return this.allProfitDao.secondAmount(req);
     }
 
     /**

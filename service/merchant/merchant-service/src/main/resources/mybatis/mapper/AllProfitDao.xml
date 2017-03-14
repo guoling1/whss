@@ -35,6 +35,29 @@
 		splitDate DESC LIMIT #{offset},#{pageSize}
 	</select>
 
+	<!-- 查询公司分润统计 -->
+	<select id="companyAmount" resultType="java.lang.String">
+		SELECT
+			sum(a.split_amount) AS splitAmount
+		FROM
+			tb_split_account_record a
+		LEFT JOIN tb_account b ON a.receipt_money_account_id = b.id
+		WHERE
+		b.id IN (1, 2, 11, 48, 49)
+		AND a.split_date <![CDATA[ <= ]]>#{splitDate}
+		<if test="startTime!=null and startTime!=''">
+			AND a.split_date <![CDATA[ >= ]]> #{startTime}
+		</if>
+
+		<if test="endTime!=null and endTime!=''">
+			AND a.split_date <![CDATA[ <= ]]> #{endTime}
+		</if>
+
+		<if test="businessType != null and businessType != ''">
+			AND a.business_type = #{businessType}
+		</if>
+	</select>
+
 	<!-- 查询公司分润导出 -->
 	<select id="selectCompanyProfitDc" resultType="com.jkm.hss.merchant.helper.response.CompanyProfitResponse">
 		SELECT
@@ -142,6 +165,37 @@
 		splitDate DESC LIMIT #{offset},#{pageSize}
 	</select>
 
+	<!-- 查询一级代理商分润统计 -->
+	<select id="getFirstAmount" resultType="java.lang.String">
+		SELECT
+		sum(a.split_amount) AS splitAmount
+		FROM
+		tb_split_account_record a
+		LEFT JOIN tb_dealer b ON a.receipt_money_account_id = b.account_id
+		WHERE
+		b.`level` = 1 AND a.split_date <![CDATA[ <= ]]>#{splitDate}
+
+		<if test="startTime!=null and startTime!=''">
+			AND a.split_date <![CDATA[ >= ]]> #{startTime}
+		</if>
+
+		<if test="endTime!=null and endTime!=''">
+			AND a.split_date <![CDATA[ <= ]]> #{endTime}
+		</if>
+
+		<if test="businessType != null and businessType != ''">
+			AND a.business_type = #{businessType}
+		</if>
+
+		<if test="proxyName != null and proxyName != ''">
+			AND b.proxy_name = #{proxyName}
+		</if>
+
+		<if test="markCode != null and markCode != ''">
+			AND b.mark_code = #{markCode}
+		</if>
+	</select>
+
 	<!-- 查询一级代理商分润导出 -->
 	<select id="selectOneProfitDc" resultType="com.jkm.hss.merchant.helper.response.CompanyProfitResponse">
 		SELECT
@@ -237,6 +291,7 @@
 		b.proxy_name AS proxy_name1,
 		b.mark_code,
 		b.`level`,
+		(SELECT proxy_name FROM tb_dealer WHERE id=b.first_level_dealer_id) AS proxy_name,
 		b.first_level_dealer_id
 		FROM
 		tb_split_account_record a
@@ -254,6 +309,10 @@
 
 	<if test="proxyName1 != null and proxyName1 != ''">
 		AND b.proxy_name = #{proxyName1}
+	</if>
+
+	<if test="proxyName != null and proxyName != ''">
+		AND b.first_level_dealer_id in (select id from tb_dealer where proxy_name LIKE CONCAT('%',#{proxyName},'%'))
 	</if>
 
 	<if test="markCode != null and markCode != ''">
@@ -276,6 +335,40 @@
 		splitDate DESC LIMIT #{offset},#{pageSize}
 	</select>
 
+	<!-- 查询二级代理商分润统计-->
+	<select id="secondAmount" resultType="java.lang.String">
+		SELECT
+		sum(a.split_amount) AS splitAmount
+		FROM
+		tb_split_account_record a
+		LEFT JOIN tb_dealer b ON a.receipt_money_account_id = b.account_id
+		WHERE
+		b.`level` = 2 AND a.split_date <![CDATA[ <= ]]>#{splitDate}
+
+		<if test="startTime!=null and startTime!=''">
+			AND a.split_date <![CDATA[ >= ]]> #{startTime}
+		</if>
+
+		<if test="endTime!=null and endTime!=''">
+			AND a.split_date <![CDATA[ <= ]]> #{endTime}
+		</if>
+
+		<if test="proxyName1 != null and proxyName1 != ''">
+			AND b.proxy_name = #{proxyName1}
+		</if>
+		<if test="proxyName != null and proxyName != ''">
+			AND b.first_level_dealer_id in (select id from tb_dealer where proxy_name LIKE CONCAT('%',#{proxyName},'%'))
+		</if>
+
+		<if test="markCode != null and markCode != ''">
+			AND b.mark_code = #{markCode}
+		</if>
+
+		<if test="businessType != null and businessType != ''">
+			AND a.business_type = #{businessType}
+		</if>
+	</select>
+
 	<!-- 查询二级代理商分润导出-->
 	<select id="selectTwoProfitDc" resultType="com.jkm.hss.merchant.helper.response.CompanyProfitResponse">
 		SELECT
@@ -286,6 +379,7 @@
 		b.proxy_name AS proxy_name1,
 		b.mark_code,
 		b.`level`,
+		(SELECT proxy_name FROM tb_dealer WHERE id=b.first_level_dealer_id) AS proxy_name,
 		b.first_level_dealer_id
 		FROM
 		tb_split_account_record a
@@ -304,7 +398,9 @@
 		<if test="proxyName1 != null and proxyName1 != ''">
 			AND b.proxy_name = #{proxyName1}
 		</if>
-
+		<if test="proxyName != null and proxyName != ''">
+			AND b.first_level_dealer_id in (select id from tb_dealer where proxy_name LIKE CONCAT('%',#{proxyName},'%'))
+		</if>
 		<if test="markCode != null and markCode != ''">
 			AND b.mark_code = #{markCode}
 		</if>
@@ -351,58 +447,6 @@
 			b.first_level_dealer_id
 		ORDER BY
 			splitDate DESC
-	</select>
-
-	<!-- 查询二级代理商分润总数 -->
-	<select id="selectTwoProfitCount" resultType="com.jkm.hss.merchant.helper.response.CompanyProfitResponse">
-		SELECT
-		a.receipt_money_account_id,
-		a.business_type,
-		sum(a.split_amount) AS splitAmount,
-		DATE_FORMAT(a.split_date, '%Y-%m-%d') AS splitDate,
-		b.proxy_name AS proxy_name1,
-		b.mark_code,
-		b.`level`,
-		b.first_level_dealer_id
-		FROM
-		tb_split_account_record a
-		LEFT JOIN tb_dealer b ON a.receipt_money_account_id = b.account_id
-		WHERE
-		b.`level` = 2 AND a.split_date <![CDATA[ <= ]]>#{splitDate}
-
-	<if test="startTime!=null and startTime!=''">
-		AND a.split_date <![CDATA[ >= ]]> #{startTime}
-	</if>
-
-	<if test="endTime!=null and endTime!=''">
-		AND a.split_date <![CDATA[ <= ]]> #{endTime}
-	</if>
-
-	<if test="proxyName != null and proxyName != ''">
-		AND b.proxy_name = #{proxyName}
-	</if>
-
-	<if test="proxyName1 != null and proxyName1 != ''">
-		AND b.proxy_name = #{proxyName1}
-	</if>
-
-	<if test="markCode != null and markCode != ''">
-		AND b.mark_code = #{markCode}
-	</if>
-
-	<if test="businessType != null and businessType != ''">
-		AND a.business_type = #{businessType}
-	</if>
-		GROUP BY
-		a.receipt_money_account_id,
-		a.business_type,
-		splitDate,
-		b.mark_code,
-		b.proxy_name,
-		b.`level`,
-		b.first_level_dealer_id
-		ORDER BY
-		splitDate DESC
 	</select>
 
 	<!-- 查询公司分润详情 -->
