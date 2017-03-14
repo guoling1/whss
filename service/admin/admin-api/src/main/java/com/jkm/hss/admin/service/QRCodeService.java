@@ -475,4 +475,11 @@ public interface QRCodeService {
      * @return
      */
     int getSecondUnActivateCount(long secondLevelDealerId);
+    /**
+     * 查询二级代理商激活二维码数
+     *
+     * @param secondLevelDealerId
+     * @return
+     */
+    int getSecondActivateCount(long secondLevelDealerId);
 }

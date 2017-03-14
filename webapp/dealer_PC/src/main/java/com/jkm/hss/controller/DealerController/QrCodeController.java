@@ -193,9 +193,11 @@ public class QrCodeController extends BaseController {
             myQrCodeListRequest.setSecondDealerId(super.getDealer().get().getId());
             qrCodeListPageResponse.setUnDistributeCount(0);
             qrCodeListPageResponse.setDistributeCount(0);
-
+            int unActivateCount = this.qrCodeService.getSecondUnActivateCount(super.getDealer().get().getId());
+            qrCodeListPageResponse.setUnActivateCount(unActivateCount);
+            int activateCount = this.qrCodeService.getSecondActivateCount(super.getDealer().get().getId());
+            qrCodeListPageResponse.setActivateCount(activateCount);
         }
-
         final PageModel<MyQrCodeListResponse> pageModel = this.qrCodeService.selectDealerQrCodeList(myQrCodeListRequest);
         qrCodeListPageResponse.setPageModel(pageModel);
         return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", pageModel);

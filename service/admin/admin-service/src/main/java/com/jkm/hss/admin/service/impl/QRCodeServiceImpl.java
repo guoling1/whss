@@ -1028,6 +1028,17 @@ public class QRCodeServiceImpl implements QRCodeService {
     }
 
     /**
+     * 查询二级代理商激活二维码数
+     *
+     * @param secondLevelDealerId
+     * @return
+     */
+    @Override
+    public int getSecondActivateCount(long secondLevelDealerId) {
+        return qrCodeDao.getSecondActivateCount(secondLevelDealerId);
+    }
+
+    /**
      * 生成二维码
      * @param adminId
      * @param count

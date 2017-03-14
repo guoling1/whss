@@ -276,14 +276,20 @@
     </select>
 
     <select id="getSecondCodeCount" resultType="java.lang.Integer">
-        SELECT COUNT(*) FROM tb_qr_code
+        SELECT COUNT(1) FROM tb_qr_code
         WHERE second_level_dealer_id = #{secondLevelDealerId}
     </select>
 
     <select id="getSecondUnActivateCount" resultType="java.lang.Integer">
-        SELECT COUNT(*) FROM tb_qr_code
+        SELECT COUNT(1) FROM tb_qr_code
         WHERE second_level_dealer_id = #{secondLevelDealerId}
         AND activate_status = 1
+    </select>
+
+    <select id="getSecondActivateCount" resultType="java.lang.Integer">
+        SELECT COUNT(1) FROM tb_qr_code
+        WHERE second_level_dealer_id = #{secondLevelDealerId}
+        AND activate_status = 2
     </select>
 
     <select id="selectDistributeToSecondDealerCodeCount" resultType="java.lang.Integer">
