@@ -17,10 +17,7 @@ import com.jkm.hss.controller.BaseController;
 import com.jkm.hss.dealer.service.PartnerShallProfitDetailService;
 import com.jkm.hss.dealer.service.ShallProfitDetailService;
 import com.jkm.hss.helper.ApplicationConsts;
-import com.jkm.hss.merchant.entity.AccountInfo;
-import com.jkm.hss.merchant.entity.MerchantChannelRate;
-import com.jkm.hss.merchant.entity.MerchantInfo;
-import com.jkm.hss.merchant.entity.UserInfo;
+import com.jkm.hss.merchant.entity.*;
 import com.jkm.hss.merchant.enums.EnumIsUpgrade;
 import com.jkm.hss.merchant.enums.EnumMerchantStatus;
 import com.jkm.hss.merchant.enums.EnumPayMethod;
@@ -114,6 +111,9 @@ public class LoginController extends BaseController {
 
     @Autowired
     private MerchantChannelRateService merchantChannelRateService;
+
+    @Autowired
+    private AccountBankService accountBankService;
 
     /**
      * 扫固定码注册和微信公众号注册入口
@@ -813,8 +813,8 @@ public class LoginController extends BaseController {
      * @return
      * @throws IOException
      */
-    @RequestMapping(value = "/bankBranch", method = RequestMethod.GET)
-    public String bankBranch(final HttpServletRequest request, final HttpServletResponse response,final Model model) throws IOException {
+    @RequestMapping(value = "/bankBranch/{bankId}", method = RequestMethod.GET)
+    public String bankBranch(final HttpServletRequest request, final HttpServletResponse response,final Model model,@PathVariable("bankId") Long bankId) throws IOException {
         boolean isRedirect = false;
         if(!super.isLogin(request)){
             return "redirect:"+ WxConstants.WEIXIN_USERINFO+request.getRequestURI()+ WxConstants.WEIXIN_USERINFO_REDIRECT;
@@ -840,34 +840,40 @@ public class LoginController extends BaseController {
                         url = "/sqb/prompt";
                         isRedirect= true;
                     }else if(result.get().getStatus()== EnumMerchantStatus.PASSED.getId()||result.get().getStatus()== EnumMerchantStatus.FRIEND.getId()){//跳提现页面
-                        if(result.get().getBankNo()!=null&&!"".equals(result.get().getBankNo())){
-                            String bankNo = MerchantSupport.decryptBankCard(result.get().getBankNo());
+                        Optional<AccountBank> accountBankOptional = accountBankService.selectById(bankId);
+                        if(!accountBankOptional.isPresent()){
+                            model.addAttribute("message","查询不到默认银行卡信息");
+                            url = "/message";
+                        }
+                        if(accountBankOptional.get().getBankNo()!=null&&!"".equals(accountBankOptional.get().getBankNo())){
+                            String bankNo = MerchantSupport.decryptBankCard(accountBankOptional.get().getBankNo());
                             model.addAttribute("bankNo",bankNo.substring(bankNo.length()-4,bankNo.length()));
                         }else{
                             model.addAttribute("bankNo","");
                         }
-                        if(result.get().getReserveMobile()!=null&&!"".equals(result.get().getReserveMobile())){
-                            String mobile = MerchantSupport.decryptMobile(result.get().getReserveMobile());
+                        if(accountBankOptional.get().getReserveMobile()!=null&&!"".equals(accountBankOptional.get().getReserveMobile())){
+                            String mobile = MerchantSupport.decryptMobile(accountBankOptional.get().getReserveMobile());
                             model.addAttribute("mobile",mobile.substring(0,3)+"******"+mobile.substring(mobile.length()-2,mobile.length()));
                         }else{
                             model.addAttribute("mobile","");
                         }
-                        model.addAttribute("bankName", result.get().getBankName());
-                        model.addAttribute("bankBin",result.get().getBankBin());
-                        model.addAttribute("provinceCode",result.get().getProvinceCode());
-                        model.addAttribute("provinceName",result.get().getProvinceName());
-                        model.addAttribute("cityCode",result.get().getCityCode());
-                        model.addAttribute("cityName",result.get().getCityName());
-                        model.addAttribute("countyCode",result.get().getCountyCode());
-                        model.addAttribute("countyName",result.get().getCountyName());
-                        model.addAttribute("branchCode",result.get().getBranchCode());
-                        if(result.get().getBranchName()!=null&&!"".equals(result.get().getBranchName())){//有支行信息
-                            String tempBranchName = result.get().getBranchName();
+                        model.addAttribute("bankName", accountBankOptional.get().getBankName());
+                        model.addAttribute("bankBin",accountBankOptional.get().getBankBin());
+                        model.addAttribute("provinceCode",accountBankOptional.get().getBranchProvinceCode());
+                        model.addAttribute("provinceName",accountBankOptional.get().getBranchProvinceName());
+                        model.addAttribute("cityCode",accountBankOptional.get().getBranchCityCode());
+                        model.addAttribute("cityName",accountBankOptional.get().getBranchCityName());
+                        model.addAttribute("countyCode",accountBankOptional.get().getBranchCountyCode());
+                        model.addAttribute("countyName",accountBankOptional.get().getBranchCountyName());
+                        model.addAttribute("branchCode",accountBankOptional.get().getBranchCode());
+                        model.addAttribute("branchName",accountBankOptional.get().getBranchName());
+                        if(accountBankOptional.get().getBranchName()!=null&&!"".equals(accountBankOptional.get().getBranchName())){//有支行信息
+                            String tempBranchName = accountBankOptional.get().getBranchName();
                             if(tempBranchName.length()>12){
                                 tempBranchName = "***"+tempBranchName.substring(tempBranchName.length()-12,tempBranchName.length());
                             }
                             model.addAttribute("branchShortName",tempBranchName);
-                            model.addAttribute("branchName",result.get().getBranchName());
+                            model.addAttribute("branchName",accountBankOptional.get().getBranchName());
                         }else{
                             model.addAttribute("branchShortName","");
                             model.addAttribute("branchName","");
