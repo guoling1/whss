@@ -41,18 +41,28 @@
             </li>
           </ul>
           <!--表格-->
-          <el-table v-loading.body="loading" style="font-size: 12px;margin:15px 0" :data="records" border>
-            <el-table-column type="index" width="62" label="序号"></el-table-column>
+          <el-table v-loading.body="loading" style="font-size: 12px;margin:15px 0" :data="records" border :row-style="tableFoot">
+            <el-table-column type="index" width="62" label="序号">
+              <template scope="scope">
+                <div v-if="records[scope.$index].settleType!='当页总额'&&records[scope.$index].settleType!='筛选条件统计'">{{scope.$index+1}}</div>
+              </template>
+            </el-table-column>
             <el-table-column prop="splitSn" label="分润流水号" width="218"></el-table-column>
             <el-table-column prop="businessType" label="业务类型"></el-table-column>
             <el-table-column prop="splitDate" label="分润时间" :formatter="changeTime" width="152"></el-table-column>
             <el-table-column prop="orderNo" label="交易订单号" width="218"></el-table-column>
             <el-table-column prop="settleType" label="结算周期"></el-table-column>
             <el-table-column prop="splitTotalAmount" label="分润总额" align="right" :formatter="changeTotal"></el-table-column>
-            <el-table-column prop="outMoneyAccountName" label="分润出款账户"></el-table-column>
+            <el-table-column prop="splitAmount" align="right" header-align="left" label="分润金额" :formatter="changePrice"></el-table-column>
+            <el-table-column prop="outMoneyAccountName" label="分润出款账户">
+              <template scope="scope">
+                <span v-if="records[scope.$index].settleType!='当页总额'&&records[scope.$index].settleType!='筛选条件统计'" type="text" size="small">明细
+                </span>
+                <a v-if="records[scope.$index].settleType=='筛选条件统计'" @click="add">点击统计</a>
+              </template>
+            </el-table-column>
             <el-table-column prop="receiptMoneyUserName" label="分润方名称"></el-table-column>
             <el-table-column prop="profitType" label="分润方类型" v-if="isShow"></el-table-column>
-            <el-table-column prop="splitAmount" align="right" header-align="left" label="分润金额" :formatter="changePrice"></el-table-column>
             <el-table-column prop="remark" label="备注信息"></el-table-column>
           </el-table>
           <!--分页-->
@@ -89,7 +99,8 @@
         date:'',
         records: [],
         count: 0,
-        total: 0,
+        total: '',
+        price: '',
         loading: true,
         path:'',
         isShow:true
@@ -143,16 +154,30 @@
           .then(function (res) {
             this.$data.records = res.data.records;
             this.$data.count = res.data.count;
-            this.$data.total = res.data.totalPage;
             this.$data.loading = false;
-            /*var toFix = function (val) {
-             return parseFloat(val).toFixed(2)
-             }
-             for (let i = 0; i < this.$data.records.length; i++) {
-             this.$data.records[i].collectMoney = toFix(this.$data.records[i].collectMoney)
-             this.$data.records[i].withdrawMoney = toFix(this.$data.records[i].withdrawMoney)
-             this.$data.records[i].totalMoney = toFix(this.$data.records[i].totalMoney)
-             }*/
+            var toFix = function (val) {
+              return parseFloat(val).toFixed(2)
+            }
+            var total=0,price = 0;
+            for (let i = 0; i < this.$data.records.length; i++) {
+              this.$data.records[i].splitTotalAmount = toFix(this.$data.records[i].splitTotalAmount);
+              this.$data.records[i].splitAmount = toFix(this.$data.records[i].splitAmount);
+              total = toFix(parseFloat(total)+parseFloat(this.$data.records[i].splitTotalAmount))
+              price = toFix(parseFloat(price)+parseFloat(this.$data.records[i].splitAmount))
+            }
+            if(this.records.length!=0){
+              this.records.push({
+                settleType:"当页总额",
+                splitTotalAmount:total,
+                splitAmount:price
+              },{
+                settleType:"筛选条件统计",
+                splitTotalAmount:'',
+                splitAmount:price
+              });
+              this.records[this.records.length-1].splitTotalAmount = this.total;
+              this.records[this.records.length-1].splitAmount = this.price;
+            }
           }, function (err) {
             this.$data.loading = false;
             this.$message({
@@ -161,6 +186,28 @@
               type: 'error'
             });
           })
+      },
+      add(){
+        this.$data.loading = true;
+        this.$http.post('/admin/queryProfit/profitAmount',this.query)
+          .then(res=>{
+            this.$data.loading = false;
+            this.records[this.records.length-1].splitAmount = this.total = res.data;
+          })
+          .catch(err=>{
+            this.$data.loading = false;
+            this.$message({
+              showClose: true,
+              message: err.statusMessage,
+              type: 'error'
+            });
+          })
+      },
+      tableFoot(row, index) {
+        if (row.settleType === '当页总额'||row.settleType === '筛选条件统计') {
+          return {background:'#eef1f6'}
+        }
+        return '';
       },
       //格式化时间
       changeTime: function (row, column) {
@@ -187,13 +234,21 @@
       //格式化金额
       changeTotal: function (row, colum) {
         var val =row.splitTotalAmount;
-        return parseFloat(val).toFixed(2)
+        if(val!=''){
+          val = parseFloat(val).toFixed(2)
+        }
+        return val;
       },
       changePrice: function (row, colum) {
         var val =row.splitAmount;
-        return parseFloat(val).toFixed(2)
+        if(val!=''){
+          val = parseFloat(val).toFixed(2)
+        }
+        return val;
       },
       search(){
+        this.total = '';
+        this.price = '';
         this.$data.query.pageNo = 1;
         this.getData();
       },
