@@ -615,12 +615,17 @@ public class LoginController extends BaseController {
                         url = "/sqb/prompt";
                         isRedirect= true;
                     }else if(result.get().getStatus()== EnumMerchantStatus.PASSED.getId()||result.get().getStatus()== EnumMerchantStatus.FRIEND.getId()){//跳提现页面
-                        String phone = MerchantSupport.decryptMobile(result.get().getReserveMobile());
-                        String bankNo = MerchantSupport.decryptBankCard(result.get().getBankNo());
+                        AccountBank accountBank = accountBankService.getDefault(result.get().getAccountId());
+                        if(accountBank==null){
+                            model.addAttribute("message","查询不到默认银行卡信息");
+                            url = "/message";
+                        }
+                        String phone = MerchantSupport.decryptMobile(accountBank.getReserveMobile());
+                        String bankNo = MerchantSupport.decryptBankCard(accountBank.getBankNo());
                         model.addAttribute("phone_01", phone.substring(0,3));
                         model.addAttribute("phone_02", phone.substring(phone.length()-4,phone.length()));
                         model.addAttribute("bankNo", bankNo.substring(bankNo.length()-4,bankNo.length()));
-                        model.addAttribute("bankName",result.get().getBankName());
+                        model.addAttribute("bankName",accountBank.getBankName());
                         AccountInfo accountInfo = accountInfoService.selectByPrimaryKey(result.get().getAccountId());
                         DecimalFormat decimalFormat=new DecimalFormat("0.00");//构造方法的字符格式这里如果小数不足2位,会以0补足.
                         if(accountInfo==null){//没有账户
@@ -760,31 +765,6 @@ public class LoginController extends BaseController {
                         url = "/sqb/prompt";
                         isRedirect= true;
                     }else if(result.get().getStatus()== EnumMerchantStatus.PASSED.getId()||result.get().getStatus()== EnumMerchantStatus.FRIEND.getId()){//跳提现页面
-                        if(result.get().getBankNo()!=null&&!"".equals(result.get().getBankNo())){
-                            String bankNo = MerchantSupport.decryptBankCard(result.get().getBankNo());
-                            model.addAttribute("bankNo",bankNo.substring(bankNo.length()-4,bankNo.length()));
-                        }else{
-                            model.addAttribute("bankNo","");
-                        }
-                        if(result.get().getReserveMobile()!=null&&!"".equals(result.get().getReserveMobile())){
-                            String mobile = MerchantSupport.decryptMobile(result.get().getReserveMobile());
-                            model.addAttribute("mobile",mobile.substring(0,3)+"******"+mobile.substring(mobile.length()-2,mobile.length()));
-                        }else{
-                            model.addAttribute("mobile","");
-                        }
-                        if(result.get().getBranchName()!=null&&!"".equals(result.get().getBranchName())){//有支行信息
-                            model.addAttribute("hasBranch",1);
-                            String tempBranchName = result.get().getBranchName();
-                            if(tempBranchName.length()>12){
-                                tempBranchName = "***"+tempBranchName.substring(tempBranchName.length()-12,tempBranchName.length());
-                            }
-                            model.addAttribute("branchName",tempBranchName);
-                        }else{
-                            model.addAttribute("hasBranch",0);//没有支行信息
-                            model.addAttribute("branchName","");
-                        }
-                        model.addAttribute("bankName", result.get().getBankName());
-                        model.addAttribute("bankBin",result.get().getBankBin());
                         url = "/bank";
                     }
                 }else{
@@ -866,7 +846,6 @@ public class LoginController extends BaseController {
                         model.addAttribute("countyCode",accountBankOptional.get().getBranchCountyCode());
                         model.addAttribute("countyName",accountBankOptional.get().getBranchCountyName());
                         model.addAttribute("branchCode",accountBankOptional.get().getBranchCode());
-                        model.addAttribute("branchName",accountBankOptional.get().getBranchName());
                         if(accountBankOptional.get().getBranchName()!=null&&!"".equals(accountBankOptional.get().getBranchName())){//有支行信息
                             String tempBranchName = accountBankOptional.get().getBranchName();
                             if(tempBranchName.length()>12){
