@@ -131,8 +131,9 @@ public class PayServiceImpl implements PayService {
         order.setStatus(EnumOrderStatus.DUE_PAY.getId());
         this.orderService.add(order);
         //请求支付中心下单
+        final AccountBank accountBank = this.accountBankService.getDefault(merchant.getAccountId());
         final PaymentSdkPlaceOrderResponse placeOrderResponse = this.requestPlaceOrder(order,
-                channelCode, merchant, businessReturnUrl);
+                channelCode, accountBank, merchant, businessReturnUrl);
         return this.handlePlaceOrder(placeOrderResponse, order);
     }
 
@@ -171,7 +172,8 @@ public class PayServiceImpl implements PayService {
         order.setStatus(EnumOrderStatus.DUE_PAY.getId());
         this.orderService.add(order);
         //请求支付中心下单
-        final PaymentSdkPlaceOrderResponse placeOrderResponse = this.requestPlaceOrder(order, channelCode, merchant,
+        final AccountBank accountBank = this.accountBankService.getDefault(merchant.getAccountId());
+        final PaymentSdkPlaceOrderResponse placeOrderResponse = this.requestPlaceOrder(order, channelCode, accountBank, merchant,
                 PaymentSdkConstants.SDK_PAY_RETURN_URL + order.getTradeAmount() + "/" + order.getId());
         return this.handlePlaceOrder(placeOrderResponse, order);
     }
@@ -949,7 +951,7 @@ public class PayServiceImpl implements PayService {
      * @param merchant
      * @param returnUrl 前端回调地址
      */
-    private PaymentSdkPlaceOrderResponse requestPlaceOrder(final Order order, final String channel,
+    private PaymentSdkPlaceOrderResponse requestPlaceOrder(final Order order, final String channel, final AccountBank accountBank,
                                                            final MerchantInfo merchant, final String returnUrl) {
         final PaymentSdkPlaceOrderRequest placeOrderRequest = new PaymentSdkPlaceOrderRequest();
         placeOrderRequest.setAppId(PaymentSdkConstants.APP_ID);
@@ -962,8 +964,8 @@ public class PayServiceImpl implements PayService {
         placeOrderRequest.setTotalAmount(order.getTradeAmount().toPlainString());
         placeOrderRequest.setChannel(channel);
         placeOrderRequest.setSettleNotifyUrl(PaymentSdkConstants.SDK_PAY_WITHDRAW_NOTIFY_URL);
-        placeOrderRequest.setBankCode(merchant.getCode());
-        placeOrderRequest.setCardNo(merchant.getBankNo());
+        placeOrderRequest.setBankCode(accountBank.getBranchCode());
+        placeOrderRequest.setCardNo(accountBank.getBankNo());
         placeOrderRequest.setPayerName(merchant.getName());
         placeOrderRequest.setIdCardNo(merchant.getIdentity());
         final String content = HttpClientPost.postJson(PaymentSdkConstants.SDK_PAY_PLACE_ORDER, SdkSerializeUtil.convertObjToMap(placeOrderRequest));

@@ -24,9 +24,11 @@ import com.jkm.hss.bill.service.*;
 import com.jkm.hss.dealer.entity.Dealer;
 import com.jkm.hss.dealer.service.DealerService;
 import com.jkm.hss.dealer.service.ShallProfitDetailService;
+import com.jkm.hss.merchant.entity.AccountBank;
 import com.jkm.hss.merchant.entity.MerchantInfo;
 import com.jkm.hss.merchant.entity.UserInfo;
 import com.jkm.hss.merchant.helper.MerchantSupport;
+import com.jkm.hss.merchant.service.AccountBankService;
 import com.jkm.hss.merchant.service.MerchantInfoService;
 import com.jkm.hss.merchant.service.SendMsgService;
 import com.jkm.hss.merchant.service.UserInfoService;
@@ -79,6 +81,8 @@ public class WithdrawServiceImpl implements WithdrawService {
     private SettlementRecordService settlementRecordService;
     @Autowired
     private MerchantWithdrawService merchantWithdrawService;
+    @Autowired
+    private AccountBankService accountBankService;
 
     /**
      * {@inheritDoc}
@@ -94,6 +98,7 @@ public class WithdrawServiceImpl implements WithdrawService {
     public Pair<Integer, String> merchantWithdrawBySettlementRecord(final long merchantId, final long settlementRecordId, final String payOrderSn, final int payChannelSign) {
         log.info("商户[{}]，对结算单[{}], 进行提现", merchantId, settlementRecordId);
         final MerchantInfo merchant = this.merchantInfoService.selectById(merchantId).get();
+        final AccountBank accountBank = this.accountBankService.getDefault(merchant.getAccountId());
         final SettlementRecord settlementRecord = this.settlementRecordService.getById(settlementRecordId).get();
         if (settlementRecord.isWaitWithdraw()) {
             final BigDecimal merchantWithdrawPoundage = this.calculateService.getMerchantWithdrawPoundage(EnumProductType.HSS, merchantId, payChannelSign);
@@ -103,10 +108,10 @@ public class WithdrawServiceImpl implements WithdrawService {
             paymentSdkDaiFuRequest.setTotalAmount(settlementRecord.getSettleAmount().subtract(merchantWithdrawPoundage).toPlainString());
             paymentSdkDaiFuRequest.setTradeType(EnumBalanceTimeType.D0.getType());
             paymentSdkDaiFuRequest.setIsCompany("0");
-            paymentSdkDaiFuRequest.setMobile(MerchantSupport.decryptMobile(merchant.getMobile()));
+            paymentSdkDaiFuRequest.setMobile(accountBank.getReserveMobile());
             paymentSdkDaiFuRequest.setBankName(merchant.getBankName());
             paymentSdkDaiFuRequest.setAccountName(merchant.getName());
-            paymentSdkDaiFuRequest.setAccountNumber(MerchantSupport.decryptBankCard(merchant.getBankNo()));
+            paymentSdkDaiFuRequest.setAccountNumber(accountBank.getBankNo());
             paymentSdkDaiFuRequest.setIdCard(MerchantSupport.decryptIdentity(merchant.getIdentity()));
             paymentSdkDaiFuRequest.setPlayMoneyChannel(EnumPayChannelSign.idOf(payChannelSign).getUpperChannel().getId());
             paymentSdkDaiFuRequest.setNote(merchant.getMerchantName());
