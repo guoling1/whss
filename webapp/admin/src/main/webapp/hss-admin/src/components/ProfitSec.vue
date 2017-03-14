@@ -211,7 +211,7 @@
       },
       add(){
         this.$data.loading = true;
-        this.$http.post('order/xx',this.query)
+        this.$http.post('/admin/allProfit/secondAmount',this.query)
           .then(res=>{
             this.$data.loading = false;
             this.records[this.records.length-1].splitAmount = this.total = res.data;
