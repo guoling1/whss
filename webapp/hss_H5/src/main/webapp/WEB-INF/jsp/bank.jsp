@@ -27,7 +27,7 @@
       <div class="info">
         <div class="name">
           ${bankName}
-          <a href="/sqb/bankBranch" class="btn red" id="btn">补充支行信息</a></div>
+          <a href="/sqb/bankBranch/${bankId}" class="btn red" id="btn">补充支行信息</a></div>
         <div class="type">储蓄卡 <c:if test="${branchName!=''}">| ${branchName}</c:if></div>
       </div>
     </div>
@@ -69,5 +69,6 @@
   }
 </script>
 <script src="http://static.jinkaimen.cn/vendor/vendor.1.0.5.min.js"></script>
-<script src="http://static.jinkaimen.cn/hss/2.1.4/bank.min.js"></script>
+<%--<script src="http://static.jinkaimen.cn/hss/2.1.5/bank.min.js"></script>--%>
+<script src="/js/hss/2.1.5/bank.min.js"></script>
 </html>

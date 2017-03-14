@@ -3,6 +3,8 @@
  */
 
 // 引入浏览器特性处理
+const http = _require('http');
+const message = _require('message');
 const browser = _require('browser');
 browser.elastic_touch();
 // 定义变量
@@ -41,3 +43,8 @@ if (index != -1) {
   btn.className = 'btn red';
   logo.className = 'logo DEFAULT';
 }
+
+// 获取银行卡列表
+http.post('/wx/myCardList', {}, function (data) {
+  console.log(data);
+});
