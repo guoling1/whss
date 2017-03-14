@@ -103,26 +103,31 @@
         price: '',
         loading: true,
         path:'',
-        isShow:true
+        isShow:true,
+        totalUrl:''
       }
     },
     created: function () {
       if(this.$route.path=="/admin/record/profitDet"){
-        this.$data.path = '/admin/queryProfit/profitDetails'
+        this.$data.path = '/admin/queryProfit/profitDetails';
+        this.$data.totalUrl = '/admin/queryProfit/profitAmount'
       }else if(this.$route.path=="/admin/record/profitComDet"){
         this.$data.path = '/admin/allProfit/companyProfitDetail';
+        this.$data.totalUrl = '/admin/allProfit/ProfitDetailAmount';
         this.$data.query.accId = this.$route.query.id;
         this.$data.query.splitDate = this.$route.query.time;
         this.$data.query.businessType = this.$route.query.type;
         this.isShow =false
       }else if(this.$route.path=="/admin/record/profitFirDet"){
         this.$data.path = '/admin/allProfit/firstDealerDetail';
-        this.isShow =false
+        this.$data.totalUrl = '/admin/allProfit/firstDetailAmount';
+        this.isShow =false;
         this.$data.query.receiptMoneyAccountId = this.$route.query.id;
         this.$data.query.businessType = this.$route.query.type;
         this.$data.query.splitDate = this.$route.query.time;
       }else if(this.$route.path=="/admin/record/profitSecDet"){
         this.$data.path = '/admin/allProfit/secondDealerDetail';
+        this.$data.totalUrl = '/admin/allProfit/secondDealerDetail';
         this.$data.query.receiptMoneyAccountId = this.$route.query.id;
         this.$data.query.splitDate = this.$route.query.time;
         this.$data.query.businessType = this.$route.query.type;
@@ -173,7 +178,7 @@
               },{
                 settleType:"筛选条件统计",
                 splitTotalAmount:'',
-                splitAmount:price
+                splitAmount:''
               });
               this.records[this.records.length-1].splitTotalAmount = this.total;
               this.records[this.records.length-1].splitAmount = this.price;
@@ -189,10 +194,11 @@
       },
       add(){
         this.$data.loading = true;
-        this.$http.post('/admin/queryProfit/profitAmount',this.query)
+        this.$http.post(this.totalUrl,this.query)
           .then(res=>{
             this.$data.loading = false;
-            this.records[this.records.length-1].splitAmount = this.total = res.data;
+            this.records[this.records.length-1].splitTotalAmount = this.total = res.data.splitTotalAmount;
+            this.records[this.records.length-1].splitAmount = this.price = res.data.splitAmount;
           })
           .catch(err=>{
             this.$data.loading = false;
