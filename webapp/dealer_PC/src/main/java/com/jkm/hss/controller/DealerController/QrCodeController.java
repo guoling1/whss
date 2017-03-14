@@ -8,7 +8,11 @@ import com.jkm.base.common.entity.PageModel;
 import com.jkm.base.common.enums.EnumBoolean;
 import com.jkm.hss.admin.entity.DistributeQRCodeRecord;
 import com.jkm.hss.admin.enums.EnumQRCodeDistributeType;
+import com.jkm.hss.admin.helper.requestparam.MyQrCodeListRequest;
+import com.jkm.hss.admin.helper.responseparam.MyQrCodeListResponse;
+import com.jkm.hss.admin.helper.responseparam.QrCodeListResponse;
 import com.jkm.hss.admin.service.DistributeQRCodeRecordService;
+import com.jkm.hss.admin.service.QRCodeService;
 import com.jkm.hss.controller.BaseController;
 import com.jkm.hss.dealer.entity.Dealer;
 import com.jkm.hss.dealer.entity.DealerChannelRate;
@@ -48,6 +52,8 @@ public class QrCodeController extends BaseController {
     private ProductService productService;
     @Autowired
     private DistributeQRCodeRecordService distributeQRCodeRecordService;
+    @Autowired
+    private QRCodeService qrCodeService;
 
     /**
      * 判断登录代理商是否代理产品
@@ -162,4 +168,15 @@ public class QrCodeController extends BaseController {
         return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "分配成功", distributeQRCodeRecords);
     }
 
+    /**
+     * 所有二维码
+     * @param myQrCodeListRequest
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/myQrCodeList", method = RequestMethod.POST)
+    public CommonResponse myQrCodeList (@RequestBody MyQrCodeListRequest myQrCodeListRequest) {
+        final PageModel<MyQrCodeListResponse> pageModel = this.qrCodeService.selectDealerQrCodeList(myQrCodeListRequest);
+        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", pageModel);
+    }
 }
