@@ -19,9 +19,5 @@ public class QrCodeDetailResponse {
      * 二维码地址
      */
     private String qrUrl;
-    /**
-     * 二维码base64
-     */
-    private String qrUrlBase64;
 
 }
