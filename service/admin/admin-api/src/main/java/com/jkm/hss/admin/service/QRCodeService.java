@@ -468,4 +468,11 @@ public interface QRCodeService {
      * @return
      */
     int getFirstActivateCount(long firstLevelDealerId);
+    /**
+     * 查询二级代理商未激活二维码数
+     *
+     * @param secondLevelDealerId
+     * @return
+     */
+    int getSecondUnActivateCount(long secondLevelDealerId);
 }

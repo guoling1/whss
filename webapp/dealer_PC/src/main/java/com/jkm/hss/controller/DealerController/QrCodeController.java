@@ -194,7 +194,6 @@ public class QrCodeController extends BaseController {
             qrCodeListPageResponse.setUnDistributeCount(0);
             qrCodeListPageResponse.setDistributeCount(0);
 
-
         }
 
         final PageModel<MyQrCodeListResponse> pageModel = this.qrCodeService.selectDealerQrCodeList(myQrCodeListRequest);
