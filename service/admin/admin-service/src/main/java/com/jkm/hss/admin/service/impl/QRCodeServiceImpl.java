@@ -897,13 +897,14 @@ public class QRCodeServiceImpl implements QRCodeService {
             //生成二维码记录
             ProductionQrCodeRecord productionQrCodeRecord = new ProductionQrCodeRecord();
             productionQrCodeRecord.setStartCode(codes.get(0).getCode());
-            productionQrCodeRecord.setStartCode(codes.get(count - 1).getCode());
+            productionQrCodeRecord.setEndCode(codes.get(count - 1).getCode());
             productionQrCodeRecord.setCount(codes.size());
             productionQrCodeRecord.setQrType(type);
             productionQrCodeRecord.setProductId(productId);
             productionQrCodeRecord.setSysType(sysType);
             productionQrCodeRecord.setOperatorId(adminId);
             productionQrCodeRecord.setDownloadUrl(excelFile.getAbsolutePath());
+            productionQrCodeRecord.setCreateTime(new Date());
             productionQrCodeRecordService.add(productionQrCodeRecord);
             return productionQrCodeRecord;
         } catch (final Exception e) {

@@ -59,4 +59,11 @@
             AND sys_type = #{sysType}
         </if>
     </select>
+
+    <update id="updateDownUrl">
+        UPDATE tb_production_qr_code_record
+        SET
+        download_url = #{downloadUrl}
+        WHERE id = #{id}
+    </update>
 </mapper>
