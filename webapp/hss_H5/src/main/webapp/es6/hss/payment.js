@@ -20,8 +20,8 @@ new Keyboard({
 
 if (pageData.isSelf == 1) {
   let layerSelf = document.getElementById('layerSelf');
-  let cancelSelf = document.getElementById('cancelNotSelf');
-  let submitSelf = document.getElementById('cancelNotSelf');
+  let cancelSelf = document.getElementById('cancelSelf');
+  let submitSelf = document.getElementById('submitSelf');
   cancelSelf.addEventListener('click', function () {
     layerSelf.style.display = 'none';
   });
@@ -31,7 +31,7 @@ if (pageData.isSelf == 1) {
 }
 let layerNotSelf = document.getElementById('layerNotSelf');
 let cancelNotSelf = document.getElementById('cancelNotSelf');
-let submitNotSelf = document.getElementById('cancelNotSelf');
+let submitNotSelf = document.getElementById('submitNotSelf');
 cancelNotSelf.addEventListener('click', function () {
   layerNotSelf.style.display = 'none';
 });
