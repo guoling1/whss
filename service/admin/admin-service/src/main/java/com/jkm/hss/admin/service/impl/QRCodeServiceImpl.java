@@ -961,6 +961,7 @@ public class QRCodeServiceImpl implements QRCodeService {
         long count = 0l;
         List<MyQrCodeListResponse> qrCodeList = null;
         if((EnumQRCodeSysType.HSS.getId()).equals(myQrCodeListRequest.getSysType())){
+
             count=qrCodeDao.getDealerHSSQrCodeCount(myQrCodeListRequest);
             qrCodeList=qrCodeDao.getDealerHSSQrCodeList(myQrCodeListRequest);
         }else{
@@ -970,6 +971,39 @@ public class QRCodeServiceImpl implements QRCodeService {
         pageModel.setCount(count);
         pageModel.setRecords(qrCodeList);
         return pageModel;
+    }
+    private int getMerchantStatus(int status,String type){
+        int tempStatus = -1;
+        if("hss".equals(type)){
+            if(status==0){
+                tempStatus = -1;
+            }else if(status==1){
+                tempStatus = 0;
+            }else if(status==2){
+
+            }else if(status==3){
+
+            }else if(status==4){
+
+            }else{
+
+            }
+        }else{
+            if(status==0){
+
+            }else if(status==1){
+
+            }else if(status==2){
+
+            }else if(status==3){
+
+            }else if(status==4){
+
+            }else{
+
+            }
+        }
+        return tempStatus;
     }
 
     /**
