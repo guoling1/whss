@@ -414,7 +414,7 @@ public class TradeController extends BaseController {
             return CommonResponse.simpleResponse(-2, "未登录");
         }
         final MerchantInfo merchantInfo = merchantInfoOptional.get();
-        if(merchantInfo.getStatus()!= EnumMerchantStatus.PASSED.getId()&&merchantInfo.getStatus()!= EnumMerchantStatus.FRIEND.getId()){
+        if(merchantInfo.getStatus()!= EnumMerchantStatus.PASSED.getId() && merchantInfo.getStatus()!= EnumMerchantStatus.FRIEND.getId()){
             return CommonResponse.simpleResponse(-2, "未审核通过");
         }
         if(new BigDecimal(firstUnionPaySendMsgRequest.getAmount()).compareTo(new BigDecimal("5.00")) < 0){
@@ -431,16 +431,16 @@ public class TradeController extends BaseController {
         }
         final Optional<BankCardBin> bankCardBinOptional = this.bankCardBinService.analyseCardNo(firstUnionPaySendMsgRequest.getBankCardNo());
         if (!bankCardBinOptional.isPresent()) {
-            return CommonResponse.builder4MapResult(1, "fail").addParam("errorCode", "001").build();
+            return CommonResponse.builder4MapResult(2, "fail").addParam("errorCode", "001").build();
         }
         final BankCardBin bankCardBin = bankCardBinOptional.get();
         if (!"1".equals(bankCardBin.getCardTypeCode())) {
-            return CommonResponse.builder4MapResult(1, "fail").addParam("errorCode", "002").build();
+            return CommonResponse.builder4MapResult(2, "fail").addParam("errorCode", "002").build();
         }
         if (!bankCardBin.getBankName().equals(firstUnionPaySendMsgRequest.getBankName())) {
             final boolean exist = this.channelSupportCreditBankService.isExistByChannelSignAndBankName(firstUnionPaySendMsgRequest.getChannel(), bankCardBin.getBankName());
             if (!exist) {
-                return CommonResponse.builder4MapResult(1, "fail").addParam("errorCode", "003").build();
+                return CommonResponse.builder4MapResult(2, "fail").addParam("errorCode", "003").build();
             }
             firstUnionPaySendMsgRequest.setBankName(bankCardBin.getBankName());
         }
