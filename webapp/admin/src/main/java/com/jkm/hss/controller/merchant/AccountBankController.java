@@ -5,8 +5,12 @@ import com.jkm.base.common.entity.CommonResponse;
 import com.jkm.hss.admin.helper.requestparam.ChangeBankCardRequest;
 import com.jkm.hss.controller.BaseController;
 import com.jkm.hss.merchant.entity.BankCardBin;
+import com.jkm.hss.merchant.entity.MerchantInfo;
+import com.jkm.hss.merchant.enums.EnumAccountBank;
+import com.jkm.hss.merchant.helper.MerchantSupport;
 import com.jkm.hss.merchant.service.AccountBankService;
 import com.jkm.hss.merchant.service.BankCardBinService;
+import com.jkm.hss.merchant.service.MerchantInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
@@ -25,6 +29,8 @@ public class AccountBankController extends BaseController {
     private AccountBankService accountBankService;
     @Autowired
     private BankCardBinService bankCardBinService;
+    @Autowired
+    private MerchantInfoService merchantInfoService;
 
 
     /**
@@ -51,7 +57,15 @@ public class AccountBankController extends BaseController {
         if("1".equals(bankCardBinOptional.get().getCardTypeCode())){
             return CommonResponse.simpleResponse(-1, "只能输入储蓄卡");
         }
-        accountBankService.changeBankCard(changeBankCardRequest.getMerchantId(),changeBankCardRequest.getBankNo(),changeBankCardRequest.getReserveMobile());
+        Optional<MerchantInfo> merchantInfoOptional = merchantInfoService.selectById(changeBankCardRequest.getMerchantId());
+        if(!merchantInfoOptional.isPresent()){
+            return CommonResponse.simpleResponse(-1, "商户不存在");
+        }
+        Long backId = accountBankService.isExistBankNo(merchantInfoOptional.get().getAccountId(), MerchantSupport.encryptBankCard(changeBankCardRequest.getBankNo()), EnumAccountBank.DEBITCARD.getId());
+        if(backId>0){
+            return CommonResponse.simpleResponse(-1, "银行卡号已存在");
+        }
+        accountBankService.changeBankCard(merchantInfoOptional.get(),changeBankCardRequest.getBankNo(),changeBankCardRequest.getReserveMobile());
         return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "更改成功");
     }
 

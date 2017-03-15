@@ -16,7 +16,7 @@ public class QrCodeListResponse {
     /**
      * 二维码编号
      */
-    private String markCode;
+    private String code;
     /**
      * 激活时间
      */

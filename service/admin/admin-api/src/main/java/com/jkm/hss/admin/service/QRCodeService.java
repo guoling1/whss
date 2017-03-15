@@ -8,11 +8,9 @@ import com.jkm.hss.admin.entity.QRCode;
 import com.jkm.hss.admin.helper.FirstLevelDealerCodeInfo;
 import com.jkm.hss.admin.helper.MyMerchantCount;
 import com.jkm.hss.admin.helper.SecondLevelDealerCodeInfo;
+import com.jkm.hss.admin.helper.requestparam.MyQrCodeListRequest;
 import com.jkm.hss.admin.helper.requestparam.QrCodeListRequest;
-import com.jkm.hss.admin.helper.responseparam.ActiveCodeCount;
-import com.jkm.hss.admin.helper.responseparam.DistributeCodeCount;
-import com.jkm.hss.admin.helper.responseparam.QRCodeList;
-import com.jkm.hss.admin.helper.responseparam.QrCodeListResponse;
+import com.jkm.hss.admin.helper.responseparam.*;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
 
@@ -431,9 +429,50 @@ public interface QRCodeService {
     ProductionQrCodeRecord productionQrCode(long adminId, int count, final String baseUrl, long productId, String sysType, int type);
 
     /**
-     * 所有二维码
+     * 所有二维码[boss]
      * @param qrCodeListRequest
      * @return
      */
     PageModel<QrCodeListResponse> selectQrCodeList(QrCodeListRequest qrCodeListRequest);
+    /**
+     * 所有二维码[dealer]
+     * @param myQrCodeListRequest
+     * @return
+     */
+    PageModel<MyQrCodeListResponse> selectDealerQrCodeList(MyQrCodeListRequest myQrCodeListRequest);
+
+    /**
+     * 未分配个数
+     * @param firstLevelDealerId
+     * @return
+     */
+    int getFirstResidueCount(long firstLevelDealerId);
+
+    /**
+     * 已分配个数
+     * @param firstLevelDealerId
+     * @return
+     */
+    int getFirstDistributeCount(long firstLevelDealerId);
+
+    /**
+     * 未激活个数
+     * @param firstLevelDealerId
+     * @return
+     */
+    int getFirstUnActivateCount(long firstLevelDealerId);
+
+    /**
+     * 已激活个数
+     * @param firstLevelDealerId
+     * @return
+     */
+    int getFirstActivateCount(long firstLevelDealerId);
+    /**
+     * 查询二级代理商未激活二维码数
+     *
+     * @param secondLevelDealerId
+     * @return
+     */
+    int getSecondUnActivateCount(long secondLevelDealerId);
 }

@@ -2,9 +2,9 @@ package com.jkm.hss.admin.dao;
 
 import com.jkm.hss.admin.entity.CodeQueryResponse;
 import com.jkm.hss.admin.entity.QRCode;
-import com.jkm.hss.admin.helper.responseparam.ActiveCodeCount;
-import com.jkm.hss.admin.helper.responseparam.DistributeCodeCount;
-import com.jkm.hss.admin.helper.responseparam.QRCodeList;
+import com.jkm.hss.admin.helper.requestparam.MyQrCodeListRequest;
+import com.jkm.hss.admin.helper.requestparam.QrCodeListRequest;
+import com.jkm.hss.admin.helper.responseparam.*;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
@@ -448,4 +448,58 @@ public interface QRCodeDao {
      * @return
      */
     List<QRCode> getUnDistributeCodeByCodeAndSysType(@Param("startCode") String startCode, @Param("endCode") String endCode,@Param("sysType") String sysType);
+
+    /**
+     * hss项目下的二维码列表[boss]
+     * @param qrCodeListRequest
+     * @return
+     */
+    List<QrCodeListResponse> getHSSQrCodeList(QrCodeListRequest qrCodeListRequest);
+
+    /**
+     * hss项目下的二维码个数[boss]
+     * @param qrCodeListRequest
+     * @return
+     */
+    long getHSSQrCodeCount(QrCodeListRequest qrCodeListRequest);
+    /**
+     * hsy项目下的二维码列表[boss]
+     * @param qrCodeListRequest
+     * @return
+     */
+    List<QrCodeListResponse> getHSYQrCodeList(QrCodeListRequest qrCodeListRequest);
+
+    /**
+     * hsy项目下的二维码个数[boss]
+     * @param qrCodeListRequest
+     * @return
+     */
+    long getHSYQrCodeCount(QrCodeListRequest qrCodeListRequest);
+
+    /**
+     * hss项目下的二维码列表[代理商]
+     * @param myQrCodeListRequest
+     * @return
+     */
+    List<MyQrCodeListResponse> getDealerHSSQrCodeList(MyQrCodeListRequest myQrCodeListRequest);
+
+    /**
+     * hss项目下的二维码个数[代理商]
+     * @param myQrCodeListRequest
+     * @return
+     */
+    long getDealerHSSQrCodeCount(MyQrCodeListRequest myQrCodeListRequest);
+    /**
+     * hsy项目下的二维码列表[代理商]
+     * @param myQrCodeListRequest
+     * @return
+     */
+    List<MyQrCodeListResponse> getDealerHSYQrCodeList(MyQrCodeListRequest myQrCodeListRequest);
+
+    /**
+     * hsy项目下的二维码个数[代理商]
+     * @param myQrCodeListRequest
+     * @return
+     */
+    long getDealerHSYQrCodeCount(MyQrCodeListRequest myQrCodeListRequest);
 }
