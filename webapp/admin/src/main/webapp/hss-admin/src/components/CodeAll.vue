@@ -76,7 +76,7 @@
           merchantName:'',
           firstDealerName:'',
           secondDealerName:'',
-          sysType:''
+          sysType:'hss'
         },
         records: [],
         count: 0,

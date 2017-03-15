@@ -70,7 +70,6 @@
           <el-dialog :show-close="true" title="分配成功" v-model="isShow">
             <div class="maskCon">
               <span>产品名称：</span>
-              <span>{{query.sysType}}</span>
               <span v-if="query.sysType=='hss'">好收收</span>
               <span v-if="query.sysType=='hsy'">好收银</span>
             </div>
@@ -96,8 +95,8 @@
             <div class="text" v-if="query.type==2">二维码文件10分钟内有效</div>
             <div class="text" v-if="query.type==2">实体码请务必及时下载Excel文件</div>
             <div slot="footer" class="dialog-footer" style="text-align: center;">
-              <a :href="'http://'+this.url" v-if="query.type==2">下载文件</a>
-              <el-button @click="this.isShow = false" v-if="query.type==1">确定</el-button>
+              <a :href="'http://'+this.url" class="btn btn-primary" style="padding: 6px 50px;" v-if="query.type==2">下载文件</a>
+              <a @click="this.isShow = false" v-if="query.type==1" class="btn btn-primary" style="padding: 6px 50px;">确 定</a>
             </div>
           </el-dialog>
         </div>
@@ -112,11 +111,11 @@
     data () {
       return {
         query: {
-          sysType: "",//hss或hsy
-          type:'',//1实体码 2电子码
+          sysType: "hss",//hss或hsy
+          type:'1',//1实体码 2电子码
           count:''//分配数量
         },
-        isShow:false,
+        isShow:true,
         url:'',
         startCode:'',
         endCode: ''
@@ -128,10 +127,10 @@
         this.$http.post('/admin/code/productionQrCode', this.query)
           .then(function (res) {
             this.isShow = true;
-            this.url= res.data.downloadUrl;
-            this.startCode= res.data.startCode;
-            this.endCode= res.data.endCode;
-            this.productionTime= res.data.productionTime;
+            this.url= res.data.url;
+            this.startCode= res.data.productionQrCodeRecord.startCode;
+            this.endCode= res.data.productionQrCodeRecord.endCode;
+            this.productionTime= res.data.productionQrCodeRecord.productionTime;
           }, function (err) {
             this.$message({
               showClose: true,
@@ -141,22 +140,6 @@
           })
       }
     },
-    filters: {
-      changeTime: function (val) {
-        if(val==''||val==null){
-          return ''
-        }else {
-          val = new Date(val)
-          var year=val.getFullYear();
-          var month=val.getMonth()+1;
-          var date=val.getDate();
-          var hour=val.getHours();
-          var minute=val.getMinutes();
-          var second=val.getSeconds();
-          return year+"-"+month+"-"+date+" "+hour+":"+minute+":"+second;
-        }
-      }
-    }
   }
 </script>
 
