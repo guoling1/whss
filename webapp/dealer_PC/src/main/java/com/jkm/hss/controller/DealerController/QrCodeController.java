@@ -287,6 +287,6 @@ public class QrCodeController extends BaseController {
         ossClient.putObject("jkm-file", fileName, new File(filePath), meta);
         URL downloadUrl = ossClient.generatePresignedUrl("jkm-file", fileName, expireDate);
         return CommonResponse.builder4MapResult(CommonResponse.SUCCESS_CODE, "下载成功")
-                .addParam("url", downloadUrl.getHost() + downloadUrl.getFile()).build();
+                .addParam("url", "http://"+downloadUrl.getHost() + downloadUrl.getFile()).build();
     }
 }
