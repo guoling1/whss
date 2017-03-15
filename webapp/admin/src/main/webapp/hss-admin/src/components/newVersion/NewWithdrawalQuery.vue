@@ -18,6 +18,10 @@
               <el-input style="width: 130px" v-model="query.orderNo" placeholder="请输入内容" size="small"></el-input>
             </li>
             <li class="same">
+              <label>备注:</label>
+              <el-input style="width: 130px" v-model="query.remark" placeholder="请输入内容" size="small"></el-input>
+            </li>
+            <li class="same">
               <label>收款账户名:</label>
               <el-input style="width: 130px" v-model="query.userName" placeholder="请输入内容" size="small"></el-input>
             </li>
@@ -39,8 +43,12 @@
             </li>
           </ul>
           <!--表格-->
-          <el-table v-loading.body="loading" max-height="637" style="font-size: 12px;margin-bottom: 15px" :data="records" border>
-            <el-table-column type="index" width="62" label="序号" fixed="left"></el-table-column>
+          <el-table v-loading.body="loading" max-height="637" style="font-size: 12px;margin-bottom: 15px" :data="records" border :row-style="tableFoot">
+            <el-table-column width="62" label="序号" fixed="left">
+              <template scope="scope">
+                <div v-if="records[scope.$index].orderNo!='当页总额'&&records[scope.$index].orderNo!='筛选条件统计'">{{scope.$index+1}}</div>
+              </template>
+            </el-table-column>
             <el-table-column label="打款流水号" min-width="100">
               <template scope="scope">
                 <span class="td" :data-clipboard-text="records[scope.$index].sn" type="text" size="small"
@@ -49,33 +57,38 @@
             </el-table-column>
             <el-table-column label="交易单号" min-width="100">
               <template scope="scope">
-                <span class="td" :data-clipboard-text="records[scope.$index].orderNo" type="text" size="small"
-                      style="cursor: pointer" title="点击复制">{{records[scope.$index].orderNo|changeHide}}</span>
+                <span v-if="records[scope.$index].orderNo!='当页总额'&&records[scope.$index].orderNo!='筛选条件统计'" class="td" :data-clipboard-text="records[scope.$index].orderNo" type="text" size="small" style="cursor: pointer" title="点击复制">{{records[scope.$index].orderNo|changeHide}}</span>
+                <span v-if="records[scope.$index].orderNo=='当页总额'">当页总额</span>
+                <span v-if="records[scope.$index].orderNo=='筛选条件统计'">筛选条件统计</span>
               </template>
             </el-table-column>
-            <el-table-column prop="requestTime" :formatter="changeTime" label="打款时间" width="160"></el-table-column>
-            <el-table-column prop="receiptUserName" label="用户名" min-width="100"></el-table-column>
+            <el-table-column prop="amount" align="right" label="打款金额" min-width="90"></el-table-column>
+            <el-table-column label="收款账户名" min-width="100">
+              <template scope="scope">
+                <div v-if="records[scope.$index].orderNo!='当页总额'&&records[scope.$index].orderNo!='筛选条件统计'">{{records[scope.$index].receiptUserName}}</div>
+                <a v-if="records[scope.$index].orderNo=='筛选条件统计'" @click="add">点击统计</a>
+              </template>
+            </el-table-column>
             <el-table-column label="收款银行账号" min-width="100">
               <template scope="scope">
                 <span class="td" :data-clipboard-text="records[scope.$index].bankCard" type="text" size="small"
                       style="cursor: pointer" title="点击复制">{{records[scope.$index].bankCard|changeHide}}</span>
               </template>
             </el-table-column>
-            <el-table-column prop="amount" align="right" label="打款金额" min-width="90"></el-table-column>
-            <el-table-column prop="statusValue" label="支付状态" min-width="90"></el-table-column>
+            <el-table-column prop="requestTime" :formatter="changeTime" label="打款时间" width="160"></el-table-column>
+            <el-table-column prop="statusValue" label="打款状态" min-width="90"></el-table-column>
             <el-table-column prop="playMoneyChannel" label="打款通道" min-width="120"></el-table-column>
             <el-table-column prop="message" label="渠道信息" min-width="85"></el-table-column>
             <el-table-column label="备注信息" min-width="90">
               <template scope="scope">
-                <span class="td" :data-clipboard-text="records[scope.$index].remark" type="text" size="small"
-                      style="cursor: pointer" title="点击复制">{{records[scope.$index].remark|changeHide}}</span>
+                <span class="td" :data-clipboard-text="records[scope.$index].remark" type="text" size="small" style="cursor: pointer" title="点击复制">{{records[scope.$index].remark|changeHide}}</span>
               </template>
             </el-table-column>
             <el-table-column label="操作" min-width="80" fixed="right">
               <template scope="scope">
-                <router-link :to="{path:'/admin/record/withdrawalAudit',query:{orderNo:records[scope.$index].orderNo,sn:records[scope.$index].sn,requestTime:records[scope.$index].requestTime,amount:records[scope.$index].amount,receiptUserName:records[scope.$index].receiptUserName,playMoneyChannel:records[scope.$index].playMoneyChannel,status:records[scope.$index].status,bankCard:records[scope.$index].bankCard,message:records[scope.$index].message}}" id="audit" v-if="(records[scope.$index].status=='2'||records[scope.$index].status=='3'||records[scope.$index].status=='5')&&records[scope.$index].auditStatus==0" >审核</router-link>
-                <span v-if="records[scope.$index].status=='5'&&records[scope.$index].auditStatus!=0">{{records[scope.$index].auditStatusValue}}</span>
-                <a href="javascript:;" @click="updata(records[scope.$index].sn)">同步</a>
+                <router-link :to="{path:'/admin/record/withdrawalAudit',query:{orderNo:records[scope.$index].orderNo,sn:records[scope.$index].sn,requestTime:records[scope.$index].requestTime,amount:records[scope.$index].amount,receiptUserName:records[scope.$index].receiptUserName,playMoneyChannel:records[scope.$index].playMoneyChannel,status:records[scope.$index].status,bankCard:records[scope.$index].bankCard,message:records[scope.$index].message}}" id="audit" v-if="(records[scope.$index].status=='2'||records[scope.$index].status=='3'||records[scope.$index].status=='5')&&records[scope.$index].auditStatus==0&&records[scope.$index].orderNo!='当页总额'&&records[scope.$index].orderNo!='筛选条件统计'" >审核</router-link>
+                <span v-if="records[scope.$index].status=='5'&&records[scope.$index].auditStatus!=0&&records[scope.$index].orderNo!='当页总额'&&records[scope.$index].orderNo!='筛选条件统计'">{{records[scope.$index].auditStatusValue}}</span>
+                <a href="javascript:;" @click="updata(records[scope.$index].sn)" v-if="records[scope.$index].orderNo!='当页总额'&&records[scope.$index].orderNo!='筛选条件统计'">同步</a>
               </template>
             </el-table-column>
           </el-table>
@@ -125,23 +138,26 @@
           pageNo:1,
           pageSize:10,
           orderNo:'',
+          remark:'',
           sn:'',
           userName:'',
           status:''
         },
         records: [],
         count: 0,
-        total: 0,
+        total: '',
         loading: true,
         url:'',
         //正式
         queryUrl:'http://pay.qianbaojiajia.com/order/withdraw/listOrder',
          excelUrl:'http://pay.qianbaojiajia.com/order/withdraw/exportExcel',
          syncUrl:'http://pay.qianbaojiajia.com/order/syncWithdrawOrder',
+         addUrl:'http://pay.qianbaojiajia.com/order/withdraw/countAmount',
         //测试
-        /*queryUrl:'http://192.168.1.20:8076/order/withdraw/listOrder',
+        /*queryUrl:'http://192.168.1.25:8240/order/withdraw/listOrder',
         excelUrl:'http://192.168.1.20:8076/order/withdraw/exportExcel',
-        syncUrl:'http://192.168.1.20:8076/order/syncWithdrawOrder'*/
+        syncUrl:'http://192.168.1.20:8076/order/syncWithdrawOrder',
+        addUrl:'http://192.168.1.25:8240/order/withdraw/countAmount',*/
       }
     },
     created: function () {
@@ -163,9 +179,25 @@
           .then(function (res) {
             this.loading = false;
             this.$data.records = res.data.records;
-            this.$data.total=res.data.totalPage;
             this.$data.url=res.data.ext;
             this.$data.count = res.data.count;
+            var price=0;
+            var toFix = function (val) {
+              return parseFloat(val).toFixed(2)
+            };
+            for (var i = 0; i < this.records.length; i++) {
+              price = toFix(parseFloat(price)+parseFloat(this.records[i].amount));
+            }
+            if(this.records.length!=0){
+              this.records.push({
+                orderNo:"当页总额",
+                amount:price
+              },{
+                orderNo:"筛选条件统计",
+                amount:''
+              });
+              this.records[this.records.length-1].amount = this.total;
+            }
           },function (err) {
             this.$data.loading = false;
             this.$message({
@@ -174,6 +206,28 @@
               type: 'error'
             });
           })
+      },
+      add(){
+        this.$data.loading = true;
+        this.$http.post(this.addUrl,this.query)
+          .then(res=>{
+            this.$data.loading = false;
+            this.records[this.records.length-1].amount = this.total = res.data;
+          })
+          .catch(err=>{
+            this.$data.loading = false;
+            this.$message({
+              showClose: true,
+              message: err.statusMessage,
+              type: 'error'
+            });
+          })
+      },
+      tableFoot(row, index) {
+        if (row.orderNo === '当页总额'||row.orderNo === '筛选条件统计') {
+          return {background:'#eef1f6'}
+        }
+        return '';
       },
       //格式化时间
       changeTime: function (row, column) {
@@ -229,6 +283,7 @@
           })
       },
       search(){
+        this.total = '';
         this.$data.query.pageNo = 1;
         this.getData()
       },
