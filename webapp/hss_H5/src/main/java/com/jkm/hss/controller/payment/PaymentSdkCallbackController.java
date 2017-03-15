@@ -73,7 +73,6 @@ public class PaymentSdkCallbackController extends BaseController {
     @RequestMapping(value = "withdraw", method = RequestMethod.POST)
     public Object handleWithdrawCallbackMsg(@RequestBody final PaymentSdkWithdrawCallbackResponse paymentSdkWithdrawCallbackResponse) {
         log.info("收到支付中心的提现回调请求，订单号[{}], 参数[{}]", paymentSdkWithdrawCallbackResponse.getOrderNo(), JSON.toJSONString(paymentSdkWithdrawCallbackResponse));
-        this.orderService.getByOrderNo(paymentSdkWithdrawCallbackResponse.getOrderNo()).get();
         this.withdrawService.handleWithdrawCallbackMsg(paymentSdkWithdrawCallbackResponse);
         return "success";
     }
