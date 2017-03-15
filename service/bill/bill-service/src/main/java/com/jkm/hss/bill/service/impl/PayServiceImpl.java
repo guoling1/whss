@@ -37,6 +37,7 @@ import com.jkm.hss.product.enums.EnumProductType;
 import com.jkm.hss.product.servcie.BasicChannelService;
 import com.jkm.hss.product.servcie.UpgradeRecommendRulesService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
 import org.joda.time.DateTime;
@@ -924,10 +925,12 @@ public class PayServiceImpl implements PayService {
     public Pair<Integer, String> confirmUnionPay(final long orderId, final String code) {
         final Order order = this.orderService.getByIdWithLock(orderId).get();
         if (order.isDuePay()) {
-            this.orderService.updateStatus(orderId, EnumOrderStatus.PAYING.getId(), order.getRemark());
+            this.orderService.updateStatus(orderId, EnumOrderStatus.PAYING.getId(), StringUtils.isEmpty(order.getRemark()) ? "" : order.getRemark());
             final PaymentSdkConfirmUnionPayRequest paymentSdkConfirmUnionPayRequest = new PaymentSdkConfirmUnionPayRequest();
+            paymentSdkConfirmUnionPayRequest.setAppId(order.getAppId());
             paymentSdkConfirmUnionPayRequest.setOrderNo(order.getOrderNo());
-            paymentSdkConfirmUnionPayRequest.setCode(code);
+            paymentSdkConfirmUnionPayRequest.setCode(order.getPayType());
+            paymentSdkConfirmUnionPayRequest.setYzm(code);
             final String resultStr = this.httpClientFacade.jsonPost(PaymentSdkConstants.SDK_PAY_UNIONPAY_CONFRIM, SdkSerializeUtil.convertObjToMap(paymentSdkConfirmUnionPayRequest));
             log.info("订单号[{}], 快捷确认下单结果[{}]", order.getOrderNo(), resultStr);
             final PaymentSdkConfirmUnionPayResponse paymentSdkConfirmUnionPayResponse = JSONObject.parseObject(resultStr, PaymentSdkConfirmUnionPayResponse.class);

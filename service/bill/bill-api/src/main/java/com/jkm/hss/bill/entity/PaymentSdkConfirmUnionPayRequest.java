@@ -10,12 +10,17 @@ import lombok.Data;
 @Data
 public class PaymentSdkConfirmUnionPayRequest {
 
+
+    private String appId;
+
+    private String yzm;
+
     /**
      * 交易订单号
      */
     private String orderNo;
     /**
-     * 验证码
+     *  通道
      */
     private String code;
 }

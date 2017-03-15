@@ -170,7 +170,7 @@ public class AccountBankServiceImpl implements AccountBankService{
      */
     @Override
     public int setDefaultCreditCard(long id) {
-        AccountBank accountBank = accountBankDao.getById(id);
+        AccountBank accountBank = accountBankDao.selectById(id);
         if(accountBank!=null){
             this.reset(accountBank.getAccountId(),EnumAccountBank.CREDIT.getId());
         }

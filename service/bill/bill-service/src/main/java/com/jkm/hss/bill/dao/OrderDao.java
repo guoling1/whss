@@ -48,7 +48,7 @@ public interface OrderDao {
      * @param id
      * @param status
      */
-    int updateStatus(@Param("id") long id, @Param("status") int status, @Param("status") String remark);
+    int updateStatus(@Param("id") long id, @Param("status") int status, @Param("remark") String remark);
 
     /**
      * 更新结算状态
