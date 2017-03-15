@@ -262,7 +262,7 @@ public class OrderServiceImpl implements OrderService {
         this.frozenRecordService.add(frozenRecord);
         //添加账户流水--减少
         this.accountFlowService.addAccountFlow(account.getId(), playMoneyOrder.getOrderNo(), amount,
-                "手动提现", EnumAccountFlowType.DECREASE);
+                "提现", EnumAccountFlowType.DECREASE);
         return playMoneyOrder.getId();
     }
 
