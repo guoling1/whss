@@ -4,7 +4,7 @@ import com.jkm.hss.account.enums.EnumSplitBusinessType;
 import com.jkm.hss.bill.dao.ProfitDao;
 import com.jkm.hss.bill.entity.JkmProfitDetailsResponse;
 import com.jkm.hss.bill.service.ProfitService;
-import com.jkm.hss.merchant.helper.request.ProfitDetailsRequest;
+import com.jkm.hss.merchant.entity.ProfitDetailsRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -81,5 +81,12 @@ public class ProfitServiceImpl implements ProfitService {
     public int selectProfitDetailsCount(ProfitDetailsRequest req) {
         ProfitDetailsRequest request =selectTime(req);
         return  profitDao.selectProfitDetailsCount(request);
+    }
+
+    @Override
+    public JkmProfitDetailsResponse profitAmount(ProfitDetailsRequest req) {
+        ProfitDetailsRequest request =selectTime(req);
+        JkmProfitDetailsResponse res = profitDao.profitAmount(request);
+        return res;
     }
 }

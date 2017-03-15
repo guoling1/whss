@@ -27,6 +27,11 @@ public class MqConfig {
      */
     public static final String MERCHANT_WITHDRAW = "hss_merchant_withdraw";
 
+    /**
+     * t1定时发起提现
+     */
+    public static final String MERCHANT_WITHDRAW_T1 = "hss_merchant_withdraw_t1";
+
     // ###################hsy#######################
     /**
      * 批量结算

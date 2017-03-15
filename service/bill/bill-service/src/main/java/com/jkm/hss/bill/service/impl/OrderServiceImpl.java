@@ -1,5 +1,6 @@
 package com.jkm.hss.bill.service.impl;
 
+import com.alibaba.fastjson.JSONObject;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.jkm.base.common.entity.ExcelSheetVO;
@@ -9,26 +10,31 @@ import com.jkm.base.common.util.ExcelUtil;
 import com.jkm.base.common.util.SnGenerator;
 import com.jkm.hss.account.entity.Account;
 import com.jkm.hss.account.entity.FrozenRecord;
+import com.jkm.hss.account.entity.SettleAccountFlow;
 import com.jkm.hss.account.enums.EnumAccountFlowType;
+import com.jkm.hss.account.enums.EnumAccountUserType;
 import com.jkm.hss.account.sevice.AccountFlowService;
 import com.jkm.hss.account.sevice.AccountService;
 import com.jkm.hss.account.sevice.FrozenRecordService;
+import com.jkm.hss.account.sevice.SettleAccountFlowService;
 import com.jkm.hss.bill.dao.OrderDao;
 import com.jkm.hss.bill.entity.MerchantTradeResponse;
 import com.jkm.hss.bill.entity.Order;
+import com.jkm.hss.bill.entity.SettlementRecord;
 import com.jkm.hss.bill.enums.EnumOrderStatus;
 import com.jkm.hss.bill.enums.EnumPayType;
 import com.jkm.hss.bill.enums.EnumSettleStatus;
 import com.jkm.hss.bill.enums.EnumTradeType;
 import com.jkm.hss.bill.helper.requestparam.QueryMerchantPayOrdersRequestParam;
-import com.jkm.hss.bill.service.CalculateService;
-import com.jkm.hss.bill.service.OrderService;
+import com.jkm.hss.bill.service.*;
 import com.jkm.hss.dealer.entity.Dealer;
 import com.jkm.hss.dealer.service.DealerService;
 import com.jkm.hss.merchant.entity.MerchantInfo;
 import com.jkm.hss.merchant.helper.MerchantSupport;
 import com.jkm.hss.merchant.helper.request.OrderTradeRequest;
 import com.jkm.hss.merchant.service.MerchantInfoService;
+import com.jkm.hss.mq.config.MqConfig;
+import com.jkm.hss.mq.producer.MqProducer;
 import com.jkm.hss.product.enums.EnumPayChannelSign;
 import com.jkm.hss.product.enums.EnumProductType;
 import com.jkm.hsy.user.entity.AppBizShop;
@@ -67,6 +73,14 @@ public class OrderServiceImpl implements OrderService {
     private AccountService accountService;
     @Autowired
     private DealerService dealerService;
+    @Autowired
+    private SettleAccountFlowService settleAccountFlowService;
+    @Autowired
+    private SettlementRecordService settlementRecordService;
+    @Autowired
+    private WithdrawService withdrawService;
+    @Autowired
+    private PayService payService;
 
     /**
      * {@inheritDoc}
@@ -832,6 +846,97 @@ public class OrderServiceImpl implements OrderService {
     }
 
     /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void handleT1UnSettlePayOrder() {
+        final List<Long> orderIds = this.getT1PaySuccessAndUnSettleOrderIds(new Date(), EnumProductType.HSS.getId());
+        if (!CollectionUtils.isEmpty(orderIds)) {
+            for (int i = 0; i < orderIds.size(); i++) {
+                final long orderId = orderIds.get(i);
+                final JSONObject requestParam = new JSONObject();
+                requestParam.put("orderId", orderId);
+                MqProducer.produce(requestParam, MqConfig.MERCHANT_WITHDRAW_T1, 10 * i);
+            }
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param settleDate
+     * @param appId
+     * @return
+     */
+    @Override
+    public List<Long> getT1PaySuccessAndUnSettleOrderIds(Date settleDate, String appId) {
+        return this.orderDao.selectT1PaySuccessAndUnSettleOrderIds(settleDate, appId);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param orderId
+     */
+    @Override
+    @Transactional
+    public void t1WithdrawByOrderId(final long orderId) {
+        log.info("订单[{}], T1发起结算提现");
+        final Order order = this.getByIdWithLock(orderId).get();
+        if (order.isPaySuccess() & order.isDueSettle()) {
+            final Optional<SettleAccountFlow> decreaseSettleAccountFlowOptional = this.settleAccountFlowService.getByOrderNoAndAccountIdAndType(order.getOrderNo(),
+                    order.getPayee(), EnumAccountFlowType.DECREASE.getId());
+            Preconditions.checkState(!decreaseSettleAccountFlowOptional.isPresent(), "订单[{}], 在T1发起结算提现时,出现已结算的记录!!", orderId);
+            final SettleAccountFlow increaseSettleAccountFlow = this.settleAccountFlowService.getByOrderNoAndAccountIdAndType(order.getOrderNo(),
+                    order.getPayee(), EnumAccountFlowType.INCREASE.getId()).get();
+            final SettlementRecord settlementRecord = this.settlementRecordService.getByIdWithLock(increaseSettleAccountFlow.getSettlementRecordId()).get();
+            if (settlementRecord.isWaitWithdraw()) {
+                final MerchantInfo merchant = this.merchantInfoService.getByAccountId(order.getPayee()).get();
+                this.withdrawService.merchantWithdrawBySettlementRecord(merchant.getId(), settlementRecord.getId(), order.getSn(), order.getPayChannelSign());
+                log.info("订单[{}], T1发起结算提现, 手续费-入账可用余额");
+                this.dealerAndMerchantPoundageSettleImpl(order, increaseSettleAccountFlow.getId());
+            }
+        }
+        log.error("订单[{}],在T1发起结算提现时，状态错误!!!，订单状态[{}], 结算状态[{}]", orderId, order.getStatus(), order.getSettleStatus());
+    }
+
+    /**
+     * 手续费由待结算入余额
+     *
+     * @param order
+     * @param settleFlowId   收钱商户的待结算流水ID
+     */
+    private void dealerAndMerchantPoundageSettleImpl(final Order order, final long settleFlowId) {
+        final List<SettleAccountFlow> flows = this.settleAccountFlowService.getByOrderNo(order.getOrderNo());
+        if (!CollectionUtils.isEmpty(flows)) {
+            for (SettleAccountFlow settleAccountFlow : flows) {
+                if (settleAccountFlow.getId() == settleFlowId
+                        || EnumAccountUserType.COMPANY.getId() == settleAccountFlow.getAccountUserType()) {
+                    continue;
+                }
+                Preconditions.checkState(EnumAccountFlowType.INCREASE.getId() == settleAccountFlow.getType(),
+                        "订单[{}],在T1发起结算提现时, 手续费入账到余额，出现已结算的待结算流水", order.getId());
+                if (EnumAccountUserType.MERCHANT.getId() == settleAccountFlow.getAccountUserType()) {
+                    final MerchantInfo merchant = this.merchantInfoService.getByAccountId(settleAccountFlow.getAccountId()).get();
+                    final long settlementRecordId = this.payService.generateMerchantSettlementRecord(settleAccountFlow.getAccountId(),
+                            merchant, order.getSettleTime(), settleAccountFlow.getIncomeAmount());
+                    this.settleAccountFlowService.updateSettlementRecordIdById(settleAccountFlow.getId(), settlementRecordId);
+                    //待结算--可用余额
+                    this.payService.merchantRecordedAccount(settleAccountFlow.getAccountId(), settleAccountFlow.getIncomeAmount(), order, settlementRecordId);
+                }
+                if (EnumAccountUserType.DEALER.getId() == settleAccountFlow.getAccountUserType()) {
+                    final Dealer dealer = this.dealerService.getByAccountId(settleAccountFlow.getAccountId()).get();
+                    final long settlementRecordId = this.payService.generateDealerSettlementRecord(settleAccountFlow.getAccountId(),
+                            dealer, order.getSettleTime(), settleAccountFlow.getIncomeAmount());
+                    this.settleAccountFlowService.updateSettlementRecordIdById(settleAccountFlow.getId(), settlementRecordId);
+                    //待结算--可用余额
+                    this.payService.dealerRecordedAccount(settleAccountFlow.getAccountId(), settleAccountFlow.getIncomeAmount(), order, settlementRecordId);
+                }
+            }
+        }
+    }
+
+    /**
      * 生成ExcelVo
      * @param
      * @param baseUrl
@@ -879,13 +984,13 @@ public class OrderServiceImpl implements OrderService {
                 columns.add(list.get(i).getProxyName());
                 columns.add(list.get(i).getProxyName1());
                 columns.add(String.valueOf(list.get(i).getTradeAmount()));
-                columns.add(String.valueOf(list.get(i).getPayRate()));
-//                if (list.get(i).getPayRate()==null){
-//                    String x = "";
-//                    columns.add(x);
-//                }else {
-//                    columns.add(String.valueOf(list.get(i).getPayRate()));
-//                }
+//                columns.add(String.valueOf(list.get(i).getPayRate()));
+                if (list.get(i).getPayRate()==null){
+                    String x = "0";
+                    columns.add(x);
+                }else {
+                    columns.add(String.valueOf(list.get(i).getPayRate()));
+                }
                 if (list.get(i).getPoundage()==null){
                     String x = " ";
                     columns.add(x);
@@ -969,31 +1074,6 @@ public class OrderServiceImpl implements OrderService {
                 }else {
                     columns.add("");
                 }
-//                if ("S".equals(list.get(i).getPayType())){
-//                    columns.add("微信扫码");
-//                }
-//                if ("N".equals(list.get(i).getPayType())){
-//                    columns.add("微信二维码");
-//
-//                }
-//                if ("H".equals(list.get(i).getPayType())){
-//                    columns.add("微信H5收银台");
-//                }
-//                if ("B".equals(list.get(i).getPayType())){
-//                    columns.add("快捷收款");
-//                }
-//                if ("Z".equals(list.get(i).getPayType())){
-//                    columns.add("支付宝扫码");
-//                }
-//                if (list.get(i).getPayChannelSign()==101){
-//                    columns.add("阳光微信扫码");
-//                }
-//                if (list.get(i).getPayChannelSign()==102){
-//                    columns.add("阳光支付宝扫码");
-//                }
-//                if (list.get(i).getPayChannelSign()==103){
-//                    columns.add("阳光银联支付");
-//                }
                 if (list.get(i).getPayChannelSign()==101){
                     columns.add(EnumPayChannelSign.YG_WECHAT.getName());
                 }

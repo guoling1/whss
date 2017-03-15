@@ -48,7 +48,7 @@ public interface OrderDao {
      * @param id
      * @param status
      */
-    int updateStatus(@Param("id") long id, @Param("status") int status, @Param("status") String remark);
+    int updateStatus(@Param("id") long id, @Param("status") int status, @Param("remark") String remark);
 
     /**
      * 更新结算状态
@@ -254,4 +254,13 @@ public interface OrderDao {
      * @return
      */
     String amountCount(OrderTradeRequest req);
+
+    /**
+     * 查询指定结算日期，指定业务线，T1的支付成功的待结算的订单IDS
+     *
+     * @param settleDate
+     * @param appId
+     * @return
+     */
+    List<Long> selectT1PaySuccessAndUnSettleOrderIds(@Param("settleDate") Date settleDate, @Param("appId") String appId);
 }

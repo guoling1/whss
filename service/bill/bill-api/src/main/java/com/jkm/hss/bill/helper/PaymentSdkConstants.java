@@ -35,6 +35,16 @@ public final class PaymentSdkConstants {
     public static final String SDK_PAY_PLACE_ORDER;
 
     /**
+     *  快捷下单-发送验证码
+     */
+    public static final String SDK_PAY_UNIONPAY_PREPARE;
+
+    /**
+     * 快捷支付-确认支付
+     */
+    public static final String SDK_PAY_UNIONPAY_CONFRIM;
+
+    /**
      * 提现接口
      */
     public static final String SDK_PAY_WITHDRAW;
@@ -60,6 +70,10 @@ public final class PaymentSdkConstants {
         Preconditions.checkState(!StringUtils.isEmpty(SDK_PAY_WITHDRAW), "加载支付中心提现url失败");
         SDK_PAY_QUERYIN= config.sdkPayQueryIn();
         Preconditions.checkState(!StringUtils.isEmpty(SDK_PAY_QUERYIN), "加载支付中心查询商户入网url失败");
+        SDK_PAY_UNIONPAY_PREPARE = config.sdkPayUnionPayPrepare();
+        Preconditions.checkState(!StringUtils.isEmpty(SDK_PAY_UNIONPAY_PREPARE), "加载支付中心快捷支付-预下单url失败");
+        SDK_PAY_UNIONPAY_CONFRIM = config.sdkPayUnionPayConfirm();
+        Preconditions.checkState(!StringUtils.isEmpty(SDK_PAY_UNIONPAY_CONFRIM), "加载支付中心快捷支付-确认下单url失败");
     }
 
     private static PaymentSdkConfig getConfig() {
@@ -114,5 +128,13 @@ public final class PaymentSdkConstants {
         @Key("payment.sdk.pay.query.url")
         @DefaultValue("http://pay.qianbaojiajia.com/km/merchant/query")
         String sdkPayQueryIn();
+
+        @Key("payment.sdk.pay.unionpay.prepare")
+        @DefaultValue("http://pay.qianbaojiajia.com/pay/fastPlaceOrder")
+        String sdkPayUnionPayPrepare();
+
+        @Key("payment.sdk.pay.unionpay.confirm")
+        @DefaultValue("http://pay.qianbaojiajia.com/pay/confirmPlaceOrder")
+        String sdkPayUnionPayConfirm();
     }
 }

@@ -1,6 +1,6 @@
 package com.jkm.base.sms.service.impl;
 
-import com.jkm.base.common.spring.http.client.HttpClientFacade;
+import com.jkm.base.common.spring.http.client.impl.HttpClientFacade;
 import com.jkm.base.sms.service.SmsSendMessageService;
 import com.jkm.base.sms.service.constants.NotifierConstants;
 import org.springframework.beans.factory.annotation.Autowired;
