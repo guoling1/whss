@@ -92,11 +92,11 @@
                 <li>{{startCode}}至{{endCode}}</li>
               </ul>
             </div>
-            <div class="text" v-if="query.type==2">二维码文件10分钟内有效</div>
-            <div class="text" v-if="query.type==2">实体码请务必及时下载Excel文件</div>
+            <div class="text" v-if="query.type==1">二维码文件10分钟内有效</div>
+            <div class="text" v-if="query.type==1">实体码请务必及时下载Excel文件</div>
             <div slot="footer" class="dialog-footer" style="text-align: center;">
-              <a :href="'http://'+this.url" class="btn btn-primary" style="padding: 6px 50px;" v-if="query.type==2">下载文件</a>
-              <a @click="this.isShow = false" v-if="query.type==1" class="btn btn-primary" style="padding: 6px 50px;">确 定</a>
+              <a :href="'http://'+this.url" class="btn btn-primary" style="padding: 6px 50px;" v-if="query.type==1">下载文件</a>
+              <a @click="this.isShow = false" v-if="query.type==2" class="btn btn-primary" style="padding: 6px 50px;">确 定</a>
             </div>
           </el-dialog>
         </div>
@@ -107,7 +107,7 @@
 
 <script lang="babel">
   export default {
-    name: 'issueProduct',
+    name: 'codeProduct',
     data () {
       return {
         query: {
@@ -115,10 +115,11 @@
           type:'1',//1实体码 2电子码
           count:''//分配数量
         },
-        isShow:true,
+        isShow:false,
         url:'',
         startCode:'',
-        endCode: ''
+        endCode: '',
+        productionTime:''
       }
     },
     methods: {
