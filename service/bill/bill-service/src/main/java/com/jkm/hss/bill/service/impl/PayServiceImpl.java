@@ -658,7 +658,7 @@ public class PayServiceImpl implements PayService {
         //手续费账户结算
         if (null != companyMoneyTriple) {
             this.splitAccountRecordService.addMerchantUpgradePaySplitAccountRecord(EnumSplitBusinessType.HSSPROMOTE.getId(), order.getOrderNo(), order.getOrderNo(),
-                    order.getTradeAmount(), order.getRealPayAmount(), firstMoneyTriple, "金开门利润账户", "商户升级-反润");
+                    order.getTradeAmount(), order.getRealPayAmount(), companyMoneyTriple, "金开门利润账户", "商户升级-反润");
             final Account jkmAccount = this.accountService.getByIdWithLock(AccountConstants.JKM_ACCOUNT_ID).get();;
             this.accountService.increaseTotalAmount(jkmAccount.getId(), companyMoneyTriple.getMiddle());
             this.accountService.increaseAvailableAmount(jkmAccount.getId(), companyMoneyTriple.getMiddle());
