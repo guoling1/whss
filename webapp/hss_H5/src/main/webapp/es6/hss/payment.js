@@ -39,6 +39,6 @@ submitNotSelf.addEventListener('click', function () {
   if (WeixinJSBridge) {
     WeixinJSBridge.call('closeWindow');
   } else {
-    window.close();
+    AlipayJSBridge.call('closeWebview');
   }
 });
