@@ -60,7 +60,7 @@
           height: 180,
           colorDark: "#000000",
           colorLight: "#ffffff",
-          correctLevel: QRCode.CorrectLevel.H
+          correctLevel: QRCode.CorrectLevel.L
         });
       }, err => {
         this.$message({
@@ -75,12 +75,11 @@
         this.$http.post('/daili/qrCode/downLoadQrCode', {
           code: this.code,
         }).then(res => {
-          console.log(res.data);
           let links = document.createElement("a");
           document.body.appendChild(links);
           links.style = "display: none";
           links.href = res.data.url;
-          //links.download = fileName;
+          links.download = '123.jpg';
           links.click();
           document.body.removeChild(links);
         }, err => {
