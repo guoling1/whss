@@ -961,10 +961,13 @@ public class QRCodeServiceImpl implements QRCodeService {
         long count = 0l;
         List<MyQrCodeListResponse> qrCodeList = null;
         if((EnumQRCodeSysType.HSS.getId()).equals(myQrCodeListRequest.getSysType())){
-
+            int tempStatus = getMerchantStatus(myQrCodeListRequest.getMerchantStatus(),EnumQRCodeSysType.HSS.getId());
+            myQrCodeListRequest.setMerchantStatus(tempStatus);
             count=qrCodeDao.getDealerHSSQrCodeCount(myQrCodeListRequest);
             qrCodeList=qrCodeDao.getDealerHSSQrCodeList(myQrCodeListRequest);
         }else{
+            int tempStatus = getMerchantStatus(myQrCodeListRequest.getMerchantStatus(),EnumQRCodeSysType.HSY.getId());
+            myQrCodeListRequest.setMerchantStatus(tempStatus);
             count=qrCodeDao.getDealerHSYQrCodeCount(myQrCodeListRequest);
             qrCodeList=qrCodeDao.getDealerHSYQrCodeList(myQrCodeListRequest);
         }
@@ -974,33 +977,33 @@ public class QRCodeServiceImpl implements QRCodeService {
     }
     private int getMerchantStatus(int status,String type){
         int tempStatus = -1;
-        if("hss".equals(type)){
+        if((EnumQRCodeSysType.HSS.getId()).equals(type)){
             if(status==0){
                 tempStatus = -1;
             }else if(status==1){
                 tempStatus = 0;
             }else if(status==2){
-
+                tempStatus = 2;
             }else if(status==3){
-
+                tempStatus = 4;
             }else if(status==4){
-
+                tempStatus = 3;
             }else{
-
+                tempStatus = -1;
             }
         }else{
             if(status==0){
-
+                tempStatus = -1;
             }else if(status==1){
-
+                tempStatus = 4;
             }else if(status==2){
-
+                tempStatus = 2;
             }else if(status==3){
-
+                tempStatus = 3;
             }else if(status==4){
-
+                tempStatus = 1;
             }else{
-
+                tempStatus = -1;
             }
         }
         return tempStatus;

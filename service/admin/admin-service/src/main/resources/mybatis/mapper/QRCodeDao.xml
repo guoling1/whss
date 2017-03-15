@@ -520,7 +520,7 @@
         FROM
 	    tb_qr_code as c
         LEFT JOIN tb_merchant_info AS i ON c.merchant_id = i.id
-        WHERE  sys_type='hss'
+        WHERE  c.sys_type='hss'
         <if test="code != null and code!=''">
             and c.code = #{code}
         </if>
@@ -639,7 +639,7 @@
         FROM
         tb_qr_code as c
         LEFT JOIN app_biz_shop as i ON c.merchant_id = i.id
-        WHERE sys_type='hsy'
+        WHERE c.sys_type='hsy'
         <if test="code != null and code!=''">
             and c.code = #{code}
         </if>
@@ -757,7 +757,10 @@
         FROM
         tb_qr_code as c
         LEFT JOIN tb_merchant_info AS i ON c.merchant_id = i.id
-        WHERE  sys_type='hss'
+        WHERE  c.sys_type='hss'
+        <if test="merchantStatus>-1">
+            AND i.`status` = #{merchantStatus}
+        </if>
         <if test="firstDealerId>0">
             AND c.first_level_dealer_id = #{firstDealerId}
         </if>
@@ -797,8 +800,14 @@
 
 
     <select id="getDealerHSSQrCodeCount" resultType="java.lang.Long">
-        SELECT count(1) from tb_qr_code
-        WHERE sys_type='hss'
+        SELECT count(1)
+        FROM
+        tb_qr_code as c
+        LEFT JOIN tb_merchant_info AS i ON c.merchant_id = i.id
+        WHERE  c.sys_type='hss'
+        <if test="merchantStatus>-1">
+            AND i.`status` = #{merchantStatus}
+        </if>
         <if test="firstDealerId>0">
             AND c.first_level_dealer_id = #{firstDealerId}
         </if>
@@ -869,7 +878,10 @@
         FROM
         tb_qr_code as c
         LEFT JOIN app_biz_shop as i ON c.merchant_id = i.id
-        WHERE sys_type='hsy'
+        WHERE c.sys_type='hsy'
+        <if test="merchantStatus>-1">
+            AND i.STATUS = #{merchantStatus}
+        </if>
         <if test="firstDealerId>0">
             AND c.first_level_dealer_id = #{firstDealerId}
         </if>
@@ -909,22 +921,26 @@
 
 
     <select id="getDealerHSYQrCodeCount" resultType="java.lang.Long">
-        SELECT count(1) from tb_qr_code
-        WHERE sys_type='hsy'
+        SELECT count(1) FROM tb_qr_code as c
+        LEFT JOIN app_biz_shop as i ON c.merchant_id = i.id
+        WHERE c.sys_type='hsy'
+        <if test="merchantStatus>-1">
+            AND i.STATUS = #{merchantStatus}
+        </if>
         <if test="firstDealerId>0">
-            AND first_level_dealer_id = #{firstDealerId}
+            AND c.first_level_dealer_id = #{firstDealerId}
         </if>
         <if test="secondDealerId>0">
-            AND second_level_dealer_id = #{secondDealerId}
+            AND c.second_level_dealer_id = #{secondDealerId}
         </if>
         <if test="activateStatus>0">
-            AND activate_status = #{activateStatus}
+            AND c.activate_status = #{activateStatus}
         </if>
         <if test="code != null and code!=''">
-            and code = #{code}
+            and c.code = #{code}
         </if>
         <if test="merchantName != null and merchantName!=''">
-            AND merchant_id IN (
+            AND c.merchant_id IN (
             SELECT
             id
             FROM
@@ -934,7 +950,7 @@
             )
         </if>
         <if test="secondDealerName != null and secondDealerName!=''">
-            AND second_level_dealer_id IN (
+            AND c.second_level_dealer_id IN (
             SELECT
             id
             FROM
