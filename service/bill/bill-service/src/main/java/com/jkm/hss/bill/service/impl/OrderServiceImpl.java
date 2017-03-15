@@ -40,7 +40,6 @@ import com.jkm.hss.product.enums.EnumProductType;
 import com.jkm.hsy.user.entity.AppBizShop;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
-import org.aspectj.weaver.ast.Or;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -985,13 +984,13 @@ public class OrderServiceImpl implements OrderService {
                 columns.add(list.get(i).getProxyName());
                 columns.add(list.get(i).getProxyName1());
                 columns.add(String.valueOf(list.get(i).getTradeAmount()));
-                columns.add(String.valueOf(list.get(i).getPayRate()));
-//                if (list.get(i).getPayRate()==null){
-//                    String x = "";
-//                    columns.add(x);
-//                }else {
-//                    columns.add(String.valueOf(list.get(i).getPayRate()));
-//                }
+//                columns.add(String.valueOf(list.get(i).getPayRate()));
+                if (list.get(i).getPayRate()==null){
+                    String x = "0";
+                    columns.add(x);
+                }else {
+                    columns.add(String.valueOf(list.get(i).getPayRate()));
+                }
                 if (list.get(i).getPoundage()==null){
                     String x = " ";
                     columns.add(x);
@@ -1075,31 +1074,6 @@ public class OrderServiceImpl implements OrderService {
                 }else {
                     columns.add("");
                 }
-//                if ("S".equals(list.get(i).getPayType())){
-//                    columns.add("微信扫码");
-//                }
-//                if ("N".equals(list.get(i).getPayType())){
-//                    columns.add("微信二维码");
-//
-//                }
-//                if ("H".equals(list.get(i).getPayType())){
-//                    columns.add("微信H5收银台");
-//                }
-//                if ("B".equals(list.get(i).getPayType())){
-//                    columns.add("快捷收款");
-//                }
-//                if ("Z".equals(list.get(i).getPayType())){
-//                    columns.add("支付宝扫码");
-//                }
-//                if (list.get(i).getPayChannelSign()==101){
-//                    columns.add("阳光微信扫码");
-//                }
-//                if (list.get(i).getPayChannelSign()==102){
-//                    columns.add("阳光支付宝扫码");
-//                }
-//                if (list.get(i).getPayChannelSign()==103){
-//                    columns.add("阳光银联支付");
-//                }
                 if (list.get(i).getPayChannelSign()==101){
                     columns.add(EnumPayChannelSign.YG_WECHAT.getName());
                 }
