@@ -274,6 +274,13 @@ public interface QRCodeDao {
      * @return
      */
     int getSecondUnActivateCount(@Param("secondLevelDealerId") long secondLevelDealerId);
+    /**
+     * 查询二级代理商激活二维码数
+     *
+     * @param secondLevelDealerId
+     * @return
+     */
+    int getSecondActivateCount(@Param("secondLevelDealerId") long secondLevelDealerId);
 
     /**
      * 一级代理商给二级代理分配的二维码数

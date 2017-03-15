@@ -292,7 +292,7 @@ public class AccountBankServiceImpl implements AccountBankService{
                 }
                 bankListResponse.setBankBin(accountBank1.getBankBin());
                 String tempBranchName = accountBank1.getBranchName();
-                if(!"".equals(tempBranchName)&&tempBranchName!=null&&tempBranchName.length()>12){
+                if(tempBranchName.length()>12){
                     tempBranchName = "***"+tempBranchName.substring(tempBranchName.length()-12,tempBranchName.length());
                 }
                 bankListResponse.setBranchName(tempBranchName);

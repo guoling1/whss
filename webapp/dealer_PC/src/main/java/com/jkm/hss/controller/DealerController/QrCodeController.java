@@ -1,15 +1,23 @@
 package com.jkm.hss.controller.DealerController;
 
+import com.aliyun.oss.OSSClient;
+import com.aliyun.oss.model.ObjectMetadata;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.jkm.base.common.entity.CommonResponse;
 import com.jkm.base.common.entity.PageModel;
 import com.jkm.base.common.enums.EnumBoolean;
+import com.jkm.base.common.util.QRCodeUtil;
 import com.jkm.hss.admin.entity.DistributeQRCodeRecord;
+import com.jkm.hss.admin.entity.QRCode;
 import com.jkm.hss.admin.enums.EnumQRCodeDistributeType;
+import com.jkm.hss.admin.enums.EnumQRCodeSysType;
+import com.jkm.hss.admin.helper.requestparam.DownLoadQrCodeRequest;
 import com.jkm.hss.admin.helper.requestparam.MyQrCodeListRequest;
+import com.jkm.hss.admin.helper.requestparam.QrCodeDetailRequest;
 import com.jkm.hss.admin.helper.responseparam.MyQrCodeListResponse;
+import com.jkm.hss.admin.helper.responseparam.QrCodeDetailResponse;
 import com.jkm.hss.admin.helper.responseparam.QrCodeListPageResponse;
 import com.jkm.hss.admin.helper.responseparam.QrCodeListResponse;
 import com.jkm.hss.admin.service.DistributeQRCodeRecordService;
@@ -24,6 +32,7 @@ import com.jkm.hss.dealer.helper.response.DealerOfFirstDealerResponse;
 import com.jkm.hss.dealer.helper.response.DistributeRecordResponse;
 import com.jkm.hss.dealer.service.DealerChannelRateService;
 import com.jkm.hss.dealer.service.DealerService;
+import com.jkm.hss.helper.ApplicationConsts;
 import com.jkm.hss.helper.request.DistributeQRCodeRecordResponse;
 import com.jkm.hss.helper.request.DistributeQrCodeRequest;
 import com.jkm.hss.helper.response.ProxyProductResponse;
@@ -32,10 +41,17 @@ import com.jkm.hss.product.enums.EnumProductType;
 import com.jkm.hss.product.servcie.ProductService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -55,6 +71,8 @@ public class QrCodeController extends BaseController {
     private DistributeQRCodeRecordService distributeQRCodeRecordService;
     @Autowired
     private QRCodeService qrCodeService;
+    @Autowired
+    private OSSClient ossClient;
 
     /**
      * 判断登录代理商是否代理产品
@@ -193,11 +211,82 @@ public class QrCodeController extends BaseController {
             myQrCodeListRequest.setSecondDealerId(super.getDealer().get().getId());
             qrCodeListPageResponse.setUnDistributeCount(0);
             qrCodeListPageResponse.setDistributeCount(0);
-
+            int unActivateCount = this.qrCodeService.getSecondUnActivateCount(super.getDealer().get().getId());
+            qrCodeListPageResponse.setUnActivateCount(unActivateCount);
+            int activateCount = this.qrCodeService.getSecondActivateCount(super.getDealer().get().getId());
+            qrCodeListPageResponse.setActivateCount(activateCount);
         }
-
         final PageModel<MyQrCodeListResponse> pageModel = this.qrCodeService.selectDealerQrCodeList(myQrCodeListRequest);
         qrCodeListPageResponse.setPageModel(pageModel);
         return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", pageModel);
+    }
+
+    /**
+     * 二维码详情
+     * @param qrCodeDetailRequest
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/qrCodeDetail", method = RequestMethod.POST)
+    public CommonResponse qrCodeDetail (@RequestBody QrCodeDetailRequest qrCodeDetailRequest) {
+        Optional<QRCode> qrCodeOptional = this.qrCodeService.getByCode(qrCodeDetailRequest.getCode());
+        if(!qrCodeOptional.isPresent()){
+            return CommonResponse.simpleResponse(-1, "二维码不存在");
+        }
+        QrCodeDetailResponse qrCodeDetailResponse = new QrCodeDetailResponse();
+        if((EnumQRCodeSysType.HSS.getId()).equals(qrCodeOptional.get().getSysType())){
+            qrCodeDetailResponse.setProductName("好收收");
+            String url = "http://hss.qianbaojiajia.com/code/scanCode?code="+qrCodeOptional.get().getCode()+"&sign="+qrCodeOptional.get().getSign();
+            qrCodeDetailResponse.setQrUrl(url);
+        }
+        if((EnumQRCodeSysType.HSY.getId()).equals(qrCodeOptional.get().getSysType())){
+            qrCodeDetailResponse.setProductName("好收银");
+            String url = "http://hsy.qianbaojiajia.com/code/scanCode?code="+qrCodeOptional.get().getCode()+"&sign="+qrCodeOptional.get().getSign();
+            qrCodeDetailResponse.setQrUrl(url);
+        }
+        qrCodeDetailResponse.setCode(qrCodeOptional.get().getCode());
+        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", qrCodeDetailResponse);
+    }
+    /**
+     * 下载二维码
+     * @param downLoadQrCodeRequest
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/downLoadQrCode", method = RequestMethod.POST)
+    public CommonResponse downLoadQrCode (@RequestBody DownLoadQrCodeRequest downLoadQrCodeRequest) throws FileNotFoundException {
+        if(StringUtils.isBlank(downLoadQrCodeRequest.getCode())){
+            return CommonResponse.simpleResponse(-1, "code不能为空");
+        }
+        Optional<QRCode> qrCodeOptional = this.qrCodeService.getByCode(downLoadQrCodeRequest.getCode());
+        if(!qrCodeOptional.isPresent()){
+            return CommonResponse.simpleResponse(-1, "二维码不存在");
+        }
+        String url = "";
+        String productName = "";
+        if((EnumQRCodeSysType.HSS.getId()).equals(qrCodeOptional.get().getSysType())){
+            url = "http://hss.qianbaojiajia.com/code/scanCode?code="+qrCodeOptional.get().getCode()+"&sign="+qrCodeOptional.get().getSign();
+            productName = "好收收";
+        }
+        if((EnumQRCodeSysType.HSY.getId()).equals(qrCodeOptional.get().getSysType())){
+            url = "http://hsy.qianbaojiajia.com/code/scanCode?code="+qrCodeOptional.get().getCode()+"&sign="+qrCodeOptional.get().getSign();
+            productName = "好收银";
+        }
+        final String tempDir = QRCodeUtil.getTempDir();
+        final String filePath = QRCodeUtil.generateCode(tempDir, url, downLoadQrCodeRequest.getCode());
+
+        final ObjectMetadata meta = new ObjectMetadata();
+        meta.setCacheControl("public, max-age=31536000");
+        meta.setExpirationTime(new DateTime().plusYears(1).toDate());
+        meta.setContentType("image/jpeg");
+        final Date expireDate = new Date(new Date().getTime() + 30 * 60 * 1000);
+        Calendar cal = Calendar.getInstance();
+        int day = cal.get(Calendar.DATE);
+        int month = cal.get(Calendar.MONTH) + 1;
+        String fileName = "qrcode/"+super.getDealerId()+"/" +downLoadQrCodeRequest.getCode()+"-"+productName+"-"+month+"-"+day+".jpg";
+        ossClient.putObject("jkm-file", fileName, new File(filePath), meta);
+        URL downloadUrl = ossClient.generatePresignedUrl("jkm-file", fileName, expireDate);
+        return CommonResponse.builder4MapResult(0, "下载成功")
+                .addParam("url", downloadUrl.getHost() + downloadUrl.getFile()).build();
     }
 }

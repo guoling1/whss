@@ -67,10 +67,10 @@ public class QrCodeController extends BaseController {
     @ResponseBody
     @RequestMapping(value = "productionQrCode", method = RequestMethod.POST)
     public CommonResponse productionQrCode(@RequestBody final ProductionQrCodeRequest request) {
-        if(request.getSysType()!= EnumQRCodeSysType.HSS.getId()||request.getSysType()!=EnumQRCodeSysType.HSY.getId()){
+        if(!(EnumQRCodeSysType.HSS.getId()).equals(request.getSysType())&&!(EnumQRCodeSysType.HSY.getId()).equals(request.getSysType())){
             return CommonResponse.simpleResponse(-1, "产品参数错误");
         }
-        if(request.getType()!= EnumQRCodeDistributeType.ENTITYCODE.getCode()||request.getType()!= EnumQRCodeDistributeType.ELECTRONICCODE.getCode()){
+        if(request.getType()!= EnumQRCodeDistributeType.ENTITYCODE.getCode()&&request.getType()!= EnumQRCodeDistributeType.ELECTRONICCODE.getCode()){
             return CommonResponse.simpleResponse(-1, "类型参数错误");
         }
         if(request.getCount()<=0){
@@ -98,6 +98,8 @@ public class QrCodeController extends BaseController {
             return CommonResponse.simpleResponse(-1, "文件上传失败");
         }
         FileUtils.deleteQuietly(new File(productionQrCodeRecord.getDownloadUrl()));
+
+
         ProductionQrCodeResponse productionQrCodeResponse = new ProductionQrCodeResponse();
         if((EnumQRCodeSysType.HSS.getId()).equals(productionQrCodeRecord.getSysType())){
             productionQrCodeResponse.setProductName("好收收");
@@ -115,8 +117,8 @@ public class QrCodeController extends BaseController {
         productionQrCodeResponse.setProductionTime(productionQrCodeRecord.getCreateTime());
         productionQrCodeResponse.setStartCode(productionQrCodeRecord.getStartCode());
         productionQrCodeResponse.setEndCode(productionQrCodeRecord.getEndCode());
-        productionQrCodeResponse.setDownloadUrl(productionQrCodeRecord.getDownloadUrl());
-
+        productionQrCodeResponse.setDownloadUrl(url.getHost() + url.getFile());
+        productionQrCodeRecordService.updateDownUrl(productionQrCodeRecord.getId(),productionQrCodeResponse.getDownloadUrl());
         return CommonResponse.builder4MapResult(CommonResponse.SUCCESS_CODE, "产码成功")
                 .addParam("url", url.getHost() + url.getFile()).addParam("productionQrCodeRecord",productionQrCodeResponse).build();
     }

@@ -46,4 +46,16 @@ public class ProductionQrCodeRecordServiceImpl implements ProductionQrCodeRecord
         pageModel.setRecords(productionQrCodeRecords);
         return pageModel;
     }
+
+    /**
+     * 更改下载url
+     *
+     * @param id
+     * @param downloadUrl
+     * @return
+     */
+    @Override
+    public int updateDownUrl(long id, String downloadUrl) {
+        return productionQrCodeRecordDao.updateDownUrl(id,downloadUrl);
+    }
 }

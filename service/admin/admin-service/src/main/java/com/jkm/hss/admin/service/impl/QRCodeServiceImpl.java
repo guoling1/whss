@@ -688,8 +688,8 @@ public class QRCodeServiceImpl implements QRCodeService {
         final List<List<String>> datas = new ArrayList<List<String>>();
         final ArrayList<String> heads = new ArrayList<>();
         excelSheetVO.setName("qr_code");
-        heads.add("卡号");
-        heads.add("ID");
+        heads.add("码号");
+        heads.add("地址");
         datas.add(heads);
         for (QRCode qrCode : codes) {
             final ArrayList<String> columns = new ArrayList<>();
@@ -897,13 +897,14 @@ public class QRCodeServiceImpl implements QRCodeService {
             //生成二维码记录
             ProductionQrCodeRecord productionQrCodeRecord = new ProductionQrCodeRecord();
             productionQrCodeRecord.setStartCode(codes.get(0).getCode());
-            productionQrCodeRecord.setStartCode(codes.get(count - 1).getCode());
+            productionQrCodeRecord.setEndCode(codes.get(count - 1).getCode());
             productionQrCodeRecord.setCount(codes.size());
             productionQrCodeRecord.setQrType(type);
             productionQrCodeRecord.setProductId(productId);
             productionQrCodeRecord.setSysType(sysType);
             productionQrCodeRecord.setOperatorId(adminId);
             productionQrCodeRecord.setDownloadUrl(excelFile.getAbsolutePath());
+            productionQrCodeRecord.setCreateTime(new Date());
             productionQrCodeRecordService.add(productionQrCodeRecord);
             return productionQrCodeRecord;
         } catch (final Exception e) {
@@ -961,15 +962,52 @@ public class QRCodeServiceImpl implements QRCodeService {
         long count = 0l;
         List<MyQrCodeListResponse> qrCodeList = null;
         if((EnumQRCodeSysType.HSS.getId()).equals(myQrCodeListRequest.getSysType())){
+            int tempStatus = getMerchantStatus(myQrCodeListRequest.getMerchantStatus(),EnumQRCodeSysType.HSS.getId());
+            myQrCodeListRequest.setMerchantStatus(tempStatus);
             count=qrCodeDao.getDealerHSSQrCodeCount(myQrCodeListRequest);
             qrCodeList=qrCodeDao.getDealerHSSQrCodeList(myQrCodeListRequest);
         }else{
+            int tempStatus = getMerchantStatus(myQrCodeListRequest.getMerchantStatus(),EnumQRCodeSysType.HSY.getId());
+            myQrCodeListRequest.setMerchantStatus(tempStatus);
             count=qrCodeDao.getDealerHSYQrCodeCount(myQrCodeListRequest);
             qrCodeList=qrCodeDao.getDealerHSYQrCodeList(myQrCodeListRequest);
         }
         pageModel.setCount(count);
         pageModel.setRecords(qrCodeList);
         return pageModel;
+    }
+    private int getMerchantStatus(int status,String type){
+        int tempStatus = -1;
+        if((EnumQRCodeSysType.HSS.getId()).equals(type)){
+            if(status==0){
+                tempStatus = -1;
+            }else if(status==1){
+                tempStatus = 0;
+            }else if(status==2){
+                tempStatus = 2;
+            }else if(status==3){
+                tempStatus = 4;
+            }else if(status==4){
+                tempStatus = 3;
+            }else{
+                tempStatus = -1;
+            }
+        }else{
+            if(status==0){
+                tempStatus = -1;
+            }else if(status==1){
+                tempStatus = 4;
+            }else if(status==2){
+                tempStatus = 2;
+            }else if(status==3){
+                tempStatus = 3;
+            }else if(status==4){
+                tempStatus = 1;
+            }else{
+                tempStatus = -1;
+            }
+        }
+        return tempStatus;
     }
 
     /**
@@ -1025,6 +1063,17 @@ public class QRCodeServiceImpl implements QRCodeService {
     @Override
     public int getSecondUnActivateCount(long secondLevelDealerId) {
         return qrCodeDao.getSecondUnActivateCount(secondLevelDealerId);
+    }
+
+    /**
+     * 查询二级代理商激活二维码数
+     *
+     * @param secondLevelDealerId
+     * @return
+     */
+    @Override
+    public int getSecondActivateCount(long secondLevelDealerId) {
+        return qrCodeDao.getSecondActivateCount(secondLevelDealerId);
     }
 
     /**
