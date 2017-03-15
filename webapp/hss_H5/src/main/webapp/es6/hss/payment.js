@@ -36,5 +36,9 @@ cancelNotSelf.addEventListener('click', function () {
   layerNotSelf.style.display = 'none';
 });
 submitNotSelf.addEventListener('click', function () {
-  WeixinJSBridge.call('closeWindow');
+  if (WeixinJSBridge) {
+    WeixinJSBridge.call('closeWindow');
+  } else {
+    window.close();
+  }
 });
