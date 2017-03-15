@@ -50,8 +50,6 @@ public class PaymentSdkCallbackController extends BaseController {
     private OrderService orderService;
     @Autowired
     private SendMessageService sendMessageService;
-    @Autowired
-    private HSYTradeService hsyTradeService;
 
     /**
      * 支付回调

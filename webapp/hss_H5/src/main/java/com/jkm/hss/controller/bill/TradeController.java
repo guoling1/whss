@@ -402,33 +402,33 @@ public class TradeController extends BaseController {
     @RequestMapping(value = "firstUnionPay", method = RequestMethod.POST)
     public CommonResponse firstUnionPay(@RequestBody FirstUnionPaySendMsgRequest firstUnionPaySendMsgRequest,
                                         final HttpServletRequest httpServletRequest) {
-//        if(!super.isLogin(httpServletRequest)){
-//            return CommonResponse.simpleResponse(-2, "未登录");
-//        }
-//        final Optional<UserInfo> userInfoOptional = this.userInfoService.selectByOpenId(super.getOpenId(httpServletRequest));
-//        if(!userInfoOptional.isPresent()){
-//            return CommonResponse.simpleResponse(-2, "未登录");
-//        }
-//        final Optional<MerchantInfo> merchantInfoOptional = this.merchantInfoService.selectById(userInfoOptional.get().getMerchantId());
-//        if(!merchantInfoOptional.isPresent()){
-//            return CommonResponse.simpleResponse(-2, "未登录");
-//        }
-//        final MerchantInfo merchantInfo = merchantInfoOptional.get();
-//        if(merchantInfo.getStatus()!= EnumMerchantStatus.PASSED.getId()&&merchantInfo.getStatus()!= EnumMerchantStatus.FRIEND.getId()){
-//            return CommonResponse.simpleResponse(-2, "未审核通过");
-//        }
-//        if(new BigDecimal(firstUnionPaySendMsgRequest.getAmount()).compareTo(new BigDecimal("5.00")) < 0){
-//            return CommonResponse.simpleResponse(-1, "支付金额至少5.00元");
-//        }
-//        if (!EnumPayChannelSign.isUnionPay(firstUnionPaySendMsgRequest.getChannel())) {
-//            return CommonResponse.simpleResponse(-1, "支付方式错误");
-//        }
-//        if (!ValidateUtils.isMobile(firstUnionPaySendMsgRequest.getMobile())) {
-//            return CommonResponse.simpleResponse(-1, "手机号格式错误");
-//        }
-//        if (StringUtils.isEmpty(firstUnionPaySendMsgRequest.getExpireDate())) {
-//            return CommonResponse.simpleResponse(-1, "有效期不能为空");
-//        }
+        if(!super.isLogin(httpServletRequest)){
+            return CommonResponse.simpleResponse(-2, "未登录");
+        }
+        final Optional<UserInfo> userInfoOptional = this.userInfoService.selectByOpenId(super.getOpenId(httpServletRequest));
+        if(!userInfoOptional.isPresent()){
+            return CommonResponse.simpleResponse(-2, "未登录");
+        }
+        final Optional<MerchantInfo> merchantInfoOptional = this.merchantInfoService.selectById(userInfoOptional.get().getMerchantId());
+        if(!merchantInfoOptional.isPresent()){
+            return CommonResponse.simpleResponse(-2, "未登录");
+        }
+        final MerchantInfo merchantInfo = merchantInfoOptional.get();
+        if(merchantInfo.getStatus()!= EnumMerchantStatus.PASSED.getId()&&merchantInfo.getStatus()!= EnumMerchantStatus.FRIEND.getId()){
+            return CommonResponse.simpleResponse(-2, "未审核通过");
+        }
+        if(new BigDecimal(firstUnionPaySendMsgRequest.getAmount()).compareTo(new BigDecimal("5.00")) < 0){
+            return CommonResponse.simpleResponse(-1, "支付金额至少5.00元");
+        }
+        if (!EnumPayChannelSign.isUnionPay(firstUnionPaySendMsgRequest.getChannel())) {
+            return CommonResponse.simpleResponse(-1, "支付方式错误");
+        }
+        if (!ValidateUtils.isMobile(firstUnionPaySendMsgRequest.getMobile())) {
+            return CommonResponse.simpleResponse(-1, "手机号格式错误");
+        }
+        if (StringUtils.isEmpty(firstUnionPaySendMsgRequest.getExpireDate())) {
+            return CommonResponse.simpleResponse(-1, "有效期不能为空");
+        }
         final Optional<BankCardBin> bankCardBinOptional = this.bankCardBinService.analyseCardNo(firstUnionPaySendMsgRequest.getBankCardNo());
         if (!bankCardBinOptional.isPresent()) {
             return CommonResponse.builder4MapResult(1, "fail").addParam("errorCode", "001").build();
@@ -444,9 +444,9 @@ public class TradeController extends BaseController {
             }
             firstUnionPaySendMsgRequest.setBankName(bankCardBin.getBankName());
         }
-        final long creditBankCardId = this.accountBankService.initCreditBankCard(75, firstUnionPaySendMsgRequest.getBankCardNo(),
+        final long creditBankCardId = this.accountBankService.initCreditBankCard(merchantInfo.getAccountId(), firstUnionPaySendMsgRequest.getBankCardNo(),
                 firstUnionPaySendMsgRequest.getBankName(), firstUnionPaySendMsgRequest.getMobile(), bankCardBin.getBinNo(), firstUnionPaySendMsgRequest.getExpireDate());
-        final Pair<Integer, String> result = this.payService.unionPay(94, firstUnionPaySendMsgRequest.getAmount(),
+        final Pair<Integer, String> result = this.payService.unionPay(merchantInfo.getId(), firstUnionPaySendMsgRequest.getAmount(),
                 firstUnionPaySendMsgRequest.getChannel(), creditBankCardId, firstUnionPaySendMsgRequest.getCvv2(), EnumProductType.HSS.getId());
         if (0 == result.getLeft()) {
             return CommonResponse.builder4MapResult(CommonResponse.SUCCESS_CODE, "success")
@@ -467,29 +467,29 @@ public class TradeController extends BaseController {
     @RequestMapping(value = "againUnionPay", method = RequestMethod.POST)
     public CommonResponse againUnionPay(@RequestBody AgainUnionPaySendMsgRequest againUnionPaySendMsgRequest,
                                         final HttpServletRequest httpServletRequest) {
-//        if(!super.isLogin(httpServletRequest)){
-//            return CommonResponse.simpleResponse(-2, "未登录");
-//        }
-//        final Optional<UserInfo> userInfoOptional = this.userInfoService.selectByOpenId(super.getOpenId(httpServletRequest));
-//        if(!userInfoOptional.isPresent()){
-//            return CommonResponse.simpleResponse(-2, "未登录");
-//        }
-//        final Optional<MerchantInfo> merchantInfoOptional = this.merchantInfoService.selectById(userInfoOptional.get().getMerchantId());
-//        if(!merchantInfoOptional.isPresent()){
-//            return CommonResponse.simpleResponse(-2, "未登录");
-//        }
-//        final MerchantInfo merchantInfo = merchantInfoOptional.get();
-//        if(merchantInfo.getStatus()!= EnumMerchantStatus.PASSED.getId()&&merchantInfo.getStatus()!= EnumMerchantStatus.FRIEND.getId()){
-//            return CommonResponse.simpleResponse(-2, "未审核通过");
-//        }
-//        if(new BigDecimal(againUnionPaySendMsgRequest.getAmount()).compareTo(new BigDecimal("5.00")) < 0){
-//            return CommonResponse.simpleResponse(-1, "支付金额至少5.00元");
-//        }
-//        if (!EnumPayChannelSign.isUnionPay(againUnionPaySendMsgRequest.getChannel())) {
-//            return CommonResponse.simpleResponse(-1, "支付方式错误");
-//        }
+        if(!super.isLogin(httpServletRequest)){
+            return CommonResponse.simpleResponse(-2, "未登录");
+        }
+        final Optional<UserInfo> userInfoOptional = this.userInfoService.selectByOpenId(super.getOpenId(httpServletRequest));
+        if(!userInfoOptional.isPresent()){
+            return CommonResponse.simpleResponse(-2, "未登录");
+        }
+        final Optional<MerchantInfo> merchantInfoOptional = this.merchantInfoService.selectById(userInfoOptional.get().getMerchantId());
+        if(!merchantInfoOptional.isPresent()){
+            return CommonResponse.simpleResponse(-2, "未登录");
+        }
+        final MerchantInfo merchantInfo = merchantInfoOptional.get();
+        if(merchantInfo.getStatus()!= EnumMerchantStatus.PASSED.getId()&&merchantInfo.getStatus()!= EnumMerchantStatus.FRIEND.getId()){
+            return CommonResponse.simpleResponse(-2, "未审核通过");
+        }
+        if(new BigDecimal(againUnionPaySendMsgRequest.getAmount()).compareTo(new BigDecimal("5.00")) < 0){
+            return CommonResponse.simpleResponse(-1, "支付金额至少5.00元");
+        }
+        if (!EnumPayChannelSign.isUnionPay(againUnionPaySendMsgRequest.getChannel())) {
+            return CommonResponse.simpleResponse(-1, "支付方式错误");
+        }
         this.accountBankService.setDefaultCreditCard(againUnionPaySendMsgRequest.getCreditCardId());
-        final Pair<Integer, String> result = this.payService.unionPay(94, againUnionPaySendMsgRequest.getAmount(),
+        final Pair<Integer, String> result = this.payService.unionPay(merchantInfo.getId(), againUnionPaySendMsgRequest.getAmount(),
                 againUnionPaySendMsgRequest.getChannel(), againUnionPaySendMsgRequest.getCreditCardId(),
                 againUnionPaySendMsgRequest.getCvv2(), EnumProductType.HSS.getId());
         if (0 == result.getLeft()) {
@@ -511,16 +511,16 @@ public class TradeController extends BaseController {
     @RequestMapping(value = "confirmUnionPay", method = RequestMethod.POST)
     public CommonResponse confirmUnionPay(@RequestBody final ConfirmUnionPayRequest confirmUnionPayRequest,
                                           final HttpServletRequest httpServletRequest) {
-//        if(!super.isLogin(httpServletRequest)){
-//            return CommonResponse.simpleResponse(-2, "未登录");
-//        }
-//        final Optional<Order> orderOptional = this.orderService.getById(confirmUnionPayRequest.getOrderId());
-//        if (!orderOptional.isPresent()) {
-//            return CommonResponse.simpleResponse(-1, "订单不存在");
-//        }
-//        if (StringUtils.isEmpty(confirmUnionPayRequest.getCode().trim())) {
-//            return CommonResponse.simpleResponse(-1, "验证码不能为空");
-//        }
+        if(!super.isLogin(httpServletRequest)){
+            return CommonResponse.simpleResponse(-2, "未登录");
+        }
+        final Optional<Order> orderOptional = this.orderService.getById(confirmUnionPayRequest.getOrderId());
+        if (!orderOptional.isPresent()) {
+            return CommonResponse.simpleResponse(-1, "订单不存在");
+        }
+        if (StringUtils.isEmpty(confirmUnionPayRequest.getCode().trim())) {
+            return CommonResponse.simpleResponse(-1, "验证码不能为空");
+        }
         final Pair<Integer, String> result = this.payService.confirmUnionPay(confirmUnionPayRequest.getOrderId(), confirmUnionPayRequest.getCode());
         if (0 == result.getLeft()) {
             return CommonResponse.builder4MapResult(CommonResponse.SUCCESS_CODE, "success")
