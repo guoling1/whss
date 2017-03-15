@@ -67,7 +67,7 @@ public class QrCodeController extends BaseController {
     @ResponseBody
     @RequestMapping(value = "productionQrCode", method = RequestMethod.POST)
     public CommonResponse productionQrCode(@RequestBody final ProductionQrCodeRequest request) {
-        if(request.getSysType()!= EnumQRCodeSysType.HSS.getId()||request.getSysType()!=EnumQRCodeSysType.HSY.getId()){
+        if(!(EnumQRCodeSysType.HSS.getId()).equals(request.getSysType())&&!(EnumQRCodeSysType.HSY.getId()).equals(request.getSysType())){
             return CommonResponse.simpleResponse(-1, "产品参数错误");
         }
         if(request.getType()!= EnumQRCodeDistributeType.ENTITYCODE.getCode()||request.getType()!= EnumQRCodeDistributeType.ELECTRONICCODE.getCode()){
