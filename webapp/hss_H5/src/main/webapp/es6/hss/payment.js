@@ -18,6 +18,11 @@ new Keyboard({
   amount: '2000'
 });
 
+function is_weixin() {
+  let ua = navigator.userAgent.toLowerCase();
+  return (ua.match(/MicroMessenger/i) == "micromessenger");
+}
+
 if (pageData.isSelf == 1) {
   let layerSelf = document.getElementById('layerSelf');
   let cancelSelf = document.getElementById('cancelSelf');
@@ -36,7 +41,7 @@ cancelNotSelf.addEventListener('click', function () {
   layerNotSelf.style.display = 'none';
 });
 submitNotSelf.addEventListener('click', function () {
-  if (WeixinJSBridge) {
+  if (is_weixin()) {
     WeixinJSBridge.call('closeWindow');
   } else {
     AlipayJSBridge.call('closeWebview');
