@@ -555,7 +555,7 @@
             )
         </if>
         ORDER BY
-            c.create_time DESC
+            c.code DESC
         LIMIT #{offset},#{count}
     </select>
 
@@ -674,7 +674,7 @@
             )
         </if>
         ORDER BY
-        c.create_time DESC
+        c.code DESC
         LIMIT #{offset},#{count}
     </select>
 
@@ -794,7 +794,7 @@
             AND c.activate_status = #{activateStatus}
         </if>
         ORDER BY
-        c.create_time DESC
+        c.code DESC
         LIMIT #{offset},#{count}
     </select>
 
@@ -915,7 +915,7 @@
             )
         </if>
         ORDER BY
-        c.create_time DESC
+        c.code DESC
         LIMIT #{offset},#{count}
     </select>
 
