@@ -37,10 +37,10 @@
             </li>
           </ul>
           <!--表格-->
-          <el-table v-loading.body="loading" style="font-size: 12px;margin:15px 0" :data="records" border>
+          <el-table v-loading.body="loading" style="font-size: 12px;margin:15px 0" :data="records" border :row-style="tableFoot">
             <el-table-column   width="100" label="序号">
               <template scope="scope">
-                <div v-if="records[scope.$index].businessType!='总额'">{{scope.$index+1}}</div>
+                <div v-if="records[scope.$index].businessType!='当页总额'&&records[scope.$index].businessType!='筛选条件统计'">{{scope.$index+1}}</div>
               </template>
             </el-table-column>
             <el-table-column prop="proxyName" label="代理商名称"></el-table-column>
@@ -50,8 +50,9 @@
             <el-table-column prop="splitAmount" label="收益金额" align="right" header-align="left"></el-table-column>
             <el-table-column label="操作" width="100">
               <template scope="scope">
-                <router-link :to="{path:'/admin/record/profitFirDet',query:{type:records[scope.$index].businessType,id:records[scope.$index].receiptMoneyAccountId,time:records[scope.$index].splitDate}}" v-if="records[scope.$index].splitAmount!=0&&records[scope.$index].businessType!='总额'" type="text" size="small">明细
+                <router-link :to="{path:'/admin/record/profitFirDet',query:{type:records[scope.$index].businessType,id:records[scope.$index].receiptMoneyAccountId,time:records[scope.$index].splitDate}}" v-if="records[scope.$index].splitAmount!=0&&records[scope.$index].businessType!='当页总额'&&records[scope.$index].businessType!='筛选条件统计'" type="text" size="small">明细
                 </router-link>
+                <a v-if="records[scope.$index].businessType=='筛选条件统计'" @click="add">点击统计</a>
               </template>
             </el-table-column>
           </el-table>
@@ -132,7 +133,7 @@
         },
         records: [],
         count: 0,
-        total: 0,
+        total: '',
         loading: true,
         isMask: false,
         loadUrl: '',
@@ -170,7 +171,6 @@
           .then(function (res) {
             this.$data.records = res.data.records;
             this.$data.count = res.data.count;
-            this.$data.total = res.data.totalPage;
             this.$data.loadUrl1 = res.data.ext;
             this.$data.loading = false;
             var toFix = function (val) {
@@ -183,9 +183,13 @@
             }
             if(this.records.length!=0){
               this.records.push({
-                businessType:"总额",
+                businessType:"当页总额",
                 splitAmount:total
+              },{
+                businessType:"筛选条件统计",
+                splitAmount:''
               })
+              this.records[this.records.length-1].splitAmount = this.total;
             }
           }, function (err) {
             this.$data.loading = false;
@@ -195,6 +199,28 @@
               type: 'error'
             });
           })
+      },
+      add(){
+        this.$data.loading = true;
+        this.$http.post('/admin/allProfit/firstAmount',this.query)
+          .then(res=>{
+            this.$data.loading = false;
+            this.records[this.records.length-1].splitAmount = this.total = res.data;
+          })
+          .catch(err=>{
+            this.$data.loading = false;
+            this.$message({
+              showClose: true,
+              message: err.statusMessage,
+              type: 'error'
+            });
+          })
+      },
+      tableFoot(row, index) {
+        if (row.businessType === '当页总额'||row.businessType === '筛选条件统计') {
+          return {background:'#eef1f6'}
+        }
+        return '';
       },
       //格式化时间
       changeTime: function (row, column) {

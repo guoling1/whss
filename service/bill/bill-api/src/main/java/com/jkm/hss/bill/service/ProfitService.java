@@ -1,7 +1,7 @@
 package com.jkm.hss.bill.service;
 
 import com.jkm.hss.bill.entity.JkmProfitDetailsResponse;
-import com.jkm.hss.merchant.helper.request.ProfitDetailsRequest;
+import com.jkm.hss.merchant.entity.ProfitDetailsRequest;
 
 import java.util.List;
 
@@ -23,4 +23,11 @@ public interface ProfitService {
      * @return
      */
     int selectProfitDetailsCount(ProfitDetailsRequest req);
+
+    /**
+     * 分润统计
+     * @param req
+     * @return
+     */
+    JkmProfitDetailsResponse profitAmount(ProfitDetailsRequest req);
 }
