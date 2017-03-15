@@ -218,7 +218,7 @@ public class QrCodeController extends BaseController {
         }
         final PageModel<MyQrCodeListResponse> pageModel = this.qrCodeService.selectDealerQrCodeList(myQrCodeListRequest);
         qrCodeListPageResponse.setPageModel(pageModel);
-        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", pageModel);
+        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", qrCodeListPageResponse);
     }
 
     /**
