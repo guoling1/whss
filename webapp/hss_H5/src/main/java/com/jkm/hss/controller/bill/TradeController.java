@@ -292,8 +292,8 @@ public class TradeController extends BaseController {
      * @return
      * @throws IOException
      */
-    @RequestMapping(value = "/paySuccess/{id}", method = RequestMethod.GET)
-    public String paySuccessPage(final Model model, @PathVariable("id") long id) throws IOException {
+    @RequestMapping(value = "/unionPaySuccess/{id}", method = RequestMethod.GET)
+    public String  unionPaySuccessPage(final Model model, @PathVariable("id") long id) throws IOException {
         final Optional<Order> orderOptional = this.orderService.getById(id);
         if(!orderOptional.isPresent()){
             return "/500.jsp";
@@ -303,8 +303,8 @@ public class TradeController extends BaseController {
             model.addAttribute("sn", order.getSn());
             model.addAttribute("amount", order.getTradeAmount().toPlainString());
             model.addAttribute("bankName", creditCard.getBankName());
-            model.addAttribute("shortNO", creditCard.getBankNo().substring(creditCard.getBankNo().length() - 4));
-            return "/tradeRecordDetail";
+            model.addAttribute("shortNo", creditCard.getBankNo().substring(creditCard.getBankNo().length() - 4));
+            return "/unionPaySuccess";
         }
     }
 
@@ -359,10 +359,10 @@ public class TradeController extends BaseController {
         Preconditions.checkState(EnumPayChannelSign.isUnionPay(channelSign), "渠道不是快捷");
         model.addAttribute("amount", amountStr);
         model.addAttribute("merchantName", merchantInfo.getMerchantName());
-        final String bankCard = MerchantSupport.decryptBankCard(merchantInfo.getBankNo());
+        final String identity = MerchantSupport.decryptIdentity(merchantInfo.getIdentity());
         model.addAttribute("bankAccountName", merchantInfo.getName());
-        model.addAttribute("idCard", bankCard.substring(0, 3) + "************" + bankCard.substring(bankCard.length() - 3, bankCard.length()));
-        return "";
+        model.addAttribute("idCard", identity.substring(0, 3) + "************" + identity.substring(identity.length() - 3, identity.length()));
+        return "/firstUnionPay";
     }
 
     /**
@@ -388,7 +388,7 @@ public class TradeController extends BaseController {
         model.addAttribute("bankName", accountBank.getBankName());
         model.addAttribute("shortNo", bankNo.substring(bankNo.length() - 4));
         model.addAttribute("mobile", mobile.substring(0, 2) + "**** ***" + mobile.substring(mobile.length() - 2));
-        return "";
+        return "/againUnionPay";
     }
 
     /**
