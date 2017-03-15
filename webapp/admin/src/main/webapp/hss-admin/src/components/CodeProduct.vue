@@ -112,8 +112,8 @@
     data () {
       return {
         query: {
-          sysType: "",//hss或hsy
-          type:'',//1实体码 2电子码
+          sysType: "hss",//hss或hsy
+          type:'1',//1实体码 2电子码
           count:''//分配数量
         },
         isShow:false,
