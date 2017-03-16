@@ -533,11 +533,4 @@ public class TradeController extends BaseController {
         }
         return CommonResponse.simpleResponse(-1, result.getRight());
     }
-
-
-    @RequestMapping(value = "test")
-    public void test() {
-        final List<MergeTableSettlementDate> all = this.mergeTableSettlementDateService.getAll();
-        System.out.println(all.get(0).getBeganDate());
-    }
 }
