@@ -1341,7 +1341,7 @@ public class WxPubController extends BaseController {
         }
         if(merchantChannelRate.getEnterNet()==EnumEnterNet.UNENT.getId()) {
             log.info("商户需入网");
-            JSONObject jo = merchantChannelRateService.enterInterNet1(merchantInfo.get().getProductId(),merchantInfo.get().getId(),merchantChannelRateOptional.get().getChannelCompany());
+            JSONObject jo = merchantChannelRateService.enterInterNet1(merchantInfo.get().getAccountId(),merchantInfo.get().getProductId(),merchantInfo.get().getId(),merchantChannelRateOptional.get().getChannelCompany());
             return CommonResponse.simpleResponse(jo.getInt("code"), jo.getString("msg"));
         }
         return null;

@@ -1,12 +1,11 @@
 package com.jkm.hss.merchant.service.impl;
 
 import com.google.common.base.Optional;
-import com.jkm.base.common.entity.CommonResponse;
 import com.jkm.hss.merchant.dao.MerchantChannelRateDao;
 import com.jkm.hss.merchant.dao.MerchantInfoDao;
+import com.jkm.hss.merchant.entity.AccountBank;
 import com.jkm.hss.merchant.entity.MerchantChannelRate;
 import com.jkm.hss.merchant.entity.MerchantInfo;
-import com.jkm.hss.merchant.enums.EnumCheck;
 import com.jkm.hss.merchant.enums.EnumEnterNet;
 import com.jkm.hss.merchant.helper.MerchantConsts;
 import com.jkm.hss.merchant.helper.MerchantSupport;
@@ -15,16 +14,18 @@ import com.jkm.hss.merchant.helper.request.MerchantChannelRateRequest;
 import com.jkm.hss.merchant.helper.request.MerchantEnterInRequest;
 import com.jkm.hss.merchant.helper.request.MerchantGetRateRequest;
 import com.jkm.hss.merchant.helper.request.MerchantUpgradeRequest;
+import com.jkm.hss.merchant.service.AccountBankService;
 import com.jkm.hss.merchant.service.MerchantChannelRateService;
-import com.jkm.hss.product.enums.EnumPayChannelSign;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.json.JSONObject;
-import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by xingliujie on 2017/2/27.
@@ -36,6 +37,8 @@ public class MerchantChannelRateServiceImpl implements MerchantChannelRateServic
     private MerchantChannelRateDao merchantChannelRateDao;
     @Autowired
     private MerchantInfoDao merchantInfoDao;
+    @Autowired
+    private AccountBankService accountBankService;
     /**
      * 费率初始化
      *
@@ -214,7 +217,7 @@ public class MerchantChannelRateServiceImpl implements MerchantChannelRateServic
      * @param channelCompany
      */
     @Override
-    public JSONObject enterInterNet1(long productId, long merchantId, String channelCompany) {
+    public JSONObject enterInterNet1(long accountId,long productId, long merchantId, String channelCompany) {
         JSONObject resultJo = new JSONObject();
         MerchantEnterInRequest merchantEnterInRequest = new MerchantEnterInRequest();
         merchantEnterInRequest.setProductId(productId);
@@ -243,22 +246,23 @@ public class MerchantChannelRateServiceImpl implements MerchantChannelRateServic
                 MerchantInfo merchantInfo = merchantInfoDao.selectById(merchantId);
                 if(merchantInfo!=null&&isNet==1){
                     if(weixinMerchantPayRate!=null&&zhifubaoMerchantPayRate!=null){
+                        AccountBank accountBank = accountBankService.getDefault(accountId);
                         Map<String, String> paramsMap = new HashMap<String, String>();
-                        paramsMap.put("phone", MerchantSupport.decryptMobile(merchantId,merchantInfo.getReserveMobile()));
+                        paramsMap.put("phone", accountBank.getReserveMobile());
                         paramsMap.put("merchantName", merchantInfo.getMerchantName());
                         paramsMap.put("merchantNo", merchantInfo.getMarkCode());
                         paramsMap.put("address", merchantInfo.getAddress());
                         paramsMap.put("personName", merchantInfo.getName());
                         paramsMap.put("idCard", merchantInfo.getIdentity());
-                        paramsMap.put("bankNo", merchantInfo.getBankNo());
+                        paramsMap.put("bankNo", MerchantSupport.encryptBankCard(accountBank.getBankNo()));
                         paramsMap.put("wxRate", weixinMerchantPayRate.toString());
                         paramsMap.put("zfbRate", zhifubaoMerchantPayRate.toString());
                         paramsMap.put("bankName", merchantInfo.getBankName());
-                        paramsMap.put("prov", merchantInfo.getProvinceName());
-                        paramsMap.put("city", merchantInfo.getCityName());     //后台通知url
-                        paramsMap.put("country", merchantInfo.getCountyName());
-                        paramsMap.put("bankBranch", merchantInfo.getBranchName());
-                        paramsMap.put("bankCode", merchantInfo.getBranchCode());
+                        paramsMap.put("prov", accountBank.getBranchProvinceName());
+                        paramsMap.put("city", accountBank.getBranchCityName());
+                        paramsMap.put("country", accountBank.getBranchCountyName());
+                        paramsMap.put("bankBranch", accountBank.getBranchName());
+                        paramsMap.put("bankCode", accountBank.getBranchCode());
                         paramsMap.put("creditCardNo", merchantInfo.getCreditCard());
                         log.info("入网参数为："+JSONObject.fromObject(paramsMap).toString());
                         String result = SmPost.post(MerchantConsts.getMerchantConfig().merchantIN(), paramsMap);
