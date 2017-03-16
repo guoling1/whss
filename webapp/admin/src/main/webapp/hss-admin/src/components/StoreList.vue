@@ -28,6 +28,10 @@
                   <el-input style="width: 120px" v-model="query.proxyName1" placeholder="请输入内容" size="small"></el-input>
                 </li>
                 <li class="same">
+                  <label>注册手机号:</label>
+                  <el-input style="width: 120px" v-model="query.mobile" placeholder="请输入内容" size="small"></el-input>
+                </li>
+                <li class="same">
                   <label>注册时间:</label>
                   <el-date-picker style="width: 190px" v-model="date" type="daterange" align="right" placeholder="选择日期范围" :picker-options="pickerOptions" size="small">
                   </el-date-picker>
@@ -215,6 +219,7 @@
           shortName:'',
           globalID:'',
           proxyName:'',
+          mobile:'',
           proxyName1:'',
           startTime:'',
           endTime:'',
@@ -349,6 +354,7 @@
           globalID:'',
           proxyName:'',
           proxyName1:'',
+          mobile:'',
           startTime:'',
           endTime:'',
           startTime1:'',
@@ -362,6 +368,8 @@
         }else if(event.target.innerHTML=="好收银"){
           this.$data.url='/admin/hsyMerchantList/getMerchantList'
         }
+        this.$data.records='';
+        this.$data.loading = true;
         this.$http.post(this.$data.url,this.$data.query)
           .then(function (res) {
             this.$data.loading = false;
