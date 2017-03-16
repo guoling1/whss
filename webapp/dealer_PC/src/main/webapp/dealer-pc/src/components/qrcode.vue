@@ -209,8 +209,8 @@
           this.codeData.distributeCount = res.data.distributeCount;
           this.codeData.unActivateCount = res.data.unActivateCount;
           this.codeData.activateCount = res.data.activateCount;
-          this.total = res.data.count;
-          this.tableData = res.data.records;
+          this.total = res.data.pageModel.count;
+          this.tableData = res.data.pageModel.records;
         }, err => {
           this.tableLoading = false;
           this.$message({
