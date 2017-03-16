@@ -854,6 +854,7 @@ public class OrderServiceImpl implements OrderService {
     public void handleT1UnSettlePayOrder() {
         final String format = DateFormatUtil.format(new Date(), DateFormatUtil.yyyy_MM_dd);
         final List<Long> orderIds = this.getT1PaySuccessAndUnSettleOrderIds(DateFormatUtil.parse(format, DateFormatUtil.yyyy_MM_dd), EnumProductType.HSS.getId());
+        log.info("hss-T1-定时处理提现, 订单[{}]", orderIds);
         if (!CollectionUtils.isEmpty(orderIds)) {
             for (int i = 0; i < orderIds.size(); i++) {
                 final long orderId = orderIds.get(i);
