@@ -125,5 +125,5 @@
   }
 </script>
 <script src="http://static.jinkaimen.cn/vendor/vendor.1.0.6.min.js"></script>
-<script src="http://static.jinkaimen.cn/hss/2.1.7/bankBranch.min.js"></script>
+<script src="http://static.jinkaimen.cn/hss/2.2.0/bankBranch.min.js"></script>
 </html>
