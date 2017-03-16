@@ -993,19 +993,19 @@ public class OrderServiceImpl implements OrderService {
                 columns.add(list.get(i).getProxyName());
                 columns.add(list.get(i).getProxyName1());
                 columns.add(String.valueOf(list.get(i).getTradeAmount()));
-//                columns.add(String.valueOf(list.get(i).getPayRate()));
-                if (list.get(i).getPayRate()==null){
-                    String x = "0";
-                    columns.add(x);
-                }else {
-                    columns.add(String.valueOf(list.get(i).getPayRate()));
-                }
-                if (list.get(i).getPoundage()==null){
-                    String x = " ";
-                    columns.add(x);
-                }else {
-                    columns.add(String.valueOf(list.get(i).getPoundage()));
-                }
+                columns.add(String.valueOf(list.get(i).getPayRate()));
+//                if (list.get(i).getPayRate()==null){
+//                    String x = "0";
+//                    columns.add(x);
+//                }else {
+//                    columns.add(String.valueOf(list.get(i).getPayRate()));
+//                }
+//                if (list.get(i).getPoundage()==null){
+//                    String x = " ";
+//                    columns.add(x);
+//                }else {
+//                    columns.add(String.valueOf(list.get(i).getPoundage()));
+//                }
                 if (list.get(i).getStatus()==1){
                     columns.add("待支付");
                 }
