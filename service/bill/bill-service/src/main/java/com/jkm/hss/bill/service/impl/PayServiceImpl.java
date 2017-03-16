@@ -972,7 +972,17 @@ public class PayServiceImpl implements PayService {
         placeOrderRequest.setPayerName(merchant.getName());
         placeOrderRequest.setIdCardNo(merchant.getIdentity());
         final String content = HttpClientPost.postJson(PaymentSdkConstants.SDK_PAY_PLACE_ORDER, SdkSerializeUtil.convertObjToMap(placeOrderRequest));
-        return JSON.parseObject(content, PaymentSdkPlaceOrderResponse.class);
+        PaymentSdkPlaceOrderResponse paymentSdkPlaceOrderResponse;
+        try {
+            paymentSdkPlaceOrderResponse = JSON.parseObject(content, PaymentSdkPlaceOrderResponse.class);
+        } catch (final Throwable throwable) {
+            log.error(" 订单[{}], 请求网关下单，返回结果[{}],下单失败", order.getId(), content);
+            paymentSdkPlaceOrderResponse = new PaymentSdkPlaceOrderResponse();
+            paymentSdkPlaceOrderResponse.setCode(EnumBasicStatus.FAIL.getId());
+            paymentSdkPlaceOrderResponse.setMessage("稍后请重试");
+        }
+
+        return paymentSdkPlaceOrderResponse;
     }
 
     /**
