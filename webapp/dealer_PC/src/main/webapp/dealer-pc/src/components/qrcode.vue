@@ -148,11 +148,11 @@
             label: '全部'
           },
           {
-            value: '1',
+            value: '2',
             label: '已激活'
           },
           {
-            value: '2',
+            value: '1',
             label: '未激活'
           }
         ],
