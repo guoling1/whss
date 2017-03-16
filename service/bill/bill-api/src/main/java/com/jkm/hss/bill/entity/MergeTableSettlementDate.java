@@ -30,7 +30,7 @@ public class MergeTableSettlementDate extends BaseEntity {
     /**
      * 并表理由
      */
-    private Date reason;
+    private String reason;
     /**
      * 上游渠道
      *

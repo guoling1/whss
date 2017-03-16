@@ -9,10 +9,12 @@ import com.jkm.base.common.entity.PageModel;
 import com.jkm.base.common.util.DateFormatUtil;
 import com.jkm.base.common.util.ValidateUtils;
 import com.jkm.hss.account.enums.EnumAppType;
+import com.jkm.hss.bill.entity.MergeTableSettlementDate;
 import com.jkm.hss.bill.entity.Order;
 import com.jkm.hss.bill.enums.EnumOrderStatus;
 import com.jkm.hss.bill.enums.EnumSettleStatus;
 import com.jkm.hss.bill.helper.requestparam.QueryMerchantPayOrdersRequestParam;
+import com.jkm.hss.bill.service.MergeTableSettlementDateService;
 import com.jkm.hss.bill.service.OrderService;
 import com.jkm.hss.bill.service.PayService;
 import com.jkm.hss.controller.BaseController;
@@ -70,6 +72,8 @@ public class TradeController extends BaseController {
     private BankCardBinService bankCardBinService;
     @Autowired
     private ChannelSupportCreditBankService channelSupportCreditBankService;
+    @Autowired
+    private MergeTableSettlementDateService mergeTableSettlementDateService;
 
 
     /**
@@ -530,4 +534,10 @@ public class TradeController extends BaseController {
         return CommonResponse.simpleResponse(-1, result.getRight());
     }
 
+
+    @RequestMapping(value = "test")
+    public void test() {
+        final List<MergeTableSettlementDate> all = this.mergeTableSettlementDateService.getAll();
+        System.out.println(all.get(0).getBeganDate());
+    }
 }
