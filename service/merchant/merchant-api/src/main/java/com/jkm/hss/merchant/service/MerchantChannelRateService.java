@@ -8,6 +8,7 @@ import com.jkm.hss.merchant.helper.request.MerchantChannelRateRequest;
 import com.jkm.hss.merchant.helper.request.MerchantEnterInRequest;
 import com.jkm.hss.merchant.helper.request.MerchantGetRateRequest;
 import com.jkm.hss.merchant.helper.request.MerchantUpgradeRequest;
+import net.sf.json.JSONObject;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.math.BigDecimal;
@@ -82,4 +83,9 @@ public interface MerchantChannelRateService {
      * @return
      */
     List<Long> selectFailMerchantInfo();
+
+    /**
+     * 商户入网
+     */
+    JSONObject enterInterNet1(long productId, long merchantId, String channelCompany);
 }
