@@ -52,11 +52,11 @@
       </div>
       <div class="message-box-foot">
         <div class="message-cancel" id="cancel">
-          待会儿再说
+          取消
         </div>
         <div class="message-line"></div>
         <div class="message-submit" id="login">
-          去补全
+          登录
         </div>
       </div>
     </div>
@@ -71,5 +71,5 @@
   }
 </script>
 <script src="http://static.jinkaimen.cn/vendor/vendor.1.0.5.min.js"></script>
-<script src="http://static.jinkaimen.cn/hss/2.1.5/reg.min.js"></script>
+<script src="http://static.jinkaimen.cn/hss/2.1.7/reg.min.js"></script>
 </html>

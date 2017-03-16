@@ -39,11 +39,12 @@
     </div>
   </div>
   <div class="btn-box">
-    <div class="box">完成</div>
+    <div class="box" id="complete">完成</div>
   </div>
 </div>
 
 </body>
 <script src="http://static.jinkaimen.cn/vendor/vendor.1.0.5.min.js"></script>
-<script src="http://static.jinkaimen.cn/hss/2.1.5/withdrawSuccess.min.js"></script>
+<%--<script src="http://static.jinkaimen.cn/hss/2.1.7/withdrawSuccess.min.js"></script>--%>
+<script src="/js/hss/2.1.7/withdrawSuccess.min.js"></script>
 </html>

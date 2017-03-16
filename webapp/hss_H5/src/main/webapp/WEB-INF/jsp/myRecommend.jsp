@@ -93,5 +93,5 @@
 </script>
 <script src="http://static.jinkaimen.cn/qrcode/qrcode.min.js"></script>
 <script src="http://static.jinkaimen.cn/vendor/vendor.1.0.5.min.js"></script>
-<script src="http://static.jinkaimen.cn/hss/2.1.5/myRecommend.min.js"></script>
+<script src="http://static.jinkaimen.cn/hss/2.1.7/myRecommend.min.js"></script>
 </html>
