@@ -151,12 +151,28 @@ input:focus {
       font-size: 16px;
       color: #5a5a5a;
       font-weight: bold;
+      position: relative;
+      .message-x {
+        padding: 10px;
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        width: 9px;
+        height: 9px;
+        background: url("../assets/message-x.png") no-repeat center;
+        background-size: 9px 9px;
+      }
     }
     .message-box-body {
       font-size: 15px;
       color: #5a5a5a;
       padding: 5px 0 25px 0;
       line-height: 28px;
+      span {
+        font-size: 12px;
+        color: #999;
+        line-height: 20px;
+      }
     }
     .message-box-foot {
       height: 50px;
@@ -2017,12 +2033,17 @@ input:focus {
       text-align: center;
       margin: 5px 0;
     }
+    .code-line {
+      margin: auto;
+      width: 160px;
+      height: 1px;
+      background-color: #bed5ed;
+    }
     .code-re {
       font-size: 16px;
       color: #d0d0d0;
     }
   }
-
 }
 
 #transaction {

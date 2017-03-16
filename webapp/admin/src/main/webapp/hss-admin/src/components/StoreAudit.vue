@@ -79,17 +79,8 @@
             <div class="label">商铺简称：<span>——</span></div>
           </el-col>
           <el-col :span="5">
-            <!--<div class="label">商户营业执照号：<span>——</span></div>-->
+            <div class="label">经营种类：<span>——</span></div>
           </el-col>
-        </el-row>
-        <el-row type="flex" class="row-bg" justify="space-around" style="margin-bottom: 15px">
-          <el-col :span="5">
-            <div class="label">店主（法人）实名：<span>{{msg.name}}</span></div>
-          </el-col>
-          <el-col :span="5">
-            <div class="label">店主身份证号：<span>{{msg.identity}}</span></div>
-          </el-col>
-          <el-col :span="5"></el-col>
         </el-row>
         <el-row type="flex" class="row-bg" justify="space-around" style="margin-bottom: 15px">
           <el-col :span="5">
@@ -97,15 +88,12 @@
               <a @click="reset" v-if="!isShow">修改上报名称</a>
             </div>
           </el-col>
-          <el-col :span="5"></el-col>
-          <el-col :span="5"></el-col>
-        </el-row>
-        <el-row type="flex" class="row-bg" justify="space-around" style="margin-bottom: 15px">
           <el-col :span="5">
-            <div class="label">经营种类：<span>——</span></div>
+            <div class="label">店主（法人）实名：<span>{{msg.name}}</span></div>
           </el-col>
-          <el-col :span="5"></el-col>
-          <el-col :span="5"></el-col>
+          <el-col :span="5">
+            <div class="label">店主身份证号：<span>{{msg.identity}}</span></div>
+          </el-col>
         </el-row>
         <el-row type="flex" class="row-bg" justify="space-around" style="margin-bottom: 15px">
           <el-col :span="5">

@@ -29,8 +29,10 @@ import com.jkm.hss.bill.service.OrderService;
 import com.jkm.hss.dealer.entity.Dealer;
 import com.jkm.hss.dealer.helper.DealerSupport;
 import com.jkm.hss.dealer.service.DealerService;
+import com.jkm.hss.merchant.entity.AccountBank;
 import com.jkm.hss.merchant.entity.MerchantInfo;
 import com.jkm.hss.merchant.helper.MerchantSupport;
+import com.jkm.hss.merchant.service.AccountBankService;
 import com.jkm.hss.merchant.service.MerchantInfoService;
 import com.jkm.hss.product.enums.EnumBalanceTimeType;
 import com.jkm.hss.product.enums.EnumPayChannelSign;
@@ -62,6 +64,8 @@ public class MerchantWithdrawServiceImpl implements MerchantWithdrawService {
     private AccountFlowService accountFlowService;
     @Autowired
     private MerchantInfoService merchantInfoService;
+    @Autowired
+    private AccountBankService accountBankService;
     /**
      * {@inheritDoc}
      * @param accountId
@@ -94,7 +98,8 @@ public class MerchantWithdrawServiceImpl implements MerchantWithdrawService {
             paymentSdkDaiFuRequest.setMobile(MerchantSupport.decryptMobile(merchantInfo.getId() , merchantInfo.getReserveMobile()));
             paymentSdkDaiFuRequest.setBankName(merchantInfo.getBankName());
             paymentSdkDaiFuRequest.setAccountName(merchantInfo.getName());
-            paymentSdkDaiFuRequest.setAccountNumber(MerchantSupport.decryptBankCard(merchantInfo.getId(),merchantInfo.getBankNo()));
+            final AccountBank accountBank = this.accountBankService.getDefault(merchantInfo.getAccountId());
+            paymentSdkDaiFuRequest.setAccountNumber(accountBank.getBankNo());
             paymentSdkDaiFuRequest.setIdCard(MerchantSupport.decryptIdentity(merchantInfo.getId(), merchantInfo.getIdentity()));
             paymentSdkDaiFuRequest.setPlayMoneyChannel(EnumUpperChannel.SAOMI.getId());
             paymentSdkDaiFuRequest.setNote(merchantInfo.getMerchantName());

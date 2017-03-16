@@ -24,3 +24,8 @@ bank.innerHTML = decodeURIComponent(query.toBank);
 amount.innerHTML = query.toAmount + '元';
 fee.innerHTML = query.toFee + '元';
 come.innerHTML = query.toCome + '元';
+
+let complete = document.getElementById('complete');
+complete.addEventListener('click', function () {
+  window.location.href = '/sqb/wallet';
+});

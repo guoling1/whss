@@ -197,8 +197,10 @@ public class AccountBankServiceImpl implements AccountBankService{
     @Override
     public AccountBank getDefault(long accountId) {
         AccountBank accountBank = accountBankDao.getDefault(accountId);
-        accountBank.setBankNo(MerchantSupport.decryptBankCard(accountId,accountBank.getBankNo()));
-        accountBank.setReserveMobile(MerchantSupport.decryptMobile(accountId,accountBank.getReserveMobile()));
+        if(accountBank!=null){
+            accountBank.setBankNo(MerchantSupport.decryptBankCard(accountId,accountBank.getBankNo()));
+            accountBank.setReserveMobile(MerchantSupport.decryptMobile(accountId,accountBank.getReserveMobile()));
+        }
         return accountBank;
     }
 
@@ -292,12 +294,12 @@ public class AccountBankServiceImpl implements AccountBankService{
                 }
                 bankListResponse.setBankBin(accountBank1.getBankBin());
                 String tempBranchName = accountBank1.getBranchName();
-                if(tempBranchName.length()>12){
+                if(!"".equals(tempBranchName)&&tempBranchName!=null&&tempBranchName.length()>12){
                     tempBranchName = "***"+tempBranchName.substring(tempBranchName.length()-12,tempBranchName.length());
                 }
                 bankListResponse.setBranchName(tempBranchName);
                 bankListResponse.setCardType(accountBank1.getCardType());
-                if(accountBank1.getBranchCode()!=null&&!"".equals(accountBank1.getBranchCode())){
+                if(accountBank1.getBranchName()!=null&&!"".equals(accountBank1.getBranchName())){
                     bankListResponse.setHasBranch(1);
                 }else{
                     bankListResponse.setHasBranch(0);

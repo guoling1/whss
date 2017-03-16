@@ -24,7 +24,7 @@ cancelB.addEventListener('click', function () {
 });
 
 toB.addEventListener('click', function () {
-  window.location.href = '/sqb/bankBranch?branch=true';
+  window.location.href = '/sqb/bankBranch/' + pageData.bankId + '?branch=true';
 });
 
 let layerBK = document.getElementById('layerBK');
@@ -36,7 +36,7 @@ cancelBK.addEventListener('click', function () {
 });
 
 toBK.addEventListener('click', function () {
-  window.location.href = '/sqb/bankBranch?branch=true&card=true';
+  window.location.href = '/sqb/bankBranch/' + pageData.bankId + '?branch=true&card=true';
 });
 
 let layerC = document.getElementById('layerC');
