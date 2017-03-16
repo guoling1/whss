@@ -16,7 +16,6 @@
                 未激活个数:{{codeData.unActivateCount}}个&nbsp;&nbsp;
                 已激活个数:{{codeData.activateCount}}个&nbsp;&nbsp;
               </span>
-              <el-button type="primary" size="small" @click="withdrawal($event)">提现</el-button>
             </div>
             <div class="box-body screen-top">
               <div class="screen-item">
@@ -149,11 +148,11 @@
             label: '全部'
           },
           {
-            value: '1',
+            value: '2',
             label: '已激活'
           },
           {
-            value: '2',
+            value: '1',
             label: '未激活'
           }
         ],

@@ -5,6 +5,7 @@ import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.jkm.base.common.entity.ExcelSheetVO;
 import com.jkm.base.common.entity.PageModel;
+import com.jkm.base.common.util.DateFormatUtil;
 import com.jkm.base.common.util.DateTimeUtil;
 import com.jkm.base.common.util.ExcelUtil;
 import com.jkm.base.common.util.SnGenerator;
@@ -40,6 +41,7 @@ import com.jkm.hss.product.enums.EnumProductType;
 import com.jkm.hsy.user.entity.AppBizShop;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -850,7 +852,8 @@ public class OrderServiceImpl implements OrderService {
      */
     @Override
     public void handleT1UnSettlePayOrder() {
-        final List<Long> orderIds = this.getT1PaySuccessAndUnSettleOrderIds(new Date(), EnumProductType.HSS.getId());
+        final String format = DateFormatUtil.format(new Date(), DateFormatUtil.yyyy_MM_dd);
+        final List<Long> orderIds = this.getT1PaySuccessAndUnSettleOrderIds(DateFormatUtil.parse(format, DateFormatUtil.yyyy_MM_dd), EnumProductType.HSS.getId());
         if (!CollectionUtils.isEmpty(orderIds)) {
             for (int i = 0; i < orderIds.size(); i++) {
                 final long orderId = orderIds.get(i);
@@ -881,9 +884,9 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @Transactional
     public void t1WithdrawByOrderId(final long orderId) {
-        log.info("订单[{}], T1发起结算提现");
+        log.info("订单[{}], T1发起结算提现", orderId);
         final Order order = this.getByIdWithLock(orderId).get();
-        if (order.isPaySuccess() & order.isDueSettle()) {
+        if (order.isPaySuccess() && order.isDueSettle()) {
             final Optional<SettleAccountFlow> decreaseSettleAccountFlowOptional = this.settleAccountFlowService.getByOrderNoAndAccountIdAndType(order.getOrderNo(),
                     order.getPayee(), EnumAccountFlowType.DECREASE.getId());
             Preconditions.checkState(!decreaseSettleAccountFlowOptional.isPresent(), "订单[{}], 在T1发起结算提现时,出现已结算的记录!!", orderId);
@@ -892,9 +895,15 @@ public class OrderServiceImpl implements OrderService {
             final SettlementRecord settlementRecord = this.settlementRecordService.getByIdWithLock(increaseSettleAccountFlow.getSettlementRecordId()).get();
             if (settlementRecord.isWaitWithdraw()) {
                 final MerchantInfo merchant = this.merchantInfoService.getByAccountId(order.getPayee()).get();
-                this.withdrawService.merchantWithdrawBySettlementRecord(merchant.getId(), settlementRecord.getId(), order.getSn(), order.getPayChannelSign());
-                log.info("订单[{}], T1发起结算提现, 手续费-入账可用余额");
-                this.dealerAndMerchantPoundageSettleImpl(order, increaseSettleAccountFlow.getId());
+                final Pair<Integer, String> withdrawPair = this.withdrawService.merchantWithdrawBySettlementRecord(merchant.getId(),
+                        settlementRecord.getId(), order.getSn(), order.getPayChannelSign());
+                if (withdrawPair.getLeft() != -1) {
+                    log.info("订单[{}], T1发起结算提现, 手续费-入账可用余额", orderId);
+                    this.dealerAndMerchantPoundageSettleImpl(order, increaseSettleAccountFlow.getId());
+                    return;
+                }
+                log.error("订单[{}],在T1发起结算提现时， 请求网关异常", orderId, order.getStatus(), order.getSettleStatus());
+                return;
             }
         }
         log.error("订单[{}],在T1发起结算提现时，状态错误!!!，订单状态[{}], 结算状态[{}]", orderId, order.getStatus(), order.getSettleStatus());
