@@ -5,6 +5,7 @@
 // 引入浏览器特性处理
 const http = _require('http');
 const message = _require('message');
+const validate = _require('validate');
 const browser = _require('browser');
 browser.elastic_touch('layer-w-list');
 browser.elastic_touch('layer-b-list');
@@ -66,25 +67,34 @@ if (pageData.provinceCode != '' &&
 
 
 submit.onclick = function () {
-  http.post('/wx/branchInfo', {
-    bankId: getLocationString(),
-    branchCode: pageData.branchCode,
-    branchName: pageData.branchName,
-    provinceCode: pageData.provinceCode,
-    provinceName: pageData.provinceName,
-    cityCode: pageData.cityCode,
-    cityName: pageData.cityName,
-    countyCode: pageData.countyCode,
-    countyName: pageData.countyName
-  }, function () {
-    if (getQueryString('card')) {
-      window.location.href = '/sqb/creditCardAuthen?card=true';
-    } else if (getQueryString('branch')) {
-      layer.style.display = 'block';
-    } else {
-      window.location.href = '/sqb/bank';
-    }
-  })
+  if (validate.empty(pageData.provinceCode, '所在地区') &&
+    validate.empty(pageData.provinceName, '所在地区') &&
+    validate.empty(pageData.cityCode, '所在地区') &&
+    validate.empty(pageData.cityName, '所在地区') &&
+    validate.empty(pageData.countyCode, '所在地区') &&
+    validate.empty(pageData.countyName, '所在地区') &&
+    validate.empty(pageData.branchCode, '支行信息') &&
+    validate.empty(pageData.branchName, '支行信息')) {
+    http.post('/wx/branchInfo', {
+      bankId: getLocationString(),
+      branchCode: pageData.branchCode,
+      branchName: pageData.branchName,
+      provinceCode: pageData.provinceCode,
+      provinceName: pageData.provinceName,
+      cityCode: pageData.cityCode,
+      cityName: pageData.cityName,
+      countyCode: pageData.countyCode,
+      countyName: pageData.countyName
+    }, function () {
+      if (getQueryString('card')) {
+        window.location.href = '/sqb/creditCardAuthen?card=true';
+      } else if (getQueryString('branch')) {
+        layer.style.display = 'block';
+      } else {
+        window.location.href = '/sqb/bank';
+      }
+    })
+  }
 };
 
 branch.onclick = function () {
