@@ -22,13 +22,12 @@ import com.jkm.hss.bill.helper.SdkSerializeUtil;
 import com.jkm.hss.bill.service.*;
 import com.jkm.hss.dealer.entity.Dealer;
 import com.jkm.hss.dealer.service.DealerService;
+import com.jkm.hss.merchant.entity.AccountBank;
 import com.jkm.hss.merchant.entity.MerchantInfo;
 import com.jkm.hss.merchant.entity.UserInfo;
 
-import com.jkm.hss.merchant.service.MerchantInfoService;
-import com.jkm.hss.merchant.service.MerchantPromoteShallService;
-import com.jkm.hss.merchant.service.SendMsgService;
-import com.jkm.hss.merchant.service.UserInfoService;
+import com.jkm.hss.merchant.helper.MerchantSupport;
+import com.jkm.hss.merchant.service.*;
 import com.jkm.hss.mq.config.MqConfig;
 import com.jkm.hss.mq.producer.MqProducer;
 import com.jkm.hss.product.enums.EnumBalanceTimeType;
@@ -85,6 +84,8 @@ public class PayServiceImpl implements PayService {
     private SettlementRecordService settlementRecordService;
     @Autowired
     private BasicChannelService basicChannelService;
+    @Autowired
+    private AccountBankService accountBankService;
 
     /**
      * {@inheritDoc}
@@ -129,8 +130,9 @@ public class PayServiceImpl implements PayService {
         order.setStatus(EnumOrderStatus.DUE_PAY.getId());
         this.orderService.add(order);
         //请求支付中心下单
+        final AccountBank accountBank = this.accountBankService.getDefault(merchant.getAccountId());
         final PaymentSdkPlaceOrderResponse placeOrderResponse = this.requestPlaceOrder(order,
-                channelCode, merchant, businessReturnUrl);
+                channelCode, accountBank, merchant, businessReturnUrl);
         return this.handlePlaceOrder(placeOrderResponse, order);
     }
 
@@ -169,7 +171,8 @@ public class PayServiceImpl implements PayService {
         order.setStatus(EnumOrderStatus.DUE_PAY.getId());
         this.orderService.add(order);
         //请求支付中心下单
-        final PaymentSdkPlaceOrderResponse placeOrderResponse = this.requestPlaceOrder(order, channelCode, merchant,
+        final AccountBank accountBank = this.accountBankService.getDefault(merchant.getAccountId());
+        final PaymentSdkPlaceOrderResponse placeOrderResponse = this.requestPlaceOrder(order, channelCode, accountBank, merchant,
                 PaymentSdkConstants.SDK_PAY_RETURN_URL + order.getTradeAmount() + "/" + order.getId());
         return this.handlePlaceOrder(placeOrderResponse, order);
     }
@@ -820,7 +823,7 @@ public class PayServiceImpl implements PayService {
      * @param merchant
      * @param returnUrl 前端回调地址
      */
-    private PaymentSdkPlaceOrderResponse requestPlaceOrder(final Order order, final String channel,
+    private PaymentSdkPlaceOrderResponse requestPlaceOrder(final Order order, final String channel, final AccountBank accountBank,
                                                            final MerchantInfo merchant, final String returnUrl) {
         final PaymentSdkPlaceOrderRequest placeOrderRequest = new PaymentSdkPlaceOrderRequest();
         placeOrderRequest.setAppId(PaymentSdkConstants.APP_ID);
@@ -834,7 +837,7 @@ public class PayServiceImpl implements PayService {
         placeOrderRequest.setChannel(channel);
         placeOrderRequest.setSettleNotifyUrl(PaymentSdkConstants.SDK_PAY_WITHDRAW_NOTIFY_URL);
         placeOrderRequest.setBankCode(merchant.getCode());
-        placeOrderRequest.setCardNo(merchant.getBankNo());
+        placeOrderRequest.setCardNo(MerchantSupport.encryptBankCard(accountBank.getBankNo()));
         placeOrderRequest.setPayerName(merchant.getName());
         placeOrderRequest.setIdCardNo(merchant.getIdentity());
         final String content = HttpClientPost.postJson(PaymentSdkConstants.SDK_PAY_PLACE_ORDER, SdkSerializeUtil.convertObjToMap(placeOrderRequest));
