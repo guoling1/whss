@@ -59,6 +59,7 @@ public class HolidayOffServiceImpl implements HolidayOffService {
      */
     @Override
     public boolean contains(final Date tradeDate) {
+        this.assertInit();
         return vector.contains(tradeDate);
     }
 

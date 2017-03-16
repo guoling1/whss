@@ -41,6 +41,7 @@ import com.jkm.hss.product.enums.EnumProductType;
 import com.jkm.hsy.user.entity.AppBizShop;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -894,9 +895,14 @@ public class OrderServiceImpl implements OrderService {
             final SettlementRecord settlementRecord = this.settlementRecordService.getByIdWithLock(increaseSettleAccountFlow.getSettlementRecordId()).get();
             if (settlementRecord.isWaitWithdraw()) {
                 final MerchantInfo merchant = this.merchantInfoService.getByAccountId(order.getPayee()).get();
-                this.withdrawService.merchantWithdrawBySettlementRecord(merchant.getId(), settlementRecord.getId(), order.getSn(), order.getPayChannelSign());
-                log.info("订单[{}], T1发起结算提现, 手续费-入账可用余额", orderId);
-                this.dealerAndMerchantPoundageSettleImpl(order, increaseSettleAccountFlow.getId());
+                final Pair<Integer, String> withdrawPair = this.withdrawService.merchantWithdrawBySettlementRecord(merchant.getId(),
+                        settlementRecord.getId(), order.getSn(), order.getPayChannelSign());
+                if (withdrawPair.getLeft() != -1) {
+                    log.info("订单[{}], T1发起结算提现, 手续费-入账可用余额", orderId);
+                    this.dealerAndMerchantPoundageSettleImpl(order, increaseSettleAccountFlow.getId());
+                    return;
+                }
+                log.error("订单[{}],在T1发起结算提现时， 请求网关异常", orderId, order.getStatus(), order.getSettleStatus());
                 return;
             }
         }

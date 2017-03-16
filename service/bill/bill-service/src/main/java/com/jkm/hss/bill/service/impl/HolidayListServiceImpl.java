@@ -35,11 +35,35 @@ public class HolidayListServiceImpl implements HolidayListService {
     }
 
     /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void init() {
+        if (isNotInit()) {
+            synchronized (HolidayListServiceImpl.class) {
+                if (isNotInit()) {
+                    final List<HolidayList> holidayLists = this.getAll();
+                    for (HolidayList holiday : holidayLists) {
+                        vector.add(Triple.of(holiday.getBeganDate(), holiday.getEndDate(), holiday.getWorkDate()));
+                    }
+                    isInit.set(true);
+                }
+            }
+        }
+    }
+
+    @Override
+    public Date getWorkDay(Date tradeDate) {
+        return null;
+    }
+
+
+    /**
      * 初始化
      */
     private void assertInit() {
         if (isNotInit()) {
-//            this.init();
+            this.init();
         }
     }
     /**

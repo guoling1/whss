@@ -123,12 +123,16 @@ public class WithdrawServiceImpl implements WithdrawService {
             try {
                 final String content = HttpClientPost.postJson(PaymentSdkConstants.SDK_PAY_WITHDRAW,
                         SdkSerializeUtil.convertObjToMap(paymentSdkDaiFuRequest));
+                log.info("结算单[" + settlementRecord.getSettleNo() + "],  返回结果[{}]", content);
                 response = JSON.parseObject(content, PaymentSdkDaiFuResponse.class);
             } catch (final Throwable e) {
                 log.error("结算单[" + settlementRecord.getSettleNo() + "], 请求网关支付异常", e);
                 return Pair.of(-1, "请求网关异常， 提现失败");
             }
             this.settlementRecordService.updateStatus(settlementRecordId, EnumSettlementRecordStatus.WITHDRAWING.getId());
+            final SettleAccountFlow settleAccountFlow = this.settleAccountFlowService.getBySettlementRecordId(settlementRecordId).get(0);
+            final Order payOrder = this.orderService.getByOrderNo(settleAccountFlow.getOrderNo()).get();
+            this.orderService.updateSettleStatus(payOrder.getId(), EnumSettleStatus.SETTLE_ING.getId());
             return this.handleWithdrawResult(settlementRecordId, response);
         }
         log.error("商户[{}]，结算单[{}]不可以提现, 状态[{}]", merchantId, settlementRecordId, settlementRecord.getStatus());

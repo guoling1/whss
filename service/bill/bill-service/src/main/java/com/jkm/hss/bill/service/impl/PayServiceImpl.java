@@ -970,7 +970,7 @@ public class PayServiceImpl implements PayService {
         placeOrderRequest.setChannel(channel);
         placeOrderRequest.setSettleNotifyUrl(PaymentSdkConstants.SDK_PAY_WITHDRAW_NOTIFY_URL);
         placeOrderRequest.setBankCode(accountBank.getBranchCode());
-        placeOrderRequest.setCardNo(accountBank.getBankNo());
+        placeOrderRequest.setCardNo(MerchantSupport.encryptBankCard(accountBank.getBankNo()));
         placeOrderRequest.setPayerName(merchant.getName());
         placeOrderRequest.setIdCardNo(merchant.getIdentity());
         final String content = HttpClientPost.postJson(PaymentSdkConstants.SDK_PAY_PLACE_ORDER, SdkSerializeUtil.convertObjToMap(placeOrderRequest));
