@@ -45,6 +45,12 @@ function getQueryString(name) {
   return null;
 }
 
+function getLocationString() {
+  let path = window.location.href;
+  let index = path.lastIndexOf("\/");
+  return path.substring(index + 1, path.length);
+}
+
 // 处理 初始化 的过程
 if (pageData.provinceCode != '' &&
   pageData.provinceName != '' &&
@@ -61,6 +67,7 @@ if (pageData.provinceCode != '' &&
 
 submit.onclick = function () {
   http.post('/wx/branchInfo', {
+    bankId: getLocationString(),
     branchCode: pageData.branchCode,
     branchName: pageData.branchName,
     provinceCode: pageData.provinceCode,

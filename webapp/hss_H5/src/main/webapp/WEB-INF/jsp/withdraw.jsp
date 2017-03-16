@@ -40,7 +40,7 @@
     <div class="message-box">
       <div class="message-box-head">
         短信已发送至 <span id="mobile"></span>
-        <div class="message-x"></div>
+        <div class="message-x" id="layer-x"></div>
       </div>
       <div class="message-box-body">
         <div class="code-title">验证码</div>

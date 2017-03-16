@@ -307,7 +307,7 @@ input:focus {
   right: 10px;
   width: 9px;
   height: 9px;
-  background: url("../../assets/message-x.png") no-repeat center;
+  background: url("../assets/message-x.png") no-repeat center;
   background-size: 9px 9px;
 }
 .message-space .message-box .message-box-body {
