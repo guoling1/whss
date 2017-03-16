@@ -197,8 +197,10 @@ public class AccountBankServiceImpl implements AccountBankService{
     @Override
     public AccountBank getDefault(long accountId) {
         AccountBank accountBank = accountBankDao.getDefault(accountId);
-        accountBank.setBankNo(MerchantSupport.decryptBankCard(accountId,accountBank.getBankNo()));
-        accountBank.setReserveMobile(MerchantSupport.decryptMobile(accountId,accountBank.getReserveMobile()));
+        if(accountBank!=null){
+            accountBank.setBankNo(MerchantSupport.decryptBankCard(accountId,accountBank.getBankNo()));
+            accountBank.setReserveMobile(MerchantSupport.decryptMobile(accountId,accountBank.getReserveMobile()));
+        }
         return accountBank;
     }
 
