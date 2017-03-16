@@ -140,6 +140,8 @@ world.onclick = function () {
     ProvincesSet();
   }
   branch.value = '';
+  pageData.branchCode = '';
+  pageData.branchName = '';
   layer_b_list.innerHTML = '';
   layer_w.style.display = 'block';
   let rect_w = layer_w.getBoundingClientRect();
