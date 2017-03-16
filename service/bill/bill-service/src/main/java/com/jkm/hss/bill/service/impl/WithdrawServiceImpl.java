@@ -100,7 +100,6 @@ public class WithdrawServiceImpl implements WithdrawService {
         final MerchantInfo merchant = this.merchantInfoService.selectById(merchantId).get();
         final AccountBank accountBank = this.accountBankService.getDefault(merchant.getAccountId());
         final SettlementRecord settlementRecord = this.settlementRecordService.getById(settlementRecordId).get();
-        final AccountBank accountBank = this.accountBankService.getDefault(merchant.getAccountId());
         if (settlementRecord.isWaitWithdraw()) {
             final BigDecimal merchantWithdrawPoundage = this.calculateService.getMerchantWithdrawPoundage(EnumProductType.HSS, merchantId, payChannelSign);
             final PaymentSdkDaiFuRequest paymentSdkDaiFuRequest = new PaymentSdkDaiFuRequest();
