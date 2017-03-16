@@ -71,9 +71,9 @@ public final class PaymentSdkConstants {
         SDK_PAY_QUERYIN= config.sdkPayQueryIn();
         Preconditions.checkState(!StringUtils.isEmpty(SDK_PAY_QUERYIN), "加载支付中心查询商户入网url失败");
         SDK_PAY_UNIONPAY_PREPARE = config.sdkPayUnionPayPrepare();
-//        Preconditions.checkState(!StringUtils.isEmpty(SDK_PAY_UNIONPAY_PREPARE), "加载支付中心快捷支付-预下单url失败");
+       Preconditions.checkState(!StringUtils.isEmpty(SDK_PAY_UNIONPAY_PREPARE), "加载支付中心快捷支付-预下单url失败");
         SDK_PAY_UNIONPAY_CONFRIM = config.sdkPayUnionPayConfirm();
-//        Preconditions.checkState(!StringUtils.isEmpty(SDK_PAY_UNIONPAY_CONFRIM), "加载支付中心快捷支付-确认下单url失败");
+       Preconditions.checkState(!StringUtils.isEmpty(SDK_PAY_UNIONPAY_CONFRIM), "加载支付中心快捷支付-确认下单url失败");
     }
 
     private static PaymentSdkConfig getConfig() {
