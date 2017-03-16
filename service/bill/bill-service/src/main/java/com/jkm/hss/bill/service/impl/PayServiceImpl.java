@@ -973,6 +973,7 @@ public class PayServiceImpl implements PayService {
         placeOrderRequest.setPayerName(merchant.getName());
         placeOrderRequest.setIdCardNo(merchant.getIdentity());
         final String content = HttpClientPost.postJson(PaymentSdkConstants.SDK_PAY_PLACE_ORDER, SdkSerializeUtil.convertObjToMap(placeOrderRequest));
+        log.info("商户[{}], 订单号[{}],  下单结果[{}]", merchant.getId(), order.getOrderNo(), content);
         PaymentSdkPlaceOrderResponse paymentSdkPlaceOrderResponse;
         try {
             paymentSdkPlaceOrderResponse = JSON.parseObject(content, PaymentSdkPlaceOrderResponse.class);
