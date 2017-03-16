@@ -122,7 +122,7 @@
                 <el-table-column type="index" width="100" label="序号"></el-table-column>
                 <el-table-column prop="globalID" label="商户编号"></el-table-column>
                 <el-table-column prop="shortName" label="商户名称"></el-table-column>
-                <el-table-column prop="shortName" label="所属代理商"></el-table-column>
+                <el-table-column prop="proxyNames" label="所属代理商"></el-table-column>
                 <el-table-column prop="createTime" label="注册时间" :formatter="changeTime"></el-table-column>
                 <el-table-column prop="cellphone" label="注册手机号"></el-table-column>
                 <el-table-column prop="districtCode" label="省市"></el-table-column>
