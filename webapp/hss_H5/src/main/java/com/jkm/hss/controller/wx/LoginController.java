@@ -516,16 +516,24 @@ public class LoginController extends BaseController {
     public String collection(final HttpServletRequest request, final HttpServletResponse response, final Model model) throws IOException {
         if(!super.isLogin(request)){
             model.addAttribute("merchantName", "");
+            model.addAttribute("merchantName", 0);
         }else{
             String merchantName = "";
+            long bankId = 0;
             Optional<UserInfo> userInfoOptional = userInfoService.selectByOpenId(super.getOpenId(request));
             if(userInfoOptional.isPresent()){
                 Optional<MerchantInfo> merchantInfo = this.merchantInfoService.selectById(userInfoOptional.get().getMerchantId());
                 if(merchantInfo.isPresent()){
                     merchantName = merchantInfo.get().getMerchantName();
+                    AccountBank accountBank = accountBankService.getDefault(merchantInfo.get().getAccountId());
+                    if(accountBank!=null){
+                        bankId = accountBank.getId();
+                    }
                 }
+
             }
             model.addAttribute("merchantName", merchantName);
+            model.addAttribute("bankId", bankId);
         }
         return "/collection";
     }
