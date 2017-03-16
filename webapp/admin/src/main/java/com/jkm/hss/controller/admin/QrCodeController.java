@@ -4,12 +4,21 @@ import com.aliyun.oss.OSSClient;
 import com.aliyun.oss.model.ObjectMetadata;
 import com.google.common.base.Optional;
 import com.jkm.base.common.entity.CommonResponse;
+import com.jkm.base.common.entity.PageModel;
 import com.jkm.base.common.util.DateFormatUtil;
 import com.jkm.hss.admin.entity.ProductionQrCodeRecord;
+import com.jkm.hss.admin.entity.QRCode;
 import com.jkm.hss.admin.enums.EnumQRCodeDistributeType;
 import com.jkm.hss.admin.enums.EnumQRCodeSysType;
+import com.jkm.hss.admin.helper.requestparam.ProductionRequest;
+import com.jkm.hss.admin.helper.requestparam.QrCodeListRequest;
+import com.jkm.hss.admin.helper.responseparam.ProductionListResponse;
+import com.jkm.hss.admin.helper.responseparam.QrCodeListResponse;
+import com.jkm.hss.admin.service.ProductionQrCodeRecordService;
 import com.jkm.hss.admin.service.QRCodeService;
 import com.jkm.hss.controller.BaseController;
+import com.jkm.hss.dealer.helper.requestparam.ListFirstDealerRequest;
+import com.jkm.hss.dealer.helper.response.FirstDealerResponse;
 import com.jkm.hss.helper.ApplicationConsts;
 import com.jkm.hss.helper.request.ProductionQrCodeRequest;
 import com.jkm.hss.helper.response.ProductionQrCodeResponse;
@@ -47,67 +56,72 @@ public class QrCodeController extends BaseController {
     @Autowired
     private ProductService productService;
 
+    @Autowired
+    private ProductionQrCodeRecordService productionQrCodeRecordService;
+
     /**
      * 产码
      * @param request
      * @return
      */
-//    @ResponseBody
-//    @RequestMapping(value = "productionQrCode", method = RequestMethod.POST)
-//    public CommonResponse productionQrCode(@RequestBody final ProductionQrCodeRequest request) {
-//        if(request.getSysType()!= EnumQRCodeSysType.HSS.getId()||request.getSysType()!=EnumQRCodeSysType.HSY.getId()){
-//            return CommonResponse.simpleResponse(-1, "产品参数错误");
-//        }
-//        if(request.getType()!= EnumQRCodeDistributeType.ENTITYCODE.getCode()||request.getType()!= EnumQRCodeDistributeType.ELECTRONICCODE.getCode()){
-//            return CommonResponse.simpleResponse(-1, "类型参数错误");
-//        }
-//        if(request.getCount()<=0){
-//            return CommonResponse.simpleResponse(-1, "个数至少为1");
-//        }
-//        Optional<Product> productOptional = productService.selectByType(request.getSysType());
-//        if(!productOptional.isPresent()){
-//            return CommonResponse.simpleResponse(-1, "无此产品");
-//        }
-//        String domainName = "http://"+request.getSysType()+".qianbaojiajia.com/code/scanCode";
-//        ProductionQrCodeRecord productionQrCodeRecord = this.qrCodeService.productionQrCode(1, request.getCount(),
-//                domainName,productOptional.get().getId(),request.getSysType(),request.getType());
-//        final String fileName = getFileName(productionQrCodeRecord.getDownloadUrl(),request.getSysType());
-//        final ObjectMetadata meta = new ObjectMetadata();
-//        meta.setCacheControl("public, max-age=31536000");
-//        meta.setExpirationTime(new DateTime().plusYears(1).toDate());
-//        meta.setContentType("application/x-xls");
-//        final Date expireDate = new Date(new Date().getTime() + 30 * 60 * 1000);
-//        URL url;
-//        try {
-//            ossClient.putObject(ApplicationConsts.getApplicationConfig().ossBucke(), fileName, new FileInputStream(new File(productionQrCodeRecord.getDownloadUrl())), meta);
-//            url = ossClient.generatePresignedUrl(ApplicationConsts.getApplicationConfig().ossBucke(), fileName, expireDate);
-//        } catch (IOException e) {
-//            log.error("上传文件失败", e);
-//            return CommonResponse.simpleResponse(-1, "文件上传失败");
-//        }
-//        FileUtils.deleteQuietly(new File(productionQrCodeRecord.getDownloadUrl()));
-//
-//        ProductionQrCodeResponse productionQrCodeResponse = new ProductionQrCodeResponse();
-//        if((EnumQRCodeSysType.HSS.getId()).equals(productionQrCodeRecord.getSysType())){
-//            productionQrCodeResponse.setProductName("好收收");
-//        }
-//        if((EnumQRCodeSysType.HSY.getId()).equals(productionQrCodeRecord.getSysType())){
-//            productionQrCodeResponse.setProductName("好收银");
-//        }
-//        if(EnumQRCodeDistributeType.ENTITYCODE.getCode()==productionQrCodeRecord.getQrType()){
-//            productionQrCodeResponse.setQrType("实体码");
-//        }
-//        if(EnumQRCodeDistributeType.ELECTRONICCODE.getCode()==productionQrCodeRecord.getQrType()){
-//            productionQrCodeResponse.setQrType("电子码");
-//        }
-//        productionQrCodeResponse.setCount(productionQrCodeRecord.getCount());
-//        productionQrCodeResponse.setProductionTime(productionQrCodeRecord.getCreateTime());
-//        productionQrCodeResponse.setStartCode(productionQrCodeRecord.getStartCode());
-//        productionQrCodeResponse.setEndCode(productionQrCodeRecord.getEndCode());
-//        productionQrCodeResponse.setDownloadUrl(productionQrCodeRecord.getDownloadUrl());
-//        return CommonResponse.builder4MapResult(CommonResponse.SUCCESS_CODE, "产码成功")
-//                .addParam("url", url.getHost() + url.getFile()).addParam("productionQrCodeRecord",productionQrCodeRecord).build();
-//    }
+    @ResponseBody
+    @RequestMapping(value = "productionQrCode", method = RequestMethod.POST)
+    public CommonResponse productionQrCode(@RequestBody final ProductionQrCodeRequest request) {
+        if(!(EnumQRCodeSysType.HSS.getId()).equals(request.getSysType())&&!(EnumQRCodeSysType.HSY.getId()).equals(request.getSysType())){
+            return CommonResponse.simpleResponse(-1, "产品参数错误");
+        }
+        if(request.getType()!= EnumQRCodeDistributeType.ENTITYCODE.getCode()&&request.getType()!= EnumQRCodeDistributeType.ELECTRONICCODE.getCode()){
+            return CommonResponse.simpleResponse(-1, "类型参数错误");
+        }
+        if(request.getCount()<=0){
+            return CommonResponse.simpleResponse(-1, "个数至少为1");
+        }
+        Optional<Product> productOptional = productService.selectByType(request.getSysType());
+        if(!productOptional.isPresent()){
+            return CommonResponse.simpleResponse(-1, "无此产品");
+        }
+        String domainName = "http://"+request.getSysType()+".qianbaojiajia.com/code/scanCode";
+        ProductionQrCodeRecord productionQrCodeRecord = this.qrCodeService.productionQrCode(super.getAdminUser().getId(), request.getCount(),
+                domainName,productOptional.get().getId(),request.getSysType(),request.getType());
+        final String fileName = getFileName(productionQrCodeRecord.getDownloadUrl(),request.getSysType());
+        final ObjectMetadata meta = new ObjectMetadata();
+        meta.setCacheControl("public, max-age=31536000");
+        meta.setExpirationTime(new DateTime().plusYears(1).toDate());
+        meta.setContentType("application/x-xls");
+        final Date expireDate = new Date(new Date().getTime() + 30 * 60 * 1000);
+        URL url;
+        try {
+            ossClient.putObject(ApplicationConsts.getApplicationConfig().ossBucke(), fileName, new FileInputStream(new File(productionQrCodeRecord.getDownloadUrl())), meta);
+            url = ossClient.generatePresignedUrl(ApplicationConsts.getApplicationConfig().ossBucke(), fileName, expireDate);
+        } catch (IOException e) {
+            log.error("上传文件失败", e);
+            return CommonResponse.simpleResponse(-1, "文件上传失败");
+        }
+        FileUtils.deleteQuietly(new File(productionQrCodeRecord.getDownloadUrl()));
+
+
+        ProductionQrCodeResponse productionQrCodeResponse = new ProductionQrCodeResponse();
+        if((EnumQRCodeSysType.HSS.getId()).equals(productionQrCodeRecord.getSysType())){
+            productionQrCodeResponse.setProductName("好收收");
+        }
+        if((EnumQRCodeSysType.HSY.getId()).equals(productionQrCodeRecord.getSysType())){
+            productionQrCodeResponse.setProductName("好收银");
+        }
+        if(EnumQRCodeDistributeType.ENTITYCODE.getCode()==productionQrCodeRecord.getQrType()){
+            productionQrCodeResponse.setQrType("实体码");
+        }
+        if(EnumQRCodeDistributeType.ELECTRONICCODE.getCode()==productionQrCodeRecord.getQrType()){
+            productionQrCodeResponse.setQrType("电子码");
+        }
+        productionQrCodeResponse.setCount(productionQrCodeRecord.getCount());
+        productionQrCodeResponse.setProductionTime(productionQrCodeRecord.getCreateTime());
+        productionQrCodeResponse.setStartCode(productionQrCodeRecord.getStartCode());
+        productionQrCodeResponse.setEndCode(productionQrCodeRecord.getEndCode());
+        productionQrCodeResponse.setDownloadUrl(url.getHost() + url.getFile());
+        productionQrCodeRecordService.updateDownUrl(productionQrCodeRecord.getId(),productionQrCodeResponse.getDownloadUrl());
+        return CommonResponse.builder4MapResult(CommonResponse.SUCCESS_CODE, "产码成功")
+                .addParam("url", url.getHost() + url.getFile()).addParam("productionQrCodeRecord",productionQrCodeResponse).build();
+    }
     /**
      * 获取随机文件名
      *
@@ -118,5 +132,29 @@ public class QrCodeController extends BaseController {
         final String dateFileName = DateFormatUtil.format(new Date(), DateFormatUtil.yyyyMMdd);
         final String extName = originalFilename.substring(originalFilename.lastIndexOf(File.separator) + 1);
         return directoryName+"/" + dateFileName + "/" + extName;
+    }
+
+    /**
+     * 二维码生成记录
+     * @param productionRequest
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/productionList", method = RequestMethod.POST)
+    public CommonResponse productionList(@RequestBody final ProductionRequest productionRequest) {
+        final PageModel<ProductionListResponse> pageModel = this.productionQrCodeRecordService.selectList(productionRequest);
+        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", pageModel);
+    }
+
+    /**
+     * 所有二维码
+     * @param qrCodeListRequest
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/selectQrCodeList", method = RequestMethod.POST)
+    public CommonResponse selectQrCodeList(@RequestBody final QrCodeListRequest qrCodeListRequest) {
+        final PageModel<QrCodeListResponse> pageModel = this.qrCodeService.selectQrCodeList(qrCodeListRequest);
+        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", pageModel);
     }
 }

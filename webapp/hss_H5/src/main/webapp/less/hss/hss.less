@@ -153,7 +153,7 @@ input:focus {
       font-weight: bold;
     }
     .message-box-body {
-      font-size: 16px;
+      font-size: 15px;
       color: #5a5a5a;
       padding: 5px 0 25px 0;
       line-height: 28px;
@@ -193,6 +193,233 @@ input:focus {
 }
 
 // 好收收样式调整 end
+
+// 账户流水 余额明细
+
+#accountFlow {
+  width: 100%;
+  height: auto;
+  min-height: 100%;
+  background-color: #f4f5f8;
+  .flow-group {
+    width: 100%;
+    height: 50px;
+    background-color: #FFF;
+    border-bottom: 1px solid #e6e8f1;
+    padding: 0 15px;
+    .flow-left {
+      float: left;
+      .flow-top {
+        font-size: 14px;
+        color: #222222;
+        margin-top: 3px;
+        text-align: left;
+        .s {
+          font-size: 12px;
+          color: #c1c1c1;
+          margin-left: 5px;
+        }
+      }
+      .flow-bottom {
+        font-size: 12px;
+        color: #c1c1c1;
+        text-align: left;
+      }
+    }
+    .flow-right {
+      float: right;
+      height: 50px;
+      line-height: 50px;
+      font-size: 15px;
+      &.green {
+        color: #36c493;
+      }
+      &.red {
+        color: #e94444;
+      }
+    }
+  }
+}
+
+// 账户 余额
+#account {
+  width: 100%;
+  height: auto;
+  background-color: #f4f5f8;
+  .account {
+    width: 100%;
+    background-color: #FFF;
+    padding: 50px;
+    .logo {
+      width: 60px;
+      height: 60px;
+      margin: auto;
+      background: url("../assets/account.png") no-repeat center;
+      background-size: 60px 60px;
+    }
+    .amount {
+      font-size: 36px;
+      color: #222222;
+      margin-top: 20px;
+      .s {
+        font-size: 20px;
+        margin-right: 5px;
+      }
+    }
+    .useAmount {
+      font-size: 15px;
+      color: #5a5a5a;
+    }
+    .btn {
+      display: block;
+      width: 100%;
+      height: 46px;
+      margin: 30px 0 25px 0;
+      line-height: 46px;
+      border-radius: 5px;
+      background-color: #4ecea2;
+      font-size: 16px;
+      color: #FFF;
+    }
+    .check {
+      font-size: 12px;
+      color: #036ad1;
+      span {
+        display: inline-block;
+        width: 10px;
+        height: 10px;
+        margin-right: 5px;
+        background: url("../assets/amount_detail.png") no-repeat center;
+        background-size: 10px 10px;
+      }
+    }
+  }
+  .qa {
+    width: 100%;
+    height: auto;
+    margin-top: 8px;
+    background-color: #FFF;
+    padding: 25px 15px 50px 15px;
+    .qa-title {
+      font-size: 12px;
+      color: #5a5a5a;
+      text-align: left;
+      span {
+        display: inline-block;
+        width: 12px;
+        height: 12px;
+        margin-right: 5px;
+        background: url("../assets/qa.png") no-repeat center;
+        background-size: 12px 12px;
+      }
+    }
+    .qa-group {
+      margin-top: 15px;
+      .q {
+        text-align: left;
+        font-size: 12px;
+        color: #5a5a5a;
+        span {
+          display: inline-block;
+          width: 4px;
+          height: 4px;
+          border-radius: 50%;
+          background-color: #b0b0b0;
+          transform: translate3d(0, -3px, 0);
+          margin-right: 5px;
+        }
+      }
+      .a {
+        text-align: left;
+        font-size: 12px;
+        color: #b0b0b0;
+        padding-left: 9px;
+      }
+    }
+  }
+}
+
+// 公告列表
+#noticeList {
+  width: 100%;
+  height: 100%;
+  background: #f4f5f8;
+  .list-box {
+    width: 100%;
+    height: auto;
+    background-color: #FFF;
+    .list-li {
+      width: 100%;
+      height: 50px;
+      padding: 6px 15px;
+      border-bottom: 1px solid #e6e8f1;
+      .list-icon {
+        width: 35px;
+        height: 35px;
+        float: left;
+        margin-right: 10px;
+        &.notice1 {
+          background: url("../assets/notice-icon-1.png") no-repeat center;
+          background-size: 35px 35px;
+        }
+        &.notice2 {
+          background: url("../assets/notice-icon-2.png") no-repeat center;
+          background-size: 35px 35px;
+        }
+      }
+      .list-info {
+        float: left;
+        .top {
+          font-size: 14px;
+          color: #5a5a5a;
+          text-align: left;
+        }
+        .bottom {
+          font-size: 12px;
+          color: #c1c1c1;
+          text-align: left;
+        }
+      }
+      .list-right {
+        float: right;
+        width: 6px;
+        height: 10px;
+        background: url("../assets/list-right.png") no-repeat center;
+        background-size: 6px 10px;
+        margin-top: 13px;
+      }
+    }
+  }
+}
+
+// 公告详情
+#noticeDetails {
+  width: 100%;
+  height: 100%;
+  background: #f4f5f8;
+  padding: 0 15px;
+  .title-box {
+    width: 100%;
+    height: auto;
+    border-bottom: 1px solid #e6e8f1;
+    padding: 5px 0;
+    .title {
+      font-size: 18px;
+      color: #222222;
+      text-align: left;
+    }
+    .date {
+      font-size: 12px;
+      color: #c1c1c1;
+      text-align: left;
+    }
+  }
+  .content-box {
+    color: #5a5a5a;
+    padding: 10px 0;
+    text-align: left;
+  }
+}
 
 // 商户 注册 reg
 #reg, #login {
@@ -403,8 +630,95 @@ input:focus {
   width: 100%;
   height: 100%;
   overflow: auto;
+  background-color: #f4f5f8;
   .main {
     padding-bottom: 20px;
+  }
+
+  .layer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 99;
+    background-color: #FFF;
+    display: none;
+    .layer-name {
+      padding: 0 15px;
+      text-align: left;
+      min-width: 75px;
+      float: left;
+      font-size: 15px;
+      color: #5a5a5a;
+      width: 100%;
+      height: 50px;
+      border-top: 1px solid #efefef;
+      box-shadow: 0 3px 8px #e8eaf0;
+    }
+    .match {
+      padding: 0 15px;
+      width: 100%;
+      height: 50px;
+      border-top: 1px solid #efefef;
+      box-shadow: 0 3px 8px #e8eaf0;
+      .match_name {
+        text-align: left;
+        min-width: 75px;
+        float: left;
+        font-size: 15px;
+        color: #5a5a5a;
+        margin-right: 20px;
+      }
+      .match_ipt {
+        float: left;
+        height: 49px;
+        line-height: 49px;
+        font-size: 15px;
+      }
+    }
+  }
+  .search {
+    &.top {
+      margin-top: 50px;
+    }
+    .search-result {
+      width: 100%;
+      height: 50px;
+      line-height: 50px;
+      border-bottom: 1px solid #efefef;
+      padding: 0 15px;
+      div {
+        height: 49px;
+        display: inline-block;
+        float: left;
+        text-align: left;
+        font-size: 14px;
+        color: #5a5a5a;
+        margin-right: 20px;
+        &.choose {
+          color: #4ecea2;
+          border-bottom: 2px solid #4ecea2;
+        }
+      }
+    }
+    .search-list {
+      width: 100%;
+      overflow: auto;
+      div {
+        width: 100%;
+        height: 50px;
+        line-height: 50px;
+        font-size: 14px;
+        color: #5a5a5a;
+        text-align: left;
+        padding: 0 15px;
+        overflow: hidden;
+        &.t {
+          background: url("../assets/choose.png") no-repeat center right 15px;
+          background-size: 8px 8px;
+        }
+      }
+    }
   }
 
   .process {
@@ -440,17 +754,11 @@ input:focus {
     }
   }
 
-  .top {
+  .space {
     width: 100%;
     height: auto;
+    margin-bottom: 8px;
     background-color: #FFF;
-    padding-top: 15px;
-  }
-
-  .bottom {
-    .flexItem(auto);
-    width: 100%;
-    border-top: 8px solid #f4f5f8;
     .skip {
       height: 56px;
       line-height: 56px;
@@ -464,28 +772,28 @@ input:focus {
   }
 
   .group {
-    .flexBox();
     width: 100%;
     height: 50px;
     line-height: 50px;
     border-bottom: 1px solid #edeef5;
     padding: 0 15px;
+    position: relative;
     .name {
-      width: 50px;
+      display: inline-block;
+      float: left;
+      width: 75px;
       line-height: 50px;
-      margin-right: 15px;
-      font-size: 15px;
-      color: #4a5171;
+      font-size: 14px;
+      color: #5a5a5a;
       text-align: left;
     }
     .file {
       display: inline-block;
-      .flexItem(auto);
-      width: 1px;
+      float: left;
       line-height: 50px;
       text-align: left;
-      font-size: 15px;
-      color: #7079a0;
+      font-size: 14px;
+      color: #d0d0d0;
       position: relative;
       div {
         width: 100%;
@@ -497,31 +805,35 @@ input:focus {
       }
     }
     .ipt {
-      .flexItem(auto);
       border: none;
+      float: left;
+      height: 49px;
+      font-size: 14px;
       color: #4a5171;
+      max-width: 140px;
     }
     ::-webkit-input-placeholder {
-      color: #aab2d2;
+      color: #d0d0d0;
     }
     :-moz-placeholder {
-      color: #aab2d2;
+      color: #d0d0d0;
     }
     ::-moz-placeholder {
-      color: #aab2d2;
+      color: #d0d0d0;
     }
     :-ms-input-placeholder {
-      color: #aab2d2;
+      color: #d0d0d0;
     }
     .btn {
+      float: right;
       line-height: 50px;
-      font-size: 12px;
-      color: #7079a0;
+      font-size: 14px;
+      color: #036ad1;
     }
   }
 
   .next {
-    padding: 26px 15px 0;
+    padding: 5px 15px 0;
     div {
       width: 100%;
       height: 50px;
@@ -534,6 +846,13 @@ input:focus {
     }
   }
 
+  .skip {
+    height: 50px;
+    line-height: 50px;
+    font-size: 15px;
+    color: #b0b0b0;
+  }
+
   .sample {
     display: none;
     position: absolute;
@@ -543,12 +862,53 @@ input:focus {
     height: 100%;
     background: rgba(0, 0, 0, 0.5);
     z-index: 89;
-    img {
+    .img {
       position: absolute;
       top: 45%;
       left: 50%;
       width: 90%;
       transform: translate3d(-50%, -50%, 0);
+    }
+    .sample-box {
+      width: 85%;
+      height: auto;
+      border-radius: 10px;
+      background-color: #FFF;
+      position: absolute;
+      top: 45%;
+      left: 50%;
+      transform: translate3d(-50%, -50%, 0);
+      overflow: hidden;
+      .sample-box-head {
+        width: 100%;
+        height: 50px;
+        line-height: 50px;
+        font-size: 16px;
+        font-weight: bold;
+        color: #5a5a5a;
+        position: relative;
+        .sample-xx {
+          position: absolute;
+          display: block;
+          top: 20px;
+          right: 20px;
+          width: 9px;
+          height: 9px;
+          background: url("../assets/sample-xx.png") no-repeat center;
+          background-size: 9px 9px;
+        }
+      }
+      .sample-box-body {
+        width: 100%;
+      }
+      .sample-box-foot {
+        width: 100%;
+        height: 50px;
+        line-height: 50px;
+        border-top: 1px solid #e6e8f1;
+        font-size: 16px;
+        color: #036ad1;
+      }
     }
   }
 }
@@ -681,6 +1041,39 @@ input:focus {
 // 钱包首页
 
 #wallet {
+  .announcement {
+    width: 100%;
+    height: 25px;
+    background-color: #3c5186;
+    padding: 0 15px 0 30px;
+    position: relative;
+    display: none;
+    .announcement-icon {
+      display: block;
+      position: absolute;
+      top: 6px;
+      left: 15px;
+      width: 13px;
+      height: 12px;
+      background: url("../assets/announcement.png") no-repeat center;
+      background-size: 13px 12px;
+    }
+    .announcement-text-box {
+      width: 100%;
+      height: 25px;
+      position: relative;
+      overflow: hidden;
+    }
+    .announcement-text {
+      line-height: 25px;
+      font-size: 12px;
+      color: #d0d0d0;
+      white-space: nowrap;
+      text-align: left;
+      position: absolute;
+      top: 0;
+    }
+  }
   .wallet {
     width: 100%;
     height: 130px;
@@ -820,6 +1213,10 @@ input:focus {
         &.unbundling {
           background: url("../assets/unbundling.png") no-repeat center;
           background-size: 30px 26px;
+        }
+        &.announcement1 {
+          background: url("../assets/announcement-logo.png") no-repeat center;
+          background-size: 27px 30px;
         }
         &.more {
           background: url("../assets/more.png") no-repeat center;
@@ -1475,6 +1872,69 @@ input:focus {
   }
 }
 
+// 提现成功
+#withdrawSuccess {
+  width: 100%;
+  height: auto;
+  background-color: #f4f5f8;
+  .cont {
+    width: 100%;
+    height: auto;
+    background-color: #FFF;
+    .detail {
+      .logo {
+        margin: 35px auto 25px;
+        width: 87px;
+        height: 87px;
+        background: url("../assets/withdrawSuccess.png") no-repeat center;
+        background-size: 87px 87px;
+      }
+      .text {
+        font-size: 19px;
+        color: #222222;
+      }
+      .small {
+        font-size: 14px;
+        color: #5a5a5a;
+        margin-bottom: 40px;
+      }
+    }
+    .list-box {
+      .list-group {
+        width: 100%;
+        height: 47px;
+        line-height: 47px;
+        border-bottom: 1px solid #e8eaf3;
+        padding: 0 15px;
+        .left {
+          float: left;
+          font-size: 15px;
+          color: #5a5a5a;
+        }
+        .right {
+          float: right;
+          font-size: 15px;
+          color: #222222;
+        }
+      }
+    }
+  }
+  .btn-box {
+    width: 100%;
+    margin-top: 20px;
+    padding: 0 15px;
+    .box {
+      width: 100%;
+      height: 45px;
+      line-height: 45px;
+      border-radius: 5px;
+      background-color: #4ecea2;
+      font-size: 16px;
+      color: #FFF;
+    }
+  }
+}
+
 // 提现页面
 #withdrawal {
   width: 100%;
@@ -1491,15 +1951,15 @@ input:focus {
       height: 40px;
       line-height: 40px;
       font-size: 12px;
-      color: #8c93b2;
+      color: #5a5a5a;
     }
     .amount {
       height: 50px;
       line-height: 50px;
       font-size: 36px;
-      color: #202335;
+      color: #222222;
       margin-bottom: 30px;
-      span {
+      .s {
         font-size: 24px;
       }
     }
@@ -1524,89 +1984,45 @@ input:focus {
         font-size: 16px;
         color: #8c93b2;
       }
+      .mpt {
+        font-size: 12px;
+        color: #5a5a5a;
+      }
     }
   }
   .detail {
     height: 40px;
     line-height: 40px;
-    font-size: 14px;
-    color: #8c93b2;
+    font-size: 12px;
+    color: #d0d0d0;
   }
   .btn {
     width: 100%;
     height: 50px;
     line-height: 50px;
-    background-color: #7086bd;
+    background-color: #4ecea2;
     font-size: 16px;
     color: #FFF;
     border-radius: 5px;
   }
   .btn:disabled {
-    background-color: #b0c3f2;
+    background-color: #a6e5d4;
   }
-
-  .layer {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    z-index: 99;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    .space {
-      width: 95%;
-      height: auto;
-      border-radius: 3px;
-      background-color: #FFF;
-      position: absolute;
-      top: 45%;
-      left: 50%;
-      transform: translate3d(-50%, -50%, 0);
-      overflow: hidden;
-      .space-title {
-        width: 100%;
-        height: 65px;
-        line-height: 65px;
-        background-color: #f4f5f8;
-        text-align: left;
-        padding-left: 15px;
-        .xx {
-          float: right;
-          width: 65px;
-          height: 65px;
-          background: url("../assets/xx.png") no-repeat center;
-          background-size: 18px 18px;
-        }
-      }
-      .space-cont {
-        padding: 0 15px 10px;
-        .input {
-          width: 100%;
-          height: 50px;
-          line-height: 50px;
-          border-bottom: 1px solid #f4f5f8;
-          margin: 10px 0;
-          input {
-            .flexItem(1);
-            padding-left: 15px;
-          }
-          .re {
-            color: #9b9fb4;
-          }
-        }
-        .submit {
-          width: 100%;
-          height: 50px;
-          line-height: 50px;
-          background-color: #7086bd;
-          font-size: 16px;
-          color: #FFF;
-          border-radius: 5px;
-        }
-      }
+  .message-space {
+    .code-title {
+      font-size: 16px;
+      color: #202335;
+    }
+    .code-ipt {
+      text-align: center;
+      margin: 5px 0;
+    }
+    .code-re {
+      font-size: 16px;
+      color: #d0d0d0;
     }
   }
+
 }
 
 #transaction {
@@ -1938,6 +2354,7 @@ input:focus {
       }
       .info {
         float: left;
+        width: calc(100% - 62px);
         .name {
           text-align: left;
           font-size: 18px;
@@ -1960,8 +2377,12 @@ input:focus {
         font-size: 12px;
         color: #FFF;
         padding: 0 5px;
+        margin-top: 5px;
         &.red {
           background-color: #c64b4b;
+        }
+        &.green {
+          background-color: #3d9a63;
         }
         &.blue {
           background-color: #406eae;
@@ -2108,8 +2529,9 @@ input:focus {
             color: #5a5a5a;
             text-align: left;
             padding: 0 15px;
+            overflow: hidden;
             &.t {
-              background: url("../../assets/choose.png") no-repeat center right 15px;
+              background: url("../assets/choose.png") no-repeat center right 15px;
               background-size: 8px 8px;
             }
           }

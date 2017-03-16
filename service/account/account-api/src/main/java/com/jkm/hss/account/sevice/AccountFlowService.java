@@ -66,4 +66,14 @@ public interface AccountFlowService {
      * @return
      */
     boolean checkExistByFlowNo(String flowNo);
+
+    /**
+     * 分页查询hss商户资金流水
+     *
+     * @param pageNo
+     * @param pageSize
+     * @param accountId
+     * @return
+     */
+    PageModel<AccountFlow> selectByParamToMerchantFlow(int pageNo, int pageSize, long accountId);
 }

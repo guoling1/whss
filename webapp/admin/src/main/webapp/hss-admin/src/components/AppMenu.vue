@@ -117,7 +117,7 @@
           </ul>
         </li>
         <li
-          :class="(url=='/admin/record/issueRecord'||url=='/admin/record/issue'||url=='/admin/record/codeStatus')?'treeview active':'treeview'">
+          :class="(url=='/admin/record/issueRecord'||url=='/admin/record/issue'||url=='/admin/record/codeStatus'||url=='/admin/record/codeProRecord'||url=='/admin/record/codeAll')?'treeview active':'treeview'">
           <a href="#"><span>设备管理</span></a>
           <ul class="treeview-menu">
             <!--<li :class="(url=='/admin/record/issue1')?'active':''" @click="refrash"><router-link to="/admin/record/issue1"><span>按个数分配</span> </router-link></li>-->
@@ -129,6 +129,12 @@
             </li>
             <li :class="(url=='/admin/record/codeStatus')?'active':''" @click="refrash">
               <router-link to="/admin/record/codeStatus"><span>二维码状态查询</span></router-link>
+            </li>
+            <li :class="(url=='/admin/record/codeProRecord')?'active':''" @click="refrash">
+              <router-link to="/admin/record/codeProRecord"><span>产码记录</span></router-link>
+            </li>
+            <li :class="(url=='/admin/record/codeAll')?'active':''" @click="refrash">
+              <router-link to="/admin/record/codeAll"><span>所有二维码</span></router-link>
             </li>
           </ul>
         </li>

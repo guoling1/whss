@@ -119,9 +119,9 @@ public class BasicChannelServiceImpl implements BasicChannelService {
             return EnumPayChannelSign.codeOf(payType.substring(0, payType.indexOf("_code")));
         } else if (payType.contains("_jsapi")) {
             return EnumPayChannelSign.codeOf(payType.substring(0, payType.indexOf("_jsapi")));
+        } else {
+            return EnumPayChannelSign.codeOf(payType);
         }
-        log.error("支付方式[{}]，异常", payType);
-        return null;
     }
 //    @Override
 //    public List<BasicChannel> selectListChannel() {

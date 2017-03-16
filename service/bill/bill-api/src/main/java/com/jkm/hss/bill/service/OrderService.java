@@ -6,6 +6,7 @@ import com.jkm.hss.bill.entity.MerchantTradeResponse;
 import com.jkm.hss.bill.entity.Order;
 import com.jkm.hss.bill.helper.requestparam.QueryMerchantPayOrdersRequestParam;
 import com.jkm.hss.dealer.entity.Dealer;
+import com.jkm.hss.merchant.entity.MerchantInfo;
 import com.jkm.hss.merchant.helper.request.OrderTradeRequest;
 import com.jkm.hsy.user.entity.AppBizShop;
 
@@ -56,6 +57,18 @@ public interface OrderService {
      * @return
      */
     long createDealerPlayMoneyOrder(Dealer dealer, BigDecimal amount, String appId, int channel, String settleType, BigDecimal withdrawFee);
+
+    /**
+     * 创建商户提现单
+     *
+     * @param merchantInfo
+     * @param amount
+     * @param appId
+     * @param channel
+     * @param settleType
+     * @return
+     */
+    long createMerchantPlayMoneyOrder(MerchantInfo merchantInfo, BigDecimal amount, String appId, int channel, String settleType, BigDecimal withdrawFee);
 
     /**
      * 更新
@@ -233,6 +246,26 @@ public interface OrderService {
      */
     String amountCount(OrderTradeRequest req);
 
+    /**
+     * hss-T1-结算到卡定时处理实现
+     */
+    void handleT1UnSettlePayOrder();
+
+    /**
+     * 查询指定结算日期，指定业务线，T1的支付成功的待结算的订单IDS
+     *
+     * @param settleDate
+     * @param appId
+     * @return
+     */
+    List<Long> getT1PaySuccessAndUnSettleOrderIds(Date settleDate, String appId);
+
+    /**
+     * T1 按支付单ID，发起体现
+     *
+     * @param orderId
+     */
+    void t1WithdrawByOrderId(long orderId);
     /**
      * 查询交易详情
      * @param orderRecord
