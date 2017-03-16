@@ -558,9 +558,10 @@ public class LoginController extends BaseController {
      * @throws IOException
      */
     @RequestMapping(value = "/paymentWx", method = RequestMethod.GET)
-    public String paymentWx(final HttpServletRequest request, final HttpServletResponse response, final Model model,@RequestParam(value = "merchantId", required = true) long merchantId,@RequestParam(value = "name") String name) throws IOException {
+    public String paymentWx(final HttpServletRequest request, final HttpServletResponse response, final Model model,@RequestParam(value = "merchantId", required = true) long merchantId,@RequestParam(value = "name") String name,@RequestParam(value = "isSelf") int isSelf) throws IOException {
         model.addAttribute("mid", merchantId);
         model.addAttribute("merchantName", name);
+        model.addAttribute("isSelf", isSelf);
         return "/payment-wx";
     }
 

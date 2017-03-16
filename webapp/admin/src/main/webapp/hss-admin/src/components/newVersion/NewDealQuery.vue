@@ -142,7 +142,7 @@
             <el-table-column prop="remark" label="渠道信息" min-width="90"></el-table-column>
             <el-table-column label="操作" width="90" fixed="right">
               <template scope="scope">
-                <router-link :to="{path:'/admin/record/newDealDet',query:{orderNo:records[scope.$index].orderNo}}" v-if="records[scope.$index].proxyName1!='当页总额'||records[scope.$index].proxyName1!='筛选条件统计'" type="text" size="small">详情
+                <router-link :to="{path:'/admin/record/newDealDet',query:{orderNo:records[scope.$index].orderNo}}" v-if="records[scope.$index].proxyName1!='当页总额'&&records[scope.$index].proxyName1!='筛选条件统计'" type="text" size="small">详情
                 </router-link>
               </template>
             </el-table-column>
