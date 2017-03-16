@@ -5,6 +5,7 @@ import com.jkm.hss.admin.entity.ProductionQrCodeRecord;
 import com.jkm.hss.admin.helper.requestparam.ProductionRequest;
 import com.jkm.hss.admin.helper.responseparam.ProductionListResponse;
 
+
 /**
  * Created by xingliujie on 2017/2/20.
  */
@@ -21,4 +22,12 @@ public interface ProductionQrCodeRecordService {
      * @param productionRequest
      */
     PageModel<ProductionListResponse> selectList(ProductionRequest productionRequest);
+
+    /**
+     * 更改下载url
+     * @param id
+     * @param downloadUrl
+     * @return
+     */
+    int updateDownUrl(long id,String downloadUrl);
 }

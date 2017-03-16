@@ -688,8 +688,8 @@ public class QRCodeServiceImpl implements QRCodeService {
         final List<List<String>> datas = new ArrayList<List<String>>();
         final ArrayList<String> heads = new ArrayList<>();
         excelSheetVO.setName("qr_code");
-        heads.add("卡号");
-        heads.add("ID");
+        heads.add("码号");
+        heads.add("地址");
         datas.add(heads);
         for (QRCode qrCode : codes) {
             final ArrayList<String> columns = new ArrayList<>();
@@ -897,13 +897,14 @@ public class QRCodeServiceImpl implements QRCodeService {
             //生成二维码记录
             ProductionQrCodeRecord productionQrCodeRecord = new ProductionQrCodeRecord();
             productionQrCodeRecord.setStartCode(codes.get(0).getCode());
-            productionQrCodeRecord.setStartCode(codes.get(count - 1).getCode());
+            productionQrCodeRecord.setEndCode(codes.get(count - 1).getCode());
             productionQrCodeRecord.setCount(codes.size());
             productionQrCodeRecord.setQrType(type);
             productionQrCodeRecord.setProductId(productId);
             productionQrCodeRecord.setSysType(sysType);
             productionQrCodeRecord.setOperatorId(adminId);
             productionQrCodeRecord.setDownloadUrl(excelFile.getAbsolutePath());
+            productionQrCodeRecord.setCreateTime(new Date());
             productionQrCodeRecordService.add(productionQrCodeRecord);
             return productionQrCodeRecord;
         } catch (final Exception e) {

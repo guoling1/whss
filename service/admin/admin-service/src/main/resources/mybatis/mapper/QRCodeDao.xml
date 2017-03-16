@@ -13,8 +13,6 @@
       sign,
       distribute_status,
       activate_status,
-      qr_type,
-      activate_time,
       type,
       product_id,
       sys_type,
@@ -33,8 +31,6 @@
       #{sign},
       #{distributeStatus},
       #{activateStatus},
-      #{qrType},
-      #{activateTime},
       #{type},
       #{productId},
       #{sysType},
@@ -555,7 +551,7 @@
             )
         </if>
         ORDER BY
-            c.create_time DESC
+            c.code DESC
         LIMIT #{offset},#{count}
     </select>
 
@@ -674,7 +670,7 @@
             )
         </if>
         ORDER BY
-        c.create_time DESC
+        c.code DESC
         LIMIT #{offset},#{count}
     </select>
 
@@ -794,7 +790,7 @@
             AND c.activate_status = #{activateStatus}
         </if>
         ORDER BY
-        c.create_time DESC
+        c.code DESC
         LIMIT #{offset},#{count}
     </select>
 
@@ -915,7 +911,7 @@
             )
         </if>
         ORDER BY
-        c.create_time DESC
+        c.code DESC
         LIMIT #{offset},#{count}
     </select>
 
