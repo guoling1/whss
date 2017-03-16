@@ -19,7 +19,7 @@ public enum  EnumOrderStatus {
     /**
      *支付中"
      */
-//    PAYING(2, "支付中"),
+    PAYING(2, "支付中"),
 
     /**
      *支付失败

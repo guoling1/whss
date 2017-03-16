@@ -170,7 +170,7 @@ public class AccountBankServiceImpl implements AccountBankService{
      */
     @Override
     public int setDefaultCreditCard(long id) {
-        AccountBank accountBank = accountBankDao.getById(id);
+        AccountBank accountBank = accountBankDao.selectById(id);
         if(accountBank!=null){
             this.reset(accountBank.getAccountId(),EnumAccountBank.CREDIT.getId());
         }
@@ -292,7 +292,7 @@ public class AccountBankServiceImpl implements AccountBankService{
                 }
                 bankListResponse.setBankBin(accountBank1.getBankBin());
                 String tempBranchName = accountBank1.getBranchName();
-                if(!"".equals(tempBranchName)&&tempBranchName!=null&&tempBranchName.length()>12){
+                if(tempBranchName.length()>12){
                     tempBranchName = "***"+tempBranchName.substring(tempBranchName.length()-12,tempBranchName.length());
                 }
                 bankListResponse.setBranchName(tempBranchName);

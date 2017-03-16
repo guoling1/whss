@@ -531,7 +531,9 @@ public class LoginController extends BaseController {
     }
 
     /**
-     * 支付成功页面
+     * 支付成功页面（前端回调）
+     *
+     *
      * @param request
      * @param response
      * @param model

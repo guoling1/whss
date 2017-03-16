@@ -42,7 +42,11 @@ public class MyQrCodeListRequest extends PageQueryParams {
     private int activateStatus;
     /**
      * 商户状态
-     *
+     * 0 全部
+     * 1注册完成
+     * 2待审核
+     * 3审核不通过
+     * 4 审核通过
      */
     private int merchantStatus;
     /**

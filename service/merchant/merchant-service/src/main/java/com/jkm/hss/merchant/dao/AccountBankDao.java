@@ -98,12 +98,6 @@ public interface AccountBankDao {
      */
     int deleteCreditCard(@Param("id") long id);
 
-    /**
-     * 根据Id获取银行卡信息
-     * @param id
-     * @return
-     */
-    AccountBank getById(@Param("id") long id);
 
 
     /**

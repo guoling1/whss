@@ -75,7 +75,7 @@ public class SplitAccountRecordServiceImpl implements SplitAccountRecordService 
     @Transactional
     public void addPaySplitAccountRecord(final String splitBusinessType, final String orderNo, final String orderNo1, final BigDecimal tradeAmount,
                                          final BigDecimal poundage, final Triple<Long, BigDecimal, BigDecimal> triple,
-                                         final String receiptMoneyUserName, final String remark) {
+                                         final String receiptMoneyUserName, final String remark, final int accountUserType) {
 
         final SplitAccountRecord splitAccountRecord = new SplitAccountRecord();
         splitAccountRecord.setBusinessType(splitBusinessType);
@@ -91,6 +91,7 @@ public class SplitAccountRecordServiceImpl implements SplitAccountRecordService 
         splitAccountRecord.setSplitRate(triple.getRight());
         splitAccountRecord.setRemark(remark);
         splitAccountRecord.setSplitDate(new Date());
+        splitAccountRecord.setAccountUserType(accountUserType);
         this.add(splitAccountRecord);
     }
 
@@ -110,7 +111,7 @@ public class SplitAccountRecordServiceImpl implements SplitAccountRecordService 
     @Transactional
     public void addMerchantUpgradePaySplitAccountRecord(final String splitBusinessType, final String orderNo, final String orderNo1, final BigDecimal tradeAmount,
                                          final BigDecimal poundage, final Triple<Long, BigDecimal, String> triple,
-                                         final String receiptMoneyUserName, final String remark) {
+                                         final String receiptMoneyUserName, final String remark, final int accountUserType) {
 
         final SplitAccountRecord splitAccountRecord = new SplitAccountRecord();
         splitAccountRecord.setBusinessType(splitBusinessType);
@@ -125,6 +126,7 @@ public class SplitAccountRecordServiceImpl implements SplitAccountRecordService 
         splitAccountRecord.setSplitTotalAmount(poundage);
         splitAccountRecord.setSplitDate(new Date());
         splitAccountRecord.setRemark(remark);
+        splitAccountRecord.setAccountUserType(accountUserType);
         this.add(splitAccountRecord);
     }
 
@@ -143,7 +145,7 @@ public class SplitAccountRecordServiceImpl implements SplitAccountRecordService 
     @Transactional
     public void addWithdrawSplitAccountRecord(final String splitBusinessType, final String orderNo, final String orderNo1, final BigDecimal tradeAmount,
                                               final BigDecimal poundage, final Triple<Long, BigDecimal, String> triple,
-                                              final String receiptMoneyUserName, final String remark) {
+                                              final String receiptMoneyUserName, final String remark, final int accountUserType) {
         final SplitAccountRecord splitAccountRecord = new SplitAccountRecord();
         splitAccountRecord.setBusinessType(splitBusinessType);
         splitAccountRecord.setOrderNo(orderNo);
@@ -157,6 +159,7 @@ public class SplitAccountRecordServiceImpl implements SplitAccountRecordService 
         splitAccountRecord.setSplitTotalAmount(poundage);
         splitAccountRecord.setRemark(remark);
         splitAccountRecord.setSplitDate(new Date());
+        splitAccountRecord.setAccountUserType(accountUserType);
         this.add(splitAccountRecord);
     }
 

@@ -81,12 +81,12 @@ public interface SettleAccountFlowDao {
     List<SettleAccountFlow> selectByAuditRecordId(@Param("recordId") long recordId);
 
     /**
-     * 按交易订单号查询代理商和公司(等)的分润流水
+     * 按交易订单号查询
      *
      * @param orderNo
      * @return
      */
-    List<SettleAccountFlow> selectDealerOrCompanyFlowByOrderNo(@Param("orderNo") String orderNo);
+    List<SettleAccountFlow> selectByOrderNo(@Param("orderNo") String orderNo);
 
     /**
      * 按结算单id查询

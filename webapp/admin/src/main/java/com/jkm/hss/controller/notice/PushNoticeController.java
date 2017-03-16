@@ -114,18 +114,6 @@ public class PushNoticeController extends BaseController {
         return CommonResponse.objectResponse(1, "success", pageModel);
     }
 
-//    /**
-//     * 发布公告微信显示列表
-//     * @param
-//     * @return
-//     */
-//    @ResponseBody
-//    @RequestMapping(value = "/list",method = RequestMethod.POST)
-//    public CommonResponse list(){
-//        List<NoticeResponse> list = pushNoticeService.list();
-//        return CommonResponse.objectResponse(1, "success", list);
-//    }
-
     /**
      * 发布详情
      * @param request
