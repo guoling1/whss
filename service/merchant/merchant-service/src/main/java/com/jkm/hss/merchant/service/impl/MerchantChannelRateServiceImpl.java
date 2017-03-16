@@ -248,7 +248,7 @@ public class MerchantChannelRateServiceImpl implements MerchantChannelRateServic
                     if(weixinMerchantPayRate!=null&&zhifubaoMerchantPayRate!=null){
                         AccountBank accountBank = accountBankService.getDefault(accountId);
                         Map<String, String> paramsMap = new HashMap<String, String>();
-                        paramsMap.put("phone", MerchantSupport.encryptMobile(accountBank.getReserveMobile()));
+                        paramsMap.put("phone", accountBank.getReserveMobile());
                         paramsMap.put("merchantName", merchantInfo.getMerchantName());
                         paramsMap.put("merchantNo", merchantInfo.getMarkCode());
                         paramsMap.put("address", merchantInfo.getAddress());
@@ -262,7 +262,7 @@ public class MerchantChannelRateServiceImpl implements MerchantChannelRateServic
                         paramsMap.put("city", accountBank.getBranchCityName());
                         paramsMap.put("country", accountBank.getBranchCountyName());
                         paramsMap.put("bankBranch", accountBank.getBranchName());
-                        paramsMap.put("bankCode", merchantInfo.getBranchCode());
+                        paramsMap.put("bankCode", accountBank.getBranchCode());
                         paramsMap.put("creditCardNo", merchantInfo.getCreditCard());
                         log.info("入网参数为："+JSONObject.fromObject(paramsMap).toString());
                         String result = SmPost.post(MerchantConsts.getMerchantConfig().merchantIN(), paramsMap);
