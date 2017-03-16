@@ -122,7 +122,7 @@ public class TradeController extends BaseController {
                     .addParam("subMerName", merchantInfo.getMerchantName())
                     .addParam("amount", totalFee).build();
         }
-        return CommonResponse.simpleResponse(-1, resultPair.getRight());
+        return CommonResponse.simpleResponse(-1, "请稍后重试");
     }
 
 
