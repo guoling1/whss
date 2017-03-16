@@ -42,7 +42,7 @@ let getData = function (e, page) {
   }
   http.post('/account/flowDetails', {
     pageNo: nowPage,
-    pageSize: 5
+    pageSize: 20
   }, function (res) {
     console.log(res.records);
     for (let i = 0; i < res.records.length; i++) {
