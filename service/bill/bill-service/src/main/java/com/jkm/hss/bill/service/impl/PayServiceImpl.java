@@ -16,6 +16,7 @@ import com.jkm.hss.account.sevice.*;
 import com.jkm.hss.bill.entity.*;
 import com.jkm.hss.bill.entity.callback.PaymentSdkPayCallbackResponse;
 import com.jkm.hss.bill.enums.*;
+import com.jkm.hss.bill.helper.HolidaySettlementConstants;
 import com.jkm.hss.bill.helper.PaymentSdkConstants;
 import com.jkm.hss.bill.helper.SdkSerializeUtil;
 import com.jkm.hss.bill.service.*;
@@ -30,10 +31,7 @@ import com.jkm.hss.merchant.helper.MerchantSupport;
 import com.jkm.hss.merchant.service.*;
 import com.jkm.hss.mq.config.MqConfig;
 import com.jkm.hss.mq.producer.MqProducer;
-import com.jkm.hss.product.enums.EnumBalanceTimeType;
-import com.jkm.hss.product.enums.EnumMerchantPayType;
-import com.jkm.hss.product.enums.EnumPayChannelSign;
-import com.jkm.hss.product.enums.EnumProductType;
+import com.jkm.hss.product.enums.*;
 import com.jkm.hss.product.servcie.BasicChannelService;
 import com.jkm.hss.product.servcie.UpgradeRecommendRulesService;
 import lombok.extern.slf4j.Slf4j;
@@ -88,6 +86,8 @@ public class PayServiceImpl implements PayService {
     private AccountBankService accountBankService;
     @Autowired
     private HttpClientFacade httpClientFacade;
+    @Autowired
+    private MergeTableSettlementDateService mergeTableSettlementDateService;
 
     /**
      * {@inheritDoc}
@@ -254,9 +254,7 @@ public class PayServiceImpl implements PayService {
         order.setStatus(EnumOrderStatus.PAY_SUCCESS.getId());
         final EnumPayChannelSign enumPayChannelSign = this.basicChannelService.getEnumPayChannelSignByCode(paymentSdkPayCallbackResponse.getPayType());
         order.setPayChannelSign(enumPayChannelSign.getId());
-        if (EnumPayChannelSign.MB_UNIONPAY.getId() == enumPayChannelSign.getId()) {
-            order.setSettleTime(this.getMoBaoUnionPaySettleDate(order.getPaySuccessTime()));
-        }
+        order.setSettleTime(this.getHssSettleDate(order, enumPayChannelSign));
         log.info("返回的通道是[{}]", order.getPayType());
         //处理商户升级的支付单(此时商户自己付款给金开门)
         if (order.getPayer() > 0 && order.getPayee() == AccountConstants.JKM_ACCOUNT_ID) {
@@ -974,7 +972,17 @@ public class PayServiceImpl implements PayService {
         placeOrderRequest.setPayerName(merchant.getName());
         placeOrderRequest.setIdCardNo(merchant.getIdentity());
         final String content = HttpClientPost.postJson(PaymentSdkConstants.SDK_PAY_PLACE_ORDER, SdkSerializeUtil.convertObjToMap(placeOrderRequest));
-        return JSON.parseObject(content, PaymentSdkPlaceOrderResponse.class);
+        PaymentSdkPlaceOrderResponse paymentSdkPlaceOrderResponse;
+        try {
+            paymentSdkPlaceOrderResponse = JSON.parseObject(content, PaymentSdkPlaceOrderResponse.class);
+        } catch (final Throwable throwable) {
+            log.error(" 订单[{}], 请求网关下单，返回结果[{}],下单失败", order.getId(), content);
+            paymentSdkPlaceOrderResponse = new PaymentSdkPlaceOrderResponse();
+            paymentSdkPlaceOrderResponse.setCode(EnumBasicStatus.FAIL.getId());
+            paymentSdkPlaceOrderResponse.setMessage("稍后请重试");
+        }
+
+        return paymentSdkPlaceOrderResponse;
     }
 
     /**
@@ -986,10 +994,37 @@ public class PayServiceImpl implements PayService {
      * @return
      */
     private Date getMoBaoUnionPaySettleDate(Date tradeDate) {
+        if (HolidaySettlementConstants.HOLIDAY_OPEN) {
+            final Date settlementDate = this.mergeTableSettlementDateService.getSettlementDate(tradeDate, EnumUpperChannel.MOBAO.getId());
+            if (null != settlementDate) {
+                return settlementDate;
+            }
+        }
         final int millisOfDay = new DateTime(tradeDate).getMillisOfDay();
         if (millisOfDay > 82560000) {//当作第二个工作日的交易
             tradeDate = new DateTime(tradeDate).plusDays(1).toDate();
         }
         return DateTimeUtil.generateT1SettleDate(tradeDate);
+    }
+
+    /**
+     *  获取结算日期
+     *
+     * @param order
+     * @param payChannelSign
+     * @return
+     */
+    private Date getHssSettleDate(final Order order, final EnumPayChannelSign payChannelSign) {
+        if (EnumBalanceTimeType.D0.getType().equals(order.getSettleType())) {
+            return order.getPaySuccessTime();
+        } else if (EnumBalanceTimeType.T1.getType().equals(order.getSettleType())) {
+            final EnumUpperChannel upperChannel = payChannelSign.getUpperChannel();
+            switch (upperChannel) {
+                case MOBAO:
+                    return this.getMoBaoUnionPaySettleDate(order.getPaySuccessTime());
+            }
+        }
+        log.error("can not be here");
+        return new Date();
     }
 }

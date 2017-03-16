@@ -854,6 +854,7 @@ public class OrderServiceImpl implements OrderService {
     public void handleT1UnSettlePayOrder() {
         final String format = DateFormatUtil.format(new Date(), DateFormatUtil.yyyy_MM_dd);
         final List<Long> orderIds = this.getT1PaySuccessAndUnSettleOrderIds(DateFormatUtil.parse(format, DateFormatUtil.yyyy_MM_dd), EnumProductType.HSS.getId());
+        log.info("hss-T1-定时处理提现, 订单[{}]", orderIds);
         if (!CollectionUtils.isEmpty(orderIds)) {
             for (int i = 0; i < orderIds.size(); i++) {
                 final long orderId = orderIds.get(i);
@@ -993,19 +994,19 @@ public class OrderServiceImpl implements OrderService {
                 columns.add(list.get(i).getProxyName());
                 columns.add(list.get(i).getProxyName1());
                 columns.add(String.valueOf(list.get(i).getTradeAmount()));
-//                columns.add(String.valueOf(list.get(i).getPayRate()));
-                if (list.get(i).getPayRate()==null){
-                    String x = "0";
-                    columns.add(x);
-                }else {
-                    columns.add(String.valueOf(list.get(i).getPayRate()));
-                }
-                if (list.get(i).getPoundage()==null){
-                    String x = " ";
-                    columns.add(x);
-                }else {
-                    columns.add(String.valueOf(list.get(i).getPoundage()));
-                }
+                columns.add(String.valueOf(list.get(i).getPayRate()));
+//                if (list.get(i).getPayRate()==null){
+//                    String x = "0";
+//                    columns.add(x);
+//                }else {
+//                    columns.add(String.valueOf(list.get(i).getPayRate()));
+//                }
+//                if (list.get(i).getPoundage()==null){
+//                    String x = " ";
+//                    columns.add(x);
+//                }else {
+//                    columns.add(String.valueOf(list.get(i).getPoundage()));
+//                }
                 if (list.get(i).getStatus()==1){
                     columns.add("待支付");
                 }
