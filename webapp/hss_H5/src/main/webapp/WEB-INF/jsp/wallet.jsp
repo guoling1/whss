@@ -25,7 +25,7 @@
   <div class="announcement" id="announcement">
     <span class="announcement-icon"></span>
     <div class="announcement-text-box" id="announcement-text-box">
-      <span class="announcement-text" id="announcement-text">这是公告这是公告这是公告这是公告这是公告这是公告</span>
+      <span class="announcement-text" id="announcement-text"></span>
     </div>
   </div>
   <div class="wallet">

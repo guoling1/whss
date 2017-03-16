@@ -38,10 +38,14 @@
 
   <div class="message-space" id="layer">
     <div class="message-box">
-      <div class="message-box-head">短信已发送至 <span id="mobile"></span></div>
+      <div class="message-box-head">
+        短信已发送至 <span id="mobile"></span>
+        <div class="message-x"></div>
+      </div>
       <div class="message-box-body">
         <div class="code-title">验证码</div>
         <input type="text" class="code-ipt" id="code" placeholder="输入短信验证码">
+        <div class="code-line"></div>
         <div class="code-re" id="sendCode">重新获取</div>
       </div>
       <div class="message-box-foot">
