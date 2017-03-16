@@ -31,4 +31,8 @@ public class HolidayList extends BaseEntity {
      * 结束日期
      */
     private Date endDate;
+    /**
+     * 假日后第一工作日
+     */
+    private Date workDate;
 }

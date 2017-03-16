@@ -2,6 +2,7 @@ package com.jkm.hss.bill.service;
 
 import com.jkm.hss.bill.entity.HolidayOff;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -15,4 +16,17 @@ public interface HolidayOffService {
      * @return
      */
     List<HolidayOff> getAll();
+
+    /**
+     * 初始化
+     */
+    void init();
+
+    /**
+     * 是否在调休日内
+     *
+     * @param tradeDate
+     * @return
+     */
+    boolean contains(Date tradeDate);
 }
