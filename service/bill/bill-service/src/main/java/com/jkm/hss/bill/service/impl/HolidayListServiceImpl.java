@@ -52,8 +52,21 @@ public class HolidayListServiceImpl implements HolidayListService {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param tradeDate
+     * @return
+     */
     @Override
-    public Date getWorkDay(Date tradeDate) {
+    public Date getWorkDay(final Date tradeDate) {
+        this.assertInit();
+        for (Triple<Date, Date, Date> triple : vector) {
+            if (triple.getLeft().compareTo(tradeDate) <= 0
+                    && triple.getMiddle().compareTo(tradeDate) >= 0) {
+                return triple.getLeft();
+            }
+        }
         return null;
     }
 

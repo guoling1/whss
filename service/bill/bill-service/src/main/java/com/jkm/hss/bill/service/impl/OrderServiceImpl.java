@@ -886,7 +886,7 @@ public class OrderServiceImpl implements OrderService {
     public void t1WithdrawByOrderId(final long orderId) {
         log.info("订单[{}], T1发起结算提现", orderId);
         final Order order = this.getByIdWithLock(orderId).get();
-        if (order.isPaySuccess() & order.isDueSettle()) {
+        if (order.isPaySuccess() && order.isDueSettle()) {
             final Optional<SettleAccountFlow> decreaseSettleAccountFlowOptional = this.settleAccountFlowService.getByOrderNoAndAccountIdAndType(order.getOrderNo(),
                     order.getPayee(), EnumAccountFlowType.DECREASE.getId());
             Preconditions.checkState(!decreaseSettleAccountFlowOptional.isPresent(), "订单[{}], 在T1发起结算提现时,出现已结算的记录!!", orderId);
