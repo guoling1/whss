@@ -99,6 +99,10 @@
         AND a.merchant_name LIKE CONCAT('%',#{merchantName},'%')
     </if>
 
+    <if test="mobile != null and mobile != ''">
+        AND a.mobile LIKE CONCAT('%',#{mobile},'%')
+    </if>
+
     <if test="status != null">
         AND a.status=#{status}
     </if>
