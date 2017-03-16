@@ -96,19 +96,6 @@
       <div id="submit" class="submit">确认修改</div>
     </div>
   </div>
-  <div class="message-space" id="layer">
-    <div class="message-box">
-      <div class="message-box-head">提示</div>
-      <div class="message-box-body">
-        商户信息报备中，大约1个工作日完成<br>请耐心等待
-      </div>
-      <div class="message-box-foot">
-        <div class="message-enter" id="cancel">
-          确定
-        </div>
-      </div>
-    </div>
-  </div>
 </div>
 </body>
 <script>
@@ -124,6 +111,6 @@
     branchName: '${branchName}',
   }
 </script>
-<script src="http://static.jinkaimen.cn/vendor/vendor.1.0.6.min.js"></script>
-<script src="http://static.jinkaimen.cn/hss/2.2.0/bankBranch.min.js"></script>
+<script src="http://static.jinkaimen.cn/vendor/vendor.1.0.7.min.js"></script>
+<script src="http://static.jinkaimen.cn/hss/2.2.1/bankBranch.min.js"></script>
 </html>

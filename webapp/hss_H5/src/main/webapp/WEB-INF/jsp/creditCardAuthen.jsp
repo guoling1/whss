@@ -169,6 +169,6 @@
 </div>
 
 </body>
-<script src="http://static.jinkaimen.cn/vendor/vendor.1.0.6.min.js"></script>
-<script src="http://static.jinkaimen.cn/hss/2.2.0/creditCardAuthen.min.js"></script>
+<script src="http://static.jinkaimen.cn/vendor/vendor.1.0.7.min.js"></script>
+<script src="http://static.jinkaimen.cn/hss/2.2.1/creditCardAuthen.min.js"></script>
 </html>

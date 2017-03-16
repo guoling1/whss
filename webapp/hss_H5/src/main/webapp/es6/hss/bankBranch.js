@@ -32,13 +32,6 @@ let Provinces = false;
 let Citys = false;
 let Countrys = false;
 
-let layer = document.getElementById('layer');
-let cancel = document.getElementById('cancel');
-
-cancel.addEventListener('click', function () {
-  window.location.href = '/sqb/wallet';
-});
-
 function getQueryString(name) {
   let reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
   let r = window.location.search.substr(1).match(reg);
