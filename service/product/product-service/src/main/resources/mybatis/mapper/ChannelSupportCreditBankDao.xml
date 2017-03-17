@@ -1,13 +1,52 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.jkm.hss.product.dao.ChannelSupportCreditBankDao">
+    <update id="updateStatus">
+        UPDATE tb_channel_support_credit_bank SET status = #{status} WHERE id = #{id}
+    </update>
 
-    <select id="selectByChannelSign" resultType="com.jkm.hss.product.entity.ChannelSupportCreditBank">
-        SELECT * FROM tb_channel_support_credit_bank WHERE channel_sign = #{channelSign};
+    <select id="selectById" resultType="com.jkm.hss.product.entity.ChannelSupportCreditBank">
+        SELECT * FROM tb_channel_support_credit_bank WHERE id = #{id}
     </select>
 
-    <select id="selectByChannelSignAndBankName" resultType="java.lang.Integer">
-        SELECT COUNT(0) FROM tb_channel_support_credit_bank WHERE channel_sign = #{channelSign} AND bank_name = #{bankName};
+    <select id="selectByUpperChannel" resultType="com.jkm.hss.product.entity.ChannelSupportCreditBank">
+        SELECT * FROM tb_channel_support_credit_bank WHERE upper_channel = #{upperChannel};
+    </select>
+
+    <select id="selectByUpperChannelAndBankName" resultType="java.lang.Integer">
+        SELECT COUNT(0) FROM tb_channel_support_credit_bank WHERE upper_channel = #{upperChannel} AND bank_name = #{bankName};
+    </select>
+
+    <select id="selectCountByParam" resultType="java.lang.Integer">
+        SELECT COUNT(0) FROM tb_channel_support_credit_bank
+        <where>
+            <if test="channelName != null">
+                AND upper_channel_name = #{channelName}
+            </if>
+            <if test="channelCode != null">
+                AND upper_channel_code = #{channelCode}
+            </if>
+            <if test="bankCode != null">
+                AND bank_code = #{bankCode}
+            </if>
+        </where>
+    </select>
+
+    <select id="selectByParam" resultType="com.jkm.hss.product.entity.ChannelSupportCreditBank">
+        SELECT * FROM tb_channel_support_credit_bank
+        <where>
+            <if test="channelName != null">
+                AND upper_channel_name = #{channelName}
+            </if>
+            <if test="channelCode != null">
+                AND upper_channel_code = #{channelCode}
+            </if>
+            <if test="bankCode != null">
+                AND bank_code = #{bankCode}
+            </if>
+        </where>
+        ORDER BY id DESC
+        LIMIT #{offset}, #{count}
     </select>
 
 </mapper>

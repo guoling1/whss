@@ -87,5 +87,5 @@ public interface MerchantChannelRateService {
     /**
      * 商户入网
      */
-    JSONObject enterInterNet1(long productId, long merchantId, String channelCompany);
+    JSONObject enterInterNet1(long accountId,long productId, long merchantId, String channelCompany);
 }

@@ -337,7 +337,7 @@ public class TradeController extends BaseController {
             return CommonResponse.simpleResponse(-2, " 未登录");
         }
         final MerchantInfo merchantInfo = merchantInfoOptional.get();
-        if(merchantInfo.getStatus()!= EnumMerchantStatus.PASSED.getId()&&merchantInfo.getStatus()!= EnumMerchantStatus.FRIEND.getId()){
+        if(merchantInfo.getStatus()!= EnumMerchantStatus.PASSED.getId() && merchantInfo.getStatus()!= EnumMerchantStatus.FRIEND.getId()){
             return CommonResponse.simpleResponse(-2, " 未登录");
         }
         if(new BigDecimal(unionPayRequest.getTotalFee()).compareTo(new BigDecimal("10.00")) < 0){
@@ -450,14 +450,15 @@ public class TradeController extends BaseController {
             return CommonResponse.builder4MapResult(2, "fail").addParam("errorCode", "002").build();
         }
         if (!bankCardBin.getBankName().equals(firstUnionPaySendMsgRequest.getBankName())) {
-            final boolean exist = this.channelSupportCreditBankService.isExistByChannelSignAndBankName(firstUnionPaySendMsgRequest.getChannel(), bankCardBin.getBankName());
+            final boolean exist = this.channelSupportCreditBankService.
+                    isExistByUpperChannelAndBankName(EnumPayChannelSign.idOf(firstUnionPaySendMsgRequest.getChannel()).getUpperChannel().getId(), bankCardBin.getBankName());
             if (!exist) {
                 return CommonResponse.builder4MapResult(2, "fail").addParam("errorCode", "003").build();
             }
             firstUnionPaySendMsgRequest.setBankName(bankCardBin.getBankName());
         }
         final long creditBankCardId = this.accountBankService.initCreditBankCard(merchantInfo.getAccountId(), firstUnionPaySendMsgRequest.getBankCardNo(),
-                firstUnionPaySendMsgRequest.getBankName(), firstUnionPaySendMsgRequest.getMobile(), bankCardBin.getBinNo(), firstUnionPaySendMsgRequest.getExpireDate());
+                firstUnionPaySendMsgRequest.getBankName(), firstUnionPaySendMsgRequest.getMobile(), bankCardBin.getShorthand(), firstUnionPaySendMsgRequest.getExpireDate());
         final Pair<Integer, String> result = this.payService.unionPay(merchantInfo.getId(), firstUnionPaySendMsgRequest.getAmount(),
                 firstUnionPaySendMsgRequest.getChannel(), creditBankCardId, firstUnionPaySendMsgRequest.getCvv2(), EnumProductType.HSS.getId());
         if (0 == result.getLeft()) {
