@@ -404,19 +404,14 @@ public class DealerServiceImpl implements DealerService {
         final Product product = this.productService.selectByType(EnumProductType.HSS.getId()).get();
         final BigDecimal merchantRate = getMerchantRate(channelSign, merchantInfo);
         final BigDecimal originMoney = tradeAmount.multiply(getMerchantRate(channelSign, merchantInfo)).setScale(2, BigDecimal.ROUND_UP);
-        final BigDecimal waitOriginMoney = originMoney.setScale(2, BigDecimal.ROUND_UP);
+        //final BigDecimal waitOriginMoney = originMoney.setScale(2, BigDecimal.ROUND_UP);
+        //计算商户手续费
+        final BigDecimal waitOriginMoney = this.calculateMerchantFee(tradeAmount, originMoney, channelSign);
         //通道成本
         final BasicChannel basicChannel = this.basicChannelService.selectByChannelTypeSign(channelSign).get();
-        BigDecimal basicMoney;
         final BigDecimal basicTrade = tradeAmount.multiply(basicChannel.getBasicTradeRate());
-        if (new BigDecimal("0.01").compareTo(basicTrade) == 1){
-            //通道成本不足一分 , 按一分收
-            basicMoney = new BigDecimal("0.01");
+        final BigDecimal basicMoney = this.calculateChannelFee(basicTrade, channelSign);
 
-        }else{
-            //超过一分,四舍五入,保留两位有效数字
-            basicMoney = basicTrade.setScale(2, BigDecimal.ROUND_HALF_UP);
-        }
         //通道分润
         final ProductChannelDetail productChannelDetail = this.productChannelDetailService.selectByProductIdAndChannelId(product.getId(), channelSign).get();
         final BigDecimal channelMoney = tradeAmount.multiply(productChannelDetail.getProductTradeRate().
