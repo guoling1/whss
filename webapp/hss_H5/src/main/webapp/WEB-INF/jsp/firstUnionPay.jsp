@@ -86,7 +86,10 @@
     <div class="choose-box-body">
       <div class="choose-box-body-list-bank">
         <div class="logo"></div>
-        <div class="detail"></div>
+        <div class="detail">
+          <div class="name">中国工商银行</div>
+          <div class="small">单笔限额 2,000.00元</div>
+        </div>
       </div>
     </div>
   </div>

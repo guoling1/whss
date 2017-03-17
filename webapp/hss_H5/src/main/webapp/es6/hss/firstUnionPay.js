@@ -11,6 +11,8 @@ const validate = _require('validate');
 const message = _require('message');
 
 // 获取支持的银行卡列表
-http.post('/channel/queryChannelSupportBank', {}, function (data) {
+http.post('/channel/queryChannelSupportBank', {
+  channelSign: '301'
+}, function (data) {
   console.log(data);
 });
