@@ -241,8 +241,10 @@ public class WithdrawServiceImpl implements WithdrawService {
 
             final UserInfo user = userInfoService.selectByMerchantId(merchant.getId()).get();
             log.info("商户[{}], 结算单[{}], 提现成功", merchant.getId(), settlementRecord.getSettleNo());
+            final AccountBank accountBank = this.accountBankService.getDefault(merchant.getAccountId());
+            final String bankNo = accountBank.getBankNo();
             this.sendMsgService.sendPushMessage(settlementRecord.getSettleAmount(), settlementRecord.getCreateTime(),
-                    merchantWithdrawPoundage, merchant.getBankNoShort(), user.getOpenId());
+                    merchantWithdrawPoundage, bankNo.substring(bankNo.length() - 4), user.getOpenId());
         }
     }
 
