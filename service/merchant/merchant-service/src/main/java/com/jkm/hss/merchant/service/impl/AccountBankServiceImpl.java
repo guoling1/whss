@@ -353,6 +353,7 @@ public class AccountBankServiceImpl implements AccountBankService{
         if (0 == pair.getLeft()) {
             accountBank.setIsAuthen("1");
         }
+        log.info("AccountId={}",merchantInfo.getAccountId());
         accountBank.setAccountId(merchantInfo.getAccountId());
         accountBank.setBankNo(bankcard);
         final Optional<BankCardBin> bankCardBinOptional = this.bankCardBinService.analyseCardNo(bankNo);
@@ -363,6 +364,20 @@ public class AccountBankServiceImpl implements AccountBankService{
         accountBank.setBankBin(bankCardBinOptional.get().getShorthand());
         return this.insert(accountBank);
     }
+    /**
+     * 更改默认银行卡（已存在银行卡）
+     * @param bankId
+     * @param merchantInfo
+     * @param bankNo
+     * @param reserveMobile
+     * @return
+     */
+    @Override
+    public int updateDefaultBankCard(long bankId,MerchantInfo merchantInfo, String bankNo, String reserveMobile) {
+        this.reset(merchantInfo.getAccountId(),EnumAccountBank.DEBITCARD.getId());
+        return setDefault(bankId);
+    }
+
 
     /**
      * 是否有银行卡
