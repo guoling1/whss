@@ -1,6 +1,7 @@
 package com.jkm.hss.product.dao;
 
 import com.jkm.hss.product.entity.ChannelSupportCreditBank;
+import com.jkm.hss.product.helper.requestparam.QuerySupportBankParams;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
@@ -28,4 +29,12 @@ public interface ChannelSupportCreditBankDao {
      * @return
      */
     int selectByUpperChannelAndBankName(@Param("upperChannel") int upperChannel, @Param("bankName") String bankName);
+
+    /**
+     * 列表-个数
+     *
+     * @param querySupportBankParams
+     * @return
+     */
+    int selectCountByParam(QuerySupportBankParams querySupportBankParams);
 }

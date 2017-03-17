@@ -1,6 +1,8 @@
 package com.jkm.hss.product.servcie;
 
+import com.jkm.base.common.entity.PageModel;
 import com.jkm.hss.product.entity.ChannelSupportCreditBank;
+import com.jkm.hss.product.helper.requestparam.QuerySupportBankParams;
 
 import java.util.List;
 
@@ -24,4 +26,12 @@ public interface ChannelSupportCreditBankService {
      * @param bankName
      */
     boolean isExistByUpperChannelAndBankName(int channel, String bankName);
+
+    /**
+     * 行用卡-支持银行列表
+     *
+     * @param querySupportBankParams
+     * @return
+     */
+    PageModel<ChannelSupportCreditBank> querySupportBank(QuerySupportBankParams querySupportBankParams);
 }
