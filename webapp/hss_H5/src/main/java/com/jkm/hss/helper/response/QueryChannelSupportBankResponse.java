@@ -17,6 +17,10 @@ public class QueryChannelSupportBankResponse {
      */
     private String bankName;
     /**
+     * 银行编码
+     */
+    private String bankCode;
+    /**
      * 单笔限额
      */
     private String singleLimitAmount;

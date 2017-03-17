@@ -53,6 +53,7 @@ public class ChannelController extends BaseController {
                 final QueryChannelSupportBankResponse supportBankResponse = new QueryChannelSupportBankResponse();
                 supportBankResponse.setId(channelSupportCreditBank.getId());
                 supportBankResponse.setBankName(channelSupportCreditBank.getBankName());
+                supportBankResponse.setBankCode(channelSupportCreditBank.getBankCode());
                 supportBankResponse.setSingleLimitAmount(channelSupportCreditBank.getSingleLimitAmount().toPlainString());
                 supportBankResponse.setDayLimitAmount(channelSupportCreditBank.getDayLimitAmount().toPlainString());
                 supportBankResponse.setStatus(channelSupportCreditBank.getStatus());
