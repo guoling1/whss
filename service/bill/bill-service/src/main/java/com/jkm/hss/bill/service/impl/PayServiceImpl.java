@@ -900,6 +900,7 @@ public class PayServiceImpl implements PayService {
         final EnumBasicStatus enumBasicStatus = EnumBasicStatus.of(paymentSdkUnionPayResponse.getCode());
         switch (enumBasicStatus) {
             case SUCCESS:
+                order.setSn(paymentSdkUnionPayResponse.getSn());
                 order.setRemark(paymentSdkUnionPayResponse.getMessage());
                 this.orderService.update(order);
                 return Pair.of(0, order.getId() + "");
