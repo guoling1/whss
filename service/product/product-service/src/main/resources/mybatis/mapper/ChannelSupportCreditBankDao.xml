@@ -10,4 +10,21 @@
         SELECT COUNT(0) FROM tb_channel_support_credit_bank WHERE upper_channel = #{upperChannel} AND bank_name = #{bankName};
     </select>
 
+    <select id="selectCountByParam" resultType="java.lang.Integer">
+        SELECT COUNT(0) FROM tb_channel_support_credit_bank
+        <where>
+            <if test="channelName != null">
+                AND channel_name = #{channelName}
+            </if>
+            <if test="channelCode != null">
+                AND channel_code = #{channelCode}
+            </if>
+            <if test="bankCode != null">
+                AND bank_code = #{bankCode}
+            </if>
+        </where>
+        ORDER BY id DESC
+        LIMIT #{offset}, #{count}
+    </select>
+
 </mapper>

@@ -1,14 +1,17 @@
 package com.jkm.hss.controller.channel;
 
-import com.google.common.base.Optional;
-import com.google.common.base.Preconditions;
 import com.jkm.base.common.entity.CommonResponse;
+import com.jkm.base.common.entity.PageModel;
 import com.jkm.hss.account.sevice.AccountService;
+import com.jkm.hss.product.helper.requestparam.QuerySupportBankParams;
 import com.jkm.hss.controller.BaseController;
 import com.jkm.hss.helper.request.ChannelAddRequest;
+import com.jkm.hss.helper.response.QuerySupportBankResponse;
 import com.jkm.hss.product.entity.BasicChannel;
+import com.jkm.hss.product.entity.ChannelSupportCreditBank;
 import com.jkm.hss.product.enums.EnumPayChannelSign;
 import com.jkm.hss.product.servcie.BasicChannelService;
+import com.jkm.hss.product.servcie.ChannelSupportCreditBankService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -32,6 +35,8 @@ public class ChannelController extends BaseController {
     private BasicChannelService basicChannelService;
     @Autowired
     private AccountService accountService;
+    @Autowired
+    private ChannelSupportCreditBankService channelSupportCreditBankService;
     /**
      * 添加通道
      *
@@ -88,13 +93,20 @@ public class ChannelController extends BaseController {
     }
 
 
-
+    /**
+     * 快捷信用卡-支持银行列表
+     *
+     * @param querySupportBankParams
+     * @return
+     */
     @ResponseBody
     @RequestMapping(value = "querySupportBank", method = RequestMethod.POST)
-    public CommonResponse querySupportBank() {
+    public CommonResponse querySupportBank(@RequestBody QuerySupportBankParams querySupportBankParams) {
+        final PageModel<QuerySupportBankResponse> resulst = new PageModel<>();
+        final PageModel<ChannelSupportCreditBank> page = this.channelSupportCreditBankService.querySupportBank(querySupportBankParams);
 
 
-        return CommonResponse.simpleResponse(0, "");
+        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "success", resulst);
     }
 
 }

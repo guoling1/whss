@@ -3,23 +3,31 @@ package com.jkm.hss.helper.response;
 import lombok.Data;
 
 /**
- * Created by yulong.zhang on 2017/3/10.
- *
- * 查询快捷通道支持的银行卡列表  出参
+ * Created by yulong.zhang on 2017/3/17.
  */
 @Data
-public class QueryChannelSupportBankResponse {
+public class QuerySupportBankResponse {
 
-
-    private long id;
     /**
-     * 银行名字
+     * 通道名称
      */
-    private String bankName;
+    private String channelName;
+    /**
+     * 通道编码
+     */
+    private String channelCode;
     /**
      * 银行编码
      */
     private String bankCode;
+    /**
+     * 银行名称
+     */
+    private String bankName;
+    /**
+     * 卡类型
+     */
+    private String cardType;
     /**
      * 单笔限额
      */
