@@ -44,53 +44,73 @@
   <div class="space">
     <div class="list">
       <div class="left">所属银行</div>
-      <input class="ipt" type="text" placeholder="点击选择">
+      <input id="chooseBank" class="ipt" type="text" placeholder="点击选择" readonly>
     </div>
     <div class="list">
       <div class="left">银行卡号</div>
-      <input class="ipt" type="text" placeholder="请输入信用卡号">
+      <input id="bankCode" class="ipt" type="text" placeholder="请输入信用卡号">
     </div>
   </div>
   <div class="space">
     <div class="list">
       <div class="left">有效期</div>
-      <input class="ipt" type="text" placeholder="请输入信用卡有效期">
-      <div class="mpt">查看示例</div>
+      <input id="expireDate" class="ipt" type="text" placeholder="请输入信用卡有效期">
+      <div class="mpt" id="check_validity">查看示例</div>
     </div>
     <div class="list">
       <div class="left">CVV2</div>
-      <input class="ipt" type="text" placeholder="信用卡背面最后3个数字">
-      <div class="mpt">查看示例</div>
+      <input id="cvv2" class="ipt" type="text" placeholder="信用卡背面最后3个数字">
+      <div class="mpt" id="check_cvv">查看示例</div>
     </div>
     <div class="list">
       <div class="left">开户手机号</div>
-      <input class="ipt" type="text" placeholder="银行预留手机号">
+      <input id="mobile" class="ipt" type="text" placeholder="银行预留手机号">
     </div>
     <div class="list">
       <div class="left">短信验证码</div>
-      <input class="ipt" type="text" placeholder="输入短信验证码">
-      <div class="mpt">点击获取</div>
+      <input id="code" class="ipt" type="text" placeholder="输入短信验证码">
+      <div class="mpt" id="sendCode">点击获取</div>
     </div>
   </div>
   <div class="btn-box">
-    <div class="btn">立即支付</div>
+    <div class="btn" id="submit">立即支付</div>
+  </div>
+  <div class="message-space" id="example_validity">
+    <div class="message-box">
+      <div class="message-box-head">有效期图例</div>
+      <div class="message-box-body">
+        <img class="img" src="../../assets/validity.png" alt="">
+      </div>
+      <div class="message-box-foot">
+        <div class="message-enter" id="cancel_validity">
+          知道了
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="message-space" id="example_cvv">
+    <div class="message-box">
+      <div class="message-box-head">CVV2图例</div>
+      <div class="message-box-body">
+        <img class="img" src="../../assets/CVV.png" alt="">
+      </div>
+      <div class="message-box-foot">
+        <div class="message-enter" id="cancel_cvv">
+          知道了
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 
-<div class="choose-space" id="layer" style="display: block">
+<div class="choose-space" id="layer">
   <div class="choose-box">
     <div class="choose-box-head">
       请选择银行
       <div class="choose-x" id="layer-x"></div>
     </div>
-    <div class="choose-box-body">
-      <div class="choose-box-body-list-bank">
-        <div class="logo"></div>
-        <div class="detail">
-          <div class="name">中国工商银行</div>
-          <div class="small">单笔限额 2,000.00元</div>
-        </div>
-      </div>
+    <div class="choose-box-body" id="layer-body">
+      <%-- 动态加载 --%>
     </div>
   </div>
 </div>

@@ -315,6 +315,7 @@ input:focus {
   color: #5a5a5a;
   padding: 5px 0 25px 0;
   line-height: 28px;
+  overflow: auto;
 }
 .message-space .message-box .message-box-body span {
   font-size: 12px;
@@ -391,16 +392,24 @@ input:focus {
   background: url("../assets/message-x.png") no-repeat center;
   background-size: 9px 9px;
 }
+.choose-space .choose-box-body {
+  max-height: 250px;
+  overflow: auto;
+}
 .choose-space .choose-box-body .choose-box-body-list-bank {
   width: 100%;
   height: 50px;
   padding: 0 15px;
 }
+.choose-space .choose-box-body .choose-box-body-list-bank.active {
+  background: url("../../assets/bank-right.png") no-repeat center right 15px;
+  background-size: 11px 8px;
+}
 .choose-space .choose-box-body .choose-box-body-list-bank .logo {
   float: left;
   width: 19px;
   height: 19px;
-  margin-top: 10px;
+  margin-top: 14px;
   margin-right: 10px;
 }
 .choose-space .choose-box-body .choose-box-body-list-bank .detail {
@@ -416,54 +425,88 @@ input:focus {
   font-size: 12px;
   color: #5a5a5a;
 }
-#firstUnionPay {
+.choose-space .choose-box-body .choose-box-body-list-bank .info {
+  text-align: left;
+  line-height: 50px;
+  font-size: 14px;
+  color: #222222;
+}
+.choose-space .choose-box-body .choose-box-body-list-bank .info span {
+  font-size: 12px;
+  color: #5a5a5a;
+}
+.choose-space .choose-box-foot {
+  width: 100%;
+  height: 45px;
+  line-height: 45px;
+  font-size: 16px;
+  color: #036ad1;
+}
+.choose-space .choose-box-foot .icon {
+  display: inline-block;
+  width: 15px;
+  height: 15px;
+  background: url("../../assets/add-icon.png") no-repeat center;
+  background-size: 15px 15px;
+  transform: translate3d(0, 2px, 0);
+}
+#firstUnionPay,
+#againUnionPay {
   width: 100%;
   height: auto;
   min-height: 100%;
   overflow: auto;
   background-color: #f4f5f8;
 }
-#firstUnionPay .space {
+#firstUnionPay .space,
+#againUnionPay .space {
   width: 100%;
   height: auto;
   background-color: #FFF;
   margin-bottom: 8px;
 }
-#firstUnionPay .space.pd {
+#firstUnionPay .space.pd,
+#againUnionPay .space.pd {
   padding: 8px 0;
 }
-#firstUnionPay .space .small-list {
+#firstUnionPay .space .small-list,
+#againUnionPay .space .small-list {
   width: 100%;
   height: 25px;
   line-height: 25px;
   padding: 0 15px;
   overflow: hidden;
 }
-#firstUnionPay .space .small-list .left {
+#firstUnionPay .space .small-list .left,
+#againUnionPay .space .small-list .left {
   float: left;
   text-align: left;
   font-size: 12px;
   color: #5a5a5a;
 }
-#firstUnionPay .space .small-list .right {
+#firstUnionPay .space .small-list .right,
+#againUnionPay .space .small-list .right {
   float: right;
   text-align: right;
   font-size: 12px;
   color: #5a5a5a;
 }
-#firstUnionPay .space .small-list .right.or {
+#firstUnionPay .space .small-list .right.or,
+#againUnionPay .space .small-list .right.or {
   font-size: 15px;
   color: #faa30b;
   font-weight: bold;
 }
-#firstUnionPay .space .list {
+#firstUnionPay .space .list,
+#againUnionPay .space .list {
   width: 100%;
   height: 50px;
   line-height: 50px;
   padding: 0 15px;
   border-bottom: 1px solid #edeef5;
 }
-#firstUnionPay .space .list .left {
+#firstUnionPay .space .list .left,
+#againUnionPay .space .list .left {
   float: left;
   text-align: left;
   font-size: 14px;
@@ -471,37 +514,43 @@ input:focus {
   min-width: 80px;
   margin-right: 20px;
 }
-#firstUnionPay .space .list .val {
+#firstUnionPay .space .list .val,
+#againUnionPay .space .list .val {
   float: left;
   text-align: left;
   font-size: 14px;
   color: #222222;
   margin-right: 5px;
 }
-#firstUnionPay .space .list .small {
+#firstUnionPay .space .list .small,
+#againUnionPay .space .list .small {
   float: left;
   text-align: left;
   font-size: 14px;
   color: #d0d0d0;
 }
-#firstUnionPay .space .list .ipt {
+#firstUnionPay .space .list .ipt,
+#againUnionPay .space .list .ipt {
   float: left;
   width: auto;
   height: 49px;
   max-width: 133px;
   font-size: 14px;
 }
-#firstUnionPay .space .list .mpt {
+#firstUnionPay .space .list .mpt,
+#againUnionPay .space .list .mpt {
   float: right;
   text-align: right;
   font-size: 14px;
   color: #036ad1;
 }
-#firstUnionPay .btn-box {
+#firstUnionPay .btn-box,
+#againUnionPay .btn-box {
   width: 100%;
   padding: 10px 15px;
 }
-#firstUnionPay .btn-box .btn {
+#firstUnionPay .btn-box .btn,
+#againUnionPay .btn-box .btn {
   width: 100%;
   height: 45px;
   line-height: 45px;
@@ -509,6 +558,11 @@ input:focus {
   font-size: 16px;
   color: #FFF;
   background-color: #4ecea2;
+}
+#firstUnionPay .img,
+#againUnionPay .img {
+  width: 100%;
+  height: auto;
 }
 #accountFlow {
   width: 100%;
