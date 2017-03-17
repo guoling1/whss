@@ -441,7 +441,7 @@ public class TradeController extends BaseController {
         if(new BigDecimal(firstUnionPaySendMsgRequest.getAmount()).compareTo(new BigDecimal("10.00")) < 0){
             return CommonResponse.simpleResponse(-1, "支付金额至少10.00元");
         }
-        final Optional<BankCardBin> bankCardBinOptional = this.bankCardBinService.analyseCardNoByType(firstUnionPaySendMsgRequest.getBankCardNo());
+        final Optional<BankCardBin> bankCardBinOptional = this.bankCardBinService.analyseCardNo(firstUnionPaySendMsgRequest.getBankCardNo());
         if (!bankCardBinOptional.isPresent()) {
             return CommonResponse.builder4MapResult(2, "fail").addParam("errorCode", "001").build();
         }
