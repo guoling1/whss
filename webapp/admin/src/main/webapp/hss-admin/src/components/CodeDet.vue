@@ -19,7 +19,8 @@
               <div>点击按钮或右键另存二维码保存</div>
             </el-form-item>
             <el-form-item>
-              <el-button type="primary" @click="download">下 载</el-button>
+              <a :href="this.href" download="二维码" class="btn btn-primary">下载</a>
+              <!--<el-button type="primary" @click="download">下 载</el-button>-->
             </el-form-item>
           </el-form>
         </div>
@@ -36,7 +37,8 @@
       return {
         code: '',
         productName: '',
-        qrUrl: ''
+        qrUrl: '',
+        href:''
       }
     },
     mounted (){
@@ -62,9 +64,20 @@
           type: 'error'
         });
       });
+      this.$http.post('/admin/code/downLoadQrCode', {
+        code: query.code,
+      }).then(res => {
+        this.href = res.data.url;
+      }, err => {
+        this.$message({
+          showClose: true,
+          message: err.data.msg,
+          type: 'error'
+        });
+      });
     },
     methods: {
-      download: function () {
+      /*download: function () {
         this.$http.post('/admin/code/downLoadQrCode', {
           code: this.code,
         }).then(res => {
@@ -82,7 +95,7 @@
             type: 'error'
           });
         });
-      }
+      }*/
     }
   }
 </script>
