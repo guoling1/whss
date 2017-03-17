@@ -59,6 +59,7 @@ const Invite = r => require.ensure([], () => r(require('../../components/Invite'
 //通道
 const PassAdd = r => require.ensure([], () => r(require('../../components/PassAdd')), 'group-record');
 const PassList = r => require.ensure([], () => r(require('../../components/PassList')), 'group-record');
+const LimitList = r => require.ensure([], () => r(require('../../components/LimitList')), 'group-record');
 //员工
 const PersonnelList = r => require.ensure([], () => r(require('../../components/PersonnelList')), 'group-record');
 const PersonnelAdd = r => require.ensure([], () => r(require('../../components/PersonnelAdd')), 'group-record');
@@ -194,6 +195,11 @@ export default {
       path: 'passList',
       name: 'PassList',
       component: PassList
+    },
+    {
+      path: 'limitList',
+      name: 'LimitList',
+      component: LimitList
     },
     {
       path: 'productAdd',
