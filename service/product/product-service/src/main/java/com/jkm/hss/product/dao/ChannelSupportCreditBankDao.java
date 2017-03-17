@@ -14,6 +14,23 @@ import java.util.List;
 public interface ChannelSupportCreditBankDao {
 
     /**
+     * 更新状态
+     *
+     * @param id
+     * @param status
+     * @return
+     */
+    int updateStatus(@Param("id") long id, @Param("status") int status);
+
+    /**
+     * 按id查询
+     *
+     * @param id
+     * @return
+     */
+    ChannelSupportCreditBank selectById(@Param("id") long id);
+
+    /**
      * 查询当前通道支持的银行
      *
      * @param upperChannel

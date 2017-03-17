@@ -1,6 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.jkm.hss.product.dao.ChannelSupportCreditBankDao">
+    <update id="updateStatus">
+        UPDATE tb_channel_support_credit_bank SET status = #{status} WHERE id = #{id}
+    </update>
+
+    <select id="selectById" resultType="com.jkm.hss.product.entity.ChannelSupportCreditBank">
+        SELECT * FROM tb_channel_support_credit_bank WHERE id = #{id}
+    </select>
 
     <select id="selectByUpperChannel" resultType="com.jkm.hss.product.entity.ChannelSupportCreditBank">
         SELECT * FROM tb_channel_support_credit_bank WHERE upper_channel = #{upperChannel};

@@ -8,6 +8,7 @@ import lombok.Data;
 @Data
 public class QuerySupportBankResponse {
 
+    private long id;
     /**
      * 通道名称
      */

@@ -1,10 +1,13 @@
 package com.jkm.hss.controller.channel;
 
 import com.google.common.base.Function;
+import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
 import com.jkm.base.common.entity.CommonResponse;
 import com.jkm.base.common.entity.PageModel;
+import com.jkm.base.common.enums.EnumBoolean;
 import com.jkm.hss.account.sevice.AccountService;
+import com.jkm.hss.helper.request.AuditSupportBankRequest;
 import com.jkm.hss.product.helper.requestparam.QuerySupportBankParams;
 import com.jkm.hss.controller.BaseController;
 import com.jkm.hss.helper.request.ChannelAddRequest;
@@ -128,6 +131,7 @@ public class ChannelController extends BaseController {
             @Override
             public QuerySupportBankResponse apply(ChannelSupportCreditBank channelSupportCreditBank) {
                 final QuerySupportBankResponse querySupportBankResponse = new QuerySupportBankResponse();
+                querySupportBankResponse.setId(channelSupportCreditBank.getId());
                 querySupportBankResponse.setChannelName(channelSupportCreditBank.getUpperChannelName());
                 querySupportBankResponse.setChannelCode(channelSupportCreditBank.getUpperChannelCode());
                 querySupportBankResponse.setBankCode(channelSupportCreditBank.getBankCode());
@@ -142,6 +146,29 @@ public class ChannelController extends BaseController {
         result.setCount(page.getCount());
         result.setRecords(responses);
         return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "success", result);
+    }
+
+    /**
+     * 启用，禁用 支持银行
+     *
+     * @param auditSupportBankRequest
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "auditSupportBank", method = RequestMethod.POST)
+    public CommonResponse auditSupportBank(@RequestBody AuditSupportBankRequest auditSupportBankRequest) {
+        final Optional<ChannelSupportCreditBank> supportBankOption = this.channelSupportCreditBankService.getById(auditSupportBankRequest.getId());
+        if (!supportBankOption.isPresent()) {
+            return CommonResponse.simpleResponse(-1, "记录不存在");
+        }
+        if (1 == auditSupportBankRequest.getOperation() && EnumBoolean.FALSE.getCode() == supportBankOption.get().getStatus()) {
+            this.channelSupportCreditBankService.updateStatus(auditSupportBankRequest.getId(), EnumBoolean.TRUE.getCode());
+        } else if (2 == auditSupportBankRequest.getOperation() && EnumBoolean.TRUE.getCode() == supportBankOption.get().getStatus()) {
+            this.channelSupportCreditBankService.updateStatus(auditSupportBankRequest.getId(), EnumBoolean.FALSE.getCode());
+        } else {
+            return CommonResponse.simpleResponse(-1, "非法操作");
+        }
+        return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "success");
     }
 
 }
