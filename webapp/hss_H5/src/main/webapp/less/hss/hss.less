@@ -208,10 +208,155 @@ input:focus {
   }
 }
 
+.choose-space {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 99;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  .choose-box {
+    width: 85%;
+    height: auto;
+    border-radius: 10px;
+    background-color: #FFF;
+    position: absolute;
+    top: 45%;
+    left: 50%;
+    transform: translate3d(-50%, -50%, 0);
+    overflow: hidden;
+  }
+  .choose-box-head {
+    height: 45px;
+    line-height: 45px;
+    font-size: 16px;
+    color: #5a5a5a;
+    font-weight: bold;
+    position: relative;
+    .choose-x {
+      padding: 10px;
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      width: 9px;
+      height: 9px;
+      background: url("../assets/message-x.png") no-repeat center;
+      background-size: 9px 9px;
+    }
+  }
+  .choose-box-body {
+    .choose-box-body-list-bank {
+      .logo {
+
+      }
+      .detail {
+
+      }
+    }
+  }
+}
+
 // 好收收样式调整 end
 
-// 账户流水 余额明细
+// 快捷首次支付
+#firstUnionPay {
+  width: 100%;
+  height: auto;
+  min-height: 100%;
+  overflow: auto;
+  background-color: #f4f5f8;
+  .space {
+    width: 100%;
+    height: auto;
+    background-color: #FFF;
+    margin-bottom: 8px;
+    &.pd {
+      padding: 8px 0;
+    }
+    .small-list {
+      width: 100%;
+      height: 25px;
+      line-height: 25px;
+      padding: 0 15px;
+      overflow: hidden;
+      .left {
+        float: left;
+        text-align: left;
+        font-size: 12px;
+        color: #5a5a5a;
+      }
+      .right {
+        float: right;
+        text-align: right;
+        font-size: 12px;
+        color: #5a5a5a;
+        &.or {
+          font-size: 15px;
+          color: #faa30b;
+          font-weight: bold;
+        }
+      }
+    }
+    .list {
+      width: 100%;
+      height: 50px;
+      line-height: 50px;
+      padding: 0 15px;
+      border-bottom: 1px solid #edeef5;
+      .left {
+        float: left;
+        text-align: left;
+        font-size: 14px;
+        color: #5a5a5a;
+        min-width: 80px;
+        margin-right: 20px;
+      }
+      .val {
+        float: left;
+        text-align: left;
+        font-size: 14px;
+        color: #222222;
+        margin-right: 5px;
+      }
+      .small {
+        float: left;
+        text-align: left;
+        font-size: 14px;
+        color: #d0d0d0;
+      }
+      .ipt {
+        float: left;
+        width: auto;
+        height: 49px;
+        max-width: 133px;
+        font-size: 14px;
+      }
+      .mpt {
+        float: right;
+        text-align: right;
+        font-size: 14px;
+        color: #036ad1;
+      }
+    }
+  }
+  .btn-box {
+    width: 100%;
+    padding: 10px 15px;
+    .btn {
+      width: 100%;
+      height: 45px;
+      line-height: 45px;
+      border-radius: 5px;
+      font-size: 16px;
+      color: #FFF;
+      background-color: #4ecea2;
+    }
+  }
+}
 
+// 账户流水 余额明细
 #accountFlow {
   width: 100%;
   height: auto;
