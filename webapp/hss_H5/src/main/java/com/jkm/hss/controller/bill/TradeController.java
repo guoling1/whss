@@ -321,30 +321,35 @@ public class TradeController extends BaseController {
      * @param httpServletRequest
      * @return
      */
+    @ResponseBody
     @RequestMapping(value = "unionPayRoute", method = RequestMethod.POST)
-    public String unionPayRoute(@RequestBody UnionPayRequest unionPayRequest,
+    public CommonResponse unionPayRoute(@RequestBody UnionPayRequest unionPayRequest,
                            final HttpServletRequest httpServletRequest) {
         if(!super.isLogin(httpServletRequest)){
-            return "/sqb/login";
+            return CommonResponse.simpleResponse(-2, " 未登录");
         }
         Optional<UserInfo> userInfoOptional = this.userInfoService.selectByOpenId(super.getOpenId(httpServletRequest));
         if(!userInfoOptional.isPresent()){
-            return "/sqb/login";
+            return CommonResponse.simpleResponse(-2, " 未登录");
         }
         Optional<MerchantInfo> merchantInfoOptional = this.merchantInfoService.selectById(userInfoOptional.get().getMerchantId());
         if(!merchantInfoOptional.isPresent()){
-            return "/sqb/login";
+            return CommonResponse.simpleResponse(-2, " 未登录");
         }
         final MerchantInfo merchantInfo = merchantInfoOptional.get();
         if(merchantInfo.getStatus()!= EnumMerchantStatus.PASSED.getId()&&merchantInfo.getStatus()!= EnumMerchantStatus.FRIEND.getId()){
-            return "/sqb/login";
+            return CommonResponse.simpleResponse(-2, " 未登录");
         }
         Preconditions.checkState(EnumPayChannelSign.isUnionPay(unionPayRequest.getPayChannel()), "渠道不是快捷");
         final int creditBankCount = this.accountBankService.isHasCreditBank(merchantInfo.getAccountId());
         if (creditBankCount <= 0) {
-            return "/trade/firstUnionPayPage?amount=" + unionPayRequest.getTotalFee() + "&channel=" + unionPayRequest.getPayChannel();
+            return CommonResponse.builder4MapResult(CommonResponse.SUCCESS_CODE, "success")
+                    .addParam("url", "/trade/firstUnionPayPage?amount=" + unionPayRequest.getTotalFee() + "&channel=" + unionPayRequest.getPayChannel())
+                    .build();
         }
-        return "/trade/againUnionPayPage?amount=" + unionPayRequest.getTotalFee() + "&channel=" + unionPayRequest.getPayChannel();
+        return CommonResponse.builder4MapResult(CommonResponse.SUCCESS_CODE, "success")
+                .addParam("url", "/trade/againUnionPayPage?amount=" + unionPayRequest.getTotalFee() + "&channel=" + unionPayRequest.getPayChannel())
+                .build();
     }
 
     /**
