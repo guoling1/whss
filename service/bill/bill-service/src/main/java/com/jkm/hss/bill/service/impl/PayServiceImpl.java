@@ -895,7 +895,7 @@ public class PayServiceImpl implements PayService {
         } catch (final Throwable e) {
             log.error("商户[ " + merchantId +" ], 订单号[{ " + order.getOrderNo() + " ], 下单失败", e);
             this.orderService.updateRemark(order.getId(), "下单失败");
-            return Pair.of(-1, "下单失败");
+            return Pair.of(-1, "稍后请重试");
         }
         final EnumBasicStatus enumBasicStatus = EnumBasicStatus.of(paymentSdkUnionPayResponse.getCode());
         switch (enumBasicStatus) {
@@ -906,7 +906,8 @@ public class PayServiceImpl implements PayService {
             case FAIL:
                 order.setRemark(paymentSdkUnionPayResponse.getMessage());
                 this.orderService.update(order);
-                return Pair.of(-1, order.getRemark());
+                log.info("订单[{}], 下单失败", order.getId());
+                return Pair.of(-1, "稍后请重试");
         }
         return Pair.of(-1, "下单失败");
     }
@@ -972,6 +973,7 @@ public class PayServiceImpl implements PayService {
         placeOrderRequest.setPayerName(merchant.getName());
         placeOrderRequest.setIdCardNo(merchant.getIdentity());
         final String content = HttpClientPost.postJson(PaymentSdkConstants.SDK_PAY_PLACE_ORDER, SdkSerializeUtil.convertObjToMap(placeOrderRequest));
+        log.info("商户[{}], 订单号[{}],  下单结果[{}]", merchant.getId(), order.getOrderNo(), content);
         PaymentSdkPlaceOrderResponse paymentSdkPlaceOrderResponse;
         try {
             paymentSdkPlaceOrderResponse = JSON.parseObject(content, PaymentSdkPlaceOrderResponse.class);

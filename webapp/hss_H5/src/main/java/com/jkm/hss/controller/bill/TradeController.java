@@ -122,7 +122,7 @@ public class TradeController extends BaseController {
                     .addParam("subMerName", merchantInfo.getMerchantName())
                     .addParam("amount", totalFee).build();
         }
-        return CommonResponse.simpleResponse(-1, resultPair.getRight());
+        return CommonResponse.simpleResponse(-1, "请稍后重试");
     }
 
 
@@ -342,9 +342,9 @@ public class TradeController extends BaseController {
         Preconditions.checkState(EnumPayChannelSign.isUnionPay(unionPayRequest.getPayChannel()), "渠道不是快捷");
         final int creditBankCount = this.accountBankService.isHasCreditBank(merchantInfo.getAccountId());
         if (creditBankCount <= 0) {
-            return "/trade/firstUnionPay?amount=" + unionPayRequest.getTotalFee() + "&channel=" + unionPayRequest.getPayChannel();
+            return "/trade/firstUnionPayPage?amount=" + unionPayRequest.getTotalFee() + "&channel=" + unionPayRequest.getPayChannel();
         }
-        return "/trade/unionPay?amount=" + unionPayRequest.getTotalFee() + "&channel=" + unionPayRequest.getPayChannel();
+        return "/trade/againUnionPayPage?amount=" + unionPayRequest.getTotalFee() + "&channel=" + unionPayRequest.getPayChannel();
     }
 
     /**
