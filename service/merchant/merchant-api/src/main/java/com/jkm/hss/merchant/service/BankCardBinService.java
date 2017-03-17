@@ -9,4 +9,11 @@ import com.jkm.hss.merchant.entity.BankCardBin;
 public interface BankCardBinService {
 
     Optional<BankCardBin> analyseCardNo(String bankNo);
+
+    /**
+     * 查询信用卡
+     * @param bankNo
+     * @return
+     */
+    Optional<BankCardBin> analyseCardNoByType(String bankNo);
 }
