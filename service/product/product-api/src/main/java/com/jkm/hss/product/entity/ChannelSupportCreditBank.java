@@ -24,6 +24,14 @@ public class ChannelSupportCreditBank extends BaseEntity {
      */
     private int upperChannel;
     /**
+     * 渠道名字
+     */
+    private String upperChannelName;
+    /**
+     * 渠道编码
+     */
+    private String upperChannelCode;
+    /**
      * 银行编号
      */
     private String bankCode;

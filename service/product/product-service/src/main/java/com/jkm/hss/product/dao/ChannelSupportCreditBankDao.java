@@ -37,4 +37,12 @@ public interface ChannelSupportCreditBankDao {
      * @return
      */
     int selectCountByParam(QuerySupportBankParams querySupportBankParams);
+
+    /**
+     * 列表-集合
+     *
+     * @param querySupportBankParams
+     * @return
+     */
+    List<ChannelSupportCreditBank> selectByParam(QuerySupportBankParams querySupportBankParams);
 }
