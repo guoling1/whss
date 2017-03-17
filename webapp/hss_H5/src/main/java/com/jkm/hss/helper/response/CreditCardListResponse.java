@@ -20,4 +20,8 @@ public class CreditCardListResponse {
      * 尾号
      */
     private String shortNo;
+    /**
+     * 手机号
+     */
+    private String mobile;
 }

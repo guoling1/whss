@@ -45,6 +45,8 @@ public class BankCardController extends BaseController {
                 creditCardListResponse.setCreditCardId(accountBank.getId());
                 creditCardListResponse.setBankName(accountBank.getBankName());
                 creditCardListResponse.setShortNo(accountBank.getBankNo().substring(accountBank.getBankNo().length() - 4));
+                final String mobile = accountBank.getReserveMobile();
+                creditCardListResponse.setMobile(mobile.substring(0, 2) + "**** ***" + mobile.substring(mobile.length() - 2));
                 return creditCardListResponse;
             }
         });
