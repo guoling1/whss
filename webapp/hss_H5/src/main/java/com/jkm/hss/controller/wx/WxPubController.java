@@ -1033,7 +1033,7 @@ public class WxPubController extends BaseController {
         if(StringUtils.isBlank(creditCardAuthenRequest.getCreditCard())){
             return CommonResponse.simpleResponse(-1, "请输入信用卡号");
         }
-        final Optional<BankCardBin> bankCardBinOptional = this.bankCardBinService.analyseCardNo(creditCardAuthenRequest.getCreditCard());
+        final Optional<BankCardBin> bankCardBinOptional = this.bankCardBinService.analyseCardNoByType(creditCardAuthenRequest.getCreditCard());
         if(!bankCardBinOptional.isPresent()){
             return CommonResponse.simpleResponse(-1, "信用卡号错误");
         }
