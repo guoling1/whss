@@ -88,4 +88,13 @@ public class ChannelController extends BaseController {
     }
 
 
+
+    @ResponseBody
+    @RequestMapping(value = "querySupportBank", method = RequestMethod.POST)
+    public CommonResponse querySupportBank() {
+
+
+        return CommonResponse.simpleResponse(0, "");
+    }
+
 }

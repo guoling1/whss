@@ -2,12 +2,12 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.jkm.hss.product.dao.ChannelSupportCreditBankDao">
 
-    <select id="selectByChannelSign" resultType="com.jkm.hss.product.entity.ChannelSupportCreditBank">
-        SELECT * FROM tb_channel_support_credit_bank WHERE channel_sign = #{channelSign};
+    <select id="selectByUpperChannel" resultType="com.jkm.hss.product.entity.ChannelSupportCreditBank">
+        SELECT * FROM tb_channel_support_credit_bank WHERE upper_channel = #{upperChannel};
     </select>
 
-    <select id="selectByChannelSignAndBankName" resultType="java.lang.Integer">
-        SELECT COUNT(0) FROM tb_channel_support_credit_bank WHERE channel_sign = #{channelSign} AND bank_name = #{bankName};
+    <select id="selectByUpperChannelAndBankName" resultType="java.lang.Integer">
+        SELECT COUNT(0) FROM tb_channel_support_credit_bank WHERE upper_channel = #{upperChannel} AND bank_name = #{bankName};
     </select>
 
 </mapper>

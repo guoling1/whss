@@ -20,23 +20,23 @@ public class ChannelSupportCreditBankServiceImpl implements ChannelSupportCredit
     /**
      * {@inheritDoc}
      *
-     * @param channelSign
+     * @param upperChannel
      * @return
      */
     @Override
-    public List<ChannelSupportCreditBank> getByChannelSign(final int channelSign) {
-        return this.channelSupportCreditBankDao.selectByChannelSign(channelSign);
+    public List<ChannelSupportCreditBank> getByUpperChannel(final int upperChannel) {
+        return this.channelSupportCreditBankDao.selectByUpperChannel(upperChannel);
     }
 
     /**
      * {@inheritDoc}
      *
-     * @param channel
+     * @param upperChannel
      * @param bankName
      * @return
      */
     @Override
-    public boolean isExistByChannelSignAndBankName(final int channel, final String bankName) {
-        return this.channelSupportCreditBankDao.selectByChannelSignAndBankName(channel, bankName) > 0;
+    public boolean isExistByUpperChannelAndBankName(final int upperChannel, final String bankName) {
+        return this.channelSupportCreditBankDao.selectByUpperChannelAndBankName(upperChannel, bankName) > 0;
     }
 }
