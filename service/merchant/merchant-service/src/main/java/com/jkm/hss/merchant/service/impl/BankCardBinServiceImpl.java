@@ -40,22 +40,4 @@ public class BankCardBinServiceImpl implements BankCardBinService {
         return Optional.absent();
     }
 
-    /**
-     * 查询信用卡
-     *
-     * @param bankNo
-     * @return
-     */
-    @Override
-    public Optional<BankCardBin> analyseCardNoByType(String bankNo) {
-        Preconditions.checkArgument(!Strings.isNullOrEmpty(bankNo) && bankNo.length() >= 10, "卡号不正确");
-        for (final int binLength : BIN_LENGTH_LIST) {
-            final Optional<BankCardBin> cardBinOptional = baseBankCardBinService.loadByBinNoAndType(bankNo.substring(0, binLength));
-            if (cardBinOptional.isPresent()) {
-                return cardBinOptional;
-            }
-        }
-
-        return Optional.absent();
-    }
 }

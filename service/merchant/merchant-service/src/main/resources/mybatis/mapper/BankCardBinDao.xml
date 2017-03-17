@@ -2,10 +2,6 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.jkm.hss.merchant.dao.BankCardBinDao">
     <select id="loadByBinNo" resultType="com.jkm.hss.merchant.entity.BankCardBin">
-        SELECT * from tb_bank_card_bin where bin_no=#{bankNo} and card_type_code=0
-    </select>
-
-    <select id="loadByBinNoAndType" resultType="com.jkm.hss.merchant.entity.BankCardBin">
-        SELECT * from tb_bank_card_bin where bin_no=#{bankNo} and card_type_code=1
+        SELECT * from tb_bank_card_bin where bin_no=#{bankNo}
     </select>
 </mapper>
