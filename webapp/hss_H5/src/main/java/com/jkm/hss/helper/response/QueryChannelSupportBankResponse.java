@@ -13,10 +13,6 @@ public class QueryChannelSupportBankResponse {
 
     private long id;
     /**
-     * 通道唯一标志
-     */
-    private int channelSign;
-    /**
      * 银行名字
      */
     private String bankName;
@@ -28,4 +24,8 @@ public class QueryChannelSupportBankResponse {
      * 日累计限额
      */
     private String dayLimitAmount;
+    /**
+     * 状态
+     */
+    private int status;
 }

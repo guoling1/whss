@@ -15,7 +15,7 @@ public interface ChannelSupportCreditBankService {
      * @param channelSign
      * @return
      */
-    List<ChannelSupportCreditBank> getByChannelSign(int channelSign);
+    List<ChannelSupportCreditBank> getByUpperChannel(int channelSign);
 
     /**
      * 当前渠道是否支持，当前银行
@@ -23,5 +23,5 @@ public interface ChannelSupportCreditBankService {
      * @param channel
      * @param bankName
      */
-    boolean isExistByChannelSignAndBankName(int channel, String bankName);
+    boolean isExistByUpperChannelAndBankName(int channel, String bankName);
 }

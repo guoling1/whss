@@ -450,7 +450,8 @@ public class TradeController extends BaseController {
             return CommonResponse.builder4MapResult(2, "fail").addParam("errorCode", "002").build();
         }
         if (!bankCardBin.getBankName().equals(firstUnionPaySendMsgRequest.getBankName())) {
-            final boolean exist = this.channelSupportCreditBankService.isExistByChannelSignAndBankName(firstUnionPaySendMsgRequest.getChannel(), bankCardBin.getBankName());
+            final boolean exist = this.channelSupportCreditBankService.
+                    isExistByUpperChannelAndBankName(EnumPayChannelSign.idOf(firstUnionPaySendMsgRequest.getChannel()).getUpperChannel().getId(), bankCardBin.getBankName());
             if (!exist) {
                 return CommonResponse.builder4MapResult(2, "fail").addParam("errorCode", "003").build();
             }

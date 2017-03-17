@@ -15,17 +15,17 @@ public interface ChannelSupportCreditBankDao {
     /**
      * 查询当前通道支持的银行
      *
-     * @param channelSign
+     * @param upperChannel
      * @return
      */
-    List<ChannelSupportCreditBank> selectByChannelSign(@Param("channelSign") int channelSign);
+    List<ChannelSupportCreditBank> selectByUpperChannel(@Param("upperChannel") int upperChannel);
 
     /**
      * 查询当前通道，是否支持当前银行
      *
-     * @param channel
+     * @param upperChannel
      * @param bankName
      * @return
      */
-    int selectByChannelSignAndBankName(@Param("channel") int channel, @Param("bankName") String bankName);
+    int selectByUpperChannelAndBankName(@Param("upperChannel") int upperChannel, @Param("bankName") String bankName);
 }
