@@ -1,8 +1,13 @@
 package com.jkm.hss.controller.channel;
 
+import com.google.common.base.Function;
+import com.google.common.base.Optional;
+import com.google.common.collect.Lists;
 import com.jkm.base.common.entity.CommonResponse;
 import com.jkm.base.common.entity.PageModel;
+import com.jkm.base.common.enums.EnumBoolean;
 import com.jkm.hss.account.sevice.AccountService;
+import com.jkm.hss.helper.request.AuditSupportBankRequest;
 import com.jkm.hss.product.helper.requestparam.QuerySupportBankParams;
 import com.jkm.hss.controller.BaseController;
 import com.jkm.hss.helper.request.ChannelAddRequest;
@@ -13,6 +18,8 @@ import com.jkm.hss.product.enums.EnumPayChannelSign;
 import com.jkm.hss.product.servcie.BasicChannelService;
 import com.jkm.hss.product.servcie.ChannelSupportCreditBankService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,6 +28,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.math.BigDecimal;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -102,11 +110,65 @@ public class ChannelController extends BaseController {
     @ResponseBody
     @RequestMapping(value = "querySupportBank", method = RequestMethod.POST)
     public CommonResponse querySupportBank(@RequestBody QuerySupportBankParams querySupportBankParams) {
-        final PageModel<QuerySupportBankResponse> resulst = new PageModel<>();
+        final PageModel<QuerySupportBankResponse> result = new PageModel<>(querySupportBankParams.getPageNo(), querySupportBankParams.getPageSize());
+        if (StringUtils.isEmpty(querySupportBankParams.getChannelName())) {
+            querySupportBankParams.setChannelName(null);
+        }
+        if (StringUtils.isEmpty(querySupportBankParams.getChannelCode())) {
+            querySupportBankParams.setChannelCode(null);
+        }
+        if (StringUtils.isEmpty(querySupportBankParams.getBankCode())) {
+            querySupportBankParams.setBankCode(null);
+        }
         final PageModel<ChannelSupportCreditBank> page = this.channelSupportCreditBankService.querySupportBank(querySupportBankParams);
+        final List<ChannelSupportCreditBank> records = page.getRecords();
+        if (CollectionUtils.isEmpty(records)) {
+            result.setCount(0);
+            result.setRecords(Collections.<QuerySupportBankResponse>emptyList());
+            return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "success", result);
+        }
+        final List<QuerySupportBankResponse> responses = Lists.transform(records, new Function<ChannelSupportCreditBank, QuerySupportBankResponse>() {
+            @Override
+            public QuerySupportBankResponse apply(ChannelSupportCreditBank channelSupportCreditBank) {
+                final QuerySupportBankResponse querySupportBankResponse = new QuerySupportBankResponse();
+                querySupportBankResponse.setId(channelSupportCreditBank.getId());
+                querySupportBankResponse.setChannelName(channelSupportCreditBank.getUpperChannelName());
+                querySupportBankResponse.setChannelCode(channelSupportCreditBank.getUpperChannelCode());
+                querySupportBankResponse.setBankCode(channelSupportCreditBank.getBankCode());
+                querySupportBankResponse.setBankName(channelSupportCreditBank.getBankName());
+                querySupportBankResponse.setCardType(channelSupportCreditBank.getBankCardType());
+                querySupportBankResponse.setSingleLimitAmount(channelSupportCreditBank.getSingleLimitAmount().toPlainString());
+                querySupportBankResponse.setDayLimitAmount(channelSupportCreditBank.getDayLimitAmount().toPlainString());
+                querySupportBankResponse.setStatus(channelSupportCreditBank.getStatus());
+                return querySupportBankResponse;
+            }
+        });
+        result.setCount(page.getCount());
+        result.setRecords(responses);
+        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "success", result);
+    }
 
-
-        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "success", resulst);
+    /**
+     * 启用，禁用 支持银行
+     *
+     * @param auditSupportBankRequest
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "auditSupportBank", method = RequestMethod.POST)
+    public CommonResponse auditSupportBank(@RequestBody AuditSupportBankRequest auditSupportBankRequest) {
+        final Optional<ChannelSupportCreditBank> supportBankOption = this.channelSupportCreditBankService.getById(auditSupportBankRequest.getId());
+        if (!supportBankOption.isPresent()) {
+            return CommonResponse.simpleResponse(-1, "记录不存在");
+        }
+        if (1 == auditSupportBankRequest.getOperation() && EnumBoolean.FALSE.getCode() == supportBankOption.get().getStatus()) {
+            this.channelSupportCreditBankService.updateStatus(auditSupportBankRequest.getId(), EnumBoolean.TRUE.getCode());
+        } else if (2 == auditSupportBankRequest.getOperation() && EnumBoolean.TRUE.getCode() == supportBankOption.get().getStatus()) {
+            this.channelSupportCreditBankService.updateStatus(auditSupportBankRequest.getId(), EnumBoolean.FALSE.getCode());
+        } else {
+            return CommonResponse.simpleResponse(-1, "非法操作");
+        }
+        return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "success");
     }
 
 }

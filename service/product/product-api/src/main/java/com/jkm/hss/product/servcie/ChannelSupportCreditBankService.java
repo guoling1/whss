@@ -1,5 +1,6 @@
 package com.jkm.hss.product.servcie;
 
+import com.google.common.base.Optional;
 import com.jkm.base.common.entity.PageModel;
 import com.jkm.hss.product.entity.ChannelSupportCreditBank;
 import com.jkm.hss.product.helper.requestparam.QuerySupportBankParams;
@@ -10,6 +11,24 @@ import java.util.List;
  * Created by yulong.zhang on 2017/3/10.
  */
 public interface ChannelSupportCreditBankService {
+
+
+    /**
+     * 更新状态
+     *
+     * @param id
+     * @param status
+     * @return
+     */
+    int updateStatus(long id, int status);
+
+    /**
+     * 按ID 查询
+     *
+     * @param id
+     * @return
+     */
+    Optional<ChannelSupportCreditBank> getById(long id);
 
     /**
      * 按通道标志查询

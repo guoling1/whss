@@ -1033,7 +1033,7 @@ public class WxPubController extends BaseController {
         if(StringUtils.isBlank(creditCardAuthenRequest.getCreditCard())){
             return CommonResponse.simpleResponse(-1, "请输入信用卡号");
         }
-        final Optional<BankCardBin> bankCardBinOptional = this.bankCardBinService.analyseCardNo(creditCardAuthenRequest.getCreditCard());
+        final Optional<BankCardBin> bankCardBinOptional = this.bankCardBinService.analyseCardNoByType(creditCardAuthenRequest.getCreditCard());
         if(!bankCardBinOptional.isPresent()){
             return CommonResponse.simpleResponse(-1, "信用卡号错误");
         }
@@ -1341,7 +1341,7 @@ public class WxPubController extends BaseController {
         }
         if(merchantChannelRate.getEnterNet()==EnumEnterNet.UNENT.getId()) {
             log.info("商户需入网");
-            JSONObject jo = merchantChannelRateService.enterInterNet1(merchantInfo.get().getProductId(),merchantInfo.get().getId(),merchantChannelRateOptional.get().getChannelCompany());
+            JSONObject jo = merchantChannelRateService.enterInterNet1(merchantInfo.get().getAccountId(),merchantInfo.get().getProductId(),merchantInfo.get().getId(),merchantChannelRateOptional.get().getChannelCompany());
             return CommonResponse.simpleResponse(jo.getInt("code"), jo.getString("msg"));
         }
         return null;
