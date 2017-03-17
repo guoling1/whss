@@ -130,12 +130,12 @@
             <li :class="(url=='/admin/record/codeStatus')?'active':''" @click="refrash">
               <router-link to="/admin/record/codeStatus"><span>二维码状态查询</span></router-link>
             </li>
-            <!--<li :class="(url=='/admin/record/codeProRecord')?'active':''" @click="refrash">
+            <li :class="(url=='/admin/record/codeProRecord')?'active':''" @click="refrash">
               <router-link to="/admin/record/codeProRecord"><span>产码记录</span></router-link>
             </li>
             <li :class="(url=='/admin/record/codeAll')?'active':''" @click="refrash">
               <router-link to="/admin/record/codeAll"><span>所有二维码</span></router-link>
-            </li>-->
+            </li>
           </ul>
         </li>
         <li
