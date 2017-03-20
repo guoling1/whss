@@ -941,7 +941,7 @@ public class PayServiceImpl implements PayService {
                     return Pair.of(0, "");
                 case FAIL:
                     this.orderService.updateRemark(orderId, paymentSdkConfirmUnionPayResponse.getMessage());
-                    return Pair.of(-1, order.getRemark());
+                    return Pair.of(-1, paymentSdkConfirmUnionPayResponse.getMessage());
             }
         }
         return Pair.of(-1, "订单状态错误，确认支付失败");
