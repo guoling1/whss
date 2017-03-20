@@ -22,6 +22,7 @@ import com.jkm.hss.merchant.entity.UserInfo;
 import com.jkm.hss.merchant.enums.EnumMerchantStatus;
 import com.jkm.hss.merchant.helper.MerchantSupport;
 import com.jkm.hss.merchant.helper.WxPubUtil;
+import com.jkm.hss.merchant.helper.request.GetBankNameRequest;
 import com.jkm.hss.merchant.helper.request.MerchantInfoAddRequest;
 import com.jkm.hss.merchant.service.BankCardBinService;
 import com.jkm.hss.merchant.service.MerchantInfoService;
@@ -369,5 +370,24 @@ public class MerchantInfoController extends BaseController {
             return "**" + name.charAt(2);
         }
           return "**" + name.charAt(length - 1);
+    }
+
+    /**
+     * 根据银行卡号查银行卡名称
+     * @param getBankNameRequest
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/selectBankNameByBankNo", method = RequestMethod.POST)
+    public CommonResponse selectBankNameByBankNo(@RequestBody final GetBankNameRequest getBankNameRequest){
+        String bankNo = getBankNameRequest.getBankNo();
+        final Optional<BankCardBin> bankCardBinOptional = this.bankCardBinService.analyseCardNo(bankNo);
+        if(!bankCardBinOptional.isPresent()){
+            return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE,"查询成功","");
+        }
+        if(!"1".equals(bankCardBinOptional.get().getCardTypeCode())){
+            return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE,"查询成功","");
+        }
+        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE,"查询成功",bankCardBinOptional.get().getShorthand());
     }
 }
