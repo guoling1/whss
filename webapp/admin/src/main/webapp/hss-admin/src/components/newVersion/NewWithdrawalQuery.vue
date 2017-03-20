@@ -154,7 +154,7 @@
          syncUrl:'http://pay.qianbaojiajia.com/order/syncWithdrawOrder',
          addUrl:'http://pay.qianbaojiajia.com/order/withdraw/countAmount',
         //测试
-        /*queryUrl:'http://192.168.1.25:8240/order/withdraw/listOrder',
+        /*queryUrl:'http://192.168.1.20:8076/order/withdraw/listOrder',
         excelUrl:'http://192.168.1.20:8076/order/withdraw/exportExcel',
         syncUrl:'http://192.168.1.20:8076/order/syncWithdrawOrder',
         addUrl:'http://192.168.1.25:8240/order/withdraw/countAmount',*/
