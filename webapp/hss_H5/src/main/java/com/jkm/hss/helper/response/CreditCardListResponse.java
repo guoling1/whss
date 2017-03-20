@@ -17,7 +17,15 @@ public class CreditCardListResponse {
      */
     private String bankName;
     /**
+     * 银行便码
+     */
+    private String bankCode;
+    /**
      * 尾号
      */
     private String shortNo;
+    /**
+     * 手机号
+     */
+    private String mobile;
 }

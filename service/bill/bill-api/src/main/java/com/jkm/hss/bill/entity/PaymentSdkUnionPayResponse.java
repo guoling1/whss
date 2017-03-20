@@ -16,6 +16,11 @@ public class PaymentSdkUnionPayResponse {
     private String orderNo;
 
     /**
+     * 流水号
+     */
+    private String sn;
+
+    /**
      * 成功标识
      *
      * {@link com.jkm.hss.bill.enums.EnumBasicStatus}

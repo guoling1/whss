@@ -903,7 +903,7 @@ public class OrderServiceImpl implements OrderService {
                     this.dealerAndMerchantPoundageSettleImpl(order, increaseSettleAccountFlow.getId());
                     return;
                 }
-                log.error("订单[{}],在T1发起结算提现时， 请求网关异常", orderId, order.getStatus(), order.getSettleStatus());
+                log.error("订单[{}],在T1发起结算提现时， 提现失败异常", orderId, order.getStatus(), order.getSettleStatus());
                 return;
             }
         }

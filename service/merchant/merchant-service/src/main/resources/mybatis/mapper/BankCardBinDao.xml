@@ -4,5 +4,4 @@
     <select id="loadByBinNo" resultType="com.jkm.hss.merchant.entity.BankCardBin">
         SELECT * from tb_bank_card_bin where bin_no=#{bankNo}
     </select>
-
 </mapper>

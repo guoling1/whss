@@ -43,6 +43,7 @@ import com.jkm.hss.product.entity.Product;
 import com.jkm.hss.product.entity.ProductChannelDetail;
 import com.jkm.hss.product.enums.EnumPayChannelSign;
 import com.jkm.hss.product.enums.EnumProductType;
+import com.jkm.hss.product.enums.EnumUpperChannel;
 import com.jkm.hss.product.servcie.BasicChannelService;
 import com.jkm.hss.product.servcie.ProductChannelDetailService;
 import com.jkm.hss.product.servcie.ProductService;
@@ -394,7 +395,7 @@ public class DealerServiceImpl implements DealerService {
         return map;
     }
 
-    //间接商户分润
+    //间接商户分润 hss
     private Map<String,Triple<Long,BigDecimal,BigDecimal>> getShallProfitInDirect(String orderNo, BigDecimal tradeAmount, int channelSign, long merchantId) {
         Map<String,Triple<Long,BigDecimal,BigDecimal>> map = new HashMap<>();
         log.info("交易单号[" + orderNo + "]请求就行收单分润，分润金额：" + tradeAmount);
@@ -403,19 +404,14 @@ public class DealerServiceImpl implements DealerService {
         final Product product = this.productService.selectByType(EnumProductType.HSS.getId()).get();
         final BigDecimal merchantRate = getMerchantRate(channelSign, merchantInfo);
         final BigDecimal originMoney = tradeAmount.multiply(getMerchantRate(channelSign, merchantInfo)).setScale(2, BigDecimal.ROUND_UP);
-        final BigDecimal waitOriginMoney = originMoney.setScale(2, BigDecimal.ROUND_UP);
+        //final BigDecimal waitOriginMoney = originMoney.setScale(2, BigDecimal.ROUND_UP);
+        //计算商户手续费
+        final BigDecimal waitOriginMoney = this.calculateMerchantFee(tradeAmount, originMoney, channelSign);
         //通道成本
         final BasicChannel basicChannel = this.basicChannelService.selectByChannelTypeSign(channelSign).get();
-        BigDecimal basicMoney;
         final BigDecimal basicTrade = tradeAmount.multiply(basicChannel.getBasicTradeRate());
-        if (new BigDecimal("0.01").compareTo(basicTrade) == 1){
-            //通道成本不足一分 , 按一分收
-            basicMoney = new BigDecimal("0.01");
+        final BigDecimal basicMoney = this.calculateChannelFee(basicTrade, channelSign);
 
-        }else{
-            //超过一分,四舍五入,保留两位有效数字
-            basicMoney = basicTrade.setScale(2, BigDecimal.ROUND_HALF_UP);
-        }
         //通道分润
         final ProductChannelDetail productChannelDetail = this.productChannelDetailService.selectByProductIdAndChannelId(product.getId(), channelSign).get();
         final BigDecimal channelMoney = tradeAmount.multiply(productChannelDetail.getProductTradeRate().
@@ -753,7 +749,7 @@ public class DealerServiceImpl implements DealerService {
 
         return merchantChannelRateOptional.get().getMerchantPayRate();
     }
-    //直属商户分润
+    //直属商户分润 hss
     private Map<String,Triple<Long,BigDecimal,BigDecimal>> getShallProfitDirect(String orderNo, BigDecimal tradeAmount, int channelSign, long merchantId) {
         log.info("交易单号[" + orderNo + "]请求就行收单分润，分润金额：" + tradeAmount);
         final ShallProfitDetail detail = this.shallProfitDetailService.selectByOrderIdToHss(orderNo);
@@ -777,37 +773,17 @@ public class DealerServiceImpl implements DealerService {
             final BasicChannel basicChannel = channelOptional.get();
             //商户手续费
             final BigDecimal merchantRate = this.getMerchantRate(channelSign, merchantInfo);
-
             final BigDecimal waitOriginMoney = totalFee.multiply(merchantRate);
-            BigDecimal waitMoney;
-            if (new BigDecimal("0.01").compareTo(waitOriginMoney) == 1){
-                //手续费不足一分 , 按一分收
-                if (new BigDecimal("0.01").compareTo(totalFee) == 0){
-                    //支付金额一分,不收手续费
-                    waitMoney = new BigDecimal("0");
-                }else{
-                    waitMoney = new BigDecimal("0.01");
-                }
-            }else{
-                //收手续费,进一位,保留两位有效数字
-                waitMoney = waitOriginMoney.setScale(2,BigDecimal.ROUND_UP);
-            }
 
+            //计算商户手续费，按照通道来
+            final BigDecimal waitMoney = this.calculateMerchantFee(totalFee, waitOriginMoney, channelSign);
             //获取产品的信息, 产品通道的费率
             final Optional<Product> productOptional = this.productService.selectById(merchantInfo.getProductId());
             final  Product product = productOptional.get();
 
-            //通道成本
-            BigDecimal basicMoney;
+            //通道成本， 不同通道成本计算不同
             final BigDecimal basicTrade = totalFee.multiply(basicChannel.getBasicTradeRate());
-            if (new BigDecimal("0.01").compareTo(basicTrade) == 1){
-                //通道成本不足一分 , 按一分收
-                basicMoney = new BigDecimal("0.01");
-
-            }else{
-                //超过一分,四舍五入,保留两位有效数字
-                basicMoney = basicTrade.setScale(2, BigDecimal.ROUND_HALF_UP);
-            }
+            final BigDecimal basicMoney = this.calculateChannelFee(basicTrade, channelSign);
 
             //通道分润
             final BigDecimal channelMoney = totalFee.multiply(productChannelDetail.getProductTradeRate().
@@ -856,19 +832,9 @@ public class DealerServiceImpl implements DealerService {
         final BigDecimal merchantRate = this.getMerchantRate(channelSign, merchantInfo);
         //待分润金额
         final BigDecimal waitOriginMoney = totalFee.multiply(merchantRate);
-        BigDecimal waitMoney;
-        if (new BigDecimal("0.01").compareTo(waitOriginMoney) == 1){
-            //手续费不足一分 , 按一分收
-            if (new BigDecimal("0.01").compareTo(totalFee) == 0){
-                //支付金额一分,不收手续费
-                waitMoney = new BigDecimal("0");
-            }else{
-                waitMoney = new BigDecimal("0.01");
-            }
-        }else{
-            //收手续费,进一位,保留两位有效数字
-            waitMoney = waitOriginMoney.setScale(2,BigDecimal.ROUND_UP);
-        }
+
+        //计算商户手续费，按照通道来
+        final BigDecimal waitMoney = this.calculateMerchantFee(totalFee, waitOriginMoney, channelSign);
         //判断代理商等级
         if (dealer.getLevel() == EnumDealerLevel.FIRST.getId()){
             //一级
@@ -984,6 +950,95 @@ public class DealerServiceImpl implements DealerService {
         }
         log.info("订单" + orderNo + "分润处理成功,返回map成功");
         return map;
+    }
+
+    //按照通道计算通道成本
+    private BigDecimal calculateChannelFee(BigDecimal basicTrade, int channelSign) {
+
+        BigDecimal basicMoney;
+        final EnumUpperChannel upperChannel = EnumPayChannelSign.idOf(channelSign).getUpperChannel();
+        switch (upperChannel){
+            case SAOMI:
+                if (new BigDecimal("0.01").compareTo(basicTrade) == 1){
+                    //通道成本不足一分 , 按一分收
+                    basicMoney = new BigDecimal("0.01");
+
+                }else{
+                    //超过一分,四舍五入,保留两位有效数字
+                    basicMoney = basicTrade.setScale(2, BigDecimal.ROUND_HALF_UP);
+                }
+                return basicMoney;
+            case KAMENG:
+                if (new BigDecimal("0.01").compareTo(basicTrade) == 1){
+                    //通道成本不足一分 , 按一分收
+                    basicMoney = new BigDecimal("0.01");
+
+                }else{
+                    //超过一分,四舍五入,保留两位有效数字
+                    basicMoney = basicTrade.setScale(2, BigDecimal.ROUND_HALF_UP);
+                }
+                return basicMoney;
+            case MOBAO:
+                if (new BigDecimal("0.1").compareTo(basicTrade) == 1){
+                    //通道成本不足一毛, 按一毛收
+                    basicMoney = new BigDecimal("0.1");
+                }else{
+                    //超过一毛,四舍五入,保留两位有效数字
+                    basicMoney = basicTrade.setScale(2, BigDecimal.ROUND_HALF_UP);
+                }
+                return basicMoney;
+            default:
+                basicMoney = basicTrade.setScale(2, BigDecimal.ROUND_HALF_UP);
+                return basicMoney;
+        }
+    }
+    //按照通道计算商户手续费，
+    private BigDecimal calculateMerchantFee(BigDecimal totalFee, BigDecimal waitOriginMoney, int channelSign) {
+         BigDecimal waitMoney;
+        final EnumUpperChannel upperChannel = EnumPayChannelSign.idOf(channelSign).getUpperChannel();
+        switch (upperChannel){
+            case SAOMI:
+                if (new BigDecimal("0.01").compareTo(waitOriginMoney) == 1){
+                    //手续费不足一分 , 按一分收
+                    if (new BigDecimal("0.01").compareTo(totalFee) == 0){
+                        //支付金额一分,不收手续费
+                        waitMoney = new BigDecimal("0");
+                    }else{
+                        waitMoney = new BigDecimal("0.01");
+                    }
+                }else{
+                    //收手续费,进一位,保留两位有效数字
+                    waitMoney = waitOriginMoney.setScale(2,BigDecimal.ROUND_UP);
+                }
+                return waitMoney;
+            case KAMENG:
+                if (new BigDecimal("0.01").compareTo(waitOriginMoney) == 1){
+                    //手续费不足一分 , 按一分收
+                    if (new BigDecimal("0.01").compareTo(totalFee) == 0){
+                        //支付金额一分,不收手续费
+                        waitMoney = new BigDecimal("0");
+                    }else{
+                        waitMoney = new BigDecimal("0.01");
+                    }
+                }else{
+                    //收手续费,进一位,保留两位有效数字
+                    waitMoney = waitOriginMoney.setScale(2,BigDecimal.ROUND_UP);
+                }
+                return waitMoney;
+            case MOBAO:
+                if (new BigDecimal("0.1").compareTo(waitOriginMoney) == 1){
+                    //手续费不足一毛 , 按一毛收
+                    waitMoney = new BigDecimal("0.1");
+                }else{
+                    //收手续费,进一位,保留两位有效数字
+                    waitMoney = waitOriginMoney.setScale(2,BigDecimal.ROUND_UP);
+                }
+                return waitMoney;
+            default:
+                waitMoney = waitOriginMoney.setScale(2,BigDecimal.ROUND_UP);
+                return waitMoney;
+        }
+
     }
 
     /**
