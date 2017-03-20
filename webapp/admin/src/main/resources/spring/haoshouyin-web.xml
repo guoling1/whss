@@ -62,6 +62,7 @@
             <mvc:mapping path="/admin/profit/**"/>
             <mvc:mapping path="/admin/channel/**"/>
             <mvc:mapping path="/admin/product/**"/>
+            <mvc:mapping path="/admin/accountBank/**"/>
             <mvc:mapping path="/admin/merchantInfoCheckRecord/**"/>
             <mvc:mapping path="/admin/query/**"/>
             <mvc:mapping path="/admin/QueryMerchantInfoRecord/**"/>

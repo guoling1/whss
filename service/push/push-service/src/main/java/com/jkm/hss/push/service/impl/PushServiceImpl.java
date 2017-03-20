@@ -266,6 +266,7 @@ public class PushServiceImpl implements PushService {
         push.setTitle("");
         push.setContent(content);
         push.setClientId(clientId);
+//        push.setClientId("3c3002bf2b52d12798a5d29673d91437");
         push.setPushType(pushType);
         push.setTempType("4");
         push.setTargets(target);

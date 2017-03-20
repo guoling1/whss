@@ -8,6 +8,10 @@ import lombok.Data;
 @Data
 public class ContinueBankInfoRequest {
     /**
+     * 银行卡编码
+     */
+    private long bankId;
+    /**
      * 商户编码
      */
     private long id;

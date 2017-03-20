@@ -68,4 +68,11 @@
     <select id="selectCountByFlowNo" resultType="java.lang.Integer">
         SELECT COUNT(0) FROM tb_account_flow WHERE flow_no = #{flowNo}
     </select>
+    <select id="selectCountByParamToMerchantFlow" resultType="java.lang.Long">
+        SELECT COUNT(*) FROM tb_account_flow WHERE account_id = #{accountId}
+    </select>
+    <select id="selectByParamToMerchantFlow" resultType="com.jkm.hss.account.entity.AccountFlow">
+        SELECT * FROM tb_account_flow WHERE account_id = #{accountId} AND (out_amount+income_amount) &gt; 0.00
+        ORDER BY id DESC limit #{firstIndex},#{pageSize}
+    </select>
 </mapper>

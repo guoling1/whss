@@ -20,6 +20,8 @@ public class MessageListenerImpl implements MessageListener {
 
     @Autowired
     private WithdrawService withdrawService;
+    @Autowired
+    private OrderService orderService;
     /**
      * 消费消息
      *
@@ -34,12 +36,16 @@ public class MessageListenerImpl implements MessageListener {
         try {
             final JSONObject body = JSONObject.parseObject(new String(message.getBody(),"UTF-8"));
             if (MqConfig.MERCHANT_WITHDRAW.equals(message.getTag())) {
-                log.info("消费消息--结算单[{}]， 向网关发送提现请求", body.getLongValue("settlementRecordId"));
+                log.info("消费消息--结算单[{}]， D0-向网关发送提现请求", body.getLongValue("settlementRecordId"));
                 final long merchantId = body.getLongValue("merchantId");
                 final long settlementRecordId = body.getLongValue("settlementRecordId");
                 final String payOrderSn = body.getString("payOrderSn");
                 final int payChannelSign = body.getIntValue("payChannelSign");
                 this.withdrawService.merchantWithdrawBySettlementRecord(merchantId, settlementRecordId, payOrderSn, payChannelSign);
+            } else if (MqConfig.MERCHANT_WITHDRAW_T1.equals(message.getTag())) {
+                log.info("消费消息--订单[{}], T1-发起提现请求", body.getLongValue("orderId"));
+                final long orderId = body.getLongValue("orderId");
+                this.orderService.t1WithdrawByOrderId(orderId);
             }
         } catch (final Throwable e) {
             log.error("consume message error, Topic is: [{}], tag is: [{}] MsgId is: [{}]", message.getTopic(),

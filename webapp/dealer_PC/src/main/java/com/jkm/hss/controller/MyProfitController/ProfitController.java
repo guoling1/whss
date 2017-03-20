@@ -46,6 +46,7 @@ public class ProfitController extends BaseController{
     public CommonResponse getShallProfitDetails(@RequestBody final ProfitDetailsSelectRequest request){
         try{
             final Dealer dealer = this.getDealer().get();
+            //final Dealer dealer = this.dealerService.getById(28).get();
             final long accountId = dealer.getAccountId();
             PageModel<SplitAccountRecord> pageModel = this.splitAccountRecordService.selectByParam(request.getPageNo(), request.getPageSize(), accountId, request.getOrderNo(),
                     request.getBusinessType(), request.getBeginDate(), request.getEndDate());
@@ -74,15 +75,15 @@ public class ProfitController extends BaseController{
             List<ProfitDetailsSelectResponse> responseList = Lists.transform(records, new Function<SplitAccountRecord, ProfitDetailsSelectResponse>() {
                 @Override
                 public ProfitDetailsSelectResponse apply(SplitAccountRecord input) {
-                    final Order order = map.get(input.getOrderNo());
+                   // final Order order = map.get(input.getOrderNo());
 
                     ProfitDetailsSelectResponse response = new ProfitDetailsSelectResponse();
                     response.setSplitOrderNo(input.getSplitSn());
                     response.setBusinessType(input.getBusinessType());
                     response.setSplitCreateTime(input.getCreateTime());
                     response.setOrderNo(input.getOrderNo());
-                    response.setSplitSettlePeriod(getSplitSettlePeriod(order));
-                    response.setSettleTime(order.getSettleTime());
+                    //response.setSplitSettlePeriod(getSplitSettlePeriod(order));
+                    //response.setSettleTime(order.getSettleTime());
                     response.setDealerName(getDealerName(dealer));
                     response.setSplitAmount(input.getSplitAmount().toString());
                     response.setRemark(getRemark(input.getBusinessType()));

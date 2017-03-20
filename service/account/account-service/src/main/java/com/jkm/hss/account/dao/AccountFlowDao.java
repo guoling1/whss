@@ -69,4 +69,21 @@ public interface AccountFlowDao {
      * @return
      */
     int selectCountByFlowNo(@Param("flowNo") String flowNo);
+
+    /**
+     * 商户流水分页
+     * @param firstIndex
+     * @param pageSize
+     * @param accountId
+     * @return
+     */
+    List<AccountFlow> selectByParamToMerchantFlow(@Param("firstIndex") int firstIndex, @Param("pageSize") int pageSize, @Param("accountId") long accountId);
+
+    /**
+     * 商户流水分页
+     *
+     * @param accountId
+     * @return
+     */
+    long selectCountByParamToMerchantFlow(@Param("accountId") long accountId);
 }

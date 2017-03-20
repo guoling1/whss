@@ -2,8 +2,8 @@ package com.jkm.hss.bill.service;
 
 import com.jkm.hss.account.entity.Account;
 import com.jkm.hss.bill.entity.AccountDetailsResponse;
+import com.jkm.hss.merchant.entity.ProfitDetailsRequest;
 import com.jkm.hss.merchant.helper.request.JkmProfitRequest;
-import com.jkm.hss.merchant.helper.request.ProfitDetailsRequest;
 
 import java.util.List;
 
