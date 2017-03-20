@@ -42,9 +42,9 @@ public interface ChannelSupportCreditBankService {
      * 当前渠道是否支持，当前银行
      *
      * @param channel
-     * @param bankName
+     * @param bankCode
      */
-    boolean isExistByUpperChannelAndBankName(int channel, String bankName);
+    boolean isExistByUpperChannelAndBankCode(int channel, String bankCode);
 
     /**
      * 行用卡-支持银行列表

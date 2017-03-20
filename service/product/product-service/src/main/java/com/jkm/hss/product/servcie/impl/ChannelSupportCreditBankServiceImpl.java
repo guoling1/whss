@@ -62,12 +62,12 @@ public class ChannelSupportCreditBankServiceImpl implements ChannelSupportCredit
      * {@inheritDoc}
      *
      * @param upperChannel
-     * @param bankName
+     * @param bankCode
      * @return
      */
     @Override
-    public boolean isExistByUpperChannelAndBankName(final int upperChannel, final String bankName) {
-        return this.channelSupportCreditBankDao.selectByUpperChannelAndBankName(upperChannel, bankName) > 0;
+    public boolean isExistByUpperChannelAndBankCode(final int upperChannel, final String bankCode) {
+        return this.channelSupportCreditBankDao.selectByUpperChannelAndBankCode(upperChannel, bankCode) > 0;
     }
 
     /**
