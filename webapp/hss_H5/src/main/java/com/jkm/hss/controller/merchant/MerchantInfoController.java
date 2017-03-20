@@ -383,11 +383,11 @@ public class MerchantInfoController extends BaseController {
         String bankNo = getBankNameRequest.getBankNo();
         final Optional<BankCardBin> bankCardBinOptional = this.bankCardBinService.analyseCardNo(bankNo);
         if(!bankCardBinOptional.isPresent()){
-            return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE,"");
+            return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE,"查询成功","");
         }
         if(!"1".equals(bankCardBinOptional.get().getCardTypeCode())){
-            return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE,"");
+            return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE,"查询成功","");
         }
-        return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE,bankCardBinOptional.get().getBankName());
+        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE,"查询成功",bankCardBinOptional.get().getBankName());
     }
 }
