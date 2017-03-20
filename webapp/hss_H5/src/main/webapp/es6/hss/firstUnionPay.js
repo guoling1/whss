@@ -8,6 +8,9 @@ browser.elastic_touch();
 // 引入动画模版 处理验证码
 const AnimationCountdown = _require('art-countdown');
 let countdown = new AnimationCountdown('sendCode', '重新获取');
+// 时间选择器
+const DatePicker = _require('datePicker');
+new DatePicker('expireDate');
 // 引入http message
 const http = _require('http');
 const validate = _require('validate');
@@ -63,6 +66,46 @@ cancel_validity.addEventListener('click', function () {
   example_validity.style.display = 'none';
 });
 
+// 定义信用卡号 正确性校验
+let test = function (cardNo) {
+  cardNo = cardNo || '';
+  let cache = [], cardNoArr = cardNo.split(''),
+    temp, cardNoTemp, cardNoArrLen = cardNoArr.length,
+    sum = 0, cacheLen;
+  /*信用卡校验规则：
+   *1、从倒数第二位开始，每相隔一位*2，如果乘积为两位数则数字相加
+   *2、得到的乘积与1中未处理的数字相加（除了最后一位），取和向上最近的以0结尾的数字
+   *3、用2得到的数字减去2中相加的和，得到的数字等于信用卡最后一位
+   */
+  if (cardNoArrLen < 1) {
+    return false;
+  }
+  let lastnumber = cardNoArr[cardNoArrLen - 1];
+  let cacuIndex = cardNoArrLen - 2;
+  let curIndex = cardNoArrLen - 1;
+  while (curIndex--) {
+    let mod = cacuIndex - curIndex;
+    if (mod % 2) {
+      cache.push(parseInt(cardNoArr[curIndex]));
+    } else {
+      cardNoTemp = cardNoArr[curIndex] * 2;
+
+      if (cardNoTemp.toString().length == 1) {
+        cache.push(cardNoArr[curIndex] * 2);
+      } else {
+        temp = cardNoTemp.toString().split('');
+        cache.push(parseInt(temp[0], 10) + parseInt(temp[1], 10));
+      }
+    }
+  }
+  cacheLen = cache.length;
+  while (cacheLen--) {
+    sum += cache[cacheLen];
+  }
+  let ceil = Math.ceil(sum / 10);
+  return (ceil * 10 - sum) == lastnumber;
+};
+
 let amount = getQueryString('amount');
 let channel = getQueryString('channel');
 let bankName = '';
@@ -72,6 +115,11 @@ let cvv2 = document.getElementById('cvv2');
 let mobile = document.getElementById('mobile');
 let code = document.getElementById('code');
 let orderId = '';
+// 定义信用卡号校验
+bankCode.addEventListener('change', function (e) {
+  let ev = e.target;
+  console.log(ev.value);
+});
 // 定义支付
 submit.addEventListener('click', function () {
   http.post('/trade/confirmUnionPay', {
@@ -84,12 +132,13 @@ submit.addEventListener('click', function () {
 // 定义验证码
 sendCode.addEventListener('click', function () {
   if (countdown.check()) {
+    let expire = expireDate.value.split('/');
     http.post('/trade/firstUnionPay', {
       amount: amount,
       channel: channel,
       bankName: bankName,
       bankCardNo: bankCode.value,
-      expireDate: expireDate.value,
+      expireDate: expire[0] + expire[1],
       cvv2: cvv2.value,
       mobile: mobile.value
     }, function (data) {
@@ -121,14 +170,26 @@ http.post('/channel/queryChannelSupportBank', {
       layer.style.display = 'none';
     });
     let logo = document.createElement('div');
-    logo.className = 'logo';
+    if (data[i].status == 1) {
+      logo.className = 'logo ' + data[i].bankCode;
+    } else {
+      logo.className = 'logo ' + data[i].bankCode + '_NO';
+    }
     let detail = document.createElement('div');
     detail.className = 'detail';
     let name = document.createElement('div');
-    name.className = 'name';
+    if (data[i].status == 1) {
+      name.className = 'name';
+    } else {
+      name.className = 'name NO';
+    }
     name.innerHTML = data[i].bankName;
     let small = document.createElement('div');
-    small.className = 'small';
+    if (data[i].status == 1) {
+      small.className = 'small';
+    } else {
+      small.className = 'small NO';
+    }
     small.innerHTML = '单日限额 ' + fmoney(data[i].dayLimitAmount, 2) + '元';
     detail.appendChild(name);
     detail.appendChild(small);

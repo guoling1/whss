@@ -31,9 +31,9 @@
     </div>
   </div>
   <div class="space">
-    <div class="list">
+    <div class="list right" id="chooseBank">
       <div class="left">付款银行</div>
-      <div class="val" id="chooseBank">${bankName} 尾号${shortNo}</div>
+      <div class="val" id="bank">${bankName} 尾号${shortNo}</div>
     </div>
     <div class="list">
       <div class="left">CVV2</div>
@@ -42,7 +42,7 @@
     </div>
     <div class="list">
       <div class="left">开户手机号</div>
-      <div class="val">${mobile}</div>
+      <div class="val" id="mobile">${mobile}</div>
     </div>
     <div class="list">
       <div class="left">短信验证码</div>

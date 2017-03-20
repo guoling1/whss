@@ -54,7 +54,7 @@
   <div class="space">
     <div class="list">
       <div class="left">有效期</div>
-      <input id="expireDate" class="ipt" type="text" placeholder="请输入信用卡有效期">
+      <input id="expireDate" class="ipt" type="text" placeholder="请选择信用卡有效期" readonly>
       <div class="mpt" id="check_validity">查看示例</div>
     </div>
     <div class="list">
@@ -115,6 +115,7 @@
   </div>
 </div>
 </body>
+<script src="https://res.wx.qq.com/open/libs/weuijs/1.0.0/weui.min.js"></script>
 <script src="http://static.jinkaimen.cn/vendor/vendor.1.0.9.1.min.js"></script>
 <%--<script src="http://static.jinkaimen.cn/hss/2.2.1/firstUnionPay.min.js"></script>--%>
 <script src="/js/hss/2.2.1/firstUnionPay.min.js"></script>

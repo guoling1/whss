@@ -25,6 +25,8 @@ let layer = document.getElementById('layer');
 let layer_body = document.getElementById('layer-body');
 let layer_x = document.getElementById('layer-x');
 let chooseBank = document.getElementById('chooseBank');
+let bank = document.getElementById('bank');
+let mobile = document.getElementById('mobile');
 let sendCode = document.getElementById('sendCode');
 let submit = document.getElementById('submit');
 let addNew = document.getElementById('addNew');
@@ -94,6 +96,8 @@ http.post('/bankcard/list/' + pageData.creditCardId, {}, function (data) {
         className[i].className = 'choose-box-body-list-bank';
       }
       this.className = 'choose-box-body-list-bank active';
+      bank.innerHTML = data[i].bankName + ' 尾号' + data[i].shortNo;
+      mobile.innerHTML = data[i].mobile;
       pageData.creditCardId = data[i].creditCardId;
       layer.style.display = 'none';
     });
