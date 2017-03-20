@@ -55,13 +55,13 @@ public class InitDataController extends BaseController{
     @RequestMapping(value = "initDealer", method = RequestMethod.GET)
     public CommonResponse init(final HttpServletRequest request, final HttpServletResponse response) {
         //初始化数据start
-        long productId = 0;
+        long productId = 6;
         int channelTypeSign = 301;
-        BigDecimal dealerTradeRate = null;
-        String dealerBalanceType = "D0";
-        BigDecimal dealerWithdrawFee = null;
-        BigDecimal dealerMerchantPayRate = null;
-        BigDecimal dealerMerchantWithdrawFee = null;
+        BigDecimal dealerTradeRate = new BigDecimal("0.0046");
+        String dealerBalanceType = "T1";
+        BigDecimal dealerWithdrawFee = new BigDecimal("1.00");
+        BigDecimal dealerMerchantPayRate = new BigDecimal("0.0060");
+        BigDecimal dealerMerchantWithdrawFee = new BigDecimal("2.00");
         //初始化数据end
         List<Long> dealerIds = dealerChannelRateDao.initDealerData();
         for(int i=0;i<dealerIds.size();i++){
@@ -95,7 +95,6 @@ public class InitDataController extends BaseController{
     @RequestMapping(value = "initMerchant", method = RequestMethod.GET)
     public void initMerchant(final HttpServletRequest request, final HttpServletResponse response) {
         //微信费率
-        BigDecimal payRate =  null;
         int channelType = 301;
         String sysType = EnumProductType.HSS.getId();
 
@@ -114,7 +113,7 @@ public class InitDataController extends BaseController{
                     merchantChannelRate.setChannelTypeSign(channelType);
                     merchantChannelRate.setMerchantBalanceType(dealerChannelRateOptional.get().getDealerBalanceType());
                     merchantChannelRate.setMerchantWithdrawFee(dealerChannelRateOptional.get().getDealerMerchantWithdrawFee());
-                    merchantChannelRate.setMerchantPayRate(payRate);
+                    merchantChannelRate.setMerchantPayRate(dealerChannelRateOptional.get().getDealerMerchantPayRate());
                     if(basicChannelOptionalTemp.get().getIsNeed()==1){//需要入网
                         merchantChannelRate.setEnterNet(EnumEnterNet.UNENT.getId());
                     }else{
@@ -144,7 +143,7 @@ public class InitDataController extends BaseController{
                     merchantChannelRate.setChannelTypeSign(channelType);
                     merchantChannelRate.setMerchantBalanceType(productChannelDetailOptional.get().getProductBalanceType());
                     merchantChannelRate.setMerchantWithdrawFee(productChannelDetailOptional.get().getProductMerchantWithdrawFee());
-                    merchantChannelRate.setMerchantPayRate(payRate);
+                    merchantChannelRate.setMerchantPayRate(productChannelDetailOptional.get().getProductMerchantPayRate());
                     if(basicChannelOptionalTemp.get().getIsNeed()==1){//需要入网
                         merchantChannelRate.setEnterNet(EnumEnterNet.UNENT.getId());
                     }else{
