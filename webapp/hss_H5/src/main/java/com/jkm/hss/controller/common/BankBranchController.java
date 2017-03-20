@@ -4,10 +4,13 @@ import com.google.common.base.Optional;
 import com.jkm.base.common.entity.CommonResponse;
 import com.jkm.hss.controller.BaseController;
 import com.jkm.hss.helper.request.MerchantLoginCodeRequest;
+import com.jkm.hss.merchant.entity.AccountBank;
 import com.jkm.hss.merchant.entity.BankBranch;
 import com.jkm.hss.merchant.entity.MerchantInfo;
 import com.jkm.hss.merchant.entity.UserInfo;
+import com.jkm.hss.merchant.enums.EnumMerchantStatus;
 import com.jkm.hss.merchant.helper.request.BankBranchRequest;
+import com.jkm.hss.merchant.service.AccountBankService;
 import com.jkm.hss.merchant.service.BankBranchService;
 import com.jkm.hss.merchant.service.MerchantInfoService;
 import com.jkm.hss.merchant.service.UserInfoService;
@@ -41,6 +44,9 @@ public class BankBranchController extends BaseController {
     @Autowired
     private MerchantInfoService merchantInfoService;
 
+    @Autowired
+    private AccountBankService accountBankService;
+
     /**
      * 获取商户银行卡信息
      *
@@ -60,17 +66,21 @@ public class BankBranchController extends BaseController {
         if(!merchantInfo.isPresent()){
             return CommonResponse.simpleResponse(-2, "未登录");
         }
-        if(merchantInfo.get().getBankNo()==null||"".equals(merchantInfo.get().getBankNo())){
+        if(merchantInfo.get().getStatus()!= EnumMerchantStatus.PASSED.getId()&&merchantInfo.get().getStatus()!= EnumMerchantStatus.FRIEND.getId()){
+            return CommonResponse.simpleResponse(-2, "信息未完善或待审核");
+        }
+        AccountBank accountBank = accountBankService.getDefault(merchantInfo.get().getAccountId());
+        if(accountBank==null){
             return CommonResponse.simpleResponse(-2, "银行卡号不完善");
         }
-        if(merchantInfo.get().getBankName()==null||"".equals(merchantInfo.get().getBankName())){
+        if(accountBank.getBankName()==null||"".equals(accountBank.getBankName())){
             return CommonResponse.simpleResponse(-2, "银行名称不完善");
         }
-        if("建设银行".equals(merchantInfo.get().getBankName())){
+        if("建设银行".equals(accountBank.getBankName())){
             bankBranchRequest.setCityName("");
             bankBranchRequest.setProvinceName("");
         }
-        List<BankBranch> bankBranchList = bankBranchService.findByBankName(merchantInfo.get().getBankName(),bankBranchRequest.getContions(),bankBranchRequest.getProvinceName(),bankBranchRequest.getCityName());
+        List<BankBranch> bankBranchList = bankBranchService.findByBankName(accountBank.getBankName(),bankBranchRequest.getContions(),bankBranchRequest.getProvinceName(),bankBranchRequest.getCityName());
         return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", bankBranchList);
     }
 
