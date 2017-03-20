@@ -13,8 +13,7 @@
         content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
   <meta name="format-detection" content="telephone=no"/>
   <title>好收收</title>
-  <%--<link rel="stylesheet" href="http://static.jinkaimen.cn/hss/css/style.2.2.1.css">--%>
-  <link rel="stylesheet" href="/css/hss/style.2.2.1.css">
+  <link rel="stylesheet" href="http://static.jinkaimen.cn/hss/css/style.2.2.2.css">
   <link rel="stylesheet" href="http://static.jinkaimen.cn/weui/weui.css">
 </head>
 <body>
@@ -48,7 +47,7 @@
     </div>
     <div class="list">
       <div class="left">银行卡号</div>
-      <input id="bankCode" class="ipt" type="text" placeholder="请输入信用卡号">
+      <input id="bankCode" class="ipt" type="text" placeholder="请输入信用卡号" readonly>
     </div>
   </div>
   <div class="space">
@@ -117,6 +116,5 @@
 </body>
 <script src="https://res.wx.qq.com/open/libs/weuijs/1.0.0/weui.min.js"></script>
 <script src="http://static.jinkaimen.cn/vendor/vendor.1.0.9.1.min.js"></script>
-<%--<script src="http://static.jinkaimen.cn/hss/2.2.1/firstUnionPay.min.js"></script>--%>
-<script src="/js/hss/2.2.1/firstUnionPay.min.js"></script>
+<script src="http://static.jinkaimen.cn/hss/2.2.2/firstUnionPay.min.js"></script>
 </html>

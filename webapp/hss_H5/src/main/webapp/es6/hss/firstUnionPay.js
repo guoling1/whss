@@ -115,37 +115,82 @@ let cvv2 = document.getElementById('cvv2');
 let mobile = document.getElementById('mobile');
 let code = document.getElementById('code');
 let orderId = '';
+let supportBankCardList = {};
+let support = false;
 // 定义信用卡号校验
+bankCode.addEventListener('click', function () {
+  if (!bankName || bankName == '') {
+    message.prompt_show('请先选择所属银行');
+  }
+});
 bankCode.addEventListener('change', function (e) {
   let ev = e.target;
-  console.log(ev.value);
+  if (ev.value.length >= 13 && ev.value.length <= 24 && test(ev.value)) {
+    http.post('/merchantInfo/selectBankNameByBankNo', {
+      bankNo: ev.value
+    }, function (data) {
+      if (!data || data == '') {
+        support = false;
+        message.prompt_show('暂不支持使用储蓄卡');
+      } else {
+        let allow = false;
+        for (let i = 0; i < supportBankCardList.length; i++) {
+          if (data == supportBankCardList[i].bankCode) {
+            allow = true;
+            support = true;
+            if (supportBankCardList[i].bankName != bankName) {
+              bankName = supportBankCardList[i].bankName;
+              chooseBank.value = supportBankCardList[i].bankName;
+            }
+          }
+        }
+        if (!allow) {
+          support = false;
+          message.prompt_show('暂时不支持该银行的卡');
+        }
+      }
+    })
+  }
 });
 // 定义支付
 submit.addEventListener('click', function () {
-  http.post('/trade/confirmUnionPay', {
-    orderId: orderId,
-    code: code.value,
-  }, function () {
-    window.location.replace('/trade/unionPaySuccess/' + orderId);
-  })
+  if (!support) {
+    message.prompt_show('请输入正确的信用卡号');
+  } else if (validate.empty(expireDate.value, '信用卡有效期') &&
+    validate.empty(cvv2.value, 'CVV2') &&
+    validate.phone(mobile.value) &&
+    validate.empty(code.value, '验证码')) {
+    http.post('/trade/confirmUnionPay', {
+      orderId: orderId,
+      code: code.value,
+    }, function () {
+      window.location.replace('/trade/unionPaySuccess/' + orderId);
+    })
+  }
 });
 // 定义验证码
 sendCode.addEventListener('click', function () {
   if (countdown.check()) {
-    let expire = expireDate.value.split('/');
-    http.post('/trade/firstUnionPay', {
-      amount: amount,
-      channel: channel,
-      bankName: bankName,
-      bankCardNo: bankCode.value,
-      expireDate: expire[0] + expire[1],
-      cvv2: cvv2.value,
-      mobile: mobile.value
-    }, function (data) {
-      orderId = data.orderId;
-      message.prompt_show('验证码发送成功');
-      countdown.submit_start();
-    })
+    if (!support) {
+      message.prompt_show('请输入正确的信用卡号');
+    } else if (validate.empty(expireDate.value, '信用卡有效期') &&
+      validate.empty(cvv2.value, 'CVV2') &&
+      validate.phone(mobile.value)) {
+      let expire = expireDate.value.split('/');
+      http.post('/trade/firstUnionPay', {
+        amount: amount,
+        channel: channel,
+        bankName: bankName,
+        bankCardNo: bankCode.value,
+        expireDate: expire[0] + expire[1],
+        cvv2: cvv2.value,
+        mobile: mobile.value
+      }, function (data) {
+        orderId = data.orderId;
+        message.prompt_show('验证码发送成功');
+        countdown.submit_start();
+      })
+    }
   }
 });
 
@@ -161,6 +206,7 @@ layer_x.addEventListener('click', function () {
 http.post('/channel/queryChannelSupportBank', {
   channelSign: '301'
 }, function (data) {
+  supportBankCardList = data;
   for (let i = 0; i < data.length; i++) {
     let list = document.createElement('div');
     list.className = 'choose-box-body-list-bank';
@@ -168,6 +214,7 @@ http.post('/channel/queryChannelSupportBank', {
       bankName = data[i].bankName;
       chooseBank.value = data[i].bankName;
       layer.style.display = 'none';
+      bankCode.removeAttribute('readonly');
     });
     let logo = document.createElement('div');
     if (data[i].status == 1) {

@@ -31,6 +31,10 @@ let sendCode = document.getElementById('sendCode');
 let submit = document.getElementById('submit');
 let addNew = document.getElementById('addNew');
 
+layer_x.addEventListener('click', function () {
+  layer.style.display = 'none';
+});
+
 let check_cvv = document.getElementById('check_cvv');
 let example_cvv = document.getElementById('example_cvv');
 let cancel_cvv = document.getElementById('cancel_cvv');
@@ -58,26 +62,31 @@ addNew.addEventListener('click', function () {
 });
 // 定义支付
 submit.addEventListener('click', function () {
-  http.post('/trade/confirmUnionPay', {
-    orderId: orderId,
-    code: code.value,
-  }, function () {
-    window.location.replace('/trade/unionPaySuccess/' + orderId);
-  })
+  if (validate.empty(cvv2.value, 'CVV2') &&
+    validate.empty(code.value, '验证码')) {
+    http.post('/trade/confirmUnionPay', {
+      orderId: orderId,
+      code: code.value,
+    }, function () {
+      window.location.replace('/trade/unionPaySuccess/' + orderId);
+    })
+  }
 });
 // 定义验证码
 sendCode.addEventListener('click', function () {
   if (countdown.check()) {
-    http.post('/trade/againUnionPay', {
-      amount: amount,
-      channel: channel,
-      creditCardId: pageData.creditCardId,
-      cvv2: cvv2.value
-    }, function (data) {
-      orderId = data.orderId;
-      message.prompt_show('验证码发送成功');
-      countdown.submit_start();
-    })
+    if (validate.empty(cvv2.value, 'CVV2')) {
+      http.post('/trade/againUnionPay', {
+        amount: amount,
+        channel: channel,
+        creditCardId: pageData.creditCardId,
+        cvv2: cvv2.value
+      }, function (data) {
+        orderId = data.orderId;
+        message.prompt_show('验证码发送成功');
+        countdown.submit_start();
+      })
+    }
   }
 });
 
@@ -102,7 +111,7 @@ http.post('/bankcard/list/' + pageData.creditCardId, {}, function (data) {
       layer.style.display = 'none';
     });
     let logo = document.createElement('div');
-    logo.className = 'logo';
+    logo.className = 'logo ' + data[i].bankCode;
     let info = document.createElement('div');
     info.className = 'info';
     info.innerHTML = data[i].bankName + ' (' + data[i].shortNo + ')' + ' <span>信用卡</span>';
