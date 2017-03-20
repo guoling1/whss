@@ -71,5 +71,5 @@
   }
 </script>
 <script src="http://static.jinkaimen.cn/vendor/vendor.1.0.7.min.js"></script>
-<script src="http://static.jinkaimen.cn/hss/2.2.2/reg.min.js"></script>
+<script src="http://static.jinkaimen.cn/hss/2.2.3/reg.min.js"></script>
 </html>
