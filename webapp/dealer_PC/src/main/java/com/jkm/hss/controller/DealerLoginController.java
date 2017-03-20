@@ -47,13 +47,17 @@ public class DealerLoginController extends BaseController{
     @ResponseBody
     @RequestMapping(value = "/pc", method = RequestMethod.POST)
     public CommonResponse ajaxLogin(final HttpServletResponse response, @RequestBody final DealerLoginRequest loginRequest) {
-
+        if (loginRequest.getLoginName()==null||"".equals(loginRequest.getLoginName())){
+            return CommonResponse.simpleResponse(-1, "登录名不能为空");
+        }
+        if (loginRequest.getPwd()==null||"".equals(loginRequest.getPwd())){
+            return CommonResponse.simpleResponse(-1, "密码不能为空");
+        }
         final Dealer dealer = this.dealerService.getDealerByLoginName(loginRequest.getLoginName());
         if (dealer == null){
             return CommonResponse.simpleResponse(-1, "登录失败,用户不存在");
         }
-
-        if (dealer.getLoginPwd().equals(DealerSupport.passwordDigest(loginRequest.getPwd(),"JKM"))){
+        if ((DealerSupport.passwordDigest(loginRequest.getPwd(),"JKM")).equals(dealer.getLoginPwd())){
             //密码正确
             final DealerPassport dealerPassport =
                     this.dealerPassportService.createPassport(dealer.getId(), EnumPassportType.MOBILE, EnumLoginStatus.LOGIN);
