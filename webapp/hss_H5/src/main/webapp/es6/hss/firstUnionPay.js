@@ -109,7 +109,8 @@ let test = function (cardNo) {
 let amount = getQueryString('amount');
 let channel = getQueryString('channel');
 let bankName = '';
-let bankCode = document.getElementById('bankCode');
+let bankCode = '';
+let bankCodeBtn = document.getElementById('bankCode');
 let expireDate = document.getElementById('expireDate');
 let cvv2 = document.getElementById('cvv2');
 let mobile = document.getElementById('mobile');
@@ -118,12 +119,12 @@ let orderId = '';
 let supportBankCardList = {};
 let support = false;
 // 定义信用卡号校验
-bankCode.addEventListener('click', function () {
+bankCodeBtn.addEventListener('click', function () {
   if (!bankName || bankName == '') {
     message.prompt_show('请先选择所属银行');
   }
 });
-bankCode.addEventListener('change', function (e) {
+bankCodeBtn.addEventListener('change', function (e) {
   let ev = e.target;
   if (ev.value.length >= 13 && ev.value.length <= 24 && test(ev.value)) {
     http.post('/merchantInfo/selectBankNameByBankNo', {
@@ -140,6 +141,7 @@ bankCode.addEventListener('change', function (e) {
             support = true;
             if (supportBankCardList[i].bankName != bankName) {
               bankName = supportBankCardList[i].bankName;
+              bankCode = supportBankCardList[i].bankCode;
               chooseBank.value = supportBankCardList[i].bankName;
             }
           }
@@ -180,8 +182,8 @@ sendCode.addEventListener('click', function () {
       http.post('/trade/firstUnionPay', {
         amount: amount,
         channel: channel,
-        bankName: bankName,
-        bankCardNo: bankCode.value,
+        bankCode: bankCode,
+        bankCardNo: bankCodeBtn.value,
         expireDate: expire[0] + expire[1],
         cvv2: cvv2.value,
         mobile: mobile.value
@@ -212,9 +214,10 @@ http.post('/channel/queryChannelSupportBank', {
     list.className = 'choose-box-body-list-bank';
     list.addEventListener('click', function () {
       bankName = data[i].bankName;
+      bankCode = data[i].bankCode;
       chooseBank.value = data[i].bankName;
       layer.style.display = 'none';
-      bankCode.removeAttribute('readonly');
+      bankCodeBtn.removeAttribute('readonly');
     });
     let logo = document.createElement('div');
     if (data[i].status == 1) {
