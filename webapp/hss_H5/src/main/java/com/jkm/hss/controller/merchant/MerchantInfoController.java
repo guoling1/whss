@@ -388,6 +388,6 @@ public class MerchantInfoController extends BaseController {
         if(!"1".equals(bankCardBinOptional.get().getCardTypeCode())){
             return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE,"查询成功","");
         }
-        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE,"查询成功",bankCardBinOptional.get().getBankName());
+        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE,"查询成功",bankCardBinOptional.get().getShorthand());
     }
 }
