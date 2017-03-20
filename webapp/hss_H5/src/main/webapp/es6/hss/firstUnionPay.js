@@ -187,7 +187,7 @@ sendCode.addEventListener('click', function () {
         channel: channel,
         bankCode: bankCode,
         bankCardNo: bankCodeBtn.value,
-        expireDate: expire[0] + expire[1],
+        expireDate: expire[1] + expire[0],
         cvv2: cvv2.value,
         mobile: mobile.value
       }, function (data) {

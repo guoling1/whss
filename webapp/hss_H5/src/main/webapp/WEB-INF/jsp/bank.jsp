@@ -44,5 +44,5 @@
 
 </body>
 <script src="http://static.jinkaimen.cn/vendor/vendor.1.0.9.2.min.js"></script>
-<script src="http://static.jinkaimen.cn/hss/2.2.3/bank.min.js"></script>
+<script src="http://static.jinkaimen.cn/hss/2.2.4/bank.min.js"></script>
 </html>

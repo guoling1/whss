@@ -63,5 +63,5 @@
 <%--<script src="http://static.jinkaimen.cn/weui/weui.min.js"></script>--%>
 <script src="https://res.wx.qq.com/open/libs/weuijs/1.0.0/weui.min.js"></script>
 <script src="http://static.jinkaimen.cn/vendor/vendor.1.0.9.2.min.js"></script>
-<script src="http://static.jinkaimen.cn/hss/2.2.3/tradeRecord.min.js"></script>
+<script src="http://static.jinkaimen.cn/hss/2.2.4/tradeRecord.min.js"></script>
 </html>
