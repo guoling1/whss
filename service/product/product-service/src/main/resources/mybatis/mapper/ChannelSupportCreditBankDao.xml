@@ -13,8 +13,8 @@
         SELECT * FROM tb_channel_support_credit_bank WHERE upper_channel = #{upperChannel};
     </select>
 
-    <select id="selectByUpperChannelAndBankName" resultType="java.lang.Integer">
-        SELECT COUNT(0) FROM tb_channel_support_credit_bank WHERE upper_channel = #{upperChannel} AND bank_name = #{bankName};
+    <select id="selectByUpperChannelAndBankCode" resultType="java.lang.Integer">
+        SELECT COUNT(0) FROM tb_channel_support_credit_bank WHERE upper_channel = #{upperChannel} AND bank_code = #{bankCode};
     </select>
 
     <select id="selectCountByParam" resultType="java.lang.Integer">

@@ -42,10 +42,10 @@ public interface ChannelSupportCreditBankDao {
      * 查询当前通道，是否支持当前银行
      *
      * @param upperChannel
-     * @param bankName
+     * @param bankCode
      * @return
      */
-    int selectByUpperChannelAndBankName(@Param("upperChannel") int upperChannel, @Param("bankName") String bankName);
+    int selectByUpperChannelAndBankCode(@Param("upperChannel") int upperChannel, @Param("bankCode") String bankCode);
 
     /**
      * 列表-个数

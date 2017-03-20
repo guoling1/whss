@@ -449,16 +449,16 @@ public class TradeController extends BaseController {
         if (!"1".equals(bankCardBin.getCardTypeCode())) {
             return CommonResponse.builder4MapResult(2, "fail").addParam("errorCode", "002").build();
         }
-        if (!bankCardBin.getBankName().equals(firstUnionPaySendMsgRequest.getBankName())) {
+        if (!bankCardBin.getShorthand().equals(firstUnionPaySendMsgRequest.getBankCode())) {
             final boolean exist = this.channelSupportCreditBankService.
-                    isExistByUpperChannelAndBankName(EnumPayChannelSign.idOf(firstUnionPaySendMsgRequest.getChannel()).getUpperChannel().getId(), bankCardBin.getBankName());
+                    isExistByUpperChannelAndBankCode(EnumPayChannelSign.idOf(firstUnionPaySendMsgRequest.getChannel()).getUpperChannel().getId(), bankCardBin.getShorthand());
             if (!exist) {
                 return CommonResponse.builder4MapResult(2, "fail").addParam("errorCode", "003").build();
             }
-            firstUnionPaySendMsgRequest.setBankName(bankCardBin.getBankName());
+            firstUnionPaySendMsgRequest.setBankCode(bankCardBin.getShorthand());
         }
         final long creditBankCardId = this.accountBankService.initCreditBankCard(merchantInfo.getAccountId(), firstUnionPaySendMsgRequest.getBankCardNo(),
-                firstUnionPaySendMsgRequest.getBankName(), firstUnionPaySendMsgRequest.getMobile(), bankCardBin.getShorthand(), firstUnionPaySendMsgRequest.getExpireDate());
+                bankCardBin.getBankName(), firstUnionPaySendMsgRequest.getMobile(), bankCardBin.getShorthand(), firstUnionPaySendMsgRequest.getExpireDate());
         final Pair<Integer, String> result = this.payService.unionPay(merchantInfo.getId(), firstUnionPaySendMsgRequest.getAmount(),
                 firstUnionPaySendMsgRequest.getChannel(), creditBankCardId, firstUnionPaySendMsgRequest.getCvv2(), EnumProductType.HSS.getId());
         if (0 == result.getLeft()) {
