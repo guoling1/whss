@@ -16,6 +16,7 @@ import com.jkm.hss.merchant.enums.EnumMerchantStatus;
 import com.jkm.hss.merchant.enums.EnumPayMethod;
 import com.jkm.hss.merchant.enums.EnumStatus;
 import com.jkm.hss.merchant.enums.EnumUpgradeRecordType;
+import com.jkm.hss.merchant.helper.request.ChangeDealerRequest;
 import com.jkm.hss.merchant.helper.request.ContinueBankInfoRequest;
 import com.jkm.hss.merchant.helper.request.MerchantInfoAddRequest;
 import com.jkm.hss.merchant.helper.request.MerchantUpgradeRequest;
@@ -527,6 +528,17 @@ public class MerchantInfoServiceImpl implements MerchantInfoService {
     @Override
     public int toAuthen(String isAuthen, long id) {
         return merchantInfoDao.toAuthen(isAuthen,id);
+    }
+
+    /**
+     * 商户切换代理
+     *
+     * @param changeDealerRequest
+     * @return
+     */
+    @Override
+    public int changeDealer(ChangeDealerRequest changeDealerRequest) {
+        return merchantInfoDao.changeDealer(changeDealerRequest);
     }
 
 }
