@@ -579,4 +579,8 @@
     <select id="getDealerByLoginName" resultType="com.jkm.hss.dealer.entity.Dealer">
         SELECT * FROM tb_dealer WHERE login_name = #{loginName}
     </select>
+    <!--根据markCode查询代理商信息-->
+    <select id="getDealerByMarkCode" resultType="com.jkm.hss.dealer.entity.Dealer">
+        SELECT * FROM tb_dealer WHERE mark_coe = #{markCode}
+    </select>
 </mapper>

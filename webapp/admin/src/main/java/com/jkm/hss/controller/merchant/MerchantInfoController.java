@@ -2,6 +2,8 @@ package com.jkm.hss.controller.merchant;
 
 import com.jkm.base.common.entity.CommonResponse;
 import com.jkm.hss.controller.BaseController;
+import com.jkm.hss.dealer.service.DealerService;
+import com.jkm.hss.merchant.enums.EnumChangeType;
 import com.jkm.hss.merchant.helper.request.ChangeDealerRequest;
 import com.jkm.hss.merchant.service.MerchantInfoService;
 import lombok.extern.slf4j.Slf4j;
@@ -21,6 +23,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class MerchantInfoController extends BaseController{
     @Autowired
     private MerchantInfoService merchantInfoService;
+    @Autowired
+    private DealerService dealerService;
 
     /**
      * 切换代理
@@ -29,7 +33,20 @@ public class MerchantInfoController extends BaseController{
     @ResponseBody
     @RequestMapping(value = "/changeDealer",method = RequestMethod.GET)
     public CommonResponse changeDealer(@RequestBody ChangeDealerRequest changeDealerRequest){
-        merchantInfoService.sele
+        if(changeDealerRequest.getMerchantId()<=0){
+            return CommonResponse.simpleResponse(-1, "商户编码不正确");
+        }
+        if(changeDealerRequest.getChangeType()== EnumChangeType.BOSS.getId()){//是boss
+            changeDealerRequest.setCurrentDealerId(0);
+            changeDealerRequest.setFirstDealerId(0);
+            changeDealerRequest.setSecondDealerId(0);
+        }
+        if(changeDealerRequest.getChangeType()== EnumChangeType.FIRSTDEALER.getId()){//是一代
+        }
+        if(changeDealerRequest.getChangeType()== EnumChangeType.SECONDDEALER.getId()){//是二代
+
+        }
+        merchantInfoService.changeDealer(changeDealerRequest);
         return CommonResponse.simpleResponse(1, "success");
     }
 }

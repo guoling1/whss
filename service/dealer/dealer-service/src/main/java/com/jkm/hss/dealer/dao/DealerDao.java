@@ -301,4 +301,11 @@ public interface DealerDao {
      * @return
      */
     MerchantInfoResponse getProxyName(int firstLevelDealerId);
+
+    /**
+     * 根据markCode查询代理商信息
+     * @param markCode
+     * @return
+     */
+    Dealer getDealerByMarkCode(@Param("markCode") String markCode);
 }

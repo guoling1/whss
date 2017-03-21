@@ -2249,4 +2249,15 @@ public class DealerServiceImpl implements DealerService {
         MerchantInfoResponse response = dealerDao.getProxyName(firstLevelDealerId);
         return response;
     }
+
+    /**
+     * 根据代理商编码查询代理商信息
+     *
+     * @param markCode
+     * @return
+     */
+    @Override
+    public Optional<Dealer> getDealerByMarkCode(String markCode) {
+        return Optional.fromNullable(dealerDao.getDealerByMarkCode(markCode));
+    }
 }

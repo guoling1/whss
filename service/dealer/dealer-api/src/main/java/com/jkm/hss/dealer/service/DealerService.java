@@ -498,5 +498,11 @@ public interface DealerService {
      */
     MerchantInfoResponse getProxyName(int firstLevelDealerId);
 
+    /**
+     * 根据代理商编码查询代理商信息
+     * @param markCode
+     * @return
+     */
+    Optional<Dealer> getDealerByMarkCode(String markCode);
 
 }
