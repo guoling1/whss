@@ -519,7 +519,6 @@ public class TradeController extends BaseController {
         if (StringUtils.isEmpty(againUnionPaySendMsgRequest.getCvv2())) {
             return CommonResponse.simpleResponse(-1, "CVV2 不能为空");
         }
-        this.accountBankService.setDefaultCreditCard(againUnionPaySendMsgRequest.getCreditCardId());
         final Pair<Integer, String> result = this.payService.unionPay(merchantInfo.getId(), againUnionPaySendMsgRequest.getAmount(),
                 againUnionPaySendMsgRequest.getChannel(), againUnionPaySendMsgRequest.getCreditCardId(),
                 againUnionPaySendMsgRequest.getCvv2(), EnumProductType.HSS.getId());
