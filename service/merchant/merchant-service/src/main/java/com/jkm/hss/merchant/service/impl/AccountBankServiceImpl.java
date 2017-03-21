@@ -109,7 +109,7 @@ public class AccountBankServiceImpl implements AccountBankService{
         Optional<AccountBank> backAccountBank = this.isExistBankNo(accountId,MerchantSupport.encryptBankCard(bankNo),EnumAccountBank.CREDIT.getId());
         if(!backAccountBank.isPresent()){
             log.info("不存在该账号{}",bankNo);
-            this.reset(accountId,EnumAccountBank.CREDIT.getId());
+//            this.reset(accountId,EnumAccountBank.CREDIT.getId());
             AccountBank accountBank = new AccountBank();
             accountBank.setAccountId(accountId);
             accountBank.setBankNo(MerchantSupport.encryptBankCard(bankNo));
