@@ -745,7 +745,7 @@
         WHEN i.`status` = 5 THEN
         '禁用'
         WHEN i.`status` = 6 THEN
-        '激活'
+        '审核通过'
         ELSE
         NULL
         END as merchantStatus,
@@ -754,9 +754,10 @@
         tb_qr_code as c
         LEFT JOIN tb_merchant_info AS i ON c.merchant_id = i.id
         WHERE  c.sys_type='hss'
-        <if test="merchantStatus>-1">
-            AND i.`status` = #{merchantStatus}
-        </if>
+        AND i.`status` IN
+        <foreach collection="merchantStatusList" item="item" index="index" open="(" separator="," close=")">
+            #{item}
+        </foreach>
         <if test="firstDealerId>0">
             AND c.first_level_dealer_id = #{firstDealerId}
         </if>
@@ -801,9 +802,10 @@
         tb_qr_code as c
         LEFT JOIN tb_merchant_info AS i ON c.merchant_id = i.id
         WHERE  c.sys_type='hss'
-        <if test="merchantStatus>-1">
-            AND i.`status` = #{merchantStatus}
-        </if>
+        AND i.`status` IN
+        <foreach collection="merchantStatusList" item="item" index="index" open="(" separator="," close=")">
+            #{item}
+        </foreach>
         <if test="firstDealerId>0">
             AND c.first_level_dealer_id = #{firstDealerId}
         </if>
@@ -875,9 +877,10 @@
         tb_qr_code as c
         LEFT JOIN app_biz_shop as i ON c.merchant_id = i.id
         WHERE c.sys_type='hsy'
-        <if test="merchantStatus>-1">
-            AND i.STATUS = #{merchantStatus}
-        </if>
+        AND i.STATUS IN
+        <foreach collection="merchantStatusList" item="item" index="index" open="(" separator="," close=")">
+            #{item}
+        </foreach>
         <if test="firstDealerId>0">
             AND c.first_level_dealer_id = #{firstDealerId}
         </if>
@@ -920,9 +923,10 @@
         SELECT count(1) FROM tb_qr_code as c
         LEFT JOIN app_biz_shop as i ON c.merchant_id = i.id
         WHERE c.sys_type='hsy'
-        <if test="merchantStatus>-1">
-            AND i.STATUS = #{merchantStatus}
-        </if>
+        AND i.STATUS IN
+        <foreach collection="merchantStatusList" item="item" index="index" open="(" separator="," close=")">
+            #{item}
+        </foreach>
         <if test="firstDealerId>0">
             AND c.first_level_dealer_id = #{firstDealerId}
         </if>

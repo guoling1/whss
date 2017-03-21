@@ -962,13 +962,13 @@ public class QRCodeServiceImpl implements QRCodeService {
         long count = 0l;
         List<MyQrCodeListResponse> qrCodeList = null;
         if((EnumQRCodeSysType.HSS.getId()).equals(myQrCodeListRequest.getSysType())){
-            int tempStatus = getMerchantStatus(myQrCodeListRequest.getMerchantStatus(),EnumQRCodeSysType.HSS.getId());
-            myQrCodeListRequest.setMerchantStatus(tempStatus);
+            List<Integer> tempStatus = getMerchantStatus(myQrCodeListRequest.getMerchantStatus(),EnumQRCodeSysType.HSS.getId());
+            myQrCodeListRequest.setMerchantStatusList(tempStatus);
             count=qrCodeDao.getDealerHSSQrCodeCount(myQrCodeListRequest);
             qrCodeList=qrCodeDao.getDealerHSSQrCodeList(myQrCodeListRequest);
         }else{
-            int tempStatus = getMerchantStatus(myQrCodeListRequest.getMerchantStatus(),EnumQRCodeSysType.HSY.getId());
-            myQrCodeListRequest.setMerchantStatus(tempStatus);
+            List<Integer> tempStatus = getMerchantStatus(myQrCodeListRequest.getMerchantStatus(),EnumQRCodeSysType.HSY.getId());
+            myQrCodeListRequest.setMerchantStatusList(tempStatus);
             count=qrCodeDao.getDealerHSYQrCodeCount(myQrCodeListRequest);
             qrCodeList=qrCodeDao.getDealerHSYQrCodeList(myQrCodeListRequest);
         }
@@ -976,38 +976,59 @@ public class QRCodeServiceImpl implements QRCodeService {
         pageModel.setRecords(qrCodeList);
         return pageModel;
     }
-    private int getMerchantStatus(int status,String type){
-        int tempStatus = -1;
+    private List<Integer> getMerchantStatus(int status,String type){
+        List<Integer> merchantStatusList = new ArrayList<Integer>();
         if((EnumQRCodeSysType.HSS.getId()).equals(type)){
             if(status==0){
-                tempStatus = -1;
+                merchantStatusList.add(0);
+                merchantStatusList.add(1);
+                merchantStatusList.add(2);
+                merchantStatusList.add(3);
+                merchantStatusList.add(4);
+                merchantStatusList.add(5);
+                merchantStatusList.add(6);
             }else if(status==1){
-                tempStatus = 0;
+                merchantStatusList.add(0);
             }else if(status==2){
-                tempStatus = 2;
+                merchantStatusList.add(2);
             }else if(status==3){
-                tempStatus = 4;
+                merchantStatusList.add(4);
             }else if(status==4){
-                tempStatus = 3;
+                merchantStatusList.add(3);
+                merchantStatusList.add(6);
             }else{
-                tempStatus = -1;
+                merchantStatusList.add(0);
+                merchantStatusList.add(1);
+                merchantStatusList.add(2);
+                merchantStatusList.add(3);
+                merchantStatusList.add(4);
+                merchantStatusList.add(5);
+                merchantStatusList.add(6);
             }
         }else{
             if(status==0){
-                tempStatus = -1;
+                merchantStatusList.add(1);
+                merchantStatusList.add(2);
+                merchantStatusList.add(3);
+                merchantStatusList.add(4);
+                merchantStatusList.add(99);
             }else if(status==1){
-                tempStatus = 4;
+                merchantStatusList.add(4);
             }else if(status==2){
-                tempStatus = 2;
+                merchantStatusList.add(2);
             }else if(status==3){
-                tempStatus = 3;
+                merchantStatusList.add(3);
             }else if(status==4){
-                tempStatus = 1;
+                merchantStatusList.add(1);
             }else{
-                tempStatus = -1;
+                merchantStatusList.add(1);
+                merchantStatusList.add(2);
+                merchantStatusList.add(3);
+                merchantStatusList.add(4);
+                merchantStatusList.add(99);
             }
         }
-        return tempStatus;
+        return merchantStatusList;
     }
 
     /**
