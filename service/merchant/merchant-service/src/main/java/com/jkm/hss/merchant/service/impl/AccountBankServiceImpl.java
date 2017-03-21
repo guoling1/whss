@@ -391,4 +391,22 @@ public class AccountBankServiceImpl implements AccountBankService{
     public Optional<AccountBank> selectStatelessById(long id) {
         return Optional.fromNullable(accountBankDao.selectStatelessById(id));
     }
+
+    /**
+     * 是否有信用卡
+     *
+     * @param accountId
+     * @param bankNo
+     * @return
+     */
+    @Override
+    public boolean isExistBankNo(long accountId, String bankNo) {
+        Long backId = this.isExistBankNo(accountId,MerchantSupport.encryptBankCard(bankNo),EnumAccountBank.CREDIT.getId());
+        if(backId==null){
+            return false;
+        }else{
+            return true;
+        }
+    }
+
 }

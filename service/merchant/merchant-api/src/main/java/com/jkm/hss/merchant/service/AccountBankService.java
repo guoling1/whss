@@ -152,4 +152,12 @@ public interface AccountBankService {
      * @return
      */
     Optional<AccountBank> selectStatelessById(long id);
+
+    /**
+     * 是否有信用卡
+     * @param accountId
+     * @param bankNo
+     * @return
+     */
+    boolean isExistBankNo(long accountId,  String bankNo);
 }
