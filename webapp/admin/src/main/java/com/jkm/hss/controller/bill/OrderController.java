@@ -23,7 +23,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -126,21 +125,20 @@ public class OrderController extends BaseController {
             req.setEndTime(sdf.format(rightNow.getTime()));
         }
         WithdrawResponse result = orderService.withdrawAmount(req);
-        if (result!=null){
-            if (result.getTradeAmount()==null){
-                BigDecimal b1 = new BigDecimal(Double.toString(0));
-                result.setTradeAmount(b1);
-            }
-            if (result.getPoundage()==null){
-                BigDecimal b1 = new BigDecimal(Double.toString(0));
-                result.setPoundage(b1);
-
-            }
-        }else {
-            BigDecimal b1 = new BigDecimal(Double.toString(0));
-            result.setPoundage(b1);
-            result.setTradeAmount(b1);
-        }
+//        BigDecimal x = new BigDecimal("0.0");
+//        if (result!=null){
+//            if (result.getTradeAmount()==null){
+//                result.setTradeAmount(x);
+//            }
+//            if (result.getPoundage()==null){
+//                result.setPoundage(x);
+//
+//            }
+//        }else {
+//
+//            result.setPoundage(x);
+//            result.setTradeAmount(x);
+//        }
         return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "统计完成", result);
 
     }
