@@ -168,9 +168,9 @@
     </update>
 
     <!-- 是否已存在卡号 -->
-    <select id="isExistBankNo" resultType="java.lang.Long">
+    <select id="isExistBankNo" resultType="com.jkm.hss.merchant.entity.AccountBank">
         SELECT
-        id
+        <include refid="Base_Column_List" />
         FROM tb_account_bank
         WHERE account_id = #{accountId} and status=0 and card_type=#{cardType} and bank_no=#{bankNo}
     </select>

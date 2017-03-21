@@ -145,7 +145,7 @@ public interface AccountBankService {
      * @param bankNo
      * @return
      */
-    Long isExistBankNo(long accountId,String bankNo,int cardType);
+    Optional<AccountBank> isExistBankNo(long accountId,String bankNo,int cardType);
     /**
      * 无状态查询信用卡
      * @param id
@@ -159,5 +159,5 @@ public interface AccountBankService {
      * @param bankNo
      * @return
      */
-    boolean isExistBankNo(long accountId,  String bankNo);
+    Optional<AccountBank> isExistBankNo(long accountId,  String bankNo);
 }

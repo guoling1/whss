@@ -106,8 +106,8 @@ public class AccountBankServiceImpl implements AccountBankService{
      */
     @Override
     public long initCreditBankCard(long accountId,String bankNo,String bankName,String reserveMobile,String bankBin,String expiryTime) {
-        Long backId = this.isExistBankNo(accountId,MerchantSupport.encryptBankCard(bankNo),EnumAccountBank.CREDIT.getId());
-        if(backId==null){
+        Optional<AccountBank> backAccountBank = this.isExistBankNo(accountId,MerchantSupport.encryptBankCard(bankNo),EnumAccountBank.CREDIT.getId());
+        if(!backAccountBank.isPresent()){
             log.info("不存在该账号{}",bankNo);
             this.reset(accountId,EnumAccountBank.CREDIT.getId());
             AccountBank accountBank = new AccountBank();
@@ -126,7 +126,7 @@ public class AccountBankServiceImpl implements AccountBankService{
             log.info("已经存在该账号{}",bankNo);
 //            this.reset(accountId,EnumAccountBank.CREDIT.getId());
 //            this.setDefaultCreditCard(backId);
-            return backId;
+            return backAccountBank.get().getId();
         }
 
     }
@@ -377,8 +377,8 @@ public class AccountBankServiceImpl implements AccountBankService{
      * @return
      */
     @Override
-    public Long isExistBankNo(long accountId, String bankNo, int cardType) {
-        return accountBankDao.isExistBankNo(accountId,bankNo,cardType);
+    public Optional<AccountBank> isExistBankNo(long accountId, String bankNo, int cardType) {
+        return Optional.fromNullable(accountBankDao.isExistBankNo(accountId,bankNo,cardType));
     }
 
     /**
@@ -400,13 +400,9 @@ public class AccountBankServiceImpl implements AccountBankService{
      * @return
      */
     @Override
-    public boolean isExistBankNo(long accountId, String bankNo) {
-        Long backId = this.isExistBankNo(accountId,MerchantSupport.encryptBankCard(bankNo),EnumAccountBank.CREDIT.getId());
-        if(backId==null){
-            return false;
-        }else{
-            return true;
-        }
+    public Optional<AccountBank> isExistBankNo(long accountId, String bankNo) {
+        Optional<AccountBank> accountBankOptional = this.isExistBankNo(accountId,MerchantSupport.encryptBankCard(bankNo),EnumAccountBank.CREDIT.getId());
+        return accountBankOptional;
     }
 
 }
