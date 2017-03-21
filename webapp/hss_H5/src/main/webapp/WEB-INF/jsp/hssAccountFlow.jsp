@@ -17,6 +17,10 @@
   <div id="content">
     <%-- 动态加载 --%>
   </div>
+  <div id="empty" class="empty">
+    <div class="img"></div>
+    <div class="text">没有数据</div>
+  </div>
 </div>
 
 </body>

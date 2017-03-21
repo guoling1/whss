@@ -744,6 +744,7 @@ input:focus {
   height: auto;
   min-height: 100%;
   background-color: #f4f5f8;
+  position: relative;
 }
 #accountFlow .flow-group {
   width: 100%;
@@ -782,6 +783,24 @@ input:focus {
 }
 #accountFlow .flow-group .flow-right.red {
   color: #e94444;
+}
+#accountFlow .empty {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  display: none;
+}
+#accountFlow .empty .img {
+  margin: 45% auto 0;
+  width: 163px;
+  height: 129px;
+  background: url("../../assets/noData.png") no-repeat center;
+  background-size: 163px 129px;
+}
+#accountFlow .empty .text {
+  margin-top: 20px;
+  font-size: 12px;
+  color: #b0b0b0;
 }
 #account {
   width: 100%;
