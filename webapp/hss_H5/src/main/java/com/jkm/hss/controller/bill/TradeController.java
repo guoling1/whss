@@ -7,6 +7,7 @@ import com.google.common.collect.Lists;
 import com.jkm.base.common.entity.CommonResponse;
 import com.jkm.base.common.entity.PageModel;
 import com.jkm.base.common.util.DateFormatUtil;
+import com.jkm.base.common.util.StringUtil;
 import com.jkm.base.common.util.ValidateUtils;
 import com.jkm.hss.account.enums.EnumAppType;
 import com.jkm.hss.bill.entity.MergeTableSettlementDate;
@@ -441,6 +442,15 @@ public class TradeController extends BaseController {
         if(new BigDecimal(firstUnionPaySendMsgRequest.getAmount()).compareTo(new BigDecimal("10.00")) < 0){
             return CommonResponse.simpleResponse(-1, "支付金额至少10.00元");
         }
+        if (StringUtils.isEmpty(firstUnionPaySendMsgRequest.getBankCardNo())) {
+            return CommonResponse.simpleResponse(-1, "银卡卡号不能为空");
+        }
+        if (StringUtils.isEmpty(firstUnionPaySendMsgRequest.getExpireDate())) {
+            return CommonResponse.simpleResponse(-1, "有效期不能为空");
+        }
+        if (StringUtils.isEmpty(firstUnionPaySendMsgRequest.getCvv2())) {
+            return CommonResponse.simpleResponse(-1, "CVV2 不能为空");
+        }
         final Optional<BankCardBin> bankCardBinOptional = this.bankCardBinService.analyseCardNo(firstUnionPaySendMsgRequest.getBankCardNo());
         if (!bankCardBinOptional.isPresent()) {
             return CommonResponse.builder4MapResult(2, "fail").addParam("errorCode", "001").build();
@@ -457,6 +467,10 @@ public class TradeController extends BaseController {
             }
             firstUnionPaySendMsgRequest.setBankCode(bankCardBin.getShorthand());
         }
+        final Optional<AccountBank> bankOptional = this.accountBankService.selectCreditCardByBankNo(merchantInfo.getAccountId(), firstUnionPaySendMsgRequest.getBankCardNo());
+        if (bankOptional.isPresent()) {
+            return CommonResponse.simpleResponse(-1, "当前信用卡已经存在");
+        }
         final long creditBankCardId = this.accountBankService.initCreditBankCard(merchantInfo.getAccountId(), firstUnionPaySendMsgRequest.getBankCardNo(),
                 bankCardBin.getBankName(), firstUnionPaySendMsgRequest.getMobile(), bankCardBin.getShorthand(), firstUnionPaySendMsgRequest.getExpireDate());
         final Pair<Integer, String> result = this.payService.unionPay(merchantInfo.getId(), firstUnionPaySendMsgRequest.getAmount(),
@@ -464,6 +478,7 @@ public class TradeController extends BaseController {
         if (0 == result.getLeft()) {
             return CommonResponse.builder4MapResult(CommonResponse.SUCCESS_CODE, "success")
                     .addParam("orderId", result.getRight())
+                    .addParam("creditCardId", creditBankCardId)
                     .build();
         }
         return CommonResponse.simpleResponse(-1, result.getRight());
@@ -501,13 +516,16 @@ public class TradeController extends BaseController {
         if(new BigDecimal(againUnionPaySendMsgRequest.getAmount()).compareTo(new BigDecimal("10.00")) < 0){
             return CommonResponse.simpleResponse(-1, "支付金额至少10.00元");
         }
-        this.accountBankService.setDefaultCreditCard(againUnionPaySendMsgRequest.getCreditCardId());
+        if (StringUtils.isEmpty(againUnionPaySendMsgRequest.getCvv2())) {
+            return CommonResponse.simpleResponse(-1, "CVV2 不能为空");
+        }
         final Pair<Integer, String> result = this.payService.unionPay(merchantInfo.getId(), againUnionPaySendMsgRequest.getAmount(),
                 againUnionPaySendMsgRequest.getChannel(), againUnionPaySendMsgRequest.getCreditCardId(),
                 againUnionPaySendMsgRequest.getCvv2(), EnumProductType.HSS.getId());
         if (0 == result.getLeft()) {
             return CommonResponse.builder4MapResult(CommonResponse.SUCCESS_CODE, "success")
                     .addParam("orderId", result.getRight())
+                    .addParam("creditCardId", againUnionPaySendMsgRequest.getCreditCardId())
                     .build();
         }
         return CommonResponse.simpleResponse(-1, result.getRight());
@@ -536,6 +554,9 @@ public class TradeController extends BaseController {
         }
         final Pair<Integer, String> result = this.payService.confirmUnionPay(confirmUnionPayRequest.getOrderId(), confirmUnionPayRequest.getCode());
         if (0 == result.getLeft()) {
+            final AccountBank accountBank = this.accountBankService.selectCreditCardByBankNoAndStateless(orderOptional.get().getPayee(),
+                    MerchantSupport.decryptBankCard(orderOptional.get().getPayBankCard())).get();
+            this.accountBankService.setDefaultCreditCard(accountBank.getId());
             return CommonResponse.builder4MapResult(CommonResponse.SUCCESS_CODE, "success")
                     .addParam("orderId", confirmUnionPayRequest.getOrderId())
                     .build();

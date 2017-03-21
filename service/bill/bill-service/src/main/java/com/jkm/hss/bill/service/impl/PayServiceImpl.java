@@ -854,6 +854,7 @@ public class PayServiceImpl implements PayService {
                                           final long creditBankCardId, final String cvv2, final String appId) {
         log.info("商户[{}] 通过快捷， 支付一笔资金[{}]", merchantId, amount);
         final MerchantInfo merchant = this.merchantInfoService.selectById(merchantId).get();
+        final AccountBank accountBank = this.accountBankService.selectStatelessById(creditBankCardId).get();
         final EnumPayChannelSign enumPayChannelSign = EnumPayChannelSign.idOf(channel);
         final Order order = new Order();
         order.setOrderNo(SnGenerator.generateSn(EnumTradeType.PAY.getId()));
@@ -868,11 +869,11 @@ public class PayServiceImpl implements PayService {
         order.setGoodsDescribe(merchant.getMerchantName());
         order.setPayType(enumPayChannelSign.getCode());
         order.setPayChannelSign(channel);
+        order.setPayBankCard(accountBank.getBankNo());
         order.setSettleStatus(EnumSettleStatus.DUE_SETTLE.getId());
         order.setSettleType(EnumBalanceTimeType.T1.getType());
         order.setStatus(EnumOrderStatus.DUE_PAY.getId());
         this.orderService.add(order);
-        final AccountBank accountBank = this.accountBankService.selectById(creditBankCardId).get();
         final PaymentSdkUnionPayRequest paymentSdkUnionPayRequest = new PaymentSdkUnionPayRequest();
         paymentSdkUnionPayRequest.setAppId(appId);
         paymentSdkUnionPayRequest.setOrderNo(order.getOrderNo());

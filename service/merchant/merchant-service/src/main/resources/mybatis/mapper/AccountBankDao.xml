@@ -86,8 +86,9 @@
     <update id="setDefaultCreditCard">
         UPDATE tb_account_bank
         set
-        is_default=1
-        WHERE id = #{id}  and status=0 and card_type=1
+        is_default=1,
+        status = 0
+        WHERE id = #{id}  and card_type=1
     </update>
 
     <!-- 全部设置为不是默认银行卡-->
@@ -166,11 +167,27 @@
         WHERE id = #{id}
     </update>
 
-    <!-- 是否已存在卡号 -->
-    <select id="isExistBankNo" resultType="java.lang.Long">
+    <!-- 有状态查询银行卡 -->
+    <select id="selectByBankNo" resultType="com.jkm.hss.merchant.entity.AccountBank">
         SELECT
-        id
+        <include refid="Base_Column_List" />
         FROM tb_account_bank
         WHERE account_id = #{accountId} and status=0 and card_type=#{cardType} and bank_no=#{bankNo}
+    </select>
+
+    <!-- 无状态查询信用卡-->
+    <select id="selectStatelessById" resultType="com.jkm.hss.merchant.entity.AccountBank">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM tb_account_bank
+        WHERE id = #{id} and card_type=1
+    </select>
+
+    <!-- 无状态查询银行卡 -->
+    <select id="selectByBankNoAndStateless" resultType="com.jkm.hss.merchant.entity.AccountBank">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM tb_account_bank
+        WHERE account_id = #{accountId} and card_type=#{cardType} and bank_no=#{bankNo}
     </select>
 </mapper>

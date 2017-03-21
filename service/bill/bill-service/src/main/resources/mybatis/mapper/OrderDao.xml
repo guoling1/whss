@@ -28,6 +28,7 @@
         settle_type,
         success_settle_time,
         pay_channel_sign,
+        pay_bank_card,
         remark,
         status
         )
@@ -57,6 +58,7 @@
         #{settleType},
         #{successSettleTime},
         #{payChannelSign},
+        #{payBankCard},
         #{remark},
         #{status}
         );
