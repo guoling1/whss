@@ -48,4 +48,12 @@ public interface ProductChannelDetailService {
      * @param detail
      */
     void updateOrAdd(ProductChannelDetail detail);
+
+    /**
+     * 根据通道查询
+     * @param productId
+     * @param channelTypeSign
+     * @return
+     */
+    Optional<ProductChannelDetail> selectRateByProductIdAndChannelTypeSign(long productId,  int channelTypeSign);
 }
