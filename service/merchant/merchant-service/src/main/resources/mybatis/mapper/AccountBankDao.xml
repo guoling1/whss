@@ -167,8 +167,8 @@
         WHERE id = #{id}
     </update>
 
-    <!-- 是否已存在卡号 -->
-    <select id="isExistBankNo" resultType="com.jkm.hss.merchant.entity.AccountBank">
+    <!-- 有状态查询银行卡 -->
+    <select id="selectByBankNo" resultType="com.jkm.hss.merchant.entity.AccountBank">
         SELECT
         <include refid="Base_Column_List" />
         FROM tb_account_bank
@@ -181,5 +181,13 @@
         <include refid="Base_Column_List" />
         FROM tb_account_bank
         WHERE id = #{id} and card_type=1
+    </select>
+
+    <!-- 无状态查询银行卡 -->
+    <select id="selectByBankNoAndStateless" resultType="com.jkm.hss.merchant.entity.AccountBank">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM tb_account_bank
+        WHERE account_id = #{accountId} and card_type=#{cardType} and bank_no=#{bankNo}
     </select>
 </mapper>

@@ -154,10 +154,17 @@ public interface AccountBankService {
     Optional<AccountBank> selectStatelessById(long id);
 
     /**
-     * 是否有信用卡
+     * 根据信用卡号查询信用卡
      * @param accountId
      * @param bankNo
      * @return
      */
-    Optional<AccountBank> isExistBankNo(long accountId,  String bankNo);
+    Optional<AccountBank> selectCreditCardByBankNo(long accountId,  String bankNo);
+    /**
+     * 无状态查询信用卡
+     * @param accountId
+     * @param bankNo
+     * @return
+     */
+    Optional<AccountBank> selectCreditCardByBankNoAndStateless(long accountId,  String bankNo);
 }

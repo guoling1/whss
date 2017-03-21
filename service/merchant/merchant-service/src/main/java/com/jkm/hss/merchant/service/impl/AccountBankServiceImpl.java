@@ -172,9 +172,11 @@ public class AccountBankServiceImpl implements AccountBankService{
      */
     @Override
     public int setDefaultCreditCard(long id) {
-        AccountBank accountBank = accountBankDao.selectById(id);
+        AccountBank accountBank = accountBankDao.selectStatelessById(id);
         if(accountBank!=null){
-            this.reset(accountBank.getAccountId(),EnumAccountBank.CREDIT.getId());
+            if(accountBank.getIsDefault()!=EnumBankDefault.DEFAULT.getId()){
+                this.reset(accountBank.getAccountId(),EnumAccountBank.CREDIT.getId());
+            }
         }
         return accountBankDao.setDefaultCreditCard(id);
     }
@@ -378,7 +380,7 @@ public class AccountBankServiceImpl implements AccountBankService{
      */
     @Override
     public Optional<AccountBank> isExistBankNo(long accountId, String bankNo, int cardType) {
-        return Optional.fromNullable(accountBankDao.isExistBankNo(accountId,bankNo,cardType));
+        return Optional.fromNullable(accountBankDao.selectByBankNo(accountId,bankNo,cardType));
     }
 
     /**
@@ -400,9 +402,21 @@ public class AccountBankServiceImpl implements AccountBankService{
      * @return
      */
     @Override
-    public Optional<AccountBank> isExistBankNo(long accountId, String bankNo) {
+    public Optional<AccountBank> selectCreditCardByBankNo(long accountId, String bankNo) {
         Optional<AccountBank> accountBankOptional = this.isExistBankNo(accountId,MerchantSupport.encryptBankCard(bankNo),EnumAccountBank.CREDIT.getId());
         return accountBankOptional;
+    }
+
+    /**
+     * 无状态查询信用卡
+     *
+     * @param accountId
+     * @param bankNo
+     * @return
+     */
+    @Override
+    public Optional<AccountBank> selectCreditCardByBankNoAndStateless(long accountId, String bankNo) {
+        return Optional.fromNullable(accountBankDao.selectByBankNoAndStateless(accountId,MerchantSupport.encryptBankCard(bankNo),EnumAccountBank.CREDIT.getId()));
     }
 
 }
