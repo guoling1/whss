@@ -62,10 +62,11 @@ public class AccountBankController extends BaseController {
             return CommonResponse.simpleResponse(-1, "商户不存在");
         }
         Long backId = accountBankService.isExistBankNo(merchantInfoOptional.get().getAccountId(), MerchantSupport.encryptBankCard(changeBankCardRequest.getBankNo()), EnumAccountBank.DEBITCARD.getId());
-        if(backId>0){
-            return CommonResponse.simpleResponse(-1, "银行卡号已存在");
+        if(backId!=null){
+            accountBankService.updateDefaultBankCard(backId,merchantInfoOptional.get(),changeBankCardRequest.getBankNo(),changeBankCardRequest.getReserveMobile());
+        }else{
+            accountBankService.changeBankCard(merchantInfoOptional.get(),changeBankCardRequest.getBankNo(),changeBankCardRequest.getReserveMobile());
         }
-        accountBankService.changeBankCard(merchantInfoOptional.get(),changeBankCardRequest.getBankNo(),changeBankCardRequest.getReserveMobile());
         return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "更改成功");
     }
 

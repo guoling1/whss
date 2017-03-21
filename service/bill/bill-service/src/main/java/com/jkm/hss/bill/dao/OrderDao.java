@@ -124,15 +124,6 @@ public interface OrderDao {
     int selectOrderListCount(Map map);
 
     /**
-     * 导出excel
-     * @param req
-     * @return
-     */
-    List<MerchantTradeResponse> selectOrderListTrade(OrderTradeRequest req);
-
-
-
-    /**
      * 交易详情
      * @param orderNo
      * @return
@@ -263,4 +254,11 @@ public interface OrderDao {
      * @return
      */
     List<Long> selectT1PaySuccessAndUnSettleOrderIds(@Param("settleDate") Date settleDate, @Param("appId") String appId);
+
+    /**
+     * 下载查询
+     * @param map
+     * @return
+     */
+    List<MerchantTradeResponse> downloadOrderList(Map map);
 }

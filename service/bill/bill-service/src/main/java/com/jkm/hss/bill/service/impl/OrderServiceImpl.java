@@ -489,6 +489,106 @@ public class OrderServiceImpl implements OrderService {
         return list;
     }
 
+
+
+    public List<MerchantTradeResponse> selectOrderList(OrderTradeRequest req) {
+        Map<String,Object> map = new HashMap<String,Object>();
+        map.put("orderNo",req.getOrderNo());
+        map.put("startTime",req.getStartTime());
+        map.put("endTime",req.getEndTime());
+        map.put("merchantId",req.getMerchantId());
+        map.put("merchantName",req.getMerchantName());
+        map.put("orderNo",req.getOrderNo());
+        map.put("payType",req.getPayType());
+        map.put("settleStatus",req.getSettleStatus());
+        map.put("status",req.getStatus());
+        map.put("lessTotalFee",req.getLessTotalFee());
+        map.put("moreTotalFee",req.getMoreTotalFee());
+        map.put("offset",req.getOffset());
+        map.put("size",req.getSize());
+        map.put("sn",req.getSn());
+        map.put("proxyName",req.getProxyName());
+        map.put("proxyName1",req.getProxyName1());
+        map.put("businessOrderNo",req.getBusinessOrderNo());
+        List<MerchantTradeResponse> list = orderDao.downloadOrderList(map);
+        if (list.size()>0){
+            for (int i=0;i<list.size();i++){
+                if (list.get(i).getAppId().equals("hss")){
+                    String hss="好收收";
+                    list.get(i).setAppId(hss);
+                }
+                if (list.get(i).getAppId().equals("hsy")){
+                    String hsy="好收银";
+                    list.get(i).setAppId(hsy);
+                }
+                if (list.get(i).getPayChannelSign()==101){
+                    list.get(i).setPayChannelSigns(EnumPayChannelSign.YG_WECHAT.getName());
+                }
+                if (list.get(i).getPayChannelSign()==102){
+                    list.get(i).setPayChannelSigns(EnumPayChannelSign.YG_ALIPAY.getName());
+                }
+                if (list.get(i).getPayChannelSign()==103){
+                    list.get(i).setPayChannelSigns(EnumPayChannelSign.YG_UNIONPAY.getName());
+                }
+                if (list.get(i).getPayChannelSign()==201){
+                    list.get(i).setPayChannelSigns(EnumPayChannelSign.KM_WECHAT.getName());
+                }
+                if (list.get(i).getPayChannelSign()==202){
+                    list.get(i).setPayChannelSigns(EnumPayChannelSign.KM_ALIPAY.getName());
+                }
+                if (list.get(i).getPayChannelSign()==301){
+                    list.get(i).setPayChannelSigns(EnumPayChannelSign.MB_UNIONPAY.getName());
+                }
+                if (list.get(i).getPayType()!=null&&!list.get(i).getPayType().equals("")){
+                    if (list.get(i).getPayType().equals("sm_wechat_jsapi")){
+                        list.get(i).setPayType(EnumPayType.YG_WECHAT_JSAPI.getValue());
+                    }
+                    if (list.get(i).getPayType().equals("sm_alipay_jsapi")){
+                        list.get(i).setPayType(EnumPayType.YG_ALIPAY_JSAPI.getValue());
+                    }
+                    if (list.get(i).getPayType().equals("sm_wechat_code")){
+                        list.get(i).setPayType(EnumPayType.YG_WECHAT_CODE.getValue());
+                    }
+                    if (list.get(i).getPayType().equals("sm_alipay_code")){
+                        list.get(i).setPayType(EnumPayType.YG_ALIPAY_CODE.getValue());
+                    }
+                    if (list.get(i).getPayType().equals("sm_unionpay")){
+                        list.get(i).setPayType(EnumPayType.YG_UNIONPAY.getValue());
+                    }
+                    if (list.get(i).getPayType().equals("km_wechat_jsapi")){
+                        list.get(i).setPayType(EnumPayType.KM_WECHAT_JSAPI.getValue());
+                    }
+                    if (list.get(i).getPayType().equals("km_alipay_jsapi")){
+                        list.get(i).setPayType(EnumPayType.KM_ALIPAY_JSAPI.getValue());
+                    }
+                    if (list.get(i).getPayType().equals("km_wechat_code")){
+                        list.get(i).setPayType(EnumPayType.KM_WECHAT_CODE.getValue());
+                    }
+                    if (list.get(i).getPayType().equals("km_alipay_code")){
+                        list.get(i).setPayType(EnumPayType.KM_ALIPAY_CODE.getValue());
+                    }
+                    if (list.get(i).getPayType().equals("mb_unionpay")){
+                        list.get(i).setPayType(EnumPayType.MB_UNIONPAY.getValue());
+                    }
+                    if (list.get(i).getPayType().equals("hzyb_wechat")){
+                        list.get(i).setPayType(EnumPayType.HZYB_WECHAT.getValue());
+                    }
+                    if (list.get(i).getPayType().equals("hzyb_alipay")){
+                        list.get(i).setPayType(EnumPayType.HZYB_ALIPAY.getValue());
+                    }
+                    if (list.get(i).getPayType().equals("yijia_wechat")){
+                        list.get(i).setPayType(EnumPayType.YIJIA_WECHAT.getValue());
+                    }
+                    if (list.get(i).getPayType().equals("yijia_alipay")){
+                        list.get(i).setPayType(EnumPayType.YIJIA_ALIPAY.getValue());
+                    }
+                }
+
+            }
+        }
+        return list;
+    }
+
     /**
      * 获取临时路径
      *
@@ -953,7 +1053,7 @@ public class OrderServiceImpl implements OrderService {
      * @return
      */
     private ExcelSheetVO generateCodeExcelSheet(OrderTradeRequest req,String baseUrl) {
-        List<MerchantTradeResponse> list = selectOrderListByPage(req);
+        List<MerchantTradeResponse> list = selectOrderList(req);
         final ExcelSheetVO excelSheetVO = new ExcelSheetVO();
         final List<List<String>> datas = new ArrayList<List<String>>();
         final ArrayList<String> heads = new ArrayList<>();
