@@ -30,7 +30,7 @@
           </el-col>
           <el-col :span="5">
             <div class="label">一级代理名称：<span>{{msg.proxyName}}</span>
-              <!--<a>修改代理商归属</a>-->
+              <a @click="dealerMask = true" v-if="!isShow">修改代理商归属</a>
             </div>
           </el-col>
           <el-col :span="5">
@@ -224,6 +224,7 @@
           </template>
         </div>
       </div>
+      <!--修改结算卡-->
       <el-dialog title="修改默认结算卡" v-model="changeBank">
         <el-form :label-position="right" label-width="150px">
           <el-form-item label="结算卡号：" width="120">
@@ -235,6 +236,37 @@
         </el-form>
         <div slot="footer" class="dialog-footer" style="text-align: center">
           <el-button type="primary" style="width: 200px;margin-top: -50px;position: relative;top: -30px;" @click="changeBankNo">确 定</el-button>
+        </div>
+      </el-dialog>
+      <!--修改归属-->
+      <el-dialog title="修改商户归属信息" v-model="dealerMask">
+        <el-form :label-position="right" label-width="150px">
+          <el-form-item label="切换类型：" width="120" style="margin-bottom: 0">归属关系
+          </el-form-item>
+          <el-form-item label="当前一级代理：" width="120" style="margin-bottom: 0">
+            {{msg.proxyName}}
+          </el-form-item>
+          <el-form-item label="当前二级代理：" width="120" style="margin-bottom: 0">
+            {{msg.proxyName1}}
+          </el-form-item>
+          <el-form-item label="切换对象：" width="120" style="margin-bottom: 0">
+            <el-select size="small" placeholder="请选择">
+              <el-option label="切换金开门直属" value="shanghai"></el-option>
+              <el-option label="切换为一级直属" value="beijing"></el-option>
+              <el-option label="切换到二级" value="beijing"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="代理商编号：" width="120" style="margin-bottom: 0">
+            <el-input style="width: 70%" size="small" v-model="dealerNo" placeholder="请输入代理商编号，切换为金开门直属无需输入"></el-input>
+          </el-form-item>
+          <el-form-item label="代理商名称：" width="120" style="margin-bottom: 0">
+            {{msg.proxyName1}}
+          </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer" style="text-align: center">
+          <el-button @click="dealerMask = false" style="position: relative;top: -20px;">取 消</el-button>
+          <el-button @click="changeDealer" type="primary" style="position: relative;top: -20px;">确 定</el-button>
+          <div style="text-align: center;margin-bottom: 10px">切换成功后，新产生的收款立即生效</div>
         </div>
       </el-dialog>
       <div class="box box-primary" v-if="!isShow">
@@ -337,7 +369,8 @@
           merchantId:'',
           bankNo:'',
           reserveMobile:''
-        }
+        },
+        dealerNo:''
       }
     },
     created: function () {
@@ -364,6 +397,17 @@
         })
     },
     methods: {
+      changeDealer: function () {
+        this.$http.post('',this.dealerQuery)
+          .then()
+          .catch(err=>{
+            this.$message({
+              showClose: true,
+              message: err.statusMessage,
+              type: 'error'
+            })
+          })
+      },
       //修改名称
       reset: function () {
         this.$prompt('请输入新名称', '修改上报名称', {
@@ -493,6 +537,13 @@
       },
       changeDeal: function (val) {
         return val = val ? val : '无'
+      }
+    },
+    watch: {
+      dealerNo:function (val, oldVal) {
+        if(oldVal.length==11){
+          console.log('查询代理名')
+        }
       }
     }
   }
