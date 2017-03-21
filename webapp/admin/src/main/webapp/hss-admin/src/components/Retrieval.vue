@@ -23,7 +23,7 @@
             </li>
             <li class="same">
               <label>账户名称:</label>
-              <el-input style="width: 130px" v-model="query.merchantName" placeholder="请输入内容" size="small"></el-input>
+              <el-input style="width: 130px" v-model="query.userName" placeholder="请输入内容" size="small"></el-input>
             </li>
             <li class="same">
               <label>提现时间:</label>
@@ -37,14 +37,10 @@
             </li>
             <li class="same">
               <label>提现状态:</label>
-              <el-select style="width: 120px" clearable v-model="query.status" size="small">
+              <el-select style="width: 120px" clearable v-model="query.withdrawStatus" size="small">
                 <el-option label="全部" value="">全部</el-option>
-                <el-option label="待支付" value="1">待支付</el-option>
-                <el-option label="支付中" value="1">支付中</el-option>
-                <el-option label="支付成功" value="4">支付成功</el-option>
-                <el-option label="支付失败" value="3">支付失败</el-option>
-                <el-option label="提现中" value="3">提现中</el-option>
-                <el-option label="提现成功" value="3">提现成功</el-option>
+                <el-option label="提现中" value="提现中">提现中</el-option>
+                <el-option label="提现成功" value="提现成功">提现成功</el-option>
               </el-select>
             </li>
             <li class="same">
@@ -60,38 +56,27 @@
             </el-table-column>
             <el-table-column label="业务订单号" min-width="112">
               <template scope="scope">
-                <span class="td" :data-clipboard-text="records[scope.$index].businessOrderNo" type="text" size="small"
-                      style="cursor: pointer" title="点击复制">{{records[scope.$index].businessOrderNo|changeHide}}</span>
+                <span class="td" :data-clipboard-text="records[scope.$index].businessOrderNo" type="text" size="small" style="cursor: pointer" title="点击复制">{{records[scope.$index].businessOrderNo|changeHide}}</span>
               </template>
             </el-table-column>
-            <el-table-column prop="merchantName" label="账户名称" min-width="120"></el-table-column>
-            <el-table-column prop="merchantName" label="用户类型" min-width="120"></el-table-column>
+            <el-table-column prop="userName" label="账户名称" min-width="120"></el-table-column>
+            <el-table-column prop="userType" label="用户类型" min-width="120"></el-table-column>
             <el-table-column label="提现单号" min-width="112">
               <template scope="scope">
-                <span class="td" :data-clipboard-text="records[scope.$index].orderNo" type="text" size="small"
-                      style="cursor: pointer" title="点击复制">{{records[scope.$index].orderNo|changeHide}}</span>
+                <span class="td" :data-clipboard-text="records[scope.$index].orderNo" type="text" size="small" style="cursor: pointer" title="点击复制">{{records[scope.$index].orderNo|changeHide}}</span>
               </template>
             </el-table-column>
-            <el-table-column prop="merchantName" label="提现金额" min-width="120"></el-table-column>
-            <el-table-column prop="merchantName" label="手续费" min-width="120"></el-table-column>
-            <el-table-column prop="merchantName" label="提现状态" min-width="120"></el-table-column>
-            <el-table-column prop="merchantName" label="渠道名称" min-width="120"></el-table-column>
+            <el-table-column prop="tradeAmount" label="提现金额" min-width="120"></el-table-column>
+            <el-table-column prop="poundage" label="手续费" min-width="120"></el-table-column>
+            <el-table-column prop="withdrawStatus" label="提现状态" min-width="120"></el-table-column>
+            <el-table-column prop="payChannelName" label="渠道名称" min-width="120"></el-table-column>
             <el-table-column label="打款流水号" min-width="112">
               <template scope="scope">
-                <span class="td" :data-clipboard-text="records[scope.$index].sn" type="text" size="small"
-                      style="cursor: pointer" title="点击复制">{{records[scope.$index].sn|changeHide}}</span>
+                <span class="td" :data-clipboard-text="records[scope.$index].sn" type="text" size="small" style="cursor: pointer" title="点击复制">{{records[scope.$index].sn|changeHide}}</span>
               </template>
             </el-table-column>
-            <el-table-column label="提现时间" width="162">
-              <template scope="scope">
-                {{scope.row.createTime|changeTime}}
-              </template>
-            </el-table-column>
-            <el-table-column prop="createTime" :formatter="changeTime" label="成功时间" width="162">
-              <template scope="scope">
-                {{scope.row.createTime|changeTime}}
-              </template>
-            </el-table-column>
+            <el-table-column prop="createTimes" label="提现时间" width="162"></el-table-column>
+            <el-table-column prop="successTime" label="成功时间" width="162"></el-table-column>
           </el-table>
           </el-table>
           <ul style="float: left;margin-top: 5px">
@@ -110,9 +95,9 @@
           <div class="block" style="text-align: right">
             <el-pagination @size-change="handleSizeChange"
                            @current-change="handleCurrentChange"
-                           :current-page="query.page"
+                           :current-page="query.pageNo"
                            :page-sizes="[10, 20, 50]"
-                           :page-size="query.size"
+                           :page-size="query.pageSize"
                            layout="total, sizes, prev, pager, next, jumper"
                            :total="count">
             </el-pagination>
@@ -130,21 +115,15 @@
     data(){
       return {
         query:{
-          page:1,
-          size:10,
+          pageNo:1,
+          pageSize:10,
           orderNo:'',
           businessOrderNo:'',
           sn:'',
-          merchantName: '',
+          userName: '',
           startTime: '',
           endTime: '',
-          lessTotalFee: '',
-          moreTotalFee: '',
-          status: '',
-          settleStatus:'',
-          payType:'',
-          proxyName:'',
-          proxyName1:''
+          withdrawStatus: '',
         },
         pageTotal:0,
         addTotal:0,
@@ -185,28 +164,30 @@
           this.$data.query.endTime = str;
         }
       }
-      this.getData()
+      this.getData();
       this.getAddTotal()
     },
     methods: {
       getData: function () {
         this.loading = true;
-        this.$http.post('/admin/queryOrder/orderList',this.$data.query)
+        this.$http.post('/admin/order/withdrawList',this.query)
           .then(function (res) {
             this.loading = false;
             this.$data.records = res.data.records;
             this.$data.count = res.data.count;
-            var price=0;
+            var price=0,total=0;
             var toFix = function (val) {
               return parseFloat(val).toFixed(2)
             };
             for (var i = 0; i < this.records.length; i++) {
-              price = toFix(parseFloat(price)+parseFloat(this.records[i].tradeAmount))
+              price = toFix(parseFloat(price)+parseFloat(this.records[i].tradeAmount));
+              total = toFix(parseFloat(total)+parseFloat(this.records[i].poundage));
               if (this.records[i].payRate != null) {
                 this.records[i].payRate = (parseFloat(this.records[i].payRate) * 100).toFixed(2) + '%';
               }
             }
             this.pageTotal = price;
+            this.pageTotal1 = total;
           },function (err) {
             this.$data.loading = false;
             this.$message({
@@ -261,19 +242,19 @@
         }
       },
       search(){
-        this.$data.query.page = 1;
+        this.$data.query.pageNo = 1;
         this.getData()
         this.getAddTotal()
       },
       //每页条数改变
       handleSizeChange(val) {
-        this.$data.query.page = 1;
-        this.$data.query.size = val;
+        this.$data.query.pageNo = 1;
+        this.$data.query.pageSize = val;
         this.getData()
       },
       //当前页改变时
       handleCurrentChange(val) {
-        this.$data.query.page = val;
+        this.$data.query.pageNo = val;
         this.getData()
       },
       getAddTotal(){

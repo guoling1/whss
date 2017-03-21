@@ -319,6 +319,7 @@
         }
       },
       search(){
+        this.total = '';
         this.query.page = 1;
         this.getData();
         this.getAddTotal()
