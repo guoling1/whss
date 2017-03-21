@@ -127,7 +127,31 @@
         LEFT JOIN tb_account b ON a.payer = b.id
         LEFT JOIN tb_merchant_info c ON b.id = c.account_id
         WHERE
-            trade_type = 3
+            a.trade_type = 3
+    <if test="businessOrderNo != null and businessOrderNo != ''">
+        AND a.business_order_no = #{businessOrderNo}
+    </if>
+    <if test="orderNo != null and orderNo != ''">
+        AND a.order_no = #{orderNo}
+    </if>
+    <if test="sn != null and sn != ''">
+        AND a.sn = #{sn}
+    </if>
+    <if test="userName != null and userName != ''">
+        AND b.user_name = #{userName}
+    </if>
+    <if test="startTime != null and startTime != ''">
+        AND a.create_time <![CDATA[ >= ]]> #{startTime}
+    </if>
+    <if test="endTime != null and endTime != ''">
+        AND a.create_time <![CDATA[ <= ]]> #{endTime}
+    </if>
+    <if test="status != null and status > 0">
+        AND a.status = #{status}
+    </if>
+        ORDER BY
+            a.create_time DESC
+        LIMIT #{offset},#{pageSize}
     </select>
 
     <!-- 提现总数 -->
@@ -140,6 +164,27 @@
         LEFT JOIN tb_merchant_info c ON b.id = c.account_id
         WHERE
             trade_type = 3
+    <if test="businessOrderNo != null and businessOrderNo != ''">
+        AND a.business_order_no = #{businessOrderNo}
+    </if>
+    <if test="orderNo != null and orderNo != ''">
+        AND a.order_no = #{orderNo}
+    </if>
+    <if test="sn != null and sn != ''">
+        AND a.sn = #{sn}
+    </if>
+    <if test="userName != null and userName != ''">
+        AND b.user_name = #{userName}
+    </if>
+    <if test="startTime != null and startTime != ''">
+        AND a.create_time <![CDATA[ >= ]]> #{startTime}
+    </if>
+    <if test="endTime != null and endTime != ''">
+        AND a.create_time <![CDATA[ <= ]]> #{endTime}
+    </if>
+    <if test="status != null and status > 0">
+        AND a.status = #{status}
+    </if>
     </select>
 
     <select id="selectByOrderNoAndTradeType" resultType="com.jkm.hss.bill.entity.Order">

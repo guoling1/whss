@@ -16,6 +16,16 @@ import lombok.Data;
 public class WithdrawRequest {
 
     /**
+     * 提现状态
+     */
+    private String withdrawStatus;
+
+    /**
+     * 交易状态
+     */
+    private int status;
+
+    /**
      * 账户名称
      */
     private String userName;
