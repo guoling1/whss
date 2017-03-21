@@ -67,7 +67,6 @@ submit.addEventListener('click', function () {
     message.load_show('正在支付');
     http.post('/trade/confirmUnionPay', {
       orderId: orderId,
-      isFirst: 0,
       code: code.value,
     }, function () {
       message.load_hide();
