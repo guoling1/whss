@@ -93,6 +93,13 @@
             </el-table-column>
           </el-table>
           </el-table>
+          <ul style="float: left;margin-top: 5px">
+            <li>
+              <label style="margin-right: 10px;">打款金额</label>
+              <span>当页总额：{{pageTotal}}&nbsp;元</span>&nbsp;&nbsp;&nbsp;&nbsp;
+              <span>筛选条件统计：{{addTotal}}&nbsp;元</span>
+            </li>
+          </ul>
           <!--分页-->
           <div class="block" style="text-align: right">
             <el-pagination @size-change="handleSizeChange"
@@ -148,16 +155,18 @@
         total: '',
         loading: true,
         url:'',
+        pageTotal: 0,
+        addTotal: 0,
         //正式
-        queryUrl:'http://pay.qianbaojiajia.com/order/withdraw/listOrder',
+        /*queryUrl:'http://pay.qianbaojiajia.com/order/withdraw/listOrder',
          excelUrl:'http://pay.qianbaojiajia.com/order/withdraw/exportExcel',
          syncUrl:'http://pay.qianbaojiajia.com/order/syncWithdrawOrder',
-         addUrl:'http://pay.qianbaojiajia.com/order/withdraw/countAmount',
+         addUrl:'http://pay.qianbaojiajia.com/order/withdraw/countAmount',*/
         //测试
-        /*queryUrl:'http://192.168.1.20:8076/order/withdraw/listOrder',
+        queryUrl:'http://192.168.1.20:8076/order/withdraw/listOrder',
         excelUrl:'http://192.168.1.20:8076/order/withdraw/exportExcel',
         syncUrl:'http://192.168.1.20:8076/order/syncWithdrawOrder',
-        addUrl:'http://192.168.1.25:8240/order/withdraw/countAmount',*/
+        addUrl:'http://192.168.1.25:8240/order/withdraw/countAmount',
       }
     },
     created: function () {
@@ -170,7 +179,8 @@
           type: 'success'
         });
       });
-      this.getData()
+      this.getData();
+      this.getAddTotal()
     },
     methods: {
       getData: function () {
@@ -188,7 +198,8 @@
             for (var i = 0; i < this.records.length; i++) {
               price = toFix(parseFloat(price)+parseFloat(this.records[i].amount));
             }
-            if(this.records.length!=0){
+            this.pageTotal = price;
+            /*if(this.records.length!=0){
               this.records.push({
                 orderNo:"当页总额",
                 amount:price
@@ -197,7 +208,7 @@
                 amount:''
               });
               this.records[this.records.length-1].amount = this.total;
-            }
+            }*/
           },function (err) {
             this.$data.loading = false;
             this.$message({
@@ -207,12 +218,10 @@
             });
           })
       },
-      add(){
-        this.$data.loading = true;
+      getAddTotal(){
         this.$http.post(this.addUrl,this.query)
           .then(res=>{
-            this.$data.loading = false;
-            this.records[this.records.length-1].amount = this.total = res.data;
+            this.addTotal = res.data;
           })
           .catch(err=>{
             this.$data.loading = false;
@@ -285,7 +294,8 @@
       search(){
         this.total = '';
         this.$data.query.pageNo = 1;
-        this.getData()
+        this.getData();
+        this.getAddTotal()
       },
       //每页条数改变
       handleSizeChange(val) {
