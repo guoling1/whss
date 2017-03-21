@@ -52,7 +52,6 @@ let channel = getQueryString('channel');
 let cvv2 = document.getElementById('cvv2');
 let code = document.getElementById('code');
 let orderId = '';
-let creditCardId = '';
 // 选择支付卡
 chooseBank.addEventListener('click', function () {
   layer.style.display = 'block';
@@ -68,7 +67,7 @@ submit.addEventListener('click', function () {
     message.load_show('正在支付');
     http.post('/trade/confirmUnionPay', {
       orderId: orderId,
-      creditCardId: creditCardId,
+      isFirst: 0,
       code: code.value,
     }, function () {
       message.load_hide();
@@ -88,7 +87,6 @@ sendCode.addEventListener('click', function () {
         cvv2: cvv2.value
       }, function (data) {
         orderId = data.orderId;
-        creditCardId = data.creditCardId;
         message.load_hide();
         message.prompt_show('验证码发送成功');
         countdown.submit_start();
