@@ -121,5 +121,5 @@
   });
 </script>
 <script src="http://static.jinkaimen.cn/vendor/vendor.1.0.9.2.min.js"></script>
-<script src="http://static.jinkaimen.cn/hss/2.2.4/upload.min.js"></script>
+<script src="http://static.jinkaimen.cn/hss/2.2.5/upload.min.js"></script>
 </html>

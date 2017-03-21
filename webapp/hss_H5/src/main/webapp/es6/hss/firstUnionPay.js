@@ -116,6 +116,7 @@ let cvv2 = document.getElementById('cvv2');
 let mobile = document.getElementById('mobile');
 let code = document.getElementById('code');
 let orderId = '';
+let creditCardId = '';
 let supportBankCardList = {};
 let support = false;
 // 定义信用卡号校验
@@ -165,6 +166,7 @@ submit.addEventListener('click', function () {
     message.load_show('正在支付');
     http.post('/trade/confirmUnionPay', {
       orderId: orderId,
+      creditCardId: creditCardId,
       code: code.value,
     }, function () {
       message.load_hide();
@@ -192,6 +194,7 @@ sendCode.addEventListener('click', function () {
         mobile: mobile.value
       }, function (data) {
         orderId = data.orderId;
+        creditCardId = data.creditCardId;
         message.load_hide();
         message.prompt_show('验证码发送成功');
         countdown.submit_start();
