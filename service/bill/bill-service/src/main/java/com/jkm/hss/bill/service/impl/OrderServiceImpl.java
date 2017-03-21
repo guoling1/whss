@@ -1061,6 +1061,12 @@ public class OrderServiceImpl implements OrderService {
         return this.orderDao.getNo(req);
     }
 
+    @Override
+    public WithdrawResponse withdrawAmount(WithdrawRequest req) {
+        WithdrawResponse response = this.orderDao.withdrawAmount(req);
+        return response;
+    }
+
     /**
      * 手续费由待结算入余额
      *

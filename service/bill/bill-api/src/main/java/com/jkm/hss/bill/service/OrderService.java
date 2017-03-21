@@ -277,6 +277,13 @@ public interface OrderService {
      * @return
      */
     int getNo(WithdrawRequest req);
+
+    /**
+     * 提现统计
+     * @param req
+     * @return
+     */
+    WithdrawResponse withdrawAmount(WithdrawRequest req);
     /**
      * 查询交易详情
      * @param orderRecord

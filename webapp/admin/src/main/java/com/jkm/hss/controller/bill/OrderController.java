@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -80,7 +81,12 @@ public class OrderController extends BaseController {
         return CommonResponse.simpleResponse(-1, "没有查到打款用户信息");
     }
 
-
+    /**
+     * 提现
+     * @param req
+     * @return
+     * @throws ParseException
+     */
     @ResponseBody
     @RequestMapping(value = "/withdrawList", method = RequestMethod.POST)
     public CommonResponse withdrawList(@RequestBody WithdrawRequest req) throws ParseException {
@@ -101,6 +107,43 @@ public class OrderController extends BaseController {
         return CommonResponse.objectResponse(1,"success",pageModel);
 
         }
+
+    /**
+     * 提现统计
+     * @param req
+     * @return
+     * @throws ParseException
+     */
+    @ResponseBody
+    @RequestMapping(value = "/withdrawAmount", method = RequestMethod.POST)
+    public CommonResponse withdrawAmount(@RequestBody final WithdrawRequest req) throws ParseException {
+        if(req.getEndTime()!=null&&!"".equals(req.getEndTime())){
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            Date dt = sdf.parse(req.getEndTime());
+            Calendar rightNow = Calendar.getInstance();
+            rightNow.setTime(dt);
+            rightNow.add(Calendar.DATE, 1);
+            req.setEndTime(sdf.format(rightNow.getTime()));
+        }
+        WithdrawResponse result = orderService.withdrawAmount(req);
+        if (result!=null){
+            if (result.getTradeAmount()==null){
+                BigDecimal b1 = new BigDecimal(Double.toString(0));
+                result.setTradeAmount(b1);
+            }
+            if (result.getPoundage()==null){
+                BigDecimal b1 = new BigDecimal(Double.toString(0));
+                result.setPoundage(b1);
+
+            }
+        }else {
+            BigDecimal b1 = new BigDecimal(Double.toString(0));
+            result.setPoundage(b1);
+            result.setTradeAmount(b1);
+        }
+        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "统计完成", result);
+
+    }
 
 
 

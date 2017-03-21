@@ -277,4 +277,11 @@ public interface OrderDao {
      * @return
      */
     int getNo(WithdrawRequest req);
+
+    /**
+     * 提现统计
+     * @param req
+     * @return
+     */
+    WithdrawResponse withdrawAmount(WithdrawRequest req);
 }
