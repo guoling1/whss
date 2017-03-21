@@ -166,6 +166,10 @@ public class Order extends BaseEntity {
     private int payChannelSign;
 
     /**
+     * 支付所用信用卡
+     */
+    private String payBankCard;
+    /**
      * 是否待支付
      *
      * @return

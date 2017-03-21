@@ -175,7 +175,7 @@
         WHERE account_id = #{accountId} and status=0 and card_type=#{cardType} and bank_no=#{bankNo}
     </select>
 
-    <!-- 无状态查询信用卡 -->
+    <!-- 无状态查询信用卡-->
     <select id="selectStatelessById" resultType="com.jkm.hss.merchant.entity.AccountBank">
         SELECT
         <include refid="Base_Column_List" />
