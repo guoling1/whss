@@ -117,6 +117,31 @@
         SELECT * FROM tb_order WHERE id = #{id} FOR UPDATE
     </select>
 
+    <!-- 提现列表 -->
+    <select id="withdrawList" resultType="com.jkm.hss.bill.entity.WithdrawResponse">
+        SELECT
+            a.*, b.user_name,
+            c.dealer_id
+        FROM
+            tb_order a
+        LEFT JOIN tb_account b ON a.payer = b.id
+        LEFT JOIN tb_merchant_info c ON b.id = c.account_id
+        WHERE
+            trade_type = 3
+    </select>
+
+    <!-- 提现总数 -->
+    <select id="getNo" resultType="java.lang.Integer">
+        SELECT
+            COUNT(*)
+        FROM
+            tb_order a
+        LEFT JOIN tb_account b ON a.payer = b.id
+        LEFT JOIN tb_merchant_info c ON b.id = c.account_id
+        WHERE
+            trade_type = 3
+    </select>
+
     <select id="selectByOrderNoAndTradeType" resultType="com.jkm.hss.bill.entity.Order">
         SELECT * FROM tb_order WHERE order_no = #{orderNo} AND trade_type = #{tradeType};
     </select>

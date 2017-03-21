@@ -2,6 +2,8 @@ package com.jkm.hss.bill.dao;
 
 import com.jkm.hss.bill.entity.MerchantTradeResponse;
 import com.jkm.hss.bill.entity.Order;
+import com.jkm.hss.bill.entity.WithdrawRequest;
+import com.jkm.hss.bill.entity.WithdrawResponse;
 import com.jkm.hss.bill.helper.requestparam.QueryMerchantPayOrdersRequestParam;
 import com.jkm.hss.merchant.helper.request.OrderTradeRequest;
 import org.apache.ibatis.annotations.Param;
@@ -261,4 +263,18 @@ public interface OrderDao {
      * @return
      */
     List<MerchantTradeResponse> downloadOrderList(Map map);
+
+    /**
+     * 提现列表
+     * @param req
+     * @return
+     */
+    List<WithdrawResponse> withdrawList(WithdrawRequest req);
+
+    /**
+     * 总数
+     * @param req
+     * @return
+     */
+    int getNo(WithdrawRequest req);
 }

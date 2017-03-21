@@ -4,6 +4,8 @@ import com.google.common.base.Optional;
 import com.jkm.base.common.entity.PageModel;
 import com.jkm.hss.bill.entity.MerchantTradeResponse;
 import com.jkm.hss.bill.entity.Order;
+import com.jkm.hss.bill.entity.WithdrawRequest;
+import com.jkm.hss.bill.entity.WithdrawResponse;
 import com.jkm.hss.bill.helper.requestparam.QueryMerchantPayOrdersRequestParam;
 import com.jkm.hss.dealer.entity.Dealer;
 import com.jkm.hss.merchant.entity.MerchantInfo;
@@ -266,6 +268,15 @@ public interface OrderService {
      * @param orderId
      */
     void t1WithdrawByOrderId(long orderId);
+
+    List<WithdrawResponse> withdrawList(WithdrawRequest req);
+
+    /**
+     * 总数
+     * @param req
+     * @return
+     */
+    int getNo(WithdrawRequest req);
     /**
      * 查询交易详情
      * @param orderRecord
