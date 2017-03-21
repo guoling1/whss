@@ -11,6 +11,7 @@ const message = _require('message');
 const http = _require('http');
 
 // 定义ajax事件
+let empty = document.getElementById('empty');
 let content = document.getElementById('content');
 let list = document.createElement('list');
 let nowPage = 1;
@@ -44,7 +45,11 @@ let getData = function (e, page) {
     pageNo: nowPage,
     pageSize: 20
   }, function (res) {
-    console.log(res.records);
+    if (res.count == 0) {
+      empty.style.display = 'block';
+      return;
+    }
+    empty.style.display = 'none';
     for (let i = 0; i < res.records.length; i++) {
       let div_list = document.createElement('div');
       div_list.className = 'flow-group';

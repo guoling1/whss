@@ -17,9 +17,13 @@
   <div id="content">
     <%-- 动态加载 --%>
   </div>
+  <div id="empty" class="empty">
+    <div class="img"></div>
+    <div class="text">没有数据</div>
+  </div>
 </div>
 
 </body>
 <script src="http://static.jinkaimen.cn/vendor/vendor.1.0.9.2.min.js"></script>
-<script src="http://static.jinkaimen.cn/hss/2.2.4/hasAccountFlow.min.js"></script>
+<script src="http://static.jinkaimen.cn/hss/2.2.5/hasAccountFlow.min.js"></script>
 </html>
