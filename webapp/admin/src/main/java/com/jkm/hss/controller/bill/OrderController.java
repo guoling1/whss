@@ -2,6 +2,7 @@ package com.jkm.hss.controller.bill;
 
 import com.google.common.base.Optional;
 import com.jkm.base.common.entity.CommonResponse;
+import com.jkm.base.common.entity.PageModel;
 import com.jkm.hss.bill.entity.Order;
 import com.jkm.hss.bill.entity.WithdrawRequest;
 import com.jkm.hss.bill.entity.WithdrawResponse;
@@ -83,8 +84,8 @@ public class OrderController extends BaseController {
     @ResponseBody
     @RequestMapping(value = "/withdrawList", method = RequestMethod.POST)
     public CommonResponse withdrawList(@RequestBody WithdrawRequest req) throws ParseException {
-//        final PageModel<WithdrawResponse> pageModel = new PageModel<WithdrawResponse>(req.getPageNo(), req.getPageSize());
-//        req.setOffset(pageModel.getFirstIndex());
+        final PageModel<WithdrawResponse> pageModel = new PageModel<WithdrawResponse>(req.getPageNo(), req.getPageSize());
+        req.setOffset(pageModel.getFirstIndex());
         if(req.getEndTime()!=null&&!"".equals(req.getEndTime())){
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
             Date dt = sdf.parse(req.getEndTime());
@@ -95,9 +96,9 @@ public class OrderController extends BaseController {
             }
         List<WithdrawResponse> list = this.orderService.withdrawList(req);
         long count = this.orderService.getNo(req);
-//        pageModel.setCount(count);
-//        pageModel.setRecords(list);
-        return CommonResponse.objectResponse(1,"success",list);
+        pageModel.setCount(count);
+        pageModel.setRecords(list);
+        return CommonResponse.objectResponse(1,"success",pageModel);
 
         }
 
