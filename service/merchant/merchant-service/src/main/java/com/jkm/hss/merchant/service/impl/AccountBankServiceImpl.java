@@ -9,6 +9,7 @@ import com.jkm.hss.merchant.entity.BankCardBin;
 import com.jkm.hss.merchant.entity.MerchantInfo;
 import com.jkm.hss.merchant.enums.EnumAccountBank;
 import com.jkm.hss.merchant.enums.EnumBankDefault;
+import com.jkm.hss.merchant.enums.EnumCommonStatus;
 import com.jkm.hss.merchant.helper.MerchantSupport;
 import com.jkm.hss.merchant.helper.request.ContinueBankInfoRequest;
 import com.jkm.hss.merchant.helper.response.BankListResponse;
@@ -115,15 +116,16 @@ public class AccountBankServiceImpl implements AccountBankService{
             accountBank.setBankName(bankName);
             accountBank.setReserveMobile(MerchantSupport.encryptMobile(reserveMobile));
             accountBank.setCardType(EnumAccountBank.CREDIT.getId());
-            accountBank.setIsDefault(EnumBankDefault.DEFAULT.getId());
+            accountBank.setIsDefault(EnumBankDefault.UNDEFALUT.getId());
             accountBank.setBankBin(bankBin);
             accountBank.setExpiryTime(expiryTime);
+            accountBank.setStatus(EnumCommonStatus.DISABLE.getId());
             this.insert(accountBank);
             return accountBank.getId();
         }else{
             log.info("已经存在该账号{}",bankNo);
-            this.reset(accountId,EnumAccountBank.CREDIT.getId());
-            this.setDefaultCreditCard(backId);
+//            this.reset(accountId,EnumAccountBank.CREDIT.getId());
+//            this.setDefaultCreditCard(backId);
             return backId;
         }
 
@@ -377,5 +379,16 @@ public class AccountBankServiceImpl implements AccountBankService{
     @Override
     public Long isExistBankNo(long accountId, String bankNo, int cardType) {
         return accountBankDao.isExistBankNo(accountId,bankNo,cardType);
+    }
+
+    /**
+     * 无状态查询信用卡
+     *
+     * @param id
+     * @return
+     */
+    @Override
+    public Optional<AccountBank> selectStatelessById(long id) {
+        return Optional.fromNullable(accountBankDao.selectStatelessById(id));
     }
 }

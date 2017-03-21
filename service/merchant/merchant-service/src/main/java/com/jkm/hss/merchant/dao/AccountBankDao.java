@@ -108,4 +108,11 @@ public interface AccountBankDao {
      */
     Long isExistBankNo(@Param("accountId") long accountId,@Param("bankNo") String bankNo,@Param("cardType") int cardType);
 
+
+    /**
+     * 无状态查询信用卡
+     * @param id
+     * @return
+     */
+    AccountBank selectStatelessById(@Param("id") long id);
 }

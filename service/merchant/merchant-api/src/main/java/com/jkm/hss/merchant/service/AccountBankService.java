@@ -146,4 +146,10 @@ public interface AccountBankService {
      * @return
      */
     Long isExistBankNo(long accountId,String bankNo,int cardType);
+    /**
+     * 无状态查询信用卡
+     * @param id
+     * @return
+     */
+    Optional<AccountBank> selectStatelessById(long id);
 }
