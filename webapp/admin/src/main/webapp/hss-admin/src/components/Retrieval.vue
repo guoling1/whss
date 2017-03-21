@@ -258,9 +258,12 @@
         this.getData()
       },
       getAddTotal(){
-        this.$http.post('/admin/queryOrder/amountCount',this.query)
+        this.addTotal = 0;
+        this.addTotal1 = 0;
+        this.$http.post('/admin/order/withdrawAmount',this.query)
           .then(res=>{
-            this.addTotal = res.data;
+            this.addTotal = res.data.tradeAmount;
+            this.addTotal1 = res.data.poundage;
           })
           .catch(err=>{
             this.$data.loading = false;
