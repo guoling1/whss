@@ -36,15 +36,24 @@ public class MerchantInfoController extends BaseController{
         if(changeDealerRequest.getMerchantId()<=0){
             return CommonResponse.simpleResponse(-1, "商户编码不正确");
         }
+        if(changeDealerRequest.getChangeType()<=0){
+            return CommonResponse.simpleResponse(-1, "请选择切换对象");
+        }
         if(changeDealerRequest.getChangeType()== EnumChangeType.BOSS.getId()){//是boss
             changeDealerRequest.setCurrentDealerId(0);
             changeDealerRequest.setFirstDealerId(0);
             changeDealerRequest.setSecondDealerId(0);
         }
         if(changeDealerRequest.getChangeType()== EnumChangeType.FIRSTDEALER.getId()){//是一代
+            if(changeDealerRequest.getMarkCode()==null||"".equals(changeDealerRequest.getMarkCode())){
+                return CommonResponse.simpleResponse(-1, "请输入代理商编码");
+            }
+
         }
         if(changeDealerRequest.getChangeType()== EnumChangeType.SECONDDEALER.getId()){//是二代
-
+            if(changeDealerRequest.getMarkCode()==null||"".equals(changeDealerRequest.getMarkCode())){
+                return CommonResponse.simpleResponse(-1, "请输入代理商编码");
+            }
         }
         merchantInfoService.changeDealer(changeDealerRequest);
         return CommonResponse.simpleResponse(1, "success");
