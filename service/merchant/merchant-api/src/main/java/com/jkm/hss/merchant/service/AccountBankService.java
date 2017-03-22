@@ -146,6 +146,15 @@ public interface AccountBankService {
      */
     int changeBankCard(MerchantInfo merchantInfo, String bankNo, String reserveMobile);
     /**
+     * 更改默认银行卡（已存在银行卡）
+     * @param bankId
+     * @param merchantInfo
+     * @param bankNo
+     * @param reserveMobile
+     * @return
+     */
+    public int updateDefaultBankCard(long bankId,MerchantInfo merchantInfo, String bankNo, String reserveMobile);
+    /**
      * 是否有银行卡
      * @param accountId
      * @param bankNo

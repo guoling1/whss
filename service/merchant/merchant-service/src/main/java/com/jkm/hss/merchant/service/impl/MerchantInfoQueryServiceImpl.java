@@ -39,7 +39,10 @@ public class MerchantInfoQueryServiceImpl implements MerchantInfoQueryService {
 
     @Override
     public List<MerchantInfoResponse> getAll(MerchantInfoRequest req) {
-
+        String mobile = req.getMobile();
+        if (mobile!=null&&!mobile.equals("")){
+            req.setMobile(MerchantSupport.encryptMobile(mobile));
+        }
         List<MerchantInfoResponse> list = this.merchantInfoQueryDao.getAll(req);
         if (list.size()>0){
             for (int i=0;i<list.size();i++){
