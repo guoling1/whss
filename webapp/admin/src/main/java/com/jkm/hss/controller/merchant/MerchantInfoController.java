@@ -1,9 +1,15 @@
 package com.jkm.hss.controller.merchant;
 
+import com.google.common.base.Optional;
 import com.jkm.base.common.entity.CommonResponse;
+import com.jkm.hss.admin.entity.QRCode;
+import com.jkm.hss.admin.enums.EnumQRCodeSysType;
+import com.jkm.hss.admin.service.QRCodeService;
 import com.jkm.hss.controller.BaseController;
 import com.jkm.hss.dealer.service.DealerService;
+import com.jkm.hss.merchant.entity.MerchantInfo;
 import com.jkm.hss.merchant.enums.EnumChangeType;
+import com.jkm.hss.merchant.enums.EnumSource;
 import com.jkm.hss.merchant.helper.request.ChangeDealerRequest;
 import com.jkm.hss.merchant.service.MerchantInfoService;
 import lombok.extern.slf4j.Slf4j;
@@ -25,6 +31,8 @@ public class MerchantInfoController extends BaseController{
     private MerchantInfoService merchantInfoService;
     @Autowired
     private DealerService dealerService;
+    @Autowired
+    private QRCodeService qrCodeService;
 
     /**
      * 切换代理
@@ -38,6 +46,17 @@ public class MerchantInfoController extends BaseController{
         }
         if(changeDealerRequest.getChangeType()<=0){
             return CommonResponse.simpleResponse(-1, "请选择切换对象");
+        }
+        Optional<MerchantInfo> merchantInfoOptional =  merchantInfoService.selectById(changeDealerRequest.getMerchantId());
+        if(!merchantInfoOptional.isPresent()){
+            return CommonResponse.simpleResponse(-1, "该商户不存在");
+        }
+        if(merchantInfoOptional.get().getSource()!= EnumSource.SCAN.getId()){
+            return CommonResponse.simpleResponse(-1, "仅支持扫码注册");
+        }
+        Optional<QRCode> qrCodeOptional = qrCodeService.getByCode(merchantInfoOptional.get().getCode(), EnumQRCodeSysType.HSS.getId());
+        if(!qrCodeOptional.isPresent()){
+            return CommonResponse.simpleResponse(-1, "该商户的二维码不存在");
         }
         if(changeDealerRequest.getChangeType()== EnumChangeType.BOSS.getId()){//是boss
             changeDealerRequest.setCurrentDealerId(0);
