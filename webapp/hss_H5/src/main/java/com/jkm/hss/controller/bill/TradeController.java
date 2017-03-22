@@ -466,13 +466,17 @@ public class TradeController extends BaseController {
         if (!"1".equals(bankCardBin.getCardTypeCode())) {
             return CommonResponse.builder4MapResult(2, "fail").addParam("errorCode", "002").build();
         }
+        final boolean exist = this.channelSupportCreditBankService.
+                isExistByUpperChannelAndBankCode(EnumPayChannelSign.idOf(firstUnionPaySendMsgRequest.getChannel()).getUpperChannel().getId(), bankCardBin.getShorthand());
         if (!bankCardBin.getShorthand().equals(firstUnionPaySendMsgRequest.getBankCode())) {
-            final boolean exist = this.channelSupportCreditBankService.
-                    isExistByUpperChannelAndBankCode(EnumPayChannelSign.idOf(firstUnionPaySendMsgRequest.getChannel()).getUpperChannel().getId(), bankCardBin.getShorthand());
             if (!exist) {
                 return CommonResponse.builder4MapResult(2, "fail").addParam("errorCode", "003").build();
             }
             firstUnionPaySendMsgRequest.setBankCode(bankCardBin.getShorthand());
+        } else {
+            if (!exist) {
+                return CommonResponse.simpleResponse(-1, "当前信用卡不支持");
+            }
         }
         final Optional<AccountBank> bankOptional = this.accountBankService.selectCreditCardByBankNo(merchantInfo.getAccountId(), firstUnionPaySendMsgRequest.getBankCardNo());
         if (bankOptional.isPresent()) {
@@ -525,6 +529,15 @@ public class TradeController extends BaseController {
         }
         if (StringUtils.isEmpty(againUnionPaySendMsgRequest.getCvv2())) {
             return CommonResponse.simpleResponse(-1, "CVV2 不能为空");
+        }
+        final Optional<AccountBank> accountBankOptional = this.accountBankService.selectById(againUnionPaySendMsgRequest.getCreditCardId());
+        if (!accountBankOptional.isPresent()) {
+            return CommonResponse.simpleResponse(-1, "信用卡不存在");
+        }
+        final boolean exist = this.channelSupportCreditBankService.
+                isExistByUpperChannelAndBankCode(EnumPayChannelSign.idOf(againUnionPaySendMsgRequest.getChannel()).getUpperChannel().getId(), accountBankOptional.get().getBankBin());
+        if (!exist) {
+            return CommonResponse.simpleResponse(-1, "信用卡暂不可用");
         }
         final Pair<Integer, String> result = this.payService.unionPay(merchantInfo.getId(), againUnionPaySendMsgRequest.getAmount(),
                 againUnionPaySendMsgRequest.getChannel(), againUnionPaySendMsgRequest.getCreditCardId(),
