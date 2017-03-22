@@ -181,7 +181,16 @@ public class AccountBankServiceImpl implements AccountBankService{
         }
         return accountBankDao.setDefaultCreditCard(id);
     }
-
+    /**
+     * 设置为默认信用卡
+     *
+     * @param id
+     * @return
+     */
+    @Override
+    public int setDefaultCreditCardById(long id) {
+        return accountBankDao.setDefaultCreditCardById(id);
+    }
     /**
      * 全部设置为不是默认银行卡
      *
@@ -218,8 +227,10 @@ public class AccountBankServiceImpl implements AccountBankService{
     @Override
     public AccountBank getDefaultCreditCard(long accountId) {
         AccountBank accountBank = accountBankDao.getDefaultCreditCard(accountId);
-        accountBank.setBankNo(MerchantSupport.decryptBankCard(accountId,accountBank.getBankNo()));
-        accountBank.setReserveMobile(MerchantSupport.decryptMobile(accountId,accountBank.getReserveMobile()));
+        if(accountBank!=null){
+            accountBank.setBankNo(MerchantSupport.decryptBankCard(accountId,accountBank.getBankNo()));
+            accountBank.setReserveMobile(MerchantSupport.decryptMobile(accountId,accountBank.getReserveMobile()));
+        }
         return accountBank;
     }
 
@@ -418,6 +429,17 @@ public class AccountBankServiceImpl implements AccountBankService{
     @Override
     public Optional<AccountBank> selectCreditCardByBankNoAndStateless(long accountId, String bankNo) {
         return Optional.fromNullable(accountBankDao.selectByBankNoAndStateless(accountId,MerchantSupport.encryptBankCard(bankNo),EnumAccountBank.CREDIT.getId()));
+    }
+
+    /**
+     * 获取最新信用卡
+     *
+     * @param accountId
+     * @return
+     */
+    @Override
+    public Optional<AccountBank> getTopCreditCard(long accountId) {
+        return Optional.fromNullable(accountBankDao.getTopCreditCard(accountId));
     }
 
 }
