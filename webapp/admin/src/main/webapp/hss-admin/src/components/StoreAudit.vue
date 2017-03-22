@@ -6,7 +6,7 @@
     </div>
     <div style="margin: 0 15px">
       <div class="box box-primary">
-        <p class="lead">注册信息</p>
+        <p class="lead">注册信息 <a style="font-size: 14px;color: #20a0ff;font-weight: 500;cursor: pointer" @click="dealerMask = true" v-if="!isShow">修改代理商归属</a></p>
         <el-row type="flex" class="row-bg" justify="space-around" style="margin-bottom: 15px">
           <el-col :span="5">
             <div class="label">注册手机：<span>{{msg.mobile}}</span>
@@ -30,7 +30,6 @@
           </el-col>
           <el-col :span="5">
             <div class="label">一级代理名称：<span>{{msg.proxyName}}</span>
-              <a @click="dealerMask = true" v-if="!isShow">修改代理商归属</a>
             </div>
           </el-col>
           <el-col :span="5">
@@ -244,10 +243,10 @@
           <el-form-item label="切换类型：" width="120" style="margin-bottom: 0">归属关系
           </el-form-item>
           <el-form-item label="当前一级代理：" width="120" style="margin-bottom: 0">
-            {{msg.proxyName}}
+            {{msg.proxyName|filterDealer}}
           </el-form-item>
           <el-form-item label="当前二级代理：" width="120" style="margin-bottom: 0">
-            {{msg.proxyName1}}
+            {{msg.proxyName1|filterDealer}}
           </el-form-item>
           <el-form-item label="切换对象：" width="120" style="margin-bottom: 0">
             <el-select size="small" placeholder="请选择" v-model="dealerQuery.changeType">
