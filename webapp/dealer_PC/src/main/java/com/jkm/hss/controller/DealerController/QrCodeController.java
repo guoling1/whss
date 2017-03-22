@@ -200,7 +200,7 @@ public class QrCodeController extends BaseController {
             myQrCodeListRequest.setFirstDealerId(super.getDealer().get().getId());
             int unDistributeCount = this.qrCodeService.getFirstResidueCount(super.getDealer().get().getId());
             qrCodeListPageResponse.setUnDistributeCount(unDistributeCount);
-            int distributeCount = this.qrCodeService.getFirstResidueCount(super.getDealer().get().getId());
+            int distributeCount = this.qrCodeService.getFirstDistributeCount(super.getDealer().get().getId());
             qrCodeListPageResponse.setDistributeCount(distributeCount);
             int unActivateCount = this.qrCodeService.getFirstUnActivateCount(super.getDealer().get().getId());
             qrCodeListPageResponse.setUnActivateCount(unActivateCount);
