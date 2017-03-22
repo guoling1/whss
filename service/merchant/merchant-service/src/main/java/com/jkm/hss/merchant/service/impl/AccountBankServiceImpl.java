@@ -106,10 +106,8 @@ public class AccountBankServiceImpl implements AccountBankService{
      */
     @Override
     public long initCreditBankCard(long accountId,String bankNo,String bankName,String reserveMobile,String bankBin,String expiryTime) {
-        Optional<AccountBank> backAccountBank = this.isExistBankNo(accountId,MerchantSupport.encryptBankCard(bankNo),EnumAccountBank.CREDIT.getId());
+        Optional<AccountBank> backAccountBank = this.selectCreditCardByBankNoAndStateless(accountId,MerchantSupport.encryptBankCard(bankNo));
         if(!backAccountBank.isPresent()){
-            log.info("不存在该账号{}",bankNo);
-//            this.reset(accountId,EnumAccountBank.CREDIT.getId());
             AccountBank accountBank = new AccountBank();
             accountBank.setAccountId(accountId);
             accountBank.setBankNo(MerchantSupport.encryptBankCard(bankNo));
@@ -123,9 +121,12 @@ public class AccountBankServiceImpl implements AccountBankService{
             this.insert(accountBank);
             return accountBank.getId();
         }else{
-            log.info("已经存在该账号{}",bankNo);
-//            this.reset(accountId,EnumAccountBank.CREDIT.getId());
-//            this.setDefaultCreditCard(backId);
+            AccountBank accountBank = backAccountBank.get();
+            accountBank.setReserveMobile(MerchantSupport.encryptMobile(reserveMobile));
+            accountBank.setBankName(bankName);
+            accountBank.setBankBin(bankBin);
+            accountBank.setExpiryTime(expiryTime);
+            accountBankDao.updateBankInfo(accountBank);
             return backAccountBank.get().getId();
         }
 
