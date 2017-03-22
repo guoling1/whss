@@ -97,7 +97,7 @@
             <li>
               <label style="margin-right: 10px;">打款金额</label>
               <span>当页总额：{{pageTotal}}&nbsp;元</span>&nbsp;&nbsp;&nbsp;&nbsp;
-              <span>筛选条件统计：{{addTotal}}&nbsp;元</span>
+              <span>统计总额：{{addTotal}}&nbsp;元</span>
             </li>
           </ul>
           <!--分页-->
