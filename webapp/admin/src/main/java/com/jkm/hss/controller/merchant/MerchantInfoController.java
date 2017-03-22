@@ -77,7 +77,7 @@ public class MerchantInfoController extends BaseController{
                 return CommonResponse.simpleResponse(-1, "代理商不存在");
             }
             if(dealerOptional.get().getLevel()!= EnumDealerLevel.FIRST.getId()){
-                return CommonResponse.simpleResponse(-1, "代理商编码和切换类型不一致");
+                return CommonResponse.simpleResponse(-1, "代理商编码和切换对象不一致");
             }
             changeDealerRequest.setCurrentDealerId(dealerOptional.get().getId());
             changeDealerRequest.setFirstDealerId(dealerOptional.get().getId());
@@ -92,7 +92,7 @@ public class MerchantInfoController extends BaseController{
                 return CommonResponse.simpleResponse(-1, "代理商不存在");
             }
             if(dealerOptional.get().getLevel()!= EnumDealerLevel.SECOND.getId()){
-                return CommonResponse.simpleResponse(-1, "代理商编码和切换类型不一致");
+                return CommonResponse.simpleResponse(-1, "代理商编码和切换对象不一致");
             }
             changeDealerRequest.setCurrentDealerId(dealerOptional.get().getId());
             changeDealerRequest.setFirstDealerId(dealerOptional.get().getFirstLevelDealerId());
