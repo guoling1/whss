@@ -102,7 +102,7 @@
         UPDATE tb_account_bank
         set
         is_default=0
-        WHERE account_id = #{accountId} and status=0 and card_type=#{cardType}
+        WHERE account_id = #{accountId} and card_type=#{cardType}
     </update>
 
     <!-- 获取默认储蓄卡 -->
