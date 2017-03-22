@@ -422,11 +422,11 @@ public class QRCodeServiceImpl implements QRCodeService {
         final Pair<Date, Date> lastDayDate = this.getLastDayDate();
         final int lastDayActivateCount = this.qrCodeDao.selectFirstLastDayActivateCount(firstLevelDealerId,
                 lastDayDate.getLeft(), lastDayDate.getRight());
-        final int residueCount = this.qrCodeDao.getFirstResidueCount(firstLevelDealerId);
-        final int distributeCount = this.qrCodeDao.getFirstDistributeCount(firstLevelDealerId);
-        final int distributeToSelfCount = this.qrCodeDao.getFirstDistributeToSelfCount(firstLevelDealerId);
-        final int unActivateCount = this.qrCodeDao.getFirstUnActivateCount(firstLevelDealerId);
-        final int activateCount = this.qrCodeDao.getFirstActivateCount(firstLevelDealerId);
+        final int residueCount = this.qrCodeDao.getFirstResidueCount(firstLevelDealerId,EnumQRCodeSysType.HSS.getId());
+        final int distributeCount = this.qrCodeDao.getFirstDistributeCount(firstLevelDealerId,EnumQRCodeSysType.HSS.getId());
+        final int distributeToSelfCount = this.qrCodeDao.getFirstDistributeToSelfCount(firstLevelDealerId,EnumQRCodeSysType.HSS.getId());
+        final int unActivateCount = this.qrCodeDao.getFirstUnActivateCount(firstLevelDealerId,EnumQRCodeSysType.HSS.getId());
+        final int activateCount = this.qrCodeDao.getFirstActivateCount(firstLevelDealerId,EnumQRCodeSysType.HSS.getId());
         final FirstLevelDealerCodeInfo firstLevelDealerCodeInfo = new FirstLevelDealerCodeInfo();
         firstLevelDealerCodeInfo.setDistributeToSelfCount(distributeToSelfCount);
         firstLevelDealerCodeInfo.setLastDayActivateCount(lastDayActivateCount);
@@ -448,7 +448,7 @@ public class QRCodeServiceImpl implements QRCodeService {
         final int lastDayActivateCount = this.qrCodeDao.selectSecondLastDayActivateCount(secondLevelDealerId,
                 lastDayDate.getLeft(), lastDayDate.getRight());
         final int codeCount = this.qrCodeDao.getSecondCodeCount(secondLevelDealerId);
-        final int unActivateCount = this.qrCodeDao.getSecondUnActivateCount(secondLevelDealerId);
+        final int unActivateCount = this.qrCodeDao.getSecondUnActivateCount(secondLevelDealerId,EnumQRCodeSysType.HSS.getId());
         final SecondLevelDealerCodeInfo secondLevelDealerCodeInfo = new SecondLevelDealerCodeInfo();
         secondLevelDealerCodeInfo.setLastDayActivateCount(lastDayActivateCount);
         secondLevelDealerCodeInfo.setCodeCount(codeCount);
@@ -980,13 +980,7 @@ public class QRCodeServiceImpl implements QRCodeService {
         List<Integer> merchantStatusList = new ArrayList<Integer>();
         if((EnumQRCodeSysType.HSS.getId()).equals(type)){
             if(status==0){
-                merchantStatusList.add(0);
-                merchantStatusList.add(1);
-                merchantStatusList.add(2);
-                merchantStatusList.add(3);
-                merchantStatusList.add(4);
-                merchantStatusList.add(5);
-                merchantStatusList.add(6);
+
             }else if(status==1){
                 merchantStatusList.add(0);
             }else if(status==2){
@@ -997,21 +991,11 @@ public class QRCodeServiceImpl implements QRCodeService {
                 merchantStatusList.add(3);
                 merchantStatusList.add(6);
             }else{
-                merchantStatusList.add(0);
-                merchantStatusList.add(1);
-                merchantStatusList.add(2);
-                merchantStatusList.add(3);
-                merchantStatusList.add(4);
-                merchantStatusList.add(5);
-                merchantStatusList.add(6);
+
             }
         }else{
             if(status==0){
-                merchantStatusList.add(1);
-                merchantStatusList.add(2);
-                merchantStatusList.add(3);
-                merchantStatusList.add(4);
-                merchantStatusList.add(99);
+
             }else if(status==1){
                 merchantStatusList.add(4);
             }else if(status==2){
@@ -1021,11 +1005,7 @@ public class QRCodeServiceImpl implements QRCodeService {
             }else if(status==4){
                 merchantStatusList.add(1);
             }else{
-                merchantStatusList.add(1);
-                merchantStatusList.add(2);
-                merchantStatusList.add(3);
-                merchantStatusList.add(4);
-                merchantStatusList.add(99);
+
             }
         }
         return merchantStatusList;
@@ -1038,8 +1018,8 @@ public class QRCodeServiceImpl implements QRCodeService {
      * @return
      */
     @Override
-    public int getFirstResidueCount(long firstLevelDealerId) {
-        return qrCodeDao.getFirstResidueCount(firstLevelDealerId);
+    public int getFirstResidueCount(long firstLevelDealerId,String sysType) {
+        return qrCodeDao.getFirstResidueCount(firstLevelDealerId,sysType);
     }
 
     /**
@@ -1049,8 +1029,8 @@ public class QRCodeServiceImpl implements QRCodeService {
      * @return
      */
     @Override
-    public int getFirstDistributeCount(long firstLevelDealerId) {
-        return qrCodeDao.getFirstDistributeCount(firstLevelDealerId);
+    public int getFirstDistributeCount(long firstLevelDealerId,String sysType) {
+        return qrCodeDao.getFirstDistributeCount(firstLevelDealerId,sysType);
     }
 
     /**
@@ -1060,8 +1040,8 @@ public class QRCodeServiceImpl implements QRCodeService {
      * @return
      */
     @Override
-    public int getFirstUnActivateCount(long firstLevelDealerId) {
-        return qrCodeDao.getFirstUnActivateCount(firstLevelDealerId);
+    public int getFirstUnActivateCount(long firstLevelDealerId,String sysType) {
+        return qrCodeDao.getFirstUnActivateCount(firstLevelDealerId,sysType);
     }
 
     /**
@@ -1071,8 +1051,8 @@ public class QRCodeServiceImpl implements QRCodeService {
      * @return
      */
     @Override
-    public int getFirstActivateCount(long firstLevelDealerId) {
-        return qrCodeDao.getFirstActivateCount(firstLevelDealerId);
+    public int getFirstActivateCount(long firstLevelDealerId,String sysType) {
+        return qrCodeDao.getFirstActivateCount(firstLevelDealerId,sysType);
     }
 
     /**
@@ -1082,8 +1062,8 @@ public class QRCodeServiceImpl implements QRCodeService {
      * @return
      */
     @Override
-    public int getSecondUnActivateCount(long secondLevelDealerId) {
-        return qrCodeDao.getSecondUnActivateCount(secondLevelDealerId);
+    public int getSecondUnActivateCount(long secondLevelDealerId,String sysType) {
+        return qrCodeDao.getSecondUnActivateCount(secondLevelDealerId,sysType);
     }
 
     /**
@@ -1093,8 +1073,8 @@ public class QRCodeServiceImpl implements QRCodeService {
      * @return
      */
     @Override
-    public int getSecondActivateCount(long secondLevelDealerId) {
-        return qrCodeDao.getSecondActivateCount(secondLevelDealerId);
+    public int getSecondActivateCount(long secondLevelDealerId,String sysType) {
+        return qrCodeDao.getSecondActivateCount(secondLevelDealerId,sysType);
     }
 
     /**

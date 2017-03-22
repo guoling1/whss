@@ -446,40 +446,40 @@ public interface QRCodeService {
      * @param firstLevelDealerId
      * @return
      */
-    int getFirstResidueCount(long firstLevelDealerId);
+    int getFirstResidueCount(long firstLevelDealerId,String sysType);
 
     /**
      * 已分配个数
      * @param firstLevelDealerId
      * @return
      */
-    int getFirstDistributeCount(long firstLevelDealerId);
+    int getFirstDistributeCount(long firstLevelDealerId,String sysType);
 
     /**
      * 未激活个数
      * @param firstLevelDealerId
      * @return
      */
-    int getFirstUnActivateCount(long firstLevelDealerId);
+    int getFirstUnActivateCount(long firstLevelDealerId,String sysType);
 
     /**
      * 已激活个数
      * @param firstLevelDealerId
      * @return
      */
-    int getFirstActivateCount(long firstLevelDealerId);
+    int getFirstActivateCount(long firstLevelDealerId,String sysType);
     /**
      * 查询二级代理商未激活二维码数
      *
      * @param secondLevelDealerId
      * @return
      */
-    int getSecondUnActivateCount(long secondLevelDealerId);
+    int getSecondUnActivateCount(long secondLevelDealerId,String sysType);
     /**
      * 查询二级代理商激活二维码数
      *
      * @param secondLevelDealerId
      * @return
      */
-    int getSecondActivateCount(long secondLevelDealerId);
+    int getSecondActivateCount(long secondLevelDealerId,String sysType);
 }
