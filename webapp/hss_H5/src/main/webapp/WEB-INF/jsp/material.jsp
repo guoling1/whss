@@ -118,7 +118,6 @@
     <img class="img" src="http://static.jinkaimen.cn/hss/assets/card-sample.png" alt="">
   </div>
 </div>
-</div>
 </body>
 <script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
 <script>
