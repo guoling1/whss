@@ -202,7 +202,7 @@
         set
         reserve_mobile = #{reserveMobile},
         bank_name=#{bankName},
-        bank_bin = #{bankBin}
+        bank_bin = #{bankBin},
         expiry_time=#{expiryTime}
         WHERE id = #{id}
     </update>
