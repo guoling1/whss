@@ -14,11 +14,11 @@ public enum EnumChangeType {
     /**
      * 一代
      */
-    FIRSTDEALER(1),
+    FIRSTDEALER(2),
     /**
      * 二代
      */
-    SECONDDEALER(1);
+    SECONDDEALER(3);
 
     @Getter
     private int id;

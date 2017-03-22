@@ -99,6 +99,6 @@ public class MerchantInfoController extends BaseController{
             changeDealerRequest.setSecondDealerId(dealerOptional.get().getId());
         }
         merchantInfoService.changeDealer(merchantInfoOptional.get().getCode(),changeDealerRequest);
-        return CommonResponse.simpleResponse(1, "更改代理商成功");
+        return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "更改代理商成功");
     }
 }
