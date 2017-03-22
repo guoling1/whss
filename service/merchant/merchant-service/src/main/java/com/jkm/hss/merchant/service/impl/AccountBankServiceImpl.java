@@ -106,7 +106,7 @@ public class AccountBankServiceImpl implements AccountBankService{
      */
     @Override
     public long initCreditBankCard(long accountId,String bankNo,String bankName,String reserveMobile,String bankBin,String expiryTime) {
-        Optional<AccountBank> backAccountBank = this.selectCreditCardByBankNoAndStateless(accountId,MerchantSupport.encryptBankCard(bankNo));
+        Optional<AccountBank> backAccountBank = this.selectCreditCardByBankNoAndStateless(accountId,bankNo);
         if(!backAccountBank.isPresent()){
             AccountBank accountBank = new AccountBank();
             accountBank.setAccountId(accountId);
