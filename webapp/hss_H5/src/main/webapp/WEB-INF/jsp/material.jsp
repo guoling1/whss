@@ -9,7 +9,7 @@
   <meta name="viewport"
         content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
   <title>好收收</title>
-  <link rel="stylesheet" href="http://static.jinkaimen.cn/hss/css/style.2.1.5.css">
+  <link rel="stylesheet" href="http://static.jinkaimen.cn/hss/css/style.2.2.2.css">
   <link rel="stylesheet" href="http://static.jinkaimen.cn/weui/weui.css">
 </head>
 <body>
@@ -117,7 +117,6 @@
   <div class="sample" id="sampleHide">
     <img class="img" src="http://static.jinkaimen.cn/hss/assets/card-sample.png" alt="">
   </div>
-</div>
 </div>
 </body>
 <script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
