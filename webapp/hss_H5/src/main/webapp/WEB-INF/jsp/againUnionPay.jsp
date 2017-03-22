@@ -91,7 +91,9 @@
 </body>
 <script>
   var pageData = {
-    creditCardId: '${creditCardId}'
+    creditCardId: '${creditCardId}',
+    status: '${status}',
+    canPay: false
   }
 </script>
 <script src="http://static.jinkaimen.cn/vendor/vendor.1.0.9.2.min.js"></script>

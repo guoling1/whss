@@ -136,7 +136,7 @@ bankCodeBtn.addEventListener('change', function (e) {
       } else {
         let allow = false;
         for (let i = 0; i < supportBankCardList.length; i++) {
-          if (data == supportBankCardList[i].bankCode) {
+          if (data == supportBankCardList[i].bankCode && supportBankCardList[i].status == 1) {
             allow = true;
             support = true;
             if (supportBankCardList[i].bankName != bankName) {
@@ -144,6 +144,8 @@ bankCodeBtn.addEventListener('change', function (e) {
               bankCode = supportBankCardList[i].bankCode;
               chooseBank.value = supportBankCardList[i].bankName;
             }
+          } else {
+            message.prompt_show('暂时不支持该银行的卡');
           }
         }
         if (!allow) {
