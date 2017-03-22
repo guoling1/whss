@@ -96,7 +96,7 @@
             <div class="text" v-if="query.type==1">实体码请务必及时下载Excel文件</div>
             <div slot="footer" class="dialog-footer" style="text-align: center;">
               <a :href="'http://'+this.url" class="btn btn-primary" style="padding: 6px 50px;" v-if="query.type==1">下载文件</a>
-              <a @click="this.isShow = false" v-if="query.type==2" class="btn btn-primary" style="padding: 6px 50px;">确 定</a>
+              <a @click="isShow = false" v-if="query.type==2" class="btn btn-primary" style="padding: 6px 50px;">确 定</a>
             </div>
           </el-dialog>
         </div>

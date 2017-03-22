@@ -54,22 +54,22 @@
                 <div>{{scope.$index+1}}</div>
               </template>
             </el-table-column>
-            <el-table-column label="业务订单号" min-width="112">
+            <el-table-column label="业务订单号">
               <template scope="scope">
                 <span class="td" :data-clipboard-text="records[scope.$index].businessOrderNo" type="text" size="small" style="cursor: pointer" title="点击复制">{{records[scope.$index].businessOrderNo|changeHide}}</span>
               </template>
             </el-table-column>
-            <el-table-column prop="userName" label="账户名称" min-width="120"></el-table-column>
-            <el-table-column prop="userType" label="用户类型" min-width="120"></el-table-column>
-            <el-table-column label="提现单号" min-width="112">
+            <el-table-column prop="userName" label="账户名称"></el-table-column>
+            <el-table-column prop="userType" label="用户类型"></el-table-column>
+            <el-table-column label="提现单号" min-width="112px">
               <template scope="scope">
                 <span class="td" :data-clipboard-text="records[scope.$index].orderNo" type="text" size="small" style="cursor: pointer" title="点击复制">{{records[scope.$index].orderNo|changeHide}}</span>
               </template>
             </el-table-column>
-            <el-table-column prop="tradeAmount" label="提现金额" min-width="120"></el-table-column>
-            <el-table-column prop="poundage" label="手续费" min-width="120"></el-table-column>
-            <el-table-column prop="withdrawStatus" label="提现状态" min-width="120"></el-table-column>
-            <el-table-column prop="payChannelName" label="渠道名称" min-width="120"></el-table-column>
+            <el-table-column prop="tradeAmount" label="提现金额" align="right"></el-table-column>
+            <el-table-column prop="poundage" label="手续费" align="right"></el-table-column>
+            <el-table-column prop="withdrawStatus" label="提现状态"></el-table-column>
+            <el-table-column prop="payChannelName" label="渠道名称"></el-table-column>
             <el-table-column label="打款流水号" min-width="112">
               <template scope="scope">
                 <span class="td" :data-clipboard-text="records[scope.$index].sn" type="text" size="small" style="cursor: pointer" title="点击复制">{{records[scope.$index].sn|changeHide}}</span>
@@ -83,12 +83,12 @@
             <li>
               <label style="margin-right: 10px;">提现金额</label>
               <span>当页总额：{{pageTotal}}&nbsp;元</span>&nbsp;&nbsp;&nbsp;&nbsp;
-              <span>筛选条件统计：{{addTotal}}&nbsp;元</span>
+              <span>统计总额：{{addTotal}}&nbsp;元</span>
             </li>
             <li>
               <label style="margin-right: 10px;">手续费</label>
               <span>当页总额：{{pageTotal1}}&nbsp;元</span>&nbsp;&nbsp;&nbsp;&nbsp;
-              <span>筛选条件统计：{{addTotal1}}&nbsp;元</span>
+              <span>统计总额：{{addTotal1}}&nbsp;元</span>
             </li>
           </ul>
           <!--分页-->
