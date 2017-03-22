@@ -216,13 +216,15 @@ http.post('/channel/queryChannelSupportBank', {
   for (let i = 0; i < data.length; i++) {
     let list = document.createElement('div');
     list.className = 'choose-box-body-list-bank';
-    list.addEventListener('click', function () {
-      bankName = data[i].bankName;
-      bankCode = data[i].bankCode;
-      chooseBank.value = data[i].bankName;
-      layer.style.display = 'none';
-      bankCodeBtn.removeAttribute('readonly');
-    });
+    if (data[i].status == 1) {
+      list.addEventListener('click', function () {
+        bankName = data[i].bankName;
+        bankCode = data[i].bankCode;
+        chooseBank.value = data[i].bankName;
+        layer.style.display = 'none';
+        bankCodeBtn.removeAttribute('readonly');
+      });
+    }
     let logo = document.createElement('div');
     if (data[i].status == 1) {
       logo.className = 'logo ' + data[i].bankCode;
@@ -241,10 +243,11 @@ http.post('/channel/queryChannelSupportBank', {
     let small = document.createElement('div');
     if (data[i].status == 1) {
       small.className = 'small';
+      small.innerHTML = '该通道暂不可用';
     } else {
       small.className = 'small NO';
+      small.innerHTML = '单日限额 ' + fmoney(data[i].dayLimitAmount, 2) + '元';
     }
-    small.innerHTML = '单日限额 ' + fmoney(data[i].dayLimitAmount, 2) + '元';
     detail.appendChild(name);
     detail.appendChild(small);
     list.appendChild(logo);

@@ -95,7 +95,10 @@ sendCode.addEventListener('click', function () {
 });
 
 // 获取支持的银行卡列表
-http.post('/bankcard/list/' + pageData.creditCardId, {}, function (data) {
+http.post('/bankcard/list', {
+  creditCardId: pageData.creditCardId,
+  channel: channel
+}, function (data) {
   for (let i = 0; i < data.length; i++) {
     let list = document.createElement('div');
     if (pageData.creditCardId == data[i].creditCardId) {
@@ -103,22 +106,34 @@ http.post('/bankcard/list/' + pageData.creditCardId, {}, function (data) {
     } else {
       list.className = 'choose-box-body-list-bank';
     }
-    list.addEventListener('click', function () {
-      let className = document.getElementsByClassName('choose-box-body-list-bank');
-      for (let i = 0; i < className.length; i++) {
-        className[i].className = 'choose-box-body-list-bank';
-      }
-      this.className = 'choose-box-body-list-bank active';
-      bank.innerHTML = data[i].bankName + ' 尾号' + data[i].shortNo;
-      mobile.innerHTML = data[i].mobile;
-      pageData.creditCardId = data[i].creditCardId;
-      layer.style.display = 'none';
-    });
+    if (data[i].status == 1) {
+      list.addEventListener('click', function () {
+        let className = document.getElementsByClassName('choose-box-body-list-bank');
+        for (let i = 0; i < className.length; i++) {
+          className[i].className = 'choose-box-body-list-bank';
+        }
+        this.className = 'choose-box-body-list-bank active';
+        bank.className = 'val';
+        bank.innerHTML = data[i].bankName + ' 尾号' + data[i].shortNo;
+        mobile.innerHTML = data[i].mobile;
+        pageData.creditCardId = data[i].creditCardId;
+        layer.style.display = 'none';
+      });
+    }
     let logo = document.createElement('div');
-    logo.className = 'logo ' + data[i].bankCode;
+    if (data[i].status == 0) {
+      logo.className = 'logo ' + data[i].bankCode + '_NO';
+    } else {
+      logo.className = 'logo ' + data[i].bankCode;
+    }
     let info = document.createElement('div');
-    info.className = 'info';
-    info.innerHTML = data[i].bankName + ' (' + data[i].shortNo + ')' + ' <span>信用卡</span>';
+    if (data[i].status == 0) {
+      info.className = 'info NO';
+      info.innerHTML = data[i].bankName + ' (' + data[i].shortNo + ')' + ' <span>信用卡 (暂不可用)</span>';
+    } else {
+      info.className = 'info';
+      info.innerHTML = data[i].bankName + ' (' + data[i].shortNo + ')' + ' <span>信用卡</span>';
+    }
     list.appendChild(logo);
     list.appendChild(info);
     layer_body.appendChild(list);

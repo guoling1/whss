@@ -52,5 +52,5 @@
 </script>
 <script src="http://static.jinkaimen.cn/qrcode/qrcode.min.js"></script>
 <script src="http://static.jinkaimen.cn/vendor/vendor.1.0.9.2.min.js"></script>
-<script src="http://static.jinkaimen.cn/hss/2.2.5/charge.min.js"></script>
+<script src="http://static.jinkaimen.cn/hss/2.2.6/charge.min.js"></script>
 </html>
