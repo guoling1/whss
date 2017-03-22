@@ -1,5 +1,5 @@
 <template lang="html">
-  <div id="storeAudit">
+  <div id="storeAudit" v-loading.body="loading">
     <div class="box-header with-border" style="margin: 0 0 0 3px;">
       <h3 v-if="isShow" class="box-title" style="border-left: 3px solid #e4e0e0;padding-left: 10px;">商户审核</h3>
       <h3 v-else="isShow" class="box-title" style="border-left: 3px solid #e4e0e0;padding-left: 10px;">商户资料</h3>
@@ -250,17 +250,17 @@
             {{msg.proxyName1}}
           </el-form-item>
           <el-form-item label="切换对象：" width="120" style="margin-bottom: 0">
-            <el-select size="small" placeholder="请选择">
-              <el-option label="切换金开门直属" value="shanghai"></el-option>
-              <el-option label="切换为一级直属" value="beijing"></el-option>
-              <el-option label="切换到二级" value="beijing"></el-option>
+            <el-select size="small" placeholder="请选择" v-model="dealerQuery.changeType">
+              <el-option label="切换金开门直属" value="1"></el-option>
+              <el-option label="切换为一级直属" value="2"></el-option>
+              <el-option label="切换到二级" value="3"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="代理商编号：" width="120" style="margin-bottom: 0">
-            <el-input style="width: 70%" size="small" v-model="dealerNo" placeholder="请输入代理商编号，切换为金开门直属无需输入"></el-input>
+            <el-input style="width: 70%" size="small" v-model="dealerNo" placeholder="请输入代理商编号，切换为金开门直属无需输入" maxlength="12"></el-input>
           </el-form-item>
           <el-form-item label="代理商名称：" width="120" style="margin-bottom: 0">
-            {{msg.proxyName1}}
+            {{dealerName}}
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer" style="text-align: center">
@@ -339,6 +339,7 @@
     name: 'storeAudit',
     data () {
       return {
+        loading: true,
         dealerMask: false,
         id: '',
         msg: {
@@ -370,7 +371,13 @@
           bankNo:'',
           reserveMobile:''
         },
-        dealerNo:''
+        dealerNo:'',
+        dealerName:'',
+        dealerQuery:{
+          changeType:'',
+          markCode:'',
+          merchantId:''
+        }
       }
     },
     created: function () {
@@ -388,7 +395,9 @@
             this.rateInfo[i].merchantRate = parseFloat(this.rateInfo[i].merchantRate * 100).toFixed(2) + '%'
             this.rateInfo[i].withdrawMoney = this.rateInfo[i].withdrawMoney + '元/笔'
           }
+          this.loading=false
         }, function (err) {
+          this.loading=false
           this.$message({
             showClose: true,
             message: err.statusMessage,
@@ -398,14 +407,29 @@
     },
     methods: {
       changeDealer: function () {
-        this.$http.post('',this.dealerQuery)
-          .then()
+        this.loading = true;
+        this.dealerQuery.markCode = this.dealerNo;
+        this.dealerQuery.merchantId = this.$route.query.id;
+        this.$http.post('/admin/merchantInfo/changeDealer',this.dealerQuery)
+          .then(()=>{
+            this.$message({
+              showClose: true,
+              message: '更新代理商成功',
+              type: 'success'
+            });
+            this.dealerMask = false;
+            setTimeout(function () {
+              location.reload();
+            },200);
+            this.loading = false
+          })
           .catch(err=>{
             this.$message({
               showClose: true,
               message: err.statusMessage,
               type: 'error'
             })
+            this.loading = false
           })
       },
       //修改名称
@@ -541,8 +565,18 @@
     },
     watch: {
       dealerNo:function (val, oldVal) {
-        if(oldVal.length==11){
-          console.log('查询代理名')
+        if(val.length==12){
+          this.$http.post('/admin/dealer/getDealerByMarkCode',{markCode:val})
+            .then(res =>{
+                this.dealerName = res.data;
+            })
+            .catch(err =>{
+              this.$message({
+                showClose: true,
+                message: err.statusMessage,
+                type: 'error'
+              })
+            })
         }
       }
     }
