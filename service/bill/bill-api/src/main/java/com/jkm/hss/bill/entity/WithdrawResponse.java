@@ -19,6 +19,151 @@ import java.util.Date;
 public class WithdrawResponse{
 
     /**
+     * 商户所在地
+     */
+    private String locationM;
+
+    /**
+     * 商户详细地址
+     */
+    private String address;
+
+    /**
+     * 商户所属一级代理名
+     */
+    private String proxyNames;
+
+    /**
+     * 商户所属二级代理名
+     */
+    private String proxyName1;
+
+    /**
+     * 商户所在省
+     */
+    private String provinceName;
+
+    /**
+     * 商户所在市
+     */
+    private String cityName;
+
+    /**
+     * 商户所在县
+     */
+    private String countyName;
+
+    /**
+     * 商户一级代理商id
+     */
+    private long firstDealerId;
+
+    /**
+     * 商户二级代理商id
+     */
+    private long secondDealerId;
+
+    /**
+     * 商户注册时间
+     */
+    private Date createTimeM;
+
+    /**
+     * 商户注册时间
+     */
+    private String createTimeMs;
+
+    /**
+     * 代理商注册时间
+     */
+    private Date createTimeD;
+
+    /**
+     * 代理商注册时间
+     */
+    private String createTimeDs;
+
+    /**
+     * 商户编号
+     */
+    private String markCodeM;
+
+    /**
+     * 代理商注册手机号
+     */
+    private String mobileD;
+
+    /**
+     * 商户注册手机号
+     */
+    private String mobile;
+
+    /**
+     * 代理商编号
+     */
+    private String markCodes;
+
+    /**
+     * 一级代理商编号
+     */
+    private String markCode;
+
+    /**
+     * 二级代理商编号
+     */
+    private String markCode1;
+
+    /**
+     * 代理详细地址
+     */
+    private String belongArea;
+
+    /**
+     * 代理所在地
+     */
+    private String location;
+
+    /**
+     * 代理商所在省
+     */
+    private String belongProvinceName;
+
+    /**
+     * 代理商所在市
+     */
+    private String belongCityName;
+
+    /**
+     * 代理商级别
+     */
+    private int level;
+
+    /**
+     * 一级代理商id
+     */
+    private long firstLevelDealerId;
+
+    /**
+     * 商户id
+     */
+    private long idm;
+
+    /**
+     * 代理商id
+     */
+    private long idd;
+
+    /**
+     * 商户名
+     */
+    private String merchantName;
+
+    /**
+     * 代理商名
+     */
+    private String proxyName;
+
+    /**
      * 账户名称
      */
     private String userName;
@@ -93,6 +238,11 @@ public class WithdrawResponse{
      * {@link com.jkm.hss.bill.enums.EnumTradeType}
      */
     private int tradeType;
+
+    /**
+     * 交易类型
+     */
+    private String tradeTypes;
 
     /**
      * 付款人(accountId)

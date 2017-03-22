@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -125,24 +126,31 @@ public class OrderController extends BaseController {
             req.setEndTime(sdf.format(rightNow.getTime()));
         }
         WithdrawResponse result = orderService.withdrawAmount(req);
-//        BigDecimal x = new BigDecimal("0.0");
-//        if (result!=null){
-//            if (result.getTradeAmount()==null){
-//                result.setTradeAmount(x);
-//            }
-//            if (result.getPoundage()==null){
-//                result.setPoundage(x);
-//
-//            }
-//        }else {
-//
-//            result.setPoundage(x);
-//            result.setTradeAmount(x);
-//        }
+        BigDecimal x = new BigDecimal("0.0");
+        WithdrawResponse response = new WithdrawResponse();
+        if (result==null){
+            response.setPoundage(x);
+            response.setTradeAmount(x);
+            return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "统计完成", response);
+        }
         return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "统计完成", result);
 
     }
 
-
+    @ResponseBody
+    @RequestMapping(value = "/withdrawDetail", method = RequestMethod.POST)
+    public CommonResponse withdrawDetail(@RequestBody WithdrawRequest req) throws ParseException {
+        long idd = req.getIdd();
+        long idm = req.getIdm();
+        if (idd>0){
+            WithdrawResponse result = orderService.withdrawDetail(idd);
+            return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", result);
+        }
+        if (idm>0){
+            WithdrawResponse results = orderService.withdrawDetails(idm);
+            return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", results);
+        }
+        return CommonResponse.simpleResponse(-1, "查询异常");
+    }
 
 }

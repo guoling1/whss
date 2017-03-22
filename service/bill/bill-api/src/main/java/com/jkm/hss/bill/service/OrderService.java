@@ -284,6 +284,21 @@ public interface OrderService {
      * @return
      */
     WithdrawResponse withdrawAmount(WithdrawRequest req);
+
+    /**
+     * 查询提现详情代理商
+     * @param idd
+     * @return
+     */
+    WithdrawResponse withdrawDetail(long idd);
+
+    /**
+     * 查询提现详情商户
+     * @param idm
+     * @return
+     */
+    WithdrawResponse withdrawDetails(long idm);
+
     /**
      * 查询交易详情
      * @param orderRecord

@@ -284,4 +284,18 @@ public interface OrderDao {
      * @return
      */
     WithdrawResponse withdrawAmount(WithdrawRequest req);
+
+    /**
+     * 提现详情代理商
+     * @param idd
+     * @return
+     */
+    WithdrawResponse withdrawDetail(long idd);
+
+    /**
+     * 提现详情商户
+     * @param idm
+     * @return
+     */
+    WithdrawResponse withdrawDetails(long idm);
 }

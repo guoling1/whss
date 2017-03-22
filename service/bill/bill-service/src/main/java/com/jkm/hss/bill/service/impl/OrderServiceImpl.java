@@ -1014,10 +1014,11 @@ public class OrderServiceImpl implements OrderService {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         if (list.size()>0){
             for (int i=0;i<list.size();i++){
-                if (list.get(i).getDealerId()>0){
-                    list.get(i).setUserType("代理商");
-                }else {
+                if (list.get(i).getMerchantName()!=null&&!("").equals(list.get(i).getMerchantName())){
                     list.get(i).setUserType("商户");
+                }
+                if (list.get(i).getProxyName()!=null&&!("").equals(list.get(i).getProxyName())){
+                    list.get(i).setUserType("代理商");
                 }
                 if (list.get(i).getCreateTime()!=null&&!list.get(i).getCreateTime().equals("")){
                     String dates = sdf.format(list.get(i).getCreateTime());
@@ -1064,6 +1065,89 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public WithdrawResponse withdrawAmount(WithdrawRequest req) {
         WithdrawResponse response = this.orderDao.withdrawAmount(req);
+        return response;
+    }
+
+    @Override
+    public WithdrawResponse withdrawDetail(long idd) {
+        WithdrawResponse response = orderDao.withdrawDetail(idd);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        if (response!=null){
+            if (response.getCreateTime()!=null&&!response.getCreateTime().equals("")){
+                String dates = sdf.format(response.getCreateTime());
+                response.setCreateTimes(dates);
+            }
+            if (response.getSuccessSettleTime()!=null&&!response.getSuccessSettleTime().equals("")){
+                String dates = sdf.format(response.getSuccessSettleTime());
+                response.setSuccessTime(dates);
+            }
+            if (response.getStatus()==5){
+                response.setWithdrawStatus(EnumOrderStatus.WITHDRAWING.getValue());
+            }
+            if (response.getStatus()==6){
+                response.setWithdrawStatus(EnumOrderStatus.WITHDRAW_SUCCESS.getValue());
+            }
+            if (response.getPayChannelSign()==101){
+                response.setPayChannelName(EnumPayChannelSign.idOf(response.getPayChannelSign()).getName());
+            }
+            if (response.getPayChannelSign()==102){
+                response.setPayChannelName(EnumPayChannelSign.idOf(response.getPayChannelSign()).getName());
+            }
+            if (response.getPayChannelSign()==103){
+                response.setPayChannelName(EnumPayChannelSign.idOf(response.getPayChannelSign()).getName());
+            }
+            if (response.getPayChannelSign()==201){
+                response.setPayChannelName(EnumPayChannelSign.idOf(response.getPayChannelSign()).getName());
+            }
+            if (response.getPayChannelSign()==202){
+                response.setPayChannelName(EnumPayChannelSign.idOf(response.getPayChannelSign()).getName());
+            }
+            if (response.getPayChannelSign()==301){
+                response.setPayChannelName(EnumPayChannelSign.idOf(response.getPayChannelSign()).getName());
+            }
+        }
+        return this.orderDao.withdrawDetail(idd);
+    }
+
+    @Override
+    public WithdrawResponse withdrawDetails(long idm) {
+        WithdrawResponse response = this.orderDao.withdrawDetails(idm);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        if (response!=null){
+            response.setMobile(MerchantSupport.decryptMobile(response.getMobile()));
+            if (response.getCreateTime()!=null&&!response.getCreateTime().equals("")){
+                String dates = sdf.format(response.getCreateTime());
+                response.setCreateTimes(dates);
+            }
+            if (response.getSuccessSettleTime()!=null&&!response.getSuccessSettleTime().equals("")){
+                String dates = sdf.format(response.getSuccessSettleTime());
+                response.setSuccessTime(dates);
+            }
+            if (response.getStatus()==5){
+                response.setWithdrawStatus(EnumOrderStatus.WITHDRAWING.getValue());
+            }
+            if (response.getStatus()==6){
+                response.setWithdrawStatus(EnumOrderStatus.WITHDRAW_SUCCESS.getValue());
+            }
+            if (response.getPayChannelSign()==101){
+                response.setPayChannelName(EnumPayChannelSign.idOf(response.getPayChannelSign()).getName());
+            }
+            if (response.getPayChannelSign()==102){
+                response.setPayChannelName(EnumPayChannelSign.idOf(response.getPayChannelSign()).getName());
+            }
+            if (response.getPayChannelSign()==103){
+                response.setPayChannelName(EnumPayChannelSign.idOf(response.getPayChannelSign()).getName());
+            }
+            if (response.getPayChannelSign()==201){
+                response.setPayChannelName(EnumPayChannelSign.idOf(response.getPayChannelSign()).getName());
+            }
+            if (response.getPayChannelSign()==202){
+                response.setPayChannelName(EnumPayChannelSign.idOf(response.getPayChannelSign()).getName());
+            }
+            if (response.getPayChannelSign()==301){
+                response.setPayChannelName(EnumPayChannelSign.idOf(response.getPayChannelSign()).getName());
+            }
+        }
         return response;
     }
 

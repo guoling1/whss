@@ -121,13 +121,18 @@
     <select id="withdrawList" resultType="com.jkm.hss.bill.entity.WithdrawResponse">
         SELECT
             a.*, b.user_name,
-            c.dealer_id
+            c.dealer_id,
+            c.merchant_name,
+            d.proxy_name,
+            c.id AS idm,
+            d.id AS idd
         FROM
-            tb_order a
+          tb_order a
         LEFT JOIN tb_account b ON a.payer = b.id
         LEFT JOIN tb_merchant_info c ON b.id = c.account_id
+        LEFT JOIN tb_dealer d ON b.id = d.account_id
         WHERE
-            a.trade_type = 3
+          a.trade_type = 3
     <if test="businessOrderNo != null and businessOrderNo != ''">
         AND a.business_order_no = #{businessOrderNo}
     </if>
@@ -160,11 +165,12 @@
             SUM(a.trade_amount) AS trade_amount,
             SUM(a.poundage) AS poundage
         FROM
-            tb_order a
+          tb_order a
         LEFT JOIN tb_account b ON a.payer = b.id
         LEFT JOIN tb_merchant_info c ON b.id = c.account_id
+        LEFT JOIN tb_dealer d ON b.id = d.account_id
         WHERE
-            trade_type = 3
+          a.trade_type = 3
         <if test="businessOrderNo != null and businessOrderNo != ''">
             AND a.business_order_no = #{businessOrderNo}
         </if>
@@ -188,16 +194,65 @@
         </if>
     </select>
 
-    <!-- 提现总数 -->
-    <select id="getNo" resultType="java.lang.Integer">
+    <!-- 提现详情代理商 -->
+    <select id="withdrawDetail" resultType="com.jkm.hss.bill.entity.WithdrawResponse">
         SELECT
-            COUNT(*)
+            a.*, c.proxy_name,
+            c.mark_code AS markCodes,
+            c.belong_area,
+            c.belong_province_name,
+            c.belong_city_name,
+            c.`level`,
+            c.first_level_dealer_id,
+            c.mobile AS mobileD,
+            c.create_time AS create_timeD
+        FROM
+            tb_order a
+        LEFT JOIN tb_account b ON a.payer = b.id
+        LEFT JOIN tb_dealer c ON b.id = c.account_id
+        WHERE
+            a.trade_type = 3
+        AND c.id = #{idd}
+        AND a.create_time = #{createTimes}
+    </select>
+
+    <!-- 提现详情商户 -->
+    <select id="withdrawDetails" resultType="com.jkm.hss.bill.entity.WithdrawResponse">
+        SELECT
+            a.*, b.user_name,
+            c.dealer_id,
+            c.merchant_name,
+            c.mark_code AS mark_codeM,
+            c.mobile,
+            c.create_time AS create_timeM,
+            c.province_name,
+            c.city_name,
+            c.county_name,
+            c.first_dealer_id,
+            c.second_dealer_id,
+          (select proxy_name from tb_dealer where id=c.first_dealer_id) as proxyNames,
+          (select proxy_name from tb_dealer where id=c.second_dealer_id) as proxyName1
         FROM
             tb_order a
         LEFT JOIN tb_account b ON a.payer = b.id
         LEFT JOIN tb_merchant_info c ON b.id = c.account_id
         WHERE
-            trade_type = 3
+            a.trade_type = 3
+        AND c.id=#{idm}
+        AND a.create_time=#{createTimes}
+    </select>
+
+    <!-- 提现总数 -->
+    <select id="getNo" resultType="java.lang.Integer">
+        SELECT
+            COUNT(*)
+        FROM
+          tb_order a
+        LEFT JOIN tb_account b ON a.payer = b.id
+        LEFT JOIN tb_merchant_info c ON b.id = c.account_id
+        LEFT JOIN tb_dealer d ON b.id = d.account_id
+        WHERE
+          a.trade_type = 3
     <if test="businessOrderNo != null and businessOrderNo != ''">
         AND a.business_order_no = #{businessOrderNo}
     </if>

@@ -16,6 +16,21 @@ import lombok.Data;
 public class WithdrawRequest {
 
     /**
+     * 提现时间
+     */
+    private String createTimes;
+
+    /**
+     * 商户id
+     */
+    private long idm;
+
+    /**
+     * 代理商id
+     */
+    private long idd;
+
+    /**
      * 提现状态
      */
     private String withdrawStatus;
