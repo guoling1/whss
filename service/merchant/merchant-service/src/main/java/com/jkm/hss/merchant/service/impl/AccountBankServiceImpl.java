@@ -175,7 +175,7 @@ public class AccountBankServiceImpl implements AccountBankService{
     public int setDefaultCreditCard(long id) {
         AccountBank accountBank = accountBankDao.selectStatelessById(id);
         if(accountBank!=null){
-            if(accountBank.getIsDefault()!=EnumBankDefault.DEFAULT.getId()){
+            if(accountBank.getIsDefault()==EnumBankDefault.DEFAULT.getId()){
                 this.reset(accountBank.getAccountId(),EnumAccountBank.CREDIT.getId());
             }
         }
