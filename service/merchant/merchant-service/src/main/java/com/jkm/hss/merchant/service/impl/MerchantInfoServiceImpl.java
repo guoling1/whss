@@ -532,13 +532,13 @@ public class MerchantInfoServiceImpl implements MerchantInfoService {
 
     /**
      * 商户切换代理
-     *
+     * @param code
      * @param changeDealerRequest
-     * @return
      */
     @Override
-    public int changeDealer(ChangeDealerRequest changeDealerRequest) {
-        return merchantInfoDao.changeDealer(changeDealerRequest);
+    public void changeDealer(String code,ChangeDealerRequest changeDealerRequest) {
+        merchantInfoDao.updateDealerInfo(changeDealerRequest);
+        qrCodeService.updateDealerInfo(code,changeDealerRequest.getFirstDealerId(),changeDealerRequest.getSecondDealerId());
     }
 
 }

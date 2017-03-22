@@ -509,4 +509,13 @@ public interface QRCodeDao {
      * @return
      */
     long getDealerHSYQrCodeCount(MyQrCodeListRequest myQrCodeListRequest);
+    /**
+     * 修改代理商信息
+     *
+     * @param code
+     * @param firstDealerId
+     * @param secondDealerId
+     * @return
+     */
+    int updateDealerInfo(@Param("code") String code, @Param("firstDealerId") long firstDealerId, @Param("secondDealerId") long secondDealerId);
 }

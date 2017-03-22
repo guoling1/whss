@@ -182,5 +182,5 @@ public interface MerchantInfoDao {
      * @param changeDealerRequest
      * @return
      */
-    int changeDealer(ChangeDealerRequest changeDealerRequest);
+    int updateDealerInfo(ChangeDealerRequest changeDealerRequest);
 }

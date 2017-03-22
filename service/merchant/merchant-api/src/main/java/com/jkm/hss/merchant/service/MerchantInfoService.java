@@ -197,9 +197,9 @@ public interface MerchantInfoService {
 
     /**
      * 商户切换代理
+     * @param code
      * @param changeDealerRequest
-     * @return
      */
-    int changeDealer(ChangeDealerRequest changeDealerRequest);
+    void changeDealer(String code,ChangeDealerRequest changeDealerRequest);
 
 }

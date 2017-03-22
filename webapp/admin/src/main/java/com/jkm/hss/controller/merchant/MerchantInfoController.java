@@ -6,6 +6,8 @@ import com.jkm.hss.admin.entity.QRCode;
 import com.jkm.hss.admin.enums.EnumQRCodeSysType;
 import com.jkm.hss.admin.service.QRCodeService;
 import com.jkm.hss.controller.BaseController;
+import com.jkm.hss.dealer.entity.Dealer;
+import com.jkm.hss.dealer.enums.EnumDealerLevel;
 import com.jkm.hss.dealer.service.DealerService;
 import com.jkm.hss.merchant.entity.MerchantInfo;
 import com.jkm.hss.merchant.enums.EnumChangeType;
@@ -58,6 +60,9 @@ public class MerchantInfoController extends BaseController{
         if(!qrCodeOptional.isPresent()){
             return CommonResponse.simpleResponse(-1, "该商户的二维码不存在");
         }
+        if(merchantInfoOptional.get().getId()!=qrCodeOptional.get().getMerchantId()){
+            return CommonResponse.simpleResponse(-1, "商户编码和二维码中商户编码不一致");
+        }
         if(changeDealerRequest.getChangeType()== EnumChangeType.BOSS.getId()){//是boss
             changeDealerRequest.setCurrentDealerId(0);
             changeDealerRequest.setFirstDealerId(0);
@@ -67,14 +72,33 @@ public class MerchantInfoController extends BaseController{
             if(changeDealerRequest.getMarkCode()==null||"".equals(changeDealerRequest.getMarkCode())){
                 return CommonResponse.simpleResponse(-1, "请输入代理商编码");
             }
-
+            Optional<Dealer> dealerOptional = dealerService.getDealerByMarkCode(changeDealerRequest.getMarkCode());
+            if(!dealerOptional.isPresent()){
+                return CommonResponse.simpleResponse(-1, "代理商不存在");
+            }
+            if(dealerOptional.get().getLevel()!= EnumDealerLevel.FIRST.getId()){
+                return CommonResponse.simpleResponse(-1, "代理商编码和切换类型不一致");
+            }
+            changeDealerRequest.setCurrentDealerId(dealerOptional.get().getId());
+            changeDealerRequest.setFirstDealerId(dealerOptional.get().getId());
+            changeDealerRequest.setSecondDealerId(0);
         }
         if(changeDealerRequest.getChangeType()== EnumChangeType.SECONDDEALER.getId()){//是二代
             if(changeDealerRequest.getMarkCode()==null||"".equals(changeDealerRequest.getMarkCode())){
                 return CommonResponse.simpleResponse(-1, "请输入代理商编码");
             }
+            Optional<Dealer> dealerOptional = dealerService.getDealerByMarkCode(changeDealerRequest.getMarkCode());
+            if(!dealerOptional.isPresent()){
+                return CommonResponse.simpleResponse(-1, "代理商不存在");
+            }
+            if(dealerOptional.get().getLevel()!= EnumDealerLevel.SECOND.getId()){
+                return CommonResponse.simpleResponse(-1, "代理商编码和切换类型不一致");
+            }
+            changeDealerRequest.setCurrentDealerId(dealerOptional.get().getId());
+            changeDealerRequest.setFirstDealerId(dealerOptional.get().getFirstLevelDealerId());
+            changeDealerRequest.setSecondDealerId(dealerOptional.get().getId());
         }
-        merchantInfoService.changeDealer(changeDealerRequest);
-        return CommonResponse.simpleResponse(1, "success");
+        merchantInfoService.changeDealer(merchantInfoOptional.get().getCode(),changeDealerRequest);
+        return CommonResponse.simpleResponse(1, "更改代理商成功");
     }
 }
