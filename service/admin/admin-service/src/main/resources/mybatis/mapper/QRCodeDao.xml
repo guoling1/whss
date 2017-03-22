@@ -508,7 +508,7 @@
             WHEN i.`status` = 5 THEN
                 '禁用'
             WHEN i.`status` = 6 THEN
-                '激活'
+                '审核通过'
             ELSE
                 NULL
             END as merchantStatus,
