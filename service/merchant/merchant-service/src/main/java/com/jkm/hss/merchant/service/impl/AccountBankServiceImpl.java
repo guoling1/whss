@@ -174,9 +174,7 @@ public class AccountBankServiceImpl implements AccountBankService{
     @Override
     public int setDefaultCreditCard(long id) {
         AccountBank accountBank = accountBankDao.selectStatelessById(id);
-        if(accountBank!=null){
-                this.reset(accountBank.getAccountId(),EnumAccountBank.CREDIT.getId());
-        }
+        this.reset(accountBank.getAccountId(),EnumAccountBank.CREDIT.getId());
         return accountBankDao.setDefaultCreditCard(id);
     }
     /**
