@@ -41,7 +41,7 @@ public class MerchantInfoController extends BaseController{
      * @return
      */
     @ResponseBody
-    @RequestMapping(value = "/changeDealer",method = RequestMethod.GET)
+    @RequestMapping(value = "/changeDealer",method = RequestMethod.POST)
     public CommonResponse changeDealer(@RequestBody ChangeDealerRequest changeDealerRequest){
         if(changeDealerRequest.getMerchantId()<=0){
             return CommonResponse.simpleResponse(-1, "商户编码不正确");
