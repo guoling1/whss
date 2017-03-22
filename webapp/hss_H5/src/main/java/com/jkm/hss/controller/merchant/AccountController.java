@@ -27,6 +27,7 @@ import com.jkm.hss.merchant.helper.MerchantSupport;
 import com.jkm.hss.merchant.helper.WxConstants;
 import com.jkm.hss.merchant.helper.request.MerchantChannelRateRequest;
 import com.jkm.hss.merchant.helper.request.MerchantFlowRequest;
+import com.jkm.hss.merchant.service.AccountBankService;
 import com.jkm.hss.merchant.service.MerchantChannelRateService;
 import com.jkm.hss.merchant.service.MerchantInfoService;
 import com.jkm.hss.merchant.service.UserInfoService;
@@ -77,6 +78,8 @@ public class AccountController extends BaseController{
     private MerchantInfoService merchantInfoService;
     @Autowired
     private MerchantWithdrawService merchantWithdrawService;
+    @Autowired
+    private AccountBankService accountBankService;
 
     /**
      * 跳到提现页面
@@ -229,7 +232,8 @@ public class AccountController extends BaseController{
             response.setBankName(merchantInfo.getBankName());
             response.setWithdrawFee(merchantChannelRate.getMerchantWithdrawFee());
 
-            final String bankNo = MerchantSupport.decryptBankCard(merchantInfo.getId(), merchantInfo.getBankNo());
+            final AccountBank accountBank = this.accountBankService.getDefault(merchantInfo.getAccountId());
+            final String bankNo = accountBank.getBankNo();
             response.setBankNo("尾号" + bankNo.substring(bankNo.length() - 4 , bankNo.length()));
             response.setMobile( merchantInfo.getPlainBankMobile( MerchantSupport.decryptMobile(merchantInfo.getId(), merchantInfo.getReserveMobile())));
 

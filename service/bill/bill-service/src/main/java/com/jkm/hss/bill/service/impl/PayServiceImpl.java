@@ -281,7 +281,7 @@ public class PayServiceImpl implements PayService {
         final MerchantInfo merchant = this.merchantInfoService.getByAccountId(order.getPayee()).get();
         //手续费， 费率
         final BigDecimal merchantPayPoundageRate = this.calculateService.getMerchantPayPoundageRate(EnumProductType.HSS, merchant.getId(), enumPayChannelSign.getId());
-        final BigDecimal merchantPayPoundage = this.calculateService.getMerchantPayPoundage(order.getTradeAmount(), merchantPayPoundageRate);
+        final BigDecimal merchantPayPoundage = this.calculateService.getMerchantPayPoundage(order.getTradeAmount(), merchantPayPoundageRate, order.getPayChannelSign());
         order.setPoundage(merchantPayPoundage);
         order.setPayRate(merchantPayPoundageRate);
         this.orderService.update(order);
