@@ -86,4 +86,16 @@ public class ProductChannelDetailServiceImpl implements ProductChannelDetailServ
         }
         this.productChannelDao.update(detail);
     }
+
+    /**
+     * 根据通道查询
+     *
+     * @param productId
+     * @param channelTypeSign
+     * @return
+     */
+    @Override
+    public Optional<ProductChannelDetail> selectRateByProductIdAndChannelTypeSign(long productId, int channelTypeSign) {
+        return Optional.fromNullable(this.productChannelDao.selectRateByProductIdAndChannelTypeSign(productId,channelTypeSign));
+    }
 }

@@ -190,4 +190,14 @@
         FROM tb_account_bank
         WHERE account_id = #{accountId} and card_type=#{cardType} and bank_no=#{bankNo}
     </select>
+
+    <update id="updateBankInfo">
+        UPDATE tb_account_bank
+        set
+        reserve_mobile = #{reserveMobile},
+        bank_name=#{bankName},
+        bank_bin = #{bankBin}
+        expiry_time=#{expiryTime}
+        WHERE id = #{id}
+    </update>
 </mapper>

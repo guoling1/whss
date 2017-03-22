@@ -122,4 +122,10 @@ public interface AccountBankDao {
      * @return
      */
     AccountBank selectByBankNoAndStateless(@Param("accountId") long accountId,@Param("bankNo") String bankNo,@Param("cardType") int cardType);
+    /**
+     * 修改银行卡信息
+     * @param accountBank
+     * @return
+     */
+    int updateBankInfo(AccountBank accountBank);
 }
