@@ -395,8 +395,15 @@ public class TradeController extends BaseController {
         model.addAttribute("amount", amountStr);
         model.addAttribute("merchantName", merchantInfo.getMerchantName());
         final AccountBank accountBank = this.accountBankService.getDefaultCreditCard(merchantInfo.getAccountId());
+        final boolean exist = this.channelSupportCreditBankService.
+                isExistByUpperChannelAndBankCode(EnumPayChannelSign.idOf(channelSign).getUpperChannel().getId(), accountBank.getBankBin());
         final String bankNo = accountBank.getBankNo();
         final String mobile = accountBank.getReserveMobile();
+        if (exist) {
+            model.addAttribute("status", 1);
+        } else {
+            model.addAttribute("status", 0);
+        }
         model.addAttribute("creditCardId", accountBank.getId());
         model.addAttribute("bankName", accountBank.getBankName());
         model.addAttribute("shortNo", bankNo.substring(bankNo.length() - 4));
