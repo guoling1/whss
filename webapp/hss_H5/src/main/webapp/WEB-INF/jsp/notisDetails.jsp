@@ -9,19 +9,18 @@
   <meta name="viewport"
         content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
   <title>好收收</title>
-  <link rel="stylesheet" href="http://static.jinkaimen.cn/hss/css/style.2.1.5.css">
+  <link rel="stylesheet" href="http://static.jinkaimen.cn/hss/css/style.2.1.7.css">
   <link rel="stylesheet" href="http://static.jinkaimen.cn/weui/weui.css">
 </head>
 <body>
 <div id="noticeDetails">
-  <img src="http://static.jinkaimen.cn/hss/assets/book.png" alt="">
-
-  <p>公告详情</p>
-
-  <p class="small">${res}</p>
-  <a href="/sqb/repeatAddInfo/${id}" class="btn">重新提交资料</a>
+  <div class="title-box">
+    <div class="title" id="title"></div>
+    <div class="date" id="date"></div>
+  </div>
+  <div class="content-box" id="context"></div>
 </div>
 </body>
-<script src="http://static.jinkaimen.cn/vendor/vendor.1.0.3.min.js"></script>
-<script src="http://static.jinkaimen.cn/hss/2.1.3/common.min.js"></script>
+<script src="http://static.jinkaimen.cn/vendor/vendor.1.0.5.min.js"></script>
+<script src="http://static.jinkaimen.cn/hss/2.1.5/notisDetails.min.js"></script>
 </html>

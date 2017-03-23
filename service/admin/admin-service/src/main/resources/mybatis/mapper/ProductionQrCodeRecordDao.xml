@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.jkm.hss.admin.dao.ProductionQrCodeRecordDao">
+    <sql id="Base_Column_List">
+        id,start_code,end_code,count,qr_type,product_id,sys_type,operator_id,download_url,status,create_time,update_time
+    </sql>
     <insert id="insert" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO tb_production_qr_code_record
         (
@@ -27,4 +30,40 @@
         #{status}
         );
     </insert>
+
+    <!-- 查询列表 -->
+    <select id="selectList" resultType="com.jkm.hss.admin.helper.responseparam.ProductionListResponse">
+        SELECT
+        r.id,r.create_time,r.start_code,r.end_code,r.count,r.qr_type,r.sys_type,(select username from tb_admin_user WHERE  id=r.operator_id) as operatorName
+        FROM tb_production_qr_code_record as r
+        WHERE 1=1
+        <if test="qrType>0">
+            AND r.qr_type = #{qrType}
+        </if>
+        <if test="sysType != null and sysType!=''">
+            AND r.sys_type = #{sysType}
+        </if>
+        ORDER BY r.create_time DESC LIMIT #{offset},#{count}
+    </select>
+
+    <!-- 查询个数 -->
+    <select id="selectCount" resultType="java.lang.Long">
+        SELECT
+        count(1)
+        FROM tb_production_qr_code_record
+        WHERE 1=1
+        <if test="qrType>0">
+            AND qr_type = #{qrType}
+        </if>
+        <if test="sysType != null and sysType!=''">
+            AND sys_type = #{sysType}
+        </if>
+    </select>
+
+    <update id="updateDownUrl">
+        UPDATE tb_production_qr_code_record
+        SET
+        download_url = #{downloadUrl}
+        WHERE id = #{id}
+    </update>
 </mapper>

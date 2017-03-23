@@ -19,6 +19,12 @@ public interface AccountBankDao {
      */
     int isHasAccountBank(@Param("accountId") long accountId);
     /**
+     * 是否有信用卡
+     * @param accountId
+     * @return
+     */
+    int isHasCreditBank(@Param("accountId") long accountId);
+    /**
      * 新增
      * @param accountBank
      * @return
@@ -37,25 +43,31 @@ public interface AccountBankDao {
      * @return
      */
     int setDefault(@Param("id") long id);
+    /**
+     * 设置为默认信用卡
+     * @param id
+     * @return
+     */
+    int setDefaultCreditCard(@Param("id") long id);
 
     /**
      * 全部设置为不是默认银行卡
      * @return
      */
-    int reset(@Param("accountId") long accountId);
+    int reset(@Param("accountId") long accountId,@Param("cardType") int cardType);
 
     /**
-     * 获取默认银行卡信息
+     * 获取默认储蓄卡
      * @param accountId
      * @return
      */
     AccountBank getDefault(@Param("accountId") long accountId);
     /**
-     * 获取最新信用卡信息
+     * 获取默认信用卡
      * @param accountId
      * @return
      */
-    AccountBank getCreditCard(@Param("accountId") long accountId);
+    AccountBank getDefaultCreditCard(@Param("accountId") long accountId);
 
     /**
      * 查询信用卡列表
@@ -86,5 +98,14 @@ public interface AccountBankDao {
      */
     int deleteCreditCard(@Param("id") long id);
 
+
+
+    /**
+     * 是否有银行卡
+     * @param accountId
+     * @param bankNo
+     * @return
+     */
+    Long isExistBankNo(@Param("accountId") long accountId,@Param("bankNo") String bankNo,@Param("cardType") int cardType);
 
 }

@@ -49,6 +49,9 @@ const AgentAddBase = r => require.ensure([], () => r(require('../../components/A
 const Issue = r => require.ensure([], () => r(require('../../components/Issue')), 'group-record');
 const IssueRecord = r => require.ensure([], () => r(require('../../components/IssueRecord')), 'group-record');
 const CodeStatus = r => require.ensure([], () => r(require('../../components/CodeStatus')), 'group-record');
+const CodeProRecord = r => require.ensure([], () => r(require('../../components/CodeProRecord')), 'group-record');
+const CodeProduct = r => require.ensure([], () => r(require('../../components/CodeProduct')), 'group-record');
+const CodeAll = r => require.ensure([], () => r(require('../../components/CodeAll')), 'group-record');
 //产品
 const ProductAdd = r => require.ensure([], () => r(require('../../components/ProductAdd')), 'group-record');
 const ProductList = r => require.ensure([], () => r(require('../../components/ProductList')), 'group-record');
@@ -213,6 +216,11 @@ export default {
       component: IssueRecord
     },
     {
+      path: 'codeProRecord',
+      name: 'CodeProRecord',
+      component: CodeProRecord
+    },
+    {
       path: 'invite',
       name: 'Invite',
       component: Invite
@@ -221,6 +229,16 @@ export default {
       path: 'codeStatus',
       name: 'CodeStatus',
       component: CodeStatus
+    },
+    {
+      path: 'codeAll',
+      name: 'CodeAll',
+      component: CodeAll
+    },
+    {
+      path: 'codeProduct',
+      name: 'CodeProduct',
+      component: CodeProduct
     },
     {
       path: 'orderQuery',

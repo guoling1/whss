@@ -600,4 +600,13 @@
                 #{item}
             </foreach>
     </select>
+
+    <select id="selectT1PaySuccessAndUnSettleOrderIds" resultType="java.lang.Long">
+        SELECT id FROM tb_order
+        WHERE app_id = #{appId}
+        AND settle_time = #{settleDate}
+        AND settle_status = 1
+        AND status = 4
+        AND settle_type = 'T1'
+    </select>
 </mapper>

@@ -300,7 +300,7 @@ input:focus {
   font-weight: bold;
 }
 .message-space .message-box .message-box-body {
-  font-size: 16px;
+  font-size: 15px;
   color: #5a5a5a;
   padding: 5px 0 25px 0;
   line-height: 28px;
@@ -335,6 +335,84 @@ input:focus {
   font-size: 16px;
   color: #036ad1;
   font-weight: bold;
+}
+#noticeList {
+  width: 100%;
+  height: 100%;
+  background: #f4f5f8;
+}
+#noticeList .list-box {
+  width: 100%;
+  height: auto;
+  background-color: #FFF;
+}
+#noticeList .list-box .list-li {
+  width: 100%;
+  height: 50px;
+  padding: 6px 15px;
+  border-bottom: 1px solid #e6e8f1;
+}
+#noticeList .list-box .list-li .list-icon {
+  width: 35px;
+  height: 35px;
+  float: left;
+  margin-right: 10px;
+}
+#noticeList .list-box .list-li .list-icon.notice1 {
+  background: url("../../assets/notice-icon-1.png") no-repeat center;
+  background-size: 35px 35px;
+}
+#noticeList .list-box .list-li .list-icon.notice2 {
+  background: url("../../assets/notice-icon-2.png") no-repeat center;
+  background-size: 35px 35px;
+}
+#noticeList .list-box .list-li .list-info {
+  float: left;
+}
+#noticeList .list-box .list-li .list-info .top {
+  font-size: 14px;
+  color: #5a5a5a;
+  text-align: left;
+}
+#noticeList .list-box .list-li .list-info .bottom {
+  font-size: 12px;
+  color: #c1c1c1;
+  text-align: left;
+}
+#noticeList .list-box .list-li .list-right {
+  float: right;
+  width: 6px;
+  height: 10px;
+  background: url("../../assets/list-right.png") no-repeat center;
+  background-size: 6px 10px;
+  margin-top: 13px;
+}
+#noticeDetails {
+  width: 100%;
+  height: 100%;
+  background: #f4f5f8;
+  padding: 0 15px;
+}
+#noticeDetails .title-box {
+  width: 100%;
+  height: auto;
+  border-bottom: 1px solid #e6e8f1;
+  padding: 5px 0;
+}
+#noticeDetails .title-box .title {
+  font-size: 18px;
+  color: #222222;
+  text-align: left;
+}
+#noticeDetails .title-box .date {
+  font-size: 12px;
+  color: #c1c1c1;
+  text-align: left;
+}
+#noticeDetails .content-box {
+  color: #5a5a5a;
+  padding: 10px 0;
+  text-align: left;
 }
 #reg,
 #login {
@@ -632,6 +710,89 @@ input:focus {
 #material .main {
   padding-bottom: 20px;
 }
+#material .layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 99;
+  background-color: #FFF;
+  display: none;
+}
+#material .layer .layer-name {
+  padding: 0 15px;
+  text-align: left;
+  min-width: 75px;
+  float: left;
+  font-size: 15px;
+  color: #5a5a5a;
+  width: 100%;
+  height: 50px;
+  border-top: 1px solid #efefef;
+  box-shadow: 0 3px 8px #e8eaf0;
+}
+#material .layer .match {
+  padding: 0 15px;
+  width: 100%;
+  height: 50px;
+  border-top: 1px solid #efefef;
+  box-shadow: 0 3px 8px #e8eaf0;
+}
+#material .layer .match .match_name {
+  text-align: left;
+  min-width: 75px;
+  float: left;
+  font-size: 15px;
+  color: #5a5a5a;
+  margin-right: 20px;
+}
+#material .layer .match .match_ipt {
+  float: left;
+  height: 49px;
+  line-height: 49px;
+  font-size: 15px;
+}
+#material .search.top {
+  margin-top: 50px;
+}
+#material .search .search-result {
+  width: 100%;
+  height: 50px;
+  line-height: 50px;
+  border-bottom: 1px solid #efefef;
+  padding: 0 15px;
+}
+#material .search .search-result div {
+  height: 49px;
+  display: inline-block;
+  float: left;
+  text-align: left;
+  font-size: 14px;
+  color: #5a5a5a;
+  margin-right: 20px;
+}
+#material .search .search-result div.choose {
+  color: #4ecea2;
+  border-bottom: 2px solid #4ecea2;
+}
+#material .search .search-list {
+  width: 100%;
+  overflow: auto;
+}
+#material .search .search-list div {
+  width: 100%;
+  height: 50px;
+  line-height: 50px;
+  font-size: 14px;
+  color: #5a5a5a;
+  text-align: left;
+  padding: 0 15px;
+  overflow: hidden;
+}
+#material .search .search-list div.t {
+  background: url("../assets/choose.png") no-repeat center right 15px;
+  background-size: 8px 8px;
+}
 #material .process {
   width: 100%;
   height: 47px;
@@ -686,6 +847,7 @@ input:focus {
   line-height: 50px;
   border-bottom: 1px solid #edeef5;
   padding: 0 15px;
+  position: relative;
 }
 #material .group .name {
   display: inline-block;
@@ -942,6 +1104,39 @@ input:focus {
   background-color: #7086bd;
   border-radius: 5px;
 }
+#wallet .announcement {
+  width: 100%;
+  height: 25px;
+  background-color: #3c5186;
+  padding: 0 15px 0 30px;
+  position: relative;
+  display: none;
+}
+#wallet .announcement .announcement-icon {
+  display: block;
+  position: absolute;
+  top: 6px;
+  left: 15px;
+  width: 13px;
+  height: 12px;
+  background: url("../../assets/announcement.png") no-repeat center;
+  background-size: 13px 12px;
+}
+#wallet .announcement .announcement-text-box {
+  width: 100%;
+  height: 25px;
+  position: relative;
+  overflow: hidden;
+}
+#wallet .announcement .announcement-text {
+  line-height: 25px;
+  font-size: 12px;
+  color: #d0d0d0;
+  white-space: nowrap;
+  text-align: left;
+  position: absolute;
+  top: 0;
+}
 #wallet .wallet {
   width: 100%;
   height: 130px;
@@ -1081,6 +1276,10 @@ input:focus {
 #wallet .application .group .logo.unbundling {
   background: url("../assets/unbundling.png") no-repeat center;
   background-size: 30px 26px;
+}
+#wallet .application .group .logo.announcement {
+  background: url("../../assets/announcement-logo.png") no-repeat center;
+  background-size: 27px 30px;
 }
 #wallet .application .group .logo.more {
   background: url("../assets/more.png") no-repeat center;
@@ -2296,6 +2495,7 @@ input:focus {
 }
 #bankList .group .top .info {
   float: left;
+  width: calc(100% - 62px);
 }
 #bankList .group .top .info .name {
   text-align: left;
@@ -2318,6 +2518,7 @@ input:focus {
   font-size: 12px;
   color: #FFF;
   padding: 0 5px;
+  margin-top: 5px;
 }
 #bankList .group .top .btn.red {
   background-color: #c64b4b;

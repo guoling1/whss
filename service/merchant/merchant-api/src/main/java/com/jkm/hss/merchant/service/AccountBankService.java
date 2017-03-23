@@ -2,6 +2,7 @@ package com.jkm.hss.merchant.service;
 
 import com.google.common.base.Optional;
 import com.jkm.hss.merchant.entity.AccountBank;
+import com.jkm.hss.merchant.entity.MerchantInfo;
 import com.jkm.hss.merchant.helper.request.ContinueBankInfoRequest;
 import com.jkm.hss.merchant.helper.response.BankListResponse;
 
@@ -17,11 +18,30 @@ public interface AccountBankService {
      * @return
      */
     int isHasAccountBank(long accountId);
+
+    /**
+     * 是否有信用卡信息
+     * @param accountId
+     * @return
+     */
+    int isHasCreditBank(long accountId);
     /**
      * 初始化银行卡账户
      * @return
      */
     int initAccountBank(long merchantId,long accountId);
+
+    /**
+     * 初始化信用卡
+     * @param accountId
+     * @param bankNo
+     * @param bankName
+     * @param reserveMobile
+     * @param bankBin
+     * @param expiryTime
+     * @return
+     */
+    long initCreditBankCard(long accountId,String bankNo,String bankName,String reserveMobile,String bankBin,String expiryTime);
     /**
      * 新增
      * @param accountBank
@@ -43,23 +63,38 @@ public interface AccountBankService {
     int setDefault(long id);
 
     /**
+     * 设置为默认信用卡
+     * @param id
+     * @return
+     */
+    int setDefaultCreditCard(long id);
+
+    /**
      * 全部设置为不是默认银行卡
      * @return
      */
-    int reset(long accountId);
+    int reset(long accountId,int cardType);
+
 
     /**
-     * 获取默认银行卡信息
+     * 获取默认银行卡
      * @param accountId
      * @return
      */
     AccountBank getDefault(long accountId);
     /**
-     * 获取最新信用卡信息
+     * 获取默认信用卡
      * @param accountId
      * @return
      */
-    AccountBank getCreditCard(long accountId);
+    AccountBank getDefaultCreditCard(long accountId);
+
+    /**
+     * 查询解密过的信用卡列表
+     * @param accountId
+     * @return
+     */
+    List<AccountBank> selectCreditList(long accountId);
 
     /**
      * 查询信用卡列表
@@ -98,10 +133,17 @@ public interface AccountBankService {
 
     /**
      * 更改默认银行卡
-     * @param merchantId
+     * @param merchantInfo
      * @param bankNo
      * @param reserveMobile
      * @return
      */
-    int changeBankCard(long merchantId,String bankNo,String reserveMobile);
+    int changeBankCard(MerchantInfo merchantInfo, String bankNo, String reserveMobile);
+    /**
+     * 是否有银行卡
+     * @param accountId
+     * @param bankNo
+     * @return
+     */
+    Long isExistBankNo(long accountId,String bankNo,int cardType);
 }

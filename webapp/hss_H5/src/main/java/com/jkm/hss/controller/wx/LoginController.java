@@ -2,11 +2,13 @@ package com.jkm.hss.controller.wx;
 
 
 import com.google.common.base.Optional;
+import com.jkm.base.common.entity.CommonResponse;
 import com.jkm.base.common.util.CookieUtil;
 import com.jkm.base.common.util.DateFormatUtil;
 import com.jkm.base.common.util.SnGenerator;
 import com.jkm.hss.account.entity.Account;
 import com.jkm.hss.account.sevice.AccountService;
+import com.jkm.hss.admin.helper.responseparam.AppBizDistrictResponse;
 import com.jkm.hss.bill.entity.Order;
 import com.jkm.hss.bill.enums.EnumOrderStatus;
 import com.jkm.hss.bill.service.OrderService;
@@ -529,7 +531,9 @@ public class LoginController extends BaseController {
     }
 
     /**
-     * 支付成功页面
+     * 支付成功页面（前端回调）
+     *
+     *
      * @param request
      * @param response
      * @param model
@@ -844,13 +848,13 @@ public class LoginController extends BaseController {
                         model.addAttribute("countyCode",accountBankOptional.get().getBranchCountyCode());
                         model.addAttribute("countyName",accountBankOptional.get().getBranchCountyName());
                         model.addAttribute("branchCode",accountBankOptional.get().getBranchCode());
-                        if(result.get().getBranchName()!=null&&!"".equals(result.get().getBranchName())){//有支行信息
-                            String tempBranchName = result.get().getBranchName();
+                        if(accountBankOptional.get().getBranchName()!=null&&!"".equals(accountBankOptional.get().getBranchName())){//有支行信息
+                            String tempBranchName = accountBankOptional.get().getBranchName();
                             if(tempBranchName.length()>12){
                                 tempBranchName = "***"+tempBranchName.substring(tempBranchName.length()-12,tempBranchName.length());
                             }
                             model.addAttribute("branchShortName",tempBranchName);
-                            model.addAttribute("branchName",result.get().getBranchName());
+                            model.addAttribute("branchName",accountBankOptional.get().getBranchName());
                         }else{
                             model.addAttribute("branchShortName","");
                             model.addAttribute("branchName","");

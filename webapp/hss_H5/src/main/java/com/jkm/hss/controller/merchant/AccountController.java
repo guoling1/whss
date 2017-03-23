@@ -212,7 +212,7 @@ public class AccountController extends BaseController{
             //final UserInfo userInfo = userInfoService.selectByOpenId("ou2YpwfghecQNYYUpIQ-kbqGY7Hc").get();
             final MerchantInfo merchantInfo = this.merchantInfoService.selectById(userInfo.getMerchantId()).get();
 
-            final String mobile = DealerSupport.decryptMobile(merchantInfo.getId(), merchantInfo.getReserveMobile());
+            final String mobile = MerchantSupport.decryptMobile(merchantInfo.getReserveMobile());
 
            final Pair<Integer, String> pair = smsAuthService.checkVerifyCode(mobile, withdrawRequest.getCode(), EnumVerificationCodeType.WITH_DRAW);
 
@@ -273,7 +273,7 @@ public class AccountController extends BaseController{
         //final UserInfo userInfo = userInfoService.selectByOpenId("ou2YpwfghecQNYYUpIQ-kbqGY7Hc").get();
         final MerchantInfo merchantInfo = this.merchantInfoService.selectById(userInfo.getMerchantId()).get();
         log.info( "<<<" + merchantInfo.getId() +">>>商户提现发送验证码");
-        final String mobile = MerchantSupport.decryptMobile(merchantInfo.getId(), merchantInfo.getReserveMobile());
+        final String mobile = MerchantSupport.decryptMobile(merchantInfo.getReserveMobile());
 
         if (StringUtils.isBlank(mobile)) {
             return CommonResponse.simpleResponse(-1, "手机号不能为空");
@@ -282,7 +282,7 @@ public class AccountController extends BaseController{
             return CommonResponse.simpleResponse(-1, "手机号格式错误");
         }
 
-        final Pair<Integer, String> verifyCode = this.smsAuthService.getVerifyCode(mobile, EnumVerificationCodeType.WITHDRAW_DEALER);
+        final Pair<Integer, String> verifyCode = this.smsAuthService.getVerifyCode(mobile, EnumVerificationCodeType.WITH_DRAW);
         if (1 == verifyCode.getLeft()) {
             final Map<String, String> params = ImmutableMap.of("code", verifyCode.getRight());
             this.sendMessageService.sendMessage(SendMessageParams.builder()
@@ -296,30 +296,6 @@ public class AccountController extends BaseController{
             return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "发送验证码成功");
         }
         return CommonResponse.simpleResponse(-1, verifyCode.getRight());
-    }
-
-    /**
-     * 校验提现验证码
-     *
-     * @param
-     * @return
-     */
-    @ResponseBody
-    @RequestMapping(value = "checkVerifyCode", method = RequestMethod.POST)
-    public CommonResponse sendVerifyCode(HttpServletRequest request, @RequestBody final MerchantWithdrawRequest withdrawRequest) {
-
-        UserInfo userInfo = userInfoService.selectByOpenId(super.getOpenId(request)).get();
-        //final UserInfo userInfo = userInfoService.selectByOpenId("ou2YpwfghecQNYYUpIQ-kbqGY7Hc").get();
-        final MerchantInfo merchantInfo = this.merchantInfoService.selectById(userInfo.getMerchantId()).get();
-
-        final String mobile = MerchantSupport.decryptMobile(merchantInfo.getId(), merchantInfo.getReserveMobile());
-        final Pair<Integer, String> pair = smsAuthService.checkVerifyCode(mobile, withdrawRequest.getCode(), EnumVerificationCodeType.WITH_DRAW);
-
-        if (1 != pair.getLeft()) {
-            return CommonResponse.simpleResponse(-1, pair.getRight());
-        }
-
-        return CommonResponse.simpleResponse(1, pair.getRight());
     }
 
 }

@@ -48,7 +48,7 @@ public interface SplitAccountRecordService {
      */
     void addPaySplitAccountRecord(String splitBusinessType, String orderNo, String orderNo1, BigDecimal tradeAmount, BigDecimal poundage,
                                   Triple<Long, BigDecimal, BigDecimal> triple,
-                                  String receiptMoneyUserName, String remark);
+                                  String receiptMoneyUserName, String remark, int accountUserType);
 
     /**
      * 添加分账记录(商户升级支付)
@@ -63,7 +63,7 @@ public interface SplitAccountRecordService {
      */
     void addMerchantUpgradePaySplitAccountRecord(String splitBusinessType,String orderNo, String orderNo1, BigDecimal tradeAmount, BigDecimal poundage,
                                   Triple<Long, BigDecimal, String> triple,
-                                  String receiptMoneyUserName, String remark);
+                                  String receiptMoneyUserName, String remark, int accountUserType);
 
     /**
      * 添加分账记录
@@ -78,7 +78,7 @@ public interface SplitAccountRecordService {
      */
     void addWithdrawSplitAccountRecord(String splitBusinessType, String orderNo, String orderNo1, BigDecimal tradeAmount, BigDecimal poundage,
                                   Triple<Long, BigDecimal, String> triple,
-                                  String receiptMoneyUserName, String remark);
+                                  String receiptMoneyUserName, String remark, int accountUserType);
 
     PageModel<SplitAccountRecord> selectByParam(int pageNo, int pageSize, long accountId, String orderNo, String businessType, String beginDate, String endDate);
 

@@ -24,6 +24,7 @@ import dealer_account from './components/dealer_account.vue'
 import merchants from './components/merchants.vue'
 import transaction from './components/transaction.vue'
 import qrcode from './components/qrcode.vue'
+import qrcode_detail from './components/qrcode_detail.vue'
 import employees from './components/employees.vue'
 import roles from './components/roles.vue'
 import information from './components/information.vue'
@@ -74,6 +75,7 @@ const routes = [
       {path: 'merchants', name: "merchants", component: merchants},
       {path: 'transaction', name: "transaction", component: transaction},
       {path: 'qrcode', name: "qrcode", component: qrcode},
+      {path: 'qrcode_detail', name: "qrcode_detail", component: qrcode_detail},
       {path: 'employees', name: "employees", component: employees},
       {path: 'roles', name: "roles", component: roles},
       {path: 'information', name: "information", component: information},
