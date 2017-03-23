@@ -1119,10 +1119,12 @@ public class OrderServiceImpl implements OrderService {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         if (response!=null){
             response.setMobile(MerchantSupport.decryptMobile(response.getMobile()));
-            if (response.getProvinceCode().equals("110000")||response.getProvinceCode().equals("120000")||response.getProvinceCode().equals("310000")||response.getProvinceCode().equals("500000")){
-                response.setLocationM(response.getProvinceName()+response.getCountyName());
-            }else {
-                response.setLocationM(response.getProvinceName()+response.getCityName()+response.getCountyName());
+            if (response.getProvinceCode()!=null&&!("").equals(response.getProvinceCode())){
+                if (response.getProvinceCode().equals("110000")||response.getProvinceCode().equals("120000")||response.getProvinceCode().equals("310000")||response.getProvinceCode().equals("500000")){
+                    response.setLocationM(response.getProvinceName()+response.getCountyName());
+                }else {
+                    response.setLocationM(response.getProvinceName()+response.getCityName()+response.getCountyName());
+                }
             }
             if (response.getFirstDealerId()>0 ){
                 MerchantInfoResponse res = dealerService.getInfo(response.getFirstDealerId());
@@ -1185,19 +1187,19 @@ public class OrderServiceImpl implements OrderService {
                     list.get(i).setFinishTimes(dates);
                 }
                 if (list.get(i).getStatus()==1){
-                    list.get(i).setStatusValue(EnumPlayStatus.of(list.get(i).getStatus()).getId());
+                    list.get(i).setStatusValue(EnumPlayStatus.of(list.get(i).getStatus()).getValue());
                 }
                 if (list.get(i).getStatus()==2){
-                    list.get(i).setStatusValue(EnumPlayStatus.of(list.get(i).getStatus()).getId());
+                    list.get(i).setStatusValue(EnumPlayStatus.of(list.get(i).getStatus()).getValue());
                 }
                 if (list.get(i).getStatus()==3){
-                    list.get(i).setStatusValue(EnumPlayStatus.of(list.get(i).getStatus()).getId());
+                    list.get(i).setStatusValue(EnumPlayStatus.of(list.get(i).getStatus()).getValue());
                 }
                 if (list.get(i).getStatus()==4){
-                    list.get(i).setStatusValue(EnumPlayStatus.of(list.get(i).getStatus()).getId());
+                    list.get(i).setStatusValue(EnumPlayStatus.of(list.get(i).getStatus()).getValue());
                 }
                 if (list.get(i).getStatus()==5){
-                    list.get(i).setStatusValue(EnumPlayStatus.of(list.get(i).getStatus()).getId());
+                    list.get(i).setStatusValue(EnumPlayStatus.of(list.get(i).getStatus()).getValue());
                 }
 
                 if (list.get(i).getPlayMoneyChannel()==1){

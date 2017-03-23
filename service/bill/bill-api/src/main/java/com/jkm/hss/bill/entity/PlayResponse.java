@@ -44,7 +44,7 @@ public class PlayResponse {
     /**
      * 打款状态
      */
-    private int statusValue;
+    private String statusValue;
 
     /**
      * 成功时间
