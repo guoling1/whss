@@ -217,7 +217,7 @@
           <template>
             <el-table :data="payData" border style="width: 100%">
               <el-table-column prop="sn" label="打款流水号"></el-table-column>
-              <el-table-column prop="amount" label="打款金额（元）"></el-table-column>
+              <el-table-column prop="amount" align="right" label="打款金额（元）"></el-table-column>
               <el-table-column prop="requestTimes" label="打款发起时间"></el-table-column>
               <el-table-column prop="statusValue" label="打款状态"></el-table-column>
               <el-table-column prop="finishTimes" label="打款完成时间"></el-table-column>
@@ -233,12 +233,12 @@
           <template>
             <el-table :data="profitData" border style="width: 100%">
               <el-table-column prop="splitSn" label="分润流水号"></el-table-column>
-              <el-table-column prop="splitAmount" label="分润金额（元）"></el-table-column>
+              <el-table-column prop="splitAmount" align="right" label="分润金额（元）"></el-table-column>
               <el-table-column prop="receiptMoneyUserName" label="分润收款方名称"></el-table-column>
               <el-table-column prop="accountUserTypes" label="收款方类型"></el-table-column>
               <el-table-column prop="settleType" label="结算周期"></el-table-column>
               <el-table-column prop="splitDates" label="结算时间"></el-table-column>
-              <el-table-column prop="splitTotalAmount" label="分润总额"></el-table-column>
+              <el-table-column prop="splitTotalAmount" align="right" label="分润总额"></el-table-column>
               <el-table-column prop="remarks" label="备注"></el-table-column>
             </el-table>
           </template>
@@ -280,7 +280,9 @@
       }
       this.$http.post('/admin/order/withdrawDetail', this.query)
         .then(function (res) {
-          this.$data.msg = res.data;
+          this.msg = res.data.results;
+          this.payData = res.data.list;
+          this.profitData = res.data.list1;
         }, function (err) {
           this.$message({
             showClose: true,
