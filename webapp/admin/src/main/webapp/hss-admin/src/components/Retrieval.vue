@@ -59,7 +59,11 @@
                 <span class="td" :data-clipboard-text="records[scope.$index].businessOrderNo" type="text" size="small" style="cursor: pointer" title="点击复制">{{records[scope.$index].businessOrderNo|changeHide}}</span>
               </template>
             </el-table-column>
-            <el-table-column prop="userName" label="账户名称"></el-table-column>
+            <el-table-column prop="userName" label="账户名称">
+              <template scope="scope">
+                <router-link :to='"/admin/record/retrievalDet?idd="+records[scope.$index].idd+"&createTimes="+records[scope.$index].createTimes+"&idm="+records[scope.$index].idm'>{{records[scope.$index].userName}}</router-link>
+              </template>
+            </el-table-column>
             <el-table-column prop="userType" label="用户类型"></el-table-column>
             <el-table-column label="提现单号" min-width="112px">
               <template scope="scope">

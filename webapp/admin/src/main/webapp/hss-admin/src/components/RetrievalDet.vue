@@ -8,10 +8,10 @@
         <p class="lead">提现商户信息</p>
         <el-row type="flex" class="row-bg" justify="space-around" style="margin-bottom: 15px">
           <el-col :span="5">
-            <div class="label">商户名称：<span>{{msg.mobile}}</span></div>
+            <div class="label">商户名称：<span>{{msg.merchantName}}</span></div>
           </el-col>
           <el-col :span="5">
-            <div class="label">商户编号：<span>{{msg.createTime|changeTime}}</span></div>
+            <div class="label">商户编号：<span>{{msg.markCodeM}}</span></div>
           </el-col>
           <el-col :span="5">
             <div class="label"><span></span></div>
@@ -22,7 +22,7 @@
             <div class="label">商户注册手机号：<span>{{msg.mobile}}</span></div>
           </el-col>
           <el-col :span="5">
-            <div class="label">商户注册时间：<span>{{msg.createTime|changeTime}}</span></div>
+            <div class="label">商户注册时间：<span>{{msg.createTimeM|changeTime}}</span></div>
           </el-col>
           <el-col :span="5">
             <div class="label"><span></span></div>
@@ -30,21 +30,10 @@
         </el-row>
         <el-row type="flex" class="row-bg" justify="space-around" style="margin-bottom: 15px">
           <el-col :span="5">
-            <div class="label">商户所在地：<span>{{msg.mobile}}</span></div>
+            <div class="label">商户所在地：<span>{{msg.locationM}}</span></div>
           </el-col>
           <el-col :span="5">
-            <div class="label">商户详细地址：<span>{{msg.createTime|changeTime}}</span></div>
-          </el-col>
-          <el-col :span="5">
-            <div class="label"><span></span></div>
-          </el-col>
-        </el-row>
-        <el-row type="flex" class="row-bg" justify="space-around" style="margin-bottom: 15px">
-          <el-col :span="5">
-            <div class="label">一级代理名称：<span>{{msg.markCode2}}</span></div>
-          </el-col>
-          <el-col :span="5">
-            <div class="label">一级代理编号：<span>{{msg.proxyName1}}</span></div>
+            <div class="label">商户详细地址：<span>{{msg.address}}</span></div>
           </el-col>
           <el-col :span="5">
             <div class="label"><span></span></div>
@@ -52,10 +41,21 @@
         </el-row>
         <el-row type="flex" class="row-bg" justify="space-around" style="margin-bottom: 15px">
           <el-col :span="5">
-            <div class="label">二级代理名称：<span>{{msg.markCode2}}</span></div>
+            <div class="label">一级代理名称：<span>{{msg.proxyNames}}</span></div>
           </el-col>
           <el-col :span="5">
-            <div class="label">二级代理编号：<span>{{msg.proxyName1}}</span></div>
+            <div class="label">一级代理编号：<span>{{msg.markCode}}</span></div>
+          </el-col>
+          <el-col :span="5">
+            <div class="label"><span></span></div>
+          </el-col>
+        </el-row>
+        <el-row type="flex" class="row-bg" justify="space-around" style="margin-bottom: 15px">
+          <el-col :span="5">
+            <div class="label">二级代理名称：<span>{{msg.proxyName1}}</span></div>
+          </el-col>
+          <el-col :span="5">
+            <div class="label">二级代理编号：<span>{{msg.markCode1}}</span></div>
           </el-col>
           <el-col :span="5">
             <div class="label"><span></span></div>
@@ -66,21 +66,10 @@
         <p class="lead">提现代理商信息</p>
         <el-row type="flex" class="row-bg" justify="space-around" style="margin-bottom: 15px">
           <el-col :span="5">
-            <div class="label">代理名称：<span>{{msg.mobile}}</span></div>
+            <div class="label">代理名称：<span>{{msg.proxyName}}</span></div>
           </el-col>
           <el-col :span="5">
-            <div class="label">代理编号：<span>{{msg.createTime|changeTime}}</span></div>
-          </el-col>
-          <el-col :span="5">
-            <div class="label"><span></span></div>
-          </el-col>
-        </el-row>
-        <el-row type="flex" class="row-bg" justify="space-around" style="margin-bottom: 15px">
-          <el-col :span="5">
-            <div class="label">代理注册手机号：<span>{{msg.mobile}}</span></div>
-          </el-col>
-          <el-col :span="5">
-            <div class="label">代理注册时间：<span>{{msg.createTime|changeTime}}</span></div>
+            <div class="label">代理编号：<span>{{msg.markCodes}}</span></div>
           </el-col>
           <el-col :span="5">
             <div class="label"><span></span></div>
@@ -88,10 +77,10 @@
         </el-row>
         <el-row type="flex" class="row-bg" justify="space-around" style="margin-bottom: 15px">
           <el-col :span="5">
-            <div class="label">代理所在地：<span>{{msg.mobile}}</span></div>
+            <div class="label">代理注册手机号：<span>{{msg.mobileD}}</span></div>
           </el-col>
           <el-col :span="5">
-            <div class="label">代理详细地址：<span>{{msg.createTime|changeTime}}</span></div>
+            <div class="label">代理注册时间：<span>{{msg.create_timeD}}</span></div>
           </el-col>
           <el-col :span="5">
             <div class="label"><span></span></div>
@@ -99,10 +88,21 @@
         </el-row>
         <el-row type="flex" class="row-bg" justify="space-around" style="margin-bottom: 15px">
           <el-col :span="5">
-            <div class="label">一级代理名称：<span>{{msg.markCode2}}</span></div>
+            <div class="label">代理所在地：<span>{{msg.location}}</span></div>
           </el-col>
           <el-col :span="5">
-            <div class="label">一级代理编号：<span>{{msg.proxyName1}}</span></div>
+            <div class="label">代理详细地址：<span>{{msg.belongArea}}</span></div>
+          </el-col>
+          <el-col :span="5">
+            <div class="label"><span></span></div>
+          </el-col>
+        </el-row>
+        <el-row type="flex" class="row-bg" justify="space-around" style="margin-bottom: 15px">
+          <el-col :span="5">
+            <div class="label">一级代理名称：<span>{{msg.proxyNames}}</span></div>
+          </el-col>
+          <el-col :span="5">
+            <div class="label">一级代理编号：<span>{{msg.markCode}}</span></div>
           </el-col>
           <el-col :span="5">
             <div class="label"><span></span></div>
@@ -113,21 +113,10 @@
         <p class="lead">交易信息</p>
         <el-row type="flex" class="row-bg" justify="space-around" style="margin-bottom: 15px">
           <el-col :span="5">
-            <div class="label">提现单号：<span>{{msg.mobile}}</span></div>
+            <div class="label">提现单号：<span>{{msg.orderNo}}</span></div>
           </el-col>
           <el-col :span="5">
-            <div class="label">结算周期：<span>{{msg.createTime|changeTime}}</span></div>
-          </el-col>
-          <el-col :span="5">
-            <div class="label"><span></span></div>
-          </el-col>
-        </el-row>
-        <el-row type="flex" class="row-bg" justify="space-around" style="margin-bottom: 15px">
-          <el-col :span="5">
-            <div class="label">交易发起时间：<span>{{msg.mobile}}</span></div>
-          </el-col>
-          <el-col :span="5">
-            <div class="label">结算状态：<span>{{msg.createTime|changeTime}}</span></div>
+            <div class="label">结算周期：<span>{{msg.settleType}}</span></div>
           </el-col>
           <el-col :span="5">
             <div class="label"><span></span></div>
@@ -135,21 +124,10 @@
         </el-row>
         <el-row type="flex" class="row-bg" justify="space-around" style="margin-bottom: 15px">
           <el-col :span="5">
-            <div class="label">交易金额：<span>{{msg.mobile}}</span></div>
+            <div class="label">交易发起时间：<span>{{msg.createTimes}}</span></div>
           </el-col>
           <el-col :span="5">
-            <div class="label">结算时间：<span>{{msg.createTime|changeTime}}</span></div>
-          </el-col>
-          <el-col :span="5">
-            <div class="label"><span></span></div>
-          </el-col>
-        </el-row>
-        <el-row type="flex" class="row-bg" justify="space-around" style="margin-bottom: 15px">
-          <el-col :span="5">
-            <div class="label">手续费率：<span>{{msg.mobile}}</span></div>
-          </el-col>
-          <el-col :span="5">
-            <div class="label">付款人：<span>{{msg.createTime|changeTime}}</span></div>
+            <div class="label">结算状态：<span>--</span></div>
           </el-col>
           <el-col :span="5">
             <div class="label"><span></span></div>
@@ -157,7 +135,29 @@
         </el-row>
         <el-row type="flex" class="row-bg" justify="space-around" style="margin-bottom: 15px">
           <el-col :span="5">
-            <div class="label">手续费：<span>{{msg.mobile}}</span></div>
+            <div class="label">交易金额：<span>{{msg.tradeAmount}}</span></div>
+          </el-col>
+          <el-col :span="5">
+            <div class="label">结算时间：<span>--</span></div>
+          </el-col>
+          <el-col :span="5">
+            <div class="label"><span></span></div>
+          </el-col>
+        </el-row>
+        <el-row type="flex" class="row-bg" justify="space-around" style="margin-bottom: 15px">
+          <el-col :span="5">
+            <div class="label">手续费率：<span>--</span></div>
+          </el-col>
+          <el-col :span="5">
+            <div class="label">付款人：<span>--</span></div>
+          </el-col>
+          <el-col :span="5">
+            <div class="label"><span></span></div>
+          </el-col>
+        </el-row>
+        <el-row type="flex" class="row-bg" justify="space-around" style="margin-bottom: 15px">
+          <el-col :span="5">
+            <div class="label">手续费：<span>{{msg.poundage}}</span></div>
           </el-col>
           <el-col :span="5">
             <div class="label">付款人账户：<span>{{msg.createTime|changeTime}}</span></div>
@@ -168,21 +168,10 @@
         </el-row>
         <el-row type="flex" class="row-bg" justify="space-around" style="margin-bottom: 15px">
           <el-col :span="5">
-            <div class="label">交易类型：<span>{{msg.mobile}}</span></div>
+            <div class="label">交易类型：<span>{{msg.tradeTypes}}</span></div>
           </el-col>
           <el-col :span="5">
-            <div class="label">收款账户编号：<span>{{msg.createTime|changeTime}}</span></div>
-          </el-col>
-          <el-col :span="5">
-            <div class="label"><span></span></div>
-          </el-col>
-        </el-row>
-        <el-row type="flex" class="row-bg" justify="space-around" style="margin-bottom: 15px">
-          <el-col :span="5">
-            <div class="label">交易状态：<span>{{msg.mobile}}</span></div>
-          </el-col>
-          <el-col :span="5">
-            <div class="label">收款商户名称：<span>{{msg.createTime|changeTime}}</span></div>
+            <div class="label">收款账户编号：<span>--</span></div>
           </el-col>
           <el-col :span="5">
             <div class="label"><span></span></div>
@@ -190,10 +179,10 @@
         </el-row>
         <el-row type="flex" class="row-bg" justify="space-around" style="margin-bottom: 15px">
           <el-col :span="5">
-            <div class="label">交易成功时间：<span>{{msg.mobile}}</span></div>
+            <div class="label">交易状态：<span>{{msg.withdrawStatus}}</span></div>
           </el-col>
           <el-col :span="5">
-            <div class="label">商品名称：<span>{{msg.createTime|changeTime}}</span></div>
+            <div class="label">收款商户名称：<span>--</span></div>
           </el-col>
           <el-col :span="5">
             <div class="label"><span></span></div>
@@ -201,10 +190,21 @@
         </el-row>
         <el-row type="flex" class="row-bg" justify="space-around" style="margin-bottom: 15px">
           <el-col :span="5">
-            <div class="label">支付方式：<span>{{msg.mobile}}</span></div>
+            <div class="label">交易成功时间：<span>{{msg.successTime}}</span></div>
           </el-col>
           <el-col :span="5">
-            <div class="label">商品描述：<span>{{msg.createTime|changeTime}}</span></div>
+            <div class="label">商品名称：<span>{{msg.goodsName}}</span></div>
+          </el-col>
+          <el-col :span="5">
+            <div class="label"><span></span></div>
+          </el-col>
+        </el-row>
+        <el-row type="flex" class="row-bg" justify="space-around" style="margin-bottom: 15px">
+          <el-col :span="5">
+            <div class="label">支付方式：<span>--</span></div>
+          </el-col>
+          <el-col :span="5">
+            <div class="label">商品描述：<span>{{msg.goodsDescribe}}</span></div>
           </el-col>
           <el-col :span="5">
             <div class="label"><span></span></div>
@@ -277,8 +277,20 @@
       }
     },
     created: function () {
-      this.$data.id = this.$route.query.id;
-      this.$http.post('/admin/QueryMerchantInfoRecord/getAll', {id: this.$data.id})
+      if(this.$route.query.idd==0){
+        this.isStore=true
+          this.query = {
+            idm:this.$route.query.idm,
+            createTimes:this.$route.query.createTimes
+          }
+      }else {
+        this.isStore=false
+        this.query = {
+          idd:this.$route.query.idd,
+          createTimes:this.$route.query.createTimes
+        }
+      }
+      this.$http.post('/admin/order/withdrawDetail', this.query)
         .then(function (res) {
           this.$data.msg = res.data.list[0];
         }, function (err) {
