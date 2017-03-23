@@ -215,14 +215,14 @@
         <p class="lead">打款流水</p>
         <div style="width: 80%;margin: 0 0 15px 15px;">
           <template>
-            <el-table :data="rateInfo" border style="width: 100%">
-              <el-table-column prop="channelName" label="打款流水号"></el-table-column>
-              <el-table-column prop="merchantRate" label="打款金额（元）"></el-table-column>
-              <el-table-column prop="time" label="打款发起时间"></el-table-column>
-              <el-table-column prop="withdrawMoney" label="打款状态"></el-table-column>
-              <el-table-column prop="entNet" label="打款完成时间"></el-table-column>
-              <el-table-column prop="remarks" label="打款渠道"></el-table-column>
-              <el-table-column prop="remarks" label="渠道信息"></el-table-column>
+            <el-table :data="payData" border style="width: 100%">
+              <el-table-column prop="sn" label="打款流水号"></el-table-column>
+              <el-table-column prop="amount" label="打款金额（元）"></el-table-column>
+              <el-table-column prop="requestTimes" label="打款发起时间"></el-table-column>
+              <el-table-column prop="statusValue" label="打款状态"></el-table-column>
+              <el-table-column prop="finishTimes" label="打款完成时间"></el-table-column>
+              <el-table-column prop="playMoneyChannel" label="打款渠道"></el-table-column>
+              <el-table-column prop="message" label="渠道信息"></el-table-column>
             </el-table>
           </template>
         </div>
@@ -231,14 +231,14 @@
         <p class="lead">分润流水</p>
         <div style="width: 80%;margin: 0 0 15px 15px;">
           <template>
-            <el-table :data="rateInfo" border style="width: 100%">
-              <el-table-column prop="channelName" label="分润流水号"></el-table-column>
-              <el-table-column prop="merchantRate" label="分润金额（元）"></el-table-column>
-              <el-table-column prop="time" label="分润收款方名称"></el-table-column>
-              <el-table-column prop="withdrawMoney" label="收款方类型"></el-table-column>
-              <el-table-column prop="entNet" label="结算周期"></el-table-column>
-              <el-table-column prop="remarks" label="结算时间"></el-table-column>
-              <el-table-column prop="remarks" label="分润总额"></el-table-column>
+            <el-table :data="profitData" border style="width: 100%">
+              <el-table-column prop="splitSn" label="分润流水号"></el-table-column>
+              <el-table-column prop="splitAmount" label="分润金额（元）"></el-table-column>
+              <el-table-column prop="receiptMoneyUserName" label="分润收款方名称"></el-table-column>
+              <el-table-column prop="accountUserTypes" label="收款方类型"></el-table-column>
+              <el-table-column prop="settleType" label="结算周期"></el-table-column>
+              <el-table-column prop="splitDates" label="结算时间"></el-table-column>
+              <el-table-column prop="splitTotalAmount" label="分润总额"></el-table-column>
               <el-table-column prop="remarks" label="备注"></el-table-column>
             </el-table>
           </template>
@@ -255,25 +255,9 @@
       return {
         isStore: true,
         id: '',
-        msg: {
-          id: '',
-          merchantName: '',
-          identity: '',
-          address: '',
-          bankNo: '',
-          mobile: '',
-          identityFacePic: '',
-          identityOppositePic: '',
-          identityHandPic: '',
-          bankHandPic: '',
-          proxyName1: '',
-          proxyName: '',
-          reserveMobile: '',
-          createTime: '',
-          proxyNameYQ: '',
-          proxyNameYQ1: '',
-        },
-        rateInfo: []
+        msg: {},
+        profitData: [],
+        payData: [],
       }
     },
     created: function () {
@@ -281,18 +265,22 @@
         this.isStore=true
           this.query = {
             idm:this.$route.query.idm,
-            createTimes:this.$route.query.createTimes
+            createTimes:this.$route.query.createTimes,
+            businessOrderNo:this.$route.query.businessOrderNo,
+            orderNo:this.$route.query.orderNo
           }
       }else {
         this.isStore=false
         this.query = {
           idd:this.$route.query.idd,
-          createTimes:this.$route.query.createTimes
+          createTimes:this.$route.query.createTimes,
+          businessOrderNo:this.$route.query.businessOrderNo,
+          orderNo:this.$route.query.orderNo
         }
       }
       this.$http.post('/admin/order/withdrawDetail', this.query)
         .then(function (res) {
-          this.$data.msg = res.data.list[0];
+          this.$data.msg = res.data;
         }, function (err) {
           this.$message({
             showClose: true,

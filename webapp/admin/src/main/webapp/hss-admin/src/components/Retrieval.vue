@@ -61,7 +61,8 @@
             </el-table-column>
             <el-table-column prop="userName" label="账户名称">
               <template scope="scope">
-                <router-link :to='"/admin/record/retrievalDet?idd="+records[scope.$index].idd+"&createTimes="+records[scope.$index].createTimes+"&idm="+records[scope.$index].idm'>{{records[scope.$index].userName}}</router-link>
+                <!--<router-link :to='"/admin/record/retrievalDet?idd="+records[scope.$index].idd+"&createTimes="+records[scope.$index].createTimes+"&idm="+records[scope.$index].idm'>{{records[scope.$index].userName}}</router-link>-->
+                <router-link :to='{path:"/admin/record/retrievalDet",query:{idd:records[scope.$index].idd,createTimes:records[scope.$index].createTimes,idm:records[scope.$index].idm,businessOrderNo:records[scope.$index].businessOrderNo,orderNo:records[scope.$index].orderNo}}'>{{records[scope.$index].userName}}</router-link>
               </template>
             </el-table-column>
             <el-table-column prop="userType" label="用户类型"></el-table-column>
