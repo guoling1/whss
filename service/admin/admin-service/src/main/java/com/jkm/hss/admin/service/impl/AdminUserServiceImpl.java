@@ -108,8 +108,8 @@ public class AdminUserServiceImpl implements AdminUserService {
      * @return
      */
     @Override
-    public Optional<AdminUser> getAdminUserByName(final String username) {
-        return Optional.fromNullable(adminUserDao.selectByUsername(username));
+    public Optional<AdminUser> getAdminUserByNameAndType(final String username,final int type) {
+        return Optional.fromNullable(adminUserDao.selectByUsernameAndType(username,type));
     }
 
     @Override
@@ -137,7 +137,7 @@ public class AdminUserServiceImpl implements AdminUserService {
      */
     @Override
     public Optional<AdminUserPassport> login(final String username, final String password) {
-        final Optional<AdminUser> adminUserOptional = getAdminUserByName(username);
+        final Optional<AdminUser> adminUserOptional = getAdminUserByNameAndType(username,EnumAdminType.BOSS.getCode());
         if (adminUserOptional.isPresent()) {
             final AdminUser adminUser = adminUserOptional.get();
             if (AdminUserSupporter.isPasswordCorrect(adminUser, password)) {
@@ -351,6 +351,7 @@ public class AdminUserServiceImpl implements AdminUserService {
      */
     @Override
     public PageModel<AdminUserListResponse> userList(AdminUserListRequest adminUserListRequest) {
+        adminUserListRequest.setType(EnumAdminType.BOSS.getCode());
         final PageModel<AdminUserListResponse> pageModel = new PageModel<>(adminUserListRequest.getPageNo(), adminUserListRequest.getPageSize());
         adminUserListRequest.setOffset(pageModel.getFirstIndex());
         adminUserListRequest.setCount(pageModel.getPageSize());
@@ -390,8 +391,8 @@ public class AdminUserServiceImpl implements AdminUserService {
      * @return
      */
     @Override
-    public Long selectByUsernameUnIncludeNow(String username, long id) {
-        return adminUserDao.selectByUsernameUnIncludeNow(username,id);
+    public Long selectByUsernameAndTypeUnIncludeNow(String username, int type, long id) {
+        return adminUserDao.selectByUsernameAndTypeUnIncludeNow(username,type,id);
     }
 
     /**

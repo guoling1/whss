@@ -10,6 +10,8 @@ import com.jkm.base.common.entity.PageModel;
 import com.jkm.base.common.util.CookieUtil;
 import com.jkm.base.common.util.ValidateUtils;
 import com.jkm.hss.admin.entity.*;
+import com.jkm.hss.admin.enums.EnumAdminType;
+import com.jkm.hss.admin.enums.EnumIsMaster;
 import com.jkm.hss.admin.enums.EnumQRCodeDistributeType;
 import com.jkm.hss.admin.helper.AdminUserSupporter;
 import com.jkm.hss.admin.helper.requestparam.AdminUserListRequest;
@@ -118,7 +120,7 @@ public class AdminController extends BaseController {
             return CommonResponse.simpleResponse(-1, "密码长度6-32位");
         }
 
-        final Optional<AdminUser> userOptional = this.adminUserService.getAdminUserByName(_username);
+        final Optional<AdminUser> userOptional = this.adminUserService.getAdminUserByNameAndType(_username,EnumAdminType.BOSS.getCode());
         if (!userOptional.isPresent()) {
             return CommonResponse.simpleResponse(-1, "登陆用户不存在");
         }
@@ -927,7 +929,7 @@ public class AdminController extends BaseController {
     @RequestMapping(value = "/addUser", method = RequestMethod.POST)
     public CommonResponse addUser (@RequestBody AdminUserRequest adminUserRequest) {
         AdminUser adminUser = new AdminUser();
-        final Optional<AdminUser> adminUserOptional = this.adminUserService.getAdminUserByName(adminUserRequest.getUsername());
+        final Optional<AdminUser> adminUserOptional = this.adminUserService.getAdminUserByNameAndType(adminUserRequest.getUsername(), EnumAdminType.BOSS.getCode());
         if(adminUserOptional.isPresent()) {
             return CommonResponse.simpleResponse(-1, "登录名已存在");
         }
@@ -956,6 +958,8 @@ public class AdminController extends BaseController {
         adminUser.setIdentityOppositePic(adminUserRequest.getIdentityOppositePic());
         adminUser.setMobile(adminUserRequest.getMobile());
         adminUser.setEmail(adminUserRequest.getEmail());
+        adminUser.setIsMaster(EnumIsMaster.NOTMASTER.getCode());
+        adminUser.setDealerId(0);
         adminUser.setRoleId(adminUserRequest.getRoleId());
         long userId = this.adminUserService.createUser(adminUser);
         return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "新增成功",userId);
@@ -1023,7 +1027,7 @@ public class AdminController extends BaseController {
         if(!adminUserOptional.isPresent()){
             return CommonResponse.simpleResponse(-1, "登录名不存在");
         }
-        final long proxyNameCount = this.adminUserService.selectByUsernameUnIncludeNow(adminUser.getUsername(), adminUser.getId());
+        final long proxyNameCount = this.adminUserService.selectByUsernameAndTypeUnIncludeNow(adminUser.getUsername(),EnumAdminType.BOSS.getCode(), adminUser.getId());
         if (proxyNameCount > 0) {
             return CommonResponse.simpleResponse(-1, "登录名已经存在");
         }

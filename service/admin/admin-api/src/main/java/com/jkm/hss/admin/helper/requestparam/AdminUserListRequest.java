@@ -1,6 +1,7 @@
 package com.jkm.hss.admin.helper.requestparam;
 
 import com.jkm.base.common.entity.PageQueryParams;
+import com.jkm.hss.admin.enums.EnumAdminType;
 import lombok.Data;
 
 /**
@@ -23,6 +24,12 @@ public class AdminUserListRequest extends PageQueryParams {
      * 手机号
      */
     private String mobile;
+
+    /**
+     * 类型
+     * {@link EnumAdminType}
+     */
+    private int type;
 
     private int offset;
 

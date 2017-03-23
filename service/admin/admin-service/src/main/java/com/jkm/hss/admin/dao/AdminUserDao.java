@@ -37,12 +37,12 @@ public interface AdminUserDao {
     AdminUser selectById(@Param("id") long id);
 
     /**
-     * 根据用户名查找
+     * 根据用户名和类型获取
      *
      * @param username
      * @return
      */
-    AdminUser selectByUsername(@Param("username") String username);
+    AdminUser selectByUsernameAndType(@Param("username") String username,@Param("type") int type);
 
     /**
      * 修改密码
@@ -87,7 +87,7 @@ public interface AdminUserDao {
      * @param id
      * @return
      */
-    Long selectByUsernameUnIncludeNow(@Param("username") String username,@Param("id") long id);
+    Long selectByUsernameAndTypeUnIncludeNow(@Param("username") String username,@Param("type") int type,@Param("id") long id);
 
     /**
      * 最后一次登陆时间

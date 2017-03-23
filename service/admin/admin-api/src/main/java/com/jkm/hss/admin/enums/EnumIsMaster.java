@@ -5,25 +5,21 @@ import lombok.Getter;
 /**
  * Created by xingliujie on 2017/2/22.
  */
-public enum EnumAdminType {
+public enum EnumIsMaster {
     /**
-     * boss后台
+     * 有全部菜单权限
      */
-    BOSS(1),
+    MASTER(1),
     /**
-     * 一级代理
+     * 没有全部菜单权限
      */
-    FIRSTDEALER(2),
-    /**
-     * 二级代理
-     */
-    SECONDDEALER(3);
+    NOTMASTER(2);
 
 
     @Getter
     private int code;
 
-    EnumAdminType(final int code) {
+    EnumIsMaster(final int code) {
         this.code = code;
     }
 }

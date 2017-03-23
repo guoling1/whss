@@ -76,6 +76,16 @@ public class AdminUser extends BaseEntity {
      * {@link com.jkm.hss.admin.enums.EnumAdminType}
      */
     private int type;
+    /**
+     * 代理商编码
+     */
+    private long dealerId;
+    /**
+     * 是否有全部菜单权限
+     * 1.是 2不是
+     * {@link com.jkm.hss.admin.enums.EnumAdminType}
+     */
+    private int isMaster;
 
     /**
      * 用户是否被激活

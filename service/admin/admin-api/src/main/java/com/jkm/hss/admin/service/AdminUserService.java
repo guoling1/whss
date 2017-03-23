@@ -39,12 +39,12 @@ public interface AdminUserService {
     Optional<AdminUser> getAdminUserById(long auid);
 
     /**
-     * 根据用户名获取
+     * 根据用户名和类型获取
      *
      * @param username
      * @return
      */
-    Optional<AdminUser> getAdminUserByName(final String username);
+    Optional<AdminUser> getAdminUserByNameAndType(final String username,final int type);
 
     /**
      * 禁用用户
@@ -173,7 +173,7 @@ public interface AdminUserService {
      * @param id
      * @return
      */
-    Long selectByUsernameUnIncludeNow(String username,long id);
+    Long selectByUsernameAndTypeUnIncludeNow(String username,int type,long id);
 
     /**
      * 最后一次登陆时间
