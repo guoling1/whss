@@ -147,10 +147,10 @@ public class OrderController extends BaseController {
         String createTimes = req.getCreateTimes();
         JSONObject jsonObject = new JSONObject();
         if (idd>0){
-            WithdrawResponse result = orderService.withdrawDetail(idd,createTimes);
+            WithdrawResponse results = orderService.withdrawDetail(idd,createTimes);
             List<PlayResponse> list = orderService.getPlayMoney(req.getOrderNo());
             List<ProfitResponse> list1 = profitService.getInfo(req.getBusinessOrderNo());
-            jsonObject.put("result",result);
+            jsonObject.put("results",results);
             jsonObject.put("list",list);
             jsonObject.put("list1",list1);
             return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", jsonObject);
