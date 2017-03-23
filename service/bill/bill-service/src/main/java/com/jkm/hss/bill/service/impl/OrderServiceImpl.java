@@ -1203,19 +1203,19 @@ public class OrderServiceImpl implements OrderService {
                 }
 
                 if (list.get(i).getPlayMoneyChannel()==1){
-                    list.get(i).setPlayMoneyChannel(EnumChannel.of(list.get(i).getPlayMoneyChannel()).getId());
+                    list.get(i).setPlayMoneyChannels(EnumChannel.of(list.get(i).getPlayMoneyChannel()).getValue());
                 }
                 if (list.get(i).getPlayMoneyChannel()==2){
-                    list.get(i).setPlayMoneyChannel(EnumChannel.of(list.get(i).getPlayMoneyChannel()).getId());
+                    list.get(i).setPlayMoneyChannels(EnumChannel.of(list.get(i).getPlayMoneyChannel()).getValue());
                 }
                 if (list.get(i).getPlayMoneyChannel()==3){
-                    list.get(i).setPlayMoneyChannel(EnumChannel.of(list.get(i).getPlayMoneyChannel()).getId());
+                    list.get(i).setPlayMoneyChannels(EnumChannel.of(list.get(i).getPlayMoneyChannel()).getValue());
                 }
                 if (list.get(i).getPlayMoneyChannel()==4){
-                    list.get(i).setPlayMoneyChannel(EnumChannel.of(list.get(i).getPlayMoneyChannel()).getId());
+                    list.get(i).setPlayMoneyChannels(EnumChannel.of(list.get(i).getPlayMoneyChannel()).getValue());
                 }
                 if (list.get(i).getPlayMoneyChannel()==5){
-                    list.get(i).setPlayMoneyChannel(EnumChannel.of(list.get(i).getPlayMoneyChannel()).getId());
+                    list.get(i).setPlayMoneyChannels(EnumChannel.of(list.get(i).getPlayMoneyChannel()).getValue());
                 }
 
             }

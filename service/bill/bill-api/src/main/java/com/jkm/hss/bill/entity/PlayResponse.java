@@ -63,6 +63,12 @@ public class PlayResponse {
     private int playMoneyChannel;
 
     /**
+     * 打款渠道
+     * {@link com.jkm.hss.bill.enums.EnumChannel}
+     */
+    private String playMoneyChannels;
+
+    /**
      * 渠道的原始的信息
      */
     private String message;
