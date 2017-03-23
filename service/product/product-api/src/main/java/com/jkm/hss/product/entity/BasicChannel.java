@@ -92,7 +92,7 @@ public class BasicChannel extends BaseEntity{
     /**
      * 最低手续费
      */
-    private String lowestFee;
+    private BigDecimal lowestFee;
 
     /**
      * 备注
