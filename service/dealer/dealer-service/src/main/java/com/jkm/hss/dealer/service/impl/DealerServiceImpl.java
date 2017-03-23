@@ -419,7 +419,7 @@ public class DealerServiceImpl implements DealerService {
         //判断是否是公司直属商户发展的商户
         if (merchantInfo.getFirstDealerId() == 0){
             map.put("channelMoney", Triple.of(basicChannel.getAccountId(), channelMoney, basicChannel.getBasicTradeRate()));
-
+            map.put("basicMoney", Triple.of(0L,basicMoney,basicChannel.getBasicTradeRate()));
             //上级商户 = （商户费率 -  上级商户）* 商户交易金额（如果商户费率低于或等于上级商户，那么上级商户无润）
             final MerchantInfo firstMerchantInfo = this.merchantInfoService.selectById(merchantInfo.getFirstMerchantId()).get();
             //上级商户的费率
@@ -554,6 +554,7 @@ public class DealerServiceImpl implements DealerService {
                 final BigDecimal firstMoney = tradeAmount.multiply(space.multiply(add)).setScale(2,BigDecimal.ROUND_DOWN);
                 //金开门利润 = 商户手续费 -  一代  一级商户
                 final BigDecimal productMoney = waitOriginMoney.subtract(firstMoney).subtract(firstMerchantMoney).subtract(basicMoney).subtract(channelMoney);
+                map.put("basicMoney", Triple.of(0L,basicMoney,basicChannel.getBasicTradeRate()));
                 map.put("channelMoney", Triple.of(basicChannel.getAccountId(), channelMoney, basicChannel.getBasicTradeRate()));
                 map.put("productMoney", Triple.of(product.getAccountId(), productMoney, productChannelDetail.getProductTradeRate()));
                 map.put("firstMerchantMoney", Triple.of(firstMerchantInfo.getAccountId(), firstMerchantMoney, getMerchantRate(channelSign, firstMerchantInfo)));
@@ -592,6 +593,7 @@ public class DealerServiceImpl implements DealerService {
                 final BigDecimal firstMoney = tradeAmount.multiply(space.multiply(dealerUpgerdeRate.getFirstDealerShareProfitRate())).setScale(2,BigDecimal.ROUND_DOWN);
                 //金开门利润 = 商户手续费 -  一代 - 二代 - 一级商户 - 二级商户
                 final BigDecimal productMoney = waitOriginMoney.subtract(firstMoney).subtract(secondMoney).subtract(firstMerchantMoney).subtract(basicMoney).subtract(channelMoney);
+                map.put("basicMoney", Triple.of(0L,basicMoney,basicChannel.getBasicTradeRate()));
                 map.put("channelMoney", Triple.of(basicChannel.getAccountId(), channelMoney, basicChannel.getBasicTradeRate()));
                 map.put("productMoney", Triple.of(product.getAccountId(), productMoney, productChannelDetail.getProductTradeRate()));
                 map.put("firstMerchantMoney", Triple.of(firstMerchantInfo.getAccountId(), firstMerchantMoney, getMerchantRate(channelSign, firstMerchantInfo)));
@@ -659,6 +661,7 @@ public class DealerServiceImpl implements DealerService {
                 final BigDecimal firstMoney = tradeAmount.multiply(space.multiply(add)).setScale(2,BigDecimal.ROUND_DOWN);
                 //金开门利润 = 商户手续费 -  一代  一级商户 - 二级商户
                 final BigDecimal productMoney = waitOriginMoney.subtract(firstMoney).subtract(firstMerchantMoney).subtract(secondMerchantMoney).subtract(basicMoney).subtract(channelMoney);
+                map.put("basicMoney", Triple.of(0L,basicMoney,basicChannel.getBasicTradeRate()));
                 map.put("channelMoney", Triple.of(basicChannel.getAccountId(), channelMoney, basicChannel.getBasicTradeRate()));
                 map.put("productMoney", Triple.of(product.getAccountId(), productMoney, productChannelDetail.getProductTradeRate()));
                 map.put("firstMerchantMoney", Triple.of(firstMerchantInfo.getAccountId(), firstMerchantMoney, getMerchantRate(channelSign, firstMerchantInfo)));
@@ -699,6 +702,7 @@ public class DealerServiceImpl implements DealerService {
                 final BigDecimal firstMoney = tradeAmount.multiply(space.multiply(dealerUpgerdeRate.getFirstDealerShareProfitRate())).setScale(2,BigDecimal.ROUND_DOWN);
                 //金开门利润 = 商户手续费 -  一代  - 二代 一级商户 - 二级商户
                 final BigDecimal productMoney = waitOriginMoney.subtract(firstMoney).subtract(secondMoney).subtract(firstMerchantMoney).subtract(secondMerchantMoney).subtract(basicMoney).subtract(channelMoney);
+                map.put("basicMoney", Triple.of(0L,basicMoney,basicChannel.getBasicTradeRate()));
                 map.put("channelMoney", Triple.of(basicChannel.getAccountId(), channelMoney, basicChannel.getBasicTradeRate()));
                 map.put("productMoney", Triple.of(product.getAccountId(), productMoney, productChannelDetail.getProductTradeRate()));
                 map.put("firstMerchantMoney", Triple.of(firstMerchantInfo.getAccountId(), firstMerchantMoney, getMerchantRate(channelSign, firstMerchantInfo)));
@@ -811,6 +815,7 @@ public class DealerServiceImpl implements DealerService {
             companyProfitDetail.setChannelShallAmount(channelMoney);
             companyProfitDetail.setProfitDate(DateFormatUtil.format(new Date(), DateFormatUtil.yyyy_MM_dd));
             this.companyProfitDetailService.add(companyProfitDetail);
+            map.put("basicMoney", Triple.of(0L,basicMoney,basicChannel.getBasicTradeRate()));
             map.put("channelMoney",Triple.of(basicChannel.getAccountId(), channelMoney, basicChannel.getBasicTradeRate()));
             map.put("productMoney",Triple.of(product.getAccountId(), productMoney, productChannelDetail.getProductTradeRate()));
             return map;
@@ -883,6 +888,7 @@ public class DealerServiceImpl implements DealerService {
             shallProfitDetail.setSecondShallAmount(new BigDecimal(0));
             shallProfitDetail.setProfitDate(DateFormatUtil.format(new Date(), DateFormatUtil.yyyy_MM_dd));
             this.shallProfitDetailService.init(shallProfitDetail);
+            map.put("basicMoney", Triple.of(0L,basicMoney,basicChannel.getBasicTradeRate()));
             map.put("firstMoney", Triple.of(dealer.getAccountId(), firstMoney, dealerChannelRate.getDealerTradeRate()));
             map.put("channelMoney",Triple.of(basicChannel.getAccountId(), channelMoney, basicChannel.getBasicTradeRate()));
             map.put("productMoney",Triple.of(product.getAccountId(), productMoney, productChannelDetail.getProductTradeRate()));
@@ -943,6 +949,7 @@ public class DealerServiceImpl implements DealerService {
             shallProfitDetail.setSecondShallAmount(secondMoney);
             shallProfitDetail.setProfitDate(DateFormatUtil.format(new Date(), DateFormatUtil.yyyy_MM_dd));
             this.shallProfitDetailService.init(shallProfitDetail);
+            map.put("basicMoney", Triple.of(0L,basicMoney,basicChannel.getBasicTradeRate()));
             map.put("firstMoney", Triple.of(firstDealer.getAccountId(), firstMoney, firstDealerChannelRate.getDealerTradeRate()));
             map.put("secondMoney", Triple.of(dealer.getAccountId(),secondMoney, dealerChannelRate.getDealerTradeRate()));
             map.put("channelMoney",Triple.of(basicChannel.getAccountId(), channelMoney, basicChannel.getBasicTradeRate()));
