@@ -8,6 +8,9 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.jkm.base.common.entity.CommonResponse;
 import com.jkm.base.common.entity.PageModel;
+import com.jkm.hss.admin.entity.AdminUser;
+import com.jkm.hss.admin.enums.EnumIsMaster;
+import com.jkm.hss.admin.service.AdminUserService;
 import com.jkm.hss.controller.BaseController;
 import com.jkm.hss.dealer.entity.Dealer;
 import com.jkm.hss.dealer.entity.DealerChannelRate;
@@ -75,6 +78,9 @@ public class DealerController extends BaseController {
 
     @Autowired
     private UpgradeRecommendRulesService upgradeRecommendRulesService;
+
+    @Autowired
+    private AdminUserService adminUserService;
 
     /**
      * 按手机号和名称模糊匹配
@@ -240,7 +246,7 @@ public class DealerController extends BaseController {
         return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", pageModel);
     }
     /**
-     * 根据代理商编码超找代理商信息
+     * 根据代理商编码查找代理商信息
      * @param dealerId
      * @return
      */
@@ -256,7 +262,10 @@ public class DealerController extends BaseController {
         dealerDetailResponse.setId(dealer.getId());
         dealerDetailResponse.setMobile(dealer.getMobile());
         dealerDetailResponse.setName(dealer.getProxyName());
-        dealerDetailResponse.setLoginName(dealer.getLoginName());
+        Optional<AdminUser> adminUserOptional = this.adminUserService.getAdminUserByDealerIdAndIsMaster(dealerId, EnumIsMaster.MASTER.getCode());
+        if(adminUserOptional.isPresent()){
+            dealerDetailResponse.setLoginName(adminUserOptional.get().getUsername());
+        }
         dealerDetailResponse.setEmail(dealer.getEmail());
         dealerDetailResponse.setMarkCode(dealer.getMarkCode());
         dealerDetailResponse.setBelongProvinceCode(dealer.getBelongProvinceCode());
@@ -772,6 +781,7 @@ public class DealerController extends BaseController {
             }
             request.setLoginPwd(DealerSupport.passwordDigest(request.getLoginPwd(),"JKM"));
             this.dealerService.updatePwd(request.getLoginPwd(),request.getDealerId());
+            adminUserService.updateDealerUserPwd(request.getLoginPwd(),request.getDealerId());
             return CommonResponse.builder4MapResult(CommonResponse.SUCCESS_CODE, "修改成功")
                     .addParam("dealerId", request.getDealerId()).build();
         }catch (Exception e){

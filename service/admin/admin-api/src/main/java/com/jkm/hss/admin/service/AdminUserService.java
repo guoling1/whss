@@ -45,6 +45,13 @@ public interface AdminUserService {
      * @return
      */
     Optional<AdminUser> getAdminUserByNameAndType(final String username,final int type);
+    /**
+     * 根据用户名和类型获取
+     *
+     * @param username
+     * @return
+     */
+    Optional<AdminUser> getAdminUserByNameAndTypeUnIncludeNow(final String username,final int type,final long dealerId);
 
     /**
      * 禁用用户
@@ -181,4 +188,38 @@ public interface AdminUserService {
      * @return
      */
     void updateLastLoginDate(long id);
+
+    /**
+     * 创建一级代理商管理账户
+     * @param adminUser
+     * @return
+     */
+    void createFirstDealerUser(AdminUser adminUser);
+    /**
+     * 创建二级代理商管理账户
+     * @param adminUser
+     * @return
+     */
+    void createSecondDealerUser(AdminUser adminUser);
+    /**
+     * 修改一级代理商管理账户
+     * @param adminUser
+     * @return
+     */
+    void updateDealerUser(AdminUser adminUser);
+
+    /**
+     * 修改代理商登录密码
+     * @param pwd
+     * @param dealerId
+     */
+    void updateDealerUserPwd(String pwd,long dealerId);
+
+    /**
+     * 根据代理商编码和是否有所有权限查询代理商
+     * @param dealerId
+     * @param isMaster
+     * @return
+     */
+    Optional<AdminUser> getAdminUserByDealerIdAndIsMaster(final long dealerId,final int isMaster);
 }

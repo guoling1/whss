@@ -4,7 +4,7 @@
 
     <sql id="Base_Column_List">
         id,username,realname,email,mobile,status,company_id,
-        dept_id,id_card,last_login_date,role_id,mark_code,identity_face_pic,identity_opposite_pic,create_time,update_time
+        dept_id,id_card,last_login_date,role_id,mark_code,identity_face_pic,identity_opposite_pic,create_time,update_time,dealer_id,is_master
     </sql>
 
     <insert id="insert" useGeneratedKeys="true" keyProperty="id">
@@ -25,7 +25,9 @@
         role_id,
         mark_code,
         identity_face_pic,
-        identity_opposite_pic
+        identity_opposite_pic,
+        dealer_id,
+        is_master
         )
         VALUES
         (
@@ -44,7 +46,9 @@
         #{roleId},
         #{markCode},
         #{identityFacePic},
-        #{identityOppositePic}
+        #{identityOppositePic},
+        #{dealerId},
+        #{isMaster}
         );
     </insert>
 
@@ -71,6 +75,10 @@
 
     <select id="selectByUsernameAndType" resultType="com.jkm.hss.admin.entity.AdminUser">
         SELECT * FROM tb_admin_user WHERE username = #{username} and type=#{type} and status=1
+    </select>
+
+    <select id="getAdminUserByNameAndTypeUnIncludeNow" resultType="com.jkm.hss.admin.entity.AdminUser">
+        SELECT * FROM tb_admin_user WHERE username = #{username} and type=#{type} and status=1 and id not in (select id from tb_admin_user where type=#{type} and is_master=1 and dealer_id=#{dealerId})
     </select>
 
     <update id="updatePwd">
@@ -137,4 +145,25 @@
         last_login_date = now()
         WHERE id = #{id}
     </update>
+
+    <update id="updateDealerUser">
+        UPDATE tb_admin_user
+        SET
+        username = #{username},
+        realname = #{realname},
+        mobile = #{mobile},
+        id_card = #{idCard}
+        WHERE dealer_id = #{dealerId} and is_master = #{isMaster}
+    </update>
+
+    <update id="updateDealerUserPwd">
+        UPDATE tb_admin_user
+        SET
+        password = #{pwd}
+        WHERE dealer_id = #{dealerId} and is_master = 1
+    </update>
+
+    <select id="getAdminUserByDealerIdAndIsMaster" resultType="com.jkm.hss.admin.entity.AdminUser">
+        SELECT <include refid="Base_Column_List" /> FROM tb_admin_user WHERE dealer_id = #{dealerId} and is_master = #{isMaster}
+    </select>
 </mapper>

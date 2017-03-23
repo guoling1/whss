@@ -7,8 +7,6 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.jkm.base.common.entity.PageModel;
 import com.jkm.base.common.enums.EnumGlobalAdminUserLevel;
-import com.jkm.base.common.enums.EnumGlobalIDPro;
-import com.jkm.base.common.enums.EnumGlobalIDType;
 import com.jkm.base.common.util.GlobalID;
 import com.jkm.hss.admin.dao.AdminUserDao;
 import com.jkm.hss.admin.entity.*;
@@ -27,7 +25,6 @@ import org.apache.commons.lang3.tuple.Triple;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -110,6 +107,18 @@ public class AdminUserServiceImpl implements AdminUserService {
     @Override
     public Optional<AdminUser> getAdminUserByNameAndType(final String username,final int type) {
         return Optional.fromNullable(adminUserDao.selectByUsernameAndType(username,type));
+    }
+
+    /**
+     * 根据用户名和类型获取
+     *
+     * @param username
+     * @param type
+     * @param dealerId @return
+     */
+    @Override
+    public Optional<AdminUser> getAdminUserByNameAndTypeUnIncludeNow(String username, int type, long dealerId) {
+        return Optional.fromNullable(adminUserDao.getAdminUserByNameAndTypeUnIncludeNow(username,type,dealerId));
     }
 
     @Override
@@ -404,5 +413,57 @@ public class AdminUserServiceImpl implements AdminUserService {
     @Override
     public void updateLastLoginDate(long id) {
         adminUserDao.updateLastLoginDate(id);
+    }
+
+    /**
+     * 创建一级代理登录用户
+     * @param adminUser
+     */
+    @Override
+    public void createFirstDealerUser(AdminUser adminUser) {
+        this.adminUserDao.insert(adminUser);
+        this.adminUserDao.updateMarkCode(GlobalID.GetAdminUserID(EnumGlobalAdminUserLevel.FIRSTDEALER,adminUser.getId()+""),adminUser.getId());
+    }
+    /**
+     * 创建二级代理登录用户
+     * @param adminUser
+     */
+    @Override
+    public void createSecondDealerUser(AdminUser adminUser) {
+        this.adminUserDao.insert(adminUser);
+        this.adminUserDao.updateMarkCode(GlobalID.GetAdminUserID(EnumGlobalAdminUserLevel.SECONDDEALER,adminUser.getId()+""),adminUser.getId());
+    }
+
+    /**
+     * 修改一级代理商管理账户
+     *
+     * @param adminUser
+     * @return
+     */
+    @Override
+    public void updateDealerUser(AdminUser adminUser) {
+        this.adminUserDao.updateDealerUser(adminUser);
+    }
+
+    /**
+     * 修改代理商登录密码
+     *
+     * @param pwd
+     * @param dealerId
+     */
+    @Override
+    public void updateDealerUserPwd(String pwd, long dealerId) {
+        this.adminUserDao.updateDealerUserPwd(pwd,dealerId);
+    }
+
+    /**
+     * 根据代理商编码和是否有所有权限查询代理商
+     * @param dealerId
+     * @param isMaster
+     * @return
+     */
+    @Override
+    public Optional<AdminUser> getAdminUserByDealerIdAndIsMaster(long dealerId,int isMaster) {
+        return Optional.fromNullable(this.adminUserDao.getAdminUserByDealerIdAndIsMaster(dealerId,isMaster));
     }
 }

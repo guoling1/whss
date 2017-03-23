@@ -83,7 +83,7 @@ public class AdminUser extends BaseEntity {
     /**
      * 是否有全部菜单权限
      * 1.是 2不是
-     * {@link com.jkm.hss.admin.enums.EnumAdminType}
+     * {@link com.jkm.hss.admin.enums.EnumIsMaster}
      */
     private int isMaster;
 

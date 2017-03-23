@@ -43,6 +43,13 @@ public interface AdminUserDao {
      * @return
      */
     AdminUser selectByUsernameAndType(@Param("username") String username,@Param("type") int type);
+    /**
+     * 根据用户名和类型获取
+     *
+     * @param username
+     * @return
+     */
+    AdminUser getAdminUserByNameAndTypeUnIncludeNow(@Param("username") String username,@Param("type") int type,@Param("dealerId") long dealerId);
 
     /**
      * 修改密码
@@ -95,5 +102,28 @@ public interface AdminUserDao {
      * @return
      */
     void updateLastLoginDate(@Param("id") long id);
+
+    /**
+     * 修改一级代理商管理账户
+     *
+     * @param adminUser
+     * @return
+     */
+    void updateDealerUser(AdminUser adminUser);
+
+    /**
+     * 修改代理商登录密码
+     * @param pwd
+     * @param dealerId
+     */
+    void updateDealerUserPwd(@Param("pwd") String pwd, @Param("dealerId") long dealerId);
+
+    /**
+     * 根据代理商编码和是否有所有权限查询代理商
+     * @param dealerId
+     * @param isMaster
+     * @return
+     */
+    AdminUser getAdminUserByDealerIdAndIsMaster(@Param("dealerId") long dealerId,@Param("isMaster") int isMaster);
 
 }
