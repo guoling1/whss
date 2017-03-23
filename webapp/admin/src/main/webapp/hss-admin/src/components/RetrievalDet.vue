@@ -221,7 +221,7 @@
               <el-table-column prop="requestTimes" label="打款发起时间"></el-table-column>
               <el-table-column prop="statusValue" label="打款状态"></el-table-column>
               <el-table-column prop="finishTimes" label="打款完成时间"></el-table-column>
-              <el-table-column prop="playMoneyChannel" label="打款渠道"></el-table-column>
+              <el-table-column prop="playMoneyChannels" label="打款渠道"></el-table-column>
               <el-table-column prop="message" label="渠道信息"></el-table-column>
             </el-table>
           </template>
