@@ -6,6 +6,8 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -13,7 +15,7 @@
         content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
   <meta name="format-detection" content="telephone=no"/>
   <title>好收收</title>
-  <link rel="stylesheet" href="http://static.jinkaimen.cn/hss/css/style.2.2.2.css">
+  <link rel="stylesheet" href="http://static.jinkaimen.cn/hss/css/style.2.2.3.css">
   <link rel="stylesheet" href="http://static.jinkaimen.cn/weui/weui.css">
 </head>
 <body>
@@ -32,7 +34,12 @@
   <div class="space">
     <div class="list right" id="chooseBank">
       <div class="left">付款银行</div>
-      <div class="val" id="bank">${bankName} 尾号${shortNo}</div>
+      <c:if test="${status==0}">
+        <div class="val NO" id="bank">${bankName} 尾号${shortNo} (暂不可用)</div>
+      </c:if>
+      <c:if test="${status==1}">
+        <div class="val" id="bank">${bankName} 尾号${shortNo}</div>
+      </c:if>
     </div>
     <div class="list">
       <div class="left">CVV2</div>
@@ -84,9 +91,11 @@
 </body>
 <script>
   var pageData = {
-    creditCardId: '${creditCardId}'
+    creditCardId: '${creditCardId}',
+    status: '${status}',
+    canPay: false
   }
 </script>
 <script src="http://static.jinkaimen.cn/vendor/vendor.1.0.9.2.min.js"></script>
-<script src="http://static.jinkaimen.cn/hss/2.2.5/againUnionPay.min.js"></script>
+<script src="http://static.jinkaimen.cn/hss/2.2.6/againUnionPay.min.js"></script>
 </html>

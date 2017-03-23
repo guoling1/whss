@@ -136,7 +136,7 @@ bankCodeBtn.addEventListener('change', function (e) {
       } else {
         let allow = false;
         for (let i = 0; i < supportBankCardList.length; i++) {
-          if (data == supportBankCardList[i].bankCode) {
+          if (data == supportBankCardList[i].bankCode && supportBankCardList[i].status == 1) {
             allow = true;
             support = true;
             if (supportBankCardList[i].bankName != bankName) {
@@ -144,6 +144,8 @@ bankCodeBtn.addEventListener('change', function (e) {
               bankCode = supportBankCardList[i].bankCode;
               chooseBank.value = supportBankCardList[i].bankName;
             }
+          } else {
+            message.prompt_show('暂时不支持该银行的卡');
           }
         }
         if (!allow) {
@@ -216,13 +218,15 @@ http.post('/channel/queryChannelSupportBank', {
   for (let i = 0; i < data.length; i++) {
     let list = document.createElement('div');
     list.className = 'choose-box-body-list-bank';
-    list.addEventListener('click', function () {
-      bankName = data[i].bankName;
-      bankCode = data[i].bankCode;
-      chooseBank.value = data[i].bankName;
-      layer.style.display = 'none';
-      bankCodeBtn.removeAttribute('readonly');
-    });
+    if (data[i].status == 1) {
+      list.addEventListener('click', function () {
+        bankName = data[i].bankName;
+        bankCode = data[i].bankCode;
+        chooseBank.value = data[i].bankName;
+        layer.style.display = 'none';
+        bankCodeBtn.removeAttribute('readonly');
+      });
+    }
     let logo = document.createElement('div');
     if (data[i].status == 1) {
       logo.className = 'logo ' + data[i].bankCode;
@@ -241,10 +245,11 @@ http.post('/channel/queryChannelSupportBank', {
     let small = document.createElement('div');
     if (data[i].status == 1) {
       small.className = 'small';
+      small.innerHTML = '单日限额 ' + fmoney(data[i].dayLimitAmount, 2) + '元';
     } else {
       small.className = 'small NO';
+      small.innerHTML = '该通道暂不可用';
     }
-    small.innerHTML = '单日限额 ' + fmoney(data[i].dayLimitAmount, 2) + '元';
     detail.appendChild(name);
     detail.appendChild(small);
     list.appendChild(logo);
