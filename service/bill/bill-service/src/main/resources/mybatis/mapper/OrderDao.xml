@@ -221,7 +221,9 @@
         SELECT
             a.*, b.user_name,
             c.dealer_id,
+            c.address,
             c.merchant_name,
+            c.province_code,
             c.mark_code AS mark_codeM,
             c.mobile,
             c.create_time AS create_timeM,
@@ -800,5 +802,21 @@
         AND settle_status = 1
         AND status = 4
         AND settle_type = 'T1'
+    </select>
+
+    <!-- 查询打款 -->
+    <select id="getPlayMoney" resultType="com.jkm.hss.bill.entity.PlayResponse">
+        SELECT
+            sn,
+            amount,
+            request_time,
+            `status`,
+            finish_time,
+            play_money_channel,
+            message
+        FROM
+            tb_play_money_order
+        WHERE
+            order_no = #{orderNo}
     </select>
 </mapper>

@@ -15,6 +15,8 @@ import lombok.Data;
 @Data
 public class WithdrawRequest {
 
+
+
     /**
      * 提现时间
      */

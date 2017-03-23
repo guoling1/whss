@@ -19,6 +19,11 @@ import java.util.Date;
 public class WithdrawResponse{
 
     /**
+     * 所在省份编码
+     */
+    private String provinceCode;
+
+    /**
      * 商户所在地
      */
     private String locationM;
@@ -141,7 +146,7 @@ public class WithdrawResponse{
     /**
      * 一级代理商id
      */
-    private long firstLevelDealerId;
+    private int firstLevelDealerId;
 
     /**
      * 商户id

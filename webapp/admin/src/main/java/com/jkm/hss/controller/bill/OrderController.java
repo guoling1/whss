@@ -1,13 +1,13 @@
 package com.jkm.hss.controller.bill;
 
+import com.alibaba.fastjson.JSONObject;
 import com.google.common.base.Optional;
 import com.jkm.base.common.entity.CommonResponse;
 import com.jkm.base.common.entity.PageModel;
-import com.jkm.hss.bill.entity.Order;
-import com.jkm.hss.bill.entity.WithdrawRequest;
-import com.jkm.hss.bill.entity.WithdrawResponse;
+import com.jkm.hss.bill.entity.*;
 import com.jkm.hss.bill.enums.EnumTradeType;
 import com.jkm.hss.bill.service.OrderService;
+import com.jkm.hss.bill.service.ProfitService;
 import com.jkm.hss.controller.BaseController;
 import com.jkm.hss.dealer.entity.Dealer;
 import com.jkm.hss.dealer.service.DealerService;
@@ -44,6 +44,8 @@ public class OrderController extends BaseController {
     private DealerService dealerService;
     @Autowired
     private MerchantInfoService merchantInfoService;
+    @Autowired
+    private ProfitService profitService;
     /**
      * 提现审核时（查询用户信息）
      *
@@ -142,13 +144,25 @@ public class OrderController extends BaseController {
     public CommonResponse withdrawDetail(@RequestBody WithdrawRequest req) throws ParseException {
         long idd = req.getIdd();
         long idm = req.getIdm();
+        String createTimes = req.getCreateTimes();
+        JSONObject jsonObject = new JSONObject();
         if (idd>0){
-            WithdrawResponse result = orderService.withdrawDetail(idd);
-            return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", result);
+            WithdrawResponse result = orderService.withdrawDetail(idd,createTimes);
+            List<PlayResponse> list = orderService.getPlayMoney(req.getOrderNo());
+            List<ProfitResponse> list1 = profitService.getInfo(req.getBusinessOrderNo());
+            jsonObject.put("result",result);
+            jsonObject.put("list",list);
+            jsonObject.put("list1",list1);
+            return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", jsonObject);
         }
         if (idm>0){
-            WithdrawResponse results = orderService.withdrawDetails(idm);
-            return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", results);
+            WithdrawResponse results = orderService.withdrawDetails(idm,createTimes);
+            List<PlayResponse> list = orderService.getPlayMoney(req.getOrderNo());
+            List<ProfitResponse> list1 = profitService.getInfo(req.getBusinessOrderNo());
+            jsonObject.put("results",results);
+            jsonObject.put("list",list);
+            jsonObject.put("list1",list1);
+            return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", jsonObject);
         }
         return CommonResponse.simpleResponse(-1, "查询异常");
     }

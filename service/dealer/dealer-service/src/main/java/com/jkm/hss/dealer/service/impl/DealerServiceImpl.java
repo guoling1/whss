@@ -2249,4 +2249,16 @@ public class DealerServiceImpl implements DealerService {
         MerchantInfoResponse response = dealerDao.getProxyName(firstLevelDealerId);
         return response;
     }
+
+    @Override
+    public MerchantInfoResponse getInfo(long firstDealerId) {
+        MerchantInfoResponse response = dealerDao.getInfo(firstDealerId);
+        return response;
+    }
+
+    @Override
+    public MerchantInfoResponse getInfo1(long secondDealerId) {
+        MerchantInfoResponse response = dealerDao.getInfo1(secondDealerId);
+        return response;
+    }
 }

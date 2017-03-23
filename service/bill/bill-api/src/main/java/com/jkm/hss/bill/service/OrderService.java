@@ -2,10 +2,7 @@ package com.jkm.hss.bill.service;
 
 import com.google.common.base.Optional;
 import com.jkm.base.common.entity.PageModel;
-import com.jkm.hss.bill.entity.MerchantTradeResponse;
-import com.jkm.hss.bill.entity.Order;
-import com.jkm.hss.bill.entity.WithdrawRequest;
-import com.jkm.hss.bill.entity.WithdrawResponse;
+import com.jkm.hss.bill.entity.*;
 import com.jkm.hss.bill.helper.requestparam.QueryMerchantPayOrdersRequestParam;
 import com.jkm.hss.dealer.entity.Dealer;
 import com.jkm.hss.merchant.entity.MerchantInfo;
@@ -290,14 +287,21 @@ public interface OrderService {
      * @param idd
      * @return
      */
-    WithdrawResponse withdrawDetail(long idd);
+    WithdrawResponse withdrawDetail(long idd,String createTimes);
 
     /**
      * 查询提现详情商户
      * @param idm
      * @return
      */
-    WithdrawResponse withdrawDetails(long idm);
+    WithdrawResponse withdrawDetails(long idm,String createTimes);
+
+    /**
+     * 查询打款
+     * @param orderNo
+     * @return
+     */
+    List<PlayResponse> getPlayMoney(String orderNo);
 
     /**
      * 查询交易详情

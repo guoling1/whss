@@ -1,9 +1,6 @@
 package com.jkm.hss.bill.dao;
 
-import com.jkm.hss.bill.entity.MerchantTradeResponse;
-import com.jkm.hss.bill.entity.Order;
-import com.jkm.hss.bill.entity.WithdrawRequest;
-import com.jkm.hss.bill.entity.WithdrawResponse;
+import com.jkm.hss.bill.entity.*;
 import com.jkm.hss.bill.helper.requestparam.QueryMerchantPayOrdersRequestParam;
 import com.jkm.hss.merchant.helper.request.OrderTradeRequest;
 import org.apache.ibatis.annotations.Param;
@@ -290,12 +287,19 @@ public interface OrderDao {
      * @param idd
      * @return
      */
-    WithdrawResponse withdrawDetail(long idd);
+    WithdrawResponse withdrawDetail(@Param("idd") long idd,@Param("createTimes") String createTimes);
 
     /**
      * 提现详情商户
      * @param idm
      * @return
      */
-    WithdrawResponse withdrawDetails(long idm);
+    WithdrawResponse withdrawDetails(@Param("idm") long idm,@Param("createTimes") String createTimes);
+
+    /**
+     * 查询代理打款
+     * @param orderNo
+     * @return
+     */
+    List<PlayResponse> getPlayMoney(@Param("orderNo") String orderNo);
 }

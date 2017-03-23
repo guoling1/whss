@@ -2,7 +2,9 @@ package com.jkm.hss.bill.dao;
 
 
 import com.jkm.hss.bill.entity.JkmProfitDetailsResponse;
+import com.jkm.hss.bill.entity.ProfitResponse;
 import com.jkm.hss.merchant.entity.ProfitDetailsRequest;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -33,4 +35,11 @@ public interface ProfitDao {
      * @return
      */
     JkmProfitDetailsResponse profitAmount(ProfitDetailsRequest req);
+
+    /**
+     * 查询分润（提现）
+     * @param businessOrderNo
+     * @return
+     */
+    List<ProfitResponse> getInfo(@Param("businessOrderNo") String businessOrderNo);
 }
