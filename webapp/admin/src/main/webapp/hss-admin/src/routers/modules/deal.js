@@ -16,6 +16,7 @@ const NewDealDet = r => require.ensure([], () => r(require('../../components/new
 const ProfitCom = r => require.ensure([], () => r(require('../../components/ProfitCom')), 'group-record');
 const ProfitFir = r => require.ensure([], () => r(require('../../components/ProfitFir')), 'group-record');
 const ProfitSec = r => require.ensure([], () => r(require('../../components/ProfitSec')), 'group-record');
+const ProfitCount = r => require.ensure([], () => r(require('../../components/ProfitCount')), 'group-record');
 const ProfitComDet = r => require.ensure([], () => r(require('../../components/ProfitDet')), 'group-record');
 const ProfitDet = r => require.ensure([], () => r(require('../../components/ProfitDet')), 'group-record');
 const ProfitFirDet = r => require.ensure([], () => r(require('../../components/ProfitDet')), 'group-record');
@@ -63,6 +64,8 @@ const PassList = r => require.ensure([], () => r(require('../../components/PassL
 //员工
 const PersonnelList = r => require.ensure([], () => r(require('../../components/PersonnelList')), 'group-record');
 const PersonnelAdd = r => require.ensure([], () => r(require('../../components/PersonnelAdd')), 'group-record');
+const Role = r => require.ensure([], () => r(require('../../components/Role')), 'group-record');
+const RoleAdd = r => require.ensure([], () => r(require('../../components/RoleAdd')), 'group-record');
 
 const Test = r => require.ensure([], () => r(require('../../components/Test')), 'group-record');
 
@@ -272,6 +275,11 @@ export default {
       component: ProfitCom
     },
     {
+      path: 'profitCount',
+      name: 'ProfitCount',
+      component: ProfitCount
+    },
+    {
       path: 'profitFir',
       name: 'ProfitFir',
       component: ProfitFir
@@ -310,6 +318,16 @@ export default {
       path: 'personnelAdd',
       name: 'PersonnelAdd',
       component: PersonnelAdd
+    },
+    {
+      path: 'role',
+      name: 'Role',
+      component: Role
+    },
+    {
+      path: 'roleAdd',
+      name: 'RoleAdd',
+      component: RoleAdd
     },
     {
       path: 'test',
