@@ -3,8 +3,10 @@ package com.jkm.hss.controller.bill;
 import com.google.common.base.Optional;
 import com.jkm.base.common.entity.CommonResponse;
 import com.jkm.hss.bill.entity.Order;
+import com.jkm.hss.bill.entity.SettlementRecord;
 import com.jkm.hss.bill.enums.EnumTradeType;
 import com.jkm.hss.bill.service.OrderService;
+import com.jkm.hss.bill.service.SettlementRecordService;
 import com.jkm.hss.controller.BaseController;
 import com.jkm.hss.dealer.entity.Dealer;
 import com.jkm.hss.dealer.service.DealerService;
@@ -32,6 +34,8 @@ public class OrderController extends BaseController {
     private DealerService dealerService;
     @Autowired
     private MerchantInfoService merchantInfoService;
+    @Autowired
+    private SettlementRecordService settlementRecordService;
     /**
      * 提现审核时（查询用户信息）
      *
@@ -44,11 +48,19 @@ public class OrderController extends BaseController {
         if (StringUtils.isEmpty(orderNo)) {
             return CommonResponse.simpleResponse(-1, "交易订单号不能空");
         }
-        final Order order = this.orderService.getByOrderNo(orderNo).get();
-        if (EnumTradeType.WITHDRAW.getId() != order.getTradeType()) {
-            return CommonResponse.simpleResponse(-1, "交易单[提现单]异常");
+        long accountId;
+        final Optional<Order> orderOptional = this.orderService.getByOrderNo(orderNo);
+        if (orderOptional.isPresent()) {
+            final Order order = orderOptional.get();
+            if (EnumTradeType.WITHDRAW.getId() != order.getTradeType()) {
+                return CommonResponse.simpleResponse(-1, "交易单[提现单]异常");
+            }
+            accountId = order.getPayer();
+        } else {
+            final SettlementRecord settlementRecord = this.settlementRecordService.getBySettleNo(orderNo).get();
+            accountId = settlementRecord.getAccountId();
         }
-        final Optional<MerchantInfo> merchantInfoOptional = this.merchantInfoService.getByAccountId(order.getPayer());
+        final Optional<MerchantInfo> merchantInfoOptional = this.merchantInfoService.getByAccountId(accountId);
         if (merchantInfoOptional.isPresent()) {
             final MerchantInfo merchantInfo = merchantInfoOptional.get();
             return CommonResponse.builder4MapResult(CommonResponse.SUCCESS_CODE, "success")
@@ -57,7 +69,7 @@ public class OrderController extends BaseController {
                     .addParam("userType", "商户")
                     .build();
         }
-        final Optional<Dealer> dealerOptional = this.dealerService.getByAccountId(order.getPayer());
+        final Optional<Dealer> dealerOptional = this.dealerService.getByAccountId(accountId);
         if (dealerOptional.isPresent()) {
             final Dealer dealer = dealerOptional.get();
             return CommonResponse.builder4MapResult(CommonResponse.SUCCESS_CODE, "success")
