@@ -199,7 +199,7 @@
             </el-row>
             <el-row type="flex" class="row-bg" justify="center">
               <el-col :span="4">
-                <div class="alignRight">开户名称:</div>
+                <div class="alignRight">持卡人姓名:</div>
               </el-col>
               <el-col :span="6">
                 <div class="grid-content bg-purple-light">
