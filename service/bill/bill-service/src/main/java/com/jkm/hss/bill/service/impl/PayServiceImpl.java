@@ -945,7 +945,7 @@ public class PayServiceImpl implements PayService {
                     return Pair.of(-1, paymentSdkConfirmUnionPayResponse.getMessage());
             }
         }
-        return Pair.of(-1, "订单状态错误，确认支付失败");
+        return Pair.of(-1, "请重新发送验证码");
     }
 
 

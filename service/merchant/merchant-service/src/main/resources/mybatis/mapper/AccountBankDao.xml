@@ -90,13 +90,19 @@
         status = 0
         WHERE id = #{id}  and card_type=1
     </update>
-
+    <!-- 设置为默认信用卡(用于删除信用卡之后设置默认信用卡)-->
+    <update id="setDefaultCreditCardById">
+        UPDATE tb_account_bank
+        set
+        is_default=1
+        WHERE id = #{id}
+    </update>
     <!-- 全部设置为不是默认银行卡-->
     <update id="reset">
         UPDATE tb_account_bank
         set
         is_default=0
-        WHERE account_id = #{accountId} and status=0 and card_type=#{cardType}
+        WHERE account_id = #{accountId} and card_type=#{cardType}
     </update>
 
     <!-- 获取默认储蓄卡 -->
@@ -189,5 +195,23 @@
         <include refid="Base_Column_List" />
         FROM tb_account_bank
         WHERE account_id = #{accountId} and card_type=#{cardType} and bank_no=#{bankNo}
+    </select>
+
+    <update id="updateBankInfo">
+        UPDATE tb_account_bank
+        set
+        reserve_mobile = #{reserveMobile},
+        bank_name=#{bankName},
+        bank_bin = #{bankBin},
+        expiry_time=#{expiryTime}
+        WHERE id = #{id}
+    </update>
+
+    <!-- 获取最新信用卡 -->
+    <select id="getTopCreditCard" resultType="com.jkm.hss.merchant.entity.AccountBank">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM tb_account_bank
+        WHERE account_id = #{accountId} and status=0 and card_type=1 order by create_time desc limit 0,1
     </select>
 </mapper>

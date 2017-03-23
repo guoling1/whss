@@ -59,7 +59,7 @@ public class InitDataController extends BaseController{
         int channelTypeSign = 301;
         BigDecimal dealerTradeRate = new BigDecimal("0.0046");
         String dealerBalanceType = "T1";
-        BigDecimal dealerWithdrawFee = new BigDecimal("1.00");
+        BigDecimal dealerWithdrawFee = new BigDecimal("1.50");
         BigDecimal dealerMerchantPayRate = new BigDecimal("0.0060");
         BigDecimal dealerMerchantWithdrawFee = new BigDecimal("2.00");
         //初始化数据end
@@ -124,7 +124,8 @@ public class InitDataController extends BaseController{
                     merchantChannelRate.setStatus(EnumCommonStatus.NORMAL.getId());
                     MerchantChannelRateRequest merchantChannelRateRequest = new MerchantChannelRateRequest();
                     merchantChannelRateRequest.setChannelTypeSign(channelType);
-                    merchantChannelRateRequest.setProductId(merchantInfoList.get(i).getId());
+                    merchantChannelRateRequest.setProductId(merchantInfoList.get(i).getProductId());
+                    merchantChannelRateRequest.setMerchantId(merchantInfoList.get(i).getId());
                     Optional<MerchantChannelRate> merchantChannelRateOptional = merchantChannelRateService.selectByChannelTypeSignAndProductIdAndMerchantId(merchantChannelRateRequest);
                     if(!merchantChannelRateOptional.isPresent()){//不存在
                         merchantChannelRateService.initMerchantChannelRate(merchantChannelRate);
@@ -133,7 +134,7 @@ public class InitDataController extends BaseController{
                     }
                 }
             }else{
-                Optional<ProductChannelDetail> productChannelDetailOptional = productChannelDetailService.selectRateByProductIdAndChannelType(merchantInfoList.get(i).getProductId(),channelType);
+                Optional<ProductChannelDetail> productChannelDetailOptional = productChannelDetailService.selectRateByProductIdAndChannelTypeSign(merchantInfoList.get(i).getProductId(),channelType);
                 if(productChannelDetailOptional.isPresent()){
                     MerchantChannelRate merchantChannelRate = new MerchantChannelRate();
                     merchantChannelRate.setMerchantId(merchantInfoList.get(i).getId());
@@ -154,7 +155,8 @@ public class InitDataController extends BaseController{
                     merchantChannelRate.setStatus(EnumCommonStatus.NORMAL.getId());
                     MerchantChannelRateRequest merchantChannelRateRequest = new MerchantChannelRateRequest();
                     merchantChannelRateRequest.setChannelTypeSign(channelType);
-                    merchantChannelRateRequest.setProductId(merchantInfoList.get(i).getId());
+                    merchantChannelRateRequest.setProductId(merchantInfoList.get(i).getProductId());
+                    merchantChannelRateRequest.setMerchantId(merchantInfoList.get(i).getId());
                     Optional<MerchantChannelRate> merchantChannelRateOptional = merchantChannelRateService.selectByChannelTypeSignAndProductIdAndMerchantId(merchantChannelRateRequest);
                     if(!merchantChannelRateOptional.isPresent()){//不存在
                         merchantChannelRateService.initMerchantChannelRate(merchantChannelRate);

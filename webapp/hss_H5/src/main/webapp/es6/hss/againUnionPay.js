@@ -60,42 +60,57 @@ chooseBank.addEventListener('click', function () {
 addNew.addEventListener('click', function () {
   window.location.replace('/trade/firstUnionPayPage?amount=' + amount + '&channel=' + channel);
 });
+// 是否可支付 或者发送验证码
+if (pageData.status == 1) {
+  pageData.canPay = true;
+}
 // 定义支付
 submit.addEventListener('click', function () {
-  if (validate.empty(cvv2.value, 'CVV2') &&
-    validate.empty(code.value, '验证码')) {
-    message.load_show('正在支付');
-    http.post('/trade/confirmUnionPay', {
-      orderId: orderId,
-      code: code.value,
-    }, function () {
-      message.load_hide();
-      window.location.replace('/trade/unionPaySuccess/' + orderId);
-    })
+  if (pageData.canPay) {
+    if (validate.empty(cvv2.value, 'CVV2') &&
+      validate.empty(code.value, '验证码')) {
+      message.load_show('正在支付');
+      http.post('/trade/confirmUnionPay', {
+        orderId: orderId,
+        code: code.value,
+      }, function () {
+        message.load_hide();
+        window.location.replace('/trade/unionPaySuccess/' + orderId);
+      })
+    }
+  } else {
+    message.prompt_show('请选择可用的银行卡');
   }
 });
 // 定义验证码
 sendCode.addEventListener('click', function () {
-  if (countdown.check()) {
-    if (validate.empty(cvv2.value, 'CVV2')) {
-      message.load_show('正在发送');
-      http.post('/trade/againUnionPay', {
-        amount: amount,
-        channel: channel,
-        creditCardId: pageData.creditCardId,
-        cvv2: cvv2.value
-      }, function (data) {
-        orderId = data.orderId;
-        message.load_hide();
-        message.prompt_show('验证码发送成功');
-        countdown.submit_start();
-      })
+  if (pageData.canPay) {
+    if (countdown.check()) {
+      if (validate.empty(cvv2.value, 'CVV2')) {
+        message.load_show('正在发送');
+        http.post('/trade/againUnionPay', {
+          amount: amount,
+          channel: channel,
+          creditCardId: pageData.creditCardId,
+          cvv2: cvv2.value
+        }, function (data) {
+          orderId = data.orderId;
+          message.load_hide();
+          message.prompt_show('验证码发送成功');
+          countdown.submit_start();
+        })
+      }
     }
+  } else {
+    message.prompt_show('请选择可用的银行卡');
   }
 });
 
 // 获取支持的银行卡列表
-http.post('/bankcard/list/' + pageData.creditCardId, {}, function (data) {
+http.post('/bankcard/list', {
+  creditCardId: pageData.creditCardId,
+  channel: channel
+}, function (data) {
   for (let i = 0; i < data.length; i++) {
     let list = document.createElement('div');
     if (pageData.creditCardId == data[i].creditCardId) {
@@ -103,22 +118,35 @@ http.post('/bankcard/list/' + pageData.creditCardId, {}, function (data) {
     } else {
       list.className = 'choose-box-body-list-bank';
     }
-    list.addEventListener('click', function () {
-      let className = document.getElementsByClassName('choose-box-body-list-bank');
-      for (let i = 0; i < className.length; i++) {
-        className[i].className = 'choose-box-body-list-bank';
-      }
-      this.className = 'choose-box-body-list-bank active';
-      bank.innerHTML = data[i].bankName + ' 尾号' + data[i].shortNo;
-      mobile.innerHTML = data[i].mobile;
-      pageData.creditCardId = data[i].creditCardId;
-      layer.style.display = 'none';
-    });
+    if (data[i].status == 1) {
+      list.addEventListener('click', function () {
+        let className = document.getElementsByClassName('choose-box-body-list-bank');
+        for (let i = 0; i < className.length; i++) {
+          className[i].className = 'choose-box-body-list-bank';
+        }
+        this.className = 'choose-box-body-list-bank active';
+        bank.className = 'val';
+        bank.innerHTML = data[i].bankName + ' 尾号' + data[i].shortNo;
+        mobile.innerHTML = data[i].mobile;
+        pageData.creditCardId = data[i].creditCardId;
+        pageData.canPay = true;
+        layer.style.display = 'none';
+      });
+    }
     let logo = document.createElement('div');
-    logo.className = 'logo ' + data[i].bankCode;
+    if (data[i].status == 0) {
+      logo.className = 'logo ' + data[i].bankCode + '_NO';
+    } else {
+      logo.className = 'logo ' + data[i].bankCode;
+    }
     let info = document.createElement('div');
-    info.className = 'info';
-    info.innerHTML = data[i].bankName + ' (' + data[i].shortNo + ')' + ' <span>信用卡</span>';
+    if (data[i].status == 0) {
+      info.className = 'info NO';
+      info.innerHTML = data[i].bankName + ' (' + data[i].shortNo + ')' + ' <span>信用卡 (暂不可用)</span>';
+    } else {
+      info.className = 'info';
+      info.innerHTML = data[i].bankName + ' (' + data[i].shortNo + ')' + ' <span>信用卡</span>';
+    }
     list.appendChild(logo);
     list.appendChild(info);
     layer_body.appendChild(list);

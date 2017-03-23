@@ -49,6 +49,12 @@ public interface AccountBankDao {
      * @return
      */
     int setDefaultCreditCard(@Param("id") long id);
+    /**
+     * 设置为默认信用卡（用于删除信用卡之后设置默认信用卡）
+     * @param id
+     * @return
+     */
+    int setDefaultCreditCardById(@Param("id") long id);
 
     /**
      * 全部设置为不是默认银行卡
@@ -122,4 +128,16 @@ public interface AccountBankDao {
      * @return
      */
     AccountBank selectByBankNoAndStateless(@Param("accountId") long accountId,@Param("bankNo") String bankNo,@Param("cardType") int cardType);
+    /**
+     * 修改银行卡信息
+     * @param accountBank
+     * @return
+     */
+    int updateBankInfo(AccountBank accountBank);
+    /**
+     * 获取最新信用卡
+     * @param accountId
+     * @return
+     */
+    AccountBank getTopCreditCard(@Param("accountId") long accountId);
 }

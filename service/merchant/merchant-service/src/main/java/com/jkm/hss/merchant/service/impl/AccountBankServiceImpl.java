@@ -106,10 +106,8 @@ public class AccountBankServiceImpl implements AccountBankService{
      */
     @Override
     public long initCreditBankCard(long accountId,String bankNo,String bankName,String reserveMobile,String bankBin,String expiryTime) {
-        Optional<AccountBank> backAccountBank = this.isExistBankNo(accountId,MerchantSupport.encryptBankCard(bankNo),EnumAccountBank.CREDIT.getId());
+        Optional<AccountBank> backAccountBank = this.selectCreditCardByBankNoAndStateless(accountId,bankNo);
         if(!backAccountBank.isPresent()){
-            log.info("不存在该账号{}",bankNo);
-//            this.reset(accountId,EnumAccountBank.CREDIT.getId());
             AccountBank accountBank = new AccountBank();
             accountBank.setAccountId(accountId);
             accountBank.setBankNo(MerchantSupport.encryptBankCard(bankNo));
@@ -123,9 +121,12 @@ public class AccountBankServiceImpl implements AccountBankService{
             this.insert(accountBank);
             return accountBank.getId();
         }else{
-            log.info("已经存在该账号{}",bankNo);
-//            this.reset(accountId,EnumAccountBank.CREDIT.getId());
-//            this.setDefaultCreditCard(backId);
+            AccountBank accountBank = backAccountBank.get();
+            accountBank.setReserveMobile(MerchantSupport.encryptMobile(reserveMobile));
+            accountBank.setBankName(bankName);
+            accountBank.setBankBin(bankBin);
+            accountBank.setExpiryTime(expiryTime);
+            accountBankDao.updateBankInfo(accountBank);
             return backAccountBank.get().getId();
         }
 
@@ -174,13 +175,20 @@ public class AccountBankServiceImpl implements AccountBankService{
     public int setDefaultCreditCard(long id) {
         AccountBank accountBank = accountBankDao.selectStatelessById(id);
         if(accountBank!=null){
-            if(accountBank.getIsDefault()!=EnumBankDefault.DEFAULT.getId()){
-                this.reset(accountBank.getAccountId(),EnumAccountBank.CREDIT.getId());
-            }
+            this.reset(accountBank.getAccountId(),EnumAccountBank.CREDIT.getId());
         }
         return accountBankDao.setDefaultCreditCard(id);
     }
-
+    /**
+     * 设置为默认信用卡
+     *
+     * @param id
+     * @return
+     */
+    @Override
+    public int setDefaultCreditCardById(long id) {
+        return accountBankDao.setDefaultCreditCardById(id);
+    }
     /**
      * 全部设置为不是默认银行卡
      *
@@ -217,8 +225,10 @@ public class AccountBankServiceImpl implements AccountBankService{
     @Override
     public AccountBank getDefaultCreditCard(long accountId) {
         AccountBank accountBank = accountBankDao.getDefaultCreditCard(accountId);
-        accountBank.setBankNo(MerchantSupport.decryptBankCard(accountId,accountBank.getBankNo()));
-        accountBank.setReserveMobile(MerchantSupport.decryptMobile(accountId,accountBank.getReserveMobile()));
+        if(accountBank!=null){
+            accountBank.setBankNo(MerchantSupport.decryptBankCard(accountId,accountBank.getBankNo()));
+            accountBank.setReserveMobile(MerchantSupport.decryptMobile(accountId,accountBank.getReserveMobile()));
+        }
         return accountBank;
     }
 
@@ -359,6 +369,7 @@ public class AccountBankServiceImpl implements AccountBankService{
         if (0 == pair.getLeft()) {
             accountBank.setIsAuthen("1");
         }
+        log.info("AccountId={}",merchantInfo.getAccountId());
         accountBank.setAccountId(merchantInfo.getAccountId());
         accountBank.setBankNo(bankcard);
         final Optional<BankCardBin> bankCardBinOptional = this.bankCardBinService.analyseCardNo(bankNo);
@@ -369,6 +380,20 @@ public class AccountBankServiceImpl implements AccountBankService{
         accountBank.setBankBin(bankCardBinOptional.get().getShorthand());
         return this.insert(accountBank);
     }
+    /**
+     * 更改默认银行卡（已存在银行卡）
+     * @param bankId
+     * @param merchantInfo
+     * @param bankNo
+     * @param reserveMobile
+     * @return
+     */
+    @Override
+    public int updateDefaultBankCard(long bankId,MerchantInfo merchantInfo, String bankNo, String reserveMobile) {
+        this.reset(merchantInfo.getAccountId(),EnumAccountBank.DEBITCARD.getId());
+        return setDefault(bankId);
+    }
+
 
     /**
      * 是否有银行卡
@@ -417,6 +442,17 @@ public class AccountBankServiceImpl implements AccountBankService{
     @Override
     public Optional<AccountBank> selectCreditCardByBankNoAndStateless(long accountId, String bankNo) {
         return Optional.fromNullable(accountBankDao.selectByBankNoAndStateless(accountId,MerchantSupport.encryptBankCard(bankNo),EnumAccountBank.CREDIT.getId()));
+    }
+
+    /**
+     * 获取最新信用卡
+     *
+     * @param accountId
+     * @return
+     */
+    @Override
+    public Optional<AccountBank> getTopCreditCard(long accountId) {
+        return Optional.fromNullable(accountBankDao.getTopCreditCard(accountId));
     }
 
 }
