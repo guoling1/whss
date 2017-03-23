@@ -360,7 +360,6 @@ public class AdminUserServiceImpl implements AdminUserService {
      */
     @Override
     public PageModel<AdminUserListResponse> userList(AdminUserListRequest adminUserListRequest) {
-        adminUserListRequest.setType(EnumAdminType.BOSS.getCode());
         final PageModel<AdminUserListResponse> pageModel = new PageModel<>(adminUserListRequest.getPageNo(), adminUserListRequest.getPageSize());
         adminUserListRequest.setOffset(pageModel.getFirstIndex());
         adminUserListRequest.setCount(pageModel.getPageSize());
@@ -420,18 +419,20 @@ public class AdminUserServiceImpl implements AdminUserService {
      * @param adminUser
      */
     @Override
-    public void createFirstDealerUser(AdminUser adminUser) {
+    public long createFirstDealerUser(AdminUser adminUser) {
         this.adminUserDao.insert(adminUser);
         this.adminUserDao.updateMarkCode(GlobalID.GetAdminUserID(EnumGlobalAdminUserLevel.FIRSTDEALER,adminUser.getId()+""),adminUser.getId());
+        return adminUser.getId();
     }
     /**
      * 创建二级代理登录用户
      * @param adminUser
      */
     @Override
-    public void createSecondDealerUser(AdminUser adminUser) {
+    public long createSecondDealerUser(AdminUser adminUser) {
         this.adminUserDao.insert(adminUser);
         this.adminUserDao.updateMarkCode(GlobalID.GetAdminUserID(EnumGlobalAdminUserLevel.SECONDDEALER,adminUser.getId()+""),adminUser.getId());
+        return adminUser.getId();
     }
 
     /**
@@ -454,6 +455,17 @@ public class AdminUserServiceImpl implements AdminUserService {
     @Override
     public void updateDealerUserPwd(String pwd, long dealerId) {
         this.adminUserDao.updateDealerUserPwd(pwd,dealerId);
+    }
+
+    /**
+     * 修改代理商登录密码
+     *
+     * @param pwd
+     * @param id
+     */
+    @Override
+    public void updateDealerUserPwdById(String pwd, long id) {
+        this.adminUserDao.updateDealerUserPwdById(pwd,id);
     }
 
     /**

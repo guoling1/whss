@@ -119,6 +119,13 @@ public interface AdminUserDao {
     void updateDealerUserPwd(@Param("pwd") String pwd, @Param("dealerId") long dealerId);
 
     /**
+     * 根据用户编码修改密码
+     * @param pwd
+     * @param id
+     */
+    void updateDealerUserPwdById(@Param("pwd") String pwd, @Param("id") long id);
+
+    /**
      * 根据代理商编码和是否有所有权限查询代理商
      * @param dealerId
      * @param isMaster

@@ -163,6 +163,13 @@
         WHERE dealer_id = #{dealerId} and is_master = 1
     </update>
 
+    <update id="updateDealerUserPwdById">
+        UPDATE tb_admin_user
+        SET
+        password = #{pwd}
+        WHERE id=#{id}
+    </update>
+
     <select id="getAdminUserByDealerIdAndIsMaster" resultType="com.jkm.hss.admin.entity.AdminUser">
         SELECT <include refid="Base_Column_List" /> FROM tb_admin_user WHERE dealer_id = #{dealerId} and is_master = #{isMaster}
     </select>

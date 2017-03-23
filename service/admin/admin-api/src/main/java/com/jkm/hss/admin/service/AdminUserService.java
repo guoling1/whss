@@ -194,13 +194,13 @@ public interface AdminUserService {
      * @param adminUser
      * @return
      */
-    void createFirstDealerUser(AdminUser adminUser);
+    long createFirstDealerUser(AdminUser adminUser);
     /**
      * 创建二级代理商管理账户
      * @param adminUser
      * @return
      */
-    void createSecondDealerUser(AdminUser adminUser);
+    long createSecondDealerUser(AdminUser adminUser);
     /**
      * 修改一级代理商管理账户
      * @param adminUser
@@ -214,6 +214,12 @@ public interface AdminUserService {
      * @param dealerId
      */
     void updateDealerUserPwd(String pwd,long dealerId);
+    /**
+     * 修改代理商登录密码
+     * @param pwd
+     * @param id
+     */
+    void updateDealerUserPwdById(String pwd,long id);
 
     /**
      * 根据代理商编码和是否有所有权限查询代理商
