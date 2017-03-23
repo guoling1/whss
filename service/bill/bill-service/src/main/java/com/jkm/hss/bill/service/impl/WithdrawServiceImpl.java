@@ -279,7 +279,7 @@ public class WithdrawServiceImpl implements WithdrawService {
         final BigDecimal productMoney = null == productMoneyTriple ? new BigDecimal("0.00") : productMoneyTriple.getMiddle();
         final BigDecimal firstMoney = null == firstMoneyTriple ? new BigDecimal("0.00") : firstMoneyTriple.getMiddle();
         final BigDecimal secondMoney = null == secondMoneyTriple ? new BigDecimal("0.00") : secondMoneyTriple.getMiddle();
-        log.info("结算单[{}], 提现分润，成本[{}], 通道[{}], 产品[{}], 一级代理[{}], 二级代理[{}]", settlementRecord.getId(), basicMoney, channelMoney, productMoney, firstMoney, secondMoney);
+        log.info("结算单[{}], 提现分润[{}]，成本[{}], 通道[{}], 产品[{}], 一级代理[{}], 二级代理[{}]", settlementRecord.getId(), poundage, basicMoney, channelMoney, productMoney, firstMoney, secondMoney);
         Preconditions.checkState(poundage.compareTo(basicMoney.add(channelMoney).add(productMoney).add(firstMoney).add(secondMoney)) >= 0, "提现-手续费总额不可以小于分润总和");
         //手续费账户结算
         final Account poundageAccount = this.accountService.getByIdWithLock(AccountConstants.POUNDAGE_ACCOUNT_ID).get();

@@ -439,7 +439,7 @@ public class PayServiceImpl implements PayService {
         final BigDecimal secondMoney = null == secondMoneyTriple ? new BigDecimal("0.00") : secondMoneyTriple.getMiddle();
         final BigDecimal firstMerchantMoney = null == firstMerchantMoneyTriple ? new BigDecimal("0.00") : firstMerchantMoneyTriple.getMiddle();
         final BigDecimal secondMerchantMoney = null == secondMerchantMoneyTriple ? new BigDecimal("0.00") : secondMerchantMoneyTriple.getMiddle();
-        log.info("订单[{}], 收单分润，成本[{}], 通道[{}], 产品[{}], 一级代理[{}], 二级代理[{}], 直推[{}], 间推[{}]", order.getId(), basicMoney, channelMoney, productMoney, firstMoney, secondMoney, firstMerchantMoney, secondMerchantMoney);
+        log.info("订单[{}], 收单分润[{}]，成本[{}], 通道[{}], 产品[{}], 一级代理[{}], 二级代理[{}], 直推[{}], 间推[{}]", order.getId(), order.getPoundage(), basicMoney, channelMoney, productMoney, firstMoney, secondMoney, firstMerchantMoney, secondMerchantMoney);
         Preconditions.checkState(order.getPoundage().compareTo(basicMoney.add(channelMoney).add(productMoney).add(firstMoney).add(secondMoney).add(firstMerchantMoney).add(secondMerchantMoney)) >= 0, "收单-手续费总额不可以小于分润总和");
         //手续费账户结算
         final Account poundageAccount = this.accountService.getByIdWithLock(AccountConstants.POUNDAGE_ACCOUNT_ID).get();
