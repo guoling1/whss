@@ -54,9 +54,9 @@
                 <div>{{scope.$index+1}}</div>
               </template>
             </el-table-column>
-            <el-table-column label="业务订单号">
+            <el-table-column label="提现单号" min-width="112px">
               <template scope="scope">
-                <span class="td" :data-clipboard-text="records[scope.$index].businessOrderNo" type="text" size="small" style="cursor: pointer" title="点击复制">{{records[scope.$index].businessOrderNo|changeHide}}</span>
+                <span class="td" :data-clipboard-text="records[scope.$index].orderNo" type="text" size="small" style="cursor: pointer" title="点击复制">{{records[scope.$index].orderNo|changeHide}}</span>
               </template>
             </el-table-column>
             <el-table-column prop="userName" label="账户名称">
@@ -66,9 +66,9 @@
               </template>
             </el-table-column>
             <el-table-column prop="userType" label="用户类型"></el-table-column>
-            <el-table-column label="提现单号" min-width="112px">
+            <el-table-column label="业务订单号">
               <template scope="scope">
-                <span class="td" :data-clipboard-text="records[scope.$index].orderNo" type="text" size="small" style="cursor: pointer" title="点击复制">{{records[scope.$index].orderNo|changeHide}}</span>
+                <span class="td" :data-clipboard-text="records[scope.$index].businessOrderNo" type="text" size="small" style="cursor: pointer" title="点击复制">{{records[scope.$index].businessOrderNo|changeHide}}</span>
               </template>
             </el-table-column>
             <el-table-column prop="tradeAmount" label="提现金额" align="right"></el-table-column>
