@@ -18,10 +18,8 @@ import com.jkm.hss.admin.helper.AdminUserSupporter;
 import com.jkm.hss.admin.helper.requestparam.AdminUserListRequest;
 import com.jkm.hss.admin.helper.requestparam.AdminUserRequest;
 import com.jkm.hss.admin.helper.requestparam.DistributeQrCodeRequest;
-import com.jkm.hss.admin.helper.responseparam.AdminUserListResponse;
-import com.jkm.hss.admin.helper.responseparam.AdminUserResponse;
-import com.jkm.hss.admin.helper.responseparam.BossDistributeQRCodeRecordResponse;
-import com.jkm.hss.admin.helper.responseparam.DistributeQRCodeRecordResponse;
+import com.jkm.hss.admin.helper.responseparam.*;
+import com.jkm.hss.admin.service.AdminRoleService;
 import com.jkm.hss.admin.service.AdminUserService;
 import com.jkm.hss.admin.service.QRCodeService;
 import com.jkm.hss.controller.BaseController;
@@ -46,6 +44,7 @@ import com.jkm.hss.helper.response.FirstLevelDealerAddResponse;
 import com.jkm.hss.merchant.entity.BankCardBin;
 import com.jkm.hss.merchant.helper.ValidationUtil;
 import com.jkm.hss.merchant.service.BankCardBinService;
+import com.jkm.hss.notifier.enums.EnumUserType;
 import com.jkm.hss.product.entity.Product;
 import com.jkm.hss.product.entity.ProductChannelDetail;
 import com.jkm.hss.product.enums.EnumPayChannelSign;
@@ -103,6 +102,9 @@ public class AdminController extends BaseController {
 
     @Autowired
     private OSSClient ossClient;
+
+    @Autowired
+    private AdminRoleService adminRoleService;
 
     /**
      * 登录
@@ -1113,4 +1115,14 @@ public class AdminController extends BaseController {
         return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功",adminUserResponse);
     }
 
+    /**
+     * 角色列表
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/userRoleList", method = RequestMethod.POST)
+    public CommonResponse userRoleList () {
+        List<AdminRoleListResponse> adminRoleListResponses = adminRoleService.selectAdminRoleList(EnumAdminType.BOSS.getCode());
+        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", adminRoleListResponses);
+    }
 }

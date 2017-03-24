@@ -366,7 +366,7 @@ public class AdminUserServiceImpl implements AdminUserService {
         if(!StringUtil.isNullOrEmpty(adminUserListRequest.getMobile())){
             adminUserListRequest.setMobile(AdminUserSupporter.encryptMobile(adminUserListRequest.getMobile()));
         }
-        final int count = this.adminUserDao.selectAdminUserCountByPageParams(adminUserListRequest);
+        final long count = this.adminUserDao.selectAdminUserCountByPageParams(adminUserListRequest);
         final List<AdminUser> adminUsers = this.adminUserDao.selectAdminUserListByPageParams(adminUserListRequest);
         List<AdminUserListResponse> list = new ArrayList<AdminUserListResponse>();
         if(adminUsers.size()>0){

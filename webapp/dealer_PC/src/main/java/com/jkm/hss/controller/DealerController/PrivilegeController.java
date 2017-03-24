@@ -6,15 +6,19 @@ import com.jkm.base.common.entity.CommonResponse;
 import com.jkm.base.common.entity.PageModel;
 import com.jkm.base.common.util.CookieUtil;
 import com.jkm.base.common.util.ValidateUtils;
+import com.jkm.hss.admin.entity.AdminRole;
 import com.jkm.hss.admin.entity.AdminUser;
 import com.jkm.hss.admin.enums.EnumAdminType;
 import com.jkm.hss.admin.enums.EnumAdminUserStatus;
 import com.jkm.hss.admin.enums.EnumIsMaster;
 import com.jkm.hss.admin.helper.AdminUserSupporter;
+import com.jkm.hss.admin.helper.requestparam.AdminRoleListRequest;
 import com.jkm.hss.admin.helper.requestparam.AdminUserListRequest;
 import com.jkm.hss.admin.helper.requestparam.AdminUserRequest;
+import com.jkm.hss.admin.helper.responseparam.AdminRoleListResponse;
 import com.jkm.hss.admin.helper.responseparam.AdminUserListResponse;
 import com.jkm.hss.admin.helper.responseparam.AdminUserResponse;
+import com.jkm.hss.admin.service.AdminRoleService;
 import com.jkm.hss.admin.service.AdminUserService;
 import com.jkm.hss.controller.BaseController;
 import com.jkm.hss.dealer.entity.Dealer;
@@ -30,6 +34,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletResponse;
 import java.net.URL;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by xingliujie on 2017/3/23.
@@ -40,6 +45,8 @@ import java.util.Date;
 public class PrivilegeController extends BaseController {
     @Autowired
     private AdminUserService adminUserService;
+    @Autowired
+    private AdminRoleService adminRoleService;
     @Autowired
     private DealerPassportService dealerPassportService;
     @Autowired
@@ -259,4 +266,26 @@ public class PrivilegeController extends BaseController {
         adminUserResponse.setRoleId(adminUserOptional.get().getRoleId());
         return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功",adminUserResponse);
     }
+
+
+    /**
+     * 角色列表
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/userRoleList", method = RequestMethod.POST)
+    public CommonResponse userRoleList () {
+        Optional<Dealer> dealerOptional = super.getDealer();
+        int level = dealerOptional.get().getLevel();
+        int type = EnumAdminType.FIRSTDEALER.getCode();
+        if(level==1){
+            type=EnumAdminType.FIRSTDEALER.getCode();
+        }
+        if(level==2){
+            type=EnumAdminType.SECONDDEALER.getCode();
+        }
+        List<AdminRoleListResponse> adminRoleListResponses = adminRoleService.selectAdminRoleList(type);
+        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功",adminRoleListResponses);
+    }
+
 }

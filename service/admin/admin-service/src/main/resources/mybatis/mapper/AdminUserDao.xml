@@ -4,7 +4,7 @@
 
     <sql id="Base_Column_List">
         id,username,realname,email,mobile,status,company_id,
-        dept_id,id_card,last_login_date,role_id,mark_code,identity_face_pic,identity_opposite_pic,create_time,update_time,dealer_id,is_master
+        dept_id,id_card,last_login_date,role_id,mark_code,identity_face_pic,identity_opposite_pic,create_time,update_time,type,dealer_id,is_master
     </sql>
 
     <insert id="insert" useGeneratedKeys="true" keyProperty="id">
@@ -103,7 +103,7 @@
         WHERE id = #{id}
     </update>
 
-    <select id="selectAdminUserCountByPageParams" resultType="java.lang.Integer">
+    <select id="selectAdminUserCountByPageParams" resultType="java.lang.Long">
         SELECT COUNT(1) FROM tb_admin_user
         <where>
             type=#{type}

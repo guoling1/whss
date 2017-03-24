@@ -79,7 +79,7 @@ public interface AdminUserDao {
      * @param adminUserListRequest
      * @return
      */
-    int selectAdminUserCountByPageParams(AdminUserListRequest adminUserListRequest);
+    long selectAdminUserCountByPageParams(AdminUserListRequest adminUserListRequest);
 
     /**
      * 分页查询员工列表
