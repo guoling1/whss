@@ -246,9 +246,7 @@
     },
     created: function () {
       this.$http.post('/daili/privilege/userRoleList').then((res)=>{
-        if(res.data!=[]){
-          this.query.roleId = res.data;
-        }
+        this.role = res.data;
       });
       //若为查看详情
       if (this.$route.query.id != undefined) {
