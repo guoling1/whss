@@ -57,7 +57,7 @@
 
     <mvc:interceptors>
         <mvc:interceptor>
-            <mvc:mapping path="/admin/user/**"/>
+            <!--<mvc:mapping path="/admin/user/**"/>-->
             <mvc:mapping path="/admin/dealer/**"/>
             <mvc:mapping path="/admin/profit/**"/>
             <mvc:mapping path="/admin/channel/**"/>
