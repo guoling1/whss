@@ -8,6 +8,7 @@ import com.google.common.collect.Lists;
 import com.jkm.base.common.entity.PageModel;
 import com.jkm.base.common.enums.EnumGlobalAdminUserLevel;
 import com.jkm.base.common.util.GlobalID;
+import com.jkm.hss.admin.dao.AdminRoleDao;
 import com.jkm.hss.admin.dao.AdminUserDao;
 import com.jkm.hss.admin.entity.*;
 import com.jkm.hss.admin.enums.EnumAdminType;
@@ -52,6 +53,9 @@ public class AdminUserServiceImpl implements AdminUserService {
 
     @Autowired
     private DataDictionaryService dataDictionaryService;
+
+    @Autowired
+    private AdminRoleDao adminRoleDao;
 
     /**
      * {@inheritDoc}
@@ -382,7 +386,10 @@ public class AdminUserServiceImpl implements AdminUserService {
                     adminUserListResponse.setMobile(AdminUserSupporter.decryptMobile(adminUsers.get(i).getId(),adminUsers.get(i).getMobile()));
                 }
                 adminUserListResponse.setEmail(adminUsers.get(i).getEmail());
-                adminUserListResponse.setRoleName("管理员");
+                AdminRole adminRole = adminRoleDao.selectById(adminUsers.get(i).getRoleId());
+                if(adminRole!=null){
+                    adminUserListResponse.setRoleName(adminRole.getRoleName());
+                }
                 adminUserListResponse.setCreateTime(adminUsers.get(i).getCreateTime());
                 adminUserListResponse.setStatus(adminUsers.get(i).getStatus());
                 list.add(adminUserListResponse);

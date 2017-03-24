@@ -69,4 +69,8 @@
         SELECT id,role_name FROM tb_admin_role type=#{type} and status=1
     </select>
 
+    <select id="selectById" resultType="com.jkm.hss.admin.entity.AdminRole">
+        SELECT <include refid="Base_Column_List" /> FROM tb_admin_role WHERE  id=#{id}
+    </select>
+
 </mapper>

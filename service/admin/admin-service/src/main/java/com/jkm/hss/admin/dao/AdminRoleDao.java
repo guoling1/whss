@@ -53,5 +53,12 @@ public interface AdminRoleDao {
      * @param type
      * @return
      */
-    List<AdminRoleListResponse> selectAdminRoleList(@Param("id") int type);
+    List<AdminRoleListResponse> selectAdminRoleList(@Param("type") int type);
+
+    /**
+     * 查询角色信息
+     * @param id
+     * @return
+     */
+    AdminRole selectById(@Param("id") long id);
 }
