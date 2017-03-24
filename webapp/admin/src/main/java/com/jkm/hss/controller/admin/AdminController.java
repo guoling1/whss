@@ -1125,4 +1125,15 @@ public class AdminController extends BaseController {
         List<AdminRoleListResponse> adminRoleListResponses = adminRoleService.selectAdminRoleList(EnumAdminType.BOSS.getCode());
         return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", adminRoleListResponses);
     }
+
+    /**
+     * 权限集合
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/getPrivilege", method = RequestMethod.POST)
+    public CommonResponse getPrivilege () {
+        List<AdminRoleListResponse> adminRoleListResponses = adminRoleService.selectAdminRoleList(EnumAdminType.BOSS.getCode());
+        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", adminRoleListResponses);
+    }
 }

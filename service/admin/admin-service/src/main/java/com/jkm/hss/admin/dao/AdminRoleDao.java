@@ -1,5 +1,6 @@
 package com.jkm.hss.admin.dao;
 
+import com.jkm.hss.admin.entity.AdminMenu;
 import com.jkm.hss.admin.entity.AdminRole;
 import com.jkm.hss.admin.helper.requestparam.AdminRoleListRequest;
 import com.jkm.hss.admin.helper.responseparam.AdminRoleListResponse;
@@ -61,4 +62,11 @@ public interface AdminRoleDao {
      * @return
      */
     AdminRole selectById(@Param("id") long id);
+
+    /**
+     * 根据父编码查询菜单
+     * @param parentId
+     * @return
+     */
+    List<AdminMenu> getMenuByParentId(@Param("parentId") long parentId);
 }

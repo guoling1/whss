@@ -6,6 +6,11 @@
         id,role_name,descr,type,status,create_time,update_time
     </sql>
 
+    <sql id="Base_Column_List1">
+        id,parent_id,menu_name,menu_url,descr,sn,type,status,create_time,update_time
+    </sql>
+
+
     <insert id="insert" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO tb_admin_role
         (
@@ -73,4 +78,7 @@
         SELECT <include refid="Base_Column_List" /> FROM tb_admin_role WHERE  id=#{id}
     </select>
 
+    <select id="getMenuByParentId" resultType="com.jkm.hss.admin.entity.AdminMenu">
+        SELECT <include refid="Base_Column_List1" /> FROM tb_admin_menu WHERE  parent_id=#{parentId} ORDER by sn asc
+    </select>
 </mapper>

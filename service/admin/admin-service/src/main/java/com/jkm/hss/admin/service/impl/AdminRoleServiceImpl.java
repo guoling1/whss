@@ -1,14 +1,17 @@
 package com.jkm.hss.admin.service.impl;
 
 import com.jkm.hss.admin.dao.AdminRoleDao;
+import com.jkm.hss.admin.entity.AdminMenu;
 import com.jkm.hss.admin.entity.AdminRole;
 import com.jkm.hss.admin.helper.requestparam.AdminRoleListRequest;
+import com.jkm.hss.admin.helper.responseparam.AdminMenuOptRelListResponse;
 import com.jkm.hss.admin.helper.responseparam.AdminRoleListResponse;
 import com.jkm.hss.admin.service.AdminRoleService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -83,4 +86,22 @@ public class AdminRoleServiceImpl implements AdminRoleService{
     public List<AdminRoleListResponse> selectAdminRoleList(int type) {
         return adminRoleDao.selectAdminRoleList(type);
     }
+
+    /**
+     * 权限集合
+     *
+     * @param type
+     * @return
+     */
+    @Override
+    public List<AdminMenuOptRelListResponse> getPrivilege(int type) {
+        List<AdminMenuOptRelListResponse> list = new ArrayList<AdminMenuOptRelListResponse>();
+        List<AdminMenu> adminMenuList =  adminRoleDao.getMenuByParentId(0);
+        if(adminMenuList.size()>0){
+
+        }
+        return null;
+    }
+
+
 }

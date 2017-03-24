@@ -2,6 +2,7 @@ package com.jkm.hss.admin.service;
 
 import com.jkm.hss.admin.entity.AdminRole;
 import com.jkm.hss.admin.helper.requestparam.AdminRoleListRequest;
+import com.jkm.hss.admin.helper.responseparam.AdminMenuOptRelListResponse;
 import com.jkm.hss.admin.helper.responseparam.AdminRoleListResponse;
 
 import java.util.List;
@@ -51,4 +52,11 @@ public interface AdminRoleService {
      * @return
      */
     List<AdminRoleListResponse> selectAdminRoleList(int type);
+
+    /**
+     *权限集合
+     * @param type
+     * @return
+     */
+    List<AdminMenuOptRelListResponse> getPrivilege(int type);
 }
