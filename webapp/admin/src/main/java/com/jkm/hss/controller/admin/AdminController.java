@@ -1127,13 +1127,13 @@ public class AdminController extends BaseController {
     }
 
     /**
-     * 权限集合
+     * 权限列表
      * @return
      */
     @ResponseBody
-    @RequestMapping(value = "/getPrivilege", method = RequestMethod.POST)
-    public CommonResponse getPrivilege () {
-        List<AdminRoleListResponse> adminRoleListResponses = adminRoleService.selectAdminRoleList(EnumAdminType.BOSS.getCode());
-        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", adminRoleListResponses);
+    @RequestMapping(value = "/getPrivilegeList", method = RequestMethod.POST)
+    public CommonResponse getPrivilegeList () {
+        List<AdminMenuOptRelListResponse> adminMenuOptRelListResponses = adminRoleService.getPrivilege(EnumAdminType.BOSS.getCode());
+        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功",adminMenuOptRelListResponses);
     }
 }

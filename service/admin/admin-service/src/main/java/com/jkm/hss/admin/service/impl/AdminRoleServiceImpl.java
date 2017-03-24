@@ -103,7 +103,6 @@ public class AdminRoleServiceImpl implements AdminRoleService{
                 AdminMenuOptRelListResponse adminMenuOptRelListResponse = new AdminMenuOptRelListResponse();
                 adminMenuOptRelListResponse.setId(adminMenuList.get(i).getId());
                 adminMenuOptRelListResponse.setMenuName(adminMenuList.get(i).getMenuName());
-                adminMenuOptRelListResponse.setMenuUrl(adminMenuList.get(i).getMenuUrl());
                 List<AdminMenu> adminMenuChildrenList = adminRoleDao.getMenuByParentIdAndType(adminMenuList.get(i).getId(),type);
                 List<AdminMenuOptRelListResponse.Menu> menus = new ArrayList<AdminMenuOptRelListResponse.Menu>();
                 if(adminMenuChildrenList.size()>0){

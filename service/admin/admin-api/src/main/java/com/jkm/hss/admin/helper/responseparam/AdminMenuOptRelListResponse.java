@@ -18,9 +18,6 @@ public class AdminMenuOptRelListResponse {
      */
     private String menuName;
     /**
-     * 菜单地址
-     */
-    private String menuUrl;
     /**
      * 子菜单
      */
