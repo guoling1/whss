@@ -24,7 +24,7 @@ public class Task {
      *
      * 凌晨6点
      */
-    @Scheduled(cron = "0 0 6 * * ?")
+    @Scheduled(cron = "0 0 13 * * ?")
     public void handleT1Task() {
         log.info("hss-T1- 结算到卡定时任务--start");
         this.orderService.handleT1UnSettlePayOrder();
