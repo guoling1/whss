@@ -222,6 +222,7 @@ public class PrivilegeController extends BaseController {
             type=EnumAdminType.SECONDDEALER.getCode();
         }
         adminUserListRequest.setType(type);
+        adminUserListRequest.setDealerId(super.getDealerId());
         PageModel<AdminUserListResponse> adminUserPageModel = adminUserService.userList(adminUserListRequest);
         return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功",adminUserPageModel);
     }

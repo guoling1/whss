@@ -116,6 +116,9 @@
             <if test="mobile != null and mobile!=''">
                 AND mobile = #{mobile}
             </if>
+            <if test="dealerId >0">
+                AND dealer_id = #{dealerId}
+            </if>
         </where>
     </select>
     <select id="selectAdminUserListByPageParams" resultType="com.jkm.hss.admin.entity.AdminUser">
@@ -130,6 +133,9 @@
             </if>
             <if test="mobile != null and mobile!=''">
                 AND mobile = #{mobile}
+            </if>
+            <if test="dealerId >0">
+                AND dealer_id = #{dealerId}
             </if>
             ORDER BY create_time DESC LIMIT #{offset},#{count}
         </where>

@@ -11,6 +11,10 @@ import lombok.Data;
  */
 @Data
 public class AdminUserListRequest extends PageQueryParams {
+    /**
+     * 代理商编码
+     */
+    private long dealerId;
 
     /**
      * 员工编号
