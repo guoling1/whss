@@ -27,7 +27,7 @@
               </div>
               <div class="screen-item">
                 <span class="screen-title"></span>
-                <el-button type="primary" size="small" @click="screen">筛选</el-button>
+                <el-button type="primary" size="small" @click="search">筛选</el-button>
               </div>
             </div>
             <div class="box-body">
@@ -53,7 +53,7 @@
                 </el-table-column>
                 <el-table-column label="操作" width="100">
                   <template scope="scope">
-                    <router-link :to="{path:'/admin/record/personnelAdd',query:{id:records[scope.$index].id}}" type="text"
+                    <router-link :to="{path:'/daili/app/employees_add',query:{id:records[scope.$index].id}}" type="text"
                                  size="small">编辑
                     </router-link>
                     <a @click="open(records[scope.$index].id)" v-if="records[scope.$index].status==2" type="text" size="small">开启</a>
@@ -105,6 +105,9 @@
       this.getData()
     },
     methods: {
+      add: function () {
+        this.$router.push('/daili/app/employees_add');
+      },
       getData: function () {
         this.loading = true;
         this.$http.post('/daili/privilege/userList', this.query)

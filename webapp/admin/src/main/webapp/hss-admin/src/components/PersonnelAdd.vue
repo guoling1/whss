@@ -193,7 +193,7 @@
               <el-col :span="6">
                 <div class="grid-content bg-purple-light">
                   <el-select style="width: 100%" v-model="query.roleId" clearable placeholder="请选择" size="small">
-                    <el-option label="管理员" :value="query.roleId">管理员</el-option>
+                    <el-option :label="item.roleName" :value="item.id" v-for="item in role">{{item.roleName}}</el-option>
                   </el-select>
                 </div>
               </el-col>
@@ -243,6 +243,7 @@
       return {
         company:[],
         dept:[],
+        role:[],
         dialogFormVisible: false,
         password: '',
         query: {
@@ -256,7 +257,7 @@
           identityOppositePic: "",
           mobile: "",
           email:"",
-          roleId: 1
+          roleId: ""
         },
         id: 0,
         isShow: true,
@@ -273,6 +274,9 @@
       this.$http.post('/admin/dict/selectAllByType',{dictType:"user_dept"}).then((res)=>{
         this.dept = res.data;
       });
+      this.$http.post('/admin/user/userRoleList').then((res)=>{
+        this.role = res.data;
+    });
       //若为查看详情
       if (this.$route.query.id != undefined) {
         this.$data.isShow = false;
@@ -413,7 +417,6 @@
       },
       //修改
       upDate: function () {
-        this.$data.query.roleId = this.$data.query.id;
         if (this.query.username.length > 16 || this.query.username.length < 4) {
           this.$message({
             showClose: true,

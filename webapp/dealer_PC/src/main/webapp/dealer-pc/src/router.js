@@ -26,6 +26,7 @@ import transaction from './components/transaction.vue'
 import qrcode from './components/qrcode.vue'
 import qrcode_detail from './components/qrcode_detail.vue'
 import employees from './components/employees.vue'
+import employees_add from './components/employees_add.vue'
 import roles from './components/roles.vue'
 import information from './components/information.vue'
 import policy from './components/policy.vue'
@@ -77,6 +78,7 @@ const routes = [
       {path: 'qrcode', name: "qrcode", component: qrcode},
       {path: 'qrcode_detail', name: "qrcode_detail", component: qrcode_detail},
       {path: 'employees', name: "employees", component: employees},
+      {path: 'employees_add', name: "employees_add", component: employees_add},
       {path: 'roles', name: "roles", component: roles},
       {path: 'information', name: "information", component: information},
       {path: 'policy', name: "policy", component: policy},
