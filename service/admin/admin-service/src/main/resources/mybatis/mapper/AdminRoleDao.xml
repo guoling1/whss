@@ -44,7 +44,7 @@
         WHERE id = #{id}
     </update>
 
-    <select id="selectAdminRoleCountByPageParams" resultType="java.lang.long">
+    <select id="selectAdminRoleCountByPageParams" resultType="java.lang.Long">
         SELECT COUNT(1) FROM tb_admin_role
         <where>
             type=#{type}
