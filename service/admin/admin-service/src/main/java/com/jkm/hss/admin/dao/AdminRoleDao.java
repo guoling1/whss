@@ -1,8 +1,10 @@
 package com.jkm.hss.admin.dao;
 
 import com.jkm.hss.admin.entity.AdminMenu;
+import com.jkm.hss.admin.entity.AdminOpt;
 import com.jkm.hss.admin.entity.AdminRole;
 import com.jkm.hss.admin.helper.requestparam.AdminRoleListRequest;
+import com.jkm.hss.admin.helper.responseparam.AdminOptResponse;
 import com.jkm.hss.admin.helper.responseparam.AdminRoleListResponse;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
@@ -68,5 +70,12 @@ public interface AdminRoleDao {
      * @param parentId
      * @return
      */
-    List<AdminMenu> getMenuByParentId(@Param("parentId") long parentId);
+    List<AdminMenu> getMenuByParentIdAndType(@Param("parentId") long parentId,@Param("type") int type);
+
+    /**
+     * 根据菜单编码查询菜单
+     * @param menuId
+     * @return
+     */
+    List<AdminOptResponse> getOptByMenuIdAndType(@Param("menuId") long menuId, @Param("type") int type);
 }

@@ -10,6 +10,10 @@ import java.util.List;
 @Data
 public class AdminMenuOptRelListResponse {
     /**
+     * 编码
+     */
+    private long id;
+    /**
      *菜单名
      */
     private String menuName;

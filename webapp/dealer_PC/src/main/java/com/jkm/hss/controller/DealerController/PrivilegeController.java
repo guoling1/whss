@@ -15,6 +15,7 @@ import com.jkm.hss.admin.helper.AdminUserSupporter;
 import com.jkm.hss.admin.helper.requestparam.AdminRoleListRequest;
 import com.jkm.hss.admin.helper.requestparam.AdminUserListRequest;
 import com.jkm.hss.admin.helper.requestparam.AdminUserRequest;
+import com.jkm.hss.admin.helper.responseparam.AdminMenuOptRelListResponse;
 import com.jkm.hss.admin.helper.responseparam.AdminRoleListResponse;
 import com.jkm.hss.admin.helper.responseparam.AdminUserListResponse;
 import com.jkm.hss.admin.helper.responseparam.AdminUserResponse;
@@ -289,4 +290,25 @@ public class PrivilegeController extends BaseController {
         return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功",adminRoleListResponses);
     }
 
+
+
+    /**
+     * 权限列表
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/getPrivilegeList", method = RequestMethod.POST)
+    public CommonResponse getPrivilegeList () {
+        Optional<Dealer> dealerOptional = super.getDealer();
+        int level = dealerOptional.get().getLevel();
+        int type = EnumAdminType.FIRSTDEALER.getCode();
+        if(level==1){
+            type=EnumAdminType.FIRSTDEALER.getCode();
+        }
+        if(level==2){
+            type=EnumAdminType.SECONDDEALER.getCode();
+        }
+        List<AdminMenuOptRelListResponse> adminMenuOptRelListResponses = adminRoleService.getPrivilege(type);
+        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功",adminMenuOptRelListResponses);
+    }
 }

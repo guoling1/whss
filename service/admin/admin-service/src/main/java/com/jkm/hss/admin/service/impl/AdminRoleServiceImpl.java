@@ -5,6 +5,7 @@ import com.jkm.hss.admin.entity.AdminMenu;
 import com.jkm.hss.admin.entity.AdminRole;
 import com.jkm.hss.admin.helper.requestparam.AdminRoleListRequest;
 import com.jkm.hss.admin.helper.responseparam.AdminMenuOptRelListResponse;
+import com.jkm.hss.admin.helper.responseparam.AdminOptResponse;
 import com.jkm.hss.admin.helper.responseparam.AdminRoleListResponse;
 import com.jkm.hss.admin.service.AdminRoleService;
 import lombok.extern.slf4j.Slf4j;
@@ -96,11 +97,40 @@ public class AdminRoleServiceImpl implements AdminRoleService{
     @Override
     public List<AdminMenuOptRelListResponse> getPrivilege(int type) {
         List<AdminMenuOptRelListResponse> list = new ArrayList<AdminMenuOptRelListResponse>();
-        List<AdminMenu> adminMenuList =  adminRoleDao.getMenuByParentId(0);
+        List<AdminMenu> adminMenuList =  adminRoleDao.getMenuByParentIdAndType(0,type);
         if(adminMenuList.size()>0){
+            for(int i=0;i<adminMenuList.size();i++){
+                AdminMenuOptRelListResponse adminMenuOptRelListResponse = new AdminMenuOptRelListResponse();
+                adminMenuOptRelListResponse.setId(adminMenuList.get(i).getId());
+                adminMenuOptRelListResponse.setMenuName(adminMenuList.get(i).getMenuName());
+                adminMenuOptRelListResponse.setMenuUrl(adminMenuList.get(i).getMenuUrl());
+                List<AdminMenu> adminMenuChildrenList = adminRoleDao.getMenuByParentIdAndType(adminMenuList.get(i).getId(),type);
+                List<AdminMenuOptRelListResponse.Menu> menus = new ArrayList<AdminMenuOptRelListResponse.Menu>();
+                if(adminMenuChildrenList.size()>0){
+                    for(int j=0;j<adminMenuChildrenList.size();j++){
+                        AdminMenuOptRelListResponse.Menu menu = new AdminMenuOptRelListResponse.Menu();
+                        menu.setId(adminMenuChildrenList.get(j).getId());
+                        menu.setMenuName(adminMenuChildrenList.get(j).getMenuName());
+                        menus.add(menu);
+                    }
+                }
+                adminMenuOptRelListResponse.setChildren(menus);
 
+                List<AdminOptResponse> adminOptResponses = adminRoleDao.getOptByMenuIdAndType(adminMenuList.get(i).getId(),type);
+                List<AdminMenuOptRelListResponse.Opt> opts= new ArrayList<AdminMenuOptRelListResponse.Opt>();
+                if(adminOptResponses.size()>0){
+                    for(int k=0;k<opts.size();k++){
+                        AdminMenuOptRelListResponse.Opt opt= new AdminMenuOptRelListResponse.Opt();
+                        opt.setId(opts.get(k).getId());
+                        opt.setOptName(opts.get(k).getOptName());
+                        opts.add(opt);
+                    }
+                }
+                adminMenuOptRelListResponse.setOpts(opts);
+                list.add(adminMenuOptRelListResponse);
+            }
         }
-        return null;
+        return list;
     }
 
 
