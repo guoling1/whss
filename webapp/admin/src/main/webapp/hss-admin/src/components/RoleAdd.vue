@@ -163,16 +163,4 @@
   table th {
     background: #eef1f6;
   }
-
-  /*table {
-    display: inline-block;
-    vertical-align: top;
-    border-right: 1px solid #dfe6ec;
-    border-bottom: 1px solid #dfe6ec
-  }
-
-  table th, table td {
-    border-left: 1px solid #dfe6ec;
-    border-top: 1px solid #dfe6ec
-  }*/
 </style>

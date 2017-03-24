@@ -3,7 +3,7 @@
     <div class="col-md-12">
       <div class="box" style="margin-top:15px;overflow: hidden">
         <div class="box-header">
-          <h3 class="box-title">员工管理</h3>
+          <h3 class="box-title">角色管理</h3>
           <router-link to="/admin/record/roleAdd" class="btn btn-primary" style="float: right;">新增角色</router-link>
         </div>
         <div class="box-body">

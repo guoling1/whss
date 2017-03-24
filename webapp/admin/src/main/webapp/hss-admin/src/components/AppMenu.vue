@@ -170,7 +170,7 @@
         </li>
 
         <li
-          :class="(url=='/admin/record/personnelList')?'treeview active':'treeview'">
+          :class="(url=='/admin/record/personnelList'||url=='/admin/record/role')?'treeview active':'treeview'">
           <a href="#"><span>员工权限管理</span></a>
           <ul class="treeview-menu">
             <li :class="(url=='/admin/record/personnelList')?'active':''" @click="refrash">

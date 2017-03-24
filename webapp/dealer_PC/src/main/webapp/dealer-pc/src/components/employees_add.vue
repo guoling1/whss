@@ -256,12 +256,14 @@
             this.$data.query = res.data;
             if (res.data.realIdentityFacePic != null) {
               this.hasButton = false;
+              document.getElementById('btn').style.marginLeft=0;
               this.fileList.push({
                 url: res.data.realIdentityFacePic
               });
             }
             if (res.data.realIdentityOppositePic != null) {
               this.hasButton1 = false;
+              document.getElementById('btn1').style.marginLeft=0;
               this.fileList1.push({
                 url: res.data.realIdentityOppositePic
               })
