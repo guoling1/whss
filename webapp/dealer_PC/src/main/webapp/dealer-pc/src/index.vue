@@ -231,23 +231,23 @@
               </li>
             </ul>
           </li>
-          <!--<li class="treeview">-->
-            <!--<a href="#">-->
-              <!--<i class="fa fa-user-plus"></i> <span>员工权限管理</span>-->
-              <!--<span class="pull-right-container">-->
-                <!--<i class="fa fa-angle-left pull-right"></i>-->
-                <!--&lt;!&ndash; <small class="label pull-right bg-green">new</small> &ndash;&gt;-->
-              <!--</span>-->
-            <!--</a>-->
-            <!--<ul class="treeview-menu">-->
-              <!--<li>-->
-                <!--<router-link to="employees"><i class="fa fa-circle-o"></i> 员工管理</router-link>-->
-              <!--</li>-->
-              <!--<li>-->
-                <!--<router-link to="roles"><i class="fa fa-circle-o"></i> 角色管理</router-link>-->
-              <!--</li>-->
-            <!--</ul>-->
-          <!--</li>-->
+          <li class="treeview">
+            <a href="#">
+              <i class="fa fa-user-plus"></i> <span>员工权限管理</span>
+              <span class="pull-right-container">
+                <i class="fa fa-angle-left pull-right"></i>
+                <!-- <small class="label pull-right bg-green">new</small> -->
+              </span>
+            </a>
+            <ul class="treeview-menu">
+              <li>
+                <router-link to="employees"><i class="fa fa-circle-o"></i> 员工管理</router-link>
+              </li>
+              <li>
+                <router-link to="roles"><i class="fa fa-circle-o"></i> 角色管理</router-link>
+              </li>
+            </ul>
+          </li>
           <!--<li class="treeview">-->
             <!--<a href="#">-->
               <!--<i class="fa fa-user-secret"></i> <span>我的信息</span>-->
