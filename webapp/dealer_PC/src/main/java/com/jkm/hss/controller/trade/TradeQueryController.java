@@ -19,7 +19,7 @@ import java.util.List;
  * Created by zhangbin on 2017/3/27.
  */
 @Controller
-@RequestMapping(value = "/tradeQuery")
+@RequestMapping(value = "/daili/tradeQuery")
 public class TradeQueryController extends BaseController {
 
     @Autowired
