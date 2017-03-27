@@ -172,6 +172,7 @@
           proxyName:'',
           proxyName1:''
         },
+        date: '',
       }
     },
     created(){
@@ -180,8 +181,8 @@
     methods: {
       datetimeSelect: function (val) {
         let format = val.split(' - ');
-        this.beginDate = format[0];
-        this.endDate = format[1];
+        this.query.startTime = format[0];
+        this.query.endTime = format[1];
       },
       screen: function () {
         this.getData();
