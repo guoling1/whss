@@ -579,4 +579,14 @@
     <select id="getDealerByLoginName" resultType="com.jkm.hss.dealer.entity.Dealer">
         SELECT * FROM tb_dealer WHERE login_name = #{loginName}
     </select>
+
+    <!-- 查询一级代理商的编码和名称 -->
+    <select id="getInfo" resultType="com.jkm.hss.merchant.entity.MerchantInfoResponse">
+        SELECT * FROM tb_dealer WHERE id = #{firstDealerId}
+    </select>
+
+    <!-- 查询二级代理商的编码和名称 -->
+    <select id="getInfo1" resultType="com.jkm.hss.merchant.entity.MerchantInfoResponse">
+        SELECT * FROM tb_dealer WHERE id = #{secondDealerId}
+    </select>
 </mapper>

@@ -225,7 +225,7 @@ public interface QRCodeDao {
      * @param firstLevelDealerId
      * @return
      */
-    int getFirstResidueCount(@Param("firstLevelDealerId") long firstLevelDealerId);
+    int getFirstResidueCount(@Param("firstLevelDealerId") long firstLevelDealerId,@Param("sysType") String sysType);
 
     /**
      * 查询一级代理商已分配二维码数
@@ -233,7 +233,7 @@ public interface QRCodeDao {
      * @param firstLevelDealerId
      * @return
      */
-    int getFirstDistributeCount(@Param("firstLevelDealerId") long firstLevelDealerId);
+    int getFirstDistributeCount(@Param("firstLevelDealerId") long firstLevelDealerId,@Param("sysType") String sysType);
 
     /**
      * 查询一级代理商分配给自己的二维码数
@@ -241,7 +241,7 @@ public interface QRCodeDao {
      * @param firstLevelDealerId
      * @return
      */
-    int getFirstDistributeToSelfCount(@Param("firstLevelDealerId") long firstLevelDealerId);
+    int getFirstDistributeToSelfCount(@Param("firstLevelDealerId") long firstLevelDealerId,@Param("sysType") String sysType);
 
     /**
      * 查询一级代理商未激活二维码数
@@ -249,7 +249,7 @@ public interface QRCodeDao {
      * @param firstLevelDealerId
      * @return
      */
-    int getFirstUnActivateCount(@Param("firstLevelDealerId") long firstLevelDealerId);
+    int getFirstUnActivateCount(@Param("firstLevelDealerId") long firstLevelDealerId,@Param("sysType") String sysType);
 
     /**
      * 查询一级代理商已激活二维码数
@@ -257,7 +257,7 @@ public interface QRCodeDao {
      * @param firstLevelDealerId
      * @return
      */
-    int getFirstActivateCount(@Param("firstLevelDealerId") long firstLevelDealerId);
+    int getFirstActivateCount(@Param("firstLevelDealerId") long firstLevelDealerId,@Param("sysType") String sysType);
 
     /**
      * 查询二级代理商二维码数
@@ -273,14 +273,14 @@ public interface QRCodeDao {
      * @param secondLevelDealerId
      * @return
      */
-    int getSecondUnActivateCount(@Param("secondLevelDealerId") long secondLevelDealerId);
+    int getSecondUnActivateCount(@Param("secondLevelDealerId") long secondLevelDealerId,@Param("sysType") String sysType);
     /**
      * 查询二级代理商激活二维码数
      *
      * @param secondLevelDealerId
      * @return
      */
-    int getSecondActivateCount(@Param("secondLevelDealerId") long secondLevelDealerId);
+    int getSecondActivateCount(@Param("secondLevelDealerId") long secondLevelDealerId,@Param("sysType") String sysType);
 
     /**
      * 一级代理商给二级代理分配的二维码数

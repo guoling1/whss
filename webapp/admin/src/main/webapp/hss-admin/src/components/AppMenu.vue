@@ -32,11 +32,14 @@
         <!-- <li class="header">HEADER</li>
          Optionally, you can add icons to the links
         <li><a href="#"><i class="fa fa-link"></i> <span>Link</span></a></li>-->
-        <li :class="(url=='/admin/record/newDeal')?'treeview active':'treeview'">
+        <li :class="(url=='/admin/record/newDeal'||url=='/admin/record/retrieval')?'treeview active':'treeview'">
           <a href="#"><span>交易查询</span></a>
           <ul class="treeview-menu">
             <li :class="(url=='/admin/record/newDeal')?'treeview active':'treeview'" @click="refrash">
               <router-link to="/admin/record/newDeal"><span>交易查询</span></router-link>
+            </li>
+            <li :class="(url=='/admin/record/retrieval')?'treeview active':'treeview'" @click="refrash">
+              <router-link to="/admin/record/retrieval"><span>提现查询</span></router-link>
             </li>
           </ul>
         </li>

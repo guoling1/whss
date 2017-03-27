@@ -87,6 +87,11 @@ public class AllProfitController extends BaseController {
             req.setEndTime(sdf.format(rightNow.getTime()));
         }
         String result = allProfitService.companyAmount(req);
+//        BigDecimal x = new BigDecimal("0.0");
+        if(result==null||("").equals(result)){
+            String res="0";
+            return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "统计完成", res);
+        }
         return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "统计完成", result);
 
     }
@@ -192,7 +197,10 @@ public class AllProfitController extends BaseController {
             req.setEndTime(sdf.format(rightNow.getTime()));
         }
         String result = allProfitService.getFirstAmount(req);
-
+        if(result==null||("").equals(result)){
+            String res="0";
+            return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "统计完成", res);
+        }
         return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "统计完成", result);
 
     }
@@ -301,7 +309,10 @@ public class AllProfitController extends BaseController {
             req.setEndTime(sdf.format(rightNow.getTime()));
         }
         String result = allProfitService.secondAmount(req);
-
+        if(result==null||("").equals(result)){
+            String res="0";
+            return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "统计完成", res);
+        }
         return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "统计完成", result);
     }
 
