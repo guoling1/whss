@@ -1223,6 +1223,17 @@ public class OrderServiceImpl implements OrderService {
         return list;
     }
 
+    @Override
+    public List<MerchantTradeResponse> getTrade(OrderTradeRequest req) {
+        List<MerchantTradeResponse> list = this.orderDao.getTrade(req);
+        return list;
+    }
+
+    @Override
+    public List<MerchantTradeResponse> getTradeFirst(OrderTradeRequest req) {
+        List<MerchantTradeResponse> list = this.orderDao.getTradeFirst(req);
+        return list;
+    }
 
 
     /**
