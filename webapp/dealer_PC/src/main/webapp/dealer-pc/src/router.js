@@ -122,7 +122,7 @@ Vue.http.interceptors.push((request, next) => {
         router.push('/daili/login');
       } else if (body.code != 1) {
         response.status = 500;
-        response.statusMessage = body.message || '系统异常';
+        response.statusMessage = body.message || body.msg || '系统异常';
         response.statusText = 'Internal Server Error';
         response.ok = false;
       } else {
