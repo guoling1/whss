@@ -46,6 +46,13 @@
               </template>
             </el-table-column>
           </el-table>
+          <ul style="float: left;margin-top: 5px">
+            <li>
+              <label style="margin-right: 10px;">收益金额</label>
+              <span>当页总额：{{pageTotal}}&nbsp;元</span>&nbsp;&nbsp;&nbsp;&nbsp;
+              <span>统计总额：{{addTotal}}&nbsp;元</span>
+            </li>
+          </ul>
           <!--分页-->
           <div class="block" style="text-align: right">
             <el-pagination @size-change="handleSizeChange"
@@ -126,6 +133,8 @@
         isMask: false,
         loadUrl: '',
         loadUrl1: '',
+        pageTotal: 0,
+        addTotal: 0
       }
     },
     created: function () {
@@ -146,7 +155,8 @@
           this.$data.query.endTime = str;
         }
       }
-      this.getData()
+      this.getData();
+      this.getAddTotal()
     },
     methods: {
       onload: function () {
@@ -169,7 +179,8 @@
               this.$data.records[i].splitAmount = toFix(this.$data.records[i].splitAmount);
               total = toFix(parseFloat(total)+parseFloat(this.$data.records[i].splitAmount))
             }
-            if(this.records.length!=0){
+            this.pageTotal = total;
+            /*if(this.records.length!=0){
               this.records.push({
                 businessType:"当页总额",
                 splitAmount:total
@@ -178,7 +189,7 @@
                 splitAmount:''
               })
               this.records[this.records.length-1].splitAmount = this.total;
-            }
+            }*/
           }, function (err) {
             this.$data.loading = false;
             this.$message({
@@ -210,12 +221,10 @@
           return year+"-"+tod(month)+"-"+tod(date);
         }
       },
-      add(){
-        this.$data.loading = true;
+      getAddTotal(){
         this.$http.post('/admin/allProfit/companyAmount',this.query)
           .then(res=>{
-            this.$data.loading = false;
-            this.records[this.records.length-1].splitAmount = this.total = res.data;
+            this.addTotal = res.data;
           })
           .catch(err=>{
             this.$data.loading = false;
@@ -235,7 +244,8 @@
       search(){
         this.total = '';
         this.$data.query.pageNo = 1;
-        this.getData()
+        this.getData();
+        this.getAddTotal()
       },
       //每页条数改变
       handleSizeChange(val) {

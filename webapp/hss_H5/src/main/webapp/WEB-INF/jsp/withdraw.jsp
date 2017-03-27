@@ -12,7 +12,7 @@
   <meta name="viewport"
         content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
   <title>好收收</title>
-  <link rel="stylesheet" href="http://static.jinkaimen.cn/hss/css/style.2.1.7.css">
+  <link rel="stylesheet" href="http://static.jinkaimen.cn/hss/css/style.2.2.0.css">
   <link rel="stylesheet" href="http://static.jinkaimen.cn/weui/weui.css">
 </head>
 <body>
@@ -38,10 +38,14 @@
 
   <div class="message-space" id="layer">
     <div class="message-box">
-      <div class="message-box-head">短信已发送至 <span id="mobile"></span></div>
+      <div class="message-box-head">
+        短信已发送至 <span id="mobile"></span>
+        <div class="message-x" id="layer-x"></div>
+      </div>
       <div class="message-box-body">
         <div class="code-title">验证码</div>
         <input type="text" class="code-ipt" id="code" placeholder="输入短信验证码">
+        <div class="code-line"></div>
         <div class="code-re" id="sendCode">重新获取</div>
       </div>
       <div class="message-box-foot">
@@ -59,6 +63,6 @@
     bookValue: '${realMoney}'
   }
 </script>
-<script src="http://static.jinkaimen.cn/vendor/vendor.1.0.5.min.js"></script>
-<script src="http://static.jinkaimen.cn/hss/2.1.5/withdrawal.min.js"></script>
+<script src="http://static.jinkaimen.cn/vendor/vendor.1.0.7.min.js"></script>
+<script src="http://static.jinkaimen.cn/hss/2.2.1/withdrawal.min.js"></script>
 </html>

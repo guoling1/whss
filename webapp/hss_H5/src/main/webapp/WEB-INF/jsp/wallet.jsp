@@ -16,7 +16,7 @@
         content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
   <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
   <title>好收收</title>
-  <link rel="stylesheet" href="http://static.jinkaimen.cn/hss/css/style.2.1.7.css">
+  <link rel="stylesheet" href="http://static.jinkaimen.cn/hss/css/style.2.2.0.css">
   <link rel="stylesheet" href="http://static.jinkaimen.cn/weui/weui.css">
 </head>
 <body>
@@ -25,7 +25,7 @@
   <div class="announcement" id="announcement">
     <span class="announcement-icon"></span>
     <div class="announcement-text-box" id="announcement-text-box">
-      <span class="announcement-text" id="announcement-text">这是公告这是公告这是公告这是公告这是公告这是公告</span>
+      <span class="announcement-text" id="announcement-text"></span>
     </div>
   </div>
   <div class="wallet">
@@ -116,6 +116,6 @@
     showRecommend: '${showRecommend}'//1显示升级 2不显示升级
   };
 </script>
-<script src="http://static.jinkaimen.cn/vendor/vendor.1.0.5.min.js"></script>
-<script src="http://static.jinkaimen.cn/hss/2.1.5/wallet.min.js"></script>
+<script src="http://static.jinkaimen.cn/vendor/vendor.1.0.7.min.js"></script>
+<script src="http://static.jinkaimen.cn/hss/2.2.1/wallet.min.js"></script>
 </html>

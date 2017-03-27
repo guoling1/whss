@@ -12,9 +12,14 @@ const http = _require('http');
 // 定义变量
 const next = document.getElementById('next');
 const layer = document.getElementById('layer');
+const layer_x = document.getElementById('layer-x');
 const submit = document.getElementById('submit');
 const sendCode = document.getElementById('sendCode');
 const code = document.getElementById('code');
+
+layer_x.addEventListener('click', function () {
+  layer.style.display = 'none';
+});
 // 引入浏览器特性处理
 const browser = _require('browser');
 browser.elastic_touch();

@@ -204,7 +204,29 @@ public class CodeController extends BaseController {
                 model.addAttribute("name", merchantInfo.getMerchantName());
                 log.info("设备标示{}",agent.indexOf("micromessenger"));
                 if (agent.indexOf("micromessenger") > -1) {//weixin
-                    url = "/sqb/paymentWx";
+                    if(openId==null||"".equals(openId)){
+                        String requestUrl = "";
+                        if(request.getQueryString() == null){
+                            requestUrl = "";
+                        }else{
+                            requestUrl = request.getQueryString();
+                        }
+                        log.info("跳转地址是{}",requestUrl);
+                        try {
+                            String encoderUrl = URLEncoder.encode(requestUrl, "UTF-8");
+                            return "redirect:"+ WxConstants.WEIXIN_MERCHANT_USERINFO+encoderUrl+ WxConstants.WEIXIN_USERINFO_REDIRECT;
+                        } catch (UnsupportedEncodingException e) {
+                            e.printStackTrace();
+                        }
+                    }else{
+                        if(openId.equals(openIdTemp)){
+                            model.addAttribute("isSelf",1);
+                            url = "/sqb/paymentWx";
+                        }else{
+                            model.addAttribute("isSelf",2);
+                            url = "/sqb/paymentWx";
+                        }
+                    }
                 }
                 if (agent.indexOf("aliapp") > -1) {// AliApp
                     url = "/sqb/paymentZfb";

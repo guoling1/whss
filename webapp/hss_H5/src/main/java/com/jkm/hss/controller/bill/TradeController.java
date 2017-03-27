@@ -9,10 +9,12 @@ import com.jkm.base.common.entity.PageModel;
 import com.jkm.base.common.util.DateFormatUtil;
 import com.jkm.base.common.util.ValidateUtils;
 import com.jkm.hss.account.enums.EnumAppType;
+import com.jkm.hss.bill.entity.MergeTableSettlementDate;
 import com.jkm.hss.bill.entity.Order;
 import com.jkm.hss.bill.enums.EnumOrderStatus;
 import com.jkm.hss.bill.enums.EnumSettleStatus;
 import com.jkm.hss.bill.helper.requestparam.QueryMerchantPayOrdersRequestParam;
+import com.jkm.hss.bill.service.MergeTableSettlementDateService;
 import com.jkm.hss.bill.service.OrderService;
 import com.jkm.hss.bill.service.PayService;
 import com.jkm.hss.controller.BaseController;
@@ -70,6 +72,8 @@ public class TradeController extends BaseController {
     private BankCardBinService bankCardBinService;
     @Autowired
     private ChannelSupportCreditBankService channelSupportCreditBankService;
+    @Autowired
+    private MergeTableSettlementDateService mergeTableSettlementDateService;
 
 
     /**
@@ -118,7 +122,7 @@ public class TradeController extends BaseController {
                     .addParam("subMerName", merchantInfo.getMerchantName())
                     .addParam("amount", totalFee).build();
         }
-        return CommonResponse.simpleResponse(-1, resultPair.getRight());
+        return CommonResponse.simpleResponse(-1, "请稍后重试");
     }
 
 
@@ -338,9 +342,9 @@ public class TradeController extends BaseController {
         Preconditions.checkState(EnumPayChannelSign.isUnionPay(unionPayRequest.getPayChannel()), "渠道不是快捷");
         final int creditBankCount = this.accountBankService.isHasCreditBank(merchantInfo.getAccountId());
         if (creditBankCount <= 0) {
-            return "/trade/firstUnionPay?amount=" + unionPayRequest.getTotalFee() + "&channel=" + unionPayRequest.getPayChannel();
+            return "/trade/firstUnionPayPage?amount=" + unionPayRequest.getTotalFee() + "&channel=" + unionPayRequest.getPayChannel();
         }
-        return "/trade/unionPay?amount=" + unionPayRequest.getTotalFee() + "&channel=" + unionPayRequest.getPayChannel();
+        return "/trade/againUnionPayPage?amount=" + unionPayRequest.getTotalFee() + "&channel=" + unionPayRequest.getPayChannel();
     }
 
     /**
@@ -529,5 +533,4 @@ public class TradeController extends BaseController {
         }
         return CommonResponse.simpleResponse(-1, result.getRight());
     }
-
 }

@@ -39,7 +39,11 @@
           <el-table v-loading.body="loading" style="font-size: 12px;margin:15px 0" :data="records" border>
             <el-table-column type="index" width="70" label="序号"></el-table-column>
             <el-table-column prop="sysTypeName" label="产品类型"></el-table-column>
-            <el-table-column prop="code" label="二维码编号"></el-table-column>
+            <el-table-column prop="code" label="二维码编号">
+              <template scope="scope">
+                <el-button type="text" @click="checkDetail($event,scope.row.code)">{{scope.row.code}}</el-button>
+              </template>
+            </el-table-column>
             <el-table-column prop="activateTime" :formatter="changeTime" label="激活时间"></el-table-column>
             <el-table-column prop="firstDealerName" label="一代名称"></el-table-column>
             <el-table-column prop="secondDealerName" label="二代名称"></el-table-column>
@@ -88,6 +92,9 @@
       this.getData()
     },
     methods: {
+      checkDetail: function (event, code) {
+        this.$router.push({path: '/admin/record/codeDet', query: {code: code}});
+      },
       getData: function () {
         this.loading = true;
         this.$http.post('/admin/code/selectQrCodeList', this.query)

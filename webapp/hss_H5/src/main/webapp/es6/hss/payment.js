@@ -11,5 +11,39 @@ const Keyboard = _require('keyboard');
 new Keyboard({
   spanId: 'key-span',
   inputId: 'key-input',
-  keyboardId: 'keyboard'
+  keyboardId: 'keyboard',
+  isSelf: pageData.isSelf,
+  selfId: 'layerSelf',
+  notSelfId: 'layerNotSelf',
+  amount: '2000'
+});
+
+function is_weixin() {
+  let ua = navigator.userAgent.toLowerCase();
+  return (ua.match(/MicroMessenger/i) == "micromessenger");
+}
+
+if (pageData.isSelf == 1) {
+  let layerSelf = document.getElementById('layerSelf');
+  let cancelSelf = document.getElementById('cancelSelf');
+  let submitSelf = document.getElementById('submitSelf');
+  cancelSelf.addEventListener('click', function () {
+    layerSelf.style.display = 'none';
+  });
+  submitSelf.addEventListener('click', function () {
+    window.location.href = '/sqb/collection';
+  })
+}
+let layerNotSelf = document.getElementById('layerNotSelf');
+let cancelNotSelf = document.getElementById('cancelNotSelf');
+let submitNotSelf = document.getElementById('submitNotSelf');
+cancelNotSelf.addEventListener('click', function () {
+  layerNotSelf.style.display = 'none';
+});
+submitNotSelf.addEventListener('click', function () {
+  if (is_weixin()) {
+    WeixinJSBridge.call('closeWindow');
+  } else {
+    AlipayJSBridge.call('closeWebview');
+  }
 });

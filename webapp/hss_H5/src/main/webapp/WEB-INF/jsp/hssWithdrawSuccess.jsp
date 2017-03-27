@@ -8,7 +8,7 @@
   <meta name="viewport"
         content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
   <title>提现成功</title>
-  <link rel="stylesheet" href="http://static.jinkaimen.cn/hss/css/style.2.1.7.css">
+  <link rel="stylesheet" href="http://static.jinkaimen.cn/hss/css/style.2.2.0.css">
   <link rel="stylesheet" href="http://static.jinkaimen.cn/weui/weui.css">
 </head>
 <body>
@@ -39,11 +39,11 @@
     </div>
   </div>
   <div class="btn-box">
-    <div class="box">完成</div>
+    <div class="box" id="complete">完成</div>
   </div>
 </div>
 
 </body>
-<script src="http://static.jinkaimen.cn/vendor/vendor.1.0.5.min.js"></script>
-<script src="http://static.jinkaimen.cn/hss/2.1.5/withdrawSuccess.min.js"></script>
+<script src="http://static.jinkaimen.cn/vendor/vendor.1.0.7.min.js"></script>
+<script src="http://static.jinkaimen.cn/hss/2.2.1/withdrawSuccess.min.js"></script>
 </html>

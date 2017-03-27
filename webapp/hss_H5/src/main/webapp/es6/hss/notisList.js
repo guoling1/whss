@@ -52,9 +52,9 @@ let getData = function (e, page) {
       };
       let div_icon = document.createElement('div');
       if (res.records[i].type == 1) {
-        div_icon.className = 'list-icon notice1';
-      } else {
         div_icon.className = 'list-icon notice2';
+      } else {
+        div_icon.className = 'list-icon notice1';
       }
       let div_info = document.createElement('div');
       div_info.className = 'list-info';

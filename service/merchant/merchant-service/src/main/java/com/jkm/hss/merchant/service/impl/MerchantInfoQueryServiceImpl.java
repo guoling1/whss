@@ -39,7 +39,10 @@ public class MerchantInfoQueryServiceImpl implements MerchantInfoQueryService {
 
     @Override
     public List<MerchantInfoResponse> getAll(MerchantInfoRequest req) {
-
+        String mobile = req.getMobile();
+        if (mobile!=null&&!mobile.equals("")){
+            req.setMobile(MerchantSupport.encryptMobile(mobile));
+        }
         List<MerchantInfoResponse> list = this.merchantInfoQueryDao.getAll(req);
         if (list.size()>0){
             for (int i=0;i<list.size();i++){
@@ -52,11 +55,29 @@ public class MerchantInfoQueryServiceImpl implements MerchantInfoQueryService {
         return list;
     }
 
-//    @Override
-//    public int getCount(MerchantInfoRequest req) {
-//        int count = merchantInfoQueryDao.getCount(req);
-//        return count;
-//    }
+
+    private List<MerchantInfoResponse> downloade(MerchantInfoRequest req) {
+        String mobile = req.getMobile();
+        if (mobile!=null&&!mobile.equals("")){
+            req.setMobile(MerchantSupport.encryptMobile(mobile));
+        }
+        List<MerchantInfoResponse> list = this.merchantInfoQueryDao.downloade(req);
+        if (list.size()>0){
+            for (int i=0;i<list.size();i++){
+                if(list.get(i).getMobile()!=null&&!list.get(i).getMobile().equals("")){
+                    list.get(i).setMobile(MerchantSupport.decryptMobile(list.get(i).getMobile()));
+                }
+
+            }
+        }
+        return list;
+    }
+
+    @Override
+    public int getCount(MerchantInfoRequest req) {
+        int count = merchantInfoQueryDao.getCount(req);
+        return count;
+    }
 
     @Override
     public List<MerchantInfoResponse> getRecord(MerchantInfoRequest req) {
@@ -144,7 +165,7 @@ public class MerchantInfoQueryServiceImpl implements MerchantInfoQueryService {
      * @return
      */
     private ExcelSheetVO generateCodeExcelSheet(MerchantInfoRequest req,String baseUrl) {
-        List<MerchantInfoResponse> list = getAll(req);
+        List<MerchantInfoResponse> list = downloade(req);
         final ExcelSheetVO excelSheetVO = new ExcelSheetVO();
         final List<List<String>> datas = new ArrayList<List<String>>();
         final ArrayList<String> heads = new ArrayList<>();

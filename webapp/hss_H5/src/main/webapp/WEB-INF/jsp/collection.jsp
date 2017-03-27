@@ -13,7 +13,7 @@
         content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
   <meta name="format-detection" content="telephone=no"/>
   <title>好收收</title>
-  <link rel="stylesheet" href="http://static.jinkaimen.cn/hss/css/style.2.1.7.css">
+  <link rel="stylesheet" href="http://static.jinkaimen.cn/hss/css/style.2.2.0.css">
   <link rel="stylesheet" href="http://static.jinkaimen.cn/weui/weui.css">
 </head>
 <body>
@@ -68,89 +68,14 @@
       </div>
     </div>
   </div>
-
-  <div class="message-space" id="layerBK">
-    <div class="message-box">
-      <div class="message-box-head">提示</div>
-      <div class="message-box-body">
-        使用该通道前<br>您需要补全结算卡的支行信息
-      </div>
-      <div class="message-box-foot">
-        <div class="message-cancel" id="cancelBK">
-          待会儿再说
-        </div>
-        <div class="message-line"></div>
-        <div class="message-submit" id="toBK">
-          去补全
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="message-space" id="layerB">
-    <div class="message-box">
-      <div class="message-box-head">提示</div>
-      <div class="message-box-body">
-        使用该通道前<br>您需要补全结算卡的支行信息
-      </div>
-      <div class="message-box-foot">
-        <div class="message-cancel" id="cancelB">
-          待会儿再说
-        </div>
-        <div class="message-line"></div>
-        <div class="message-submit" id="toB">
-          去补全
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="message-space" id="layerC">
-    <div class="message-box">
-      <div class="message-box-head">提示</div>
-      <div class="message-box-body">
-        补全信用卡信息可以提高您的支付额度
-      </div>
-      <div class="message-box-foot">
-        <div class="message-cancel" id="cancelC">
-          待会儿再说
-        </div>
-        <div class="message-line"></div>
-        <div class="message-submit" id="toC">
-          去补全
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="message-space" id="layer">
-    <div class="message-box">
-      <div class="message-box-head">提示</div>
-      <div class="message-box-body">
-        该通道正在支付公司注册中<br>请明天再使用该通道
-      </div>
-      <div class="message-box-foot">
-        <div class="message-enter" id="cancel">
-          确定
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="message-space" id="layerE">
-    <div class="message-box">
-      <div class="message-box-head">提示</div>
-      <div class="message-box-body" id="textE"></div>
-      <div class="message-box-foot">
-        <div class="message-enter" id="cancelE">
-          确定
-        </div>
-      </div>
-    </div>
-  </div>
 </div>
 
 </body>
-<script src="http://static.jinkaimen.cn/vendor/vendor.1.0.5.min.js"></script>
-<script src="http://static.jinkaimen.cn/hss/2.1.5/collection.min.js"></script>
+<script>
+  var pageData = {
+    bankId: '${bankId}'
+  }
+</script>
+<script src="http://static.jinkaimen.cn/vendor/vendor.1.0.7.min.js"></script>
+<script src="http://static.jinkaimen.cn/hss/2.2.1/collection.min.js"></script>
 </html>

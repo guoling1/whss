@@ -6,6 +6,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.jkm.base.common.entity.CommonResponse;
 import com.jkm.base.common.entity.PageModel;
+import com.jkm.base.common.util.CookieUtil;
 import com.jkm.base.common.util.DateFormatUtil;
 import com.jkm.base.common.util.ValidateUtils;
 import com.jkm.hss.account.entity.Account;
@@ -16,15 +17,17 @@ import com.jkm.hss.bill.service.DealerWithdrawService;
 import com.jkm.hss.bill.service.MerchantWithdrawService;
 import com.jkm.hss.controller.BaseController;
 import com.jkm.hss.dealer.helper.DealerSupport;
+import com.jkm.hss.helper.ApplicationConsts;
 import com.jkm.hss.helper.request.MerchantWithdrawRequest;
 import com.jkm.hss.helper.response.AccountInfoResponse;
 import com.jkm.hss.helper.response.FlowDetailsSelectResponse;
-import com.jkm.hss.merchant.entity.MerchantChannelRate;
-import com.jkm.hss.merchant.entity.MerchantInfo;
-import com.jkm.hss.merchant.entity.UserInfo;
+import com.jkm.hss.merchant.entity.*;
+import com.jkm.hss.merchant.enums.EnumMerchantStatus;
 import com.jkm.hss.merchant.helper.MerchantSupport;
+import com.jkm.hss.merchant.helper.WxConstants;
 import com.jkm.hss.merchant.helper.request.MerchantChannelRateRequest;
 import com.jkm.hss.merchant.helper.request.MerchantFlowRequest;
+import com.jkm.hss.merchant.service.AccountBankService;
 import com.jkm.hss.merchant.service.MerchantChannelRateService;
 import com.jkm.hss.merchant.service.MerchantInfoService;
 import com.jkm.hss.merchant.service.UserInfoService;
@@ -43,7 +46,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Map;
 
@@ -73,15 +78,59 @@ public class AccountController extends BaseController{
     private MerchantInfoService merchantInfoService;
     @Autowired
     private MerchantWithdrawService merchantWithdrawService;
+    @Autowired
+    private AccountBankService accountBankService;
 
     /**
      * 跳到提现页面
      * @return
      */
     @RequestMapping(value = "/toWithdraw", method = RequestMethod.GET)
-    public String toWithdrawJsp(HttpServletRequest request){
+    public String toWithdrawJsp(final HttpServletRequest request, final HttpServletResponse response){
+        boolean isRedirect = false;
+        if(!super.isLogin(request)){
+            return "redirect:"+ WxConstants.WEIXIN_USERINFO+request.getRequestURI()+ WxConstants.WEIXIN_USERINFO_REDIRECT;
+        }else {
+            String url = "";
+            Optional<UserInfo> userInfoOptional = userInfoService.selectByOpenId(super.getOpenId(request));
+            if (userInfoOptional.isPresent()) {
+                Long merchantId = userInfoOptional.get().getMerchantId();
+                if (merchantId != null && merchantId != 0){
+                    Optional<MerchantInfo> result = merchantInfoService.selectById(merchantId);
+                    if (result.get().getStatus()== EnumMerchantStatus.LOGIN.getId()){//登录
+                        url = "/sqb/reg";
+                        isRedirect= true;
+                    }else if(result.get().getStatus()== EnumMerchantStatus.INIT.getId()){
+                        url = "/sqb/addInfo";
+                        isRedirect= true;
+                    }else if(result.get().getStatus()== EnumMerchantStatus.ONESTEP.getId()){
+                        url = "/sqb/addNext";
+                        isRedirect= true;
+                    }else if(result.get().getStatus()== EnumMerchantStatus.REVIEW.getId()||
+                            result.get().getStatus()== EnumMerchantStatus.UNPASSED.getId()||
+                            result.get().getStatus()== EnumMerchantStatus.DISABLE.getId()){
+                        url = "/sqb/prompt";
+                        isRedirect= true;
+                    }else if(result.get().getStatus()== EnumMerchantStatus.PASSED.getId()||result.get().getStatus()== EnumMerchantStatus.FRIEND.getId()){//跳提现页面
 
-        return "/withdraw";
+                        url = "/withdraw";
+                    }
+                }else{
+                    url = "/sqb/reg";
+                    isRedirect= true;
+                }
+            }else{
+                CookieUtil.deleteCookie(response, ApplicationConsts.MERCHANT_COOKIE_KEY,ApplicationConsts.getApplicationConfig().domain());
+                isRedirect= true;
+                url = "/sqb/reg";
+            }
+            if(isRedirect){
+                return "redirect:"+url;
+            }else{
+                return url;
+            }
+        }
+
     }
 
     /**
@@ -89,9 +138,51 @@ public class AccountController extends BaseController{
      * @return
      */
     @RequestMapping(value = "/toHssAccount", method = RequestMethod.GET)
-    public String toHssAccount(HttpServletRequest request){
+    public String toHssAccount(final HttpServletRequest request, final HttpServletResponse response){
+        boolean isRedirect = false;
+        if(!super.isLogin(request)){
+            return "redirect:"+ WxConstants.WEIXIN_USERINFO+request.getRequestURI()+ WxConstants.WEIXIN_USERINFO_REDIRECT;
+        }else {
+            String url = "";
+            Optional<UserInfo> userInfoOptional = userInfoService.selectByOpenId(super.getOpenId(request));
+            if (userInfoOptional.isPresent()) {
+                Long merchantId = userInfoOptional.get().getMerchantId();
+                if (merchantId != null && merchantId != 0){
+                    Optional<MerchantInfo> result = merchantInfoService.selectById(merchantId);
+                    if (result.get().getStatus()== EnumMerchantStatus.LOGIN.getId()){//登录
+                        url = "/sqb/reg";
+                        isRedirect= true;
+                    }else if(result.get().getStatus()== EnumMerchantStatus.INIT.getId()){
+                        url = "/sqb/addInfo";
+                        isRedirect= true;
+                    }else if(result.get().getStatus()== EnumMerchantStatus.ONESTEP.getId()){
+                        url = "/sqb/addNext";
+                        isRedirect= true;
+                    }else if(result.get().getStatus()== EnumMerchantStatus.REVIEW.getId()||
+                            result.get().getStatus()== EnumMerchantStatus.UNPASSED.getId()||
+                            result.get().getStatus()== EnumMerchantStatus.DISABLE.getId()){
+                        url = "/sqb/prompt";
+                        isRedirect= true;
+                    }else if(result.get().getStatus()== EnumMerchantStatus.PASSED.getId()||result.get().getStatus()== EnumMerchantStatus.FRIEND.getId()){//跳提现页面
 
-        return "/hssAccount";
+                        url = "/hssAccount";
+                    }
+                }else{
+                    url = "/sqb/reg";
+                    isRedirect= true;
+                }
+            }else{
+                CookieUtil.deleteCookie(response,ApplicationConsts.MERCHANT_COOKIE_KEY,ApplicationConsts.getApplicationConfig().domain());
+                isRedirect= true;
+                url = "/sqb/reg";
+            }
+            if(isRedirect){
+                return "redirect:"+url;
+            }else{
+                return url;
+            }
+        }
+
     }
 
     /**
@@ -141,7 +232,8 @@ public class AccountController extends BaseController{
             response.setBankName(merchantInfo.getBankName());
             response.setWithdrawFee(merchantChannelRate.getMerchantWithdrawFee());
 
-            final String bankNo = MerchantSupport.decryptBankCard(merchantInfo.getId(), merchantInfo.getBankNo());
+            final AccountBank accountBank = this.accountBankService.getDefault(merchantInfo.getAccountId());
+            final String bankNo = accountBank.getBankNo();
             response.setBankNo("尾号" + bankNo.substring(bankNo.length() - 4 , bankNo.length()));
             response.setMobile( merchantInfo.getPlainBankMobile( MerchantSupport.decryptMobile(merchantInfo.getId(), merchantInfo.getReserveMobile())));
 

@@ -197,8 +197,10 @@ public class AccountBankServiceImpl implements AccountBankService{
     @Override
     public AccountBank getDefault(long accountId) {
         AccountBank accountBank = accountBankDao.getDefault(accountId);
-        accountBank.setBankNo(MerchantSupport.decryptBankCard(accountId,accountBank.getBankNo()));
-        accountBank.setReserveMobile(MerchantSupport.decryptMobile(accountId,accountBank.getReserveMobile()));
+        if(accountBank!=null){
+            accountBank.setBankNo(MerchantSupport.decryptBankCard(accountId,accountBank.getBankNo()));
+            accountBank.setReserveMobile(MerchantSupport.decryptMobile(accountId,accountBank.getReserveMobile()));
+        }
         return accountBank;
     }
 
@@ -292,12 +294,12 @@ public class AccountBankServiceImpl implements AccountBankService{
                 }
                 bankListResponse.setBankBin(accountBank1.getBankBin());
                 String tempBranchName = accountBank1.getBranchName();
-                if(tempBranchName.length()>12){
+                if(!"".equals(tempBranchName)&&tempBranchName!=null&&tempBranchName.length()>12){
                     tempBranchName = "***"+tempBranchName.substring(tempBranchName.length()-12,tempBranchName.length());
                 }
                 bankListResponse.setBranchName(tempBranchName);
                 bankListResponse.setCardType(accountBank1.getCardType());
-                if(accountBank1.getBranchCode()!=null&&!"".equals(accountBank1.getBranchCode())){
+                if(accountBank1.getBranchName()!=null&&!"".equals(accountBank1.getBranchName())){
                     bankListResponse.setHasBranch(1);
                 }else{
                     bankListResponse.setHasBranch(0);
@@ -353,6 +355,7 @@ public class AccountBankServiceImpl implements AccountBankService{
         if (0 == pair.getLeft()) {
             accountBank.setIsAuthen("1");
         }
+        log.info("AccountId={}",merchantInfo.getAccountId());
         accountBank.setAccountId(merchantInfo.getAccountId());
         accountBank.setBankNo(bankcard);
         final Optional<BankCardBin> bankCardBinOptional = this.bankCardBinService.analyseCardNo(bankNo);
@@ -363,6 +366,20 @@ public class AccountBankServiceImpl implements AccountBankService{
         accountBank.setBankBin(bankCardBinOptional.get().getShorthand());
         return this.insert(accountBank);
     }
+    /**
+     * 更改默认银行卡（已存在银行卡）
+     * @param bankId
+     * @param merchantInfo
+     * @param bankNo
+     * @param reserveMobile
+     * @return
+     */
+    @Override
+    public int updateDefaultBankCard(long bankId,MerchantInfo merchantInfo, String bankNo, String reserveMobile) {
+        this.reset(merchantInfo.getAccountId(),EnumAccountBank.DEBITCARD.getId());
+        return setDefault(bankId);
+    }
+
 
     /**
      * 是否有银行卡

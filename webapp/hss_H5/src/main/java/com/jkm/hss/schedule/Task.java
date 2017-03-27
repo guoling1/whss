@@ -22,9 +22,9 @@ public class Task {
     /**
      * T1 结算到卡定时任务
      *
-     * 周一到周五 凌晨4点
+     * 凌晨6点
      */
-    @Scheduled(cron = "0 0/2 * ? * 2-6")
+    @Scheduled(cron = "0 0 6 * * ?")
     public void handleT1Task() {
         log.info("hss-T1- 结算到卡定时任务--start");
         this.orderService.handleT1UnSettlePayOrder();
