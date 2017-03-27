@@ -235,9 +235,6 @@
       })
     },
     methods: {
-      toDet: function (val) {
-
-      },
       //格式化hss创建时间
       changeTime: function (row, column) {
         var val=row.createTime;

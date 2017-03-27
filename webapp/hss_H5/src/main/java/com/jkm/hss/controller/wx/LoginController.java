@@ -1031,8 +1031,24 @@ public class LoginController extends BaseController {
                 url = "/message";
             }else {
                 Optional<UserInfo> uiOptional = userInfoService.selectById(id);
-                model.addAttribute("inviteCode",MerchantSupport.decryptMobile(uiOptional.get().getMobile()));
-                url = "/reg";
+                if(uiOptional.isPresent()){
+                    Optional<MerchantInfo> merchantInfoOptional = merchantInfoService.selectById(uiOptional.get().getMerchantId());
+                    if(merchantInfoOptional.isPresent()){
+                        if(merchantInfoOptional.get().getStatus()!= EnumMerchantStatus.PASSED.getId()&&merchantInfoOptional.get().getStatus()!= EnumMerchantStatus.FRIEND.getId()){
+                            model.addAttribute("message","推荐商户未审核通过");
+                            url = "/message";
+                        }else{
+                            model.addAttribute("inviteCode",MerchantSupport.decryptMobile(uiOptional.get().getMobile()));
+                            url = "/reg";
+                        }
+                    }else{
+                        model.addAttribute("message","推荐商户不存在");
+                        url = "/message";
+                    }
+                }else{
+                    model.addAttribute("message","推荐用户不存在");
+                    url = "/message";
+                }
             }
             if(isRedirect){
                 return "redirect:"+url;

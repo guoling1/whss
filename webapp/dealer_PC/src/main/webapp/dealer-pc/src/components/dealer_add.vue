@@ -56,7 +56,7 @@
                 <el-form-item label="结算卡号" prop="bankCard">
                   <el-input v-model="form.bankCard" size="small"></el-input>
                 </el-form-item>
-                <el-form-item label="开户名称" prop="bankAccountName">
+                <el-form-item label="持卡人姓名" prop="bankAccountName">
                   <el-input v-model="form.bankAccountName" size="small"></el-input>
                 </el-form-item>
                 <el-form-item label="身份证号" prop="idCard">

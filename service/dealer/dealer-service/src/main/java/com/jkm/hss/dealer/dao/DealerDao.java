@@ -301,4 +301,18 @@ public interface DealerDao {
      * @return
      */
     MerchantInfoResponse getProxyName(int firstLevelDealerId);
+
+    /**
+     * 查询一级代理商的编码和名称
+     * @param firstDealerId
+     * @return
+     */
+    MerchantInfoResponse getInfo(@Param("firstDealerId") long firstDealerId);
+
+    /**
+     * 查询二级代理商编码和名称
+     * @param secondDealerId
+     * @return
+     */
+    MerchantInfoResponse getInfo1(@Param("secondDealerId") long secondDealerId);
 }
