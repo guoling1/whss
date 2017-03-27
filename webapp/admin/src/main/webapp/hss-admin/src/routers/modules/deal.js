@@ -12,6 +12,8 @@ const DealQuery = r => require.ensure([], () => r(require('../../components/Deal
 const DealDet = r => require.ensure([], () => r(require('../../components/DealDet')), 'group-record');
 const NewDealQuery = r => require.ensure([], () => r(require('../../components/newVersion/NewDealQuery')), 'group-record');
 const NewDealDet = r => require.ensure([], () => r(require('../../components/newVersion/NewDealDet')), 'group-record');
+const Retrieval = r => require.ensure([], () => r(require('../../components/Retrieval')), 'group-record');
+const RetrievalDet = r => require.ensure([], () => r(require('../../components/RetrievalDet')), 'group-record');
 //分润
 const ProfitCom = r => require.ensure([], () => r(require('../../components/ProfitCom')), 'group-record');
 const ProfitFir = r => require.ensure([], () => r(require('../../components/ProfitFir')), 'group-record');
@@ -100,6 +102,16 @@ export default {
       path: 'newDealDet',
       name: 'NewDealDet',
       component: NewDealDet
+    },
+    {
+      path: 'retrieval',
+      name: 'Retrieval',
+      component: Retrieval
+    },
+    {
+      path: 'retrievalDet',
+      name: 'RetrievalDet',
+      component: RetrievalDet
     },
     {
       path: 'newWithdrawalQuery',

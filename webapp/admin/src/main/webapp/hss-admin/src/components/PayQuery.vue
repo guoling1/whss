@@ -93,6 +93,13 @@
             </el-table-column>
           </el-table>
           </el-table>
+          <ul style="float: left;margin-top: 5px">
+            <li>
+              <label style="margin-right: 10px;">支付金额</label>
+              <span>当页总额：{{pageTotal}}&nbsp;元</span>&nbsp;&nbsp;&nbsp;&nbsp;
+              <span>筛选条件统计：{{addTotal}}&nbsp;元</span>
+            </li>
+          </ul>
           <!--分页-->
           <div class="block" style="text-align: right">
             <el-pagination @size-change="handleSizeChange"
@@ -153,17 +160,19 @@
         count: 0,
         total: '',
         loading: true,
+        pageTotal: 0,
+        addTotal: 0,
         url:'',
         //正式
-        queryUrl:'http://pay.qianbaojiajia.com/order/pay/listOrder',
+        /*queryUrl:'http://pay.qianbaojiajia.com/order/pay/listOrder',
          excelUrl:'http://pay.qianbaojiajia.com/order/pay/exportExcel',
          syncUrl:'http://pay.qianbaojiajia.com/order/syncPayOrder',
-         addUrl:'http://pay.qianbaojiajia.com/order/pay/payAmount'
+         addUrl:'http://pay.qianbaojiajia.com/order/pay/payAmount'*/
         //测试
-        /*queryUrl:'http://192.168.1.20:8076/order/pay/listOrder',
+        queryUrl:'http://192.168.1.20:8076/order/pay/listOrder',
         excelUrl:'http://192.168.1.20:8076/order/pay/exportExcel',
         syncUrl:'http://192.168.1.20:8076/order/syncPayOrder',
-        addUrl:'http://192.168.1.25:8240/order/pay/payAmount',*/
+        addUrl:'http://192.168.1.25:8240/order/pay/payAmount',
       }
     },
     created: function () {
@@ -193,7 +202,8 @@
           this.$data.query.endCreateTime = str;
         }
       }
-      this.getData()
+      this.getData();
+      this.getAddTotal()
     },
     methods: {
       getData: function () {
@@ -211,7 +221,8 @@
             for (var i = 0; i < this.records.length; i++) {
               price = toFix(parseFloat(price)+parseFloat(this.records[i].payAmount));
             }
-            if(this.records.length!=0){
+            this.pageTotal = price;
+            /*if(this.records.length!=0){
               this.records.push({
                 orderNo:"当页总额",
                 payAmount:price
@@ -220,7 +231,7 @@
                 payAmount:''
               });
               this.records[this.records.length-1].payAmount = this.total;
-            }
+            }*/
           },function (err) {
             this.$data.loading = false;
             this.$message({
@@ -230,12 +241,10 @@
             });
           })
       },
-      add(){
-        this.$data.loading = true;
+      getAddTotal(){
         this.$http.post(this.addUrl,this.query)
           .then(res=>{
-            this.$data.loading = false;
-            this.records[this.records.length-1].payAmount = this.total = res.data;
+          this.addTotal = res.data;
           })
           .catch(err=>{
             this.$data.loading = false;
@@ -309,7 +318,8 @@
       search(){
         this.total = '';
         this.$data.query.pageNo = 1;
-        this.getData()
+        this.getData();
+        this.getAddTotal()
       },
       //每页条数改变
       handleSizeChange(val) {
@@ -375,27 +385,7 @@
           val = val.replace(val.substring(3,val.length-6),"…");
         }
         return val
-      },
-      changeTime: function (val) {
-        if (val == '' || val == null) {
-          return ''
-        } else {
-          val = new Date(val)
-          var year = val.getFullYear();
-          var month = val.getMonth() + 1;
-          var date = val.getDate();
-          var hour = val.getHours();
-          var minute = val.getMinutes();
-          var second = val.getSeconds();
-          function tod(a) {
-            if (a < 10) {
-              a = "0" + a
-            }
-            return a;
-          }
-          return year + "-" + tod(month) + "-" + tod(date) + " " + tod(hour) + ":" + tod(minute) + ":" + tod(second);
-        }
-      },
+      }
     }
   }
 </script>

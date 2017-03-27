@@ -117,6 +117,167 @@
         SELECT * FROM tb_order WHERE id = #{id} FOR UPDATE
     </select>
 
+    <!-- 提现列表 -->
+    <select id="withdrawList" resultType="com.jkm.hss.bill.entity.WithdrawResponse">
+        SELECT
+            a.*, b.user_name,
+            c.dealer_id,
+            c.merchant_name,
+            d.proxy_name,
+            c.id AS idm,
+            d.id AS idd
+        FROM
+          tb_order a
+        LEFT JOIN tb_account b ON a.payer = b.id
+        LEFT JOIN tb_merchant_info c ON b.id = c.account_id
+        LEFT JOIN tb_dealer d ON b.id = d.account_id
+        WHERE
+          a.trade_type = 3
+    <if test="businessOrderNo != null and businessOrderNo != ''">
+        AND a.business_order_no = #{businessOrderNo}
+    </if>
+    <if test="orderNo != null and orderNo != ''">
+        AND a.order_no = #{orderNo}
+    </if>
+    <if test="sn != null and sn != ''">
+        AND a.sn = #{sn}
+    </if>
+    <if test="userName != null and userName != ''">
+        AND b.user_name = #{userName}
+    </if>
+    <if test="startTime != null and startTime != ''">
+        AND a.create_time <![CDATA[ >= ]]> #{startTime}
+    </if>
+    <if test="endTime != null and endTime != ''">
+        AND a.create_time <![CDATA[ <= ]]> #{endTime}
+    </if>
+    <if test="status != null and status > 0">
+        AND a.status = #{status}
+    </if>
+        ORDER BY
+            a.create_time DESC
+        LIMIT #{offset},#{pageSize}
+    </select>
+
+    <!-- 提现统计 -->
+    <select id="withdrawAmount" resultType="com.jkm.hss.bill.entity.WithdrawResponse">
+        SELECT
+            SUM(a.trade_amount) AS trade_amount,
+            SUM(a.poundage) AS poundage
+        FROM
+          tb_order a
+        LEFT JOIN tb_account b ON a.payer = b.id
+        LEFT JOIN tb_merchant_info c ON b.id = c.account_id
+        LEFT JOIN tb_dealer d ON b.id = d.account_id
+        WHERE
+          a.trade_type = 3
+        <if test="businessOrderNo != null and businessOrderNo != ''">
+            AND a.business_order_no = #{businessOrderNo}
+        </if>
+        <if test="orderNo != null and orderNo != ''">
+            AND a.order_no = #{orderNo}
+        </if>
+        <if test="sn != null and sn != ''">
+            AND a.sn = #{sn}
+        </if>
+        <if test="userName != null and userName != ''">
+            AND b.user_name = #{userName}
+        </if>
+        <if test="startTime != null and startTime != ''">
+            AND a.create_time <![CDATA[ >= ]]> #{startTime}
+        </if>
+        <if test="endTime != null and endTime != ''">
+            AND a.create_time <![CDATA[ <= ]]> #{endTime}
+        </if>
+        <if test="status != null and status > 0">
+            AND a.status = #{status}
+        </if>
+    </select>
+
+    <!-- 提现详情代理商 -->
+    <select id="withdrawDetail" resultType="com.jkm.hss.bill.entity.WithdrawResponse">
+        SELECT
+            a.*, c.proxy_name,
+            c.mark_code AS markCodes,
+            c.belong_area,
+            c.belong_province_name,
+            c.belong_city_name,
+            c.`level`,
+            c.first_level_dealer_id,
+            c.mobile AS mobileD,
+            c.create_time AS create_timeD
+        FROM
+            tb_order a
+        LEFT JOIN tb_account b ON a.payer = b.id
+        LEFT JOIN tb_dealer c ON b.id = c.account_id
+        WHERE
+            a.trade_type = 3
+        AND c.id = #{idd}
+        AND a.create_time = #{createTimes}
+    </select>
+
+    <!-- 提现详情商户 -->
+    <select id="withdrawDetails" resultType="com.jkm.hss.bill.entity.WithdrawResponse">
+        SELECT
+            a.*, b.user_name,
+            c.dealer_id,
+            c.address,
+            c.merchant_name,
+            c.province_code,
+            c.mark_code AS mark_codeM,
+            c.mobile,
+            c.create_time AS create_timeM,
+            c.province_name,
+            c.city_name,
+            c.county_name,
+            c.first_dealer_id,
+            c.second_dealer_id,
+          (select proxy_name from tb_dealer where id=c.first_dealer_id) as proxyNames,
+          (select proxy_name from tb_dealer where id=c.second_dealer_id) as proxyName1
+        FROM
+            tb_order a
+        LEFT JOIN tb_account b ON a.payer = b.id
+        LEFT JOIN tb_merchant_info c ON b.id = c.account_id
+        WHERE
+            a.trade_type = 3
+        AND c.id=#{idm}
+        AND a.create_time=#{createTimes}
+    </select>
+
+    <!-- 提现总数 -->
+    <select id="getNo" resultType="java.lang.Integer">
+        SELECT
+            COUNT(*)
+        FROM
+          tb_order a
+        LEFT JOIN tb_account b ON a.payer = b.id
+        LEFT JOIN tb_merchant_info c ON b.id = c.account_id
+        LEFT JOIN tb_dealer d ON b.id = d.account_id
+        WHERE
+          a.trade_type = 3
+    <if test="businessOrderNo != null and businessOrderNo != ''">
+        AND a.business_order_no = #{businessOrderNo}
+    </if>
+    <if test="orderNo != null and orderNo != ''">
+        AND a.order_no = #{orderNo}
+    </if>
+    <if test="sn != null and sn != ''">
+        AND a.sn = #{sn}
+    </if>
+    <if test="userName != null and userName != ''">
+        AND b.user_name = #{userName}
+    </if>
+    <if test="startTime != null and startTime != ''">
+        AND a.create_time <![CDATA[ >= ]]> #{startTime}
+    </if>
+    <if test="endTime != null and endTime != ''">
+        AND a.create_time <![CDATA[ <= ]]> #{endTime}
+    </if>
+    <if test="status != null and status > 0">
+        AND a.status = #{status}
+    </if>
+    </select>
+
     <select id="selectByOrderNoAndTradeType" resultType="com.jkm.hss.bill.entity.Order">
         SELECT * FROM tb_order WHERE order_no = #{orderNo} AND trade_type = #{tradeType};
     </select>
@@ -641,5 +802,21 @@
         AND settle_status = 1
         AND status = 4
         AND settle_type = 'T1'
+    </select>
+
+    <!-- 查询打款 -->
+    <select id="getPlayMoney" resultType="com.jkm.hss.bill.entity.PlayResponse">
+        SELECT
+            sn,
+            amount,
+            request_time,
+            `status`,
+            finish_time,
+            play_money_channel,
+            message
+        FROM
+            tb_play_money_order
+        WHERE
+            order_no = #{orderNo}
     </select>
 </mapper>
