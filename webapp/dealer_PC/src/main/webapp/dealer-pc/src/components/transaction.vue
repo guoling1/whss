@@ -45,7 +45,7 @@
               <div class="screen-item">
                 <span class="screen-title">交易状态</span>
                 <el-select v-model="query.status" size="small" clearable placeholder="请选择" style="width: 220px">
-                  <el-option v-for="item in item_settlementStatus"
+                  <el-option v-for="item in item_status"
                              :label="item.label"
                              :value="item.value">
                   </el-option>
@@ -54,7 +54,7 @@
               <div class="screen-item">
                 <span class="screen-title">结算状态</span>
                 <el-select v-model="query.settleStatus" size="small" clearable placeholder="请选择" style="width: 220px">
-                  <el-option v-for="item in item_settlementStatus"
+                  <el-option v-for="item in item_settleStatus"
                              :label="item.label"
                              :value="item.value">
                   </el-option>
@@ -63,7 +63,7 @@
               <div class="screen-item">
                 <span class="screen-title">支付方式</span>
                 <el-select v-model="query.payType" size="small" clearable placeholder="请选择" style="width: 220px">
-                  <el-option v-for="item in item_settlementStatus"
+                  <el-option v-for="item in item_payType"
                              :label="item.label"
                              :value="item.value">
                   </el-option>
@@ -75,17 +75,12 @@
               </div>
             </div>
             <div class="box-body">
-              <el-table v-loading.body="loading" height="583" style="font-size: 12px;margin:15px 0" :data="records" border :row-style="tableFoot">
-                <el-table-column width="62" label="序号" fixed="left">
-                  <template scope="scope">
-                    <div v-if="records[scope.$index].proxyName1!='当页总额'&&records[scope.$index].proxyName1!='筛选条件统计'">{{scope.$index+1}}</div>
-                  </template>
-                </el-table-column>
+              <el-table v-loading.body="tableLoading" height="583" style="font-size: 12px;margin:15px 0" :data="records" border :row-style="tableFoot">
+                <el-table-column type="index" width="62" label="序号" fixed="left"></el-table-column>
                 <el-table-column prop="appId" label="业务方" min-width="85"></el-table-column>
                 <el-table-column label="业务订单号" min-width="112">
                   <template scope="scope">
-                <span class="td" :data-clipboard-text="records[scope.$index].businessOrderNo" type="text" size="small"
-                      style="cursor: pointer" title="点击复制">{{records[scope.$index].businessOrderNo|changeHide}}</span>
+                <span class="td" :data-clipboard-text="records[scope.$index].businessOrderNo" type="text" size="small" style="cursor: pointer" title="点击复制">{{records[scope.$index].businessOrderNo|changeHide}}</span>
                   </template>
                 </el-table-column>
                 <el-table-column label="交易订单号" min-width="112">
@@ -137,7 +132,7 @@
                              :page-sizes="[20, 100, 200, 500]"
                              :page-size="pageSize"
                              layout="total, sizes, prev, pager, next, jumper"
-                             :total="count">
+                             :total="total">
               </el-pagination>
             </div>
             <!-- /.box-body -->
@@ -152,6 +147,7 @@
 </template>
 <script lang="babel">
   import store from '../store'
+  import Clipboard from "clipboard"
   export default {
     data () {
       return {
@@ -170,12 +166,67 @@
           settleStatus:'',
           payType:'',
           proxyName:'',
-          proxyName1:''
         },
+        item_status:[
+          {value: '', label: '全部'},
+          {value: '1', label: '待支付'},
+          {value: '4', label: '支付成功'},
+          {value: '3', label: '支付失败'}
+        ],
+        item_settleStatus:[
+          {value: '', label: '全部'},
+          {value: '1', label: '待结算'},
+          {value: '2', label: '结算中'},
+          {value: '3', label: '已结算'}
+        ],
+        item_payType:[
+          {value: '', label: '全部'},
+          {value: 'sm_wechat_jsapi', label: '阳光微信公众号'},
+          {value: 'sm_alipay_jsapi', label: '阳光支付宝公众号'},
+          {value: 'sm_wechat_code', label: '阳光微信扫码'},
+          {value: 'sm_alipay_code', label: '阳光支付宝扫码'},
+          {value: 'sm_unionpay', label: '阳光快捷'},
+          {value: 'km_wechat_jsapi', label: '卡盟微信公众号'},
+          {value: 'km_alipay_jsapi', label: '卡盟支付宝公众号'},
+          {value: 'km_wechat_code', label: '卡盟微信扫码'},
+          {value: 'km_alipay_code', label: '卡盟支付宝扫码'},
+          {value: 'mb_unionpay', label: '摩宝快捷'},
+          {value: 'hzyb_wechat', label: '合众易宝微信'},
+          {value: 'hzyb_alipay', label: '合众易宝支付宝'},
+          {value: 'yijia_wechat', label: '溢+微信'},
+          {value: 'yijia_alipay', label: '溢+支付宝'},
+        ],
         date: '',
+        total:0
       }
     },
     created(){
+      var clipboard = new Clipboard('.td');
+      // 复制成功执行的回调，可选
+      clipboard.on('success', (e) => {
+        this.$message({
+        showClose: true,
+        message: "复制成功  内容为：" + e.text,
+        type: 'success'
+        });
+      });
+      let time = new Date();
+      this.date = [time,time];
+      for (var j = 0; j < this.date.length; j++) {
+        var str = this.date[j];
+        var ary = [str.getFullYear(), str.getMonth() + 1, str.getDate()];
+        for (var i = 0, len = ary.length; i < len; i++) {
+          if (ary[i] < 10) {
+            ary[i] = '0' + ary[i];
+          }
+        }
+        str = ary[0] + '-' + ary[1] + '-' + ary[2];
+        if (j == 0) {
+          this.query.startTime = str;
+        } else {
+          this.query.endTime = str;
+        }
+      }
       this.getData();
     },
     methods: {
@@ -185,18 +236,13 @@
         this.query.endTime = format[1];
       },
       screen: function () {
+        this.total = '';
+        this.query.page = 1;
         this.getData();
       },
       getData: function () {
         this.tableLoading = true;
-        this.$http.post('/daili/profit/details', {
-          pageSize: this.pageSize,
-          pageNo: this.pageNo,
-          orderNo: this.orderNo,
-          businessType: this.businessType,
-          beginDate: this.beginDate,
-          endDate: this.endDate
-        }).then(res => {
+        this.$http.post('/tradeQuery/tradeList', this.query).then(res => {
           this.tableLoading = false;
           this.total = res.data.count;
           this.tableData = res.data.records;
@@ -210,11 +256,12 @@
         });
       },
       handleSizeChange(val) {
-        this.pageSize = val;
+        this.query.page = 1;
+        this.query.size = val;
         this.getData();
       },
       handleCurrentChange(val) {
-        this.pageNo = val;
+        this.query.page = val;
         this.getData();
       }
     }
