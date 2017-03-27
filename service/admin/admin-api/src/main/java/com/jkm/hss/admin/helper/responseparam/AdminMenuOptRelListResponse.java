@@ -1,5 +1,6 @@
 package com.jkm.hss.admin.helper.responseparam;
 
+import com.jkm.hss.admin.enums.EnumIsSelected;
 import lombok.Data;
 
 import java.util.List;
@@ -13,6 +14,11 @@ public class AdminMenuOptRelListResponse {
      * 编码
      */
     private long id;
+    /**
+     * 是否选中（1选中 2未选中）
+     * {@link EnumIsSelected}
+     */
+    private int isSelected;
     /**
      *菜单名
      */
@@ -34,11 +40,19 @@ public class AdminMenuOptRelListResponse {
          * 编码
          */
         private long id;
-
+        /**
+         * 是否选中（1选中 2未选中）
+         * {@link EnumIsSelected}
+         */
+        private int isSelected;
         /**
          *菜单名
          */
         private String menuName;
+        /**
+         * 操作集合
+         */
+        private List<Opt> opts;
     }
 
     @Data
@@ -47,9 +61,14 @@ public class AdminMenuOptRelListResponse {
          * 编码
          */
         private long id;
+        /**
+         * 是否选中（1选中 2未选中）
+         * {@link EnumIsSelected}
+         */
+        private int isSelected;
 
         /**
-         *操作名
+         * 操作集合
          */
         private String optName;
 

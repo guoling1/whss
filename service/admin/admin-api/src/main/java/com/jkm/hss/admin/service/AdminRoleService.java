@@ -1,7 +1,9 @@
 package com.jkm.hss.admin.service;
 
+import com.google.common.base.Optional;
 import com.jkm.hss.admin.entity.AdminRole;
 import com.jkm.hss.admin.helper.requestparam.AdminRoleListRequest;
+import com.jkm.hss.admin.helper.requestparam.RoleDetailRequest;
 import com.jkm.hss.admin.helper.responseparam.AdminMenuOptRelListResponse;
 import com.jkm.hss.admin.helper.responseparam.AdminRoleListResponse;
 
@@ -58,5 +60,19 @@ public interface AdminRoleService {
      * @param type
      * @return
      */
-    List<AdminMenuOptRelListResponse> getPrivilege(int type);
+    List<AdminMenuOptRelListResponse> getPrivilege(int type,long id,long userId);
+
+    /**
+     * 根据编码查询角色
+     * @param id
+     * @return
+     */
+    Optional<AdminRole> selectById(long id);
+    /**
+     * 插入
+     *
+     * @param roleDetailRequest
+     */
+    void save(RoleDetailRequest roleDetailRequest);
+
 }

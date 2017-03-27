@@ -85,4 +85,14 @@
     <select id="getOptByMenuIdAndType" resultType="com.jkm.hss.admin.helper.responseparam.AdminOptResponse">
         SELECT id,show_name FROM tb_admin_opt WHERE  menu_id=#{menuId} and type=#{type} and status=1 ORDER by create_time asc
     </select>
+
+    <select id="getMenuByParentIdAndTypeAndRoleId" resultType="com.jkm.hss.admin.helper.responseparam.AdminMenuResponse">
+        SELECT
+        m.id,m.parent_id,m.menu_name,m.menu_url,m.descr,m.sn,m.type,(select count(1) from tb_admin_role_menu_rel where role_id=#{roleId} and menu_id=m.id and status=1 and user_id=#{userId}) as isSelect
+        FROM tb_admin_menu  as m WHERE  m.parent_id=#{parentId} and m.type=#{type} and m.status=1 ORDER by m.sn asc
+    </select>
+
+    <select id="getSelectedOptByMenuIdAndType" resultType="com.jkm.hss.admin.helper.responseparam.AdminOptRelResponse">
+        SELECT o.id,o.show_name,(select count(1) from tb_admin_menu_opt_rel where menu_id=#{menuId} and opt_id=o.id and status=1 and user_id=#{userId}) as isSelect FROM tb_admin_opt as o WHERE  o.menu_id=#{menuId} and o.type=#{type} and o.status=1 ORDER by o.create_time asc
+    </select>
 </mapper>

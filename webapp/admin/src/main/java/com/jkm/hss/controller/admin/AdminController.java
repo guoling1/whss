@@ -15,9 +15,7 @@ import com.jkm.hss.admin.enums.EnumAdminUserStatus;
 import com.jkm.hss.admin.enums.EnumIsMaster;
 import com.jkm.hss.admin.enums.EnumQRCodeDistributeType;
 import com.jkm.hss.admin.helper.AdminUserSupporter;
-import com.jkm.hss.admin.helper.requestparam.AdminUserListRequest;
-import com.jkm.hss.admin.helper.requestparam.AdminUserRequest;
-import com.jkm.hss.admin.helper.requestparam.DistributeQrCodeRequest;
+import com.jkm.hss.admin.helper.requestparam.*;
 import com.jkm.hss.admin.helper.responseparam.*;
 import com.jkm.hss.admin.service.AdminRoleService;
 import com.jkm.hss.admin.service.AdminUserService;
@@ -1127,13 +1125,35 @@ public class AdminController extends BaseController {
     }
 
     /**
-     * 权限列表
+     * 角色详情
      * @return
      */
     @ResponseBody
-    @RequestMapping(value = "/getPrivilegeList", method = RequestMethod.POST)
-    public CommonResponse getPrivilegeList () {
-        List<AdminMenuOptRelListResponse> adminMenuOptRelListResponses = adminRoleService.getPrivilege(EnumAdminType.BOSS.getCode());
-        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功",adminMenuOptRelListResponses);
+    @RequestMapping(value = "/getRoleDetail", method = RequestMethod.POST)
+    public CommonResponse getRoleDetail (@RequestBody AdminRoleDetailRequest adminRoleDetailRequest) {
+        RoleDetailResponse roleDetailResponse = new RoleDetailResponse();
+        if(adminRoleDetailRequest.getId()>0){
+            Optional<AdminRole> adminRoleOptional = adminRoleService.selectById(roleDetailResponse.getRoleId());
+            if(!adminRoleOptional.isPresent()){
+                return CommonResponse.simpleResponse(-1, "角色不存在");
+            }
+            roleDetailResponse.setRoleId(roleDetailResponse.getRoleId());
+            roleDetailResponse.setRoleName(adminRoleOptional.get().getRoleName());
+        }
+        List<AdminMenuOptRelListResponse> adminMenuOptRelListResponses = adminRoleService.getPrivilege(EnumAdminType.BOSS.getCode(),adminRoleDetailRequest.getId(),super.getAdminUser().getId());
+        roleDetailResponse.setList(adminMenuOptRelListResponses);
+        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功",roleDetailResponse);
     }
+
+    /**
+     * 添加角色
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/saveRole", method = RequestMethod.POST)
+    public CommonResponse saveRole (@RequestBody RoleDetailRequest roleDetailRequest) {
+        adminRoleService.save(roleDetailRequest);
+        return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "添加成功");
+    }
+
 }

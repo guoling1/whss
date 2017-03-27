@@ -1,9 +1,10 @@
 package com.jkm.hss.admin.dao;
 
 import com.jkm.hss.admin.entity.AdminMenu;
-import com.jkm.hss.admin.entity.AdminOpt;
 import com.jkm.hss.admin.entity.AdminRole;
 import com.jkm.hss.admin.helper.requestparam.AdminRoleListRequest;
+import com.jkm.hss.admin.helper.responseparam.AdminMenuResponse;
+import com.jkm.hss.admin.helper.responseparam.AdminOptRelResponse;
 import com.jkm.hss.admin.helper.responseparam.AdminOptResponse;
 import com.jkm.hss.admin.helper.responseparam.AdminRoleListResponse;
 import org.apache.ibatis.annotations.Param;
@@ -66,16 +67,40 @@ public interface AdminRoleDao {
     AdminRole selectById(@Param("id") long id);
 
     /**
-     * 根据父编码查询菜单
+     * 根据父编码、类型查询菜单
      * @param parentId
      * @return
      */
     List<AdminMenu> getMenuByParentIdAndType(@Param("parentId") long parentId,@Param("type") int type);
 
     /**
-     * 根据菜单编码查询菜单
+     * 根据菜单编码、类型查询菜单
      * @param menuId
      * @return
      */
     List<AdminOptResponse> getOptByMenuIdAndType(@Param("menuId") long menuId, @Param("type") int type);
+
+    /**
+     * 根据父编码、类型、角色编码查询菜单
+     * @param parentId
+     * @return
+     */
+    List<AdminMenuResponse> getMenuByParentIdAndTypeAndRoleId(@Param("parentId") long parentId, @Param("type") int type, @Param("roleId") long roleId, @Param("userId") long userId);
+    /**
+     * 根据菜单编码、类型、操作编码查询菜单
+     * @param menuId
+     * @return
+     */
+    List<AdminOptRelResponse> getOptByMenuIdAndTypeAndUserId(@Param("menuId") long menuId, @Param("type") int type, @Param("userId") long userId);
+
+    /**
+     * 根据用户编码删除角色菜单关联
+     * @param userId
+     */
+    void deleteRoleAndMenuByUserId(@Param("userId") long userId);
+    /**
+     * 根据用户编码删除菜单操作关联
+     * @param userId
+     */
+    void deleteMenuAndOptByUserId(@Param("userId") long userId);
 }
