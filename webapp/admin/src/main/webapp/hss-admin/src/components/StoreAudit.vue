@@ -398,7 +398,7 @@
         this.$http.post('/admin/merchantInfoCheckRecord/record', {
           merchantId: this.$data.id
         }).then(function (res) {
-          this.$router.push('/admin/record/storeList')
+          this.$router.go(-1)
         }, function (err) {
           this.$message({
             showClose: true,
@@ -413,7 +413,7 @@
           descr: this.$data.reason
         })
           .then(function (res) {
-            this.$router.push('/admin/record/storeList')
+            this.$router.go(-1)
           }, function (err) {
             this.$message({
               showClose: true,
