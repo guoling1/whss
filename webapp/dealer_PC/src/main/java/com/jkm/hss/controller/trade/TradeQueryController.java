@@ -13,6 +13,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -27,11 +31,19 @@ public class TradeQueryController extends BaseController {
 
     @ResponseBody
     @RequestMapping(value = "/tradeList", method = RequestMethod.POST)
-    public CommonResponse tradeList(@RequestBody OrderTradeRequest req) {
+    public CommonResponse tradeList(@RequestBody OrderTradeRequest req) throws ParseException {
         final PageModel<MerchantTradeResponse> pageModel = new PageModel<MerchantTradeResponse>(req.getPage(), req.getSize());
         req.setOffset(pageModel.getFirstIndex());
         long dealerId = super.getDealerId();
         int level = super.getDealer().get().getLevel();
+        if(req.getEndTime()!=null&&!"".equals(req.getEndTime())){
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            Date dt = sdf.parse(req.getEndTime());
+            Calendar rightNow = Calendar.getInstance();
+            rightNow.setTime(dt);
+            rightNow.add(Calendar.DATE, 1);
+            req.setEndTime(sdf.format(rightNow.getTime()));
+        }
         req.setDealerId(dealerId);
         if (level==2){
             List<MerchantTradeResponse> list = orderService.getTrade(req);
