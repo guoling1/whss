@@ -90,6 +90,11 @@ public class BasicChannel extends BaseEntity{
     private String channelCompany;
 
     /**
+     * 最低手续费
+     */
+    private BigDecimal lowestFee;
+
+    /**
      * 备注
      */
     private String remarks;

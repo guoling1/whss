@@ -956,7 +956,7 @@ public class OrderServiceImpl implements OrderService {
                 final long orderId = orderIds.get(i);
                 final JSONObject requestParam = new JSONObject();
                 requestParam.put("orderId", orderId);
-                MqProducer.produce(requestParam, MqConfig.MERCHANT_WITHDRAW_T1, 10 * i);
+                MqProducer.produce(requestParam, MqConfig.MERCHANT_WITHDRAW_T1, 1000 * i);
             }
         }
     }
