@@ -28,33 +28,13 @@
                 <el-input v-model="query.merchantName" placeholder="收款商户名称" size="small" style="width:220px"></el-input>
               </div>
               <div class="screen-item">
-                <span class="screen-title">上级代理名称</span>
-                <el-input v-model="query.proxyName" placeholder="上级代理名称" size="small" style="width:220px"></el-input>
-              </div>
-              <div class="screen-item">
-                <span class="screen-title">交易日期</span>
-                <el-date-picker size="small"
-                                v-model="date"
-                                type="daterange"
-                                align="right"
-                                @change="datetimeSelect"
-                                placeholder="选择日期范围"
-                                :picker-options="pickerOptions2">
-                </el-date-picker>
+                <span class="screen-title">收款商户编号</span>
+                <el-input v-model="query.merchantNo" placeholder="收款商户编号" size="small" style="width:220px"></el-input>
               </div>
               <div class="screen-item">
                 <span class="screen-title">交易状态</span>
                 <el-select v-model="query.status" size="small" clearable placeholder="请选择" style="width: 220px">
                   <el-option v-for="item in item_status"
-                             :label="item.label"
-                             :value="item.value">
-                  </el-option>
-                </el-select>
-              </div>
-              <div class="screen-item">
-                <span class="screen-title">结算状态</span>
-                <el-select v-model="query.settleStatus" size="small" clearable placeholder="请选择" style="width: 220px">
-                  <el-option v-for="item in item_settleStatus"
                              :label="item.label"
                              :value="item.value">
                   </el-option>
@@ -70,6 +50,30 @@
                 </el-select>
               </div>
               <div class="screen-item">
+                <span class="screen-title">结算状态</span>
+                <el-select v-model="query.settleStatus" size="small" clearable placeholder="请选择" style="width: 220px">
+                  <el-option v-for="item in item_settleStatus"
+                             :label="item.label"
+                             :value="item.value">
+                  </el-option>
+                </el-select>
+              </div>
+              <div class="screen-item">
+                <span class="screen-title">交易日期</span>
+                <el-date-picker size="small"
+                                v-model="date"
+                                type="daterange"
+                                align="right"
+                                @change="datetimeSelect"
+                                placeholder="选择日期范围"
+                                :picker-options="pickerOptions2">
+                </el-date-picker>
+              </div>
+              <div class="screen-item">
+                <span class="screen-title">上级代理名称</span>
+                <el-input v-model="query.proxyName" placeholder="上级代理名称" size="small" style="width:220px"></el-input>
+              </div>
+              <div class="screen-item">
                 <span class="screen-title"></span>
                 <el-button type="primary" size="small" @click="screen">筛选</el-button>
               </div>
@@ -83,10 +87,25 @@
                 <span class="td" :data-clipboard-text="records[scope.$index].businessOrderNo" type="text" size="small" style="cursor: pointer" title="点击复制">{{records[scope.$index].businessOrderNo|changeHide}}</span>
                   </template>
                 </el-table-column>
+                <el-table-column prop="merchantName" label="收款商户名称" min-width="120"></el-table-column>
+                <el-table-column prop="proxyName" label="所属一级" min-width="90"></el-table-column>
+                <el-table-column prop="proxyName1" label="所属二级" min-width="110"></el-table-column>
                 <el-table-column label="交易订单号" min-width="112">
                   <template scope="scope">
                 <span class="td" :data-clipboard-text="records[scope.$index].orderNo" type="text" size="small"
                       style="cursor: pointer" title="点击复制">{{records[scope.$index].orderNo|changeHide}}</span>
+                  </template>
+                </el-table-column>
+                <el-table-column prop="tradeAmount" :formatter="changeNum" label="支付金额" min-width="120" align="right"></el-table-column>
+                <el-table-column label="手续费" min-width="90" align="right">
+                  <template scope="scope">
+                    <div v-if="records[scope.$index].proxyName1!='当页总额'&&records[scope.$index].proxyName1!='筛选条件统计'">{{records[scope.$index].payRate}}</div>
+                    <a v-if="records[scope.$index].proxyName1=='筛选条件统计'" @click="add">点击统计</a>
+                  </template>
+                </el-table-column>
+                <el-table-column label="交易状态" min-width="90">
+                  <template scope="scope">
+                    <div v-if="records[scope.$index].proxyName1!='当页总额'&&records[scope.$index].proxyName1!='筛选条件统计'">{{records[scope.$index].status|changeStatus}}</div>
                   </template>
                 </el-table-column>
                 <el-table-column label="支付流水号" min-width="112">
@@ -95,42 +114,20 @@
                       style="cursor: pointer" title="点击复制">{{records[scope.$index].sn|changeHide}}</span>
                   </template>
                 </el-table-column>
-                <el-table-column prop="createTime" :formatter="changeTime" label="交易日期" width="162"></el-table-column>
-                <el-table-column prop="merchantName" label="收款商户名称" min-width="120"></el-table-column>
-                <el-table-column prop="proxyName" label="所属一级" min-width="90"></el-table-column>
-                <el-table-column prop="proxyName1" label="所属二级" min-width="110"></el-table-column>
-                <el-table-column prop="tradeAmount" :formatter="changeNum" label="支付金额" min-width="120" align="right"></el-table-column>
-                <el-table-column label="手续费率" min-width="90" align="right">
-                  <template scope="scope">
-                    <div v-if="records[scope.$index].proxyName1!='当页总额'&&records[scope.$index].proxyName1!='筛选条件统计'">{{records[scope.$index].payRate}}</div>
-                    <a v-if="records[scope.$index].proxyName1=='筛选条件统计'" @click="add">点击统计</a>
-                  </template>
-                </el-table-column>
-                <el-table-column label="订单状态" min-width="90">
-                  <template scope="scope">
-                    <div v-if="records[scope.$index].proxyName1!='当页总额'&&records[scope.$index].proxyName1!='筛选条件统计'">{{records[scope.$index].status|changeStatus}}</div>
-                  </template>
-                </el-table-column>
-                <el-table-column prop="settleStatus" :formatter="changeSettleStatus" label="结算状态" min-width="90"></el-table-column>
                 <el-table-column prop="payType" label="支付方式" min-width="115"></el-table-column>
-                <el-table-column prop="payChannelSigns" label="支付渠道" min-width="115"></el-table-column>
-                <el-table-column prop="remark" label="渠道信息" min-width="90"></el-table-column>
-                <el-table-column label="操作" width="90" fixed="right">
-                  <template scope="scope">
-                    <router-link :to="{path:'/admin/record/newDealDet',query:{orderNo:records[scope.$index].orderNo}}" v-if="records[scope.$index].proxyName1!='当页总额'&&records[scope.$index].proxyName1!='筛选条件统计'" type="text" size="small">详情
-                    </router-link>
-                  </template>
-                </el-table-column>
-              </el-table>
+                <el-table-column prop="settleStatus" :formatter="changeSettleStatus" label="结算状态" min-width="90"></el-table-column>
+                <el-table-column prop="createTime" :formatter="changeTime" label="交易日期" width="162"></el-table-column>
+                <el-table-column prop="" :formatter="changeTime" label="成功时间" width="162"></el-table-column>
+                <el-table-column prop="" :formatter="changeTime" label="结算周期"></el-table-column>
               </el-table>
             </div>
             <div class="box-body">
               <el-pagination style="float:right"
                              @size-change="handleSizeChange"
                              @current-change="handleCurrentChange"
-                             :current-page="pageNo"
+                             :current-page="query.page"
                              :page-sizes="[20, 100, 200, 500]"
-                             :page-size="pageSize"
+                             :page-size="query.size"
                              layout="total, sizes, prev, pager, next, jumper"
                              :total="total">
               </el-pagination>
@@ -158,6 +155,7 @@
           businessOrderNo:'',
           sn:'',
           merchantName: '',
+          merchantNo: '',
           startTime: '',
           endTime: '',
           lessTotalFee: '',
@@ -167,6 +165,7 @@
           payType:'',
           proxyName:'',
         },
+        records:[],
         item_status:[
           {value: '', label: '全部'},
           {value: '1', label: '待支付'},
@@ -242,10 +241,10 @@
       },
       getData: function () {
         this.tableLoading = true;
-        this.$http.post('/tradeQuery/tradeList', this.query).then(res => {
+        this.$http.post('/daili/tradeQuery/tradeList', this.query).then(res => {
           this.tableLoading = false;
           this.total = res.data.count;
-          this.tableData = res.data.records;
+          this.records = res.data.records;
         }, err => {
           this.tableLoading = false;
           this.$message({
@@ -263,6 +262,14 @@
       handleCurrentChange(val) {
         this.query.page = val;
         this.getData();
+      }
+    },
+    filters: {
+      changeHide: function (val) {
+        if(val!=""&&val!=null){
+          val = val.replace(val.substring(3,val.length-6),"…");
+        }
+        return val
       }
     }
   }
