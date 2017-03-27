@@ -60,7 +60,7 @@ public interface AdminRoleService {
      * @param type
      * @return
      */
-    List<AdminMenuOptRelListResponse> getPrivilege(int type,long id,long userId);
+    List<AdminMenuOptRelListResponse> getPrivilege(int type,long id);
 
     /**
      * 根据编码查询角色
@@ -74,5 +74,11 @@ public interface AdminRoleService {
      * @param roleDetailRequest
      */
     void save(RoleDetailRequest roleDetailRequest);
+//    /**
+//     * 插入
+//     *
+//     * @param roleDetailRequest
+//     */
+//    PageModel<> save(RoleDetailRequest roleDetailRequest);
 
 }

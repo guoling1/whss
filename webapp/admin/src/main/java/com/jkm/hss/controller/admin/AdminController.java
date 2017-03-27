@@ -1140,20 +1140,40 @@ public class AdminController extends BaseController {
             roleDetailResponse.setRoleId(roleDetailResponse.getRoleId());
             roleDetailResponse.setRoleName(adminRoleOptional.get().getRoleName());
         }
-        List<AdminMenuOptRelListResponse> adminMenuOptRelListResponses = adminRoleService.getPrivilege(EnumAdminType.BOSS.getCode(),adminRoleDetailRequest.getId(),super.getAdminUser().getId());
+        List<AdminMenuOptRelListResponse> adminMenuOptRelListResponses = adminRoleService.getPrivilege(EnumAdminType.BOSS.getCode(),adminRoleDetailRequest.getId());
         roleDetailResponse.setList(adminMenuOptRelListResponses);
         return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功",roleDetailResponse);
     }
 
     /**
-     * 添加角色
+     * 添加或修改角色
      * @return
      */
     @ResponseBody
     @RequestMapping(value = "/saveRole", method = RequestMethod.POST)
     public CommonResponse saveRole (@RequestBody RoleDetailRequest roleDetailRequest) {
+        if(roleDetailRequest.getRoleName()==null||"".equals(roleDetailRequest.getRoleName())){
+            return CommonResponse.simpleResponse(-1, "请输入角色名");
+        }
+        if(roleDetailRequest.getList()==null||roleDetailRequest.getList().size()<=0){
+            return CommonResponse.simpleResponse(-1, "请选择菜单");
+        }
+        roleDetailRequest.setType(EnumAdminType.BOSS.getCode());
         adminRoleService.save(roleDetailRequest);
         return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "添加成功");
     }
+
+    /**
+     * 分页查询角色列表
+     * @param adminRoleListRequest
+     * @return
+     */
+//    @ResponseBody
+//    @RequestMapping(value = "/roleListByPage", method = RequestMethod.POST)
+//    public CommonResponse roleListByPage (@RequestBody AdminRoleListRequest adminRoleListRequest) {
+//        adminRoleListRequest.setType(EnumAdminType.BOSS.getCode());
+////        PageModel<AdminUserListResponse> adminUserPageModel = adminUserService.userList(adminUserListRequest);
+////        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功",adminUserPageModel);
+//    }
 
 }

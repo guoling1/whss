@@ -1,7 +1,9 @@
 package com.jkm.hss.admin.dao;
 
 import com.jkm.hss.admin.entity.AdminMenu;
+import com.jkm.hss.admin.entity.AdminMenuOptRel;
 import com.jkm.hss.admin.entity.AdminRole;
+import com.jkm.hss.admin.entity.AdminRoleMenuRel;
 import com.jkm.hss.admin.helper.requestparam.AdminRoleListRequest;
 import com.jkm.hss.admin.helper.responseparam.AdminMenuResponse;
 import com.jkm.hss.admin.helper.responseparam.AdminOptRelResponse;
@@ -85,22 +87,42 @@ public interface AdminRoleDao {
      * @param parentId
      * @return
      */
-    List<AdminMenuResponse> getMenuByParentIdAndTypeAndRoleId(@Param("parentId") long parentId, @Param("type") int type, @Param("roleId") long roleId, @Param("userId") long userId);
+    List<AdminMenuResponse> getMenuByParentIdAndTypeAndRoleId(@Param("parentId") long parentId, @Param("type") int type, @Param("roleId") long roleId);
     /**
      * 根据菜单编码、类型、操作编码查询菜单
      * @param menuId
      * @return
      */
-    List<AdminOptRelResponse> getOptByMenuIdAndTypeAndUserId(@Param("menuId") long menuId, @Param("type") int type, @Param("userId") long userId);
+    List<AdminOptRelResponse> getOptByMenuIdAndTypeAndUserId(@Param("menuId") long menuId, @Param("type") int type);
 
     /**
-     * 根据用户编码删除角色菜单关联
-     * @param userId
+     * 根据角色编码删除角色菜单关联
+     * @param roleId
      */
-    void deleteRoleAndMenuByUserId(@Param("userId") long userId);
+    void deleteRoleAndMenuByRoleId(@Param("roleId") long roleId);
     /**
-     * 根据用户编码删除菜单操作关联
-     * @param userId
+     * 根据角色编码删除菜单操作关联
+     * @param roleId
      */
-    void deleteMenuAndOptByUserId(@Param("userId") long userId);
+    void deleteMenuAndOptByRoleId(@Param("roleId") long roleId);
+
+    /**
+     * 新增角色菜单
+     * @param adminRoleMenuRel
+     */
+    void insertRoleAndMenuRel(AdminRoleMenuRel adminRoleMenuRel);
+
+    /**
+     * 新增菜单权限
+     * @param adminMenuOptRel
+     */
+    void insertMenuAndOptRel(AdminMenuOptRel adminMenuOptRel);
+
+    /**
+     * 修改角色名
+     * @param roleName
+     * @param id
+     * @return
+     */
+    int updateRoleNameById(@Param("roleName") String roleName,@Param("id") long id);
 }

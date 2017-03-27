@@ -19,6 +19,11 @@ public class RoleDetailRequest {
      */
     private String roleName;
     /**
+     *员工类型
+     * {@link com.jkm.hss.admin.enums.EnumAdminType}
+     */
+    private int type;
+    /**
      * 权限列表
      */
     private List<AdminMenuOptRelListResponse> list;

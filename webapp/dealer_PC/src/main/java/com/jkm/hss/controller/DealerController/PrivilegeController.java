@@ -275,7 +275,7 @@ public class PrivilegeController extends BaseController {
      * @return
      */
     @ResponseBody
-    @RequestMapping(value = "/userRoleList", method = RequestMethod.POST)
+    @RequestMapping(value = "/userRoleList", method = RequestMethod.GET)
     public CommonResponse userRoleList () {
         Optional<Dealer> dealerOptional = super.getDealer();
         int level = dealerOptional.get().getLevel();
@@ -292,23 +292,4 @@ public class PrivilegeController extends BaseController {
 
 
 
-    /**
-     * 权限列表
-     * @return
-     */
-    @ResponseBody
-    @RequestMapping(value = "/getPrivilegeList", method = RequestMethod.POST)
-    public CommonResponse getPrivilegeList () {
-        Optional<Dealer> dealerOptional = super.getDealer();
-        int level = dealerOptional.get().getLevel();
-        int type = EnumAdminType.FIRSTDEALER.getCode();
-        if(level==1){
-            type=EnumAdminType.FIRSTDEALER.getCode();
-        }
-        if(level==2){
-            type=EnumAdminType.SECONDDEALER.getCode();
-        }
-        List<AdminMenuOptRelListResponse> adminMenuOptRelListResponses = adminRoleService.getPrivilege(type);
-        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功",adminMenuOptRelListResponses);
-    }
 }
