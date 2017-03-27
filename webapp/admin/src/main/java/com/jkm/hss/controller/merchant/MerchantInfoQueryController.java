@@ -71,8 +71,8 @@ public class MerchantInfoQueryController extends BaseController {
             req.setEndTime2(sdf.format(rightNow.getTime()));
         }
         List<MerchantInfoResponse> list = this.merchantInfoQueryService.getAll(req);
-//        long count = this.merchantInfoQueryService.getCount(req);
-        pageModel.setCount(list.size());
+        long count = this.merchantInfoQueryService.getCount(req);
+        pageModel.setCount(count);
         pageModel.setRecords(list);
         String downLoadExcel = downLoad(req);
         pageModel.setExt(downLoadExcel);

@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -93,6 +94,13 @@ public class ProfitDetailsController extends BaseController{
             req.setEndTime(sdf.format(rightNow.getTime()));
         }
         JkmProfitDetailsResponse profitAmount =  profitService.profitAmount(req);
+        BigDecimal x = new BigDecimal("0.0");
+        JkmProfitDetailsResponse res = new JkmProfitDetailsResponse();
+        if (profitAmount==null){
+            res.setSplitAmount(x);
+            res.setSplitTotalAmount(x);
+            return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "统计完成", res);
+        }
         return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "统计完成", profitAmount);
     }
 

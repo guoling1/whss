@@ -24,7 +24,7 @@ public interface MerchantInfoQueryDao {
      * 查询总数
      * @return
      */
-//    int getCount(MerchantInfoRequest req);
+    int getCount(MerchantInfoRequest req);
 
     /**
      * 查询待审核商户列表
@@ -39,4 +39,10 @@ public interface MerchantInfoQueryDao {
      */
     int getCountRecord(MerchantInfoRequest req);
 
+    /**
+     * 下载
+     * @param req
+     * @return
+     */
+    List<MerchantInfoResponse> downloade(MerchantInfoRequest req);
 }

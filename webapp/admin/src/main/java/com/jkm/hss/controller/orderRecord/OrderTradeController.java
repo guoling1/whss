@@ -88,6 +88,10 @@ public class OrderTradeController extends BaseController{
             req.setEndTime(sdf.format(rightNow.getTime()));
         }
         String orderList =  orderService.amountCount(req);
+        if (orderList==null||("").equals(orderList)){
+            int res = 0;
+            return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", res);
+        }
         return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", orderList);
     }
 

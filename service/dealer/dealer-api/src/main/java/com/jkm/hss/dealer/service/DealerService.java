@@ -18,7 +18,6 @@ import com.jkm.hss.dealer.helper.response.SecondDealerResponse;
 import com.jkm.hss.merchant.entity.MerchantInfo;
 import com.jkm.hss.merchant.entity.MerchantInfoResponse;
 import com.jkm.hss.merchant.entity.OrderRecord;
-import com.jkm.hss.merchant.helper.request.OrderTradeRequest;
 import com.jkm.hss.product.enums.EnumProductType;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
@@ -498,5 +497,17 @@ public interface DealerService {
      */
     MerchantInfoResponse getProxyName(int firstLevelDealerId);
 
+    /**
+     * 查询一级代理商的编码和名称
+     * @param firstDealerId
+     * @return
+     */
+    MerchantInfoResponse getInfo(long firstDealerId);
 
+    /**
+     * 查询二级代理商编码和名称
+     * @param secondDealerId
+     * @return
+     */
+    MerchantInfoResponse getInfo1(long secondDealerId);
 }
