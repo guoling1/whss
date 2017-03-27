@@ -5,10 +5,7 @@ import com.jkm.hss.admin.entity.AdminMenuOptRel;
 import com.jkm.hss.admin.entity.AdminRole;
 import com.jkm.hss.admin.entity.AdminRoleMenuRel;
 import com.jkm.hss.admin.helper.requestparam.AdminRoleListRequest;
-import com.jkm.hss.admin.helper.responseparam.AdminMenuResponse;
-import com.jkm.hss.admin.helper.responseparam.AdminOptRelResponse;
-import com.jkm.hss.admin.helper.responseparam.AdminOptResponse;
-import com.jkm.hss.admin.helper.responseparam.AdminRoleListResponse;
+import com.jkm.hss.admin.helper.responseparam.*;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
@@ -52,7 +49,7 @@ public interface AdminRoleDao {
      * @param adminRoleListRequest
      * @return
      */
-    List<AdminRole> selectAdminRoleListByPageParams(AdminRoleListRequest adminRoleListRequest);
+    List<AdminRoleListPageResponse> selectAdminRoleListByPageParams(AdminRoleListRequest adminRoleListRequest);
 
     /**
      *分类查询角色列表

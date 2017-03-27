@@ -1,6 +1,7 @@
 package com.jkm.hss.admin.service.impl;
 
 import com.google.common.base.Optional;
+import com.jkm.base.common.entity.PageModel;
 import com.jkm.hss.admin.dao.AdminRoleDao;
 import com.jkm.hss.admin.entity.AdminMenu;
 import com.jkm.hss.admin.entity.AdminMenuOptRel;
@@ -79,7 +80,7 @@ public class AdminRoleServiceImpl implements AdminRoleService{
      * @return
      */
     @Override
-    public List<AdminRole> selectAdminRoleListByPageParams(AdminRoleListRequest adminRoleListRequest) {
+    public List<AdminRoleListPageResponse> selectAdminRoleListByPageParams(AdminRoleListRequest adminRoleListRequest) {
         return adminRoleDao.selectAdminRoleListByPageParams(adminRoleListRequest);
     }
 
@@ -355,6 +356,24 @@ public class AdminRoleServiceImpl implements AdminRoleService{
                 }
             }
         }
+    }
+
+    /**
+     * 角色列表
+     *
+     * @param adminRoleListRequest
+     * @return
+     */
+    @Override
+    public PageModel<AdminRoleListPageResponse> roleListByPage(AdminRoleListRequest adminRoleListRequest) {
+        PageModel<AdminRoleListPageResponse> pageModel = new PageModel<>(adminRoleListRequest.getPageNo(),adminRoleListRequest.getPageSize());
+        adminRoleListRequest.setOffset(pageModel.getFirstIndex());
+        adminRoleListRequest.setCount(pageModel.getPageSize());
+        long total = this.selectAdminRoleCountByPageParams(adminRoleListRequest);
+        List<AdminRoleListPageResponse> adminRoleListPageResponses = this.selectAdminRoleListByPageParams(adminRoleListRequest);
+        pageModel.setCount(total);
+        pageModel.setRecords(adminRoleListPageResponses);
+        return pageModel;
     }
 
 

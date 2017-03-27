@@ -1168,12 +1168,35 @@ public class AdminController extends BaseController {
      * @param adminRoleListRequest
      * @return
      */
-//    @ResponseBody
-//    @RequestMapping(value = "/roleListByPage", method = RequestMethod.POST)
-//    public CommonResponse roleListByPage (@RequestBody AdminRoleListRequest adminRoleListRequest) {
-//        adminRoleListRequest.setType(EnumAdminType.BOSS.getCode());
-////        PageModel<AdminUserListResponse> adminUserPageModel = adminUserService.userList(adminUserListRequest);
-////        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功",adminUserPageModel);
-//    }
+    @ResponseBody
+    @RequestMapping(value = "/roleListByPage", method = RequestMethod.POST)
+    public CommonResponse roleListByPage (@RequestBody AdminRoleListRequest adminRoleListRequest) {
+        adminRoleListRequest.setType(EnumAdminType.BOSS.getCode());
+        PageModel<AdminRoleListPageResponse> adminUserPageModel = adminRoleService.roleListByPage(adminRoleListRequest);
+        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功",adminUserPageModel);
+    }
+
+    /**
+     * 禁用角色
+     * @param adminRoleDetailRequest
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/disableRole", method = RequestMethod.POST)
+    public CommonResponse disableRole (final HttpServletResponse response,@RequestBody AdminRoleDetailRequest adminRoleDetailRequest) {
+        adminRoleService.disableRole(adminRoleDetailRequest.getId());
+        return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "禁用成功");
+    }
+    /**
+     * 启用角色
+     * @param adminRoleDetailRequest
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/activeRole", method = RequestMethod.POST)
+    public CommonResponse activeRole (@RequestBody AdminRoleDetailRequest adminRoleDetailRequest) {
+        adminRoleService.enableRole(adminRoleDetailRequest.getId());
+        return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "启用成功");
+    }
 
 }

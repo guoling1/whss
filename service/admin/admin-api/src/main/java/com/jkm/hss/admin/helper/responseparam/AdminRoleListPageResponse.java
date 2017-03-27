@@ -24,5 +24,5 @@ public class AdminRoleListPageResponse {
     /**
      *
      */
-    private String status;
+    private String statusName;
 }

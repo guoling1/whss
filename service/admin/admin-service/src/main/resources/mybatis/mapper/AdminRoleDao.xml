@@ -59,8 +59,15 @@
         </where>
     </select>
 
-    <select id="selectAdminRoleListByPageParams" resultType="com.jkm.hss.admin.entity.AdminRole">
-        SELECT <include refid="Base_Column_List" /> FROM tb_admin_role
+    <select id="selectAdminRoleListByPageParams" resultType="com.jkm.hss.admin.helper.responseparam.AdminRoleListPageResponse">
+        SELECT id,role_name,update_time,
+        CASE
+        WHEN status = 1 THEN
+        '正常'
+        ELSE
+        '禁用'
+        END as statusName,
+        FROM tb_admin_role
         <where>
             type=#{type}
             <if test="roleName != null and roleName!=''">

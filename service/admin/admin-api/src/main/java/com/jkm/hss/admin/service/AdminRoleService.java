@@ -1,10 +1,12 @@
 package com.jkm.hss.admin.service;
 
 import com.google.common.base.Optional;
+import com.jkm.base.common.entity.PageModel;
 import com.jkm.hss.admin.entity.AdminRole;
 import com.jkm.hss.admin.helper.requestparam.AdminRoleListRequest;
 import com.jkm.hss.admin.helper.requestparam.RoleDetailRequest;
 import com.jkm.hss.admin.helper.responseparam.AdminMenuOptRelListResponse;
+import com.jkm.hss.admin.helper.responseparam.AdminRoleListPageResponse;
 import com.jkm.hss.admin.helper.responseparam.AdminRoleListResponse;
 
 import java.util.List;
@@ -46,7 +48,7 @@ public interface AdminRoleService {
      * @param adminRoleListRequest
      * @return
      */
-    List<AdminRole> selectAdminRoleListByPageParams(AdminRoleListRequest adminRoleListRequest);
+    List<AdminRoleListPageResponse> selectAdminRoleListByPageParams(AdminRoleListRequest adminRoleListRequest);
 
     /**
      *分类查询角色列表
@@ -74,11 +76,12 @@ public interface AdminRoleService {
      * @param roleDetailRequest
      */
     void save(RoleDetailRequest roleDetailRequest);
-//    /**
-//     * 插入
-//     *
-//     * @param roleDetailRequest
-//     */
-//    PageModel<> save(RoleDetailRequest roleDetailRequest);
+
+    /**
+     * 角色列表
+     * @param adminRoleListRequest
+     * @return
+     */
+    PageModel<AdminRoleListPageResponse> roleListByPage(AdminRoleListRequest adminRoleListRequest);
 
 }
