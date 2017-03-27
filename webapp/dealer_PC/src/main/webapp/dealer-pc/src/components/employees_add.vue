@@ -232,7 +232,7 @@
               </el-form-item>
               <el-form-item label="角色">
                 <el-select style="width: 100%" v-model="query.roleId" clearable placeholder="请选择" size="small">
-                  <el-option v-for="item in role" :label="item.roleName" :value="item.id">{{item.roleName}}</el-option>
+                  <el-option v-for="item in role" :label="item.roleName" :value="item.roleId"></el-option>
                 </el-select>
               </el-form-item>
               <el-form-item>
@@ -299,7 +299,7 @@
             {type: 'email', message: '请输入正确的邮箱', trigger: 'blur'}
           ],
           roleId: [
-            {required: true, message: '请选择角色', trigger: 'change'}
+            {required: true, message: '请选择角色', trigger: 'blur'}
           ],
         },
         role:[],
@@ -319,6 +319,7 @@
           email:"",
           roleId: ""
         },
+        roleName:'',
         id: 0,
         isShow: true,
         isMask: false,
@@ -340,7 +341,11 @@
         this.$http.get('/daili/privilege/userDetail/' + this.$route.query.id)
           .then(function (res) {
             this.query = res.data;
-            this.query.roleId = res.data.roleId;
+            for(var i=0;i<this.role.length;i++){
+                if(this.query.roleId==this.role[i].id){
+                    this.roleName = this.role[i].roleName;
+                }
+            }
             if (res.data.realIdentityFacePic != null) {
               this.hasButton = false;
               document.getElementById('btn').style.marginLeft=0;
@@ -454,7 +459,12 @@
               });
             })
         }*/
-        console.log(this.query.roleId);
+        for(var i=0;i<this.role.length;i++){
+          if(this.roleName==this.role[i].roleName){
+            this.query.roleId = this.role[i].id;
+          }
+        }
+        console.log(this.query.roleId)
         this.$refs['form'].validate((valid) => {
           if (valid) {
             this.$http.post('/daili/privilege/addUser', this.query).then(res => {
