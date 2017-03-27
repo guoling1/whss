@@ -32,7 +32,6 @@ import java.util.List;
  * Created by lt on 2016/12/7.
  */
 @Slf4j
-
 @Controller
 @RequestMapping(value = "/admin/queryOrder")
 public class OrderTradeController extends BaseController{
