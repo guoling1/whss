@@ -316,4 +316,18 @@ public interface OrderDao {
      * @return
      */
     List<MerchantTradeResponse> getTradeFirst(OrderTradeRequest req);
+
+    /**
+     *  代理商pc交易查询二级总数
+     * @param req
+     * @return
+     */
+    int listCount(OrderTradeRequest req);
+
+    /**
+     * 代理商pc交易查询一级总数
+     * @param req
+     * @return
+     */
+    int listFirstCount(OrderTradeRequest req);
 }

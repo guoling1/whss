@@ -32,16 +32,9 @@ public class QueryMerchantController extends BaseController {
         req.setOffset(pageModel.getFirstIndex());
         long dealerId = super.getDealerId();
         int level = super.getDealer().get().getLevel();
-        String proxyName = super.getDealer().get().getProxyName();
         req.setDealerId(dealerId);
         List<QueryMerchantResponse> list = dealerService.dealerMerchantList(req);
-        if (list.size()>0){
-            for (int i=0;i<list.size();i++){
-                if (level==1){
-                    list.get(i).setProxyName(proxyName);
-                }
-            }
-        }
+
         int count = dealerService.dealerMerchantCount(req);
         pageModel.setCount(count);
         pageModel.setRecords(list);

@@ -35,11 +35,17 @@ public class TradeQueryController extends BaseController {
         req.setDealerId(dealerId);
         if (level==2){
             List<MerchantTradeResponse> list = orderService.getTrade(req);
-            return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", list);
+            int count = orderService.listCount(req);
+            pageModel.setCount(count);
+            pageModel.setRecords(list);
+            return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", pageModel);
         }
         if (level==1){
             List<MerchantTradeResponse> list = orderService.getTradeFirst(req);
-            return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", list);
+            int count = orderService.listFirstCount(req);
+            pageModel.setCount(count);
+            pageModel.setRecords(list);
+            return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", pageModel);
         }
 
         return CommonResponse.simpleResponse(-1, "查询异常");

@@ -1385,6 +1385,16 @@ public class OrderServiceImpl implements OrderService {
         return list;
     }
 
+    @Override
+    public int listCount(OrderTradeRequest req) {
+        return this.orderDao.listCount(req);
+    }
+
+    @Override
+    public int listFirstCount(OrderTradeRequest req) {
+        return this.orderDao.listFirstCount(req);
+    }
+
 
     /**
      * 手续费由待结算入余额
