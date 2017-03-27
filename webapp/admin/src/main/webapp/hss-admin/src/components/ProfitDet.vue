@@ -54,13 +54,7 @@
             <el-table-column prop="settleType" label="结算周期"></el-table-column>
             <el-table-column prop="splitTotalAmount" label="分润总额" align="right" :formatter="changeTotal"></el-table-column>
             <el-table-column prop="splitAmount" align="right" header-align="left" label="分润金额" :formatter="changePrice"></el-table-column>
-            <el-table-column prop="outMoneyAccountName" label="分润出款账户">
-              <template scope="scope">
-                <span v-if="records[scope.$index].settleType!='当页总额'&&records[scope.$index].settleType!='筛选条件统计'" type="text" size="small">明细
-                </span>
-                <a v-if="records[scope.$index].settleType=='筛选条件统计'" @click="add">点击统计</a>
-              </template>
-            </el-table-column>
+            <el-table-column prop="outMoneyAccountName" label="分润出款账户"></el-table-column>
             <el-table-column prop="receiptMoneyUserName" label="分润方名称"></el-table-column>
             <el-table-column prop="profitType" label="分润方类型" v-if="isShow"></el-table-column>
             <el-table-column prop="remark" label="备注信息"></el-table-column>
