@@ -230,9 +230,9 @@
               <el-form-item label="邮箱" prop="email">
                 <el-input v-model="query.email" size="small"></el-input>
               </el-form-item>
-              <el-form-item label="角色">
+              <el-form-item label="角色" prop="roleId">
                 <el-select style="width: 100%" v-model="query.roleId" clearable placeholder="请选择" size="small">
-                  <el-option v-for="item in role" :label="item.roleName" :value="item.roleId"></el-option>
+                  <el-option v-for="item in role" :label="item.roleName" :value="item.id"></el-option>
                 </el-select>
               </el-form-item>
               <el-form-item>
@@ -333,6 +333,9 @@
     created: function () {
       this.$http.post('/daili/privilege/userRoleList').then((res)=>{
         this.role = res.data;
+        for(var i=0;i<this.role.length;i++){
+          this.role[i].id = String(this.role[i].id)
+        }
       });
       //若为查看详情
       if (this.$route.query.id != undefined) {
@@ -341,6 +344,7 @@
         this.$http.get('/daili/privilege/userDetail/' + this.$route.query.id)
           .then(function (res) {
             this.query = res.data;
+            this.query.roleId = String(this.query.roleId)
             for(var i=0;i<this.role.length;i++){
                 if(this.query.roleId==this.role[i].id){
                     this.roleName = this.role[i].roleName;
@@ -429,42 +433,6 @@
         }
       },
       create: function () {
-        /*var reg = /(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,32}/;
-        if (this.query.username.length > 16 || this.query.username.length < 4) {
-          this.$message({
-            showClose: true,
-            message: '请设置4-16位登录名',
-            type: 'error'
-          });
-        } else if (!reg.test(this.query.password)) {
-          this.$message({
-            showClose: true,
-            message: '请设置6-32位以上，数字字母混合密码',
-            type: 'error'
-          });
-        } else {
-          this.$http.post('/daili/privilege/addUser', this.query)
-            .then(function (res) {
-              this.$message({
-                showClose: true,
-                message: '创建成功',
-                type: 'success'
-              });
-              this.$router.push('/daili/app/employees')
-            }, function (err) {
-              this.$message({
-                showClose: true,
-                message: err.statusMessage,
-                type: 'error'
-              });
-            })
-        }*/
-        for(var i=0;i<this.role.length;i++){
-          if(this.roleName==this.role[i].roleName){
-            this.query.roleId = this.role[i].id;
-          }
-        }
-        console.log(this.query.roleId)
         this.$refs['form'].validate((valid) => {
           if (valid) {
             this.$http.post('/daili/privilege/addUser', this.query).then(res => {
@@ -477,7 +445,7 @@
             }, err => {
               this.$message({
                 showClose: true,
-                message: err.data.msg,
+                message: err.statusMessage,
                 type: 'error'
               });
             })
@@ -493,29 +461,6 @@
       },
       //修改
       upDate: function () {
-        /*if (this.query.username.length > 16 || this.query.username.length < 4) {
-          this.$message({
-            showClose: true,
-            message: '请设置4-16位登录名',
-            type: 'error'
-          });
-        } else {
-          this.$http.post('/daili/privilege/updateUser', this.$data.query)
-            .then(function (res) {
-              this.$message({
-                showClose: true,
-                message: '修改成功',
-                type: 'success'
-              });
-              this.$router.push('/daili/app/employees')
-            }, function (err) {
-              this.$message({
-                showClose: true,
-                message: err.statusMessage,
-                type: 'error'
-              });
-            })
-        }*/
         this.query.password = "******";
         this.$refs['form'].validate((valid) => {
           if (valid) {
@@ -529,7 +474,7 @@
             }, err => {
               this.$message({
                 showClose: true,
-                message: err.data.msg,
+                message: err.statusMessage,
                 type: 'error'
               });
             })
