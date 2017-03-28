@@ -21,7 +21,11 @@
           <el-table v-loading.body="loading" style="font-size: 12px;margin:15px 0" :data="records" border>
             <el-table-column type="index" width="70" label="序号"></el-table-column>
             <el-table-column prop="roleName" label="角色名称"></el-table-column>
-            <el-table-column prop="updateTime" label="最后编辑时间"></el-table-column>
+            <el-table-column prop="updateTime" label="最后编辑时间">
+              <template scope="scope">
+                {{scope.row.updateTime|changeTime}}
+              </template>
+            </el-table-column>
             <el-table-column prop="statusName" label="状态"></el-table-column>
             <el-table-column label="操作" width="100">
               <template scope="scope">

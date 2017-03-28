@@ -3,7 +3,8 @@
     <div class="col-md-12">
       <div class="box" style="margin-top:15px;overflow: hidden">
         <div class="box-header">
-          <h3 class="box-title">角色管理</h3>
+          <h3 class="box-title" v-if="isAdd">新增角色</h3>
+          <h3 class="box-title" v-else>角色详情</h3>
         </div>
         <div class="box-body">
           <ul>
@@ -39,7 +40,7 @@
                       <tr width="100%" v-for="itemChild in item.children">
                         <td>
                           <span v-for="opt in itemChild.opts" style="margin-right: 10px"><el-checkbox
-                            style="margin: 0 5px" v-model="opt.isSelected" @change="optSelect"></el-checkbox>{{opt.optName}}</span>
+                            style="margin: 0 5px" v-model="opt.isSelected"></el-checkbox>{{opt.optName}}</span>
                         </td>
                       </tr>
                       </tbody>
@@ -47,12 +48,12 @@
                   </td>
                 </tr>
                 </tbody>
-
               </table>
             </li>
             <li class="same">
               <label class="title"></label>
-              <el-button type="primary" @click="submit">确 定</el-button>
+              <el-button type="primary" @click="submit" v-if="isAdd">确 定</el-button>
+              <el-button type="primary" @click="submit" v-else>修改</el-button>
             </li>
           </ul>
         </div>
@@ -66,17 +67,22 @@
     data(){
       return {
         roleName:'',
-        tableData: []
+        tableData: [],
+        isAdd:true
       }
     },
     created: function () {
       let id=0;
       if(this.$route.query.id!=undefined){
         id = this.$route.query.id;
+        this.isAdd = false;
       }
       this.$http.post('/admin/user/getRoleDetail',{id:id})
         .then(res => {
           this.tableData = res.data.list;
+          this.roleName = res.data.roleName;
+          console.log(this.tableData)
+         /* this.tableData = JSON.parse(JSON.stringify(res.data.list));*/
           for (var i = 0; i < this.tableData.length; i++) {
             for (var j = 0; j < this.tableData[i].children.length; j++) {
               for (var k = 0; k < this.tableData[i].children[j].opts.length; k++) {
@@ -97,9 +103,6 @@
         })
     },
     methods: {
-      optSelect: function (e) {
-        console.log(e)
-      },
       submit:function () {
         var list = JSON.parse(JSON.stringify(this.tableData));
         for (var i = 0; i < list.length; i++) {
@@ -111,8 +114,13 @@
           }
           list[i].isSelected = Number(list[i].isSelected);
         }
+        let id=0;
+        if(this.$route.query.id!=undefined){
+          id = this.$route.query.id;
+          this.isAdd = false;
+        }
         this.$http.post('/admin/user/saveRole',{
-          roleId:0,
+          roleId:id,
           roleName:this.roleName,
           list:list
         }).then(res => {
@@ -134,6 +142,7 @@
     watch: {},
     computed: {
       $tableData: function () {
+        let flag2 = false;
         for (let i = 0; i < this.tableData.length; i++) {
           let flag1 = false;
           for (let j = 0; j < this.tableData[i].children.length; j++) {
@@ -141,6 +150,7 @@
             for (let k = 0; k < this.tableData[i].children[j].opts.length; k++) {
               if (this.tableData[i].children[j].opts[k].isSelected) {
                 flag = true;
+                continue;
               }
             }
             if (flag) {
@@ -148,10 +158,12 @@
             }
             if (this.tableData[i].children[j].isSelected == true) {
               flag1 = true;
+              continue;
             }
           }
           if (flag1) {
-            this.tableData[i].isSelected = true
+            this.tableData[i].isSelected = true;
+            continue;
           }
         }
         return this.tableData;
