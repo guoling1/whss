@@ -482,8 +482,6 @@ public interface QRCodeService {
      * @return
      */
     int getSecondActivateCount(long secondLevelDealerId,String sysType);
-    int getSecondActivateCount(long secondLevelDealerId);
-
 
     /**
      * 修改代理商信息
