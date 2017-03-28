@@ -242,7 +242,7 @@ public class AdminRoleServiceImpl implements AdminRoleService{
      *
      * @param roleDetailRequest
      */
-    @Transactional
+
     @Override
     public void save(RoleDetailRequest roleDetailRequest) {
         if(roleDetailRequest.getRoleId()<=0){
@@ -284,11 +284,11 @@ public class AdminRoleServiceImpl implements AdminRoleService{
                             adminRoleDao.insertRoleAndMenuRel(adminRoleMenuRel);
                         }
                         if(menus.get(k).getOpts().size()>0){
-                            List<AdminMenuOptRelListResponse.Opt> childOpts = list.get(k).getOpts();
+                            List<AdminMenuOptRelListResponse.Opt> childOpts = menus.get(k).getOpts();
                             for(int n=0;n<childOpts.size();n++){
                                 if(childOpts.get(n).getIsSelected()==EnumIsSelected.SELECTED.getCode()){
                                     AdminMenuOptRel adminMenuOptRel = new AdminMenuOptRel();
-                                    adminMenuOptRel.setMenuId(childOpts.get(n).getId());
+                                    adminMenuOptRel.setMenuId(menus.get(k).getId());
                                     adminMenuOptRel.setRoleId(adminRole.getId());
                                     adminMenuOptRel.setOptId(childOpts.get(n).getId());
                                     adminMenuOptRel.setStatus(EnumAdminUserStatus.NORMAL.getCode());
@@ -338,11 +338,11 @@ public class AdminRoleServiceImpl implements AdminRoleService{
                             adminRoleDao.insertRoleAndMenuRel(adminRoleMenuRel);
                         }
                         if(list.get(k).getOpts().size()>0){
-                            List<AdminMenuOptRelListResponse.Opt> childOpts = list.get(k).getOpts();
+                            List<AdminMenuOptRelListResponse.Opt> childOpts = menus.get(k).getOpts();
                             for(int n=0;n<childOpts.size();n++){
                                 if(childOpts.get(n).getIsSelected()==EnumIsSelected.SELECTED.getCode()){
                                     AdminMenuOptRel adminMenuOptRel = new AdminMenuOptRel();
-                                    adminMenuOptRel.setMenuId(childOpts.get(n).getId());
+                                    adminMenuOptRel.setMenuId(menus.get(n).getId());
                                     adminMenuOptRel.setRoleId(roleDetailRequest.getRoleId());
                                     adminMenuOptRel.setOptId(childOpts.get(n).getId());
                                     adminMenuOptRel.setStatus(EnumAdminUserStatus.NORMAL.getCode());
