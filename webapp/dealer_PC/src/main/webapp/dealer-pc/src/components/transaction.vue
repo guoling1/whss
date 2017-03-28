@@ -84,7 +84,7 @@
                 <el-table-column prop="appId" label="业务方" min-width="85"></el-table-column>
                 <el-table-column label="业务订单号" min-width="112">
                   <template scope="scope">
-                <span class="td" :data-clipboard-text="records[scope.$index].businessOrderNo" type="text" size="small" style="cursor: pointer" title="点击复制">{{records[scope.$index].businessOrderNo|changeHide}}</span>
+                    <span class="td" :data-clipboard-text="records[scope.$index].businessOrderNo" type="text" size="small" style="cursor: pointer" title="点击复制">{{records[scope.$index].businessOrderNo|changeHide}}</span>
                   </template>
                 </el-table-column>
                 <el-table-column prop="merchantName" label="收款商户名称" min-width="120"></el-table-column>
@@ -92,33 +92,35 @@
                 <el-table-column prop="proxyName1" label="所属二级" min-width="110"></el-table-column>
                 <el-table-column label="交易订单号" min-width="112">
                   <template scope="scope">
-                <span class="td" :data-clipboard-text="records[scope.$index].orderNo" type="text" size="small"
-                      style="cursor: pointer" title="点击复制">{{records[scope.$index].orderNo|changeHide}}</span>
+                    <span class="td" :data-clipboard-text="records[scope.$index].orderNo" type="text" size="small" style="cursor: pointer" title="点击复制">{{records[scope.$index].orderNo|changeHide}}</span>
                   </template>
                 </el-table-column>
-                <el-table-column prop="tradeAmount" :formatter="changeNum" label="支付金额" min-width="120" align="right"></el-table-column>
-                <el-table-column label="手续费" min-width="90" align="right">
+                <el-table-column label="支付金额" min-width="90" align="right">
                   <template scope="scope">
-                    <div v-if="records[scope.$index].proxyName1!='当页总额'&&records[scope.$index].proxyName1!='筛选条件统计'">{{records[scope.$index].payRate}}</div>
-                    <a v-if="records[scope.$index].proxyName1=='筛选条件统计'" @click="add">点击统计</a>
+                    {{scope.row.tradeAmount | filter_toFix}}
+                  </template>
+                </el-table-column>
+                <el-table-column label="手续费" min-width="80" align="right">
+                  <template scope="scope">
+                    {{scope.row.poundage | filter_toFix}}
                   </template>
                 </el-table-column>
                 <el-table-column label="交易状态" min-width="90">
                   <template scope="scope">
-                    <div v-if="records[scope.$index].proxyName1!='当页总额'&&records[scope.$index].proxyName1!='筛选条件统计'">{{records[scope.$index].status|changeStatus}}</div>
+                    {{scope.row.status}}
                   </template>
                 </el-table-column>
                 <el-table-column label="支付流水号" min-width="112">
                   <template scope="scope">
-                <span class="td" :data-clipboard-text="records[scope.$index].sn" type="text" size="small"
-                      style="cursor: pointer" title="点击复制">{{records[scope.$index].sn|changeHide}}</span>
+                    <span class="td" :data-clipboard-text="records[scope.$index].sn" type="text" size="small"
+                      style="cursor: pointer" title="点击复制">{{scope.row.sn|changeHide}}</span>
                   </template>
                 </el-table-column>
                 <el-table-column prop="payType" label="支付方式" min-width="115"></el-table-column>
-                <el-table-column prop="settleStatus" :formatter="changeSettleStatus" label="结算状态" min-width="90"></el-table-column>
-                <el-table-column prop="createTime" :formatter="changeTime" label="交易日期" width="162"></el-table-column>
-                <el-table-column prop="" :formatter="changeTime" label="成功时间" width="162"></el-table-column>
-                <el-table-column prop="" :formatter="changeTime" label="结算周期"></el-table-column>
+                <el-table-column prop="settleStatus" label="结算状态" min-width="90"></el-table-column>
+                <el-table-column prop="createTime" label="交易日期" width="162"></el-table-column>
+                <el-table-column prop="" label="成功时间" width="162"></el-table-column>
+                <el-table-column prop="settleType" label="结算周期"></el-table-column>
               </el-table>
             </div>
             <div class="box-body">
@@ -230,9 +232,14 @@
     },
     methods: {
       datetimeSelect: function (val) {
-        let format = val.split(' - ');
-        this.query.startTime = format[0];
-        this.query.endTime = format[1];
+        if(val == undefined){
+          this.query.startTime = '';
+          this.query.endTime = '';
+        }else {
+          let format = val.split(' - ');
+          this.query.startTime = format[0];
+          this.query.endTime = format[1];
+        }
       },
       screen: function () {
         this.total = '';
