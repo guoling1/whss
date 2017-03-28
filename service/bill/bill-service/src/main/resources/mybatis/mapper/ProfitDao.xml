@@ -25,6 +25,7 @@
         SELECT
         a.*, b.id AS ids,
         c.`level`,
+        a.account_user_type,
         d.settle_type
         FROM
         tb_split_account_record a

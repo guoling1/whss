@@ -46,4 +46,6 @@ public interface MerchantInfoQueryService {
     String downloadExcel(MerchantInfoRequest req, String baseUrl);
 
     int getCount(MerchantInfoRequest req);
+
+
 }

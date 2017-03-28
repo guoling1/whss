@@ -70,6 +70,7 @@
             <mvc:mapping path="/daili/qrCode/**"/>
             <mvc:mapping path="/daili/account/**"/>
             <mvc:mapping path="/daili/profit/**"/>
+            <mvc:mapping path="/daili/tradeQuery/**"/>
             <mvc:exclude-mapping path="/daili/login/**"/>
             <mvc:exclude-mapping path="/daili/callback/withdraw"/>
             <bean id="dealerLoginInterceptor" class="com.jkm.hss.interceptor.DealerLoginInterceptor">
