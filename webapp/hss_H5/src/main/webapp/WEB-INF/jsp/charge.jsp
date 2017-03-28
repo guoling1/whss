@@ -12,7 +12,7 @@
   <meta name="viewport"
         content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
   <title>好收收</title>
-  <link rel="stylesheet" href="http://static.jinkaimen.cn/hss/css/style.2.0.2.css">
+  <link rel="stylesheet" href="http://static.jinkaimen.cn/hss/css/style.2.0.3.css">
   <link rel="stylesheet" href="http://static.jinkaimen.cn/weui/weui.css">
 </head>
 <body>
@@ -29,10 +29,11 @@
     <div class="bottom">
       <div class="qr" id="qr"></div>
 
+      <div class="red_mpt">请勿在微信内长按二维码识别</div>
       <div class="bar">
         <img src="http://static.jinkaimen.cn/hss/assets/wxb.png" alt=""/>
         <img src="http://static.jinkaimen.cn/hss/assets/zfbb.png" alt=""/>
-        <span>长按识别或保存二维码付款</span>
+        <span>截图保存后识别二维码付款</span>
       </div>
     </div>
   </div>
