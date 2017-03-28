@@ -76,7 +76,17 @@
       }
       this.$http.post('/admin/user/getRoleDetail',{id:id})
         .then(res => {
-          this.tableData = res.data.list
+          this.tableData = res.data.list;
+          for (var i = 0; i < this.tableData.length; i++) {
+            for (var j = 0; j < this.tableData[i].children.length; j++) {
+              for (var k = 0; k < this.tableData[i].children[j].opts.length; k++) {
+                this.tableData[i].children[j].opts[k].isSelected = Boolean(this.tableData[i].children[j].opts[k].isSelected);
+              }
+              this.tableData[i].children[j].isSelected = Boolean(this.tableData[i].children[j].isSelected);
+            }
+            this.tableData[i].isSelected = Boolean(this.tableData[i].isSelected);
+          }
+          console.log(this.tableData)
         })
         .catch(err => {
           this.$message({
