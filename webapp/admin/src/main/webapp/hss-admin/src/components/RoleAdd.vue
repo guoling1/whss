@@ -22,7 +22,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr v-for="item in tableData">
+                <tr v-for="item in $tableData">
                   <td><el-checkbox style="margin: 0 5px" v-model="item.isSelected"></el-checkbox>{{item.menuName}}</td>
                   <td style="padding: 0">
                     <table style="width: 100%;height: 100%" border="0" cellspacing="0" cellpadding="0" class="table table-bordered">
@@ -38,7 +38,8 @@
                       <tbody>
                       <tr width="100%" v-for="itemChild in item.children">
                         <td>
-                          <span v-for="opt in itemChild.opts" style="margin-right: 10px"><el-checkbox style="margin: 0 5px" v-model="opt.isSelected"></el-checkbox>{{opt.optName}}</span>
+                          <span v-for="opt in itemChild.opts" style="margin-right: 10px"><el-checkbox
+                            style="margin: 0 5px" v-model="opt.isSelected" @change="optSelect"></el-checkbox>{{opt.optName}}</span>
                         </td>
                       </tr>
                       </tbody>
@@ -65,62 +66,15 @@
     data(){
       return {
         roleName:'',
-        tableData: [
-          {
-            name: '员工权限管理',
-            isTrue: true,
-            son: [{
-              name: '员工管理',
-              isTrue: false,
-              children: [{
-                name: '禁用',
-                isTrue: false,
-              }, {
-                name: '编辑',
-                isTrue: false,
-              }]
-            }, {
-              name: '新增员工',
-              isTrue: false,
-              children: [{
-                name: '禁用1',
-                isTrue: false,
-              }, {
-                name: '编辑1',
-                isTrue: false,
-              }]
-            }]
-          },
-          {
-            name: '交易查询',
-            isTrue: false,
-            son: [{
-              name: '员工管理1',
-              isTrue: false,
-              children: [{
-                name: '禁用2',
-                isTrue: false,
-              }, {
-                name: '编辑2',
-                isTrue: false,
-              }]
-            }, {
-              name: '新增员工',
-              isTrue: false,
-              children: [{
-                name: '禁用3',
-                isTrue: false,
-              }, {
-                name: '编辑3',
-                isTrue: false,
-              }]
-            }]
-          }
-        ]
+        tableData: []
       }
     },
     created: function () {
-      this.$http.post('/admin/user/getRoleDetail',{id:0})
+      let id=0;
+      if(this.$route.query.id!=undefined){
+        id = this.$route.query.id;
+      }
+      this.$http.post('/admin/user/getRoleDetail',{id:id})
         .then(res => {
           this.tableData = res.data.list
         })
@@ -133,11 +87,66 @@
         })
     },
     methods: {
+      optSelect: function (e) {
+        console.log(e)
+      },
       submit:function () {
-        console.log(this.tableData)
+        var list = JSON.parse(JSON.stringify(this.tableData));
+        for (var i = 0; i < list.length; i++) {
+          for (var j = 0; j < list[i].children.length; j++) {
+            for (var k = 0; k < list[i].children[j].opts.length; k++) {
+              list[i].children[j].opts[k].isSelected = Number(list[i].children[j].opts[k].isSelected);
+            }
+            list[i].children[j].isSelected = Number(list[i].children[j].isSelected);
+          }
+          list[i].isSelected = Number(list[i].isSelected);
+        }
+        this.$http.post('/admin/user/saveRole',{
+          roleId:0,
+          roleName:this.roleName,
+          list:list
+        }).then(res => {
+          this.$message({
+            showClose: true,
+            message: '添加成功',
+            type: 'success'
+          });
+          this.$router.push('/admin/record/role')
+        }).catch(err =>{
+          this.$message({
+            showClose: true,
+            message: err.statusMessage,
+            type: 'error'
+          });
+        })
       }
     },
     watch: {},
+    computed: {
+      $tableData: function () {
+        for (let i = 0; i < this.tableData.length; i++) {
+          let flag1 = false;
+          for (let j = 0; j < this.tableData[i].children.length; j++) {
+            let flag = false;
+            for (let k = 0; k < this.tableData[i].children[j].opts.length; k++) {
+              if (this.tableData[i].children[j].opts[k].isSelected) {
+                flag = true;
+              }
+            }
+            if (flag) {
+              this.tableData[i].children[j].isSelected = true
+            }
+            if (this.tableData[i].children[j].isSelected == true) {
+              flag1 = true;
+            }
+          }
+          if (flag1) {
+            this.tableData[i].isSelected = true
+          }
+        }
+        return this.tableData;
+      }
+    }
   }
 </script>
 <style scoped lang="less" rel="stylesheet/less">

@@ -25,7 +25,7 @@
             <el-table-column prop="statusName" label="状态"></el-table-column>
             <el-table-column label="操作" width="100">
               <template scope="scope">
-                <router-link :to="{path:'/admin/record/personnelAdd',query:{id:records[scope.$index].id}}" type="text"
+                <router-link :to="{path:'/admin/record/roleAdd',query:{id:records[scope.$index].id}}" type="text"
                              size="small">编辑
                 </router-link>
                 <a @click="open(records[scope.$index].id)" v-if="records[scope.$index].statusName=='禁用'" type="text" size="small">开启</a>
