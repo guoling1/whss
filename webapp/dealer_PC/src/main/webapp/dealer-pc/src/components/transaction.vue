@@ -28,10 +28,6 @@
                 <el-input v-model="query.merchantName" placeholder="收款商户名称" size="small" style="width:220px"></el-input>
               </div>
               <div class="screen-item">
-                <span class="screen-title">收款商户编号</span>
-                <el-input v-model="query.merchantNo" placeholder="收款商户编号" size="small" style="width:220px"></el-input>
-              </div>
-              <div class="screen-item">
                 <span class="screen-title">交易状态</span>
                 <el-select v-model="query.status" size="small" clearable placeholder="请选择" style="width: 220px">
                   <el-option v-for="item in item_status"
@@ -82,17 +78,17 @@
               <el-table v-loading.body="tableLoading" height="583" style="font-size: 12px;margin:15px 0" :data="records" border>
                 <el-table-column type="index" width="62" label="序号" fixed="left"></el-table-column>
                 <el-table-column prop="appId" label="业务方" min-width="85"></el-table-column>
-                <el-table-column label="业务订单号" min-width="112">
+                <el-table-column label="交易订单号" min-width="112">
                   <template scope="scope">
-                    <span class="td" :data-clipboard-text="records[scope.$index].businessOrderNo" type="text" size="small" style="cursor: pointer" title="点击复制">{{records[scope.$index].businessOrderNo|changeHide}}</span>
+                    <span class="td" :data-clipboard-text="records[scope.$index].orderNo" type="text" size="small" style="cursor: pointer" title="点击复制">{{records[scope.$index].orderNo|changeHide}}</span>
                   </template>
                 </el-table-column>
                 <el-table-column prop="merchantName" label="收款商户名称" min-width="120"></el-table-column>
                 <el-table-column prop="proxyName" label="所属一级" min-width="90"></el-table-column>
                 <el-table-column prop="proxyName1" label="所属二级" min-width="110"></el-table-column>
-                <el-table-column label="交易订单号" min-width="112">
+                <el-table-column label="业务订单号" min-width="112">
                   <template scope="scope">
-                    <span class="td" :data-clipboard-text="records[scope.$index].orderNo" type="text" size="small" style="cursor: pointer" title="点击复制">{{records[scope.$index].orderNo|changeHide}}</span>
+                    <span class="td" :data-clipboard-text="records[scope.$index].businessOrderNo" type="text" size="small" style="cursor: pointer" title="点击复制">{{records[scope.$index].businessOrderNo|changeHide}}</span>
                   </template>
                 </el-table-column>
                 <el-table-column label="支付金额" min-width="90" align="right">
@@ -107,7 +103,7 @@
                 </el-table-column>
                 <el-table-column label="交易状态" min-width="90">
                   <template scope="scope">
-                    {{scope.row.status}}
+                    {{scope.row.statusValue}}
                   </template>
                 </el-table-column>
                 <el-table-column label="支付流水号" min-width="112">
@@ -117,9 +113,9 @@
                   </template>
                 </el-table-column>
                 <el-table-column prop="payType" label="支付方式" min-width="115"></el-table-column>
-                <el-table-column prop="settleStatus" label="结算状态" min-width="90"></el-table-column>
-                <el-table-column prop="createTime" label="交易日期" width="162"></el-table-column>
-                <el-table-column prop="" label="成功时间" width="162"></el-table-column>
+                <el-table-column prop="settleStat" label="结算状态" min-width="90"></el-table-column>
+                <el-table-column prop="createTimed" label="交易时间" width="162"></el-table-column>
+                <el-table-column prop="paySuccessTimes" label="成功时间" width="162"></el-table-column>
                 <el-table-column prop="settleType" label="结算周期"></el-table-column>
               </el-table>
             </div>
