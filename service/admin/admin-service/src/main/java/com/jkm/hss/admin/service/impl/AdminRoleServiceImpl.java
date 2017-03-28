@@ -330,14 +330,14 @@ public class AdminRoleServiceImpl implements AdminRoleService{
                 if(list.get(i).getChildren().size()>0){
                     List<AdminMenuOptRelListResponse.Menu> menus = list.get(i).getChildren();
                     for(int k=0;k<menus.size();k++){
-                        if(list.get(k).getIsSelected()==EnumIsSelected.SELECTED.getCode()){
+                        if(menus.get(k).getIsSelected()==EnumIsSelected.SELECTED.getCode()){
                             AdminRoleMenuRel adminRoleMenuRel = new AdminRoleMenuRel();
                             adminRoleMenuRel.setRoleId(roleDetailRequest.getRoleId());
                             adminRoleMenuRel.setMenuId(menus.get(k).getId());
                             adminRoleMenuRel.setStatus(EnumAdminUserStatus.NORMAL.getCode());
                             adminRoleDao.insertRoleAndMenuRel(adminRoleMenuRel);
                         }
-                        if(list.get(k).getOpts().size()>0){
+                        if(menus.get(k).getOpts().size()>0){
                             List<AdminMenuOptRelListResponse.Opt> childOpts = menus.get(k).getOpts();
                             for(int n=0;n<childOpts.size();n++){
                                 if(childOpts.get(n).getIsSelected()==EnumIsSelected.SELECTED.getCode()){
