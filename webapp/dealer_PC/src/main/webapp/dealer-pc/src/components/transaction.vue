@@ -75,7 +75,7 @@
               </div>
             </div>
             <div class="box-body">
-              <el-table v-loading.body="tableLoading" height="583" style="font-size: 12px;margin:15px 0" :data="records" border>
+              <el-table v-loading.body="tableLoading" style="font-size: 12px;margin:15px 0" :data="records" border>
                 <el-table-column type="index" width="62" label="序号" fixed="left"></el-table-column>
                 <el-table-column prop="appId" label="业务方" min-width="85"></el-table-column>
                 <el-table-column label="交易订单号" min-width="112">
@@ -148,7 +148,7 @@
       return {
         query:{
           page:1,
-          size:10,
+          size:20,
           orderNo:'',
           businessOrderNo:'',
           sn:'',
