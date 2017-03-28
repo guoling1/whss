@@ -9,7 +9,7 @@
           <ul>
             <li class="same">
               <label class="title">角色名称:</label>
-              <el-input style="width: 220px" placeholder="请输入内容" size="small"></el-input>
+              <el-input v-model="roleName" style="width: 220px" placeholder="请输入内容" size="small"></el-input>
             </li>
             <li class="same">
               <label class="title">权限:</label>
@@ -23,12 +23,12 @@
                 </thead>
                 <tbody>
                 <tr v-for="item in tableData">
-                  <td><el-checkbox style="margin: 0 5px" v-model="item.isTrue"></el-checkbox>{{item.name}}</td>
+                  <td><el-checkbox style="margin: 0 5px" v-model="item.isSelected"></el-checkbox>{{item.menuName}}</td>
                   <td style="padding: 0">
                     <table style="width: 100%;height: 100%" border="0" cellspacing="0" cellpadding="0" class="table table-bordered">
                       <tbody>
-                      <tr v-for="itemSon in item.son">
-                        <td><el-checkbox style="margin: 0 5px" v-model="itemSon.isTrue"></el-checkbox>{{itemSon.name}}</td>
+                      <tr v-for="itemChild in item.children">
+                        <td><el-checkbox style="margin: 0 5px" v-model="itemChild.isSelected"></el-checkbox>{{itemChild.menuName}}</td>
                       </tr>
                       </tbody>
                     </table>
@@ -36,9 +36,9 @@
                   <td>
                     <table style="width: 100%;height: 100%" border="0" cellspacing="0" cellpadding="0" class="table table-bordered">
                       <tbody>
-                      <tr width="100%" v-for="itemSon in item.son">
+                      <tr width="100%" v-for="itemChild in item.children">
                         <td>
-                          <span v-for="itemChild in itemSon.children" style="margin-right: 10px"><el-checkbox style="margin: 0 5px" v-model="itemChild.isTrue"></el-checkbox>{{itemChild.name}}</span>
+                          <span v-for="opt in itemChild.opts" style="margin-right: 10px"><el-checkbox style="margin: 0 5px" v-model="opt.isSelected"></el-checkbox>{{opt.optName}}</span>
                         </td>
                       </tr>
                       </tbody>
@@ -64,6 +64,7 @@
     name: 'roleAdd',
     data(){
       return {
+        roleName:'',
         tableData: [
           {
             name: '员工权限管理',
@@ -119,7 +120,17 @@
       }
     },
     created: function () {
-
+      this.$http.post('/admin/user/getRoleDetail',{id:0})
+        .then(res => {
+          this.tableData = res.data.list
+        })
+        .catch(err => {
+          this.$message({
+            showClose: true,
+            message: err.statusMessage,
+            type: 'error'
+          });
+        })
     },
     methods: {
       submit:function () {

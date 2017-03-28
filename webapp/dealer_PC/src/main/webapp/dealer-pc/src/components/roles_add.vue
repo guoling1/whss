@@ -47,7 +47,6 @@
                     </td>
                   </tr>
                   </tbody>
-
                 </table>
               </li>
               <li class="same">
@@ -84,7 +83,7 @@
               isTrue: false,
               children: [{
                 name: '禁用1',
-                isTrue: false,
+                isTrue: true,
               }, {
                 name: '编辑1',
                 isTrue: false,
@@ -120,7 +119,19 @@
       }
     },
     created: function () {
-
+        for(let i=0; i<this.tableData.length;i++){
+          for(let j=0;j<this.tableData[i].son.length; j++){
+            let flag = false;
+            for(let k=0; k<this.tableData[i].son[j].children.length;k++){
+              if(this.tableData[i].son[j].children[k].isTrue){
+                flag = true;
+              }
+            }
+            if(flag){
+              this.tableData[i].son[j].isTrue = true
+            }
+          }
+        }
     },
     methods: {
       submit:function () {
