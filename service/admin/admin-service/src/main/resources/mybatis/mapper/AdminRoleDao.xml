@@ -149,4 +149,22 @@
         role_name=#{roleName}
         WHERE id = #{id}
     </update>
+
+    <select id="getLoginMenu" resultType="com.jkm.hss.admin.helper.responseparam.MenuResponse">
+        SELECT r.id,r.menu_name,r.url from tb_admin_role_menu_rel as m left join tb_admin_role as r on m.menu_id=r.id where r.parent_id=#{parentId} and r.type=#{type} and m.role_id=#{roleId} and r.status=1
+    </select>
+
+    <select id="getPrivilegeByContions" resultType="java.lang.Integer">
+        SELECT
+        count(1)
+        FROM
+	    tb_admin_menu_opt_rel as r
+        LEFT JOIN tb_admin_opt as o ON r.opt_id = o.id
+        WHERE
+        r.role_id = #{roleId}
+        AND o.status = 1
+        AND o.url = #{url}
+        AND o.type = #{type}
+        AND o.method = #{method}
+    </select>
 </mapper>

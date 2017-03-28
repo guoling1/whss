@@ -1,4 +1,4 @@
-package com.jkm.hss.helper.response;
+package com.jkm.hss.admin.helper.responseparam;
 
 import lombok.Data;
 
@@ -26,20 +26,5 @@ public class AdminUserLoginResponse {
     /**
      * 子菜单
      */
-    private List<Menu> children;
-    @Data
-    public static class Menu {
-        /**
-         * 编码
-         */
-        private long id;
-        /**
-         *菜单名
-         */
-        private String menuName;
-        /**
-         * 路由地址
-         */
-        private String url;
-    }
+    private List<MenuResponse> children;
 }

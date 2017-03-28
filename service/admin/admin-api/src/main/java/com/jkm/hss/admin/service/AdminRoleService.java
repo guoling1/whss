@@ -8,6 +8,7 @@ import com.jkm.hss.admin.helper.requestparam.RoleDetailRequest;
 import com.jkm.hss.admin.helper.responseparam.AdminMenuOptRelListResponse;
 import com.jkm.hss.admin.helper.responseparam.AdminRoleListPageResponse;
 import com.jkm.hss.admin.helper.responseparam.AdminRoleListResponse;
+import com.jkm.hss.admin.helper.responseparam.AdminUserLoginResponse;
 
 import java.util.List;
 
@@ -84,4 +85,21 @@ public interface AdminRoleService {
      */
     PageModel<AdminRoleListPageResponse> roleListByPage(AdminRoleListRequest adminRoleListRequest);
 
+    /**
+     * 根据角色编码和类型查询登录菜单
+     * @param roleId
+     * @param type
+     * @return
+     */
+    List<AdminUserLoginResponse> getLoginMenu(long roleId,int type);
+
+    /**
+     * 判断是否有接口访问权限
+     * @param roleId
+     * @param type
+     * @param url
+     * @param method
+     * @return
+     */
+    int getPrivilegeByContions(long roleId,int type,String url,String method);
 }

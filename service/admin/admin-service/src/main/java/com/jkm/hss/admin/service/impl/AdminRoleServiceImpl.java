@@ -376,5 +376,43 @@ public class AdminRoleServiceImpl implements AdminRoleService{
         return pageModel;
     }
 
+    /**
+     * 根据角色编码和类型查询登录菜单
+     *
+     * @param roleId
+     * @param type
+     * @return
+     */
+    @Override
+    public List<AdminUserLoginResponse> getLoginMenu(long roleId, int type) {
+        List<AdminUserLoginResponse> list = new ArrayList<AdminUserLoginResponse>();
+        List<MenuResponse> menuResponses = adminRoleDao.getLoginMenu(0,type,roleId);
+        if(menuResponses.size()>0){
+            for(int i=0;i<menuResponses.size();i++){
+                AdminUserLoginResponse adminUserLoginResponse = new AdminUserLoginResponse();
+                adminUserLoginResponse.setId(menuResponses.get(i).getId());
+                adminUserLoginResponse.setMenuName(menuResponses.get(i).getMenuName());
+                adminUserLoginResponse.setUrl(menuResponses.get(i).getUrl());
+                adminUserLoginResponse.setChildren(adminRoleDao.getLoginMenu(menuResponses.get(i).getId(),type,roleId));
+                list.add(adminUserLoginResponse);
+            }
+        }
+        return list;
+    }
+
+    /**
+     * 判断是否有接口访问权限
+     *
+     * @param roleId
+     * @param type
+     * @param url
+     * @param method
+     * @return
+     */
+    @Override
+    public int getPrivilegeByContions(long roleId, int type, String url, String method) {
+        int count = adminRoleDao.getPrivilegeByContions(roleId,type,url,method);
+        return count;
+    }
 
 }

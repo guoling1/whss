@@ -6,6 +6,8 @@ import com.jkm.base.common.databind.DataBindManager;
 import com.jkm.base.common.entity.CommonResponse;
 import com.jkm.base.common.util.CookieUtil;
 import com.jkm.base.common.util.ResponseWriter;
+import com.jkm.hss.admin.enums.EnumAdminType;
+import com.jkm.hss.admin.service.AdminRoleService;
 import com.jkm.hss.helper.ApplicationConsts;
 import com.jkm.hss.admin.entity.AdminUser;
 import com.jkm.hss.admin.entity.AdminUserPassport;
@@ -35,6 +37,9 @@ public class AdminLoginInterceptor extends HandlerInterceptorAdapter {
 
     @Setter
     private AdminUserPassportService adminUserPassportService;
+
+    @Setter
+    private AdminRoleService adminRoleService;
     /**
      * 经销商登录拦截
      *
@@ -48,7 +53,7 @@ public class AdminLoginInterceptor extends HandlerInterceptorAdapter {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         final String token = CookieUtil.getCookie(request, ApplicationConsts.ADMIN_COOKIE_KEY);
 
-        final Triple<Integer, String, AdminUser> checkResult = this.checkToken(token);
+        final Triple<Integer, String, AdminUser> checkResult = this.checkToken(token,request);
         if (0 != checkResult.getLeft()) {
             ResponseWriter.writeJsonResponse(response, CommonResponse.simpleResponse(checkResult.getLeft(), checkResult.getMiddle()));
             return false;
@@ -57,7 +62,7 @@ public class AdminLoginInterceptor extends HandlerInterceptorAdapter {
         return super.preHandle(request, response, handler);
     }
 
-    private Triple<Integer, String, AdminUser> checkToken(final String token) {
+    private Triple<Integer, String, AdminUser> checkToken(final String token,final HttpServletRequest request) {
         if (StringUtils.isEmpty(token)) {
             return Triple.of(-100, "请先登录系统", null);
         }
@@ -86,11 +91,13 @@ public class AdminLoginInterceptor extends HandlerInterceptorAdapter {
         if (EnumAdminUserStatus.NORMAL.getCode() != adminUser.getStatus()) {
             return Triple.of(-204, "用户被禁用！", null);
         }
-
+        int count = adminRoleService.getPrivilegeByContions(adminUser.getRoleId(), EnumAdminType.BOSS.getCode(),request.getRequestURI(),request.getMethod());
+        if(count<=0){
+            return Triple.of(-205, "权限不足", null);
+        }
         if (adminUserPassport.getExpireTime() < (System.currentTimeMillis() + 5 * 60 * 1000)) {
             this.adminUserPassportService.refreshToken(adminUserPassport.getId());
         }
-
         return Triple.of(0, "", adminUser);
     }
 

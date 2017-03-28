@@ -122,4 +122,23 @@ public interface AdminRoleDao {
      * @return
      */
     int updateRoleNameById(@Param("roleName") String roleName,@Param("id") long id);
+
+    /**
+     * 根据角色编码和类型查询登录菜单
+     * @param parentId
+     * @param type
+     * @param roleId
+     * @return
+     */
+    List<MenuResponse> getLoginMenu(@Param("parentId") long parentId, @Param("type") int type,@Param("roleId") long roleId);
+
+    /**
+     * 判断是否有接口访问权限
+     * @param roleId
+     * @param type
+     * @param url
+     * @param method
+     * @return
+     */
+    int getPrivilegeByContions(@Param("roleId") long roleId,@Param("type") int type,@Param("url") String url,@Param("method") String method);
 }
