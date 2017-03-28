@@ -103,6 +103,6 @@
 </div>
 </body>
 <script src="https://res.wx.qq.com/open/libs/weuijs/1.0.0/weui.min.js"></script>
-<script src="http://static.jinkaimen.cn/vendor/vendor.1.0.9.4.min.js"></script>
+<script src="http://static.jinkaimen.cn/vendor/vendor.1.0.9.5.min.js"></script>
 <script src="http://static.jinkaimen.cn/hss/2.2.8/firstUnionPay.min.js"></script>
 </html>
