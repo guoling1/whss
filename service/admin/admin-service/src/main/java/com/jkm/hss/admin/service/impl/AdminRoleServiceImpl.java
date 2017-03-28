@@ -189,15 +189,15 @@ public class AdminRoleServiceImpl implements AdminRoleService{
                     for(int j=0;j<adminMenuChildrenList.size();j++){
                         AdminMenuOptRelListResponse.Menu menu = new AdminMenuOptRelListResponse.Menu();
                         menu.setId(adminMenuChildrenList.get(j).getId());
-                        menu.setIsSelected(adminMenuChildrenList.get(i).getIsSelected());
+                        menu.setIsSelected(adminMenuChildrenList.get(j).getIsSelected());
                         menu.setMenuName(adminMenuChildrenList.get(j).getMenuName());
-                        List<AdminOptRelResponse> adminOptResponses = adminRoleDao.getOptByMenuIdAndTypeAndUserId(adminMenuChildrenList.get(j).getId(),type);
+                        List<AdminOptRelResponse> adminOptResponses = adminRoleDao.getOptByMenuIdAndTypeAndRoleId(adminMenuChildrenList.get(j).getId(),type,roleId);
                         List<AdminMenuOptRelListResponse.Opt> opts= new ArrayList<AdminMenuOptRelListResponse.Opt>();
                         if(adminOptResponses.size()>0){
                             for(int l=0;l<adminOptResponses.size();l++){
                                 AdminMenuOptRelListResponse.Opt opt= new AdminMenuOptRelListResponse.Opt();
                                 opt.setId(adminOptResponses.get(l).getId());
-                                opt.setIsSelected(adminOptResponses.get(i).getIsSelected());
+                                opt.setIsSelected(adminOptResponses.get(l).getIsSelected());
                                 opt.setOptName(adminOptResponses.get(l).getShowName());
                                 opts.add(opt);
                             }
@@ -208,7 +208,7 @@ public class AdminRoleServiceImpl implements AdminRoleService{
                 }
                 adminMenuOptRelListResponse.setChildren(menus);
 
-                List<AdminOptRelResponse> adminOptResponses = adminRoleDao.getOptByMenuIdAndTypeAndUserId(adminMenuList.get(i).getId(),type);
+                List<AdminOptRelResponse> adminOptResponses = adminRoleDao.getOptByMenuIdAndTypeAndRoleId(adminMenuList.get(i).getId(),type,roleId);
                 List<AdminMenuOptRelListResponse.Opt> opts= new ArrayList<AdminMenuOptRelListResponse.Opt>();
                 if(adminOptResponses.size()>0){
                     for(int k=0;k<adminOptResponses.size();k++){

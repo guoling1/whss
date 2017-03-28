@@ -90,7 +90,7 @@ public interface AdminRoleDao {
      * @param menuId
      * @return
      */
-    List<AdminOptRelResponse> getOptByMenuIdAndTypeAndUserId(@Param("menuId") long menuId, @Param("type") int type);
+    List<AdminOptRelResponse> getOptByMenuIdAndTypeAndRoleId(@Param("menuId") long menuId, @Param("type") int type,@Param("roleId") long roleId);
 
     /**
      * 根据角色编码删除角色菜单关联
