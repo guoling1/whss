@@ -1,5 +1,6 @@
 package com.jkm.hss.admin.dao;
 
+import com.google.common.base.Optional;
 import com.jkm.hss.admin.entity.AdminMenu;
 import com.jkm.hss.admin.entity.AdminMenuOptRel;
 import com.jkm.hss.admin.entity.AdminRole;
@@ -141,4 +142,19 @@ public interface AdminRoleDao {
      * @return
      */
     int getPrivilegeByContions(@Param("roleId") long roleId,@Param("type") int type,@Param("url") String url,@Param("method") String method);
+
+    /**
+     *根据名称和类型查询角色
+     * @param roleName
+     * @param type
+     * @return
+     */
+    AdminRole selectByRoleNameAndType(@Param("roleName") String roleName, @Param("type") int type);
+    /**
+     *根据名称和类型查询角色
+     * @param roleName
+     * @param type
+     * @return
+     */
+    AdminRole selectByRoleNameAndTypeUnIncludeNow(@Param("roleName") String roleName, @Param("type") int type, @Param("roleId") long roleId);
 }

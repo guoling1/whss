@@ -415,4 +415,29 @@ public class AdminRoleServiceImpl implements AdminRoleService{
         return count;
     }
 
+    /**
+     * 根据名称和类型查询角色
+     *
+     * @param roleName
+     * @param type
+     * @return
+     */
+    @Override
+    public Optional<AdminRole> selectByRoleNameAndType(String roleName, int type) {
+        return Optional.fromNullable(adminRoleDao.selectByRoleNameAndType(roleName,type));
+    }
+
+    /**
+     * 根据名称和类型查询角色是否重复
+     *
+     * @param roleName
+     * @param type
+     * @param roleId
+     * @return
+     */
+    @Override
+    public Optional<AdminRole> selectByRoleNameAndTypeUnIncludeNow(String roleName, int type, long roleId) {
+        return Optional.fromNullable(adminRoleDao.selectByRoleNameAndTypeUnIncludeNow(roleName,type,roleId));
+    }
+
 }

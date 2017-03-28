@@ -102,4 +102,19 @@ public interface AdminRoleService {
      * @return
      */
     int getPrivilegeByContions(long roleId,int type,String url,String method);
+
+    /**
+     * 根据名称和类型查询角色是否重复
+     * @param roleName
+     * @param type
+     * @return
+     */
+    Optional<AdminRole> selectByRoleNameAndType(String roleName,int type);
+    /**
+     * 根据名称和类型查询角色是否重复
+     * @param roleName
+     * @param type
+     * @return
+     */
+    Optional<AdminRole> selectByRoleNameAndTypeUnIncludeNow(String roleName,int type,long roleId);
 }

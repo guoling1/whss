@@ -167,4 +167,12 @@
         AND o.type = #{type}
         AND o.method = #{method}
     </select>
+
+    <select id="selectByRoleNameAndType" resultType="com.jkm.hss.admin.entity.AdminRole">
+        SELECT <include refid="Base_Column_List" /> FROM tb_admin_role WHERE  role_name=#{roleName} and type=#{type} and status=1
+    </select>
+
+    <select id="selectByRoleNameAndTypeUnIncludeNow" resultType="com.jkm.hss.admin.entity.AdminRole">
+        SELECT <include refid="Base_Column_List" /> FROM tb_admin_role WHERE  role_name=#{roleName} and type=#{type} and status=1 and id !=#{roleId}
+    </select>
 </mapper>

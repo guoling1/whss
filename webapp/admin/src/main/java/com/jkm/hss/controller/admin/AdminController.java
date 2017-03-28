@@ -1159,6 +1159,17 @@ public class AdminController extends BaseController {
         if(roleDetailRequest.getList()==null||roleDetailRequest.getList().size()<=0){
             return CommonResponse.simpleResponse(-1, "请选择菜单");
         }
+        if(roleDetailRequest.getRoleId()<=0){
+            Optional<AdminRole> adminRoleOptional = adminRoleService.selectByRoleNameAndType(roleDetailRequest.getRoleName(),EnumAdminType.BOSS.getCode());
+            if(adminRoleOptional.isPresent()){
+                return CommonResponse.simpleResponse(-1, "角色名已存在");
+            }
+        }else{
+            Optional<AdminRole> adminRoleOptional = adminRoleService.selectByRoleNameAndTypeUnIncludeNow(roleDetailRequest.getRoleName(),EnumAdminType.BOSS.getCode(),roleDetailRequest.getRoleId());
+            if(adminRoleOptional.isPresent()){
+                return CommonResponse.simpleResponse(-1, "角色名已存在");
+            }
+        }
         roleDetailRequest.setType(EnumAdminType.BOSS.getCode());
         adminRoleService.save(roleDetailRequest);
         return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "操作成功");
