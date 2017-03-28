@@ -11,36 +11,39 @@ public enum EnumUpperChannel {
     /**
      * 扫米
      */
-    SAOMI(1, "扫米"),
+    SAOMI(1, "SM", "扫米"),
 
     /**
      * 摩宝
      */
-    MOBAO(2, "摩宝"),
+    MOBAO(2, "MB", "摩宝"),
 
     /**
      * 卡盟
      */
-    KAMENG(3, "卡盟"),
+    KAMENG(3, "KM", "卡盟"),
 
     /**
      * 合众易宝
      */
-    HEZONG_YIBAO(4, "合众易宝"),
+    HEZONG_YIBAO(4, "HZYB", "合众易宝"),
 
     /**
      * 溢+
      */
-    YIJIA(5, "溢+")
+    YIJIA(5, "YIJIA", "溢+")
     ;
 
     @Getter
     private int id;
     @Getter
+    private String code;
+    @Getter
     private String value;
 
-    EnumUpperChannel(final int id, final String value) {
+    EnumUpperChannel(final int id, final String code, final String value) {
         this.id = id;
+        this.code = code;
         this.value = value;
     }
 }

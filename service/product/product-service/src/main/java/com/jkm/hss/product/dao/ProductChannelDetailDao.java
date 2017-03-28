@@ -53,4 +53,11 @@ public interface ProductChannelDetailDao {
      * @return
      */
     ProductChannelDetail selectRateByProductIdAndChannelType(@Param("productId") long productId, @Param("channelType") int channelType);
+    /**
+     * 根据通道查询
+     * @param productId
+     * @param channelTypeSign
+     * @return
+     */
+    ProductChannelDetail selectRateByProductIdAndChannelTypeSign(@Param("productId") long productId, @Param("channelTypeSign") int channelTypeSign);
 }

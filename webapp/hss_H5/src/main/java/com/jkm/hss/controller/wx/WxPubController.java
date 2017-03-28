@@ -449,7 +449,13 @@ public class WxPubController extends BaseController {
                     return CommonResponse.simpleResponse(-1, "不能邀请自己");
                 }
                 Optional<MerchantInfo> miOptional = merchantInfoService.selectByMobile(MerchantSupport.encryptMobile(loginRequest.getInviteCode()));
-                if(miOptional.isPresent()&&miOptional.get().getIsUpgrade()==EnumIsUpgrade.CANNOTUPGRADE.getId()){
+                if(!miOptional.isPresent()){
+                    return CommonResponse.simpleResponse(-1, "邀请码不存在");
+                }
+                if(miOptional.get().getStatus()!= EnumMerchantStatus.PASSED.getId()&&miOptional.get().getStatus()!= EnumMerchantStatus.FRIEND.getId()){
+                    return CommonResponse.simpleResponse(-1, "邀请码不存在");
+                }
+                if(miOptional.get().getIsUpgrade()==EnumIsUpgrade.CANNOTUPGRADE.getId()){
                     return CommonResponse.simpleResponse(-1, "邀请码不存在");
                 }
             }
@@ -1282,6 +1288,10 @@ public class WxPubController extends BaseController {
             return CommonResponse.simpleResponse(-1, "只能删除信用卡");
         }
         accountBankService.deleteCreditCard(deleteCreditCardRequest.getBankId());
+        Optional<AccountBank> accountBankOptional1 = accountBankService.getTopCreditCard(merchantInfo.get().getAccountId());
+        if(accountBankOptional1.isPresent()){
+            accountBankService.setDefaultCreditCardById(accountBankOptional1.get().getId());
+        }
         return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "删除成功");
     }
 

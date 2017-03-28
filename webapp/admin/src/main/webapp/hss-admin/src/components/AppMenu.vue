@@ -32,11 +32,14 @@
         <!-- <li class="header">HEADER</li>
          Optionally, you can add icons to the links
         <li><a href="#"><i class="fa fa-link"></i> <span>Link</span></a></li>-->
-        <li :class="(url=='/admin/record/newDeal')?'treeview active':'treeview'">
+        <li :class="(url=='/admin/record/newDeal'||url=='/admin/record/retrieval')?'treeview active':'treeview'">
           <a href="#"><span>交易查询</span></a>
           <ul class="treeview-menu">
             <li :class="(url=='/admin/record/newDeal')?'treeview active':'treeview'" @click="refrash">
               <router-link to="/admin/record/newDeal"><span>交易查询</span></router-link>
+            </li>
+            <li :class="(url=='/admin/record/retrieval')?'treeview active':'treeview'" @click="refrash">
+              <router-link to="/admin/record/retrieval"><span>提现查询</span></router-link>
             </li>
           </ul>
         </li>
@@ -155,15 +158,15 @@
           </ul>
         </li>
         <li class="treeview"
-            :class="(url=='/admin/record/passList'||url=='/admin/record/passAdd')?'treeview active':'treeview'">
+            :class="(url=='/admin/record/passList'||url=='/admin/record/limitList')?'treeview active':'treeview'">
           <a href="#"><span>通道管理</span>
           </a>
           <ul class="treeview-menu">
             <li @click="refrash" :class="(url=='/admin/record/passList')?'treeview active':'treeview'">
               <router-link to="/admin/record/passList"><span>通道列表</span></router-link>
             </li>
-            <li @click="refrash" :class="(url=='/admin/record/passAdd')?'treeview active':'treeview'">
-              <router-link to="/admin/record/passAdd"><span>新增通道</span></router-link>
+            <li @click="refrash" :class="(url=='/admin/record/limitList')?'treeview active':'treeview'">
+              <router-link to="/admin/record/limitList"><span>银行卡限额管理</span></router-link>
             </li>
           </ul>
         </li>

@@ -241,34 +241,34 @@
     <select id="getFirstResidueCount" resultType="java.lang.Integer">
         SELECT COUNT(*) FROM tb_qr_code
         WHERE first_level_dealer_id = #{firstLevelDealerId}
-        AND distribute_status = 1
+        AND distribute_status = 1 AND sys_type=#{sysType}
     </select>
 
     <select id="getFirstDistributeCount" resultType="java.lang.Integer">
         SELECT COUNT(*) FROM tb_qr_code
         WHERE first_level_dealer_id = #{firstLevelDealerId}
-        AND distribute_status = 2
+        AND distribute_status = 2 AND sys_type=#{sysType}
     </select>
 
     <select id="getFirstDistributeToSelfCount" resultType="java.lang.Integer">
         SELECT COUNT(*) FROM tb_qr_code
         WHERE first_level_dealer_id = #{firstLevelDealerId}
         AND second_level_dealer_id = 0
-        AND distribute_status = 2
+        AND distribute_status = 2 AND sys_type=#{sysType}
     </select>
 
     <select id="getFirstUnActivateCount" resultType="java.lang.Integer">
         SELECT COUNT(*) FROM tb_qr_code
         WHERE first_level_dealer_id = #{firstLevelDealerId}
         AND distribute_status = 2
-        AND activate_status = 1
+        AND activate_status = 1 AND sys_type=#{sysType}
     </select>
 
     <select id="getFirstActivateCount" resultType="java.lang.Integer">
         SELECT COUNT(*) FROM tb_qr_code
         WHERE first_level_dealer_id = #{firstLevelDealerId}
         AND distribute_status = 2
-        AND activate_status = 2
+        AND activate_status = 2 AND sys_type=#{sysType}
     </select>
 
     <select id="getSecondCodeCount" resultType="java.lang.Integer">
@@ -279,13 +279,13 @@
     <select id="getSecondUnActivateCount" resultType="java.lang.Integer">
         SELECT COUNT(1) FROM tb_qr_code
         WHERE second_level_dealer_id = #{secondLevelDealerId}
-        AND activate_status = 1
+        AND activate_status = 1 AND sys_type=#{sysType}
     </select>
 
     <select id="getSecondActivateCount" resultType="java.lang.Integer">
         SELECT COUNT(1) FROM tb_qr_code
         WHERE second_level_dealer_id = #{secondLevelDealerId}
-        AND activate_status = 2
+        AND activate_status = 2 AND sys_type=#{sysType}
     </select>
 
     <select id="selectDistributeToSecondDealerCodeCount" resultType="java.lang.Integer">
@@ -508,7 +508,7 @@
             WHEN i.`status` = 5 THEN
                 '禁用'
             WHEN i.`status` = 6 THEN
-                '激活'
+                '审核通过'
             ELSE
                 NULL
             END as merchantStatus,
@@ -745,7 +745,7 @@
         WHEN i.`status` = 5 THEN
         '禁用'
         WHEN i.`status` = 6 THEN
-        '激活'
+        '审核通过'
         ELSE
         NULL
         END as merchantStatus,
@@ -754,8 +754,11 @@
         tb_qr_code as c
         LEFT JOIN tb_merchant_info AS i ON c.merchant_id = i.id
         WHERE  c.sys_type='hss'
-        <if test="merchantStatus>-1">
-            AND i.`status` = #{merchantStatus}
+        <if test="merchantStatusList!=null and merchantStatusList.size()>0">
+            AND i.`status` IN
+            <foreach collection="merchantStatusList" item="item" index="index" open="(" separator="," close=")">
+                #{item}
+            </foreach>
         </if>
         <if test="firstDealerId>0">
             AND c.first_level_dealer_id = #{firstDealerId}
@@ -801,8 +804,11 @@
         tb_qr_code as c
         LEFT JOIN tb_merchant_info AS i ON c.merchant_id = i.id
         WHERE  c.sys_type='hss'
-        <if test="merchantStatus>-1">
-            AND i.`status` = #{merchantStatus}
+        <if test="merchantStatusList!=null and merchantStatusList.size()>0">
+            AND i.`status` IN
+            <foreach collection="merchantStatusList" item="item" index="index" open="(" separator="," close=")">
+                #{item}
+            </foreach>
         </if>
         <if test="firstDealerId>0">
             AND c.first_level_dealer_id = #{firstDealerId}
@@ -875,8 +881,11 @@
         tb_qr_code as c
         LEFT JOIN app_biz_shop as i ON c.merchant_id = i.id
         WHERE c.sys_type='hsy'
-        <if test="merchantStatus>-1">
-            AND i.STATUS = #{merchantStatus}
+        <if test="merchantStatusList!=null and merchantStatusList.size()>0">
+            AND i.STATUS IN
+            <foreach collection="merchantStatusList" item="item" index="index" open="(" separator="," close=")">
+                #{item}
+            </foreach>
         </if>
         <if test="firstDealerId>0">
             AND c.first_level_dealer_id = #{firstDealerId}
@@ -920,8 +929,11 @@
         SELECT count(1) FROM tb_qr_code as c
         LEFT JOIN app_biz_shop as i ON c.merchant_id = i.id
         WHERE c.sys_type='hsy'
-        <if test="merchantStatus>-1">
-            AND i.STATUS = #{merchantStatus}
+        <if test="merchantStatusList!=null and merchantStatusList.size()>0">
+            AND i.STATUS IN
+            <foreach collection="merchantStatusList" item="item" index="index" open="(" separator="," close=")">
+                #{item}
+            </foreach>
         </if>
         <if test="firstDealerId>0">
             AND c.first_level_dealer_id = #{firstDealerId}

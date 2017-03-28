@@ -39,4 +39,5 @@ public class BankCardBinServiceImpl implements BankCardBinService {
 
         return Optional.absent();
     }
+
 }

@@ -11,16 +11,30 @@ import java.math.BigDecimal;
  * tb_channel_support_credit_bank
  *
  * 通道支持信用卡银行
+ *
+ * {@link com.jkm.base.common.enums.EnumBoolean}
  */
 @Data
 public class ChannelSupportCreditBank extends BaseEntity {
 
     /**
-     *  通道唯一标志
+     *  渠道
      *
-     *  {@link com.jkm.hss.product.enums.EnumPayChannelSign}
+     *  {@link com.jkm.hss.product.enums.EnumUpperChannel}
      */
-    private int channelSign;
+    private int upperChannel;
+    /**
+     * 渠道名字
+     */
+    private String upperChannelName;
+    /**
+     * 渠道编码
+     */
+    private String upperChannelCode;
+    /**
+     * 银行编号
+     */
+    private String bankCode;
     /**
      * 银行名字
      */

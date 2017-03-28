@@ -63,11 +63,17 @@ public interface AccountBankService {
     int setDefault(long id);
 
     /**
-     * 设置为默认信用卡
+     * 设置为默认信用卡（用于支付成功之后设置默认信用卡）
      * @param id
      * @return
      */
     int setDefaultCreditCard(long id);
+    /**
+     * 设置为默认信用卡(用于删除信用卡之后设置默认信用卡)
+     * @param id
+     * @return
+     */
+    int setDefaultCreditCardById(long id);
 
     /**
      * 全部设置为不是默认银行卡
@@ -154,5 +160,33 @@ public interface AccountBankService {
      * @param bankNo
      * @return
      */
-    Long isExistBankNo(long accountId,String bankNo,int cardType);
+    Optional<AccountBank> isExistBankNo(long accountId,String bankNo,int cardType);
+    /**
+     * 无状态查询信用卡
+     * @param id
+     * @return
+     */
+    Optional<AccountBank> selectStatelessById(long id);
+
+    /**
+     * 根据信用卡号查询信用卡
+     * @param accountId
+     * @param bankNo
+     * @return
+     */
+    Optional<AccountBank> selectCreditCardByBankNo(long accountId,  String bankNo);
+    /**
+     * 无状态查询信用卡
+     * @param accountId
+     * @param bankNo
+     * @return
+     */
+    Optional<AccountBank> selectCreditCardByBankNoAndStateless(long accountId,  String bankNo);
+
+    /**
+     * 获取最新信用卡
+     * @param accountId
+     * @return
+     */
+    Optional<AccountBank> getTopCreditCard(long accountId);
 }

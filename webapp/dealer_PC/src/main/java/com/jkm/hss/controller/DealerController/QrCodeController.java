@@ -198,22 +198,22 @@ public class QrCodeController extends BaseController {
         QrCodeListPageResponse<MyQrCodeListResponse> qrCodeListPageResponse = new QrCodeListPageResponse<MyQrCodeListResponse>();
         if(super.getDealer().get().getLevel() == EnumDealerLevel.FIRST.getId()){
             myQrCodeListRequest.setFirstDealerId(super.getDealer().get().getId());
-            int unDistributeCount = this.qrCodeService.getFirstResidueCount(super.getDealer().get().getId());
+            int unDistributeCount = this.qrCodeService.getFirstResidueCount(super.getDealer().get().getId(),myQrCodeListRequest.getSysType());
             qrCodeListPageResponse.setUnDistributeCount(unDistributeCount);
-            int distributeCount = this.qrCodeService.getFirstDistributeCount(super.getDealer().get().getId());
+            int distributeCount = this.qrCodeService.getFirstDistributeCount(super.getDealer().get().getId(),myQrCodeListRequest.getSysType());
             qrCodeListPageResponse.setDistributeCount(distributeCount);
-            int unActivateCount = this.qrCodeService.getFirstUnActivateCount(super.getDealer().get().getId());
+            int unActivateCount = this.qrCodeService.getFirstUnActivateCount(super.getDealer().get().getId(),myQrCodeListRequest.getSysType());
             qrCodeListPageResponse.setUnActivateCount(unActivateCount);
-            int activateCount = this.qrCodeService.getFirstActivateCount(super.getDealer().get().getId());
+            int activateCount = this.qrCodeService.getFirstActivateCount(super.getDealer().get().getId(),myQrCodeListRequest.getSysType());
             qrCodeListPageResponse.setActivateCount(activateCount);
         }
         if(super.getDealer().get().getLevel() == EnumDealerLevel.SECOND.getId()){
             myQrCodeListRequest.setSecondDealerId(super.getDealer().get().getId());
             qrCodeListPageResponse.setUnDistributeCount(0);
             qrCodeListPageResponse.setDistributeCount(0);
-            int unActivateCount = this.qrCodeService.getSecondUnActivateCount(super.getDealer().get().getId());
+            int unActivateCount = this.qrCodeService.getSecondUnActivateCount(super.getDealer().get().getId(),myQrCodeListRequest.getSysType());
             qrCodeListPageResponse.setUnActivateCount(unActivateCount);
-            int activateCount = this.qrCodeService.getSecondActivateCount(super.getDealer().get().getId());
+            int activateCount = this.qrCodeService.getSecondActivateCount(super.getDealer().get().getId(),myQrCodeListRequest.getSysType());
             qrCodeListPageResponse.setActivateCount(activateCount);
         }
         final PageModel<MyQrCodeListResponse> pageModel = this.qrCodeService.selectDealerQrCodeList(myQrCodeListRequest);

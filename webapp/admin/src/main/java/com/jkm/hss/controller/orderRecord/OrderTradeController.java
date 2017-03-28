@@ -32,7 +32,6 @@ import java.util.List;
  * Created by lt on 2016/12/7.
  */
 @Slf4j
-
 @Controller
 @RequestMapping(value = "/admin/queryOrder")
 public class OrderTradeController extends BaseController{
@@ -88,6 +87,10 @@ public class OrderTradeController extends BaseController{
             req.setEndTime(sdf.format(rightNow.getTime()));
         }
         String orderList =  orderService.amountCount(req);
+        if (orderList==null||("").equals(orderList)){
+            int res = 0;
+            return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", res);
+        }
         return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", orderList);
     }
 

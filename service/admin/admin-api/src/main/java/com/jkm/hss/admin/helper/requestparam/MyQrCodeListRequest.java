@@ -4,6 +4,8 @@ import com.jkm.base.common.entity.PageQueryParams;
 import com.jkm.hss.admin.enums.EnumQRCodeActivateStatus;
 import lombok.Data;
 
+import java.util.List;
+
 /**
  * Created by xingliujie on 2017/2/16.
  */
@@ -49,6 +51,11 @@ public class MyQrCodeListRequest extends PageQueryParams {
      * 4 审核通过
      */
     private int merchantStatus;
+
+    /**
+     * 商户状态集合
+     */
+    private List<Integer> merchantStatusList;
     /**
      *
      */

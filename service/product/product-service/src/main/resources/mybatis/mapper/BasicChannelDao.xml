@@ -17,6 +17,8 @@
         limit_amount,
         is_need,
         channel_company,
+        lowest_fee,
+        remarks,
         status
         )VALUES(
         #{accountId},
@@ -33,6 +35,8 @@
         #{limitAmount},
         #{isNeed},
         #{channelCompany},
+        #{lowestFee},
+        #{remarks},
         #{status}
         )
     </insert>
@@ -53,6 +57,7 @@
         channel_company=#{channelCompany},
         status = #{status},
         channel_code = #{channelCode},
+        lowest_fee = #{lowestFee},
         remarks = #{remarks}
         WHERE id = #{id}
     </update>

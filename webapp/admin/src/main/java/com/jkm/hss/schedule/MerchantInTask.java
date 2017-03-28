@@ -45,7 +45,7 @@ public class MerchantInTask {
     /**
      * 每隔五S同步商户入网结果
      */
-    //@Scheduled(cron = "*/5 * * * * ?")
+//    @Scheduled(cron = "*/5 * * * * ?")
     public void handleMerchantInTask() {
         log.info("商户入网同步定时任务--start");
         //查询商户入网中的id
@@ -80,7 +80,7 @@ public class MerchantInTask {
     /**
      * 每隔59S检查入网结果
      */
-    //@Scheduled(cron = "*/59 * * * * ?")
+//    @Scheduled(cron = "*/59 * * * * ?")
     public void handleMerchantTask() {
 
         log.info("商户入网提交定时任务--start");
