@@ -138,8 +138,8 @@ public class AdminController extends BaseController {
         this.adminUserService.updateLastLoginDate(tokenOptional.get().getAuid());
         CookieUtil.setSessionCookie(response, ApplicationConsts.ADMIN_COOKIE_KEY, tokenOptional.get().getToken(),
                 ApplicationConsts.getApplicationConfig().domain(), (int)(DealerConsts.TOKEN_EXPIRE_MILLIS / 1000));
-        List<AdminUserLoginResponse> loginMenu = this.adminRoleService.getLoginMenu(userOptional.get().getRoleId(),EnumAdminType.BOSS.getCode());
-        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "登录成功",loginMenu);
+//        List<AdminUserLoginResponse> loginMenu = this.adminRoleService.getLoginMenu(userOptional.get().getRoleId(),EnumAdminType.BOSS.getCode());
+        return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "登录成功");
     }
 
     /**
@@ -1134,11 +1134,11 @@ public class AdminController extends BaseController {
     public CommonResponse getRoleDetail (@RequestBody AdminRoleDetailRequest adminRoleDetailRequest) {
         RoleDetailResponse roleDetailResponse = new RoleDetailResponse();
         if(adminRoleDetailRequest.getId()>0){
-            Optional<AdminRole> adminRoleOptional = adminRoleService.selectById(roleDetailResponse.getRoleId());
+            Optional<AdminRole> adminRoleOptional = adminRoleService.selectById(adminRoleDetailRequest.getId());
             if(!adminRoleOptional.isPresent()){
                 return CommonResponse.simpleResponse(-1, "角色不存在");
             }
-            roleDetailResponse.setRoleId(roleDetailResponse.getRoleId());
+            roleDetailResponse.setRoleId(adminRoleDetailRequest.getId());
             roleDetailResponse.setRoleName(adminRoleOptional.get().getRoleName());
         }
         List<AdminMenuOptRelListResponse> adminMenuOptRelListResponses = adminRoleService.getPrivilege(EnumAdminType.BOSS.getCode(),adminRoleDetailRequest.getId());
