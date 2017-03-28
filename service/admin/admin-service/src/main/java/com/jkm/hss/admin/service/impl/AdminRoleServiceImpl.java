@@ -400,20 +400,6 @@ public class AdminRoleServiceImpl implements AdminRoleService{
         return list;
     }
 
-    /**
-     * 判断是否有接口访问权限
-     *
-     * @param roleId
-     * @param type
-     * @param url
-     * @param method
-     * @return
-     */
-    @Override
-    public int getPrivilegeByContions(long roleId, int type, String url, String method) {
-        int count = adminRoleDao.getPrivilegeByContions(roleId,type,url,method);
-        return count;
-    }
 
     /**
      * 根据名称和类型查询角色

@@ -485,4 +485,18 @@ public class AdminUserServiceImpl implements AdminUserService {
     public Optional<AdminUser> getAdminUserByDealerIdAndIsMaster(long dealerId,int isMaster) {
         return Optional.fromNullable(this.adminUserDao.getAdminUserByDealerIdAndIsMaster(dealerId,isMaster));
     }
+
+    /**
+     * 判断是否有接口访问权限
+     *
+     * @param roleId
+     * @param type
+     * @param url
+     * @param method
+     * @return
+     */
+    @Override
+    public int getPrivilegeByContions(long roleId, int type, String url, String method) {
+        return adminRoleDao.getPrivilegeByContions(roleId,type,url,method);
+    }
 }

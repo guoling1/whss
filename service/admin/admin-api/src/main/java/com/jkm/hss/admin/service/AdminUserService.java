@@ -228,4 +228,14 @@ public interface AdminUserService {
      * @return
      */
     Optional<AdminUser> getAdminUserByDealerIdAndIsMaster(final long dealerId,final int isMaster);
+
+    /**
+     * 判断是否有接口访问权限
+     * @param roleId
+     * @param type
+     * @param url
+     * @param method
+     * @return
+     */
+    int getPrivilegeByContions(long roleId,int type,String url,String method);
 }

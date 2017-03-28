@@ -12,13 +12,8 @@ import com.jkm.hss.admin.enums.EnumAdminType;
 import com.jkm.hss.admin.enums.EnumAdminUserStatus;
 import com.jkm.hss.admin.enums.EnumIsMaster;
 import com.jkm.hss.admin.helper.AdminUserSupporter;
-import com.jkm.hss.admin.helper.requestparam.AdminRoleListRequest;
-import com.jkm.hss.admin.helper.requestparam.AdminUserListRequest;
-import com.jkm.hss.admin.helper.requestparam.AdminUserRequest;
-import com.jkm.hss.admin.helper.responseparam.AdminMenuOptRelListResponse;
-import com.jkm.hss.admin.helper.responseparam.AdminRoleListResponse;
-import com.jkm.hss.admin.helper.responseparam.AdminUserListResponse;
-import com.jkm.hss.admin.helper.responseparam.AdminUserResponse;
+import com.jkm.hss.admin.helper.requestparam.*;
+import com.jkm.hss.admin.helper.responseparam.*;
 import com.jkm.hss.admin.service.AdminRoleService;
 import com.jkm.hss.admin.service.AdminUserService;
 import com.jkm.hss.controller.BaseController;
@@ -291,5 +286,116 @@ public class PrivilegeController extends BaseController {
     }
 
 
+    /**
+     * 角色详情
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/getRoleDetail", method = RequestMethod.POST)
+    public CommonResponse getRoleDetail (@RequestBody AdminRoleDetailRequest adminRoleDetailRequest) {
+        Optional<Dealer> dealerOptional = super.getDealer();
+        int level = dealerOptional.get().getLevel();
+        int type = EnumAdminType.FIRSTDEALER.getCode();
+        if(level==1){
+            type=EnumAdminType.FIRSTDEALER.getCode();
+        }
+        if(level==2){
+            type=EnumAdminType.SECONDDEALER.getCode();
+        }
+        RoleDetailResponse roleDetailResponse = new RoleDetailResponse();
+        if(adminRoleDetailRequest.getId()>0){
+            Optional<AdminRole> adminRoleOptional = adminRoleService.selectById(adminRoleDetailRequest.getId());
+            if(!adminRoleOptional.isPresent()){
+                return CommonResponse.simpleResponse(-1, "角色不存在");
+            }
+            roleDetailResponse.setRoleId(adminRoleDetailRequest.getId());
+            roleDetailResponse.setRoleName(adminRoleOptional.get().getRoleName());
+        }
+        List<AdminMenuOptRelListResponse> adminMenuOptRelListResponses = adminRoleService.getPrivilege(type,adminRoleDetailRequest.getId());
+        roleDetailResponse.setList(adminMenuOptRelListResponses);
+        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功",roleDetailResponse);
+    }
 
+    /**
+     * 添加或修改角色
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/saveRole", method = RequestMethod.POST)
+    public CommonResponse saveRole (@RequestBody RoleDetailRequest roleDetailRequest) {
+        Optional<Dealer> dealerOptional = super.getDealer();
+        int level = dealerOptional.get().getLevel();
+        int type = EnumAdminType.FIRSTDEALER.getCode();
+        if(level==1){
+            type=EnumAdminType.FIRSTDEALER.getCode();
+        }
+        if(level==2){
+            type=EnumAdminType.SECONDDEALER.getCode();
+        }
+        if(roleDetailRequest.getRoleName()==null||"".equals(roleDetailRequest.getRoleName())){
+            return CommonResponse.simpleResponse(-1, "请输入角色名");
+        }
+        if(roleDetailRequest.getList()==null||roleDetailRequest.getList().size()<=0){
+            return CommonResponse.simpleResponse(-1, "请选择菜单");
+        }
+        if(roleDetailRequest.getRoleId()<=0){
+            Optional<AdminRole> adminRoleOptional = adminRoleService.selectByRoleNameAndType(roleDetailRequest.getRoleName(),type);
+            if(adminRoleOptional.isPresent()){
+                return CommonResponse.simpleResponse(-1, "角色名已存在");
+            }
+        }else{
+            Optional<AdminRole> adminRoleOptional = adminRoleService.selectByRoleNameAndTypeUnIncludeNow(roleDetailRequest.getRoleName(),type,roleDetailRequest.getRoleId());
+            if(adminRoleOptional.isPresent()){
+                return CommonResponse.simpleResponse(-1, "角色名已存在");
+            }
+        }
+        roleDetailRequest.setType(type);
+        adminRoleService.save(roleDetailRequest);
+        return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "操作成功");
+    }
+
+    /**
+     * 分页查询角色列表
+     * @param adminRoleListRequest
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/roleListByPage", method = RequestMethod.POST)
+    public CommonResponse roleListByPage (@RequestBody AdminRoleListRequest adminRoleListRequest) {
+        Optional<Dealer> dealerOptional = super.getDealer();
+        int level = dealerOptional.get().getLevel();
+        int type = EnumAdminType.FIRSTDEALER.getCode();
+        if(level==1){
+            type=EnumAdminType.FIRSTDEALER.getCode();
+        }
+        if(level==2){
+            type=EnumAdminType.SECONDDEALER.getCode();
+        }
+        adminRoleListRequest.setType(type);
+        PageModel<AdminRoleListPageResponse> adminUserPageModel = adminRoleService.roleListByPage(adminRoleListRequest);
+        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功",adminUserPageModel);
+    }
+
+    /**
+     * 禁用角色
+     * @param adminRoleDetailRequest
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/disableRole", method = RequestMethod.POST)
+    public CommonResponse disableRole (final HttpServletResponse response,@RequestBody AdminRoleDetailRequest adminRoleDetailRequest) {
+        adminRoleService.disableRole(adminRoleDetailRequest.getId());
+        return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "禁用成功");
+    }
+    /**
+     * 启用角色
+     * @param adminRoleDetailRequest
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/activeRole", method = RequestMethod.POST)
+    public CommonResponse activeRole (@RequestBody AdminRoleDetailRequest adminRoleDetailRequest) {
+        adminRoleService.enableRole(adminRoleDetailRequest.getId());
+        return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "启用成功");
+    }
 }

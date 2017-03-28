@@ -94,16 +94,6 @@ public interface AdminRoleService {
     List<AdminUserLoginResponse> getLoginMenu(long roleId,int type);
 
     /**
-     * 判断是否有接口访问权限
-     * @param roleId
-     * @param type
-     * @param url
-     * @param method
-     * @return
-     */
-    int getPrivilegeByContions(long roleId,int type,String url,String method);
-
-    /**
      * 根据名称和类型查询角色是否重复
      * @param roleName
      * @param type
