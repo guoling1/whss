@@ -1226,8 +1226,41 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public List<MerchantTradeResponse> getTrade(OrderTradeRequest req) {
         List<MerchantTradeResponse> list = this.orderDao.getTrade(req);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         if (list.size()>0){
             for (int i=0;i<list.size();i++){
+                if (list.get(i).getCreateTime()!=null){
+                    String dates = sdf.format(list.get(i).getCreateTime());
+                    list.get(i).setCreateTimed(dates);
+                }
+                if (list.get(i).getPaySuccessTime()!=null){
+                    String dates = sdf.format(list.get(i).getPaySuccessTime());
+                    list.get(i).setPaySuccessTimes(dates);
+                }
+                if (list.get(i).getStatus()==1){
+                    list.get(i).setStatusValue(EnumOrderStatus.DUE_PAY.getValue());
+                }
+                if (list.get(i).getStatus()==2){
+                    list.get(i).setStatusValue(EnumOrderStatus.PAYING.getValue());
+                }
+                if (list.get(i).getStatus()==3){
+                    list.get(i).setStatusValue(EnumOrderStatus.PAY_FAIL.getValue());
+                }
+                if (list.get(i).getStatus()==4){
+                    list.get(i).setStatusValue(EnumOrderStatus.PAY_SUCCESS.getValue());
+                }
+                if (list.get(i).getStatus()==5){
+                    list.get(i).setStatusValue(EnumOrderStatus.WITHDRAWING.getValue());
+                }
+                if (list.get(i).getStatus()==6){
+                    list.get(i).setStatusValue(EnumOrderStatus.WITHDRAW_SUCCESS.getValue());
+                }
+                if (list.get(i).getStatus()==7){
+                    list.get(i).setStatusValue(EnumOrderStatus.RECHARGE_SUCCESS.getValue());
+                }
+                if (list.get(i).getStatus()==8){
+                    list.get(i).setStatusValue(EnumOrderStatus.RECHARGE_FAIL.getValue());
+                }
                 if (list.get(i).getAppId().equals("hss")){
                     String hss="好收收";
                     list.get(i).setAppId(hss);
@@ -1307,8 +1340,53 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public List<MerchantTradeResponse> getTradeFirst(OrderTradeRequest req) {
         List<MerchantTradeResponse> list = this.orderDao.getTradeFirst(req);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         if (list.size()>0){
             for (int i=0;i<list.size();i++){
+                if (list.get(i).getSettleStatus()==1){
+                    list.get(i).setSettleStat(EnumSettleStatus.DUE_SETTLE.getValue());
+                }
+                if (list.get(i).getSettleStatus()==2){
+                    list.get(i).setSettleStat(EnumSettleStatus.SETTLE_ING.getValue());
+                }
+                if (list.get(i).getSettleStatus()==3){
+                    list.get(i).setSettleStat(EnumSettleStatus.SETTLED.getValue());
+                }
+                if (list.get(i).getSettleStatus()==4){
+                    list.get(i).setSettleStat(EnumSettleStatus.SETTLE_PART.getValue());
+                }
+                if (list.get(i).getCreateTime()!=null){
+                    String dates = sdf.format(list.get(i).getCreateTime());
+                    list.get(i).setCreateTimed(dates);
+                }
+                if (list.get(i).getPaySuccessTime()!=null){
+                    String dates = sdf.format(list.get(i).getPaySuccessTime());
+                    list.get(i).setPaySuccessTimes(dates);
+                }
+                if (list.get(i).getStatus()==1){
+                    list.get(i).setStatusValue(EnumOrderStatus.DUE_PAY.getValue());
+                }
+                if (list.get(i).getStatus()==2){
+                    list.get(i).setStatusValue(EnumOrderStatus.PAYING.getValue());
+                }
+                if (list.get(i).getStatus()==3){
+                    list.get(i).setStatusValue(EnumOrderStatus.PAY_FAIL.getValue());
+                }
+                if (list.get(i).getStatus()==4){
+                    list.get(i).setStatusValue(EnumOrderStatus.PAY_SUCCESS.getValue());
+                }
+                if (list.get(i).getStatus()==5){
+                    list.get(i).setStatusValue(EnumOrderStatus.WITHDRAWING.getValue());
+                }
+                if (list.get(i).getStatus()==6){
+                    list.get(i).setStatusValue(EnumOrderStatus.WITHDRAW_SUCCESS.getValue());
+                }
+                if (list.get(i).getStatus()==7){
+                    list.get(i).setStatusValue(EnumOrderStatus.RECHARGE_SUCCESS.getValue());
+                }
+                if (list.get(i).getStatus()==8){
+                    list.get(i).setStatusValue(EnumOrderStatus.RECHARGE_FAIL.getValue());
+                }
                 if (list.get(i).getAppId().equals("hss")){
                     String hss="好收收";
                     list.get(i).setAppId(hss);

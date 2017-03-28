@@ -60,6 +60,11 @@ public class MerchantTradeResponse {
     private Date createTime;
 
     /**
+     * 交易日期
+     */
+    private String createTimed;
+
+    /**
      * 一级代理商id
      */
     private long firstLevelDealerId;
@@ -84,6 +89,13 @@ public class MerchantTradeResponse {
      * tinyint
      */
     protected int status;
+
+    /**
+     * 状态
+     * tinyint
+     */
+    protected String statusValue;
+
 
     /**
      * 如果是提现单 ，此值表示 对应支付单的id
@@ -150,6 +162,11 @@ public class MerchantTradeResponse {
     private Date paySuccessTime;
 
     /**
+     * 付款成功时间（交易成功）
+     */
+    private String paySuccessTimes;
+
+    /**
      * 手续费
      */
     private BigDecimal poundage;
@@ -175,6 +192,13 @@ public class MerchantTradeResponse {
      * {@link EnumSettleStatus}
      */
     private int settleStatus;
+
+    /**
+     * 结算状态
+     *
+     * {@link EnumSettleStatus}
+     */
+    private String settleStat;
 
     /**
      * 结算时间(预计结算时间)
