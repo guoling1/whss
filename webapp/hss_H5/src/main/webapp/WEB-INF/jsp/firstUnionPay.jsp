@@ -47,7 +47,7 @@
     </div>
     <div class="list">
       <div class="left">银行卡号</div>
-      <input id="bankCode" class="ipt" type="text" placeholder="请输入信用卡号" readonly>
+      <input id="bankCode" class="ipt" type="number" placeholder="请输入信用卡号" readonly>
     </div>
   </div>
   <div class="space">
@@ -101,20 +101,8 @@
     </div>
   </div>
 </div>
-
-<div class="choose-space" id="layer">
-  <div class="choose-box">
-    <div class="choose-box-head">
-      请选择银行
-      <div class="choose-x" id="layer-x"></div>
-    </div>
-    <div class="choose-box-body" id="layer-body">
-      <%-- 动态加载 --%>
-    </div>
-  </div>
-</div>
 </body>
 <script src="https://res.wx.qq.com/open/libs/weuijs/1.0.0/weui.min.js"></script>
-<script src="http://static.jinkaimen.cn/vendor/vendor.1.0.9.2.min.js"></script>
-<script src="http://static.jinkaimen.cn/hss/2.2.7/firstUnionPay.min.js"></script>
+<script src="http://static.jinkaimen.cn/vendor/vendor.1.0.9.5.min.js"></script>
+<script src="http://static.jinkaimen.cn/hss/2.2.8/firstUnionPay.min.js"></script>
 </html>

@@ -8,7 +8,7 @@ const http = _require('http');
 const tools = _require('tools');
 // 引入浏览器特性处理
 const browser = _require('browser');
-browser.elastic_touch('list');
+browser.elastic_touch('noticeDetails');
 // 定义ajax事件
 let query = tools.GetUrlArg();
 let title =document.getElementById('title');
