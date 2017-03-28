@@ -1160,7 +1160,7 @@ public class AdminController extends BaseController {
         }
         roleDetailRequest.setType(EnumAdminType.BOSS.getCode());
         adminRoleService.save(roleDetailRequest);
-        return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "添加成功");
+        return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "操作成功");
     }
 
     /**

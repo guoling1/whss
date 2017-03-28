@@ -126,7 +126,7 @@ public class AdminRoleServiceImpl implements AdminRoleService{
                 adminMenuOptRelListResponse.setId(adminMenuList.get(i).getId());
                 adminMenuOptRelListResponse.setIsSelected(EnumIsSelected.UNSELECTED.getCode());
                 adminMenuOptRelListResponse.setMenuName(adminMenuList.get(i).getMenuName());
-                List<AdminMenu> adminMenuChildrenList = adminRoleDao.getMenuByParentIdAndType(adminMenuList.get(i).getParentId(),type);
+                List<AdminMenu> adminMenuChildrenList = adminRoleDao.getMenuByParentIdAndType(adminMenuList.get(i).getId(),type);
                 List<AdminMenuOptRelListResponse.Menu> menus = new ArrayList<AdminMenuOptRelListResponse.Menu>();
                 if(adminMenuChildrenList.size()>0){
                     for(int j=0;j<adminMenuChildrenList.size();j++){
@@ -183,7 +183,7 @@ public class AdminRoleServiceImpl implements AdminRoleService{
                 adminMenuOptRelListResponse.setId(adminMenuList.get(i).getId());
                 adminMenuOptRelListResponse.setIsSelected(adminMenuList.get(i).getIsSelected());
                 adminMenuOptRelListResponse.setMenuName(adminMenuList.get(i).getMenuName());
-                List<AdminMenuResponse> adminMenuChildrenList = adminRoleDao.getMenuByParentIdAndTypeAndRoleId(adminMenuList.get(i).getParentId(),type,roleId);
+                List<AdminMenuResponse> adminMenuChildrenList = adminRoleDao.getMenuByParentIdAndTypeAndRoleId(adminMenuList.get(i).getId(),type,roleId);
                 List<AdminMenuOptRelListResponse.Menu> menus = new ArrayList<AdminMenuOptRelListResponse.Menu>();
                 if(adminMenuChildrenList.size()>0){
                     for(int j=0;j<adminMenuChildrenList.size();j++){
@@ -276,14 +276,14 @@ public class AdminRoleServiceImpl implements AdminRoleService{
                 if(list.get(i).getChildren().size()>0){
                     List<AdminMenuOptRelListResponse.Menu> menus = list.get(i).getChildren();
                     for(int k=0;k<menus.size();k++){
-                        if(list.get(k).getIsSelected()==EnumIsSelected.SELECTED.getCode()){
+                        if(menus.get(k).getIsSelected()==EnumIsSelected.SELECTED.getCode()){
                             AdminRoleMenuRel adminRoleMenuRel = new AdminRoleMenuRel();
                             adminRoleMenuRel.setRoleId(adminRole.getId());
                             adminRoleMenuRel.setMenuId(menus.get(k).getId());
                             adminRoleMenuRel.setStatus(EnumAdminUserStatus.NORMAL.getCode());
                             adminRoleDao.insertRoleAndMenuRel(adminRoleMenuRel);
                         }
-                        if(list.get(k).getOpts().size()>0){
+                        if(menus.get(k).getOpts().size()>0){
                             List<AdminMenuOptRelListResponse.Opt> childOpts = list.get(k).getOpts();
                             for(int n=0;n<childOpts.size();n++){
                                 if(childOpts.get(n).getIsSelected()==EnumIsSelected.SELECTED.getCode()){
