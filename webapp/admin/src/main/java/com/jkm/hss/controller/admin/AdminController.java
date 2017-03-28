@@ -138,8 +138,8 @@ public class AdminController extends BaseController {
         this.adminUserService.updateLastLoginDate(tokenOptional.get().getAuid());
         CookieUtil.setSessionCookie(response, ApplicationConsts.ADMIN_COOKIE_KEY, tokenOptional.get().getToken(),
                 ApplicationConsts.getApplicationConfig().domain(), (int)(DealerConsts.TOKEN_EXPIRE_MILLIS / 1000));
-//        List<AdminUserLoginResponse> loginMenu = this.adminRoleService.getLoginMenu(userOptional.get().getRoleId(),EnumAdminType.BOSS.getCode());
-        return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "登录成功");
+        List<AdminUserLoginResponse> loginMenu = this.adminRoleService.getLoginMenu(userOptional.get().getRoleId(),EnumAdminType.BOSS.getCode());
+        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "登录成功",loginMenu);
     }
 
     /**

@@ -392,7 +392,7 @@ public class AdminRoleServiceImpl implements AdminRoleService{
                 AdminUserLoginResponse adminUserLoginResponse = new AdminUserLoginResponse();
                 adminUserLoginResponse.setId(menuResponses.get(i).getId());
                 adminUserLoginResponse.setMenuName(menuResponses.get(i).getMenuName());
-                adminUserLoginResponse.setUrl(menuResponses.get(i).getUrl());
+                adminUserLoginResponse.setUrl(menuResponses.get(i).getMenuUrl());
                 adminUserLoginResponse.setChildren(adminRoleDao.getLoginMenu(menuResponses.get(i).getId(),type,roleId));
                 list.add(adminUserLoginResponse);
             }

@@ -151,7 +151,7 @@
     </update>
 
     <select id="getLoginMenu" resultType="com.jkm.hss.admin.helper.responseparam.MenuResponse">
-        SELECT r.id,r.menu_name,r.url from tb_admin_role_menu_rel as m left join tb_admin_role as r on m.menu_id=r.id where r.parent_id=#{parentId} and r.type=#{type} and m.role_id=#{roleId} and r.status=1
+        SELECT r.id,r.menu_name,r.menu_url from tb_admin_role_menu_rel as m left join tb_admin_menu as r on m.menu_id=r.id where r.parent_id=#{parentId} and r.type=#{type} and m.role_id=#{roleId} and r.status=1 ORDER by r.sn asc
     </select>
 
     <select id="getPrivilegeByContions" resultType="java.lang.Integer">

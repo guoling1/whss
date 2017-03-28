@@ -18,5 +18,5 @@ public class MenuResponse {
     /**
      * 路由地址
      */
-    private String url;
+    private String menuUrl;
 }
