@@ -2531,7 +2531,7 @@ input:focus {
   color: #4b526d;
 }
 #chargeCode .content .top .shop {
-  padding: 34px 0 24px;
+  padding: 34px 0 5px;
   font-size: 15px;
 }
 #chargeCode .content .top .price {
@@ -2564,6 +2564,11 @@ input:focus {
   margin: 48px auto 0;
   width: 180px;
   height: 180px;
+}
+#chargeCode .content .bottom .red_mpt {
+  font-size: 14px;
+  margin-top: 20px;
+  color: red;
 }
 #chargeCode .content .bottom .bar {
   position: absolute;
