@@ -514,16 +514,30 @@ public interface DealerService {
     MerchantInfoResponse getInfo1(long secondDealerId);
 
     /**
-     * 查询代理商下的所有商户
+     * 查询一级代理商下的所有商户
      * @param req
      * @return
      */
     List<QueryMerchantResponse> dealerMerchantList(QueryMerchantRequest req);
 
     /**
-     * 查询代理商下的所有商户总数
+     * 查询一级代理商下的所有商户总数
      * @param req
      * @return
      */
     int dealerMerchantCount(QueryMerchantRequest req);
+
+    /**
+     * 查询二级代理商下的所有商户
+     * @param req
+     * @return
+     */
+    List<QueryMerchantResponse> dealerMerchantSecondList(QueryMerchantRequest req);
+
+    /**
+     * 查询二级代理商下的所有商户总数
+     * @param req
+     * @return
+     */
+    int dealerMerchantSecondCount(QueryMerchantRequest req);
 }

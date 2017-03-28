@@ -35,6 +35,9 @@ import com.jkm.hss.merchant.entity.MerchantChannelRate;
 import com.jkm.hss.merchant.entity.MerchantInfo;
 import com.jkm.hss.merchant.entity.MerchantInfoResponse;
 import com.jkm.hss.merchant.entity.OrderRecord;
+import com.jkm.hss.merchant.enums.EnumMerchantStatus;
+import com.jkm.hss.merchant.enums.EnumSource;
+import com.jkm.hss.merchant.helper.MerchantSupport;
 import com.jkm.hss.merchant.helper.request.MerchantChannelRateRequest;
 import com.jkm.hss.merchant.service.MerchantChannelRateService;
 import com.jkm.hss.merchant.service.MerchantInfoService;
@@ -58,6 +61,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -2328,6 +2332,46 @@ public class DealerServiceImpl implements DealerService {
     @Override
     public List<QueryMerchantResponse> dealerMerchantList(QueryMerchantRequest req) {
         List<QueryMerchantResponse> list = this.dealerDao.dealerMerchantList(req);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        if (list.size()>0){
+            for (int i=0;i<list.size();i++){
+                if (list.get(i).getCreateTime()!=null){
+                    String dates = sdf.format(list.get(i).getCreateTime());
+                    list.get(i).setCreateTimes(dates);
+                }
+                if (list.get(i).getAuthenticationTime()!=null){
+                    String dates = sdf.format(list.get(i).getAuthenticationTime());
+                    list.get(i).setAuthenticationTimes(dates);
+                }
+                if (list.get(i).getMobile()!=null&&!list.get(i).getMobile().equals("")){
+                    list.get(i).setMobile(MerchantSupport.decryptMobile(list.get(i).getMobile()));
+                }
+                if (list.get(i).getSource()==0){
+                    list.get(i).setRegistered(EnumSource.SCAN.getValue());
+                }
+                if (list.get(i).getSource()==1){
+                    list.get(i).setRegistered(EnumSource.RECOMMEND.getValue());
+                }
+                if (list.get(i).getSource()==2){
+                    list.get(i).setRegistered(EnumSource.DEALERRECOMMEND.getValue());
+                }
+                if(list.get(i).getStatus()==0){
+                    list.get(i).setStatusValue(EnumMerchantStatus.INIT.getName());
+                }
+                if(list.get(i).getStatus()==1){
+                    list.get(i).setStatusValue(EnumMerchantStatus.ONESTEP.getName());
+                }
+                if(list.get(i).getStatus()==2){
+                    list.get(i).setStatusValue(EnumMerchantStatus.REVIEW.getName());
+                }
+                if(list.get(i).getStatus()==3||list.get(i).getStatus()==6){
+                    list.get(i).setStatusValue(EnumMerchantStatus.PASSED.getName());
+                }
+                if(list.get(i).getStatus()==4){
+                    list.get(i).setStatusValue(EnumMerchantStatus.UNPASSED.getName());
+                }
+            }
+        }
         return list;
     }
 
@@ -2335,5 +2379,16 @@ public class DealerServiceImpl implements DealerService {
     public int dealerMerchantCount(QueryMerchantRequest req) {
 
         return this.dealerDao.dealerMerchantCount(req);
+    }
+
+    @Override
+    public List<QueryMerchantResponse> dealerMerchantSecondList(QueryMerchantRequest req) {
+        List<QueryMerchantResponse> list = this.dealerDao.dealerMerchantSecondList(req);
+        return list;
+    }
+
+    @Override
+    public int dealerMerchantSecondCount(QueryMerchantRequest req) {
+        return this.dealerDao.dealerMerchantSecondCount(req);
     }
 }

@@ -590,14 +590,16 @@
         SELECT * FROM tb_dealer WHERE id = #{secondDealerId}
     </select>
 
-    <!-- 查询代理商下的所有商户 -->
+    <!-- 查询一级代理商下的所有商户 -->
     <select id="dealerMerchantList" resultType="com.jkm.hss.dealer.entity.QueryMerchantResponse">
         SELECT
-            *
+          a.*,
+          (select proxy_name from tb_dealer where id=a.first_dealer_id) as proxyName,
+          (select proxy_name from tb_dealer where id=a.second_dealer_id) as proxyName1
         FROM
-            tb_merchant_info
+          tb_merchant_info a
         WHERE
-            `first_dealer_id` = #{dealerId}
+          a.first_dealer_id = #{dealerId}
     <!--<if test="">-->
 
     <!--</if>-->
@@ -630,11 +632,61 @@
 
     <!--</if>-->
         ORDER BY
-            `create_time` DESC
+            a.`create_time` DESC LIMIT #{offset},#{pageSize}
     </select>
 
-    <!-- 查询代理商下的所有商户总数 -->
+    <!-- 查询二级代理商下的所有商户 -->
+    <select id="dealerMerchantSecondList" resultType="com.jkm.hss.dealer.entity.QueryMerchantResponse">
+        SELECT
+            a.*,
+            (select proxy_name from tb_dealer where id=a.first_dealer_id) as proxyName,
+            (select proxy_name from tb_dealer where id=a.second_dealer_id) as proxyName1
+        FROM
+            tb_merchant_info a
+        WHERE
+            a.second_dealer_id = #{dealerId}
+        <!--<if test="">-->
+
+        <!--</if>-->
+
+        <!--<if test="">-->
+
+        <!--</if>-->
+
+        <!--<if test="">-->
+
+        <!--</if>-->
+
+        <!--<if test="">-->
+
+        <!--</if>-->
+
+        <!--<if test="">-->
+
+        <!--</if>-->
+
+        <!--<if test="">-->
+
+        <!--</if>-->
+
+        <!--<if test="">-->
+
+        <!--</if>-->
+
+        <!--<if test="">-->
+
+        <!--</if>-->
+        ORDER BY
+        a.`create_time` DESC LIMIT #{offset},#{pageSize}
+    </select>
+
+    <!-- 查询一级代理商下的所有商户总数 -->
     <select id="dealerMerchantCount" resultType="java.lang.Integer">
         SELECT COUNT(*) FROM tb_merchant_info WHERE `first_dealer_id` = #{dealerId}
+    </select>
+
+    <!-- 查询二级代理商下的所有商户总数 -->
+    <select id="dealerMerchantSecondCount" resultType="java.lang.Integer">
+        SELECT COUNT(*) FROM tb_merchant_info WHERE second_dealer_id = #{dealerId}
     </select>
 </mapper>
