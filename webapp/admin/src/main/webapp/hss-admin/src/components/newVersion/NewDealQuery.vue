@@ -306,7 +306,6 @@
         }else {
           return val
         }
-
       },
       changeSettleStatus: function (row, column) {
         var val = row.settleStatus;
