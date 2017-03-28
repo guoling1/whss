@@ -19,6 +19,16 @@ import java.util.Date;
 public class WithdrawResponse{
 
     /**
+     * 提现成功时间
+     */
+    private Date updateTime;
+
+    /**
+     * 提现成功时间
+     */
+    private String updateTimes;
+
+    /**
      * 所在省份编码
      */
     private String provinceCode;
