@@ -35,9 +35,6 @@ function getQueryString(name) {
 }
 
 // 定义变量
-let layer = document.getElementById('layer');
-let layer_body = document.getElementById('layer-body');
-let layer_x = document.getElementById('layer-x');
 let chooseBank = document.getElementById('chooseBank');
 let sendCode = document.getElementById('sendCode');
 let submit = document.getElementById('submit');
@@ -200,58 +197,30 @@ sendCode.addEventListener('click', function () {
   }
 });
 
-chooseBank.addEventListener('click', function () {
-  layer.style.display = 'block';
-});
-
-layer_x.addEventListener('click', function () {
-  layer.style.display = 'none';
-});
-
 // 获取支持的银行卡列表
+let bankNameList = [];
 http.post('/channel/queryChannelSupportBank', {
   channelSign: '301'
 }, function (data) {
   supportBankCardList = data;
   for (let i = 0; i < data.length; i++) {
-    let list = document.createElement('div');
-    list.className = 'choose-box-body-list-bank';
+    let bankNameObject = {};
+    bankNameObject.label = '<span style="color: #5a5a5a">' + data[i].bankName + '</span><span style="font-size: 14px;color: #5a5a5a"> (单笔限额' + fmoney(data[i].singleLimitAmount, 2) + '元)</span>';
+    bankNameObject.value = data[i].bankName + '/' + data[i].bankCode;
     if (data[i].status == 1) {
-      list.addEventListener('click', function () {
-        bankName = data[i].bankName;
-        bankCode = data[i].bankCode;
-        chooseBank.value = data[i].bankName;
-        layer.style.display = 'none';
-        bankCodeBtn.removeAttribute('readonly');
-      });
+      bankNameList.push(bankNameObject);
     }
-    let logo = document.createElement('div');
-    if (data[i].status == 1) {
-      logo.className = 'logo ' + data[i].bankCode;
-    } else {
-      logo.className = 'logo ' + data[i].bankCode + '_NO';
-    }
-    let detail = document.createElement('div');
-    detail.className = 'detail';
-    let name = document.createElement('div');
-    if (data[i].status == 1) {
-      name.className = 'name';
-    } else {
-      name.className = 'name NO';
-    }
-    name.innerHTML = data[i].bankName;
-    let small = document.createElement('div');
-    if (data[i].status == 1) {
-      small.className = 'small';
-      small.innerHTML = '单笔限额 ' + fmoney(data[i].singleLimitAmount, 2) + '元';
-    } else {
-      small.className = 'small NO';
-      small.innerHTML = '该通道暂不可用';
-    }
-    detail.appendChild(name);
-    detail.appendChild(small);
-    list.appendChild(logo);
-    list.appendChild(detail);
-    layer_body.appendChild(list);
   }
+  chooseBank.addEventListener('click', () => {
+    weui.picker(bankNameList, {
+      onConfirm: (result) => {
+        let format = result[0].split('/');
+        chooseBank.value = format[0];
+        bankName = format[0];
+        bankCode = format[1];
+        bankCodeBtn.removeAttribute('readonly');
+      },
+      id: 'chooseBank'
+    });
+  });
 });

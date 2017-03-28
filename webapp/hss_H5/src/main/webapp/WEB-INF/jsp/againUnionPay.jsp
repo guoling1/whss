@@ -96,6 +96,6 @@
     canPay: false
   }
 </script>
-<script src="http://static.jinkaimen.cn/vendor/vendor.1.0.9.2.min.js"></script>
-<script src="http://static.jinkaimen.cn/hss/2.2.7/againUnionPay.min.js"></script>
+<script src="http://static.jinkaimen.cn/vendor/vendor.1.0.9.4.min.js"></script>
+<script src="http://static.jinkaimen.cn/hss/2.2.8/againUnionPay.min.js"></script>
 </html>
