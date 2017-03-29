@@ -37,7 +37,7 @@
     <a class="operation" href="/account/toHssAccount">
       <div class="logo wallet"></div>
       <div class="operation-title">余额</div>
-      <div class="operation-small">${totalAmount}</div>
+      <div class="operation-small">${avaliable}</div>
     </a>
     <a class="operation" href="/account/toWithdraw">
       <div class="logo card"></div>
