@@ -34,12 +34,12 @@
       <div class="operation-title">收款</div>
     </a>
 
-    <a class="operation" href="/account/toHssAccount">
+    <a class="operation touch_op" href="/account/toHssAccount">
       <div class="logo wallet"></div>
       <div class="operation-title">余额</div>
       <div class="operation-small">${avaliable}</div>
     </a>
-    <a class="operation" href="/account/toWithdraw">
+    <a class="operation touch_op" href="/account/toWithdraw">
       <div class="logo card"></div>
       <div class="operation-title">提现</div>
     </a>
