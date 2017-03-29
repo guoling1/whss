@@ -88,7 +88,7 @@ public class DealerLoginController extends BaseController{
     @ResponseBody
     @RequestMapping(value = "/logout")
     public CommonResponse<BaseEntity> logout(final HttpServletResponse response,final HttpServletRequest request){
-        this.adminUserService.logout(getDealerId());
+        this.adminUserService.logout(getAdminUserId());
         CookieUtil.deleteCookie(response, ApplicationConsts.DEALER_COOKIE_KEY, ApplicationConsts.getApplicationConfig().domain());
         return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "登出成功");
     }
