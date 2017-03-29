@@ -411,8 +411,6 @@ public class AdminRoleServiceImpl implements AdminRoleService{
                 }
             }
         }
-
-
         return list;
     }
 
