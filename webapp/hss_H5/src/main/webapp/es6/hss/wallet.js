@@ -47,7 +47,7 @@ if (pageData.showRecommend == 2) {
 http.post('/notice/pageAnnouncement', {}, function (data) {
   if (data) {
     announcement.style.display = 'block';
-    announcement_text.innerHTML = data.text.replace(/<[^>]+>/g, "");
+    announcement_text.innerHTML = data.title.replace(/<[^>]+>/g, "");
     let announcement_text_box_ClientRect = announcement_text_box.getBoundingClientRect();
     let initLeft = announcement_text_box_ClientRect.width;
     let announcement_text_ClientRect = announcement_text.getBoundingClientRect();

@@ -87,18 +87,22 @@ sendCode.addEventListener('click', function () {
   if (pageData.canPay) {
     if (countdown.check()) {
       if (validate.empty(cvv2.value, 'CVV2')) {
-        message.load_show('正在发送');
-        http.post('/trade/againUnionPay', {
-          amount: amount,
-          channel: channel,
-          creditCardId: pageData.creditCardId,
-          cvv2: cvv2.value
-        }, function (data) {
-          orderId = data.orderId;
-          message.load_hide();
-          message.prompt_show('验证码发送成功');
-          countdown.submit_start();
-        })
+        if (cvv2.value.length == 3) {
+          message.load_show('正在发送');
+          http.post('/trade/againUnionPay', {
+            amount: amount,
+            channel: channel,
+            creditCardId: pageData.creditCardId,
+            cvv2: cvv2.value
+          }, function (data) {
+            orderId = data.orderId;
+            message.load_hide();
+            message.prompt_show('验证码发送成功');
+            countdown.submit_start();
+          })
+        } else {
+          message.prompt_show('请输入正确的CVV2');
+        }
       }
     }
   } else {

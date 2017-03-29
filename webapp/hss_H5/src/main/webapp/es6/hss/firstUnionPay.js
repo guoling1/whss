@@ -161,14 +161,18 @@ submit.addEventListener('click', function () {
     validate.empty(cvv2.value, 'CVV2') &&
     validate.phone(mobile.value) &&
     validate.empty(code.value, '验证码')) {
-    message.load_show('正在支付');
-    http.post('/trade/confirmUnionPay', {
-      orderId: orderId,
-      code: code.value,
-    }, function () {
-      message.load_hide();
-      window.location.replace('/trade/unionPaySuccess/' + orderId);
-    })
+    if (cvv2.value.length == 3) {
+      message.load_show('正在支付');
+      http.post('/trade/confirmUnionPay', {
+        orderId: orderId,
+        code: code.value,
+      }, function () {
+        message.load_hide();
+        window.location.replace('/trade/unionPaySuccess/' + orderId);
+      })
+    } else {
+      message.prompt_show('请输入正确的CVV2');
+    }
   }
 });
 // 定义验证码
