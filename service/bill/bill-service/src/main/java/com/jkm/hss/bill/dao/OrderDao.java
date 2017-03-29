@@ -302,4 +302,32 @@ public interface OrderDao {
      * @return
      */
     List<PlayResponse> getPlayMoney(@Param("orderNo") String orderNo);
+
+    /**
+     * 代理商pc交易查询二级
+     * @param req
+     * @return
+     */
+    List<MerchantTradeResponse> getTrade(OrderTradeRequest req);
+
+    /**
+     * 代理商pc交易查询一级
+     * @param req
+     * @return
+     */
+    List<MerchantTradeResponse> getTradeFirst(OrderTradeRequest req);
+
+    /**
+     *  代理商pc交易查询二级总数
+     * @param req
+     * @return
+     */
+    int listCount(OrderTradeRequest req);
+
+    /**
+     * 代理商pc交易查询一级总数
+     * @param req
+     * @return
+     */
+    int listFirstCount(OrderTradeRequest req);
 }

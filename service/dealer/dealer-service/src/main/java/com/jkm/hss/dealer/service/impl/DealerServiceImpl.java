@@ -2308,4 +2308,16 @@ public class DealerServiceImpl implements DealerService {
         MerchantInfoResponse response = dealerDao.getInfo1(secondDealerId);
         return response;
     }
+
+    @Override
+    public List<QueryMerchantResponse> dealerMerchantList(QueryMerchantRequest req) {
+        List<QueryMerchantResponse> list = this.dealerDao.dealerMerchantList(req);
+        return list;
+    }
+
+    @Override
+    public int dealerMerchantCount(QueryMerchantRequest req) {
+
+        return this.dealerDao.dealerMerchantCount(req);
+    }
 }
