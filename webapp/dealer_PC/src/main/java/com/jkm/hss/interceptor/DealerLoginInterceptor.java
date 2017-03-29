@@ -8,6 +8,13 @@ import com.jkm.base.common.enums.EnumBoolean;
 import com.jkm.base.common.util.CookieUtil;
 import com.jkm.base.common.util.RequestUtil;
 import com.jkm.base.common.util.ResponseWriter;
+import com.jkm.hss.admin.entity.AdminUser;
+import com.jkm.hss.admin.entity.AdminUserPassport;
+import com.jkm.hss.admin.enums.EnumAdminType;
+import com.jkm.hss.admin.enums.EnumAdminUserStatus;
+import com.jkm.hss.admin.helper.AdminTokenHelper;
+import com.jkm.hss.admin.service.AdminUserPassportService;
+import com.jkm.hss.admin.service.AdminUserService;
 import com.jkm.hss.helper.ApplicationConsts;
 import com.jkm.hss.dealer.entity.Dealer;
 import com.jkm.hss.dealer.entity.DealerPassport;
@@ -33,11 +40,15 @@ public class DealerLoginInterceptor extends HandlerInterceptorAdapter {
 
     private static final DataBind<Dealer> DEALER_USER_INFO_DATA_BIND = DataBindManager.getInstance().getDataBind(ApplicationConsts.REQUEST_USER_INFO_DATA_BIND_DEALER);
 
+    private static final DataBind<AdminUser> Admin_USER_INFO_DATA_BIND = DataBindManager.getInstance().getDataBind(ApplicationConsts.ADMIN_USER_INFO_DATA_BIND_DEALER);
     @Setter
     private DealerService dealerService;
 
     @Setter
-    private DealerPassportService dealerPassportService;
+    private AdminUserPassportService adminUserPassportService;
+
+    @Setter
+    private AdminUserService adminUserService;
 
     /**
      * 经销商登录拦截
@@ -52,63 +63,72 @@ public class DealerLoginInterceptor extends HandlerInterceptorAdapter {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         final String token = CookieUtil.getCookie(request, ApplicationConsts.DEALER_COOKIE_KEY);
 
-        final Triple<Integer, String, Dealer> checkResult = this.checkToken(token);
+        final Triple<Integer, String, AdminUser> checkResult = this.checkToken(token);
         if (0 != checkResult.getLeft()) {
-            ResponseWriter.writeJsonResponse(response, CommonResponse.simpleResponse(-2, "not login"));
+            ResponseWriter.writeJsonResponse(response, CommonResponse.simpleResponse(-2, checkResult.getMiddle()));
             return false;
         }
-        DEALER_USER_INFO_DATA_BIND.put(checkResult.getRight());
+        Admin_USER_INFO_DATA_BIND.put(checkResult.getRight());
+        Optional<Dealer> dealerOptional = dealerService.getById(checkResult.getRight().getDealerId());
+        DEALER_USER_INFO_DATA_BIND.put(dealerOptional.get());
+        int level = dealerOptional.get().getLevel();
+        int type = EnumAdminType.FIRSTDEALER.getCode();
+        if(level==1){
+            type=EnumAdminType.FIRSTDEALER.getCode();
+        }
+        if(level==2){
+            type=EnumAdminType.SECONDDEALER.getCode();
+        }
+        int count = this.adminUserService.hasUrl(type,request.getRequestURI(),request.getMethod());
+        if(count>0){
+            int privilegeCount = this.adminUserService.getPrivilegeByContions(checkResult.getRight().getRoleId(),type,request.getRequestURI(),request.getMethod());
+            if(privilegeCount<=0){
+                ResponseWriter.writeJsonResponse(response, CommonResponse.simpleResponse(-2, "权限不足"));
+                return false;
+            }
+        }
         return super.preHandle(request, response, handler);
     }
 
-    private Triple<Integer, String, Dealer> checkToken(final String token) {
+    private Triple<Integer, String, AdminUser> checkToken(final String token) {
         if (StringUtils.isEmpty(token)) {
             return Triple.of(-100, "请先登录系统", null);
         }
 
-        final long dealerId = TokenSupporter.decryptDealerId(token);
-        if (dealerId == 0) {
+        final long auid = AdminTokenHelper.decryptAdminUserId(token);
+        if (auid == 0) {
             return Triple.of(-100, "请先登录系统", null);
         }
 
-        final Optional<DealerPassport> passportOptional = this.dealerPassportService.getByToken(token, EnumPassportType.MOBILE);
-        if (!passportOptional.isPresent()) {
+        final Optional<AdminUserPassport> adminUserPassportOptional = this.adminUserPassportService.getByToken(token);
+        if (!adminUserPassportOptional.isPresent()) {
             return Triple.of(-200, "该用户已在其地点登录，本次登录已失效！", null);
         }
 
-        final DealerPassport dealerPassport = passportOptional.get();
-        if (dealerPassport.isExpire()) {
+        final AdminUserPassport adminUserPassport = adminUserPassportOptional.get();
+        if (adminUserPassport.isExpire()) {
             return Triple.of(-201, "登录状态已过期，请重新登录！", null);
         }
 
-        if (!dealerPassport.isValid()) {
-            return Triple.of(-202, "登录状态无效，请重新登录！", null);
-        }
-
-        final Optional<Dealer> dealerOptional = this.dealerService.getById(dealerId);
-        if (!dealerOptional.isPresent()) {
+        final Optional<AdminUser> adminUserOptional = this.adminUserService.getAdminUserById(auid);
+        if (!adminUserOptional.isPresent()) {
             return Triple.of(-203, "用户不存在", null);
         }
 
-        final Dealer dealer = dealerOptional.get();
-        if (EnumDealerStatus.NORMAL.getId() != dealer.getStatus()) {
+        final AdminUser adminUser = adminUserOptional.get();
+        if (EnumAdminUserStatus.NORMAL.getCode() != adminUser.getStatus()) {
             return Triple.of(-204, "用户被禁用！", null);
         }
 
-        if (dealerPassport.getExpireTime() < (System.currentTimeMillis() + 5 * 60 * 1000)) {
-            this.dealerPassportService.refreshToken(dealerPassport.getId());
+        if (adminUserPassport.getExpireTime() < (System.currentTimeMillis() + 5 * 60 * 1000)) {
+            this.adminUserPassportService.refreshToken(adminUserPassport.getId());
         }
-        if (dealerPassport.isLogin()) {
-            dealer.setLogin(true);
-        } else {
-            dealer.setLogin(false);
-        }
-        return Triple.of(0, "", dealer);
+        return Triple.of(0, "", adminUser);
     }
 
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
-        DEALER_USER_INFO_DATA_BIND.remove();
+        Admin_USER_INFO_DATA_BIND.remove();
         super.afterCompletion(request, response, handler, ex);
     }
 }

@@ -49,7 +49,21 @@ public interface AdminUserDao {
      * @param username
      * @return
      */
+    AdminUser selectDealerLoginNameByUsername(@Param("username") String username);
+    /**
+     * 根据用户名和类型获取
+     *
+     * @param username
+     * @return
+     */
     AdminUser getAdminUserByNameAndTypeUnIncludeNow(@Param("username") String username,@Param("type") int type,@Param("dealerId") long dealerId);
+    /**
+     * 代理商根据用户名和类型获取
+     *
+     * @param username
+     * @return
+     */
+    AdminUser getAdminDealerUserByNameUnIncludeNow(@Param("username") String username,@Param("dealerId") long dealerId);
 
     /**
      * 修改密码

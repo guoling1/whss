@@ -110,7 +110,11 @@ public class AdminUserServiceImpl implements AdminUserService {
      */
     @Override
     public Optional<AdminUser> getAdminUserByNameAndType(final String username,final int type) {
-        return Optional.fromNullable(adminUserDao.selectByUsernameAndType(username,type));
+        if(type==EnumAdminType.BOSS.getCode()){
+            return Optional.fromNullable(adminUserDao.selectByUsernameAndType(username,type));
+        }else{
+            return Optional.fromNullable(adminUserDao.selectDealerLoginNameByUsername(username));
+        }
     }
 
     /**
@@ -122,7 +126,12 @@ public class AdminUserServiceImpl implements AdminUserService {
      */
     @Override
     public Optional<AdminUser> getAdminUserByNameAndTypeUnIncludeNow(String username, int type, long dealerId) {
-        return Optional.fromNullable(adminUserDao.getAdminUserByNameAndTypeUnIncludeNow(username,type,dealerId));
+        if(type==EnumAdminType.BOSS.getCode()){
+            return Optional.fromNullable(adminUserDao.getAdminUserByNameAndTypeUnIncludeNow(username,type,dealerId));
+        }else{
+            return Optional.fromNullable(adminUserDao.getAdminDealerUserByNameUnIncludeNow(username,dealerId));
+        }
+
     }
 
     @Override
