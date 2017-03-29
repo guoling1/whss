@@ -9,6 +9,11 @@ import lombok.Data;
 public class HsyQueryMerchantRequest {
 
     /**
+     * 一级代理商id
+     */
+    private long firstLevelDealerId;
+
+    /**
      * 代理商id
      */
     private long dealerId;

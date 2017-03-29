@@ -659,7 +659,7 @@
 
     <!-- 查询一级代理商下的所有商户总数 -->
     <select id="dealerMerchantCount" resultType="java.lang.Integer">
-        SELECT COUNT(*) FROM tb_merchant_info WHERE `first_dealer_id` = #{dealerId}
+        SELECT COUNT(*) FROM tb_merchant_info a WHERE a.`first_dealer_id` = #{dealerId}
     <if test="markCode!=null and markCode!=''">
         AND a.mark_code = #{markCode}
     </if>
@@ -683,7 +683,7 @@
 
     <!-- 查询二级代理商下的所有商户总数 -->
     <select id="dealerMerchantSecondCount" resultType="java.lang.Integer">
-        SELECT COUNT(*) FROM tb_merchant_info WHERE second_dealer_id = #{dealerId}
+        SELECT COUNT(*) FROM tb_merchant_info a WHERE a.second_dealer_id = #{dealerId}
     <if test="markCode!=null and markCode!=''">
         AND a.mark_code = #{markCode}
     </if>
