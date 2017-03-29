@@ -109,14 +109,13 @@
     bankId: '${bankId}'
   };
   // 弹窗提醒临时解决方案
-  let temporary = document.getElementById('temporary');
-  let temporary_cancel = document.getElementById('temporary-cancel');
+  var temporary = document.getElementById('temporary');
+  var temporary_cancel = document.getElementById('temporary-cancel');
   temporary_cancel.addEventListener('click', function () {
     temporary.style.display = 'none';
   });
   /* localStorage 判断是否弹出提示
    * 弊端：一旦用户清除缓存数据 这个值会被重置*/
-  alert(localStorage.getItem('read_first'));
   if (localStorage.getItem('read_first') != 'true') {
     temporary.style.display = 'block';
     localStorage.setItem('read_first', 'true');
