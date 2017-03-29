@@ -27,23 +27,23 @@
               <el-table :data="tableData" border
                         v-loading="tableLoading"
                         element-loading-text="数据加载中">
-                <el-table-column prop="splitOrderNo" label="商户编号"></el-table-column>
-                <el-table-column prop="splitOrderNo" label="商户名称"></el-table-column>
+                <el-table-column prop="markCode" label="商户编号"></el-table-column>
+                <el-table-column prop="merchantName" label="商户名称"></el-table-column>
+                <el-table-column prop="proxyName" label="所属一级"></el-table-column>
+                <el-table-column prop="proxyName1" label="所属二级"></el-table-column>
                 <el-table-column label="注册时间">
                   <template scope="scope">
-                    {{ scope.row.businessType | filter_businessType }}
+                    {{ scope.row.createTime | datetime }}
                   </template>
                 </el-table-column>
-                <el-table-column label="注册手机号">
+                <el-table-column prop="mobile" label="注册手机号"></el-table-column>
+                <el-table-column prop="registered" label="注册方式"></el-table-column>
+                <el-table-column label="认证时间">
                   <template scope="scope">
-                    {{ scope.row.splitCreateTime | datetime }}
+                    {{ scope.row.authenticationTime | datetime }}
                   </template>
                 </el-table-column>
-                <el-table-column prop="orderNo" label="所属代理商"></el-table-column>
-                <el-table-column prop="splitSettlePeriod" label="所属代理商编号"></el-table-column>
-                <el-table-column prop="splitSettlePeriod" label="注册业务来源"></el-table-column>
-                <el-table-column prop="dealerName" label="注册入口"></el-table-column>
-                <el-table-column prop="splitAmount" label="已开通业务"></el-table-column>
+                <el-table-column prop="statusValue" label="商户状态"></el-table-column>
               </el-table>
             </div>
             <div class="box-body">
