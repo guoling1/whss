@@ -15,6 +15,7 @@ import com.jkm.hss.admin.enums.EnumAdminUserStatus;
 import com.jkm.hss.admin.helper.AdminTokenHelper;
 import com.jkm.hss.admin.service.AdminUserPassportService;
 import com.jkm.hss.admin.service.AdminUserService;
+import com.jkm.hss.merchant.enums.EnumType;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -89,10 +90,13 @@ public class AdminLoginInterceptor extends HandlerInterceptorAdapter {
         if (EnumAdminUserStatus.NORMAL.getCode() != adminUser.getStatus()) {
             return Triple.of(-204, "用户被禁用！", null);
         }
-//        int count = this.adminUserService.getPrivilegeByContions(1,1,"/wx","POST");
-//        if(count<=0){
-//            return Triple.of(-205, "权限不足", null);
-//        }
+        int count = this.adminUserService.hasUrl(EnumAdminType.BOSS.getCode(),request.getRequestURI(),request.getMethod());
+        if(count>0){
+            int privilegeCount = this.adminUserService.getPrivilegeByContions(adminUser.getRoleId(),EnumAdminType.BOSS.getCode(),request.getRequestURI(),request.getMethod());
+            if(privilegeCount<=0){
+                return Triple.of(-204, "权限不足", null);
+            }
+        }
         if (adminUserPassport.getExpireTime() < (System.currentTimeMillis() + 5 * 60 * 1000)) {
             this.adminUserPassportService.refreshToken(adminUserPassport.getId());
         }

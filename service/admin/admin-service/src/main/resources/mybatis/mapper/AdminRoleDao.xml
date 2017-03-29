@@ -168,6 +168,18 @@
         AND o.method = #{method}
     </select>
 
+    <select id="hasUrl" resultType="java.lang.Integer">
+        SELECT
+        count(1)
+        FROM
+        tb_admin_opt
+        WHERE
+        status=1
+        and type = #{type}
+        and url = #{url}
+        and method = #{method}
+    </select>
+
     <select id="selectByRoleNameAndType" resultType="com.jkm.hss.admin.entity.AdminRole">
         SELECT <include refid="Base_Column_List" /> FROM tb_admin_role WHERE  role_name=#{roleName} and type=#{type} and status=1
     </select>

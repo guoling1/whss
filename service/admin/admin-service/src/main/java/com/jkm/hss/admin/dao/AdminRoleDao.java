@@ -144,6 +144,15 @@ public interface AdminRoleDao {
     int getPrivilegeByContions(@Param("roleId") long roleId,@Param("type") int type,@Param("url") String url,@Param("method") String method);
 
     /**
+     * 是否有访问的操作
+     * @param type
+     * @param url
+     * @param method
+     * @return
+     */
+    int hasUrl(@Param("type") int type,@Param("url") String url,@Param("method") String method);
+
+    /**
      *根据名称和类型查询角色
      * @param roleName
      * @param type

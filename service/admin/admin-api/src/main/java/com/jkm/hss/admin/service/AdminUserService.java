@@ -238,4 +238,13 @@ public interface AdminUserService {
      * @return
      */
     int getPrivilegeByContions(long roleId,int type,String url,String method);
+
+    /**
+     * 是否有访问的操作
+     * @param type
+     * @param url
+     * @param method
+     * @return
+     */
+    int hasUrl(int type,String url,String method);
 }

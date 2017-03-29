@@ -499,4 +499,17 @@ public class AdminUserServiceImpl implements AdminUserService {
     public int getPrivilegeByContions(long roleId, int type, String url, String method) {
         return adminRoleDao.getPrivilegeByContions(roleId,type,url,method);
     }
+
+    /**
+     * 是否有访问的操作
+     *
+     * @param type
+     * @param url
+     * @param method
+     * @return
+     */
+    @Override
+    public int hasUrl(int type, String url, String method) {
+        return adminRoleDao.hasUrl(type,url,method);
+    }
 }
