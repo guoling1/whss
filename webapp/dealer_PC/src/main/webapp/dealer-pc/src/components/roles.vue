@@ -25,16 +25,20 @@
           <!--表格-->
           <el-table v-loading.body="loading" style="font-size: 12px;margin:15px 0" :data="records" border>
             <el-table-column type="index" width="70" label="序号"></el-table-column>
-            <el-table-column prop="markCode" label="角色名称"></el-table-column>
-            <el-table-column prop="username" label="最后编辑时间"></el-table-column>
-            <el-table-column prop="realname" label="状态"></el-table-column>
+            <el-table-column prop="roleName" label="角色名称"></el-table-column>
+            <el-table-column prop="updateTime" label="最后编辑时间">
+              <template scope="scope">
+                {{scope.row.updateTime|datetime}}
+              </template>
+            </el-table-column>
+            <el-table-column prop="statusName" label="状态"></el-table-column>
             <el-table-column label="操作" width="100">
               <template scope="scope">
-                <router-link :to="{path:'/admin/record/personnelAdd',query:{id:records[scope.$index].id}}" type="text"
+                <router-link :to="{path:'/daili/record/roles_add',query:{id:records[scope.$index].id}}" type="text"
                              size="small">编辑
                 </router-link>
-                <a @click="open(records[scope.$index].id)" v-if="records[scope.$index].status==2" type="text" size="small">开启</a>
-                <a @click="close(records[scope.$index].id)" v-if="records[scope.$index].status==1" type="text" size="small">禁用</a>
+                <a @click="open(records[scope.$index].id)" v-if="records[scope.$index].statusName=='禁用'" type="text" size="small">开启</a>
+                <a @click="close(records[scope.$index].id)" v-if="records[scope.$index].statusName=='正常'" type="text" size="small">禁用</a>
               </template>
             </el-table-column>
           </el-table>
@@ -46,7 +50,7 @@
             <el-pagination @size-change="handleSizeChange"
                            @current-change="handleCurrentChange"
                            :current-page="query.pageNo"
-                           :page-sizes="[10, 20, 50]"
+                           :page-sizes="[20, 50, 100]"
                            :page-size="query.pageSize"
                            layout="total, sizes, prev, pager, next, jumper"
                            :total="count">
@@ -65,11 +69,10 @@
         query:{
           pageNo:1,
           pageSize:10,
-          markCode: "",
+          roleName: "",
         },
         records: [],
         count: 0,
-        total: 0,
         loading: true,
       }
     },
@@ -82,7 +85,7 @@
       },
       getData: function () {
         this.loading = true;
-        this.$http.post('/admin/user/userList', this.$data.query)
+        this.$http.post('/daili/user/userList', this.query)
           .then(function (res) {
             this.loading = false;
             this.$data.records = res.data.records;
@@ -98,11 +101,11 @@
       },
       open: function (val) {
         this.loading = true;
-        this.$http.post('/admin/user/activeUser',{id:val})
+        this.$http.post('/daili/user/activeUser',{id:val})
           .then((res)=>{
             for(var i=0;i<this.records.length;i++){
               if(this.records[i].id == val){
-                this.records[i].status = '1'
+                this.records[i].statusName = '正常'
               }
             }
             this.loading = false;
@@ -122,11 +125,11 @@
       },
       close: function (val) {
         this.loading = true;
-        this.$http.post('/admin/user/disableUser',{id:val})
+        this.$http.post('/daili/user/disableUser',{id:val})
           .then((res)=>{
             for(var i=0;i<this.records.length;i++){
               if(this.records[i].id == val){
-                this.records[i].status = '2'
+                this.records[i].statusName = '禁用'
               }
             }
             this.loading = false;

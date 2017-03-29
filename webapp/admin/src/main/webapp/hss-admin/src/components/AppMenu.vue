@@ -32,6 +32,9 @@
         <!-- <li class="header">HEADER</li>
          Optionally, you can add icons to the links
         <li><a href="#"><i class="fa fa-link"></i> <span>Link</span></a></li>-->
+        <li :class="(url=='/admin/record/home')?'treeview active':'treeview'">
+          <router-link to="/admin/record/home"><span>主页</span></router-link>
+        </li>
         <li v-if="list.交易查询==1" :class="(url=='/admin/record/newDeal')?'treeview active':'treeview'">
           <a href="#"><span>交易查询</span></a>
           <ul class="treeview-menu">
@@ -189,59 +192,50 @@
         msg: '注册',
         url: '',
         list:{
-          '交易查询':1,
-          '支付交易查询':1,
-          '分润管理':1,
-          '分润明细':1,
-          '分润统计':1,
-          '公司分润账户':1,
-          '结算管理':1,
-          '商户结算记录':1,
-          '代理商结算记录':1,
-          '渠道交易查询':1,
-          '支付查询':1,
-          '打款查询':1,
-          '商户管理':1,
-          '待审核商户':1,
-          '商户消息':1,
-          '代理商管理':1,
-          '所有商户':1,
-          '一级代理商':1,
-          '二级代理商':1,
-          '设备管理':1,
-          '分配二维码':1,
-          '二维码分配记录':1,
-          '产码记录':1,
-          '所有二维码':1,
-          '产品管理':1,
-          '产品列表':1,
-          '合伙人推荐':1,
-          '通道管理':1,
-          '通道列表':1,
-          '员工权限管理':1,
-          '员工管理':1,
-          '角色管理':1,
+          '交易查询':0,
+          '支付交易查询':0,
+          '分润管理':0,
+          '分润明细':0,
+          '分润统计':0,
+          '公司分润账户':0,
+          '结算管理':0,
+          '商户结算记录':0,
+          '代理商结算记录':0,
+          '渠道交易查询':0,
+          '支付查询':0,
+          '打款查询':0,
+          '商户管理':0,
+          '待审核商户':0,
+          '商户消息':0,
+          '代理商管理':0,
+          '所有商户':0,
+          '一级代理商':0,
+          '二级代理商':0,
+          '设备管理':0,
+          '分配二维码':0,
+          '二维码分配记录':0,
+          '产码记录':0,
+          '所有二维码':0,
+          '产品管理':0,
+          '产品列表':0,
+          '合伙人推荐':0,
+          '通道管理':0,
+          '通道列表':0,
+          '员工权限管理':0,
+          '员工管理':0,
+          '角色管理':0,
         },
       }
     },
     created: function () {
       this.$data.url = location.pathname;
-      if(sessionStorage.getItem('login')==[]){
-          location.reload()
-      }
-
-      /*let list = JSON.parse(sessionStorage.getItem('login'));
-      console.log(list);
-      if(list!=null){
-        for(let i=0;i<list.length;i++){
-          this.$list[list[i].menuName]=1
-          for(let j=0;j<list[i].children.length;j++) {
-            this.$list[list[i].children[j].menuName]=1
-          }
+      let list = JSON.parse(sessionStorage.getItem('login'));
+      for(let i=0;i<list.length;i++){
+        this.list[list[i].menuName]=1;
+        for(let j=0;j<list[i].children.length;j++) {
+          this.list[list[i].children[j].menuName]=1
         }
-      }*/
-
-      console.log(sessionStorage.getItem('login'))
+      }
     },
     methods: {
       refrash: function () {

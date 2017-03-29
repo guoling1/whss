@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="col-md-12">
+    <div class="col-md-12" style="height: 880px">
       <div class="box" style="margin-top:15px;overflow: hidden">
         <div class="box-header">
           <h3 class="box-title">T1结算审核</h3>

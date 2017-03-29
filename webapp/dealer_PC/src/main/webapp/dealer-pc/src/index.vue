@@ -154,7 +154,7 @@
             <!--</ul>-->
           </li>
           <li class="treeview">
-            <a href="#">
+            <a v-if="list.我的分润!=undefined" href="#">
               <i class="fa fa-money"></i>
               <span>我的分润</span>
               <span class="pull-right-container">
@@ -163,19 +163,19 @@
               </span>
             </a>
             <ul class="treeview-menu">
-              <li>
+              <li v-if="list.分润明细!=undefined">
                 <router-link to="profits_detail"><i class="fa fa-circle-o"></i>分润明细</router-link>
               </li>
               <!--<li>-->
                 <!--<router-link to="settlement"><i class="fa fa-circle-o"></i>结算记录</router-link>-->
               <!--</li>-->
-              <li>
+              <li v-if="list.余额提现!=undefined">
                 <router-link to="balance_withdrawal"><i class="fa fa-circle-o"></i>余额提现</router-link>
               </li>
             </ul>
           </li>
           <li class="treeview" v-show="dealerLeavel!=2">
-            <a href="#">
+            <a href="#" v-if="list.下级代理!=undefined">
               <i class="fa fa-users"></i> <span>下级代理</span>
               <span class="pull-right-container">
                 <i class="fa fa-angle-left pull-right"></i>
@@ -183,7 +183,7 @@
               </span>
             </a>
             <ul class="treeview-menu">
-              <li>
+              <li v-if="list.所有代理商!=undefined">
                 <router-link to="dealer_list"><i class="fa fa-circle-o"></i> 所有代理商</router-link>
               </li>
               <!--<li>-->
@@ -212,7 +212,7 @@
             <!--</ul>-->
           <!--</li>-->
           <li class="treeview" v-show="dealerLeavel!=2">
-            <a href="#">
+            <a href="#" v-if="list.设备管理!=undefined">
               <i class="fa fa-calculator"></i> <span>设备管理</span>
               <span class="pull-right-container">
                 <i class="fa fa-angle-left pull-right"></i>
@@ -220,19 +220,19 @@
               </span>
             </a>
             <ul class="treeview-menu">
-              <li>
+              <li v-if="list.分配二维码!=undefined">
                 <router-link to="distribution_qrcode"><i class="fa fa-circle-o"></i> 分配二维码</router-link>
               </li>
               <!--<li>-->
                 <!--<router-link to="qrcode_distribution"><i class="fa fa-circle-o"></i> 二维码分配记录</router-link>-->
               <!--</li>-->
-              <li>
+              <li v-if="list.所有二维码!=undefined">
                 <router-link to="qrcode"><i class="fa fa-circle-o"></i> 所有二维码</router-link>
               </li>
             </ul>
           </li>
           <li class="treeview">
-            <a href="#">
+            <a href="#" v-if="list.员工权限管理!=undefined">
               <i class="fa fa-user-plus"></i> <span>员工权限管理</span>
               <span class="pull-right-container">
                 <i class="fa fa-angle-left pull-right"></i>
@@ -240,10 +240,10 @@
               </span>
             </a>
             <ul class="treeview-menu">
-              <li>
+              <li v-if="list.员工管理!=undefined">
                 <router-link to="employees"><i class="fa fa-circle-o"></i> 员工管理</router-link>
               </li>
-              <li>
+              <li v-if="list.角色管理!=undefined">
                 <router-link to="roles"><i class="fa fa-circle-o"></i> 角色管理</router-link>
               </li>
             </ul>
@@ -326,7 +326,13 @@
       if (bIsIpad || bIsIphoneOs || bIsMidp || bIsUc7 || bIsUc || bIsAndroid || bIsCE || bIsWM) {
         $("a[href!='#']").attr("data-toggle", "offcanvas");
       }
-      console.log(sessionStorage.getItem('user'))
+      let list = JSON.parse(sessionStorage.getItem('login'));
+      for(let i=0;i<list.length;i++){
+        this.list[list[i].menuName]=1;
+        for(let j=0;j<list[i].children.length;j++) {
+          this.list[list[i].children[j].menuName]=1
+        }
+      }
     },
     methods: {
       logout: function () {

@@ -1,6 +1,6 @@
 <template lang="html">
   <!-- Main Footer -->
-  <footer class="main-footer" style="margin-left: 130px;">
+  <footer class="main-footer" style="margin-left: 130px;position: fixed;bottom: 0;">
     <!-- To the right -->
     <div class="pull-right hidden-xs">
       Anything you want

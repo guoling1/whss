@@ -81,7 +81,6 @@
         .then(res => {
           this.tableData = res.data.list;
           this.roleName = res.data.roleName;
-          console.log(this.tableData)
          /* this.tableData = JSON.parse(JSON.stringify(res.data.list));*/
           for (var i = 0; i < this.tableData.length; i++) {
             for (var j = 0; j < this.tableData[i].children.length; j++) {
@@ -92,7 +91,6 @@
             }
             this.tableData[i].isSelected = Boolean(this.tableData[i].isSelected);
           }
-          console.log(this.tableData)
         })
         .catch(err => {
           this.$message({

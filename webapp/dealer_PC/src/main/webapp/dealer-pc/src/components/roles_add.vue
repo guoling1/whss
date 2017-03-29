@@ -5,12 +5,13 @@
         <div class="box" style="margin-top:15px;overflow: hidden">
           <div class="box-header">
             <h3 class="box-title">新增角色</h3>
+            <h3 class="box-title" v-else>角色详情</h3>
           </div>
           <div class="box-body">
             <ul>
               <li class="same">
                 <label class="title">角色名称:</label>
-                <el-input style="width: 220px" placeholder="请输入内容" size="small"></el-input>
+                <el-input v-model="roleName" style="width: 220px" placeholder="请输入内容" size="small"></el-input>
               </li>
               <li class="same">
                 <label class="title">权限:</label>
@@ -23,13 +24,13 @@
                   </tr>
                   </thead>
                   <tbody>
-                  <tr v-for="item in tableData">
-                    <td><el-checkbox style="margin: 0 5px" v-model="item.isTrue"></el-checkbox>{{item.name}}</td>
+                  <tr v-for="item in $tableData">
+                    <td><el-checkbox style="margin: 0 5px" v-model="item.isSelected"></el-checkbox>{{item.menuName}}</td>
                     <td style="padding: 0">
                       <table style="width: 100%;height: 100%" border="0" cellspacing="0" cellpadding="0" class="table table-bordered">
                         <tbody>
-                        <tr v-for="itemSon in item.son">
-                          <td><el-checkbox style="margin: 0 5px" v-model="itemSon.isTrue"></el-checkbox>{{itemSon.name}}</td>
+                        <tr v-for="itemChild in item.children">
+                          <td><el-checkbox style="margin: 0 5px" v-model="itemChild.isSelected"></el-checkbox>{{itemChild.menuName}}</td>
                         </tr>
                         </tbody>
                       </table>
@@ -37,9 +38,10 @@
                     <td>
                       <table style="width: 100%;height: 100%" border="0" cellspacing="0" cellpadding="0" class="table table-bordered">
                         <tbody>
-                        <tr width="100%" v-for="itemSon in item.son">
+                        <tr width="100%" v-for="itemChild in item.children">
                           <td>
-                            <span v-for="itemChild in itemSon.children" style="margin-right: 10px"><el-checkbox style="margin: 0 5px" v-model="itemChild.isTrue"></el-checkbox>{{itemChild.name}}</span>
+                          <span v-for="opt in itemChild.opts" style="margin-right: 10px"><el-checkbox
+                            style="margin: 0 5px" v-model="opt.isSelected"></el-checkbox>{{opt.optName}}</span>
                           </td>
                         </tr>
                         </tbody>
@@ -51,7 +53,8 @@
               </li>
               <li class="same">
                 <label class="title"></label>
-                <el-button type="primary" @click="submit">确 定</el-button>
+                <el-button type="primary" @click="submit" v-if="isAdd">确 定</el-button>
+                <el-button type="primary" @click="submit" v-else>修改</el-button>
               </li>
             </ul>
           </div>
@@ -64,81 +67,106 @@
   export default {
     data(){
       return {
-        tableData: [
-          {
-            name: '员工权限管理',
-            isTrue: true,
-            son: [{
-              name: '员工管理',
-              isTrue: false,
-              children: [{
-                name: '禁用',
-                isTrue: false,
-              }, {
-                name: '编辑',
-                isTrue: false,
-              }]
-            }, {
-              name: '新增员工',
-              isTrue: false,
-              children: [{
-                name: '禁用1',
-                isTrue: true,
-              }, {
-                name: '编辑1',
-                isTrue: false,
-              }]
-            }]
-          },
-          {
-            name: '交易查询',
-            isTrue: false,
-            son: [{
-              name: '员工管理1',
-              isTrue: false,
-              children: [{
-                name: '禁用2',
-                isTrue: false,
-              }, {
-                name: '编辑2',
-                isTrue: false,
-              }]
-            }, {
-              name: '新增员工',
-              isTrue: false,
-              children: [{
-                name: '禁用3',
-                isTrue: false,
-              }, {
-                name: '编辑3',
-                isTrue: false,
-              }]
-            }]
-          }
-        ]
+        roleName:'',
+        tableData: [],
+        isAdd:true
       }
     },
     created: function () {
-        for(let i=0; i<this.tableData.length;i++){
-          for(let j=0;j<this.tableData[i].son.length; j++){
-            let flag = false;
-            for(let k=0; k<this.tableData[i].son[j].children.length;k++){
-              if(this.tableData[i].son[j].children[k].isTrue){
-                flag = true;
-              }
-            }
-            if(flag){
-              this.tableData[i].son[j].isTrue = true
-            }
+      let id=0;
+      if(this.$route.query.id!=undefined){
+        id = this.$route.query.id;
+        this.isAdd = false;
+      }
+      this.$http.post('/daili/user/getRoleDetail',{id:id})
+        .then(res => {
+        this.tableData = res.data.list;
+      this.roleName = res.data.roleName;
+      /* this.tableData = JSON.parse(JSON.stringify(res.data.list));*/
+      for (var i = 0; i < this.tableData.length; i++) {
+        for (var j = 0; j < this.tableData[i].children.length; j++) {
+          for (var k = 0; k < this.tableData[i].children[j].opts.length; k++) {
+            this.tableData[i].children[j].opts[k].isSelected = Boolean(this.tableData[i].children[j].opts[k].isSelected);
           }
+          this.tableData[i].children[j].isSelected = Boolean(this.tableData[i].children[j].isSelected);
         }
+        this.tableData[i].isSelected = Boolean(this.tableData[i].isSelected);
+      }
+    })
+      .catch(err => {
+        this.$message({
+        showClose: true,
+        message: err.statusMessage,
+        type: 'error'
+      });
+    })
     },
     methods: {
       submit:function () {
-        console.log(this.tableData)
+        var list = JSON.parse(JSON.stringify(this.tableData));
+        for (var i = 0; i < list.length; i++) {
+          for (var j = 0; j < list[i].children.length; j++) {
+            for (var k = 0; k < list[i].children[j].opts.length; k++) {
+              list[i].children[j].opts[k].isSelected = Number(list[i].children[j].opts[k].isSelected);
+            }
+            list[i].children[j].isSelected = Number(list[i].children[j].isSelected);
+          }
+          list[i].isSelected = Number(list[i].isSelected);
+        }
+        let id=0;
+        if(this.$route.query.id!=undefined){
+          id = this.$route.query.id;
+          this.isAdd = false;
+        }
+        this.$http.post('/daili/user/saveRole',{
+          roleId:id,
+          roleName:this.roleName,
+          list:list
+        }).then(res => {
+          this.$message({
+          showClose: true,
+          message: '添加成功',
+          type: 'success'
+        });
+        this.$router.push('/daili/record/role')
+      }).catch(err =>{
+          this.$message({
+          showClose: true,
+          message: err.statusMessage,
+          type: 'error'
+        });
+      })
       }
     },
-    watch: {},
+    computed: {
+      $tableData: function () {
+        let flag2 = false;
+        for (let i = 0; i < this.tableData.length; i++) {
+          let flag1 = false;
+          for (let j = 0; j < this.tableData[i].children.length; j++) {
+            let flag = false;
+            for (let k = 0; k < this.tableData[i].children[j].opts.length; k++) {
+              if (this.tableData[i].children[j].opts[k].isSelected) {
+                flag = true;
+                continue;
+              }
+            }
+            if (flag) {
+              this.tableData[i].children[j].isSelected = true
+            }
+            if (this.tableData[i].children[j].isSelected == true) {
+              flag1 = true;
+              continue;
+            }
+          }
+          if (flag1) {
+            this.tableData[i].isSelected = true;
+            continue;
+          }
+        }
+        return this.tableData;
+      }
+    }
   }
 </script>
 <style scoped lang="less" rel="stylesheet/less">
