@@ -1001,15 +1001,15 @@ public class PayServiceImpl implements PayService {
      * @return
      */
     private Date getMoBaoUnionPaySettleDate(Date tradeDate) {
+        final int millisOfDay = new DateTime(tradeDate).getMillisOfDay();
+        if (millisOfDay > 82560000) {//当作第二个工作日的交易
+            tradeDate = new DateTime(tradeDate).plusDays(1).toDate();
+        }
         if (HolidaySettlementConstants.HOLIDAY_OPEN) {
             final Date settlementDate = this.mergeTableSettlementDateService.getSettlementDate(tradeDate, EnumUpperChannel.MOBAO.getId());
             if (null != settlementDate) {
                 return settlementDate;
             }
-        }
-        final int millisOfDay = new DateTime(tradeDate).getMillisOfDay();
-        if (millisOfDay > 82560000) {//当作第二个工作日的交易
-            tradeDate = new DateTime(tradeDate).plusDays(1).toDate();
         }
         return DateTimeUtil.generateT1SettleDate(tradeDate);
     }
