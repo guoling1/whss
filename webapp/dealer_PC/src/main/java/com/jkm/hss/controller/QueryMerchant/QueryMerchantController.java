@@ -6,6 +6,7 @@ import com.jkm.hss.controller.BaseController;
 import com.jkm.hss.dealer.entity.QueryMerchantRequest;
 import com.jkm.hss.dealer.entity.QueryMerchantResponse;
 import com.jkm.hss.dealer.service.DealerService;
+import com.jkm.hss.merchant.helper.MerchantSupport;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -52,6 +53,9 @@ public class QueryMerchantController extends BaseController {
             req.setEndTime1(sdf.format(rightNow.getTime()));
         }
         req.setDealerId(dealerId);
+        if (req.getMobile()!=null&&!req.getMobile().equals("")){
+            req.setMobile(MerchantSupport.encryptMobile(req.getMobile()));
+        }
         if(level==1){
             List<QueryMerchantResponse> list = dealerService.dealerMerchantList(req);
             int count = dealerService.dealerMerchantCount(req);

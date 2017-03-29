@@ -9,6 +9,32 @@ import lombok.Data;
 public class QueryMerchantRequest {
 
     /**
+     * 商户编号
+     */
+    private String markCode;
+
+    /**
+     * 商户名称
+     */
+    private String merchantName;
+
+    /**
+     * 所属一级
+     */
+    private String proxyName;
+
+    /**
+     * 所属二
+     * 级
+     */
+    private String proxyName1;
+
+    /**
+     * 注册手机号
+     */
+    private String mobile;
+
+    /**
      * 查询条件：注册开始时间
      */
     private String startTime;

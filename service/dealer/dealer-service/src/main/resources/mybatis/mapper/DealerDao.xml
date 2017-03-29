@@ -600,38 +600,27 @@
           tb_merchant_info a
         WHERE
           a.first_dealer_id = #{dealerId}
-    <!--<if test="">-->
+    <if test="markCode!=null and markCode!=''">
+          AND a.mark_code = #{markCode}
+    </if>
 
-    <!--</if>-->
+    <if test="merchantName!=null and merchantName!=''">
+          AND a.merchant_name = #{merchantName}
+    </if>
 
-    <!--<if test="">-->
+    <if test="proxyName != null and proxyName!=''">
+          AND a.first_dealer_id in (select id from tb_dealer where proxy_name LIKE CONCAT('%',#{proxyName},'%'))
+    </if>
 
-    <!--</if>-->
+    <if test="proxyName1 != null and proxyName1!=''">
+          AND a.second_dealer_id in (select id from tb_dealer where proxy_name LIKE CONCAT('%',#{proxyName1},'%'))
+    </if>
 
-    <!--<if test="">-->
+    <if test="mobile!=null and mobile!=''">
+          AND a.mobile = #{mobile}
+    </if>
 
-    <!--</if>-->
-
-    <!--<if test="">-->
-
-    <!--</if>-->
-
-    <!--<if test="">-->
-
-    <!--</if>-->
-
-    <!--<if test="">-->
-
-    <!--</if>-->
-
-    <!--<if test="">-->
-
-    <!--</if>-->
-
-    <!--<if test="">-->
-
-    <!--</if>-->
-        ORDER BY
+          ORDER BY
             a.`create_time` DESC LIMIT #{offset},#{pageSize}
     </select>
 
@@ -645,48 +634,74 @@
             tb_merchant_info a
         WHERE
             a.second_dealer_id = #{dealerId}
-        <!--<if test="">-->
+    <if test="markCode!=null and markCode!=''">
+        AND a.mark_code = #{markCode}
+    </if>
 
-        <!--</if>-->
+    <if test="merchantName!=null and merchantName!=''">
+        AND a.merchant_name = #{merchantName}
+    </if>
 
-        <!--<if test="">-->
+    <if test="proxyName != null and proxyName!=''">
+        AND a.first_dealer_id in (select id from tb_dealer where proxy_name LIKE CONCAT('%',#{proxyName},'%'))
+    </if>
 
-        <!--</if>-->
+    <if test="proxyName1 != null and proxyName1!=''">
+        AND a.second_dealer_id in (select id from tb_dealer where proxy_name LIKE CONCAT('%',#{proxyName1},'%'))
+    </if>
 
-        <!--<if test="">-->
-
-        <!--</if>-->
-
-        <!--<if test="">-->
-
-        <!--</if>-->
-
-        <!--<if test="">-->
-
-        <!--</if>-->
-
-        <!--<if test="">-->
-
-        <!--</if>-->
-
-        <!--<if test="">-->
-
-        <!--</if>-->
-
-        <!--<if test="">-->
-
-        <!--</if>-->
+    <if test="mobile!=null and mobile!=''">
+        AND a.mobile = #{mobile}
+    </if>
         ORDER BY
-        a.`create_time` DESC LIMIT #{offset},#{pageSize}
+            a.`create_time` DESC LIMIT #{offset},#{pageSize}
     </select>
 
     <!-- 查询一级代理商下的所有商户总数 -->
     <select id="dealerMerchantCount" resultType="java.lang.Integer">
         SELECT COUNT(*) FROM tb_merchant_info WHERE `first_dealer_id` = #{dealerId}
+    <if test="markCode!=null and markCode!=''">
+        AND a.mark_code = #{markCode}
+    </if>
+
+    <if test="merchantName!=null and merchantName!=''">
+        AND a.merchant_name = #{merchantName}
+    </if>
+
+    <if test="proxyName != null and proxyName!=''">
+        AND a.first_dealer_id in (select id from tb_dealer where proxy_name LIKE CONCAT('%',#{proxyName},'%'))
+    </if>
+
+    <if test="proxyName1 != null and proxyName1!=''">
+        AND a.second_dealer_id in (select id from tb_dealer where proxy_name LIKE CONCAT('%',#{proxyName1},'%'))
+    </if>
+
+    <if test="mobile!=null and mobile!=''">
+        AND a.mobile = #{mobile}
+    </if>
     </select>
 
     <!-- 查询二级代理商下的所有商户总数 -->
     <select id="dealerMerchantSecondCount" resultType="java.lang.Integer">
         SELECT COUNT(*) FROM tb_merchant_info WHERE second_dealer_id = #{dealerId}
+    <if test="markCode!=null and markCode!=''">
+        AND a.mark_code = #{markCode}
+    </if>
+
+    <if test="merchantName!=null and merchantName!=''">
+        AND a.merchant_name = #{merchantName}
+    </if>
+
+    <if test="proxyName != null and proxyName!=''">
+        AND a.first_dealer_id in (select id from tb_dealer where proxy_name LIKE CONCAT('%',#{proxyName},'%'))
+    </if>
+
+    <if test="proxyName1 != null and proxyName1!=''">
+        AND a.second_dealer_id in (select id from tb_dealer where proxy_name LIKE CONCAT('%',#{proxyName1},'%'))
+    </if>
+
+    <if test="mobile!=null and mobile!=''">
+        AND a.mobile = #{mobile}
+    </if>
     </select>
 </mapper>
