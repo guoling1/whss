@@ -219,7 +219,7 @@
     </select>
 
     <!-- 查询代理商下商户列表总数 -->
-    <select id="hsyMerchantList" resultType="com.jkm.hsy.user.entity.HsyQueryMerchantResponse">
+    <select id="hsyMerchantList" resultType="java.lang.Integer">
         SELECT
           COUNT(*)
         FROM
@@ -239,7 +239,7 @@
     </select>
 
     <!-- 查询二级代理商下商户列表总数 -->
-    <select id="hsyMerchantSecondListCount" resultType="com.jkm.hsy.user.entity.HsyQueryMerchantResponse">
+    <select id="hsyMerchantSecondListCount" resultType="java.lang.Integer">
         SELECT
         COUNT(*)
         FROM
