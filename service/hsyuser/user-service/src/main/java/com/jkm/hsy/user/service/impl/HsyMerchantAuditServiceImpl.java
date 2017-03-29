@@ -2,9 +2,7 @@ package com.jkm.hsy.user.service.impl;
 
 import com.jkm.hsy.user.constant.IndustryCodeType;
 import com.jkm.hsy.user.dao.HsyMerchantAuditDao;
-import com.jkm.hsy.user.entity.AppAuUser;
-import com.jkm.hsy.user.entity.HsyMerchantAuditRequest;
-import com.jkm.hsy.user.entity.HsyMerchantAuditResponse;
+import com.jkm.hsy.user.entity.*;
 import com.jkm.hsy.user.service.HsyMerchantAuditService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -252,6 +250,28 @@ public class HsyMerchantAuditServiceImpl implements HsyMerchantAuditService {
     public int getCheckPendingCount(HsyMerchantAuditRequest hsyMerchantAuditRequest) {
         int count = hsyMerchantAuditDao.getCheckPendingCount(hsyMerchantAuditRequest);
         return count;
+    }
+
+    @Override
+    public List<HsyQueryMerchantResponse> hsyMerchantList(HsyQueryMerchantRequest request) {
+        List<HsyQueryMerchantResponse> list = this.hsyMerchantAuditDao.hsyMerchantList(request);
+        return list;
+    }
+
+    @Override
+    public int hsyMerchantListCount(HsyQueryMerchantRequest request) {
+        return this.hsyMerchantAuditDao.hsyMerchantListCount(request);
+    }
+
+    @Override
+    public List<HsyQueryMerchantResponse> hsyMerchantSecondList(HsyQueryMerchantRequest request) {
+        List<HsyQueryMerchantResponse> list = this.hsyMerchantAuditDao.hsyMerchantSecondList(request);
+        return list;
+    }
+
+    @Override
+    public int hsyMerchantSecondListCount(HsyQueryMerchantRequest request) {
+        return this.hsyMerchantAuditDao.hsyMerchantSecondListCount(request);
     }
 
 

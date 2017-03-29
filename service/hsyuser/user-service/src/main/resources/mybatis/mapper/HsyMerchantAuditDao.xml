@@ -174,5 +174,88 @@
         WHERE c.SID=#{id}
     </select>
 
+    <!-- 查询代理商下商户列表 -->
+    <select id="hsyMerchantList" resultType="com.jkm.hsy.user.entity.HsyQueryMerchantResponse">
+        SELECT
+            a.*, c.CELLPHONE,c.DEALERID,
+            (SELECT proxy_name FROM tb_dealer WHERE id = c.DEALERID) as proxyName
+        FROM
+          app_biz_shop a
+        LEFT JOIN app_biz_shop_user_role b ON a.ID = b.SID
+        LEFT JOIN app_au_user c ON c.ID = b.UID
+        WHERE
+          b.ROLE = 1
+    <if test="globalID!=null and globalID!=''">
+        AND a.GLOBALID=#{globalID}
+    </if>
+    <if test="shortName!=null and shortName!=''">
+        AND a.SHORTNAME=#{shortName}
+    </if>
+        ORDER BY
+        a.CREATETIME DESC
+        LIMIT #{offset},#{pageSize}
+    </select>
+
+    <!-- 查询二级代理商下商户列表 -->
+    <select id="hsyMerchantSecondList" resultType="com.jkm.hsy.user.entity.HsyQueryMerchantResponse">
+        SELECT
+        a.*, c.CELLPHONE,c.DEALERID,
+        (SELECT proxy_name FROM tb_dealer WHERE id = c.DEALERID) as proxyName
+        FROM
+        app_biz_shop a
+        LEFT JOIN app_biz_shop_user_role b ON a.ID = b.SID
+        LEFT JOIN app_au_user c ON c.ID = b.UID
+        WHERE
+        b.ROLE = 1
+        <if test="globalID!=null and globalID!=''">
+            AND a.GLOBALID=#{globalID}
+        </if>
+        <if test="shortName!=null and shortName!=''">
+            AND a.SHORTNAME=#{shortName}
+        </if>
+        ORDER BY
+        a.CREATETIME DESC
+        LIMIT #{offset},#{pageSize}
+    </select>
+
+    <!-- 查询代理商下商户列表总数 -->
+    <select id="hsyMerchantList" resultType="com.jkm.hsy.user.entity.HsyQueryMerchantResponse">
+        SELECT
+          COUNT(*)
+        FROM
+        app_biz_shop a
+        LEFT JOIN app_biz_shop_user_role b ON a.ID = b.SID
+        LEFT JOIN app_au_user c ON c.ID = b.UID
+        WHERE
+        b.ROLE = 1
+        <if test="globalID!=null and globalID!=''">
+            AND a.GLOBALID=#{globalID}
+        </if>
+        <if test="shortName!=null and shortName!=''">
+            AND a.SHORTNAME=#{shortName}
+        </if>
+        ORDER BY
+        a.CREATETIME DESC
+    </select>
+
+    <!-- 查询二级代理商下商户列表总数 -->
+    <select id="hsyMerchantSecondListCount" resultType="com.jkm.hsy.user.entity.HsyQueryMerchantResponse">
+        SELECT
+        COUNT(*)
+        FROM
+        app_biz_shop a
+        LEFT JOIN app_biz_shop_user_role b ON a.ID = b.SID
+        LEFT JOIN app_au_user c ON c.ID = b.UID
+        WHERE
+        b.ROLE = 1
+        <if test="globalID!=null and globalID!=''">
+            AND a.GLOBALID=#{globalID}
+        </if>
+        <if test="shortName!=null and shortName!=''">
+            AND a.SHORTNAME=#{shortName}
+        </if>
+        ORDER BY
+        a.CREATETIME DESC
+    </select>
 
 </mapper>

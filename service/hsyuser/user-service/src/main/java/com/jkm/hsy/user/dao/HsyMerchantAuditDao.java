@@ -1,8 +1,6 @@
 package com.jkm.hsy.user.dao;
 
-import com.jkm.hsy.user.entity.AppAuUser;
-import com.jkm.hsy.user.entity.HsyMerchantAuditRequest;
-import com.jkm.hsy.user.entity.HsyMerchantAuditResponse;
+import com.jkm.hsy.user.entity.*;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
@@ -94,4 +92,32 @@ public interface HsyMerchantAuditDao {
      * @return
      */
     int getCheckPendingCount(HsyMerchantAuditRequest hsyMerchantAuditRequest);
+
+    /**
+     *  查询代理商下的商户（hsy）
+     * @param request
+     * @return
+     */
+    List<HsyQueryMerchantResponse> hsyMerchantList(HsyQueryMerchantRequest request);
+
+    /**
+     * 查询代理商下的商户总数（hsy）
+     * @param request
+     * @return
+     */
+    int hsyMerchantListCount(HsyQueryMerchantRequest request);
+
+    /**
+     * 查询二级代理商下的商户（hsy）
+     * @param request
+     * @return
+     */
+    List<HsyQueryMerchantResponse> hsyMerchantSecondList(HsyQueryMerchantRequest request);
+
+    /**
+     * 查询二级代理商下的商户总数（hsy）
+     * @param request
+     * @return
+     */
+    int hsyMerchantSecondListCount(HsyQueryMerchantRequest request);
 }
