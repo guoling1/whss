@@ -847,16 +847,8 @@ public class DealerServiceImpl implements DealerService {
             final BigDecimal firstMoney = totalFee.multiply(merchantRate.
                     subtract(dealerChannelRate.getDealerTradeRate())).setScale(2,BigDecimal.ROUND_DOWN);
             //通道成本
-            BigDecimal basicMoney;
             final BigDecimal basicTrade = totalFee.multiply(basicChannel.getBasicTradeRate());
-            if (new BigDecimal("0.01").compareTo(basicTrade) == 1){
-                //通道成本不足一分 , 按一分收
-                basicMoney = new BigDecimal("0.01");
-
-            }else{
-                //超过一分,四舍五入,保留两位有效数字
-                basicMoney = basicTrade.setScale(2, BigDecimal.ROUND_HALF_UP);
-            }
+            final BigDecimal basicMoney = this.calculateChannelFee(basicTrade, channelSign);
             //通道分润
             final BigDecimal channelMoney = totalFee.multiply(productChannelDetail.getProductTradeRate().
                     subtract(basicChannel.getBasicTradeRate())).setScale(2,BigDecimal.ROUND_DOWN);
@@ -910,16 +902,8 @@ public class DealerServiceImpl implements DealerService {
             final BigDecimal channelMoney = totalFee.multiply(productChannelDetail.getProductTradeRate().
                     subtract(basicChannel.getBasicTradeRate())).setScale(2,BigDecimal.ROUND_DOWN);
             //通道成本
-            BigDecimal basicMoney;
             final BigDecimal basicTrade = totalFee.multiply(basicChannel.getBasicTradeRate());
-            if (new BigDecimal("0.01").compareTo(basicTrade) == 1){
-                //通道成本不足一分 , 按一分收
-                basicMoney = new BigDecimal("0.01");
-
-            }else{
-                //超过一分,四舍五入,保留两位有效数字
-                basicMoney = basicTrade.setScale(2, BigDecimal.ROUND_HALF_UP);
-            }
+            final BigDecimal basicMoney = this.calculateChannelFee(basicTrade, channelSign);
             //产品分润
             final BigDecimal productMoney;
             if (new BigDecimal("0.01").compareTo(totalFee) == 0){
