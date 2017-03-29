@@ -42,9 +42,11 @@
         this.$http.post('/admin/user/login', {
           username: this.$data.username,
           password: this.$data.password
-        }).then(function () {
+        }).then(function (res) {
           this.$store.commit('LOGIN_HIDE');
+          sessionStorage.setItem('login', JSON.stringify(res.data));
           this.$router.push({path: '/admin/record/newDeal'})
+          location.reload()
         }, function (err) {
           this.$store.commit('MESSAGE_ACCORD_SHOW', {
             text: err.statusMessage

@@ -326,6 +326,7 @@
       if (bIsIpad || bIsIphoneOs || bIsMidp || bIsUc7 || bIsUc || bIsAndroid || bIsCE || bIsWM) {
         $("a[href!='#']").attr("data-toggle", "offcanvas");
       }
+      console.log(sessionStorage.getItem('user'))
     },
     methods: {
       logout: function () {
