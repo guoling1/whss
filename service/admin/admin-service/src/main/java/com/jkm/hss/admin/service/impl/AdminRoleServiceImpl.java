@@ -384,19 +384,35 @@ public class AdminRoleServiceImpl implements AdminRoleService{
      * @return
      */
     @Override
-    public List<AdminUserLoginResponse> getLoginMenu(long roleId, int type) {
+    public List<AdminUserLoginResponse> getLoginMenu(long roleId, int type,int isMaster) {
         List<AdminUserLoginResponse> list = new ArrayList<AdminUserLoginResponse>();
-        List<MenuResponse> menuResponses = adminRoleDao.getLoginMenu(0,type,roleId);
-        if(menuResponses.size()>0){
-            for(int i=0;i<menuResponses.size();i++){
-                AdminUserLoginResponse adminUserLoginResponse = new AdminUserLoginResponse();
-                adminUserLoginResponse.setId(menuResponses.get(i).getId());
-                adminUserLoginResponse.setMenuName(menuResponses.get(i).getMenuName());
-                adminUserLoginResponse.setUrl(menuResponses.get(i).getMenuUrl());
-                adminUserLoginResponse.setChildren(adminRoleDao.getLoginMenu(menuResponses.get(i).getId(),type,roleId));
-                list.add(adminUserLoginResponse);
+        if(isMaster==1){
+            List<MenuResponse> adminMenuList = adminRoleDao.getMasterLoginMenu(0,type);
+            if(adminMenuList.size()>0){
+                for(int i=0;i<adminMenuList.size();i++){
+                    AdminUserLoginResponse adminUserLoginResponse = new AdminUserLoginResponse();
+                    adminUserLoginResponse.setId(adminMenuList.get(i).getId());
+                    adminUserLoginResponse.setMenuName(adminMenuList.get(i).getMenuName());
+                    adminUserLoginResponse.setUrl(adminMenuList.get(i).getMenuUrl());
+                    adminUserLoginResponse.setChildren(adminRoleDao.getMasterLoginMenu(adminMenuList.get(i).getId(),type));
+                    list.add(adminUserLoginResponse);
+                }
+            }
+        }else{
+            List<MenuResponse> menuResponses = adminRoleDao.getLoginMenu(0,type,roleId);
+            if(menuResponses.size()>0){
+                for(int i=0;i<menuResponses.size();i++){
+                    AdminUserLoginResponse adminUserLoginResponse = new AdminUserLoginResponse();
+                    adminUserLoginResponse.setId(menuResponses.get(i).getId());
+                    adminUserLoginResponse.setMenuName(menuResponses.get(i).getMenuName());
+                    adminUserLoginResponse.setUrl(menuResponses.get(i).getMenuUrl());
+                    adminUserLoginResponse.setChildren(adminRoleDao.getLoginMenu(menuResponses.get(i).getId(),type,roleId));
+                    list.add(adminUserLoginResponse);
+                }
             }
         }
+
+
         return list;
     }
 

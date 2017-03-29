@@ -125,6 +125,13 @@ public interface AdminRoleDao {
     int updateRoleNameById(@Param("roleName") String roleName,@Param("id") long id);
 
     /**
+     * 根据父编码、类型查询菜单
+     * @param parentId
+     * @return
+     */
+    List<MenuResponse> getMasterLoginMenu(@Param("parentId") long parentId,@Param("type") int type);
+
+    /**
      * 根据角色编码和类型查询登录菜单
      * @param parentId
      * @param type

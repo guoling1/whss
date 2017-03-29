@@ -91,7 +91,7 @@ public interface AdminRoleService {
      * @param type
      * @return
      */
-    List<AdminUserLoginResponse> getLoginMenu(long roleId,int type);
+    List<AdminUserLoginResponse> getLoginMenu(long roleId,int type,int isMaster);
 
     /**
      * 根据名称和类型查询角色是否重复
