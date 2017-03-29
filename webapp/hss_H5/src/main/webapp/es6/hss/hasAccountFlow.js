@@ -2,6 +2,9 @@
  * Created by administrator on 2016/12/8.
  */
 
+// 引入浏览器特性处理
+const browser = _require('browser');
+browser.elastic_touch('list');
 // 引入动画模版 处理验证码
 const AnimationCountdown = _require('art-countdown');
 let countdown = new AnimationCountdown('sendCode', '重新获取');
@@ -61,11 +64,15 @@ let getData = function (e, page) {
       if (res.records[i].incomeAmount > 0) {
         div_span.innerHTML = '收入';
       } else {
-        div_span.innerHTML = '提现';
+        div_span.innerHTML = '支出';
       }
       let div_spanS = document.createElement('span');
       div_spanS.className = 's';
-      div_spanS.innerHTML = res.records[i].remark;
+      if (res.records[i].remark == '支付') {
+        div_spanS.innerHTML = '收款';
+      } else {
+        div_spanS.innerHTML = res.records[i].remark;
+      }
       div_top.appendChild(div_span);
       div_top.appendChild(div_spanS);
       let div_bottom = document.createElement('div');
