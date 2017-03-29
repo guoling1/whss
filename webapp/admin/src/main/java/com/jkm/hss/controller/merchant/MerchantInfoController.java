@@ -14,6 +14,9 @@ import com.jkm.hss.merchant.enums.EnumChangeType;
 import com.jkm.hss.merchant.enums.EnumSource;
 import com.jkm.hss.merchant.helper.request.ChangeDealerRequest;
 import com.jkm.hss.merchant.service.MerchantInfoService;
+import com.jkm.hss.product.entity.Product;
+import com.jkm.hss.product.enums.EnumProductType;
+import com.jkm.hss.product.servcie.ProductService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -35,6 +38,8 @@ public class MerchantInfoController extends BaseController{
     private DealerService dealerService;
     @Autowired
     private QRCodeService qrCodeService;
+    @Autowired
+    private ProductService productService;
 
     /**
      * 切换代理
@@ -64,6 +69,10 @@ public class MerchantInfoController extends BaseController{
             return CommonResponse.simpleResponse(-1, "商户编码和二维码中商户编码不一致");
         }
         if(changeDealerRequest.getChangeType()== EnumChangeType.BOSS.getId()){//是boss
+            Optional<Product> productOptional = productService.selectByType(EnumProductType.HSS.getId());
+            if(!productOptional.isPresent()){
+                return CommonResponse.simpleResponse(-1, "产品通道未配置");
+            }
             changeDealerRequest.setCurrentDealerId(0);
             changeDealerRequest.setFirstDealerId(0);
             changeDealerRequest.setSecondDealerId(0);
