@@ -74,7 +74,7 @@ public class DealerLoginController extends BaseController{
                 type=EnumAdminType.SECONDDEALER.getCode();
             }
             List<AdminUserLoginResponse> loginMenu = this.adminRoleService.getLoginMenu(adminUserOptional.get().getRoleId(),type,adminUserOptional.get().getIsMaster());
-            return CommonResponse.simpleResponse(1, adminUserOptional.get().getRealname());
+            return CommonResponse.objectResponse(1, adminUserOptional.get().getRealname(),loginMenu);
         }
         return CommonResponse.simpleResponse(-1, "登录失败,密码错误");
     }
