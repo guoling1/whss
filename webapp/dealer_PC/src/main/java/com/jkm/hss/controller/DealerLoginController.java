@@ -56,7 +56,7 @@ public class DealerLoginController extends BaseController{
     @RequestMapping(value = "/pc", method = RequestMethod.POST)
     public CommonResponse ajaxLogin(final HttpServletResponse response, @RequestBody final DealerLoginRequest loginRequest) {
         Optional<AdminUser> adminUserOptional = this.adminUserService.getAdminUserByNameAndType(loginRequest.getLoginName(), EnumAdminType.SECONDDEALER.getCode());
-        if (adminUserOptional.isPresent()) {
+        if (!adminUserOptional.isPresent()) {
             return CommonResponse.simpleResponse(-1, "登录名已经存在");
         }
         if (adminUserOptional.get().getPassword().equals(DealerSupport.passwordDigest(loginRequest.getPwd(),"JKM"))){
