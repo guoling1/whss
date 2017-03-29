@@ -7,7 +7,9 @@ import com.jkm.hss.admin.enums.EnumQRCodeSysType;
 import com.jkm.hss.admin.service.QRCodeService;
 import com.jkm.hss.controller.BaseController;
 import com.jkm.hss.dealer.entity.Dealer;
+import com.jkm.hss.dealer.entity.DealerChannelRate;
 import com.jkm.hss.dealer.enums.EnumDealerLevel;
+import com.jkm.hss.dealer.service.DealerChannelRateService;
 import com.jkm.hss.dealer.service.DealerService;
 import com.jkm.hss.merchant.entity.MerchantInfo;
 import com.jkm.hss.merchant.enums.EnumChangeType;
@@ -25,6 +27,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.List;
+
 /**
  * Created by yuxiang on 2017-02-28.
  */
@@ -40,6 +44,8 @@ public class MerchantInfoController extends BaseController{
     private QRCodeService qrCodeService;
     @Autowired
     private ProductService productService;
+    @Autowired
+    private DealerChannelRateService dealerChannelRateService;
 
     /**
      * 切换代理
@@ -68,11 +74,11 @@ public class MerchantInfoController extends BaseController{
         if(merchantInfoOptional.get().getId()!=qrCodeOptional.get().getMerchantId()){
             return CommonResponse.simpleResponse(-1, "商户编码和二维码中商户编码不一致");
         }
+        Optional<Product> productOptional = productService.selectByType(EnumProductType.HSS.getId());
+        if(!productOptional.isPresent()){
+            return CommonResponse.simpleResponse(-1, "产品费率通道未配置");
+        }
         if(changeDealerRequest.getChangeType()== EnumChangeType.BOSS.getId()){//是boss
-            Optional<Product> productOptional = productService.selectByType(EnumProductType.HSS.getId());
-            if(!productOptional.isPresent()){
-                return CommonResponse.simpleResponse(-1, "产品通道未配置");
-            }
             changeDealerRequest.setCurrentDealerId(0);
             changeDealerRequest.setFirstDealerId(0);
             changeDealerRequest.setSecondDealerId(0);
@@ -88,6 +94,10 @@ public class MerchantInfoController extends BaseController{
             if(dealerOptional.get().getLevel()!= EnumDealerLevel.FIRST.getId()){
                 return CommonResponse.simpleResponse(-1, "代理商编码和切换对象不一致");
             }
+            List<DealerChannelRate> dealerChannelRateList = dealerChannelRateService.selectByDealerIdAndProductId(dealerOptional.get().getId(),productOptional.get().getId());
+            if(dealerChannelRateList.size()<=0){
+                return CommonResponse.simpleResponse(-1, "代理商费率通道未配置");
+            }
             changeDealerRequest.setCurrentDealerId(dealerOptional.get().getId());
             changeDealerRequest.setFirstDealerId(dealerOptional.get().getId());
             changeDealerRequest.setSecondDealerId(0);
@@ -102,6 +112,10 @@ public class MerchantInfoController extends BaseController{
             }
             if(dealerOptional.get().getLevel()!= EnumDealerLevel.SECOND.getId()){
                 return CommonResponse.simpleResponse(-1, "代理商编码和切换对象不一致");
+            }
+            List<DealerChannelRate> dealerChannelRateList = dealerChannelRateService.selectByDealerIdAndProductId(dealerOptional.get().getId(),productOptional.get().getId());
+            if(dealerChannelRateList.size()<=0){
+                return CommonResponse.simpleResponse(-1, "代理商费率通道未配置");
             }
             changeDealerRequest.setCurrentDealerId(dealerOptional.get().getId());
             changeDealerRequest.setFirstDealerId(dealerOptional.get().getFirstLevelDealerId());
