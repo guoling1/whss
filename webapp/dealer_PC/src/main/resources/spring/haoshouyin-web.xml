@@ -75,7 +75,8 @@
             <mvc:exclude-mapping path="/daili/callback/withdraw"/>
             <bean id="dealerLoginInterceptor" class="com.jkm.hss.interceptor.DealerLoginInterceptor">
                 <property name="dealerService" ref="dealerServiceImpl"/>
-                <property name="dealerPassportService" ref="dealerPassportServiceImpl"/>
+                <property name="adminUserPassportService" ref="adminUserPassportServiceImpl"/>
+                <property name="adminUserService" ref="adminUserServiceImpl"/>
             </bean>
         </mvc:interceptor>
     </mvc:interceptors>
