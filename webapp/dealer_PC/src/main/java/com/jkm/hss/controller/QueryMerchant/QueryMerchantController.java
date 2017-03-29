@@ -61,12 +61,14 @@ public class QueryMerchantController extends BaseController {
             int count = dealerService.dealerMerchantCount(req);
             pageModel.setCount(count);
             pageModel.setRecords(list);
+            return CommonResponse.objectResponse(1,"success",pageModel);
         }
         if(level==2){
             List<QueryMerchantResponse> list = dealerService.dealerMerchantSecondList(req);
             int count = dealerService.dealerMerchantSecondCount(req);
             pageModel.setCount(count);
             pageModel.setRecords(list);
+            return CommonResponse.objectResponse(1,"success",pageModel);
         }
 
 
