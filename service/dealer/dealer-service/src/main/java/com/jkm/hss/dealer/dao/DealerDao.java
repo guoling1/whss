@@ -331,4 +331,10 @@ public interface DealerDao {
      * @return
      */
     int dealerMerchantCount(QueryMerchantRequest req);
+
+    /**
+     * 所有代理商
+     * @return
+     */
+    List<Dealer> selectAllDealers();
 }

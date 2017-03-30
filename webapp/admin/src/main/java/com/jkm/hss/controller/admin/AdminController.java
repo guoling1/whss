@@ -139,7 +139,15 @@ public class AdminController extends BaseController {
         CookieUtil.setSessionCookie(response, ApplicationConsts.ADMIN_COOKIE_KEY, tokenOptional.get().getToken(),
                 ApplicationConsts.getApplicationConfig().domain(), (int)(DealerConsts.TOKEN_EXPIRE_MILLIS / 1000));
         List<AdminUserLoginResponse> loginMenu = this.adminRoleService.getLoginMenu(userOptional.get().getRoleId(),EnumAdminType.BOSS.getCode(),userOptional.get().getIsMaster());
-        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "登录成功",loginMenu);
+        String roleName = "";
+        if(userOptional.get().getRoleId()<=0){
+            roleName = "超级管理员";
+        }else{
+            Optional<AdminRole> adminRoleOptional = adminRoleService.selectById(userOptional.get().getRoleId());
+            roleName = adminRoleOptional.get().getRoleName();
+        }
+        userOptional.get().getRoleId();
+        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, roleName,loginMenu);
     }
 
     /**

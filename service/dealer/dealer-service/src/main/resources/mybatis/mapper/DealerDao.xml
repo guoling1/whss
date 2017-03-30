@@ -637,4 +637,8 @@
     <select id="dealerMerchantCount" resultType="java.lang.Integer">
         SELECT COUNT(*) FROM tb_merchant_info WHERE `first_dealer_id` = #{dealerId}
     </select>
+
+    <select id="selectAllDealers" resultType="com.jkm.hss.dealer.entity.Dealer">
+        SELECT * FROM tb_dealer
+    </select>
 </mapper>
