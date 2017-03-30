@@ -45,7 +45,8 @@
         }).then(function (res) {
           this.$store.commit('LOGIN_HIDE');
           sessionStorage.setItem('login', JSON.stringify(res.data));
-          this.$router.push({path: '/admin/record/newDeal'})
+          sessionStorage.setItem('user', JSON.stringify(res.msg));
+          this.$router.push({path: '/admin/record/home'})
           location.reload()
         }, function (err) {
           this.$store.commit('MESSAGE_ACCORD_SHOW', {

@@ -17,7 +17,7 @@
         <ul class="nav navbar-nav">
           <li class="dropdown user user-menu">
             <div class="loginInfo">
-              <span class="name">超级管理员</span>
+              <span class="name">{{userName}}</span>
               <span class="btn btn-danger" @click="logout">退出</span>
             </div>
           </li>
@@ -32,7 +32,12 @@
   export default {
     name: 'collection',
     data: function () {
-      return {}
+      return {
+        userName:''
+      }
+    },
+    created:function () {
+      this.userName = JSON.parse(sessionStorage.getItem('user'));
     },
     methods: {
       logout: function () {

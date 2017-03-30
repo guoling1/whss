@@ -294,7 +294,8 @@
       return {
         dealerInfo: '',
         position: '',
-        dealerLeavel: ''
+        dealerLeavel: '',
+        list:''
       }
     },
     beforeRouteEnter (to, from, next){
@@ -327,10 +328,12 @@
         $("a[href!='#']").attr("data-toggle", "offcanvas");
       }
       let list = JSON.parse(sessionStorage.getItem('login'));
-      for(let i=0;i<list.length;i++){
-        this.list[list[i].menuName]=1;
-        for(let j=0;j<list[i].children.length;j++) {
-          this.list[list[i].children[j].menuName]=1
+      if(list!=null){
+        for(let i=0;i<list.length;i++){
+          this.list[list[i].menuName]=1;
+          for(let j=0;j<list[i].children.length;j++) {
+            this.list[list[i].children[j].menuName]=1
+          }
         }
       }
     },

@@ -8,6 +8,8 @@ const DealQuery = r => require.ensure([], () => r(require('components/DealQuery'
 const DealDet = r => require.ensure([], () => r(require('components/DealDet')), 'group-record');
 const NewDealQuery = r => require.ensure([], () => r(require('components/newVersion/NewDealQuery')), 'group-record');
 const NewDealDet = r => require.ensure([], () => r(require('components/newVersion/NewDealDet')), 'group-record');
+const Retrieval = r => require.ensure([], () => r(require('components/Retrieval')), 'group-record');
+const RetrievalDet = r => require.ensure([], () => r(require('components/RetrievalDet')), 'group-record');
 //分润
 const ProfitCom = r => require.ensure([], () => r(require('components/ProfitCom')), 'group-record');
 const ProfitFir = r => require.ensure([], () => r(require('components/ProfitFir')), 'group-record');
@@ -57,6 +59,7 @@ const Invite = r => require.ensure([], () => r(require('components/Invite')), 'g
 //通道
 const PassAdd = r => require.ensure([], () => r(require('components/PassAdd')), 'group-record');
 const PassList = r => require.ensure([], () => r(require('components/PassList')), 'group-record');
+const LimitList = r => require.ensure([], () => r(require('components/LimitList')), 'group-record');
 //员工
 const PersonnelList = r => require.ensure([], () => r(require('components/PersonnelList')), 'group-record');
 const PersonnelAdd = r => require.ensure([], () => r(require('components/PersonnelAdd')), 'group-record');
@@ -70,7 +73,7 @@ const Home = r => require.ensure([], () => r(require('components/Home')), 'group
 const Login = r => require.ensure([], () => r(require('components/Login')), 'group-record');
 let routes = [
   {
-    path: '/admin',
+    path: '/',
     redirect: '/admin/login'
   },
   {
@@ -79,8 +82,8 @@ let routes = [
   },
   {
     path: '/admin/record',
-    component: AAHome,
     redirect: '/admin/record/home',
+    component: AAHome,
     children: [
       {
         path: 'home',
@@ -116,6 +119,16 @@ let routes = [
         path: 'newDealDet',
         name: 'NewDealDet',
         component: NewDealDet
+      },
+      {
+        path: 'retrieval',
+        name: 'Retrieval',
+        component: Retrieval
+      },
+      {
+        path: 'retrievalDet',
+        name: 'RetrievalDet',
+        component: RetrievalDet
       },
       {
         path: 'newWithdrawalQuery',
@@ -211,6 +224,11 @@ let routes = [
         path: 'passList',
         name: 'PassList',
         component: PassList
+      },
+      {
+        path: 'limitList',
+        name: 'LimitList',
+        component: LimitList
       },
       {
         path: 'productAdd',

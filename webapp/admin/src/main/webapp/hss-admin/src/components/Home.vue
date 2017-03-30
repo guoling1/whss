@@ -3,7 +3,7 @@
     <!-- Main content -->
     <section class="content">
       <h4 class="text-center top">
-        您好，{{dealerInfo}}
+        您好，{{userName}}
       </h4>
       <h2 class="text-center bottom">
         welcome
@@ -16,11 +16,11 @@
   export default {
     data () {
       return {
-        dealerInfo: ''
+        userName: ''
       }
     },
-    mounted (){
-
+    created:function () {
+      this.userName = JSON.parse(sessionStorage.getItem('user'));
     },
     methods: {}
   }

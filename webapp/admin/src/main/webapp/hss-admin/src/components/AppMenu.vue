@@ -197,9 +197,7 @@
       return {
         msg: '注册',
         url: '',
-        list:{
-
-        },
+        list:{},
       }
     },
     created: function () {

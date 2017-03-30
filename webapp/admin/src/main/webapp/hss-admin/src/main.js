@@ -100,6 +100,7 @@ Vue.http.interceptors.push((request, next) => {
         response.ok = false;
       } else {
         response.data = body.result;
+        response.msg = body.msg;
       }
     } else {
       response.statusMessage = '系统异常';
