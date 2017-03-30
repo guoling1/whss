@@ -35,4 +35,6 @@ public class HsyQueryMerchantResponse {
     private int status;//状态
 
     private String statusValue;//状态
+
+    private String districtCode;//行政区代码
 }
