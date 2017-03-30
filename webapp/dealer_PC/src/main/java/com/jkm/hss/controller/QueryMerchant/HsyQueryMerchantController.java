@@ -31,10 +31,10 @@ public class HsyQueryMerchantController extends BaseController {
     public CommonResponse hsyMerchantList(@RequestBody HsyQueryMerchantRequest request) throws ParseException {
         final PageModel<HsyQueryMerchantResponse> pageModel = new PageModel<HsyQueryMerchantResponse>(request.getPageNo(), request.getPageSize());
         request.setOffset(pageModel.getFirstIndex());
-//        long dealerId = super.getDealerId();
-//        int level = super.getDealer().get().getLevel();
-        long dealerId =21;
-        int level =1  ;
+        long dealerId = super.getDealerId();
+        int level = super.getDealer().get().getLevel();
+//        long dealerId =21;
+//        int level =1  ;
         request.setDealerId(dealerId);
         if (level==1){
             List<HsyQueryMerchantResponse> list = hsyMerchantAuditService.hsyMerchantList(request);
