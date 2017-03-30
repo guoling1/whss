@@ -9,27 +9,27 @@
         <p class="lead">注册信息</p>
         <el-row type="flex" class="row-bg" justify="space-around" style="margin-bottom: 15px">
           <el-col :span="5">
-            <div class="label">注册手机：<span>{{msg.mobile}}</span>
+            <div class="label">注册手机：<span>{{$msg.mobile}}</span>
               <!--<a>修改登录手机号</a>-->
             </div>
           </el-col>
           <el-col :span="5">
-            <div class="label">注册时间：<span>{{msg.createTime|changeTime}}</span></div>
+            <div class="label">注册时间：<span>{{$msg.createTime|changeTime}}</span></div>
           </el-col>
           <el-col :span="5">
             <div class="label">注册方式：
-              <span v-if="msg.source==0">扫码注册</span>
-              <span v-if="msg.source==1">商户推荐注册</span>
-              <span v-if="msg.source==2">代理商推荐注册</span>
+              <span v-if="$msg.source==0">扫码注册</span>
+              <span v-if="$msg.source==1">商户推荐注册</span>
+              <span v-if="$msg.source==2">代理商推荐注册</span>
             </div>
           </el-col>
         </el-row>
         <el-row type="flex" class="row-bg" justify="space-around" style="margin-bottom: 15px">
           <el-col :span="5">
-            <div class="label">一级代理编号：<span>{{msg.markCode1}}</span></div>
+            <div class="label">一级代理编号：<span>{{$msg.markCode1}}</span></div>
           </el-col>
           <el-col :span="5">
-            <div class="label">一级代理名称：<span>{{msg.proxyName}}</span>
+            <div class="label">一级代理名称：<span>{{$msg.proxyName}}</span>
               <!--<a>修改代理商归属</a>-->
             </div>
           </el-col>
@@ -39,10 +39,10 @@
         </el-row>
         <el-row type="flex" class="row-bg" justify="space-around" style="margin-bottom: 15px">
           <el-col :span="5">
-            <div class="label">二级代理编号：<span>{{msg.markCode2}}</span></div>
+            <div class="label">二级代理编号：<span>{{$msg.markCode2}}</span></div>
           </el-col>
           <el-col :span="5">
-            <div class="label">二级代理名称：<span>{{msg.proxyName1}}</span></div>
+            <div class="label">二级代理名称：<span>{{$msg.proxyName1}}</span></div>
           </el-col>
           <el-col :span="5">
             <div class="label">邀请层级：<span></span></div>
@@ -50,21 +50,21 @@
         </el-row>
         <el-row type="flex" class="row-bg" justify="space-around" style="margin-bottom: 15px">
           <el-col :span="5">
-            <div class="label">推荐商户编号：<span>{{msg.recommenderCode}}</span></div>
+            <div class="label">推荐商户编号：<span>{{$msg.recommenderCode}}</span></div>
           </el-col>
           <el-col :span="5">
-            <div class="label">推荐商户名称：<span>{{msg.recommenderName}}</span></div>
+            <div class="label">推荐商户名称：<span>{{$msg.recommenderName}}</span></div>
           </el-col>
           <el-col :span="5">
-            <div class="label">推荐人注册手机号<span>{{msg.recommenderPhone}}</span></div>
+            <div class="label">推荐人注册手机号<span>{{$msg.recommenderPhone}}</span></div>
           </el-col>
         </el-row>
         <el-row type="flex" class="row-bg" justify="space-around" style="margin-bottom: 15px">
           <el-col :span="5">
-            <div class="label">推荐所属一级代理名：<span>{{msg.proxyNameYq}}</span></div>
+            <div class="label">推荐所属一级代理名：<span>{{$msg.proxyNameYq}}</span></div>
           </el-col>
           <el-col :span="5">
-            <div class="label">推荐所属二级代理名：<span>{{msg.proxyNameYq1}}</span></div>
+            <div class="label">推荐所属二级代理名：<span>{{$msg.proxyNameYq1}}</span></div>
           </el-col>
           <el-col :span="5"></el-col>
         </el-row>
@@ -73,7 +73,7 @@
         <p class="lead">认证信息</p>
         <el-row type="flex" class="row-bg" justify="space-around" style="margin-bottom: 15px">
           <el-col :span="5">
-            <div class="label">商铺名称（全称）：<span>{{msg.merchantName}}</span></div>
+            <div class="label">商铺名称（全称）：<span>{{$msg.merchantName}}</span></div>
           </el-col>
           <el-col :span="5">
             <div class="label">商铺简称：<span>——</span></div>
@@ -84,15 +84,15 @@
         </el-row>
         <el-row type="flex" class="row-bg" justify="space-around" style="margin-bottom: 15px">
           <el-col :span="5">
-            <div class="label">商铺上报名称：<span>{{msg.merchantChangeName}}</span>
+            <div class="label">商铺上报名称：<span>{{$msg.merchantChangeName}}</span>
               <a @click="reset" v-if="!isShow">修改上报名称</a>
             </div>
           </el-col>
           <el-col :span="5">
-            <div class="label">店主（法人）实名：<span>{{msg.name}}</span></div>
+            <div class="label">店主（法人）实名：<span>{{$msg.name}}</span></div>
           </el-col>
           <el-col :span="5">
-            <div class="label">店主身份证号：<span>{{msg.identity}}</span></div>
+            <div class="label">店主身份证号：<span>{{$msg.identity}}</span></div>
           </el-col>
         </el-row>
         <el-row type="flex" class="row-bg" justify="space-around" style="margin-bottom: 15px">
@@ -100,7 +100,7 @@
             <div class="label">省市区：<span>--</span></div>
           </el-col>
           <el-col :span="5">
-            <div class="label">商铺详细地址：<span>{{msg.address}}</span></div>
+            <div class="label">商铺详细地址：<span>{{$msg.address}}</span></div>
           </el-col>
           <el-col :span="5">
             <div class="label"><span></span></div>
@@ -111,7 +111,7 @@
             <div class="label">资料提交时间：<span>——</span></div>
           </el-col>
           <el-col :span="5">
-            <div class="label">资料审核状态：<span>{{msg.stat}}</span></div>
+            <div class="label">资料审核状态：<span>{{$msg.stat}}</span></div>
           </el-col>
           <el-col :span="5">
             <div class="label"><span></span></div>
@@ -132,19 +132,19 @@
             </tr>
             <tr class="row">
               <td class="col-md-3" style="text-align: center;border: none;">
-                <img style="width: 200px" @click="changeBig()" :src="msg.identityFacePic" alt=""/>
+                <img style="width: 200px" @click="changeBig()" :src="$msg.identityFacePic" alt=""/>
               </td>
               <td class="col-md-3" style="text-align: center;border: none;">
-                <img style="width: 200px" @click="changeBig()" :src="msg.identityOppositePic" alt=""/>
+                <img style="width: 200px" @click="changeBig()" :src="$msg.identityOppositePic" alt=""/>
               </td>
               <td class="col-md-3" style="text-align: center;border: none;">
-                <img style="width: 200px" @click="changeBig()" :src="msg.identityHandPic" alt=""/>
+                <img style="width: 200px" @click="changeBig()" :src="$msg.identityHandPic" alt=""/>
               </td>
               <td class="col-md-3" style="text-align: center;border: none;">
-                <img style="width: 200px" @click="changeBig()" :src="msg.bankPic" alt=""/>
+                <img style="width: 200px" @click="changeBig()" :src="$msg.bankPic" alt=""/>
               </td>
               <td class="col-md-3" style="text-align: center;border: none;">
-                <img style="width: 200px" @click="changeBig()" :src="msg.bankHandPic" alt=""/>
+                <img style="width: 200px" @click="changeBig()" :src="$msg.bankHandPic" alt=""/>
               </td>
             </tr>
             </tbody>
@@ -156,7 +156,7 @@
         <a href="javascript:;" @click="changeBank = true" v-if="!isShow">修改默认结算卡</a>
         <el-row type="flex" class="row-bg" justify="space-around" style="margin-bottom: 15px">
           <el-col :span="5">
-            <div class="label">结算卡开户名：<span>{{msg.name}}</span></div>
+            <div class="label">结算卡开户名：<span>{{$msg.name}}</span></div>
           </el-col>
           <el-col :span="5">
           </el-col>
@@ -165,7 +165,7 @@
         </el-row>
         <el-row type="flex" class="row-bg" justify="space-around" style="margin-bottom: 15px">
           <el-col :span="5">
-            <div class="label">身份证号：<span>{{msg.identity}}</span></div>
+            <div class="label">身份证号：<span>{{$msg.identity}}</span></div>
           </el-col>
           <el-col :span="5">
           </el-col>
@@ -174,7 +174,7 @@
         </el-row>
         <el-row type="flex" class="row-bg" justify="space-around" style="margin-bottom: 15px">
           <el-col :span="5">
-            <div class="label">商户结算卡号：<span>{{msg.bankNo}}</span></div>
+            <div class="label">商户结算卡号：<span>{{$msg.bankNo}}</span></div>
           </el-col>
           <el-col :span="5">
           </el-col>
@@ -183,7 +183,7 @@
         </el-row>
         <el-row type="flex" class="row-bg" justify="space-around" style="margin-bottom: 15px">
           <el-col :span="5">
-            <div class="label">结算卡所属银行：<span>{{msg.bankName}}</span></div>
+            <div class="label">结算卡所属银行：<span>{{$msg.bankName}}</span></div>
           </el-col>
           <el-col :span="5">
           </el-col>
@@ -192,7 +192,7 @@
         </el-row>
         <el-row type="flex" class="row-bg" justify="space-around" style="margin-bottom: 15px">
           <el-col :span="5">
-            <div class="label">支行信息：<span>{{msg.branchName}}</span></div>
+            <div class="label">支行信息：<span>{{$msg.branchName}}</span></div>
           </el-col>
           <el-col :span="5">
           </el-col>
@@ -201,7 +201,7 @@
         </el-row>
         <el-row type="flex" class="row-bg" justify="space-around" style="margin-bottom: 15px">
           <el-col :span="5">
-            <div class="label">认证状态：<span>{{msg.isAuthen}}</span></div>
+            <div class="label">认证状态：<span>{{$msg.isAuthen}}</span></div>
           </el-col>
           <el-col :span="5">
           </el-col>
@@ -346,24 +346,27 @@
       if (this.$route.query.status != 2) {
         this.$data.isShow = false;
       }
-      this.$http.post('/admin/QueryMerchantInfoRecord/getAll', {id: this.$data.id})
-        .then(function (res) {
-          this.$data.msg = res.data.list[0];
-          this.$data.res = res.data.res;
-          this.$data.rateInfo = res.data.rateInfo;
-          for (let i = 0; i < this.rateInfo.length; i++) {
-            this.rateInfo[i].merchantRate = parseFloat(this.rateInfo[i].merchantRate * 100).toFixed(2) + '%'
-            this.rateInfo[i].withdrawMoney = this.rateInfo[i].withdrawMoney + '元/笔'
-          }
-        }, function (err) {
-          this.$message({
-            showClose: true,
-            message: err.statusMessage,
-            type: 'error'
-          })
-        })
+      this.getData();
     },
     methods: {
+      getData:function () {
+        this.$http.post('/admin/QueryMerchantInfoRecord/getAll', {id: this.$data.id})
+          .then(function (res) {
+            this.$data.msg = res.data.list[0];
+            this.$data.res = res.data.res;
+            this.$data.rateInfo = res.data.rateInfo;
+            for (let i = 0; i < this.rateInfo.length; i++) {
+              this.rateInfo[i].merchantRate = parseFloat(this.rateInfo[i].merchantRate * 100).toFixed(2) + '%'
+              this.rateInfo[i].withdrawMoney = this.rateInfo[i].withdrawMoney + '元/笔'
+            }
+          }, function (err) {
+            this.$message({
+              showClose: true,
+              message: err.statusMessage,
+              type: 'error'
+            })
+          })
+      },
       //修改名称
       reset: function () {
         this.$prompt('请输入新名称', '修改上报名称', {
@@ -431,6 +434,7 @@
               type: 'success',
               message: '修改成功'
             });
+            this.getData();
             this.changeBank = false;
           })
           .catch(err=>{
@@ -451,6 +455,11 @@
       },
       isNo: function () {
         document.getElementById('mask').style.display = 'none'
+      }
+    },
+    computed:{
+      $msg:function () {
+        return this.msg
       }
     },
     filters: {
