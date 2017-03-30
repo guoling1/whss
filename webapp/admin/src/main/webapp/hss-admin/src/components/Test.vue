@@ -433,6 +433,7 @@
       }
     },
     created: function () {
+      this._$power('fds');
       this.$data.id = this.$route.query.id;
       if(this.$route.query.status !=2){
         this.$data.isShow = false;

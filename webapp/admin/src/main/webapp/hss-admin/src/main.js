@@ -119,6 +119,9 @@ Vue.use(keyboard);
 import validate from './plugin/validate'
 Vue.use(validate);
 
+import power from './plugin/power'
+Vue.use(power)
+
 import Head from './components/AppHead.vue';
 import Menu from './components/AppMenu.vue';
 import Content from './components/AppContent.vue';
