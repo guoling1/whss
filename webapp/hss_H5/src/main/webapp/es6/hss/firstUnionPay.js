@@ -161,14 +161,18 @@ submit.addEventListener('click', function () {
     validate.empty(cvv2.value, 'CVV2') &&
     validate.phone(mobile.value) &&
     validate.empty(code.value, '验证码')) {
-    message.load_show('正在支付');
-    http.post('/trade/confirmUnionPay', {
-      orderId: orderId,
-      code: code.value,
-    }, function () {
-      message.load_hide();
-      window.location.replace('/trade/unionPaySuccess/' + orderId);
-    })
+    if (cvv2.value.length == 3) {
+      message.load_show('正在支付');
+      http.post('/trade/confirmUnionPay', {
+        orderId: orderId,
+        code: code.value,
+      }, function () {
+        message.load_hide();
+        window.location.replace('/trade/unionPaySuccess/' + orderId);
+      })
+    } else {
+      message.prompt_show('请输入正确的CVV2');
+    }
   }
 });
 // 定义验证码
@@ -179,22 +183,26 @@ sendCode.addEventListener('click', function () {
     } else if (validate.empty(expireDate.value, '信用卡有效期') &&
       validate.empty(cvv2.value, 'CVV2') &&
       validate.phone(mobile.value)) {
-      message.load_show('正在发送');
-      let expire = expireDate.value.split('/');
-      http.post('/trade/firstUnionPay', {
-        amount: amount,
-        channel: channel,
-        bankCode: bankCode,
-        bankCardNo: bankCodeBtn.value,
-        expireDate: expire[1] + expire[0],
-        cvv2: cvv2.value,
-        mobile: mobile.value
-      }, function (data) {
-        orderId = data.orderId;
-        message.load_hide();
-        message.prompt_show('验证码发送成功');
-        countdown.submit_start();
-      })
+      if (cvv2.value.length == 3) {
+        message.load_show('正在发送');
+        let expire = expireDate.value.split('/');
+        http.post('/trade/firstUnionPay', {
+          amount: amount,
+          channel: channel,
+          bankCode: bankCode,
+          bankCardNo: bankCodeBtn.value,
+          expireDate: expire[1] + expire[0],
+          cvv2: cvv2.value,
+          mobile: mobile.value
+        }, function (data) {
+          orderId = data.orderId;
+          message.load_hide();
+          message.prompt_show('验证码发送成功');
+          countdown.submit_start();
+        })
+      } else {
+        message.prompt_show('请输入正确的CVV2');
+      }
     }
   }
 });

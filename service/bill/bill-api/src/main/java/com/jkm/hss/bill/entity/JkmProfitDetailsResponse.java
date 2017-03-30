@@ -34,6 +34,11 @@ public class JkmProfitDetailsResponse {
     private String profitType;
 
     /**
+     * 分润方类型
+     */
+    private int accountUserType;
+
+    /**
      * yu
      * 业务类型
      * {@link com.jkm.hss.account.enums.EnumSplitBusinessType}
