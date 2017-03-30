@@ -2,6 +2,7 @@ package com.jkm.hss.controller.admin;
 
 import com.jkm.base.common.entity.CommonResponse;
 import com.jkm.base.common.entity.PageModel;
+import com.jkm.hss.account.enums.EnumSplitAccountUserType;
 import com.jkm.hss.bill.entity.JkmProfitDetailsResponse;
 import com.jkm.hss.bill.service.ProfitService;
 import com.jkm.hss.controller.BaseController;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -54,14 +56,20 @@ public class ProfitDetailsController extends BaseController{
         List<JkmProfitDetailsResponse> orderList =  profitService.selectProfitDetails(req);
         if (orderList.size()>0){
             for (int i=0;i<orderList.size();i++){
-                if (orderList.get(i).getLevel()==1){
-                    orderList.get(i).setProfitType("一级代理商");
+                if (orderList.get(i).getAccountUserType()==1){
+                    orderList.get(i).setProfitType(EnumSplitAccountUserType.JKM.getValue());
                 }
-                if (orderList.get(i).getLevel()==2){
-                    orderList.get(i).setProfitType("二级代理商");
-                }if (orderList.get(i).getLevel()==0){
-                    orderList.get(i).setProfitType("金开门");
+                if (orderList.get(i).getAccountUserType()==2){
+                    orderList.get(i).setProfitType(EnumSplitAccountUserType.MERCHANT.getValue());
                 }
+                if (orderList.get(i).getAccountUserType()==3){
+                    orderList.get(i).setProfitType(EnumSplitAccountUserType.FIRST_DEALER.getValue());
+                }
+                if (orderList.get(i).getAccountUserType()==4){
+                    orderList.get(i).setProfitType(EnumSplitAccountUserType.SECOND_DEALER.getValue());
+                }
+
+
             }
         }
         if (orderList==null){
@@ -93,6 +101,13 @@ public class ProfitDetailsController extends BaseController{
             req.setEndTime(sdf.format(rightNow.getTime()));
         }
         JkmProfitDetailsResponse profitAmount =  profitService.profitAmount(req);
+        BigDecimal x = new BigDecimal("0.0");
+        JkmProfitDetailsResponse res = new JkmProfitDetailsResponse();
+        if (profitAmount==null){
+            res.setSplitAmount(x);
+            res.setSplitTotalAmount(x);
+            return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "统计完成", res);
+        }
         return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "统计完成", profitAmount);
     }
 

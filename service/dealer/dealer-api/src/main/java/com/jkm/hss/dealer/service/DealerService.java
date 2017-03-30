@@ -10,6 +10,8 @@ import com.jkm.hss.admin.helper.responseparam.BossDistributeQRCodeRecordResponse
 import com.jkm.hss.admin.helper.responseparam.DistributeCodeCount;
 import com.jkm.hss.dealer.entity.Dealer;
 import com.jkm.hss.dealer.entity.DealerChannelRate;
+import com.jkm.hss.dealer.entity.QueryMerchantRequest;
+import com.jkm.hss.dealer.entity.QueryMerchantResponse;
 import com.jkm.hss.dealer.helper.requestparam.*;
 import com.jkm.hss.dealer.helper.response.DealerOfFirstDealerResponse;
 import com.jkm.hss.dealer.helper.response.DistributeRecordResponse;
@@ -18,7 +20,6 @@ import com.jkm.hss.dealer.helper.response.SecondDealerResponse;
 import com.jkm.hss.merchant.entity.MerchantInfo;
 import com.jkm.hss.merchant.entity.MerchantInfoResponse;
 import com.jkm.hss.merchant.entity.OrderRecord;
-import com.jkm.hss.merchant.helper.request.OrderTradeRequest;
 import com.jkm.hss.product.enums.EnumProductType;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
@@ -498,5 +499,31 @@ public interface DealerService {
      */
     MerchantInfoResponse getProxyName(int firstLevelDealerId);
 
+    /**
+     * 查询一级代理商的编码和名称
+     * @param firstDealerId
+     * @return
+     */
+    MerchantInfoResponse getInfo(long firstDealerId);
 
+    /**
+     * 查询二级代理商编码和名称
+     * @param secondDealerId
+     * @return
+     */
+    MerchantInfoResponse getInfo1(long secondDealerId);
+
+    /**
+     * 查询代理商下的所有商户
+     * @param req
+     * @return
+     */
+    List<QueryMerchantResponse> dealerMerchantList(QueryMerchantRequest req);
+
+    /**
+     * 查询代理商下的所有商户总数
+     * @param req
+     * @return
+     */
+    int dealerMerchantCount(QueryMerchantRequest req);
 }

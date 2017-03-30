@@ -281,7 +281,7 @@ public class PayServiceImpl implements PayService {
         final MerchantInfo merchant = this.merchantInfoService.getByAccountId(order.getPayee()).get();
         //手续费， 费率
         final BigDecimal merchantPayPoundageRate = this.calculateService.getMerchantPayPoundageRate(EnumProductType.HSS, merchant.getId(), enumPayChannelSign.getId());
-        final BigDecimal merchantPayPoundage = this.calculateService.getMerchantPayPoundage(order.getTradeAmount(), merchantPayPoundageRate);
+        final BigDecimal merchantPayPoundage = this.calculateService.getMerchantPayPoundage(order.getTradeAmount(), merchantPayPoundageRate, order.getPayChannelSign());
         order.setPoundage(merchantPayPoundage);
         order.setPayRate(merchantPayPoundageRate);
         this.orderService.update(order);
@@ -424,6 +424,7 @@ public class PayServiceImpl implements PayService {
     public void poundageSettle(final Order order, final long merchantId) {
         final Map<String, Triple<Long, BigDecimal, BigDecimal>> shallProfitMap = this.dealerService.shallProfit(EnumProductType.HSS, order.getOrderNo(),
                 order.getTradeAmount(), order.getPayChannelSign(), merchantId);
+        final Triple<Long, BigDecimal, BigDecimal> basicMoneyTriple = shallProfitMap.get("basicMoney");
         final Triple<Long, BigDecimal, BigDecimal> channelMoneyTriple = shallProfitMap.get("channelMoney");
         final Triple<Long, BigDecimal, BigDecimal> productMoneyTriple = shallProfitMap.get("productMoney");
         final Triple<Long, BigDecimal, BigDecimal> firstMoneyTriple = shallProfitMap.get("firstMoney");
@@ -431,13 +432,15 @@ public class PayServiceImpl implements PayService {
         final Triple<Long, BigDecimal, BigDecimal> firstMerchantMoneyTriple = shallProfitMap.get("firstMerchantMoney");
         final Triple<Long, BigDecimal, BigDecimal> secondMerchantMoneyTriple = shallProfitMap.get("secondMerchantMoney");
 
+        final BigDecimal basicMoney = null == basicMoneyTriple ? new BigDecimal("0.00") : basicMoneyTriple.getMiddle();
         final BigDecimal channelMoney = null == channelMoneyTriple ? new BigDecimal("0.00") : channelMoneyTriple.getMiddle();
         final BigDecimal productMoney = null == productMoneyTriple ? new BigDecimal("0.00") : productMoneyTriple.getMiddle();
         final BigDecimal firstMoney = null == firstMoneyTriple ? new BigDecimal("0.00") : firstMoneyTriple.getMiddle();
         final BigDecimal secondMoney = null == secondMoneyTriple ? new BigDecimal("0.00") : secondMoneyTriple.getMiddle();
         final BigDecimal firstMerchantMoney = null == firstMerchantMoneyTriple ? new BigDecimal("0.00") : firstMerchantMoneyTriple.getMiddle();
         final BigDecimal secondMerchantMoney = null == secondMerchantMoneyTriple ? new BigDecimal("0.00") : secondMerchantMoneyTriple.getMiddle();
-        Preconditions.checkState(order.getPoundage().compareTo(channelMoney.add(productMoney).add(firstMoney).add(secondMoney).add(firstMerchantMoney).add(secondMerchantMoney)) >= 0, "收手续不可以小于分润总和");
+        log.info("订单[{}], 收单分润[{}]，成本[{}], 通道[{}], 产品[{}], 一级代理[{}], 二级代理[{}], 直推[{}], 间推[{}]", order.getId(), order.getPoundage(), basicMoney, channelMoney, productMoney, firstMoney, secondMoney, firstMerchantMoney, secondMerchantMoney);
+        Preconditions.checkState(order.getPoundage().compareTo(basicMoney.add(channelMoney).add(productMoney).add(firstMoney).add(secondMoney).add(firstMerchantMoney).add(secondMerchantMoney)) >= 0, "收单-手续费总额不可以小于分润总和");
         //手续费账户结算
         final Account poundageAccount = this.accountService.getByIdWithLock(AccountConstants.POUNDAGE_ACCOUNT_ID).get();
         Preconditions.checkState(order.getPoundage().compareTo(poundageAccount.getAvailable()) <= 0, "该笔订单的分账手续费不可以大于手续费账户的可用余额总和");
@@ -854,6 +857,7 @@ public class PayServiceImpl implements PayService {
                                           final long creditBankCardId, final String cvv2, final String appId) {
         log.info("商户[{}] 通过快捷， 支付一笔资金[{}]", merchantId, amount);
         final MerchantInfo merchant = this.merchantInfoService.selectById(merchantId).get();
+        final AccountBank accountBank = this.accountBankService.selectStatelessById(creditBankCardId).get();
         final EnumPayChannelSign enumPayChannelSign = EnumPayChannelSign.idOf(channel);
         final Order order = new Order();
         order.setOrderNo(SnGenerator.generateSn(EnumTradeType.PAY.getId()));
@@ -868,11 +872,11 @@ public class PayServiceImpl implements PayService {
         order.setGoodsDescribe(merchant.getMerchantName());
         order.setPayType(enumPayChannelSign.getCode());
         order.setPayChannelSign(channel);
+        order.setPayBankCard(accountBank.getBankNo());
         order.setSettleStatus(EnumSettleStatus.DUE_SETTLE.getId());
         order.setSettleType(EnumBalanceTimeType.T1.getType());
         order.setStatus(EnumOrderStatus.DUE_PAY.getId());
         this.orderService.add(order);
-        final AccountBank accountBank = this.accountBankService.selectById(creditBankCardId).get();
         final PaymentSdkUnionPayRequest paymentSdkUnionPayRequest = new PaymentSdkUnionPayRequest();
         paymentSdkUnionPayRequest.setAppId(appId);
         paymentSdkUnionPayRequest.setOrderNo(order.getOrderNo());
@@ -900,6 +904,7 @@ public class PayServiceImpl implements PayService {
         final EnumBasicStatus enumBasicStatus = EnumBasicStatus.of(paymentSdkUnionPayResponse.getCode());
         switch (enumBasicStatus) {
             case SUCCESS:
+                order.setSn(paymentSdkUnionPayResponse.getSn());
                 order.setRemark(paymentSdkUnionPayResponse.getMessage());
                 this.orderService.update(order);
                 return Pair.of(0, order.getId() + "");
@@ -940,10 +945,10 @@ public class PayServiceImpl implements PayService {
                     return Pair.of(0, "");
                 case FAIL:
                     this.orderService.updateRemark(orderId, paymentSdkConfirmUnionPayResponse.getMessage());
-                    return Pair.of(-1, order.getRemark());
+                    return Pair.of(-1, paymentSdkConfirmUnionPayResponse.getMessage());
             }
         }
-        return Pair.of(-1, "订单状态错误，确认支付失败");
+        return Pair.of(-1, "请重新发送验证码");
     }
 
 
@@ -996,15 +1001,15 @@ public class PayServiceImpl implements PayService {
      * @return
      */
     private Date getMoBaoUnionPaySettleDate(Date tradeDate) {
+        final int millisOfDay = new DateTime(tradeDate).getMillisOfDay();
+        if (millisOfDay > 82560000) {//当作第二个工作日的交易
+            tradeDate = new DateTime(tradeDate).plusDays(1).toDate();
+        }
         if (HolidaySettlementConstants.HOLIDAY_OPEN) {
             final Date settlementDate = this.mergeTableSettlementDateService.getSettlementDate(tradeDate, EnumUpperChannel.MOBAO.getId());
             if (null != settlementDate) {
                 return settlementDate;
             }
-        }
-        final int millisOfDay = new DateTime(tradeDate).getMillisOfDay();
-        if (millisOfDay > 82560000) {//当作第二个工作日的交易
-            tradeDate = new DateTime(tradeDate).plusDays(1).toDate();
         }
         return DateTimeUtil.generateT1SettleDate(tradeDate);
     }

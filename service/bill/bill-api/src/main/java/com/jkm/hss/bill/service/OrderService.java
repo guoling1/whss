@@ -2,8 +2,7 @@ package com.jkm.hss.bill.service;
 
 import com.google.common.base.Optional;
 import com.jkm.base.common.entity.PageModel;
-import com.jkm.hss.bill.entity.MerchantTradeResponse;
-import com.jkm.hss.bill.entity.Order;
+import com.jkm.hss.bill.entity.*;
 import com.jkm.hss.bill.helper.requestparam.QueryMerchantPayOrdersRequestParam;
 import com.jkm.hss.dealer.entity.Dealer;
 import com.jkm.hss.merchant.entity.MerchantInfo;
@@ -266,6 +265,72 @@ public interface OrderService {
      * @param orderId
      */
     void t1WithdrawByOrderId(long orderId);
+
+    List<WithdrawResponse> withdrawList(WithdrawRequest req);
+
+    /**
+     * 总数
+     * @param req
+     * @return
+     */
+    int getNo(WithdrawRequest req);
+
+    /**
+     * 提现统计
+     * @param req
+     * @return
+     */
+    WithdrawResponse withdrawAmount(WithdrawRequest req);
+
+    /**
+     * 查询提现详情代理商
+     * @param idd
+     * @return
+     */
+    WithdrawResponse withdrawDetail(long idd,String createTimes);
+
+    /**
+     * 查询提现详情商户
+     * @param idm
+     * @return
+     */
+    WithdrawResponse withdrawDetails(long idm,String createTimes);
+
+    /**
+     * 查询打款
+     * @param orderNo
+     * @return
+     */
+    List<PlayResponse> getPlayMoney(String orderNo);
+
+    /**
+     * 代理商pc交易查询二级
+     * @param req
+     * @return
+     */
+    List<MerchantTradeResponse> getTrade(OrderTradeRequest req);
+
+    /**
+     * 代理商pc交易查询一级
+     * @param req
+     * @return
+     */
+    List<MerchantTradeResponse> getTradeFirst(OrderTradeRequest req);
+
+    /**
+     * 代理商pc交易查询二级总数
+     * @param req
+     * @return
+     */
+    int listCount(OrderTradeRequest req);
+
+    /**
+     * 代理商pc交易查询一级总数
+     * @param req
+     * @return
+     */
+    int listFirstCount(OrderTradeRequest req);
+
     /**
      * 查询交易详情
      * @param orderRecord

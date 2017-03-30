@@ -41,6 +41,9 @@
             <li v-if="list.支付交易查询==1" :class="(url=='/admin/record/newDeal')?'treeview active':'treeview'" @click="refrash">
               <router-link to="/admin/record/newDeal"><span>支付交易查询</span></router-link>
             </li>
+            <li :class="(url=='/admin/record/retrieval')?'treeview active':'treeview'" @click="refrash">
+              <router-link to="/admin/record/retrieval"><span>提现查询</span></router-link>
+            </li>
           </ul>
         </li>
         <li v-if="list.分润管理==1" :class="(url=='/admin/record/profitCount'||url=='/admin/record/profitAccount'||url=='/admin/record/profitDet')?'treeview active':'treeview'">
@@ -155,6 +158,8 @@
           </ul>
         </li>
         <li v-if="list.通道管理==1" class="treeview" :class="(url=='/admin/record/passList'||url=='/admin/record/passAdd')?'treeview active':'treeview'">
+        <li class="treeview"
+            :class="(url=='/admin/record/passList'||url=='/admin/record/limitList')?'treeview active':'treeview'">
           <a href="#"><span>通道管理</span>
           </a>
           <ul class="treeview-menu">
@@ -164,6 +169,9 @@
             <!--<li @click="refrash" :class="(url=='/admin/record/passAdd')?'treeview active':'treeview'">
               <router-link to="/admin/record/passAdd"><span>新增通道</span></router-link>
             </li>-->
+            <li @click="refrash" :class="(url=='/admin/record/limitList')?'treeview active':'treeview'">
+              <router-link to="/admin/record/limitList"><span>银行卡限额管理</span></router-link>
+            </li>
           </ul>
         </li>
         <li v-if="list.员工权限管理==1" :class="(url=='/admin/record/personnelList'||url=='/admin/record/role')?'treeview active':'treeview'">
@@ -252,11 +260,6 @@
           obj.className = 'el-icon-arrow-down  pull-right'
         }
       }
-    },
-    computed:{
-      /*list:function () {
-        return this.$list
-      }*/
     }
   }
 </script>

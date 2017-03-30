@@ -1,6 +1,8 @@
 package com.jkm.hss.dealer.dao;
 
 import com.jkm.hss.dealer.entity.Dealer;
+import com.jkm.hss.dealer.entity.QueryMerchantRequest;
+import com.jkm.hss.dealer.entity.QueryMerchantResponse;
 import com.jkm.hss.dealer.helper.requestparam.*;
 import com.jkm.hss.dealer.helper.response.DealerOfFirstDealerResponse;
 import com.jkm.hss.dealer.helper.response.FirstDealerResponse;
@@ -301,4 +303,32 @@ public interface DealerDao {
      * @return
      */
     MerchantInfoResponse getProxyName(int firstLevelDealerId);
+
+    /**
+     * 查询一级代理商的编码和名称
+     * @param firstDealerId
+     * @return
+     */
+    MerchantInfoResponse getInfo(@Param("firstDealerId") long firstDealerId);
+
+    /**
+     * 查询二级代理商编码和名称
+     * @param secondDealerId
+     * @return
+     */
+    MerchantInfoResponse getInfo1(@Param("secondDealerId") long secondDealerId);
+
+    /**
+     * 查询代理商下的所有的商户
+     * @param req
+     * @return
+     */
+    List<QueryMerchantResponse> dealerMerchantList(QueryMerchantRequest req);
+
+    /**
+     * 查询代理商下的所有的商户总数
+     * @param req
+     * @return
+     */
+    int dealerMerchantCount(QueryMerchantRequest req);
 }

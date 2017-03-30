@@ -28,7 +28,7 @@ public final class HolidaySettlementConstants {
     private interface HolidaySettlementConfig extends Config {
 
         @Key("holiday.open")
-        @DefaultValue("false")
+        @DefaultValue("true")
         boolean holidayOpen();
     }
 }

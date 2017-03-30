@@ -21,7 +21,7 @@ public class FirstUnionPaySendMsgRequest {
     /**
      * 银行名称
      */
-    private String bankName;
+    private String bankCode;
     /**
      * 信用卡行卡号
      */

@@ -7,6 +7,7 @@ import com.jkm.hss.controller.BaseController;
 import com.jkm.hss.helper.request.QueryChannelSupportBankRequest;
 import com.jkm.hss.helper.response.QueryChannelSupportBankResponse;
 import com.jkm.hss.product.entity.ChannelSupportCreditBank;
+import com.jkm.hss.product.enums.EnumPayChannelSign;
 import com.jkm.hss.product.servcie.ChannelSupportCreditBankService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
@@ -42,7 +43,7 @@ public class ChannelController extends BaseController {
     @RequestMapping(value = "queryChannelSupportBank", method = RequestMethod.POST)
     public CommonResponse queryChannelSupportBank(@RequestBody final QueryChannelSupportBankRequest queryChannelSupportBankRequest) {
         final List<ChannelSupportCreditBank> channelSupportCreditBankList =
-                this.channelSupportCreditBankService.getByChannelSign(queryChannelSupportBankRequest.getChannelSign());
+                this.channelSupportCreditBankService.getByUpperChannel(EnumPayChannelSign.idOf(queryChannelSupportBankRequest.getChannelSign()).getUpperChannel().getId());
         if (CollectionUtils.isEmpty(channelSupportCreditBankList)) {
             return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "success", Collections.emptyList());
         }
@@ -51,10 +52,11 @@ public class ChannelController extends BaseController {
             public QueryChannelSupportBankResponse apply(ChannelSupportCreditBank channelSupportCreditBank) {
                 final QueryChannelSupportBankResponse supportBankResponse = new QueryChannelSupportBankResponse();
                 supportBankResponse.setId(channelSupportCreditBank.getId());
-                supportBankResponse.setChannelSign(channelSupportCreditBank.getChannelSign());
                 supportBankResponse.setBankName(channelSupportCreditBank.getBankName());
+                supportBankResponse.setBankCode(channelSupportCreditBank.getBankCode());
                 supportBankResponse.setSingleLimitAmount(channelSupportCreditBank.getSingleLimitAmount().toPlainString());
                 supportBankResponse.setDayLimitAmount(channelSupportCreditBank.getDayLimitAmount().toPlainString());
+                supportBankResponse.setStatus(channelSupportCreditBank.getStatus());
                 return supportBankResponse;
             }
         });

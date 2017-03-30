@@ -4,21 +4,20 @@ import com.google.common.base.Optional;
 import com.jkm.base.common.entity.BaseEntity;
 import com.jkm.base.common.entity.CommonResponse;
 import com.jkm.base.common.util.CookieUtil;
-import com.jkm.hss.admin.entity.AdminUser;
-import com.jkm.hss.admin.entity.AdminUserPassport;
-import com.jkm.hss.admin.enums.EnumAdminType;
-import com.jkm.hss.admin.helper.responseparam.AdminUserLoginResponse;
-import com.jkm.hss.admin.service.AdminRoleService;
-import com.jkm.hss.admin.service.AdminUserPassportService;
-import com.jkm.hss.admin.service.AdminUserService;
+import com.jkm.base.common.util.ValidateUtils;
 import com.jkm.hss.dealer.entity.Dealer;
+import com.jkm.hss.dealer.entity.DealerPassport;
+import com.jkm.hss.dealer.enums.EnumLoginStatus;
+import com.jkm.hss.dealer.enums.EnumPassportType;
 import com.jkm.hss.dealer.helper.DealerConsts;
 import com.jkm.hss.dealer.helper.DealerSupport;
+import com.jkm.hss.dealer.service.DealerPassportService;
 import com.jkm.hss.dealer.service.DealerService;
 import com.jkm.hss.helper.ApplicationConsts;
 import com.jkm.hss.helper.request.DealerLoginRequest;
+import com.jkm.hss.notifier.enums.EnumVerificationCodeType;
 import lombok.extern.slf4j.Slf4j;
-import org.immutables.value.internal.$processor$.meta.$TreesMirrors;
+import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -26,9 +25,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.List;
 
 /**
  * Created by yuxiang on 2017-02-15.
@@ -41,12 +38,7 @@ public class DealerLoginController extends BaseController{
     @Autowired
     private DealerService dealerService;
     @Autowired
-    private AdminUserPassportService adminUserPassportService;
-    @Autowired
-    private AdminUserService adminUserService;
-    @Autowired
-    private AdminRoleService adminRoleService;
-
+    private DealerPassportService dealerPassportService;
     /**
      * 登录
      *
@@ -55,6 +47,12 @@ public class DealerLoginController extends BaseController{
     @ResponseBody
     @RequestMapping(value = "/pc", method = RequestMethod.POST)
     public CommonResponse ajaxLogin(final HttpServletResponse response, @RequestBody final DealerLoginRequest loginRequest) {
+        if (loginRequest.getLoginName()==null||"".equals(loginRequest.getLoginName())){
+            return CommonResponse.simpleResponse(-1, "登录名不能为空");
+        }
+        if (loginRequest.getPwd()==null||"".equals(loginRequest.getPwd())){
+            return CommonResponse.simpleResponse(-1, "密码不能为空");
+        }
         Optional<AdminUser> adminUserOptional = this.adminUserService.getAdminUserByNameAndType(loginRequest.getLoginName(), EnumAdminType.SECONDDEALER.getCode());
         if (!adminUserOptional.isPresent()) {
             return CommonResponse.simpleResponse(-1, "登录名已经存在");

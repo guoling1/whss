@@ -19,18 +19,14 @@ import com.jkm.hss.account.sevice.AccountService;
 import com.jkm.hss.account.sevice.FrozenRecordService;
 import com.jkm.hss.account.sevice.SettleAccountFlowService;
 import com.jkm.hss.bill.dao.OrderDao;
-import com.jkm.hss.bill.entity.MerchantTradeResponse;
-import com.jkm.hss.bill.entity.Order;
-import com.jkm.hss.bill.entity.SettlementRecord;
-import com.jkm.hss.bill.enums.EnumOrderStatus;
-import com.jkm.hss.bill.enums.EnumPayType;
-import com.jkm.hss.bill.enums.EnumSettleStatus;
-import com.jkm.hss.bill.enums.EnumTradeType;
+import com.jkm.hss.bill.entity.*;
+import com.jkm.hss.bill.enums.*;
 import com.jkm.hss.bill.helper.requestparam.QueryMerchantPayOrdersRequestParam;
 import com.jkm.hss.bill.service.*;
 import com.jkm.hss.dealer.entity.Dealer;
 import com.jkm.hss.dealer.service.DealerService;
 import com.jkm.hss.merchant.entity.MerchantInfo;
+import com.jkm.hss.merchant.entity.MerchantInfoResponse;
 import com.jkm.hss.merchant.helper.MerchantSupport;
 import com.jkm.hss.merchant.helper.request.OrderTradeRequest;
 import com.jkm.hss.merchant.service.MerchantInfoService;
@@ -960,7 +956,7 @@ public class OrderServiceImpl implements OrderService {
                 final long orderId = orderIds.get(i);
                 final JSONObject requestParam = new JSONObject();
                 requestParam.put("orderId", orderId);
-                MqProducer.produce(requestParam, MqConfig.MERCHANT_WITHDRAW_T1, 10 * i);
+                MqProducer.produce(requestParam, MqConfig.MERCHANT_WITHDRAW_T1, 1000 * i);
             }
         }
     }
@@ -1003,12 +999,482 @@ public class OrderServiceImpl implements OrderService {
                     this.dealerAndMerchantPoundageSettleImpl(order, increaseSettleAccountFlow.getId());
                     return;
                 }
-                log.error("订单[{}],在T1发起结算提现时， 请求网关异常", orderId, order.getStatus(), order.getSettleStatus());
+                log.error("订单[{}],在T1发起结算提现时， 提现失败异常", orderId, order.getStatus(), order.getSettleStatus());
                 return;
             }
         }
         log.error("订单[{}],在T1发起结算提现时，状态错误!!!，订单状态[{}], 结算状态[{}]", orderId, order.getStatus(), order.getSettleStatus());
     }
+
+    @Override
+    public List<WithdrawResponse> withdrawList(WithdrawRequest req) {
+        List<WithdrawResponse> list = this.orderDao.withdrawList(req);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        if (list.size()>0){
+            for (int i=0;i<list.size();i++){
+                if (list.get(i).getMerchantName()!=null&&!list.get(i).getMerchantName().equals("")){
+                    list.get(i).setUserType("商户");
+                }
+                if (list.get(i).getProxyName()!=null&&!list.get(i).getProxyName().equals("")){
+                    list.get(i).setUserType("代理商");
+                }
+                if (list.get(i).getCreateTime()!=null&&!list.get(i).getCreateTime().equals("")){
+                    String dates = sdf.format(list.get(i).getCreateTime());
+                    list.get(i).setCreateTimes(dates);
+                }
+                if (list.get(i).getSuccessSettleTime()!=null&&!list.get(i).getSuccessSettleTime().equals("")){
+                    String dates = sdf.format(list.get(i).getSuccessSettleTime());
+                    list.get(i).setSuccessTime(dates);
+                }
+                if (list.get(i).getStatus()==5){
+                    list.get(i).setWithdrawStatus(EnumOrderStatus.WITHDRAWING.getValue());
+                }
+                if (list.get(i).getStatus()==6){
+                    list.get(i).setWithdrawStatus(EnumOrderStatus.WITHDRAW_SUCCESS.getValue());
+                    String dates = sdf.format(list.get(i).getUpdateTime());
+                    list.get(i).setUpdateTimes(dates);
+                }
+                if (list.get(i).getPayChannelSign()==101){
+                    list.get(i).setPayChannelName(EnumPayChannelSign.idOf(list.get(i).getPayChannelSign()).getName());
+                }
+                if (list.get(i).getPayChannelSign()==102){
+                    list.get(i).setPayChannelName(EnumPayChannelSign.idOf(list.get(i).getPayChannelSign()).getName());
+                }
+                if (list.get(i).getPayChannelSign()==103){
+                    list.get(i).setPayChannelName(EnumPayChannelSign.idOf(list.get(i).getPayChannelSign()).getName());
+                }
+                if (list.get(i).getPayChannelSign()==201){
+                    list.get(i).setPayChannelName(EnumPayChannelSign.idOf(list.get(i).getPayChannelSign()).getName());
+                }
+                if (list.get(i).getPayChannelSign()==202){
+                    list.get(i).setPayChannelName(EnumPayChannelSign.idOf(list.get(i).getPayChannelSign()).getName());
+                }
+                if (list.get(i).getPayChannelSign()==301){
+                    list.get(i).setPayChannelName(EnumPayChannelSign.idOf(list.get(i).getPayChannelSign()).getName());
+                }
+            }
+        }
+        return list;
+    }
+
+    @Override
+    public int getNo(WithdrawRequest req) {
+        return this.orderDao.getNo(req);
+    }
+
+    @Override
+    public WithdrawResponse withdrawAmount(WithdrawRequest req) {
+        WithdrawResponse response = this.orderDao.withdrawAmount(req);
+        return response;
+    }
+
+    @Override
+    public WithdrawResponse withdrawDetail(long idd,String createTimes) {
+        WithdrawResponse response = orderDao.withdrawDetail(idd,createTimes);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        if (response!=null){
+            response.setLocation(response.getBelongProvinceName()+response.getBelongCityName());
+            if (response.getLevel()==2){
+                MerchantInfoResponse res = dealerService.getProxyName(response.getFirstLevelDealerId());
+                response.setProxyNames(res.getProxyName());
+                response.setMarkCode(res.getMarkCode());
+            }
+            if (response.getCreateTime()!=null&&!response.getCreateTime().equals("")){
+                String dates = sdf.format(response.getCreateTime());
+                response.setCreateTimes(dates);
+            }
+            if (response.getSuccessSettleTime()!=null&&!response.getSuccessSettleTime().equals("")){
+                String dates = sdf.format(response.getSuccessSettleTime());
+                response.setSuccessTime(dates);
+            }
+            if (response.getStatus()==5){
+                response.setWithdrawStatus(EnumOrderStatus.WITHDRAWING.getValue());
+            }
+            if (response.getStatus()==6){
+                response.setWithdrawStatus(EnumOrderStatus.WITHDRAW_SUCCESS.getValue());
+            }
+            if (response.getPayChannelSign()==101){
+                response.setPayChannelName(EnumPayChannelSign.idOf(response.getPayChannelSign()).getName());
+            }
+            if (response.getPayChannelSign()==102){
+                response.setPayChannelName(EnumPayChannelSign.idOf(response.getPayChannelSign()).getName());
+            }
+            if (response.getPayChannelSign()==103){
+                response.setPayChannelName(EnumPayChannelSign.idOf(response.getPayChannelSign()).getName());
+            }
+            if (response.getPayChannelSign()==201){
+                response.setPayChannelName(EnumPayChannelSign.idOf(response.getPayChannelSign()).getName());
+            }
+            if (response.getPayChannelSign()==202){
+                response.setPayChannelName(EnumPayChannelSign.idOf(response.getPayChannelSign()).getName());
+            }
+            if (response.getPayChannelSign()==301){
+                response.setPayChannelName(EnumPayChannelSign.idOf(response.getPayChannelSign()).getName());
+            }
+        }
+        return response;
+    }
+
+    @Override
+    public WithdrawResponse withdrawDetails(long idm,String createTimes) {
+        WithdrawResponse response = this.orderDao.withdrawDetails(idm,createTimes);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        if (response!=null){
+            response.setMobile(MerchantSupport.decryptMobile(response.getMobile()));
+            if (response.getProvinceCode()!=null&&!("").equals(response.getProvinceCode())){
+                if (response.getProvinceCode().equals("110000")||response.getProvinceCode().equals("120000")||response.getProvinceCode().equals("310000")||response.getProvinceCode().equals("500000")){
+                    response.setLocationM(response.getProvinceName()+response.getCountyName());
+                }else {
+                    response.setLocationM(response.getProvinceName()+response.getCityName()+response.getCountyName());
+                }
+            }
+            if (response.getFirstDealerId()>0 ){
+                MerchantInfoResponse res = dealerService.getInfo(response.getFirstDealerId());
+                response.setProxyNames(res.getProxyName());
+                response.setMarkCode(res.getMarkCode());
+            }
+            if (response.getSecondDealerId()>0){
+                MerchantInfoResponse res1 = dealerService.getInfo1(response.getSecondDealerId());
+                response.setProxyName1(res1.getProxyName());
+                response.setMarkCode1(res1.getMarkCode());
+            }
+            if (response.getCreateTime()!=null&&!response.getCreateTime().equals("")){
+                String dates = sdf.format(response.getCreateTime());
+                response.setCreateTimes(dates);
+            }
+            if (response.getSuccessSettleTime()!=null&&!response.getSuccessSettleTime().equals("")){
+                String dates = sdf.format(response.getSuccessSettleTime());
+                response.setSuccessTime(dates);
+            }
+            if (response.getStatus()==5){
+                response.setWithdrawStatus(EnumOrderStatus.WITHDRAWING.getValue());
+            }
+            if (response.getStatus()==6){
+                response.setWithdrawStatus(EnumOrderStatus.WITHDRAW_SUCCESS.getValue());
+            }
+            if (response.getPayChannelSign()==101){
+                response.setPayChannelName(EnumPayChannelSign.idOf(response.getPayChannelSign()).getName());
+            }
+            if (response.getPayChannelSign()==102){
+                response.setPayChannelName(EnumPayChannelSign.idOf(response.getPayChannelSign()).getName());
+            }
+            if (response.getPayChannelSign()==103){
+                response.setPayChannelName(EnumPayChannelSign.idOf(response.getPayChannelSign()).getName());
+            }
+            if (response.getPayChannelSign()==201){
+                response.setPayChannelName(EnumPayChannelSign.idOf(response.getPayChannelSign()).getName());
+            }
+            if (response.getPayChannelSign()==202){
+                response.setPayChannelName(EnumPayChannelSign.idOf(response.getPayChannelSign()).getName());
+            }
+            if (response.getPayChannelSign()==301){
+                response.setPayChannelName(EnumPayChannelSign.idOf(response.getPayChannelSign()).getName());
+            }
+        }
+        return response;
+    }
+
+    @Override
+    public List<PlayResponse> getPlayMoney(String orderNo) {
+        List<PlayResponse> list = this.orderDao.getPlayMoney(orderNo);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        if (list.size()>0){
+            for (int i=0;i<list.size();i++){
+                if (list.get(i).getRequestTime()!=null){
+                    String dates = sdf.format(list.get(i).getRequestTime());
+                    list.get(i).setRequestTimes(dates);
+                }
+                if (list.get(i).getFinishTime()!=null){
+                    String dates = sdf.format(list.get(i).getFinishTime());
+                    list.get(i).setFinishTimes(dates);
+                }
+                if (list.get(i).getStatus()==1){
+                    list.get(i).setStatusValue(EnumPlayStatus.of(list.get(i).getStatus()).getValue());
+                }
+                if (list.get(i).getStatus()==2){
+                    list.get(i).setStatusValue(EnumPlayStatus.of(list.get(i).getStatus()).getValue());
+                }
+                if (list.get(i).getStatus()==3){
+                    list.get(i).setStatusValue(EnumPlayStatus.of(list.get(i).getStatus()).getValue());
+                }
+                if (list.get(i).getStatus()==4){
+                    list.get(i).setStatusValue(EnumPlayStatus.of(list.get(i).getStatus()).getValue());
+                }
+                if (list.get(i).getStatus()==5){
+                    list.get(i).setStatusValue(EnumPlayStatus.of(list.get(i).getStatus()).getValue());
+                }
+
+                if (list.get(i).getPlayMoneyChannel()==1){
+                    list.get(i).setPlayMoneyChannels(EnumChannel.of(list.get(i).getPlayMoneyChannel()).getValue());
+                }
+                if (list.get(i).getPlayMoneyChannel()==2){
+                    list.get(i).setPlayMoneyChannels(EnumChannel.of(list.get(i).getPlayMoneyChannel()).getValue());
+                }
+                if (list.get(i).getPlayMoneyChannel()==3){
+                    list.get(i).setPlayMoneyChannels(EnumChannel.of(list.get(i).getPlayMoneyChannel()).getValue());
+                }
+                if (list.get(i).getPlayMoneyChannel()==4){
+                    list.get(i).setPlayMoneyChannels(EnumChannel.of(list.get(i).getPlayMoneyChannel()).getValue());
+                }
+                if (list.get(i).getPlayMoneyChannel()==5){
+                    list.get(i).setPlayMoneyChannels(EnumChannel.of(list.get(i).getPlayMoneyChannel()).getValue());
+                }
+
+            }
+        }
+        return list;
+    }
+
+    @Override
+    public List<MerchantTradeResponse> getTrade(OrderTradeRequest req) {
+        List<MerchantTradeResponse> list = this.orderDao.getTrade(req);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        if (list.size()>0){
+            for (int i=0;i<list.size();i++){
+                if (list.get(i).getCreateTime()!=null){
+                    String dates = sdf.format(list.get(i).getCreateTime());
+                    list.get(i).setCreateTimed(dates);
+                }
+                if (list.get(i).getPaySuccessTime()!=null){
+                    String dates = sdf.format(list.get(i).getPaySuccessTime());
+                    list.get(i).setPaySuccessTimes(dates);
+                }
+                if (list.get(i).getStatus()==1){
+                    list.get(i).setStatusValue(EnumOrderStatus.DUE_PAY.getValue());
+                }
+                if (list.get(i).getStatus()==2){
+                    list.get(i).setStatusValue(EnumOrderStatus.PAYING.getValue());
+                }
+                if (list.get(i).getStatus()==3){
+                    list.get(i).setStatusValue(EnumOrderStatus.PAY_FAIL.getValue());
+                }
+                if (list.get(i).getStatus()==4){
+                    list.get(i).setStatusValue(EnumOrderStatus.PAY_SUCCESS.getValue());
+                }
+                if (list.get(i).getStatus()==5){
+                    list.get(i).setStatusValue(EnumOrderStatus.WITHDRAWING.getValue());
+                }
+                if (list.get(i).getStatus()==6){
+                    list.get(i).setStatusValue(EnumOrderStatus.WITHDRAW_SUCCESS.getValue());
+                }
+                if (list.get(i).getStatus()==7){
+                    list.get(i).setStatusValue(EnumOrderStatus.RECHARGE_SUCCESS.getValue());
+                }
+                if (list.get(i).getStatus()==8){
+                    list.get(i).setStatusValue(EnumOrderStatus.RECHARGE_FAIL.getValue());
+                }
+                if (list.get(i).getAppId().equals("hss")){
+                    String hss="好收收";
+                    list.get(i).setAppId(hss);
+                }
+                if (list.get(i).getAppId().equals("hsy")){
+                    String hsy="好收银";
+                    list.get(i).setAppId(hsy);
+                }
+                if (list.get(i).getPayChannelSign()==101){
+                    list.get(i).setPayChannelSigns(EnumPayChannelSign.YG_WECHAT.getName());
+                }
+                if (list.get(i).getPayChannelSign()==102){
+                    list.get(i).setPayChannelSigns(EnumPayChannelSign.YG_ALIPAY.getName());
+                }
+                if (list.get(i).getPayChannelSign()==103){
+                    list.get(i).setPayChannelSigns(EnumPayChannelSign.YG_UNIONPAY.getName());
+                }
+                if (list.get(i).getPayChannelSign()==201){
+                    list.get(i).setPayChannelSigns(EnumPayChannelSign.KM_WECHAT.getName());
+                }
+                if (list.get(i).getPayChannelSign()==202){
+                    list.get(i).setPayChannelSigns(EnumPayChannelSign.KM_ALIPAY.getName());
+                }
+                if (list.get(i).getPayChannelSign()==301){
+                    list.get(i).setPayChannelSigns(EnumPayChannelSign.MB_UNIONPAY.getName());
+                }
+                if (list.get(i).getPayType()!=null&&!list.get(i).getPayType().equals("")){
+                    if (list.get(i).getPayType().equals("sm_wechat_jsapi")){
+                        list.get(i).setPayType(EnumPayType.YG_WECHAT_JSAPI.getValue());
+                    }
+                    if (list.get(i).getPayType().equals("sm_alipay_jsapi")){
+                        list.get(i).setPayType(EnumPayType.YG_ALIPAY_JSAPI.getValue());
+                    }
+                    if (list.get(i).getPayType().equals("sm_wechat_code")){
+                        list.get(i).setPayType(EnumPayType.YG_WECHAT_CODE.getValue());
+                    }
+                    if (list.get(i).getPayType().equals("sm_alipay_code")){
+                        list.get(i).setPayType(EnumPayType.YG_ALIPAY_CODE.getValue());
+                    }
+                    if (list.get(i).getPayType().equals("sm_unionpay")){
+                        list.get(i).setPayType(EnumPayType.YG_UNIONPAY.getValue());
+                    }
+                    if (list.get(i).getPayType().equals("km_wechat_jsapi")){
+                        list.get(i).setPayType(EnumPayType.KM_WECHAT_JSAPI.getValue());
+                    }
+                    if (list.get(i).getPayType().equals("km_alipay_jsapi")){
+                        list.get(i).setPayType(EnumPayType.KM_ALIPAY_JSAPI.getValue());
+                    }
+                    if (list.get(i).getPayType().equals("km_wechat_code")){
+                        list.get(i).setPayType(EnumPayType.KM_WECHAT_CODE.getValue());
+                    }
+                    if (list.get(i).getPayType().equals("km_alipay_code")){
+                        list.get(i).setPayType(EnumPayType.KM_ALIPAY_CODE.getValue());
+                    }
+                    if (list.get(i).getPayType().equals("mb_unionpay")){
+                        list.get(i).setPayType(EnumPayType.MB_UNIONPAY.getValue());
+                    }
+                    if (list.get(i).getPayType().equals("hzyb_wechat")){
+                        list.get(i).setPayType(EnumPayType.HZYB_WECHAT.getValue());
+                    }
+                    if (list.get(i).getPayType().equals("hzyb_alipay")){
+                        list.get(i).setPayType(EnumPayType.HZYB_ALIPAY.getValue());
+                    }
+                    if (list.get(i).getPayType().equals("yijia_wechat")){
+                        list.get(i).setPayType(EnumPayType.YIJIA_WECHAT.getValue());
+                    }
+                    if (list.get(i).getPayType().equals("yijia_alipay")){
+                        list.get(i).setPayType(EnumPayType.YIJIA_ALIPAY.getValue());
+                    }
+                }
+
+            }
+        }
+        return list;
+    }
+
+    @Override
+    public List<MerchantTradeResponse> getTradeFirst(OrderTradeRequest req) {
+        List<MerchantTradeResponse> list = this.orderDao.getTradeFirst(req);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        if (list.size()>0){
+            for (int i=0;i<list.size();i++){
+                if (list.get(i).getSettleStatus()==1){
+                    list.get(i).setSettleStat(EnumSettleStatus.DUE_SETTLE.getValue());
+                }
+                if (list.get(i).getSettleStatus()==2){
+                    list.get(i).setSettleStat(EnumSettleStatus.SETTLE_ING.getValue());
+                }
+                if (list.get(i).getSettleStatus()==3){
+                    list.get(i).setSettleStat(EnumSettleStatus.SETTLED.getValue());
+                }
+                if (list.get(i).getSettleStatus()==4){
+                    list.get(i).setSettleStat(EnumSettleStatus.SETTLE_PART.getValue());
+                }
+                if (list.get(i).getCreateTime()!=null){
+                    String dates = sdf.format(list.get(i).getCreateTime());
+                    list.get(i).setCreateTimed(dates);
+                }
+                if (list.get(i).getPaySuccessTime()!=null){
+                    String dates = sdf.format(list.get(i).getPaySuccessTime());
+                    list.get(i).setPaySuccessTimes(dates);
+                }
+                if (list.get(i).getStatus()==1){
+                    list.get(i).setStatusValue(EnumOrderStatus.DUE_PAY.getValue());
+                }
+                if (list.get(i).getStatus()==2){
+                    list.get(i).setStatusValue(EnumOrderStatus.PAYING.getValue());
+                }
+                if (list.get(i).getStatus()==3){
+                    list.get(i).setStatusValue(EnumOrderStatus.PAY_FAIL.getValue());
+                }
+                if (list.get(i).getStatus()==4){
+                    list.get(i).setStatusValue(EnumOrderStatus.PAY_SUCCESS.getValue());
+                }
+                if (list.get(i).getStatus()==5){
+                    list.get(i).setStatusValue(EnumOrderStatus.WITHDRAWING.getValue());
+                }
+                if (list.get(i).getStatus()==6){
+                    list.get(i).setStatusValue(EnumOrderStatus.WITHDRAW_SUCCESS.getValue());
+                }
+                if (list.get(i).getStatus()==7){
+                    list.get(i).setStatusValue(EnumOrderStatus.RECHARGE_SUCCESS.getValue());
+                }
+                if (list.get(i).getStatus()==8){
+                    list.get(i).setStatusValue(EnumOrderStatus.RECHARGE_FAIL.getValue());
+                }
+                if (list.get(i).getAppId().equals("hss")){
+                    String hss="好收收";
+                    list.get(i).setAppId(hss);
+                }
+                if (list.get(i).getAppId().equals("hsy")){
+                    String hsy="好收银";
+                    list.get(i).setAppId(hsy);
+                }
+                if (list.get(i).getPayChannelSign()==101){
+                    list.get(i).setPayChannelSigns(EnumPayChannelSign.YG_WECHAT.getName());
+                }
+                if (list.get(i).getPayChannelSign()==102){
+                    list.get(i).setPayChannelSigns(EnumPayChannelSign.YG_ALIPAY.getName());
+                }
+                if (list.get(i).getPayChannelSign()==103){
+                    list.get(i).setPayChannelSigns(EnumPayChannelSign.YG_UNIONPAY.getName());
+                }
+                if (list.get(i).getPayChannelSign()==201){
+                    list.get(i).setPayChannelSigns(EnumPayChannelSign.KM_WECHAT.getName());
+                }
+                if (list.get(i).getPayChannelSign()==202){
+                    list.get(i).setPayChannelSigns(EnumPayChannelSign.KM_ALIPAY.getName());
+                }
+                if (list.get(i).getPayChannelSign()==301){
+                    list.get(i).setPayChannelSigns(EnumPayChannelSign.MB_UNIONPAY.getName());
+                }
+                if (list.get(i).getPayType()!=null&&!list.get(i).getPayType().equals("")){
+                    if (list.get(i).getPayType().equals("sm_wechat_jsapi")){
+                        list.get(i).setPayType(EnumPayType.YG_WECHAT_JSAPI.getValue());
+                    }
+                    if (list.get(i).getPayType().equals("sm_alipay_jsapi")){
+                        list.get(i).setPayType(EnumPayType.YG_ALIPAY_JSAPI.getValue());
+                    }
+                    if (list.get(i).getPayType().equals("sm_wechat_code")){
+                        list.get(i).setPayType(EnumPayType.YG_WECHAT_CODE.getValue());
+                    }
+                    if (list.get(i).getPayType().equals("sm_alipay_code")){
+                        list.get(i).setPayType(EnumPayType.YG_ALIPAY_CODE.getValue());
+                    }
+                    if (list.get(i).getPayType().equals("sm_unionpay")){
+                        list.get(i).setPayType(EnumPayType.YG_UNIONPAY.getValue());
+                    }
+                    if (list.get(i).getPayType().equals("km_wechat_jsapi")){
+                        list.get(i).setPayType(EnumPayType.KM_WECHAT_JSAPI.getValue());
+                    }
+                    if (list.get(i).getPayType().equals("km_alipay_jsapi")){
+                        list.get(i).setPayType(EnumPayType.KM_ALIPAY_JSAPI.getValue());
+                    }
+                    if (list.get(i).getPayType().equals("km_wechat_code")){
+                        list.get(i).setPayType(EnumPayType.KM_WECHAT_CODE.getValue());
+                    }
+                    if (list.get(i).getPayType().equals("km_alipay_code")){
+                        list.get(i).setPayType(EnumPayType.KM_ALIPAY_CODE.getValue());
+                    }
+                    if (list.get(i).getPayType().equals("mb_unionpay")){
+                        list.get(i).setPayType(EnumPayType.MB_UNIONPAY.getValue());
+                    }
+                    if (list.get(i).getPayType().equals("hzyb_wechat")){
+                        list.get(i).setPayType(EnumPayType.HZYB_WECHAT.getValue());
+                    }
+                    if (list.get(i).getPayType().equals("hzyb_alipay")){
+                        list.get(i).setPayType(EnumPayType.HZYB_ALIPAY.getValue());
+                    }
+                    if (list.get(i).getPayType().equals("yijia_wechat")){
+                        list.get(i).setPayType(EnumPayType.YIJIA_WECHAT.getValue());
+                    }
+                    if (list.get(i).getPayType().equals("yijia_alipay")){
+                        list.get(i).setPayType(EnumPayType.YIJIA_ALIPAY.getValue());
+                    }
+                }
+
+            }
+        }
+        return list;
+    }
+
+    @Override
+    public int listCount(OrderTradeRequest req) {
+        return this.orderDao.listCount(req);
+    }
+
+    @Override
+    public int listFirstCount(OrderTradeRequest req) {
+        return this.orderDao.listFirstCount(req);
+    }
+
 
     /**
      * 手续费由待结算入余额

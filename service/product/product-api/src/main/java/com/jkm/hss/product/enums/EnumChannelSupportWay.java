@@ -11,7 +11,9 @@ public enum EnumChannelSupportWay {
 
     ONLY_JSAPI(2 , "公众号支付"),
 
-    CODE_JSAPI(3 , "扫码，公众号支付");
+    CODE_JSAPI(3 , "扫码，公众号支付"),
+
+    ONLY_UNIONPAY(4, "快捷支付");
 
     @Getter
     private int way;

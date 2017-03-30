@@ -54,17 +54,23 @@
             <el-table-column prop="settleType" label="结算周期"></el-table-column>
             <el-table-column prop="splitTotalAmount" label="分润总额" align="right" :formatter="changeTotal"></el-table-column>
             <el-table-column prop="splitAmount" align="right" header-align="left" label="分润金额" :formatter="changePrice"></el-table-column>
-            <el-table-column prop="outMoneyAccountName" label="分润出款账户">
-              <template scope="scope">
-                <span v-if="records[scope.$index].settleType!='当页总额'&&records[scope.$index].settleType!='筛选条件统计'" type="text" size="small">明细
-                </span>
-                <a v-if="records[scope.$index].settleType=='筛选条件统计'" @click="add">点击统计</a>
-              </template>
-            </el-table-column>
+            <el-table-column prop="outMoneyAccountName" label="分润出款账户"></el-table-column>
             <el-table-column prop="receiptMoneyUserName" label="分润方名称"></el-table-column>
             <el-table-column prop="profitType" label="分润方类型" v-if="isShow"></el-table-column>
             <el-table-column prop="remark" label="备注信息"></el-table-column>
           </el-table>
+          <ul style="float: left;margin-top: 5px">
+            <li>
+              <label style="margin-right: 10px;">分润总额</label>
+              <span>当页总额：{{pageTotal}}&nbsp;元</span>&nbsp;&nbsp;&nbsp;&nbsp;
+              <span>统计总额：{{addTotal}}&nbsp;元</span>
+            </li>
+            <li>
+              <label style="margin-right: 10px;">分润金额</label>
+              <span>当页总额：{{pageTotal1}}&nbsp;元</span>&nbsp;&nbsp;&nbsp;&nbsp;
+              <span>统计总额：{{addTotal1}}&nbsp;元</span>
+            </li>
+          </ul>
           <!--分页-->
           <div class="block" style="text-align: right">
             <el-pagination @size-change="handleSizeChange"
@@ -104,7 +110,11 @@
         loading: true,
         path:'',
         isShow:true,
-        totalUrl:''
+        totalUrl:'',
+        pageTotal:0,
+        pageTotal1:0,
+        addTotal:0,
+        addTotal1:0
       }
     },
     created: function () {
@@ -151,6 +161,7 @@
         }
       }
       this.getData();
+      this.getAddTotal()
     },
     methods: {
       getData: function () {
@@ -162,7 +173,7 @@
             this.$data.loading = false;
             var toFix = function (val) {
               return parseFloat(val).toFixed(2)
-            }
+            };
             var total=0,price = 0;
             for (let i = 0; i < this.$data.records.length; i++) {
               this.$data.records[i].splitTotalAmount = toFix(this.$data.records[i].splitTotalAmount);
@@ -170,7 +181,9 @@
               total = toFix(parseFloat(total)+parseFloat(this.$data.records[i].splitTotalAmount))
               price = toFix(parseFloat(price)+parseFloat(this.$data.records[i].splitAmount))
             }
-            if(this.records.length!=0){
+            this.pageTotal = total;
+            this.pageTotal1 = price;
+            /*if(this.records.length!=0){
               this.records.push({
                 settleType:"当页总额",
                 splitTotalAmount:total,
@@ -182,7 +195,7 @@
               });
               this.records[this.records.length-1].splitTotalAmount = this.total;
               this.records[this.records.length-1].splitAmount = this.price;
-            }
+            }*/
           }, function (err) {
             this.$data.loading = false;
             this.$message({
@@ -192,16 +205,13 @@
             });
           })
       },
-      add(){
-        this.$data.loading = true;
+      getAddTotal(){
         this.$http.post(this.totalUrl,this.query)
           .then(res=>{
-            this.$data.loading = false;
-            this.records[this.records.length-1].splitTotalAmount = this.total = res.data.splitTotalAmount;
-            this.records[this.records.length-1].splitAmount = this.price = res.data.splitAmount;
+            this.addTotal = res.data.splitTotalAmount;
+            this.addTotal1 = res.data.splitAmount;
           })
           .catch(err=>{
-            this.$data.loading = false;
             this.$message({
               showClose: true,
               message: err.statusMessage,
@@ -257,6 +267,7 @@
         this.price = '';
         this.$data.query.pageNo = 1;
         this.getData();
+        this.getAddTotal()
       },
       //当前页改变时
       handleCurrentChange(val) {

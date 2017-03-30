@@ -4,6 +4,7 @@ import com.google.common.base.Optional;
 import com.jkm.base.common.entity.CommonResponse;
 import com.jkm.hss.admin.helper.requestparam.ChangeBankCardRequest;
 import com.jkm.hss.controller.BaseController;
+import com.jkm.hss.merchant.entity.AccountBank;
 import com.jkm.hss.merchant.entity.BankCardBin;
 import com.jkm.hss.merchant.entity.MerchantInfo;
 import com.jkm.hss.merchant.enums.EnumAccountBank;
@@ -61,12 +62,11 @@ public class AccountBankController extends BaseController {
         if(!merchantInfoOptional.isPresent()){
             return CommonResponse.simpleResponse(-1, "商户不存在");
         }
-        Long backId = accountBankService.isExistBankNo(merchantInfoOptional.get().getAccountId(), MerchantSupport.encryptBankCard(changeBankCardRequest.getBankNo()), EnumAccountBank.DEBITCARD.getId());
-        if(backId!=null){
-            accountBankService.updateDefaultBankCard(backId,merchantInfoOptional.get(),changeBankCardRequest.getBankNo(),changeBankCardRequest.getReserveMobile());
-        }else{
-            accountBankService.changeBankCard(merchantInfoOptional.get(),changeBankCardRequest.getBankNo(),changeBankCardRequest.getReserveMobile());
+        Optional<AccountBank> accountBankOptional = accountBankService.isExistBankNo(merchantInfoOptional.get().getAccountId(), MerchantSupport.encryptBankCard(changeBankCardRequest.getBankNo()), EnumAccountBank.DEBITCARD.getId());
+        if(accountBankOptional.isPresent()){
+            return CommonResponse.simpleResponse(-1, "银行卡号已存在");
         }
+        accountBankService.changeBankCard(merchantInfoOptional.get(),changeBankCardRequest.getBankNo(),changeBankCardRequest.getReserveMobile());
         return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "更改成功");
     }
 

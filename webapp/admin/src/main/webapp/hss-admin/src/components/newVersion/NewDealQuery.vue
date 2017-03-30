@@ -148,6 +148,13 @@
             </el-table-column>
           </el-table>
           </el-table>
+          <ul style="float: left;margin-top: 5px">
+            <li>
+              <label style="margin-right: 10px;">支付金额</label>
+              <span>当页总额：{{pageTotal}}&nbsp;元</span>&nbsp;&nbsp;&nbsp;&nbsp;
+              <span>统计总额：{{addTotal}}&nbsp;元</span>
+            </li>
+          </ul>
           <!--分页-->
           <div class="block" style="text-align: right">
             <el-pagination @size-change="handleSizeChange"
@@ -193,7 +200,9 @@
         count: 0,
         total: '',
         loading: true,
-        url: ''
+        url: '',
+        pageTotal: 0,
+        addTotal: 0
       }
     },
     created: function () {
@@ -218,22 +227,23 @@
         }
         str = ary[0] + '-' + ary[1] + '-' + ary[2];
         if (j == 0) {
-          this.$data.query.startTime = str;
+          this.query.startTime = str;
         } else {
-          this.$data.query.endTime = str;
+          this.query.endTime = str;
         }
       }
-      this.getData()
+      this.getData();
+      this.getAddTotal()
     },
     methods: {
       getData: function () {
         this.loading = true;
-        this.$http.post('/admin/queryOrder/orderList',this.$data.query)
+        this.$http.post('/admin/queryOrder/orderList',this.query)
           .then(function (res) {
             this.loading = false;
-            this.$data.records = res.data.records;
-            this.$data.url=res.data.ext;
-            this.$data.count = res.data.count;
+            this.records = res.data.records;
+            this.url=res.data.ext;
+            this.count = res.data.count;
             var price=0;
             var toFix = function (val) {
               return parseFloat(val).toFixed(2)
@@ -244,7 +254,8 @@
                 this.records[i].payRate = (parseFloat(this.records[i].payRate) * 100).toFixed(2) + '%';
               }
             }
-            if(this.records.length!=0){
+            this.pageTotal = price;
+            /*if(this.records.length!=0){
               this.records.push({
                 proxyName1:"当页总额",
                 tradeAmount:price
@@ -253,9 +264,9 @@
                 tradeAmount:''
               })
               this.records[this.records.length-1].tradeAmount = this.total;
-            }
+             }*/
           },function (err) {
-            this.$data.loading = false;
+            this.loading = false;
             this.$message({
               showClose: true,
               message: err.statusMessage,
@@ -295,7 +306,6 @@
         }else {
           return val
         }
-
       },
       changeSettleStatus: function (row, column) {
         var val = row.settleStatus;
@@ -309,18 +319,19 @@
       },
       search(){
         this.total = '';
-        this.$data.query.page = 1;
-        this.getData()
+        this.query.page = 1;
+        this.getData();
+        this.getAddTotal()
       },
       //每页条数改变
       handleSizeChange(val) {
-        this.$data.query.page = 1;
-        this.$data.query.size = val;
-        this.getData()
+        this.query.page = 1;
+        this.query.size = val;
+        this.getData();
       },
       //当前页改变时
       handleCurrentChange(val) {
-        this.$data.query.page = val;
+        this.query.page = val;
         this.getData()
       },
       tableFoot(row, index) {
@@ -329,15 +340,13 @@
         }
         return '';
       },
-      add(){
-        this.$data.loading = true;
+      getAddTotal(){
         this.$http.post('/admin/queryOrder/amountCount',this.query)
           .then(res=>{
-            this.$data.loading = false;
-            this.records[this.records.length-1].tradeAmount = this.total = res.data;
+            this.addTotal = res.data;
           })
           .catch(err=>{
-            this.$data.loading = false;
+            this.loading = false;
             this.$message({
               showClose: true,
               message: err.statusMessage,
@@ -359,14 +368,14 @@
             }
             str = ary[0] + '-' + ary[1] + '-' + ary[2];
             if (j == 0) {
-              this.$data.query.startTime = str;
+              this.query.startTime = str;
             } else {
-              this.$data.query.endTime = str;
+              this.query.endTime = str;
             }
           }
         } else {
-          this.$data.query.startTime = '';
-          this.$data.query.endTime = '';
+          this.query.startTime = '';
+          this.query.endTime = '';
         }
       }
     },

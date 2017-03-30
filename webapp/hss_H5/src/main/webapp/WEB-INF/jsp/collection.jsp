@@ -13,7 +13,7 @@
         content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
   <meta name="format-detection" content="telephone=no"/>
   <title>好收收</title>
-  <link rel="stylesheet" href="http://static.jinkaimen.cn/hss/css/style.2.2.0.css">
+  <link rel="stylesheet" href="http://static.jinkaimen.cn/hss/css/style.2.2.5.css">
   <link rel="stylesheet" href="http://static.jinkaimen.cn/weui/weui.css">
 </head>
 <body>
@@ -29,7 +29,9 @@
       <input type="hidden" id="key-input" value="">
     </div>
   </div>
-  <div class="prompt-deep">收款实时到账;无卡快捷单笔限额2万</div>
+  <div class="prompt-deep">支付宝与微信收款实时到账，无卡快捷T1到账<span id="know"></span>
+    <br>支付宝与微信限额1万，无卡快捷限额2万
+  </div>
   <div class="keyboard" id="keyboard">
     <div class="copyright flexBox">
       <span class="line"></span>
@@ -70,12 +72,55 @@
   </div>
 </div>
 
+<div class="message-space" id="layer">
+  <div class="message-box">
+    <div class="message-box-head">
+      T1到账说明
+      <div class="message-x" id="layer-x"></div>
+    </div>
+    <div class="message-box-body">
+      “T1”是指下一个工作日<br>遇到周末及法定节假日顺延<br>
+      <span>22:56分以后支付成功的，算到下一个工作日</span>
+    </div>
+    <div class="message-box-foot">
+      <div class="message-enter" id="submit">
+        确认
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="temporary-announcement-space" id="temporary">
+  <div class="temporary-announcement-box">
+    <div class="temporary-announcement-lion"></div>
+    <div class="temporary-announcement-title">无卡快捷上线啦</div>
+    <div class="temporary-announcement-content">支持限额 <span>2万</span> T+1结算</div>
+    <div class="temporary-announcement-content">支付成功率 <span>95%</span></div>
+    <div class="temporary-announcement-content">优惠期费率 <span>0.48%</span></div>
+    <div class="temporary-announcement-btn-box">
+      <div class="temporary-announcement-btn" id="temporary-cancel">继续下单</div>
+    </div>
+  </div>
+</div>
+
 </body>
 <script>
   var pageData = {
     bankId: '${bankId}'
+  };
+  // 弹窗提醒临时解决方案
+  var temporary = document.getElementById('temporary');
+  var temporary_cancel = document.getElementById('temporary-cancel');
+  temporary_cancel.addEventListener('click', function () {
+    temporary.style.display = 'none';
+  });
+  /* localStorage 判断是否弹出提示
+   * 弊端：一旦用户清除缓存数据 这个值会被重置*/
+  if (localStorage.getItem('read_first') != 'true') {
+    temporary.style.display = 'block';
+    localStorage.setItem('read_first', 'true');
   }
 </script>
-<script src="http://static.jinkaimen.cn/vendor/vendor.1.0.7.min.js"></script>
-<script src="http://static.jinkaimen.cn/hss/2.2.1/collection.min.js"></script>
+<script src="http://static.jinkaimen.cn/vendor/vendor.1.0.9.5.min.js"></script>
+<script src="http://static.jinkaimen.cn/hss/2.2.9/collection.min.js"></script>
 </html>

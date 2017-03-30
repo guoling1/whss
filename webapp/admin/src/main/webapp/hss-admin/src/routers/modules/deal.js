@@ -12,6 +12,8 @@ const DealQuery = r => require.ensure([], () => r(require('../../components/Deal
 const DealDet = r => require.ensure([], () => r(require('../../components/DealDet')), 'group-record');
 const NewDealQuery = r => require.ensure([], () => r(require('../../components/newVersion/NewDealQuery')), 'group-record');
 const NewDealDet = r => require.ensure([], () => r(require('../../components/newVersion/NewDealDet')), 'group-record');
+const Retrieval = r => require.ensure([], () => r(require('../../components/Retrieval')), 'group-record');
+const RetrievalDet = r => require.ensure([], () => r(require('../../components/RetrievalDet')), 'group-record');
 //分润
 const ProfitCom = r => require.ensure([], () => r(require('../../components/ProfitCom')), 'group-record');
 const ProfitFir = r => require.ensure([], () => r(require('../../components/ProfitFir')), 'group-record');
@@ -61,6 +63,7 @@ const Invite = r => require.ensure([], () => r(require('../../components/Invite'
 //通道
 const PassAdd = r => require.ensure([], () => r(require('../../components/PassAdd')), 'group-record');
 const PassList = r => require.ensure([], () => r(require('../../components/PassList')), 'group-record');
+const LimitList = r => require.ensure([], () => r(require('../../components/LimitList')), 'group-record');
 //员工
 const PersonnelList = r => require.ensure([], () => r(require('../../components/PersonnelList')), 'group-record');
 const PersonnelAdd = r => require.ensure([], () => r(require('../../components/PersonnelAdd')), 'group-record');
@@ -103,6 +106,16 @@ export default {
       path: 'newDealDet',
       name: 'NewDealDet',
       component: NewDealDet
+    },
+    {
+      path: 'retrieval',
+      name: 'Retrieval',
+      component: Retrieval
+    },
+    {
+      path: 'retrievalDet',
+      name: 'RetrievalDet',
+      component: RetrievalDet
     },
     {
       path: 'newWithdrawalQuery',
@@ -198,6 +211,11 @@ export default {
       path: 'passList',
       name: 'PassList',
       component: PassList
+    },
+    {
+      path: 'limitList',
+      name: 'LimitList',
+      component: LimitList
     },
     {
       path: 'productAdd',

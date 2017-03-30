@@ -22,4 +22,5 @@ public class BaseBankCardBinServiceImpl implements BaseBankCardBinService {
     public Optional<BankCardBin> loadByBinNo(final String bankNo) {
         return Optional.fromNullable(bankCardBinDao.loadByBinNo(bankNo));
     }
+
 }

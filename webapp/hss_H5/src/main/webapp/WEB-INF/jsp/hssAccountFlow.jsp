@@ -8,18 +8,22 @@
   <meta name="viewport"
         content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
   <title>账户流水</title>
-  <link rel="stylesheet" href="http://static.jinkaimen.cn/hss/css/style.2.2.0.css">
+  <link rel="stylesheet" href="http://static.jinkaimen.cn/hss/css/style.2.2.5.css">
   <link rel="stylesheet" href="http://static.jinkaimen.cn/weui/weui.css">
 </head>
 <body>
 
 <div id="accountFlow">
-  <div id="content">
+  <div class="list" id="content">
     <%-- 动态加载 --%>
+  </div>
+  <div id="empty" class="empty">
+    <div class="img"></div>
+    <div class="text">没有数据</div>
   </div>
 </div>
 
 </body>
-<script src="http://static.jinkaimen.cn/vendor/vendor.1.0.7.min.js"></script>
-<script src="http://static.jinkaimen.cn/hss/2.2.1/hasAccountFlow.min.js"></script>
+<script src="http://static.jinkaimen.cn/vendor/vendor.1.0.9.5.min.js"></script>
+<script src="http://static.jinkaimen.cn/hss/2.2.9/hasAccountFlow.min.js"></script>
 </html>
