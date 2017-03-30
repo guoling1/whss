@@ -8,24 +8,25 @@
         <div class="box-body">
           <ul>
             <li class="same">
-              <label>对账日期:</label>
-              <el-date-picker v-model="query.date" size="small" type="date" placeholder="选择日期" :picker-options="pickerOptions"></el-date-picker>
+              <label>对账渠道:</label>
+              <el-input v-model="query.channelName" placeholder="请输入内容" size="small" style="width: 193px"></el-input>
             </li>
             <li class="same">
-              <label>单边方向:</label>
-              <el-select clearable v-model="query.db" size="small" style="width: 193px">
-                <el-option v-for="item in item_db" :label="item.label" :value="item.value"></el-option>
+              <label>交易时间:</label>
+              <el-date-picker
+                v-model="date"
+                type="daterange"
+                align="right"
+                placeholder="选择日期范围"
+                :picker-options="pickerOptions2" size="small">
+              </el-date-picker>
+            </li>
+            <li class="same">
+              <label>交易类型:</label>
+              <el-select clearable v-model="query.tradeType" size="small" style="width: 193px">
+                <el-option label="交易" value="1"></el-option>
+                <el-option label="提现" value="3"></el-option>
               </el-select>
-            </li>
-            <li class="same">
-              <label>处理结果:</label>
-              <el-select clearable v-model="query.cl" size="small" style="width: 193px">
-                <el-option v-for="item in item_cl" :label="item.label" :value="item.value"></el-option>
-              </el-select>
-            </li>
-            <li class="same">
-              <label>对账单号:</label>
-              <el-input v-model="query.no" placeholder="请输入内容" size="small" style="width: 193px"></el-input>
             </li>
             <li class="same">
               <div class="btn btn-primary" @click="search">筛选</div>
@@ -54,7 +55,7 @@
           <div class="block" style="text-align: right">
             <el-pagination @size-change="handleSizeChange"
                            @current-change="handleCurrentChange"
-                           :current-page="query.pageNo"
+                           :current-page="query.currentPage"
                            :page-sizes="[10, 20, 50]"
                            :page-size="query.pageSize"
                            layout="total, sizes, prev, pager, next, jumper"
@@ -109,12 +110,12 @@
         records:[],
         count:0,
         query:{
-          pageNo:1,
-          pageSize:10,
-          date:'',
-          db:'',
-          cl:'',
-          no:''
+          pageSize:"",
+          currentPage:"",
+          channelName:"",
+          tradeType:"",
+          startDateStr:"",
+          endDateStr:""
         },
         handleQuery:{
           changeType:'',
@@ -135,6 +136,7 @@
         loading:true,
         isShow:true,
         index:'',
+        url:'http://192.168.1.99:8080/balance/external/statisticList'
       }
     },
     created: function () {
@@ -146,7 +148,7 @@
       },
       getData: function () {
         this.loading = true;
-        this.$http.post('/admin/settlementRecord/list',this.$data.query)
+        this.$http.post(this.url,this.query)
           .then(function (res) {
             this.$data.records = res.data.records;
             this.$data.count = res.data.count;
@@ -161,45 +163,45 @@
           })
       },
       search: function () {
-        this.$data.query.pageNo = 1;
+        this.$data.query.currentPage = 1;
         this.getData()
       },
       //每页条数改变
       handleSizeChange(val) {
-        this.$data.query.pageNo = 1;
+        this.$data.query.currentPage = 1;
         this.$data.query.pageSize = val;
         this.getData()
       },
       //当前页改变时
       handleCurrentChange(val) {
-        this.$data.query.pageNo = val;
+        this.$data.query.currentPage = val;
         this.getData()
       },
     },
-    /*watch:{
-     date:function (val,oldVal) {
-     if(val[0]!=null){
-     for(var j=0;j<val.length;j++){
-     var str = val[j];
-     var ary = [str.getFullYear(), str.getMonth() + 1, str.getDate()];
-     for(var i = 0, len = ary.length; i < len; i ++) {
-     if(ary[i] < 10) {
-     ary[i] = '0' + ary[i];
-     }
-     }
-     str = ary[0] + '-' + ary[1] + '-' + ary[2];
-     if(j==0){
-     this.$data.query.starDate = str;
-     }else {
-     this.$data.query.starDate = str;
-     }
-     }
-     }else {
-     this.$data.query.starDate = '';
-     this.$data.query.starDate = '';
-     }
-     }
-     }*/
+    watch: {
+      date: function (val, oldVal) {
+        if (val[0] != null) {
+          for (var j = 0; j < val.length; j++) {
+            var str = val[j];
+            var ary = [str.getFullYear(), str.getMonth() + 1, str.getDate()];
+            for (var i = 0, len = ary.length; i < len; i++) {
+              if (ary[i] < 10) {
+                ary[i] = '0' + ary[i];
+              }
+            }
+            str = ary[0] + '-' + ary[1] + '-' + ary[2];
+            if (j == 0) {
+              this.$data.query.startDateStr = str;
+            } else {
+              this.$data.query.endDateStr = str;
+            }
+          }
+        } else {
+          this.$data.query.startDateStr = '';
+          this.$data.query.endDateStr = '';
+        }
+      }
+    }
   }
 </script>
 <style scoped lang="less">
