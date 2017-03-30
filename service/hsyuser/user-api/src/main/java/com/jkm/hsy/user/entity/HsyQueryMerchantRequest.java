@@ -8,6 +8,10 @@ import lombok.Data;
 @Data
 public class HsyQueryMerchantRequest {
 
+    private String globalID;//商户编号
+
+    private String shortName;//商户名称
+
     /**
      * 一级代理商id
      */

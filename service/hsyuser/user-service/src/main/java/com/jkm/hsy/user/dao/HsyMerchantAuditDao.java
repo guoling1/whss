@@ -120,4 +120,5 @@ public interface HsyMerchantAuditDao {
      * @return
      */
     int hsyMerchantSecondListCount(HsyQueryMerchantRequest request);
+
 }
