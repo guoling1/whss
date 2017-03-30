@@ -157,9 +157,7 @@
             </li>
           </ul>
         </li>
-        <li v-if="list.通道管理==1" class="treeview" :class="(url=='/admin/record/passList'||url=='/admin/record/passAdd')?'treeview active':'treeview'">
-        <li class="treeview"
-            :class="(url=='/admin/record/passList'||url=='/admin/record/limitList')?'treeview active':'treeview'">
+        <li v-if="list.通道管理==1" class="treeview" :class="(url=='/admin/record/passList'||url=='/admin/record/limitList')?'treeview active':'treeview'">
           <a href="#"><span>通道管理</span>
           </a>
           <ul class="treeview-menu">
