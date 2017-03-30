@@ -175,7 +175,8 @@
       handle: function () {
          this.$http.post(this.handleUrl,this.handleQuery)
            .then(res => {
-               this.isShow = false;
+             this.isShow = false;
+             this.getData()
            })
            .catch(err =>{
              this.$message({
