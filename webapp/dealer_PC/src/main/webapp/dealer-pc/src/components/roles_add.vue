@@ -78,7 +78,7 @@
         id = this.$route.query.id;
         this.isAdd = false;
       }
-      this.$http.post('/daili/user/getRoleDetail',{id:id})
+      this.$http.post('/daili/privilege/getRoleDetail',{id:id})
         .then(res => {
         this.tableData = res.data.list;
       this.roleName = res.data.roleName;
@@ -118,7 +118,7 @@
           id = this.$route.query.id;
           this.isAdd = false;
         }
-        this.$http.post('/daili/user/saveRole',{
+        this.$http.post('/daili/privilege/saveRole',{
           roleId:id,
           roleName:this.roleName,
           list:list
@@ -128,7 +128,7 @@
           message: '添加成功',
           type: 'success'
         });
-        this.$router.push('/daili/record/role')
+        this.$router.push('/daili/privilege/role')
       }).catch(err =>{
           this.$message({
           showClose: true,

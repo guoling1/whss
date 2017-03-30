@@ -3,8 +3,33 @@
  */
 export default{
   install(Vue){
-    const power = function (x) {
-      console.log(x)
+    const power = function (val,fun) {
+      if(val==1){
+        this.$message({
+          showClose: true,
+          message: '无访问权限',
+          type: 'error'
+        })
+        return;
+      }else {
+        fun()
+      }
+
+      // this.$http.post('',{id:val})
+      //   .then(res =>{
+      //     this.$message({
+      //       showClose: true,
+      //       message: err.statusMessage,
+      //       type: 'error'
+      //     })
+      //   })
+      //   .catch( err =>{
+      //     this.$message({
+      //       showClose: true,
+      //       message: err.statusMessage,
+      //       type: 'error'
+      //     })
+      //   })
     }
     Vue.__power = power;
     Vue.prototype._$power = power;

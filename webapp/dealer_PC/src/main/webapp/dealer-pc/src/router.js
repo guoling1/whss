@@ -144,6 +144,8 @@ Vue.use(ElementUI);
 // 添加自定义插件
 import filePost from './plugin-vue/file-post'
 Vue.use(filePost);
+import power from './plugin-vue/power'
+Vue.use(power);
 
 /* eslint-disable no-new */
 // new Vue({

@@ -85,7 +85,7 @@
       },
       getData: function () {
         this.loading = true;
-        this.$http.post('/daili/user/userList', this.query)
+        this.$http.post('/daili/privilege/userList', this.query)
           .then(function (res) {
             this.loading = false;
             this.$data.records = res.data.records;
@@ -101,7 +101,7 @@
       },
       open: function (val) {
         this.loading = true;
-        this.$http.post('/daili/user/activeUser',{id:val})
+        this.$http.post('/daili/privilege/activeUser',{id:val})
           .then((res)=>{
             for(var i=0;i<this.records.length;i++){
               if(this.records[i].id == val){
@@ -125,7 +125,7 @@
       },
       close: function (val) {
         this.loading = true;
-        this.$http.post('/daili/user/disableUser',{id:val})
+        this.$http.post('/daili/privilege/disableUser',{id:val})
           .then((res)=>{
             for(var i=0;i<this.records.length;i++){
               if(this.records[i].id == val){
