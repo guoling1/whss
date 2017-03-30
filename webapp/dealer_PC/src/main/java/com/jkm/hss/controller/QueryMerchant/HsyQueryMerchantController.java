@@ -34,9 +34,17 @@ public class HsyQueryMerchantController extends BaseController {
         long dealerId = super.getDealerId();
         int level = super.getDealer().get().getLevel();
         long firstLevelDealerId = super.getDealer().get().getFirstLevelDealerId();
-        request.setFirstLevelDealerId(firstLevelDealerId);
+
         request.setDealerId(dealerId);
         if (level==1){
+            if (firstLevelDealerId>0){
+                request.setFirstLevelDealerId(firstLevelDealerId);
+//                List<HsyQueryMerchantResponse> list = hsyMerchantAuditService.hsyMerchantList1(request);
+//                int count = hsyMerchantAuditService.hsyMerchantListCount1(request);
+//                pageModel.setCount(count);
+//                pageModel.setRecords(list);
+                return CommonResponse.objectResponse(1, "success", pageModel);
+            }
             List<HsyQueryMerchantResponse> list = hsyMerchantAuditService.hsyMerchantList(request);
             int count = hsyMerchantAuditService.hsyMerchantListCount(request);
             pageModel.setCount(count);
