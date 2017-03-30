@@ -26,6 +26,11 @@ public class BasicChannel extends BaseEntity{
     private long accountId;
 
     /**
+     * 通道简称(后台展示的)
+     */
+    private String channelShortName;
+
+    /**
      * 通道名称(华友支付宝,卡盟微信)
      */
     private String channelName;
