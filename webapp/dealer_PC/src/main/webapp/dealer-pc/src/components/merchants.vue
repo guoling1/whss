@@ -153,7 +153,6 @@
       },
       screen: function () {
         this.getData();
-        this.getData_hsy();
       },
       screen_hsy: function () {
         this.getData_hsy();
