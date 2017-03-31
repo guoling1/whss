@@ -134,7 +134,7 @@
           返回
         </div>
         <div class="btn btn-primary" @click="_$power(change,'boss_first_product__update')" style="margin: 20px 0 100px;" v-if="level==1&&!isAdd&&records.productName=='好收收'">修改</div>
-        <div class="btn btn-primary" @click="_$power(change,'boss_merchant_check')"  @click="change" style="margin: 20px 0 100px;" v-if="level==1&&isAdd">开 通</div>
+        <div class="btn btn-primary" @click="_$power(change,'boss_merchant_check')" style="margin: 20px 0 100px;" v-if="level==1&&isAdd">开 通</div>
       </div>
     </div>
   </div>

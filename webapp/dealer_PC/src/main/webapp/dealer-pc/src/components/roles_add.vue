@@ -128,7 +128,7 @@
           message: '添加成功',
           type: 'success'
         });
-        this.$router.push('/daili/app/role')
+        this.$router.push('/daili/app/roles')
       }).catch(err =>{
           this.$message({
           showClose: true,
