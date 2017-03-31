@@ -510,6 +510,20 @@ public class AdminUserServiceImpl implements AdminUserService {
     }
 
     /**
+     * 判断是否有接口访问权限(js公共调用)
+     *
+     * @param roleId
+     * @param type
+     * @param descr
+     * @return
+     */
+    @Override
+    public int getPrivilegeByContionsOfJs(long roleId, int type, String descr) {
+        return adminRoleDao.getPrivilegeByContionsOfJs(roleId,type,descr);
+    }
+
+
+    /**
      * 是否有访问的操作
      *
      * @param type
@@ -520,5 +534,17 @@ public class AdminUserServiceImpl implements AdminUserService {
     @Override
     public int hasUrl(int type, String url, String method) {
         return adminRoleDao.hasUrl(type,url,method);
+    }
+
+    /**
+     * 是否有关键字
+     *
+     * @param type
+     * @param descr
+     * @return
+     */
+    @Override
+    public int hasDescr(int type, String descr) {
+        return adminRoleDao.hasDescr(type,descr);
     }
 }

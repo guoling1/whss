@@ -90,6 +90,13 @@ public class AdminLoginInterceptor extends HandlerInterceptorAdapter {
         if (EnumAdminUserStatus.NORMAL.getCode() != adminUser.getStatus()) {
             return Triple.of(-204, "用户被禁用！", null);
         }
+//        int count = this.adminUserService.hasUrl(EnumAdminType.BOSS.getCode(),request.getRequestURI(),request.getMethod());
+//        if(count>0){
+//            int privilegeCount = this.adminUserService.getPrivilegeByContions(adminUser.getRoleId(),EnumAdminType.BOSS.getCode(),request.getRequestURI(),request.getMethod());
+//            if(privilegeCount<=0){
+//                return Triple.of(-204, "权限不足", null);
+//            }
+//        }
         if (adminUserPassport.getExpireTime() < (System.currentTimeMillis() + 5 * 60 * 1000)) {
             this.adminUserPassportService.refreshToken(adminUserPassport.getId());
         }

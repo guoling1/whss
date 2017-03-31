@@ -1219,4 +1219,21 @@ public class AdminController extends BaseController {
         return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "启用成功");
     }
 
+    /**
+     * 是否有权限
+     * @param havePermissionRequest
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/havePermission", method = RequestMethod.POST)
+    public CommonResponse havePermission (@RequestBody HavePermissionRequest havePermissionRequest) {
+        int count = this.adminUserService.hasDescr(EnumAdminType.BOSS.getCode(),havePermissionRequest.getDescr());
+        if(count>0){
+            int privilegeCount = this.adminUserService.getPrivilegeByContionsOfJs(super.getAdminUser().getRoleId(),EnumAdminType.BOSS.getCode(),havePermissionRequest.getDescr());
+            if(privilegeCount<=0){
+                return CommonResponse.simpleResponse(-1, "权限不足");
+            }
+        }
+        return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "有权限访问");
+    }
 }

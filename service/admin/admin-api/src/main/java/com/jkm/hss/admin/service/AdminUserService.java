@@ -238,6 +238,14 @@ public interface AdminUserService {
      * @return
      */
     int getPrivilegeByContions(long roleId,int type,String url,String method);
+    /**
+     * 判断是否有接口访问权限(js公共调用)
+     * @param roleId
+     * @param type
+     * @param descr
+     * @return
+     */
+    int getPrivilegeByContionsOfJs(long roleId,int type,String descr);
 
     /**
      * 是否有访问的操作
@@ -247,4 +255,12 @@ public interface AdminUserService {
      * @return
      */
     int hasUrl(int type,String url,String method);
+
+    /**
+     * 是否有关键字
+     * @param type
+     * @param descr
+     * @return
+     */
+    int hasDescr(int type,String descr);
 }

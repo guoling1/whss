@@ -172,6 +172,19 @@
         AND o.method = #{method}
     </select>
 
+    <select id="getPrivilegeByContionsOfJs" resultType="java.lang.Integer">
+        SELECT
+        count(1)
+        FROM
+        tb_admin_menu_opt_rel as r
+        LEFT JOIN tb_admin_opt as o ON r.opt_id = o.id
+        WHERE
+        r.role_id = #{roleId}
+        AND o.status = 1
+        AND o.type = #{type}
+        AND o.descr = #{descr}
+    </select>
+
     <select id="hasUrl" resultType="java.lang.Integer">
         SELECT
         count(1)
@@ -182,6 +195,17 @@
         and type = #{type}
         and url = #{url}
         and method = #{method}
+    </select>
+
+    <select id="hasDescr" resultType="java.lang.Integer">
+        SELECT
+        count(1)
+        FROM
+        tb_admin_opt
+        WHERE
+        status=1
+        and type = #{type}
+        and descr = #{descr}
     </select>
 
     <select id="selectByRoleNameAndType" resultType="com.jkm.hss.admin.entity.AdminRole">

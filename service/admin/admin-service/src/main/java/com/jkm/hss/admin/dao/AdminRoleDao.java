@@ -149,6 +149,14 @@ public interface AdminRoleDao {
      * @return
      */
     int getPrivilegeByContions(@Param("roleId") long roleId,@Param("type") int type,@Param("url") String url,@Param("method") String method);
+    /**
+     * 判断是否有接口访问权限(js公共调用)
+     * @param roleId
+     * @param type
+     * @param type
+     * @return
+     */
+    int getPrivilegeByContionsOfJs(@Param("roleId") long roleId,@Param("type") int type,@Param("descr") String descr);
 
     /**
      * 是否有访问的操作
@@ -158,6 +166,13 @@ public interface AdminRoleDao {
      * @return
      */
     int hasUrl(@Param("type") int type,@Param("url") String url,@Param("method") String method);
+    /**
+     * 是否有关键字
+     * @param type
+     * @param descr
+     * @return
+     */
+    int hasDescr(@Param("type") int type,@Param("descr") String descr);
 
     /**
      *根据名称和类型查询角色
