@@ -13,6 +13,20 @@ public class HsyQueryMerchantRequest {
     private String shortName;//商户名称
 
     /**
+     * 查询条件：注册开始时间
+     */
+    private String startTime;
+
+    /**
+     * 查询条件：注册结束时间
+     */
+    private String endTime;
+
+    private String cellphone;//注册手机号
+
+    private String industry;//行业
+
+    /**
      * 一级代理商id
      */
     private long firstLevelDealerId;
