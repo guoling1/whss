@@ -9,7 +9,7 @@
               <h3 class="box-title">员工管理</h3>
             </div>
             <div class="box-body screen-top">
-              <el-button type="primary" icon="plus" size="small" @click="add">新增员工</el-button>
+              <el-button type="primary" icon="plus" size="small" @click="_$power(add,'dealer_staff_add')">新增员工</el-button>
             </div>
             <!-- /.box-header -->
             <div class="box-body screen-top">
@@ -53,11 +53,9 @@
                 </el-table-column>
                 <el-table-column label="操作" width="100">
                   <template scope="scope">
-                    <router-link :to="{path:'/daili/app/employees_add',query:{id:records[scope.$index].id}}" type="text"
-                                 size="small">编辑
-                    </router-link>
-                    <a @click="open(records[scope.$index].id)" v-if="records[scope.$index].status==2" type="text" size="small">开启</a>
-                    <a @click="close(records[scope.$index].id)" v-if="records[scope.$index].status==1" type="text" size="small">禁用</a>
+                    <a @click="_$power(scope.row.id,audit,'dealer_staff_update')" type="text" size="small">编辑</a>
+                    <a @click="_$power(scope.row.id,open,'dealer_staff_disable')" v-if="records[scope.$index].status==2" type="text" size="small">开启</a>
+                    <a @click="_$power(scope.row.id,close,'dealer_staff_disable')" v-if="records[scope.$index].status==1" type="text" size="small">禁用</a>
                   </template>
                 </el-table-column>
               </el-table>
@@ -105,6 +103,9 @@
       this.getData()
     },
     methods: {
+      audit:function (id) {
+        this.$router.push({path:'/daili/app/employees_add',query:{id:id}});
+      },
       add: function () {
         this.$router.push('/daili/app/employees_add');
       },

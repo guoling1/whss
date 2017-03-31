@@ -7,7 +7,7 @@
           <h3 class="box-title">角色管理</h3>
         </div>
         <div class="box-body screen-top">
-          <el-button type="primary" icon="plus" size="small" @click="add">新增角色</el-button>
+          <el-button type="primary" icon="plus" size="small" @click="_$power(add,'dealer_role_add')">新增角色</el-button>
         </div>
         <div class="box-body screen-top">
           <div class="screen-item">
@@ -34,11 +34,10 @@
             <el-table-column prop="statusName" label="状态"></el-table-column>
             <el-table-column label="操作" width="100">
               <template scope="scope">
-                <router-link :to="{path:'/daili/app/roles_add',query:{id:records[scope.$index].id}}" type="text"
-                             size="small">编辑
-                </router-link>
-                <a @click="open(records[scope.$index].id)" v-if="records[scope.$index].statusName=='禁用'" type="text" size="small">开启</a>
-                <a @click="close(records[scope.$index].id)" v-if="records[scope.$index].statusName=='正常'" type="text" size="small">禁用</a>
+                <a @click="_$power(scope.row.id,audit,'dealer_role_update')" :to="{path:'/daili/app/roles_add',query:{id:records[scope.$index].id}}" type="text" size="small">编辑
+                </a>
+                <a @click="_$power(scope.row.id,open,'dealer_role_disable')" v-if="records[scope.$index].statusName=='禁用'" type="text" size="small">开启</a>
+                <a @click="_$power(scope.row.id,close,'dealer_role_disable')" v-if="records[scope.$index].statusName=='正常'" type="text" size="small">禁用</a>
               </template>
             </el-table-column>
           </el-table>
@@ -80,6 +79,9 @@
       this.getData()
     },
     methods: {
+      audit:function (id) {
+        this.$router.push({path:'/daili/app/roles_add',query:{id:id}});
+      },
       add: function () {
         this.$router.push('/daili/app/roles_add');
       },

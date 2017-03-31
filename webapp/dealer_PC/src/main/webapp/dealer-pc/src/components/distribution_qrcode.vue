@@ -74,7 +74,7 @@
                   <el-input v-model="form.count" size="small"></el-input>
                 </el-form-item>
                 <el-form-item>
-                  <el-button type="primary" size="small" @click="onSubmit">分配二维码</el-button>
+                  <el-button type="primary" size="small" @click="_$power(onSubmit,'dealer_qr_code_distribute')">分配二维码</el-button>
                 </el-form-item>
               </el-form>
             </div>
