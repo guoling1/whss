@@ -295,7 +295,7 @@
         dealerInfo: '',
         position: '',
         dealerLeavel: '',
-        list:''
+        list:{}
       }
     },
     beforeRouteEnter (to, from, next){
