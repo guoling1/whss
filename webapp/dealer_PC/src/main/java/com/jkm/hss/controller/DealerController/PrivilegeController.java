@@ -398,4 +398,30 @@ public class PrivilegeController extends BaseController {
         adminRoleService.enableRole(adminRoleDetailRequest.getId());
         return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "启用成功");
     }
+    /**
+     * 是否有权限
+     * @param havePermissionRequest
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/havePermission", method = RequestMethod.POST)
+    public CommonResponse havePermission (@RequestBody HavePermissionRequest havePermissionRequest) {
+        Optional<Dealer> dealerOptional = super.getDealer();
+        int level = dealerOptional.get().getLevel();
+        int type = EnumAdminType.FIRSTDEALER.getCode();
+        if(level==1){
+            type=EnumAdminType.FIRSTDEALER.getCode();
+        }
+        if(level==2){
+            type=EnumAdminType.SECONDDEALER.getCode();
+        }
+        int count = this.adminUserService.hasDescr(EnumAdminType.BOSS.getCode(),havePermissionRequest.getDescr());
+        if(count>0){
+            int privilegeCount = this.adminUserService.getPrivilegeByContionsOfJs(super.getAdminUser().get().getRoleId(),type,havePermissionRequest.getDescr());
+            if(privilegeCount<=0){
+                return CommonResponse.simpleResponse(-1, "权限不足");
+            }
+        }
+        return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "有权限访问");
+    }
 }
