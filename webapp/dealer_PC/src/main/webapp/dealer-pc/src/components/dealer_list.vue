@@ -10,7 +10,8 @@
             </div>
             <!-- /.box-header -->
             <div class="box-body screen-top">
-              <el-button type="primary" icon="plus" size="small" @click="addDealer">新增代理商</el-button>
+              <el-button type="primary" icon="plus" size="small" @click="_$power(addDealer,'dealer_add')">新增代理商</el-button>
+              <!--<el-button type="primary" icon="plus" size="small" @click="addDealer">新增代理商</el-button>-->
             </div>
             <div class="box-body screen-top">
               <div class="screen-item">
@@ -239,7 +240,7 @@
       checkHss: function (event, id, productId) {
         this.$router.push({path: '/daili/app/product_add', query: {product: 'hss', dealerId: id, productId: productId}});
       },
-      checkHsy: function (event, id, productId) {
+      checkHsy: function (id, productId) {
         this.$router.push({path: '/daili/app/product_add', query: {product: 'hsy', dealerId: id, productId: productId}});
       },
       handleSizeChange(val) {
