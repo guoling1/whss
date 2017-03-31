@@ -41,7 +41,8 @@ public class MessageListenerImpl implements MessageListener {
                 final long settlementRecordId = body.getLongValue("settlementRecordId");
                 final String payOrderSn = body.getString("payOrderSn");
                 final int payChannelSign = body.getIntValue("payChannelSign");
-                this.withdrawService.merchantWithdrawBySettlementRecord(merchantId, settlementRecordId, payOrderSn, payChannelSign);
+                log.info("发起提现+++++++++++++++++++++++++++");
+//                this.withdrawService.merchantWithdrawBySettlementRecord(merchantId, settlementRecordId, payOrderSn, payChannelSign);
             } else if (MqConfig.MERCHANT_WITHDRAW_T1.equals(message.getTag())) {
                 log.info("消费消息--订单[{}], T1-发起提现请求", body.getLongValue("orderId"));
                 final long orderId = body.getLongValue("orderId");

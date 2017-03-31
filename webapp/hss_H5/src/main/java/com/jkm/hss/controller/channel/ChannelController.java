@@ -42,6 +42,7 @@ public class ChannelController extends BaseController {
     @ResponseBody
     @RequestMapping(value = "queryChannelSupportBank", method = RequestMethod.POST)
     public CommonResponse queryChannelSupportBank(@RequestBody final QueryChannelSupportBankRequest queryChannelSupportBankRequest) {
+        queryChannelSupportBankRequest.setChannelSign(601);
         final List<ChannelSupportCreditBank> channelSupportCreditBankList =
                 this.channelSupportCreditBankService.getByUpperChannel(EnumPayChannelSign.idOf(queryChannelSupportBankRequest.getChannelSign()).getUpperChannel().getId());
         if (CollectionUtils.isEmpty(channelSupportCreditBankList)) {

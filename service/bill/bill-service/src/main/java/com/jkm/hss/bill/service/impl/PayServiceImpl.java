@@ -874,7 +874,7 @@ public class PayServiceImpl implements PayService {
         order.setPayChannelSign(channel);
         order.setPayBankCard(accountBank.getBankNo());
         order.setSettleStatus(EnumSettleStatus.DUE_SETTLE.getId());
-        order.setSettleType(EnumBalanceTimeType.T1.getType());
+        order.setSettleType(enumPayChannelSign.getSettleType().getType());
         order.setStatus(EnumOrderStatus.DUE_PAY.getId());
         this.orderService.add(order);
         final PaymentSdkUnionPayRequest paymentSdkUnionPayRequest = new PaymentSdkUnionPayRequest();
