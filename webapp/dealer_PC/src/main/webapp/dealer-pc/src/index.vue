@@ -206,9 +206,9 @@
               <li>
                 <router-link to="merchants"><i class="fa fa-circle-o"></i> 所有商户</router-link>
               </li>
-              <!--<li>-->
-                <!--<router-link to="transaction"><i class="fa fa-circle-o"></i> 交易管理</router-link>-->
-              <!--</li>-->
+              <li>
+                <router-link to="transaction"><i class="fa fa-circle-o"></i> 交易管理</router-link>
+              </li>
             </ul>
           </li>
           <li class="treeview" v-show="dealerLeavel!=2">
