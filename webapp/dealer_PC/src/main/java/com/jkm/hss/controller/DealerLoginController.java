@@ -63,7 +63,7 @@ public class DealerLoginController extends BaseController{
         }
         Optional<AdminUser> adminUserOptional = this.adminUserService.getAdminUserByNameAndType(loginRequest.getLoginName(), EnumAdminType.SECONDDEALER.getCode());
         if (!adminUserOptional.isPresent()) {
-            return CommonResponse.simpleResponse(-1, "登录名已经存在");
+            return CommonResponse.simpleResponse(-1, "用户名或密码错误或该用户被禁用");
         }
         if (adminUserOptional.get().getPassword().equals(DealerSupport.passwordDigest(loginRequest.getPwd(),"JKM"))){
             final AdminUserPassport adminUserToken = adminUserPassportService.generateToken(adminUserOptional.get().getId());

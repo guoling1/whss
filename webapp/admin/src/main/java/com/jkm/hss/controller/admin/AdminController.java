@@ -761,7 +761,7 @@ public class AdminController extends BaseController {
             adminUser.setSalt("100000");
             adminUser.setPassword(DealerSupport.passwordDigest(firstLevelDealerAdd2Request.getLoginPwd(),"JKM"));
             adminUser.setRealname(firstLevelDealerAdd2Request.getBankAccountName());
-            adminUser.setEmail("");
+            adminUser.setEmail(firstLevelDealerAdd2Request.getEmail());
             adminUser.setMobile(AdminUserSupporter.encryptMobile(firstLevelDealerAdd2Request.getMobile()));
             adminUser.setCompanyId("");
             adminUser.setDeptId("");
@@ -853,6 +853,7 @@ public class AdminController extends BaseController {
 
             //更改登录用户
             AdminUser adminUser = new AdminUser();
+            adminUser.setEmail(request.getEmail());
             adminUser.setUsername(request.getLoginName());
             adminUser.setRealname(request.getBankAccountName());
             adminUser.setMobile(AdminUserSupporter.encryptMobile(request.getMobile()));

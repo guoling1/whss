@@ -158,6 +158,7 @@
     <update id="updateDealerUser">
         UPDATE tb_admin_user
         SET
+        email=#{email},
         username = #{username},
         realname = #{realname},
         mobile = #{mobile},

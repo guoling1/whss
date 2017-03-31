@@ -172,7 +172,7 @@ public class DealerController extends BaseController {
             adminUser.setSalt("200000");
             adminUser.setPassword(DealerSupport.passwordDigest(secondLevelDealerAdd2Request.getLoginPwd(),"JKM"));
             adminUser.setRealname(secondLevelDealerAdd2Request.getBankAccountName());
-            adminUser.setEmail("");
+            adminUser.setEmail(secondLevelDealerAdd2Request.getEmail());
             adminUser.setMobile(AdminUserSupporter.encryptMobile(secondLevelDealerAdd2Request.getMobile()));
             adminUser.setCompanyId("");
             adminUser.setDeptId("");
@@ -325,6 +325,7 @@ public class DealerController extends BaseController {
             this.dealerService.updateSecondDealer(request);
             //更改登录用户
             AdminUser adminUser = new AdminUser();
+            adminUser.setEmail(request.getEmail());
             adminUser.setUsername(request.getLoginName());
             adminUser.setRealname(request.getBankAccountName());
             adminUser.setMobile(AdminUserSupporter.encryptMobile(request.getMobile()));
