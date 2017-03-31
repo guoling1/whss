@@ -188,8 +188,29 @@
     <if test="globalID!=null and globalID!=''">
         AND a.GLOBALID=#{globalID}
     </if>
+
     <if test="shortName!=null and shortName!=''">
         AND a.SHORTNAME=#{shortName}
+    </if>
+
+    <!--<if test="proxyName!=null and proxyName!=''">-->
+        <!--AND a.SHORTNAME=#{shortName}-->
+    <!--</if>-->
+
+    <if test="startTime!=null and startTime!=''">
+        AND a.CREATETIME <![CDATA[ >= ]]> #{startTime}
+    </if>
+
+    <if test="endTime!=null and endTime!=''">
+        AND a.CREATETIME <![CDATA[ <= ]]> #{endTime}
+    </if>
+
+    <if test="cellphone!=null and cellphone!=''">
+        AND c.CELLPHONE = #{cellphone}
+    </if>
+
+    <if test="industryCode!=null and industryCode!=''">
+        AND a.INDUSTRYCODE = #{industryCode}
     </if>
         ORDER BY
         a.CREATETIME DESC

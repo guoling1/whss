@@ -14,6 +14,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -34,6 +37,14 @@ public class HsyQueryMerchantController extends BaseController {
         long dealerId = super.getDealerId();
         int level = super.getDealer().get().getLevel();
         request.setDealerId(dealerId);
+        if(request.getEndTime()!=null&&!"".equals(request.getEndTime())){
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            Date dt = sdf.parse(request.getEndTime());
+            Calendar rightNow = Calendar.getInstance();
+            rightNow.setTime(dt);
+            rightNow.add(Calendar.DATE, 1);
+            request.setEndTime(sdf.format(rightNow.getTime()));
+        }
         if (level==1){
             List<HsyQueryMerchantResponse> list = hsyMerchantAuditService.hsyMerchantList(request);
             int count = hsyMerchantAuditService.hsyMerchantListCount(request);

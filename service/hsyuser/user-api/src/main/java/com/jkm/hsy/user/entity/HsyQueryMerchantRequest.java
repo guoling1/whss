@@ -26,6 +26,10 @@ public class HsyQueryMerchantRequest {
 
     private String industry;//行业
 
+    private String industryCode;//行业代码
+
+    private String proxyName;//所属代理商
+
     /**
      * 一级代理商id
      */
