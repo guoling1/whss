@@ -78,7 +78,7 @@
                   </div>
                   <div class="box-body">
                     <el-table :data="hsy.tableData" border
-                              v-loading="tableLoading"
+                              v-loading="hsy.tableLoading"
                               element-loading-text="数据加载中">
                       <el-table-column prop="globalID" label="商户编号"></el-table-column>
                       <el-table-column prop="shortName" label="商户名称"></el-table-column>
@@ -102,7 +102,7 @@
                                    :page-sizes="[20, 100, 200, 500]"
                                    :page-size="hsy.pageSize"
                                    layout="total, sizes, prev, pager, next, jumper"
-                                   :total="total">
+                                   :total="hsy.total">
                     </el-pagination>
                   </div>
                 </el-tab-pane>
@@ -185,11 +185,11 @@
           globalID: this.hsy.globalID,
           shortName: this.hsy.shortName
         }).then(res => {
-          this.tableLoading = false;
-          this.total = res.data.count;
-          this.tableData = res.data.records;
+          this.hsy.tableLoading = false;
+          this.hsy.total = res.data.count;
+          this.hsy.tableData = res.data.records;
         }, err => {
-          this.tableLoading = false;
+          this.hsy.tableLoading = false;
           this.$message({
             showClose: true,
             message: err.data.msg,
