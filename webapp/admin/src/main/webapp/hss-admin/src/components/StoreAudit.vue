@@ -389,16 +389,19 @@
     },
     methods: {
       getData:function () {
+        this.loading = true;
         this.$http.post('/admin/QueryMerchantInfoRecord/getAll', {id: this.$data.id})
           .then(function (res) {
             this.$data.msg = res.data.list[0];
             this.$data.res = res.data.res;
+            this.loading = false;
             this.$data.rateInfo = res.data.rateInfo;
             for (let i = 0; i < this.rateInfo.length; i++) {
               this.rateInfo[i].merchantRate = parseFloat(this.rateInfo[i].merchantRate * 100).toFixed(2) + '%'
               this.rateInfo[i].withdrawMoney = this.rateInfo[i].withdrawMoney + '元/笔'
             }
           }, function (err) {
+            this.loading = false;
             this.$message({
               showClose: true,
               message: err.statusMessage,
