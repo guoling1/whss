@@ -6,9 +6,8 @@
           <h3 class="box-title">交易查询</h3>
           <router-link to="/admin/record/deal" class="pull-right btn btn-primary" style="margin-left: 20px">切换旧版
           </router-link>
-          <!--<a :href="'http://'+this.$data.url" download="交易记录" class="btn btn-primary" style="float: right;color: #fff">导出</a>-->
+          <a :href="'http://'+this.$data.url" download="交易记录" class="btn btn-primary" style="float: right;color: #fff">导出</a>
           <!--<span @click="_$power(onload,'boss_trade_export')" download="公司分润" class="btn btn-primary" style="color: #fff;float: right">导出</span>-->
-          <span @click="onload" download="公司分润" class="btn btn-primary" style="color: #fff;float: right">导出</span>
         </div>
         <div class="box-body">
           <!--筛选-->
