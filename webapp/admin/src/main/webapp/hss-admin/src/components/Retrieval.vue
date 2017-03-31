@@ -81,7 +81,7 @@
               </template>
             </el-table-column>
             <el-table-column prop="createTimes" label="提现时间" width="162"></el-table-column>
-            <el-table-column prop="successTime" label="成功时间" width="162"></el-table-column>
+            <el-table-column prop="updateTimes" label="成功时间" width="162"></el-table-column>
           </el-table>
           </el-table>
           <ul style="float: left;margin-top: 5px">

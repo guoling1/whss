@@ -1012,10 +1012,10 @@ public class OrderServiceImpl implements OrderService {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         if (list.size()>0){
             for (int i=0;i<list.size();i++){
-                if (list.get(i).getMerchantName()!=null&&!("").equals(list.get(i).getMerchantName())){
+                if (list.get(i).getMerchantName()!=null&&!list.get(i).getMerchantName().equals("")){
                     list.get(i).setUserType("商户");
                 }
-                if (list.get(i).getProxyName()!=null&&!("").equals(list.get(i).getProxyName())){
+                if (list.get(i).getProxyName()!=null&&!list.get(i).getProxyName().equals("")){
                     list.get(i).setUserType("代理商");
                 }
                 if (list.get(i).getCreateTime()!=null&&!list.get(i).getCreateTime().equals("")){
@@ -1031,6 +1031,8 @@ public class OrderServiceImpl implements OrderService {
                 }
                 if (list.get(i).getStatus()==6){
                     list.get(i).setWithdrawStatus(EnumOrderStatus.WITHDRAW_SUCCESS.getValue());
+                    String dates = sdf.format(list.get(i).getUpdateTime());
+                    list.get(i).setUpdateTimes(dates);
                 }
                 if (list.get(i).getPayChannelSign()==101){
                     list.get(i).setPayChannelName(EnumPayChannelSign.idOf(list.get(i).getPayChannelSign()).getName());
