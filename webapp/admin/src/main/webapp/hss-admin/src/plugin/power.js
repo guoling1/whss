@@ -13,7 +13,7 @@ export default{
       console.log(arguments[arguments.length-1]);
       this.$http.post('/admin/user/havePermission', {descr: arguments[arguments.length-1]})
         .then(res => {
-          arguments[arguments.length-1](arguments)
+          arguments[arguments.length-2](arguments[0],arguments[1],arguments[2],arguments[3])
         })
         .catch(err => {
           this.$message({

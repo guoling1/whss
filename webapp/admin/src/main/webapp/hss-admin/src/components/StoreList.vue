@@ -131,7 +131,7 @@
                 <el-table-column label="操作" width="100">
                   <template scope="scope">
                     <a @click="auditHsy(scope.row.id,scope.row.status)" v-if="records[scope.$index].stat=='待审核'" type="text" size="small">审核</a>
-                    <a @click="_$power(auditHsy,'boss_merchant_check',scope.row.id,scope.row.status,auditHsy,'boss_merchant_check')" type="text" size="small">审核</a>
+                    <a @click="_$power(scope.row.id,scope.row.status,auditHsy,'boss_merchant_check')" type="text" size="small">审核</a>
                     <router-link :to="{path:'/admin/record/StoreAuditHSY',query:{id:records[scope.$index].id,status:records[scope.$index].status}}" v-if="records[scope.$index].stat!='待审核'" type="text" size="small">查看详情</router-link>
                   </template>
                 </el-table-column>
