@@ -3,8 +3,8 @@
  */
 export default{
   install(Vue){
-    const power = function (val,fun) {
-      if(val==1){
+    const power = function (fun,val) {
+      if(val==undefined){
         this.$message({
           showClose: true,
           message: '无访问权限',

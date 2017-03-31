@@ -6,7 +6,9 @@
           <h3 class="box-title">交易查询</h3>
           <router-link to="/admin/record/deal" class="pull-right btn btn-primary" style="margin-left: 20px">切换旧版
           </router-link>
-          <a :href="'http://'+this.$data.url" download="交易记录" class="btn btn-primary" style="float: right;color: #fff">导出</a>
+          <!--<a :href="'http://'+this.$data.url" download="交易记录" class="btn btn-primary" style="float: right;color: #fff">导出</a>-->
+          <!--<span @click="_$power(onload,'boss_trade_export')" download="公司分润" class="btn btn-primary" style="color: #fff;float: right">导出</span>-->
+          <span @click="onload" download="公司分润" class="btn btn-primary" style="color: #fff;float: right">导出</span>
         </div>
         <div class="box-body">
           <!--筛选-->
@@ -167,6 +169,22 @@
             </el-pagination>
           </div>
         </div>
+        <div class="box box-info mask el-message-box" v-if="isMask">
+          <div class="maskCon">
+            <div class="head">
+              <div class="title">消息</div>
+              <i class="el-icon-close" @click="isMask=false"></i>
+            </div>
+            <div class="body">
+              <div>确定导出列表吗？</div>
+            </div>
+            <div class="foot">
+              <a href="javascript:void(0)" @click="isMask=false" class="el-button el-button--default">取消</a>
+              <a :href="'http://'+loadUrl" @click="isMask=false"
+                 class="el-button el-button-default el-button--primary ">下载</a>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -193,7 +211,10 @@
           settleStatus:'',
           payType:'',
           proxyName:'',
-          proxyName1:''
+          proxyName1:'',
+          loadUrl: '',
+          loadUrl1: '',
+
         },
         date: '',
         records: [],
@@ -202,7 +223,8 @@
         loading: true,
         url: '',
         pageTotal: 0,
-        addTotal: 0
+        addTotal: 0,
+        isMask:false
       }
     },
     created: function () {
@@ -242,7 +264,8 @@
           .then(function (res) {
             this.loading = false;
             this.records = res.data.records;
-            this.url=res.data.ext;
+            this.$data.loadUrl1 = res.data.ext;
+            this.$data.loading = false;
             this.count = res.data.count;
             var price=0;
             var toFix = function (val) {
@@ -274,6 +297,11 @@
             });
           })
 
+      },
+      onload: function (x) {
+        console.log(x)
+        this.$data.loadUrl = this.loadUrl1;
+        this.$data.isMask = true;
       },
       //格式化hss创建时间
       changeTime: function (row, column) {
@@ -441,6 +469,83 @@
 
   .price:hover {
     border-color: #20a0ff;
+  }
+  .mask {
+    z-index: 2020;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.45);
+
+    .maskCon {
+      margin: 250px auto;
+      text-align: left;
+      vertical-align: middle;
+      background-color: #fff;
+      width: 420px;
+      border-radius: 3px;
+      font-size: 16px;
+      overflow: hidden;
+      -webkit-backface-visibility: hidden;
+      backface-visibility: hidden;
+
+      .head {
+        position: relative;
+        padding: 20px 20px 0;
+
+        .title {
+          padding-left: 0;
+          margin-bottom: 0;
+          font-size: 16px;
+          font-weight: 700;
+          height: 18px;
+          color: #333;
+        }
+
+        i {
+          font-family: element-icons !important;
+          speak: none;
+          font-style: normal;
+          font-weight: 400;
+          font-variant: normal;
+          text-transform: none;
+          vertical-align: baseline;
+          display: inline-block;
+          -webkit-font-smoothing: antialiased;
+          position: absolute;
+          top: 19px;
+          right: 20px;
+          color: #999;
+          cursor: pointer;
+          line-height: 20px;
+          text-align: center;
+        }
+
+      }
+      .body {
+        padding: 30px 20px;
+        color: #48576a;
+        font-size: 14px;
+        position: relative;
+
+        div {
+          margin: 0;
+          line-height: 1.4;
+          font-size: 14px;
+          color: #48576a;
+          font-weight: 400;
+        }
+
+      }
+      .foot {
+        padding: 10px 20px 15px;
+        text-align: right;
+      }
+
+    }
+
   }
 
 </style>
