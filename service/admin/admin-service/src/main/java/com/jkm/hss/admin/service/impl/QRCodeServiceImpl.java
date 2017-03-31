@@ -1078,6 +1078,19 @@ public class QRCodeServiceImpl implements QRCodeService {
     }
 
     /**
+     * 修改代理商信息
+     *
+     * @param code
+     * @param firstDealerId
+     * @param secondDealerId
+     * @return
+     */
+    @Override
+    public int updateDealerInfo(String code, long firstDealerId, long secondDealerId) {
+        return qrCodeDao.updateDealerInfo(code,firstDealerId,secondDealerId);
+    }
+
+    /**
      * 生成二维码
      * @param adminId
      * @param count

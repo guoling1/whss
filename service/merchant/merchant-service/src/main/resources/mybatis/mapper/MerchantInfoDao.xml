@@ -480,4 +480,13 @@
         is_authen=#{isAuthen}
         WHERE id = #{id}
     </update>
+
+    <update id="updateDealerInfo">
+        UPDATE tb_merchant_info
+        SET
+        dealer_id = #{currentDealerId},
+        first_dealer_id = #{firstDealerId},
+        second_dealer_id = #{secondDealerId}
+        WHERE id = #{merchantId}
+    </update>
 </mapper>

@@ -345,4 +345,11 @@ public interface DealerDao {
      * @return
      */
     int dealerMerchantSecondCount(QueryMerchantRequest req);
+
+    /**
+     * 根据markCode查询代理商信息
+     * @param markCode
+     * @return
+     */
+    Dealer getDealerByMarkCode(@Param("markCode") String markCode);
 }

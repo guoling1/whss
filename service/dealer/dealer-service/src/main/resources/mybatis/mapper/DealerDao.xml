@@ -589,6 +589,10 @@
     <select id="getInfo1" resultType="com.jkm.hss.merchant.entity.MerchantInfoResponse">
         SELECT * FROM tb_dealer WHERE id = #{secondDealerId}
     </select>
+    <!--根据markCode查询代理商信息-->
+    <select id="getDealerByMarkCode" resultType="com.jkm.hss.dealer.entity.Dealer">
+        SELECT * FROM tb_dealer WHERE mark_code = #{markCode}
+    </select>
 
     <!-- 查询一级代理商下的所有商户 -->
     <select id="dealerMerchantList" resultType="com.jkm.hss.dealer.entity.QueryMerchantResponse">

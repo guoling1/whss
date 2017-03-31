@@ -505,6 +505,12 @@ public interface DealerService {
      * @return
      */
     MerchantInfoResponse getInfo(long firstDealerId);
+    /**
+     * 根据代理商编码查询代理商信息
+     * @param markCode
+     * @return
+     */
+    Optional<Dealer> getDealerByMarkCode(String markCode);
 
     /**
      * 查询二级代理商编码和名称
