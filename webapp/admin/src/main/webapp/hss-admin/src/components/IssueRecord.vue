@@ -4,7 +4,7 @@
       <div class="box" style="margin-top:15px;overflow: hidden">
         <div class="box-header">
           <h3 class="box-title">二维码分配记录</h3>
-          <router-link to="/admin/record/issue" class="pull-right btn btn-primary" style="margin-left: 20px">分配二维码</router-link>
+          <a @click="_$power(issue,'boss_qr_code_distribute')" class="pull-right btn btn-primary" style="margin-left: 20px">分配二维码</a>
         </div>
         <div class="box-body">
           <!--筛选-->
@@ -104,6 +104,9 @@
         })
     },
     methods: {
+      issue: function () {
+        this.$router.push('/admin/record/issue')
+      },
       //格式化时间
       distributeTime: function (row, column) {
         var val=row.distributeTime;

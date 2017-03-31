@@ -63,10 +63,8 @@
                     v-model="outputContent"></v-editor>
                   <input type="button" class="btn btn-primary" value="立即发布" v-if="!isShow" style="margin: 15px 0 100px"
                          @click="open">
-                  <input type="button" class="btn btn-primary" value="修 改" v-if="isShow"
-                         style="margin: 15px 30px 100px 0" @click="change">
-                  <input type="button" class="btn btn-primary" value="删 除" v-if="isShow" style="margin: 15px 0 100px"
-                         @click="del">
+                  <input type="button" class="btn btn-primary" value="修 改" v-if="isShow" style="margin: 15px 30px 100px 0" @click="_$power(change,'boss_merchant_update_message')" @click="change">
+                  <input type="button" class="btn btn-primary" value="删 除" v-if="isShow" style="margin: 15px 0 100px" @click="_$power(del,'boss_merchant_delete_message')">
                 </div>
               </div>
             </el-col>

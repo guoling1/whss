@@ -93,8 +93,8 @@
                 </el-table-column>
                 <el-table-column label="操作" width="100">
                   <template scope="scope">
-                    <router-link :to="{path:'/admin/record/StoreAudit',query:{id:records[scope.$index].id,status:records[scope.$index].status}}" v-if="records[scope.$index].status==2" type="text" size="small">审核</router-link>
-                    <router-link :to="{path:'/admin/record/StoreAudit',query:{id:records[scope.$index].id,status:records[scope.$index].status}}" v-if="records[scope.$index].status!=2" type="text" size="small">查看详情</router-link>
+                    <a @click="_$power(scope.row.id,scope.row.status,audit,'boss_merchant_check')" v-if="records[scope.$index].status==2" type="text" size="small">审核</a>
+                    <a @click="_$power(scope.row.id,scope.row.status,audit,'boss_merchant_detail')" v-if="records[scope.$index].status==2" type="text" size="small">查看详情</a>
                   </template>
                 </el-table-column>
               </el-table>
@@ -130,9 +130,8 @@
                 <el-table-column prop="stat" label="状态"></el-table-column>
                 <el-table-column label="操作" width="100">
                   <template scope="scope">
-                    <a @click="auditHsy(scope.row.id,scope.row.status)" v-if="records[scope.$index].stat=='待审核'" type="text" size="small">审核</a>
-                    <a @click="_$power(scope.row.id,scope.row.status,auditHsy,'boss_merchant_check')" type="text" size="small">审核</a>
-                    <router-link :to="{path:'/admin/record/StoreAuditHSY',query:{id:records[scope.$index].id,status:records[scope.$index].status}}" v-if="records[scope.$index].stat!='待审核'" type="text" size="small">查看详情</router-link>
+                    <a @click="_$power(scope.row.id,scope.row.status,auditHsy,'boss_merchant_check')" v-if="records[scope.$index].stat=='待审核'" type="text" size="small">审核</a>
+                    <a @click="_$power(scope.row.id,scope.row.status,auditHsy,'boss_merchant_detail')" v-if="records[scope.$index].stat!='待审核'" type="text" size="small">查看详情</a>
                   </template>
                 </el-table-column>
               </el-table>
@@ -288,8 +287,10 @@
     },
     methods: {
       auditHsy: function (id,status) {
-        console.log(id,status,arguments)
         this.$router.push({path:'/admin/record/StoreAuditHSY',query:{id:id,status:status}})
+      },
+      audit: function (id,status) {
+        this.$router.push({path:'/admin/record/StoreAudit',query:{id:id,status:status}})
       },
       //同步
       synchro: function () {

@@ -34,7 +34,7 @@
             <el-table-column prop="statusName" label="状态"></el-table-column>
             <el-table-column label="操作" width="100">
               <template scope="scope">
-                <router-link :to="{path:'/daili/record/roles_add',query:{id:records[scope.$index].id}}" type="text"
+                <router-link :to="{path:'/daili/app/roles_add',query:{id:records[scope.$index].id}}" type="text"
                              size="small">编辑
                 </router-link>
                 <a @click="open(records[scope.$index].id)" v-if="records[scope.$index].statusName=='禁用'" type="text" size="small">开启</a>
@@ -85,7 +85,7 @@
       },
       getData: function () {
         this.loading = true;
-        this.$http.post('/daili/privilege/userList', this.query)
+        this.$http.post('/daili/privilege/roleListByPage', this.query)
           .then(function (res) {
             this.loading = false;
             this.$data.records = res.data.records;

@@ -4,7 +4,7 @@
       <div class="box" style="margin-top:15px;overflow: hidden">
         <div class="box-header">
           <h3 class="box-title">员工管理</h3>
-          <router-link to="/admin/record/personnelAdd" class="btn btn-primary" style="float: right;">新增员工</router-link>
+          <a @click="_$power(issue,'boss_staff_add')" class="btn btn-primary" style="float: right;">新增员工</a>
         </div>
         <div class="box-body">
           <!--筛选-->
@@ -46,11 +46,9 @@
             </el-table-column>
             <el-table-column label="操作" width="100">
               <template scope="scope">
-                <router-link :to="{path:'/admin/record/personnelAdd',query:{id:records[scope.$index].id}}" type="text"
-                             size="small">编辑
-                </router-link>
-                <a @click="open(records[scope.$index].id)" v-if="records[scope.$index].status==2" type="text" size="small">开启</a>
-                <a @click="close(records[scope.$index].id)" v-if="records[scope.$index].status==1" type="text" size="small">禁用</a>
+                <a @click="_$power(scope.row.id,issue1,'boss_staff_update')" type="text" size="small">编辑</a>
+                <a @click="_$power(scope.row.id,open,'boss_staff_disable')" v-if="records[scope.$index].status==2" type="text" size="small">开启</a>
+                <a @click="_$power(scope.row.id,close,'boss_staff_disable')" v-if="records[scope.$index].status==1" type="text" size="small">禁用</a>
               </template>
             </el-table-column>
           </el-table>
@@ -93,6 +91,12 @@
       this.getData()
     },
     methods: {
+      issue: function () {
+        this.$router.push('/admin/record/personnelAdd')
+      },
+      issue1: function (id) {
+        this.$router.push({path:'/admin/record/personnelAdd',query:{id:id}})
+      },
       getData: function () {
         this.loading = true;
         this.$http.post('/admin/user/userList', this.$data.query)

@@ -4,7 +4,7 @@
       <div class="box" style="margin-top:15px;overflow: hidden">
         <div class="box-header">
           <h3 class="box-title">商户公告</h3>
-          <router-link to="/admin/record/storeNoticeDet" class="btn btn-primary" style="color: #fff;float: right;">发布消息</router-link>
+          <a @click="_$power(release,'boss_merchant_send_message')" to="/admin/record/storeNoticeDet" class="btn btn-primary" style="color: #fff;float: right;">发布消息</a>
         </div>
         <div class="box-body">
           <!--筛选-->
@@ -80,6 +80,9 @@
       this.getData()
     },
     methods: {
+      release:function () {
+        this.$router.push('/admin/record/storeNoticeDet')
+      },
       getData: function () {
         this.loading = true;
         this.$http.post('/admin/pushNotice/noticeList',this.$data.query)

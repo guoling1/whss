@@ -84,8 +84,10 @@
                 </el-table-column>
                 <el-table-column label="操作" width="100">
                   <template scope="scope">
-                    <router-link :to="{path:'/admin/record/StoreAudit',query:{id:records[scope.$index].id,status:records[scope.$index].status}}" v-if="records[scope.$index].status==2" type="text" size="small">审核</router-link>
-                    <router-link :to="{path:'/admin/record/StoreAudit',query:{id:records[scope.$index].id,status:records[scope.$index].status}}" v-if="records[scope.$index].status!=2" type="text" size="small">查看详情</router-link>
+                    <a @click="_$power(scope.row.id,scope.row.status,audit,'boss_unmerchant_check')" v-if="records[scope.$index].status==2" type="text" size="small">审核</a>
+                    <a @click="_$power(scope.row.id,scope.row.status,audit,'boss_unmerchant_detail')" v-if="records[scope.$index].status==2" type="text" size="small">查看详情</a>
+                    <!--<router-link :to="{path:'/admin/record/StoreAudit',query:{id:records[scope.$index].id,status:records[scope.$index].status}}" v-if="records[scope.$index].status==2" type="text" size="small">审核</router-link>
+                    <router-link :to="{path:'/admin/record/StoreAudit',query:{id:records[scope.$index].id,status:records[scope.$index].status}}" v-if="records[scope.$index].status!=2" type="text" size="small">查看详情</router-link>-->
                   </template>
                 </el-table-column>
               </el-table>
@@ -125,8 +127,10 @@
                 </el-table-column>-->
                 <el-table-column label="操作" width="100">
                   <template scope="scope">
-                    <router-link :to="{path:'/admin/record/StoreAuditHSY',query:{id:records[scope.$index].id,status:records[scope.$index].status}}" v-if="records[scope.$index].stat=='待审核'" type="text" size="small">审核</router-link>
-                    <router-link :to="{path:'/admin/record/StoreAuditHSY',query:{id:records[scope.$index].id,status:records[scope.$index].status}}" v-if="records[scope.$index].stat!='待审核'" type="text" size="small">查看详情</router-link>
+                    <a @click="_$power(scope.row.id,scope.row.status,auditHsy,'boss_unmerchant_check')" v-if="records[scope.$index].stat=='待审核'" type="text" size="small">审核</a>
+                    <a @click="_$power(scope.row.id,scope.row.status,auditHsy,'boss_unmerchant_detail')" v-if="records[scope.$index].stat!='待审核'" type="text" size="small">查看详情</a>
+                    <!--<router-link :to="{path:'/admin/record/StoreAuditHSY',query:{id:records[scope.$index].id,status:records[scope.$index].status}}" v-if="records[scope.$index].stat=='待审核'" type="text" size="small">审核</router-link>-->
+                    <!--<router-link :to="{path:'/admin/record/StoreAuditHSY',query:{id:records[scope.$index].id,status:records[scope.$index].status}}" v-if="records[scope.$index].stat!='待审核'" type="text" size="small">查看详情</router-link>-->
                   </template>
                 </el-table-column>
               </el-table>
@@ -235,6 +239,12 @@
       })
     },
     methods: {
+      auditHsy: function (id,status) {
+        this.$router.push({path:'/admin/record/StoreAuditHSY',query:{id:id,status:status}})
+      },
+      audit: function (id,status) {
+        this.$router.push({path:'/admin/record/StoreAudit',query:{id:id,status:status}})
+      },
       //格式化hss创建时间
       changeTime: function (row, column) {
         var val=row.createTime;

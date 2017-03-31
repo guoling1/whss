@@ -41,8 +41,8 @@
             <el-table-column prop="--" label="月累计限额"></el-table-column>
             <el-table-column label="操作" width="90">
               <template scope="scope">
-                <a href="#" @click="onOff(1,scope.row.id)" v-if="scope.row.status==0">启用</a>
-                <a href="#" @click="onOff(2,scope.row.id)" v-if="scope.row.status==1">禁用</a>
+                <a href="#" @click="_$power(1,scope.row.id,onOff,'boss_quota_enable')" v-if="scope.row.status==0">启用</a>
+                <a href="#" @click="_$power(2,scope.row.id,onOff,'boss_quota_disable')" v-if="scope.row.status==1">禁用</a>
               </template>
             </el-table-column>
           </el-table>

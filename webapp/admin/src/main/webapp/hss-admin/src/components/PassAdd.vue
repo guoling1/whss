@@ -213,7 +213,7 @@
                    style="width: 45%;float: right;margin: 20px 0 100px;">
                 添加通道
               </div>
-              <div class="btn btn-primary" @click="change()" v-if="!isShow"
+              <div class="btn btn-primary" @click="_$power(change,'boss_channel_update')" v-if="!isShow"
                    style="width: 45%;float: right;margin: 20px 0 100px;">
                 修改
               </div>
