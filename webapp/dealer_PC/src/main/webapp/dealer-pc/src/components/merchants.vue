@@ -178,7 +178,7 @@
         });
       },
       getData_hsy: function () {
-        this.tableLoading = true;
+        this.hsy.tableLoading = true;
         this.$http.post('/daili/HsyQueryMerchant/hsyMerchantList', {
           pageSize: this.hsy.pageSize,
           pageNo: this.hsy.pageNo,
