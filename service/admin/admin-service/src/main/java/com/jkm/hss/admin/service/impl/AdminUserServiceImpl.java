@@ -401,6 +401,7 @@ public class AdminUserServiceImpl implements AdminUserService {
                 }
                 adminUserListResponse.setCreateTime(adminUsers.get(i).getCreateTime());
                 adminUserListResponse.setStatus(adminUsers.get(i).getStatus());
+                adminUserListResponse.setIsMaster(adminUsers.get(i).getIsMaster());
                 list.add(adminUserListResponse);
             }
         }

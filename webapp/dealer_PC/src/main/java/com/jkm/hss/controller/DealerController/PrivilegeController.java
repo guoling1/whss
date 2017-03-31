@@ -418,7 +418,7 @@ public class PrivilegeController extends BaseController {
         if(level==2){
             type=EnumAdminType.SECONDDEALER.getCode();
         }
-        int count = this.adminUserService.hasDescr(EnumAdminType.BOSS.getCode(),havePermissionRequest.getDescr());
+        int count = this.adminUserService.hasDescr(type,havePermissionRequest.getDescr());
         if(count>0){
             int privilegeCount = this.adminUserService.getPrivilegeByContionsOfJs(super.getAdminUser().get().getRoleId(),type,havePermissionRequest.getDescr());
             if(privilegeCount<=0){
