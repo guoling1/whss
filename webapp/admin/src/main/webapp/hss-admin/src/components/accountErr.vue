@@ -151,6 +151,7 @@
         this.loading = true;
         this.$http.post(this.url,this.query)
           .then(function (res) {
+            console.log(res);
             this.$data.records = res.data.records;
             this.$data.count = res.data.count;
             this.$data.total = res.data.totalPage;

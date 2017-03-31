@@ -84,6 +84,7 @@
                 class="upload-demo"
                 action="//jsonplaceholder.typicode.com/posts/"
                 :on-preview="handlePreview"
+                :on-success="handleSuccess"
                 :on-remove="handleRemove"
                 :file-list="fileList">
                 <el-button id="btn" size="small" type="primary">点击上传</el-button>
@@ -145,6 +146,9 @@
     methods: {
       handlePreview(file) {
         console.log(file);
+      },
+      handleSuccess(){
+         this.$router.push('/admin/records/accountData')
       },
       getData: function () {
         this.loading = true;
