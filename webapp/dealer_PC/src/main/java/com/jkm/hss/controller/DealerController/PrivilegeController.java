@@ -270,7 +270,7 @@ public class PrivilegeController extends BaseController {
      * @return
      */
     @ResponseBody
-    @RequestMapping(value = "/userRoleList", method = RequestMethod.GET)
+    @RequestMapping(value = "/userRoleList", method = RequestMethod.POST)
     public CommonResponse userRoleList () {
         Optional<Dealer> dealerOptional = super.getDealer();
         int level = dealerOptional.get().getLevel();
