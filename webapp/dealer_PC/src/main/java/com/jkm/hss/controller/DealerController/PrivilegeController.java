@@ -406,6 +406,9 @@ public class PrivilegeController extends BaseController {
     @ResponseBody
     @RequestMapping(value = "/havePermission", method = RequestMethod.POST)
     public CommonResponse havePermission (@RequestBody HavePermissionRequest havePermissionRequest) {
+        if(super.getAdminUser().get().getIsMaster()==EnumIsMaster.MASTER.getCode()){
+            return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "有权限访问");
+        }
         Optional<Dealer> dealerOptional = super.getDealer();
         int level = dealerOptional.get().getLevel();
         int type = EnumAdminType.FIRSTDEALER.getCode();

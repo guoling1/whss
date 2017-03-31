@@ -146,7 +146,6 @@ public class AdminController extends BaseController {
             Optional<AdminRole> adminRoleOptional = adminRoleService.selectById(userOptional.get().getRoleId());
             roleName = adminRoleOptional.get().getRoleName();
         }
-        userOptional.get().getRoleId();
         return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, roleName,loginMenu);
     }
 
@@ -1227,6 +1226,9 @@ public class AdminController extends BaseController {
     @ResponseBody
     @RequestMapping(value = "/havePermission", method = RequestMethod.POST)
     public CommonResponse havePermission (@RequestBody HavePermissionRequest havePermissionRequest) {
+        if(super.getAdminUser().getIsMaster()==EnumIsMaster.MASTER.getCode()){
+            return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "有权限访问");
+        }
         int count = this.adminUserService.hasDescr(EnumAdminType.BOSS.getCode(),havePermissionRequest.getDescr());
         if(count>0){
             int privilegeCount = this.adminUserService.getPrivilegeByContionsOfJs(super.getAdminUser().getRoleId(),EnumAdminType.BOSS.getCode(),havePermissionRequest.getDescr());
