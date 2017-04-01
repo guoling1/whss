@@ -342,7 +342,7 @@ public class AdminRoleServiceImpl implements AdminRoleService{
                             for(int n=0;n<childOpts.size();n++){
                                 if(childOpts.get(n).getIsSelected()==EnumIsSelected.SELECTED.getCode()){
                                     AdminMenuOptRel adminMenuOptRel = new AdminMenuOptRel();
-                                    adminMenuOptRel.setMenuId(menus.get(n).getId());
+                                    adminMenuOptRel.setMenuId(menus.get(k).getId());
                                     adminMenuOptRel.setRoleId(roleDetailRequest.getRoleId());
                                     adminMenuOptRel.setOptId(childOpts.get(n).getId());
                                     adminMenuOptRel.setStatus(EnumAdminUserStatus.NORMAL.getCode());

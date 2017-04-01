@@ -11,10 +11,7 @@ import com.jkm.base.common.util.GlobalID;
 import com.jkm.hss.admin.dao.AdminRoleDao;
 import com.jkm.hss.admin.dao.AdminUserDao;
 import com.jkm.hss.admin.entity.*;
-import com.jkm.hss.admin.enums.EnumAdminType;
-import com.jkm.hss.admin.enums.EnumAdminUserStatus;
-import com.jkm.hss.admin.enums.EnumDataDictionaryType;
-import com.jkm.hss.admin.enums.EnumQRCodeDistributeType2;
+import com.jkm.hss.admin.enums.*;
 import com.jkm.hss.admin.helper.AdminUserSupporter;
 import com.jkm.hss.admin.helper.requestparam.AdminUserListRequest;
 import com.jkm.hss.admin.helper.responseparam.AdminUserListResponse;
@@ -395,9 +392,13 @@ public class AdminUserServiceImpl implements AdminUserService {
                     adminUserListResponse.setMobile(AdminUserSupporter.decryptMobile(adminUsers.get(i).getId(),adminUsers.get(i).getMobile()));
                 }
                 adminUserListResponse.setEmail(adminUsers.get(i).getEmail());
-                AdminRole adminRole = adminRoleDao.selectById(adminUsers.get(i).getRoleId());
-                if(adminRole!=null){
-                    adminUserListResponse.setRoleName(adminRole.getRoleName());
+                if(adminUsers.get(i).getIsMaster()== EnumIsMaster.MASTER.getCode()){
+                    adminUserListResponse.setRoleName("超级管理员");
+                }else{
+                    AdminRole adminRole = adminRoleDao.selectById(adminUsers.get(i).getRoleId());
+                    if(adminRole!=null){
+                        adminUserListResponse.setRoleName(adminRole.getRoleName());
+                    }
                 }
                 adminUserListResponse.setCreateTime(adminUsers.get(i).getCreateTime());
                 adminUserListResponse.setStatus(adminUsers.get(i).getStatus());
