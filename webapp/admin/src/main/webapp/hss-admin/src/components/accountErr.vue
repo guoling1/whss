@@ -54,19 +54,40 @@
             </li>
           </ul>
           <!--表格-->
-          <el-table v-loading.body="loading" style="font-size: 12px;margin:15px 0" :data="records" border>
+          <el-table v-loading.body="loading" style="font-size: 12px;margin:15px 0" :data="$records" border>
             <el-table-column type="index" width="62" label="序号" fixed="left"></el-table-column>
             <el-table-column prop="channelName" label="对账渠道" ></el-table-column>
-            <el-table-column prop="userNo" label="交易类型" ></el-table-column>
-            <el-table-column prop="userNo" label="交易时间" ></el-table-column>
-            <el-table-column prop="userNo" label="单边方向" ></el-table-column>
-            <el-table-column prop="userNo" label="交易流水" ></el-table-column>
-            <el-table-column prop="userNo" label="交易金额" ></el-table-column>
-            <el-table-column prop="userNo" label="处理结果" ></el-table-column>
-            <el-table-column prop="userNo" label="处理原因" ></el-table-column>
+            <el-table-column label="交易类型" >
+              <template scope="scope">
+                <span v-if="scope.row.tradeType==1">交易</span>
+                <span v-if="scope.row.tradeType==3">提现</span>
+              </template>
+            </el-table-column>
+            <el-table-column prop="tradeDate" label="交易时间" ></el-table-column>
+            <el-table-column label="单边方向">
+              <template scope="scope">
+                <span v-if="scope.row.side=='self'">我方单边</span>
+                <span v-if="scope.row.side=='other'">对方单边</span>
+              </template>
+            </el-table-column>
+            <el-table-column prop="orderSN" label="交易流水" ></el-table-column>
+            <el-table-column label="交易金额" align="right">
+              <template scope="scope">
+                {{scope.row.tradeAmount|toFix}}
+              </template>
+            </el-table-column>
+            <el-table-column label="处理结果" >
+              <template scope="scope">
+                <span v-if="scope.row.status==1">未处理</span>
+                <span v-if="scope.row.status==2">系统已处理</span>
+                <span v-if="scope.row.status==3">无需处理</span>
+                <span v-if="scope.row.status==4">已线下处理</span>
+              </template>
+            </el-table-column>
+            <el-table-column prop="handleReason" label="处理原因" ></el-table-column>
             <el-table-column label="操作" width="70">
               <template scope="scope">
-                <el-button @click="change(scope.row.id)" type="text" size="small" v-if="records[scope.$index].settleStatusValue!='结算成功'">处理</el-button>
+                <el-button @click="change(scope.row.id)" type="text" size="small" v-if="scope.row.status==1">处理</el-button>
               </template>
             </el-table-column>
           </el-table>
@@ -110,6 +131,7 @@
         pickerOptions: {},
         records:[],
         count:0,
+        date:'',
         query:{
           currentPage:1,
           pageSize:10,
@@ -139,7 +161,7 @@
         ],
         loading:true,
         isShow:false,
-        url:'http://192.168.1.43:8080/balance/external/detailList',
+        url:'http://192.168.1.99:8080/balance/external/detailList',
         handleUrl:'http://192.168.1.99:8080/balance/external/updateDetailReason'
       }
     },
@@ -151,13 +173,11 @@
         this.loading = true;
         this.$http.post(this.url,this.query)
           .then(function (res) {
-            console.log(res);
-            this.$data.records = res.data.records;
-            this.$data.count = res.data.count;
-            this.$data.total = res.data.totalPage;
-            this.$data.loading = false;
+            this.records = res.data.list;
+            this.count = res.data.page.totalRecord;
+            this.loading = false;
           },function (err) {
-            this.$data.loading = false;
+            this.loading = false;
             this.$message({
               showClose: true,
               message: err.statusMessage,
@@ -224,9 +244,9 @@
       }
     },
     computed:{
-      /*$records:function () {
+      $records:function () {
         return this.records;
-      }*/
+      }
     }
   }
 </script>

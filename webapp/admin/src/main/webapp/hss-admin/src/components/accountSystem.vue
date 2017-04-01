@@ -32,22 +32,33 @@
               <div class="btn btn-primary" @click="search">筛选</div>
             </li>
           </ul>
-          <!--表格-->
-          <el-table v-loading.body="loading" style="font-size: 12px;margin:15px 0" :data="records" border>
+          <el-table v-loading.body="loading" style="font-size: 12px;margin:15px 0" :data="$records" border>
             <el-table-column type="index" width="62" label="序号" fixed="left"></el-table-column>
-            <el-table-column prop="userName" label="通道名称" ></el-table-column>
-            <el-table-column prop="userNo" label="单边方向" ></el-table-column>
-            <el-table-column prop="userNo" label="类型" ></el-table-column>
-            <el-table-column prop="userNo" label="日期" ></el-table-column>
-            <el-table-column prop="userNo" label="对账单号" ></el-table-column>
-            <el-table-column prop="userNo" label="对账金额（元）" ></el-table-column>
-            <el-table-column prop="userNo" label="处理时间" ></el-table-column>
-            <el-table-column prop="userNo" label="处理结果" ></el-table-column>
-            <el-table-column prop="userNo" label="操作人" ></el-table-column>
-            <el-table-column prop="userNo" label="备注信息" ></el-table-column>
-            <el-table-column label="操作" width="70">
+            <el-table-column prop="channelName" label="通道名称" ></el-table-column>
+            <el-table-column label="交易类型" >
               <template scope="scope">
-                <!--<el-button @click.native.prevent="list(scope.$index)" type="text" size="small" v-if="records[scope.$index].settleStatusValue!='结算成功'">结算</el-button>-->
+                <span v-if="scope.row.tradeType==1">交易</span>
+                <span v-if="scope.row.tradeType==3">提现</span>
+              </template>
+            </el-table-column>
+            <el-table-column prop="tradeDate" label="交易时间" ></el-table-column>
+            <el-table-column prop="balanceCount" label="帐平笔数" align="right" ></el-table-column>
+            <el-table-column label="帐平金额（元）" align="right">
+              <template scope="scope">{{scope.row.balanceSum|toFix}}</template>
+            </el-table-column>
+            <el-table-column prop="exCount" label="对方单边笔数"  align="right"></el-table-column>
+            <el-table-column label="对方单边金额（元）"  align="right">
+              <template scope="scope">{{scope.row.exSum|toFix}}</template>
+            </el-table-column>
+            <el-table-column prop="inCountWD" label="己方单边笔数"  align="right"></el-table-column>
+            <el-table-column label="己方单边金额（元）"  align="right">
+              <template scope="scope">{{scope.row.inSumWD|toFix}}</template>
+            </el-table-column>
+            <el-table-column label="操作">
+              <template scope="scope">
+                  <el-button @click="handle" type="text" size="small" v-if="scope.row.batchNO==undefined">上传文件</el-button>
+                  <el-button @click="load(scope.row.batchNO)" type="text" size="small" v-if="scope.row.batchNO!=undefined">下载文件</el-button>
+                  <el-button @click="handle" type="text" size="small" v-if="scope.row.batchNO!=undefined">重新上传</el-button>
               </template>
             </el-table-column>
           </el-table>
@@ -62,27 +73,14 @@
                            :total="count">
             </el-pagination>
           </div>
-          <!--审核-->
-          <!--<div v-if="isShow">-->
-
-          <!--</div>-->
         </div>
-        <el-dialog title="修改商户归属信息" v-model="isShow">
+        <el-dialog title="上传对账文件" v-model="isShow">
           <el-form :label-position="right" label-width="150px">
-            <el-form-item label="处理方式：" width="80" style="margin-bottom: 0">
-              <el-select size="small" placeholder="请选择" v-model="handleQuery.changeType">
-                <el-option label="系统已处理" value="1"></el-option>
-                <el-option label="无需处理" value="2"></el-option>
-                <el-option label="已线下处理" value="3"></el-option>
-              </el-select>
-            </el-form-item>
-            <el-form-item label="备注信息：" width="120" style="margin-bottom: 0">
-              <el-input style="width: 70%" type="textarea" :rows="2" placeholder="非必填" v-model="textarea"></el-input>
-            </el-form-item>
-            <el-form-item label="备注信息：" width="120" style="margin-bottom: 0">
+            <el-form-item label="上传文件：" width="120" style="margin-bottom: 0">
               <el-upload
                 class="upload-demo"
-                action="//jsonplaceholder.typicode.com/posts/"
+                :action="uploadURL"
+                :data={id:id}
                 :on-preview="handlePreview"
                 :on-success="handleSuccess"
                 :on-remove="handleRemove"
@@ -92,10 +90,22 @@
               </el-upload>
             </el-form-item>
           </el-form>
-          <div slot="footer" class="dialog-footer" style="text-align: center">
-            <el-button type="primary" style="position: relative;top: -20px;">处 理</el-button>
-          </div>
         </el-dialog>
+        <div class="box box-info mask el-message-box" v-if="isMask">
+            <div class="maskCon">
+              <div class="head">
+                <div class="title">消息</div>
+                <i class="el-icon-close" @click="isMask=false"></i>
+              </div>
+              <div class="body">
+                <div>确定下载文件吗？</div>
+              </div>
+              <div class="foot">
+                <a href="javascript:void(0)" @click="isMask=false" class="el-button el-button--default">取消</a>
+                <a :href="loadURL+loadURL1" @click="isMask=false" class="el-button el-button-default el-button--primary ">下载</a>
+              </div>
+            </div>
+          </div>
       </div>
     </div>
   </div>
@@ -107,6 +117,7 @@
     data(){
       return{
         pickerOptions: {},
+        date:'',
         fileList: [],
         records:[],
         count:0,
@@ -118,44 +129,45 @@
           startDateStr:"",
           endDateStr:""
         },
-        handleQuery:{
-          changeType:'',
-          res:""
-        },
-        item_db:[
-          {label:'', value:'全部'},
-          {label:'', value:'我方单边'},
-          {label:'', value:'对方单边'}
-        ],
-        item_cl:[
-          {label:'', value:'全部'},
-          {label:'', value:'未处理'},
-          {label:'', value:'系统已处理'},
-          {label:'', value:'无需处理'},
-          {label:'', value:'已线下处理'}
-        ],
+        id:'',
         loading:true,
-        isShow:true,
-        index:'',
-        url:'http://192.168.1.99:8080/balance/external/statisticList'
+        isShow:false,
+        isMask:false,
+        loadURL1:'',
+        loadURL:'http://192.168.1.99:8080/balance/external/downloadxlsx/',
+        url:'http://192.168.1.99:8080/balance/external/statisticList',
+        uploadURL:'http://192.168.1.99:8080/balance/external/banlanceAccount'
       }
     },
     created: function () {
       this.getData()
     },
     methods: {
-      handlePreview(file) {
-        console.log(file);
+      handle: function(id,batchNO){
+        this.isShow=true;
+        this.id=id;
       },
-      handleSuccess(){
-         this.$router.push('/admin/records/accountData')
+      load:function (url) {
+        this.isMask = true;
+        this.loadURL1 = url;
+      },
+      handleSuccess(file){
+        this.$message({
+          showClose: true,
+          message: file.result.result,
+          type: 'info'
+        });
+        if(file.result.result=='操作成功'){
+          this.$router.push('/admin/record/accountData');
+          sessionStorage.setItem('data',JSON.stringify(file.result.jsonPayResult))
+        }
       },
       getData: function () {
         this.loading = true;
         this.$http.post(this.url,this.query)
           .then(function (res) {
-            this.$data.records = res.data.records;
-            this.$data.count = res.data.count;
+            this.$data.records = res.data.list;
+            this.$data.count = res.data.page.totalRecord;
             this.$data.loading = false;
           },function (err) {
             this.$data.loading = false;
@@ -167,18 +179,18 @@
           })
       },
       search: function () {
-        this.$data.query.currentPage = 1;
+        this.query.currentPage = 1;
         this.getData()
       },
       //每页条数改变
       handleSizeChange(val) {
-        this.$data.query.currentPage = 1;
+        this.query.currentPage = 1;
         this.$data.query.pageSize = val;
         this.getData()
       },
       //当前页改变时
       handleCurrentChange(val) {
-        this.$data.query.currentPage = val;
+        this.query.currentPage = val;
         this.getData()
       },
     },
@@ -205,10 +217,15 @@
           this.$data.query.endDateStr = '';
         }
       }
+    },
+    computed:{
+      $records:function () {
+        return this.records
+      }
     }
   }
 </script>
-<style scoped lang="less">
+<style scoped lang="less" rel="stylesheet/less">
   ul{
     padding: 0;
   }
@@ -219,5 +236,74 @@
   }
   .btn{
     font-size: 12px;
+  }
+  .mask {
+    z-index: 2020;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.45);
+  .maskCon {
+    margin: 250px auto;
+    text-align: left;
+    vertical-align: middle;
+    background-color: #fff;
+    width: 420px;
+    border-radius: 3px;
+    font-size: 16px;
+    overflow: hidden;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+  .head {
+    position: relative;
+    padding: 20px 20px 0;
+  .title {
+    padding-left: 0;
+    margin-bottom: 0;
+    font-size: 16px;
+    font-weight: 700;
+    height: 18px;
+    color: #333;
+  }
+  i {
+    font-family: element-icons !important;
+    speak: none;
+    font-style: normal;
+    font-weight: 400;
+    font-variant: normal;
+    text-transform: none;
+    vertical-align: baseline;
+    display: inline-block;
+    -webkit-font-smoothing: antialiased;
+    position: absolute;
+    top: 19px;
+    right: 20px;
+    color: #999;
+    cursor: pointer;
+    line-height: 20px;
+    text-align: center;
+  }
+  }
+  .body {
+    padding: 30px 20px;
+    color: #48576a;
+    font-size: 14px;
+    position: relative;
+  div {
+    margin: 0;
+    line-height: 1.4;
+    font-size: 14px;
+    color: #48576a;
+    font-weight: 400;
+  }
+  }
+  .foot {
+    padding: 10px 20px 15px;
+    text-align: right;
+  }
+  }
+
   }
 </style>
