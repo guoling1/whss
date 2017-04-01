@@ -74,7 +74,7 @@
         this.$router.push('/admin/record/accountSystem')
       },
       submit:function () {
-          this.$http.post(this.url,{batchNO:JSON.parse(sessionStorage.getItem('data')).balanceExternalStatistic.batchNO})
+          this.$http.post(this.url,{batchNO:JSON.parse(sessionStorage.getItem('data')).balanceExternalStatistic.batchNO},{emulateJSON: true})
             .then(res =>{
               this.$message({
                 showClose: true,
@@ -93,7 +93,7 @@
       },
       getData: function () {
         this.loading = true;
-        this.$http.post(this.url,this.query)
+        this.$http.post(this.url,this.query,{emulateJSON: true})
           .then(function (res) {
             this.records = res.data.list;
             this.count = res.data.page.totalRecord;

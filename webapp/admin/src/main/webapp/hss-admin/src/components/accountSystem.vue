@@ -122,8 +122,8 @@
         records:[],
         count:0,
         query:{
-          pageSize:"",
-          currentPage:"",
+          pageSize:10,
+          currentPage:1,
           channelName:"",
           tradeType:"",
           startDateStr:"",
@@ -164,7 +164,7 @@
       },
       getData: function () {
         this.loading = true;
-        this.$http.post(this.url,this.query)
+        this.$http.post(this.url,this.query,{emulateJSON: true})
           .then(function (res) {
             this.$data.records = res.data.list;
             this.$data.count = res.data.page.totalRecord;

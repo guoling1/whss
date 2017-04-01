@@ -171,7 +171,7 @@
     methods: {
       getData: function () {
         this.loading = true;
-        this.$http.post(this.url, this.query)
+        this.$http.post(this.url, this.query,{emulateJSON: true})
           .then(function (res) {
             this.records = res.data.list;
             this.count = res.data.page.totalRecord;
@@ -194,7 +194,7 @@
         this.handleQuery.id=id;
       },
       handle: function () {
-         this.$http.post(this.handleUrl,this.handleQuery)
+         this.$http.post(this.handleUrl,this.handleQuery,{emulateJSON: true})
            .then(res => {
              this.isShow = false;
              this.getData()
