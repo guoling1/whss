@@ -18,7 +18,7 @@
             </el-table-column>
             <el-table-column label="网关配置" min-width="100">
               <template scope="scope">
-                <div @click="setup(scope.$index)">配置</div>
+                <div @click="setup(scope.$index)" v-if="scope.$index==0")>配置</div>
               </template>
             </el-table-column>
           </el-table>
@@ -111,6 +111,9 @@
         })
     },
     methods: {
+      setup:function () {
+        this.$router.push('/admin/record/gateway')
+      },
       create: function () {
         this.$data.product.channels = [];
         this.$data.product.productId = this.$data.products[this.$data.id].productId;
