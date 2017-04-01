@@ -220,16 +220,21 @@ public class CodeController extends BaseController {
                         }
                     }else{
                         if(openId.equals(openIdTemp)){
-                            model.addAttribute("isSelf",1);
-                            url = "/sqb/paymentWx";
+//                            model.addAttribute("isSelf",1);
+//                            url = "/sqb/paymentWx";
+                            return "/sqb/collection";
                         }else{
-                            model.addAttribute("isSelf",2);
-                            url = "/sqb/paymentWx";
+//                            model.addAttribute("isSelf",2);
+//                            url = "/sqb/paymentWx";
+                            model.addAttribute("message", "该二维码已被注册");
+                            url = "/message";
                         }
                     }
                 }
                 if (agent.indexOf("aliapp") > -1) {// AliApp
-                    url = "/sqb/paymentZfb";
+                    model.addAttribute("message", "该二维码已被注册");
+                    url = "/message";
+//                    url = "/sqb/paymentZfb";
                 }
             }else if (EnumMerchantStatus.LOGIN.getId() == merchantInfo.getStatus()) {//注册
                 model.addAttribute("code", code);
