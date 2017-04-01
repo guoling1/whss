@@ -222,18 +222,18 @@ public class CodeController extends BaseController {
                         if(openId.equals(openIdTemp)){
 //                            model.addAttribute("isSelf",1);
 //                            url = "/sqb/paymentWx";
-                            return "/sqb/collection";
+                            url = "/sqb/collection";
                         }else{
 //                            model.addAttribute("isSelf",2);
 //                            url = "/sqb/paymentWx";
                             model.addAttribute("message", "该二维码已被注册");
-                            url = "/message";
+                            return "/message";
                         }
                     }
                 }
                 if (agent.indexOf("aliapp") > -1) {// AliApp
                     model.addAttribute("message", "该二维码已被注册");
-                    url = "/message";
+                    return "/message";
 //                    url = "/sqb/paymentZfb";
                 }
             }else if (EnumMerchantStatus.LOGIN.getId() == merchantInfo.getStatus()) {//注册
