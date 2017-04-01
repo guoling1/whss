@@ -171,7 +171,7 @@
     methods: {
       getData: function () {
         this.loading = true;
-        this.$http.post(this.url,this.query)
+        this.$http.post(this.url, this.query)
           .then(function (res) {
             this.records = res.data.list;
             this.count = res.data.page.totalRecord;
