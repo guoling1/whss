@@ -80,6 +80,7 @@
     name: 'gatewayAdd',
     data () {
       return {
+        isShow:true,
         productType:'',
         channelSign:'',
         viewChannelName:'',
@@ -111,16 +112,14 @@
           });
         })
       //若为查看详情
-      if (this.$route.query.id != undefined) {
-        this.$data.isShow = false;
-        this.$http.post('/admin/channel/list')
-          .then(function (res) {
-            this.query = res.data[this.$route.query.id];
-            this.name = res.data[this.$route.query.id].channelName;
-            this.query.isNeed = res.data[this.$route.query.id].isNeed;
-            this.query.id = res.data[this.$route.query.id].id;
-            this.query.status = res.data[this.$route.query.id].status;
-            this.query.accountId = res.data[this.$route.query.id].accountId;
+      if (this.$route.query.index != undefined) {
+        this.isShow = false;
+        this.$http.post('/admin/product/listGateway',{"productType":"hss"})
+          .then(res => {
+            this.productType = res.data[this.$route.query.index].productType;
+            this.viewChannelName = res.data[this.$route.query.index].viewChannelName;
+            this.channelSign = res.data[this.$route.query.index].channelSign;
+            this.id = res.data[this.$route.query.index].id;
           })
           .catch(err => {
             this.$message({
@@ -133,10 +132,10 @@
     },
     methods: {
       create: function () {
-        this.$http.post('/admin/paymentChannel/add', {
+        this.$http.post('/admin/product/addGateway', {
           productType:this.productType,
           channelSign:this.channelSign,
-          viewChannelName:this.viewChannelName
+          viewChannelName:this.viewChannelName,
         })
           .then(function (res) {
             this.$message({
@@ -157,6 +156,11 @@
         this.$router.push('/admin/record/gateway')
       },
       change: function () {
+        if(this.productType=='hss'){
+            this.productId = 6;
+        }else if(this.productType=='hsy'){
+          this.productId = 7;
+        }
         this.$http.post('/admin/product/updateGateway', {
           productType:this.productType,
           channelSign:this.channelSign,
