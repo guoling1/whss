@@ -4,7 +4,7 @@
       <div class="box" style="margin-top:15px;overflow: hidden">
         <div class="box-header">
           <h3 class="box-title">打款查询</h3>
-          <router-link to="/admin/record/withdrawal" class="  pull-right" style="margin-left: 20px">切换旧版</router-link>
+          <router-link to="/admin/record/withdrawal" class="pull-right" style="margin-left: 20px">切换旧版</router-link>
         </div>
         <div class="box-body">
           <!--筛选-->

@@ -4,9 +4,26 @@
       <div class="box">
         <div class="box-header">
           <h3 class="box-title">产品列表</h3>
+          <router-link class="btn btn-primary pull-right" to="/admin/record/productAdd" style="margin: 0 15px">
+            新增产品
+          </router-link>
         </div>
         <div class="box-body">
-          <div id="example2_wrapper" class="dataTables_wrapper form-inline dt-bootstrap">
+          <el-table max-height="637" style="font-size: 12px;margin-bottom: 15px;width: 50%" :data="products" border>
+            <el-table-column prop="productName" label="产品名称"></el-table-column>
+            <el-table-column label="通道配置" min-width="100">
+              <template scope="scope">
+                <div @click="detail(scope.$index)">查看详情</div>
+              </template>
+            </el-table-column>
+            <el-table-column label="网关配置" min-width="100">
+              <template scope="scope">
+                <div @click="setup(scope.$index)" v-if="scope.$index==0")>配置</div>
+              </template>
+            </el-table-column>
+          </el-table>
+          </el-table>
+          <!--<div id="example2_wrapper" class="dataTables_wrapper form-inline dt-bootstrap">
             <div class="row">
               <div class="col-sm-6"></div>
               <div class="col-sm-6"></div>
@@ -48,32 +65,12 @@
                 </table>
               </div>
             </div>
-            <!--分页-->
-            <!--<div class="row">
-              <div class="col-sm-5">
-              </div>
-              <div class="col-sm-7">
-                <div class="dataTables_paginate paging_simple_numbers" id="example2_paginate">
-                  <ul class="pagination" id="page">
-                    <li class="paginate_button previous disabled" id="example2_previous"><a href="#" aria-controls="example2" data-dt-idx="0" tabindex="0">上一页</a>
-                    </li>
-                    <li class="paginate_button active"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0">1</a></li>
-                    </li>
-                    <li class="paginate_button next" id="example2_next"><a href="#" aria-controls="example2" data-dt-idx="7" tabindex="0">下一页</a></li>
-                  </ul>
-                </div>
-              </div>
-            </div>-->
-          </div>
+          </div>-->
         </div>
         <!-- /.box-body -->
       </div>
       <!-- /.box -->
     </div>
-
-    <router-link class="btn btn-primary" to="/admin/record/productAdd" style="margin: 0 15px">
-      新增产品
-    </router-link>
   </div>
 </template>
 
@@ -99,7 +96,6 @@
       this.$http.post('/admin/product/list')
         .then(function (res) {
           this.$data.products = res.data;
-          console.log(this.$data.products)
           for (let i = 0; i < this.$data.products.length; i++) {
             for (let j = 0; j < this.$data.products[i].list.length; j++) {
               this.$data.products[i].list[j].paymentSettleRate = '';
@@ -115,6 +111,9 @@
         })
     },
     methods: {
+      setup:function () {
+        this.$router.push('/admin/record/gateway')
+      },
       create: function () {
         this.$data.product.channels = [];
         this.$data.product.productId = this.$data.products[this.$data.id].productId;
