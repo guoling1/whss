@@ -14,8 +14,8 @@
               </el-col>
               <el-col :span="6">
                 <div class="grid-content bg-purple-light">
-                  <el-select style="width: 100%" v-model="product" clearable placeholder="请选择" size="small">
-                    <el-option v-for="product in products" :label="product.productName" value="微信">微信</el-option>
+                  <el-select style="width: 100%" v-model="productType" clearable placeholder="请选择" size="small">
+                    <el-option v-for="product in products" :label="product.productName" :value="product.type"></el-option>
                   </el-select>
                 </div>
               </el-col>
@@ -27,7 +27,7 @@
               </el-col>
               <el-col :span="6">
                 <div class="grid-content bg-purple-light">
-                  <el-input size="small" v-model="showName" placeholder="最多5个字"></el-input>
+                  <el-input size="small" v-model="viewChannelName" placeholder="最多5个字"></el-input>
                 </div>
               </el-col>
               <el-col :span="8"></el-col>
@@ -38,8 +38,8 @@
               </el-col>
               <el-col :span="6">
                 <div class="grid-content bg-purple-light">
-                  <el-select style="width: 100%" v-model="channel" clearable placeholder="请选择" size="small">
-                    <el-option label="微信" value="微信">微信</el-option>
+                  <el-select style="width: 100%" v-model="channelSign" clearable placeholder="请选择" size="small">
+                    <el-option v-for="channel in channels" :label="channel.channelName" :value="channel.channelTypeSign"></el-option>
                   </el-select>
                 </div>
               </el-col>
@@ -80,17 +80,29 @@
     name: 'gatewayAdd',
     data () {
       return {
-        channel:'',
-        showName:'',
-        product:'',
+        productType:'',
+        channelSign:'',
+        viewChannelName:'',
         products:[],
-        channels:[]
+        channels:[],
+        productId:'',
+        id:''
       }
     },
     created: function () {
       this.$http.post('/admin/product/list')
         .then(function (res) {
           this.products = res.data;
+        }, function (err) {
+          this.$message({
+            showClose: true,
+            message: err.statusMessage,
+            type: 'error'
+          });
+        })
+      this.$http.post('/admin/channel/list')
+        .then(function (res) {
+          this.channels = res.data;
         }, function (err) {
           this.$message({
             showClose: true,
@@ -120,26 +132,19 @@
       }
     },
     methods: {
-      //创建一级代理
       create: function () {
-        this.query.channelName = this.name;
-        var isFalse = false;
-        for( var i in this.query){
-          if(this.query[i]==''){
-            isFalse = true;
-            break;
-          }else {
-            isFalse = false
-          }
-        }
-        this.$http.post('/admin/paymentChannel/add', this.$data.query)
+        this.$http.post('/admin/paymentChannel/add', {
+          productType:this.productType,
+          channelSign:this.channelSign,
+          viewChannelName:this.viewChannelName
+        })
           .then(function (res) {
             this.$message({
               showClose: true,
               message: '创建成功',
               type: 'success'
             });
-            this.$router.push('/admin/record/passList')
+            this.$router.push('/admin/record/gateway')
           }, function (err) {
             this.$message({
               showClose: true,
@@ -149,18 +154,23 @@
           })
       },
       goBack: function () {
-        this.$router.push('/admin/record/passList')
+        this.$router.push('/admin/record/gateway')
       },
-      //修改
       change: function () {
-        this.$http.post('/admin/channel/update', this.$data.query)
+        this.$http.post('/admin/product/updateGateway', {
+          productType:this.productType,
+          channelSign:this.channelSign,
+          viewChannelName:this.viewChannelName,
+          productId:this.productId,
+          id: this.id
+        })
           .then(function (res) {
             this.$message({
               showClose: true,
-              message: '修改成功',
+              message: '创建成功',
               type: 'success'
             });
-            this.$router.push('/admin/record/passList')
+            this.$router.push('/admin/record/gateway')
           }, function (err) {
             this.$message({
               showClose: true,

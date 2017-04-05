@@ -12,11 +12,11 @@
               <label class="title">网关模板:</label>
               <el-table max-height="637" style="font-size:12px;width:80%;display: inline-table;vertical-align: top" :data="records" border>
                 <el-table-column type="index" width="70" label="序号"></el-table-column>
-                <el-table-column prop="productName" label="展示名称"></el-table-column>
-                <el-table-column prop="productName" label="通道名称"></el-table-column>
+                <el-table-column prop="viewChannelName" label="展示名称"></el-table-column>
+                <el-table-column prop="channelShortName" label="通道名称"></el-table-column>
                 <el-table-column label="操作" min-width="100">
                   <template scope="scope">
-                    <div @click="detail(scope.$index)">修改</div>
+                    <div @click="detail(scope.row.productId,scope.row.id)">修改</div>
                   </template>
                 </el-table-column>
               </el-table>
@@ -40,10 +40,9 @@
       }
     },
     created: function () {
-      this.$http.post('/admin/user/getRoleDetail',{})
+      this.$http.post('/admin/product/listGateway',{"productType":"hss"})
         .then(res => {
-          this.tableData = res.data.list;
-          this.roleName = res.data.roleName;
+          this.records = res.data;
         })
         .catch(err => {
           this.$message({
@@ -88,6 +87,9 @@
             type: 'error'
           });
         })
+      },
+      detail: function (productId, id) {
+        this.$router.push({path:'/admin/record/gatewayAdd',query:{productId:productId,id:id}})
       }
     }
   }
