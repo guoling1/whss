@@ -1,19 +1,21 @@
 package com.jkm.hss.controller.channel;
 
+import com.google.common.base.Optional;
+import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.jkm.base.common.entity.CommonResponse;
 import com.jkm.hss.account.sevice.AccountService;
 import com.jkm.hss.controller.BaseController;
 import com.jkm.hss.helper.request.ProductAddRequest;
 import com.jkm.hss.helper.response.ProductListResponse;
+import com.jkm.hss.product.entity.BasicChannel;
 import com.jkm.hss.product.entity.Product;
 import com.jkm.hss.product.entity.ProductChannelDetail;
-import com.jkm.hss.product.enums.EnumPayChannelSign;
-import com.jkm.hss.product.enums.EnumProductChannelDetailStatus;
-import com.jkm.hss.product.enums.EnumProductStatus;
-import com.jkm.hss.product.enums.EnumProductType;
+import com.jkm.hss.product.entity.ProductChannelGateway;
+import com.jkm.hss.product.enums.*;
 import com.jkm.hss.product.servcie.BasicChannelService;
 import com.jkm.hss.product.servcie.ProductChannelDetailService;
+import com.jkm.hss.product.servcie.ProductChannelGatewayService;
 import com.jkm.hss.product.servcie.ProductService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,6 +45,8 @@ public class ProductController extends BaseController {
     private ProductChannelDetailService productChannelDetailService;
     @Autowired
     private AccountService accountService;
+    @Autowired
+    private ProductChannelGatewayService productChannelGatewayService;
     /**
      * 录入产品
      *
@@ -155,28 +159,77 @@ public class ProductController extends BaseController {
         return CommonResponse.simpleResponse(-1, "fail");
     }
 
+
     /**
-     * 获取产品中添加通道列表
+     * 新增网关通道
+     * @param request
      * @return
      */
-//    @ResponseBody
-//    @RequestMapping(value = "/listChannel", method = RequestMethod.POST)
-//    public CommonResponse listChannel() {
-//        try{
-//            final List<BasicChannel> listChannel = this.basicChannelService.selectListChannel();
-//            if (listChannel.size()>0){
-//                for (int i=0;i<listChannel.size();i++){
-//                    BigDecimal basicTradeRate = listChannel.get(i).getBasicTradeRate();
-//                    BigDecimal res = new BigDecimal(100);
-////                    basicTradeRate.multiply(res).doubleValue();
-//                    listChannel.get(i).setBasicTradeRate(basicTradeRate.multiply(res));
-//                }
-//            }
-//            return  CommonResponse.objectResponse(1, "success", listChannel);
-//        }catch (final Throwable throwable){
-//            log.error("获取通道列表异常,异常信息:" + throwable.getMessage());
-//        }
-//        return CommonResponse.simpleResponse(-1, "fail");
-//    }
+    @ResponseBody
+    @RequestMapping(value = "/addGateway", method = RequestMethod.POST)
+    public CommonResponse addProductChannelGateway(@RequestBody final ProductChannelGateway request){
+
+        try{
+            final Optional<BasicChannel> basicChannelOptional =
+                    this.basicChannelService.selectByChannelTypeSign(request.getChannelSign());
+            Preconditions.checkArgument(basicChannelOptional.isPresent(), "基础通道不存在");
+            final Product product = this.productService.selectByType(request.getProductType()).get();
+            final BasicChannel basicChannel = basicChannelOptional.get();
+            request.setChannelShortName(basicChannel.getChannelShortName());
+            request.setProductId(product.getId());
+            request.setStatus(EnumProductChannelGatewayStatus.USEING.getId());
+
+            this.productChannelGatewayService.addNew(request);
+            return CommonResponse.simpleResponse(1, "success");
+        }catch (final Throwable e){
+
+            log.error("添加网关失败，异常信息:" + e.getMessage());
+            return CommonResponse.simpleResponse(-1, "fail");
+        }
+    }
+
+    /**
+     * 网关通道列表
+     * @param
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/listGateway", method = RequestMethod.POST)
+    public CommonResponse listProductChannelGateway(@RequestBody final ProductChannelGateway request){
+
+        try{
+            final Product product = this.productService.selectByType(request.getProductType()).get();
+            final List<ProductChannelGateway> list =
+                    this.productChannelGatewayService.selectByProductTypeAndProductId(EnumProductType.of(request.getProductType()), product.getId());
+            return CommonResponse.objectResponse(1, "success", list);
+        }catch (final Throwable e){
+
+            log.error("获取网关列表失败，异常信息:" + e.getMessage());
+            return CommonResponse.simpleResponse(-1, "fail");
+        }
+    }
+
+    /**
+     * 修改网关通道
+     * @param request
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/updateGateway", method = RequestMethod.POST)
+    public CommonResponse updateProductChannelGateway(@RequestBody final ProductChannelGateway request){
+
+
+        try{
+            final BasicChannel basicChannel = this.basicChannelService.selectByChannelTypeSign(request.getChannelSign()).get();
+            request.setChannelShortName(basicChannel.getChannelShortName());
+            request.setStatus(EnumProductChannelGatewayStatus.USEING.getId());
+            this.productChannelGatewayService.update(request);
+            return CommonResponse.simpleResponse(1, "success");
+        }catch (final Throwable e){
+
+            log.error("修改网关失败，异常信息:" + e.getMessage());
+            return CommonResponse.simpleResponse(-1, "fail");
+        }
+    }
 
 }

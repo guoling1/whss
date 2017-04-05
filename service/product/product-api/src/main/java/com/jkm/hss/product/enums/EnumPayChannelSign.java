@@ -14,6 +14,10 @@ import java.util.List;
  */
 public enum EnumPayChannelSign {
 
+    /**
+     * 维护通道
+     */
+    UN_USE(100, "un_use", EnumPaymentChannel.WECHAT_PAY, "维护通道", EnumUpperChannel.SAOMI, false),
     //#################################阳光万维########################################
     /**
      * 阳光微信

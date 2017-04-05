@@ -79,8 +79,14 @@ public class BasicChannel extends BaseEntity{
      * {@link com.jkm.hss.product.enums.EnumBasicSettleType}
      */
     private String basicSettleType;
+
     /**
-     * 预估额度
+     * 预估额度(最小)
+     */
+    private BigDecimal limitMinAmount;
+
+    /**
+     * 预估额度(最大)
      */
     private BigDecimal limitAmount;
 
