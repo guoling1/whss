@@ -1,7 +1,9 @@
 package com.jkm.hss.admin.dao;
 
 import com.jkm.hss.admin.entity.AdminUser;
+import com.jkm.hss.admin.helper.requestparam.AdminDealerUserListRequest;
 import com.jkm.hss.admin.helper.requestparam.AdminUserListRequest;
+import com.jkm.hss.admin.helper.responseparam.AdminDealerUser;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
@@ -101,6 +103,20 @@ public interface AdminUserDao {
      * @return
      */
     List<AdminUser> selectAdminUserListByPageParams(AdminUserListRequest adminUserListRequest);
+
+    /**
+     * 代理商员工数量
+     * @param adminDealerUserListRequest
+     * @return
+     */
+    long selectAdminUserDealerCountByPageParams(AdminDealerUserListRequest adminDealerUserListRequest);
+
+    /**
+     * 代理商分页查询员工列表
+     * @param adminDealerUserListRequest
+     * @return
+     */
+    List<AdminDealerUser> selectAdminUserDealerListByPageParams(AdminDealerUserListRequest adminDealerUserListRequest);
 
     /**
      *

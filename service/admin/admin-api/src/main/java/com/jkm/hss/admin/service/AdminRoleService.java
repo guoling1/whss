@@ -51,6 +51,21 @@ public interface AdminRoleService {
      */
     List<AdminRoleListPageResponse> selectAdminRoleListByPageParams(AdminRoleListRequest adminRoleListRequest);
 
+
+    /**
+     * 根据分页查询代理商角色个数
+     * @param adminRoleListRequest
+     * @return
+     */
+    long selectAdminDealerRoleCountByPageParams(AdminRoleListRequest adminRoleListRequest);
+
+    /**
+     * 分页查询代理商角色列表
+     * @param adminRoleListRequest
+     * @return
+     */
+    List<AdminRoleListPageResponse> selectAdminDealerRoleListByPageParams(AdminRoleListRequest adminRoleListRequest);
+
     /**
      *分类查询角色列表
      * @param type
@@ -84,6 +99,12 @@ public interface AdminRoleService {
      * @return
      */
     PageModel<AdminRoleListPageResponse> roleListByPage(AdminRoleListRequest adminRoleListRequest);
+    /**
+     * 代理商角色列表
+     * @param adminRoleListRequest
+     * @return
+     */
+    PageModel<AdminRoleListPageResponse> roleDealerListByPage(AdminRoleListRequest adminRoleListRequest);
 
     /**
      * 根据角色编码和类型查询登录菜单

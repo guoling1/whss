@@ -14,6 +14,10 @@ public class AdminRoleListPageResponse {
      */
     private long id;
     /**
+     * 类型
+     */
+    private int type;
+    /**
      * 角色名称
      */
     private String roleName;

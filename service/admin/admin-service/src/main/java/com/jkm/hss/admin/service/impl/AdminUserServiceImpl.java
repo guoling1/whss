@@ -13,7 +13,10 @@ import com.jkm.hss.admin.dao.AdminUserDao;
 import com.jkm.hss.admin.entity.*;
 import com.jkm.hss.admin.enums.*;
 import com.jkm.hss.admin.helper.AdminUserSupporter;
+import com.jkm.hss.admin.helper.requestparam.AdminDealerUserListRequest;
 import com.jkm.hss.admin.helper.requestparam.AdminUserListRequest;
+import com.jkm.hss.admin.helper.responseparam.AdminDealerUser;
+import com.jkm.hss.admin.helper.responseparam.AdminUserDealerListResponse;
 import com.jkm.hss.admin.helper.responseparam.AdminUserListResponse;
 import com.jkm.hss.admin.service.*;
 import lombok.extern.slf4j.Slf4j;
@@ -410,7 +413,54 @@ public class AdminUserServiceImpl implements AdminUserService {
         pageModel.setRecords(list);
         return pageModel;
     }
-
+    /**
+     * boss代理商员工列表
+     *
+     * @param adminDealerUserListRequest
+     * @return
+     */
+    @Override
+    public PageModel<AdminUserDealerListResponse> userDealerList(AdminDealerUserListRequest adminDealerUserListRequest) {
+        final PageModel<AdminUserDealerListResponse> pageModel = new PageModel<>(adminDealerUserListRequest.getPageNo(), adminDealerUserListRequest.getPageSize());
+        adminDealerUserListRequest.setOffset(pageModel.getFirstIndex());
+        adminDealerUserListRequest.setCount(pageModel.getPageSize());
+        if(!StringUtil.isNullOrEmpty(adminDealerUserListRequest.getMobile())){
+            adminDealerUserListRequest.setMobile(AdminUserSupporter.encryptMobile(adminDealerUserListRequest.getMobile()));
+        }
+        final long count = this.adminUserDao.selectAdminUserDealerCountByPageParams(adminDealerUserListRequest);
+        final List<AdminDealerUser> adminUsers = this.adminUserDao.selectAdminUserDealerListByPageParams(adminDealerUserListRequest);
+        List<AdminUserDealerListResponse> list = new ArrayList<AdminUserDealerListResponse>();
+        if(adminUsers.size()>0){
+            for(int i=0;i<adminUsers.size();i++){
+                AdminUserDealerListResponse adminUserListResponse = new AdminUserDealerListResponse();
+                adminUserListResponse.setId(adminUsers.get(i).getId());
+                adminUserListResponse.setMarkCode(adminUsers.get(i).getMarkCode());
+                adminUserListResponse.setUsername(adminUsers.get(i).getUsername());
+                adminUserListResponse.setRealname(adminUsers.get(i).getRealname());
+                adminUserListResponse.setBelongDealer(adminUsers.get(i).getBelongDealer());
+                adminUserListResponse.setRoleId(adminUsers.get(i).getRoleId());
+                if(adminUsers.get(i).getMobile()!=null&&!"".equals(adminUsers.get(i).getMobile())){
+                    adminUserListResponse.setMobile(AdminUserSupporter.decryptMobile(adminUsers.get(i).getId(),adminUsers.get(i).getMobile()));
+                }
+                adminUserListResponse.setEmail(adminUsers.get(i).getEmail());
+                if(adminUsers.get(i).getIsMaster()== EnumIsMaster.MASTER.getCode()){
+                    adminUserListResponse.setRoleName("超级管理员");
+                }else{
+                    AdminRole adminRole = adminRoleDao.selectById(adminUsers.get(i).getRoleId());
+                    if(adminRole!=null){
+                        adminUserListResponse.setRoleName(adminRole.getRoleName());
+                    }
+                }
+                adminUserListResponse.setCreateTime(adminUsers.get(i).getCreateTime());
+                adminUserListResponse.setStatus(adminUsers.get(i).getStatus());
+                adminUserListResponse.setIsMaster(adminUsers.get(i).getIsMaster());
+                list.add(adminUserListResponse);
+            }
+        }
+        pageModel.setCount(count);
+        pageModel.setRecords(list);
+        return pageModel;
+    }
     /**
      * @param username
      * @param id

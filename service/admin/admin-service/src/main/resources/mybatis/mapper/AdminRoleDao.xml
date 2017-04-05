@@ -77,6 +77,34 @@
         </where>
     </select>
 
+    <select id="selectAdminDealerRoleCountByPageParams" resultType="java.lang.Long">
+        SELECT COUNT(1) FROM tb_admin_role
+        <where>
+            type in (2,3)
+            <if test="roleName != null and roleName!=''">
+                AND `role_name` LIKE "%"#{roleName}"%"
+            </if>
+        </where>
+    </select>
+
+    <select id="selectAdminDealerRoleListByPageParams" resultType="com.jkm.hss.admin.helper.responseparam.AdminRoleListPageResponse">
+        SELECT id,role_name,update_time,
+        CASE
+        WHEN status = 1 THEN
+        '正常'
+        ELSE
+        '禁用'
+        END as statusName
+        FROM tb_admin_role
+        <where>
+            type in (2,3)
+            <if test="roleName != null and roleName!=''">
+                AND `role_name` LIKE "%"#{roleName}"%"
+            </if>
+            ORDER BY create_time DESC LIMIT #{offset},#{count}
+        </where>
+    </select>
+
     <select id="selectAdminRoleList" resultType="com.jkm.hss.admin.helper.responseparam.AdminRoleListResponse">
         SELECT id,role_name FROM tb_admin_role where type=#{type} and status=1
     </select>

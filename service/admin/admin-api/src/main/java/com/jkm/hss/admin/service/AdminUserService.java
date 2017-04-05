@@ -3,7 +3,9 @@ package com.jkm.hss.admin.service;
 import com.google.common.base.Optional;
 import com.jkm.base.common.entity.PageModel;
 import com.jkm.hss.admin.entity.*;
+import com.jkm.hss.admin.helper.requestparam.AdminDealerUserListRequest;
 import com.jkm.hss.admin.helper.requestparam.AdminUserListRequest;
+import com.jkm.hss.admin.helper.responseparam.AdminUserDealerListResponse;
 import com.jkm.hss.admin.helper.responseparam.AdminUserListResponse;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
@@ -173,6 +175,12 @@ public interface AdminUserService {
      * @return
      */
     PageModel<AdminUserListResponse> userList(AdminUserListRequest adminUserListRequest);
+    /**
+     * 员工列表
+     * @param adminDealerUserListRequest
+     * @return
+     */
+    PageModel<AdminUserDealerListResponse> userDealerList(AdminDealerUserListRequest adminDealerUserListRequest);
 
     /**
      *

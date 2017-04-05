@@ -1,5 +1,6 @@
 package com.jkm.hss.controller.admin;
 
+import com.aliyun.oss.OSSClient;
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
@@ -8,8 +9,17 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.jkm.base.common.entity.CommonResponse;
 import com.jkm.base.common.entity.PageModel;
+import com.jkm.base.common.util.CookieUtil;
+import com.jkm.base.common.util.ValidateUtils;
+import com.jkm.hss.admin.entity.AdminRole;
 import com.jkm.hss.admin.entity.AdminUser;
+import com.jkm.hss.admin.enums.EnumAdminType;
+import com.jkm.hss.admin.enums.EnumAdminUserStatus;
 import com.jkm.hss.admin.enums.EnumIsMaster;
+import com.jkm.hss.admin.helper.AdminUserSupporter;
+import com.jkm.hss.admin.helper.requestparam.*;
+import com.jkm.hss.admin.helper.responseparam.*;
+import com.jkm.hss.admin.service.AdminRoleService;
 import com.jkm.hss.admin.service.AdminUserService;
 import com.jkm.hss.controller.BaseController;
 import com.jkm.hss.dealer.entity.Dealer;
@@ -26,6 +36,7 @@ import com.jkm.hss.dealer.helper.response.SecondDealerResponse;
 import com.jkm.hss.dealer.service.DealerChannelRateService;
 import com.jkm.hss.dealer.service.DealerService;
 import com.jkm.hss.dealer.service.DealerUpgerdeRateService;
+import com.jkm.hss.helper.ApplicationConsts;
 import com.jkm.hss.helper.request.FirstLevelDealerFindRequest;
 import com.jkm.hss.helper.response.*;
 import com.jkm.hss.product.entity.BasicChannel;
@@ -45,8 +56,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
 import java.math.BigDecimal;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -81,6 +95,10 @@ public class DealerController extends BaseController {
 
     @Autowired
     private AdminUserService adminUserService;
+    @Autowired
+    private AdminRoleService adminRoleService;
+    @Autowired
+    private OSSClient ossClient;
 
     /**
      * 按手机号和名称模糊匹配
@@ -805,5 +823,215 @@ public class DealerController extends BaseController {
         }else{
             return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", "");
         }
+    }
+
+
+
+
+
+
+
+    //用户和权限管理
+    /**
+     * 用户列表
+     * @param adminDealerUserListRequest
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/userList", method = RequestMethod.POST)
+    public CommonResponse userList (@RequestBody AdminDealerUserListRequest adminDealerUserListRequest) {
+        PageModel<AdminUserDealerListResponse> adminUserPageModel = adminUserService.userDealerList(adminDealerUserListRequest);
+        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功",adminUserPageModel);
+    }
+
+    /**
+     * 禁用用户
+     * @param adminUserRequest
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/disableUser", method = RequestMethod.POST)
+    public CommonResponse disableUser (final HttpServletResponse response, @RequestBody AdminUserRequest adminUserRequest) {
+        adminUserService.disableUser(adminUserRequest.getId());
+        Optional<AdminUser> adminUserOptional = adminUserService.getAdminUserById(adminUserRequest.getId());
+        return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "禁用成功");
+    }
+
+    /**
+     * 启用用户
+     * @param adminUserRequest
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/activeUser", method = RequestMethod.POST)
+    public CommonResponse activeUser (@RequestBody AdminUserRequest adminUserRequest) {
+        adminUserService.activeUser(adminUserRequest.getId());
+        return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "启用成功");
+    }
+
+
+    /**
+     * 编辑用户
+     * @param adminUser
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/updateUser", method = RequestMethod.POST)
+    public CommonResponse updateUser (@RequestBody AdminUser adminUser) {
+        if(adminUser.getId()<=0){
+            return CommonResponse.simpleResponse(-1, "登录名不存在");
+        }
+        Optional<AdminUser> adminUserOptional = this.adminUserService.getAdminUserById(adminUser.getId());
+        if(!adminUserOptional.isPresent()){
+            return CommonResponse.simpleResponse(-1, "登录名不存在");
+        }
+        Optional<Dealer> dealerOptional = dealerService.getById(adminUserOptional.get().getDealerId());
+        if(!dealerOptional.isPresent()){
+            return CommonResponse.simpleResponse(-1, "登录名不存在");
+        }
+
+        int type = EnumAdminType.FIRSTDEALER.getCode();
+        if(dealerOptional.get().getLevel()==1){
+            type=EnumAdminType.FIRSTDEALER.getCode();
+        }
+        if(dealerOptional.get().getLevel()==2){
+            type=EnumAdminType.SECONDDEALER.getCode();
+        }
+        final long proxyNameCount = this.adminUserService.selectByUsernameAndTypeUnIncludeNow(adminUser.getUsername(),type, adminUser.getId());
+        if (proxyNameCount > 0) {
+            return CommonResponse.simpleResponse(-1, "登录名已经存在");
+        }
+        adminUserService.update(adminUser);
+        return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "修改成功");
+    }
+
+
+    /**
+     * 员工详情
+     * @param userId
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/userDetail/{userId}", method = RequestMethod.GET)
+    public CommonResponse userDetail (@PathVariable final long userId) {
+        Optional<AdminUser> adminUserOptional = adminUserService.getAdminUserById(userId);
+        if(!adminUserOptional.isPresent()){
+            return  CommonResponse.simpleResponse(-1,"该员工不存在");
+        }
+        Date expiration = new Date(new Date().getTime() + 30*60*1000);
+        AdminUserResponse adminUserResponse = new AdminUserResponse();
+        if(adminUserOptional.get().getMobile()!=null&&!"".equals(adminUserOptional.get().getMobile())){
+            adminUserResponse.setMobile(AdminUserSupporter.decryptMobile(userId,adminUserOptional.get().getMobile()));
+        }
+        if(adminUserOptional.get().getIdCard()!=null&&!"".equals(adminUserOptional.get().getIdCard())){
+            adminUserResponse.setIdCard(AdminUserSupporter.decryptIdentity(adminUserOptional.get().getIdCard()));
+        }
+        if(adminUserOptional.get().getIdentityFacePic()!=null&&!"".equals(adminUserOptional.get().getIdentityFacePic())){
+            adminUserResponse.setIdentityFacePic(adminUserOptional.get().getIdentityFacePic());
+            URL url = ossClient.generatePresignedUrl(ApplicationConsts.getApplicationConfig().ossBucke(), adminUserResponse.getIdentityFacePic(),expiration);
+            adminUserResponse.setRealIdentityFacePic(url.toString());
+        }
+        if(adminUserOptional.get().getIdentityOppositePic()!=null&&!"".equals(adminUserOptional.get().getIdentityOppositePic())){
+            adminUserResponse.setIdentityOppositePic(adminUserOptional.get().getIdentityOppositePic());
+            URL url = ossClient.generatePresignedUrl(ApplicationConsts.getApplicationConfig().ossBucke(), adminUserResponse.getIdentityOppositePic(),expiration);
+            adminUserResponse.setRealIdentityOppositePic(url.toString());
+        }
+        adminUserResponse.setId(adminUserOptional.get().getId());
+        adminUserResponse.setStatus(adminUserOptional.get().getStatus());
+        adminUserResponse.setUsername(adminUserOptional.get().getUsername());
+        adminUserResponse.setRealname(adminUserOptional.get().getRealname());
+        adminUserResponse.setEmail(adminUserOptional.get().getEmail());
+        adminUserResponse.setCompanyId(adminUserOptional.get().getCompanyId());
+        adminUserResponse.setDeptId(adminUserOptional.get().getDeptId());
+        adminUserResponse.setRoleId(adminUserOptional.get().getRoleId());
+        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功",adminUserResponse);
+    }
+
+
+    /**
+     * 角色详情
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/getRoleDetail", method = RequestMethod.POST)
+    public CommonResponse getRoleDetail (@RequestBody AdminRoleAndTypeDetailRequest adminRoleAndTypeDetailRequest) {
+        RoleDetailResponse roleDetailResponse = new RoleDetailResponse();
+        if(adminRoleAndTypeDetailRequest.getId()>0){
+            Optional<AdminRole> adminRoleOptional = adminRoleService.selectById(adminRoleAndTypeDetailRequest.getId());
+            if(!adminRoleOptional.isPresent()){
+                return CommonResponse.simpleResponse(-1, "角色不存在");
+            }
+            roleDetailResponse.setRoleId(adminRoleAndTypeDetailRequest.getId());
+            roleDetailResponse.setRoleName(adminRoleOptional.get().getRoleName());
+        }
+        List<AdminMenuOptRelListResponse> adminMenuOptRelListResponses = adminRoleService.getPrivilege(adminRoleAndTypeDetailRequest.getType(),adminRoleAndTypeDetailRequest.getId());
+        roleDetailResponse.setList(adminMenuOptRelListResponses);
+        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功",roleDetailResponse);
+    }
+
+    /**
+     * 添加或修改角色
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/saveRole", method = RequestMethod.POST)
+    public CommonResponse saveRole (@RequestBody RoleDetailRequest roleDetailRequest) {
+        if(roleDetailRequest.getType()<=1){
+            return CommonResponse.simpleResponse(-1, "请选择代理商类型");
+        }
+        if(roleDetailRequest.getRoleName()==null||"".equals(roleDetailRequest.getRoleName())){
+            return CommonResponse.simpleResponse(-1, "请输入角色名");
+        }
+        if(roleDetailRequest.getList()==null||roleDetailRequest.getList().size()<=0){
+            return CommonResponse.simpleResponse(-1, "请选择菜单");
+        }
+        if(roleDetailRequest.getRoleId()<=0){
+            Optional<AdminRole> adminRoleOptional = adminRoleService.selectByRoleNameAndType(roleDetailRequest.getRoleName(),roleDetailRequest.getType());
+            if(adminRoleOptional.isPresent()){
+                return CommonResponse.simpleResponse(-1, "角色名已存在");
+            }
+        }else{
+            Optional<AdminRole> adminRoleOptional = adminRoleService.selectByRoleNameAndTypeUnIncludeNow(roleDetailRequest.getRoleName(),roleDetailRequest.getType(),roleDetailRequest.getRoleId());
+            if(adminRoleOptional.isPresent()){
+                return CommonResponse.simpleResponse(-1, "角色名已存在");
+            }
+        }
+        adminRoleService.save(roleDetailRequest);
+        return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "操作成功");
+    }
+
+    /**
+     * 分页查询角色列表
+     * @param adminRoleListRequest
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/roleListByPage", method = RequestMethod.POST)
+    public CommonResponse roleListByPage (@RequestBody AdminRoleListRequest adminRoleListRequest) {
+        PageModel<AdminRoleListPageResponse> adminUserPageModel = adminRoleService.roleDealerListByPage(adminRoleListRequest);
+        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功",adminUserPageModel);
+    }
+
+    /**
+     * 禁用角色
+     * @param adminRoleDetailRequest
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/disableRole", method = RequestMethod.POST)
+    public CommonResponse disableRole (final HttpServletResponse response, @RequestBody AdminRoleDetailRequest adminRoleDetailRequest) {
+        adminRoleService.disableRole(adminRoleDetailRequest.getId());
+        return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "禁用成功");
+    }
+    /**
+     * 启用角色
+     * @param adminRoleDetailRequest
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/activeRole", method = RequestMethod.POST)
+    public CommonResponse activeRole (@RequestBody AdminRoleDetailRequest adminRoleDetailRequest) {
+        adminRoleService.enableRole(adminRoleDetailRequest.getId());
+        return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "启用成功");
     }
 }

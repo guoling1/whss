@@ -84,6 +84,29 @@ public class AdminRoleServiceImpl implements AdminRoleService{
         return adminRoleDao.selectAdminRoleListByPageParams(adminRoleListRequest);
     }
 
+
+    /**
+     * 根据分页查询角色个数
+     *
+     * @param adminRoleListRequest
+     * @return
+     */
+    @Override
+    public long selectAdminDealerRoleCountByPageParams(AdminRoleListRequest adminRoleListRequest) {
+        return adminRoleDao.selectAdminDealerRoleCountByPageParams(adminRoleListRequest);
+    }
+
+    /**
+     * 分页查询角色列表
+     *
+     * @param adminRoleListRequest
+     * @return
+     */
+    @Override
+    public List<AdminRoleListPageResponse> selectAdminDealerRoleListByPageParams(AdminRoleListRequest adminRoleListRequest) {
+        return adminRoleDao.selectAdminDealerRoleListByPageParams(adminRoleListRequest);
+    }
+
     /**
      * 分类查询角色列表
      *
@@ -371,6 +394,24 @@ public class AdminRoleServiceImpl implements AdminRoleService{
         adminRoleListRequest.setCount(pageModel.getPageSize());
         long total = this.selectAdminRoleCountByPageParams(adminRoleListRequest);
         List<AdminRoleListPageResponse> adminRoleListPageResponses = this.selectAdminRoleListByPageParams(adminRoleListRequest);
+        pageModel.setCount(total);
+        pageModel.setRecords(adminRoleListPageResponses);
+        return pageModel;
+    }
+
+    /**
+     * 角色列表
+     *
+     * @param adminRoleListRequest
+     * @return
+     */
+    @Override
+    public PageModel<AdminRoleListPageResponse> roleDealerListByPage(AdminRoleListRequest adminRoleListRequest) {
+        PageModel<AdminRoleListPageResponse> pageModel = new PageModel<>(adminRoleListRequest.getPageNo(),adminRoleListRequest.getPageSize());
+        adminRoleListRequest.setOffset(pageModel.getFirstIndex());
+        adminRoleListRequest.setCount(pageModel.getPageSize());
+        long total = this.selectAdminDealerRoleCountByPageParams(adminRoleListRequest);
+        List<AdminRoleListPageResponse> adminRoleListPageResponses = this.selectAdminDealerRoleListByPageParams(adminRoleListRequest);
         pageModel.setCount(total);
         pageModel.setRecords(adminRoleListPageResponses);
         return pageModel;
