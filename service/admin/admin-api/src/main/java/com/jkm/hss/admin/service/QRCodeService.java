@@ -482,4 +482,13 @@ public interface QRCodeService {
      * @return
      */
     int getSecondActivateCount(long secondLevelDealerId,String sysType);
+
+    /**
+     * 修改代理商信息
+     * @param code
+     * @param firstDealerId
+     * @param secondDealerId
+     * @return
+     */
+    int updateDealerInfo(String code, long firstDealerId, long secondDealerId);
 }

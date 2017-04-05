@@ -194,23 +194,23 @@
               <!--</li>-->
             </ul>
           </li>
-          <!--<li class="treeview">-->
-            <!--<a href="#">-->
-              <!--<i class="fa fa-bank"></i> <span>商户管理</span>-->
-              <!--<span class="pull-right-container">-->
-                <!--<i class="fa fa-angle-left pull-right"></i>-->
-                <!--&lt;!&ndash; <small class="label pull-right bg-green">new</small> &ndash;&gt;-->
-              <!--</span>-->
-            <!--</a>-->
-            <!--<ul class="treeview-menu">-->
-              <!--<li>-->
-                <!--<router-link to="merchants"><i class="fa fa-circle-o"></i> 所有商户</router-link>-->
-              <!--</li>-->
-              <!--<li>-->
-                <!--<router-link to="transaction"><i class="fa fa-circle-o"></i> 交易管理</router-link>-->
-              <!--</li>-->
-            <!--</ul>-->
-          <!--</li>-->
+          <li class="treeview">
+            <a href="#">
+              <i class="fa fa-bank"></i> <span>商户管理</span>
+              <span class="pull-right-container">
+                <i class="fa fa-angle-left pull-right"></i>
+                <!-- <small class="label pull-right bg-green">new</small> -->
+              </span>
+            </a>
+            <ul class="treeview-menu">
+              <li>
+                <router-link to="merchants"><i class="fa fa-circle-o"></i> 所有商户</router-link>
+              </li>
+              <li>
+                <router-link to="transaction"><i class="fa fa-circle-o"></i> 交易管理</router-link>
+              </li>
+            </ul>
+          </li>
           <li class="treeview" v-show="dealerLeavel!=2">
             <a href="#" v-if="list.设备管理!=undefined">
               <i class="fa fa-calculator"></i> <span>设备管理</span>

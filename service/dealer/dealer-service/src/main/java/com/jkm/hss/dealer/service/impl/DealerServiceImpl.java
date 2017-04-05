@@ -35,6 +35,9 @@ import com.jkm.hss.merchant.entity.MerchantChannelRate;
 import com.jkm.hss.merchant.entity.MerchantInfo;
 import com.jkm.hss.merchant.entity.MerchantInfoResponse;
 import com.jkm.hss.merchant.entity.OrderRecord;
+import com.jkm.hss.merchant.enums.EnumMerchantStatus;
+import com.jkm.hss.merchant.enums.EnumSource;
+import com.jkm.hss.merchant.helper.MerchantSupport;
 import com.jkm.hss.merchant.helper.request.MerchantChannelRateRequest;
 import com.jkm.hss.merchant.service.MerchantChannelRateService;
 import com.jkm.hss.merchant.service.MerchantInfoService;
@@ -58,6 +61,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -120,31 +124,31 @@ public class DealerServiceImpl implements DealerService {
     @Transactional
     public Map<String, Triple<Long, BigDecimal, BigDecimal>> shallProfit(final EnumProductType type,final String orderNo, final BigDecimal tradeAmount,
 
-                                                                     final int channelSign, final long merchantId) {
+                                                                         final int channelSign, final long merchantId) {
 
-       if (type.getId().equals(EnumProductType.HSS.getId())){
+        if (type.getId().equals(EnumProductType.HSS.getId())){
 
-           //好收收收单分润
-           try{
-               final MerchantInfo merchantInfo = this.merchantInfoService.selectById(merchantId).get();
-               //判断商户是否是直属商户
-               if (merchantInfo.getFirstMerchantId() == 0){
-                   //直属商户
-                   return this.getShallProfitDirect(orderNo, tradeAmount, channelSign, merchantId);
-               }else {
-                   //推荐商户
-                   return this.getShallProfitInDirect(orderNo, tradeAmount, channelSign, merchantId);
-               }
+            //好收收收单分润
+            try{
+                final MerchantInfo merchantInfo = this.merchantInfoService.selectById(merchantId).get();
+                //判断商户是否是直属商户
+                if (merchantInfo.getFirstMerchantId() == 0){
+                    //直属商户
+                    return this.getShallProfitDirect(orderNo, tradeAmount, channelSign, merchantId);
+                }else {
+                    //推荐商户
+                    return this.getShallProfitInDirect(orderNo, tradeAmount, channelSign, merchantId);
+                }
 
-           }catch (final Throwable throwable){
-               log.error("交易订单号["+ orderNo + "]分润异常，异常信息：" + throwable.getMessage());
-               throw  throwable;
-           }
-       }else{
+            }catch (final Throwable throwable){
+                log.error("交易订单号["+ orderNo + "]分润异常，异常信息：" + throwable.getMessage());
+                throw  throwable;
+            }
+        }else{
 
-           //好收银收单分润
-           return this.getShallProfitDirectToHsy(orderNo, tradeAmount, channelSign, merchantId);
-       }
+            //好收银收单分润
+            return this.getShallProfitDirectToHsy(orderNo, tradeAmount, channelSign, merchantId);
+        }
 
 
     }
@@ -473,11 +477,11 @@ public class DealerServiceImpl implements DealerService {
                     if (b.compareTo(new BigDecimal("0")) == 1){
 
                         final BigDecimal  d = a.subtract(b);
-                            if (d.compareTo( new BigDecimal("0")) == 1){
-                                secondSelfMerchantRate = d;
-                            }else {
-                                secondSelfMerchantRate = new BigDecimal("0");
-                            }
+                        if (d.compareTo( new BigDecimal("0")) == 1){
+                            secondSelfMerchantRate = d;
+                        }else {
+                            secondSelfMerchantRate = new BigDecimal("0");
+                        }
                     }else{
                         secondSelfMerchantRate = a;
                     }
@@ -532,7 +536,7 @@ public class DealerServiceImpl implements DealerService {
         final Dealer secondDealer = this.dealerDao.selectById(merchantInfo.getSecondDealerId());
         //上级商户 = （商户费率 -  上级商户）* 商户交易金额（如果商户费率低于或等于上级商户，那么上级商户无润）
         final MerchantInfo firstMerchantInfo = this.merchantInfoService.selectById(merchantInfo.getFirstMerchantId()).get();
-            //上级商户的费率
+        //上级商户的费率
         final BigDecimal firstMerchantRate = getMerchantRate(channelSign, firstMerchantInfo);
         final BigDecimal firstMerchantMoney;
         final BigDecimal firstMerchantSelfRate;
@@ -1462,11 +1466,11 @@ public class DealerServiceImpl implements DealerService {
         final List<DistributeCodeCount> distributeCodeCounts = this.qrCodeService.getDistributeCodeCount(dealerId, secondLevelDealerIds);
         final Map<Long, DistributeCodeCount> distributeCodeCountMap = Maps.uniqueIndex(distributeCodeCounts,
                 new Function<DistributeCodeCount, Long>() {
-            @Override
-            public Long apply(DistributeCodeCount input) {
-                return input.getSecondLevelDealerId();
-            }
-        });
+                    @Override
+                    public Long apply(DistributeCodeCount input) {
+                        return input.getSecondLevelDealerId();
+                    }
+                });
         final List<ActiveCodeCount> activeCodeCounts = this.qrCodeService.getActiveCodeCount(dealerId, secondLevelDealerIds);
 
         final Map<Long, ActiveCodeCount> activeCodeCountMap = Maps.uniqueIndex(activeCodeCounts, new Function<ActiveCodeCount, Long>() {
@@ -1477,12 +1481,12 @@ public class DealerServiceImpl implements DealerService {
         });
         final List<Triple<Dealer, DistributeCodeCount, ActiveCodeCount>> results = Lists.transform(secondLevelDealers,
                 new Function<Dealer, Triple<Dealer, DistributeCodeCount, ActiveCodeCount>>() {
-            @Override
-            public Triple<Dealer, DistributeCodeCount, ActiveCodeCount> apply(Dealer input) {
-                return Triple.of(input, distributeCodeCountMap.get(input.getId()),
-                        activeCodeCountMap.get(input.getId()));
-            }
-        });
+                    @Override
+                    public Triple<Dealer, DistributeCodeCount, ActiveCodeCount> apply(Dealer input) {
+                        return Triple.of(input, distributeCodeCountMap.get(input.getId()),
+                                activeCodeCountMap.get(input.getId()));
+                    }
+                });
         return results;
     }
 
@@ -2090,7 +2094,7 @@ public class DealerServiceImpl implements DealerService {
     @Override
     @Transactional
     public List<DistributeQRCodeRecord> distributeQRCodeByCode(final int type, final String sysType,final long dealerId, final long toDealerId,
-                                                         final String startCode, final String endCode) {
+                                                               final String startCode, final String endCode) {
         final List<DistributeQRCodeRecord> records = new ArrayList<>();
         final List<QRCode> qrCodeList = this.qrCodeService.getUnDistributeCodeByDealerIdAndRangeCodeAndSysType(dealerId, startCode, endCode,sysType);
         if (CollectionUtils.isEmpty(qrCodeList)) {
@@ -2309,9 +2313,59 @@ public class DealerServiceImpl implements DealerService {
         return response;
     }
 
+    /**
+     * 根据代理商编码查询代理商信息
+     *
+     * @param markCode
+     * @return
+     */
+    @Override
+    public Optional<Dealer> getDealerByMarkCode(String markCode) {
+        return Optional.fromNullable(dealerDao.getDealerByMarkCode(markCode));
+    }
     @Override
     public List<QueryMerchantResponse> dealerMerchantList(QueryMerchantRequest req) {
         List<QueryMerchantResponse> list = this.dealerDao.dealerMerchantList(req);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        if (list.size()>0){
+            for (int i=0;i<list.size();i++){
+                if (list.get(i).getCreateTime()!=null){
+                    String dates = sdf.format(list.get(i).getCreateTime());
+                    list.get(i).setCreateTimes(dates);
+                }
+                if (list.get(i).getAuthenticationTime()!=null){
+                    String dates = sdf.format(list.get(i).getAuthenticationTime());
+                    list.get(i).setAuthenticationTimes(dates);
+                }
+                if (list.get(i).getMobile()!=null&&!list.get(i).getMobile().equals("")){
+                    list.get(i).setMobile(MerchantSupport.decryptMobile(list.get(i).getMobile()));
+                }
+                if (list.get(i).getSource()==0){
+                    list.get(i).setRegistered(EnumSource.SCAN.getValue());
+                }
+                if (list.get(i).getSource()==1){
+                    list.get(i).setRegistered(EnumSource.RECOMMEND.getValue());
+                }
+                if (list.get(i).getSource()==2){
+                    list.get(i).setRegistered(EnumSource.DEALERRECOMMEND.getValue());
+                }
+                if(list.get(i).getStatus()==0){
+                    list.get(i).setStatusValue(EnumMerchantStatus.INIT.getName());
+                }
+                if(list.get(i).getStatus()==1){
+                    list.get(i).setStatusValue(EnumMerchantStatus.ONESTEP.getName());
+                }
+                if(list.get(i).getStatus()==2){
+                    list.get(i).setStatusValue(EnumMerchantStatus.REVIEW.getName());
+                }
+                if(list.get(i).getStatus()==3||list.get(i).getStatus()==6){
+                    list.get(i).setStatusValue(EnumMerchantStatus.PASSED.getName());
+                }
+                if(list.get(i).getStatus()==4){
+                    list.get(i).setStatusValue(EnumMerchantStatus.UNPASSED.getName());
+                }
+            }
+        }
         return list;
     }
 
@@ -2319,5 +2373,56 @@ public class DealerServiceImpl implements DealerService {
     public int dealerMerchantCount(QueryMerchantRequest req) {
 
         return this.dealerDao.dealerMerchantCount(req);
+    }
+
+    @Override
+    public List<QueryMerchantResponse> dealerMerchantSecondList(QueryMerchantRequest req) {
+        List<QueryMerchantResponse> list = this.dealerDao.dealerMerchantSecondList(req);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        if (list.size()>0){
+            for (int i=0;i<list.size();i++){
+                if (list.get(i).getCreateTime()!=null){
+                    String dates = sdf.format(list.get(i).getCreateTime());
+                    list.get(i).setCreateTimes(dates);
+                }
+                if (list.get(i).getAuthenticationTime()!=null){
+                    String dates = sdf.format(list.get(i).getAuthenticationTime());
+                    list.get(i).setAuthenticationTimes(dates);
+                }
+                if (list.get(i).getMobile()!=null&&!list.get(i).getMobile().equals("")){
+                    list.get(i).setMobile(MerchantSupport.decryptMobile(list.get(i).getMobile()));
+                }
+                if (list.get(i).getSource()==0){
+                    list.get(i).setRegistered(EnumSource.SCAN.getValue());
+                }
+                if (list.get(i).getSource()==1){
+                    list.get(i).setRegistered(EnumSource.RECOMMEND.getValue());
+                }
+                if (list.get(i).getSource()==2){
+                    list.get(i).setRegistered(EnumSource.DEALERRECOMMEND.getValue());
+                }
+                if(list.get(i).getStatus()==0){
+                    list.get(i).setStatusValue(EnumMerchantStatus.INIT.getName());
+                }
+                if(list.get(i).getStatus()==1){
+                    list.get(i).setStatusValue(EnumMerchantStatus.ONESTEP.getName());
+                }
+                if(list.get(i).getStatus()==2){
+                    list.get(i).setStatusValue(EnumMerchantStatus.REVIEW.getName());
+                }
+                if(list.get(i).getStatus()==3||list.get(i).getStatus()==6){
+                    list.get(i).setStatusValue(EnumMerchantStatus.PASSED.getName());
+                }
+                if(list.get(i).getStatus()==4){
+                    list.get(i).setStatusValue(EnumMerchantStatus.UNPASSED.getName());
+                }
+            }
+        }
+        return list;
+    }
+
+    @Override
+    public int dealerMerchantSecondCount(QueryMerchantRequest req) {
+        return this.dealerDao.dealerMerchantSecondCount(req);
     }
 }

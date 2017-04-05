@@ -75,11 +75,11 @@ public class MergeTableSettlementDateServiceImpl implements MergeTableSettlement
         this.assertInit();
         tradeDate = DateFormatUtil.parse(DateFormatUtil.format(tradeDate, DateFormatUtil.yyyy_MM_dd), DateFormatUtil.yyyy_MM_dd);
         final List<Triple<Date, Date, Date>> triples = map.get(upperChannel);
-        if (CollectionUtils.isEmpty(triples)) {
+        if (!CollectionUtils.isEmpty(triples)) {
             for (Triple<Date, Date, Date> triple : triples) {
                 if (triple.getLeft().compareTo(tradeDate) <= 0
                         && triple.getMiddle().compareTo(tradeDate) >= 0) {
-                    return triple.getLeft();
+                    return triple.getRight();
                 }
             }
         }
