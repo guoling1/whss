@@ -1,6 +1,5 @@
 package com.jkm.hss.merchant.dao;
 
-import com.jkm.hss.merchant.entity.Website;
 import com.jkm.hss.merchant.entity.WebsiteRequest;
 
 /**
@@ -13,5 +12,11 @@ public interface WebsiteDao {
      * @param req
      * @return
      */
-    Website selectWebsite(WebsiteRequest req);
+    int selectWebsite(WebsiteRequest req);
+
+    /**
+     * 保存用户提交资料
+     * @param req
+     */
+    void insertWebsite(WebsiteRequest req);
 }

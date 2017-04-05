@@ -1,6 +1,5 @@
 package com.jkm.hss.merchant.service;
 
-import com.jkm.hss.merchant.entity.Website;
 import com.jkm.hss.merchant.entity.WebsiteRequest;
 
 /**
@@ -13,5 +12,11 @@ public interface WebsiteService {
      * @param req
      * @return
      */
-    Website selectWebsite(WebsiteRequest req);
+    int selectWebsite(WebsiteRequest req);
+
+    /**
+     * 保存用户提交信息
+     * @param req
+     */
+    void insertWebsite(WebsiteRequest req);
 }

@@ -1,7 +1,6 @@
 package com.jkm.hss.merchant.service.impl;
 
 import com.jkm.hss.merchant.dao.WebsiteDao;
-import com.jkm.hss.merchant.entity.Website;
 import com.jkm.hss.merchant.entity.WebsiteRequest;
 import com.jkm.hss.merchant.service.WebsiteService;
 
@@ -13,8 +12,12 @@ public class WebsiteServiceImpl implements WebsiteService {
     private WebsiteDao  websiteDao;
 
     @Override
-    public Website selectWebsite(WebsiteRequest req) {
-        Website res = websiteDao.selectWebsite(req);
-        return res;
+    public int selectWebsite(WebsiteRequest req) {
+        return this.websiteDao.selectWebsite(req);
+    }
+
+    @Override
+    public void insertWebsite(WebsiteRequest req) {
+        this.websiteDao.insertWebsite(req);
     }
 }

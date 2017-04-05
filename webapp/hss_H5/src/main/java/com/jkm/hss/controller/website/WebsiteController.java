@@ -2,7 +2,6 @@ package com.jkm.hss.controller.website;
 
 import com.jkm.base.common.entity.CommonResponse;
 import com.jkm.hss.controller.BaseController;
-import com.jkm.hss.merchant.entity.Website;
 import com.jkm.hss.merchant.entity.WebsiteRequest;
 import com.jkm.hss.merchant.service.WebsiteService;
 import org.springframework.stereotype.Controller;
@@ -28,11 +27,11 @@ public class WebsiteController extends BaseController {
     public CommonResponse websiteSave(@RequestBody WebsiteRequest req,HttpServletRequest request){
         String ipAddress = getIpAddress(request);
         req.setIp(ipAddress);
-        Website response = websiteService.selectWebsite(req);
-        if (response!=null){
+        int response = websiteService.selectWebsite(req);
+        if (response > 20){
             return CommonResponse.simpleResponse(1, "您已多次使用该ip提交");
         }
-//        websiteService.insertWebsite(req);
+        websiteService.insertWebsite(req);
         return CommonResponse.simpleResponse(1, "success");
 
     }
