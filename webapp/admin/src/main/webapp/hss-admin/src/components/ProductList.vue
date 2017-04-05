@@ -13,12 +13,12 @@
             <el-table-column prop="productName" label="产品名称"></el-table-column>
             <el-table-column label="通道配置" min-width="100">
               <template scope="scope">
-                <div @click="detail(scope.$index)">查看详情</div>
+                <el-button type="text" @click="detail(scope.$index)">查看详情</el-button>
               </template>
             </el-table-column>
             <el-table-column label="网关配置" min-width="100">
               <template scope="scope">
-                <div @click="setup(scope.$index)" v-if="scope.$index==0")>配置</div>
+                <el-button type="text" @click="setup(scope.$index)" v-if="scope.$index==0">配置</el-button>
               </template>
             </el-table-column>
           </el-table>
