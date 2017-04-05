@@ -32,4 +32,7 @@
         SELECT * FROM tb_product_channel_gateway
         WHERE product_type = #{type} AND product_id = #{productId} AND status = 2
     </select>
+    <select id="selectByChannelSign" resultType="com.jkm.hss.product.entity.ProductChannelGateway">
+        SELECT * FROM tb_product_channel_gateway WHERE channel_sign = #{channelSign} order by id limit 1
+    </select>
 </mapper>

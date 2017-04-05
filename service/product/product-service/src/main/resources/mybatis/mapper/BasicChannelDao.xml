@@ -20,6 +20,7 @@
         is_need,
         channel_company,
         lowest_fee,
+        is_use,
         remarks,
         status
         )VALUES(
@@ -40,6 +41,7 @@
         #{isNeed},
         #{channelCompany},
         #{lowestFee},
+        #{isUse},
         #{remarks},
         #{status}
         )
@@ -64,6 +66,7 @@
         status = #{status},
         channel_code = #{channelCode},
         lowest_fee = #{lowestFee},
+        is_use = #{isUse},
         remarks = #{remarks}
         WHERE id = #{id}
     </update>

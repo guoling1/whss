@@ -51,4 +51,15 @@ public class ProductChannelGatewayServiceImpl implements ProductChannelGatewaySe
 
         this.productChannelGatewayDao.update(productChannelGateway);
     }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param channelTypeSign
+     * @return
+     */
+    @Override
+    public ProductChannelGateway selectByChannelSign(int channelTypeSign) {
+        return this.productChannelGatewayDao.selectByChannelSign(channelTypeSign);
+    }
 }

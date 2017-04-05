@@ -18,4 +18,6 @@ public interface ProductChannelGatewayDao {
     List<ProductChannelGateway> selectByProductTypeAndProductId(@Param("type") String type, @Param("productId") long productId);
 
     void update(ProductChannelGateway productChannelGateway);
+
+    ProductChannelGateway selectByChannelSign(int channelTypeSign);
 }

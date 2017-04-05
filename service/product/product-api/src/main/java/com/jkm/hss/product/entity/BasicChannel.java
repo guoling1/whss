@@ -92,6 +92,8 @@ public class BasicChannel extends BaseEntity{
 
     /**
      * 是否需要商户入网
+     *
+     * {@link com.jkm.base.common.enums.EnumBoolean}
      */
     private int isNeed;
 
@@ -104,6 +106,14 @@ public class BasicChannel extends BaseEntity{
      * 最低手续费
      */
     private BigDecimal lowestFee;
+
+    /**
+     *  是否维护
+     *  {@link com.jkm.base.common.enums.EnumBoolean}
+     *
+     *  1是0否
+     */
+    private int isUse;
 
     /**
      * 备注

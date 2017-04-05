@@ -31,4 +31,11 @@ public interface ProductChannelGatewayService {
      * @param productChannelGateway
      */
     void update(ProductChannelGateway productChannelGateway);
+
+    /**
+     * 查询
+     * @param channelTypeSign
+     * @return
+     */
+    ProductChannelGateway selectByChannelSign(int channelTypeSign);
 }
