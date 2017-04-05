@@ -62,3 +62,11 @@ Vue.filter('filter_amount', function (value) {
   }
   return value;
 });
+
+Vue.filter('filter_toFix', function (value) {
+    if(value!=null){
+      return parseFloat(value).toFixed(2);
+    }else {
+      return value
+    }
+});

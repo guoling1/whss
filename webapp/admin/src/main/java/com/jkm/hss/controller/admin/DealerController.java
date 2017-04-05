@@ -779,4 +779,21 @@ public class DealerController extends BaseController {
             return CommonResponse.simpleResponse(-1, e.getMessage());
         }
     }
+
+
+    /**
+     * 根据代理商编码查询代理商信息
+     * @param request
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "getDealerByMarkCode", method = RequestMethod.POST)
+    public CommonResponse getDealerByMarkCode(@RequestBody DealerMarkCodeRequest request) {
+        Optional<Dealer> dealerOptional = dealerService.getDealerByMarkCode(request.getMarkCode());
+        if(dealerOptional.isPresent()){
+            return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", dealerOptional.get().getProxyName());
+        }else{
+            return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", "");
+        }
+    }
 }

@@ -243,6 +243,12 @@ public class MerchantInfoResponse {
     private Date createTime;
 
     /**
+     * 注册时间
+     * datetime
+     */
+    private Date createTimes;
+
+    /**
      * 商户状态
      */
     private Integer status;

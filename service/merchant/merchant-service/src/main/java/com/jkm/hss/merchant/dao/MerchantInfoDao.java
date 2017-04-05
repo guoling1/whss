@@ -2,6 +2,7 @@ package com.jkm.hss.merchant.dao;
 
 import com.google.common.base.Optional;
 import com.jkm.hss.merchant.entity.MerchantInfo;
+import com.jkm.hss.merchant.helper.request.ChangeDealerRequest;
 import com.jkm.hss.merchant.helper.request.ContinueBankInfoRequest;
 import com.jkm.hss.merchant.helper.request.MerchantInfoAddRequest;
 import org.apache.ibatis.annotations.Param;
@@ -176,4 +177,10 @@ public interface MerchantInfoDao {
      * @return
      */
     int toAuthen(@Param("isAuthen") String isAuthen, @Param("id") long id);
+    /**
+     * 商户切换代理
+     * @param changeDealerRequest
+     * @return
+     */
+    int updateDealerInfo(ChangeDealerRequest changeDealerRequest);
 }
