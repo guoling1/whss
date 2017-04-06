@@ -153,45 +153,66 @@
             <!--<li class="active"><a href="index2.html"><i class="fa fa-circle-o"></i> Dashboard v2</a></li>-->
             <!--</ul>-->
           </li>
-          <li class="treeview">
-            <a v-if="list.我的分润!=undefined" href="#">
-              <i class="fa fa-money"></i>
-              <span>我的分润</span>
+          <li class="treeview" v-for="(menu,index) in menus">
+            <a href="#">
+              <i :class="classList[index]"></i>
+              <span>{{menu.menuName}}</span>
               <span class="pull-right-container">
                 <i class="fa fa-angle-left pull-right"></i>
                 <!-- <small class="label pull-right bg-green">new</small> -->
               </span>
             </a>
             <ul class="treeview-menu">
-              <li v-if="list.分润明细!=undefined">
-                <router-link to="profits_detail"><i class="fa fa-circle-o"></i>分润明细</router-link>
+              <li v-for="item in menu.children">
+                <router-link :to="item.menuUrl"><i class="fa fa-circle-o"></i>{{item.menuName}}</router-link>
               </li>
               <!--<li>-->
-                <!--<router-link to="settlement"><i class="fa fa-circle-o"></i>结算记录</router-link>-->
+              <!--<router-link to="settlement"><i class="fa fa-circle-o"></i>结算记录</router-link>-->
               <!--</li>-->
-              <li v-if="list.余额提现!=undefined">
+              <!--<li>-->
+                <!--<router-link to="balance_withdrawal"><i class="fa fa-circle-o"></i>余额提现</router-link>-->
+              <!--</li>-->
+            </ul>
+          </li>
+          <!--<li class="treeview">
+            <a href="#">
+              <i class="fa fa-money"></i>
+              <span>我的分润</span>
+              <span class="pull-right-container">
+                <i class="fa fa-angle-left pull-right"></i>
+                &lt;!&ndash; <small class="label pull-right bg-green">new</small> &ndash;&gt;
+              </span>
+            </a>
+            <ul class="treeview-menu">
+              <li>
+                <router-link to="profits_detail"><i class="fa fa-circle-o"></i>分润明细</router-link>
+              </li>
+              &lt;!&ndash;<li>&ndash;&gt;
+                &lt;!&ndash;<router-link to="settlement"><i class="fa fa-circle-o"></i>结算记录</router-link>&ndash;&gt;
+              &lt;!&ndash;</li>&ndash;&gt;
+              <li>
                 <router-link to="balance_withdrawal"><i class="fa fa-circle-o"></i>余额提现</router-link>
               </li>
             </ul>
           </li>
           <li class="treeview" v-show="dealerLeavel!=2">
-            <a href="#" v-if="list.下级代理!=undefined">
+            <a href="#">
               <i class="fa fa-users"></i> <span>下级代理</span>
               <span class="pull-right-container">
                 <i class="fa fa-angle-left pull-right"></i>
-                <!-- <small class="label pull-right bg-green">new</small> -->
+                &lt;!&ndash; <small class="label pull-right bg-green">new</small> &ndash;&gt;
               </span>
             </a>
             <ul class="treeview-menu">
-              <li v-if="list.所有代理商!=undefined">
+              <li>
                 <router-link to="dealer_list"><i class="fa fa-circle-o"></i> 所有代理商</router-link>
               </li>
-              <!--<li>-->
-                <!--<router-link to="dealer_settlement"><i class="fa fa-circle-o"></i> 代理结算记录</router-link>-->
-              <!--</li>-->
-              <!--<li>-->
-                <!--<router-link to="dealer_account"><i class="fa fa-circle-o"></i> 代理商账户</router-link>-->
-              <!--</li>-->
+              &lt;!&ndash;<li>&ndash;&gt;
+                &lt;!&ndash;<router-link to="dealer_settlement"><i class="fa fa-circle-o"></i> 代理结算记录</router-link>&ndash;&gt;
+              &lt;!&ndash;</li>&ndash;&gt;
+              &lt;!&ndash;<li>&ndash;&gt;
+                &lt;!&ndash;<router-link to="dealer_account"><i class="fa fa-circle-o"></i> 代理商账户</router-link>&ndash;&gt;
+              &lt;!&ndash;</li>&ndash;&gt;
             </ul>
           </li>
           <li class="treeview">
@@ -199,7 +220,7 @@
               <i class="fa fa-bank"></i> <span>商户管理</span>
               <span class="pull-right-container">
                 <i class="fa fa-angle-left pull-right"></i>
-                <!-- <small class="label pull-right bg-green">new</small> -->
+                &lt;!&ndash; <small class="label pull-right bg-green">new</small> &ndash;&gt;
               </span>
             </a>
             <ul class="treeview-menu">
@@ -212,42 +233,42 @@
             </ul>
           </li>
           <li class="treeview" v-show="dealerLeavel!=2">
-            <a href="#" v-if="list.设备管理!=undefined">
+            <a href="#">
               <i class="fa fa-calculator"></i> <span>设备管理</span>
               <span class="pull-right-container">
                 <i class="fa fa-angle-left pull-right"></i>
-                <!-- <small class="label pull-right bg-green">new</small> -->
+                &lt;!&ndash; <small class="label pull-right bg-green">new</small> &ndash;&gt;
               </span>
             </a>
             <ul class="treeview-menu">
-              <li v-if="list.分配二维码!=undefined">
+              <li>
                 <router-link to="distribution_qrcode"><i class="fa fa-circle-o"></i> 分配二维码</router-link>
               </li>
-              <!--<li>-->
-                <!--<router-link to="qrcode_distribution"><i class="fa fa-circle-o"></i> 二维码分配记录</router-link>-->
-              <!--</li>-->
-              <li v-if="list.所有二维码!=undefined">
+              &lt;!&ndash;<li>&ndash;&gt;
+                &lt;!&ndash;<router-link to="qrcode_distribution"><i class="fa fa-circle-o"></i> 二维码分配记录</router-link>&ndash;&gt;
+              &lt;!&ndash;</li>&ndash;&gt;
+              <li>
                 <router-link to="qrcode"><i class="fa fa-circle-o"></i> 所有二维码</router-link>
               </li>
             </ul>
           </li>
           <li class="treeview">
-            <a href="#" v-if="list.员工权限管理!=undefined">
+            <a href="#">
               <i class="fa fa-user-plus"></i> <span>员工权限管理</span>
               <span class="pull-right-container">
                 <i class="fa fa-angle-left pull-right"></i>
-                <!-- <small class="label pull-right bg-green">new</small> -->
+                &lt;!&ndash; <small class="label pull-right bg-green">new</small> &ndash;&gt;
               </span>
             </a>
             <ul class="treeview-menu">
-              <li v-if="list.员工管理!=undefined">
+              <li>
                 <router-link to="employees"><i class="fa fa-circle-o"></i> 员工管理</router-link>
               </li>
-              <!--<li v-if="list.角色管理!=undefined">-->
-                <!--<router-link to="roles"><i class="fa fa-circle-o"></i> 角色管理</router-link>-->
-              <!--</li>-->
+              &lt;!&ndash;<li>&ndash;&gt;
+                &lt;!&ndash;<router-link to="roles"><i class="fa fa-circle-o"></i> 角色管理</router-link>&ndash;&gt;
+              &lt;!&ndash;</li>&ndash;&gt;
             </ul>
-          </li>
+          </li>-->
           <!--<li class="treeview">-->
             <!--<a href="#">-->
               <!--<i class="fa fa-user-secret"></i> <span>我的信息</span>-->
@@ -295,7 +316,8 @@
         dealerInfo: '',
         position: '',
         dealerLeavel: '',
-        list:{}
+        list:{},
+        classList:['fa fa-money','fa fa-users','fa fa-bank','fa fa-calculator','fa fa-user-plus']
       }
     },
     beforeRouteEnter (to, from, next){
@@ -327,15 +349,7 @@
       if (bIsIpad || bIsIphoneOs || bIsMidp || bIsUc7 || bIsUc || bIsAndroid || bIsCE || bIsWM) {
         $("a[href!='#']").attr("data-toggle", "offcanvas");
       }
-      let list = JSON.parse(sessionStorage.getItem('login'));
-      if(list!=null){
-        for(let i=0;i<list.length;i++){
-          this.list[list[i].menuName]=1;
-          for(let j=0;j<list[i].children.length;j++) {
-            this.list[list[i].children[j].menuName]=1
-          }
-        }
-      }
+      this.menus = JSON.parse(sessionStorage.getItem('login'));
     },
     methods: {
       logout: function () {

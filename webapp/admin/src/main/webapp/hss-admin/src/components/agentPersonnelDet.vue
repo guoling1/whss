@@ -33,9 +33,9 @@
                 </div>
               </el-col>
               <el-col :span="8">
-                <!--<div class="grid-content bg-purple-light">-->
-                  <!--<el-button v-if="!isShow" type="text" @click="dialogFormVisible = true" style="margin-left: 15px">修改密码</el-button>-->
-                <!--</div>-->
+                <div class="grid-content bg-purple-light">
+                  <el-button v-if="!isShow" type="text" @click="dialogFormVisible = true" style="margin-left: 15px">修改密码</el-button>
+                </div>
               </el-col>
             </el-row>
             <!--修改密码-->
@@ -358,15 +358,7 @@
       },
       //修改密码
       resetPw: function () {
-        var reg = /(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,32}/;
-        if (!reg.test(this.password)) {
-          this.$message({
-            showClose: true,
-            message: '请设置6-32位，数字字母混合密码',
-            type: 'error'
-          });
-        } else {
-          this.$http.post('/admin/user/updatePwd', {id: this.$route.query.id, password: this.$data.password})
+          this.$http.post('/admin/dealer/updatePwdById', {id: this.$route.query.id, password: this.$data.password})
             .then(function (res) {
               this.$data.dialogFormVisible = false;
               this.$data.password = '';
@@ -383,23 +375,9 @@
                 type: 'error'
               })
             })
-        }
+
       },
       create: function () {
-        var reg = /(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,32}/;
-        if (this.query.username.length > 16 || this.query.username.length < 4) {
-          this.$message({
-            showClose: true,
-            message: '请设置4-16位登录名',
-            type: 'error'
-          });
-        } else if (!reg.test(this.query.password)) {
-          this.$message({
-            showClose: true,
-            message: '请设置6-32位以上，数字字母混合密码',
-            type: 'error'
-          });
-        } else {
           this.$http.post('/admin/user/addUser', this.query)
             .then(function (res) {
               this.$message({
@@ -415,7 +393,7 @@
                 type: 'error'
               });
             })
-        }
+
 
       },
       goBack: function () {

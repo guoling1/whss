@@ -18,8 +18,8 @@
                 <table style="width:90%;display: inline-table;vertical-align: top" border="0" cellspacing="0" cellpadding="0" class="table table-bordered">
                   <thead>
                   <tr>
-                    <th width="35%">一级菜单名称</th>
-                    <th width="35%">子菜单名称</th>
+                    <th width="23%">一级菜单名称</th>
+                    <th width="25%">子菜单名称</th>
                     <th >操作</th>
                   </tr>
                   </thead>
@@ -53,6 +53,7 @@
               </li>
               <li class="same">
                 <label class="title"></label>
+                <el-button type="primary" size="small" @click="goBack">返 回</el-button>
                 <!--<el-button type="primary" @click="submit" v-if="isAdd">确 定</el-button>
                 <el-button type="primary" @click="submit" v-else>修改</el-button>-->
               </li>
@@ -83,14 +84,27 @@
         this.tableData = res.data.list;
       this.roleName = res.data.roleName;
       /* this.tableData = JSON.parse(JSON.stringify(res.data.list));*/
-      for (var i = 0; i < this.tableData.length; i++) {
-        for (var j = 0; j < this.tableData[i].children.length; j++) {
-          for (var k = 0; k < this.tableData[i].children[j].opts.length; k++) {
-            this.tableData[i].children[j].opts[k].isSelected = Boolean(this.tableData[i].children[j].opts[k].isSelected);
+      if(this.$route.query.id==0){
+        this.roleName = '超级管理员'
+        for (var i = 0; i < this.tableData.length; i++) {
+          for (var j = 0; j < this.tableData[i].children.length; j++) {
+            for (var k = 0; k < this.tableData[i].children[j].opts.length; k++) {
+              this.tableData[i].children[j].opts[k].isSelected = true;
+            }
+            this.tableData[i].children[j].isSelected = true;
           }
-          this.tableData[i].children[j].isSelected = Boolean(this.tableData[i].children[j].isSelected);
+          this.tableData[i].isSelected = true;
         }
-        this.tableData[i].isSelected = Boolean(this.tableData[i].isSelected);
+      }else {
+        for (var i = 0; i < this.tableData.length; i++) {
+          for (var j = 0; j < this.tableData[i].children.length; j++) {
+            for (var k = 0; k < this.tableData[i].children[j].opts.length; k++) {
+              this.tableData[i].children[j].opts[k].isSelected = Boolean(this.tableData[i].children[j].opts[k].isSelected);
+            }
+            this.tableData[i].children[j].isSelected = Boolean(this.tableData[i].children[j].isSelected);
+          }
+          this.tableData[i].isSelected = Boolean(this.tableData[i].isSelected);
+        }
       }
     })
       .catch(err => {
@@ -102,6 +116,9 @@
     })
     },
     methods: {
+      goBack: function () {
+        this.$router.push('/daili/app/employees')
+      },
       submit:function () {
         var list = JSON.parse(JSON.stringify(this.tableData));
         for (var i = 0; i < list.length; i++) {
