@@ -10,7 +10,7 @@
           <ul>
             <li class="same" v-if="isAdd">
               <label class="title">代理商级别:</label>
-              <el-select style="width: 220px" v-model="type" clearable placeholder="请选择" size="small">
+              <el-select style="width: 220px" v-model="type" size="small">
                 <el-option label="一级代理商" value="2"></el-option>
                 <el-option label="二级代理商" value="3"></el-option>
               </el-select>
@@ -76,7 +76,7 @@
         roleName:'',
         tableData: [],
         isAdd:true,
-        type:''
+        type:'2'
       }
     },
     created: function () {

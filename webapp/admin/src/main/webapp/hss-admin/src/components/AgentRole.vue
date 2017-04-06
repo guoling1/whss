@@ -4,7 +4,7 @@
       <div class="box" style="margin-top:15px;overflow: hidden">
         <div class="box-header">
           <h3 class="box-title">代理商员工权限管理</h3>
-          <a @click="_$power(issue,'boss_role_add')" class="btn btn-primary" style="float: right;">新增角色</a>
+          <a @click="_$power(issue,'boss_dealer_role_add')" class="btn btn-primary" style="float: right;">新增角色</a>
         </div>
         <div class="box-body">
           <!--筛选-->
@@ -35,9 +35,9 @@
             <el-table-column prop="statusName" label="状态"></el-table-column>
             <el-table-column label="操作" width="100">
               <template scope="scope">
-                <a @click="_$power(scope.row.id,scope.row.type,issue1,'boss_role_update')" type="text" size="small">编辑</a>
-                <a @click="_$power(scope.row.id,open,'boss_role_disable')"  v-if="records[scope.$index].statusName=='禁用'" type="text" size="small">开启</a>
-                <a @click="_$power(scope.row.id,close,'boss_role_disable')" v-if="records[scope.$index].statusName=='正常'" type="text" size="small">禁用</a>
+                <a @click="_$power(scope.row.id,scope.row.type,issue1,'boss_dealer_role_update')" type="text" size="small">编辑</a>
+                <a @click="_$power(scope.row.id,open,'boss_dealer_role_disable')"  v-if="records[scope.$index].statusName=='禁用'" type="text" size="small">开启</a>
+                <a @click="_$power(scope.row.id,close,'boss_dealer_role_disable')" v-if="records[scope.$index].statusName=='正常'" type="text" size="small">禁用</a>
               </template>
             </el-table-column>
           </el-table>
