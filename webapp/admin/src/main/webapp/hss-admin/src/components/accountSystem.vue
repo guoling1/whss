@@ -60,7 +60,7 @@
             </el-table-column>
             <el-table-column label="操作">
               <template scope="scope">
-                  <el-button @click="handle(scope.row.id,scope.row.tradeDate,scope.row.tradeType)" type="text" size="small" v-if="scope.row.batchNO==undefined">上传文件</el-button>
+                  <el-button @click="handle(scope.row.id,scope.row.tradeDate,scope.row.tradeType,scope.row.channelName)" type="text" size="small" v-if="scope.row.batchNO==undefined">上传文件</el-button>
                   <el-button @click="load(scope.row.batchNO)" type="text" size="small" v-if="scope.row.batchNO!=undefined">下载文件</el-button>
                   <el-button @click="handle(scope.row.id,scope.row.tradeDate,scope.row.tradeType)" type="text" size="small" v-if="scope.row.batchNO!=undefined">重新上传</el-button>
               </template>
@@ -86,6 +86,9 @@
             <el-form-item label="对账类型：" width="120" style="margin-bottom: 0">
               <span v-if="tradeType==1">交易</span>
               <span v-if="tradeType==3">提现</span>
+            </el-form-item>
+            <el-form-item label="渠道名称：" width="120" style="margin-bottom: 0">
+              {{channelName}}
             </el-form-item>
             <el-form-item label="上传文件：" width="120" style="margin-bottom: 0">
               <el-upload
@@ -156,10 +159,11 @@
       this.getData()
     },
     methods: {
-      handle: function(id,tradeDate,tradeType){
+      handle: function(id,tradeDate,tradeType,channelName){
         this.isShow=true;
         this.tradeDate=tradeDate;
         this.tradeType=tradeType;
+        this.channelName=channelName;
         this.id=id;
       },
       load:function (url) {
