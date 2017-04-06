@@ -10,7 +10,7 @@
           <ul>
             <li class="same" v-if="isAdd">
               <label class="title">代理商级别:</label>
-              <el-select style="width: 220px" v-model="type" size="small">
+              <el-select style="width: 220px" v-model="type" size="small" @change="handleSelect">
                 <el-option label="一级代理商" value="2"></el-option>
                 <el-option label="二级代理商" value="3"></el-option>
               </el-select>
@@ -110,6 +110,35 @@
         })
     },
     methods: {
+      handleSelect: function (val) {
+        let id=0;
+        if(this.$route.query.id!=undefined){
+          id = this.$route.query.id;
+          this.type = this.$route.query.type;
+          this.isAdd = false;
+        }
+        this.$http.post('/admin/dealer/getRoleDetail',{id:id,type:val})
+          .then(res => {
+            this.tableData = res.data.list;
+            this.roleName = res.data.roleName;
+            for (var i = 0; i < this.tableData.length; i++) {
+              for (var j = 0; j < this.tableData[i].children.length; j++) {
+                for (var k = 0; k < this.tableData[i].children[j].opts.length; k++) {
+                  this.tableData[i].children[j].opts[k].isSelected = Boolean(this.tableData[i].children[j].opts[k].isSelected);
+                }
+                this.tableData[i].children[j].isSelected = Boolean(this.tableData[i].children[j].isSelected);
+              }
+              this.tableData[i].isSelected = Boolean(this.tableData[i].isSelected);
+            }
+          })
+          .catch(err => {
+            this.$message({
+              showClose: true,
+              message: err.statusMessage,
+              type: 'error'
+            });
+          })
+      },
       submit:function () {
         var list = JSON.parse(JSON.stringify(this.tableData));
         for (var i = 0; i < list.length; i++) {
@@ -126,7 +155,7 @@
           id = this.$route.query.id;
           this.isAdd = false;
         }
-        this.$http.post('/admin/user/saveRole',{
+        this.$http.post('/admin/dealer/saveRole',{
           roleId:id,
           roleName:this.roleName,
           list:list,
