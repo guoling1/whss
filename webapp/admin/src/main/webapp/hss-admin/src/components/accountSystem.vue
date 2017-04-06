@@ -41,7 +41,11 @@
                 <span v-if="scope.row.tradeType==3">提现</span>
               </template>
             </el-table-column>
-            <el-table-column prop="tradeDate" label="交易时间" ></el-table-column>
+            <el-table-column label="交易时间">
+              <template scope="scope">
+                {{scope.row.tradeDate|strSplit}}
+              </template>
+            </el-table-column>
             <el-table-column prop="balanceCount" label="帐平笔数" align="right" ></el-table-column>
             <el-table-column label="帐平金额（元）" align="right">
               <template scope="scope">{{scope.row.balanceSum|toFix}}</template>
@@ -56,9 +60,9 @@
             </el-table-column>
             <el-table-column label="操作">
               <template scope="scope">
-                  <el-button @click="handle(scope.row.id)" type="text" size="small" v-if="scope.row.batchNO==undefined">上传文件</el-button>
+                  <el-button @click="handle(scope.row.id,scope.row.tradeDate,scope.row.tradeType)" type="text" size="small" v-if="scope.row.batchNO==undefined">上传文件</el-button>
                   <el-button @click="load(scope.row.batchNO)" type="text" size="small" v-if="scope.row.batchNO!=undefined">下载文件</el-button>
-                  <el-button @click="handle(scope.row.id)" type="text" size="small" v-if="scope.row.batchNO!=undefined">重新上传</el-button>
+                  <el-button @click="handle(scope.row.id,scope.row.tradeDate,scope.row.tradeType)" type="text" size="small" v-if="scope.row.batchNO!=undefined">重新上传</el-button>
               </template>
             </el-table-column>
           </el-table>
@@ -76,6 +80,13 @@
         </div>
         <el-dialog title="上传对账文件" v-model="isShow">
           <el-form :label-position="right" label-width="150px">
+            <el-form-item label="对账日期：" width="120" style="margin-bottom: 0">
+              {{tradeDate|strSplit}}
+            </el-form-item>
+            <el-form-item label="对账类型：" width="120" style="margin-bottom: 0">
+              <span v-if="tradeType==1">交易</span>
+              <span v-if="tradeType==3">提现</span>
+            </el-form-item>
             <el-form-item label="上传文件：" width="120" style="margin-bottom: 0">
               <el-upload
                 class="upload-demo"
@@ -121,6 +132,8 @@
         fileList: [],
         records:[],
         count:0,
+        tradeDate:'',
+        tradeType:'',
         query:{
           pageSize:10,
           currentPage:1,
@@ -143,8 +156,10 @@
       this.getData()
     },
     methods: {
-      handle: function(id,batchNO){
+      handle: function(id,tradeDate,tradeType){
         this.isShow=true;
+        this.tradeDate=tradeDate;
+        this.tradeType=tradeType;
         this.id=id;
       },
       load:function (url) {
@@ -221,6 +236,12 @@
     computed:{
       $records:function () {
         return this.records
+      }
+    },
+    filters:{
+      strSplit:function (val) {
+        let a = val.toString().split(' ')
+        return a[0]
       }
     }
   }

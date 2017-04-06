@@ -7,7 +7,7 @@
         </div>
         <div class="box-body">
           <el-tabs class="tab" v-model="activeName" type="card">
-            <el-tab-pane label="对方单边笔数" name="first">
+            <el-tab-pane :label='"对方单边笔数("+exCount+"笔)"' name="first">
               <el-table  style="font-size: 12px;margin:15px 0" :data="exDetailList" border :row-style="tableFoot">
                 <el-table-column   width="100" label="序号">
                   <template scope="scope">
@@ -19,7 +19,7 @@
                 <el-table-column prop="tradeAmount" label="交易金额" align="right" header-align="left"></el-table-column>
               </el-table>
             </el-tab-pane>
-            <el-tab-pane label="己方单边笔数" name="second">
+            <el-tab-pane :label='"己方单边笔数("+inCount+"笔)"' name="second">
               <el-table style="font-size: 12px;margin:15px 0" :data="inDetailList" border :row-style="tableFoot">
                 <el-table-column   width="100" label="序号">
                   <template scope="scope">
@@ -31,7 +31,7 @@
                 <el-table-column prop="tradeAmount" label="交易金额" align="right" header-align="left"></el-table-column>
               </el-table>
             </el-tab-pane>
-            <el-tab-pane label="帐平笔数" name="third">
+            <el-tab-pane :label='"帐平笔数("+balanceCount+"笔)"' name="third">
               <el-table style="font-size: 12px;margin:15px 0" :data="balanceList" border :row-style="tableFoot">
                 <el-table-column   width="100" label="序号">
                   <template scope="scope">
@@ -61,6 +61,9 @@
         exDetailList:[],
         inDetailList:[],
         balanceList:[],
+        balanceCount:'',
+        exCount:'',
+        inCount:'',
         url:"http://192.168.1.99:8080/balance/external/confirmBanlanceAccount"
       }
     },
@@ -68,6 +71,9 @@
       this.exDetailList = JSON.parse(sessionStorage.getItem('data')).exDetailList;
       this.inDetailList = JSON.parse(sessionStorage.getItem('data')).inDetailList;
       this.balanceList = JSON.parse(sessionStorage.getItem('data')).balanceList;
+      this.balanceCount = JSON.parse(sessionStorage.getItem('data')).balanceExternalStatistic.balanceCount;
+      this.exCount = JSON.parse(sessionStorage.getItem('data')).balanceExternalStatistic.exCount;
+      this.inCount = JSON.parse(sessionStorage.getItem('data')).balanceExternalStatistic.inCount;
     },
     methods: {
       goBack:function () {
