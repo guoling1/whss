@@ -13,7 +13,8 @@
         content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
   <meta name="format-detection" content="telephone=no"/>
   <title>好收收</title>
-  <link rel="stylesheet" href="http://static.jinkaimen.cn/hss/css/style.2.2.4.css">
+  <%--<link rel="stylesheet" href="http://static.jinkaimen.cn/hss/css/style.2.2.6.css">--%>
+  <link rel="stylesheet" href="/css/hss/style.2.2.6.css">
   <link rel="stylesheet" href="http://static.jinkaimen.cn/weui/weui.css">
 </head>
 <body>
@@ -30,7 +31,8 @@
     </div>
   </div>
   <div class="prompt-deep">支付宝与微信收款实时到账，无卡快捷T1到账<span id="know"></span>
-    <br>支付宝与微信限额1万，无卡快捷限额2万</div>
+    <br>支付宝与微信限额1万，无卡快捷限额2万
+  </div>
   <div class="keyboard" id="keyboard">
     <div class="copyright flexBox">
       <span class="line"></span>
@@ -69,7 +71,22 @@
       </div>
     </div>
   </div>
+  <div class="channel-box">
+    <div class="channel-space top">
+      <div class="channel-group">
+        <div class="channel-li">渠道名称</div>
+        <div class="channel-li">结算时间<span></span></div>
+        <div class="channel-li">费率</div>
+        <div class="channel-li">单笔限额</div>
+      </div>
+    </div>
+    <div class="channel-small">各通道限额动态变化，一次不通过可换其他通道重试</div>
+    <div class="channel-space">
+      <div class="channel-group"></div>
+    </div>
+  </div>
 </div>
+
 
 <div class="message-space" id="layer">
   <div class="message-box">
