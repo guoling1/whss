@@ -190,6 +190,9 @@
         </where>
     </select>
 
+    <select id="selectByUsernameAndTypeUnIncludeNow" resultType="java.lang.Long">
+        SELECT COUNT(1) FROM tb_admin_user WHERE username = #{username} AND id != #{id} and type=#{type} and status=1
+    </select>
 
     <update id="updateLastLoginDate">
         UPDATE tb_admin_user

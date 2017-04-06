@@ -402,6 +402,8 @@ public class AdminUserServiceImpl implements AdminUserService {
                     AdminRole adminRole = adminRoleDao.selectById(adminUsers.get(i).getRoleId());
                     if(adminRole!=null){
                         adminUserListResponse.setRoleName(adminRole.getRoleName());
+                    }else{
+                        adminUserListResponse.setRoleName("管理员");
                     }
                 }
                 adminUserListResponse.setCreateTime(adminUsers.get(i).getCreateTime());
