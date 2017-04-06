@@ -162,7 +162,6 @@ public class PrivilegeController extends BaseController {
             return CommonResponse.simpleResponse(-1, "登录名不存在");
         }
         adminUserService.updateDealerUserPwdById(DealerSupport.passwordDigest(adminUserRequest.getPassword(),"JKM"),adminUserRequest.getId());
-        adminUserService.updatePwd(adminUserRequest.getPassword(),adminUserRequest.getId());
         return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "修改成功");
     }
 

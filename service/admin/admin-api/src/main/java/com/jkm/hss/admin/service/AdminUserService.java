@@ -162,7 +162,7 @@ public interface AdminUserService {
     int unDistributeCount(String sysType);
 
     /**
-     * x修改密码
+     * 修改密码
      * @param password
      * @param id
      * @return
