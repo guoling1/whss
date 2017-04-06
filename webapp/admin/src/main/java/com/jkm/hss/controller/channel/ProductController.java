@@ -175,6 +175,8 @@ public class ProductController extends BaseController {
             Preconditions.checkArgument(basicChannelOptional.isPresent(), "基础通道不存在");
             final Product product = this.productService.selectByType(request.getProductType()).get();
             final BasicChannel basicChannel = basicChannelOptional.get();
+            request.setGatewayType(EnumGatewayType.PRODUCT.getId());
+            request.setDealerId(0);
             request.setChannelShortName(basicChannel.getChannelShortName());
             request.setProductId(product.getId());
             request.setStatus(EnumProductChannelGatewayStatus.USEING.getId());
