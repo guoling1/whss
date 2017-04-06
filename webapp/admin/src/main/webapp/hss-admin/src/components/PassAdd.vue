@@ -14,11 +14,24 @@
               </el-col>
               <el-col :span="6">
                 <div class="grid-content bg-purple-light">
-                  <el-input size="small" v-model="name" placeholder="请输入内容"></el-input>
+                  <el-input size="small" v-model="query.channelShortName" placeholder="请输入内容"></el-input>
                 </div>
               </el-col>
               <el-col :span="8">
                 <div class="grid-content bg-purple-light right">例如：华有支付宝</div>
+              </el-col>
+            </el-row>
+            <el-row type="flex" class="row-bg" justify="center">
+              <el-col :span="4">
+                <div class="alignRight">原始名称:</div>
+              </el-col>
+              <el-col :span="6">
+                <div class="grid-content bg-purple-light">
+                  <el-input size="small" v-model="name" placeholder="请输入内容"></el-input>
+                </div>
+              </el-col>
+              <el-col :span="8">
+                <div class="grid-content bg-purple-light right"></div>
               </el-col>
             </el-row>
             <el-row type="flex" class="row-bg" justify="center">
@@ -278,6 +291,7 @@
     data () {
       return {
         query: {
+          channelShortName:'',
           channelName: '',
           channelCode: '',
           supportWay: '',
