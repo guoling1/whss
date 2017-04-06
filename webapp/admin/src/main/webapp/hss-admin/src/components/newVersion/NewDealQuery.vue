@@ -74,20 +74,11 @@
               <label>支付方式：</label>
               <el-select style="width: 140px" clearable v-model="query.payType" size="small">
                 <el-option label="全部" value="">全部</el-option>
-                <el-option label="阳光微信公众号" value="sm_wechat_jsapi">阳光微信公众号</el-option>
-                <el-option label="阳光支付宝公众号" value="sm_alipay_jsapi">阳光支付宝公众号</el-option>
-                <el-option label="阳光微信扫码" value="sm_wechat_code">阳光微信扫码</el-option>
-                <el-option label="阳光支付宝扫码" value="sm_alipay_code">阳光支付宝扫码</el-option>
-                <el-option label="阳光快捷" value="sm_unionpay">阳光快捷</el-option>
-                <el-option label="卡盟微信公众号" value="km_wechat_jsapi">卡盟微信公众号</el-option>
-                <el-option label="卡盟支付宝公众号" value="km_alipay_jsapi">卡盟支付宝公众号</el-option>
-                <el-option label="卡盟微信扫码" value="km_wechat_code">卡盟微信扫码</el-option>
-                <el-option label="卡盟支付宝扫码" value="km_alipay_code">卡盟支付宝扫码</el-option>
-                <el-option label="摩宝快捷" value="mb_unionpay">摩宝快捷</el-option>
-                <el-option label="合众易宝微信" value="hzyb_wechat">合众易宝微信</el-option>
-                <el-option label="合众易宝支付宝" value="hzyb_alipay">合众易宝支付宝</el-option>
-                <el-option label="溢+微信" value="yijia_wechat">溢+微信</el-option>
-                <el-option label="溢+支付宝" value="yijia_alipay">溢+支付宝</el-option>
+                <el-option label="微信公众号支付" value="wechat_jsapi"></el-option>
+                <el-option label="支付宝公众号支付" value="alipay_jsapi"></el-option>
+                <el-option label="微信支付" value="wechat_code"></el-option>
+                <el-option label="支付宝支付" value="alipay_code"></el-option>
+                <el-option label="快捷支付" value="unionpay"></el-option>
               </el-select>
             </li>
             <li class="same">
