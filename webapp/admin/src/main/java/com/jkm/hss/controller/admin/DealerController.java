@@ -944,6 +944,7 @@ public class DealerController extends BaseController {
         adminUserResponse.setCompanyId(adminUserOptional.get().getCompanyId());
         adminUserResponse.setDeptId(adminUserOptional.get().getDeptId());
         adminUserResponse.setRoleId(adminUserOptional.get().getRoleId());
+        adminUserResponse.setType(adminUserOptional.get().getType());
         return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功",adminUserResponse);
     }
 
@@ -1033,5 +1034,16 @@ public class DealerController extends BaseController {
     public CommonResponse activeRole (@RequestBody AdminRoleDetailRequest adminRoleDetailRequest) {
         adminRoleService.enableRole(adminRoleDetailRequest.getId());
         return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "启用成功");
+    }
+
+    /**
+     * 角色列表
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/userRoleList/{type}", method = RequestMethod.POST)
+    public CommonResponse userRoleList (@PathVariable final int type) {
+        List<AdminRoleListResponse> adminRoleListResponses = adminRoleService.selectAdminRoleList(type);
+        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功",adminRoleListResponses);
     }
 }
