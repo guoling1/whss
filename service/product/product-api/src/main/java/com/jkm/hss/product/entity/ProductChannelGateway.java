@@ -19,9 +19,9 @@ public class ProductChannelGateway extends BaseEntity {
     private String gatewayType;
 
     /**
-     * 代理商id
+     * 代理商网关模板id
      */
-    private long dealerId;
+    private long dealerGatewayId;
 
     /**
      * 产品id

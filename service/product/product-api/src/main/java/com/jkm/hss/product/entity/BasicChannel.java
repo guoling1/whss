@@ -111,7 +111,7 @@ public class BasicChannel extends BaseEntity{
      *  是否维护
      *  {@link com.jkm.base.common.enums.EnumBoolean}
      *
-     *  1是0否
+     *  0维护 1使用
      */
     private int isUse;
 

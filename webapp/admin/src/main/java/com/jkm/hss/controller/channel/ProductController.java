@@ -176,7 +176,7 @@ public class ProductController extends BaseController {
             final Product product = this.productService.selectByType(request.getProductType()).get();
             final BasicChannel basicChannel = basicChannelOptional.get();
             request.setGatewayType(EnumGatewayType.PRODUCT.getId());
-            request.setDealerId(0);
+            request.setDealerGatewayId(0);
             request.setChannelShortName(basicChannel.getChannelShortName());
             request.setProductId(product.getId());
             request.setStatus(EnumProductChannelGatewayStatus.USEING.getId());
@@ -223,6 +223,7 @@ public class ProductController extends BaseController {
 
         try{
             final BasicChannel basicChannel = this.basicChannelService.selectByChannelTypeSign(request.getChannelSign()).get();
+            request.setGatewayType(EnumGatewayType.PRODUCT.getId());
             request.setChannelShortName(basicChannel.getChannelShortName());
             request.setStatus(EnumProductChannelGatewayStatus.USEING.getId());
             this.productChannelGatewayService.update(request);

@@ -4,7 +4,7 @@
     <insert id="addNew" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO tb_product_channel_gateway
         (gateway_type,
-        dealer_id,
+        dealer_gateway_id,
         product_id,
         product_type,
         channel_sign,
@@ -13,7 +13,7 @@
         status
         )VALUES(
          #{gatewayType},
-         #{dealerId},
+         #{dealerGatewayId},
          #{productId},
          #{productType},
          #{channelSign},
@@ -26,7 +26,7 @@
         UPDATE tb_product_channel_gateway
         SET
         gateway_type = #{gatewayType},
-        dealer_id = #{dealerId},
+        dealer_gateway_id = #{dealerGatewayId},
         product_id = #{productId},
         product_type = #{productType},
         channel_sign = #{channelSign},
