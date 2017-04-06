@@ -216,8 +216,8 @@
               <el-col :span="6">
                 <div class="grid-content bg-purple-light">
                   <el-radio-group v-model="query.isUse">
-                    <el-radio :label="0">可用</el-radio>
-                    <el-radio :label="1">维护</el-radio>
+                    <el-radio :label="1">可用</el-radio>
+                    <el-radio :label="0">维护</el-radio>
                   </el-radio-group>
                 </div>
               </el-col>
@@ -327,6 +327,7 @@
             this.query = res.data[this.$route.query.id];
             this.name = res.data[this.$route.query.id].channelName;
             this.query.isNeed = res.data[this.$route.query.id].isNeed;
+            this.query.isUse = res.data[this.$route.query.id].isUse;
             if (/微信/.test(this.name)) {
               this.nameType = 'wx';
               if (this.query.supportWay == 3) {
