@@ -391,6 +391,7 @@ public class AdminUserServiceImpl implements AdminUserService {
                 adminUserListResponse.setRealname(adminUsers.get(i).getRealname());
                 adminUserListResponse.setCompanyName(dataDictionaryService.selectDictNameByDictTypeAndDictValue(EnumDataDictionaryType.COMPANY.getId(),adminUsers.get(i).getCompanyId()));
                 adminUserListResponse.setDeptName(dataDictionaryService.selectDictNameByDictTypeAndDictValue(EnumDataDictionaryType.DEPT.getId(),adminUsers.get(i).getDeptId()));
+                adminUserListResponse.setRoleId(adminUsers.get(i).getRoleId());
                 if(adminUsers.get(i).getMobile()!=null&&!"".equals(adminUsers.get(i).getMobile())){
                     adminUserListResponse.setMobile(AdminUserSupporter.decryptMobile(adminUsers.get(i).getId(),adminUsers.get(i).getMobile()));
                 }

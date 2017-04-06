@@ -47,6 +47,10 @@ public class AdminUserListResponse {
      */
     private String email;
     /**
+     * 角色编码
+     */
+    private long roleId;
+    /**
      * 角色名称
      */
     private String roleName;
