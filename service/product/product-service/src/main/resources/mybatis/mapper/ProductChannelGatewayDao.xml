@@ -37,9 +37,9 @@
     </update>
     <select id="selectByProductTypeAndProductId" resultType="com.jkm.hss.product.entity.ProductChannelGateway">
         SELECT * FROM tb_product_channel_gateway
-        WHERE product_type = #{type} AND product_id = #{productId} AND status = 2 AND gateway_type = product
+        WHERE product_type = #{type} AND product_id = #{productId} AND status = 2 AND gateway_type = 'product'
     </select>
     <select id="selectByChannelSign" resultType="com.jkm.hss.product.entity.ProductChannelGateway">
-        SELECT * FROM tb_product_channel_gateway WHERE channel_sign = #{channelSign}  AND gateway_type = product order by id limit 1
+        SELECT * FROM tb_product_channel_gateway WHERE channel_sign = #{channelSign}  AND gateway_type = 'product' order by id limit 1
     </select>
 </mapper>
