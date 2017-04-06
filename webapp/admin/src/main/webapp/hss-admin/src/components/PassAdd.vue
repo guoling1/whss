@@ -156,12 +156,56 @@
             </el-row>
             <el-row type="flex" class="row-bg" justify="center">
               <el-col :span="4">
-                <div class="alignRight">预估额度:</div>
+                <div class="alignRight">预估最低额度:</div>
+              </el-col>
+              <el-col :span="6">
+                <div class="grid-content bg-purple-light" style="position: relative">
+                  <el-input size="small" v-model="query.limitMinAmount" placeholder="请输入内容"></el-input>
+                  <b>元/笔</b>
+                </div>
+              </el-col>
+              <el-col :span="8">
+                <div class="grid-content bg-purple-light"></div>
+              </el-col>
+            </el-row>
+            <el-row type="flex" class="row-bg" justify="center">
+              <el-col :span="4">
+                <div class="alignRight">预估最大额度:</div>
               </el-col>
               <el-col :span="6">
                 <div class="grid-content bg-purple-light" style="position: relative">
                   <el-input size="small" v-model="query.limitAmount" placeholder="请输入内容"></el-input>
                   <b>元/笔</b>
+                </div>
+              </el-col>
+              <el-col :span="8">
+                <div class="grid-content bg-purple-light"></div>
+              </el-col>
+            </el-row>
+            <el-row type="flex" class="row-bg" justify="center">
+              <el-col :span="4">
+                <div class="alignRight">最低手续费:</div>
+              </el-col>
+              <el-col :span="6">
+                <div class="grid-content bg-purple-light" style="position: relative">
+                  <el-input size="small" v-model="query.lowestFee" placeholder="请输入内容"></el-input>
+                  <b>元/笔</b>
+                </div>
+              </el-col>
+              <el-col :span="8">
+                <div class="grid-content bg-purple-light"></div>
+              </el-col>
+            </el-row>
+            <el-row type="flex" class="row-bg" justify="center">
+              <el-col :span="4">
+                <div class="alignRight">通道状态:</div>
+              </el-col>
+              <el-col :span="6">
+                <div class="grid-content bg-purple-light">
+                  <el-radio-group v-model="query.isUse">
+                    <el-radio :label="0">可用</el-radio>
+                    <el-radio :label="1">维护</el-radio>
+                  </el-radio-group>
                 </div>
               </el-col>
               <el-col :span="8">
@@ -244,6 +288,9 @@
           basicBalanceType: '',
           basicSettleType: '',
           limitAmount: '',
+          limitMinAmount: '',
+          lowestFee:'',
+          isUse:'',
           isNeed: '',
           remarks: '',
           id: '',
@@ -286,9 +333,7 @@
                 this.payWay = ['支付宝扫码']
               }
             }else {
-              if (this.query.supportWay == 4) {
-                this.payWay = ['无卡快捷']
-              }
+              this.payWay = ['无卡快捷']
             }
             this.query.id = res.data[this.$route.query.id].id;
             this.query.status = res.data[this.$route.query.id].status;

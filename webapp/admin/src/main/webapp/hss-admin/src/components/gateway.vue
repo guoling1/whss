@@ -16,20 +16,20 @@
                 <el-table-column prop="channelShortName" label="通道名称"></el-table-column>
                 <el-table-column label="操作" min-width="100">
                   <template scope="scope">
-                    <div @click="detail(scope.row.productId,scope.row.id)">修改</div>
+                    <el-button type="text" @click="detail(scope.row.productId,scope.$index)">修改</el-button>
                   </template>
                 </el-table-column>
               </el-table>
             </li>
-            <li class="same">
-              <label class="title"></label>
-              <el-button type="primary" @click="submit">保存更改</el-button>
-            </li>
+            <!--<li class="same">-->
+              <!--<label class="title"></label>-->
+              <!--<el-button type="primary" @click="submit">保存更改</el-button>-->
+            <!--</li>-->
           </ul>
+        </div>
         </div>
       </div>
     </div>
-  </div>
 </template>
 <script lang="babel">
   export default{
@@ -88,8 +88,8 @@
           });
         })
       },
-      detail: function (productId, id) {
-        this.$router.push({path:'/admin/record/gatewayAdd',query:{productId:productId,id:id}})
+      detail: function (productId, index) {
+        this.$router.push({path:'/admin/record/gatewayAdd',query:{productId:productId,index:index}})
       }
     }
   }

@@ -246,13 +246,7 @@
                 <span v-if="records[scope.$index].basicSettleType=='SELF'">自主打款结算</span>
               </template>
             </el-table-column>
-            <el-table-column prop="supportWay" label="支付方式">
-              <template scope="scope">
-                <span v-if="records[scope.$index].supportWay=='1'">公众号</span>
-                <span v-if="records[scope.$index].supportWay=='2'">扫码</span>
-                <span v-if="records[scope.$index].supportWay=='3'">公众号、扫码</span>
-              </template>
-            </el-table-column>
+            <el-table-column prop="thirdCompany" label="支付方式"></el-table-column>
             <el-table-column prop="remarks" label="备注信息"></el-table-column>
           </el-table>
           <!--分页
