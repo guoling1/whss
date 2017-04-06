@@ -88,7 +88,7 @@ gulp.task('js-hss', () => {
 
 gulp.task('replace-hss', function () {
   return gulp.src('WEB-INF/jsp/*.jsp')
-    .pipe(replace('vendor.1.0.9.4.min.js', 'vendor.1.0.9.5.min.js'))
+    .pipe(replace('vendor.1.0.9.5.min.js', 'vendor.1.0.9.7.min.js'))
     .pipe(replace('style.2.2.5.css', 'style.2.2.6.css'))
     .pipe(replace('style.2.0.2.css', 'style.2.0.3.css'))
     .pipe(replace('/hss/2.2.9/', '/hss/2.2.10/'))

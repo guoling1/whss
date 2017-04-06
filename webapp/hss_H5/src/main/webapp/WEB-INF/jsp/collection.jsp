@@ -13,8 +13,7 @@
         content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
   <meta name="format-detection" content="telephone=no"/>
   <title>好收收</title>
-  <%--<link rel="stylesheet" href="http://static.jinkaimen.cn/hss/css/style.2.2.6.css">--%>
-  <link rel="stylesheet" href="/css/hss/style.2.2.6.css">
+  <link rel="stylesheet" href="http://static.jinkaimen.cn/hss/css/style.2.2.6.css">
   <link rel="stylesheet" href="http://static.jinkaimen.cn/weui/weui.css">
 </head>
 <body>
@@ -56,38 +55,35 @@
       </div>
       <div class="qr">
         <div class="delete" keyCtrl="delete" touch="true"></div>
-        <div class="quick" keyCtrl="quick">
-          <div class="logo"></div>
-          <div class="word">无卡快捷</div>
-        </div>
-        <div class="wx-pay" keyCtrl="wx-ss">
-          <div class="wx-logo"></div>
-          <div class="word">微信</div>
-        </div>
-        <div class="ali-pay" keyCtrl="ali-ss">
-          <div class="ali-logo"></div>
-          <div class="word">支付宝</div>
+        <%--<div class="quick" keyCtrl="quick">--%>
+        <%--<div class="logo"></div>--%>
+        <%--<div class="word">无卡快捷</div>--%>
+        <%--</div>--%>
+        <%--<div class="wx-pay" keyCtrl="wx-ss">--%>
+        <%--<div class="wx-logo"></div>--%>
+        <%--<div class="word">微信</div>--%>
+        <%--</div>--%>
+        <%--<div class="ali-pay" keyCtrl="ali-ss">--%>
+        <%--<div class="ali-logo"></div>--%>
+        <%--<div class="word">支付宝</div>--%>
+        <%--</div>--%>
+        <div class="all-pay" keyCtrl="pay">
+          <div class="word big">收款</div>
         </div>
       </div>
     </div>
-  </div>
-  <div class="channel-box">
-    <div class="channel-space top">
-      <div class="channel-group">
-        <div class="channel-li">渠道名称</div>
-        <div class="channel-li">结算时间<span></span></div>
-        <div class="channel-li">费率</div>
-        <div class="channel-li">单笔限额</div>
+    <div class="channel-box" id="channelBox">
+      <div class="channel-space top">
+        <div class="channel-group">
+          <div class="channel-li">渠道名称</div>
+          <div class="channel-li">结算时间<span></span></div>
+          <div class="channel-li">费率</div>
+          <div class="channel-li">单笔限额</div>
+        </div>
       </div>
-    </div>
-    <div class="channel-small">各通道限额动态变化，一次不通过可换其他通道重试</div>
-    <div class="channel-space">
-      <%-- 动态添加 --%>
-      <div class="channel-group">
-        <div class="channel-con name">阳光万维</div>
-        <div class="channel-con">D0到账<span></span></div>
-        <div class="channel-con">0.45%</div>
-        <div class="channel-con right">3000元</div>
+      <div class="channel-small">各通道限额动态变化，一次不通过可换其他通道重试</div>
+      <div class="channel-space" id="channel">
+        <%-- 动态添加 --%>
       </div>
     </div>
   </div>
@@ -118,7 +114,6 @@
     bankId: '${bankId}'
   }
 </script>
-<script src="http://static.jinkaimen.cn/vendor/vendor.1.0.9.5.min.js"></script>
-<%--<script src="http://static.jinkaimen.cn/hss/2.2.10/collection.min.js"></script>--%>
-<script src="/js/hss/2.2.10/collection.min.js"></script>
+<script src="http://static.jinkaimen.cn/vendor/vendor.1.0.9.7.min.js"></script>
+<script src="http://static.jinkaimen.cn/hss/2.2.10/collection.min.js"></script>
 </html>

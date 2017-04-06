@@ -33,7 +33,75 @@ submit.addEventListener('click', function () {
 });
 
 // 多通道获取
+let channelBox = document.getElementById('channelBox');
+let channel = document.getElementById('channel');
+const checkBusinessRegistration = (code, amount) => {
+  return new Promise(function (resolve, reject) {
+    message.load_show('正在校验');
+    http.post('/wx/checkMerchantInfo1', {
+      amount: amount,
+      channelTypeSign: code
+    }, function () {
+      message.load_hide();
+      resolve(true);
+    });
+  });
+};
 http.post('/channel/list', {}, function (data) {
-  console.log(data);
-  let group = document.createElement('group');
+  for (let i = 0; i < data.length; i++) {
+    let group = document.createElement('div');
+    group.className = 'channel-group';
+    group.onclick = function () {
+      let amount = channelBox.getAttribute('payAmount');
+      if (amount > 0) {
+        checkBusinessRegistration(data[i].channelSign, amount).then(function (check) {
+          if (check) {
+            message.load_show('正在支付');
+            switch (data[i].payMethod) {
+              case '快捷':
+                http.post('/trade/unionPayRoute', {  // /wx/receipt
+                  totalFee: amount,
+                  payChannel: data[i].channelSign
+                }, function (data) {
+                  message.load_hide();
+                  window.location.replace(data.url);
+                });
+                break;
+              default:
+                http.post('/trade/dcReceipt', {  // /wx/receipt
+                  totalFee: amount,
+                  payChannel: data[i].channelSign
+                }, function (data) {
+                  message.load_hide();
+                  window.location.replace("/sqb/charge?qrCode=" + encodeURIComponent(data.payUrl) + "&name=" + data.subMerName + "&money=" + data.amount);
+                });
+                break;
+            }
+          } else {
+            message.load_hide();
+          }
+        });
+      } else {
+        message.prompt_show('请输入正确的收款金额');
+      }
+    };
+    console.log(data[i]);
+    let name = document.createElement('div');
+    name.className = 'channel-con name';
+    name.innerHTML = data[i].channelName;
+    let time = document.createElement('div');
+    time.className = 'channel-con';
+    time.innerHTML = data[i].settleType + '到账';
+    let fee = document.createElement('div');
+    fee.className = 'channel-con';
+    fee.innerHTML = (data[i].channelRate * 100).toFixed(2) + '%';
+    let amount = document.createElement('div');
+    amount.className = 'channel-con';
+    amount.innerHTML = data[i].limitAmount + '元';
+    group.appendChild(name);
+    group.appendChild(time);
+    group.appendChild(fee);
+    group.appendChild(amount);
+    channel.appendChild(group);
+  }
 });

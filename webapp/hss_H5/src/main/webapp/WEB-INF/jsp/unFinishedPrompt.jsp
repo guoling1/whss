@@ -18,6 +18,6 @@
     <p>请耐心等待</p>
 </div>
 </body>
-<script src="http://static.jinkaimen.cn/vendor/vendor.1.0.9.5.min.js"></script>
+<script src="http://static.jinkaimen.cn/vendor/vendor.1.0.9.7.min.js"></script>
 <script src="http://static.jinkaimen.cn/hss/2.2.10/common.min.js"></script>
 </html>
