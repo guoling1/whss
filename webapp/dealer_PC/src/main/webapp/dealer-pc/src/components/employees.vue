@@ -38,7 +38,11 @@
                 <el-table-column prop="realname" label="姓名"></el-table-column>
                 <el-table-column prop="mobile" label="手机号"></el-table-column>
                 <el-table-column prop="email" label="邮箱"></el-table-column>
-                <el-table-column prop="roleName" label="角色权限"></el-table-column>
+                <el-table-column prop="roleName" label="角色权限">
+                  <template scope="scope">
+                    <el-button type="text" @click="roleDet(scope.row.roleId)">{{scope.row.roleName}}</el-button>
+                  </template>
+                </el-table-column>
                 <el-table-column prop="createTime" label="注册日期">
                   <template scope="scope">
                     <span>{{scope.row.createTime|datetime}}</span>
@@ -103,6 +107,9 @@
       this.getData()
     },
     methods: {
+      roleDet: function (id) {
+        this.$router.push({path:'/daili/app/roles_add',query:{id:id}});
+      },
       audit:function (id) {
         this.$router.push({path:'/daili/app/employees_add',query:{id:id}});
       },

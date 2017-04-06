@@ -53,8 +53,8 @@
               </li>
               <li class="same">
                 <label class="title"></label>
-                <el-button type="primary" @click="submit" v-if="isAdd">确 定</el-button>
-                <el-button type="primary" @click="submit" v-else>修改</el-button>
+                <!--<el-button type="primary" @click="submit" v-if="isAdd">确 定</el-button>
+                <el-button type="primary" @click="submit" v-else>修改</el-button>-->
               </li>
             </ul>
           </div>
