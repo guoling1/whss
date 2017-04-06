@@ -60,15 +60,15 @@ public class ChannelGatewayController extends BaseController {
     public CommonResponse getChannelList(@RequestBody final DynamicCodePayRequest payRequest,
                                          final HttpServletRequest request){
 
-       /* if(!super.isLogin(request)){
+        if(!super.isLogin(request)){
             return CommonResponse.simpleResponse(-2, "未登录");
         }
         Optional<UserInfo> userInfoOptional = userInfoService.selectByOpenId(super.getOpenId(request));
         if(!userInfoOptional.isPresent()){
             return CommonResponse.simpleResponse(-2, "未登录");
-        }*/
-        //userInfoOptional.get().getMerchantId()
-        Optional<MerchantInfo> merchantInfoOptional = merchantInfoService.selectById(94);
+        }
+
+        Optional<MerchantInfo> merchantInfoOptional = merchantInfoService.selectById(userInfoOptional.get().getMerchantId());
         if(!merchantInfoOptional.isPresent()){
             return CommonResponse.simpleResponse(-2, "未登录");
         }
@@ -77,17 +77,10 @@ public class ChannelGatewayController extends BaseController {
             return CommonResponse.simpleResponse(-2, "未审核通过");
         }
 
-        //获取该商户对应的产品通道模板
+        //获取该商户对应的产品通道网关
         final Product product = this.productService.selectByType(EnumProductType.HSS.getId()).get();
         final List<ProductChannelGateway> productChannelGatewayList =
                 this.productChannelGatewayService.selectByProductTypeAndProductId(EnumProductType.HSS, product.getId());
-        Map<Integer, ProductChannelGateway> productChannelGatewayMap = Maps.uniqueIndex(productChannelGatewayList, new Function<ProductChannelGateway, Integer>() {
-            @Override
-            public Integer apply(ProductChannelGateway input) {
-                return input.getChannelSign();
-            }
-        });
-
 
         final List<MerchantChannelRate> merchantChannelRateList = this.merchantChannelRateService.selectByMerchantId(merchantInfo.getId());
         Map<Integer, MerchantChannelRate> merchantChannelRateMap = Maps.uniqueIndex(merchantChannelRateList, new Function<MerchantChannelRate, Integer>() {
@@ -104,7 +97,7 @@ public class ChannelGatewayController extends BaseController {
             final BasicChannel basicChannel = this.basicChannelService.selectByChannelTypeSign(channelSign).get();
             final MerchantChannelResponse merchantChannelResponse = new MerchantChannelResponse();
             merchantChannelResponse.setPayMethod(EnumPayChannelSign.idOf(channelSign).getPaymentChannel().getValue());
-            merchantChannelResponse.setChannelName(productChannelGatewayMap.get(channelSign).getViewChannelName());
+            merchantChannelResponse.setChannelName(productChannelGateway.getViewChannelName());
             merchantChannelResponse.setChannelRate(merchantChannelRateMap.get(channelSign).getMerchantPayRate().toString());
             merchantChannelResponse.setChannelSign(channelSign);
             merchantChannelResponse.setLimitAmount(basicChannel.getLimitAmount().toString());

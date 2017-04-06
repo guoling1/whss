@@ -3,13 +3,17 @@
 <mapper namespace="com.jkm.hss.product.dao.ProductChannelGatewayDao">
     <insert id="addNew" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO tb_product_channel_gateway
-        (product_id,
+        (gateway_type,
+        dealer_id,
+        product_id,
         product_type,
         channel_sign,
         view_channel_name,
         channel_short_name,
         status
         )VALUES(
+         #{gatewayType},
+         #{dealerId},
          #{productId},
          #{productType},
          #{channelSign},
@@ -20,7 +24,10 @@
     </insert>
     <update id="update">
         UPDATE tb_product_channel_gateway
-        SET product_id = #{productId},
+        SET
+        gateway_type = #{gatewayType},
+        dealer_id = #{dealerId},
+        product_id = #{productId},
         product_type = #{productType},
         channel_sign = #{channelSign},
         view_channel_name = #{viewChannelName},
@@ -30,9 +37,9 @@
     </update>
     <select id="selectByProductTypeAndProductId" resultType="com.jkm.hss.product.entity.ProductChannelGateway">
         SELECT * FROM tb_product_channel_gateway
-        WHERE product_type = #{type} AND product_id = #{productId} AND status = 2
+        WHERE product_type = #{type} AND product_id = #{productId} AND status = 2 AND gateway_type = product
     </select>
     <select id="selectByChannelSign" resultType="com.jkm.hss.product.entity.ProductChannelGateway">
-        SELECT * FROM tb_product_channel_gateway WHERE channel_sign = #{channelSign} order by id limit 1
+        SELECT * FROM tb_product_channel_gateway WHERE channel_sign = #{channelSign}  AND gateway_type = product order by id limit 1
     </select>
 </mapper>

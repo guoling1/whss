@@ -12,6 +12,18 @@ import lombok.Data;
 public class ProductChannelGateway extends BaseEntity {
 
     /**
+     * 网关类型
+     *
+     * {@link com.jkm.hss.product.enums.EnumGatewayType}
+     */
+    private String gatewayType;
+
+    /**
+     * 代理商id
+     */
+    private long dealerId;
+
+    /**
      * 产品id
      */
     private long productId;
