@@ -227,8 +227,13 @@
             <el-table-column label="通道名称">
               <template scope="scope">
                 <router-link :to="{path:'/admin/record/passAdd',query:{id:scope.$index}}"
-                             type="text" size="small">{{records[scope.$index].channelName}}
+                             type="text" size="small">{{records[scope.$index].channelShortName}}
                 </router-link>
+              </template>
+            </el-table-column>
+            <el-table-column label="原始名称">
+              <template scope="scope">
+                {{records[scope.$index].channelName}}
               </template>
             </el-table-column>
             <el-table-column prop="channelCode" label="通道编码"></el-table-column>
