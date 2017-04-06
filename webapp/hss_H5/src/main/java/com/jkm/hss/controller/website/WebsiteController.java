@@ -29,10 +29,10 @@ public class WebsiteController extends BaseController {
         req.setIp(ipAddress);
         int response = websiteService.selectWebsite(req);
         if (response > 20){
-            return CommonResponse.simpleResponse(1, "您已多次使用该ip提交");
+            return CommonResponse.simpleResponse(-1, "您已多次使用该ip提交");
         }
         websiteService.insertWebsite(req);
-        return CommonResponse.simpleResponse(1, "success");
+        return CommonResponse.simpleResponse(1, "提交成功");
 
     }
 
