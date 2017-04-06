@@ -54,7 +54,7 @@ let channelBox = document.getElementById('channelBox');
 let channel = document.getElementById('channel');
 const checkBusinessRegistration = (code, amount) => {
   return new Promise(function (resolve, reject) {
-    message.load_show('正在校验');
+    message.load_show('正在支付');
     http.post('/wx/checkMerchantInfo1', {
       amount: amount,
       channelTypeSign: code
