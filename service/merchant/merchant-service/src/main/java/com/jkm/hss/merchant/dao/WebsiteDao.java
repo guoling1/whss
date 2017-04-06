@@ -1,7 +1,11 @@
 package com.jkm.hss.merchant.dao;
 
+import com.jkm.hss.merchant.entity.CooperationQueryRequest;
+import com.jkm.hss.merchant.entity.CooperationQueryResponse;
 import com.jkm.hss.merchant.entity.WebsiteRequest;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 /**
  * Created by zhangbin on 2017/4/5.
@@ -21,4 +25,18 @@ public interface WebsiteDao {
      * @param req
      */
     void insertWebsite(WebsiteRequest req);
+
+    /**
+     * 查询申请合作用户列表
+     * @param request
+     * @return
+     */
+    List<CooperationQueryResponse> selectCooperation(CooperationQueryRequest request);
+
+    /**
+     * 查询申请合作用户列表总数
+     * @param request
+     * @return
+     */
+    int selectCooperationCount(CooperationQueryRequest request);
 }

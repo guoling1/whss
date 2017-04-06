@@ -1,10 +1,14 @@
 package com.jkm.hss.merchant.service.impl;
 
 import com.jkm.hss.merchant.dao.WebsiteDao;
+import com.jkm.hss.merchant.entity.CooperationQueryRequest;
+import com.jkm.hss.merchant.entity.CooperationQueryResponse;
 import com.jkm.hss.merchant.entity.WebsiteRequest;
 import com.jkm.hss.merchant.service.WebsiteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * Created by zhangbin on 2017/4/5.
@@ -23,5 +27,16 @@ public class WebsiteServiceImpl implements WebsiteService {
     @Override
     public void insertWebsite(WebsiteRequest req) {
         this.websiteDao.insertWebsite(req);
+    }
+
+    @Override
+    public List<CooperationQueryResponse> selectCooperation(CooperationQueryRequest request) {
+        List<CooperationQueryResponse> list = this.websiteDao.selectCooperation(request);
+        return list;
+    }
+
+    @Override
+    public int selectCooperationCount(CooperationQueryRequest request) {
+        return this.websiteDao.selectCooperationCount(request);
     }
 }

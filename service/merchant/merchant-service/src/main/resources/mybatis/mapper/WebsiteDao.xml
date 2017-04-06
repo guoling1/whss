@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.jkm.hss.merchant.dao.WebsiteDao">
 
-    <!-- 插入公告信息 -->
+    <!-- 插入申请信息 -->
     <insert id="insertWebsite" useGeneratedKeys="true" keyProperty="id" >
         INSERT INTO tb_website (
             user_name,
@@ -18,9 +18,24 @@
             #{ip})
     </insert>
 
-    <!-- 查询公告列表 -->
     <select id="selectWebsite" resultType="java.lang.Integer">
        SELECT COUNT(ip) FROM tb_website WHERE ip = #{ip}
+    </select>
+
+    <!-- 查询申请合作用户列表 -->
+    <select id="selectCooperation" resultType="com.jkm.hss.merchant.entity.CooperationQueryResponse">
+        SELECT
+            *
+        FROM
+            tb_website
+        ORDER BY
+            create_time DESC
+        LIMIT #{offset},#{pageSize}
+    </select>
+
+    <!-- 查询申请合作用户列表总数 -->
+    <select id="selectCooperationCount" resultType="java.lang.Integer">
+        SELECT COUNT(id) FROM tb_website
     </select>
 
 </mapper>
