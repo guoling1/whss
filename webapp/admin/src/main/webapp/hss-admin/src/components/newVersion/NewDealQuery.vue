@@ -93,16 +93,16 @@
               </template>
             </el-table-column>
             <el-table-column prop="appId" label="业务方" min-width="85"></el-table-column>
-            <el-table-column label="业务订单号" min-width="112">
-              <template scope="scope">
-                <span class="td" :data-clipboard-text="records[scope.$index].businessOrderNo" type="text" size="small"
-                      style="cursor: pointer" title="点击复制">{{records[scope.$index].businessOrderNo|changeHide}}</span>
-              </template>
-            </el-table-column>
             <el-table-column label="交易订单号" min-width="112">
               <template scope="scope">
                 <span class="td" :data-clipboard-text="records[scope.$index].orderNo" type="text" size="small"
                       style="cursor: pointer" title="点击复制">{{records[scope.$index].orderNo|changeHide}}</span>
+              </template>
+            </el-table-column>
+            <el-table-column label="业务订单号" min-width="112">
+              <template scope="scope">
+                <span class="td" :data-clipboard-text="records[scope.$index].businessOrderNo" type="text" size="small"
+                      style="cursor: pointer" title="点击复制">{{records[scope.$index].businessOrderNo|changeHide}}</span>
               </template>
             </el-table-column>
             <el-table-column label="支付流水号" min-width="112">
