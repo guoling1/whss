@@ -216,8 +216,8 @@
               <el-col :span="6">
                 <div class="grid-content bg-purple-light">
                   <el-radio-group v-model="query.isUse">
-                    <el-radio :label="0">可用</el-radio>
-                    <el-radio :label="1">维护</el-radio>
+                    <el-radio :label="1">可用</el-radio>
+                    <el-radio :label="0">维护</el-radio>
                   </el-radio-group>
                 </div>
               </el-col>
