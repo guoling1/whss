@@ -14,7 +14,7 @@ public class AdminDealerUserListRequest extends PageQueryParams {
     /**
      * 代理商名称
      */
-    private long dealerName;
+    private String dealerName;
 
     /**
      * 员工编号
