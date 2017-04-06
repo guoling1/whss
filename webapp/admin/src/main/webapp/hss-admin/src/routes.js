@@ -44,6 +44,10 @@ const AgentListFir = r => require.ensure([], () => r(require('components/AgentLi
 const AgentAdd = r => require.ensure([], () => r(require('components/AgentAdd')), 'group-record');
 const AgentAddPro = r => require.ensure([], () => r(require('components/AgentAddPro')), 'group-record');
 const AgentAddBase = r => require.ensure([], () => r(require('components/AgentAddBase')), 'group-record');
+const AgentPersonnel = r => require.ensure([], () => r(require('components/AgentPersonnel')), 'group-record');
+const AgentPersonnelDet = r => require.ensure([], () => r(require('components/AgentPersonnelDet')), 'group-record');
+const AgentRole = r => require.ensure([], () => r(require('components/AgentRole')), 'group-record');
+const AgentRoleAdd = r => require.ensure([], () => r(require('components/AgentRoleAdd')), 'group-record');
 //设备
 const Issue = r => require.ensure([], () => r(require('components/Issue')), 'group-record');
 const IssueRecord = r => require.ensure([], () => r(require('components/IssueRecord')), 'group-record');
@@ -89,6 +93,26 @@ let routes = [
         path: 'home',
         name: 'Home',
         component: Home
+      },
+      {
+        path: 'agentPersonnel',
+        name: 'AgentPersonnel',
+        component: AgentPersonnel
+      },
+      {
+        path: 'agentPersonnelDet',
+        name: 'AgentPersonnelDet',
+        component: AgentPersonnelDet
+      },
+      {
+        path: 'agentRole',
+        name: 'AgentRole',
+        component: AgentRole
+      },
+      {
+        path: 'agentRoleAdd',
+        name: 'AgentRoleAdd',
+        component: AgentRoleAdd
       },
       {
         path: 'storeAuditHSY',

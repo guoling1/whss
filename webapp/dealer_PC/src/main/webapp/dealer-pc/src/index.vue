@@ -243,9 +243,9 @@
               <li v-if="list.员工管理!=undefined">
                 <router-link to="employees"><i class="fa fa-circle-o"></i> 员工管理</router-link>
               </li>
-              <li v-if="list.角色管理!=undefined">
-                <router-link to="roles"><i class="fa fa-circle-o"></i> 角色管理</router-link>
-              </li>
+              <!--<li v-if="list.角色管理!=undefined">-->
+                <!--<router-link to="roles"><i class="fa fa-circle-o"></i> 角色管理</router-link>-->
+              <!--</li>-->
             </ul>
           </li>
           <!--<li class="treeview">-->

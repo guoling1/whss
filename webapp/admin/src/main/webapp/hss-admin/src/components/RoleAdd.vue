@@ -17,8 +17,8 @@
               <table style="width:90%;display: inline-table;vertical-align: top" border="0" cellspacing="0" cellpadding="0" class="table table-bordered">
                 <thead>
                 <tr>
-                  <th width="35%">一级菜单名称</th>
-                  <th width="35%">子菜单名称</th>
+                  <th width="23%">一级菜单名称</th>
+                  <th width="25%">子菜单名称</th>
                   <th >操作</th>
                 </tr>
                 </thead>

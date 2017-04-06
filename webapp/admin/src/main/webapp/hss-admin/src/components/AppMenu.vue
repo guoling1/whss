@@ -109,7 +109,7 @@
           </ul>
           </router-link>
         </li>
-        <li v-if="list.代理商管理!=undefined" :class="(url=='/admin/record/agentListFir'||url=='/admin/record/agentListSec')?'treeview active':'treeview'">
+        <li v-if="list.代理商管理!=undefined" :class="(url=='/admin/record/agentListFir'||url=='/admin/record/agentListSec'||url=='/admin/record/agentPersonnel'||url=='/admin/record/agentRole')?'treeview active':'treeview'">
           <a href="#"><span>代理商管理</span>
           </a>
           <ul class="treeview-menu">
@@ -118,6 +118,12 @@
             </li>
             <li v-if="list.二级代理商!=undefined" @click="refrash" :class="(url=='/admin/record/agentListSec')?'treeview active':'treeview'">
               <router-link to="/admin/record/agentListSec"><span>二级代理商</span></router-link>
+            </li>
+            <li v-if="list.代理商员工!=undefined" @click="refrash" :class="(url=='/admin/record/agentPersonnel')?'treeview active':'treeview'">
+              <router-link to="/admin/record/agentPersonnel"><span>代理商员工</span></router-link>
+            </li>
+            <li v-if="list.代理商员工!=undefined" @click="refrash" :class="(url=='/admin/record/agentRole')?'treeview active':'treeview'">
+              <router-link to="/admin/record/agentRole"><span>代理商员工权限</span></router-link>
             </li>
           </ul>
         </li>
