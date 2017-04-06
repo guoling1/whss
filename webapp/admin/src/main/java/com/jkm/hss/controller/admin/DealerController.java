@@ -1046,4 +1046,26 @@ public class DealerController extends BaseController {
         List<AdminRoleListResponse> adminRoleListResponses = adminRoleService.selectAdminRoleList(type);
         return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功",adminRoleListResponses);
     }
+
+    /**
+     * 代理商用户修改密码
+     * @param adminUserRequest
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/updatePwdById", method = RequestMethod.POST)
+    public CommonResponse updatePwdById (@RequestBody AdminUserRequest adminUserRequest) {
+        if(adminUserRequest.getId()<=0){
+            return CommonResponse.simpleResponse(-1, "登录名不存在");
+        }
+        if(StringUtils.isEmpty(adminUserRequest.getPassword())){
+            return CommonResponse.simpleResponse(-1, "请输入密码");
+        }
+        Optional<AdminUser> adminUserOptional = this.adminUserService.getAdminUserById(adminUserRequest.getId());
+        if(!adminUserOptional.isPresent()){
+            return CommonResponse.simpleResponse(-1, "登录名不存在");
+        }
+        adminUserService.updateDealerUserPwdById(DealerSupport.passwordDigest(adminUserRequest.getPassword(),"JKM"),adminUserRequest.getId());
+        return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "修改成功");
+    }
 }
