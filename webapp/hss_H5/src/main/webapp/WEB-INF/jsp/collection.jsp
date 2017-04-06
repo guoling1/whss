@@ -82,7 +82,13 @@
     </div>
     <div class="channel-small">各通道限额动态变化，一次不通过可换其他通道重试</div>
     <div class="channel-space">
-      <div class="channel-group"></div>
+      <%-- 动态添加 --%>
+      <div class="channel-group">
+        <div class="channel-con name">阳光万维</div>
+        <div class="channel-con">D0到账<span></span></div>
+        <div class="channel-con">0.45%</div>
+        <div class="channel-con right">3000元</div>
+      </div>
     </div>
   </div>
 </div>
@@ -113,5 +119,6 @@
   }
 </script>
 <script src="http://static.jinkaimen.cn/vendor/vendor.1.0.9.5.min.js"></script>
-<script src="http://static.jinkaimen.cn/hss/2.2.8/collection.min.js"></script>
+<%--<script src="http://static.jinkaimen.cn/hss/2.2.10/collection.min.js"></script>--%>
+<script src="/js/hss/2.2.10/collection.min.js"></script>
 </html>

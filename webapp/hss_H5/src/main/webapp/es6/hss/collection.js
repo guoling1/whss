@@ -6,6 +6,7 @@
 const browser = _require('browser');
 browser.elastic_touch();
 // 引入http message
+const http = _require('http');
 const message = _require('message');
 const Keyboard = _require('keyboard');
 new Keyboard({
@@ -29,4 +30,10 @@ layer_x.addEventListener('click', function () {
 
 submit.addEventListener('click', function () {
   layer.style.display = 'none';
+});
+
+// 多通道获取
+http.post('/channel/list', {}, function (data) {
+  console.log(data);
+  let group = document.createElement('group');
 });

@@ -2546,6 +2546,32 @@ input:focus {
   background: url("../../assets/channel-q.png") no-repeat center;
   background-size: 14px 14px;
 }
+#collection .channel-box .channel-space .channel-group .channel-con,
+#payment-wx .channel-box .channel-space .channel-group .channel-con,
+#payment-zfb .channel-box .channel-space .channel-group .channel-con {
+  float: left;
+  line-height: 40px;
+  width: 25%;
+  font-size: 14px;
+  color: #5a5a5a;
+}
+#collection .channel-box .channel-space .channel-group .channel-con.name,
+#payment-wx .channel-box .channel-space .channel-group .channel-con.name,
+#payment-zfb .channel-box .channel-space .channel-group .channel-con.name {
+  color: #222;
+  font-weight: bold;
+}
+#collection .channel-box .channel-space .channel-group .channel-con.dis,
+#payment-wx .channel-box .channel-space .channel-group .channel-con.dis,
+#payment-zfb .channel-box .channel-space .channel-group .channel-con.dis {
+  color: #b0b0b0;
+}
+#collection .channel-box .channel-space .channel-group .channel-con.right,
+#payment-wx .channel-box .channel-space .channel-group .channel-con.right,
+#payment-zfb .channel-box .channel-space .channel-group .channel-con.right {
+  background: url("../../assets/channel-right.png") no-repeat center right;
+  background-size: 6px 10px;
+}
 #collection .channel-box .channel-small,
 #payment-wx .channel-box .channel-small,
 #payment-zfb .channel-box .channel-small {
