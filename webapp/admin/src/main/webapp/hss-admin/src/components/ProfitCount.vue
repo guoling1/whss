@@ -292,7 +292,7 @@
           vm.$data.totalUrl='/admin/allProfit/secondAmount'
         }else {
           vm.$data.activeName='first';
-          vm.$data.url='/admin/allProfit/CompanyProfit';
+          vm.$data.url='/admin/allProfit/companyProfit';
           vm.$data.totalUrl='/admin/allProfit/companyAmount'
         }
         vm.$data.records = [];

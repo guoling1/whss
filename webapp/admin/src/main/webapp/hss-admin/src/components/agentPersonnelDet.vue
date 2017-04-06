@@ -264,7 +264,8 @@
         isMask: false,
         productId: '',
         fileList: [],
-        fileList1: []
+        fileList1: [],
+        type:''
       }
     },
     created: function () {
@@ -274,15 +275,20 @@
       this.$http.post('/admin/dict/selectAllByType',{dictType:"user_dept"}).then((res)=>{
         this.dept = res.data;
       });
-      this.$http.post('/admin/user/userRoleList').then((res)=>{
-        this.role = res.data;
-    });
+//      this.$http.post('/admin/user/userRoleList').then((res)=>{
+//        this.role = res.data;
+//    });
       //若为查看详情
       if (this.$route.query.id != undefined) {
         this.$data.isShow = false;
         this.$http.get('/admin/dealer/userDetail/' + this.$route.query.id)
           .then(function (res) {
             this.$data.query = res.data;
+            this.$data.type = res.data.type;
+            this.$http.post('/admin/dealer/userRoleList/' + this.type)
+              .then(res=>{
+                this.role = res.data;
+              })
             if (res.data.realIdentityFacePic != null) {
               this.fileList.push({
                 url: res.data.realIdentityFacePic
