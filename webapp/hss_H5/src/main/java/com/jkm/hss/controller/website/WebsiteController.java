@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 
 /**
@@ -22,9 +23,21 @@ public class WebsiteController extends BaseController {
 
     private WebsiteService websiteService;
 
+    /**
+     * 网站
+     *
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/websiteSave", method = RequestMethod.OPTIONS)
+    public void websiteSave() {
+
+    }
+
     @ResponseBody
     @RequestMapping(value = "/websiteSave",method = RequestMethod.POST)
-    public CommonResponse websiteSave(@RequestBody WebsiteRequest req,HttpServletRequest request){
+    public CommonResponse websiteSave(@RequestBody WebsiteRequest req,HttpServletRequest request,HttpServletResponse httpServletResponse){
+        httpServletResponse.setHeader("Access-Control-Allow-Origin", "*");
         String ipAddress = getIpAddress(request);
         req.setIp(ipAddress);
         int response = websiteService.selectWebsite(req);
