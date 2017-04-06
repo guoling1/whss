@@ -15,7 +15,7 @@
             #{userName},
             #{mobile},
             #{type},
-            #{ip}
+            #{ip})
     </insert>
 
     <!-- 查询公告列表 -->

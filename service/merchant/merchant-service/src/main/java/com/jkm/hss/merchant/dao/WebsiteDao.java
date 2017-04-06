@@ -1,10 +1,12 @@
 package com.jkm.hss.merchant.dao;
 
 import com.jkm.hss.merchant.entity.WebsiteRequest;
+import org.springframework.stereotype.Repository;
 
 /**
  * Created by zhangbin on 2017/4/5.
  */
+@Repository
 public interface WebsiteDao {
 
     /**
