@@ -1,10 +1,10 @@
 <template>
-  <div>
+  <div class="wrapper">
     <app-header></app-header>
 
     <app-menu></app-menu>
 
-    <app-content></app-content>
+    <app-content ></app-content>
 
     <!--<app-footer></app-footer>-->
   </div>

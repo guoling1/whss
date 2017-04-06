@@ -1,5 +1,5 @@
 <template lang="html">
-  <div class="content-wrapper">
+  <div class="content-wrapper" style="margin-left: 0">
     <!-- Main content -->
     <section class="content">
       <h4 class="text-center top">
