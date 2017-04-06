@@ -2551,6 +2551,7 @@ input:focus {
   height: 40px;
   padding: 0 15px;
   background-color: #FFF;
+  border-bottom: 1px solid #e6e8f1;
 }
 #collection .channel-box .channel-space .channel-group .channel-li,
 #payment-wx .channel-box .channel-space .channel-group .channel-li,
@@ -2564,8 +2565,13 @@ input:focus {
 #collection .channel-box .channel-space .channel-group .channel-li span,
 #payment-wx .channel-box .channel-space .channel-group .channel-li span,
 #payment-zfb .channel-box .channel-space .channel-group .channel-li span {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  margin-left: 5px;
   background: url("../assets/channel-q.png") no-repeat center;
   background-size: 14px 14px;
+  transform: translate3d(0, 2px, 0);
 }
 #collection .channel-box .channel-space .channel-group .channel-con,
 #payment-wx .channel-box .channel-space .channel-group .channel-con,

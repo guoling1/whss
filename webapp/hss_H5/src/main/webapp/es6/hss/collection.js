@@ -32,6 +32,23 @@ submit.addEventListener('click', function () {
   layer.style.display = 'none';
 });
 
+let know_channel = document.getElementById('know-channel');
+let layer_channel = document.getElementById('layer-channel');
+let layer_x_channel = document.getElementById('layer-x-channel');
+let submit_channel = document.getElementById('submit-channel');
+
+know_channel.addEventListener('click', function () {
+  layer_channel.style.display = 'block';
+});
+
+layer_x_channel.addEventListener('click', function () {
+  layer_channel.style.display = 'none';
+});
+
+submit_channel.addEventListener('click', function () {
+  layer_channel.style.display = 'none';
+});
+
 // 多通道获取
 let channelBox = document.getElementById('channelBox');
 let channel = document.getElementById('channel');

@@ -76,7 +76,7 @@
       <div class="channel-space top">
         <div class="channel-group">
           <div class="channel-li">渠道名称</div>
-          <div class="channel-li">结算时间<span></span></div>
+          <div class="channel-li">结算时间<span id="know-channel"></span></div>
           <div class="channel-li">费率</div>
           <div class="channel-li">单笔限额</div>
         </div>
@@ -89,6 +89,24 @@
   </div>
 </div>
 
+<div class="message-space" id="layer-channel">
+  <div class="message-box">
+    <div class="message-box-head">
+      结算时间说明
+      <div class="message-x" id="layer-x-channel"></div>
+    </div>
+    <div class="message-box-body">
+      <div>“D0”是指当日<br>一般在十分钟内到账结算卡<br></div>
+      <div style="margin-top:10px">“T1”是指下一个工作日<br>遇到周末及法定节假日顺延<br></div>
+      <span>22:56分以后支付成功的，算到下一个工作日</span>
+    </div>
+    <div class="message-box-foot">
+      <div class="message-enter" id="submit-channel">
+        确认
+      </div>
+    </div>
+  </div>
+</div>
 
 <div class="message-space" id="layer">
   <div class="message-box">
