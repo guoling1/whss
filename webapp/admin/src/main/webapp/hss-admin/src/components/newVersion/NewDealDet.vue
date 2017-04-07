@@ -79,7 +79,7 @@
               <th style="text-align: right">结算状态:</th>
               <td>{{record.settleStatus|changeSettleStatus}}</td>
               <th style="text-align: right">结算周期:</th>
-              <td>—</td>
+              <td>{{record.settleType}}</td>
               <th style="text-align: right">交易时间:</th>
               <td>{{record.createTime|changeTime}}</td>
             </tr>

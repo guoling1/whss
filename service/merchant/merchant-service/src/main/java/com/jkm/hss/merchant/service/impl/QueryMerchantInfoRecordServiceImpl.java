@@ -5,6 +5,7 @@ import com.jkm.hss.merchant.entity.LogResponse;
 import com.jkm.hss.merchant.entity.MerchantInfoResponse;
 import com.jkm.hss.merchant.entity.ReferralResponse;
 import com.jkm.hss.merchant.entity.SettleResponse;
+import com.jkm.hss.merchant.enums.EnumSource;
 import com.jkm.hss.merchant.helper.MerchantSupport;
 import com.jkm.hss.merchant.service.QueryMerchantInfoRecordService;
 import lombok.extern.slf4j.Slf4j;
@@ -65,16 +66,24 @@ public class QueryMerchantInfoRecordServiceImpl implements QueryMerchantInfoReco
                     list.get(i).setCheckedTime(checkedTime);
                 }
                 if (list.get(i).getSource()==0){
-                    list.get(i).setRegistered("扫码注册");
+                    list.get(i).setRegistered(EnumSource.SCAN.getValue());
                 }
                 if (list.get(i).getSource()==1){
-                    list.get(i).setRegistered("推荐注册");
+                    list.get(i).setRegistered(EnumSource.RECOMMEND.getValue());
                 }
-                if (list.get(i).getIsAuthen().equals("1")){
-                    list.get(i).setIsAuthen("认证通过");
+                if (list.get(i).getSource()==2){
+                    list.get(i).setRegistered(EnumSource.DEALERRECOMMEND.getValue());
+                }
+                if (list.get(i).getIsAuthen()!=null&&!list.get(i).getIsAuthen().equals("")){
+                    if (list.get(i).getIsAuthen().equals("1")){
+                        list.get(i).setIsAuthen("认证通过");
+                    }else {
+                        list.get(i).setIsAuthen("认证未通过");
+                    }
                 }else {
                     list.get(i).setIsAuthen("认证未通过");
                 }
+
 
             }
         }

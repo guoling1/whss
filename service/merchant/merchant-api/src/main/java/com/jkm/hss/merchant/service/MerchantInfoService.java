@@ -2,6 +2,7 @@ package com.jkm.hss.merchant.service;
 
 import com.google.common.base.Optional;
 import com.jkm.hss.merchant.entity.MerchantInfo;
+import com.jkm.hss.merchant.helper.request.ChangeDealerRequest;
 import com.jkm.hss.merchant.helper.request.ContinueBankInfoRequest;
 import com.jkm.hss.merchant.helper.request.MerchantInfoAddRequest;
 import org.apache.commons.lang3.tuple.Pair;
@@ -193,5 +194,12 @@ public interface MerchantInfoService {
      * @return
      */
     int toAuthen(String isAuthen,long id);
+
+    /**
+     * 商户切换代理
+     * @param code
+     * @param changeDealerRequest
+     */
+    void changeDealer(String code,ChangeDealerRequest changeDealerRequest);
 
 }

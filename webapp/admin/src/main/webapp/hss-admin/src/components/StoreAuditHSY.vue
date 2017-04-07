@@ -301,8 +301,8 @@
         this.$http.post('/admin/hsyMerchantAudit/throughAudit', {
           id: this.$data.id,
           uid: this.$data.msg.uid,
+          name: this.msg.name
         }).then(function (res) {
-          /*this.$router.push('/admin/record/storeList')*/
           this.$router.go(-1)
         }, function (err) {
           this.$message({
@@ -315,7 +315,7 @@
       unAudit: function () {
         this.$http.post('/admin/hsyMerchantAudit/rejectToExamine',{id: this.$data.id, uid: this.$data.msg.uid,checkErrorInfo:this.$data.reason})
           .then(function (res) {
-            this.$router.push('/admin/record/storeList')
+            this.$router.go(-1)
           },function (err) {
             this.$message({
               showClose: true,

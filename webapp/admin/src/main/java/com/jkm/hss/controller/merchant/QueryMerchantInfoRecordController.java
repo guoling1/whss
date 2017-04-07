@@ -9,15 +9,15 @@ import com.jkm.hss.controller.BaseController;
 import com.jkm.hss.dealer.service.DealerService;
 import com.jkm.hss.helper.ApplicationConsts;
 import com.jkm.hss.helper.response.MerchantRateResponse;
-import com.jkm.hss.merchant.entity.LogResponse;
-import com.jkm.hss.merchant.entity.MerchantChannelRate;
-import com.jkm.hss.merchant.entity.MerchantInfoResponse;
-import com.jkm.hss.merchant.entity.SettleResponse;
+import com.jkm.hss.merchant.entity.*;
 import com.jkm.hss.merchant.enums.EnumEnterNet;
+import com.jkm.hss.merchant.enums.EnumMerchantStatus;
 import com.jkm.hss.merchant.helper.MerchantSupport;
+import com.jkm.hss.merchant.service.AccountBankService;
 import com.jkm.hss.merchant.service.MerchantChannelRateService;
 import com.jkm.hss.merchant.service.QueryMerchantInfoRecordService;
 import com.jkm.hss.product.enums.EnumPayChannelSign;
+import com.jkm.hss.push.sevice.PushService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -48,25 +48,25 @@ public class QueryMerchantInfoRecordController extends BaseController {
     private DealerService dealerService;
 
     @Autowired
+    private AccountBankService accountBankService;
+
+    @Autowired
+    private PushService pushService;
+
+    @Autowired
     private MerchantChannelRateService merchantChannelRateService;
     @ResponseBody
     @RequestMapping(value = "/getAll",method = RequestMethod.POST)
     public JSONObject getAll(@RequestBody final MerchantInfoResponse merchantInfo) throws ParseException {
         JSONObject jsonObject = new JSONObject();
-//        ReferralResponse res = this.queryMerchantInfoRecordService.getRefInformation(merchantInfo.getId());
         List<MerchantInfoResponse> list = this.queryMerchantInfoRecordService.getAll(merchantInfo);
         MerchantInfoResponse response = this.queryMerchantInfoRecordService.getrecommenderInfo(merchantInfo.getId());
 
         if (list.size()>0 || response!=null){
             for (int i=0;i<list.size();i++){
-                if (list.get(i).getLevel()==1){
-                    list.get(i).setProxyName(list.get(i).getProxyName());
-                }
                 if (list.get(i).getLevel()==2){
-                    list.get(i).setProxyName1(list.get(i).getProxyName());
                     list.get(i).setMarkCode2(list.get(i).getMarkCode1());
                     MerchantInfoResponse proxyNames = dealerService.getProxyName(list.get(i).getFirstLevelDealerId());
-                    list.get(i).setProxyName(proxyNames.getProxyName());
                     if (list.get(i).getMarkCode1()!=null&&!list.get(i).getMarkCode1().equals("")){
                         list.get(i).setMarkCode1(proxyNames.getMarkCode());
                     }
@@ -82,11 +82,37 @@ public class QueryMerchantInfoRecordController extends BaseController {
                         list.get(i).setRecommenderPhone(MerchantSupport.decryptMobile(response.getMobile()));
                     }
                 }
+                if (list.get(i).getStatus()==0){
+                    list.get(i).setStat(EnumMerchantStatus.INIT.getName());
+                }
+                if (list.get(i).getStatus()==1){
+                    list.get(i).setStat(EnumMerchantStatus.ONESTEP.getName());
+                }
+                if (list.get(i).getStatus()==2){
+                    list.get(i).setStat(EnumMerchantStatus.REVIEW.getName());
+                }
+                if (list.get(i).getStatus()==3 || list.get(i).getStatus()==6){
+                    list.get(i).setStat(EnumMerchantStatus.PASSED.getName());
+                }
+                if (list.get(i).getStatus()==4){
+                    list.get(i).setStat(EnumMerchantStatus.UNPASSED.getName());
+                }
+                if (list.get(i).getAccountId()>0){
+                    AccountBank res = accountBankService.getDefault(list.get(i).getAccountId());
+                    list.get(i).setBankNo(res.getBankNo());
+                    list.get(i).setBankName(res.getBankName());
+                    list.get(i).setBranchName(res.getBranchName());
+//                    list.get(i).setIsAuthen(res.getIsAuthen());
+                    if ("1".equals(res.getIsAuthen())){
+                        list.get(i).setIsAuthen("认证通过");
+                    }else {
+                        list.get(i).setIsAuthen("认证未通过");
+                    }
+                }
 
 
             }
         }
-        SettleResponse lst = this.queryMerchantInfoRecordService.getSettle(merchantInfo.getId());
 
         List<LogResponse> lists = this.queryMerchantInfoRecordService.getLog(merchantInfo);
         if (list!=null&&list.size()>0){
@@ -128,21 +154,11 @@ public class QueryMerchantInfoRecordController extends BaseController {
                     list.get(i).setIdentityHandPic(urls);
 
                 }
-//                list.get(i).setProxyName(list.get(i).getProxyName());
-//               list.get(i).setProxyName1(list.get(i).getProxyName1());
-//                if (list.get(i).getDealerId()==0){
-//                    String ProxyName = "金开门";
-//                    list.get(i).setProxyName(ProxyName);
-//                }
-//                JSONObject jsonObject = new JSONObject();
                 jsonObject.put("code",1);
                 jsonObject.put("msg","success");
                 JSONObject jo = new JSONObject();
                 jo.put("list",list);
                 jo.put("res",lists);
-                /*jo.put("weixinRate",lst.getWeixinRate());
-                jo.put("alipayRate",lst.getAlipayRate());
-                jo.put("fastRate",lst.getFastRate());*/
                 List<MerchantChannelRate> rateList =
                         this.merchantChannelRateService.selectByMerchantId(merchantInfo.getId());
                 List<MerchantRateResponse> listResponse = Lists.transform(rateList, new Function<MerchantChannelRate, MerchantRateResponse>() {
@@ -168,4 +184,5 @@ public class QueryMerchantInfoRecordController extends BaseController {
         jsonObject.put("msg","没有查到符合条件的数据");
         return jsonObject;
     }
+
 }

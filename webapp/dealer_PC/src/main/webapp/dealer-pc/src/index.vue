@@ -166,9 +166,9 @@
               <li>
                 <router-link to="profits_detail"><i class="fa fa-circle-o"></i>分润明细</router-link>
               </li>
-              <li>
-                <router-link to="settlement"><i class="fa fa-circle-o"></i>结算记录</router-link>
-              </li>
+              <!--<li>-->
+                <!--<router-link to="settlement"><i class="fa fa-circle-o"></i>结算记录</router-link>-->
+              <!--</li>-->
               <li>
                 <router-link to="balance_withdrawal"><i class="fa fa-circle-o"></i>余额提现</router-link>
               </li>
@@ -186,12 +186,12 @@
               <li>
                 <router-link to="dealer_list"><i class="fa fa-circle-o"></i> 所有代理商</router-link>
               </li>
-              <li>
-                <router-link to="dealer_settlement"><i class="fa fa-circle-o"></i> 代理结算记录</router-link>
-              </li>
-              <li>
-                <router-link to="dealer_account"><i class="fa fa-circle-o"></i> 代理商账户</router-link>
-              </li>
+              <!--<li>-->
+                <!--<router-link to="dealer_settlement"><i class="fa fa-circle-o"></i> 代理结算记录</router-link>-->
+              <!--</li>-->
+              <!--<li>-->
+                <!--<router-link to="dealer_account"><i class="fa fa-circle-o"></i> 代理商账户</router-link>-->
+              <!--</li>-->
             </ul>
           </li>
           <li class="treeview">
@@ -223,48 +223,48 @@
               <li>
                 <router-link to="distribution_qrcode"><i class="fa fa-circle-o"></i> 分配二维码</router-link>
               </li>
-              <li>
-                <router-link to="qrcode_distribution"><i class="fa fa-circle-o"></i> 二维码分配记录</router-link>
-              </li>
+              <!--<li>-->
+                <!--<router-link to="qrcode_distribution"><i class="fa fa-circle-o"></i> 二维码分配记录</router-link>-->
+              <!--</li>-->
               <li>
                 <router-link to="qrcode"><i class="fa fa-circle-o"></i> 所有二维码</router-link>
               </li>
             </ul>
           </li>
-          <li class="treeview">
-            <a href="#">
-              <i class="fa fa-user-plus"></i> <span>员工权限管理</span>
-              <span class="pull-right-container">
-                <i class="fa fa-angle-left pull-right"></i>
-                <!-- <small class="label pull-right bg-green">new</small> -->
-              </span>
-            </a>
-            <ul class="treeview-menu">
-              <li>
-                <router-link to="employees"><i class="fa fa-circle-o"></i> 员工管理</router-link>
-              </li>
-              <li>
-                <router-link to="roles"><i class="fa fa-circle-o"></i> 角色管理</router-link>
-              </li>
-            </ul>
-          </li>
-          <li class="treeview">
-            <a href="#">
-              <i class="fa fa-user-secret"></i> <span>我的信息</span>
-              <span class="pull-right-container">
-                <i class="fa fa-angle-left pull-right"></i>
-                <!-- <small class="label pull-right bg-green">new</small> -->
-              </span>
-            </a>
-            <ul class="treeview-menu">
-              <li>
-                <router-link to="information"><i class="fa fa-circle-o"></i> 注册信息</router-link>
-              </li>
-              <li>
-                <router-link to="policy"><i class="fa fa-circle-o"></i> 代理政策</router-link>
-              </li>
-            </ul>
-          </li>
+          <!--<li class="treeview">-->
+            <!--<a href="#">-->
+              <!--<i class="fa fa-user-plus"></i> <span>员工权限管理</span>-->
+              <!--<span class="pull-right-container">-->
+                <!--<i class="fa fa-angle-left pull-right"></i>-->
+                <!--&lt;!&ndash; <small class="label pull-right bg-green">new</small> &ndash;&gt;-->
+              <!--</span>-->
+            <!--</a>-->
+            <!--<ul class="treeview-menu">-->
+              <!--<li>-->
+                <!--<router-link to="employees"><i class="fa fa-circle-o"></i> 员工管理</router-link>-->
+              <!--</li>-->
+              <!--<li>-->
+                <!--<router-link to="roles"><i class="fa fa-circle-o"></i> 角色管理</router-link>-->
+              <!--</li>-->
+            <!--</ul>-->
+          <!--</li>-->
+          <!--<li class="treeview">-->
+            <!--<a href="#">-->
+              <!--<i class="fa fa-user-secret"></i> <span>我的信息</span>-->
+              <!--<span class="pull-right-container">-->
+                <!--<i class="fa fa-angle-left pull-right"></i>-->
+                <!--&lt;!&ndash; <small class="label pull-right bg-green">new</small> &ndash;&gt;-->
+              <!--</span>-->
+            <!--</a>-->
+            <!--<ul class="treeview-menu">-->
+              <!--<li>-->
+                <!--<router-link to="information"><i class="fa fa-circle-o"></i> 注册信息</router-link>-->
+              <!--</li>-->
+              <!--<li>-->
+                <!--<router-link to="policy"><i class="fa fa-circle-o"></i> 代理政策</router-link>-->
+              <!--</li>-->
+            <!--</ul>-->
+          <!--</li>-->
 
           <!-- <li class="header">LABELS</li>
           <li><a href="#"><i class="fa fa-circle-o text-red"></i> <span>Important</span></a></li>

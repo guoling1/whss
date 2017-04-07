@@ -114,7 +114,7 @@ public class ShallProfitDetailServiceImpl implements ShallProfitDetailService{
             //提现分润
             final Map<String, Triple<Long, BigDecimal, String>> map = new HashMap<>();
             if (appAuUser.getDealerID() == 0){
-                final ProductChannelDetail productChannelDetail = this.productChannelDetailService.selectByProductIdAndChannelId(appAuUser.getId(), channelSign).get();
+                final ProductChannelDetail productChannelDetail = this.productChannelDetailService.selectByProductIdAndChannelId(appAuUser.getProductID(), channelSign).get();
                 //final ProductChannelDetail productChannelDetail = list.get(0);
                 final Optional<BasicChannel> channelOptional =  this.basicChannelService.selectByChannelTypeSign(channelSign);
                 final BasicChannel basicChannel = channelOptional.get();
@@ -138,6 +138,7 @@ public class ShallProfitDetailServiceImpl implements ShallProfitDetailService{
                 this.companyProfitDetailService.add(companyProfitDetail);
                 map.put("channelMoney",Triple.of(basicChannel.getAccountId(), channelMoney,"M1"));
                 map.put("productMoney",Triple.of(product.getAccountId(), productMoney,"M1"));
+                map.put("basicMoney",Triple.of(0L, basicChannel.getBasicWithdrawFee(),"M1"));
                 return map;
             }
             final Optional<Dealer> dealerOptional = this.dealerService.getById(appAuUser.getDealerID());
@@ -181,6 +182,7 @@ public class ShallProfitDetailServiceImpl implements ShallProfitDetailService{
                 map.put("firstMoney", Triple.of(dealer.getAccountId(), firstMoney, "M1"));
                 map.put("channelMoney",Triple.of(basicChannel.getAccountId(), channelMoney, "M1"));
                 map.put("productMoney",Triple.of(product.getAccountId(), productMoney, "M1"));
+                map.put("basicMoney",Triple.of(0L, basicChannel.getBasicWithdrawFee(),"M1"));
             }else if(dealer.getLevel() == EnumDealerLevel.SECOND.getId()){
                 //查找一级代理的代理通道费率
                 final Optional<Dealer> firstDealerOptional = this.dealerService.getById(dealer.getFirstLevelDealerId());
@@ -218,6 +220,7 @@ public class ShallProfitDetailServiceImpl implements ShallProfitDetailService{
                 map.put("secondMoney", Triple.of(dealer.getAccountId(),secondMoney, "M1"));
                 map.put("channelMoney",Triple.of(basicChannel.getAccountId(), channelMoney,"M1"));
                 map.put("productMoney",Triple.of(product.getAccountId(), productMoney,"M1"));
+                map.put("basicMoney",Triple.of(0L, basicChannel.getBasicWithdrawFee(),"M1"));
             }
             log.info("订单" + orderNo + "分润处理成功,返回map成功");
             return map;
@@ -242,7 +245,7 @@ public class ShallProfitDetailServiceImpl implements ShallProfitDetailService{
         if (merchantInfo.getFirstMerchantId() != 0){
             log.info("商户[" + merchantId + "]请求进行提现分润，由于该商户是间接商户，不参与分润，直接进入公司账户，交易订单号:" + orderNo);
 
-            final ProductChannelDetail productChannelDetail = this.productChannelDetailService.selectByProductIdAndChannelId(merchantInfo.getId(), channelSign).get();
+            final ProductChannelDetail productChannelDetail = this.productChannelDetailService.selectByProductIdAndChannelId(merchantInfo.getProductId(), channelSign).get();
             final Optional<BasicChannel> channelOptional =  this.basicChannelService.selectByChannelTypeSign(channelSign);
             final BasicChannel basicChannel = channelOptional.get();
             final BigDecimal channelMoney = productChannelDetail.getProductWithdrawFee().subtract(basicChannel.getBasicWithdrawFee());
@@ -254,6 +257,7 @@ public class ShallProfitDetailServiceImpl implements ShallProfitDetailService{
             Map<String, Triple<Long, BigDecimal, String>> map = new HashMap<>();
             map.put("productMoney",Triple.of(product.getAccountId(), productMoney,"M1"));
             map.put("channelMoney",Triple.of(basicChannel.getAccountId(), channelMoney,"M1"));
+            map.put("basicMoney",Triple.of(0L, basicChannel.getBasicWithdrawFee(),"M1"));
             final CompanyProfitDetail companyProfitDetail = new CompanyProfitDetail();
             companyProfitDetail.setProductType(EnumProductType.HSS.getId());
             companyProfitDetail.setMerchantId(merchantId);
@@ -298,6 +302,7 @@ public class ShallProfitDetailServiceImpl implements ShallProfitDetailService{
                 this.companyProfitDetailService.add(companyProfitDetail);
                 map.put("channelMoney",Triple.of(basicChannel.getAccountId(), channelMoney,"M1"));
                 map.put("productMoney",Triple.of(product.getAccountId(), productMoney,"M1"));
+                map.put("basicMoney",Triple.of(0L, basicChannel.getBasicWithdrawFee(),"M1"));
                 return map;
             }
             final Optional<Dealer> dealerOptional = this.dealerService.getById(merchantInfo.getDealerId());
@@ -341,6 +346,7 @@ public class ShallProfitDetailServiceImpl implements ShallProfitDetailService{
                 map.put("firstMoney", Triple.of(dealer.getAccountId(), firstMoney, "M1"));
                 map.put("channelMoney",Triple.of(basicChannel.getAccountId(), channelMoney, "M1"));
                 map.put("productMoney",Triple.of(product.getAccountId(), productMoney, "M1"));
+                map.put("basicMoney",Triple.of(0L, basicChannel.getBasicWithdrawFee(),"M1"));
             }else if(dealer.getLevel() == EnumDealerLevel.SECOND.getId()){
                 //查找一级代理的代理通道费率
                 final Optional<Dealer> firstDealerOptional = this.dealerService.getById(dealer.getFirstLevelDealerId());
@@ -378,6 +384,7 @@ public class ShallProfitDetailServiceImpl implements ShallProfitDetailService{
                 map.put("secondMoney", Triple.of(dealer.getAccountId(),secondMoney, "M1"));
                 map.put("channelMoney",Triple.of(basicChannel.getAccountId(), channelMoney,"M1"));
                 map.put("productMoney",Triple.of(product.getAccountId(), productMoney,"M1"));
+                map.put("basicMoney",Triple.of(0L, basicChannel.getBasicWithdrawFee(),"M1"));
             }
             log.info("订单" + orderNo + "分润处理成功,返回map成功");
             return map;

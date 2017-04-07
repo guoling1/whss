@@ -95,13 +95,13 @@ public interface SettleAccountFlowService {
      */
     List<SettleAccountFlow> getByAuditRecordId(long recordId);
 
-    /**按交易订单号查询代理商和公司(等)的分润流水
-     *
+    /**
+     * 按订单号查询
      *
      * @param orderNo
      * @return
      */
-    List<SettleAccountFlow> getDealerOrCompanyFlowByOrderNo(String orderNo);
+    List<SettleAccountFlow> getByOrderNo(String orderNo);
 
     /**
      * 按结算单id查询

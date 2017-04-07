@@ -1,4 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,7 +8,7 @@
   <meta name="viewport"
         content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
   <title>好收收</title>
-  <link rel="stylesheet" href="http://static.jinkaimen.cn/hss/css/style.2.1.3.css">
+  <link rel="stylesheet" href="http://static.jinkaimen.cn/hss/css/style.2.2.5.css">
   <link rel="stylesheet" href="http://static.jinkaimen.cn/weui/weui.css">
 </head>
 <body>
@@ -17,7 +19,7 @@
       <div class="logo" id="logo"></div>
       <div class="info">
         <div class="name">${bankName}</div>
-        <div class="type">储蓄卡 | xx支行</div>
+        <div class="type">储蓄卡 <c:if test="${branchShortName!=''}">| ${branchShortName}</c:if></div>
       </div>
     </div>
     <div class="bottom">
@@ -94,32 +96,6 @@
       <div id="submit" class="submit">确认修改</div>
     </div>
   </div>
-  <div class="message-space" id="layer">
-    <div class="message-box">
-      <div class="message-box-head">提示</div>
-      <div class="message-box-body">
-        该通道正在支付公司注册中<br>请明天再使用该通道
-      </div>
-      <div class="message-box-foot">
-        <div class="message-enter" id="cancel">
-          确定
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="message-space" id="layerC">
-    <div class="message-box">
-      <div class="message-box-head">提示</div>
-      <div class="message-box-body">
-        补全信用卡信息可以提高您的支付额度
-      </div>
-      <div class="message-box-foot">
-        <div class="message-enter" id="cancelC">
-          去补充
-        </div>
-      </div>
-    </div>
-  </div>
 </div>
 </body>
 <script>
@@ -135,6 +111,6 @@
     branchName: '${branchName}',
   }
 </script>
-<script src="http://static.jinkaimen.cn/vendor/vendor.1.0.3.min.js"></script>
-<script src="http://static.jinkaimen.cn/hss/2.1.1/bankBranch.min.js"></script>
+<script src="http://static.jinkaimen.cn/vendor/vendor.1.0.9.5.min.js"></script>
+<script src="http://static.jinkaimen.cn/hss/2.2.9/bankBranch.min.js"></script>
 </html>

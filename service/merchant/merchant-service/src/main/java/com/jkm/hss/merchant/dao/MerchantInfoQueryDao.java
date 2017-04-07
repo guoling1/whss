@@ -40,8 +40,9 @@ public interface MerchantInfoQueryDao {
     int getCountRecord(MerchantInfoRequest req);
 
     /**
-     * 查询所有
+     * 下载
+     * @param req
      * @return
      */
-    List<MerchantInfoResponse> seletAll();
+    List<MerchantInfoResponse> downloade(MerchantInfoRequest req);
 }

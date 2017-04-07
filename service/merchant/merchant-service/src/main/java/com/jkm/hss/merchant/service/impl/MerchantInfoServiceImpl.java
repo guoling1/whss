@@ -16,6 +16,7 @@ import com.jkm.hss.merchant.enums.EnumMerchantStatus;
 import com.jkm.hss.merchant.enums.EnumPayMethod;
 import com.jkm.hss.merchant.enums.EnumStatus;
 import com.jkm.hss.merchant.enums.EnumUpgradeRecordType;
+import com.jkm.hss.merchant.helper.request.ChangeDealerRequest;
 import com.jkm.hss.merchant.helper.request.ContinueBankInfoRequest;
 import com.jkm.hss.merchant.helper.request.MerchantInfoAddRequest;
 import com.jkm.hss.merchant.helper.request.MerchantUpgradeRequest;
@@ -508,6 +509,12 @@ public class MerchantInfoServiceImpl implements MerchantInfoService {
      */
     @Override
     public int updateBranchInfo(ContinueBankInfoRequest continueBankInfoRequest) {
+        MerchantInfo merchantInfo = merchantInfoDao.selectById(continueBankInfoRequest.getId());
+        if(merchantInfo.getProvinceCode()!=null&&!"".equals(merchantInfo.getProvinceCode())
+                &&merchantInfo.getCityCode()!=null&&!"".equals(merchantInfo.getCityCode())
+                &&merchantInfo.getCountyCode()!=null&&!"".equals(merchantInfo.getCountyCode())){
+            return 0;
+        }
         return merchantInfoDao.updateBranchInfo(continueBankInfoRequest);
     }
 
@@ -521,6 +528,17 @@ public class MerchantInfoServiceImpl implements MerchantInfoService {
     @Override
     public int toAuthen(String isAuthen, long id) {
         return merchantInfoDao.toAuthen(isAuthen,id);
+    }
+
+    /**
+     * 商户切换代理
+     * @param code
+     * @param changeDealerRequest
+     */
+    @Override
+    public void changeDealer(String code,ChangeDealerRequest changeDealerRequest) {
+        merchantInfoDao.updateDealerInfo(changeDealerRequest);
+        qrCodeService.updateDealerInfo(code,changeDealerRequest.getFirstDealerId(),changeDealerRequest.getSecondDealerId());
     }
 
 }

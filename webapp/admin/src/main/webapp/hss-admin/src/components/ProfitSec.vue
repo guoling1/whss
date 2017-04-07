@@ -41,10 +41,10 @@
             </li>
           </ul>
           <!--表格-->
-          <el-table v-loading.body="loading" style="font-size: 12px;margin:15px 0" :data="records" border>
+          <el-table v-loading.body="loading" style="font-size: 12px;margin:15px 0" :data="records" border :row-style="tableFoot">
             <el-table-column   width="100" label="序号">
               <template scope="scope">
-                <div v-if="records[scope.$index].businessType!='总额'">{{scope.$index+1}}</div>
+                <div v-if="records[scope.$index].businessType!='当页总额'&&records[scope.$index].businessType!='筛选条件统计'">{{scope.$index+1}}</div>
               </template>
             </el-table-column>
             <el-table-column prop="proxyName" label="上级代理商名称"></el-table-column>
@@ -57,11 +57,19 @@
               <template scope="scope">
                 <router-link
                   :to="{path:'/admin/record/profitSecDet',query:{type:records[scope.$index].businessType,id:records[scope.$index].receiptMoneyAccountId,time:records[scope.$index].splitDate}}"
-                  v-if="records[scope.$index].splitAmount!=0&&records[scope.$index].businessType!='总额'" type="text" size="small">明细
+                  v-if="records[scope.$index].splitAmount!=0&&records[scope.$index].businessType!='当页总额'&&records[scope.$index].businessType!='筛选条件统计'" type="text" size="small">明细
                 </router-link>
+                <a v-if="records[scope.$index].businessType=='筛选条件统计'" @click="add">点击统计</a>
               </template>
             </el-table-column>
           </el-table>
+          <ul style="float: left;margin-top: 5px">
+            <li>
+              <label style="margin-right: 10px;">收益金额</label>
+              <span>当页总额：{{pageTotal}}&nbsp;元</span>&nbsp;&nbsp;&nbsp;&nbsp;
+              <span>统计总额：{{addTotal}}&nbsp;元</span>
+            </li>
+          </ul>
           <!--分页-->
           <div class="block" style="text-align: right">
             <el-pagination @size-change="handleSizeChange"
@@ -140,16 +148,36 @@
         },
         records: [],
         count: 0,
-        total: 0,
+        total: '',
         currentPage: 1,
         loading: true,
         isMask: false,
         loadUrl: '',
         loadUrl1: '',
+        pageTotal: 0,
+        addTotal: 0
       }
     },
     created: function () {
+      let time = new Date(new Date().getTime()-86400000);
+      this.date = [time, time];
+      for (var j = 0; j < this.date.length; j++) {
+        var str = this.date[j];
+        var ary = [str.getFullYear(), str.getMonth() + 1, str.getDate()];
+        for (var i = 0, len = ary.length; i < len; i++) {
+          if (ary[i] < 10) {
+            ary[i] = '0' + ary[i];
+          }
+        }
+        str = ary[0] + '-' + ary[1] + '-' + ary[2];
+        if (j == 0) {
+          this.$data.query.startTime = str;
+        } else {
+          this.$data.query.endTime = str;
+        }
+      }
       this.getData();
+      this.getAddTotal()
     },
     methods: {
       onload: function () {
@@ -162,7 +190,6 @@
           .then(function (res) {
             this.$data.records = res.data.records;
             this.$data.count = res.data.count;
-            this.$data.total = res.data.totalPage;
             this.$data.loadUrl1 = res.data.ext;
             this.$data.loading = false;
             var toFix = function (val) {
@@ -173,12 +200,17 @@
               this.$data.records[i].splitAmount = toFix(this.$data.records[i].splitAmount);
               total = toFix(parseFloat(total)+parseFloat(this.$data.records[i].splitAmount))
             }
-            if(this.records.length!=0){
+            this.pageTotal = total;
+            /*if(this.records.length!=0){
               this.records.push({
-                businessType:"总额",
+                businessType:"当页总额",
                 splitAmount:total
+              },{
+                businessType:"筛选条件统计",
+                splitAmount:''
               })
-            }
+              this.records[this.records.length-1].splitAmount = this.total;
+            }*/
           }, function (err) {
             this.$data.loading = false;
             this.$message({
@@ -187,6 +219,26 @@
               type: 'error'
             });
           })
+      },
+      getAddTotal(){
+        this.$http.post('/admin/allProfit/secondAmount',this.query)
+          .then(res=>{
+            this.addTotal = res.data;
+          })
+          .catch(err=>{
+            this.$data.loading = false;
+            this.$message({
+              showClose: true,
+              message: err.statusMessage,
+              type: 'error'
+            });
+          })
+      },
+      tableFoot(row, index) {
+        if (row.businessType === '当页总额'||row.businessType === '筛选条件统计') {
+          return {background:'#eef1f6'}
+        }
+        return '';
       },
       //格式化时间
       changeTime: function (row, column) {
@@ -215,6 +267,7 @@
       search(){
         this.$data.query.pageNo = 1;
         this.getData();
+        this.getAddTotal()
       },
       //当前页改变时
       handleCurrentChange(val) {
@@ -230,7 +283,7 @@
     },
     watch:{
       date:function (val,oldVal) {
-        if(val[0]!=null){
+        if (val != undefined && val[0] != null) {
           for(var j=0;j<val.length;j++){
             var str = val[j];
             var ary = [str.getFullYear(), str.getMonth() + 1, str.getDate()];

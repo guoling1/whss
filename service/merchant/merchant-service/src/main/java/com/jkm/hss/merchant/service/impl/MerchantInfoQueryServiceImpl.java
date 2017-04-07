@@ -39,20 +39,35 @@ public class MerchantInfoQueryServiceImpl implements MerchantInfoQueryService {
 
     @Override
     public List<MerchantInfoResponse> getAll(MerchantInfoRequest req) {
-
+        String mobile = req.getMobile();
+        if (mobile!=null&&!mobile.equals("")){
+            req.setMobile(MerchantSupport.encryptMobile(mobile));
+        }
         List<MerchantInfoResponse> list = this.merchantInfoQueryDao.getAll(req);
         if (list.size()>0){
             for (int i=0;i<list.size();i++){
                 if(list.get(i).getMobile()!=null&&!list.get(i).getMobile().equals("")){
                     list.get(i).setMobile(MerchantSupport.decryptMobile(list.get(i).getMobile()));
                 }
-                if (list.get(i).getLevel()==1){
-                    list.get(i).setProxyName(list.get(i).getProxyName());
-                }if (list.get(i).getLevel()==2){
-                    list.get(i).setProxyName1(list.get(i).getProxyName());
-                    String proxyName = dealerService.selectProxyName(list.get(i).getFirstLevelDealerId());
-                    list.get(i).setProxyName(proxyName);
+
+            }
+        }
+        return list;
+    }
+
+
+    private List<MerchantInfoResponse> downloade(MerchantInfoRequest req) {
+        String mobile = req.getMobile();
+        if (mobile!=null&&!mobile.equals("")){
+            req.setMobile(MerchantSupport.encryptMobile(mobile));
+        }
+        List<MerchantInfoResponse> list = this.merchantInfoQueryDao.downloade(req);
+        if (list.size()>0){
+            for (int i=0;i<list.size();i++){
+                if(list.get(i).getMobile()!=null&&!list.get(i).getMobile().equals("")){
+                    list.get(i).setMobile(MerchantSupport.decryptMobile(list.get(i).getMobile()));
                 }
+
             }
         }
         return list;
@@ -91,26 +106,6 @@ public class MerchantInfoQueryServiceImpl implements MerchantInfoQueryService {
         int count = this.merchantInfoQueryDao.getCountRecord(req);
 
         return count;
-    }
-
-    @Override
-    public List<MerchantInfoResponse> seletAll() {
-        List<MerchantInfoResponse> list = this.merchantInfoQueryDao.seletAll();
-        if (list.size()>0){
-            for (int i=0;i<list.size();i++){
-                if(list.get(i).getMobile()!=null&&!list.get(i).getMobile().equals("")){
-                    list.get(i).setMobile(MerchantSupport.decryptMobile(list.get(i).getId(),list.get(i).getMobile()));
-                }
-                if (list.get(i).getLevel()==1){
-                    list.get(i).setProxyName(list.get(i).getProxyName());
-                }if (list.get(i).getLevel()==2){
-                    list.get(i).setProxyName1(list.get(i).getProxyName());
-                    String proxyName = dealerService.selectProxyName(list.get(i).getFirstLevelDealerId());
-                    list.get(i).setProxyName(proxyName);
-                }
-            }
-        }
-        return list;
     }
 
     /**
@@ -170,7 +165,7 @@ public class MerchantInfoQueryServiceImpl implements MerchantInfoQueryService {
      * @return
      */
     private ExcelSheetVO generateCodeExcelSheet(MerchantInfoRequest req,String baseUrl) {
-        List<MerchantInfoResponse> list = seletAll();
+        List<MerchantInfoResponse> list = downloade(req);
         final ExcelSheetVO excelSheetVO = new ExcelSheetVO();
         final List<List<String>> datas = new ArrayList<List<String>>();
         final ArrayList<String> heads = new ArrayList<>();

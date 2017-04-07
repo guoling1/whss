@@ -15,7 +15,10 @@
       activate_status,
       type,
       product_id,
-      sys_type
+      sys_type,
+      qr_type,
+      activate_time,
+      distribute_time
       )
       VALUES
       (
@@ -30,7 +33,10 @@
       #{activateStatus},
       #{type},
       #{productId},
-      #{sysType}
+      #{sysType},
+      #{qrType},
+      #{activateTime},
+      #{distributeTime}
       );
     </insert>
 
@@ -100,6 +106,7 @@
     <update id="markAsDistribute2">
         UPDATE tb_qr_code
         SET distribute_status = 2,
+        distribute_time=now(),
         second_level_dealer_id = #{toDealerId}
         WHERE id IN
         <foreach collection="codeIds" index="index" item="item" open="(" separator="," close=")">
@@ -111,6 +118,7 @@
         UPDATE tb_qr_code
         SET
         merchant_id = #{merchantId},
+        activate_time=now(),
         distribute_status = 2,
         activate_status = 2
         WHERE code = #{code}
@@ -233,45 +241,51 @@
     <select id="getFirstResidueCount" resultType="java.lang.Integer">
         SELECT COUNT(*) FROM tb_qr_code
         WHERE first_level_dealer_id = #{firstLevelDealerId}
-        AND distribute_status = 1
+        AND distribute_status = 1 AND sys_type=#{sysType}
     </select>
 
     <select id="getFirstDistributeCount" resultType="java.lang.Integer">
         SELECT COUNT(*) FROM tb_qr_code
         WHERE first_level_dealer_id = #{firstLevelDealerId}
-        AND distribute_status = 2
+        AND distribute_status = 2 AND sys_type=#{sysType}
     </select>
 
     <select id="getFirstDistributeToSelfCount" resultType="java.lang.Integer">
         SELECT COUNT(*) FROM tb_qr_code
         WHERE first_level_dealer_id = #{firstLevelDealerId}
         AND second_level_dealer_id = 0
-        AND distribute_status = 2
+        AND distribute_status = 2 AND sys_type=#{sysType}
     </select>
 
     <select id="getFirstUnActivateCount" resultType="java.lang.Integer">
         SELECT COUNT(*) FROM tb_qr_code
         WHERE first_level_dealer_id = #{firstLevelDealerId}
         AND distribute_status = 2
-        AND activate_status = 1
+        AND activate_status = 1 AND sys_type=#{sysType}
     </select>
 
     <select id="getFirstActivateCount" resultType="java.lang.Integer">
         SELECT COUNT(*) FROM tb_qr_code
         WHERE first_level_dealer_id = #{firstLevelDealerId}
         AND distribute_status = 2
-        AND activate_status = 2
+        AND activate_status = 2 AND sys_type=#{sysType}
     </select>
 
     <select id="getSecondCodeCount" resultType="java.lang.Integer">
-        SELECT COUNT(*) FROM tb_qr_code
+        SELECT COUNT(1) FROM tb_qr_code
         WHERE second_level_dealer_id = #{secondLevelDealerId}
     </select>
 
     <select id="getSecondUnActivateCount" resultType="java.lang.Integer">
-        SELECT COUNT(*) FROM tb_qr_code
+        SELECT COUNT(1) FROM tb_qr_code
         WHERE second_level_dealer_id = #{secondLevelDealerId}
-        AND activate_status = 1
+        AND activate_status = 1 AND sys_type=#{sysType}
+    </select>
+
+    <select id="getSecondActivateCount" resultType="java.lang.Integer">
+        SELECT COUNT(1) FROM tb_qr_code
+        WHERE second_level_dealer_id = #{secondLevelDealerId}
+        AND activate_status = 2 AND sys_type=#{sysType}
     </select>
 
     <select id="selectDistributeToSecondDealerCodeCount" resultType="java.lang.Integer">
@@ -456,4 +470,511 @@
         AND code BETWEEN #{startCode} AND #{endCode} AND sys_type=#{sysType}
         ORDER BY code ASC
     </select>
+
+    <select id="getHSSQrCodeList" resultType="com.jkm.hss.admin.helper.responseparam.QrCodeListResponse">
+        SELECT
+	    '好收收' as sysTypeName,
+	    c.code,
+	    c.activate_time,
+        (
+            SELECT
+                proxy_name
+            FROM
+                tb_dealer
+            WHERE
+                id = c.first_level_dealer_id
+        ) as firstDealerName,
+        (
+            SELECT
+                proxy_name
+            FROM
+                tb_dealer
+            WHERE
+                id = c.second_level_dealer_id
+        ) as secondDealerName,
+	    i.merchant_name,
+	    i.mark_code as merchantMarkCode,
+	    CASE
+            WHEN i.`status` = 0 THEN
+                '待填写资料'
+            WHEN i.`status` = 1 THEN
+                '资料填写中'
+            WHEN i.`status` = 2 THEN
+                '待审核'
+            WHEN i.`status` = 3 THEN
+                '审核通过'
+            WHEN i.`status` = 4 THEN
+                '审核不通过'
+            WHEN i.`status` = 5 THEN
+                '禁用'
+            WHEN i.`status` = 6 THEN
+                '审核通过'
+            ELSE
+                NULL
+            END as merchantStatus,
+        NULL as shopName
+        FROM
+	    tb_qr_code as c
+        LEFT JOIN tb_merchant_info AS i ON c.merchant_id = i.id
+        WHERE  c.sys_type='hss'
+        <if test="code != null and code!=''">
+            and c.code = #{code}
+        </if>
+        <if test="merchantName != null and merchantName!=''">
+            AND c.merchant_id IN (
+            SELECT
+            id
+            FROM
+            tb_merchant_info
+            WHERE
+            merchant_name LIKE "%"#{merchantName}"%"
+            )
+        </if>
+        <if test="firstDealerName != null and firstDealerName!=''">
+            AND c.first_level_dealer_id IN (
+            SELECT
+            id
+            FROM
+            tb_dealer
+            WHERE
+            proxy_name LIKE "%"#{firstDealerName}"%"
+            )
+        </if>
+        <if test="secondDealerName != null and secondDealerName!=''">
+            AND c.second_level_dealer_id IN (
+            SELECT
+            id
+            FROM
+            tb_dealer
+            WHERE
+            proxy_name LIKE "%"#{secondDealerName}"%"
+            )
+        </if>
+        ORDER BY
+            c.code DESC
+        LIMIT #{offset},#{count}
+    </select>
+
+
+    <select id="getHSSQrCodeCount" resultType="java.lang.Long">
+        SELECT count(1) from tb_qr_code
+        WHERE sys_type='hss'
+        <if test="code != null and code!=''">
+            and code = #{code}
+        </if>
+        <if test="merchantName != null and merchantName!=''">
+            AND merchant_id IN (
+            SELECT
+            id
+            FROM
+            tb_merchant_info
+            WHERE
+            merchant_name LIKE "%"#{merchantName}"%"
+            )
+        </if>
+        <if test="firstDealerName != null and firstDealerName!=''">
+            AND first_level_dealer_id IN (
+            SELECT
+            id
+            FROM
+            tb_dealer
+            WHERE
+            proxy_name LIKE "%"#{firstDealerName}"%"
+            )
+        </if>
+        <if test="secondDealerName != null and secondDealerName!=''">
+            AND second_level_dealer_id IN (
+            SELECT
+            id
+            FROM
+            tb_dealer
+            WHERE
+            proxy_name LIKE "%"#{secondDealerName}"%"
+            )
+        </if>
+    </select>
+
+    <select id="getHSYQrCodeList" resultType="com.jkm.hss.admin.helper.responseparam.QrCodeListResponse">
+        SELECT
+        '好收银' as sysTypeName,
+        c.code,
+        c.activate_time,
+        (
+        SELECT
+        proxy_name
+        FROM
+        tb_dealer
+        WHERE
+        id = c.first_level_dealer_id
+        ) as firstDealerName,
+        (
+        SELECT
+        proxy_name
+        FROM
+        tb_dealer
+        WHERE
+        id = c.second_level_dealer_id
+        ) as secondDealerName,
+        i.NAME  as merchantName,
+        i.GLOBALID as merchantMarkCode,
+        CASE
+        WHEN i.`STATUS` = 1 THEN
+        '正常'
+        WHEN i.`STATUS` = 2 THEN
+        '审核中'
+        WHEN i.`STATUS` = 3 THEN
+        '审核失败'
+        WHEN i.`STATUS` = 4 THEN
+        '已注册'
+        WHEN i.`STATUS` = 99 THEN
+        '禁用'
+        ELSE
+        NULL
+        END as merchantStatus,
+        i.SHORTNAME as shopName
+        FROM
+        tb_qr_code as c
+        LEFT JOIN app_biz_shop as i ON c.merchant_id = i.id
+        WHERE c.sys_type='hsy'
+        <if test="code != null and code!=''">
+            and c.code = #{code}
+        </if>
+        <if test="merchantName != null and merchantName!=''">
+            AND c.merchant_id IN (
+            SELECT
+            id
+            FROM
+            app_biz_shop
+            WHERE
+            NAME LIKE "%"#{merchantName}"%"
+            )
+        </if>
+        <if test="firstDealerName != null and firstDealerName!=''">
+            AND c.first_level_dealer_id IN (
+            SELECT
+            id
+            FROM
+            tb_dealer
+            WHERE
+            proxy_name LIKE "%"#{firstDealerName}"%"
+            )
+        </if>
+        <if test="secondDealerName != null and secondDealerName!=''">
+            AND c.second_level_dealer_id IN (
+            SELECT
+            id
+            FROM
+            tb_dealer
+            WHERE
+            proxy_name LIKE "%"#{secondDealerName}"%"
+            )
+        </if>
+        ORDER BY
+        c.code DESC
+        LIMIT #{offset},#{count}
+    </select>
+
+
+    <select id="getHSYQrCodeCount" resultType="java.lang.Long">
+        SELECT count(1) from tb_qr_code
+        WHERE sys_type='hsy'
+        <if test="code != null and code!=''">
+            and code = #{code}
+        </if>
+        <if test="merchantName != null and merchantName!=''">
+            AND merchant_id IN (
+            SELECT
+            id
+            FROM
+            app_biz_shop
+            WHERE
+            NAME LIKE "%"#{merchantName}"%"
+            )
+        </if>
+        <if test="firstDealerName != null and firstDealerName!=''">
+            AND first_level_dealer_id IN (
+            SELECT
+            id
+            FROM
+            tb_dealer
+            WHERE
+            proxy_name LIKE "%"#{firstDealerName}"%"
+            )
+        </if>
+        <if test="secondDealerName != null and secondDealerName!=''">
+            AND second_level_dealer_id IN (
+            SELECT
+            id
+            FROM
+            tb_dealer
+            WHERE
+            proxy_name LIKE "%"#{secondDealerName}"%"
+            )
+        </if>
+    </select>
+
+
+    <select id="getDealerHSSQrCodeList" resultType="com.jkm.hss.admin.helper.responseparam.MyQrCodeListResponse">
+        SELECT
+        c.id,
+        '好收收' as sysTypeName,
+        c.code,
+        c.distribute_time,
+        c.activate_time,
+        (
+        SELECT
+        proxy_name
+        FROM
+        tb_dealer
+        WHERE
+        id = c.second_level_dealer_id
+        ) as secondDealerName,
+        i.merchant_name,
+        i.mark_code as merchantMarkCode,
+        CASE
+        WHEN i.`status` = 0 THEN
+        '待填写资料'
+        WHEN i.`status` = 1 THEN
+        '资料填写中'
+        WHEN i.`status` = 2 THEN
+        '待审核'
+        WHEN i.`status` = 3 THEN
+        '审核通过'
+        WHEN i.`status` = 4 THEN
+        '审核不通过'
+        WHEN i.`status` = 5 THEN
+        '禁用'
+        WHEN i.`status` = 6 THEN
+        '审核通过'
+        ELSE
+        NULL
+        END as merchantStatus,
+        NULL as shopName
+        FROM
+        tb_qr_code as c
+        LEFT JOIN tb_merchant_info AS i ON c.merchant_id = i.id
+        WHERE  c.sys_type='hss'
+        <if test="merchantStatusList!=null and merchantStatusList.size()>0">
+            AND i.`status` IN
+            <foreach collection="merchantStatusList" item="item" index="index" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="firstDealerId>0">
+            AND c.first_level_dealer_id = #{firstDealerId}
+        </if>
+        <if test="secondDealerId>0">
+            AND c.second_level_dealer_id = #{secondDealerId}
+        </if>
+        <if test="code != null and code!=''">
+            and c.code = #{code}
+        </if>
+        <if test="merchantName != null and merchantName!=''">
+            AND c.merchant_id IN (
+            SELECT
+            id
+            FROM
+            tb_merchant_info
+            WHERE
+            merchant_name LIKE "%"#{merchantName}"%"
+            )
+        </if>
+        <if test="secondDealerName != null and secondDealerName!=''">
+            AND c.second_level_dealer_id IN (
+            SELECT
+            id
+            FROM
+            tb_dealer
+            WHERE
+            proxy_name LIKE "%"#{secondDealerName}"%"
+            )
+        </if>
+        <if test="activateStatus>0">
+            AND c.activate_status = #{activateStatus}
+        </if>
+        ORDER BY
+        c.code DESC
+        LIMIT #{offset},#{count}
+    </select>
+
+
+    <select id="getDealerHSSQrCodeCount" resultType="java.lang.Long">
+        SELECT count(1)
+        FROM
+        tb_qr_code as c
+        LEFT JOIN tb_merchant_info AS i ON c.merchant_id = i.id
+        WHERE  c.sys_type='hss'
+        <if test="merchantStatusList!=null and merchantStatusList.size()>0">
+            AND i.`status` IN
+            <foreach collection="merchantStatusList" item="item" index="index" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="firstDealerId>0">
+            AND c.first_level_dealer_id = #{firstDealerId}
+        </if>
+        <if test="secondDealerId>0">
+            AND c.second_level_dealer_id = #{secondDealerId}
+        </if>
+        <if test="code != null and code!=''">
+            and c.code = #{code}
+        </if>
+        <if test="merchantName != null and merchantName!=''">
+            AND c.merchant_id IN (
+            SELECT
+            id
+            FROM
+            tb_merchant_info
+            WHERE
+            merchant_name LIKE "%"#{merchantName}"%"
+            )
+        </if>
+        <if test="secondDealerName != null and secondDealerName!=''">
+            AND c.second_level_dealer_id IN (
+            SELECT
+            id
+            FROM
+            tb_dealer
+            WHERE
+            proxy_name LIKE "%"#{secondDealerName}"%"
+            )
+        </if>
+        <if test="activateStatus>0">
+            AND c.activate_status = #{activateStatus}
+        </if>
+    </select>
+
+
+    <select id="getDealerHSYQrCodeList" resultType="com.jkm.hss.admin.helper.responseparam.MyQrCodeListResponse">
+        SELECT
+        c.id,
+        '好收银' as sysTypeName,
+        c.code,
+        c.distribute_time,
+        c.activate_time,
+        (
+        SELECT
+        proxy_name
+        FROM
+        tb_dealer
+        WHERE
+        id = c.second_level_dealer_id
+        ) as secondDealerName,
+        i.NAME as merchantName,
+        i.GLOBALID as merchantMarkCode,
+        CASE
+        WHEN i.`STATUS` = 1 THEN
+        '正常'
+        WHEN i.`STATUS` = 2 THEN
+        '审核中'
+        WHEN i.`STATUS` = 3 THEN
+        '审核失败'
+        WHEN i.`STATUS` = 4 THEN
+        '已注册'
+        WHEN i.`STATUS` = 99 THEN
+        '禁用'
+        ELSE
+        NULL
+        END as merchantStatus,
+        i.SHORTNAME as shopName
+        FROM
+        tb_qr_code as c
+        LEFT JOIN app_biz_shop as i ON c.merchant_id = i.id
+        WHERE c.sys_type='hsy'
+        <if test="merchantStatusList!=null and merchantStatusList.size()>0">
+            AND i.STATUS IN
+            <foreach collection="merchantStatusList" item="item" index="index" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="firstDealerId>0">
+            AND c.first_level_dealer_id = #{firstDealerId}
+        </if>
+        <if test="secondDealerId>0">
+            AND c.second_level_dealer_id = #{secondDealerId}
+        </if>
+        <if test="activateStatus>0">
+            AND c.activate_status = #{activateStatus}
+        </if>
+        <if test="code != null and code!=''">
+            and c.code = #{code}
+        </if>
+        <if test="merchantName != null and merchantName!=''">
+            AND c.merchant_id IN (
+            SELECT
+            id
+            FROM
+            app_biz_shop
+            WHERE
+            NAME LIKE "%"#{merchantName}"%"
+            )
+        </if>
+        <if test="secondDealerName != null and secondDealerName!=''">
+            AND c.second_level_dealer_id IN (
+            SELECT
+            id
+            FROM
+            tb_dealer
+            WHERE
+            proxy_name LIKE "%"#{secondDealerName}"%"
+            )
+        </if>
+        ORDER BY
+        c.code DESC
+        LIMIT #{offset},#{count}
+    </select>
+
+
+    <select id="getDealerHSYQrCodeCount" resultType="java.lang.Long">
+        SELECT count(1) FROM tb_qr_code as c
+        LEFT JOIN app_biz_shop as i ON c.merchant_id = i.id
+        WHERE c.sys_type='hsy'
+        <if test="merchantStatusList!=null and merchantStatusList.size()>0">
+            AND i.STATUS IN
+            <foreach collection="merchantStatusList" item="item" index="index" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="firstDealerId>0">
+            AND c.first_level_dealer_id = #{firstDealerId}
+        </if>
+        <if test="secondDealerId>0">
+            AND c.second_level_dealer_id = #{secondDealerId}
+        </if>
+        <if test="activateStatus>0">
+            AND c.activate_status = #{activateStatus}
+        </if>
+        <if test="code != null and code!=''">
+            and c.code = #{code}
+        </if>
+        <if test="merchantName != null and merchantName!=''">
+            AND c.merchant_id IN (
+            SELECT
+            id
+            FROM
+            app_biz_shop
+            WHERE
+            NAME LIKE "%"#{merchantName}"%"
+            )
+        </if>
+        <if test="secondDealerName != null and secondDealerName!=''">
+            AND c.second_level_dealer_id IN (
+            SELECT
+            id
+            FROM
+            tb_dealer
+            WHERE
+            proxy_name LIKE "%"#{secondDealerName}"%"
+            )
+        </if>
+    </select>
+
+    <!--修改代理商信息-->
+    <update id="updateDealerInfo">
+        UPDATE tb_qr_code
+        SET
+        first_level_dealer_id = #{firstDealerId},
+        second_level_dealer_id = #{secondDealerId}
+        WHERE code = #{code}
+    </update>
 </mapper>

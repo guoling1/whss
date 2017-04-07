@@ -3,7 +3,7 @@
     <div class="col-md-12">
       <div class="box" style="margin-top:15px;overflow: hidden">
         <div class="box-header">
-          <h3 class="box-title">商户列表</h3>
+          <h3 class="box-title">待审核商户列表</h3>
         </div>
         <div class="box-body">
           <el-tabs class="tab" v-model="activeName" type="card" @tab-click="handleClick">
@@ -234,31 +234,7 @@
           })
       })
     },
-    /*created:function () {
-     if(this.$data.activeName=='second'){
-     this.$data.url='/admin/hsyMerchantList/getMerchantList'
-     }else {
-     this.$data.url='/admin/query/getAll'
-     }
-     this.$http.post(this.$data.url,this.$data.query)
-     .then(function (res) {
-     this.$data.loading = false;
-     this.$data.records   = res.data.records;
-     this.$data.count = res.data.count;
-     this.$data.total = res.data.totalPage;
-     }, function (err) {
-     this.$data.loading = false;
-     this.$message({
-     showClose: true,
-     message: err.statusMessage,
-     type: 'error'
-     })
-     })
-     },*/
     methods: {
-      toDet: function (val) {
-
-      },
       //格式化hss创建时间
       changeTime: function (row, column) {
         var val=row.createTime;
@@ -359,7 +335,7 @@
     },
     watch:{
       date:function (val,oldVal) {
-        if(val[0]!=null){
+        if(val!=undefined&&val[0]!=null){
           for(var j=0;j<val.length;j++){
             var str = val[j];
             var ary = [str.getFullYear(), str.getMonth() + 1, str.getDate()];
@@ -381,7 +357,7 @@
         }
       },
       date1:function (val,oldVal) {
-        if(val[0]!=null){
+        if(val!=undefined&&val[0]!=null){
           for(var j=0;j<val.length;j++){
             var str = val[j];
             var ary = [str.getFullYear(), str.getMonth() + 1, str.getDate()];
@@ -403,7 +379,7 @@
         }
       },
       date2:function (val,oldVal) {
-        if(val[0]!=null){
+        if(val!=undefined&&val[0]!=null){
           for(var j=0;j<val.length;j++){
             var str = val[j];
             var ary = [str.getFullYear(), str.getMonth() + 1, str.getDate()];

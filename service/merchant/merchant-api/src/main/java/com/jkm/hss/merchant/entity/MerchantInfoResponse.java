@@ -10,6 +10,16 @@ import java.util.Date;
 public class MerchantInfoResponse {
 
     /**
+     * 资料审核状态
+     */
+    private String stat;
+
+    /**
+     * 支行信息
+     */
+    private String branchName;
+
+    /**
      * 是否认证 1认证 其他未认证
      */
     private String isAuthen;
@@ -231,6 +241,12 @@ public class MerchantInfoResponse {
      * datetime
      */
     private Date createTime;
+
+    /**
+     * 注册时间
+     * datetime
+     */
+    private Date createTimes;
 
     /**
      * 商户状态

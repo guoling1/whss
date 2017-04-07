@@ -2,10 +2,10 @@ package com.jkm.hss.bill.service;
 
 import com.google.common.base.Optional;
 import com.jkm.base.common.entity.PageModel;
-import com.jkm.hss.bill.entity.MerchantTradeResponse;
-import com.jkm.hss.bill.entity.Order;
+import com.jkm.hss.bill.entity.*;
 import com.jkm.hss.bill.helper.requestparam.QueryMerchantPayOrdersRequestParam;
 import com.jkm.hss.dealer.entity.Dealer;
+import com.jkm.hss.merchant.entity.MerchantInfo;
 import com.jkm.hss.merchant.helper.request.OrderTradeRequest;
 import com.jkm.hsy.user.entity.AppBizShop;
 
@@ -56,6 +56,18 @@ public interface OrderService {
      * @return
      */
     long createDealerPlayMoneyOrder(Dealer dealer, BigDecimal amount, String appId, int channel, String settleType, BigDecimal withdrawFee);
+
+    /**
+     * 创建商户提现单
+     *
+     * @param merchantInfo
+     * @param amount
+     * @param appId
+     * @param channel
+     * @param settleType
+     * @return
+     */
+    long createMerchantPlayMoneyOrder(MerchantInfo merchantInfo, BigDecimal amount, String appId, int channel, String settleType, BigDecimal withdrawFee);
 
     /**
      * 更新
@@ -218,6 +230,106 @@ public interface OrderService {
      * @return
      */
     List<Order> getByOrderNos(List<String> orderNos);
+
+    /**
+     * 一二级筛选用
+     * @param req
+     * @return
+     */
+    List<MerchantTradeResponse> getOrderList(OrderTradeRequest req);
+
+    /**
+     * 统计
+     * @param req
+     * @return
+     */
+    String amountCount(OrderTradeRequest req);
+
+    /**
+     * hss-T1-结算到卡定时处理实现
+     */
+    void handleT1UnSettlePayOrder();
+
+    /**
+     * 查询指定结算日期，指定业务线，T1的支付成功的待结算的订单IDS
+     *
+     * @param settleDate
+     * @param appId
+     * @return
+     */
+    List<Long> getT1PaySuccessAndUnSettleOrderIds(Date settleDate, String appId);
+
+    /**
+     * T1 按支付单ID，发起体现
+     *
+     * @param orderId
+     */
+    void t1WithdrawByOrderId(long orderId);
+
+    List<WithdrawResponse> withdrawList(WithdrawRequest req);
+
+    /**
+     * 总数
+     * @param req
+     * @return
+     */
+    int getNo(WithdrawRequest req);
+
+    /**
+     * 提现统计
+     * @param req
+     * @return
+     */
+    WithdrawResponse withdrawAmount(WithdrawRequest req);
+
+    /**
+     * 查询提现详情代理商
+     * @param idd
+     * @return
+     */
+    WithdrawResponse withdrawDetail(long idd,String createTimes);
+
+    /**
+     * 查询提现详情商户
+     * @param idm
+     * @return
+     */
+    WithdrawResponse withdrawDetails(long idm,String createTimes);
+
+    /**
+     * 查询打款
+     * @param orderNo
+     * @return
+     */
+    List<PlayResponse> getPlayMoney(String orderNo);
+
+    /**
+     * 代理商pc交易查询二级
+     * @param req
+     * @return
+     */
+    List<MerchantTradeResponse> getTrade(OrderTradeRequest req);
+
+    /**
+     * 代理商pc交易查询一级
+     * @param req
+     * @return
+     */
+    List<MerchantTradeResponse> getTradeFirst(OrderTradeRequest req);
+
+    /**
+     * 代理商pc交易查询二级总数
+     * @param req
+     * @return
+     */
+    int listCount(OrderTradeRequest req);
+
+    /**
+     * 代理商pc交易查询一级总数
+     * @param req
+     * @return
+     */
+    int listFirstCount(OrderTradeRequest req);
 
     /**
      * 查询交易详情

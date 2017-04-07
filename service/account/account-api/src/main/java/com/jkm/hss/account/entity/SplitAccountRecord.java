@@ -30,6 +30,13 @@ public class SplitAccountRecord extends BaseEntity {
     private String orderNo;
 
     /**
+     * 分账方用户类型
+     *
+     * {@link com.jkm.hss.account.enums.EnumSplitAccountUserType}
+     */
+    private int accountUserType;
+
+    /**
      * 分账单号（为了支持多次分账， 现在可以和交易单号保持一致）
      */
     private String splitOrderNo;

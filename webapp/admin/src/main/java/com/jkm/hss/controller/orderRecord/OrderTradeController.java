@@ -32,7 +32,6 @@ import java.util.List;
  * Created by lt on 2016/12/7.
  */
 @Slf4j
-
 @Controller
 @RequestMapping(value = "/admin/queryOrder")
 public class OrderTradeController extends BaseController{
@@ -62,25 +61,37 @@ public class OrderTradeController extends BaseController{
             req.setEndTime(sdf.format(rightNow.getTime()));
         }
         List<MerchantTradeResponse> orderList =  orderService.selectOrderListByPage(req);
-//        if(orderList.size()>0){
-//            for (int i=0;i<orderList.size();i++){
-//                if (req.getProxyName()!=null&&!req.getProxyName().equals("")){
-//                    if (req.getProxyName().equals(lists.get(i).getProxyName())){
-//                        list1.add(lists.get(i));
-//                    }
-//                    pageModel.setCount(list1.size());
-//                    pageModel.setRecords(list1);
-//
-//                }
-//
-//            }
-//        }
         long count = orderService.selectOrderListCount(req);
         pageModel.setCount(count);
         pageModel.setRecords(orderList);
         String downLoadExcel = downLoad(req);
         pageModel.setExt(downLoadExcel);
         return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", pageModel);
+    }
+
+
+    /**
+     * 统计
+     * @param req
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/amountCount ",method = RequestMethod.POST)
+    public CommonResponse amountCount(@RequestBody OrderTradeRequest req) throws ParseException {
+        if(req.getEndTime()!=null&&!"".equals(req.getEndTime())){
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            Date dt = sdf.parse(req.getEndTime());
+            Calendar rightNow = Calendar.getInstance();
+            rightNow.setTime(dt);
+            rightNow.add(Calendar.DATE, 1);
+            req.setEndTime(sdf.format(rightNow.getTime()));
+        }
+        String orderList =  orderService.amountCount(req);
+        if (orderList==null||("").equals(orderList)){
+            int res = 0;
+            return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", res);
+        }
+        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", orderList);
     }
 
     /**
@@ -108,8 +119,6 @@ public class OrderTradeController extends BaseController{
         meta.setContentType("application/x-xls");
         SimpleDateFormat sdf =   new SimpleDateFormat("yyyyMMdd");
         String nowDate = sdf.format(new Date());
-//        Date date = new Date();
-//        long nousedate =  date.getTime();
         String fileName = "hss/"+  nowDate + "/" + "trade.xls";
         final Date expireDate = new Date(new Date().getTime() + 30 * 60 * 1000);
         URL url = null;

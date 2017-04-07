@@ -11,6 +11,13 @@ import java.util.Date;
 @Data
 public class HsyMerchantAuditResponse {
 
+//    private long firstLevelDealerId;//一级代理商id
+//    private int level; //代理商级别
+//    private String markCode;    //一级代理商编码
+//    private String markCode1;   //二级级代理商编码
+    private String proxyNames; //所属代理商
+    private String proxyName; //所属一级代理商
+    private String proxyName1; //所属二级代理商
     private String code;//省市码
     private String cardNO;//卡号
     private String cardAccountName;//开户名

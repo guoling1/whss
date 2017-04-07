@@ -1,10 +1,12 @@
 package com.jkm.hss.bill.service.impl;
 
+import com.jkm.hss.account.enums.EnumSplitAccountUserType;
 import com.jkm.hss.account.enums.EnumSplitBusinessType;
 import com.jkm.hss.bill.dao.ProfitDao;
 import com.jkm.hss.bill.entity.JkmProfitDetailsResponse;
+import com.jkm.hss.bill.entity.ProfitResponse;
 import com.jkm.hss.bill.service.ProfitService;
-import com.jkm.hss.merchant.helper.request.ProfitDetailsRequest;
+import com.jkm.hss.merchant.entity.ProfitDetailsRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -81,5 +83,39 @@ public class ProfitServiceImpl implements ProfitService {
     public int selectProfitDetailsCount(ProfitDetailsRequest req) {
         ProfitDetailsRequest request =selectTime(req);
         return  profitDao.selectProfitDetailsCount(request);
+    }
+
+    @Override
+    public JkmProfitDetailsResponse profitAmount(ProfitDetailsRequest req) {
+        ProfitDetailsRequest request =selectTime(req);
+        JkmProfitDetailsResponse res = profitDao.profitAmount(request);
+        return res;
+    }
+
+    @Override
+    public List<ProfitResponse> getInfo(String businessOrderNo) {
+        List<ProfitResponse> list = this.profitDao.getInfo(businessOrderNo);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        if (list.size()>0){
+            for (int i=0;i<list.size();i++){
+                if (list.get(i).getAccountUserType()==1){
+                    list.get(i).setAccountUserTypes(EnumSplitAccountUserType.JKM.getValue());
+                }
+                if (list.get(i).getAccountUserType()==2){
+                    list.get(i).setAccountUserTypes(EnumSplitAccountUserType.MERCHANT.getValue());
+                }
+                if (list.get(i).getAccountUserType()==3){
+                    list.get(i).setAccountUserTypes(EnumSplitAccountUserType.FIRST_DEALER.getValue());
+                }
+                if (list.get(i).getAccountUserType()==4){
+                    list.get(i).setAccountUserTypes(EnumSplitAccountUserType.SECOND_DEALER.getValue());
+                }
+                if (list.get(i).getSplitDate()!=null){
+                    String dates = sdf.format(list.get(i).getSplitDate());
+                    list.get(i).setSplitDates(dates);
+                }
+            }
+        }
+        return list;
     }
 }

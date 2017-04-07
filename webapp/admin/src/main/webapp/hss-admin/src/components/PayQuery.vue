@@ -34,7 +34,7 @@
               <el-input style="width: 130px" v-model="query.sn" placeholder="请输入内容" size="small"></el-input>
             </li>
             <li class="same">
-              <label>订单号:</label>
+              <label>交易订单号:</label>
               <el-input style="width: 130px" v-model="query.orderNo" placeholder="请输入内容" size="small"></el-input>
             </li>
             <li class="same">
@@ -52,22 +52,32 @@
             </li>
           </ul>
           <!--表格-->
-          <el-table v-loading.body="loading" max-height="637" style="font-size: 12px;margin-bottom: 15px" :data="records" border>
-            <el-table-column type="index" width="62" label="序号" fixed="left"></el-table-column>
+          <el-table v-loading.body="loading" max-height="637" style="font-size: 12px;margin-bottom: 15px" :data="records" border :row-style="tableFoot">
+            <el-table-column width="62" label="序号" fixed="left">
+              <template scope="scope">
+                <div v-if="records[scope.$index].orderNo!='当页总额'&&records[scope.$index].orderNo!='筛选条件统计'">{{scope.$index+1}}</div>
+              </template>
+            </el-table-column>
             <el-table-column label="支付流水号" min-width="112">
               <template scope="scope">
                 <span class="td" :data-clipboard-text="records[scope.$index].sn" type="text" size="small"
                       style="cursor: pointer" title="点击复制">{{records[scope.$index].sn|changeHide}}</span>
               </template>
             </el-table-column>
-            <el-table-column label="订单号" min-width="112">
+            <el-table-column label="交易订单号" min-width="112">
               <template scope="scope">
-                <span class="td" :data-clipboard-text="records[scope.$index].orderNo" type="text" size="small"
-                      style="cursor: pointer" title="点击复制">{{records[scope.$index].orderNo|changeHide}}</span>
+                <span v-if="records[scope.$index].orderNo!='当页总额'&&records[scope.$index].orderNo!='筛选条件统计'" class="td" :data-clipboard-text="records[scope.$index].orderNo" type="text" size="small" style="cursor: pointer" title="点击复制">{{records[scope.$index].orderNo|changeHide}}</span>
+                <span v-if="records[scope.$index].orderNo=='当页总额'">当页总额</span>
+                <span v-if="records[scope.$index].orderNo=='筛选条件统计'">筛选条件统计</span>
               </template>
             </el-table-column>
             <el-table-column prop="payAmount" align="right" label="支付金额" width="90"></el-table-column>
-            <el-table-column prop="createTime" :formatter="changeTime" label="创建时间" min-width="155"></el-table-column>
+            <el-table-column label="创建时间" min-width="155">
+              <template scope="scope">
+                <div v-if="records[scope.$index].orderNo!='当页总额'&&records[scope.$index].orderNo!='筛选条件统计'">{{records[scope.$index].createTime|changeTime}}</div>
+                <a v-if="records[scope.$index].orderNo=='筛选条件统计'" @click="add">点击统计</a>
+              </template>
+            </el-table-column>
             <el-table-column prop="finishTime" :formatter="changeTime2" label="支付完成时间" min-width="155"></el-table-column>
             <el-table-column prop="payChannel" label="支付渠道" min-width="90"></el-table-column>
             <el-table-column prop="payType" label="支付方式" min-width="120"></el-table-column>
@@ -78,11 +88,18 @@
             <el-table-column prop="message" label="渠道信息" min-width="115"></el-table-column>
             <el-table-column label="操作" min-width="80" fixed="right">
               <template scope="scope">
-                <a type="text" size="small" @click="synchro(records[scope.$index].sn)">补单</a>
+                <a v-if="records[scope.$index].orderNo!='当页总额'&&records[scope.$index].orderNo!='筛选条件统计'" type="text" size="small" @click="synchro(records[scope.$index].sn)">补单</a>
               </template>
             </el-table-column>
           </el-table>
           </el-table>
+          <ul style="float: left;margin-top: 5px">
+            <li>
+              <label style="margin-right: 10px;">支付金额</label>
+              <span>当页总额：{{pageTotal}}&nbsp;元</span>&nbsp;&nbsp;&nbsp;&nbsp;
+              <span>筛选条件统计：{{addTotal}}&nbsp;元</span>
+            </li>
+          </ul>
           <!--分页-->
           <div class="block" style="text-align: right">
             <el-pagination @size-change="handleSizeChange"
@@ -141,17 +158,21 @@
         date1: '',
         records: [],
         count: 0,
-        total: 0,
+        total: '',
         loading: true,
+        pageTotal: 0,
+        addTotal: 0,
         url:'',
         //正式
-        /*queryUrl:'http://pay.qianbaojiajia.com/order/pay/listOrder',
+        queryUrl:'http://pay.qianbaojiajia.com/order/pay/listOrder',
          excelUrl:'http://pay.qianbaojiajia.com/order/pay/exportExcel',
-         syncUrl:'http://pay.qianbaojiajia.com/order/syncPayOrder',*/
+         syncUrl:'http://pay.qianbaojiajia.com/order/syncPayOrder',
+         addUrl:'http://pay.qianbaojiajia.com/order/pay/payAmount'
         //测试
-        queryUrl:'http://192.168.1.20:8076/order/pay/listOrder',
+        /*queryUrl:'http://192.168.1.20:8076/order/pay/listOrder',
         excelUrl:'http://192.168.1.20:8076/order/pay/exportExcel',
         syncUrl:'http://192.168.1.20:8076/order/syncPayOrder',
+        addUrl:'http://192.168.1.25:8240/order/pay/payAmount',*/
       }
     },
     created: function () {
@@ -164,7 +185,25 @@
           type: 'success'
         });
       });
-      this.getData()
+      let time = new Date();
+      this.date = [time,time];
+      for (var j = 0; j < this.date.length; j++) {
+        var str = this.date[j];
+        var ary = [str.getFullYear(), str.getMonth() + 1, str.getDate()];
+        for (var i = 0, len = ary.length; i < len; i++) {
+          if (ary[i] < 10) {
+            ary[i] = '0' + ary[i];
+          }
+        }
+        str = ary[0] + '-' + ary[1] + '-' + ary[2];
+        if (j == 0) {
+          this.$data.query.startCreateTime = str;
+        } else {
+          this.$data.query.endCreateTime = str;
+        }
+      }
+      this.getData();
+      this.getAddTotal()
     },
     methods: {
       getData: function () {
@@ -173,9 +212,26 @@
           .then(function (res) {
             this.loading = false;
             this.$data.records = res.data.records;
-            this.$data.total=res.data.totalPage;
             this.$data.url=res.data.ext;
             this.$data.count = res.data.count;
+            var price=0;
+            var toFix = function (val) {
+              return parseFloat(val).toFixed(2)
+            };
+            for (var i = 0; i < this.records.length; i++) {
+              price = toFix(parseFloat(price)+parseFloat(this.records[i].payAmount));
+            }
+            this.pageTotal = price;
+            /*if(this.records.length!=0){
+              this.records.push({
+                orderNo:"当页总额",
+                payAmount:price
+              },{
+                orderNo:"筛选条件统计",
+                payAmount:''
+              });
+              this.records[this.records.length-1].payAmount = this.total;
+            }*/
           },function (err) {
             this.$data.loading = false;
             this.$message({
@@ -185,28 +241,27 @@
             });
           })
       },
-      //格式化时间
-      changeTime: function (row, column) {
-        var val = row.createTime;
-        if (val == '' || val == null) {
-          return ''
-        } else {
-          val = new Date(val)
-          var year = val.getFullYear();
-          var month = val.getMonth() + 1;
-          var date = val.getDate();
-          var hour = val.getHours();
-          var minute = val.getMinutes();
-          var second = val.getSeconds();
-          function tod(a) {
-            if (a < 10) {
-              a = "0" + a
-            }
-            return a;
-          }
-          return year + "-" + tod(month) + "-" + tod(date) + " " + tod(hour) + ":" + tod(minute) + ":" + tod(second);
-        }
+      getAddTotal(){
+        this.$http.post(this.addUrl,this.query)
+          .then(res=>{
+          this.addTotal = res.data;
+          })
+          .catch(err=>{
+            this.$data.loading = false;
+            this.$message({
+              showClose: true,
+              message: err.statusMessage,
+              type: 'error'
+            });
+          })
       },
+      tableFoot(row, index) {
+        if (row.orderNo === '当页总额'||row.orderNo === '筛选条件统计') {
+          return {background:'#eef1f6'}
+        }
+        return '';
+      },
+      //格式化时间
       changeTime2: function (row, column) {
         var val = row.finishTime;
         if (val == '' || val == null) {
@@ -261,8 +316,10 @@
           })
       },
       search(){
+        this.total = '';
         this.$data.query.pageNo = 1;
-        this.getData()
+        this.getData();
+        this.getAddTotal()
       },
       //每页条数改变
       handleSizeChange(val) {
@@ -278,7 +335,7 @@
     },
     watch: {
       date: function (val, oldVal) {
-        if (val[0] != null) {
+        if (val!=undefined&&val[0] != null) {
           for (var j = 0; j < val.length; j++) {
             var str = val[j];
             var ary = [str.getFullYear(), str.getMonth() + 1, str.getDate()];
@@ -300,7 +357,7 @@
         }
       },
       date1: function (val, oldVal) {
-        if (val[0] != null) {
+        if (val!=undefined&&val[0] != null) {
           for (var j = 0; j < val.length; j++) {
             var str = val[j];
             var ary = [str.getFullYear(), str.getMonth() + 1, str.getDate()];
@@ -328,7 +385,7 @@
           val = val.replace(val.substring(3,val.length-6),"…");
         }
         return val
-      },
+      }
     }
   }
 </script>

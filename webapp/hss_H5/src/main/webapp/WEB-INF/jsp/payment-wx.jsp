@@ -16,7 +16,7 @@
         content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
   <meta name="format-detection" content="telephone=no"/>
   <title>好收收</title>
-  <link rel="stylesheet" href="http://static.jinkaimen.cn/hss/css/style.2.1.3.css">
+  <link rel="stylesheet" href="http://static.jinkaimen.cn/hss/css/style.2.2.5.css">
   <link rel="stylesheet" href="http://static.jinkaimen.cn/weui/weui.css">
 </head>
 <body>
@@ -70,12 +70,52 @@
   </div>
 </div>
 
+<div class="message-space" id="layerNotSelf">
+  <div class="message-box">
+    <div class="message-box-head">提示</div>
+    <div class="message-box-body">
+      收款牌支持的收款额度较低<br>
+      超过2000元请使用“动态二维码”<br>
+      <span>打开微信公众号，点击底部菜单“收款”生成二维码</span>
+    </div>
+    <div class="message-box-foot">
+      <div class="message-cancel" id="cancelNotSelf">
+        返回修改金额
+      </div>
+      <div class="message-line"></div>
+      <div class="message-submit" id="submitNotSelf">
+        确定
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="message-space" id="layerSelf">
+  <div class="message-box">
+    <div class="message-box-head">提示</div>
+    <div class="message-box-body">
+      收款牌支持的收款额度较低<br>
+      超过2000元请使用“动态二维码”
+    </div>
+    <div class="message-box-foot">
+      <div class="message-cancel" id="cancelSelf">
+        返回修改金额
+      </div>
+      <div class="message-line"></div>
+      <div class="message-submit" id="submitSelf">
+        去往动码收款
+      </div>
+    </div>
+  </div>
+</div>
+
 </body>
 <script>
-  var pageDate = {
-    merchantId: ${mid}
+  var pageData = {
+    merchantId: '${mid}',
+    isSelf: '${isSelf}'
   }
 </script>
-<script src="http://static.jinkaimen.cn/vendor/vendor.1.0.3.min.js"></script>
-<script src="http://static.jinkaimen.cn/hss/2.1.1/payment.min.js"></script>
+<script src="http://static.jinkaimen.cn/vendor/vendor.1.0.9.5.min.js"></script>
+<script src="http://static.jinkaimen.cn/hss/2.2.9/payment.min.js"></script>
 </html>

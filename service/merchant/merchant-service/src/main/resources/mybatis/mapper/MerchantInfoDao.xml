@@ -25,7 +25,13 @@
         name=#{name},
         identity=#{identity},
         reserve_mobile = #{reserveMobile},
-        status = #{status}
+        status = #{status},
+        province_code=#{provinceCode},
+        province_name=#{provinceName},
+        city_code=#{cityCode},
+        city_name=#{cityName},
+        county_code=#{countyCode},
+        county_name=#{countyName}
 
         WHERE id = #{id}
     </update>
@@ -473,5 +479,14 @@
         SET
         is_authen=#{isAuthen}
         WHERE id = #{id}
+    </update>
+
+    <update id="updateDealerInfo">
+        UPDATE tb_merchant_info
+        SET
+        dealer_id = #{currentDealerId},
+        first_dealer_id = #{firstDealerId},
+        second_dealer_id = #{secondDealerId}
+        WHERE id = #{merchantId}
     </update>
 </mapper>

@@ -28,6 +28,10 @@
                   <el-input style="width: 120px" v-model="query.proxyName1" placeholder="请输入内容" size="small"></el-input>
                 </li>
                 <li class="same">
+                  <label>注册手机号:</label>
+                  <el-input style="width: 120px" v-model="query.mobile" placeholder="请输入内容" size="small"></el-input>
+                </li>
+                <li class="same">
                   <label>注册时间:</label>
                   <el-date-picker style="width: 190px" v-model="date" type="daterange" align="right" placeholder="选择日期范围" :picker-options="pickerOptions" size="small">
                   </el-date-picker>
@@ -118,7 +122,7 @@
                 <el-table-column type="index" width="100" label="序号"></el-table-column>
                 <el-table-column prop="globalID" label="商户编号"></el-table-column>
                 <el-table-column prop="shortName" label="商户名称"></el-table-column>
-                <el-table-column prop="shortName" label="所属代理商"></el-table-column>
+                <el-table-column prop="proxyNames" label="所属代理商"></el-table-column>
                 <el-table-column prop="createTime" label="注册时间" :formatter="changeTime"></el-table-column>
                 <el-table-column prop="cellphone" label="注册手机号"></el-table-column>
                 <el-table-column prop="districtCode" label="省市"></el-table-column>
@@ -215,6 +219,7 @@
           shortName:'',
           globalID:'',
           proxyName:'',
+          mobile:'',
           proxyName1:'',
           startTime:'',
           endTime:'',
@@ -260,6 +265,25 @@
             })
           })
       })
+    },
+    created: function () {
+//      let time = new Date();
+//      this.date = [time,time];
+//      for (var j = 0; j < this.date.length; j++) {
+//        var str = this.date[j];
+//        var ary = [str.getFullYear(), str.getMonth() + 1, str.getDate()];
+//        for (var i = 0, len = ary.length; i < len; i++) {
+//          if (ary[i] < 10) {
+//            ary[i] = '0' + ary[i];
+//          }
+//        }
+//        str = ary[0] + '-' + ary[1] + '-' + ary[2];
+//        if (j == 0) {
+//          this.$data.query.startTime = str;
+//        } else {
+//          this.$data.query.endTime = str;
+//        }
+//      }
     },
     methods: {
       //同步
@@ -330,6 +354,7 @@
           globalID:'',
           proxyName:'',
           proxyName1:'',
+          mobile:'',
           startTime:'',
           endTime:'',
           startTime1:'',
@@ -343,6 +368,8 @@
         }else if(event.target.innerHTML=="好收银"){
           this.$data.url='/admin/hsyMerchantList/getMerchantList'
         }
+        this.$data.records='';
+        this.$data.loading = true;
         this.$http.post(this.$data.url,this.$data.query)
           .then(function (res) {
             this.$data.loading = false;
@@ -419,7 +446,7 @@
     },
     watch:{
       date:function (val,oldVal) {
-        if(val[0]!=null){
+        if(val!=undefined&&val[0]!=null){
           for(var j=0;j<val.length;j++){
             var str = val[j];
             var ary = [str.getFullYear(), str.getMonth() + 1, str.getDate()];
@@ -441,7 +468,7 @@
         }
       },
       date1:function (val,oldVal) {
-        if(val[0]!=null){
+        if(val!=undefined&&val[0]!=null){
           for(var j=0;j<val.length;j++){
             var str = val[j];
             var ary = [str.getFullYear(), str.getMonth() + 1, str.getDate()];
@@ -463,7 +490,7 @@
         }
       },
       date2:function (val,oldVal) {
-        if(val[0]!=null){
+        if(val!=undefined&&val[0]!=null){
           for(var j=0;j<val.length;j++){
             var str = val[j];
             var ary = [str.getFullYear(), str.getMonth() + 1, str.getDate()];

@@ -166,12 +166,25 @@ public class Order extends BaseEntity {
     private int payChannelSign;
 
     /**
+     * 支付所用信用卡
+     */
+    private String payBankCard;
+    /**
      * 是否待支付
      *
      * @return
      */
     public boolean isDuePay() {
         return EnumOrderStatus.DUE_PAY.getId() == this.status;
+    }
+
+    /**
+     * 是否支付中
+     *
+     * @return
+     */
+    public boolean isPaying() {
+        return EnumOrderStatus.PAYING.getId() == this.status;
     }
 
     /**

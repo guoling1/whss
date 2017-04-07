@@ -20,6 +20,16 @@ import java.util.Date;
 public class MerchantTradeResponse {
 
     /**
+     * 业务订单号
+     */
+    private String businessOrderNo;
+
+    /**
+     * 商户编码
+     */
+    private String markCode;
+
+    /**
      * 产品
      */
     private String appId;
@@ -50,6 +60,11 @@ public class MerchantTradeResponse {
     private Date createTime;
 
     /**
+     * 交易日期
+     */
+    private String createTimed;
+
+    /**
      * 一级代理商id
      */
     private long firstLevelDealerId;
@@ -74,6 +89,13 @@ public class MerchantTradeResponse {
      * tinyint
      */
     protected int status;
+
+    /**
+     * 状态
+     * tinyint
+     */
+    protected String statusValue;
+
 
     /**
      * 如果是提现单 ，此值表示 对应支付单的id
@@ -140,6 +162,11 @@ public class MerchantTradeResponse {
     private Date paySuccessTime;
 
     /**
+     * 付款成功时间（交易成功）
+     */
+    private String paySuccessTimes;
+
+    /**
      * 手续费
      */
     private BigDecimal poundage;
@@ -167,6 +194,13 @@ public class MerchantTradeResponse {
     private int settleStatus;
 
     /**
+     * 结算状态
+     *
+     * {@link EnumSettleStatus}
+     */
+    private String settleStat;
+
+    /**
      * 结算时间(预计结算时间)
      */
     private Date settleTime;
@@ -187,6 +221,7 @@ public class MerchantTradeResponse {
      * {@link com.jkm.hss.product.enums.EnumPayChannelSign}
      */
     private int payChannelSign;
+
 
     /**
      * 支付渠道名
@@ -217,5 +252,10 @@ public class MerchantTradeResponse {
      * 注册时间
      */
     private Date createTimes;
+
+    /**
+     * 结算周期
+     */
+    private String settleType;
 
 }

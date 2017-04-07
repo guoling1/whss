@@ -2,11 +2,30 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.jkm.hss.bill.dao.ProfitDao">
 
+    <select id="getInfo" resultType="com.jkm.hss.bill.entity.ProfitResponse">
+        SELECT
+            a.split_sn,
+            a.split_amount,
+            a.receipt_money_user_name,
+            a.account_user_type,
+            a.split_date,
+            a.split_total_amount,
+            a.remark,
+            b.settle_type
+        FROM
+            tb_split_account_record a
+        LEFT JOIN tb_order b ON b.order_no = a.order_no
+        WHERE
+            split_sn = #{businessOrderNo}
+
+
+    </select>
 
     <select id="selectProfitDetails" resultType="com.jkm.hss.bill.entity.JkmProfitDetailsResponse">
         SELECT
         a.*, b.id AS ids,
         c.`level`,
+        a.account_user_type,
         d.settle_type
         FROM
         tb_split_account_record a
@@ -15,6 +34,13 @@
         LEFT JOIN tb_order d ON d.order_no = a.order_no
         WHERE
         1 = 1 AND a.split_date <![CDATA[ <= ]]>#{splitDate}
+        <if test="startTime!=null and startTime!=''">
+            AND a.split_date <![CDATA[ >= ]]> #{startTime}
+        </if>
+
+        <if test="endTime!=null and endTime!=''">
+            AND a.split_date <![CDATA[ <= ]]> #{endTime}
+        </if>
         <if test="orderNo!=null and orderNo!=''">
             AND a.order_no = #{orderNo}
         </if>
@@ -28,8 +54,45 @@
         limit #{offset}, #{pageSize}
     </select>
 
+    <!-- 分润统计 -->
+    <select id="profitAmount" resultType="com.jkm.hss.bill.entity.JkmProfitDetailsResponse">
+        SELECT
+            SUM(a.split_total_amount) AS split_total_amount,
+            SUM(a.split_amount) AS split_amount
+        FROM
+            tb_split_account_record a
+        LEFT JOIN tb_account b ON b.id = a.receipt_money_account_id
+        LEFT JOIN tb_dealer c ON c.account_id = a.receipt_money_account_id
+        LEFT JOIN tb_order d ON d.order_no = a.order_no
+        WHERE
+        1 = 1 AND a.split_date <![CDATA[ <= ]]>#{splitDate}
+        <if test="startTime!=null and startTime!=''">
+            AND a.split_date <![CDATA[ >= ]]> #{startTime}
+        </if>
+
+        <if test="endTime!=null and endTime!=''">
+            AND a.split_date <![CDATA[ <= ]]> #{endTime}
+        </if>
+        <if test="orderNo!=null and orderNo!=''">
+            AND a.order_no = #{orderNo}
+        </if>
+        <if test="receiptMoneyUserName!=null and receiptMoneyUserName!=''">
+            AND a.receipt_money_user_name = #{receiptMoneyUserName}
+        </if>
+        <if test="businessType != null and businessType != ''">
+            AND a.business_type = #{businessType}
+        </if>
+    </select>
+
     <select id="selectProfitDetailsCount"  resultType="java.lang.Integer">
         SELECT COUNT(1) FROM tb_split_account_record WHERE 1=1 AND split_date <![CDATA[ <= ]]>#{splitDate}
+        <if test="startTime!=null and startTime!=''">
+            AND split_date <![CDATA[ >= ]]> #{startTime}
+        </if>
+
+        <if test="endTime!=null and endTime!=''">
+            AND split_date <![CDATA[ <= ]]> #{endTime}
+        </if>
         <if test="orderNo!=null and orderNo!=''">
             AND order_no = #{orderNo}
         </if>

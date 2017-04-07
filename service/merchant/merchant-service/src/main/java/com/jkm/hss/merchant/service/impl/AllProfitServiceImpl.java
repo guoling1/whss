@@ -199,14 +199,6 @@ public class AllProfitServiceImpl implements AllProfitService {
         return list;
     }
 
-    @Override
-    public List<CompanyProfitResponse> selectTwoProfitCount(CompanyPrifitRequest req) {
-        CompanyPrifitRequest request =selectTime(req);
-        List<CompanyProfitResponse> list = allProfitDao.selectTwoProfitCount(request);
-        return list;
-    }
-
-
     private CompanyPrifitRequest selectTime(CompanyPrifitRequest req) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         Date dt= new Date();
@@ -541,6 +533,81 @@ public class AllProfitServiceImpl implements AllProfitService {
             }
         }
         return "";
+    }
+
+    @Override
+    public String companyAmount(CompanyPrifitRequest req) {
+        CompanyPrifitRequest request =selectTime(req);
+        return this.allProfitDao.companyAmount(request);
+    }
+
+    @Override
+    public String getFirstAmount(CompanyPrifitRequest req) {
+        CompanyPrifitRequest request =selectTime(req);
+        return this.allProfitDao.getFirstAmount(request);
+    }
+
+    @Override
+    public String secondAmount(CompanyPrifitRequest req) {
+        CompanyPrifitRequest request =selectTime(req);
+        return this.allProfitDao.secondAmount(request);
+    }
+
+    @Override
+    public CompanyProfitResponse ProfitDetailAmount(CompanyPrifitRequest req) {
+        final CompanyPrifitRequest request =getTime(req);
+        if (request.getBusinessType().equals("好收收- 收款")){
+            request.setBusinessType(EnumSplitBusinessType.HSSPAY.getId());
+        }
+        if (request.getBusinessType().equals("好收收-提现")){
+            request.setBusinessType(EnumSplitBusinessType.HSSWITHDRAW.getId());
+        }
+        if (request.getBusinessType().equals("好收收-升级费")){
+            request.setBusinessType(EnumSplitBusinessType.HSSPROMOTE.getId());
+        }
+        if (request.getBusinessType().equals("好收银-收款")){
+            request.setBusinessType(EnumSplitBusinessType.HSYPAY.getId());
+        }
+        CompanyProfitResponse res = this.allProfitDao.ProfitDetailAmount(request);
+        return res;
+    }
+
+    @Override
+    public CompanyProfitResponse firstDetailAmount(CompanyPrifitRequest req) {
+        final CompanyPrifitRequest request =getTime(req);
+        if (request.getBusinessType().equals("好收收- 收款")){
+            request.setBusinessType(EnumSplitBusinessType.HSSPAY.getId());
+        }
+        if (request.getBusinessType().equals("好收收-提现")){
+            request.setBusinessType(EnumSplitBusinessType.HSSWITHDRAW.getId());
+        }
+        if (request.getBusinessType().equals("好收收-升级费")){
+            request.setBusinessType(EnumSplitBusinessType.HSSPROMOTE.getId());
+        }
+        if (request.getBusinessType().equals("好收银-收款")){
+            request.setBusinessType(EnumSplitBusinessType.HSYPAY.getId());
+        }
+        CompanyProfitResponse res = this.allProfitDao.firstDetailAmount(request);
+        return res;
+    }
+
+    @Override
+    public CompanyProfitResponse secondDetailAmount(CompanyPrifitRequest req) {
+        final CompanyPrifitRequest request =getTime(req);
+        if (request.getBusinessType().equals("好收收- 收款")){
+            request.setBusinessType(EnumSplitBusinessType.HSSPAY.getId());
+        }
+        if (request.getBusinessType().equals("好收收-提现")){
+            request.setBusinessType(EnumSplitBusinessType.HSSWITHDRAW.getId());
+        }
+        if (request.getBusinessType().equals("好收收-升级费")){
+            request.setBusinessType(EnumSplitBusinessType.HSSPROMOTE.getId());
+        }
+        if (request.getBusinessType().equals("好收银-收款")){
+            request.setBusinessType(EnumSplitBusinessType.HSYPAY.getId());
+        }
+        CompanyProfitResponse res = this.allProfitDao.secondDetailAmount(request);
+        return res;
     }
 
     /**

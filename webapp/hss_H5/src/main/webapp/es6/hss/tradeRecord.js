@@ -50,8 +50,8 @@ content.appendChild(more);
 // 定义支付
 const payStatus = {
   1: '待支付',
-  3: '支付失败',
-  4: '支付成功'
+  3: '交易失败',
+  4: '交易成功'
 };
 // 定义支付方式
 const payType = {
@@ -77,7 +77,7 @@ let getData = function (e, page) {
   }, function (res) {
     for (let i = 0; i < res.records.length; i++) {
       let group = document.createElement('a');
-      group.href = '/sqb/tradeDetail/' + res.records[i].orderId;
+      group.href = '/trade/detail/' + res.records[i].orderId;
       group.className = 'group';
       let top = document.createElement('div');
       top.className = 'top';

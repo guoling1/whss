@@ -7,6 +7,12 @@ import java.util.Date;
 
 @Data
 public class MerchantInfoRequest {
+
+    /**
+     * 注册手机号
+     */
+    private String mobile;
+
     /**
      * 所属1代理商名称
      */

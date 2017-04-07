@@ -1,6 +1,5 @@
 package com.jkm.hss.bill.service;
 
-import com.jkm.hss.bill.entity.Order;
 import com.jkm.hss.bill.entity.SettlementRecord;
 import com.jkm.hss.bill.entity.callback.PaymentSdkWithdrawCallbackResponse;
 import com.jkm.hss.merchant.entity.MerchantInfo;

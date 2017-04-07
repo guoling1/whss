@@ -1,6 +1,7 @@
 package com.jkm.hss.merchant.entity;
 
 import com.jkm.base.common.entity.BaseEntity;
+import com.jkm.hss.merchant.enums.EnumSource;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -161,6 +162,7 @@ public class MerchantInfo extends BaseEntity{
     private Long productId;
     /**
      * 商户来源
+     * {@link EnumSource}
      */
     private int source;
 
@@ -220,6 +222,8 @@ public class MerchantInfo extends BaseEntity{
      */
     private String isAuthen;
 
-
+    public String getPlainBankMobile(String phone){
+        return phone.substring(0,3) + "****" + phone.substring(7,11);
+    }
 
 }

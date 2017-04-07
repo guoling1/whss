@@ -21,7 +21,7 @@ public interface MerchantInfoQueryService {
      * 查询 总数
      * @return
      */
-    int getCount(MerchantInfoRequest req);
+//    int getCount(MerchantInfoRequest req);
 
     /**
      * 查询待审核商户列表
@@ -36,11 +36,6 @@ public interface MerchantInfoQueryService {
      */
     int getCountRecord(MerchantInfoRequest req);
 
-    /**
-     * 查询所有
-     * @return
-     */
-    List<MerchantInfoResponse> seletAll();
 
     /**
      * 导出所有商户
@@ -49,4 +44,8 @@ public interface MerchantInfoQueryService {
      * @return
      */
     String downloadExcel(MerchantInfoRequest req, String baseUrl);
+
+    int getCount(MerchantInfoRequest req);
+
+
 }

@@ -85,9 +85,9 @@
         请选择打款账户
         <span @click="close">×</span>
       </div>
-      <div class="box-footer clearfix" style="border-top: none;text-align: center">
-        <a href="javascript:void(0)" id="btn1" @click="choose(1)" class="btn btn-sm btn-info btn-flat">D0账户打款</a>
-        <a href="javascript:void(0)" id="btn2" @click="choose(2)" class="btn btn-sm btn-primary btn-flat">T1账户打款</a>
+      <div class="box-footer clearfix" style="margin-top:20px;border-top: none;text-align: center">
+        <el-button :disabled="isBtn" id="btn1" @click.once="choose(1)">D0账户打款</el-button>
+        <el-button :disabled="isBtn" href="javascript:;" id="btn2" @click.once="choose(2)">T1账户打款</el-button>
       </div>
     </div>
   </div>
@@ -98,6 +98,7 @@
     name:'productAdd',
     data(){
       return{
+        isBtn:false,
         query:{
           accountId:"",
           userName:"",
@@ -112,13 +113,13 @@
         isMask: false,
         record: this.$route.query,
         //正式
-        /*queryUrl:'http://pay.qianbaojiajia.com/order/withdraw/audit',
+         queryUrl:'http://pay.qianbaojiajia.com/order/withdraw/audit',
          excelUrl:'http://pay.qianbaojiajia.com/order/withdraw/exportExcel',
-         syncUrl:'http://pay.qianbaojiajia.com/order/syncWithdrawOrder',*/
+         syncUrl:'http://pay.qianbaojiajia.com/order/syncWithdrawOrder',
         //测试
-        queryUrl:'http://192.168.1.20:8076/order/withdraw/audit',
-        excelUrl:'http://192.168.1.20:8076/order/withdraw/exportExcel',
-        syncUrl:'http://192.168.1.20:8076/order/syncWithdrawOrder',
+        /*queryUrl:'http://192.168.1.20:8076/order/withdraw/audit',
+         excelUrl:'http://192.168.1.20:8076/order/withdraw/exportExcel',
+         syncUrl:'http://192.168.1.20:8076/order/syncWithdrawOrder',*/
       }
     },
     created: function () {
@@ -161,21 +162,20 @@
       },
       choose: function (val) {
         this.$data.query.accountType = val;
-        document.getElementById('btn1').setAttribute("disabled","disabled");
-        document.getElementById('btn1').onclick="";
-        document.getElementById('btn2').setAttribute("disabled","disabled");
-        document.getElementById('btn2').onclick="";
+        this.isBtn=true;
         this.$http.post(this.$data.queryUrl,this.$data.query)
           .then(function (res) {
             this.$store.commit('MESSAGE_DELAY_SHOW', {
               text: "操作成功"
             })
             this.$data.isMask = false;
+            this.isBtn=false;
             this.$router.push('/admin/record/newWithdrawalQuery')
           },function (err) {
             this.$store.commit('MESSAGE_DELAY_SHOW', {
               text: err.statusMessage
             })
+            this.isBtn=false;
             this.$data.isMask = false;
             this.$router.push('/admin/record/newWithdrawalQuery')
           })

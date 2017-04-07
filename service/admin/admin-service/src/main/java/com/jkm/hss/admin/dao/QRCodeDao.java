@@ -2,9 +2,9 @@ package com.jkm.hss.admin.dao;
 
 import com.jkm.hss.admin.entity.CodeQueryResponse;
 import com.jkm.hss.admin.entity.QRCode;
-import com.jkm.hss.admin.helper.responseparam.ActiveCodeCount;
-import com.jkm.hss.admin.helper.responseparam.DistributeCodeCount;
-import com.jkm.hss.admin.helper.responseparam.QRCodeList;
+import com.jkm.hss.admin.helper.requestparam.MyQrCodeListRequest;
+import com.jkm.hss.admin.helper.requestparam.QrCodeListRequest;
+import com.jkm.hss.admin.helper.responseparam.*;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
@@ -225,7 +225,7 @@ public interface QRCodeDao {
      * @param firstLevelDealerId
      * @return
      */
-    int getFirstResidueCount(@Param("firstLevelDealerId") long firstLevelDealerId);
+    int getFirstResidueCount(@Param("firstLevelDealerId") long firstLevelDealerId,@Param("sysType") String sysType);
 
     /**
      * 查询一级代理商已分配二维码数
@@ -233,7 +233,7 @@ public interface QRCodeDao {
      * @param firstLevelDealerId
      * @return
      */
-    int getFirstDistributeCount(@Param("firstLevelDealerId") long firstLevelDealerId);
+    int getFirstDistributeCount(@Param("firstLevelDealerId") long firstLevelDealerId,@Param("sysType") String sysType);
 
     /**
      * 查询一级代理商分配给自己的二维码数
@@ -241,7 +241,7 @@ public interface QRCodeDao {
      * @param firstLevelDealerId
      * @return
      */
-    int getFirstDistributeToSelfCount(@Param("firstLevelDealerId") long firstLevelDealerId);
+    int getFirstDistributeToSelfCount(@Param("firstLevelDealerId") long firstLevelDealerId,@Param("sysType") String sysType);
 
     /**
      * 查询一级代理商未激活二维码数
@@ -249,7 +249,7 @@ public interface QRCodeDao {
      * @param firstLevelDealerId
      * @return
      */
-    int getFirstUnActivateCount(@Param("firstLevelDealerId") long firstLevelDealerId);
+    int getFirstUnActivateCount(@Param("firstLevelDealerId") long firstLevelDealerId,@Param("sysType") String sysType);
 
     /**
      * 查询一级代理商已激活二维码数
@@ -257,7 +257,7 @@ public interface QRCodeDao {
      * @param firstLevelDealerId
      * @return
      */
-    int getFirstActivateCount(@Param("firstLevelDealerId") long firstLevelDealerId);
+    int getFirstActivateCount(@Param("firstLevelDealerId") long firstLevelDealerId,@Param("sysType") String sysType);
 
     /**
      * 查询二级代理商二维码数
@@ -273,7 +273,14 @@ public interface QRCodeDao {
      * @param secondLevelDealerId
      * @return
      */
-    int getSecondUnActivateCount(@Param("secondLevelDealerId") long secondLevelDealerId);
+    int getSecondUnActivateCount(@Param("secondLevelDealerId") long secondLevelDealerId,@Param("sysType") String sysType);
+    /**
+     * 查询二级代理商激活二维码数
+     *
+     * @param secondLevelDealerId
+     * @return
+     */
+    int getSecondActivateCount(@Param("secondLevelDealerId") long secondLevelDealerId,@Param("sysType") String sysType);
 
     /**
      * 一级代理商给二级代理分配的二维码数
@@ -448,4 +455,67 @@ public interface QRCodeDao {
      * @return
      */
     List<QRCode> getUnDistributeCodeByCodeAndSysType(@Param("startCode") String startCode, @Param("endCode") String endCode,@Param("sysType") String sysType);
+
+    /**
+     * hss项目下的二维码列表[boss]
+     * @param qrCodeListRequest
+     * @return
+     */
+    List<QrCodeListResponse> getHSSQrCodeList(QrCodeListRequest qrCodeListRequest);
+
+    /**
+     * hss项目下的二维码个数[boss]
+     * @param qrCodeListRequest
+     * @return
+     */
+    long getHSSQrCodeCount(QrCodeListRequest qrCodeListRequest);
+    /**
+     * hsy项目下的二维码列表[boss]
+     * @param qrCodeListRequest
+     * @return
+     */
+    List<QrCodeListResponse> getHSYQrCodeList(QrCodeListRequest qrCodeListRequest);
+
+    /**
+     * hsy项目下的二维码个数[boss]
+     * @param qrCodeListRequest
+     * @return
+     */
+    long getHSYQrCodeCount(QrCodeListRequest qrCodeListRequest);
+
+    /**
+     * hss项目下的二维码列表[代理商]
+     * @param myQrCodeListRequest
+     * @return
+     */
+    List<MyQrCodeListResponse> getDealerHSSQrCodeList(MyQrCodeListRequest myQrCodeListRequest);
+
+    /**
+     * hss项目下的二维码个数[代理商]
+     * @param myQrCodeListRequest
+     * @return
+     */
+    long getDealerHSSQrCodeCount(MyQrCodeListRequest myQrCodeListRequest);
+    /**
+     * hsy项目下的二维码列表[代理商]
+     * @param myQrCodeListRequest
+     * @return
+     */
+    List<MyQrCodeListResponse> getDealerHSYQrCodeList(MyQrCodeListRequest myQrCodeListRequest);
+
+    /**
+     * hsy项目下的二维码个数[代理商]
+     * @param myQrCodeListRequest
+     * @return
+     */
+    long getDealerHSYQrCodeCount(MyQrCodeListRequest myQrCodeListRequest);
+    /**
+     * 修改代理商信息
+     *
+     * @param code
+     * @param firstDealerId
+     * @param secondDealerId
+     * @return
+     */
+    int updateDealerInfo(@Param("code") String code, @Param("firstDealerId") long firstDealerId, @Param("secondDealerId") long secondDealerId);
 }

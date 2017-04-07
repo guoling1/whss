@@ -10,5 +10,4 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface BankCardBinDao {
     BankCardBin loadByBinNo(@Param("bankNo")String bankNo);
-
 }

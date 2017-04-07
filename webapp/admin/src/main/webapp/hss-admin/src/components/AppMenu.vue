@@ -32,11 +32,14 @@
         <!-- <li class="header">HEADER</li>
          Optionally, you can add icons to the links
         <li><a href="#"><i class="fa fa-link"></i> <span>Link</span></a></li>-->
-        <li :class="(url=='/admin/record/newDeal')?'treeview active':'treeview'">
+        <li :class="(url=='/admin/record/newDeal'||url=='/admin/record/retrieval')?'treeview active':'treeview'">
           <a href="#"><span>交易查询</span></a>
           <ul class="treeview-menu">
             <li :class="(url=='/admin/record/newDeal')?'treeview active':'treeview'" @click="refrash">
               <router-link to="/admin/record/newDeal"><span>交易查询</span></router-link>
+            </li>
+            <li :class="(url=='/admin/record/retrieval')?'treeview active':'treeview'" @click="refrash">
+              <router-link to="/admin/record/retrieval"><span>提现查询</span></router-link>
             </li>
           </ul>
         </li>
@@ -97,9 +100,9 @@
             <li :class="(url=='/admin/record/storeAuditList')?'treeview active':'treeview'" @click="refrash">
               <router-link to="/admin/record/storeAuditList"><span>待审核商户</span></router-link>
             </li>
-            <!--<li :class="(url=='/admin/record/storeNotice')?'treeview active':'treeview'" @click="refrash">
+            <li :class="(url=='/admin/record/storeNotice')?'treeview active':'treeview'" @click="refrash">
               <router-link to="/admin/record/storeNotice"><span>商户公告</span></router-link>
-            </li>-->
+            </li>
           </ul>
           </router-link>
         </li>
@@ -117,7 +120,7 @@
           </ul>
         </li>
         <li
-          :class="(url=='/admin/record/issueRecord'||url=='/admin/record/issue'||url=='/admin/record/codeStatus')?'treeview active':'treeview'">
+          :class="(url=='/admin/record/issueRecord'||url=='/admin/record/issue'||url=='/admin/record/codeStatus'||url=='/admin/record/codeProRecord'||url=='/admin/record/codeAll')?'treeview active':'treeview'">
           <a href="#"><span>设备管理</span></a>
           <ul class="treeview-menu">
             <!--<li :class="(url=='/admin/record/issue1')?'active':''" @click="refrash"><router-link to="/admin/record/issue1"><span>按个数分配</span> </router-link></li>-->
@@ -129,6 +132,12 @@
             </li>
             <li :class="(url=='/admin/record/codeStatus')?'active':''" @click="refrash">
               <router-link to="/admin/record/codeStatus"><span>二维码状态查询</span></router-link>
+            </li>
+            <li :class="(url=='/admin/record/codeProRecord')?'active':''" @click="refrash">
+              <router-link to="/admin/record/codeProRecord"><span>产码记录</span></router-link>
+            </li>
+            <li :class="(url=='/admin/record/codeAll')?'active':''" @click="refrash">
+              <router-link to="/admin/record/codeAll"><span>所有二维码</span></router-link>
             </li>
           </ul>
         </li>
@@ -149,15 +158,15 @@
           </ul>
         </li>
         <li class="treeview"
-            :class="(url=='/admin/record/passList'||url=='/admin/record/passAdd')?'treeview active':'treeview'">
+            :class="(url=='/admin/record/passList'||url=='/admin/record/limitList')?'treeview active':'treeview'">
           <a href="#"><span>通道管理</span>
           </a>
           <ul class="treeview-menu">
             <li @click="refrash" :class="(url=='/admin/record/passList')?'treeview active':'treeview'">
               <router-link to="/admin/record/passList"><span>通道列表</span></router-link>
             </li>
-            <li @click="refrash" :class="(url=='/admin/record/passAdd')?'treeview active':'treeview'">
-              <router-link to="/admin/record/passAdd"><span>新增通道</span></router-link>
+            <li @click="refrash" :class="(url=='/admin/record/limitList')?'treeview active':'treeview'">
+              <router-link to="/admin/record/limitList"><span>银行卡限额管理</span></router-link>
             </li>
           </ul>
         </li>

@@ -5,8 +5,10 @@
 // 引入浏览器特性处理
 const http = _require('http');
 const message = _require('message');
+const validate = _require('validate');
 const browser = _require('browser');
-browser.elastic_touch();
+browser.elastic_touch('layer-w-list');
+browser.elastic_touch('layer-b-list');
 // 定义变量
 const color = document.getElementById('color');
 const logo = document.getElementById('logo');
@@ -30,25 +32,17 @@ let Provinces = false;
 let Citys = false;
 let Countrys = false;
 
-let layer = document.getElementById('layer');
-let cancel = document.getElementById('cancel');
-
-cancel.addEventListener('click', function () {
-  window.location.href = '/sqb/wallet';
-});
-
-let layerC = document.getElementById('layerC');
-let cancelcC = document.getElementById('cancelC');
-
-cancelcC.addEventListener('click', function () {
-  window.location.href = '/sqb/creditCardAuthen?card=true';
-});
-
 function getQueryString(name) {
   let reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
   let r = window.location.search.substr(1).match(reg);
   if (r != null) return unescape(r[2]);
   return null;
+}
+
+function getLocationString() {
+  let path = window.location.href;
+  let index = path.lastIndexOf("\/");
+  return path.substring(index + 1, path.length);
 }
 
 // 处理 初始化 的过程
@@ -66,24 +60,34 @@ if (pageData.provinceCode != '' &&
 
 
 submit.onclick = function () {
-  http.post('/wx/branchInfo', {
-    branchCode: pageData.branchCode,
-    branchName: pageData.branchName,
-    provinceCode: pageData.provinceCode,
-    provinceName: pageData.provinceName,
-    cityCode: pageData.cityCode,
-    cityName: pageData.cityName,
-    countyCode: pageData.countyCode,
-    countyName: pageData.countyName
-  }, function () {
-    if (getQueryString('card')) {
-      layerC.style.display = 'block';
-    } else if (getQueryString('branch')) {
-      layer.style.display = 'block';
-    } else {
-      window.location.href = '/sqb/bank';
-    }
-  })
+  if (validate.empty(pageData.provinceCode, '所在地区') &&
+    validate.empty(pageData.provinceName, '所在地区') &&
+    validate.empty(pageData.cityCode, '所在地区') &&
+    validate.empty(pageData.cityName, '所在地区') &&
+    validate.empty(pageData.countyCode, '所在地区') &&
+    validate.empty(pageData.countyName, '所在地区') &&
+    validate.empty(pageData.branchCode, '支行信息') &&
+    validate.empty(pageData.branchName, '支行信息')) {
+    http.post('/wx/branchInfo', {
+      bankId: getLocationString(),
+      branchCode: pageData.branchCode,
+      branchName: pageData.branchName,
+      provinceCode: pageData.provinceCode,
+      provinceName: pageData.provinceName,
+      cityCode: pageData.cityCode,
+      cityName: pageData.cityName,
+      countyCode: pageData.countyCode,
+      countyName: pageData.countyName
+    }, function () {
+      if (getQueryString('card')) {
+        window.location.href = '/sqb/creditCardAuthen?card=true';
+      } else if (getQueryString('branch')) {
+        layer.style.display = 'block';
+      } else {
+        window.location.href = '/sqb/bank';
+      }
+    })
+  }
 };
 
 branch.onclick = function () {
@@ -136,6 +140,8 @@ world.onclick = function () {
     ProvincesSet();
   }
   branch.value = '';
+  pageData.branchCode = '';
+  pageData.branchName = '';
   layer_b_list.innerHTML = '';
   layer_w.style.display = 'block';
   let rect_w = layer_w.getBoundingClientRect();
@@ -215,6 +221,21 @@ let CountrysSet = function (code) {
   }
   ct.className = 'choose';
   ct.style.display = 'inline-block';
+};
+
+p.onclick = function () {
+  c.style.display = 'none';
+  ct.style.display = 'none';
+  ProvincesSet();
+};
+
+c.onclick = function () {
+  ct.style.display = 'none';
+  CitysSet(pageData.provinceCode);
+};
+
+ct.onclick = function () {
+  CitysSet(pageData.cityCode);
 };
 
 // 卡bin和颜色一一对应

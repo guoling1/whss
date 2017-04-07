@@ -2,10 +2,12 @@ package com.jkm.hss.bill.service;
 
 import com.jkm.hss.bill.entity.Order;
 import com.jkm.hss.bill.entity.callback.PaymentSdkPayCallbackResponse;
+import com.jkm.hss.dealer.entity.Dealer;
 import com.jkm.hss.merchant.entity.MerchantInfo;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.math.BigDecimal;
+import java.util.Date;
 
 /**
  * Created by yulong.zhang on 2016/12/23.
@@ -87,10 +89,74 @@ public interface PayService {
     void poundageSettle(Order order, long merchantId);
 
     /**
+     * 手续费分账，生成代理商结算单记录
+     *
+     * @param accountId
+     * @param dealer
+     * @param settleDate
+     * @param settleAmount
+     * @return
+     */
+    long generateDealerSettlementRecord(long accountId, Dealer dealer, Date settleDate, BigDecimal settleAmount);
+
+    /**
+     * 手续费分账，生成商户结算单记录
+     *
+     * @param accountId
+     * @param merchant
+     * @param settleDate
+     * @param settleAmount
+     * @return
+     */
+    long generateMerchantSettlementRecord(long accountId, MerchantInfo merchant, Date settleDate, BigDecimal settleAmount);
+
+    /**
+     * 手续费分账，代理商待结算入可用余额
+     *
+     * @param accountId
+     * @param settleAmount
+     * @param order
+     * @param settlementRecordId
+     */
+    void dealerRecordedAccount(long accountId, BigDecimal settleAmount, Order order, long settlementRecordId);
+
+    /**
+     * 手续费分账，商户待结算入可用余额
+     *
+     * @param accountId
+     * @param settleAmount
+     * @param order
+     * @param settlementRecordId
+     */
+    void merchantRecordedAccount(long accountId, BigDecimal settleAmount, Order order, long settlementRecordId);
+
+    /**
      * 支付手续费结算 到 代理商等 待结算账户
      *
      * @param order
      * @param merchantId
      */
     void merchantUpgradePoundageSettle(Order order, long merchantId);
+
+    /**
+     * 快捷支付
+     *
+     * @param merchantId  商户ID
+     * @param amount      金额
+     * @param channel     渠道
+     * @param creditBankCardId  信用卡ID
+     * @param cvv2   cvv2
+     * @param appId
+     * @return
+     */
+    Pair<Integer,String> unionPay(long merchantId, String amount, int channel, long creditBankCardId, String cvv2, String appId);
+
+    /**
+     * 确认支付
+     *
+     * @param orderId
+     * @param code
+     * @return
+     */
+    Pair<Integer,String> confirmUnionPay(long orderId, String code);
 }

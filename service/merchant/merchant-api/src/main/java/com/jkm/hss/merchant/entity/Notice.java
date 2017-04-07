@@ -10,6 +10,11 @@ import lombok.Data;
 public class Notice extends BaseEntity {
 
     /**
+     * 公告类型
+     */
+    private String type;
+
+    /**
      * 发布人
      */
     private String publisher;

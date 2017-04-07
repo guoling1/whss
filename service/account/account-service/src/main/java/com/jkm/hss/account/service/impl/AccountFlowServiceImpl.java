@@ -143,6 +143,28 @@ public class AccountFlowServiceImpl implements AccountFlowService {
     }
 
     /**
+     * {@inheritDoc}
+     *
+     * @param pageNo
+     * @param pageSize
+     * @param accountId
+     * @return
+     */
+    @Override
+    public PageModel<AccountFlow> selectByParamToMerchantFlow(int pageNo, int pageSize, long accountId) {
+
+        PageModel<AccountFlow> pageModel = new PageModel<>(pageNo, pageSize);
+
+        List<AccountFlow> list =
+                this.accountFlowDao.selectByParamToMerchantFlow( pageModel.getFirstIndex(), pageSize, accountId);
+        long count = this.accountFlowDao.selectCountByParamToMerchantFlow(accountId);
+
+        pageModel.setCount(count);
+        pageModel.setRecords(list);
+        return pageModel;
+    }
+
+    /**
      * 获取流水号
      *
      * @return

@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jkm.hss.merchant.dao.AccountBankDao">
+    <!-- 通用查询结果列-->
+    <sql id="Base_Column_List">
+        id,	account_id,	expiry_time,bank_no,bank_name,bank_bin,reserve_mobile,branch_code,branch_name,branch_province_code,branch_province_name,
+        branch_city_code,branch_city_name,branch_county_code,branch_county_name,card_type,is_authen,is_default,
+        status,create_time,	update_time
+    </sql>
+
+    <!-- 添加 -->
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id" parameterType="com.jkm.hss.merchant.entity.AccountBank">
+        INSERT INTO tb_account_bank (
+            account_id,
+            bank_no,
+            bank_bin,
+            bank_name,
+            branch_code,
+            branch_name,
+            reserve_mobile,
+            branch_province_code,
+            branch_province_name,
+            branch_city_code,
+            branch_city_name,
+            branch_county_code,
+            branch_county_name,
+            expiry_time,
+            card_type,
+            is_authen,
+            is_default,
+            status
+        )VALUES (
+            #{accountId},
+            #{bankNo},
+            #{bankBin},
+            #{bankName},
+            #{branchCode},
+            #{branchName},
+            #{reserveMobile},
+            #{branchProvinceCode},
+            #{branchProvinceName},
+            #{branchCityCode},
+            #{branchCityName},
+            #{branchCountyCode},
+            #{branchCountyName},
+            #{expiryTime},
+            #{cardType},
+            #{isAuthen},
+            #{isDefault},
+            #{status}
+        )
+    </insert>
+
+    <!-- 修 改-->
+    <update id="update">
+        UPDATE tb_account_bank
+        set
+        account_id=#{accountId},
+        bank_no=#{bankNo},
+        bank_name=#{bankName},
+        branch_code=#{branchCode},
+        branch_name=#{branchName},
+        branch_province_code=#{branchProvinceCode},
+        branch_province_name=#{branchProvinceName},
+        branch_city_code=#{branchCityCode},
+        branch_city_name=#{branchCityName},
+        branch_county_code=#{branchCountyCode},
+        branch_county_name=#{branchCountyName},
+        card_type=#{cardType},
+        is_authen=#{isAuthen},
+        is_default=#{isDefault},
+        status=#{status}
+        WHERE id = #{id}
+    </update>
+
+    <!-- 设置为默认银行卡-->
+    <update id="setDefault">
+        UPDATE tb_account_bank
+        set
+        is_default=1
+        WHERE id = #{id}  and status=0 and card_type=0
+    </update>
+
+    <!-- 设置为默认信用卡-->
+    <update id="setDefaultCreditCard">
+        UPDATE tb_account_bank
+        set
+        is_default=1,
+        status = 0
+        WHERE id = #{id}  and card_type=1
+    </update>
+    <!-- 设置为默认信用卡(用于删除信用卡之后设置默认信用卡)-->
+    <update id="setDefaultCreditCardById">
+        UPDATE tb_account_bank
+        set
+        is_default=1
+        WHERE id = #{id}
+    </update>
+    <!-- 全部设置为不是默认银行卡-->
+    <update id="reset">
+        UPDATE tb_account_bank
+        set
+        is_default=0
+        WHERE account_id = #{accountId} and card_type=#{cardType}
+    </update>
+
+    <!-- 获取默认储蓄卡 -->
+    <select id="getDefault" resultType="com.jkm.hss.merchant.entity.AccountBank">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM tb_account_bank
+        WHERE account_id = #{accountId} and status=0 and card_type=0 and is_default=1
+    </select>
+
+    <!-- 获取默认信用卡 -->
+    <select id="getDefaultCreditCard" resultType="com.jkm.hss.merchant.entity.AccountBank">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM tb_account_bank
+        WHERE account_id = #{accountId} and status=0 and card_type=1 and is_default=1
+    </select>
+
+
+    <!-- 查询信用卡列表 -->
+    <select id="selectCreditCardList" resultType="com.jkm.hss.merchant.entity.AccountBank">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM tb_account_bank
+        WHERE account_id = #{accountId} and status=0 and card_type=1
+    </select>
+
+    <!-- 是否有银行卡信息 -->
+    <select id="isHasAccountBank" resultType="java.lang.Integer">
+        SELECT count(id) FROM tb_account_bank
+        WHERE account_id = #{accountId} and status=0 and card_type=0
+    </select>
+
+    <!-- 是否有信用卡 -->
+    <select id="isHasCreditBank" resultType="java.lang.Integer">
+        SELECT count(id) FROM tb_account_bank
+        WHERE account_id = #{accountId} and status=0 and card_type=1
+    </select>
+
+    <!-- 根据主键id查询 -->
+    <select id="selectById" resultType="com.jkm.hss.merchant.entity.AccountBank">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM tb_account_bank
+        WHERE id = #{id} and status=0
+    </select>
+
+    <!-- 修改支行信息-->
+    <update id="updateBranchInfo">
+        UPDATE tb_account_bank
+        set
+        branch_code=#{branchCode},
+        branch_name=#{branchName},
+        branch_province_code=#{provinceCode},
+        branch_province_name=#{provinceName},
+        branch_city_code=#{cityCode},
+        branch_city_name=#{cityName},
+        branch_county_code=#{countyCode},
+        branch_county_name=#{countyName}
+        WHERE id = #{bankId}
+    </update>
+
+    <!-- 删除信用卡-->
+    <update id="deleteCreditCard">
+        UPDATE tb_account_bank
+        set
+        status=1
+        WHERE id = #{id}
+    </update>
+
+    <!-- 有状态查询银行卡 -->
+    <select id="selectByBankNo" resultType="com.jkm.hss.merchant.entity.AccountBank">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM tb_account_bank
+        WHERE account_id = #{accountId} and status=0 and card_type=#{cardType} and bank_no=#{bankNo}
+    </select>
+
+    <!-- 无状态查询信用卡-->
+    <select id="selectStatelessById" resultType="com.jkm.hss.merchant.entity.AccountBank">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM tb_account_bank
+        WHERE id = #{id} and card_type=1
+    </select>
+
+    <!-- 无状态查询银行卡 -->
+    <select id="selectByBankNoAndStateless" resultType="com.jkm.hss.merchant.entity.AccountBank">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM tb_account_bank
+        WHERE account_id = #{accountId} and card_type=#{cardType} and bank_no=#{bankNo}
+    </select>
+
+    <update id="updateBankInfo">
+        UPDATE tb_account_bank
+        set
+        reserve_mobile = #{reserveMobile},
+        bank_name=#{bankName},
+        bank_bin = #{bankBin},
+        expiry_time=#{expiryTime}
+        WHERE id = #{id}
+    </update>
+
+    <!-- 获取最新信用卡 -->
+    <select id="getTopCreditCard" resultType="com.jkm.hss.merchant.entity.AccountBank">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM tb_account_bank
+        WHERE account_id = #{accountId} and status=0 and card_type=1 order by create_time desc limit 0,1
+    </select>
+</mapper>

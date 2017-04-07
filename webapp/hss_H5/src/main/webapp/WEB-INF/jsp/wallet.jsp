@@ -16,27 +16,33 @@
         content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
   <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
   <title>好收收</title>
-  <link rel="stylesheet" href="http://static.jinkaimen.cn/hss/css/style.2.1.3.css">
+  <link rel="stylesheet" href="http://static.jinkaimen.cn/hss/css/style.2.2.5.css">
   <link rel="stylesheet" href="http://static.jinkaimen.cn/weui/weui.css">
 </head>
 <body>
 
 <div id="wallet">
+  <div class="announcement" id="announcement">
+    <span class="announcement-icon"></span>
+    <div class="announcement-text-box" id="announcement-text-box">
+      <span class="announcement-text" id="announcement-text"></span>
+    </div>
+  </div>
   <div class="wallet">
     <a class="operation touch_op" href="/sqb/collection">
       <div class="logo collection"></div>
       <div class="operation-title">收款</div>
     </a>
 
-    <div class="operation">
+    <a class="operation touch_op" href="/account/toHssAccount">
       <div class="logo wallet"></div>
       <div class="operation-title">余额</div>
       <div class="operation-small">${avaliable}</div>
-    </div>
-    <div class="operation">
+    </a>
+    <a class="operation touch_op" href="/account/toWithdraw">
       <div class="logo card"></div>
       <div class="operation-title">提现</div>
-    </div>
+    </a>
   </div>
   <div class="record">
     <a href="/sqb/tradeRecord" class="group touch_gr"><span class="record"></span>收款记录</a>
@@ -46,7 +52,7 @@
   </div>
   <div>
     <div class="advertisement">
-      <img src="http://static.jinkaimen.cn/hss/assets/banner.png" alt="">
+      <img src="http://static.jinkaimen.cn/hss/assets/banner2.png" alt="">
     </div>
     <div class="application">
       <a class="group touch_gr" id="show_recommend" href="/sqb/myRecommend">
@@ -74,7 +80,10 @@
         <div class="logo credit"></div>
         <div class="text">信用卡申请</div>
       </a>
-
+      <div class="group touch_gr" id="announcement-link">
+        <div class="logo announcement1"></div>
+        <div class="text">公告信息</div>
+      </div>
       <div class="group touch_gr" id="unbundling">
         <div class="logo unbundling"></div>
         <div class="text">解绑微信</div>
@@ -107,6 +116,6 @@
     showRecommend: '${showRecommend}'//1显示升级 2不显示升级
   };
 </script>
-<script src="http://static.jinkaimen.cn/vendor/vendor.1.0.3.min.js"></script>
-<script src="http://static.jinkaimen.cn/hss/2.1.1/wallet.min.js"></script>
+<script src="http://static.jinkaimen.cn/vendor/vendor.1.0.9.5.min.js"></script>
+<script src="http://static.jinkaimen.cn/hss/2.2.9/wallet.min.js"></script>
 </html>
