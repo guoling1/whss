@@ -3,6 +3,7 @@ package com.jkm.hss.product.servcie.impl;
 import com.google.common.base.Optional;
 import com.jkm.hss.product.dao.ProductChannelGatewayDao;
 import com.jkm.hss.product.entity.ProductChannelGateway;
+import com.jkm.hss.product.enums.EnumGatewayType;
 import com.jkm.hss.product.enums.EnumProductType;
 import com.jkm.hss.product.servcie.ProductChannelGatewayService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,8 +38,8 @@ public class ProductChannelGatewayServiceImpl implements ProductChannelGatewaySe
      * @return
      */
     @Override
-    public List<ProductChannelGateway>  selectByProductTypeAndProductId(EnumProductType enumProductType, long productId) {
-        return this.productChannelGatewayDao.selectByProductTypeAndProductId(enumProductType.getId(), productId);
+    public List<ProductChannelGateway>  selectByProductTypeAndGatewayAndProductId(EnumProductType enumProductType, EnumGatewayType enumGatewayType, long productId) {
+        return this.productChannelGatewayDao.selectByProductTypeAndGatewayAndProductId(enumProductType.getId(), enumGatewayType.getId(),productId);
     }
 
     /**
@@ -52,14 +53,4 @@ public class ProductChannelGatewayServiceImpl implements ProductChannelGatewaySe
         this.productChannelGatewayDao.update(productChannelGateway);
     }
 
-    /**
-     * {@inheritDoc}
-     *
-     * @param channelTypeSign
-     * @return
-     */
-    @Override
-    public ProductChannelGateway selectByChannelSign(int channelTypeSign) {
-        return this.productChannelGatewayDao.selectByChannelSign(channelTypeSign);
-    }
 }

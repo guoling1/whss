@@ -17,6 +17,7 @@ import com.jkm.hss.merchant.service.UserInfoService;
 import com.jkm.hss.product.entity.BasicChannel;
 import com.jkm.hss.product.entity.Product;
 import com.jkm.hss.product.entity.ProductChannelGateway;
+import com.jkm.hss.product.enums.EnumGatewayType;
 import com.jkm.hss.product.enums.EnumPayChannelSign;
 import com.jkm.hss.product.enums.EnumProductType;
 import com.jkm.hss.product.servcie.BasicChannelService;
@@ -80,7 +81,7 @@ public class ChannelGatewayController extends BaseController {
         //获取该商户对应的产品通道网关
         final Product product = this.productService.selectByType(EnumProductType.HSS.getId()).get();
         final List<ProductChannelGateway> productChannelGatewayList =
-                this.productChannelGatewayService.selectByProductTypeAndProductId(EnumProductType.HSS, product.getId());
+                this.productChannelGatewayService.selectByProductTypeAndGatewayAndProductId(EnumProductType.HSS, EnumGatewayType.PRODUCT, product.getId());
 
         final List<MerchantChannelRate> merchantChannelRateList = this.merchantChannelRateService.selectByMerchantId(merchantInfo.getId());
         Map<Integer, MerchantChannelRate> merchantChannelRateMap = Maps.uniqueIndex(merchantChannelRateList, new Function<MerchantChannelRate, Integer>() {

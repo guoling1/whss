@@ -202,7 +202,7 @@ public class ProductController extends BaseController {
         try{
             final Product product = this.productService.selectByType(request.getProductType()).get();
             final List<ProductChannelGateway> list =
-                    this.productChannelGatewayService.selectByProductTypeAndProductId(EnumProductType.of(request.getProductType()), product.getId());
+                    this.productChannelGatewayService.selectByProductTypeAndGatewayAndProductId(EnumProductType.of(request.getProductType()), EnumGatewayType.PRODUCT,product.getId());
             return CommonResponse.objectResponse(1, "success", list);
         }catch (final Throwable e){
 
