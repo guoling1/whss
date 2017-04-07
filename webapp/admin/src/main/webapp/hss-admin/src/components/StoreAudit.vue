@@ -268,7 +268,7 @@
           <div style="text-align: center;margin-bottom: 10px">切换成功后，新产生的收款立即生效</div>
         </div>
       </el-dialog>
-      <div class="box box-primary" v-if="!isShow">
+      <div class="box box-primary" v-if="!isShow||res.length!=0">
         <p class="lead">审核日志</p>
         <div class="table-responsive">
           <div class="col-sm-12">
@@ -294,7 +294,7 @@
               <tr role="row" class="odd" v-for="re in this.$data.res">
                 <td class="sorting_1">{{re.status|status}}</td>
                 <td>{{re.createTime|changeTime}}</td>
-                <td>—</td>
+                <td>{{re.name}}</td>
                 <td>{{re.descr}}</td>
               </tr>
               </tbody>
