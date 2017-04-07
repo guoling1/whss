@@ -6,7 +6,7 @@
           <h3 class="box-title">对账数据</h3>
         </div>
         <div class="box-body">
-          <el-tabs class="tab" v-model="activeName" type="card">
+          <el-tabs class="tab" v-model="activeName" type="border-card" style="margin-bottom: 20px">
             <el-tab-pane :label='"对方单边笔数("+exCount+"笔)"' name="first">
               <el-table  style="font-size: 12px;margin:15px 0" :data="exDetailList" border :row-style="tableFoot">
                 <el-table-column   width="100" label="序号">
