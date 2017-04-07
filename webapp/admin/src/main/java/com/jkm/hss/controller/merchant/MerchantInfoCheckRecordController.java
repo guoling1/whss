@@ -74,6 +74,7 @@ public class MerchantInfoCheckRecordController extends BaseController {
         }
         MerchantInfo merchantInfo = merchantInfoOptional.get();
         requestMerchantInfo.setStatus(EnumMerchantStatus.PASSED.getId());
+        requestMerchantInfo.setName(super.getAdminUser().getUsername());
         this.merchantInfoCheckRecordService.save(requestMerchantInfo);
         final MerchantInfo merchant = merchantInfoOptional.get();
         final long accountId = this.accountService.initAccount(merchant.getMerchantName());
