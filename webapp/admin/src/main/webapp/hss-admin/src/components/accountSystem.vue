@@ -62,7 +62,7 @@
               <template scope="scope">
                   <el-button @click="handle(scope.row.id,scope.row.tradeDate,scope.row.tradeType,scope.row.channelName)" type="text" size="small" v-if="scope.row.batchNO==undefined">上传文件</el-button>
                   <el-button @click="load(scope.row.batchNO)" type="text" size="small" v-if="scope.row.batchNO!=undefined">下载文件</el-button>
-                  <el-button @click="handle(scope.row.id,scope.row.tradeDate,scope.row.tradeType)" type="text" size="small" v-if="scope.row.batchNO!=undefined">重新上传</el-button>
+                  <el-button @click="handle(scope.row.id,scope.row.tradeDate,scope.row.tradeType,scope.row.channelName)" type="text" size="small" v-if="scope.row.batchNO!=undefined">重新上传</el-button>
               </template>
             </el-table-column>
           </el-table>

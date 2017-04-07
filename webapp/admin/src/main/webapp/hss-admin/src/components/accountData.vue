@@ -15,7 +15,7 @@
                   </template>
                 </el-table-column>
                 <el-table-column prop="orderSN" label="交易流水"></el-table-column>
-                <el-table-column prop="tradeTime" label="交易时间"></el-table-column>
+                <el-table-column prop="tradeDate" label="交易时间"></el-table-column>
                 <el-table-column prop="tradeAmount" label="交易金额" align="right" header-align="left"></el-table-column>
               </el-table>
             </el-tab-pane>
@@ -27,7 +27,7 @@
                   </template>
                 </el-table-column>
                 <el-table-column prop="orderSN" label="交易流水"></el-table-column>
-                <el-table-column prop="tradeTime" label="交易时间"></el-table-column>
+                <el-table-column prop="tradeDate" label="交易时间"></el-table-column>
                 <el-table-column prop="tradeAmount" label="交易金额" align="right" header-align="left"></el-table-column>
               </el-table>
             </el-tab-pane>
