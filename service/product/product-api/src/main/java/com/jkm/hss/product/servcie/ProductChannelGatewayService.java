@@ -1,7 +1,7 @@
 package com.jkm.hss.product.servcie;
 
-import com.google.common.base.Optional;
 import com.jkm.hss.product.entity.ProductChannelGateway;
+import com.jkm.hss.product.enums.EnumGatewayType;
 import com.jkm.hss.product.enums.EnumProductType;
 
 import java.util.List;
@@ -23,7 +23,7 @@ public interface ProductChannelGatewayService {
      * @param enumProductType
      * @return
      */
-    List<ProductChannelGateway>  selectByProductTypeAndProductId(EnumProductType enumProductType, long productId);
+    List<ProductChannelGateway>  selectByProductTypeAndGatewayAndProductId(EnumProductType enumProductType, EnumGatewayType enumGatewayType,long productId);
 
     /**
      * 修改
@@ -32,10 +32,4 @@ public interface ProductChannelGatewayService {
      */
     void update(ProductChannelGateway productChannelGateway);
 
-    /**
-     * 查询
-     * @param channelTypeSign
-     * @return
-     */
-    ProductChannelGateway selectByChannelSign(int channelTypeSign);
 }
