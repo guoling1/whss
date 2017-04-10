@@ -361,20 +361,18 @@ public class AccountBankServiceImpl implements AccountBankService{
         AccountBank accountBank = new AccountBank();
         //校验身份4要素
         final String mobile = MerchantSupport.decryptMobile(merchantInfo.getMobile());
-        final String bankcard = MerchantSupport.encryptBankCard(bankNo);
-        final String idCard = merchantInfo.getIdentity();
-        final String bankReserveMobile = MerchantSupport.encryptMobile(reserveMobile);
+        final String idCard = MerchantSupport.decryptIdentity(merchantInfo.getIdentity());
         final String realName = merchantInfo.getName();
-        final Pair<Integer, String> pair = this.verifyIdService.verifyID(mobile, bankcard, idCard, bankReserveMobile, realName);
+        final Pair<Integer, String> pair = this.verifyIdService.verifyID(mobile, bankNo, idCard, reserveMobile, realName);
         if (0 == pair.getLeft()) {
             accountBank.setIsAuthen("1");
         }
         log.info("AccountId={}",merchantInfo.getAccountId());
         accountBank.setAccountId(merchantInfo.getAccountId());
-        accountBank.setBankNo(bankcard);
+        accountBank.setBankNo(MerchantSupport.encryptBankCard(bankNo));
         final Optional<BankCardBin> bankCardBinOptional = this.bankCardBinService.analyseCardNo(bankNo);
         accountBank.setBankName(bankCardBinOptional.get().getBankName());
-        accountBank.setReserveMobile(bankReserveMobile);
+        accountBank.setReserveMobile(MerchantSupport.encryptMobile(reserveMobile));
         accountBank.setCardType(EnumAccountBank.DEBITCARD.getId());
         accountBank.setIsDefault(EnumBankDefault.DEFAULT.getId());
         accountBank.setBankBin(bankCardBinOptional.get().getShorthand());

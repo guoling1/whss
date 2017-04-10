@@ -50,8 +50,8 @@ content.appendChild(more);
 // 定义支付
 const payStatus = {
   1: '待支付',
-  3: '支付失败',
-  4: '支付成功'
+  3: '交易失败',
+  4: '交易成功'
 };
 // 定义支付方式
 const payType = {

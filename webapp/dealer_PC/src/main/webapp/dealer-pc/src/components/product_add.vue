@@ -23,7 +23,8 @@
                                     :rules="{required:true,pattern:/^[0-9]{1,4}([.][0-9]{1,2})?$/,message:'不能为空 保留俩位小数',trigger:'blur'}">
                         <el-popover placement="top" title="提示" width="200" trigger="focus">
                           <span>最小值：{{scope.row.minPaymentSettleRate}} <br> 最大值：{{scope.row.merchantSettleRate}}</span>
-                          <el-input slot="reference" size="small" placeholder="保留俩位小数" v-model="scope.row.paymentSettleRate">
+                          <el-input slot="reference" size="small" placeholder="保留俩位小数"
+                                    v-model="scope.row.paymentSettleRate">
                             <template slot="append">%</template>
                           </el-input>
                         </el-popover>
@@ -39,7 +40,8 @@
                                     :rules="{required:true,pattern:/^[0-9]{1,4}([.][0-9]{1,2})?$/,message:'不能为空 保留俩位小数',trigger:'blur'}">
                         <el-popover placement="top" title="提示" width="200" trigger="focus">
                           <span>最小值：{{scope.row.minWithdrawSettleFee}} <br> 最大值：{{scope.row.merchantWithdrawFee}}</span>
-                          <el-input slot="reference" size="small" placeholder="保留俩位小数" v-model="scope.row.withdrawSettleFee">
+                          <el-input slot="reference" size="small" placeholder="保留俩位小数"
+                                    v-model="scope.row.withdrawSettleFee">
                             <template slot="append">元/笔</template>
                           </el-input>
                         </el-popover>
@@ -74,17 +76,17 @@
               </el-table>
             </div>
             <!--<div class="box-body">-->
-              <!--<label class="form-label">代理商推广码&推广链接</label>-->
-              <!--<br>-->
-              <!--<el-switch v-model="inviteBoolean" @change="switchInvite"-->
-                         <!--on-text="开启" on-color="#13ce66"-->
-                         <!--off-text="关闭" off-color="#ff4949">-->
-              <!--</el-switch>-->
-              <!--<div class="inviteText" v-show="inviteBoolean">-->
-                <!--推广码：{{inviteCode}}-->
-                <!--<br>-->
-                <!--推广链接：https://{{product}}.qianbaojiajia.com/reg?invest={{inviteCode}}-->
-              <!--</div>-->
+            <!--<label class="form-label">代理商推广码&推广链接</label>-->
+            <!--<br>-->
+            <!--<el-switch v-model="inviteBoolean" @change="switchInvite"-->
+            <!--on-text="开启" on-color="#13ce66"-->
+            <!--off-text="关闭" off-color="#ff4949">-->
+            <!--</el-switch>-->
+            <!--<div class="inviteText" v-show="inviteBoolean">-->
+            <!--推广码：{{inviteCode}}-->
+            <!--<br>-->
+            <!--推广链接：https://{{product}}.qianbaojiajia.com/reg?invest={{inviteCode}}-->
+            <!--</div>-->
             <!--</div>-->
             <div class="box-body">
               <el-button type="primary" size="small" @click="onSubmit">保存产品设置</el-button>
@@ -193,10 +195,14 @@
                 }).then(res => {
                   done();
                   instance.confirmButtonLoading = false;
+                  instance.confirmButtonText = '确定';
                 }, err => {
+                  instance.confirmButtonLoading = false;
+                  instance.confirmButtonText = '确定';
                   this.$message({
                     showClose: true,
                     message: err.data.msg,
+                    duration: 0,
                     type: 'error'
                   });
                 });
@@ -205,12 +211,14 @@
               }
             }
           }).then(action => {
-            this.$message({
-              showClose: true,
-              message: '保存成功',
-              type: 'success'
-            });
-            this.$router.push('/daili/app/dealer_list');
+            if (action == 'confirm') {
+              this.$message({
+                showClose: true,
+                message: '保存成功',
+                type: 'success'
+              });
+              this.$router.push('/daili/app/dealer_list');
+            }
           });
         } else {
           this.$message({

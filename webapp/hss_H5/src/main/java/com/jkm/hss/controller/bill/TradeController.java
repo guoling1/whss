@@ -422,6 +422,7 @@ public class TradeController extends BaseController {
     @RequestMapping(value = "firstUnionPay", method = RequestMethod.POST)
     public CommonResponse firstUnionPay(@RequestBody FirstUnionPaySendMsgRequest firstUnionPaySendMsgRequest,
                                         final HttpServletRequest httpServletRequest) {
+        firstUnionPaySendMsgRequest.setChannel(601);
         if(!super.isLogin(httpServletRequest)){
             return CommonResponse.simpleResponse(-2, "未登录");
         }

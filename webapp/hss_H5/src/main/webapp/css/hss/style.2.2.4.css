@@ -271,6 +271,66 @@ span {
 input:focus {
   border: none;
 }
+.temporary-announcement-space {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 99;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+}
+.temporary-announcement-space .temporary-announcement-box {
+  width: 85%;
+  height: auto;
+  border-radius: 10px;
+  position: absolute;
+  top: 45%;
+  left: 50%;
+  transform: translate3d(-50%, -50%, 0);
+  padding-top: 140px;
+  background: #FFF url("../../assets/temporary-announcement-bg.png") no-repeat top;
+  background-size: 100%;
+}
+.temporary-announcement-space .temporary-announcement-box .temporary-announcement-lion {
+  position: absolute;
+  top: -30px;
+  left: 50%;
+  width: 133px;
+  height: 128px;
+  background: url("../../assets/temporary-announcement-lion.png") no-repeat center;
+  background-size: 133px 128px;
+  transform: translate3d(-50%, 0, 0);
+}
+.temporary-announcement-space .temporary-announcement-box .temporary-announcement-title {
+  font-size: 20px;
+  color: #fc5d5d;
+  margin-bottom: 10px;
+}
+.temporary-announcement-space .temporary-announcement-box .temporary-announcement-content {
+  font-size: 15px;
+  color: #401515;
+}
+.temporary-announcement-space .temporary-announcement-box .temporary-announcement-content span {
+  color: #fc5d5d;
+}
+.temporary-announcement-space .temporary-announcement-box .temporary-announcement-btn-box {
+  width: 100%;
+  padding: 25px 70px;
+}
+.temporary-announcement-space .temporary-announcement-box .temporary-announcement-btn-box .temporary-announcement-btn {
+  width: 100%;
+  height: 35px;
+  line-height: 35px;
+  border-radius: 17.5px;
+  font-size: 15px;
+  color: #FFF;
+  background: -webkit-linear-gradient(left, #f9a87b, #ff7f7a);
+  background: -o-linear-gradient(left, #f9a87b, #ff7f7a);
+  background: -moz-linear-gradient(left, #f9a87b, #ff7f7a);
+  background: linear-gradient(left, #f9a87b, #ff7f7a);
+}
 .message-space {
   display: none;
   position: fixed;

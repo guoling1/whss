@@ -102,7 +102,7 @@ public class QueryMerchantInfoRecordController extends BaseController {
                     list.get(i).setBankNo(res.getBankNo());
                     list.get(i).setBankName(res.getBankName());
                     list.get(i).setBranchName(res.getBranchName());
-                    list.get(i).setIsAuthen(res.getIsAuthen());
+//                    list.get(i).setIsAuthen(res.getIsAuthen());
                     if ("1".equals(res.getIsAuthen())){
                         list.get(i).setIsAuthen("认证通过");
                     }else {

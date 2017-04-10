@@ -22,17 +22,17 @@ public enum EnumPayChannelSign {
     /**
      * 阳光微信
      */
-    YG_WECHAT(101, "sm_wechat", EnumPaymentChannel.WECHAT_PAY, "阳光微信", EnumUpperChannel.SAOMI, false),
+    YG_WECHAT(101, "sm_wechat", EnumPaymentChannel.WECHAT_PAY, "阳光微信", EnumUpperChannel.SAOMI, false, EnumBalanceTimeType.D0),
 
     /**
      * 阳光支付宝
      */
-    YG_ALIPAY(102, "sm_alipay", EnumPaymentChannel.ALIPAY, "阳光支付宝", EnumUpperChannel.SAOMI, false),
+    YG_ALIPAY(102, "sm_alipay", EnumPaymentChannel.ALIPAY, "阳光支付宝", EnumUpperChannel.SAOMI, false, EnumBalanceTimeType.D0),
 
     /**
      * 快捷支付
      */
-    YG_UNIONPAY(103, "sm_unionpay", EnumPaymentChannel.UNIONPAY, "阳光快捷", EnumUpperChannel.SAOMI, false),
+    YG_UNIONPAY(103, "sm_unionpay", EnumPaymentChannel.UNIONPAY, "阳光快捷", EnumUpperChannel.SAOMI, false, EnumBalanceTimeType.D0),
 
 
     //#################################卡盟############################################
@@ -40,19 +40,19 @@ public enum EnumPayChannelSign {
     /**
      * 卡盟微信
      */
-    KM_WECHAT(201, "km_wechat", EnumPaymentChannel.WECHAT_PAY, "卡盟微信", EnumUpperChannel.KAMENG, true),
+    KM_WECHAT(201, "km_wechat", EnumPaymentChannel.WECHAT_PAY, "卡盟微信", EnumUpperChannel.KAMENG, true, EnumBalanceTimeType.D0),
 
     /**
      * 卡盟支付宝
      */
-    KM_ALIPAY(202, "km_alipay", EnumPaymentChannel.ALIPAY, "卡盟支付宝", EnumUpperChannel.KAMENG, true),
+    KM_ALIPAY(202, "km_alipay", EnumPaymentChannel.ALIPAY, "卡盟支付宝", EnumUpperChannel.KAMENG, true, EnumBalanceTimeType.D0),
 
 
     //#################################摩宝#############################################
     /**
      * 摩宝快捷
      */
-    MB_UNIONPAY(301, "mb_unionpay", EnumPaymentChannel.UNIONPAY, "摩宝快捷", EnumUpperChannel.MOBAO, false),
+    MB_UNIONPAY(301, "mb_unionpay", EnumPaymentChannel.UNIONPAY, "摩宝快捷", EnumUpperChannel.MOBAO, false, EnumBalanceTimeType.T1),
 
     //#################################合众易宝#########################################
     /**
@@ -75,6 +75,11 @@ public enum EnumPayChannelSign {
      * 溢+支付宝
      */
 //    YIJIA_ALIPAY(502, "yijia_alipay", "支付宝", "溢+支付宝", EnumUpperChannel.YIJIA, false)
+
+    /**
+     * 易联快捷
+     */
+    EL_UNIONPAY(601, "el_unionpay", EnumPaymentChannel.UNIONPAY, "易联快捷", EnumUpperChannel.EASY_LINK, false, EnumBalanceTimeType.T1)
 
     ;
 
@@ -110,15 +115,18 @@ public enum EnumPayChannelSign {
     private EnumUpperChannel upperChannel;
     @Getter
     private Boolean autoSettle;
+    @Getter
+    private EnumBalanceTimeType settleType;
 
     EnumPayChannelSign(final int id, final String code, final EnumPaymentChannel paymentChannel,
-                       final String name, final EnumUpperChannel upperChannel, final boolean autoSettle) {
+                       final String name, final EnumUpperChannel upperChannel, final boolean autoSettle, final EnumBalanceTimeType settleType) {
         this.id = id;
         this.code = code;
         this.paymentChannel = paymentChannel;
         this.name = name;
         this.upperChannel = upperChannel;
         this.autoSettle = autoSettle;
+        this.settleType = settleType;
     }
 
     /**
@@ -198,16 +206,6 @@ public enum EnumPayChannelSign {
      * @return
      */
     public static boolean isUnionPay(final int channelSign) {
-        return MB_UNIONPAY.getId() == channelSign;
-    }
-
-    /**
-     *  渠道是否是 T+1 结算
-     *
-     * @param channelSign
-     * @return
-     */
-    public static boolean isT1Settlement(final int channelSign) {
-        return MB_UNIONPAY.getId() == channelSign;
+        return MB_UNIONPAY.getId() == channelSign || EL_UNIONPAY.getId() == channelSign;
     }
 }

@@ -8,7 +8,7 @@
   <meta name="viewport"
         content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
   <title>账户详情</title>
-  <link rel="stylesheet" href="http://static.jinkaimen.cn/hss/css/style.2.2.6.css">
+  <link rel="stylesheet" href="http://static.jinkaimen.cn/hss/css/style.2.2.5.css">
   <link rel="stylesheet" href="http://static.jinkaimen.cn/weui/weui.css">
 </head>
 <body>
@@ -25,7 +25,7 @@
     <div class="qa-title"><span></span>常见问题</div>
     <div class="qa-group">
       <div class="q"><span></span>我为什么没有余额？</div>
-      <div class="a">收款以外的收入结算到账户余额，收款资金实时结算到您注册时绑定的结算银行卡。如果没有其他收入，就不会产生余额。</div>
+      <div class="a">收款资金实时结算到您注册时绑定的结算银行卡。如果没有其他收入，就不会产生余额。</div>
     </div>
     <div class="qa-group">
       <div class="q"><span></span>余额如何提现？</div>
@@ -43,6 +43,15 @@
 </div>
 
 </body>
-<script src="http://static.jinkaimen.cn/vendor/vendor.1.0.9.7.min.js"></script>
-<script src="http://static.jinkaimen.cn/hss/2.2.10/hasAccount.min.js"></script>
+<script>
+  var _hmt = _hmt || [];
+  (function () {
+    var hm = document.createElement("script");
+    hm.src = "https://hm.baidu.com/hm.js?a50541c927a563018bb64f5d6c996869";
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(hm, s);
+  })();
+</script>
+<script src="http://static.jinkaimen.cn/vendor/vendor.1.0.9.5.min.js"></script>
+<script src="http://static.jinkaimen.cn/hss/2.2.9/hasAccount.min.js"></script>
 </html>

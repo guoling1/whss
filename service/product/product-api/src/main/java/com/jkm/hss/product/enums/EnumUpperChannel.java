@@ -31,7 +31,12 @@ public enum EnumUpperChannel {
     /**
      * 溢+
      */
-    YIJIA(5, "YIJIA", "溢+")
+    YIJIA(5, "YIJIA", "溢+"),
+
+    /**
+     * 易联
+     */
+    EASY_LINK(6, "EL", "易联")
     ;
 
     @Getter
