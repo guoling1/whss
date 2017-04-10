@@ -38,4 +38,37 @@
         SELECT COUNT(id) FROM tb_website
     </select>
 
+    <!-- 查询手机号 -->
+    <select id="selectMobile" resultType="java.lang.String">
+        SELECT mobile FROM tb_join WHERE mobile = #{mobile}
+    </select>
+
+    <!-- 插入信息 -->
+    <insert id="saveInfo" useGeneratedKeys="true" keyProperty="id" >
+        INSERT INTO tb_join (
+        user_name,
+        mobile,
+        company_name,
+        province_code,
+        province_name,
+        city_code,
+        city_name,
+        county_code,
+        county_name,
+        type
+        )
+        VALUES
+        (
+        #{userName},
+        #{mobile},
+        #{companyName},
+        #{provinceCode},
+        #{provinceName},
+        #{cityCode},
+        #{cityName},
+        #{countyCode},
+        #{countyName},
+        #{type}
+    </insert>
+
 </mapper>

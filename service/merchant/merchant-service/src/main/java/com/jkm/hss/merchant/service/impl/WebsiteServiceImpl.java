@@ -39,4 +39,14 @@ public class WebsiteServiceImpl implements WebsiteService {
     public int selectCooperationCount(CooperationQueryRequest request) {
         return this.websiteDao.selectCooperationCount(request);
     }
+
+    @Override
+    public String selectMobile(String mobile) {
+        return this.websiteDao.selectMobile(mobile);
+    }
+
+    @Override
+    public void saveInfo(String userName, String mobile, String companyName, String provinceCode, String provinceName, String cityCode, String cityName, String countyCode, String countyName, String type) {
+        this.websiteDao.saveInfo(userName,mobile,companyName,provinceCode,provinceName,cityCode,cityName,countyCode,countyName,type);
+    }
 }

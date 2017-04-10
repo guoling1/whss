@@ -12,6 +12,7 @@ import java.util.Map;
 public enum EnumVerificationCodeType {
 
 
+
     /**
      * 商户注册验证码
      */
@@ -57,9 +58,16 @@ public enum EnumVerificationCodeType {
     MERCHANT_NO_AUDIT(10,EnumNoticeType.MERCHANT_NO_AUDIT,100),
 
     /**
+     * 官网申请 Official website
+     */
+    OFFICIAL_WEBSITE(11,EnumNoticeType.OFFICIAL_WEBSITE,1000),
+
+
+    /**
      * 商户登录验证码
      */
     LOGIN_MERCHANT(7, EnumNoticeType.LOGIN_MERCHANT, 100);
+
 
     private static final Map<Integer, EnumVerificationCodeType> TYPE_MAP = new HashMap<>();
 

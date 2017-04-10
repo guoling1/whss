@@ -3,6 +3,7 @@ package com.jkm.hss.merchant.dao;
 import com.jkm.hss.merchant.entity.CooperationQueryRequest;
 import com.jkm.hss.merchant.entity.CooperationQueryResponse;
 import com.jkm.hss.merchant.entity.WebsiteRequest;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -39,4 +40,16 @@ public interface WebsiteDao {
      * @return
      */
     int selectCooperationCount(CooperationQueryRequest request);
+
+    /**
+     * 查询手机号
+     * @param mobile
+     * @return
+     */
+    String selectMobile(@Param("mobile") String mobile);
+
+    void saveInfo(@Param("userName") String userName,@Param("mobile") String mobile,@Param("companyName") String companyName,
+                  @Param("provinceCode") String provinceCode,@Param("provinceName") String provinceName,
+                  @Param("cityCode") String cityCode,@Param("cityName") String cityName,
+                  @Param("countyCode") String countyCode,@Param("countyName") String countyName,@Param("type") String type);
 }
