@@ -44,7 +44,7 @@ public class ProductChannelGateway extends BaseEntity {
     private String viewChannelName;
 
     /**
-     * 通道简称(后台展示的)
+     * 通道简称(后台展示的名称)
      */
     private String channelShortName;
 
