@@ -978,6 +978,15 @@ public class DealerServiceImpl implements DealerService {
                     basicMoney = basicTrade.setScale(2, BigDecimal.ROUND_HALF_UP);
                 }
                 return basicMoney;
+            case EASY_LINK:
+                if (new BigDecimal("0.1").compareTo(basicTrade) == 1){
+                    //通道成本不足一毛, 按一毛收
+                    basicMoney = new BigDecimal("0.1");
+                }else{
+                    //超过一毛,四舍五入,保留两位有效数字
+                    basicMoney = basicTrade.setScale(2, BigDecimal.ROUND_HALF_UP);
+                }
+                return basicMoney;
             default:
                 basicMoney = basicTrade.setScale(2, BigDecimal.ROUND_HALF_UP);
                 return basicMoney;
@@ -1018,6 +1027,15 @@ public class DealerServiceImpl implements DealerService {
                 }
                 return waitMoney;
             case MOBAO:
+                if (basicChannel.getLowestFee().compareTo(waitOriginMoney) == 1){
+                    //手续费不足两毛 , 按2毛收
+                    waitMoney = basicChannel.getLowestFee();
+                }else{
+                    //收手续费,进一位,保留两位有效数字
+                    waitMoney = waitOriginMoney.setScale(2,BigDecimal.ROUND_UP);
+                }
+                return waitMoney;
+            case EASY_LINK:
                 if (basicChannel.getLowestFee().compareTo(waitOriginMoney) == 1){
                     //手续费不足两毛 , 按2毛收
                     waitMoney = basicChannel.getLowestFee();
