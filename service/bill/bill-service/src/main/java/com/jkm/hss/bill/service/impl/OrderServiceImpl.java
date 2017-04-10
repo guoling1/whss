@@ -945,11 +945,13 @@ public class OrderServiceImpl implements OrderService {
 
     /**
      * {@inheritDoc}
+     *
+     * @param channelList
      */
     @Override
-    public void handleT1UnSettlePayOrder() {
+    public void handleT1UnSettlePayOrder(final List<Integer> channelList) {
         final String format = DateFormatUtil.format(new Date(), DateFormatUtil.yyyy_MM_dd);
-        final List<Long> orderIds = this.getT1PaySuccessAndUnSettleOrderIds(DateFormatUtil.parse(format, DateFormatUtil.yyyy_MM_dd), EnumProductType.HSS.getId());
+        final List<Long> orderIds = this.getT1PaySuccessAndUnSettleOrderIds(DateFormatUtil.parse(format, DateFormatUtil.yyyy_MM_dd), EnumProductType.HSS.getId(), channelList);
         log.info("hss-T1-定时处理提现, 订单[{}]", orderIds);
         if (!CollectionUtils.isEmpty(orderIds)) {
             for (int i = 0; i < orderIds.size(); i++) {
@@ -969,8 +971,8 @@ public class OrderServiceImpl implements OrderService {
      * @return
      */
     @Override
-    public List<Long> getT1PaySuccessAndUnSettleOrderIds(Date settleDate, String appId) {
-        return this.orderDao.selectT1PaySuccessAndUnSettleOrderIds(settleDate, appId);
+    public List<Long> getT1PaySuccessAndUnSettleOrderIds(final Date settleDate, final String appId, final List<Integer> channelList) {
+        return this.orderDao.selectT1PaySuccessAndUnSettleOrderIds(settleDate, appId, channelList);
     }
 
     /**
@@ -1498,7 +1500,7 @@ public class OrderServiceImpl implements OrderService {
                             merchant, order.getSettleTime(), settleAccountFlow.getIncomeAmount());
                     this.settleAccountFlowService.updateSettlementRecordIdById(settleAccountFlow.getId(), settlementRecordId);
                     //待结算--可用余额
-                    this.payService.merchantRecordedAccount(settleAccountFlow.getAccountId(), settleAccountFlow.getIncomeAmount(), order, settlementRecordId);
+                    this.payService.merchantRecordedAccount(settleAccountFlow.getAccountId(), settleAccountFlow.getIncomeAmount(), order, settlementRecordId, settleAccountFlow.getRemark());
                 }
                 if (EnumAccountUserType.DEALER.getId() == settleAccountFlow.getAccountUserType()) {
                     final Dealer dealer = this.dealerService.getByAccountId(settleAccountFlow.getAccountId()).get();

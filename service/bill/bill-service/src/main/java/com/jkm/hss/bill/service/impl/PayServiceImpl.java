@@ -313,13 +313,13 @@ public class PayServiceImpl implements PayService {
                 merchant.getMerchantName(),  merchant.getMerchantName(), ui.get().getOpenId());
 
         //商户提现(发消息)
-        if (!enumPayChannelSign.getAutoSettle() && !EnumPayChannelSign.isT1Settlement(enumPayChannelSign.getId())) {
+        if (!enumPayChannelSign.getAutoSettle() && !enumPayChannelSign.getSettleType().getType().equals(EnumBalanceTimeType.T1.getType())) {
             final JSONObject requestJsonObject = new JSONObject();
             requestJsonObject.put("merchantId", merchant.getId());
             requestJsonObject.put("settlementRecordId", settlementRecordId);
             requestJsonObject.put("payOrderSn", paymentSdkPayCallbackResponse.getSn());
             requestJsonObject.put("payChannelSign", enumPayChannelSign.getId());
-            MqProducer.produce(requestJsonObject, MqConfig.MERCHANT_WITHDRAW, 100);
+            MqProducer.produce(requestJsonObject, MqConfig.MERCHANT_WITHDRAW, 500);
         }
     }
 
@@ -536,7 +536,7 @@ public class PayServiceImpl implements PayService {
                 this.settleAccountFlowService.updateSettlementRecordIdById(settleAccountFlowIncreaseId, settlementRecordId);
 
                 //待结算--可用余额
-                this.merchantRecordedAccount(account.getId(), firstMerchantMoneyTriple.getMiddle(), order, settlementRecordId);
+                this.merchantRecordedAccount(account.getId(), firstMerchantMoneyTriple.getMiddle(), order, settlementRecordId, "收单-直推");
             }
         }
         //间推商户利润--到结算--可用余额
@@ -557,7 +557,7 @@ public class PayServiceImpl implements PayService {
                 this.settleAccountFlowService.updateSettlementRecordIdById(settleAccountFlowIncreaseId, settlementRecordId);
 
                 //待结算--可用余额
-                this.merchantRecordedAccount(account.getId(), secondMerchantMoneyTriple.getMiddle(), order, settlementRecordId);
+                this.merchantRecordedAccount(account.getId(), secondMerchantMoneyTriple.getMiddle(), order, settlementRecordId, "收单-间推");
             }
         }
 
@@ -647,13 +647,13 @@ public class PayServiceImpl implements PayService {
      */
     @Override
     @Transactional
-    public void merchantRecordedAccount(final long accountId, final BigDecimal settleAmount, final Order order, final long settlementRecordId) {
+    public void merchantRecordedAccount(final long accountId, final BigDecimal settleAmount, final Order order, final long settlementRecordId, final String remark) {
         this.accountService.increaseAvailableAmount(accountId, settleAmount);
         this.accountService.decreaseSettleAmount(accountId, settleAmount);
         final long settleAccountFlowDecreaseId = this.settleAccountFlowService.addSettleAccountFlow(accountId, order.getOrderNo(), settleAmount,
-                "收单-间推", EnumAccountFlowType.DECREASE, EnumAppType.HSS.getId(), order.getPaySuccessTime(), EnumAccountUserType.MERCHANT.getId());
+                remark, EnumAccountFlowType.DECREASE, EnumAppType.HSS.getId(), order.getPaySuccessTime(), EnumAccountUserType.MERCHANT.getId());
         this.accountFlowService.addAccountFlow(accountId, order.getOrderNo(), settleAmount,
-                "收单-间推", EnumAccountFlowType.INCREASE);
+                remark, EnumAccountFlowType.INCREASE);
         this.settleAccountFlowService.updateSettlementRecordIdById(settleAccountFlowDecreaseId, settlementRecordId);
     }
 
@@ -1015,6 +1015,28 @@ public class PayServiceImpl implements PayService {
     }
 
     /**
+     * 获得易联支付结算时间
+     *
+     * 82740000表示22:59:00(通道清算时间是23:00:00)
+     *
+     * @param tradeDate
+     * @return
+     */
+    private Date getEasyLinkUnionPaySettleDate(Date tradeDate) {
+        final int millisOfDay = new DateTime(tradeDate).getMillisOfDay();
+        if (millisOfDay > 82740000) {//当作第二个工作日的交易
+            tradeDate = new DateTime(tradeDate).plusDays(1).toDate();
+        }
+        if (HolidaySettlementConstants.HOLIDAY_OPEN) {
+            final Date settlementDate = this.mergeTableSettlementDateService.getSettlementDate(tradeDate, EnumUpperChannel.EASY_LINK.getId());
+            if (null != settlementDate) {
+                return settlementDate;
+            }
+        }
+        return DateTimeUtil.generateT1SettleDate(tradeDate);
+    }
+
+    /**
      *  获取结算日期
      *
      * @param order
@@ -1029,6 +1051,8 @@ public class PayServiceImpl implements PayService {
             switch (upperChannel) {
                 case MOBAO:
                     return this.getMoBaoUnionPaySettleDate(order.getPaySuccessTime());
+                case EASY_LINK:
+                    return this.getEasyLinkUnionPaySettleDate(order.getPaySuccessTime());
             }
         }
         log.error("can not be here");

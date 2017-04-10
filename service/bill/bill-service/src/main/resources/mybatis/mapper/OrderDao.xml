@@ -1062,6 +1062,11 @@
         AND settle_status = 1
         AND status = 4
         AND settle_type = 'T1'
+        AND trade_type = 1
+        AND pay_channel_sign IN
+        <foreach collection="channelList" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
     </select>
 
     <!-- 查询打款 -->

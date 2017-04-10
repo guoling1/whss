@@ -75,7 +75,7 @@ public enum EnumPayChannelSign {
     /**
      * 易联快捷
      */
-    EL_UNIONPAY(601, "el_unionpay", EnumPaymentChannel.UNIONPAY, "易联快捷", EnumUpperChannel.EASY_LINK, false, EnumBalanceTimeType.D0)
+    EL_UNIONPAY(601, "el_unionpay", EnumPaymentChannel.UNIONPAY, "易联快捷", EnumUpperChannel.EASY_LINK, false, EnumBalanceTimeType.T1)
 
     ;
 
@@ -203,15 +203,5 @@ public enum EnumPayChannelSign {
      */
     public static boolean isUnionPay(final int channelSign) {
         return MB_UNIONPAY.getId() == channelSign || EL_UNIONPAY.getId() == channelSign;
-    }
-
-    /**
-     *  渠道是否是 T+1 结算
-     *
-     * @param channelSign
-     * @return
-     */
-    public static boolean isT1Settlement(final int channelSign) {
-        return MB_UNIONPAY.getId() == channelSign;
     }
 }
