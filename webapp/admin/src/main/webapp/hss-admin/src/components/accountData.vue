@@ -65,7 +65,7 @@
         exCount:'',
         inCount:'',
         //正式
-//        url:"http://checking.qianbaojiajia.com/balance/external/confirmBanlanceAccount"
+//        url:"http://checking.qianbaojiajia.com/external/confirmBanlanceAccount"
         //测试
         url:"http://192.168.1.99:8080/balance/external/confirmBanlanceAccount"
       }

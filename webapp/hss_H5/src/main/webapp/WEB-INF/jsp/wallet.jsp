@@ -112,6 +112,15 @@
 </div>
 </body>
 <script>
+  var _hmt = _hmt || [];
+  (function () {
+    var hm = document.createElement("script");
+    hm.src = "https://hm.baidu.com/hm.js?a50541c927a563018bb64f5d6c996869";
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(hm, s);
+  })();
+</script>
+<script>
   var pageData = {
     showRecommend: '${showRecommend}'//1显示升级 2不显示升级
   };
