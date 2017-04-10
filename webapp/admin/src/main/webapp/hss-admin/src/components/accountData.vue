@@ -64,7 +64,10 @@
         balanceCount:'',
         exCount:'',
         inCount:'',
-        url:"http://192.168.1.99:8080/balance/external/confirmBanlanceAccount"
+        //正式
+        url:"http://checking.qianbaojiajia.com/external/confirmBanlanceAccount"
+        //测试
+//        url:"http://192.168.1.99:8080/balance/external/confirmBanlanceAccount"
       }
     },
     created: function () {
