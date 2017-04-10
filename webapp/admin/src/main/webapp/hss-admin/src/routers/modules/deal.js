@@ -59,6 +59,10 @@ const CodeDet = r => require.ensure([], () => r(require('../../components/CodeDe
 const ProductAdd = r => require.ensure([], () => r(require('../../components/ProductAdd')), 'group-record');
 const ProductList = r => require.ensure([], () => r(require('../../components/ProductList')), 'group-record');
 const Invite = r => require.ensure([], () => r(require('../../components/Invite')), 'group-record');
+const Gateway = r => require.ensure([], () => r(require('../../components/Gateway')), 'group-record');
+const GatewayAdd = r => require.ensure([], () => r(require('../../components/GatewayAdd')), 'group-record');
+const Template = r => require.ensure([], () => r(require('../../components/Template')), 'group-record');
+const TemplateAdd = r => require.ensure([], () => r(require('../../components/TemplateAdd')), 'group-record');
 //通道
 const PassAdd = r => require.ensure([], () => r(require('../../components/PassAdd')), 'group-record');
 const PassList = r => require.ensure([], () => r(require('../../components/PassList')), 'group-record');
@@ -77,6 +81,26 @@ export default {
   redirect: '/admin/record/newDeal',
   component: Crumbs,
   children: [
+    {
+      path: 'template',
+      name: 'Template',
+      component: Template
+    },
+    {
+      path: 'templateAdd',
+      name: 'TemplateAdd',
+      component: TemplateAdd
+    },
+    {
+      path: 'gateway',
+      name: 'Gateway',
+      component: Gateway
+    },
+    {
+      path: 'gatewayAdd',
+      name: 'GatewayAdd',
+      component: GatewayAdd
+    },
     {
       path: 'accountData',
       name: 'AccountData',
