@@ -968,4 +968,13 @@
             )
         </if>
     </select>
+
+    <!--修改代理商信息-->
+    <update id="updateDealerInfo">
+        UPDATE tb_qr_code
+        SET
+        first_level_dealer_id = #{firstDealerId},
+        second_level_dealer_id = #{secondDealerId}
+        WHERE code = #{code}
+    </update>
 </mapper>

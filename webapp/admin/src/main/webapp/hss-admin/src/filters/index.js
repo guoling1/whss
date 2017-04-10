@@ -26,3 +26,9 @@ Vue.filter('changeTime', function (val) {
       return year + "-" + tod(month) + "-" + tod(date) + " " + tod(hour) + ":" + tod(minute) + ":" + tod(second);
     }
 });
+Vue.filter('filterDealer', function (value) {
+  if (value == ''||value == null) {
+    return '--'
+  }
+  return value;
+});
