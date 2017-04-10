@@ -84,6 +84,12 @@ public class WithdrawServiceImpl implements WithdrawService {
     @Autowired
     private AccountBankService accountBankService;
 
+    public static void main(String[] args) {
+        System.out.println(MerchantSupport.decryptMobile("BCfNvk4VNUbRKflLoxdqNg"));
+        System.out.println(MerchantSupport.decryptIdentity("D3vG_-D1N4mteOCVC2eqY9MQvF00HEow82qj4tNiGIk"));
+        System.out.println(MerchantSupport.decryptBankCard("UeZ-yfCxb3_Zjpuc8lE6e6nVEpC4yp4ExfcDKHzJjB4"));
+    }
+
     /**
      * {@inheritDoc}
      *
@@ -222,6 +228,7 @@ public class WithdrawServiceImpl implements WithdrawService {
                     EnumAppType.HSS.getId(), settleAccountFlow.getTradeDate(), EnumAccountUserType.MERCHANT.getId());
             this.settleAccountFlowService.updateSettlementRecordIdById(settleAccountFlowDecreaseId, settlementRecordId);
             this.orderService.updateSettleStatus(payOrder.getId(), EnumSettleStatus.SETTLED.getId());
+            this.orderService.updateRemark(payOrder.getId(), "提现成功");
             this.settlementRecordService.updateSettleStatus(settlementRecordId, EnumSettleStatus.SETTLED.getId());
             this.settlementRecordService.updateStatus(settlementRecordId, EnumSettlementRecordStatus.WITHDRAW_SUCCESS.getId());
 

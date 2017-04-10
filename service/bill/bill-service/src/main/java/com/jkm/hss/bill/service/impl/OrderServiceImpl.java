@@ -435,6 +435,9 @@ public class OrderServiceImpl implements OrderService {
                 if (list.get(i).getPayChannelSign()==301){
                     list.get(i).setPayChannelSigns(EnumPayChannelSign.MB_UNIONPAY.getName());
                 }
+                if (list.get(i).getPayChannelSign()==601){
+                    list.get(i).setPayChannelSigns(EnumPayChannelSign.EL_UNIONPAY.getName());
+                }
                 if (list.get(i).getPayType()!=null&&!list.get(i).getPayType().equals("")){
                     if (list.get(i).getPayType().equals("sm_wechat_jsapi")){
                         list.get(i).setPayType(EnumPayType.YG_WECHAT_JSAPI.getValue());
@@ -477,6 +480,9 @@ public class OrderServiceImpl implements OrderService {
                     }
                     if (list.get(i).getPayType().equals("yijia_alipay")){
                         list.get(i).setPayType(EnumPayType.YIJIA_ALIPAY.getValue());
+                    }
+                    if (list.get(i).getPayType().equals("el_unionpay")){
+                        list.get(i).setPayType(EnumPayType.EASY_LINK_UNIONPAY.getValue());
                     }
                 }
 
@@ -535,6 +541,9 @@ public class OrderServiceImpl implements OrderService {
                 if (list.get(i).getPayChannelSign()==301){
                     list.get(i).setPayChannelSigns(EnumPayChannelSign.MB_UNIONPAY.getName());
                 }
+                if (list.get(i).getPayChannelSign()==601){
+                    list.get(i).setPayChannelSigns(EnumPayChannelSign.EL_UNIONPAY.getName());
+                }
                 if (list.get(i).getPayType()!=null&&!list.get(i).getPayType().equals("")){
                     if (list.get(i).getPayType().equals("sm_wechat_jsapi")){
                         list.get(i).setPayType(EnumPayType.YG_WECHAT_JSAPI.getValue());
@@ -577,6 +586,9 @@ public class OrderServiceImpl implements OrderService {
                     }
                     if (list.get(i).getPayType().equals("yijia_alipay")){
                         list.get(i).setPayType(EnumPayType.YIJIA_ALIPAY.getValue());
+                    }
+                    if (list.get(i).getPayType().equals("el_unionpay")){
+                        list.get(i).setPayType(EnumPayType.EASY_LINK_UNIONPAY.getValue());
                     }
                 }
 
@@ -679,6 +691,10 @@ public class OrderServiceImpl implements OrderService {
                 if (list.getPayChannelSign()==301){
                     list.setPayChannelSigns(EnumPayChannelSign.MB_UNIONPAY.getName());
                 }
+                if (list.getPayChannelSign()==601){
+                    list.setPayChannelSigns(EnumPayChannelSign.EL_UNIONPAY.getName());
+                }
+
                 if (list.getPayType()!=null&&!list.getPayType().equals("")){
                     if (list.getPayType().equals("sm_wechat_jsapi")){
                         list.setPayType(EnumPayType.YG_WECHAT_JSAPI.getValue());
@@ -721,6 +737,9 @@ public class OrderServiceImpl implements OrderService {
                     }
                     if (list.getPayType().equals("yijia_alipay")){
                         list.setPayType(EnumPayType.YIJIA_ALIPAY.getValue());
+                    }
+                    if (list.getPayType().equals("el_unionpay")){
+                        list.setPayType(EnumPayType.EASY_LINK_UNIONPAY.getValue());
                     }
                 }
                 if (list.getLevel()==1){
@@ -877,6 +896,9 @@ public class OrderServiceImpl implements OrderService {
                 if (list.get(i).getPayChannelSign()==301){
                     list.get(i).setPayChannelSigns(EnumPayChannelSign.MB_UNIONPAY.getName());
                 }
+                if (list.get(i).getPayChannelSign()==601){
+                    list.get(i).setPayChannelSigns(EnumPayChannelSign.EL_UNIONPAY.getName());
+                }
                 if (list.get(i).getPayType()!=null&&!list.get(i).getPayType().equals("")){
                     if (list.get(i).getPayType().equals("sm_wechat_jsapi")){
                         list.get(i).setPayType(EnumPayType.YG_WECHAT_JSAPI.getValue());
@@ -920,6 +942,9 @@ public class OrderServiceImpl implements OrderService {
                     if (list.get(i).getPayType().equals("yijia_alipay")){
                         list.get(i).setPayType(EnumPayType.YIJIA_ALIPAY.getValue());
                     }
+                    if (list.get(i).getPayType().equals("el_unionpay")){
+                        list.get(i).setPayType(EnumPayType.EASY_LINK_UNIONPAY.getValue());
+                    }
                 }
 //                if (list.get(i).getLevel()==1){
 //                    list.get(i).setProxyName(list.get(i).getProxyName());
@@ -945,11 +970,13 @@ public class OrderServiceImpl implements OrderService {
 
     /**
      * {@inheritDoc}
+     *
+     * @param channelList
      */
     @Override
-    public void handleT1UnSettlePayOrder() {
+    public void handleT1UnSettlePayOrder(final List<Integer> channelList) {
         final String format = DateFormatUtil.format(new Date(), DateFormatUtil.yyyy_MM_dd);
-        final List<Long> orderIds = this.getT1PaySuccessAndUnSettleOrderIds(DateFormatUtil.parse(format, DateFormatUtil.yyyy_MM_dd), EnumProductType.HSS.getId());
+        final List<Long> orderIds = this.getT1PaySuccessAndUnSettleOrderIds(DateFormatUtil.parse(format, DateFormatUtil.yyyy_MM_dd), EnumProductType.HSS.getId(), channelList);
         log.info("hss-T1-定时处理提现, 订单[{}]", orderIds);
         if (!CollectionUtils.isEmpty(orderIds)) {
             for (int i = 0; i < orderIds.size(); i++) {
@@ -969,8 +996,8 @@ public class OrderServiceImpl implements OrderService {
      * @return
      */
     @Override
-    public List<Long> getT1PaySuccessAndUnSettleOrderIds(Date settleDate, String appId) {
-        return this.orderDao.selectT1PaySuccessAndUnSettleOrderIds(settleDate, appId);
+    public List<Long> getT1PaySuccessAndUnSettleOrderIds(final Date settleDate, final String appId, final List<Integer> channelList) {
+        return this.orderDao.selectT1PaySuccessAndUnSettleOrderIds(settleDate, appId, channelList);
     }
 
     /**
@@ -1052,6 +1079,9 @@ public class OrderServiceImpl implements OrderService {
                 if (list.get(i).getPayChannelSign()==301){
                     list.get(i).setPayChannelName(EnumPayChannelSign.idOf(list.get(i).getPayChannelSign()).getName());
                 }
+                if (list.get(i).getPayChannelSign()==601){
+                    list.get(i).setPayChannelName(EnumPayChannelSign.idOf(list.get(i).getPayChannelSign()).getName());
+                }
             }
         }
         return list;
@@ -1111,6 +1141,9 @@ public class OrderServiceImpl implements OrderService {
             if (response.getPayChannelSign()==301){
                 response.setPayChannelName(EnumPayChannelSign.idOf(response.getPayChannelSign()).getName());
             }
+            if (response.getPayChannelSign()==601){
+                response.setPayChannelName(EnumPayChannelSign.idOf(response.getPayChannelSign()).getName());
+            }
         }
         return response;
     }
@@ -1168,6 +1201,9 @@ public class OrderServiceImpl implements OrderService {
                 response.setPayChannelName(EnumPayChannelSign.idOf(response.getPayChannelSign()).getName());
             }
             if (response.getPayChannelSign()==301){
+                response.setPayChannelName(EnumPayChannelSign.idOf(response.getPayChannelSign()).getName());
+            }
+            if (response.getPayChannelSign()==601){
                 response.setPayChannelName(EnumPayChannelSign.idOf(response.getPayChannelSign()).getName());
             }
         }
@@ -1289,6 +1325,9 @@ public class OrderServiceImpl implements OrderService {
                 if (list.get(i).getPayChannelSign()==301){
                     list.get(i).setPayChannelSigns(EnumPayChannelSign.MB_UNIONPAY.getName());
                 }
+                if (list.get(i).getPayChannelSign()==601){
+                    list.get(i).setPayChannelSigns(EnumPayChannelSign.EL_UNIONPAY.getName());
+                }
                 if (list.get(i).getPayType()!=null&&!list.get(i).getPayType().equals("")){
                     if (list.get(i).getPayType().equals("sm_wechat_jsapi")){
                         list.get(i).setPayType(EnumPayType.YG_WECHAT_JSAPI.getValue());
@@ -1331,6 +1370,9 @@ public class OrderServiceImpl implements OrderService {
                     }
                     if (list.get(i).getPayType().equals("yijia_alipay")){
                         list.get(i).setPayType(EnumPayType.YIJIA_ALIPAY.getValue());
+                    }
+                    if (list.get(i).getPayType().equals("el_unionpay")){
+                        list.get(i).setPayType(EnumPayType.EASY_LINK_UNIONPAY.getValue());
                     }
                 }
 
@@ -1415,6 +1457,9 @@ public class OrderServiceImpl implements OrderService {
                 if (list.get(i).getPayChannelSign()==301){
                     list.get(i).setPayChannelSigns(EnumPayChannelSign.MB_UNIONPAY.getName());
                 }
+                if (list.get(i).getPayChannelSign()==601){
+                    list.get(i).setPayChannelSigns(EnumPayChannelSign.EL_UNIONPAY.getName());
+                }
                 if (list.get(i).getPayType()!=null&&!list.get(i).getPayType().equals("")){
                     if (list.get(i).getPayType().equals("sm_wechat_jsapi")){
                         list.get(i).setPayType(EnumPayType.YG_WECHAT_JSAPI.getValue());
@@ -1458,6 +1503,9 @@ public class OrderServiceImpl implements OrderService {
                     if (list.get(i).getPayType().equals("yijia_alipay")){
                         list.get(i).setPayType(EnumPayType.YIJIA_ALIPAY.getValue());
                     }
+                    if (list.get(i).getPayType().equals("el_unionpay")){
+                        list.get(i).setPayType(EnumPayType.EASY_LINK_UNIONPAY.getValue());
+                    }
                 }
 
             }
@@ -1498,7 +1546,7 @@ public class OrderServiceImpl implements OrderService {
                             merchant, order.getSettleTime(), settleAccountFlow.getIncomeAmount());
                     this.settleAccountFlowService.updateSettlementRecordIdById(settleAccountFlow.getId(), settlementRecordId);
                     //待结算--可用余额
-                    this.payService.merchantRecordedAccount(settleAccountFlow.getAccountId(), settleAccountFlow.getIncomeAmount(), order, settlementRecordId);
+                    this.payService.merchantRecordedAccount(settleAccountFlow.getAccountId(), settleAccountFlow.getIncomeAmount(), order, settlementRecordId, settleAccountFlow.getRemark());
                 }
                 if (EnumAccountUserType.DEALER.getId() == settleAccountFlow.getAccountUserType()) {
                     final Dealer dealer = this.dealerService.getByAccountId(settleAccountFlow.getAccountId()).get();
@@ -1647,6 +1695,9 @@ public class OrderServiceImpl implements OrderService {
                     if (list.get(i).getPayType().equals(EnumPayType.YIJIA_ALIPAY.getValue())){
                         columns.add(EnumPayType.YIJIA_ALIPAY.getValue());
                     }
+                    if (list.get(i).getPayType().equals(EnumPayType.EASY_LINK_UNIONPAY.getValue())){
+                        columns.add(EnumPayType.EASY_LINK_UNIONPAY.getValue());
+                    }
                 }else {
                     columns.add("");
                 }
@@ -1667,6 +1718,9 @@ public class OrderServiceImpl implements OrderService {
                 }
                 if (list.get(i).getPayChannelSign()==301){
                     columns.add(EnumPayChannelSign.MB_UNIONPAY.getName());
+                }
+                if (list.get(i).getPayChannelSign()==601){
+                    list.get(i).setPayChannelSigns(EnumPayChannelSign.EL_UNIONPAY.getName());
                 }
                 columns.add(list.get(i).getRemark());
                 datas.add(columns);
