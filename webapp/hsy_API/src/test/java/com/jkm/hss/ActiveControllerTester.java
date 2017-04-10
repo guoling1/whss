@@ -22,8 +22,8 @@ import java.util.*;
  */
 public class ActiveControllerTester {
 //    public static String url="http://192.168.1.99:8080/hsy/active/rest";
-//    public static String url="http://localhost:8080/hsy/active/rest";
-    public static String url="http://hsy.qianbaojiajia.com/active/rest";
+    public static String url="http://localhost:8080/hsy/active/rest";
+//    public static String url="http://hsy.qianbaojiajia.com/active/rest";
 
     @Test
     public void testInsertHsyUser()throws Exception{
@@ -403,6 +403,19 @@ public class ActiveControllerTester {
         p.setTimeStamp(AppDateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
         p.setV("v1.0");
         String param="{\"versionCode\":8}";
+        p.setRequestData(param);
+        ActiveControllerTester.testRest(p);
+    }
+
+    @Test
+    public void testFindAllPageComponent()throws Exception{
+        AppParam p=new AppParam();
+        p.setServiceCode("HSY001038");
+        p.setAccessToken("");
+        p.setAppType("ios");
+        p.setTimeStamp(AppDateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
+        p.setV("v1.0");
+        String param="{}";
         p.setRequestData(param);
         ActiveControllerTester.testRest(p);
     }

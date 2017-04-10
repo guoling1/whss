@@ -3,6 +3,7 @@ package com.jkm.hsy.user.service.impl;
 import com.google.gson.*;
 import com.jkm.hsy.user.constant.AppConstant;
 import com.jkm.hsy.user.dao.HsyAppVersionDao;
+import com.jkm.hsy.user.entity.AppCmComponent;
 import com.jkm.hsy.user.entity.AppParam;
 import com.jkm.hsy.user.entity.AppVersion;
 import com.jkm.hsy.user.exception.ApiHandleException;
@@ -121,5 +122,12 @@ public class HsyAppVersionServiceImpl implements HsyAppVersionService {
             return gson.toJson(versionList.get(0));
         else
             return gson.toJson(appVersion);
+    }
+
+    /**HSY001038 查找app页面组件*/
+    public String findAllPageComponent(String dataParam,AppParam appParam)throws ApiHandleException{
+        Gson gson=new GsonBuilder().setDateFormat(AppConstant.DATE_FORMAT).create();
+        List<AppCmComponent> list=hsyAppVersionDao.findAllPageComponent();
+        return  gson.toJson(list);
     }
 }
