@@ -1,12 +1,12 @@
 <template lang="html">
-  <div id="storeAudit">
+  <div id="storeAudit" v-loading.body="loading">
     <div class="box-header with-border" style="margin: 0 0 0 3px;">
       <h3 v-if="isShow" class="box-title" style="border-left: 3px solid #e4e0e0;padding-left: 10px;">商户审核</h3>
       <h3 v-else="isShow" class="box-title" style="border-left: 3px solid #e4e0e0;padding-left: 10px;">商户资料</h3>
     </div>
     <div style="margin: 0 15px">
       <div class="box box-primary">
-        <p class="lead">注册信息</p>
+        <p class="lead">注册信息 <a style="font-size: 14px;color: #20a0ff;font-weight: 500;cursor: pointer" @click="dealerMask = true" v-if="!isShow">修改代理商归属</a></p>
         <el-row type="flex" class="row-bg" justify="space-around" style="margin-bottom: 15px">
           <el-col :span="5">
             <div class="label">注册手机：<span>{{$msg.mobile}}</span>
@@ -237,6 +237,37 @@
           <el-button type="primary" style="width: 200px;margin-top: -50px;position: relative;top: -30px;" @click="changeBankNo">确 定</el-button>
         </div>
       </el-dialog>
+      <!--修改归属-->
+      <el-dialog title="修改商户归属信息" v-model="dealerMask">
+        <el-form :label-position="right" label-width="150px">
+          <el-form-item label="切换类型：" width="120" style="margin-bottom: 0">归属关系
+          </el-form-item>
+          <el-form-item label="当前一级代理：" width="120" style="margin-bottom: 0">
+            {{msg.proxyName|filterDealer}}
+          </el-form-item>
+          <el-form-item label="当前二级代理：" width="120" style="margin-bottom: 0">
+            {{msg.proxyName1|filterDealer}}
+          </el-form-item>
+          <el-form-item label="切换对象：" width="120" style="margin-bottom: 0">
+            <el-select size="small" placeholder="请选择" v-model="dealerQuery.changeType">
+              <el-option label="切换金开门直属" value="1"></el-option>
+              <el-option label="切换为一级直属" value="2"></el-option>
+              <el-option label="切换到二级" value="3"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="代理商编号：" width="120" style="margin-bottom: 0">
+            <el-input style="width: 70%" size="small" v-model="dealerNo" placeholder="请输入代理商编号，切换为金开门直属无需输入" maxlength="12"></el-input>
+          </el-form-item>
+          <el-form-item label="代理商名称：" width="120" style="margin-bottom: 0">
+            {{dealerName}}
+          </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer" style="text-align: center">
+          <el-button @click="dealerMask = false" style="position: relative;top: -20px;">取 消</el-button>
+          <el-button @click="changeDealer" type="primary" style="position: relative;top: -20px;">确 定</el-button>
+          <div style="text-align: center;margin-bottom: 10px">切换成功后，新产生的收款立即生效</div>
+        </div>
+      </el-dialog>
       <div class="box box-primary" v-if="!isShow">
         <p class="lead">审核日志</p>
         <div class="table-responsive">
@@ -307,6 +338,7 @@
     name: 'storeAudit',
     data () {
       return {
+        loading: true,
         dealerMask: false,
         id: '',
         msg: {
@@ -337,6 +369,13 @@
           merchantId:'',
           bankNo:'',
           reserveMobile:''
+        },
+        dealerNo:'',
+        dealerName:'',
+        dealerQuery:{
+          changeType:'',
+          markCode:'',
+          merchantId:''
         }
       }
     },
@@ -350,21 +389,50 @@
     },
     methods: {
       getData:function () {
+        this.loading = true;
         this.$http.post('/admin/QueryMerchantInfoRecord/getAll', {id: this.$data.id})
           .then(function (res) {
             this.$data.msg = res.data.list[0];
             this.$data.res = res.data.res;
+            this.loading = false;
             this.$data.rateInfo = res.data.rateInfo;
             for (let i = 0; i < this.rateInfo.length; i++) {
               this.rateInfo[i].merchantRate = parseFloat(this.rateInfo[i].merchantRate * 100).toFixed(2) + '%'
               this.rateInfo[i].withdrawMoney = this.rateInfo[i].withdrawMoney + '元/笔'
             }
           }, function (err) {
+            this.loading = false;
             this.$message({
               showClose: true,
               message: err.statusMessage,
               type: 'error'
             })
+          })
+      },
+      changeDealer: function () {
+        this.loading = true;
+        this.dealerQuery.markCode = this.dealerNo;
+        this.dealerQuery.merchantId = this.$route.query.id;
+        this.$http.post('/admin/merchantInfo/changeDealer',this.dealerQuery)
+          .then(()=>{
+            this.$message({
+              showClose: true,
+              message: '更新代理商成功',
+              type: 'success'
+            });
+            this.dealerMask = false;
+            setTimeout(function () {
+              location.reload();
+            },200);
+            this.loading = false
+          })
+          .catch(err=>{
+            this.$message({
+              showClose: true,
+              message: err.statusMessage,
+              type: 'error'
+            })
+            this.loading = false
           })
       },
       //修改名称
@@ -502,6 +570,23 @@
       },
       changeDeal: function (val) {
         return val = val ? val : '无'
+      }
+    },
+    watch: {
+      dealerNo:function (val, oldVal) {
+        if(val.length==12){
+          this.$http.post('/admin/dealer/getDealerByMarkCode',{markCode:val})
+            .then(res =>{
+                this.dealerName = res.data;
+            })
+            .catch(err =>{
+              this.$message({
+                showClose: true,
+                message: err.statusMessage,
+                type: 'error'
+              })
+            })
+        }
       }
     }
   }
