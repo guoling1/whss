@@ -86,6 +86,15 @@
 
 </body>
 <script>
+  var _hmt = _hmt || [];
+  (function () {
+    var hm = document.createElement("script");
+    hm.src = "https://hm.baidu.com/hm.js?a50541c927a563018bb64f5d6c996869";
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(hm, s);
+  })();
+</script>
+<script>
   //分享链接
   var pageData = {
     shareUrl: '${shareUrl}'
