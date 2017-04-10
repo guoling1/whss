@@ -4,6 +4,7 @@ import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableMap;
 import com.jkm.base.common.entity.CommonResponse;
 import com.jkm.base.common.entity.PageModel;
+import com.jkm.base.common.enums.EnumBoolean;
 import com.jkm.base.common.enums.EnumGlobalIDPro;
 import com.jkm.base.common.enums.EnumGlobalIDType;
 import com.jkm.base.common.util.CookieUtil;
@@ -37,14 +38,12 @@ import com.jkm.hss.notifier.service.SmsAuthService;
 import com.jkm.hss.product.entity.BasicChannel;
 import com.jkm.hss.product.entity.Product;
 import com.jkm.hss.product.entity.ProductChannelDetail;
+import com.jkm.hss.product.entity.ProductChannelGateway;
 import com.jkm.hss.product.enums.EnumPayChannelSign;
 import com.jkm.hss.product.enums.EnumProductType;
 import com.jkm.hss.product.enums.EnumUpGradeType;
 import com.jkm.hss.product.enums.EnumUpperChannel;
-import com.jkm.hss.product.servcie.BasicChannelService;
-import com.jkm.hss.product.servcie.ProductChannelDetailService;
-import com.jkm.hss.product.servcie.ProductService;
-import com.jkm.hss.product.servcie.UpgradePayRecordService;
+import com.jkm.hss.product.servcie.*;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.json.JSONObject;
 import org.apache.commons.lang3.StringUtils;
@@ -111,7 +110,8 @@ public class WxPubController extends BaseController {
     private BasicChannelService basicChannelService;
     @Autowired
     private AccountBankService accountBankService;
-
+    @Autowired
+    private ProductChannelGatewayService productChannelGatewayService;
 
 
 
@@ -1333,6 +1333,20 @@ public class WxPubController extends BaseController {
             return CommonResponse.simpleResponse(-1, "通道信息配置有误");
         }
         MerchantChannelRate merchantChannelRate = merchantChannelRateOptional.get();
+
+        //通道限额拦截，通道可用拦截，
+        final BasicChannel basicChannel =
+                this.basicChannelService.selectByChannelTypeSign(checkMerchantInfoRequest.getChannelTypeSign()).get();
+        if (basicChannel.getIsUse() == EnumBoolean.FALSE.getCode()){
+            //通道不可用
+            return CommonResponse.simpleResponse(-1, "通道维护中");
+        }
+        if (checkMerchantInfoRequest.getAmount().compareTo(basicChannel.getLimitMinAmount()) == -1){
+            return CommonResponse.simpleResponse(-1, "支付金额至少" + basicChannel.getLimitMinAmount() + "元");
+        }
+        if (checkMerchantInfoRequest.getAmount().compareTo(basicChannel.getLimitAmount()) == 1){
+            return CommonResponse.simpleResponse(-1, "通道单笔限额" + basicChannel.getLimitAmount() + "元");
+        }
 
         if(merchantChannelRate.getEnterNet()==EnumEnterNet.UNSUPPORT.getId()){
             return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "无需入网");

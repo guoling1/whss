@@ -12,7 +12,7 @@
   <meta name="viewport"
         content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
   <title>好收收</title>
-  <link rel="stylesheet" href="http://static.jinkaimen.cn/hss/css/style.2.2.5.css">
+  <link rel="stylesheet" href="http://static.jinkaimen.cn/hss/css/style.2.2.6.css">
   <link rel="stylesheet" href="http://static.jinkaimen.cn/weui/weui.css">
 </head>
 <body>
@@ -34,8 +34,8 @@
         <div class="group">
           <div class="g-title">支付状态</div>
           <div class="g-list">
-            <div class="li active" y-variable="paySuccess">交易成功</div>
-            <div class="li" y-variable="payError">交易失败</div>
+            <div class="li active" y-variable="paySuccess">支付成功</div>
+            <div class="li" y-variable="payError">支付失败</div>
             <div class="li" y-variable="payWait">待支付</div>
           </div>
         </div>
@@ -60,17 +60,8 @@
 </div>
 
 </body>
-<script>
-  var _hmt = _hmt || [];
-  (function () {
-    var hm = document.createElement("script");
-    hm.src = "https://hm.baidu.com/hm.js?a50541c927a563018bb64f5d6c996869";
-    var s = document.getElementsByTagName("script")[0];
-    s.parentNode.insertBefore(hm, s);
-  })();
-</script>
 <%--<script src="http://static.jinkaimen.cn/weui/weui.min.js"></script>--%>
 <script src="https://res.wx.qq.com/open/libs/weuijs/1.0.0/weui.min.js"></script>
-<script src="http://static.jinkaimen.cn/vendor/vendor.1.0.9.5.min.js"></script>
-<script src="http://static.jinkaimen.cn/hss/2.2.9/tradeRecord.min.js"></script>
+<script src="http://static.jinkaimen.cn/vendor/vendor.1.0.9.7.min.js"></script>
+<script src="http://static.jinkaimen.cn/hss/2.2.10/tradeRecord.min.js"></script>
 </html>
