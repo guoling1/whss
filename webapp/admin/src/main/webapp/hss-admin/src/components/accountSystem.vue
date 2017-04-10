@@ -150,6 +150,11 @@
         isShow:false,
         isMask:false,
         loadURL1:'',
+        //正式
+        /*loadURL:'http://checking.qianbaojiajia.com/balance/external/downloadxlsx/',
+        url:'http://checking.qianbaojiajia.com/balance/external/statisticList',
+        uploadURL:'http://checking.qianbaojiajia.com/balance/external/banlanceAccount'*/
+        //测试
         loadURL:'http://192.168.1.99:8080/balance/external/downloadxlsx/',
         url:'http://192.168.1.99:8080/balance/external/statisticList',
         uploadURL:'http://192.168.1.99:8080/balance/external/banlanceAccount'
