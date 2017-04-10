@@ -83,7 +83,7 @@ gulp.task('js-hss', () => {
     }))
     .pipe(rename({suffix: ".min"}))
     .pipe(sourcemaps.write('.'))
-    .pipe(gulp.dest('js/hss/2.2.10'));
+    .pipe(gulp.dest('js/hss/2.2.9'));
 });
 
 gulp.task('replace-hss', function () {
