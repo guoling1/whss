@@ -16,7 +16,7 @@
         content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
   <meta name="format-detection" content="telephone=no"/>
   <title>我的推广</title>
-  <link rel="stylesheet" href="http://static.jinkaimen.cn/hss/css/style.2.2.5.css">
+  <link rel="stylesheet" href="http://static.jinkaimen.cn/hss/css/style.2.2.6.css">
   <link rel="stylesheet" href="http://static.jinkaimen.cn/weui/weui.css">
 </head>
 <body>
@@ -86,21 +86,12 @@
 
 </body>
 <script>
-  var _hmt = _hmt || [];
-  (function () {
-    var hm = document.createElement("script");
-    hm.src = "https://hm.baidu.com/hm.js?a50541c927a563018bb64f5d6c996869";
-    var s = document.getElementsByTagName("script")[0];
-    s.parentNode.insertBefore(hm, s);
-  })();
-</script>
-<script>
   //分享链接
   var pageData = {
     shareUrl: '${shareUrl}'
   }
 </script>
 <script src="http://static.jinkaimen.cn/qrcode/qrcode.min.js"></script>
-<script src="http://static.jinkaimen.cn/vendor/vendor.1.0.9.5.min.js"></script>
-<script src="http://static.jinkaimen.cn/hss/2.2.9/myRecommend.min.js"></script>
+<script src="http://static.jinkaimen.cn/vendor/vendor.1.0.9.7.min.js"></script>
+<script src="http://static.jinkaimen.cn/hss/2.2.10/myRecommend.min.js"></script>
 </html>
