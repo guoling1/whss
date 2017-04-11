@@ -20,6 +20,11 @@ public class PaymentChannelRequest {
     private long accountId;
 
     /**
+     * 通道简称(后台展示的)
+     */
+    private String channelShortName;
+
+    /**
      * 通道名称(华友支付宝,卡盟微信)
      */
     private String channelName;
@@ -68,6 +73,11 @@ public class PaymentChannelRequest {
      * {@link com.jkm.hss.product.enums.EnumBasicSettleType}
      */
     private String basicSettleType;
+
+    /**
+     * 预估额度(最小)
+     */
+    private BigDecimal limitMinAmount;
     /**
      * 预估额度
      */
@@ -87,6 +97,19 @@ public class PaymentChannelRequest {
      * 公司
      */
     private String channelCompany;
+
+    /**
+     * 最低手续费
+     */
+    private BigDecimal lowestFee;
+
+    /**
+     *  是否维护
+     *  {@link com.jkm.base.common.enums.EnumBoolean}
+     *
+     *  0维护 1使用
+     */
+    private int isUse;
 
     /**
      * 状态
