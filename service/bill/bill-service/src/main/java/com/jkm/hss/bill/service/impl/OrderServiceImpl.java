@@ -492,6 +492,9 @@ public class OrderServiceImpl implements OrderService {
 //                        list.get(i).setPayType(EnumPayType.YIJIA_ALIPAY.getValue());
                         list.get(i).setPayType("支付宝支付");
                     }
+                    if (list.get(i).getPayType().equals("el_unionpay")){
+                        list.get(i).setPayType("快捷支付");
+                    }
                 }
 
             }
@@ -605,6 +608,9 @@ public class OrderServiceImpl implements OrderService {
                     if (list.get(i).getPayType().equals("yijia_alipay")){
 //                        list.get(i).setPayType(EnumPayType.YIJIA_ALIPAY.getValue());
                         list.get(i).setPayType("支付宝支付");
+                    }
+                    if (list.get(i).getPayType().equals("el_unionpay")){
+                        list.get(i).setPayType("快捷支付");
                     }
                 }
 
@@ -763,6 +769,9 @@ public class OrderServiceImpl implements OrderService {
                 if (list.getPayType().equals("yijia_alipay")){
 //                        list.get(i).setPayType(EnumPayType.YIJIA_ALIPAY.getValue());
                     list.setPayType("支付宝支付");
+                }
+                if (list.getPayType().equals("el_unionpay")){
+                    list.setPayType("快捷支付");
                 }
             }
                 if (list.getLevel()==1){
@@ -975,6 +984,9 @@ public class OrderServiceImpl implements OrderService {
                     if (list.get(i).getPayType().equals("yijia_alipay")){
 //                        list.get(i).setPayType(EnumPayType.YIJIA_ALIPAY.getValue());
                         list.get(i).setPayType("支付宝支付");
+                    }
+                    if (list.get(i).getPayType().equals("el_unionpay")){
+                        list.get(i).setPayType("快捷支付");
                     }
                 }
 //                if (list.get(i).getLevel()==1){
@@ -1402,6 +1414,9 @@ public class OrderServiceImpl implements OrderService {
 //                        list.get(i).setPayType(EnumPayType.YIJIA_ALIPAY.getValue());
                         list.get(i).setPayType("支付宝支付");
                     }
+                    if (list.get(i).getPayType().equals("el_unionpay")){
+                        list.get(i).setPayType("快捷支付");
+                    }
                 }
 
             }
@@ -1541,6 +1556,9 @@ public class OrderServiceImpl implements OrderService {
                     if (list.get(i).getPayType().equals("yijia_alipay")){
 //                        list.get(i).setPayType(EnumPayType.YIJIA_ALIPAY.getValue());
                         list.get(i).setPayType("支付宝支付");
+                    }
+                    if (list.get(i).getPayType().equals("el_unionpay")){
+                        list.get(i).setPayType("快捷支付");
                     }
                 }
 
@@ -1744,6 +1762,9 @@ public class OrderServiceImpl implements OrderService {
                     if (list.get(i).getPayType().equals("yijia_alipay")){
 //                        list.get(i).setPayType(EnumPayType.YIJIA_ALIPAY.getValue());
                         list.get(i).setPayType("支付宝支付");
+                    }
+                    if (list.get(i).getPayType().equals("el_unionpay")){
+                        list.get(i).setPayType("快捷支付");
                     }
                 }else {
                     columns.add("");
