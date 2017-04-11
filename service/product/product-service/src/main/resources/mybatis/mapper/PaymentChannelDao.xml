@@ -5,6 +5,7 @@
     <insert id="addPaymentChannel" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO tb_basic_channel
         (account_id,
+        channel_short_name,
         channel_code,
         channel_name,
         channel_type_sign,
@@ -15,13 +16,17 @@
         basic_withdraw_fee,
         basic_balance_type,
         basic_settle_type,
+        limit_min_amount,
         limit_amount,
+        lowest_fee,
         is_need,
+        is_use,
         channel_company,
         remarks,
         status
         )VALUES(
         #{accountId},
+        #{channelShortName},
         #{channelCode},
         #{channelName},
         #{channelTypeSign},
@@ -32,8 +37,11 @@
         #{basicWithdrawFee},
         #{basicBalanceType},
         #{basicSettleType},
+        #{limitMinAmount},
         #{limitAmount},
+        #{lowestFee},
         #{isNeed},
+        #{isUse},
         #{channelCompany},
         #{remarks},
         #{status}
