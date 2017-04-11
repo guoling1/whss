@@ -6,7 +6,7 @@
     <sql id="Base_Column_List">
         id,	account_id,	expiry_time,bank_no,bank_name,bank_bin,reserve_mobile,branch_code,branch_name,branch_province_code,branch_province_name,
         branch_city_code,branch_city_name,branch_county_code,branch_county_name,card_type,is_authen,is_default,
-        status,create_time,	update_time
+        status,create_time,	update_time,cvv
     </sql>
 
     <!-- 添加 -->
