@@ -131,6 +131,32 @@ public class MerchantSupport {
         }
     }
 
+
+    /**
+     * 加密cvv
+     *
+     * @param cvv
+     * @return
+     */
+    public static String encryptCvv(final String cvv) {
+        return AESUtil.encrypt(cvv, MerchantConsts.getMerchantConfig().tbMerchantEncryptKey());
+    }
+
+    /**
+     * 解密cvv
+     *
+     * @param cvv
+     * @return
+     */
+    public static String decryptCvv(final String cvv) {
+        try {
+            return AESUtil.decrypt(cvv, MerchantConsts.getMerchantConfig().tbMerchantEncryptKey());
+        } catch (final Throwable e) {
+            log.error("解密[{}]异常", cvv);
+            throw e;
+        }
+    }
+
     /**
      * 密码hash
      *

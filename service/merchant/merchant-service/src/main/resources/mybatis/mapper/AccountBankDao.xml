@@ -29,7 +29,8 @@
             card_type,
             is_authen,
             is_default,
-            status
+            status,
+            cvv
         )VALUES (
             #{accountId},
             #{bankNo},
@@ -48,7 +49,8 @@
             #{cardType},
             #{isAuthen},
             #{isDefault},
-            #{status}
+            #{status},
+            #{cvv}
         )
     </insert>
 
@@ -199,11 +201,23 @@
 
     <update id="updateBankInfo">
         UPDATE tb_account_bank
-        set
-        reserve_mobile = #{reserveMobile},
-        bank_name=#{bankName},
-        bank_bin = #{bankBin},
-        expiry_time=#{expiryTime}
+        <set>
+            <if test="reserveMobile!=null">
+                reserve_mobile = #{reserveMobile},
+            </if>
+            <if test="bankName!=null">
+                bank_name=#{bankName},
+            </if>
+            <if test="bankBin!=null">
+                bank_bin = #{bankBin},
+            </if>
+            <if test="expiryTime!=null">
+                expiry_time=#{expiryTime},
+            </if>
+            <if test="cvv!=null">
+                cvv=#{cvv},
+            </if>
+        </set>
         WHERE id = #{id}
     </update>
 

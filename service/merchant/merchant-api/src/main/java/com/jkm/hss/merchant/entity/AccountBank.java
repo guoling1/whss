@@ -82,4 +82,8 @@ public class AccountBank extends BaseEntity {
      * 有效期
      */
     private String expiryTime;
+    /**
+     * cvv
+     */
+    private String cvv;
 }
