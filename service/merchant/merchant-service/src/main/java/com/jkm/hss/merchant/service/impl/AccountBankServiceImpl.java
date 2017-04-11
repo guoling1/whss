@@ -481,7 +481,7 @@ public class AccountBankServiceImpl implements AccountBankService{
      * @param id
      */
     @Override
-    public void updateCvvAndexpiryTimeById(String cvv, String expiryTime, long id) {
+    public void updateCvvAndExpiryTimeById(String cvv, String expiryTime, long id) {
         AccountBank accountBank = new AccountBank();
         accountBank.setId(id);
         accountBank.setCvv(MerchantSupport.encryptCvv(cvv));

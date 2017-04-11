@@ -203,7 +203,7 @@ public interface AccountBankService {
      * @param expiryTime
      * @param id
      */
-    void updateCvvAndexpiryTimeById(String cvv,String expiryTime,long id);
+    void updateCvvAndExpiryTimeById(String cvv,String expiryTime,long id);
 
     /**
      * 是否有cvv
