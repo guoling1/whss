@@ -53,6 +53,18 @@ public class BasicChannel extends BaseEntity{
     private int supportWay;
 
     /**
+     * 鉴权类型
+     *
+     *三要素：银行卡号，姓名，身份证号
+     *四要素：银行卡号，姓名，身份证号，手机号
+     *五要素：银行卡号，姓名，身份证号，手机号，有效期（信用卡）
+     *六要素：银行卡号，姓名，身份证号，手机号，有效期（信用卡），CVV（信用卡）
+     *
+     * {@link com.jkm.hss.product.enums.EnumCheckType}
+     */
+    private int checkType;
+
+    /**
      * 收单公司(支付宝,微信)
      */
     private String thirdCompany;
