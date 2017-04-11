@@ -6,7 +6,6 @@ import com.jkm.base.common.util.CreateImageCodeUtil;
 import com.jkm.hss.admin.helper.requestparam.AppBizDistrictRequest;
 import com.jkm.hss.admin.helper.responseparam.AppBizDistrictResponse;
 import com.jkm.hss.admin.service.AppBizDistrictService;
-import com.jkm.hss.helper.request.DistrictRequest;
 import com.jkm.hss.merchant.entity.Join;
 import com.jkm.hss.merchant.service.WebsiteService;
 import com.jkm.hss.notifier.enums.EnumNoticeType;
@@ -18,7 +17,11 @@ import com.jkm.hss.notifier.service.SmsAuthService;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletResponse;
@@ -64,7 +67,7 @@ public class JoinController {
      */
     @ResponseBody
     @RequestMapping(value = "/selectProvinces", method = RequestMethod.POST)
-    public CommonResponse selectProvinces(@RequestBody HttpServletResponse httpServletResponse){
+    public CommonResponse selectProvinces(HttpServletResponse httpServletResponse){
         httpServletResponse.setHeader("Access-Control-Allow-Origin", "*");
         List<AppBizDistrictResponse> list =  this.appBizDistrictService.findAllProvinces();
         return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功",list);
@@ -86,9 +89,16 @@ public class JoinController {
      */
     @ResponseBody
     @RequestMapping(value = "/selectCities", method = RequestMethod.POST)
-    public CommonResponse selectCities(@RequestBody final DistrictRequest districtRequest,HttpServletResponse httpServletResponse){
+    public CommonResponse selectCities(@RequestBody final AppBizDistrictRequest appBizDistrictRequest,HttpServletResponse httpServletResponse){
         httpServletResponse.setHeader("Access-Control-Allow-Origin", "*");
-        List<AppBizDistrictResponse> list =  this.appBizDistrictService.findCityByProvinceCode(districtRequest.getCode());
+        if(StringUtils.isEmpty(appBizDistrictRequest.getCode())){
+            return CommonResponse.simpleResponse(-1, "请选择省份");
+        }
+        if("110000,120000,310000,500000".contains(appBizDistrictRequest.getCode())){
+            List<AppBizDistrictResponse> appBizDistrictResponseList = appBizDistrictService.findByCode(appBizDistrictRequest.getCode());
+            return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功",appBizDistrictResponseList);
+        }
+        List<AppBizDistrictResponse> list =  this.appBizDistrictService.findCityByProvinceCode(appBizDistrictRequest.getCode());
         return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功",list);
     }
 
@@ -108,9 +118,9 @@ public class JoinController {
      */
     @ResponseBody
     @RequestMapping(value = "/selectDistrict", method = RequestMethod.POST)
-    public CommonResponse selectDistrict(@RequestBody HttpServletResponse httpServletResponse,AppBizDistrictRequest appBizDistrictRequest){
+    public CommonResponse selectDistrict(@RequestBody final AppBizDistrictRequest appBizDistrictRequest, HttpServletResponse httpServletResponse){
         httpServletResponse.setHeader("Access-Control-Allow-Origin", "*");
-        List<AppBizDistrictResponse> list =  this.appBizDistrictService.findByCode(appBizDistrictRequest.getCode());
+        List<AppBizDistrictResponse> list =  this.appBizDistrictService.findCityByProvinceCode(appBizDistrictRequest.getCode());
         return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功",list);
     }
 
