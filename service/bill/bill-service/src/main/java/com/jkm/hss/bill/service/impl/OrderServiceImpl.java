@@ -417,24 +417,8 @@ public class OrderServiceImpl implements OrderService {
                     String hsy="好收银";
                     list.get(i).setAppId(hsy);
                 }
-                if (list.get(i).getPayChannelSign()==101){
-                    list.get(i).setPayChannelSigns(EnumPayChannelSign.YG_WECHAT.getName());
-                }
-                if (list.get(i).getPayChannelSign()==102){
-                    list.get(i).setPayChannelSigns(EnumPayChannelSign.YG_ALIPAY.getName());
-                }
-                if (list.get(i).getPayChannelSign()==103){
-                    list.get(i).setPayChannelSigns(EnumPayChannelSign.YG_UNIONPAY.getName());
-                }
-                if (list.get(i).getPayChannelSign()==201){
-                    list.get(i).setPayChannelSigns(EnumPayChannelSign.KM_WECHAT.getName());
-                }
-                if (list.get(i).getPayChannelSign()==202){
-                    list.get(i).setPayChannelSigns(EnumPayChannelSign.KM_ALIPAY.getName());
-                }
-                if (list.get(i).getPayChannelSign()==301){
-                    list.get(i).setPayChannelSigns(EnumPayChannelSign.MB_UNIONPAY.getName());
-                }
+                list.get(i).setPayChannelSigns(EnumPayChannelSign.idOf(list.get(i).getPayChannelSign()).getName());
+
                 if (list.get(i).getPayType()!=null&&!list.get(i).getPayType().equals("")){
                     if (list.get(i).getPayType().equals("sm_wechat_jsapi")){
 //                        list.get(i).setPayType(EnumPayType.YG_WECHAT_JSAPI.getValue());
