@@ -217,6 +217,9 @@
             <if test="cvv!=null">
                 cvv=#{cvv},
             </if>
+            <if test="updateType>0">
+                update_type=#{updateType},
+            </if>
         </set>
         WHERE id = #{id}
     </update>
@@ -228,4 +231,22 @@
         FROM tb_account_bank
         WHERE account_id = #{accountId} and status=0 and card_type=1 order by create_time desc limit 0,1
     </select>
+    <!--清空cvv-->
+    <update id="cleanCvv">
+        UPDATE tb_account_bank
+        set cvv=null
+        WHERE id = #{id}
+    </update>
+    <!--清空有效期-->
+    <update id="cleanExpiryTime">
+        UPDATE tb_account_bank
+        set expiry_time=null
+        WHERE id = #{id}
+    </update>
+    <!--清空cvv和有效期-->
+    <update id="cleanCvvAndExpiryTime">
+        UPDATE tb_account_bank
+        set cvv=null,expiry_time=null
+        WHERE id = #{id}
+    </update>
 </mapper>

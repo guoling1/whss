@@ -198,6 +198,13 @@ public interface AccountBankService {
     void updateCvvById(String cvv,long id);
 
     /**
+     * 根据id更改有效期
+     * @param expiryTime
+     * @param id
+     */
+    void updateExpiryTimeById(String expiryTime,long id);
+
+    /**
      * 根据id更改cvv和有效期
      * @param cvv
      * @param expiryTime
@@ -218,4 +225,11 @@ public interface AccountBankService {
      * @return
      */
     boolean isHasExpiryTime(long id);
+
+    /**
+     * 清理cvv或有有效期
+     * @param id
+     * @param type
+     */
+    void cleanCvvAndExpiryTime(long id,int type);
 }

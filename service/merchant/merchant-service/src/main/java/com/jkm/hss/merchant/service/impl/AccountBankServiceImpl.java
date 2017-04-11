@@ -9,6 +9,7 @@ import com.jkm.hss.merchant.entity.BankCardBin;
 import com.jkm.hss.merchant.entity.MerchantInfo;
 import com.jkm.hss.merchant.enums.EnumAccountBank;
 import com.jkm.hss.merchant.enums.EnumBankDefault;
+import com.jkm.hss.merchant.enums.EnumCleanType;
 import com.jkm.hss.merchant.enums.EnumCommonStatus;
 import com.jkm.hss.merchant.helper.MerchantSupport;
 import com.jkm.hss.merchant.helper.request.ContinueBankInfoRequest;
@@ -470,9 +471,24 @@ public class AccountBankServiceImpl implements AccountBankService{
         AccountBank accountBank = new AccountBank();
         accountBank.setId(id);
         accountBank.setCvv(MerchantSupport.encryptCvv(cvv));
+        accountBank.setUpdateType(EnumCleanType.CVV.getId());
         accountBankDao.updateBankInfo(accountBank);
     }
 
+    /**
+     * 根据id更改有效期
+     *
+     * @param expiryTime
+     * @param id
+     */
+    @Override
+    public void updateExpiryTimeById(String expiryTime, long id) {
+        AccountBank accountBank = new AccountBank();
+        accountBank.setId(id);
+        accountBank.setExpiryTime(expiryTime);
+        accountBank.setUpdateType(EnumCleanType.EXPIRYTIME.getId());
+        accountBankDao.updateBankInfo(accountBank);
+    }
     /**
      * 根据id更改cvv和有效期
      *
@@ -486,6 +502,7 @@ public class AccountBankServiceImpl implements AccountBankService{
         accountBank.setId(id);
         accountBank.setCvv(MerchantSupport.encryptCvv(cvv));
         accountBank.setExpiryTime(expiryTime);
+        accountBank.setUpdateType(EnumCleanType.CVVANDEXPIRYTIME.getId());
         accountBankDao.updateBankInfo(accountBank);
     }
 
@@ -517,6 +534,24 @@ public class AccountBankServiceImpl implements AccountBankService{
             return true;
         }
         return false;
+    }
+
+    /**
+     * 清理cvv或有有效期
+     *
+     * @param type
+     */
+    @Override
+    public void cleanCvvAndExpiryTime(long id,int type) {
+        if(EnumCleanType.CVV.getId()==type){
+            accountBankDao.cleanCvv(id);
+        }
+        if(EnumCleanType.EXPIRYTIME.getId()==type){
+            accountBankDao.cleanExpiryTime(id);
+        }
+        if(EnumCleanType.CVVANDEXPIRYTIME.getId()==type){
+            accountBankDao.cleanCvvAndExpiryTime(id);
+        }
     }
 
 }
