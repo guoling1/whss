@@ -12,7 +12,7 @@
   <meta name="viewport"
         content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
   <title>好收收</title>
-  <link rel="stylesheet" href="http://static.jinkaimen.cn/hss/css/style.2.2.6.css">
+  <link rel="stylesheet" href="http://static.jinkaimen.cn/hss/css/style.2.2.7.css">
   <link rel="stylesheet" href="http://static.jinkaimen.cn/weui/weui.css">
   <style>
     #branchInfo {
@@ -170,5 +170,5 @@
 
 </body>
 <script src="http://static.jinkaimen.cn/vendor/vendor.1.0.9.7.min.js"></script>
-<script src="http://static.jinkaimen.cn/hss/2.2.10/creditCardAuthen.min.js"></script>
+<script src="http://static.jinkaimen.cn/hss/2.2.11/creditCardAuthen.min.js"></script>
 </html>

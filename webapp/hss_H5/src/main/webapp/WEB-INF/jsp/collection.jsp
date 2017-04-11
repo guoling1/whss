@@ -13,7 +13,7 @@
         content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
   <meta name="format-detection" content="telephone=no"/>
   <title>好收收</title>
-  <link rel="stylesheet" href="http://static.jinkaimen.cn/hss/css/style.2.2.6.css">
+  <link rel="stylesheet" href="http://static.jinkaimen.cn/hss/css/style.2.2.7.css">
   <link rel="stylesheet" href="http://static.jinkaimen.cn/weui/weui.css">
 </head>
 <body>
@@ -75,9 +75,9 @@
     <div class="channel-box" id="channelBox">
       <div class="channel-space top">
         <div class="channel-group">
-          <div class="channel-li">渠道名称</div>
+          <div class="channel-li big">渠道名称</div>
           <div class="channel-li">结算时间<span id="know-channel"></span></div>
-          <div class="channel-li">费率</div>
+          <div class="channel-li small">费率</div>
           <div class="channel-li">单笔限额</div>
         </div>
       </div>
@@ -133,5 +133,5 @@
   }
 </script>
 <script src="http://static.jinkaimen.cn/vendor/vendor.1.0.9.7.min.js"></script>
-<script src="http://static.jinkaimen.cn/hss/2.2.10/collection.min.js"></script>
+<script src="http://static.jinkaimen.cn/hss/2.2.11/collection.min.js"></script>
 </html>
