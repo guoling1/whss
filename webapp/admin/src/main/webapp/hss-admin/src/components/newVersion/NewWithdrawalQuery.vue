@@ -167,7 +167,7 @@
         queryUrl:'http://192.168.1.20:8076/order/withdraw/listOrder',
         excelUrl:'http://192.168.1.20:8076/order/withdraw/exportExcel',
         syncUrl:'http://192.168.1.20:8076/order/syncWithdrawOrder',
-        addUrl:'http://192.168.1.25:8240/order/withdraw/countAmount',
+        addUrl:'http://192.168.1.20:8076/order/withdraw/countAmount',
       }
     },
     created: function () {
