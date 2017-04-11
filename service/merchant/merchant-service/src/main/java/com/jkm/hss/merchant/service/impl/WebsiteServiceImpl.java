@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by zhangbin on 2017/4/5.
@@ -46,7 +47,7 @@ public class WebsiteServiceImpl implements WebsiteService {
     }
 
     @Override
-    public void saveInfo(String userName, String mobile, String companyName, String provinceCode, String provinceName, String cityCode, String cityName, String countyCode, String countyName, String type) {
-        this.websiteDao.saveInfo(userName,mobile,companyName,provinceCode,provinceName,cityCode,cityName,countyCode,countyName,type);
+    public void saveInfo(Map map) {
+        this.websiteDao.saveInfo(map);
     }
 }

@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by zhangbin on 2017/4/5.
@@ -48,8 +49,5 @@ public interface WebsiteDao {
      */
     String selectMobile(@Param("mobile") String mobile);
 
-    void saveInfo(@Param("userName") String userName,@Param("mobile") String mobile,@Param("companyName") String companyName,
-                  @Param("provinceCode") String provinceCode,@Param("provinceName") String provinceName,
-                  @Param("cityCode") String cityCode,@Param("cityName") String cityName,
-                  @Param("countyCode") String countyCode,@Param("countyName") String countyName,@Param("type") String type);
+    void saveInfo(Map map);
 }

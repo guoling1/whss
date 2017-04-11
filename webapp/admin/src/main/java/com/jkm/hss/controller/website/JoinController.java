@@ -30,6 +30,7 @@ import javax.servlet.http.HttpSession;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -138,29 +139,30 @@ public class JoinController {
 
     @ResponseBody
     @RequestMapping(value = "/save",method = RequestMethod.POST)
-    public CommonResponse save(@RequestBody HttpServletResponse httpServletResponse,JoinRequest join){
+    public CommonResponse save(@RequestBody final JoinRequest join, HttpServletResponse httpServletResponse){
         httpServletResponse.setHeader("Access-Control-Allow-Origin", "*");
-        String userName = join.getUserName();
-        String mobile = join.getMobile();
-        String companyName = join.getCompanyName();
-        String provinceCode = join.getProvinceCode();
-        String provinceName = join.getProvinceName();
-        String cityCode = join.getCityCode();
-        String cityName = join.getCityName();
-        String countyCode = join.getCountyCode();
-        String countyName = join.getCountyName();
-        String type = join.getType();
         String code = join.getCode();
-        String mobileNo = websiteService.selectMobile(mobile);
-        if (mobile.equals(mobileNo)){
-            return CommonResponse.simpleResponse(-1,"改手机号已注册！");
+        Map<String,Object> map = new HashMap<String,Object>();
+        map.put("userName",join.getUserName());
+        map.put("mobile",join.getMobile());
+        map.put("companyName",join.getCompanyName());
+        map.put("provinceCode",join.getProvinceCode());
+        map.put("provinceName",join.getProvinceName());
+        map.put("cityCode",join.getCityCode());
+        map.put("cityName",join.getCityName());
+        map.put("countyCode",join.getCountyCode());
+        map.put("countyName",join.getCountyName());
+        map.put("type",join.getType());
+        String mobileNo = websiteService.selectMobile(join.getMobile());
+        if (join.getMobile().equals(mobileNo)){
+            return CommonResponse.simpleResponse(-1,"该手机号已注册！");
         }
         final Pair<Integer, String> checkResult =
-                this.smsAuthService.checkVerifyCode(mobile, code, EnumVerificationCodeType.OFFICIAL_WEBSITE);
+                this.smsAuthService.checkVerifyCode(join.getMobile(), code, EnumVerificationCodeType.OFFICIAL_WEBSITE);
         if (1 != checkResult.getLeft()) {
             return CommonResponse.simpleResponse(-1, checkResult.getRight());
         }
-        this.websiteService.saveInfo(userName,mobile,companyName,provinceCode,provinceName,cityCode,cityName,countyCode,countyName,type);
+        this.websiteService.saveInfo(map);
         return CommonResponse.simpleResponse(1,"提交成功！");
     }
 

@@ -68,7 +68,7 @@
         #{cityName},
         #{countyCode},
         #{countyName},
-        #{type}
+        #{type})
     </insert>
 
 </mapper>
