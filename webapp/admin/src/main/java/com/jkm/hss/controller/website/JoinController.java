@@ -7,6 +7,7 @@ import com.jkm.hss.admin.helper.requestparam.AppBizDistrictRequest;
 import com.jkm.hss.admin.helper.responseparam.AppBizDistrictResponse;
 import com.jkm.hss.admin.service.AppBizDistrictService;
 import com.jkm.hss.merchant.entity.Join;
+import com.jkm.hss.merchant.entity.JoinRequest;
 import com.jkm.hss.merchant.service.WebsiteService;
 import com.jkm.hss.notifier.enums.EnumNoticeType;
 import com.jkm.hss.notifier.enums.EnumUserType;
@@ -137,7 +138,7 @@ public class JoinController {
 
     @ResponseBody
     @RequestMapping(value = "/save",method = RequestMethod.POST)
-    public CommonResponse save(@RequestBody HttpServletResponse httpServletResponse,Join join){
+    public CommonResponse save(@RequestBody HttpServletResponse httpServletResponse,JoinRequest join){
         httpServletResponse.setHeader("Access-Control-Allow-Origin", "*");
         String userName = join.getUserName();
         String mobile = join.getMobile();
@@ -149,11 +150,16 @@ public class JoinController {
         String countyCode = join.getCountyCode();
         String countyName = join.getCountyName();
         String type = join.getType();
+        String code = join.getCode();
         String mobileNo = websiteService.selectMobile(mobile);
         if (mobile.equals(mobileNo)){
             return CommonResponse.simpleResponse(-1,"改手机号已注册！");
         }
-
+        final Pair<Integer, String> checkResult =
+                this.smsAuthService.checkVerifyCode(mobile, code, EnumVerificationCodeType.OFFICIAL_WEBSITE);
+        if (1 != checkResult.getLeft()) {
+            return CommonResponse.simpleResponse(-1, checkResult.getRight());
+        }
         this.websiteService.saveInfo(userName,mobile,companyName,provinceCode,provinceName,cityCode,cityName,countyCode,countyName,type);
         return CommonResponse.simpleResponse(1,"提交成功！");
     }
