@@ -994,11 +994,11 @@ public class AdminController extends BaseController {
     @ResponseBody
     @RequestMapping(value = "/updatePwd", method = RequestMethod.POST)
     public CommonResponse updatePwd (@RequestBody AdminUserRequest adminUserRequest) {
-        if (!(adminUserRequest.getUsername().length() >= 4 && adminUserRequest.getUsername().length() <= 16)) {
-            return CommonResponse.simpleResponse(-1, "登录名长度4-16位");
-        }
         if(adminUserRequest.getId()<=0){
             return CommonResponse.simpleResponse(-1, "登录名不存在");
+        }
+        if(StringUtils.isEmpty(adminUserRequest.getPassword())){
+            return CommonResponse.simpleResponse(-1, "请输入密码");
         }
         Optional<AdminUser> adminUserOptional = this.adminUserService.getAdminUserById(adminUserRequest.getId());
         if(!adminUserOptional.isPresent()){
