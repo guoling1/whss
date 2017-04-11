@@ -26,9 +26,31 @@ Vue.filter('changeTime', function (val) {
       return year + "-" + tod(month) + "-" + tod(date) + " " + tod(hour) + ":" + tod(minute) + ":" + tod(second);
     }
 });
-Vue.filter('filterDealer', function (value) {
-  if (value == ''||value == null) {
-    return '--'
+Vue.filter('changeDate', function (val) {
+  if (val == '' || val == null) {
+    return ''
+  } else {
+    val = new Date(val)
+    let year = val.getFullYear();
+    let month = val.getMonth() + 1;
+    let date = val.getDate();
+
+    function tod(a) {
+      if (a < 10) {
+        a = "0" + a
+      }
+      return a;
+    }
+
+    return year + "-" + tod(month) + "-" + tod(date) ;
   }
-  return value;
+});
+
+
+Vue.filter('toFix', function (val) {
+  if (val == '' || val == null) {
+    return ''
+  } else {
+    return parseFloat(val).toFixed(2);
+  }
 });
