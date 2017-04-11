@@ -848,13 +848,12 @@ public class PayServiceImpl implements PayService {
      * @param amount      金额
      * @param channel     渠道
      * @param creditBankCardId  信用卡ID
-     * @param cvv2   cvv2
      * @param appId
      * @return
      */
     @Override
     public Pair<Integer, String> unionPay(final long merchantId, final String amount, final int channel,
-                                          final long creditBankCardId, final String cvv2, final String appId) {
+                                          final long creditBankCardId, final String appId) {
         log.info("商户[{}] 通过快捷， 支付一笔资金[{}]", merchantId, amount);
         final MerchantInfo merchant = this.merchantInfoService.selectById(merchantId).get();
         final AccountBank accountBank = this.accountBankService.selectStatelessById(creditBankCardId).get();
@@ -888,7 +887,7 @@ public class PayServiceImpl implements PayService {
         paymentSdkUnionPayRequest.setCardByName(merchant.getName());
         paymentSdkUnionPayRequest.setCardByNo(MerchantSupport.decryptBankCard(merchant.getAccountId(), accountBank.getBankNo()));
         paymentSdkUnionPayRequest.setExpireDate(accountBank.getExpiryTime());
-        paymentSdkUnionPayRequest.setCardCvv(cvv2);
+        paymentSdkUnionPayRequest.setCardCvv(MerchantSupport.decryptCvv(accountBank.getCvv()));
         paymentSdkUnionPayRequest.setCerNumber(MerchantSupport.decryptIdentity(merchant.getIdentity()));
         paymentSdkUnionPayRequest.setMobile(MerchantSupport.decryptMobile(merchant.getAccountId(), accountBank.getReserveMobile()));
         final String resultStr = this.httpClientFacade.jsonPost(PaymentSdkConstants.SDK_PAY_UNIONPAY_PREPARE, SdkSerializeUtil.convertObjToMap(paymentSdkUnionPayRequest));

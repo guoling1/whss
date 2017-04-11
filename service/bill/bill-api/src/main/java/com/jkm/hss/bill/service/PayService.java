@@ -145,11 +145,10 @@ public interface PayService {
      * @param amount      金额
      * @param channel     渠道
      * @param creditBankCardId  信用卡ID
-     * @param cvv2   cvv2
      * @param appId
      * @return
      */
-    Pair<Integer,String> unionPay(long merchantId, String amount, int channel, long creditBankCardId, String cvv2, String appId);
+    Pair<Integer,String> unionPay(long merchantId, String amount, int channel, long creditBankCardId, String appId);
 
     /**
      * 确认支付
