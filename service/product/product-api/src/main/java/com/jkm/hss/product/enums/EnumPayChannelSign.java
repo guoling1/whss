@@ -52,7 +52,12 @@ public enum EnumPayChannelSign {
     /**
      * 摩宝快捷
      */
-    MB_UNIONPAY(301, "mb_unionpay", EnumPaymentChannel.UNIONPAY, "摩宝快捷", EnumUpperChannel.MOBAO, false, EnumBalanceTimeType.T1),
+    MB_UNIONPAY(301, "mb_unionpay", EnumPaymentChannel.UNIONPAY, "摩宝快捷T1", EnumUpperChannel.MOBAO, false, EnumBalanceTimeType.T1),
+
+    /**
+     * 摩宝快捷-DO
+     */
+    MB_UNIONPAY_DO(302, "mb_unionpay_d0", EnumPaymentChannel.UNIONPAY, "摩宝快捷D0", EnumUpperChannel.MOBAO, false, EnumBalanceTimeType.D0),
 
     //#################################合众易宝#########################################
     /**
