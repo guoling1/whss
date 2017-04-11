@@ -104,13 +104,13 @@ http.post('/channel/list', {}, function (data) {
     };
     console.log(data[i]);
     let name = document.createElement('div');
-    name.className = 'channel-con name';
+    name.className = 'channel-con name big';
     name.innerHTML = data[i].channelName;
     let time = document.createElement('div');
     time.className = 'channel-con';
     time.innerHTML = data[i].settleType + '到账';
     let fee = document.createElement('div');
-    fee.className = 'channel-con';
+    fee.className = 'channel-con small';
     fee.innerHTML = (data[i].channelRate * 100).toFixed(2) + '%';
     let amount = document.createElement('div');
     amount.className = 'channel-con';

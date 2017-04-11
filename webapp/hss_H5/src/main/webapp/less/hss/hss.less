@@ -2289,6 +2289,12 @@ input:focus {
           width: 25%;
           font-size: 14px;
           color: #5a5a5a;
+          &.small {
+            width: 20%;
+          }
+          &.big {
+            width: 30%;
+          }
           span {
             display: inline-block;
             width: 14px;
@@ -2305,9 +2311,16 @@ input:focus {
           width: 25%;
           font-size: 14px;
           color: #5a5a5a;
+          &.small {
+            width: 20%;
+          }
+          &.big {
+            width: 30%;
+          }
           &.name {
             color: #222;
             font-weight: bold;
+            text-overflow: ellipsis;
           }
           &.dis {
             color: #b0b0b0;

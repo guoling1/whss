@@ -210,7 +210,7 @@ sendCode.addEventListener('click', function () {
 // 获取支持的银行卡列表
 let bankNameList = [];
 http.post('/channel/queryChannelSupportBank', {
-  channelSign: '301'
+  channelSign: channel
 }, function (data) {
   supportBankCardList = data;
   for (let i = 0; i < data.length; i++) {
