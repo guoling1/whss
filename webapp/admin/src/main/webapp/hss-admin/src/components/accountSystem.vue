@@ -151,13 +151,13 @@
         isMask:false,
         loadURL1:'',
         //正式
-        /*loadURL:'http://checking.qianbaojiajia.com/external/downloadxlsx/',
+        loadURL:'http://checking.qianbaojiajia.com/external/downloadxlsx/',
         url:'http://checking.qianbaojiajia.com/external/statisticList',
-        uploadURL:'http://checking.qianbaojiajia.com/external/banlanceAccount'*/
+        uploadURL:'http://checking.qianbaojiajia.com/external/banlanceAccount'
         //测试
-        loadURL:'http://192.168.1.99:8080/balance/external/downloadxlsx/',
+        /*loadURL:'http://192.168.1.99:8080/balance/external/downloadxlsx/',
         url:'http://192.168.1.99:8080/balance/external/statisticList',
-        uploadURL:'http://192.168.1.99:8080/balance/external/banlanceAccount'
+        uploadURL:'http://192.168.1.99:8080/balance/external/banlanceAccount'*/
       }
     },
     created: function () {
