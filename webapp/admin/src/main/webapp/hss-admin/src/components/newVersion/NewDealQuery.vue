@@ -74,9 +74,9 @@
               <label>支付方式：</label>
               <el-select style="width: 140px" clearable v-model="query.payType" size="small">
                 <el-option label="全部" value="">全部</el-option>
-                <el-option label="微信支付" value="1"></el-option>
-                <el-option label="支付宝支付" value="2"></el-option>
-                <el-option label="快捷支付" value="3"></el-option>
+                <el-option label="微信支付" value="wechat"></el-option>
+                <el-option label="支付宝支付" value="alipay"></el-option>
+                <el-option label="快捷支付" value="unionpay"></el-option>
               </el-select>
             </li>
             <li class="same">
