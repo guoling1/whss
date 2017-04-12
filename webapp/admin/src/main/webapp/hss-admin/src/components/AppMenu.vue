@@ -82,6 +82,17 @@
             </li>
           </ul>
         </li>
+        <li :class="(url=='/admin/record/accountSystem'||url=='/admin/record/accountErr')?'treeview active':'treeview'">
+          <a href="#"><span>对账管理</span></a>
+          <ul class="treeview-menu">
+            <li :class="(url=='/admin/record/accountSystem')?'treeview active':'treeview'" @click="refrash">
+              <router-link to="/admin/record/accountSystem"><span>系统对账</span></router-link>
+            </li>
+            <li :class="(url=='/admin/record/accountErr')?'treeview active':'treeview'" @click="refrash">
+              <router-link to="/admin/record/accountErr"><span>对账异常处理</span></router-link>
+            </li>
+          </ul>
+        </li>
         <li v-if="list.渠道交易查询!=undefined" :class="(url=='/admin/record/payQuery'||url=='/admin/record/newWithdrawalQuery')?'treeview active':'treeview'">
           <a href="#"><span>渠道交易查询</span></a>
           <ul class="treeview-menu">

@@ -69,6 +69,9 @@ const PersonnelList = r => require.ensure([], () => r(require('../../components/
 const PersonnelAdd = r => require.ensure([], () => r(require('../../components/PersonnelAdd')), 'group-record');
 const Role = r => require.ensure([], () => r(require('../../components/Role')), 'group-record');
 const RoleAdd = r => require.ensure([], () => r(require('../../components/RoleAdd')), 'group-record');
+const AccountSystem = r => require.ensure([], () => r(require('../../components/accountSystem')), 'group-record');
+const AccountErr = r => require.ensure([], () => r(require('../../components/accountErr')), 'group-record');
+const AccountData = r => require.ensure([], () => r(require('../../components/accountData')), 'group-record');
 
 const Test = r => require.ensure([], () => r(require('../../components/Test')), 'group-record');
 
@@ -77,6 +80,21 @@ export default {
   redirect: '/admin/record/newDeal',
   component: Crumbs,
   children: [
+    {
+      path: 'accountData',
+      name: 'AccountData',
+      component: AccountData
+    },
+    {
+      path: 'accountSystem',
+      name: 'AccountSystem',
+      component: AccountSystem
+    },
+    {
+      path: 'accountErr',
+      name: 'AccountErr',
+      component: AccountErr
+    },
     {
       path: 'storeAuditHSY',
       name: 'StoreAuditHSY',

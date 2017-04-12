@@ -303,7 +303,7 @@
             this.$data.loading = false;
             this.$message({
               showClose: true,
-              message: res.msg,
+              message: '操作成功',
               type: 'success'
             });
           },function (err) {
