@@ -66,7 +66,7 @@ public class QueryMerchantResponse {
     /**
      * 认证时间
      */
-    private Date authenticationTimes;
+    private String authenticationTimes;
 
     /**
      * 商户状态
@@ -76,7 +76,7 @@ public class QueryMerchantResponse {
     /**
      * 商户状态
      */
-    private int statusValue;
+    private String statusValue;
 
 
 }

@@ -5,6 +5,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.jkm.base.common.entity.CommonResponse;
+import com.jkm.base.common.enums.EnumBoolean;
 import com.jkm.hss.controller.BaseController;
 import com.jkm.hss.helper.request.CreditCardListRequest;
 import com.jkm.hss.helper.response.CreditCardListResponse;
@@ -61,7 +62,11 @@ public class BankCardController extends BaseController {
                 creditCardListResponse.setCreditCardId(accountBank.getId());
                 creditCardListResponse.setBankName(accountBank.getBankName());
                 creditCardListResponse.setBankCode(accountBank.getBankBin());
-                creditCardListResponse.setStatus(channelSupportCreditBank.getStatus());
+                if (null != channelSupportCreditBank) {
+                    creditCardListResponse.setStatus(channelSupportCreditBank.getStatus());
+                } else {
+                    creditCardListResponse.setStatus(EnumBoolean.FALSE.getCode());
+                }
                 creditCardListResponse.setShortNo(accountBank.getBankNo().substring(accountBank.getBankNo().length() - 4));
                 final String mobile = accountBank.getReserveMobile();
                 creditCardListResponse.setMobile(mobile.substring(0, 2) + "**** ***" + mobile.substring(mobile.length() - 2));

@@ -252,7 +252,7 @@ public interface OrderDao {
      * @param appId
      * @return
      */
-    List<Long> selectT1PaySuccessAndUnSettleOrderIds(@Param("settleDate") Date settleDate, @Param("appId") String appId);
+    List<Long> selectT1PaySuccessAndUnSettleOrderIds(@Param("settleDate") Date settleDate, @Param("appId") String appId, @Param("channelList") List<Integer> channelList);
 
     /**
      * 下载查询

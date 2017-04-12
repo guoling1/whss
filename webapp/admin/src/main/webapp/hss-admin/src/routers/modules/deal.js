@@ -59,6 +59,10 @@ const CodeDet = r => require.ensure([], () => r(require('../../components/CodeDe
 const ProductAdd = r => require.ensure([], () => r(require('../../components/ProductAdd')), 'group-record');
 const ProductList = r => require.ensure([], () => r(require('../../components/ProductList')), 'group-record');
 const Invite = r => require.ensure([], () => r(require('../../components/Invite')), 'group-record');
+const Gateway = r => require.ensure([], () => r(require('../../components/Gateway')), 'group-record');
+const GatewayAdd = r => require.ensure([], () => r(require('../../components/GatewayAdd')), 'group-record');
+const Template = r => require.ensure([], () => r(require('../../components/Template')), 'group-record');
+const TemplateAdd = r => require.ensure([], () => r(require('../../components/TemplateAdd')), 'group-record');
 //通道
 const PassAdd = r => require.ensure([], () => r(require('../../components/PassAdd')), 'group-record');
 const PassList = r => require.ensure([], () => r(require('../../components/PassList')), 'group-record');
@@ -66,6 +70,9 @@ const LimitList = r => require.ensure([], () => r(require('../../components/Limi
 //员工
 const PersonnelList = r => require.ensure([], () => r(require('../../components/PersonnelList')), 'group-record');
 const PersonnelAdd = r => require.ensure([], () => r(require('../../components/PersonnelAdd')), 'group-record');
+const AccountSystem = r => require.ensure([], () => r(require('../../components/accountSystem')), 'group-record');
+const AccountErr = r => require.ensure([], () => r(require('../../components/accountErr')), 'group-record');
+const AccountData = r => require.ensure([], () => r(require('../../components/accountData')), 'group-record');
 
 const Test = r => require.ensure([], () => r(require('../../components/Test')), 'group-record');
 
@@ -74,6 +81,41 @@ export default {
   redirect: '/admin/record/newDeal',
   component: Crumbs,
   children: [
+    {
+      path: 'template',
+      name: 'Template',
+      component: Template
+    },
+    {
+      path: 'templateAdd',
+      name: 'TemplateAdd',
+      component: TemplateAdd
+    },
+    {
+      path: 'gateway',
+      name: 'Gateway',
+      component: Gateway
+    },
+    {
+      path: 'gatewayAdd',
+      name: 'GatewayAdd',
+      component: GatewayAdd
+    },
+    {
+      path: 'accountData',
+      name: 'AccountData',
+      component: AccountData
+    },
+    {
+      path: 'accountSystem',
+      name: 'AccountSystem',
+      component: AccountSystem
+    },
+    {
+      path: 'accountErr',
+      name: 'AccountErr',
+      component: AccountErr
+    },
     {
       path: 'storeAuditHSY',
       name: 'StoreAuditHSY',

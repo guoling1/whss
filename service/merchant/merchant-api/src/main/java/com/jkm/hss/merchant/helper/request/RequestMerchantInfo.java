@@ -8,7 +8,10 @@ import lombok.Data;
 @Data
 public class RequestMerchantInfo {
 
-
+    /**
+     * 审核人
+     */
+    private String name;
 
     /**
      * 商户编码

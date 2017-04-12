@@ -4,7 +4,7 @@
       <div class="box" style="margin-top:15px;overflow: hidden">
         <div class="box-header">
           <h3 class="box-title">打款查询</h3>
-          <router-link to="/admin/record/withdrawal" class="  pull-right" style="margin-left: 20px">切换旧版</router-link>
+          <router-link to="/admin/record/withdrawal" class="pull-right" style="margin-left: 20px">切换旧版</router-link>
         </div>
         <div class="box-body">
           <!--筛选-->
@@ -162,11 +162,12 @@
          excelUrl:'http://pay.qianbaojiajia.com/order/withdraw/exportExcel',
          syncUrl:'http://pay.qianbaojiajia.com/order/syncWithdrawOrder',
          addUrl:'http://pay.qianbaojiajia.com/order/withdraw/countAmount',
+
         //测试
         /*queryUrl:'http://192.168.1.20:8076/order/withdraw/listOrder',
         excelUrl:'http://192.168.1.20:8076/order/withdraw/exportExcel',
         syncUrl:'http://192.168.1.20:8076/order/syncWithdrawOrder',
-        addUrl:'http://192.168.1.25:8240/order/withdraw/countAmount',*/
+        addUrl:'http://192.168.1.20:8076/order/withdraw/countAmount',*/
       }
     },
     created: function () {

@@ -38,12 +38,14 @@
     <insert id="insert" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO tb_merchant_info_check_record
         (
+        name,
         merchant_id,
         descr,
         status
         )
         VALUES
         (
+        #{name},
         #{merchantId},
         #{descr},
         #{status}

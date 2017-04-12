@@ -21,10 +21,17 @@ let qrImg = new QRCode(qr, {
   correctLevel: QRCode.CorrectLevel.H
 });
 
+function getQueryString(name) {
+  let reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
+  let r = window.location.search.substr(1).match(reg);
+  if (r != null) return unescape(r[2]);
+  return null;
+}
+
 refresh.addEventListener('click', function () {
   http.post('/trade/dcReceipt', {
     totalFee: pageData.amount,
-    payChannel: '101'
+    payChannel: getQueryString('payChannel')
   }, function (data) {
     qrImg.makeCode(data.payUrl);
     message.prompt_show('刷新成功');
