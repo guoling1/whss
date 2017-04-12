@@ -15,6 +15,11 @@ public class MerchantInfoCheckRecord extends BaseEntity {
     private long merchantId;
 
     /**
+     * 审核人
+     */
+    private String name;
+
+    /**
      * 原因描述
      */
     private String descr;
