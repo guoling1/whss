@@ -35,10 +35,10 @@
         <li :class="(url=='/admin/record/newDeal'||url=='/admin/record/retrieval')?'treeview active':'treeview'">
           <a href="#"><span>交易查询</span></a>
           <ul class="treeview-menu">
-            <li :class="(url=='/admin/record/newDeal')?'treeview active':'treeview'" @click="refrash">
+            <li :class="(url=='/admin/record/newDeal')?'treeview active':'treeview'" @click="refrash('交易查询')">
               <router-link to="/admin/record/newDeal"><span>交易查询</span></router-link>
             </li>
-            <li :class="(url=='/admin/record/retrieval')?'treeview active':'treeview'" @click="refrash">
+            <li :class="(url=='/admin/record/retrieval')?'treeview active':'treeview'" @click="refrash('提现查询')">
               <router-link to="/admin/record/retrieval"><span>提现查询</span></router-link>
             </li>
           </ul>
@@ -209,13 +209,23 @@
     },
     created: function () {
       this.$data.url = location.pathname;
-      /*if(document.getElementById('open').className=='treeview active'){
-       document.getElementById('right').className=''
-       }*/
+//      sessionStorage.removeItem('tabsData')
     },
     methods: {
-      refrash: function () {
+      refrash: function (name) {
+
+//        sessionStorage.setItem('tabsData',JSON.stringify([{title:name,name:name}]));
         location.reload()
+//        localStorage.setItem('tabsData',JSON.stringify([]))
+        var session = localStorage.getItem('tabsData')
+        if(session!=null){
+            console.log(JSON.parse(localStorage.getItem('tabsData')))
+          localStorage.setItem('tabsData',JSON.stringify(JSON.parse(localStorage.getItem('tabsData')).concat([{title:name,name:name}])));
+        }else {
+          localStorage.setItem('tabsData',JSON.stringify([].concat([{title:name,name:name}])));
+        }
+        console.log(session)
+
       },
       open: function () {
         var obj = document.getElementById('right');

@@ -67,9 +67,9 @@ export default {
 
       <!-- 路由出口 -->
       <!-- 路由匹配到的组件将渲染在这里 -->
-      <el-tabs v-model="editableTabsValue2" type="card" closable @tab-remove="removeTab">
+      <el-tabs v-model="$editableTabsValue2" type="card" closable @tab-remove="removeTab">
         <el-tab-pane
-          v-for="(item, index) in editableTabs2"
+          v-for="(item, index) in $editableTabs2"
           :label="item.title"
           :name="item.name"
         >
@@ -103,7 +103,26 @@ export default {
           name: '2',
           content: 'Tab 2 content'
         }],
-        tabIndex: 2
+        tabIndex: 2,
+        sess:[],
+      }
+    },
+    created:function () {
+      setInterval(function () {
+        this.editableTabs2 = JSON.parse(localStorage.getItem('tabsData'));
+//        console.log(this.sess)
+      },20)
+
+    },
+    computed: {
+      $editableTabs2:function () {
+//        this.editableTabs2.concat(this.sess)
+        return this.editableTabs2
+      }
+    },
+    watch:{
+      sess:function () {
+        console.log(arguments)
       }
     },
     methods: {
