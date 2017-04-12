@@ -106,9 +106,6 @@ public class TradeController extends BaseController {
         if (StringUtils.isBlank(totalFee)) {
             return CommonResponse.simpleResponse(-1, "请输入收款金额");
         }
-        if(new BigDecimal(totalFee).compareTo(new BigDecimal("5.00")) < 0){
-            return CommonResponse.simpleResponse(-1, "支付金额至少5.00元");
-        }
         if(StringUtils.isBlank(merchantInfo.getMerchantName())){
             return CommonResponse.simpleResponse(-1, "缺失商户名称");
         }
@@ -145,10 +142,6 @@ public class TradeController extends BaseController {
         final String totalAmount = payRequest.getTotalFee();
         if (StringUtils.isBlank(totalAmount)) {
             return CommonResponse.simpleResponse(-1, "请输入收款金额");
-        }
-
-        if(new BigDecimal(totalAmount).compareTo(new BigDecimal("5.00")) < 0){
-            return CommonResponse.simpleResponse(-1, "支付金额至少5.00元");
         }
 
         if(StringUtils.isBlank(merchantInfo.get().getMerchantName())){
@@ -341,9 +334,6 @@ public class TradeController extends BaseController {
         if(merchantInfo.getStatus()!= EnumMerchantStatus.PASSED.getId() && merchantInfo.getStatus()!= EnumMerchantStatus.FRIEND.getId()){
             return CommonResponse.simpleResponse(-2, " 未登录");
         }
-        if(new BigDecimal(unionPayRequest.getTotalFee()).compareTo(new BigDecimal("10.00")) < 0){
-            return CommonResponse.simpleResponse(-1, "支付金额至少10.00元");
-        }
         Preconditions.checkState(EnumPayChannelSign.isUnionPay(unionPayRequest.getPayChannel()), "渠道不是快捷");
         final int creditBankCount = this.accountBankService.isHasCreditBank(merchantInfo.getAccountId());
         if (creditBankCount <= 0) {
@@ -366,6 +356,9 @@ public class TradeController extends BaseController {
                                     final Model model) {
         final String amountStr = httpServletRequest.getParameter("amount");
         final String channelStr = httpServletRequest.getParameter("channel");
+        if(!super.isLogin(httpServletRequest)){
+            return "/sqb/reg";
+        }
         final UserInfo userInfo = this.userInfoService.selectByOpenId(super.getOpenId(httpServletRequest)).get();
         final MerchantInfo merchantInfo = this.merchantInfoService.selectById(userInfo.getMerchantId()).get();
         final Integer channelSign = Integer.valueOf(channelStr);
@@ -388,6 +381,9 @@ public class TradeController extends BaseController {
                                 final Model model) {
         final String amountStr = httpServletRequest.getParameter("amount");
         final String channelStr = httpServletRequest.getParameter("channel");
+        if(!super.isLogin(httpServletRequest)){
+            return "/sqb/reg";
+        }
         final UserInfo userInfo = this.userInfoService.selectByOpenId(super.getOpenId(httpServletRequest)).get();
         final MerchantInfo merchantInfo = this.merchantInfoService.selectById(userInfo.getMerchantId()).get();
         final Integer channelSign = Integer.valueOf(channelStr);
@@ -445,9 +441,6 @@ public class TradeController extends BaseController {
         }
         if (StringUtils.isEmpty(firstUnionPaySendMsgRequest.getExpireDate())) {
             return CommonResponse.simpleResponse(-1, "有效期不能为空");
-        }
-        if(new BigDecimal(firstUnionPaySendMsgRequest.getAmount()).compareTo(new BigDecimal("10.00")) < 0){
-            return CommonResponse.simpleResponse(-1, "支付金额至少10.00元");
         }
         if (StringUtils.isEmpty(firstUnionPaySendMsgRequest.getBankCardNo())) {
             return CommonResponse.simpleResponse(-1, "银卡卡号不能为空");
@@ -523,9 +516,6 @@ public class TradeController extends BaseController {
         }
         if (!EnumPayChannelSign.isUnionPay(againUnionPaySendMsgRequest.getChannel())) {
             return CommonResponse.simpleResponse(-1, "支付方式错误");
-        }
-        if(new BigDecimal(againUnionPaySendMsgRequest.getAmount()).compareTo(new BigDecimal("10.00")) < 0){
-            return CommonResponse.simpleResponse(-1, "支付金额至少10.00元");
         }
         if (StringUtils.isEmpty(againUnionPaySendMsgRequest.getCvv2())) {
             return CommonResponse.simpleResponse(-1, "CVV2 不能为空");
