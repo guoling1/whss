@@ -41,7 +41,7 @@ public class Task {
      * 易联
      * 中午12:30
      */
-    @Scheduled(cron = "0 30 12 * * ?")
+    @Scheduled(cron = "0 35 10 * * ?")
     public void handleEasyLinkT1Task() {
         log.info("hss-T1-易联快捷- 结算到卡定时任务--start");
         final ArrayList<Integer> channelList = new ArrayList<>();
