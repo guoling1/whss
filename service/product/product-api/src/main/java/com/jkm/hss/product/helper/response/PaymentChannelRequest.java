@@ -37,8 +37,8 @@ public class PaymentChannelRequest {
      *五要素：银行卡号，姓名，身份证号，手机号，有效期（信用卡）
      *六要素：银行卡号，姓名，身份证号，手机号，有效期（信用卡），CVV（信用卡）
      *
-     * {@link com.jkm.hss.product.enums.EnumCheckType}
-     */
+     *
+     * */
     private int checkType;
 
     /**

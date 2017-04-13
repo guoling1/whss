@@ -93,7 +93,12 @@ public enum EnumNoticeType {
     /**
      * 商户审核成功hss
      */
-    MERCHANT_NO_AUDIT(907, "审核通过");
+    MERCHANT_NO_AUDIT(907, "审核通过"),
+
+    /**
+     * 官网验证码
+     */
+    OFFICIAL_WEBSITE(1000,"官网验证码");
 
 
     private static final Map<Integer, EnumNoticeType> ENUM_MAP = new HashMap<>();

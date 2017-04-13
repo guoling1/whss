@@ -74,20 +74,9 @@
               <label>支付方式：</label>
               <el-select style="width: 140px" clearable v-model="query.payType" size="small">
                 <el-option label="全部" value="">全部</el-option>
-                <el-option label="阳光微信公众号" value="sm_wechat_jsapi">阳光微信公众号</el-option>
-                <el-option label="阳光支付宝公众号" value="sm_alipay_jsapi">阳光支付宝公众号</el-option>
-                <el-option label="阳光微信扫码" value="sm_wechat_code">阳光微信扫码</el-option>
-                <el-option label="阳光支付宝扫码" value="sm_alipay_code">阳光支付宝扫码</el-option>
-                <el-option label="阳光快捷" value="sm_unionpay">阳光快捷</el-option>
-                <el-option label="卡盟微信公众号" value="km_wechat_jsapi">卡盟微信公众号</el-option>
-                <el-option label="卡盟支付宝公众号" value="km_alipay_jsapi">卡盟支付宝公众号</el-option>
-                <el-option label="卡盟微信扫码" value="km_wechat_code">卡盟微信扫码</el-option>
-                <el-option label="卡盟支付宝扫码" value="km_alipay_code">卡盟支付宝扫码</el-option>
-                <el-option label="摩宝快捷" value="mb_unionpay">摩宝快捷</el-option>
-                <el-option label="合众易宝微信" value="hzyb_wechat">合众易宝微信</el-option>
-                <el-option label="合众易宝支付宝" value="hzyb_alipay">合众易宝支付宝</el-option>
-                <el-option label="溢+微信" value="yijia_wechat">溢+微信</el-option>
-                <el-option label="溢+支付宝" value="yijia_alipay">溢+支付宝</el-option>
+                <el-option label="微信支付" value="wechat"></el-option>
+                <el-option label="支付宝支付" value="alipay"></el-option>
+                <el-option label="快捷支付" value="unionpay"></el-option>
               </el-select>
             </li>
             <li class="same">
@@ -102,16 +91,16 @@
               </template>
             </el-table-column>
             <el-table-column prop="appId" label="业务方" min-width="85"></el-table-column>
-            <el-table-column label="业务订单号" min-width="112">
-              <template scope="scope">
-                <span class="td" :data-clipboard-text="records[scope.$index].businessOrderNo" type="text" size="small"
-                      style="cursor: pointer" title="点击复制">{{records[scope.$index].businessOrderNo|changeHide}}</span>
-              </template>
-            </el-table-column>
             <el-table-column label="交易订单号" min-width="112">
               <template scope="scope">
                 <span class="td" :data-clipboard-text="records[scope.$index].orderNo" type="text" size="small"
                       style="cursor: pointer" title="点击复制">{{records[scope.$index].orderNo|changeHide}}</span>
+              </template>
+            </el-table-column>
+            <el-table-column label="业务订单号" min-width="112">
+              <template scope="scope">
+                <span class="td" :data-clipboard-text="records[scope.$index].businessOrderNo" type="text" size="small"
+                      style="cursor: pointer" title="点击复制">{{records[scope.$index].businessOrderNo|changeHide}}</span>
               </template>
             </el-table-column>
             <el-table-column label="支付流水号" min-width="112">
