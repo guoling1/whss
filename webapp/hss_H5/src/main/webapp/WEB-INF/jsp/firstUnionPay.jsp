@@ -111,6 +111,5 @@
 </script>
 <script src="https://res.wx.qq.com/open/libs/weuijs/1.0.0/weui.min.js"></script>
 <script src="http://static.jinkaimen.cn/vendor/vendor.1.0.9.7.min.js"></script>
-<%--<script src="http://static.jinkaimen.cn/hss/2.2.12/firstUnionPay.min.js"></script>--%>
-<script src="/js/hss/2.2.12/firstUnionPay.min.js"></script>
+<script src="http://static.jinkaimen.cn/hss/2.2.12/firstUnionPay.min.js"></script>
 </html>
