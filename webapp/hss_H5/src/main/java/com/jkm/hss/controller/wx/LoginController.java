@@ -2,7 +2,9 @@ package com.jkm.hss.controller.wx;
 
 
 import com.google.common.base.Optional;
+import com.google.common.base.Preconditions;
 import com.jkm.base.common.entity.CommonResponse;
+import com.jkm.base.common.enums.EnumBoolean;
 import com.jkm.base.common.util.CookieUtil;
 import com.jkm.base.common.util.DateFormatUtil;
 import com.jkm.base.common.util.SnGenerator;
@@ -26,13 +28,11 @@ import com.jkm.hss.merchant.helper.WxConstants;
 import com.jkm.hss.merchant.helper.WxPubUtil;
 import com.jkm.hss.merchant.helper.request.MerchantGetRateRequest;
 import com.jkm.hss.merchant.service.*;
+import com.jkm.hss.product.entity.BasicChannel;
 import com.jkm.hss.product.entity.ProductChannelDetail;
 import com.jkm.hss.product.entity.UpgradePayRecord;
 import com.jkm.hss.product.entity.UpgradeRules;
-import com.jkm.hss.product.enums.EnumPayChannelSign;
-import com.jkm.hss.product.enums.EnumPaymentChannel;
-import com.jkm.hss.product.enums.EnumUpgrade;
-import com.jkm.hss.product.enums.EnumUpgradePayResult;
+import com.jkm.hss.product.enums.*;
 import com.jkm.hss.product.helper.response.UpgradeResult;
 import com.jkm.hss.product.servcie.ProductChannelDetailService;
 import com.jkm.hss.product.servcie.UpgradePayRecordService;
@@ -515,28 +515,63 @@ public class LoginController extends BaseController {
      */
     @RequestMapping(value = "/collection", method = RequestMethod.GET)
     public String collection(final HttpServletRequest request, final HttpServletResponse response, final Model model) throws IOException {
+        boolean isRedirect = false;
         if(!super.isLogin(request)){
-            model.addAttribute("merchantName", "");
-            model.addAttribute("merchantName", 0);
+            return "redirect:"+ WxConstants.WEIXIN_USERINFO+request.getRequestURI()+ WxConstants.WEIXIN_USERINFO_REDIRECT;
         }else{
-            String merchantName = "";
-            long bankId = 0;
+            String url = "";
             Optional<UserInfo> userInfoOptional = userInfoService.selectByOpenId(super.getOpenId(request));
-            if(userInfoOptional.isPresent()){
-                Optional<MerchantInfo> merchantInfo = this.merchantInfoService.selectById(userInfoOptional.get().getMerchantId());
-                if(merchantInfo.isPresent()){
-                    merchantName = merchantInfo.get().getMerchantName();
-                    AccountBank accountBank = accountBankService.getDefault(merchantInfo.get().getAccountId());
-                    if(accountBank!=null){
-                        bankId = accountBank.getId();
+            if (userInfoOptional.isPresent()) {
+                Long merchantId = userInfoOptional.get().getMerchantId();
+                if (merchantId != null && merchantId != 0){
+                    Optional<MerchantInfo> result = merchantInfoService.selectById(merchantId);
+                    if (result.get().getStatus()== EnumMerchantStatus.LOGIN.getId()){//登录
+                        url = "/sqb/reg";
+                        isRedirect= true;
+                    }else if(result.get().getStatus()== EnumMerchantStatus.INIT.getId()){
+                        url = "/sqb/addInfo";
+                        isRedirect= true;
+                    }else if(result.get().getStatus()== EnumMerchantStatus.ONESTEP.getId()){
+                        url = "/sqb/addNext";
+                        isRedirect= true;
+                    }else if(result.get().getStatus()== EnumMerchantStatus.REVIEW.getId()||
+                            result.get().getStatus()== EnumMerchantStatus.UNPASSED.getId()||
+                            result.get().getStatus()== EnumMerchantStatus.DISABLE.getId()){
+                        url = "/sqb/prompt";
+                        isRedirect= true;
+                    }else if(result.get().getStatus()== EnumMerchantStatus.PASSED.getId()||result.get().getStatus()== EnumMerchantStatus.FRIEND.getId()){//跳首页
+                        String merchantName = "";
+                        long bankId = 0;
+                        if(userInfoOptional.isPresent()){
+                            Optional<MerchantInfo> merchantInfo = this.merchantInfoService.selectById(userInfoOptional.get().getMerchantId());
+                            if(merchantInfo.isPresent()){
+                                merchantName = merchantInfo.get().getMerchantName();
+                                AccountBank accountBank = accountBankService.getDefault(merchantInfo.get().getAccountId());
+                                if(accountBank!=null){
+                                    bankId = accountBank.getId();
+                                }
+                            }
+                        }
+                        model.addAttribute("merchantName", merchantName);
+                        model.addAttribute("bankId", bankId);
+                        url = "/collection";
                     }
+                }else{
+                    CookieUtil.deleteCookie(response,ApplicationConsts.MERCHANT_COOKIE_KEY,ApplicationConsts.getApplicationConfig().domain());
+                    url = "/sqb/reg";
+                    isRedirect= true;
                 }
-
+            }else{
+                CookieUtil.deleteCookie(response,ApplicationConsts.MERCHANT_COOKIE_KEY,ApplicationConsts.getApplicationConfig().domain());
+                isRedirect= true;
+                url = "/sqb/reg";
             }
-            model.addAttribute("merchantName", merchantName);
-            model.addAttribute("bankId", bankId);
+            if(isRedirect){
+                return "redirect:"+url;
+            }else{
+                return url;
+            }
         }
-        return "/collection";
     }
 
     /**
