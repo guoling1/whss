@@ -4,7 +4,7 @@
       <div class="box" style="margin-top:15px;overflow: hidden">
         <div class="box-header">
           <h3 class="box-title">角色管理</h3>
-          <router-link to="/admin/record/roleAdd" class="btn btn-primary" style="float: right;">新增角色</router-link>
+          <a @click="_$power(issue,'boss_role_add')" class="btn btn-primary" style="float: right;">新增角色</a>
         </div>
         <div class="box-body">
           <!--筛选-->
@@ -29,11 +29,9 @@
             <el-table-column prop="statusName" label="状态"></el-table-column>
             <el-table-column label="操作" width="100">
               <template scope="scope">
-                <router-link :to="{path:'/admin/record/roleAdd',query:{id:records[scope.$index].id}}" type="text"
-                             size="small">编辑
-                </router-link>
-                <a @click="open(records[scope.$index].id)" v-if="records[scope.$index].statusName=='禁用'" type="text" size="small">开启</a>
-                <a @click="close(records[scope.$index].id)" v-if="records[scope.$index].statusName=='正常'" type="text" size="small">禁用</a>
+                <a @click="_$power(scope.row.id,issue1,'boss_role_update')" type="text" size="small">编辑</a>
+                <a @click="_$power(scope.row.id,open,'boss_role_disable')"  v-if="records[scope.$index].statusName=='禁用'" type="text" size="small">开启</a>
+                <a @click="_$power(scope.row.id,close,'boss_role_disable')" v-if="records[scope.$index].statusName=='正常'" type="text" size="small">禁用</a>
               </template>
             </el-table-column>
           </el-table>
@@ -73,6 +71,12 @@
       this.getData()
     },
     methods: {
+      issue: function () {
+        this.$router.push('/admin/record/roleAdd')
+      },
+      issue1: function (id) {
+        this.$router.push({path:'/admin/record/roleAdd',query:{id:id}})
+      },
       getData: function () {
         this.loading = true;
         this.$http.post('/admin/user/roleListByPage', this.$data.query)

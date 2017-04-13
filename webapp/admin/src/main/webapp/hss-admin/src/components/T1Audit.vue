@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="col-md-12">
+    <div class="col-md-12" style="height: 880px">
       <div class="box" style="margin-top:15px;overflow: hidden">
         <div class="box-header">
           <h3 class="box-title">T1结算审核</h3>
@@ -70,7 +70,7 @@
             <el-table-column prop="settleStatusValue" label="结算状态" ></el-table-column>
             <el-table-column label="操作" width="70">
               <template scope="scope">
-                <el-button @click.native.prevent="list(scope.$index)" type="text" size="small" v-if="records[scope.$index].settleStatusValue!='结算成功'">结算</el-button>
+                <el-button @click.native.prevent="_$power(list,'boss_trade_export',scope.$index)" type="text" size="small" v-if="records[scope.$index].settleStatusValue!='结算成功'">结算</el-button>
               </template>
             </el-table-column>
           </el-table>

@@ -39,7 +39,7 @@
               <div class="btn btn-primary" @click="search">筛选</div>
               </li>
             <li class="same" style="float: right">
-              <span @click="onload()" download="打款记录" class="btn btn-primary" style="color: #fff">导出</span>
+              <span @click="_$power(onload,'boss_trade_export')" download="打款记录" class="btn btn-primary" style="color: #fff">导出</span>
             </li>
           </ul>
           <!--表格-->

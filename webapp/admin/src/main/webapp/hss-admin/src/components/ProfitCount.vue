@@ -29,7 +29,7 @@
                   <div class="btn btn-primary" @click="search">筛选</div>
                 </li>
                 <li class="same" style="color: #fff;float: right">
-                  <span @click="onload()" download="公司分润" class="btn btn-primary">导出</span>
+                  <span @click="_$power(onload,'boss_company_share_export')" download="公司分润" class="btn btn-primary">导出</span>
                 </li>
               </ul>
               <!--表格-->
@@ -85,7 +85,7 @@
                   <div class="btn btn-primary" @click="search">筛选</div>
                 </li>
                 <li class="same" style="color: #fff;float: right">
-                  <span @click="onload()" download="公司分润" class="btn btn-primary" style="color: #fff;float: right">导出</span>
+                  <span @click="_$power(onload,'boss_first_share_export')" download="公司分润" class="btn btn-primary" style="color: #fff;float: right">导出</span>
                 </li>
               </ul>
               <!--表格-->
@@ -146,7 +146,7 @@
                   <div class="btn btn-primary" @click="search">筛选</div>
                 </li>
                 <li class="same" style="color: #fff;float: right">
-                  <span @click="onload()" download="公司分润" class="btn btn-primary">导出</span>
+                  <span @click="_$power(onload,'boss_seconde_share_export')" download="公司分润" class="btn btn-primary">导出</span>
                 </li>
               </ul>
               <!--表格-->
@@ -292,7 +292,7 @@
           vm.$data.totalUrl='/admin/allProfit/secondAmount'
         }else {
           vm.$data.activeName='first';
-          vm.$data.url='/admin/allProfit/CompanyProfit';
+          vm.$data.url='/admin/allProfit/companyProfit';
           vm.$data.totalUrl='/admin/allProfit/companyAmount'
         }
         vm.$data.records = [];

@@ -47,7 +47,7 @@ export default {
 </style>-->
 <template lang="html">
   <!-- Content Wrapper. Contains page content -->
-  <div class="content-wrapper" style="margin-left: 130px">
+  <div class="content-wrapper" style="margin-left: 130px;" id="content">
     <!-- Content Header (Page header) -->
     <!-- <section class="content-header">
       <h1>
@@ -152,8 +152,12 @@ export default {
         this.editableTabsValue2 = activeName;
         this.editableTabs2 = tabs.filter(tab => tab.name !== targetName);
       }
+    },
+    attached:function () {
+      document.getElementById('content').style.height = (document.documentElement.clientHeight-98)+'px';
     }
   }
+
 </script>
 
 <style scoped lang="less">

@@ -4,7 +4,8 @@
       <div class="box" style="margin-top:15px;overflow: hidden">
         <div class="box-header">
           <h3 class="box-title">产码记录</h3>
-          <router-link to="/admin/record/codeProduct" class="pull-right btn btn-primary" style="margin-left: 20px">生产二维码</router-link>
+          <!--<router-link to="/admin/record/codeProduct" class="pull-right btn btn-primary" style="margin-left: 20px">生产二维码</router-link>-->
+          <a @click="_$power(issue,'boss_qr_code_product')" class="pull-right btn btn-primary" style="margin-left: 20px">生产二维码</a>
         </div>
         <div class="box-body">
           <!--筛选-->
@@ -92,6 +93,9 @@
       this.getData()
     },
     methods: {
+      issue: function () {
+        this.$router.push('/admin/record/codeProduct')
+      },
       getData: function () {
         this.loading = true;
         this.$http.post('/admin/code/productionList',this.query)

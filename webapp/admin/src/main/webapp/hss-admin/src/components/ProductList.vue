@@ -71,9 +71,9 @@
       <!-- /.box -->
     </div>
 
-    <router-link class="btn btn-primary" to="/admin/record/productAdd" style="margin: 0 15px">
+    <a @click="_$power(issue,'boss_product_add')" class="btn btn-primary" style="margin: 0 15px">
       新增产品
-    </router-link>
+    </a>
   </div>
 </template>
 
@@ -115,6 +115,9 @@
         })
     },
     methods: {
+      issue: function () {
+        this.$router.push('/admin/record/productAdd')
+      },
       create: function () {
         this.$data.product.channels = [];
         this.$data.product.productId = this.$data.products[this.$data.id].productId;

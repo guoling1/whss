@@ -3,7 +3,9 @@ package com.jkm.hss.admin.service;
 import com.google.common.base.Optional;
 import com.jkm.base.common.entity.PageModel;
 import com.jkm.hss.admin.entity.*;
+import com.jkm.hss.admin.helper.requestparam.AdminDealerUserListRequest;
 import com.jkm.hss.admin.helper.requestparam.AdminUserListRequest;
+import com.jkm.hss.admin.helper.responseparam.AdminUserDealerListResponse;
 import com.jkm.hss.admin.helper.responseparam.AdminUserListResponse;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
@@ -39,12 +41,19 @@ public interface AdminUserService {
     Optional<AdminUser> getAdminUserById(long auid);
 
     /**
-     * 根据用户名获取
+     * 根据用户名和类型获取
      *
      * @param username
      * @return
      */
-    Optional<AdminUser> getAdminUserByName(final String username);
+    Optional<AdminUser> getAdminUserByNameAndType(final String username,final int type);
+    /**
+     * 根据用户名和类型获取
+     *
+     * @param username
+     * @return
+     */
+    Optional<AdminUser> getAdminUserByNameAndTypeUnIncludeNow(final String username,final int type,final long dealerId);
 
     /**
      * 禁用用户
@@ -153,7 +162,7 @@ public interface AdminUserService {
     int unDistributeCount(String sysType);
 
     /**
-     * x修改密码
+     * 修改密码
      * @param password
      * @param id
      * @return
@@ -166,6 +175,12 @@ public interface AdminUserService {
      * @return
      */
     PageModel<AdminUserListResponse> userList(AdminUserListRequest adminUserListRequest);
+    /**
+     * 员工列表
+     * @param adminDealerUserListRequest
+     * @return
+     */
+    PageModel<AdminUserDealerListResponse> userDealerList(AdminDealerUserListRequest adminDealerUserListRequest);
 
     /**
      *
@@ -173,7 +188,7 @@ public interface AdminUserService {
      * @param id
      * @return
      */
-    Long selectByUsernameUnIncludeNow(String username,long id);
+    Long selectByUsernameAndTypeUnIncludeNow(String username,int type,long id);
 
     /**
      * 最后一次登陆时间
@@ -181,4 +196,79 @@ public interface AdminUserService {
      * @return
      */
     void updateLastLoginDate(long id);
+
+    /**
+     * 创建一级代理商管理账户
+     * @param adminUser
+     * @return
+     */
+    long createFirstDealerUser(AdminUser adminUser);
+    /**
+     * 创建二级代理商管理账户
+     * @param adminUser
+     * @return
+     */
+    long createSecondDealerUser(AdminUser adminUser);
+    /**
+     * 修改一级代理商管理账户
+     * @param adminUser
+     * @return
+     */
+    void updateDealerUser(AdminUser adminUser);
+
+    /**
+     * 修改代理商登录密码
+     * @param pwd
+     * @param dealerId
+     */
+    void updateDealerUserPwd(String pwd,long dealerId);
+    /**
+     * 修改代理商登录密码
+     * @param pwd
+     * @param id
+     */
+    void updateDealerUserPwdById(String pwd,long id);
+
+    /**
+     * 根据代理商编码和是否有所有权限查询代理商
+     * @param dealerId
+     * @param isMaster
+     * @return
+     */
+    Optional<AdminUser> getAdminUserByDealerIdAndIsMaster(final long dealerId,final int isMaster);
+
+    /**
+     * 判断是否有接口访问权限
+     * @param roleId
+     * @param type
+     * @param url
+     * @param method
+     * @return
+     */
+    int getPrivilegeByContions(long roleId,int type,String url,String method);
+    /**
+     * 判断是否有接口访问权限(js公共调用)
+     * @param roleId
+     * @param type
+     * @param descr
+     * @return
+     */
+    int getPrivilegeByContionsOfJs(long roleId,int type,String descr);
+
+    /**
+     * 是否有访问的操作
+     * @param type
+     * @param url
+     * @param method
+     * @return
+     */
+    int hasUrl(int type,String url,String method);
+
+    /**
+     * 是否有关键字
+     * @param type
+     * @param descr
+     * @return
+     */
+    int hasDescr(int type,String descr);
 }
