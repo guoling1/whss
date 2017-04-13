@@ -30,6 +30,13 @@
             <el-table-column label="通道名称">
               <template scope="scope">
                 <router-link :to="{path:'/admin/record/passAdd',query:{id:scope.$index}}"
+                             type="text" size="small">{{records[scope.$index].channelShortName}}
+                </router-link>
+              </template>
+            </el-table-column>
+            <el-table-column label="原始名称">
+              <template scope="scope">
+                <router-link :to="{path:'/admin/record/passAdd',query:{id:scope.$index}}"
                              type="text" size="small">{{records[scope.$index].channelName}}
                 </router-link>
               </template>
@@ -49,13 +56,7 @@
                 <span v-if="records[scope.$index].basicSettleType=='SELF'">自主打款结算</span>
               </template>
             </el-table-column>
-            <el-table-column prop="supportWay" label="支付方式">
-              <template scope="scope">
-                <span v-if="records[scope.$index].supportWay=='1'">公众号</span>
-                <span v-if="records[scope.$index].supportWay=='2'">扫码</span>
-                <span v-if="records[scope.$index].supportWay=='3'">公众号、扫码</span>
-              </template>
-            </el-table-column>
+            <el-table-column prop="thirdCompany" label="支付方式"></el-table-column>
             <el-table-column prop="remarks" label="备注信息"></el-table-column>
           </el-table>
           <!--分页

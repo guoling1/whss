@@ -172,7 +172,7 @@
         /*queryUrl:'http://192.168.1.20:8076/order/pay/listOrder',
         excelUrl:'http://192.168.1.20:8076/order/pay/exportExcel',
         syncUrl:'http://192.168.1.20:8076/order/syncPayOrder',
-        addUrl:'http://192.168.1.25:8240/order/pay/payAmount',*/
+        addUrl:'http://192.168.1.20:8076/order/pay/payAmount',*/
       }
     },
     created: function () {

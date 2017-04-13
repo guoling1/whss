@@ -87,7 +87,12 @@ public enum EnumPayType {
     /**
      * 溢+支付宝
      */
-    YIJIA_ALIPAY("yijia_alipay", "yijia_alipay", "溢+支付宝", EnumPaymentChannel.WECHAT_PAY, EnumUpperChannel.YIJIA)
+    YIJIA_ALIPAY("yijia_alipay", "yijia_alipay", "溢+支付宝", EnumPaymentChannel.WECHAT_PAY, EnumUpperChannel.YIJIA),
+
+    /**
+     * 易联快捷支付
+     */
+    EASY_LINK_UNIONPAY("easy_link_unionpay", "el_unionpay", "易联快捷", EnumPaymentChannel.UNIONPAY, EnumUpperChannel.EASY_LINK)
     ;
 
 

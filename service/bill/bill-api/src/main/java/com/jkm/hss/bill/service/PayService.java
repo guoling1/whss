@@ -128,7 +128,7 @@ public interface PayService {
      * @param order
      * @param settlementRecordId
      */
-    void merchantRecordedAccount(long accountId, BigDecimal settleAmount, Order order, long settlementRecordId);
+    void merchantRecordedAccount(long accountId, BigDecimal settleAmount, Order order, long settlementRecordId, String remark);
 
     /**
      * 支付手续费结算 到 代理商等 待结算账户

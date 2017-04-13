@@ -103,7 +103,7 @@
             </el-pagination>
           </div>
         </div>
-        <el-dialog title="修改商户归属信息" v-model="isShow">
+        <el-dialog title="对账异常处理" v-model="isShow">
           <el-form :label-position="right" label-width="150px">
             <el-form-item label="备注信息：" width="120" style="margin-bottom: 0">
               <el-input style="width: 70%"
@@ -165,8 +165,8 @@
         url:"http://checking.qianbaojiajia.com/external/detailList",
         handleUrl:'http://checking.qianbaojiajia.com/external/updateDetailReason'
         //测试
-         /*url:'http://192.168.1.99:8080/balance/external/detailList',
-         handleUrl:'http://192.168.1.99:8080/balance/external/updateDetailReason'*/
+//         url:'http://192.168.1.99:8080/balance/external/detailList',
+//         handleUrl:'http://192.168.1.99:8080/balance/external/updateDetailReason'
       }
     },
     created: function () {

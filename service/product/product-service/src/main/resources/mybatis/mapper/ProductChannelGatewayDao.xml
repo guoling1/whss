@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jkm.hss.product.dao.ProductChannelGatewayDao">
+    <insert id="addNew" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO tb_product_channel_gateway
+        (gateway_type,
+        dealer_gateway_id,
+        product_id,
+        product_type,
+        channel_sign,
+        view_channel_name,
+        channel_short_name,
+        status
+        )VALUES(
+         #{gatewayType},
+         #{dealerGatewayId},
+         #{productId},
+         #{productType},
+         #{channelSign},
+         #{viewChannelName},
+         #{channelShortName},
+         #{status}
+        )
+    </insert>
+    <update id="update">
+        UPDATE tb_product_channel_gateway
+        SET
+        gateway_type = #{gatewayType},
+        dealer_gateway_id = #{dealerGatewayId},
+        product_id = #{productId},
+        product_type = #{productType},
+        channel_sign = #{channelSign},
+        view_channel_name = #{viewChannelName},
+        channel_short_name = #{channelShortName},
+        status = #{status}
+        WHERE id = #{id}
+    </update>
+    <select id="selectByProductTypeAndGatewayAndProductId"
+            resultType="com.jkm.hss.product.entity.ProductChannelGateway">
+        SELECT * FROM tb_product_channel_gateway
+        WHERE product_type = #{type} AND gateway_type = #{gatewayType} AND product_id = #{productId} AND status = 2 AND gateway_type = 'product'
+    </select>
+</mapper>

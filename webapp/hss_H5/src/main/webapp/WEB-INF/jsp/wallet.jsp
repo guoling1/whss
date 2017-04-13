@@ -16,7 +16,7 @@
         content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
   <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
   <title>好收收</title>
-  <link rel="stylesheet" href="http://static.jinkaimen.cn/hss/css/style.2.2.5.css">
+  <link rel="stylesheet" href="http://static.jinkaimen.cn/hss/css/style.2.2.7.css">
   <link rel="stylesheet" href="http://static.jinkaimen.cn/weui/weui.css">
 </head>
 <body>
@@ -34,12 +34,12 @@
       <div class="operation-title">收款</div>
     </a>
 
-    <a class="operation touch_op" href="/account/toHssAccount">
+    <a class="operation" href="/account/toHssAccount">
       <div class="logo wallet"></div>
       <div class="operation-title">余额</div>
       <div class="operation-small">${avaliable}</div>
     </a>
-    <a class="operation touch_op" href="/account/toWithdraw">
+    <a class="operation" href="/account/toWithdraw">
       <div class="logo card"></div>
       <div class="operation-title">提现</div>
     </a>
@@ -52,7 +52,7 @@
   </div>
   <div>
     <div class="advertisement">
-      <img src="http://static.jinkaimen.cn/hss/assets/banner2.png" alt="">
+      <img src="http://static.jinkaimen.cn/hss/assets/banner.png" alt="">
     </div>
     <div class="application">
       <a class="group touch_gr" id="show_recommend" href="/sqb/myRecommend">
@@ -116,6 +116,6 @@
     showRecommend: '${showRecommend}'//1显示升级 2不显示升级
   };
 </script>
-<script src="http://static.jinkaimen.cn/vendor/vendor.1.0.9.5.min.js"></script>
-<script src="http://static.jinkaimen.cn/hss/2.2.9/wallet.min.js"></script>
+<script src="http://static.jinkaimen.cn/vendor/vendor.1.0.9.7.min.js"></script>
+<script src="http://static.jinkaimen.cn/hss/2.2.11/wallet.min.js"></script>
 </html>
