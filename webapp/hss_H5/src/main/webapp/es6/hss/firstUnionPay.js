@@ -115,6 +115,15 @@ let code = document.getElementById('code');
 let orderId = '';
 let supportBankCardList = {};
 let support = false;
+// 是否展示 有效期选择 cvv2填写
+let showExpireDate = document.getElementById('showExpireDate');
+let showCvv = document.getElementById('showCvv');
+if (pageData.showExpireDate == 1) {
+  showExpireDate.style.display = 'block';
+}
+if (pageData.showCvv == 1) {
+  showCvv.style.display = 'block';
+}
 // 定义信用卡号校验
 bankCodeBtn.addEventListener('click', function () {
   if (!bankName || bankName == '') {
@@ -157,8 +166,8 @@ bankCodeBtn.addEventListener('change', function (e) {
 submit.addEventListener('click', function () {
   if (!support) {
     message.prompt_show('请输入正确的信用卡号');
-  } else if (validate.empty(expireDate.value, '信用卡有效期') &&
-    validate.empty(cvv2.value, 'CVV2') &&
+  } else if ((pageData.showExpireDate == 0 || validate.empty(expireDate.value, '信用卡有效期')) &&
+    (pageData.showCvv == 0 || validate.empty(cvv2.value, 'CVV2')) &&
     validate.phone(mobile.value) &&
     validate.empty(code.value, '验证码')) {
     if (cvv2.value.length == 3) {
@@ -180,8 +189,8 @@ sendCode.addEventListener('click', function () {
   if (countdown.check()) {
     if (!support) {
       message.prompt_show('请输入正确的信用卡号');
-    } else if (validate.empty(expireDate.value, '信用卡有效期') &&
-      validate.empty(cvv2.value, 'CVV2') &&
+    } else if ((pageData.showExpireDate == 0 || validate.empty(expireDate.value, '信用卡有效期')) &&
+      (pageData.showCvv == 0 || validate.empty(cvv2.value, 'CVV2')) &&
       validate.phone(mobile.value)) {
       if (cvv2.value.length == 3) {
         message.load_show('正在发送');

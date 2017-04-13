@@ -102,7 +102,6 @@ http.post('/channel/list', {}, function (data) {
         message.prompt_show('请输入正确的收款金额');
       }
     };
-    console.log(data[i]);
     let name = document.createElement('div');
     name.className = 'channel-con name big';
     name.innerHTML = data[i].channelName;
@@ -113,7 +112,7 @@ http.post('/channel/list', {}, function (data) {
     fee.className = 'channel-con small';
     fee.innerHTML = (data[i].channelRate * 100).toFixed(2) + '%';
     let amount = document.createElement('div');
-    amount.className = 'channel-con';
+    amount.className = 'channel-con right';
     amount.innerHTML = data[i].limitAmount + '元';
     group.appendChild(name);
     group.appendChild(time);

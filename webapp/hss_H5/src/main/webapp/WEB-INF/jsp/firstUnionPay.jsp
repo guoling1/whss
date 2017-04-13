@@ -13,7 +13,8 @@
         content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
   <meta name="format-detection" content="telephone=no"/>
   <title>好收收</title>
-  <link rel="stylesheet" href="http://static.jinkaimen.cn/hss/css/style.2.2.7.css">
+  <%--<link rel="stylesheet" href="http://static.jinkaimen.cn/hss/css/style.2.2.8.css">--%>
+  <link rel="stylesheet" href="/css/hss/style.2.2.8.css">
   <link rel="stylesheet" href="http://static.jinkaimen.cn/weui/weui.css">
 </head>
 <body>
@@ -51,12 +52,12 @@
     </div>
   </div>
   <div class="space">
-    <div class="list">
+    <div class="list" id="showExpireDate">
       <div class="left">有效期</div>
       <input id="expireDate" class="ipt" type="text" placeholder="请选择信用卡有效期" readonly>
       <div class="mpt" id="check_validity">查看示例</div>
     </div>
-    <div class="list">
+    <div class="list" id="showCvv">
       <div class="left">CVV2</div>
       <input id="cvv2" class="ipt" type="text" placeholder="信用卡背面最后3个数字">
       <div class="mpt" id="check_cvv">查看示例</div>
@@ -102,7 +103,14 @@
   </div>
 </div>
 </body>
+<script>
+  var pageData = {
+    showExpireDate: '${showExpireDate}',
+    showCvv: '${showCvv}'
+  }
+</script>
 <script src="https://res.wx.qq.com/open/libs/weuijs/1.0.0/weui.min.js"></script>
 <script src="http://static.jinkaimen.cn/vendor/vendor.1.0.9.7.min.js"></script>
-<script src="http://static.jinkaimen.cn/hss/2.2.11/firstUnionPay.min.js"></script>
+<%--<script src="http://static.jinkaimen.cn/hss/2.2.12/firstUnionPay.min.js"></script>--%>
+<script src="/js/hss/2.2.12/firstUnionPay.min.js"></script>
 </html>
