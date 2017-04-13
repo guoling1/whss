@@ -136,6 +136,7 @@ let CountrysSet = function (code) {
       countyName = Countrys[code][i].aname;
       world.value = provinceName + cityName + countyName;
       layer_w.style.display = 'none';
+      recordQ();
     };
     layer_w_list.appendChild(div_Countrys);
   }
@@ -230,11 +231,68 @@ merchantName.addEventListener('change', function () {
 });
 
 let recordQ = function () {
-
+  localStorage.setItem('pathQ', JSON.stringify({
+    provinceCode: provinceCode,
+    provinceName: provinceName,
+    cityCode: cityCode,
+    cityName: cityName,
+    countyCode: countyCode,
+    countyName: countyName
+  }));
 };
+
+address.addEventListener('change', function () {
+  localStorage.setItem('address', address.value);
+});
+
+bankNo.addEventListener('change', function () {
+  localStorage.setItem('bankNo', bankNo.value);
+});
+
+username.addEventListener('change', function () {
+  localStorage.setItem('username', username.value);
+});
+
+identity.addEventListener('change', function () {
+  localStorage.setItem('identity', identity.value);
+});
+
+reserveMobile.addEventListener('change', function () {
+  localStorage.setItem('reserveMobile', reserveMobile.value);
+});
 
 // 部署 输入框数据获取事件
 
 if (localStorage.getItem('merchantName')) {
   merchantName.value = localStorage.getItem('merchantName');
+}
+
+if (localStorage.getItem('pathQ')) {
+  provinceCode = JSON.parse(localStorage.getItem('pathQ')).provinceCode;
+  provinceName = JSON.parse(localStorage.getItem('pathQ')).provinceName;
+  cityCode = JSON.parse(localStorage.getItem('pathQ')).cityCode;
+  cityName = JSON.parse(localStorage.getItem('pathQ')).cityName;
+  countyCode = JSON.parse(localStorage.getItem('pathQ')).countyCode;
+  countyName = JSON.parse(localStorage.getItem('pathQ')).countyName;
+  world.value = provinceName + cityName + countyName;
+}
+
+if (localStorage.getItem('address')) {
+  address.value = localStorage.getItem('address');
+}
+
+if (localStorage.getItem('bankNo')) {
+  bankNo.value = localStorage.getItem('bankNo');
+}
+
+if (localStorage.getItem('username')) {
+  username.value = localStorage.getItem('username');
+}
+
+if (localStorage.getItem('identity')) {
+  identity.value = localStorage.getItem('identity');
+}
+
+if (localStorage.getItem('reserveMobile')) {
+  reserveMobile.value = localStorage.getItem('reserveMobile');
 }
