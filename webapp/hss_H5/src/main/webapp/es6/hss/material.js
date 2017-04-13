@@ -222,3 +222,19 @@ submit.addEventListener('click', function () {
     })
   }
 });
+
+// 部署 输入框记录事件
+
+merchantName.addEventListener('change', function () {
+  localStorage.setItem('merchantName', merchantName.value);
+});
+
+let recordQ = function () {
+
+};
+
+// 部署 输入框数据获取事件
+
+if (localStorage.getItem('merchantName')) {
+  merchantName.value = localStorage.getItem('merchantName');
+}
