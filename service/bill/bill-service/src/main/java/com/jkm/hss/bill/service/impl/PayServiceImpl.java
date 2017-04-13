@@ -887,7 +887,7 @@ public class PayServiceImpl implements PayService {
         paymentSdkUnionPayRequest.setCardByName(merchant.getName());
         paymentSdkUnionPayRequest.setCardByNo(MerchantSupport.decryptBankCard(merchant.getAccountId(), accountBank.getBankNo()));
         paymentSdkUnionPayRequest.setExpireDate(accountBank.getExpiryTime());
-        paymentSdkUnionPayRequest.setCardCvv(MerchantSupport.decryptCvv(accountBank.getCvv()));
+        paymentSdkUnionPayRequest.setCardCvv(StringUtils.isEmpty(accountBank.getCvv()) ? "" : MerchantSupport.decryptCvv(accountBank.getCvv()));
         paymentSdkUnionPayRequest.setCerNumber(MerchantSupport.decryptIdentity(merchant.getIdentity()));
         paymentSdkUnionPayRequest.setMobile(MerchantSupport.decryptMobile(merchant.getAccountId(), accountBank.getReserveMobile()));
         final String resultStr = this.httpClientFacade.jsonPost(PaymentSdkConstants.SDK_PAY_UNIONPAY_PREPARE, SdkSerializeUtil.convertObjToMap(paymentSdkUnionPayRequest));
