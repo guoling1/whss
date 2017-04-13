@@ -536,7 +536,7 @@ public class TradeController extends BaseController {
         }
         final long creditBankCardId = this.accountBankService.initCreditBankCard(merchantInfo.getAccountId(), firstUnionPaySendMsgRequest.getBankCardNo(),
                 bankCardBin.getBankName(), firstUnionPaySendMsgRequest.getMobile(), bankCardBin.getShorthand(), firstUnionPaySendMsgRequest.getExpireDate(), firstUnionPaySendMsgRequest.getCvv2());
-        final Pair<Integer, String> result = this.payService.unionPay(merchantInfo.getId(), firstUnionPaySendMsgRequest.getAmount(),
+        final Pair<Integer, String> result = this.payService.firstUnionPay(merchantInfo.getId(), firstUnionPaySendMsgRequest.getAmount(),
                 firstUnionPaySendMsgRequest.getChannel(), creditBankCardId, EnumProductType.HSS.getId());
         if (0 == result.getLeft()) {
             return CommonResponse.builder4MapResult(CommonResponse.SUCCESS_CODE, "success")
@@ -601,22 +601,9 @@ public class TradeController extends BaseController {
                 && !hasCvv) {
             return CommonResponse.simpleResponse(-1, "CVV2 不能为空");
         }
-        if (EnumCheckType.FIVE_CHECK.getId() == basicChannel.getCheckType()) {
-            if (!hasExpiryTime) {
-                this.accountBankService.updateExpiryTimeById(againUnionPaySendMsgRequest.getExpireDate(), accountBankOptional.get().getId());
-            }
-        }
-        if (EnumCheckType.SIX_CHECK.getId() == basicChannel.getCheckType()) {
-            if (!hasExpiryTime && !hasCvv) {
-                this.accountBankService.updateCvvAndExpiryTimeById(againUnionPaySendMsgRequest.getCvv2(), againUnionPaySendMsgRequest.getExpireDate(), accountBankOptional.get().getId());
-            } else if (!hasExpiryTime) {
-                this.accountBankService.updateExpiryTimeById(againUnionPaySendMsgRequest.getExpireDate(), accountBankOptional.get().getId());
-            } else if (!hasCvv) {
-                this.accountBankService.updateCvvById(againUnionPaySendMsgRequest.getCvv2(), accountBankOptional.get().getId());
-            }
-        }
-        final Pair<Integer, String> result = this.payService.unionPay(merchantInfo.getId(), againUnionPaySendMsgRequest.getAmount(),
-                againUnionPaySendMsgRequest.getChannel(), againUnionPaySendMsgRequest.getCreditCardId(), EnumProductType.HSS.getId());
+        final Pair<Integer, String> result = this.payService.againUnionPay(merchantInfo.getId(), againUnionPaySendMsgRequest.getAmount(),
+                againUnionPaySendMsgRequest.getChannel(), againUnionPaySendMsgRequest.getExpireDate(), againUnionPaySendMsgRequest.getCvv2(),
+                againUnionPaySendMsgRequest.getCreditCardId(), EnumProductType.HSS.getId());
         if (0 == result.getLeft()) {
             return CommonResponse.builder4MapResult(CommonResponse.SUCCESS_CODE, "success")
                     .addParam("orderId", result.getRight())
@@ -649,19 +636,10 @@ public class TradeController extends BaseController {
         }
         final Pair<Integer, String> result = this.payService.confirmUnionPay(confirmUnionPayRequest.getOrderId(), confirmUnionPayRequest.getCode());
         if (0 == result.getLeft()) {
-            final AccountBank accountBank = this.accountBankService.selectCreditCardByBankNoAndStateless(orderOptional.get().getPayee(),
-                    MerchantSupport.decryptBankCard(orderOptional.get().getPayBankCard())).get();
-            this.accountBankService.setDefaultCreditCard(accountBank.getId());
             return CommonResponse.builder4MapResult(CommonResponse.SUCCESS_CODE, "success")
                     .addParam("orderId", confirmUnionPayRequest.getOrderId())
                     .build();
-        } else {
-            final Optional<AccountBank> accountBankOptional = this.accountBankService.selectCreditCardByBankNo(orderOptional.get().getPayee(),
-                    MerchantSupport.decryptBankCard(orderOptional.get().getPayBankCard()));
-            if (accountBankOptional.isPresent()) {
-                this.accountBankService.cleanCvvAndExpiryTime(accountBankOptional.get().getId(), accountBankOptional.get().getUpdateType());
-            }
-            return CommonResponse.simpleResponse(-1, result.getRight());
         }
+        return CommonResponse.simpleResponse(-1, result.getRight());
     }
 }

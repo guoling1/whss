@@ -31,6 +31,7 @@ import com.jkm.hss.merchant.helper.MerchantSupport;
 import com.jkm.hss.merchant.service.*;
 import com.jkm.hss.mq.config.MqConfig;
 import com.jkm.hss.mq.producer.MqProducer;
+import com.jkm.hss.product.entity.BasicChannel;
 import com.jkm.hss.product.enums.*;
 import com.jkm.hss.product.servcie.BasicChannelService;
 import com.jkm.hss.product.servcie.UpgradeRecommendRulesService;
@@ -844,16 +845,15 @@ public class PayServiceImpl implements PayService {
     /**
      * {@inheritDoc}
      *
-     * @param merchantId  商户ID
-     * @param amount      金额
-     * @param channel     渠道
-     * @param creditBankCardId  信用卡ID
+     * @param merchantId
+     * @param amount
+     * @param channel
      * @param appId
      * @return
      */
     @Override
-    public Pair<Integer, String> unionPay(final long merchantId, final String amount, final int channel,
-                                          final long creditBankCardId, final String appId) {
+    public Pair<Integer, String> firstUnionPay(final long merchantId, final String amount, final int channel,
+                                               final long creditBankCardId, final String appId) {
         log.info("商户[{}] 通过快捷， 支付一笔资金[{}]", merchantId, amount);
         final MerchantInfo merchant = this.merchantInfoService.selectById(merchantId).get();
         final AccountBank accountBank = this.accountBankService.selectStatelessById(creditBankCardId).get();
@@ -876,6 +876,68 @@ public class PayServiceImpl implements PayService {
         order.setSettleType(enumPayChannelSign.getSettleType().getType());
         order.setStatus(EnumOrderStatus.DUE_PAY.getId());
         this.orderService.add(order);
+        return this.unionPay(order.getId(), merchantId, amount, channel, creditBankCardId, appId);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param merchantId
+     * @param amount
+     * @param channel
+     * @param expireDate
+     * @param cvv
+     * @param appId
+     * @return
+     */
+    @Override
+    public Pair<Integer, String> againUnionPay(final long merchantId, final String amount, final int channel, final String expireDate,
+                                               final String cvv, final long creditBankCardId, final String appId) {
+        log.info("商户[{}] 通过快捷， 支付一笔资金[{}]", merchantId, amount);
+        final MerchantInfo merchant = this.merchantInfoService.selectById(merchantId).get();
+        final AccountBank accountBank = this.accountBankService.selectStatelessById(creditBankCardId).get();
+        final EnumPayChannelSign enumPayChannelSign = EnumPayChannelSign.idOf(channel);
+        final Order order = new Order();
+        order.setOrderNo(SnGenerator.generateSn(EnumTradeType.PAY.getId()));
+        order.setTradeAmount(new BigDecimal(amount));
+        order.setRealPayAmount(new BigDecimal(amount));
+        order.setAppId(appId);
+        order.setTradeType(EnumTradeType.PAY.getId());
+        order.setServiceType(EnumServiceType.RECEIVE_MONEY.getId());
+        order.setPayer(0);
+        order.setPayee(merchant.getAccountId());
+        order.setGoodsName(merchant.getMerchantName());
+        order.setGoodsDescribe(merchant.getMerchantName());
+        order.setPayType(enumPayChannelSign.getCode());
+        order.setPayChannelSign(channel);
+        order.setPayBankCard(accountBank.getBankNo());
+        order.setSettleStatus(EnumSettleStatus.DUE_SETTLE.getId());
+        order.setSettleType(enumPayChannelSign.getSettleType().getType());
+        order.setStatus(EnumOrderStatus.DUE_PAY.getId());
+        order.setBankExpireDate(expireDate);
+        order.setCvv(StringUtils.isEmpty(cvv) ? "" : MerchantSupport.encryptCvv(cvv));
+        this.orderService.add(order);
+        return this.unionPay(order.getId(), merchantId, amount, channel, creditBankCardId, appId);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param merchantId  商户ID
+     * @param amount      金额
+     * @param channel     渠道
+     * @param creditBankCardId  信用卡ID
+     * @param appId
+     * @return
+     */
+    @Override
+    @Transactional
+    public Pair<Integer, String> unionPay(final long orderId, final long merchantId, final String amount, final int channel,
+                                          final long creditBankCardId, final String appId) {
+        log.info("商户[{}] 通过快捷， 支付一笔资金[{}]", merchantId, amount);
+        final MerchantInfo merchant = this.merchantInfoService.selectById(merchantId).get();
+        final AccountBank accountBank = this.accountBankService.selectStatelessById(creditBankCardId).get();
+        final Order order = this.orderService.getByIdWithLock(orderId).get();
         final PaymentSdkUnionPayRequest paymentSdkUnionPayRequest = new PaymentSdkUnionPayRequest();
         paymentSdkUnionPayRequest.setAppId(appId);
         paymentSdkUnionPayRequest.setOrderNo(order.getOrderNo());
@@ -941,6 +1003,16 @@ public class PayServiceImpl implements PayService {
             switch (enumBasicStatus) {
                 case SUCCESS:
                     this.orderService.updateRemark(orderId, paymentSdkConfirmUnionPayResponse.getMessage());
+                    final Optional<AccountBank> accountBankOptional = this.accountBankService.selectCreditCardByBankNo(order.getPayee(),
+                            MerchantSupport.decryptBankCard(order.getPayBankCard()));
+                    if (accountBankOptional.isPresent()) {
+                        this.handleBankExpireDateAndCvv(order, accountBankOptional.get());
+                        this.accountBankService.setDefaultCreditCard(accountBankOptional.get().getId());
+                    } else {
+                        final AccountBank accountBank = this.accountBankService.selectCreditCardByBankNoAndStateless(order.getPayee(),
+                                MerchantSupport.decryptBankCard(order.getPayBankCard())).get();
+                        this.accountBankService.setDefaultCreditCard(accountBank.getId());
+                    }
                     return Pair.of(0, "");
                 case FAIL:
                     this.orderService.updateRemark(orderId, paymentSdkConfirmUnionPayResponse.getMessage());
@@ -950,6 +1022,29 @@ public class PayServiceImpl implements PayService {
         return Pair.of(-1, "请重新发送验证码");
     }
 
+    private void handleBankExpireDateAndCvv(final Order order, final AccountBank accountBank) {
+        //保存expireDate or cvv
+        final BasicChannel basicChannel = this.basicChannelService.selectByChannelTypeSign(order.getPayChannelSign()).get();
+        final boolean hasExpiryTime = this.accountBankService.isHasExpiryTime(accountBank.getId());
+        final boolean hasCvv = this.accountBankService.isHasCvv(accountBank.getId());
+        final EnumCheckType checkType = EnumCheckType.of(basicChannel.getCheckType());
+        switch (checkType) {
+            case FIVE_CHECK:
+                if (!hasExpiryTime) {
+                    this.accountBankService.updateExpiryTimeById(order.getBankExpireDate(), accountBank.getId());
+                }
+                break;
+            case SIX_CHECK:
+                if (!hasExpiryTime && !hasCvv) {
+                    this.accountBankService.updateCvvAndExpiryTimeById(MerchantSupport.decryptCvv(order.getCvv()), order.getBankExpireDate(), accountBank.getId());
+                } else if (!hasExpiryTime) {
+                    this.accountBankService.updateExpiryTimeById(order.getBankExpireDate(), accountBank.getId());
+                } else if (!hasCvv) {
+                    this.accountBankService.updateCvvById(MerchantSupport.decryptCvv(order.getCvv()), accountBank.getId());
+                }
+                break;
+        }
+    }
 
     /**
      * 请求支付中心下单

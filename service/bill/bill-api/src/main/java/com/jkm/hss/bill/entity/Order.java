@@ -169,6 +169,16 @@ public class Order extends BaseEntity {
      * 支付所用信用卡
      */
     private String payBankCard;
+
+    /**
+     * 信用卡过期时间
+     */
+    private String bankExpireDate;
+
+    /**
+     * cvv
+     */
+    private String cvv;
     /**
      * 是否待支付
      *

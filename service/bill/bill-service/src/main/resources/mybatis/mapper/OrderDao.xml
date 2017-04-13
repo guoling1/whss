@@ -29,6 +29,8 @@
         success_settle_time,
         pay_channel_sign,
         pay_bank_card,
+        bank_expire_date,
+        cvv,
         remark,
         status
         )
@@ -59,6 +61,8 @@
         #{successSettleTime},
         #{payChannelSign},
         #{payBankCard},
+        #{bankExpireDate},
+        #{cvv},
         #{remark},
         #{status}
         );
