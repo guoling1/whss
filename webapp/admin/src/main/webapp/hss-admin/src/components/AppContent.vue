@@ -73,9 +73,8 @@ export default {
           :label="item.title"
           :name="item.name"
         >
-          <keep-alive>
             <router-view></router-view>
-          </keep-alive>
+
 
         </el-tab-pane>
       </el-tabs>
@@ -109,7 +108,7 @@ export default {
     },
     created:function () {
 //      setInterval(function () {
-//        this.editableTabs2 = JSON.parse(localStorage.getItem('tabsData'));
+        this.editableTabs2 = JSON.parse(localStorage.getItem('tabsData'));
 ////        console.log(this.sess)
 //      },20)
       console.log()

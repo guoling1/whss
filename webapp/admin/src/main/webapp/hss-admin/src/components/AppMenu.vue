@@ -209,18 +209,24 @@
     },
     created: function () {
       this.$data.url = location.pathname;
-//      sessionStorage.removeItem('tabsData')
+//      localStorage.removeItem('tabsData')
     },
     methods: {
       refrash: function (name) {
-
-//        sessionStorage.setItem('tabsData',JSON.stringify([{title:name,name:name}]));
         location.reload()
-//        localStorage.setItem('tabsData',JSON.stringify([]))
-        var session = localStorage.getItem('tabsData')
+        var session = JSON.parse(localStorage.getItem('tabsData'));
         if(session!=null){
-            console.log(JSON.parse(localStorage.getItem('tabsData')))
-          localStorage.setItem('tabsData',JSON.stringify(JSON.parse(localStorage.getItem('tabsData')).concat([{title:name,name:name}])));
+          var flag = false;
+          for(var i=0;i<session.length;i++){
+              if(session[i].title == name){
+                flag = true
+                break;
+              }
+          }
+          if(flag!=true){
+            var ary = session.concat([{title:name,name:name}]);
+            localStorage.setItem('tabsData',JSON.stringify(ary));
+          }
         }else {
           localStorage.setItem('tabsData',JSON.stringify([].concat([{title:name,name:name}])));
         }
