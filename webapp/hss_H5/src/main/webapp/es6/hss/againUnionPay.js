@@ -95,7 +95,7 @@ submit.addEventListener('click', function () {
     if ((pageData.showExpireDate == 0 || validate.empty(expireDate.value, '信用卡有效期')) &&
       (pageData.showCvv == 0 || validate.empty(cvv2.value, 'CVV2')) &&
       validate.empty(code.value, '验证码')) {
-      if (cvv2.value.length == 3) {
+      if ((pageData.showCvv == 0 || cvv2.value.length == 3)) {
         message.load_show('正在支付');
         http.post('/trade/confirmUnionPay', {
           orderId: orderId,
@@ -118,7 +118,7 @@ sendCode.addEventListener('click', function () {
     if (countdown.check()) {
       if ((pageData.showExpireDate == 0 || validate.empty(expireDate.value, '信用卡有效期')) &&
         (pageData.showCvv == 0 || validate.empty(cvv2.value, 'CVV2'))) {
-        if (cvv2.value.length == 3) {
+        if ((pageData.showCvv == 0 || cvv2.value.length == 3)) {
           message.load_show('正在发送');
           http.post('/trade/againUnionPay', {
             amount: amount,
