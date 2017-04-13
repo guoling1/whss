@@ -94,7 +94,7 @@
                 <el-table-column label="操作" width="100">
                   <template scope="scope">
                     <a @click="_$power(scope.row.id,scope.row.status,audit,'boss_merchant_check')" v-if="records[scope.$index].status==2" type="text" size="small">审核</a>
-                    <a @click="_$power(scope.row.id,scope.row.status,audit,'boss_merchant_detail')" v-if="records[scope.$index].status==2" type="text" size="small">查看详情</a>
+                    <a @click="_$power(scope.row.id,scope.row.status,audit,'boss_merchant_detail')" v-if="records[scope.$index].status!=2" type="text" size="small">查看详情</a>
                   </template>
                 </el-table-column>
               </el-table>

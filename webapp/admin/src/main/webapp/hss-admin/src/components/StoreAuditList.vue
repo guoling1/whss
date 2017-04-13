@@ -85,7 +85,7 @@
                 <el-table-column label="操作" width="100">
                   <template scope="scope">
                     <a @click="_$power(scope.row.id,scope.row.status,audit,'boss_unmerchant_check')" v-if="records[scope.$index].status==2" type="text" size="small">审核</a>
-                    <a @click="_$power(scope.row.id,scope.row.status,audit,'boss_unmerchant_detail')" v-if="records[scope.$index].status==2" type="text" size="small">查看详情</a>
+                    <a @click="_$power(scope.row.id,scope.row.status,audit,'boss_unmerchant_detail')" v-if="records[scope.$index].status!=2" type="text" size="small">查看详情</a>
                     <!--<router-link :to="{path:'/admin/record/StoreAudit',query:{id:records[scope.$index].id,status:records[scope.$index].status}}" v-if="records[scope.$index].status==2" type="text" size="small">审核</router-link>
                     <router-link :to="{path:'/admin/record/StoreAudit',query:{id:records[scope.$index].id,status:records[scope.$index].status}}" v-if="records[scope.$index].status!=2" type="text" size="small">查看详情</router-link>-->
                   </template>
