@@ -51,12 +51,12 @@
     </div>
   </div>
   <div class="space">
-    <div class="list" id="showExpireDate">
+    <div class="list" id="showExpireDate" style="display: none;">
       <div class="left">有效期</div>
       <input id="expireDate" class="ipt" type="text" placeholder="请选择信用卡有效期" readonly>
       <div class="mpt" id="check_validity">查看示例</div>
     </div>
-    <div class="list" id="showCvv">
+    <div class="list" id="showCvv" style="display: none;">
       <div class="left">CVV2</div>
       <input id="cvv2" class="ipt" type="text" placeholder="信用卡背面最后3个数字">
       <div class="mpt" id="check_cvv">查看示例</div>
