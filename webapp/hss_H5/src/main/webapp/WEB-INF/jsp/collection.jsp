@@ -133,5 +133,5 @@
   }
 </script>
 <script src="http://static.jinkaimen.cn/vendor/vendor.1.0.9.7.min.js"></script>
-<script src="http://static.jinkaimen.cn/hss/2.2.13/collection.min.js"></script>
+<script src="http://static.jinkaimen.cn/hss/2.2.14/collection.min.js"></script>
 </html>

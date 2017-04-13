@@ -66,5 +66,5 @@
 
 </body>
 <script src="http://static.jinkaimen.cn/vendor/vendor.1.0.9.7.min.js"></script>
-<script src="http://static.jinkaimen.cn/hss/2.2.13/common.min.js"></script>
+<script src="http://static.jinkaimen.cn/hss/2.2.14/common.min.js"></script>
 </html>

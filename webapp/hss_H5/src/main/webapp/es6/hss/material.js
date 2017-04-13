@@ -228,14 +228,14 @@ submit.addEventListener('click', function () {
 
 merchantName.addEventListener('change', function () {
   localStorage.setItem('merchantName', JSON.stringify({
-    markCode: pageDate.markCode,
+    markCode: pageData.markCode,
     merchantName: merchantName.value
   }));
 });
 
 let recordQ = function () {
   localStorage.setItem('pathQ', JSON.stringify({
-    markCode: pageDate.markCode,
+    markCode: pageData.markCode,
     provinceCode: provinceCode,
     provinceName: provinceName,
     cityCode: cityCode,
@@ -247,35 +247,35 @@ let recordQ = function () {
 
 address.addEventListener('change', function () {
   localStorage.setItem('address', JSON.stringify({
-    markCode: pageDate.markCode,
+    markCode: pageData.markCode,
     address: address.value
   }));
 });
 
 bankNo.addEventListener('change', function () {
   localStorage.setItem('bankNo', JSON.stringify({
-    markCode: pageDate.markCode,
+    markCode: pageData.markCode,
     bankNo: bankNo.value
   }));
 });
 
 username.addEventListener('change', function () {
   localStorage.setItem('username', JSON.stringify({
-    markCode: pageDate.markCode,
+    markCode: pageData.markCode,
     username: username.value
   }));
 });
 
 identity.addEventListener('change', function () {
   localStorage.setItem('identity', JSON.stringify({
-    markCode: pageDate.markCode,
+    markCode: pageData.markCode,
     identity: identity.value
   }));
 });
 
 reserveMobile.addEventListener('change', function () {
   localStorage.setItem('reserveMobile', JSON.stringify({
-    markCode: pageDate.markCode,
+    markCode: pageData.markCode,
     reserveMobile: reserveMobile.value
   }));
 });
