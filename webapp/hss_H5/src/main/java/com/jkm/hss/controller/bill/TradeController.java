@@ -492,13 +492,23 @@ public class TradeController extends BaseController {
             return CommonResponse.simpleResponse(-1, "银卡卡号不能为空");
         }
         final BasicChannel basicChannel = this.basicChannelService.selectByChannelTypeSign(firstUnionPaySendMsgRequest.getChannel()).get();
-        if (StringUtils.isEmpty(firstUnionPaySendMsgRequest.getExpireDate())
-                && (EnumCheckType.FIVE_CHECK.getId() == basicChannel.getCheckType() || EnumCheckType.SIX_CHECK.getId() == basicChannel.getCheckType())) {
-            return CommonResponse.simpleResponse(-1, "有效期不能为空");
+        if (EnumCheckType.FOUR_CHECK.getId() == basicChannel.getCheckType()) {
+            firstUnionPaySendMsgRequest.setExpireDate("");
+            firstUnionPaySendMsgRequest.setCvv2("");
         }
-        if (StringUtils.isEmpty(firstUnionPaySendMsgRequest.getCvv2())
-                && EnumCheckType.SIX_CHECK.getId() == basicChannel.getCheckType()) {
-            return CommonResponse.simpleResponse(-1, "CVV2 不能为空");
+        if (EnumCheckType.FIVE_CHECK.getId() == basicChannel.getCheckType()) {
+            firstUnionPaySendMsgRequest.setCvv2("");
+            if (StringUtils.isEmpty(firstUnionPaySendMsgRequest.getExpireDate())) {
+                return CommonResponse.simpleResponse(-1, "有效期不能为空");
+            }
+        }
+        if (EnumCheckType.SIX_CHECK.getId() == basicChannel.getCheckType()) {
+            if (StringUtils.isEmpty(firstUnionPaySendMsgRequest.getExpireDate())) {
+                return CommonResponse.simpleResponse(-1, "有效期不能为空");
+            }
+            if (StringUtils.isEmpty(firstUnionPaySendMsgRequest.getCvv2())) {
+                return CommonResponse.simpleResponse(-1, "CVV2 不能为空");
+            }
         }
         final Optional<BankCardBin> bankCardBinOptional = this.bankCardBinService.analyseCardNo(firstUnionPaySendMsgRequest.getBankCardNo());
         if (!bankCardBinOptional.isPresent()) {
