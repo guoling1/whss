@@ -233,7 +233,8 @@
     methods: {
       refrash: function (name) {
 //        location.reload()
-        this.$emit("a-msg", this.a);
+        console.log(this)
+        bus.$emit("a-msg", '123');
         /*var session = JSON.parse(localStorage.getItem('tabsData'));
         if(session!=null){
           var flag = false;

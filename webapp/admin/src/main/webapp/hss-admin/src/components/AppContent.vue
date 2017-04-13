@@ -107,15 +107,15 @@ export default {
         a:''
       }
     },
-    created:function () {
+    mounted:function () {
+        console.log(this)
 //      setInterval(function () {
 //        this.editableTabs2 = JSON.parse(localStorage.getItem('tabsData'));
 ////        console.log(this.sess)
 //      },20)
-      this.$on("a-msg", function (a) {
-        this.a = a;
-      }.bind(this));
-      console.log(this.a)
+      /*bus.$on("a-msg", function (a) {
+        console.log(a)
+      });*/
 
     },
     computed: {
