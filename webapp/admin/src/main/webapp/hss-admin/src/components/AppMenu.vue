@@ -210,6 +210,7 @@
 <script lang="babel">
   export default {
     name: 'collection',
+    props: ['val'],
     data () {
       return {
         msg: '注册',
@@ -233,8 +234,7 @@
     methods: {
       refrash: function (name) {
 //        location.reload()
-        console.log(this)
-        bus.$emit("a-msg", '123');
+        console.log(this.val)
         /*var session = JSON.parse(localStorage.getItem('tabsData'));
         if(session!=null){
           var flag = false;

@@ -14,7 +14,8 @@
   export default{
     data(){
       return {
-        msg: 'hello vue'
+        msg: 'hello vue',
+        val: '123'
       }
     },
     created(){
