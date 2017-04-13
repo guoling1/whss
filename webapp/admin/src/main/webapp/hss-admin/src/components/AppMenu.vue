@@ -82,13 +82,13 @@
             </li>
           </ul>
         </li>
-        <li :class="(url=='/admin/record/accountSystem'||url=='/admin/record/accountErr')?'treeview active':'treeview'">
+        <li v-if="list.对账管理!=undefined" :class="(url=='/admin/record/accountSystem'||url=='/admin/record/accountErr')?'treeview active':'treeview'">
           <a href="#"><span>对账管理</span></a>
           <ul class="treeview-menu">
-            <li :class="(url=='/admin/record/accountSystem')?'treeview active':'treeview'" @click="refrash">
+            <li v-if="list.系统对账!=undefined" :class="(url=='/admin/record/accountSystem')?'treeview active':'treeview'" @click="refrash">
               <router-link to="/admin/record/accountSystem"><span>系统对账</span></router-link>
             </li>
-            <li :class="(url=='/admin/record/accountErr')?'treeview active':'treeview'" @click="refrash">
+            <li v-if="list.对账异常处理!=undefined" :class="(url=='/admin/record/accountErr')?'treeview active':'treeview'" @click="refrash">
               <router-link to="/admin/record/accountErr"><span>对账异常处理</span></router-link>
             </li>
           </ul>

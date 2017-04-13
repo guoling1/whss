@@ -6,7 +6,7 @@
           <h3 class="box-title">通道列表</h3>
           <!--<router-link to="/admin/record/passAdd" class="pull-right btn btn-primary" style="margin-left: 20px">新增通道-->
           <!--</router-link>-->
-          <a @click="_$power(issue,'boss_channel_add')" class="pull-right btn btn-primary" style="margin: 20px">
+          <a @click="_$power(issue,'boss_channel_add')" class="pull-right btn btn-primary">
             新增通道
           </a>
         </div>
