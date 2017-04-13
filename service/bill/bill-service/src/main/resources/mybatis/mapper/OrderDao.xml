@@ -353,7 +353,7 @@
             AND a.status=#{status}
         </if>
         <if test="payType != null and payType!=''">
-            AND a.pay_type =  #{payType}
+            AND a.pay_type LIKE CONCAT('%',#{payType},'%')
         </if>
         <if test="lessTotalFee != null and lessTotalFee!=''">
             AND a.real_pay_amount <![CDATA[ >= ]]> #{lessTotalFee}
@@ -431,7 +431,7 @@
             AND a.status=#{status}
         </if>
         <if test="payType != null and payType!=''">
-            AND a.pay_type =  #{payType}
+            AND a.pay_type LIKE CONCAT('%',#{payType},'%')
         </if>
         <if test="lessTotalFee != null and lessTotalFee!=''">
             AND a.real_pay_amount <![CDATA[ >= ]]> #{lessTotalFee}
@@ -483,7 +483,7 @@
             AND a.status=#{status}
         </if>
         <if test="payType != null and payType!=''">
-            AND a.pay_type =  #{payType}
+            AND a.pay_type LIKE CONCAT('%',#{payType},'%')
         </if>
         <if test="lessTotalFee != null and lessTotalFee!=''">
             AND a.real_pay_amount <![CDATA[ >= ]]> #{lessTotalFee}
@@ -560,7 +560,7 @@
             AND a.status=#{status}
         </if>
         <if test="payType != null and payType!=''">
-            AND a.pay_type =  #{payType}
+            AND a.pay_type LIKE CONCAT('%',#{payType},'%')
         </if>
         <if test="lessTotalFee != null and lessTotalFee!=''">
             AND a.real_pay_amount <![CDATA[ >= ]]> #{lessTotalFee}
@@ -612,7 +612,7 @@
             AND a.status=#{status}
         </if>
         <if test="payType != null and payType!=''">
-            AND a.pay_type =  #{payType}
+            AND a.pay_type LIKE CONCAT('%',#{payType},'%')
         </if>
         <if test="lessTotalFee != null and lessTotalFee!=''">
             AND a.real_pay_amount <![CDATA[ >= ]]> #{lessTotalFee}
@@ -688,7 +688,7 @@
             AND a.status=#{status}
         </if>
         <if test="payType != null and payType!=''">
-            AND a.pay_type =  #{payType}
+            AND a.pay_type LIKE CONCAT('%',#{payType},'%')
         </if>
         <if test="lessTotalFee != null and lessTotalFee!=''">
             AND a.real_pay_amount <![CDATA[ >= ]]> #{lessTotalFee}
@@ -752,7 +752,7 @@
             AND a.status=#{status}
         </if>
         <if test="payType != null and payType!=''">
-            AND a.pay_type =  #{payType}
+            AND a.pay_type LIKE CONCAT('%',#{payType},'%')
         </if>
         <if test="lessTotalFee != null and lessTotalFee!=''">
             AND a.real_pay_amount <![CDATA[ >= ]]> #{lessTotalFee}
@@ -847,7 +847,7 @@
             AND a.status=#{status}
         </if>
         <if test="payType != null and payType!=''">
-            AND a.pay_type =  #{payType}
+            AND a.pay_type LIKE CONCAT('%',#{payType},'%')
         </if>
         <if test="lessTotalFee != null and lessTotalFee!=''">
             AND a.real_pay_amount <![CDATA[ >= ]]> #{lessTotalFee}
@@ -897,7 +897,7 @@
             AND a.status=#{status}
         </if>
         <if test="payType != null and payType!=''">
-            AND a.pay_type =  #{payType}
+            AND a.pay_type LIKE CONCAT('%',#{payType},'%')
         </if>
         <if test="lessTotalFee != null and lessTotalFee!=''">
             AND a.real_pay_amount <![CDATA[ >= ]]> #{lessTotalFee}

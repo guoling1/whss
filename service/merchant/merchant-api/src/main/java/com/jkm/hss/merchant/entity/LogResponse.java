@@ -7,6 +7,11 @@ import lombok.Data;
 public class LogResponse {
 
     /**
+     * 审核人
+     */
+    private String name;
+
+    /**
      * 批复信息
      */
     private String descr;
