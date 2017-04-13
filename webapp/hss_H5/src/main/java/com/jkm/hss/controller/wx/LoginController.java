@@ -251,6 +251,7 @@ public class LoginController extends BaseController {
                         }
                         Map<String, String> res = WxPubUtil.sign(requestUrl);
                         model.addAttribute("config",res);
+                        model.addAttribute("markCode",result.get().getMarkCode());
                         url = "/material";
                     }else if(result.get().getStatus()== EnumMerchantStatus.ONESTEP.getId()){
                         url = "/sqb/addNext";
