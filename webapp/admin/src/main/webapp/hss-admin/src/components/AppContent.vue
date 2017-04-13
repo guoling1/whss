@@ -104,14 +104,18 @@ export default {
         }],
         tabIndex: 2,
         sess:[],
+        a:''
       }
     },
     created:function () {
 //      setInterval(function () {
-        this.editableTabs2 = JSON.parse(localStorage.getItem('tabsData'));
+//        this.editableTabs2 = JSON.parse(localStorage.getItem('tabsData'));
 ////        console.log(this.sess)
 //      },20)
-      console.log()
+      this.$on("a-msg", function (a) {
+        this.a = a;
+      }.bind(this));
+      console.log(this.a)
 
     },
     computed: {

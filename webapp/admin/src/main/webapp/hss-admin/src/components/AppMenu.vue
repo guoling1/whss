@@ -85,7 +85,7 @@
         <li :class="(url=='/admin/record/accountSystem'||url=='/admin/record/accountErr')?'treeview active':'treeview'">
           <a href="#"><span>对账管理</span></a>
           <ul class="treeview-menu">
-            <li :class="(url=='/admin/record/accountSystem')?'treeview active':'treeview'" @click="refrash">
+            <li :class="(url=='/admin/record/accountSystem')?'treeview active':'treeview'" @click="refrash('系统对账')">
               <router-link to="/admin/record/accountSystem"><span>系统对账</span></router-link>
             </li>
             <li :class="(url=='/admin/record/accountErr')?'treeview active':'treeview'" @click="refrash">
@@ -232,8 +232,9 @@
     },
     methods: {
       refrash: function (name) {
-        location.reload()
-        var session = JSON.parse(localStorage.getItem('tabsData'));
+//        location.reload()
+        this.$emit("a-msg", this.a);
+        /*var session = JSON.parse(localStorage.getItem('tabsData'));
         if(session!=null){
           var flag = false;
           for(var i=0;i<session.length;i++){
@@ -249,7 +250,7 @@
         }else {
           localStorage.setItem('tabsData',JSON.stringify([].concat([{title:name,name:name}])));
         }
-        console.log(session)
+        console.log(session)*/
 
       },
       open: function () {
