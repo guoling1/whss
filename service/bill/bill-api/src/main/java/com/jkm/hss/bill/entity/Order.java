@@ -82,13 +82,15 @@ public class Order extends BaseEntity {
     private long payee;
 
     /**
-     * 付款账户（支付宝，微信，银行）目前只有银行卡
+     * 付款账户（支付宝，微信，快捷)
      *
      */
     private String payAccount;
 
     /**
-     * 付款账户类型(目前为空)
+     * 付款账户类型
+     *
+     * {@link com.jkm.hss.product.enums.EnumPaymentChannel}
      */
     private String payAccountType;
 
@@ -179,6 +181,29 @@ public class Order extends BaseEntity {
      * cvv
      */
     private String cvv;
+
+    /**
+     * 银行流水号
+     */
+    private String bankTradeNo;
+
+    /**
+     * 交易卡类型
+     *
+     * {@link com.jkm.hss.account.enums.EnumBankType}
+     */
+    private String tradeCardType;
+
+    /**
+     * 交易卡号
+     */
+    private String tradeCardNo;
+
+    /**
+     * 支付宝/微信订单号
+     */
+    private String wechatOrAlipayOrderNo;
+
     /**
      * 是否待支付
      *
