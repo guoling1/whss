@@ -106,11 +106,11 @@ http.post('/channel/list', {}, function (list) {
     name.className = 'channel-con name big';
     name.innerHTML = list[i].channelName;
     let time = document.createElement('div');
-    time.className = 'channel-con';
-    time.innerHTML = list[i].settleType + '到账';
+    time.className = 'channel-con small';
+    time.innerHTML = list[i].settleType;
     let fee = document.createElement('div');
-    fee.className = 'channel-con small';
-    fee.innerHTML = (list[i].channelRate * 100).toFixed(2) + '%';
+    fee.className = 'channel-con';
+    fee.innerHTML = (list[i].channelRate * 100).toFixed(2) + '%' + '+' + (list[i].fee / 1).toFixed(0);
     let amount = document.createElement('div');
     amount.className = 'channel-con right';
     amount.innerHTML = list[i].limitAmount + '元';

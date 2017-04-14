@@ -15,7 +15,7 @@
         content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
   <meta name="format-detection" content="telephone=no"/>
   <title>好收收</title>
-  <link rel="stylesheet" href="http://static.jinkaimen.cn/hss/css/style.2.2.8.css">
+  <link rel="stylesheet" href="http://static.jinkaimen.cn/hss/css/style.2.2.9.css">
   <link rel="stylesheet" href="http://static.jinkaimen.cn/weui/weui.css">
 </head>
 <body>
@@ -35,7 +35,7 @@
     <div class="list right" id="chooseBank">
       <div class="left">付款银行</div>
       <c:if test="${status==0}">
-        <div class="val NO" id="bank">${bankName} 尾号${shortNo} (暂不可用)</div>
+        <div class="val NO" id="bank">${bankName} 尾号${shortNo} (本通道不支持)</div>
       </c:if>
       <c:if test="${status==1}">
         <div class="val" id="bank">${bankName} 尾号${shortNo}</div>
@@ -117,6 +117,6 @@
   }
 </script>
 <script src="https://res.wx.qq.com/open/libs/weuijs/1.0.0/weui.min.js"></script>
-<script src="http://static.jinkaimen.cn/vendor/vendor.1.0.9.7.min.js"></script>
-<script src="http://static.jinkaimen.cn/hss/2.2.14/againUnionPay.min.js"></script>
+<script src="http://static.jinkaimen.cn/vendor/vendor.1.0.9.8.min.js"></script>
+<script src="http://static.jinkaimen.cn/hss/2.2.15/againUnionPay.min.js"></script>
 </html>
