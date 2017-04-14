@@ -84,7 +84,7 @@
       <div class="channel-space" id="channel">
         <%-- 动态添加 --%>
       </div>
-      <div class="channel-small">各通道限额动态变化，一次不通过可换其他通道重试</div>
+      <div class="channel-small"><span></span>各通道限额动态变化，一次不通过可换其他通道重试</div>
     </div>
   </div>
 </div>
