@@ -793,6 +793,12 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public List<WithdrawResponse> withdrawList(WithdrawRequest req) {
+        if (req.getWithdrawStatus().equals("提现中")){
+            req.setStatus(5);
+        }
+        if (req.getWithdrawStatus().equals("提现成功")){
+            req.setStatus(6);
+        }
         List<WithdrawResponse> list = this.orderDao.withdrawList(req);
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         if (list.size()>0){
