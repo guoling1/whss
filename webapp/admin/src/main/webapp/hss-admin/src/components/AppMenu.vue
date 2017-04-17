@@ -47,7 +47,9 @@
           <a href="#"><span>分润管理</span>
           </a>
           <ul class="treeview-menu">
-            <li @click="refrash" :class="(url=='/admin/record/profitDet')?'treeview active':'treeview'"><router-link to="/admin/record/profitDet"><span>分润明细</span> </router-link></li>
+            <li @click="refrash" :class="(url=='/admin/record/profitDet')?'treeview active':'treeview'">
+              <router-link to="/admin/record/profitDet"><span>分润明细</span></router-link>
+            </li>
             <li :class="(url=='/admin/record/profitCom'||url=='/admin/record/profitFir'||url=='/admin/record/profitSec')?'treeview active':'treeview'">
               <a href="#" @click="open"><span>分润统计</span>
                 <span class="pull-right-container">
@@ -56,12 +58,20 @@
                 <!--<i class="el-icon-arrow-left"></i>-->
               </a>
               <ul class="treeview-menu" style="margin-left: -8px">
-                <li @click="refrash" :class="(url=='/admin/record/profitCom')?'treeview active':'treeview'"><router-link to="/admin/record/profitCom"><span>公司分润</span> </router-link></li>
-                <li @click="refrash" :class="(url=='/admin/record/profitFir')?'treeview active':'treeview'"><router-link to="/admin/record/profitFir"><span>一级代理商分润</span> </router-link></li>
-                <li @click="refrash" :class="(url=='/admin/record/profitSec')?'treeview active':'treeview'"><router-link to="/admin/record/profitSec"><span>二级代理商分润</span> </router-link></li>
+                <li @click="refrash" :class="(url=='/admin/record/profitCom')?'treeview active':'treeview'">
+                  <router-link to="/admin/record/profitCom"><span>公司分润</span></router-link>
+                </li>
+                <li @click="refrash" :class="(url=='/admin/record/profitFir')?'treeview active':'treeview'">
+                  <router-link to="/admin/record/profitFir"><span>一级代理商分润</span></router-link>
+                </li>
+                <li @click="refrash" :class="(url=='/admin/record/profitSec')?'treeview active':'treeview'">
+                  <router-link to="/admin/record/profitSec"><span>二级代理商分润</span></router-link>
+                </li>
               </ul>
             </li>
-            <li @click="refrash" :class="(url=='/admin/record/profitAccount')?'treeview active':'treeview'"><router-link to="/admin/record/profitAccount"><span>公司分润账户</span> </router-link></li>
+            <li @click="refrash" :class="(url=='/admin/record/profitAccount')?'treeview active':'treeview'">
+              <router-link to="/admin/record/profitAccount"><span>公司分润账户</span></router-link>
+            </li>
           </ul>
         </li>
         <li :class="(url=='/admin/record/t1Audit'||url=='/admin/record/tAuditStore'||url=='/admin/record/tAuditDealer')?'treeview active':'treeview'">
@@ -118,7 +128,7 @@
           </router-link>
         </li>
         <li
-          :class="(url=='/admin/record/agentListFir'||url=='/admin/record/agentListSec')?'treeview active':'treeview'">
+                :class="(url=='/admin/record/agentListFir'||url=='/admin/record/agentListSec')?'treeview active':'treeview'">
           <a href="#"><span>代理商管理</span>
           </a>
           <ul class="treeview-menu">
@@ -131,7 +141,7 @@
           </ul>
         </li>
         <li
-          :class="(url=='/admin/record/issueRecord'||url=='/admin/record/issue'||url=='/admin/record/codeStatus'||url=='/admin/record/codeProRecord'||url=='/admin/record/codeAll')?'treeview active':'treeview'">
+                :class="(url=='/admin/record/issueRecord'||url=='/admin/record/issue'||url=='/admin/record/codeStatus'||url=='/admin/record/codeProRecord'||url=='/admin/record/codeAll')?'treeview active':'treeview'">
           <a href="#"><span>设备管理</span></a>
           <ul class="treeview-menu">
             <!--<li :class="(url=='/admin/record/issue1')?'active':''" @click="refrash"><router-link to="/admin/record/issue1"><span>按个数分配</span> </router-link></li>-->
@@ -153,7 +163,7 @@
           </ul>
         </li>
         <li
-          :class="(url=='/admin/record/productList'||url=='/admin/record/productAdd'||url=='/admin/record/invite')?'treeview active':'treeview'">
+                :class="(url=='/admin/record/productList'||url=='/admin/record/productAdd'||url=='/admin/record/invite')?'treeview active':'treeview'">
           <a href="#"><span>产品管理</span>
           </a>
           <ul class="treeview-menu">
@@ -170,8 +180,7 @@
         </li>
         <li class="treeview"
             :class="(url=='/admin/record/passList'||url=='/admin/record/limitList')?'treeview active':'treeview'">
-          <a href="#"><span>通道管理</span>
-          </a>
+          <a href="#"><span>通道管理</span></a>
           <ul class="treeview-menu">
             <li @click="refrash" :class="(url=='/admin/record/passList')?'treeview active':'treeview'">
               <router-link to="/admin/record/passList"><span>通道列表</span></router-link>
@@ -182,12 +191,25 @@
           </ul>
         </li>
 
-        <li
-          :class="(url=='/admin/record/personnelList')?'treeview active':'treeview'">
+        <li :class="(url=='/admin/record/personnelList')?'treeview active':'treeview'">
           <a href="#"><span>员工权限管理</span></a>
           <ul class="treeview-menu">
             <li :class="(url=='/admin/record/personnelList')?'active':''" @click="refrash">
               <router-link to="/admin/record/personnelList"><span>员工管理</span></router-link>
+            </li>
+          </ul>
+        </li>
+
+        <li class="treeview"
+            :class="(url=='/admin/record/application'||url=='/admin/record/channel')?'treeview active':'treeview'">
+          <a href="#"><span>合作意向</span>
+          </a>
+          <ul class="treeview-menu">
+            <li @click="refrash" :class="(url=='/admin/record/application')?'treeview active':'treeview'">
+              <router-link to="/admin/record/application"><span>合作申请</span></router-link>
+            </li>
+            <li @click="refrash" :class="(url=='/admin/record/channel')?'treeview active':'treeview'">
+              <router-link to="/admin/record/channel"><span>渠道招募</span></router-link>
             </li>
           </ul>
         </li>
