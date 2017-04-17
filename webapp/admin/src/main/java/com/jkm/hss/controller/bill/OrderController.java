@@ -1,6 +1,8 @@
 package com.jkm.hss.controller.bill;
 
 import com.alibaba.fastjson.JSONObject;
+import com.aliyun.oss.OSSClient;
+import com.aliyun.oss.model.ObjectMetadata;
 import com.google.common.base.Optional;
 import com.jkm.base.common.entity.CommonResponse;
 import com.jkm.hss.bill.entity.Order;
@@ -14,11 +16,13 @@ import com.jkm.hss.bill.service.ProfitService;
 import com.jkm.hss.controller.BaseController;
 import com.jkm.hss.dealer.entity.Dealer;
 import com.jkm.hss.dealer.service.DealerService;
+import com.jkm.hss.helper.ApplicationConsts;
 import com.jkm.hss.helper.request.QueryInfoByOrderNoRequest;
 import com.jkm.hss.merchant.entity.MerchantInfo;
 import com.jkm.hss.merchant.service.MerchantInfoService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -26,7 +30,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.math.BigDecimal;
+import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -41,6 +49,8 @@ import java.util.List;
 @RequestMapping(value = "/admin/order")
 public class OrderController extends BaseController {
 
+    @Autowired
+    private OSSClient ossClient;
     @Autowired
     private OrderService orderService;
     @Autowired
@@ -152,6 +162,12 @@ public class OrderController extends BaseController {
 
     }
 
+    /**
+     * 提现详情
+     * @param req
+     * @return
+     * @throws ParseException
+     */
     @ResponseBody
     @RequestMapping(value = "/withdrawDetail", method = RequestMethod.POST)
     public CommonResponse withdrawDetail(@RequestBody WithdrawRequest req) throws ParseException {
@@ -178,6 +194,33 @@ public class OrderController extends BaseController {
             return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", jsonObject);
         }
         return CommonResponse.simpleResponse(-1, "查询异常");
+    }
+
+    /**
+     * 导出全部
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/downLoad", method = RequestMethod.POST)
+    private String downLoad(@RequestBody WithdrawRequest req){
+        final String fileZip = this.orderService.downLoad(req, ApplicationConsts.getApplicationConfig().ossBucke());
+        final ObjectMetadata meta = new ObjectMetadata();
+        meta.setCacheControl("public, max-age=31536000");
+        meta.setExpirationTime(new DateTime().plusYears(1).toDate());
+        meta.setContentType("application/x-xls");
+        SimpleDateFormat sdf =   new SimpleDateFormat("yyyyMMdd");
+        String nowDate = sdf.format(new Date());
+        String fileName = "hss/"+  nowDate + "/" + "withdraw.xls";
+        final Date expireDate = new Date(new Date().getTime() + 30 * 60 * 1000);
+        URL url = null;
+        try {
+            ossClient.putObject(ApplicationConsts.getApplicationConfig().ossBucke(), fileName, new FileInputStream(new File(fileZip)), meta);
+            url = ossClient.generatePresignedUrl(ApplicationConsts.getApplicationConfig().ossBucke(), fileName, expireDate);
+            return url.getHost() + url.getFile();
+        } catch (IOException e) {
+            log.error("上传文件失败", e);
+        }
+        return null;
     }
 
 }

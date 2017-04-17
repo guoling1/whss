@@ -827,6 +827,46 @@ public class OrderServiceImpl implements OrderService {
         return list;
     }
 
+    /**
+     * 提现下载
+     * @param req
+     * @return
+     */
+    public List<WithdrawResponse> withdrawList1(WithdrawRequest req) {
+        List<WithdrawResponse> list = this.orderDao.withdrawList1(req);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        if (list.size()>0){
+            for (int i=0;i<list.size();i++){
+                if (list.get(i).getMerchantName()!=null&&!list.get(i).getMerchantName().equals("")){
+                    list.get(i).setUserType("商户");
+                }
+                if (list.get(i).getProxyName()!=null&&!list.get(i).getProxyName().equals("")){
+                    list.get(i).setUserType("代理商");
+                }
+                if (list.get(i).getCreateTime()!=null&&!list.get(i).getCreateTime().equals("")){
+                    String dates = sdf.format(list.get(i).getCreateTime());
+                    list.get(i).setCreateTimes(dates);
+                }
+                if (list.get(i).getSuccessSettleTime()!=null&&!list.get(i).getSuccessSettleTime().equals("")){
+                    String dates = sdf.format(list.get(i).getSuccessSettleTime());
+                    list.get(i).setSuccessTime(dates);
+                }
+                if (list.get(i).getStatus()==5){
+                    list.get(i).setWithdrawStatus(EnumOrderStatus.WITHDRAWING.getValue());
+                }
+                if (list.get(i).getStatus()==6){
+                    list.get(i).setWithdrawStatus(EnumOrderStatus.WITHDRAW_SUCCESS.getValue());
+                    String dates = sdf.format(list.get(i).getUpdateTime());
+                    list.get(i).setUpdateTimes(dates);
+                }
+                if (list.get(i).getPayChannelSign()!=0) {
+                    list.get(i).setPayChannelName(EnumPayChannelSign.idOf(list.get(i).getPayChannelSign()).getName());
+                }
+            }
+        }
+        return list;
+    }
+
     @Override
     public int getNo(WithdrawRequest req) {
         return this.orderDao.getNo(req);
@@ -1025,6 +1065,96 @@ public class OrderServiceImpl implements OrderService {
     public int listFirstCount(OrderTradeRequest req) {
         return this.orderDao.listFirstCount(req);
     }
+
+    @Override
+    public String downLoad(WithdrawRequest req, String baseUrl) {
+        final String tempDir = this.getTempDir();
+        final File excelFile = new File(tempDir + File.separator + ".xls");
+        final ExcelSheetVO excelSheet = excelSheet(req,baseUrl);
+        final List<ExcelSheetVO> excelSheets = new ArrayList<>();
+        excelSheets.add(excelSheet);
+        FileOutputStream fileOutputStream = null;
+        try {
+            fileOutputStream = new FileOutputStream(excelFile);
+            ExcelUtil.exportExcel(excelSheets, fileOutputStream);
+            return excelFile.getAbsolutePath();
+        } catch (final Exception e) {
+            log.error("download trade record error", e);
+            e.printStackTrace();
+        }  finally {
+            if (fileOutputStream != null) {
+                try {
+                    fileOutputStream.close();
+                } catch (final IOException e) {
+                    log.error("close fileOutputStream error", e);
+                    e.printStackTrace();
+                }
+            }
+        }
+        return "";
+    }
+
+    /**
+     * 生成ExcelVo
+     * @param
+     * @param baseUrl
+     * @return
+     */
+    private ExcelSheetVO excelSheet(WithdrawRequest req,String baseUrl) {
+        List<WithdrawResponse> list = withdrawList1(req);
+        final ExcelSheetVO excelSheetVO = new ExcelSheetVO();
+        final List<List<String>> datas = new ArrayList<List<String>>();
+        final ArrayList<String> heads = new ArrayList<>();
+        excelSheetVO.setName("withdraw");
+        heads.add("提现单号");
+        heads.add("账户名称");
+        heads.add("用户类型");
+        heads.add("业务订单号");
+        heads.add("提现金额");
+        heads.add("手续费");
+        heads.add("提现状态");
+        heads.add("渠道名称");
+        heads.add("打款流水号");
+        heads.add("提现时间");
+        heads.add("成功时间");
+        datas.add(heads);
+        if(list.size()>0){
+            for(int i=0;i<list.size();i++){
+                ArrayList<String> columns = new ArrayList<>();
+                columns.add(list.get(i).getOrderNo());
+                columns.add(list.get(i).getMerchantName());
+                columns.add(list.get(i).getUserType());
+                columns.add(list.get(i).getBusinessOrderNo());
+                columns.add(String.valueOf(list.get(i).getTradeAmount()));
+                columns.add(String.valueOf(list.get(i).getPoundage()));
+                columns.add(list.get(i).getWithdrawStatus());
+                columns.add(list.get(i).getPayChannelName());
+                columns.add(list.get(i).getSn());
+                if (list.get(i).getCreateTime()!= null && !"".equals(list.get(i).getCreateTime())){
+                    DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                    String st = df.format(list.get(i).getCreateTime());
+                    columns.add(st);
+
+                }else {
+                    columns.add("");
+                }
+
+                if (list.get(i).getUpdateTime()!= null && !"".equals(list.get(i).getUpdateTime())){
+                    DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                    String st = df.format(list.get(i).getUpdateTime());
+                    columns.add(st);
+
+                }else {
+                    columns.add("");
+                }
+
+                datas.add(columns);
+            }
+        }
+        excelSheetVO.setDatas(datas);
+        return excelSheetVO;
+    }
+
 
 
     /**

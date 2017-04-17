@@ -330,4 +330,11 @@ public interface OrderDao {
      * @return
      */
     int listFirstCount(OrderTradeRequest req);
+
+    /**
+     * 提现下载
+     * @param req
+     * @return
+     */
+    List<WithdrawResponse> withdrawList1(WithdrawRequest req);
 }
