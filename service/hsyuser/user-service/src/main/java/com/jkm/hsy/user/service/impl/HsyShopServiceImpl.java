@@ -386,7 +386,7 @@ public class HsyShopServiceImpl implements HsyShopService {
         if(!(appBizShop.getUid()!=null&&!appBizShop.getUid().equals("")))
             throw new ApiHandleException(ResultCode.PARAM_LACK,"用户ID");
 
-        appBizShop.setType(AppConstant.ROLE_TYPE_BRANCH);
+        appBizShop.setType(AppConstant.ROLE_TYPE_PRIMARY);
         AppBizShop primaryAppBizShop=null;
         List<AppBizShop> shopList=hsyShopDao.findPrimaryAppBizShopByUserID(appBizShop);
         if(!(shopList!=null&&shopList.size()!=0))
