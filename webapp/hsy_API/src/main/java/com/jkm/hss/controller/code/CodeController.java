@@ -7,6 +7,7 @@ import com.jkm.hss.admin.enums.EnumQRCodeSysType;
 import com.jkm.hss.admin.service.QRCodeService;
 import com.jkm.hss.controller.BaseController;
 import com.jkm.hss.helper.ApplicationConsts;
+import com.jkm.hss.merchant.helper.WxConstants;
 import com.jkm.hsy.user.dao.HsyShopDao;
 import com.jkm.hsy.user.entity.AppBizShop;
 import lombok.extern.slf4j.Slf4j;
@@ -19,6 +20,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.List;
 
 /**
@@ -42,7 +45,7 @@ public class CodeController extends BaseController {
      * @return
      */
     @RequestMapping(value = "/scanCode", method = RequestMethod.GET)
-    public String scanCode(final HttpServletRequest request, final HttpServletResponse response, final Model model,@RequestParam(value = "openId", required = false) String openId) {
+    public String scanCode(final HttpServletRequest request, final HttpServletResponse response, final Model model,@RequestParam(value = "openId", required = false) String openId) throws UnsupportedEncodingException {
         boolean isRedirect = true;
         final String code = request.getParameter("code");
         final String sign = request.getParameter("sign");
@@ -68,6 +71,17 @@ public class CodeController extends BaseController {
             model.addAttribute("name", merchantName);
             log.info("设备标示{}",agent.indexOf("micromessenger"));
             if (agent.indexOf("micromessenger") > -1) {
+                if(openId==null||"".equals(openId)){
+                    String requestUrl = "";
+                    if(request.getQueryString() == null){
+                        requestUrl = "";
+                    }else{
+                        requestUrl = request.getQueryString();
+                    }
+                    String encoderUrl = URLEncoder.encode(requestUrl, "UTF-8");
+                    return "redirect:"+ WxConstants.WEIXIN_HSY_MERCHANT_USERINFO+encoderUrl+ WxConstants.WEIXIN_USERINFO_REDIRECT;
+                }
+                model.addAttribute("openId",openId);
                 url = "/sqb/paymentWx";
             }
             if (agent.indexOf("aliapp") > -1) {
