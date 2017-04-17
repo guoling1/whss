@@ -4,7 +4,7 @@
 
     <app-menu></app-menu>
 
-    <app-content ></app-content>
+    <app-content></app-content>
 
     <!--<app-footer></app-footer>-->
   </div>
@@ -15,13 +15,18 @@
     data(){
       return {
         msg: 'hello vue',
-        val: '123'
+        tabs: ['123']
       }
     },
     created(){
-
+//      console.log(this.$refs.child)
     },
-    methods: {}
+    methods: {},
+    watch:{
+        tabs:function () {
+console.log(arguments)
+        }
+    }
   }
 </script>
 

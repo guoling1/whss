@@ -67,17 +67,21 @@ export default {
 
       <!-- 路由出口 -->
       <!-- 路由匹配到的组件将渲染在这里 -->
-      <el-tabs v-model="editableTabsValue2" type="card" closable @tab-remove="removeTab">
+      <el-tabs v-model="editableTabsValue2" type="card" closable @tab-remove="removeTab" @tab-click="handleClick">
         <el-tab-pane
-          v-for="(item, index) in $editableTabs2"
+          v-for="(item, index) in editableTabs2"
           :label="item.title"
-          :name="item.name"
+          :name="item.url"
         >
+          <keep-alive>
             <router-view></router-view>
-
+          </keep-alive>
 
         </el-tab-pane>
       </el-tabs>
+      <!--<keep-alive>-->
+        <!--<router-view></router-view>-->
+      <!--</keep-alive>-->
 
 
     </section>
@@ -92,68 +96,59 @@ export default {
     data () {
       return {
         msg: '注册',
-        editableTabsValue2: '2',
-        editableTabs2: [{
-          title: 'Tab 1',
-          name: '1',
-          content: 'Tab 1 content'
-        }, {
-          title: 'Tab 2',
-          name: '2',
-          content: 'Tab 2 content'
-        }],
+        editableTabsValue2: '/admin/record/home',
+        editableTabs2: [],
         tabIndex: 2,
         sess:[],
-        a:''
+        a:[],
+        b:''
       }
     },
-    mounted:function () {
-        console.log(this)
-//      setInterval(function () {
-//        this.editableTabs2 = JSON.parse(localStorage.getItem('tabsData'));
-////        console.log(this.sess)
-//      },20)
-      /*bus.$on("a-msg", function (a) {
-        console.log(a)
-      });*/
-
-    },
-    computed: {
-      $editableTabs2:function () {
-//        this.editableTabs2.concat(this.sess)
-        return this.editableTabs2
-      }
+    created:function () {
+      this.a = this._$tabsData;
+      //this.editableTabsValue2 = this.$route.path
+      console.log(this.b)
     },
     watch:{
-      sess:function () {
+      a:function (val) {
+        this.editableTabsValue2 = this.$route.path
+        this.editableTabs2 = val
+      },
+      b:function () {
         console.log(arguments)
+//        this.editableTabsValue2 = val;
       }
     },
     methods: {
-      addTab(targetName) {
-        let newTabName = ++this.tabIndex + '';
-        this.editableTabs2.push({
-          title: 'New Tab',
-          name: newTabName,
-          content: 'New Tab content'
-        });
-        this.editableTabsValue2 = newTabName;
+      handleClick:function (tab) {
+        this.editableTabsValue2 = tab.name
+        this.$router.push(tab.name)
       },
       removeTab(targetName) {
+        for(let i=0; i<this._$tabsData.length;i++){
+            if(this._$tabsData[i].name == targetName.label){
+              this._$tabsData.splice(i,1);
+              i--;
+              break
+            }
+        }
         let tabs = this.editableTabs2;
         let activeName = this.editableTabsValue2;
         if (activeName === targetName) {
           tabs.forEach((tab, index) => {
-            if (tab.name === targetName) {
+            if (tab.url === targetName) {
               let nextTab = tabs[index + 1] || tabs[index - 1];
               if (nextTab) {
-                activeName = nextTab.name;
+                activeName = nextTab.url;
+                console.log(activeName)
               }
             }
           });
         }
 
         this.editableTabsValue2 = activeName;
+
+        this.$router.push(activeName)
         this.editableTabs2 = tabs.filter(tab => tab.name !== targetName);
       }
     },

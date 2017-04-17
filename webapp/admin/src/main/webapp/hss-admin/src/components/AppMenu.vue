@@ -85,10 +85,10 @@
         <li :class="(url=='/admin/record/accountSystem'||url=='/admin/record/accountErr')?'treeview active':'treeview'">
           <a href="#"><span>对账管理</span></a>
           <ul class="treeview-menu">
-            <li :class="(url=='/admin/record/accountSystem')?'treeview active':'treeview'" @click="refrash('系统对账')">
+            <li :class="(url=='/admin/record/accountSystem')?'treeview active':'treeview'" @click="refrash('系统对账','/admin/record/accountSystem')">
               <router-link to="/admin/record/accountSystem"><span>系统对账</span></router-link>
             </li>
-            <li :class="(url=='/admin/record/accountErr')?'treeview active':'treeview'" @click="refrash">
+            <li :class="(url=='/admin/record/accountErr')?'treeview active':'treeview'" @click="refrash('对账异常处理','/admin/record/accountErr')">
               <router-link to="/admin/record/accountErr"><span>对账异常处理</span></router-link>
             </li>
           </ul>
@@ -192,10 +192,10 @@
         <li v-if="list.员工权限管理!=undefined" :class="(url=='/admin/record/personnelList'||url=='/admin/record/role')?'treeview active':'treeview'">
           <a href="#"><span>员工权限管理</span></a>
           <ul class="treeview-menu">
-            <li v-if="list.员工管理!=undefined" :class="(url=='/admin/record/personnelList')?'active':''" @click="refrash">
+            <li v-if="list.员工管理!=undefined" :class="(url=='/admin/record/personnelList')?'active':''" @click="refrash('员工管理','/admin/record/personnelList')">
               <router-link to="/admin/record/personnelList"><span>员工管理</span></router-link>
             </li>
-            <li v-if="list.角色管理!=undefined" :class="(url=='/admin/record/role')?'active':''" @click="refrash">
+            <li v-if="list.角色管理!=undefined" :class="(url=='/admin/record/role')?'active':''" @click="refrash('角色管理','/admin/record/role')">
               <router-link to="/admin/record/role"><span>角色管理</span></router-link>
             </li>
           </ul>
@@ -210,12 +210,17 @@
 <script lang="babel">
   export default {
     name: 'collection',
-    props: ['val'],
+    props: {
+      tabs: {
+        type: Array
+      }
+    },
     data () {
       return {
         msg: '注册',
         url: '',
         list:{},
+        b:'23'
       }
     },
     created: function () {
@@ -232,9 +237,24 @@
 
     },
     methods: {
-      refrash: function (name) {
-//        location.reload()
-        console.log(this.val)
+      refrash: function (name,url) {
+        // location.reload()
+        this._$tabsVal = {name : name};
+        let tab = this._$tabsData,
+            flag = false;
+        for(let i=0;i<tab.length;i++){
+            if(tab[i].title == name){
+              flag = true
+              break;
+            }
+        }
+        if(flag!=true){
+          this._$tabsData.push({title:name,name:name,url:url});
+        }
+//          this.tabs.push('52514')
+
+//        this.$emit('child',this.b)
+//        console.log(this.tabs)
         /*var session = JSON.parse(localStorage.getItem('tabsData'));
         if(session!=null){
           var flag = false;
