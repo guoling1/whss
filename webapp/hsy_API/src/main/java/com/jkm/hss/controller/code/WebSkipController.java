@@ -3,6 +3,9 @@ package com.jkm.hss.controller.code;
 import com.jkm.hss.bill.entity.Order;
 import com.jkm.hss.bill.service.OrderService;
 import com.jkm.hss.controller.BaseController;
+import com.jkm.hss.helper.ApplicationConsts;
+import com.jkm.hss.merchant.helper.WxConstants;
+import com.jkm.hss.merchant.helper.WxPubUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -15,6 +18,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.net.URLDecoder;
+import java.util.Map;
 
 /**
  * Created by Thinkpad on 2017/1/18.
@@ -53,9 +58,10 @@ public class WebSkipController extends BaseController {
      * @throws IOException
      */
     @RequestMapping(value = "/paymentWx", method = RequestMethod.GET)
-    public String paymentWx(final HttpServletRequest request, final HttpServletResponse response, final Model model, @RequestParam(value = "merchantId", required = true) long merchantId, @RequestParam(value = "name") String name) throws IOException {
+    public String paymentWx(final HttpServletRequest request, final HttpServletResponse response, final Model model, @RequestParam(value = "merchantId", required = true) long merchantId, @RequestParam(value = "name") String name, @RequestParam(value = "openId") String openId) throws IOException {
         model.addAttribute("mid", merchantId);
         model.addAttribute("merchantName", name);
+        model.addAttribute("openId", openId);
         return "/payment-wx";
     }
 
@@ -74,5 +80,41 @@ public class WebSkipController extends BaseController {
         model.addAttribute("mid", merchantId);
         model.addAttribute("merchantName", name);
         return "/payment-zfb";
+    }
+
+    /**
+     * 扫固定微信跳转页面
+     * @param request
+     * @param response
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value = "toSkip", method = RequestMethod.GET)
+    public String  toSkip(final HttpServletRequest request, final HttpServletResponse response,final Model model) throws Exception{
+        String getQueryString = "";
+        if(request.getQueryString() == null){
+            getQueryString="";
+        }else{
+            getQueryString = request.getQueryString();
+        }
+        String[] arr = getQueryString.split("&");
+        String code="";
+        String state="";
+        for(int i =0;i<arr.length;i++){
+            if("code".equals(arr[i].split("=")[0])){
+                code = arr[i].split("=")[1];
+            }
+            if("state".equals(arr[i].split("=")[0])){
+                state = arr[i].split("=")[1];
+            }
+        }
+        Map<String,String> ret = WxPubUtil.getOpenid(code, WxConstants.APP_HSY_ID,WxConstants.APP_HSY_SECRET);
+        model.addAttribute("openId", ret.get("openid"));
+        log.info("openid是：{}",ret.get("openid"));
+        String tempUrl = URLDecoder.decode(state, "UTF-8");
+        String redirectUrl = URLDecoder.decode(tempUrl,"UTF-8");
+        String finalRedirectUrl = "http://"+ ApplicationConsts.getApplicationConfig().domain()+"/code/scanCode?"+redirectUrl;
+        log.info("跳转地址是：{}",finalRedirectUrl);
+        return "redirect:"+finalRedirectUrl;
     }
 }
