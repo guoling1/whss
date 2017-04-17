@@ -43,7 +43,6 @@
                 <span v-if="records[scope.$index].status==1" type="text" size="small">正常</span>
               </template>
             </el-table-column>
-            </el-table-column>
             <el-table-column label="操作" width="100">
               <template scope="scope">
                 <router-link :to="{path:'/admin/record/personnelAdd',query:{id:records[scope.$index].id}}" type="text"
@@ -53,7 +52,6 @@
                 <a @click="close(records[scope.$index].id)" v-if="records[scope.$index].status==1" type="text" size="small">禁用</a>
               </template>
             </el-table-column>
-          </el-table>
           </el-table>
           <!--分页-->
           <div class="block" style="text-align: right">
