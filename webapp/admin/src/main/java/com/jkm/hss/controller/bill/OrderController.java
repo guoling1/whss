@@ -202,7 +202,7 @@ public class OrderController extends BaseController {
      */
     @ResponseBody
     @RequestMapping(value = "/downLoad", method = RequestMethod.POST)
-    private String downLoad(@RequestBody WithdrawRequest req){
+    private JSONObject downLoad(@RequestBody WithdrawRequest req){
         final String fileZip = this.orderService.downLoad(req, ApplicationConsts.getApplicationConfig().ossBucke());
         final ObjectMetadata meta = new ObjectMetadata();
         meta.setCacheControl("public, max-age=31536000");
@@ -216,7 +216,10 @@ public class OrderController extends BaseController {
         try {
             ossClient.putObject(ApplicationConsts.getApplicationConfig().ossBucke(), fileName, new FileInputStream(new File(fileZip)), meta);
             url = ossClient.generatePresignedUrl(ApplicationConsts.getApplicationConfig().ossBucke(), fileName, expireDate);
-            return url.getHost() + url.getFile();
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("code",1);
+            jsonObject.put("result",url.getHost() + url.getFile());
+            return jsonObject;
         } catch (IOException e) {
             log.error("上传文件失败", e);
         }
