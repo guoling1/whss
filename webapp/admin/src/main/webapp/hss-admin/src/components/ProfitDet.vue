@@ -7,18 +7,18 @@
         </div>
         <div class="box-body">
           <!--筛选-->
-          <ul>
+          <ul style="margin-bottom: 0">
             <li class="same">
               <label>交易订单号:</label>
-              <el-input style="width: 120px" v-model="query.orderNo" placeholder="请输入内容" size="small"></el-input>
+              <el-input style="width: 188px" v-model="query.orderNo" placeholder="请输入内容" size="small"></el-input>
             </li>
             <li class="same">
               <label>分润方名称:</label>
-              <el-input style="width: 120px" v-model="query.receiptMoneyUserName" placeholder="请输入内容" size="small"></el-input>
+              <el-input style="width: 188px" v-model="query.receiptMoneyUserName" placeholder="请输入内容" size="small"></el-input>
             </li>
             <li class="same" v-if="isShow">
               <label>业务类型:</label>
-              <el-select style="width: 140px" clearable v-model="query.businessType" size="small" >
+              <el-select style="width: 188px" clearable v-model="query.businessType" size="small" >
                 <el-option label="全部" value="">全部</el-option>
                 <el-option label="好收收-收款" value="hssPay">好收收-收款</el-option>
                 <el-option label="好收收-提现" value="hssWithdraw">好收收-提现</el-option>
@@ -29,6 +29,7 @@
             <li class="same" v-if="isShow">
               <label>分润日期:</label>
               <el-date-picker
+                style="width: 188px"
                 v-model="date"
                 type="daterange"
                 align="right"
@@ -41,7 +42,7 @@
             </li>
           </ul>
           <!--表格-->
-          <el-table v-loading.body="loading" style="font-size: 12px;margin:15px 0" :data="records" border :row-style="tableFoot">
+          <el-table v-loading.body="loading" style="font-size: 12px;margin-bottom: 15px" :data="records" border :row-style="tableFoot">
             <el-table-column type="index" width="62" label="序号">
               <template scope="scope">
                 <div v-if="records[scope.$index].settleType!='当页总额'&&records[scope.$index].settleType!='筛选条件统计'">{{scope.$index+1}}</div>

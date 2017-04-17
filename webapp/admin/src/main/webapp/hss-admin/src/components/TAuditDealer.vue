@@ -7,18 +7,18 @@
         </div>
         <div class="box-body">
           <!--筛选-->
-          <ul>
+          <ul class="search">
             <li class="same">
               <label>结算日期:</label>
-              <el-date-picker v-model="date" size="small" type="daterange" align="right" placeholder="选择日期范围" :picker-options="pickerOptions"></el-date-picker>
+              <el-date-picker v-model="date" size="small" type="daterange" align="right" placeholder="选择日期范围" :picker-options="pickerOptions" style="width: 188px"></el-date-picker>
             </li>
             <li class="same">
               <label>结算单号:</label>
-              <el-input style="width: 130px" v-model="query.settleNo" placeholder="请输入内容" size="small"></el-input>
+              <el-input style="width: 188px" v-model="query.settleNo" placeholder="请输入内容" size="small"></el-input>
             </li>
             <li class="same">
               <label>结算状态:</label>
-              <el-select clearable v-model="query.settleStatus" size="small" >
+              <el-select clearable v-model="query.settleStatus" size="small" style="width: 188px">
                 <el-option label="全部" value="">全部</el-option>
                 <el-option label="待结算" value="1">待结算</el-option>
                 <el-option label="部分结算" value="4">部分结算</el-option>
@@ -27,18 +27,18 @@
             </li>
             <li class="same">
               <label>代理商名称:</label>
-              <el-input style="width: 130px" v-model="query.userName" placeholder="请输入内容" size="small"></el-input>
+              <el-input style="width: 188px" v-model="query.userName" placeholder="请输入内容" size="small"></el-input>
             </li>
             <li class="same">
               <label>代理商编号:</label>
-              <el-input style="width: 130px" v-model="query.userNo" placeholder="请输入内容" size="small"></el-input>
+              <el-input style="width: 188px" v-model="query.userNo" placeholder="请输入内容" size="small"></el-input>
             </li>
             <li class="same">
               <div class="btn btn-primary" @click="search">筛选</div>
             </li>
           </ul>
           <!--表格-->
-          <el-table v-loading.body="loading" style="font-size: 12px;margin:15px 0" :data="records" border @selection-change="handleSelectionChange">
+          <el-table v-loading.body="loading" style="font-size: 12px;margin-bottom: 15px" :data="records" border @selection-change="handleSelectionChange">
             <el-table-column type="index" width="62" label="序号" fixed="left"></el-table-column>
             <!--<el-table-column type="selection" width="55"></el-table-column>-->
             <el-table-column prop="userName" label="代理商名称" ></el-table-column>
@@ -322,8 +322,16 @@
   .maskCon{
     margin:0 0 15px 50px
   }
-  ul{
+  .search{
+    margin-bottom:0;
+  label{
+    display: block;
+    margin-bottom: 0;
+  }
+  }
+  ul {
     padding: 0;
+    margin:0;
   }
   .same{
     list-style: none;

@@ -54,7 +54,7 @@
             </li>
           </ul>
           <!--表格-->
-          <el-table v-loading.body="loading" style="font-size: 12px;margin:15px 0" :data="$records" border>
+          <el-table v-loading.body="loading" style="font-size: 12px;margin-bottom: 15px" :data="$records" border>
             <el-table-column type="index" width="62" label="序号" fixed="left"></el-table-column>
             <el-table-column prop="channelName" label="对账渠道" ></el-table-column>
             <el-table-column label="交易类型" >
@@ -162,11 +162,11 @@
         loading:true,
         isShow:false,
         //正式
-        url:"http://checking.qianbaojiajia.com/external/detailList",
-        handleUrl:'http://checking.qianbaojiajia.com/external/updateDetailReason'
+//        url:"http://checking.qianbaojiajia.com/external/detailList",
+//        handleUrl:'http://checking.qianbaojiajia.com/external/updateDetailReason'
         //测试
-//         url:'http://192.168.1.99:8080/balance/external/detailList',
-//         handleUrl:'http://192.168.1.99:8080/balance/external/updateDetailReason'
+         url:'http://192.168.1.99:8080/balance/external/detailList',
+         handleUrl:'http://192.168.1.99:8080/balance/external/updateDetailReason'
       }
     },
     created: function () {
@@ -257,7 +257,13 @@
 <style scoped lang="less">
   ul{
     padding: 0;
+    margin:0;
+  label{
+    display: block;
+    margin-bottom: 0;
   }
+  }
+
   .same{
     list-style: none;
     display: inline-block;

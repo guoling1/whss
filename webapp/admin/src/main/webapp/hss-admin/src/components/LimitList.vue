@@ -7,25 +7,25 @@
         </div>
         <div class="box-body">
           <!--筛选-->
-          <ul>
+          <ul class="search">
             <li class="same">
               <label>通道名称:</label>
-              <el-input style="width: 130px" v-model="query.channelName" placeholder="请输入内容" size="small"></el-input>
+              <el-input style="width: 188px" v-model="query.channelName" placeholder="请输入内容" size="small"></el-input>
             </li>
             <li class="same">
               <label>通道编码:</label>
-              <el-input style="width: 130px" v-model="query.channelCode" placeholder="请输入内容" size="small"></el-input>
+              <el-input style="width: 188px" v-model="query.channelCode" placeholder="请输入内容" size="small"></el-input>
             </li>
             <li class="same">
               <label>银行编码:</label>
-              <el-input style="width: 130px" v-model="query.bankCode" placeholder="请输入内容" size="small"></el-input>
+              <el-input style="width: 188px" v-model="query.bankCode" placeholder="请输入内容" size="small"></el-input>
             </li>
             <li class="same">
               <div class="btn btn-primary" @click="search">筛选</div>
             </li>
           </ul>
           <!--表格-->
-          <el-table v-loading.body="loading" height="583" style="font-size: 12px;margin:15px 0" :data="records" border>
+          <el-table v-loading.body="loading" height="583" style="font-size: 12px;margin-bottom: 15px" :data="records" border>
             <el-table-column width="62" label="序号">
               <template scope="scope">
                 <div>{{scope.$index+1}}</div>
@@ -154,6 +154,14 @@
 <style scoped lang="less" rel="stylesheet/less">
   ul {
     padding: 0;
+    margin:0;
+  }
+  .search{
+    margin-bottom:0;
+    label{
+      display: block;
+      margin-bottom: 0;
+    }
   }
 
   .same {

@@ -8,7 +8,7 @@
         </div>
         <div class="box-body">
           <!--筛选-->
-          <ul>
+          <ul class="search">
             <li class="same">
               <label>发布日期:</label>
               <el-date-picker
@@ -24,7 +24,7 @@
             </li>
           </ul>
           <!--表格-->
-          <el-table v-loading.body="loading" height="583" style="font-size: 12px;margin:15px 0" :data="records" border>
+          <el-table v-loading.body="loading" height="583" style="font-size: 12px;margin-bottom: 15px" :data="records" border>
             <el-table-column type="index" width="62" label="序号"></el-table-column>
              <!--:formatter="changeTime"-->
             <el-table-column prop="dates" label="发布时间"></el-table-column>
@@ -171,8 +171,15 @@
 <style scoped lang="less" rel="stylesheet/less">
   ul {
     padding: 0;
+    margin:0;
   }
-
+  .search{
+    margin-bottom:0;
+    label{
+      display: block;
+      margin-bottom: 0;
+    }
+  }
   .same {
     list-style: none;
     display: inline-block;

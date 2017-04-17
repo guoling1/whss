@@ -8,26 +8,27 @@
         </div>
         <div class="box-body">
           <!--筛选-->
-          <ul>
+          <ul class="search">
             <li class="same">
               <label>业务订单号:</label>
-              <el-input style="width: 130px" v-model="query.businessOrderNo" placeholder="请输入内容" size="small"></el-input>
+              <el-input style="width: 188px" v-model="query.businessOrderNo" placeholder="请输入内容" size="small"></el-input>
             </li>
             <li class="same">
               <label>提现单号:</label>
-              <el-input style="width: 130px" v-model="query.orderNo" placeholder="请输入内容" size="small"></el-input>
+              <el-input style="width: 188px" v-model="query.orderNo" placeholder="请输入内容" size="small"></el-input>
             </li>
             <li class="same">
               <label>打款流水号:</label>
-              <el-input style="width: 130px" v-model="query.sn" placeholder="请输入内容" size="small"></el-input>
+              <el-input style="width: 188px" v-model="query.sn" placeholder="请输入内容" size="small"></el-input>
             </li>
             <li class="same">
               <label>账户名称:</label>
-              <el-input style="width: 130px" v-model="query.userName" placeholder="请输入内容" size="small"></el-input>
+              <el-input style="width: 188px" v-model="query.userName" placeholder="请输入内容" size="small"></el-input>
             </li>
             <li class="same">
               <label>提现时间:</label>
               <el-date-picker
+                style="width: 188px"
                 v-model="date"
                 type="daterange"
                 align="right"
@@ -37,7 +38,7 @@
             </li>
             <li class="same">
               <label>提现状态:</label>
-              <el-select style="width: 120px" clearable v-model="query.withdrawStatus" size="small">
+              <el-select style="width: 188px" clearable v-model="query.withdrawStatus" size="small">
                 <el-option label="全部" value="">全部</el-option>
                 <el-option label="提现中" value="提现中">提现中</el-option>
                 <el-option label="提现成功" value="提现成功">提现成功</el-option>
@@ -48,7 +49,7 @@
             </li>
           </ul>
           <!--表格-->
-          <el-table v-loading.body="loading" height="583" style="font-size: 12px;margin:15px 0" :data="records" border>
+          <el-table v-loading.body="loading" height="650" style="font-size: 12px;margin-bottom: 15px;" :data="records" border>
             <el-table-column width="62" label="序号" fixed="left">
               <template scope="scope">
                 <div>{{scope.$index+1}}</div>
@@ -333,10 +334,16 @@
 </script>
 
 <style scoped lang="less" rel="stylesheet/less">
-  ul {
-    padding: 0;
+  .search {
+    label{
+      display: block;
+      margin-bottom: 0;
+    }
   }
-
+  ul{
+    padding: 0;
+    margin: 0;
+  }
   .same {
     list-style: none;
     display: inline-block;

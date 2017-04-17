@@ -9,41 +9,41 @@
           <el-tabs class="tab" v-model="activeName" type="card" @tab-click="handleClick">
             <el-tab-pane label="好收收" name="first">
               <!--筛选-->
-              <ul>
+              <ul class="search">
                 <li class="same">
                   <label>商户编号:</label>
-                  <el-input style="width: 120px" v-model="query.markCode" placeholder="请输入内容" size="small"></el-input>
+                  <el-input style="width: 188px" v-model="query.markCode" placeholder="请输入内容" size="small"></el-input>
                 </li>
                 <li class="same">
                   <label>商户名称:</label>
-                  <el-input style="width: 120px" v-model="query.merchantName" placeholder="请输入内容" size="small"></el-input>
+                  <el-input style="width: 188px" v-model="query.merchantName" placeholder="请输入内容" size="small"></el-input>
                 </li>
                 <li class="same">
                   <label>所属一级代理:</label>
-                  <el-input style="width: 120px" v-model="query.proxyName" placeholder="请输入内容" size="small"></el-input>
+                  <el-input style="width: 188px" v-model="query.proxyName" placeholder="请输入内容" size="small"></el-input>
                 </li>
                 <li class="same">
                   <label>所属二级代理:</label>
-                  <el-input style="width: 120px" v-model="query.proxyName1" placeholder="请输入内容" size="small"></el-input>
+                  <el-input style="width: 188px" v-model="query.proxyName1" placeholder="请输入内容" size="small"></el-input>
                 </li>
                 <li class="same">
                   <label>注册时间:</label>
-                  <el-date-picker style="width: 190px" v-model="date" type="daterange" align="right" placeholder="选择日期范围" :picker-options="pickerOptions" size="small">
+                  <el-date-picker style="width: 188px" v-model="date" type="daterange" align="right" placeholder="选择日期范围" :picker-options="pickerOptions" size="small">
                   </el-date-picker>
                 </li>
                 <li class="same">
                   <label>认证时间:</label>
-                  <el-date-picker style="width: 190px" v-model="date1" type="daterange" align="right" placeholder="选择日期范围" :picker-options="pickerOptions" size="small">
+                  <el-date-picker style="width: 188px" v-model="date1" type="daterange" align="right" placeholder="选择日期范围" :picker-options="pickerOptions" size="small">
                   </el-date-picker>
                 </li>
                 <li class="same">
                   <label>审核时间:</label>
-                  <el-date-picker style="width: 190px" v-model="date2" type="daterange" align="right" placeholder="选择日期范围" :picker-options="pickerOptions" size="small">
+                  <el-date-picker style="width: 188px" v-model="date2" type="daterange" align="right" placeholder="选择日期范围" :picker-options="pickerOptions" size="small">
                   </el-date-picker>
                 </li>
                 <li class="same">
                   <label>审核状态:</label>
-                  <el-select style="width: 160px" v-model="query.status" clearable placeholder="请选择" size="small">
+                  <el-select style="width: 188px" v-model="query.status" clearable placeholder="请选择" size="small">
                     <el-option label="全部" value="">全部</el-option>
                     <el-option label="已注册" value="0">已注册</el-option>
                     <el-option label="已提交基本资料" value="1">已提交基本资料</el-option>
@@ -57,7 +57,7 @@
                 </li>
               </ul>
               <!--表格-->
-              <el-table v-loading.body="loading" style="font-size: 12px;margin:15px 0" :data="records" border>
+              <el-table v-loading.body="loading" style="font-size: 12px;margin-bottom: 15px" :data="records" border>
                 <el-table-column type="index" width="70" label="序号"></el-table-column>
                 <el-table-column prop="markCode" label="商户编号"></el-table-column>
                 <el-table-column prop="merchantName" label="商户名称"></el-table-column>
@@ -94,21 +94,21 @@
             </el-tab-pane>
             <el-tab-pane label="好收银" name="second">
               <!--筛选-->
-              <ul>
+              <ul class="search">
                 <li class="same">
                   <label>商户编号:</label>
-                  <el-input style="width: 120px" v-model="query.globalID" placeholder="请输入内容" size="small"></el-input>
+                  <el-input style="width: 188px" v-model="query.globalID" placeholder="请输入内容" size="small"></el-input>
                 </li>
                 <li class="same">
                   <label>商户名称:</label>
-                  <el-input style="width: 120px" v-model="query.shortName" placeholder="请输入内容" size="small"></el-input>
+                  <el-input style="width: 188px" v-model="query.shortName" placeholder="请输入内容" size="small"></el-input>
                 </li>
                 <li class="same">
                   <div class="btn btn-primary" @click="search">筛选</div>
                 </li>
               </ul>
               <!--表格-->
-              <el-table v-loading.body="loading" style="font-size: 12px;margin:15px 0" :data="records" border>
+              <el-table v-loading.body="loading" style="font-size: 12px;margin-bottom: 15px" :data="records" border>
                 <el-table-column type="index" width="100" label="序号"></el-table-column>
                 <el-table-column prop="globalID" label="商户编号"></el-table-column>
                 <el-table-column prop="shortName" label="商户名称"></el-table-column>
@@ -414,8 +414,16 @@
   }
 </script>
 <style scoped lang="less">
-  ul{
+  ul {
     padding: 0;
+    margin:0;
+  }
+  .search{
+    margin-bottom:0;
+  label{
+    display: block;
+    margin-bottom: 0;
+  }
   }
   .same{
     list-style: none;
