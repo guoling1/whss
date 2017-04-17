@@ -36,7 +36,12 @@ public enum EnumUpperChannel {
     /**
      * 易联
      */
-    EASY_LINK(6, "EL", "易联")
+    EASY_LINK(6, "EL", "易联"),
+
+    /**
+     * 民生银行
+     */
+    MS_BANK(7, "MS", "民生银行")
     ;
 
     @Getter

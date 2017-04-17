@@ -22,4 +22,9 @@ public class StaticCodePayRequest {
      * 支付通道
      */
     private int payChannel;
+
+    /**
+     * 会员id
+     */
+    private String memberId;
 }

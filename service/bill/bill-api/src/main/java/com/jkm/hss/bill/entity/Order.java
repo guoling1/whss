@@ -4,6 +4,7 @@ import com.jkm.base.common.entity.BaseEntity;
 import com.jkm.hss.bill.enums.EnumOrderStatus;
 import com.jkm.hss.bill.enums.EnumSettleStatus;
 import lombok.Data;
+import org.apache.commons.codec.digest.DigestUtils;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -92,7 +93,7 @@ public class Order extends BaseEntity {
      *
      * {@link com.jkm.hss.product.enums.EnumPaymentChannel}
      */
-    private String payAccountType;
+    private int payAccountType;
 
     /**
      * 支付方式
@@ -203,6 +204,34 @@ public class Order extends BaseEntity {
      * 支付宝/微信订单号
      */
     private String wechatOrAlipayOrderNo;
+
+    /**
+     * 支付url
+     */
+    private String payUrl;
+
+    /**
+     * 封装的支付url加盐
+     */
+    private String paySalt;
+
+    /**
+     * 封装的支付url签名
+     */
+    private String paySign;
+
+    /**
+     * 获取签名
+     *
+     * @return
+     */
+    public String getSignCode() {
+        return DigestUtils.sha256Hex(this.payUrl + DigestUtils.sha256Hex(this.paySalt));
+    }
+
+    public boolean isCorrectSign(final String sign) {
+        return this.paySign.equals(sign);
+    }
 
     /**
      * 是否待支付

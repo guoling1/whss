@@ -31,6 +31,10 @@
         pay_bank_card,
         bank_expire_date,
         cvv,
+        bank_trade_no,
+        trade_card_no,
+        trade_card_type,
+        wechat_or_alipay_order_no,
         remark,
         status
         )
@@ -63,6 +67,10 @@
         #{payBankCard},
         #{bankExpireDate},
         #{cvv},
+        #{bankTradeNo},
+        #{tradeCardNo},
+        #{tradeCardType},
+        #{wechatOrAlipayOrderNo},
         #{remark},
         #{status}
         );
@@ -90,6 +98,13 @@
         settle_time = #{settleTime},
         success_settle_time = #{successSettleTime},
         pay_channel_sign = #{payChannelSign},
+        bank_trade_no = #{bankTradeNo},
+        trade_card_no = #{tradeCardNo},
+        trade_card_type = #{tradeCardType},
+        wechat_or_alipay_order_no = #{wechatOrAlipayOrderNo},
+        pay_url = #{payUrl},
+        pay_salt = #{paySalt},
+        pay_sign = #{paySign},
         remark = #{remark},
         status = #{status}
         WHERE id = #{id}

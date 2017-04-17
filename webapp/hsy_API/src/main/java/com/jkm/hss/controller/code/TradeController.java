@@ -1,11 +1,14 @@
 package com.jkm.hss.controller.code;
 
 import com.google.common.base.Optional;
+import com.google.common.base.Preconditions;
 import com.jkm.base.common.entity.CommonResponse;
 import com.jkm.hss.account.entity.Account;
 import com.jkm.hss.account.enums.EnumAppType;
 import com.jkm.hss.account.sevice.AccountService;
+import com.jkm.hss.bill.entity.Order;
 import com.jkm.hss.bill.service.HSYTradeService;
+import com.jkm.hss.bill.service.OrderService;
 import com.jkm.hss.controller.BaseController;
 import com.jkm.hss.helper.request.StaticCodePayRequest;
 import com.jkm.hss.helper.request.WithdrawRequest;
@@ -21,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.net.URLDecoder;
@@ -38,6 +42,8 @@ public class TradeController extends BaseController {
     private HsyShopDao hsyShopDao;
     @Autowired
     private AccountService accountService;
+    @Autowired
+    private OrderService orderService;
 
     /**
      * 静态码支付
@@ -50,7 +56,7 @@ public class TradeController extends BaseController {
     public CommonResponse staticCodeReceipt(@RequestBody final StaticCodePayRequest payRequest) throws UnsupportedEncodingException {
         final AppBizShop shop = this.hsyShopDao.findAppBizShopByID(payRequest.getMerchantId()).get(0);
         final Pair<Integer, String> resultPair = this.hsyTradeService.receipt(payRequest.getTotalFee(),
-                payRequest.getPayChannel(), shop.getId(), EnumAppType.HSY.getId());
+                payRequest.getPayChannel(), shop.getId(), EnumAppType.HSY.getId(), payRequest.getMemberId());
         log.info("payUrl={}",resultPair.getRight());
         if (0 == resultPair.getLeft()) {
             return CommonResponse.builder4MapResult(CommonResponse.SUCCESS_CODE, "收款成功")
@@ -91,5 +97,22 @@ public class TradeController extends BaseController {
         }
 
         return CommonResponse.simpleResponse(-1, "提现失败");
+    }
+
+    /**
+     * url支付
+     *
+     * @return
+     */
+    @RequestMapping(value = "pay", method = RequestMethod.GET)
+    public void notifyPay(final HttpServletRequest httpServletRequest) {
+        final String orderNo = httpServletRequest.getParameter("o_n");
+        final String sign = httpServletRequest.getParameter("sign");
+        log.info("订单[{}],请求支付", orderNo);
+        final Optional<Order> orderOptional = this.orderService.getByOrderNo(orderNo);
+        Preconditions.checkState(orderOptional.isPresent(), "订单不存在");
+        final Order order = orderOptional.get();
+        Preconditions.checkState(order.isCorrectSign(sign), "`签名错误");
+        this.hsyTradeService.notifyPay(order.getId());
     }
 }

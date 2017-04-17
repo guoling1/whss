@@ -22,17 +22,17 @@ public enum EnumPayChannelSign {
     /**
      * 阳光微信
      */
-    YG_WECHAT(101, "sm_wechat", EnumPaymentChannel.WECHAT_PAY, "阳光微信", EnumUpperChannel.SAOMI, false, EnumBalanceTimeType.D0),
+    YG_WECHAT(101, "sm_wechat", EnumPaymentChannel.WECHAT_PAY, "阳光微信", EnumUpperChannel.SAOMI, false, EnumBalanceTimeType.D0, false),
 
     /**
      * 阳光支付宝
      */
-    YG_ALIPAY(102, "sm_alipay", EnumPaymentChannel.ALIPAY, "阳光支付宝", EnumUpperChannel.SAOMI, false, EnumBalanceTimeType.D0),
+    YG_ALIPAY(102, "sm_alipay", EnumPaymentChannel.ALIPAY, "阳光支付宝", EnumUpperChannel.SAOMI, false, EnumBalanceTimeType.D0, false),
 
     /**
      * 快捷支付
      */
-    YG_UNIONPAY(103, "sm_unionpay", EnumPaymentChannel.UNIONPAY, "阳光快捷", EnumUpperChannel.SAOMI, false, EnumBalanceTimeType.D0),
+    YG_UNIONPAY(103, "sm_unionpay", EnumPaymentChannel.UNIONPAY, "阳光快捷", EnumUpperChannel.SAOMI, false, EnumBalanceTimeType.D0, false),
 
 
     //#################################卡盟############################################
@@ -40,24 +40,24 @@ public enum EnumPayChannelSign {
     /**
      * 卡盟微信
      */
-    KM_WECHAT(201, "km_wechat", EnumPaymentChannel.WECHAT_PAY, "卡盟微信", EnumUpperChannel.KAMENG, true, EnumBalanceTimeType.D0),
+    KM_WECHAT(201, "km_wechat", EnumPaymentChannel.WECHAT_PAY, "卡盟微信", EnumUpperChannel.KAMENG, true, EnumBalanceTimeType.D0, false),
 
     /**
      * 卡盟支付宝
      */
-    KM_ALIPAY(202, "km_alipay", EnumPaymentChannel.ALIPAY, "卡盟支付宝", EnumUpperChannel.KAMENG, true, EnumBalanceTimeType.D0),
+    KM_ALIPAY(202, "km_alipay", EnumPaymentChannel.ALIPAY, "卡盟支付宝", EnumUpperChannel.KAMENG, true, EnumBalanceTimeType.D0, false),
 
 
     //#################################摩宝#############################################
     /**
      * 摩宝快捷
      */
-    MB_UNIONPAY(301, "mb_unionpay", EnumPaymentChannel.UNIONPAY, "摩宝快捷T1", EnumUpperChannel.MOBAO, false, EnumBalanceTimeType.T1),
+    MB_UNIONPAY(301, "mb_unionpay", EnumPaymentChannel.UNIONPAY, "摩宝快捷T1", EnumUpperChannel.MOBAO, false, EnumBalanceTimeType.T1, false),
 
     /**
      * 摩宝快捷-DO
      */
-    MB_UNIONPAY_DO(302, "mb_unionpay_d0", EnumPaymentChannel.UNIONPAY, "摩宝快捷D0", EnumUpperChannel.MOBAO, false, EnumBalanceTimeType.D0),
+    MB_UNIONPAY_DO(302, "mb_unionpay_d0", EnumPaymentChannel.UNIONPAY, "摩宝快捷D0", EnumUpperChannel.MOBAO, false, EnumBalanceTimeType.D0, false),
 
     //#################################合众易宝#########################################
     /**
@@ -81,12 +81,25 @@ public enum EnumPayChannelSign {
      */
 //    YIJIA_ALIPAY(502, "yijia_alipay", "支付宝", "溢+支付宝", EnumUpperChannel.YIJIA, false)
 
+    //#################################易联#############################################
+
     /**
      * 易联快捷
      */
-    EL_UNIONPAY(601, "el_unionpay", EnumPaymentChannel.UNIONPAY, "易联快捷", EnumUpperChannel.EASY_LINK, false, EnumBalanceTimeType.T1)
+    EL_UNIONPAY(601, "el_unionpay", EnumPaymentChannel.UNIONPAY, "易联快捷", EnumUpperChannel.EASY_LINK, false, EnumBalanceTimeType.T1, false),
 
-    ;
+
+    //#################################民生#############################################
+
+    /**
+     * 民生微信
+     */
+    MS_WECHAT_JSAPI(701, "ms_wechat", EnumPaymentChannel.WECHAT_PAY, "民生微信", EnumUpperChannel.MS_BANK, false, EnumBalanceTimeType.T1, true),
+    /**
+     * 民生支付宝
+     */
+    MS_ALIPAY_JSAPI(702, "ms_alipay", EnumPaymentChannel.ALIPAY, "民生支付宝", EnumUpperChannel.MS_BANK, false, EnumBalanceTimeType.T1, true);
+
 
     private static final ImmutableMap<String, EnumPayChannelSign> STATUS_IMMUTABLE_MAP;
 
@@ -122,9 +135,12 @@ public enum EnumPayChannelSign {
     private Boolean autoSettle;
     @Getter
     private EnumBalanceTimeType settleType;
+    @Getter
+    private Boolean needPackage;
 
     EnumPayChannelSign(final int id, final String code, final EnumPaymentChannel paymentChannel,
-                       final String name, final EnumUpperChannel upperChannel, final boolean autoSettle, final EnumBalanceTimeType settleType) {
+                       final String name, final EnumUpperChannel upperChannel, final boolean autoSettle,
+                       final EnumBalanceTimeType settleType, final Boolean needPackage) {
         this.id = id;
         this.code = code;
         this.paymentChannel = paymentChannel;
@@ -132,6 +148,7 @@ public enum EnumPayChannelSign {
         this.upperChannel = upperChannel;
         this.autoSettle = autoSettle;
         this.settleType = settleType;
+        this.needPackage = needPackage;
     }
 
     /**

@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.jkm.base.common.entity.PageModel;
+import com.jkm.base.common.spring.http.client.impl.HttpClientFacade;
 import com.jkm.base.common.util.DateFormatUtil;
 import com.jkm.base.common.util.DateTimeUtil;
 import com.jkm.base.common.util.HttpClientPost;
@@ -27,6 +28,7 @@ import com.jkm.hss.bill.service.OrderService;
 import com.jkm.hss.dealer.entity.Dealer;
 import com.jkm.hss.dealer.service.DealerService;
 import com.jkm.hss.dealer.service.ShallProfitDetailService;
+import com.jkm.hss.merchant.helper.WxConstants;
 import com.jkm.hss.notifier.enums.EnumVerificationCodeType;
 import com.jkm.hss.notifier.service.SmsAuthService;
 import com.jkm.hss.product.enums.*;
@@ -39,6 +41,7 @@ import com.jkm.hsy.user.entity.AppBizShop;
 import com.jkm.hsy.user.entity.AppParam;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
@@ -85,6 +88,8 @@ public class HSYTradeServiceImpl implements HSYTradeService {
     private PushService pushService;
     @Autowired
     private BasicChannelService basicChannelService;
+    @Autowired
+    private HttpClientFacade httpClientFacade;
 
     /**
      * {@inheritDoc}
@@ -149,21 +154,12 @@ public class HSYTradeServiceImpl implements HSYTradeService {
                 } else if (EnumTradeType.WITHDRAW.getId() == order.getTradeType()) {
                     jo.put("tradeType", "2");
                 }
-
-                if (EnumPayChannelSign.YG_WECHAT.getId() == order.getPayChannelSign()) {
-                    jo.put("channel", "微信");
-                } else if (EnumPayChannelSign.YG_ALIPAY.getId() == order.getPayChannelSign()) {
-                    jo.put("channel", "支付宝");
-                } else if (EnumPayChannelSign.YG_UNIONPAY.getId() == order.getPayChannelSign()) {
-                    jo.put("channel", "快捷");
-                }
-
+                jo.put("channel", EnumPayChannelSign.idOf(order.getPayChannelSign()).getPaymentChannel().getValue());
                 if (EnumOrderStatus.PAY_SUCCESS.getId() == order.getStatus()) {
                     jo.put("msg", "收款成功");
                 } else if (EnumOrderStatus.WITHDRAW_SUCCESS.getId() == order.getStatus()) {
                     jo.put("msg", "提现成功");
                 }
-
                 jo.put("amount", order.getTradeAmount().toPlainString());
                 jo.put("time", order.getCreateTime());
                 jo.put("code", order.getOrderNo().substring(order.getOrderNo().length() - 4));
@@ -191,7 +187,7 @@ public class HSYTradeServiceImpl implements HSYTradeService {
         final int channel = paramJo.getIntValue("channel");
         final long shopId = paramJo.getLongValue("shopId");
         final String appId = paramJo.getString("appId");
-        final Pair<Integer, String> receiptResult = this.receipt(totalAmount, channel, shopId, appId);
+        final Pair<Integer, String> receiptResult = this.receipt(totalAmount, channel, shopId, appId, "");
         if (0 != receiptResult.getLeft()) {
             result.put("code", -1);
             result.put("msg", "下单失败");
@@ -209,16 +205,17 @@ public class HSYTradeServiceImpl implements HSYTradeService {
      *
      * @param totalAmount
      * @param channel
-     * @param shopId
+     * @param shopId  店铺id
      * @param appId
+     * @param memberId 会员id
      * @return
      */
     @Override
-    @Transactional
-    public Pair<Integer, String> receipt(final String totalAmount, final int channel, final long shopId, final String appId) {
+    public Pair<Integer, String> receipt(final String totalAmount, final int channel, final long shopId, final String appId, final String memberId) {
         log.info("店铺[{}] 通过动态扫码， 支付一笔资金[{}]", shopId, totalAmount);
         final AppBizShop shop = this.hsyShopDao.findAppBizShopByID(shopId).get(0);
         final String channelCode = this.basicChannelService.selectCodeByChannelSign(channel, EnumMerchantPayType.MERCHANT_JSAPI);
+        final EnumPayChannelSign payChannelSign = EnumPayChannelSign.idOf(channel);
         final Order order = new Order();
         order.setOrderNo(SnGenerator.generateSn(EnumTradeType.PAY.getId()));
         order.setTradeAmount(new BigDecimal(totalAmount));
@@ -232,32 +229,72 @@ public class HSYTradeServiceImpl implements HSYTradeService {
         order.setGoodsDescribe(shop.getShortName());
         order.setPayType(channelCode);
         order.setPayChannelSign(channel);
+        order.setPayAccountType(payChannelSign.getPaymentChannel().getId());
+        order.setPayAccount(memberId);
         order.setSettleStatus(EnumSettleStatus.DUE_SETTLE.getId());
-        order.setSettleType(EnumBalanceTimeType.T1.getType());
+        order.setSettleType(payChannelSign.getSettleType().getType());
         order.setSettleTime(DateTimeUtil.generateT1SettleDate(new Date()));
         order.setStatus(EnumOrderStatus.DUE_PAY.getId());
         this.orderService.add(order);
+
+        return this.handlePlaceOrder(shop, channelCode, order);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param shop
+     * @param channelCode
+     * @param order
+     * @return
+     */
+    @Override
+    @Transactional
+    public Pair<Integer, String> handlePlaceOrder(final AppBizShop shop, final String channelCode, final Order order) {
         //请求支付中心下单
         final PaymentSdkPlaceOrderResponse placeOrderResponse = this.requestPlaceOrder(order, channelCode, shop,
                 PaymentSdkConstants.SDK_PAY_RETURN_URL + order.getTradeAmount() + "/" + order.getId());
-        return this.handlePlaceOrder(placeOrderResponse, order);
-    }
-
-    private Pair<Integer, String> handlePlaceOrder(final PaymentSdkPlaceOrderResponse placeOrderResponse, final Order order) {
         final EnumBasicStatus enumBasicStatus = EnumBasicStatus.of(placeOrderResponse.getCode());
         final Optional<Order> orderOptional = this.orderService.getByIdWithLock(order.getId());
         Preconditions.checkState(orderOptional.get().isDuePay());
+        final EnumPayChannelSign payChannelSign = EnumPayChannelSign.idOf(order.getPayChannelSign());
         switch (enumBasicStatus) {
             case SUCCESS:
+                log.info("订单[{}]-下单成功【{}】", order.getId(), placeOrderResponse);
                 order.setRemark(placeOrderResponse.getMessage());
+                order.setPayUrl(placeOrderResponse.getPayUrl());
+                if (payChannelSign.getNeedPackage()) {
+                    order.setPaySalt(RandomStringUtils.randomAlphanumeric(16));
+                    order.setPaySign(order.getSignCode());
+                    this.orderService.update(order);
+                    final String url = "/trade/pay?" + "o_n=" + order.getOrderNo() + "&sign=" + order.getPaySign();
+                    return Pair.of(0, url);
+                }
                 this.orderService.update(order);
                 return Pair.of(0, placeOrderResponse.getPayUrl());
             case FAIL:
-                order.setRemark(placeOrderResponse.getMessage());
-                this.orderService.update(order);
+                log.info("订单[{}]-下单失败【{}】", order.getId(), placeOrderResponse.getMessage());
+                this.orderService.updateRemark(order.getId(), placeOrderResponse.getMessage());
                 return Pair.of(-1, "下单失败");
         }
-        return Pair.of(-1, "下单失败");
+        return Pair.of(-1, "下单网关返回状态异常");
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param orderId
+     */
+    @Override
+    @Transactional
+    public void notifyPay(final long orderId) {
+        if (this.orderService.getById(orderId).get().isDuePay()) {
+            final Order order = this.orderService.getByIdWithLock(orderId).get();
+            if (order.isDuePay()) {
+                this.orderService.updateStatus(orderId, EnumOrderStatus.PAYING.getId(), "请求支付中");
+                this.httpClientFacade.get(order.getPayUrl());
+            }
+        }
     }
 
 
@@ -272,9 +309,9 @@ public class HSYTradeServiceImpl implements HSYTradeService {
         final String orderNo = paymentSdkPayCallbackResponse.getOrderNo();
         final Optional<Order> orderOptional = this.orderService.getByOrderNoAndTradeType(orderNo, EnumTradeType.PAY.getId());
         Preconditions.checkState(orderOptional.isPresent(), "交易订单[{}]不存在", orderNo);
-        if (orderOptional.get().isDuePay()) {
+        if (orderOptional.get().isDuePay() || orderOptional.get().isPaying()) {
             final Order order = this.orderService.getByIdWithLock(orderOptional.get().getId()).get();
-            if (order.isDuePay()) {
+            if (order.isDuePay() || order.isPaying()) {
                 this.handlePayCallbackMsgImpl(paymentSdkPayCallbackResponse, order);
             }
         }
@@ -298,6 +335,7 @@ public class HSYTradeServiceImpl implements HSYTradeService {
                 this.markPayFail(paymentSdkPayCallbackResponse, order);
                 break;
             case HANDLING:
+                log.info("hsy订单[{}], 支付处理中回调处理", paymentSdkPayCallbackResponse.getOrderNo());
                 this.markPayHandling(paymentSdkPayCallbackResponse, order);
                 break;
             default:
@@ -321,13 +359,17 @@ public class HSYTradeServiceImpl implements HSYTradeService {
         order.setStatus(EnumOrderStatus.PAY_SUCCESS.getId());
         final EnumPayChannelSign enumPayChannelSign = this.basicChannelService.getEnumPayChannelSignByCode(paymentSdkPayCallbackResponse.getPayType());
         order.setPayChannelSign(enumPayChannelSign.getId());
-        log.info("返回的通道是[{}]", order.getPayType());
+        log.info("hsy业务返回的通道是[{}]", order.getPayType());
         log.info("交易订单[{}]，处理hsy支付回调业务", order.getOrderNo());
         final AppBizShop shop = this.hsyShopDao.findAppBizShopByAccountID(order.getPayee()).get(0);
         final BigDecimal merchantPayPoundageRate = this.calculateService.getMerchantPayPoundageRate(EnumProductType.HSY, shop.getId(), enumPayChannelSign.getId());
         final BigDecimal merchantPayPoundage = this.calculateService.getMerchantPayPoundage(order.getTradeAmount(), merchantPayPoundageRate, order.getPayChannelSign());
         order.setPoundage(merchantPayPoundage);
         order.setPayRate(merchantPayPoundageRate);
+        order.setBankTradeNo(paymentSdkPayCallbackResponse.getBankTradeNo());
+        order.setTradeCardType(paymentSdkPayCallbackResponse.getTradeCardType());
+        order.setTradeCardNo(paymentSdkPayCallbackResponse.getTradeCardNo());
+        order.setWechatOrAlipayOrderNo(paymentSdkPayCallbackResponse.getWechatOrAlipayOrderNo());
         this.orderService.update(order);
         //入账
         this.recorded(order.getId(), shop);
@@ -433,7 +475,6 @@ public class HSYTradeServiceImpl implements HSYTradeService {
 
         //判断业务类型
         final String splitBusinessType = EnumSplitBusinessType.HSYPAY.getId();
-        log.info(">>>orderNo:" + order.getOrderNo() + "该笔订单的业务类型：" + splitBusinessType);
         //通道利润--到结算
         if (null != channelMoneyTriple) {
             this.splitAccountRecordService.addPaySplitAccountRecord(splitBusinessType, order.getOrderNo(), order.getOrderNo(),
@@ -523,9 +564,18 @@ public class HSYTradeServiceImpl implements HSYTradeService {
         placeOrderRequest.setMerNo(shop.getGlobalID());
         placeOrderRequest.setTotalAmount(order.getTradeAmount().toPlainString());
         placeOrderRequest.setChannel(channel);
-
-        final String content = HttpClientPost.postJson(PaymentSdkConstants.SDK_PAY_PLACE_ORDER, SdkSerializeUtil.convertObjToMap(placeOrderRequest));
-        return JSON.parseObject(content, PaymentSdkPlaceOrderResponse.class);
+        placeOrderRequest.setWxAppId(WxConstants.APP_ID);
+        placeOrderRequest.setMemberId(order.getPayAccount());
+        try {
+            final String content = HttpClientPost.postJson(PaymentSdkConstants.SDK_PAY_PLACE_ORDER, SdkSerializeUtil.convertObjToMap(placeOrderRequest));
+            return JSON.parseObject(content, PaymentSdkPlaceOrderResponse.class);
+        } catch (final Throwable e){
+            log.error("hsy订单[{}]，下单失败", order.getId());
+            final PaymentSdkPlaceOrderResponse paymentSdkPlaceOrderResponse = new PaymentSdkPlaceOrderResponse();
+            paymentSdkPlaceOrderResponse.setCode(EnumBasicStatus.FAIL.getId());
+            paymentSdkPlaceOrderResponse.setMessage("请求网关下单异常");
+            return paymentSdkPlaceOrderResponse;
+        }
     }
 
     /**
