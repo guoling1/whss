@@ -2,6 +2,8 @@ package com.jkm.hss.merchant.entity;
 
 import lombok.Data;
 
+import java.util.Date;
+
 /**
  * Created by zhangbin on 2017/4/10.
  */
@@ -57,4 +59,14 @@ public class JoinResponse {
      * 类型（代理商还是商户）
      */
     private String type;
+
+    /**
+     * 申请时间
+     */
+    private Date createTime;
+
+    /**
+     * 申请时间
+     */
+    private String createTimes;
 }
