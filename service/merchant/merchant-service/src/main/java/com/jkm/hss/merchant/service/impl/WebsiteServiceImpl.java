@@ -1,9 +1,7 @@
 package com.jkm.hss.merchant.service.impl;
 
 import com.jkm.hss.merchant.dao.WebsiteDao;
-import com.jkm.hss.merchant.entity.CooperationQueryRequest;
-import com.jkm.hss.merchant.entity.CooperationQueryResponse;
-import com.jkm.hss.merchant.entity.WebsiteRequest;
+import com.jkm.hss.merchant.entity.*;
 import com.jkm.hss.merchant.service.WebsiteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -49,5 +47,16 @@ public class WebsiteServiceImpl implements WebsiteService {
     @Override
     public void saveInfo(Map map) {
         this.websiteDao.saveInfo(map);
+    }
+
+    @Override
+    public List<JoinResponse> selectJoin(JoinRequest request) {
+        List<JoinResponse> list = this.websiteDao.selectJoin(request);
+        return list;
+    }
+
+    @Override
+    public int selectJoinCount(JoinRequest request) {
+        return this.websiteDao.selectJoinCount(request);
     }
 }

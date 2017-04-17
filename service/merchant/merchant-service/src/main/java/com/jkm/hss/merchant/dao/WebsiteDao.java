@@ -1,8 +1,6 @@
 package com.jkm.hss.merchant.dao;
 
-import com.jkm.hss.merchant.entity.CooperationQueryRequest;
-import com.jkm.hss.merchant.entity.CooperationQueryResponse;
-import com.jkm.hss.merchant.entity.WebsiteRequest;
+import com.jkm.hss.merchant.entity.*;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
@@ -50,4 +48,18 @@ public interface WebsiteDao {
     String selectMobile(@Param("mobile") String mobile);
 
     void saveInfo(Map map);
+
+    /**
+     * 查询加盟用户列表
+     * @param request
+     * @return
+     */
+    List<JoinResponse> selectJoin(JoinRequest request);
+
+    /**
+     * 查询加盟用户列表总数
+     * @param request
+     * @return
+     */
+    int selectJoinCount(JoinRequest request);
 }

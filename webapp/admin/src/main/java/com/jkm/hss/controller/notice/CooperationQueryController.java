@@ -5,6 +5,8 @@ import com.jkm.base.common.entity.PageModel;
 import com.jkm.hss.controller.BaseController;
 import com.jkm.hss.merchant.entity.CooperationQueryRequest;
 import com.jkm.hss.merchant.entity.CooperationQueryResponse;
+import com.jkm.hss.merchant.entity.JoinRequest;
+import com.jkm.hss.merchant.entity.JoinResponse;
 import com.jkm.hss.merchant.service.WebsiteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -35,5 +37,18 @@ public class CooperationQueryController extends BaseController {
         pageModel.setCount(count);
         pageModel.setRecords(list);
         return CommonResponse.objectResponse(1, "success", pageModel);
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/selectJoin",method = RequestMethod.POST)
+    public CommonResponse selectJoin(@RequestBody JoinRequest request){
+        final PageModel<JoinResponse> pageModel = new PageModel<JoinResponse>(request.getPageNo(), request.getPageSize());
+        request.setOffset(pageModel.getFirstIndex());
+        List<JoinResponse> list = this.websiteService.selectJoin(request);
+        int count = this.websiteService.selectJoinCount(request);
+        pageModel.setCount(count);
+        pageModel.setRecords(list);
+        return CommonResponse.objectResponse(1, "success", pageModel);
+
     }
 }

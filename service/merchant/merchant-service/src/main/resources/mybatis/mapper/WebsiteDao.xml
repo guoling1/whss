@@ -38,6 +38,22 @@
         SELECT COUNT(id) FROM tb_website
     </select>
 
+    <!-- 查询加盟用户列表 -->
+    <select id="selectJoin" resultType="com.jkm.hss.merchant.entity.JoinResponse">
+        SELECT
+        *
+        FROM
+        tb_join
+        ORDER BY
+        create_time DESC
+        LIMIT #{offset},#{pageSize}
+    </select>
+
+    <!-- 查询加盟用户列表总数 -->
+    <select id="selectJoinCount" resultType="java.lang.Integer">
+        SELECT COUNT(id) FROM tb_join
+    </select>
+
     <!-- 查询手机号 -->
     <select id="selectMobile" resultType="java.lang.String">
         SELECT mobile FROM tb_join WHERE mobile = #{mobile}

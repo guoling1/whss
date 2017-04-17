@@ -3,24 +3,10 @@ package com.jkm.hss.merchant.entity;
 import lombok.Data;
 
 /**
- * Created by zhangbin on 2017/4/11.
+ * Created by zhangbin on 2017/4/10.
  */
 @Data
-public class JoinRequest {
-
-    /**
-     * 当前页数
-     */
-    private int pageNo;
-    /**
-     * 每页显示页数
-     */
-    private int pageSize;
-
-    /**
-     * 条数
-     */
-    private Integer offset;
+public class JoinResponse {
 
     /**
      * 用户名字
@@ -71,9 +57,4 @@ public class JoinRequest {
      * 类型（代理商还是商户）
      */
     private String type;
-
-    /**
-     * 验证码
-     */
-    private String code;
 }
