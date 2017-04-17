@@ -292,7 +292,7 @@ public class HsyShopServiceImpl implements HsyShopService {
 
         /**参数验证*/
         if(!(appBizShop.getUid()!=null&&!appBizShop.getUid().equals("")))
-            throw new ApiHandleException(ResultCode.PARAM_LACK,"用户ID");
+            throw new ApiHandleException(ResultCode.PARAM_LACK,"店铺ID");
 
         List<AppBizShop> shopList=hsyShopDao.findShopList(appBizShop);
         gson = new GsonBuilder().registerTypeAdapter(Date.class, new JsonSerializer<Date>() {
@@ -386,7 +386,7 @@ public class HsyShopServiceImpl implements HsyShopService {
         if(!(appBizShop.getUid()!=null&&!appBizShop.getUid().equals("")))
             throw new ApiHandleException(ResultCode.PARAM_LACK,"用户ID");
 
-        appBizShop.setType(AppConstant.ROLE_TYPE_PRIMARY);
+        appBizShop.setType(AppConstant.ROLE_TYPE_BRANCH);
         AppBizShop primaryAppBizShop=null;
         List<AppBizShop> shopList=hsyShopDao.findPrimaryAppBizShopByUserID(appBizShop);
         if(!(shopList!=null&&shopList.size()!=0))

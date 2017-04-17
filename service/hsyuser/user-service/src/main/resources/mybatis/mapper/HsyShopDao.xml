@@ -81,7 +81,7 @@
         (select PATH from app_cm_file where uuid=shop.STOREFRONTID) STOREFRONTURL,
         (select PATH from app_cm_file where uuid=shop.COUNTERID) COUNTERURL,
         (select PATH from app_cm_file where uuid=shop.INDOORID) INDOORURL,
-        (select count(*) from app_biz_shop_user_role where role=3) COUNTEMPLOYEE,
+        (select count(*) from app_biz_shop_user_role where sid=shop.id and role=3) COUNTEMPLOYEE,
         sur.TYPE TYPE,
         (select COUNT(1) from tb_qr_code where merchant_id=shop.id and sys_type='hsy')  COUNTQR
         from app_biz_shop shop left join app_biz_shop_user_role sur on shop.ID=sur.SID
@@ -97,7 +97,7 @@
         (select PATH from app_cm_file where uuid=shop.STOREFRONTID) STOREFRONTURL,
         (select PATH from app_cm_file where uuid=shop.COUNTERID) COUNTERURL,
         (select PATH from app_cm_file where uuid=shop.INDOORID) INDOORURL,
-        (select count(*) from app_biz_shop_user_role where role=3) COUNTEMPLOYEE,
+        (select count(*) from app_biz_shop_user_role where sid=shop.id and role=3) COUNTEMPLOYEE,
         sur.TYPE TYPE,
         shop.CHECKERRORINFO CHECKERRORINFO,
         (select COUNT(1) from tb_qr_code where merchant_id=shop.id and sys_type='hsy')  COUNTQR
