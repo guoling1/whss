@@ -237,7 +237,6 @@ public class HSYTradeServiceImpl implements HSYTradeService {
         order.setPayAccount(memberId);
         order.setSettleStatus(EnumSettleStatus.DUE_SETTLE.getId());
         order.setSettleType(payChannelSign.getSettleType().getType());
-        order.setSettleTime(DateTimeUtil.generateT1SettleDate(new Date()));
         order.setStatus(EnumOrderStatus.DUE_PAY.getId());
         this.orderService.add(order);
 
