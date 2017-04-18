@@ -874,16 +874,16 @@ public class HSYTradeServiceImpl implements HSYTradeService {
     }
 
     /**
-     * 获取魔宝快捷结算时间
+     * 获取收银家结算时间
      *
      * 82560000表示22:56:00
      *
      * @param tradeDate
      * @return
      */
-    private Date getPaySettleDate(Date tradeDate) {
+    private Date getShouYinJiaPaySettleDate(Date tradeDate) {
         if (HolidaySettlementConstants.HOLIDAY_OPEN) {
-            final Date settlementDate = this.mergeTableSettlementDateService.getSettlementDate(tradeDate, EnumUpperChannel.MOBAO.getId());
+            final Date settlementDate = this.mergeTableSettlementDateService.getSettlementDate(tradeDate, EnumUpperChannel.SYJ.getId());
             if (null != settlementDate) {
                 return settlementDate;
             }
@@ -901,8 +901,8 @@ public class HSYTradeServiceImpl implements HSYTradeService {
     private Date getHsySettleDate(final Order order, final EnumPayChannelSign payChannelSign) {
         final EnumUpperChannel upperChannel = payChannelSign.getUpperChannel();
         switch (upperChannel) {
-            case MS_BANK:
-                return this.getPaySettleDate(order.getPaySuccessTime());
+            case SYJ:
+                return this.getShouYinJiaPaySettleDate(order.getPaySuccessTime());
         }
         log.error("can not be here");
         return new Date();
