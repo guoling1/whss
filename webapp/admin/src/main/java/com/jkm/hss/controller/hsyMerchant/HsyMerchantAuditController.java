@@ -68,7 +68,7 @@ public class HsyMerchantAuditController extends BaseController {
             hsyMerchantAuditService.stepChange(uid);
         }
         pushService.pushAuditMsg(hsyMerchantAuditRequest.getUid(),false);
-        return CommonResponse.simpleResponse(-1,"审核未通过");
+        return CommonResponse.simpleResponse(1,"审核未通过");
 
     }
 }
