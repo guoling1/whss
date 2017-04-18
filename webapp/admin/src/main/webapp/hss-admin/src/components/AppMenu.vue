@@ -107,7 +107,7 @@
         <li v-if="list.商户管理!=undefined" :class="(url=='/admin/record/storeList'||url=='/admin/record/storeAuditList'||url=='/admin/record/storeNotice')?'treeview active':'treeview'">
           <a href="#"><span>商户管理</span></a>
           <ul class="treeview-menu">
-            <li v-if="list.所有商户!=undefined" :class="(url=='/admin/record/storeList')?'treeview active':'treeview'" @click="refrash">
+            <li v-if="list.所有商户!=undefined" :class="(url=='/admin/record/storeList')?'treeview active':'treeview'" @click="refrash('所有商户','/admin/record/storeList')">
               <router-link to="/admin/record/storeList"><span>所有商户</span></router-link>
             </li>
             <!--<li @click="refrash"><router-link to="/admin/record/storeAccount"><span>商户账户</span> </router-link></li>-->

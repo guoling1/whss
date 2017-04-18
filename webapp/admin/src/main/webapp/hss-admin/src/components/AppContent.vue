@@ -93,6 +93,11 @@ export default {
 <script lang="babel">
   export default {
     name: 'collection',
+    props: {
+      tabs: {
+        type: Array
+      }
+    },
     data () {
       return {
         msg: '注册',
@@ -107,49 +112,46 @@ export default {
     created:function () {
       this.a = this._$tabsData;
       //this.editableTabsValue2 = this.$route.path
-      console.log(this.b)
     },
     watch:{
       a:function (val) {
         this.editableTabsValue2 = this.$route.path
         this.editableTabs2 = val
-      },
-      b:function () {
-        console.log(arguments)
-//        this.editableTabsValue2 = val;
       }
     },
     methods: {
-      handleClick:function (tab) {
+      handleClick:function (tab,event) {
+        console.log(tab,event)
         this.editableTabsValue2 = tab.name
         this.$router.push(tab.name)
       },
       removeTab(targetName) {
-        for(let i=0; i<this._$tabsData.length;i++){
-            if(this._$tabsData[i].name == targetName.label){
-              this._$tabsData.splice(i,1);
-              i--;
-              break
-            }
-        }
-        let tabs = this.editableTabs2;
+
+
+        let tabs = this._$tabsData;
+        console.log(tabs)
         let activeName = this.editableTabsValue2;
-        if (activeName === targetName) {
+        if (activeName === targetName.name) {
           tabs.forEach((tab, index) => {
-            if (tab.url === targetName) {
+            if (tab.url === targetName.name) {
               let nextTab = tabs[index + 1] || tabs[index - 1];
+              for(let i=0; i<this._$tabsData.length;i++){
+                if(this._$tabsData[i].name == targetName.label){
+                  this._$tabsData.splice(i,1);
+                  i--;
+                  break
+                }
+              }
               if (nextTab) {
                 activeName = nextTab.url;
-                console.log(activeName)
               }
             }
           });
         }
-
+        console.log(tabs)
         this.editableTabsValue2 = activeName;
-
         this.$router.push(activeName)
-        this.editableTabs2 = tabs.filter(tab => tab.name !== targetName);
+//        this._$tabsData = this.editableTabs2 = tabs.filter(tab => tab.name !== targetName);
       }
     },
     attached:function () {
