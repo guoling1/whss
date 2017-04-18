@@ -416,7 +416,7 @@ public class HSYTradeServiceImpl implements HSYTradeService {
             this.accountService.increaseSettleAmount(account.getId(), order.getRealPayAmount().subtract(order.getPoundage()));
             this.settleAccountFlowService.addSettleAccountFlow(account.getId(), order.getOrderNo(),
                     order.getRealPayAmount().subtract(order.getPoundage()), "支付", EnumAccountFlowType.INCREASE,
-                    EnumAppType.HSY.getId(), order.getSettleTime(), EnumAccountUserType.MERCHANT.getId());
+                    EnumAppType.HSY.getId(), order.getPaySuccessTime(), order.getSettleTime(), EnumAccountUserType.MERCHANT.getId());
 
             //手续费账户--可用余额
             final Account poundageAccount = this.accountService.getByIdWithLock(AccountConstants.POUNDAGE_ACCOUNT_ID).get();
@@ -470,7 +470,7 @@ public class HSYTradeServiceImpl implements HSYTradeService {
             this.accountService.increaseTotalAmount(account.getId(), channelMoneyTriple.getMiddle());
             this.accountService.increaseSettleAmount(account.getId(), channelMoneyTriple.getMiddle());
             this.settleAccountFlowService.addSettleAccountFlow(account.getId(), order.getOrderNo(), channelMoneyTriple.getMiddle(),
-                    "支付分润", EnumAccountFlowType.INCREASE, EnumAppType.HSY.getId(), order.getSettleTime(), EnumAccountUserType.COMPANY.getId());
+                    "支付分润", EnumAccountFlowType.INCREASE, EnumAppType.HSY.getId(), order.getPaySuccessTime(), order.getSettleTime(), EnumAccountUserType.COMPANY.getId());
         }
         //产品利润--到结算
         if (null != productMoneyTriple) {
@@ -481,7 +481,7 @@ public class HSYTradeServiceImpl implements HSYTradeService {
             this.accountService.increaseTotalAmount(account.getId(), productMoneyTriple.getMiddle());
             this.accountService.increaseSettleAmount(account.getId(), productMoneyTriple.getMiddle());
             this.settleAccountFlowService.addSettleAccountFlow(account.getId(), order.getOrderNo(), productMoneyTriple.getMiddle(),
-                    "支付分润", EnumAccountFlowType.INCREASE, EnumAppType.HSY.getId(), order.getSettleTime(), EnumAccountUserType.COMPANY.getId());
+                    "支付分润", EnumAccountFlowType.INCREASE, EnumAppType.HSY.getId(), order.getPaySuccessTime(), order.getSettleTime(), EnumAccountUserType.COMPANY.getId());
         }
         //一级代理商利润--到结算
         if (null != firstMoneyTriple) {
@@ -493,7 +493,7 @@ public class HSYTradeServiceImpl implements HSYTradeService {
             this.accountService.increaseTotalAmount(account.getId(), firstMoneyTriple.getMiddle());
             this.accountService.increaseSettleAmount(account.getId(), firstMoneyTriple.getMiddle());
             this.settleAccountFlowService.addSettleAccountFlow(account.getId(), order.getOrderNo(), firstMoneyTriple.getMiddle(),
-                    "支付分润", EnumAccountFlowType.INCREASE, EnumAppType.HSY.getId(), order.getSettleTime(), EnumAccountUserType.DEALER.getId());
+                    "支付分润", EnumAccountFlowType.INCREASE, EnumAppType.HSY.getId(), order.getPaySuccessTime(), order.getSettleTime(), EnumAccountUserType.DEALER.getId());
         }
         //二级代理商利润--到结算
         if (null != secondMoneyTriple) {
@@ -505,7 +505,7 @@ public class HSYTradeServiceImpl implements HSYTradeService {
             this.accountService.increaseTotalAmount(account.getId(), secondMoneyTriple.getMiddle());
             this.accountService.increaseSettleAmount(account.getId(), secondMoneyTriple.getMiddle());
             this.settleAccountFlowService.addSettleAccountFlow(account.getId(), order.getOrderNo(), secondMoneyTriple.getMiddle(),
-                    "支付分润", EnumAccountFlowType.INCREASE, EnumAppType.HSY.getId(), order.getSettleTime(), EnumAccountUserType.DEALER.getId());
+                    "支付分润", EnumAccountFlowType.INCREASE, EnumAppType.HSY.getId(), order.getPaySuccessTime(), order.getSettleTime(), EnumAccountUserType.DEALER.getId());
         }
 
     }
@@ -735,7 +735,7 @@ public class HSYTradeServiceImpl implements HSYTradeService {
             this.accountService.increaseTotalAmount(account.getId(), channelMoneyTriple.getMiddle());
             this.accountService.increaseSettleAmount(account.getId(), channelMoneyTriple.getMiddle());
             this.settleAccountFlowService.addSettleAccountFlow(account.getId(), order.getOrderNo(), channelMoneyTriple.getMiddle(),
-                    "提现分润", EnumAccountFlowType.INCREASE, EnumAppType.HSY.getId(), order.getPaySuccessTime(), EnumAccountUserType.COMPANY.getId());
+                    "提现分润", EnumAccountFlowType.INCREASE, EnumAppType.HSY.getId(), order.getPaySuccessTime(), order.getSettleTime(), EnumAccountUserType.COMPANY.getId());
         }
         //产品利润--到结算
         if (null != productMoneyTriple) {
@@ -746,7 +746,7 @@ public class HSYTradeServiceImpl implements HSYTradeService {
             this.accountService.increaseTotalAmount(account.getId(), productMoneyTriple.getMiddle());
             this.accountService.increaseSettleAmount(account.getId(), productMoneyTriple.getMiddle());
             this.settleAccountFlowService.addSettleAccountFlow(account.getId(), order.getOrderNo(), productMoneyTriple.getMiddle(),
-                    "提现分润", EnumAccountFlowType.INCREASE, EnumAppType.HSY.getId(), order.getPaySuccessTime(), EnumAccountUserType.COMPANY.getId());
+                    "提现分润", EnumAccountFlowType.INCREASE, EnumAppType.HSY.getId(), order.getPaySuccessTime(), order.getSettleTime(), EnumAccountUserType.COMPANY.getId());
         }
         //一级代理商利润--到结算
         if (null != firstMoneyTriple) {
@@ -758,7 +758,7 @@ public class HSYTradeServiceImpl implements HSYTradeService {
             this.accountService.increaseTotalAmount(account.getId(), firstMoneyTriple.getMiddle());
             this.accountService.increaseSettleAmount(account.getId(), firstMoneyTriple.getMiddle());
             this.settleAccountFlowService.addSettleAccountFlow(account.getId(), order.getOrderNo(), firstMoneyTriple.getMiddle(),
-                    "提现分润", EnumAccountFlowType.INCREASE, EnumAppType.HSY.getId(), order.getPaySuccessTime(), EnumAccountUserType.DEALER.getId());
+                    "提现分润", EnumAccountFlowType.INCREASE, EnumAppType.HSY.getId(), order.getPaySuccessTime(), order.getSettleTime(), EnumAccountUserType.DEALER.getId());
         }
         //二级代理商利润--到结算
         if (null != secondMoneyTriple) {
@@ -770,7 +770,7 @@ public class HSYTradeServiceImpl implements HSYTradeService {
             this.accountService.increaseTotalAmount(account.getId(), secondMoneyTriple.getMiddle());
             this.accountService.increaseSettleAmount(account.getId(), secondMoneyTriple.getMiddle());
             this.settleAccountFlowService.addSettleAccountFlow(account.getId(), order.getOrderNo(), secondMoneyTriple.getMiddle(),
-                    "提现分润", EnumAccountFlowType.INCREASE, EnumAppType.HSY.getId(), order.getPaySuccessTime(), EnumAccountUserType.DEALER.getId());
+                    "提现分润", EnumAccountFlowType.INCREASE, EnumAppType.HSY.getId(), order.getPaySuccessTime(), order.getSettleTime(), EnumAccountUserType.DEALER.getId());
         }
 
     }

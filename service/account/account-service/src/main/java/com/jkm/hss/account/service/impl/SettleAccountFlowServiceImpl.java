@@ -120,7 +120,7 @@ public class SettleAccountFlowServiceImpl implements SettleAccountFlowService {
     @Override
     @Transactional
     public long addSettleAccountFlow(long accountId, String orderNo, BigDecimal changeAmount, String remark,
-                                     EnumAccountFlowType type, String appId, Date settleDate, int accountUserType) {
+                                     EnumAccountFlowType type, String appId, Date tradeDate, Date settleDate, int accountUserType) {
         //此时的account已经是可用余额改变的结果
         final Account account = this.accountService.getByIdWithLock(accountId).get();
         final SettleAccountFlow settleAccountFlow = new SettleAccountFlow();
@@ -143,6 +143,7 @@ public class SettleAccountFlowServiceImpl implements SettleAccountFlowService {
         settleAccountFlow.setChangeTime(new Date());
         settleAccountFlow.setRemark(remark);
         settleAccountFlow.setAppId(appId);
+        settleAccountFlow.setTradeDate(tradeDate);
         settleAccountFlow.setSettleDate(settleDate);
         settleAccountFlow.setAccountUserType(accountUserType);
         this.settleAccountFlowDao.insert(settleAccountFlow);

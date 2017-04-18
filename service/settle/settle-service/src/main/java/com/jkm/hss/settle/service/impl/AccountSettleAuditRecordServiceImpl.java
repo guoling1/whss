@@ -458,7 +458,7 @@ public class AccountSettleAuditRecordServiceImpl implements AccountSettleAuditRe
                 Preconditions.checkState(account.getDueSettleAmount().compareTo(merchantIncreaseSettleAccountFlow.getIncomeAmount()) >= 0, "账户的待结算总金额不可以小于单笔结算流水的待结算金额");
                 this.accountService.decreaseSettleAmount(account.getId(), merchantIncreaseSettleAccountFlow.getIncomeAmount());
                 this.settleAccountFlowService.addSettleAccountFlow(account.getId(), settleAccountFlow.getOrderNo(), merchantIncreaseSettleAccountFlow.getIncomeAmount(),
-                        merchantIncreaseSettleAccountFlow.getRemark(), EnumAccountFlowType.DECREASE, merchantIncreaseSettleAccountFlow.getAppId(),
+                        merchantIncreaseSettleAccountFlow.getRemark(), EnumAccountFlowType.DECREASE, merchantIncreaseSettleAccountFlow.getAppId(), merchantIncreaseSettleAccountFlow.getTradeDate(),
                         merchantIncreaseSettleAccountFlow.getSettleDate(), merchantIncreaseSettleAccountFlow.getAccountUserType());
                 //可用余额流水增加
                 if (EnumAccountUserType.MERCHANT.getId() != settleAccountFlow.getAccountUserType()) {

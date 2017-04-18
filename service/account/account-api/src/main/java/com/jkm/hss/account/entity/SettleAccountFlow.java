@@ -78,6 +78,11 @@ public class SettleAccountFlow extends BaseEntity {
     private String appId;
 
     /**
+     * 交易日期
+     */
+    private Date tradeDate;
+
+    /**
      * 结算日期
      */
     private Date settleDate;
