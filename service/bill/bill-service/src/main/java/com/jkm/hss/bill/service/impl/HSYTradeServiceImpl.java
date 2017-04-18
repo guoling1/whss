@@ -876,8 +876,6 @@ public class HSYTradeServiceImpl implements HSYTradeService {
     /**
      * 获取收银家结算时间
      *
-     * 82560000表示22:56:00
-     *
      * @param tradeDate
      * @return
      */
