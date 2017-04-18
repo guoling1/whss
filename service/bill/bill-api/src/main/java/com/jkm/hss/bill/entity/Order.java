@@ -206,7 +206,7 @@ public class Order extends BaseEntity {
     private String wechatOrAlipayOrderNo;
 
     /**
-     * 支付url
+     * 支付要素
      */
     private String payInfo;
 

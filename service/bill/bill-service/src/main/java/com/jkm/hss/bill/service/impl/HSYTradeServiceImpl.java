@@ -549,7 +549,7 @@ public class HSYTradeServiceImpl implements HSYTradeService {
         placeOrderRequest.setMerNo(shop.getGlobalID());
         placeOrderRequest.setTotalAmount(order.getTradeAmount().toPlainString());
         placeOrderRequest.setChannel(channel);
-        placeOrderRequest.setWxAppId(WxConstants.APP_ID);
+        placeOrderRequest.setWxAppId(WxConstants.APP_HSY_ID);
         placeOrderRequest.setMemberId(order.getPayAccount());
         try {
             final String content = HttpClientPost.postJson(PaymentSdkConstants.SDK_PAY_PLACE_ORDER, SdkSerializeUtil.convertObjToMap(placeOrderRequest));
