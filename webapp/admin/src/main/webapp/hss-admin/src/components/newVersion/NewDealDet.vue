@@ -1,6 +1,5 @@
 <template lang="html">
-  <div id="dealList">
-    <!--<div style="padding: 8px 30px; background: rgb(243, 156, 18); z-index: 999999; font-size: 22px; font-weight: 600;margin-bottom: 15px;    color: #fff;">交易详情</div>-->
+  <div id="dealDet">
     <div class="box-header with-border" style="margin: 0 0 0 3px;">
       <h3 class="box-title" style="border-left: 3px solid #e4e0e0;padding-left: 10px;">交易详情</h3>
     </div>
@@ -102,7 +101,7 @@
             </tbody></table>
         </div>
       </div>
-      <div class="box box-primary">
+      <!--<div class="box box-primary">
         <p class="lead"> 支付流水单</p>
         <div class="table-responsive">
           <table class="table">
@@ -119,31 +118,40 @@
             </tbody>
           </table>
         </div>
-      </div>
+      </div>-->
     </div>
-    <message></message>
-  </div>
+    <el-button v-show="false" v-loading.fullscreen.lock="fullscreenLoading">显示整页加载</el-button>
   </div>
 </template>
 
 <script lang="babel">
-  import Message from '../Message.vue'
   export default {
-    name: 'dealList',
-    components: {
-      Message
-    },
+    name: 'dealDet',
     data: function () {
       return {
-        record:{}
+        record:{},
+        fullscreenLoading:false
       }
     },
-    created: function(){
+    activated: function(){
+      this.record={};
+      this.fullscreenLoading = true;
       this.$http.post('/admin/queryOrder/orderListAll',{orderNo:this.$route.query.orderNo})
         .then(function (res) {
-          this.$data.record = res.data;
+          this.record = res.data;
+          setTimeout(() => {
+            this.fullscreenLoading = false;
+          }, 1000)
         },function (err) {
-          console.log(err)
+          this.record={};
+          setTimeout(() => {
+            this.fullscreenLoading = false;
+          }, 1000)
+          this.$message({
+            showClose: true,
+            message: err.statusMessage,
+            type: 'error'
+          });
         })
     },
     filters: {
@@ -152,26 +160,6 @@
           return "商户"
         }else if(val==1){
           return "代理商"
-        }
-      },
-      changeTime: function (val) {
-        if(val==''||val==null){
-          return ''
-        }else {
-          val = new Date(val)
-          var year=val.getFullYear();
-          var month=val.getMonth()+1;
-          var date=val.getDate();
-          var hour=val.getHours();
-          var minute=val.getMinutes();
-          var second=val.getSeconds();
-          function tod(a) {
-            if(a<10){
-              a = "0"+a
-            }
-            return a;
-          }
-          return year+"-"+tod(month)+"-"+tod(date)+" "+tod(hour)+":"+tod(minute)+":"+tod(second);
         }
       },
       changeStatus: function (val) {
