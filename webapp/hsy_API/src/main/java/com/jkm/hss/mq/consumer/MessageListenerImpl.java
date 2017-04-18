@@ -23,8 +23,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 public class MessageListenerImpl implements MessageListener {
 
     @Autowired
-    private OrderService orderService;
-    @Autowired
     @Qualifier("accountSettleAuditRecordService")
     private AccountSettleAuditRecordService accountSettleAuditRecordService;
     /**
@@ -39,15 +37,15 @@ public class MessageListenerImpl implements MessageListener {
         log.info("Receive message, Topic is: [{}], tag is: [{}] MsgId is: [{}]", message.getTopic(),
                 message.getTag(), message.getMsgID());
         try {
-//            final JSONObject body = JSONObject.parseObject(new String(message.getBody(),"UTF-8"));
-//            if (MqConfig.POUNDAGE_SETTLE.equals(message.getTag())) {
-//                log.info("消费消息--订单[{}]， 手续费结算", body.getString("orderNo"));
-//                final String orderNo = body.getString("orderNo");
-//                this.accountSettleAuditRecordService.poundageSettle(orderNo);
-//            }
+            final JSONObject body = JSONObject.parseObject(new String(message.getBody(),"UTF-8"));
+            if (MqConfig.NORMAL_SETTLE.equals(message.getTag())) {
+                log.info("消费消息--结算审核记录[{}]， 结算", body.getLong("recordId"));
+                final long recordId = body.getLong("recordId");
+                this.accountSettleAuditRecordService.settleImpl(recordId);
+            }
         } catch (Throwable e) {
-            log.info("consume message error, Topic is: [{}], tag is: [{}] MsgId is: [{}]", message.getTopic(),
-                    message.getTag(), message.getMsgID());
+            log.info("consume message error, Topic is: [{}], tag is: [{}] MsgId is: [{}] key is [{}]", message.getTopic(),
+                    message.getTag(), message.getMsgID(), message.getKey());
         }
         //如果想测试消息重投的功能,可以将Action.CommitMessage 替换成Action.ReconsumeLater
         return Action.CommitMessage;

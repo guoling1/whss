@@ -20,10 +20,12 @@ import com.jkm.hss.bill.entity.*;
 import com.jkm.hss.bill.entity.callback.PaymentSdkPayCallbackResponse;
 import com.jkm.hss.bill.entity.callback.PaymentSdkWithdrawCallbackResponse;
 import com.jkm.hss.bill.enums.*;
+import com.jkm.hss.bill.helper.HolidaySettlementConstants;
 import com.jkm.hss.bill.helper.PaymentSdkConstants;
 import com.jkm.hss.bill.helper.SdkSerializeUtil;
 import com.jkm.hss.bill.service.CalculateService;
 import com.jkm.hss.bill.service.HSYTradeService;
+import com.jkm.hss.bill.service.MergeTableSettlementDateService;
 import com.jkm.hss.bill.service.OrderService;
 import com.jkm.hss.dealer.entity.Dealer;
 import com.jkm.hss.dealer.service.DealerService;
@@ -90,6 +92,8 @@ public class HSYTradeServiceImpl implements HSYTradeService {
     private BasicChannelService basicChannelService;
     @Autowired
     private HttpClientFacade httpClientFacade;
+    @Autowired
+    private MergeTableSettlementDateService mergeTableSettlementDateService;
 
     /**
      * {@inheritDoc}
@@ -262,7 +266,7 @@ public class HSYTradeServiceImpl implements HSYTradeService {
             case SUCCESS:
                 log.info("订单[{}]-下单成功【{}】", order.getId(), placeOrderResponse);
                 order.setRemark(placeOrderResponse.getMessage());
-                order.setPayUrl(placeOrderResponse.getPayUrl());
+                order.setPayInfo(placeOrderResponse.getPayUrl());
                 if (payChannelSign.getNeedPackage()) {
                     order.setPaySalt(RandomStringUtils.randomAlphanumeric(16));
                     order.setPaySign(order.getSignCode());
@@ -279,25 +283,6 @@ public class HSYTradeServiceImpl implements HSYTradeService {
         }
         return Pair.of(-1, "下单网关返回状态异常");
     }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @param orderId
-     */
-    @Override
-    @Transactional
-    public void notifyPay(final long orderId) {
-        if (this.orderService.getById(orderId).get().isDuePay()) {
-            final Order order = this.orderService.getByIdWithLock(orderId).get();
-            if (order.isDuePay()) {
-                this.orderService.updateStatus(orderId, EnumOrderStatus.PAYING.getId(), "请求支付中");
-                this.httpClientFacade.get(order.getPayUrl());
-            }
-        }
-    }
-
-
     /**
      * {@inheritDoc}
      *
@@ -370,6 +355,7 @@ public class HSYTradeServiceImpl implements HSYTradeService {
         order.setTradeCardType(paymentSdkPayCallbackResponse.getTradeCardType());
         order.setTradeCardNo(paymentSdkPayCallbackResponse.getTradeCardNo());
         order.setWechatOrAlipayOrderNo(paymentSdkPayCallbackResponse.getWechatOrAlipayOrderNo());
+        order.setSettleTime(this.getHsySettleDate(order, enumPayChannelSign));
         this.orderService.update(order);
         //入账
         this.recorded(order.getId(), shop);
@@ -430,7 +416,7 @@ public class HSYTradeServiceImpl implements HSYTradeService {
             this.accountService.increaseSettleAmount(account.getId(), order.getRealPayAmount().subtract(order.getPoundage()));
             this.settleAccountFlowService.addSettleAccountFlow(account.getId(), order.getOrderNo(),
                     order.getRealPayAmount().subtract(order.getPoundage()), "支付", EnumAccountFlowType.INCREASE,
-                    EnumAppType.HSY.getId(), order.getPaySuccessTime(), EnumAccountUserType.MERCHANT.getId());
+                    EnumAppType.HSY.getId(), order.getSettleTime(), EnumAccountUserType.MERCHANT.getId());
 
             //手续费账户--可用余额
             final Account poundageAccount = this.accountService.getByIdWithLock(AccountConstants.POUNDAGE_ACCOUNT_ID).get();
@@ -484,7 +470,7 @@ public class HSYTradeServiceImpl implements HSYTradeService {
             this.accountService.increaseTotalAmount(account.getId(), channelMoneyTriple.getMiddle());
             this.accountService.increaseSettleAmount(account.getId(), channelMoneyTriple.getMiddle());
             this.settleAccountFlowService.addSettleAccountFlow(account.getId(), order.getOrderNo(), channelMoneyTriple.getMiddle(),
-                    "支付分润", EnumAccountFlowType.INCREASE, EnumAppType.HSY.getId(), order.getPaySuccessTime(), EnumAccountUserType.COMPANY.getId());
+                    "支付分润", EnumAccountFlowType.INCREASE, EnumAppType.HSY.getId(), order.getSettleTime(), EnumAccountUserType.COMPANY.getId());
         }
         //产品利润--到结算
         if (null != productMoneyTriple) {
@@ -495,7 +481,7 @@ public class HSYTradeServiceImpl implements HSYTradeService {
             this.accountService.increaseTotalAmount(account.getId(), productMoneyTriple.getMiddle());
             this.accountService.increaseSettleAmount(account.getId(), productMoneyTriple.getMiddle());
             this.settleAccountFlowService.addSettleAccountFlow(account.getId(), order.getOrderNo(), productMoneyTriple.getMiddle(),
-                    "支付分润", EnumAccountFlowType.INCREASE, EnumAppType.HSY.getId(), order.getPaySuccessTime(), EnumAccountUserType.COMPANY.getId());
+                    "支付分润", EnumAccountFlowType.INCREASE, EnumAppType.HSY.getId(), order.getSettleTime(), EnumAccountUserType.COMPANY.getId());
         }
         //一级代理商利润--到结算
         if (null != firstMoneyTriple) {
@@ -507,7 +493,7 @@ public class HSYTradeServiceImpl implements HSYTradeService {
             this.accountService.increaseTotalAmount(account.getId(), firstMoneyTriple.getMiddle());
             this.accountService.increaseSettleAmount(account.getId(), firstMoneyTriple.getMiddle());
             this.settleAccountFlowService.addSettleAccountFlow(account.getId(), order.getOrderNo(), firstMoneyTriple.getMiddle(),
-                    "支付分润", EnumAccountFlowType.INCREASE, EnumAppType.HSY.getId(), order.getPaySuccessTime(), EnumAccountUserType.DEALER.getId());
+                    "支付分润", EnumAccountFlowType.INCREASE, EnumAppType.HSY.getId(), order.getSettleTime(), EnumAccountUserType.DEALER.getId());
         }
         //二级代理商利润--到结算
         if (null != secondMoneyTriple) {
@@ -519,7 +505,7 @@ public class HSYTradeServiceImpl implements HSYTradeService {
             this.accountService.increaseTotalAmount(account.getId(), secondMoneyTriple.getMiddle());
             this.accountService.increaseSettleAmount(account.getId(), secondMoneyTriple.getMiddle());
             this.settleAccountFlowService.addSettleAccountFlow(account.getId(), order.getOrderNo(), secondMoneyTriple.getMiddle(),
-                    "支付分润", EnumAccountFlowType.INCREASE, EnumAppType.HSY.getId(), order.getPaySuccessTime(), EnumAccountUserType.DEALER.getId());
+                    "支付分润", EnumAccountFlowType.INCREASE, EnumAppType.HSY.getId(), order.getSettleTime(), EnumAccountUserType.DEALER.getId());
         }
 
     }
@@ -886,5 +872,40 @@ public class HSYTradeServiceImpl implements HSYTradeService {
     private void  markWithdrawFail(final long orderId, final long accountId,
                                    final PaymentSdkDaiFuResponse response) {
         log.error("###########【Impossible】#########提现单[{}]提现失败####################", orderId);
+    }
+
+    /**
+     * 获取魔宝快捷结算时间
+     *
+     * 82560000表示22:56:00
+     *
+     * @param tradeDate
+     * @return
+     */
+    private Date getPaySettleDate(Date tradeDate) {
+        if (HolidaySettlementConstants.HOLIDAY_OPEN) {
+            final Date settlementDate = this.mergeTableSettlementDateService.getSettlementDate(tradeDate, EnumUpperChannel.MOBAO.getId());
+            if (null != settlementDate) {
+                return settlementDate;
+            }
+        }
+        return DateTimeUtil.generateT1SettleDate(tradeDate);
+    }
+
+    /**
+     *  获取结算日期
+     *
+     * @param order
+     * @param payChannelSign
+     * @return
+     */
+    private Date getHsySettleDate(final Order order, final EnumPayChannelSign payChannelSign) {
+        final EnumUpperChannel upperChannel = payChannelSign.getUpperChannel();
+        switch (upperChannel) {
+            case MS_BANK:
+                return this.getPaySettleDate(order.getPaySuccessTime());
+        }
+        log.error("can not be here");
+        return new Date();
     }
 }

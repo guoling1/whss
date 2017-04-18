@@ -75,7 +75,12 @@ public interface AccountSettleAuditRecordService {
     /**
      * 处理 T1 结算审核, 生成记录
      */
-    void handleT1SettleTask();
+    void generateHsySettleAuditRecordTask();
+
+    /**
+     * 处理 T1 结算审核,自动结算
+     */
+    void handleSettleAuditRecordTask();
 
     /**
      * 正常结算
@@ -111,11 +116,11 @@ public interface AccountSettleAuditRecordService {
     Pair<Integer,String> batchSettle(List<Long> recordIds);
 
     /**
-     * 结算
+     * 代理商和公司待结算审核记录结算
      *
-     * @param flows
+     * @param recordId
      */
-    void settleImpl(List<SettleAccountFlow> flows);
+    void settleImpl(long recordId);
 
     /**
      * 记录列表

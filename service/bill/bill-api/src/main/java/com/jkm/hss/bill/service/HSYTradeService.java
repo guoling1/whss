@@ -65,12 +65,6 @@ public interface HSYTradeService {
     Pair<Integer, String> handlePlaceOrder(AppBizShop shop, String channelCode, Order order);
 
     /**
-     * 唤醒支付
-     *
-     * @param orderId
-     */
-    void notifyPay(long orderId);
-    /**
      * 处理支付中心， 支付结果回调
      *
      * @param paymentSdkPayCallbackResponse

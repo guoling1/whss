@@ -16,6 +16,7 @@ import com.jkm.hss.product.enums.EnumPayChannelSign;
 import com.jkm.hsy.user.dao.HsyShopDao;
 import com.jkm.hsy.user.entity.AppBizShop;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -54,6 +55,7 @@ public class TradeController extends BaseController {
     @ResponseBody
     @RequestMapping(value = "scReceipt", method = RequestMethod.POST)
     public CommonResponse staticCodeReceipt(@RequestBody final StaticCodePayRequest payRequest) throws UnsupportedEncodingException {
+        EnumPayChannelSign.idOf(payRequest.getPayChannel());
         final AppBizShop shop = this.hsyShopDao.findAppBizShopByID(payRequest.getMerchantId()).get(0);
         final Pair<Integer, String> resultPair = this.hsyTradeService.receipt(payRequest.getTotalFee(),
                 payRequest.getPayChannel(), shop.getId(), EnumAppType.HSY.getId(), payRequest.getMemberId());
@@ -105,7 +107,7 @@ public class TradeController extends BaseController {
      * @return
      */
     @RequestMapping(value = "pay", method = RequestMethod.GET)
-    public void notifyPay(final HttpServletRequest httpServletRequest) {
+    public CommonResponse notifyPay(final HttpServletRequest httpServletRequest) {
         final String orderNo = httpServletRequest.getParameter("o_n");
         final String sign = httpServletRequest.getParameter("sign");
         log.info("订单[{}],请求支付", orderNo);
@@ -113,6 +115,31 @@ public class TradeController extends BaseController {
         Preconditions.checkState(orderOptional.isPresent(), "订单不存在");
         final Order order = orderOptional.get();
         Preconditions.checkState(order.isCorrectSign(sign), "`签名错误");
-        this.hsyTradeService.notifyPay(order.getId());
+        final String payInfo = order.getPayInfo();
+        Preconditions.checkState(StringUtils.isEmpty(payInfo), "支付要素不能为空");
+        final EnumPayChannelSign payChannelSign = EnumPayChannelSign.idOf(order.getPayChannelSign());
+        log.info("订单[{}], 通道[{}],支付要素是[[}]", order.getId(), payChannelSign.getCode(), payInfo);
+        switch (payChannelSign.getPaymentChannel()) {
+            case WECHAT_PAY:
+                final String[] wechantPayInfoArray = payInfo.split("\\|");
+                Preconditions.checkState(wechantPayInfoArray.length == 6, "缺少支付要素");
+                return CommonResponse.builder4MapResult(CommonResponse.SUCCESS_CODE, "success")
+                        .addParam("appId", wechantPayInfoArray[0])
+                        .addParam("timeStamp", wechantPayInfoArray[1])
+                        .addParam("nonceStr", wechantPayInfoArray[2])
+                        .addParam("package", wechantPayInfoArray[3])
+                        .addParam("signType", wechantPayInfoArray[4])
+                        .addParam("paySign", wechantPayInfoArray[5])
+                        .build();
+            case ALIPAY:
+                final String[] alipayPayInfoArray = payInfo.split("\\|");
+                Preconditions.checkState(alipayPayInfoArray.length == 1, "缺少支付要素");
+                return CommonResponse.builder4MapResult(CommonResponse.SUCCESS_CODE, "success")
+                        .addParam("tradeNO", alipayPayInfoArray[0])
+                        .build();
+                default:
+                    log.error("订单[{}], 通道[{}]，支付渠道错误", order.getId(), payChannelSign.getCode());
+                    return CommonResponse.simpleResponse(-1, "支付渠道错误");
+        }
     }
 }

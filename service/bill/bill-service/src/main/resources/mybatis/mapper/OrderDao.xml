@@ -102,7 +102,7 @@
         trade_card_no = #{tradeCardNo},
         trade_card_type = #{tradeCardType},
         wechat_or_alipay_order_no = #{wechatOrAlipayOrderNo},
-        pay_url = #{payUrl},
+        pay_info = #{payInfo},
         pay_salt = #{paySalt},
         pay_sign = #{paySign},
         remark = #{remark},

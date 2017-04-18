@@ -41,7 +41,12 @@ public enum EnumUpperChannel {
     /**
      * 民生银行
      */
-    MS_BANK(7, "MS", "民生银行")
+    MS_BANK(7, "MS", "民生银行"),
+
+    /**
+     * 收银家
+     */
+    SYJ(8, "SYJ", "收银家")
     ;
 
     @Getter

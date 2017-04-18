@@ -1,5 +1,6 @@
 package com.jkm.hss.product.enums;
 
+import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 import lombok.Getter;
 import org.apache.commons.lang3.tuple.Pair;
@@ -98,7 +99,16 @@ public enum EnumPayChannelSign {
     /**
      * 民生支付宝
      */
-    MS_ALIPAY_JSAPI(702, "ms_alipay", EnumPaymentChannel.ALIPAY, "民生支付宝", EnumUpperChannel.MS_BANK, false, EnumBalanceTimeType.T1, true);
+    MS_ALIPAY_JSAPI(702, "ms_alipay", EnumPaymentChannel.ALIPAY, "民生支付宝", EnumUpperChannel.MS_BANK, false, EnumBalanceTimeType.T1, true),
+
+    /**
+     * 收银家WX公众号支付
+     */
+    SYJ_WECHAT_JSAPI(801, "syj_wechat", EnumPaymentChannel.WECHAT_PAY, "收银家微信", EnumUpperChannel.SYJ, true, EnumBalanceTimeType.T1, true),
+    /**
+     * 收银家zfb公众号支付
+     */
+    SYJ_ALIPAY_JSAPI(802, "syj_alipay", EnumPaymentChannel.ALIPAY, "收银家支付宝", EnumUpperChannel.SYJ, true, EnumBalanceTimeType.T1, true);
 
 
     private static final ImmutableMap<String, EnumPayChannelSign> STATUS_IMMUTABLE_MAP;
@@ -174,6 +184,7 @@ public enum EnumPayChannelSign {
 
 
     public static EnumPayChannelSign idOf(final int id) {
+        Preconditions.checkState(ID_INIT_MAP.containsKey(id), "unknown channel[{}]", id);
         return ID_INIT_MAP.get(id);
     }
 

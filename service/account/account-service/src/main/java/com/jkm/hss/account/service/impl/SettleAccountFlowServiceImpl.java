@@ -1,6 +1,7 @@
 package com.jkm.hss.account.service.impl;
 
 import com.google.common.base.Optional;
+import com.jkm.base.common.util.DateTimeUtil;
 import com.jkm.base.common.util.SnGenerator;
 import com.jkm.hss.account.dao.SettleAccountFlowDao;
 import com.jkm.hss.account.entity.Account;
@@ -11,6 +12,7 @@ import com.jkm.hss.account.sevice.AccountService;
 import com.jkm.hss.account.sevice.SettleAccountFlowService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -70,15 +72,15 @@ public class SettleAccountFlowServiceImpl implements SettleAccountFlowService {
     /**
      * {@inheritDoc}
      *
-     * @param tradeDate
+     * @param settleDate
      * @param accountId
      * @param settleAuditRecordId
      * @return
      */
     @Override
     @Transactional
-    public int updateSettleAuditRecordIdByTradeDateAndAccountId(final Date tradeDate, final long accountId, final long settleAuditRecordId) {
-        return this.settleAccountFlowDao.updateSettleAuditRecordIdByTradeDateAndAccountId(tradeDate, accountId, settleAuditRecordId);
+    public int updateSettleAuditRecordIdBySettleDateAndAccountId(final Date settleDate, final long accountId, final long settleAuditRecordId) {
+        return this.settleAccountFlowDao.updateSettleAuditRecordIdBySettleDateAndAccountId(settleDate, accountId, settleAuditRecordId);
     }
 
     /**
@@ -118,7 +120,7 @@ public class SettleAccountFlowServiceImpl implements SettleAccountFlowService {
     @Override
     @Transactional
     public long addSettleAccountFlow(long accountId, String orderNo, BigDecimal changeAmount, String remark,
-                                     EnumAccountFlowType type, String appId, Date tradeDate, int accountUserType) {
+                                     EnumAccountFlowType type, String appId, Date settleDate, int accountUserType) {
         //此时的account已经是可用余额改变的结果
         final Account account = this.accountService.getByIdWithLock(accountId).get();
         final SettleAccountFlow settleAccountFlow = new SettleAccountFlow();
@@ -141,7 +143,7 @@ public class SettleAccountFlowServiceImpl implements SettleAccountFlowService {
         settleAccountFlow.setChangeTime(new Date());
         settleAccountFlow.setRemark(remark);
         settleAccountFlow.setAppId(appId);
-        settleAccountFlow.setTradeDate(tradeDate);
+        settleAccountFlow.setSettleDate(settleDate);
         settleAccountFlow.setAccountUserType(accountUserType);
         this.settleAccountFlowDao.insert(settleAccountFlow);
         return settleAccountFlow.getId();
@@ -150,12 +152,12 @@ public class SettleAccountFlowServiceImpl implements SettleAccountFlowService {
     /**
      * {@inheritDoc}
      *
-     * @param tradeDate
+     * @param settleDate
      * @return
      */
     @Override
-    public List<SettleAccountFlowStatistics> statisticsYesterdayFlow(final Date tradeDate) {
-        return this.settleAccountFlowDao.statisticsYesterdayFlow(tradeDate);
+    public List<SettleAccountFlowStatistics> statisticsYesterdayFlow(final Date settleDate) {
+        return this.settleAccountFlowDao.statisticsYesterdayFlow(settleDate);
     }
 
     /**
@@ -194,12 +196,12 @@ public class SettleAccountFlowServiceImpl implements SettleAccountFlowService {
     /**
      * {@inheritDoc}
      *
-     * @param tradeDate
+     * @param settleDate
      * @return
      */
     @Override
-    public int getYesterdayDecreaseFlowCount(final Date tradeDate) {
-        return this.settleAccountFlowDao.selectYesterdayDecreaseFlowCount(tradeDate);
+    public int getYesterdayDecreaseFlowCount(final Date settleDate) {
+        return this.settleAccountFlowDao.selectYesterdayDecreaseFlowCount(settleDate);
     }
 
     /**

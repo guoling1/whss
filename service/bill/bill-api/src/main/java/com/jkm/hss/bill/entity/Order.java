@@ -208,7 +208,7 @@ public class Order extends BaseEntity {
     /**
      * 支付url
      */
-    private String payUrl;
+    private String payInfo;
 
     /**
      * 封装的支付url加盐
@@ -226,7 +226,7 @@ public class Order extends BaseEntity {
      * @return
      */
     public String getSignCode() {
-        return DigestUtils.sha256Hex(this.payUrl + DigestUtils.sha256Hex(this.paySalt));
+        return DigestUtils.sha256Hex(this.payInfo + DigestUtils.sha256Hex(this.paySalt));
     }
 
     public boolean isCorrectSign(final String sign) {
