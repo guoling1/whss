@@ -116,7 +116,7 @@ public class TradeController extends BaseController {
         final Order order = orderOptional.get();
         Preconditions.checkState(order.isCorrectSign(sign), "`签名错误");
         final String payInfo = order.getPayInfo();
-        Preconditions.checkState(StringUtils.isEmpty(payInfo), "支付要素不能为空");
+        Preconditions.checkState(!StringUtils.isEmpty(payInfo), "支付要素不能为空");
         final EnumPayChannelSign payChannelSign = EnumPayChannelSign.idOf(order.getPayChannelSign());
         log.info("订单[{}], 通道[{}],支付要素是[[}]", order.getId(), payChannelSign.getCode(), payInfo);
         switch (payChannelSign.getPaymentChannel()) {
