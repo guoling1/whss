@@ -130,7 +130,10 @@ _require.register("keyboard", (module, exports, _require, global) => {
             'getBrandWCPayRequest', {
               "appId": jsonData.appId, //公众号名称，由商户传入
               "timeStamp": jsonData.timeStamp, //时间戳，自 1970 年以来的 秒数
-              "nonceStr": jsonData.nonceStr, //随机串 "package":jsonData.package, "signType":jsonData.signType, //微信签名方式: "paySign":jsonData.paySign //微信签名
+              "nonceStr": jsonData.nonceStr, //随机串
+              "package":jsonData.package,
+              "signType":jsonData.signType, //微信签名方式:
+              "paySign":jsonData.paySign //微信签名
             },
             // 使用以上方式判断前端返回,微信团队郑重提示:res.err_msg 将在用户支付成功后返回ok，但并不保证它绝对可靠。
             function (res) {
@@ -143,7 +146,7 @@ _require.register("keyboard", (module, exports, _require, global) => {
               }
             }
           );
-        }
+        };
 
         // 获取输入的功能键 delete quick wx-zfb
         let keyCtrl = getKeyValue(ev, 'keyCtrl');
@@ -158,9 +161,8 @@ _require.register("keyboard", (module, exports, _require, global) => {
                   memberId: pageData.memberId,
                   merchantId: pageData.merchantId
                 }, function (data) {
-                  http.get(data.payUrl, {}, function (data) {
-                    alert(data);
-                    alert(data.result);
+                  http.post(data.payUrl, {}, function (data) {
+                    onBridgeReady(data);
                   });
                 });
               } else {
