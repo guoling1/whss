@@ -38,10 +38,10 @@
         <li v-if="list.交易查询!=undefined" :class="(url=='/admin/record/newDeal'||url=='/admin/record/retrieval')?'treeview active':'treeview'">
           <a href="#"><span>交易查询</span></a>
           <ul class="treeview-menu">
-            <li v-if="list.支付交易查询!=undefined" :class="(url=='/admin/record/newDeal')?'treeview active':'treeview'" @click="refrash">
+            <li v-if="list.支付交易查询!=undefined" :class="(url=='/admin/record/newDeal')?'treeview active':'treeview'" @click="refrash('支付交易查询','/admin/record/newDeal')">
               <router-link to="/admin/record/newDeal"><span>支付交易查询</span></router-link>
             </li>
-            <li v-if="list.提现查询!=undefined" :class="(url=='/admin/record/retrieval')?'treeview active':'treeview'" @click="refrash">
+            <li v-if="list.提现查询!=undefined" :class="(url=='/admin/record/retrieval')?'treeview active':'treeview'" @click="refrash('提现查询','/admin/record/retrieval')">
               <router-link to="/admin/record/retrieval"><span>提现查询</span></router-link>
             </li>
           </ul>
@@ -50,7 +50,7 @@
           <a href="#"><span>分润管理</span>
           </a>
           <ul class="treeview-menu">
-            <li v-if="list.分润明细!=undefined1" @click="refrash" :class="(url=='/admin/record/profitDet')?'treeview active':'treeview'"><router-link to="/admin/record/profitDet"><span>分润明细</span> </router-link></li>
+            <li v-if="list.分润明细!=undefined" @click="refrash" :class="(url=='/admin/record/profitDet')?'treeview active':'treeview'"><router-link to="/admin/record/profitDet"><span>分润明细</span> </router-link></li>
             <li v-if="list.分润统计!=undefined" @click="refrash" :class="(url=='/admin/record/profitCount')?'treeview active':'treeview'"><router-link to="/admin/record/profitCount"><span>分润统计</span> </router-link></li>
             <!--<li :class="(url=='/admin/record/profitCom'||url=='/admin/record/profitFir'||url=='/admin/record/profitSec')?'treeview active':'treeview'">
               <a href="#" @click="open"><span>分润统计</span>

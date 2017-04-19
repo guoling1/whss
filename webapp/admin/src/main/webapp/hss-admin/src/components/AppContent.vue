@@ -67,23 +67,18 @@ export default {
 
       <!-- 路由出口 -->
       <!-- 路由匹配到的组件将渲染在这里 -->
-      <el-tabs v-model="editableTabsValue2" type="card" closable @tab-remove="removeTab" @tab-click="handleClick">
+      <el-tabs v-model="editableTabsValue2" type="card" @tab-click="handleClick">
         <el-tab-pane
-          v-for="(item, index) in editableTabs2"
-          :label="item.title"
+          v-for="(item, index) in $editableTabs2"
           :name="item.url"
         >
+          <span slot="label">{{item.title}}<i class="el-icon-circle-cross" @click.stop="removeTab(item.url)" style="margin-left: 8px;color: #a09e9e"></i></span>
           <keep-alive>
             <router-view></router-view>
           </keep-alive>
 
         </el-tab-pane>
       </el-tabs>
-      <!--<keep-alive>-->
-        <!--<router-view></router-view>-->
-      <!--</keep-alive>-->
-
-
     </section>
     <!-- /.content -->
   </div>
@@ -105,57 +100,67 @@ export default {
         editableTabs2: [],
         tabIndex: 2,
         sess:[],
-        a:[],
+        tabsData:[],
         b:''
       }
     },
     created:function () {
-      this.a = this._$tabsData;
-      //this.editableTabsValue2 = this.$route.path
+      this.tabsData = this._$tabsData;
+      this.editableTabsValue2 = this.$route.path
     },
     watch:{
-      a:function (val) {
-        this.editableTabsValue2 = this.$route.path
-        this.editableTabs2 = val
+      tabsData:function (val) {
+        console.log(val)
+//        this.editableTabsValue2 = this.$route.path;
+        this.tabsData = val;
+      },
+      $route:function (val) {
+        this.editableTabsValue2 = this.$route.path;
       }
     },
     methods: {
       handleClick:function (tab,event) {
-        console.log(tab,event)
         this.editableTabsValue2 = tab.name
         this.$router.push(tab.name)
       },
       removeTab(targetName) {
-
-
-        let tabs = this._$tabsData;
-        console.log(tabs)
+        let tabs = this.tabsData;
         let activeName = this.editableTabsValue2;
-        if (activeName === targetName.name) {
+        if (activeName == targetName) {
           tabs.forEach((tab, index) => {
-            if (tab.url === targetName.name) {
+            if (tab.url == targetName) {
               let nextTab = tabs[index + 1] || tabs[index - 1];
-              for(let i=0; i<this._$tabsData.length;i++){
-                if(this._$tabsData[i].name == targetName.label){
-                  this._$tabsData.splice(i,1);
-                  i--;
-                  break
-                }
-              }
               if (nextTab) {
                 activeName = nextTab.url;
               }
             }
           });
         }
-        console.log(tabs)
-        this.editableTabsValue2 = activeName;
-        this.$router.push(activeName)
-//        this._$tabsData = this.editableTabs2 = tabs.filter(tab => tab.name !== targetName);
+
+        for(var i=0;i<this._$tabsData.length;i++){
+            if(this._$tabsData[i].url==targetName){
+              this._$tabsData.splice(i,1);
+              i--;
+              break;
+            }
+        }
+
+        this.$router.push(activeName);
+//        this.editableTabsValue2 = activeName;
+
+        console.log(this.editableTabsValue2)
+//        console.log(this._$tabsData)
+//        this.tabsData = this._$tabsData
+//        this.$router.push(activeName);
       }
     },
     attached:function () {
       document.getElementById('content').style.height = (document.documentElement.clientHeight-98)+'px';
+    },
+    computed: {
+        $editableTabs2:function () {
+          return this.tabsData
+        }
     }
   }
 
