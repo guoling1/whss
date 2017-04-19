@@ -121,15 +121,15 @@ public class TradeController extends BaseController {
         log.info("订单[{}], 通道[{}],支付要素是[[}]", order.getId(), payChannelSign.getCode(), payInfo);
         switch (payChannelSign.getPaymentChannel()) {
             case WECHAT_PAY:
-                final String[] wechantPayInfoArray = payInfo.split("\\|");
-                Preconditions.checkState(wechantPayInfoArray.length == 6, "缺少支付要素");
+                final String[] wechatPayInfoArray = payInfo.split("\\|");
+                Preconditions.checkState(wechatPayInfoArray.length == 6, "缺少支付要素");
                 return CommonResponse.builder4MapResult(CommonResponse.SUCCESS_CODE, "success")
-                        .addParam("appId", wechantPayInfoArray[0])
-                        .addParam("timeStamp", wechantPayInfoArray[1])
-                        .addParam("nonceStr", wechantPayInfoArray[2])
-                        .addParam("package", wechantPayInfoArray[3])
-                        .addParam("signType", wechantPayInfoArray[4])
-                        .addParam("paySign", wechantPayInfoArray[5])
+                        .addParam("appId", wechatPayInfoArray[0])
+                        .addParam("timeStamp", wechatPayInfoArray[1])
+                        .addParam("nonceStr", wechatPayInfoArray[2])
+                        .addParam("package", wechatPayInfoArray[3])
+                        .addParam("signType", wechatPayInfoArray[4])
+                        .addParam("paySign", wechatPayInfoArray[5])
                         .build();
             case ALIPAY:
                 final String[] alipayPayInfoArray = payInfo.split("\\|");

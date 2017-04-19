@@ -265,7 +265,7 @@ public class HSYTradeServiceImpl implements HSYTradeService {
             case SUCCESS:
                 log.info("订单[{}]-下单成功【{}】", order.getId(), placeOrderResponse);
                 order.setRemark(placeOrderResponse.getMessage());
-                order.setPayInfo(placeOrderResponse.getPayUrl());
+                order.setPayInfo(placeOrderResponse.getPayInfo());
                 if (payChannelSign.getNeedPackage()) {
                     order.setPaySalt(RandomStringUtils.randomAlphanumeric(16));
                     order.setPaySign(order.getSignCode());
