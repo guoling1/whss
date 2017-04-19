@@ -167,7 +167,6 @@ _require.register("keyboard", (module, exports, _require, global) => {
               break;
             case 'wx-pay':
               if (oldValue > 0) {
-                alert(oldValue);
                 http.post('/trade/scReceipt', {
                   totalFee: oldValue,
                   payChannel: '801',

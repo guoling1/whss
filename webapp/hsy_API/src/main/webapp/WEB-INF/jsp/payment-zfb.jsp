@@ -65,10 +65,10 @@
 
 </body>
 <script>
-  var pageDate = {
-    merchantId: ${mid}
+  var pageData = {
+    memberId: 'o7Gpqw_N4t8PBnh8Ah1BClJjUt5I',
+    merchantId: '${mid}'
   }
 </script>
-<script src="http://static.jinkaimen.cn/vendor/vendor.1.0.1.min.js"></script>
-<script src="http://static.jinkaimen.cn/hss/2.0.1/payment.min.js"></script>
+<script src="/js/2.0.1/payment.2.0.1.min.js"></script>
 </html>
