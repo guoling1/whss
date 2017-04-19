@@ -9,6 +9,7 @@ import com.jkm.hss.admin.enums.EnumQRCodeSysType;
 import com.jkm.hss.admin.service.QRCodeService;
 import com.jkm.hss.dealer.service.DealerChannelRateService;
 import com.jkm.hsy.user.constant.AppConstant;
+import com.jkm.hsy.user.dao.HsyCmbcDao;
 import com.jkm.hsy.user.dao.HsyShopDao;
 import com.jkm.hsy.user.dao.HsyUserDao;
 import com.jkm.hsy.user.entity.AppAuUser;
@@ -17,6 +18,8 @@ import com.jkm.hsy.user.entity.AppBizShop;
 import com.jkm.hsy.user.entity.AppParam;
 import com.jkm.hsy.user.exception.ApiHandleException;
 import com.jkm.hsy.user.exception.ResultCode;
+import com.jkm.hsy.user.help.requestparam.CmbcResponse;
+import com.jkm.hsy.user.service.HsyCmbcService;
 import com.jkm.hsy.user.service.HsyQrCodeService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.Triple;
@@ -43,6 +46,12 @@ public class HsyQrCodeServiceImpl implements HsyQrCodeService{
 
     @Autowired
     private DealerChannelRateService dealerChannelRateService;
+
+    @Autowired
+    private HsyCmbcService hsyCmbcService;
+
+    @Autowired
+    private HsyCmbcDao hsyCmbcDao;
 
     /**
      * 绑定二维码
@@ -83,6 +92,10 @@ public class HsyQrCodeServiceImpl implements HsyQrCodeService{
             throw new ApiHandleException(ResultCode.RESULT_FAILE,"该用户不存在");
         if(shops.get(0).getStatus()!=1)
             throw new ApiHandleException(ResultCode.RESULT_FAILE,"该店铺未审核通过");
+        if(qrCodeOptional.get().getMerchantId()==appBindShop.getShopId()&&appBindShop.getShopId()!=0&&qrCodeOptional.get().getActivateStatus()== EnumQRCodeActivateStatus.ACTIVATE.getCode()){//如果是商户自己的
+            log.info("同一商户");
+            return appBindShop.getCode();
+        }
         if(qrCodeOptional.get().getActivateStatus()== EnumQRCodeActivateStatus.ACTIVATE.getCode())
             throw new ApiHandleException(ResultCode.RESULT_FAILE,"该二维码已经被激活，不能再次绑定");
         //是否在同一代理商下，是否在同一产品下
@@ -112,6 +125,19 @@ public class HsyQrCodeServiceImpl implements HsyQrCodeService{
         saveAppAuUser.setAlipayRate(decimalTriple.getMiddle());
         saveAppAuUser.setFastRate(decimalTriple.getRight());
         hsyUserDao.updateByID(saveAppAuUser);
+        AppAuUser appAuUser = hsyCmbcDao.selectByUserId(list.get(0).getId());
+        if(appAuUser.getHxbOpenProduct()==1){//首次绑定二维码，新增产品费率
+            CmbcResponse cmbcResponse = hsyCmbcService.merchantBindChannel(list.get(0).getId());
+            if(cmbcResponse.getCode()==-1){
+                throw new ApiHandleException(ResultCode.RESULT_FAILE,"开通产品失败");
+            }
+            hsyCmbcDao.updateHxbUserById(list.get(0).getId());
+        }else{//更换二维码，修改产品费率
+            CmbcResponse cmbcResponse = hsyCmbcService.merchantUpdateBindChannel(list.get(0).getId());
+            if(cmbcResponse.getCode()==-1){
+                throw new ApiHandleException(ResultCode.RESULT_FAILE,"修改产品失败");
+            }
+        }
         return appBindShop.getCode();
     }
 }
