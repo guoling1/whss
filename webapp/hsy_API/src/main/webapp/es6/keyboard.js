@@ -125,15 +125,15 @@ _require.register("keyboard", (module, exports, _require, global) => {
         }
 
         // 唤起微信支付
-        let onBridgeReady = function (jsonData) {
+        let onWeixinJSBridge = function (jsonData) {
           WeixinJSBridge.invoke(
             'getBrandWCPayRequest', {
               "appId": jsonData.appId, //公众号名称，由商户传入
               "timeStamp": jsonData.timeStamp, //时间戳，自 1970 年以来的 秒数
               "nonceStr": jsonData.nonceStr, //随机串
-              "package":jsonData.package,
-              "signType":jsonData.signType, //微信签名方式:
-              "paySign":jsonData.paySign //微信签名
+              "package": jsonData.package,
+              "signType": jsonData.signType, //微信签名方式:
+              "paySign": jsonData.paySign //微信签名
             },
             // 使用以上方式判断前端返回,微信团队郑重提示:res.err_msg 将在用户支付成功后返回ok，但并不保证它绝对可靠。
             function (res) {
@@ -148,10 +148,23 @@ _require.register("keyboard", (module, exports, _require, global) => {
           );
         };
 
+        // 唤起支付宝支付
+        let onAlipayJSBridge = function (jsonData) {
+          AlipayJSBridge.call("tradePay", {tradeNO: jsonData.channelNo},
+            function (result) {
+              alert(JSON.stringify(result));
+            });
+        };
+
         // 获取输入的功能键 delete quick wx-zfb
         let keyCtrl = getKeyValue(ev, 'keyCtrl');
         if (keyCtrl) {
           switch (keyCtrl) {
+            case 'delete':
+              let a = oldValue.substr(0, oldValue.length - 1);
+              this.input.value = a;
+              this.span.innerHTML = a;
+              break;
             case 'wx-pay':
               if (oldValue > 0) {
                 alert(oldValue);
@@ -162,7 +175,7 @@ _require.register("keyboard", (module, exports, _require, global) => {
                   merchantId: pageData.merchantId
                 }, function (data) {
                   http.post(data.payUrl, {}, function (data) {
-                    onBridgeReady(data);
+                    onWeixinJSBridge(data);
                   });
                 });
               } else {
@@ -173,10 +186,12 @@ _require.register("keyboard", (module, exports, _require, global) => {
               if (oldValue > 0) {
                 http.post('/trade/scReceipt', { // /wx/receiptByCode
                   totalFee: oldValue,
-                  payChannel: '102',
+                  payChannel: '802',
                   merchantId: pageData.merchantId
                 }, function (data) {
-                  window.location.href = data.payUrl;
+                  http.post(data.payUrl, {}, function (data) {
+                    onAlipayJSBridge(data);
+                  });
                 });
               } else {
                 message.prompt_show('请输入正确的支付金额');
