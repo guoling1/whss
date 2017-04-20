@@ -86,6 +86,6 @@
   }
 </script>
 <script src="http://static.jinkaimen.cn/qrcode/qrcode.min.js"></script>
-<script src="http://static.jinkaimen.cn/vendor/vendor.1.0.9.7.min.js"></script>
-<script src="http://static.jinkaimen.cn/hss/2.2.12/toUpgerde.min.js"></script>
+<script src="http://static.jinkaimen.cn/vendor/vendor.1.0.9.8.min.js"></script>
+<script src="http://static.jinkaimen.cn/hss/2.2.15/toUpgerde.min.js"></script>
 </html>

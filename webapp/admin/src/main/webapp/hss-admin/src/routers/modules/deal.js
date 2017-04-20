@@ -18,6 +18,7 @@ const RetrievalDet = r => require.ensure([], () => r(require('../../components/R
 const ProfitCom = r => require.ensure([], () => r(require('../../components/ProfitCom')), 'group-record');
 const ProfitFir = r => require.ensure([], () => r(require('../../components/ProfitFir')), 'group-record');
 const ProfitSec = r => require.ensure([], () => r(require('../../components/ProfitSec')), 'group-record');
+const ProfitCount = r => require.ensure([], () => r(require('../../components/ProfitCount')), 'group-record');
 const ProfitComDet = r => require.ensure([], () => r(require('../../components/ProfitDet')), 'group-record');
 const ProfitDet = r => require.ensure([], () => r(require('../../components/ProfitDet')), 'group-record');
 const ProfitFirDet = r => require.ensure([], () => r(require('../../components/ProfitDet')), 'group-record');
@@ -70,9 +71,14 @@ const LimitList = r => require.ensure([], () => r(require('../../components/Limi
 //员工
 const PersonnelList = r => require.ensure([], () => r(require('../../components/PersonnelList')), 'group-record');
 const PersonnelAdd = r => require.ensure([], () => r(require('../../components/PersonnelAdd')), 'group-record');
+const Role = r => require.ensure([], () => r(require('../../components/Role')), 'group-record');
+const RoleAdd = r => require.ensure([], () => r(require('../../components/RoleAdd')), 'group-record');
 const AccountSystem = r => require.ensure([], () => r(require('../../components/accountSystem')), 'group-record');
 const AccountErr = r => require.ensure([], () => r(require('../../components/accountErr')), 'group-record');
 const AccountData = r => require.ensure([], () => r(require('../../components/accountData')), 'group-record');
+//合作意向
+const Application = r => require.ensure([], () => r(require('../../components/Application')), 'group-record');
+const Channel = r => require.ensure([], () => r(require('../../components/Channel')), 'group-record');
 
 const Test = r => require.ensure([], () => r(require('../../components/Test')), 'group-record');
 
@@ -332,6 +338,11 @@ export default {
       component: ProfitCom
     },
     {
+      path: 'profitCount',
+      name: 'ProfitCount',
+      component: ProfitCount
+    },
+    {
       path: 'profitFir',
       name: 'ProfitFir',
       component: ProfitFir
@@ -372,9 +383,29 @@ export default {
       component: PersonnelAdd
     },
     {
+      path: 'role',
+      name: 'Role',
+      component: Role
+    },
+    {
+      path: 'roleAdd',
+      name: 'RoleAdd',
+      component: RoleAdd
+    },
+    {
       path: 'test',
       name: 'Test',
       component: Test
+    },
+    {
+      path: 'application',
+      name: 'Application',
+      component: Application
+    },
+    {
+      path: 'channel',
+      name: 'Channel',
+      component: Channel
     },
   ]
 }

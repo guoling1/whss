@@ -13,7 +13,8 @@
               <span style="font-size:14px">总金额:{{accountData.totalAmount}}元&nbsp;&nbsp;
                 待结算余额:{{accountData.dueSettleAmount}}元&nbsp;&nbsp;
                 可提现余额:{{accountData.available}}元&nbsp;&nbsp;</span>
-              <el-button type="primary" size="small" @click="withdrawal($event)">提现</el-button>
+              <el-button type="primary" size="small" @click="_$power(withdrawal,'dealer_withdrawals')">提现</el-button>
+              <!--<el-button type="primary" size="small" @click="withdrawal($event)">提现</el-button>-->
             </div>
             <div class="box-body screen-top">
               <div class="screen-item">

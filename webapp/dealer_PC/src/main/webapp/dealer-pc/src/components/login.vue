@@ -73,6 +73,7 @@
             } else {
               localStorage.setItem('accountInfo', null);
             }
+            sessionStorage.setItem('login', JSON.stringify(res.data));
             // 跳转到 home 页
             this.$router.push('/daili/app/home');
             this.isLogin = false;

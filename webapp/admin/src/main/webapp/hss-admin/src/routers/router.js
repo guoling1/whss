@@ -7,8 +7,8 @@ import Login from '../components/Login.vue'
 
 export default [
   {
-    path: '/admin',
-    redirect: '/admin/record'
+    path: '/',
+    redirect: '/admin/login'
   },
   {
     path: '/admin/login',

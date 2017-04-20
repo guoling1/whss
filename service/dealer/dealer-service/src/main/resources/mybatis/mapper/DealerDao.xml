@@ -708,4 +708,8 @@
         AND a.mobile = #{mobile}
     </if>
     </select>
+
+    <select id="selectAllDealers" resultType="com.jkm.hss.dealer.entity.Dealer">
+        SELECT * FROM tb_dealer
+    </select>
 </mapper>

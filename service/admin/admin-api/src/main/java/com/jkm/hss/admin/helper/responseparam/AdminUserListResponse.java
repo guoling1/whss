@@ -47,6 +47,10 @@ public class AdminUserListResponse {
      */
     private String email;
     /**
+     * 角色编码
+     */
+    private long roleId;
+    /**
      * 角色名称
      */
     private String roleName;
@@ -54,10 +58,16 @@ public class AdminUserListResponse {
      * 创建时间
      * datetime
      */
-    protected Date createTime;
+    private Date createTime;
     /**
      * 状态
      * tinyint
      */
-    protected int status;
+    private int status;
+    /**
+     * 是否有全部菜单权限
+     * 1.是 2不是
+     * {@link com.jkm.hss.admin.enums.EnumIsMaster}
+     */
+    private int isMaster;
 }

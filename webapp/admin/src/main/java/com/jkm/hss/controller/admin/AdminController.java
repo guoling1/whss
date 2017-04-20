@@ -10,15 +10,14 @@ import com.jkm.base.common.entity.PageModel;
 import com.jkm.base.common.util.CookieUtil;
 import com.jkm.base.common.util.ValidateUtils;
 import com.jkm.hss.admin.entity.*;
+import com.jkm.hss.admin.enums.EnumAdminType;
+import com.jkm.hss.admin.enums.EnumAdminUserStatus;
+import com.jkm.hss.admin.enums.EnumIsMaster;
 import com.jkm.hss.admin.enums.EnumQRCodeDistributeType;
 import com.jkm.hss.admin.helper.AdminUserSupporter;
-import com.jkm.hss.admin.helper.requestparam.AdminUserListRequest;
-import com.jkm.hss.admin.helper.requestparam.AdminUserRequest;
-import com.jkm.hss.admin.helper.requestparam.DistributeQrCodeRequest;
-import com.jkm.hss.admin.helper.responseparam.AdminUserListResponse;
-import com.jkm.hss.admin.helper.responseparam.AdminUserResponse;
-import com.jkm.hss.admin.helper.responseparam.BossDistributeQRCodeRecordResponse;
-import com.jkm.hss.admin.helper.responseparam.DistributeQRCodeRecordResponse;
+import com.jkm.hss.admin.helper.requestparam.*;
+import com.jkm.hss.admin.helper.responseparam.*;
+import com.jkm.hss.admin.service.AdminRoleService;
 import com.jkm.hss.admin.service.AdminUserService;
 import com.jkm.hss.admin.service.QRCodeService;
 import com.jkm.hss.controller.BaseController;
@@ -27,6 +26,7 @@ import com.jkm.hss.dealer.entity.DealerChannelRate;
 import com.jkm.hss.dealer.enums.EnumDealerLevel;
 import com.jkm.hss.dealer.enums.EnumRecommendBtn;
 import com.jkm.hss.dealer.helper.DealerConsts;
+import com.jkm.hss.dealer.helper.DealerSupport;
 import com.jkm.hss.dealer.helper.requestparam.FirstLevelDealerAdd2Request;
 import com.jkm.hss.dealer.helper.requestparam.FirstLevelDealerAddRequest;
 import com.jkm.hss.dealer.helper.requestparam.FirstLevelDealerUpdate2Request;
@@ -42,6 +42,7 @@ import com.jkm.hss.helper.response.FirstLevelDealerAddResponse;
 import com.jkm.hss.merchant.entity.BankCardBin;
 import com.jkm.hss.merchant.helper.ValidationUtil;
 import com.jkm.hss.merchant.service.BankCardBinService;
+import com.jkm.hss.notifier.enums.EnumUserType;
 import com.jkm.hss.product.entity.Product;
 import com.jkm.hss.product.entity.ProductChannelDetail;
 import com.jkm.hss.product.enums.EnumPayChannelSign;
@@ -100,6 +101,9 @@ public class AdminController extends BaseController {
     @Autowired
     private OSSClient ossClient;
 
+    @Autowired
+    private AdminRoleService adminRoleService;
+
     /**
      * 登录
      *
@@ -118,7 +122,7 @@ public class AdminController extends BaseController {
             return CommonResponse.simpleResponse(-1, "密码长度6-32位");
         }
 
-        final Optional<AdminUser> userOptional = this.adminUserService.getAdminUserByName(_username);
+        final Optional<AdminUser> userOptional = this.adminUserService.getAdminUserByNameAndType(_username,EnumAdminType.BOSS.getCode());
         if (!userOptional.isPresent()) {
             return CommonResponse.simpleResponse(-1, "登陆用户不存在");
         }
@@ -134,7 +138,15 @@ public class AdminController extends BaseController {
         this.adminUserService.updateLastLoginDate(tokenOptional.get().getAuid());
         CookieUtil.setSessionCookie(response, ApplicationConsts.ADMIN_COOKIE_KEY, tokenOptional.get().getToken(),
                 ApplicationConsts.getApplicationConfig().domain(), (int)(DealerConsts.TOKEN_EXPIRE_MILLIS / 1000));
-        return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "登录成功");
+        List<AdminUserLoginResponse> loginMenu = this.adminRoleService.getLoginMenu(userOptional.get().getRoleId(),EnumAdminType.BOSS.getCode(),userOptional.get().getIsMaster());
+        String roleName = "";
+        if(userOptional.get().getRoleId()<=0){
+            roleName = "超级管理员";
+        }else{
+            Optional<AdminRole> adminRoleOptional = adminRoleService.selectById(userOptional.get().getRoleId());
+            roleName = adminRoleOptional.get().getRoleName();
+        }
+        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, roleName,loginMenu);
     }
 
     /**
@@ -701,8 +713,8 @@ public class AdminController extends BaseController {
             if(StringUtils.isBlank(firstLevelDealerAdd2Request.getLoginName())) {
                 return CommonResponse.simpleResponse(-1, "登录名不能为空");
             }
-            final long loginNameCount = this.dealerService.getByLoginName(firstLevelDealerAdd2Request.getLoginName());
-            if (loginNameCount > 0) {
+            Optional<AdminUser> adminUserOptional = this.adminUserService.getAdminUserByNameAndType(firstLevelDealerAdd2Request.getLoginName(),EnumAdminType.FIRSTDEALER.getCode());
+            if (adminUserOptional.isPresent()) {
                 return CommonResponse.simpleResponse(-1, "登录名已经存在");
             }
             if(StringUtils.isBlank(firstLevelDealerAdd2Request.getLoginPwd())) {
@@ -711,9 +723,6 @@ public class AdminController extends BaseController {
             if(StringUtils.isBlank(firstLevelDealerAdd2Request.getEmail())) {
                 return CommonResponse.simpleResponse(-1, "联系邮箱不能为空");
             }
-//            if(!ValidateUtils.isEmail(firstLevelDealerAdd2Request.getEmail())) {
-//                return CommonResponse.simpleResponse(-1, "联系邮箱格式错误");
-//            }
             if(StringUtils.isBlank(firstLevelDealerAdd2Request.getBelongProvinceCode())) {
                 return CommonResponse.simpleResponse(-1, "所在省份编码不能为空");
             }
@@ -745,6 +754,27 @@ public class AdminController extends BaseController {
                 return CommonResponse.simpleResponse(-1, "开户手机号格式错误");
             }
             final long dealerId = this.dealerService.createFirstDealer2(firstLevelDealerAdd2Request);
+
+            //创建登录用户
+            AdminUser adminUser = new AdminUser();
+            adminUser.setUsername(firstLevelDealerAdd2Request.getLoginName());
+            adminUser.setSalt("100000");
+            adminUser.setPassword(DealerSupport.passwordDigest(firstLevelDealerAdd2Request.getLoginPwd(),"JKM"));
+            adminUser.setRealname(firstLevelDealerAdd2Request.getBankAccountName());
+            adminUser.setEmail(firstLevelDealerAdd2Request.getEmail());
+            adminUser.setMobile(AdminUserSupporter.encryptMobile(firstLevelDealerAdd2Request.getMobile()));
+            adminUser.setCompanyId("");
+            adminUser.setDeptId("");
+            adminUser.setIdCard(AdminUserSupporter.encryptIdenrity(firstLevelDealerAdd2Request.getIdCard()));
+            adminUser.setRoleId(0l);
+            adminUser.setIdentityFacePic("");
+            adminUser.setIdentityOppositePic("");
+            adminUser.setType(EnumAdminType.FIRSTDEALER.getCode());
+            adminUser.setDealerId(dealerId);
+            adminUser.setIsMaster(EnumIsMaster.MASTER.getCode());
+            adminUser.setStatus(EnumAdminUserStatus.NORMAL.getCode());
+            this.adminUserService.createFirstDealerUser(adminUser);
+
             final FirstLevelDealerAddResponse firstLevelDealerAddResponse = new FirstLevelDealerAddResponse();
             firstLevelDealerAddResponse.setDealerId(dealerId);
             return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "添加成功", firstLevelDealerAddResponse);
@@ -778,21 +808,16 @@ public class AdminController extends BaseController {
             if (proxyNameCount > 0) {
                 return CommonResponse.simpleResponse(-1, "代理名称已经存在");
             }
-
             if(StringUtils.isBlank(request.getLoginName())) {
                 return CommonResponse.simpleResponse(-1, "登录名不能为空");
             }
-            final long loginNameCount = this.dealerService.getByLoginNameUnIncludeNow(request.getLoginName(), request.getDealerId());
-            if (loginNameCount > 0) {
+            Optional<AdminUser> adminUserOptional = this.adminUserService.getAdminUserByNameAndTypeUnIncludeNow(request.getLoginName(),EnumAdminType.FIRSTDEALER.getCode(),request.getDealerId());
+            if (adminUserOptional.isPresent()) {
                 return CommonResponse.simpleResponse(-1, "登录名已经存在");
             }
             if(StringUtils.isBlank(request.getEmail())) {
                 return CommonResponse.simpleResponse(-1, "联系邮箱不能为空");
             }
-//            if(!ValidateUtils.isEmail(request.getEmail())) {
-//                return CommonResponse.simpleResponse(-1, "联系邮箱格式错误");
-//            }
-
             if(StringUtils.isBlank(request.getBelongProvinceCode())) {
                 return CommonResponse.simpleResponse(-1, "所在省份编码不能为空");
             }
@@ -825,6 +850,17 @@ public class AdminController extends BaseController {
                 return CommonResponse.simpleResponse(-1, "开户手机号格式错误");
             }
             this.dealerService.updateDealer2(request);
+
+            //更改登录用户
+            AdminUser adminUser = new AdminUser();
+            adminUser.setEmail(request.getEmail());
+            adminUser.setUsername(request.getLoginName());
+            adminUser.setRealname(request.getBankAccountName());
+            adminUser.setMobile(AdminUserSupporter.encryptMobile(request.getMobile()));
+            adminUser.setIdCard(AdminUserSupporter.encryptIdenrity(request.getIdCard()));
+            adminUser.setDealerId(request.getDealerId());
+            adminUser.setIsMaster(EnumIsMaster.MASTER.getCode());
+            this.adminUserService.updateDealerUser(adminUser);
             return CommonResponse.builder4MapResult(CommonResponse.SUCCESS_CODE, "修改成功")
                     .addParam("dealerId", request.getDealerId()).build();
         }catch (Exception e){
@@ -927,7 +963,7 @@ public class AdminController extends BaseController {
     @RequestMapping(value = "/addUser", method = RequestMethod.POST)
     public CommonResponse addUser (@RequestBody AdminUserRequest adminUserRequest) {
         AdminUser adminUser = new AdminUser();
-        final Optional<AdminUser> adminUserOptional = this.adminUserService.getAdminUserByName(adminUserRequest.getUsername());
+        final Optional<AdminUser> adminUserOptional = this.adminUserService.getAdminUserByNameAndType(adminUserRequest.getUsername(), EnumAdminType.BOSS.getCode());
         if(adminUserOptional.isPresent()) {
             return CommonResponse.simpleResponse(-1, "登录名已存在");
         }
@@ -956,6 +992,8 @@ public class AdminController extends BaseController {
         adminUser.setIdentityOppositePic(adminUserRequest.getIdentityOppositePic());
         adminUser.setMobile(adminUserRequest.getMobile());
         adminUser.setEmail(adminUserRequest.getEmail());
+        adminUser.setIsMaster(EnumIsMaster.NOTMASTER.getCode());
+        adminUser.setDealerId(0);
         adminUser.setRoleId(adminUserRequest.getRoleId());
         long userId = this.adminUserService.createUser(adminUser);
         return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "新增成功",userId);
@@ -1023,7 +1061,7 @@ public class AdminController extends BaseController {
         if(!adminUserOptional.isPresent()){
             return CommonResponse.simpleResponse(-1, "登录名不存在");
         }
-        final long proxyNameCount = this.adminUserService.selectByUsernameUnIncludeNow(adminUser.getUsername(), adminUser.getId());
+        final long proxyNameCount = this.adminUserService.selectByUsernameAndTypeUnIncludeNow(adminUser.getUsername(),EnumAdminType.BOSS.getCode(), adminUser.getId());
         if (proxyNameCount > 0) {
             return CommonResponse.simpleResponse(-1, "登录名已经存在");
         }
@@ -1038,6 +1076,7 @@ public class AdminController extends BaseController {
     @ResponseBody
     @RequestMapping(value = "/userList", method = RequestMethod.POST)
     public CommonResponse userList (@RequestBody AdminUserListRequest adminUserListRequest) {
+        adminUserListRequest.setType(EnumAdminType.BOSS.getCode());
         PageModel<AdminUserListResponse> adminUserPageModel = adminUserService.userList(adminUserListRequest);
         return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功",adminUserPageModel);
     }
@@ -1083,4 +1122,121 @@ public class AdminController extends BaseController {
         return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功",adminUserResponse);
     }
 
+    /**
+     * 角色列表
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/userRoleList", method = RequestMethod.POST)
+    public CommonResponse userRoleList () {
+        List<AdminRoleListResponse> adminRoleListResponses = adminRoleService.selectAdminRoleList(EnumAdminType.BOSS.getCode());
+        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", adminRoleListResponses);
+    }
+
+    /**
+     * 角色详情
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/getRoleDetail", method = RequestMethod.POST)
+    public CommonResponse getRoleDetail (@RequestBody AdminRoleDetailRequest adminRoleDetailRequest) {
+        RoleDetailResponse roleDetailResponse = new RoleDetailResponse();
+        if(adminRoleDetailRequest.getId()>0){
+            Optional<AdminRole> adminRoleOptional = adminRoleService.selectById(adminRoleDetailRequest.getId());
+            if(!adminRoleOptional.isPresent()){
+                return CommonResponse.simpleResponse(-1, "角色不存在");
+            }
+            roleDetailResponse.setRoleId(adminRoleDetailRequest.getId());
+            roleDetailResponse.setRoleName(adminRoleOptional.get().getRoleName());
+        }
+        List<AdminMenuOptRelListResponse> adminMenuOptRelListResponses = adminRoleService.getPrivilege(EnumAdminType.BOSS.getCode(),adminRoleDetailRequest.getId());
+        roleDetailResponse.setList(adminMenuOptRelListResponses);
+        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功",roleDetailResponse);
+    }
+
+    /**
+     * 添加或修改角色
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/saveRole", method = RequestMethod.POST)
+    public CommonResponse saveRole (@RequestBody RoleDetailRequest roleDetailRequest) {
+        if(roleDetailRequest.getRoleName()==null||"".equals(roleDetailRequest.getRoleName())){
+            return CommonResponse.simpleResponse(-1, "请输入角色名");
+        }
+        if(roleDetailRequest.getList()==null||roleDetailRequest.getList().size()<=0){
+            return CommonResponse.simpleResponse(-1, "请选择菜单");
+        }
+        if(roleDetailRequest.getRoleId()<=0){
+            Optional<AdminRole> adminRoleOptional = adminRoleService.selectByRoleNameAndType(roleDetailRequest.getRoleName(),EnumAdminType.BOSS.getCode());
+            if(adminRoleOptional.isPresent()){
+                return CommonResponse.simpleResponse(-1, "角色名已存在");
+            }
+        }else{
+            Optional<AdminRole> adminRoleOptional = adminRoleService.selectByRoleNameAndTypeUnIncludeNow(roleDetailRequest.getRoleName(),EnumAdminType.BOSS.getCode(),roleDetailRequest.getRoleId());
+            if(adminRoleOptional.isPresent()){
+                return CommonResponse.simpleResponse(-1, "角色名已存在");
+            }
+        }
+        roleDetailRequest.setType(EnumAdminType.BOSS.getCode());
+        adminRoleService.save(roleDetailRequest);
+        return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "操作成功");
+    }
+
+    /**
+     * 分页查询角色列表
+     * @param adminRoleListRequest
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/roleListByPage", method = RequestMethod.POST)
+    public CommonResponse roleListByPage (@RequestBody AdminRoleListRequest adminRoleListRequest) {
+        adminRoleListRequest.setType(EnumAdminType.BOSS.getCode());
+        PageModel<AdminRoleListPageResponse> adminUserPageModel = adminRoleService.roleListByPage(adminRoleListRequest);
+        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功",adminUserPageModel);
+    }
+
+    /**
+     * 禁用角色
+     * @param adminRoleDetailRequest
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/disableRole", method = RequestMethod.POST)
+    public CommonResponse disableRole (final HttpServletResponse response,@RequestBody AdminRoleDetailRequest adminRoleDetailRequest) {
+        adminRoleService.disableRole(adminRoleDetailRequest.getId());
+        return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "禁用成功");
+    }
+    /**
+     * 启用角色
+     * @param adminRoleDetailRequest
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/activeRole", method = RequestMethod.POST)
+    public CommonResponse activeRole (@RequestBody AdminRoleDetailRequest adminRoleDetailRequest) {
+        adminRoleService.enableRole(adminRoleDetailRequest.getId());
+        return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "启用成功");
+    }
+
+    /**
+     * 是否有权限
+     * @param havePermissionRequest
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/havePermission", method = RequestMethod.POST)
+    public CommonResponse havePermission (@RequestBody HavePermissionRequest havePermissionRequest) {
+        if(super.getAdminUser().getIsMaster()==EnumIsMaster.MASTER.getCode()){
+            return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "有权限访问");
+        }
+        int count = this.adminUserService.hasDescr(EnumAdminType.BOSS.getCode(),havePermissionRequest.getDescr());
+        if(count>0){
+            int privilegeCount = this.adminUserService.getPrivilegeByContionsOfJs(super.getAdminUser().getRoleId(),EnumAdminType.BOSS.getCode(),havePermissionRequest.getDescr());
+            if(privilegeCount<=0){
+                return CommonResponse.simpleResponse(-1, "权限不足");
+            }
+        }
+        return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "有权限访问");
+    }
 }

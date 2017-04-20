@@ -39,4 +39,6 @@ public class AccountInfoResponse {
      * 手机号
      */
     private String mobile;
+
+    private BigDecimal settleAmount;
 }

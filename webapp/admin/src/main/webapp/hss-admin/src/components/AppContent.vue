@@ -1,6 +1,6 @@
 <template lang="html">
   <!-- Content Wrapper. Contains page content -->
-  <div class="content-wrapper" style="margin-left: 130px">
+  <div class="content-wrapper" style="margin-left: 130px;" id="content">
     <!-- Content Header (Page header) -->
     <!-- <section class="content-header">
       <h1>
@@ -35,6 +35,9 @@ export default {
     return {
       msg: '注册'
     }
+  },
+  attached:function () {
+    document.getElementById('content').style.height = (document.documentElement.clientHeight-98)+'px';
   }
 }
 </script>

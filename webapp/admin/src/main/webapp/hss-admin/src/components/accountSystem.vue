@@ -9,7 +9,7 @@
           <ul>
             <li class="same">
               <label>对账渠道:</label>
-              <el-input v-model="query.channelName" placeholder="请输入内容" size="small" style="width: 193px"></el-input>
+              <el-input v-model="query.channelName" placeholder="请输入内容" size="small" style="width: 220px"></el-input>
             </li>
             <li class="same">
               <label>交易时间:</label>
@@ -23,7 +23,7 @@
             </li>
             <li class="same">
               <label>交易类型:</label>
-              <el-select clearable v-model="query.tradeType" size="small" style="width: 193px">
+              <el-select clearable v-model="query.tradeType" size="small" style="width: 220px">
                 <el-option label="交易" value="1"></el-option>
                 <el-option label="提现" value="3"></el-option>
               </el-select>
@@ -32,7 +32,7 @@
               <div class="btn btn-primary" @click="search">筛选</div>
             </li>
           </ul>
-          <el-table v-loading.body="loading" style="font-size: 12px;margin:15px 0" :data="$records" border>
+          <el-table v-loading.body="loading" style="font-size: 12px;margin-bottom: 15px;" :data="$records" border>
             <el-table-column type="index" width="62" label="序号" fixed="left"></el-table-column>
             <el-table-column prop="channelName" label="通道名称" ></el-table-column>
             <el-table-column label="交易类型" >
@@ -258,6 +258,11 @@
 <style scoped lang="less" rel="stylesheet/less">
   ul{
     padding: 0;
+    margin: 0;
+  }
+  label{
+    display: block;
+    margin-bottom: 0;
   }
   .same{
     list-style: none;

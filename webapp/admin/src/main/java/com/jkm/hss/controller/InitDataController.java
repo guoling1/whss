@@ -2,9 +2,19 @@ package com.jkm.hss.controller;
 
 import com.google.common.base.Optional;
 import com.jkm.base.common.entity.CommonResponse;
+import com.jkm.hss.admin.entity.AdminUser;
+import com.jkm.hss.admin.enums.EnumAdminType;
+import com.jkm.hss.admin.enums.EnumAdminUserStatus;
+import com.jkm.hss.admin.enums.EnumIsMaster;
+import com.jkm.hss.admin.helper.AdminUserSupporter;
+import com.jkm.hss.admin.service.AdminUserService;
 import com.jkm.hss.dealer.dao.DealerChannelRateDao;
+import com.jkm.hss.dealer.dao.DealerDao;
+import com.jkm.hss.dealer.entity.Dealer;
 import com.jkm.hss.dealer.entity.DealerChannelRate;
+import com.jkm.hss.dealer.helper.DealerSupport;
 import com.jkm.hss.dealer.service.DealerChannelRateService;
+import com.jkm.hss.dealer.service.DealerService;
 import com.jkm.hss.merchant.entity.MerchantChannelRate;
 import com.jkm.hss.merchant.entity.MerchantInfo;
 import com.jkm.hss.merchant.enums.EnumCommonStatus;
@@ -48,6 +58,10 @@ public class InitDataController extends BaseController{
     private MerchantChannelRateService merchantChannelRateService;
     @Autowired
     private ProductChannelDetailService productChannelDetailService;
+    @Autowired
+    private DealerDao dealerDao;
+    @Autowired
+    private AdminUserService adminUserService;
     /**
      * 初始化代理商数据
      */
@@ -169,5 +183,50 @@ public class InitDataController extends BaseController{
             }
             log.info("第"+i+"数据初始化end，商户编号"+merchantInfoList.get(i).getId());
         }
+    }
+
+
+    /**
+     * 初始化代理商商户
+     * @param request
+     * @param response
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "initDealerUser", method = RequestMethod.GET)
+    public CommonResponse initDealerUser(final HttpServletRequest request, final HttpServletResponse response) {
+        List<Dealer> dealers = dealerDao.selectAllDealers();
+        for(int i=0;i<dealers.size();i++){
+            AdminUser adminUser = new AdminUser();
+            adminUser.setUsername(dealers.get(i).getLoginName());
+            adminUser.setSalt("100000");
+            adminUser.setPassword(dealers.get(i).getLoginPwd());
+            adminUser.setRealname(dealers.get(i).getBankAccountName());
+            adminUser.setEmail(dealers.get(i).getEmail());
+            if(dealers.get(i).getMobile()!=null&&!"".equals(dealers.get(i).getMobile())){
+                adminUser.setMobile(AdminUserSupporter.encryptMobile(dealers.get(i).getMobile()));
+            }
+            adminUser.setCompanyId("");
+            adminUser.setDeptId("");
+            if(dealers.get(i).getIdCard()!=null&&!"".equals(dealers.get(i).getIdCard())){
+                adminUser.setIdCard(AdminUserSupporter.encryptIdenrity(DealerSupport.decryptIdentity(dealers.get(i).getId(),dealers.get(i).getIdCard())));
+            }
+            adminUser.setRoleId(0l);
+            adminUser.setIdentityFacePic("");
+            adminUser.setIdentityOppositePic("");
+
+            adminUser.setDealerId(dealers.get(i).getId());
+            adminUser.setIsMaster(EnumIsMaster.MASTER.getCode());
+            adminUser.setStatus(EnumAdminUserStatus.NORMAL.getCode());
+            if(dealers.get(i).getLevel()==1){
+                adminUser.setType(EnumAdminType.FIRSTDEALER.getCode());
+                this.adminUserService.createFirstDealerUser(adminUser);
+            }
+            if(dealers.get(i).getLevel()==2){
+                adminUser.setType(EnumAdminType.SECONDDEALER.getCode());
+                this.adminUserService.createSecondDealerUser(adminUser);
+            }
+        }
+        return CommonResponse.objectResponse(1,"","");
     }
 }

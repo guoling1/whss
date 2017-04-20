@@ -9,7 +9,15 @@ public enum EnumAdminType {
     /**
      * boss后台
      */
-    BOSS(1);
+    BOSS(1),
+    /**
+     * 一级代理
+     */
+    FIRSTDEALER(2),
+    /**
+     * 二级代理
+     */
+    SECONDDEALER(3);
 
 
     @Getter
