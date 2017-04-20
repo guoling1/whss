@@ -86,6 +86,7 @@ public class CodeController extends BaseController {
                 url = "/sqb/paymentWx";
             }
             if (agent.indexOf("aliapp") > -1) {
+                log.info("进入支付宝");
                 log.info("alipay的openId={}",openId);
                 if(openId==null||"".equals(openId)){
                     String requestUrl = "";
@@ -94,7 +95,9 @@ public class CodeController extends BaseController {
                     }else{
                         requestUrl = request.getQueryString();
                     }
+                    log.info("请求地址是:{}",requestUrl);
                     String encoderUrl = URLEncoder.encode(requestUrl, "UTF-8");
+                    log.info("加密之后的地址是:{}",encoderUrl);
                     return "redirect:"+ AlipayServiceConstants.OAUTH_URL+encoderUrl;
                 }
                 model.addAttribute("openId",openId);

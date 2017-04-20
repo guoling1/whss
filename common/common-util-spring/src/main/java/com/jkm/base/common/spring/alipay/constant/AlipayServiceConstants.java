@@ -33,7 +33,7 @@ public class AlipayServiceConstants {
     public static final String PUBLIC_KEY = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAzcWRbNfziKc6Wes3H9pnRE0ExirTlXLB/OI4eQCimp5VsSox5KcHziihUVAobzHgotkC3l59FIm2GxyNeL+mBal6orL37p9SE68FPXC1kOlmnml3BHP+zJtuN5c8GcbfUw2mJYQ/zSgaixPu05VXzm7xzRJSeunzXmriK6qvMGN8jFGORWGbXTYHbIiZZtRfnO9rqHZi0lwFdX/F/6m86GBVTqlB3LQ0U0iFNc+F6Dounn75OFtEh/PnuFsmjW1WfpBpGksfOG6SIZTqenEwOiOTV4InZm3iobveuA55LTE63BpIZoZgDQ+6FxwsjcqZ7fLiOjfKJPryKb4hYa7RHQIDAQAB";
 
     /**支付宝网关*/
-    public static final String ALIPAY_GATEWAY = "https://openapi.alipay.com/gateway.do";
+    public static final String ALIPAY_GATEWAY = "https://openapi.alipaydev.com/gateway.do";
 
     /**授权访问令牌的授权类型*/
     public static final String GRANT_TYPE = "authorization_code";
