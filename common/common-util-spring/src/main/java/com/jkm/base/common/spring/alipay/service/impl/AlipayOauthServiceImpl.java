@@ -29,7 +29,8 @@ public class AlipayOauthServiceImpl implements AlipayOauthService {
      * @return
      */
     @Override
-    public AlipayUserInfoShareResponse getUserInfo(String authCode) throws AlipayApiException {
+    public String getUserId(String authCode) throws AlipayApiException {
+        String userId = "";
         AlipayClient alipayClient = new DefaultAlipayClient(AlipayServiceConstants.ALIPAY_GATEWAY, AlipayServiceConstants.APP_ID,
                 AlipayServiceConstants.PRIVATE_KEY, "json", AlipayServiceConstants.CHARSET, AlipayServiceConstants.ALIPAY_PUBLIC_KEY, AlipayServiceConstants.SIGN_TYPE);
         AlipaySystemOauthTokenRequest request = new AlipaySystemOauthTokenRequest();
@@ -39,36 +40,15 @@ public class AlipayOauthServiceImpl implements AlipayOauthService {
             AlipaySystemOauthTokenResponse oauthTokenResponse = alipayClient.execute(request);
             if (null != oauthTokenResponse && oauthTokenResponse.isSuccess()) {
                 log.info("authCode换取成功");
+                userId = oauthTokenResponse.getUserId();
                 log.info("授权码是{}",oauthTokenResponse.getAccessToken());
-
-                AlipayClient alipayClient1 = new DefaultAlipayClient(AlipayServiceConstants.ALIPAY_GATEWAY, AlipayServiceConstants.APP_ID,
-                        AlipayServiceConstants.PRIVATE_KEY, "json", AlipayServiceConstants.CHARSET, AlipayServiceConstants.ALIPAY_PUBLIC_KEY, AlipayServiceConstants.SIGN_TYPE);
-                AlipayUserInfoShareRequest request1 = new AlipayUserInfoShareRequest();
-                String access_token = oauthTokenResponse.getAccessToken();
-                try {
-                    AlipayUserInfoShareResponse userinfoShareResponse = alipayClient1.execute(request1, access_token);
-                    //成功获得用户信息
-                    if (null != userinfoShareResponse && userinfoShareResponse.isSuccess()) {
-                        //这里仅是简单打印， 请开发者按实际情况自行进行处理
-                        System.out.println("获取用户信息成功：" + userinfoShareResponse.getBody());
-                    } else {
-                        //这里仅是简单打印， 请开发者按实际情况自行进行处理
-                        System.out.println("获取用户信息失败");
-                    }
-                    return userinfoShareResponse;
-                } catch (AlipayApiException e) {
-                    //处理异常
-                    e.printStackTrace();
-                }
             }else{
                 log.info("authCode换取authToken失败");
-                return null;
             }
-            System.out.println(oauthTokenResponse.getAccessToken());
         } catch (AlipayApiException e) {
             //处理异常
             e.printStackTrace();
         }
-        return null;
+        return userId;
     }
 }

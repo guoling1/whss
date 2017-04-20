@@ -14,6 +14,6 @@ public interface AlipayOauthService {
      * @param authCode
      * @return
      */
-    AlipayUserInfoShareResponse getUserInfo(String authCode) throws AlipayApiException;
+    String getUserId(String authCode) throws AlipayApiException;
 
 }

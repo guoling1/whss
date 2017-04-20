@@ -159,13 +159,13 @@ public class WebSkipController extends BaseController {
                 log.info("请求地址得参数是:{}",state);
             }
         }
-        AlipayUserInfoShareResponse alipayUserInfoShareResponse = alipayOauthService.getUserInfo(authcode);
-        if(alipayUserInfoShareResponse==null){
+        String userId = alipayOauthService.getUserId(authcode);
+        if(userId==null||"".equals(userId)){
             model.addAttribute("message", "支付宝授权失败");
             return "/message";
         }
-        model.addAttribute("openId", alipayUserInfoShareResponse.getUserId());
-        log.info("openid是：{}",alipayUserInfoShareResponse.getUserId());
+        model.addAttribute("openId", userId);
+        log.info("openid是：{}",userId);
         String tempUrl = URLDecoder.decode(state, "UTF-8");
         String redirectUrl = URLDecoder.decode(tempUrl,"UTF-8");
         String finalRedirectUrl = "http://"+ ApplicationConsts.getApplicationConfig().domain()+"/code/scanCode?"+redirectUrl;
