@@ -2,6 +2,7 @@ package com.jkm.hss.bill.service.impl;
 
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
+import com.jkm.base.common.util.DateFormatUtil;
 import com.jkm.hss.account.helper.AccountConstants;
 import com.jkm.hss.bill.service.CalculateService;
 import com.jkm.hss.dealer.entity.Dealer;
@@ -35,6 +36,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -79,6 +81,15 @@ public class CalculateServiceImpl implements CalculateService {
      */
     @Override
     public BigDecimal getMerchantPayPoundageRate(EnumProductType type,final long merchantId, final int channelSign) {
+        //hss活动
+        final Date beginDate = DateFormatUtil.parse("2017-04-12 00:00:00", DateFormatUtil.yyyy_MM_dd_HH_mm_ss);
+        final Date endDate = DateFormatUtil.parse("2017-06-01 23:59:59", DateFormatUtil.yyyy_MM_dd_HH_mm_ss);
+        final Date currentDate = new Date();
+        final boolean isActTime = currentDate.after(beginDate) && endDate.before(endDate);
+        if ((EnumPayChannelSign.EL_UNIONPAY.getId() == channelSign) && isActTime){
+            return new BigDecimal("0.0038");
+        }
+
         if (type.getId().equals(EnumProductType.HSS.getId())){
             //hss
             final MerchantInfo merchant = this.merchantInfoService.selectById(merchantId).get();
@@ -109,6 +120,13 @@ public class CalculateServiceImpl implements CalculateService {
      */
     @Override
     public BigDecimal getMerchantWithdrawPoundage(EnumProductType type,final long merchantId, final int channelSign) {
+        final Date beginDate = DateFormatUtil.parse("2017-04-12 00:00:00", DateFormatUtil.yyyy_MM_dd_HH_mm_ss);
+        final Date endDate = DateFormatUtil.parse("2017-06-01 23:59:59", DateFormatUtil.yyyy_MM_dd_HH_mm_ss);
+        final Date currentDate = new Date();
+        final boolean isActTime = currentDate.after(beginDate) && endDate.before(endDate);
+        if ((EnumPayChannelSign.EL_UNIONPAY.getId() == channelSign) && isActTime){
+            return new BigDecimal("3");
+        }
 
         if (type.getId().equals(EnumProductType.HSS.getId())){
             //HSS
@@ -159,6 +177,15 @@ public class CalculateServiceImpl implements CalculateService {
      */
     @Override
     public BigDecimal getMerchantPayPoundage(final BigDecimal traderAmount, final BigDecimal merchantPayPoundageRate, final int channelSign) {
+        //hss活动
+        final Date beginDate = DateFormatUtil.parse("2017-04-12 00:00:00", DateFormatUtil.yyyy_MM_dd_HH_mm_ss);
+        final Date endDate = DateFormatUtil.parse("2017-06-01 23:59:59", DateFormatUtil.yyyy_MM_dd_HH_mm_ss);
+        final Date currentDate = new Date();
+        final boolean isActTime = currentDate.after(beginDate) && endDate.before(endDate);
+        if ((EnumPayChannelSign.EL_UNIONPAY.getId() == channelSign) && isActTime){
+            return  traderAmount.multiply(new BigDecimal("0.0038")).setScale(2,BigDecimal.ROUND_UP);
+        }
+
         //原始手续费
         final BigDecimal originDueSplitAmount = traderAmount.multiply(merchantPayPoundageRate);
         /*final BigDecimal minPoundage = new BigDecimal("0.01");

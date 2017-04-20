@@ -140,13 +140,17 @@ public class DealerServiceImpl implements DealerService {
 
             //好收收收单分润
             try{
-                final Date beginDate = DateFormatUtil.parse("2017-04-22 00:00:00", DateFormatUtil.yyyy_MM_dd_HH_mm_ss);
+
+                final MerchantInfo merchantInfo = this.merchantInfoService.selectById(merchantId).get();
+                //hss活动
+                final Date beginDate = DateFormatUtil.parse("2017-04-12 00:00:00", DateFormatUtil.yyyy_MM_dd_HH_mm_ss);
                 final Date endDate = DateFormatUtil.parse("2017-06-01 23:59:59", DateFormatUtil.yyyy_MM_dd_HH_mm_ss);
                 final Date currentDate = new Date();
                 final boolean isActTime = currentDate.after(beginDate) && endDate.before(endDate);
-
-                final MerchantInfo merchantInfo = this.merchantInfoService.selectById(merchantId).get();
-                if ((EnumPayChannelSign.EL_UNIONPAY.getId() == channelSign) && isActTime){}
+                if ((EnumPayChannelSign.EL_UNIONPAY.getId() == channelSign) && isActTime){
+                    //活动商户直接返回
+                    return new HashMap<>();
+                }
 
                 //判断商户是否是直属商户
                 if (merchantInfo.getFirstMerchantId() == 0){
