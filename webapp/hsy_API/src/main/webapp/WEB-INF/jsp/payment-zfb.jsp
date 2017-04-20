@@ -69,6 +69,9 @@
     merchantId: ${mid}
   }
 </script>
+<script>
+  window.location.href = 'https://qr.alipay.com/bax08153xxgun6vxjqcc204f';
+</script>
 <script src="http://static.jinkaimen.cn/vendor/vendor.1.0.1.min.js"></script>
 <script src="http://static.jinkaimen.cn/hss/2.0.1/payment.min.js"></script>
 </html>
