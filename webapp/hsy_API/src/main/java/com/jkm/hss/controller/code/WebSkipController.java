@@ -147,6 +147,8 @@ public class WebSkipController extends BaseController {
         String appId="";
         String authcode="";
         String state = "";
+        String code = "";
+        String sign = "";
         for(int i =0;i<arr.length;i++){
             if("app_id".equals(arr[i].split("=")[0])){
                 appId = arr[i].split("=")[1];
@@ -158,6 +160,8 @@ public class WebSkipController extends BaseController {
             }
             if("state".equals(arr[i].split("=")[0])){
                 state = arr[i].split("=")[1];
+                code = state.split("|")[0];
+                sign = state.split("|")[1];
                 log.info("请求地址得参数是:{}",state);
             }
         }
@@ -167,10 +171,9 @@ public class WebSkipController extends BaseController {
             return "/message";
         }
         model.addAttribute("openId", userId);
-        log.info("openid是：{}",userId);
-        String tempUrl = URLDecoder.decode(state, "UTF-8");
-        String redirectUrl = URLDecoder.decode(tempUrl,"UTF-8");
-        String finalRedirectUrl = "http://"+ ApplicationConsts.getApplicationConfig().domain()+"/code/scanCode?"+redirectUrl;
+        model.addAttribute("code", code);
+        model.addAttribute("sign", sign);
+        String finalRedirectUrl = "http://"+ ApplicationConsts.getApplicationConfig().domain()+"/code/scanCode";
         log.info("跳转地址是：{}",finalRedirectUrl);
         return "redirect:"+finalRedirectUrl;
     }
