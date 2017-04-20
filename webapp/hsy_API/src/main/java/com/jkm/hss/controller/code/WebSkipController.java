@@ -1,5 +1,6 @@
 package com.jkm.hss.controller.code;
 
+import com.alipay.api.response.AlipayUserInfoShareResponse;
 import com.alipay.api.response.AlipayUserUserinfoShareResponse;
 import com.jkm.base.common.spring.alipay.service.AlipayOauthService;
 import com.jkm.hss.bill.entity.Order;
@@ -158,13 +159,13 @@ public class WebSkipController extends BaseController {
                 log.info("请求地址得参数是:{}",state);
             }
         }
-        AlipayUserUserinfoShareResponse alipayUserUserinfoShareResponse = alipayOauthService.getUserInfo(authcode);
-        if(alipayUserUserinfoShareResponse==null){
+        AlipayUserInfoShareResponse alipayUserInfoShareResponse = alipayOauthService.getUserInfo(authcode);
+        if(alipayUserInfoShareResponse==null){
             model.addAttribute("message", "支付宝授权失败");
             return "/message";
         }
-        model.addAttribute("openId", alipayUserUserinfoShareResponse.getUserId());
-        log.info("openid是：{}",alipayUserUserinfoShareResponse.getUserId());
+        model.addAttribute("openId", alipayUserInfoShareResponse.getUserId());
+        log.info("openid是：{}",alipayUserInfoShareResponse.getUserId());
         String tempUrl = URLDecoder.decode(state, "UTF-8");
         String redirectUrl = URLDecoder.decode(tempUrl,"UTF-8");
         String finalRedirectUrl = "http://"+ ApplicationConsts.getApplicationConfig().domain()+"/code/scanCode?"+redirectUrl;
