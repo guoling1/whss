@@ -92,6 +92,10 @@ let routes = [
     component: Login
   },
   {
+    path: '/admin/newDealDet',
+    component: NewDealDet
+  },
+  {
     path: '/admin/record',
     redirect: '/admin/record/home',
     component: AAHome,
@@ -181,11 +185,11 @@ let routes = [
         name: 'NewDealQuery',
         component: NewDealQuery
       },
-      {
-        path: 'newDealDet',
-        name: 'NewDealDet',
-        component: NewDealDet
-      },
+      // {
+      //   path: 'newDealDet',
+      //   name: 'NewDealDet',
+      //   component: NewDealDet
+      // },
       {
         path: 'retrieval',
         name: 'Retrieval',
