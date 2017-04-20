@@ -4,11 +4,18 @@ import com.jkm.base.common.entity.CommonResponse;
 import com.jkm.hss.account.sevice.AccountService;
 import com.jkm.hss.controller.BaseController;
 import com.jkm.hss.push.sevice.PushService;
+import com.jkm.hsy.user.Enum.EnumHxbsStatus;
 import com.jkm.hsy.user.constant.AppConstant;
+import com.jkm.hsy.user.dao.HsyUserDao;
 import com.jkm.hsy.user.entity.AppAuUser;
 import com.jkm.hsy.user.entity.HsyMerchantAuditRequest;
 import com.jkm.hsy.user.entity.HsyMerchantAuditResponse;
+import com.jkm.hsy.user.exception.ApiHandleException;
+import com.jkm.hsy.user.exception.ResultCode;
+import com.jkm.hsy.user.help.requestparam.CmbcResponse;
+import com.jkm.hsy.user.service.HsyCmbcService;
 import com.jkm.hsy.user.service.HsyMerchantAuditService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,6 +26,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 /**
  * Created by zhangbin on 2017/1/20.
  */
+@Slf4j
 @Controller
 @RequestMapping(value = "/admin/hsyMerchantAudit")
 public class HsyMerchantAuditController extends BaseController {
@@ -32,6 +40,12 @@ public class HsyMerchantAuditController extends BaseController {
     @Autowired
     private PushService pushService;
 
+    @Autowired
+    private HsyCmbcService hsyCmbcService;
+
+    @Autowired
+    private HsyUserDao hsyUserDao;
+
     @ResponseBody
     @RequestMapping(value = "/throughAudit",method = RequestMethod.POST)
     public CommonResponse throughAudit(@RequestBody final HsyMerchantAuditRequest hsyMerchantAuditRequest){
@@ -43,13 +57,25 @@ public class HsyMerchantAuditController extends BaseController {
         if (acct!=null){
             accountService.delAcct(acct.getAccountID());
         }
-
         final long accountId = this.accountService.initAccount(hsyMerchantAuditRequest.getName());
         hsyMerchantAuditRequest.setAccountID(accountId);
         hsyMerchantAuditService.updateAccount(hsyMerchantAuditRequest.getAccountID(),hsyMerchantAuditRequest.getUid());
         hsyMerchantAuditRequest.setStatus(AppConstant.SHOP_STATUS_NORMAL);
         hsyMerchantAuditService.auditPass(hsyMerchantAuditRequest);
         pushService.pushAuditMsg(hsyMerchantAuditRequest.getUid(),true);
+        CmbcResponse cmbcResponse = hsyCmbcService.merchantBaseInfoReg(hsyMerchantAuditRequest.getUid(),hsyMerchantAuditRequest.getId());
+        if(cmbcResponse.getCode()==1){
+            hsyUserDao.updateHxbsStatus(EnumHxbsStatus.PASS.getId(),cmbcResponse.getMsg(),hsyMerchantAuditRequest.getUid());
+            //入驻成功再开通产品
+        }else{
+            hsyUserDao.updateHxbsStatus(EnumHxbsStatus.UNPASS.getId(),cmbcResponse.getMsg(),hsyMerchantAuditRequest.getUid());
+        }
+        if(hsyMerchantAudit.getWeixinRate()!=null&&!"".equals(hsyMerchantAudit.getWeixinRate())){//添加产品
+            CmbcResponse cmbcResponse1 = hsyCmbcService.merchantBindChannel(hsyMerchantAuditRequest.getUid());
+            if(cmbcResponse1.getCode()==-1){
+                log.info("添加产品失败");
+            }
+        }
         return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE,"审核通过");
 
     }

@@ -206,4 +206,7 @@
         order by UPDATETIME desc
     </select>
 
+    <update id="updateHxbsStatus">
+        update app_au_user set HXBSTATUS=#{status},HXBREMARKS=#{remarks} where ID=#{uid}
+    </update>
 </mapper>

@@ -207,5 +207,11 @@
             <artifactId>ons-client</artifactId>
             <version>1.2.5</version>
         </dependency>
+        <!--生活号-->
+        <dependency>
+            <groupId>com.pentahohub.nexus</groupId>
+            <artifactId>alipay-sdk-java</artifactId>
+            <version>20170105134539</version>
+        </dependency>
     </dependencies>
 </project>

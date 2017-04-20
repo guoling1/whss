@@ -106,7 +106,8 @@ public class TradeController extends BaseController {
      *
      * @return
      */
-    @RequestMapping(value = "pay", method = RequestMethod.GET)
+    @ResponseBody
+    @RequestMapping(value = "pay")
     public CommonResponse notifyPay(final HttpServletRequest httpServletRequest) {
         final String orderNo = httpServletRequest.getParameter("o_n");
         final String sign = httpServletRequest.getParameter("sign");
@@ -118,7 +119,7 @@ public class TradeController extends BaseController {
         final String payInfo = order.getPayInfo();
         Preconditions.checkState(!StringUtils.isEmpty(payInfo), "支付要素不能为空");
         final EnumPayChannelSign payChannelSign = EnumPayChannelSign.idOf(order.getPayChannelSign());
-        log.info("订单[{}], 通道[{}],支付要素是[[}]", order.getId(), payChannelSign.getCode(), payInfo);
+        log.info("订单[{}], 通道[{}],支付要素是[{}]", order.getId(), payChannelSign.getCode(), payInfo);
         switch (payChannelSign.getPaymentChannel()) {
             case WECHAT_PAY:
                 final String[] wechatPayInfoArray = payInfo.split("\\|");

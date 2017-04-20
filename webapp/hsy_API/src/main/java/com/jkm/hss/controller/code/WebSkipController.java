@@ -1,5 +1,7 @@
 package com.jkm.hss.controller.code;
 
+import com.alipay.api.response.AlipayUserUserinfoShareResponse;
+import com.jkm.base.common.spring.alipay.service.AlipayOauthService;
 import com.jkm.hss.bill.entity.Order;
 import com.jkm.hss.bill.service.OrderService;
 import com.jkm.hss.controller.BaseController;
@@ -7,6 +9,7 @@ import com.jkm.hss.helper.ApplicationConsts;
 import com.jkm.hss.merchant.helper.WxConstants;
 import com.jkm.hss.merchant.helper.WxPubUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.immutables.value.internal.$processor$.meta.$TreesMirrors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -30,6 +33,8 @@ import java.util.Map;
 public class WebSkipController extends BaseController {
     @Autowired
     private OrderService orderService;
+    @Autowired
+    private AlipayOauthService alipayOauthService;
     /**
      * 支付升级成功页面
      * @param request
@@ -116,5 +121,47 @@ public class WebSkipController extends BaseController {
         String finalRedirectUrl = "http://"+ ApplicationConsts.getApplicationConfig().domain()+"/code/scanCode?"+redirectUrl;
         log.info("跳转地址是：{}",finalRedirectUrl);
         return "redirect:"+finalRedirectUrl;
+    }
+
+    /**
+     * 扫固定微信跳转页面
+     * @param request
+     * @param response
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value = "toAlipaySkip", method = RequestMethod.GET)
+    public String  toAlipaySkip(final HttpServletRequest request, final HttpServletResponse response,final Model model) throws Exception{
+        String getQueryString = "";
+        if(request.getQueryString() == null){
+            getQueryString="";
+        }else{
+            getQueryString = request.getQueryString();
+        }
+        String[] arr = getQueryString.split("&");
+        String appId="";
+        String authcode="";
+        for(int i =0;i<arr.length;i++){
+            if("app_id".equals(arr[i].split("=")[0])){
+                appId = arr[i].split("=")[1];
+            }
+            if("app_auth_code".equals(arr[i].split("=")[0])){
+                authcode = arr[i].split("=")[1];
+            }
+        }
+        AlipayUserUserinfoShareResponse alipayUserUserinfoShareResponse = alipayOauthService.getUserInfo(authcode);
+        model.addAttribute("openId", alipayUserUserinfoShareResponse.getUserId());
+        log.info("openid是：{}",alipayUserUserinfoShareResponse.getUserId());
+        String tempUrl = URLDecoder.decode(authcode, "UTF-8");
+        String redirectUrl = URLDecoder.decode(tempUrl,"UTF-8");
+        String finalRedirectUrl = "http://"+ ApplicationConsts.getApplicationConfig().domain()+"/code/scanCode?"+redirectUrl;
+        log.info("跳转地址是：{}",finalRedirectUrl);
+        return "redirect:"+finalRedirectUrl;
+    }
+
+    @RequestMapping(value = "getUrl", method = RequestMethod.GET)
+    public String  getUrl(final HttpServletRequest request, final HttpServletResponse response,final Model model) throws Exception{
+        log.info("跳转");
+        return "redirect:https://openauth.alipaydev.com/oauth2/appToAppAuth.htm?app_id=2016102000728193&redirect_uri=http%3a%2f%2fhsy.qianbaojiajia.com%2fsqb%2ftoAlipaySkip";
     }
 }
