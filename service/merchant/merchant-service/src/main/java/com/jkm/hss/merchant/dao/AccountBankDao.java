@@ -140,4 +140,21 @@ public interface AccountBankDao {
      * @return
      */
     AccountBank getTopCreditCard(@Param("accountId") long accountId);
+
+    /**
+     * 清空cvv
+     * @param id
+     */
+    void cleanCvv(@Param("id") long id);
+    /**
+     * 清空有效期
+     * @param id
+     */
+    void cleanExpiryTime(@Param("id") long id);
+
+    /**
+     * 清空cvv和有效期
+     * @param id
+     */
+    void cleanCvvAndExpiryTime(@Param("id") long id);
 }

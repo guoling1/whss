@@ -71,6 +71,21 @@
             </el-row>
             <el-row type="flex" class="row-bg" justify="center">
               <el-col :span="4">
+                <div class="alignRight">鉴权要素:</div>
+              </el-col>
+              <el-col :span="6">
+                <div class="grid-content bg-purple-light">
+                  <el-radio-group v-model="query.checkType">
+                    <el-radio :label="4">四要素：银行卡号，姓名，身份证号，手机号</el-radio>
+                    <el-radio :label="5" style="margin-left: 0">五要素：银行卡号，姓名，身份证号，手机号，有效期（信用卡）</el-radio>
+                    <el-radio :label="6" style="margin-left: 0">六要素：银行卡号，姓名，身份证号，手机号，有效期（信用卡），CVV（信用卡）</el-radio>
+                  </el-radio-group>
+                </div>
+              </el-col>
+              <el-col :span="8"></el-col>
+            </el-row>
+            <el-row type="flex" class="row-bg" justify="center">
+              <el-col :span="4">
                 <div class="alignRight">收单机构:</div>
               </el-col>
               <el-col :span="6">
@@ -309,7 +324,8 @@
           remarks: '',
           id: '',
           status: '',
-          accountId: ''
+          accountId: '',
+          checkType:''
         },
         id: 0,
         isShow: true,
@@ -339,7 +355,6 @@
               }
             } else if (/支付宝/.test(this.name)) {
               this.nameType = 'zfb';
-              console.log(this.query.supportWay)
               if (this.query.supportWay == 3) {
                 this.payWay = ['支付宝公众号','支付宝扫码']
               } else if (this.query.supportWay == 2) {
@@ -353,6 +368,7 @@
             this.query.id = res.data[this.$route.query.id].id;
             this.query.status = res.data[this.$route.query.id].status;
             this.query.accountId = res.data[this.$route.query.id].accountId;
+            this.query.checkType = res.data[this.$route.query.id].checkType;
           })
           .catch(err => {
             this.$message({
@@ -408,7 +424,6 @@
       },
       //修改
       change: function () {
-          console.log(this.query);
         this.$http.post('/admin/channel/update', this.$data.query)
           .then(function (res) {
             this.$message({

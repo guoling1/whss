@@ -9,7 +9,7 @@
   <meta name="viewport"
         content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
   <title>好收收</title>
-  <link rel="stylesheet" href="http://static.jinkaimen.cn/hss/css/style.2.2.7.css">
+  <link rel="stylesheet" href="http://static.jinkaimen.cn/hss/css/style.2.2.9.css">
   <link rel="stylesheet" href="http://static.jinkaimen.cn/weui/weui.css">
 </head>
 <body>
@@ -121,6 +121,11 @@
 </body>
 <script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
 <script>
+  var pageData = {
+    markCode: '${markCode}'
+  }
+</script>
+<script>
   /*
    * 注意：
    * 1. 所有的JS接口只能在公众号绑定的域名下调用，公众号开发者需要先登录微信公众平台进入“公众号设置”的“功能设置”里填写“JS接口安全域名”。
@@ -144,7 +149,6 @@
     ]
   });
 </script>
-<script src="http://static.jinkaimen.cn/vendor/vendor.1.0.9.7.min.js"></script>
-<script src="http://static.jinkaimen.cn/hss/2.2.11/material.min.js"></script>
-
+<script src="http://static.jinkaimen.cn/vendor/vendor.1.0.9.8.min.js"></script>
+<script src="http://static.jinkaimen.cn/hss/2.2.15/material.min.js"></script>
 </html>

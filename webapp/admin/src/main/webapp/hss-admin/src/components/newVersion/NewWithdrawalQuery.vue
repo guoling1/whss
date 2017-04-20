@@ -43,36 +43,36 @@
             </li>
           </ul>
           <!--表格-->
-          <el-table v-loading.body="loading" max-height="637" style="font-size: 12px;margin-bottom: 15px;" :data="records" border :row-style="tableFoot">
+          <el-table v-loading.body="loading" max-height="637" style="font-size: 12px;margin-bottom: 15px" :data="$records" border :row-style="tableFoot">
             <el-table-column width="62" label="序号" fixed="left">
               <template scope="scope">
-                <div v-if="records[scope.$index].orderNo!='当页总额'&&records[scope.$index].orderNo!='筛选条件统计'">{{scope.$index+1}}</div>
+                <div v-if="$records[scope.$index].orderNo!='当页总额'&&$records[scope.$index].orderNo!='筛选条件统计'">{{scope.$index+1}}</div>
               </template>
             </el-table-column>
             <el-table-column label="打款流水号" min-width="100">
               <template scope="scope">
-                <span class="td" :data-clipboard-text="records[scope.$index].sn" type="text" size="small"
-                      style="cursor: pointer" title="点击复制">{{records[scope.$index].sn|changeHide}}</span>
+                <span class="td" :data-clipboard-text="$records[scope.$index].sn" type="text" size="small"
+                      style="cursor: pointer" title="点击复制">{{$records[scope.$index].sn|changeHide}}</span>
               </template>
             </el-table-column>
             <el-table-column label="交易单号" min-width="100">
               <template scope="scope">
-                <span v-if="records[scope.$index].orderNo!='当页总额'&&records[scope.$index].orderNo!='筛选条件统计'" class="td" :data-clipboard-text="records[scope.$index].orderNo" type="text" size="small" style="cursor: pointer" title="点击复制">{{records[scope.$index].orderNo|changeHide}}</span>
-                <span v-if="records[scope.$index].orderNo=='当页总额'">当页总额</span>
-                <span v-if="records[scope.$index].orderNo=='筛选条件统计'">筛选条件统计</span>
+                <span v-if="$records[scope.$index].orderNo!='当页总额'&&$records[scope.$index].orderNo!='筛选条件统计'" class="td" :data-clipboard-text="$records[scope.$index].orderNo" type="text" size="small" style="cursor: pointer" title="点击复制">{{$records[scope.$index].orderNo|changeHide}}</span>
+                <span v-if="$records[scope.$index].orderNo=='当页总额'">当页总额</span>
+                <span v-if="$records[scope.$index].orderNo=='筛选条件统计'">筛选条件统计</span>
               </template>
             </el-table-column>
             <el-table-column prop="amount" align="right" label="打款金额" min-width="90"></el-table-column>
             <el-table-column label="收款账户名" min-width="100">
               <template scope="scope">
-                <div v-if="records[scope.$index].orderNo!='当页总额'&&records[scope.$index].orderNo!='筛选条件统计'">{{records[scope.$index].receiptUserName}}</div>
-                <a v-if="records[scope.$index].orderNo=='筛选条件统计'" @click="add">点击统计</a>
+                <div v-if="$records[scope.$index].orderNo!='当页总额'&&$records[scope.$index].orderNo!='筛选条件统计'">{{$records[scope.$index].receiptUserName}}</div>
+                <a v-if="$records[scope.$index].orderNo=='筛选条件统计'" @click="add">点击统计</a>
               </template>
             </el-table-column>
             <el-table-column label="收款银行账号" min-width="100">
               <template scope="scope">
-                <span class="td" :data-clipboard-text="records[scope.$index].bankCard" type="text" size="small"
-                      style="cursor: pointer" title="点击复制">{{records[scope.$index].bankCard|changeHide}}</span>
+                <span class="td" :data-clipboard-text="$records[scope.$index].bankCard" type="text" size="small"
+                      style="cursor: pointer" title="点击复制">{{$records[scope.$index].bankCard|changeHide}}</span>
               </template>
             </el-table-column>
             <el-table-column prop="requestTime" :formatter="changeTime" label="打款时间" width="160"></el-table-column>
@@ -81,14 +81,14 @@
             <el-table-column prop="message" label="渠道信息" min-width="85"></el-table-column>
             <el-table-column label="备注信息" min-width="90">
               <template scope="scope">
-                <span class="td" :data-clipboard-text="records[scope.$index].remark" type="text" size="small" style="cursor: pointer" title="点击复制">{{records[scope.$index].remark|changeHide}}</span>
+                <span class="td" :data-clipboard-text="$records[scope.$index].remark" type="text" size="small" style="cursor: pointer" title="点击复制">{{$records[scope.$index].remark|changeHide}}</span>
               </template>
             </el-table-column>
             <el-table-column label="操作" min-width="80" fixed="right">
               <template scope="scope">
-                <router-link :to="{path:'/admin/record/withdrawalAudit',query:{orderNo:records[scope.$index].orderNo,sn:records[scope.$index].sn,requestTime:records[scope.$index].requestTime,amount:records[scope.$index].amount,receiptUserName:records[scope.$index].receiptUserName,playMoneyChannel:records[scope.$index].playMoneyChannel,status:records[scope.$index].status,bankCard:records[scope.$index].bankCard,message:records[scope.$index].message}}" id="audit" v-if="(records[scope.$index].status=='2'||records[scope.$index].status=='3'||records[scope.$index].status=='5')&&records[scope.$index].auditStatus==0&&records[scope.$index].orderNo!='当页总额'&&records[scope.$index].orderNo!='筛选条件统计'" >审核</router-link>
-                <span v-if="records[scope.$index].status=='5'&&records[scope.$index].auditStatus!=0&&records[scope.$index].orderNo!='当页总额'&&records[scope.$index].orderNo!='筛选条件统计'">{{records[scope.$index].auditStatusValue}}</span>
-                <a href="javascript:;" @click="updata(records[scope.$index].sn)" v-if="records[scope.$index].orderNo!='当页总额'&&records[scope.$index].orderNo!='筛选条件统计'">同步</a>
+                <router-link :to="{path:'/admin/record/withdrawalAudit',query:{orderNo:$records[scope.$index].orderNo,sn:$records[scope.$index].sn,requestTime:$records[scope.$index].requestTime,amount:$records[scope.$index].amount,receiptUserName:$records[scope.$index].receiptUserName,playMoneyChannel:$records[scope.$index].playMoneyChannel,status:$records[scope.$index].status,bankCard:$records[scope.$index].bankCard,message:$records[scope.$index].message}}" id="audit" v-if="($records[scope.$index].status=='2'||$records[scope.$index].status=='3'||$records[scope.$index].status=='5')&&$records[scope.$index].auditStatus==0&&$records[scope.$index].orderNo!='当页总额'&&$records[scope.$index].orderNo!='筛选条件统计'" >审核</router-link>
+                <span v-if="$records[scope.$index].status=='5'&&$records[scope.$index].auditStatus!=0&&$records[scope.$index].orderNo!='当页总额'&&$records[scope.$index].orderNo!='筛选条件统计'">{{$records[scope.$index].auditStatusValue}}</span>
+                <a href="javascript:;" @click="updata($records[scope.$index].sn)" v-if="$records[scope.$index].orderNo!='当页总额'&&$records[scope.$index].orderNo!='筛选条件统计'">同步</a>
               </template>
             </el-table-column>
           </el-table>
@@ -277,12 +277,14 @@
         this.$data.loading = true;
         this.$http.post(this.$data.syncUrl,{sn:val})
           .then(function (res) {
-            this.$data.loading = false;
+            // this.$data.loading = false;
             this.$message({
               showClose: true,
               message: '同步成功',
               type: 'success'
             });
+            this.getData();
+            this.getAddTotal()
           },function (err) {
             this.$data.loading = false;
             this.$message({
@@ -363,6 +365,11 @@
         }
         return val
       },
+    },
+    computed: {
+      $records: function () {
+        return this.records;
+      }
     }
   }
 </script>

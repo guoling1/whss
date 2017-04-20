@@ -6,14 +6,15 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.jkm.base.common.entity.CommonResponse;
 import com.jkm.base.common.entity.PageModel;
+import com.jkm.base.common.enums.EnumBoolean;
+import com.jkm.base.common.util.DateFormatUtil;
+import com.jkm.base.common.util.ValidateUtils;
 import com.jkm.base.common.util.*;
 import com.jkm.hss.account.enums.EnumAppType;
-import com.jkm.hss.bill.entity.MergeTableSettlementDate;
 import com.jkm.hss.bill.entity.Order;
 import com.jkm.hss.bill.enums.EnumOrderStatus;
 import com.jkm.hss.bill.enums.EnumSettleStatus;
 import com.jkm.hss.bill.helper.requestparam.QueryMerchantPayOrdersRequestParam;
-import com.jkm.hss.bill.service.MergeTableSettlementDateService;
 import com.jkm.hss.bill.service.OrderService;
 import com.jkm.hss.bill.service.PayService;
 import com.jkm.hss.controller.BaseController;
@@ -24,6 +25,8 @@ import com.jkm.hss.merchant.entity.AccountBank;
 import com.jkm.hss.merchant.entity.BankCardBin;
 import com.jkm.hss.merchant.entity.MerchantInfo;
 import com.jkm.hss.merchant.entity.UserInfo;
+import com.jkm.hss.merchant.enums.EnumCheck;
+import com.jkm.hss.merchant.enums.EnumCleanType;
 import com.jkm.hss.merchant.enums.EnumMerchantStatus;
 import com.jkm.hss.merchant.helper.MerchantSupport;
 import com.jkm.hss.merchant.helper.WxConstants;
@@ -31,13 +34,17 @@ import com.jkm.hss.merchant.service.AccountBankService;
 import com.jkm.hss.merchant.service.BankCardBinService;
 import com.jkm.hss.merchant.service.MerchantInfoService;
 import com.jkm.hss.merchant.service.UserInfoService;
+import com.jkm.hss.product.entity.BasicChannel;
+import com.jkm.hss.product.enums.EnumCheckType;
 import com.jkm.hss.product.entity.UpgradePayRecord;
 import com.jkm.hss.product.entity.UpgradeRules;
 import com.jkm.hss.product.enums.EnumPayChannelSign;
 import com.jkm.hss.product.enums.EnumProductType;
+import com.jkm.hss.product.servcie.BasicChannelService;
 import com.jkm.hss.product.enums.EnumUpgrade;
 import com.jkm.hss.product.enums.EnumUpgradePayResult;
 import com.jkm.hss.product.servcie.ChannelSupportCreditBankService;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
@@ -60,6 +67,7 @@ import java.util.List;
 /**
  * Created by yulong.zhang on 2016/12/23.
  */
+@Slf4j
 @Controller
 @RequestMapping(value = "/trade")
 public class TradeController extends BaseController {
@@ -79,7 +87,7 @@ public class TradeController extends BaseController {
     @Autowired
     private ChannelSupportCreditBankService channelSupportCreditBankService;
     @Autowired
-    private MergeTableSettlementDateService mergeTableSettlementDateService;
+    private BasicChannelService basicChannelService;
 
 
     /**
@@ -386,12 +394,25 @@ public class TradeController extends BaseController {
                     }else if(result.get().getStatus()== EnumMerchantStatus.PASSED.getId()||result.get().getStatus()== EnumMerchantStatus.FRIEND.getId()){//跳首页
                         final String amountStr = httpServletRequest.getParameter("amount");
                         final String channelStr = httpServletRequest.getParameter("channel");
+                        final UserInfo userInfo = this.userInfoService.selectByOpenId(super.getOpenId(httpServletRequest)).get();
+                        final MerchantInfo merchantInfo = this.merchantInfoService.selectById(userInfo.getMerchantId()).get();
                         final Integer channelSign = Integer.valueOf(channelStr);
                         Preconditions.checkState(EnumPayChannelSign.isUnionPay(channelSign), "渠道不是快捷");
+                        final BasicChannel basicChannel = this.basicChannelService.selectByChannelTypeSign(channelSign).get();
+                        if (EnumCheckType.FIVE_CHECK.getId() == basicChannel.getCheckType()) {
+                            model.addAttribute("showExpireDate", EnumBoolean.TRUE.getCode());
+                            model.addAttribute("showCvv", EnumBoolean.FALSE.getCode());
+                        } else if (EnumCheckType.SIX_CHECK.getId() == basicChannel.getCheckType()) {
+                            model.addAttribute("showExpireDate", EnumBoolean.TRUE.getCode());
+                            model.addAttribute("showCvv", EnumBoolean.TRUE.getCode());
+                        } else {
+                            model.addAttribute("showExpireDate", EnumBoolean.FALSE.getCode());
+                            model.addAttribute("showCvv", EnumBoolean.FALSE.getCode());
+                        }
                         model.addAttribute("amount", amountStr);
-                        model.addAttribute("merchantName", result.get().getMerchantName());
-                        final String identity = MerchantSupport.decryptIdentity(result.get().getIdentity());
-                        model.addAttribute("bankAccountName", result.get().getName());
+                        model.addAttribute("merchantName", merchantInfo.getMerchantName());
+                        final String identity = MerchantSupport.decryptIdentity(merchantInfo.getIdentity());
+                        model.addAttribute("bankAccountName", merchantInfo.getName());
                         model.addAttribute("idCard", identity.substring(0, 3) + "************" + identity.substring(identity.length() - 3, identity.length()));
                         url = "/firstUnionPay";
                     }
@@ -449,19 +470,44 @@ public class TradeController extends BaseController {
                     }else if(result.get().getStatus()== EnumMerchantStatus.PASSED.getId()||result.get().getStatus()== EnumMerchantStatus.FRIEND.getId()){//跳首页
                         final String amountStr = httpServletRequest.getParameter("amount");
                         final String channelStr = httpServletRequest.getParameter("channel");
+                        final UserInfo userInfo = this.userInfoService.selectByOpenId(super.getOpenId(httpServletRequest)).get();
+                        final MerchantInfo merchantInfo = this.merchantInfoService.selectById(userInfo.getMerchantId()).get();
                         final Integer channelSign = Integer.valueOf(channelStr);
                         Preconditions.checkState(EnumPayChannelSign.isUnionPay(channelSign), "渠道不是快捷");
                         model.addAttribute("amount", amountStr);
-                        model.addAttribute("merchantName", result.get().getMerchantName());
-                        final AccountBank accountBank = this.accountBankService.getDefaultCreditCard(result.get().getAccountId());
+                        model.addAttribute("merchantName", merchantInfo.getMerchantName());
+                        final AccountBank accountBank = this.accountBankService.getDefaultCreditCard(merchantInfo.getAccountId());
                         final boolean exist = this.channelSupportCreditBankService.
                                 isExistByUpperChannelAndBankCode(EnumPayChannelSign.idOf(channelSign).getUpperChannel().getId(), accountBank.getBankBin());
                         final String bankNo = accountBank.getBankNo();
                         final String mobile = accountBank.getReserveMobile();
                         if (exist) {
-                            model.addAttribute("status", 1);
+                            model.addAttribute("status", EnumBoolean.TRUE.getCode());
                         } else {
-                            model.addAttribute("status", 0);
+                            model.addAttribute("status", EnumBoolean.FALSE.getCode());
+                        }
+                        final BasicChannel basicChannel = this.basicChannelService.selectByChannelTypeSign(channelSign).get();
+                        if (EnumCheckType.FIVE_CHECK.getId() == basicChannel.getCheckType()) {
+                            if (this.accountBankService.isHasExpiryTime(accountBank.getId())) {
+                                model.addAttribute("showExpireDate", EnumBoolean.FALSE.getCode());
+                            } else {
+                                model.addAttribute("showExpireDate", EnumBoolean.TRUE.getCode());
+                            }
+                            model.addAttribute("showCvv", EnumBoolean.FALSE.getCode());
+                        } else if (EnumCheckType.SIX_CHECK.getId() == basicChannel.getCheckType()) {
+                            if (this.accountBankService.isHasExpiryTime(accountBank.getId())) {
+                                model.addAttribute("showExpireDate", EnumBoolean.FALSE.getCode());
+                            } else {
+                                model.addAttribute("showExpireDate", EnumBoolean.TRUE.getCode());
+                            }
+                            if (this.accountBankService.isHasCvv(accountBank.getId())) {
+                                model.addAttribute("showCvv", EnumBoolean.FALSE.getCode());
+                            } else {
+                                model.addAttribute("showCvv", EnumBoolean.TRUE.getCode());
+                            }
+                        } else {
+                            model.addAttribute("showExpireDate", EnumBoolean.FALSE.getCode());
+                            model.addAttribute("showCvv", EnumBoolean.FALSE.getCode());
                         }
                         model.addAttribute("creditCardId", accountBank.getId());
                         model.addAttribute("bankName", accountBank.getBankName());
@@ -522,14 +568,30 @@ public class TradeController extends BaseController {
         if (StringUtils.isEmpty(firstUnionPaySendMsgRequest.getExpireDate())) {
             return CommonResponse.simpleResponse(-1, "有效期不能为空");
         }
+        if(new BigDecimal(firstUnionPaySendMsgRequest.getAmount()).compareTo(new BigDecimal("10.00")) < 0){
+            return CommonResponse.simpleResponse(-1, "支付金额至少10.00元");
+        }
         if (StringUtils.isEmpty(firstUnionPaySendMsgRequest.getBankCardNo())) {
             return CommonResponse.simpleResponse(-1, "银卡卡号不能为空");
         }
-        if (StringUtils.isEmpty(firstUnionPaySendMsgRequest.getExpireDate())) {
-            return CommonResponse.simpleResponse(-1, "有效期不能为空");
+        final BasicChannel basicChannel = this.basicChannelService.selectByChannelTypeSign(firstUnionPaySendMsgRequest.getChannel()).get();
+        if (EnumCheckType.FOUR_CHECK.getId() == basicChannel.getCheckType()) {
+            firstUnionPaySendMsgRequest.setExpireDate("");
+            firstUnionPaySendMsgRequest.setCvv2("");
         }
-        if (StringUtils.isEmpty(firstUnionPaySendMsgRequest.getCvv2())) {
-            return CommonResponse.simpleResponse(-1, "CVV2 不能为空");
+        if (EnumCheckType.FIVE_CHECK.getId() == basicChannel.getCheckType()) {
+            firstUnionPaySendMsgRequest.setCvv2("");
+            if (StringUtils.isEmpty(firstUnionPaySendMsgRequest.getExpireDate())) {
+                return CommonResponse.simpleResponse(-1, "有效期不能为空");
+            }
+        }
+        if (EnumCheckType.SIX_CHECK.getId() == basicChannel.getCheckType()) {
+            if (StringUtils.isEmpty(firstUnionPaySendMsgRequest.getExpireDate())) {
+                return CommonResponse.simpleResponse(-1, "有效期不能为空");
+            }
+            if (StringUtils.isEmpty(firstUnionPaySendMsgRequest.getCvv2())) {
+                return CommonResponse.simpleResponse(-1, "CVV2 不能为空");
+            }
         }
         final Optional<BankCardBin> bankCardBinOptional = this.bankCardBinService.analyseCardNo(firstUnionPaySendMsgRequest.getBankCardNo());
         if (!bankCardBinOptional.isPresent()) {
@@ -556,9 +618,9 @@ public class TradeController extends BaseController {
             return CommonResponse.simpleResponse(-1, "当前信用卡已经存在");
         }
         final long creditBankCardId = this.accountBankService.initCreditBankCard(merchantInfo.getAccountId(), firstUnionPaySendMsgRequest.getBankCardNo(),
-                bankCardBin.getBankName(), firstUnionPaySendMsgRequest.getMobile(), bankCardBin.getShorthand(), firstUnionPaySendMsgRequest.getExpireDate());
-        final Pair<Integer, String> result = this.payService.unionPay(merchantInfo.getId(), firstUnionPaySendMsgRequest.getAmount(),
-                firstUnionPaySendMsgRequest.getChannel(), creditBankCardId, firstUnionPaySendMsgRequest.getCvv2(), EnumProductType.HSS.getId());
+                bankCardBin.getBankName(), firstUnionPaySendMsgRequest.getMobile(), bankCardBin.getShorthand(), firstUnionPaySendMsgRequest.getExpireDate(), firstUnionPaySendMsgRequest.getCvv2());
+        final Pair<Integer, String> result = this.payService.firstUnionPay(merchantInfo.getId(), firstUnionPaySendMsgRequest.getAmount(),
+                firstUnionPaySendMsgRequest.getChannel(), creditBankCardId, EnumProductType.HSS.getId());
         if (0 == result.getLeft()) {
             return CommonResponse.builder4MapResult(CommonResponse.SUCCESS_CODE, "success")
                     .addParam("orderId", result.getRight())
@@ -597,9 +659,6 @@ public class TradeController extends BaseController {
         if (!EnumPayChannelSign.isUnionPay(againUnionPaySendMsgRequest.getChannel())) {
             return CommonResponse.simpleResponse(-1, "支付方式错误");
         }
-        if (StringUtils.isEmpty(againUnionPaySendMsgRequest.getCvv2())) {
-            return CommonResponse.simpleResponse(-1, "CVV2 不能为空");
-        }
         final Optional<AccountBank> accountBankOptional = this.accountBankService.selectById(againUnionPaySendMsgRequest.getCreditCardId());
         if (!accountBankOptional.isPresent()) {
             return CommonResponse.simpleResponse(-1, "信用卡不存在");
@@ -609,9 +668,22 @@ public class TradeController extends BaseController {
         if (!exist) {
             return CommonResponse.simpleResponse(-1, "信用卡暂不可用");
         }
-        final Pair<Integer, String> result = this.payService.unionPay(merchantInfo.getId(), againUnionPaySendMsgRequest.getAmount(),
-                againUnionPaySendMsgRequest.getChannel(), againUnionPaySendMsgRequest.getCreditCardId(),
-                againUnionPaySendMsgRequest.getCvv2(), EnumProductType.HSS.getId());
+        final BasicChannel basicChannel = this.basicChannelService.selectByChannelTypeSign(againUnionPaySendMsgRequest.getChannel()).get();
+        final boolean hasExpiryTime = this.accountBankService.isHasExpiryTime(accountBankOptional.get().getId());
+        final boolean hasCvv = this.accountBankService.isHasCvv(accountBankOptional.get().getId());
+        if (StringUtils.isEmpty(againUnionPaySendMsgRequest.getExpireDate())
+                && (EnumCheckType.FIVE_CHECK.getId() == basicChannel.getCheckType() || EnumCheckType.SIX_CHECK.getId() == basicChannel.getCheckType())
+                && !hasExpiryTime) {
+            return CommonResponse.simpleResponse(-1, "有效期不能为空");
+        }
+        if (StringUtils.isEmpty(againUnionPaySendMsgRequest.getCvv2())
+                && EnumCheckType.SIX_CHECK.getId() == basicChannel.getCheckType()
+                && !hasCvv) {
+            return CommonResponse.simpleResponse(-1, "CVV2 不能为空");
+        }
+        final Pair<Integer, String> result = this.payService.againUnionPay(merchantInfo.getId(), againUnionPaySendMsgRequest.getAmount(),
+                againUnionPaySendMsgRequest.getChannel(), againUnionPaySendMsgRequest.getExpireDate(), againUnionPaySendMsgRequest.getCvv2(),
+                againUnionPaySendMsgRequest.getCreditCardId(), EnumProductType.HSS.getId());
         if (0 == result.getLeft()) {
             return CommonResponse.builder4MapResult(CommonResponse.SUCCESS_CODE, "success")
                     .addParam("orderId", result.getRight())
@@ -644,9 +716,6 @@ public class TradeController extends BaseController {
         }
         final Pair<Integer, String> result = this.payService.confirmUnionPay(confirmUnionPayRequest.getOrderId(), confirmUnionPayRequest.getCode());
         if (0 == result.getLeft()) {
-            final AccountBank accountBank = this.accountBankService.selectCreditCardByBankNoAndStateless(orderOptional.get().getPayee(),
-                    MerchantSupport.decryptBankCard(orderOptional.get().getPayBankCard())).get();
-            this.accountBankService.setDefaultCreditCard(accountBank.getId());
             return CommonResponse.builder4MapResult(CommonResponse.SUCCESS_CODE, "success")
                     .addParam("orderId", confirmUnionPayRequest.getOrderId())
                     .build();

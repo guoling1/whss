@@ -139,17 +139,41 @@ public interface PayService {
     void merchantUpgradePoundageSettle(Order order, long merchantId);
 
     /**
+     * 首次支付
+     *
+     * @param merchantId
+     * @param amount
+     * @param channel
+     * @param creditBankCardId
+     * @param appId
+     * @return
+     */
+    Pair<Integer,String> firstUnionPay(long merchantId, String amount, int channel, long creditBankCardId, String appId);
+
+    /**
+     * 再次支付
+     *
+     * @param merchantId
+     * @param amount
+     * @param channel
+     * @param expireDate
+     * @param cvv
+     * @param appId
+     * @return
+     */
+    Pair<Integer,String> againUnionPay(long merchantId, String amount, int channel, String expireDate, String cvv, long creditBankCardId, String appId);
+
+    /**
      * 快捷支付
      *
      * @param merchantId  商户ID
      * @param amount      金额
      * @param channel     渠道
      * @param creditBankCardId  信用卡ID
-     * @param cvv2   cvv2
      * @param appId
      * @return
      */
-    Pair<Integer,String> unionPay(long merchantId, String amount, int channel, long creditBankCardId, String cvv2, String appId);
+    Pair<Integer,String> unionPay(long orderId, long merchantId, String amount, int channel, long creditBankCardId, String appId);
 
     /**
      * 确认支付

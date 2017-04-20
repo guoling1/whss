@@ -17,6 +17,8 @@ public class MerchantChannelResponse {
 
     private String channelRate;
 
+    private String fee;
+
     private String limitAmount;
 
     private int channelSign;

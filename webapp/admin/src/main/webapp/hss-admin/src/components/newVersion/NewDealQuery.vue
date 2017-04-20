@@ -81,6 +81,13 @@
               </el-select>
             </li>
             <li class="same">
+              <label>支付渠道：</label>
+              <el-select style="width: 140px" clearable v-model="query.payChannelSign" size="small">
+                <el-option label="全部" value=""></el-option>
+                <el-option :label="channel.channelName" :value="channel.channelTypeSign" v-for="channel in channelList"></el-option>
+              </el-select>
+            </li>
+            <li class="same">
               <div class="btn btn-primary" @click="search">筛选</div>
             </li>
           </ul>
@@ -198,7 +205,9 @@
           proxyName1:'',
           loadUrl: '',
           loadUrl1: '',
+          payChannelSign:''
         },
+        channelList:[],
         date: '',
         records: [],
         count: 0,
@@ -220,6 +229,18 @@
           type: 'success'
         });
       });
+
+      this.$http.post('/admin/channel/list')
+        .then(function (res) {
+          this.channelList = res.data;
+        }, function (err) {
+          this.$message({
+            showClose: true,
+            message: err.statusMessage,
+            type: 'error'
+          });
+        });
+
       let time = new Date();
       this.date = [time,time];
       for (var j = 0; j < this.date.length; j++) {
@@ -301,6 +322,12 @@
       handleCurrentChange(val) {
         this.query.page = val;
         this.getData()
+      },
+      tableFoot(row, index) {
+        if (row.proxyName1 === '当页总额'||row.proxyName1 === '筛选条件统计') {
+          return {background:'#eef1f6'}
+        }
+        return '';
       },
       getAddTotal(){
         this.$http.post('/admin/queryOrder/amountCount',this.query)

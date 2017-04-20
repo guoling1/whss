@@ -25,4 +25,8 @@ public class AgainUnionPaySendMsgRequest {
      * 信用卡cvv2
      */
     private String cvv2;
+    /**
+     * 信用卡有效期
+     */
+    private String expireDate;
 }

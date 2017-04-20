@@ -105,6 +105,13 @@
         </div>
         <el-dialog title="对账异常处理" v-model="isShow">
           <el-form :label-position="right" label-width="150px">
+            <el-form-item label="处理状态：" width="120" style="margin-bottom: 0">
+              <el-select clearable v-model="handleQuery.status" size="small" style="width: 220px">
+                <el-option label="系统已处理" value="2"></el-option>
+                <el-option label="无需处理" value="3"></el-option>
+                <el-option label="已线下处理" value="4"></el-option>
+              </el-select>
+            </el-form-item>
             <el-form-item label="备注信息：" width="120" style="margin-bottom: 0">
               <el-input style="width: 70%"
                 type="textarea"
@@ -145,6 +152,7 @@
         },
         handleQuery:{
           handleReason:'',
+          status:'',
           id:""
         },
         item_side:[

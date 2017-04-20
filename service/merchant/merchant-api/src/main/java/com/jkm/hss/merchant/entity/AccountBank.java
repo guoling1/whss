@@ -3,6 +3,7 @@ package com.jkm.hss.merchant.entity;
 import com.jkm.base.common.entity.BaseEntity;
 import com.jkm.hss.merchant.enums.EnumAccountBank;
 import com.jkm.hss.merchant.enums.EnumBankDefault;
+import com.jkm.hss.merchant.enums.EnumCleanType;
 import lombok.Data;
 
 /**
@@ -82,4 +83,14 @@ public class AccountBank extends BaseEntity {
      * 有效期
      */
     private String expiryTime;
+    /**
+     * cvv
+     */
+    private String cvv;
+
+    /**
+     * 更新类型
+     * {@link EnumCleanType}
+     */
+    private int updateType;
 }

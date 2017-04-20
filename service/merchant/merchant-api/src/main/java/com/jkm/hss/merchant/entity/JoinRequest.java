@@ -9,6 +9,30 @@ import lombok.Data;
 public class JoinRequest {
 
     /**
+     * 查询条件：开始时间
+     */
+    private String startTime;
+
+    /**
+     * 查询条件：结束时间
+     */
+    private String endTime;
+
+    /**
+     * 当前页数
+     */
+    private int pageNo;
+    /**
+     * 每页显示页数
+     */
+    private int pageSize;
+
+    /**
+     * 条数
+     */
+    private Integer offset;
+
+    /**
      * 用户名字
      */
     private String userName;

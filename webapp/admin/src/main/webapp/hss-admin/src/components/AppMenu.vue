@@ -200,6 +200,20 @@
             </li>
           </ul>
         </li>
+
+        <li class="treeview"
+            :class="(url=='/admin/record/application'||url=='/admin/record/channel')?'treeview active':'treeview'">
+          <a href="#"><span>合作意向</span>
+          </a>
+          <ul class="treeview-menu">
+            <li @click="refrash" :class="(url=='/admin/record/application')?'treeview active':'treeview'">
+              <router-link to="/admin/record/application"><span>合作申请</span></router-link>
+            </li>
+            <li @click="refrash" :class="(url=='/admin/record/channel')?'treeview active':'treeview'">
+              <router-link to="/admin/record/channel"><span>渠道招募</span></router-link>
+            </li>
+          </ul>
+        </li>
       </ul>
       <!-- /.sidebar-menu -->
     </section>
