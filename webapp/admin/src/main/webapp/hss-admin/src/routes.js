@@ -95,8 +95,10 @@ let routes = [
     component: Login
   },
   {
-    path: '/admin/newDealDet',
-    component: NewDealDet
+    path: '/admin/det',
+    children:[
+      {path:'newDealDet',component: NewDealDet}
+    ]
   },
   {
     path: '/admin/record',

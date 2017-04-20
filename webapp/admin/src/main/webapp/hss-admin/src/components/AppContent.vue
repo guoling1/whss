@@ -61,7 +61,7 @@ export default {
     </section> -->
 
     <!-- Main content -->
-    <section class="content" style="overflow: hidden;padding: 0">
+    <section class="content" style="overflow: hidden;padding: 0;min-height: 850px">
 
       <!-- Your Page Content Here -->
 

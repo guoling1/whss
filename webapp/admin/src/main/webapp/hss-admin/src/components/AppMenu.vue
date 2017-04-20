@@ -235,6 +235,7 @@
     </section>
     <!-- /.sidebar -->
   </aside>
+
 </template>
 
 <script lang="babel">

@@ -135,7 +135,7 @@
             <el-table-column prop="remark" label="渠道信息" min-width="90"></el-table-column>
             <el-table-column label="操作" width="90" fixed="right">
               <template scope="scope">
-                <router-link target="_blank" :to="{path:'/admin/newDealDet',query:{orderNo:scope.row.orderNo}}" type="text">详情
+                <router-link :to="{path:'/admin/det/newDealDet',query:{orderNo:scope.row.orderNo}}" type="text">详情
                 </router-link>
               </template>
             </el-table-column>
