@@ -44,7 +44,7 @@
               </el-table>
             </el-tab-pane>
           </el-tabs>
-          <el-button @click="goBack">取 消</el-button>
+          <!--<el-button @click="goBack">取 消</el-button>-->
           <el-button type="primary" @click="submit">确认对账</el-button>
         </div>
         <!-- /.box-body -->
@@ -90,7 +90,7 @@
                 message: '对账成功',
                 type: 'success'
               });
-              this.$router.push('/admin/record/accountSystem')
+//              this.$router.push('/admin/record/accountSystem')
             })
             .catch(err =>{
               this.$message({

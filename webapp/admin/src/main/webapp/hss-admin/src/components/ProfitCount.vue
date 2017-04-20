@@ -48,7 +48,7 @@
                 <el-table-column prop="splitAmount" label="收益金额" align="right" header-align="left"></el-table-column>
                 <el-table-column label="操作" width="100">
                   <template scope="scope">
-                    <router-link :to="{path:'/admin/record/profitComDet',query:{type:records[scope.$index].businessType,time:records[scope.$index].splitDate}}" v-if="records[scope.$index].splitAmount!=0&&records[scope.$index].businessType!='当页总额'&&records[scope.$index].businessType!='筛选条件统计'" type="text" size="small">明细
+                    <router-link target="_blank" :to="{path:'/admin/details/profitComDet',query:{type:records[scope.$index].businessType,time:records[scope.$index].splitDate}}" v-if="records[scope.$index].splitAmount!=0&&records[scope.$index].businessType!='当页总额'&&records[scope.$index].businessType!='筛选条件统计'" type="text" size="small">明细
                     </router-link>
                     <a v-if="records[scope.$index].businessType=='筛选条件统计'" @click="add">点击统计</a>
                   </template>
@@ -106,7 +106,7 @@
                 <el-table-column prop="splitAmount" label="收益金额" align="right" header-align="left"></el-table-column>
                 <el-table-column label="操作" width="100">
                   <template scope="scope">
-                    <router-link :to="{path:'/admin/record/profitFirDet',query:{type:records[scope.$index].businessType,id:records[scope.$index].receiptMoneyAccountId,time:records[scope.$index].splitDate}}" v-if="records[scope.$index].splitAmount!=0&&records[scope.$index].businessType!='当页总额'&&records[scope.$index].businessType!='筛选条件统计'" type="text" size="small">明细
+                    <router-link target="_blank" :to="{path:'/admin/details/profitFirDet',query:{type:records[scope.$index].businessType,id:records[scope.$index].receiptMoneyAccountId,time:records[scope.$index].splitDate}}" v-if="records[scope.$index].splitAmount!=0&&records[scope.$index].businessType!='当页总额'&&records[scope.$index].businessType!='筛选条件统计'" type="text" size="small">明细
                     </router-link>
                     <a v-if="records[scope.$index].businessType=='筛选条件统计'" @click="add">点击统计</a>
                   </template>
@@ -168,8 +168,7 @@
                 <el-table-column prop="splitAmount" label="收益金额" align="right" header-align="left"></el-table-column>
                 <el-table-column label="操作" width="100">
                   <template scope="scope">
-                    <router-link
-                      :to="{path:'/admin/record/profitSecDet',query:{type:records[scope.$index].businessType,id:records[scope.$index].receiptMoneyAccountId,time:records[scope.$index].splitDate}}"
+                    <router-link target="_blank" :to="{path:'/admin/details/profitSecDet',query:{type:records[scope.$index].businessType,id:records[scope.$index].receiptMoneyAccountId,time:records[scope.$index].splitDate}}"
                       v-if="records[scope.$index].splitAmount!=0&&records[scope.$index].businessType!='当页总额'&&records[scope.$index].businessType!='筛选条件统计'" type="text" size="small">明细
                     </router-link>
                     <a v-if="records[scope.$index].businessType=='筛选条件统计'" @click="add">点击统计</a>

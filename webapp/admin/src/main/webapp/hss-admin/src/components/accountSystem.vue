@@ -182,7 +182,8 @@
           type: 'info'
         });
         if(file.result.result=='操作成功'){
-          this.$router.push('/admin/record/accountData');
+//          this.$router.push('/admin/record/accountData');
+          window.open("http://admin.qianbaojiajia.com/admin/details/accountData");
           sessionStorage.setItem('data',JSON.stringify(file.result.jsonPayResult))
         }
       },

@@ -52,12 +52,12 @@
           <el-table v-loading.body="loading"  style="font-size: 12px;margin:15px 0" :data="records" border >
             <el-table-column label="代理商名称">
               <template scope="scope">
-                <router-link :to="'/admin/record/agentAddBase?level=1&id='+records[scope.$index].id">{{records[scope.$index].proxyName}}</router-link>
+                <router-link :to="'/admin/agentAddBase?level=1&id='+records[scope.$index].id">{{records[scope.$index].proxyName}}</router-link>
               </template>
             </el-table-column>
             <el-table-column label="代理商编号">
               <template scope="scope">
-                <router-link :to="'/admin/record/agentAddBase?level=1&id='+records[scope.$index].id">{{records[scope.$index].markCode}}</router-link>
+                <router-link :to="'/admin/agentAddBase?level=1&id='+records[scope.$index].id">{{records[scope.$index].markCode}}</router-link>
               </template>
             </el-table-column>
             <el-table-column prop="level" label="代理商级别" ></el-table-column>
@@ -146,13 +146,16 @@
     },
     methods: {
       openProduct:function (id,productId,val) {
-        this.$router.push({path:'/admin/record/agentAddPro',query:{dealerId:id,productId:productId,product:val}});
+        window.open('http://admin.qianbaojiajia.com/admin/details/agentAddPro?dealerId='+id+'&productId='+productId+'&product='+val);
+//        this.$router.push({path:'/admin/record/agentAddPro',query:{dealerId:idproductId:productId,product:val}});
       },
       auditProduct:function (id,productId,val) {
-        this.$router.push({path:'/admin/record/agentAddPro',query:{dealerId:id,productId:productId,product:val}});
+        window.open('http://admin.qianbaojiajia.com/admin/details/agentAddPro?dealerId='+id+'&productId='+productId+'&product='+val);
+//        this.$router.push({path:'/admin/record/agentAddPro',query:{dealerId:id,productId:productId,product:val}});
       },
       agentAdd:function () {
-        this.$router.push("/admin/record/agentAddBase")
+        window.open('http://admin.qianbaojiajia.com/admin/details/agentAddBase');
+//        this.$router.push("/admin/record/agentAddBase")
       },
       getData: function () {
         this.$data.loading = true;

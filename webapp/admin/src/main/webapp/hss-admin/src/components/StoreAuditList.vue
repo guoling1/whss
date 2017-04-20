@@ -240,10 +240,12 @@
     },
     methods: {
       auditHsy: function (id,status) {
-        this.$router.push({path:'/admin/record/StoreAuditHSY',query:{id:id,status:status}})
+//        this.$router.push({path:'/admin/record/StoreAuditHSY',query:{id:id,status:status}})
+        window.open('http://admin.qianbaojiajia.com/admin/details/StoreAuditHSY?id='+id+'&status='+status);
       },
       audit: function (id,status) {
-        this.$router.push({path:'/admin/record/StoreAudit',query:{id:id,status:status}})
+        window.open('http://admin.qianbaojiajia.com/admin/details/StoreAudit?id='+id+'&status='+status);
+//        this.$router.push({path:'/admin/record/StoreAudit',query:{id:id,status:status}})
       },
       //格式化hss创建时间
       changeTime: function (row, column) {

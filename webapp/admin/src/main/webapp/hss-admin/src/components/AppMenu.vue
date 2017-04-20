@@ -282,28 +282,6 @@
         if(flag!=true){
           this._$tabsData.push({title:name,name:name,url:url});
         }
-//          this.tabs.push('52514')
-
-//        this.$emit('child',this.b)
-//        console.log(this.tabs)
-        /*var session = JSON.parse(localStorage.getItem('tabsData'));
-        if(session!=null){
-          var flag = false;
-          for(var i=0;i<session.length;i++){
-              if(session[i].title == name){
-                flag = true
-                break;
-              }
-          }
-          if(flag!=true){
-            var ary = session.concat([{title:name,name:name}]);
-            localStorage.setItem('tabsData',JSON.stringify(ary));
-          }
-        }else {
-          localStorage.setItem('tabsData',JSON.stringify([].concat([{title:name,name:name}])));
-        }
-        console.log(session)*/
-
       },
       open: function () {
         var obj = document.getElementById('right');
