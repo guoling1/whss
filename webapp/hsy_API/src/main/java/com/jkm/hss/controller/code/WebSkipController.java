@@ -132,6 +132,7 @@ public class WebSkipController extends BaseController {
      */
     @RequestMapping(value = "toAlipaySkip", method = RequestMethod.GET)
     public String  toAlipaySkip(final HttpServletRequest request, final HttpServletResponse response,final Model model) throws Exception{
+        log.info("请求地址是：{}",request.getRequestURL());
         String getQueryString = "";
         if(request.getQueryString() == null){
             getQueryString="";
