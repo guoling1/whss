@@ -111,10 +111,8 @@ http.post('/channel/list', {}, function (list) {
     let fee = document.createElement('div');
     // 5月活动
     if (list[i].channelSign == 601) {
-      let startTime = new Date('2017-04-20 00:00:00').getTime();
-      let endTime = new Date('2017-05-31 23:59:59').getTime();
       let now = new Date().getTime();
-      if (now >= startTime && now <= endTime) {
+      if (now >= 1492617600000 && now <= 1496246399000) {
         fee.className = 'channel-con';
         fee.innerHTML = '0.38%+3';
         // 展示 惠
