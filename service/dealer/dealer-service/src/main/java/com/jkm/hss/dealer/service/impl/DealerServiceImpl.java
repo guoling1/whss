@@ -149,7 +149,7 @@ public class DealerServiceImpl implements DealerService {
                 final Date beginDate = DateFormatUtil.parse("2017-04-12 00:00:00", DateFormatUtil.yyyy_MM_dd_HH_mm_ss);
                 final Date endDate = DateFormatUtil.parse("2017-06-01 23:59:59", DateFormatUtil.yyyy_MM_dd_HH_mm_ss);
                 final Date currentDate = new Date();
-                final boolean isActTime = currentDate.after(beginDate) && endDate.before(endDate);
+                final boolean isActTime = currentDate.after(beginDate) && currentDate.before(endDate);
                 if ((EnumPayChannelSign.EL_UNIONPAY.getId() == channelSign) && isActTime){
                     //活动商户直接返回
                     final Map<String, Triple<Long, BigDecimal, BigDecimal>> map = new HashMap<>();

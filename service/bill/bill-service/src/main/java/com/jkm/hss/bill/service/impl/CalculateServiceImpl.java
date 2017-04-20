@@ -85,7 +85,7 @@ public class CalculateServiceImpl implements CalculateService {
         final Date beginDate = DateFormatUtil.parse("2017-04-12 00:00:00", DateFormatUtil.yyyy_MM_dd_HH_mm_ss);
         final Date endDate = DateFormatUtil.parse("2017-06-01 23:59:59", DateFormatUtil.yyyy_MM_dd_HH_mm_ss);
         final Date currentDate = new Date();
-        final boolean isActTime = currentDate.after(beginDate) && endDate.before(endDate);
+        final boolean isActTime = currentDate.after(beginDate) && currentDate.before(endDate);
         if ((EnumPayChannelSign.EL_UNIONPAY.getId() == channelSign) && isActTime){
             return new BigDecimal("0.0038");
         }
@@ -123,7 +123,7 @@ public class CalculateServiceImpl implements CalculateService {
         final Date beginDate = DateFormatUtil.parse("2017-04-12 00:00:00", DateFormatUtil.yyyy_MM_dd_HH_mm_ss);
         final Date endDate = DateFormatUtil.parse("2017-06-01 23:59:59", DateFormatUtil.yyyy_MM_dd_HH_mm_ss);
         final Date currentDate = new Date();
-        final boolean isActTime = currentDate.after(beginDate) && endDate.before(endDate);
+        final boolean isActTime = currentDate.after(beginDate) && currentDate.before(endDate);
         if ((EnumPayChannelSign.EL_UNIONPAY.getId() == channelSign) && isActTime){
             return new BigDecimal("3");
         }
@@ -181,7 +181,7 @@ public class CalculateServiceImpl implements CalculateService {
         final Date beginDate = DateFormatUtil.parse("2017-04-12 00:00:00", DateFormatUtil.yyyy_MM_dd_HH_mm_ss);
         final Date endDate = DateFormatUtil.parse("2017-06-01 23:59:59", DateFormatUtil.yyyy_MM_dd_HH_mm_ss);
         final Date currentDate = new Date();
-        final boolean isActTime = currentDate.after(beginDate) && endDate.before(endDate);
+        final boolean isActTime = currentDate.after(beginDate) && currentDate.before(endDate);
         if ((EnumPayChannelSign.EL_UNIONPAY.getId() == channelSign) && isActTime){
             return  traderAmount.multiply(new BigDecimal("0.0038")).setScale(2,BigDecimal.ROUND_UP);
         }
