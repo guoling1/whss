@@ -189,7 +189,7 @@ public class DealerServiceImpl implements DealerService {
                     map.put("channelMoney",Triple.of(basicChannel.getAccountId(), channelMoney, basicChannel.getBasicTradeRate()));
                     return map;
                 }
-                log.info("-----------------------");
+                log.info("-----------------------" + isActTime +"" +(EnumPayChannelSign.EL_UNIONPAY.getId() == channelSign));
                 //判断商户是否是直属商户
                 if (merchantInfo.getFirstMerchantId() == 0){
                     //直属商户
