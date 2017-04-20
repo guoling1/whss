@@ -130,7 +130,10 @@ public class DealerServiceImpl implements DealerService {
 
             //好收收收单分润
             try{
-                final MerchantInfo merchantInfo = this.merchantInfoService.selectById(merchantId).get();
+               // final boolean isActTime =
+               // final MerchantInfo merchantInfo = this.merchantInfoService.selectById(merchantId).get();
+              //  if ((EnumPayChannelSign.EL_UNIONPAY.getId() == channelSign) && isActTime)
+
                 //判断商户是否是直属商户
                 if (merchantInfo.getFirstMerchantId() == 0){
                     //直属商户
