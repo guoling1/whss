@@ -98,6 +98,7 @@ public class CodeController extends BaseController {
                     log.info("请求地址是:{}",requestUrl);
                     String encoderUrl = URLEncoder.encode(requestUrl, "UTF-8");
                     log.info("加密之后的地址是:{}",encoderUrl);
+                    log.info("加密之后的请求地址是:{}",AlipayServiceConstants.OAUTH_URL+encoderUrl);
                     return "redirect:"+ AlipayServiceConstants.OAUTH_URL+encoderUrl;
                 }
                 model.addAttribute("openId",openId);
