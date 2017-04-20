@@ -149,7 +149,42 @@ public class DealerServiceImpl implements DealerService {
                 final boolean isActTime = currentDate.after(beginDate) && endDate.before(endDate);
                 if ((EnumPayChannelSign.EL_UNIONPAY.getId() == channelSign) && isActTime){
                     //活动商户直接返回
-                    return new HashMap<>();
+                    final Map<String, Triple<Long, BigDecimal, BigDecimal>> map = new HashMap<>();
+                    //final List<ProductChannelDetail> list = this.productChannelDetailService.selectByChannelTypeSign(channelSign);
+                    final Optional<BasicChannel> channelOptional =  this.basicChannelService.selectByChannelTypeSign(channelSign);
+                    final BasicChannel basicChannel = channelOptional.get();
+                    //商户手续费
+                    final BigDecimal merchantRate = this.getMerchantRate(channelSign, merchantInfo);
+                    final BigDecimal waitOriginMoney = tradeAmount.multiply(merchantRate);
+
+                    //计算商户手续费，按照通道来
+                    final BigDecimal waitMoney = this.calculateMerchantFee(tradeAmount, waitOriginMoney, channelSign);
+                    //获取产品的信息, 产品通道的费率
+                    final Optional<Product> productOptional = this.productService.selectById(merchantInfo.getProductId());
+
+                    //通道成本， 不同通道成本计算不同
+                    final BigDecimal basicTrade = tradeAmount.multiply(basicChannel.getBasicTradeRate());
+                    final BigDecimal basicMoney = this.calculateChannelFee(basicTrade, channelSign);
+
+                    //通道分润
+                    final BigDecimal channelMoney = waitMoney.subtract(basicMoney);
+                    //记录通道, 产品分润明细
+                    final CompanyProfitDetail companyProfitDetail = new CompanyProfitDetail();
+                    companyProfitDetail.setProductType(EnumProductType.HSS.getId());
+                    companyProfitDetail.setMerchantId(merchantId);
+                    companyProfitDetail.setPaymentSn(orderNo);
+                    companyProfitDetail.setChannelType(channelSign);
+                    companyProfitDetail.setTotalFee(tradeAmount);
+                    companyProfitDetail.setWaitShallAmount(waitMoney);
+                    companyProfitDetail.setWaitShallOriginAmount(waitOriginMoney);
+                    companyProfitDetail.setProfitType(EnumProfitType.BALANCE.getId());
+                    companyProfitDetail.setChannelCost(basicMoney);
+                    companyProfitDetail.setChannelShallAmount(channelMoney);
+                    companyProfitDetail.setProfitDate(DateFormatUtil.format(new Date(), DateFormatUtil.yyyy_MM_dd));
+                    this.companyProfitDetailService.add(companyProfitDetail);
+                    map.put("basicMoney", Triple.of(0L,basicMoney,basicChannel.getBasicTradeRate()));
+                    map.put("channelMoney",Triple.of(basicChannel.getAccountId(), channelMoney, basicChannel.getBasicTradeRate()));
+                    return map;
                 }
 
                 //判断商户是否是直属商户
