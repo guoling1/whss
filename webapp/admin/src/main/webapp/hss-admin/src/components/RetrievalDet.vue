@@ -1,5 +1,5 @@
 <template lang="html">
-  <div id="storeAudit">
+  <div id="retrievalDet">
     <div class="box-header with-border" style="margin: 0 0 0 3px;">
       <h3 class="box-title" style="border-left: 3px solid #e4e0e0;padding-left: 10px;">提现详情</h3>
     </div>
@@ -250,7 +250,7 @@
 
 <script lang="babel">
   export default {
-    name: 'storeAudit',
+    name: 'retrievalDet',
     data () {
       return {
         isStore: true,
@@ -260,7 +260,7 @@
         payData: [],
       }
     },
-    created: function () {
+    activated: function () {
       if(this.$route.query.idd==0){
         this.isStore=true
           this.query = {

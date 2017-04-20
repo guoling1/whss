@@ -119,7 +119,7 @@
           </el-col>
           <el-col :span="6">
             <div class="grid-content bg-purple-light" style="width: 100%">
-              <div class="btn btn-primary" @click="create" style="width: 100%;float: right;margin: 20px 0 100px;">
+              <div class="btn btn-primary" @click="_$power(create,'boss_qr_code_right_distribute')" style="width: 100%;float: right;margin: 20px 0 100px;">
                 立即分配
               </div>
             </div>

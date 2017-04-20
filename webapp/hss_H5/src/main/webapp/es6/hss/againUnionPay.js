@@ -120,10 +120,12 @@ sendCode.addEventListener('click', function () {
         (pageData.showCvv == 0 || validate.empty(cvv2.value, 'CVV2'))) {
         if ((pageData.showCvv == 0 || cvv2.value.length == 3)) {
           message.load_show('正在发送');
+          let expire = expireDate.value.split('/');
           http.post('/trade/againUnionPay', {
             amount: amount,
             channel: channel,
             creditCardId: pageData.creditCardId,
+            expireDate: expire[1] + expire[0],
             cvv2: cvv2.value
           }, function (data) {
             orderId = data.orderId;

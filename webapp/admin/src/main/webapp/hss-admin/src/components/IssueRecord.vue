@@ -4,30 +4,30 @@
       <div class="box" style="margin-top:15px;overflow: hidden">
         <div class="box-header">
           <h3 class="box-title">二维码分配记录</h3>
-          <router-link to="/admin/record/issue" class="pull-right btn btn-primary" style="margin-left: 20px">分配二维码</router-link>
+          <a @click="_$power(issue,'boss_qr_code_distribute')" class="pull-right btn btn-primary" style="margin-left: 20px">分配二维码</a>
         </div>
         <div class="box-body">
           <!--筛选-->
-          <ul>
+          <ul class="search">
             <li class="same">
               <label>代理商编号:</label>
-              <el-input style="width: 120px" v-model="query.markCode" placeholder="请输入内容" size="small"></el-input>
+              <el-input style="width: 188px" v-model="query.markCode" placeholder="请输入内容" size="small"></el-input>
             </li>
             <li class="same">
               <label>代理商名称:</label>
-              <el-input style="width: 120px" v-model="query.name" placeholder="请输入内容" size="small"></el-input>
+              <el-input style="width: 188px" v-model="query.name" placeholder="请输入内容" size="small"></el-input>
             </li>
             <li class="same">
               <label>上级代理名称:</label>
-              <el-input style="width: 120px" v-model="query.firstName" placeholder="请输入内容" size="small"></el-input>
+              <el-input style="width: 188px" v-model="query.firstName" placeholder="请输入内容" size="small"></el-input>
             </li>
             <li class="same">
               <label>上级代理编号:</label>
-              <el-input style="width: 120px" v-model="query.firstMarkCode" placeholder="请输入内容" size="small"></el-input>
+              <el-input style="width: 188px" v-model="query.firstMarkCode" placeholder="请输入内容" size="small"></el-input>
             </li>
             <li class="same">
               <label>分配方:</label>
-              <el-select style="width: 160px" v-model="query.type" clearable placeholder="请选择" size="small">
+              <el-select style="width: 188px" v-model="query.type" clearable placeholder="请选择" size="small">
                 <el-option label="全部" value="0">全部</el-option>
                 <el-option label="金开门" value="1">金开门</el-option>
                 <el-option label="一级代理" value="2">一级代理</el-option>
@@ -38,7 +38,7 @@
             </li>
           </ul>
           <!--表格-->
-          <el-table v-loading.body="loading" style="font-size: 12px;margin:15px 0" :data="records" border>
+          <el-table v-loading.body="loading" style="font-size: 12px;margin-bottom: 15px" :data="records" border>
             <el-table-column type="index" width="70" label="序号"></el-table-column>
             <el-table-column prop="distributeTime" :formatter="distributeTime" label="分配时间"></el-table-column>
             <el-table-column prop="proxyName" label="代理名称"></el-table-column>
@@ -104,6 +104,9 @@
         })
     },
     methods: {
+      issue: function () {
+        this.$router.push('/admin/record/issue')
+      },
       //格式化时间
       distributeTime: function (row, column) {
         var val=row.distributeTime;
@@ -171,8 +174,16 @@
   }
 </script>
 <style scoped lang="less">
-  ul{
+  ul {
     padding: 0;
+    margin:0;
+  }
+  .search{
+    margin-bottom:0;
+  label{
+    display: block;
+    margin-bottom: 0;
+  }
   }
   .same{
     list-style: none;

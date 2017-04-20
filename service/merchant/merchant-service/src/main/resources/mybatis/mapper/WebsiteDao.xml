@@ -28,6 +28,14 @@
             *
         FROM
             tb_website
+        WHERE 1=1
+    <if test="startTime!=null and startTime!=''">
+        AND a.split_date <![CDATA[ >= ]]> #{startTime}
+    </if>
+
+    <if test="endTime!=null and endTime!=''">
+        AND a.split_date <![CDATA[ <= ]]> #{endTime}
+    </if>
         ORDER BY
             create_time DESC
         LIMIT #{offset},#{pageSize}
@@ -36,6 +44,46 @@
     <!-- 查询申请合作用户列表总数 -->
     <select id="selectCooperationCount" resultType="java.lang.Integer">
         SELECT COUNT(id) FROM tb_website
+        WHERE 1=1
+    <if test="startTime!=null and startTime!=''">
+        AND a.split_date <![CDATA[ >= ]]> #{startTime}
+    </if>
+
+    <if test="endTime!=null and endTime!=''">
+        AND a.split_date <![CDATA[ <= ]]> #{endTime}
+    </if>
+    </select>
+
+    <!-- 查询加盟用户列表 -->
+    <select id="selectJoin" resultType="com.jkm.hss.merchant.entity.JoinResponse">
+        SELECT
+        *
+        FROM
+        tb_join
+        WHERE 1=1
+    <if test="startTime!=null and startTime!=''">
+        AND a.split_date <![CDATA[ >= ]]> #{startTime}
+    </if>
+
+    <if test="endTime!=null and endTime!=''">
+        AND a.split_date <![CDATA[ <= ]]> #{endTime}
+    </if>
+        ORDER BY
+        create_time DESC
+        LIMIT #{offset},#{pageSize}
+    </select>
+
+    <!-- 查询加盟用户列表总数 -->
+    <select id="selectJoinCount" resultType="java.lang.Integer">
+        SELECT COUNT(id) FROM tb_join
+        WHERE 1=1
+    <if test="startTime!=null and startTime!=''">
+        AND a.split_date <![CDATA[ >= ]]> #{startTime}
+    </if>
+
+    <if test="endTime!=null and endTime!=''">
+        AND a.split_date <![CDATA[ <= ]]> #{endTime}
+    </if>
     </select>
 
     <!-- 查询手机号 -->

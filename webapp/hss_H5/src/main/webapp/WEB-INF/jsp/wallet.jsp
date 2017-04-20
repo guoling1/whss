@@ -16,24 +16,17 @@
         content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
   <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
   <title>好收收</title>
-  <link rel="stylesheet" href="http://static.jinkaimen.cn/hss/css/style.2.2.8.css">
+  <link rel="stylesheet" href="http://static.jinkaimen.cn/hss/css/style.2.2.9.css">
   <link rel="stylesheet" href="http://static.jinkaimen.cn/weui/weui.css">
 </head>
 <body>
 
 <div id="wallet">
-  <div class="announcement" id="announcement">
-    <span class="announcement-icon"></span>
-    <div class="announcement-text-box" id="announcement-text-box">
-      <span class="announcement-text" id="announcement-text"></span>
-    </div>
-  </div>
   <div class="wallet">
     <a class="operation touch_op" href="/sqb/collection">
       <div class="logo collection"></div>
       <div class="operation-title">收款</div>
     </a>
-
     <a class="operation" href="/account/toHssAccount">
       <div class="logo wallet"></div>
       <div class="operation-title">余额</div>
@@ -43,6 +36,12 @@
       <div class="logo card"></div>
       <div class="operation-title">提现</div>
     </a>
+  </div>
+  <div class="announcement" id="announcement">
+    <span class="announcement-icon"></span>
+    <div class="announcement-text-box" id="announcement-text-box">
+      <span class="announcement-text" id="announcement-text"></span>
+    </div>
   </div>
   <div class="record">
     <a href="/sqb/tradeRecord" class="group touch_gr"><span class="record"></span>收款记录</a>
@@ -116,6 +115,6 @@
     showRecommend: '${showRecommend}'//1显示升级 2不显示升级
   };
 </script>
-<script src="http://static.jinkaimen.cn/vendor/vendor.1.0.9.7.min.js"></script>
-<script src="http://static.jinkaimen.cn/hss/2.2.12/wallet.min.js"></script>
+<script src="http://static.jinkaimen.cn/vendor/vendor.1.0.9.8.min.js"></script>
+<script src="http://static.jinkaimen.cn/hss/2.2.15/wallet.min.js"></script>
 </html>

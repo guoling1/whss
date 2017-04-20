@@ -8,7 +8,7 @@
   <meta name="viewport"
         content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
   <title>提现成功</title>
-  <link rel="stylesheet" href="http://static.jinkaimen.cn/hss/css/style.2.2.8.css">
+  <link rel="stylesheet" href="http://static.jinkaimen.cn/hss/css/style.2.2.9.css">
   <link rel="stylesheet" href="http://static.jinkaimen.cn/weui/weui.css">
 </head>
 <body>
@@ -44,6 +44,6 @@
 </div>
 
 </body>
-<script src="http://static.jinkaimen.cn/vendor/vendor.1.0.9.7.min.js"></script>
-<script src="http://static.jinkaimen.cn/hss/2.2.12/withdrawSuccess.min.js"></script>
+<script src="http://static.jinkaimen.cn/vendor/vendor.1.0.9.8.min.js"></script>
+<script src="http://static.jinkaimen.cn/hss/2.2.15/withdrawSuccess.min.js"></script>
 </html>

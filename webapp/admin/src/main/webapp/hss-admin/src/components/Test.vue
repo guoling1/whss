@@ -293,7 +293,7 @@
               <th style="text-align: right">店铺上报名称:</th>
               <td>
                 <input type="text" style="background:#efecec;padding-left:5px;" :value="msg.merchantChangeName" readonly>
-                <el-button type="text" @click="reset" v-if="!isShow">修改上报名称</el-button>
+                <el-button type="text" @click="_$power(2,reset)" v-if="!isShow">修改上报名称</el-button>
               </td>
               <th style="text-align: right"></th>
               <td></td>
@@ -433,6 +433,7 @@
       }
     },
     created: function () {
+//      this._$power('fds');
       this.$data.id = this.$route.query.id;
       if(this.$route.query.status !=2){
         this.$data.isShow = false;

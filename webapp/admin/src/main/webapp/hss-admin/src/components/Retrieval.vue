@@ -4,30 +4,31 @@
       <div class="box" style="margin-top:15px;overflow: hidden">
         <div class="box-header">
           <h3 class="box-title">提现查询</h3>
-          <!--<a :href="'http://'+this.$data.url" download="交易记录" class="btn btn-primary" style="float: right;color: #fff">导出</a>-->
+          <span @click="onload()" download="提现查询" class="btn btn-primary" style="float: right;color: #fff">导出</span>
         </div>
         <div class="box-body">
           <!--筛选-->
-          <ul>
+          <ul class="search">
             <li class="same">
               <label>业务订单号:</label>
-              <el-input style="width: 130px" v-model="query.businessOrderNo" placeholder="请输入内容" size="small"></el-input>
+              <el-input style="width: 188px" v-model="query.businessOrderNo" placeholder="请输入内容" size="small"></el-input>
             </li>
             <li class="same">
               <label>提现单号:</label>
-              <el-input style="width: 130px" v-model="query.orderNo" placeholder="请输入内容" size="small"></el-input>
+              <el-input style="width: 188px" v-model="query.orderNo" placeholder="请输入内容" size="small"></el-input>
             </li>
             <li class="same">
               <label>打款流水号:</label>
-              <el-input style="width: 130px" v-model="query.sn" placeholder="请输入内容" size="small"></el-input>
+              <el-input style="width: 188px" v-model="query.sn" placeholder="请输入内容" size="small"></el-input>
             </li>
             <li class="same">
               <label>账户名称:</label>
-              <el-input style="width: 130px" v-model="query.userName" placeholder="请输入内容" size="small"></el-input>
+              <el-input style="width: 188px" v-model="query.userName" placeholder="请输入内容" size="small"></el-input>
             </li>
             <li class="same">
               <label>提现时间:</label>
               <el-date-picker
+                style="width: 188px"
                 v-model="date"
                 type="daterange"
                 align="right"
@@ -37,7 +38,7 @@
             </li>
             <li class="same">
               <label>提现状态:</label>
-              <el-select style="width: 120px" clearable v-model="query.withdrawStatus" size="small">
+              <el-select style="width: 188px" clearable v-model="query.withdrawStatus" size="small">
                 <el-option label="全部" value="">全部</el-option>
                 <el-option label="提现中" value="提现中">提现中</el-option>
                 <el-option label="提现成功" value="提现成功">提现成功</el-option>
@@ -48,36 +49,39 @@
             </li>
           </ul>
           <!--表格-->
-          <el-table v-loading.body="loading" height="583" style="font-size: 12px;margin:15px 0" :data="records" border>
-            <el-table-column width="62" label="序号" fixed="left">
-              <template scope="scope">
-                <div>{{scope.$index+1}}</div>
-              </template>
-            </el-table-column>
+          <el-table v-loading.body="loading" height="650" style="font-size: 12px;margin-bottom: 15px;" :data="records" border>
+            <el-table-column width="62" label="序号" fixed="left" type="index"></el-table-column>
             <el-table-column label="提现单号" min-width="112px">
               <template scope="scope">
-                <span class="td" :data-clipboard-text="records[scope.$index].orderNo" type="text" size="small" style="cursor: pointer" title="点击复制">{{records[scope.$index].orderNo|changeHide}}</span>
+                <span class="td" :data-clipboard-text="scope.row.orderNo" type="text" size="small" style="cursor: pointer" title="点击复制">{{scope.row.orderNo|changeHide}}</span>
               </template>
             </el-table-column>
             <el-table-column prop="userName" label="账户名称">
               <template scope="scope">
-                <!--<router-link :to='"/admin/record/retrievalDet?idd="+records[scope.$index].idd+"&createTimes="+records[scope.$index].createTimes+"&idm="+records[scope.$index].idm'>{{records[scope.$index].userName}}</router-link>-->
-                <router-link :to='{path:"/admin/record/retrievalDet",query:{idd:records[scope.$index].idd,createTimes:records[scope.$index].createTimes,idm:records[scope.$index].idm,businessOrderNo:records[scope.$index].businessOrderNo,orderNo:records[scope.$index].orderNo}}'>{{records[scope.$index].userName}}</router-link>
+                <router-link :to='{path:"/admin/record/retrievalDet",query:{idd:scope.row.idd,createTimes:scope.row.createTimes,idm:scope.row.idm,businessOrderNo:scope.row.businessOrderNo,orderNo:scope.row.orderNo}}'>{{scope.row.userName}}</router-link>
               </template>
             </el-table-column>
             <el-table-column prop="userType" label="用户类型"></el-table-column>
             <el-table-column label="业务订单号">
               <template scope="scope">
-                <span class="td" :data-clipboard-text="records[scope.$index].businessOrderNo" type="text" size="small" style="cursor: pointer" title="点击复制">{{records[scope.$index].businessOrderNo|changeHide}}</span>
+                <span class="td" :data-clipboard-text="scope.row.businessOrderNo" type="text" size="small" style="cursor: pointer" title="点击复制">{{scope.row.businessOrderNo|changeHide}}</span>
               </template>
             </el-table-column>
-            <el-table-column prop="tradeAmount" label="提现金额" align="right"></el-table-column>
-            <el-table-column prop="poundage" label="手续费" align="right"></el-table-column>
+            <el-table-column prop="tradeAmount" label="提现金额" align="right">
+              <template scope="scope">
+                <span>{{scope.row.tradeAmount|toFix}}</span>
+              </template>
+            </el-table-column>
+            <el-table-column label="手续费" align="right">
+              <template scope="scope">
+                <span>{{scope.row.poundage|toFix}}</span>
+              </template>
+            </el-table-column>
             <el-table-column prop="withdrawStatus" label="提现状态"></el-table-column>
             <el-table-column prop="payChannelName" label="渠道名称"></el-table-column>
             <el-table-column label="打款流水号" min-width="112">
               <template scope="scope">
-                <span class="td" :data-clipboard-text="records[scope.$index].sn" type="text" size="small" style="cursor: pointer" title="点击复制">{{records[scope.$index].sn|changeHide}}</span>
+                <span class="td" :data-clipboard-text="scope.row.sn" type="text" size="small" style="cursor: pointer" title="点击复制">{{scope.row.sn|changeHide}}</span>
               </template>
             </el-table-column>
             <el-table-column prop="createTimes" label="提现时间" width="162"></el-table-column>
@@ -110,6 +114,23 @@
         </div>
       </div>
     </div>
+    <!--下载-->
+    <div class="box box-info mask el-message-box" v-if="isMask">
+      <div class="maskCon">
+        <div class="head">
+          <div class="title">消息</div>
+          <i class="el-icon-close" @click="isMask=false"></i>
+        </div>
+        <div class="body">
+          <div>确定导出列表吗？</div>
+        </div>
+        <div class="foot">
+          <a href="javascript:void(0)" @click="isMask=false" class="el-button el-button--default">取消</a>
+          <a :href="'http://'+url" @click="isMask=false" class="el-button el-button-default el-button--primary ">下载</a>
+        </div>
+      </div>
+
+    </div>
   </div>
 </template>
 
@@ -139,7 +160,8 @@
         count: 0,
         total: '',
         loading: true,
-        url: ''
+        url: '',
+        isMask:false
       }
     },
     created: function () {
@@ -164,22 +186,36 @@
         }
         str = ary[0] + '-' + ary[1] + '-' + ary[2];
         if (j == 0) {
-          this.$data.query.startTime = str;
+          this.query.startTime = str;
         } else {
-          this.$data.query.endTime = str;
+          this.query.endTime = str;
         }
       }
       this.getData();
       this.getAddTotal()
     },
     methods: {
+      onload:function () {
+        this.$http.post('/admin/order/downLoad',this.query)
+          .then(function (res) {
+            this.$data.isMask = true;
+            this.$data.url = res.data;
+          },function (err) {
+            this.$message({
+              showClose: true,
+              message: err.statusMessage,
+              type: 'error'
+            });
+            this.$data.isMask = false;
+          })
+      },
       getData: function () {
         this.loading = true;
         this.$http.post('/admin/order/withdrawList',this.query)
           .then(function (res) {
             this.loading = false;
-            this.$data.records = res.data.records;
-            this.$data.count = res.data.count;
+            this.records = res.data.records;
+            this.count = res.data.count;
             var price=0,total=0;
             var toFix = function (val) {
               return parseFloat(val).toFixed(2)
@@ -194,7 +230,7 @@
             this.pageTotal = price;
             this.pageTotal1 = total;
           },function (err) {
-            this.$data.loading = false;
+            this.loading = false;
             this.$message({
               showClose: true,
               message: err.statusMessage,
@@ -247,19 +283,19 @@
         }
       },
       search(){
-        this.$data.query.pageNo = 1;
+        this.query.pageNo = 1;
         this.getData()
         this.getAddTotal()
       },
       //每页条数改变
       handleSizeChange(val) {
-        this.$data.query.pageNo = 1;
-        this.$data.query.pageSize = val;
+        this.query.pageNo = 1;
+        this.query.pageSize = val;
         this.getData()
       },
       //当前页改变时
       handleCurrentChange(val) {
-        this.$data.query.pageNo = val;
+        this.query.pageNo = val;
         this.getData()
       },
       getAddTotal(){
@@ -271,7 +307,7 @@
             this.addTotal1 = res.data.poundage;
           })
           .catch(err=>{
-            this.$data.loading = false;
+            this.loading = false;
             this.$message({
               showClose: true,
               message: err.statusMessage,
@@ -293,14 +329,14 @@
             }
             str = ary[0] + '-' + ary[1] + '-' + ary[2];
             if (j == 0) {
-              this.$data.query.startTime = str;
+              this.query.startTime = str;
             } else {
-              this.$data.query.endTime = str;
+              this.query.endTime = str;
             }
           }
         } else {
-          this.$data.query.startTime = '';
-          this.$data.query.endTime = '';
+          this.query.startTime = '';
+          this.query.endTime = '';
         }
       }
     },
@@ -333,10 +369,16 @@
 </script>
 
 <style scoped lang="less" rel="stylesheet/less">
-  ul {
-    padding: 0;
+  .search {
+    label{
+      display: block;
+      margin-bottom: 0;
+    }
   }
-
+  ul{
+    padding: 0;
+    margin: 0;
+  }
   .same {
     list-style: none;
     display: inline-block;
@@ -367,5 +409,73 @@
   .price:hover {
     border-color: #20a0ff;
   }
+  .mask{
+    z-index: 2020;
+    position: fixed;
+    top:0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.45);
+    .maskCon{
+      margin: 250px auto;
+      text-align: left;
+      vertical-align: middle;
+      background-color: #fff;
+      width: 420px;
+      border-radius: 3px;
+      font-size: 16px;
+      overflow: hidden;
+      -webkit-backface-visibility: hidden;
+      backface-visibility: hidden;
+      .head{
+        position: relative;
+        padding: 20px 20px 0;
+        .title{
+          padding-left: 0;
+          margin-bottom: 0;
+          font-size: 16px;
+          font-weight: 700;
+          height: 18px;
+          color: #333;
+        }
+        i{
+          font-family: element-icons!important;
+          speak: none;
+          font-style: normal;
+          font-weight: 400;
+          font-variant: normal;
+          text-transform: none;
+          vertical-align: baseline;
+          display: inline-block;
+          -webkit-font-smoothing: antialiased;
+          position: absolute;
+          top: 19px;
+          right: 20px;
+          color: #999;
+          cursor: pointer;
+          line-height: 20px;
+          text-align: center;
+        }
+      }
+      .body{
+        padding: 30px 20px;
+        color: #48576a;
+        font-size: 14px;
+        position: relative;
+        div{
+          margin: 0;
+          line-height: 1.4;
+          font-size: 14px;
+          color: #48576a;
+          font-weight: 400;
+        }
+      }
+      .foot{
+        padding: 10px 20px 15px;
+        text-align: right;
+      }
+    }
 
+  }
 </style>
