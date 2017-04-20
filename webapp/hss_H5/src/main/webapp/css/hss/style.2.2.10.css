@@ -2661,6 +2661,7 @@ input:focus {
   background: url("../../assets/preferential.png") no-repeat center;
   background-size: 13px 13px;
   margin-left: 3px;
+  transform: translate3d(0, 1px, 0);
 }
 #collection .channel-box .channel-space .channel-group .channel-con.small,
 #payment-wx .channel-box .channel-space .channel-group .channel-con.small,

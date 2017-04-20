@@ -110,16 +110,21 @@ http.post('/channel/list', {}, function (list) {
     time.innerHTML = list[i].settleType;
     let fee = document.createElement('div');
     // 5月活动
-    let startTime = new Date('2017-04-22 00:00:00').getTime();
-    let endTime = new Date('2017-05-31 23:59:59').getTime();
-    let now = new Date().getTime();
-    if (list[i].channelSign == 601 && now >= startTime && now <= endTime) {
-      fee.className = 'channel-con';
-      fee.innerHTML = '0.38%+3';
-      // 展示 惠
-      let hui = document.createElement('span');
-      hui.className = 'preferential';
-      name.appendChild(hui);
+    if (list[i].channelSign == 601) {
+      let startTime = new Date('2017-04-20 00:00:00').getTime();
+      let endTime = new Date('2017-05-31 23:59:59').getTime();
+      let now = new Date().getTime();
+      if (now >= startTime && now <= endTime) {
+        fee.className = 'channel-con';
+        fee.innerHTML = '0.38%+3';
+        // 展示 惠
+        let hui = document.createElement('span');
+        hui.className = 'preferential';
+        name.appendChild(hui);
+      } else {
+        fee.className = 'channel-con';
+        fee.innerHTML = (list[i].channelRate * 100).toFixed(2) + '%' + '+' + (list[i].fee / 1).toFixed(0);
+      }
     } else {
       fee.className = 'channel-con';
       fee.innerHTML = (list[i].channelRate * 100).toFixed(2) + '%' + '+' + (list[i].fee / 1).toFixed(0);
