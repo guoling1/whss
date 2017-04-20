@@ -82,7 +82,7 @@
             </li>
             <li class="same">
               <label>支付渠道：</label>
-              <el-select style="width: 140px" clearable v-model="query.payChannelSign" size="small">
+              <el-select style="width: 188px" clearable v-model="query.payChannelSign" size="small">
                 <el-option label="全部" value=""></el-option>
                 <el-option :label="channel.channelName" :value="channel.channelTypeSign" v-for="channel in channelList"></el-option>
               </el-select>
