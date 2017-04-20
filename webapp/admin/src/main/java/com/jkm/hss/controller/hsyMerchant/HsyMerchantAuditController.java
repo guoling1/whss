@@ -67,14 +67,14 @@ public class HsyMerchantAuditController extends BaseController {
         if(cmbcResponse.getCode()==1){
             hsyUserDao.updateHxbsStatus(EnumHxbsStatus.PASS.getId(),cmbcResponse.getMsg(),hsyMerchantAuditRequest.getUid());
             //入驻成功再开通产品
+            if(hsyMerchantAudit.getWeixinRate()!=null&&!"".equals(hsyMerchantAudit.getWeixinRate())){//添加产品
+                CmbcResponse cmbcResponse1 = hsyCmbcService.merchantBindChannel(hsyMerchantAuditRequest.getUid());
+                if(cmbcResponse1.getCode()==-1){
+                    log.info("添加产品失败");
+                }
+            }
         }else{
             hsyUserDao.updateHxbsStatus(EnumHxbsStatus.UNPASS.getId(),cmbcResponse.getMsg(),hsyMerchantAuditRequest.getUid());
-        }
-        if(hsyMerchantAudit.getWeixinRate()!=null&&!"".equals(hsyMerchantAudit.getWeixinRate())){//添加产品
-            CmbcResponse cmbcResponse1 = hsyCmbcService.merchantBindChannel(hsyMerchantAuditRequest.getUid());
-            if(cmbcResponse1.getCode()==-1){
-                log.info("添加产品失败");
-            }
         }
         return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE,"审核通过");
 

@@ -112,7 +112,7 @@ public class HsyCmbcServiceImpl implements HsyCmbcService {
         paramsMap.put("zfbOnlineRate", appAuUser.getAlipayRate().toString());
         paramsMap.put("zfbBizCategory",getAlipayCategory(appAuUser.getIndustryCode()));
         log.info("民生银行商户支付通道绑定参数为："+ JSONObject.fromObject(paramsMap).toString());
-        String result = SmPost.post(MerchantConsts.getMerchantConfig().merchantBaseInfoReg(), paramsMap);
+        String result = SmPost.post(MerchantConsts.getMerchantConfig().merchantBindChannel(), paramsMap);
         if (result != null && !"".equals(result)) {
             JSONObject jo = JSONObject.fromObject(result);
             log.info("民生银行商户支付通道绑定返回结果为："+jo.toString());
