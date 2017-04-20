@@ -47,6 +47,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -407,6 +408,18 @@ public class OrderServiceImpl implements OrderService {
         map.put("proxyName1",req.getProxyName1());
         map.put("businessOrderNo",req.getBusinessOrderNo());
         List<MerchantTradeResponse> list = orderDao.selectOrderList(map);
+
+        String dat = "2017-04-21 23:59:59";
+        String dat1 = "2017-06-01 00:00:00";
+        Date date = new Date();
+        Date date1 = new Date();
+        DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        try {
+            date = sdf.parse(dat);
+            date1 = sdf.parse(dat1);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
         if (list.size()>0){
             for (int i=0;i<list.size();i++){
                 if (list.get(i).getAppId().equals("hss")){
@@ -417,6 +430,11 @@ public class OrderServiceImpl implements OrderService {
                     String hsy="好收银";
                     list.get(i).setAppId(hsy);
                 }
+
+                if(list.get(i).getCreateTime().getTime() > date.getTime()&& list.get(i).getCreateTime().getTime()< date1.getTime()&&list.get(i).getPayChannelSign()==601){
+                   list.get(i).setPayRate(new BigDecimal(0.0038));
+                }
+
                 if (list.get(i).getPayChannelSign()!=0) {
                     list.get(i).setPayChannelSigns(EnumPayChannelSign.idOf(list.get(i).getPayChannelSign()).getName());
                 }
@@ -453,6 +471,17 @@ public class OrderServiceImpl implements OrderService {
         map.put("proxyName1",req.getProxyName1());
         map.put("businessOrderNo",req.getBusinessOrderNo());
         List<MerchantTradeResponse> list = orderDao.downloadOrderList(map);
+        String dat = "2017-04-21 23:59:59";
+        String dat1 = "2017-06-01 00:00:00";
+        Date date = new Date();
+        Date date1 = new Date();
+        DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        try {
+            date = sdf.parse(dat);
+            date1 = sdf.parse(dat1);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
         if (list.size()>0){
             for (int i=0;i<list.size();i++){
                 if (list.get(i).getAppId().equals("hss")){
@@ -471,6 +500,9 @@ public class OrderServiceImpl implements OrderService {
                         list.get(i).setPayType(EnumPayChannelSign.idOf(list.get(i).getPayChannelSign()).getPaymentChannel().getValue());
                     }
 
+                }
+                if(list.get(i).getCreateTime().getTime() > date.getTime()&& list.get(i).getCreateTime().getTime()< date1.getTime()&&list.get(i).getPayChannelSign()==601){
+                    list.get(i).setPayRate(new BigDecimal(0.0038));
                 }
             }
         }
@@ -529,6 +561,21 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public MerchantTradeResponse selectOrderListByPageAll(OrderTradeRequest req) {
         MerchantTradeResponse list = orderDao.selectOrderListByPageAll(req.getOrderNo());
+        String dat = "2017-04-21 23:59:59";
+        String dat1 = "2017-06-01 00:00:00";
+        Date date = new Date();
+        Date date1 = new Date();
+        DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        try {
+            date = sdf.parse(dat);
+            date1 = sdf.parse(dat1);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        if(list.getCreateTime().getTime() > date.getTime()&& list.getCreateTime().getTime()< date1.getTime()&&list.getPayChannelSign()==601){
+            list.setPayRate(new BigDecimal(0.0038));
+            list.setPoundage(new BigDecimal(3));
+        }
         if (list!=null){
 
                 if (list.getAppId().equals("hss")){
