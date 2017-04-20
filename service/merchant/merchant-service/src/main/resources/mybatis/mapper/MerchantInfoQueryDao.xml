@@ -54,6 +54,58 @@
     </if>
     </select>
 
+    <select id="getCount1" resultType="java.lang.Integer">
+        SELECT
+        COUNT(*)
+        FROM
+        tb_merchant_info a
+        LEFT JOIN tb_dealer b ON a.dealer_id = b.id
+        WHERE
+        1 = 1
+        <if test="merchantName != null and merchantName != ''">
+            AND a.merchant_name LIKE CONCAT('%',#{merchantName},'%')
+        </if>
+
+        <if test="mobile != null and mobile != ''">
+            AND a.mobile LIKE CONCAT('%',#{mobile},'%')
+        </if>
+
+        <if test="status != null">
+            AND a.status = #{status}
+        </if>
+
+        <if test="proxyName != null and proxyName!=''">
+            AND a.first_dealer_id in (select id from tb_dealer where proxy_name LIKE CONCAT('%',#{proxyName},'%'))
+        </if>
+        <if test="proxyName1 != null and proxyName1!=''">
+            AND a.second_dealer_id in (select id from tb_dealer where proxy_name LIKE CONCAT('%',#{proxyName1},'%'))
+        </if>
+        <if test="startTime!=null and startTime!=''">
+            AND a.create_time <![CDATA[ >= ]]> #{startTime}
+        </if>
+        <if test="endTime!=null and endTime!=''">
+            AND a.create_time <![CDATA[ <= ]]> #{endTime}
+        </if>
+
+        <if test="startTime1!=null and startTime1!=''">
+            AND a.authentication_time <![CDATA[ >= ]]> #{startTime1}
+        </if>
+
+        <if test="endTime1!=null and endTime1!=''">
+            AND a.authentication_time <![CDATA[ <= ]]> #{endTime1}
+        </if>
+
+        <if test="startTime2!=null and startTime2!=''">
+            AND a.checked_time <![CDATA[ >= ]]> #{startTime2}
+        </if>
+        <if test="endTime2!=null and endTime2!=''">
+            AND a.checked_time <![CDATA[ <= ]]> #{endTime2}
+        </if>
+        <if test="markCode!=null and markCode!=''">
+            AND a.mark_code LIKE CONCAT('%',#{markCode},'%')
+        </if>
+    </select>
+
     <!--查询待审核总数-->
     <select id="getCountRecord" resultType="java.lang.Integer">
         SELECT
@@ -123,6 +175,10 @@
         AND a.status in (#{status},6)
     </if>
 
+    <!--<if test="status != null">-->
+        <!--AND a.status = #{status}-->
+    <!--</if>-->
+
     <if test="proxyName != null and proxyName!=''">
         AND a.first_dealer_id in (select id from tb_dealer where proxy_name LIKE CONCAT('%',#{proxyName},'%'))
     </if>
@@ -159,8 +215,141 @@
 
     </select>
 
+    <select id="getAll1"  resultType="com.jkm.hss.merchant.entity.MerchantInfoResponse">
+        SELECT
+        a.mark_code,
+        a.id,
+        a.source,
+        a.merchant_name,
+        a.mobile,
+        a. STATUS,
+        a.dealer_id,
+        a.create_time,
+        a.authentication_time,
+        a.checked_time,
+        (select proxy_name from tb_dealer where id=a.first_dealer_id) as proxyName,
+        (select proxy_name from tb_dealer where id=a.second_dealer_id) as proxyName1
+        FROM
+        tb_merchant_info a
+        LEFT JOIN tb_dealer b ON a.dealer_id = b.id
+        WHERE
+        1 = 1
+        <if test="merchantName != null and merchantName != ''">
+            AND a.merchant_name LIKE CONCAT('%',#{merchantName},'%')
+        </if>
+
+        <if test="mobile != null and mobile != ''">
+            AND a.mobile LIKE CONCAT('%',#{mobile},'%')
+        </if>
+
+        <if test="status != null">
+            AND a.status = #{status}
+        </if>
+
+        <if test="proxyName != null and proxyName!=''">
+            AND a.first_dealer_id in (select id from tb_dealer where proxy_name LIKE CONCAT('%',#{proxyName},'%'))
+        </if>
+        <if test="proxyName1 != null and proxyName1!=''">
+            AND a.second_dealer_id in (select id from tb_dealer where proxy_name LIKE CONCAT('%',#{proxyName1},'%'))
+        </if>
+        <if test="startTime!=null and startTime!=''">
+            AND a.create_time <![CDATA[ >= ]]> #{startTime}
+        </if>
+        <if test="endTime!=null and endTime!=''">
+            AND a.create_time <![CDATA[ <= ]]> #{endTime}
+        </if>
+
+        <if test="startTime1!=null and startTime1!=''">
+            AND a.authentication_time <![CDATA[ >= ]]> #{startTime1}
+        </if>
+
+        <if test="endTime1!=null and endTime1!=''">
+            AND a.authentication_time <![CDATA[ <= ]]> #{endTime1}
+        </if>
+
+        <if test="startTime2!=null and startTime2!=''">
+            AND a.checked_time <![CDATA[ >= ]]> #{startTime2}
+        </if>
+        <if test="endTime2!=null and endTime2!=''">
+            AND a.checked_time <![CDATA[ <= ]]> #{endTime2}
+        </if>
+        <if test="markCode!=null and markCode!=''">
+            AND a.mark_code LIKE CONCAT('%',#{markCode},'%')
+        </if>
+        ORDER BY
+        create_time DESC
+        LIMIT #{offset},#{pageSize}
+
+    </select>
+
     <!-- 下载 -->
     <select id="downloade"  resultType="com.jkm.hss.merchant.entity.MerchantInfoResponse">
+        SELECT
+        a.mark_code,
+        a.id,
+        a.source,
+        a.merchant_name,
+        a.mobile,
+        a. STATUS,
+        a.dealer_id,
+        a.create_time,
+        a.authentication_time,
+        a.checked_time,
+        (select proxy_name from tb_dealer where id=a.first_dealer_id) as proxyName,
+        (select proxy_name from tb_dealer where id=a.second_dealer_id) as proxyName1
+        FROM
+        tb_merchant_info a
+        LEFT JOIN tb_dealer b ON a.dealer_id = b.id
+        WHERE
+        1 = 1
+        <if test="merchantName != null and merchantName != ''">
+            AND a.merchant_name LIKE CONCAT('%',#{merchantName},'%')
+        </if>
+
+        <if test="mobile != null and mobile != ''">
+            AND a.mobile LIKE CONCAT('%',#{mobile},'%')
+        </if>
+
+        <if test="status != null">
+            AND a.status = #{status}
+        </if>
+
+        <if test="proxyName != null and proxyName!=''">
+            AND a.first_dealer_id in (select id from tb_dealer where proxy_name LIKE CONCAT('%',#{proxyName},'%'))
+        </if>
+        <if test="proxyName1 != null and proxyName1!=''">
+            AND a.second_dealer_id in (select id from tb_dealer where proxy_name LIKE CONCAT('%',#{proxyName1},'%'))
+        </if>
+        <if test="startTime!=null and startTime!=''">
+            AND a.create_time <![CDATA[ >= ]]> #{startTime}
+        </if>
+        <if test="endTime!=null and endTime!=''">
+            AND a.create_time <![CDATA[ <= ]]> #{endTime}
+        </if>
+
+        <if test="startTime1!=null and startTime1!=''">
+            AND a.authentication_time <![CDATA[ >= ]]> #{startTime1}
+        </if>
+
+        <if test="endTime1!=null and endTime1!=''">
+            AND a.authentication_time <![CDATA[ <= ]]> #{endTime1}
+        </if>
+
+        <if test="startTime2!=null and startTime2!=''">
+            AND a.checked_time <![CDATA[ >= ]]> #{startTime2}
+        </if>
+        <if test="endTime2!=null and endTime2!=''">
+            AND a.checked_time <![CDATA[ <= ]]> #{endTime2}
+        </if>
+        <if test="markCode!=null and markCode!=''">
+            AND a.mark_code LIKE CONCAT('%',#{markCode},'%')
+        </if>
+        ORDER BY
+        create_time DESC
+    </select>
+
+    <!-- 下载 -->
+    <select id="downloade1"  resultType="com.jkm.hss.merchant.entity.MerchantInfoResponse">
         SELECT
         a.mark_code,
         a.id,

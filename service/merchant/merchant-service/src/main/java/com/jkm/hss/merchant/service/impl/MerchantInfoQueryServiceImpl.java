@@ -43,12 +43,28 @@ public class MerchantInfoQueryServiceImpl implements MerchantInfoQueryService {
         if (mobile!=null&&!mobile.equals("")){
             req.setMobile(MerchantSupport.encryptMobile(mobile));
         }
-        List<MerchantInfoResponse> list = this.merchantInfoQueryDao.getAll(req);
+        Integer status = req.getStatus();
+        if (status!=null) {
+            if (status == 3) {
+                List<MerchantInfoResponse> list = this.merchantInfoQueryDao.getAll(req);
+                if (list.size() > 0) {
+                    for (int i = 0; i < list.size(); i++) {
+                        if (list.get(i).getMobile() != null && !list.get(i).getMobile().equals("")) {
+                            list.get(i).setMobile(MerchantSupport.decryptMobile(list.get(i).getMobile()));
+                        }
+
+                    }
+                }
+                return list;
+            }
+        }
+        List<MerchantInfoResponse> list = this.merchantInfoQueryDao.getAll1(req);
         if (list.size()>0){
             for (int i=0;i<list.size();i++){
                 if(list.get(i).getMobile()!=null&&!list.get(i).getMobile().equals("")){
                     list.get(i).setMobile(MerchantSupport.decryptMobile(list.get(i).getMobile()));
                 }
+
 
             }
         }
@@ -60,6 +76,21 @@ public class MerchantInfoQueryServiceImpl implements MerchantInfoQueryService {
         String mobile = req.getMobile();
         if (mobile!=null&&!mobile.equals("")){
             req.setMobile(MerchantSupport.encryptMobile(mobile));
+        }
+        Integer status = req.getStatus();
+        if (status!=null) {
+            if (status == 3) {
+                List<MerchantInfoResponse> list = this.merchantInfoQueryDao.downloade1(req);
+                if (list.size() > 0) {
+                    for (int i = 0; i < list.size(); i++) {
+                        if (list.get(i).getMobile() != null && !list.get(i).getMobile().equals("")) {
+                            list.get(i).setMobile(MerchantSupport.decryptMobile(list.get(i).getMobile()));
+                        }
+
+                    }
+                }
+                return list;
+            }
         }
         List<MerchantInfoResponse> list = this.merchantInfoQueryDao.downloade(req);
         if (list.size()>0){
@@ -75,7 +106,14 @@ public class MerchantInfoQueryServiceImpl implements MerchantInfoQueryService {
 
     @Override
     public int getCount(MerchantInfoRequest req) {
-        int count = merchantInfoQueryDao.getCount(req);
+        Integer status = req.getStatus();
+        if (status!=null){
+            if (status==3){
+                int count = merchantInfoQueryDao.getCount(req);
+                return count;
+            }
+        }
+        int count = merchantInfoQueryDao.getCount1(req);
         return count;
     }
 
@@ -226,7 +264,7 @@ public class MerchantInfoQueryServiceImpl implements MerchantInfoQueryService {
                 if (list.get(i).getStatus()==2){
                     columns.add(EnumMerchantStatus.REVIEW.getName());
                 }
-                if (list.get(i).getStatus()==3){
+                if (list.get(i).getStatus()==3 || list.get(i).getStatus()==6){
                     columns.add(EnumMerchantStatus.PASSED.getName());
                 }
                 if (list.get(i).getStatus()==4){
