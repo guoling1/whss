@@ -159,6 +159,10 @@ public class WebSkipController extends BaseController {
             }
         }
         AlipayUserUserinfoShareResponse alipayUserUserinfoShareResponse = alipayOauthService.getUserInfo(authcode);
+        if(alipayUserUserinfoShareResponse==null){
+            model.addAttribute("message", "支付宝授权失败");
+            return "/message";
+        }
         model.addAttribute("openId", alipayUserUserinfoShareResponse.getUserId());
         log.info("openid是：{}",alipayUserUserinfoShareResponse.getUserId());
         String tempUrl = URLDecoder.decode(state, "UTF-8");

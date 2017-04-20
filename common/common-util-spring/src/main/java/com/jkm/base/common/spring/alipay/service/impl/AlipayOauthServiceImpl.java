@@ -40,6 +40,7 @@ public class AlipayOauthServiceImpl implements AlipayOauthService {
         //成功获得authToken
         if (null != oauthTokenResponse && oauthTokenResponse.isSuccess()) {
             //4. 利用authToken获取用户信息
+            log.info("authCode换取authToken成功");
             AlipayUserUserinfoShareRequest userinfoShareRequest = new AlipayUserUserinfoShareRequest();
             AlipayUserUserinfoShareResponse userinfoShareResponse = alipayClient.execute(
                     userinfoShareRequest, oauthTokenResponse.getAccessToken());
