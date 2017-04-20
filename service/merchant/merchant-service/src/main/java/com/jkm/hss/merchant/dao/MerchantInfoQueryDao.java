@@ -45,4 +45,25 @@ public interface MerchantInfoQueryDao {
      * @return
      */
     List<MerchantInfoResponse> downloade(MerchantInfoRequest req);
+
+    /**
+     * 查询状态非3或6
+     * @param req
+     * @return
+     */
+    List<MerchantInfoResponse> getAll1(MerchantInfoRequest req);
+
+    /**
+     * 查询状态非3或6总数
+     * @param req
+     * @return
+     */
+    int getCount1(MerchantInfoRequest req);
+
+    /**
+     * 下载
+     * @param req
+     * @return
+     */
+    List<MerchantInfoResponse> downloade1(MerchantInfoRequest req);
 }

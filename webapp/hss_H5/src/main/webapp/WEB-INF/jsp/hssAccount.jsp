@@ -8,7 +8,7 @@
   <meta name="viewport"
         content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
   <title>账户详情</title>
-  <link rel="stylesheet" href="http://static.jinkaimen.cn/hss/css/style.2.2.7.css">
+  <link rel="stylesheet" href="http://static.jinkaimen.cn/hss/css/style.2.2.9.css">
   <link rel="stylesheet" href="http://static.jinkaimen.cn/weui/weui.css">
 </head>
 <body>
@@ -17,6 +17,7 @@
   <div class="account">
     <div class="logo"></div>
     <div class="amount"><span class="s">¥</span><span id="amount"></span></div>
+    <div class="useAmount">待结算金额: ¥<span id="settleAmount"></span></div>
     <div class="useAmount">可提现金额: ¥<span id="available"></span></div>
     <a class="btn" href="/account/toWithdraw">提现</a>
     <a class="check" href="/account/toHssAccountFlow"><span></span>查看余额明细</a>
@@ -43,6 +44,6 @@
 </div>
 
 </body>
-<script src="http://static.jinkaimen.cn/vendor/vendor.1.0.9.7.min.js"></script>
-<script src="http://static.jinkaimen.cn/hss/2.2.11/hasAccount.min.js"></script>
+<script src="http://static.jinkaimen.cn/vendor/vendor.1.0.9.8.min.js"></script>
+<script src="http://static.jinkaimen.cn/hss/2.2.15/hasAccount.min.js"></script>
 </html>

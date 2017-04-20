@@ -9,6 +9,7 @@ import com.jkm.hss.merchant.entity.BankCardBin;
 import com.jkm.hss.merchant.entity.MerchantInfo;
 import com.jkm.hss.merchant.enums.EnumAccountBank;
 import com.jkm.hss.merchant.enums.EnumBankDefault;
+import com.jkm.hss.merchant.enums.EnumCleanType;
 import com.jkm.hss.merchant.enums.EnumCommonStatus;
 import com.jkm.hss.merchant.helper.MerchantSupport;
 import com.jkm.hss.merchant.helper.request.ContinueBankInfoRequest;
@@ -105,7 +106,7 @@ public class AccountBankServiceImpl implements AccountBankService{
      * @return
      */
     @Override
-    public long initCreditBankCard(long accountId,String bankNo,String bankName,String reserveMobile,String bankBin,String expiryTime) {
+    public long initCreditBankCard(long accountId,String bankNo,String bankName,String reserveMobile,String bankBin,String expiryTime,String cvv) {
         Optional<AccountBank> backAccountBank = this.selectCreditCardByBankNoAndStateless(accountId,bankNo);
         if(!backAccountBank.isPresent()){
             AccountBank accountBank = new AccountBank();
@@ -117,6 +118,9 @@ public class AccountBankServiceImpl implements AccountBankService{
             accountBank.setIsDefault(EnumBankDefault.UNDEFALUT.getId());
             accountBank.setBankBin(bankBin);
             accountBank.setExpiryTime(expiryTime);
+            if(cvv!=null&&!"".equals(cvv)){
+                accountBank.setCvv(MerchantSupport.encryptCvv(cvv));
+            }
             accountBank.setStatus(EnumCommonStatus.DISABLE.getId());
             this.insert(accountBank);
             return accountBank.getId();
@@ -126,6 +130,9 @@ public class AccountBankServiceImpl implements AccountBankService{
             accountBank.setBankName(bankName);
             accountBank.setBankBin(bankBin);
             accountBank.setExpiryTime(expiryTime);
+            if(cvv!=null&&!"".equals(cvv)){
+                accountBank.setCvv(MerchantSupport.encryptCvv(cvv));
+            }
             accountBankDao.updateBankInfo(accountBank);
             return backAccountBank.get().getId();
         }
@@ -451,6 +458,100 @@ public class AccountBankServiceImpl implements AccountBankService{
     @Override
     public Optional<AccountBank> getTopCreditCard(long accountId) {
         return Optional.fromNullable(accountBankDao.getTopCreditCard(accountId));
+    }
+
+    /**
+     * 根据id更改cvv
+     *
+     * @param cvv
+     * @param id
+     */
+    @Override
+    public void updateCvvById(String cvv, long id) {
+        AccountBank accountBank = new AccountBank();
+        accountBank.setId(id);
+        accountBank.setCvv(MerchantSupport.encryptCvv(cvv));
+        accountBank.setUpdateType(EnumCleanType.CVV.getId());
+        accountBankDao.updateBankInfo(accountBank);
+    }
+
+    /**
+     * 根据id更改有效期
+     *
+     * @param expiryTime
+     * @param id
+     */
+    @Override
+    public void updateExpiryTimeById(String expiryTime, long id) {
+        AccountBank accountBank = new AccountBank();
+        accountBank.setId(id);
+        accountBank.setExpiryTime(expiryTime);
+        accountBank.setUpdateType(EnumCleanType.EXPIRYTIME.getId());
+        accountBankDao.updateBankInfo(accountBank);
+    }
+    /**
+     * 根据id更改cvv和有效期
+     *
+     * @param cvv
+     * @param expiryTime
+     * @param id
+     */
+    @Override
+    public void updateCvvAndExpiryTimeById(String cvv, String expiryTime, long id) {
+        AccountBank accountBank = new AccountBank();
+        accountBank.setId(id);
+        accountBank.setCvv(MerchantSupport.encryptCvv(cvv));
+        accountBank.setExpiryTime(expiryTime);
+        accountBank.setUpdateType(EnumCleanType.CVVANDEXPIRYTIME.getId());
+        accountBankDao.updateBankInfo(accountBank);
+    }
+
+    /**
+     * 是否有cvv
+     *
+     * @param id
+     * @return
+     */
+    @Override
+    public boolean isHasCvv(long id) {
+        AccountBank accountBank = accountBankDao.selectById(id);
+        if(accountBank!=null&&accountBank.getCvv()!=null&&!"".equals(accountBank.getCvv())){
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * 是否有有效期
+     *
+     * @param id
+     * @return
+     */
+    @Override
+    public boolean isHasExpiryTime(long id) {
+        AccountBank accountBank = accountBankDao.selectById(id);
+        if(accountBank!=null&&accountBank.getExpiryTime()!=null&&!"".equals(accountBank.getExpiryTime())){
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * 清理cvv或有有效期
+     *
+     * @param type
+     */
+    @Override
+    public void cleanCvvAndExpiryTime(long id,int type) {
+        if(EnumCleanType.CVV.getId()==type){
+            accountBankDao.cleanCvv(id);
+        }
+        if(EnumCleanType.EXPIRYTIME.getId()==type){
+            accountBankDao.cleanExpiryTime(id);
+        }
+        if(EnumCleanType.CVVANDEXPIRYTIME.getId()==type){
+            accountBankDao.cleanCvvAndExpiryTime(id);
+        }
     }
 
 }

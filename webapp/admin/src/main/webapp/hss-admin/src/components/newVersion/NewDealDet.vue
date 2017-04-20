@@ -120,7 +120,7 @@
         </div>
       </div>-->
     </div>
-    <el-button v-show="false" v-loading.fullscreen.lock="fullscreenLoading">显示整页加载</el-button>
+    <!--<el-button v-show="false" v-loading.fullscreen.lock="fullscreenLoading">显示整页加载</el-button>-->
   </div>
 </template>
 
@@ -130,23 +130,23 @@
     data: function () {
       return {
         record:{},
-        fullscreenLoading:false
+//        fullscreenLoading:false
       }
     },
-    activated: function(){
+    created: function(){
       this.record={};
-      this.fullscreenLoading = true;
+//      this.fullscreenLoading = true;
       this.$http.post('/admin/queryOrder/orderListAll',{orderNo:this.$route.query.orderNo})
         .then(function (res) {
           this.record = res.data;
           setTimeout(() => {
-            this.fullscreenLoading = false;
+//            this.fullscreenLoading = false;
           }, 1000)
         },function (err) {
           this.record={};
-          setTimeout(() => {
-            this.fullscreenLoading = false;
-          }, 1000)
+//          setTimeout(() => {
+//            this.fullscreenLoading = false;
+//          }, 1000)
           this.$message({
             showClose: true,
             message: err.statusMessage,

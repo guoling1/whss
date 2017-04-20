@@ -41,7 +41,7 @@ public interface AccountBankService {
      * @param expiryTime
      * @return
      */
-    long initCreditBankCard(long accountId,String bankNo,String bankName,String reserveMobile,String bankBin,String expiryTime);
+    long initCreditBankCard(long accountId,String bankNo,String bankName,String reserveMobile,String bankBin,String expiryTime,String cvv);
     /**
      * 新增
      * @param accountBank
@@ -189,4 +189,47 @@ public interface AccountBankService {
      * @return
      */
     Optional<AccountBank> getTopCreditCard(long accountId);
+
+    /**
+     * 根据id更改cvv
+     * @param cvv
+     * @param id
+     */
+    void updateCvvById(String cvv,long id);
+
+    /**
+     * 根据id更改有效期
+     * @param expiryTime
+     * @param id
+     */
+    void updateExpiryTimeById(String expiryTime,long id);
+
+    /**
+     * 根据id更改cvv和有效期
+     * @param cvv
+     * @param expiryTime
+     * @param id
+     */
+    void updateCvvAndExpiryTimeById(String cvv,String expiryTime,long id);
+
+    /**
+     * 是否有cvv
+     * @param id
+     * @return
+     */
+    boolean isHasCvv(long id);
+
+    /**
+     * 是否有有效期
+     * @param id
+     * @return
+     */
+    boolean isHasExpiryTime(long id);
+
+    /**
+     * 清理cvv或有有效期
+     * @param id
+     * @param type
+     */
+    void cleanCvvAndExpiryTime(long id,int type);
 }

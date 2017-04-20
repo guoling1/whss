@@ -51,6 +51,7 @@
         SET account_id = #{accountId},
         channel_short_name = #{channelShortName},
         channel_name = #{channelName},
+        check_type = #{checkType},
         channel_type_sign = #{channelTypeSign},
         support_way = #{supportWay},
         third_company = #{thirdCompany},

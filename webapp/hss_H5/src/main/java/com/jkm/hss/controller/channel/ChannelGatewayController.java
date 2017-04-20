@@ -100,6 +100,7 @@ public class ChannelGatewayController extends BaseController {
             merchantChannelResponse.setPayMethod(EnumPayChannelSign.idOf(channelSign).getPaymentChannel().getValue());
             merchantChannelResponse.setChannelName(productChannelGateway.getViewChannelName());
             merchantChannelResponse.setChannelRate(merchantChannelRateMap.get(channelSign).getMerchantPayRate().toString());
+            merchantChannelResponse.setFee(merchantChannelRateMap.get(channelSign).getMerchantWithdrawFee().toString());
             merchantChannelResponse.setChannelSign(channelSign);
             merchantChannelResponse.setLimitAmount(basicChannel.getLimitAmount().toString());
             merchantChannelResponse.setSettleType(merchantChannelRateMap.get(channelSign).getMerchantBalanceType());

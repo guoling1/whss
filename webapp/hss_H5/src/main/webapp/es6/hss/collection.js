@@ -64,21 +64,21 @@ const checkBusinessRegistration = (code, amount) => {
     });
   });
 };
-http.post('/channel/list', {}, function (data) {
-  for (let i = 0; i < data.length; i++) {
+http.post('/channel/list', {}, function (list) {
+  for (let i = 0; i < list.length; i++) {
     let group = document.createElement('div');
     group.className = 'channel-group';
     group.onclick = function () {
       let amount = channelBox.getAttribute('payAmount');
       if (amount > 0) {
-        checkBusinessRegistration(data[i].channelSign, amount).then(function (check) {
+        checkBusinessRegistration(list[i].channelSign, amount).then(function (check) {
           if (check) {
             message.load_show('正在支付');
-            switch (data[i].payMethod) {
+            switch (list[i].payMethod) {
               case '快捷':
                 http.post('/trade/unionPayRoute', {  // /wx/receipt
                   totalFee: amount,
-                  payChannel: data[i].channelSign
+                  payChannel: list[i].channelSign
                 }, function (data) {
                   message.load_hide();
                   window.location.replace(data.url);
@@ -87,10 +87,10 @@ http.post('/channel/list', {}, function (data) {
               default:
                 http.post('/trade/dcReceipt', {  // /wx/receipt
                   totalFee: amount,
-                  payChannel: data[i].channelSign
+                  payChannel: list[i].channelSign
                 }, function (data) {
                   message.load_hide();
-                  window.location.replace("/sqb/charge?qrCode=" + encodeURIComponent(data.payUrl) + "&name=" + data.subMerName + "&money=" + data.amount);
+                  window.location.replace("/sqb/charge?qrCode=" + encodeURIComponent(data.payUrl) + "&name=" + data.subMerName + "&money=" + data.amount + "&payChannel=" + list[i].channelSign);
                 });
                 break;
             }
@@ -102,19 +102,18 @@ http.post('/channel/list', {}, function (data) {
         message.prompt_show('请输入正确的收款金额');
       }
     };
-    console.log(data[i]);
     let name = document.createElement('div');
     name.className = 'channel-con name big';
-    name.innerHTML = data[i].channelName;
+    name.innerHTML = list[i].channelName;
     let time = document.createElement('div');
-    time.className = 'channel-con';
-    time.innerHTML = data[i].settleType + '到账';
+    time.className = 'channel-con small';
+    time.innerHTML = list[i].settleType;
     let fee = document.createElement('div');
-    fee.className = 'channel-con small';
-    fee.innerHTML = (data[i].channelRate * 100).toFixed(2) + '%';
+    fee.className = 'channel-con';
+    fee.innerHTML = (list[i].channelRate * 100).toFixed(2) + '%' + '+' + (list[i].fee / 1).toFixed(0);
     let amount = document.createElement('div');
-    amount.className = 'channel-con';
-    amount.innerHTML = data[i].limitAmount + '元';
+    amount.className = 'channel-con right';
+    amount.innerHTML = list[i].limitAmount + '元';
     group.appendChild(name);
     group.appendChild(time);
     group.appendChild(fee);

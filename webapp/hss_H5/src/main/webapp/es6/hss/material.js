@@ -136,6 +136,7 @@ let CountrysSet = function (code) {
       countyName = Countrys[code][i].aname;
       world.value = provinceName + cityName + countyName;
       layer_w.style.display = 'none';
+      recordQ();
     };
     layer_w_list.appendChild(div_Countrys);
   }
@@ -222,3 +223,109 @@ submit.addEventListener('click', function () {
     })
   }
 });
+
+// 部署 输入框记录事件
+
+merchantName.addEventListener('change', function () {
+  localStorage.setItem('merchantName', JSON.stringify({
+    markCode: pageData.markCode,
+    merchantName: merchantName.value
+  }));
+});
+
+let recordQ = function () {
+  localStorage.setItem('pathQ', JSON.stringify({
+    markCode: pageData.markCode,
+    provinceCode: provinceCode,
+    provinceName: provinceName,
+    cityCode: cityCode,
+    cityName: cityName,
+    countyCode: countyCode,
+    countyName: countyName
+  }));
+};
+
+address.addEventListener('change', function () {
+  localStorage.setItem('address', JSON.stringify({
+    markCode: pageData.markCode,
+    address: address.value
+  }));
+});
+
+bankNo.addEventListener('change', function () {
+  localStorage.setItem('bankNo', JSON.stringify({
+    markCode: pageData.markCode,
+    bankNo: bankNo.value
+  }));
+});
+
+username.addEventListener('change', function () {
+  localStorage.setItem('username', JSON.stringify({
+    markCode: pageData.markCode,
+    username: username.value
+  }));
+});
+
+identity.addEventListener('change', function () {
+  localStorage.setItem('identity', JSON.stringify({
+    markCode: pageData.markCode,
+    identity: identity.value
+  }));
+});
+
+reserveMobile.addEventListener('change', function () {
+  localStorage.setItem('reserveMobile', JSON.stringify({
+    markCode: pageData.markCode,
+    reserveMobile: reserveMobile.value
+  }));
+});
+
+// 部署 输入框数据获取事件
+
+if (localStorage.getItem('merchantName')) {
+  if (JSON.parse(localStorage.getItem('merchantName')).markCode == pageData.markCode) {
+    merchantName.value = JSON.parse(localStorage.getItem('merchantName')).merchantName;
+  }
+}
+
+if (localStorage.getItem('pathQ')) {
+  if (JSON.parse(localStorage.getItem('pathQ')).markCode == pageData.markCode) {
+    provinceCode = JSON.parse(localStorage.getItem('pathQ')).provinceCode;
+    provinceName = JSON.parse(localStorage.getItem('pathQ')).provinceName;
+    cityCode = JSON.parse(localStorage.getItem('pathQ')).cityCode;
+    cityName = JSON.parse(localStorage.getItem('pathQ')).cityName;
+    countyCode = JSON.parse(localStorage.getItem('pathQ')).countyCode;
+    countyName = JSON.parse(localStorage.getItem('pathQ')).countyName;
+    world.value = provinceName + cityName + countyName;
+  }
+}
+
+if (localStorage.getItem('address')) {
+  if (JSON.parse(localStorage.getItem('address')).markCode == pageData.markCode) {
+    address.value = JSON.parse(localStorage.getItem('address')).address;
+  }
+}
+
+if (localStorage.getItem('bankNo')) {
+  if (JSON.parse(localStorage.getItem('bankNo')).markCode == pageData.markCode) {
+    bankNo.value = JSON.parse(localStorage.getItem('bankNo')).bankNo;
+  }
+}
+
+if (localStorage.getItem('username')) {
+  if (JSON.parse(localStorage.getItem('username')).markCode == pageData.markCode) {
+    username.value = JSON.parse(localStorage.getItem('username')).username;
+  }
+}
+
+if (localStorage.getItem('identity')) {
+  if (JSON.parse(localStorage.getItem('identity')).markCode == pageData.markCode) {
+    identity.value = JSON.parse(localStorage.getItem('identity')).identity;
+  }
+}
+
+if (localStorage.getItem('reserveMobile')) {
+  if (JSON.parse(localStorage.getItem('reserveMobile')).markCode == pageData.markCode) {
+    reserveMobile.value = JSON.parse(localStorage.getItem('reserveMobile')).reserveMobile;
+  }
+}

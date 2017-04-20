@@ -76,6 +76,9 @@ const RoleAdd = r => require.ensure([], () => r(require('components/RoleAdd')), 
 const AccountSystem = r => require.ensure([], () => r(require('components/accountSystem')), 'group-record');
 const AccountErr = r => require.ensure([], () => r(require('components/accountErr')), 'group-record');
 const AccountData = r => require.ensure([], () => r(require('components/accountData')), 'group-record');
+//合作意向
+const Application = r => require.ensure([], () => r(require('components/Application')), 'group-record');
+const Channel = r => require.ensure([], () => r(require('components/Channel')), 'group-record');
 
 const Test = r => require.ensure([], () => r(require('components/Test')), 'group-record');
 
@@ -434,6 +437,16 @@ let routes = [
         path: 'test',
         name: 'Test',
         component: Test
+      },
+      {
+        path: 'application',
+        name: 'Application',
+        component: Application
+      },
+      {
+        path: 'channel',
+        name: 'Channel',
+        component: Channel
       },
     ]
   },
