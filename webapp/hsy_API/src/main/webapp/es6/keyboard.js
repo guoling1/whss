@@ -167,16 +167,26 @@ _require.register("keyboard", (module, exports, _require, global) => {
               break;
             case 'wx-pay':
               if (oldValue > 0) {
-                http.post('/trade/scReceipt', {
+                http.post('/trade/scReceipt', { // /wx/receiptByCode
                   totalFee: oldValue,
-                  payChannel: '801',
-                  memberId: pageData.memberId,
+                  payChannel: '802',
                   merchantId: pageData.merchantId
                 }, function (data) {
-                  http.post(data.payUrl, {}, function (data) {
-                    onWeixinJSBridge(data);
-                  });
+                  alert(data.payUrl);
+                  // http.post(data.payUrl, {}, function (data) {
+                  //   onAlipayJSBridge(data);
+                  // });
                 });
+                // http.post('/trade/scReceipt', {
+                //   totalFee: oldValue,
+                //   payChannel: '801',
+                //   memberId: pageData.memberId,
+                //   merchantId: pageData.merchantId
+                // }, function (data) {
+                //   http.post(data.payUrl, {}, function (data) {
+                //     onWeixinJSBridge(data);
+                //   });
+                // });
               } else {
                 message.prompt_show('请输入正确的支付金额');
               }
