@@ -1,5 +1,6 @@
 package com.jkm.base.common.spring.alipay.service.impl;
 
+import com.alibaba.fastjson.JSONObject;
 import com.alipay.api.AlipayApiException;
 import com.alipay.api.AlipayClient;
 import com.alipay.api.request.AlipaySystemOauthTokenRequest;
@@ -26,12 +27,16 @@ public class AlipayOauthServiceImpl implements AlipayOauthService {
      */
     @Override
     public AlipayUserUserinfoShareResponse getUserInfo(String authCode) throws AlipayApiException {
+        log.info("授权码是{}",authCode);
+        log.info("开始获取授权码");
         AlipaySystemOauthTokenRequest oauthTokenRequest = new AlipaySystemOauthTokenRequest();
         oauthTokenRequest.setCode(authCode);
         oauthTokenRequest.setGrantType(AlipayServiceConstants.GRANT_TYPE);
         AlipayClient alipayClient = AlipayAPIClientFactory.getAlipayClient();
         AlipaySystemOauthTokenResponse oauthTokenResponse = alipayClient
                 .execute(oauthTokenRequest);
+        log.info("开始获取授权码结束");
+        log.info("授权码结果是：{}", JSONObject.toJSON(oauthTokenResponse).toString());
         //成功获得authToken
         if (null != oauthTokenResponse && oauthTokenResponse.isSuccess()) {
             //4. 利用authToken获取用户信息

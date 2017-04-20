@@ -17,7 +17,7 @@ public class AlipayServiceConstants {
     public static final String SIGN_TYPE  = "RSA2";
 
     //开发者账号PID
-    public static final String PARTNER = "";
+    public static final String PARTNER = "2088421947044115";
 
     //appid
     public static final String APP_ID = "2016102000728193";

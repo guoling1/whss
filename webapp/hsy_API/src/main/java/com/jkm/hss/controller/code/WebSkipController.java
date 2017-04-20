@@ -139,6 +139,7 @@ public class WebSkipController extends BaseController {
         }else{
             getQueryString = request.getQueryString();
         }
+        log.info("请求参数是:{}",getQueryString);
         String[] arr = getQueryString.split("&");
         String appId="";
         String authcode="";
@@ -146,12 +147,15 @@ public class WebSkipController extends BaseController {
         for(int i =0;i<arr.length;i++){
             if("app_id".equals(arr[i].split("=")[0])){
                 appId = arr[i].split("=")[1];
+                log.info("appId是:{}",appId);
             }
             if("app_auth_code".equals(arr[i].split("=")[0])){
                 authcode = arr[i].split("=")[1];
+                log.info("authcode是:{}",authcode);
             }
             if("state".equals(arr[i].split("=")[0])){
                 state = arr[i].split("=")[1];
+                log.info("请求地址得参数是:{}",state);
             }
         }
         AlipayUserUserinfoShareResponse alipayUserUserinfoShareResponse = alipayOauthService.getUserInfo(authcode);
