@@ -26,6 +26,11 @@ public class BasicChannel extends BaseEntity{
     private long accountId;
 
     /**
+     * 通道简称(后台展示的)
+     */
+    private String channelShortName;
+
+    /**
      * 通道名称(华友支付宝,卡盟微信)
      */
     private String channelName;
@@ -74,13 +79,21 @@ public class BasicChannel extends BaseEntity{
      * {@link com.jkm.hss.product.enums.EnumBasicSettleType}
      */
     private String basicSettleType;
+
     /**
-     * 预估额度
+     * 预估额度(最小)
+     */
+    private BigDecimal limitMinAmount;
+
+    /**
+     * 预估额度(最大)
      */
     private BigDecimal limitAmount;
 
     /**
      * 是否需要商户入网
+     *
+     * {@link com.jkm.base.common.enums.EnumBoolean}
      */
     private int isNeed;
 
@@ -93,6 +106,14 @@ public class BasicChannel extends BaseEntity{
      * 最低手续费
      */
     private BigDecimal lowestFee;
+
+    /**
+     *  是否维护
+     *  {@link com.jkm.base.common.enums.EnumBoolean}
+     *
+     *  0维护 1使用
+     */
+    private int isUse;
 
     /**
      * 备注

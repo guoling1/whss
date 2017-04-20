@@ -8,17 +8,17 @@
         </div>
         <div class="box-body">
           <!--筛选-->
-          <ul>
+          <ul class="search">
             <li class="same">
               <label>角色名称:</label>
-              <el-input style="width: 120px" v-model="query.roleName" placeholder="请输入内容" size="small"></el-input>
+              <el-input style="width: 188px" v-model="query.roleName" placeholder="请输入内容" size="small"></el-input>
             </li>
             <li class="same">
               <div class="btn btn-primary" @click="search">筛选</div>
             </li>
           </ul>
           <!--表格-->
-          <el-table v-loading.body="loading" style="font-size: 12px;margin:15px 0" :data="records" border>
+          <el-table v-loading.body="loading" style="font-size: 12px;margin-bottom: 15px" :data="records" border>
             <el-table-column type="index" width="70" label="序号"></el-table-column>
             <el-table-column prop="roleName" label="角色名称"></el-table-column>
             <el-table-column label="代理商级别">
@@ -169,8 +169,16 @@
   }
 </script>
 <style scoped lang="less">
-  ul{
+  ul {
     padding: 0;
+    margin:0;
+  }
+  .search{
+    margin-bottom:0;
+  label{
+    display: block;
+    margin-bottom: 0;
+  }
   }
   .same{
     list-style: none;

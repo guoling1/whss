@@ -14,11 +14,24 @@
               </el-col>
               <el-col :span="6">
                 <div class="grid-content bg-purple-light">
-                  <el-input size="small" v-model="name" placeholder="请输入内容"></el-input>
+                  <el-input size="small" v-model="query.channelShortName" placeholder="请输入内容"></el-input>
                 </div>
               </el-col>
               <el-col :span="8">
                 <div class="grid-content bg-purple-light right">例如：华有支付宝</div>
+              </el-col>
+            </el-row>
+            <el-row type="flex" class="row-bg" justify="center">
+              <el-col :span="4">
+                <div class="alignRight">原始名称:</div>
+              </el-col>
+              <el-col :span="6">
+                <div class="grid-content bg-purple-light">
+                  <el-input size="small" v-model="name" placeholder="请输入内容"></el-input>
+                </div>
+              </el-col>
+              <el-col :span="8">
+                <div class="grid-content bg-purple-light right"></div>
               </el-col>
             </el-row>
             <el-row type="flex" class="row-bg" justify="center">
@@ -156,12 +169,56 @@
             </el-row>
             <el-row type="flex" class="row-bg" justify="center">
               <el-col :span="4">
-                <div class="alignRight">预估额度:</div>
+                <div class="alignRight">预估最低额度:</div>
+              </el-col>
+              <el-col :span="6">
+                <div class="grid-content bg-purple-light" style="position: relative">
+                  <el-input size="small" v-model="query.limitMinAmount" placeholder="请输入内容"></el-input>
+                  <b>元/笔</b>
+                </div>
+              </el-col>
+              <el-col :span="8">
+                <div class="grid-content bg-purple-light"></div>
+              </el-col>
+            </el-row>
+            <el-row type="flex" class="row-bg" justify="center">
+              <el-col :span="4">
+                <div class="alignRight">预估最大额度:</div>
               </el-col>
               <el-col :span="6">
                 <div class="grid-content bg-purple-light" style="position: relative">
                   <el-input size="small" v-model="query.limitAmount" placeholder="请输入内容"></el-input>
                   <b>元/笔</b>
+                </div>
+              </el-col>
+              <el-col :span="8">
+                <div class="grid-content bg-purple-light"></div>
+              </el-col>
+            </el-row>
+            <el-row type="flex" class="row-bg" justify="center">
+              <el-col :span="4">
+                <div class="alignRight">最低手续费:</div>
+              </el-col>
+              <el-col :span="6">
+                <div class="grid-content bg-purple-light" style="position: relative">
+                  <el-input size="small" v-model="query.lowestFee" placeholder="请输入内容"></el-input>
+                  <b>元/笔</b>
+                </div>
+              </el-col>
+              <el-col :span="8">
+                <div class="grid-content bg-purple-light"></div>
+              </el-col>
+            </el-row>
+            <el-row type="flex" class="row-bg" justify="center">
+              <el-col :span="4">
+                <div class="alignRight">通道状态:</div>
+              </el-col>
+              <el-col :span="6">
+                <div class="grid-content bg-purple-light">
+                  <el-radio-group v-model="query.isUse">
+                    <el-radio :label="1">可用</el-radio>
+                    <el-radio :label="0">维护</el-radio>
+                  </el-radio-group>
                 </div>
               </el-col>
               <el-col :span="8">
@@ -234,6 +291,7 @@
     data () {
       return {
         query: {
+          channelShortName:'',
           channelName: '',
           channelCode: '',
           supportWay: '',
@@ -244,6 +302,9 @@
           basicBalanceType: '',
           basicSettleType: '',
           limitAmount: '',
+          limitMinAmount: '',
+          lowestFee:'',
+          isUse:'',
           isNeed: '',
           remarks: '',
           id: '',
@@ -266,6 +327,7 @@
             this.query = res.data[this.$route.query.id];
             this.name = res.data[this.$route.query.id].channelName;
             this.query.isNeed = res.data[this.$route.query.id].isNeed;
+            this.query.isUse = res.data[this.$route.query.id].isUse;
             if (/微信/.test(this.name)) {
               this.nameType = 'wx';
               if (this.query.supportWay == 3) {
@@ -286,9 +348,7 @@
                 this.payWay = ['支付宝扫码']
               }
             }else {
-              if (this.query.supportWay == 4) {
-                this.payWay = ['无卡快捷']
-              }
+              this.payWay = ['无卡快捷']
             }
             this.query.id = res.data[this.$route.query.id].id;
             this.query.status = res.data[this.$route.query.id].status;

@@ -54,3 +54,10 @@ Vue.filter('toFix', function (val) {
     return parseFloat(val).toFixed(2);
   }
 });
+
+Vue.filter('changeHide', function (val) {
+  if(val!=""&&val!=null){
+    val = val.replace(val.substring(3,val.length-6),"…");
+  }
+  return val
+});

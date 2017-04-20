@@ -183,7 +183,7 @@ public class JoinController {
      */
     @ResponseBody
     @RequestMapping(value = "/phoneNo",method = RequestMethod.POST)
-    public CommonResponse phoneNo(@RequestBody Join join, HttpServletResponse httpServletResponse) {
+    public CommonResponse phoneNo(@RequestBody final Join join, HttpServletResponse httpServletResponse) {
         httpServletResponse.setHeader("Access-Control-Allow-Origin", "*");
 
         if (("").equals(join.getMobile())){

@@ -106,7 +106,7 @@ public class WithdrawServiceImpl implements WithdrawService {
             paymentSdkDaiFuRequest.setAppId(settlementRecord.getAppId());
             paymentSdkDaiFuRequest.setOrderNo(settlementRecord.getSettleNo());
             paymentSdkDaiFuRequest.setTotalAmount(settlementRecord.getSettleAmount().subtract(merchantWithdrawPoundage).toPlainString());
-            paymentSdkDaiFuRequest.setTradeType(EnumBalanceTimeType.D0.getType());
+            paymentSdkDaiFuRequest.setTradeType(EnumPayChannelSign.idOf(payChannelSign).getSettleType().getType());
             paymentSdkDaiFuRequest.setIsCompany("0");
             paymentSdkDaiFuRequest.setMobile(accountBank.getReserveMobile());
             paymentSdkDaiFuRequest.setBankName(merchant.getBankName());
@@ -222,6 +222,7 @@ public class WithdrawServiceImpl implements WithdrawService {
                     EnumAppType.HSS.getId(), settleAccountFlow.getTradeDate(), EnumAccountUserType.MERCHANT.getId());
             this.settleAccountFlowService.updateSettlementRecordIdById(settleAccountFlowDecreaseId, settlementRecordId);
             this.orderService.updateSettleStatus(payOrder.getId(), EnumSettleStatus.SETTLED.getId());
+            this.orderService.updateRemark(payOrder.getId(), "提现成功");
             this.settlementRecordService.updateSettleStatus(settlementRecordId, EnumSettleStatus.SETTLED.getId());
             this.settlementRecordService.updateStatus(settlementRecordId, EnumSettlementRecordStatus.WITHDRAW_SUCCESS.getId());
 

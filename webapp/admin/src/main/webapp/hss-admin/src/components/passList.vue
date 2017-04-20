@@ -6,7 +6,7 @@
           <h3 class="box-title">通道列表</h3>
           <!--<router-link to="/admin/record/passAdd" class="pull-right btn btn-primary" style="margin-left: 20px">新增通道-->
           <!--</router-link>-->
-          <a @click="_$power(issue,'boss_channel_add')" class="pull-right btn btn-primary" style="margin: 20px">
+          <a @click="_$power(issue,'boss_channel_add')" class="pull-right btn btn-primary">
             新增通道
           </a>
         </div>
@@ -30,6 +30,13 @@
             <el-table-column label="通道名称">
               <template scope="scope">
                 <router-link :to="{path:'/admin/record/passAdd',query:{id:scope.$index}}"
+                             type="text" size="small">{{records[scope.$index].channelShortName}}
+                </router-link>
+              </template>
+            </el-table-column>
+            <el-table-column label="原始名称">
+              <template scope="scope">
+                <router-link :to="{path:'/admin/record/passAdd',query:{id:scope.$index}}"
                              type="text" size="small">{{records[scope.$index].channelName}}
                 </router-link>
               </template>
@@ -49,13 +56,7 @@
                 <span v-if="records[scope.$index].basicSettleType=='SELF'">自主打款结算</span>
               </template>
             </el-table-column>
-            <el-table-column prop="supportWay" label="支付方式">
-              <template scope="scope">
-                <span v-if="records[scope.$index].supportWay=='1'">公众号</span>
-                <span v-if="records[scope.$index].supportWay=='2'">扫码</span>
-                <span v-if="records[scope.$index].supportWay=='3'">公众号、扫码</span>
-              </template>
-            </el-table-column>
+            <el-table-column prop="thirdCompany" label="支付方式"></el-table-column>
             <el-table-column prop="remarks" label="备注信息"></el-table-column>
           </el-table>
           <!--分页

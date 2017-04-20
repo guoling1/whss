@@ -13,7 +13,7 @@
         content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
   <meta name="format-detection" content="telephone=no"/>
   <title>好收收</title>
-  <link rel="stylesheet" href="http://static.jinkaimen.cn/hss/css/style.2.2.5.css">
+  <link rel="stylesheet" href="http://static.jinkaimen.cn/hss/css/style.2.2.7.css">
   <link rel="stylesheet" href="http://static.jinkaimen.cn/weui/weui.css">
 </head>
 <body>
@@ -55,18 +55,54 @@
       </div>
       <div class="qr">
         <div class="delete" keyCtrl="delete" touch="true"></div>
-        <div class="quick" keyCtrl="quick">
-          <div class="logo"></div>
-          <div class="word">无卡快捷</div>
+        <%--<div class="quick" keyCtrl="quick">--%>
+        <%--<div class="logo"></div>--%>
+        <%--<div class="word">无卡快捷</div>--%>
+        <%--</div>--%>
+        <%--<div class="wx-pay" keyCtrl="wx-ss">--%>
+        <%--<div class="wx-logo"></div>--%>
+        <%--<div class="word">微信</div>--%>
+        <%--</div>--%>
+        <%--<div class="ali-pay" keyCtrl="ali-ss">--%>
+        <%--<div class="ali-logo"></div>--%>
+        <%--<div class="word">支付宝</div>--%>
+        <%--</div>--%>
+        <div class="all-pay" keyCtrl="pay">
+          <div class="word big">收款</div>
         </div>
-        <div class="wx-pay" keyCtrl="wx-ss">
-          <div class="wx-logo"></div>
-          <div class="word">微信</div>
+      </div>
+    </div>
+    <div class="channel-box" id="channelBox">
+      <div class="channel-space top">
+        <div class="channel-group">
+          <div class="channel-li big">渠道名称</div>
+          <div class="channel-li">结算时间<span id="know-channel"></span></div>
+          <div class="channel-li small">费率</div>
+          <div class="channel-li">单笔限额</div>
         </div>
-        <div class="ali-pay" keyCtrl="ali-ss">
-          <div class="ali-logo"></div>
-          <div class="word">支付宝</div>
-        </div>
+      </div>
+      <div class="channel-small">各通道限额动态变化，一次不通过可换其他通道重试</div>
+      <div class="channel-space" id="channel">
+        <%-- 动态添加 --%>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="message-space" id="layer-channel">
+  <div class="message-box">
+    <div class="message-box-head">
+      结算时间说明
+      <div class="message-x" id="layer-x-channel"></div>
+    </div>
+    <div class="message-box-body">
+      <div>“D0”是指当日<br>一般在十分钟内到账结算卡<br></div>
+      <div style="margin-top:10px">“T1”是指下一个工作日<br>遇到周末及法定节假日顺延<br></div>
+      <span>22:56分以后支付成功的，算到下一个工作日</span>
+    </div>
+    <div class="message-box-foot">
+      <div class="message-enter" id="submit-channel">
+        确认
       </div>
     </div>
   </div>
@@ -90,37 +126,12 @@
   </div>
 </div>
 
-<div class="temporary-announcement-space" id="temporary">
-  <div class="temporary-announcement-box">
-    <div class="temporary-announcement-lion"></div>
-    <div class="temporary-announcement-title">无卡快捷上线啦</div>
-    <div class="temporary-announcement-content">支持限额 <span>2万</span> T+1结算</div>
-    <div class="temporary-announcement-content">支付成功率 <span>95%</span></div>
-    <div class="temporary-announcement-content">优惠期费率 <span>0.48%</span></div>
-    <div class="temporary-announcement-btn-box">
-      <div class="temporary-announcement-btn" id="temporary-cancel">继续下单</div>
-    </div>
-  </div>
-</div>
-
 </body>
 <script>
   var pageData = {
     bankId: '${bankId}'
-  };
-  // 弹窗提醒临时解决方案
-  var temporary = document.getElementById('temporary');
-  var temporary_cancel = document.getElementById('temporary-cancel');
-  temporary_cancel.addEventListener('click', function () {
-    temporary.style.display = 'none';
-  });
-  /* localStorage 判断是否弹出提示
-   * 弊端：一旦用户清除缓存数据 这个值会被重置*/
-  if (localStorage.getItem('read_first') != 'true') {
-    temporary.style.display = 'block';
-    localStorage.setItem('read_first', 'true');
   }
 </script>
-<script src="http://static.jinkaimen.cn/vendor/vendor.1.0.9.5.min.js"></script>
-<script src="http://static.jinkaimen.cn/hss/2.2.9/collection.min.js"></script>
+<script src="http://static.jinkaimen.cn/vendor/vendor.1.0.9.7.min.js"></script>
+<script src="http://static.jinkaimen.cn/hss/2.2.11/collection.min.js"></script>
 </html>

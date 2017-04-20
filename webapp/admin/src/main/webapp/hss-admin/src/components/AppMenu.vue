@@ -35,13 +35,29 @@
         <li :class="(url=='/admin/record/home')?'treeview active':'treeview'">
           <router-link to="/admin/record/home"><span>主页</span></router-link>
         </li>
-        <li v-if="list.交易查询!=undefined" :class="(url=='/admin/record/newDeal'||url=='/admin/record/retrieval')?'treeview active':'treeview'">
+        <li class="treeview" v-for="(menu,index) in menus">
+          <a href="#">
+            <span>{{menu.menuName}}</span>
+          </a>
+          <ul class="treeview-menu">
+            <li v-for="item in menu.children" @click="refrash(item.menuName,item.menuUrl)">
+              <router-link :to="item.menuUrl">{{item.menuName}}</router-link>
+            </li>
+            <!--<li>-->
+            <!--<router-link to="settlement"><i class="fa fa-circle-o"></i>结算记录</router-link>-->
+            <!--</li>-->
+            <!--<li>-->
+            <!--<router-link to="balance_withdrawal"><i class="fa fa-circle-o"></i>余额提现</router-link>-->
+            <!--</li>-->
+          </ul>
+        </li>
+        <!--<li v-if="list.交易查询!=undefined" :class="(url=='/admin/record/newDeal'||url=='/admin/record/retrieval')?'treeview active':'treeview'">
           <a href="#"><span>交易查询</span></a>
           <ul class="treeview-menu">
-            <li v-if="list.支付交易查询!=undefined" :class="(url=='/admin/record/newDeal')?'treeview active':'treeview'" @click="refrash('支付交易查询','/admin/record/newDeal')">
+            <li v-if="list.支付交易查询!=undefined" :class="(url=='/admin/record/newDeal')?'treeview active':'treeview'" @click="refrash">
               <router-link to="/admin/record/newDeal"><span>支付交易查询</span></router-link>
             </li>
-            <li v-if="list.提现查询!=undefined" :class="(url=='/admin/record/retrieval')?'treeview active':'treeview'" @click="refrash('提现查询','/admin/record/retrieval')">
+            <li v-if="list.提现查询!=undefined" :class="(url=='/admin/record/retrieval')?'treeview active':'treeview'" @click="refrash">
               <router-link to="/admin/record/retrieval"><span>提现查询</span></router-link>
             </li>
           </ul>
@@ -50,9 +66,9 @@
           <a href="#"><span>分润管理</span>
           </a>
           <ul class="treeview-menu">
-            <li v-if="list.分润明细!=undefined" @click="refrash" :class="(url=='/admin/record/profitDet')?'treeview active':'treeview'"><router-link to="/admin/record/profitDet"><span>分润明细</span> </router-link></li>
+            <li v-if="list.分润明细!=undefined1" @click="refrash" :class="(url=='/admin/record/profitDet')?'treeview active':'treeview'"><router-link to="/admin/record/profitDet"><span>分润明细</span> </router-link></li>
             <li v-if="list.分润统计!=undefined" @click="refrash" :class="(url=='/admin/record/profitCount')?'treeview active':'treeview'"><router-link to="/admin/record/profitCount"><span>分润统计</span> </router-link></li>
-            <!--<li :class="(url=='/admin/record/profitCom'||url=='/admin/record/profitFir'||url=='/admin/record/profitSec')?'treeview active':'treeview'">
+            &lt;!&ndash;<li :class="(url=='/admin/record/profitCom'||url=='/admin/record/profitFir'||url=='/admin/record/profitSec')?'treeview active':'treeview'">
               <a href="#" @click="open"><span>分润统计</span>
                 <span class="pull-right-container">
                   <i id="right" class="el-icon-arrow-left pull-right"></i>
@@ -64,7 +80,7 @@
                 <li @click="refrash" :class="(url=='/admin/record/profitFir')?'treeview active':'treeview'"><router-link to="/admin/record/profitFir"><span>一级代理商分润</span> </router-link></li>
                 <li @click="refrash" :class="(url=='/admin/record/profitSec')?'treeview active':'treeview'"><router-link to="/admin/record/profitSec"><span>二级代理商分润</span> </router-link></li>
               </ul>
-            </li>-->
+            </li>&ndash;&gt;
             <li v-if="list.公司分润账户!=undefined" @click="refrash" :class="(url=='/admin/record/profitAccount')?'treeview active':'treeview'"><router-link to="/admin/record/profitAccount"><span>公司分润账户</span> </router-link></li>
           </ul>
         </li>
@@ -82,13 +98,13 @@
             </li>
           </ul>
         </li>
-        <li :class="(url=='/admin/record/accountSystem'||url=='/admin/record/accountErr')?'treeview active':'treeview'">
+        <li v-if="list.对账管理!=undefined" :class="(url=='/admin/record/accountSystem'||url=='/admin/record/accountErr')?'treeview active':'treeview'">
           <a href="#"><span>对账管理</span></a>
           <ul class="treeview-menu">
-            <li :class="(url=='/admin/record/accountSystem')?'treeview active':'treeview'" @click="refrash('系统对账','/admin/record/accountSystem')">
+            <li v-if="list.系统对账!=undefined" :class="(url=='/admin/record/accountSystem')?'treeview active':'treeview'" @click="refrash('系统对账','/admin/record/accountSystem')">
               <router-link to="/admin/record/accountSystem"><span>系统对账</span></router-link>
             </li>
-            <li :class="(url=='/admin/record/accountErr')?'treeview active':'treeview'" @click="refrash('对账异常处理','/admin/record/accountErr')">
+            <li v-if="list.对账异常处理!=undefined" :class="(url=='/admin/record/accountErr')?'treeview active':'treeview'" @click="refrash('对账异常处理','/admin/record/accountErr')">
               <router-link to="/admin/record/accountErr"><span>对账异常处理</span></router-link>
             </li>
           </ul>
@@ -107,10 +123,10 @@
         <li v-if="list.商户管理!=undefined" :class="(url=='/admin/record/storeList'||url=='/admin/record/storeAuditList'||url=='/admin/record/storeNotice')?'treeview active':'treeview'">
           <a href="#"><span>商户管理</span></a>
           <ul class="treeview-menu">
-            <li v-if="list.所有商户!=undefined" :class="(url=='/admin/record/storeList')?'treeview active':'treeview'" @click="refrash('所有商户','/admin/record/storeList')">
+            <li v-if="list.所有商户!=undefined" :class="(url=='/admin/record/storeList')?'treeview active':'treeview'" @click="refrash">
               <router-link to="/admin/record/storeList"><span>所有商户</span></router-link>
             </li>
-            <!--<li @click="refrash"><router-link to="/admin/record/storeAccount"><span>商户账户</span> </router-link></li>-->
+            &lt;!&ndash;<li @click="refrash"><router-link to="/admin/record/storeAccount"><span>商户账户</span> </router-link></li>&ndash;&gt;
             <li v-if="list.待审核商户!=undefined" :class="(url=='/admin/record/storeAuditList')?'treeview active':'treeview'" @click="refrash">
               <router-link to="/admin/record/storeAuditList"><span>待审核商户</span></router-link>
             </li>
@@ -141,16 +157,16 @@
         <li v-if="list.设备管理!=undefined" :class="(url=='/admin/record/issueRecord'||url=='/admin/record/issue'||url=='/admin/record/codeStatus'||url=='/admin/record/codeProRecord'||url=='/admin/record/codeAll')?'treeview active':'treeview'">
           <a href="#"><span>设备管理</span></a>
           <ul class="treeview-menu">
-            <!--<li :class="(url=='/admin/record/issue1')?'active':''" @click="refrash"><router-link to="/admin/record/issue1"><span>按个数分配</span> </router-link></li>-->
+            &lt;!&ndash;<li :class="(url=='/admin/record/issue1')?'active':''" @click="refrash"><router-link to="/admin/record/issue1"><span>按个数分配</span> </router-link></li>&ndash;&gt;
             <li v-if="list.分配二维码!=undefined" :class="(url=='/admin/record/issue')?'active':''" @click="refrash">
               <router-link to="/admin/record/issue"><span>分配二维码</span></router-link>
             </li>
             <li v-if="list.二维码分配记录!=undefined" :class="(url=='/admin/record/issueRecord')?'active':''" @click="refrash">
               <router-link to="/admin/record/issueRecord"><span>二维码分配记录</span></router-link>
             </li>
-            <!--<li :class="(url=='/admin/record/codeStatus')?'active':''" @click="refrash">
+            &lt;!&ndash;<li :class="(url=='/admin/record/codeStatus')?'active':''" @click="refrash">
               <router-link to="/admin/record/codeStatus"><span>二维码状态查询</span></router-link>
-            </li>-->
+            </li>&ndash;&gt;
             <li v-if="list.产码记录!=undefined" :class="(url=='/admin/record/codeProRecord')?'active':''" @click="refrash">
               <router-link to="/admin/record/codeProRecord"><span>产码记录</span></router-link>
             </li>
@@ -166,9 +182,9 @@
             <li v-if="list.产品列表!=undefined" @click="refrash" :class="(url=='/admin/record/productList')?'treeview active':'treeview'">
               <router-link to="/admin/record/productList"><span>产品列表</span></router-link>
             </li>
-            <!--<li @click="refrash" :class="(url=='/admin/record/productAdd')?'treeview active':'treeview'">
+            &lt;!&ndash;<li @click="refrash" :class="(url=='/admin/record/productAdd')?'treeview active':'treeview'">
               <router-link to="/admin/record/productAdd"><span>新增产品</span></router-link>
-            </li>-->
+            </li>&ndash;&gt;
             <li v-if="list.合伙人推荐!=undefined" @click="refrash" :class="(url=='/admin/record/invite')?'treeview active':'treeview'">
               <router-link to="/admin/record/invite"><span>合伙人推荐</span></router-link>
             </li>
@@ -181,9 +197,9 @@
             <li v-if="list.通道列表!=undefined" @click="refrash" :class="(url=='/admin/record/passList')?'treeview active':'treeview'">
               <router-link to="/admin/record/passList"><span>通道列表</span></router-link>
             </li>
-            <!--<li @click="refrash" :class="(url=='/admin/record/passAdd')?'treeview active':'treeview'">
+            &lt;!&ndash;<li @click="refrash" :class="(url=='/admin/record/passAdd')?'treeview active':'treeview'">
               <router-link to="/admin/record/passAdd"><span>新增通道</span></router-link>
-            </li>-->
+            </li>&ndash;&gt;
             <li v-if="list.银行卡限额管理!=undefined" @click="refrash" :class="(url=='/admin/record/limitList')?'treeview active':'treeview'">
               <router-link to="/admin/record/limitList"><span>银行卡限额管理</span></router-link>
             </li>
@@ -192,14 +208,14 @@
         <li v-if="list.员工权限管理!=undefined" :class="(url=='/admin/record/personnelList'||url=='/admin/record/role')?'treeview active':'treeview'">
           <a href="#"><span>员工权限管理</span></a>
           <ul class="treeview-menu">
-            <li v-if="list.员工管理!=undefined" :class="(url=='/admin/record/personnelList')?'active':''" @click="refrash('员工管理','/admin/record/personnelList')">
+            <li v-if="list.员工管理!=undefined" :class="(url=='/admin/record/personnelList')?'active':''" @click="refrash">
               <router-link to="/admin/record/personnelList"><span>员工管理</span></router-link>
             </li>
-            <li v-if="list.角色管理!=undefined" :class="(url=='/admin/record/role')?'active':''" @click="refrash('角色管理','/admin/record/role')">
+            <li v-if="list.角色管理!=undefined" :class="(url=='/admin/record/role')?'active':''" @click="refrash">
               <router-link to="/admin/record/role"><span>角色管理</span></router-link>
             </li>
           </ul>
-        </li>
+        </li>-->
       </ul>
       <!-- /.sidebar-menu -->
     </section>
@@ -220,20 +236,20 @@
         msg: '注册',
         url: '',
         list:{},
-        b:'23'
+        menus:[]
       }
     },
     created: function () {
       this.$data.url = location.pathname;
-      let list = JSON.parse(sessionStorage.getItem('login'));
-      if(list!=null){
+      this.menus = JSON.parse(sessionStorage.getItem('login'));
+      /*if(list!=null){
         for(let i=0;i<list.length;i++){
           this.list[list[i].menuName]=1;
           for(let j=0;j<list[i].children.length;j++) {
             this.list[list[i].children[j].menuName]=1
           }
         }
-      }
+      }*/
 
     },
     methods: {

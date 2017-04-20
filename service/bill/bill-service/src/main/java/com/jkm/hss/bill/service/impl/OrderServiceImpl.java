@@ -420,68 +420,12 @@ public class OrderServiceImpl implements OrderService {
                 if (list.get(i).getPayChannelSign()!=0) {
                     list.get(i).setPayChannelSigns(EnumPayChannelSign.idOf(list.get(i).getPayChannelSign()).getName());
                 }
-                if (list.get(i).getPayType()!=null&&!list.get(i).getPayType().equals("")){
-                    if (list.get(i).getPayType().equals("sm_wechat_jsapi")){
-//                        list.get(i).setPayType(EnumPayType.YG_WECHAT_JSAPI.getValue());
-                        list.get(i).setPayType("微信公众号支付");
+                if (list.get(i).getPayType()!=null&&!list.get(i).getPayType().equals("")) {
+                    if (list.get(i).getPayChannelSign()!=0) {
+                        list.get(i).setPayType(EnumPayChannelSign.idOf(list.get(i).getPayChannelSign()).getPaymentChannel().getValue());
                     }
-                    if (list.get(i).getPayType().equals("sm_alipay_jsapi")){
-//                        list.get(i).setPayType(EnumPayType.YG_ALIPAY_JSAPI.getValue());
-                        list.get(i).setPayType("支付宝公众号支付");
-                    }
-                    if (list.get(i).getPayType().equals("sm_wechat_code")){
-//                        list.get(i).setPayType(EnumPayType.YG_WECHAT_CODE.getValue());
-                        list.get(i).setPayType("微信支付");
-                    }
-                    if (list.get(i).getPayType().equals("sm_alipay_code")){
-//                        list.get(i).setPayType(EnumPayType.YG_ALIPAY_CODE.getValue());
-                        list.get(i).setPayType("支付宝支付");
-                    }
-                    if (list.get(i).getPayType().equals("sm_unionpay")){
-//                        list.get(i).setPayType(EnumPayType.YG_UNIONPAY.getValue());
-                        list.get(i).setPayType("快捷支付");
-                    }
-                    if (list.get(i).getPayType().equals("km_wechat_jsapi")){
-//                        list.get(i).setPayType(EnumPayType.KM_WECHAT_JSAPI.getValue());
-                        list.get(i).setPayType("微信公众号支付");
-                    }
-                    if (list.get(i).getPayType().equals("km_alipay_jsapi")){
-//                        list.get(i).setPayType(EnumPayType.KM_ALIPAY_JSAPI.getValue());
-                        list.get(i).setPayType("支付宝公众号支付");
-                    }
-                    if (list.get(i).getPayType().equals("km_wechat_code")){
-//                        list.get(i).setPayType(EnumPayType.KM_WECHAT_CODE.getValue());
-                        list.get(i).setPayType("微信支付");
-                    }
-                    if (list.get(i).getPayType().equals("km_alipay_code")){
-//                        list.get(i).setPayType(EnumPayType.KM_ALIPAY_CODE.getValue());
-                        list.get(i).setPayType("支付宝支付");
-                    }
-                    if (list.get(i).getPayType().equals("mb_unionpay")){
-//                        list.get(i).setPayType(EnumPayType.MB_UNIONPAY.getValue());
-                        list.get(i).setPayType("快捷支付");
-                    }
-                    if (list.get(i).getPayType().equals("hzyb_wechat")){
-//                        list.get(i).setPayType(EnumPayType.HZYB_WECHAT.getValue());
-                        list.get(i).setPayType("微信支付");
-                    }
-                    if (list.get(i).getPayType().equals("hzyb_alipay")){
-//                        list.get(i).setPayType(EnumPayType.HZYB_ALIPAY.getValue());
-                        list.get(i).setPayType("支付宝支付");
-                    }
-                    if (list.get(i).getPayType().equals("yijia_wechat")){
-//                        list.get(i).setPayType(EnumPayType.YIJIA_WECHAT.getValue());
-                        list.get(i).setPayType("微信支付");
-                    }
-                    if (list.get(i).getPayType().equals("yijia_alipay")){
-//                        list.get(i).setPayType(EnumPayType.YIJIA_ALIPAY.getValue());
-                        list.get(i).setPayType("支付宝支付");
-                    }
-                    if (list.get(i).getPayType().equals("el_unionpay")){
-                        list.get(i).setPayType("快捷支付");
-                    }
-                }
 
+                }
             }
         }
         return list;
@@ -522,68 +466,12 @@ public class OrderServiceImpl implements OrderService {
                 if (list.get(i).getPayChannelSign()!=0) {
                     list.get(i).setPayChannelSigns(EnumPayChannelSign.idOf(list.get(i).getPayChannelSign()).getName());
                 }
-                if (list.get(i).getPayType()!=null&&!list.get(i).getPayType().equals("")){
-                    if (list.get(i).getPayType().equals("sm_wechat_jsapi")){
-//                        list.get(i).setPayType(EnumPayType.YG_WECHAT_JSAPI.getValue());
-                        list.get(i).setPayType("微信公众号支付");
+                if (list.get(i).getPayType()!=null&&!list.get(i).getPayType().equals("")) {
+                    if (list.get(i).getPayChannelSign()!=0) {
+                        list.get(i).setPayType(EnumPayChannelSign.idOf(list.get(i).getPayChannelSign()).getPaymentChannel().getValue());
                     }
-                    if (list.get(i).getPayType().equals("sm_alipay_jsapi")){
-//                        list.get(i).setPayType(EnumPayType.YG_ALIPAY_JSAPI.getValue());
-                        list.get(i).setPayType("支付宝公众号支付");
-                    }
-                    if (list.get(i).getPayType().equals("sm_wechat_code")){
-//                        list.get(i).setPayType(EnumPayType.YG_WECHAT_CODE.getValue());
-                        list.get(i).setPayType("微信支付");
-                    }
-                    if (list.get(i).getPayType().equals("sm_alipay_code")){
-//                        list.get(i).setPayType(EnumPayType.YG_ALIPAY_CODE.getValue());
-                        list.get(i).setPayType("支付宝支付");
-                    }
-                    if (list.get(i).getPayType().equals("sm_unionpay")){
-//                        list.get(i).setPayType(EnumPayType.YG_UNIONPAY.getValue());
-                        list.get(i).setPayType("快捷支付");
-                    }
-                    if (list.get(i).getPayType().equals("km_wechat_jsapi")){
-//                        list.get(i).setPayType(EnumPayType.KM_WECHAT_JSAPI.getValue());
-                        list.get(i).setPayType("微信公众号支付");
-                    }
-                    if (list.get(i).getPayType().equals("km_alipay_jsapi")){
-//                        list.get(i).setPayType(EnumPayType.KM_ALIPAY_JSAPI.getValue());
-                        list.get(i).setPayType("支付宝公众号支付");
-                    }
-                    if (list.get(i).getPayType().equals("km_wechat_code")){
-//                        list.get(i).setPayType(EnumPayType.KM_WECHAT_CODE.getValue());
-                        list.get(i).setPayType("微信支付");
-                    }
-                    if (list.get(i).getPayType().equals("km_alipay_code")){
-//                        list.get(i).setPayType(EnumPayType.KM_ALIPAY_CODE.getValue());
-                        list.get(i).setPayType("支付宝支付");
-                    }
-                    if (list.get(i).getPayType().equals("mb_unionpay")){
-//                        list.get(i).setPayType(EnumPayType.MB_UNIONPAY.getValue());
-                        list.get(i).setPayType("快捷支付");
-                    }
-                    if (list.get(i).getPayType().equals("hzyb_wechat")){
-//                        list.get(i).setPayType(EnumPayType.HZYB_WECHAT.getValue());
-                        list.get(i).setPayType("微信支付");
-                    }
-                    if (list.get(i).getPayType().equals("hzyb_alipay")){
-//                        list.get(i).setPayType(EnumPayType.HZYB_ALIPAY.getValue());
-                        list.get(i).setPayType("支付宝支付");
-                    }
-                    if (list.get(i).getPayType().equals("yijia_wechat")){
-//                        list.get(i).setPayType(EnumPayType.YIJIA_WECHAT.getValue());
-                        list.get(i).setPayType("微信支付");
-                    }
-                    if (list.get(i).getPayType().equals("yijia_alipay")){
-//                        list.get(i).setPayType(EnumPayType.YIJIA_ALIPAY.getValue());
-                        list.get(i).setPayType("支付宝支付");
-                    }
-                    if (list.get(i).getPayType().equals("el_unionpay")){
-                        list.get(i).setPayType("快捷支付");
-                    }
-                }
 
+                }
             }
         }
         return list;
@@ -667,67 +555,13 @@ public class OrderServiceImpl implements OrderService {
                 if (list.getPayChannelSign()!=0) {
                     list.setPayChannelSigns(EnumPayChannelSign.idOf(list.getPayChannelSign()).getName());
                 }
-            if (list.getPayType()!=null&&!list.getPayType().equals("")){
-                if (list.getPayType().equals("sm_wechat_jsapi")){
-//                        list.get(i).setPayType(EnumPayType.YG_WECHAT_JSAPI.getValue());
-                    list.setPayType("微信公众号支付");
+
+                if (list.getPayType()!=null&&!list.getPayType().equals("")) {
+                    if (list.getPayChannelSign()!=0) {
+                        list.setPayType(EnumPayChannelSign.idOf(list.getPayChannelSign()).getPaymentChannel().getValue());
+                    }
+
                 }
-                if (list.getPayType().equals("sm_alipay_jsapi")){
-//                        list.get(i).setPayType(EnumPayType.YG_ALIPAY_JSAPI.getValue());
-                    list.setPayType("支付宝公众号支付");
-                }
-                if (list.getPayType().equals("sm_wechat_code")){
-//                        list.get(i).setPayType(EnumPayType.YG_WECHAT_CODE.getValue());
-                    list.setPayType("微信支付");
-                }
-                if (list.getPayType().equals("sm_alipay_code")){
-//                        list.get(i).setPayType(EnumPayType.YG_ALIPAY_CODE.getValue());
-                    list.setPayType("支付宝支付");
-                }
-                if (list.getPayType().equals("sm_unionpay")){
-//                        list.get(i).setPayType(EnumPayType.YG_UNIONPAY.getValue());
-                    list.setPayType("快捷支付");
-                }
-                if (list.getPayType().equals("km_wechat_jsapi")){
-//                        list.get(i).setPayType(EnumPayType.KM_WECHAT_JSAPI.getValue());
-                    list.setPayType("微信公众号支付");
-                }
-                if (list.getPayType().equals("km_alipay_jsapi")){
-//                        list.get(i).setPayType(EnumPayType.KM_ALIPAY_JSAPI.getValue());
-                    list.setPayType("支付宝公众号支付");
-                }
-                if (list.getPayType().equals("km_wechat_code")){
-//                        list.get(i).setPayType(EnumPayType.KM_WECHAT_CODE.getValue());
-                    list.setPayType("微信支付");
-                }
-                if (list.getPayType().equals("km_alipay_code")){
-//                        list.get(i).setPayType(EnumPayType.KM_ALIPAY_CODE.getValue());
-                    list.setPayType("支付宝支付");
-                }
-                if (list.getPayType().equals("mb_unionpay")){
-//                        list.get(i).setPayType(EnumPayType.MB_UNIONPAY.getValue());
-                    list.setPayType("快捷支付");
-                }
-                if (list.getPayType().equals("hzyb_wechat")){
-//                        list.get(i).setPayType(EnumPayType.HZYB_WECHAT.getValue());
-                    list.setPayType("微信支付");
-                }
-                if (list.getPayType().equals("hzyb_alipay")){
-//                        list.get(i).setPayType(EnumPayType.HZYB_ALIPAY.getValue());
-                    list.setPayType("支付宝支付");
-                }
-                if (list.getPayType().equals("yijia_wechat")){
-//                        list.get(i).setPayType(EnumPayType.YIJIA_WECHAT.getValue());
-                    list.setPayType("微信支付");
-                }
-                if (list.getPayType().equals("yijia_alipay")){
-//                        list.get(i).setPayType(EnumPayType.YIJIA_ALIPAY.getValue());
-                    list.setPayType("支付宝支付");
-                }
-                if (list.getPayType().equals("el_unionpay")){
-                    list.setPayType("快捷支付");
-                }
-            }
                 if (list.getLevel()==1){
                     list.setProxyName(list.getProxyName());
                 }
@@ -864,68 +698,11 @@ public class OrderServiceImpl implements OrderService {
                     String hsy="好收银";
                     list.get(i).setAppId(hsy);
                 }
-                if (list.get(i).getPayChannelSign()!=0) {
-                    list.get(i).setPayChannelSigns(EnumPayChannelSign.idOf(list.get(i).getPayChannelSign()).getName());
-                }
-                if (list.get(i).getPayType()!=null&&!list.get(i).getPayType().equals("")){
-                    if (list.get(i).getPayType().equals("sm_wechat_jsapi")){
-//                        list.get(i).setPayType(EnumPayType.YG_WECHAT_JSAPI.getValue());
-                        list.get(i).setPayType("微信公众号支付");
-                    }
-                    if (list.get(i).getPayType().equals("sm_alipay_jsapi")){
-//                        list.get(i).setPayType(EnumPayType.YG_ALIPAY_JSAPI.getValue());
-                        list.get(i).setPayType("支付宝公众号支付");
-                    }
-                    if (list.get(i).getPayType().equals("sm_wechat_code")){
-//                        list.get(i).setPayType(EnumPayType.YG_WECHAT_CODE.getValue());
-                        list.get(i).setPayType("微信支付");
-                    }
-                    if (list.get(i).getPayType().equals("sm_alipay_code")){
-//                        list.get(i).setPayType(EnumPayType.YG_ALIPAY_CODE.getValue());
-                        list.get(i).setPayType("支付宝支付");
-                    }
-                    if (list.get(i).getPayType().equals("sm_unionpay")){
-//                        list.get(i).setPayType(EnumPayType.YG_UNIONPAY.getValue());
-                        list.get(i).setPayType("快捷支付");
-                    }
-                    if (list.get(i).getPayType().equals("km_wechat_jsapi")){
-//                        list.get(i).setPayType(EnumPayType.KM_WECHAT_JSAPI.getValue());
-                        list.get(i).setPayType("微信公众号支付");
-                    }
-                    if (list.get(i).getPayType().equals("km_alipay_jsapi")){
-//                        list.get(i).setPayType(EnumPayType.KM_ALIPAY_JSAPI.getValue());
-                        list.get(i).setPayType("支付宝公众号支付");
-                    }
-                    if (list.get(i).getPayType().equals("km_wechat_code")){
-//                        list.get(i).setPayType(EnumPayType.KM_WECHAT_CODE.getValue());
-                        list.get(i).setPayType("微信支付");
-                    }
-                    if (list.get(i).getPayType().equals("km_alipay_code")){
-//                        list.get(i).setPayType(EnumPayType.KM_ALIPAY_CODE.getValue());
-                        list.get(i).setPayType("支付宝支付");
-                    }
-                    if (list.get(i).getPayType().equals("mb_unionpay")){
-//                        list.get(i).setPayType(EnumPayType.MB_UNIONPAY.getValue());
-                        list.get(i).setPayType("快捷支付");
-                    }
-                    if (list.get(i).getPayType().equals("hzyb_wechat")){
-//                        list.get(i).setPayType(EnumPayType.HZYB_WECHAT.getValue());
-                        list.get(i).setPayType("微信支付");
-                    }
-                    if (list.get(i).getPayType().equals("hzyb_alipay")){
-//                        list.get(i).setPayType(EnumPayType.HZYB_ALIPAY.getValue());
-                        list.get(i).setPayType("支付宝支付");
-                    }
-                    if (list.get(i).getPayType().equals("yijia_wechat")){
-//                        list.get(i).setPayType(EnumPayType.YIJIA_WECHAT.getValue());
-                        list.get(i).setPayType("微信支付");
-                    }
-                    if (list.get(i).getPayType().equals("yijia_alipay")){
-//                        list.get(i).setPayType(EnumPayType.YIJIA_ALIPAY.getValue());
-                        list.get(i).setPayType("支付宝支付");
-                    }
-                    if (list.get(i).getPayType().equals("el_unionpay")){
-                        list.get(i).setPayType("快捷支付");
+
+                list.get(i).setPayChannelSigns(EnumPayChannelSign.idOf(list.get(i).getPayChannelSign()).getName());
+                if (list.get(i).getPayType()!=null&&!list.get(i).getPayType().equals("")) {
+                    if (list.get(i).getPayChannelSign()!=0) {
+                        list.get(i).setPayType(EnumPayChannelSign.idOf(list.get(i).getPayChannelSign()).getPaymentChannel().getValue());
                     }
                 }
 //                if (list.get(i).getLevel()==1){
@@ -954,9 +731,9 @@ public class OrderServiceImpl implements OrderService {
      * {@inheritDoc}
      */
     @Override
-    public void handleT1UnSettlePayOrder() {
+    public void handleT1UnSettlePayOrder(final List<Integer> channelList) {
         final String format = DateFormatUtil.format(new Date(), DateFormatUtil.yyyy_MM_dd);
-        final List<Long> orderIds = this.getT1PaySuccessAndUnSettleOrderIds(DateFormatUtil.parse(format, DateFormatUtil.yyyy_MM_dd), EnumProductType.HSS.getId());
+        final List<Long> orderIds = this.getT1PaySuccessAndUnSettleOrderIds(DateFormatUtil.parse(format, DateFormatUtil.yyyy_MM_dd), EnumProductType.HSS.getId(), channelList);
         log.info("hss-T1-定时处理提现, 订单[{}]", orderIds);
         if (!CollectionUtils.isEmpty(orderIds)) {
             for (int i = 0; i < orderIds.size(); i++) {
@@ -968,6 +745,7 @@ public class OrderServiceImpl implements OrderService {
         }
     }
 
+
     /**
      * {@inheritDoc}
      *
@@ -976,8 +754,8 @@ public class OrderServiceImpl implements OrderService {
      * @return
      */
     @Override
-    public List<Long> getT1PaySuccessAndUnSettleOrderIds(Date settleDate, String appId) {
-        return this.orderDao.selectT1PaySuccessAndUnSettleOrderIds(settleDate, appId);
+    public List<Long> getT1PaySuccessAndUnSettleOrderIds(final Date settleDate, final String appId, final List<Integer> channelList) {
+        return this.orderDao.selectT1PaySuccessAndUnSettleOrderIds(settleDate, appId, channelList);
     }
 
     /**
@@ -1082,9 +860,9 @@ public class OrderServiceImpl implements OrderService {
             if (response.getStatus()==5){
                 response.setWithdrawStatus(EnumOrderStatus.WITHDRAWING.getValue());
             }
-
-            response.setPayChannelName(EnumPayChannelSign.idOf(response.getPayChannelSign()).getName());
-
+            if (response.getPayChannelSign()!=0) {
+                response.setPayChannelName(EnumPayChannelSign.idOf(response.getPayChannelSign()).getName());
+            }
         }
         return response;
     }
@@ -1126,9 +904,9 @@ public class OrderServiceImpl implements OrderService {
             if (response.getStatus()==6){
                 response.setWithdrawStatus(EnumOrderStatus.WITHDRAW_SUCCESS.getValue());
             }
-
-            response.setPayChannelName(EnumPayChannelSign.idOf(response.getPayChannelSign()).getName());
-
+            if (response.getPayChannelSign()!=0) {
+                response.setPayChannelName(EnumPayChannelSign.idOf(response.getPayChannelSign()).getName());
+            }
         }
         return response;
     }
@@ -1185,66 +963,11 @@ public class OrderServiceImpl implements OrderService {
                 if (list.get(i).getPayChannelSign()!=0) {
                     list.get(i).setPayChannelSigns(EnumPayChannelSign.idOf(list.get(i).getPayChannelSign()).getName());
                 }
-                if (list.get(i).getPayType()!=null&&!list.get(i).getPayType().equals("")){
-                    if (list.get(i).getPayType().equals("sm_wechat_jsapi")){
-//                        list.get(i).setPayType(EnumPayType.YG_WECHAT_JSAPI.getValue());
-                        list.get(i).setPayType("微信公众号支付");
+                if (list.get(i).getPayType()!=null&&!list.get(i).getPayType().equals("")) {
+                    if (list.get(i).getPayChannelSign()!=0) {
+                        list.get(i).setPayType(EnumPayChannelSign.idOf(list.get(i).getPayChannelSign()).getPaymentChannel().getValue());
                     }
-                    if (list.get(i).getPayType().equals("sm_alipay_jsapi")){
-//                        list.get(i).setPayType(EnumPayType.YG_ALIPAY_JSAPI.getValue());
-                        list.get(i).setPayType("支付宝公众号支付");
-                    }
-                    if (list.get(i).getPayType().equals("sm_wechat_code")){
-//                        list.get(i).setPayType(EnumPayType.YG_WECHAT_CODE.getValue());
-                        list.get(i).setPayType("微信支付");
-                    }
-                    if (list.get(i).getPayType().equals("sm_alipay_code")){
-//                        list.get(i).setPayType(EnumPayType.YG_ALIPAY_CODE.getValue());
-                        list.get(i).setPayType("支付宝支付");
-                    }
-                    if (list.get(i).getPayType().equals("sm_unionpay")){
-//                        list.get(i).setPayType(EnumPayType.YG_UNIONPAY.getValue());
-                        list.get(i).setPayType("快捷支付");
-                    }
-                    if (list.get(i).getPayType().equals("km_wechat_jsapi")){
-//                        list.get(i).setPayType(EnumPayType.KM_WECHAT_JSAPI.getValue());
-                        list.get(i).setPayType("微信公众号支付");
-                    }
-                    if (list.get(i).getPayType().equals("km_alipay_jsapi")){
-//                        list.get(i).setPayType(EnumPayType.KM_ALIPAY_JSAPI.getValue());
-                        list.get(i).setPayType("支付宝公众号支付");
-                    }
-                    if (list.get(i).getPayType().equals("km_wechat_code")){
-//                        list.get(i).setPayType(EnumPayType.KM_WECHAT_CODE.getValue());
-                        list.get(i).setPayType("微信支付");
-                    }
-                    if (list.get(i).getPayType().equals("km_alipay_code")){
-//                        list.get(i).setPayType(EnumPayType.KM_ALIPAY_CODE.getValue());
-                        list.get(i).setPayType("支付宝支付");
-                    }
-                    if (list.get(i).getPayType().equals("mb_unionpay")){
-//                        list.get(i).setPayType(EnumPayType.MB_UNIONPAY.getValue());
-                        list.get(i).setPayType("快捷支付");
-                    }
-                    if (list.get(i).getPayType().equals("hzyb_wechat")){
-//                        list.get(i).setPayType(EnumPayType.HZYB_WECHAT.getValue());
-                        list.get(i).setPayType("微信支付");
-                    }
-                    if (list.get(i).getPayType().equals("hzyb_alipay")){
-//                        list.get(i).setPayType(EnumPayType.HZYB_ALIPAY.getValue());
-                        list.get(i).setPayType("支付宝支付");
-                    }
-                    if (list.get(i).getPayType().equals("yijia_wechat")){
-//                        list.get(i).setPayType(EnumPayType.YIJIA_WECHAT.getValue());
-                        list.get(i).setPayType("微信支付");
-                    }
-                    if (list.get(i).getPayType().equals("yijia_alipay")){
-//                        list.get(i).setPayType(EnumPayType.YIJIA_ALIPAY.getValue());
-                        list.get(i).setPayType("支付宝支付");
-                    }
-                    if (list.get(i).getPayType().equals("el_unionpay")){
-                        list.get(i).setPayType("快捷支付");
-                    }
+
                 }
 
             }
@@ -1282,68 +1005,12 @@ public class OrderServiceImpl implements OrderService {
                 if (list.get(i).getPayChannelSign()!=0) {
                     list.get(i).setPayChannelSigns(EnumPayChannelSign.idOf(list.get(i).getPayChannelSign()).getName());
                 }
-                if (list.get(i).getPayType()!=null&&!list.get(i).getPayType().equals("")){
-                    if (list.get(i).getPayType().equals("sm_wechat_jsapi")){
-//                        list.get(i).setPayType(EnumPayType.YG_WECHAT_JSAPI.getValue());
-                        list.get(i).setPayType("微信公众号支付");
+                if (list.get(i).getPayType()!=null&&!list.get(i).getPayType().equals("")) {
+                    if (list.get(i).getPayChannelSign()!=0) {
+                        list.get(i).setPayType(EnumPayChannelSign.idOf(list.get(i).getPayChannelSign()).getPaymentChannel().getValue());
                     }
-                    if (list.get(i).getPayType().equals("sm_alipay_jsapi")){
-//                        list.get(i).setPayType(EnumPayType.YG_ALIPAY_JSAPI.getValue());
-                        list.get(i).setPayType("支付宝公众号支付");
-                    }
-                    if (list.get(i).getPayType().equals("sm_wechat_code")){
-//                        list.get(i).setPayType(EnumPayType.YG_WECHAT_CODE.getValue());
-                        list.get(i).setPayType("微信支付");
-                    }
-                    if (list.get(i).getPayType().equals("sm_alipay_code")){
-//                        list.get(i).setPayType(EnumPayType.YG_ALIPAY_CODE.getValue());
-                        list.get(i).setPayType("支付宝支付");
-                    }
-                    if (list.get(i).getPayType().equals("sm_unionpay")){
-//                        list.get(i).setPayType(EnumPayType.YG_UNIONPAY.getValue());
-                        list.get(i).setPayType("快捷支付");
-                    }
-                    if (list.get(i).getPayType().equals("km_wechat_jsapi")){
-//                        list.get(i).setPayType(EnumPayType.KM_WECHAT_JSAPI.getValue());
-                        list.get(i).setPayType("微信公众号支付");
-                    }
-                    if (list.get(i).getPayType().equals("km_alipay_jsapi")){
-//                        list.get(i).setPayType(EnumPayType.KM_ALIPAY_JSAPI.getValue());
-                        list.get(i).setPayType("支付宝公众号支付");
-                    }
-                    if (list.get(i).getPayType().equals("km_wechat_code")){
-//                        list.get(i).setPayType(EnumPayType.KM_WECHAT_CODE.getValue());
-                        list.get(i).setPayType("微信支付");
-                    }
-                    if (list.get(i).getPayType().equals("km_alipay_code")){
-//                        list.get(i).setPayType(EnumPayType.KM_ALIPAY_CODE.getValue());
-                        list.get(i).setPayType("支付宝支付");
-                    }
-                    if (list.get(i).getPayType().equals("mb_unionpay")){
-//                        list.get(i).setPayType(EnumPayType.MB_UNIONPAY.getValue());
-                        list.get(i).setPayType("快捷支付");
-                    }
-                    if (list.get(i).getPayType().equals("hzyb_wechat")){
-//                        list.get(i).setPayType(EnumPayType.HZYB_WECHAT.getValue());
-                        list.get(i).setPayType("微信支付");
-                    }
-                    if (list.get(i).getPayType().equals("hzyb_alipay")){
-//                        list.get(i).setPayType(EnumPayType.HZYB_ALIPAY.getValue());
-                        list.get(i).setPayType("支付宝支付");
-                    }
-                    if (list.get(i).getPayType().equals("yijia_wechat")){
-//                        list.get(i).setPayType(EnumPayType.YIJIA_WECHAT.getValue());
-                        list.get(i).setPayType("微信支付");
-                    }
-                    if (list.get(i).getPayType().equals("yijia_alipay")){
-//                        list.get(i).setPayType(EnumPayType.YIJIA_ALIPAY.getValue());
-                        list.get(i).setPayType("支付宝支付");
-                    }
-                    if (list.get(i).getPayType().equals("el_unionpay")){
-                        list.get(i).setPayType("快捷支付");
-                    }
-                }
 
+                }
             }
         }
         return list;
@@ -1382,7 +1049,7 @@ public class OrderServiceImpl implements OrderService {
                             merchant, order.getSettleTime(), settleAccountFlow.getIncomeAmount());
                     this.settleAccountFlowService.updateSettlementRecordIdById(settleAccountFlow.getId(), settlementRecordId);
                     //待结算--可用余额
-                    this.payService.merchantRecordedAccount(settleAccountFlow.getAccountId(), settleAccountFlow.getIncomeAmount(), order, settlementRecordId);
+                    this.payService.merchantRecordedAccount(settleAccountFlow.getAccountId(), settleAccountFlow.getIncomeAmount(), order, settlementRecordId, settleAccountFlow.getRemark());
                 }
                 if (EnumAccountUserType.DEALER.getId() == settleAccountFlow.getAccountUserType()) {
                     final Dealer dealer = this.dealerService.getByAccountId(settleAccountFlow.getAccountId()).get();
@@ -1488,67 +1155,11 @@ public class OrderServiceImpl implements OrderService {
                 if (list.get(i).getSettleStatus()==3){
                     columns.add("已结算");
                 }
-                if (list.get(i).getPayType()!=null&&!list.get(i).getPayType().equals("")){
-                    if (list.get(i).getPayType().equals("sm_wechat_jsapi")){
-//                        list.get(i).setPayType(EnumPayType.YG_WECHAT_JSAPI.getValue());
-                        list.get(i).setPayType("微信公众号支付");
+                if (list.get(i).getPayType()!=null&&!list.get(i).getPayType().equals("")) {
+                    if (list.get(i).getPayChannelSign()!=0) {
+                        list.get(i).setPayType(EnumPayChannelSign.idOf(list.get(i).getPayChannelSign()).getPaymentChannel().getValue());
                     }
-                    if (list.get(i).getPayType().equals("sm_alipay_jsapi")){
-//                        list.get(i).setPayType(EnumPayType.YG_ALIPAY_JSAPI.getValue());
-                        list.get(i).setPayType("支付宝公众号支付");
-                    }
-                    if (list.get(i).getPayType().equals("sm_wechat_code")){
-//                        list.get(i).setPayType(EnumPayType.YG_WECHAT_CODE.getValue());
-                        list.get(i).setPayType("微信支付");
-                    }
-                    if (list.get(i).getPayType().equals("sm_alipay_code")){
-//                        list.get(i).setPayType(EnumPayType.YG_ALIPAY_CODE.getValue());
-                        list.get(i).setPayType("支付宝支付");
-                    }
-                    if (list.get(i).getPayType().equals("sm_unionpay")){
-//                        list.get(i).setPayType(EnumPayType.YG_UNIONPAY.getValue());
-                        list.get(i).setPayType("快捷支付");
-                    }
-                    if (list.get(i).getPayType().equals("km_wechat_jsapi")){
-//                        list.get(i).setPayType(EnumPayType.KM_WECHAT_JSAPI.getValue());
-                        list.get(i).setPayType("微信公众号支付");
-                    }
-                    if (list.get(i).getPayType().equals("km_alipay_jsapi")){
-//                        list.get(i).setPayType(EnumPayType.KM_ALIPAY_JSAPI.getValue());
-                        list.get(i).setPayType("支付宝公众号支付");
-                    }
-                    if (list.get(i).getPayType().equals("km_wechat_code")){
-//                        list.get(i).setPayType(EnumPayType.KM_WECHAT_CODE.getValue());
-                        list.get(i).setPayType("微信支付");
-                    }
-                    if (list.get(i).getPayType().equals("km_alipay_code")){
-//                        list.get(i).setPayType(EnumPayType.KM_ALIPAY_CODE.getValue());
-                        list.get(i).setPayType("支付宝支付");
-                    }
-                    if (list.get(i).getPayType().equals("mb_unionpay")){
-//                        list.get(i).setPayType(EnumPayType.MB_UNIONPAY.getValue());
-                        list.get(i).setPayType("快捷支付");
-                    }
-                    if (list.get(i).getPayType().equals("hzyb_wechat")){
-//                        list.get(i).setPayType(EnumPayType.HZYB_WECHAT.getValue());
-                        list.get(i).setPayType("微信支付");
-                    }
-                    if (list.get(i).getPayType().equals("hzyb_alipay")){
-//                        list.get(i).setPayType(EnumPayType.HZYB_ALIPAY.getValue());
-                        list.get(i).setPayType("支付宝支付");
-                    }
-                    if (list.get(i).getPayType().equals("yijia_wechat")){
-//                        list.get(i).setPayType(EnumPayType.YIJIA_WECHAT.getValue());
-                        list.get(i).setPayType("微信支付");
-                    }
-                    if (list.get(i).getPayType().equals("yijia_alipay")){
-//                        list.get(i).setPayType(EnumPayType.YIJIA_ALIPAY.getValue());
-                        list.get(i).setPayType("支付宝支付");
-                    }
-                    if (list.get(i).getPayType().equals("el_unionpay")){
-                        list.get(i).setPayType("快捷支付");
-                    }
-                }else {
+                } else {
                     columns.add("");
                 }
                 if (list.get(i).getPayChannelSign()!=0) {

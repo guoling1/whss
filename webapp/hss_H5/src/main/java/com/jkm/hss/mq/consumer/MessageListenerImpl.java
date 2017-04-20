@@ -48,8 +48,8 @@ public class MessageListenerImpl implements MessageListener {
                 this.orderService.t1WithdrawByOrderId(orderId);
             }
         } catch (final Throwable e) {
-            log.error("consume message error, Topic is: [{}], tag is: [{}] MsgId is: [{}]", message.getTopic(),
-                    message.getTag(), message.getMsgID());
+            log.error("consume message error, Topic is: [{}], tag is: [{}] MsgId is: [{}] key is : [{}]", message.getTopic(),
+                    message.getTag(), message.getMsgID(), message.getKey());
             log.error("消费消息--提现， 向网关发送提现请求异常", e);
         }
         //如果想测试消息重投的功能,可以将Action.CommitMessage 替换成Action.ReconsumeLater

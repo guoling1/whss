@@ -5,6 +5,7 @@
         INSERT INTO tb_basic_channel
         (account_id,
         channel_code,
+        channel_short_name,
         channel_name,
         channel_type_sign,
         support_way,
@@ -14,15 +15,18 @@
         basic_withdraw_fee,
         basic_balance_type,
         basic_settle_type,
+        limit_min_amount,
         limit_amount,
         is_need,
         channel_company,
         lowest_fee,
+        is_use,
         remarks,
         status
         )VALUES(
         #{accountId},
         #{channelCode},
+        #{channelShortName},
         #{channelName},
         #{channelTypeSign},
         #{supportWay},
@@ -32,10 +36,12 @@
         #{basicWithdrawFee},
         #{basicBalanceType},
         #{basicSettleType},
+        #{limitMinAmount},
         #{limitAmount},
         #{isNeed},
         #{channelCompany},
         #{lowestFee},
+        #{isUse},
         #{remarks},
         #{status}
         )
@@ -43,6 +49,7 @@
     <update id="update">
         UPDATE tb_basic_channel
         SET account_id = #{accountId},
+        channel_short_name = #{channelShortName},
         channel_name = #{channelName},
         channel_type_sign = #{channelTypeSign},
         support_way = #{supportWay},
@@ -52,12 +59,14 @@
         basic_withdraw_fee = #{basicWithdrawFee},
         basic_balance_type = #{basicBalanceType},
         basic_settle_type = #{basicSettleType},
+        limit_min_amount = #{limitMinAmount},
         limit_amount=#{limitAmount},
         is_need=#{isNeed},
         channel_company=#{channelCompany},
         status = #{status},
         channel_code = #{channelCode},
         lowest_fee = #{lowestFee},
+        is_use = #{isUse},
         remarks = #{remarks}
         WHERE id = #{id}
     </update>

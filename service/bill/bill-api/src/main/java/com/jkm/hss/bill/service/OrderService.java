@@ -247,17 +247,20 @@ public interface OrderService {
 
     /**
      * hss-T1-结算到卡定时处理实现
+     *
+     * @param channelList
      */
-    void handleT1UnSettlePayOrder();
+    void handleT1UnSettlePayOrder(List<Integer> channelList);
 
     /**
      * 查询指定结算日期，指定业务线，T1的支付成功的待结算的订单IDS
      *
      * @param settleDate
      * @param appId
+     * @param channelList
      * @return
      */
-    List<Long> getT1PaySuccessAndUnSettleOrderIds(Date settleDate, String appId);
+    List<Long> getT1PaySuccessAndUnSettleOrderIds(Date settleDate, String appId, List<Integer> channelList);
 
     /**
      * T1 按支付单ID，发起体现
