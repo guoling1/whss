@@ -1108,6 +1108,9 @@ public class DealerServiceImpl implements DealerService {
                     final boolean isActTime = currentDate.after(beginDate) && currentDate.before(endDate);
                     if ((EnumPayChannelSign.EL_UNIONPAY.getId() == channelSign) && isActTime){
                         waitMoney = totalFee.multiply(new BigDecimal("0.0038")).setScale(2,BigDecimal.ROUND_UP);
+                        if (basicChannel.getLowestFee().compareTo(waitMoney) == 1){
+                            waitMoney = basicChannel.getLowestFee();
+                        }
                     }else{
                         //收手续费,进一位,保留两位有效数字
                         waitMoney = waitOriginMoney.setScale(2,BigDecimal.ROUND_UP);
