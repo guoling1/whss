@@ -85,6 +85,7 @@ const Test = r => require.ensure([], () => r(require('components/Test')), 'group
 const AAHome = r => require.ensure([], () => r(require('components/AAHome')), 'group-record');
 const Home = r => require.ensure([], () => r(require('components/Home')), 'group-record');
 const Login = r => require.ensure([], () => r(require('components/Login')), 'group-record');
+const Crumbs = r => require.ensure([], () => r(require('./Crumbs')), 'group-record');
 let routes = [
   {
     path: '/',
@@ -95,9 +96,10 @@ let routes = [
     component: Login
   },
   {
-    path: '/admin/det',
+    path: '/admin/details',
+    component: Crumbs,
     children:[
-      {path:'newDealDet',component: NewDealDet}
+      {path:'newDealDet',name:'NewDealDet',component: NewDealDet}
     ]
   },
   {
