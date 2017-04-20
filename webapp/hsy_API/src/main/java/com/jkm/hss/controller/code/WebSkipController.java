@@ -141,6 +141,7 @@ public class WebSkipController extends BaseController {
         String[] arr = getQueryString.split("&");
         String appId="";
         String authcode="";
+        String state = "";
         for(int i =0;i<arr.length;i++){
             if("app_id".equals(arr[i].split("=")[0])){
                 appId = arr[i].split("=")[1];
@@ -148,20 +149,18 @@ public class WebSkipController extends BaseController {
             if("app_auth_code".equals(arr[i].split("=")[0])){
                 authcode = arr[i].split("=")[1];
             }
+            if("state".equals(arr[i].split("=")[0])){
+                state = arr[i].split("=")[1];
+            }
         }
         AlipayUserUserinfoShareResponse alipayUserUserinfoShareResponse = alipayOauthService.getUserInfo(authcode);
         model.addAttribute("openId", alipayUserUserinfoShareResponse.getUserId());
         log.info("openid是：{}",alipayUserUserinfoShareResponse.getUserId());
-        String tempUrl = URLDecoder.decode(authcode, "UTF-8");
+        String tempUrl = URLDecoder.decode(state, "UTF-8");
         String redirectUrl = URLDecoder.decode(tempUrl,"UTF-8");
         String finalRedirectUrl = "http://"+ ApplicationConsts.getApplicationConfig().domain()+"/code/scanCode?"+redirectUrl;
         log.info("跳转地址是：{}",finalRedirectUrl);
         return "redirect:"+finalRedirectUrl;
     }
 
-    @RequestMapping(value = "getUrl", method = RequestMethod.GET)
-    public String  getUrl(final HttpServletRequest request, final HttpServletResponse response,final Model model) throws Exception{
-        log.info("跳转");
-        return "redirect:https://openauth.alipaydev.com/oauth2/appToAppAuth.htm?app_id=2016102000728193&redirect_uri=http%3a%2f%2fhsy.qianbaojiajia.com%2fsqb%2ftoAlipaySkip";
-    }
 }

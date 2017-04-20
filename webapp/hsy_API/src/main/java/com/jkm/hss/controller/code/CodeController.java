@@ -2,6 +2,7 @@ package com.jkm.hss.controller.code;
 
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
+import com.jkm.base.common.spring.alipay.constant.AlipayServiceConstants;
 import com.jkm.hss.admin.entity.QRCode;
 import com.jkm.hss.admin.enums.EnumQRCodeSysType;
 import com.jkm.hss.admin.service.QRCodeService;
@@ -85,6 +86,18 @@ public class CodeController extends BaseController {
                 url = "/sqb/paymentWx";
             }
             if (agent.indexOf("aliapp") > -1) {
+                log.info("alipay的openId={}",openId);
+                if(openId==null||"".equals(openId)){
+                    String requestUrl = "";
+                    if(request.getQueryString() == null){
+                        requestUrl = "";
+                    }else{
+                        requestUrl = request.getQueryString();
+                    }
+                    String encoderUrl = URLEncoder.encode(requestUrl, "UTF-8");
+                    return "redirect:"+ AlipayServiceConstants.OAUTH_URL+encoderUrl;
+                }
+                model.addAttribute("openId",openId);
                 url = "/sqb/paymentZfb";
             }
         } else {
