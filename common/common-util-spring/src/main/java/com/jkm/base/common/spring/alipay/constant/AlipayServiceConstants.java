@@ -46,5 +46,7 @@ public class AlipayServiceConstants {
     /**
      * 授权拼接url
      */
-    public static final String OAUTH_URL = "https://openauth.alipaydev.com/oauth2/publicAppAuthorize.htm?app_id="+APP_ID+"&scope=auth_base&redirect_uri="+REDIRECT_URI+"&state=";
+    public static final String OAUTH_URL = "https://openauth.alipaydev.com/oauth2/publicAppAuthorize.htm?app_id="+APP_ID+"&state=";
+
+    public static final String OAUTH_URL_AFTER = "&scope=auth_base&redirect_uri="+REDIRECT_URI;
 }
