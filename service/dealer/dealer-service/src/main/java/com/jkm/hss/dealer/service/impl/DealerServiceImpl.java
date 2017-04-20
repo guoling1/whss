@@ -56,6 +56,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -111,6 +112,15 @@ public class DealerServiceImpl implements DealerService {
         return null;
     }
 
+    public static void main(String[] args){
+
+        final Date beginDate = DateFormatUtil.parse("2017-04-22 00:00:00", DateFormatUtil.yyyy_MM_dd_HH_mm_ss);
+        final Date endDate = DateFormatUtil.parse("2017-06-01 23:59:59", DateFormatUtil.yyyy_MM_dd_HH_mm_ss);
+        final Date currentDate = new Date();
+        final boolean isActTime = currentDate.after(beginDate) && currentDate.before(endDate);
+        System.out.print(isActTime);
+    }
+
     /**
      * {@inheritDoc}
      *
@@ -130,9 +140,13 @@ public class DealerServiceImpl implements DealerService {
 
             //好收收收单分润
             try{
-               // final boolean isActTime =
-               // final MerchantInfo merchantInfo = this.merchantInfoService.selectById(merchantId).get();
-              //  if ((EnumPayChannelSign.EL_UNIONPAY.getId() == channelSign) && isActTime)
+                final Date beginDate = DateFormatUtil.parse("2017-04-22 00:00:00", DateFormatUtil.yyyy_MM_dd_HH_mm_ss);
+                final Date endDate = DateFormatUtil.parse("2017-06-01 23:59:59", DateFormatUtil.yyyy_MM_dd_HH_mm_ss);
+                final Date currentDate = new Date();
+                final boolean isActTime = currentDate.after(beginDate) && endDate.before(endDate);
+
+                final MerchantInfo merchantInfo = this.merchantInfoService.selectById(merchantId).get();
+                if ((EnumPayChannelSign.EL_UNIONPAY.getId() == channelSign) && isActTime){}
 
                 //判断商户是否是直属商户
                 if (merchantInfo.getFirstMerchantId() == 0){
