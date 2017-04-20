@@ -162,8 +162,6 @@ public class DealerServiceImpl implements DealerService {
 
                     //计算商户手续费，按照通道来
                     final BigDecimal waitMoney = this.calculateMerchantFee(tradeAmount, waitOriginMoney, channelSign);
-                    //获取产品的信息, 产品通道的费率
-                    final Optional<Product> productOptional = this.productService.selectById(merchantInfo.getProductId());
 
                     //通道成本， 不同通道成本计算不同
                     final BigDecimal basicTrade = tradeAmount.multiply(basicChannel.getBasicTradeRate());
@@ -1103,8 +1101,17 @@ public class DealerServiceImpl implements DealerService {
                     //手续费不足两毛 , 按2毛收
                     waitMoney = basicChannel.getLowestFee();
                 }else{
-                    //收手续费,进一位,保留两位有效数字
-                    waitMoney = waitOriginMoney.setScale(2,BigDecimal.ROUND_UP);
+                    //hss活动
+                    final Date beginDate = DateFormatUtil.parse("2017-04-12 00:00:00", DateFormatUtil.yyyy_MM_dd_HH_mm_ss);
+                    final Date endDate = DateFormatUtil.parse("2017-06-01 23:59:59", DateFormatUtil.yyyy_MM_dd_HH_mm_ss);
+                    final Date currentDate = new Date();
+                    final boolean isActTime = currentDate.after(beginDate) && currentDate.before(endDate);
+                    if ((EnumPayChannelSign.EL_UNIONPAY.getId() == channelSign) && isActTime){
+                        waitMoney = totalFee.multiply(new BigDecimal("0.0038")).setScale(2,BigDecimal.ROUND_UP);
+                    }else{
+                        //收手续费,进一位,保留两位有效数字
+                        waitMoney = waitOriginMoney.setScale(2,BigDecimal.ROUND_UP);
+                    }
                 }
                 return waitMoney;
             default:
