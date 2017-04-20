@@ -41,7 +41,6 @@ public class AlipayOauthServiceImpl implements AlipayOauthService {
                 log.info("authCode换取成功");
                 log.info("授权码是{}",oauthTokenResponse.getAccessToken());
 
-
                 AlipayClient alipayClient1 = new DefaultAlipayClient(AlipayServiceConstants.ALIPAY_GATEWAY, AlipayServiceConstants.APP_ID,
                         AlipayServiceConstants.PRIVATE_KEY, "json", AlipayServiceConstants.CHARSET, AlipayServiceConstants.ALIPAY_PUBLIC_KEY, AlipayServiceConstants.SIGN_TYPE);
                 AlipayUserInfoShareRequest request1 = new AlipayUserInfoShareRequest();
