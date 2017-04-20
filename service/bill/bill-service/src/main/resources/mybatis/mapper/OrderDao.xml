@@ -1103,4 +1103,22 @@
         WHERE
             order_no = #{orderNo}
     </select>
+
+    <select id="selectTradeAmountAndFeeByOrderNoList" resultType="java.util.Map">
+        SELECT SUM(trade_amount) as tradeAmount, SUM(poundage) as poundage FROM tb_order
+        WHERE order_no IN
+        <foreach collection="orderNos" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+
+    <select id="selectByAppParam" resultType="com.jkm.hss.bill.entity.Order">
+        SELECT trade_amount, poundage, pay_channel_sign, create_time FROM tb_order
+        WHERE order_no IN
+        <foreach collection="orderNos" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        ORDER BY id DESC
+        LIMIT #{offset}, #{count}
+    </select>
 </mapper>

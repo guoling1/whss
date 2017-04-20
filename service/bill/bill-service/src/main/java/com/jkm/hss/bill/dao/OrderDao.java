@@ -330,4 +330,22 @@ public interface OrderDao {
      * @return
      */
     int listFirstCount(OrderTradeRequest req);
+
+    /**
+     * 按订单号统计交易金额
+     *
+     * @param orderNos
+     * @return
+     */
+    Map<String,BigDecimal> selectTradeAmountAndFeeByOrderNoList(@Param("orderNos") List<String> orderNos);
+
+    /**
+     * 按订单号s 查询交易（app）
+     *
+     * @param orderNos
+     * @param offset
+     * @param count
+     * @return
+     */
+    List<Order> selectByAppParam(@Param("orderNos") List<String> orderNos, @Param("offset") int offset, @Param("count") int count);
 }

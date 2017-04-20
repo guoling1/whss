@@ -218,6 +218,17 @@ public class SettleAccountFlowServiceImpl implements SettleAccountFlowService {
     }
 
     /**
+     * {@inheritDoc}
+     *
+     * @param recordId
+     * @return
+     */
+    @Override
+    public List<String> getOrderNoByAuditRecordId(final long recordId) {
+        return this.settleAccountFlowDao.selectOrderNosByRecordId(recordId);
+    }
+
+    /**
      * 获取流水号
      *
      * @return

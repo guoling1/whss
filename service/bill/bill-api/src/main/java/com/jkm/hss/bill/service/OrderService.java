@@ -12,6 +12,7 @@ import com.jkm.hsy.user.entity.AppBizShop;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by yulong.zhang on 2016/12/22.
@@ -333,6 +334,24 @@ public interface OrderService {
      * @return
      */
     int listFirstCount(OrderTradeRequest req);
+
+    /**
+     * 按订单号s统计交易金额
+     *
+     * @param orderNos
+     * @return
+     */
+    Map<String, BigDecimal> getTradeAmountAndFeeByOrderNoList(List<String> orderNos);
+
+    /**
+     * 按订单号s 查询交易（app）
+     *
+     * @param orderNos
+     * @param offset
+     * @param pageSize
+     * @return
+     */
+   List<Order> getOrderByOrderNos(List<String> orderNos, int offset, int pageSize);
 
     /**
      * 查询交易详情

@@ -111,4 +111,12 @@ public interface SettleAccountFlowDao {
      * @return
      */
     int selectCountByFlowNo(@Param("flowNo") String flowNo);
+
+    /**
+     * 按结算审核记录查询订单号
+     *
+     * @param recordId
+     * @return
+     */
+    List<String> selectOrderNosByRecordId(@Param("recordId") long recordId);
 }

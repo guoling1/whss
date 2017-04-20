@@ -73,6 +73,24 @@ public interface AccountSettleAuditRecordService {
     String appSettleRecordList(String dataParam, AppParam appParam);
 
     /**
+     * 结算审核记录详情
+     *
+     * @param dataParam
+     * @param appParam
+     * @return
+     */
+    String appSettleRecordDetail(String dataParam, AppParam appParam);
+
+    /**
+     * 按结算审核记录查询交易
+     *
+     * @param dataParam
+     * @param appParam
+     * @return
+     */
+    String appGetOrderListByRecordId(String dataParam, AppParam appParam);
+
+    /**
      * 处理 T1 结算审核, 生成记录
      */
     void generateHsySettleAuditRecordTask();

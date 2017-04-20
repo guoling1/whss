@@ -35,11 +35,13 @@ import com.jkm.hss.merchant.entity.MerchantInfo;
 import com.jkm.hss.merchant.service.MerchantInfoService;
 import com.jkm.hss.mq.config.MqConfig;
 import com.jkm.hss.mq.producer.MqProducer;
+import com.jkm.hss.product.enums.EnumPayChannelSign;
 import com.jkm.hss.settle.dao.AccountSettleAuditRecordDao;
 import com.jkm.hss.settle.entity.AccountSettleAuditRecord;
 import com.jkm.hss.settle.enums.EnumAccountCheckStatus;
 import com.jkm.hss.settle.enums.EnumSettleStatus;
 import com.jkm.hss.settle.helper.requestparam.ListSettleAuditRecordRequest;
+import com.jkm.hss.settle.helper.responseparam.AppSettleRecordDetailResponse;
 import com.jkm.hss.settle.service.AccountSettleAuditRecordService;
 import com.jkm.hsy.user.dao.HsyShopDao;
 import com.jkm.hsy.user.entity.AppAuUser;
@@ -176,11 +178,68 @@ public class AccountSettleAuditRecordServiceImpl implements AccountSettleAuditRe
                 jo.put("recordId", record.getId());
                 jo.put("settleDate", record.getSettleDate());
                 jo.put("number", record.getTradeNumber());
-                jo.put("settleAmount", record.getSettleAmount());
+                jo.put("settleAmount", record.getSettleAmount().toPlainString());
             }
         } else {
             pageModel.setRecords(Collections.<JSONObject>emptyList());
         }
+        return JSON.toJSONString(pageModel);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param dataParam
+     * @param appParam
+     * @return
+     */
+    @Override
+    public String appSettleRecordDetail(final String dataParam, final AppParam appParam) {
+        final JSONObject paramJo = JSONObject.parseObject(dataParam);
+        final long recordId = paramJo.getLongValue("recordId");
+        final AccountSettleAuditRecord accountSettleAuditRecord = this.getById(recordId).get();
+        final AppSettleRecordDetailResponse appSettleRecordDetailResponse = new AppSettleRecordDetailResponse();
+        appSettleRecordDetailResponse.setSettleAmount(accountSettleAuditRecord.getSettleAmount().toPlainString());
+        appSettleRecordDetailResponse.setNumber(accountSettleAuditRecord.getTradeNumber());
+        appSettleRecordDetailResponse.setRecordId(recordId);
+        appSettleRecordDetailResponse.setSettleDate(accountSettleAuditRecord.getSettleDate());
+        final List<String> orderNos = this.settleAccountFlowService.getOrderNoByAuditRecordId(recordId);
+        final Map<String, BigDecimal> tradeAmountMap = this.orderService.getTradeAmountAndFeeByOrderNoList(orderNos);
+        appSettleRecordDetailResponse.setTradeAmount(tradeAmountMap.get("tradeAmount").toPlainString());
+        appSettleRecordDetailResponse.setFeeAmount(tradeAmountMap.get("poundage").toPlainString());
+        return JSON.toJSONString(appSettleRecordDetailResponse);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param dataParam
+     * @param appParam
+     * @return
+     */
+    @Override
+    public String appGetOrderListByRecordId(final String dataParam, final AppParam appParam) {
+        final JSONObject paramJo = JSONObject.parseObject(dataParam);
+        final int pageNo = paramJo.getIntValue("pageNo");
+        final int pageSize = paramJo.getIntValue("pageSize");
+        final long recordId = paramJo.getLongValue("recordId");
+        final List<String> orderNos = this.settleAccountFlowService.getOrderNoByAuditRecordId(recordId);
+        final PageModel<JSONObject> pageModel = new PageModel<>(pageNo, pageSize);
+        final List<Order> orders = this.orderService.getOrderByOrderNos(orderNos, pageModel.getFirstIndex(), pageSize);
+        pageModel.setCount(orderNos.size());
+        final List<JSONObject> jsonObjects = Lists.transform(orders, new Function<Order, JSONObject>() {
+            @Override
+            public JSONObject apply(Order order) {
+                final JSONObject jo = new JSONObject();
+                jo.put("tradeAmount", order.getTradeAmount().toPlainString());
+                jo.put("tradeDate", order.getCreateTime());
+                jo.put("poundage", order.getPoundage());
+                final EnumPayChannelSign payChannelSign = EnumPayChannelSign.idOf(order.getPayChannelSign());
+                jo.put("type", payChannelSign.getPaymentChannel().getId());
+                return jo;
+            }
+        });
+        pageModel.setRecords(jsonObjects);
         return JSON.toJSONString(pageModel);
     }
 

@@ -126,4 +126,12 @@ public interface SettleAccountFlowService {
      * @return
      */
     boolean checkExistByFlowNo(String flowNo);
+
+    /**
+     * 按结算审核记录查询订单号
+     *
+     * @param recordId
+     * @return
+     */
+    List<String> getOrderNoByAuditRecordId(long recordId);
 }
