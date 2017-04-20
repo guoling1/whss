@@ -63,6 +63,30 @@ public class SettleController extends BaseController {
 
 
     /**
+     * 生成结算审核记录
+     *
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "generateRecord")
+    public CommonResponse generateSettleAuditRecord() {
+        this.accountSettleAuditRecordService.generateHsySettleAuditRecordTask();
+        return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "success");
+    }
+
+
+    /**
+     * 标记为结算
+     *
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "markSettled")
+    public CommonResponse markSettled() {
+        this.accountSettleAuditRecordService.handleSettleAuditRecordTask();
+        return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "success");
+    }
+    /**
      *  结算
      *
      * @param settleRequest

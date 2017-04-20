@@ -26,7 +26,7 @@ public class Task {
      *
      * 2点0时0分
      */
-    @Scheduled(cron = "0 0 2 * * ?")
+//    @Scheduled(cron = "0 0 2 * * ?")
     public void generateHsySettleAuditRecordTask() {
         log.info("生成结算审核记录定时任务--start");
         this.accountSettleAuditRecordService.generateHsySettleAuditRecordTask();
@@ -36,10 +36,10 @@ public class Task {
     /**
      * 处理 T1 结算 自动结算
      */
-    @Scheduled(cron = "0 0 14 * * ?")
+//    @Scheduled(cron = "0 0 14 * * ?")
     public void handleT1WithdrawTask() {
         log.info("结算审核记录自动结算定时任务--start");
-        this.accountSettleAuditRecordService.handleSettleAuditRecordTask();
+//        this.accountSettleAuditRecordService.handleSettleAuditRecordTask();
         log.info("结算审核记录自动结算定时任务--end");
     }
 }
