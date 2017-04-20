@@ -149,7 +149,7 @@ public class WebSkipController extends BaseController {
                 appId = arr[i].split("=")[1];
                 log.info("appId是:{}",appId);
             }
-            if("app_auth_code".equals(arr[i].split("=")[0])){
+            if("auth_code".equals(arr[i].split("=")[0])){
                 authcode = arr[i].split("=")[1];
                 log.info("authcode是:{}",authcode);
             }
