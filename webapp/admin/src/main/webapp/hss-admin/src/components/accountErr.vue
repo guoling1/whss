@@ -114,10 +114,10 @@
             </el-form-item>
             <el-form-item label="备注信息：" width="120" style="margin-bottom: 0">
               <el-input style="width: 70%"
-                type="textarea"
-                :rows="2"
-                placeholder="非必填"
-                v-model="handleQuery.handleReason">
+                        type="textarea"
+                        :rows="2"
+                        placeholder="非必填"
+                        v-model="handleQuery.handleReason">
               </el-input>
             </el-form-item>
           </el-form>
@@ -206,18 +206,18 @@
         this.handleQuery.id=id;
       },
       handle: function () {
-         this.$http.post(this.handleUrl,this.handleQuery,{emulateJSON: true})
-           .then(res => {
-             this.isShow = false;
-             this.getData()
-           })
-           .catch(err =>{
-             this.$message({
-               showClose: true,
-               message: err.statusMessage,
-               type: 'error'
-             })
-           })
+        this.$http.post(this.handleUrl,this.handleQuery,{emulateJSON: true})
+          .then(res => {
+            this.isShow = false;
+            this.getData()
+          })
+          .catch(err =>{
+            this.$message({
+              showClose: true,
+              message: err.statusMessage,
+              type: 'error'
+            })
+          })
       },
       //每页条数改变
       handleSizeChange(val) {
