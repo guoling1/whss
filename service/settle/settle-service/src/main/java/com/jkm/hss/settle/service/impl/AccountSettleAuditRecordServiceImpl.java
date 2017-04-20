@@ -233,7 +233,7 @@ public class AccountSettleAuditRecordServiceImpl implements AccountSettleAuditRe
                 final JSONObject jo = new JSONObject();
                 jo.put("tradeAmount", order.getTradeAmount().toPlainString());
                 jo.put("tradeDate", order.getCreateTime());
-                jo.put("poundage", order.getPoundage());
+                jo.put("feeAmount", order.getPoundage());
                 final EnumPayChannelSign payChannelSign = EnumPayChannelSign.idOf(order.getPayChannelSign());
                 jo.put("type", payChannelSign.getPaymentChannel().getId());
                 return jo;
