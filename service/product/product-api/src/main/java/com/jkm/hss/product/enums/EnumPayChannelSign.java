@@ -95,20 +95,20 @@ public enum EnumPayChannelSign {
     /**
      * 民生微信
      */
-    MS_WECHAT_JSAPI(701, "ms_wechat", EnumPaymentChannel.WECHAT_PAY, "民生微信", EnumUpperChannel.MS_BANK, false, EnumBalanceTimeType.T1, true),
+    MS_WECHAT(701, "ms_wechat", EnumPaymentChannel.WECHAT_PAY, "民生微信", EnumUpperChannel.MS_BANK, false, EnumBalanceTimeType.T1, true),
     /**
      * 民生支付宝
      */
-    MS_ALIPAY_JSAPI(702, "ms_alipay", EnumPaymentChannel.ALIPAY, "民生支付宝", EnumUpperChannel.MS_BANK, false, EnumBalanceTimeType.T1, true),
+    MS_ALIPAY(702, "ms_alipay", EnumPaymentChannel.ALIPAY, "民生支付宝", EnumUpperChannel.MS_BANK, false, EnumBalanceTimeType.T1, true),
 
     /**
-     * 收银家WX公众号支付
+     * 收银家WX
      */
-    SYJ_WECHAT_JSAPI(801, "syj_wechat", EnumPaymentChannel.WECHAT_PAY, "收银家微信", EnumUpperChannel.SYJ, true, EnumBalanceTimeType.T1, true),
+    SYJ_WECHAT(801, "syj_wechat", EnumPaymentChannel.WECHAT_PAY, "收银家微信", EnumUpperChannel.SYJ, true, EnumBalanceTimeType.T1, true),
     /**
-     * 收银家zfb公众号支付
+     * 收银家zfb
      */
-    SYJ_ALIPAY_JSAPI(802, "syj_alipay", EnumPaymentChannel.ALIPAY, "收银家支付宝", EnumUpperChannel.SYJ, true, EnumBalanceTimeType.T1, true);
+    SYJ_ALIPAY(802, "syj_alipay", EnumPaymentChannel.ALIPAY, "收银家支付宝", EnumUpperChannel.SYJ, true, EnumBalanceTimeType.T1, true);
 
 
     private static final ImmutableMap<String, EnumPayChannelSign> STATUS_IMMUTABLE_MAP;
