@@ -177,24 +177,10 @@ public class CalculateServiceImpl implements CalculateService {
      */
     @Override
     public BigDecimal getMerchantPayPoundage(final BigDecimal traderAmount, final BigDecimal merchantPayPoundageRate, final int channelSign) {
-        //hss活动
-        final Date beginDate = DateFormatUtil.parse("2017-04-12 00:00:00", DateFormatUtil.yyyy_MM_dd_HH_mm_ss);
-        final Date endDate = DateFormatUtil.parse("2017-06-01 23:59:59", DateFormatUtil.yyyy_MM_dd_HH_mm_ss);
-        final Date currentDate = new Date();
-        final boolean isActTime = currentDate.after(beginDate) && currentDate.before(endDate);
-        if ((EnumPayChannelSign.EL_UNIONPAY.getId() == channelSign) && isActTime){
-            return  traderAmount.multiply(new BigDecimal("0.0038")).setScale(2,BigDecimal.ROUND_UP);
-        }
 
         //原始手续费
         final BigDecimal originDueSplitAmount = traderAmount.multiply(merchantPayPoundageRate);
-        /*final BigDecimal minPoundage = new BigDecimal("0.01");
-        if (minPoundage.compareTo(originDueSplitAmount) > 0) {//手续费不足0.01元
-            if (minPoundage.compareTo(traderAmount) == 0) {//交易金额是0.01
-                return new BigDecimal(0);
-            }
-            return minPoundage;
-        }*/
+
         return this.calculateMerchantFee(traderAmount, originDueSplitAmount, channelSign);
     }
 
@@ -246,8 +232,18 @@ public class CalculateServiceImpl implements CalculateService {
                     //手续费不足两毛 , 按2毛收
                     waitMoney = basicChannel.getLowestFee();
                 }else{
-                    //收手续费,进一位,保留两位有效数字
-                    waitMoney = waitOriginMoney.setScale(2,BigDecimal.ROUND_UP);
+                    //hss活动
+                    final Date beginDate = DateFormatUtil.parse("2017-04-12 00:00:00", DateFormatUtil.yyyy_MM_dd_HH_mm_ss);
+                    final Date endDate = DateFormatUtil.parse("2017-06-01 23:59:59", DateFormatUtil.yyyy_MM_dd_HH_mm_ss);
+                    final Date currentDate = new Date();
+                    final boolean isActTime = currentDate.after(beginDate) && currentDate.before(endDate);
+                    if ((EnumPayChannelSign.EL_UNIONPAY.getId() == channelSign) && isActTime){
+                        waitMoney = totalFee.multiply(new BigDecimal("0.0038")).setScale(2,BigDecimal.ROUND_UP);
+                    }else{
+                        //收手续费,进一位,保留两位有效数字
+                        waitMoney = waitOriginMoney.setScale(2,BigDecimal.ROUND_UP);
+                    }
+
                 }
                 return waitMoney;
             default:
