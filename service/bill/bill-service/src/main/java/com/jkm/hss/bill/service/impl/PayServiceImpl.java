@@ -1017,7 +1017,7 @@ public class PayServiceImpl implements PayService {
                     }
                     return Pair.of(0, "");
                 case FAIL:
-                    this.orderService.updateRemark(orderId, paymentSdkConfirmUnionPayResponse.getMessage());
+                    this.orderService.updateStatus(orderId, EnumOrderStatus.PAY_FAIL.getId(), paymentSdkConfirmUnionPayResponse.getMessage());
                     return Pair.of(-1, paymentSdkConfirmUnionPayResponse.getMessage());
             }
         }
