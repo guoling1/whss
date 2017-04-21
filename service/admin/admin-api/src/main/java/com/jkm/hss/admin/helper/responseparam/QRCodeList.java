@@ -10,5 +10,6 @@ import java.util.Date;
 @Data
 public class QRCodeList {
     private String code;
+    private String sign;
     private Date createtime;
 }

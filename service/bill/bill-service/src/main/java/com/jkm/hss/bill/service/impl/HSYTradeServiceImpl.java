@@ -222,7 +222,7 @@ public class HSYTradeServiceImpl implements HSYTradeService {
         if (EnumPayChannelSign.SYJ_ALIPAY.getId() == channel) {
             channelCode = this.basicChannelService.selectCodeByChannelSign(channel, EnumMerchantPayType.MERCHANT_CODE);
         } else {
-            channelCode = this.basicChannelService.selectCodeByChannelSign(channel, EnumMerchantPayType.MERCHANT_JSAPI);
+            channelCode = this.basicChannelService.selectCodeByChannelSign(channel, EnumMerchantPayType.MERCHANT_CODE);
         }
         final EnumPayChannelSign payChannelSign = EnumPayChannelSign.idOf(channel);
         final Order order = new Order();

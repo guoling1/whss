@@ -35,4 +35,7 @@ public class AppConstant {
     public static int REGISTER_VERIFICATION_NOTICE_TYPE_ID=704;
     public static String SEND_PASSWORD_MESSAGE="您的好收银账号增加成功，登录账号为您当前手机号，初始密码为${password}【钱包++】";
     public static int SEND_PASSWORD_NOTICE_TYPE_ID=705;
+
+    public static int PAGE_SIZE=10;
+    public static String QR_URL="http://hsy.qianbaojiajia.com/code/scanCode";
 }
