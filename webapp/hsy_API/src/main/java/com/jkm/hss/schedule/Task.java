@@ -29,7 +29,7 @@ public class Task {
 //    @Scheduled(cron = "0 0 2 * * ?")
     public void generateHsySettleAuditRecordTask() {
         log.info("生成结算审核记录定时任务--start");
-        this.accountSettleAuditRecordService.generateHsySettleAuditRecordTask();
+//        this.accountSettleAuditRecordService.generateHsySettleAuditRecordTask();
         log.info("生成结算审核记录定时任务--end");
     }
 
