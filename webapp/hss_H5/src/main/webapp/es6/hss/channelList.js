@@ -100,7 +100,7 @@ http.post('/channel/list', {}, function (list) {
     if (list[i].channelSign == 601) {
       let now = new Date().getTime();
       // 1492617600000 1492790400000
-      if (now >= 1492617600000 && now <= 1496246399000) {
+      if (now >= 1492790400000 && now <= 1496246399000) {
         fee.className = 'channel-con preferential';
         fee.innerHTML = '0.38%+3';
         // 展示 惠
