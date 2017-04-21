@@ -421,7 +421,7 @@
 
     <select id="bindShopList" resultType="com.jkm.hss.admin.helper.responseparam.QRCodeList">
         SELECT code,create_time FROM tb_qr_code
-        WHERE merchant_id=#{shopId} and sys_type=#{sysType} and status=1
+        WHERE merchant_id=#{shopId} and sys_type=#{sysType}
     </select>
 
     <select id="selectUnDistributeCodeByDealerIdAndRangeCodeAndSysType" resultType="com.jkm.hss.admin.entity.QRCode">
