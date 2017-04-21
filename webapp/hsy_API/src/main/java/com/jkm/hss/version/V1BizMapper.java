@@ -50,6 +50,8 @@ public class V1BizMapper {
 		/**交易记录*/
 		bizMapper.put("HSY001036", new String[]{"hsyTradeService", "tradeList"});
 		bizMapper.put("HSY001037", new String[]{"hsyAppVersionService","findVersionDetailByVersionCode"});
-		bizMapper.put("HSY001038", new String[]{"hsyAppVersionService","findAllPageComponent"});
+		bizMapper.put("HSY001040", new String[]{"hsyAppVersionService","findAllPageComponent"});
+		bizMapper.put("HSY001041", new String[]{"hsyShopService","findBankBranchList"});
+		bizMapper.put("HSY001042", new String[]{"hsyShopService","findBankList"});
 	}
 }

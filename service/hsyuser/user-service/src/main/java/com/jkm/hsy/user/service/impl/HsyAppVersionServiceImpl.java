@@ -124,7 +124,7 @@ public class HsyAppVersionServiceImpl implements HsyAppVersionService {
             return gson.toJson(appVersion);
     }
 
-    /**HSY001038 查找app页面组件*/
+    /**HSY001040 查找app页面组件*/
     public String findAllPageComponent(String dataParam,AppParam appParam)throws ApiHandleException{
         Gson gson=new GsonBuilder().setDateFormat(AppConstant.DATE_FORMAT).create();
         List<AppCmComponent> list=hsyAppVersionDao.findAllPageComponent();
