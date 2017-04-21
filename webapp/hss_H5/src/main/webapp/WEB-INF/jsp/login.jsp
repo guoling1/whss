@@ -8,7 +8,7 @@
   <meta name="viewport"
         content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
   <title>好收收-登录</title>
-  <link rel="stylesheet" href="http://static.jinkaimen.cn/hss/css/style.2.2.10.css">
+  <link rel="stylesheet" href="http://static.jinkaimen.cn/hss/css/style.2.2.11.css">
   <link rel="stylesheet" href="http://static.jinkaimen.cn/weui/weui.css">
 </head>
 <body>
@@ -35,6 +35,6 @@
 </div>
 
 </body>
-<script src="http://static.jinkaimen.cn/vendor/vendor.1.0.9.8.min.js"></script>
-<script src="http://static.jinkaimen.cn/hss/2.2.16/login.min.js"></script>
+<script src="http://static.jinkaimen.cn/vendor/vendor.1.0.9.9.min.js"></script>
+<script src="http://static.jinkaimen.cn/hss/2.2.17/login.min.js"></script>
 </html>
