@@ -79,7 +79,7 @@ public class CodeController extends BaseController {
                     }else{
                         requestUrl = request.getQueryString();
                     }
-                    String encoderUrl = code+"|"+sign;
+                    String encoderUrl = URLEncoder.encode(requestUrl, "UTF-8");
                     return "redirect:"+ WxConstants.WEIXIN_HSY_MERCHANT_USERINFO+encoderUrl+ WxConstants.WEIXIN_USERINFO_REDIRECT;
                 }
                 model.addAttribute("openId",openId);
