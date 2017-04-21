@@ -129,7 +129,7 @@ public class HsyQrCodeServiceImpl implements HsyQrCodeService{
         AppAuUser appAuUser = hsyCmbcDao.selectByUserId(list.get(0).getId());
         if(appAuUser.getHxbStatus()== EnumHxbsStatus.PASS.getId()){//入驻成功开通产品或修改产品
             if(appAuUser.getHxbOpenProduct()==1){//首次绑定二维码，新增产品费率
-                CmbcResponse cmbcResponse = hsyCmbcService.merchantBindChannel(list.get(0).getId());
+                CmbcResponse cmbcResponse = hsyCmbcService.merchantBindChannel(list.get(0).getId(),appBindShop.getShopId());
                 if(cmbcResponse.getCode()==-1){
                     throw new ApiHandleException(ResultCode.RESULT_FAILE,"开通产品失败");
                 }

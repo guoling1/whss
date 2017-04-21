@@ -108,15 +108,16 @@ public class HsyCmbcServiceImpl implements HsyCmbcService {
      * @return
      */
     @Override
-    public CmbcResponse merchantBindChannel(long userId) {
+    public CmbcResponse merchantBindChannel(long userId,long shopId) {
         AppAuUser appAuUser = hsyCmbcDao.selectByUserId(userId);
+        AppBizShop appBizShop = hsyCmbcDao.selectByShopId(shopId);
         CmbcResponse cmbcResponse = new CmbcResponse();
         Map<String, String> paramsMap = new HashMap<String, String>();
         paramsMap.put("merchantNo", appAuUser.getGlobalID());
         paramsMap.put("wxOnlineRate", appAuUser.getWeixinRate().toString());
-        paramsMap.put("wxBizCategory", getWxCategory(appAuUser.getIndustryCode()));
+        paramsMap.put("wxBizCategory", getWxCategory(appBizShop.getIndustryCode()));
         paramsMap.put("zfbOnlineRate", appAuUser.getAlipayRate().toString());
-        paramsMap.put("zfbBizCategory",getAlipayCategory(appAuUser.getIndustryCode()));
+        paramsMap.put("zfbBizCategory",getAlipayCategory(appBizShop.getIndustryCode()));
         log.info("民生银行商户支付通道绑定参数为："+ JSONObject.fromObject(paramsMap).toString());
         String result = SmPost.post(MerchantConsts.getMerchantConfig().merchantBindChannel(), paramsMap);
         if (result != null && !"".equals(result)) {

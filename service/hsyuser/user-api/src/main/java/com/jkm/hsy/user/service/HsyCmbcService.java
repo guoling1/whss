@@ -17,7 +17,7 @@ public interface HsyCmbcService {
      * 民生银行商户支付通道绑定
      * @return
      */
-    CmbcResponse merchantBindChannel(long userId);
+    CmbcResponse merchantBindChannel(long userId,long shopId);
     /**
      * 民生银行商户支付修改通道绑定
      * @return
