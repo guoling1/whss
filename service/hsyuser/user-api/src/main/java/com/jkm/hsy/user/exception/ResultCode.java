@@ -35,6 +35,10 @@ public enum ResultCode {
 	USER_FORBID(2029,"您已被禁止登陆"),
 	PASSWORD_SEND_FAIL(2030,"密码发送失败"),
 	USER_CAN_NOT_BE_FOUND(2031,"找不到该用户"),
+	SHOP_STATUS_NOT_EXSIT(2032,"店铺状态不存在"),
+	SORT_TYPE_NOT_EXSIT(2033,"排序类型不存在"),
+	CURRENT_PAGE_MUST_BE_BIGGER_THAN_ZERO(2034,"当前页数必须大于零"),
+	SORT_COLUMN_NOT_EXSIT(2035,"排序列不存在"),
 	RESULT_FAILE(2100,"返回结果错误"),
 	;
 

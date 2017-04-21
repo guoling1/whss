@@ -27,13 +27,16 @@
             <if test="contactCellphone!=null and contactCellphone!=''">CONTACTCELLPHONE=#{contactCellphone},</if>
             <if test="status!=null">STATUS=#{status},</if>
             <if test="isPublic!=null">ISPUBLIC=#{isPublic},</if>
+            <if test="licenceNO!=null and licenceNO!=''">LICENCENO=#{licenceNO},</if>
+            <if test="licenceStartDate!=null">LICENCESTARTDATE=#{licenceStartDate},</if>
+            <if test="licenceEndDate!=null">LICENCEENDDATE=#{licenceEndDate},</if>
             <if test="createTime!=null">CREATETIME=#{createTime},</if>
             <if test="updateTime!=null">UPDATETIME=#{updateTime}</if>
         </set> where ID=#{id}
     </update>
 
     <insert id="insertAppBizCard" useGeneratedKeys="true" keyProperty="id" parameterType="com.jkm.hsy.user.entity.AppBizCard">
-        insert into app_biz_card(SID,CARDNO,CARDACCOUNTNAME,CARDBANK,BANKADDRESS,CARDFID,CARDCELLPHONE,IDCARDNO,STATUS,CREATETIME,UPDATETIME) values(#{sid},#{cardNO},#{cardAccountName},#{cardBank},#{bankAddress},#{cardfID},#{cardCellphone},#{idcardNO},#{status},#{createTime},#{updateTime})
+        insert into app_biz_card(SID,CARDNO,CARDACCOUNTNAME,CARDBANK,BANKADDRESS,CARDFID,CARDCELLPHONE,IDCARDNO,STATUS,CREATETIME,UPDATETIME,BRANCHCODE,BRANCHDISTRICTCODE) values(#{sid},#{cardNO},#{cardAccountName},#{cardBank},#{bankAddress},#{cardfID},#{cardCellphone},#{idcardNO},#{status},#{createTime},#{updateTime},#{branchCode},#{branchDistrictCode})
     </insert>
 
     <select id="findAppBizCardByParam" parameterType="com.jkm.hsy.user.entity.AppBizCard" resultType="com.jkm.hsy.user.entity.AppBizCard">
@@ -52,6 +55,15 @@
         from app_biz_district
         where 1=1
         <if test="parentCode!=null and parentCode!=''">and PARENTCODE=#{parentCode}</if>
+        order by CODE
+    </select>
+
+    <select id="findDistrictByCode" resultType="com.jkm.hsy.user.entity.AppBizDistrict">
+        select
+        CODE,ANAME,AINDEX,ATYPE,PARENTCODE,ISLEAF
+        from app_biz_district
+        where 1=1
+        <if test="code!=null and code!=''">and CODE=#{code}</if>
         order by CODE
     </select>
 
@@ -81,7 +93,7 @@
         (select PATH from app_cm_file where uuid=shop.STOREFRONTID) STOREFRONTURL,
         (select PATH from app_cm_file where uuid=shop.COUNTERID) COUNTERURL,
         (select PATH from app_cm_file where uuid=shop.INDOORID) INDOORURL,
-        (select count(*) from app_biz_shop_user_role where role=3) COUNTEMPLOYEE,
+        (select count(*) from app_biz_shop_user_role where sid=shop.id and role=3) COUNTEMPLOYEE,
         sur.TYPE TYPE,
         (select COUNT(1) from tb_qr_code where merchant_id=shop.id and sys_type='hsy')  COUNTQR
         from app_biz_shop shop left join app_biz_shop_user_role sur on shop.ID=sur.SID
@@ -97,7 +109,7 @@
         (select PATH from app_cm_file where uuid=shop.STOREFRONTID) STOREFRONTURL,
         (select PATH from app_cm_file where uuid=shop.COUNTERID) COUNTERURL,
         (select PATH from app_cm_file where uuid=shop.INDOORID) INDOORURL,
-        (select count(*) from app_biz_shop_user_role where role=3) COUNTEMPLOYEE,
+        (select count(*) from app_biz_shop_user_role where sid=shop.id and role=3) COUNTEMPLOYEE,
         sur.TYPE TYPE,
         shop.CHECKERRORINFO CHECKERRORINFO,
         (select COUNT(1) from tb_qr_code where merchant_id=shop.id and sys_type='hsy')  COUNTQR
@@ -159,6 +171,8 @@
             <if test="cardCellphone!=null and cardCellphone!=''">CARDCELLPHONE=#{cardCellphone},</if>
             <if test="idcardNO!=null and idcardNO!=''">IDCARDNO=#{idcardNO},</if>
             <if test="status!=null and status!=''">STATUS=#{status},</if>
+            <if test="branchCode!=null and branchCode!=''">BRANCHCODE=#{branchCode},</if>
+            <if test="branchDistrictCode!=null and branchDistrictCode!=''">BRANCHDISTRICTCODE=#{branchDistrictCode},</if>
             <if test="createTime!=null">CREATETIME=#{createTime},</if>
             <if test="updateTime!=null">UPDATETIME=#{updateTime}</if>
         </set> where ID=#{id}
@@ -243,6 +257,65 @@
         from app_au_user user
         where user.ACCOUNTID=#{accountID}
         order by user.UPDATETIME desc
+    </select>
+
+    <select id="findBankBranchListByPage" parameterType="page" resultType="com.jkm.hsy.user.entity.AppBizBankBranch">
+        select ID,BRANCHCODE,BRANCHNAME,BANKNAME,PROVINCE,CITY,DISTRICTCODE,AVAILABLE,BANKINDEX from app_biz_bank_branch
+        where AVAILABLE=1
+        <if test="objectT.bankName!=null and objectT.bankName!=''">
+            AND BANKNAME=#{objectT.bankName}
+        </if>
+        <if test="objectT.districtCode!=null and objectT.districtCode!=''">
+            AND DISTRICTCODE=#{objectT.districtCode}
+        </if>
+        <if test="objectT.branchName!=null and objectT.branchName!=''">
+            and BRANCHNAME LIKE CONCAT('%',#{objectT.branchName},'%')
+            union
+            select ID,BRANCHCODE,BRANCHNAME,BANKNAME,PROVINCE,CITY,DISTRICTCODE,AVAILABLE,BANKINDEX from app_biz_bank_branch
+            where AVAILABLE=1 and BRANCHNAME LIKE CONCAT('%',#{objectT.branchName},'%')
+            <if test="objectT.bankName!=null and objectT.bankName!=''">
+                AND BANKNAME=#{objectT.bankName}
+            </if>
+        </if>
+    </select>
+
+    <select id="findBankBranchListByPageCount" parameterType="com.jkm.hsy.user.entity.AppBizBankBranch" resultType="java.lang.Integer">
+        select count(*) from (
+        select ID,BRANCHCODE,BRANCHNAME,BANKNAME,PROVINCE,CITY,DISTRICTCODE,AVAILABLE,BANKINDEX from app_biz_bank_branch
+        where AVAILABLE=1
+        <if test="bankName!=null and bankName!=''">
+            AND BANKNAME=#{bankName}
+        </if>
+        <if test="districtCode!=null and districtCode!=''">
+            AND DISTRICTCODE=#{districtCode}
+        </if>
+        <if test="branchName!=null and branchName!=''">
+            and BRANCHNAME LIKE CONCAT('%',#{branchName},'%')
+            union
+            select ID,BRANCHCODE,BRANCHNAME,BANKNAME,PROVINCE,CITY,DISTRICTCODE,AVAILABLE,BANKINDEX from app_biz_bank_branch
+            where AVAILABLE=1 and BRANCHNAME LIKE CONCAT('%',#{branchName},'%')
+            <if test="bankName!=null and bankName!=''">
+                AND BANKNAME=#{bankName}
+            </if>
+        </if>) x
+    </select>
+
+    <select id="findBankListByPage" parameterType="page" resultType="com.jkm.hsy.user.entity.AppBizBankBranch">
+        select BANKNAME,BANKINDEX from app_biz_bank_branch group by BANKNAME,AVAILABLE
+        having AVAILABLE=1
+        <if test="objectT.bankName!=null and objectT.bankName!=''">
+            AND BANKNAME LIKE CONCAT('%',#{objectT.bankName},'%')
+        </if>
+        order by BANKINDEX,ID
+    </select>
+
+    <select id="findBankListByPageCount" parameterType="com.jkm.hsy.user.entity.AppBizBankBranch" resultType="java.lang.Integer">
+        select count(*) from (
+        select BANKNAME,BANKINDEX from app_biz_bank_branch group by BANKNAME,AVAILABLE
+        having AVAILABLE=1
+        <if test="bankName!=null and bankName!=''">
+            AND BANKNAME LIKE CONCAT('%',#{bankName},'%')
+        </if>) x
     </select>
 
 </mapper>
