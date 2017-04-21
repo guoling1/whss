@@ -158,12 +158,13 @@ public class WebSkipController extends BaseController {
                 authcode = arr[i].split("=")[1];
                 log.info("authcode是:{}",authcode);
             }
-            if("code".equals(arr[i].split("=")[0])){
-                code = arr[i].split("=")[1];
-                log.info("code参数是:{}",code);
+            if("state".equals(arr[i].split("=")[0])){
+                    code = arr[i].split("=")[2];
+                    log.info("code参数是:{}",code);
             }
+
             if("sign".equals(arr[i].split("=")[0])){
-                sign = state.split("=")[1];
+                sign = arr[i].split("=")[1];
                 log.info("sign参数是:{}",code);
             }
         }
