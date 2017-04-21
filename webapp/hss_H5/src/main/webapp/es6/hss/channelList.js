@@ -99,7 +99,7 @@ http.post('/channel/list', {}, function (list) {
     // 5月活动
     if (list[i].channelSign == 601) {
       let now = new Date().getTime();
-      if (now >= 1492617600000 && now <= 1496246399000) {
+      if (now >= 1492790400000 && now <= 1496246399000) {
         fee.className = 'channel-con';
         fee.innerHTML = '0.38%+3';
         // 展示 惠
