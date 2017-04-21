@@ -32,7 +32,7 @@ import java.util.Map;
 public class GatewayController extends HttpServlet {
 
     @ResponseBody
-    @RequestMapping(value = "gateway", method = RequestMethod.GET)
+    @RequestMapping(value = "gateway", method = RequestMethod.POST)
     public void gateway(HttpServletRequest request, HttpServletResponse response) throws ServletException,
             IOException {
         //支付宝响应消息
