@@ -5,7 +5,7 @@ package com.jkm.base.common.spring.alipay.constant;
  */
 public class AlipayServiceConstants {
     /**支付宝公钥-从支付宝生活号详情页面获取*/
-    public static final String ALIPAY_PUBLIC_KEY = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAyRywsGq8lvs8Le8akuvydycpINurWh2q0t4OmulnADt4PqHCwSx6mwpg4PTKGjt7o4NQ5bvFWZ65WK49bAqNHZey/I6JyPFr1F2ru+AXRXbFfTWkPWZUHBr1+VUSys3BRaCdy2/2CB5bYBibqMEeEQ2/FWN2/xP+s9/FGTvlanl+kzQmlsUliInE16Z3f32Pffk6gWYwaBtWcsTBwDvOL4vNldUiMq+ySDzybYi3BAU5jFjM5zpvrMHx7GoENl7KO9nPfrN++31Xe4b7u1yzIFQVd1hwpiTH3Tv/bMzCT3JK4UX4nLPT38ykIF8uUw7N6Yj/1HGd9g6cYHc9+bA+wQIDAQAB";
+    public static final String ALIPAY_PUBLIC_KEY = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAgYpQ0hJUWSYUHUoWtP4tRFD/8Lc2vSPobIQH1lkZnUGrjqBW29atE09/M5kRN8hT5GrkQm3sFEU1n8+LQpidvhyWFT0vaqKfNgcANAaabM8YZHNWP6SyVw8MVSW09OM9xmEunrpZVboJF4wl6AgBN2MVrMxxpc7GLkSUa2RsIWthxQTOFJ5h8GH7Vs2cJMBngqlxnLrG2+576m+H4IQfRg/QYB0/r+SrgQj7gLAnZSO04RU0Ajq0D5PESg/FdV+e2962yy/ELIfKVLD7mqg+k/T0DhpCwNBWq36mbW2QMeEnfuk1coF5LsFOg4+c1oaf6HuWrAZnDVATS7dNbIIm0QIDAQAB";
 
     /**签名编码-视支付宝服务窗要求*/
     public static final String SIGN_CHARSET = "utf-8";
@@ -20,20 +20,20 @@ public class AlipayServiceConstants {
     public static final String PARTNER = "2088421947044115";
 
     //appid
-    public static final String APP_ID = "2016102000728193";
+    public static final String APP_ID = "2016092801990045";
 
     /**
      * 私钥
      */
-    public static final String PRIVATE_KEY = "MIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDNxZFs1/OIpzpZ6zcf2mdETQTGKtOVcsH84jh5AKKanlWxKjHkpwfOKKFRUChvMeCi2QLeXn0UibYbHI14v6YFqXqisvfun1ITrwU9cLWQ6WaeaXcEc/7Mm243lzwZxt9TDaYlhD/NKBqLE+7TlVfObvHNElJ66fNeauIrqq8wY3yMUY5FYZtdNgdsiJlm1F+c72uodmLSXAV1f8X/qbzoYFVOqUHctDRTSIU1z4XoOi6efvk4W0SH8+e4WyaNbVZ+kGkaSx84bpIhlOp6cTA6I5NXgidmbeKhu964DnktMTrcGkhmhmAND7oXHCyNypnt8uI6N8ok+vIpviFhrtEdAgMBAAECggEBALQZB39MQ0qHkvrAdC7c6SVOg68uLKHRHxhGp0bA15CcpEO7uo914c7+oLKahclMzl+5sFkQOkmPfmOcSfY1RwoNm9hq67VenGe998gerct3fOmJRTIQlCJgp8bgBypIdY4rlA+iAHV/dDvl5lIplACJ+fiS4L3Tpb4trmaprUubNakDaLZQ6PISj+nP+ODxhiZLPgZpDpL2l0a5vAAfAvIK6RstYaLQzEFSnCqyFue5bN6A50dfqmPmsjw5rgT4xbeWz8rWwbGh6DAYAM52/9xckJXsaQq6Xknmk06IHYW6x3YqXWnWjTHpK+YJqISAF8SEF1HaOYQ1jlrj6bLtlgECgYEA7DXOGAwnyZI3YDXfqxksGJOnbVuyjuh5Y3aHwH5LD3wFKycZGOlDVfqHmsqt7VTlMG2QjJk0zkzyEmfVof3ih5xDho5S0ZWTUoooqgBeRSbXOXQR4GOureE/uSN3btwD/VC/UDXm5GLfNzjjfHOJkxAJe8jkxk2gURb9Ajse6ZkCgYEA3wLsyChCUgeRvwI/F1v2y5ty0bvGFzLFPPb3cCVYqlkV2TisGE/VM6uqATW5sHQf/LpCltvRDJnnhwmhiSMKy8/SLATV5leBFjypX6dP6KHq0g7eUp5UxFXr6e5xSGF+BCCppVZPHfBbFJ3bgY1l0aWWuj/5WK6DLYg2I9VEPiUCgYEA4/BAAwCn3GIWweb7Adb2sHi71lHoivNXQF3/PgghUr3xFuVR2LIwYmWyOfNfx2hnCkaQeLzXMkUaTBybEQk4cnieyNfKn6jhU4MzHmngjoaepjiVj51h0TVOEtBgzj/OMcKb+0EooDexA08IZu3vUlTlceg4rAv4qoeue1qlx/ECgYAl+3+Mj57MDdH68E0Ck30zLGSf6BVS+iixu3ZlOVcinE2mU4qsEVzEkiZAUoAv13djOe4Bd6rhNI1EaJWEn91E3T50lNZBhwHLYcWPLxXjD0DJShL/i0vwrJmjnCLbKw+lcFK0gEC1XqyElGZAaG7BCCzlx+OWARMCfEKMU9RtqQKBgFWgPqV22M0sBBYmxDsBy/ueHyjQx5i8HmYhdQhoqyaNG0LxCyGvl6xuVsiS8KcjfmX+l/5KeeT8YOTGxHN35XM8fzVM2LYC0jetz2zvQ0AUeAUmDd1XNZLipo9Z790jIkz72Z/3MSmzMweVassqHkq7XHI/3bWCExK3LIJphNbH";
+    public static final String PRIVATE_KEY = "MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCOa+qUI9HFLedL/vm5m9IM6sqvZsh3GX4vrPjWxkLE6mdWOkduOQIypOS10vdIXZXzZwg1G+PUqt7PTiDtVitzgk9uaThL4ex5D5IffZOwr+LxzvWmwey/SJHDPpcdnIkXtqj6UaEtdRDZLCKfPu58HadJIrw0imaSe2FTE/zQwtazP8V/vNfs/UOizoCw0ZcWpcV9+BlJ/y82tlooSOggzKlLjz15G1KfgGPXJtEYYd4m6etsvzviyFlV9IlKWQawBld07rs6XbHFoWVrkBDvLvMPew7eIDo26fg8mKpke73WpKDbADeq2IkpNnKlVcjcpZjwc8vHG37K6oWEjpgtAgMBAAECggEAAujriwlMUOYGMsRL3+HyIbduWrUT5XMM4/Z5wxGb7aAIaneYXAUoKVa7IYfk64KV/LofLc6bEg5HrR6gh5jaHGsOKmhV8R71kOejiacsLFD7pwsec8DEkIfwCngt6Dn5hxWBUFP4ohAhPv6q2mwTvU9xyom+JKirPdTtgSAIa093uMF8SejlFV7FCHrD3JptC/04KkjqJDwmzL/JMlJS5bsK/Re0mwEItLnRZTYuus8JIfW1G48A9yfjriD28ujRMCaGUVefY7/O9SePeKwM8coNXzNw1yke9SvppZKHcPZVwR++hjXk/99JzngICfHIdrpGGincpm/P5QhPdXEJlQKBgQD3XBWH/M5XaKZptxlrd6gP/Gn2bybF26ULnfFoXYWuUnG6np/peQ/FKVGm/XtV2feAGHE/gyFc12Ceqd/TxE4gBBT1Ingxpw9nGxfyZowFOuduI7tRBu+9SDBfnwjwi9ULcB7Sn51XY7zXstbvy/L/3h1ZwX4VIlq6SrXJ8xs4ywKBgQCTZXbl3z12tzkj3NVUDbUpV1za0Kqf4KBMVrKZ00Q8R/Y67vP5bs/EL+qm26mUrGSkmwZUG03aztOXG5xv9Jf6j7O7cN+M8hjQshXaN2O2dxmaegc83YGHZFR+I4zbBNu1wQzZ5y8GLW8cw9XCU/iZGYow87LVXh3QAHQc7hTr5wKBgHac325AGanscrAKrtPLovlXbnBPSGZkNrZlXFdRUUMQIZz9Z20LMja244KR1kyKopX4IoX0GVFtrdUnXD8tyNCtZGdPyhb1JvuoEEmaRtZTMpqr46ytCNTZAuk3V5ARXW2IrB8PjuFS4EEGbu65+6IaHjTmBdGYkaz3GkjmnE0VAoGAPYp4qSObQwzfE6UpgM20XQ133HiRNO2RoC32phk6fTzChvqr7PIiV1R2UbKXTFbqMnvzmXxI9lmyqH3DxE7IgbosHc/T1sJiMAia7SCBRnbVvtTCXtxRL5lpWb04G14c6fcviW9oB9lCci0l+9wZiLrMIwItIb8JDYaS9F1HaPMCgYEAx2Kfe1Gg22sPFzkG/XODHH5SNkvryKCDZPPva5QVZ+I9XAfQU0Z4YOCR1rr3NRLruNMQRE9IZgpe7I6rZwhGQdI6Pm7nCVL+mYHbpKLOdls4ZVAbF8KB37Rli8/aiG0jgf3ctnki76t978Ld5UGjw/Axv4vE0Nax5QnKqAQFkhA=";
 
     /**
      * 公钥
      */
-    public static final String PUBLIC_KEY = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAzcWRbNfziKc6Wes3H9pnRE0ExirTlXLB/OI4eQCimp5VsSox5KcHziihUVAobzHgotkC3l59FIm2GxyNeL+mBal6orL37p9SE68FPXC1kOlmnml3BHP+zJtuN5c8GcbfUw2mJYQ/zSgaixPu05VXzm7xzRJSeunzXmriK6qvMGN8jFGORWGbXTYHbIiZZtRfnO9rqHZi0lwFdX/F/6m86GBVTqlB3LQ0U0iFNc+F6Dounn75OFtEh/PnuFsmjW1WfpBpGksfOG6SIZTqenEwOiOTV4InZm3iobveuA55LTE63BpIZoZgDQ+6FxwsjcqZ7fLiOjfKJPryKb4hYa7RHQIDAQAB";
+    public static final String PUBLIC_KEY = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAjmvqlCPRxS3nS/75uZvSDOrKr2bIdxl+L6z41sZCxOpnVjpHbjkCMqTktdL3SF2V82cINRvj1Krez04g7VYrc4JPbmk4S+HseQ+SH32TsK/i8c71psHsv0iRwz6XHZyJF7ao+lGhLXUQ2Swinz7ufB2nSSK8NIpmknthUxP80MLWsz/Ff7zX7P1Dos6AsNGXFqXFffgZSf8vNrZaKEjoIMypS489eRtSn4Bj1ybRGGHeJunrbL874shZVfSJSlkGsAZXdO67Ol2xxaFla5AQ7y7zD3sO3iA6Nun4PJiqZHu91qSg2wA3qtiJKTZypVXI3KWY8HPLxxt+yuqFhI6YLQIDAQAB";
 
     /**支付宝网关*/
-    public static final String ALIPAY_GATEWAY = "https://openapi.alipaydev.com/gateway.do";
+    public static final String ALIPAY_GATEWAY = "https://openapi.alipay.com/gateway.do";
 
     /**授权访问令牌的授权类型*/
     public static final String GRANT_TYPE = "authorization_code";
@@ -46,7 +46,7 @@ public class AlipayServiceConstants {
     /**
      * 授权拼接url
      */
-    public static final String OAUTH_URL = "https://openauth.alipaydev.com/oauth2/publicAppAuthorize.htm?app_id="+APP_ID+"&state=";
+    public static final String OAUTH_URL = "https://openauth.alipay.com/oauth2/publicAppAuthorize.htm?app_id="+APP_ID+"&state=";
 
     public static final String OAUTH_URL_AFTER = "&scope=auth_base&redirect_uri="+REDIRECT_URI;
 }
