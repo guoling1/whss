@@ -334,7 +334,7 @@ public class AccountSettleAuditRecordServiceImpl implements AccountSettleAuditRe
                 settlementRecord.setTradeNumber(accountSettleAuditRecord.getTradeNumber());
                 settlementRecord.setSettleAmount(accountSettleAuditRecord.getSettleAmount());
                 settlementRecord.setSettleStatus(EnumSettleStatus.DUE_SETTLE.getId());
-                settlementRecord.setSettleMode(EnumSettleModeType.SELF_SETTLE.getId());
+                settlementRecord.setSettleMode(EnumSettleModeType.CHANNEL_SETTLE.getId());
                 settlementRecord.setSettleDestination(EnumSettleDestinationType.TO_CARD.getId());
                 settlementRecord.setStatus(EnumSettlementRecordStatus.WAIT_WITHDRAW.getId());
                 final long settlementRecordId = this.settlementRecordService.add(settlementRecord);
