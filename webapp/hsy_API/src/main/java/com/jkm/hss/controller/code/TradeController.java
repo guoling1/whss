@@ -15,6 +15,7 @@ import com.jkm.hss.helper.request.WithdrawRequest;
 import com.jkm.hss.product.enums.EnumPayChannelSign;
 import com.jkm.hsy.user.dao.HsyShopDao;
 import com.jkm.hsy.user.entity.AppBizShop;
+import com.jkm.hsy.user.service.HsyCmbcService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
@@ -45,7 +46,8 @@ public class TradeController extends BaseController {
     private AccountService accountService;
     @Autowired
     private OrderService orderService;
-
+    @Autowired
+    private HsyCmbcService hsyCmbcService;
     /**
      * 静态码支付
      *
@@ -142,5 +144,16 @@ public class TradeController extends BaseController {
                     log.error("订单[{}], 通道[{}]，支付渠道错误", order.getId(), payChannelSign.getCode());
                     return CommonResponse.simpleResponse(-1, "支付渠道错误");
         }
+    }
+
+    /**
+     * url支付
+     *
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "test")
+    public void test(final HttpServletRequest httpServletRequest) {
+        hsyCmbcService.merchantBindChannel(106,99);
     }
 }
