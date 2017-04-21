@@ -79,7 +79,7 @@ public class CodeController extends BaseController {
                     }else{
                         requestUrl = request.getQueryString();
                     }
-                    String encoderUrl = URLEncoder.encode(requestUrl, "UTF-8");
+                    String encoderUrl = code+"|"+sign;
                     return "redirect:"+ WxConstants.WEIXIN_HSY_MERCHANT_USERINFO+encoderUrl+ WxConstants.WEIXIN_USERINFO_REDIRECT;
                 }
                 model.addAttribute("openId",openId);
@@ -99,7 +99,7 @@ public class CodeController extends BaseController {
                     String encoderUrl = URLEncoder.encode(requestUrl, "UTF-8");
                     log.info("加密之后的地址是:{}",encoderUrl);
                     log.info("加密之后的请求地址是:{}",AlipayServiceConstants.OAUTH_URL+encoderUrl);
-                    return "redirect:"+ AlipayServiceConstants.OAUTH_URL+encoderUrl;
+                    return "redirect:"+ AlipayServiceConstants.OAUTH_URL+encoderUrl+AlipayServiceConstants.OAUTH_URL_AFTER;
                 }
                 model.addAttribute("openId",openId);
                 url = "/sqb/paymentZfb";

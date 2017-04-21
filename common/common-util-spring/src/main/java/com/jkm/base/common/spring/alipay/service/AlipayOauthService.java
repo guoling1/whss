@@ -1,6 +1,8 @@
 package com.jkm.base.common.spring.alipay.service;
 
 import com.alipay.api.AlipayApiException;
+import com.alipay.api.request.AlipayUserInfoShareRequest;
+import com.alipay.api.response.AlipayUserInfoShareResponse;
 import com.alipay.api.response.AlipayUserUserinfoShareResponse;
 
 /**
@@ -12,6 +14,6 @@ public interface AlipayOauthService {
      * @param authCode
      * @return
      */
-    AlipayUserUserinfoShareResponse getUserInfo(String authCode) throws AlipayApiException;
+    String getUserId(String authCode) throws AlipayApiException;
 
 }
