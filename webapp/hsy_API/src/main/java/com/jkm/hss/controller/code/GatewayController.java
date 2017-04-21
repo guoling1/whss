@@ -53,6 +53,8 @@ public class GatewayController extends HttpServlet {
 
             //4. 执行业务逻辑
             responseMsg = executor.execute();
+            LogUtil.log("响应字符串", responseMsg);
+
 
         }
         catch (AlipayApiException alipayApiException) {
@@ -113,7 +115,9 @@ public class GatewayController extends HttpServlet {
         sb.append("<?xml version=\"1.0\" encoding=\"" + charset + "\"?>");
         if (isEncrypt) {// 加密
             sb.append("<alipay>");
+            LogUtil.log("bizContent=", bizContent);
             String encrypted = AlipaySignature.rsaEncrypt(bizContent, alipayPublicKey, charset);
+            LogUtil.log("encrypted=", encrypted);
             sb.append("<response>" + encrypted + "</response>");
             sb.append("<encryption_type>AES</encryption_type>");
             if (isSign) {

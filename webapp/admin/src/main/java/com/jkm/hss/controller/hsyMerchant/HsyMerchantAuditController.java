@@ -6,6 +6,7 @@ import com.jkm.hss.controller.BaseController;
 import com.jkm.hss.push.sevice.PushService;
 import com.jkm.hsy.user.Enum.EnumHxbsStatus;
 import com.jkm.hsy.user.constant.AppConstant;
+import com.jkm.hsy.user.dao.HsyCmbcDao;
 import com.jkm.hsy.user.dao.HsyUserDao;
 import com.jkm.hsy.user.entity.AppAuUser;
 import com.jkm.hsy.user.entity.HsyMerchantAuditRequest;
@@ -46,6 +47,9 @@ public class HsyMerchantAuditController extends BaseController {
     @Autowired
     private HsyUserDao hsyUserDao;
 
+    @Autowired
+    private HsyCmbcDao hsyCmbcDao;
+
     @ResponseBody
     @RequestMapping(value = "/throughAudit",method = RequestMethod.POST)
     public CommonResponse throughAudit(@RequestBody final HsyMerchantAuditRequest hsyMerchantAuditRequest){
@@ -69,8 +73,10 @@ public class HsyMerchantAuditController extends BaseController {
             //入驻成功再开通产品
             if(hsyMerchantAudit.getWeixinRate()!=null&&!"".equals(hsyMerchantAudit.getWeixinRate())){//添加产品
                 CmbcResponse cmbcResponse1 = hsyCmbcService.merchantBindChannel(hsyMerchantAuditRequest.getUid());
-                if(cmbcResponse1.getCode()==-1){
-                    log.info("添加产品失败");
+                if(cmbcResponse1.getCode()==1){
+                    hsyCmbcDao.updateHxbUserById(hsyMerchantAuditRequest.getUid());
+                }else{
+                   log.info("开通产品失败");
                 }
             }
         }else{
