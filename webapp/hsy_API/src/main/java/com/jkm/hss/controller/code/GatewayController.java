@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -28,11 +29,11 @@ import java.util.Map;
 @Slf4j
 @Controller
 @RequestMapping(value = "/fuwuchuang")
-public class GatewayController {
+public class GatewayController extends HttpServlet {
 
     @ResponseBody
     @RequestMapping(value = "gateway", method = RequestMethod.GET)
-    public void staticCodeReceipt(HttpServletRequest request, HttpServletResponse response) throws ServletException,
+    public void gateway(HttpServletRequest request, HttpServletResponse response) throws ServletException,
             IOException {
         //支付宝响应消息
         String responseMsg = "";
