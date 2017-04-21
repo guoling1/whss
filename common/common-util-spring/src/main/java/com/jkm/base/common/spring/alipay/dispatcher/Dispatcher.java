@@ -9,6 +9,7 @@ import java.util.Map;
 import com.jkm.base.common.spring.alipay.constant.AlipayServiceEventConstants;
 import com.jkm.base.common.spring.alipay.constant.AlipayServiceNameConstants;
 import com.jkm.base.common.spring.alipay.executor.*;
+import com.jkm.base.common.spring.alipay.util.LogUtil;
 import com.jkm.base.common.spring.alipay.util.MyException;
 import net.sf.json.JSONObject;
 import net.sf.json.xml.XMLSerializer;
@@ -33,24 +34,26 @@ public class Dispatcher {
     public static ActionExecutor getExecutor(Map<String, String> params) throws MyException {
         //获取服务信息
         String service = params.get("service");
+        LogUtil.log("服务名称", service);
         if (StringUtils.isEmpty(service)) {
             throw new MyException("无法取得服务名");
         }
         //获取内容信息
         String bizContent = params.get("biz_content");
+        LogUtil.log("服务内容", bizContent);
         if (StringUtils.isEmpty(bizContent)) {
             throw new MyException("无法取得业务内容信息");
         }
 
         //将XML转化成json对象
         JSONObject bizContentJson = (JSONObject) new XMLSerializer().read(bizContent);
-
+        LogUtil.log("json格式字符串", bizContentJson.toString());
         // 1.获取消息类型信息 
         String msgType = bizContentJson.getString("MsgType");
         if (StringUtils.isEmpty(msgType)) {
             throw new MyException("无法取得消息类型");
         }
-
+        LogUtil.log("消息类型", msgType);
         // 2.根据消息类型(msgType)进行执行器的分类转发
         //  2.1 纯文本聊天类型
         if ("text".equals(msgType)) {
@@ -82,7 +85,7 @@ public class Dispatcher {
                                                                                              throws MyException {
         // 1. 获取事件类型
         String eventType = bizContentJson.getString("EventType");
-
+        LogUtil.log("获取事件类型", eventType);
         if (StringUtils.isEmpty(eventType)) {
             throw new MyException("无法取得事件类型");
         }
@@ -91,16 +94,17 @@ public class Dispatcher {
         // 2.1 激活验证开发者模式
         if (AlipayServiceNameConstants.ALIPAY_CHECK_SERVICE.equals(service)
             && eventType.equals(AlipayServiceEventConstants.VERIFYGW_EVENT)) {
-
+            LogUtil.log("根据事件类型再次区分服务类型", "1");
             return new InAlipayVerifyExecutor();
 
             // 2.2 其他消息通知类 
         } else if (AlipayServiceNameConstants.ALIPAY_PUBLIC_MESSAGE_NOTIFY.equals(service)) {
-
+            LogUtil.log("根据事件类型再次区分服务类型", "2");
             return getMsgNotifyExecutor(eventType, bizContentJson);
 
             // 2.3 对于后续支付宝可能新增的类型，统一默认返回AKC响应
         } else {
+            LogUtil.log("根据事件类型再次区分服务类型", "3");
             return new InAlipayDefaultExecutor(bizContentJson);
         }
     }

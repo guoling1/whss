@@ -6,6 +6,7 @@ package com.jkm.base.common.spring.alipay.executor;
 
 
 import com.jkm.base.common.spring.alipay.constant.AlipayServiceConstants;
+import com.jkm.base.common.spring.alipay.util.LogUtil;
 import com.jkm.base.common.spring.alipay.util.MyException;
 
 /**
@@ -21,6 +22,7 @@ public class InAlipayVerifyExecutor implements ActionExecutor {
      */
     @Override
     public String execute() throws MyException {
+        LogUtil.log("进入执行类：", "InAlipayVerifyExecutor");
         return this.setResponse();
     }
 
@@ -35,6 +37,8 @@ public class InAlipayVerifyExecutor implements ActionExecutor {
         builder.append("<success>").append(Boolean.TRUE.toString()).append("</success>");
         builder.append("<biz_content>").append(AlipayServiceConstants.PUBLIC_KEY)
             .append("</biz_content>");
+        LogUtil.log("进入执行响应类：", "setResponse");
+        LogUtil.log("结果：", builder.toString());
         return builder.toString();
     }
 }
