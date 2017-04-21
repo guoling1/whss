@@ -2609,6 +2609,11 @@ input:focus {
 }
 .channel .channel-box .channel-space .channel-group .channel-li.big {
   width: 30%;
+  text-align: left;
+}
+.channel .channel-box .channel-space .channel-group .channel-li.right {
+  text-align: right;
+  padding-right: 20px;
 }
 .channel .channel-box .channel-space .channel-group .channel-li span {
   display: inline-block;
@@ -2628,10 +2633,10 @@ input:focus {
 }
 .channel .channel-box .channel-space .channel-group .channel-con .preferential {
   display: inline-block;
-  width: 13px;
-  height: 13px;
+  width: 30px;
+  height: 14px;
   background: url("../assets/preferential.png") no-repeat center;
-  background-size: 13px 13px;
+  background-size: 30px 14px;
   margin-left: 3px;
   transform: translate3d(0, 1px, 0);
 }
@@ -2644,12 +2649,17 @@ input:focus {
 .channel .channel-box .channel-space .channel-group .channel-con.name {
   color: #222;
   font-weight: bold;
-  text-overflow: ellipsis;
+  text-align: left;
 }
 .channel .channel-box .channel-space .channel-group .channel-con.dis {
   color: #b0b0b0;
 }
+.channel .channel-box .channel-space .channel-group .channel-con.preferential {
+  color: #e78034;
+}
 .channel .channel-box .channel-space .channel-group .channel-con.right {
+  text-align: right;
+  padding-right: 20px;
   background: url("../assets/channel-right.png") no-repeat center right;
   background-size: 6px 10px;
 }

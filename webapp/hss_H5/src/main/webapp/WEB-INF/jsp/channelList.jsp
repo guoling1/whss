@@ -12,7 +12,7 @@
   <meta name="viewport"
         content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
   <title>请选择通道</title>
-  <link rel="stylesheet" href="http://static.jinkaimen.cn/hss/css/style.2.2.11.css">
+  <link rel="stylesheet" href="http://static.jinkaimen.cn/hss/css/style.2.2.12.css">
   <link rel="stylesheet" href="http://static.jinkaimen.cn/weui/weui.css">
 </head>
 <body>
@@ -24,7 +24,7 @@
         <div class="channel-li big">渠道名称</div>
         <div class="channel-li">结算时间<span id="know-channel"></span></div>
         <div class="channel-li" style="width: 16%">费率</div>
-        <div class="channel-li" style="float: right">单笔限额</div>
+        <div class="channel-li right" style="float: right">单笔限额</div>
       </div>
     </div>
     <div class="channel-space" id="channel">
@@ -55,5 +55,5 @@
 
 </body>
 <script src="http://static.jinkaimen.cn/vendor/vendor.1.0.9.9.min.js"></script>
-<script src="http://static.jinkaimen.cn/hss/2.2.17/channelList.min.js"></script>
+<script src="http://static.jinkaimen.cn/hss/2.2.18/channelList.min.js"></script>
 </html>
