@@ -263,7 +263,7 @@
         select ID,BRANCHCODE,BRANCHNAME,BANKNAME,PROVINCE,CITY,DISTRICTCODE,AVAILABLE,BANKINDEX from app_biz_bank_branch
         where AVAILABLE=1
         <if test="objectT.bankName!=null and objectT.bankName!=''">
-            AND BANKNAME=#{objectT.bankName}
+            AND BANKNAME LIKE CONCAT('%',#{objectT.bankName},'%')
         </if>
         <if test="objectT.districtCode!=null and objectT.districtCode!=''">
             AND DISTRICTCODE=#{objectT.districtCode}
@@ -284,7 +284,7 @@
         select ID,BRANCHCODE,BRANCHNAME,BANKNAME,PROVINCE,CITY,DISTRICTCODE,AVAILABLE,BANKINDEX from app_biz_bank_branch
         where AVAILABLE=1
         <if test="bankName!=null and bankName!=''">
-            AND BANKNAME=#{bankName}
+            AND BANKNAME LIKE CONCAT('%',#{bankName},'%')
         </if>
         <if test="districtCode!=null and districtCode!=''">
             AND DISTRICTCODE=#{districtCode}

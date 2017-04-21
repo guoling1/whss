@@ -351,6 +351,7 @@ public class HsyShopServiceImpl implements HsyShopService {
         map.put("appBizShop",appBizShop);
         map.put("userList",userList);
         map.put("qrList",qrList);
+        map.put("qrUrl",AppConstant.QR_URL);
         gson = new GsonBuilder().setExclusionStrategies(new ExclusionStrategy() {
             public boolean shouldSkipField(FieldAttributes f) {
                 return f.getName().contains("password");

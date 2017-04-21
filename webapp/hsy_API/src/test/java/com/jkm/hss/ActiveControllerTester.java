@@ -409,6 +409,19 @@ public class ActiveControllerTester {
     }
 
     @Test
+    public void testHSY001039() throws Exception {
+        AppParam p=new AppParam();
+        p.setServiceCode("HSY001039");
+        p.setAccessToken("661bf9ce274d196264ebe457bf2bbfdf");
+        p.setAppType("ios");
+        p.setTimeStamp("2017-04-20 15:24:21");
+        p.setV("v1.0");
+        String param="{\"recordId\":8,\"pageNo\":1,\"pageSize\":10}";
+        p.setRequestData(param);
+        ActiveControllerTester.testRest(p);
+    }
+
+    @Test
     public void testFindAllPageComponent()throws Exception{
         AppParam p=new AppParam();
         p.setServiceCode("HSY001040");
@@ -557,16 +570,4 @@ public class ActiveControllerTester {
         ActiveControllerTester.testRest(p);
     }
 
-    @Test
-    public void testHSY001039() throws Exception {
-        AppParam p=new AppParam();
-        p.setServiceCode("HSY001039");
-        p.setAccessToken("661bf9ce274d196264ebe457bf2bbfdf");
-        p.setAppType("ios");
-        p.setTimeStamp("2017-04-20 15:24:21");
-        p.setV("v1.0");
-        String param="{\"recordId\":8,\"pageNo\":1,\"pageSize\":10}";
-        p.setRequestData(param);
-        ActiveControllerTester.testRest(p);
-    }
 }

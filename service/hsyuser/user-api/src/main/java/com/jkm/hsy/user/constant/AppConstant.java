@@ -37,4 +37,5 @@ public class AppConstant {
     public static int SEND_PASSWORD_NOTICE_TYPE_ID=705;
 
     public static int PAGE_SIZE=10;
+    public static String QR_URL="http://hsy.qianbaojiajia.com/code/scanCode";
 }
