@@ -55,6 +55,16 @@ public class MerchantInfoResponse {
     private long secondDealerId;
 
     /**
+     * 一级推荐
+     */
+    private long firstMerchantId;
+
+    /**
+     * 二级推荐
+     */
+    private long secondMerchantId;
+
+    /**
      * 注册方式
      */
     private String registered;
