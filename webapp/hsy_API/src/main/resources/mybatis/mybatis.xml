@@ -8,11 +8,11 @@
     </settings>
 
     <typeAliases>
-        <typeAlias alias="page" type="com.jkm.hsy.user.constant.Page"/>
+        <typeAlias alias="page" type="com.jkm.base.common.util.Page"/>
     </typeAliases>
 
     <plugins>
-        <plugin interceptor="com.jkm.hsy.user.constant.PageInterceptor">
+        <plugin interceptor="com.jkm.base.common.util.PageInterceptor">
             <property name="dataBaseType" value="mysql" />
         </plugin>
     </plugins>
