@@ -95,8 +95,8 @@ public class ShallProfitDetailServiceImpl implements ShallProfitDetailService{
 
         if (type.getId() == EnumProductType.HSS.getId()){
             //hss活动
-            final Date beginDate = DateFormatUtil.parse("2017-04-12 00:00:00", DateFormatUtil.yyyy_MM_dd_HH_mm_ss);
-            final Date endDate = DateFormatUtil.parse("2017-05-01 23:59:59", DateFormatUtil.yyyy_MM_dd_HH_mm_ss);
+            final Date beginDate = DateFormatUtil.parse("2017-04-22 00:00:00", DateFormatUtil.yyyy_MM_dd_HH_mm_ss);
+            final Date endDate = DateFormatUtil.parse("2017-05-31 23:59:59", DateFormatUtil.yyyy_MM_dd_HH_mm_ss);
             final Date currentDate = new Date();
             final boolean isActTime = currentDate.after(beginDate) && currentDate.before(endDate);
             if ((EnumPayChannelSign.EL_UNIONPAY.getId() == channelSign) && isActTime){
