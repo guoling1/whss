@@ -30,7 +30,7 @@
             <el-table-column prop="dates" label="发布时间"></el-table-column>
             <el-table-column label="标题" min-width="160">
               <template scope="scope">
-                <router-link target="_blank" :to="{path:'/admin/record/StoreNoticeDet',query:{id:records[scope.$index].id}}"
+                <router-link target="_blank" :to="{path:'/admin/details/StoreNoticeDet',query:{id:records[scope.$index].id}}"
                   type="text" size="small">
                   {{records[scope.$index].title}}
                 </router-link>

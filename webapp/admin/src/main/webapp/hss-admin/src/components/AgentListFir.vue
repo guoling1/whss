@@ -52,12 +52,12 @@
           <el-table v-loading.body="loading"  style="font-size: 12px;margin:15px 0" :data="records" border >
             <el-table-column label="代理商名称">
               <template scope="scope">
-                <router-link :to="'/admin/agentAddBase?level=1&id='+records[scope.$index].id">{{records[scope.$index].proxyName}}</router-link>
+                <router-link target="_blank" :to="'/admin/details/agentAddBase?level=1&id='+records[scope.$index].id">{{records[scope.$index].proxyName}}</router-link>
               </template>
             </el-table-column>
             <el-table-column label="代理商编号">
               <template scope="scope">
-                <router-link :to="'/admin/agentAddBase?level=1&id='+records[scope.$index].id">{{records[scope.$index].markCode}}</router-link>
+                <router-link target="_blank" :to="'/admin/details/agentAddBase?level=1&id='+records[scope.$index].id">{{records[scope.$index].markCode}}</router-link>
               </template>
             </el-table-column>
             <el-table-column prop="level" label="代理商级别" ></el-table-column>
@@ -66,8 +66,8 @@
             <el-table-column prop="mobile" label="联系手机号" ></el-table-column>
             <el-table-column label="好收收">
               <template scope="scope">
-                <a target="_blank" @click="_$power(scope.row.id,scope.row.hssProductId,'hss',openProduct,'boss_first_product_add')" v-if="records[scope.$index].hssProductId==0">开通产品</a>
-                <a target="_blank" @click="_$power(scope.row.id,scope.row.hssProductId,'hss',auditProduct,'boss_first_product_update_btn')" v-else="records[scope.$index].hssProductId==0">修改产品设置</a>
+                <a @click="_$power(scope.row.id,scope.row.hssProductId,'hss',openProduct,'boss_first_product_add')" v-if="records[scope.$index].hssProductId==0">开通产品</a>
+                <a @click="_$power(scope.row.id,scope.row.hssProductId,'hss',auditProduct,'boss_first_product_update_btn')" v-else="records[scope.$index].hssProductId==0">修改产品设置</a>
               </template>
             </el-table-column>
             <el-table-column label="好收银" >

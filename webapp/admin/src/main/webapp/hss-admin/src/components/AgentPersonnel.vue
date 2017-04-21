@@ -96,10 +96,12 @@
     },
     methods: {
       issue: function () {
-        this.$router.push('/admin/record/personnelAdd')
+        window.open('http://admin.qianbaojiajia.com/admin/details/personnelAdd');
+//        this.$router.push('/admin/record/personnelAdd')
       },
       issue1: function (id) {
-        this.$router.push({path:'/admin/record/agentpersonnelDet',query:{id:id}})
+        window.open('http://admin.qianbaojiajia.com/admin/details/agentpersonnelDet?id='+id);
+//        this.$router.push({path:'/admin/record/agentpersonnelDet',query:{id:id}})
       },
       getData: function () {
         this.loading = true;

@@ -260,7 +260,7 @@
         payData: [],
       }
     },
-    activated: function () {
+    created: function () {
       if(this.$route.query.idd==0){
         this.isStore=true
           this.query = {
