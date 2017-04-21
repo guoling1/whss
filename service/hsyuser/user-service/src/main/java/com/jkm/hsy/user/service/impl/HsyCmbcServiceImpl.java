@@ -46,11 +46,17 @@ public class HsyCmbcServiceImpl implements HsyCmbcService {
         Map<String, String> paramsMap = new HashMap<String, String>();
         //商户信息-MerchantInfo
         paramsMap.put("merchantNo", appAuUser.getGlobalID());//商户编号
-        paramsMap.put("fullName", appAuUser.getShopName());//商户全称
-        paramsMap.put("shortName", appAuUser.getShopShortName());//商户简称
+        paramsMap.put("fullName", appBizShop.getName());//商户全称
+        paramsMap.put("shortName", appBizShop.getShortName());//商户简称
         paramsMap.put("servicePhone","4006226233");//客服电话
-        paramsMap.put("businessLicense",appBizShop.getLicenceNO());//证据编号
-        paramsMap.put("businessLicenseType","NATIONAL_LEGAL");//证件类型
+        if(appBizShop.getLicenceNO()==null||"".equals(appBizShop.getLicenceNO())){
+            paramsMap.put("businessLicense","");//证据编号
+            paramsMap.put("businessLicenseType","");//证件类型
+        }else{
+            paramsMap.put("businessLicense",appBizShop.getLicenceNO());//证据编号
+            paramsMap.put("businessLicenseType","NATIONAL_LEGAL");//证件类型
+        }
+
 
         //联系人信息-contactInfo
         paramsMap.put("contactName",appAuUser.getRealname());//联系人名称
