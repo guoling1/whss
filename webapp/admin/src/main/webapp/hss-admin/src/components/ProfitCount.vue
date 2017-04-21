@@ -255,10 +255,10 @@
         date:'',
         date1:'',
         date2:'',
-        url:'',
+        url:'/admin/allProfit/companyProfit',
+        totalUrl:'/admin/allProfit/companyAmount',
         loadUrl:'',
         loadUrl1:'',
-        totalUrl:"",
         fromName:'',
         query:{
           pageNo:1,
@@ -297,7 +297,7 @@
         vm.$data.records = [];
         vm.$data.total = 0;
         vm.$data.count = 0;
-        vm.$http.post(vm.$data.url,vm.query)
+        /*vm.$http.post(vm.$data.url,vm.query)
           .then(function (res) {
             vm.$data.loading = false;
             vm.$data.records = res.data.records;
@@ -331,7 +331,7 @@
               message: err.statusMessage,
               type: 'error'
             });
-          })
+          })*/
       })
     },
     created: function () {
@@ -352,6 +352,8 @@
           this.$data.query.endTime = str;
         }
       }
+      this.getData();
+      this.getAddTotal();
     },
     methods: {
       onload: function () {

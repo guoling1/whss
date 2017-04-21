@@ -209,7 +209,7 @@
         date:'',
         date1:'',
         date2:'',
-        url:'',
+        url:'/admin/query/getAll',
         loadUrl:'',
         loadUrl1:'',
         fromName:'',
@@ -249,7 +249,7 @@
         vm.$data.records = '';
         vm.$data.total = 0;
         vm.$data.count = 0;
-        vm.$http.post(vm.$data.url,vm.$data.query)
+        /*vm.$http.post(vm.$data.url,vm.$data.query)
           .then(function (res) {
             vm.$data.loading = false;
             vm.$data.records = res.data.records;
@@ -263,7 +263,7 @@
               message: err.statusMessage,
               type: 'error'
             })
-          })
+          })*/
       })
     },
     created: function () {
@@ -284,6 +284,7 @@
 //          this.$data.query.endTime = str;
 //        }
 //      }
+      this.getData()
     },
     methods: {
       auditHsy: function (id,status) {
@@ -293,6 +294,23 @@
       audit: function (id,status) {
         window.open('http://admin.qianbaojiajia.com/admin/details/StoreAudit?id='+id+'&status='+status);
 //        this.$router.push({path:'/admin/record/StoreAudit',query:{id:id,status:status}})
+      },
+      getData: function () {
+        this.$http.post(this.$data.url,this.$data.query)
+          .then(function (res) {
+            this.$data.loading = false;
+            this.$data.records   = res.data.records;
+            this.$data.count = res.data.count;
+            this.$data.total = res.data.totalPage;
+            this.$data.loadUrl1 = res.data.ext;
+          }, function (err) {
+            this.$data.loading = false;
+            this.$message({
+              showClose: true,
+              message: err.statusMessage,
+              type: 'error'
+            })
+          })
       },
       //同步
       synchro: function () {
@@ -366,78 +384,25 @@
         }
         this.$data.records='';
         this.$data.loading = true;
-        this.$http.post(this.$data.url,this.$data.query)
-          .then(function (res) {
-            this.$data.loading = false;
-            this.$data.records   = res.data.records;
-            this.$data.count = res.data.count;
-            this.$data.total = res.data.totalPage;
-            this.$data.loadUrl1 = res.data.ext;
-          }, function (err) {
-            this.$data.loading = false;
-            this.$message({
-              showClose: true,
-              message: err.statusMessage,
-              type: 'error'
-            })
-          })
+        this.getData()
       },
       search(){
         this.$data.query.pageNo = 1;
         this.$data.loading = true;
-        this.$http.post(this.$data.url,this.$data.query)
-          .then(function (res) {
-            this.$data.loading = false;
-            this.$data.records   = res.data.records;
-            this.$data.count = res.data.count;
-            this.$data.total = res.data.totalPage;
-          }, function (err) {
-            this.$data.loading = false;
-            this.$message({
-              showClose: true,
-              message: err.statusMessage,
-              type: 'error'
-            })
-          })
+        this.getData()
       },
       //当前页改变时
       handleCurrentChange(val) {
         this.$data.query.pageNo = val;
         this.$data.loading = true;
         this.$data.records = '';
-        this.$http.post(this.$data.url,this.$data.query)
-          .then(function (res) {
-            this.$data.loading = false;
-            this.$data.records   = res.data.records;
-            this.$data.count = res.data.count;
-            this.$data.total = res.data.totalPage;
-          }, function (err) {
-            this.$data.loading = false;
-            this.$message({
-              showClose: true,
-              message: err.statusMessage,
-              type: 'error'
-            })
-          })
+        this.getData()
       },
       handleSizeChange: function (val) {
         this.query.pageNo = 1;
         this.query.pageSize = val;
         this.loading = true;
-        this.$http.post(this.$data.url,this.$data.query)
-          .then(function (res) {
-            this.$data.loading = false;
-            this.$data.records   = res.data.records;
-            this.$data.count = res.data.count;
-            this.$data.total = res.data.totalPage;
-          }, function (err) {
-            this.$data.loading = false;
-            this.$message({
-              showClose: true,
-              message: err.statusMessage,
-              type: 'error'
-            })
-          })
+        this.getData()
       }
     },
     watch:{

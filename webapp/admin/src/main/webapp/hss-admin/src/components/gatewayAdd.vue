@@ -143,7 +143,7 @@
               message: '创建成功',
               type: 'success'
             });
-            this.$router.push('/admin/record/gateway')
+            this.$router.push('/admin/details/gateway')
           }, function (err) {
             this.$message({
               showClose: true,
@@ -153,7 +153,7 @@
           })
       },
       goBack: function () {
-        this.$router.push('/admin/record/gateway')
+        this.$router.push('/admin/details/gateway')
       },
       change: function () {
         if(this.productType=='hss'){
@@ -174,7 +174,7 @@
               message: '创建成功',
               type: 'success'
             });
-            this.$router.push('/admin/record/gateway')
+            this.$router.push('/admin/details/gateway')
           }, function (err) {
             this.$message({
               showClose: true,

@@ -4,6 +4,7 @@
       <div class="box" style="margin-top:15px;overflow: hidden">
         <div class="box-header">
           <h3 class="box-title">对账数据</h3>
+          <a href="javascript:window.close();" class="pull-right btn btn-primary">关闭</a>
         </div>
         <div class="box-body">
           <el-tabs class="tab" v-model="activeName" type="border-card" style="margin-bottom: 20px">
@@ -54,6 +55,7 @@
   </div>
 </template>
 <script lang="babel">
+  import Message from './Message.vue'
   export default{
     name: 'tAuditStore',
     data(){
@@ -85,11 +87,9 @@
       submit:function () {
           this.$http.post(this.url,{batchNO:JSON.parse(sessionStorage.getItem('data')).balanceExternalStatistic.batchNO},{emulateJSON: true})
             .then(res =>{
-              this.$message({
-                showClose: true,
-                message: '对账成功',
-                type: 'success'
-              });
+              this.$store.commit('MESSAGE_ACCORD_SHOW', {
+                text: '对账成功'
+              })
 //              this.$router.push('/admin/record/accountSystem')
             })
             .catch(err =>{
