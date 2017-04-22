@@ -8,10 +8,10 @@ public class AlipayServiceConstants {
     public static final String ALIPAY_PUBLIC_KEY = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAgYpQ0hJUWSYUHUoWtP4tRFD/8Lc2vSPobIQH1lkZnUGrjqBW29atE09/M5kRN8hT5GrkQm3sFEU1n8+LQpidvhyWFT0vaqKfNgcANAaabM8YZHNWP6SyVw8MVSW09OM9xmEunrpZVboJF4wl6AgBN2MVrMxxpc7GLkSUa2RsIWthxQTOFJ5h8GH7Vs2cJMBngqlxnLrG2+576m+H4IQfRg/QYB0/r+SrgQj7gLAnZSO04RU0Ajq0D5PESg/FdV+e2962yy/ELIfKVLD7mqg+k/T0DhpCwNBWq36mbW2QMeEnfuk1coF5LsFOg4+c1oaf6HuWrAZnDVATS7dNbIIm0QIDAQAB";
 
     /**签名编码-视支付宝服务窗要求*/
-    public static final String SIGN_CHARSET = "utf-8";
+    public static final String SIGN_CHARSET = "GBK";
 
     /**字符编码-传递给支付宝的数据编码*/
-    public static final String CHARSET = "utf-8";
+    public static final String CHARSET = "GBK";
 
     //签名类型-视支付宝服务窗要求
     public static final String SIGN_TYPE  = "RSA2";
