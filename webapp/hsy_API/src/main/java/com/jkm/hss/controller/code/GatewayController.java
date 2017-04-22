@@ -101,12 +101,13 @@ public class GatewayController extends HttpServlet {
      * @return
      */
     private void verifySign(Map<String, String> params) throws AlipayApiException {
-
+        LogUtil.log("延签开始","");
         if (!AlipaySignature.rsaCheckV2(params, AlipayServiceEnvConstants.ALIPAY_PUBLIC_KEY,
                 AlipayServiceEnvConstants.SIGN_CHARSET, AlipayServiceEnvConstants.SIGN_TYPE)) {
-            log.info("验签失败");
+            LogUtil.log("延签失败","");
             throw new AlipayApiException("verify sign fail.");
         }
+        LogUtil.log("延签结束","");
     }
 
 
