@@ -21,6 +21,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -32,15 +33,20 @@ import java.util.Map;
 public class GatewayController extends HttpServlet {
 
     @ResponseBody
-    @RequestMapping(value = "gateway", method = RequestMethod.POST)
+    @RequestMapping(value = "gateway", method = RequestMethod.GET)
     public void gateway(HttpServletRequest request, HttpServletResponse response) throws ServletException,
             IOException {
         //支付宝响应消息
         String responseMsg = "";
 
         //1. 解析请求参数
-        Map<String, String> params = RequestUtil.getRequestParams(request);
-
+        Map<String, String> params = new HashMap<String, String>();
+        params.put("biz_content","<?xml version=\"1.0\" encoding=\"gbk\"?><XML><AppId><![CDATA[2016092801990045]]></AppId><FromUserId></FromUserId><CreateTime><![CDATA[1492843412536]]></CreateTime><MsgType><![CDATA[event]]></MsgType><\n" +
+                "EventType><![CDATA[verifygw]]></EventType><ActionParam></ActionParam><AgreementId></AgreementId><AccountNo></AccountNo></XML>");
+        params.put("sign","EMYgty4AIXsQkEhS90cEKPcGmsEvw37qCwYgGjuspDXp+XcSQkdgdGwkk+eBRtsDavt9DcIZ5VkzMM9G0keiSwmTdNi0tKskeTaHB/sMK5SpgnkH+uEtjb331FLDZBIc3vBaRxdMOLYrRDWBvwwhISvfrHinb76Bedn7OfZfVnEXagXYGxGdI+XSS2F7SBPn/EGLPqt+ymR9rzMNk8oky8sx3ceSnexe0puncnszU+IOglMThN+3xFd4WNdaSWkMJCSgrDEKvcvhWpvAob/LuAqNAIYKwesQ/Gf1UJ9BZW44si4L53LfI/FF6hZYl1CWvWY3kwn3v0ib9qU/dv8WFA==");
+        params.put("sign_type","RSA2");
+        params.put("service","alipay.service.check");
+        params.put("charset","GBK");
         //打印本次请求日志，开发者自行决定是否需要
         LogUtil.log("支付宝请求串", params.toString());
 
