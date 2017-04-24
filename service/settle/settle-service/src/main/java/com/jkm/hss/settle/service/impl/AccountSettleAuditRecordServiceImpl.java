@@ -355,7 +355,7 @@ public class AccountSettleAuditRecordServiceImpl implements AccountSettleAuditRe
         final Date settleDate = DateFormatUtil.parse(DateFormatUtil.format(new Date(), DateFormatUtil.yyyy_MM_dd) , DateFormatUtil.yyyy_MM_dd);
         //查询结算单--结算
         final List<Long> pendingIds = this.accountSettleAuditRecordDao.selectPendingSettleAuditRecordIdsBySettleDateAndSettleStatus(settleDate, EnumSettleStatus.DUE_SETTLE.getId());
-        log.info("今日[{}], 可以结算的结算审核记录[{}]", pendingIds);
+        log.info("今日[{}], 可以结算的结算审核记录[{}]", settleDate, pendingIds);
         for (int i= 0; i < pendingIds.size(); i++) {
             final long settleAuditRecordId = pendingIds.get(i);
             log.info("结算审核记录[{}],发消息进行结算", settleAuditRecordId);
