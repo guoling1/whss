@@ -99,4 +99,6 @@ public interface HsyMerchantAuditService {
      */
     int hsyMerchantSecondListCount(HsyQueryMerchantRequest request);
 
+
+
 }

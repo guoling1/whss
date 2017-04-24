@@ -4,6 +4,8 @@ import com.jkm.base.common.entity.ExcelSheetVO;
 import com.jkm.base.common.util.ExcelUtil;
 import com.jkm.hss.dealer.service.DealerService;
 import com.jkm.hss.merchant.dao.MerchantInfoQueryDao;
+import com.jkm.hss.merchant.entity.HistoryPhotoChangeRequest;
+import com.jkm.hss.merchant.entity.HistoryPhotoChangeResponse;
 import com.jkm.hss.merchant.entity.MerchantInfoRequest;
 import com.jkm.hss.merchant.entity.MerchantInfoResponse;
 import com.jkm.hss.merchant.enums.EnumMerchantStatus;
@@ -115,6 +117,52 @@ public class MerchantInfoQueryServiceImpl implements MerchantInfoQueryService {
         }
         int count = merchantInfoQueryDao.getCount1(req);
         return count;
+    }
+
+    @Override
+    public HistoryPhotoChangeResponse getPhoto(long merchantId) {
+        return this.merchantInfoQueryDao.getPhoto(merchantId);
+    }
+
+    @Override
+    public void saveHistory(HistoryPhotoChangeRequest request) {
+        this.merchantInfoQueryDao.saveHistory(request);
+    }
+
+    @Override
+    public void savePhotoChang(HistoryPhotoChangeRequest request) {
+        this.merchantInfoQueryDao.savePhotoChang(request);
+    }
+
+    @Override
+    public void savePhotoChang1(HistoryPhotoChangeRequest request) {
+        this.merchantInfoQueryDao.savePhotoChang1(request);
+    }
+
+    @Override
+    public void savePhotoChang2(HistoryPhotoChangeRequest request) {
+        this.merchantInfoQueryDao.savePhotoChang2(request);
+    }
+
+    @Override
+    public void savePhotoChang3(HistoryPhotoChangeRequest request) {
+        this.merchantInfoQueryDao.savePhotoChang3(request);
+    }
+
+    @Override
+    public void savePhotoChang4(HistoryPhotoChangeRequest request) {
+        this.merchantInfoQueryDao.savePhotoChang4(request);
+    }
+
+    @Override
+    public List<HistoryPhotoChangeResponse> selectHistory(HistoryPhotoChangeRequest request) {
+        List<HistoryPhotoChangeResponse> list = this.merchantInfoQueryDao.selectHistory(request);
+        return list;
+    }
+
+    @Override
+    public int selectHistoryCount(HistoryPhotoChangeRequest request) {
+        return this.merchantInfoQueryDao.selectHistoryCount(request);
     }
 
     @Override

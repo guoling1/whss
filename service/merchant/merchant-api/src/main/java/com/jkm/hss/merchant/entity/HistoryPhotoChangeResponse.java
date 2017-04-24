@@ -1,18 +1,14 @@
 package com.jkm.hss.merchant.entity;
 
-import com.jkm.base.common.entity.BaseEntity;
 import lombok.Data;
 
+import java.util.Date;
+
 /**
- * Created by zhangbin on 2017/4/21.
+ * Created by zhangbin on 2017/4/24.
  */
 @Data
-public class HistoricalPhotoChange extends BaseEntity {
-
-    /**
-     * 商户id
-     */
-    private long merchantId;
+public class HistoryPhotoChangeResponse {
 
     /**
      * 身份证正面
@@ -39,6 +35,22 @@ public class HistoricalPhotoChange extends BaseEntity {
     private String bankPic;
 
     /**
+     * 商户id
+     */
+    private long merchantId;
+
+    /**
+     * 照片
+     */
+    private String photo;
+
+    /**
+     * 类型（1：结算卡2：手持结算卡：3手持身份证4：身份证正面5：身份证反面）
+     *
+     */
+    private int type;
+
+    /**
      * 原因描述
      */
     private String reasonDescription;
@@ -52,4 +64,14 @@ public class HistoricalPhotoChange extends BaseEntity {
      * 操作人
      */
     private String operator;
+
+    /**
+     * 更新时间
+     */
+    private Date createTime;
+
+    /**
+     * 更新时间
+     */
+    private Date createTimes;
 }
