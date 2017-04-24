@@ -16,6 +16,7 @@ import com.jkm.hss.merchant.helper.MerchantSupport;
 import com.jkm.hss.merchant.service.AccountBankService;
 import com.jkm.hss.merchant.service.MerchantChannelRateService;
 import com.jkm.hss.merchant.service.QueryMerchantInfoRecordService;
+import com.jkm.hss.product.enums.EnumBalanceTimeType;
 import com.jkm.hss.product.enums.EnumPayChannelSign;
 import com.jkm.hss.push.sevice.PushService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -169,6 +170,7 @@ public class QueryMerchantInfoRecordController extends BaseController {
                         mechantRateResponse.setMerchantRate(input.getMerchantPayRate().toString());
                         mechantRateResponse.setWithdrawMoney(input.getMerchantWithdrawFee().setScale(2).toString());
                         mechantRateResponse.setEntNet(EnumEnterNet.idOf(input.getEnterNet()).getMsg());
+                        mechantRateResponse.setMerchantBalanceType(EnumBalanceTimeType.of(input.getMerchantBalanceType()).getName());
                         mechantRateResponse.setRemarks(input.getRemarks());
                         return mechantRateResponse;
                     }
