@@ -119,6 +119,7 @@ public class HsyCmbcServiceImpl implements HsyCmbcService {
         paramsMap.put("zfbOnlineRate", appAuUser.getAlipayRate().toString());
         paramsMap.put("zfbBizCategory",getAlipayCategory(appBizShop.getIndustryCode()));
         log.info("民生银行商户支付通道绑定参数为："+ JSONObject.fromObject(paramsMap).toString());
+        log.info("url:{}",MerchantConsts.getMerchantConfig().merchantBindChannel());
         String result = SmPost.post(MerchantConsts.getMerchantConfig().merchantBindChannel(), paramsMap);
         if (result != null && !"".equals(result)) {
             JSONObject jo = JSONObject.fromObject(result);
@@ -147,6 +148,7 @@ public class HsyCmbcServiceImpl implements HsyCmbcService {
         paramsMap.put("wxOnlineRate", appAuUser.getWeixinRate().toString());
         paramsMap.put("zfbOnlineRate", appAuUser.getAlipayRate().toString());
         log.info("民生银行商户支付修改通道绑定参数为："+ JSONObject.fromObject(paramsMap).toString());
+        log.info("url:{}",MerchantConsts.getMerchantConfig().merchantUpdateChannel());
         String result = SmPost.post(MerchantConsts.getMerchantConfig().merchantUpdateChannel(), paramsMap);
         if (result != null && !"".equals(result)) {
             JSONObject jo = JSONObject.fromObject(result);
