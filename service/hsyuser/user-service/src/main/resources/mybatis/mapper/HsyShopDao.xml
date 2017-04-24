@@ -70,6 +70,7 @@
     <select id="findPrimaryAppBizShopByUserID" parameterType="com.jkm.hsy.user.entity.AppBizShop" resultType="com.jkm.hsy.user.entity.AppBizShop">
         select distinct
           shop.ID,shop.GLOBALID,shop.NAME,shop.SHORTNAME,shop.INDUSTRYCODE,shop.DISTRICTCODE,shop.ADDRESS,shop.LICENCEID,shop.STOREFRONTID,shop.COUNTERID,shop.INDOORID,shop.PARENTID,shop.CONTACTNAME,shop.CONTACTCELLPHONE,shop.STATUS,shop.ISPUBLIC,shop.CREATETIME,shop.UPDATETIME,
+        shop.licenceNO,shop.licenceStartDate,shop.licenceEndDate,
         (select PATH from app_cm_file acf where uuid=shop.LICENCEID) LICENCEURL,
         (select PATH from app_cm_file where uuid=shop.STOREFRONTID) STOREFRONTURL,
         (select PATH from app_cm_file where uuid=shop.COUNTERID) COUNTERURL,

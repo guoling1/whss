@@ -217,6 +217,29 @@ public class HsyUserServiceImpl implements HsyUserService {
 //            throw new ApiHandleException(ResultCode.USER_NO_CEHCK);
         if(appBizShop.getCheckErrorInfo()==null)
             appBizShop.setCheckErrorInfo("");
+        if(appBizShop.getDistrictCode()!=null&&!appBizShop.getDistrictCode().equals("")){
+            String districtName="";
+            String parentCode="";
+            String districtCode=appBizShop.getDistrictCode();
+            while(!parentCode.equals("0")) {
+                List<AppBizDistrict> appBizDistrictList = hsyShopDao.findDistrictByCode(districtCode);
+                parentCode=appBizDistrictList.get(0).getParentCode();
+                if(!districtName.equals(""))
+                    districtName=appBizDistrictList.get(0).getAname()+"|"+districtName;
+                else
+                    districtName=appBizDistrictList.get(0).getAname();
+                districtCode=parentCode;
+            }
+            appBizShop.setDistrictName(districtName);
+        }
+        if(appBizShop.getIndustryCode()!=null&&!appBizShop.getIndustryCode().equals(""))
+            appBizShop.setIndustryName(IndustryCodeType.getValue(Integer.parseInt(appBizShop.getIndustryCode())));
+
+        AppBizCard appBizCard=new AppBizCard();
+        appBizCard.setSid(appBizShop.getId());
+        List<AppBizCard> appBizCardList=hsyShopDao.findAppBizCardByParam(appBizCard);
+        if(appBizCardList!=null&&appBizCardList.size()!=0)
+            appBizCard=appBizCardList.get(0);
         gson = new GsonBuilder().setExclusionStrategies(new ExclusionStrategy() {
             public boolean shouldSkipField(FieldAttributes f) {
                 return f.getName().contains("password");
@@ -236,7 +259,7 @@ public class HsyUserServiceImpl implements HsyUserService {
         Map map=new HashMap();
         map.put("appAuUser",appAuUserFind);
         map.put("appBizShop",appBizShop);
-
+        map.put("appBizCard",appBizCard);
         return gson.toJson(map);
     }
 
@@ -827,6 +850,12 @@ public class HsyUserServiceImpl implements HsyUserService {
         }
         if(appBizShop.getIndustryCode()!=null&&!appBizShop.getIndustryCode().equals(""))
             appBizShop.setIndustryName(IndustryCodeType.getValue(Integer.parseInt(appBizShop.getIndustryCode())));
+
+        AppBizCard appBizCard=new AppBizCard();
+        appBizCard.setSid(appBizShop.getId());
+        List<AppBizCard> appBizCardList=hsyShopDao.findAppBizCardByParam(appBizCard);
+        if(appBizCardList!=null&&appBizCardList.size()!=0)
+            appBizCard=appBizCardList.get(0);
         gson = new GsonBuilder().setExclusionStrategies(new ExclusionStrategy() {
             public boolean shouldSkipField(FieldAttributes f) {
                 return f.getName().contains("password");
@@ -867,6 +896,7 @@ public class HsyUserServiceImpl implements HsyUserService {
         }
         map.put("appAuUser",appAuUserFind);
         map.put("appBizShop",appBizShop);
+        map.put("appBizCard",appBizCard);
         return gson.toJson(map);
     }
 
