@@ -240,6 +240,21 @@ public class HsyUserServiceImpl implements HsyUserService {
         List<AppBizCard> appBizCardList=hsyShopDao.findAppBizCardByParam(appBizCard);
         if(appBizCardList!=null&&appBizCardList.size()!=0)
             appBizCard=appBizCardList.get(0);
+        if(appBizCard.getBranchDistrictCode()!=null&&!appBizCard.getBranchDistrictCode().equals("")){
+            String districtName="";
+            String parentCode="";
+            String districtCode=appBizCard.getBranchDistrictCode();
+            while(!parentCode.equals("0")) {
+                List<AppBizDistrict> appBizDistrictList = hsyShopDao.findDistrictByCode(districtCode);
+                parentCode=appBizDistrictList.get(0).getParentCode();
+                if(!districtName.equals(""))
+                    districtName=appBizDistrictList.get(0).getAname()+"|"+districtName;
+                else
+                    districtName=appBizDistrictList.get(0).getAname();
+                districtCode=parentCode;
+            }
+            appBizCard.setBranchDistrictName(districtName);
+        }
         gson = new GsonBuilder().setExclusionStrategies(new ExclusionStrategy() {
             public boolean shouldSkipField(FieldAttributes f) {
                 return f.getName().contains("password");
@@ -856,6 +871,21 @@ public class HsyUserServiceImpl implements HsyUserService {
         List<AppBizCard> appBizCardList=hsyShopDao.findAppBizCardByParam(appBizCard);
         if(appBizCardList!=null&&appBizCardList.size()!=0)
             appBizCard=appBizCardList.get(0);
+        if(appBizCard.getBranchDistrictCode()!=null&&!appBizCard.getBranchDistrictCode().equals("")){
+            String districtName="";
+            String parentCode="";
+            String districtCode=appBizCard.getBranchDistrictCode();
+            while(!parentCode.equals("0")) {
+                List<AppBizDistrict> appBizDistrictList = hsyShopDao.findDistrictByCode(districtCode);
+                parentCode=appBizDistrictList.get(0).getParentCode();
+                if(!districtName.equals(""))
+                    districtName=appBizDistrictList.get(0).getAname()+"|"+districtName;
+                else
+                    districtName=appBizDistrictList.get(0).getAname();
+                districtCode=parentCode;
+            }
+            appBizCard.setBranchDistrictName(districtName);
+        }
         gson = new GsonBuilder().setExclusionStrategies(new ExclusionStrategy() {
             public boolean shouldSkipField(FieldAttributes f) {
                 return f.getName().contains("password");

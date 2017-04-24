@@ -41,7 +41,7 @@
 
     <select id="findAppBizCardByParam" parameterType="com.jkm.hsy.user.entity.AppBizCard" resultType="com.jkm.hsy.user.entity.AppBizCard">
         select
-            ID,SID,CARDNO,CARDACCOUNTNAME,CARDBANK,BANKADDRESS,CARDFID,CARDCELLPHONE,IDCARDNO,STATUS,CREATETIME,UPDATETIME
+        ID,SID,CARDNO,CARDACCOUNTNAME,CARDBANK,BANKADDRESS,CARDFID,CARDCELLPHONE,IDCARDNO,STATUS,BRANCHCODE,BRANCHDISTRICTCODE,CREATETIME,UPDATETIME
         from app_biz_card
         where 1=1
           <!--<if test="cardNO!=null and cardNO!=''">and CARDNO=#{cardNO}</if>-->
