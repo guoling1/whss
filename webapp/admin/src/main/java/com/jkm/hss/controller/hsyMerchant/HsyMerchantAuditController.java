@@ -141,6 +141,9 @@ public class HsyMerchantAuditController extends BaseController {
             return CommonResponse.simpleResponse(-1,"店铺编码有误");
         }
         AppAuUser appAuUser = hsyCmbcDao.selectByUserId(hsyMerchantAuditRequest.getUid());
+        if(appAuUser.getHxbStatus()!=EnumHxbsStatus.UNPASS.getId()){
+            return CommonResponse.simpleResponse(-1,"只有全部通道都入网失败的才可以驳回");
+        }
         if(appAuUser.getAccountID()>0){
             accountService.delAcct(appAuUser.getAccountID());
         }
