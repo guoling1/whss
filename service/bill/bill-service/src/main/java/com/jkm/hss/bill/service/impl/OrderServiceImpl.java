@@ -1249,37 +1249,8 @@ public class OrderServiceImpl implements OrderService {
                 columns.add(String.valueOf(list.get(i).getTradeAmount()));
                 columns.add(String.valueOf(list.get(i).getPayRate()));
                 columns.add(EnumOrderStatus.of(list.get(i).getStatus()).getValue());
-//                if (list.get(i).getStatus()==1){
-//                    columns.add("待支付");
-//                }
-//                if (list.get(i).getStatus()==3){
-//                    columns.add("支付失败");
-//                }
-//                if (list.get(i).getStatus()==4){
-//                    columns.add("支付成功");
-//                }
-//                if (list.get(i).getStatus()==5){
-//                    columns.add("提现中");
-//                }
-//                if (list.get(i).getStatus()==6){
-//                    columns.add("提现成功");
-//                }
-//                if (list.get(i).getStatus()==7){
-//                    columns.add("充值成功");
-//                }
-//                if (list.get(i).getStatus()==8){
-//                    columns.add("充值失败");
-//                }
                 columns.add(EnumSettleStatus.of(list.get(i).getSettleStatus()).getValue());
-//                if (list.get(i).getSettleStatus()==1){
-//                    columns.add("未结算");
-//                }
-//                if (list.get(i).getSettleStatus()==2){
-//                    columns.add("结算中");
-//                }
-//                if (list.get(i).getSettleStatus()==3){
-//                    columns.add("已结算");
-//                }
+
                 if (list.get(i).getPayType()!=null&&!list.get(i).getPayType().equals("")) {
                     if (list.get(i).getPayChannelSign()!=0) {
                         columns.add(EnumPayChannelSign.idOf(list.get(i).getPayChannelSign()).getPaymentChannel().getValue());
