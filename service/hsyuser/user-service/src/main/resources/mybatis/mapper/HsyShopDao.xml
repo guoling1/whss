@@ -196,10 +196,11 @@
         select distinct
         shop.ID,shop.GLOBALID,shop.NAME,shop.SHORTNAME,shop.INDUSTRYCODE,shop.DISTRICTCODE,shop.ADDRESS,shop.LICENCEID,shop.STOREFRONTID,shop.COUNTERID,shop.INDOORID,shop.PARENTID,shop.CONTACTNAME,shop.CONTACTCELLPHONE,shop.STATUS,shop.ISPUBLIC,user.ACCOUNTID,shop.CREATETIME,shop.UPDATETIME
         from app_biz_shop shop left join app_biz_shop_user_role sur on shop.ID=sur.SID left join app_au_user user on user.ID=sur.UID
-        where sur.TYPE=1 and user.ACCOUNTID=-1
+        where sur.TYPE=1 and (user.ACCOUNTID=-1
         <foreach collection="list" item="account" open="" separator="" close="">
             or user.ACCOUNTID = #{account}
         </foreach>
+        )
     </select>
 
     <select id="findPrimaryAppBizShopByAccountID" parameterType="java.lang.Long" resultType="com.jkm.hsy.user.entity.AppBizShop">
