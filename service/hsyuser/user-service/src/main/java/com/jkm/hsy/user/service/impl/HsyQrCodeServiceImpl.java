@@ -128,8 +128,8 @@ public class HsyQrCodeServiceImpl implements HsyQrCodeService{
         saveAppAuUser.setFastRate(decimalTriple.getRight());
         hsyUserDao.updateByID(saveAppAuUser);
         AppAuUser appAuUser = hsyCmbcDao.selectByUserId(list.get(0).getId());
-        if(appAuUser.getHxbStatus()== EnumHxbsStatus.PASS.getId()){//入驻成功开通产品或修改产品
-            if(appAuUser.getHxbOpenProduct()==EnumHxbsOpenProductStatus.PASS.getId()){//开通产品成功
+        if(appAuUser.getHxbStatus()!=null&&appAuUser.getHxbStatus()== EnumHxbsStatus.PASS.getId()){//入驻成功开通产品或修改产品
+            if(appAuUser.getHxbOpenProduct()!=null && appAuUser.getHxbOpenProduct()==EnumHxbsOpenProductStatus.PASS.getId()){//开通产品成功
                 CmbcResponse cmbcResponse = hsyCmbcService.merchantUpdateBindChannel(list.get(0).getId());
                 if(cmbcResponse.getCode()==-1){
                     throw new ApiHandleException(ResultCode.RESULT_FAILE,"修改产品失败");
