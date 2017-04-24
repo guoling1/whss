@@ -150,7 +150,7 @@
             <tr class="row">
               <td class="col-md-3" style="text-align: center;border: none;">
                 <img style="width: 200px" @click="changeBig()" :src="$msg.identityFacePic" alt="" v-if="$msg.identityFacePic!=null"/>
-                <el-button v-if="$msg.identityFacePic!=null" type="text" @click="changePhoto('identityFacePic')">点击更换</el-button>
+                <el-button v-if="$msg.identityFacePic!=null" type="text" @click="changePhoto('4')">点击更换</el-button>
                 <el-upload v-else id="upload" style="position: relative" action="/upload/picUpload"
                            type="drag" :thumbnail-mode="true"
                            :on-preview="handlePreview"
@@ -165,7 +165,7 @@
               </td>
               <td class="col-md-3" style="text-align: center;border: none;">
                 <img style="width: 200px" @click="changeBig()" :src="$msg.identityOppositePic" alt="" v-if="$msg.identityOppositePic!=null"/>
-                <el-button v-if="$msg.identityOppositePic!=null" type="text" @click="changePhoto('identityOppositePic')">点击更换</el-button>
+                <el-button v-if="$msg.identityOppositePic!=null" type="text" @click="changePhoto('5')">点击更换</el-button>
                 <el-upload v-else id="upload" style="position: relative" action="/upload/picUpload"
                            type="drag" :thumbnail-mode="true"
                            :on-preview="handlePreview"
@@ -180,7 +180,7 @@
               </td>
               <td class="col-md-3" style="text-align: center;border: none;">
                 <img style="width: 200px" @click="changeBig()" :src="$msg.identityHandPic" alt="" v-if="$msg.identityHandPic!=null"/>
-                <el-button v-if="$msg.identityHandPic!=null" type="text" @click="changePhoto('identityHandPic')">点击更换</el-button>
+                <el-button v-if="$msg.identityHandPic!=null" type="text" @click="changePhoto('3')">点击更换</el-button>
                 <el-upload v-else id="upload" style="position: relative" action="/upload/picUpload"
                            type="drag" :thumbnail-mode="true"
                            :on-preview="handlePreview"
@@ -195,7 +195,7 @@
               </td>
               <td class="col-md-3" style="text-align: center;border: none;">
                 <img style="width: 200px" @click="changeBig()" :src="$msg.bankPic" alt="" v-if="$msg.bankPic!=null"/>
-                <el-button v-if="$msg.bankPic!=null" type="text" @click="changePhoto('bankPic')">点击更换</el-button>
+                <el-button v-if="$msg.bankPic!=null" type="text" @click="changePhoto('1')">点击更换</el-button>
                 <el-upload v-else id="upload" style="position: relative" action="/upload/picUpload"
                            type="drag" :thumbnail-mode="true"
                            :on-preview="handlePreview"
@@ -210,7 +210,7 @@
               </td>
               <td class="col-md-3" style="text-align: center;border: none;">
                 <img style="width: 200px" @click="changeBig()" :src="$msg.bankHandPic" alt="" v-if="$msg.bankHandPic!=null"/>
-                <el-button v-if="$msg.bankHandPic!=null" type="text" @click="changePhoto('bankHandPic')">点击更换</el-button>
+                <el-button v-if="$msg.bankHandPic!=null" type="text" @click="changePhoto('2')">点击更换</el-button>
                 <el-upload v-else id="upload" style="position: relative" action="/upload/picUpload"
                            type="drag" :thumbnail-mode="true"
                            :on-preview="handlePreview"
@@ -411,8 +411,9 @@
           <el-form-item label="上传照片：" width="120" style="margin-bottom: 0">
             <el-upload
               class="upload-demo"
-              :action="uploadURL"
-              :data={id:id}
+              action="/admin/photoChange/savePhotoChang"
+              name="photo"
+              :data={merchantId:id,type:photoType}
               :on-preview="handlePreview"
               :on-success="handleSuccess"
               :on-error="handleErr"
