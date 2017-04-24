@@ -111,6 +111,10 @@ public class HsyMerchantAuditController extends BaseController {
     @ResponseBody
     @RequestMapping(value = "/reenter",method = RequestMethod.POST)
     public CommonResponse reenter(@RequestBody final AppUserAndShopRequest appUserAndShopRequest){
+        AppBizShop appBizShop = hsyCmbcDao.selectByShopId(appUserAndShopRequest.getShopId());
+        if(appBizShop.getStatus()!=AppConstant.SHOP_STATUS_NORMAL){
+            return CommonResponse.simpleResponse(-1,"该商户未通过审核，不能重新入网");
+        }
         AppAuUser appAuUser = hsyCmbcDao.selectByUserId(appUserAndShopRequest.getUserId());
         if(appAuUser.getHxbStatus()!=null&&appAuUser.getHxbStatus()==EnumHxbsStatus.PASS.getId()){
             return CommonResponse.simpleResponse(-1,"该商户已经入网，不能重复入网");
@@ -136,9 +140,12 @@ public class HsyMerchantAuditController extends BaseController {
         if(hsyMerchantAuditRequest.getId()==null||hsyMerchantAuditRequest.getId()<=0){
             return CommonResponse.simpleResponse(-1,"店铺编码有误");
         }
-        AppBizShop appBizShop = hsyCmbcDao.selectByShopId(hsyMerchantAuditRequest.getId());
-        if(appBizShop.getAccountID()>0){
-            accountService.delAcct(appBizShop.getAccountID());
+        AppAuUser appAuUser = hsyCmbcDao.selectByUserId(hsyMerchantAuditRequest.getUid());
+        if(appAuUser.getHxbStatus()!=EnumHxbsStatus.UNPASS.getId()){
+            return CommonResponse.simpleResponse(-1,"只有全部通道都入网失败的才可以驳回");
+        }
+        if(appAuUser.getAccountID()>0){
+            accountService.delAcct(appAuUser.getAccountID());
         }
         hsyMerchantAuditRequest.setStatus(AppConstant.SHOP_STATUS_REJECT_FILL);
         hsyMerchantAuditService.auditPass(hsyMerchantAuditRequest);

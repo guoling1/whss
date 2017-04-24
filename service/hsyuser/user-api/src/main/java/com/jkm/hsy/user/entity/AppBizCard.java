@@ -19,6 +19,8 @@ public class AppBizCard {
     private String branchCode;//联行号
     private String branchDistrictCode;//联行地区代码
 
+    private String branchDistrictName;//联行地区
+
     public Long getId() {
         return id;
     }
@@ -125,6 +127,14 @@ public class AppBizCard {
 
     public String getBranchDistrictCode() {
         return branchDistrictCode;
+    }
+
+    public String getBranchDistrictName() {
+        return branchDistrictName;
+    }
+
+    public void setBranchDistrictName(String branchDistrictName) {
+        this.branchDistrictName = branchDistrictName;
     }
 
     public void setBranchDistrictCode(String branchDistrictCode) {
