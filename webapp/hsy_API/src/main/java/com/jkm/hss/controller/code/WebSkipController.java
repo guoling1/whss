@@ -1,5 +1,6 @@
 package com.jkm.hss.controller.code;
 
+import com.alipay.api.response.AlipayUserInfoShareResponse;
 import com.alipay.api.response.AlipayUserUserinfoShareResponse;
 import com.jkm.base.common.spring.alipay.service.AlipayOauthService;
 import com.jkm.hss.bill.entity.Order;
@@ -81,9 +82,11 @@ public class WebSkipController extends BaseController {
      * @throws IOException
      */
     @RequestMapping(value = "/paymentZfb", method = RequestMethod.GET)
-    public String paymentZfb(final HttpServletRequest request, final HttpServletResponse response, final Model model,@RequestParam(value = "merchantId", required = true) long merchantId,@RequestParam(value = "name") String name) throws IOException {
+    public String paymentZfb(final HttpServletRequest request, final HttpServletResponse response, final Model model,@RequestParam(value = "merchantId", required = true) long merchantId,@RequestParam(value = "name") String name,@RequestParam(value = "openId") String openId) throws IOException {
         model.addAttribute("mid", merchantId);
         model.addAttribute("merchantName", name);
+        model.addAttribute("openId", openId);
+        log.info("openId={}",openId);
         return "/payment-zfb";
     }
 
@@ -144,6 +147,8 @@ public class WebSkipController extends BaseController {
         String appId="";
         String authcode="";
         String state = "";
+        String code = "";
+        String sign = "";
         for(int i =0;i<arr.length;i++){
             if("app_id".equals(arr[i].split("=")[0])){
                 appId = arr[i].split("=")[1];
@@ -154,20 +159,24 @@ public class WebSkipController extends BaseController {
                 log.info("authcode是:{}",authcode);
             }
             if("state".equals(arr[i].split("=")[0])){
-                state = arr[i].split("=")[1];
-                log.info("请求地址得参数是:{}",state);
+                    code = arr[i].split("=")[2];
+                    log.info("code参数是:{}",code);
+            }
+
+            if("sign".equals(arr[i].split("=")[0])){
+                sign = arr[i].split("=")[1];
+                log.info("sign参数是:{}",sign);
             }
         }
-        AlipayUserUserinfoShareResponse alipayUserUserinfoShareResponse = alipayOauthService.getUserInfo(authcode);
-        if(alipayUserUserinfoShareResponse==null){
+        String userId = alipayOauthService.getUserId(authcode);
+        if(userId==null||"".equals(userId)){
             model.addAttribute("message", "支付宝授权失败");
             return "/message";
         }
-        model.addAttribute("openId", alipayUserUserinfoShareResponse.getUserId());
-        log.info("openid是：{}",alipayUserUserinfoShareResponse.getUserId());
-        String tempUrl = URLDecoder.decode(state, "UTF-8");
-        String redirectUrl = URLDecoder.decode(tempUrl,"UTF-8");
-        String finalRedirectUrl = "http://"+ ApplicationConsts.getApplicationConfig().domain()+"/code/scanCode?"+redirectUrl;
+        model.addAttribute("openId", userId);
+        model.addAttribute("code", code);
+        model.addAttribute("sign", sign);
+        String finalRedirectUrl = "http://"+ ApplicationConsts.getApplicationConfig().domain()+"/code/scanCode";
         log.info("跳转地址是：{}",finalRedirectUrl);
         return "redirect:"+finalRedirectUrl;
     }

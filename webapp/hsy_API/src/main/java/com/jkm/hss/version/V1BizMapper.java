@@ -54,5 +54,8 @@ public class V1BizMapper {
 		bizMapper.put("HSY001038", new String[]{"accountSettleAuditRecordService", "appSettleRecordDetail"});
 		/**结算记录对应的交易列表*/
 		bizMapper.put("HSY001039", new String[]{"accountSettleAuditRecordService", "appGetOrderListByRecordId"});
+		bizMapper.put("HSY001040", new String[]{"hsyAppVersionService","findAllPageComponent"});
+		bizMapper.put("HSY001041", new String[]{"hsyShopService","findBankBranchList"});
+		bizMapper.put("HSY001042", new String[]{"hsyShopService","findBankList"});
 	}
 }

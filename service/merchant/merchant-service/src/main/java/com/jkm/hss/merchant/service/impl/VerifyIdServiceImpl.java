@@ -1,7 +1,6 @@
 package com.jkm.hss.merchant.service.impl;
 
 import com.google.common.base.Optional;
-import com.google.common.base.Preconditions;
 import com.jkm.base.common.spring.aliyun.service.VerifyID4ElementService;
 import com.jkm.hss.merchant.dao.VerifyID4ElementRecordDao;
 import com.jkm.hss.merchant.entity.VerifyID4ElementRecord;
@@ -102,8 +101,8 @@ public class VerifyIdServiceImpl implements VerifyIdService {
      */
     @Override
     @Transactional
-    public Pair<Integer, String> verifyID(final String mobile, final String bankcard, final String idCard,
-                                          final String bankReserveMobile, final String realName) {
+    synchronized public Pair<Integer, String> verifyID(final String mobile, final String bankcard, final String idCard,
+                                                       final String bankReserveMobile, final String realName) {
         final Optional<VerifyID4ElementRecord> recordOptional = this.getRecordByMobile(mobile);
         long verifyID4ElementRecordId = 0;
         if (!recordOptional.isPresent()) {

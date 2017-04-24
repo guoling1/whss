@@ -222,7 +222,7 @@ public class HSYTradeServiceImpl implements HSYTradeService {
         if (EnumPayChannelSign.SYJ_ALIPAY.getId() == channel) {
             channelCode = this.basicChannelService.selectCodeByChannelSign(channel, EnumMerchantPayType.MERCHANT_CODE);
         } else {
-            channelCode = this.basicChannelService.selectCodeByChannelSign(channel, EnumMerchantPayType.MERCHANT_JSAPI);
+            channelCode = this.basicChannelService.selectCodeByChannelSign(channel, EnumMerchantPayType.MERCHANT_CODE);
         }
         final EnumPayChannelSign payChannelSign = EnumPayChannelSign.idOf(channel);
         final Order order = new Order();
@@ -544,6 +544,7 @@ public class HSYTradeServiceImpl implements HSYTradeService {
      */
     private PaymentSdkPlaceOrderResponse requestPlaceOrder(final Order order, final String channel,
                                                            final AppBizShop shop, final String returnUrl) {
+        final AppAuUser appAuUser = this.hsyShopDao.findAuUserByAccountID(shop.getAccountID()).get(0);
         final PaymentSdkPlaceOrderRequest placeOrderRequest = new PaymentSdkPlaceOrderRequest();
         placeOrderRequest.setAppId(EnumAppType.HSY.getId());
         placeOrderRequest.setOrderNo(order.getOrderNo());
@@ -551,7 +552,7 @@ public class HSYTradeServiceImpl implements HSYTradeService {
         placeOrderRequest.setReturnUrl(returnUrl);
         placeOrderRequest.setNotifyUrl(PaymentSdkConstants.SDK_PAY_NOTIFY_URL);
         placeOrderRequest.setMerName(shop.getShortName());
-        placeOrderRequest.setMerNo(shop.getGlobalID());
+        placeOrderRequest.setMerNo(appAuUser.getGlobalID());
         placeOrderRequest.setTotalAmount(order.getTradeAmount().toPlainString());
         placeOrderRequest.setChannel(channel);
         placeOrderRequest.setWxAppId(WxConstants.APP_HSY_ID);

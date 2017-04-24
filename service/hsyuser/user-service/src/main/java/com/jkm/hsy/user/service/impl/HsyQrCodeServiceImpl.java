@@ -8,6 +8,7 @@ import com.jkm.hss.admin.enums.EnumQRCodeActivateStatus;
 import com.jkm.hss.admin.enums.EnumQRCodeSysType;
 import com.jkm.hss.admin.service.QRCodeService;
 import com.jkm.hss.dealer.service.DealerChannelRateService;
+import com.jkm.hsy.user.Enum.EnumHxbsOpenProductStatus;
 import com.jkm.hsy.user.Enum.EnumHxbsStatus;
 import com.jkm.hsy.user.constant.AppConstant;
 import com.jkm.hsy.user.dao.HsyCmbcDao;
@@ -129,11 +130,11 @@ public class HsyQrCodeServiceImpl implements HsyQrCodeService{
         AppAuUser appAuUser = hsyCmbcDao.selectByUserId(list.get(0).getId());
         if(appAuUser.getHxbStatus()== EnumHxbsStatus.PASS.getId()){//入驻成功开通产品或修改产品
             if(appAuUser.getHxbOpenProduct()==1){//首次绑定二维码，新增产品费率
-                CmbcResponse cmbcResponse = hsyCmbcService.merchantBindChannel(list.get(0).getId());
+                CmbcResponse cmbcResponse = hsyCmbcService.merchantBindChannel(list.get(0).getId(),appBindShop.getShopId());
                 if(cmbcResponse.getCode()==-1){
                     throw new ApiHandleException(ResultCode.RESULT_FAILE,"开通产品失败");
                 }
-                hsyCmbcDao.updateHxbUserById(list.get(0).getId());
+                hsyCmbcDao.updateHxbUserById(EnumHxbsOpenProductStatus.PASS.getId(),list.get(0).getId());
             }else{//更换二维码，修改产品费率
                 CmbcResponse cmbcResponse = hsyCmbcService.merchantUpdateBindChannel(list.get(0).getId());
                 if(cmbcResponse.getCode()==-1){

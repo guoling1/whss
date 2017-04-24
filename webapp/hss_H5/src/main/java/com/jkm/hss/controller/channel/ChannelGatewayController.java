@@ -56,6 +56,17 @@ public class ChannelGatewayController extends BaseController {
     @Autowired
     private BasicChannelService basicChannelService;
 
+
+    /**
+     * 跳到通道列表页面
+     * @return
+     */
+    @RequestMapping(value = "/toListJsp", method = RequestMethod.GET)
+    public String toJsp(HttpServletRequest request){
+
+        return "/channelList";
+    }
+
     @ResponseBody
     @RequestMapping(value = "/list", method = RequestMethod.POST)
     public CommonResponse getChannelList(@RequestBody final DynamicCodePayRequest payRequest,

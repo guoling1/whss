@@ -10,9 +10,7 @@ import com.jkm.hss.admin.helper.responseparam.QRCodeList;
 import com.jkm.hss.admin.service.QRCodeService;
 import com.jkm.hss.merchant.entity.BankCardBin;
 import com.jkm.hss.merchant.service.BankCardBinService;
-import com.jkm.hsy.user.constant.AppConstant;
-import com.jkm.hsy.user.constant.FileType;
-import com.jkm.hsy.user.constant.IndustryCodeType;
+import com.jkm.hsy.user.constant.*;
 import com.jkm.hsy.user.dao.HsyShopDao;
 import com.jkm.hsy.user.dao.HsyUserDao;
 import com.jkm.hsy.user.entity.*;
@@ -66,6 +64,14 @@ public class HsyShopServiceImpl implements HsyShopService {
             throw new ApiHandleException(ResultCode.PARAM_LACK,"街道");
         if(!(appBizShop.getIsPublic()!=null&&!appBizShop.getIsPublic().equals("")))
             throw new ApiHandleException(ResultCode.PARAM_LACK,"结算类型");
+        if(appBizShop.getIsPublic()==1) {
+            if (!(appBizShop.getLicenceNO() != null && !appBizShop.getLicenceNO().equals("")))
+                throw new ApiHandleException(ResultCode.PARAM_LACK, "营业执照号");
+            if (!(appBizShop.getLicenceStartDate() != null && !appBizShop.getLicenceStartDate().equals("")))
+                throw new ApiHandleException(ResultCode.PARAM_LACK, "营业执照起期");
+            if (!(appBizShop.getLicenceEndDate() != null && !appBizShop.getLicenceEndDate().equals("")))
+                throw new ApiHandleException(ResultCode.PARAM_LACK, "营业执照止期");
+        }
 
         String fileKey="fileA";
         MultipartFile file=files.get(fileKey);
@@ -191,12 +197,18 @@ public class HsyShopServiceImpl implements HsyShopService {
             throw new ApiHandleException(ResultCode.PARAM_LACK,"结算卡号");
         if(!(appBizCard.getCardBank()!=null&&!appBizCard.getCardBank().equals("")))
             throw new ApiHandleException(ResultCode.PARAM_LACK,"开户行");
+        if(!(appBizCard.getBranchCode()!=null&&!appBizCard.getBranchCode().equals("")))
+            throw new ApiHandleException(ResultCode.PARAM_LACK,"联行号");
         if(!(appBizCard.getBankAddress()!=null&&!appBizCard.getBankAddress().equals("")))
             throw new ApiHandleException(ResultCode.PARAM_LACK,"所在支行");
         if(!(appBizCard.getCardAccountName()!=null&&!appBizCard.getCardAccountName().equals("")))
             throw new ApiHandleException(ResultCode.PARAM_LACK,"开户名");
         if(!(appBizCard.getSid()!=null&&!appBizCard.getSid().equals("")))
             throw new ApiHandleException(ResultCode.PARAM_LACK,"商铺ID");
+        if(!(appBizCard.getIdcardNO()!=null&&!appBizCard.getIdcardNO().equals("")))
+            throw new ApiHandleException(ResultCode.PARAM_LACK,"身份证号");
+        if(!(appBizCard.getBranchDistrictCode()!=null&&!appBizCard.getBranchDistrictCode().equals("")))
+            throw new ApiHandleException(ResultCode.PARAM_LACK,"联行号地区代码");
 
         /**数据验证*/
         List<AppBizCard> appBizCardList=hsyShopDao.findAppBizCardByParam(appBizCard);
@@ -224,6 +236,7 @@ public class HsyShopServiceImpl implements HsyShopService {
             AppBizShopUserRole sur= surList.get(0);
             AppAuUser user=new AppAuUser();
             user.setId(sur.getUid());
+            user.setIdcard(appBizCard.getIdcardNO());
             user.setAuStep("4");
             user.setUpdateTime(date);
             hsyUserDao.updateByID(user);
@@ -252,7 +265,12 @@ public class HsyShopServiceImpl implements HsyShopService {
         if(!(appBizCard.getCardNO()!=null&&!appBizCard.getCardNO().equals("")))
             throw new ApiHandleException(ResultCode.PARAM_LACK,"银行卡号");
 
-        Optional<BankCardBin> bankCardBinOptional=bankCardBinService.analyseCardNo(appBizCard.getCardNO());
+        Optional<BankCardBin> bankCardBinOptional=null;
+        try {
+            bankCardBinOptional = bankCardBinService.analyseCardNo(appBizCard.getCardNO());
+        }catch(Exception e){
+            return gson.toJson(null);
+        }
         if(bankCardBinOptional.isPresent())
             return gson.toJson(bankCardBinOptional.get());
         else
@@ -292,7 +310,7 @@ public class HsyShopServiceImpl implements HsyShopService {
 
         /**参数验证*/
         if(!(appBizShop.getUid()!=null&&!appBizShop.getUid().equals("")))
-            throw new ApiHandleException(ResultCode.PARAM_LACK,"用户ID");
+            throw new ApiHandleException(ResultCode.PARAM_LACK,"店铺ID");
 
         List<AppBizShop> shopList=hsyShopDao.findShopList(appBizShop);
         gson = new GsonBuilder().registerTypeAdapter(Date.class, new JsonSerializer<Date>() {
@@ -333,6 +351,7 @@ public class HsyShopServiceImpl implements HsyShopService {
         map.put("appBizShop",appBizShop);
         map.put("userList",userList);
         map.put("qrList",qrList);
+        map.put("qrUrl",AppConstant.QR_URL);
         gson = new GsonBuilder().setExclusionStrategies(new ExclusionStrategy() {
             public boolean shouldSkipField(FieldAttributes f) {
                 return f.getName().contains("password");
@@ -474,5 +493,121 @@ public class HsyShopServiceImpl implements HsyShopService {
             }
         }).create();
         return gson.toJson(map);
+    }
+
+    /**HSY001041 查询支行列表*/
+    public String findBankBranchList(String dataParam,AppParam appParam)throws ApiHandleException{
+        Gson gson=new GsonBuilder().setDateFormat(AppConstant.DATE_FORMAT).create();
+        /**参数转化*/
+        AppBizBankBranch bankBranch=null;
+        try{
+            bankBranch=gson.fromJson(dataParam, AppBizBankBranch.class);
+        } catch(Exception e){
+            throw new ApiHandleException(ResultCode.PARAM_TRANS_FAIL);
+        }
+
+        /**参数验证*/
+        if(!(bankBranch.getBankName()!=null&&!bankBranch.getBankName().equals("")))
+            throw new ApiHandleException(ResultCode.PARAM_LACK,"开户行");
+        if(!(bankBranch.getDistrictCode()!=null&&!bankBranch.getDistrictCode().equals("")))
+            throw new ApiHandleException(ResultCode.PARAM_LACK,"地区代码");
+        if(!(bankBranch.getCurrentPage()!=null&&!bankBranch.getCurrentPage().equals("")))
+            throw new ApiHandleException(ResultCode.PARAM_LACK,"当前页数");
+        if(bankBranch.getCurrentPage()<=0)
+            throw new ApiHandleException(ResultCode.CURRENT_PAGE_MUST_BE_BIGGER_THAN_ZERO);
+
+        if(bankBranch.getDistrictCode().substring(0,2).equals("11")||bankBranch.getDistrictCode().substring(0,2).equals("12")||bankBranch.getDistrictCode().substring(0,2).equals("31")||bankBranch.getDistrictCode().substring(0,2).equals("50"))
+            bankBranch.setDistrictCode(bankBranch.getDistrictCode().substring(0,2)+"0000");
+        else
+            bankBranch.setDistrictCode(bankBranch.getDistrictCode().substring(0,4)+"00");
+
+        PageUtils page=new PageUtils();
+        page.setCurrentPage(bankBranch.getCurrentPage());
+        page.setPageSize(AppConstant.PAGE_SIZE);
+        Page<AppBizBankBranch> pageAll=new Page<AppBizBankBranch>();
+        pageAll.setObjectT(bankBranch);
+        pageAll.setPage(page);
+        pageAll.getPage().setTotalRecord(hsyShopDao.findBankBranchListByPageCount(pageAll.getObjectT()));
+        pageAll.setList(hsyShopDao.findBankBranchListByPage(pageAll));
+
+        gson = new GsonBuilder().setExclusionStrategies(new ExclusionStrategy() {
+            public boolean shouldSkipField(FieldAttributes f) {
+                boolean flag=false;
+                if(f.getName().contains("objectT"))
+                    return true;
+                if(f.getName().contains("viewpagecount"))
+                    return true;
+                if(f.getName().contains("startPageIndex"))
+                    return true;
+                if(f.getName().contains("endPageIndex"))
+                    return true;
+                return flag;
+            }
+            public boolean shouldSkipClass(Class<?> aClass) {
+                return false;
+            }
+        }).registerTypeAdapter(Date.class, new JsonSerializer<Date>() {
+            public JsonElement serialize(Date date, Type typeOfT, JsonSerializationContext context) throws JsonParseException {
+                return new JsonPrimitive(date.getTime());
+            }
+        }).registerTypeAdapter(Date.class, new JsonDeserializer<Date>() {
+            public Date deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+                return new java.util.Date(json.getAsJsonPrimitive().getAsLong());
+            }
+        }).create();
+        return gson.toJson(pageAll);
+    }
+
+    /**HSY001042 查询银行列表*/
+    public String findBankList(String dataParam,AppParam appParam)throws ApiHandleException{
+        Gson gson=new GsonBuilder().setDateFormat(AppConstant.DATE_FORMAT).create();
+        /**参数转化*/
+        AppBizBankBranch bankBranch=null;
+        try{
+            bankBranch=gson.fromJson(dataParam, AppBizBankBranch.class);
+        } catch(Exception e){
+            throw new ApiHandleException(ResultCode.PARAM_TRANS_FAIL);
+        }
+
+        /**参数验证*/
+        if(!(bankBranch.getCurrentPage()!=null&&!bankBranch.getCurrentPage().equals("")))
+            throw new ApiHandleException(ResultCode.PARAM_LACK,"当前页数");
+        if(bankBranch.getCurrentPage()<=0)
+            throw new ApiHandleException(ResultCode.CURRENT_PAGE_MUST_BE_BIGGER_THAN_ZERO);
+
+        PageUtils page=new PageUtils();
+        page.setCurrentPage(bankBranch.getCurrentPage());
+        page.setPageSize(AppConstant.PAGE_SIZE);
+        Page<AppBizBankBranch> pageAll=new Page<AppBizBankBranch>();
+        pageAll.setObjectT(bankBranch);
+        pageAll.setPage(page);
+        pageAll.getPage().setTotalRecord(hsyShopDao.findBankListByPageCount(pageAll.getObjectT()));
+        pageAll.setList(hsyShopDao.findBankListByPage(pageAll));
+        gson = new GsonBuilder().setExclusionStrategies(new ExclusionStrategy() {
+            public boolean shouldSkipField(FieldAttributes f) {
+                boolean flag=false;
+                if(f.getName().contains("objectT"))
+                    return true;
+                if(f.getName().contains("viewpagecount"))
+                    return true;
+                if(f.getName().contains("startPageIndex"))
+                    return true;
+                if(f.getName().contains("endPageIndex"))
+                    return true;
+                return flag;
+            }
+            public boolean shouldSkipClass(Class<?> aClass) {
+                return false;
+            }
+        }).registerTypeAdapter(Date.class, new JsonSerializer<Date>() {
+            public JsonElement serialize(Date date, Type typeOfT, JsonSerializationContext context) throws JsonParseException {
+                return new JsonPrimitive(date.getTime());
+            }
+        }).registerTypeAdapter(Date.class, new JsonDeserializer<Date>() {
+            public Date deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+                return new java.util.Date(json.getAsJsonPrimitive().getAsLong());
+            }
+        }).create();
+        return gson.toJson(pageAll);
     }
 }

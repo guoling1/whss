@@ -179,12 +179,12 @@ public class HsyMerchantAuditServiceImpl implements HsyMerchantAuditService {
     }
 
     @Override
-    public void stepChange(int uid) {
+    public void stepChange(Long uid) {
         hsyMerchantAuditDao.stepChange(uid);
     }
 
     @Override
-    public int getUid(Long id) {
+    public long getUid(Long id) {
         return hsyMerchantAuditDao.getUid(id);
     }
 

@@ -3,6 +3,7 @@ package com.jkm.hsy.user.dao;
 import com.jkm.hsy.user.entity.AppAuUser;
 import com.jkm.hsy.user.entity.AppBizCard;
 import com.jkm.hsy.user.entity.AppBizShop;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -15,26 +16,26 @@ public interface HsyCmbcDao {
      * @param id
      * @return
      */
-    AppAuUser selectByUserId(long id);
+    AppAuUser selectByUserId(@Param("id") long id);
 
     /**
      * 根据编码查询好收银店铺
      * @param id
      * @return
      */
-    AppBizShop selectByShopId(long id);
+    AppBizShop selectByShopId(@Param("id") long id);
 
     /**
      * 根据userId查询好收银银行卡
      * @param userId
      * @return
      */
-    AppBizCard selectByCardId(long userId);
+    AppBizCard selectByCardId(@Param("userId") long userId);
 
     /**
      * 根据userId更改开通产品状态
-     * @param userId
+     * @param id
      * @return
      */
-    void updateHxbUserById(long userId);
+    void updateHxbUserById(@Param("hxbOpenProduct") int hxbOpenProduct,@Param("id") long id);
 }

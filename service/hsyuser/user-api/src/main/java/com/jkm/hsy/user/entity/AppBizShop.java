@@ -44,6 +44,9 @@ public class AppBizShop {
     private Integer countEmployee;//员工个数
     private Integer countQR;//二维码个数
 
+    private String industryName;//行业名称
+    private String districtName;//行政区名称
+
     public Long getId() {
         return id;
     }
@@ -322,5 +325,21 @@ public class AppBizShop {
 
     public void setLicenceEndDate(Date licenceEndDate) {
         this.licenceEndDate = licenceEndDate;
+    }
+
+    public String getIndustryName() {
+        return industryName;
+    }
+
+    public void setIndustryName(String industryName) {
+        this.industryName = industryName;
+    }
+
+    public String getDistrictName() {
+        return districtName;
+    }
+
+    public void setDistrictName(String districtName) {
+        this.districtName = districtName;
     }
 }
