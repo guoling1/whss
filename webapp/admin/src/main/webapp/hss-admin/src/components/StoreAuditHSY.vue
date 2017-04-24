@@ -175,7 +175,9 @@
         </div>
       </div>
       <div class="box box-primary" style="overflow: hidden">
-        <p class="lead">商户费率信息</p>
+        <span class="lead">商户费率信息</span>
+        <el-button type="text" @click="isReenter = true">重新入网</el-button>
+        <el-button type="text" @click="isReject = true">驳回充填</el-button>
         <div style="width: 70%;margin: 0 0 15px 15px;">
           <template>
             <el-table :data="tableData" border style="width: 100%">
@@ -187,6 +189,21 @@
           </template>
         </div>
 
+        <el-dialog title="重新入网" v-model="isReenter" size="tiny">
+          <p style="text-align: center;font-weight: 700">确认重新发起入网吗？？</p>
+          <span slot="footer" class="dialog-footer">
+            <el-button @click="isReenter = false">取 消</el-button>
+            <el-button type="primary" @click="reenter">确 定</el-button>
+          </span>
+        </el-dialog>
+        <el-dialog title="驳回重填" v-model="isReject" size="tiny">
+          <p style="text-align: center;font-weight: 700">确认驳回重填吗？</p>
+          <p style="text-align: center">只有全部通道都入网失败的才可以驳回</p>
+          <span slot="footer" class="dialog-footer">
+            <el-button @click="isReject = false">取 消</el-button>
+            <el-button type="primary" @click="reject">确 定</el-button>
+          </span>
+        </el-dialog>
       </div>
       <div class="box box-primary" v-if="!isShow">
         <p class="lead">审核日志</p>
@@ -263,6 +280,8 @@
           proxyNameYQ:'',
           proxyNameYQ1:'',
         },
+        isReenter:false,
+        isReject:false,
         reason:'',
         isShow:true,
         res: [],
@@ -297,6 +316,44 @@
 
     },
     methods: {
+      // 重新入网
+      reenter:function () {
+        this.$http.post('/admin/hsyMerchantAudit/reenter', {
+          shopId: this.$data.id,//店铺编码
+          userId: this.$data.msg.uid,//商户编码
+        }).then(function (res) {
+          this.$message({
+            showClose: true,
+            message: '重新入网成功',
+            type: 'success'
+          })
+        }, function (err) {
+          this.$message({
+            showClose: true,
+            message: err.statusMessage,
+            type: 'error'
+          })
+        })
+      },
+      // 驳回
+      reject:function () {
+        this.$http.post('/admin/hsyMerchantAudit/reject', {
+          id: this.$data.id,
+          uid: this.$data.msg.uid,
+        }).then(function (res) {
+          this.$message({
+            showClose: true,
+            message: '驳回充填成功',
+            type: 'success'
+          })
+        }, function (err) {
+          this.$message({
+            showClose: true,
+            message: err.statusMessage,
+            type: 'error'
+          })
+        })
+      },
       audit: function (event) {
         this.$http.post('/admin/hsyMerchantAudit/throughAudit', {
           id: this.$data.id,
