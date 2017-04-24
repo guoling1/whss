@@ -130,7 +130,7 @@
               <th class="col-md-3" style="text-align: center;">银行卡正面:</th>
               <th class="col-md-3" style="text-align: center;">手持结算卡:</th>
             </tr>
-            <tr class="row">
+            <!--<tr class="row">
               <td class="col-md-3" style="text-align: center;border: none;">
                 <img style="width: 200px" @click="changeBig()" :src="$msg.identityFacePic" alt=""/>
               </td>
@@ -145,6 +145,92 @@
               </td>
               <td class="col-md-3" style="text-align: center;border: none;">
                 <img style="width: 200px" @click="changeBig()" :src="$msg.bankHandPic" alt=""/>
+              </td>
+            </tr>-->
+            <tr class="row">
+              <td class="col-md-3" style="text-align: center;border: none;">
+                <img style="width: 200px" @click="changeBig()" :src="$msg.identityFacePic" alt="" v-if="$msg.identityFacePic==null"/>
+                <p v-if="$msg.identityFacePic==null">点击更换</p>
+                <el-upload v-else id="upload" style="position: relative" action="/upload/picUpload"
+                           type="drag" :thumbnail-mode="true"
+                           :on-preview="handlePreview"
+                           :on-success="handleSuccess"
+                           :on-error="handleErr"
+                           :default-file-list="fileList1">
+                  <i class="el-icon-upload"></i>
+                  <div class="el-dragger__text">将文件拖到此处，或<em>点击上传</em></div>
+                  <div style="position: absolute;top: 126px;margin-left:0px;width: 200px;height: 30px;background: #fbfdff"></div>
+                  <div style="position: absolute;top: 1px;margin-left:0px;width: 200px;height: 30px;background: #fbfdff"></div>
+                </el-upload>
+              </td>
+              <td class="col-md-3" style="text-align: center;border: none;">
+                <img style="width: 200px" @click="changeBig()" :src="$msg.identityOppositePic" alt="" v-if="$msg.identityOppositePic==null"/>
+                <p v-if="$msg.identityOppositePic==null">点击更换</p>
+                <el-upload v-else id="upload" style="position: relative" action="/upload/picUpload"
+                           type="drag" :thumbnail-mode="true"
+                           :on-preview="handlePreview"
+                           :on-remove="handleRemove"
+                           :on-success="handleSuccess"
+                           :on-error="handleErr"
+                           :default-file-list="fileList2">
+                  <i class="el-icon-upload"></i>
+                  <div class="el-dragger__text">将文件拖到此处，或<em>点击上传</em></div>
+                  <div style="position: absolute;top: 126px;margin-left:0px;width: 200px;height: 30px;background: #fbfdff"></div>
+                  <div style="position: absolute;top: 3px;margin-left:1px;width: 200px;height: 30px;background: #fbfdff"></div>
+                </el-upload>
+              </td>
+              <td class="col-md-3" style="text-align: center;border: none;">
+                <img style="width: 200px" @click="changeBig()" :src="$msg.identityFacePic" alt="" v-if="$msg.identityHandPic==null"/>
+                <p v-if="$msg.identityHandPic==null">点击更换</p>
+                <el-upload id="upload" style="position: relative" action="/upload/picUpload"
+                           type="drag" :thumbnail-mode="true"
+                           :on-preview="handlePreview"
+                           :on-remove="handleRemove"
+                           :on-success="handleSuccess"
+                           :on-error="handleErr"
+                           :default-file-list="fileList3">
+                  <i class="el-icon-upload"></i>
+                  <div class="el-dragger__text">将文件拖到此处，或<em>点击上传</em></div>
+                  <!--<div class="el-upload__tip" slot="tip">只能上传jpg/png文件，且不超过500kb</div>-->
+                  <div
+                    style="position: absolute;top: 126px;margin-left:0px;width: 200px;height: 30px;background: #fbfdff"></div>
+                  <div
+                    style="position: absolute;top: 3px;margin-left:1px;width: 200px;height: 30px;background: #fbfdff"></div>
+                </el-upload>
+              </td>
+              <td class="col-md-3" style="text-align: center;border: none;">
+                <el-upload id="upload" style="position: relative" action="/upload/picUpload"
+                           type="drag" :thumbnail-mode="true"
+                           :on-preview="handlePreview"
+                           :on-remove="handleRemove"
+                           :on-success="handleSuccess"
+                           :on-error="handleErr"
+                           :default-file-list="fileList4">
+                  <i class="el-icon-upload"></i>
+                  <div class="el-dragger__text">将文件拖到此处，或<em>点击上传</em></div>
+                  <!--<div class="el-upload__tip" slot="tip">只能上传jpg/png文件，且不超过500kb</div>-->
+                  <div
+                    style="position: absolute;top: 126px;margin-left:0px;width: 200px;height: 30px;background: #fbfdff"></div>
+                  <div
+                    style="position: absolute;top: 3px;margin-left:1px;width: 200px;height: 30px;background: #fbfdff"></div>
+                </el-upload>
+              </td>
+              <td class="col-md-3" style="text-align: center;border: none;">
+                <el-upload id="upload" style="position: relative" action="/upload/picUpload"
+                           type="drag" :thumbnail-mode="true"
+                           :on-preview="handlePreview"
+                           :on-remove="handleRemove"
+                           :on-success="handleSuccess"
+                           :on-error="handleErr"
+                           :default-file-list="fileList5">
+                  <i class="el-icon-upload"></i>
+                  <div class="el-dragger__text">将文件拖到此处，或<em>点击上传</em></div>
+                  <!--<div class="el-upload__tip" slot="tip">只能上传jpg/png文件，且不超过500kb</div>-->
+                  <div
+                    style="position: absolute;top: 126px;margin-left:0px;width: 200px;height: 30px;background: #fbfdff"></div>
+                  <div
+                    style="position: absolute;top: 3px;margin-left:1px;width: 200px;height: 30px;background: #fbfdff"></div>
+                </el-upload>
               </td>
             </tr>
             </tbody>
@@ -329,6 +415,23 @@
           </table>
         </div>
       </div>
+      <el-dialog title="更换认证资料" v-model="isShow">
+        <el-form :label-position="right" label-width="150px">
+          <el-form-item label="上传照片：" width="120" style="margin-bottom: 0">
+            <el-upload
+              class="upload-demo"
+              :action="uploadURL"
+              :data={id:id}
+              :on-preview="handlePreview"
+              :on-success="handleSuccess"
+              :on-remove="handleRemove"
+              :file-list="fileList">
+              <el-button id="btn" size="small" type="primary">点击上传</el-button>
+              <div style="position: absolute;top: 36px;left:-1px;width: 220px;height: 30px;background: #fff"></div>
+            </el-upload>
+          </el-form-item>
+        </el-form>
+      </el-dialog>
     </div>
   </div>
 </template>
@@ -388,6 +491,14 @@
       this.getData();
     },
     methods: {
+      handleSuccess: function (response, file, fileList) {
+        this.query.identityFacePic = response.result.url;
+        //移除继续上传按钮
+        setTimeout(function () {
+          var aSpan = document.getElementById('phone').getElementsByTagName('span')[0];
+          document.getElementsByClassName('el-draggeer__cover__btns')[0].removeChild(aSpan)
+        }, 300)
+      },
       getData:function () {
         this.loading = true;
         this.$http.post('/admin/QueryMerchantInfoRecord/getAll', {id: this.$data.id})
@@ -400,6 +511,9 @@
               this.rateInfo[i].merchantRate = parseFloat(this.rateInfo[i].merchantRate * 100).toFixed(2) + '%'
               this.rateInfo[i].withdrawMoney = this.rateInfo[i].withdrawMoney + '元/笔'
             }
+            this.fileList.push({
+                url:this.msg.identityFacePic
+            })
           }, function (err) {
             this.loading = false;
             this.$message({
