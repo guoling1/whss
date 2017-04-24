@@ -81,7 +81,7 @@ public class HsyCmbcServiceImpl implements HsyCmbcService {
         HsyMerchantAuditResponse city = hsyMerchantAuditDao.getCode(district.getParentCode());
         paramsMap.put("city",city.getAName());//商户地址市
         if("110000,120000,310000,500000".contains(city.getCode())){
-            paramsMap.put("province",city.getAName());//商户地址省
+            paramsMap.put("province",city.getAName().replace("市",""));//商户地址省
         }else{
             HsyMerchantAuditResponse province = hsyMerchantAuditDao.getCode(city.getParentCode());
             paramsMap.put("province",province.getAName());//商户地址省
