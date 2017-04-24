@@ -563,7 +563,7 @@
         LIMIT #{offset}, #{pageSize}
     </select>
 
-    <select id="selectHistory"  resultType="com.jkm.hss.merchant.entity.HistoryPhotoChangeResponse">
+    <select id="selectHistoryCount"  resultType="com.jkm.hss.merchant.entity.HistoryPhotoChangeResponse">
         SELECT
             COUNT(1)
         FROM
