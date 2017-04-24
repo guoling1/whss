@@ -8,6 +8,7 @@ import com.jkm.hss.admin.enums.EnumQRCodeActivateStatus;
 import com.jkm.hss.admin.enums.EnumQRCodeSysType;
 import com.jkm.hss.admin.service.QRCodeService;
 import com.jkm.hss.dealer.service.DealerChannelRateService;
+import com.jkm.hsy.user.Enum.EnumHxbsOpenProductStatus;
 import com.jkm.hsy.user.Enum.EnumHxbsStatus;
 import com.jkm.hsy.user.constant.AppConstant;
 import com.jkm.hsy.user.dao.HsyCmbcDao;
@@ -133,7 +134,7 @@ public class HsyQrCodeServiceImpl implements HsyQrCodeService{
                 if(cmbcResponse.getCode()==-1){
                     throw new ApiHandleException(ResultCode.RESULT_FAILE,"开通产品失败");
                 }
-                hsyCmbcDao.updateHxbUserById(list.get(0).getId());
+                hsyCmbcDao.updateHxbUserById(EnumHxbsOpenProductStatus.PASS.getId(),list.get(0).getId());
             }else{//更换二维码，修改产品费率
                 CmbcResponse cmbcResponse = hsyCmbcService.merchantUpdateBindChannel(list.get(0).getId());
                 if(cmbcResponse.getCode()==-1){
