@@ -129,18 +129,20 @@ public class HsyQrCodeServiceImpl implements HsyQrCodeService{
         hsyUserDao.updateByID(saveAppAuUser);
         AppAuUser appAuUser = hsyCmbcDao.selectByUserId(list.get(0).getId());
         if(appAuUser.getHxbStatus()== EnumHxbsStatus.PASS.getId()){//入驻成功开通产品或修改产品
-            if(appAuUser.getHxbOpenProduct()==1){//首次绑定二维码，新增产品费率
+            if(appAuUser.getHxbOpenProduct()==EnumHxbsOpenProductStatus.PASS.getId()){//开通产品成功
+                CmbcResponse cmbcResponse = hsyCmbcService.merchantUpdateBindChannel(list.get(0).getId());
+                if(cmbcResponse.getCode()==-1){
+                    throw new ApiHandleException(ResultCode.RESULT_FAILE,"修改产品失败");
+                }
+            }else{//未开通产品或者开通产品失败
                 CmbcResponse cmbcResponse = hsyCmbcService.merchantBindChannel(list.get(0).getId(),appBindShop.getShopId());
                 if(cmbcResponse.getCode()==-1){
                     throw new ApiHandleException(ResultCode.RESULT_FAILE,"开通产品失败");
                 }
                 hsyCmbcDao.updateHxbUserById(EnumHxbsOpenProductStatus.PASS.getId(),list.get(0).getId());
-            }else{//更换二维码，修改产品费率
-                CmbcResponse cmbcResponse = hsyCmbcService.merchantUpdateBindChannel(list.get(0).getId());
-                if(cmbcResponse.getCode()==-1){
-                    throw new ApiHandleException(ResultCode.RESULT_FAILE,"修改产品失败");
-                }
             }
+        }else{
+            throw new ApiHandleException(ResultCode.RESULT_FAILE,"商户未入网");
         }
         return appBindShop.getCode();
     }
