@@ -110,8 +110,6 @@ export default {
     },
     watch:{
       tabsData:function (val) {
-        console.log(val)
-//        this.editableTabsValue2 = this.$route.path;
         this.tabsData = val;
       },
       $route:function (val) {
@@ -136,7 +134,6 @@ export default {
             }
           });
         }
-
         for(var i=0;i<this._$tabsData.length;i++){
             if(this._$tabsData[i].url==targetName){
               this._$tabsData.splice(i,1);
@@ -144,14 +141,7 @@ export default {
               break;
             }
         }
-
         this.$router.push(activeName);
-//        this.editableTabsValue2 = activeName;
-
-        console.log(this.editableTabsValue2)
-//        console.log(this._$tabsData)
-//        this.tabsData = this._$tabsData
-//        this.$router.push(activeName);
       }
     },
     attached:function () {
