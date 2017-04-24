@@ -50,6 +50,19 @@
               </el-select>
             </li>
             <li class="same">
+              <label>渠道方:</label>
+              <el-select style="width: 120px" clearable v-model="query.upperChannel" size="small">
+                <el-option label="全部" value=""></el-option>
+                <el-option label="扫米" value="1"></el-option>
+                <el-option label="摩宝" value="2"></el-option>
+                <el-option label="卡盟" value="3"></el-option>
+                <el-option label="合众易宝" value="4"></el-option>
+                <el-option label="溢+" value="5"></el-option>
+                <el-option label="易联" value="6"></el-option>
+                <el-option label="银行家" value="8"></el-option>
+              </el-select>
+            </li>
+            <li class="same">
               <div class="btn btn-primary" @click="search">筛选</div>
             </li>
           </ul>
@@ -81,7 +94,6 @@
               </template>
             </el-table-column>
             <el-table-column prop="finishTime" :formatter="changeTime2" label="支付完成时间" min-width="155"></el-table-column>
-            <el-table-column prop="payChannel" label="支付渠道" min-width="90"></el-table-column>
             <el-table-column prop="payType" label="支付方式" min-width="120"></el-table-column>
             <el-table-column prop="upperChannel" label="渠道方" min-width="85"></el-table-column>
             <el-table-column prop="payAccount" label="支付账号" min-width="90"></el-table-column>
@@ -154,7 +166,8 @@
           startCreateTime: '',
           endCreateTime: '',
           startFinishTime: '',
-          endFinishTime: ''
+          endFinishTime: '',
+          upperChannel:''
         },
         date: '',
         date1: '',

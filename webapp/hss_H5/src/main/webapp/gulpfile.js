@@ -45,12 +45,12 @@ gulp.task('less-hss', function () {
     .pipe(less({
       paths: [path.join(__dirname, 'less', 'includes')]
     }))
-    .pipe(rename({basename: "style.2.2.9"}))
+    .pipe(rename({basename: "style.2.2.12"}))
     .pipe(gulp.dest('css'));
 });
 
 gulp.task('replace-hss-calc', ['build-hss'], function () {
-  return gulp.src('css/hss/style.2.2.9.css')
+  return gulp.src('css/hss/style.2.2.12.css')
     .pipe(replace('calc(0%)', 'calc(100% - 100px)'))
     .pipe(replace('calc(38%)', 'calc(100% - 62px)'))
     .pipe(gulp.dest('css/hss'));
@@ -83,15 +83,15 @@ gulp.task('js-hss', () => {
     }))
     .pipe(rename({suffix: ".min"}))
     .pipe(sourcemaps.write('.'))
-    .pipe(gulp.dest('js/hss/2.2.15'));
+    .pipe(gulp.dest('js/hss/2.2.18'));
 });
 
 gulp.task('replace-hss', function () {
   return gulp.src('WEB-INF/jsp/*.jsp')
-    .pipe(replace('vendor.1.0.9.7.min.js', 'vendor.1.0.9.8.min.js'))
-    .pipe(replace('style.2.2.8.css', 'style.2.2.9.css'))
+    .pipe(replace('vendor.1.0.9.8.min.js', 'vendor.1.0.9.9.min.js'))
+    .pipe(replace('style.2.2.11.css', 'style.2.2.12.css'))
     .pipe(replace('style.2.0.2.css', 'style.2.0.3.css'))
-    .pipe(replace('/hss/2.2.14/', '/hss/2.2.15/'))
+    .pipe(replace('/hss/2.2.17/', '/hss/2.2.18/'))
     .pipe(gulp.dest('WEB-INF/jsp'));
 });
 

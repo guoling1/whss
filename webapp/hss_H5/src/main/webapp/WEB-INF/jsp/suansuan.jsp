@@ -13,7 +13,7 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <title>我的推广</title>
-    <link rel="stylesheet" href="http://static.jinkaimen.cn/hss/css/style.2.2.9.css">
+    <link rel="stylesheet" href="http://static.jinkaimen.cn/hss/css/style.2.2.12.css">
     <link rel="stylesheet" href="http://static.jinkaimen.cn/weui/weui.css">
 </head>
 <body>
@@ -24,5 +24,5 @@
 
 </body>
 
-<script src="http://static.jinkaimen.cn/vendor/vendor.1.0.9.8.min.js"></script>
+<script src="http://static.jinkaimen.cn/vendor/vendor.1.0.9.9.min.js"></script>
 </html>

@@ -107,4 +107,12 @@ public class OrderTradeRequest {
      *结算状态1：待结算，2：结算中，3：已结算
      */
     private Integer settleStatus;
+
+    /**
+     * 支付渠道标识（101， 102， 103）
+     *
+     *
+     */
+    private int payChannelSign;
+
 }

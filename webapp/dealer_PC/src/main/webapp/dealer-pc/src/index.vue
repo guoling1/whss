@@ -232,7 +232,7 @@
               </li>
             </ul>
           </li>
-          <li class="treeview" v-show="dealerLeavel!=2">
+          <li class="treeview">
             <a href="#">
               <i class="fa fa-calculator"></i> <span>设备管理</span>
               <span class="pull-right-container">
@@ -241,7 +241,7 @@
               </span>
             </a>
             <ul class="treeview-menu">
-              <li>
+              <li v-show="dealerLeavel!=2">
                 <router-link to="distribution_qrcode"><i class="fa fa-circle-o"></i> 分配二维码</router-link>
               </li>
               &lt;!&ndash;<li>&ndash;&gt;

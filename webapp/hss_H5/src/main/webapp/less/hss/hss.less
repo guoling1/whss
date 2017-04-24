@@ -2260,18 +2260,16 @@ input:focus {
       }
     }
   }
+}
+
+// 通道列表
+.channel {
   .channel-box {
-    position: fixed;
-    top: 0;
-    left: 100%;
     width: 100%;
     height: 100%;
     background-color: #f4f5f8;
     transition: all .3s;
     -webkit-transition: all .3s;
-    &.active {
-      left: 0;
-    }
     .channel-space {
       width: 100%;
       &.top {
@@ -2294,12 +2292,17 @@ input:focus {
           }
           &.big {
             width: 30%;
+            text-align: left;
+          }
+          &.right {
+            text-align: right;
+            padding-right: 20px;
           }
           span {
             display: inline-block;
             width: 14px;
             height: 14px;
-            margin-left: 5px;
+            margin-left: 2px;
             background: url("../assets/channel-q.png") no-repeat center;
             background-size: 14px 14px;
             transform: translate3d(0, 2px, 0);
@@ -2311,6 +2314,15 @@ input:focus {
           width: 25%;
           font-size: 14px;
           color: #5a5a5a;
+          .preferential {
+            display: inline-block;
+            width: 30px;
+            height: 14px;
+            background: url("../assets/preferential.png") no-repeat center;
+            background-size: 30px 14px;
+            margin-left: 3px;
+            transform: translate3d(0, 2px, 0);
+          }
           &.small {
             width: 20%;
           }
@@ -2320,12 +2332,17 @@ input:focus {
           &.name {
             color: #222;
             font-weight: bold;
-            text-overflow: ellipsis;
+            text-align: left;
           }
           &.dis {
             color: #b0b0b0;
           }
+          &.preferential {
+            color: #e78034;
+          }
           &.right {
+            text-align: right;
+            padding-right: 20px;
             background: url("../assets/channel-right.png") no-repeat center right;
             background-size: 6px 10px;
           }
