@@ -42,6 +42,7 @@ public class MessageListenerImpl implements MessageListener {
         } catch (Throwable e) {
             log.info("consume message error, Topic is: [{}], tag is: [{}] MsgId is: [{}]", message.getTopic(),
                     message.getTag(), message.getMsgID());
+            log.error("消费消息异常", e);
         }
         //如果想测试消息重投的功能,可以将Action.CommitMessage 替换成Action.ReconsumeLater
         return Action.CommitMessage;
