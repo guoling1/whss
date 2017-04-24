@@ -162,7 +162,7 @@
 
 
     <!-- 审核不通过更改提交资料步骤 -->
-    <select id="getUid" resultType="java.lang.Integer">
+    <select id="getUid" resultType="java.lang.Long">
         SELECT UID FROM app_biz_shop_user_role WHERE SID=#{id}
     </select>
 

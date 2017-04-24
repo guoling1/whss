@@ -34,8 +34,8 @@ public interface HsyCmbcDao {
 
     /**
      * 根据userId更改开通产品状态
-     * @param userId
+     * @param id
      * @return
      */
-    void updateHxbUserById(@Param("userId") long userId);
+    void updateHxbUserById(@Param("hxbOpenProduct") int hxbOpenProduct,@Param("id") long id);
 }
