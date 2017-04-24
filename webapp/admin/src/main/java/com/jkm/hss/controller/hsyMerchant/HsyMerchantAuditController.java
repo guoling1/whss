@@ -123,6 +123,7 @@ public class HsyMerchantAuditController extends BaseController {
         if(cmbcResponse.getCode()!=1){
             return CommonResponse.simpleResponse(-1,cmbcResponse.getMsg());
         }
+        hsyUserDao.updateHxbsStatus(EnumHxbsStatus.PASS.getId(),cmbcResponse.getMsg(),appUserAndShopRequest.getUserId());
         return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE,"入网成功");
     }
 
