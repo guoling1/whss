@@ -31,23 +31,40 @@ public class AlipayOauthServiceImpl implements AlipayOauthService {
     @Override
     public String getUserId(String authCode) throws AlipayApiException {
         String userId = "";
-        AlipayClient alipayClient = new DefaultAlipayClient(AlipayServiceConstants.ALIPAY_GATEWAY, AlipayServiceConstants.APP_ID,
-                AlipayServiceConstants.PRIVATE_KEY, "json", AlipayServiceConstants.CHARSET, AlipayServiceConstants.ALIPAY_PUBLIC_KEY, AlipayServiceConstants.SIGN_TYPE);
-        AlipaySystemOauthTokenRequest request = new AlipaySystemOauthTokenRequest();
-        request.setCode(authCode);
-        request.setGrantType(AlipayServiceConstants.GRANT_TYPE);
         try {
-            AlipaySystemOauthTokenResponse oauthTokenResponse = alipayClient.execute(request);
-            if (null != oauthTokenResponse && oauthTokenResponse.isSuccess()) {
-                log.info("authCode换取成功");
-                userId = oauthTokenResponse.getUserId();
-                log.info("授权码是{}",oauthTokenResponse.getAccessToken());
-            }else{
-                log.info("authCode换取authToken失败");
-            }
-        } catch (AlipayApiException e) {
-            //处理异常
-            e.printStackTrace();
+            //3. 利用authCode获得authToken
+            AlipaySystemOauthTokenRequest oauthTokenRequest = new AlipaySystemOauthTokenRequest();
+            oauthTokenRequest.setCode(authCode);
+            oauthTokenRequest.setGrantType(AlipayServiceConstants.GRANT_TYPE);
+            AlipayClient alipayClient = AlipayAPIClientFactory.getAlipayClient();
+            AlipaySystemOauthTokenResponse oauthTokenResponse = alipayClient
+                    .execute(oauthTokenRequest);
+            userId = oauthTokenResponse.getUserId();
+//            log.info("成功返回信息为{}",JSONObject.toJSON(oauthTokenResponse).toString());
+//            //成功获得authToken
+//            if (null != oauthTokenResponse && oauthTokenResponse.isSuccess()) {
+//                log.info("利用authToken获取用户信息");
+//                AlipayUserUserinfoShareRequest userinfoShareRequest = new AlipayUserUserinfoShareRequest();
+//                AlipayUserUserinfoShareResponse userinfoShareResponse = alipayClient.execute(
+//                        userinfoShareRequest, oauthTokenResponse.getAccessToken());
+//                log.info("利用authToken获取用户信息{}",JSONObject.toJSON(userinfoShareResponse).toString());
+//                //成功获得用户信息
+//                if (null != userinfoShareResponse && userinfoShareResponse.isSuccess()) {
+//                    //这里仅是简单打印， 请开发者按实际情况自行进行处理
+//                    System.out.println("获取用户信息成功：" + userinfoShareResponse.getBody());
+//
+//                } else {
+//                    //这里仅是简单打印， 请开发者按实际情况自行进行处理
+//                    System.out.println("获取用户信息失败");
+//
+//                }
+//            } else {
+//                //这里仅是简单打印， 请开发者按实际情况自行进行处理
+//                System.out.println("authCode换取authToken失败");
+//            }
+        } catch (AlipayApiException alipayApiException) {
+            //自行处理异常
+            alipayApiException.printStackTrace();
         }
         return userId;
     }
