@@ -119,7 +119,8 @@
         </el-row>
       </div>
       <div class="box box-primary">
-        <p class="lead">认证资料</p>
+        <span class="lead">认证资料</span>
+        <el-button type="text" @click="toDet">认证资料历史</el-button>
         <div class="table-responsive">
           <table class="table">
             <tbody>
@@ -149,8 +150,8 @@
             </tr>-->
             <tr class="row">
               <td class="col-md-3" style="text-align: center;border: none;">
-                <img style="width: 200px" @click="changeBig()" :src="$msg.identityFacePic" alt="" v-if="$msg.identityFacePic!=null"/>
-                <el-button v-if="$msg.identityFacePic!=null" type="text" @click="changePhoto('4')">点击更换</el-button>
+                <img style="width: 200px;" @click="changeBig()" :src="$msg.identityFacePic" alt="" v-if="$msg.identityFacePic!=null"/>
+                <el-button style="display: block;margin: 0 auto" v-if="$msg.identityFacePic!=null" type="text" @click="changePhoto('4')">点击更换</el-button>
                 <el-upload v-else id="upload" style="position: relative" action="/upload/picUpload"
                            type="drag" :thumbnail-mode="true"
                            :on-preview="handlePreview"
@@ -165,7 +166,7 @@
               </td>
               <td class="col-md-3" style="text-align: center;border: none;">
                 <img style="width: 200px" @click="changeBig()" :src="$msg.identityOppositePic" alt="" v-if="$msg.identityOppositePic!=null"/>
-                <el-button v-if="$msg.identityOppositePic!=null" type="text" @click="changePhoto('5')">点击更换</el-button>
+                <el-button style="display: block;margin: 0 auto" v-if="$msg.identityOppositePic!=null" type="text" @click="changePhoto('5')">点击更换</el-button>
                 <el-upload v-else id="upload" style="position: relative" action="/upload/picUpload"
                            type="drag" :thumbnail-mode="true"
                            :on-preview="handlePreview"
@@ -180,7 +181,7 @@
               </td>
               <td class="col-md-3" style="text-align: center;border: none;">
                 <img style="width: 200px" @click="changeBig()" :src="$msg.identityHandPic" alt="" v-if="$msg.identityHandPic!=null"/>
-                <el-button v-if="$msg.identityHandPic!=null" type="text" @click="changePhoto('3')">点击更换</el-button>
+                <el-button style="display: block;margin: 0 auto" v-if="$msg.identityHandPic!=null" type="text" @click="changePhoto('3')">点击更换</el-button>
                 <el-upload v-else id="upload" style="position: relative" action="/upload/picUpload"
                            type="drag" :thumbnail-mode="true"
                            :on-preview="handlePreview"
@@ -195,7 +196,7 @@
               </td>
               <td class="col-md-3" style="text-align: center;border: none;">
                 <img style="width: 200px" @click="changeBig()" :src="$msg.bankPic" alt="" v-if="$msg.bankPic!=null"/>
-                <el-button v-if="$msg.bankPic!=null" type="text" @click="changePhoto('1')">点击更换</el-button>
+                <el-button style="display: block;margin: 0 auto" v-if="$msg.bankPic!=null" type="text" @click="changePhoto('1')">点击更换</el-button>
                 <el-upload v-else id="upload" style="position: relative" action="/upload/picUpload"
                            type="drag" :thumbnail-mode="true"
                            :on-preview="handlePreview"
@@ -210,7 +211,7 @@
               </td>
               <td class="col-md-3" style="text-align: center;border: none;">
                 <img style="width: 200px" @click="changeBig()" :src="$msg.bankHandPic" alt="" v-if="$msg.bankHandPic!=null"/>
-                <el-button v-if="$msg.bankHandPic!=null" type="text" @click="changePhoto('2')">点击更换</el-button>
+                <el-button style="display: block;margin: 0 auto" v-if="$msg.bankHandPic!=null" type="text" @click="changePhoto('2')">点击更换</el-button>
                 <el-upload v-else id="upload" style="position: relative" action="/upload/picUpload"
                            type="drag" :thumbnail-mode="true"
                            :on-preview="handlePreview"
@@ -644,6 +645,9 @@
       },
       isNo: function () {
         document.getElementById('mask').style.display = 'none'
+      },
+      toDet:function () {
+        this.$router.push({path:'/admin/record/dataHistory',query:{merchantId:this.id}})
       }
     },
     computed:{

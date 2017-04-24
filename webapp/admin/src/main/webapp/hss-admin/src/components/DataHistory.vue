@@ -4,7 +4,6 @@
       <div class="box" style="margin-top:15px;overflow: hidden">
         <div class="box-header">
           <h3 class="box-title">认证资料历史</h3>
-          <router-link to="/admin/record/issue" class="pull-right btn btn-primary" style="margin-left: 20px">分配二维码</router-link>
         </div>
         <div class="box-body">
           <el-table v-loading.body="loading" style="font-size: 12px;margin:15px 0" :data="records" border>
@@ -19,6 +18,17 @@
             </el-table-column>
           </el-table>
         </div>
+        <!--分页-->
+        <div class="block" style="text-align: right">
+          <el-pagination @size-change="handleSizeChange"
+                         @current-change="handleCurrentChange"
+                         :current-page="query.pageNo"
+                         :page-sizes="[10, 20, 50]"
+                         :page-size="query.pageSize"
+                         layout="total, sizes, prev, pager, next, jumper"
+                         :total="count">
+          </el-pagination>
+        </div>
         <div class="mask" id="mask" style="display: none" @click="isNo()">
           <p @click="isNo">×</p>
           <img src="" alt="">
@@ -32,26 +42,48 @@
     name: 'dataHistory',
     data(){
       return {
+        query:{
+          pageNo:1,
+          pageSize:10,
+          merchantId:""
+        },
         records: [],
+        count: 0,
+        currentPage: 1,
         loading: true,
-        isMask:false
       }
     },
     created: function () {
-      this.$http.post('/admin/user/distributeRecord',this.$data.query)
-        .then(function (res) {
-          this.loading = false;
-          this.$data.records   = res.data.records;
-        }, function (err) {
-          this.loading = false;
-          this.$message({
-            showClose: true,
-            message: err.statusMessage,
-            type: 'error'
-          })
-        })
+      this.merchantId = this.$route.query.id;
+      this.getData();
     },
     methods: {
+      getData: function () {
+        this.loading = true;
+        this.$http.post('/admin/photoChange/selectHistory',this.query)
+          .then(function (res) {
+            this.loading = false;
+            this.count = res.data.count;
+            this.records = res.data.records;
+          }, function (err) {
+            this.loading = false;
+            this.$message({
+              showClose: true,
+              message: err.statusMessage,
+              type: 'error'
+            })
+          })
+      },
+      handleSizeChange(val) {
+        this.query.page = 1;
+        this.query.size = val;
+        this.getData();
+      },
+      //当前页改变时
+      handleCurrentChange(val) {
+        this.query.page = val;
+        this.getData()
+      },
       changeBig: function (e) {
         e = e || window.event;
         var obj = e.srcElement || e.target;
