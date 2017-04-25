@@ -54,7 +54,7 @@
       }
     },
     created: function () {
-      this.merchantId = this.$route.query.id;
+      this.query.merchantId = this.$route.query.merchantId;
       this.getData();
     },
     methods: {

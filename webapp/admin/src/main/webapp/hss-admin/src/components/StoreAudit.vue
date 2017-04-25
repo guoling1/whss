@@ -497,6 +497,7 @@
           message: '上传成功',
           type: 'success'
         });
+        this.isUpload = false;
         this.getData()
       },
       handleErr:function (err) {
