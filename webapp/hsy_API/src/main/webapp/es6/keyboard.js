@@ -187,7 +187,7 @@ _require.register("keyboard", (module, exports, _require, global) => {
             case 'ali-pay':
               if (oldValue > 0) {
                 onAlipayJSBridge();
-                message.load_show('正在支付');
+                // message.load_show('正在支付');
                 // http.post('/trade/scReceipt', {
                 //   totalFee: oldValue,
                 //   payChannel: '802',
