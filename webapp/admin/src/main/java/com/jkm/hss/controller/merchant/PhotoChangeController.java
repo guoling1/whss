@@ -10,6 +10,7 @@ import com.jkm.hss.controller.BaseController;
 import com.jkm.hss.helper.ApplicationConsts;
 import com.jkm.hss.merchant.entity.HistoryPhotoChangeRequest;
 import com.jkm.hss.merchant.entity.HistoryPhotoChangeResponse;
+import com.jkm.hss.merchant.enums.EnumPhotoType;
 import com.jkm.hss.merchant.service.MerchantInfoQueryService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -52,7 +53,7 @@ public class PhotoChangeController extends BaseController {
     @ResponseBody
     @RequestMapping(value = "/savePhotoChang",method = RequestMethod.POST)
     public CommonResponse<BaseEntity> savePhotoChang(@RequestParam("photo") MultipartFile file,
-                         long merchantId,int type,String reasonDescription,String cardName) {
+                         long merchantId,int type,String reasonDescription) {
 
         HistoryPhotoChangeResponse response = merchantInfoQueryService.getPhoto(merchantId);
 
@@ -71,26 +72,31 @@ public class PhotoChangeController extends BaseController {
             ossClient.putObject(ApplicationConsts.getApplicationConfig().ossBucke(), photoName, file.getInputStream(),meta);
             if (type==1) {
                 String photo = response.getBankPic();
+                String cardName = EnumPhotoType.BANKPIC.getValue();
                 merchantInfoQueryService.saveHistory(merchantId,photo,type,reasonDescription,cardName,operator);
                 merchantInfoQueryService.savePhotoChang(photoName,merchantId);
             }
             if (type==2) {
                 String photo = response.getBankHandPic();
+                String cardName = EnumPhotoType.BANKHANDPIC.getValue();
                 merchantInfoQueryService.saveHistory(merchantId,photo,type,reasonDescription,cardName,operator);
                 merchantInfoQueryService.savePhotoChang1(photoName,merchantId);
             }
             if (type==3) {
                 String photo = response.getIdentityHandPic();
+                String cardName = EnumPhotoType.IDENTITYHANDPIC.getValue();
                 merchantInfoQueryService.saveHistory(merchantId,photo,type,reasonDescription,cardName,operator);
                 merchantInfoQueryService.savePhotoChang2(photoName,merchantId);
             }
             if (type==4) {
                 String photo = response.getIdentityFacePic();
+                String cardName = EnumPhotoType.IDENTITYFACEPIC.getValue();
                 merchantInfoQueryService.saveHistory(merchantId,photo,type,reasonDescription,cardName,operator);
                 merchantInfoQueryService.savePhotoChang3(photoName,merchantId);
             }
             if (type==5) {
                 String photo = response.getIdentityOppositePic();
+                String cardName = EnumPhotoType.PicIDENTITYOPPOSITEPIC.getValue();
                 merchantInfoQueryService.saveHistory(merchantId,photo,type,reasonDescription,cardName,operator);
                 merchantInfoQueryService.savePhotoChang4(photoName,merchantId);
             }
@@ -114,12 +120,12 @@ public class PhotoChangeController extends BaseController {
         List<HistoryPhotoChangeResponse> list = merchantInfoQueryService.selectHistory(request);
         if (list!=null&&list.size()>0) {
             for (int i = 0; i < list.size(); i++) {
-                if (list.get(i).getPhoto() != null && !"".equals(list.get(i).getPhoto())) {
-                    String photoName = list.get(i).getPhoto();
+                if (list.get(i).getPohto() != null && !"".equals(list.get(i).getPohto())) {
+                    String photoName = list.get(i).getPohto();
                     Date expiration = new Date(new Date().getTime() + 30 * 60 * 1000);
                     URL url = ossClient.generatePresignedUrl(ApplicationConsts.getApplicationConfig().ossBucke(), photoName, expiration);
                     String urls = url.toString();
-                    list.get(i).setPhoto(urls);
+                    list.get(i).setPohto(urls);
                 }
             }
         }

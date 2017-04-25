@@ -42,7 +42,7 @@ public class HistoryPhotoChangeResponse {
     /**
      * 照片
      */
-    private String photo;
+    private String pohto;
 
     /**
      * 类型（1：结算卡2：手持结算卡：3手持身份证4：身份证正面5：身份证反面）
