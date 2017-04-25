@@ -176,8 +176,8 @@
       </div>
       <div class="box box-primary" style="overflow: hidden">
         <span class="lead">商户费率信息</span>
-        <el-button type="text" @click="isReenter = true">重新入网</el-button>
-        <el-button type="text" @click="isReject = true">驳回充填</el-button>
+        <el-button type="text" @click="isReenter = true" v-if="msg.status==1">重新入网</el-button>
+        <el-button type="text" @click="isReject = true" v-if="msg.status==1">驳回充填</el-button>
         <div style="width: 70%;margin: 0 0 15px 15px;">
           <template>
             <el-table :data="tableData" border style="width: 100%">
@@ -185,7 +185,12 @@
               <el-table-column prop="rate" label="支付结算手续费"></el-table-column>
               <el-table-column prop="time" label="结算时间" ></el-table-column>
               <el-table-column prop="money" label="提现手续费" ></el-table-column>
-              <el-table-column prop="status" label="产品开通状态" ></el-table-column>
+              <el-table-column prop="status" label="产品开通状态">
+                <template scope="scope">
+                  <span v-if="scope.row.status==1">成功</span>
+                  <span v-if="scope.row.status==2">失败</span>
+                </template>
+              </el-table-column>
               <el-table-column prop="msg" label="入网备注信息" ></el-table-column>
             </el-table>
           </template>
@@ -313,7 +318,10 @@
         .then(function (res) {
           this.$data.msg = res.data;
           this.tableData[1].rate = parseFloat(res.data.weixinRate * 100).toFixed(2) + '%';
-          this.tableData[0].rate = parseFloat(res.data.fastRate * 100).toFixed(2) + '%';
+          this.tableData[0].rate = parseFloat(res.data.alipayRate * 100).toFixed(2) + '%';
+          this.tableData[0].status = this.tableData[1].status = res.data.hxbOpenProduct;
+          this.tableData[0].msg = this.tableData[1].msg = res.data.hxbRemarks;
+
         },function (err) {
           this.$message({
             showClose: true,
