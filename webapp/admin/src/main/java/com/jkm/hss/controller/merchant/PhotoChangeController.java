@@ -19,7 +19,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
@@ -103,26 +102,6 @@ public class PhotoChangeController extends BaseController {
         return CommonResponse.simpleResponse(1,"操作成功");
 
     }
-
-    public CommonResponse<BaseEntity> savePhoto(@RequestParam("photo") MultipartFile file) {
-        Preconditions.checkArgument(!file.isEmpty(), "图片不能为空");
-        Preconditions.checkArgument(isImage(file), "图片格式不正确");
-        final String fileName = getOrginFileName(file.getOriginalFilename());
-        final ObjectMetadata meta = new ObjectMetadata();
-        meta.setCacheControl("public, max-age=31536000");
-        meta.setExpirationTime(new DateTime().plusYears(1).toDate());
-        meta.setContentType(file.getContentType());
-        try {
-            ossClient.putObject(ApplicationConsts.getApplicationConfig().ossBucke(), fileName, file.getInputStream(), meta);
-        } catch (IOException e) {
-            log.error("上传文件失败", e);
-            CommonResponse.simpleResponse(-1, "图片上传失败");
-        }
-
-        return CommonResponse.builder4MapResult(0, "success")
-                .addParam("url", fileName).build();
-    }
-
 
     /**
      * 查看照片
