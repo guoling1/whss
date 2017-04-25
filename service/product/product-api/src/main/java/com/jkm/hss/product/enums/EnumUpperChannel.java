@@ -36,7 +36,12 @@ public enum EnumUpperChannel {
     /**
      * 易联
      */
-    EASY_LINK(6, "EL", "易联")
+    EASY_LINK(6, "EL", "易联"),
+
+    /**
+     * 收银家
+     */
+    SYJ(8, "SYJ", "收银家")
     ;
 
     @Getter
