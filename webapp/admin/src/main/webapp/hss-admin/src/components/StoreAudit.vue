@@ -495,7 +495,6 @@
         this.$data.isShow = false;
       }
       this.getData();
-
     },
     methods: {
       changePhoto: function (val) {
@@ -531,20 +530,6 @@
               this.rateInfo[i].merchantRate = parseFloat(this.rateInfo[i].merchantRate * 100).toFixed(2) + '%'
               this.rateInfo[i].withdrawMoney = this.rateInfo[i].withdrawMoney + '元/笔'
             }
-            function isHasImg(pathImg){
-              var ImgObj=new Image();
-              ImgObj.src= pathImg;
-              console.log(ImgObj)
-              console.log(ImgObj.fileSize)
-              if(ImgObj.fileSize != '110B')
-              {
-                return true;
-              } else {
-                return false;
-              }
-            }
-            console.log(isHasImg(this.msg.identityFacePic))
-            console.log(this.msg.identityFacePic)
           }, function (err) {
             this.loading = false;
             this.$message({

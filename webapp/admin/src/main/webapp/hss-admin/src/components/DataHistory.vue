@@ -9,7 +9,7 @@
           <el-table v-loading.body="loading" style="font-size: 12px;margin:15px 0" :data="records" border>
             <el-table-column type="index" width="70" label="序号"></el-table-column>
             <el-table-column prop="cardName" label="名称"></el-table-column>
-            <el-table-column prop="createTime" label="更新时间"></el-table-column>
+            <el-table-column prop="createTimes" label="更新时间"></el-table-column>
             <el-table-column prop="operator" label="操作人"></el-table-column>
             <el-table-column label="照片">
               <template scope="scope">
