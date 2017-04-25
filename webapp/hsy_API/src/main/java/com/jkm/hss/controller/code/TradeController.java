@@ -131,12 +131,14 @@ public class TradeController extends BaseController {
                         .addParam("package", wechatPayInfoArray[3])
                         .addParam("signType", wechatPayInfoArray[4])
                         .addParam("paySign", wechatPayInfoArray[5])
+                        .addParam("orderId", order.getId())
                         .build();
             case ALIPAY:
                 final String[] alipayPayInfoArray = payInfo.split("\\|");
                 Preconditions.checkState(alipayPayInfoArray.length == 1, "缺少支付要素");
                 return CommonResponse.builder4MapResult(CommonResponse.SUCCESS_CODE, "success")
                         .addParam("tradeNO", alipayPayInfoArray[0])
+                        .addParam("orderId", order.getId())
                         .build();
                 default:
                     log.error("订单[{}], 通道[{}]，支付渠道错误", order.getId(), payChannelSign.getCode());
