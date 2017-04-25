@@ -151,10 +151,16 @@ _require.register("keyboard", (module, exports, _require, global) => {
         // 唤起支付宝支付
         let onAlipayJSBridge = function (jsonData) {
           //jsonData.channelNo
-          AlipayJSBridge.call("tradePay", {tradeNO: 2017042521001004500231812603},
-            function (result) {
-              alert(JSON.stringify(result));
-            });
+          alert(1);
+          try {
+            alert(2);
+            AlipayJSBridge.call("tradePay", {tradeNO: 2017042521001004500231812603},
+              function (result) {
+                alert(JSON.stringify(result));
+              });
+          } catch (err) {
+            alert(err)
+          }
         };
 
         // 获取输入的功能键 delete quick wx-zfb
