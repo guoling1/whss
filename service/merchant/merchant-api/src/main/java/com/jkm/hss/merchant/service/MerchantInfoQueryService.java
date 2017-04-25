@@ -71,31 +71,31 @@ public interface MerchantInfoQueryService {
      * 修改或上传结算卡
      * @param photoName
      */
-    void savePhotoChang(String photoName);
+    void savePhotoChang(String photoName,long merchantId);
 
     /**
      * 修改或上传手持结算卡
      * @param photoName
      */
-    void savePhotoChang1(String photoName);
+    void savePhotoChang1(String photoName,long merchantId);
 
     /**
      * 修改或上传手持身份证
      * @param photoName
      */
-    void savePhotoChang2(String photoName);
+    void savePhotoChang2(String photoName,long merchantId);
 
     /**
      * 修改或上传身份证正面
      * @param photoName
      */
-    void savePhotoChang3(String photoName);
+    void savePhotoChang3(String photoName,long merchantId);
 
     /**
      * 修改或上传身份证反面
      * @param photoName
      */
-    void savePhotoChang4(String photoName);
+    void savePhotoChang4(String photoName,long merchantId);
 
     /**
      * 查询商户认证历史

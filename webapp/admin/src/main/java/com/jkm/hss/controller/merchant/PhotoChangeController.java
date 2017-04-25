@@ -73,27 +73,27 @@ public class PhotoChangeController extends BaseController {
             if (type==1) {
                 String photo = response.getBankPic();
                 merchantInfoQueryService.saveHistory(merchantId,photo,type,reasonDescription,cardName,operator);
-                merchantInfoQueryService.savePhotoChang(photoName);
+                merchantInfoQueryService.savePhotoChang(photoName,merchantId);
             }
             if (type==2) {
                 String photo = response.getBankHandPic();
                 merchantInfoQueryService.saveHistory(merchantId,photo,type,reasonDescription,cardName,operator);
-                merchantInfoQueryService.savePhotoChang1(photoName);
+                merchantInfoQueryService.savePhotoChang1(photoName,merchantId);
             }
             if (type==3) {
                 String photo = response.getIdentityHandPic();
                 merchantInfoQueryService.saveHistory(merchantId,photo,type,reasonDescription,cardName,operator);
-                merchantInfoQueryService.savePhotoChang2(photoName);
+                merchantInfoQueryService.savePhotoChang2(photoName,merchantId);
             }
             if (type==4) {
                 String photo = response.getIdentityFacePic();
                 merchantInfoQueryService.saveHistory(merchantId,photo,type,reasonDescription,cardName,operator);
-                merchantInfoQueryService.savePhotoChang3(photoName);
+                merchantInfoQueryService.savePhotoChang3(photoName,merchantId);
             }
             if (type==5) {
                 String photo = response.getIdentityOppositePic();
                 merchantInfoQueryService.saveHistory(merchantId,photo,type,reasonDescription,cardName,operator);
-                merchantInfoQueryService.savePhotoChang4(photoName);
+                merchantInfoQueryService.savePhotoChang4(photoName,merchantId);
             }
         } catch (Exception e) {
             e.printStackTrace();

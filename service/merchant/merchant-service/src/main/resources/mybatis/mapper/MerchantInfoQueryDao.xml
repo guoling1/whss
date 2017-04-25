@@ -513,7 +513,7 @@
         VALUES
         (
         #{merchantId},
-        #{pohto},
+        #{photo},
         #{type},
         #{reasonDescription},
         #{cardName},

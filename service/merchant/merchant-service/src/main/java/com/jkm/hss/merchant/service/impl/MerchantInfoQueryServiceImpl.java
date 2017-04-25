@@ -23,7 +23,9 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by zhangbin on 2016/11/27.
@@ -126,32 +128,54 @@ public class MerchantInfoQueryServiceImpl implements MerchantInfoQueryService {
 
     @Override
     public void saveHistory(long merchantId, String photo, int type, String reasonDescription, String cardName, String operator) {
-        this.merchantInfoQueryDao.saveHistory(merchantId,photo,type,reasonDescription,cardName,operator);
+        Map map = new HashMap();
+        map.put("merchantId",merchantId);
+        map.put("photo",photo);
+        map.put("type",type);
+        map.put("reasonDescription",reasonDescription);
+        map.put("cardName",cardName);
+        map.put("operator",operator);
+        this.merchantInfoQueryDao.saveHistory(map);
     }
 
     @Override
-    public void savePhotoChang(String photoName) {
-        this.merchantInfoQueryDao.savePhotoChang(photoName);
+    public void savePhotoChang(String photoName,long merchantId) {
+        Map map = new HashMap();
+        map.put("photoName",photoName);
+        map.put("merchantId",merchantId);
+        this.merchantInfoQueryDao.savePhotoChang(map);
     }
 
     @Override
-    public void savePhotoChang1(String photoName) {
-        this.merchantInfoQueryDao.savePhotoChang1(photoName);
+    public void savePhotoChang1(String photoName,long merchantId) {
+        Map map = new HashMap();
+        map.put("photoName",photoName);
+        map.put("merchantId",merchantId);
+        this.merchantInfoQueryDao.savePhotoChang1(map);
     }
 
     @Override
-    public void savePhotoChang2(String photoName) {
-        this.merchantInfoQueryDao.savePhotoChang2(photoName);
+    public void savePhotoChang2(String photoName,long merchantId) {
+        Map map = new HashMap();
+        map.put("photoName",photoName);
+        map.put("merchantId",merchantId);
+        this.merchantInfoQueryDao.savePhotoChang2(map);
     }
 
     @Override
-    public void savePhotoChang3(String photoName) {
-        this.merchantInfoQueryDao.savePhotoChang3(photoName);
+    public void savePhotoChang3(String photoName,long merchantId) {
+        Map map = new HashMap();
+        map.put("photoName",photoName);
+        map.put("merchantId",merchantId);
+        this.merchantInfoQueryDao.savePhotoChang3(map);
     }
 
     @Override
-    public void savePhotoChang4(String photoName) {
-        this.merchantInfoQueryDao.savePhotoChang4(photoName);
+    public void savePhotoChang4(String photoName,long merchantId) {
+        Map map = new HashMap();
+        map.put("photoName",photoName);
+        map.put("merchantId",merchantId);
+        this.merchantInfoQueryDao.savePhotoChang4(map);
     }
 
     @Override
