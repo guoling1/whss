@@ -76,9 +76,9 @@ _require.register("keyboard", (module, exports, _require, global) => {
           num = oldNum + inputNum;
         }
         //大于俩万
-        if (num >= 20000) {
-          num = 20000;
-          message.prompt_show('收款金额不能超过20000');
+        if (num >= 10000) {
+          num = 10000;
+          message.prompt_show('收款金额不能超过10000');
         }
         return num;
       };
