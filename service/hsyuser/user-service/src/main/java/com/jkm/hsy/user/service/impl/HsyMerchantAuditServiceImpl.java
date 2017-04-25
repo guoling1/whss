@@ -1,5 +1,7 @@
 package com.jkm.hsy.user.service.impl;
 
+import com.jkm.hsy.user.Enum.EnumHxbsOpenProductStatus;
+import com.jkm.hsy.user.Enum.EnumHxbsStatus;
 import com.jkm.hsy.user.constant.IndustryCodeType;
 import com.jkm.hsy.user.dao.HsyMerchantAuditDao;
 import com.jkm.hsy.user.entity.*;
@@ -88,6 +90,16 @@ public class HsyMerchantAuditServiceImpl implements HsyMerchantAuditService {
     public HsyMerchantAuditResponse getDetails(Long id) {
 
         HsyMerchantAuditResponse res = hsyMerchantAuditDao.getDetails(id);
+        if(res.getHxbStatus()!=null&&res.getHxbStatus()== EnumHxbsStatus.PASS.getId()){
+            res.setHxbStatus(EnumHxbsStatus.PASS.getId());
+        }else{
+            res.setHxbStatus(EnumHxbsStatus.UNPASS.getId());
+        }
+        if(res.getHxbOpenProduct()!=null&&res.getHxbOpenProduct()== EnumHxbsOpenProductStatus.PASS.getId()){
+            res.setHxbOpenProduct(EnumHxbsOpenProductStatus.PASS.getId());
+        }else{
+            res.setHxbOpenProduct(EnumHxbsOpenProductStatus.UNPASS.getId());
+        }
         if (res!=null){
             if (res.getStatus()==1){
                 res.setStat("审核已通过");
