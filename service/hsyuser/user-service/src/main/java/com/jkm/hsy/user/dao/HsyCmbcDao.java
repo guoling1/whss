@@ -37,5 +37,5 @@ public interface HsyCmbcDao {
      * @param id
      * @return
      */
-    void updateHxbUserById(@Param("hxbOpenProduct") int hxbOpenProduct,@Param("id") long id);
+    void updateHxbUserById(@Param("hxbOpenProduct") int hxbOpenProduct,@Param("hxbOpenProductRemarks") String hxbOpenProductRemarks,@Param("id") long id);
 }

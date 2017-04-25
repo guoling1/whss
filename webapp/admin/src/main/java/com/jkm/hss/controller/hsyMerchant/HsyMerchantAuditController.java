@@ -73,9 +73,9 @@ public class HsyMerchantAuditController extends BaseController {
             if(hsyMerchantAudit.getWeixinRate()!=null&&!"".equals(hsyMerchantAudit.getWeixinRate())){//添加产品
                 CmbcResponse cmbcResponse1 = hsyCmbcService.merchantBindChannel(hsyMerchantAuditRequest.getUid(),hsyMerchantAuditRequest.getId());
                 if(cmbcResponse1.getCode()==1){//开通产品成功
-                    hsyCmbcDao.updateHxbUserById(EnumHxbsOpenProductStatus.PASS.getId(),hsyMerchantAuditRequest.getUid());
+                    hsyCmbcDao.updateHxbUserById(EnumHxbsOpenProductStatus.PASS.getId(),cmbcResponse1.getMsg(),hsyMerchantAuditRequest.getUid());
                 }else{//开通产品失败
-                    hsyCmbcDao.updateHxbUserById(EnumHxbsOpenProductStatus.UNPASS.getId(),hsyMerchantAuditRequest.getUid());
+                    hsyCmbcDao.updateHxbUserById(EnumHxbsOpenProductStatus.UNPASS.getId(),cmbcResponse1.getMsg(),hsyMerchantAuditRequest.getUid());
                 }
             }
         }else{
@@ -120,10 +120,10 @@ public class HsyMerchantAuditController extends BaseController {
             if(appAuUser.getHxbOpenProduct()!=null&&appAuUser.getHxbOpenProduct()==EnumHxbsOpenProductStatus.UNPASS.getId()){
                 CmbcResponse cmbcResponse1 = hsyCmbcService.merchantBindChannel(appUserAndShopRequest.getUserId(),appUserAndShopRequest.getShopId());
                 if(cmbcResponse1.getCode()==1){//开通产品成功
-                    hsyCmbcDao.updateHxbUserById(EnumHxbsOpenProductStatus.PASS.getId(),appUserAndShopRequest.getUserId());
+                    hsyCmbcDao.updateHxbUserById(EnumHxbsOpenProductStatus.PASS.getId(),cmbcResponse1.getMsg(),appUserAndShopRequest.getUserId());
                     return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE,"该商户已经入网且开通产品成功");
                 }else{//开通产品失败
-                    hsyCmbcDao.updateHxbUserById(EnumHxbsOpenProductStatus.UNPASS.getId(),appUserAndShopRequest.getUserId());
+                    hsyCmbcDao.updateHxbUserById(EnumHxbsOpenProductStatus.UNPASS.getId(),cmbcResponse1.getMsg(),appUserAndShopRequest.getUserId());
                     return CommonResponse.simpleResponse(-1,"该商户已经入网但,开通产品失败");
                 }
             }else{
@@ -138,10 +138,10 @@ public class HsyMerchantAuditController extends BaseController {
                 if(appAuUser.getWeixinRate()!=null&&!"".equals(appAuUser.getWeixinRate())){//添加产品
                     CmbcResponse cmbcResponse1 = hsyCmbcService.merchantBindChannel(appUserAndShopRequest.getUserId(),appUserAndShopRequest.getShopId());
                     if(cmbcResponse1.getCode()==1){//开通产品成功
-                        hsyCmbcDao.updateHxbUserById(EnumHxbsOpenProductStatus.PASS.getId(),appUserAndShopRequest.getUserId());
+                        hsyCmbcDao.updateHxbUserById(EnumHxbsOpenProductStatus.PASS.getId(),cmbcResponse1.getMsg(),appUserAndShopRequest.getUserId());
                         return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE,"入网成功");
                     }else{//开通产品失败
-                        hsyCmbcDao.updateHxbUserById(EnumHxbsOpenProductStatus.UNPASS.getId(),appUserAndShopRequest.getUserId());
+                        hsyCmbcDao.updateHxbUserById(EnumHxbsOpenProductStatus.UNPASS.getId(),cmbcResponse1.getMsg(),appUserAndShopRequest.getUserId());
                         return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE,"开通产品失败");
                     }
                 }else{

@@ -145,7 +145,7 @@ public class HsyQrCodeServiceImpl implements HsyQrCodeService{
                     throw new ApiHandleException(ResultCode.RESULT_FAILE,"开通产品失败");
                 }
                 log.info("返回参数是：{}", JSONObject.toJSON(cmbcResponse).toString());
-                hsyCmbcDao.updateHxbUserById(EnumHxbsOpenProductStatus.PASS.getId(),list.get(0).getId());
+                hsyCmbcDao.updateHxbUserById(EnumHxbsOpenProductStatus.PASS.getId(),cmbcResponse.getMsg(),list.get(0).getId());
             }
         }else{
             throw new ApiHandleException(ResultCode.RESULT_FAILE,"商户未入网");

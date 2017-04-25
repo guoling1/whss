@@ -29,6 +29,6 @@
     </select>
     <!--修改开通华夏接口状态-->
     <update id="updateHxbUserById">
-        update app_au_user set HXBOPENPRODUCT=#{hxbOpenProduct} where ID=#{id}
+        update app_au_user set HXBOPENPRODUCT=#{hxbOpenProduct},HXBOPENPRODUCTREMARKS=#{hxbOpenProductRemarks} where ID=#{id}
     </update>
 </mapper>
