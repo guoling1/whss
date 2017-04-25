@@ -117,7 +117,7 @@ public class HSYTradeServiceImpl implements HSYTradeService {
         result.put("bankName", appBizCard1.getCardBank());
         final String cardNO = appBizCard1.getCardNO();
         result.put("cardNo", cardNO.substring(cardNO.length() - 4));
-        final BigDecimal merchantWithdrawPoundage = this.calculateService.getMerchantWithdrawPoundage(EnumProductType.HSY, shop.getId(), channel);
+        final BigDecimal merchantWithdrawPoundage = new BigDecimal("2");//this.calculateService.getMerchantWithdrawPoundage(EnumProductType.HSY, shop.getId(), channel);
         result.put("poundage", merchantWithdrawPoundage);
         result.put("mobile", appAuUser.getCellphone());
         result.put("available", account.getAvailable());
@@ -594,8 +594,8 @@ public class HSYTradeServiceImpl implements HSYTradeService {
             result.put("msg", "提现金额错误");
             return result.toJSONString();
         }
-        final AppBizShop shop = this.hsyShopDao.findAppBizShopByAccountID(accountId).get(0);
-        final BigDecimal merchantWithdrawPoundage = this.calculateService.getMerchantWithdrawPoundage(EnumProductType.HSY, shop.getId(), channel);
+//        final AppBizShop shop = this.hsyShopDao.findAppBizShopByAccountID(accountId).get(0);
+        final BigDecimal merchantWithdrawPoundage = new BigDecimal("2");//this.calculateService.getMerchantWithdrawPoundage(EnumProductType.HSY, shop.getId(), channel);
         if (new BigDecimal(totalAmount).compareTo(merchantWithdrawPoundage) <= 0) {
             result.put("code", -1);
             result.put("msg", "提现金额必须大于手续费");
