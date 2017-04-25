@@ -144,6 +144,13 @@ public class TradeController extends BaseController {
         }
     }
 
+    /**
+     * 支付成业
+     *
+     * @param model
+     * @param id
+     * @return
+     */
     @RequestMapping(value = "success/${id}")
     public String paySuccessPage(final Model model, @PathVariable("id") long id) {
         final Optional<Order> orderOptional = this.orderService.getById(id);
