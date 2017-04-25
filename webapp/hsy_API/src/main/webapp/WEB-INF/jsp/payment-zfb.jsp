@@ -66,6 +66,7 @@
 </body>
 <script>
   var pageData = {
+    memberId: '${openId}',
     merchantId: '${mid}'
   }
 </script>
