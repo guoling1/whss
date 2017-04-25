@@ -217,7 +217,7 @@
           </ul>
         </li>
 
-        <li class="treeview"
+        <li v-if="list.合作意向!=undefined" class="treeview"
             :class="(url=='/admin/record/application'||url=='/admin/record/channel')?'treeview active':'treeview'">
           <a href="#"><span>合作意向</span>
           </a>

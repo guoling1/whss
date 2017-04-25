@@ -34,7 +34,7 @@
               </el-col>
               <el-col :span="8">
                 <div class="grid-content bg-purple-light">
-                  <el-button v-if="!isShow" type="text" @click="dialogFormVisible = true" style="margin-left: 15px">修改密码</el-button>
+                  <el-button v-if="!isShow" type="text" @click="_$power(function(){dialogFormVisible = true},'boss_staff_updatepwd')" style="margin-left: 15px">修改密码</el-button>
                 </div>
               </el-col>
             </el-row>

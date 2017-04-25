@@ -184,7 +184,7 @@
               <el-form-item label="登录密码" prop="password">
                 <el-input type="password" size="small" v-model="query.password" v-if="isShow"></el-input>
                 <el-input type="password" size="small" value="******" v-if="!isShow" :disabled="true"></el-input>
-                <el-button v-if="!isShow" type="text" @click="dialogFormVisible = true" style="margin-left: 15px;position: absolute;top: 0;left: 100%;">修改密码</el-button>
+                <el-button v-if="!isShow" type="text" @click="_$power(function(){dialogFormVisible = true},'dealer_staff_updatepwd')" style="margin-left: 15px;position: absolute;top: 0;left: 100%;">修改密码</el-button>
               </el-form-item>
               <el-form-item label="真实姓名" prop="realname">
                 <el-input v-model="query.realname" size="small"></el-input>
