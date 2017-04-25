@@ -152,8 +152,10 @@
               <td class="col-md-3" style="text-align: center;border: none;">
                 <img style="width: 200px;" @click="changeBig()" :src="$msg.identityFacePic" alt="" v-if="$msg.identityFacePic!=null&&$msg.identityFacePic!=''"/>
                 <el-button style="display: block;margin: 0 auto" v-if="$msg.identityFacePic!=null&&$msg.identityFacePic!=''" type="text" @click="changePhoto('4')">点击更换</el-button>
-                <el-upload v-else id="upload" style="position: relative" action="/upload/picUpload"
+                <el-upload v-else id="upload" style="position: relative" action="/admin/photoChange/savePhotoChang"
                            type="drag" :thumbnail-mode="true"
+                           name="photo"
+                           :data={merchantId:id,type:4}
                            :on-preview="handlePreview"
                            :on-success="handleSuccess"
                            :on-error="handleErr"
@@ -167,8 +169,10 @@
               <td class="col-md-3" style="text-align: center;border: none;">
                 <img style="width: 200px" @click="changeBig()" :src="$msg.identityOppositePic" alt="" v-if="$msg.identityOppositePic!=null&&$msg.identityOppositePic!=''"/>
                 <el-button style="display: block;margin: 0 auto" v-if="$msg.identityOppositePic!=null&&$msg.identityOppositePic!=''" type="text" @click="changePhoto('5')">点击更换</el-button>
-                <el-upload v-else id="upload" style="position: relative" action="/upload/picUpload"
+                <el-upload v-else id="upload" style="position: relative" action="/admin/photoChange/savePhotoChang"
                            type="drag" :thumbnail-mode="true"
+                           name="photo"
+                           :data={merchantId:id,type:5}
                            :on-preview="handlePreview"
                            :on-success="handleSuccess"
                            :on-error="handleErr"
@@ -182,8 +186,10 @@
               <td class="col-md-3" style="text-align: center;border: none;">
                 <img style="width: 200px" @click="changeBig()" :src="$msg.identityHandPic" alt="" v-if="$msg.identityHandPic!=null&&$msg.identityHandPic!=''"/>
                 <el-button style="display: block;margin: 0 auto" v-if="$msg.identityHandPic!=null&&$msg.identityHandPic!=''" type="text" @click="changePhoto('3')">点击更换</el-button>
-                <el-upload v-else id="upload" style="position: relative" action="/upload/picUpload"
+                <el-upload v-else id="upload" style="position: relative" action="/admin/photoChange/savePhotoChang"
                            type="drag" :thumbnail-mode="true"
+                           name="photo"
+                           :data={merchantId:id,type:3}
                            :on-preview="handlePreview"
                            :on-success="handleSuccess"
                            :on-error="handleErr"
@@ -197,8 +203,10 @@
               <td class="col-md-3" style="text-align: center;border: none;">
                 <img style="width: 200px" @click="changeBig()" :src="$msg.bankPic" alt="" v-if="$msg.bankPic!=null&&$msg.bankPic!=''"/>
                 <el-button style="display: block;margin: 0 auto" v-if="$msg.bankPic!=null&&$msg.bankPic!=''" type="text" @click="changePhoto('1')">点击更换</el-button>
-                <el-upload v-else id="upload" style="position: relative" action="/upload/picUpload"
+                <el-upload v-else id="upload" style="position: relative" action="/admin/photoChange/savePhotoChang"
                            type="drag" :thumbnail-mode="true"
+                           name="photo"
+                           :data={merchantId:id,type:1}
                            :on-preview="handlePreview"
                            :on-success="handleSuccess"
                            :on-error="handleErr"
@@ -212,8 +220,10 @@
               <td class="col-md-3" style="text-align: center;border: none;">
                 <img style="width: 200px" @click="changeBig()" :src="$msg.bankHandPic" alt="" v-if="$msg.bankHandPic!=null&&$msg.bankHandPic!=''"/>
                 <el-button style="display: block;margin: 0 auto" v-if="$msg.bankHandPic!=null&&$msg.bankHandPic!=''" type="text" @click="changePhoto('2')">点击更换</el-button>
-                <el-upload v-else id="upload" style="position: relative" action="/upload/picUpload"
+                <el-upload v-else id="upload" style="position: relative" action="/admin/photoChange/savePhotoChang"
                            type="drag" :thumbnail-mode="true"
+                           name="photo"
+                           :data={merchantId:id,type:2}
                            :on-preview="handlePreview"
                            :on-success="handleSuccess"
                            :on-error="handleErr"
@@ -485,6 +495,7 @@
         this.$data.isShow = false;
       }
       this.getData();
+
     },
     methods: {
       changePhoto: function (val) {
@@ -520,9 +531,20 @@
               this.rateInfo[i].merchantRate = parseFloat(this.rateInfo[i].merchantRate * 100).toFixed(2) + '%'
               this.rateInfo[i].withdrawMoney = this.rateInfo[i].withdrawMoney + '元/笔'
             }
-            this.fileList.push({
-                url:this.msg.identityFacePic
-            })
+            function isHasImg(pathImg){
+              var ImgObj=new Image();
+              ImgObj.src= pathImg;
+              console.log(ImgObj)
+              console.log(ImgObj.fileSize)
+              if(ImgObj.fileSize != '110B')
+              {
+                return true;
+              } else {
+                return false;
+              }
+            }
+            console.log(isHasImg(this.msg.identityFacePic))
+            console.log(this.msg.identityFacePic)
           }, function (err) {
             this.loading = false;
             this.$message({

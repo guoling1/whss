@@ -8,12 +8,12 @@
         <div class="box-body">
           <el-table v-loading.body="loading" style="font-size: 12px;margin:15px 0" :data="records" border>
             <el-table-column type="index" width="70" label="序号"></el-table-column>
-            <el-table-column prop="distributeTime" label="名称"></el-table-column>
-            <el-table-column prop="proxyName" label="更新时间"></el-table-column>
-            <el-table-column prop="markCode" label="操作人"></el-table-column>
+            <el-table-column prop="cardName" label="名称"></el-table-column>
+            <el-table-column prop="createTime" label="更新时间"></el-table-column>
+            <el-table-column prop="operator" label="操作人"></el-table-column>
             <el-table-column label="照片">
               <template scope="scope">
-                <span>点击查看</span>
+                <el-button type="text" @click="changeBig(scope.row.pohto)">点击查看</el-button>
               </template>
             </el-table-column>
           </el-table>
@@ -84,12 +84,10 @@
         this.query.page = val;
         this.getData()
       },
-      changeBig: function (e) {
-        e = e || window.event;
-        var obj = e.srcElement || e.target;
+      changeBig: function (val) {
         var mask = document.getElementById('mask'),
           img = mask.getElementsByTagName('img')[0];
-        img.src = obj.src;
+        img.src = val;
         mask.style.display = 'block'
       },
       isNo: function () {
