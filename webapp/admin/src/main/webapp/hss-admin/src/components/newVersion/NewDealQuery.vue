@@ -216,7 +216,9 @@
         url: '',
         pageTotal: 0,
         addTotal: 0,
-        isMask:false
+        isMask:false,
+        loadUrl:'',
+        loadUrl1:''
       }
     },
     created: function () {
