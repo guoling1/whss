@@ -165,7 +165,7 @@ public class WebSkipController extends BaseController {
 
             if("sign".equals(arr[i].split("=")[0])){
                 sign = arr[i].split("=")[1];
-                log.info("sign参数是:{}",code);
+                log.info("sign参数是:{}",sign);
             }
         }
         String userId = alipayOauthService.getUserId(authcode);

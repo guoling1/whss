@@ -189,10 +189,13 @@ _require.register("keyboard", (module, exports, _require, global) => {
                 http.post('/trade/scReceipt', { // /wx/receiptByCode
                   totalFee: oldValue,
                   payChannel: '802',
+                  memberId: pageData.memberId,
                   merchantId: pageData.merchantId
                 }, function (data) {
-                  message.load_hide();
-                  window.location.href = data.payUrl;
+                  http.post(data.payUrl, {}, function (data) {
+                    message.load_hide();
+                    onAlipayJSBridge(data);
+                  });
                 });
               } else {
                 message.prompt_show('请输入正确的支付金额');

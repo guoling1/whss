@@ -17,18 +17,18 @@ import java.util.Date;
  * Created by Thinkpad on 2017/1/17.
  */
 public class QrCodeControllerTester {
-    public static String url="http://localhost:8080/active/rest";
+    public static String url="http://localhost:8083/active/rest";
     @Test
     public void testInsertHsyUser()throws Exception{
-        AppParam p=new AppParam();
-        p.setServiceCode("HSY001020");
-        p.setAccessToken("");
-        p.setAppType("android");
-        p.setTimeStamp(AppDateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
-        p.setV("v1.0");
-        String param="{\"code\": \"100010084454\",\"userId\":\"115\",\"shopId\":\"76\"}";
-        p.setRequestData(param);
-        QrCodeControllerTester.testRest(p);
+//        AppParam p=new AppParam();
+//        p.setServiceCode("HSY001020");
+//        p.setAccessToken("");
+//        p.setAppType("android");
+//        p.setTimeStamp(AppDateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
+//        p.setV("v1.0");
+//        String param="{\"code\": \"100010125729\",\"userId\":\"106\",\"shopId\":\"99\"}";
+//        p.setRequestData(param);
+//        QrCodeControllerTester.testRest(p);
     }
     public static void testRest(AppParam p)throws Exception{
         HttpURLConnection httpConnection = (HttpURLConnection)new URL(url).openConnection();

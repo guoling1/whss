@@ -286,21 +286,25 @@ public class AccountSettleAuditRecordServiceImpl implements AccountSettleAuditRe
             for (SettleAccountFlowStatistics statistics : settleAccountFlowStatisticses) {
                 final EnumAccountUserType accountUserType = EnumAccountUserType.of(statistics.getAccountUserType());
                 final AccountSettleAuditRecord accountSettleAuditRecord = new AccountSettleAuditRecord();
+                final SettlementRecord settlementRecord = new SettlementRecord();
                 switch (accountUserType) {
                     case COMPANY:
                         final Account account = this.accountService.getById(statistics.getAccountId()).get();
                         accountSettleAuditRecord.setUserNo("");
                         accountSettleAuditRecord.setUserName(account.getUserName());
+                        settlementRecord.setSettleDestination(EnumSettleDestinationType.TO_ACCOUNT.getId());
                         break;
                     case DEALER:
                         final Dealer dealer = dealerMap.get(statistics.getAccountId());
                         accountSettleAuditRecord.setUserNo(dealer.getMarkCode());
                         accountSettleAuditRecord.setUserName(dealer.getProxyName());
+                        settlementRecord.setSettleDestination(EnumSettleDestinationType.TO_ACCOUNT.getId());
                         break;
                     case MERCHANT:
                         final AppBizShop shop = shopMap.get(statistics.getAccountId());
                         accountSettleAuditRecord.setUserNo(shop.getGlobalID());
                         accountSettleAuditRecord.setUserName(shop.getShortName());
+                        settlementRecord.setSettleDestination(EnumSettleDestinationType.TO_CARD.getId());
                         break;
                     default:
                         log.error("账户[{}]，生成结算审核记录时，出现未知流水", statistics.getAccountId());
@@ -322,7 +326,6 @@ public class AccountSettleAuditRecordServiceImpl implements AccountSettleAuditRe
                         accountSettleAuditRecord.getId(), updateCount);
 
                 //生成结算单
-                final SettlementRecord settlementRecord = new SettlementRecord();
                 settlementRecord.setSettleNo(this.settlementRecordService.getSettleNo(accountUserType.getId(), EnumSettleDestinationType.TO_ACCOUNT.getId()));
                 settlementRecord.setSettleAuditRecordId(accountSettleAuditRecord.getId());
                 settlementRecord.setAccountId(statistics.getAccountId());
@@ -335,7 +338,6 @@ public class AccountSettleAuditRecordServiceImpl implements AccountSettleAuditRe
                 settlementRecord.setSettleAmount(accountSettleAuditRecord.getSettleAmount());
                 settlementRecord.setSettleStatus(EnumSettleStatus.DUE_SETTLE.getId());
                 settlementRecord.setSettleMode(EnumSettleModeType.CHANNEL_SETTLE.getId());
-                settlementRecord.setSettleDestination(EnumSettleDestinationType.TO_CARD.getId());
                 settlementRecord.setStatus(EnumSettlementRecordStatus.WAIT_WITHDRAW.getId());
                 final long settlementRecordId = this.settlementRecordService.add(settlementRecord);
                 final int updateCount2 = this.settleAccountFlowService.updateSettlementRecordIdBySettleAuditRecordId(accountSettleAuditRecord.getId(), settlementRecordId);
@@ -353,7 +355,7 @@ public class AccountSettleAuditRecordServiceImpl implements AccountSettleAuditRe
         final Date settleDate = DateFormatUtil.parse(DateFormatUtil.format(new Date(), DateFormatUtil.yyyy_MM_dd) , DateFormatUtil.yyyy_MM_dd);
         //查询结算单--结算
         final List<Long> pendingIds = this.accountSettleAuditRecordDao.selectPendingSettleAuditRecordIdsBySettleDateAndSettleStatus(settleDate, EnumSettleStatus.DUE_SETTLE.getId());
-        log.info("今日[{}], 可以结算的结算审核记录[{}]", pendingIds);
+        log.info("今日[{}], 可以结算的结算审核记录[{}]", settleDate, pendingIds);
         for (int i= 0; i < pendingIds.size(); i++) {
             final long settleAuditRecordId = pendingIds.get(i);
             log.info("结算审核记录[{}],发消息进行结算", settleAuditRecordId);

@@ -5,11 +5,13 @@ import com.alipay.api.AlipayConstants;
 import com.alipay.api.internal.util.AlipaySignature;
 import com.alipay.api.internal.util.StringUtils;
 import com.jkm.base.common.spring.alipay.constant.AlipayServiceConstants;
+import com.jkm.base.common.spring.alipay.constant.AlipayServiceEnvConstants;
 import com.jkm.base.common.spring.alipay.dispatcher.Dispatcher;
 import com.jkm.base.common.spring.alipay.executor.ActionExecutor;
 import com.jkm.base.common.spring.alipay.util.LogUtil;
 import com.jkm.base.common.spring.alipay.util.RequestUtil;
 import lombok.extern.slf4j.Slf4j;
+import net.sf.json.JSONObject;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -40,7 +42,8 @@ public class GatewayController extends HttpServlet {
 
         //1. 解析请求参数
         Map<String, String> params = RequestUtil.getRequestParams(request);
-
+        JSONObject jo = JSONObject.fromObject(params);
+        LogUtil.log("支付宝请求json串", jo.toString());
         //打印本次请求日志，开发者自行决定是否需要
         LogUtil.log("支付宝请求串", params.toString());
 
@@ -98,11 +101,13 @@ public class GatewayController extends HttpServlet {
      * @return
      */
     private void verifySign(Map<String, String> params) throws AlipayApiException {
-
-        if (!AlipaySignature.rsaCheckV2(params, AlipayServiceConstants.ALIPAY_PUBLIC_KEY,
-                AlipayServiceConstants.SIGN_CHARSET, AlipayServiceConstants.SIGN_TYPE)) {
+        LogUtil.log("延签开始","");
+        if (!AlipaySignature.rsaCheckV2(params, AlipayServiceEnvConstants.ALIPAY_PUBLIC_KEY,
+                AlipayServiceEnvConstants.SIGN_CHARSET, AlipayServiceEnvConstants.SIGN_TYPE)) {
+            LogUtil.log("延签失败","");
             throw new AlipayApiException("verify sign fail.");
         }
+        LogUtil.log("延签结束","");
     }
 
 
@@ -115,9 +120,7 @@ public class GatewayController extends HttpServlet {
         sb.append("<?xml version=\"1.0\" encoding=\"" + charset + "\"?>");
         if (isEncrypt) {// 加密
             sb.append("<alipay>");
-            LogUtil.log("bizContent=", bizContent);
             String encrypted = AlipaySignature.rsaEncrypt(bizContent, alipayPublicKey, charset);
-            LogUtil.log("encrypted=", encrypted);
             sb.append("<response>" + encrypted + "</response>");
             sb.append("<encryption_type>AES</encryption_type>");
             if (isSign) {

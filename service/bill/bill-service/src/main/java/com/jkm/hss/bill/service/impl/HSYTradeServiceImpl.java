@@ -220,7 +220,7 @@ public class HSYTradeServiceImpl implements HSYTradeService {
         final AppBizShop shop = this.hsyShopDao.findAppBizShopByID(shopId).get(0);
         String channelCode;
         if (EnumPayChannelSign.SYJ_ALIPAY.getId() == channel) {
-            channelCode = this.basicChannelService.selectCodeByChannelSign(channel, EnumMerchantPayType.MERCHANT_CODE);
+            channelCode = this.basicChannelService.selectCodeByChannelSign(channel, EnumMerchantPayType.MERCHANT_JSAPI);
         } else {
             channelCode = this.basicChannelService.selectCodeByChannelSign(channel, EnumMerchantPayType.MERCHANT_CODE);
         }

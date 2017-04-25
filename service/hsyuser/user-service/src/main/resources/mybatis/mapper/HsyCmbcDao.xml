@@ -4,7 +4,7 @@
     <sql id="Base_Column_User_List">
         ID,GLOBALID,CELLPHONE,PASSWORD,	NICKNAME,	REALNAME,	STATUS,	PROFILE,AUSTEP,
         IDCARD,	IDCARDF,IDCARDB,IDCARDH,ACCOUNTID,	DEALERID,	PRODUCTID,	WEIXINRATE,ALIPAYRATE,FASTRATE,PARENTID,
-        ROLETEMP,CREATETIME,UPDATETIME,	CONTRACTID,HXBOPENPRODUCT
+        ROLETEMP,CREATETIME,UPDATETIME,	CONTRACTID,HXBSTATUS,HXBREMARKS,HXBOPENPRODUCT
     </sql>
     <sql id="Base_Column_Shop_List">
         ID,GLOBALID,NAME,SHORTNAME,	INDUSTRYCODE,	DISTRICTCODE,	ADDRESS,	LICENCEID,STOREFRONTID,
@@ -29,6 +29,6 @@
     </select>
     <!--修改开通华夏接口状态-->
     <update id="updateHxbUserById">
-        update app_au_user set HXBOPENPRODUCT=1 where ID=#{id}
+        update app_au_user set HXBOPENPRODUCT=#{hxbOpenProduct},HXBOPENPRODUCTREMARKS=#{hxbOpenProductRemarks} where ID=#{id}
     </update>
 </mapper>
