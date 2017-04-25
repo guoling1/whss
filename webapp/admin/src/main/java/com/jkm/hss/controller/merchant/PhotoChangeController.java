@@ -46,7 +46,7 @@ public class PhotoChangeController extends BaseController {
      */
     private static boolean isImage(final MultipartFile file) {
         List<String> allowType =
-                Arrays.asList("image/png; charset=UTF-8", "image/gif; charset=UTF-8", "image/jpg; charset=UTF-8", "image/jpeg; charset=UTF-8", "image/x-png; charset=UTF-8", "image/pjpeg; charset=UTF-8");
+                Arrays.asList("image/png", "image/gif", "image/jpg", "image/jpeg", "image/x-png", "image/pjpeg");
         return allowType.contains(file.getContentType());
     }
 
@@ -107,7 +107,7 @@ public class PhotoChangeController extends BaseController {
 //    }
     @ResponseBody
     @RequestMapping("/savePhotoChang")
-    public CommonResponse<BaseEntity> savePhotoChang(@RequestParam("photo") MultipartFile file,String merchantId) {
+    public CommonResponse<BaseEntity> savePhotoChang(@RequestParam("photo") MultipartFile file) {
         Preconditions.checkArgument(!file.isEmpty(), "图片不能为空");
         Preconditions.checkArgument(isImage(file), "图片格式不正确");
         final String fileName = getOrginFileName(file.getOriginalFilename());
