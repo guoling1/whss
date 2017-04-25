@@ -154,6 +154,15 @@ _require.register("keyboard", (module, exports, _require, global) => {
           alert(1);
           try {
             alert(2);
+            AlipayJSBridge.call('toast', {
+
+              content: 'Toast测试',
+              type: 'success',
+              duration: 3000
+            }, function () {
+
+              alert("toast消失后执行");
+            });
             AlipayJSBridge.call("tradePay", {tradeNO: 2017042521001004500231812603},
               function (result) {
                 alert(JSON.stringify(result));
