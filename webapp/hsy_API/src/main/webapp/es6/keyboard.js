@@ -151,25 +151,10 @@ _require.register("keyboard", (module, exports, _require, global) => {
         // 唤起支付宝支付
         let onAlipayJSBridge = function (jsonData) {
           //jsonData.channelNo
-          alert(1);
-          try {
-            alert(2);
-            AlipayJSBridge.call('toast', {
-
-              content: 'Toast测试',
-              type: 'success',
-              duration: 3000
-            }, function () {
-
-              alert("toast消失后执行");
+          AlipayJSBridge.call("tradePay", {tradeNO: jsonData.channelNo},
+            function (result) {
+              alert(JSON.stringify(result));
             });
-            AlipayJSBridge.call("tradePay", {tradeNO: '2017042521001004500231812603'},
-              function (result) {
-                alert(JSON.stringify(result));
-              });
-          } catch (err) {
-            alert(err)
-          }
         };
 
         // 获取输入的功能键 delete quick wx-zfb
@@ -201,19 +186,18 @@ _require.register("keyboard", (module, exports, _require, global) => {
               break;
             case 'ali-pay':
               if (oldValue > 0) {
-                onAlipayJSBridge();
-                // message.load_show('正在支付');
-                // http.post('/trade/scReceipt', {
-                //   totalFee: oldValue,
-                //   payChannel: '802',
-                //   memberId: pageData.memberId,
-                //   merchantId: pageData.merchantId
-                // }, function (data) {
-                //   http.post(data.payUrl, {}, function (data) {
-                //     message.load_hide();
-                //     onAlipayJSBridge(data);
-                //   });
-                // });
+                message.load_show('正在支付');
+                http.post('/trade/scReceipt', {
+                  totalFee: oldValue,
+                  payChannel: '802',
+                  memberId: pageData.memberId,
+                  merchantId: pageData.merchantId
+                }, function (data) {
+                  http.post(data.payUrl, {}, function (data) {
+                    message.load_hide();
+                    onAlipayJSBridge(data);
+                  });
+                });
               } else {
                 message.prompt_show('请输入正确的支付金额');
               }
