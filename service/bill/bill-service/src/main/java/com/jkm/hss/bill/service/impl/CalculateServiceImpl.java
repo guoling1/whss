@@ -223,6 +223,9 @@ public class CalculateServiceImpl implements CalculateService {
                     waitMoney = waitOriginMoney.setScale(2,BigDecimal.ROUND_UP);
                 }
                 return waitMoney;
+            case SYJ:
+                waitMoney = waitOriginMoney.setScale(2,BigDecimal.ROUND_HALF_UP);
+                return  waitMoney;
             default:
                 waitMoney = waitOriginMoney.setScale(2,BigDecimal.ROUND_UP);
                 return waitMoney;
