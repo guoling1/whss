@@ -145,7 +145,7 @@ public class TradeController extends BaseController {
     }
 
     /**
-     * 支付成业
+     * 支付成功页
      *
      * @param model
      * @param id
