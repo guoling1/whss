@@ -406,6 +406,7 @@ public class OrderServiceImpl implements OrderService {
         map.put("proxyName",req.getProxyName());
         map.put("proxyName1",req.getProxyName1());
         map.put("businessOrderNo",req.getBusinessOrderNo());
+        map.put("payChannelSign",req.getPayChannelSign());
         List<MerchantTradeResponse> list = orderDao.selectOrderList(map);
         if (list.size()>0){
             for (int i=0;i<list.size();i++){
@@ -1289,6 +1290,7 @@ public class OrderServiceImpl implements OrderService {
         map.put("proxyName",req.getProxyName());
         map.put("proxyName1",req.getProxyName1());
         map.put("businessOrderNo",req.getBusinessOrderNo());
+        map.put("payChannelSign",req.getPayChannelSign());
         return orderDao.selectOrderListCount(map);
     }
 

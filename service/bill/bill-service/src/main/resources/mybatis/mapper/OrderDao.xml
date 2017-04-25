@@ -903,6 +903,9 @@
         <if test="settleStatus != null">
             AND a.settle_status = #{settleStatus}
         </if>
+        <if test="payChannelSign != null">
+            AND a.pay_channel_sign = #{payChannelSign}
+        </if>
     </select>
 
     <!-- 统计 -->
@@ -952,6 +955,9 @@
         </if>
         <if test="settleStatus != null">
             AND a.settle_status = #{settleStatus}
+        </if>
+        <if test="payChannelSign != null">
+            AND a.pay_channel_sign = #{payChannelSign}
         </if>
     </select>
 
