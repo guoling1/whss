@@ -151,9 +151,18 @@ _require.register("keyboard", (module, exports, _require, global) => {
         // 唤起支付宝支付
         let onAlipayJSBridge = function (jsonData) {
           //jsonData.channelNo
-          AlipayJSBridge.call("tradePay", {tradeNO: '2017042521001004500231944668'},
+          AlipayJSBridge.call("tradePay", {tradeNO: jsonData.channelNo},
             function (result) {
-              alert(JSON.stringify(result));
+              let data = JSON.stringify(result);
+              if (data.resultCode == 9000 || data.resultCode == 8000) {
+                AlipayJSBridge.call('pushWindow', {
+                  url: 'http://hsy.qianbaojiajia.com/trade/success/' + jsonData.orderId,
+                  param: {
+                    readTitle: true,
+                    showOptionMenu: false
+                  }
+                });
+              }
             });
         };
 
@@ -186,19 +195,18 @@ _require.register("keyboard", (module, exports, _require, global) => {
               break;
             case 'ali-pay':
               if (oldValue > 0) {
-                onAlipayJSBridge();
-                // message.load_show('正在支付');
-                // http.post('/trade/scReceipt', {
-                //   totalFee: oldValue,
-                //   payChannel: '802',
-                //   memberId: pageData.memberId,
-                //   merchantId: pageData.merchantId
-                // }, function (data) {
-                //   http.post(data.payUrl, {}, function (data) {
-                //     message.load_hide();
-                //     onAlipayJSBridge(data);
-                //   });
-                // });
+                message.load_show('正在支付');
+                http.post('/trade/scReceipt', {
+                  totalFee: oldValue,
+                  payChannel: '802',
+                  memberId: pageData.memberId,
+                  merchantId: pageData.merchantId
+                }, function (data) {
+                  http.post(data.payUrl, {}, function (data) {
+                    message.load_hide();
+                    onAlipayJSBridge(data);
+                  });
+                });
               } else {
                 message.prompt_show('请输入正确的支付金额');
               }
