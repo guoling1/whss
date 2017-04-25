@@ -125,33 +125,33 @@ public class MerchantInfoQueryServiceImpl implements MerchantInfoQueryService {
     }
 
     @Override
-    public void saveHistory(HistoryPhotoChangeRequest request) {
-        this.merchantInfoQueryDao.saveHistory(request);
+    public void saveHistory(long merchantId, String photo, int type, String reasonDescription, String cardName, String operator) {
+        this.merchantInfoQueryDao.saveHistory(merchantId,photo,type,reasonDescription,cardName,operator);
     }
 
     @Override
-    public void savePhotoChang(HistoryPhotoChangeRequest request) {
-        this.merchantInfoQueryDao.savePhotoChang(request);
+    public void savePhotoChang(String photoName) {
+        this.merchantInfoQueryDao.savePhotoChang(photoName);
     }
 
     @Override
-    public void savePhotoChang1(HistoryPhotoChangeRequest request) {
-        this.merchantInfoQueryDao.savePhotoChang1(request);
+    public void savePhotoChang1(String photoName) {
+        this.merchantInfoQueryDao.savePhotoChang1(photoName);
     }
 
     @Override
-    public void savePhotoChang2(HistoryPhotoChangeRequest request) {
-        this.merchantInfoQueryDao.savePhotoChang2(request);
+    public void savePhotoChang2(String photoName) {
+        this.merchantInfoQueryDao.savePhotoChang2(photoName);
     }
 
     @Override
-    public void savePhotoChang3(HistoryPhotoChangeRequest request) {
-        this.merchantInfoQueryDao.savePhotoChang3(request);
+    public void savePhotoChang3(String photoName) {
+        this.merchantInfoQueryDao.savePhotoChang3(photoName);
     }
 
     @Override
-    public void savePhotoChang4(HistoryPhotoChangeRequest request) {
-        this.merchantInfoQueryDao.savePhotoChang4(request);
+    public void savePhotoChang4(String photoName) {
+        this.merchantInfoQueryDao.savePhotoChang4(photoName);
     }
 
     @Override

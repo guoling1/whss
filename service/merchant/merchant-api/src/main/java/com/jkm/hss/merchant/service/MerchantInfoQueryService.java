@@ -58,39 +58,44 @@ public interface MerchantInfoQueryService {
 
     /**
      * 保存历史
-     * @param request
+     * @param merchantId
+     * @param photo
+     * @param type
+     * @param reasonDescription
+     * @param cardName
+     * @param operator
      */
-    void saveHistory(HistoryPhotoChangeRequest request);
+    void saveHistory(long merchantId, String photo, int type, String reasonDescription, String cardName, String operator);
 
     /**
      * 修改或上传结算卡
-     * @param request
+     * @param photoName
      */
-    void savePhotoChang(HistoryPhotoChangeRequest request);
+    void savePhotoChang(String photoName);
 
     /**
      * 修改或上传手持结算卡
-     * @param request
+     * @param photoName
      */
-    void savePhotoChang1(HistoryPhotoChangeRequest request);
+    void savePhotoChang1(String photoName);
 
     /**
      * 修改或上传手持身份证
-     * @param request
+     * @param photoName
      */
-    void savePhotoChang2(HistoryPhotoChangeRequest request);
+    void savePhotoChang2(String photoName);
 
     /**
      * 修改或上传身份证正面
-     * @param request
+     * @param photoName
      */
-    void savePhotoChang3(HistoryPhotoChangeRequest request);
+    void savePhotoChang3(String photoName);
 
     /**
      * 修改或上传身份证反面
-     * @param request
+     * @param photoName
      */
-    void savePhotoChang4(HistoryPhotoChangeRequest request);
+    void savePhotoChang4(String photoName);
 
     /**
      * 查询商户认证历史
@@ -105,4 +110,7 @@ public interface MerchantInfoQueryService {
      * @return
      */
     int selectHistoryCount(HistoryPhotoChangeRequest request);
+
+
+
 }

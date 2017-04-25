@@ -79,39 +79,46 @@ public interface MerchantInfoQueryDao {
 
     /**
      * 保存历史
-     * @param request
+     * @param merchantId
+     * @param photo
+     * @param type
+     * @param reasonDescription
+     * @param cardName
+     * @param operator
      */
-    void saveHistory(HistoryPhotoChangeRequest request);
+    void saveHistory(@Param("merchantId") long merchantId,@Param("photo") String photo,@Param("type") int type
+            ,@Param("reasonDescription") String reasonDescription,@Param("cardName") String cardName,
+                     @Param("operator") String operator);
 
     /**
      * 修改或上传结算卡
-     * @param request
+     * @param photoName
      */
-    void savePhotoChang(HistoryPhotoChangeRequest request);
+    void savePhotoChang(@Param("photoName") String photoName);
 
     /**
      * 修改或上传手持结算卡
-     * @param request
+     * @param photoName
      */
-    void savePhotoChang1(HistoryPhotoChangeRequest request);
+    void savePhotoChang1(@Param("photoName") String photoName);
 
     /**
      * 修改或上传手持身份证
-     * @param request
+     * @param photoName
      */
-    void savePhotoChang2(HistoryPhotoChangeRequest request);
+    void savePhotoChang2(@Param("photoName") String photoName);
 
     /**
      * 修改或上传身份证正面
-     * @param request
+     * @param photoName
      */
-    void savePhotoChang3(HistoryPhotoChangeRequest request);
+    void savePhotoChang3(@Param("photoName") String photoName);
 
     /**
      * 修改或上传身份证反面
-     * @param request
+     * @param photoName
      */
-    void savePhotoChang4(HistoryPhotoChangeRequest request);
+    void savePhotoChang4(@Param("photoName") String photoName);
 
     /**
      * 查询商户认证历史

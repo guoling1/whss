@@ -35,7 +35,7 @@ public class HistoryPhotoChangeRequest {
     /**
      * 照片地址
      */
-    private String photoName;
+//    private String photoName;
 
     /**
      * 类型（1：结算卡2：手持结算卡：3手持身份证4：身份证正面5：身份证反面）

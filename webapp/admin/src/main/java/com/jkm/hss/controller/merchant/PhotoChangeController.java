@@ -50,64 +50,61 @@ public class PhotoChangeController extends BaseController {
         return allowType.contains(file.getContentType());
     }
 
-//    @ResponseBody
-//    @RequestMapping(value = "/savePhotoChang",method = RequestMethod.POST)
-//    public CommonResponse<BaseEntity> savePhotoChang(@RequestParam("photo") MultipartFile file, @RequestBody HistoryPhotoChangeRequest request) {
-//
-//        HistoryPhotoChangeResponse response = merchantInfoQueryService.getPhoto(request.getMerchantId());
-//        request.setOperator(super.getAdminUser().getUsername());
-//
-//            final String photoName = getOrginFileName(file.getOriginalFilename());
-//
-//            Preconditions.checkArgument(!file.isEmpty(), "图片不能为空");
-//            Preconditions.checkArgument(isImage(file), "图片格式不正确");
-//            final ObjectMetadata meta = new ObjectMetadata();
-//            meta.setCacheControl("public, max-age=31536000");
-//            meta.setExpirationTime(new DateTime().plusYears(1).toDate());
-//            meta.setContentType(file.getContentType());
-//        try {
-//            ossClient.putObject(ApplicationConsts.getApplicationConfig().ossBucke(), photoName, file.getInputStream(),meta);
-//            if (request.getType()==1) {
-//                request.setPhoto(response.getBankPic());
-//                merchantInfoQueryService.saveHistory(request);
-//                request.setPhotoName(photoName);
-//                merchantInfoQueryService.savePhotoChang(request);
-//            }
-//            if (request.getType()==2) {
-//                request.setPhoto(response.getBankHandPic());
-//                merchantInfoQueryService.saveHistory(request);
-//                request.setPhotoName(photoName);
-//                merchantInfoQueryService.savePhotoChang1(request);
-//            }
-//            if (request.getType()==3) {
-//                request.setPhoto(response.getIdentityHandPic());
-//                merchantInfoQueryService.saveHistory(request);
-//                request.setPhotoName(photoName);
-//                merchantInfoQueryService.savePhotoChang2(request);
-//            }
-//            if (request.getType()==4) {
-//                request.setPhoto(response.getIdentityFacePic());
-//                merchantInfoQueryService.saveHistory(request);
-//                request.setPhotoName(photoName);
-//                merchantInfoQueryService.savePhotoChang3(request);
-//            }
-//            if (request.getType()==5) {
-//                request.setPhoto(response.getIdentityOppositePic());
-//                merchantInfoQueryService.saveHistory(request);
-//                request.setPhotoName(photoName);
-//                merchantInfoQueryService.savePhotoChang4(request);
-//            }
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            log.debug("操作异常");
-//        }
-//
-//        return CommonResponse.simpleResponse(1,"操作成功");
-//
-//    }
     @ResponseBody
-    @RequestMapping("/savePhotoChang")
-    public CommonResponse<BaseEntity> savePhotoChang(@RequestParam("photo") MultipartFile file) {
+    @RequestMapping(value = "/savePhotoChang",method = RequestMethod.POST)
+    public CommonResponse<BaseEntity> savePhotoChang(@RequestParam("photo") MultipartFile file,
+                         long merchantId,int type,String reasonDescription,String cardName) {
+
+        HistoryPhotoChangeResponse response = merchantInfoQueryService.getPhoto(merchantId);
+
+        final String photoName = getOrginFileName(file.getOriginalFilename());
+
+        Preconditions.checkArgument(!file.isEmpty(), "图片不能为空");
+        Preconditions.checkArgument(isImage(file), "图片格式不正确");
+        final ObjectMetadata meta = new ObjectMetadata();
+        meta.setCacheControl("public, max-age=31536000");
+        meta.setExpirationTime(new DateTime().plusYears(1).toDate());
+        meta.setContentType(file.getContentType());
+        String operator = super.getAdminUser().getUsername();
+//        String photo = response.getPhoto();
+
+        try {
+            ossClient.putObject(ApplicationConsts.getApplicationConfig().ossBucke(), photoName, file.getInputStream(),meta);
+            if (type==1) {
+                String photo = response.getBankPic();
+                merchantInfoQueryService.saveHistory(merchantId,photo,type,reasonDescription,cardName,operator);
+                merchantInfoQueryService.savePhotoChang(photoName);
+            }
+            if (type==2) {
+                String photo = response.getBankHandPic();
+                merchantInfoQueryService.saveHistory(merchantId,photo,type,reasonDescription,cardName,operator);
+                merchantInfoQueryService.savePhotoChang1(photoName);
+            }
+            if (type==3) {
+                String photo = response.getIdentityHandPic();
+                merchantInfoQueryService.saveHistory(merchantId,photo,type,reasonDescription,cardName,operator);
+                merchantInfoQueryService.savePhotoChang2(photoName);
+            }
+            if (type==4) {
+                String photo = response.getIdentityFacePic();
+                merchantInfoQueryService.saveHistory(merchantId,photo,type,reasonDescription,cardName,operator);
+                merchantInfoQueryService.savePhotoChang3(photoName);
+            }
+            if (type==5) {
+                String photo = response.getIdentityOppositePic();
+                merchantInfoQueryService.saveHistory(merchantId,photo,type,reasonDescription,cardName,operator);
+                merchantInfoQueryService.savePhotoChang4(photoName);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            log.debug("操作异常");
+        }
+
+        return CommonResponse.simpleResponse(1,"操作成功");
+
+    }
+
+    public CommonResponse<BaseEntity> savePhoto(@RequestParam("photo") MultipartFile file) {
         Preconditions.checkArgument(!file.isEmpty(), "图片不能为空");
         Preconditions.checkArgument(isImage(file), "图片格式不正确");
         final String fileName = getOrginFileName(file.getOriginalFilename());
