@@ -183,8 +183,11 @@
               <el-table-column prop="rate" label="支付结算手续费"></el-table-column>
               <el-table-column prop="time" label="结算时间" ></el-table-column>
               <el-table-column prop="money" label="提现手续费" ></el-table-column>
+              <el-table-column prop="status" label="产品开通状态" ></el-table-column>
+              <el-table-column prop="msg" label="入网备注信息" ></el-table-column>
             </el-table>
           </template>
+        </div>
         </div>
 
       </div>
@@ -267,15 +270,19 @@
         isShow:true,
         res: [],
         tableData:[{
-          name:'魔宝支付宝',
+          name:'支付宝',
           rate:'',
-          time:'',
-          money:''
+          time:'T1',
+          money:'0元/笔',
+          status:'--',
+          msg:'--'
         },{
-          name:'魔宝微信',
+          name:'微信',
           rate:'',
-          time:'',
-          money:''
+          time:'T1',
+          money:'0元/笔',
+          status:'--',
+          msg:'--'
         }]
       }
     },
@@ -287,6 +294,8 @@
       this.$http.post('/admin/hsyMerchantList/getDetails',{id:this.$data.id})
         .then(function (res) {
           this.$data.msg = res.data;
+          this.tableData[1].rate = parseFloat(res.data.weixinRate * 100).toFixed(2) + '%';
+          this.tableData[0].rate = parseFloat(res.data.fastRate * 100).toFixed(2) + '%';
         },function (err) {
           this.$message({
             showClose: true,
