@@ -21,10 +21,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.UnsupportedEncodingException;
@@ -133,16 +131,38 @@ public class TradeController extends BaseController {
                         .addParam("package", wechatPayInfoArray[3])
                         .addParam("signType", wechatPayInfoArray[4])
                         .addParam("paySign", wechatPayInfoArray[5])
+                        .addParam("orderId", order.getId())
                         .build();
             case ALIPAY:
                 final String[] alipayPayInfoArray = payInfo.split("\\|");
                 Preconditions.checkState(alipayPayInfoArray.length == 1, "缺少支付要素");
                 return CommonResponse.builder4MapResult(CommonResponse.SUCCESS_CODE, "success")
                         .addParam("tradeNO", alipayPayInfoArray[0])
+                        .addParam("orderId", order.getId())
                         .build();
                 default:
                     log.error("订单[{}], 通道[{}]，支付渠道错误", order.getId(), payChannelSign.getCode());
                     return CommonResponse.simpleResponse(-1, "支付渠道错误");
+        }
+    }
+
+    /**
+     * 支付成功页
+     *
+     * @param model
+     * @param id
+     * @return
+     */
+    @RequestMapping(value = "success/${id}")
+    public String paySuccessPage(final Model model, @PathVariable("id") long id) {
+        final Optional<Order> orderOptional = this.orderService.getById(id);
+        if(!orderOptional.isPresent()){
+            return "/500.jsp";
+        }else{
+            final Order order = orderOptional.get();
+            model.addAttribute("sn", order.getSn());
+            model.addAttribute("money", order.getRealPayAmount().toPlainString());
+            return "/success.jsp";
         }
     }
 
