@@ -330,12 +330,14 @@
           shopId: this.$data.id,//店铺编码
           userId: this.$data.msg.uid,//商户编码
         }).then(function (res) {
+          this.isReenter = false;
           this.$message({
             showClose: true,
             message: '重新入网成功',
             type: 'success'
           })
         }, function (err) {
+          this.isReenter = false;
           this.$message({
             showClose: true,
             message: err.statusMessage,
@@ -349,12 +351,14 @@
           id: this.$data.id,
           uid: this.$data.msg.uid,
         }).then(function (res) {
+          this.isReject = false;
           this.$message({
             showClose: true,
             message: '驳回充填成功',
             type: 'success'
           })
         }, function (err) {
+          this.isReject = false;
           this.$message({
             showClose: true,
             message: err.statusMessage,
