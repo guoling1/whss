@@ -110,7 +110,7 @@ public class PhotoChangeController extends BaseController {
     }
 
     /**
-     * 查看照片
+     * 查看认证历史
      */
     @ResponseBody
     @RequestMapping(value = "/selectHistory", method = RequestMethod.POST)

@@ -181,6 +181,15 @@ public class MerchantInfoQueryServiceImpl implements MerchantInfoQueryService {
     @Override
     public List<HistoryPhotoChangeResponse> selectHistory(HistoryPhotoChangeRequest request) {
         List<HistoryPhotoChangeResponse> list = this.merchantInfoQueryDao.selectHistory(request);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        if (list.size()>0){
+            for (int i=0;i<list.size();i++){
+                if (list.get(i).getCreateTime()!=null&&!list.get(i).getCreateTime().equals("")){
+                    String dates = sdf.format(list.get(i).getCreateTime());
+                    list.get(i).setCreateTimes(dates);
+                }
+            }
+        }
         return list;
     }
 

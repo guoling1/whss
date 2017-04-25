@@ -73,5 +73,5 @@ public class HistoryPhotoChangeResponse {
     /**
      * 更新时间
      */
-    private Date createTimes;
+    private String createTimes;
 }
