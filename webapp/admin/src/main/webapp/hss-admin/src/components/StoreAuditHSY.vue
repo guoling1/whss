@@ -176,8 +176,8 @@
       </div>
       <div class="box box-primary" style="overflow: hidden">
         <span class="lead">商户费率信息</span>
-        <el-button type="text" @click="isReenter = true" v-if="msg.status==1">重新入网</el-button>
-        <el-button type="text" @click="isReject = true" v-if="msg.status==1">驳回充填</el-button>
+        <el-button type="text" @click="isReenter = true" v-if="status==1">重新入网</el-button>
+        <el-button type="text" @click="isReject = true" v-if="status==1">驳回充填</el-button>
         <div style="width: 70%;margin: 0 0 15px 15px;">
           <template>
             <el-table :data="tableData" border style="width: 100%">
@@ -306,11 +306,13 @@
           money:'0元/笔',
           status:'--',
           msg:'--'
-        }]
+        }],
+        status:''
       }
     },
     created: function () {
       this.$data.id = this.$route.query.id;
+      this.status = this.$route.query.status;
       if(this.$route.query.status !=2){
         this.$data.isShow = false;
       }
