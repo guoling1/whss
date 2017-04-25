@@ -68,7 +68,8 @@
   var pageData = {
     memberId: '${openId}',
     merchantId: '${mid}'
-  }
+  };
+  alert(pageData.memberId);
 </script>
 <script src="/js/2.0.1/payment.2.0.1.min.js"></script>
 </html>
