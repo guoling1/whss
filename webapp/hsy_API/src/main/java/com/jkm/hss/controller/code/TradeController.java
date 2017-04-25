@@ -21,10 +21,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.UnsupportedEncodingException;
@@ -143,6 +141,19 @@ public class TradeController extends BaseController {
                 default:
                     log.error("订单[{}], 通道[{}]，支付渠道错误", order.getId(), payChannelSign.getCode());
                     return CommonResponse.simpleResponse(-1, "支付渠道错误");
+        }
+    }
+
+    @RequestMapping(value = "success/${id}")
+    public String paySuccessPage(final Model model, @PathVariable("id") long id) {
+        final Optional<Order> orderOptional = this.orderService.getById(id);
+        if(!orderOptional.isPresent()){
+            return "/500.jsp";
+        }else{
+            final Order order = orderOptional.get();
+            model.addAttribute("sn", order.getSn());
+            model.addAttribute("money", order.getRealPayAmount().toPlainString());
+            return "/success.jsp";
         }
     }
 

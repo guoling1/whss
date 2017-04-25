@@ -24,7 +24,7 @@
   </div>
   <div class="group">
     <div class="left">交易流水号</div>
-    <div class="right">${firstSn}<span>${secondSn}</span></div>
+    <div class="right">${sn}</div>
   </div>
   <div class="group">
     <div class="left">付款金额</div>
