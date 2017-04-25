@@ -406,7 +406,7 @@
             AND a.settle_status = #{settleStatus}
         </if>
 
-        <if test="payChannelSign != null">
+        <if test="payChannelSign != null and payChannelSign > 0">
             AND a.pay_channel_sign = #{payChannelSign}
         </if>
         ORDER BY a.create_time DESC
@@ -903,7 +903,7 @@
         <if test="settleStatus != null">
             AND a.settle_status = #{settleStatus}
         </if>
-        <if test="payChannelSign != null">
+        <if test="payChannelSign != null and payChannelSign > 0">
             AND a.pay_channel_sign = #{payChannelSign}
         </if>
     </select>
@@ -956,7 +956,7 @@
         <if test="settleStatus != null">
             AND a.settle_status = #{settleStatus}
         </if>
-        <if test="payChannelSign != null">
+        <if test="payChannelSign != null and payChannelSign > 0">
             AND a.pay_channel_sign = #{payChannelSign}
         </if>
     </select>
