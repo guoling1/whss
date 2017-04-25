@@ -31,6 +31,7 @@ public class CommonController extends BaseController {
 
     @Autowired
     private OSSClient ossClient;
+
     /**
      * 判断文件是否是图片
      * @param file

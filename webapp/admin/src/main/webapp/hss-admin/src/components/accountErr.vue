@@ -54,7 +54,7 @@
             </li>
           </ul>
           <!--表格-->
-          <el-table v-loading.body="loading" style="font-size: 12px;margin:15px 0" :data="$records" border>
+          <el-table v-loading.body="loading" style="font-size: 12px;margin-bottom: 15px" :data="$records" border>
             <el-table-column type="index" width="62" label="序号" fixed="left"></el-table-column>
             <el-table-column prop="channelName" label="对账渠道" ></el-table-column>
             <el-table-column label="交易类型" >
@@ -114,10 +114,10 @@
             </el-form-item>
             <el-form-item label="备注信息：" width="120" style="margin-bottom: 0">
               <el-input style="width: 70%"
-                type="textarea"
-                :rows="2"
-                placeholder="非必填"
-                v-model="handleQuery.handleReason">
+                        type="textarea"
+                        :rows="2"
+                        placeholder="非必填"
+                        v-model="handleQuery.handleReason">
               </el-input>
             </el-form-item>
           </el-form>
@@ -170,11 +170,11 @@
         loading:true,
         isShow:false,
         //正式
-        url:"http://checking.qianbaojiajia.com/external/detailList",
-        handleUrl:'http://checking.qianbaojiajia.com/external/updateDetailReason'
+//        url:"http://checking.qianbaojiajia.com/external/detailList",
+//        handleUrl:'http://checking.qianbaojiajia.com/external/updateDetailReason'
         //测试
-//         url:'http://192.168.1.99:8080/balance/external/detailList',
-//         handleUrl:'http://192.168.1.99:8080/balance/external/updateDetailReason'
+         url:'http://192.168.1.99:8080/balance/external/detailList',
+         handleUrl:'http://192.168.1.99:8080/balance/external/updateDetailReason'
       }
     },
     created: function () {
@@ -206,18 +206,18 @@
         this.handleQuery.id=id;
       },
       handle: function () {
-         this.$http.post(this.handleUrl,this.handleQuery,{emulateJSON: true})
-           .then(res => {
-             this.isShow = false;
-             this.getData()
-           })
-           .catch(err =>{
-             this.$message({
-               showClose: true,
-               message: err.statusMessage,
-               type: 'error'
-             })
-           })
+        this.$http.post(this.handleUrl,this.handleQuery,{emulateJSON: true})
+          .then(res => {
+            this.isShow = false;
+            this.getData()
+          })
+          .catch(err =>{
+            this.$message({
+              showClose: true,
+              message: err.statusMessage,
+              type: 'error'
+            })
+          })
       },
       //每页条数改变
       handleSizeChange(val) {
@@ -265,7 +265,13 @@
 <style scoped lang="less">
   ul{
     padding: 0;
+    margin:0;
+  label{
+    display: block;
+    margin-bottom: 0;
   }
+  }
+
   .same{
     list-style: none;
     display: inline-block;

@@ -3,6 +3,7 @@ package com.jkm.hss.admin.service.impl;
 
 import com.google.common.base.Optional;
 import com.jkm.hss.admin.entity.AdminUser;
+import com.jkm.hss.admin.enums.EnumAdminType;
 import com.jkm.hss.admin.service.AdminUserInitService;
 import com.jkm.hss.admin.service.AdminUserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,7 +42,7 @@ public class AdminUserInitServiceImpl implements AdminUserInitService {
     }
 
     private void addAdminUser(final AdminUser adminUser) {
-        final Optional<AdminUser> adminUserOptional = this.adminUserService.getAdminUserByName(adminUser.getUsername());
+        final Optional<AdminUser> adminUserOptional = this.adminUserService.getAdminUserByNameAndType(adminUser.getUsername(), EnumAdminType.BOSS.getCode());
         if (!adminUserOptional.isPresent()) {
             this.adminUserService.createUser(adminUser);
         }

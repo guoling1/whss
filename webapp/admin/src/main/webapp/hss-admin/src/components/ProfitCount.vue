@@ -9,7 +9,7 @@
           <el-tabs class="tab" v-model="activeName" type="card" @tab-click="handleClick">
             <el-tab-pane label="公司分润" name="first">
               <!--筛选-->
-              <ul>
+              <ul class="search">
                 <li class="same">
                   <label>交易日期:</label>
                   <el-date-picker style="width: 190px" v-model="date" type="daterange" align="right" placeholder="选择日期范围" :picker-options="pickerOptions" size="small">
@@ -29,11 +29,11 @@
                   <div class="btn btn-primary" @click="search">筛选</div>
                 </li>
                 <li class="same" style="color: #fff;float: right">
-                  <span @click="onload()" download="公司分润" class="btn btn-primary">导出</span>
+                  <span @click="_$power(onload,'boss_company_share_export')" download="公司分润" class="btn btn-primary">导出</span>
                 </li>
               </ul>
               <!--表格-->
-              <el-table v-loading.body="loading" style="font-size: 12px;margin:15px 0" :data="records" border :row-style="tableFoot">
+              <el-table v-loading.body="loading" style="font-size: 12px;margin-bottom: 15px;" :data="records" border :row-style="tableFoot">
                 <el-table-column   width="100" label="序号">
                   <template scope="scope">
                     <div v-if="records[scope.$index].businessType!='当页总额'&&records[scope.$index].businessType!='筛选条件统计'">{{scope.$index+1}}</div>
@@ -57,7 +57,7 @@
             </el-tab-pane>
             <el-tab-pane label="一级代理商分润" name="second">
               <!--筛选-->
-              <ul>
+              <ul class="search">
                 <li class="same">
                   <label>交易日期:</label>
                   <el-date-picker style="width: 190px" v-model="date" type="daterange" align="right" placeholder="选择日期范围" :picker-options="pickerOptions" size="small">
@@ -85,11 +85,11 @@
                   <div class="btn btn-primary" @click="search">筛选</div>
                 </li>
                 <li class="same" style="color: #fff;float: right">
-                  <span @click="onload()" download="公司分润" class="btn btn-primary" style="color: #fff;float: right">导出</span>
+                  <span @click="_$power(onload,'boss_first_share_export')" download="公司分润" class="btn btn-primary" style="color: #fff;float: right">导出</span>
                 </li>
               </ul>
               <!--表格-->
-              <el-table v-loading.body="loading" style="font-size: 12px;margin:15px 0" :data="records" border :row-style="tableFoot">
+              <el-table v-loading.body="loading" style="font-size: 12px;margin-bottom: 15px" :data="records" border :row-style="tableFoot">
                 <el-table-column   width="100" label="序号">
                   <template scope="scope">
                     <div v-if="records[scope.$index].businessType!='当页总额'&&records[scope.$index].businessType!='筛选条件统计'">{{scope.$index+1}}</div>
@@ -114,7 +114,7 @@
               </el-table>
             </el-tab-pane>
             <el-tab-pane label="二级代理商分润" name="third">
-              <ul>
+              <ul class="search">
                 <li class="same">
                   <label>交易日期:</label>
                   <el-date-picker style="width: 190px" v-model="date" type="daterange" align="right" placeholder="选择日期范围" :picker-options="pickerOptions" size="small">
@@ -146,11 +146,11 @@
                   <div class="btn btn-primary" @click="search">筛选</div>
                 </li>
                 <li class="same" style="color: #fff;float: right">
-                  <span @click="onload()" download="公司分润" class="btn btn-primary">导出</span>
+                  <span @click="_$power(onload,'boss_seconde_share_export')" download="公司分润" class="btn btn-primary">导出</span>
                 </li>
               </ul>
               <!--表格-->
-              <el-table v-loading.body="loading" style="font-size: 12px;margin:15px 0" :data="records" border :row-style="tableFoot">
+              <el-table v-loading.body="loading" style="font-size: 12px;margin-bottom: 15px" :data="records" border :row-style="tableFoot">
                 <el-table-column   width="100" label="序号">
                   <template scope="scope">
                     <div v-if="records[scope.$index].businessType!='当页总额'&&records[scope.$index].businessType!='筛选条件统计'">{{scope.$index+1}}</div>
@@ -292,7 +292,7 @@
           vm.$data.totalUrl='/admin/allProfit/secondAmount'
         }else {
           vm.$data.activeName='first';
-          vm.$data.url='/admin/allProfit/CompanyProfit';
+          vm.$data.url='/admin/allProfit/companyProfit';
           vm.$data.totalUrl='/admin/allProfit/companyAmount'
         }
         vm.$data.records = [];
@@ -535,6 +535,18 @@
   }
 </script>
 <style scoped lang="less" rel="stylesheet/less">
+  ul {
+    padding: 0;
+    margin:0;
+  }
+  .search{
+    margin-bottom: 0;
+    label{
+      display: block;
+      margin-bottom: 0;
+    }
+  }
+
   ul{
     padding: 0;
   }

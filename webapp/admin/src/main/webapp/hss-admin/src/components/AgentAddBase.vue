@@ -75,8 +75,8 @@
               </el-col>
               <el-col :span="8">
                 <div class="grid-content bg-purple-light" style="margin: 0 15px;">
-                  <!--<el-button type="text" @click="resetPw" v-if="!isShow">修改密码</el-button>-->
-                  <el-button type="text" @click="dialogFormVisible = true">修改密码</el-button>
+                  <el-button type="text" @click="_$power(function(){dialogFormVisible = true},'boss_first_update_pwd')" v-if="!isShow&&level==1">修改密码</el-button>
+                  <el-button type="text" @click="_$power(function(){dialogFormVisible = true},'boss_second_update_pwd')" v-if="!isShow&&level==2">修改密码</el-button>
                 </div>
               </el-col>
             </el-row>
@@ -250,9 +250,8 @@
               <div class="btn btn-primary" @click="create" v-if="isShow" style="width: 45%;float: right;margin: 20px 0 100px;">
                 创建代理商
               </div>
-              <div class="btn btn-primary" @click="change()" v-if="!isShow" style="width: 45%;float: right;margin: 20px 0 100px;">
-                修改
-              </div>
+              <div class="btn btn-primary" @click="_$power(change,'boss_first_update')" v-if="!isShow&&level==1" style="width: 45%;float: right;margin: 20px 0 100px;">修改</div>
+              <div class="btn btn-primary" @click="_$power(change,'boss_second_update')" v-if="!isShow&&level==2" style="width: 45%;float: right;margin: 20px 0 100px;">修改</div>
             </div>
           </el-col>
           <el-col :span="8">

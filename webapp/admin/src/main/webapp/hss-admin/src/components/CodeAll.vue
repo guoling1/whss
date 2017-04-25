@@ -7,26 +7,26 @@
         </div>
         <div class="box-body">
           <!--筛选-->
-          <ul>
+          <ul class="search">
             <li class="same">
               <label>二维码编号:</label>
-              <el-input style="width: 120px" v-model="query.code" placeholder="请输入内容" size="small"></el-input>
+              <el-input style="width: 188px" v-model="query.code" placeholder="请输入内容" size="small"></el-input>
             </li>
             <li class="same">
               <label>商户名称:</label>
-              <el-input style="width: 120px" v-model="query.merchantName" placeholder="请输入内容" size="small"></el-input>
+              <el-input style="width: 188px" v-model="query.merchantName" placeholder="请输入内容" size="small"></el-input>
             </li>
             <li class="same">
               <label>一代名称:</label>
-              <el-input style="width: 120px" v-model="query.firstDealerName" placeholder="请输入内容" size="small"></el-input>
+              <el-input style="width: 188px" v-model="query.firstDealerName" placeholder="请输入内容" size="small"></el-input>
             </li>
             <li class="same">
               <label>二代名称:</label>
-              <el-input style="width: 120px" v-model="query.secondDealerName" placeholder="请输入内容" size="small"></el-input>
+              <el-input style="width: 188px" v-model="query.secondDealerName" placeholder="请输入内容" size="small"></el-input>
             </li>
             <li class="same">
               <label>产品类型:</label>
-              <el-select style="width: 160px" v-model="query.sysType" clearable placeholder="请选择" size="small">
+              <el-select style="width: 188px" v-model="query.sysType" clearable placeholder="请选择" size="small">
                 <el-option label="好收收" value="hss">好收收</el-option>
                 <el-option label="好收银" value="hsy">好收银</el-option>
               </el-select>
@@ -36,7 +36,7 @@
             </li>
           </ul>
           <!--表格-->
-          <el-table v-loading.body="loading" style="font-size: 12px;margin:15px 0" :data="records" border>
+          <el-table v-loading.body="loading" style="font-size: 12px;margin-bottom: 15px" :data="records" border>
             <el-table-column type="index" width="70" label="序号"></el-table-column>
             <el-table-column prop="sysTypeName" label="产品类型"></el-table-column>
             <el-table-column prop="code" label="二维码编号">
@@ -154,8 +154,16 @@
   }
 </script>
 <style scoped lang="less">
-  ul{
+  ul {
     padding: 0;
+    margin:0;
+  }
+  .search{
+    margin-bottom:0;
+  label{
+    display: block;
+    margin-bottom: 0;
+  }
   }
   .same{
     list-style: none;

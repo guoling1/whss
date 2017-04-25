@@ -6,38 +6,39 @@
           <h3 class="box-title">交易查询</h3>
           <router-link to="/admin/record/deal" class="pull-right btn btn-primary" style="margin-left: 20px">切换旧版
           </router-link>
-          <a :href="'http://'+this.$data.url" download="交易记录" class="btn btn-primary" style="float: right;color: #fff">导出</a>
+          <span @click="_$power(onload,'boss_trade_export')" download="交易记录" class="btn btn-primary" style="float: right">导出</span>
         </div>
         <div class="box-body">
           <!--筛选-->
-          <ul>
+          <ul class="search">
             <li class="same">
               <label>业务订单号:</label>
-              <el-input style="width: 130px" v-model="query.businessOrderNo" placeholder="请输入内容" size="small"></el-input>
+              <el-input style="width: 188px" v-model="query.businessOrderNo" placeholder="请输入内容" size="small"></el-input>
             </li>
             <li class="same">
               <label>交易订单号:</label>
-              <el-input style="width: 130px" v-model="query.orderNo" placeholder="请输入内容" size="small"></el-input>
+              <el-input style="width: 188px" v-model="query.orderNo" placeholder="请输入内容" size="small"></el-input>
             </li>
             <li class="same">
               <label>支付流水号:</label>
-              <el-input style="width: 130px" v-model="query.sn" placeholder="请输入内容" size="small"></el-input>
+              <el-input style="width: 188px" v-model="query.sn" placeholder="请输入内容" size="small"></el-input>
             </li>
             <li class="same">
               <label>收款商户名称:</label>
-              <el-input style="width: 130px" v-model="query.merchantName" placeholder="请输入内容" size="small"></el-input>
+              <el-input style="width: 188px" v-model="query.merchantName" placeholder="请输入内容" size="small"></el-input>
             </li>
             <li class="same">
               <label>所属一级代理:</label>
-              <el-input style="width: 130px" v-model="query.proxyName" placeholder="请输入内容" size="small"></el-input>
+              <el-input style="width: 188px" v-model="query.proxyName" placeholder="请输入内容" size="small"></el-input>
             </li>
             <li class="same">
               <label>所属二级代理:</label>
-              <el-input style="width: 130px" v-model="query.proxyName1" placeholder="请输入内容" size="small"></el-input>
+              <el-input style="width: 188px" v-model="query.proxyName1" placeholder="请输入内容" size="small"></el-input>
             </li>
             <li class="same">
               <label>交易日期:</label>
               <el-date-picker
+                style="width: 188px"
                 v-model="date"
                 type="daterange"
                 align="right"
@@ -47,14 +48,14 @@
             </li>
             <li class="same">
               <label>交易金额:</label>
-              <div class="form-control price">
+              <div class="form-control price" style="margin-top: -4px;">
                 <input type="text" name="date" value="" v-model="query.lessTotalFee">至
                 <input type="text" name="date" value="" v-model="query.moreTotalFee">
               </div>
             </li>
             <li class="same">
               <label>交易状态:</label>
-              <el-select style="width: 120px" clearable v-model="query.status" size="small">
+              <el-select style="width: 188px" clearable v-model="query.status" size="small">
                 <el-option label="全部" value="">全部</el-option>
                 <el-option label="待支付" value="1">待支付</el-option>
                 <el-option label="支付成功" value="4">支付成功</el-option>
@@ -63,7 +64,7 @@
             </li>
             <li class="same">
               <label>结算状态:</label>
-              <el-select style="width: 120px" clearable v-model="query.settleStatus" size="small">
+              <el-select style="width: 188px" clearable v-model="query.settleStatus" size="small">
                 <el-option label="全部" value="">全部</el-option>
                 <el-option label="待结算" value="1">待结算</el-option>
                 <el-option label="结算中" value="2">结算中</el-option>
@@ -72,7 +73,7 @@
             </li>
             <li class="same">
               <label>支付方式：</label>
-              <el-select style="width: 140px" clearable v-model="query.payType" size="small">
+              <el-select style="width: 188px" clearable v-model="query.payType" size="small">
                 <el-option label="全部" value="">全部</el-option>
                 <el-option label="微信支付" value="wechat"></el-option>
                 <el-option label="支付宝支付" value="alipay"></el-option>
@@ -81,7 +82,7 @@
             </li>
             <li class="same">
               <label>支付渠道：</label>
-              <el-select style="width: 140px" clearable v-model="query.payChannelSign" size="small">
+              <el-select style="width: 188px" clearable v-model="query.payChannelSign" size="small">
                 <el-option label="全部" value=""></el-option>
                 <el-option :label="channel.channelName" :value="channel.channelTypeSign" v-for="channel in channelList"></el-option>
               </el-select>
@@ -91,45 +92,41 @@
             </li>
           </ul>
           <!--表格-->
-          <el-table v-loading.body="loading" height="583" style="font-size: 12px;margin:15px 0" :data="records" border :row-style="tableFoot">
-            <el-table-column width="62" label="序号" fixed="left">
-              <template scope="scope">
-                <div v-if="records[scope.$index].proxyName1!='当页总额'&&records[scope.$index].proxyName1!='筛选条件统计'">{{scope.$index+1}}</div>
-              </template>
-            </el-table-column>
+          <el-table v-loading.body="loading" height="620" style="font-size: 12px;margin-bottom: 15px;" :data="records" border>
+            <el-table-column width="62" label="序号" fixed="left" type="index"></el-table-column>
             <el-table-column prop="appId" label="业务方" min-width="85"></el-table-column>
             <el-table-column label="交易订单号" min-width="112">
               <template scope="scope">
-                <span class="td" :data-clipboard-text="records[scope.$index].orderNo" type="text" size="small"
-                      style="cursor: pointer" title="点击复制">{{records[scope.$index].orderNo|changeHide}}</span>
+                <span class="td" :data-clipboard-text="scope.row.orderNo" style="cursor: pointer" title="点击复制">{{scope.row.orderNo|changeHide}}</span>
               </template>
             </el-table-column>
             <el-table-column label="业务订单号" min-width="112">
               <template scope="scope">
-                <span class="td" :data-clipboard-text="records[scope.$index].businessOrderNo" type="text" size="small"
-                      style="cursor: pointer" title="点击复制">{{records[scope.$index].businessOrderNo|changeHide}}</span>
+                <span class="td" :data-clipboard-text="scope.row.businessOrderNo" style="cursor: pointer" title="点击复制">{{scope.row.businessOrderNo|changeHide}}</span>
               </template>
             </el-table-column>
             <el-table-column label="支付流水号" min-width="112">
               <template scope="scope">
-                <span class="td" :data-clipboard-text="records[scope.$index].sn" type="text" size="small"
-                      style="cursor: pointer" title="点击复制">{{records[scope.$index].sn|changeHide}}</span>
+                <span class="td" :data-clipboard-text="scope.row.sn" style="cursor: pointer" title="点击复制">{{scope.row.sn|changeHide}}</span>
               </template>
             </el-table-column>
-            <el-table-column prop="createTime" :formatter="changeTime" label="交易日期" width="162"></el-table-column>
+            <el-table-column label="交易日期" width="162">
+              <template scope="scope">
+                <span>{{scope.row.createTime|changeTime}}</span>
+              </template>
+            </el-table-column>
             <el-table-column prop="merchantName" label="收款商户名称" min-width="120"></el-table-column>
             <el-table-column prop="proxyName" label="所属一级" min-width="90"></el-table-column>
             <el-table-column prop="proxyName1" label="所属二级" min-width="110"></el-table-column>
-            <el-table-column prop="tradeAmount" :formatter="changeNum" label="支付金额" min-width="120" align="right"></el-table-column>
-            <el-table-column label="手续费率" min-width="90" align="right">
+            <el-table-column label="支付金额" align="right">
               <template scope="scope">
-                <div v-if="records[scope.$index].proxyName1!='当页总额'&&records[scope.$index].proxyName1!='筛选条件统计'">{{records[scope.$index].payRate}}</div>
-                <a v-if="records[scope.$index].proxyName1=='筛选条件统计'" @click="add">点击统计</a>
+                <span>{{scope.row.tradeAmount|toFix}}</span>
               </template>
             </el-table-column>
+            <el-table-column prop="payRate" label="手续费率" min-width="90" align="right"></el-table-column>
             <el-table-column label="订单状态" min-width="90">
               <template scope="scope">
-                <div v-if="records[scope.$index].proxyName1!='当页总额'&&records[scope.$index].proxyName1!='筛选条件统计'">{{records[scope.$index].status|changeStatus}}</div>
+                <span>{{scope.row.status|changeStatus}}</span>
               </template>
             </el-table-column>
             <el-table-column prop="settleStatus" :formatter="changeSettleStatus" label="结算状态" min-width="90"></el-table-column>
@@ -138,7 +135,7 @@
             <el-table-column prop="remark" label="渠道信息" min-width="90"></el-table-column>
             <el-table-column label="操作" width="90" fixed="right">
               <template scope="scope">
-                <router-link :to="{path:'/admin/record/newDealDet',query:{orderNo:records[scope.$index].orderNo}}" v-if="records[scope.$index].proxyName1!='当页总额'&&records[scope.$index].proxyName1!='筛选条件统计'" type="text" size="small">详情
+                <router-link :to="{path:'/admin/record/newDealDet',query:{orderNo:scope.row.orderNo}}" type="text">详情
                 </router-link>
               </template>
             </el-table-column>
@@ -161,6 +158,22 @@
                            layout="total, sizes, prev, pager, next, jumper"
                            :total="count">
             </el-pagination>
+          </div>
+        </div>
+        <div class="box box-info mask el-message-box" v-if="isMask">
+          <div class="maskCon">
+            <div class="head">
+              <div class="title">消息</div>
+              <i class="el-icon-close" @click="isMask=false"></i>
+            </div>
+            <div class="body">
+              <div>确定导出列表吗？</div>
+            </div>
+            <div class="foot">
+              <a href="javascript:void(0)" @click="isMask=false" class="el-button el-button--default">取消</a>
+              <a :href="'http://'+loadUrl" @click="isMask=false"
+                 class="el-button el-button-default el-button--primary ">下载</a>
+            </div>
           </div>
         </div>
       </div>
@@ -190,6 +203,8 @@
           payType:'',
           proxyName:'',
           proxyName1:'',
+          loadUrl: '',
+          loadUrl1: '',
           payChannelSign:''
         },
         channelList:[],
@@ -200,7 +215,8 @@
         loading: true,
         url: '',
         pageTotal: 0,
-        addTotal: 0
+        addTotal: 0,
+        isMask:false
       }
     },
     created: function () {
@@ -252,7 +268,8 @@
           .then(function (res) {
             this.loading = false;
             this.records = res.data.records;
-            this.url=res.data.ext;
+            this.loadUrl1 = res.data.ext;
+            this.loading = false;
             this.count = res.data.count;
             var price=0;
             var toFix = function (val) {
@@ -265,16 +282,6 @@
               }
             }
             this.pageTotal = price;
-            /*if(this.records.length!=0){
-              this.records.push({
-                proxyName1:"当页总额",
-                tradeAmount:price
-              },{
-                proxyName1:"筛选条件统计",
-                tradeAmount:''
-              })
-              this.records[this.records.length-1].tradeAmount = this.total;
-             }*/
           },function (err) {
             this.loading = false;
             this.$message({
@@ -285,37 +292,9 @@
           })
 
       },
-      //格式化hss创建时间
-      changeTime: function (row, column) {
-        var val = row.createTime;
-        if (val == '' || val == null) {
-          return ''
-        } else {
-          val = new Date(val)
-          var year = val.getFullYear();
-          var month = val.getMonth() + 1;
-          var date = val.getDate();
-          var hour = val.getHours();
-          var minute = val.getMinutes();
-          var second = val.getSeconds();
-
-          function tod(a) {
-            if (a < 10) {
-              a = "0" + a
-            }
-            return a;
-          }
-
-          return year + "-" + tod(month) + "-" + tod(date) + " " + tod(hour) + ":" + tod(minute) + ":" + tod(second);
-        }
-      },
-      changeNum: function (row, column) {
-        var val = row.tradeAmount;
-        if(val!=''){
-          return parseFloat(val).toFixed(2);
-        }else {
-          return val
-        }
+      onload: function () {
+        this.$data.loadUrl = this.loadUrl1;
+        this.$data.isMask = true;
       },
       changeSettleStatus: function (row, column) {
         var val = row.settleStatus;
@@ -390,12 +369,6 @@
       }
     },
     filters: {
-      changeHide: function (val) {
-        if(val!=""&&val!=null){
-          val = val.replace(val.substring(3,val.length-6),"…");
-        }
-        return val
-      },
       changeStatus: function (val) {
         if(val == 1){
           return "待支付"
@@ -420,12 +393,19 @@
 <style scoped lang="less" rel="stylesheet/less">
   ul {
     padding: 0;
+    margin:0;
+  }
+  .search{
+    label{
+      display: block;
+      margin-bottom: 0;
+    }
   }
 
   .same {
     list-style: none;
     display: inline-block;
-    margin: 0 15px 15px 0;
+    margin: 0 15px 10px 0;
   }
   .btn{
     font-size: 12px;
@@ -433,7 +413,7 @@
 
   .price {
     display: inline-block;
-    width: 210px;
+    width: 188px;
     height: 30px;
     border-radius: 4px;
     border-color: #bfcbd9;
@@ -442,7 +422,7 @@
     input {
       border: none;
       display: inline-block;
-      width: 45%;
+      width: 43%;
       height: 25px;
       position: relative;
       top: -3px;
@@ -452,5 +432,78 @@
   .price:hover {
     border-color: #20a0ff;
   }
+  .mask {
+    z-index: 2020;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.45);
 
+    .maskCon {
+      margin: 250px auto;
+      text-align: left;
+      vertical-align: middle;
+      background-color: #fff;
+      width: 420px;
+      border-radius: 3px;
+      font-size: 16px;
+      overflow: hidden;
+      -webkit-backface-visibility: hidden;
+      backface-visibility: hidden;
+
+      .head {
+        position: relative;
+        padding: 20px 20px 0;
+
+        .title {
+          padding-left: 0;
+          margin-bottom: 0;
+          font-size: 16px;
+          font-weight: 700;
+          height: 18px;
+          color: #333;
+        }
+
+        i {
+          font-family: element-icons !important;
+          speak: none;
+          font-style: normal;
+          font-weight: 400;
+          font-variant: normal;
+          text-transform: none;
+          vertical-align: baseline;
+          display: inline-block;
+          -webkit-font-smoothing: antialiased;
+          position: absolute;
+          top: 19px;
+          right: 20px;
+          color: #999;
+          cursor: pointer;
+          line-height: 20px;
+          text-align: center;
+        }
+
+      }
+      .body {
+        padding: 30px 20px;
+        color: #48576a;
+        font-size: 14px;
+        position: relative;
+
+        div {
+          margin: 0;
+          line-height: 1.4;
+          font-size: 14px;
+          color: #48576a;
+          font-weight: 400;
+        }
+      }
+      .foot {
+        padding: 10px 20px 15px;
+        text-align: right;
+      }
+    }
+  }
 </style>
