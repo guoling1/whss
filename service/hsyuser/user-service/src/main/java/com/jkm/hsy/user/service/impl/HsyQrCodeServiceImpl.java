@@ -1,5 +1,6 @@
 package com.jkm.hsy.user.service.impl;
 
+import com.alibaba.fastjson.JSONObject;
 import com.google.common.base.Optional;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -112,8 +113,7 @@ public class HsyQrCodeServiceImpl implements HsyQrCodeService{
             throw new ApiHandleException(ResultCode.RESULT_FAILE,"二维码必须绑定在同一代理商下");
         if(list.get(0).getProductID()!=null&&productId!=list.get(0).getProductID())
             throw new ApiHandleException(ResultCode.RESULT_FAILE,"二维码必须绑定在同一产品下");
-        //绑定并激活
-        qrCodeService.markAsActivate(appBindShop.getCode(),appBindShop.getShopId());
+
         //计算费率
         Triple<BigDecimal, BigDecimal, BigDecimal> decimalTriple = dealerChannelRateService.getMerchantRateByDealerId(currentDealerId,qrCodeOptional.get().getProductId());
         if(decimalTriple==null)
@@ -129,21 +129,30 @@ public class HsyQrCodeServiceImpl implements HsyQrCodeService{
         hsyUserDao.updateByID(saveAppAuUser);
         AppAuUser appAuUser = hsyCmbcDao.selectByUserId(list.get(0).getId());
         if(appAuUser.getHxbStatus()!=null&&appAuUser.getHxbStatus()== EnumHxbsStatus.PASS.getId()){//入驻成功开通产品或修改产品
+
             if(appAuUser.getHxbOpenProduct()!=null && appAuUser.getHxbOpenProduct()==EnumHxbsOpenProductStatus.PASS.getId()){//开通产品成功
+                log.info("修改产品");
                 CmbcResponse cmbcResponse = hsyCmbcService.merchantUpdateBindChannel(list.get(0).getId());
+                log.info("返回参数是：{}", JSONObject.toJSON(cmbcResponse).toString());
                 if(cmbcResponse.getCode()==-1){
                     throw new ApiHandleException(ResultCode.RESULT_FAILE,"修改产品失败");
                 }
             }else{//未开通产品或者开通产品失败
+                log.info("新增产品");
                 CmbcResponse cmbcResponse = hsyCmbcService.merchantBindChannel(list.get(0).getId(),appBindShop.getShopId());
+                log.info("返回参数是：{}", JSONObject.toJSON(cmbcResponse).toString());
                 if(cmbcResponse.getCode()==-1){
                     throw new ApiHandleException(ResultCode.RESULT_FAILE,"开通产品失败");
                 }
-                hsyCmbcDao.updateHxbUserById(EnumHxbsOpenProductStatus.PASS.getId(),list.get(0).getId());
+                log.info("返回参数是：{}", JSONObject.toJSON(cmbcResponse).toString());
+                hsyCmbcDao.updateHxbUserById(EnumHxbsOpenProductStatus.PASS.getId(),cmbcResponse.getMsg(),list.get(0).getId());
             }
         }else{
             throw new ApiHandleException(ResultCode.RESULT_FAILE,"商户未入网");
         }
+        log.info("开通产品成功");
+        //绑定并激活
+        qrCodeService.markAsActivate(appBindShop.getCode(),appBindShop.getShopId());
         return appBindShop.getCode();
     }
 }
