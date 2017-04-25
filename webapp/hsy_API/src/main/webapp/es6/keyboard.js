@@ -150,7 +150,8 @@ _require.register("keyboard", (module, exports, _require, global) => {
 
         // 唤起支付宝支付
         let onAlipayJSBridge = function (jsonData) {
-          AlipayJSBridge.call("tradePay", {tradeNO: jsonData.channelNo},
+          //jsonData.channelNo
+          AlipayJSBridge.call("tradePay", {tradeNO: '2017042521001004500231944668'},
             function (result) {
               alert(JSON.stringify(result));
             });
@@ -185,15 +186,19 @@ _require.register("keyboard", (module, exports, _require, global) => {
               break;
             case 'ali-pay':
               if (oldValue > 0) {
-                message.load_show('正在支付');
-                http.post('/trade/scReceipt', { // /wx/receiptByCode
-                  totalFee: oldValue,
-                  payChannel: '802',
-                  merchantId: pageData.merchantId
-                }, function (data) {
-                  message.load_hide();
-                  window.location.href = data.payUrl;
-                });
+                onAlipayJSBridge();
+                // message.load_show('正在支付');
+                // http.post('/trade/scReceipt', {
+                //   totalFee: oldValue,
+                //   payChannel: '802',
+                //   memberId: pageData.memberId,
+                //   merchantId: pageData.merchantId
+                // }, function (data) {
+                //   http.post(data.payUrl, {}, function (data) {
+                //     message.load_hide();
+                //     onAlipayJSBridge(data);
+                //   });
+                // });
               } else {
                 message.prompt_show('请输入正确的支付金额');
               }
