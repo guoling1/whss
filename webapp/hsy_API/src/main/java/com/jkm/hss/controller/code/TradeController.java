@@ -59,7 +59,6 @@ public class TradeController extends BaseController {
         final AppBizShop shop = this.hsyShopDao.findAppBizShopByID(payRequest.getMerchantId()).get(0);
         final Pair<Integer, String> resultPair = this.hsyTradeService.receipt(payRequest.getTotalFee(),
                 payRequest.getPayChannel(), shop.getId(), EnumAppType.HSY.getId(), payRequest.getMemberId());
-        log.info("payUrl={}",resultPair.getRight());
         if (0 == resultPair.getLeft()) {
             return CommonResponse.builder4MapResult(CommonResponse.SUCCESS_CODE, "收款成功")
                     .addParam("payUrl", URLDecoder.decode(resultPair.getRight(), "UTF-8")).addParam("subMerName", shop.getName())

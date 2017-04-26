@@ -561,7 +561,7 @@ public class HSYTradeServiceImpl implements HSYTradeService {
             final String content = HttpClientPost.postJson(PaymentSdkConstants.SDK_PAY_PLACE_ORDER, SdkSerializeUtil.convertObjToMap(placeOrderRequest));
             return JSON.parseObject(content, PaymentSdkPlaceOrderResponse.class);
         } catch (final Throwable e){
-            log.error("hsy订单[{}]，下单失败", order.getId());
+            log.error("hsy订单[{}]，下单失败-请求网关下单异常", order.getId());
             final PaymentSdkPlaceOrderResponse paymentSdkPlaceOrderResponse = new PaymentSdkPlaceOrderResponse();
             paymentSdkPlaceOrderResponse.setCode(EnumBasicStatus.FAIL.getId());
             paymentSdkPlaceOrderResponse.setMessage("请求网关下单异常");
