@@ -518,4 +518,13 @@ public interface QRCodeDao {
      * @return
      */
     int updateDealerInfo(@Param("code") String code, @Param("firstDealerId") long firstDealerId, @Param("secondDealerId") long secondDealerId);
+
+    /**
+     * 回收二维码
+     * @param sysType
+     * @param startCode
+     * @param endCode
+     * @return
+     */
+    int revokeQrCode(@Param("sysType") String sysType,@Param("startCode") String startCode,@Param("endCode") String endCode);
 }

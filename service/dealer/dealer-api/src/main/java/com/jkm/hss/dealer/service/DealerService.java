@@ -551,4 +551,7 @@ public interface DealerService {
      *二代切换一代
      */
     int updateBelong(long secondDealerId,long firstDealerId);
+
+
+
 }

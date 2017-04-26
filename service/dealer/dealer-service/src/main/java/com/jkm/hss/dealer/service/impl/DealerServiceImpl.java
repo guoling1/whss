@@ -2523,4 +2523,6 @@ public class DealerServiceImpl implements DealerService {
     public int updateBelong(long secondDealerId, long firstDealerId) {
         return this.dealerDao.updateBelong(secondDealerId,firstDealerId);
     }
+
+
 }

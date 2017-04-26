@@ -13,6 +13,7 @@ import com.jkm.base.common.util.CookieUtil;
 import com.jkm.base.common.util.ValidateUtils;
 import com.jkm.hss.admin.entity.AdminRole;
 import com.jkm.hss.admin.entity.AdminUser;
+import com.jkm.hss.admin.entity.RevokeQrCodeRecord;
 import com.jkm.hss.admin.enums.EnumAdminType;
 import com.jkm.hss.admin.enums.EnumAdminUserStatus;
 import com.jkm.hss.admin.enums.EnumIsMaster;
@@ -21,6 +22,7 @@ import com.jkm.hss.admin.helper.requestparam.*;
 import com.jkm.hss.admin.helper.responseparam.*;
 import com.jkm.hss.admin.service.AdminRoleService;
 import com.jkm.hss.admin.service.AdminUserService;
+import com.jkm.hss.admin.service.RevokeQrCodeRecordService;
 import com.jkm.hss.controller.BaseController;
 import com.jkm.hss.dealer.entity.Dealer;
 import com.jkm.hss.dealer.entity.DealerChannelRate;
@@ -40,6 +42,8 @@ import com.jkm.hss.helper.ApplicationConsts;
 import com.jkm.hss.helper.request.FirstLevelDealerFindRequest;
 import com.jkm.hss.helper.request.RevokeQrCodeRequest;
 import com.jkm.hss.helper.response.*;
+import com.jkm.hss.merchant.enums.EnumCommonStatus;
+import com.jkm.hss.merchant.enums.EnumPlatformType;
 import com.jkm.hss.product.entity.BasicChannel;
 import com.jkm.hss.product.entity.Product;
 import com.jkm.hss.product.entity.ProductChannelDetail;
@@ -100,6 +104,8 @@ public class DealerController extends BaseController {
     private AdminRoleService adminRoleService;
     @Autowired
     private OSSClient ossClient;
+    @Autowired
+    private RevokeQrCodeRecordService revokeQrCodeRecordService;
 
     /**
      * 按手机号和名称模糊匹配
@@ -1098,29 +1104,5 @@ public class DealerController extends BaseController {
         }
     }
 
-    /**
-     * 二级代理切代理
-     * @param revokeQrCodeRequest
-     * @return
-     */
-//    @ResponseBody
-//    @RequestMapping(value = "/revokeQrCode", method = RequestMethod.POST)
-//    public CommonResponse revokeQrCode (@RequestBody RevokeQrCodeRequest revokeQrCodeRequest) {
-//        Optional<Product> productOptional = productService.selectByType(revokeQrCodeRequest.getSysType());
-//
-//        Optional<Dealer> dealerOptional = dealerService.getDealerByMarkCode(dealerMarkCodeRequest.getMarkCode());
-//        if(!dealerOptional.isPresent()){
-//            return CommonResponse.simpleResponse(-1, "要切到的一级代理商不存在");
-//        }
-//        Optional<Dealer> dealerOptional2 = dealerService.getById(dealerMarkCodeRequest.getSecondDealerId());
-//        if(!dealerOptional2.isPresent()){
-//            return CommonResponse.simpleResponse(-1, "该二级代理商不存在");
-//        }
-//        int returnCount = dealerService.updateBelong(dealerMarkCodeRequest.getSecondDealerId(),dealerOptional.get().getId());
-//        if(returnCount>0){
-//            return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "切换成功");
-//        }else{
-//            return CommonResponse.simpleResponse(-1, "切换失败");
-//        }
-//    }
+
 }

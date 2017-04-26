@@ -365,4 +365,5 @@ public interface DealerDao {
      * @param firstDealerId
      */
     int updateBelong(@Param("secondDealerId") long secondDealerId,@Param("firstDealerId") long firstDealerId);
+
 }
