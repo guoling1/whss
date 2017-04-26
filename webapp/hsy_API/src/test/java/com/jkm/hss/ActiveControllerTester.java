@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.jkm.hsy.user.entity.AppParam;
 import com.jkm.hsy.user.entity.AppResult;
 import com.jkm.hsy.user.util.AppDateUtil;
+import org.joda.time.DateTime;
 import org.junit.Test;
 
 import java.io.ByteArrayOutputStream;
@@ -23,6 +24,7 @@ import java.util.*;
 public class ActiveControllerTester {
 //    public static String url="http://192.168.1.99:8080/hsy/active/rest";
     public static String url="http://localhost:8080/hsy/active/rest";
+//    public static String url="http://hsy.qianbaojiajia.com/active/rest";
 
     @Test
     public void testInsertHsyUser()throws Exception{
@@ -114,7 +116,7 @@ public class ActiveControllerTester {
         p.setAppType("android");
         p.setTimeStamp(AppDateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
         p.setV("v1.0");
-        String param="{\"cardNO\":\"6214830107011438\",\"cardBank\":\"招商银行\",\"cardAccountName\":\"张玉龙\",\"sid\":22,\"bankAddress\":\"招商银行北新桥分行\"}";
+        String param="{\"cardNO\":\"6214830107011438\",\"cardBank\":\"招商银行\",\"cardAccountName\":\"张玉龙\",\"sid\":25,\"bankAddress\":\"招商银行北新桥分行\",\"branchCode\":\"001121004578\",\"idcardNO\":\"1111199001013333\",\"branchDistrictCode\":\"110109\"}";
 //        String param="{\"cardNO\":\"4033930019071753\",\"cardBank\":\"1000000\",\"cardAccountName\":\"开户名\",\"sid\":5,\"bankAddress\":\"开户行支行\"}";
         p.setRequestData(param);
         ActiveControllerTester.testRest(p);
@@ -168,7 +170,7 @@ public class ActiveControllerTester {
         p.setAppType("android");
         p.setTimeStamp(AppDateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
         p.setV("v1.0");
-        String param="{\"id\":10}";
+        String param="{\"id\":62}";
         p.setRequestData(param);
         ActiveControllerTester.testRest(p);
     }
@@ -375,7 +377,7 @@ public class ActiveControllerTester {
         p.setAppType("android");
         p.setTimeStamp(AppDateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
         p.setV("v1.0");
-        String param="{\"id\":75}";
+        String param="{\"id\":71}";
         p.setRequestData(param);
         ActiveControllerTester.testRest(p);
     }
@@ -401,7 +403,59 @@ public class ActiveControllerTester {
         p.setAppType("ios");
         p.setTimeStamp(AppDateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
         p.setV("v1.0");
-        String param="{\"versionCode\":2}";
+        String param="{\"versionCode\":8}";
+        p.setRequestData(param);
+        ActiveControllerTester.testRest(p);
+    }
+
+    @Test
+    public void testHSY001039() throws Exception {
+        AppParam p=new AppParam();
+        p.setServiceCode("HSY001039");
+        p.setAccessToken("661bf9ce274d196264ebe457bf2bbfdf");
+        p.setAppType("ios");
+        p.setTimeStamp("2017-04-20 15:24:21");
+        p.setV("v1.0");
+        String param="{\"recordId\":8,\"pageNo\":1,\"pageSize\":10}";
+        p.setRequestData(param);
+        ActiveControllerTester.testRest(p);
+    }
+
+    @Test
+    public void testFindAllPageComponent()throws Exception{
+        AppParam p=new AppParam();
+        p.setServiceCode("HSY001040");
+        p.setAccessToken("");
+        p.setAppType("ios");
+        p.setTimeStamp(AppDateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
+        p.setV("v1.0");
+        String param="{}";
+        p.setRequestData(param);
+        ActiveControllerTester.testRest(p);
+    }
+
+    @Test
+    public void testFindBankBranchList()throws Exception{
+        AppParam p=new AppParam();
+        p.setServiceCode("HSY001041");
+        p.setAccessToken("");
+        p.setAppType("android");
+        p.setTimeStamp(AppDateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
+        p.setV("v1.0");
+        String param="{\"bankName\": \"招商银行\",\"districtCode\":\"110000\",\"currentPage\":1}";
+        p.setRequestData(param);
+        ActiveControllerTester.testRest(p);
+    }
+
+    @Test
+    public void testFindBankList()throws Exception{
+        AppParam p=new AppParam();
+        p.setServiceCode("HSY001042");
+        p.setAccessToken("");
+        p.setAppType("android");
+        p.setTimeStamp(AppDateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
+        p.setV("v1.0");
+        String param="{\"bankName\": \"中\",\"currentPage\":1}";
         p.setRequestData(param);
         ActiveControllerTester.testRest(p);
     }
@@ -501,4 +555,19 @@ public class ActiveControllerTester {
         AppResult result=gson.fromJson(json, AppResult.class);
         System.out.println("dataResult---"+result.getEncryptDataResult());
     }
+
+
+    @Test
+    public void testHSY001038() throws Exception {
+        AppParam p=new AppParam();
+        p.setServiceCode("HSY001038");
+        p.setAccessToken("661bf9ce274d196264ebe457bf2bbfdf");
+        p.setAppType("ios");
+        p.setTimeStamp("2017-04-20 15:24:21");
+        p.setV("v1.0");
+        String param="{\"recordId\":8}";
+        p.setRequestData(param);
+        ActiveControllerTester.testRest(p);
+    }
+
 }

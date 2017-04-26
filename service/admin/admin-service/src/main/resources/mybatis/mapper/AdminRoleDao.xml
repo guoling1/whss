@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jkm.hss.admin.dao.AdminRoleDao">
+
+    <sql id="Base_Column_List">
+        id,role_name,descr,type,status,create_time,update_time
+    </sql>
+
+    <sql id="Base_Column_List1">
+        id,parent_id,menu_name,menu_url,descr,sn,type,status,create_time,update_time
+    </sql>
+
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO tb_admin_role
+        (
+        role_name,
+        descr,
+        type,
+        status
+        )
+        VALUES
+        (
+        #{roleName},
+        #{descr},
+        #{type},
+        #{status}
+        );
+    </insert>
+
+    <update id="update">
+        UPDATE tb_admin_role
+        SET
+        role_name = #{roleName}
+        WHERE id = #{id}
+    </update>
+
+    <update id="enableRole">
+        UPDATE tb_admin_role
+        SET
+        status = 1
+        WHERE id = #{id}
+    </update>
+
+    <update id="disableRole">
+        UPDATE tb_admin_role
+        SET
+        status = 2
+        WHERE id = #{id}
+    </update>
+
+    <select id="selectAdminRoleCountByPageParams" resultType="java.lang.Long">
+        SELECT COUNT(1) FROM tb_admin_role
+        <where>
+            type=#{type}
+            <if test="roleName != null and roleName!=''">
+                AND `role_name` LIKE "%"#{roleName}"%"
+            </if>
+        </where>
+    </select>
+
+    <select id="selectAdminRoleListByPageParams" resultType="com.jkm.hss.admin.helper.responseparam.AdminRoleListPageResponse">
+        SELECT id,role_name,update_time,
+        CASE
+        WHEN status = 1 THEN
+        '正常'
+        ELSE
+        '禁用'
+        END as statusName
+        FROM tb_admin_role
+        <where>
+            type=#{type}
+            <if test="roleName != null and roleName!=''">
+                AND `role_name` LIKE "%"#{roleName}"%"
+            </if>
+            ORDER BY create_time DESC LIMIT #{offset},#{count}
+        </where>
+    </select>
+
+    <select id="selectAdminDealerRoleCountByPageParams" resultType="java.lang.Long">
+        SELECT COUNT(1) FROM tb_admin_role
+        <where>
+            type in (2,3)
+            <if test="roleName != null and roleName!=''">
+                AND `role_name` LIKE "%"#{roleName}"%"
+            </if>
+        </where>
+    </select>
+
+    <select id="selectAdminDealerRoleListByPageParams" resultType="com.jkm.hss.admin.helper.responseparam.AdminRoleListPageResponse">
+        SELECT id,type,role_name,update_time,
+        CASE
+        WHEN status = 1 THEN
+        '正常'
+        ELSE
+        '禁用'
+        END as statusName
+        FROM tb_admin_role
+        <where>
+            type in (2,3)
+            <if test="roleName != null and roleName!=''">
+                AND `role_name` LIKE "%"#{roleName}"%"
+            </if>
+            ORDER BY create_time DESC LIMIT #{offset},#{count}
+        </where>
+    </select>
+
+    <select id="selectAdminRoleList" resultType="com.jkm.hss.admin.helper.responseparam.AdminRoleListResponse">
+        SELECT id,role_name FROM tb_admin_role where type=#{type} and status=1
+    </select>
+
+    <select id="selectById" resultType="com.jkm.hss.admin.entity.AdminRole">
+        SELECT <include refid="Base_Column_List" /> FROM tb_admin_role WHERE  id=#{id}
+    </select>
+
+    <select id="getMenuByParentIdAndType" resultType="com.jkm.hss.admin.entity.AdminMenu">
+        SELECT <include refid="Base_Column_List1" /> FROM tb_admin_menu WHERE  parent_id=#{parentId} and type=#{type} and status=1 ORDER by sn asc
+    </select>
+
+    <select id="getOptByMenuIdAndType" resultType="com.jkm.hss.admin.helper.responseparam.AdminOptResponse">
+        SELECT id,show_name FROM tb_admin_opt WHERE  menu_id=#{menuId} and type=#{type} and status=1 ORDER by create_time asc
+    </select>
+
+    <select id="getMenuByParentIdAndTypeAndRoleId" resultType="com.jkm.hss.admin.helper.responseparam.AdminMenuResponse">
+        SELECT
+        m.id,m.parent_id,m.menu_name,m.menu_url,m.descr,m.sn,m.type,(select count(1) from tb_admin_role_menu_rel where role_id=#{roleId} and menu_id=m.id and status=1) as isSelected
+        FROM tb_admin_menu  as m WHERE  m.parent_id=#{parentId} and m.type=#{type} and m.status=1 ORDER by m.sn asc
+    </select>
+
+    <select id="getOptByMenuIdAndTypeAndRoleId" resultType="com.jkm.hss.admin.helper.responseparam.AdminOptRelResponse">
+        SELECT o.id,o.show_name,(select count(1) from tb_admin_menu_opt_rel where menu_id=#{menuId} and opt_id=o.id and status=1 and role_id=#{roleId}) as isSelected FROM tb_admin_opt as o WHERE  o.menu_id=#{menuId} and o.type=#{type} and o.status=1 ORDER by o.create_time asc
+    </select>
+
+    <delete id="deleteRoleAndMenuByRoleId">
+        DELETE FROM tb_admin_role_menu_rel WHERE role_id=#{roleId}
+    </delete>
+
+    <delete id="deleteMenuAndOptByRoleId">
+        DELETE FROM tb_admin_menu_opt_rel WHERE role_id=#{roleId}
+    </delete>
+
+    <insert id="insertRoleAndMenuRel" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO tb_admin_role_menu_rel
+        (
+        role_id,
+        menu_id,
+        status
+        )
+        VALUES
+        (
+        #{roleId},
+        #{menuId},
+        #{status}
+        )
+    </insert>
+
+    <insert id="insertMenuAndOptRel" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO tb_admin_menu_opt_rel
+        (
+        role_id,
+        menu_id,
+        opt_id,
+        status
+        )
+        VALUES
+        (
+        #{roleId},
+        #{menuId},
+        #{optId},
+        #{status}
+        )
+    </insert>
+
+    <update id="updateRoleNameById">
+        UPDATE tb_admin_role
+        SET
+        role_name=#{roleName}
+        WHERE id = #{id}
+    </update>
+
+    <select id="getLoginMenu" resultType="com.jkm.hss.admin.helper.responseparam.MenuResponse">
+        SELECT r.id,r.menu_name,r.menu_url from tb_admin_role_menu_rel as m left join tb_admin_menu as r on m.menu_id=r.id where r.parent_id=#{parentId} and r.type=#{type} and m.role_id=#{roleId} and r.status=1 ORDER by r.sn asc
+    </select>
+
+    <select id="getMasterLoginMenu" resultType="com.jkm.hss.admin.helper.responseparam.MenuResponse">
+        SELECT id,menu_name,menu_url FROM tb_admin_menu WHERE  parent_id=#{parentId} and type=#{type} and status=1 ORDER by sn asc
+    </select>
+
+    <select id="getPrivilegeByContions" resultType="java.lang.Integer">
+        SELECT
+        count(1)
+        FROM
+	    tb_admin_menu_opt_rel as r
+        LEFT JOIN tb_admin_opt as o ON r.opt_id = o.id
+        WHERE
+        r.role_id = #{roleId}
+        AND o.status = 1
+        AND o.url = #{url}
+        AND o.type = #{type}
+        AND o.method = #{method}
+    </select>
+
+    <select id="getPrivilegeByContionsOfJs" resultType="java.lang.Integer">
+        SELECT
+        count(1)
+        FROM
+        tb_admin_menu_opt_rel as r
+        LEFT JOIN tb_admin_opt as o ON r.opt_id = o.id
+        WHERE
+        r.role_id = #{roleId}
+        AND o.status = 1
+        AND o.type = #{type}
+        AND o.descr = #{descr}
+    </select>
+
+    <select id="hasUrl" resultType="java.lang.Integer">
+        SELECT
+        count(1)
+        FROM
+        tb_admin_opt
+        WHERE
+        status=1
+        and type = #{type}
+        and url = #{url}
+        and method = #{method}
+    </select>
+
+    <select id="hasDescr" resultType="java.lang.Integer">
+        SELECT
+        count(1)
+        FROM
+        tb_admin_opt
+        WHERE
+        status=1
+        and type = #{type}
+        and descr = #{descr}
+    </select>
+
+    <select id="selectByRoleNameAndType" resultType="com.jkm.hss.admin.entity.AdminRole">
+        SELECT <include refid="Base_Column_List" /> FROM tb_admin_role WHERE  role_name=#{roleName} and type=#{type} and status=1
+    </select>
+
+    <select id="selectByRoleNameAndTypeUnIncludeNow" resultType="com.jkm.hss.admin.entity.AdminRole">
+        SELECT <include refid="Base_Column_List" /> FROM tb_admin_role WHERE  role_name=#{roleName} and type=#{type} and status=1 and id !=#{roleId}
+    </select>
+</mapper>

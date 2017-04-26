@@ -16,6 +16,7 @@ import com.jkm.hss.merchant.helper.MerchantSupport;
 import com.jkm.hss.merchant.service.AccountBankService;
 import com.jkm.hss.merchant.service.MerchantChannelRateService;
 import com.jkm.hss.merchant.service.QueryMerchantInfoRecordService;
+import com.jkm.hss.product.enums.EnumBalanceTimeType;
 import com.jkm.hss.product.enums.EnumPayChannelSign;
 import com.jkm.hss.push.sevice.PushService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,7 +65,7 @@ public class QueryMerchantInfoRecordController extends BaseController {
 
         if (list.size()>0 || response!=null){
             for (int i=0;i<list.size();i++){
-                if (list.get(i).getLevel()==2){
+                if (list.get(i).getSecondDealerId()>0){
                     list.get(i).setMarkCode2(list.get(i).getMarkCode1());
                     MerchantInfoResponse proxyNames = dealerService.getProxyName(list.get(i).getFirstLevelDealerId());
                     if (list.get(i).getMarkCode1()!=null&&!list.get(i).getMarkCode1().equals("")){
@@ -169,6 +170,7 @@ public class QueryMerchantInfoRecordController extends BaseController {
                         mechantRateResponse.setMerchantRate(input.getMerchantPayRate().toString());
                         mechantRateResponse.setWithdrawMoney(input.getMerchantWithdrawFee().setScale(2).toString());
                         mechantRateResponse.setEntNet(EnumEnterNet.idOf(input.getEnterNet()).getMsg());
+                        mechantRateResponse.setMerchantBalanceType(EnumBalanceTimeType.of(input.getMerchantBalanceType()).getName());
                         mechantRateResponse.setRemarks(input.getRemarks());
                         return mechantRateResponse;
                     }

@@ -94,4 +94,13 @@ public interface AccountSettleAuditRecordDao {
      * @return
      */
     List<AccountSettleAuditRecord> selectByParam(ListSettleAuditRecordRequest settleAuditRecordRequest);
+
+    /**
+     * 查询指定结算日期，指定结算状态的结算审核记录ids
+     *
+     * @param settleDate
+     * @param settleStatus
+     * @return
+     */
+    List<Long> selectPendingSettleAuditRecordIdsBySettleDateAndSettleStatus(@Param("settleDate") Date settleDate, @Param("settleStatus") int settleStatus);
 }

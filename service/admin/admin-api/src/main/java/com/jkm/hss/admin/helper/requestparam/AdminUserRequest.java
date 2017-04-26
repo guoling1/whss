@@ -63,6 +63,6 @@ public class AdminUserRequest{
     /**
      * 角色编码
      */
-    private Long roleId;
+    private long roleId;
 
 }

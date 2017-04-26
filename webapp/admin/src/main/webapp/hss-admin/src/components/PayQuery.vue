@@ -4,14 +4,15 @@
       <div class="box" style="margin-top:15px;overflow: hidden">
         <div class="box-header">
           <h3 class="box-title">支付查询</h3>
-          <span @click="onload()" download="交易记录" class="btn btn-primary" style="float: right;color: #fff">导出</span>
+          <span @click="_$power(onload,'boss_pay_export')" download="交易记录" class="btn btn-primary" style="float: right;color: #fff">导出</span>
         </div>
         <div class="box-body">
           <!--筛选-->
-          <ul>
+          <ul class="search">
             <li class="same">
               <label>支付创建日期:</label>
               <el-date-picker
+                style="width: 188px"
                 v-model="date"
                 type="daterange"
                 align="right"
@@ -22,6 +23,7 @@
             <li class="same">
               <label>支付完成日期:</label>
               <el-date-picker
+                style="width: 188px"
                 v-model="date1"
                 type="daterange"
                 align="right"
@@ -31,15 +33,15 @@
             </li>
             <li class="same">
               <label>支付流水号:</label>
-              <el-input style="width: 130px" v-model="query.sn" placeholder="请输入内容" size="small"></el-input>
+              <el-input style="width: 188px" v-model="query.sn" placeholder="请输入内容" size="small"></el-input>
             </li>
             <li class="same">
               <label>交易订单号:</label>
-              <el-input style="width: 130px" v-model="query.orderNo" placeholder="请输入内容" size="small"></el-input>
+              <el-input style="width: 188px" v-model="query.orderNo" placeholder="请输入内容" size="small"></el-input>
             </li>
             <li class="same">
               <label>支付状态:</label>
-              <el-select style="width: 120px" clearable v-model="query.status" size="small">
+              <el-select style="width: 188px" clearable v-model="query.status" size="small">
                 <el-option label="全部" value="">全部</el-option>
                 <el-option label="待支付" value="1">待支付</el-option>
                 <el-option label="支付中" value="2">支付中</el-option>
@@ -406,6 +408,14 @@
 <style scoped lang="less" rel="stylesheet/less">
   ul {
     padding: 0;
+    margin:0;
+  }
+  .search{
+    margin-bottom:0;
+    label{
+      display: block;
+      margin-bottom: 0;
+    }
   }
 
   .same {

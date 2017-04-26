@@ -16,6 +16,7 @@
         income_amount,
         app_id,
         trade_date,
+        settle_date,
         change_time,
         type,
         remark,
@@ -35,6 +36,7 @@
         #{incomeAmount},
         #{appId},
         #{tradeDate},
+        #{settleDate},
         #{changeTime},
         #{type},
         #{remark},
@@ -54,11 +56,11 @@
         WHERE settle_audit_record_id = #{settleAuditRecordId}
     </update>
 
-    <update id="updateSettleAuditRecordIdByTradeDateAndAccountId">
+    <update id="updateSettleAuditRecordIdBySettleDateAndAccountId">
         UPDATE tb_settle_account_flow
         SET settle_audit_record_id = #{settleAuditRecordId}
         WHERE app_id = 'hsy'
-        AND trade_date = #{tradeDate}
+        AND settle_date = #{settleDate}
         AND account_id = #{accountId}
         AND type = 1
     </update>
@@ -75,7 +77,7 @@
         SELECT account_user_type, account_id, count(id) as count, SUM(income_amount) as amount
         FROM tb_settle_account_flow
         WHERE app_id = 'hsy'
-        AND trade_date = #{tradeDate}
+        AND settle_date = #{settleDate}
         AND type = 1
         GROUP BY account_user_type, account_id;
     </select>
@@ -96,12 +98,17 @@
         SELECT count(0)
         FROM tb_settle_account_flow
         WHERE app_id = 'hsy'
-        AND trade_date = #{tradeDate}
+        AND settle_date = #{settleDate}
         AND type = 2
     </select>
 
     <select id="selectCountByFlowNo" resultType="java.lang.Integer">
         SELECT count(0) FROM tb_settle_account_flow WHERE flow_no = #{flowNo}
+    </select>
+
+    <select id="selectOrderNosByRecordId" resultType="java.lang.String">
+        SELECT DISTINCT(order_no) FROM tb_settle_account_flow
+        WHERE settle_audit_record_id = #{recordId}
     </select>
 
 </mapper>

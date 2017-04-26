@@ -26,4 +26,10 @@
         order by VERSIONCODE desc,UPDATETIME desc
     </select>
 
+    <select id="findAllPageComponent" resultType="com.jkm.hsy.user.entity.AppCmComponent">
+        select
+        ID,TITLE,ICONURL,JUMPURL,VIEWORDER,CREATETIME,UPDATETIME
+        from app_cm_component
+    </select>
+
 </mapper>

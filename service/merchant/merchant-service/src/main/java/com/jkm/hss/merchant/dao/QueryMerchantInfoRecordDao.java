@@ -45,17 +45,17 @@ public interface QueryMerchantInfoRecordDao {
 
     /**
      * 查询推荐所属1代理商名称
-     * @param firstDealerId
+     * @param firstMerchantId
      * @return
      */
-    MerchantInfoResponse selectProxyNameYq(@Param("firstDealerId") long firstDealerId);
+    MerchantInfoResponse selectProxyNameYq(@Param("firstMerchantId") long firstMerchantId);
 
     /**
-     * 查询推荐所属1代理商名称
-     * @param secondDealerId
+     * 查询推荐所属2代理商名称
+     * @param secondMerchantId
      * @return
      */
-    MerchantInfoResponse selectProxyNameYq1(@Param("secondDealerId") long secondDealerId);
+    MerchantInfoResponse selectProxyNameYq1(@Param("secondMerchantId") long secondMerchantId);
 
     /**
      * 查询推荐信息
@@ -63,4 +63,18 @@ public interface QueryMerchantInfoRecordDao {
      * @return
      */
     MerchantInfoResponse getrecommenderInfo(@Param("id") long id);
+
+    /**
+     * 查询推荐所属1代理商名称
+     * @param firstDealerId
+     * @return
+     */
+    MerchantInfoResponse selectProxyNameTJ(@Param("firstDealerId") long firstDealerId);
+
+    /**
+     * 查询推荐所属2代理商名称
+     * @param secondDealerId
+     * @return
+     */
+    MerchantInfoResponse selectProxyNameTJ1(@Param("secondDealerId") long secondDealerId);
 }

@@ -5,6 +5,12 @@ import com.google.common.base.Preconditions;
 import com.jkm.base.common.entity.CommonResponse;
 import com.jkm.base.common.entity.PageModel;
 import com.jkm.base.common.util.ValidateUtils;
+import com.jkm.hss.admin.entity.AdminUser;
+import com.jkm.hss.admin.enums.EnumAdminType;
+import com.jkm.hss.admin.enums.EnumAdminUserStatus;
+import com.jkm.hss.admin.enums.EnumIsMaster;
+import com.jkm.hss.admin.helper.AdminUserSupporter;
+import com.jkm.hss.admin.service.AdminUserService;
 import com.jkm.hss.controller.BaseController;
 import com.jkm.hss.dealer.entity.Dealer;
 import com.jkm.hss.dealer.entity.DealerChannelRate;
@@ -65,6 +71,8 @@ public class DealerController extends BaseController {
     private DealerRateService dealerRateService;
     @Autowired
     private DealerUpgerdeRateService dealerUpgerdeRateService;
+    @Autowired
+    private AdminUserService adminUserService;
     /**
      * 二级代理商列表
      *
@@ -116,8 +124,8 @@ public class DealerController extends BaseController {
             if(StringUtils.isBlank(secondLevelDealerAdd2Request.getLoginName())) {
                 return CommonResponse.simpleResponse(-1, "登录名不能为空");
             }
-            final long loginNameCount = this.dealerService.getByLoginName(secondLevelDealerAdd2Request.getLoginName());
-            if (loginNameCount > 0) {
+            Optional<AdminUser> adminUserOptional = this.adminUserService.getAdminUserByNameAndType(secondLevelDealerAdd2Request.getLoginName(),EnumAdminType.SECONDDEALER.getCode());
+            if (adminUserOptional.isPresent()) {
                 return CommonResponse.simpleResponse(-1, "登录名已经存在");
             }
             if(StringUtils.isBlank(secondLevelDealerAdd2Request.getLoginPwd())) {
@@ -126,9 +134,6 @@ public class DealerController extends BaseController {
             if(StringUtils.isBlank(secondLevelDealerAdd2Request.getEmail())) {
                 return CommonResponse.simpleResponse(-1, "联系邮箱不能为空");
             }
-//            if(!ValidateUtils.isEmail(secondLevelDealerAdd2Request.getEmail())) {
-//                return CommonResponse.simpleResponse(-1, "联系邮箱格式错误");
-//            }
             if(StringUtils.isBlank(secondLevelDealerAdd2Request.getBelongProvinceCode())) {
                 return CommonResponse.simpleResponse(-1, "所在省份编码不能为空");
             }
@@ -160,6 +165,27 @@ public class DealerController extends BaseController {
                 return CommonResponse.simpleResponse(-1, "开户手机号格式错误");
             }
             final long dealerId = this.dealerService.createSecondDealer2(secondLevelDealerAdd2Request,super.getDealerId());
+
+            //创建登录用户
+            AdminUser adminUser = new AdminUser();
+            adminUser.setUsername(secondLevelDealerAdd2Request.getLoginName());
+            adminUser.setSalt("200000");
+            adminUser.setPassword(DealerSupport.passwordDigest(secondLevelDealerAdd2Request.getLoginPwd(),"JKM"));
+            adminUser.setRealname(secondLevelDealerAdd2Request.getBankAccountName());
+            adminUser.setEmail(secondLevelDealerAdd2Request.getEmail());
+            adminUser.setMobile(AdminUserSupporter.encryptMobile(secondLevelDealerAdd2Request.getMobile()));
+            adminUser.setCompanyId("");
+            adminUser.setDeptId("");
+            adminUser.setIdCard(AdminUserSupporter.encryptIdenrity(secondLevelDealerAdd2Request.getIdCard()));
+            adminUser.setRoleId(0l);
+            adminUser.setIdentityFacePic("");
+            adminUser.setIdentityOppositePic("");
+            adminUser.setType(EnumAdminType.SECONDDEALER.getCode());
+            adminUser.setDealerId(dealerId);
+            adminUser.setIsMaster(EnumIsMaster.MASTER.getCode());
+            adminUser.setStatus(EnumAdminUserStatus.NORMAL.getCode());
+            this.adminUserService.createSecondDealerUser(adminUser);
+
             final SecondLevelDealerAddResponse secondLevelDealerAddResponse = new SecondLevelDealerAddResponse();
             secondLevelDealerAddResponse.setDealerId(dealerId);
             return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "添加成功", secondLevelDealerAddResponse);
@@ -180,9 +206,9 @@ public class DealerController extends BaseController {
         if(StringUtils.isBlank(uniqueNameRequest.getLoginName())) {
             return CommonResponse.simpleResponse(-1, "登录名不能为空");
         }
-        final long loginNameCount = this.dealerService.getByLoginName(uniqueNameRequest.getLoginName());
-        if (loginNameCount > 0) {
-            return CommonResponse.simpleResponse(-1, "登录名已经存在");
+        final Optional<AdminUser> adminUserOptional = this.adminUserService.getAdminUserByNameAndType(uniqueNameRequest.getLoginName(), EnumAdminType.SECONDDEALER.getCode());
+        if(adminUserOptional.isPresent()) {
+            return CommonResponse.simpleResponse(-1, "登录名已存在");
         }
         return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "登录名不存在");
     }
@@ -204,7 +230,10 @@ public class DealerController extends BaseController {
         dealerDetailResponse.setId(dealer.getId());
         dealerDetailResponse.setMobile(dealer.getMobile());
         dealerDetailResponse.setName(dealer.getProxyName());
-        dealerDetailResponse.setLoginName(dealer.getLoginName());
+        Optional<AdminUser> adminUserOptional = this.adminUserService.getAdminUserByDealerIdAndIsMaster(dealerId,EnumIsMaster.MASTER.getCode());
+        if(adminUserOptional.isPresent()){
+            dealerDetailResponse.setLoginName(adminUserOptional.get().getUsername());
+        }
         dealerDetailResponse.setEmail(dealer.getEmail());
         dealerDetailResponse.setMarkCode(dealer.getMarkCode());
         dealerDetailResponse.setBelongProvinceCode(dealer.getBelongProvinceCode());
@@ -255,17 +284,13 @@ public class DealerController extends BaseController {
             if(StringUtils.isBlank(request.getLoginName())) {
                 return CommonResponse.simpleResponse(-1, "登录名不能为空");
             }
-            final long loginNameCount = this.dealerService.getByLoginNameUnIncludeNow(request.getLoginName(), request.getDealerId());
-            if (loginNameCount > 0) {
+            Optional<AdminUser> adminUserOptional = this.adminUserService.getAdminUserByNameAndTypeUnIncludeNow(request.getLoginName(),EnumAdminType.SECONDDEALER.getCode(),request.getDealerId());
+            if (adminUserOptional.isPresent()) {
                 return CommonResponse.simpleResponse(-1, "登录名已经存在");
             }
             if(StringUtils.isBlank(request.getEmail())) {
                 return CommonResponse.simpleResponse(-1, "联系邮箱不能为空");
             }
-//            if(!ValidateUtils.isEmail(request.getEmail())) {
-//                return CommonResponse.simpleResponse(-1, "联系邮箱格式错误");
-//            }
-
             if(StringUtils.isBlank(request.getBelongProvinceCode())) {
                 return CommonResponse.simpleResponse(-1, "所在省份编码不能为空");
             }
@@ -298,6 +323,16 @@ public class DealerController extends BaseController {
                 return CommonResponse.simpleResponse(-1, "开户手机号格式错误");
             }
             this.dealerService.updateSecondDealer(request);
+            //更改登录用户
+            AdminUser adminUser = new AdminUser();
+            adminUser.setEmail(request.getEmail());
+            adminUser.setUsername(request.getLoginName());
+            adminUser.setRealname(request.getBankAccountName());
+            adminUser.setMobile(AdminUserSupporter.encryptMobile(request.getMobile()));
+            adminUser.setIdCard(AdminUserSupporter.encryptIdenrity(request.getIdCard()));
+            adminUser.setDealerId(request.getDealerId());
+            adminUser.setIsMaster(EnumIsMaster.MASTER.getCode());
+            this.adminUserService.updateDealerUser(adminUser);
             return CommonResponse.builder4MapResult(CommonResponse.SUCCESS_CODE, "修改成功")
                     .addParam("dealerId", request.getDealerId()).build();
         }catch (Exception e){
@@ -325,6 +360,7 @@ public class DealerController extends BaseController {
             }
             request.setLoginPwd(DealerSupport.passwordDigest(request.getLoginPwd(),"JKM"));
             this.dealerService.updatePwd(request.getLoginPwd(),request.getDealerId());
+            adminUserService.updateDealerUserPwd(request.getLoginPwd(),request.getDealerId());
             return CommonResponse.builder4MapResult(CommonResponse.SUCCESS_CODE, "修改成功")
                     .addParam("dealerId", request.getDealerId()).build();
         }catch (Exception e){
@@ -502,7 +538,10 @@ public class DealerController extends BaseController {
         dealerDetailResponse.setId(dealer.getId());
         dealerDetailResponse.setMobile(dealer.getMobile());
         dealerDetailResponse.setName(dealer.getProxyName());
-        dealerDetailResponse.setLoginName(dealer.getLoginName());
+        Optional<AdminUser> adminUserOptional = this.adminUserService.getAdminUserByDealerIdAndIsMaster(super.getDealerId(),EnumIsMaster.MASTER.getCode());
+        if(adminUserOptional.isPresent()){
+            dealerDetailResponse.setLoginName(adminUserOptional.get().getUsername());
+        }
         dealerDetailResponse.setEmail(dealer.getEmail());
         dealerDetailResponse.setMarkCode(dealer.getMarkCode());
         dealerDetailResponse.setBelongProvinceCode(dealer.getBelongProvinceCode());

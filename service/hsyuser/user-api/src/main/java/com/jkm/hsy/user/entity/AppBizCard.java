@@ -16,6 +16,10 @@ public class AppBizCard {
     private Integer status;//状态：1正常 2 已删除
     private Date createTime;
     private Date updateTime;
+    private String branchCode;//联行号
+    private String branchDistrictCode;//联行地区代码
+
+    private String branchDistrictName;//联行地区
 
     public Long getId() {
         return id;
@@ -111,5 +115,29 @@ public class AppBizCard {
 
     public void setUpdateTime(Date updateTime) {
         this.updateTime = updateTime;
+    }
+
+    public String getBranchCode() {
+        return branchCode;
+    }
+
+    public void setBranchCode(String branchCode) {
+        this.branchCode = branchCode;
+    }
+
+    public String getBranchDistrictCode() {
+        return branchDistrictCode;
+    }
+
+    public String getBranchDistrictName() {
+        return branchDistrictName;
+    }
+
+    public void setBranchDistrictName(String branchDistrictName) {
+        this.branchDistrictName = branchDistrictName;
+    }
+
+    public void setBranchDistrictCode(String branchDistrictCode) {
+        this.branchDistrictCode = branchDistrictCode;
     }
 }

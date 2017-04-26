@@ -10,22 +10,12 @@ const path = require('path');
 const sourcemaps = require('gulp-sourcemaps');
 const babel = require('gulp-babel');
 const concat = require('gulp-concat');
+const uglify = require('gulp-uglify');
 const replace = require('gulp-replace');
 const rename = require("gulp-rename");
 
-gulp.task('js-dealer', () => {
-  return gulp.src('es6/dealer/*.js')
-    .pipe(sourcemaps.init())
-    .pipe(babel({
-      presets: ['es2015']
-    }))
-    .pipe(rename({suffix: ".min"}))
-    .pipe(sourcemaps.write('.'))
-    .pipe(gulp.dest('js/dealer/0.1.1'));
-});
-
-gulp.task('less-dealer', function () {
-  return gulp.src('less/**/dealer.less')
+gulp.task('less', function () {
+  return gulp.src('less/**/style.less')
     .pipe(less({
       paths: [path.join(__dirname, 'less', 'includes')]
     }))
@@ -33,38 +23,31 @@ gulp.task('less-dealer', function () {
     .pipe(gulp.dest('css'));
 });
 
-gulp.task('replace-dealer', function () {
-  return gulp.src('WEB-INF/jsp/dealer/*.jsp')
-    .pipe(replace('0.1.1', '0.1.1'))
-    .pipe(gulp.dest('WEB-INF/jsp/dealer'));
-});
-
-gulp.task('less-hss', function () {
-  return gulp.src('less/**/hss.less')
-    .pipe(less({
-      paths: [path.join(__dirname, 'less', 'includes')]
-    }))
-    .pipe(rename({basename: "style"}))
-    .pipe(gulp.dest('css'));
-});
-
-gulp.task('js-hss', () => {
-  return gulp.src('es6/hss/*.js')
-    .pipe(sourcemaps.init())
+gulp.task('es', () => {
+  return gulp.src([
+    'es6/**/require.js',
+    'es6/**/message.js',
+    'es6/**/http.js',
+    'es6/**/fastclick.js',
+    //!!以上顺序不得变更
+    'es6/**/keyboard.js',
+    'es6/**/*.js'
+  ]).pipe(sourcemaps.init())
     .pipe(babel({
       presets: ['es2015']
     }))
+    .pipe(concat('payment.2.0.1.js'))
+    .pipe(uglify())
     .pipe(rename({suffix: ".min"}))
     .pipe(sourcemaps.write('.'))
-    .pipe(gulp.dest('js/hss/0.1.19'));
+    .pipe(gulp.dest('js/2.0.1'));
 });
 
-gulp.task('replace-hss', function () {
+gulp.task('replace', function () {
   return gulp.src('WEB-INF/jsp/*.jsp')
     .pipe(replace('0.1.19', '0.1.19'))
     .pipe(gulp.dest('WEB-INF/jsp'));
 });
 
 // default 使用默认配置 开发时候使用
-gulp.task('build-hss', ['js-hss', 'less-hss', 'replace-hss']);
-gulp.task('build-dealer', ['js-dealer', 'less-dealer', 'replace-dealer']);
+gulp.task('build', ['es', 'less', 'replace']);

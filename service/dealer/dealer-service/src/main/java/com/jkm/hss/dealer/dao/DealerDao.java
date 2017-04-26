@@ -352,4 +352,10 @@ public interface DealerDao {
      * @return
      */
     Dealer getDealerByMarkCode(@Param("markCode") String markCode);
+
+    /**
+     * 所有代理商
+     * @return
+     */
+    List<Dealer> selectAllDealers();
 }

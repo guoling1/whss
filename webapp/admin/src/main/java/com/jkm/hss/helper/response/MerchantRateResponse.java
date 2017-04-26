@@ -17,4 +17,10 @@ public class MerchantRateResponse {
     private String entNet;
 
     private String remarks;
+
+    /**
+     * 结算时间
+     * @link com.jkm.hss.product.enums.EnumBalanceTimeType
+     */
+    private String merchantBalanceType;
 }

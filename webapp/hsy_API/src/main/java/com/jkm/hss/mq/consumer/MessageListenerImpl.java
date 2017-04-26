@@ -1,16 +1,9 @@
 package com.jkm.hss.mq.consumer;
 
-import com.alibaba.fastjson.JSONObject;
 import com.aliyun.openservices.ons.api.Action;
 import com.aliyun.openservices.ons.api.ConsumeContext;
 import com.aliyun.openservices.ons.api.Message;
 import com.aliyun.openservices.ons.api.MessageListener;
-import com.google.common.base.Optional;
-import com.google.common.base.Preconditions;
-import com.jkm.hss.bill.entity.Order;
-import com.jkm.hss.bill.enums.EnumSettleStatus;
-import com.jkm.hss.bill.service.OrderService;
-import com.jkm.hss.mq.config.MqConfig;
 import com.jkm.hss.settle.service.AccountSettleAuditRecordService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,8 +15,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 @Slf4j
 public class MessageListenerImpl implements MessageListener {
 
-    @Autowired
-    private OrderService orderService;
     @Autowired
     @Qualifier("accountSettleAuditRecordService")
     private AccountSettleAuditRecordService accountSettleAuditRecordService;
@@ -39,15 +30,10 @@ public class MessageListenerImpl implements MessageListener {
         log.info("Receive message, Topic is: [{}], tag is: [{}] MsgId is: [{}]", message.getTopic(),
                 message.getTag(), message.getMsgID());
         try {
-//            final JSONObject body = JSONObject.parseObject(new String(message.getBody(),"UTF-8"));
-//            if (MqConfig.POUNDAGE_SETTLE.equals(message.getTag())) {
-//                log.info("消费消息--订单[{}]， 手续费结算", body.getString("orderNo"));
-//                final String orderNo = body.getString("orderNo");
-//                this.accountSettleAuditRecordService.poundageSettle(orderNo);
-//            }
+
         } catch (Throwable e) {
-            log.info("consume message error, Topic is: [{}], tag is: [{}] MsgId is: [{}]", message.getTopic(),
-                    message.getTag(), message.getMsgID());
+            log.info("consume message error, Topic is: [{}], tag is: [{}] MsgId is: [{}] key is [{}]", message.getTopic(),
+                    message.getTag(), message.getMsgID(), message.getKey());
         }
         //如果想测试消息重投的功能,可以将Action.CommitMessage 替换成Action.ReconsumeLater
         return Action.CommitMessage;

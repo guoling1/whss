@@ -5,11 +5,6 @@ import com.aliyun.openservices.ons.api.Action;
 import com.aliyun.openservices.ons.api.ConsumeContext;
 import com.aliyun.openservices.ons.api.Message;
 import com.aliyun.openservices.ons.api.MessageListener;
-import com.google.common.base.Optional;
-import com.google.common.base.Preconditions;
-import com.jkm.hss.bill.entity.Order;
-import com.jkm.hss.bill.enums.EnumSettleStatus;
-import com.jkm.hss.bill.service.OrderService;
 import com.jkm.hss.mq.config.MqConfig;
 import com.jkm.hss.settle.service.AccountSettleAuditRecordService;
 import lombok.extern.slf4j.Slf4j;
@@ -22,8 +17,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 @Slf4j
 public class MessageListenerImpl implements MessageListener {
 
-    @Autowired
-    private OrderService orderService;
     @Autowired
     @Qualifier("accountSettleAuditRecordService")
     private AccountSettleAuditRecordService accountSettleAuditRecordService;
@@ -39,15 +32,17 @@ public class MessageListenerImpl implements MessageListener {
         log.info("Receive message, Topic is: [{}], tag is: [{}] MsgId is: [{}]", message.getTopic(),
                 message.getTag(), message.getMsgID());
         try {
+
             final JSONObject body = JSONObject.parseObject(new String(message.getBody(),"UTF-8"));
             if (MqConfig.NORMAL_SETTLE.equals(message.getTag())) {
                 log.info("消费消息--结算审核记录[{}]， 结算", body.getLong("recordId"));
                 final long recordId = body.getLong("recordId");
-                this.accountSettleAuditRecordService.normalSettle(recordId);
+                this.accountSettleAuditRecordService.settleImpl(recordId);
             }
         } catch (Throwable e) {
             log.info("consume message error, Topic is: [{}], tag is: [{}] MsgId is: [{}]", message.getTopic(),
                     message.getTag(), message.getMsgID());
+            log.error("消费消息异常", e);
         }
         //如果想测试消息重投的功能,可以将Action.CommitMessage 替换成Action.ReconsumeLater
         return Action.CommitMessage;

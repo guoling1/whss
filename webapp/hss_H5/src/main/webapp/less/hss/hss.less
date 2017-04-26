@@ -2292,12 +2292,17 @@ input:focus {
           }
           &.big {
             width: 30%;
+            text-align: left;
+          }
+          &.right {
+            text-align: right;
+            padding-right: 20px;
           }
           span {
             display: inline-block;
             width: 14px;
             height: 14px;
-            margin-left: 5px;
+            margin-left: 2px;
             background: url("../assets/channel-q.png") no-repeat center;
             background-size: 14px 14px;
             transform: translate3d(0, 2px, 0);
@@ -2311,12 +2316,12 @@ input:focus {
           color: #5a5a5a;
           .preferential {
             display: inline-block;
-            width: 13px;
-            height: 13px;
+            width: 30px;
+            height: 14px;
             background: url("../assets/preferential.png") no-repeat center;
-            background-size: 13px 13px;
+            background-size: 30px 14px;
             margin-left: 3px;
-            transform: translate3d(0, 1px, 0);
+            transform: translate3d(0, 2px, 0);
           }
           &.small {
             width: 20%;
@@ -2327,12 +2332,17 @@ input:focus {
           &.name {
             color: #222;
             font-weight: bold;
-            text-overflow: ellipsis;
+            text-align: left;
           }
           &.dis {
             color: #b0b0b0;
           }
+          &.preferential {
+            color: #e78034;
+          }
           &.right {
+            text-align: right;
+            padding-right: 20px;
             background: url("../assets/channel-right.png") no-repeat center right;
             background-size: 6px 10px;
           }

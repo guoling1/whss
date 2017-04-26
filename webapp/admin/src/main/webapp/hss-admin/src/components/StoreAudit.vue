@@ -304,7 +304,7 @@
             <el-table :data="rateInfo" border style="width: 100%">
               <el-table-column prop="channelName" label="通道名称"></el-table-column>
               <el-table-column prop="merchantRate" label="支付结算手续费"></el-table-column>
-              <el-table-column prop="time" label="结算时间"></el-table-column>
+              <el-table-column prop="merchantBalanceType" label="结算时间"></el-table-column>
               <el-table-column prop="withdrawMoney" label="提现手续费"></el-table-column>
               <el-table-column prop="entNet" label="商户入网状态"></el-table-column>
               <el-table-column prop="remarks" label="商户入网备注信息"></el-table-column>

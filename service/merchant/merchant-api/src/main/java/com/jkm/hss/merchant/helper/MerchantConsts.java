@@ -87,5 +87,17 @@ public class MerchantConsts {
         @Key("merchant.in")
         @DefaultValue("")
         String merchantIN();
+
+        @Key("merchant.baseInfo.reg")
+        @DefaultValue("")
+        String merchantBaseInfoReg();
+
+        @Key("merchant.bind.channel")
+        @DefaultValue("")
+        String merchantBindChannel();
+
+        @Key("merchant.update.channel")
+        @DefaultValue("")
+        String merchantUpdateChannel();
     }
 }

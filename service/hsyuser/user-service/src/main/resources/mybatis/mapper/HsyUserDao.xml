@@ -70,6 +70,7 @@
             <if test="fastRate!=null">FASTRATE=#{fastRate},</if>
             <if test="parentID!=null">PARENTID=#{parentID},</if>
             <if test="roleTemp!=null">ROLETEMP=#{roleTemp},</if>
+            <if test="contractID!=null and contractID!=''">CONTRACTID=#{contractID},</if>
             <if test="createTime!=null">CREATETIME=#{createTime},</if>
             <if test="updateTime!=null">UPDATETIME=#{updateTime}</if>
         </set> where CELLPHONE=#{cellphone}
@@ -98,6 +99,7 @@
             <if test="fastRate!=null">FASTRATE=#{fastRate},</if>
             <if test="parentID!=null">PARENTID=#{parentID},</if>
             <if test="roleTemp!=null">ROLETEMP=#{roleTemp},</if>
+            <if test="contractID!=null and contractID!=''">CONTRACTID=#{contractID},</if>
             <if test="createTime!=null">CREATETIME=#{createTime},</if>
             <if test="updateTime!=null">UPDATETIME=#{updateTime}</if>
         </set> where ID=#{id}
@@ -206,4 +208,7 @@
         order by UPDATETIME desc
     </select>
 
+    <update id="updateHxbsStatus">
+        update app_au_user set HXBSTATUS=#{status},HXBREMARKS=#{remarks} where ID=#{uid}
+    </update>
 </mapper>

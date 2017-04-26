@@ -8,7 +8,7 @@
   <meta name="viewport"
         content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
   <meta name="format-detection" content="telephone=no"/>
-  <title>好收银</title>
+  <title>钱包加加</title>
   <link rel="stylesheet" href="http://static.jinkaimen.cn/hss/css/style.2.0.1.css">
   <link rel="stylesheet" href="http://static.jinkaimen.cn/weui/weui.css">
 </head>
@@ -35,7 +35,7 @@
   <div class="keyboard" id="keyboard">
     <div class="copyright flexBox">
       <span class="line"></span>
-      <span class="word">由好收银提供技术支持</span>
+      <span class="word">由钱包加加提供技术支持</span>
       <span class="line"></span>
     </div>
     <div class="keys">
@@ -65,10 +65,12 @@
 
 </body>
 <script>
-  var pageDate = {
-    merchantId: ${mid}
+  var pageData = {
+    memberId: '${openId}',
+    merchantId: '${mid}'
   }
 </script>
-<script src="http://static.jinkaimen.cn/vendor/vendor.1.0.1.min.js"></script>
-<script src="http://static.jinkaimen.cn/hss/2.0.1/payment.min.js"></script>
+<script src="https://a.alipayobjects.com/g/h5-lib/alipayjsapi/0.2.4/alipayjsapi.inc.min.js"></script>
+<script type="text/javascript" src="https://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+<script src="/js/2.0.1/payment.2.0.1.min.js"></script>
 </html>
