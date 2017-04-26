@@ -370,9 +370,6 @@ public class CalculateServiceImpl implements CalculateService {
             //金开门利润 = 升级费 - 直推分润 - 间推分润 - 一级代理分润 - 二级代理分润
             BigDecimal productMoney = waitAmount.subtract(inDirectMoney).subtract(directMoney).subtract(firstMoney).subtract(secondMoney);
 
-            final PartnerShallProfitDetail detail = new PartnerShallProfitDetail();
-
-
             Map<String, Triple<Long, BigDecimal, String>> map = new HashMap<>();
             map.put("companyMoney", Triple.of(AccountConstants.JKM_ACCOUNT_ID, productMoney, "D0"));
             map.put("firstMoney", Triple.of(dealer.getAccountId(), firstMoney, "D0"));
