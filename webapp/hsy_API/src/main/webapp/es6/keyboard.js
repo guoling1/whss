@@ -154,7 +154,6 @@ _require.register("keyboard", (module, exports, _require, global) => {
           AlipayJSBridge.call("tradePay", {tradeNO: jsonData.tradeNO},
             function (result) {
               if (result.resultCode == 9000 || result.resultCode == 8000) {
-                alert('跳转');
                 window.location.href = '/trade/success/' + jsonData.orderId;
               }
             });
