@@ -17,8 +17,8 @@
                 <el-table-column label="操作" min-width="100">
                   <template scope="scope">
                     <el-button type="text" @click="detail(scope.row.productId,scope.$index)">修改</el-button>
-                    <el-button type="text" @click="open(scope.row.id)" v-if="scope.row.recommend!=0">推荐</el-button>
-                    <el-button type="text" @click="close(scope.row.id)" v-if="scope.row.recommend==0">取消推荐</el-button>
+                    <el-button type="text" @click="open(scope.row.id)" v-if="scope.row.recommend==0">推荐</el-button>
+                    <el-button type="text" @click="close(scope.row.id)" v-if="scope.row.recommend!=0">取消推荐</el-button>
                   </template>
                 </el-table-column>
               </el-table>
