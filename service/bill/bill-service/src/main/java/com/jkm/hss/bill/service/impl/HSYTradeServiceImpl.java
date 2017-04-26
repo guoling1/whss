@@ -218,12 +218,12 @@ public class HSYTradeServiceImpl implements HSYTradeService {
     public Pair<Integer, String> receipt(final String totalAmount, final int channel, final long shopId, final String appId, final String memberId) {
         log.info("店铺[{}] 通过动态扫码， 支付一笔资金[{}]", shopId, totalAmount);
         final AppBizShop shop = this.hsyShopDao.findAppBizShopByID(shopId).get(0);
-        String channelCode;
-        if (EnumPayChannelSign.SYJ_ALIPAY.getId() == channel) {
-            channelCode = this.basicChannelService.selectCodeByChannelSign(channel, EnumMerchantPayType.MERCHANT_JSAPI);
-        } else {
-            channelCode = this.basicChannelService.selectCodeByChannelSign(channel, EnumMerchantPayType.MERCHANT_CODE);
-        }
+        final String channelCode = this.basicChannelService.selectCodeByChannelSign(channel, EnumMerchantPayType.MERCHANT_JSAPI);
+//        if (EnumPayChannelSign.SYJ_ALIPAY.getId() == channel) {
+//            channelCode = this.basicChannelService.selectCodeByChannelSign(channel, EnumMerchantPayType.MERCHANT_JSAPI);
+//        } else {
+//            channelCode = this.basicChannelService.selectCodeByChannelSign(channel, EnumMerchantPayType.MERCHANT_CODE);
+//        }
         final EnumPayChannelSign payChannelSign = EnumPayChannelSign.idOf(channel);
         final Order order = new Order();
         order.setOrderNo(SnGenerator.generateSn(EnumTradeType.PAY.getId()));

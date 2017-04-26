@@ -108,7 +108,7 @@ public enum EnumPayChannelSign {
     /**
      * 收银家zfb
      */
-    SYJ_ALIPAY(802, "syj_alipay", EnumPaymentChannel.ALIPAY, "收银家支付宝T1", EnumUpperChannel.SYJ, true, EnumBalanceTimeType.T1, false);
+    SYJ_ALIPAY(802, "syj_alipay", EnumPaymentChannel.ALIPAY, "收银家支付宝T1", EnumUpperChannel.SYJ, true, EnumBalanceTimeType.T1, true);
 
 
     private static final ImmutableMap<String, EnumPayChannelSign> STATUS_IMMUTABLE_MAP;
