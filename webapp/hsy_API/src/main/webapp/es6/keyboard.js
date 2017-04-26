@@ -151,8 +151,11 @@ _require.register("keyboard", (module, exports, _require, global) => {
         // 唤起支付宝支付
         let onAlipayJSBridge = function (jsonData) {
           //jsonData.channelNo
+          alert(jsonData.channelNo);
+          alert(typeof (jsonData.channelNo));
           AlipayJSBridge.call("tradePay", {tradeNO: jsonData.channelNo},
             function (result) {
+              alert(result);
               let data = JSON.stringify(result);
               if (data.resultCode == 9000 || data.resultCode == 8000) {
                 AlipayJSBridge.call('pushWindow', {
