@@ -174,9 +174,27 @@
                 </div>
               </el-col>
               <el-col :span="8">
-                <div class="grid-content bg-purple-light"></div>
+                <div class="grid-content bg-purple-light">
+                  <el-button type="text" @click="dealerMask = true">点击切换</el-button>
+                </div>
               </el-col>
             </el-row>
+            <!--切换代理-->
+            <el-dialog title="切换代理" v-model="dealerMask">
+              <el-form :label-position="right" label-width="150px">
+                <el-form-item label="切换对象：" width="120" style="margin-bottom: 0">
+                  <el-input style="width: 70%" size="small" v-model="dealerNo" placeholder="请输入一级代理编号，切换为金开门直属无需输入" maxlength="12"></el-input>
+                </el-form-item>
+                <el-form-item label="名称：" width="120" style="margin-bottom: 0">
+                  {{dealerName}}
+                </el-form-item>
+              </el-form>
+              <div slot="footer" class="dialog-footer" style="text-align: center">
+                <el-button @click="dealerMask = false" style="position: relative;top: -20px;">取 消</el-button>
+                <el-button @click="changeDealer" type="primary" style="position: relative;top: -20px;">确 定</el-button>
+                <div style="text-align: center;margin-bottom: 10px">切换成功后，立即生效，原商户费率信息不变</div>
+              </div>
+            </el-dialog>
           </div>
         </div>
         <div>
@@ -293,7 +311,10 @@
         },
         id: 0,
         isShow: true,
-        productId: ''
+        productId: '',
+        dealerMask:false,
+        dealerName:'',
+        dealerNo:''
       }
     },
     created: function () {
@@ -345,6 +366,21 @@
               this.$data.query.belongCityCode = this.$data.citys[i].code;
             }
           }
+        }
+      },
+      dealerNo:function (val, oldVal) {
+        if(val.length==12){
+          this.$http.post('/admin/dealer/getDealerByMarkCode',{markCode:val})
+            .then(res =>{
+              this.dealerName = res.data;
+            })
+            .catch(err =>{
+              this.$message({
+                showClose: true,
+                message: err.statusMessage,
+                type: 'error'
+              })
+            })
         }
       }
     },
@@ -442,7 +478,34 @@
               type: 'error'
             });
           })
-      }
+      },
+      changeDealer: function () {
+        this.loading = true;
+        this.$http.post('/admin/dealer/changeDealer',{
+          secondDealerId:this.$route.query.id,
+          markCode:this.dealerNo
+        })
+          .then(()=>{
+            this.$message({
+              showClose: true,
+              message: '更新代理商成功',
+              type: 'success'
+            });
+            this.dealerMask = false;
+            setTimeout(function () {
+              location.reload();
+            },200);
+            this.loading = false
+          })
+          .catch(err=>{
+            this.$message({
+              showClose: true,
+              message: err.statusMessage,
+              type: 'error'
+            })
+            this.loading = false
+          })
+      },
     },
     filters: {
       changeName: function (val) {
