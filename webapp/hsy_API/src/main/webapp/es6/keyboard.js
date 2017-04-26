@@ -155,13 +155,7 @@ _require.register("keyboard", (module, exports, _require, global) => {
             function (result) {
               let data = JSON.stringify(result);
               if (data.resultCode == 9000 || data.resultCode == 8000) {
-                AlipayJSBridge.call('pushWindow', {
-                  url: 'http://hsy.qianbaojiajia.com/trade/success/' + jsonData.orderId,
-                  param: {
-                    readTitle: true,
-                    showOptionMenu: false
-                  }
-                });
+                window.location.href = '/trade/success/' + jsonData.orderId;
               }
             });
         };
