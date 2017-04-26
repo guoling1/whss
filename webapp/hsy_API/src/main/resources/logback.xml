@@ -12,9 +12,9 @@
 
     <appender name="FILE_LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <Encoding>UTF-8</Encoding>
-        <File>${log.dir}/hss-mobile.log</File>
+        <File>${log.dir}/hsy-mobile.log</File>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <FileNamePattern>${log.dir}/bak/hss-mobile.%d{yyyy-MM-dd}.log.zip</FileNamePattern>
+            <FileNamePattern>${log.dir}/bak/hsy-mobile.%d{yyyy-MM-dd}.log.zip</FileNamePattern>
         </rollingPolicy>
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
             <Pattern>${normal-pattern}</Pattern>
@@ -24,9 +24,9 @@
 
     <appender name="JKM_LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <Encoding>UTF-8</Encoding>
-        <File>${log.dir}/hss-mobile_jkm.log</File>
+        <File>${log.dir}/hsy-mobile_jkm.log</File>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <FileNamePattern>${log.dir}/bak/hss-mobile_jkm.%d{yyyy-MM-dd}.log.zip</FileNamePattern>
+            <FileNamePattern>${log.dir}/bak/hsy-mobile_jkm.%d{yyyy-MM-dd}.log.zip</FileNamePattern>
         </rollingPolicy>
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
             <Pattern>${normal-pattern}</Pattern>
