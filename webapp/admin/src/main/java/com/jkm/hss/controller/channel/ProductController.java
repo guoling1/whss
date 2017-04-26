@@ -219,6 +219,9 @@ public class ProductController extends BaseController {
     @ResponseBody
     @RequestMapping(value = "/recommend", method = RequestMethod.POST)
     public CommonResponse recommend(@RequestBody final ProductChannelGateway request){
+        if (("").equals(request.getId())){
+            return CommonResponse.simpleResponse(-1, "fail");
+        }
         try{
             this.productChannelGatewayService.recommend(request);
             return CommonResponse.simpleResponse(1, "已成功推荐");
