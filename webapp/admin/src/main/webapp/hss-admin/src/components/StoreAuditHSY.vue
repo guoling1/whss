@@ -188,12 +188,22 @@
               <el-table-column prop="status" label="产品开通状态" ></el-table-column>
               <el-table-column prop="msg" label="入网备注信息" ></el-table-column>
               <el-table-column prop="status" label="产品开通状态">
+              <el-table-column prop="status" label="入网状态" >
                 <template scope="scope">
+                  <span v-if="scope.row.status==0">未入网</span>
                   <span v-if="scope.row.status==1">成功</span>
                   <span v-if="scope.row.status==2">失败</span>
                 </template>
               </el-table-column>
               <el-table-column prop="msg" label="入网备注信息" ></el-table-column>
+              <el-table-column prop="product" label="产品开通状态">
+                <template scope="scope">
+                  <span v-if="scope.row.product==0">未开通</span>
+                  <span v-if="scope.row.product==1">成功</span>
+                  <span v-if="scope.row.product==2">失败</span>
+                </template>
+              </el-table-column>
+              <el-table-column prop="proMsg" label="产品开通信息" ></el-table-column>
             </el-table>
           </template>
         </div>
@@ -300,13 +310,21 @@
           rate:'',
           time:'T1',
           money:'0元/笔',
-          status:'--',
-          msg:'--'
+          status:"",
+          product:'--',
+          msg:'--',
+          proMsg:'',
         },{
           name:'微信',
           rate:'',
           time:'T1',
           money:'0元/笔',
+          status:"",
+          product:'--',
+          msg:'--',
+          proMsg:''
+        }],
+        status:''
           status:'--',
           msg:'--'
         }]
@@ -323,8 +341,11 @@
           this.$data.msg = res.data;
           this.tableData[1].rate = parseFloat(res.data.weixinRate * 100).toFixed(2) + '%';
           this.tableData[0].rate = parseFloat(res.data.alipayRate * 100).toFixed(2) + '%';
-          this.tableData[0].status = this.tableData[1].status = res.data.hxbOpenProduct;
+          this.tableData[0].product = this.tableData[1].product = res.data.hxbOpenProduct;
+          this.tableData[0].status = this.tableData[1].status = res.data.hxbStatus;
           this.tableData[0].msg = this.tableData[1].msg = res.data.hxbRemarks;
+          this.tableData[0].proMsg = this.tableData[1].proMsg = res.data.hxbOpenproductRemarks;
+
         },function (err) {
           this.$message({
             showClose: true,
