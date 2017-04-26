@@ -161,7 +161,7 @@ public class TradeController extends BaseController {
             final Order order = orderOptional.get();
             model.addAttribute("sn", order.getSn());
             model.addAttribute("money", order.getRealPayAmount().toPlainString());
-            return "/success.jsp";
+            return "/success";
         }
     }
 
