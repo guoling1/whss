@@ -2520,7 +2520,7 @@ public class DealerServiceImpl implements DealerService {
      * @param firstDealerId
      */
     @Override
-    public void updateBelong(long secondDealerId, long firstDealerId) {
-
+    public int updateBelong(long secondDealerId, long firstDealerId) {
+        return this.dealerDao.updateBelong(secondDealerId,firstDealerId);
     }
 }

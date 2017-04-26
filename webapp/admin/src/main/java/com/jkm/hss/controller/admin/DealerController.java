@@ -1069,6 +1069,7 @@ public class DealerController extends BaseController {
         return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "修改成功");
     }
 
+
     /**
      * 二级代理切代理
      * @param dealerMarkCodeRequest
@@ -1082,17 +1083,17 @@ public class DealerController extends BaseController {
         }
         Optional<Dealer> dealerOptional = dealerService.getDealerByMarkCode(dealerMarkCodeRequest.getMarkCode());
         if(!dealerOptional.isPresent()){
-            return CommonResponse.simpleResponse(-1, "该一级代理商不存在");
+            return CommonResponse.simpleResponse(-1, "要切到的一级代理商不存在");
         }
-
-//        if(StringUtils.isEmpty(adminUserRequest.getPassword())){
-//            return CommonResponse.simpleResponse(-1, "请输入密码");
-//        }
-//        Optional<AdminUser> adminUserOptional = this.adminUserService.getAdminUserById(adminUserRequest.getId());
-//        if(!adminUserOptional.isPresent()){
-//            return CommonResponse.simpleResponse(-1, "登录名不存在");
-//        }
-//        adminUserService.updateDealerUserPwdById(DealerSupport.passwordDigest(adminUserRequest.getPassword(),"JKM"),adminUserRequest.getId());
-        return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "修改成功");
+        Optional<Dealer> dealerOptional2 = dealerService.getById(dealerMarkCodeRequest.getSecondDealerId());
+        if(!dealerOptional2.isPresent()){
+            return CommonResponse.simpleResponse(-1, "该二级代理商不存在");
+        }
+        int returnCount = dealerService.updateBelong(dealerMarkCodeRequest.getSecondDealerId(),dealerOptional.get().getId());
+        if(returnCount>0){
+            return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "切换成功");
+        }else{
+            return CommonResponse.simpleResponse(-1, "切换失败");
+        }
     }
 }

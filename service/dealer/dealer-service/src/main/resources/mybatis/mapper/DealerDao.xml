@@ -712,4 +712,11 @@
     <select id="selectAllDealers" resultType="com.jkm.hss.dealer.entity.Dealer">
         SELECT * FROM tb_dealer
     </select>
+
+    <update id="updateBelong">
+        UPDATE tb_dealer
+        SET
+        first_dealer_id = #{firstDealerId}
+        WHERE id = #{secondDealerId}
+    </update>
 </mapper>
