@@ -152,7 +152,7 @@ public class TradeController extends BaseController {
      * @param id
      * @return
      */
-    @RequestMapping(value = "success/${id}")
+    @RequestMapping(value = "success/{id}")
     public String paySuccessPage(final Model model, @PathVariable("id") long id) {
         final Optional<Order> orderOptional = this.orderService.getById(id);
         if(!orderOptional.isPresent()){
