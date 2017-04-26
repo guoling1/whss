@@ -38,6 +38,7 @@ const StoreAudit = r => require.ensure([], () => r(require('components/StoreAudi
 const StoreNotice = r => require.ensure([], () => r(require('components/StoreNotice')), 'group-record');
 const StoreNoticeDet = r => require.ensure([], () => r(require('components/StoreNoticeDet')), 'group-record');
 const StoreAuditHSY = r => require.ensure([], () => r(require('components/StoreAuditHSY')), 'group-record');
+const DataHistory = r => require.ensure([], () => r(require('components/DataHistory')), 'group-record');
 //代理
 const AgentListSec = r => require.ensure([], () => r(require('components/AgentListSec')), 'group-record');
 const AgentListFir = r => require.ensure([], () => r(require('components/AgentListFir')), 'group-record');
@@ -99,6 +100,11 @@ let routes = [
     redirect: '/admin/record/home',
     component: AAHome,
     children: [
+      {
+        path: 'dataHistory',
+        name: 'DataHistory',
+        component: DataHistory
+      },
       {
         path: 'template',
         name: 'Template',
