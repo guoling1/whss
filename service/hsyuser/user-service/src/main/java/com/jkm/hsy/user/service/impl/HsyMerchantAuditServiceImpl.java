@@ -90,15 +90,15 @@ public class HsyMerchantAuditServiceImpl implements HsyMerchantAuditService {
     public HsyMerchantAuditResponse getDetails(Long id) {
 
         HsyMerchantAuditResponse res = hsyMerchantAuditDao.getDetails(id);
-        if(res.getHxbStatus()!=null&&res.getHxbStatus()== EnumHxbsStatus.PASS.getId()){
-            res.setHxbStatus(EnumHxbsStatus.PASS.getId());
+        if(res.getHxbStatus()==null||"".equals(res.getHxbStatus())){
+            res.setHxbStatus(0);
         }else{
-            res.setHxbStatus(EnumHxbsStatus.UNPASS.getId());
+            res.setHxbStatus(res.getHxbStatus());
         }
-        if(res.getHxbOpenProduct()!=null&&res.getHxbOpenProduct()== EnumHxbsOpenProductStatus.PASS.getId()){
-            res.setHxbOpenProduct(EnumHxbsOpenProductStatus.PASS.getId());
+        if(res.getHxbOpenProduct()==null||"".equals(res.getHxbOpenProduct())){
+            res.setHxbOpenProduct(0);
         }else{
-            res.setHxbOpenProduct(EnumHxbsOpenProductStatus.UNPASS.getId());
+            res.setHxbOpenProduct(res.getHxbOpenProduct());
         }
         if (res!=null){
             if (res.getStatus()==1){
