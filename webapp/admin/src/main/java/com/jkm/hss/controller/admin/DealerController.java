@@ -1068,4 +1068,26 @@ public class DealerController extends BaseController {
         adminUserService.updateDealerUserPwdById(DealerSupport.passwordDigest(adminUserRequest.getPassword(),"JKM"),adminUserRequest.getId());
         return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "修改成功");
     }
+
+    /**
+     * 二级代理切代理
+     * @param dealerMarkCodeRequest
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/changeDealer", method = RequestMethod.POST)
+    public CommonResponse changeDealer (@RequestBody DealerMarkCodeRequest dealerMarkCodeRequest) {
+//        if(dealerMarkCodeRequest.getMarkCode()==null||"".equals(dealerMarkCodeRequest.getMarkCode())){
+//            return CommonResponse.simpleResponse(-1, "请");
+//        }
+//        if(StringUtils.isEmpty(adminUserRequest.getPassword())){
+//            return CommonResponse.simpleResponse(-1, "请输入密码");
+//        }
+//        Optional<AdminUser> adminUserOptional = this.adminUserService.getAdminUserById(adminUserRequest.getId());
+//        if(!adminUserOptional.isPresent()){
+//            return CommonResponse.simpleResponse(-1, "登录名不存在");
+//        }
+//        adminUserService.updateDealerUserPwdById(DealerSupport.passwordDigest(adminUserRequest.getPassword(),"JKM"),adminUserRequest.getId());
+        return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "修改成功");
+    }
 }
