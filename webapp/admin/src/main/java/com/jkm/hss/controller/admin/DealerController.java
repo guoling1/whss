@@ -1077,9 +1077,14 @@ public class DealerController extends BaseController {
     @ResponseBody
     @RequestMapping(value = "/changeDealer", method = RequestMethod.POST)
     public CommonResponse changeDealer (@RequestBody DealerMarkCodeRequest dealerMarkCodeRequest) {
-//        if(dealerMarkCodeRequest.getMarkCode()==null||"".equals(dealerMarkCodeRequest.getMarkCode())){
-//            return CommonResponse.simpleResponse(-1, "请");
-//        }
+        if(dealerMarkCodeRequest.getMarkCode()==null||"".equals(dealerMarkCodeRequest.getMarkCode())){
+            return CommonResponse.simpleResponse(-1, "请输入一代编号");
+        }
+        Optional<Dealer> dealerOptional = dealerService.getDealerByMarkCode(dealerMarkCodeRequest.getMarkCode());
+        if(!dealerOptional.isPresent()){
+            return CommonResponse.simpleResponse(-1, "该一级代理商不存在");
+        }
+
 //        if(StringUtils.isEmpty(adminUserRequest.getPassword())){
 //            return CommonResponse.simpleResponse(-1, "请输入密码");
 //        }

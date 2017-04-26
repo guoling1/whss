@@ -546,4 +546,9 @@ public interface DealerService {
      * @return
      */
     int dealerMerchantSecondCount(QueryMerchantRequest req);
+
+    /**
+     *二代切换一代
+     */
+    void updateBelong(long secondDealerId,long firstDealerId);
 }
