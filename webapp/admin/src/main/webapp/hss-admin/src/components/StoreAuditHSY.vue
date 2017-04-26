@@ -177,7 +177,7 @@
       <div class="box box-primary" style="overflow: hidden">
         <span class="lead">商户费率信息</span>
         <el-button type="text" @click="isReenter = true" v-if="status==1">重新入网</el-button>
-        <el-button type="text" @click="isReject = true" v-if="status==1">驳回充填</el-button>
+        <el-button type="text" @click="isReject = true" v-if="status==1">驳回重填</el-button>
         <div style="width: 70%;margin: 0 0 15px 15px;">
           <template>
             <el-table :data="tableData" border style="width: 100%">
@@ -379,7 +379,7 @@
           this.isReject = false;
           this.$message({
             showClose: true,
-            message: '驳回充填成功',
+            message: '驳回重填成功',
             type: 'success'
           })
         }, function (err) {
