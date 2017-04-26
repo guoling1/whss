@@ -49,8 +49,8 @@
             </li>
           </ul>
           <!--表格-->
-          <el-table v-loading.body="loading" height="650" style="font-size: 12px;margin-bottom: 15px;" :data="records" border>
-            <el-table-column width="62" label="序号" fixed="left" type="index"></el-table-column>
+          <el-table v-loading.body="loading" style="font-size: 12px;margin-bottom: 15px;" :data="records" border>
+            <el-table-column width="62" label="序号" type="index"></el-table-column>
             <el-table-column label="提现单号" min-width="112px">
               <template scope="scope">
                 <span class="td" :data-clipboard-text="scope.row.orderNo" type="text" size="small" style="cursor: pointer" title="点击复制">{{scope.row.orderNo|changeHide}}</span>
