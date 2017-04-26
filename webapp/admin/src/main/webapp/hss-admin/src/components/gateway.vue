@@ -17,6 +17,8 @@
                 <el-table-column label="操作" min-width="100">
                   <template scope="scope">
                     <el-button type="text" @click="detail(scope.row.productId,scope.$index)">修改</el-button>
+                    <el-button type="text" @click="open(scope.row.productId,scope.$index)" v-if="scope.row.recommend!=0">推荐</el-button>
+                    <el-button type="text" @click="close(scope.row.productId,scope.$index)" v-if="scope.row.recommend==0">取消推荐</el-button>
                   </template>
                 </el-table-column>
               </el-table>
@@ -27,6 +29,35 @@
             <!--</li>-->
           </ul>
         </div>
+        <div class="box box-info mask el-message-box" v-if="isRecommend">
+          <div class="maskCon">
+            <div class="head">
+              <div class="title">提示</div>
+              <i class="el-icon-close" @click="isRecommend=false"></i>
+            </div>
+            <div class="body">
+              <div>确认推荐该通道吗？</div>
+            </div>
+            <div class="foot">
+              <a href="javascript:void(0)" @click="isRecommend=false" class="el-button el-button--default">取消</a>
+              <a @click="confirm('1')" class="el-button el-button-default el-button--primary">确定</a>
+            </div>
+          </div>
+        </div>
+        <div class="box box-info mask el-message-box" v-if="isNoRecommend">
+          <div class="maskCon">
+            <div class="head">
+              <div class="title">提示</div>
+              <i class="el-icon-close" @click="isNoRecommend=false"></i>
+            </div>
+            <div class="body">
+              <div>确认取消推荐该通道吗？</div>
+            </div>
+            <div class="foot">
+              <a href="javascript:void(0)" @click="isNoRecommend=false" class="el-button el-button--default">取消</a>
+              <a @click="confirm('')" class="el-button el-button-default el-button--primary">确定</a>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -37,6 +68,8 @@
     data(){
       return {
         records: [],
+        isRecommend:false,
+        isNoRecommend:false,
       }
     },
     created: function () {
@@ -90,6 +123,33 @@
       },
       detail: function (productId, index) {
         this.$router.push({path:'/admin/record/gatewayAdd',query:{productId:productId,index:index}})
+      },
+      open: function () {
+        this.isRecommend = true
+      },
+      close: function () {
+        this.isNoRecommend = true
+      },
+      confirm: function (val) {
+        this.$http.post('/admin/product/recommend',{recommend:val})
+          .then(res =>{
+            this.isNoRecommend = false;
+            this.isRecommend = false;
+            this.$message({
+              showClose: true,
+              message: '操作成功',
+              type: 'success'
+            });
+          })
+          .catch(err =>{
+            this.isNoRecommend = false;
+            this.isRecommend = false;
+            this.$message({
+              showClose: true,
+              message: err.statusMessage,
+              type: 'error'
+            });
+          })
       }
     }
   }
@@ -109,5 +169,74 @@
   }
   .btn{
     font-size: 12px;
+  }
+  .mask{
+    z-index: 2020;
+    position: fixed;
+    top:0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.45);
+    .maskCon{
+      margin: 250px auto;
+      text-align: left;
+      vertical-align: middle;
+      background-color: #fff;
+      width: 420px;
+      border-radius: 3px;
+      font-size: 16px;
+      overflow: hidden;
+      -webkit-backface-visibility: hidden;
+      backface-visibility: hidden;
+      .head{
+        position: relative;
+        padding: 20px 20px 0;
+        .title{
+          padding-left: 0;
+          margin-bottom: 0;
+          font-size: 16px;
+          font-weight: 700;
+          height: 18px;
+          color: #333;
+        }
+        i{
+          font-family: element-icons!important;
+          speak: none;
+          font-style: normal;
+          font-weight: 400;
+          font-variant: normal;
+          text-transform: none;
+          vertical-align: baseline;
+          display: inline-block;
+          -webkit-font-smoothing: antialiased;
+          position: absolute;
+          top: 19px;
+          right: 20px;
+          color: #999;
+          cursor: pointer;
+          line-height: 20px;
+          text-align: center;
+        }
+      }
+      .body{
+        padding: 30px 20px;
+        color: #48576a;
+        font-size: 14px;
+        position: relative;
+        div{
+          margin: 0;
+          line-height: 1.4;
+          font-size: 14px;
+          color: #48576a;
+          font-weight: 400;
+        }
+      }
+      .foot{
+        padding: 10px 20px 15px;
+        text-align: right;
+      }
+    }
+
   }
 </style>
