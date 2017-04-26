@@ -9,6 +9,7 @@ import com.jkm.hss.admin.service.QRCodeService;
 import com.jkm.hss.controller.BaseController;
 import com.jkm.hss.helper.ApplicationConsts;
 import com.jkm.hss.merchant.helper.WxConstants;
+import com.jkm.hsy.user.constant.AppConstant;
 import com.jkm.hsy.user.dao.HsyShopDao;
 import com.jkm.hsy.user.entity.AppBizShop;
 import lombok.extern.slf4j.Slf4j;
@@ -67,6 +68,8 @@ public class CodeController extends BaseController {
             log.info("code[{}] is activate", code);
             List<AppBizShop> appBizShops = hsyShopDao.findAppBizShopByID(merchantId);
             Preconditions.checkState(appBizShops!=null&&appBizShops.size()>0, "商户不存在");
+            Preconditions.checkState(appBizShops.get(0).getStatus()!=null, "商户未通过审核");
+            Preconditions.checkState(appBizShops.get(0).getStatus()==AppConstant.SHOP_STATUS_NORMAL, "商户未通过审核");
             String merchantName = hsyShopDao.findShopNameByID(merchantId);
             model.addAttribute("merchantId", merchantId);
             model.addAttribute("name", merchantName);
