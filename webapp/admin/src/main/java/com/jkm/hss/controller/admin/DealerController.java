@@ -38,6 +38,7 @@ import com.jkm.hss.dealer.service.DealerService;
 import com.jkm.hss.dealer.service.DealerUpgerdeRateService;
 import com.jkm.hss.helper.ApplicationConsts;
 import com.jkm.hss.helper.request.FirstLevelDealerFindRequest;
+import com.jkm.hss.helper.request.RevokeQrCodeRequest;
 import com.jkm.hss.helper.response.*;
 import com.jkm.hss.product.entity.BasicChannel;
 import com.jkm.hss.product.entity.Product;
@@ -1096,4 +1097,30 @@ public class DealerController extends BaseController {
             return CommonResponse.simpleResponse(-1, "切换失败");
         }
     }
+
+    /**
+     * 二级代理切代理
+     * @param revokeQrCodeRequest
+     * @return
+     */
+//    @ResponseBody
+//    @RequestMapping(value = "/revokeQrCode", method = RequestMethod.POST)
+//    public CommonResponse revokeQrCode (@RequestBody RevokeQrCodeRequest revokeQrCodeRequest) {
+//        Optional<Product> productOptional = productService.selectByType(revokeQrCodeRequest.getSysType());
+//
+//        Optional<Dealer> dealerOptional = dealerService.getDealerByMarkCode(dealerMarkCodeRequest.getMarkCode());
+//        if(!dealerOptional.isPresent()){
+//            return CommonResponse.simpleResponse(-1, "要切到的一级代理商不存在");
+//        }
+//        Optional<Dealer> dealerOptional2 = dealerService.getById(dealerMarkCodeRequest.getSecondDealerId());
+//        if(!dealerOptional2.isPresent()){
+//            return CommonResponse.simpleResponse(-1, "该二级代理商不存在");
+//        }
+//        int returnCount = dealerService.updateBelong(dealerMarkCodeRequest.getSecondDealerId(),dealerOptional.get().getId());
+//        if(returnCount>0){
+//            return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "切换成功");
+//        }else{
+//            return CommonResponse.simpleResponse(-1, "切换失败");
+//        }
+//    }
 }

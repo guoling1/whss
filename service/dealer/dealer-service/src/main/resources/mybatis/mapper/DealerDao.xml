@@ -716,7 +716,7 @@
     <update id="updateBelong">
         UPDATE tb_dealer
         SET
-        first_dealer_id = #{firstDealerId}
+        first_level_dealer_id = #{firstDealerId}
         WHERE id = #{secondDealerId}
     </update>
 </mapper>
