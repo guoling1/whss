@@ -153,10 +153,7 @@ _require.register("keyboard", (module, exports, _require, global) => {
           //jsonData.channelNo
           AlipayJSBridge.call("tradePay", {tradeNO: jsonData.tradeNO},
             function (result) {
-              let data = JSON.stringify(result);
-              alert(data);
-              alert(data.resultCode);
-              if (data.resultCode == 9000 || data.resultCode == 8000) {
+              if (result.resultCode == 9000 || result.resultCode == 8000) {
                 alert('跳转');
                 window.location.href = '/trade/success/' + jsonData.orderId;
               }
