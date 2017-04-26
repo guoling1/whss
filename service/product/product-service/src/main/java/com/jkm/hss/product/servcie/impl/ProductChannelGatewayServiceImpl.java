@@ -1,6 +1,5 @@
 package com.jkm.hss.product.servcie.impl;
 
-import com.google.common.base.Optional;
 import com.jkm.hss.product.dao.ProductChannelGatewayDao;
 import com.jkm.hss.product.entity.ProductChannelGateway;
 import com.jkm.hss.product.enums.EnumGatewayType;
@@ -51,6 +50,11 @@ public class ProductChannelGatewayServiceImpl implements ProductChannelGatewaySe
     public void update(ProductChannelGateway productChannelGateway) {
 
         this.productChannelGatewayDao.update(productChannelGateway);
+    }
+
+    @Override
+    public void recommend(ProductChannelGateway request) {
+        this.productChannelGatewayDao.recommend(request);
     }
 
 }

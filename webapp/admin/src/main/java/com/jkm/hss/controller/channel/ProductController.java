@@ -212,6 +212,24 @@ public class ProductController extends BaseController {
     }
 
     /**
+     * 推荐通道
+     * @param
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/recommend", method = RequestMethod.POST)
+    public CommonResponse recommend(@RequestBody final ProductChannelGateway request){
+        try{
+            this.productChannelGatewayService.recommend(request);
+            return CommonResponse.simpleResponse(1, "已成功推荐");
+        }catch (final Throwable e){
+
+            log.error("推荐通道失败，异常信息:" + e.getMessage());
+            return CommonResponse.simpleResponse(-1, "fail");
+        }
+    }
+
+    /**
      * 修改网关通道
      * @param request
      * @return
