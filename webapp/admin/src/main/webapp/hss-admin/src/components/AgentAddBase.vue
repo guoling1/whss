@@ -333,12 +333,7 @@
       //若为查看详情
       if (this.$route.query.id != undefined) {
         this.$data.isShow = false;
-        this.$http.get('/admin/dealer/findBydealerId/' + this.$route.query.id)
-          .then(function (res) {
-            this.$data.query = res.data;
-            this.$data.province = res.data.belongProvinceName;
-            this.$data.city = res.data.belongCityName;
-          })
+        this.getData()
       }
       this.$data.level = this.$route.query.level;
     },
@@ -385,6 +380,21 @@
       }
     },
     methods: {
+      getData:function () {
+        this.$http.get('/admin/dealer/findBydealerId/' + this.$route.query.id)
+          .then(function (res) {
+            this.$data.query = res.data;
+            this.$data.province = res.data.belongProvinceName;
+            this.$data.city = res.data.belongCityName;
+          })
+          .catch(err =>{
+            this.$message({
+              showClose: true,
+              message: err.statusMessage,
+              type: 'error'
+            })
+          })
+      },
       //修改密码
       resetPw:function() {
         this.$http.post('/admin/dealer/updatePwd',{dealerId:this.$route.query.id,loginPwd:this.$data.password})
@@ -480,7 +490,6 @@
           })
       },
       changeDealer: function () {
-        this.loading = true;
         this.$http.post('/admin/dealer/changeDealer',{
           secondDealerId:this.$route.query.id,
           markCode:this.dealerNo
@@ -492,10 +501,8 @@
               type: 'success'
             });
             this.dealerMask = false;
-            setTimeout(function () {
-              location.reload();
-            },200);
-            this.loading = false
+            this.query.firstMarkCode = this.dealerNo;
+            this.query.firstDealerName = this.dealerName;
           })
           .catch(err=>{
             this.$message({
@@ -503,7 +510,6 @@
               message: err.statusMessage,
               type: 'error'
             })
-            this.loading = false
           })
       },
     },
