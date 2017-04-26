@@ -74,5 +74,9 @@ public class AdminUserResponse {
      * 真实身份证正面
      */
     private String realIdentityFacePic;
+    /**
+     *
+     */
+    private int type;
 
 }

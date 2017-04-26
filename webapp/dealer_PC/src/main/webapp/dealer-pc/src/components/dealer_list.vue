@@ -10,7 +10,8 @@
             </div>
             <!-- /.box-header -->
             <div class="box-body screen-top">
-              <el-button type="primary" icon="plus" size="small" @click="addDealer">新增代理商</el-button>
+              <el-button type="primary" icon="plus" size="small" @click="_$power(addDealer,'dealer_add')">新增代理商</el-button>
+              <!--<el-button type="primary" icon="plus" size="small" @click="addDealer">新增代理商</el-button>-->
             </div>
             <div class="box-body screen-top">
               <div class="screen-item">
@@ -84,11 +85,11 @@
                       <span v-if="ext[0]!=0">
                         <span v-if="scope.row.hssProductId==0">
                           <el-button size="small" type="primary"
-                                     @click="openHss($event,scope.row.id,scope.row.hssProductId)">开通</el-button>
+                                     @click="_$power(scope.row.id,scope.row.hssProductId,openHss,'dealer_product_add')">开通</el-button>
                         </span>
                         <span v-else>
                           <el-button type="text"
-                                     @click="checkHsy($event,scope.row.id,scope.row.hssProductId)">查看产品详情</el-button>
+                                     @click="_$power(scope.row.id,scope.row.hssProductId,checkHss,'dealer_detail')">查看产品详情</el-button>
                         </span>
                       </span>
                       <span v-else>未开通</span>
@@ -99,11 +100,10 @@
                       <span v-if="ext[1]!=0">
                         <span v-if="scope.row.hsyProductId==0">
                           <el-button size="small" type="primary"
-                                     @click="openHsy($event,scope.row.id,scope.row.hsyProductId)">开通</el-button>
+                                     @click="_$power(scope.row.id,scope.row.hsyProductId,openHsy,'dealer_product_add')">开通</el-button>
                         </span>
                         <span v-else>
-                          <el-button type="text"
-                                     @click="checkHsy($event,scope.row.id,scope.row.hsyProductId)">查看产品详情</el-button>
+                          <el-button type="text" @click="_$power(scope.row.id,scope.row.hsyProductId,checkHsy,'dealer_detail')">查看产品详情</el-button>
                         </span>
                       </span>
                       <span v-else>未开通</span>
@@ -230,16 +230,16 @@
       checkDealer: function (event, id) {
         this.$router.push({path: '/daili/app/dealer_modify', query: {dealerId: id}});
       },
-      openHss: function (event, id, productId) {
+      openHss: function (id, productId) {
         this.$router.push({path: '/daili/app/product_add', query: {product: 'hss', dealerId: id, productId: productId}});
       },
-      openHsy: function (event, id, productId) {
+      openHsy: function (id, productId) {
         this.$router.push({path: '/daili/app/product_add', query: {product: 'hsy', dealerId: id, productId: productId}});
       },
-      checkHss: function (event, id, productId) {
+      checkHss: function (id, productId) {
         this.$router.push({path: '/daili/app/product_add', query: {product: 'hss', dealerId: id, productId: productId}});
       },
-      checkHsy: function (event, id, productId) {
+      checkHsy: function (id, productId) {
         this.$router.push({path: '/daili/app/product_add', query: {product: 'hsy', dealerId: id, productId: productId}});
       },
       handleSizeChange(val) {

@@ -320,7 +320,7 @@ public class PayServiceImpl implements PayService {
             requestJsonObject.put("settlementRecordId", settlementRecordId);
             requestJsonObject.put("payOrderSn", paymentSdkPayCallbackResponse.getSn());
             requestJsonObject.put("payChannelSign", enumPayChannelSign.getId());
-            MqProducer.produce(requestJsonObject, MqConfig.MERCHANT_WITHDRAW, 500);
+            MqProducer.produce(requestJsonObject, MqConfig.MERCHANT_WITHDRAW, 20000);
         }
     }
 

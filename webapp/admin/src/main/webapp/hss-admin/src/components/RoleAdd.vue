@@ -17,8 +17,8 @@
               <table style="width:90%;display: inline-table;vertical-align: top" border="0" cellspacing="0" cellpadding="0" class="table table-bordered">
                 <thead>
                 <tr>
-                  <th width="35%">一级菜单名称</th>
-                  <th width="35%">子菜单名称</th>
+                  <th width="23%">一级菜单名称</th>
+                  <th width="25%">子菜单名称</th>
                   <th >操作</th>
                 </tr>
                 </thead>
@@ -81,7 +81,6 @@
         .then(res => {
           this.tableData = res.data.list;
           this.roleName = res.data.roleName;
-          console.log(this.tableData)
          /* this.tableData = JSON.parse(JSON.stringify(res.data.list));*/
           for (var i = 0; i < this.tableData.length; i++) {
             for (var j = 0; j < this.tableData[i].children.length; j++) {
@@ -92,7 +91,6 @@
             }
             this.tableData[i].isSelected = Boolean(this.tableData[i].isSelected);
           }
-          console.log(this.tableData)
         })
         .catch(err => {
           this.$message({

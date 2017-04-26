@@ -693,6 +693,51 @@ public class TradeController extends BaseController {
         return CommonResponse.simpleResponse(-1, result.getRight());
     }
 
+
+    /**
+     * 校验渠道是否需要cvv,expireDate
+     *
+     * @param checkCvvAndExpireDateRequest
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "checkCvv", method = RequestMethod.POST)
+    public CommonResponse checkCvvAndExpireDate(@RequestBody CheckCvvAndExpireDateRequest checkCvvAndExpireDateRequest) {
+        final int channel = checkCvvAndExpireDateRequest.getChannel();
+        final long creditCardId = checkCvvAndExpireDateRequest.getCreditCardId();
+        log.info("信用卡[{}], 校验渠道[{}]，cvv,expireDate是否需要", creditCardId, channel);
+        final BasicChannel basicChannel = this.basicChannelService.selectByChannelTypeSign(channel).get();
+        final Optional<AccountBank> accountBankOptional = this.accountBankService.selectById(creditCardId);
+        if (!accountBankOptional.isPresent()) {
+            return CommonResponse.simpleResponse(-1, "信用卡不存在");
+        }
+        final CommonResponse.MapResultBuilder commonResponse = CommonResponse.builder4MapResult(CommonResponse.SUCCESS_CODE, "success");
+        final AccountBank accountBank = accountBankOptional.get();
+        if (EnumCheckType.FIVE_CHECK.getId() == basicChannel.getCheckType()) {
+            if (this.accountBankService.isHasExpiryTime(accountBank.getId())) {
+                commonResponse.addParam("showExpireDate", EnumBoolean.FALSE.getCode());
+            } else {
+                commonResponse.addParam("showExpireDate", EnumBoolean.TRUE.getCode());
+            }
+            commonResponse.addParam("showCvv", EnumBoolean.FALSE.getCode());
+        } else if (EnumCheckType.SIX_CHECK.getId() == basicChannel.getCheckType()) {
+            if (this.accountBankService.isHasExpiryTime(accountBank.getId())) {
+                commonResponse.addParam("showExpireDate", EnumBoolean.FALSE.getCode());
+            } else {
+                commonResponse.addParam("showExpireDate", EnumBoolean.TRUE.getCode());
+            }
+            if (this.accountBankService.isHasCvv(accountBank.getId())) {
+                commonResponse.addParam("showCvv", EnumBoolean.FALSE.getCode());
+            } else {
+                commonResponse.addParam("showCvv", EnumBoolean.TRUE.getCode());
+            }
+        } else {
+            commonResponse.addParam("showExpireDate", EnumBoolean.FALSE.getCode());
+            commonResponse.addParam("showCvv", EnumBoolean.FALSE.getCode());
+        }
+        return commonResponse.build();
+    }
+
     /**
      * 确认支付
      *

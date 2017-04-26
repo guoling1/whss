@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="col-md-12">
+    <div class="col-md-12" style="height: 880px">
       <div class="box" style="margin-top:15px;overflow: hidden">
         <div class="box-header">
           <h3 class="box-title">T1结算审核</h3>
@@ -10,18 +10,18 @@
         </div>
         <div class="box-body">
           <!--筛选-->
-          <ul>
+          <ul class="search">
             <li class="same">
               <label>结算对象编号:</label>
-              <el-input style="width: 130px" v-model="query.userNo" placeholder="请输入内容" size="small"></el-input>
+              <el-input style="width: 188px" v-model="query.userNo" placeholder="请输入内容" size="small"></el-input>
             </li>
             <li class="same">
               <label>名称:</label>
-              <el-input style="width: 130px" v-model="query.userName" placeholder="请输入内容" size="small"></el-input>
+              <el-input style="width: 188px" v-model="query.userName" placeholder="请输入内容" size="small"></el-input>
             </li>
             <li class="same">
               <label>类型:</label>
-              <el-select clearable v-model="query.userType" size="small" >
+              <el-select clearable v-model="query.userType" size="small" style="width: 188px">
                 <el-option label="全部" value="">全部</el-option>
                 <el-option label="商户" value="2">商户</el-option>
                 <el-option label="代理商" value="3">代理商</el-option>
@@ -30,11 +30,11 @@
             </li>
             <li class="same">
               <label>结算日期:</label>
-              <el-date-picker v-model="date" size="small" type="daterange" align="right" placeholder="选择日期范围" :picker-options="pickerOptions"></el-date-picker>
+              <el-date-picker v-model="date" size="small" type="daterange" align="right" placeholder="选择日期范围" :picker-options="pickerOptions" style="width: 188px"></el-date-picker>
             </li>
             <li class="same">
               <label>对账结果:</label>
-              <el-select clearable v-model="query.checkedStatus" size="small" >
+              <el-select clearable v-model="query.checkedStatus" size="small" style="width: 188px">
                 <el-option label="全部" value="">全部</el-option>
                 <el-option label="未对账" value="1">未对账</el-option>
                 <el-option label="对账完成无异常" value="2">对账完成无异常</el-option>
@@ -43,7 +43,7 @@
             </li>
             <li class="same">
               <label>结算状态:</label>
-              <el-select clearable v-model="query.settleStatus" size="small" >
+              <el-select clearable v-model="query.settleStatus" size="small" style="width: 188px">
                 <el-option label="全部" value="">全部</el-option>
                 <el-option label="待结算" value="1">待结算</el-option>
                 <el-option label="部分结算" value="4">部分结算</el-option>
@@ -55,7 +55,7 @@
             </li>
           </ul>
           <!--表格-->
-          <el-table v-loading.body="loading" style="font-size: 12px;margin:15px 0" :data="records" border @selection-change="handleSelectionChange">
+          <el-table v-loading.body="loading" style="font-size: 12px;margin-bottom: 15px" :data="records" border @selection-change="handleSelectionChange">
             <!--<el-table-column type="selection" width="55"></el-table-column>-->
             <el-table-column prop="userNo" label="结算对象编号" ></el-table-column>
             <el-table-column prop="userName" label="结算对象名称" ></el-table-column>
@@ -76,6 +76,11 @@
                 <!--<el-button @click.native.prevent="list(scope.$index)" type="text" size="small" v-if="records[scope.$index].settleStatusValue!='结算成功'">结算</el-button>-->
               <!--</template>-->
             <!--</el-table-column>-->
+            <el-table-column label="操作" width="70">
+              <template scope="scope">
+                <el-button @click.native.prevent="_$power(list,'boss_trade_export',scope.$index)" type="text" size="small" v-if="records[scope.$index].settleStatusValue!='结算成功'">结算</el-button>
+              </template>
+            </el-table-column>
           </el-table>
           <!--分页-->
           <div class="block" style="text-align: right">
@@ -394,11 +399,20 @@
     }
 </script>
 <style scoped lang="less">
+  ul {
+    padding: 0;
+    margin:0;
+  }
+  .search{
+  margin-bottom:0;
+  label{
+    display: block;
+    margin-bottom: 0;
+  }
+  }
+
   .maskCon{
     margin:0 0 15px 50px
-  }
-  ul{
-    padding: 0;
   }
   .same{
     list-style: none;

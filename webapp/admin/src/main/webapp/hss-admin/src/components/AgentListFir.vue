@@ -4,7 +4,8 @@
       <div class="box" style="margin-top:15px;overflow: hidden">
         <div class="box-header">
           <h3 class="box-title">一级代理商列表</h3>
-          <router-link to="/admin/record/agentAddBase" class="btn btn-primary" style="float: right;color: #fff">新增代理商</router-link>
+          <!--<router-link to="/admin/record/agentAddBase" class="btn btn-primary" style="float: right;color: #fff">新增代理商</router-link>-->
+          <a @click="_$power(agentAdd,'boss_first_add')" class="btn btn-primary" style="float: right;color: #fff">新增代理商</a>
         </div>
         <div class="box-body">
           <!--筛选-->
@@ -51,12 +52,12 @@
           <el-table v-loading.body="loading"  style="font-size: 12px;margin:15px 0" :data="records" border >
             <el-table-column label="代理商名称">
               <template scope="scope">
-                <router-link :to="'/admin/record/agentAddBase?id='+records[scope.$index].id">{{records[scope.$index].proxyName}}</router-link>
+                <router-link :to="'/admin/record/agentAddBase?level=1&id='+records[scope.$index].id">{{records[scope.$index].proxyName}}</router-link>
               </template>
             </el-table-column>
             <el-table-column label="代理商编号">
               <template scope="scope">
-                <router-link :to="'/admin/record/agentAddBase?id='+records[scope.$index].id">{{records[scope.$index].markCode}}</router-link>
+                <router-link :to="'/admin/record/agentAddBase?level=1&id='+records[scope.$index].id">{{records[scope.$index].markCode}}</router-link>
               </template>
             </el-table-column>
             <el-table-column prop="level" label="代理商级别" ></el-table-column>
@@ -66,13 +67,14 @@
             <el-table-column label="好收收">
               <template scope="scope">
                 <router-link :to="'/admin/record/agentAddPro?dealerId='+records[scope.$index].id+'&productId='+records[scope.$index].hssProductId+'&product=hss'" v-if="records[scope.$index].hssProductId==0">开通产品</router-link>
-                <router-link :to="'/admin/record/agentAddPro?dealerId='+records[scope.$index].id+'&productId='+records[scope.$index].hssProductId+'&product=hss'" v-else="records[scope.$index].hssProductId==0">修改产品设置</router-link>
+                <a @click="_$power(scope.row.id,scope.row.hssProductId,'hss',openProduct,'boss_first_product_add')" v-if="records[scope.$index].hssProductId==0">开通产品</a>
+                <a @click="_$power(scope.row.id,scope.row.hssProductId,'hss',auditProduct,'boss_first_product_update_btn')" v-else="records[scope.$index].hssProductId==0">修改产品设置</a>
               </template>
             </el-table-column>
             <el-table-column label="好收银" >
               <template scope="scope">
-                <router-link :to="'/admin/record/agentAddPro?dealerId='+records[scope.$index].id+'&productId='+records[scope.$index].hsyProductId+'&product=hsy'" v-if="records[scope.$index].hsyProductId==0">开通产品</router-link>
-                <router-link :to="'/admin/record/agentAddPro?dealerId='+records[scope.$index].id+'&productId='+records[scope.$index].hsyProductId+'&product=hsy'" v-else="records[scope.$index].hsyProductId==0">修改产品设置</router-link>
+                <a @click="_$power(scope.row.id,scope.row.hsyProductId,'hsy',openProduct,'boss_first_product_add')" v-if="records[scope.$index].hsyProductId==0">开通产品</a>
+                <a @click="_$power(scope.row.id,scope.row.hsyProductId,'hsy',auditProduct,'boss_first_product_update_btn')" v-else="records[scope.$index].hsyProductId==0">修改产品设置</a>
               </template>
             </el-table-column>
           </el-table>
@@ -144,6 +146,15 @@
       this.getData()
     },
     methods: {
+      openProduct:function (id,productId,val) {
+        this.$router.push({path:'/admin/record/agentAddPro',query:{dealerId:id,productId:productId,product:val}});
+      },
+      auditProduct:function (id,productId,val) {
+        this.$router.push({path:'/admin/record/agentAddPro',query:{dealerId:id,productId:productId,product:val}});
+      },
+      agentAdd:function () {
+        this.$router.push("/admin/record/agentAddBase")
+      },
       getData: function () {
         this.$data.loading = true;
         this.$http.post('/admin/dealer/listFirstDealer', this.$data.query)

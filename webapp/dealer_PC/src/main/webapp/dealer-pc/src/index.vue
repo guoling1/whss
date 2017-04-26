@@ -153,22 +153,43 @@
             <!--<li class="active"><a href="index2.html"><i class="fa fa-circle-o"></i> Dashboard v2</a></li>-->
             <!--</ul>-->
           </li>
-          <li class="treeview">
+          <li class="treeview" v-for="(menu,index) in menus">
             <a href="#">
-              <i class="fa fa-money"></i>
-              <span>我的分润</span>
+              <i :class="classList[index]"></i>
+              <span>{{menu.menuName}}</span>
               <span class="pull-right-container">
                 <i class="fa fa-angle-left pull-right"></i>
                 <!-- <small class="label pull-right bg-green">new</small> -->
               </span>
             </a>
             <ul class="treeview-menu">
+              <li v-for="item in menu.children">
+                <router-link :to="item.menuUrl"><i class="fa fa-circle-o"></i>{{item.menuName}}</router-link>
+              </li>
+              <!--<li>-->
+              <!--<router-link to="settlement"><i class="fa fa-circle-o"></i>结算记录</router-link>-->
+              <!--</li>-->
+              <!--<li>-->
+                <!--<router-link to="balance_withdrawal"><i class="fa fa-circle-o"></i>余额提现</router-link>-->
+              <!--</li>-->
+            </ul>
+          </li>
+          <!--<li class="treeview">
+            <a href="#">
+              <i class="fa fa-money"></i>
+              <span>我的分润</span>
+              <span class="pull-right-container">
+                <i class="fa fa-angle-left pull-right"></i>
+                &lt;!&ndash; <small class="label pull-right bg-green">new</small> &ndash;&gt;
+              </span>
+            </a>
+            <ul class="treeview-menu">
               <li>
                 <router-link to="profits_detail"><i class="fa fa-circle-o"></i>分润明细</router-link>
               </li>
-              <!--<li>-->
-                <!--<router-link to="settlement"><i class="fa fa-circle-o"></i>结算记录</router-link>-->
-              <!--</li>-->
+              &lt;!&ndash;<li>&ndash;&gt;
+                &lt;!&ndash;<router-link to="settlement"><i class="fa fa-circle-o"></i>结算记录</router-link>&ndash;&gt;
+              &lt;!&ndash;</li>&ndash;&gt;
               <li>
                 <router-link to="balance_withdrawal"><i class="fa fa-circle-o"></i>余额提现</router-link>
               </li>
@@ -179,19 +200,19 @@
               <i class="fa fa-users"></i> <span>下级代理</span>
               <span class="pull-right-container">
                 <i class="fa fa-angle-left pull-right"></i>
-                <!-- <small class="label pull-right bg-green">new</small> -->
+                &lt;!&ndash; <small class="label pull-right bg-green">new</small> &ndash;&gt;
               </span>
             </a>
             <ul class="treeview-menu">
               <li>
                 <router-link to="dealer_list"><i class="fa fa-circle-o"></i> 所有代理商</router-link>
               </li>
-              <!--<li>-->
-                <!--<router-link to="dealer_settlement"><i class="fa fa-circle-o"></i> 代理结算记录</router-link>-->
-              <!--</li>-->
-              <!--<li>-->
-                <!--<router-link to="dealer_account"><i class="fa fa-circle-o"></i> 代理商账户</router-link>-->
-              <!--</li>-->
+              &lt;!&ndash;<li>&ndash;&gt;
+                &lt;!&ndash;<router-link to="dealer_settlement"><i class="fa fa-circle-o"></i> 代理结算记录</router-link>&ndash;&gt;
+              &lt;!&ndash;</li>&ndash;&gt;
+              &lt;!&ndash;<li>&ndash;&gt;
+                &lt;!&ndash;<router-link to="dealer_account"><i class="fa fa-circle-o"></i> 代理商账户</router-link>&ndash;&gt;
+              &lt;!&ndash;</li>&ndash;&gt;
             </ul>
           </li>
           <li class="treeview">
@@ -199,7 +220,7 @@
               <i class="fa fa-bank"></i> <span>商户管理</span>
               <span class="pull-right-container">
                 <i class="fa fa-angle-left pull-right"></i>
-                <!-- <small class="label pull-right bg-green">new</small> -->
+                &lt;!&ndash; <small class="label pull-right bg-green">new</small> &ndash;&gt;
               </span>
             </a>
             <ul class="treeview-menu">
@@ -211,43 +232,43 @@
               </li>
             </ul>
           </li>
-          <li class="treeview" v-show="dealerLeavel!=2">
+          <li class="treeview">
             <a href="#">
               <i class="fa fa-calculator"></i> <span>设备管理</span>
               <span class="pull-right-container">
                 <i class="fa fa-angle-left pull-right"></i>
-                <!-- <small class="label pull-right bg-green">new</small> -->
+                &lt;!&ndash; <small class="label pull-right bg-green">new</small> &ndash;&gt;
               </span>
             </a>
             <ul class="treeview-menu">
-              <li>
+              <li v-show="dealerLeavel!=2">
                 <router-link to="distribution_qrcode"><i class="fa fa-circle-o"></i> 分配二维码</router-link>
               </li>
-              <!--<li>-->
-                <!--<router-link to="qrcode_distribution"><i class="fa fa-circle-o"></i> 二维码分配记录</router-link>-->
-              <!--</li>-->
+              &lt;!&ndash;<li>&ndash;&gt;
+                &lt;!&ndash;<router-link to="qrcode_distribution"><i class="fa fa-circle-o"></i> 二维码分配记录</router-link>&ndash;&gt;
+              &lt;!&ndash;</li>&ndash;&gt;
               <li>
                 <router-link to="qrcode"><i class="fa fa-circle-o"></i> 所有二维码</router-link>
               </li>
             </ul>
           </li>
-          <!--<li class="treeview">-->
-            <!--<a href="#">-->
-              <!--<i class="fa fa-user-plus"></i> <span>员工权限管理</span>-->
-              <!--<span class="pull-right-container">-->
-                <!--<i class="fa fa-angle-left pull-right"></i>-->
-                <!--&lt;!&ndash; <small class="label pull-right bg-green">new</small> &ndash;&gt;-->
-              <!--</span>-->
-            <!--</a>-->
-            <!--<ul class="treeview-menu">-->
-              <!--<li>-->
-                <!--<router-link to="employees"><i class="fa fa-circle-o"></i> 员工管理</router-link>-->
-              <!--</li>-->
-              <!--<li>-->
-                <!--<router-link to="roles"><i class="fa fa-circle-o"></i> 角色管理</router-link>-->
-              <!--</li>-->
-            <!--</ul>-->
-          <!--</li>-->
+          <li class="treeview">
+            <a href="#">
+              <i class="fa fa-user-plus"></i> <span>员工权限管理</span>
+              <span class="pull-right-container">
+                <i class="fa fa-angle-left pull-right"></i>
+                &lt;!&ndash; <small class="label pull-right bg-green">new</small> &ndash;&gt;
+              </span>
+            </a>
+            <ul class="treeview-menu">
+              <li>
+                <router-link to="employees"><i class="fa fa-circle-o"></i> 员工管理</router-link>
+              </li>
+              &lt;!&ndash;<li>&ndash;&gt;
+                &lt;!&ndash;<router-link to="roles"><i class="fa fa-circle-o"></i> 角色管理</router-link>&ndash;&gt;
+              &lt;!&ndash;</li>&ndash;&gt;
+            </ul>
+          </li>-->
           <!--<li class="treeview">-->
             <!--<a href="#">-->
               <!--<i class="fa fa-user-secret"></i> <span>我的信息</span>-->
@@ -294,7 +315,9 @@
       return {
         dealerInfo: '',
         position: '',
-        dealerLeavel: ''
+        dealerLeavel: '',
+        list:{},
+        classList:['fa fa-money','fa fa-users','fa fa-bank','fa fa-calculator','fa fa-user-plus']
       }
     },
     beforeRouteEnter (to, from, next){
@@ -326,6 +349,7 @@
       if (bIsIpad || bIsIphoneOs || bIsMidp || bIsUc7 || bIsUc || bIsAndroid || bIsCE || bIsWM) {
         $("a[href!='#']").attr("data-toggle", "offcanvas");
       }
+      this.menus = JSON.parse(sessionStorage.getItem('login'));
     },
     methods: {
       logout: function () {

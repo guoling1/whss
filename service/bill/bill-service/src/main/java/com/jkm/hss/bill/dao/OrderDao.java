@@ -332,6 +332,13 @@ public interface OrderDao {
     int listFirstCount(OrderTradeRequest req);
 
     /**
+     * 提现下载
+     * @param req
+     * @return
+     */
+    List<WithdrawResponse> withdrawList1(WithdrawRequest req);
+
+    /**
      * 按订单号统计交易金额
      *
      * @param orderNos

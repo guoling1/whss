@@ -28,8 +28,8 @@ public class ProfitServiceImpl implements ProfitService {
 
     @Override
     public List<JkmProfitDetailsResponse> selectProfitDetails(ProfitDetailsRequest req) {
-        ProfitDetailsRequest request =selectTime(req);
-        List<JkmProfitDetailsResponse> list = profitDao.selectProfitDetails(request);
+//        ProfitDetailsRequest request =selectTime(req);
+        List<JkmProfitDetailsResponse> list = profitDao.selectProfitDetails(req);
         if (list!=null){
             for (int i=0;i<list.size();i++){
                 if (list.get(i).getBusinessType().equals("hssPay")){

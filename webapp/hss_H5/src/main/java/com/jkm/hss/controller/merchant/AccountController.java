@@ -231,6 +231,7 @@ public class AccountController extends BaseController{
             response.setAvailable(account.getAvailable());
             response.setBankName(merchantInfo.getBankName());
             response.setWithdrawFee(merchantChannelRate.getMerchantWithdrawFee());
+            response.setSettleAmount(account.getDueSettleAmount());
 
             final AccountBank accountBank = this.accountBankService.getDefault(merchantInfo.getAccountId());
             final String bankNo = accountBank.getBankNo();

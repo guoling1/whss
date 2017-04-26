@@ -406,7 +406,8 @@ public class OrderServiceImpl implements OrderService {
         map.put("proxyName",req.getProxyName());
         map.put("proxyName1",req.getProxyName1());
         map.put("businessOrderNo",req.getBusinessOrderNo());
-        List<MerchantTradeResponse> list = orderDao.selectOrderList(map);
+        map.put("payChannelSign",req.getPayChannelSign());
+        List<MerchantTradeResponse> list = this.orderDao.selectOrderList(map);
         if (list.size()>0){
             for (int i=0;i<list.size();i++){
                 if (list.get(i).getAppId().equals("hss")){
@@ -793,7 +794,53 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public List<WithdrawResponse> withdrawList(WithdrawRequest req) {
+        if (req.getWithdrawStatus().equals("提现中")){
+            req.setStatus(5);
+        }
+        if (req.getWithdrawStatus().equals("提现成功")){
+            req.setStatus(6);
+        }
         List<WithdrawResponse> list = this.orderDao.withdrawList(req);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        if (list.size()>0){
+            for (int i=0;i<list.size();i++){
+                if (list.get(i).getMerchantName()!=null&&!list.get(i).getMerchantName().equals("")){
+                    list.get(i).setUserType("商户");
+                }
+                if (list.get(i).getProxyName()!=null&&!list.get(i).getProxyName().equals("")){
+                    list.get(i).setUserType("代理商");
+                }
+                if (list.get(i).getCreateTime()!=null&&!list.get(i).getCreateTime().equals("")){
+                    String dates = sdf.format(list.get(i).getCreateTime());
+                    list.get(i).setCreateTimes(dates);
+                }
+                if (list.get(i).getSuccessSettleTime()!=null&&!list.get(i).getSuccessSettleTime().equals("")){
+                    String dates = sdf.format(list.get(i).getSuccessSettleTime());
+                    list.get(i).setSuccessTime(dates);
+                }
+                if (list.get(i).getStatus()==5){
+                    list.get(i).setWithdrawStatus(EnumOrderStatus.WITHDRAWING.getValue());
+                }
+                if (list.get(i).getStatus()==6){
+                    list.get(i).setWithdrawStatus(EnumOrderStatus.WITHDRAW_SUCCESS.getValue());
+                    String dates = sdf.format(list.get(i).getUpdateTime());
+                    list.get(i).setUpdateTimes(dates);
+                }
+                if (list.get(i).getPayChannelSign()!=0) {
+                    list.get(i).setPayChannelName(EnumPayChannelSign.idOf(list.get(i).getPayChannelSign()).getName());
+                }
+            }
+        }
+        return list;
+    }
+
+    /**
+     * 提现下载
+     * @param req
+     * @return
+     */
+    public List<WithdrawResponse> withdrawList1(WithdrawRequest req) {
+        List<WithdrawResponse> list = this.orderDao.withdrawList1(req);
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         if (list.size()>0){
             for (int i=0;i<list.size();i++){
@@ -1026,6 +1073,96 @@ public class OrderServiceImpl implements OrderService {
         return this.orderDao.listFirstCount(req);
     }
 
+    @Override
+    public String downLoad(WithdrawRequest req, String baseUrl) {
+        final String tempDir = this.getTempDir();
+        final File excelFile = new File(tempDir + File.separator + ".xls");
+        final ExcelSheetVO excelSheet = excelSheet(req,baseUrl);
+        final List<ExcelSheetVO> excelSheets = new ArrayList<>();
+        excelSheets.add(excelSheet);
+        FileOutputStream fileOutputStream = null;
+        try {
+            fileOutputStream = new FileOutputStream(excelFile);
+            ExcelUtil.exportExcel(excelSheets, fileOutputStream);
+            return excelFile.getAbsolutePath();
+        } catch (final Exception e) {
+            log.error("download trade record error", e);
+            e.printStackTrace();
+        }  finally {
+            if (fileOutputStream != null) {
+                try {
+                    fileOutputStream.close();
+                } catch (final IOException e) {
+                    log.error("close fileOutputStream error", e);
+                    e.printStackTrace();
+                }
+            }
+        }
+        return "";
+    }
+
+    /**
+     * 生成ExcelVo
+     * @param
+     * @param baseUrl
+     * @return
+     */
+    private ExcelSheetVO excelSheet(WithdrawRequest req,String baseUrl) {
+        List<WithdrawResponse> list = withdrawList1(req);
+        final ExcelSheetVO excelSheetVO = new ExcelSheetVO();
+        final List<List<String>> datas = new ArrayList<List<String>>();
+        final ArrayList<String> heads = new ArrayList<>();
+        excelSheetVO.setName("withdraw");
+        heads.add("提现单号");
+        heads.add("账户名称");
+        heads.add("用户类型");
+        heads.add("业务订单号");
+        heads.add("提现金额");
+        heads.add("手续费");
+        heads.add("提现状态");
+        heads.add("渠道名称");
+        heads.add("打款流水号");
+        heads.add("提现时间");
+        heads.add("成功时间");
+        datas.add(heads);
+        if(list.size()>0){
+            for(int i=0;i<list.size();i++){
+                ArrayList<String> columns = new ArrayList<>();
+                columns.add(list.get(i).getOrderNo());
+                columns.add(list.get(i).getMerchantName());
+                columns.add(list.get(i).getUserType());
+                columns.add(list.get(i).getBusinessOrderNo());
+                columns.add(String.valueOf(list.get(i).getTradeAmount()));
+                columns.add(String.valueOf(list.get(i).getPoundage()));
+                columns.add(list.get(i).getWithdrawStatus());
+                columns.add(list.get(i).getPayChannelName());
+                columns.add(list.get(i).getSn());
+                if (list.get(i).getCreateTime()!= null && !"".equals(list.get(i).getCreateTime())){
+                    DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                    String st = df.format(list.get(i).getCreateTime());
+                    columns.add(st);
+
+                }else {
+                    columns.add("");
+                }
+
+                if (list.get(i).getUpdateTime()!= null && !"".equals(list.get(i).getUpdateTime())){
+                    DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                    String st = df.format(list.get(i).getUpdateTime());
+                    columns.add(st);
+
+                }else {
+                    columns.add("");
+                }
+
+                datas.add(columns);
+            }
+        }
+        excelSheetVO.setDatas(datas);
+        return excelSheetVO;
+    }
+
+
     /**
      * {@inheritDoc}
      *
@@ -1142,52 +1279,12 @@ public class OrderServiceImpl implements OrderService {
                 columns.add(list.get(i).getProxyName1());
                 columns.add(String.valueOf(list.get(i).getTradeAmount()));
                 columns.add(String.valueOf(list.get(i).getPayRate()));
-//                if (list.get(i).getPayRate()==null){
-//                    String x = "0";
-//                    columns.add(x);
-//                }else {
-//                    columns.add(String.valueOf(list.get(i).getPayRate()));
-//                }
-//                if (list.get(i).getPoundage()==null){
-//                    String x = " ";
-//                    columns.add(x);
-//                }else {
-//                    columns.add(String.valueOf(list.get(i).getPoundage()));
-//                }
-                if (list.get(i).getStatus()==1){
-                    columns.add("待支付");
-                }
-                if (list.get(i).getStatus()==3){
-                    columns.add("支付失败");
-                }
-                if (list.get(i).getStatus()==4){
-                    columns.add("支付成功");
-                }
-                if (list.get(i).getStatus()==5){
-                    columns.add("提现中");
-                }
-                if (list.get(i).getStatus()==6){
-                    columns.add("提现成功");
-                }
-                if (list.get(i).getStatus()==7){
-                    columns.add("充值成功");
-                }
-                if (list.get(i).getStatus()==8){
-                    columns.add("充值失败");
-                }
+                columns.add(EnumOrderStatus.of(list.get(i).getStatus()).getValue());
+                columns.add(EnumSettleStatus.of(list.get(i).getSettleStatus()).getValue());
 
-                if (list.get(i).getSettleStatus()==1){
-                    columns.add("未结算");
-                }
-                if (list.get(i).getSettleStatus()==2){
-                    columns.add("结算中");
-                }
-                if (list.get(i).getSettleStatus()==3){
-                    columns.add("已结算");
-                }
                 if (list.get(i).getPayType()!=null&&!list.get(i).getPayType().equals("")) {
                     if (list.get(i).getPayChannelSign()!=0) {
-                        list.get(i).setPayType(EnumPayChannelSign.idOf(list.get(i).getPayChannelSign()).getPaymentChannel().getValue());
+                        columns.add(EnumPayChannelSign.idOf(list.get(i).getPayChannelSign()).getPaymentChannel().getValue());
                     }
                 } else {
                     columns.add("");
@@ -1223,6 +1320,7 @@ public class OrderServiceImpl implements OrderService {
         map.put("proxyName",req.getProxyName());
         map.put("proxyName1",req.getProxyName1());
         map.put("businessOrderNo",req.getBusinessOrderNo());
+        map.put("payChannelSign",req.getPayChannelSign());
         return orderDao.selectOrderListCount(map);
     }
 

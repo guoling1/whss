@@ -185,6 +185,8 @@
               <el-table-column prop="rate" label="支付结算手续费"></el-table-column>
               <el-table-column prop="time" label="结算时间" ></el-table-column>
               <el-table-column prop="money" label="提现手续费" ></el-table-column>
+              <el-table-column prop="status" label="产品开通状态" ></el-table-column>
+              <el-table-column prop="msg" label="入网备注信息" ></el-table-column>
               <el-table-column prop="status" label="产品开通状态">
                 <template scope="scope">
                   <span v-if="scope.row.status==1">成功</span>
@@ -194,6 +196,7 @@
               <el-table-column prop="msg" label="入网备注信息" ></el-table-column>
             </el-table>
           </template>
+        </div>
         </div>
 
         <el-dialog title="重新入网" v-model="isReenter" size="tiny">
@@ -306,8 +309,7 @@
           money:'0元/笔',
           status:'--',
           msg:'--'
-        }],
-        status:''
+        }]
       }
     },
     created: function () {
@@ -323,7 +325,6 @@
           this.tableData[0].rate = parseFloat(res.data.alipayRate * 100).toFixed(2) + '%';
           this.tableData[0].status = this.tableData[1].status = res.data.hxbOpenProduct;
           this.tableData[0].msg = this.tableData[1].msg = res.data.hxbRemarks;
-
         },function (err) {
           this.$message({
             showClose: true,

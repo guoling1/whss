@@ -336,6 +336,14 @@ public interface OrderService {
     int listFirstCount(OrderTradeRequest req);
 
     /**
+     * 下载提现
+     * @param req
+     * @param baseUrl
+     * @return
+     */
+    String downLoad(WithdrawRequest req, String baseUrl);
+
+    /**
      * 按订单号s统计交易金额
      *
      * @param orderNos
