@@ -5,6 +5,7 @@
         <div class="box-header">
           <h3 class="box-title" v-if="isAdd">新增角色</h3>
           <h3 class="box-title" v-else>角色详情</h3>
+          <a href="javascript:window.close();" class="pull-right btn btn-primary">关闭</a>
         </div>
         <div class="box-body">
           <ul>
@@ -69,6 +70,7 @@
   </div>
 </template>
 <script lang="babel">
+  import Message from './Message.vue'
   export default{
     name: 'roleAdd',
     data(){
@@ -161,12 +163,15 @@
           list:list,
           type:this.type
         }).then(res => {
-          this.$message({
-            showClose: true,
-            message: '操作成功',
-            type: 'success'
-          });
-          this.$router.push('/admin/record/agentRole')
+//          this.$message({
+//            showClose: true,
+//            message: '操作成功',
+//            type: 'success'
+//          });
+//          this.$router.push('/admin/record/agentRole')
+          this.$store.commit('MESSAGE_ACCORD_SHOW', {
+            text: '操作成功'
+          })
         }).catch(err =>{
           this.$message({
             showClose: true,

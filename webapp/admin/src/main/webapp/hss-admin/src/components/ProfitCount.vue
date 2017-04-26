@@ -48,7 +48,7 @@
                 <el-table-column prop="splitAmount" label="收益金额" align="right" header-align="left"></el-table-column>
                 <el-table-column label="操作" width="100">
                   <template scope="scope">
-                    <router-link :to="{path:'/admin/record/profitComDet',query:{type:records[scope.$index].businessType,time:records[scope.$index].splitDate}}" v-if="records[scope.$index].splitAmount!=0&&records[scope.$index].businessType!='当页总额'&&records[scope.$index].businessType!='筛选条件统计'" type="text" size="small">明细
+                    <router-link target="_blank" :to="{path:'/admin/details/profitComDet',query:{type:records[scope.$index].businessType,time:records[scope.$index].splitDate}}" v-if="records[scope.$index].splitAmount!=0&&records[scope.$index].businessType!='当页总额'&&records[scope.$index].businessType!='筛选条件统计'" type="text" size="small">明细
                     </router-link>
                     <a v-if="records[scope.$index].businessType=='筛选条件统计'" @click="add">点击统计</a>
                   </template>
@@ -106,7 +106,7 @@
                 <el-table-column prop="splitAmount" label="收益金额" align="right" header-align="left"></el-table-column>
                 <el-table-column label="操作" width="100">
                   <template scope="scope">
-                    <router-link :to="{path:'/admin/record/profitFirDet',query:{type:records[scope.$index].businessType,id:records[scope.$index].receiptMoneyAccountId,time:records[scope.$index].splitDate}}" v-if="records[scope.$index].splitAmount!=0&&records[scope.$index].businessType!='当页总额'&&records[scope.$index].businessType!='筛选条件统计'" type="text" size="small">明细
+                    <router-link target="_blank" :to="{path:'/admin/details/profitFirDet',query:{type:records[scope.$index].businessType,id:records[scope.$index].receiptMoneyAccountId,time:records[scope.$index].splitDate}}" v-if="records[scope.$index].splitAmount!=0&&records[scope.$index].businessType!='当页总额'&&records[scope.$index].businessType!='筛选条件统计'" type="text" size="small">明细
                     </router-link>
                     <a v-if="records[scope.$index].businessType=='筛选条件统计'" @click="add">点击统计</a>
                   </template>
@@ -168,8 +168,7 @@
                 <el-table-column prop="splitAmount" label="收益金额" align="right" header-align="left"></el-table-column>
                 <el-table-column label="操作" width="100">
                   <template scope="scope">
-                    <router-link
-                      :to="{path:'/admin/record/profitSecDet',query:{type:records[scope.$index].businessType,id:records[scope.$index].receiptMoneyAccountId,time:records[scope.$index].splitDate}}"
+                    <router-link target="_blank" :to="{path:'/admin/details/profitSecDet',query:{type:records[scope.$index].businessType,id:records[scope.$index].receiptMoneyAccountId,time:records[scope.$index].splitDate}}"
                       v-if="records[scope.$index].splitAmount!=0&&records[scope.$index].businessType!='当页总额'&&records[scope.$index].businessType!='筛选条件统计'" type="text" size="small">明细
                     </router-link>
                     <a v-if="records[scope.$index].businessType=='筛选条件统计'" @click="add">点击统计</a>
@@ -256,10 +255,10 @@
         date:'',
         date1:'',
         date2:'',
-        url:'',
+        url:'/admin/allProfit/companyProfit',
+        totalUrl:'/admin/allProfit/companyAmount',
         loadUrl:'',
         loadUrl1:'',
-        totalUrl:"",
         fromName:'',
         query:{
           pageNo:1,
@@ -298,7 +297,7 @@
         vm.$data.records = [];
         vm.$data.total = 0;
         vm.$data.count = 0;
-        vm.$http.post(vm.$data.url,vm.query)
+        /*vm.$http.post(vm.$data.url,vm.query)
           .then(function (res) {
             vm.$data.loading = false;
             vm.$data.records = res.data.records;
@@ -332,7 +331,7 @@
               message: err.statusMessage,
               type: 'error'
             });
-          })
+          })*/
       })
     },
     created: function () {
@@ -353,6 +352,8 @@
           this.$data.query.endTime = str;
         }
       }
+      this.getData();
+      this.getAddTotal();
     },
     methods: {
       onload: function () {

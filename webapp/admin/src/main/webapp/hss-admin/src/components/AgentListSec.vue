@@ -54,12 +54,12 @@
           <el-table style="font-size: 12px;margin:15px 0" :data="records" border>
             <el-table-column label="代理商名称">
               <template scope="scope">
-                <router-link :to="'/admin/record/agentAddBase?level=2&id='+records[scope.$index].id">{{records[scope.$index].proxyName}}</router-link>
+                <router-link target="_blank" :to="'/admin/details/agentAddBase?level=2&id='+records[scope.$index].id">{{records[scope.$index].proxyName}}</router-link>
               </template>
             </el-table-column>
             <el-table-column label="代理商编号">
               <template scope="scope">
-                <router-link :to="'/admin/record/agentAddBase?level=2&id='+records[scope.$index].id">{{records[scope.$index].markCode}}</router-link>
+                <router-link target="_blank" :to="'/admin/details/agentAddBase?level=2&id='+records[scope.$index].id">{{records[scope.$index].markCode}}</router-link>
               </template>
             </el-table-column>
             <el-table-column prop="level" label="代理商级别" ></el-table-column>
@@ -70,13 +70,13 @@
             <el-table-column label="好收收">
               <template scope="scope">
                 <span v-if="records[scope.$index].hssProductId==0">未开通</span>
-                <router-link :to="'/admin/record/agentAddPro?dealerId='+records[scope.$index].id+'&productId='+records[scope.$index].hssProductId+'&product=hss&level=2'" v-else="records[scope.$index].hssProductId==0">查看产品设置</router-link>
+                <router-link target="_blank" :to="'/admin/details/agentAddPro?dealerId='+records[scope.$index].id+'&productId='+records[scope.$index].hssProductId+'&product=hss&level=2'" v-else="records[scope.$index].hssProductId==0">查看产品设置</router-link>
               </template>
             </el-table-column>
             <el-table-column label="好收银" >
               <template scope="scope">
                 <span v-if="records[scope.$index].hsyProductId==0">未开通</span>
-                <router-link :to="'/admin/record/agentAddPro?dealerId='+records[scope.$index].id+'&productId='+records[scope.$index].hsyProductId+'&product=hsy&level=2'" v-else="records[scope.$index].hsyProductId==0">查看产品设置</router-link>
+                <router-link target="_blank" :to="'/admin/details/agentAddPro?dealerId='+records[scope.$index].id+'&productId='+records[scope.$index].hsyProductId+'&product=hsy&level=2'" v-else="records[scope.$index].hsyProductId==0">查看产品设置</router-link>
               </template>
             </el-table-column>
           </el-table>

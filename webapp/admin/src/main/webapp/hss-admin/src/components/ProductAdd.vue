@@ -5,6 +5,7 @@
         <div class="box-header with-border" style="margin-bottom: 15px">
           <h3 class="box-title" v-if="isShow">新增产品</h3>
           <h3 class="box-title" v-if="!isShow">产品详情</h3>
+          <a href="javascript:window.close();" class="pull-right btn btn-primary">关闭</a>
         </div>
         <div class="">
           <div class="table-responsive">
@@ -207,14 +208,12 @@
           </el-col>
           <el-col :span="6">
             <div class="grid-content bg-purple-light" style="width: 100%">
-              <div class="btn btn-primary" @click="goBack" style="width: 45%;margin: 20px 0 100px;">
-                返回
+              <!--<div class="btn btn-primary" @click="goBack" style="width: 45%;margin: 20px 0 100px;">返回</div>-->
+              <div class="btn btn-primary" @click="create" v-if="isShow" style="width: 45%;margin: 20px 0 100px;">
+                创 建 产 品
               </div>
-              <div class="btn btn-primary" @click="create" v-if="isShow" style="width: 45%;float: right;margin: 20px 0 100px;">
-                创建产品
-              </div>
-              <div class="btn btn-primary" @click="_$power(change,'boss_product_update')" v-if="!isShow" style="width: 45%;float: right;margin: 20px 0 100px;">
-                修改
+              <div class="btn btn-primary" @click="_$power(change,'boss_product_update')" v-if="!isShow" style="width: 45%;margin: 20px 0 100px;">
+                修 改
               </div>
             </div>
           </el-col>
@@ -228,6 +227,7 @@
 </template>
 
 <script lang="babel">
+  import Message from './Message.vue'
   export default {
     name: 'productAdd',
     data () {
@@ -309,9 +309,11 @@
             }
             this.$data.query.channels = this.$data.channels
           }, function (err) {
-            this.$store.commit('MESSAGE_ACCORD_SHOW', {
-              text: err.statusMessage
-            })
+            this.$message({
+              showClose: true,
+              message: err.statusMessage,
+              type: 'error'
+            });
           })
         }
 
@@ -362,11 +364,13 @@
               this.$store.commit('MESSAGE_ACCORD_SHOW', {
                 text: '创建成功'
               })
-              this.$router.push('/admin/record/productList')
+//              this.$router.push('/admin/record/productList')
             },function(err){
-              this.$store.commit('MESSAGE_ACCORD_SHOW', {
-                text: err.statusMessage
-              })
+              this.$message({
+                showClose: true,
+                message: err.statusMessage,
+                type: 'error'
+              });
             })
         }else {
           this.query.productId=this.$data.productId;
@@ -377,11 +381,13 @@
               this.$store.commit('MESSAGE_ACCORD_SHOW', {
                 text: '修改成功'
               })
-              this.$router.push('/admin/record/productList')
+//              this.$router.push('/admin/record/productList')
             },function(err){
-              this.$store.commit('MESSAGE_ACCORD_SHOW', {
-                text: err.statusMessage
-              })
+              this.$message({
+                showClose: true,
+                message: err.statusMessage,
+                type: 'error'
+              });
             })
         }
       },
@@ -404,11 +410,13 @@
             this.$store.commit('MESSAGE_ACCORD_SHOW', {
               text: '修改成功'
             })
-            this.$router.push('/admin/record/productList')
+//            this.$router.push('/admin/record/productList')
           },function(err){
-            this.$store.commit('MESSAGE_ACCORD_SHOW', {
-              text: err.statusMessage
-            })
+            this.$message({
+              showClose: true,
+              message: err.statusMessage,
+              type: 'error'
+            });
           })
       }
     },

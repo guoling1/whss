@@ -112,10 +112,12 @@
     },
     methods: {
       issue: function () {
-        this.$router.push('/admin/record/productAdd')
+        window.open('http://admin.qianbaojiajia.com/admin/details/productAdd')
+//        this.$router.push('/admin/record/productAdd')
       },
       setup:function () {
-        this.$router.push('/admin/record/gateway')
+        window.open('http://admin.qianbaojiajia.com/admin/details/gateway')
+//        this.$router.push('/admin/record/gateway')
       },
       create: function () {
         this.$data.product.channels = [];
@@ -151,8 +153,8 @@
           })
       },
       detail: function (val) {
-        console.log(val)
-        this.$router.push({path:'/admin/record/productAdd',query:{id:val}})
+        window.open('http://admin.qianbaojiajia.com/admin/details/productAdd?id='+val);
+//        this.$router.push({path:'/admin/record/productAdd',query:{id:val}})
       }
     },
     computed: {
