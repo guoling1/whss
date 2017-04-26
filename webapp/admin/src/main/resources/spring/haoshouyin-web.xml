@@ -66,7 +66,7 @@
             <mvc:mapping path="/admin/code/**"/>
             <mvc:mapping path="/admin/order/**"/>
             <mvc:mapping path="/admin/channel/**"/>
-            <mvc:mapping path="/admin/product/**"/>
+            <!--<mvc:mapping path="/admin/product/**"/>-->
             <mvc:mapping path="/admin/upgrade/**"/>
             <mvc:mapping path="/admin/hsyMerchantAudit/**"/>
             <mvc:mapping path="/admin/hsyMerchantList/**"/>
