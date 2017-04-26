@@ -159,7 +159,7 @@ public class TradeController extends BaseController {
             return "/500.jsp";
         }else{
             final Order order = orderOptional.get();
-            model.addAttribute("sn", order.getSn());
+            model.addAttribute("sn", order.getOrderNo());
             model.addAttribute("money", order.getRealPayAmount().toPlainString());
             return "/success";
         }
