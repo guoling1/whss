@@ -10,15 +10,15 @@
           <ul>
             <li class="same">
               <label class="title">网关模板:</label>
-              <el-table max-height="637" style="font-size:12px;width:80%;display: inline-table;vertical-align: top" :data="records" border>
+              <el-table max-height="637" style="font-size:12px;width:80%;display: inline-table;vertical-align: top" :data="$$records" border>
                 <el-table-column type="index" width="70" label="序号"></el-table-column>
                 <el-table-column prop="viewChannelName" label="展示名称"></el-table-column>
                 <el-table-column prop="channelShortName" label="通道名称"></el-table-column>
                 <el-table-column label="操作" min-width="100">
                   <template scope="scope">
                     <el-button type="text" @click="detail(scope.row.productId,scope.$index)">修改</el-button>
-                    <el-button type="text" @click="open(scope.row.productId,scope.$index)" v-if="scope.row.recommend!=0">推荐</el-button>
-                    <el-button type="text" @click="close(scope.row.productId,scope.$index)" v-if="scope.row.recommend==0">取消推荐</el-button>
+                    <el-button type="text" @click="open(scope.row.id)" v-if="scope.row.recommend!=0">推荐</el-button>
+                    <el-button type="text" @click="close(scope.row.id)" v-if="scope.row.recommend==0">取消推荐</el-button>
                   </template>
                 </el-table-column>
               </el-table>
@@ -70,22 +70,26 @@
         records: [],
         isRecommend:false,
         isNoRecommend:false,
+        id:''
       }
     },
     created: function () {
-      this.$http.post('/admin/product/listGateway',{"productType":"hss"})
-        .then(res => {
-          this.records = res.data;
-        })
-        .catch(err => {
-          this.$message({
-            showClose: true,
-            message: err.statusMessage,
-            type: 'error'
-          });
-        })
+      this.getData()
     },
     methods: {
+      getData:function () {
+        this.$http.post('/admin/product/listGateway',{"productType":"hss"})
+          .then(res => {
+            this.records = res.data;
+          })
+          .catch(err => {
+            this.$message({
+              showClose: true,
+              message: err.statusMessage,
+              type: 'error'
+            });
+          })
+      },
       submit:function () {
         var list = JSON.parse(JSON.stringify(this.tableData));
         for (var i = 0; i < list.length; i++) {
@@ -124,14 +128,16 @@
       detail: function (productId, index) {
         this.$router.push({path:'/admin/record/gatewayAdd',query:{productId:productId,index:index}})
       },
-      open: function () {
-        this.isRecommend = true
+      open: function (id) {
+        this.isRecommend = true;
+        this.id = id;
       },
-      close: function () {
-        this.isNoRecommend = true
+      close: function (id) {
+        this.isNoRecommend = true;
+        this.id = id;
       },
       confirm: function (val) {
-        this.$http.post('/admin/product/recommend',{recommend:val})
+        this.$http.post('/admin/product/recommend',{recommend:val,id:this.id})
           .then(res =>{
             this.isNoRecommend = false;
             this.isRecommend = false;
@@ -140,6 +146,7 @@
               message: '操作成功',
               type: 'success'
             });
+            this.getData();
           })
           .catch(err =>{
             this.isNoRecommend = false;
@@ -150,6 +157,11 @@
               type: 'error'
             });
           })
+      }
+    },
+    computed:{
+      $$records: function () {
+        return this.records;
       }
     }
   }
