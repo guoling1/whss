@@ -21,6 +21,7 @@ import com.jkm.hss.product.entity.BasicChannel;
 import com.jkm.hss.product.entity.Product;
 import com.jkm.hss.product.entity.ProductChannelDetail;
 import com.jkm.hss.product.enums.EnumPayChannelSign;
+import com.jkm.hss.product.enums.EnumPaymentChannel;
 import com.jkm.hss.product.enums.EnumProductType;
 import com.jkm.hss.product.enums.EnumUpperChannel;
 import com.jkm.hss.product.servcie.BasicChannelService;
@@ -99,9 +100,9 @@ public class CalculateServiceImpl implements CalculateService {
             //hsy
             final List<AppAuUser> appAuUsers = this.hsyShopDao.findCorporateUserByShopID(merchantId);
             final AppAuUser appAuUser = appAuUsers.get(0);
-            if (channelSign == EnumPayChannelSign.YG_WECHAT.getId()){
+            if (EnumPayChannelSign.idOf(channelSign).getPaymentChannel().getId() == EnumPaymentChannel.WECHAT_PAY.getId()){
                 return  appAuUser.getWeixinRate();
-            }else if (channelSign == EnumPayChannelSign.YG_ALIPAY.getId()){
+            }else if (EnumPayChannelSign.idOf(channelSign).getPaymentChannel().getId() == EnumPaymentChannel.ALIPAY.getId()){
                 return appAuUser.getAlipayRate();
             }else{
                 return appAuUser.getFastRate();
