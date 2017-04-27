@@ -50,6 +50,12 @@
         WHERE id = #{id}
     </update>
 
+    <update id="updateSettleAuditRecordIdById">
+        UPDATE tb_settle_account_flow
+        SET settle_audit_record_id = #{settleAuditRecordId}
+        WHERE id = #{id}
+    </update>
+
     <update id="updateSettlementRecordIdBySettleAuditRecordId">
         UPDATE tb_settle_account_flow
         SET settlement_record_id = #{settlementRecordId}
