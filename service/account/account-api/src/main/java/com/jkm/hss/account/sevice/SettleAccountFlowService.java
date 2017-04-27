@@ -31,6 +31,14 @@ public interface SettleAccountFlowService {
     int updateSettlementRecordIdById(long id, long settlementRecordId);
 
     /**
+     * 保存结算审核记录id
+     *
+     * @param id
+     * @param settleAuditRecordId
+     */
+    int updateSettleAuditRecordIdById(long id, long settleAuditRecordId);
+
+    /**
      * 保存结算单id
      *
      * @param settleAuditRecordId  结算审核记录id

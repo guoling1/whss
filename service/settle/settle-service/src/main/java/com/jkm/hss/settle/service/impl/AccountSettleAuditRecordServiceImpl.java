@@ -518,15 +518,18 @@ public class AccountSettleAuditRecordServiceImpl implements AccountSettleAuditRe
                 //待结算金额减少
                 Preconditions.checkState(account.getDueSettleAmount().compareTo(merchantIncreaseSettleAccountFlow.getIncomeAmount()) >= 0, "账户的待结算总金额不可以小于单笔结算流水的待结算金额");
                 this.accountService.decreaseSettleAmount(account.getId(), merchantIncreaseSettleAccountFlow.getIncomeAmount());
-                this.settleAccountFlowService.addSettleAccountFlow(account.getId(), settleAccountFlow.getOrderNo(), merchantIncreaseSettleAccountFlow.getIncomeAmount(),
+                final long settleAccountFlowDecreaseId = this.settleAccountFlowService.addSettleAccountFlow(account.getId(), settleAccountFlow.getOrderNo(), merchantIncreaseSettleAccountFlow.getIncomeAmount(),
                         merchantIncreaseSettleAccountFlow.getRemark(), EnumAccountFlowType.DECREASE, merchantIncreaseSettleAccountFlow.getAppId(), merchantIncreaseSettleAccountFlow.getTradeDate(),
                         merchantIncreaseSettleAccountFlow.getSettleDate(), merchantIncreaseSettleAccountFlow.getAccountUserType());
+                this.settleAccountFlowService.updateSettlementRecordIdById(settleAccountFlowDecreaseId, merchantIncreaseSettleAccountFlow.getSettlementRecordId());
+                this.settleAccountFlowService.updateSettleAuditRecordIdById(settleAccountFlowDecreaseId, merchantIncreaseSettleAccountFlow.getSettleAuditRecordId());
                 //可用余额流水增加
                 if (EnumAccountUserType.MERCHANT.getId() != settleAccountFlow.getAccountUserType()) {
                     this.accountService.increaseAvailableAmount(account.getId(), merchantIncreaseSettleAccountFlow.getIncomeAmount());
                     this.accountFlowService.addAccountFlow(account.getId(), settleAccountFlow.getOrderNo(), merchantIncreaseSettleAccountFlow.getIncomeAmount(),
                             "支付结算", EnumAccountFlowType.INCREASE);
                 } else {
+                    this.accountService.decreaseTotalAmount(account.getId(), merchantIncreaseSettleAccountFlow.getIncomeAmount());
                     final Optional<Order> orderOptional = this.orderService.getByOrderNo(settleAccountFlow.getOrderNo());
                     Preconditions.checkState(orderOptional.isPresent(), "结算成功，更新交易结算状态， 没有查询到交易记录[{}]", settleAccountFlow.getOrderNo());
                     if (this.orderService.getByIdWithLock(orderOptional.get().getId()).get().isDueSettle()) {
