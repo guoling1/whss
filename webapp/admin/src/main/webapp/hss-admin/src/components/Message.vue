@@ -1,5 +1,5 @@
 <template lang="html">
-  <transition name="fade">
+<!--  <transition name="fade">
     <div class="main" v-if="$$message" @click="know">
       <div class="col-md-3 content" v-show="$$accord">
         <div class="box box-danger">
@@ -21,7 +21,7 @@
           </div>
         </div>
       </div>
-      <!--<div class="group" v-show="$$delay">
+      &lt;!&ndash;<div class="group" v-show="$$delay">
         <div class="prompt">提示</div>
         <div class="text">{{$$text}}</div>
       </div>
@@ -29,9 +29,16 @@
         <div class="prompt">提示</div>
         <div class="text">{{$$text}}</div>
         <div class="btn" @click="know">我知道了</div>
-      </div>-->
+      </div>&ndash;&gt;
     </div>
-  </transition>
+  </transition>-->
+  <el-dialog title="提示" v-model="$$accord" size="tiny" :show-close="false" :close-on-click-modal="false">
+    <span>{{$$text}}</span>
+    <span slot="footer" class="dialog-footer">
+    <el-button @click="closeAll">关闭窗口</el-button>
+    <!--<el-button type="primary" @click="goBack">返回主页</el-button>-->
+    </span>
+  </el-dialog>
 </template>
 <script lang="babel">
   import Vue from 'vue';
@@ -46,6 +53,13 @@
     methods: {
       know: function () {
         this.$store.commit('MESSAGE_ACCORD_HIDE');
+      },
+      goBack:function(){
+        this.$store.commit('MESSAGE_ACCORD_HIDE');
+        this.$router.push('/admin/record/home')
+      },
+      closeAll: function () {
+        window.close()
       }
     },
     computed: {

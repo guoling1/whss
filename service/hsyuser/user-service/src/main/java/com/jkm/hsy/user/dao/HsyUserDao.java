@@ -27,4 +27,5 @@ public interface HsyUserDao {
     public List<AppAuUser> findAppAuUserListByParentID(AppAuUser appAuUser);
     public void deleteAppBizShopUserRole(@Param("uid")Long uid);
     public List<AppAuUser> findAppAuUserWithRoleByID(AppAuUser appAuUser);
+    public void updateHxbsStatus(@Param("status")Integer status,@Param("remarks")String remarks,@Param("uid")Long uid);
 }

@@ -2,6 +2,7 @@
   <div id="dealDet">
     <div class="box-header with-border" style="margin: 0 0 0 3px;">
       <h3 class="box-title" style="border-left: 3px solid #e4e0e0;padding-left: 10px;">交易详情</h3>
+      <a href="javascript:window.close();" class="pull-right btn btn-primary">关闭</a>
     </div>
     <div style="margin: 0 15px">
       <div class="box box-primary">
@@ -120,7 +121,6 @@
         </div>
       </div>-->
     </div>
-    <!--<el-button v-show="false" v-loading.fullscreen.lock="fullscreenLoading">显示整页加载</el-button>-->
   </div>
 </template>
 
@@ -130,23 +130,15 @@
     data: function () {
       return {
         record:{},
-//        fullscreenLoading:false
       }
     },
     created: function(){
       this.record={};
-//      this.fullscreenLoading = true;
       this.$http.post('/admin/queryOrder/orderListAll',{orderNo:this.$route.query.orderNo})
         .then(function (res) {
           this.record = res.data;
-          setTimeout(() => {
-//            this.fullscreenLoading = false;
-          }, 1000)
         },function (err) {
           this.record={};
-//          setTimeout(() => {
-//            this.fullscreenLoading = false;
-//          }, 1000)
           this.$message({
             showClose: true,
             message: err.statusMessage,
@@ -246,9 +238,4 @@
     /*display: inline-block;*/
     margin: 0 10px;
   }
-
-  a {
-    color: #42b983;
-  }
-
 </style>

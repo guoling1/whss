@@ -70,4 +70,11 @@ public class HsyMerchantAuditResponse {
 
     private Integer countEmployee;//员工个数
     private Integer countQR;//二维码个数
+
+    //华夏银行
+    private Integer hxbStatus;//华夏入驻状态
+    private String hxbRemarks;//华夏入驻信息
+    private Integer hxbOpenProduct;//华夏开通产品状态
+    private String hxbOpenProductRemarks;//华夏开通产品信息
+
 }

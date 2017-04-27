@@ -83,6 +83,11 @@ public class SettleAccountFlow extends BaseEntity {
     private Date tradeDate;
 
     /**
+     * 结算日期
+     */
+    private Date settleDate;
+
+    /**
      * 发生时间
      */
     private Date changeTime;

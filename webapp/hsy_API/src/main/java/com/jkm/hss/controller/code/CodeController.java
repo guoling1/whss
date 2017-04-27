@@ -2,12 +2,18 @@ package com.jkm.hss.controller.code;
 
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
+import com.jkm.base.common.spring.alipay.constant.AlipayServiceConstants;
 import com.jkm.hss.admin.entity.QRCode;
 import com.jkm.hss.admin.enums.EnumQRCodeSysType;
 import com.jkm.hss.admin.service.QRCodeService;
 import com.jkm.hss.controller.BaseController;
 import com.jkm.hss.helper.ApplicationConsts;
+import com.jkm.hss.merchant.helper.WxConstants;
+import com.jkm.hsy.user.Enum.EnumHxbsOpenProductStatus;
+import com.jkm.hsy.user.Enum.EnumHxbsStatus;
+import com.jkm.hsy.user.constant.AppConstant;
 import com.jkm.hsy.user.dao.HsyShopDao;
+import com.jkm.hsy.user.entity.AppAuUser;
 import com.jkm.hsy.user.entity.AppBizShop;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +25,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.List;
 
 /**
@@ -42,7 +50,7 @@ public class CodeController extends BaseController {
      * @return
      */
     @RequestMapping(value = "/scanCode", method = RequestMethod.GET)
-    public String scanCode(final HttpServletRequest request, final HttpServletResponse response, final Model model,@RequestParam(value = "openId", required = false) String openId) {
+    public String scanCode(final HttpServletRequest request, final HttpServletResponse response, final Model model,@RequestParam(value = "openId", required = false) String openId) throws UnsupportedEncodingException {
         boolean isRedirect = true;
         final String code = request.getParameter("code");
         final String sign = request.getParameter("sign");
@@ -63,14 +71,49 @@ public class CodeController extends BaseController {
             log.info("code[{}] is activate", code);
             List<AppBizShop> appBizShops = hsyShopDao.findAppBizShopByID(merchantId);
             Preconditions.checkState(appBizShops!=null&&appBizShops.size()>0, "商户不存在");
+            Preconditions.checkState(appBizShops.get(0).getStatus()!=null, "商户未通过审核");
+            Preconditions.checkState(appBizShops.get(0).getStatus()==AppConstant.SHOP_STATUS_NORMAL, "商户未通过审核");
+            List<AppAuUser> appAuUsers = hsyShopDao.findCorporateUserByShopID(merchantId);
+            Preconditions.checkState(appAuUsers!=null&&appAuUsers.size()>0, "商户不存在");
+            Preconditions.checkState(appAuUsers.get(0).getHxbStatus()!=null, "商户未通过审核");
+            Preconditions.checkState(appAuUsers.get(0).getHxbOpenProduct()!=null, "商户未通过审核");
+            Preconditions.checkState(appAuUsers.get(0).getHxbStatus()== EnumHxbsStatus.PASS.getId(), "该商户收款功能暂未开通，请使用其他方式向商户付款");
+            Preconditions.checkState(appAuUsers.get(0).getHxbOpenProduct()== EnumHxbsOpenProductStatus.PASS.getId(), "该商户收款功能暂未开通，请使用其他方式向商户付款");
             String merchantName = hsyShopDao.findShopNameByID(merchantId);
             model.addAttribute("merchantId", merchantId);
             model.addAttribute("name", merchantName);
             log.info("设备标示{}",agent.indexOf("micromessenger"));
             if (agent.indexOf("micromessenger") > -1) {
+                if(openId==null||"".equals(openId)){
+                    String requestUrl = "";
+                    if(request.getQueryString() == null){
+                        requestUrl = "";
+                    }else{
+                        requestUrl = request.getQueryString();
+                    }
+                    String encoderUrl = URLEncoder.encode(requestUrl, "UTF-8");
+                    return "redirect:"+ WxConstants.WEIXIN_HSY_MERCHANT_USERINFO+encoderUrl+ WxConstants.WEIXIN_USERINFO_REDIRECT;
+                }
+                model.addAttribute("openId",openId);
                 url = "/sqb/paymentWx";
             }
             if (agent.indexOf("aliapp") > -1) {
+                log.info("进入支付宝");
+                log.info("alipay的openId={}",openId);
+                if(openId==null||"".equals(openId)){
+                    String requestUrl = "";
+                    if(request.getQueryString() == null){
+                        requestUrl = "";
+                    }else{
+                        requestUrl = request.getQueryString();
+                    }
+                    log.info("请求地址是:{}",requestUrl);
+                    String encoderUrl = URLEncoder.encode(requestUrl, "UTF-8");
+                    log.info("加密之后的地址是:{}",encoderUrl);
+                    log.info("加密之后的请求地址是:{}",AlipayServiceConstants.OAUTH_URL+encoderUrl);
+                    return "redirect:"+ AlipayServiceConstants.OAUTH_URL+encoderUrl+AlipayServiceConstants.OAUTH_URL_AFTER;
+                }
+                model.addAttribute("openId",openId);
                 url = "/sqb/paymentZfb";
             }
         } else {

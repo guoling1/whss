@@ -30,6 +30,15 @@ public interface SettleAccountFlowDao {
     int updateSettlementRecordIdById(@Param("id") long id, @Param("settlementRecordId") long settlementRecordId);
 
     /**
+     * 保存结审核记录id
+     *
+     * @param id
+     * @param settleAuditRecordId
+     * @return
+     */
+    int updateSettleAuditRecordIdById(@Param("id") long id, @Param("settleAuditRecordId") long settleAuditRecordId);
+
+    /**
      * 保存结算单id
      *
      * @param settleAuditRecordId
@@ -41,12 +50,12 @@ public interface SettleAccountFlowDao {
     /**
      * 保存结算审核记录
      *
-     * @param tradeDate
+     * @param settleDate
      * @param accountId
      * @param settleAuditRecordId
      * @return
      */
-    int updateSettleAuditRecordIdByTradeDateAndAccountId(@Param("tradeDate") Date tradeDate, @Param("accountId") long accountId, @Param("settleAuditRecordId") long settleAuditRecordId);
+    int updateSettleAuditRecordIdBySettleDateAndAccountId(@Param("settleDate") Date settleDate, @Param("accountId") long accountId, @Param("settleAuditRecordId") long settleAuditRecordId);
 
     /**
      * 按id查询
@@ -65,12 +74,12 @@ public interface SettleAccountFlowDao {
     SettleAccountFlow selectByOrderNoAndAccountIdAndType(@Param("orderNo") String orderNo, @Param("accountId") long accountId, @Param("type") int type);
 
     /**
-     * 统计上一日的结算流水（未结算）
+     * 统计今日待结算的结算流水
      *
-     * @param tradeDate
+     * @param settleDate
      * @return
      */
-    List<SettleAccountFlowStatistics> statisticsYesterdayFlow(@Param("tradeDate") Date tradeDate);
+    List<SettleAccountFlowStatistics> statisticsYesterdayFlow(@Param("settleDate") Date settleDate);
 
     /**
      * 按审核记录id查询
@@ -99,10 +108,10 @@ public interface SettleAccountFlowDao {
     /**
      * 查询昨日出账流水个数
      *
-     * @param tradeDate
+     * @param settleDate
      * @return
      */
-    int selectYesterdayDecreaseFlowCount(@Param("tradeDate") Date tradeDate);
+    int selectYesterdayDecreaseFlowCount(@Param("settleDate") Date settleDate);
 
     /**
      * 按流水号查询个数
@@ -111,4 +120,12 @@ public interface SettleAccountFlowDao {
      * @return
      */
     int selectCountByFlowNo(@Param("flowNo") String flowNo);
+
+    /**
+     * 按结算审核记录查询订单号
+     *
+     * @param recordId
+     * @return
+     */
+    List<String> selectOrderNosByRecordId(@Param("recordId") long recordId);
 }

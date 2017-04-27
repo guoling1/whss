@@ -4,6 +4,9 @@
       <div class="box" style="margin-top:15px;overflow: hidden">
         <div class="box-header">
           <h3 class="box-title">T1结算审核</h3>
+          <a @click="isgenerateRecord = true" class="pull-right btn btn-primary" style="margin-left: 20px">生成结算单
+          </a>
+          <a @click="ismarkSettled = true" class="btn btn-primary" style="float: right;">更新结算状态</a>
         </div>
         <div class="box-body">
           <!--筛选-->
@@ -66,11 +69,16 @@
             <el-table-column prop="tradeDate" :formatter="changeTime" label="交易日期"></el-table-column>
             <el-table-column prop="tradeNumber" label="交易笔数" align="right" width="90"></el-table-column>
             <el-table-column prop="settleAmount" label="结算金额" align="right" :formatter="changeNum"></el-table-column>
-            <el-table-column prop="checkedStatusValue" label="对账结果" ></el-table-column>
+            <!--<el-table-column prop="checkedStatusValue" label="对账结果" ></el-table-column>-->
             <el-table-column prop="settleStatusValue" label="结算状态" ></el-table-column>
+            <!--<el-table-column label="操作" width="70">-->
+              <!--<template scope="scope">-->
+                <!--<el-button @click.native.prevent="list(scope.$index)" type="text" size="small" v-if="records[scope.$index].settleStatusValue!='结算成功'">结算</el-button>-->
+              <!--</template>-->
+            <!--</el-table-column>-->
             <el-table-column label="操作" width="70">
               <template scope="scope">
-                <el-button @click.native.prevent="_$power(list,'boss_trade_export',scope.$index)" type="text" size="small" v-if="records[scope.$index].settleStatusValue!='结算成功'">结算</el-button>
+                <el-button @click.native.prevent="_$power(scope.$index,list,'boss_trade_export')" type="text" size="small" v-if="records[scope.$index].settleStatusValue!='结算成功'">结算</el-button>
               </template>
             </el-table-column>
           </el-table>
@@ -112,6 +120,28 @@
                 <el-button @click="isShow = false">取 消</el-button>
                 <el-button @click="settle(2,records[index].id)">结算已对账部分</el-button>
                 <el-button @click="settle(3,records[index].id)">强制结算全部</el-button>
+              </div>
+            </el-dialog>
+          </div>
+          <div v-if="isgenerateRecord">
+            <el-dialog title="生成结算单" v-model="isgenerateRecord">
+              <div class="maskCon">
+                <span>生成结算单后，将会展示给商户，请务必在对账完成后生成结算单</span>
+              </div>
+              <div slot="footer" class="dialog-footer" style="text-align: center;">
+                <el-button @click="isgenerateRecord = false">取 消</el-button>
+                <el-button @click="generate">立即生成</el-button>
+              </div>
+            </el-dialog>
+          </div>
+          <div v-if="ismarkSettled">
+            <el-dialog title="更新结算单" v-model="ismarkSettled">
+              <div class="maskCon">
+                <span>更新结算单为成功状态</span>
+              </div>
+              <div slot="footer" class="dialog-footer" style="text-align: center;">
+                <el-button @click="ismarkSettled = false">取 消</el-button>
+                <el-button @click="markSettled">立即更新</el-button>
               </div>
             </el-dialog>
           </div>
@@ -172,6 +202,8 @@
               currentPage4: 1,
               loading:true,
               isShow:false,
+              isgenerateRecord:false,
+              ismarkSettled:false,
               index:'',
             }
         },
@@ -196,6 +228,42 @@
         this.getData()
       },
       methods: {
+        generate:function () {
+          this.$http.post('/admin/settle/generateRecord')
+            .then(function (res) {
+              this.$message({
+                showClose: true,
+                message: '生成成功',
+                type: 'success'
+              });
+              this.$data.isgenerateRecord = false
+            })
+            .catch(function (err) {
+              this.$message({
+                showClose: true,
+                message: err.statusMessage,
+                type: 'error'
+              })
+            })
+        },
+        markSettled:function () {
+          this.$http.post('/admin/settle/markSettled')
+            .then(function (res) {
+              this.$message({
+                showClose: true,
+                message: '更新成功',
+                type: 'success'
+              });
+              this.$data.ismarkSettled = false
+            })
+            .catch(function (err) {
+              this.$message({
+                showClose: true,
+                message: err.statusMessage,
+                type: 'error'
+              })
+            })
+        },
         changeTime: function (row, column) {
           var val = row.tradeDate;
           if (val == '' || val == null) {

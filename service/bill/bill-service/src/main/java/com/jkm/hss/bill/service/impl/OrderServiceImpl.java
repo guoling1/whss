@@ -1163,6 +1163,36 @@ public class OrderServiceImpl implements OrderService {
     }
 
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param orderNos
+     * @return
+     */
+    @Override
+    public Map<String, BigDecimal> getTradeAmountAndFeeByOrderNoList(final List<String> orderNos) {
+        if (CollectionUtils.isEmpty(orderNos)) {
+            return Collections.emptyMap();
+        }
+        return this.orderDao.selectTradeAmountAndFeeByOrderNoList(orderNos);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param orderNos
+     * @param offset
+     * @param pageSize
+     * @return
+     */
+    @Override
+    public List<Order> getOrderByOrderNos(final List<String> orderNos, final int offset, final int pageSize) {
+        if (CollectionUtils.isEmpty(orderNos)) {
+            return Collections.emptyList();
+        }
+        return this.orderDao.selectByAppParam(orderNos, offset, pageSize);
+    }
+
 
     /**
      * 手续费由待结算入余额

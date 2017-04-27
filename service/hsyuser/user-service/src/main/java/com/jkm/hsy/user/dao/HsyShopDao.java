@@ -1,5 +1,6 @@
 package com.jkm.hsy.user.dao;
 
+import com.jkm.hsy.user.constant.Page;
 import com.jkm.hsy.user.entity.*;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
@@ -33,4 +34,9 @@ public interface HsyShopDao {
     public boolean isShopStatusCheckPass(@Param("accountID")Long accountID);
     public List<AppBizShopUserRole> findAppBizShopUserRoleBySidAndUid(AppBizShopUserRole appBizShopUserRole);
     public List<AppAuUser> findAuUserByAccountID(@Param("accountID")Long accountID);
+    public List<AppBizDistrict> findDistrictByCode(@Param("code")String code);
+    public List<AppBizBankBranch> findBankBranchListByPage(Page<AppBizBankBranch> entity);
+    public Integer findBankBranchListByPageCount(AppBizBankBranch entity);
+    public List<AppBizBankBranch> findBankListByPage(Page<AppBizBankBranch> entity);
+    public Integer findBankListByPageCount(AppBizBankBranch entity);
 }

@@ -5,6 +5,9 @@ import com.jkm.base.common.entity.PageModel;
 import com.jkm.hss.bill.entity.SettlementRecord;
 import com.jkm.hss.bill.helper.requestparam.QuerySettlementRecordParams;
 
+import java.util.Date;
+import java.util.List;
+
 /**
  * Created by yulong.zhang on 2017/2/22.
  */

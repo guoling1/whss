@@ -3,6 +3,7 @@
     <div class="box-header with-border" style="margin: 0 0 0 3px;">
       <h3 v-if="isShow" class="box-title" style="border-left: 3px solid #e4e0e0;padding-left: 10px;">商户审核</h3>
       <h3 v-else="isShow" class="box-title" style="border-left: 3px solid #e4e0e0;padding-left: 10px;">商户资料</h3>
+      <a href="javascript:window.close();" class="pull-right btn btn-primary">关闭</a>
     </div>
     <div style="margin: 0 15px">
       <div class="box box-primary">
@@ -175,7 +176,9 @@
         </div>
       </div>
       <div class="box box-primary" style="overflow: hidden">
-        <p class="lead">商户费率信息</p>
+        <span class="lead">商户费率信息</span>
+        <el-button type="text" @click="isReenter = true" v-if="status==1">重新入网</el-button>
+        <el-button type="text" @click="isReject = true" v-if="status==1">驳回重填</el-button>
         <div style="width: 70%;margin: 0 0 15px 15px;">
           <template>
             <el-table :data="tableData" border style="width: 100%">
@@ -183,13 +186,42 @@
               <el-table-column prop="rate" label="支付结算手续费"></el-table-column>
               <el-table-column prop="time" label="结算时间" ></el-table-column>
               <el-table-column prop="money" label="提现手续费" ></el-table-column>
-              <el-table-column prop="status" label="产品开通状态" ></el-table-column>
+              <el-table-column prop="status" label="入网状态" >
+                <template scope="scope">
+                  <span v-if="scope.row.status==0">未入网</span>
+                  <span v-if="scope.row.status==1">成功</span>
+                  <span v-if="scope.row.status==2">失败</span>
+                </template>
+              </el-table-column>
               <el-table-column prop="msg" label="入网备注信息" ></el-table-column>
+              <el-table-column prop="product" label="产品开通状态">
+                <template scope="scope">
+                  <span v-if="scope.row.product==0">未开通</span>
+                  <span v-if="scope.row.product==1">成功</span>
+                  <span v-if="scope.row.product==2">失败</span>
+                </template>
+              </el-table-column>
+              <el-table-column prop="proMsg" label="产品开通信息" ></el-table-column>
             </el-table>
           </template>
         </div>
         </div>
 
+        <el-dialog title="重新入网" v-model="isReenter" size="tiny">
+          <p style="text-align: center;font-weight: 700">确认重新发起入网吗？？</p>
+          <span slot="footer" class="dialog-footer">
+            <el-button @click="isReenter = false">取 消</el-button>
+            <el-button type="primary" @click="reenter">确 定</el-button>
+          </span>
+        </el-dialog>
+        <el-dialog title="驳回重填" v-model="isReject" size="tiny">
+          <p style="text-align: center;font-weight: 700">确认驳回重填吗？</p>
+          <p style="text-align: center">只有全部通道都入网失败的才可以驳回</p>
+          <span slot="footer" class="dialog-footer">
+            <el-button @click="isReject = false">取 消</el-button>
+            <el-button type="primary" @click="reject">确 定</el-button>
+          </span>
+        </el-dialog>
       </div>
       <div class="box box-primary" v-if="!isShow">
         <p class="lead">审核日志</p>
@@ -243,6 +275,7 @@
 </template>
 
 <script lang="babel">
+  import Message from './Message.vue'
   export default {
     name: 'dale',
     data () {
@@ -266,6 +299,8 @@
           proxyNameYQ:'',
           proxyNameYQ1:'',
         },
+        isReenter:false,
+        isReject:false,
         reason:'',
         isShow:true,
         res: [],
@@ -274,20 +309,25 @@
           rate:'',
           time:'T1',
           money:'0元/笔',
-          status:'--',
-          msg:'--'
+          status:"",
+          product:'--',
+          msg:'--',
+          proMsg:'',
         },{
           name:'微信',
           rate:'',
           time:'T1',
           money:'0元/笔',
-          status:'--',
-          msg:'--'
+          status:"",
+          product:'--',
+          msg:'--',
+          proMsg:''
         }]
       }
     },
     created: function () {
       this.$data.id = this.$route.query.id;
+      this.status = this.$route.query.status;
       if(this.$route.query.status !=2){
         this.$data.isShow = false;
       }
@@ -295,7 +335,12 @@
         .then(function (res) {
           this.$data.msg = res.data;
           this.tableData[1].rate = parseFloat(res.data.weixinRate * 100).toFixed(2) + '%';
-          this.tableData[0].rate = parseFloat(res.data.fastRate * 100).toFixed(2) + '%';
+          this.tableData[0].rate = parseFloat(res.data.alipayRate * 100).toFixed(2) + '%';
+          this.tableData[0].product = this.tableData[1].product = res.data.hxbOpenProduct;
+          this.tableData[0].status = this.tableData[1].status = res.data.hxbStatus;
+          this.tableData[0].msg = this.tableData[1].msg = res.data.hxbRemarks;
+          this.tableData[0].proMsg = this.tableData[1].proMsg = res.data.hxbOpenproductRemarks;
+
         },function (err) {
           this.$message({
             showClose: true,
@@ -306,13 +351,57 @@
 
     },
     methods: {
+      // 重新入网
+      reenter:function () {
+        this.$http.post('/admin/hsyMerchantAudit/reenter', {
+          shopId: this.$data.id,//店铺编码
+          userId: this.$data.msg.uid,//商户编码
+        }).then(function (res) {
+          this.isReenter = false;
+          this.$message({
+            showClose: true,
+            message: '重新入网成功',
+            type: 'success'
+          })
+        }, function (err) {
+          this.isReenter = false;
+          this.$message({
+            showClose: true,
+            message: err.statusMessage,
+            type: 'error'
+          })
+        })
+      },
+      // 驳回
+      reject:function () {
+        this.$http.post('/admin/hsyMerchantAudit/reject', {
+          id: this.$data.id,
+          uid: this.$data.msg.uid,
+        }).then(function (res) {
+          this.isReject = false;
+          this.$message({
+            showClose: true,
+            message: '驳回重填成功',
+            type: 'success'
+          })
+        }, function (err) {
+          this.isReject = false;
+          this.$message({
+            showClose: true,
+            message: err.statusMessage,
+            type: 'error'
+          })
+        })
+      },
       audit: function (event) {
         this.$http.post('/admin/hsyMerchantAudit/throughAudit', {
           id: this.$data.id,
           uid: this.$data.msg.uid,
           name: this.msg.name
         }).then(function (res) {
-          this.$router.go(-1)
+          this.$store.commit('MESSAGE_ACCORD_SHOW', {
+            text: '操作成功'
+          })
         }, function (err) {
           this.$message({
             showClose: true,
@@ -324,7 +413,9 @@
       unAudit: function () {
         this.$http.post('/admin/hsyMerchantAudit/rejectToExamine',{id: this.$data.id, uid: this.$data.msg.uid,checkErrorInfo:this.$data.reason})
           .then(function (res) {
-            this.$router.go(-1)
+            this.$store.commit('MESSAGE_ACCORD_SHOW', {
+              text: '操作成功'
+            })
           },function (err) {
             this.$message({
               showClose: true,

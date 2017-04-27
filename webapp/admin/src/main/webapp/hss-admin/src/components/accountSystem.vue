@@ -40,7 +40,7 @@
               <div class="btn btn-primary" @click="search">筛选</div>
             </li>
           </ul>
-          <el-table v-loading.body="loading" style="font-size: 12px;margin:15px 0" :data="$records" border :row-style="tableFoot">
+          <el-table v-loading.body="loading" style="font-size: 12px;margin-bottom: 15px" :data="$records" border :row-style="tableFoot">
             <el-table-column type="index" width="62" label="序号" fixed="left"></el-table-column>
             <el-table-column prop="channelName" label="通道名称" ></el-table-column>
             <el-table-column label="交易类型" >
@@ -190,10 +190,10 @@
         uploadURL:'http://checking.qianbaojiajia.com/external/banlanceAccount',
         cancelUrl:'http://checking.qianbaojiajia.com/external/cancelBalance'
         //测试
-//        loadURL:'http://192.168.0.110:8080/balance/external/downloadxlsx/',
-//        url:'http://192.168.0.110:8080/balance/external/statisticList',
-//        uploadURL:'http://192.168.0.110:8080/balance/external/banlanceAccount',
-//        cancelUrl:'http://192.168.0.110:8080/balance/external/cancelBalance'
+        /*loadURL:'http://192.168.0.110:8080/balance/external/downloadxlsx/',
+         url:'http://192.168.0.110:8080/balance/external/statisticList',
+         uploadURL:'http://192.168.0.110:8080/balance/external/banlanceAccount',
+         cancelUrl:'http://192.168.0.110:8080/balance/external/cancelBalance'*/
       }
     },
     created: function () {
@@ -248,8 +248,9 @@
           type: 'info'
         });
         if(file.result.result=='操作成功'){
-          this.$router.push('/admin/record/accountData');
+//          this.$router.push('/admin/record/accountData');
           sessionStorage.setItem('data',JSON.stringify(file.result.jsonPayResult))
+          window.open("http://admin.qianbaojiajia.com/admin/details/accountData");
         }
       },
       getData: function () {
@@ -324,6 +325,11 @@
 <style scoped lang="less" rel="stylesheet/less">
   ul{
     padding: 0;
+    margin: 0;
+  }
+  label{
+    display: block;
+    margin-bottom: 0;
   }
   .same{
     list-style: none;

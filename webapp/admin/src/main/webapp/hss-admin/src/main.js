@@ -122,6 +122,8 @@ Vue.use(validate);
 
 import power from './plugin/power'
 Vue.use(power)
+import tabs from './plugin/tabs'
+Vue.use(tabs)
 
 import Head from './components/AppHead.vue';
 import Menu from './components/AppMenu.vue';

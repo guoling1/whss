@@ -2,6 +2,7 @@ package com.jkm.hss.bill.service;
 
 
 import com.jkm.hss.bill.entity.Order;
+import com.jkm.hss.bill.entity.PaymentSdkPlaceOrderResponse;
 import com.jkm.hss.bill.entity.callback.PaymentSdkPayCallbackResponse;
 import com.jkm.hss.bill.entity.callback.PaymentSdkWithdrawCallbackResponse;
 import com.jkm.hss.product.enums.EnumUpperChannel;
@@ -48,10 +49,20 @@ public interface HSYTradeService {
      * @param channel
      * @param shopId  店铺id
      * @param appId
+     * @param memberId 会员id
      * @return
      */
-    Pair<Integer, String> receipt(String totalAmount, final int channel, final long shopId, final String appId);
+    Pair<Integer, String> receipt(String totalAmount, final int channel, final long shopId, final String appId, final String memberId);
 
+    /**
+     * 下单实现
+     *
+     * @param shop
+     * @param channelCode
+     * @param order
+     * @return
+     */
+    Pair<Integer, String> handlePlaceOrder(AppBizShop shop, String channelCode, Order order);
 
     /**
      * 处理支付中心， 支付结果回调

@@ -46,4 +46,27 @@ public class PaymentSdkPayCallbackResponse {
      * 信息
      */
     private String message;
+
+    /**
+     * 银行流水号
+     */
+    private String bankTradeNo;
+
+    /**
+     * 交易卡类型
+     *
+     * {@link com.jkm.hss.account.enums.EnumBankType}
+     */
+    private String tradeCardType;
+
+    /**
+     * 交易卡号
+     */
+    private String tradeCardNo;
+
+    /**
+     * 支付宝/微信订单号
+     */
+    private String wechatOrAlipayOrderNo;
+
 }
