@@ -421,6 +421,15 @@ public class HsyMerchantAuditServiceImpl implements HsyMerchantAuditService {
     @Override
     public List<HsyMerchantInfoCheckRecord> getLog(Long id) {
         List<HsyMerchantInfoCheckRecord> list = this.hsyMerchantAuditDao.getLog(id);
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        if (list.size()>0){
+            for (int i=0;i<list.size();i++){
+                if (list.get(i).getCreateTime()!=null&&!list.get(i).getCreateTime().equals("")){
+                    String dates = format.format(list.get(i).getCreateTime());
+                    list.get(i).setCreateTimes(dates);
+                }
+            }
+        }
         return list;
     }
 
