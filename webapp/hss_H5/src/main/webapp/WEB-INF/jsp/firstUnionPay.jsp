@@ -13,7 +13,7 @@
         content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
   <meta name="format-detection" content="telephone=no"/>
   <title>好收收</title>
-  <link rel="stylesheet" href="http://static.jinkaimen.cn/hss/css/style.2.2.12.css">
+  <link rel="stylesheet" href="http://static.jinkaimen.cn/hss/css/style.2.2.13.css">
   <link rel="stylesheet" href="http://static.jinkaimen.cn/weui/weui.css">
 </head>
 <body>
@@ -110,5 +110,5 @@
 </script>
 <script src="https://res.wx.qq.com/open/libs/weuijs/1.0.0/weui.min.js"></script>
 <script src="http://static.jinkaimen.cn/vendor/vendor.1.0.9.9.min.js"></script>
-<script src="http://static.jinkaimen.cn/hss/2.2.18/firstUnionPay.min.js"></script>
+<script src="http://static.jinkaimen.cn/hss/2.2.20/firstUnionPay.min.js"></script>
 </html>
