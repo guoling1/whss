@@ -331,7 +331,8 @@
       }
       this.$http.post('/admin/hsyMerchantList/getDetails',{id:this.$data.id})
         .then(function (res) {
-          this.$data.msg = res.data;
+          this.$data.msg = res.data.res;
+          this.$data.res = res.data.list;
           this.tableData[1].rate = parseFloat(res.data.weixinRate * 100).toFixed(2) + '%';
           this.tableData[0].rate = parseFloat(res.data.alipayRate * 100).toFixed(2) + '%';
           this.tableData[0].product = this.tableData[1].product = res.data.hxbOpenProduct;
