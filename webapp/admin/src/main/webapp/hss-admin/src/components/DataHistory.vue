@@ -75,13 +75,13 @@
           })
       },
       handleSizeChange(val) {
-        this.query.page = 1;
-        this.query.size = val;
+        this.query.pageNo = 1;
+        this.query.pageSize = val;
         this.getData();
       },
       //当前页改变时
       handleCurrentChange(val) {
-        this.query.page = val;
+        this.query.pageNo = val;
         this.getData()
       },
       changeBig: function (val) {

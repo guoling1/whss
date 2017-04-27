@@ -167,12 +167,12 @@
                 </el-upload>
               </td>
               <td class="col-md-3" style="text-align: center;border: none;">
-                <img style="width: 200px" @click="changeBig()" :src="$msg.identityOppositePic" alt="" v-if="$msg.identityOppositePic!=null&&$msg.identityOppositePic!=''"/>
-                <el-button style="display: block;margin: 0 auto" v-if="$msg.identityOppositePic!=null&&$msg.identityOppositePic!=''" type="text" @click="changePhoto('5')">点击更换</el-button>
+                <img style="width: 200px" @click="changeBig()" :src="$msg.identityHandPic" alt="" v-if="$msg.identityHandPic!=null&&$msg.identityHandPic!=''"/>
+                <el-button style="display: block;margin: 0 auto" v-if="$msg.identityHandPic!=null&&$msg.identityHandPic!=''" type="text" @click="changePhoto('3')">点击更换</el-button>
                 <el-upload v-else id="upload" style="position: relative" action="/admin/photoChange/savePhotoChang"
                            type="drag" :thumbnail-mode="true"
                            name="photo"
-                           :data={merchantId:id,type:5}
+                           :data={merchantId:id,type:3}
                            :on-preview="handlePreview"
                            :on-success="handleSuccess"
                            :on-error="handleErr"
@@ -184,12 +184,12 @@
                 </el-upload>
               </td>
               <td class="col-md-3" style="text-align: center;border: none;">
-                <img style="width: 200px" @click="changeBig()" :src="$msg.identityHandPic" alt="" v-if="$msg.identityHandPic!=null&&$msg.identityHandPic!=''"/>
-                <el-button style="display: block;margin: 0 auto" v-if="$msg.identityHandPic!=null&&$msg.identityHandPic!=''" type="text" @click="changePhoto('3')">点击更换</el-button>
+                <img style="width: 200px" @click="changeBig()" :src="$msg.identityOppositePic" alt="" v-if="$msg.identityOppositePic!=null&&$msg.identityOppositePic!=''"/>
+                <el-button style="display: block;margin: 0 auto" v-if="$msg.identityOppositePic!=null&&$msg.identityOppositePic!=''" type="text" @click="changePhoto('5')">点击更换</el-button>
                 <el-upload v-else id="upload" style="position: relative" action="/admin/photoChange/savePhotoChang"
                            type="drag" :thumbnail-mode="true"
                            name="photo"
-                           :data={merchantId:id,type:3}
+                           :data={merchantId:id,type:5}
                            :on-preview="handlePreview"
                            :on-success="handleSuccess"
                            :on-error="handleErr"
