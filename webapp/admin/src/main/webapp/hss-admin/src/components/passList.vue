@@ -29,14 +29,14 @@
           <el-table v-loading.body="loading" height="583" style="font-size: 12px;margin-bottom:15px" :data="records" border>
             <el-table-column label="通道名称">
               <template scope="scope">
-                <router-link :to="{path:'/admin/record/passAdd',query:{id:scope.$index}}"
+                <router-link target="_blank" :to="{path:'/admin/details/passAdd',query:{id:scope.$index}}"
                              type="text" size="small">{{records[scope.$index].channelShortName}}
                 </router-link>
               </template>
             </el-table-column>
             <el-table-column label="原始名称">
               <template scope="scope">
-                <router-link :to="{path:'/admin/record/passAdd',query:{id:scope.$index}}"
+                <router-link target="_blank" :to="{path:'/admin/details/passAdd',query:{id:scope.$index}}"
                              type="text" size="small">{{records[scope.$index].channelName}}
                 </router-link>
               </template>
@@ -109,7 +109,8 @@
     },
     methods: {
       issue: function () {
-        this.$router.push('/admin/record/passAdd')
+        window.open('http://admin.qianbaojiajia.com/admin/details/passAdd')
+//        this.$router.push('/admin/record/passAdd')
       },
       getData: function () {
         this.loading = true;

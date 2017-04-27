@@ -3,6 +3,7 @@
     <div class="box-header with-border" style="margin: 0 0 0 3px;">
       <h3 v-if="isShow" class="box-title" style="border-left: 3px solid #e4e0e0;padding-left: 10px;">商户审核</h3>
       <h3 v-else="isShow" class="box-title" style="border-left: 3px solid #e4e0e0;padding-left: 10px;">商户资料</h3>
+      <a href="javascript:window.close();" class="pull-right btn btn-primary">关闭</a>
     </div>
     <div style="margin: 0 15px">
       <div class="box box-primary">
@@ -177,7 +178,7 @@
       <div class="box box-primary" style="overflow: hidden">
         <span class="lead">商户费率信息</span>
         <el-button type="text" @click="isReenter = true" v-if="status==1">重新入网</el-button>
-        <el-button type="text" @click="isReject = true" v-if="status==1">驳回充填</el-button>
+        <el-button type="text" @click="isReject = true" v-if="status==1">驳回重填</el-button>
         <div style="width: 70%;margin: 0 0 15px 15px;">
           <template>
             <el-table :data="tableData" border style="width: 100%">
@@ -274,6 +275,7 @@
 </template>
 
 <script lang="babel">
+  import Message from './Message.vue'
   export default {
     name: 'dale',
     data () {
@@ -379,7 +381,7 @@
           this.isReject = false;
           this.$message({
             showClose: true,
-            message: '驳回充填成功',
+            message: '驳回重填成功',
             type: 'success'
           })
         }, function (err) {
@@ -397,7 +399,9 @@
           uid: this.$data.msg.uid,
           name: this.msg.name
         }).then(function (res) {
-          this.$router.go(-1)
+          this.$store.commit('MESSAGE_ACCORD_SHOW', {
+            text: '操作成功'
+          })
         }, function (err) {
           this.$message({
             showClose: true,
@@ -409,7 +413,9 @@
       unAudit: function () {
         this.$http.post('/admin/hsyMerchantAudit/rejectToExamine',{id: this.$data.id, uid: this.$data.msg.uid,checkErrorInfo:this.$data.reason})
           .then(function (res) {
-            this.$router.go(-1)
+            this.$store.commit('MESSAGE_ACCORD_SHOW', {
+              text: '操作成功'
+            })
           },function (err) {
             this.$message({
               showClose: true,
