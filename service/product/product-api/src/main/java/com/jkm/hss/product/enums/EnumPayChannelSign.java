@@ -104,11 +104,11 @@ public enum EnumPayChannelSign {
     /**
      * 收银家WX
      */
-    SYJ_WECHAT(801, "syj_wechat", EnumPaymentChannel.WECHAT_PAY, "收银家微信T1", EnumUpperChannel.SYJ, true, EnumBalanceTimeType.T1, true),
+    SYJ_WECHAT(801, "syj_wechat", EnumPaymentChannel.WECHAT_PAY, "华夏微信T1", EnumUpperChannel.SYJ, true, EnumBalanceTimeType.T1, true),
     /**
      * 收银家zfb
      */
-    SYJ_ALIPAY(802, "syj_alipay", EnumPaymentChannel.ALIPAY, "收银家支付宝T1", EnumUpperChannel.SYJ, true, EnumBalanceTimeType.T1, true);
+    SYJ_ALIPAY(802, "syj_alipay", EnumPaymentChannel.ALIPAY, "华夏支付宝T1", EnumUpperChannel.SYJ, true, EnumBalanceTimeType.T1, true);
 
 
     private static final ImmutableMap<String, EnumPayChannelSign> STATUS_IMMUTABLE_MAP;
