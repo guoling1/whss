@@ -59,7 +59,7 @@
                 <el-option label="合众易宝" value="4"></el-option>
                 <el-option label="溢+" value="5"></el-option>
                 <el-option label="易联" value="6"></el-option>
-                <el-option label="银行家" value="8"></el-option>
+                <el-option label="收银家" value="8"></el-option>
               </el-select>
             </li>
             <li class="same">
