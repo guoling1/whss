@@ -252,11 +252,23 @@ public class QrCodeController extends BaseController {
     @ResponseBody
     @RequestMapping(value = "/revokeQrCode", method = RequestMethod.POST)
     public CommonResponse revokeQrCode (@RequestBody RevokeQrCodeRequest revokeQrCodeRequest) {
+        if(revokeQrCodeRequest.getSysType()==null||"".equals(revokeQrCodeRequest.getSysType())){
+            return CommonResponse.simpleResponse(-1, "请选择产品类型");
+        }
+        if(revokeQrCodeRequest.getStartCode()==null||"".equals(revokeQrCodeRequest.getStartCode())){
+            return CommonResponse.simpleResponse(-1, "请填写开始码段");
+        }
+        if(revokeQrCodeRequest.getEndCode()==null||"".equals(revokeQrCodeRequest.getEndCode())){
+            return CommonResponse.simpleResponse(-1, "请填写结束码段");
+        }
         Optional<Product> productOptional = productService.selectByType(revokeQrCodeRequest.getSysType());
         if(!productOptional.isPresent()){
             return CommonResponse.simpleResponse(-1, "请选择产品");
         }
-        long totalCount = Long.parseLong(revokeQrCodeRequest.getEndCode())-Long.parseLong(revokeQrCodeRequest.getStartCode())+1;
+        if((Long.parseLong(revokeQrCodeRequest.getEndCode())-Long.parseLong(revokeQrCodeRequest.getStartCode()))<0){
+            return CommonResponse.simpleResponse(-1, "结束码段必须大于开始码段");
+        }
+        long totalCount = qrCodeService.getRevokeTotalCount(revokeQrCodeRequest.getSysType(),revokeQrCodeRequest.getStartCode(),revokeQrCodeRequest.getEndCode());
         long resultCount = qrCodeService.revokeQrCode(revokeQrCodeRequest.getSysType(),revokeQrCodeRequest.getStartCode(),revokeQrCodeRequest.getEndCode());
         RevokeQrCodeRecord revokeQrCodeRecord = new RevokeQrCodeRecord();
         revokeQrCodeRecord.setStartCode(revokeQrCodeRequest.getStartCode());

@@ -1136,8 +1136,21 @@ public class QRCodeServiceImpl implements QRCodeService {
      * @return
      */
     @Override
-    public int revokeQrCode(String sysType, String startCode, String endCode) {
+    public long revokeQrCode(String sysType, String startCode, String endCode) {
         return this.qrCodeDao.revokeQrCode(sysType, startCode, endCode);
+    }
+
+    /**
+     * 获取范围内待回收二维码个数
+     *
+     * @param sysType
+     * @param startCode
+     * @param endCode
+     * @return
+     */
+    @Override
+    public long getRevokeTotalCount(String sysType, String startCode, String endCode) {
+        return this.qrCodeDao.getRevokeTotalCount(sysType, startCode, endCode);
     }
 
 }

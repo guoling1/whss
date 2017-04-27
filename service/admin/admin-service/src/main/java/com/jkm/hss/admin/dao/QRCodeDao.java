@@ -526,5 +526,14 @@ public interface QRCodeDao {
      * @param endCode
      * @return
      */
-    int revokeQrCode(@Param("sysType") String sysType,@Param("startCode") String startCode,@Param("endCode") String endCode);
+    long revokeQrCode(@Param("sysType") String sysType,@Param("startCode") String startCode,@Param("endCode") String endCode);
+
+    /**
+     * 获取范围内待回收二维码个数
+     * @param sysType
+     * @param startCode
+     * @param endCode
+     * @return
+     */
+    long getRevokeTotalCount(@Param("sysType") String sysType,@Param("startCode") String startCode,@Param("endCode") String endCode);
 }

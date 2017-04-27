@@ -983,4 +983,10 @@
         set first_level_dealer_id=0,second_level_dealer_id=0,merchant_id=0,distribute_status=1
         where sys_type=#{sysType} and code between #{startCode} and #{endCode} and activate_status=1
     </update>
+
+    <!--获取范围内待回收二维码个数-->
+    <select id="getRevokeTotalCount" resultType="java.lang.Long">
+        SELECT COUNT(1) FROM tb_qr_code
+        WHERE code BETWEEN #{startCode} AND #{endCode} and sys_type=#{sysType}
+    </select>
 </mapper>

@@ -498,5 +498,14 @@ public interface QRCodeService {
      * @param endCode
      * @return
      */
-    int revokeQrCode(String sysType,String startCode,String endCode);
+    long revokeQrCode(String sysType,String startCode,String endCode);
+    /**
+     * 获取范围内待回收二维码个数
+     * @param sysType
+     * @param startCode
+     * @param endCode
+     * @return
+     */
+    long getRevokeTotalCount(String sysType,String startCode,String endCode);
+
 }
