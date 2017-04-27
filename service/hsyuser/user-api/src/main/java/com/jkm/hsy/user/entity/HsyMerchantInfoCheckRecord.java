@@ -29,4 +29,9 @@ public class HsyMerchantInfoCheckRecord extends BaseEntity {
      */
     private String descr;
 
+    /**
+     * 时间
+     */
+    private String createTimes;
+
 }
