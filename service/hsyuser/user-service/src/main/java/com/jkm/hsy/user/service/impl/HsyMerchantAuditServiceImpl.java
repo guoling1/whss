@@ -1,7 +1,5 @@
 package com.jkm.hsy.user.service.impl;
 
-import com.jkm.hsy.user.Enum.EnumHxbsOpenProductStatus;
-import com.jkm.hsy.user.Enum.EnumHxbsStatus;
 import com.jkm.hsy.user.constant.IndustryCodeType;
 import com.jkm.hsy.user.dao.HsyMerchantAuditDao;
 import com.jkm.hsy.user.entity.*;
@@ -413,6 +411,17 @@ public class HsyMerchantAuditServiceImpl implements HsyMerchantAuditService {
     @Override
     public int hsyMerchantSecondListCount(HsyQueryMerchantRequest request) {
         return this.hsyMerchantAuditDao.hsyMerchantSecondListCount(request);
+    }
+
+    @Override
+    public void saveLog(String username, Long id, String checkErrorInfo,int stat) {
+        this.hsyMerchantAuditDao.saveLog(username,id,checkErrorInfo,stat);
+    }
+
+    @Override
+    public List<HsyMerchantInfoCheckRecord> getLog(Long id) {
+        List<HsyMerchantInfoCheckRecord> list = this.hsyMerchantAuditDao.getLog(id);
+        return list;
     }
 
 

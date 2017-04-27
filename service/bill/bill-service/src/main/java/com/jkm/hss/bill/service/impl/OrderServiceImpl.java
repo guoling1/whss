@@ -407,6 +407,8 @@ public class OrderServiceImpl implements OrderService {
         map.put("proxyName1",req.getProxyName1());
         map.put("businessOrderNo",req.getBusinessOrderNo());
         map.put("payChannelSign",req.getPayChannelSign());
+        map.put("markCode",req.getMarkCode());
+        map.put("appId",req.getAppId());
         List<MerchantTradeResponse> list = this.orderDao.selectOrderList(map);
         if (list.size()>0){
             for (int i=0;i<list.size();i++){
@@ -453,6 +455,9 @@ public class OrderServiceImpl implements OrderService {
         map.put("proxyName",req.getProxyName());
         map.put("proxyName1",req.getProxyName1());
         map.put("businessOrderNo",req.getBusinessOrderNo());
+        map.put("payChannelSign",req.getPayChannelSign());
+        map.put("markCode",req.getMarkCode());
+        map.put("appId",req.getAppId());
         List<MerchantTradeResponse> list = orderDao.downloadOrderList(map);
         if (list.size()>0){
             for (int i=0;i<list.size();i++){
@@ -1248,6 +1253,7 @@ public class OrderServiceImpl implements OrderService {
         heads.add("支付流水号");
         heads.add("交易日期");
         heads.add("收款商户名称");
+        heads.add("商户编号");
         heads.add("所属一级");
         heads.add("所属二级");
         heads.add("支付金额");
@@ -1275,6 +1281,7 @@ public class OrderServiceImpl implements OrderService {
                     columns.add("");
                 }
                 columns.add(list.get(i).getMerchantName());
+                columns.add(list.get(i).getMarkCode());
                 columns.add(list.get(i).getProxyName());
                 columns.add(list.get(i).getProxyName1());
                 columns.add(String.valueOf(list.get(i).getTradeAmount()));
@@ -1321,6 +1328,8 @@ public class OrderServiceImpl implements OrderService {
         map.put("proxyName1",req.getProxyName1());
         map.put("businessOrderNo",req.getBusinessOrderNo());
         map.put("payChannelSign",req.getPayChannelSign());
+        map.put("markCode",req.getMarkCode());
+        map.put("appId",req.getAppId());
         return orderDao.selectOrderListCount(map);
     }
 

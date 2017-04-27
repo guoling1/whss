@@ -10,8 +10,6 @@ import com.jkm.hsy.user.constant.AppConstant;
 import com.jkm.hsy.user.dao.HsyCmbcDao;
 import com.jkm.hsy.user.dao.HsyUserDao;
 import com.jkm.hsy.user.entity.*;
-import com.jkm.hsy.user.exception.ApiHandleException;
-import com.jkm.hsy.user.exception.ResultCode;
 import com.jkm.hsy.user.help.requestparam.CmbcResponse;
 import com.jkm.hsy.user.service.HsyCmbcService;
 import com.jkm.hsy.user.service.HsyMerchantAuditService;
@@ -81,6 +79,8 @@ public class HsyMerchantAuditController extends BaseController {
         }else{
             hsyUserDao.updateHxbsStatus(EnumHxbsStatus.UNPASS.getId(),cmbcResponse.getMsg(),hsyMerchantAuditRequest.getUid());
         }
+        hsyMerchantAuditRequest.setStat(0);
+        this.hsyMerchantAuditService.saveLog(super.getAdminUser().getUsername(),hsyMerchantAuditRequest.getId(),hsyMerchantAuditRequest.getCheckErrorInfo(),hsyMerchantAuditRequest.getStat());
         return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE,"审核通过");
 
     }
@@ -99,6 +99,8 @@ public class HsyMerchantAuditController extends BaseController {
             hsyMerchantAuditService.stepChange(uid);
         }
         pushService.pushAuditMsg(hsyMerchantAuditRequest.getUid(),false);
+        hsyMerchantAuditRequest.setStat(1);
+        this.hsyMerchantAuditService.saveLog(super.getAdminUser().getUsername(),hsyMerchantAuditRequest.getId(),hsyMerchantAuditRequest.getCheckErrorInfo(),hsyMerchantAuditRequest.getStat());
         return CommonResponse.simpleResponse(1,"审核未通过");
 
     }
@@ -180,6 +182,8 @@ public class HsyMerchantAuditController extends BaseController {
         hsyMerchantAuditRequest.setStatus(AppConstant.SHOP_STATUS_REJECT);
         hsyMerchantAuditService.auditNotPass(hsyMerchantAuditRequest);
         hsyMerchantAuditService.stepChange(hsyMerchantAuditRequest.getUid());
+        hsyMerchantAuditRequest.setStat(1);
+        this.hsyMerchantAuditService.saveLog(super.getAdminUser().getUsername(),hsyMerchantAuditRequest.getId(),hsyMerchantAuditRequest.getCheckErrorInfo(),hsyMerchantAuditRequest.getStat());
         return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE,"驳回充填成功");
     }
 }
