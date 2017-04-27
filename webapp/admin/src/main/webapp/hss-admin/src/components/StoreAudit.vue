@@ -136,10 +136,10 @@
                 <img style="width: 200px" @click="changeBig()" :src="$msg.identityFacePic" alt=""/>
               </td>
               <td class="col-md-3" style="text-align: center;border: none;">
-                <img style="width: 200px" @click="changeBig()" :src="$msg.identityOppositePic" alt=""/>
+                <img style="width: 200px" @click="changeBig()" :src="$msg.identityHandPic" alt=""/>
               </td>
               <td class="col-md-3" style="text-align: center;border: none;">
-                <img style="width: 200px" @click="changeBig()" :src="$msg.identityHandPic" alt=""/>
+                <img style="width: 200px" @click="changeBig()" :src="$msg.identityOppositePic" alt=""/>
               </td>
               <td class="col-md-3" style="text-align: center;border: none;">
                 <img style="width: 200px" @click="changeBig()" :src="$msg.bankPic" alt=""/>
