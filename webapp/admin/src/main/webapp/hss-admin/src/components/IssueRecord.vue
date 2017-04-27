@@ -106,7 +106,7 @@
     },
     methods: {
       revoke: function () {
-        this.$router.push('/admin/record/codeRevoke')
+        window.open('http://admin.qianbaojiajia.com/admin/details/codeRevoke')
       },
       issue: function () {
         window.open('http://admin.qianbaojiajia.com/admin/details/issue')

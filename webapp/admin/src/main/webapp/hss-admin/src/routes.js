@@ -95,6 +95,7 @@ let routes = [
     path: '/admin/details',
     component: Crumbs,
     children: [
+      {path: 'codeRevoke', name: 'CodeRevoke', component: CodeRevoke},
       {path: 'template', name: 'Template', component: Template},
       {path: 'templateAdd', name: 'TemplateAdd', component: TemplateAdd},
       {path: 'gateway', name: 'Gateway', component: Gateway},
@@ -122,8 +123,7 @@ let routes = [
       {path: 'withdrawalAudit', name: 'WithdrawalAudit', component: WithdrawalAudit},
       {path: 'withdrawalDet', name: 'WithdrawalDet', component: WithdrawalDet},
       {path: 'payQuery', name: 'PayQuery', component: PayQuery},
-      {path: 'storeList', name: 'StoreList', component: StoreList
-      },
+      {path: 'storeList', name: 'StoreList', component: StoreList},
       {path: 'storeNotice', name: 'StoreNotice', component: StoreNotice},
       {path: 'storeNoticeDet', name: 'StoreNoticeDet', component: StoreNoticeDet},
       {path: 'storeAuditList', name: 'StoreAuditList', component: StoreAuditList},
@@ -172,15 +172,8 @@ let routes = [
     redirect: '/admin/record/home',
     component: AAHome,
     children: [
-      {
-        path: 'codeRevoke',
-        name: 'CodeRevoke',
-        component: CodeRevoke
-      },
-      {
-        path: 'template',
-        name: 'Template',
-        component: Template
+      {path: 'codeRevoke', name: 'CodeRevoke', component: CodeRevoke},
+      {path: 'template', name: 'Template', component: Template},
       {path: 'template', name: 'Template', component: Template},
       {path: 'templateAdd', name: 'TemplateAdd', component: TemplateAdd},
       {path: 'gateway', name: 'Gateway', component: Gateway},
@@ -207,8 +200,7 @@ let routes = [
       {path: 'withdrawalAudit', name: 'WithdrawalAudit', component: WithdrawalAudit},
       {path: 'withdrawalDet', name: 'WithdrawalDet', component: WithdrawalDet},
       {path: 'payQuery', name: 'PayQuery', component: PayQuery},
-      {path: 'storeList', name: 'StoreList', component: StoreList
-      },
+      {path: 'storeList', name: 'StoreList', component: StoreList},
       {path: 'storeNotice', name: 'StoreNotice', component: StoreNotice},
       {path: 'storeNoticeDet', name: 'StoreNoticeDet', component: StoreNoticeDet},
       {path: 'storeAuditList', name: 'StoreAuditList', component: StoreAuditList},

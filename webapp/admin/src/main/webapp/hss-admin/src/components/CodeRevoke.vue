@@ -4,6 +4,7 @@
       <div class="box tableTop">
         <div class="box-header with-border">
           <h3 class="box-title">撤回二维码</h3>
+          <a href="javascript:window.close();" class="pull-right btn btn-primary" v-if="isDet">关闭</a>
         </div>
         <div class="">
           <div class="table-responsive">
