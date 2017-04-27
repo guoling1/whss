@@ -3,6 +3,7 @@
     <div style="margin: 15px;width: inherit" class="box">
       <div class="box-header">
         <h3 class="box-title">审核打款结果</h3>
+        <a href="javascript:window.close();" class="pull-right btn btn-primary">关闭</a>
       </div>
       <form class="form-horizontal">
         <div class="box-body">
@@ -94,6 +95,7 @@
 </template>
 
 <script lang="babel">
+  import Message from './Message.vue'
   export default{
     name:'productAdd',
     data(){
@@ -129,15 +131,14 @@
           this.$data.query.userName = res.data.userName;
           this.$data.query.userType = res.data.userType;
         },function (err) {
-          this.$store.commit('MESSAGE_ACCORD_SHOW', {
-            text: err.statusMessage
+          this.$message({
+            showClose: true,
+            message: err.statusMessage,
+            type: 'error'
           })
         })
     },
     methods:{
-      goBack:function () {
-        this.$router.push('/admin/record/productList')
-      },
       audit: function (val) {
         this.$data.query.opinion = val;
         if(val==2){
@@ -145,15 +146,17 @@
         }else {
           this.$http.post(this.$data.queryUrl,this.$data.query)
             .then(function (res) {
-              this.$store.commit('MESSAGE_DELAY_SHOW', {
-                text: "操作成功"
+              this.$store.commit('MESSAGE_ACCORD_SHOW', {
+                text: '操作成功'
               })
-              this.$router.push('/admin/record/newWithdrawalQuery')
+//              this.$router.push('/admin/record/newWithdrawalQuery')
             },function (err) {
-              this.$store.commit('MESSAGE_DELAY_SHOW', {
-                text: err.statusMessage
+              this.$message({
+                showClose: true,
+                message: err.statusMessage,
+                type: 'error'
               })
-              this.$router.push('/admin/record/newWithdrawalQuery')
+//              this.$router.push('/admin/record/newWithdrawalQuery')
             })
         }
       },
@@ -165,19 +168,21 @@
         this.isBtn=true;
         this.$http.post(this.$data.queryUrl,this.$data.query)
           .then(function (res) {
-            this.$store.commit('MESSAGE_DELAY_SHOW', {
-              text: "操作成功"
+            this.$store.commit('MESSAGE_ACCORD_SHOW', {
+              text: '操作成功'
             })
             this.$data.isMask = false;
             this.isBtn=false;
-            this.$router.push('/admin/record/newWithdrawalQuery')
+//            this.$router.push('/admin/record/newWithdrawalQuery')
           },function (err) {
-            this.$store.commit('MESSAGE_DELAY_SHOW', {
-              text: err.statusMessage
+            this.$message({
+              showClose: true,
+              message: err.statusMessage,
+              type: 'error'
             })
             this.isBtn=false;
             this.$data.isMask = false;
-            this.$router.push('/admin/record/newWithdrawalQuery')
+//            this.$router.push('/admin/record/newWithdrawalQuery')
           })
       }
     },

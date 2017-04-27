@@ -93,7 +93,8 @@
     },
     methods: {
       checkDetail: function (event, code) {
-        this.$router.push({path: '/admin/record/codeDet', query: {code: code}});
+        window.open('http://admin.qianbaojiajia.com/admin/details/codeDet?code='+code);
+//        this.$router.push({path: '/admin/record/codeDet', query: {code: code}});
       },
       getData: function () {
         this.loading = true;

@@ -85,365 +85,160 @@ const Test = r => require.ensure([], () => r(require('components/Test')), 'group
 const AAHome = r => require.ensure([], () => r(require('components/AAHome')), 'group-record');
 const Home = r => require.ensure([], () => r(require('components/Home')), 'group-record');
 const Login = r => require.ensure([], () => r(require('components/Login')), 'group-record');
+const Crumbs = r => require.ensure([], () => r(require('./Crumbs')), 'group-record');
 let routes = [
+  {path: '/', redirect: '/admin/login'},
+  {path: '/admin/login', component: Login},
   {
-    path: '/',
-    redirect: '/admin/login'
-  },
-  {
-    path: '/admin/login',
-    component: Login
+    path: '/admin/details',
+    component: Crumbs,
+    children: [
+      {path: 'template', name: 'Template', component: Template},
+      {path: 'templateAdd', name: 'TemplateAdd', component: TemplateAdd},
+      {path: 'gateway', name: 'Gateway', component: Gateway},
+      {path: 'gatewayAdd', name: 'GatewayAdd', component: GatewayAdd},
+      {path: 'home', name: 'Home', component: Home},
+      {path: 'accountData', name: 'AccountData', component: AccountData},
+      {path: 'accountSystem', name: 'AccountSystem', component: AccountSystem},
+      {path: 'accountErr', name: 'AccountErr', component: AccountErr},
+      {path: 'agentPersonnel', name: 'AgentPersonnel', component: AgentPersonnel},
+      {path: 'agentPersonnelDet', name: 'AgentPersonnelDet', component: AgentPersonnelDet},
+      {path: 'agentRole', name: 'AgentRole', component: AgentRole},
+      {path: 'agentRoleAdd', name: 'AgentRoleAdd', component: AgentRoleAdd},
+      {path: 'storeAuditHSY', name: 'StoreAuditHSY', component: StoreAuditHSY},
+      {path: 't1Audit', name: 'T1Audit', component: T1Audit},
+      {path: 'tAuditDealer', name: 'TAuditDealer', component: TAuditDealer},
+      {path: 'tAuditStore', name: 'TAuditStore', component: TAuditStore},
+      {path: 'newDeal', name: 'NewDealQuery', component: NewDealQuery},
+      {path: 'newDealDet', name: 'NewDealDet', component: NewDealDet},
+      {path: 'retrieval', name: 'Retrieval', component: Retrieval},
+      {path: 'retrievalDet', name: 'RetrievalDet', component: RetrievalDet},
+      {path: 'newWithdrawalQuery', name: 'NewWithdrawalQuery', component: NewWithdrawalQuery},
+      {path: 'deal', name: 'DealQuery', component: DealQuery},
+      {path: 'dealDet', name: 'DealDet', component: DealDet},
+      {path: 'withdrawal', name: 'WithdrawalQuery', component: WithdrawalQuery},
+      {path: 'withdrawalAudit', name: 'WithdrawalAudit', component: WithdrawalAudit},
+      {path: 'withdrawalDet', name: 'WithdrawalDet', component: WithdrawalDet},
+      {path: 'payQuery', name: 'PayQuery', component: PayQuery},
+      {path: 'storeList', name: 'StoreList', component: StoreList
+      },
+      {path: 'storeNotice', name: 'StoreNotice', component: StoreNotice},
+      {path: 'storeNoticeDet', name: 'StoreNoticeDet', component: StoreNoticeDet},
+      {path: 'storeAuditList', name: 'StoreAuditList', component: StoreAuditList},
+      {path: 'storeAudit', name: 'StoreAudit', component: StoreAudit},
+      {path: 'agentListFir', name: 'AgentListFir', component: AgentListFir},
+      {path: 'agentListSec', name: 'AgentListSec', component: AgentListSec},
+      {path: 'agentAdd', name: 'AgentAdd', component: AgentAdd},
+      {path: 'agentAddPro', name: 'AgentAddPro', component: AgentAddPro},
+      {path: 'agentAddBase', name: 'AgentAddBase', component: AgentAddBase},
+      {path: 'passAdd', name: 'PassAdd', component: PassAdd},
+      {path: 'passList', name: 'PassList', component: PassList},
+      {path: 'limitList', name: 'LimitList', component: LimitList},
+      {path: 'productAdd', name: 'ProductAdd', component: ProductAdd},
+      {path: 'productList', name: 'ProductList', component: ProductList},
+      {path: 'issue', name: 'Issue', component: Issue},
+      {path: 'issueRecord', name: 'IssueRecord', component: IssueRecord},
+      {path: 'codeProRecord', name: 'CodeProRecord', component: CodeProRecord},
+      {path: 'invite', name: 'Invite', component: Invite},
+      {path: 'codeStatus', name: 'CodeStatus', component: CodeStatus},
+      {path: 'codeAll', name: 'CodeAll', component: CodeAll},
+      {path: 'codeDet', name: 'CodeDet', component: CodeDet},
+      {path: 'codeProduct', name: 'CodeProduct', component: CodeProduct},
+      {path: 'orderQuery', name: 'OrderQuery', component: OrderQuery},
+      {path: 'orderDetail', name: 'OrderDetail', component: OrderDetail},
+      {path: 'profitAccount', name: 'ProfitAccount', component: ProfitAccount},
+      {path: 'profitAccountDet', name: 'ProfitAccountDet', component: ProfitAccountDet},
+      {path: 'profitCom', name: 'ProfitCom', component: ProfitCom},
+      {path: 'profitCount', name: 'ProfitCount', component: ProfitCount},
+      {path: 'profitFir', name: 'ProfitFir', component: ProfitFir},
+      {path: 'profitSec', name: 'ProfitSec', component: ProfitSec},
+      {path: 'profitDet', name: 'ProfitDet', component: ProfitDet},
+      {path: 'profitComDet', name: 'ProfitComDet', component: ProfitComDet},
+      {path: 'profitFirDet', name: 'ProfitFirDet', component: ProfitFirDet},
+      {path: 'profitSecDet', name: 'ProfitSecDet', component: ProfitSecDet},
+      {path: 'personnelList', name: 'PersonnelList', component: PersonnelList},
+      {path: 'personnelAdd', name: 'PersonnelAdd', component: PersonnelAdd},
+      {path: 'role', name: 'Role', component: Role},
+      {path: 'roleAdd', name: 'RoleAdd', component: RoleAdd},
+      {path: 'test', name: 'Test', component: Test},
+      {path: 'application', name: 'Application', component: Application},
+      {path: 'channel', name: 'Channel', component: Channel},
+    ]
   },
   {
     path: '/admin/record',
     redirect: '/admin/record/home',
     component: AAHome,
     children: [
-      {
-        path: 'template',
-        name: 'Template',
-        component: Template
-      },
-      {
-        path: 'templateAdd',
-        name: 'TemplateAdd',
-        component: TemplateAdd
-      },
-      {
-        path: 'gateway',
-        name: 'Gateway',
-        component: Gateway
-      },
-      {
-        path: 'gatewayAdd',
-        name: 'GatewayAdd',
-        component: GatewayAdd
-      },
-      {
-        path: 'home',
-        name: 'Home',
-        component: Home
-      },
-      {
-        path: 'accountData',
-        name: 'AccountData',
-        component: AccountData
-      },
-      {
-        path: 'accountSystem',
-        name: 'AccountSystem',
-        component: AccountSystem
-      },
-      {
-        path: 'accountErr',
-        name: 'AccountErr',
-        component: AccountErr
-      },
-      {
-        path: 'agentPersonnel',
-        name: 'AgentPersonnel',
-        component: AgentPersonnel
-      },
-      {
-        path: 'agentPersonnelDet',
-        name: 'AgentPersonnelDet',
-        component: AgentPersonnelDet
-      },
-      {
-        path: 'agentRole',
-        name: 'AgentRole',
-        component: AgentRole
-      },
-      {
-        path: 'agentRoleAdd',
-        name: 'AgentRoleAdd',
-        component: AgentRoleAdd
-      },
-      {
-        path: 'storeAuditHSY',
-        name: 'StoreAuditHSY',
-        component: StoreAuditHSY
-      },
-      {
-        path: 't1Audit',
-        name: 'T1Audit',
-        component: T1Audit
-      },
-      {
-        path: 'tAuditDealer',
-        name: 'TAuditDealer',
-        component: TAuditDealer
-      },
-      {
-        path: 'tAuditStore',
-        name: 'TAuditStore',
-        component: TAuditStore
-      },
-      {
-        path: 'newDeal',
-        name: 'NewDealQuery',
-        component: NewDealQuery
-      },
-      {
-        path: 'newDealDet',
-        name: 'NewDealDet',
-        component: NewDealDet
-      },
-      {
-        path: 'retrieval',
-        name: 'Retrieval',
-        component: Retrieval
-      },
-      {
-        path: 'retrievalDet',
-        name: 'RetrievalDet',
-        component: RetrievalDet
-      },
-      {
-        path: 'newWithdrawalQuery',
-        name: 'NewWithdrawalQuery',
-        component: NewWithdrawalQuery
-      },
-      {
-        path: 'deal',
-        name: 'DealQuery',
-        component: DealQuery
-      },
-      {
-        path: 'dealDet',
-        name: 'DealDet',
-        component: DealDet
-      },
-      {
-        path: 'withdrawal',
-        name: 'WithdrawalQuery',
-        component: WithdrawalQuery
-      },
-      {
-        path: 'withdrawalAudit',
-        name: 'WithdrawalAudit',
-        component: WithdrawalAudit
-      },
-      {
-        path: 'withdrawalDet',
-        name: 'WithdrawalDet',
-        component: WithdrawalDet
-      },
-      {
-        path: 'payQuery',
-        name: 'PayQuery',
-        component: PayQuery
-      },
-      {
-        path: 'storeList',
-        name: 'StoreList',
-        component: StoreList
-      },
-      {
-        path: 'storeNotice',
-        name: 'StoreNotice',
-        component: StoreNotice
-      },
-      {
-        path: 'storeNoticeDet',
-        name: 'StoreNoticeDet',
-        component: StoreNoticeDet
-      },
-      {
-        path: 'storeAuditList',
-        name: 'StoreAuditList',
-        component: StoreAuditList
-      },
-      {
-        path: 'storeAudit',
-        name: 'StoreAudit',
-        component: StoreAudit
-      },
-      {
-        path: 'agentListFir',
-        name: 'AgentListFir',
-        component: AgentListFir
-      },
-      {
-        path: 'agentListSec',
-        name: 'AgentListSec',
-        component: AgentListSec
-      },
-      {
-        path: 'agentAdd',
-        name: 'AgentAdd',
-        component: AgentAdd
-      },
-      {
-        path: 'agentAddPro',
-        name: 'AgentAddPro',
-        component: AgentAddPro
-      },
-      {
-        path: 'agentAddBase',
-        name: 'AgentAddBase',
-        component: AgentAddBase
-      },
-      {
-        path: 'passAdd',
-        name: 'PassAdd',
-        component: PassAdd
-      },
-      {
-        path: 'passList',
-        name: 'PassList',
-        component: PassList
-      },
-      {
-        path: 'limitList',
-        name: 'LimitList',
-        component: LimitList
-      },
-      {
-        path: 'productAdd',
-        name: 'ProductAdd',
-        component: ProductAdd
-      },
-      {
-        path: 'productList',
-        name: 'ProductList',
-        component: ProductList
-      },
-      {
-        path: 'issue',
-        name: 'Issue',
-        component: Issue
-      },
-      {
-        path: 'issueRecord',
-        name: 'IssueRecord',
-        component: IssueRecord
-      },
-      {
-        path: 'codeProRecord',
-        name: 'CodeProRecord',
-        component: CodeProRecord
-      },
-      {
-        path: 'invite',
-        name: 'Invite',
-        component: Invite
-      },
-      {
-        path: 'codeStatus',
-        name: 'CodeStatus',
-        component: CodeStatus
-      },
-      {
-        path: 'codeAll',
-        name: 'CodeAll',
-        component: CodeAll
-      },
-      {
-        path: 'codeDet',
-        name: 'CodeDet',
-        component: CodeDet
-      },
-      {
-        path: 'codeProduct',
-        name: 'CodeProduct',
-        component: CodeProduct
-      },
-      {
-        path: 'orderQuery',
-        name: 'OrderQuery',
-        component: OrderQuery
-      },
-      {
-        path: 'orderDetail',
-        name: 'OrderDetail',
-        component: OrderDetail
-      },
-      {
-        path: 'profitAccount',
-        name: 'ProfitAccount',
-        component: ProfitAccount
-      },
-      {
-        path: 'profitAccountDet',
-        name: 'ProfitAccountDet',
-        component: ProfitAccountDet
-      },
-      {
-        path: 'profitCom',
-        name: 'ProfitCom',
-        component: ProfitCom
-      },
-      {
-        path: 'profitCount',
-        name: 'ProfitCount',
-        component: ProfitCount
-      },
-      {
-        path: 'profitFir',
-        name: 'ProfitFir',
-        component: ProfitFir
-      },
-      {
-        path: 'profitSec',
-        name: 'ProfitSec',
-        component: ProfitSec
-      },
-      {
-        path: 'profitDet',
-        name: 'ProfitDet',
-        component: ProfitDet
-      },
-      {
-        path: 'profitComDet',
-        name: 'ProfitComDet',
-        component: ProfitComDet
-      },
-      {
-        path: 'profitFirDet',
-        name: 'ProfitFirDet',
-        component: ProfitFirDet
-      },
-      {
-        path: 'profitSecDet',
-        name: 'ProfitSecDet',
-        component: ProfitSecDet
-      },
-      {
-        path: 'personnelList',
-        name: 'PersonnelList',
-        component: PersonnelList
-      },
-      {
-        path: 'personnelAdd',
-        name: 'PersonnelAdd',
-        component: PersonnelAdd
-      },
-      {
-        path: 'role',
-        name: 'Role',
-        component: Role
-      },
-      {
-        path: 'roleAdd',
-        name: 'RoleAdd',
-        component: RoleAdd
-      },
-      {
-        path: 'test',
-        name: 'Test',
-        component: Test
-      },
-      {
-        path: 'application',
-        name: 'Application',
-        component: Application
-      },
-      {
-        path: 'channel',
-        name: 'Channel',
-        component: Channel
-      },
+      {path: 'template', name: 'Template', component: Template},
+      {path: 'templateAdd', name: 'TemplateAdd', component: TemplateAdd},
+      {path: 'gateway', name: 'Gateway', component: Gateway},
+      {path: 'gatewayAdd', name: 'GatewayAdd', component: GatewayAdd},
+      {path: 'home', name: 'Home', component: Home},
+      {path: 'accountData', name: 'AccountData', component: AccountData},
+      {path: 'accountSystem', name: 'AccountSystem', component: AccountSystem},
+      {path: 'accountErr', name: 'AccountErr', component: AccountErr},
+      {path: 'agentPersonnel', name: 'AgentPersonnel', component: AgentPersonnel},
+      {path: 'agentPersonnelDet', name: 'AgentPersonnelDet', component: AgentPersonnelDet},
+      {path: 'agentRole', name: 'AgentRole', component: AgentRole},
+      {path: 'agentRoleAdd', name: 'AgentRoleAdd', component: AgentRoleAdd},
+      {path: 'storeAuditHSY', name: 'StoreAuditHSY', component: StoreAuditHSY},
+      {path: 't1Audit', name: 'T1Audit', component: T1Audit},
+      {path: 'tAuditDealer', name: 'TAuditDealer', component: TAuditDealer},
+      {path: 'tAuditStore', name: 'TAuditStore', component: TAuditStore},
+      {path: 'newDeal', name: 'NewDealQuery', component: NewDealQuery},
+      {path: 'retrieval', name: 'Retrieval', component: Retrieval},
+      {path: 'retrievalDet', name: 'RetrievalDet', component: RetrievalDet},
+      {path: 'newWithdrawalQuery', name: 'NewWithdrawalQuery', component: NewWithdrawalQuery},
+      {path: 'deal', name: 'DealQuery', component: DealQuery},
+      {path: 'dealDet', name: 'DealDet', component: DealDet},
+      {path: 'withdrawal', name: 'WithdrawalQuery', component: WithdrawalQuery},
+      {path: 'withdrawalAudit', name: 'WithdrawalAudit', component: WithdrawalAudit},
+      {path: 'withdrawalDet', name: 'WithdrawalDet', component: WithdrawalDet},
+      {path: 'payQuery', name: 'PayQuery', component: PayQuery},
+      {path: 'storeList', name: 'StoreList', component: StoreList
+      },
+      {path: 'storeNotice', name: 'StoreNotice', component: StoreNotice},
+      {path: 'storeNoticeDet', name: 'StoreNoticeDet', component: StoreNoticeDet},
+      {path: 'storeAuditList', name: 'StoreAuditList', component: StoreAuditList},
+      {path: 'storeAudit', name: 'StoreAudit', component: StoreAudit},
+      {path: 'agentListFir', name: 'AgentListFir', component: AgentListFir},
+      {path: 'agentListSec', name: 'AgentListSec', component: AgentListSec},
+      {path: 'agentAdd', name: 'AgentAdd', component: AgentAdd},
+      {path: 'agentAddPro', name: 'AgentAddPro', component: AgentAddPro},
+      {path: 'agentAddBase', name: 'AgentAddBase', component: AgentAddBase},
+      {path: 'passAdd', name: 'PassAdd', component: PassAdd},
+      {path: 'passList', name: 'PassList', component: PassList},
+      {path: 'limitList', name: 'LimitList', component: LimitList},
+      {path: 'productAdd', name: 'ProductAdd', component: ProductAdd},
+      {path: 'productList', name: 'ProductList', component: ProductList},
+      {path: 'issue', name: 'Issue', component: Issue},
+      {path: 'issueRecord', name: 'IssueRecord', component: IssueRecord},
+      {path: 'codeProRecord', name: 'CodeProRecord', component: CodeProRecord},
+      {path: 'invite', name: 'Invite', component: Invite},
+      {path: 'codeStatus', name: 'CodeStatus', component: CodeStatus},
+      {path: 'codeAll', name: 'CodeAll', component: CodeAll},
+      {path: 'codeDet', name: 'CodeDet', component: CodeDet},
+      {path: 'codeProduct', name: 'CodeProduct', component: CodeProduct},
+      {path: 'orderQuery', name: 'OrderQuery', component: OrderQuery},
+      {path: 'orderDetail', name: 'OrderDetail', component: OrderDetail},
+      {path: 'profitAccount', name: 'ProfitAccount', component: ProfitAccount},
+      {path: 'profitAccountDet', name: 'ProfitAccountDet', component: ProfitAccountDet},
+      {path: 'profitCom', name: 'ProfitCom', component: ProfitCom},
+      {path: 'profitCount', name: 'ProfitCount', component: ProfitCount},
+      {path: 'profitFir', name: 'ProfitFir', component: ProfitFir},
+      {path: 'profitSec', name: 'ProfitSec', component: ProfitSec},
+      {path: 'profitDet', name: 'ProfitDet', component: ProfitDet},
+      {path: 'profitComDet', name: 'ProfitComDet', component: ProfitComDet},
+      {path: 'profitFirDet', name: 'ProfitFirDet', component: ProfitFirDet},
+      {path: 'profitSecDet', name: 'ProfitSecDet', component: ProfitSecDet},
+      {path: 'personnelList', name: 'PersonnelList', component: PersonnelList},
+      {path: 'personnelAdd', name: 'PersonnelAdd', component: PersonnelAdd},
+      {path: 'role', name: 'Role', component: Role},
+      {path: 'roleAdd', name: 'RoleAdd', component: RoleAdd},
+      {path: 'test', name: 'Test', component: Test},
+      {path: 'application', name: 'Application', component: Application},
+      {path: 'channel', name: 'Channel', component: Channel},
     ]
   },
 ];

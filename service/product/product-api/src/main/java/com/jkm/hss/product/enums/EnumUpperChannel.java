@@ -46,7 +46,7 @@ public enum EnumUpperChannel {
     /**
      * 收银家
      */
-    SYJ(8, "SYJ", "收银家")
+    SYJ(8, "SYJ", "华夏银行")
     ;
 
     @Getter

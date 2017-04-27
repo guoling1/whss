@@ -105,7 +105,8 @@
     },
     methods: {
       issue: function () {
-        this.$router.push('/admin/record/issue')
+        window.open('http://admin.qianbaojiajia.com/admin/details/issue')
+//        this.$router.push('/admin/record/issue')
       },
       //格式化时间
       distributeTime: function (row, column) {
