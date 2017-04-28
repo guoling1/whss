@@ -38,6 +38,7 @@ const StoreAudit = r => require.ensure([], () => r(require('components/StoreAudi
 const StoreNotice = r => require.ensure([], () => r(require('components/StoreNotice')), 'group-record');
 const StoreNoticeDet = r => require.ensure([], () => r(require('components/StoreNoticeDet')), 'group-record');
 const StoreAuditHSY = r => require.ensure([], () => r(require('components/StoreAuditHSY')), 'group-record');
+const DataHistory = r => require.ensure([], () => r(require('components/DataHistory')), 'group-record');
 //代理
 const AgentListSec = r => require.ensure([], () => r(require('components/AgentListSec')), 'group-record');
 const AgentListFir = r => require.ensure([], () => r(require('components/AgentListFir')), 'group-record');
@@ -96,6 +97,7 @@ let routes = [
     component: Crumbs,
     children: [
       {path: 'codeRevoke', name: 'CodeRevoke', component: CodeRevoke},
+      {path: 'dataHistory', name: 'DataHistory', component: DataHistory},
       {path: 'template', name: 'Template', component: Template},
       {path: 'templateAdd', name: 'TemplateAdd', component: TemplateAdd},
       {path: 'gateway', name: 'Gateway', component: Gateway},
@@ -173,6 +175,8 @@ let routes = [
     component: AAHome,
     children: [
       {path: 'codeRevoke', name: 'CodeRevoke', component: CodeRevoke},
+      {path: 'template', name: 'Template', component: Template},
+      {path: 'dataHistory', name: 'DataHistory', component: DataHistory},
       {path: 'template', name: 'Template', component: Template},
       {path: 'template', name: 'Template', component: Template},
       {path: 'templateAdd', name: 'TemplateAdd', component: TemplateAdd},

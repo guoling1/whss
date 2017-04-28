@@ -1,5 +1,6 @@
 package com.jkm.hss.controller.hsyMerchant;
 
+import com.alibaba.fastjson.JSONObject;
 import com.aliyun.oss.OSSClient;
 import com.jkm.base.common.entity.CommonResponse;
 import com.jkm.base.common.entity.PageModel;
@@ -7,6 +8,7 @@ import com.jkm.hss.controller.BaseController;
 import com.jkm.hss.helper.ApplicationConsts;
 import com.jkm.hsy.user.entity.HsyMerchantAuditRequest;
 import com.jkm.hsy.user.entity.HsyMerchantAuditResponse;
+import com.jkm.hsy.user.entity.HsyMerchantInfoCheckRecord;
 import com.jkm.hsy.user.service.HsyMerchantAuditService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -48,10 +50,10 @@ public class HsyMerchantListController extends BaseController {
     }
     @ResponseBody
     @RequestMapping(value = "/getDetails",method = RequestMethod.POST)
-    public CommonResponse getDetails(@RequestBody final HsyMerchantAuditRequest hsyMerchantAuditRequest){
+    public JSONObject getDetails(@RequestBody final HsyMerchantAuditRequest hsyMerchantAuditRequest){
 
 
-
+        JSONObject jsonObject = new JSONObject();
         HsyMerchantAuditResponse res = hsyMerchantAuditService.getDetails(hsyMerchantAuditRequest.getId());
         Date expiration = new Date(new Date().getTime() + 30*60*1000);
         if(res!=null){
@@ -99,7 +101,14 @@ public class HsyMerchantListController extends BaseController {
 //            }
 
         }
-        return CommonResponse.objectResponse(1, "success", res);
+        List<HsyMerchantInfoCheckRecord> list = hsyMerchantAuditService.getLog(hsyMerchantAuditRequest.getId());
+        jsonObject.put("code",1);
+        jsonObject.put("msg","success");
+        JSONObject jo = new JSONObject();
+        jo.put("list",list);
+        jo.put("res",res);
+        jsonObject.put("result",jo);
+        return jsonObject;
     }
 
 
