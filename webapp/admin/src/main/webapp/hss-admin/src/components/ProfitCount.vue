@@ -1,7 +1,7 @@
 <template>
   <div id="profitCount">
     <div class="col-md-12">
-      <div class="box" style="margin-top:15px;overflow: hidden">
+      <div class="box" style="overflow: hidden">
         <div class="box-header">
           <h3 class="box-title">分润统计</h3>
         </div>
@@ -27,6 +27,7 @@
                 </li>
                 <li class="same">
                   <div class="btn btn-primary" @click="search">筛选</div>
+                  <div class="btn btn-primary" @click="reset">重置</div>
                 </li>
                 <li class="same" style="color: #fff;float: right">
                   <span @click="_$power(onload,'boss_company_share_export')" download="公司分润" class="btn btn-primary">导出</span>
@@ -83,6 +84,7 @@
                 </li>
                 <li class="same">
                   <div class="btn btn-primary" @click="search">筛选</div>
+                  <div class="btn btn-primary" @click="reset">重置</div>
                 </li>
                 <li class="same" style="color: #fff;float: right">
                   <span @click="_$power(onload,'boss_first_share_export')" download="公司分润" class="btn btn-primary" style="color: #fff;float: right">导出</span>
@@ -144,6 +146,7 @@
                 </li>
                 <li class="same">
                   <div class="btn btn-primary" @click="search">筛选</div>
+                  <div class="btn btn-primary" @click="reset">重置</div>
                 </li>
                 <li class="same" style="color: #fff;float: right">
                   <span @click="_$power(onload,'boss_seconde_share_export')" download="公司分润" class="btn btn-primary">导出</span>
@@ -297,65 +300,46 @@
         vm.$data.records = [];
         vm.$data.total = 0;
         vm.$data.count = 0;
-        /*vm.$http.post(vm.$data.url,vm.query)
-          .then(function (res) {
-            vm.$data.loading = false;
-            vm.$data.records = res.data.records;
-            vm.$data.count = res.data.count;
-            vm.$data.loadUrl1 = res.data.ext;
-            var toFix = function (val) {
-              return parseFloat(val).toFixed(2)
-            };
-            var total=0;
-            for (let i = 0; i < vm.$data.records.length; i++) {
-              vm.$data.records[i].splitAmount = toFix(vm.$data.records[i].splitAmount);
-              total = toFix(parseFloat(total)+parseFloat(vm.$data.records[i].splitAmount))
-            }
-            vm.pageTotal = total;
-          }, function (err) {
-            vm.$data.loading = false;
-            vm.$message({
-              showClose: true,
-              message: err.statusMessage,
-              type: 'error'
-            })
-          })
-        vm.$http.post(vm.totalUrl,vm.query)
-          .then(res=>{
-            vm.addTotal = res.data;
-          })
-          .catch(err=>{
-            vm.$data.loading = false;
-            vm.$message({
-              showClose: true,
-              message: err.statusMessage,
-              type: 'error'
-            });
-          })*/
       })
     },
     created: function () {
-      let time = new Date();
-      this.date = [time,time];
-      for (var j = 0; j < this.date.length; j++) {
-        var str = this.date[j];
-        var ary = [str.getFullYear(), str.getMonth() + 1, str.getDate()];
-        for (var i = 0, len = ary.length; i < len; i++) {
-          if (ary[i] < 10) {
-            ary[i] = '0' + ary[i];
-          }
-        }
-        str = ary[0] + '-' + ary[1] + '-' + ary[2];
-        if (j == 0) {
-          this.$data.query.startTime = str;
-        } else {
-          this.$data.query.endTime = str;
-        }
-      }
+      this.currentDate();
       this.getData();
       this.getAddTotal();
     },
     methods: {
+      currentDate: function () {
+        let time = new Date();
+        this.date = [time,time];
+        for (var j = 0; j < this.date.length; j++) {
+          var str = this.date[j];
+          var ary = [str.getFullYear(), str.getMonth() + 1, str.getDate()];
+          for (var i = 0, len = ary.length; i < len; i++) {
+            if (ary[i] < 10) {
+              ary[i] = '0' + ary[i];
+            }
+          }
+          str = ary[0] + '-' + ary[1] + '-' + ary[2];
+          if (j == 0) {
+            this.$data.query.startTime = str;
+          } else {
+            this.$data.query.endTime = str;
+          }
+        }
+      },
+      reset: function () {
+        this.query = {
+          pageNo:1,
+          pageSize:10,
+          startTime:'',
+          endTime:'',
+          businessType:'',
+          proxyName:'',
+          markCode:'',
+          proxyName1:'',
+        };
+        this.currentDate()
+      },
       onload: function () {
         this.$data.loadUrl = this.loadUrl1;
         this.$data.isMask = true;
