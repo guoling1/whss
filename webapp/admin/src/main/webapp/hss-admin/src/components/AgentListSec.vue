@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="col-md-12">
-      <div class="box" style="margin-top:15px;overflow: hidden">
+      <div class="box" style="overflow: hidden">
         <div class="box-header">
           <h3 class="box-title">二级代理商列表</h3>
         </div>
@@ -48,6 +48,7 @@
             </el-col>
             <el-col  :span="1" style="margin-top: 18px">
               <div class="btn btn-primary" @click="search">筛选</div>
+              <div class="btn btn-primary" @click="reset">重置</div>
             </el-col>
           </el-row>
           <!--表格-->
@@ -151,6 +152,18 @@
       this.getData()
     },
     methods: {
+      reset: function () {
+        this.query = {
+          pageNo:1,
+          pageSize:10,
+          mobile:"",//商户编号
+          name:"",  //商户名字
+          markCode:"",
+          sysType:"",
+          firstDealerName:'',
+          districtCode:''
+        };
+      },
       getData: function () {
         this.loading = true;
         this.$http.post('/admin/dealer/listSecondDealer',this.$data.query)

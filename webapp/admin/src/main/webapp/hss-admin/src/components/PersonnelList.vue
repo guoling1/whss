@@ -1,7 +1,7 @@
 <template>
   <div id="personnelList">
     <div class="col-md-12">
-      <div class="box" style="margin-top:15px;overflow: hidden">
+      <div class="box" style="overflow: hidden">
         <div class="box-header">
           <h3 class="box-title">员工管理</h3>
           <a @click="_$power(issue,'boss_staff_add')" class="btn btn-primary" style="float: right;">新增员工</a>
@@ -23,6 +23,7 @@
             </li>
             <li class="same">
               <div class="btn btn-primary" @click="search">筛选</div>
+              <div class="btn btn-primary" @click="reset">重置</div>
             </li>
           </ul>
           <!--表格-->
@@ -89,6 +90,15 @@
       this.getData()
     },
     methods: {
+      reset: function () {
+        this.query = {
+          pageNo:1,
+          pageSize:10,
+          markCode: "",
+          realname: "",
+          mobile: ""
+        };
+      },
       issue: function () {
         window.open('http://admin.qianbaojiajia.com/admin/details/personnelAdd')
 //        this.$router.push('/admin/record/personnelAdd')
