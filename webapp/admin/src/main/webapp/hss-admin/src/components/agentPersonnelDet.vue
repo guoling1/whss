@@ -5,6 +5,7 @@
         <div class="box-header with-border" style="margin-bottom: 20px">
           <!--<h3 class="box-title" v-if="isShow">新增员工</h3>-->
           <h3 class="box-title" v-if="!isShow">员工详情</h3>
+          <a href="javascript:window.close();" class="pull-right btn btn-primary">关闭</a>
         </div>
         <div class="">
           <div class="table-responsive">
@@ -210,16 +211,14 @@
           </el-col>
           <el-col :span="6">
             <div class="grid-content bg-purple-light" style="width: 100%">
-              <div class="btn btn-primary" @click="goBack" style="width: 45%;margin: 20px 0 100px;">
-                返回
-              </div>
+              <!--<div class="btn btn-primary" @click="goBack" style="width: 45%;margin: 20px 0 100px;">返回</div>-->
               <div class="btn btn-primary" @click="create" v-if="isShow"
-                   style="width: 45%;float: right;margin: 20px 0 100px;">
-                创建员工
+                   style="width: 100%;margin: 20px 0 100px;">
+                创 建 员 工
               </div>
               <div class="btn btn-primary" @click="upDate" v-if="!isShow"
-                   style="width: 45%;float: right;margin: 20px 0 100px;">
-                修改
+                   style="width: 100%;margin: 20px 0 100px;">
+                修 改
               </div>
             </div>
           </el-col>
@@ -237,6 +236,7 @@
 </template>
 
 <script lang="babel">
+  import Message from './Message.vue'
   export default {
     name: 'personnelAdd',
     data () {
@@ -380,12 +380,15 @@
       create: function () {
           this.$http.post('/admin/user/addUser', this.query)
             .then(function (res) {
-              this.$message({
-                showClose: true,
-                message: '创建成功',
-                type: 'success'
-              });
-              this.$router.push('/admin/record/personnelList')
+              this.$store.commit('MESSAGE_ACCORD_SHOW', {
+                text: '创建成功'
+              })
+//              this.$message({
+//                showClose: true,
+//                message: '创建成功',
+//                type: 'success'
+//              });
+//              this.$router.push('/admin/record/personnelList')
             }, function (err) {
               this.$message({
                 showClose: true,
@@ -403,12 +406,15 @@
       upDate: function () {
           this.$http.post('/admin/dealer/updateUser', this.$data.query)
             .then(function (res) {
-              this.$message({
-                showClose: true,
-                message: '修改成功',
-                type: 'success'
-              });
-              this.$router.push('/admin/record/agentPersonnel')
+              this.$store.commit('MESSAGE_ACCORD_SHOW', {
+                text: '修改成功'
+              })
+//              this.$message({
+//                showClose: true,
+//                message: '修改成功',
+//                type: 'success'
+//              });
+//              this.$router.push('/admin/record/agentPersonnel')
             }, function (err) {
               this.$message({
                 showClose: true,

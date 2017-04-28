@@ -78,10 +78,12 @@
     },
     methods: {
       issue: function () {
-        this.$router.push('/admin/record/agentRoleAdd')
+        window.open('http://admin.qianbaojiajia.com/admin/details/agentRoleAdd');
+//        this.$router.push('/admin/record/agentRoleAdd')
       },
       issue1: function (id,type) {
-        this.$router.push({path:'/admin/record/agentRoleAdd',query:{id:id,type:type}})
+        window.open('http://admin.qianbaojiajia.com/admin/details/agentRoleAdd?id='+id+'&type='+type);
+//        this.$router.push({path:'/admin/record/agentRoleAdd',query:{id:id,type:type}})
       },
       getData: function () {
         this.loading = true;

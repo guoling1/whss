@@ -4,8 +4,7 @@
       <div class="box" style="margin-top:15px;overflow: hidden">
         <div class="box-header">
           <h3 class="box-title">交易查询</h3>
-          <router-link to="/admin/record/deal" class="pull-right btn btn-primary" style="margin-left: 20px">切换旧版
-          </router-link>
+          <router-link to="/admin/details/deal" class="pull-right btn btn-primary" style="margin-left: 20px" target="_blank">切换旧版</router-link>
           <span @click="_$power(onload,'boss_trade_export')" download="交易记录" class="btn btn-primary" style="float: right">导出</span>
         </div>
         <div class="box-body">
@@ -148,7 +147,7 @@
             <el-table-column prop="remark" label="渠道信息" min-width="90"></el-table-column>
             <el-table-column label="操作" width="90" fixed="right">
               <template scope="scope">
-                <router-link :to="{path:'/admin/record/newDealDet',query:{orderNo:scope.row.orderNo}}" type="text">详情
+                <router-link :to="{path:'/admin/details/newDealDet',query:{orderNo:scope.row.orderNo}}" type="text" target="_blank">详情
                 </router-link>
               </template>
             </el-table-column>

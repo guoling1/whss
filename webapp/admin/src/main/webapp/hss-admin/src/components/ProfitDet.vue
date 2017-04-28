@@ -4,6 +4,7 @@
       <div class="box" style="margin-top:15px;overflow: hidden">
         <div class="box-header">
           <h3 class="box-title">分润明细</h3>
+          <a href="javascript:window.close();" class="pull-right btn btn-primary" v-if="isDet">关闭</a>
         </div>
         <div class="box-body">
           <!--筛选-->
@@ -115,28 +116,30 @@
         pageTotal:0,
         pageTotal1:0,
         addTotal:0,
-        addTotal1:0
+        addTotal1:0,
+        isDet:true
       }
     },
     created: function () {
       if(this.$route.path=="/admin/record/profitDet"){
         this.$data.path = '/admin/queryProfit/profitDetails';
         this.$data.totalUrl = '/admin/queryProfit/profitAmount'
-      }else if(this.$route.path=="/admin/record/profitComDet"){
+        this.isDet = false
+      }else if(this.$route.path=="/admin/details/profitComDet"){
         this.$data.path = '/admin/allProfit/companyProfitDetail';
         this.$data.totalUrl = '/admin/allProfit/ProfitDetailAmount';
         this.$data.query.accId = this.$route.query.id;
         this.$data.query.splitDate = this.$route.query.time;
         this.$data.query.businessType = this.$route.query.type;
         this.isShow =false
-      }else if(this.$route.path=="/admin/record/profitFirDet"){
+      }else if(this.$route.path=="/admin/details/profitFirDet"){
         this.$data.path = '/admin/allProfit/firstDealerDetail';
         this.$data.totalUrl = '/admin/allProfit/firstDetailAmount';
         this.isShow =false;
         this.$data.query.receiptMoneyAccountId = this.$route.query.id;
         this.$data.query.businessType = this.$route.query.type;
         this.$data.query.splitDate = this.$route.query.time;
-      }else if(this.$route.path=="/admin/record/profitSecDet"){
+      }else if(this.$route.path=="/admin/details/profitSecDet"){
         this.$data.path = '/admin/allProfit/secondDealerDetail';
         this.$data.totalUrl = '/admin/allProfit/secondDetailAmount';
         this.$data.query.receiptMoneyAccountId = this.$route.query.id;

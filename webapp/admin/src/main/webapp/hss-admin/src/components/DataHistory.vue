@@ -4,6 +4,7 @@
       <div class="box" style="margin-top:15px;overflow: hidden">
         <div class="box-header">
           <h3 class="box-title">认证资料历史</h3>
+          <a href="javascript:window.close();" class="pull-right btn btn-primary">关闭</a>
         </div>
         <div class="box-body">
           <el-table v-loading.body="loading" style="font-size: 12px;margin:15px 0" :data="records" border>
