@@ -59,7 +59,7 @@ public class DealerReport {
     /**
      * 二维码总数
      */
-    private String codeNumber;
+    private String qrCodeNumber;
 
 
 }
