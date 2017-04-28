@@ -409,8 +409,8 @@
         <if test="markCode != null and markCode!=''">
             AND b.mark_code = #{markCode}
         </if>
-        <if test="AppId != null and AppId!=''">
-            AND a.app_id = #{AppId}
+        <if test="appId != null and appId!=''">
+            AND a.app_id = #{appId}
         </if>
         <if test="status != null and status!=''">
             AND a.status=#{status}
