@@ -333,10 +333,10 @@
         .then(function (res) {
           this.$data.msg = res.data.res;
           this.$data.res = res.data.list;
-          if(res.data.res.weixinRate!=null||res.data.res.weixinRate!=''){
+          if(res.data.res.weixinRate!=null&&res.data.res.weixinRate!=''&&res.data.res.weixinRate!=0){
             this.tableData[1].rate = parseFloat(res.data.res.weixinRate * 100).toFixed(2) + '%';
           }
-          if(res.data.res.alipayRate!=null||res.data.res.alipayRate!=''){
+          if(res.data.res.alipayRate!=null&&res.data.res.alipayRate!=''&&res.data.res.alipayRate!=0){
             this.tableData[0].rate = parseFloat(res.data.res.alipayRate * 100).toFixed(2) + '%';
           }
           this.tableData[0].product = this.tableData[1].product = res.data.res.hxbOpenProduct;
