@@ -1,5 +1,5 @@
 <template lang="html">
-  <div id="app" class="wrapper">
+  <div id="app" class="wrapper" style="background: inherit">
     <router-view></router-view>
     <message></message>
   </div>

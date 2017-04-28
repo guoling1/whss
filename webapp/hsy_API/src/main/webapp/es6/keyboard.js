@@ -138,9 +138,9 @@ _require.register("keyboard", (module, exports, _require, global) => {
             // 使用以上方式判断前端返回,微信团队郑重提示:res.err_msg 将在用户支付成功后返回ok，但并不保证它绝对可靠。
             function (res) {
               if (res.err_msg == "get_brand_wcpay_request:cancel") {
-                window.location.href = "${pageContext.request.contextPath}/v1/app/qr/showPayResult/" + jsonData.orderNo + "?status=cancel";
+                console.log('取消支付')
               } else if (res.err_msg == "get_brand_wcpay_request:ok") {
-                window.location.href = "${pageContext.request.contextPath}/v1/app/qr/showPayResult/" + jsonData.orderNo;
+                window.location.href = '/trade/success/' + jsonData.orderId;
               } else {
                 alert(res.err_code + res.err_desc + res.err_msg);
               }
@@ -153,15 +153,8 @@ _require.register("keyboard", (module, exports, _require, global) => {
           //jsonData.channelNo
           AlipayJSBridge.call("tradePay", {tradeNO: jsonData.tradeNO},
             function (result) {
-              let data = JSON.stringify(result);
-              if (data.resultCode == 9000 || data.resultCode == 8000) {
-                AlipayJSBridge.call('pushWindow', {
-                  url: 'http://hsy.qianbaojiajia.com/trade/success/' + jsonData.orderId,
-                  param: {
-                    readTitle: true,
-                    showOptionMenu: false
-                  }
-                });
+              if (result.resultCode == 9000 || result.resultCode == 8000) {
+                window.location.href = '/trade/success/' + jsonData.orderId;
               }
             });
         };

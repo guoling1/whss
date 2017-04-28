@@ -126,7 +126,7 @@
         LEFT JOIN app_biz_shop_user_role d ON d.SID=c.ID
         LEFT JOIN app_au_user b ON b.ID=d.UID
         LEFT JOIN app_biz_card e ON e.SID=c.ID
-        WHERE c.ID=#{id} AND d.TYPE=1
+        WHERE c.ID=#{id} AND d.TYPE=1 AND d.role=1
     </select>
 
     <!-- 根据districtCode查城市哪个区 -->

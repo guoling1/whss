@@ -59,6 +59,18 @@ public class SettleAccountFlowServiceImpl implements SettleAccountFlowService {
     /**
      * {@inheritDoc}
      *
+     * @param id
+     * @param settleAuditRecordId
+     * @return
+     */
+    @Override
+    public int updateSettleAuditRecordIdById(final long id, long settleAuditRecordId) {
+        return this.settleAccountFlowDao.updateSettleAuditRecordIdById(id, settleAuditRecordId);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
      * @param settleAuditRecordId  结算审核记录id
      * @param settlementRecordId  结算单id
      * @return
