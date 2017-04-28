@@ -223,7 +223,7 @@
           </span>
         </el-dialog>
       </div>
-      <div class="box box-primary" v-if="!isShow">
+      <div class="box box-primary" v-if="!isShow||res.length!=0">
         <p class="lead">审核日志</p>
         <div class="table-responsive">
           <div class="col-sm-12">
@@ -239,8 +239,8 @@
               <tbody id="content">
               <tr role="row" class="odd" v-for="re in this.$data.res">
                 <td class="sorting_1">{{re.status|status}}</td>
-                <td>{{re.createTime|changeTime}}</td>
-                <td>—</td>
+                <td>{{re.createTimes}}</td>
+                <td>{{re.name}}</td>
                 <td>{{re.descr}}</td>
               </tr>
               </tbody>
@@ -333,13 +333,18 @@
       }
       this.$http.post('/admin/hsyMerchantList/getDetails',{id:this.$data.id})
         .then(function (res) {
-          this.$data.msg = res.data;
-          this.tableData[1].rate = parseFloat(res.data.weixinRate * 100).toFixed(2) + '%';
-          this.tableData[0].rate = parseFloat(res.data.alipayRate * 100).toFixed(2) + '%';
-          this.tableData[0].product = this.tableData[1].product = res.data.hxbOpenProduct;
-          this.tableData[0].status = this.tableData[1].status = res.data.hxbStatus;
-          this.tableData[0].msg = this.tableData[1].msg = res.data.hxbRemarks;
-          this.tableData[0].proMsg = this.tableData[1].proMsg = res.data.hxbOpenproductRemarks;
+          this.$data.msg = res.data.res;
+          this.$data.res = res.data.list;
+          if(res.data.res.weixinRate!=null&&res.data.res.weixinRate!=''&&res.data.res.weixinRate!=0){
+            this.tableData[1].rate = parseFloat(res.data.res.weixinRate * 100).toFixed(2) + '%';
+          }
+          if(res.data.res.alipayRate!=null&&res.data.res.alipayRate!=''&&res.data.res.alipayRate!=0){
+            this.tableData[0].rate = parseFloat(res.data.res.alipayRate * 100).toFixed(2) + '%';
+          }
+          this.tableData[0].product = this.tableData[1].product = res.data.res.hxbOpenProduct;
+          this.tableData[0].status = this.tableData[1].status = res.data.res.hxbStatus;
+          this.tableData[0].msg = this.tableData[1].msg = res.data.res.hxbRemarks;
+          this.tableData[0].proMsg = this.tableData[1].proMsg = res.data.res.hxbOpenproductRemarks;
 
         },function (err) {
           this.$message({
@@ -397,7 +402,8 @@
         this.$http.post('/admin/hsyMerchantAudit/throughAudit', {
           id: this.$data.id,
           uid: this.$data.msg.uid,
-          name: this.msg.name
+          name: this.msg.name,
+          checkErrorInfo: this.$data.reason
         }).then(function (res) {
           this.$store.commit('MESSAGE_ACCORD_SHOW', {
             text: '操作成功'
@@ -411,7 +417,12 @@
         })
       },
       unAudit: function () {
-        this.$http.post('/admin/hsyMerchantAudit/rejectToExamine',{id: this.$data.id, uid: this.$data.msg.uid,checkErrorInfo:this.$data.reason})
+        this.$http.post('/admin/hsyMerchantAudit/rejectToExamine', {
+          id: this.$data.id,
+          uid: this.$data.msg.uid,
+          name: this.msg.name,
+          checkErrorInfo: this.$data.reason
+        })
           .then(function (res) {
             this.$store.commit('MESSAGE_ACCORD_SHOW', {
               text: '操作成功'
