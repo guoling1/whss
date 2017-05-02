@@ -14,6 +14,7 @@ import com.jkm.hss.notifier.dao.SendMessageRecordDao;
 import com.jkm.hss.notifier.entity.SendMessageRecord;
 import com.jkm.hss.notifier.entity.SmsTemplate;
 import com.jkm.hsy.user.constant.AppConstant;
+import com.jkm.hsy.user.constant.IndustryCodeType;
 import com.jkm.hsy.user.constant.VerificationCodeType;
 import com.jkm.hsy.user.dao.HsyShopDao;
 import com.jkm.hsy.user.dao.HsyUserDao;
@@ -119,6 +120,33 @@ public class HsyUserServiceImpl implements HsyUserService {
         appBizShopUserRole.setStatus(AppConstant.ROLE_STATUS_NORMAL);
         appBizShopUserRole.setType(AppConstant.ROLE_TYPE_PRIMARY);
         hsyShopDao.insertAppBizShopUserRole(appBizShopUserRole);
+
+        List<AppAuToken> tokenList=hsyUserDao.findAppAuTokenByAccessToken(appParam.getAccessToken());
+        if (tokenList != null && tokenList.size() != 0)
+        {
+            hsyUserDao.updateAppAuUserTokenStatus(appAuUser.getId());
+
+            AppAuUserToken appAuUserToken=new AppAuUserToken();
+            appAuUserToken.setUid(appAuUser.getId());
+            appAuUserToken.setTid(tokenList.get(0).getId());
+            List<AppAuUserToken> appAuUserTokenList=hsyUserDao.findAppAuUserTokenByParam(appAuUserToken);
+            if(appAuUserTokenList!=null&&appAuUserTokenList.size()!=0)
+            {
+                AppAuUserToken appAuUserTokenUpdate=appAuUserTokenList.get(0);
+                appAuUserTokenUpdate.setStatus(1);
+                appAuUserTokenUpdate.setLoginTime(new Date());
+                hsyUserDao.updateAppAuUserTokenByUidAndTid(appAuUserTokenUpdate);
+            }
+            else
+            {
+                appAuUserToken.setStatus(1);
+                appAuUserToken.setLoginTime(new Date());
+                hsyUserDao.insertAppAuUserToken(appAuUserToken);
+            }
+        }
+        else
+            throw new ApiHandleException(ResultCode.ACCESSTOKEN_NOT_FOUND);
+
         gson = new GsonBuilder().setExclusionStrategies(new ExclusionStrategy() {
             public boolean shouldSkipField(FieldAttributes f) {
                 return f.getName().contains("password");
@@ -216,6 +244,44 @@ public class HsyUserServiceImpl implements HsyUserService {
 //            throw new ApiHandleException(ResultCode.USER_NO_CEHCK);
         if(appBizShop.getCheckErrorInfo()==null)
             appBizShop.setCheckErrorInfo("");
+        if(appBizShop.getDistrictCode()!=null&&!appBizShop.getDistrictCode().equals("")){
+            String districtName="";
+            String parentCode="";
+            String districtCode=appBizShop.getDistrictCode();
+            while(!parentCode.equals("0")) {
+                List<AppBizDistrict> appBizDistrictList = hsyShopDao.findDistrictByCode(districtCode);
+                parentCode=appBizDistrictList.get(0).getParentCode();
+                if(!districtName.equals(""))
+                    districtName=appBizDistrictList.get(0).getAname()+"|"+districtName;
+                else
+                    districtName=appBizDistrictList.get(0).getAname();
+                districtCode=parentCode;
+            }
+            appBizShop.setDistrictName(districtName);
+        }
+        if(appBizShop.getIndustryCode()!=null&&!appBizShop.getIndustryCode().equals(""))
+            appBizShop.setIndustryName(IndustryCodeType.getValue(Integer.parseInt(appBizShop.getIndustryCode())));
+
+        AppBizCard appBizCard=new AppBizCard();
+        appBizCard.setSid(appBizShop.getId());
+        List<AppBizCard> appBizCardList=hsyShopDao.findAppBizCardByParam(appBizCard);
+        if(appBizCardList!=null&&appBizCardList.size()!=0)
+            appBizCard=appBizCardList.get(0);
+        if(appBizCard.getBranchDistrictCode()!=null&&!appBizCard.getBranchDistrictCode().equals("")){
+            String districtName="";
+            String parentCode="";
+            String districtCode=appBizCard.getBranchDistrictCode();
+            while(!parentCode.equals("0")) {
+                List<AppBizDistrict> appBizDistrictList = hsyShopDao.findDistrictByCode(districtCode);
+                parentCode=appBizDistrictList.get(0).getParentCode();
+                if(!districtName.equals(""))
+                    districtName=appBizDistrictList.get(0).getAname()+"|"+districtName;
+                else
+                    districtName=appBizDistrictList.get(0).getAname();
+                districtCode=parentCode;
+            }
+            appBizCard.setBranchDistrictName(districtName);
+        }
         gson = new GsonBuilder().setExclusionStrategies(new ExclusionStrategy() {
             public boolean shouldSkipField(FieldAttributes f) {
                 return f.getName().contains("password");
@@ -235,7 +301,7 @@ public class HsyUserServiceImpl implements HsyUserService {
         Map map=new HashMap();
         map.put("appAuUser",appAuUserFind);
         map.put("appBizShop",appBizShop);
-
+        map.put("appBizCard",appBizCard);
         return gson.toJson(map);
     }
 
@@ -809,6 +875,44 @@ public class HsyUserServiceImpl implements HsyUserService {
             appBizShop=shopList.get(0);
         if(appBizShop.getCheckErrorInfo()==null)
             appBizShop.setCheckErrorInfo("");
+        if(appBizShop.getDistrictCode()!=null&&!appBizShop.getDistrictCode().equals("")){
+            String districtName="";
+            String parentCode="";
+            String districtCode=appBizShop.getDistrictCode();
+            while(!parentCode.equals("0")) {
+                List<AppBizDistrict> appBizDistrictList = hsyShopDao.findDistrictByCode(districtCode);
+                parentCode=appBizDistrictList.get(0).getParentCode();
+                if(!districtName.equals(""))
+                    districtName=appBizDistrictList.get(0).getAname()+"|"+districtName;
+                else
+                    districtName=appBizDistrictList.get(0).getAname();
+                districtCode=parentCode;
+            }
+            appBizShop.setDistrictName(districtName);
+        }
+        if(appBizShop.getIndustryCode()!=null&&!appBizShop.getIndustryCode().equals(""))
+            appBizShop.setIndustryName(IndustryCodeType.getValue(Integer.parseInt(appBizShop.getIndustryCode())));
+
+        AppBizCard appBizCard=new AppBizCard();
+        appBizCard.setSid(appBizShop.getId());
+        List<AppBizCard> appBizCardList=hsyShopDao.findAppBizCardByParam(appBizCard);
+        if(appBizCardList!=null&&appBizCardList.size()!=0)
+            appBizCard=appBizCardList.get(0);
+        if(appBizCard.getBranchDistrictCode()!=null&&!appBizCard.getBranchDistrictCode().equals("")){
+            String districtName="";
+            String parentCode="";
+            String districtCode=appBizCard.getBranchDistrictCode();
+            while(!parentCode.equals("0")) {
+                List<AppBizDistrict> appBizDistrictList = hsyShopDao.findDistrictByCode(districtCode);
+                parentCode=appBizDistrictList.get(0).getParentCode();
+                if(!districtName.equals(""))
+                    districtName=appBizDistrictList.get(0).getAname()+"|"+districtName;
+                else
+                    districtName=appBizDistrictList.get(0).getAname();
+                districtCode=parentCode;
+            }
+            appBizCard.setBranchDistrictName(districtName);
+        }
         gson = new GsonBuilder().setExclusionStrategies(new ExclusionStrategy() {
             public boolean shouldSkipField(FieldAttributes f) {
                 return f.getName().contains("password");
@@ -849,6 +953,7 @@ public class HsyUserServiceImpl implements HsyUserService {
         }
         map.put("appAuUser",appAuUserFind);
         map.put("appBizShop",appBizShop);
+        map.put("appBizCard",appBizCard);
         return gson.toJson(map);
     }
 

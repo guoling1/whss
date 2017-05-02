@@ -34,7 +34,7 @@ public interface ShallProfitDetailService {
                                                                       int channelSign, long merchantId);
 
     /**
-     * 提现需要的参数 (手续费,通道成本)
+     * 提现需要的参数 (手续费,通道成本) （废弃）
      * @param merchantId
      * @return
      */

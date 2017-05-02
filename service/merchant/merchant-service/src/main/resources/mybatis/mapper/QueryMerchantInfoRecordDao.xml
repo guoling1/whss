@@ -21,13 +21,15 @@
             a.dealer_id,
             a. STATUS,
             a.bank_name,
+            a.first_merchant_id,
             a.first_dealer_id,
+            a.second_dealer_id,
             a.is_authen,
             a.create_time,
             a.mobile,
             a.authentication_time,
             a.checked_time,
-            a.second_dealer_id,
+            a.second_merchant_id,
             a.account_id,
             a.branch_name,
             (
@@ -66,22 +68,52 @@
 
     <!--查询所属一级代理商名称-->
     <select id="selectProxyNameYq" resultType="com.jkm.hss.merchant.entity.MerchantInfoResponse">
-        SELECT
-          proxy_name
+       SELECT
+            a.mark_code,
+            a.mobile,
+            a.merchant_name,
+            a.first_dealer_id,
+            a.second_dealer_id
         FROM
-          tb_dealer
+            tb_merchant_info a
+        LEFT JOIN tb_dealer b ON a.dealer_id = b.id
         WHERE
-          id=#{firstDealerId}
+            a.id =#{firstMerchantId}
     </select>
 
     <!--查询所属二级代理商名称-->
     <select id="selectProxyNameYq1" resultType="com.jkm.hss.merchant.entity.MerchantInfoResponse">
         SELECT
-          proxy_name
+            a.mark_code,
+            a.mobile,
+            a.merchant_name,
+            a.first_dealer_id,
+            a.second_dealer_id
         FROM
-          tb_dealer
+            tb_merchant_info a
+        LEFT JOIN tb_dealer b ON a.dealer_id = b.id
         WHERE
-          id=#{secondDealerId}
+            a.id =#{secondMerchantId}
+    </select>
+
+    <!--查询所属一级代理商名称-->
+    <select id="selectProxyNameTJ" resultType="com.jkm.hss.merchant.entity.MerchantInfoResponse">
+        SELECT
+            proxy_name
+        FROM
+            tb_dealer
+        WHERE
+            id = #{firstDealerId}
+    </select>
+
+    <!--查询所属二级代理商名称-->
+    <select id="selectProxyNameTJ1" resultType="com.jkm.hss.merchant.entity.MerchantInfoResponse">
+        SELECT
+            proxy_name
+        FROM
+            tb_dealer
+        WHERE
+            id = #{secondDealerId}
     </select>
 
     <!--审核日志-->

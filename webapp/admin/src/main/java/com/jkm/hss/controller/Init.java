@@ -25,7 +25,7 @@ public class Init {
     public void initSystem() {
         log.info("######################初始化系统--start##########################");
 
-        this.initAdminUser();
+//        this.initAdminUser();
         log.info("######################初始化系统--end##########################");
     }
 

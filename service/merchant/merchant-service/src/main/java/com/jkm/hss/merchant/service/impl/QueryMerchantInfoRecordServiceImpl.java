@@ -33,13 +33,25 @@ public class QueryMerchantInfoRecordServiceImpl implements QueryMerchantInfoReco
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         if(list!=null&&list.size()>0){
             for(int i=0;i<list.size();i++){
-                if (list.get(i).getFirstDealerId()>0){
-                    MerchantInfoResponse response = queryMerchantInfoRecordDao.selectProxyNameYq(list.get(i).getFirstDealerId());
-                    list.get(i).setProxyNameYq(response.getProxyName());
+                if (list.get(i).getFirstMerchantId()>0){
+                    MerchantInfoResponse response = queryMerchantInfoRecordDao.selectProxyNameYq(list.get(i).getFirstMerchantId());
+                    if (response.getFirstDealerId()>0){
+                        MerchantInfoResponse responseTJ = queryMerchantInfoRecordDao.selectProxyNameTJ(list.get(i).getFirstDealerId());
+                        list.get(i).setProxyNameYq(responseTJ.getProxyName());
+                    }
+                    list.get(i).setRecommenderCode(response.getMarkCode());
+                    list.get(i).setRecommenderName(response.getMerchantName());
+                    list.get(i).setRecommenderPhone(response.getMobile());
                 }
-                if (list.get(i).getSecondDealerId()>0){
-                    MerchantInfoResponse response1 = queryMerchantInfoRecordDao.selectProxyNameYq1(list.get(i).getSecondDealerId());
-                    list.get(i).setProxyNameYq1(response1.getProxyName());
+                if (list.get(i).getSecondMerchantId()>0){
+                    MerchantInfoResponse response = queryMerchantInfoRecordDao.selectProxyNameYq1(list.get(i).getSecondMerchantId());
+                    if (list.get(i).getSecondDealerId()>0){
+                        MerchantInfoResponse responseTJ = queryMerchantInfoRecordDao.selectProxyNameTJ1(list.get(i).getSecondDealerId());
+                        list.get(i).setProxyNameYq1(responseTJ.getProxyName());
+                    }
+                    list.get(i).setRecommenderCode(response.getMarkCode());
+                    list.get(i).setRecommenderName(response.getMerchantName());
+                    list.get(i).setRecommenderPhone(response.getMobile());
                 }
                 if (list.get(i).getMobile()!=null&&!"".equals(list.get(i).getMobile())){
                     list.get(i).setMobile(MerchantSupport.decryptMobile(list.get(i).getMobile()));

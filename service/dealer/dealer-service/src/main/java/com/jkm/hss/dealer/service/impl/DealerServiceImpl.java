@@ -45,6 +45,7 @@ import com.jkm.hss.product.entity.BasicChannel;
 import com.jkm.hss.product.entity.Product;
 import com.jkm.hss.product.entity.ProductChannelDetail;
 import com.jkm.hss.product.enums.EnumPayChannelSign;
+import com.jkm.hss.product.enums.EnumPaymentChannel;
 import com.jkm.hss.product.enums.EnumProductType;
 import com.jkm.hss.product.enums.EnumUpperChannel;
 import com.jkm.hss.product.servcie.BasicChannelService;
@@ -56,6 +57,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -111,6 +113,18 @@ public class DealerServiceImpl implements DealerService {
         return null;
     }
 
+    public static void main(String[] args){
+
+        final Date beginDate = DateFormatUtil.parse("2017-04-12 00:00:00", DateFormatUtil.yyyy_MM_dd_HH_mm_ss);
+        final Date endDate = DateFormatUtil.parse("2017-06-01 23:59:59", DateFormatUtil.yyyy_MM_dd_HH_mm_ss);
+        final Date currentDate = new Date();
+        final boolean isActTime = currentDate.after(beginDate) && currentDate.before(endDate);
+        System.out.print(isActTime);
+        if ((EnumPayChannelSign.EL_UNIONPAY.getId() == 601) && isActTime){
+            System.out.print(isActTime);
+        }
+    }
+
     /**
      * {@inheritDoc}
      *
@@ -130,7 +144,51 @@ public class DealerServiceImpl implements DealerService {
 
             //好收收收单分润
             try{
+
                 final MerchantInfo merchantInfo = this.merchantInfoService.selectById(merchantId).get();
+                //hss活动
+                final Date beginDate = DateFormatUtil.parse("2017-04-22 00:00:00", DateFormatUtil.yyyy_MM_dd_HH_mm_ss);
+                final Date endDate = DateFormatUtil.parse("2017-05-31 23:59:59", DateFormatUtil.yyyy_MM_dd_HH_mm_ss);
+                final Date currentDate = new Date();
+                final boolean isActTime = currentDate.after(beginDate) && currentDate.before(endDate);
+                if ((EnumPayChannelSign.EL_UNIONPAY.getId() == channelSign) && isActTime){
+                    //活动商户直接返回
+                    final Map<String, Triple<Long, BigDecimal, BigDecimal>> map = new HashMap<>();
+                    //final List<ProductChannelDetail> list = this.productChannelDetailService.selectByChannelTypeSign(channelSign);
+                    final Optional<BasicChannel> channelOptional =  this.basicChannelService.selectByChannelTypeSign(channelSign);
+                    final BasicChannel basicChannel = channelOptional.get();
+                    //商户手续费
+                    final BigDecimal merchantRate = this.getMerchantRate(channelSign, merchantInfo);
+                    final BigDecimal waitOriginMoney = tradeAmount.multiply(merchantRate);
+
+                    //计算商户手续费，按照通道来
+                    final BigDecimal waitMoney = this.calculateMerchantFee(tradeAmount, waitOriginMoney, channelSign);
+
+                    //通道成本， 不同通道成本计算不同
+                    final BigDecimal basicTrade = tradeAmount.multiply(basicChannel.getBasicTradeRate());
+                    final BigDecimal basicMoney = this.calculateChannelFee(basicTrade, channelSign);
+
+                    //通道分润
+                    final BigDecimal channelMoney = waitMoney.subtract(basicMoney);
+                    //记录通道, 产品分润明细
+                    final CompanyProfitDetail companyProfitDetail = new CompanyProfitDetail();
+                    companyProfitDetail.setProductType(EnumProductType.HSS.getId());
+                    companyProfitDetail.setMerchantId(merchantId);
+                    companyProfitDetail.setPaymentSn(orderNo);
+                    companyProfitDetail.setChannelType(channelSign);
+                    companyProfitDetail.setTotalFee(tradeAmount);
+                    companyProfitDetail.setWaitShallAmount(waitMoney);
+                    companyProfitDetail.setWaitShallOriginAmount(waitOriginMoney);
+                    companyProfitDetail.setProfitType(EnumProfitType.BALANCE.getId());
+                    companyProfitDetail.setChannelCost(basicMoney);
+                    companyProfitDetail.setChannelShallAmount(channelMoney);
+                    companyProfitDetail.setProfitDate(DateFormatUtil.format(new Date(), DateFormatUtil.yyyy_MM_dd));
+                    this.companyProfitDetailService.add(companyProfitDetail);
+                    map.put("basicMoney", Triple.of(0L,basicMoney,basicChannel.getBasicTradeRate()));
+                    map.put("channelMoney",Triple.of(basicChannel.getAccountId(), channelMoney, basicChannel.getBasicTradeRate()));
+                    return map;
+                }
+                log.info("-----------------------" + isActTime +"" +(EnumPayChannelSign.EL_UNIONPAY.getId() == channelSign));
                 //判断商户是否是直属商户
                 if (merchantInfo.getFirstMerchantId() == 0){
                     //直属商户
@@ -176,27 +234,17 @@ public class DealerServiceImpl implements DealerService {
             final BasicChannel basicChannel = channelOptional.get();
             //商户手续费
             BigDecimal merchantRate;
-            if (channelSign == EnumPayChannelSign.YG_WECHAT.getId() || channelSign == EnumPayChannelSign.KM_WECHAT.getId()){
+            final EnumPayChannelSign enumPayChannelSign = EnumPayChannelSign.idOf(channelSign);
+            if (enumPayChannelSign.getPaymentChannel().getId() == EnumPaymentChannel.WECHAT_PAY.getId()){
                 merchantRate = appAuUser.getWeixinRate();
-            }else if (channelSign == EnumPayChannelSign.YG_ALIPAY.getId() || channelSign == EnumPayChannelSign.KM_ALIPAY.getId()){
+            }else if (enumPayChannelSign.getPaymentChannel().getId() == EnumPaymentChannel.ALIPAY.getId()){
                 merchantRate = appAuUser.getAlipayRate();
             }else{
                 merchantRate = appAuUser.getFastRate();
             }
             final BigDecimal waitOriginMoney = totalFee.multiply(merchantRate);
-            BigDecimal waitMoney;
-            if (new BigDecimal("0.01").compareTo(waitOriginMoney) == 1){
-                //手续费不足一分 , 按一分收
-                if (new BigDecimal("0.01").compareTo(totalFee) == 0){
-                    //支付金额一分,不收手续费
-                    waitMoney = new BigDecimal("0");
-                }else{
-                    waitMoney = new BigDecimal("0.01");
-                }
-            }else{
-                //收手续费,进一位,保留两位有效数字
-                waitMoney = waitOriginMoney.setScale(2,BigDecimal.ROUND_UP);
-            }
+            //计算商户的手续费
+            final BigDecimal waitMoney = this.calculateMerchantFee(totalFee,waitOriginMoney,channelSign);
 
             //获取产品的信息, 产品通道的费率
             final Optional<Product> productOptional = this.productService.selectById(appAuUser.getProductID());
@@ -205,16 +253,8 @@ public class DealerServiceImpl implements DealerService {
             //通道成本
             BigDecimal basicMoney;
             final BigDecimal basicTrade = totalFee.multiply(basicChannel.getBasicTradeRate());
-            if (new BigDecimal("0.01").compareTo(basicTrade) == 1){
-                //通道成本不足一分 , 按一分收
-                basicMoney = new BigDecimal("0.01");
-
-            }else{
-                //超过一分,四舍五入,保留两位有效数字
-                basicMoney = basicTrade.setScale(2, BigDecimal.ROUND_HALF_UP);
-            }
-
-            final BigDecimal merchantMoney = totalFee.subtract(waitMoney);
+           //计算通道成本
+            basicMoney = this.calculateChannelFee(basicTrade,channelSign);
             //通道分润
             final BigDecimal channelMoney = totalFee.multiply(productChannelDetail.getProductTradeRate().
                     subtract(basicChannel.getBasicTradeRate())).setScale(2,BigDecimal.ROUND_DOWN);
@@ -260,45 +300,28 @@ public class DealerServiceImpl implements DealerService {
         final BasicChannel basicChannel = channelOptional.get();
         //商户手续费
         BigDecimal merchantRate;
-        if (channelSign == EnumPayChannelSign.YG_WECHAT.getId()){
+        final EnumPayChannelSign enumPayChannelSign = EnumPayChannelSign.idOf(channelSign);
+        if (enumPayChannelSign.getPaymentChannel().getId() == EnumPaymentChannel.WECHAT_PAY.getId()){
             merchantRate = appAuUser.getWeixinRate();
-        }else if (channelSign == EnumPayChannelSign.YG_ALIPAY.getId()){
+        }else if (enumPayChannelSign.getPaymentChannel().getId() == EnumPaymentChannel.ALIPAY.getId()){
             merchantRate = appAuUser.getAlipayRate();
         }else{
             merchantRate = appAuUser.getFastRate();
         }
         //待分润金额
         final BigDecimal waitOriginMoney = totalFee.multiply(merchantRate);
-        BigDecimal waitMoney;
-        if (new BigDecimal("0.01").compareTo(waitOriginMoney) == 1){
-            //手续费不足一分 , 按一分收
-            if (new BigDecimal("0.01").compareTo(totalFee) == 0){
-                //支付金额一分,不收手续费
-                waitMoney = new BigDecimal("0");
-            }else{
-                waitMoney = new BigDecimal("0.01");
-            }
-        }else{
-            //收手续费,进一位,保留两位有效数字
-            waitMoney = waitOriginMoney.setScale(2,BigDecimal.ROUND_UP);
-        }
+        //计算商户手续费
+        final BigDecimal waitMoney = this.calculateMerchantFee(totalFee, waitOriginMoney, channelSign);
         //判断代理商等级
         if (dealer.getLevel() == EnumDealerLevel.FIRST.getId()){
             //一级
             //一级分润
             final BigDecimal firstMoney = totalFee.multiply(merchantRate.
                     subtract(dealerChannelRate.getDealerTradeRate())).setScale(2,BigDecimal.ROUND_DOWN);
-            //通道成本
-            BigDecimal basicMoney;
             final BigDecimal basicTrade = totalFee.multiply(basicChannel.getBasicTradeRate());
-            if (new BigDecimal("0.01").compareTo(basicTrade) == 1){
-                //通道成本不足一分 , 按一分收
-                basicMoney = new BigDecimal("0.01");
+            //计算通道成本
+            final BigDecimal basicMoney = this.calculateChannelFee(basicTrade, channelSign);
 
-            }else{
-                //超过一分,四舍五入,保留两位有效数字
-                basicMoney = basicTrade.setScale(2, BigDecimal.ROUND_HALF_UP);
-            }
             //通道分润
             final BigDecimal channelMoney = totalFee.multiply(productChannelDetail.getProductTradeRate().
                     subtract(basicChannel.getBasicTradeRate())).setScale(2,BigDecimal.ROUND_DOWN);
@@ -350,17 +373,10 @@ public class DealerServiceImpl implements DealerService {
             //通道分润
             final BigDecimal channelMoney = totalFee.multiply(productChannelDetail.getProductTradeRate().
                     subtract(basicChannel.getBasicTradeRate())).setScale(2,BigDecimal.ROUND_DOWN);
-            //通道成本
-            BigDecimal basicMoney;
-            final BigDecimal basicTrade = totalFee.multiply(basicChannel.getBasicTradeRate());
-            if (new BigDecimal("0.01").compareTo(basicTrade) == 1){
-                //通道成本不足一分 , 按一分收
-                basicMoney = new BigDecimal("0.01");
 
-            }else{
-                //超过一分,四舍五入,保留两位有效数字
-                basicMoney = basicTrade.setScale(2, BigDecimal.ROUND_HALF_UP);
-            }
+            final BigDecimal basicTrade = totalFee.multiply(basicChannel.getBasicTradeRate());
+            //通道成本
+            final BigDecimal basicMoney = this.calculateChannelFee(basicTrade, channelSign);
             //产品分润
             final BigDecimal productMoney;
             if (new BigDecimal("0.01").compareTo(totalFee) == 0){
@@ -991,6 +1007,9 @@ public class DealerServiceImpl implements DealerService {
                     basicMoney = basicTrade.setScale(2, BigDecimal.ROUND_HALF_UP);
                 }
                 return basicMoney;
+            case SYJ:
+                basicMoney = basicTrade.setScale(2, BigDecimal.ROUND_HALF_UP);
+                return  basicMoney;
             default:
                 basicMoney = basicTrade.setScale(2, BigDecimal.ROUND_HALF_UP);
                 return basicMoney;
@@ -1044,9 +1063,24 @@ public class DealerServiceImpl implements DealerService {
                     //手续费不足两毛 , 按2毛收
                     waitMoney = basicChannel.getLowestFee();
                 }else{
-                    //收手续费,进一位,保留两位有效数字
-                    waitMoney = waitOriginMoney.setScale(2,BigDecimal.ROUND_UP);
+                    //hss活动
+                    final Date beginDate = DateFormatUtil.parse("2017-04-22 00:00:00", DateFormatUtil.yyyy_MM_dd_HH_mm_ss);
+                    final Date endDate = DateFormatUtil.parse("2017-05-31 23:59:59", DateFormatUtil.yyyy_MM_dd_HH_mm_ss);
+                    final Date currentDate = new Date();
+                    final boolean isActTime = currentDate.after(beginDate) && currentDate.before(endDate);
+                    if ((EnumPayChannelSign.EL_UNIONPAY.getId() == channelSign) && isActTime){
+                        waitMoney = totalFee.multiply(new BigDecimal("0.0038")).setScale(2,BigDecimal.ROUND_UP);
+                        if (basicChannel.getLowestFee().compareTo(waitMoney) == 1){
+                            waitMoney = basicChannel.getLowestFee();
+                        }
+                    }else{
+                        //收手续费,进一位,保留两位有效数字
+                        waitMoney = waitOriginMoney.setScale(2,BigDecimal.ROUND_UP);
+                    }
                 }
+                return waitMoney;
+            case SYJ:
+                waitMoney = waitOriginMoney.setScale(2,BigDecimal.ROUND_HALF_UP);
                 return waitMoney;
             default:
                 waitMoney = waitOriginMoney.setScale(2,BigDecimal.ROUND_UP);

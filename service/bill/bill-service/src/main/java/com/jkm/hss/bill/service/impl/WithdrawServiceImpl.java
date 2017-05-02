@@ -219,7 +219,7 @@ public class WithdrawServiceImpl implements WithdrawService {
             this.accountService.decreaseSettleAmount(merchantAccount.getId(), settleAccountFlow.getIncomeAmount());
             final long settleAccountFlowDecreaseId = this.settleAccountFlowService.addSettleAccountFlow(merchantAccount.getId(), settleAccountFlow.getOrderNo(),
                     settleAccountFlow.getIncomeAmount(), "提现结算", EnumAccountFlowType.DECREASE,
-                    EnumAppType.HSS.getId(), settleAccountFlow.getTradeDate(), EnumAccountUserType.MERCHANT.getId());
+                    EnumAppType.HSS.getId(), settleAccountFlow.getTradeDate(), settleAccountFlow.getSettleDate(), EnumAccountUserType.MERCHANT.getId());
             this.settleAccountFlowService.updateSettlementRecordIdById(settleAccountFlowDecreaseId, settlementRecordId);
             this.orderService.updateSettleStatus(payOrder.getId(), EnumSettleStatus.SETTLED.getId());
             this.orderService.updateRemark(payOrder.getId(), "提现成功");

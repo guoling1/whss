@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jkm.hsy.user.dao.HsyCmbcDao">
+    <sql id="Base_Column_User_List">
+        ID,GLOBALID,CELLPHONE,PASSWORD,	NICKNAME,	REALNAME,	STATUS,	PROFILE,AUSTEP,
+        IDCARD,	IDCARDF,IDCARDB,IDCARDH,ACCOUNTID,	DEALERID,	PRODUCTID,	WEIXINRATE,ALIPAYRATE,FASTRATE,PARENTID,
+        ROLETEMP,CREATETIME,UPDATETIME,	CONTRACTID,HXBSTATUS,HXBREMARKS,HXBOPENPRODUCT
+    </sql>
+    <sql id="Base_Column_Shop_List">
+        ID,GLOBALID,NAME,SHORTNAME,	INDUSTRYCODE,	DISTRICTCODE,	ADDRESS,	LICENCEID,STOREFRONTID,
+        COUNTERID,	INDOORID,	PARENTID,	CONTACTNAME,	CONTACTCELLPHONE,	STATUS,	ISPUBLIC,
+        CHECKERRORINFO,CREATETIME,UPDATETIME,LICENCENO,LICENCESTARTDATE,LICENCEENDDATE
+    </sql>
+    <sql id="Base_Column_Card_List">
+        ID,SID,CARDNO,CARDACCOUNTNAME,	CARDBANK,	BANKADDRESS,	CARDFID,	CARDCELLPHONE,IDCARDNO,
+        STATUS,	CREATETIME,	UPDATETIME,	BRANCHCODE
+    </sql>
+    <!-- 根据编码查询好收银用户 -->
+    <select id="selectByUserId" resultType="com.jkm.hsy.user.entity.AppAuUser">
+        SELECT <include refid="Base_Column_User_List" /> FROM app_au_user WHERE id = #{id}
+    </select>
+    <!-- 根据编码查询好收银店铺 -->
+    <select id="selectByShopId" resultType="com.jkm.hsy.user.entity.AppBizShop">
+        SELECT <include refid="Base_Column_Shop_List" /> FROM app_biz_shop WHERE id = #{id}
+    </select>
+    <!-- 根据编码查询好收银店铺 -->
+    <select id="selectByCardId" resultType="com.jkm.hsy.user.entity.AppBizCard">
+        SELECT <include refid="Base_Column_Card_List" /> FROM app_biz_card WHERE SID = #{userId} and status=1
+    </select>
+    <!--修改开通华夏接口状态-->
+    <update id="updateHxbUserById">
+        update app_au_user set HXBOPENPRODUCT=#{hxbOpenProduct},HXBOPENPRODUCTREMARKS=#{hxbOpenProductRemarks} where ID=#{id}
+    </update>
+</mapper>

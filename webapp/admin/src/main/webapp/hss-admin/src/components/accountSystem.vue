@@ -29,10 +29,18 @@
               </el-select>
             </li>
             <li class="same">
+              <label>对账状态:</label>
+              <el-select clearable v-model="query.status" size="small" style="width: 193px">
+                <el-option label="未对账" value="0"></el-option>
+                <el-option label="已对账" value="1"></el-option>
+                <el-option label="已取消" value="2"></el-option>
+              </el-select>
+            </li>
+            <li class="same">
               <div class="btn btn-primary" @click="search">筛选</div>
             </li>
           </ul>
-          <el-table v-loading.body="loading" style="font-size: 12px;margin:15px 0" :data="$records" border>
+          <el-table v-loading.body="loading" style="font-size: 12px;margin:15px 0" :data="$records" border :row-style="tableFoot">
             <el-table-column type="index" width="62" label="序号" fixed="left"></el-table-column>
             <el-table-column prop="channelName" label="通道名称" ></el-table-column>
             <el-table-column label="交易类型" >
@@ -58,11 +66,19 @@
             <el-table-column label="己方单边金额（元）"  align="right">
               <template scope="scope">{{scope.row.inSumWD|toFix}}</template>
             </el-table-column>
+            <el-table-column label="对账状态" align="right" >
+              <template scope="scope">
+                <span v-if="scope.row.status==0">未对账</span>
+                <span v-if="scope.row.status==1">已对账</span>
+                <span v-if="scope.row.status==2">已取消</span>
+              </template>
+            </el-table-column>
             <el-table-column label="操作">
               <template scope="scope">
-                  <el-button @click="handle(scope.row.id,scope.row.tradeDate,scope.row.tradeType,scope.row.channelName)" type="text" size="small" v-if="scope.row.batchNO==undefined">上传文件</el-button>
-                  <el-button @click="load(scope.row.batchNO)" type="text" size="small" v-if="scope.row.batchNO!=undefined">下载文件</el-button>
-                  <el-button @click="handle(scope.row.id,scope.row.tradeDate,scope.row.tradeType,scope.row.channelName)" type="text" size="small" v-if="scope.row.batchNO!=undefined">重新上传</el-button>
+                <el-button @click="handle(scope.row.id,scope.row.tradeDate,scope.row.tradeType,scope.row.channelName)" type="text" size="small" v-if="scope.row.batchNO==undefined&&scope.row.status!=2">上传文件</el-button>
+                <el-button @click="load(scope.row.batchNO)" type="text" size="small" v-if="scope.row.batchNO!=undefined&&scope.row.status!=2">下载文件</el-button>
+                <el-button @click="handle(scope.row.id,scope.row.tradeDate,scope.row.tradeType,scope.row.channelName)" type="text" size="small" v-if="scope.row.batchNO!=undefined&&scope.row.status!=2">重新上传</el-button>
+                <el-button @click="cancelAcc(scope.row.id)" type="text" size="small" v-if="scope.row.status==0&&scope.row.status!=2">取消对账</el-button>
               </template>
             </el-table-column>
           </el-table>
@@ -106,20 +122,35 @@
           </el-form>
         </el-dialog>
         <div class="box box-info mask el-message-box" v-if="isMask">
-            <div class="maskCon">
-              <div class="head">
-                <div class="title">消息</div>
-                <i class="el-icon-close" @click="isMask=false"></i>
-              </div>
-              <div class="body">
-                <div>确定下载文件吗？</div>
-              </div>
-              <div class="foot">
-                <a href="javascript:void(0)" @click="isMask=false" class="el-button el-button--default">取消</a>
-                <a :href="loadURL+loadURL1" @click="isMask=false" class="el-button el-button-default el-button--primary ">下载</a>
-              </div>
+          <div class="maskCon">
+            <div class="head">
+              <div class="title">消息</div>
+              <i class="el-icon-close" @click="isMask=false"></i>
+            </div>
+            <div class="body">
+              <div>确定下载文件吗？</div>
+            </div>
+            <div class="foot">
+              <a href="javascript:void(0)" @click="isMask=false" class="el-button el-button--default">取消</a>
+              <a :href="loadURL+loadURL1" @click="isMask=false" class="el-button el-button-default el-button--primary ">下载</a>
             </div>
           </div>
+        </div>
+        <div class="box box-info mask el-message-box" v-if="isCancel">
+          <div class="maskCon">
+            <div class="head">
+              <div class="title">取消对账</div>
+              <i class="el-icon-close" @click="isCancel=false"></i>
+            </div>
+            <div class="body">
+              <div>确定取消对账吗？</div>
+            </div>
+            <div class="foot">
+              <a href="javascript:void(0)" @click="isCancel=false" class="el-button el-button--default">取消</a>
+              <a @click="cancel()" class="el-button el-button-default el-button--primary ">确定</a>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -143,9 +174,12 @@
           channelName:"",
           tradeType:"",
           startDateStr:"",
-          endDateStr:""
+          endDateStr:"",
+          status:""
         },
         id:'',
+        cancelId:"",
+        isCancel:false,
         loading:true,
         isShow:false,
         isMask:false,
@@ -153,17 +187,49 @@
         //正式
         loadURL:'http://checking.qianbaojiajia.com/external/downloadxlsx/',
         url:'http://checking.qianbaojiajia.com/external/statisticList',
-        uploadURL:'http://checking.qianbaojiajia.com/external/banlanceAccount'
+        uploadURL:'http://checking.qianbaojiajia.com/external/banlanceAccount',
+        cancelUrl:'http://checking.qianbaojiajia.com/external/cancelBalance'
         //测试
-        /*loadURL:'http://192.168.1.99:8080/balance/external/downloadxlsx/',
-        url:'http://192.168.1.99:8080/balance/external/statisticList',
-        uploadURL:'http://192.168.1.99:8080/balance/external/banlanceAccount'*/
+//        loadURL:'http://192.168.0.110:8080/balance/external/downloadxlsx/',
+//        url:'http://192.168.0.110:8080/balance/external/statisticList',
+//        uploadURL:'http://192.168.0.110:8080/balance/external/banlanceAccount',
+//        cancelUrl:'http://192.168.0.110:8080/balance/external/cancelBalance'
       }
     },
     created: function () {
       this.getData()
     },
     methods: {
+      tableFoot(row, index) {
+        console.log(row)
+        if (row.status == '2') {
+          return {background:'#eef1f6'}
+        }
+        return '';
+      },
+      cancelAcc:function (id) {
+        this.isCancel = true;
+        this.cancelId = id;
+      },
+      cancel:function () {
+        this.$http.post(this.cancelUrl,{id:this.cancelId},{emulateJSON: true})
+          .then(res => {
+            this.$message({
+              showClose: true,
+              message: '取消成功',
+              type: 'success'
+            });
+            this.isCancel = false;
+            this.getData();
+          })
+          .catch(err =>{
+            this.$message({
+              showClose: true,
+              message: err.statusMessage,
+              type: 'error'
+            });
+          })
+      },
       handle: function(id,tradeDate,tradeType,channelName){
         this.isShow=true;
         this.tradeDate=tradeDate;
@@ -275,65 +341,65 @@
     width: 100%;
     height: 100%;
     background: rgba(0, 0, 0, 0.45);
-  .maskCon {
-    margin: 250px auto;
-    text-align: left;
-    vertical-align: middle;
-    background-color: #fff;
-    width: 420px;
-    border-radius: 3px;
-    font-size: 16px;
-    overflow: hidden;
-    -webkit-backface-visibility: hidden;
-    backface-visibility: hidden;
-  .head {
-    position: relative;
-    padding: 20px 20px 0;
-  .title {
-    padding-left: 0;
-    margin-bottom: 0;
-    font-size: 16px;
-    font-weight: 700;
-    height: 18px;
-    color: #333;
-  }
-  i {
-    font-family: element-icons !important;
-    speak: none;
-    font-style: normal;
-    font-weight: 400;
-    font-variant: normal;
-    text-transform: none;
-    vertical-align: baseline;
-    display: inline-block;
-    -webkit-font-smoothing: antialiased;
-    position: absolute;
-    top: 19px;
-    right: 20px;
-    color: #999;
-    cursor: pointer;
-    line-height: 20px;
-    text-align: center;
-  }
-  }
-  .body {
-    padding: 30px 20px;
-    color: #48576a;
-    font-size: 14px;
-    position: relative;
-  div {
-    margin: 0;
-    line-height: 1.4;
-    font-size: 14px;
-    color: #48576a;
-    font-weight: 400;
-  }
-  }
-  .foot {
-    padding: 10px 20px 15px;
-    text-align: right;
-  }
-  }
+    .maskCon {
+      margin: 250px auto;
+      text-align: left;
+      vertical-align: middle;
+      background-color: #fff;
+      width: 420px;
+      border-radius: 3px;
+      font-size: 16px;
+      overflow: hidden;
+      -webkit-backface-visibility: hidden;
+      backface-visibility: hidden;
+      .head {
+        position: relative;
+        padding: 20px 20px 0;
+        .title {
+          padding-left: 0;
+          margin-bottom: 0;
+          font-size: 16px;
+          font-weight: 700;
+          height: 18px;
+          color: #333;
+        }
+        i {
+          font-family: element-icons !important;
+          speak: none;
+          font-style: normal;
+          font-weight: 400;
+          font-variant: normal;
+          text-transform: none;
+          vertical-align: baseline;
+          display: inline-block;
+          -webkit-font-smoothing: antialiased;
+          position: absolute;
+          top: 19px;
+          right: 20px;
+          color: #999;
+          cursor: pointer;
+          line-height: 20px;
+          text-align: center;
+        }
+      }
+      .body {
+        padding: 30px 20px;
+        color: #48576a;
+        font-size: 14px;
+        position: relative;
+        div {
+          margin: 0;
+          line-height: 1.4;
+          font-size: 14px;
+          color: #48576a;
+          font-weight: 400;
+        }
+      }
+      .foot {
+        padding: 10px 20px 15px;
+        text-align: right;
+      }
+    }
 
   }
 </style>

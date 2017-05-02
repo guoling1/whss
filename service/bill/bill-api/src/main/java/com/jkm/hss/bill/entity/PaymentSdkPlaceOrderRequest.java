@@ -57,6 +57,16 @@ public class PaymentSdkPlaceOrderRequest {
      */
     private String totalAmount;
 
+    /**
+     * 微信公众号id
+     */
+    private String wxAppId;
+
+    /**
+     * 会员id
+     */
+    private String memberId;
+
 
     //////**卡盟通道所需参数**//////////
 

@@ -42,12 +42,12 @@ public interface SettleAccountFlowService {
     /**
      * 保存结算审核记录
      *
-     * @param tradeDate
+     * @param settleDate
      * @param settleAuditRecordId
      * @param accountId
      * @return
      */
-    int updateSettleAuditRecordIdByTradeDateAndAccountId(Date tradeDate, long accountId, long settleAuditRecordId);
+    int updateSettleAuditRecordIdBySettleDateAndAccountId(Date settleDate, long accountId, long settleAuditRecordId);
 
     /**
      * 按id查询
@@ -77,15 +77,15 @@ public interface SettleAccountFlowService {
      * @param type 变更方向
      */
     long addSettleAccountFlow(long accountId, String orderNo, BigDecimal changeAmount, String remark, EnumAccountFlowType type,
-            String appId, Date tradeDate, int accountUserType);
+            String appId, Date tradeDate, Date settleDate, int accountUserType);
 
     /**
      * 统计上一日的结算流水（未结算）
      *
-     * @param tradeDate
+     * @param settleDate
      * @return
      */
-    List<SettleAccountFlowStatistics> statisticsYesterdayFlow(Date tradeDate);
+    List<SettleAccountFlowStatistics> statisticsYesterdayFlow(Date settleDate);
 
     /**
      * 按审核记录id查询
@@ -112,13 +112,26 @@ public interface SettleAccountFlowService {
     List<SettleAccountFlow> getBySettlementRecordId(long settlementRecordId);
 
     /**
-     * 查询昨日出账流水个数
+     * 查询今日出账流水个数
      *
-     * @param tradeDate
+     * @param settleDate
      * @return
      */
-    int getYesterdayDecreaseFlowCount(Date tradeDate);
+    int getYesterdayDecreaseFlowCount(Date settleDate);
 
-
+    /**
+     * 获取的流水号
+     *
+     * @param flowNo
+     * @return
+     */
     boolean checkExistByFlowNo(String flowNo);
+
+    /**
+     * 按结算审核记录查询订单号
+     *
+     * @param recordId
+     * @return
+     */
+    List<String> getOrderNoByAuditRecordId(long recordId);
 }

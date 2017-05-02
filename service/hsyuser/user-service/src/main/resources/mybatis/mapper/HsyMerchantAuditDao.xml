@@ -52,7 +52,7 @@
         LEFT JOIN app_biz_shop_user_role b ON a.ID = b.SID
         LEFT JOIN app_au_user c ON c.ID = b.UID
         WHERE
-        b.ROLE = 1
+        b.ROLE = 1 AND b.TYPE=1
         <if test="globalID!=null and globalID!=''">
             AND a.GLOBALID=#{globalID}
         </if>
@@ -108,6 +108,10 @@
             b.WEIXINRATE,
             b.ALIPAYRATE,
             b.FASTRATE,
+            b.HXBSTATUS,
+            b.HXBREMARKS,
+            b.HXBOPENPRODUCT,
+            b.HXBOPENPRODUCTREMARKS,
 			e.IDCARDNO,
             e.CARDNO,
             e.CARDACCOUNTNAME,
@@ -162,7 +166,7 @@
 
 
     <!-- 审核不通过更改提交资料步骤 -->
-    <select id="getUid" resultType="java.lang.Integer">
+    <select id="getUid" resultType="java.lang.Long">
         SELECT UID FROM app_biz_shop_user_role WHERE SID=#{id}
     </select>
 

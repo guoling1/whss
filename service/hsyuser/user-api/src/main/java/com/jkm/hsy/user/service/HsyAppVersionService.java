@@ -10,4 +10,5 @@ public interface HsyAppVersionService {
     public String getAppVersion(String dataParam,AppParam appParam)throws ApiHandleException;
     public String getAppVersionAndroid(String dataParam,AppParam appParam);
     public String findVersionDetailByVersionCode(String dataParam,AppParam appParam)throws ApiHandleException;
+    public String findAllPageComponent(String dataParam,AppParam appParam)throws ApiHandleException;
 }

@@ -79,12 +79,6 @@ addNew.addEventListener('click', function () {
 // 是否展示 有效期选择 cvv2填写
 let showExpireDate = document.getElementById('showExpireDate');
 let showCvv = document.getElementById('showCvv');
-if (pageData.showExpireDate == 1) {
-  showExpireDate.style.display = 'block';
-}
-if (pageData.showCvv == 1) {
-  showCvv.style.display = 'block';
-}
 // 是否可支付 或者发送验证码
 if (pageData.status == 1) {
   pageData.canPay = true;
@@ -143,6 +137,27 @@ sendCode.addEventListener('click', function () {
   }
 });
 
+// 获取是否需要展示 cvv date
+let showCD = function (id) {
+  http.post('/trade/checkCvv', {
+    channel: channel,
+    creditCardId: id
+  }, function (data) {
+    pageData.showExpireDate = data.showExpireDate;
+    pageData.showCvv = data.showCvv;
+    if (data.showCvv == 1) {
+      showCvv.style.display = 'block';
+    } else {
+      showCvv.style.display = 'none';
+    }
+    if (data.showExpireDate == 1) {
+      showExpireDate.style.display = 'block';
+    } else {
+      showExpireDate.style.display = 'none';
+    }
+  })
+};
+
 // 获取支持的银行卡列表
 http.post('/bankcard/list', {
   creditCardId: pageData.creditCardId,
@@ -152,11 +167,13 @@ http.post('/bankcard/list', {
     let list = document.createElement('div');
     if (pageData.creditCardId == data[i].creditCardId) {
       list.className = 'choose-box-body-list-bank active';
+      showCD(data[i].creditCardId);
     } else {
       list.className = 'choose-box-body-list-bank';
     }
     if (data[i].status == 1) {
       list.addEventListener('click', function () {
+        showCD(data[i].creditCardId);
         let className = document.getElementsByClassName('choose-box-body-list-bank');
         for (let i = 0; i < className.length; i++) {
           className[i].className = 'choose-box-body-list-bank';

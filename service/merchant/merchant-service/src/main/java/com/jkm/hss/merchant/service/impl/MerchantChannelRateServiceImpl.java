@@ -22,10 +22,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
  * Created by xingliujie on 2017/2/27.
@@ -90,7 +90,27 @@ public class MerchantChannelRateServiceImpl implements MerchantChannelRateServic
      */
     @Override
     public List<MerchantChannelRate> selectByMerchantId(long merchantId) {
-        return this.merchantChannelRateDao.selectByMerchantId(merchantId);
+        List<MerchantChannelRate> list = this.merchantChannelRateDao.selectByMerchantId(merchantId);
+        String dat = "2017-04-21 23:59:59";
+        String dat1 = "2017-06-01 00:00:00";
+        Date date = new Date();
+        Date date1 = new Date();
+        DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        try {
+            date = sdf.parse(dat);
+            date1 = sdf.parse(dat1);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        if (list.size()>0) {
+            for (int i = 0; i < list.size(); i++) {
+                if (list.get(i).getCreateTime().getTime() > date.getTime() && list.get(i).getCreateTime().getTime() < date1.getTime() && list.get(i).getChannelTypeSign() == 601) {
+                    list.get(i).setMerchantPayRate(new BigDecimal(0.0038));
+                    list.get(i).setMerchantWithdrawFee(new BigDecimal(3));
+                }
+            }
+        }
+        return list;
     }
 
     /**

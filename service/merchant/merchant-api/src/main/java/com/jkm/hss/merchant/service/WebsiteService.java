@@ -1,8 +1,6 @@
 package com.jkm.hss.merchant.service;
 
-import com.jkm.hss.merchant.entity.CooperationQueryRequest;
-import com.jkm.hss.merchant.entity.CooperationQueryResponse;
-import com.jkm.hss.merchant.entity.WebsiteRequest;
+import com.jkm.hss.merchant.entity.*;
 
 import java.util.List;
 import java.util.Map;
@@ -50,4 +48,18 @@ public interface WebsiteService {
      * 保存信息
      */
     void saveInfo(Map map);
+
+    /**
+     * 查询加盟用户列表
+     * @param request
+     * @return
+     */
+    List<JoinResponse> selectJoin(JoinRequest request);
+
+    /**
+     * 查询加盟用户列表总数
+     * @param request
+     * @return
+     */
+    int selectJoinCount(JoinRequest request);
 }

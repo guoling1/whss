@@ -56,12 +56,36 @@ public class SettleController extends BaseController {
     @RequestMapping(value = "settleTest")
     public CommonResponse settleTest() {
         log.info("结算审核定时任务--start--test");
-        this.accountSettleAuditRecordService.handleT1SettleTask();
+        this.accountSettleAuditRecordService.generateHsySettleAuditRecordTask();
         log.info("结算审核定时任务--end--test");
         return CommonResponse.simpleResponse(0, "success");
     }
 
 
+    /**
+     * 生成结算审核记录
+     *
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "generateRecord")
+    public CommonResponse generateSettleAuditRecord() {
+        this.accountSettleAuditRecordService.generateHsySettleAuditRecordTask();
+        return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "success");
+    }
+
+
+    /**
+     * 标记为结算
+     *
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "markSettled")
+    public CommonResponse markSettled() {
+        this.accountSettleAuditRecordService.handleSettleAuditRecordTask();
+        return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "success");
+    }
     /**
      *  结算
      *
@@ -124,10 +148,10 @@ public class SettleController extends BaseController {
                 log.error("结算审核记录[{}], 结算时，查询到未对账的交易", recordId);
                 return CommonResponse.simpleResponse(-1, "查询到未对账的交易");
             }
-            final Pair<Integer, String> result = this.accountSettleAuditRecordService.normalSettle(recordId);
-            if (0 != result.getLeft()) {
-                return CommonResponse.simpleResponse(-1, result.getRight());
-            }
+//            final Pair<Integer, String> result = this.accountSettleAuditRecordService.normalSettle(recordId);
+//            if (0 != result.getLeft()) {
+//                return CommonResponse.simpleResponse(-1, result.getRight());
+//            }
         } else {
             return CommonResponse.simpleResponse(-1, "结算选择异常");
         }
@@ -173,10 +197,10 @@ public class SettleController extends BaseController {
                 return CommonResponse.simpleResponse(-1, "查询到未对账的交易");
             }
         }
-        final Pair<Integer, String> result = this.accountSettleAuditRecordService.batchSettle(recordIds);
-        if (0 != result.getLeft()) {
-            return CommonResponse.simpleResponse(-1, result.getRight());
-        }
+//        final Pair<Integer, String> result = this.accountSettleAuditRecordService.batchSettle(recordIds);
+//        if (0 != result.getLeft()) {
+//            return CommonResponse.simpleResponse(-1, result.getRight());
+//        }
         return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "success");
     }
 

@@ -7,6 +7,7 @@ import com.jkm.base.common.databind.DataBindManager;
 import com.jkm.base.common.entity.CommonResponse;
 import com.jkm.base.common.util.CookieUtil;
 import com.jkm.base.common.util.ResponseWriter;
+import com.jkm.hss.admin.entity.AdminUser;
 import com.jkm.hss.dealer.service.DealerService;
 import com.jkm.hss.helper.ApplicationConsts;
 import com.jkm.hss.dealer.entity.Dealer;
@@ -41,7 +42,10 @@ public class BaseController {
      * 经销商 登录缓存
      */
     private static final DataBind<Dealer> DEALER_USER_INFO_DATA_BIND = DataBindManager.getInstance().getDataBind(ApplicationConsts.REQUEST_USER_INFO_DATA_BIND_DEALER);
-
+    /**
+     * 登录用户
+     */
+    private static final DataBind<AdminUser> Admin_USER_INFO_DATA_BIND = DataBindManager.getInstance().getDataBind(ApplicationConsts.ADMIN_USER_INFO_DATA_BIND_DEALER);
     /**
      * 日期处理
      *
@@ -78,14 +82,34 @@ public class BaseController {
 
 
     /**
+     * 获取当前登录用户
+     *
+     * @return
+     */
+    protected Optional<AdminUser> getAdminUser() {
+        return Optional.fromNullable(Admin_USER_INFO_DATA_BIND.get());
+    }
+
+    /**
+     * 获取当前经销商id
+     *
+     * @return
+     */
+    protected long getAdminUserId() {
+        final Optional<AdminUser> adminUserOptional = getAdminUser();
+        if (adminUserOptional.isPresent()) {
+            return adminUserOptional.get().getId();
+        }
+        return 0L;
+    }
+
+    /**
      * 获取当前经销商
      *
      * @return
      */
     protected Optional<Dealer> getDealer() {
-
       return Optional.fromNullable(DEALER_USER_INFO_DATA_BIND.get());
-      //  return Optional.fromNullable(dealerService.getById(38).get());
     }
 
     /**
@@ -99,7 +123,6 @@ public class BaseController {
            return dealerOptional.get().getId();
         }
         return 0L;
-       // return 38;
     }
 
 

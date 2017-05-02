@@ -4,8 +4,9 @@
 
     <sql id="Base_Column_List">
         id,username,realname,email,mobile,status,company_id,
-        dept_id,id_card,last_login_date,role_id,mark_code,identity_face_pic,identity_opposite_pic,create_time,update_time
+        dept_id,id_card,last_login_date,role_id,mark_code,identity_face_pic,identity_opposite_pic,create_time,update_time,type,dealer_id,is_master
     </sql>
+
 
     <insert id="insert" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO tb_admin_user
@@ -25,7 +26,9 @@
         role_id,
         mark_code,
         identity_face_pic,
-        identity_opposite_pic
+        identity_opposite_pic,
+        dealer_id,
+        is_master
         )
         VALUES
         (
@@ -44,7 +47,9 @@
         #{roleId},
         #{markCode},
         #{identityFacePic},
-        #{identityOppositePic}
+        #{identityOppositePic},
+        #{dealerId},
+        #{isMaster}
         );
     </insert>
 
@@ -69,10 +74,20 @@
         SELECT <include refid="Base_Column_List" /> FROM tb_admin_user WHERE id = #{id}
     </select>
 
-    <select id="selectByUsername" resultType="com.jkm.hss.admin.entity.AdminUser">
-        SELECT * FROM tb_admin_user WHERE username = #{username} and type=1 and status=1
+    <select id="selectByUsernameAndType" resultType="com.jkm.hss.admin.entity.AdminUser">
+        SELECT * FROM tb_admin_user WHERE username = #{username} and type=#{type} and status=1
     </select>
 
+    <select id="selectDealerLoginNameByUsername" resultType="com.jkm.hss.admin.entity.AdminUser">
+        SELECT * FROM tb_admin_user WHERE username = #{username} and type in (2,3) and status=1
+    </select>
+
+    <select id="getAdminUserByNameAndTypeUnIncludeNow" resultType="com.jkm.hss.admin.entity.AdminUser">
+        SELECT * FROM tb_admin_user WHERE username = #{username} and type=#{type} and status=1 and id not in (select id from tb_admin_user where type=#{type} and is_master=1 and dealer_id=#{dealerId})
+    </select>
+    <select id="getAdminDealerUserByNameUnIncludeNow" resultType="com.jkm.hss.admin.entity.AdminUser">
+        SELECT * FROM tb_admin_user WHERE username = #{username} and type in (2,3) and status=1 and id not in (select id from tb_admin_user where type in (2,3) and is_master=1 and dealer_id=#{dealerId})
+    </select>
     <update id="updatePwd">
         UPDATE tb_admin_user
         SET
@@ -95,10 +110,10 @@
         WHERE id = #{id}
     </update>
 
-    <select id="selectAdminUserCountByPageParams" resultType="java.lang.Integer">
+    <select id="selectAdminUserCountByPageParams" resultType="java.lang.Long">
         SELECT COUNT(1) FROM tb_admin_user
         <where>
-            type=1
+            type=#{type}
             <if test="realname != null and realname!=''">
                 AND `realname` LIKE "%"#{realname}"%"
             </if>
@@ -107,13 +122,16 @@
             </if>
             <if test="mobile != null and mobile!=''">
                 AND mobile = #{mobile}
+            </if>
+            <if test="dealerId >0">
+                AND dealer_id = #{dealerId}
             </if>
         </where>
     </select>
     <select id="selectAdminUserListByPageParams" resultType="com.jkm.hss.admin.entity.AdminUser">
         SELECT <include refid="Base_Column_List" /> FROM tb_admin_user
         <where>
-            type=1
+            type=#{type}
             <if test="realname != null and realname!=''">
                 AND `realname` LIKE "%"#{realname}"%"
             </if>
@@ -123,12 +141,57 @@
             <if test="mobile != null and mobile!=''">
                 AND mobile = #{mobile}
             </if>
+            <if test="dealerId >0">
+                AND dealer_id = #{dealerId}
+            </if>
             ORDER BY create_time DESC LIMIT #{offset},#{count}
         </where>
     </select>
 
-    <select id="selectByUsernameUnIncludeNow" resultType="java.lang.Long">
-        SELECT COUNT(1) FROM tb_admin_user WHERE username = #{username} AND id != #{id} and type=1 and status=1
+
+    <select id="selectAdminUserDealerCountByPageParams" resultType="java.lang.Long">
+        SELECT COUNT(1) FROM tb_admin_user
+        <where>
+            type in (2,3)
+            <if test="realname != null and realname!=''">
+                AND `realname` LIKE "%"#{realname}"%"
+            </if>
+            <if test="markCode != null and markCode!=''">
+                AND mark_code = #{markCode}
+            </if>
+            <if test="mobile != null and mobile!=''">
+                AND mobile = #{mobile}
+            </if>
+            <if test="dealerName != null and dealerName!=''">
+                AND dealer_id in (select id from tb_dealer where proxy_name LIKE "%"#{dealerName}"%")
+            </if>
+        </where>
+    </select>
+    <select id="selectAdminUserDealerListByPageParams" resultType="com.jkm.hss.admin.helper.responseparam.AdminDealerUser">
+        SELECT
+        id,mark_code,username,realname,email,mobile,status,(select d.proxy_name from tb_dealer as d where d.id=dealer_id) as belongDealer,
+        role_id,create_time,update_time,is_master
+        FROM tb_admin_user
+        <where>
+            type in (2,3)
+            <if test="realname != null and realname!=''">
+                AND `realname` LIKE "%"#{realname}"%"
+            </if>
+            <if test="markCode != null and markCode!=''">
+                AND mark_code = #{markCode}
+            </if>
+            <if test="mobile != null and mobile!=''">
+                AND mobile = #{mobile}
+            </if>
+            <if test="dealerName != null and dealerName!=''">
+                AND dealer_id in (select id from tb_dealer where proxy_name LIKE "%"#{dealerName}"%")
+            </if>
+            ORDER BY create_time DESC LIMIT #{offset},#{count}
+        </where>
+    </select>
+
+    <select id="selectByUsernameAndTypeUnIncludeNow" resultType="java.lang.Long">
+        SELECT COUNT(1) FROM tb_admin_user WHERE username = #{username} AND id != #{id} and type=#{type} and status=1
     </select>
 
     <update id="updateLastLoginDate">
@@ -137,4 +200,33 @@
         last_login_date = now()
         WHERE id = #{id}
     </update>
+
+    <update id="updateDealerUser">
+        UPDATE tb_admin_user
+        SET
+        email=#{email},
+        username = #{username},
+        realname = #{realname},
+        mobile = #{mobile},
+        id_card = #{idCard}
+        WHERE dealer_id = #{dealerId} and is_master = #{isMaster}
+    </update>
+
+    <update id="updateDealerUserPwd">
+        UPDATE tb_admin_user
+        SET
+        password = #{pwd}
+        WHERE dealer_id = #{dealerId} and is_master = 1
+    </update>
+
+    <update id="updateDealerUserPwdById">
+        UPDATE tb_admin_user
+        SET
+        password = #{pwd}
+        WHERE id=#{id}
+    </update>
+
+    <select id="getAdminUserByDealerIdAndIsMaster" resultType="com.jkm.hss.admin.entity.AdminUser">
+        SELECT <include refid="Base_Column_List" /> FROM tb_admin_user WHERE dealer_id = #{dealerId} and is_master = #{isMaster}
+    </select>
 </mapper>

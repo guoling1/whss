@@ -1,5 +1,7 @@
 package com.jkm.hsy.user.service.impl;
 
+import com.jkm.hsy.user.Enum.EnumHxbsOpenProductStatus;
+import com.jkm.hsy.user.Enum.EnumHxbsStatus;
 import com.jkm.hsy.user.constant.IndustryCodeType;
 import com.jkm.hsy.user.dao.HsyMerchantAuditDao;
 import com.jkm.hsy.user.entity.*;
@@ -88,6 +90,16 @@ public class HsyMerchantAuditServiceImpl implements HsyMerchantAuditService {
     public HsyMerchantAuditResponse getDetails(Long id) {
 
         HsyMerchantAuditResponse res = hsyMerchantAuditDao.getDetails(id);
+        if(res.getHxbStatus()==null||"".equals(res.getHxbStatus())){
+            res.setHxbStatus(0);
+        }else{
+            res.setHxbStatus(res.getHxbStatus());
+        }
+        if(res.getHxbOpenProduct()==null||"".equals(res.getHxbOpenProduct())){
+            res.setHxbOpenProduct(0);
+        }else{
+            res.setHxbOpenProduct(res.getHxbOpenProduct());
+        }
         if (res!=null){
             if (res.getStatus()==1){
                 res.setStat("审核已通过");
@@ -179,12 +191,12 @@ public class HsyMerchantAuditServiceImpl implements HsyMerchantAuditService {
     }
 
     @Override
-    public void stepChange(int uid) {
+    public void stepChange(Long uid) {
         hsyMerchantAuditDao.stepChange(uid);
     }
 
     @Override
-    public int getUid(Long id) {
+    public long getUid(Long id) {
         return hsyMerchantAuditDao.getUid(id);
     }
 
