@@ -15,6 +15,7 @@ import com.jkm.hss.dealer.dao.ReportDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.jkm.hss.account.sevice.AccountService;
+import com.jkm.hss.admin.enums.EnumQRCodeSysType;
 /**
  * Created by shitou on 17/4/28.
  */
@@ -30,11 +31,11 @@ public class ReportServiceImpl implements ReportService{
    public HomeReportResponse getHomeReport(final long dealerId,final long acountid,final int level, final String startTime, final String endTime) {
         String startDate=startTime+" 00:00:00";
         String endDate=endTime+" 00:00:00";
-        //STDealerRecord hssstDealerRecord=reportDao.getstdealerrecord(dealerId,startTime,"hss");
-        //STDealerRecord hsystDealerRecord=reportDao.getstdealerrecord(dealerId,startTime,"hsy");
+        STDealerRecord hssstDealerRecord=reportDao.getstdealerrecord(dealerId,startTime,EnumQRCodeSysType.HSS.getId());
+        STDealerRecord hsystDealerRecord=reportDao.getstdealerrecord(dealerId,startTime,EnumQRCodeSysType.HSY.getId());
 
         //昨日分润统计
-        BigDecimal yDayProfit=reportDao.getDayProfit(acountid,startDate,endDate);
+        BigDecimal yDayProfit;//=reportDao.getDayProfit(acountid,startDate,endDate);
         //分润统计
         BigDecimal allProfit=reportDao.getDayProfit(acountid,null,null);
         //待结算金额
@@ -44,22 +45,22 @@ public class ReportServiceImpl implements ReportService{
         BigDecimal availableAmount=accountOptional.get().getAvailable();
 
         //HSS昨日商户交易总额-直属
-        BigDecimal hssyDayMertradeAmountDir= reportDao.getHSSDayMertradeAmountDir(dealerId,startDate,endDate);
+        BigDecimal hssyDayMertradeAmountDir;//= reportDao.getHSSDayMertradeAmountDir(dealerId,startDate,endDate);
         //HSS昨日商户交易总额-下级
-        BigDecimal hssyDayMertradeAmountSub=reportDao.getHSSDayMertradeAmountSub(dealerId,startDate,endDate);
+        BigDecimal hssyDayMertradeAmountSub;//=reportDao.getHSSDayMertradeAmountSub(dealerId,startDate,endDate);
         //HSY昨日商户交易总额-直属
-        BigDecimal hsyyDayMertradeAmountDir=reportDao.getHSYDayMertradeAmountDir(dealerId,startDate,endDate);
+        BigDecimal hsyyDayMertradeAmountDir;//=reportDao.getHSYDayMertradeAmountDir(dealerId,startDate,endDate);
         //HSY昨日商户交易总额-下级
-        BigDecimal hsyyDayMertradeAmountSub=reportDao.getHSYDayMertradeAmountSub(dealerId,startDate,endDate);
+        BigDecimal hsyyDayMertradeAmountSub;//=reportDao.getHSYDayMertradeAmountSub(dealerId,startDate,endDate);
 
         //HSS昨日商户注册数-直属
-        Integer hssyDayregMerNumberDir=reportDao.getHSSDayregMerNumberDir(dealerId,startDate,endDate);
+        Integer hssyDayregMerNumberDir;//=reportDao.getHSSDayregMerNumberDir(dealerId,startDate,endDate);
         //HSS昨日商户注册数-下级代理
-        Integer hssyDayregMerNumberSub=reportDao.getHSSDayregMerNumberSub(dealerId,startTime,endTime);
+        Integer hssyDayregMerNumberSub;//=reportDao.getHSSDayregMerNumberSub(dealerId,startTime,endTime);
         //HSY昨日商户注册数-直属
-        Integer hsyyDayregMerNumberDir=reportDao.getHSYDayregMerNumberDir(dealerId,startTime,endTime);
+        Integer hsyyDayregMerNumberDir;//=reportDao.getHSYDayregMerNumberDir(dealerId,startTime,endTime);
         //HSY昨日商户注册数-下级代理
-        Integer hsyyDayregMerNumberSub=reportDao.getHSYDayregMerNumberSub(dealerId,startTime,endTime);
+        Integer hsyyDayregMerNumberSub;//=reportDao.getHSYDayregMerNumberSub(dealerId,startTime,endTime);
 
         //HSS商户注册数-直属
         Integer hssregMerNumberDir=reportDao.getHSSDayregMerNumberDir(dealerId,null,null);
@@ -71,13 +72,13 @@ public class ReportServiceImpl implements ReportService{
         Integer hsyregMerNumberSub=reportDao.getHSYDayregMerNumberSub(dealerId,null,null);
 
         //HSS昨日商户审核数-直属
-        Integer hssyDaycheckMerNumberDir=reportDao.getHSSDaycheckMerNumberDir(dealerId,startDate,endDate);
+        Integer hssyDaycheckMerNumberDir;//=reportDao.getHSSDaycheckMerNumberDir(dealerId,startDate,endDate);
         //HSS昨日商户审核数-下级代理
-        Integer hssyDaycheckMerNumberSub=reportDao.getHSSDaycheckMerNumberSub(dealerId,startTime,endTime);
+        Integer hssyDaycheckMerNumberSub;//=reportDao.getHSSDaycheckMerNumberSub(dealerId,startTime,endTime);
         //HSY昨日商户审核数-直属
-        Integer hsyyDaycheckMerNumberDir=reportDao.getHSYDaycheckMerNumberDir(dealerId,startTime,endTime);
+        Integer hsyyDaycheckMerNumberDir;//=reportDao.getHSYDaycheckMerNumberDir(dealerId,startTime,endTime);
         //HSY昨日商户审核数-下级代理
-        Integer hsyyDaycheckMerNumberSub=reportDao.getHSYDaycheckMerNumberSub(dealerId,startTime,endTime);
+        Integer hsyyDaycheckMerNumberSub;//=reportDao.getHSYDaycheckMerNumberSub(dealerId,startTime,endTime);
 
         //HSS商户审核数-直属
         Integer hsscheckMerNumberDir=reportDao.getHSSDaycheckMerNumberDir(dealerId,null,null);
@@ -100,29 +101,73 @@ public class ReportServiceImpl implements ReportService{
             hsyqrCodeNumber=reportDao.getHSYQrCodeNumbersecond(dealerId,null,null);
         }
 
-//        //插入日数据
-//        if(hssstDealerRecord==null){
-//            yDayProfit=reportDao.getDayProfit(acountid,startDate,endDate);
-//
-//            hssstDealerRecord=new STDealerRecord();
-//            hssstDealerRecord.setDealerId(dealerId);
-//            hssstDealerRecord.setProxy_name("");
-//            hssstDealerRecord.setRecordDay(DateFormatUtil.parse(startTime,DateFormatUtil.yyyy_MM_dd));
-//            hssstDealerRecord.setSys_type("hss");
-//
-//            hssstDealerRecord.setYDayProfit(yDayProfit);
-//            hssstDealerRecord.setYDaycheckMerNumberDir(hssyDaycheckMerNumberDir);
-//            hssstDealerRecord.setYDaycheckMerNumberSub(hssyDaycheckMerNumberSub);
-//            hssstDealerRecord.setYDayMertradeAmountDir(hssyDayMertradeAmountDir);
-//            hssstDealerRecord.setYDayMertradeAmountSub(hssyDayMertradeAmountSub);
-//            hssstDealerRecord.setYDayregMerNumberDir(hssyDayregMerNumberDir);
-//            hssstDealerRecord.setYDayregMerNumberSub(hssyDayregMerNumberSub);
-//            reportDao.insertstdealerrecord(hssstDealerRecord);
-//        }
-//        else {
-//            yDayProfit=hssstDealerRecord.getYDayProfit();
-//        }
-//        //
+        //插入日数据
+        if(hssstDealerRecord==null){
+            hssstDealerRecord=new STDealerRecord();
+            hssstDealerRecord.setDealerId(dealerId);
+            hssstDealerRecord.setProxy_name("");
+            hssstDealerRecord.setRecordDay(DateFormatUtil.parse(startTime,DateFormatUtil.yyyy_MM_dd));
+            hssstDealerRecord.setSys_type(EnumQRCodeSysType.HSS.getId());
+
+            yDayProfit=reportDao.getDayProfit(acountid,startDate,endDate);
+            hssyDaycheckMerNumberDir=reportDao.getHSSDaycheckMerNumberDir(dealerId,startDate,endDate);
+            hssyDaycheckMerNumberSub=reportDao.getHSSDaycheckMerNumberSub(dealerId,startTime,endTime);
+            hssyDayMertradeAmountDir=reportDao.getHSSDayMertradeAmountDir(dealerId,startDate,endDate);
+            hssyDayMertradeAmountSub=reportDao.getHSSDayMertradeAmountSub(dealerId,startDate,endDate);
+            hssyDayregMerNumberDir=reportDao.getHSSDayregMerNumberDir(dealerId,startDate,endDate);
+            hssyDayregMerNumberSub=reportDao.getHSSDayregMerNumberSub(dealerId,startTime,endTime);
+
+            hssstDealerRecord.setYDayProfit(yDayProfit);
+            hssstDealerRecord.setYDaycheckMerNumberDir(hssyDaycheckMerNumberDir);
+            hssstDealerRecord.setYDaycheckMerNumberSub(hssyDaycheckMerNumberSub);
+            hssstDealerRecord.setYDayMertradeAmountDir(hssyDayMertradeAmountDir);
+            hssstDealerRecord.setYDayMertradeAmountSub(hssyDayMertradeAmountSub);
+            hssstDealerRecord.setYDayregMerNumberDir(hssyDayregMerNumberDir);
+            hssstDealerRecord.setYDayregMerNumberSub(hssyDayregMerNumberSub);
+            reportDao.insertstdealerrecord(hssstDealerRecord);
+        }
+        else {
+            yDayProfit=hssstDealerRecord.getYDayProfit();
+            hssyDaycheckMerNumberDir=hssstDealerRecord.getYDaycheckMerNumberDir();
+            hssyDaycheckMerNumberSub=hssstDealerRecord.getYDaycheckMerNumberSub();
+            hssyDayMertradeAmountDir=hssstDealerRecord.getYDayMertradeAmountDir();
+            hssyDayMertradeAmountSub=hssstDealerRecord.getYDayMertradeAmountSub();
+            hssyDayregMerNumberDir=hssstDealerRecord.getYDayregMerNumberDir();
+            hssyDayregMerNumberSub=hssstDealerRecord.getYDayregMerNumberSub();
+        }
+
+        if(hsystDealerRecord==null){
+            hsystDealerRecord=new STDealerRecord();
+            hsystDealerRecord.setDealerId(dealerId);
+            hsystDealerRecord.setProxy_name("");
+            hsystDealerRecord.setRecordDay(DateFormatUtil.parse(startTime,DateFormatUtil.yyyy_MM_dd));
+            hsystDealerRecord.setSys_type(EnumQRCodeSysType.HSY.getId());
+
+            hsyyDaycheckMerNumberDir=reportDao.getHSYDaycheckMerNumberDir(dealerId,startDate,endDate);
+            hsyyDaycheckMerNumberSub=reportDao.getHSYDaycheckMerNumberSub(dealerId,startTime,endTime);
+            hsyyDayMertradeAmountDir=reportDao.getHSYDayMertradeAmountDir(dealerId,startDate,endDate);
+            hsyyDayMertradeAmountSub=reportDao.getHSYDayMertradeAmountSub(dealerId,startDate,endDate);
+            hsyyDayregMerNumberDir=reportDao.getHSYDayregMerNumberDir(dealerId,startDate,endDate);
+            hsyyDayregMerNumberSub=reportDao.getHSYDayregMerNumberSub(dealerId,startTime,endTime);
+
+            hsystDealerRecord.setYDaycheckMerNumberDir(hsyyDaycheckMerNumberDir);
+            hsystDealerRecord.setYDaycheckMerNumberSub(hsyyDaycheckMerNumberSub);
+            hsystDealerRecord.setYDayMertradeAmountDir(hsyyDayMertradeAmountDir);
+            hsystDealerRecord.setYDayMertradeAmountSub(hsyyDayMertradeAmountSub);
+            hsystDealerRecord.setYDayregMerNumberDir(hsyyDayregMerNumberDir);
+            hsystDealerRecord.setYDayregMerNumberSub(hsyyDayregMerNumberSub);
+            reportDao.insertstdealerrecord(hsystDealerRecord);
+
+        }
+        else{
+            hsyyDaycheckMerNumberDir=hsystDealerRecord.getYDaycheckMerNumberDir();
+            hsyyDaycheckMerNumberSub=hsystDealerRecord.getYDaycheckMerNumberSub();
+            hsyyDayMertradeAmountDir=hsystDealerRecord.getYDayMertradeAmountDir();
+            hsyyDayMertradeAmountSub=hsystDealerRecord.getYDayMertradeAmountSub();
+            hsyyDayregMerNumberDir=hsystDealerRecord.getYDayregMerNumberDir();
+            hsyyDayregMerNumberSub=hsystDealerRecord.getYDayregMerNumberSub();
+        }
+        //
 
         if(hssyDayMertradeAmountDir==null){hssyDayMertradeAmountDir=new BigDecimal(0);}
         if(hssyDayMertradeAmountSub==null){hssyDayMertradeAmountSub=new BigDecimal(0);}
@@ -142,8 +187,8 @@ public class ReportServiceImpl implements ReportService{
         hssdealerReport.setYDayregMerNumberSub(hssyDayregMerNumberSub);
         hssdealerReport.setRegMerNumberDir(hssregMerNumberDir);
         hssdealerReport.setRegMerNumberSub(hssregMerNumberSub);
-        hssdealerReport.setYDaycheckMerNumberDir(hsscheckMerNumberDir);
-        hssdealerReport.setYDaycheckMerNumberSub(hsscheckMerNumberSub);
+        hssdealerReport.setYDaycheckMerNumberDir(hssyDaycheckMerNumberDir);
+        hssdealerReport.setYDaycheckMerNumberSub(hssyDaycheckMerNumberSub);
         hssdealerReport.setCheckMerNumberDir(hsscheckMerNumberDir);
         hssdealerReport.setCheckMerNumberSub(hsscheckMerNumberSub);
         hssdealerReport.setQrCodeNumber(hssqrCodeNumber);
@@ -156,8 +201,8 @@ public class ReportServiceImpl implements ReportService{
          hsydealerReport.setYDayregMerNumberSub(hsyyDayregMerNumberSub);
          hsydealerReport.setRegMerNumberDir(hsyregMerNumberDir);
          hsydealerReport.setRegMerNumberSub(hsyregMerNumberSub);
-         hsydealerReport.setYDaycheckMerNumberDir(hsycheckMerNumberDir);
-         hsydealerReport.setYDaycheckMerNumberSub(hsycheckMerNumberSub);
+         hsydealerReport.setYDaycheckMerNumberDir(hsyyDaycheckMerNumberDir);
+         hsydealerReport.setYDaycheckMerNumberSub(hsyyDaycheckMerNumberSub);
          hsydealerReport.setCheckMerNumberDir(hsycheckMerNumberDir);
          hsydealerReport.setCheckMerNumberSub(hsycheckMerNumberSub);
          hsydealerReport.setQrCodeNumber(hsyqrCodeNumber);

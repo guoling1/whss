@@ -33,9 +33,9 @@ public class ReportController extends BaseController {
     @ResponseBody
     @RequestMapping(value = "/home", method = RequestMethod.POST)
     public CommonResponse home() {
-        long m_ndealerid=0;
-        long m_naccountid=0;
-        int m_nleve=0;
+        long m_ndealerid=0;//21
+        long m_naccountid=0;//52
+        int m_nleve=0;//1
         final Optional<Dealer> dealerOptional = getDealer();
         if (dealerOptional.isPresent()) {
             m_ndealerid= dealerOptional.get().getId();
