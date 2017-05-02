@@ -36,7 +36,7 @@
             </li>
             <li class="same">
               <label>收款商户名称:</label>
-              <el-input style="width: 188px" v-model="merchantName" placeholder="请输入内容" size="small" :disabled="appId==''"></el-input>
+              <el-input style="width: 188px" v-model="merchantName" placeholder="请先选择业务方" size="small" :disabled="appId==''"></el-input>
             </li>
             <li class="same">
               <label>所属一级代理:</label>
