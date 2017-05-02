@@ -44,7 +44,7 @@
                 <el-option label="好收收" value="hss">好收收</el-option>
               </el-select>
             </el-col>
-            <el-col  :span="1" style="margin-top: 18px">
+            <el-col  :span="5" style="margin-top: 18px">
               <div class="btn btn-primary" @click="search">筛选</div>
               <div class="btn btn-primary" @click="reset">重置</div>
             </el-col>

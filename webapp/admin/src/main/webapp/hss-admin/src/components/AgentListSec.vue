@@ -7,7 +7,7 @@
         </div>
         <div class="box-body">
           <!--筛选-->
-          <el-row :gutter="20" style="">
+          <el-row :gutter="21" style="">
             <el-col :span="3">
               <label>手机号：</label>
               <el-input v-model="query.mobile" placeholder="请输入内容" size="small"></el-input>
@@ -46,7 +46,7 @@
                 <el-option label="好收收" value="hss">好收收</el-option>
               </el-select>
             </el-col>
-            <el-col  :span="1" style="margin-top: 18px">
+            <el-col  :span="3" style="margin-top: 18px">
               <div class="btn btn-primary" @click="search">筛选</div>
               <div class="btn btn-primary" @click="reset">重置</div>
             </el-col>

@@ -81,7 +81,7 @@
               <ul class="search">
                 <li class="same">
                   <label>交易日期:</label>
-                  <el-date-picker style="width: 190px" v-model="date" type="daterange" align="right" placeholder="选择日期范围" :picker-options="pickerOptions" size="small">
+                  <el-date-picker style="width: 190px" v-model="date1" type="daterange" align="right" placeholder="选择日期范围" :picker-options="pickerOptions" size="small">
                   </el-date-picker>
                 </li>
                 <li class="same">
@@ -159,7 +159,7 @@
               <ul class="search">
                 <li class="same">
                   <label>交易日期:</label>
-                  <el-date-picker style="width: 190px" v-model="date" type="daterange" align="right" placeholder="选择日期范围" :picker-options="pickerOptions" size="small">
+                  <el-date-picker style="width: 190px" v-model="date2" type="daterange" align="right" placeholder="选择日期范围" :picker-options="pickerOptions" size="small">
                   </el-date-picker>
                 </li>
                 <li class="same">
@@ -303,8 +303,9 @@
         url:'/admin/allProfit/companyProfit',
         totalUrl:'/admin/allProfit/companyAmount',
         loadUrl:'',
-        loadUrl1:'',
         loadUrlCom:'',
+        loadUrlFir:'',
+        loadUrlSec:'',
         fromName:'',
         queryCom:{
           pageNo:1,
@@ -334,7 +335,6 @@
         },
         startTime:'',
         endTime:'',
-        records: [],
         recordsCom: [],
         recordsFir: [],
         recordsSec: [],
@@ -369,6 +369,8 @@
     created: function () {
       let time = new Date();
       this.date = [time,time];
+      this.date1 = [time,time];
+      this.date2 = [time,time];
       for (var j = 0; j < this.date.length; j++) {
         var str = this.date[j];
         var ary = [str.getFullYear(), str.getMonth() + 1, str.getDate()];
@@ -389,7 +391,7 @@
       this.queryFir.startTime = this.startTime;
       this.queryFir.endTime = this.endTime;
       this.querySec.startTime = this.startTime;
-      this.querySecZ.endTime = this.endTime;
+      this.querySec.endTime = this.endTime;
       this.getDataCom();
       this.getDataFir();
       this.getDataSec();
@@ -399,7 +401,9 @@
     },
     methods: {
       reset: function (val) {
+        let time = new Date();
         if(val == 'Com'){
+          this.date = [time,time];
           this.queryCom = {
             pageNo:1,
             pageSize:10,
@@ -408,6 +412,7 @@
             businessType:''
           }
         }else if(val == 'Fir'){
+          this.date1 = [time,time];
           this.queryFir = {
             pageNo:1,
             pageSize:10,
@@ -418,6 +423,7 @@
             markCode:'',
           }
         }else if(val == 'Sec'){
+          this.date2 = [time,time];
           this.querySec = {
             pageNo:1,
             pageSize:10,
@@ -431,7 +437,13 @@
         }
       },
       onload: function () {
-        this.$data.loadUrl = this.loadUrl1;
+        if(this.activeName == 'first'){
+          this.$data.loadUrl = this.loadUrlCom;
+        }else if(this.activeName == 'second'){
+          this.$data.loadUrl = this.loadUrlFir;
+        }else if(this.activeName == 'third'){
+          this.$data.loadUrl = this.loadUrlSec;
+        }
         this.$data.isMask = true;
       },
       getDataCom: function () {
@@ -512,75 +524,6 @@
             })
           })
       },
-      /*getData: function () {
-        this.loading = true;
-        this.$http.post(this.url,this.query)
-          .then(function (res) {
-            this.$data.loading = false;
-            this.$data.records   = res.data.records;
-            this.$data.count = res.data.count;
-            this.$data.loadUrl1 = res.data.ext;
-            var toFix = function (val) {
-              return parseFloat(val).toFixed(2)
-            };
-            var total=0;
-            for (let i = 0; i < this.$data.records.length; i++) {
-              this.$data.records[i].splitAmount = toFix(this.$data.records[i].splitAmount);
-              total = toFix(parseFloat(total)+parseFloat(this.$data.records[i].splitAmount))
-            }
-            this.pageTotal = total;
-          }, function (err) {
-            this.$data.loading = false;
-            this.$message({
-              showClose: true,
-              message: err.statusMessage,
-              type: 'error'
-            })
-          })
-      },*/
-      //选项卡改变时
-      /*handleClick: function (tab,event) {
-        this.$data.query={
-          pageNo:1,
-          pageSize:10,
-          startTime:'',
-          endTime:'',
-          businessType:'',
-          proxyName:'',
-          markCode:'',
-          proxyName1:'',
-        };
-        let time = new Date();
-        this.date = [time,time];
-        for (var j = 0; j < this.date.length; j++) {
-          var str = this.date[j];
-          var ary = [str.getFullYear(), str.getMonth() + 1, str.getDate()];
-          for (var i = 0, len = ary.length; i < len; i++) {
-            if (ary[i] < 10) {
-              ary[i] = '0' + ary[i];
-            }
-          }
-          str = ary[0] + '-' + ary[1] + '-' + ary[2];
-          if (j == 0) {
-            this.$data.query.startTime = str;
-          } else {
-            this.$data.query.endTime = str;
-          }
-        }
-        this.records=[];
-        if(event.target.innerHTML=="公司分润"){
-          this.$data.url='/admin/allProfit/companyProfit';
-          this.$data.totalUrl='/admin/allProfit/companyAmount'
-        }else if(event.target.innerHTML=="一级代理商分润"){
-          this.$data.url='/admin/allProfit/firstProfit';
-          this.$data.totalUrl='/admin/allProfit/firstAmount'
-        }else if(event.target.innerHTML=="二级代理商分润"){
-          this.$data.url='/admin/allProfit/secondProfit';
-          this.$data.totalUrl='/admin/allProfit/secondAmount'
-        }
-        this.getData();
-        this.getAddTotal();
-      },*/
       search(val){
         if(val == 'Com'){
           this.queryCom.pageNo = 1;
@@ -596,7 +539,6 @@
           this.getAddTotalSec();
         }
       },
-      //当前页改变时
       handleCurrentChangeCom(val) {
         this.queryCom.pageNo = val;
         this.getDataCom()
@@ -629,10 +571,6 @@
         this.loading = true;
         this.getDataSec()
         this.getAddTotalSec();
-      },
-      onload: function () {
-        this.$data.loadUrl = this.loadUrl1;
-        this.$data.isMask = true;
       },
       getAddTotalCom(){
         this.$http.post('/admin/allProfit/companyAmount',this.queryCom)
@@ -676,20 +614,6 @@
             });
           })
       },
-      /*getAddTotal(){
-        this.$http.post(this.totalUrl,this.query)
-          .then(res=>{
-            this.addTotal = res.data;
-          })
-          .catch(err=>{
-            this.$data.loading = false;
-            this.$message({
-              showClose: true,
-              message: err.statusMessage,
-              type: 'error'
-            });
-          })
-      },*/
     },
     watch:{
       date:function (val,oldVal) {
@@ -704,14 +628,14 @@
             }
             str = ary[0] + '-' + ary[1] + '-' + ary[2];
             if(j==0){
-              this.$data.startTime = str;
+              this.queryCom.startTime = str;
             }else {
-              this.$data.endTime = str;
+              this.queryCom.endTime = str;
             }
           }
         }else {
-          this.$data.startTime = '';
-          this.$data.endTime = '';
+          this.queryCom.startTime = '';
+          this.queryCom.endTime = '';
         }
       },
       date1:function (val,oldVal) {
@@ -726,14 +650,14 @@
             }
             str = ary[0] + '-' + ary[1] + '-' + ary[2];
             if(j==0){
-              this.$data.query.startTime1 = str;
+              this.queryFir.startTime = str;
             }else {
-              this.$data.query.endTime1 = str;
+              this.queryFir.endTime = str;
             }
           }
         }else {
-          this.$data.query.startTime1 = '';
-          this.$data.query.endTime1 = '';
+          this.queryFir.startTime = '';
+          this.queryFir.endTime = '';
         }
       },
       date2:function (val,oldVal) {
@@ -748,14 +672,14 @@
             }
             str = ary[0] + '-' + ary[1] + '-' + ary[2];
             if(j==0){
-              this.$data.query.startTime2 = str;
+              this.querySec.startTime = str;
             }else {
-              this.$data.query.endTime2 = str;
+              this.querySec.endTime = str;
             }
           }
         }else {
-          this.$data.query.startTime2 = '';
-          this.$data.query.endTime2 = '';
+          this.querySec.startTime = '';
+          this.querySec.endTime = '';
         }
       },
     },
