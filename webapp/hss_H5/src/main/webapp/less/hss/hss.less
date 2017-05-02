@@ -237,6 +237,9 @@ input:focus {
         color: #999;
         line-height: 20px;
       }
+      img {
+        width: 95%;
+      }
     }
     .message-box-foot {
       height: 50px;
@@ -655,7 +658,7 @@ input:focus {
 }
 
 // 新版快捷首次支付，再次支付
-#_firstUnionPay {
+#_firstUnionPay, #_againUnionPay {
   width: 100%;
   height: auto;
   min-height: 100%;
@@ -664,6 +667,156 @@ input:focus {
   .space-title {
     font-size: 14px;
     color: #888;
+    text-align: left;
+    padding: 15px 15px 5px;
+  }
+  .order-info {
+    width: 100%;
+    height: 65px;
+    background-color: #FFF;
+    border-top: 1px solid #d6d6d6;
+    border-bottom: 1px solid #d6d6d6;
+    padding: 0 15px;
+    .left {
+      float: left;
+      line-height: 65px;
+      font-size: 14px;
+      color: #222;
+    }
+    .right {
+      float: right;
+      line-height: 65px;
+      font-size: 15px;
+      color: #faa30b;
+    }
+  }
+  .space {
+    width: 100%;
+    height: auto;
+    background-color: #FFF;
+    border-top: 1px solid #d6d6d6;
+    border-bottom: 1px solid #d6d6d6;
+    padding: 0 10px;
+    .group {
+      width: 100%;
+      height: 45px;
+      padding: 0 5px;
+      border-bottom: 1px solid #e6e8eb;
+      position: relative;
+      .left {
+        float: left;
+        width: 50px;
+        line-height: 44px;
+        font-size: 15px;
+        color: #222;
+        margin-right: 20px;
+        text-align: left;
+      }
+      .adaptive {
+        float: left;
+        &.text {
+          line-height: 44px;
+          font-size: 15px;
+          color: #b0b0b0;
+          &.active {
+            color: #000;
+          }
+        }
+        &.ipt {
+          height: 44px;
+          font-size: 15px;
+        }
+        &.ipt::-webkit-input-placeholder {
+          font-size: 15px;
+          color: #b0b0b0;
+        }
+        &.ipt:-moz-placeholder {
+          font-size: 15px;
+          color: #b0b0b0;
+        }
+        &.ipt::-moz-placeholder {
+          font-size: 15px;
+          color: #b0b0b0;
+        }
+        &.ipt:-ms-input-placeholder {
+          font-size: 15px;
+          color: #b0b0b0;
+        }
+      }
+      .magnifying {
+        display: none;
+        position: absolute;
+        top: -50px;
+        left: 50px;
+        width: 250px;
+        height: 59px;
+        background: url("../assets/magnifying.png") no-repeat center;
+        background-size: 250px 59px;
+        line-height: 50px;
+        font-size: 18px;
+        color: #5a5a5a;
+      }
+      .i {
+        float: right;
+        width: 22px;
+        height: 22px;
+        background: url("../assets/i.png") no-repeat center;
+        background-size: 22px 22px;
+        transform: translate3d(0, 11px, 0);
+      }
+      .del {
+        display: none;
+        float: right;
+        width: 30px;
+        height: 44px;
+        background: url("../assets/delete.png") no-repeat right;
+        background-size: 12px 12px;
+      }
+      .btn {
+        float: right;
+        border: 1px solid #3bc596;
+        border-radius: 3px;
+        font-size: 14px;
+        color: #36c493;
+        padding: 0 5px;
+        transform: translate3d(0, 10px, 0);
+      }
+      &.right {
+        background: url("../assets/list-right2.png") no-repeat center right 5px;
+        background-size: 8px 12px;
+      }
+    }
+    .group:nth-last-child(1) {
+      border: none;
+    }
+  }
+  .security-info {
+    padding: 10px 15px 0;
+    font-size: 12px;
+    color: #b0b0b0;
+    text-align: left;
+    .shield {
+      display: inline-block;
+      width: 10px;
+      height: 12px;
+      background: url("../assets/shield.png") no-repeat center;
+      background-size: 10px 12px;
+      margin-right: 5px;
+      transform: translate3d(0, 2px, 0);
+    }
+  }
+  .btn-box {
+    width: 100%;
+    padding: 10px 15px;
+    .btn {
+      width: 100%;
+      height: 45px;
+      line-height: 45px;
+      border-radius: 5px;
+      font-size: 16px;
+      color: #FFF;
+      background-color: #4ecea2;
+    }
   }
 }
 

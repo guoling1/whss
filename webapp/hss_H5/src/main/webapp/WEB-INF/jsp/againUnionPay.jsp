@@ -15,50 +15,46 @@
         content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
   <meta name="format-detection" content="telephone=no"/>
   <title>好收收</title>
-  <link rel="stylesheet" href="http://static.jinkaimen.cn/hss/css/style.2.2.13.css">
+  <link rel="stylesheet" href="http://static.jinkaimen.cn/hss/css/style.2.2.14.css">
   <link rel="stylesheet" href="http://static.jinkaimen.cn/weui/weui.css">
 </head>
 <body>
 
-<div id="againUnionPay">
-  <div class="space pd">
-    <div class="small-list">
-      <div class="left">支付金额</div>
-      <div class="right or">¥${amount}</div>
-    </div>
-    <div class="small-list">
-      <div class="left">收款商户</div>
-      <div class="right">${merchantName}</div>
-    </div>
+<div id="_againUnionPay">
+  <div class="space-title">确认订单信息</div>
+  <div class="order-info">
+    <div class="left">${merchantName}</div>
+    <div class="right">¥${amount}</div>
   </div>
+  <div class="space-title">请填写银行卡信息</div>
   <div class="space">
-    <div class="list right" id="chooseBank">
-      <div class="left">付款银行</div>
+    <div class="group right" id="chooseBank">
+      <div class="left">银行</div>
       <c:if test="${status==0}">
-        <div class="val NO" id="bank">${bankName} 尾号${shortNo} (本通道不支持)</div>
+        <div class="adaptive text" id="bank">${bankName} 尾号${shortNo} (本通道不支持)</div>
       </c:if>
       <c:if test="${status==1}">
-        <div class="val" id="bank">${bankName} 尾号${shortNo}</div>
+        <div class="adaptive text active" id="bank">${bankName} 尾号${shortNo}</div>
       </c:if>
     </div>
-    <div class="list" id="showExpireDate" style="display: none;">
+    <div class="group" id="showExpireDate" style="display: none;">
       <div class="left">有效期</div>
-      <input id="expireDate" class="ipt" type="text" placeholder="请选择信用卡有效期" readonly>
-      <div class="mpt" id="check_validity">查看示例</div>
+      <div id="expireDate" class="adaptive text">请选择月份/年份</div>
+      <div class="i" id="check_validity"></div>
     </div>
-    <div class="list" id="showCvv" style="display: none;">
+    <div class="group" id="showCvv" style="display: none;">
       <div class="left">CVV2</div>
-      <input id="cvv2" class="ipt" type="text" placeholder="信用卡背面最后3个数字">
-      <div class="mpt" id="check_cvv">查看示例</div>
+      <input id="cvv2" class="adaptive ipt" type="text" placeholder="卡背面末三位">
+      <div class="i" id="check_cvv"></div>
     </div>
-    <div class="list">
-      <div class="left">开户手机号</div>
-      <div class="val" id="mobile">${mobile}</div>
+    <div class="group">
+      <div class="left">手机号</div>
+      <div class="adaptive text active" id="mobile">${mobile}</div>
     </div>
-    <div class="list">
-      <div class="left">短信验证码</div>
-      <input id="code" class="ipt" type="text" placeholder="输入短信验证码">
-      <div class="mpt" id="sendCode">点击获取</div>
+    <div class="group">
+      <div class="left">验证码</div>
+      <input id="code" class="adaptive ipt" type="text" placeholder="请输入短信验证码">
+      <div class="btn" id="sendCode">点击获取</div>
     </div>
   </div>
   <div class="btn-box">
@@ -117,6 +113,6 @@
   }
 </script>
 <script src="https://res.wx.qq.com/open/libs/weuijs/1.0.0/weui.min.js"></script>
-<script src="http://static.jinkaimen.cn/vendor/vendor.1.0.9.9.min.js"></script>
-<script src="http://static.jinkaimen.cn/hss/2.2.20/againUnionPay.min.js"></script>
+<script src="http://static.jinkaimen.cn/vendor/vendor.1.0.9.10.min.js"></script>
+<script src="http://static.jinkaimen.cn/hss/2.2.21/againUnionPay.min.js"></script>
 </html>

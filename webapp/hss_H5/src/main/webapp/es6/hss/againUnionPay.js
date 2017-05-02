@@ -34,6 +34,7 @@ let sendCode = document.getElementById('sendCode');
 let submit = document.getElementById('submit');
 let addNew = document.getElementById('addNew');
 let expireDate = document.getElementById('expireDate');
+expireDate.value = '';
 
 layer_x.addEventListener('click', function () {
   layer.style.display = 'none';
@@ -162,7 +163,7 @@ http.post('/bankcard/list', {
           className[i].className = 'choose-box-body-list-bank';
         }
         this.className = 'choose-box-body-list-bank active';
-        bank.className = 'val';
+        bank.className = 'adaptive text active';
         bank.innerHTML = data[i].bankName + ' 尾号' + data[i].shortNo;
         mobile.innerHTML = data[i].mobile;
         pageData.creditCardId = data[i].creditCardId;
