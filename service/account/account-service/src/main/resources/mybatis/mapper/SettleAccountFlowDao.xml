@@ -80,7 +80,7 @@
     </select>
 
     <select id="statisticsYesterdayFlow" resultType="com.jkm.hss.account.helper.selectresponse.SettleAccountFlowStatistics">
-        SELECT account_user_type, account_id, count(id) as count, SUM(income_amount) as amount
+        SELECT account_user_type, account_id, count(id) AS count, SUM(income_amount) AS amount, MAX(`trade_date`) AS trade_date
         FROM tb_settle_account_flow
         WHERE app_id = 'hsy'
         AND settle_date = #{settleDate}

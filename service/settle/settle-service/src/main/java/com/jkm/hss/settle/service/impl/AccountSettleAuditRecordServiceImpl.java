@@ -312,7 +312,7 @@ public class AccountSettleAuditRecordServiceImpl implements AccountSettleAuditRe
                 }
                 accountSettleAuditRecord.setAccountUserType(accountUserType.getId());
                 accountSettleAuditRecord.setAccountId(statistics.getAccountId());
-//                accountSettleAuditRecord.setTradeDate(tradeDate);
+                accountSettleAuditRecord.setTradeDate(statistics.getTradeDate());
                 accountSettleAuditRecord.setTradeNumber(statistics.getCount());
                 accountSettleAuditRecord.setSettleAmount(statistics.getAmount());
                 accountSettleAuditRecord.setAccountCheckStatus(EnumAccountCheckStatus.DUE_ACCOUNT_CHECK.getId());
