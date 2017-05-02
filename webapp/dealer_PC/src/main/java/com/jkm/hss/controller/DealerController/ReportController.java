@@ -35,20 +35,22 @@ public class ReportController extends BaseController {
     public CommonResponse home() {
         long m_ndealerid=0;
         long m_naccountid=0;
+        int m_nleve=0;
         final Optional<Dealer> dealerOptional = getDealer();
         if (dealerOptional.isPresent()) {
             m_ndealerid= dealerOptional.get().getId();
             m_naccountid=dealerOptional.get().getAccountId();
+            m_nleve=dealerOptional.get().getLevel();
         }
         Date nowD = new Date();
         //TODO计算后一天日期， 此功能后期结构优化调整
         Calendar cl = Calendar.getInstance();
         cl.setTime(nowD);
         int day = cl.get(Calendar.DATE);
-        cl.set(Calendar.DATE, day+1);
-        String startTime = DateFormatUtil.format(nowD, "yyyy-MM-dd");
-        String endTime = DateFormatUtil.format(cl.getTime(), "yyyy-MM-dd");
-        HomeReportResponse response = reportService.getHomeReport(m_ndealerid,m_naccountid, startTime, endTime);
+        cl.set(Calendar.DATE, day-1);
+        String startTime = DateFormatUtil.format(cl.getTime(), "yyyy-MM-dd");
+        String endTime = DateFormatUtil.format(nowD, "yyyy-MM-dd");
+        HomeReportResponse response = reportService.getHomeReport(m_ndealerid,m_naccountid,m_nleve, startTime, endTime);
         return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", response);
     }
 }

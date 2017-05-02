@@ -1,5 +1,6 @@
 package com.jkm.hss.dealer.dao;
 
+import com.jkm.hss.dealer.entity.STDealerRecord;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
@@ -131,7 +132,7 @@ public interface ReportDao {
      * @param endTime
      * @return
      */
-    Integer getHSSQrCodeNumber(@Param("dealerid") long dealerid,@Param("startTime") String startTime,@Param("endTime") String endTime);
+    Integer getHSSQrCodeNumberfirst(@Param("dealerid") long dealerid,@Param("startTime") String startTime,@Param("endTime") String endTime);
     /**
      * HSY二维码总数
      * @param dealerid
@@ -139,5 +140,30 @@ public interface ReportDao {
      * @param endTime
      * @return
      */
-    Integer getHSYQrCodeNumber(@Param("dealerid") long dealerid,@Param("startTime") String startTime,@Param("endTime") String endTime);
+    Integer getHSYQrCodeNumberfirst(@Param("dealerid") long dealerid,@Param("startTime") String startTime,@Param("endTime") String endTime);
+
+    /**
+     * HSS二维码总数-二级
+     * @param dealerid
+     * @param startTime
+     * @param endTime
+     * @return
+     */
+    Integer getHSSQrCodeNumbersecond(@Param("dealerid") long dealerid,@Param("startTime") String startTime,@Param("endTime") String endTime);
+    /**
+     * HSY二维码总数-二级
+     * @param dealerid
+     * @param startTime
+     * @param endTime
+     * @return
+     */
+    Integer getHSYQrCodeNumbersecond(@Param("dealerid") long dealerid,@Param("startTime") String startTime,@Param("endTime") String endTime);
+
+    /**
+     * 代理商数据日报表
+     * @param stDealerRecord
+     */
+    void insertstdealerrecord(STDealerRecord stDealerRecord);
+
+    STDealerRecord getstdealerrecord(@Param("dealerid") long dealerid,@Param("recordDay") String recordDay,@Param("sysType") String sysType);
 }

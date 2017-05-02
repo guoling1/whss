@@ -2,6 +2,8 @@ package com.jkm.hss.dealer.service.impl;
 import com.google.common.base.Optional;
 import com.jkm.base.common.util.DateFormatUtil;
 import com.jkm.hss.account.entity.Account;
+import com.jkm.hss.dealer.entity.STDealerRecord;
+import com.jkm.hss.dealer.enums.EnumDealerLevel;
 import com.jkm.hss.dealer.helper.requestparam.DealerReportRequest;
 import com.jkm.hss.dealer.helper.response.DealerReport;
 import com.jkm.hss.dealer.helper.response.HomeReportResponse;
@@ -25,9 +27,12 @@ public class ReportServiceImpl implements ReportService{
     private AccountService accountService;
 
     @Override
-   public HomeReportResponse getHomeReport(final long dealerId,final long acountid, final String startTime, final String endTime) {
+   public HomeReportResponse getHomeReport(final long dealerId,final long acountid,final int level, final String startTime, final String endTime) {
         String startDate=startTime+" 00:00:00";
         String endDate=endTime+" 00:00:00";
+        //STDealerRecord hssstDealerRecord=reportDao.getstdealerrecord(dealerId,startTime,"hss");
+        //STDealerRecord hsystDealerRecord=reportDao.getstdealerrecord(dealerId,startTime,"hsy");
+
         //昨日分润统计
         BigDecimal yDayProfit=reportDao.getDayProfit(acountid,startDate,endDate);
         //分润统计
@@ -84,10 +89,40 @@ public class ReportServiceImpl implements ReportService{
         Integer hsycheckMerNumberSub=reportDao.getHSYDaycheckMerNumberSub(dealerId,null,null);
 
         //HSS二维码总数
-        Integer hssqrCodeNumber=reportDao.getHSSQrCodeNumber(dealerId,null,null);
+        Integer hssqrCodeNumber=0;
         //HSY二维码总数
-        Integer hsyqrCodeNumber=reportDao.getHSYQrCodeNumber(dealerId,null,null);
+        Integer hsyqrCodeNumber=0;
+        if(level== EnumDealerLevel.FIRST.getId()){
+            hssqrCodeNumber=reportDao.getHSSQrCodeNumberfirst(dealerId,null,null);
+            hsyqrCodeNumber=reportDao.getHSYQrCodeNumberfirst(dealerId,null,null);
+        }else if(level==EnumDealerLevel.SECOND.getId()){
+            hssqrCodeNumber=reportDao.getHSSQrCodeNumbersecond(dealerId,null,null);
+            hsyqrCodeNumber=reportDao.getHSYQrCodeNumbersecond(dealerId,null,null);
+        }
 
+//        //插入日数据
+//        if(hssstDealerRecord==null){
+//            yDayProfit=reportDao.getDayProfit(acountid,startDate,endDate);
+//
+//            hssstDealerRecord=new STDealerRecord();
+//            hssstDealerRecord.setDealerId(dealerId);
+//            hssstDealerRecord.setProxy_name("");
+//            hssstDealerRecord.setRecordDay(DateFormatUtil.parse(startTime,DateFormatUtil.yyyy_MM_dd));
+//            hssstDealerRecord.setSys_type("hss");
+//
+//            hssstDealerRecord.setYDayProfit(yDayProfit);
+//            hssstDealerRecord.setYDaycheckMerNumberDir(hssyDaycheckMerNumberDir);
+//            hssstDealerRecord.setYDaycheckMerNumberSub(hssyDaycheckMerNumberSub);
+//            hssstDealerRecord.setYDayMertradeAmountDir(hssyDayMertradeAmountDir);
+//            hssstDealerRecord.setYDayMertradeAmountSub(hssyDayMertradeAmountSub);
+//            hssstDealerRecord.setYDayregMerNumberDir(hssyDayregMerNumberDir);
+//            hssstDealerRecord.setYDayregMerNumberSub(hssyDayregMerNumberSub);
+//            reportDao.insertstdealerrecord(hssstDealerRecord);
+//        }
+//        else {
+//            yDayProfit=hssstDealerRecord.getYDayProfit();
+//        }
+//        //
 
         if(hssyDayMertradeAmountDir==null){hssyDayMertradeAmountDir=new BigDecimal(0);}
         if(hssyDayMertradeAmountSub==null){hssyDayMertradeAmountSub=new BigDecimal(0);}
