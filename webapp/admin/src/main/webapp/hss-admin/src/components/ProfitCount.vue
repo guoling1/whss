@@ -384,6 +384,12 @@
           this.endTime = str;
         }
       }
+      this.queryCom.startTime = this.startTime;
+      this.queryCom.endTime = this.endTime;
+      this.queryFir.startTime = this.startTime;
+      this.queryFir.endTime = this.endTime;
+      this.querySec.startTime = this.startTime;
+      this.querySecZ.endTime = this.endTime;
       this.getDataCom();
       this.getDataFir();
       this.getDataSec();
