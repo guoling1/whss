@@ -3,6 +3,7 @@
     <div class="box-header with-border" style="margin: 0 0 0 3px;">
       <h3 v-if="isShow" class="box-title" style="border-left: 3px solid #e4e0e0;padding-left: 10px;">商户审核</h3>
       <h3 v-else="isShow" class="box-title" style="border-left: 3px solid #e4e0e0;padding-left: 10px;">商户资料</h3>
+      <a href="javascript:window.close();" class="pull-right btn btn-primary">关闭</a>
     </div>
     <div style="margin: 0 15px">
       <div class="box box-primary">
@@ -177,7 +178,7 @@
       <div class="box box-primary" style="overflow: hidden">
         <span class="lead">商户费率信息</span>
         <el-button type="text" @click="isReenter = true" v-if="status==1">重新入网</el-button>
-        <el-button type="text" @click="isReject = true" v-if="status==1">驳回充填</el-button>
+        <el-button type="text" @click="isReject = true" v-if="status==1">驳回重填</el-button>
         <div style="width: 70%;margin: 0 0 15px 15px;">
           <template>
             <el-table :data="tableData" border style="width: 100%">
@@ -222,7 +223,7 @@
           </span>
         </el-dialog>
       </div>
-      <div class="box box-primary" v-if="!isShow">
+      <div class="box box-primary" v-if="!isShow||res.length!=0">
         <p class="lead">审核日志</p>
         <div class="table-responsive">
           <div class="col-sm-12">
@@ -238,8 +239,8 @@
               <tbody id="content">
               <tr role="row" class="odd" v-for="re in this.$data.res">
                 <td class="sorting_1">{{re.status|status}}</td>
-                <td>{{re.createTime|changeTime}}</td>
-                <td>—</td>
+                <td>{{re.createTimes}}</td>
+                <td>{{re.name}}</td>
                 <td>{{re.descr}}</td>
               </tr>
               </tbody>
@@ -274,6 +275,7 @@
 </template>
 
 <script lang="babel">
+  import Message from './Message.vue'
   export default {
     name: 'dale',
     data () {
@@ -331,13 +333,18 @@
       }
       this.$http.post('/admin/hsyMerchantList/getDetails',{id:this.$data.id})
         .then(function (res) {
-          this.$data.msg = res.data;
-          this.tableData[1].rate = parseFloat(res.data.weixinRate * 100).toFixed(2) + '%';
-          this.tableData[0].rate = parseFloat(res.data.alipayRate * 100).toFixed(2) + '%';
-          this.tableData[0].product = this.tableData[1].product = res.data.hxbOpenProduct;
-          this.tableData[0].status = this.tableData[1].status = res.data.hxbStatus;
-          this.tableData[0].msg = this.tableData[1].msg = res.data.hxbRemarks;
-          this.tableData[0].proMsg = this.tableData[1].proMsg = res.data.hxbOpenproductRemarks;
+          this.$data.msg = res.data.res;
+          this.$data.res = res.data.list;
+          if(res.data.res.weixinRate!=null&&res.data.res.weixinRate!=''&&res.data.res.weixinRate!=0){
+            this.tableData[1].rate = parseFloat(res.data.res.weixinRate * 100).toFixed(2) + '%';
+          }
+          if(res.data.res.alipayRate!=null&&res.data.res.alipayRate!=''&&res.data.res.alipayRate!=0){
+            this.tableData[0].rate = parseFloat(res.data.res.alipayRate * 100).toFixed(2) + '%';
+          }
+          this.tableData[0].product = this.tableData[1].product = res.data.res.hxbOpenProduct;
+          this.tableData[0].status = this.tableData[1].status = res.data.res.hxbStatus;
+          this.tableData[0].msg = this.tableData[1].msg = res.data.res.hxbRemarks;
+          this.tableData[0].proMsg = this.tableData[1].proMsg = res.data.res.hxbOpenProductRemarks;
 
         },function (err) {
           this.$message({
@@ -379,7 +386,7 @@
           this.isReject = false;
           this.$message({
             showClose: true,
-            message: '驳回充填成功',
+            message: '驳回重填成功',
             type: 'success'
           })
         }, function (err) {
@@ -395,9 +402,12 @@
         this.$http.post('/admin/hsyMerchantAudit/throughAudit', {
           id: this.$data.id,
           uid: this.$data.msg.uid,
-          name: this.msg.name
+          name: this.msg.name,
+          checkErrorInfo: this.$data.reason
         }).then(function (res) {
-          this.$router.go(-1)
+          this.$store.commit('MESSAGE_ACCORD_SHOW', {
+            text: '操作成功'
+          })
         }, function (err) {
           this.$message({
             showClose: true,
@@ -407,9 +417,16 @@
         })
       },
       unAudit: function () {
-        this.$http.post('/admin/hsyMerchantAudit/rejectToExamine',{id: this.$data.id, uid: this.$data.msg.uid,checkErrorInfo:this.$data.reason})
+        this.$http.post('/admin/hsyMerchantAudit/rejectToExamine', {
+          id: this.$data.id,
+          uid: this.$data.msg.uid,
+          name: this.msg.name,
+          checkErrorInfo: this.$data.reason
+        })
           .then(function (res) {
-            this.$router.go(-1)
+            this.$store.commit('MESSAGE_ACCORD_SHOW', {
+              text: '操作成功'
+            })
           },function (err) {
             this.$message({
               showClose: true,

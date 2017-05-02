@@ -5,6 +5,7 @@
         <div class="box-header with-border">
           <h3 class="box-title" v-if="isAdd">新增代理商：产品信息设置</h3>
           <h3 class="box-title" v-if="!isAdd">代理商详情</h3>
+          <a href="javascript:window.close();" class="pull-right btn btn-primary">关闭</a>
         </div>
         <div class="">
           <div class="box-header">
@@ -130,10 +131,8 @@
             </div>
           </form>
         </div>
-        <div class="btn btn-primary" @click="goBack" style="margin: 20px 20px 100px 40px;">
-          返回
-        </div>
-        <div class="btn btn-primary" @click="_$power(change,'boss_first_product__update')" style="margin: 20px 0 100px;" v-if="level==1&&!isAdd&&records.productName=='好收收'">修改</div>
+        <!--<div class="btn btn-primary" @click="goBack" style="margin: 20px 20px 100px 40px;">返回</div>-->
+        <div class="btn btn-primary" @click="_$power(change,'boss_first_product__update')" style="margin: 20px 0 100px;" v-if="level==1&&!isAdd">修改</div>
         <div class="btn btn-primary" @click="_$power(change,'boss_merchant_check')" style="margin: 20px 0 100px;" v-if="level==1&&isAdd">开 通</div>
       </div>
     </div>
@@ -141,6 +140,7 @@
 </template>
 
 <script lang="babel">
+  import Message from './Message.vue'
   export default {
     name: 'agentAddBase',
     data () {
@@ -211,22 +211,27 @@
         }
         this.$http.post(this.$data.url, this.$data.records)
           .then(function (res) {
-            this.$message({
-              showClose: true,
-              message: '设置成功',
-              type: 'success'
-            });
-            this.$router.go(-1)
+            this.$store.commit('MESSAGE_ACCORD_SHOW', {
+              text: '设置成功'
+            })
+//            this.$message({
+//              showClose: true,
+//              message: '设置成功',
+//              type: 'success'
+//            });
+//            this.$router.go(-1)
           }, function (err) {
-            this.$data.records.totalProfitSpace = this.$data.records.totalProfitSpace*100;
-            this.$data.records.dealerUpgerdeRates[0].bossDealerShareRate = this.$data.records.dealerUpgerdeRates[0].bossDealerShareRate*100;
-            this.$data.records.dealerUpgerdeRates[0].firstDealerShareProfitRate = this.$data.records.dealerUpgerdeRates[0].firstDealerShareProfitRate*100;
-            this.$data.records.dealerUpgerdeRates[0].secondDealerShareProfitRate = this.$data.records.dealerUpgerdeRates[0].secondDealerShareProfitRate*100;
-            this.$data.records.dealerUpgerdeRates[1].bossDealerShareRate = this.$data.records.dealerUpgerdeRates[1].bossDealerShareRate*100;
-            this.$data.records.dealerUpgerdeRates[1].firstDealerShareProfitRate = this.$data.records.dealerUpgerdeRates[1].firstDealerShareProfitRate*100;
-            this.$data.records.dealerUpgerdeRates[1].secondDealerShareProfitRate = this.$data.records.dealerUpgerdeRates[1].secondDealerShareProfitRate*100;
-            this.$data.records.dealerUpgerdeRates[0] = this.$data.dealerUpgerdeRate1;
-            this.$data.records.dealerUpgerdeRates[1] = this.$data.dealerUpgerdeRate2;
+            if(this.$route.query.product == "hss"){
+              this.$data.records.totalProfitSpace = this.$data.records.totalProfitSpace*100;
+              this.$data.records.dealerUpgerdeRates[0].bossDealerShareRate = this.$data.records.dealerUpgerdeRates[0].bossDealerShareRate*100;
+              this.$data.records.dealerUpgerdeRates[0].firstDealerShareProfitRate = this.$data.records.dealerUpgerdeRates[0].firstDealerShareProfitRate*100;
+              this.$data.records.dealerUpgerdeRates[0].secondDealerShareProfitRate = this.$data.records.dealerUpgerdeRates[0].secondDealerShareProfitRate*100;
+              this.$data.records.dealerUpgerdeRates[1].bossDealerShareRate = this.$data.records.dealerUpgerdeRates[1].bossDealerShareRate*100;
+              this.$data.records.dealerUpgerdeRates[1].firstDealerShareProfitRate = this.$data.records.dealerUpgerdeRates[1].firstDealerShareProfitRate*100;
+              this.$data.records.dealerUpgerdeRates[1].secondDealerShareProfitRate = this.$data.records.dealerUpgerdeRates[1].secondDealerShareProfitRate*100;
+              this.$data.records.dealerUpgerdeRates[0] = this.$data.dealerUpgerdeRate1;
+              this.$data.records.dealerUpgerdeRates[1] = this.$data.dealerUpgerdeRate2;
+            }
             this.$message({
               showClose: true,
               message: err.statusMessage,

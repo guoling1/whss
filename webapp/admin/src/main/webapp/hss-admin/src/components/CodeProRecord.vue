@@ -94,7 +94,8 @@
     },
     methods: {
       issue: function () {
-        this.$router.push('/admin/record/codeProduct')
+        window.open('http://admin.qianbaojiajia.com/admin/details/codeProduct')
+//        this.$router.push('/admin/record/codeProduct')
       },
       getData: function () {
         this.loading = true;

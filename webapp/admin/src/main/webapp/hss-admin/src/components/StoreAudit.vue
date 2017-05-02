@@ -3,6 +3,7 @@
     <div class="box-header with-border" style="margin: 0 0 0 3px;">
       <h3 v-if="isShow" class="box-title" style="border-left: 3px solid #e4e0e0;padding-left: 10px;">商户审核</h3>
       <h3 v-else="isShow" class="box-title" style="border-left: 3px solid #e4e0e0;padding-left: 10px;">商户资料</h3>
+      <a href="javascript:window.close();" class="pull-right btn btn-primary">关闭</a>
     </div>
     <div style="margin: 0 15px">
       <div class="box box-primary">
@@ -119,7 +120,8 @@
         </el-row>
       </div>
       <div class="box box-primary">
-        <p class="lead">认证资料</p>
+        <span class="lead">认证资料</span>
+        <el-button type="text" @click="toDet">认证资料历史</el-button>
         <div class="table-responsive">
           <table class="table">
             <tbody>
@@ -130,21 +132,108 @@
               <th class="col-md-3" style="text-align: center;">银行卡正面:</th>
               <th class="col-md-3" style="text-align: center;">手持结算卡:</th>
             </tr>
-            <tr class="row">
+            <!--<tr class="row">
               <td class="col-md-3" style="text-align: center;border: none;">
                 <img style="width: 200px" @click="changeBig()" :src="$msg.identityFacePic" alt=""/>
               </td>
               <td class="col-md-3" style="text-align: center;border: none;">
-                <img style="width: 200px" @click="changeBig()" :src="$msg.identityOppositePic" alt=""/>
+                <img style="width: 200px" @click="changeBig()" :src="$msg.identityHandPic" alt=""/>
               </td>
               <td class="col-md-3" style="text-align: center;border: none;">
-                <img style="width: 200px" @click="changeBig()" :src="$msg.identityHandPic" alt=""/>
+                <img style="width: 200px" @click="changeBig()" :src="$msg.identityOppositePic" alt=""/>
               </td>
               <td class="col-md-3" style="text-align: center;border: none;">
                 <img style="width: 200px" @click="changeBig()" :src="$msg.bankPic" alt=""/>
               </td>
               <td class="col-md-3" style="text-align: center;border: none;">
                 <img style="width: 200px" @click="changeBig()" :src="$msg.bankHandPic" alt=""/>
+              </td>
+            </tr>-->
+            <tr class="row">
+              <td class="col-md-3" style="text-align: center;border: none;">
+                <img style="width: 200px;" @click="changeBig()" :src="$msg.identityFacePic" alt="" v-if="$msg.identityFacePic!=null&&$msg.identityFacePic!=''"/>
+                <el-button style="display: block;margin: 0 auto" v-if="$msg.identityFacePic!=null&&$msg.identityFacePic!=''" type="text" @click="changePhoto('4')">点击更换</el-button>
+                <el-upload v-else id="upload" style="position: relative" action="/admin/photoChange/savePhotoChang"
+                           type="drag" :thumbnail-mode="true"
+                           name="photo"
+                           :data={merchantId:id,type:4}
+                           :on-preview="handlePreview"
+                           :on-success="handleSuccess"
+                           :on-error="handleErr"
+                           :default-file-list="fileList">
+                  <i class="el-icon-upload"></i>
+                  <div class="el-dragger__text">将文件拖到此处，或<em>点击上传</em></div>
+                  <div style="position: absolute;top: 126px;margin-left:0px;width: 200px;height: 30px;background: #fbfdff"></div>
+                  <div style="position: absolute;top: 1px;margin-left:0px;width: 200px;height: 30px;background: #fbfdff"></div>
+                </el-upload>
+              </td>
+              <td class="col-md-3" style="text-align: center;border: none;">
+                <img style="width: 200px" @click="changeBig()" :src="$msg.identityHandPic" alt="" v-if="$msg.identityHandPic!=null&&$msg.identityHandPic!=''"/>
+                <el-button style="display: block;margin: 0 auto" v-if="$msg.identityHandPic!=null&&$msg.identityHandPic!=''" type="text" @click="changePhoto('3')">点击更换</el-button>
+                <el-upload v-else id="upload" style="position: relative" action="/admin/photoChange/savePhotoChang"
+                           type="drag" :thumbnail-mode="true"
+                           name="photo"
+                           :data={merchantId:id,type:3}
+                           :on-preview="handlePreview"
+                           :on-success="handleSuccess"
+                           :on-error="handleErr"
+                           :default-file-list="fileList">
+                  <i class="el-icon-upload"></i>
+                  <div class="el-dragger__text">将文件拖到此处，或<em>点击上传</em></div>
+                  <div style="position: absolute;top: 126px;margin-left:0px;width: 200px;height: 30px;background: #fbfdff"></div>
+                  <div style="position: absolute;top: 1px;margin-left:0px;width: 200px;height: 30px;background: #fbfdff"></div>
+                </el-upload>
+              </td>
+              <td class="col-md-3" style="text-align: center;border: none;">
+                <img style="width: 200px" @click="changeBig()" :src="$msg.identityOppositePic" alt="" v-if="$msg.identityOppositePic!=null&&$msg.identityOppositePic!=''"/>
+                <el-button style="display: block;margin: 0 auto" v-if="$msg.identityOppositePic!=null&&$msg.identityOppositePic!=''" type="text" @click="changePhoto('5')">点击更换</el-button>
+                <el-upload v-else id="upload" style="position: relative" action="/admin/photoChange/savePhotoChang"
+                           type="drag" :thumbnail-mode="true"
+                           name="photo"
+                           :data={merchantId:id,type:5}
+                           :on-preview="handlePreview"
+                           :on-success="handleSuccess"
+                           :on-error="handleErr"
+                           :default-file-list="fileList">
+                  <i class="el-icon-upload"></i>
+                  <div class="el-dragger__text">将文件拖到此处，或<em>点击上传</em></div>
+                  <div style="position: absolute;top: 126px;margin-left:0px;width: 200px;height: 30px;background: #fbfdff"></div>
+                  <div style="position: absolute;top: 1px;margin-left:0px;width: 200px;height: 30px;background: #fbfdff"></div>
+                </el-upload>
+              </td>
+              <td class="col-md-3" style="text-align: center;border: none;">
+                <img style="width: 200px" @click="changeBig()" :src="$msg.bankPic" alt="" v-if="$msg.bankPic!=null&&$msg.bankPic!=''"/>
+                <el-button style="display: block;margin: 0 auto" v-if="$msg.bankPic!=null&&$msg.bankPic!=''" type="text" @click="changePhoto('1')">点击更换</el-button>
+                <el-upload v-else id="upload" style="position: relative" action="/admin/photoChange/savePhotoChang"
+                           type="drag" :thumbnail-mode="true"
+                           name="photo"
+                           :data={merchantId:id,type:1}
+                           :on-preview="handlePreview"
+                           :on-success="handleSuccess"
+                           :on-error="handleErr"
+                           :default-file-list="fileList">
+                  <i class="el-icon-upload"></i>
+                  <div class="el-dragger__text">将文件拖到此处，或<em>点击上传</em></div>
+                  <div style="position: absolute;top: 126px;margin-left:0px;width: 200px;height: 30px;background: #fbfdff"></div>
+                  <div style="position: absolute;top: 1px;margin-left:0px;width: 200px;height: 30px;background: #fbfdff"></div>
+                </el-upload>
+              </td>
+              <td class="col-md-3" style="text-align: center;border: none;">
+                <img style="width: 200px" @click="changeBig()" :src="$msg.bankHandPic" alt="" v-if="$msg.bankHandPic!=null&&$msg.bankHandPic!=''"/>
+                <el-button style="display: block;margin: 0 auto" v-if="$msg.bankHandPic!=null&&$msg.bankHandPic!=''" type="text" @click="changePhoto('2')">点击更换</el-button>
+                <el-upload v-else id="upload" style="position: relative" action="/admin/photoChange/savePhotoChang"
+                           type="drag" :thumbnail-mode="true"
+                           name="photo"
+                           :data={merchantId:id,type:2}
+                           :on-preview="handlePreview"
+                           :on-success="handleSuccess"
+                           :on-error="handleErr"
+                           :default-file-list="fileList">
+                  <i class="el-icon-upload"></i>
+                  <div class="el-dragger__text">将文件拖到此处，或<em>点击上传</em></div>
+                  <div style="position: absolute;top: 126px;margin-left:0px;width: 200px;height: 30px;background: #fbfdff"></div>
+                  <div style="position: absolute;top: 1px;margin-left:0px;width: 200px;height: 30px;background: #fbfdff"></div>
+                </el-upload>
               </td>
             </tr>
             </tbody>
@@ -329,11 +418,31 @@
           </table>
         </div>
       </div>
+      <el-dialog title="更换认证资料" v-model="isUpload">
+        <el-form :label-position="right" label-width="150px">
+          <el-form-item label="上传照片：" width="120" style="margin-bottom: 0">
+            <el-upload
+              class="upload-demo"
+              action="/admin/photoChange/savePhotoChang"
+              name="photo"
+              :data={merchantId:id,type:photoType}
+              :on-preview="handlePreview"
+              :on-success="handleSuccess"
+              :on-error="handleErr"
+              :on-remove="handleRemove"
+              :file-list="fileList">
+              <el-button id="btn" size="small" type="primary">点击上传</el-button>
+              <div style="position: absolute;top: 36px;left:-1px;width: 220px;height: 30px;background: #fff"></div>
+            </el-upload>
+          </el-form-item>
+        </el-form>
+      </el-dialog>
     </div>
   </div>
 </template>
 
 <script lang="babel">
+  import Message from './Message.vue'
   export default {
     name: 'storeAudit',
     data () {
@@ -376,7 +485,9 @@
           changeType:'',
           markCode:'',
           merchantId:''
-        }
+        },
+        isUpload: false,
+        photoType:''
       }
     },
     created: function () {
@@ -388,6 +499,27 @@
       this.getData();
     },
     methods: {
+      changePhoto: function (val) {
+        this.photoType = val;
+        this.isUpload = true
+      },
+      handleSuccess: function (response, file, fileList) {
+        this.$message({
+          showClose: true,
+          message: '上传成功',
+          type: 'success'
+        });
+        this.isUpload = false;
+        this.getData()
+      },
+      handleErr:function (err) {
+        console.log(err)
+        this.$message({
+          showClose: true,
+          message: '上传失败',
+          type: 'error'
+        });
+      },
       getData:function () {
         this.loading = true;
         this.$http.post('/admin/QueryMerchantInfoRecord/getAll', {id: this.$data.id})
@@ -469,7 +601,9 @@
         this.$http.post('/admin/merchantInfoCheckRecord/record', {
           merchantId: this.$data.id
         }).then(function (res) {
-          this.$router.go(-1)
+          this.$store.commit('MESSAGE_ACCORD_SHOW', {
+            text: '操作成功'
+          })
         }, function (err) {
           this.$message({
             showClose: true,
@@ -484,7 +618,9 @@
           descr: this.$data.reason
         })
           .then(function (res) {
-            this.$router.go(-1)
+            this.$store.commit('MESSAGE_ACCORD_SHOW', {
+              text: '操作成功'
+            })
           }, function (err) {
             this.$message({
               showClose: true,
@@ -523,6 +659,10 @@
       },
       isNo: function () {
         document.getElementById('mask').style.display = 'none'
+      },
+      toDet:function () {
+        window.open('http://admin.qianbaojiajia.com/admin/details/dataHistory?merchantId='+id);
+//        this.$router.push({path:'/admin/record/dataHistory',query:{merchantId:this.id}})
       }
     },
     computed:{

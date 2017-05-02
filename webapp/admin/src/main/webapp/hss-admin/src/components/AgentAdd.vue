@@ -2,9 +2,11 @@
   <div id="agentAdd">
     <div v-if="isShow" class="box-header with-border" style="margin: 0 0 0 3px;">
       <h3 class="box-title" style="border-left: 3px solid #e4e0e0;padding-left: 10px;">新增代理商</h3>
+      <a href="javascript:window.close();" class="pull-right btn btn-primary">关闭</a>
     </div>
     <div v-if="!isShow" class="box-header with-border" style="margin: 0 0 0 3px;">
       <h3 class="box-title" style="border-left: 3px solid #e4e0e0;padding-left: 10px;">代理商资料</h3>
+      <a href="javascript:window.close();" class="pull-right btn btn-primary">关闭</a>
     </div>
     <div style="margin: 0px 15px 150px;">
       <div class="box box-info tableTop">

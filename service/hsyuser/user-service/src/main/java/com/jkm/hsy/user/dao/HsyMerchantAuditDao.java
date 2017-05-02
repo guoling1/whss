@@ -121,4 +121,18 @@ public interface HsyMerchantAuditDao {
      */
     int hsyMerchantSecondListCount(HsyQueryMerchantRequest request);
 
+    /**
+     * 插入审核记录
+     * @param username
+     * @param id
+     * @param checkErrorInfo
+     */
+    void saveLog(@Param("username") String username,@Param("id") Long id,@Param("checkErrorInfo") String checkErrorInfo,@Param("stat") int stat);
+
+    /**
+     * 查日志
+     * @param id
+     * @return
+     */
+    List<HsyMerchantInfoCheckRecord> getLog(@Param("id") Long id);
 }

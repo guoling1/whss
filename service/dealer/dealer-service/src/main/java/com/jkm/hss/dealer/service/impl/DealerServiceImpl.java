@@ -316,7 +316,7 @@ public class DealerServiceImpl implements DealerService {
         if (dealer.getLevel() == EnumDealerLevel.FIRST.getId()){
             //一级
             //一级分润
-            final BigDecimal firstMoney = totalFee.multiply(merchantRate.
+            BigDecimal firstMoney = totalFee.multiply(merchantRate.
                     subtract(dealerChannelRate.getDealerTradeRate())).setScale(2,BigDecimal.ROUND_DOWN);
             final BigDecimal basicTrade = totalFee.multiply(basicChannel.getBasicTradeRate());
             //计算通道成本
@@ -353,6 +353,10 @@ public class DealerServiceImpl implements DealerService {
             shallProfitDetail.setSecondShallAmount(new BigDecimal(0));
             shallProfitDetail.setProfitDate(DateFormatUtil.format(new Date(), DateFormatUtil.yyyy_MM_dd));
             this.shallProfitDetailService.init(shallProfitDetail);
+            if (firstMoney.compareTo(new BigDecimal("0")) == -1){
+                //一代分润金额小于0
+                firstMoney = new BigDecimal("0");
+            }
             map.put("firstMoney", Triple.of(dealer.getAccountId(), firstMoney, dealerChannelRate.getDealerTradeRate()));
             map.put("channelMoney",Triple.of(basicChannel.getAccountId(), channelMoney, basicChannel.getBasicTradeRate()));
             map.put("productMoney",Triple.of(product.getAccountId(), productMoney, productChannelDetail.getProductTradeRate()));
@@ -365,10 +369,10 @@ public class DealerServiceImpl implements DealerService {
             final DealerChannelRate firstDealerChannelRate =
                     this.dealerRateService.getByDealerIdAndProductIdAndChannelType(firstDealer.getId(), appAuUser.getProductID(),channelSign).get();
             //一级分润
-            final BigDecimal firstMoney = totalFee.multiply(dealerChannelRate.getDealerTradeRate().
+             BigDecimal firstMoney = totalFee.multiply(dealerChannelRate.getDealerTradeRate().
                     subtract(firstDealerChannelRate.getDealerTradeRate())).setScale(2,BigDecimal.ROUND_DOWN);
             //二级分润
-            final BigDecimal secondMoney = totalFee.multiply(merchantRate.
+             BigDecimal secondMoney = totalFee.multiply(merchantRate.
                     subtract(dealerChannelRate.getDealerTradeRate())).setScale(2,BigDecimal.ROUND_DOWN);
             //通道分润
             final BigDecimal channelMoney = totalFee.multiply(productChannelDetail.getProductTradeRate().
@@ -406,7 +410,15 @@ public class DealerServiceImpl implements DealerService {
             shallProfitDetail.setSecondShallAmount(secondMoney);
             shallProfitDetail.setProfitDate(DateFormatUtil.format(new Date(), DateFormatUtil.yyyy_MM_dd));
             this.shallProfitDetailService.init(shallProfitDetail);
+            if (firstMoney.compareTo(new BigDecimal("0")) == -1){
+                //一代分润金额小于0
+                firstMoney = new BigDecimal("0");
+            }
             map.put("firstMoney", Triple.of(firstDealer.getAccountId(), firstMoney, firstDealerChannelRate.getDealerTradeRate()));
+            if (secondMoney.compareTo(new BigDecimal("0")) == -1){
+                //二代分润金额小于0
+                secondMoney = new BigDecimal("0");
+            }
             map.put("secondMoney", Triple.of(dealer.getAccountId(),secondMoney, dealerChannelRate.getDealerTradeRate()));
             map.put("channelMoney",Triple.of(basicChannel.getAccountId(), channelMoney, basicChannel.getBasicTradeRate()));
             map.put("productMoney",Triple.of(product.getAccountId(), productMoney, productChannelDetail.getProductTradeRate()));
@@ -864,7 +876,7 @@ public class DealerServiceImpl implements DealerService {
         if (dealer.getLevel() == EnumDealerLevel.FIRST.getId()){
             //一级
             //一级分润
-            final BigDecimal firstMoney = totalFee.multiply(merchantRate.
+            BigDecimal firstMoney = totalFee.multiply(merchantRate.
                     subtract(dealerChannelRate.getDealerTradeRate())).setScale(2,BigDecimal.ROUND_DOWN);
             //通道成本
             final BigDecimal basicTrade = totalFee.multiply(basicChannel.getBasicTradeRate());
@@ -901,6 +913,10 @@ public class DealerServiceImpl implements DealerService {
             shallProfitDetail.setProfitDate(DateFormatUtil.format(new Date(), DateFormatUtil.yyyy_MM_dd));
             this.shallProfitDetailService.init(shallProfitDetail);
             map.put("basicMoney", Triple.of(0L,basicMoney,basicChannel.getBasicTradeRate()));
+            if (firstMoney.compareTo(new BigDecimal("0")) == -1){
+                //一代分润金额小于0
+                firstMoney = new BigDecimal("0");
+            }
             map.put("firstMoney", Triple.of(dealer.getAccountId(), firstMoney, dealerChannelRate.getDealerTradeRate()));
             map.put("channelMoney",Triple.of(basicChannel.getAccountId(), channelMoney, basicChannel.getBasicTradeRate()));
             map.put("productMoney",Triple.of(product.getAccountId(), productMoney, productChannelDetail.getProductTradeRate()));
@@ -913,10 +929,10 @@ public class DealerServiceImpl implements DealerService {
             final DealerChannelRate firstDealerChannelRate =
                     this.dealerRateService.getByDealerIdAndProductIdAndChannelType(firstDealer.getId(), merchantInfo.getProductId(),channelSign).get();
             //一级分润
-            final BigDecimal firstMoney = totalFee.multiply(dealerChannelRate.getDealerTradeRate().
+             BigDecimal firstMoney = totalFee.multiply(dealerChannelRate.getDealerTradeRate().
                     subtract(firstDealerChannelRate.getDealerTradeRate())).setScale(2,BigDecimal.ROUND_DOWN);
             //二级分润
-            final BigDecimal secondMoney = totalFee.multiply(merchantRate.
+             BigDecimal secondMoney = totalFee.multiply(merchantRate.
                     subtract(dealerChannelRate.getDealerTradeRate())).setScale(2,BigDecimal.ROUND_DOWN);
             //通道分润
             final BigDecimal channelMoney = totalFee.multiply(productChannelDetail.getProductTradeRate().
@@ -954,7 +970,15 @@ public class DealerServiceImpl implements DealerService {
             shallProfitDetail.setProfitDate(DateFormatUtil.format(new Date(), DateFormatUtil.yyyy_MM_dd));
             this.shallProfitDetailService.init(shallProfitDetail);
             map.put("basicMoney", Triple.of(0L,basicMoney,basicChannel.getBasicTradeRate()));
+            if (firstMoney.compareTo(new BigDecimal("0")) == -1){
+                //一代分润金额小于0
+                firstMoney = new BigDecimal("0");
+            }
             map.put("firstMoney", Triple.of(firstDealer.getAccountId(), firstMoney, firstDealerChannelRate.getDealerTradeRate()));
+            if (secondMoney.compareTo(new BigDecimal("0")) == -1){
+                //二代分润金额小于0
+                secondMoney = new BigDecimal("0");
+            }
             map.put("secondMoney", Triple.of(dealer.getAccountId(),secondMoney, dealerChannelRate.getDealerTradeRate()));
             map.put("channelMoney",Triple.of(basicChannel.getAccountId(), channelMoney, basicChannel.getBasicTradeRate()));
             map.put("productMoney",Triple.of(product.getAccountId(), productMoney, productChannelDetail.getProductTradeRate()));

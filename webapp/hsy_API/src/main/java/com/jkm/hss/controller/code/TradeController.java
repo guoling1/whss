@@ -60,7 +60,7 @@ public class TradeController extends BaseController {
         final Pair<Integer, String> resultPair = this.hsyTradeService.receipt(payRequest.getTotalFee(),
                 payRequest.getPayChannel(), shop.getId(), EnumAppType.HSY.getId(), payRequest.getMemberId());
         if (0 == resultPair.getLeft()) {
-            return CommonResponse.builder4MapResult(CommonResponse.SUCCESS_CODE, "收款成功")
+            return CommonResponse.builder4MapResult(CommonResponse.SUCCESS_CODE, "success")
                     .addParam("payUrl", URLDecoder.decode(resultPair.getRight(), "UTF-8")).addParam("subMerName", shop.getName())
                     .addParam("amount", payRequest.getTotalFee()).build();
         }
@@ -152,16 +152,16 @@ public class TradeController extends BaseController {
      * @param id
      * @return
      */
-    @RequestMapping(value = "success/${id}")
+    @RequestMapping(value = "success/{id}")
     public String paySuccessPage(final Model model, @PathVariable("id") long id) {
         final Optional<Order> orderOptional = this.orderService.getById(id);
         if(!orderOptional.isPresent()){
             return "/500.jsp";
         }else{
             final Order order = orderOptional.get();
-            model.addAttribute("sn", order.getSn());
+            model.addAttribute("sn", order.getOrderNo());
             model.addAttribute("money", order.getRealPayAmount().toPlainString());
-            return "/success.jsp";
+            return "/success";
         }
     }
 

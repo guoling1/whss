@@ -4,8 +4,7 @@
       <div class="box" style="margin-top:15px;overflow: hidden">
         <div class="box-header">
           <h3 class="box-title">交易查询</h3>
-          <router-link to="/admin/record/deal" class="pull-right btn btn-primary" style="margin-left: 20px">切换旧版
-          </router-link>
+          <router-link to="/admin/details/deal" class="pull-right btn btn-primary" style="margin-left: 20px" target="_blank">切换旧版</router-link>
           <span @click="_$power(onload,'boss_trade_export')" download="交易记录" class="btn btn-primary" style="float: right">导出</span>
         </div>
         <div class="box-body">
@@ -22,6 +21,10 @@
             <li class="same">
               <label>支付流水号:</label>
               <el-input style="width: 188px" v-model="query.sn" placeholder="请输入内容" size="small"></el-input>
+            </li>
+            <li class="same">
+              <label>收款商户编号:</label>
+              <el-input style="width: 188px" v-model="query.markCode" placeholder="请输入内容" size="small"></el-input>
             </li>
             <li class="same">
               <label>收款商户名称:</label>
@@ -81,6 +84,14 @@
               </el-select>
             </li>
             <li class="same">
+              <label>业务方：</label>
+              <el-select style="width: 188px" clearable v-model="query.appId" size="small">
+                <el-option label="全部" value="">全部</el-option>
+                <el-option label="好收收" value="好收收"></el-option>
+                <el-option label="好收银" value="好收银"></el-option>
+              </el-select>
+            </li>
+            <li class="same">
               <label>支付渠道：</label>
               <el-select style="width: 188px" clearable v-model="query.payChannelSign" size="small">
                 <el-option label="全部" value=""></el-option>
@@ -116,6 +127,7 @@
               </template>
             </el-table-column>
             <el-table-column prop="merchantName" label="收款商户名称" min-width="120"></el-table-column>
+            <el-table-column prop="markCode" label="收款商户编号" min-width="120"></el-table-column>
             <el-table-column prop="proxyName" label="所属一级" min-width="90"></el-table-column>
             <el-table-column prop="proxyName1" label="所属二级" min-width="110"></el-table-column>
             <el-table-column label="支付金额" align="right">
@@ -135,11 +147,10 @@
             <el-table-column prop="remark" label="渠道信息" min-width="90"></el-table-column>
             <el-table-column label="操作" width="90" fixed="right">
               <template scope="scope">
-                <router-link :to="{path:'/admin/record/newDealDet',query:{orderNo:scope.row.orderNo}}" type="text">详情
+                <router-link :to="{path:'/admin/details/newDealDet',query:{orderNo:scope.row.orderNo}}" type="text" target="_blank">详情
                 </router-link>
               </template>
             </el-table-column>
-          </el-table>
           </el-table>
           <ul style="float: left;margin-top: 5px">
             <li>
@@ -194,6 +205,7 @@
           businessOrderNo:'',
           sn:'',
           merchantName: '',
+          markCode:"",
           startTime: '',
           endTime: '',
           lessTotalFee: '',
@@ -205,7 +217,8 @@
           proxyName1:'',
           loadUrl: '',
           loadUrl1: '',
-          payChannelSign:''
+          payChannelSign:'',
+          appId:''
         },
         channelList:[],
         date: '',

@@ -99,4 +99,14 @@ public interface HsyMerchantAuditService {
      */
     int hsyMerchantSecondListCount(HsyQueryMerchantRequest request);
 
+
+    void saveLog(String username, Long id, String checkErrorInfo,int stat);
+
+    /**
+     * 查日志
+     * @param id
+     * @return
+     */
+    List<HsyMerchantInfoCheckRecord> getLog(Long id);
+
 }

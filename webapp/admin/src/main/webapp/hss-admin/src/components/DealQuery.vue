@@ -110,7 +110,7 @@
                 </thead>
                 <tbody id="content">
                 <tr v-if="order.tradeType==0" role="row" v-for="order in this.$data.orders">
-                  <td><router-link :to="{ path: '/admin/record/dealDet', query: {id: order.id}}">{{order.orderId|changeHide}}</router-link></td>
+                  <td><router-link :to="{ path: '/admin/details/dealDet', query: {id: order.id}}">{{order.orderId|changeHide}}</router-link></td>
                   <td>{{order.createTime|changeTime}}</td>
                   <td>{{order.subName}}</td>
                   <td>{{order.proxyName}}</td>

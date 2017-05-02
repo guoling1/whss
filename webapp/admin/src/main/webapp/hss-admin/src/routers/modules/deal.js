@@ -82,12 +82,18 @@ const Channel = r => require.ensure([], () => r(require('../../components/Channe
 
 const Test = r => require.ensure([], () => r(require('../../components/Test')), 'group-record');
 
+const DataHistory = r => require.ensure([], () => r(require('../../components/DataHistory')), 'group-record');
+
 export default {
   path: '/admin/record',
   redirect: '/admin/record/newDeal',
   component: Crumbs,
   children: [
     {
+      path: 'dataHistory',
+      name: 'DataHistory',
+      component: DataHistory
+    },{
       path: 'template',
       name: 'Template',
       component: Template

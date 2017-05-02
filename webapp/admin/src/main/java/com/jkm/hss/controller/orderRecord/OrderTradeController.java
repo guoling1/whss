@@ -61,8 +61,15 @@ public class OrderTradeController extends BaseController{
             rightNow.add(Calendar.DATE, 1);
             req.setEndTime(sdf.format(rightNow.getTime()));
         }
+        if (req.getAppId().equals("好收收")){
+            req.setAppId("hss");
+        }
+        if (req.getAppId().equals("好收银")){
+            req.setAppId("hsy");
+        }
+
         List<MerchantTradeResponse> orderList =  orderService.selectOrderListByPage(req);
-        long count = orderService.selectOrderListCount(req);
+        int count = orderService.selectOrderListCount(req);
         pageModel.setCount(count);
         pageModel.setRecords(orderList);
         String downLoadExcel = downLoad(req);
@@ -86,6 +93,12 @@ public class OrderTradeController extends BaseController{
             rightNow.setTime(dt);
             rightNow.add(Calendar.DATE, 1);
             req.setEndTime(sdf.format(rightNow.getTime()));
+        }
+        if (req.getAppId().equals("好收收")){
+            req.setAppId("hss");
+        }
+        if (req.getAppId().equals("好收银")){
+            req.setAppId("hsy");
         }
         String orderList =  orderService.amountCount(req);
         if (orderList==null||("").equals(orderList)){

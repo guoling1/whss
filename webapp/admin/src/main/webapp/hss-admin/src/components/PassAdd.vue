@@ -5,6 +5,7 @@
         <div class="box-header with-border" style="margin-bottom: 15px">
           <h3 class="box-title" v-if="isShow">新增通道</h3>
           <h3 class="box-title" v-if="!isShow">通道详情</h3>
+          <a href="javascript:window.close();" class="pull-right btn btn-primary">关闭</a>
         </div>
         <div class="">
           <div class="table-responsive">
@@ -54,16 +55,16 @@
               <el-col :span="6">
                 <div class="grid-content bg-purple-light">
                   <el-checkbox-group v-model="payWay">
-                    <el-checkbox label="微信公众号" v-if="nameType=='wx'||nameType==''"></el-checkbox>
-                    <el-checkbox label="微信公众号" v-if="nameType=='yl'||nameType=='zfb'" disabled></el-checkbox>
-                    <el-checkbox label="微信扫码" v-if="nameType=='wx'||nameType==''"></el-checkbox>
-                    <el-checkbox label="微信扫码" v-if="nameType=='yl'||nameType=='zfb'" disabled></el-checkbox>
-                    <el-checkbox label="支付宝公众号" v-if="nameType=='zfb'||nameType==''"></el-checkbox>
-                    <el-checkbox label="支付宝公众号" v-if="nameType=='yl'||nameType=='wx'" disabled></el-checkbox>
-                    <el-checkbox label="支付宝扫码" v-if="nameType=='zfb'||nameType==''"></el-checkbox>
-                    <el-checkbox label="支付宝扫码" v-if="nameType=='yl'||nameType=='wx'" disabled></el-checkbox>
-                    <el-checkbox label="无卡快捷" v-if="nameType=='yl'||nameType==''"></el-checkbox>
-                    <el-checkbox label="无卡快捷" v-if="nameType=='wx'||nameType=='zfb'" disabled></el-checkbox>
+                    <el-checkbox label="微信公众号" v-if="nameType=='wx'||nameType==''" style="font-weight: normal"><span style="font-size: 13px">微信公众号</span></el-checkbox>
+                    <el-checkbox label="微信公众号" v-if="nameType=='yl'||nameType=='zfb'" disabled style="font-weight: normal"><span style="font-size: 13px">微信公众号</span></el-checkbox>
+                    <el-checkbox label="微信扫码" v-if="nameType=='wx'||nameType==''" style="font-weight: normal"><span style="font-size: 13px">微信扫码</span></el-checkbox>
+                    <el-checkbox label="微信扫码" v-if="nameType=='yl'||nameType=='zfb'" disabled style="font-weight: normal"><span style="font-size: 13px">微信扫码</span></el-checkbox>
+                    <el-checkbox label="支付宝公众号" v-if="nameType=='zfb'||nameType==''" style="font-weight: normal"><span style="font-size: 13px">支付宝公众号</span></el-checkbox>
+                    <el-checkbox label="支付宝公众号" v-if="nameType=='yl'||nameType=='wx'" disabled style="font-weight: normal"><span style="font-size: 13px">支付宝公众号</span></el-checkbox>
+                    <el-checkbox label="支付宝扫码" v-if="nameType=='zfb'||nameType==''" style="font-weight: normal"><span style="font-size: 13px">支付宝扫码</span></el-checkbox>
+                    <el-checkbox label="支付宝扫码" v-if="nameType=='yl'||nameType=='wx'" disabled style="font-weight: normal"><span style="font-size: 13px">支付宝扫码</span></el-checkbox>
+                    <el-checkbox label="无卡快捷" v-if="nameType=='yl'||nameType==''" style="font-weight: normal"><span style="font-size: 13px">无卡快捷</span></el-checkbox>
+                    <el-checkbox label="无卡快捷" v-if="nameType=='wx'||nameType=='zfb'" disabled style="font-weight: normal"><span style="font-size: 13px">无卡快捷</span></el-checkbox>
                   </el-checkbox-group>
                 </div>
               </el-col>
@@ -76,9 +77,9 @@
               <el-col :span="6">
                 <div class="grid-content bg-purple-light">
                   <el-radio-group v-model="query.checkType">
-                    <el-radio :label="4">四要素：银行卡号，姓名，身份证号，手机号</el-radio>
-                    <el-radio :label="5" style="margin-left: 0">五要素：银行卡号，姓名，身份证号，手机号，有效期（信用卡）</el-radio>
-                    <el-radio :label="6" style="margin-left: 0">六要素：银行卡号，姓名，身份证号，手机号，有效期（信用卡），CVV（信用卡）</el-radio>
+                    <el-radio :label="4"><span style="font-weight: normal;font-size:13px;">四要素：银行卡号，姓名，身份证号，手机号</span></el-radio>
+                    <el-radio :label="5" style="margin-left: 0;"><span style="font-weight: normal;font-size:13px;">五要素：银行卡号，姓名，身份证号，手机号，有效期（信用卡）</span></el-radio>
+                    <el-radio :label="6" style="margin-left: 0"><span style="font-weight: normal;font-size:13px;">六要素：银行卡号，姓名，身份证号，手机号，有效期（信用卡），CVV（信用卡）</span></el-radio>
                   </el-radio-group>
                 </div>
               </el-col>
@@ -231,8 +232,8 @@
               <el-col :span="6">
                 <div class="grid-content bg-purple-light">
                   <el-radio-group v-model="query.isUse">
-                    <el-radio :label="1">可用</el-radio>
-                    <el-radio :label="0">维护</el-radio>
+                    <el-radio :label="1" style="font-weight: normal"><span style="font-size: 13px">可用</span></el-radio>
+                    <el-radio :label="0" style="font-weight: normal"><span style="font-size: 13px">维护</span></el-radio>
                   </el-radio-group>
                 </div>
               </el-col>
@@ -247,8 +248,8 @@
               <el-col :span="6">
                 <div class="grid-content bg-purple-light">
                   <el-radio-group v-model="query.isNeed">
-                    <el-radio :label="1">支持</el-radio>
-                    <el-radio :label="2">不支持</el-radio>
+                    <el-radio :label="1" style="font-weight: normal"><span style="font-size: 13px">支持</span></el-radio>
+                    <el-radio :label="2" style="font-weight: normal"><span style="font-size: 13px">不支持</span></el-radio>
                   </el-radio-group>
                 </div>
               </el-col>
@@ -278,15 +279,12 @@
           </el-col>
           <el-col :span="6">
             <div class="grid-content bg-purple-light" style="width: 100%">
-              <div class="btn btn-primary" @click="goBack" style="width: 45%;margin: 20px 0 100px;">
-                返回
-              </div>
-              <div class="btn btn-primary" @click="create" v-if="isShow"
-                   style="width: 45%;float: right;margin: 20px 0 100px;">
+              <!--<div class="btn btn-primary" @click="goBack" style="width: 45%;margin: 20px 0 100px;">返回</div>-->
+              <div class="btn btn-primary" @click="create" v-if="isShow" style="display: inherit;margin: 20px 0 100px;">
                 添加通道
               </div>
               <div class="btn btn-primary" @click="_$power(change,'boss_channel_update')" v-if="!isShow"
-                   style="width: 45%;float: right;margin: 20px 0 100px;">
+                   style="display: inherit;margin: 20px 0 100px;">
                 修改
               </div>
             </div>
@@ -405,12 +403,15 @@
         }
         this.$http.post('/admin/paymentChannel/add', this.$data.query)
           .then(function (res) {
-            this.$message({
-              showClose: true,
-              message: '创建成功',
-              type: 'success'
-            });
-            this.$router.push('/admin/record/passList')
+//            this.$message({
+//              showClose: true,
+//              message: '创建成功',
+//              type: 'success'
+//            });
+//            this.$router.push('/admin/record/passList')
+            this.$store.commit('MESSAGE_ACCORD_SHOW', {
+              text: '创建成功'
+            })
           }, function (err) {
             this.$message({
               showClose: true,
@@ -426,12 +427,15 @@
       change: function () {
         this.$http.post('/admin/channel/update', this.$data.query)
           .then(function (res) {
-            this.$message({
-              showClose: true,
-              message: '修改成功',
-              type: 'success'
-            });
-            this.$router.push('/admin/record/passList')
+//            this.$message({
+//              showClose: true,
+//              message: '修改成功',
+//              type: 'success'
+//            });
+//            this.$router.push('/admin/record/passList')
+            this.$store.commit('MESSAGE_ACCORD_SHOW', {
+              text: '修改成功'
+            })
           }, function (err) {
             this.$message({
               showClose: true,
