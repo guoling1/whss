@@ -17,7 +17,7 @@ public class BaseEntity {
      */
     protected long id;
     /**
-     * 状态
+     * 状态 0审核通过 1 审核失败或驳回重填
      * tinyint
      */
     protected int status;

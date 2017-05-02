@@ -297,7 +297,7 @@
             endCode:"",
             count:''
         }
-        this.$data.isShow= true;
+        this.$data.isShow= false;
 //        this.$router.push('/admin/record/issueRecord')
       },
     },

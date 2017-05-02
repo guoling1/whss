@@ -372,6 +372,7 @@
             a. STATUS,
             a.create_time,
             b.merchant_name,
+            b.mark_code,
             a.sn,
             a.app_id,
             (select proxy_name from tb_dealer where id=b.first_dealer_id) as proxyName,
@@ -404,6 +405,12 @@
         </if>
         <if test="sn != null and sn!=''">
             AND a.sn = #{sn}
+        </if>
+        <if test="markCode != null and markCode!=''">
+            AND b.mark_code = #{markCode}
+        </if>
+        <if test="appId != null and appId!=''">
+            AND a.app_id = #{appId}
         </if>
         <if test="status != null and status!=''">
             AND a.status=#{status}
@@ -711,6 +718,7 @@
         a. STATUS,
         a.create_time,
         b.merchant_name,
+        b.mark_code,
         a.sn,
         a.app_id,
         (select proxy_name from tb_dealer where id=b.first_dealer_id) as proxyName,
@@ -743,6 +751,12 @@
         </if>
         <if test="sn != null and sn!=''">
             AND a.sn = #{sn}
+        </if>
+        <if test="markCode != null and markCode!=''">
+            AND b.mark_code = #{markCode}
+        </if>
+        <if test="AppId != null and AppId!=''">
+            AND a.app_id = #{AppId}
         </if>
         <if test="status != null and status!=''">
             AND a.status=#{status}
@@ -903,6 +917,12 @@
         <if test="sn != null and sn!=''">
             AND a.sn = #{sn}
         </if>
+        <if test="markCode != null and markCode!=''">
+            AND b.mark_code = #{markCode}
+        </if>
+        <if test="appId != null and appId!=''">
+            AND a.app_id = #{appId}
+        </if>
         <if test="status != null and status!=''">
             AND a.status=#{status}
         </if>
@@ -955,6 +975,12 @@
         </if>
         <if test="sn != null and sn!=''">
             AND a.sn = #{sn}
+        </if>
+        <if test="markCode != null and markCode!=''">
+            AND b.mark_code = #{markCode}
+        </if>
+        <if test="appId != null and appId!=''">
+            AND a.app_id = #{appId}
         </if>
         <if test="status != null and status!=''">
             AND a.status=#{status}

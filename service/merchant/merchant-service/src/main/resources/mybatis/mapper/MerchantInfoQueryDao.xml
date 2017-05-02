@@ -487,4 +487,91 @@
         id=#{firstLevelDealerId}
     </select>
 
+    <select id="getPhoto"  resultType="com.jkm.hss.merchant.entity.HistoryPhotoChangeResponse">
+        SELECT
+            bank_pic,
+            bank_hand_pic,
+            identity_hand_pic,
+            identity_face_pic,
+            identity_opposite_pic
+        FROM
+            tb_merchant_info
+        WHERE
+            id=#{merchantId}
+    </select>
+
+    <insert id="saveHistory" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO tb_history_photo_change
+        (
+        merchant_id,
+        pohto,
+        type,
+        reason_description,
+        card_name,
+        operator
+        )
+        VALUES
+        (
+        #{merchantId},
+        #{photo},
+        #{type},
+        #{reasonDescription},
+        #{cardName},
+        #{operator}
+        );
+    </insert>
+
+    <update id="savePhotoChang">
+        UPDATE tb_merchant_info
+        SET bank_pic=#{photoName}
+        WHERE id = #{merchantId}
+    </update>
+
+    <update id="savePhotoChang1">
+        UPDATE tb_merchant_info
+        SET bank_hand_pic=#{photoName}
+        WHERE id = #{merchantId}
+    </update>
+
+    <update id="savePhotoChang2">
+        UPDATE tb_merchant_info
+        SET identity_hand_pic=#{photoName}
+        WHERE id = #{merchantId}
+    </update>
+
+    <update id="savePhotoChang3">
+        UPDATE tb_merchant_info
+        SET identity_face_pic=#{photoName}
+        WHERE id = #{merchantId}
+    </update>
+
+    <update id="savePhotoChang4">
+        UPDATE tb_merchant_info
+        SET identity_opposite_pic=#{photoName}
+        WHERE id = #{merchantId}
+    </update>
+
+    <select id="selectHistory"  resultType="com.jkm.hss.merchant.entity.HistoryPhotoChangeResponse">
+        SELECT
+            *
+        FROM
+            tb_history_photo_change
+        WHERE
+            merchant_id = #{merchantId}
+        ORDER BY
+            create_time DESC
+        LIMIT #{offset}, #{pageSize}
+    </select>
+
+    <select id="selectHistoryCount"  resultType="java.lang.Integer">
+        SELECT
+            COUNT(1)
+        FROM
+            tb_history_photo_change
+        WHERE
+            merchant_id = #{merchantId}
+        ORDER BY
+            create_time DESC
+    </select>
+
 </mapper>
