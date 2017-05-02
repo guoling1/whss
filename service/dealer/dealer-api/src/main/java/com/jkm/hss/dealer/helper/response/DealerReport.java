@@ -2,6 +2,8 @@ package com.jkm.hss.dealer.helper.response;
 
 import lombok.Data;
 
+import java.math.BigDecimal;
+
 /**
  * Created by wayne on 17/4/27.
  */
@@ -10,56 +12,56 @@ public class DealerReport {
     /**
      * 昨日商户交易总额
      */
-    private String yDayMertradeAmount;
+    private BigDecimal yDayMertradeAmount;
     /**
      * 昨日商户交易总额-直属
      */
-    private String yDayMertradeAmountDir;
+    private BigDecimal yDayMertradeAmountDir;
     /**
      * 昨日商户交易总额-下级
      */
-    private String yDayMertradeAmountSub;
+    private BigDecimal yDayMertradeAmountSub;
 
     /**
      * 昨日商户注册数-直属
      */
-    private String yDayregMerNumberDir;
+    private Integer yDayregMerNumberDir;
     /**
      * 昨日商户注册数-下级代理
      */
-    private String yDayregMerNumberSub;
+    private Integer yDayregMerNumberSub;
 
     /**
      * 商户注册总数-直属
      */
-    private String regMerNumberDir;
+    private Integer regMerNumberDir;
     /**
      * 商户注册总数-下级代理
      */
-    private String regMerNumberSub;
+    private Integer regMerNumberSub;
 
     /**
      * 昨日商户审核数-直属
      */
-    private String yDaycheckMerNumberDir;
+    private Integer yDaycheckMerNumberDir;
     /**
      * 昨日商户审核数-下级代理
      */
-    private String yDaycheckMerNumberSub;
+    private Integer yDaycheckMerNumberSub;
 
     /**
      * 商户审核总数-直属
      */
-    private String checkMerNumberDir;
+    private Integer checkMerNumberDir;
     /**
      * 商户审核总数-下级代理
      */
-    private String checkMerNumberSub;
+    private Integer checkMerNumberSub;
 
     /**
      * 二维码总数
      */
-    private String qrCodeNumber;
+    private Integer qrCodeNumber;
 
 
 }

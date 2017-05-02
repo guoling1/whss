@@ -1,11 +1,12 @@
 package com.jkm.hss.dealer.dao;
 
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
 import java.util.Date;
 import com.jkm.hss.account.entity.Account;
-
+import com.jkm.hss.dealer.helper.requestparam.DealerReportRequest;
 /**
  * Created by wayne on 17/4/27.
  */
@@ -14,79 +15,129 @@ public interface ReportDao {
 
     /**
      * 查询分润总额
+     * @param accountid
      * @param startTime
      * @param endTime
      * @return
      */
-    BigDecimal getDayProfit(Date startTime, Date endTime);
+    BigDecimal getDayProfit(@Param("accountid") long accountid,@Param("startTime") String startTime,@Param("endTime") String endTime);
 
     /**
-     * 直属商户交易额
-     * @param dealerId
-     * @param {@link com.jkm.hss.product.enums.EnumProductType}
-     * @param startTime
-     * @param endTime
+     * HSS直属商户交易额
      * @return
      */
-    BigDecimal getDayMertradeAmountDir(String dealerId,String sysType,Date startTime, Date endTime);
+    BigDecimal getHSSDayMertradeAmountDir(@Param("dealerid") long dealerid,@Param("startTime") String startTime,@Param("endTime") String endTime);
 
     /**
-     * 下级代理商户交易额
-     * @param dealerId
-     * @param sysType
+     * HSY直属商户交易额
+     * @param dealerid
      * @param startTime
      * @param endTime
      * @return
      */
-    BigDecimal getDayMertradeAmountSub(String dealerId,String sysType,Date startTime, Date endTime);
+    BigDecimal getHSYDayMertradeAmountDir(@Param("dealerid") long dealerid,@Param("startTime") String startTime,@Param("endTime") String endTime);
+    /**
+     * HSS下级代理商户交易额
+     * @param dealerid
+     * @param startTime
+     * @param endTime
+     * @return
+     */
+    BigDecimal getHSSDayMertradeAmountSub(@Param("dealerid") long dealerid,@Param("startTime") String startTime,@Param("endTime") String endTime);
+    /**
+     * HSY下级代理商户交易额
+     * @param dealerid
+     * @param startTime
+     * @param endTime
+     * @return
+     */
+    BigDecimal getHSYDayMertradeAmountSub(@Param("dealerid") long dealerid,@Param("startTime") String startTime,@Param("endTime") String endTime);
 
     /**
-     * 直属商户注册数
-     * @param dealerId
-     * @param sysType
+     * HSS直属商户注册数
+     * @param dealerid
      * @param startTime
      * @param endTime
      * @return
      */
-    Integer getDayregMerNumberDir(String dealerId,String sysType,Date startTime, Date endTime);
+    Integer getHSSDayregMerNumberDir(@Param("dealerid") long dealerid,@Param("startTime") String startTime,@Param("endTime") String endTime);
 
     /**
-     * 下级代理商户注册数
-     * @param dealerId
-     * @param sysType
+     * HSY直属商户注册数
+     * @param dealerid
      * @param startTime
      * @param endTime
      * @return
      */
-    Integer getDayregMerNumberSub(String dealerId,String sysType,Date startTime, Date endTime);
+    Integer getHSYDayregMerNumberDir(@Param("dealerid") long dealerid,@Param("startTime") String startTime,@Param("endTime") String endTime);
 
     /**
-     * 直属商户审核数
-     * @param dealerId
-     * @param sysType
+     * HSS下级代理商户注册数
+     * @param dealerid
      * @param startTime
      * @param endTime
      * @return
      */
-    Integer getDaycheckMerNumberDir(String dealerId,String sysType,Date startTime, Date endTime);
+    Integer getHSSDayregMerNumberSub(@Param("dealerid") long dealerid,@Param("startTime") String startTime,@Param("endTime") String endTime);
 
     /**
-     * 下级代理商户审核数
-     * @param dealerId
-     * @param sysType
+     * HSY下级代理商户注册数
+     * @param dealerid
      * @param startTime
      * @param endTime
      * @return
      */
-    Integer getDaycheckMerNumberSub(String dealerId,String sysType,Date startTime, Date endTime);
+    Integer getHSYDayregMerNumberSub(@Param("dealerid") long dealerid,@Param("startTime") String startTime,@Param("endTime") String endTime);
+    /**
+     * HSS直属商户审核数
+     * @param dealerid
+     * @param startTime
+     * @param endTime
+     * @return
+     */
+    Integer getHSSDaycheckMerNumberDir(@Param("dealerid") long dealerid,@Param("startTime") String startTime,@Param("endTime") String endTime);
 
     /**
-     * 二维码总数
-     * @param dealerId
-     * @param sysType
+     * HSS下级代理商户审核数
+     * @param dealerid
      * @param startTime
      * @param endTime
      * @return
      */
-    Integer getQrCodeNumber(String dealerId,String sysType,Date startTime, Date endTime);
+    Integer getHSSDaycheckMerNumberSub(@Param("dealerid") long dealerid,@Param("startTime") String startTime,@Param("endTime") String endTime);
+
+    /**
+     * HSY直属商户审核数
+     * @param dealerid
+     * @param startTime
+     * @param endTime
+     * @return
+     */
+    Integer getHSYDaycheckMerNumberDir(@Param("dealerid") long dealerid,@Param("startTime") String startTime,@Param("endTime") String endTime);
+
+    /**
+     * HSY下级代理商户审核数
+     * @param dealerid
+     * @param startTime
+     * @param endTime
+     * @return
+     */
+    Integer getHSYDaycheckMerNumberSub(@Param("dealerid") long dealerid,@Param("startTime") String startTime,@Param("endTime") String endTime);
+
+    /**
+     * HSS二维码总数
+     * @param dealerid
+     * @param startTime
+     * @param endTime
+     * @return
+     */
+    Integer getHSSQrCodeNumber(@Param("dealerid") long dealerid,@Param("startTime") String startTime,@Param("endTime") String endTime);
+    /**
+     * HSY二维码总数
+     * @param dealerid
+     * @param startTime
+     * @param endTime
+     * @return
+     */
+    Integer getHSYQrCodeNumber(@Param("dealerid") long dealerid,@Param("startTime") String startTime,@Param("endTime") String endTime);
 }

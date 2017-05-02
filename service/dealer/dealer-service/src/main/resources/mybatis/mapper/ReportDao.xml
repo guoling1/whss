@@ -1,7 +1,194 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.jkm.hss.dealer.dao.ReportDao">
+    <!--查询分润总额-->
     <select id="getDayProfit" resultType="java.math.BigDecimal">
-
+        select sum(split_amount) as splitamount
+          from tb_split_account_record
+          where receipt_money_account_id=#{accountid}
+        <if test="startTime != null">
+            and split_date >='${startTime}'
+        </if>
+        <if test="endTime != null">
+            and split_date &lt; '${endTime}'
+        </if>
     </select>
+    <!--HSS直属商户交易额-->
+    <select id="getHSSDayMertradeAmountDir" resultType="java.math.BigDecimal">
+        select sum(o.trade_amount) as tradeamount
+        from tb_order o
+        inner join tb_merchant_info m on o.payee=m.account_id
+        where o.trade_type=1
+        and o.status=4
+        and m.dealer_id=#{dealerid}
+        <if test="startTime != null">
+            and o.pay_success_time >='${startTime}'
+        </if>
+        <if test="endTime != null">
+            and o.pay_success_time &lt; '${endTime}'
+        </if>
+    </select>
+    <!--HSY直属商户交易额-->
+    <select id="getHSYDayMertradeAmountDir" resultType="java.math.BigDecimal">
+        select sum(o.trade_amount) as tradeamount
+        from tb_order o
+        inner join app_au_user m on o.payee=m.ACCOUNTID
+        where o.trade_type=1
+        and o.status=4
+        and m.DEALERID=#{dealerid}
+        <if test="startTime!=null">
+            and o.pay_success_time <![CDATA[ >= ]]> '${startTime}'
+        </if>
+        <if test="endTime!=null">
+            and o.pay_success_time <![CDATA[ < ]]> '${endTime}'
+        </if>
+    </select>
+    <!--HSS下级代理商户交易额-->
+    <select id="getHSSDayMertradeAmountSub" resultType="java.math.BigDecimal">
+        select sum(o.trade_amount) as tradeamount
+from tb_order o
+inner join tb_merchant_info m on o.payee=m.account_id
+inner join tb_dealer d on m.dealer_id=d.id
+where o.trade_type=1
+and o.status=4
+and d.first_level_dealer_id=#{dealerid}
+        <if test="startTime!=null">
+            and o.pay_success_time <![CDATA[ >= ]]> '${startTime}'
+        </if>
+        <if test="endTime!=null">
+            and o.pay_success_time <![CDATA[ < ]]> '${endTime}'
+        </if>
+    </select>
+    <!--HSY下级代理商户交易额-->
+    <select id="getHSYDayMertradeAmountSub" resultType="java.math.BigDecimal">
+        select sum(o.trade_amount) as tradeamount
+from tb_order o
+inner join app_au_user m on o.payee=m.ACCOUNTID
+inner join tb_dealer d on m.DEALERID=d.id
+where o.trade_type=1
+and o.status=4
+and d.first_level_dealer_id=#{dealerid}
+        <if test="startTime!=null">
+            and o.pay_success_time <![CDATA[ >= ]]> '${startTime}'
+        </if>
+        <if test="endTime!=null">
+            and o.pay_success_time <![CDATA[ < ]]> '${endTime}'
+        </if>
+    </select>
+    <!--HSS直属商户注册数-->
+    <select id="getHSSDayregMerNumberDir" resultType="java.lang.Integer">
+        select count(1) as mCount
+        from tb_merchant_info
+        where dealer_id=#{dealerid}
+        <if test="startTime!=null">
+            and create_time <![CDATA[ >= ]]> '${startTime}'
+        </if>
+        <if test="endTime!=null">
+            and create_time <![CDATA[ < ]]> '${endTime}'
+        </if>
+    </select>
+    <!--HSY直属商户注册数-->
+    <select id="getHSYDayregMerNumberDir" resultType="java.lang.Integer">
+        SELECT   COUNT(1) as mCount
+        FROM   app_au_user
+        where DEALERID=#{dealerid}
+        <if test="startTime!=null">
+            and CREATETIME <![CDATA[ >= ]]> '${startTime}'
+        </if>
+        <if test="endTime!=null">
+            and CREATETIME <![CDATA[ < ]]> '${endTime}'
+        </if>
+    </select>
+    <!--HSS下级代理商户注册数-->
+    <select id="getHSSDayregMerNumberSub"  resultType="java.lang.Integer">
+        select count(1) as mCount
+from tb_merchant_info m
+inner join tb_dealer d on m.dealer_id=d.id
+where d.first_level_dealer_id=#{dealerid}
+        <if test="startTime!=null">
+            and m.create_time <![CDATA[ >= ]]> '${startTime}'
+        </if>
+        <if test="endTime!=null">
+            and m.create_time <![CDATA[ < ]]> '${endTime}'
+        </if>
+    </select>
+    <!--HSY下级代理商户注册数-->
+    <select id="getHSYDayregMerNumberSub" resultType="java.lang.Integer">
+        SELECT   COUNT(1) as mCount
+        FROM   app_au_user m
+        inner join tb_dealer d on m.DEALERID=d.id
+        where d.first_level_dealer_id=#{dealerid}
+        <if test="startTime!=null">
+            and m.CREATETIME <![CDATA[ >= ]]> '${startTime}'
+        </if>
+        <if test="endTime!=null">
+            and m.CREATETIME <![CDATA[ < ]]> '${endTime}'
+        </if>
+    </select>
+    <!--HSS直属商户审核数    -->
+    <select id="getHSSDaycheckMerNumberDir" resultType="java.lang.Integer">
+        select count(1) as mCount
+        from tb_merchant_info
+        where dealer_id=#{dealerid}
+        <if test="startTime!=null">
+            and checked_time <![CDATA[ >= ]]> '${startTime}'
+        </if>
+        <if test="endTime!=null">
+            and checked_time <![CDATA[ < ]]> '${endTime}'
+        </if>
+    </select>
+    <!--HSS下级代理商户审核数    -->
+    <select id="getHSSDaycheckMerNumberSub"  resultType="java.lang.Integer">
+        select count(1) as mCount
+from tb_merchant_info m
+inner join tb_dealer d on m.dealer_id=d.id
+where d.first_level_dealer_id=#{dealerid}
+        <if test="startTime!=null">
+            and m.checked_time <![CDATA[ >= ]]> '${startTime}'
+        </if>
+        <if test="endTime!=null">
+            and m.checked_time <![CDATA[ < ]]> '${endTime}'
+        </if>
+    </select>
+    <!--HSY直属商户审核数-->
+    <select id="getHSYDaycheckMerNumberDir"   resultType="java.lang.Integer">
+        SELECT   COUNT(1) as mCount
+        FROM   app_au_user
+        where DEALERID=#{dealerid}
+        <if test="startTime!=null">
+            and UPDATETIME <![CDATA[ >= ]]> '${startTime}'
+        </if>
+        <if test="endTime!=null">
+            and UPDATETIME <![CDATA[ < ]]> '${endTime}'
+        </if>
+    </select>
+    <!--HSY下级代理商户审核数-->
+    <select id="getHSYDaycheckMerNumberSub" resultType="java.lang.Integer">
+        SELECT   COUNT(1) as mCount
+        FROM   app_au_user m
+        inner join tb_dealer d on m.DEALERID=d.id
+        where d.first_level_dealer_id=#{dealerid}
+        <if test="startTime!=null">
+            and m.UPDATETIME <![CDATA[ >= ]]> '${startTime}'
+        </if>
+        <if test="endTime!=null">
+            and m.UPDATETIME <![CDATA[ < ]]> '${endTime}'
+        </if>
+    </select>
+    <select id="getHSSQrCodeNumber"  resultType="java.lang.Integer">
+        SELECT count(1)
+        FROM
+        tb_qr_code as c
+        WHERE  c.sys_type='hss'
+        and c.first_level_dealer_id=#{dealerid}
+    </select>
+    <select id="getHSYQrCodeNumber"  resultType="java.lang.Integer">
+        SELECT count(1)
+        FROM
+        tb_qr_code as c
+        WHERE  c.sys_type='hsy'
+        and c.first_level_dealer_id=#{dealerid}
+    </select>
+
+
 </mapper>

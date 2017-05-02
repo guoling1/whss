@@ -16,5 +16,5 @@ public interface ReportService {
      * @param endTime
      * @return
      */
-    HomeReportResponse getHomeReport(long dealerId, Date startTime,Date endTime);
+    HomeReportResponse getHomeReport(long dealerId,final long acountid, String startTime,String endTime);
 }
