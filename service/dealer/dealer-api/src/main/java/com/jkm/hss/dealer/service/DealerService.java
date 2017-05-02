@@ -377,6 +377,12 @@ public interface DealerService {
      */
     void addOrUpdateHssDealer(HssDealerAddOrUpdateRequest request);
     /**
+     * 更新或新增好收收分公司配置信息
+     *
+     * @param request
+     */
+    void addOrUpdateHssOem(HssOemAddOrUpdateRequest request);
+    /**
      * 更新或新增好收银代理商配置信息
      *
      * @param request
