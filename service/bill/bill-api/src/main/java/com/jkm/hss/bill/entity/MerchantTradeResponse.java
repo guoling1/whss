@@ -20,6 +20,16 @@ import java.util.Date;
 public class MerchantTradeResponse {
 
     /**
+     * 店铺shop编码
+     */
+    private String globalId;
+
+    /**
+     * hsy商户名
+     */
+    private String shortName;
+
+    /**
      * 业务订单号
      */
     private String businessOrderNo;

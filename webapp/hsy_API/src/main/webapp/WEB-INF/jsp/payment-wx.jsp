@@ -8,7 +8,7 @@
   <meta name="viewport"
         content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
   <meta name="format-detection" content="telephone=no"/>
-  <title>钱包加加</title>
+  <title>付款给商户</title>
   <link rel="stylesheet" href="http://static.jinkaimen.cn/hss/css/style.2.0.1.css">
   <link rel="stylesheet" href="http://static.jinkaimen.cn/weui/weui.css">
 </head>

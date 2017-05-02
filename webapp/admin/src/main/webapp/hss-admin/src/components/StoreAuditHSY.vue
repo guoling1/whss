@@ -344,7 +344,7 @@
           this.tableData[0].product = this.tableData[1].product = res.data.res.hxbOpenProduct;
           this.tableData[0].status = this.tableData[1].status = res.data.res.hxbStatus;
           this.tableData[0].msg = this.tableData[1].msg = res.data.res.hxbRemarks;
-          this.tableData[0].proMsg = this.tableData[1].proMsg = res.data.res.hxbOpenproductRemarks;
+          this.tableData[0].proMsg = this.tableData[1].proMsg = res.data.res.hxbOpenProductRemarks;
 
         },function (err) {
           this.$message({
