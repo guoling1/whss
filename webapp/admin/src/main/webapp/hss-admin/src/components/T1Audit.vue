@@ -77,11 +77,11 @@
                 <!--<el-button @click.native.prevent="list(scope.$index)" type="text" size="small" v-if="records[scope.$index].settleStatusValue!='结算成功'">结算</el-button>-->
               <!--</template>-->
             <!--</el-table-column>-->
-            <el-table-column label="操作" width="70">
+            <!--<el-table-column label="操作" width="70">
               <template scope="scope">
                 <el-button @click.native.prevent="_$power(scope.$index,list,'boss_trade_export')" type="text" size="small" v-if="records[scope.$index].settleStatusValue!='结算成功'">结算</el-button>
               </template>
-            </el-table-column>
+            </el-table-column>-->
           </el-table>
           <!--分页-->
           <div class="block" style="text-align: right">

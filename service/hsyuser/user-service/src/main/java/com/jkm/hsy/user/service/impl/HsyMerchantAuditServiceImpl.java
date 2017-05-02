@@ -1,7 +1,5 @@
 package com.jkm.hsy.user.service.impl;
 
-import com.jkm.hsy.user.Enum.EnumHxbsOpenProductStatus;
-import com.jkm.hsy.user.Enum.EnumHxbsStatus;
 import com.jkm.hsy.user.constant.IndustryCodeType;
 import com.jkm.hsy.user.dao.HsyMerchantAuditDao;
 import com.jkm.hsy.user.entity.*;
@@ -413,6 +411,26 @@ public class HsyMerchantAuditServiceImpl implements HsyMerchantAuditService {
     @Override
     public int hsyMerchantSecondListCount(HsyQueryMerchantRequest request) {
         return this.hsyMerchantAuditDao.hsyMerchantSecondListCount(request);
+    }
+
+    @Override
+    public void saveLog(String username, Long id, String checkErrorInfo,int stat) {
+        this.hsyMerchantAuditDao.saveLog(username,id,checkErrorInfo,stat);
+    }
+
+    @Override
+    public List<HsyMerchantInfoCheckRecord> getLog(Long id) {
+        List<HsyMerchantInfoCheckRecord> list = this.hsyMerchantAuditDao.getLog(id);
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        if (list.size()>0){
+            for (int i=0;i<list.size();i++){
+                if (list.get(i).getCreateTime()!=null&&!list.get(i).getCreateTime().equals("")){
+                    String dates = format.format(list.get(i).getCreateTime());
+                    list.get(i).setCreateTimes(dates);
+                }
+            }
+        }
+        return list;
     }
 
 
