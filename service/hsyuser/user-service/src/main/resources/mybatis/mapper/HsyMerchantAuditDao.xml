@@ -151,7 +151,7 @@
 
     <!-- 审核通过 -->
     <update id="updateAuditPass">
-      UPDATE app_biz_shop SET STATUS=#{status} WHERE ID=#{id}
+      UPDATE app_biz_shop SET STATUS=#{status},AUDITTIME=#{auditTime} WHERE ID=#{id}
     </update>
 
     <!-- 审核不通过 -->

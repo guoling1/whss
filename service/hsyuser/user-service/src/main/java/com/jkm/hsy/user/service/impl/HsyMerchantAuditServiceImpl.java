@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -162,6 +163,10 @@ public class HsyMerchantAuditServiceImpl implements HsyMerchantAuditService {
 
     @Override
     public void auditPass(HsyMerchantAuditRequest hsyMerchantAuditRequest) {
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date date = new Date();
+        String auditTime = format.format(date);
+        hsyMerchantAuditRequest.setAuditTime(auditTime);
         hsyMerchantAuditDao.updateAuditPass(hsyMerchantAuditRequest);
 
     }

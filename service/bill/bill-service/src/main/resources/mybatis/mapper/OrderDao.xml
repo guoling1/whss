@@ -377,8 +377,8 @@
             a.app_id,
             (select proxy_name from tb_dealer where id=b.first_dealer_id) as proxyName,
             (select proxy_name from tb_dealer where id=b.second_dealer_id) as proxyName1,
-            x.SHORTNAME,
-            x.GLOBALID
+            x.SHORTNAME AS merchantName,
+            x.GLOBALID AS markCode
         FROM
             tb_order a
         LEFT JOIN tb_merchant_info b ON b.account_id=a.payee
@@ -734,8 +734,8 @@
             a.app_id,
             (select proxy_name from tb_dealer where id=b.first_dealer_id) as proxyName,
             (select proxy_name from tb_dealer where id=b.second_dealer_id) as proxyName1,
-            x.SHORTNAME,
-            x.GLOBALID
+            x.SHORTNAME AS merchantName,
+            x.GLOBALID AS markCode
         FROM
             tb_order a
         LEFT JOIN tb_merchant_info b ON b.account_id=a.payee
@@ -757,7 +757,7 @@
             AND b.merchant_name LIKE CONCAT('%',#{merchantName},'%')
         </if>
         <if test="shortName != null and shortName!=''">
-            AND x.SHORTNAME LIKE CONCAT('%',#{shortName},'%')
+            AND x.SHORTNAME = #{shortName}
         </if>
         <if test="proxyName != null and proxyName!=''">
             AND b.first_dealer_id in (select id from tb_dealer where proxy_name LIKE CONCAT('%',#{proxyName},'%'))
@@ -935,7 +935,7 @@
             AND b.merchant_name LIKE CONCAT('%',#{merchantName},'%')
         </if>
         <if test="shortName != null and shortName!=''">
-            AND x.SHORTNAME LIKE CONCAT('%',#{shortName},'%')
+            AND x.SHORTNAME = #{shortName}
         </if>
         <if test="proxyName != null and proxyName!=''">
             AND b.first_dealer_id in (select id from tb_dealer where proxy_name LIKE CONCAT('%',#{proxyName},'%'))
