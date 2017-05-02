@@ -38,6 +38,7 @@ const StoreAudit = r => require.ensure([], () => r(require('components/StoreAudi
 const StoreNotice = r => require.ensure([], () => r(require('components/StoreNotice')), 'group-record');
 const StoreNoticeDet = r => require.ensure([], () => r(require('components/StoreNoticeDet')), 'group-record');
 const StoreAuditHSY = r => require.ensure([], () => r(require('components/StoreAuditHSY')), 'group-record');
+const DataHistory = r => require.ensure([], () => r(require('components/DataHistory')), 'group-record');
 //代理
 const AgentListSec = r => require.ensure([], () => r(require('components/AgentListSec')), 'group-record');
 const AgentListFir = r => require.ensure([], () => r(require('components/AgentListFir')), 'group-record');
@@ -93,6 +94,7 @@ let routes = [
     path: '/admin/details',
     component: Crumbs,
     children: [
+      {path: 'dataHistory', name: 'DataHistory', component: DataHistory},
       {path: 'template', name: 'Template', component: Template},
       {path: 'templateAdd', name: 'TemplateAdd', component: TemplateAdd},
       {path: 'gateway', name: 'Gateway', component: Gateway},
@@ -120,8 +122,7 @@ let routes = [
       {path: 'withdrawalAudit', name: 'WithdrawalAudit', component: WithdrawalAudit},
       {path: 'withdrawalDet', name: 'WithdrawalDet', component: WithdrawalDet},
       {path: 'payQuery', name: 'PayQuery', component: PayQuery},
-      {path: 'storeList', name: 'StoreList', component: StoreList
-      },
+      {path: 'storeList', name: 'StoreList', component: StoreList},
       {path: 'storeNotice', name: 'StoreNotice', component: StoreNotice},
       {path: 'storeNoticeDet', name: 'StoreNoticeDet', component: StoreNoticeDet},
       {path: 'storeAuditList', name: 'StoreAuditList', component: StoreAuditList},
@@ -170,6 +171,8 @@ let routes = [
     redirect: '/admin/record/home',
     component: AAHome,
     children: [
+      {path: 'dataHistory', name: 'DataHistory', component: DataHistory},
+      {path: 'template', name: 'Template', component: Template},
       {path: 'template', name: 'Template', component: Template},
       {path: 'templateAdd', name: 'TemplateAdd', component: TemplateAdd},
       {path: 'gateway', name: 'Gateway', component: Gateway},
@@ -196,8 +199,7 @@ let routes = [
       {path: 'withdrawalAudit', name: 'WithdrawalAudit', component: WithdrawalAudit},
       {path: 'withdrawalDet', name: 'WithdrawalDet', component: WithdrawalDet},
       {path: 'payQuery', name: 'PayQuery', component: PayQuery},
-      {path: 'storeList', name: 'StoreList', component: StoreList
-      },
+      {path: 'storeList', name: 'StoreList', component: StoreList},
       {path: 'storeNotice', name: 'StoreNotice', component: StoreNotice},
       {path: 'storeNoticeDet', name: 'StoreNoticeDet', component: StoreNoticeDet},
       {path: 'storeAuditList', name: 'StoreAuditList', component: StoreAuditList},

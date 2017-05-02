@@ -4,6 +4,8 @@ import com.jkm.base.common.entity.ExcelSheetVO;
 import com.jkm.base.common.util.ExcelUtil;
 import com.jkm.hss.dealer.service.DealerService;
 import com.jkm.hss.merchant.dao.MerchantInfoQueryDao;
+import com.jkm.hss.merchant.entity.HistoryPhotoChangeRequest;
+import com.jkm.hss.merchant.entity.HistoryPhotoChangeResponse;
 import com.jkm.hss.merchant.entity.MerchantInfoRequest;
 import com.jkm.hss.merchant.entity.MerchantInfoResponse;
 import com.jkm.hss.merchant.enums.EnumMerchantStatus;
@@ -21,7 +23,9 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by zhangbin on 2016/11/27.
@@ -115,6 +119,83 @@ public class MerchantInfoQueryServiceImpl implements MerchantInfoQueryService {
         }
         int count = merchantInfoQueryDao.getCount1(req);
         return count;
+    }
+
+    @Override
+    public HistoryPhotoChangeResponse getPhoto(long merchantId) {
+        return this.merchantInfoQueryDao.getPhoto(merchantId);
+    }
+
+    @Override
+    public void saveHistory(long merchantId, String photo, int type, String reasonDescription, String cardName, String operator) {
+        Map map = new HashMap();
+        map.put("merchantId",merchantId);
+        map.put("photo",photo);
+        map.put("type",type);
+        map.put("reasonDescription",reasonDescription);
+        map.put("cardName",cardName);
+        map.put("operator",operator);
+        this.merchantInfoQueryDao.saveHistory(map);
+    }
+
+    @Override
+    public void savePhotoChang(String photoName,long merchantId) {
+        Map map = new HashMap();
+        map.put("photoName",photoName);
+        map.put("merchantId",merchantId);
+        this.merchantInfoQueryDao.savePhotoChang(map);
+    }
+
+    @Override
+    public void savePhotoChang1(String photoName,long merchantId) {
+        Map map = new HashMap();
+        map.put("photoName",photoName);
+        map.put("merchantId",merchantId);
+        this.merchantInfoQueryDao.savePhotoChang1(map);
+    }
+
+    @Override
+    public void savePhotoChang2(String photoName,long merchantId) {
+        Map map = new HashMap();
+        map.put("photoName",photoName);
+        map.put("merchantId",merchantId);
+        this.merchantInfoQueryDao.savePhotoChang2(map);
+    }
+
+    @Override
+    public void savePhotoChang3(String photoName,long merchantId) {
+        Map map = new HashMap();
+        map.put("photoName",photoName);
+        map.put("merchantId",merchantId);
+        this.merchantInfoQueryDao.savePhotoChang3(map);
+    }
+
+    @Override
+    public void savePhotoChang4(String photoName,long merchantId) {
+        Map map = new HashMap();
+        map.put("photoName",photoName);
+        map.put("merchantId",merchantId);
+        this.merchantInfoQueryDao.savePhotoChang4(map);
+    }
+
+    @Override
+    public List<HistoryPhotoChangeResponse> selectHistory(HistoryPhotoChangeRequest request) {
+        List<HistoryPhotoChangeResponse> list = this.merchantInfoQueryDao.selectHistory(request);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        if (list.size()>0){
+            for (int i=0;i<list.size();i++){
+                if (list.get(i).getCreateTime()!=null&&!list.get(i).getCreateTime().equals("")){
+                    String dates = sdf.format(list.get(i).getCreateTime());
+                    list.get(i).setCreateTimes(dates);
+                }
+            }
+        }
+        return list;
+    }
+
+    @Override
+    public int selectHistoryCount(HistoryPhotoChangeRequest request) {
+        return this.merchantInfoQueryDao.selectHistoryCount(request);
     }
 
     @Override
