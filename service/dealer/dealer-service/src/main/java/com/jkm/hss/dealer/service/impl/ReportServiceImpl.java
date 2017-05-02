@@ -126,7 +126,7 @@ public class ReportServiceImpl implements ReportService{
          hsydealerReport.setCheckMerNumberDir(hsycheckMerNumberDir);
          hsydealerReport.setCheckMerNumberSub(hsycheckMerNumberSub);
          hsydealerReport.setQrCodeNumber(hsyqrCodeNumber);
-         homeReportResponse.setDealerReporthss(hsydealerReport);
+         homeReportResponse.setDealerReporthsy(hsydealerReport);
 
         return homeReportResponse;
     }

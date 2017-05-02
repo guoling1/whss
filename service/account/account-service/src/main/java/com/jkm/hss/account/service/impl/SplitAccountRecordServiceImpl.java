@@ -195,6 +195,17 @@ public class SplitAccountRecordServiceImpl implements SplitAccountRecordService 
         return pageModel;
     }
 
+    @Override
+    public BigDecimal selectStatisticsByParam(long accountId, String orderNo, String businessType, String beginDate, String endDate){
+        Date beginTime = null;
+        Date endTime = null;
+        if (beginDate != null && !beginDate.equals("")){
+            beginTime = DateFormatUtil.parse(beginDate + " 00:00:00", DateFormatUtil.yyyy_MM_dd_HH_mm_ss);
+            endTime = DateFormatUtil.parse(endDate + " 23:59:59", DateFormatUtil.yyyy_MM_dd_HH_mm_ss);
+        }
+       return this.splitAccountRecordDao.selectStatisticsByParam(accountId,orderNo,businessType,beginTime,endTime);
+    }
+
     /**
      * {@inheritDoc}
      *
