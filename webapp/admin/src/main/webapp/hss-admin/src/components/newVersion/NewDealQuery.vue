@@ -24,7 +24,7 @@
             </li>
             <li class="same">
               <label>业务方：</label>
-              <el-select style="width: 188px" clearable v-model="query.appId" size="small">
+              <el-select style="width: 188px" clearable v-model="appId" size="small">
                 <el-option label="全部" value="">全部</el-option>
                 <el-option label="好收收" value="好收收"></el-option>
                 <el-option label="好收银" value="好收银"></el-option>
@@ -32,11 +32,11 @@
             </li>
             <li class="same">
               <label>收款商户编号:</label>
-              <el-input style="width: 188px" v-model="query.markCode" placeholder="请先选择业务方" size="small" :disabled="query.appId==''"></el-input>
+              <el-input style="width: 188px" v-model="markCode" placeholder="请先选择业务方" size="small" :disabled="appId==''"></el-input>
             </li>
             <li class="same">
               <label>收款商户名称:</label>
-              <el-input style="width: 188px" v-model="query.merchantName" placeholder="请输入内容" size="small"></el-input>
+              <el-input style="width: 188px" v-model="merchantName" placeholder="请输入内容" size="small"></el-input>
             </li>
             <li class="same">
               <label>所属一级代理:</label>
@@ -204,8 +204,6 @@
           orderNo:'',
           businessOrderNo:'',
           sn:'',
-          merchantName: '',
-          markCode:"",
           startTime: '',
           endTime: '',
           lessTotalFee: '',
@@ -220,6 +218,9 @@
           payChannelSign:'',
           appId:''
         },
+        appId:'',
+        merchantName: '',
+        markCode:"",
         channelList:[],
         date: '',
         records: [],
@@ -279,6 +280,23 @@
     methods: {
       getData: function () {
         this.loading = true;
+        this.query.appId = this.appId;
+        if(this.appId == '好收收'){
+          this.query.markCode = this.markCode;
+          this.query.merchantName = this.merchantName;
+          delete this.query.globalId;
+          delete this.query.shortName;
+        }else if(this.appId == '好收银'){
+          this.query.globalId = this.markCode;
+          this.query.shortName = this.merchantName;
+          delete this.query.markCode;
+          delete this.query.merchantName;
+        }else {
+          this.query.markCode = '';
+          this.query.merchantName = '';
+          this.query.globalId = '';
+          this.query.shortName = '';
+        }
         this.$http.post('/admin/queryOrder/orderList',this.query)
           .then(function (res) {
             this.loading = false;
@@ -380,6 +398,11 @@
         } else {
           this.query.startTime = '';
           this.query.endTime = '';
+        }
+      },
+      appId: function (val) {
+        if(val == ''){
+          this.markCode=''
         }
       }
     },
