@@ -9,7 +9,7 @@
         </div>
         <div class="box-body">
           <!--筛选-->
-          <el-row :gutter="20" style="width: 910px">
+          <el-row :gutter="21" style="width: 950px">
             <el-col :span="4">
               <label>手机号：</label>
               <el-input v-model="query.mobile" placeholder="请输入内容" size="small"></el-input>
@@ -22,9 +22,9 @@
               <label>代理商编号：</label>
               <el-input v-model="query.markCode" placeholder="请输入内容" size="small"></el-input>
             </el-col>
-            <el-col :span="5">
+            <el-col :span="4">
               <label>省市:</label>
-              <div class="select" id="select" @click="open"><span>请选择</span>
+              <div class="select" id="select" @click="open"><span style="color: #1f2d3d">{{selectCon}}</span>
                 <i class="el-icon-caret-bottom" style="float: right;margin-top: 10px"></i>
               </div>
               <ul class="isShow" v-if="isOpen">
@@ -36,7 +36,7 @@
                 <li :class="'cityLi'+$index" v-for="city in citys" @click="select(city.code,city.aname)">{{city.aname}}</li>
               </ul>
             </el-col>
-            <el-col  :span="5">
+            <el-col  :span="4">
               <label>代理产品:</label>
               <el-select clearable v-model="query.sysType" size="small" >
                 <el-option label="全部" value="">全部</el-option>
@@ -44,7 +44,7 @@
                 <el-option label="好收收" value="hss">好收收</el-option>
               </el-select>
             </el-col>
-            <el-col  :span="5" style="margin-top: 18px">
+            <el-col  :span="4" style="margin-top: 18px">
               <div class="btn btn-primary" @click="search">筛选</div>
               <div class="btn btn-primary" @click="reset">重置</div>
             </el-col>
@@ -128,6 +128,7 @@
         },
         isShow:false,
         index:'',
+        selectCon:'全部'
       }
     },
     created: function () {
@@ -147,6 +148,7 @@
     },
     methods: {
       reset: function () {
+        this.selectCon = '全部';
         this.query = {
           pageNo:1,
           pageSize:10,
@@ -233,17 +235,21 @@
         document.getElementById('select').style.borderColor = '#20a0ff';
       },
       select:function (valCode,val) {
-        var oCon = document.getElementById('select').getElementsByTagName('span')[0];
-        oCon.innerHTML = val;
-        oCon.style.color = '#1f2d3d';
+//        var oCon = document.getElementById('select').getElementsByTagName('span')[0];
+//        var oCon = document.getElementById('selectCol');
+        this.selectCon = val;
+//        oCon.innerHTML = val;
+//        oCon.style.color = '#1f2d3d';
         this.$data.query.districtCode = valCode;
         this.$data.isOpen = !this.$data.isOpen;
         this.$data.isOpen1 = !this.$data.isOpen1;
       },
       selectAll: function () {
-        var oCon = document.getElementById('select').getElementsByTagName('span')[0];
-        oCon.innerHTML = '全部';
-        oCon.style.color = '#1f2d3d';
+//        var oCon = document.getElementById('select').getElementsByTagName('span')[0];
+//        var oCon = document.getElementById('selectCol');
+//        oCon.innerHTML = '全部';
+        this.selectCon = '全部';
+//        oCon.style.color = '#1f2d3d';
         this.$data.query.districtCode = '';
         this.$data.isOpen = !this.$data.isOpen;
         this.$data.isOpen1 = false;

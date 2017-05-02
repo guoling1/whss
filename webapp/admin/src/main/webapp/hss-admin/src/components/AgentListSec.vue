@@ -22,7 +22,7 @@
             </el-col>
             <el-col :span="3">
               <label>省市:</label>
-              <div class="select" id="select" @click="open"><span>请选择</span>
+              <div class="select" id="select" @click="open"><span style="color: #1f2d3d">{{selectCon}}</span>
                 <i class="el-icon-caret-bottom" style="float: right;margin-top: 10px"></i>
               </div>
               <ul class="isShow" v-if="isOpen">
@@ -133,6 +133,7 @@
         },
         isShow:false,
         index:'',
+        selectCon:'全部'
       }
     },
     created: function () {
@@ -153,6 +154,7 @@
     },
     methods: {
       reset: function () {
+        this.selectCon = '全部';
         this.query = {
           pageNo:1,
           pageSize:10,
@@ -222,6 +224,7 @@
       select:function (valCode,val) {
         var oCon = document.getElementById('select').getElementsByTagName('span')[0];
         oCon.innerHTML = val;
+        this.selectCon = val;
         oCon.style.color = '#1f2d3d';
         this.$data.query.districtCode = valCode;
         this.$data.isOpen = !this.$data.isOpen;
@@ -230,6 +233,7 @@
       selectAll: function () {
         var oCon = document.getElementById('select').getElementsByTagName('span')[0];
         oCon.innerHTML = '全部';
+        this.selectCon = '全部';
         oCon.style.color = '#1f2d3d';
         this.$data.query.districtCode = '';
         this.$data.isOpen = !this.$data.isOpen;
