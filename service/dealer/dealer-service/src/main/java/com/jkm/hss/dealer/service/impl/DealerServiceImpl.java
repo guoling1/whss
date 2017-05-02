@@ -1246,6 +1246,7 @@ public class DealerServiceImpl implements DealerService {
         return this.dealerDao.selectByAccountIds(accountIds);
     }
 
+
     /**
      * {@inheritDoc}
      *
@@ -1253,8 +1254,8 @@ public class DealerServiceImpl implements DealerService {
      * @return
      */
     @Override
-    public Optional<Dealer> getByMobile(final String mobile) {
-        return Optional.fromNullable(this.dealerDao.selectByMobile(mobile));
+    public Optional<Dealer> getByMobileAndOemType(final String mobile,int oemType) {
+        return Optional.fromNullable(this.dealerDao.getByMobileAndOemType(mobile,oemType));
     }
 
     /**
@@ -1308,8 +1309,8 @@ public class DealerServiceImpl implements DealerService {
      * @return
      */
     @Override
-    public long getByProxyName(final String proxyMame) {
-        return this.dealerDao.selectByProxyName(proxyMame);
+    public long selectByProxyNameAndOemType(String proxyMame,int oemType) {
+        return this.dealerDao.selectByProxyNameAndOemType(proxyMame,oemType);
     }
 
     /**
@@ -1741,6 +1742,8 @@ public class DealerServiceImpl implements DealerService {
         dealer.setLoginName(firstLevelDealerAdd2Request.getLoginName());
         dealer.setLoginPwd(DealerSupport.passwordDigest(firstLevelDealerAdd2Request.getLoginPwd(),"JKM"));
         dealer.setEmail(firstLevelDealerAdd2Request.getEmail());
+        dealer.setOemType(firstLevelDealerAdd2Request.getOemType());
+        dealer.setOemId(firstLevelDealerAdd2Request.getOemId());
         this.add2(dealer);
         this.updateMarkCodeAndInviteCode(GlobalID.GetGlobalID(EnumGlobalIDType.DEALER, EnumGlobalIDPro.MIN,dealer.getId()+""),
                 GlobalID.GetInviteID(EnumGlobalDealerLevel.FIRSTDEALER,dealer.getId()+""),dealer.getId());
@@ -1807,7 +1810,7 @@ public class DealerServiceImpl implements DealerService {
         final PageModel<FirstDealerResponse> pageModel = new PageModel<>(listFirstDealerRequest.getPageNo(), listFirstDealerRequest.getPageSize());
         listFirstDealerRequest.setOffset(pageModel.getFirstIndex());
         listFirstDealerRequest.setCount(pageModel.getPageSize());
-        final int count = this.dealerDao.selectFirstDealerCountByPageParams(listFirstDealerRequest);
+        final Long count = this.dealerDao.selectFirstDealerCountByPageParams(listFirstDealerRequest);
         final List<FirstDealerResponse> dealers = this.dealerDao.selectFirstDealersByPageParams(listFirstDealerRequest);
         pageModel.setCount(count);
         pageModel.setRecords(dealers);

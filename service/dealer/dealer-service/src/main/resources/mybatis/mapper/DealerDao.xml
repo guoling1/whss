@@ -108,10 +108,10 @@
         </foreach>
     </select>
 
-    <select id="selectByMobile" resultType="com.jkm.hss.dealer.entity.Dealer">
-        SELECT * FROM tb_dealer WHERE mobile = #{mobile}
-    </select>
 
+    <select id="getByMobileAndOemType" resultType="com.jkm.hss.dealer.entity.Dealer">
+        SELECT * FROM tb_dealer WHERE mobile = #{mobile} and oem_type=#{oemType}
+    </select>
     <select id="selectByMobileUnIncludeNow" resultType="com.jkm.hss.dealer.entity.Dealer">
          SELECT * FROM tb_dealer WHERE mobile = #{mobile} AND id != #{dealerId}
     </select>
@@ -128,8 +128,8 @@
         SELECT * FROM tb_dealer WHERE second_level_dealer_id = #{secondLevelDealerId} AND level = 3
     </select>
 
-    <select id="selectByProxyName" resultType="java.lang.Long">
-         SELECT COUNT(1) FROM tb_dealer WHERE proxy_name = #{name}
+    <select id="selectByProxyNameAndOemType" resultType="java.lang.Long">
+         SELECT COUNT(1) FROM tb_dealer WHERE proxy_name = #{name} and oem_type=#{oemType}
     </select>
 
     <select id="selectByProxyNameUnIncludeNow" resultType="java.lang.Long">
@@ -205,10 +205,10 @@
 
 
 
-    <select id="selectFirstDealerCountByPageParams" resultType="java.lang.Integer">
+    <select id="selectFirstDealerCountByPageParams" resultType="java.lang.Long">
         SELECT COUNT(1) FROM tb_dealer as d
         <where>
-            d.level = 1
+            d.level = 1 and d.oem_type=#{oemType}
             <if test="mobile!=null and mobile!=''">
                 AND d.mobile =#{mobile}
             </if>
@@ -274,7 +274,7 @@
         d.mobile
         FROM tb_dealer as d
         <where>
-            d.level = 1
+            d.level = 1 and d.oem_type=#{oemType}
             <if test="mobile!=null and mobile!=''">
                 AND d.mobile =#{mobile}
             </if>

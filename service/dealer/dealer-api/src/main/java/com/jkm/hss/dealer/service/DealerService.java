@@ -105,13 +105,14 @@ public interface DealerService {
      */
     List<Dealer> getByAccountIds(List<Long> accountIds);
 
+
     /**
      * 按mobile查询
      *
      * @param mobile
      * @return
      */
-    Optional<Dealer> getByMobile(String mobile);
+    Optional<Dealer> getByMobileAndOemType(String mobile,int oemType);
 
     /**
      * 按mobile查询
@@ -150,7 +151,7 @@ public interface DealerService {
      * @param proxyMame
      * @return
      */
-    long getByProxyName(String proxyMame);
+    long selectByProxyNameAndOemType(String proxyMame,int oemType);
 
     /**
      * 查询代理商名称是否重复

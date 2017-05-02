@@ -1,6 +1,7 @@
 package com.jkm.hss.dealer.helper.requestparam;
 
 import com.jkm.base.common.entity.PageQueryParams;
+import com.jkm.hss.dealer.enums.EnumOemType;
 import lombok.Data;
 
 /**
@@ -33,6 +34,12 @@ public class ListFirstDealerRequest extends PageQueryParams {
      * 省市编码
      */
     private String districtCode;
+
+    /**
+     * 分公司标示 0代理商 1分公司
+     *{@link EnumOemType}
+     */
+    private Integer oemType;
 
     private int offset;
 

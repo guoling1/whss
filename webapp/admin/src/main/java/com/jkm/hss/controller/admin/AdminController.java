@@ -24,6 +24,7 @@ import com.jkm.hss.controller.BaseController;
 import com.jkm.hss.dealer.entity.Dealer;
 import com.jkm.hss.dealer.entity.DealerChannelRate;
 import com.jkm.hss.dealer.enums.EnumDealerLevel;
+import com.jkm.hss.dealer.enums.EnumOemType;
 import com.jkm.hss.dealer.enums.EnumRecommendBtn;
 import com.jkm.hss.dealer.helper.DealerConsts;
 import com.jkm.hss.dealer.helper.DealerSupport;
@@ -301,389 +302,389 @@ public class AdminController extends BaseController {
 
 
 
-    /**
-     * 添加一级代理商
-     *
-     * @return
-     */
-    @ResponseBody
-    @RequestMapping(value = "/addFirstDealer", method = RequestMethod.POST)
-    public CommonResponse addFirstDealer(@RequestBody final FirstLevelDealerAddRequest firstLevelDealerAddRequest) {
-        try{
-            if(!ValidateUtils.isMobile(firstLevelDealerAddRequest.getMobile())) {
-                return CommonResponse.simpleResponse(-1, "代理手机号格式错误");
-            }
-            if(StringUtils.isBlank(firstLevelDealerAddRequest.getName())) {
-                return CommonResponse.simpleResponse(-1, "代理名称不能为空");
-            }
-            final long proxyNameCount = this.dealerService.getByProxyName(firstLevelDealerAddRequest.getName());
-            if (proxyNameCount > 0) {
-                return CommonResponse.simpleResponse(-1, "代理名称已经存在");
-            }
-            final String bankCard = firstLevelDealerAddRequest.getBankCard();
-            final Optional<BankCardBin> bankCardBinOptional = this.bankCardBinService.analyseCardNo(bankCard);
-            if (!bankCardBinOptional.isPresent()) {
-                return CommonResponse.simpleResponse(-1, "结算卡格式错误");
-            }
-            firstLevelDealerAddRequest.setBankName(bankCardBinOptional.get().getBankName());
-            if(!ValidateUtils.isMobile(firstLevelDealerAddRequest.getBankReserveMobile())) {
-                return CommonResponse.simpleResponse(-1, "银行预留手机号格式错误");
-            }
-            final Optional<Dealer> dealerOptional = this.dealerService.getByMobile(firstLevelDealerAddRequest.getMobile());
-            if (dealerOptional.isPresent()) {
-                return CommonResponse.simpleResponse(-1, "代理商手机号已经注册");
-            }
-            if(!ValidationUtil.isIdCard(firstLevelDealerAddRequest.getIdCard())){
-                return CommonResponse.simpleResponse(-1, "身份证格式不正确");
-            }
-            if(firstLevelDealerAddRequest.getTotalProfitSpace()==null){
-                return CommonResponse.simpleResponse(-1, "收单总分润空间不能为空");
-            }
-            if((firstLevelDealerAddRequest.getTotalProfitSpace()).compareTo(new BigDecimal("0.002"))>0){
-                return CommonResponse.simpleResponse(-1, "总分润空间不可高于0.2%");
-            }
-            final FirstLevelDealerAddRequest.Product productParam = firstLevelDealerAddRequest.getProduct();
-            final long productId = productParam.getProductId();
-            final Optional<Product> productOptional = this.productService.selectById(productId);
-            if (!productOptional.isPresent()) {
-                return CommonResponse.simpleResponse(-1, "产品不存在");
-            }
-            final Product product = productOptional.get();
-            final List<ProductChannelDetail> productChannelDetails = this.productChannelDetailService.selectByProductId(productId);
-            final Map<Integer, ProductChannelDetail> integerProductChannelDetailImmutableMap =
-                    Maps.uniqueIndex(productChannelDetails, new Function<ProductChannelDetail, Integer>() {
-                        @Override
-                        public Integer apply(ProductChannelDetail input) {
-                            return input.getChannelTypeSign();
-                        }
-                    });
-            final List<FirstLevelDealerAddRequest.Channel> channelParams = productParam.getChannels();
-            for (FirstLevelDealerAddRequest.Channel channelParam : channelParams) {
-                final CommonResponse commonResponse = this.checkChannel(channelParam, integerProductChannelDetailImmutableMap, product);
-                if (1 != commonResponse.getCode()) {
-                    return commonResponse;
-                }
-            }
-
-            List<FirstLevelDealerAddRequest.DealerUpgerdeRate> dealerUpgerdeRateParams = firstLevelDealerAddRequest.getDealerUpgerdeRates();
-            for (FirstLevelDealerAddRequest.DealerUpgerdeRate dealerUpgerdeRateParam : dealerUpgerdeRateParams) {
-                final CommonResponse commonResponse = this.checkDealerUpgerdeRate(dealerUpgerdeRateParam);
-                if (1 != commonResponse.getCode()) {
-                    return commonResponse;
-                }
-            }
-            if(firstLevelDealerAddRequest.getRecommendBtn()!=EnumRecommendBtn.ON.getId()&&firstLevelDealerAddRequest.getRecommendBtn()!=EnumRecommendBtn.OFF.getId()){
-                return CommonResponse.simpleResponse(-1, "开关参数有误");
-            }
-
-            final long dealerId = this.dealerService.createFirstDealer(firstLevelDealerAddRequest);
-            final FirstLevelDealerAddResponse firstLevelDealerAddResponse = new FirstLevelDealerAddResponse();
-            firstLevelDealerAddResponse.setDealerId(dealerId);
-            return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "分配成功", firstLevelDealerAddResponse);
-        }catch (Exception e){
-            log.error("错误信息时",e);
-            return CommonResponse.simpleResponse(-1, e.getMessage());
-        }
-    }
-
-    /**
-     * 更新一级代理商
-     *
-     * @param request
-     * @return
-     */
-    @ResponseBody
-    @RequestMapping(value = "updateDealer", method = RequestMethod.POST)
-    public CommonResponse updateDealer(@RequestBody FirstLevelDealerUpdateRequest request) {
-        try{
-            if(!ValidateUtils.isMobile(request.getMobile())) {
-                return CommonResponse.simpleResponse(-1, "代理手机号格式错误");
-            }
-            final String bankCard = request.getBankCard();
-            final Optional<BankCardBin> bankCardBinOptional = this.bankCardBinService.analyseCardNo(bankCard);
-            if (!bankCardBinOptional.isPresent()) {
-                return CommonResponse.simpleResponse(-1, "结算卡格式错误");
-            }
-            if(!ValidateUtils.isMobile(request.getBankReserveMobile())) {
-                return CommonResponse.simpleResponse(-1, "银行预留手机号格式错误");
-            }
-            final long proxyNameCount = this.dealerService.getByProxyNameUnIncludeNow(request.getName(), request.getDealerId());
-            if (proxyNameCount > 0) {
-                return CommonResponse.simpleResponse(-1, "代理商名字已经存在");
-            }
-            final Optional<Dealer> dealerOptional = this.dealerService.getByMobileUnIncludeNow(request.getMobile(), request.getDealerId());
-            if (dealerOptional.isPresent()) {
-                return CommonResponse.simpleResponse(-1, "代理商手机号已经注册");
-            }
-            if(!ValidationUtil.isIdCard(request.getIdCard())){
-                return CommonResponse.simpleResponse(-1, "身份证格式不正确");
-            }
-            if(request.getTotalProfitSpace()==null){
-                return CommonResponse.simpleResponse(-1, "收单总分润空间不能为空");
-            }
-            if((request.getTotalProfitSpace()).compareTo(new BigDecimal("0.002"))>0){
-                return CommonResponse.simpleResponse(-1, "总分润空间不可高于0.2%");
-            }
-            final FirstLevelDealerUpdateRequest.Product productParam = request.getProduct();
-            final long productId = productParam.getProductId();
-            final Optional<Product> productOptional = this.productService.selectById(productId);
-            if (!productOptional.isPresent()) {
-                return CommonResponse.simpleResponse(-1, "产品不存在");
-            }
-            final Product product = productOptional.get();
-            final List<ProductChannelDetail> productChannelDetails = this.productChannelDetailService.selectByProductId(productId);
-            final Map<Integer, ProductChannelDetail> integerProductChannelDetailImmutableMap =
-                    Maps.uniqueIndex(productChannelDetails, new Function<ProductChannelDetail, Integer>() {
-                        @Override
-                        public Integer apply(ProductChannelDetail input) {
-                            return input.getChannelTypeSign();
-                        }
-                    });
-            final List<FirstLevelDealerUpdateRequest.Channel> channelParams = productParam.getChannels();
-            for (FirstLevelDealerUpdateRequest.Channel channelParam : channelParams) {
-                final CommonResponse commonResponse = this.checkChannel(channelParam, integerProductChannelDetailImmutableMap, product);
-                if (1 != commonResponse.getCode()) {
-                    return commonResponse;
-                }
-            }
-
-            List<FirstLevelDealerUpdateRequest.DealerUpgerdeRate> dealerUpgerdeRateParams = request.getDealerUpgerdeRates();
-            for (FirstLevelDealerUpdateRequest.DealerUpgerdeRate dealerUpgerdeRateParam : dealerUpgerdeRateParams) {
-                final CommonResponse commonResponse = this.checkDealerUpgerdeRate(dealerUpgerdeRateParam);
-                if (1 != commonResponse.getCode()) {
-                    return commonResponse;
-                }
-            }
-            if(request.getRecommendBtn()!=EnumRecommendBtn.ON.getId()&&request.getRecommendBtn()!=EnumRecommendBtn.OFF.getId()){
-                return CommonResponse.simpleResponse(-1, "开关参数有误");
-            }
-
-            this.dealerService.updateDealer(request);
-            return CommonResponse.builder4MapResult(CommonResponse.SUCCESS_CODE, "success")
-                    .addParam("dealerId", request.getDealerId()).build();
-        }catch (Exception e){
-            log.error("错误信息时",e.getStackTrace());
-            return CommonResponse.simpleResponse(-1, e.getMessage());
-        }
-    }
-
-    private CommonResponse checkChannel(final FirstLevelDealerUpdateRequest.Channel paramChannel,
-                                        final Map<Integer, ProductChannelDetail> integerProductChannelDetailImmutableMap,
-                                        final Product product) {
-        if (StringUtils.isBlank(paramChannel.getMerchantSettleRate())) {
-            return CommonResponse.simpleResponse(-1, "商户支付手续费不能为空");
-        }
-        if (StringUtils.isBlank(paramChannel.getMerchantWithdrawFee())) {
-            return CommonResponse.simpleResponse(-1, "商户提现手续费不能为空");
-        }
-        if (StringUtils.isBlank(paramChannel.getPaymentSettleRate())) {
-            return CommonResponse.simpleResponse(-1, "支付结算手续费不能为空");
-        }
-        if (StringUtils.isBlank(paramChannel.getWithdrawSettleFee())) {
-            return CommonResponse.simpleResponse(-1, "提现结算费不能为空");
-        }
-
-        if (paramChannel.getChannelType() == EnumPayChannelSign.YG_WECHAT.getId()) {
-            final ProductChannelDetail productChannelDetail = integerProductChannelDetailImmutableMap.get(EnumPayChannelSign.YG_WECHAT.getId());
-            final BigDecimal weixinMerchantSettleRate = new BigDecimal(paramChannel.getMerchantSettleRate())
-                    .divide(new BigDecimal("100"), 4, BigDecimal.ROUND_HALF_UP);
-            if (weixinMerchantSettleRate.compareTo(productChannelDetail.getProductMerchantPayRate().add(product.getLimitPayFeeRate())) > 0) {
-                return CommonResponse.simpleResponse(-1, "微信通道的商户支付结算费率：一级代理商的必须小于等于【产品的与支付手续费加价限额的和】");
-            }
-            final BigDecimal weixinMerchantWithdrawFee = new BigDecimal(paramChannel.getMerchantWithdrawFee());
-            if (weixinMerchantWithdrawFee.compareTo(productChannelDetail.getProductMerchantWithdrawFee().add(product.getLimitWithdrawFeeRate())) > 0) {
-                return CommonResponse.simpleResponse(-1, "微信通道的商户提现结算费用：一级代理商的必须小于等于【产品的与提现手续费加价限额的和】");
-            }
-            final BigDecimal weiXinSettleRate = new BigDecimal(paramChannel.getPaymentSettleRate())
-                    .divide(new BigDecimal("100"), 4, BigDecimal.ROUND_HALF_UP);
-            if (weiXinSettleRate.compareTo(productChannelDetail.getProductTradeRate()) < 0
-                    || weiXinSettleRate.compareTo(weixinMerchantSettleRate) > 0) {
-                return CommonResponse.simpleResponse(-1, "微信通道的支付结算费率：一级代理商的必须大于等于产品的, 小于等于商户的");
-            }
-            final BigDecimal weixinWithdrawFee = new BigDecimal(paramChannel.getWithdrawSettleFee());
-            if (weixinWithdrawFee.compareTo(productChannelDetail.getProductWithdrawFee()) < 0
-                    || weixinWithdrawFee.compareTo(weixinMerchantWithdrawFee) > 0) {
-                return CommonResponse.simpleResponse(-1, "微信通道的提现结算费用：一级代理商的必须大于等于产品的, 小于等于商户的");
-            }
-        } else if (paramChannel.getChannelType() == EnumPayChannelSign.YG_ALIPAY.getId()) {
-            final ProductChannelDetail productChannelDetail = integerProductChannelDetailImmutableMap.get(EnumPayChannelSign.YG_ALIPAY.getId());
-            final BigDecimal alipayMerchantSettleRate = new BigDecimal(paramChannel.getMerchantSettleRate())
-                    .divide(new BigDecimal("100"), 4, BigDecimal.ROUND_HALF_UP);
-            if (alipayMerchantSettleRate.compareTo(productChannelDetail.getProductMerchantPayRate().add(product.getLimitPayFeeRate())) > 0) {
-                return CommonResponse.simpleResponse(-1, "支付宝通道的商户支付结算费率：一级代理商的必须小于等于【产品的与支付手续费加价限额的和】");
-            }
-            final BigDecimal alipayMerchantWithdrawFee = new BigDecimal(paramChannel.getMerchantWithdrawFee());
-            if (alipayMerchantWithdrawFee.compareTo(productChannelDetail.getProductMerchantWithdrawFee().add(product.getLimitWithdrawFeeRate())) > 0) {
-                return CommonResponse.simpleResponse(-1, "支付宝通道的商户提现结算费用：一级代理商的必须小于等于【产品的与提现手续费加价限额的和】");
-            }
-            final BigDecimal alipaySettleRate = new BigDecimal(paramChannel.getPaymentSettleRate())
-                    .divide(new BigDecimal("100"), 4, BigDecimal.ROUND_HALF_UP);
-            if (alipaySettleRate.compareTo(productChannelDetail.getProductTradeRate()) < 0
-                    || alipaySettleRate.compareTo(alipayMerchantSettleRate) > 0) {
-                return CommonResponse.simpleResponse(-1, "支付宝通道的支付结算费率：一级代理商的必须大于等于产品的, 小于等于商户的");
-
-            }
-            final BigDecimal alipayWithdrawFee = new BigDecimal(paramChannel.getWithdrawSettleFee());
-            if (alipayWithdrawFee.compareTo(productChannelDetail.getProductWithdrawFee()) < 0
-                    || alipayWithdrawFee.compareTo(alipayMerchantWithdrawFee) > 0) {
-                return CommonResponse.simpleResponse(-1, "支付宝通道的提现结算费用：一级代理商的必须大于等于产品的, 小于等于商户的");
-            }
-
-        } else if (paramChannel.getChannelType() == EnumPayChannelSign.YG_UNIONPAY.getId()) {
-            final ProductChannelDetail productChannelDetail = integerProductChannelDetailImmutableMap.get(EnumPayChannelSign.YG_UNIONPAY.getId());
-            final BigDecimal quickPayMerchantSettleRate = new BigDecimal(paramChannel.getMerchantSettleRate())
-                    .divide(new BigDecimal("100"), 4, BigDecimal.ROUND_HALF_UP);
-            if (quickPayMerchantSettleRate.compareTo(productChannelDetail.getProductMerchantPayRate().add(product.getLimitPayFeeRate())) > 0) {
-                return CommonResponse.simpleResponse(-1, "快捷支付通道的商户支付结算费率：一级代理商的必须小于等于【产品的与支付手续费加价限额的和】");
-            }
-            final BigDecimal quickPayMerchantWithdrawFee = new BigDecimal(paramChannel.getMerchantWithdrawFee());
-            if (quickPayMerchantWithdrawFee.compareTo(productChannelDetail.getProductMerchantWithdrawFee().add(product.getLimitWithdrawFeeRate())) > 0) {
-                return CommonResponse.simpleResponse(-1, "快捷支付通道的商户提现结算费用：一级代理商的必须小于等于【产品的与提现手续费加价限额的和】");
-            }
-            final BigDecimal quickPaySettleRate = new BigDecimal(paramChannel.getPaymentSettleRate())
-                    .divide(new BigDecimal("100"), 4, BigDecimal.ROUND_HALF_UP);
-            if (quickPaySettleRate.compareTo(productChannelDetail.getProductTradeRate()) < 0
-                    || quickPaySettleRate.compareTo(quickPayMerchantSettleRate) > 0) {
-                return CommonResponse.simpleResponse(-1, "快捷支付通道的支付结算费率：一级代理商的必须大于等于产品的, 小于等于商户的");
-
-            }
-            final BigDecimal quickPayWithdrawFee = new BigDecimal(paramChannel.getWithdrawSettleFee());
-            if (quickPayWithdrawFee.compareTo(productChannelDetail.getProductWithdrawFee()) < 0
-                    || quickPayWithdrawFee.compareTo(quickPayMerchantWithdrawFee) > 0) {
-                return CommonResponse.simpleResponse(-1, "快捷支付通道的提现结算费用：一级代理商的必须大于等于产品的, 小于等于商户的");
-            }
-        }
-        return CommonResponse.simpleResponse(1, "");
-    }
-
-    private CommonResponse checkChannel(final FirstLevelDealerAddRequest.Channel paramChannel,
-                                        final Map<Integer, ProductChannelDetail> integerProductChannelDetailImmutableMap,
-                                        final Product product) {
-        if (StringUtils.isBlank(paramChannel.getMerchantSettleRate())) {
-            return CommonResponse.simpleResponse(-1, "商户支付手续费不能为空");
-        }
-        if (StringUtils.isBlank(paramChannel.getMerchantWithdrawFee())) {
-            return CommonResponse.simpleResponse(-1, "商户提现手续费不能为空");
-        }
-        if (StringUtils.isBlank(paramChannel.getPaymentSettleRate())) {
-            return CommonResponse.simpleResponse(-1, "支付结算手续费不能为空");
-        }
-        if (StringUtils.isBlank(paramChannel.getWithdrawSettleFee())) {
-            return CommonResponse.simpleResponse(-1, "提现结算费不能为空");
-        }
-
-        if (paramChannel.getChannelType() == EnumPayChannelSign.YG_WECHAT.getId()) {
-            final ProductChannelDetail productChannelDetail = integerProductChannelDetailImmutableMap.get(EnumPayChannelSign.YG_WECHAT.getId());
-            final BigDecimal weixinMerchantSettleRate = new BigDecimal(paramChannel.getMerchantSettleRate())
-                    .divide(new BigDecimal("100"), 4, BigDecimal.ROUND_HALF_UP);
-            if (weixinMerchantSettleRate.compareTo(productChannelDetail.getProductMerchantPayRate().add(product.getLimitPayFeeRate())) > 0) {
-                return CommonResponse.simpleResponse(-1, "微信通道的商户支付结算费率：一级代理商的必须小于等于【产品的与支付手续费加价限额的和】");
-            }
-            final BigDecimal weixinMerchantWithdrawFee = new BigDecimal(paramChannel.getMerchantWithdrawFee());
-            if (weixinMerchantWithdrawFee.compareTo(productChannelDetail.getProductMerchantWithdrawFee().add(product.getLimitWithdrawFeeRate())) > 0) {
-                return CommonResponse.simpleResponse(-1, "微信通道的商户提现结算费用：一级代理商的必须小于等于【产品的与提现手续费加价限额的和】");
-            }
-            final BigDecimal weiXinSettleRate = new BigDecimal(paramChannel.getPaymentSettleRate())
-                    .divide(new BigDecimal("100"), 4, BigDecimal.ROUND_HALF_UP);
-            if (weiXinSettleRate.compareTo(productChannelDetail.getProductTradeRate()) < 0
-                    || weiXinSettleRate.compareTo(weixinMerchantSettleRate) > 0) {
-                return CommonResponse.simpleResponse(-1, "微信通道的支付结算费率：一级代理商的必须大于等于产品的, 小于等于商户的");
-            }
-            final BigDecimal weixinWithdrawFee = new BigDecimal(paramChannel.getWithdrawSettleFee());
-            if (weixinWithdrawFee.compareTo(productChannelDetail.getProductWithdrawFee()) < 0
-                    || weixinWithdrawFee.compareTo(weixinMerchantWithdrawFee) > 0) {
-                return CommonResponse.simpleResponse(-1, "微信通道的提现结算费用：一级代理商的必须大于等于产品的, 小于等于商户的");
-            }
-        } else if (paramChannel.getChannelType() == EnumPayChannelSign.YG_ALIPAY.getId()) {
-            final ProductChannelDetail productChannelDetail = integerProductChannelDetailImmutableMap.get(EnumPayChannelSign.YG_ALIPAY.getId());
-            final BigDecimal alipayMerchantSettleRate = new BigDecimal(paramChannel.getMerchantSettleRate())
-                    .divide(new BigDecimal("100"), 4, BigDecimal.ROUND_HALF_UP);
-            if (alipayMerchantSettleRate.compareTo(productChannelDetail.getProductMerchantPayRate().add(product.getLimitPayFeeRate())) > 0) {
-                return CommonResponse.simpleResponse(-1, "支付宝通道的商户支付结算费率：一级代理商的必须小于等于【产品的与支付手续费加价限额的和】");
-            }
-            final BigDecimal alipayMerchantWithdrawFee = new BigDecimal(paramChannel.getMerchantWithdrawFee());
-            if (alipayMerchantWithdrawFee.compareTo(productChannelDetail.getProductMerchantWithdrawFee().add(product.getLimitWithdrawFeeRate())) > 0) {
-                return CommonResponse.simpleResponse(-1, "支付宝通道的商户提现结算费用：一级代理商的必须小于等于【产品的与提现手续费加价限额的和】");
-            }
-            final BigDecimal alipaySettleRate = new BigDecimal(paramChannel.getPaymentSettleRate())
-                    .divide(new BigDecimal("100"), 4, BigDecimal.ROUND_HALF_UP);
-            if (alipaySettleRate.compareTo(productChannelDetail.getProductTradeRate()) < 0
-                    || alipaySettleRate.compareTo(alipayMerchantSettleRate) > 0) {
-                return CommonResponse.simpleResponse(-1, "支付宝通道的支付结算费率：一级代理商的必须大于等于产品的, 小于等于商户的");
-
-            }
-            final BigDecimal alipayWithdrawFee = new BigDecimal(paramChannel.getWithdrawSettleFee());
-            if (alipayWithdrawFee.compareTo(productChannelDetail.getProductWithdrawFee()) < 0
-                    || alipayWithdrawFee.compareTo(alipayMerchantWithdrawFee) > 0) {
-                return CommonResponse.simpleResponse(-1, "支付宝通道的提现结算费用：一级代理商的必须大于等于产品的, 小于等于商户的");
-            }
-
-        } else if (paramChannel.getChannelType() == EnumPayChannelSign.YG_UNIONPAY.getId()) {
-            final ProductChannelDetail productChannelDetail = integerProductChannelDetailImmutableMap.get(EnumPayChannelSign.YG_UNIONPAY.getId());
-            final BigDecimal quickPayMerchantSettleRate = new BigDecimal(paramChannel.getMerchantSettleRate())
-                    .divide(new BigDecimal("100"), 4, BigDecimal.ROUND_HALF_UP);
-            if (quickPayMerchantSettleRate.compareTo(productChannelDetail.getProductMerchantPayRate().add(product.getLimitPayFeeRate())) > 0) {
-                return CommonResponse.simpleResponse(-1, "快捷支付通道的商户支付结算费率：一级代理商的必须小于等于【产品的与支付手续费加价限额的和】");
-            }
-            final BigDecimal quickPayMerchantWithdrawFee = new BigDecimal(paramChannel.getMerchantWithdrawFee());
-            if (quickPayMerchantWithdrawFee.compareTo(productChannelDetail.getProductMerchantWithdrawFee().add(product.getLimitWithdrawFeeRate())) > 0) {
-                return CommonResponse.simpleResponse(-1, "快捷支付通道的商户提现结算费用：一级代理商的必须小于等于【产品的与提现手续费加价限额的和】");
-            }
-            final BigDecimal quickPaySettleRate = new BigDecimal(paramChannel.getPaymentSettleRate())
-                    .divide(new BigDecimal("100"), 4, BigDecimal.ROUND_HALF_UP);
-            if (quickPaySettleRate.compareTo(productChannelDetail.getProductTradeRate()) < 0
-                    || quickPaySettleRate.compareTo(quickPayMerchantSettleRate) > 0) {
-                return CommonResponse.simpleResponse(-1, "快捷支付通道的支付结算费率：一级代理商的必须大于等于产品的, 小于等于商户的");
-
-            }
-            final BigDecimal quickPayWithdrawFee = new BigDecimal(paramChannel.getWithdrawSettleFee());
-            if (quickPayWithdrawFee.compareTo(productChannelDetail.getProductWithdrawFee()) < 0
-                    || quickPayWithdrawFee.compareTo(quickPayMerchantWithdrawFee) > 0) {
-                return CommonResponse.simpleResponse(-1, "快捷支付通道的提现结算费用：一级代理商的必须大于等于产品的, 小于等于商户的");
-            }
-        }
-        return CommonResponse.simpleResponse(1, "");
-    }
-
-    private CommonResponse checkDealerUpgerdeRate(final FirstLevelDealerAddRequest.DealerUpgerdeRate dealerUpgerdeRateParam) {
-        if (StringUtils.isBlank(dealerUpgerdeRateParam.getBossDealerShareRate())) {
-            return CommonResponse.simpleResponse(-1, "金开门分润比例不能为空");
-        }
-        if (StringUtils.isBlank(dealerUpgerdeRateParam.getFirstDealerShareProfitRate())) {
-            return CommonResponse.simpleResponse(-1, "一级代理商分润比例不能为空");
-        }
-        if (StringUtils.isBlank(dealerUpgerdeRateParam.getSecondDealerShareProfitRate())) {
-            return CommonResponse.simpleResponse(-1, "二级代理分润比例不能为空");
-        }
-        BigDecimal b1 = new BigDecimal(dealerUpgerdeRateParam.getBossDealerShareRate());
-        BigDecimal b2 = new BigDecimal(dealerUpgerdeRateParam.getFirstDealerShareProfitRate());
-        BigDecimal b3 = new BigDecimal(dealerUpgerdeRateParam.getSecondDealerShareProfitRate());
-        BigDecimal b = b1.add(b2).add(b3);
-        if (b.compareTo(new BigDecimal("1"))!=0) {
-            return CommonResponse.simpleResponse(-1, "金开门，一级代理，二级代理的比例之和必须等于100%");
-        }
-        return CommonResponse.simpleResponse(1, "");
-    }
-
-    private CommonResponse checkDealerUpgerdeRate(final FirstLevelDealerUpdateRequest.DealerUpgerdeRate dealerUpgerdeRateParam) {
-        if (StringUtils.isBlank(dealerUpgerdeRateParam.getBossDealerShareRate())) {
-            return CommonResponse.simpleResponse(-1, "金开门分润比例不能为空");
-        }
-        if (StringUtils.isBlank(dealerUpgerdeRateParam.getFirstDealerShareProfitRate())) {
-            return CommonResponse.simpleResponse(-1, "一级代理商分润比例不能为空");
-        }
-        if (StringUtils.isBlank(dealerUpgerdeRateParam.getSecondDealerShareProfitRate())) {
-            return CommonResponse.simpleResponse(-1, "二级代理分润比例不能为空");
-        }
-        BigDecimal b1 = new BigDecimal(dealerUpgerdeRateParam.getBossDealerShareRate());
-        BigDecimal b2 = new BigDecimal(dealerUpgerdeRateParam.getFirstDealerShareProfitRate());
-        BigDecimal b3 = new BigDecimal(dealerUpgerdeRateParam.getSecondDealerShareProfitRate());
-        BigDecimal b = b1.add(b2).add(b3);
-        if (b.compareTo(new BigDecimal("1"))!=0) {
-            return CommonResponse.simpleResponse(-1, "金开门，一级代理，二级代理的比例之和必须等于100%");
-        }
-        return CommonResponse.simpleResponse(1, "");
-    }
+//    /**
+//     * 添加一级代理商
+//     *
+//     * @return
+//     */
+//    @ResponseBody
+//    @RequestMapping(value = "/addFirstDealer", method = RequestMethod.POST)
+//    public CommonResponse addFirstDealer(@RequestBody final FirstLevelDealerAddRequest firstLevelDealerAddRequest) {
+//        try{
+//            if(!ValidateUtils.isMobile(firstLevelDealerAddRequest.getMobile())) {
+//                return CommonResponse.simpleResponse(-1, "代理手机号格式错误");
+//            }
+//            if(StringUtils.isBlank(firstLevelDealerAddRequest.getName())) {
+//                return CommonResponse.simpleResponse(-1, "代理名称不能为空");
+//            }
+//            final long proxyNameCount = this.dealerService.getByProxyNameAndO(firstLevelDealerAddRequest.getName());
+//            if (proxyNameCount > 0) {
+//                return CommonResponse.simpleResponse(-1, "代理名称已经存在");
+//            }
+//            final String bankCard = firstLevelDealerAddRequest.getBankCard();
+//            final Optional<BankCardBin> bankCardBinOptional = this.bankCardBinService.analyseCardNo(bankCard);
+//            if (!bankCardBinOptional.isPresent()) {
+//                return CommonResponse.simpleResponse(-1, "结算卡格式错误");
+//            }
+//            firstLevelDealerAddRequest.setBankName(bankCardBinOptional.get().getBankName());
+//            if(!ValidateUtils.isMobile(firstLevelDealerAddRequest.getBankReserveMobile())) {
+//                return CommonResponse.simpleResponse(-1, "银行预留手机号格式错误");
+//            }
+//            final Optional<Dealer> dealerOptional = this.dealerService.getByMobile(firstLevelDealerAddRequest.getMobile());
+//            if (dealerOptional.isPresent()) {
+//                return CommonResponse.simpleResponse(-1, "代理商手机号已经注册");
+//            }
+//            if(!ValidationUtil.isIdCard(firstLevelDealerAddRequest.getIdCard())){
+//                return CommonResponse.simpleResponse(-1, "身份证格式不正确");
+//            }
+//            if(firstLevelDealerAddRequest.getTotalProfitSpace()==null){
+//                return CommonResponse.simpleResponse(-1, "收单总分润空间不能为空");
+//            }
+//            if((firstLevelDealerAddRequest.getTotalProfitSpace()).compareTo(new BigDecimal("0.002"))>0){
+//                return CommonResponse.simpleResponse(-1, "总分润空间不可高于0.2%");
+//            }
+//            final FirstLevelDealerAddRequest.Product productParam = firstLevelDealerAddRequest.getProduct();
+//            final long productId = productParam.getProductId();
+//            final Optional<Product> productOptional = this.productService.selectById(productId);
+//            if (!productOptional.isPresent()) {
+//                return CommonResponse.simpleResponse(-1, "产品不存在");
+//            }
+//            final Product product = productOptional.get();
+//            final List<ProductChannelDetail> productChannelDetails = this.productChannelDetailService.selectByProductId(productId);
+//            final Map<Integer, ProductChannelDetail> integerProductChannelDetailImmutableMap =
+//                    Maps.uniqueIndex(productChannelDetails, new Function<ProductChannelDetail, Integer>() {
+//                        @Override
+//                        public Integer apply(ProductChannelDetail input) {
+//                            return input.getChannelTypeSign();
+//                        }
+//                    });
+//            final List<FirstLevelDealerAddRequest.Channel> channelParams = productParam.getChannels();
+//            for (FirstLevelDealerAddRequest.Channel channelParam : channelParams) {
+//                final CommonResponse commonResponse = this.checkChannel(channelParam, integerProductChannelDetailImmutableMap, product);
+//                if (1 != commonResponse.getCode()) {
+//                    return commonResponse;
+//                }
+//            }
+//
+//            List<FirstLevelDealerAddRequest.DealerUpgerdeRate> dealerUpgerdeRateParams = firstLevelDealerAddRequest.getDealerUpgerdeRates();
+//            for (FirstLevelDealerAddRequest.DealerUpgerdeRate dealerUpgerdeRateParam : dealerUpgerdeRateParams) {
+//                final CommonResponse commonResponse = this.checkDealerUpgerdeRate(dealerUpgerdeRateParam);
+//                if (1 != commonResponse.getCode()) {
+//                    return commonResponse;
+//                }
+//            }
+//            if(firstLevelDealerAddRequest.getRecommendBtn()!=EnumRecommendBtn.ON.getId()&&firstLevelDealerAddRequest.getRecommendBtn()!=EnumRecommendBtn.OFF.getId()){
+//                return CommonResponse.simpleResponse(-1, "开关参数有误");
+//            }
+//
+//            final long dealerId = this.dealerService.createFirstDealer(firstLevelDealerAddRequest);
+//            final FirstLevelDealerAddResponse firstLevelDealerAddResponse = new FirstLevelDealerAddResponse();
+//            firstLevelDealerAddResponse.setDealerId(dealerId);
+//            return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "分配成功", firstLevelDealerAddResponse);
+//        }catch (Exception e){
+//            log.error("错误信息时",e);
+//            return CommonResponse.simpleResponse(-1, e.getMessage());
+//        }
+//    }
+//
+//    /**
+//     * 更新一级代理商
+//     *
+//     * @param request
+//     * @return
+//     */
+//    @ResponseBody
+//    @RequestMapping(value = "updateDealer", method = RequestMethod.POST)
+//    public CommonResponse updateDealer(@RequestBody FirstLevelDealerUpdateRequest request) {
+//        try{
+//            if(!ValidateUtils.isMobile(request.getMobile())) {
+//                return CommonResponse.simpleResponse(-1, "代理手机号格式错误");
+//            }
+//            final String bankCard = request.getBankCard();
+//            final Optional<BankCardBin> bankCardBinOptional = this.bankCardBinService.analyseCardNo(bankCard);
+//            if (!bankCardBinOptional.isPresent()) {
+//                return CommonResponse.simpleResponse(-1, "结算卡格式错误");
+//            }
+//            if(!ValidateUtils.isMobile(request.getBankReserveMobile())) {
+//                return CommonResponse.simpleResponse(-1, "银行预留手机号格式错误");
+//            }
+//            final long proxyNameCount = this.dealerService.getByProxyNameUnIncludeNow(request.getName(), request.getDealerId());
+//            if (proxyNameCount > 0) {
+//                return CommonResponse.simpleResponse(-1, "代理商名字已经存在");
+//            }
+//            final Optional<Dealer> dealerOptional = this.dealerService.getByMobileUnIncludeNow(request.getMobile(), request.getDealerId());
+//            if (dealerOptional.isPresent()) {
+//                return CommonResponse.simpleResponse(-1, "代理商手机号已经注册");
+//            }
+//            if(!ValidationUtil.isIdCard(request.getIdCard())){
+//                return CommonResponse.simpleResponse(-1, "身份证格式不正确");
+//            }
+//            if(request.getTotalProfitSpace()==null){
+//                return CommonResponse.simpleResponse(-1, "收单总分润空间不能为空");
+//            }
+//            if((request.getTotalProfitSpace()).compareTo(new BigDecimal("0.002"))>0){
+//                return CommonResponse.simpleResponse(-1, "总分润空间不可高于0.2%");
+//            }
+//            final FirstLevelDealerUpdateRequest.Product productParam = request.getProduct();
+//            final long productId = productParam.getProductId();
+//            final Optional<Product> productOptional = this.productService.selectById(productId);
+//            if (!productOptional.isPresent()) {
+//                return CommonResponse.simpleResponse(-1, "产品不存在");
+//            }
+//            final Product product = productOptional.get();
+//            final List<ProductChannelDetail> productChannelDetails = this.productChannelDetailService.selectByProductId(productId);
+//            final Map<Integer, ProductChannelDetail> integerProductChannelDetailImmutableMap =
+//                    Maps.uniqueIndex(productChannelDetails, new Function<ProductChannelDetail, Integer>() {
+//                        @Override
+//                        public Integer apply(ProductChannelDetail input) {
+//                            return input.getChannelTypeSign();
+//                        }
+//                    });
+//            final List<FirstLevelDealerUpdateRequest.Channel> channelParams = productParam.getChannels();
+//            for (FirstLevelDealerUpdateRequest.Channel channelParam : channelParams) {
+//                final CommonResponse commonResponse = this.checkChannel(channelParam, integerProductChannelDetailImmutableMap, product);
+//                if (1 != commonResponse.getCode()) {
+//                    return commonResponse;
+//                }
+//            }
+//
+//            List<FirstLevelDealerUpdateRequest.DealerUpgerdeRate> dealerUpgerdeRateParams = request.getDealerUpgerdeRates();
+//            for (FirstLevelDealerUpdateRequest.DealerUpgerdeRate dealerUpgerdeRateParam : dealerUpgerdeRateParams) {
+//                final CommonResponse commonResponse = this.checkDealerUpgerdeRate(dealerUpgerdeRateParam);
+//                if (1 != commonResponse.getCode()) {
+//                    return commonResponse;
+//                }
+//            }
+//            if(request.getRecommendBtn()!=EnumRecommendBtn.ON.getId()&&request.getRecommendBtn()!=EnumRecommendBtn.OFF.getId()){
+//                return CommonResponse.simpleResponse(-1, "开关参数有误");
+//            }
+//
+//            this.dealerService.updateDealer(request);
+//            return CommonResponse.builder4MapResult(CommonResponse.SUCCESS_CODE, "success")
+//                    .addParam("dealerId", request.getDealerId()).build();
+//        }catch (Exception e){
+//            log.error("错误信息时",e.getStackTrace());
+//            return CommonResponse.simpleResponse(-1, e.getMessage());
+//        }
+//    }
+//
+//    private CommonResponse checkChannel(final FirstLevelDealerUpdateRequest.Channel paramChannel,
+//                                        final Map<Integer, ProductChannelDetail> integerProductChannelDetailImmutableMap,
+//                                        final Product product) {
+//        if (StringUtils.isBlank(paramChannel.getMerchantSettleRate())) {
+//            return CommonResponse.simpleResponse(-1, "商户支付手续费不能为空");
+//        }
+//        if (StringUtils.isBlank(paramChannel.getMerchantWithdrawFee())) {
+//            return CommonResponse.simpleResponse(-1, "商户提现手续费不能为空");
+//        }
+//        if (StringUtils.isBlank(paramChannel.getPaymentSettleRate())) {
+//            return CommonResponse.simpleResponse(-1, "支付结算手续费不能为空");
+//        }
+//        if (StringUtils.isBlank(paramChannel.getWithdrawSettleFee())) {
+//            return CommonResponse.simpleResponse(-1, "提现结算费不能为空");
+//        }
+//
+//        if (paramChannel.getChannelType() == EnumPayChannelSign.YG_WECHAT.getId()) {
+//            final ProductChannelDetail productChannelDetail = integerProductChannelDetailImmutableMap.get(EnumPayChannelSign.YG_WECHAT.getId());
+//            final BigDecimal weixinMerchantSettleRate = new BigDecimal(paramChannel.getMerchantSettleRate())
+//                    .divide(new BigDecimal("100"), 4, BigDecimal.ROUND_HALF_UP);
+//            if (weixinMerchantSettleRate.compareTo(productChannelDetail.getProductMerchantPayRate().add(product.getLimitPayFeeRate())) > 0) {
+//                return CommonResponse.simpleResponse(-1, "微信通道的商户支付结算费率：一级代理商的必须小于等于【产品的与支付手续费加价限额的和】");
+//            }
+//            final BigDecimal weixinMerchantWithdrawFee = new BigDecimal(paramChannel.getMerchantWithdrawFee());
+//            if (weixinMerchantWithdrawFee.compareTo(productChannelDetail.getProductMerchantWithdrawFee().add(product.getLimitWithdrawFeeRate())) > 0) {
+//                return CommonResponse.simpleResponse(-1, "微信通道的商户提现结算费用：一级代理商的必须小于等于【产品的与提现手续费加价限额的和】");
+//            }
+//            final BigDecimal weiXinSettleRate = new BigDecimal(paramChannel.getPaymentSettleRate())
+//                    .divide(new BigDecimal("100"), 4, BigDecimal.ROUND_HALF_UP);
+//            if (weiXinSettleRate.compareTo(productChannelDetail.getProductTradeRate()) < 0
+//                    || weiXinSettleRate.compareTo(weixinMerchantSettleRate) > 0) {
+//                return CommonResponse.simpleResponse(-1, "微信通道的支付结算费率：一级代理商的必须大于等于产品的, 小于等于商户的");
+//            }
+//            final BigDecimal weixinWithdrawFee = new BigDecimal(paramChannel.getWithdrawSettleFee());
+//            if (weixinWithdrawFee.compareTo(productChannelDetail.getProductWithdrawFee()) < 0
+//                    || weixinWithdrawFee.compareTo(weixinMerchantWithdrawFee) > 0) {
+//                return CommonResponse.simpleResponse(-1, "微信通道的提现结算费用：一级代理商的必须大于等于产品的, 小于等于商户的");
+//            }
+//        } else if (paramChannel.getChannelType() == EnumPayChannelSign.YG_ALIPAY.getId()) {
+//            final ProductChannelDetail productChannelDetail = integerProductChannelDetailImmutableMap.get(EnumPayChannelSign.YG_ALIPAY.getId());
+//            final BigDecimal alipayMerchantSettleRate = new BigDecimal(paramChannel.getMerchantSettleRate())
+//                    .divide(new BigDecimal("100"), 4, BigDecimal.ROUND_HALF_UP);
+//            if (alipayMerchantSettleRate.compareTo(productChannelDetail.getProductMerchantPayRate().add(product.getLimitPayFeeRate())) > 0) {
+//                return CommonResponse.simpleResponse(-1, "支付宝通道的商户支付结算费率：一级代理商的必须小于等于【产品的与支付手续费加价限额的和】");
+//            }
+//            final BigDecimal alipayMerchantWithdrawFee = new BigDecimal(paramChannel.getMerchantWithdrawFee());
+//            if (alipayMerchantWithdrawFee.compareTo(productChannelDetail.getProductMerchantWithdrawFee().add(product.getLimitWithdrawFeeRate())) > 0) {
+//                return CommonResponse.simpleResponse(-1, "支付宝通道的商户提现结算费用：一级代理商的必须小于等于【产品的与提现手续费加价限额的和】");
+//            }
+//            final BigDecimal alipaySettleRate = new BigDecimal(paramChannel.getPaymentSettleRate())
+//                    .divide(new BigDecimal("100"), 4, BigDecimal.ROUND_HALF_UP);
+//            if (alipaySettleRate.compareTo(productChannelDetail.getProductTradeRate()) < 0
+//                    || alipaySettleRate.compareTo(alipayMerchantSettleRate) > 0) {
+//                return CommonResponse.simpleResponse(-1, "支付宝通道的支付结算费率：一级代理商的必须大于等于产品的, 小于等于商户的");
+//
+//            }
+//            final BigDecimal alipayWithdrawFee = new BigDecimal(paramChannel.getWithdrawSettleFee());
+//            if (alipayWithdrawFee.compareTo(productChannelDetail.getProductWithdrawFee()) < 0
+//                    || alipayWithdrawFee.compareTo(alipayMerchantWithdrawFee) > 0) {
+//                return CommonResponse.simpleResponse(-1, "支付宝通道的提现结算费用：一级代理商的必须大于等于产品的, 小于等于商户的");
+//            }
+//
+//        } else if (paramChannel.getChannelType() == EnumPayChannelSign.YG_UNIONPAY.getId()) {
+//            final ProductChannelDetail productChannelDetail = integerProductChannelDetailImmutableMap.get(EnumPayChannelSign.YG_UNIONPAY.getId());
+//            final BigDecimal quickPayMerchantSettleRate = new BigDecimal(paramChannel.getMerchantSettleRate())
+//                    .divide(new BigDecimal("100"), 4, BigDecimal.ROUND_HALF_UP);
+//            if (quickPayMerchantSettleRate.compareTo(productChannelDetail.getProductMerchantPayRate().add(product.getLimitPayFeeRate())) > 0) {
+//                return CommonResponse.simpleResponse(-1, "快捷支付通道的商户支付结算费率：一级代理商的必须小于等于【产品的与支付手续费加价限额的和】");
+//            }
+//            final BigDecimal quickPayMerchantWithdrawFee = new BigDecimal(paramChannel.getMerchantWithdrawFee());
+//            if (quickPayMerchantWithdrawFee.compareTo(productChannelDetail.getProductMerchantWithdrawFee().add(product.getLimitWithdrawFeeRate())) > 0) {
+//                return CommonResponse.simpleResponse(-1, "快捷支付通道的商户提现结算费用：一级代理商的必须小于等于【产品的与提现手续费加价限额的和】");
+//            }
+//            final BigDecimal quickPaySettleRate = new BigDecimal(paramChannel.getPaymentSettleRate())
+//                    .divide(new BigDecimal("100"), 4, BigDecimal.ROUND_HALF_UP);
+//            if (quickPaySettleRate.compareTo(productChannelDetail.getProductTradeRate()) < 0
+//                    || quickPaySettleRate.compareTo(quickPayMerchantSettleRate) > 0) {
+//                return CommonResponse.simpleResponse(-1, "快捷支付通道的支付结算费率：一级代理商的必须大于等于产品的, 小于等于商户的");
+//
+//            }
+//            final BigDecimal quickPayWithdrawFee = new BigDecimal(paramChannel.getWithdrawSettleFee());
+//            if (quickPayWithdrawFee.compareTo(productChannelDetail.getProductWithdrawFee()) < 0
+//                    || quickPayWithdrawFee.compareTo(quickPayMerchantWithdrawFee) > 0) {
+//                return CommonResponse.simpleResponse(-1, "快捷支付通道的提现结算费用：一级代理商的必须大于等于产品的, 小于等于商户的");
+//            }
+//        }
+//        return CommonResponse.simpleResponse(1, "");
+//    }
+//
+//    private CommonResponse checkChannel(final FirstLevelDealerAddRequest.Channel paramChannel,
+//                                        final Map<Integer, ProductChannelDetail> integerProductChannelDetailImmutableMap,
+//                                        final Product product) {
+//        if (StringUtils.isBlank(paramChannel.getMerchantSettleRate())) {
+//            return CommonResponse.simpleResponse(-1, "商户支付手续费不能为空");
+//        }
+//        if (StringUtils.isBlank(paramChannel.getMerchantWithdrawFee())) {
+//            return CommonResponse.simpleResponse(-1, "商户提现手续费不能为空");
+//        }
+//        if (StringUtils.isBlank(paramChannel.getPaymentSettleRate())) {
+//            return CommonResponse.simpleResponse(-1, "支付结算手续费不能为空");
+//        }
+//        if (StringUtils.isBlank(paramChannel.getWithdrawSettleFee())) {
+//            return CommonResponse.simpleResponse(-1, "提现结算费不能为空");
+//        }
+//
+//        if (paramChannel.getChannelType() == EnumPayChannelSign.YG_WECHAT.getId()) {
+//            final ProductChannelDetail productChannelDetail = integerProductChannelDetailImmutableMap.get(EnumPayChannelSign.YG_WECHAT.getId());
+//            final BigDecimal weixinMerchantSettleRate = new BigDecimal(paramChannel.getMerchantSettleRate())
+//                    .divide(new BigDecimal("100"), 4, BigDecimal.ROUND_HALF_UP);
+//            if (weixinMerchantSettleRate.compareTo(productChannelDetail.getProductMerchantPayRate().add(product.getLimitPayFeeRate())) > 0) {
+//                return CommonResponse.simpleResponse(-1, "微信通道的商户支付结算费率：一级代理商的必须小于等于【产品的与支付手续费加价限额的和】");
+//            }
+//            final BigDecimal weixinMerchantWithdrawFee = new BigDecimal(paramChannel.getMerchantWithdrawFee());
+//            if (weixinMerchantWithdrawFee.compareTo(productChannelDetail.getProductMerchantWithdrawFee().add(product.getLimitWithdrawFeeRate())) > 0) {
+//                return CommonResponse.simpleResponse(-1, "微信通道的商户提现结算费用：一级代理商的必须小于等于【产品的与提现手续费加价限额的和】");
+//            }
+//            final BigDecimal weiXinSettleRate = new BigDecimal(paramChannel.getPaymentSettleRate())
+//                    .divide(new BigDecimal("100"), 4, BigDecimal.ROUND_HALF_UP);
+//            if (weiXinSettleRate.compareTo(productChannelDetail.getProductTradeRate()) < 0
+//                    || weiXinSettleRate.compareTo(weixinMerchantSettleRate) > 0) {
+//                return CommonResponse.simpleResponse(-1, "微信通道的支付结算费率：一级代理商的必须大于等于产品的, 小于等于商户的");
+//            }
+//            final BigDecimal weixinWithdrawFee = new BigDecimal(paramChannel.getWithdrawSettleFee());
+//            if (weixinWithdrawFee.compareTo(productChannelDetail.getProductWithdrawFee()) < 0
+//                    || weixinWithdrawFee.compareTo(weixinMerchantWithdrawFee) > 0) {
+//                return CommonResponse.simpleResponse(-1, "微信通道的提现结算费用：一级代理商的必须大于等于产品的, 小于等于商户的");
+//            }
+//        } else if (paramChannel.getChannelType() == EnumPayChannelSign.YG_ALIPAY.getId()) {
+//            final ProductChannelDetail productChannelDetail = integerProductChannelDetailImmutableMap.get(EnumPayChannelSign.YG_ALIPAY.getId());
+//            final BigDecimal alipayMerchantSettleRate = new BigDecimal(paramChannel.getMerchantSettleRate())
+//                    .divide(new BigDecimal("100"), 4, BigDecimal.ROUND_HALF_UP);
+//            if (alipayMerchantSettleRate.compareTo(productChannelDetail.getProductMerchantPayRate().add(product.getLimitPayFeeRate())) > 0) {
+//                return CommonResponse.simpleResponse(-1, "支付宝通道的商户支付结算费率：一级代理商的必须小于等于【产品的与支付手续费加价限额的和】");
+//            }
+//            final BigDecimal alipayMerchantWithdrawFee = new BigDecimal(paramChannel.getMerchantWithdrawFee());
+//            if (alipayMerchantWithdrawFee.compareTo(productChannelDetail.getProductMerchantWithdrawFee().add(product.getLimitWithdrawFeeRate())) > 0) {
+//                return CommonResponse.simpleResponse(-1, "支付宝通道的商户提现结算费用：一级代理商的必须小于等于【产品的与提现手续费加价限额的和】");
+//            }
+//            final BigDecimal alipaySettleRate = new BigDecimal(paramChannel.getPaymentSettleRate())
+//                    .divide(new BigDecimal("100"), 4, BigDecimal.ROUND_HALF_UP);
+//            if (alipaySettleRate.compareTo(productChannelDetail.getProductTradeRate()) < 0
+//                    || alipaySettleRate.compareTo(alipayMerchantSettleRate) > 0) {
+//                return CommonResponse.simpleResponse(-1, "支付宝通道的支付结算费率：一级代理商的必须大于等于产品的, 小于等于商户的");
+//
+//            }
+//            final BigDecimal alipayWithdrawFee = new BigDecimal(paramChannel.getWithdrawSettleFee());
+//            if (alipayWithdrawFee.compareTo(productChannelDetail.getProductWithdrawFee()) < 0
+//                    || alipayWithdrawFee.compareTo(alipayMerchantWithdrawFee) > 0) {
+//                return CommonResponse.simpleResponse(-1, "支付宝通道的提现结算费用：一级代理商的必须大于等于产品的, 小于等于商户的");
+//            }
+//
+//        } else if (paramChannel.getChannelType() == EnumPayChannelSign.YG_UNIONPAY.getId()) {
+//            final ProductChannelDetail productChannelDetail = integerProductChannelDetailImmutableMap.get(EnumPayChannelSign.YG_UNIONPAY.getId());
+//            final BigDecimal quickPayMerchantSettleRate = new BigDecimal(paramChannel.getMerchantSettleRate())
+//                    .divide(new BigDecimal("100"), 4, BigDecimal.ROUND_HALF_UP);
+//            if (quickPayMerchantSettleRate.compareTo(productChannelDetail.getProductMerchantPayRate().add(product.getLimitPayFeeRate())) > 0) {
+//                return CommonResponse.simpleResponse(-1, "快捷支付通道的商户支付结算费率：一级代理商的必须小于等于【产品的与支付手续费加价限额的和】");
+//            }
+//            final BigDecimal quickPayMerchantWithdrawFee = new BigDecimal(paramChannel.getMerchantWithdrawFee());
+//            if (quickPayMerchantWithdrawFee.compareTo(productChannelDetail.getProductMerchantWithdrawFee().add(product.getLimitWithdrawFeeRate())) > 0) {
+//                return CommonResponse.simpleResponse(-1, "快捷支付通道的商户提现结算费用：一级代理商的必须小于等于【产品的与提现手续费加价限额的和】");
+//            }
+//            final BigDecimal quickPaySettleRate = new BigDecimal(paramChannel.getPaymentSettleRate())
+//                    .divide(new BigDecimal("100"), 4, BigDecimal.ROUND_HALF_UP);
+//            if (quickPaySettleRate.compareTo(productChannelDetail.getProductTradeRate()) < 0
+//                    || quickPaySettleRate.compareTo(quickPayMerchantSettleRate) > 0) {
+//                return CommonResponse.simpleResponse(-1, "快捷支付通道的支付结算费率：一级代理商的必须大于等于产品的, 小于等于商户的");
+//
+//            }
+//            final BigDecimal quickPayWithdrawFee = new BigDecimal(paramChannel.getWithdrawSettleFee());
+//            if (quickPayWithdrawFee.compareTo(productChannelDetail.getProductWithdrawFee()) < 0
+//                    || quickPayWithdrawFee.compareTo(quickPayMerchantWithdrawFee) > 0) {
+//                return CommonResponse.simpleResponse(-1, "快捷支付通道的提现结算费用：一级代理商的必须大于等于产品的, 小于等于商户的");
+//            }
+//        }
+//        return CommonResponse.simpleResponse(1, "");
+//    }
+//
+//    private CommonResponse checkDealerUpgerdeRate(final FirstLevelDealerAddRequest.DealerUpgerdeRate dealerUpgerdeRateParam) {
+//        if (StringUtils.isBlank(dealerUpgerdeRateParam.getBossDealerShareRate())) {
+//            return CommonResponse.simpleResponse(-1, "金开门分润比例不能为空");
+//        }
+//        if (StringUtils.isBlank(dealerUpgerdeRateParam.getFirstDealerShareProfitRate())) {
+//            return CommonResponse.simpleResponse(-1, "一级代理商分润比例不能为空");
+//        }
+//        if (StringUtils.isBlank(dealerUpgerdeRateParam.getSecondDealerShareProfitRate())) {
+//            return CommonResponse.simpleResponse(-1, "二级代理分润比例不能为空");
+//        }
+//        BigDecimal b1 = new BigDecimal(dealerUpgerdeRateParam.getBossDealerShareRate());
+//        BigDecimal b2 = new BigDecimal(dealerUpgerdeRateParam.getFirstDealerShareProfitRate());
+//        BigDecimal b3 = new BigDecimal(dealerUpgerdeRateParam.getSecondDealerShareProfitRate());
+//        BigDecimal b = b1.add(b2).add(b3);
+//        if (b.compareTo(new BigDecimal("1"))!=0) {
+//            return CommonResponse.simpleResponse(-1, "金开门，一级代理，二级代理的比例之和必须等于100%");
+//        }
+//        return CommonResponse.simpleResponse(1, "");
+//    }
+//
+//    private CommonResponse checkDealerUpgerdeRate(final FirstLevelDealerUpdateRequest.DealerUpgerdeRate dealerUpgerdeRateParam) {
+//        if (StringUtils.isBlank(dealerUpgerdeRateParam.getBossDealerShareRate())) {
+//            return CommonResponse.simpleResponse(-1, "金开门分润比例不能为空");
+//        }
+//        if (StringUtils.isBlank(dealerUpgerdeRateParam.getFirstDealerShareProfitRate())) {
+//            return CommonResponse.simpleResponse(-1, "一级代理商分润比例不能为空");
+//        }
+//        if (StringUtils.isBlank(dealerUpgerdeRateParam.getSecondDealerShareProfitRate())) {
+//            return CommonResponse.simpleResponse(-1, "二级代理分润比例不能为空");
+//        }
+//        BigDecimal b1 = new BigDecimal(dealerUpgerdeRateParam.getBossDealerShareRate());
+//        BigDecimal b2 = new BigDecimal(dealerUpgerdeRateParam.getFirstDealerShareProfitRate());
+//        BigDecimal b3 = new BigDecimal(dealerUpgerdeRateParam.getSecondDealerShareProfitRate());
+//        BigDecimal b = b1.add(b2).add(b3);
+//        if (b.compareTo(new BigDecimal("1"))!=0) {
+//            return CommonResponse.simpleResponse(-1, "金开门，一级代理，二级代理的比例之和必须等于100%");
+//        }
+//        return CommonResponse.simpleResponse(1, "");
+//    }
 
 
     //==============================此处为对代理商进行重构=============================
@@ -699,14 +700,14 @@ public class AdminController extends BaseController {
             if(!ValidateUtils.isMobile(firstLevelDealerAdd2Request.getMobile())) {
                 return CommonResponse.simpleResponse(-1, "代理商手机号格式错误");
             }
-            final Optional<Dealer> dealerOptional = this.dealerService.getByMobile(firstLevelDealerAdd2Request.getMobile());
+            final Optional<Dealer> dealerOptional = this.dealerService.getByMobileAndOemType(firstLevelDealerAdd2Request.getMobile(), EnumOemType.DEALER.getId());
             if (dealerOptional.isPresent()) {
                 return CommonResponse.simpleResponse(-1, "代理商手机号已经注册");
             }
             if(StringUtils.isBlank(firstLevelDealerAdd2Request.getName())) {
                 return CommonResponse.simpleResponse(-1, "代理名称不能为空");
             }
-            final long proxyNameCount = this.dealerService.getByProxyName(firstLevelDealerAdd2Request.getName());
+            final long proxyNameCount = this.dealerService.selectByProxyNameAndOemType(firstLevelDealerAdd2Request.getName(),EnumOemType.DEALER.getId());
             if (proxyNameCount > 0) {
                 return CommonResponse.simpleResponse(-1, "代理名称已经存在");
             }
@@ -753,6 +754,8 @@ public class AdminController extends BaseController {
             if(!ValidateUtils.isMobile(firstLevelDealerAdd2Request.getBankReserveMobile())) {
                 return CommonResponse.simpleResponse(-1, "开户手机号格式错误");
             }
+            firstLevelDealerAdd2Request.setOemType(EnumOemType.DEALER.getId());
+            firstLevelDealerAdd2Request.setOemId(0);
             final long dealerId = this.dealerService.createFirstDealer2(firstLevelDealerAdd2Request);
 
             //创建登录用户
