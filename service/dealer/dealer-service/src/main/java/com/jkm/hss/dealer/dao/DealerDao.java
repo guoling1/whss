@@ -80,7 +80,7 @@ public interface DealerDao {
      * @param mobile
      * @return
      */
-    Dealer getByMobileAndOemType(@Param("mobile") String mobile,@Param("oemType") int oemType);
+    Dealer getByMobile(@Param("mobile") String mobile);
 
     /**
      * 按mobile查询
@@ -129,7 +129,7 @@ public interface DealerDao {
      * @param dealerId
      * @return
      */
-    long selectByProxyNameUnIncludeNow(@Param("proxyMame") String proxyMame, @Param("dealerId") long dealerId);
+    long selectByProxyNameUnIncludeNow(@Param("proxyMame") String proxyMame,@Param("oemType") int oemType, @Param("dealerId") long dealerId);
 
     /**
      * 按手机号和名称模糊匹配

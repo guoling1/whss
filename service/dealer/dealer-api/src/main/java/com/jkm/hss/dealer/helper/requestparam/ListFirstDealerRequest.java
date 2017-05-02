@@ -40,6 +40,10 @@ public class ListFirstDealerRequest extends PageQueryParams {
      *{@link EnumOemType}
      */
     private Integer oemType;
+    /**
+     * 所属分公司
+     */
+    private String oemName;
 
     private int offset;
 

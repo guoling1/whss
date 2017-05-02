@@ -112,7 +112,7 @@ public interface DealerService {
      * @param mobile
      * @return
      */
-    Optional<Dealer> getByMobileAndOemType(String mobile,int oemType);
+    Optional<Dealer> getByMobile(String mobile);
 
     /**
      * 按mobile查询
@@ -159,7 +159,7 @@ public interface DealerService {
      * @param proxyMame
      * @return
      */
-    long getByProxyNameUnIncludeNow(String proxyMame, long dealerId);
+    long getByProxyNameUnIncludeNow(String proxyMame, int oemType, long dealerId);
 
     /**
      * 按手机号和名称模糊匹配

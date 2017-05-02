@@ -490,11 +490,16 @@ public class AdminUserServiceImpl implements AdminUserService {
      * @param adminUser
      */
     @Override
-    public long createFirstDealerUser(AdminUser adminUser) {
+    public long createFirstDealerUser(AdminUser adminUser,int oemType) {
         this.adminUserDao.insert(adminUser);
-        this.adminUserDao.updateMarkCode(GlobalID.GetAdminUserID(EnumGlobalAdminUserLevel.FIRSTDEALER,adminUser.getId()+""),adminUser.getId());
+        if(oemType==EnumAdminOemType.OEM.getId()){
+            this.adminUserDao.updateMarkCode(GlobalID.GetAdminUserID(EnumGlobalAdminUserLevel.OEM,adminUser.getId()+""),adminUser.getId());
+        }else{
+            this.adminUserDao.updateMarkCode(GlobalID.GetAdminUserID(EnumGlobalAdminUserLevel.FIRSTDEALER,adminUser.getId()+""),adminUser.getId());
+        }
         return adminUser.getId();
     }
+
     /**
      * 创建二级代理登录用户
      * @param adminUser

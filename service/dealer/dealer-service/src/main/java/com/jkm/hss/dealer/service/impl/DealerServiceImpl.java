@@ -1254,8 +1254,8 @@ public class DealerServiceImpl implements DealerService {
      * @return
      */
     @Override
-    public Optional<Dealer> getByMobileAndOemType(final String mobile,int oemType) {
-        return Optional.fromNullable(this.dealerDao.getByMobileAndOemType(mobile,oemType));
+    public Optional<Dealer> getByMobile(final String mobile) {
+        return Optional.fromNullable(this.dealerDao.getByMobile(mobile));
     }
 
     /**
@@ -1321,8 +1321,8 @@ public class DealerServiceImpl implements DealerService {
      * @return
      */
     @Override
-    public long getByProxyNameUnIncludeNow(final String proxyMame, final long dealerId) {
-        return this.dealerDao.selectByProxyNameUnIncludeNow(proxyMame, dealerId);
+    public long getByProxyNameUnIncludeNow(String proxyMame, int oemType, long dealerId) {
+        return this.dealerDao.selectByProxyNameUnIncludeNow(proxyMame, oemType,dealerId);
     }
 
     /**
@@ -1745,8 +1745,13 @@ public class DealerServiceImpl implements DealerService {
         dealer.setOemType(firstLevelDealerAdd2Request.getOemType());
         dealer.setOemId(firstLevelDealerAdd2Request.getOemId());
         this.add2(dealer);
-        this.updateMarkCodeAndInviteCode(GlobalID.GetGlobalID(EnumGlobalIDType.DEALER, EnumGlobalIDPro.MIN,dealer.getId()+""),
-                GlobalID.GetInviteID(EnumGlobalDealerLevel.FIRSTDEALER,dealer.getId()+""),dealer.getId());
+        if(firstLevelDealerAdd2Request.getOemType()==EnumOemType.OEM.getId()){
+            this.updateMarkCodeAndInviteCode(GlobalID.GetGlobalID(EnumGlobalIDType.OEM, EnumGlobalIDPro.MIN,dealer.getId()+""),
+                    GlobalID.GetInviteID(EnumGlobalDealerLevel.OEM,dealer.getId()+""),dealer.getId());
+        }else{
+            this.updateMarkCodeAndInviteCode(GlobalID.GetGlobalID(EnumGlobalIDType.DEALER, EnumGlobalIDPro.MIN,dealer.getId()+""),
+                    GlobalID.GetInviteID(EnumGlobalDealerLevel.FIRSTDEALER,dealer.getId()+""),dealer.getId());
+        }
         return dealer.getId();
     }
     /**

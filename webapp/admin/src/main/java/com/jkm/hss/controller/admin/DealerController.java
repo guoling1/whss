@@ -132,120 +132,6 @@ public class DealerController extends BaseController {
      * @return
      */
     @ResponseBody
-    @RequestMapping(value = "/listDealer", method = RequestMethod.POST)
-    public CommonResponse listDealer(@RequestBody final ListDealerRequest listDealerRequest) {
-//        if (EnumDealerLevel.FIRST.getId() != listDealerRequest.getLevel()
-//                && EnumDealerLevel.SECOND.getId() != listDealerRequest.getLevel()) {
-//            listDealerRequest.setLevel(EnumDealerLevel.FIRST.getId());
-//        }
-        final String mobile = listDealerRequest.getMobile();
-        if (StringUtils.isEmpty(StringUtils.trim(mobile))) {
-            listDealerRequest.setMobile(null);
-        }
-        final String name = listDealerRequest.getName();
-        if(StringUtils.isEmpty(StringUtils.trim(name))) {
-            listDealerRequest.setName(null);
-        }
-        final String belongArea = listDealerRequest.getBelongArea();
-        if(StringUtils.isEmpty(StringUtils.trim(belongArea))) {
-            listDealerRequest.setBelongArea(null);
-        }
-
-        final PageModel<Dealer> pageModel = this.dealerService.listDealer(listDealerRequest);
-        final List<Dealer> records = pageModel.getRecords();
-        if (!CollectionUtils.isEmpty(records)) {
-            for (Dealer dealer : records) {
-                dealer.setSettleBankCard(DealerSupport.decryptBankCard(dealer.getId(), dealer.getSettleBankCard()));
-                dealer.setBankReserveMobile(DealerSupport.decryptMobile(dealer.getId(), dealer.getBankReserveMobile()));
-            }
-        }
-        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "success", pageModel);
-    }
-
-    /**
-     * 查询代理商信息
-     *
-     * @return
-     */
-    @ResponseBody
-    @RequestMapping(value = "{dealerId}", method = RequestMethod.GET)
-    public CommonResponse getDealer(@PathVariable final long dealerId) {
-        final Optional<Dealer> dealerOptional = this.dealerService.getById(dealerId);
-        if (!dealerOptional.isPresent()) {
-            return CommonResponse.simpleResponse(-1, "代理商不存在");
-        }
-        final Dealer dealer = dealerOptional.get();
-        final List<DealerChannelRate> channelRates = this.dealerChannelRateService.selectByDealerId(dealerId);
-        if (CollectionUtils.isEmpty(channelRates)) {
-            return CommonResponse.simpleResponse(-1, "代理商对应产品通道不存在");
-        }
-        final Optional<Product> productOptional = this.productService.selectById(channelRates.get(0).getProductId());
-        if (!productOptional.isPresent()) {
-            return CommonResponse.simpleResponse(-1, "代理商对应产品不存在");
-        }
-        final Product product = productOptional.get();
-        final FirstLevelDealerGetResponse firstLevelDealerGetResponse = new FirstLevelDealerGetResponse();
-        firstLevelDealerGetResponse.setMobile(dealer.getMobile());
-        firstLevelDealerGetResponse.setName(dealer.getProxyName());
-        firstLevelDealerGetResponse.setBelongArea(dealer.getBelongArea());
-        firstLevelDealerGetResponse.setBankCard(DealerSupport.decryptBankCard(dealer.getId(), dealer.getSettleBankCard()));
-        firstLevelDealerGetResponse.setBankName(dealer.getBankName());
-        if (dealer.getIdCard()!=null){
-            firstLevelDealerGetResponse.setIdCard(DealerSupport.decryptIdentity(dealer.getId(),dealer.getIdCard()));
-        }
-        firstLevelDealerGetResponse.setBankAccountName(dealer.getBankAccountName());
-        firstLevelDealerGetResponse.setBankReserveMobile(DealerSupport.decryptMobile(dealer.getId(), dealer.getBankReserveMobile()));
-        final FirstLevelDealerGetResponse.Product productResponse = firstLevelDealerGetResponse.new Product();
-        firstLevelDealerGetResponse.setProduct(productResponse);
-        firstLevelDealerGetResponse.setTotalProfitSpace(dealer.getTotalProfitSpace());
-        firstLevelDealerGetResponse.setRecommendBtn(dealer.getRecommendBtn());
-        productResponse.setProductId(product.getId());
-        productResponse.setProductName(product.getProductName());
-        productResponse.setLimitPayFeeRate(product.getLimitPayFeeRate().multiply(new BigDecimal("100")).setScale(2).toPlainString());
-        productResponse.setLimitWithdrawFeeRate(product.getLimitWithdrawFeeRate().toPlainString());
-        final List<FirstLevelDealerGetResponse.Channel> channels = new ArrayList<>();
-        productResponse.setChannels(channels);
-        for (DealerChannelRate dealerChannelRate : channelRates) {
-            final FirstLevelDealerGetResponse.Channel channel = new FirstLevelDealerGetResponse.Channel();
-            channel.setChannelType(dealerChannelRate.getChannelTypeSign());
-            channel.setPaymentSettleRate(dealerChannelRate.getDealerTradeRate().multiply(new BigDecimal("100")).setScale(2).toPlainString());
-            channel.setSettleType(dealerChannelRate.getDealerBalanceType());
-            channel.setWithdrawSettleFee(dealerChannelRate.getDealerWithdrawFee().toPlainString());
-            channel.setMerchantSettleRate(dealerChannelRate.getDealerMerchantPayRate().multiply(new BigDecimal("100")).setScale(2).toPlainString());
-            channel.setMerchantWithdrawFee(dealerChannelRate.getDealerMerchantWithdrawFee().toPlainString());
-            channels.add(channel);
-        }
-
-        final List<FirstLevelDealerGetResponse.DealerUpgerdeRate> dealerUpgerdeRates = new ArrayList<>();
-        firstLevelDealerGetResponse.setDealerUpgerdeRates(dealerUpgerdeRates);
-
-        List<DealerUpgerdeRate> upgerdeRates = dealerUpgerdeRateService.selectByDealerIdAndProductId(dealerId,product.getId());
-        if (upgerdeRates==null){
-            return CommonResponse.simpleResponse(-1,"未查到相关数据");
-        }
-        for(DealerUpgerdeRate dealerUpgerdeRate:upgerdeRates){
-            final FirstLevelDealerGetResponse.DealerUpgerdeRate du = new FirstLevelDealerGetResponse.DealerUpgerdeRate();
-            du.setId(dealerUpgerdeRate.getId());
-            du.setProductId(dealerUpgerdeRate.getProductId());
-            du.setType(dealerUpgerdeRate.getType());
-            du.setDealerId(dealerUpgerdeRate.getDealerId());
-            du.setFirstDealerShareProfitRate(dealerUpgerdeRate.getFirstDealerShareProfitRate().toString());
-            du.setSecondDealerShareProfitRate(dealerUpgerdeRate.getSecondDealerShareProfitRate().toString());
-            du.setBossDealerShareRate(dealerUpgerdeRate.getBossDealerShareRate().toString());
-            dealerUpgerdeRates.add(du);
-        }
-
-        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "success", firstLevelDealerGetResponse);
-    }
-
-
-//==============================此处为对代理商进行重构=============================
-    /**
-     * 一级代理商列表
-     *
-     * @return
-     */
-    @ResponseBody
     @RequestMapping(value = "/listFirstDealer", method = RequestMethod.POST)
     public CommonResponse listFirstDealer(@RequestBody final ListFirstDealerRequest listFirstDealerRequest) {
         final PageModel<FirstDealerResponse> pageModel = this.dealerService.listFirstDealer(listFirstDealerRequest);
@@ -273,7 +159,7 @@ public class DealerController extends BaseController {
     public CommonResponse findBydealerId(@PathVariable final long dealerId) {
         final Optional<Dealer> dealerOptional = this.dealerService.getById(dealerId);
         if (!dealerOptional.isPresent()) {
-            return CommonResponse.simpleResponse(-1, "代理商不存在");
+            return CommonResponse.simpleResponse(-1, "代理商或分公司不存在");
         }
         final Dealer dealer = dealerOptional.get();
         final DealerDetailResponse dealerDetailResponse = new DealerDetailResponse();
@@ -792,13 +678,12 @@ public class DealerController extends BaseController {
         try{
             final Optional<Dealer> dealerOptional = this.dealerService.getById(request.getDealerId());
             if(!dealerOptional.isPresent()){
-                return CommonResponse.simpleResponse(-1, "代理商不存在");
+                return CommonResponse.simpleResponse(-1, "登录用户不存在");
             }
             if(org.apache.commons.lang3.StringUtils.isBlank(request.getLoginPwd())) {
                 return CommonResponse.simpleResponse(-1, "登录密码不能为空");
             }
             request.setLoginPwd(DealerSupport.passwordDigest(request.getLoginPwd(),"JKM"));
-//            this.dealerService.updatePwd(request.getLoginPwd(),request.getDealerId());
             adminUserService.updateDealerUserPwd(request.getLoginPwd(),request.getDealerId());
             return CommonResponse.builder4MapResult(CommonResponse.SUCCESS_CODE, "修改成功")
                     .addParam("dealerId", request.getDealerId()).build();

@@ -109,8 +109,8 @@
     </select>
 
 
-    <select id="getByMobileAndOemType" resultType="com.jkm.hss.dealer.entity.Dealer">
-        SELECT * FROM tb_dealer WHERE mobile = #{mobile} and oem_type=#{oemType}
+    <select id="getByMobile" resultType="com.jkm.hss.dealer.entity.Dealer">
+        SELECT * FROM tb_dealer WHERE mobile = #{mobile}
     </select>
     <select id="selectByMobileUnIncludeNow" resultType="com.jkm.hss.dealer.entity.Dealer">
          SELECT * FROM tb_dealer WHERE mobile = #{mobile} AND id != #{dealerId}
@@ -133,7 +133,7 @@
     </select>
 
     <select id="selectByProxyNameUnIncludeNow" resultType="java.lang.Long">
-        SELECT COUNT(1) FROM tb_dealer WHERE proxy_name = #{proxyMame} AND id != #{dealerId}
+        SELECT COUNT(1) FROM tb_dealer WHERE proxy_name = #{proxyMame} and oem_type=#{oemType} and id != #{dealerId}
     </select>
 
     <select id="selectByCondition" resultType="com.jkm.hss.dealer.entity.Dealer">
@@ -221,6 +221,9 @@
             <if test="districtCode != null and districtCode!=''">
                 AND (d.belong_province_code = #{districtCode} OR d.belong_city_code=#{districtCode})
             </if>
+            <if test="oemName != null and oemName!=''">
+                AND d.oem_id in (select id from tb_dealer where proxy_name like "%"#{oemName}"%")
+            </if>
             <if test="sysType != null and sysType!=''">
                 AND d.id IN (select distinct(dealer_id) from tb_dealer_channel_rate where product_id in (select id from tb_product where type=#{sysType}))
             </if>
@@ -271,7 +274,8 @@
         type = 'hsy'
         )
         ) AS hsy_product_id,
-        d.mobile
+        d.mobile,
+        (select proxy_name from tb_dealer where id=d.oem_id) as oemName
         FROM tb_dealer as d
         <where>
             d.level = 1 and d.oem_type=#{oemType}
@@ -287,6 +291,9 @@
             <if test="districtCode != null and districtCode!=''">
                 AND (d.belong_province_code = #{districtCode} OR d.belong_city_code=#{districtCode})
             </if>
+            <if test="oemName != null and oemName!=''">
+                AND d.oem_id in (select id from tb_dealer where proxy_name like "%"#{oemName}"%")
+            </if>
             <if test="sysType != null and sysType!=''">
                 AND d.id IN (select distinct(dealer_id) from tb_dealer_channel_rate where product_id in (select id from tb_product where type=#{sysType}))
             </if>
@@ -298,7 +305,7 @@
     <select id="selectSecondDealerCountByPageParams" resultType="java.lang.Integer">
         SELECT COUNT(1) FROM tb_dealer as d
         <where>
-            d.level = 2
+            d.level = 2 and d.oem_type=0
             <if test="mobile!=null and mobile!=''">
                 AND d.mobile =#{mobile}
             </if>
@@ -313,6 +320,9 @@
             </if>
             <if test="sysType != null and sysType!=''">
                 AND d.id IN (select distinct(dealer_id) from tb_dealer_channel_rate where product_id in (select id from tb_product where type=#{sysType}))
+            </if>
+            <if test="oemName != null and oemName!=''">
+                AND d.oem_id in (select id from tb_dealer where proxy_name like "%"#{oemName}"%")
             </if>
             <if test="firstDealerName != null and firstDealerName!=''">
                 AND d.first_level_dealer_id IN (select id from tb_dealer where `proxy_name` LIKE "%"#{firstDealerName}"%")
@@ -365,10 +375,11 @@
         )
         ) AS hsy_product_id,
         (select proxy_name from tb_dealer WHERE id =d.first_level_dealer_id) as first_proxy_name,
-        d.mobile
+        d.mobile,
+        (select proxy_name from tb_dealer where id=d.oem_id) as oemName
         FROM tb_dealer as d
         <where>
-            d.level = 2
+            d.level = 2 and d.oem_type=0
             <if test="mobile!=null and mobile!=''">
                 AND d.mobile =#{mobile}
             </if>
@@ -383,6 +394,9 @@
             </if>
             <if test="sysType != null and sysType!=''">
                 AND d.id IN (select distinct(dealer_id) from tb_dealer_channel_rate where product_id in (select id from tb_product where type=#{sysType}))
+            </if>
+            <if test="oemName != null and oemName!=''">
+                AND d.oem_id in (select id from tb_dealer where proxy_name like "%"#{oemName}"%")
             </if>
             <if test="firstDealerName != null and firstDealerName!=''">
                 AND d.first_level_dealer_id IN (select id from tb_dealer where `proxy_name` LIKE "%"#{firstDealerName}"%")

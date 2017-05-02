@@ -202,7 +202,8 @@ public interface AdminUserService {
      * @param adminUser
      * @return
      */
-    long createFirstDealerUser(AdminUser adminUser);
+    long createFirstDealerUser(AdminUser adminUser,int oemType);
+
     /**
      * 创建二级代理商管理账户
      * @param adminUser
