@@ -14,6 +14,11 @@ public interface OemInfoDao {
      * @param oemInfo
      */
     void insert(OemInfo oemInfo);
+    /**
+     * 修改
+     * @param oemInfo
+     */
+    void update(OemInfo oemInfo);
 
     /**
      *根据分公司编码查询分公司O单配置

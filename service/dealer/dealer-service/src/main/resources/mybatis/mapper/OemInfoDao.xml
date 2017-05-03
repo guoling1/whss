@@ -33,6 +33,21 @@
         )
     </insert>
 
+    <update id="update">
+        UPDATE tb_oem_info
+        SET
+        dealer_id = #{dealerId},
+        brand_name = #{brandName},
+        wechat_name = #{wechatName},
+        wechat_code = #{wechatCode},
+        app_id = #{appId},
+        app_secret = #{appSecret},
+        logo = #{logo},
+        qr_code = #{qrCode},
+        status = #{status}
+        WHERE id = #{id}
+    </update>
+
     <select id="selectByDealerId" resultType="com.jkm.hss.dealer.entity.OemInfo">
         SELECT <include refid="Base_Column_List" /> FROM tb_oem_info where dealer_id=#{dealerId} and status=1 limit 0,1
     </select>

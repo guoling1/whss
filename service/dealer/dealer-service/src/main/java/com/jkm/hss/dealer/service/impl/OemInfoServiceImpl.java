@@ -35,6 +35,16 @@ public class OemInfoServiceImpl implements OemInfoService {
     }
 
     /**
+     * 修改
+     *
+     * @param oemInfo
+     */
+    @Override
+    public void update(OemInfo oemInfo) {
+        oemInfoDao.update(oemInfo);
+    }
+
+    /**
      * 根据分公司编码查询分公司O单配置
      *
      * @param dealerId
@@ -113,7 +123,6 @@ public class OemInfoServiceImpl implements OemInfoService {
                 templateInfoDao.insert(templateInfo);
             }
         }else{//修改
-
             oemInfo.setDealerId(addOrUpdateOemRequest.getDealerId());
             oemInfo.setBrandName(addOrUpdateOemRequest.getBrandName());
             oemInfo.setWechatCode(addOrUpdateOemRequest.getWechatCode());
@@ -123,7 +132,7 @@ public class OemInfoServiceImpl implements OemInfoService {
             oemInfo.setQrCode(addOrUpdateOemRequest.getQrCode());
             oemInfo.setLogo(addOrUpdateOemRequest.getLogo());
             oemInfo.setStatus(EnumDealerStatus.NORMAL.getId());
-
+            this.update(oemInfo);
 
         }
     }
