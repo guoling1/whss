@@ -755,7 +755,7 @@
     </select>
 
     <!-- 查询分公司账户 -->
-    <select id="getBranch" resultType="java.lang.Integer">
+    <select id="getBranchCount" resultType="java.lang.Integer">
         SELECT
             COUNT(*)
         FROM
