@@ -29,9 +29,9 @@
       <input type="hidden" id="key-input" value="">
     </div>
   </div>
-  <div class="prompt-deep">支付宝与微信收款实时到账，无卡快捷T1到账<span id="know"></span>
-    <br>支付宝与微信限额1万，无卡快捷限额2万
-  </div>
+  <%--<div class="prompt-deep">支付宝与微信收款实时到账，无卡快捷T1到账<span id="know"></span>--%>
+    <%--<br>支付宝与微信限额1万，无卡快捷限额2万--%>
+  <%--</div>--%>
   <div class="keyboard" id="keyboard">
     <div class="copyright flexBox">
       <span class="line"></span>
