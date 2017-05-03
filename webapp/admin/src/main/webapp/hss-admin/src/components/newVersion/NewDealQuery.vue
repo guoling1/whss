@@ -1,7 +1,7 @@
 <template>
   <div id="deal">
     <div class="col-md-12">
-      <div class="box" style="margin-top:15px;overflow: hidden">
+      <div class="box" style="overflow: hidden">
         <div class="box-header">
           <h3 class="box-title">交易查询</h3>
           <router-link to="/admin/details/deal" class="pull-right btn btn-primary" style="margin-left: 20px" target="_blank">切换旧版</router-link>
@@ -100,10 +100,11 @@
             </li>
             <li class="same">
               <div class="btn btn-primary" @click="search">筛选</div>
+              <div class="btn btn-primary" @click="reset">重置</div>
             </li>
           </ul>
           <!--表格-->
-          <el-table v-loading.body="loading" height="620" style="font-size: 12px;margin-bottom: 15px;" :data="records" border>
+          <el-table v-loading.body="loading" height="550" style="font-size: 12px;margin-bottom: 15px;" :data="records" border>
             <el-table-column width="62" label="序号" fixed="left" type="index"></el-table-column>
             <el-table-column prop="appId" label="业务方" min-width="85"></el-table-column>
             <el-table-column label="交易订单号" min-width="112">
@@ -256,27 +257,53 @@
           });
         });
 
-      let time = new Date();
-      this.date = [time,time];
-      for (var j = 0; j < this.date.length; j++) {
-        var str = this.date[j];
-        var ary = [str.getFullYear(), str.getMonth() + 1, str.getDate()];
-        for (var i = 0, len = ary.length; i < len; i++) {
-          if (ary[i] < 10) {
-            ary[i] = '0' + ary[i];
-          }
-        }
-        str = ary[0] + '-' + ary[1] + '-' + ary[2];
-        if (j == 0) {
-          this.query.startTime = str;
-        } else {
-          this.query.endTime = str;
-        }
-      }
+      this.currentDate();
       this.getData();
       this.getAddTotal()
     },
     methods: {
+      currentDate: function () {
+        let time = new Date();
+        this.date = [time,time];
+        for (var j = 0; j < this.date.length; j++) {
+          var str = this.date[j];
+          var ary = [str.getFullYear(), str.getMonth() + 1, str.getDate()];
+          for (var i = 0, len = ary.length; i < len; i++) {
+            if (ary[i] < 10) {
+              ary[i] = '0' + ary[i];
+            }
+          }
+          str = ary[0] + '-' + ary[1] + '-' + ary[2];
+          if (j == 0) {
+            this.query.startTime = str;
+          } else {
+            this.query.endTime = str;
+          }
+        }
+      },
+      reset: function () {
+        this.query = {
+          page:1,
+            size:10,
+            orderNo:'',
+            businessOrderNo:'',
+            sn:'',
+            merchantName: '',
+            startTime: '',
+            endTime: '',
+            lessTotalFee: '',
+            moreTotalFee: '',
+            status: '',
+            settleStatus:'',
+            payType:'',
+            proxyName:'',
+            proxyName1:'',
+            loadUrl: '',
+            loadUrl1: '',
+            payChannelSign:''
+        };
+        this.currentDate()
+      },
       getData: function () {
         this.loading = true;
         this.$http.post('/admin/queryOrder/orderList',this.query)

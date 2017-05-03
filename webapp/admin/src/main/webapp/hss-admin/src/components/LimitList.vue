@@ -1,7 +1,7 @@
 <template>
   <div id="limitList">
     <div class="col-md-12">
-      <div class="box" style="margin-top:15px;overflow: hidden">
+      <div class="box" style="overflow: hidden">
         <div class="box-header">
           <h3 class="box-title">银行卡限额</h3>
         </div>
@@ -22,6 +22,7 @@
             </li>
             <li class="same">
               <div class="btn btn-primary" @click="search">筛选</div>
+              <div class="btn btn-primary" @click="reset">重置</div>
             </li>
           </ul>
           <!--表格-->
@@ -87,6 +88,15 @@
       this.getData()
     },
     methods: {
+      reset: function () {
+        this.query = {
+          pageNo:1,
+          pageSize:10,
+          channelName:'',
+          channelCode:'',
+          bankCode:'',
+        };
+      },
       getData: function () {
         this.loading = true;
         this.$http.post('/admin/channel/querySupportBank',this.$data.query)

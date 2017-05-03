@@ -1,6 +1,6 @@
 <template lang="html">
   <div id="agentAdd">
-    <div style="margin-top: 15px" class="col-xs-12">
+    <div class="col-xs-12">
       <div class="box">
         <div class="box-header">
           <h3 class="box-title">产品列表</h3>
