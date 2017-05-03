@@ -253,6 +253,7 @@ public class AccountSettleAuditRecordServiceImpl implements AccountSettleAuditRe
         final int count = this.settleAccountFlowService.getYesterdayDecreaseFlowCount(settleDate);
         if (count > 0) {
             log.error("###############存在已经结算的待结算流水#################");
+            return;
         }
         final List<SettleAccountFlowStatistics> settleAccountFlowStatisticses = this.settleAccountFlowService.statisticsYesterdayFlow(settleDate);
         log.info("今日[{}]的待结算流水统计是[{}]", settleDate, settleAccountFlowStatisticses);
