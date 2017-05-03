@@ -1,6 +1,6 @@
 <template lang="html">
   <div id="invite">
-    <div style="margin: 15px">
+    <div style="margin: 15px;">
       <div class="box ">
         <form class="form-horizontal">
           <div class="box-header">

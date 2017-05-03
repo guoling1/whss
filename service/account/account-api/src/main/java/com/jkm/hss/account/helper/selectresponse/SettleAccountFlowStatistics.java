@@ -3,6 +3,7 @@ package com.jkm.hss.account.helper.selectresponse;
 import lombok.Data;
 
 import java.math.BigDecimal;
+import java.util.Date;
 
 /**
  * Created by yulong.zhang on 2017/2/24.
@@ -31,4 +32,9 @@ public class SettleAccountFlowStatistics {
      * 交易总额
      */
     private BigDecimal amount;
+
+    /**
+     * 交易日期
+     */
+    private Date tradeDate;
 }

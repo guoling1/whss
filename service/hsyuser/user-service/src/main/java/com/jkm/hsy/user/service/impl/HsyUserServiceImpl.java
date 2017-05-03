@@ -120,6 +120,33 @@ public class HsyUserServiceImpl implements HsyUserService {
         appBizShopUserRole.setStatus(AppConstant.ROLE_STATUS_NORMAL);
         appBizShopUserRole.setType(AppConstant.ROLE_TYPE_PRIMARY);
         hsyShopDao.insertAppBizShopUserRole(appBizShopUserRole);
+
+        List<AppAuToken> tokenList=hsyUserDao.findAppAuTokenByAccessToken(appParam.getAccessToken());
+        if (tokenList != null && tokenList.size() != 0)
+        {
+            hsyUserDao.updateAppAuUserTokenStatus(appAuUser.getId());
+
+            AppAuUserToken appAuUserToken=new AppAuUserToken();
+            appAuUserToken.setUid(appAuUser.getId());
+            appAuUserToken.setTid(tokenList.get(0).getId());
+            List<AppAuUserToken> appAuUserTokenList=hsyUserDao.findAppAuUserTokenByParam(appAuUserToken);
+            if(appAuUserTokenList!=null&&appAuUserTokenList.size()!=0)
+            {
+                AppAuUserToken appAuUserTokenUpdate=appAuUserTokenList.get(0);
+                appAuUserTokenUpdate.setStatus(1);
+                appAuUserTokenUpdate.setLoginTime(new Date());
+                hsyUserDao.updateAppAuUserTokenByUidAndTid(appAuUserTokenUpdate);
+            }
+            else
+            {
+                appAuUserToken.setStatus(1);
+                appAuUserToken.setLoginTime(new Date());
+                hsyUserDao.insertAppAuUserToken(appAuUserToken);
+            }
+        }
+        else
+            throw new ApiHandleException(ResultCode.ACCESSTOKEN_NOT_FOUND);
+
         gson = new GsonBuilder().setExclusionStrategies(new ExclusionStrategy() {
             public boolean shouldSkipField(FieldAttributes f) {
                 return f.getName().contains("password");
