@@ -8,10 +8,7 @@ import com.jkm.hss.admin.helper.requestparam.DistributeQrCodeRequest;
 import com.jkm.hss.admin.helper.responseparam.ActiveCodeCount;
 import com.jkm.hss.admin.helper.responseparam.BossDistributeQRCodeRecordResponse;
 import com.jkm.hss.admin.helper.responseparam.DistributeCodeCount;
-import com.jkm.hss.dealer.entity.Dealer;
-import com.jkm.hss.dealer.entity.DealerChannelRate;
-import com.jkm.hss.dealer.entity.QueryMerchantRequest;
-import com.jkm.hss.dealer.entity.QueryMerchantResponse;
+import com.jkm.hss.dealer.entity.*;
 import com.jkm.hss.dealer.helper.requestparam.*;
 import com.jkm.hss.dealer.helper.response.DealerOfFirstDealerResponse;
 import com.jkm.hss.dealer.helper.response.DistributeRecordResponse;
@@ -553,4 +550,18 @@ public interface DealerService {
      * @return
      */
     int dealerMerchantSecondCount(QueryMerchantRequest req);
+
+    /**
+     * 分公司账户列表查询
+     * @param req
+     * @return
+     */
+    List<BranchAccountResponse> getBranch(BranchAccountRequest req);
+
+    /**
+     * 分公司账户列表总数查询
+     * @param req
+     * @return
+     */
+    int getBranchCount(BranchAccountRequest req);
 }
