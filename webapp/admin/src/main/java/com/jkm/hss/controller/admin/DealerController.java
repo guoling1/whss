@@ -1134,4 +1134,51 @@ public class DealerController extends BaseController {
         OemDetailResponse oemDetailResponse = oemInfoService.selectByDealerId(dealerId);
         return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", oemDetailResponse);
     }
+    /**
+     * 配置O单
+     * @param addOrUpdateOemRequest
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/addOrUpdateOem", method = RequestMethod.POST)
+    public CommonResponse addOrUpdateOem (@RequestBody AddOrUpdateOemRequest addOrUpdateOemRequest) {
+        if(addOrUpdateOemRequest.getDealerId()<=0){
+            return CommonResponse.simpleResponse(-1, "分公司不存在");
+        }
+        if(StringUtils.isEmpty(addOrUpdateOemRequest.getBrandName())){
+            return CommonResponse.simpleResponse(-1, "品牌名称不能为空");
+        }
+        if(addOrUpdateOemRequest.getBrandName().length()>4){
+            return CommonResponse.simpleResponse(-1, "品牌名称不能大于4个字");
+        }
+        if(StringUtils.isEmpty(addOrUpdateOemRequest.getWechatName())){
+            return CommonResponse.simpleResponse(-1, "微信公众号名称不能为空");
+        }
+        if(StringUtils.isEmpty(addOrUpdateOemRequest.getWechatCode())){
+            return CommonResponse.simpleResponse(-1, "微信号不能为空");
+        }
+        if(StringUtils.isEmpty(addOrUpdateOemRequest.getAppId())){
+            return CommonResponse.simpleResponse(-1, "微信AppID不能为空");
+        }
+        if(StringUtils.isEmpty(addOrUpdateOemRequest.getAppSecret())){
+            return CommonResponse.simpleResponse(-1, "微信AppSecret不能为空");
+        }
+        if(StringUtils.isEmpty(addOrUpdateOemRequest.getQrCode())){
+            return CommonResponse.simpleResponse(-1, "公众号二维码不能为空");
+        }
+        if(addOrUpdateOemRequest.getTemplateInfos().size()<=0){
+            return CommonResponse.simpleResponse(-1, "消息模板不能为空");
+        }
+        for(int i=0;i<addOrUpdateOemRequest.getTemplateInfos().size();i++){
+            if(StringUtils.isEmpty(addOrUpdateOemRequest.getTemplateInfos().get(i).getTemplateId())){
+                return CommonResponse.simpleResponse(-1, "模板ID不能为空");
+            }
+        }
+//        Optional<AdminUser> adminUserOptional = this.adminUserService.getAdminUserById(adminUserRequest.getId());
+//        if(!adminUserOptional.isPresent()){
+//            return CommonResponse.simpleResponse(-1, "登录名不存在");
+//        }
+//        adminUserService.updateDealerUserPwdById(DealerSupport.passwordDigest(adminUserRequest.getPassword(),"JKM"),adminUserRequest.getId());
+        return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "修改成功");
+    }
 }

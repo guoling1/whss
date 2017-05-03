@@ -12,6 +12,7 @@ import com.jkm.hss.dealer.dao.DealerChannelRateDao;
 import com.jkm.hss.dealer.dao.DealerDao;
 import com.jkm.hss.dealer.entity.Dealer;
 import com.jkm.hss.dealer.entity.DealerChannelRate;
+import com.jkm.hss.dealer.enums.EnumOemType;
 import com.jkm.hss.dealer.helper.DealerSupport;
 import com.jkm.hss.dealer.service.DealerChannelRateService;
 import com.jkm.hss.dealer.service.DealerService;
@@ -185,48 +186,4 @@ public class InitDataController extends BaseController{
         }
     }
 
-
-    /**
-     * 初始化代理商商户
-     * @param request
-     * @param response
-     * @return
-     */
-    @ResponseBody
-    @RequestMapping(value = "initDealerUser", method = RequestMethod.GET)
-    public CommonResponse initDealerUser(final HttpServletRequest request, final HttpServletResponse response) {
-        List<Dealer> dealers = dealerDao.selectAllDealers();
-        for(int i=0;i<dealers.size();i++){
-            AdminUser adminUser = new AdminUser();
-            adminUser.setUsername(dealers.get(i).getLoginName());
-            adminUser.setSalt("100000");
-            adminUser.setPassword(dealers.get(i).getLoginPwd());
-            adminUser.setRealname(dealers.get(i).getBankAccountName());
-            adminUser.setEmail(dealers.get(i).getEmail());
-            if(dealers.get(i).getMobile()!=null&&!"".equals(dealers.get(i).getMobile())){
-                adminUser.setMobile(AdminUserSupporter.encryptMobile(dealers.get(i).getMobile()));
-            }
-            adminUser.setCompanyId("");
-            adminUser.setDeptId("");
-            if(dealers.get(i).getIdCard()!=null&&!"".equals(dealers.get(i).getIdCard())){
-                adminUser.setIdCard(AdminUserSupporter.encryptIdenrity(DealerSupport.decryptIdentity(dealers.get(i).getId(),dealers.get(i).getIdCard())));
-            }
-            adminUser.setRoleId(0l);
-            adminUser.setIdentityFacePic("");
-            adminUser.setIdentityOppositePic("");
-
-            adminUser.setDealerId(dealers.get(i).getId());
-            adminUser.setIsMaster(EnumIsMaster.MASTER.getCode());
-            adminUser.setStatus(EnumAdminUserStatus.NORMAL.getCode());
-            if(dealers.get(i).getLevel()==1){
-                adminUser.setType(EnumAdminType.FIRSTDEALER.getCode());
-                this.adminUserService.createFirstDealerUser(adminUser);
-            }
-            if(dealers.get(i).getLevel()==2){
-                adminUser.setType(EnumAdminType.SECONDDEALER.getCode());
-                this.adminUserService.createSecondDealerUser(adminUser);
-            }
-        }
-        return CommonResponse.objectResponse(1,"","");
-    }
 }
