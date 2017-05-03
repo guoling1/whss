@@ -730,4 +730,45 @@
     <select id="selectAllDealers" resultType="com.jkm.hss.dealer.entity.Dealer">
         SELECT * FROM tb_dealer
     </select>
+
+    <!-- 查询分公司账户 -->
+    <select id="getBranch" resultType="com.jkm.hss.dealer.entity.BranchAccountResponse">
+        SELECT
+            a.mark_code,
+            a.proxy_name,
+            b.total_amount,
+            b.due_settle_amount,
+            b.available
+        FROM
+            tb_dealer a
+        LEFT JOIN tb_account b ON b.id=a.account_id
+        WHERE a.oem_type=1
+    <if test="markCode != null and markCode != ''">
+        AND a.mark_code = #{markCode}
+    </if>
+
+    <if test="proxyName != null and proxyName != ''">
+        AND a.proxy_name = #{proxyName}
+    </if>
+        ORDER BY
+            a.`create_time` DESC LIMIT #{offset},#{pageSize}
+    </select>
+
+    <!-- 查询分公司账户 -->
+    <select id="getBranch" resultType="java.lang.Integer">
+        SELECT
+            COUNT(*)
+        FROM
+            tb_dealer a
+        LEFT JOIN tb_account b ON b.id=a.account_id
+        WHERE a.oem_type=1
+    <if test="markCode != null and markCode != ''">
+        AND a.mark_code = #{markCode}
+    </if>
+
+    <if test="proxyName != null and proxyName != ''">
+        AND a.proxy_name = #{proxyName}
+    </if>
+    </select>
+
 </mapper>

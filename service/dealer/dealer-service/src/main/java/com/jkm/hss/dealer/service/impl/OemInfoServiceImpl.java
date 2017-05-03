@@ -91,6 +91,7 @@ public class OemInfoServiceImpl implements OemInfoService {
                 templateInfos.add(templateInfo);
             }
         }
+        oemDetailResponse.setTemplateInfos(templateInfos);
         return oemDetailResponse;
     }
 

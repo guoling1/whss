@@ -57,7 +57,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
-import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -2550,5 +2549,16 @@ public class DealerServiceImpl implements DealerService {
     @Override
     public int dealerMerchantSecondCount(QueryMerchantRequest req) {
         return this.dealerDao.dealerMerchantSecondCount(req);
+    }
+
+    @Override
+    public List<BranchAccountResponse> getBranch(BranchAccountRequest req) {
+        List<BranchAccountResponse> list = this.dealerDao.getBranch(req);
+        return list;
+    }
+
+    @Override
+    public int getBranchCount(BranchAccountRequest req) {
+        return this.dealerDao.getBranchCount(req);
     }
 }
