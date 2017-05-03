@@ -75,10 +75,11 @@
             </el-table-column>
             <el-table-column label="操作">
               <template scope="scope">
-                  <el-button @click="handle(scope.row.id,scope.row.tradeDate,scope.row.tradeType,scope.row.channelName)" type="text" size="small" v-if="scope.row.batchNO==undefined&&scope.row.status!=2">上传文件</el-button>
-                  <el-button @click="load(scope.row.batchNO)" type="text" size="small" v-if="scope.row.batchNO!=undefined&&scope.row.status!=2">下载文件</el-button>
-                  <el-button @click="handle(scope.row.id,scope.row.tradeDate,scope.row.tradeType,scope.row.channelName)" type="text" size="small" v-if="scope.row.batchNO!=undefined&&scope.row.status!=2">重新上传</el-button>
-                  <el-button @click="cancelAcc(scope.row.id)" type="text" size="small" v-if="scope.row.status==0&&scope.row.status!=2">取消对账</el-button>
+                <el-button @click="downloadAcc(scope.row.id)" type="text" size="small" v-if="scope.row.handleType==1">联网对账</el-button>
+                <el-button @click="handle(scope.row.id,scope.row.tradeDate,scope.row.tradeType,scope.row.channelName)" type="text" size="small" v-if="scope.row.batchNO==undefined&&scope.row.status!=2&&scope.row.handleType!=1">上传文件</el-button>
+                <el-button @click="load(scope.row.batchNO)" type="text" size="small" v-if="scope.row.batchNO!=undefined&&scope.row.status!=2&&scope.row.handleType!=1">下载文件</el-button>
+                <el-button @click="handle(scope.row.id,scope.row.tradeDate,scope.row.tradeType,scope.row.channelName)" type="text" size="small" v-if="scope.row.batchNO!=undefined&&scope.row.status!=2&&scope.row.handleType!=1">重新上传</el-button>
+                <el-button @click="cancelAcc(scope.row.id)" type="text" size="small" v-if="scope.row.status==0&&scope.row.status!=2">取消对账</el-button>
               </template>
             </el-table-column>
           </el-table>
@@ -151,6 +152,21 @@
             </div>
           </div>
         </div>
+        <div class="box box-info mask el-message-box" v-if="isDownload">
+          <div class="maskCon">
+            <div class="head">
+              <div class="title">联网对账</div>
+              <i class="el-icon-close" @click="isDownload=false"></i>
+            </div>
+            <div class="body">
+              <div>确定联网对账吗？</div>
+            </div>
+            <div class="foot">
+              <a href="javascript:void(0)" @click="isDownload=false" class="el-button el-button--default">取消</a>
+              <a @click="download()" class="el-button el-button-default el-button--primary ">确定</a>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -184,16 +200,20 @@
         isShow:false,
         isMask:false,
         loadURL1:'',
+        isDownload:false,
+        downloadId:"",
         //正式
 //        loadURL:'http://checking.qianbaojiajia.com/external/downloadxlsx/',
 //        url:'http://checking.qianbaojiajia.com/external/statisticList',
 //        uploadURL:'http://checking.qianbaojiajia.com/external/banlanceAccount',
-//        cancelUrl:'http://checking.qianbaojiajia.com/external/cancelBalance'
+//        cancelUrl:'http://checking.qianbaojiajia.com/external/cancelBalance',
+//        downloadUrl:'http://checking.qianbaojiajia.com/external/banlanceAccountViaDownload'
         //测试
         loadURL:'http://192.168.0.110:8080/balance/external/downloadxlsx/',
         url:'http://192.168.0.110:8080/balance/external/statisticList',
         uploadURL:'http://192.168.0.110:8080/balance/external/banlanceAccount',
-        cancelUrl:'http://192.168.0.110:8080/balance/external/cancelBalance'
+        cancelUrl:'http://192.168.0.110:8080/balance/external/cancelBalance',
+        downloadUrl:'http://192.168.0.110:8080/balance/external/banlanceAccountViaDownload'
       }
     },
     created: function () {
@@ -206,6 +226,29 @@
           return {background:'#eef1f6'}
         }
         return '';
+      },
+      downloadAcc:function (id) {
+        this.isDownload = true;
+        this.downloadId = id;
+      },
+      download:function () {
+        this.$http.post(this.downloadUrl,{id:this.downloadId},{emulateJSON: true})
+          .then(res => {
+            this.$message({
+              showClose: true,
+              message: res.data.result,
+              type: 'warning'
+            });
+            this.isDownload = false;
+            this.getData();
+          })
+          .catch(err =>{
+            this.$message({
+              showClose: true,
+              message: err.statusMessage,
+              type: 'error'
+            });
+          })
       },
       cancelAcc:function (id) {
         this.isCancel = true;
