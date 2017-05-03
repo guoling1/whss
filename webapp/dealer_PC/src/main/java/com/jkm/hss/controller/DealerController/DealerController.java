@@ -17,6 +17,7 @@ import com.jkm.hss.dealer.entity.DealerChannelRate;
 import com.jkm.hss.dealer.entity.DealerUpgerdeRate;
 import com.jkm.hss.dealer.enums.EnumDealerLevel;
 import com.jkm.hss.dealer.enums.EnumInviteBtn;
+import com.jkm.hss.dealer.enums.EnumOemType;
 import com.jkm.hss.dealer.helper.DealerSupport;
 import com.jkm.hss.dealer.helper.requestparam.*;
 import com.jkm.hss.dealer.helper.response.SecondDealerResponse;
@@ -117,7 +118,7 @@ public class DealerController extends BaseController {
             if(StringUtils.isBlank(secondLevelDealerAdd2Request.getName())) {
                 return CommonResponse.simpleResponse(-1, "代理名称不能为空");
             }
-            final long proxyNameCount = this.dealerService.getByProxyName(secondLevelDealerAdd2Request.getName());
+            final long proxyNameCount = this.dealerService.selectByProxyNameAndOemType(secondLevelDealerAdd2Request.getName(),EnumOemType.DEALER.getId());
             if (proxyNameCount > 0) {
                 return CommonResponse.simpleResponse(-1, "代理名称已经存在");
             }
@@ -276,7 +277,7 @@ public class DealerController extends BaseController {
             if(StringUtils.isBlank(request.getName())) {
                 return CommonResponse.simpleResponse(-1, "代理名称不能为空");
             }
-            final long proxyNameCount = this.dealerService.getByProxyNameUnIncludeNow(request.getName(), request.getDealerId());
+            final long proxyNameCount = this.dealerService.getByProxyNameUnIncludeNow(request.getName(), EnumOemType.DEALER.getId(), request.getDealerId());
             if (proxyNameCount > 0) {
                 return CommonResponse.simpleResponse(-1, "代理名称已经存在");
             }

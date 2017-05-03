@@ -2,6 +2,7 @@ package com.jkm.hss.dealer.service;
 
 import com.google.common.base.Optional;
 import com.jkm.hss.dealer.entity.OemInfo;
+import com.jkm.hss.dealer.helper.requestparam.AddOrUpdateOemRequest;
 import com.jkm.hss.dealer.helper.response.OemDetailResponse;
 
 /**
@@ -19,5 +20,11 @@ public interface OemInfoService {
      * @return
      */
     OemDetailResponse selectByDealerId(long dealerId);
+
+    /**
+     * 配置O单
+     * @param addOrUpdateOemRequest
+     */
+    void addOrUpdate(AddOrUpdateOemRequest addOrUpdateOemRequest);
 
 }

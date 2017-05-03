@@ -4,8 +4,11 @@ import com.jkm.hss.dealer.dao.OemInfoDao;
 import com.jkm.hss.dealer.dao.TemplateInfoDao;
 import com.jkm.hss.dealer.entity.OemInfo;
 import com.jkm.hss.dealer.entity.TemplateInfo;
+import com.jkm.hss.dealer.enums.EnumDealerStatus;
+import com.jkm.hss.dealer.helper.requestparam.AddOrUpdateOemRequest;
 import com.jkm.hss.dealer.helper.response.OemDetailResponse;
 import com.jkm.hss.dealer.service.OemInfoService;
+import com.jkm.hss.merchant.enums.EnumCommonStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -79,5 +82,33 @@ public class OemInfoServiceImpl implements OemInfoService {
             }
         }
         return oemDetailResponse;
+    }
+
+    /**
+     * 配置O单
+     *
+     * @param addOrUpdateOemRequest
+     */
+    @Override
+    public void addOrUpdate(AddOrUpdateOemRequest addOrUpdateOemRequest) {
+        OemInfo oemInfo = oemInfoDao.selectByDealerId(addOrUpdateOemRequest.getDealerId());
+        if(oemInfo==null){//新增
+            OemInfo oi = new OemInfo();
+            oi.setDealerId(addOrUpdateOemRequest.getDealerId());
+            oi.setBrandName(addOrUpdateOemRequest.getBrandName());
+            oi.setWechatCode(addOrUpdateOemRequest.getWechatCode());
+            oi.setWechatName(addOrUpdateOemRequest.getWechatName());
+            oi.setAppId(addOrUpdateOemRequest.getAppId());
+            oi.setAppSecret(addOrUpdateOemRequest.getAppSecret());
+            oi.setQrCode(addOrUpdateOemRequest.getQrCode());
+            oi.setLogo(addOrUpdateOemRequest.getLogo());
+            oi.setStatus(EnumDealerStatus.NORMAL.getId());
+            this.insert(oi);
+            for(int i=0;i<addOrUpdateOemRequest.getTemplateInfos().size();i++){
+
+            }
+        }else{//修改
+
+        }
     }
 }
