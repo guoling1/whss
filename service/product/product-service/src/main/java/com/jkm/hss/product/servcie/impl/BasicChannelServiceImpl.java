@@ -95,6 +95,9 @@ public class BasicChannelServiceImpl implements BasicChannelService {
     public String selectCodeByChannelSign(int channelSign, EnumMerchantPayType type) {
 
         final EnumPayChannelSign enumPayChannelSign = EnumPayChannelSign.idOf(channelSign);
+        if (channelSign == EnumPayChannelSign.KM_QQPAY.getId()){
+            return EnumPayChannelSign.KM_QQPAY.getCode();
+        }
         switch (type){
 
             case MERCHANT_CODE:
