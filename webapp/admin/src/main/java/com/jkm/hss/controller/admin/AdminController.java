@@ -385,7 +385,11 @@ public class AdminController extends BaseController {
             adminUser.setRoleId(0l);
             adminUser.setIdentityFacePic("");
             adminUser.setIdentityOppositePic("");
-            adminUser.setType(EnumAdminType.FIRSTDEALER.getCode());
+            if(firstLevelDealerAdd2Request.getOemType()==1){//分公司
+                adminUser.setType(EnumAdminType.OEM.getCode());
+            }else{
+                adminUser.setType(EnumAdminType.FIRSTDEALER.getCode());
+            }
             adminUser.setDealerId(dealerId);
             adminUser.setIsMaster(EnumIsMaster.MASTER.getCode());
             adminUser.setStatus(EnumAdminUserStatus.NORMAL.getCode());

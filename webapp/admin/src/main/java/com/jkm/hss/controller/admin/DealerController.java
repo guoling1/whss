@@ -886,7 +886,7 @@ public class DealerController extends BaseController {
 
     //用户和权限管理
     /**
-     * 用户列表
+     * 代理商用户列表
      * @param adminDealerUserListRequest
      * @return
      */
@@ -896,7 +896,17 @@ public class DealerController extends BaseController {
         PageModel<AdminUserDealerListResponse> adminUserPageModel = adminUserService.userDealerList(adminDealerUserListRequest);
         return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功",adminUserPageModel);
     }
-
+    /**
+     * 分公司用户列表
+     * @param adminDealerUserListRequest
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/oemList", method = RequestMethod.POST)
+    public CommonResponse oemList (@RequestBody AdminDealerUserListRequest adminDealerUserListRequest) {
+        PageModel<AdminUserDealerListResponse> adminUserPageModel = adminUserService.userOemList(adminDealerUserListRequest);
+        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功",adminUserPageModel);
+    }
     /**
      * 禁用用户
      * @param adminUserRequest
@@ -942,15 +952,7 @@ public class DealerController extends BaseController {
         if(!dealerOptional.isPresent()){
             return CommonResponse.simpleResponse(-1, "登录名不存在");
         }
-
-        int type = EnumAdminType.FIRSTDEALER.getCode();
-        if(dealerOptional.get().getLevel()==1){
-            type=EnumAdminType.FIRSTDEALER.getCode();
-        }
-        if(dealerOptional.get().getLevel()==2){
-            type=EnumAdminType.SECONDDEALER.getCode();
-        }
-        final long proxyNameCount = this.adminUserService.selectByUsernameAndTypeUnIncludeNow(adminUser.getUsername(),type, adminUser.getId());
+        final long proxyNameCount = this.adminUserService.selectDealerByUsernameUnIncludeNow(adminUser.getUsername(), adminUser.getId());
         if (proxyNameCount > 0) {
             return CommonResponse.simpleResponse(-1, "登录名已经存在");
         }

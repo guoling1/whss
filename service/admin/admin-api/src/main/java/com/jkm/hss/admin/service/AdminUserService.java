@@ -176,11 +176,25 @@ public interface AdminUserService {
      */
     PageModel<AdminUserListResponse> userList(AdminUserListRequest adminUserListRequest);
     /**
-     * 员工列表
+     * 代理商员工列表
      * @param adminDealerUserListRequest
      * @return
      */
     PageModel<AdminUserDealerListResponse> userDealerList(AdminDealerUserListRequest adminDealerUserListRequest);
+    /**
+     * 分公司员工列表
+     * @param adminDealerUserListRequest
+     * @return
+     */
+    PageModel<AdminUserDealerListResponse> userOemList(AdminDealerUserListRequest adminDealerUserListRequest);
+
+    /**
+     *查询代理商或分公司的除当前用户名
+     * @param username
+     * @param id
+     * @return
+     */
+    Long selectDealerByUsernameUnIncludeNow(String username,long id);
 
     /**
      *

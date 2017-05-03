@@ -28,7 +28,9 @@
         invite_btn,
         login_name,
         login_pwd,
-        email
+        email,
+        oem_type,
+        oem_id
         )
         VALUES
         (
@@ -56,7 +58,9 @@
         #{inviteBtn},
         #{loginName},
         #{loginPwd},
-        #{email}
+        #{email},
+        #{oemType},
+        #{oemId}
         );
     </insert>
     <update id="update">
