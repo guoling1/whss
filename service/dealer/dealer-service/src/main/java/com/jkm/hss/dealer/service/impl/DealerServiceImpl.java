@@ -1246,6 +1246,7 @@ public class DealerServiceImpl implements DealerService {
         return this.dealerDao.selectByAccountIds(accountIds);
     }
 
+
     /**
      * {@inheritDoc}
      *
@@ -1254,7 +1255,7 @@ public class DealerServiceImpl implements DealerService {
      */
     @Override
     public Optional<Dealer> getByMobile(final String mobile) {
-        return Optional.fromNullable(this.dealerDao.selectByMobile(mobile));
+        return Optional.fromNullable(this.dealerDao.getByMobile(mobile));
     }
 
     /**
@@ -1308,8 +1309,8 @@ public class DealerServiceImpl implements DealerService {
      * @return
      */
     @Override
-    public long getByProxyName(final String proxyMame) {
-        return this.dealerDao.selectByProxyName(proxyMame);
+    public long selectByProxyNameAndOemType(String proxyMame,int oemType) {
+        return this.dealerDao.selectByProxyNameAndOemType(proxyMame,oemType);
     }
 
     /**
@@ -1320,8 +1321,8 @@ public class DealerServiceImpl implements DealerService {
      * @return
      */
     @Override
-    public long getByProxyNameUnIncludeNow(final String proxyMame, final long dealerId) {
-        return this.dealerDao.selectByProxyNameUnIncludeNow(proxyMame, dealerId);
+    public long getByProxyNameUnIncludeNow(String proxyMame, int oemType, long dealerId) {
+        return this.dealerDao.selectByProxyNameUnIncludeNow(proxyMame, oemType,dealerId);
     }
 
     /**
@@ -1741,9 +1742,16 @@ public class DealerServiceImpl implements DealerService {
         dealer.setLoginName(firstLevelDealerAdd2Request.getLoginName());
         dealer.setLoginPwd(DealerSupport.passwordDigest(firstLevelDealerAdd2Request.getLoginPwd(),"JKM"));
         dealer.setEmail(firstLevelDealerAdd2Request.getEmail());
+        dealer.setOemType(firstLevelDealerAdd2Request.getOemType());
+        dealer.setOemId(firstLevelDealerAdd2Request.getOemId());
         this.add2(dealer);
-        this.updateMarkCodeAndInviteCode(GlobalID.GetGlobalID(EnumGlobalIDType.DEALER, EnumGlobalIDPro.MIN,dealer.getId()+""),
-                GlobalID.GetInviteID(EnumGlobalDealerLevel.FIRSTDEALER,dealer.getId()+""),dealer.getId());
+        if(firstLevelDealerAdd2Request.getOemType()==EnumOemType.OEM.getId()){
+            this.updateMarkCodeAndInviteCode(GlobalID.GetGlobalID(EnumGlobalIDType.OEM, EnumGlobalIDPro.MIN,dealer.getId()+""),
+                    GlobalID.GetInviteID(EnumGlobalDealerLevel.OEM,dealer.getId()+""),dealer.getId());
+        }else{
+            this.updateMarkCodeAndInviteCode(GlobalID.GetGlobalID(EnumGlobalIDType.DEALER, EnumGlobalIDPro.MIN,dealer.getId()+""),
+                    GlobalID.GetInviteID(EnumGlobalDealerLevel.FIRSTDEALER,dealer.getId()+""),dealer.getId());
+        }
         return dealer.getId();
     }
     /**
@@ -1807,7 +1815,7 @@ public class DealerServiceImpl implements DealerService {
         final PageModel<FirstDealerResponse> pageModel = new PageModel<>(listFirstDealerRequest.getPageNo(), listFirstDealerRequest.getPageSize());
         listFirstDealerRequest.setOffset(pageModel.getFirstIndex());
         listFirstDealerRequest.setCount(pageModel.getPageSize());
-        final int count = this.dealerDao.selectFirstDealerCountByPageParams(listFirstDealerRequest);
+        final Long count = this.dealerDao.selectFirstDealerCountByPageParams(listFirstDealerRequest);
         final List<FirstDealerResponse> dealers = this.dealerDao.selectFirstDealersByPageParams(listFirstDealerRequest);
         pageModel.setCount(count);
         pageModel.setRecords(dealers);
@@ -1990,6 +1998,48 @@ public class DealerServiceImpl implements DealerService {
 
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param request
+     */
+    @Override
+    @Transactional
+    public void addOrUpdateHssOem(final HssOemAddOrUpdateRequest request) {
+        final Optional<Dealer> dealerOptional = this.getById(request.getDealerId());
+        final Dealer dealer = dealerOptional.get();
+        dealer.setRecommendBtn(EnumRecommendBtn.OFF.getId());
+        dealer.setInviteBtn(EnumRecommendBtn.OFF.getId());
+        this.updateRecommendBtnAndTotalProfitSpace(dealer);
+        final HssOemAddOrUpdateRequest.Product product = request.getProduct();
+        final long productId = product.getProductId();
+        final List<HssOemAddOrUpdateRequest.Channel> channels = product.getChannels();
+        for (HssOemAddOrUpdateRequest.Channel channel : channels) {
+            final Optional<DealerChannelRate> dealerChannelRateOptional =
+                    this.dealerRateService.getByDealerIdAndProductIdAndChannelType(request.getDealerId(), productId, channel.getChannelType());
+            if(dealerChannelRateOptional.isPresent()){//修改
+                final DealerChannelRate dealerChannelRate = dealerChannelRateOptional.get();
+                dealerChannelRate.setDealerTradeRate(new BigDecimal(channel.getPaymentSettleRate()).divide(new BigDecimal("100")));
+                dealerChannelRate.setDealerWithdrawFee(new BigDecimal(channel.getWithdrawSettleFee()));
+                dealerChannelRate.setDealerMerchantPayRate(new BigDecimal(channel.getMerchantSettleRate()).divide(new BigDecimal("100")));
+                dealerChannelRate.setDealerMerchantWithdrawFee(new BigDecimal(channel.getMerchantWithdrawFee()));
+                dealerChannelRate.setStatus(EnumDealerChannelRateStatus.USEING.getId());
+                this.dealerRateService.update(dealerChannelRate);
+            }else{//新增
+                final DealerChannelRate dealerChannelRate = new DealerChannelRate();
+                dealerChannelRate.setDealerId(dealer.getId());
+                dealerChannelRate.setProductId(productId);
+                dealerChannelRate.setChannelTypeSign(channel.getChannelType());
+                dealerChannelRate.setDealerTradeRate(new BigDecimal(channel.getPaymentSettleRate()).divide(new BigDecimal("100")));
+                dealerChannelRate.setDealerBalanceType(channel.getSettleType());
+                dealerChannelRate.setDealerWithdrawFee(new BigDecimal(channel.getWithdrawSettleFee()));
+                dealerChannelRate.setDealerMerchantPayRate(new BigDecimal(channel.getMerchantSettleRate()).divide(new BigDecimal("100")));
+                dealerChannelRate.setDealerMerchantWithdrawFee(new BigDecimal(channel.getMerchantWithdrawFee()));
+                dealerChannelRate.setStatus(EnumDealerChannelRateStatus.USEING.getId());
+                this.dealerRateService.init(dealerChannelRate);
+            }
+        }
+    }
     /**
      * {@inheritDoc}
      *

@@ -73,13 +73,14 @@ public interface DealerDao {
      */
     List<Dealer> selectByIds(@Param("ids") List<Long> ids);
 
+
     /**
-     * 按mobile查询
+     * 按mobile和oemType查询
      *
      * @param mobile
      * @return
      */
-    Dealer selectByMobile(@Param("mobile") String mobile);
+    Dealer getByMobile(@Param("mobile") String mobile);
 
     /**
      * 按mobile查询
@@ -120,7 +121,7 @@ public interface DealerDao {
      * @param name
      * @return
      */
-    long selectByProxyName(@Param("name") String name);
+    long selectByProxyNameAndOemType(@Param("name") String name,@Param("oemType") int oemType);
 
     /**
      * 按代理名称查询
@@ -128,7 +129,7 @@ public interface DealerDao {
      * @param dealerId
      * @return
      */
-    long selectByProxyNameUnIncludeNow(@Param("proxyMame") String proxyMame, @Param("dealerId") long dealerId);
+    long selectByProxyNameUnIncludeNow(@Param("proxyMame") String proxyMame,@Param("oemType") int oemType, @Param("dealerId") long dealerId);
 
     /**
      * 按手机号和名称模糊匹配
@@ -180,7 +181,7 @@ public interface DealerDao {
      * @param listFirstDealerRequest
      * @return
      */
-    int selectFirstDealerCountByPageParams(ListFirstDealerRequest listFirstDealerRequest);
+    Long selectFirstDealerCountByPageParams(ListFirstDealerRequest listFirstDealerRequest);
     /**
      * 分页查询一级代理
      *

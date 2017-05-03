@@ -5,7 +5,8 @@ package com.jkm.base.common.enums;
  */
 public enum EnumGlobalDealerLevel {
     FIRSTDEALER(1),
-    SECORDDEALER(2);
+    SECORDDEALER(2),
+    OEM(3);
 
     private final int value;
     EnumGlobalDealerLevel(int value) {

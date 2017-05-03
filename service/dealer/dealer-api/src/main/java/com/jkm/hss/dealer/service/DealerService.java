@@ -105,6 +105,7 @@ public interface DealerService {
      */
     List<Dealer> getByAccountIds(List<Long> accountIds);
 
+
     /**
      * 按mobile查询
      *
@@ -150,7 +151,7 @@ public interface DealerService {
      * @param proxyMame
      * @return
      */
-    long getByProxyName(String proxyMame);
+    long selectByProxyNameAndOemType(String proxyMame,int oemType);
 
     /**
      * 查询代理商名称是否重复
@@ -158,7 +159,7 @@ public interface DealerService {
      * @param proxyMame
      * @return
      */
-    long getByProxyNameUnIncludeNow(String proxyMame, long dealerId);
+    long getByProxyNameUnIncludeNow(String proxyMame, int oemType, long dealerId);
 
     /**
      * 按手机号和名称模糊匹配
@@ -375,6 +376,12 @@ public interface DealerService {
      * @param request
      */
     void addOrUpdateHssDealer(HssDealerAddOrUpdateRequest request);
+    /**
+     * 更新或新增好收收分公司配置信息
+     *
+     * @param request
+     */
+    void addOrUpdateHssOem(HssOemAddOrUpdateRequest request);
     /**
      * 更新或新增好收银代理商配置信息
      *
