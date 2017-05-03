@@ -182,8 +182,7 @@
           beginDate: this.beginDate,
           endDate: this.endDate
         }).then(res => {
-          console.log(res);
-          this.allTotal = 10;
+          this.allTotal = res.data;
         }, err => {
           console.log(err);
         })
