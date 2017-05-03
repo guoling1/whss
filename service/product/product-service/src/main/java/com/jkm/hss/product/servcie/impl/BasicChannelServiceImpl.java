@@ -96,7 +96,7 @@ public class BasicChannelServiceImpl implements BasicChannelService {
 
         final EnumPayChannelSign enumPayChannelSign = EnumPayChannelSign.idOf(channelSign);
         if (channelSign == EnumPayChannelSign.KM_QQPAY.getId()){
-            return EnumPayChannelSign.KM_QQPAY.getCode() + "_code";
+            return EnumPayChannelSign.KM_QQPAY.getCode();
         }
         switch (type){
 
