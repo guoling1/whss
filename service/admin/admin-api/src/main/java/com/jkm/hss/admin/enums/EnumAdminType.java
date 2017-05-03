@@ -19,7 +19,7 @@ public enum EnumAdminType {
      */
     SECONDDEALER(3),
     /**
-     * 一级代理
+     * 分公司
      */
     OEM(4);
 
