@@ -133,6 +133,27 @@ public class OemInfoServiceImpl implements OemInfoService {
             oemInfo.setLogo(addOrUpdateOemRequest.getLogo());
             oemInfo.setStatus(EnumDealerStatus.NORMAL.getId());
             this.update(oemInfo);
+            for(int i=0;i<addOrUpdateOemRequest.getTemplateInfos().size();i++){
+                TemplateInfo ti = templateInfoDao.selectBySignCodeAndOemId(addOrUpdateOemRequest.getTemplateInfos().get(i).getSignCode(),oemInfo.getId());
+                if(ti==null){
+                    TemplateInfo templateInfo = new TemplateInfo();
+                    templateInfo.setOemId(oemInfo.getId());
+                    templateInfo.setSignCode(addOrUpdateOemRequest.getTemplateInfos().get(i).getSignCode());
+                    templateInfo.setTemplateId(addOrUpdateOemRequest.getTemplateInfos().get(i).getTemplateId());
+                    templateInfo.setTemplateName(addOrUpdateOemRequest.getTemplateInfos().get(i).getTemplateName());
+                    templateInfo.setStatus(EnumDealerStatus.NORMAL.getId());
+                    templateInfoDao.insert(templateInfo);
+                }else{
+                    TemplateInfo templateInfo = new TemplateInfo();
+                    templateInfo.setId(ti.getId());
+                    templateInfo.setOemId(oemInfo.getId());
+                    templateInfo.setSignCode(addOrUpdateOemRequest.getTemplateInfos().get(i).getSignCode());
+                    templateInfo.setTemplateId(addOrUpdateOemRequest.getTemplateInfos().get(i).getTemplateId());
+                    templateInfo.setTemplateName(addOrUpdateOemRequest.getTemplateInfos().get(i).getTemplateName());
+                    templateInfo.setStatus(EnumDealerStatus.NORMAL.getId());
+                    templateInfoDao.update(templateInfo);
+                }
+            }
 
         }
     }

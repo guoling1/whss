@@ -16,6 +16,11 @@ public interface TemplateInfoDao {
      * @param templateInfo
      */
     void insert(TemplateInfo templateInfo);
+    /**
+     * 修改
+     * @param templateInfo
+     */
+    void update(TemplateInfo templateInfo);
 
     /**
      * 根据O单编码
@@ -23,4 +28,12 @@ public interface TemplateInfoDao {
      * @return
      */
     List<TemplateInfo> selectByOemId(@Param("oemId") long oemId);
+
+    /**
+     * 根据标示和O单编码查询
+     * @param signCode
+     * @param oemId
+     * @return
+     */
+    TemplateInfo selectBySignCodeAndOemId(@Param("signCode") int signCode,@Param("oemId") long oemId);
 }

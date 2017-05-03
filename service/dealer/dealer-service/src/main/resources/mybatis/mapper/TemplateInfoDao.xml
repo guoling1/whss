@@ -24,7 +24,22 @@
         )
     </insert>
 
+    <update id="update">
+        UPDATE tb_template_info
+        SET
+        sign_code = #{signCode},
+        oem_id = #{oemId},
+        template_id = #{templateId},
+        template_name = #{templateName},
+        status = #{status}
+        WHERE id = #{id}
+    </update>
+
     <select id="selectByOemId" resultType="com.jkm.hss.dealer.entity.TemplateInfo">
         SELECT <include refid="Base_Column_List" /> FROM tb_template_info where oem_id=#{oemId} and status=1 order by sign_code asc
+    </select>
+
+    <select id="selectBySignCodeAndOemId" resultType="com.jkm.hss.dealer.entity.TemplateInfo">
+        SELECT <include refid="Base_Column_List" /> FROM tb_template_info where oem_id=#{oemId} and status=1 and sign_code=#{signCode}
     </select>
 </mapper>
