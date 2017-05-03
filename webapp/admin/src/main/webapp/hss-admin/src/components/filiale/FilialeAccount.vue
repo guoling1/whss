@@ -1,46 +1,19 @@
 <template>
-  <div id="filialeManage">
+  <div id="filialeAccount">
     <div class="col-md-12">
       <div class="box" style="margin-top:15px;overflow: hidden;min-height: 400px">
         <div class="box-header">
           <h3 class="box-title">分公司账户</h3>
-          <el-button type="text" @click="addFiliale" class="pull-right">新增分公司</el-button>
         </div>
         <div class="box-body">
           <ul class="search">
             <li class="same">
-              <label>手机号:</label>
-              <el-input style="width: 188px" v-model="query.mobile" placeholder="请输入内容" size="small"></el-input>
-            </li>
-            <li class="same">
-              <label>代理商编号:</label>
+              <label>分公司编号:</label>
               <el-input style="width: 188px" v-model="query.markCode" placeholder="请输入内容" size="small"></el-input>
             </li>
             <li class="same">
-              <label>代理商名称:</label>
+              <label>分公司名称:</label>
               <el-input style="width: 188px" v-model="query.name" placeholder="请输入内容" size="small"></el-input>
-            </li>
-            <li class="same">
-              <label>省市:</label>
-              <div style="width: 188px" class="select" id="select" @click="open"><span style="color: #1f2d3d">{{selectCon}}</span>
-                <i class="el-icon-caret-bottom" style="float: right;margin-top: 10px"></i>
-              </div>
-              <ul class="isShow" v-if="isOpen">
-                <li @click="selectAll()">全部</li>
-                <li v-for="province in provinces" @mouseover="selectCity(province.code,province.aname)" @click="select(province.code,province.aname)">{{province.aname}}
-                </li>
-              </ul>
-              <ul class="isShow1" v-if="isOpen1">
-                <li :class="'cityLi'+$index" v-for="city in citys" @click="select(city.code,city.aname)">{{city.aname}}</li>
-              </ul>
-            </li>
-            <li class="same">
-              <label>代理产品:</label>
-              <el-select style="width: 188px" clearable v-model="query.status" size="small">
-                <el-option label="全部" value=""></el-option>
-                <el-option label="好收收" value="hss"></el-option>
-                <el-option label="好收银" value="hsy"></el-option>
-              </el-select>
             </li>
             <li class="same">
               <div class="btn btn-primary" @click="search">筛选</div>
@@ -50,31 +23,14 @@
           <!--表格-->
           <el-table v-loading.body="loading" style="font-size: 12px;margin-bottom: 15px;" :data="records" border>
             <el-table-column width="62" label="序号" type="index"></el-table-column>
-            <el-table-column label="分公司简称" min-width="85">
+            <el-table-column prop="appId" label="分公司编号" min-width="85"></el-table-column>
+            <el-table-column prop="appId" label="分公司名称" min-width="85"></el-table-column>
+            <el-table-column prop="appId" label="账户总额（元）" align="right" min-width="85"></el-table-column>
+            <el-table-column prop="appId" label="待结算金额（元）" align="right" min-width="85"></el-table-column>
+            <el-table-column prop="appId" label="可用余额（元）" align="right" min-width="85"></el-table-column>
+            <el-table-column prop="appId" label="操作" min-width="85">
               <template scope="scope">
-                <router-link to="/"></router-link>
-              </template>
-            </el-table-column>
-            <el-table-column label="分公司编号" min-width="85">
-              <template scope="scope">
-                <router-link to="/"></router-link>
-              </template>
-            </el-table-column>
-            <el-table-column prop="appId" label="地区" min-width="85"></el-table-column>
-            <el-table-column prop="appId" label="开通日期" min-width="85"></el-table-column>
-            <el-table-column prop="appId" label="联系人手机号" min-width="85"></el-table-column>
-            <el-table-column prop="appId" label="好收收" min-width="85">
-              <template scope="scope">
-                <a @click="_$power(scope.row.id,scope.row.hssProductId,'hss',openProduct,'boss_first_product_add')" v-if="records[scope.$index].hssProductId==0">开通产品</a>
-                <a @click="_$power(scope.row.id,scope.row.hssProductId,'hss',auditProduct,'boss_first_product_update_btn')" v-else="records[scope.$index].hssProductId==0">修改产品设置</a>
-                <a @click="_$power(scope.row.id,scope.row.hssProductId,'hss',auditProduct,'boss_first_product_update_btn')" v-else="records[scope.$index].hssProductId==0">配置网关</a>
-                <a @click="_$power(scope.row.id,scope.row.hssProductId,'hss',auditProduct,'boss_first_product_update_btn')" v-else="records[scope.$index].hssProductId==0">配置O单</a>
-              </template>
-            </el-table-column>
-            <el-table-column label="好收银" min-width="85">
-              <template scope="scope">
-                <a @click="_$power(scope.row.id,scope.row.hsyProductId,'hsy',openProduct,'boss_first_product_add')" v-if="records[scope.$index].hsyProductId==0">开通产品</a>
-                <a @click="_$power(scope.row.id,scope.row.hsyProductId,'hsy',auditProduct,'boss_first_product_update_btn')" v-else="records[scope.$index].hsyProductId==0">修改产品设置</a>
+                <a @click="_$power(scope.row.id,scope.row.hssProductId,'hss',openProduct,'boss_first_product_add')">查看明细</a>
               </template>
             </el-table-column>
           </el-table>
@@ -115,13 +71,11 @@
         loading: true,
         url: '',
         options:[],
-        provinces:[],//所有省份
-        province: '',
         citys:[],
         city:'',
         selectCon:'全部',
         isOpen:false,
-        isOpen1:false,
+        isOpen1:false
       }
     },
     created: function () {

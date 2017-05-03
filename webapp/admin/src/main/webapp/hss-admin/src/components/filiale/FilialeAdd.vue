@@ -4,7 +4,7 @@
       <div class="box tableTop">
         <div class="box-header with-border">
           <h3 class="box-title" v-if="isShow">开通分公司</h3>
-          <h3 class="box-title" v-if="!isShow">代理商详情</h3>
+          <h3 class="box-title" v-if="!isShow">分公司详情</h3>
           <a href="javascript:window.close();" class="pull-right btn btn-primary">关闭</a>
         </div>
         <div class="">
@@ -315,7 +315,7 @@
     methods: {
       //修改密码
       resetPw:function() {
-        this.$http.post('/admin/dealer/updatePwd',{dealerId:this.$route.query.id,loginPwd:this.$data.password})
+        this.$http.post('/admin/dealer/updatePwd',{dealerId:this.$route.query.id,loginPwd:this.password})
           .then(function (res) {
             this.$data.dialogFormVisible = false;
             this.$data.password = '';

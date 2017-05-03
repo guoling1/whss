@@ -92,6 +92,8 @@ const FilialeManage = r => require.ensure([], () => r(require('components/filial
 const FilialeAccount = r => require.ensure([], () => r(require('components/filiale/FilialeAccount')), 'group-record');
 const FilialeEmployee = r => require.ensure([], () => r(require('components/filiale/FilialeEmployee')), 'group-record');
 const FilialeAdd = r => require.ensure([], () => r(require('components/filiale/FilialeAdd')), 'group-record');
+const FilialePro = r => require.ensure([], () => r(require('components/filiale/FilialePro')), 'group-record');
+const ConfigureOem = r => require.ensure([], () => r(require('components/filiale/ConfigureOem')), 'group-record');
 let routes = [
   {path: '/', redirect: '/admin/login'},
   {path: '/admin/login', component: Login},
@@ -103,6 +105,8 @@ let routes = [
       {path: 'filialeEmployee', name: 'FilialeEmployee', component: FilialeEmployee},
       {path: 'filialeAccount', name: 'FilialeAccount', component: FilialeAccount},
       {path: 'filialeAdd', name: 'FilialeAdd', component: FilialeAdd},
+      {path: 'filialePro', name: 'FilialePro', component: FilialePro},
+      {path: 'configureOem', name: 'ConfigureOem', component: ConfigureOem},
       {path: 'dataHistory', name: 'DataHistory', component: DataHistory},
       {path: 'template', name: 'Template', component: Template},
       {path: 'templateAdd', name: 'TemplateAdd', component: TemplateAdd},

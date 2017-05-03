@@ -67,6 +67,7 @@
             <el-table-column prop="createTime" label="注册时间" ></el-table-column>
             <el-table-column prop="mobile" label="联系手机号" ></el-table-column>
             <el-table-column prop="firstProxyName" label="上级代理名称" ></el-table-column>
+            <el-table-column prop="oemName" label="所属分公司" ></el-table-column>
             <el-table-column label="好收收">
               <template scope="scope">
                 <span v-if="records[scope.$index].hssProductId==0">未开通</span>
@@ -128,7 +129,9 @@
           markCode:"",
           sysType:"",
           firstDealerName:'',
-          districtCode:''
+          districtCode:'',
+          oemType:0,
+          oemName:''
         },
         isShow:false,
         index:'',

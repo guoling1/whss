@@ -4,7 +4,7 @@
       <div class="box" style="margin-top:15px;overflow: hidden;min-height: 400px">
         <div class="box-header">
           <h3 class="box-title">分公司管理</h3>
-          <el-button type="text" @click="addFiliale" class="pull-right">新增分公司</el-button>
+          <el-button type="text" @click="addFiliale" class="pull-right" style="padding-top: 0">新增分公司</el-button>
         </div>
         <div class="box-body">
           <ul class="search">
@@ -56,12 +56,12 @@
             <el-table-column width="62" label="序号" type="index"></el-table-column>
             <el-table-column label="分公司简称" min-width="85">
               <template scope="scope">
-                <router-link target="_blank" :to="'/admin/details/filialeAdd?level=1&id='+scope.row.id">{{scope.row.proxyName}}</router-link>
+                <router-link target="_blank" :to="'/admin/details/filialeAdd?level=1&id='+scope.row.id" style="color: #20a0ff">{{scope.row.proxyName}}</router-link>
               </template>
             </el-table-column>
             <el-table-column label="分公司编号" min-width="85">
               <template scope="scope">
-                <router-link target="_blank" :to="'/admin/details/filialeAdd?level=1&id='+scope.row.id">{{scope.row.markCode}}</router-link>
+                <router-link target="_blank" :to="'/admin/details/filialeAdd?level=1&id='+scope.row.id" style="color: #20a0ff">{{scope.row.markCode}}</router-link>
               </template>
             </el-table-column>
             <el-table-column prop="belong" label="地区" min-width="85"></el-table-column>
@@ -71,18 +71,19 @@
               </template>
             </el-table-column>
             <el-table-column prop="mobile" label="联系人手机号" min-width="85"></el-table-column>
-            <el-table-column prop="appId" label="好收收" min-width="85">
+            <el-table-column prop="appId" label="好收收" min-width="210">
               <template scope="scope">
-                <a @click="_$power(scope.row.id,scope.row.hssProductId,'hss',openProduct,'boss_first_product_add')" v-if="records[scope.$index].hssProductId==0">开通产品</a>
-                <a @click="_$power(scope.row.id,scope.row.hssProductId,'hss',auditProduct,'boss_first_product_update_btn')" v-else="records[scope.$index].hssProductId==0">修改产品设置</a>
-                <a @click="_$power(scope.row.id,scope.row.hssProductId,'hss',auditProduct,'boss_first_product_update_btn')" v-else="records[scope.$index].hssProductId==0">配置网关</a>
-                <a @click="_$power(scope.row.id,scope.row.hssProductId,'hss',auditProduct,'boss_first_product_update_btn')" v-else="records[scope.$index].hssProductId==0">配置O单</a>
+                <a @click="openProduct(scope.row.id,scope.row.hssProductId,'hss')" v-if="records[scope.$index].hssProductId==0" style="color: #20a0ff;margin-right: 10px;">开通产品</a>
+                <a @click="auditProduct(scope.row.id,scope.row.hssProductId,'hss')" v-if="records[scope.$index].hssProductId!=0" style="color: #20a0ff;margin-right: 10px;">修改产品设置</a>
+                <a @click="auditProduct(scope.row.id,scope.row.hssProductId,'hss')" v-if="records[scope.$index].hssProductId!=0" style="color: #20a0ff;margin-right: 10px;">配置网关</a>
+                <a @click="configureOem(scope.row.id)" v-if="records[scope.$index].hssProductId!=0" style="color: #20a0ff;margin-right: 10px;">配置O单</a>
               </template>
             </el-table-column>
             <el-table-column label="好收银" min-width="85">
               <template scope="scope">
-                <a @click="_$power(scope.row.id,scope.row.hsyProductId,'hsy',openProduct,'boss_first_product_add')" v-if="records[scope.$index].hsyProductId==0">开通产品</a>
-                <a @click="_$power(scope.row.id,scope.row.hsyProductId,'hsy',auditProduct,'boss_first_product_update_btn')" v-else="records[scope.$index].hsyProductId==0">修改产品设置</a>
+                开通产品
+                <!--<a @click="_$power(scope.row.id,scope.row.hsyProductId,'hsy',openProduct,'boss_first_product_add')" v-if="records[scope.$index].hsyProductId==0">开通产品</a>
+                <a @click="_$power(scope.row.id,scope.row.hsyProductId,'hsy',auditProduct,'boss_first_product_update_btn')" v-else="records[scope.$index].hsyProductId==0">修改产品设置</a>-->
               </template>
             </el-table-column>
           </el-table>
@@ -114,7 +115,7 @@
           name:"",
           markCode:"",
           districtCode:"",
-          sysType:'hss',
+          sysType:'',
           oemName:'',
           oemType:'1'
         },
@@ -236,13 +237,16 @@
         this.getData()
       },
       openProduct:function (id,productId,val) {
-        window.open('http://admin.qianbaojiajia.com/admin/details/agentAddPro?dealerId='+id+'&productId='+productId+'&product='+val);
+        window.open('http://admin.qianbaojiajia.com/admin/details/filialePro?dealerId='+id+'&productId='+productId+'&product='+val);
 //        this.$router.push({path:'/admin/record/agentAddPro',query:{dealerId:idproductId:productId,product:val}});
       },
       auditProduct:function (id,productId,val) {
-        window.open('http://admin.qianbaojiajia.com/admin/details/agentAddPro?dealerId='+id+'&productId='+productId+'&product='+val);
+        window.open('http://admin.qianbaojiajia.com/admin/details/filialePro?dealerId='+id+'&productId='+productId+'&product='+val);
 //        this.$router.push({path:'/admin/record/agentAddPro',query:{dealerId:id,productId:productId,product:val}});
       },
+      configureOem:function (id) {
+        window.open('http://admin.qianbaojiajia.com/admin/details/configureOem?dealerId='+id);
+      }
     }
   }
 </script>

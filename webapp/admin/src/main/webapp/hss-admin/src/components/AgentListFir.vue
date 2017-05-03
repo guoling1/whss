@@ -64,6 +64,7 @@
             <el-table-column prop="belong" label="省市" ></el-table-column>
             <el-table-column prop="createTime" label="注册时间" ></el-table-column>
             <el-table-column prop="mobile" label="联系手机号" ></el-table-column>
+            <el-table-column prop="oemName" label="所属分公司" ></el-table-column>
             <el-table-column label="好收收">
               <template scope="scope">
                 <a @click="_$power(scope.row.id,scope.row.hssProductId,'hss',openProduct,'boss_first_product_add')" v-if="records[scope.$index].hssProductId==0">开通产品</a>
@@ -123,7 +124,9 @@
           name:"",
           markCode:"",  //商户名字
           sysType:"",
-          districtCode:""
+          districtCode:"",
+          oemType:0,
+          oemName:''
         },
         isShow:false,
         index:'',
