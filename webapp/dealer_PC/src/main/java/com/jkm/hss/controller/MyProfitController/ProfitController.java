@@ -115,14 +115,22 @@ public class ProfitController extends BaseController{
      */
     @ResponseBody
     @RequestMapping(value = "/profitAmount",method = RequestMethod.POST)
-    public CommonResponse profitAmount(@RequestBody final ProfitDetailsSelectRequest request)throws ParseException{
+    public CommonResponse profitAmount(@RequestBody final ProfitDetailsSelectRequest request) {
+        try {
+            final Dealer dealer = this.getDealer().get();
+            final long accountId = dealer.getAccountId();
+            BigDecimal splitAmount = this.splitAccountRecordService.selectStatisticsByParam(accountId, request.getOrderNo(),
+                    request.getBusinessType(), request.getBeginDate(), request.getEndDate());
+            if(splitAmount==null){
+                splitAmount=new BigDecimal(0);
+            }
+            return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "统计完成", splitAmount);
 
-        final Dealer dealer = this.getDealer().get();
-        final long accountId = dealer.getAccountId();
-        BigDecimal splitAmount=this.splitAccountRecordService.selectStatisticsByParam(accountId, request.getOrderNo(),
-                request.getBusinessType(), request.getBeginDate(), request.getEndDate());
+        } catch (final Throwable throwable) {
+            log.error("获取分润统计异常：" + throwable.getMessage());
+        }
 
-        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "统计完成", splitAmount);
+        return CommonResponse.simpleResponse(-1, "fail");
     }
 
 
