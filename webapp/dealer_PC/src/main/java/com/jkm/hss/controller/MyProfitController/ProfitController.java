@@ -121,7 +121,9 @@ public class ProfitController extends BaseController{
             final long accountId = dealer.getAccountId();
             BigDecimal splitAmount = this.splitAccountRecordService.selectStatisticsByParam(accountId, request.getOrderNo(),
                     request.getBusinessType(), request.getBeginDate(), request.getEndDate());
-
+            if(splitAmount==null){
+                splitAmount=new BigDecimal(0);
+            }
             return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "统计完成", splitAmount);
 
         } catch (final Throwable throwable) {
