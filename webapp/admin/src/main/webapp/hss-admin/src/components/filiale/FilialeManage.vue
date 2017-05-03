@@ -56,17 +56,21 @@
             <el-table-column width="62" label="序号" type="index"></el-table-column>
             <el-table-column label="分公司简称" min-width="85">
               <template scope="scope">
-                <router-link to="/"></router-link>
+                <router-link target="_blank" :to="'/admin/details/filialeAdd?level=1&id='+scope.row.id">{{scope.row.proxyName}}</router-link>
               </template>
             </el-table-column>
             <el-table-column label="分公司编号" min-width="85">
               <template scope="scope">
-                <router-link to="/"></router-link>
+                <router-link target="_blank" :to="'/admin/details/filialeAdd?level=1&id='+scope.row.id">{{scope.row.markCode}}</router-link>
               </template>
             </el-table-column>
-            <el-table-column prop="appId" label="地区" min-width="85"></el-table-column>
-            <el-table-column prop="appId" label="开通日期" min-width="85"></el-table-column>
-            <el-table-column prop="appId" label="联系人手机号" min-width="85"></el-table-column>
+            <el-table-column prop="belong" label="地区" min-width="85"></el-table-column>
+            <el-table-column prop="appId" label="开通日期" min-width="85">
+              <template scope="scope">
+                <span>{{scope.row.createTime|changeDate}}</span>
+              </template>
+            </el-table-column>
+            <el-table-column prop="mobile" label="联系人手机号" min-width="85"></el-table-column>
             <el-table-column prop="appId" label="好收收" min-width="85">
               <template scope="scope">
                 <a @click="_$power(scope.row.id,scope.row.hssProductId,'hss',openProduct,'boss_first_product_add')" v-if="records[scope.$index].hssProductId==0">开通产品</a>
@@ -146,7 +150,17 @@
     },
     methods: {
       reset:function () {
-
+        this.query = {
+          pageNo:1,
+          pageSize:10,
+          mobile:'',
+          name:"",
+          markCode:"",
+          districtCode:"",
+          sysType:'hss',
+          oemName:'',
+          oemType:'1'
+        }
       },
       addFiliale:function () {
         window.open('http://admin.qianbaojiajia.com/admin/details/filialeAdd');
@@ -186,11 +200,15 @@
       },
       getData: function () {
         this.loading = true;
-        this.$http.post('/admin/queryOrder/orderList',this.query)
+        this.$http.post('/admin/dealer/listFirstDealer',this.query)
           .then(function (res) {
             this.loading = false;
             this.records = res.data.records;
-            this.loading = false;
+            for (var i = 0; i < this.records.length; i++) {
+              if (this.records[i].belongProvinceName != null && this.records[i].belongCityName != null) {
+                this.records[i].belong = this.records[i].belongProvinceName + "-" + this.records[i].belongCityName;
+              }
+            }
           },function (err) {
             this.loading = false;
             this.$message({
@@ -203,20 +221,28 @@
       },
       search(){
         this.total = '';
-        this.query.page = 1;
+        this.query.pageNo = 1;
         this.getData();
       },
       //每页条数改变
       handleSizeChange(val) {
-        this.query.page = 1;
-        this.query.size = val;
+        this.query.pageNo = 1;
+        this.query.pageSize = val;
         this.getData();
       },
       //当前页改变时
       handleCurrentChange(val) {
-        this.query.page = val;
+        this.query.pageNo = val;
         this.getData()
-      }
+      },
+      openProduct:function (id,productId,val) {
+        window.open('http://admin.qianbaojiajia.com/admin/details/agentAddPro?dealerId='+id+'&productId='+productId+'&product='+val);
+//        this.$router.push({path:'/admin/record/agentAddPro',query:{dealerId:idproductId:productId,product:val}});
+      },
+      auditProduct:function (id,productId,val) {
+        window.open('http://admin.qianbaojiajia.com/admin/details/agentAddPro?dealerId='+id+'&productId='+productId+'&product='+val);
+//        this.$router.push({path:'/admin/record/agentAddPro',query:{dealerId:id,productId:productId,product:val}});
+      },
     }
   }
 </script>

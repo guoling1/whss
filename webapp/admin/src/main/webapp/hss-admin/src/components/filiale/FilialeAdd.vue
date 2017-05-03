@@ -253,6 +253,7 @@
           bankAccountName: '',
           bankReserveMobile: '',
           idCard: '',
+          oemType:1
         },
         id: 0,
         isShow: true,
@@ -334,10 +335,10 @@
       },
       //创建一级代理
       create: function () {
-        this.$http.post('/admin/user/addFirstDealer2', this.$data.query)
+        this.$http.post('/admin/user/addFirstDealer2', this.query)
           .then(function (res) {
             this.$store.commit('MESSAGE_ACCORD_SHOW', {
-              text: '修改成功'
+              text: '创建成功'
             })
           }, function (err) {
             this.$message({
@@ -347,17 +348,10 @@
             });
           })
       },
-      goBack: function () {
-        if(this.$route.query.level==2){
-          this.$router.push('/admin/record/agentListSec')
-        }else {
-          this.$router.push('/admin/record/agentListFir')
-        }
-      },
       //修改
       change: function () {
         this.$data.query.dealerId = this.$data.query.id;
-        this.$http.post('/admin/user/updateDealer2', this.$data.query)
+        this.$http.post('/admin/user/updateDealer2', this.query)
           .then(function (res) {
             this.$store.commit('MESSAGE_ACCORD_SHOW', {
               text: '修改成功'
