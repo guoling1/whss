@@ -1174,11 +1174,6 @@ public class DealerController extends BaseController {
                 return CommonResponse.simpleResponse(-1, "模板ID不能为空");
             }
         }
-//        Optional<AdminUser> adminUserOptional = this.adminUserService.getAdminUserById(adminUserRequest.getId());
-//        if(!adminUserOptional.isPresent()){
-//            return CommonResponse.simpleResponse(-1, "登录名不存在");
-//        }
-//        adminUserService.updateDealerUserPwdById(DealerSupport.passwordDigest(adminUserRequest.getPassword(),"JKM"),adminUserRequest.getId());
-        return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "修改成功");
+        return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "配置成功");
     }
 }
