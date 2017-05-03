@@ -98,6 +98,9 @@ let routes = [
     path: '/admin/details',
     component: Crumbs,
     children: [
+      {path: 'filialeManage', name: 'FilialeManage', component: FilialeManage},
+      {path: 'filialeEmployee', name: 'FilialeEmployee', component: FilialeEmployee},
+      {path: 'filialeAccount', name: 'FilialeAccount', component: FilialeAccount},
       {path: 'dataHistory', name: 'DataHistory', component: DataHistory},
       {path: 'template', name: 'Template', component: Template},
       {path: 'templateAdd', name: 'TemplateAdd', component: TemplateAdd},
