@@ -8,6 +8,12 @@ import lombok.Getter;
  * 打款渠道
  */
 public enum EnumUpperChannel {
+
+    /**
+     * 扫米
+     */
+    MEMBER(0, "MEMBER", "会员卡"),
+
     /**
      * 扫米
      */
