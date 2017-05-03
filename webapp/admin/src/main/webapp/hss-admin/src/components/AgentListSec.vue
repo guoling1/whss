@@ -324,7 +324,7 @@
     margin: 5px 0;
     position: absolute;
     left: 52%;
-    top: 30%;
+    top: 0100%;
     width: 16%;
     padding: 5px;
     z-index: 1000;

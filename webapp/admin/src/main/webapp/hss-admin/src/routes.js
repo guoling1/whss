@@ -88,9 +88,10 @@ const Home = r => require.ensure([], () => r(require('components/Home')), 'group
 const Login = r => require.ensure([], () => r(require('components/Login')), 'group-record');
 const Crumbs = r => require.ensure([], () => r(require('./Crumbs')), 'group-record');
 //分公司
-const FilialeManage = r => require.ensure([], () => r(require('components/FilialeManage')), 'group-record');
-const FilialeAccount = r => require.ensure([], () => r(require('components/FilialeAccount')), 'group-record');
-const FilialeEmployee = r => require.ensure([], () => r(require('components/FilialeEmployee')), 'group-record');
+const FilialeManage = r => require.ensure([], () => r(require('components/filiale/FilialeManage')), 'group-record');
+const FilialeAccount = r => require.ensure([], () => r(require('components/filiale/FilialeAccount')), 'group-record');
+const FilialeEmployee = r => require.ensure([], () => r(require('components/filiale/FilialeEmployee')), 'group-record');
+const FilialeAdd = r => require.ensure([], () => r(require('components/filiale/FilialeAdd')), 'group-record');
 let routes = [
   {path: '/', redirect: '/admin/login'},
   {path: '/admin/login', component: Login},
@@ -101,6 +102,7 @@ let routes = [
       {path: 'filialeManage', name: 'FilialeManage', component: FilialeManage},
       {path: 'filialeEmployee', name: 'FilialeEmployee', component: FilialeEmployee},
       {path: 'filialeAccount', name: 'FilialeAccount', component: FilialeAccount},
+      {path: 'filialeAdd', name: 'FilialeAdd', component: FilialeAdd},
       {path: 'dataHistory', name: 'DataHistory', component: DataHistory},
       {path: 'template', name: 'Template', component: Template},
       {path: 'templateAdd', name: 'TemplateAdd', component: TemplateAdd},
