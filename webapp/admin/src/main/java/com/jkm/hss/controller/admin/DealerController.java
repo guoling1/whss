@@ -1055,7 +1055,6 @@ public class DealerController extends BaseController {
         adminRoleService.save(roleDetailRequest);
         return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "操作成功");
     }
-
     /**
      * 分页查询角色列表
      * @param adminRoleListRequest
@@ -1065,6 +1064,18 @@ public class DealerController extends BaseController {
     @RequestMapping(value = "/roleListByPage", method = RequestMethod.POST)
     public CommonResponse roleListByPage (@RequestBody AdminRoleListRequest adminRoleListRequest) {
         PageModel<AdminRoleListPageResponse> adminUserPageModel = adminRoleService.roleDealerListByPage(adminRoleListRequest);
+        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功",adminUserPageModel);
+    }
+
+    /**
+     * 分公司查询角色列表
+     * @param adminRoleListRequest
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/roleOemListByPage", method = RequestMethod.POST)
+    public CommonResponse roleOemListByPage (@RequestBody AdminRoleListRequest adminRoleListRequest) {
+        PageModel<AdminRoleListPageResponse> adminUserPageModel = adminRoleService.roleOemListByPage(adminRoleListRequest);
         return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功",adminUserPageModel);
     }
 
