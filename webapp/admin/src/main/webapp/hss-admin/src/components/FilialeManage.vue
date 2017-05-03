@@ -126,7 +126,7 @@
 
       },
       selectCity: function (valCol,val) {
-        this.$data.province = val;
+        this.province = val;
         this.$http.post('/admin/district/findAllCities',{code:valCol})
           .then(function (res) {
             this.$data.citys = res.data;
@@ -143,26 +143,20 @@
       open:function () {
         console.log(this.isOpen)
         this.isOpen = !this.isOpen;
-        this.$data.isOpen1 = false;
+        this.isOpen1 = false;
         document.getElementById('select').style.borderColor = '#20a0ff';
       },
       select:function (valCode,val) {
-        var oCon = document.getElementById('select').getElementsByTagName('span')[0];
-        /*oCon.innerHTML = val;
-        oCon.style.color = '#1f2d3d';*/
         this.selectCon = val;
-        this.$data.query.districtCode = valCode;
-        this.$data.isOpen = !this.$data.isOpen;
-        this.$data.isOpen1 = !this.$data.isOpen1;
+        this.query.districtCode = valCode;
+        this.isOpen = !this.isOpen;
+        this.isOpen1 = !this.isOpen1;
       },
       selectAll: function () {
-        var oCon = document.getElementById('select').getElementsByTagName('span')[0];
-        /*oCon.innerHTML = '全部';
-        oCon.style.color = '#1f2d3d';*/
         this.selectCon = val;
-        this.$data.query.districtCode = '';
-        this.$data.isOpen = !this.$data.isOpen;
-        this.$data.isOpen1 = false;
+        this.query.districtCode = '';
+        this.isOpen = !this.isOpen;
+        this.isOpen1 = false;
       },
       getData: function () {
         this.loading = true;
