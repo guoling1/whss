@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="col-md-12">
-      <div class="box" style="margin-top:15px;overflow: hidden">
+      <div class="box" style="overflow: hidden">
         <div class="box-header">
           <h3 class="box-title">系统对账</h3>
         </div>
@@ -38,6 +38,7 @@
             </li>
             <li class="same">
               <div class="btn btn-primary" @click="search">筛选</div>
+              <div class="btn btn-primary" @click="reset">重置</div>
             </li>
           </ul>
           <el-table v-loading.body="loading" style="font-size: 12px;margin-bottom: 15px" :data="$records" border :row-style="tableFoot">
@@ -200,6 +201,17 @@
       this.getData()
     },
     methods: {
+      reset: function () {
+        this.query = {
+          pageSize:10,
+          currentPage:1,
+          channelName:"",
+          tradeType:"",
+          startDateStr:"",
+          endDateStr:"",
+          status:""
+        }
+      },
       tableFoot(row, index) {
         console.log(row)
         if (row.status == '2') {

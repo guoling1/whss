@@ -1,7 +1,7 @@
 <template>
   <div id="issueRecord">
     <div class="col-md-12">
-      <div class="box" style="margin-top:15px;overflow: hidden">
+      <div class="box" style="overflow: hidden">
         <div class="box-header">
           <h3 class="box-title">二维码分配记录</h3>
           <a @click="_$power(issue,'boss_qr_code_distribute')" class="pull-right btn btn-primary" style="margin-left: 20px">分配二维码</a>
@@ -35,6 +35,7 @@
             </li>
             <li class="same">
               <div class="btn btn-primary" @click="search">筛选</div>
+              <div class="btn btn-primary" @click="reset">重置</div>
             </li>
           </ul>
           <!--表格-->
@@ -104,6 +105,17 @@
         })
     },
     methods: {
+      reset: function () {
+        this.query = {
+          pageNo:1,
+          pageSize:10,
+          markCode:"",
+          name:"",
+          firstMarkCode:"",
+          firstName:"",
+          type:"0"
+        };
+      },
       issue: function () {
         window.open('http://admin.qianbaojiajia.com/admin/details/issue')
 //        this.$router.push('/admin/record/issue')
