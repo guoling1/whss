@@ -155,12 +155,7 @@
     },
     created() {
       this.getData();
-      this.$http.post('/daili/profit/profitAmount').then(res => {
-        console.log(res);
-        this.allTotal = 10;
-      }, err => {
-        console.log(err);
-      })
+      this.getTotal();
     },
     filters: {
       fix(v = 0){
@@ -178,6 +173,20 @@
       },
       screen: function () {
         this.getData();
+        this.getTotal();
+      },
+      getTotal: function () {
+        this.$http.post('/daili/profit/profitAmount', {
+          orderNo: this.orderNo,
+          businessType: this.businessType,
+          beginDate: this.beginDate,
+          endDate: this.endDate
+        }).then(res => {
+          console.log(res);
+          this.allTotal = 10;
+        }, err => {
+          console.log(err);
+        })
       },
       getData: function () {
         this.tableLoading = true;
