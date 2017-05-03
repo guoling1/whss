@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jkm.hss.dealer.dao.TemplateInfoDao">
+    <!-- 通用查询结果列-->
+    <sql id="Base_Column_List">
+        id,	sign_code,oem_id,template_id,template_name,status,create_time,update_time
+    </sql>
+
+    <!-- 添加 -->
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id" parameterType="com.jkm.hss.dealer.entity.OemInfo">
+        INSERT INTO tb_template_info (
+        sign_code,
+        oem_id,
+        template_id,
+        template_name,
+        status
+        )VALUES (
+        #{signCode},
+        #{oemId},
+        #{templateId},
+        #{templateName},
+        #{status}
+        )
+    </insert>
+
+    <select id="selectByOemId" resultType="com.jkm.hss.dealer.entity.TemplateInfo">
+        SELECT <include refid="Base_Column_List" /> FROM tb_template_info where oem_id=#{oemId} and status=1 order by sign_code asc
+    </select>
+</mapper>
