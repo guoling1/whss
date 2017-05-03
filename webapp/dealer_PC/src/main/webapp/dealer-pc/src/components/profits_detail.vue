@@ -39,6 +39,7 @@
                 <el-button type="primary" size="small" @click="screen">筛选</el-button>
               </div>
             </div>
+            <div class="box-body">统计总额 {{allTotal | fix}}元 当页总额 {{pageTotal | fix}}元</div>
             <div class="box-body">
               <el-table :data="tableData" border
                         v-loading="tableLoading"
@@ -58,9 +59,9 @@
                 <el-table-column prop="orderNo" label="交易订单号"></el-table-column>
                 <!--<el-table-column prop="splitSettlePeriod" label="分润结算周期"></el-table-column>-->
                 <!--<el-table-column label="结算时间">-->
-                  <!--<template scope="scope">-->
-                    <!--{{ scope.row.settleTime | datetime }}-->
-                  <!--</template>-->
+                <!--<template scope="scope">-->
+                <!--{{ scope.row.settleTime | datetime }}-->
+                <!--</template>-->
                 <!--</el-table-column>-->
                 <el-table-column prop="dealerName" label="代理商名称"></el-table-column>
                 <el-table-column prop="splitAmount" label="分润金额" align="right"></el-table-column>
@@ -147,11 +148,27 @@
               picker.$emit('pick', [start, end]);
             }
           }]
-        }
+        },
+        pageTotal: 0,
+        allTotal: 0
       }
     },
     created() {
       this.getData();
+      this.$http.post('/daili/profit/profitAmount').then(res => {
+        console.log(res);
+        this.allTotal = 10;
+      }, err => {
+        console.log(err);
+      })
+    },
+    filters: {
+      fix(v = 0){
+        if (v) {
+          return v.toFixed(2);
+        }
+        return '0.00';
+      }
     },
     methods: {
       datetimeSelect: function (val) {
@@ -175,6 +192,11 @@
           this.tableLoading = false;
           this.total = res.data.count;
           this.tableData = res.data.records;
+          let t = 0;
+          for (let i = 0; i < res.data.records.length; i++) {
+            t += res.data.records[i].splitAmount / 1;
+          }
+          this.pageTotal = t;
         }, err => {
           this.tableLoading = false;
           this.$message({
