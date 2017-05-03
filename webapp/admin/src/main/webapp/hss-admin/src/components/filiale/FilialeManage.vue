@@ -21,6 +21,10 @@
               <el-input style="width: 188px" v-model="query.name" placeholder="请输入内容" size="small"></el-input>
             </li>
             <li class="same">
+              <label>所属分公司:</label>
+              <el-input style="width: 188px" v-model="query.oemName" placeholder="请输入内容" size="small"></el-input>
+            </li>
+            <li class="same">
               <label>省市:</label>
               <div style="width: 188px" class="select" id="select" @click="open"><span style="color: #1f2d3d">{{selectCon}}</span>
                 <i class="el-icon-caret-bottom" style="float: right;margin-top: 10px"></i>
@@ -36,7 +40,7 @@
             </li>
             <li class="same">
               <label>代理产品:</label>
-              <el-select style="width: 188px" clearable v-model="query.status" size="small">
+              <el-select style="width: 188px" clearable v-model="query.sysType" size="small">
                 <el-option label="全部" value=""></el-option>
                 <el-option label="好收收" value="hss"></el-option>
                 <el-option label="好收银" value="hsy"></el-option>
@@ -106,7 +110,9 @@
           name:"",
           markCode:"",
           districtCode:"",
-          status:'hss'
+          sysType:'hss',
+          oemName:'',
+          oemType:'1'
         },
         date: '',
         records: [],
