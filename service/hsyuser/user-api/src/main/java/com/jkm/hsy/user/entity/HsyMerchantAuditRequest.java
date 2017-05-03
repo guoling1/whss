@@ -40,6 +40,28 @@ public class HsyMerchantAuditRequest {
     private Date createTime;
     private Date updateTime;
 
+    private String cellphone;//注册手机号
+
+    /**
+     * 所属1代理商名称
+     */
+    private String proxyName;
+
+    /**
+     * 所属2代理商名称
+     */
+    private String proxyName1;
+
+    /**
+     * 查询条件：开始时间
+     */
+    private String startTime;
+
+    /**
+     * 查询条件：结束时间
+     */
+    private String endTime;
+
     private Long uid;//用户ID
     private Long sid;
     private Integer role;//角色 1法人 2店长 3店员  4财务

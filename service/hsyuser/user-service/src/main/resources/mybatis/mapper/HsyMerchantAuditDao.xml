@@ -59,6 +59,9 @@
         <if test="shortName!=null and shortName!=''">
             AND a.SHORTNAME=#{shortName}
         </if>
+        <if test="cellphone!=null and cellphone!=''">
+            AND c.CELLPHONE=#{cellphone}
+        </if>
         ORDER BY
             a.CREATETIME DESC
         LIMIT #{offset},#{pageSize}
