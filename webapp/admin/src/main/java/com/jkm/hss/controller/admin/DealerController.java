@@ -1174,7 +1174,7 @@ public class DealerController extends BaseController {
                 return CommonResponse.simpleResponse(-1, "模板ID不能为空");
             }
         }
-
+        oemInfoService.addOrUpdate(addOrUpdateOemRequest);
         return CommonResponse.simpleResponse(CommonResponse.SUCCESS_CODE, "配置成功");
     }
 }

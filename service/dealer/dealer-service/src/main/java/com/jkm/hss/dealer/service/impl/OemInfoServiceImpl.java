@@ -105,9 +105,25 @@ public class OemInfoServiceImpl implements OemInfoService {
             oi.setStatus(EnumDealerStatus.NORMAL.getId());
             this.insert(oi);
             for(int i=0;i<addOrUpdateOemRequest.getTemplateInfos().size();i++){
-
+                TemplateInfo templateInfo = new TemplateInfo();
+                templateInfo.setOemId(oi.getId());
+                templateInfo.setSignCode(addOrUpdateOemRequest.getTemplateInfos().get(i).getSignCode());
+                templateInfo.setTemplateId(addOrUpdateOemRequest.getTemplateInfos().get(i).getTemplateId());
+                templateInfo.setTemplateName(addOrUpdateOemRequest.getTemplateInfos().get(i).getTemplateName());
+                templateInfoDao.insert(templateInfo);
             }
         }else{//修改
+
+            oemInfo.setDealerId(addOrUpdateOemRequest.getDealerId());
+            oemInfo.setBrandName(addOrUpdateOemRequest.getBrandName());
+            oemInfo.setWechatCode(addOrUpdateOemRequest.getWechatCode());
+            oemInfo.setWechatName(addOrUpdateOemRequest.getWechatName());
+            oemInfo.setAppId(addOrUpdateOemRequest.getAppId());
+            oemInfo.setAppSecret(addOrUpdateOemRequest.getAppSecret());
+            oemInfo.setQrCode(addOrUpdateOemRequest.getQrCode());
+            oemInfo.setLogo(addOrUpdateOemRequest.getLogo());
+            oemInfo.setStatus(EnumDealerStatus.NORMAL.getId());
+
 
         }
     }
