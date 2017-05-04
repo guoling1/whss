@@ -1,18 +1,27 @@
 package com.jkm.hsy.user.service.impl;
 
+import com.jkm.base.common.entity.ExcelSheetVO;
+import com.jkm.base.common.util.ExcelUtil;
 import com.jkm.hsy.user.constant.IndustryCodeType;
 import com.jkm.hsy.user.dao.HsyMerchantAuditDao;
 import com.jkm.hsy.user.entity.*;
 import com.jkm.hsy.user.service.HsyMerchantAuditService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by Administrator on 2017/1/19.
  */
+@Slf4j
 @Service
 public class HsyMerchantAuditServiceImpl implements HsyMerchantAuditService {
 
@@ -431,6 +440,152 @@ public class HsyMerchantAuditServiceImpl implements HsyMerchantAuditService {
             }
         }
         return list;
+    }
+
+    public List<HsyMerchantAuditResponse> hsyMerchant(HsyMerchantAuditRequest hsyMerchantAuditRequest) {
+
+        List<HsyMerchantAuditResponse> list = hsyMerchantAuditDao.hsyMerchant(hsyMerchantAuditRequest);
+        if (list.size()>0){
+            for (int i=0;i<list.size();i++){
+                if (list.size()>0){
+                    if (list.get(i).getStatus()==1){
+                        list.get(i).setStat("审核已通过");
+                    }
+                    if (list.get(i).getStatus()==2){
+                        list.get(i).setStat("待审核");
+                    }
+                    if (list.get(i).getStatus()==3){
+                        list.get(i).setStat("审核未通过");
+                    }
+                    if (list.get(i).getStatus()==4){
+                        list.get(i).setStat("商户已注册");
+                    }
+                }
+                String districtCode =list.get(i).getDistrictCode();
+                if (districtCode!=null&&!districtCode.equals("")){
+                    HsyMerchantAuditResponse ret = hsyMerchantAuditDao.getCode(districtCode);
+
+                    if (!ret.getParentCode().equals("0")){
+                        HsyMerchantAuditResponse reu = hsyMerchantAuditDao.getCity(ret.getParentCode());
+                        if (!reu.getParentCode().equals("0")){
+                            HsyMerchantAuditResponse reu1 = hsyMerchantAuditDao.getCityOnly(reu.getParentCode());
+                            list.get(i).setDistrictCode(reu1.getAName()+reu.getAName()+ret.getAName());
+                        }else {
+                            list.get(i).setDistrictCode(reu.getAName()+ret.getAName());
+                        }
+                    }
+                    if(ret.getParentCode().equals("0")){
+                        HsyMerchantAuditResponse reu = hsyMerchantAuditDao.getCityOnly(ret.getCode());
+                        list.get(i).setDistrictCode(reu.getAName());
+                    }
+                }
+                int industryCode = Integer.parseInt(list.get(i).getIndustryCode());
+                if (industryCode==1000){
+                    list.get(i).setIndustryCode(IndustryCodeType.CATERING.industryCodeValue);
+                }
+                if (industryCode==1001){
+                    list.get(i).setIndustryCode(IndustryCodeType.SUPERMARKET.industryCodeValue);
+                }
+                if (industryCode==1002){
+                    list.get(i).setIndustryCode(IndustryCodeType.LIFE_SERVICES.industryCodeValue);
+                }
+                if (industryCode==1003){
+                    list.get(i).setIndustryCode(IndustryCodeType.SHOPPING.industryCodeValue);
+                }
+                if (industryCode==1004){
+                    list.get(i).setIndustryCode(IndustryCodeType.BEAUTY.industryCodeValue);
+                }
+                if (industryCode==1005){
+                    list.get(i).setIndustryCode(IndustryCodeType.EXERCISE.industryCodeValue);
+                }
+                if (industryCode==1006){
+                    list.get(i).setIndustryCode(IndustryCodeType.HOTEL.industryCodeValue);
+                }
+            }
+        }
+        return list;
+    }
+
+    @Override
+    public String downLoadHsyMerchant(HsyMerchantAuditRequest hsyMerchantAuditRequest, String baseUrl) {
+        final String tempDir = this.getTempDir();
+        final File excelFile = new File(tempDir + File.separator + ".xls");
+        final ExcelSheetVO excelSheet = generateCodeExcelSheet(hsyMerchantAuditRequest,baseUrl);
+        final List<ExcelSheetVO> excelSheets = new ArrayList<>();
+        excelSheets.add(excelSheet);
+        FileOutputStream fileOutputStream = null;
+        try {
+            fileOutputStream = new FileOutputStream(excelFile);
+            ExcelUtil.exportExcel(excelSheets, fileOutputStream);
+            return excelFile.getAbsolutePath();
+        } catch (final Exception e) {
+            log.error("download hsyMerchant record error", e);
+            e.printStackTrace();
+        }  finally {
+            if (fileOutputStream != null) {
+                try {
+                    fileOutputStream.close();
+                } catch (final IOException e) {
+                    log.error("close fileOutputStream error", e);
+                    e.printStackTrace();
+                }
+            }
+        }
+        return "";
+    }
+
+    /**
+     * 获取临时路径
+     *
+     * @return
+     */
+    public static String getTempDir() {
+        final String dir = System.getProperty("java.io.tmpdir") + "hss" + File.separator + "hsyMerchant" + File.separator + "record";
+        final File file = new File(dir);
+        if (!file.exists()) {
+            file.mkdirs();
+        }
+        return dir;
+    }
+
+    private ExcelSheetVO generateCodeExcelSheet(HsyMerchantAuditRequest hsyMerchantAuditRequest, String baseUrl) {
+        List<HsyMerchantAuditResponse> list = hsyMerchant(hsyMerchantAuditRequest);
+        final ExcelSheetVO excelSheetVO = new ExcelSheetVO();
+        final List<List<String>> datas = new ArrayList<List<String>>();
+        final ArrayList<String> heads = new ArrayList<>();
+        excelSheetVO.setName("hsyMerchant");
+        heads.add("商户编号");
+        heads.add("商户名称");
+        heads.add("所属代理商");
+        heads.add("注册时间");
+        heads.add("注册手机号");
+        heads.add("省市");
+        heads.add("行业");
+        heads.add("状态");
+        datas.add(heads);
+        if(list.size()>0){
+            for(int i=0;i<list.size();i++){
+                ArrayList<String> columns = new ArrayList<>();
+                columns.add(list.get(i).getGlobalID());
+                columns.add(list.get(i).getShortName());
+                columns.add(list.get(i).getProxyName());
+                if (list.get(i).getCreateTime()!= null && !"".equals(list.get(i).getCreateTime())){
+                    DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                    String st = df.format(list.get(i).getCreateTime());
+                    columns.add(st);
+
+                }else {
+                    columns.add("");
+                }
+                columns.add(list.get(i).getCellphone());
+                columns.add(list.get(i).getDistrictCode());
+                columns.add(list.get(i).getIndustryCode());
+                columns.add(list.get(i).getStat());
+                datas.add(columns);
+            }
+        }
+        excelSheetVO.setDatas(datas);
+        return excelSheetVO;
     }
 
 

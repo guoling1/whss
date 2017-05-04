@@ -135,4 +135,11 @@ public interface HsyMerchantAuditDao {
      * @return
      */
     List<HsyMerchantInfoCheckRecord> getLog(@Param("id") Long id);
+
+    /**
+     * hsy商户导出数据查询
+     * @param hsyMerchantAuditRequest
+     * @return
+     */
+    List<HsyMerchantAuditResponse> hsyMerchant(HsyMerchantAuditRequest hsyMerchantAuditRequest);
 }
