@@ -253,7 +253,7 @@
         countHss: 0,
         countHsy: 0,
         currentPage: 1,
-        loading: true,
+        loading: false,
       }
     },
     beforeRouteEnter (to, from, next) {
@@ -272,12 +272,15 @@
       })
     },
     created: function () {
-      this.getDataHss()
-      this.getDataHsy()
+      /*this.getDataHss()
+      this.getDataHsy()*/
     },
     methods: {
       reset: function (val) {
         if(val == 'hss'){
+          this.dateHss='';
+          this.dateHss1='';
+          this.dateHss2='';
           this.queryHss = {
             pageNo:1,
             pageSize:10,
@@ -312,9 +315,10 @@
 //        this.$router.push({path:'/admin/record/StoreAudit',query:{id:id,status:status}})
       },
       getDataHss: function () {
+        this.loading = true;
         this.$http.post('/admin/query/getAll',this.queryHss)
           .then(function (res) {
-            this.$data.loading = false;
+            this.loading = false;
             this.$data.recordsHss = res.data.records;
             this.$data.countHss = res.data.count;
             this.$data.totalHss = res.data.totalPage;
@@ -329,6 +333,7 @@
           })
       },
       getDataHsy: function () {
+        this.loading = true;
         this.$http.post('/admin/hsyMerchantList/getMerchantList',this.queryHsy)
           .then(function (res) {
             this.$data.loading = false;
@@ -453,7 +458,7 @@
       }
     },
     watch:{
-      date:function (val,oldVal) {
+      dateHss:function (val,oldVal) {
         if(val!=undefined&&val[0]!=null){
           for(var j=0;j<val.length;j++){
             var str = val[j];
@@ -465,17 +470,17 @@
             }
             str = ary[0] + '-' + ary[1] + '-' + ary[2];
             if(j==0){
-              this.$data.query.startTime = str;
+              this.$data.queryHss.startTime = str;
             }else {
-              this.$data.query.endTime = str;
+              this.$data.queryHss.endTime = str;
             }
           }
         }else {
-          this.$data.query.startTime = '';
-          this.$data.query.endTime = '';
+          this.$data.queryHss.startTime = '';
+          this.$data.queryHss.endTime = '';
         }
       },
-      date1:function (val,oldVal) {
+      dateHss1:function (val,oldVal) {
         if(val!=undefined&&val[0]!=null){
           for(var j=0;j<val.length;j++){
             var str = val[j];
@@ -487,17 +492,17 @@
             }
             str = ary[0] + '-' + ary[1] + '-' + ary[2];
             if(j==0){
-              this.$data.query.startTime1 = str;
+              this.$data.queryHss.startTime1 = str;
             }else {
-              this.$data.query.endTime1 = str;
+              this.$data.queryHss.endTime1 = str;
             }
           }
         }else {
-          this.$data.query.startTime1 = '';
-          this.$data.query.endTime1 = '';
+          this.$data.queryHss.startTime1 = '';
+          this.$data.queryHss.endTime1 = '';
         }
       },
-      date2:function (val,oldVal) {
+      dateHss2:function (val,oldVal) {
         if(val!=undefined&&val[0]!=null){
           for(var j=0;j<val.length;j++){
             var str = val[j];
@@ -509,14 +514,14 @@
             }
             str = ary[0] + '-' + ary[1] + '-' + ary[2];
             if(j==0){
-              this.$data.query.startTime2 = str;
+              this.$data.queryHss.startTime2 = str;
             }else {
-              this.$data.query.endTime2 = str;
+              this.$data.queryHss.endTime2 = str;
             }
           }
         }else {
-          this.$data.query.startTime2 = '';
-          this.$data.query.endTime2 = '';
+          this.$data.queryHss.startTime2 = '';
+          this.$data.queryHss.endTime2 = '';
         }
       },
     },
