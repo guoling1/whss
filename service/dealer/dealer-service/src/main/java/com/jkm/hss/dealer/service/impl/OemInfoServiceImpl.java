@@ -63,6 +63,7 @@ public class OemInfoServiceImpl implements OemInfoService {
             oemDetailResponse.setAppId(oemInfo.getAppId());
             oemDetailResponse.setAppSecret(oemInfo.getAppSecret());
             oemDetailResponse.setLogo(oemInfo.getLogo());
+
             oemDetailResponse.setQrCode(oemInfo.getQrCode());
             List<TemplateInfo> templateInfoListArr = templateInfoDao.selectByOemId(oemInfo.getId());
             if(templateInfoListArr.size()>0){

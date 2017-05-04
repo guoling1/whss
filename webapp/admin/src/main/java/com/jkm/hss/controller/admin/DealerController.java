@@ -1145,6 +1145,11 @@ public class DealerController extends BaseController {
     @RequestMapping(value = "/oemDetail/{dealerId}", method = RequestMethod.GET)
     public CommonResponse oemDetail(@PathVariable final long dealerId) {
         OemDetailResponse oemDetailResponse = oemInfoService.selectByDealerId(dealerId);
+        Date expiration = new Date(new Date().getTime() + 30*60*1000);
+        if(oemDetailResponse.getQrCode()!=null&&!"".equals(oemDetailResponse.getQrCode())){
+            URL url = ossClient.generatePresignedUrl(ApplicationConsts.getApplicationConfig().ossBucke(), oemDetailResponse.getQrCode(),expiration);
+            oemDetailResponse.setRealQrCodeUrl(url.toString());
+        }
         return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "查询成功", oemDetailResponse);
     }
     /**
