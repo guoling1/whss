@@ -24,7 +24,6 @@
         #{brandName},
         #{wechatName},
         #{wechatCode},
-        #{bankName},
         #{appId},
         #{appSecret},
         #{logo},
