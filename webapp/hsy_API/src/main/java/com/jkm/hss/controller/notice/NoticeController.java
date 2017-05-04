@@ -12,10 +12,8 @@ import com.jkm.hss.merchant.service.PushNoticeService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -23,6 +21,9 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import com.jkm.hss.helper.response.HsyNoticeResponse;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * Created by wayne on 17/5/4.
@@ -33,6 +34,20 @@ import com.jkm.hss.helper.response.HsyNoticeResponse;
 public class NoticeController extends BaseController {
     @Autowired
     private PushNoticeService pushNoticeService;
+
+    /**
+     * 公告详情页面
+     * @param request
+     * @param response
+     * @param model
+     * @param noticeId
+     * @return
+     */
+    @RequestMapping(value = "/detail", method = RequestMethod.GET)
+    public String noticedetail(final HttpServletRequest request, final HttpServletResponse response, final Model model,@RequestParam(value = "noticeId", required = true) long noticeId){
+        model.addAttribute("id",noticeId);
+        return "/notice-detail";
+    }
 
     /**
      * 公告列表
