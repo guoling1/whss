@@ -109,4 +109,11 @@ public interface HsyMerchantAuditService {
      */
     List<HsyMerchantInfoCheckRecord> getLog(Long id);
 
+    /**
+     * hsy导出
+     * @param hsyMerchantAuditRequest
+     * @param baseUrl
+     * @return
+     */
+    String downLoadHsyMerchant(HsyMerchantAuditRequest hsyMerchantAuditRequest, String baseUrl);
 }
