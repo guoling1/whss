@@ -29,4 +29,9 @@ public class PaymentSdkPlaceOrderResponse {
      * 返回的支付url
      */
     private String payUrl;
+
+    /**
+     * 支付要素
+     */
+    private String payInfo;
 }

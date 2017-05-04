@@ -4,30 +4,30 @@
       <div class="box" style="margin-top:15px;overflow: hidden">
         <div class="box-header">
           <h3 class="box-title">打款查询</h3>
-          <router-link to="/admin/record/withdrawal" class="pull-right" style="margin-left: 20px">切换旧版</router-link>
+          <router-link to="/admin/record/withdrawal" class="pull-right">切换旧版</router-link>
         </div>
         <div class="box-body">
           <!--筛选-->
-          <ul>
+          <ul class="search">
             <li class="same">
               <label>打款流水号:</label>
-              <el-input style="width: 130px" v-model="query.sn" placeholder="请输入内容" size="small"></el-input>
+              <el-input style="width: 188px" v-model="query.sn" placeholder="请输入内容" size="small"></el-input>
             </li>
             <li class="same">
               <label>交易单号:</label>
-              <el-input style="width: 130px" v-model="query.orderNo" placeholder="请输入内容" size="small"></el-input>
+              <el-input style="width: 188px" v-model="query.orderNo" placeholder="请输入内容" size="small"></el-input>
             </li>
             <li class="same">
               <label>备注:</label>
-              <el-input style="width: 130px" v-model="query.remark" placeholder="请输入内容" size="small"></el-input>
+              <el-input style="width: 188px" v-model="query.remark" placeholder="请输入内容" size="small"></el-input>
             </li>
             <li class="same">
               <label>收款账户名:</label>
-              <el-input style="width: 130px" v-model="query.userName" placeholder="请输入内容" size="small"></el-input>
+              <el-input style="width: 188px" v-model="query.userName" placeholder="请输入内容" size="small"></el-input>
             </li>
             <li class="same">
               <label>打款状态:</label>
-              <el-select style="width: 120px" clearable v-model="query.status" size="small">
+              <el-select style="width: 188px" clearable v-model="query.status" size="small">
                 <el-option label="全部" value="">全部</el-option>
                 <el-option label="待提现" value="1">待提现</el-option>
                 <el-option label="请求成功" value="3">请求成功</el-option>
@@ -37,9 +37,9 @@
             </li>
             <li class="same">
               <div class="btn btn-primary" @click="search">筛选</div>
-              </li>
+            </li>
             <li class="same" style="float: right">
-              <span @click="onload()" download="打款记录" class="btn btn-primary" style="color: #fff">导出</span>
+              <div @click="_$power(onload,'boss_trade_export')" download="打款记录" class="btn btn-primary" style="margin-top: 17px;">导出</div>
             </li>
           </ul>
           <!--表格-->
@@ -86,7 +86,7 @@
             </el-table-column>
             <el-table-column label="操作" min-width="80" fixed="right">
               <template scope="scope">
-                <router-link :to="{path:'/admin/record/withdrawalAudit',query:{orderNo:$records[scope.$index].orderNo,sn:$records[scope.$index].sn,requestTime:$records[scope.$index].requestTime,amount:$records[scope.$index].amount,receiptUserName:$records[scope.$index].receiptUserName,playMoneyChannel:$records[scope.$index].playMoneyChannel,status:$records[scope.$index].status,bankCard:$records[scope.$index].bankCard,message:$records[scope.$index].message}}" id="audit" v-if="($records[scope.$index].status=='2'||$records[scope.$index].status=='3'||$records[scope.$index].status=='5')&&$records[scope.$index].auditStatus==0&&$records[scope.$index].orderNo!='当页总额'&&$records[scope.$index].orderNo!='筛选条件统计'" >审核</router-link>
+                <router-link target="_blank" :to="{path:'/admin/details/withdrawalAudit',query:{orderNo:$records[scope.$index].orderNo,sn:$records[scope.$index].sn,requestTime:$records[scope.$index].requestTime,amount:$records[scope.$index].amount,receiptUserName:$records[scope.$index].receiptUserName,playMoneyChannel:$records[scope.$index].playMoneyChannel,status:$records[scope.$index].status,bankCard:$records[scope.$index].bankCard,message:$records[scope.$index].message}}" id="audit" v-if="($records[scope.$index].status=='2'||$records[scope.$index].status=='3'||$records[scope.$index].status=='5')&&$records[scope.$index].auditStatus==0&&$records[scope.$index].orderNo!='当页总额'&&$records[scope.$index].orderNo!='筛选条件统计'" >审核</router-link>
                 <span v-if="$records[scope.$index].status=='5'&&$records[scope.$index].auditStatus!=0&&$records[scope.$index].orderNo!='当页总额'&&$records[scope.$index].orderNo!='筛选条件统计'">{{$records[scope.$index].auditStatusValue}}</span>
                 <a href="javascript:;" @click="updata($records[scope.$index].sn)" v-if="$records[scope.$index].orderNo!='当页总额'&&$records[scope.$index].orderNo!='筛选条件统计'">同步</a>
               </template>
@@ -164,10 +164,10 @@
          addUrl:'http://pay.qianbaojiajia.com/order/withdraw/countAmount',
 
         //测试
-        /*queryUrl:'http://192.168.1.20:8076/order/withdraw/listOrder',
-        excelUrl:'http://192.168.1.20:8076/order/withdraw/exportExcel',
-        syncUrl:'http://192.168.1.20:8076/order/syncWithdrawOrder',
-        addUrl:'http://192.168.1.20:8076/order/withdraw/countAmount',*/
+//        queryUrl:'http://192.168.1.20:8076/order/withdraw/listOrder',
+//        excelUrl:'http://192.168.1.20:8076/order/withdraw/exportExcel',
+//        syncUrl:'http://192.168.1.20:8076/order/syncWithdrawOrder',
+//        addUrl:'http://192.168.1.20:8076/order/withdraw/countAmount',
       }
     },
     created: function () {
@@ -377,8 +377,15 @@
 <style scoped lang="less" rel="stylesheet/less">
   ul {
     padding: 0;
+    margin:0;
   }
-
+  .search{
+    margin-bottom:0;
+    label{
+      display: block;
+      margin-bottom: 0;
+    }
+  }
   .same {
     list-style: none;
     display: inline-block;

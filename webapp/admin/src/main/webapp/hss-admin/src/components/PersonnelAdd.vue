@@ -34,7 +34,7 @@
               </el-col>
               <el-col :span="8">
                 <div class="grid-content bg-purple-light">
-                  <el-button v-if="!isShow" type="text" @click="dialogFormVisible = true" style="margin-left: 15px">修改密码</el-button>
+                  <el-button v-if="!isShow" type="text" @click="_$power(function(){dialogFormVisible = true},'boss_staff_updatepwd')" style="margin-left: 15px">修改密码</el-button>
                 </div>
               </el-col>
             </el-row>
@@ -193,7 +193,7 @@
               <el-col :span="6">
                 <div class="grid-content bg-purple-light">
                   <el-select style="width: 100%" v-model="query.roleId" clearable placeholder="请选择" size="small">
-                    <el-option label="管理员" :value="query.roleId">管理员</el-option>
+                    <el-option :label="item.roleName" :value="item.id" v-for="item in role">{{item.roleName}}</el-option>
                   </el-select>
                 </div>
               </el-col>
@@ -210,16 +210,16 @@
           </el-col>
           <el-col :span="6">
             <div class="grid-content bg-purple-light" style="width: 100%">
-              <div class="btn btn-primary" @click="goBack" style="width: 45%;margin: 20px 0 100px;">
-                返回
-              </div>
+              <!--<div class="btn btn-primary" @click="goBack" style="width: 45%;margin: 20px 0 100px;">-->
+                <!--返回-->
+              <!--</div>-->
               <div class="btn btn-primary" @click="create" v-if="isShow"
-                   style="width: 45%;float: right;margin: 20px 0 100px;">
-                创建员工
+                   style="display: inherit;margin: 15px 0">
+                创  建  员  工
               </div>
               <div class="btn btn-primary" @click="upDate" v-if="!isShow"
-                   style="width: 45%;float: right;margin: 20px 0 100px;">
-                修改
+                   style="display: inherit;margin: 15px 0">
+                修 改
               </div>
             </div>
           </el-col>
@@ -237,12 +237,14 @@
 </template>
 
 <script lang="babel">
+  import Message from './Message.vue'
   export default {
     name: 'personnelAdd',
     data () {
       return {
         company:[],
         dept:[],
+        role:[],
         dialogFormVisible: false,
         password: '',
         query: {
@@ -256,7 +258,7 @@
           identityOppositePic: "",
           mobile: "",
           email:"",
-          roleId: 1
+          roleId: ""
         },
         id: 0,
         isShow: true,
@@ -273,6 +275,9 @@
       this.$http.post('/admin/dict/selectAllByType',{dictType:"user_dept"}).then((res)=>{
         this.dept = res.data;
       });
+      this.$http.post('/admin/user/userRoleList').then((res)=>{
+        this.role = res.data;
+    });
       //若为查看详情
       if (this.$route.query.id != undefined) {
         this.$data.isShow = false;
@@ -392,12 +397,15 @@
         } else {
           this.$http.post('/admin/user/addUser', this.query)
             .then(function (res) {
-              this.$message({
-                showClose: true,
-                message: '创建成功',
-                type: 'success'
-              });
-              this.$router.push('/admin/record/personnelList')
+//              this.$message({
+//                showClose: true,
+//                message: '创建成功',
+//                type: 'success'
+//              });
+//              this.$router.push('/admin/record/personnelList')
+              this.$store.commit('MESSAGE_ACCORD_SHOW', {
+                text: '创建成功'
+              })
             }, function (err) {
               this.$message({
                 showClose: true,
@@ -413,7 +421,6 @@
       },
       //修改
       upDate: function () {
-        this.$data.query.roleId = this.$data.query.id;
         if (this.query.username.length > 16 || this.query.username.length < 4) {
           this.$message({
             showClose: true,
@@ -423,12 +430,15 @@
         } else {
           this.$http.post('/admin/user/updateUser', this.$data.query)
             .then(function (res) {
-              this.$message({
-                showClose: true,
-                message: '修改成功',
-                type: 'success'
-              });
-              this.$router.push('/admin/record/personnelList')
+//              this.$message({
+//                showClose: true,
+//                message: '修改成功',
+//                type: 'success'
+//              });
+//              this.$router.push('/admin/record/personnelList')
+              this.$store.commit('MESSAGE_ACCORD_SHOW', {
+                text: '修改成功'
+              })
             }, function (err) {
               this.$message({
                 showClose: true,

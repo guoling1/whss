@@ -4,6 +4,7 @@
       <div class="box tableTop">
         <div class="box-header with-border">
           <h3 class="box-title">分配二维码</h3>
+          <a href="javascript:window.close();" class="pull-right btn btn-primary" v-if="isDet">关闭</a>
         </div>
         <div class="">
           <div class="table-responsive">
@@ -119,7 +120,7 @@
           </el-col>
           <el-col :span="6">
             <div class="grid-content bg-purple-light" style="width: 100%">
-              <div class="btn btn-primary" @click="create" style="width: 100%;float: right;margin: 20px 0 100px;">
+              <div class="btn btn-primary" @click="_$power(create,'boss_qr_code_right_distribute')" style="width: 100%;float: right;margin: 20px 0 100px;">
                 立即分配
               </div>
             </div>
@@ -159,7 +160,7 @@
               </ul>
             </div>
             <div slot="footer" class="dialog-footer" style="text-align: center;">
-              <el-button @click="goBack">返回</el-button>
+              <el-button @click="goBack">关闭</el-button>
             </div>
           </el-dialog>
         </div>
@@ -190,10 +191,15 @@
         findDealers:'',
         isShow:false,
         issueSuss:'',
-        surplus:''
+        surplus:'',
+        isDet: false
       }
     },
     created: function () {
+        console.log(this.$route.path)
+      if(this.$route.path=='/admin/details/issue'){
+        this.isDet = true;
+      }
 
     },
     /*watch: {
@@ -282,7 +288,17 @@
           })
       },
       goBack: function () {
-        this.$router.push('/admin/record/issueRecord')
+        this.query = {
+          sysType: "",
+            dealerId:'',
+            type:'1',
+            distributeType:"1",
+            startCode:"",
+            endCode:"",
+            count:''
+        }
+        this.$data.isShow= false;
+//        this.$router.push('/admin/record/issueRecord')
       },
     },
   }

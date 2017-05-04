@@ -117,4 +117,10 @@
         ORDER BY id DESC
         LIMIT #{offset}, #{count}
     </select>
+
+    <select id="selectPendingSettleAuditRecordIdsBySettleDateAndSettleStatus" resultType="java.lang.Long">
+        SELECT id FROM tb_account_settle_audit_record
+        WHERE settle_status = #{settleStatus}
+        AND settle_date = #{settleDate}
+    </select>
 </mapper>

@@ -51,9 +51,9 @@ public interface HsyMerchantAuditService {
      */
     void updateAccount(Long accountID, Long id);
     
-    void stepChange(int uid);
+    void stepChange(Long uid);
 
-    int getUid(Long id);
+    long getUid(Long id);
 
     AppAuUser getAccId(Long id);
 
@@ -98,5 +98,15 @@ public interface HsyMerchantAuditService {
      * @return
      */
     int hsyMerchantSecondListCount(HsyQueryMerchantRequest request);
+
+
+    void saveLog(String username, Long id, String checkErrorInfo,int stat);
+
+    /**
+     * 查日志
+     * @param id
+     * @return
+     */
+    List<HsyMerchantInfoCheckRecord> getLog(Long id);
 
 }

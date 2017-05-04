@@ -9,6 +9,15 @@ import java.util.Date;
  */
 @Data
 public class HsyMerchantAuditRequest {
+    /**
+     * 状态
+     */
+    private int stat;
+
+    /**
+     * 审核时间
+     */
+    private String auditTime;
 
     private Long id;
     private String globalID;//对外ID

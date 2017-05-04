@@ -11,7 +11,7 @@
   <meta charset="UTF-8">
   <meta name="viewport"
         content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-  <title>好收银</title>
+  <title>付款成功</title>
   <link rel="stylesheet" href="http://static.jinkaimen.cn/hss/css/style.css">
   <link rel="stylesheet" href="http://static.jinkaimen.cn/weui/weui.css">
 </head>
@@ -24,7 +24,7 @@
   </div>
   <div class="group">
     <div class="left">交易流水号</div>
-    <div class="right">${firstSn}<span>${secondSn}</span></div>
+    <div class="right">${sn}</div>
   </div>
   <div class="group">
     <div class="left">付款金额</div>

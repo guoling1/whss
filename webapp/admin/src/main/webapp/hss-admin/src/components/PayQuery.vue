@@ -1,17 +1,18 @@
 <template>
   <div id="payQuery">
     <div class="col-md-12">
-      <div class="box" style="margin-top:15px;overflow: hidden">
+      <div class="box" style="overflow: hidden">
         <div class="box-header">
           <h3 class="box-title">支付查询</h3>
-          <span @click="onload()" download="交易记录" class="btn btn-primary" style="float: right;color: #fff">导出</span>
+          <span @click="_$power(onload,'boss_pay_export')" download="交易记录" class="btn btn-primary" style="float: right;color: #fff">导出</span>
         </div>
         <div class="box-body">
           <!--筛选-->
-          <ul>
+          <ul class="search">
             <li class="same">
               <label>支付创建日期:</label>
               <el-date-picker
+                style="width: 188px"
                 v-model="date"
                 type="daterange"
                 align="right"
@@ -22,6 +23,7 @@
             <li class="same">
               <label>支付完成日期:</label>
               <el-date-picker
+                style="width: 188px"
                 v-model="date1"
                 type="daterange"
                 align="right"
@@ -31,15 +33,15 @@
             </li>
             <li class="same">
               <label>支付流水号:</label>
-              <el-input style="width: 130px" v-model="query.sn" placeholder="请输入内容" size="small"></el-input>
+              <el-input style="width: 188px" v-model="query.sn" placeholder="请输入内容" size="small"></el-input>
             </li>
             <li class="same">
               <label>交易订单号:</label>
-              <el-input style="width: 130px" v-model="query.orderNo" placeholder="请输入内容" size="small"></el-input>
+              <el-input style="width: 188px" v-model="query.orderNo" placeholder="请输入内容" size="small"></el-input>
             </li>
             <li class="same">
               <label>支付状态:</label>
-              <el-select style="width: 120px" clearable v-model="query.status" size="small">
+              <el-select style="width: 188px" clearable v-model="query.status" size="small">
                 <el-option label="全部" value="">全部</el-option>
                 <el-option label="待支付" value="1">待支付</el-option>
                 <el-option label="支付中" value="2">支付中</el-option>
@@ -57,11 +59,12 @@
                 <el-option label="合众易宝" value="4"></el-option>
                 <el-option label="溢+" value="5"></el-option>
                 <el-option label="易联" value="6"></el-option>
-                <el-option label="银行家" value="8"></el-option>
+                <el-option label="收银家" value="8"></el-option>
               </el-select>
             </li>
             <li class="same">
               <div class="btn btn-primary" @click="search">筛选</div>
+              <div class="btn btn-primary" @click="reset">重置</div>
             </li>
           </ul>
           <!--表格-->
@@ -198,27 +201,45 @@
           type: 'success'
         });
       });
-      let time = new Date();
-      this.date = [time,time];
-      for (var j = 0; j < this.date.length; j++) {
-        var str = this.date[j];
-        var ary = [str.getFullYear(), str.getMonth() + 1, str.getDate()];
-        for (var i = 0, len = ary.length; i < len; i++) {
-          if (ary[i] < 10) {
-            ary[i] = '0' + ary[i];
-          }
-        }
-        str = ary[0] + '-' + ary[1] + '-' + ary[2];
-        if (j == 0) {
-          this.$data.query.startCreateTime = str;
-        } else {
-          this.$data.query.endCreateTime = str;
-        }
-      }
+      this.currentDate();
       this.getData();
       this.getAddTotal()
     },
     methods: {
+      currentDate: function () {
+        let time = new Date();
+        this.date = [time,time];
+        for (var j = 0; j < this.date.length; j++) {
+          var str = this.date[j];
+          var ary = [str.getFullYear(), str.getMonth() + 1, str.getDate()];
+          for (var i = 0, len = ary.length; i < len; i++) {
+            if (ary[i] < 10) {
+              ary[i] = '0' + ary[i];
+            }
+          }
+          str = ary[0] + '-' + ary[1] + '-' + ary[2];
+          if (j == 0) {
+            this.$data.query.startCreateTime = str;
+          } else {
+            this.$data.query.endCreateTime = str;
+          }
+        }
+      },
+      reset: function () {
+        this.query = {
+          pageNo:1,
+          pageSize:10,
+          sn:'',
+          orderNo:'',
+          status: '',
+          startCreateTime: '',
+          endCreateTime: '',
+          startFinishTime: '',
+          endFinishTime: '',
+          upperChannel:''
+        };
+        this.currentDate()
+      },
       getData: function () {
         this.loading = true;
         this.$http.post(this.queryUrl,this.$data.query)
@@ -406,6 +427,14 @@
 <style scoped lang="less" rel="stylesheet/less">
   ul {
     padding: 0;
+    margin:0;
+  }
+  .search{
+    margin-bottom:0;
+    label{
+      display: block;
+      margin-bottom: 0;
+    }
   }
 
   .same {

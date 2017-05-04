@@ -4,6 +4,7 @@
       <div class="box" style="margin-top:15px;overflow: hidden">
         <div class="box-header with-border">
           <h3 class="box-title">二维码详情</h3>
+          <a href="javascript:window.close();" class="pull-right btn btn-primary">关闭</a>
         </div>
         <!-- /.box-header -->
         <div class="box-body">

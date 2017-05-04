@@ -4,6 +4,7 @@
       <div class="box" style="margin-top:15px;overflow: hidden">
         <div class="box-header">
           <h3 class="box-title">发布消息</h3>
+          <a href="javascript:window.close();" class="pull-right btn btn-primary">关闭</a>
         </div>
         <div class="box-body">
           <el-row type="flex" class="row-bg" justify="left">
@@ -63,10 +64,8 @@
                     v-model="outputContent"></v-editor>
                   <input type="button" class="btn btn-primary" value="立即发布" v-if="!isShow" style="margin: 15px 0 100px"
                          @click="open">
-                  <input type="button" class="btn btn-primary" value="修 改" v-if="isShow"
-                         style="margin: 15px 30px 100px 0" @click="change">
-                  <input type="button" class="btn btn-primary" value="删 除" v-if="isShow" style="margin: 15px 0 100px"
-                         @click="del">
+                  <input type="button" class="btn btn-primary" value="修 改" v-if="isShow" style="margin: 15px 30px 100px 0" @click="_$power(change,'boss_merchant_update_message')">
+                  <input type="button" class="btn btn-primary" value="删 除" v-if="isShow" style="margin: 15px 0 100px" @click="_$power(del,'boss_merchant_delete_message')">
                 </div>
               </div>
             </el-col>
@@ -82,6 +81,7 @@
 
 <script>
   import Editor from './Editor'
+  import Message from './Message.vue'
   export default {
     data() {
       return {
@@ -140,11 +140,14 @@
           }).then(() => {
             this.$http.post('/admin/pushNotice/notice',this.query)
               .then(res=>{
-                this.$message({
-                  type: 'success',
-                  message: '发布成功!'
-                });
-                this.$router.push('/admin/record/storeNotice')
+                this.$store.commit('MESSAGE_ACCORD_SHOW', {
+                  text: '发布成功'
+                })
+//                this.$message({
+//                  type: 'success',
+//                  message: '发布成功!'
+//                });
+//                this.$router.push('/admin/record/storeNotice')
               })
               .catch(err=>{
                 this.$message({
@@ -171,12 +174,15 @@
         }).then(() => {
           this.$http.post('/admin/pushNotice/deleteNotice', {id: this.$route.query.id})
             .then(function (res) {
-              this.$message({
-                showClose: true,
-                message: '删除成功',
-                type: 'error'
+              this.$store.commit('MESSAGE_ACCORD_SHOW', {
+                text: '删除成功'
               })
-              this.$router.push('/admin/record/storeNotice')
+//              this.$message({
+//                showClose: true,
+//                message: '删除成功',
+//                type: 'error'
+//              })
+//              this.$router.push('/admin/record/storeNotice')
             }, function (err) {
               this.$message({
                 showClose: true,
@@ -216,11 +222,14 @@
             }).then(() => {
               this.$http.post('/admin/pushNotice/updateNotice', this.query)
                 .then(res => {
-                  this.$message({
-                    type: 'success',
-                    message: '修改成功!'
-                  });
-                  this.$router.push('/admin/record/storeNotice')
+                  this.$store.commit('MESSAGE_ACCORD_SHOW', {
+                    text: '修改成功'
+                  })
+//                  this.$message({
+//                    type: 'success',
+//                    message: '修改成功!'
+//                  });
+//                  this.$router.push('/admin/record/storeNotice')
                 })
                 .catch(err => {
                   this.$message({

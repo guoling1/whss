@@ -1,24 +1,24 @@
 <template>
   <div id="role">
     <div class="col-md-12">
-      <div class="box" style="margin-top:15px;overflow: hidden">
+      <div class="box" style="overflow: hidden">
         <div class="box-header">
           <h3 class="box-title">角色管理</h3>
-          <router-link to="/admin/record/roleAdd" class="btn btn-primary" style="float: right;">新增角色</router-link>
+          <a @click="_$power(issue,'boss_role_add')" class="btn btn-primary" style="float: right;">新增角色</a>
         </div>
         <div class="box-body">
           <!--筛选-->
-          <ul>
+          <ul class="search">
             <li class="same">
               <label>角色名称:</label>
-              <el-input style="width: 120px" v-model="query.roleName" placeholder="请输入内容" size="small"></el-input>
+              <el-input style="width: 188px" v-model="query.roleName" placeholder="请输入内容" size="small"></el-input>
             </li>
             <li class="same">
               <div class="btn btn-primary" @click="search">筛选</div>
             </li>
           </ul>
           <!--表格-->
-          <el-table v-loading.body="loading" style="font-size: 12px;margin:15px 0" :data="records" border>
+          <el-table v-loading.body="loading" style="font-size: 12px;margin-bottom: 15px" :data="records" border>
             <el-table-column type="index" width="70" label="序号"></el-table-column>
             <el-table-column prop="roleName" label="角色名称"></el-table-column>
             <el-table-column prop="updateTime" label="最后编辑时间">
@@ -29,11 +29,9 @@
             <el-table-column prop="statusName" label="状态"></el-table-column>
             <el-table-column label="操作" width="100">
               <template scope="scope">
-                <router-link :to="{path:'/admin/record/roleAdd',query:{id:records[scope.$index].id}}" type="text"
-                             size="small">编辑
-                </router-link>
-                <a @click="open(records[scope.$index].id)" v-if="records[scope.$index].statusName=='禁用'" type="text" size="small">开启</a>
-                <a @click="close(records[scope.$index].id)" v-if="records[scope.$index].statusName=='正常'" type="text" size="small">禁用</a>
+                <a @click="_$power(scope.row.id,issue1,'boss_role_update')" type="text" size="small">编辑</a>
+                <a @click="_$power(scope.row.id,open,'boss_role_disable')"  v-if="records[scope.$index].statusName=='禁用'" type="text" size="small">开启</a>
+                <a @click="_$power(scope.row.id,close,'boss_role_disable')" v-if="records[scope.$index].statusName=='正常'" type="text" size="small">禁用</a>
               </template>
             </el-table-column>
           </el-table>
@@ -73,6 +71,14 @@
       this.getData()
     },
     methods: {
+      issue: function () {
+        window.open('http://admin.qianbaojiajia.com/admin/details/roleAdd')
+//        this.$router.push('/admin/record/roleAdd')
+      },
+      issue1: function (id) {
+        window.open('http://admin.qianbaojiajia.com/admin/details/roleAdd?id='+id)
+//        this.$router.push({path:'/admin/record/roleAdd',query:{id:id}})
+      },
       getData: function () {
         this.loading = true;
         this.$http.post('/admin/user/roleListByPage', this.$data.query)
@@ -159,8 +165,16 @@
   }
 </script>
 <style scoped lang="less">
-  ul{
+  ul {
     padding: 0;
+    margin:0;
+  }
+  .search{
+    margin-bottom:0;
+  label{
+    display: block;
+    margin-bottom: 0;
+  }
   }
   .same{
     list-style: none;

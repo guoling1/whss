@@ -406,7 +406,12 @@ public class OrderServiceImpl implements OrderService {
         map.put("proxyName",req.getProxyName());
         map.put("proxyName1",req.getProxyName1());
         map.put("businessOrderNo",req.getBusinessOrderNo());
-        List<MerchantTradeResponse> list = orderDao.selectOrderList(map);
+        map.put("payChannelSign",req.getPayChannelSign());
+        map.put("markCode",req.getMarkCode());
+        map.put("appId",req.getAppId());
+        map.put("globalId",req.getGlobalId());
+        map.put("shortName",req.getShortName());
+        List<MerchantTradeResponse> list = this.orderDao.selectOrderList(map);
         if (list.size()>0){
             for (int i=0;i<list.size();i++){
                 if (list.get(i).getAppId().equals("hss")){
@@ -452,6 +457,11 @@ public class OrderServiceImpl implements OrderService {
         map.put("proxyName",req.getProxyName());
         map.put("proxyName1",req.getProxyName1());
         map.put("businessOrderNo",req.getBusinessOrderNo());
+        map.put("payChannelSign",req.getPayChannelSign());
+        map.put("markCode",req.getMarkCode());
+        map.put("appId",req.getAppId());
+        map.put("globalId",req.getGlobalId());
+        map.put("shortName",req.getShortName());
         List<MerchantTradeResponse> list = orderDao.downloadOrderList(map);
         if (list.size()>0){
             for (int i=0;i<list.size();i++){
@@ -1162,6 +1172,36 @@ public class OrderServiceImpl implements OrderService {
     }
 
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param orderNos
+     * @return
+     */
+    @Override
+    public Map<String, BigDecimal> getTradeAmountAndFeeByOrderNoList(final List<String> orderNos) {
+        if (CollectionUtils.isEmpty(orderNos)) {
+            return Collections.emptyMap();
+        }
+        return this.orderDao.selectTradeAmountAndFeeByOrderNoList(orderNos);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param orderNos
+     * @param offset
+     * @param pageSize
+     * @return
+     */
+    @Override
+    public List<Order> getOrderByOrderNos(final List<String> orderNos, final int offset, final int pageSize) {
+        if (CollectionUtils.isEmpty(orderNos)) {
+            return Collections.emptyList();
+        }
+        return this.orderDao.selectByAppParam(orderNos, offset, pageSize);
+    }
+
 
     /**
      * 手续费由待结算入余额
@@ -1217,6 +1257,7 @@ public class OrderServiceImpl implements OrderService {
         heads.add("支付流水号");
         heads.add("交易日期");
         heads.add("收款商户名称");
+        heads.add("商户编号");
         heads.add("所属一级");
         heads.add("所属二级");
         heads.add("支付金额");
@@ -1244,56 +1285,17 @@ public class OrderServiceImpl implements OrderService {
                     columns.add("");
                 }
                 columns.add(list.get(i).getMerchantName());
+                columns.add(list.get(i).getMarkCode());
                 columns.add(list.get(i).getProxyName());
                 columns.add(list.get(i).getProxyName1());
                 columns.add(String.valueOf(list.get(i).getTradeAmount()));
                 columns.add(String.valueOf(list.get(i).getPayRate()));
-//                if (list.get(i).getPayRate()==null){
-//                    String x = "0";
-//                    columns.add(x);
-//                }else {
-//                    columns.add(String.valueOf(list.get(i).getPayRate()));
-//                }
-//                if (list.get(i).getPoundage()==null){
-//                    String x = " ";
-//                    columns.add(x);
-//                }else {
-//                    columns.add(String.valueOf(list.get(i).getPoundage()));
-//                }
-                if (list.get(i).getStatus()==1){
-                    columns.add("待支付");
-                }
-                if (list.get(i).getStatus()==3){
-                    columns.add("支付失败");
-                }
-                if (list.get(i).getStatus()==4){
-                    columns.add("支付成功");
-                }
-                if (list.get(i).getStatus()==5){
-                    columns.add("提现中");
-                }
-                if (list.get(i).getStatus()==6){
-                    columns.add("提现成功");
-                }
-                if (list.get(i).getStatus()==7){
-                    columns.add("充值成功");
-                }
-                if (list.get(i).getStatus()==8){
-                    columns.add("充值失败");
-                }
+                columns.add(EnumOrderStatus.of(list.get(i).getStatus()).getValue());
+                columns.add(EnumSettleStatus.of(list.get(i).getSettleStatus()).getValue());
 
-                if (list.get(i).getSettleStatus()==1){
-                    columns.add("未结算");
-                }
-                if (list.get(i).getSettleStatus()==2){
-                    columns.add("结算中");
-                }
-                if (list.get(i).getSettleStatus()==3){
-                    columns.add("已结算");
-                }
                 if (list.get(i).getPayType()!=null&&!list.get(i).getPayType().equals("")) {
                     if (list.get(i).getPayChannelSign()!=0) {
-                        list.get(i).setPayType(EnumPayChannelSign.idOf(list.get(i).getPayChannelSign()).getPaymentChannel().getValue());
+                        columns.add(EnumPayChannelSign.idOf(list.get(i).getPayChannelSign()).getPaymentChannel().getValue());
                     }
                 } else {
                     columns.add("");
@@ -1329,6 +1331,11 @@ public class OrderServiceImpl implements OrderService {
         map.put("proxyName",req.getProxyName());
         map.put("proxyName1",req.getProxyName1());
         map.put("businessOrderNo",req.getBusinessOrderNo());
+        map.put("payChannelSign",req.getPayChannelSign());
+        map.put("markCode",req.getMarkCode());
+        map.put("appId",req.getAppId());
+        map.put("globalId",req.getGlobalId());
+        map.put("shortName",req.getShortName());
         return orderDao.selectOrderListCount(map);
     }
 

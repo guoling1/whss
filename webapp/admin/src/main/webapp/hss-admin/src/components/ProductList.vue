@@ -1,12 +1,12 @@
 <template lang="html">
   <div id="agentAdd">
-    <div style="margin-top: 15px" class="col-xs-12">
+    <div class="col-xs-12">
       <div class="box">
         <div class="box-header">
           <h3 class="box-title">产品列表</h3>
-          <router-link class="btn btn-primary pull-right" to="/admin/record/productAdd" style="margin: 0 15px">
+          <a @click="_$power(issue,'boss_product_add')" class="pull-right btn btn-primary">
             新增产品
-          </router-link>
+          </a>
         </div>
         <div class="box-body">
           <el-table max-height="637" style="font-size: 12px;margin-bottom: 15px;width: 50%" :data="products" border>
@@ -111,8 +111,13 @@
         })
     },
     methods: {
+      issue: function () {
+        window.open('http://admin.qianbaojiajia.com/admin/details/productAdd')
+//        this.$router.push('/admin/record/productAdd')
+      },
       setup:function () {
-        this.$router.push('/admin/record/gateway')
+        window.open('http://admin.qianbaojiajia.com/admin/details/gateway')
+//        this.$router.push('/admin/record/gateway')
       },
       create: function () {
         this.$data.product.channels = [];
@@ -148,8 +153,8 @@
           })
       },
       detail: function (val) {
-        console.log(val)
-        this.$router.push({path:'/admin/record/productAdd',query:{id:val}})
+        window.open('http://admin.qianbaojiajia.com/admin/details/productAdd?id='+val);
+//        this.$router.push({path:'/admin/record/productAdd',query:{id:val}})
       }
     },
     computed: {

@@ -1,14 +1,15 @@
 <template>
   <div>
     <div class="col-md-12">
-      <div class="box" style="margin-top:15px;overflow: hidden">
+      <div class="box" style="overflow: hidden">
         <div class="box-header">
           <h3 class="box-title">一级代理商列表</h3>
-          <router-link to="/admin/record/agentAddBase" class="btn btn-primary" style="float: right;color: #fff">新增代理商</router-link>
+          <!--<router-link to="/admin/record/agentAddBase" class="btn btn-primary" style="float: right;color: #fff">新增代理商</router-link>-->
+          <a @click="_$power(agentAdd,'boss_first_add')" class="btn btn-primary" style="float: right;color: #fff">新增代理商</a>
         </div>
         <div class="box-body">
           <!--筛选-->
-          <el-row :gutter="20" style="width: 910px">
+          <el-row :gutter="21" style="width: 950px">
             <el-col :span="4">
               <label>手机号：</label>
               <el-input v-model="query.mobile" placeholder="请输入内容" size="small"></el-input>
@@ -21,9 +22,9 @@
               <label>代理商编号：</label>
               <el-input v-model="query.markCode" placeholder="请输入内容" size="small"></el-input>
             </el-col>
-            <el-col :span="5">
+            <el-col :span="4">
               <label>省市:</label>
-              <div class="select" id="select" @click="open"><span>请选择</span>
+              <div class="select" id="select" @click="open"><span style="color: #1f2d3d">{{selectCon}}</span>
                 <i class="el-icon-caret-bottom" style="float: right;margin-top: 10px"></i>
               </div>
               <ul class="isShow" v-if="isOpen">
@@ -35,7 +36,7 @@
                 <li :class="'cityLi'+$index" v-for="city in citys" @click="select(city.code,city.aname)">{{city.aname}}</li>
               </ul>
             </el-col>
-            <el-col  :span="5">
+            <el-col  :span="4">
               <label>代理产品:</label>
               <el-select clearable v-model="query.sysType" size="small" >
                 <el-option label="全部" value="">全部</el-option>
@@ -43,20 +44,21 @@
                 <el-option label="好收收" value="hss">好收收</el-option>
               </el-select>
             </el-col>
-            <el-col  :span="1" style="margin-top: 18px">
+            <el-col  :span="4" style="margin-top: 18px">
               <div class="btn btn-primary" @click="search">筛选</div>
+              <div class="btn btn-primary" @click="reset">重置</div>
             </el-col>
           </el-row>
           <!--表格-->
           <el-table v-loading.body="loading"  style="font-size: 12px;margin:15px 0" :data="records" border >
             <el-table-column label="代理商名称">
               <template scope="scope">
-                <router-link :to="'/admin/record/agentAddBase?id='+records[scope.$index].id">{{records[scope.$index].proxyName}}</router-link>
+                <router-link target="_blank" :to="'/admin/details/agentAddBase?level=1&id='+records[scope.$index].id">{{records[scope.$index].proxyName}}</router-link>
               </template>
             </el-table-column>
             <el-table-column label="代理商编号">
               <template scope="scope">
-                <router-link :to="'/admin/record/agentAddBase?id='+records[scope.$index].id">{{records[scope.$index].markCode}}</router-link>
+                <router-link target="_blank" :to="'/admin/details/agentAddBase?level=1&id='+records[scope.$index].id">{{records[scope.$index].markCode}}</router-link>
               </template>
             </el-table-column>
             <el-table-column prop="level" label="代理商级别" ></el-table-column>
@@ -65,14 +67,14 @@
             <el-table-column prop="mobile" label="联系手机号" ></el-table-column>
             <el-table-column label="好收收">
               <template scope="scope">
-                <router-link :to="'/admin/record/agentAddPro?dealerId='+records[scope.$index].id+'&productId='+records[scope.$index].hssProductId+'&product=hss'" v-if="records[scope.$index].hssProductId==0">开通产品</router-link>
-                <router-link :to="'/admin/record/agentAddPro?dealerId='+records[scope.$index].id+'&productId='+records[scope.$index].hssProductId+'&product=hss'" v-else="records[scope.$index].hssProductId==0">修改产品设置</router-link>
+                <a @click="_$power(scope.row.id,scope.row.hssProductId,'hss',openProduct,'boss_first_product_add')" v-if="records[scope.$index].hssProductId==0">开通产品</a>
+                <a @click="_$power(scope.row.id,scope.row.hssProductId,'hss',auditProduct,'boss_first_product_update_btn')" v-else="records[scope.$index].hssProductId==0">修改产品设置</a>
               </template>
             </el-table-column>
             <el-table-column label="好收银" >
               <template scope="scope">
-                <router-link :to="'/admin/record/agentAddPro?dealerId='+records[scope.$index].id+'&productId='+records[scope.$index].hsyProductId+'&product=hsy'" v-if="records[scope.$index].hsyProductId==0">开通产品</router-link>
-                <router-link :to="'/admin/record/agentAddPro?dealerId='+records[scope.$index].id+'&productId='+records[scope.$index].hsyProductId+'&product=hsy'" v-else="records[scope.$index].hsyProductId==0">修改产品设置</router-link>
+                <a @click="_$power(scope.row.id,scope.row.hsyProductId,'hsy',openProduct,'boss_first_product_add')" v-if="records[scope.$index].hsyProductId==0">开通产品</a>
+                <a @click="_$power(scope.row.id,scope.row.hsyProductId,'hsy',auditProduct,'boss_first_product_update_btn')" v-else="records[scope.$index].hsyProductId==0">修改产品设置</a>
               </template>
             </el-table-column>
           </el-table>
@@ -126,6 +128,7 @@
         },
         isShow:false,
         index:'',
+        selectCon:'全部'
       }
     },
     created: function () {
@@ -144,6 +147,30 @@
       this.getData()
     },
     methods: {
+      reset: function () {
+        this.selectCon = '全部';
+        this.query = {
+          pageNo:1,
+          pageSize:10,
+          mobile:'',
+          name:"",
+          markCode:"",  //商户名字
+          sysType:"",
+          districtCode:""
+        };
+      },
+      openProduct:function (id,productId,val) {
+        window.open('http://admin.qianbaojiajia.com/admin/details/agentAddPro?dealerId='+id+'&productId='+productId+'&product='+val);
+//        this.$router.push({path:'/admin/record/agentAddPro',query:{dealerId:idproductId:productId,product:val}});
+      },
+      auditProduct:function (id,productId,val) {
+        window.open('http://admin.qianbaojiajia.com/admin/details/agentAddPro?dealerId='+id+'&productId='+productId+'&product='+val);
+//        this.$router.push({path:'/admin/record/agentAddPro',query:{dealerId:id,productId:productId,product:val}});
+      },
+      agentAdd:function () {
+        window.open('http://admin.qianbaojiajia.com/admin/details/agentAddBase');
+//        this.$router.push("/admin/record/agentAddBase")
+      },
       getData: function () {
         this.$data.loading = true;
         this.$http.post('/admin/dealer/listFirstDealer', this.$data.query)
@@ -208,17 +235,21 @@
         document.getElementById('select').style.borderColor = '#20a0ff';
       },
       select:function (valCode,val) {
-        var oCon = document.getElementById('select').getElementsByTagName('span')[0];
-        oCon.innerHTML = val;
-        oCon.style.color = '#1f2d3d';
+//        var oCon = document.getElementById('select').getElementsByTagName('span')[0];
+//        var oCon = document.getElementById('selectCol');
+        this.selectCon = val;
+//        oCon.innerHTML = val;
+//        oCon.style.color = '#1f2d3d';
         this.$data.query.districtCode = valCode;
         this.$data.isOpen = !this.$data.isOpen;
         this.$data.isOpen1 = !this.$data.isOpen1;
       },
       selectAll: function () {
-        var oCon = document.getElementById('select').getElementsByTagName('span')[0];
-        oCon.innerHTML = '全部';
-        oCon.style.color = '#1f2d3d';
+//        var oCon = document.getElementById('select').getElementsByTagName('span')[0];
+//        var oCon = document.getElementById('selectCol');
+//        oCon.innerHTML = '全部';
+        this.selectCon = '全部';
+//        oCon.style.color = '#1f2d3d';
         this.$data.query.districtCode = '';
         this.$data.isOpen = !this.$data.isOpen;
         this.$data.isOpen1 = false;

@@ -18,4 +18,13 @@ public enum IndustryCodeType {
         this.industryCodeKey = industryCodeKey;
         this.industryCodeValue = industryCodeValue;
     }
+
+    public static String getValue(Integer type){
+        for(IndustryCodeType industryCodeType : IndustryCodeType.values()){
+            if(industryCodeType.industryCodeKey==type){
+                return industryCodeType.industryCodeValue;
+            }
+        }
+        return "";
+    }
 }

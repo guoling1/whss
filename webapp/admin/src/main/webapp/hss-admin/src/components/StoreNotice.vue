@@ -4,11 +4,11 @@
       <div class="box" style="margin-top:15px;overflow: hidden">
         <div class="box-header">
           <h3 class="box-title">商户公告</h3>
-          <router-link to="/admin/record/storeNoticeDet" class="btn btn-primary" style="color: #fff;float: right;">发布消息</router-link>
+          <a @click="_$power(release,'boss_merchant_send_message')" to="/admin/record/storeNoticeDet" class="btn btn-primary" style="color: #fff;float: right;">发布消息</a>
         </div>
         <div class="box-body">
           <!--筛选-->
-          <ul>
+          <ul class="search">
             <li class="same">
               <label>发布日期:</label>
               <el-date-picker
@@ -24,13 +24,13 @@
             </li>
           </ul>
           <!--表格-->
-          <el-table v-loading.body="loading" height="583" style="font-size: 12px;margin:15px 0" :data="records" border>
+          <el-table v-loading.body="loading" height="583" style="font-size: 12px;margin-bottom: 15px" :data="records" border>
             <el-table-column type="index" width="62" label="序号"></el-table-column>
              <!--:formatter="changeTime"-->
             <el-table-column prop="dates" label="发布时间"></el-table-column>
             <el-table-column label="标题" min-width="160">
               <template scope="scope">
-                <router-link :to="{path:'/admin/record/StoreNoticeDet',query:{id:records[scope.$index].id}}"
+                <router-link target="_blank" :to="{path:'/admin/details/StoreNoticeDet',query:{id:records[scope.$index].id}}"
                   type="text" size="small">
                   {{records[scope.$index].title}}
                 </router-link>
@@ -80,6 +80,10 @@
       this.getData()
     },
     methods: {
+      release:function () {
+        window.open('http://admin.qianbaojiajia.com/admin/details/storeNoticeDet')
+//        this.$router.push('/admin/record/storeNoticeDet')
+      },
       getData: function () {
         this.loading = true;
         this.$http.post('/admin/pushNotice/noticeList',this.$data.query)
@@ -168,8 +172,15 @@
 <style scoped lang="less" rel="stylesheet/less">
   ul {
     padding: 0;
+    margin:0;
   }
-
+  .search{
+    margin-bottom:0;
+    label{
+      display: block;
+      margin-bottom: 0;
+    }
+  }
   .same {
     list-style: none;
     display: inline-block;

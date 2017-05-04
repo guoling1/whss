@@ -1,7 +1,8 @@
 <template lang="html">
-  <div id="storeAudit">
+  <div id="retrievalDet">
     <div class="box-header with-border" style="margin: 0 0 0 3px;">
       <h3 class="box-title" style="border-left: 3px solid #e4e0e0;padding-left: 10px;">提现详情</h3>
+      <a href="javascript:window.close();" class="pull-right btn btn-primary">关闭</a>
     </div>
     <div style="margin: 0 15px">
       <div class="box box-primary" v-if="isStore">
@@ -250,7 +251,7 @@
 
 <script lang="babel">
   export default {
-    name: 'storeAudit',
+    name: 'retrievalDet',
     data () {
       return {
         isStore: true,

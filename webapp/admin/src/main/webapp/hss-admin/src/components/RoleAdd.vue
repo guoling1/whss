@@ -5,6 +5,7 @@
         <div class="box-header">
           <h3 class="box-title" v-if="isAdd">新增角色</h3>
           <h3 class="box-title" v-else>角色详情</h3>
+          <a href="javascript:window.close();" class="pull-right btn btn-primary">关闭</a>
         </div>
         <div class="box-body">
           <ul>
@@ -17,8 +18,8 @@
               <table style="width:90%;display: inline-table;vertical-align: top" border="0" cellspacing="0" cellpadding="0" class="table table-bordered">
                 <thead>
                 <tr>
-                  <th width="35%">一级菜单名称</th>
-                  <th width="35%">子菜单名称</th>
+                  <th width="23%">一级菜单名称</th>
+                  <th width="25%">子菜单名称</th>
                   <th >操作</th>
                 </tr>
                 </thead>
@@ -62,6 +63,7 @@
   </div>
 </template>
 <script lang="babel">
+  import Message from './Message.vue'
   export default{
     name: 'roleAdd',
     data(){
@@ -81,7 +83,6 @@
         .then(res => {
           this.tableData = res.data.list;
           this.roleName = res.data.roleName;
-          console.log(this.tableData)
          /* this.tableData = JSON.parse(JSON.stringify(res.data.list));*/
           for (var i = 0; i < this.tableData.length; i++) {
             for (var j = 0; j < this.tableData[i].children.length; j++) {
@@ -92,7 +93,6 @@
             }
             this.tableData[i].isSelected = Boolean(this.tableData[i].isSelected);
           }
-          console.log(this.tableData)
         })
         .catch(err => {
           this.$message({
@@ -124,12 +124,15 @@
           roleName:this.roleName,
           list:list
         }).then(res => {
-          this.$message({
-            showClose: true,
-            message: '添加成功',
-            type: 'success'
-          });
-          this.$router.push('/admin/record/role')
+//          this.$message({
+//            showClose: true,
+//            message: '添加成功',
+//            type: 'success'
+//          });
+//          this.$router.push('/admin/record/role')
+          this.$store.commit('MESSAGE_ACCORD_SHOW', {
+            text: '操作成功'
+          })
         }).catch(err =>{
           this.$message({
             showClose: true,

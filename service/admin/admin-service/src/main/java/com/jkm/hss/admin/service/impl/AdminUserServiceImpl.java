@@ -7,17 +7,16 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.jkm.base.common.entity.PageModel;
 import com.jkm.base.common.enums.EnumGlobalAdminUserLevel;
-import com.jkm.base.common.enums.EnumGlobalIDPro;
-import com.jkm.base.common.enums.EnumGlobalIDType;
 import com.jkm.base.common.util.GlobalID;
+import com.jkm.hss.admin.dao.AdminRoleDao;
 import com.jkm.hss.admin.dao.AdminUserDao;
 import com.jkm.hss.admin.entity.*;
-import com.jkm.hss.admin.enums.EnumAdminType;
-import com.jkm.hss.admin.enums.EnumAdminUserStatus;
-import com.jkm.hss.admin.enums.EnumDataDictionaryType;
-import com.jkm.hss.admin.enums.EnumQRCodeDistributeType2;
+import com.jkm.hss.admin.enums.*;
 import com.jkm.hss.admin.helper.AdminUserSupporter;
+import com.jkm.hss.admin.helper.requestparam.AdminDealerUserListRequest;
 import com.jkm.hss.admin.helper.requestparam.AdminUserListRequest;
+import com.jkm.hss.admin.helper.responseparam.AdminDealerUser;
+import com.jkm.hss.admin.helper.responseparam.AdminUserDealerListResponse;
 import com.jkm.hss.admin.helper.responseparam.AdminUserListResponse;
 import com.jkm.hss.admin.service.*;
 import lombok.extern.slf4j.Slf4j;
@@ -27,7 +26,6 @@ import org.apache.commons.lang3.tuple.Triple;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -55,6 +53,9 @@ public class AdminUserServiceImpl implements AdminUserService {
 
     @Autowired
     private DataDictionaryService dataDictionaryService;
+
+    @Autowired
+    private AdminRoleDao adminRoleDao;
 
     /**
      * {@inheritDoc}
@@ -108,8 +109,29 @@ public class AdminUserServiceImpl implements AdminUserService {
      * @return
      */
     @Override
-    public Optional<AdminUser> getAdminUserByName(final String username) {
-        return Optional.fromNullable(adminUserDao.selectByUsername(username));
+    public Optional<AdminUser> getAdminUserByNameAndType(final String username,final int type) {
+        if(type==EnumAdminType.BOSS.getCode()){
+            return Optional.fromNullable(adminUserDao.selectByUsernameAndType(username,type));
+        }else{
+            return Optional.fromNullable(adminUserDao.selectDealerLoginNameByUsername(username));
+        }
+    }
+
+    /**
+     * 根据用户名和类型获取
+     *
+     * @param username
+     * @param type
+     * @param dealerId @return
+     */
+    @Override
+    public Optional<AdminUser> getAdminUserByNameAndTypeUnIncludeNow(String username, int type, long dealerId) {
+        if(type==EnumAdminType.BOSS.getCode()){
+            return Optional.fromNullable(adminUserDao.getAdminUserByNameAndTypeUnIncludeNow(username,type,dealerId));
+        }else{
+            return Optional.fromNullable(adminUserDao.getAdminDealerUserByNameUnIncludeNow(username,dealerId));
+        }
+
     }
 
     @Override
@@ -137,7 +159,7 @@ public class AdminUserServiceImpl implements AdminUserService {
      */
     @Override
     public Optional<AdminUserPassport> login(final String username, final String password) {
-        final Optional<AdminUser> adminUserOptional = getAdminUserByName(username);
+        final Optional<AdminUser> adminUserOptional = getAdminUserByNameAndType(username,EnumAdminType.BOSS.getCode());
         if (adminUserOptional.isPresent()) {
             final AdminUser adminUser = adminUserOptional.get();
             if (AdminUserSupporter.isPasswordCorrect(adminUser, password)) {
@@ -357,7 +379,7 @@ public class AdminUserServiceImpl implements AdminUserService {
         if(!StringUtil.isNullOrEmpty(adminUserListRequest.getMobile())){
             adminUserListRequest.setMobile(AdminUserSupporter.encryptMobile(adminUserListRequest.getMobile()));
         }
-        final int count = this.adminUserDao.selectAdminUserCountByPageParams(adminUserListRequest);
+        final long count = this.adminUserDao.selectAdminUserCountByPageParams(adminUserListRequest);
         final List<AdminUser> adminUsers = this.adminUserDao.selectAdminUserListByPageParams(adminUserListRequest);
         List<AdminUserListResponse> list = new ArrayList<AdminUserListResponse>();
         if(adminUsers.size()>0){
@@ -369,13 +391,24 @@ public class AdminUserServiceImpl implements AdminUserService {
                 adminUserListResponse.setRealname(adminUsers.get(i).getRealname());
                 adminUserListResponse.setCompanyName(dataDictionaryService.selectDictNameByDictTypeAndDictValue(EnumDataDictionaryType.COMPANY.getId(),adminUsers.get(i).getCompanyId()));
                 adminUserListResponse.setDeptName(dataDictionaryService.selectDictNameByDictTypeAndDictValue(EnumDataDictionaryType.DEPT.getId(),adminUsers.get(i).getDeptId()));
+                adminUserListResponse.setRoleId(adminUsers.get(i).getRoleId());
                 if(adminUsers.get(i).getMobile()!=null&&!"".equals(adminUsers.get(i).getMobile())){
                     adminUserListResponse.setMobile(AdminUserSupporter.decryptMobile(adminUsers.get(i).getId(),adminUsers.get(i).getMobile()));
                 }
                 adminUserListResponse.setEmail(adminUsers.get(i).getEmail());
-                adminUserListResponse.setRoleName("管理员");
+                if(adminUsers.get(i).getIsMaster()== EnumIsMaster.MASTER.getCode()){
+                    adminUserListResponse.setRoleName("超级管理员");
+                }else{
+                    AdminRole adminRole = adminRoleDao.selectById(adminUsers.get(i).getRoleId());
+                    if(adminRole!=null){
+                        adminUserListResponse.setRoleName(adminRole.getRoleName());
+                    }else{
+                        adminUserListResponse.setRoleName("管理员");
+                    }
+                }
                 adminUserListResponse.setCreateTime(adminUsers.get(i).getCreateTime());
                 adminUserListResponse.setStatus(adminUsers.get(i).getStatus());
+                adminUserListResponse.setIsMaster(adminUsers.get(i).getIsMaster());
                 list.add(adminUserListResponse);
             }
         }
@@ -383,15 +416,62 @@ public class AdminUserServiceImpl implements AdminUserService {
         pageModel.setRecords(list);
         return pageModel;
     }
-
+    /**
+     * boss代理商员工列表
+     *
+     * @param adminDealerUserListRequest
+     * @return
+     */
+    @Override
+    public PageModel<AdminUserDealerListResponse> userDealerList(AdminDealerUserListRequest adminDealerUserListRequest) {
+        final PageModel<AdminUserDealerListResponse> pageModel = new PageModel<>(adminDealerUserListRequest.getPageNo(), adminDealerUserListRequest.getPageSize());
+        adminDealerUserListRequest.setOffset(pageModel.getFirstIndex());
+        adminDealerUserListRequest.setCount(pageModel.getPageSize());
+        if(!StringUtil.isNullOrEmpty(adminDealerUserListRequest.getMobile())){
+            adminDealerUserListRequest.setMobile(AdminUserSupporter.encryptMobile(adminDealerUserListRequest.getMobile()));
+        }
+        final long count = this.adminUserDao.selectAdminUserDealerCountByPageParams(adminDealerUserListRequest);
+        final List<AdminDealerUser> adminUsers = this.adminUserDao.selectAdminUserDealerListByPageParams(adminDealerUserListRequest);
+        List<AdminUserDealerListResponse> list = new ArrayList<AdminUserDealerListResponse>();
+        if(adminUsers.size()>0){
+            for(int i=0;i<adminUsers.size();i++){
+                AdminUserDealerListResponse adminUserListResponse = new AdminUserDealerListResponse();
+                adminUserListResponse.setId(adminUsers.get(i).getId());
+                adminUserListResponse.setMarkCode(adminUsers.get(i).getMarkCode());
+                adminUserListResponse.setUsername(adminUsers.get(i).getUsername());
+                adminUserListResponse.setRealname(adminUsers.get(i).getRealname());
+                adminUserListResponse.setBelongDealer(adminUsers.get(i).getBelongDealer());
+                adminUserListResponse.setRoleId(adminUsers.get(i).getRoleId());
+                if(adminUsers.get(i).getMobile()!=null&&!"".equals(adminUsers.get(i).getMobile())){
+                    adminUserListResponse.setMobile(AdminUserSupporter.decryptMobile(adminUsers.get(i).getId(),adminUsers.get(i).getMobile()));
+                }
+                adminUserListResponse.setEmail(adminUsers.get(i).getEmail());
+                if(adminUsers.get(i).getIsMaster()== EnumIsMaster.MASTER.getCode()){
+                    adminUserListResponse.setRoleName("超级管理员");
+                }else{
+                    AdminRole adminRole = adminRoleDao.selectById(adminUsers.get(i).getRoleId());
+                    if(adminRole!=null){
+                        adminUserListResponse.setRoleName(adminRole.getRoleName());
+                    }
+                }
+                adminUserListResponse.setCreateTime(adminUsers.get(i).getCreateTime());
+                adminUserListResponse.setStatus(adminUsers.get(i).getStatus());
+                adminUserListResponse.setIsMaster(adminUsers.get(i).getIsMaster());
+                list.add(adminUserListResponse);
+            }
+        }
+        pageModel.setCount(count);
+        pageModel.setRecords(list);
+        return pageModel;
+    }
     /**
      * @param username
      * @param id
      * @return
      */
     @Override
-    public Long selectByUsernameUnIncludeNow(String username, long id) {
-        return adminUserDao.selectByUsernameUnIncludeNow(username,id);
+    public Long selectByUsernameAndTypeUnIncludeNow(String username, int type, long id) {
+        return adminUserDao.selectByUsernameAndTypeUnIncludeNow(username,type,id);
     }
 
     /**
@@ -403,5 +483,123 @@ public class AdminUserServiceImpl implements AdminUserService {
     @Override
     public void updateLastLoginDate(long id) {
         adminUserDao.updateLastLoginDate(id);
+    }
+
+    /**
+     * 创建一级代理登录用户
+     * @param adminUser
+     */
+    @Override
+    public long createFirstDealerUser(AdminUser adminUser) {
+        this.adminUserDao.insert(adminUser);
+        this.adminUserDao.updateMarkCode(GlobalID.GetAdminUserID(EnumGlobalAdminUserLevel.FIRSTDEALER,adminUser.getId()+""),adminUser.getId());
+        return adminUser.getId();
+    }
+    /**
+     * 创建二级代理登录用户
+     * @param adminUser
+     */
+    @Override
+    public long createSecondDealerUser(AdminUser adminUser) {
+        this.adminUserDao.insert(adminUser);
+        this.adminUserDao.updateMarkCode(GlobalID.GetAdminUserID(EnumGlobalAdminUserLevel.SECONDDEALER,adminUser.getId()+""),adminUser.getId());
+        return adminUser.getId();
+    }
+
+    /**
+     * 修改一级代理商管理账户
+     *
+     * @param adminUser
+     * @return
+     */
+    @Override
+    public void updateDealerUser(AdminUser adminUser) {
+        this.adminUserDao.updateDealerUser(adminUser);
+    }
+
+    /**
+     * 修改代理商登录密码
+     *
+     * @param pwd
+     * @param dealerId
+     */
+    @Override
+    public void updateDealerUserPwd(String pwd, long dealerId) {
+        this.adminUserDao.updateDealerUserPwd(pwd,dealerId);
+    }
+
+    /**
+     * 修改代理商登录密码
+     *
+     * @param pwd
+     * @param id
+     */
+    @Override
+    public void updateDealerUserPwdById(String pwd, long id) {
+        this.adminUserDao.updateDealerUserPwdById(pwd,id);
+    }
+
+    /**
+     * 根据代理商编码和是否有所有权限查询代理商
+     * @param dealerId
+     * @param isMaster
+     * @return
+     */
+    @Override
+    public Optional<AdminUser> getAdminUserByDealerIdAndIsMaster(long dealerId,int isMaster) {
+        return Optional.fromNullable(this.adminUserDao.getAdminUserByDealerIdAndIsMaster(dealerId,isMaster));
+    }
+
+    /**
+     * 判断是否有接口访问权限
+     *
+     * @param roleId
+     * @param type
+     * @param url
+     * @param method
+     * @return
+     */
+    @Override
+    public int getPrivilegeByContions(long roleId, int type, String url, String method) {
+        return adminRoleDao.getPrivilegeByContions(roleId,type,url,method);
+    }
+
+    /**
+     * 判断是否有接口访问权限(js公共调用)
+     *
+     * @param roleId
+     * @param type
+     * @param descr
+     * @return
+     */
+    @Override
+    public int getPrivilegeByContionsOfJs(long roleId, int type, String descr) {
+        return adminRoleDao.getPrivilegeByContionsOfJs(roleId,type,descr);
+    }
+
+
+    /**
+     * 是否有访问的操作
+     *
+     * @param type
+     * @param url
+     * @param method
+     * @return
+     */
+    @Override
+    public int hasUrl(int type, String url, String method) {
+        return adminRoleDao.hasUrl(type,url,method);
+    }
+
+    /**
+     * 是否有关键字
+     *
+     * @param type
+     * @param descr
+     * @return
+     */
+    @Override
+    public int hasDescr(int type, String descr) {
+        return adminRoleDao.hasDescr(type,descr);
     }
 }

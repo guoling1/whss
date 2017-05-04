@@ -1,24 +1,24 @@
 <template>
   <div>
     <div class="col-md-12">
-      <div class="box" style="margin-top:15px;overflow: hidden">
+      <div class="box" style="overflow: hidden">
         <div class="box-header">
           <h3 class="box-title">代理商结算记录</h3>
         </div>
         <div class="box-body">
           <!--筛选-->
-          <ul>
+          <ul class="search">
             <li class="same">
               <label>结算日期:</label>
-              <el-date-picker v-model="date" size="small" type="daterange" align="right" placeholder="选择日期范围" :picker-options="pickerOptions"></el-date-picker>
+              <el-date-picker v-model="date" size="small" type="daterange" align="right" placeholder="选择日期范围" :picker-options="pickerOptions" style="width: 188px"></el-date-picker>
             </li>
             <li class="same">
               <label>结算单号:</label>
-              <el-input style="width: 130px" v-model="query.settleNo" placeholder="请输入内容" size="small"></el-input>
+              <el-input style="width: 188px" v-model="query.settleNo" placeholder="请输入内容" size="small"></el-input>
             </li>
             <li class="same">
               <label>结算状态:</label>
-              <el-select clearable v-model="query.settleStatus" size="small" >
+              <el-select clearable v-model="query.settleStatus" size="small" style="width: 188px">
                 <el-option label="全部" value="">全部</el-option>
                 <el-option label="待结算" value="1">待结算</el-option>
                 <el-option label="部分结算" value="4">部分结算</el-option>
@@ -27,18 +27,19 @@
             </li>
             <li class="same">
               <label>代理商名称:</label>
-              <el-input style="width: 130px" v-model="query.userName" placeholder="请输入内容" size="small"></el-input>
+              <el-input style="width: 188px" v-model="query.userName" placeholder="请输入内容" size="small"></el-input>
             </li>
             <li class="same">
               <label>代理商编号:</label>
-              <el-input style="width: 130px" v-model="query.userNo" placeholder="请输入内容" size="small"></el-input>
+              <el-input style="width: 188px" v-model="query.userNo" placeholder="请输入内容" size="small"></el-input>
             </li>
             <li class="same">
               <div class="btn btn-primary" @click="search">筛选</div>
+              <div class="btn btn-primary" @click="reset">重置</div>
             </li>
           </ul>
           <!--表格-->
-          <el-table v-loading.body="loading" style="font-size: 12px;margin:15px 0" :data="records" border @selection-change="handleSelectionChange">
+          <el-table v-loading.body="loading" style="font-size: 12px;margin-bottom: 15px" :data="records" border @selection-change="handleSelectionChange">
             <el-table-column type="index" width="62" label="序号" fixed="left"></el-table-column>
             <!--<el-table-column type="selection" width="55"></el-table-column>-->
             <el-table-column prop="userName" label="代理商名称" ></el-table-column>
@@ -164,26 +165,43 @@
       }
     },
     created: function () {
-      let time = new Date();
-      this.date = [time,time];
-      for (var j = 0; j < this.date.length; j++) {
-        var str = this.date[j];
-        var ary = [str.getFullYear(), str.getMonth() + 1, str.getDate()];
-        for (var i = 0, len = ary.length; i < len; i++) {
-          if (ary[i] < 10) {
-            ary[i] = '0' + ary[i];
-          }
-        }
-        str = ary[0] + '-' + ary[1] + '-' + ary[2];
-        if (j == 0) {
-          this.$data.query.starDate = str;
-        } else {
-          this.$data.query.endDate = str;
-        }
-      }
+      this.currentDate();
       this.getData()
     },
     methods: {
+      currentDate: function () {
+        let time = new Date();
+        this.date = [time,time];
+        for (var j = 0; j < this.date.length; j++) {
+          var str = this.date[j];
+          var ary = [str.getFullYear(), str.getMonth() + 1, str.getDate()];
+          for (var i = 0, len = ary.length; i < len; i++) {
+            if (ary[i] < 10) {
+              ary[i] = '0' + ary[i];
+            }
+          }
+          str = ary[0] + '-' + ary[1] + '-' + ary[2];
+          if (j == 0) {
+            this.$data.query.starDate = str;
+          } else {
+            this.$data.query.endDate = str;
+          }
+        }
+      },
+      reset: function () {
+        this.query = {
+          pageNo:1,
+          pageSize:10,
+          userNo:"",//编号
+          userName:"",  //名字
+          settleNo:"",//结算单号
+          userType:3,//(2：商户，3：代理商)
+          starDate:"", // 开始
+          endDate:"", //结束
+          settleStatus:''
+        };
+        this.currentDate()
+      },
       changeTime: function (row, column) {
         var val = row.settleDate;
         if (val == '' || val == null) {
@@ -322,8 +340,16 @@
   .maskCon{
     margin:0 0 15px 50px
   }
-  ul{
+  .search{
+    margin-bottom:0;
+  label{
+    display: block;
+    margin-bottom: 0;
+  }
+  }
+  ul {
     padding: 0;
+    margin:0;
   }
   .same{
     list-style: none;

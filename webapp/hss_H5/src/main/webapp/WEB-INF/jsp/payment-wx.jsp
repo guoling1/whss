@@ -117,5 +117,5 @@
   }
 </script>
 <script src="http://static.jinkaimen.cn/vendor/vendor.1.0.9.9.min.js"></script>
-<script src="http://static.jinkaimen.cn/hss/2.2.18/payment.min.js"></script>
+<script src="http://static.jinkaimen.cn/hss/2.2.19/payment.min.js"></script>
 </html>

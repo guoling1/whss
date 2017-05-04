@@ -1,24 +1,27 @@
 <template>
   <div>
-    <div class="col-md-12">
-      <div class="box" style="margin-top:15px;overflow: hidden">
+    <div class="col-md-12" style="height: 880px">
+      <div class="box" style="overflow: hidden">
         <div class="box-header">
           <h3 class="box-title">T1结算审核</h3>
+          <a @click="isgenerateRecord = true" class="pull-right btn btn-primary" style="margin-left: 20px">生成结算单
+          </a>
+          <a @click="ismarkSettled = true" class="btn btn-primary" style="float: right;">更新结算状态</a>
         </div>
         <div class="box-body">
           <!--筛选-->
-          <ul>
+          <ul class="search">
             <li class="same">
               <label>结算对象编号:</label>
-              <el-input style="width: 130px" v-model="query.userNo" placeholder="请输入内容" size="small"></el-input>
+              <el-input style="width: 188px" v-model="query.userNo" placeholder="请输入内容" size="small"></el-input>
             </li>
             <li class="same">
               <label>名称:</label>
-              <el-input style="width: 130px" v-model="query.userName" placeholder="请输入内容" size="small"></el-input>
+              <el-input style="width: 188px" v-model="query.userName" placeholder="请输入内容" size="small"></el-input>
             </li>
             <li class="same">
               <label>类型:</label>
-              <el-select clearable v-model="query.userType" size="small" >
+              <el-select clearable v-model="query.userType" size="small" style="width: 188px">
                 <el-option label="全部" value="">全部</el-option>
                 <el-option label="商户" value="2">商户</el-option>
                 <el-option label="代理商" value="3">代理商</el-option>
@@ -27,11 +30,11 @@
             </li>
             <li class="same">
               <label>结算日期:</label>
-              <el-date-picker v-model="date" size="small" type="daterange" align="right" placeholder="选择日期范围" :picker-options="pickerOptions"></el-date-picker>
+              <el-date-picker v-model="date" size="small" type="daterange" align="right" placeholder="选择日期范围" :picker-options="pickerOptions" style="width: 188px"></el-date-picker>
             </li>
             <li class="same">
               <label>对账结果:</label>
-              <el-select clearable v-model="query.checkedStatus" size="small" >
+              <el-select clearable v-model="query.checkedStatus" size="small" style="width: 188px">
                 <el-option label="全部" value="">全部</el-option>
                 <el-option label="未对账" value="1">未对账</el-option>
                 <el-option label="对账完成无异常" value="2">对账完成无异常</el-option>
@@ -40,7 +43,7 @@
             </li>
             <li class="same">
               <label>结算状态:</label>
-              <el-select clearable v-model="query.settleStatus" size="small" >
+              <el-select clearable v-model="query.settleStatus" size="small" style="width: 188px">
                 <el-option label="全部" value="">全部</el-option>
                 <el-option label="待结算" value="1">待结算</el-option>
                 <el-option label="部分结算" value="4">部分结算</el-option>
@@ -49,10 +52,11 @@
             </li>
             <li class="same">
               <div class="btn btn-primary" @click="search">筛选</div>
+              <div class="btn btn-primary" @click="reset">重置</div>
             </li>
           </ul>
           <!--表格-->
-          <el-table v-loading.body="loading" style="font-size: 12px;margin:15px 0" :data="records" border @selection-change="handleSelectionChange">
+          <el-table v-loading.body="loading" style="font-size: 12px;margin-bottom: 15px" :data="records" border @selection-change="handleSelectionChange">
             <!--<el-table-column type="selection" width="55"></el-table-column>-->
             <el-table-column prop="userNo" label="结算对象编号" ></el-table-column>
             <el-table-column prop="userName" label="结算对象名称" ></el-table-column>
@@ -66,13 +70,18 @@
             <el-table-column prop="tradeDate" :formatter="changeTime" label="交易日期"></el-table-column>
             <el-table-column prop="tradeNumber" label="交易笔数" align="right" width="90"></el-table-column>
             <el-table-column prop="settleAmount" label="结算金额" align="right" :formatter="changeNum"></el-table-column>
-            <el-table-column prop="checkedStatusValue" label="对账结果" ></el-table-column>
+            <!--<el-table-column prop="checkedStatusValue" label="对账结果" ></el-table-column>-->
             <el-table-column prop="settleStatusValue" label="结算状态" ></el-table-column>
-            <el-table-column label="操作" width="70">
+            <!--<el-table-column label="操作" width="70">-->
+              <!--<template scope="scope">-->
+                <!--<el-button @click.native.prevent="list(scope.$index)" type="text" size="small" v-if="records[scope.$index].settleStatusValue!='结算成功'">结算</el-button>-->
+              <!--</template>-->
+            <!--</el-table-column>-->
+            <!--<el-table-column label="操作" width="70">
               <template scope="scope">
-                <el-button @click.native.prevent="list(scope.$index)" type="text" size="small" v-if="records[scope.$index].settleStatusValue!='结算成功'">结算</el-button>
+                <el-button @click.native.prevent="_$power(scope.$index,list,'boss_trade_export')" type="text" size="small" v-if="records[scope.$index].settleStatusValue!='结算成功'">结算</el-button>
               </template>
-            </el-table-column>
+            </el-table-column>-->
           </el-table>
           <!--分页-->
           <div class="block" style="text-align: right">
@@ -112,6 +121,28 @@
                 <el-button @click="isShow = false">取 消</el-button>
                 <el-button @click="settle(2,records[index].id)">结算已对账部分</el-button>
                 <el-button @click="settle(3,records[index].id)">强制结算全部</el-button>
+              </div>
+            </el-dialog>
+          </div>
+          <div v-if="isgenerateRecord">
+            <el-dialog title="生成结算单" v-model="isgenerateRecord">
+              <div class="maskCon">
+                <span>生成结算单后，将会展示给商户，请务必在对账完成后生成结算单</span>
+              </div>
+              <div slot="footer" class="dialog-footer" style="text-align: center;">
+                <el-button @click="isgenerateRecord = false">取 消</el-button>
+                <el-button @click="generate">立即生成</el-button>
+              </div>
+            </el-dialog>
+          </div>
+          <div v-if="ismarkSettled">
+            <el-dialog title="更新结算单" v-model="ismarkSettled">
+              <div class="maskCon">
+                <span>更新结算单为成功状态</span>
+              </div>
+              <div slot="footer" class="dialog-footer" style="text-align: center;">
+                <el-button @click="ismarkSettled = false">取 消</el-button>
+                <el-button @click="markSettled">立即更新</el-button>
               </div>
             </el-dialog>
           </div>
@@ -172,30 +203,85 @@
               currentPage4: 1,
               loading:true,
               isShow:false,
+              isgenerateRecord:false,
+              ismarkSettled:false,
               index:'',
             }
         },
       created: function () {
-        let time = new Date();
-        this.date = [time,time];
-        for (var j = 0; j < this.date.length; j++) {
-          var str = this.date[j];
-          var ary = [str.getFullYear(), str.getMonth() + 1, str.getDate()];
-          for (var i = 0, len = ary.length; i < len; i++) {
-            if (ary[i] < 10) {
-              ary[i] = '0' + ary[i];
-            }
-          }
-          str = ary[0] + '-' + ary[1] + '-' + ary[2];
-          if (j == 0) {
-            this.$data.query.startSettleDate = str;
-          } else {
-            this.$data.query.endSettleDate = str;
-          }
-        }
+        this.currentDate();
         this.getData()
       },
       methods: {
+        currentDate: function () {
+          let time = new Date();
+          this.date = [time,time];
+          for (var j = 0; j < this.date.length; j++) {
+            var str = this.date[j];
+            var ary = [str.getFullYear(), str.getMonth() + 1, str.getDate()];
+            for (var i = 0, len = ary.length; i < len; i++) {
+              if (ary[i] < 10) {
+                ary[i] = '0' + ary[i];
+              }
+            }
+            str = ary[0] + '-' + ary[1] + '-' + ary[2];
+            if (j == 0) {
+              this.$data.query.startSettleDate = str;
+            } else {
+              this.$data.query.endSettleDate = str;
+            }
+          }
+        },
+        reset: function () {
+          this.query = {
+            pageNo:1,
+            pageSize:10,
+            userNo:"",//商户编号
+            userName:"",  //商户名字
+            userType:'',
+            startSettleDate:"",
+            endSettleDate:"",
+            checkedStatus:'',
+            settleStatus:''
+          };
+          this.currentDate()
+        },
+        generate:function () {
+          this.$http.post('/admin/settle/generateRecord')
+            .then(function (res) {
+              this.$message({
+                showClose: true,
+                message: '生成成功',
+                type: 'success'
+              });
+              this.$data.isgenerateRecord = false
+            })
+            .catch(function (err) {
+              this.$message({
+                showClose: true,
+                message: err.statusMessage,
+                type: 'error'
+              })
+            })
+        },
+        markSettled:function () {
+          this.$http.post('/admin/settle/markSettled')
+            .then(function (res) {
+              this.$message({
+                showClose: true,
+                message: '更新成功',
+                type: 'success'
+              });
+              this.$data.ismarkSettled = false
+            })
+            .catch(function (err) {
+              this.$message({
+                showClose: true,
+                message: err.statusMessage,
+                type: 'error'
+              })
+            })
+        },
         changeTime: function (row, column) {
           var val = row.tradeDate;
           if (val == '' || val == null) {
@@ -331,11 +417,20 @@
     }
 </script>
 <style scoped lang="less">
+  ul {
+    padding: 0;
+    margin:0;
+  }
+  .search{
+  margin-bottom:0;
+  label{
+    display: block;
+    margin-bottom: 0;
+  }
+  }
+
   .maskCon{
     margin:0 0 15px 50px
-  }
-  ul{
-    padding: 0;
   }
   .same{
     list-style: none;

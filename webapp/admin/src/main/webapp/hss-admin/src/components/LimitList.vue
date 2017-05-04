@@ -1,31 +1,32 @@
 <template>
   <div id="limitList">
     <div class="col-md-12">
-      <div class="box" style="margin-top:15px;overflow: hidden">
+      <div class="box" style="overflow: hidden">
         <div class="box-header">
           <h3 class="box-title">银行卡限额</h3>
         </div>
         <div class="box-body">
           <!--筛选-->
-          <ul>
+          <ul class="search">
             <li class="same">
               <label>通道名称:</label>
-              <el-input style="width: 130px" v-model="query.channelName" placeholder="请输入内容" size="small"></el-input>
+              <el-input style="width: 188px" v-model="query.channelName" placeholder="请输入内容" size="small"></el-input>
             </li>
             <li class="same">
               <label>通道编码:</label>
-              <el-input style="width: 130px" v-model="query.channelCode" placeholder="请输入内容" size="small"></el-input>
+              <el-input style="width: 188px" v-model="query.channelCode" placeholder="请输入内容" size="small"></el-input>
             </li>
             <li class="same">
               <label>银行编码:</label>
-              <el-input style="width: 130px" v-model="query.bankCode" placeholder="请输入内容" size="small"></el-input>
+              <el-input style="width: 188px" v-model="query.bankCode" placeholder="请输入内容" size="small"></el-input>
             </li>
             <li class="same">
               <div class="btn btn-primary" @click="search">筛选</div>
+              <div class="btn btn-primary" @click="reset">重置</div>
             </li>
           </ul>
           <!--表格-->
-          <el-table v-loading.body="loading" height="583" style="font-size: 12px;margin:15px 0" :data="records" border>
+          <el-table v-loading.body="loading" height="583" style="font-size: 12px;margin-bottom: 15px" :data="records" border>
             <el-table-column width="62" label="序号">
               <template scope="scope">
                 <div>{{scope.$index+1}}</div>
@@ -41,8 +42,8 @@
             <el-table-column prop="--" label="月累计限额"></el-table-column>
             <el-table-column label="操作" width="90">
               <template scope="scope">
-                <a href="#" @click="onOff(1,scope.row.id)" v-if="scope.row.status==0">启用</a>
-                <a href="#" @click="onOff(2,scope.row.id)" v-if="scope.row.status==1">禁用</a>
+                <a href="#" @click="_$power(1,scope.row.id,onOff,'boss_quota_enable')" v-if="scope.row.status==0">启用</a>
+                <a href="#" @click="_$power(2,scope.row.id,onOff,'boss_quota_disable')" v-if="scope.row.status==1">禁用</a>
               </template>
             </el-table-column>
           </el-table>
@@ -87,6 +88,15 @@
       this.getData()
     },
     methods: {
+      reset: function () {
+        this.query = {
+          pageNo:1,
+          pageSize:10,
+          channelName:'',
+          channelCode:'',
+          bankCode:'',
+        };
+      },
       getData: function () {
         this.loading = true;
         this.$http.post('/admin/channel/querySupportBank',this.$data.query)
@@ -154,6 +164,14 @@
 <style scoped lang="less" rel="stylesheet/less">
   ul {
     padding: 0;
+    margin:0;
+  }
+  .search{
+    margin-bottom:0;
+    label{
+      display: block;
+      margin-bottom: 0;
+    }
   }
 
   .same {

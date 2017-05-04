@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="col-md-12">
-      <div class="box" style="margin-top:15px;overflow: hidden">
+      <div class="box" style="overflow: hidden">
         <div class="box-header">
           <h3 class="box-title">对账异常记录</h3>
         </div>
@@ -9,15 +9,15 @@
           <ul>
             <li class="same">
               <label>交易流水:</label>
-              <el-input v-model="query.orderSN" placeholder="请输入内容" size="small" style="width: 220px"></el-input>
+              <el-input v-model="query.orderSN" placeholder="请输入内容" size="small" style="width: 190px"></el-input>
             </li>
             <li class="same">
               <label>对账渠道:</label>
-              <el-input v-model="query.channelName" placeholder="请输入内容" size="small" style="width: 220px"></el-input>
+              <el-input v-model="query.channelName" placeholder="请输入内容" size="small" style="width: 190px"></el-input>
             </li>
             <li class="same">
               <label>单边方向:</label>
-              <el-select clearable v-model="query.side" size="small" style="width: 220px">
+              <el-select clearable v-model="query.side" size="small" style="width: 190px">
                 <el-option v-for="item in item_side" :label="item.label" :value="item.value"></el-option>
               </el-select>
             </li>
@@ -28,12 +28,12 @@
                 type="daterange"
                 align="right"
                 placeholder="选择日期范围"
-                :picker-options="pickerOptions2" size="small">
+                :picker-options="pickerOptions2" size="small" style="width: 190px">
               </el-date-picker>
             </li>
             <li class="same">
               <label>交易类型:</label>
-              <el-select clearable v-model="query.tradeType" size="small" style="width: 220px">
+              <el-select clearable v-model="query.tradeType" size="small" style="width: 190px">
                 <el-option label="全部" value=""></el-option>
                 <el-option label="交易" value="1"></el-option>
                 <el-option label="提现" value="3"></el-option>
@@ -41,20 +41,21 @@
             </li>
             <li class="same">
               <label>处理结果:</label>
-              <el-select clearable v-model="query.status" size="small" style="width: 220px">
+              <el-select clearable v-model="query.status" size="small" style="width: 190px">
                 <el-option v-for="item in item_status" :label="item.label" :value="item.value"></el-option>
               </el-select>
             </li>
             <li class="same">
               <label>对账单号:</label>
-              <el-input v-model="query.no" placeholder="请输入内容" size="small" style="width: 220px"></el-input>
+              <el-input v-model="query.no" placeholder="请输入内容" size="small" style="width: 190px"></el-input>
             </li>
             <li class="same">
               <div class="btn btn-primary" @click="search">筛选</div>
+              <div class="btn btn-primary" @click="reset">重置</div>
             </li>
           </ul>
           <!--表格-->
-          <el-table v-loading.body="loading" style="font-size: 12px;margin:15px 0" :data="$records" border>
+          <el-table v-loading.body="loading" style="font-size: 12px;margin-bottom: 15px" :data="$records" border>
             <el-table-column type="index" width="62" label="序号" fixed="left"></el-table-column>
             <el-table-column prop="channelName" label="对账渠道" ></el-table-column>
             <el-table-column label="交易类型" >
@@ -114,10 +115,10 @@
             </el-form-item>
             <el-form-item label="备注信息：" width="120" style="margin-bottom: 0">
               <el-input style="width: 70%"
-                type="textarea"
-                :rows="2"
-                placeholder="非必填"
-                v-model="handleQuery.handleReason">
+                        type="textarea"
+                        :rows="2"
+                        placeholder="非必填"
+                        v-model="handleQuery.handleReason">
               </el-input>
             </el-form-item>
           </el-form>
@@ -181,6 +182,19 @@
       this.getData()
     },
     methods: {
+      reset: function () {
+        this.query = {
+          currentPage:1,
+          pageSize:10,
+          orderSN:'',
+          side:'',
+          status:'',
+          channelName:'',
+          tradeType:'',
+          startDateStr:'',
+          endDateStr:''
+        }
+      },
       getData: function () {
         this.loading = true;
         this.$http.post(this.url, this.query,{emulateJSON: true})
@@ -206,18 +220,18 @@
         this.handleQuery.id=id;
       },
       handle: function () {
-         this.$http.post(this.handleUrl,this.handleQuery,{emulateJSON: true})
-           .then(res => {
-             this.isShow = false;
-             this.getData()
-           })
-           .catch(err =>{
-             this.$message({
-               showClose: true,
-               message: err.statusMessage,
-               type: 'error'
-             })
-           })
+        this.$http.post(this.handleUrl,this.handleQuery,{emulateJSON: true})
+          .then(res => {
+            this.isShow = false;
+            this.getData()
+          })
+          .catch(err =>{
+            this.$message({
+              showClose: true,
+              message: err.statusMessage,
+              type: 'error'
+            })
+          })
       },
       //每页条数改变
       handleSizeChange(val) {
@@ -265,7 +279,13 @@
 <style scoped lang="less">
   ul{
     padding: 0;
+    margin:0;
+  label{
+    display: block;
+    margin-bottom: 0;
   }
+  }
+
   .same{
     list-style: none;
     display: inline-block;

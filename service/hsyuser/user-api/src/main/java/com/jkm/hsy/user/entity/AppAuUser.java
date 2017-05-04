@@ -46,6 +46,11 @@ public class AppAuUser {
     private String originCellphone;//更改前密码
     private Long auid;
 
+    //新增字段
+    private Integer hxbStatus;//华夏商户入驻结果
+    private String hxbRemarks;//华夏商户入驻返回信息
+    private Integer hxbOpenProduct;//是否开通了华夏产品
+
     public Long getId() {
         return id;
     }
@@ -348,5 +353,29 @@ public class AppAuUser {
 
     public void setAuid(Long auid) {
         this.auid = auid;
+    }
+
+    public Integer getHxbStatus() {
+        return hxbStatus;
+    }
+
+    public void setHxbStatus(Integer hxbStatus) {
+        this.hxbStatus = hxbStatus;
+    }
+
+    public String getHxbRemarks() {
+        return hxbRemarks;
+    }
+
+    public void setHxbRemarks(String hxbRemarks) {
+        this.hxbRemarks = hxbRemarks;
+    }
+
+    public Integer getHxbOpenProduct() {
+        return hxbOpenProduct;
+    }
+
+    public void setHxbOpenProduct(Integer hxbOpenProduct) {
+        this.hxbOpenProduct = hxbOpenProduct;
     }
 }

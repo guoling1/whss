@@ -1,24 +1,25 @@
 <template>
   <div id="profitCom">
     <div class="col-md-12">
-      <div class="box" style="margin-top:15px;overflow: hidden">
+      <div class="box" style="overflow: hidden">
         <div class="box-header">
           <h3 class="box-title">分润明细</h3>
+          <a href="javascript:window.close();" class="pull-right btn btn-primary" v-if="isDet">关闭</a>
         </div>
         <div class="box-body">
           <!--筛选-->
-          <ul>
+          <ul style="margin-bottom: 0">
             <li class="same">
               <label>交易订单号:</label>
-              <el-input style="width: 120px" v-model="query.orderNo" placeholder="请输入内容" size="small"></el-input>
+              <el-input style="width: 188px" v-model="query.orderNo" placeholder="请输入内容" size="small"></el-input>
             </li>
             <li class="same">
               <label>分润方名称:</label>
-              <el-input style="width: 120px" v-model="query.receiptMoneyUserName" placeholder="请输入内容" size="small"></el-input>
+              <el-input style="width: 188px" v-model="query.receiptMoneyUserName" placeholder="请输入内容" size="small"></el-input>
             </li>
             <li class="same" v-if="isShow">
               <label>业务类型:</label>
-              <el-select style="width: 140px" clearable v-model="query.businessType" size="small" >
+              <el-select style="width: 188px" clearable v-model="query.businessType" size="small" >
                 <el-option label="全部" value="">全部</el-option>
                 <el-option label="好收收-收款" value="hssPay">好收收-收款</el-option>
                 <el-option label="好收收-提现" value="hssWithdraw">好收收-提现</el-option>
@@ -29,6 +30,7 @@
             <li class="same" v-if="isShow">
               <label>分润日期:</label>
               <el-date-picker
+                style="width: 188px"
                 v-model="date"
                 type="daterange"
                 align="right"
@@ -38,10 +40,11 @@
             </li>
             <li class="same">
               <div class="btn btn-primary" @click="search">筛选</div>
+              <div class="btn btn-primary" @click="reset">重置</div>
             </li>
           </ul>
           <!--表格-->
-          <el-table v-loading.body="loading" style="font-size: 12px;margin:15px 0" :data="records" border :row-style="tableFoot">
+          <el-table v-loading.body="loading" style="font-size: 12px;margin-bottom: 15px" :data="records" border :row-style="tableFoot">
             <el-table-column type="index" width="62" label="序号">
               <template scope="scope">
                 <div v-if="records[scope.$index].settleType!='当页总额'&&records[scope.$index].settleType!='筛选条件统计'">{{scope.$index+1}}</div>
@@ -114,28 +117,30 @@
         pageTotal:0,
         pageTotal1:0,
         addTotal:0,
-        addTotal1:0
+        addTotal1:0,
+        isDet:true
       }
     },
     created: function () {
       if(this.$route.path=="/admin/record/profitDet"){
         this.$data.path = '/admin/queryProfit/profitDetails';
         this.$data.totalUrl = '/admin/queryProfit/profitAmount'
-      }else if(this.$route.path=="/admin/record/profitComDet"){
+        this.isDet = false
+      }else if(this.$route.path=="/admin/details/profitComDet"){
         this.$data.path = '/admin/allProfit/companyProfitDetail';
         this.$data.totalUrl = '/admin/allProfit/ProfitDetailAmount';
         this.$data.query.accId = this.$route.query.id;
         this.$data.query.splitDate = this.$route.query.time;
         this.$data.query.businessType = this.$route.query.type;
         this.isShow =false
-      }else if(this.$route.path=="/admin/record/profitFirDet"){
+      }else if(this.$route.path=="/admin/details/profitFirDet"){
         this.$data.path = '/admin/allProfit/firstDealerDetail';
         this.$data.totalUrl = '/admin/allProfit/firstDetailAmount';
         this.isShow =false;
         this.$data.query.receiptMoneyAccountId = this.$route.query.id;
         this.$data.query.businessType = this.$route.query.type;
         this.$data.query.splitDate = this.$route.query.time;
-      }else if(this.$route.path=="/admin/record/profitSecDet"){
+      }else if(this.$route.path=="/admin/details/profitSecDet"){
         this.$data.path = '/admin/allProfit/secondDealerDetail';
         this.$data.totalUrl = '/admin/allProfit/secondDetailAmount';
         this.$data.query.receiptMoneyAccountId = this.$route.query.id;
@@ -143,27 +148,43 @@
         this.$data.query.businessType = this.$route.query.type;
         this.isShow =false
       }
-      let time = new Date();
-      this.date = [time,time];
-      for (var j = 0; j < this.date.length; j++) {
-        var str = this.date[j];
-        var ary = [str.getFullYear(), str.getMonth() + 1, str.getDate()];
-        for (var i = 0, len = ary.length; i < len; i++) {
-          if (ary[i] < 10) {
-            ary[i] = '0' + ary[i];
-          }
-        }
-        str = ary[0] + '-' + ary[1] + '-' + ary[2];
-        if (j == 0) {
-          this.$data.query.startTime = str;
-        } else {
-          this.$data.query.endTime = str;
-        }
-      }
+      this.currentDate();
       this.getData();
       this.getAddTotal()
     },
     methods: {
+      currentDate: function () {
+        let time = new Date();
+        this.date = [time,time];
+        for (var j = 0; j < this.date.length; j++) {
+          var str = this.date[j];
+          var ary = [str.getFullYear(), str.getMonth() + 1, str.getDate()];
+          for (var i = 0, len = ary.length; i < len; i++) {
+            if (ary[i] < 10) {
+              ary[i] = '0' + ary[i];
+            }
+          }
+          str = ary[0] + '-' + ary[1] + '-' + ary[2];
+          if (j == 0) {
+            this.$data.query.startTime = str;
+          } else {
+            this.$data.query.endTime = str;
+          }
+        }
+      },
+      reset: function () {
+        this.query = {
+          pageNo:1,
+          pageSize:10,
+          orderNo:'',
+          receiptMoneyUserName:'',
+          businessType:'',
+          splitDate:'',
+          startTime:'',
+          endTime:''
+        };
+        this.currentDate()
+      },
       getData: function () {
         this.loading = true;
         this.$http.post(this.$data.path, this.$data.query)

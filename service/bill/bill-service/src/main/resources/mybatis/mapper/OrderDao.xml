@@ -31,6 +31,10 @@
         pay_bank_card,
         bank_expire_date,
         cvv,
+        bank_trade_no,
+        trade_card_no,
+        trade_card_type,
+        wechat_or_alipay_order_no,
         remark,
         status
         )
@@ -63,6 +67,10 @@
         #{payBankCard},
         #{bankExpireDate},
         #{cvv},
+        #{bankTradeNo},
+        #{tradeCardNo},
+        #{tradeCardType},
+        #{wechatOrAlipayOrderNo},
         #{remark},
         #{status}
         );
@@ -90,6 +98,13 @@
         settle_time = #{settleTime},
         success_settle_time = #{successSettleTime},
         pay_channel_sign = #{payChannelSign},
+        bank_trade_no = #{bankTradeNo},
+        trade_card_no = #{tradeCardNo},
+        trade_card_type = #{tradeCardType},
+        wechat_or_alipay_order_no = #{wechatOrAlipayOrderNo},
+        pay_info = #{payInfo},
+        pay_salt = #{paySalt},
+        pay_sign = #{paySign},
         remark = #{remark},
         status = #{status}
         WHERE id = #{id}
@@ -357,15 +372,21 @@
             a. STATUS,
             a.create_time,
             b.merchant_name,
+            b.mark_code,
             a.sn,
             a.app_id,
             (select proxy_name from tb_dealer where id=b.first_dealer_id) as proxyName,
-            (select proxy_name from tb_dealer where id=b.second_dealer_id) as proxyName1
+            (select proxy_name from tb_dealer where id=b.second_dealer_id) as proxyName1,
+            x.SHORTNAME AS merchantName,
+            x.GLOBALID AS markCode
         FROM
             tb_order a
-        LEFT JOIN tb_merchant_info b ON a.payee = b.account_id
+        LEFT JOIN tb_merchant_info b ON b.account_id=a.payee
+        LEFT JOIN app_au_user z ON z.ACCOUNTID=a.payee
+        LEFT JOIN app_biz_shop_user_role y ON y.UID=z.ID AND y.ROLE=1 AND y.TYPE=1
+        LEFT JOIN app_biz_shop x  ON x.ID=y.SID
         WHERE
-            a.trade_type = 1
+          a.trade_type = 1
         <if test="startTime!=null and startTime!=''">
             AND a.create_time <![CDATA[ >= ]]> #{startTime}
         </if>
@@ -378,6 +399,9 @@
         <if test="merchantName != null and merchantName!=''">
             AND b.merchant_name LIKE CONCAT('%',#{merchantName},'%')
         </if>
+        <if test="shortName != null and shortName!=''">
+            AND x.SHORTNAME LIKE CONCAT('%',#{shortName},'%')
+        </if>
         <if test="proxyName != null and proxyName!=''">
             AND b.first_dealer_id in (select id from tb_dealer where proxy_name LIKE CONCAT('%',#{proxyName},'%'))
         </if>
@@ -389,6 +413,15 @@
         </if>
         <if test="sn != null and sn!=''">
             AND a.sn = #{sn}
+        </if>
+        <if test="markCode != null and markCode!=''">
+            AND b.mark_code = #{markCode}
+        </if>
+        <if test="globalId != null and globalId!=''">
+            AND x.GLOBALID = #{globalId}
+        </if>
+        <if test="appId != null and appId!=''">
+            AND a.app_id = #{appId}
         </if>
         <if test="status != null and status!=''">
             AND a.status=#{status}
@@ -406,7 +439,7 @@
             AND a.settle_status = #{settleStatus}
         </if>
 
-        <if test="payChannelSign != null">
+        <if test="payChannelSign != null and payChannelSign > 0">
             AND a.pay_channel_sign = #{payChannelSign}
         </if>
         ORDER BY a.create_time DESC
@@ -674,37 +707,43 @@
     <!-- 导出 -->
     <select id="downloadOrderList" resultType="com.jkm.hss.bill.entity.MerchantTradeResponse">
         SELECT
-        a.pay_order_id,
-        a.business_order_no,
-        a.order_no,
-        a.trade_amount,
-        a.real_pay_amount,
-        a.trade_type,
-        a.payer,
-        a.payee,
-        a.pay_account,
-        a.pay_account_type,
-        a.pay_type,
-        a.pay_success_time,
-        a.poundage,
-        a.pay_rate,
-        a.settle_status,
-        a.settle_time,
-        a.success_settle_time,
-        a.pay_channel_sign,
-        a.remark,
-        a. STATUS,
-        a.create_time,
-        b.merchant_name,
-        a.sn,
-        a.app_id,
-        (select proxy_name from tb_dealer where id=b.first_dealer_id) as proxyName,
-        (select proxy_name from tb_dealer where id=b.second_dealer_id) as proxyName1
+            a.pay_order_id,
+            a.business_order_no,
+            a.order_no,
+            a.trade_amount,
+            a.real_pay_amount,
+            a.trade_type,
+            a.payer,
+            a.payee,
+            a.pay_account,
+            a.pay_account_type,
+            a.pay_type,
+            a.pay_success_time,
+            a.poundage,
+            a.pay_rate,
+            a.settle_status,
+            a.settle_time,
+            a.success_settle_time,
+            a.pay_channel_sign,
+            a.remark,
+            a. STATUS,
+            a.create_time,
+            b.merchant_name,
+            b.mark_code,
+            a.sn,
+            a.app_id,
+            (select proxy_name from tb_dealer where id=b.first_dealer_id) as proxyName,
+            (select proxy_name from tb_dealer where id=b.second_dealer_id) as proxyName1,
+            x.SHORTNAME AS merchantName,
+            x.GLOBALID AS markCode
         FROM
-        tb_order a
-        LEFT JOIN tb_merchant_info b ON a.payee = b.account_id
+            tb_order a
+        LEFT JOIN tb_merchant_info b ON b.account_id=a.payee
+        LEFT JOIN app_au_user z ON z.ACCOUNTID=a.payee
+        LEFT JOIN app_biz_shop_user_role y ON y.UID=z.ID AND y.ROLE=1 AND y.TYPE=1
+        LEFT JOIN app_biz_shop x  ON x.ID=y.SID
         WHERE
-        a.trade_type = 1
+            a.trade_type = 1
         <if test="startTime!=null and startTime!=''">
             AND a.create_time <![CDATA[ >= ]]> #{startTime}
         </if>
@@ -717,6 +756,9 @@
         <if test="merchantName != null and merchantName!=''">
             AND b.merchant_name LIKE CONCAT('%',#{merchantName},'%')
         </if>
+        <if test="shortName != null and shortName!=''">
+            AND x.SHORTNAME = #{shortName}
+        </if>
         <if test="proxyName != null and proxyName!=''">
             AND b.first_dealer_id in (select id from tb_dealer where proxy_name LIKE CONCAT('%',#{proxyName},'%'))
         </if>
@@ -728,6 +770,15 @@
         </if>
         <if test="sn != null and sn!=''">
             AND a.sn = #{sn}
+        </if>
+        <if test="markCode != null and markCode!=''">
+            AND b.mark_code = #{markCode}
+        </if>
+        <if test="globalId != null and globalId!=''">
+            AND x.GLOBALID = #{globalId}
+        </if>
+        <if test="appId != null and appId!=''">
+            AND a.app_id = #{appId}
         </if>
         <if test="status != null and status!=''">
             AND a.status=#{status}
@@ -743,6 +794,10 @@
         </if>
         <if test="settleStatus != null">
             AND a.settle_status = #{settleStatus}
+        </if>
+
+        <if test="payChannelSign != null and payChannelSign > 0">
+            AND a.pay_channel_sign = #{payChannelSign}
         </if>
         ORDER BY a.create_time DESC
     </select>
@@ -861,9 +916,12 @@
         SELECT COUNT(1)
         FROM
         tb_order a
-        LEFT JOIN tb_merchant_info b
-        ON a.payee=b.account_id
-        WHERE a.trade_type=1
+        LEFT JOIN tb_merchant_info b ON b.account_id=a.payee
+        LEFT JOIN app_au_user z ON z.ACCOUNTID=a.payee
+        LEFT JOIN app_biz_shop_user_role y ON y.UID=z.ID AND y.ROLE=1 AND y.TYPE=1
+        LEFT JOIN app_biz_shop x  ON x.ID=y.SID
+        WHERE
+        a.trade_type = 1
         <if test="startTime!=null and startTime!=''">
             AND a.create_time <![CDATA[ >= ]]> #{startTime}
         </if>
@@ -876,6 +934,9 @@
         <if test="merchantName != null and merchantName!=''">
             AND b.merchant_name LIKE CONCAT('%',#{merchantName},'%')
         </if>
+        <if test="shortName != null and shortName!=''">
+            AND x.SHORTNAME = #{shortName}
+        </if>
         <if test="proxyName != null and proxyName!=''">
             AND b.first_dealer_id in (select id from tb_dealer where proxy_name LIKE CONCAT('%',#{proxyName},'%'))
         </if>
@@ -887,6 +948,15 @@
         </if>
         <if test="sn != null and sn!=''">
             AND a.sn = #{sn}
+        </if>
+        <if test="markCode != null and markCode!=''">
+            AND b.mark_code = #{markCode}
+        </if>
+        <if test="globalId != null and globalId!=''">
+            AND x.GLOBALID = #{globalId}
+        </if>
+        <if test="appId != null and appId!=''">
+            AND a.app_id = #{appId}
         </if>
         <if test="status != null and status!=''">
             AND a.status=#{status}
@@ -902,6 +972,9 @@
         </if>
         <if test="settleStatus != null">
             AND a.settle_status = #{settleStatus}
+        </if>
+        <if test="payChannelSign != null and payChannelSign > 0">
+            AND a.pay_channel_sign = #{payChannelSign}
         </if>
     </select>
 
@@ -938,6 +1011,12 @@
         <if test="sn != null and sn!=''">
             AND a.sn = #{sn}
         </if>
+        <if test="markCode != null and markCode!=''">
+            AND b.mark_code = #{markCode}
+        </if>
+        <if test="appId != null and appId!=''">
+            AND a.app_id = #{appId}
+        </if>
         <if test="status != null and status!=''">
             AND a.status=#{status}
         </if>
@@ -952,6 +1031,9 @@
         </if>
         <if test="settleStatus != null">
             AND a.settle_status = #{settleStatus}
+        </if>
+        <if test="payChannelSign != null and payChannelSign > 0">
+            AND a.pay_channel_sign = #{payChannelSign}
         </if>
     </select>
 
@@ -1132,5 +1214,23 @@
             tb_play_money_order
         WHERE
             order_no = #{orderNo}
+    </select>
+
+    <select id="selectTradeAmountAndFeeByOrderNoList" resultType="java.util.Map">
+        SELECT SUM(trade_amount) as tradeAmount, SUM(poundage) as poundage FROM tb_order
+        WHERE order_no IN
+        <foreach collection="orderNos" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+
+    <select id="selectByAppParam" resultType="com.jkm.hss.bill.entity.Order">
+        SELECT trade_amount, poundage, pay_channel_sign, create_time FROM tb_order
+        WHERE order_no IN
+        <foreach collection="orderNos" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        ORDER BY id DESC
+        LIMIT #{offset}, #{count}
     </select>
 </mapper>

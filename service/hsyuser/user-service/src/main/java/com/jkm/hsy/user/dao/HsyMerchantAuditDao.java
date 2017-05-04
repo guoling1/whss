@@ -66,9 +66,9 @@ public interface HsyMerchantAuditDao {
     /**
      * 审核不通过更改提交资料步骤
      */
-    void stepChange(@Param("uid") int uid);
+    void stepChange(@Param("uid") Long uid);
 
-    int getUid(@Param("id") Long id);
+    long getUid(@Param("id") Long id);
 
     /**
      *
@@ -121,4 +121,18 @@ public interface HsyMerchantAuditDao {
      */
     int hsyMerchantSecondListCount(HsyQueryMerchantRequest request);
 
+    /**
+     * 插入审核记录
+     * @param username
+     * @param id
+     * @param checkErrorInfo
+     */
+    void saveLog(@Param("username") String username,@Param("id") Long id,@Param("checkErrorInfo") String checkErrorInfo,@Param("stat") int stat);
+
+    /**
+     * 查日志
+     * @param id
+     * @return
+     */
+    List<HsyMerchantInfoCheckRecord> getLog(@Param("id") Long id);
 }

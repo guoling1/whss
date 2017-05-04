@@ -26,7 +26,9 @@ import transaction from './components/transaction.vue'
 import qrcode from './components/qrcode.vue'
 import qrcode_detail from './components/qrcode_detail.vue'
 import employees from './components/employees.vue'
+import employees_add from './components/employees_add.vue'
 import roles from './components/roles.vue'
+import roles_add from './components/roles_add.vue'
 import information from './components/information.vue'
 import policy from './components/policy.vue'
 
@@ -77,7 +79,9 @@ const routes = [
       {path: 'qrcode', name: "qrcode", component: qrcode},
       {path: 'qrcode_detail', name: "qrcode_detail", component: qrcode_detail},
       {path: 'employees', name: "employees", component: employees},
+      {path: 'employees_add', name: "employees_add", component: employees_add},
       {path: 'roles', name: "roles", component: roles},
+      {path: 'roles_add', name: "roles_add", component: roles_add},
       {path: 'information', name: "information", component: information},
       {path: 'policy', name: "policy", component: policy},
     ]
@@ -118,7 +122,7 @@ Vue.http.interceptors.push((request, next) => {
         router.push('/daili/login');
       } else if (body.code != 1) {
         response.status = 500;
-        response.statusMessage = body.message || '系统异常';
+        response.statusMessage = body.message || body.msg || '系统异常';
         response.statusText = 'Internal Server Error';
         response.ok = false;
       } else {
@@ -140,6 +144,8 @@ Vue.use(ElementUI);
 // 添加自定义插件
 import filePost from './plugin-vue/file-post'
 Vue.use(filePost);
+import power from './plugin-vue/power'
+Vue.use(power);
 
 /* eslint-disable no-new */
 // new Vue({

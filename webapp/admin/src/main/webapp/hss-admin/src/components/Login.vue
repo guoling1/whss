@@ -14,6 +14,13 @@
       </div>
 
       <div class="submit" @click="submit">登录</div>
+      <el-dialog title="提示" v-model="dialogVisible" size="tiny">
+        <span>{{text}}</span>
+        <span slot="footer" class="dialog-footer">
+
+  </span>
+      </el-dialog>
+
     </div>
     <message></message>
   </div>
@@ -31,7 +38,9 @@
         msg: '登录',
         login: false,
         username: '',
-        password: ''
+        password: '',
+        dialogVisible: false,
+        text:''
       }
     },
     created: function () {
@@ -39,16 +48,25 @@
     },
     methods: {
       submit: function () {
+
         this.$http.post('/admin/user/login', {
           username: this.$data.username,
           password: this.$data.password
-        }).then(function () {
+        }).then(function (res) {
           this.$store.commit('LOGIN_HIDE');
-          this.$router.push({path: '/admin/record/newDeal'})
+          sessionStorage.setItem('login', JSON.stringify(res.data));
+          sessionStorage.setItem('user', JSON.stringify(res.msg));
+          this.$router.push({path: '/admin/record/home'})
+          location.reload()
         }, function (err) {
-          this.$store.commit('MESSAGE_ACCORD_SHOW', {
-            text: err.statusMessage
-          })
+          this.text = err.statusMessage
+          this.dialogVisible=true
+//          this.$store.commit('MESSAGE_DELAY_SHOW', {
+//            text: err.statusMessage
+//          })
+          setTimeout(function () {
+            this.dialogVisible=false
+          }.bind(this),2000)
         });
       }
     },

@@ -5,6 +5,7 @@
         <div class="box-header with-border">
           <h3 class="box-title" v-if="isShow">新增代理商：基础注册信息</h3>
           <h3 class="box-title" v-if="!isShow">代理商详情</h3>
+          <a href="javascript:window.close();" class="pull-right btn btn-primary">关闭</a>
         </div>
         <div class="">
           <div class="box-header">
@@ -75,8 +76,8 @@
               </el-col>
               <el-col :span="8">
                 <div class="grid-content bg-purple-light" style="margin: 0 15px;">
-                  <!--<el-button type="text" @click="resetPw" v-if="!isShow">修改密码</el-button>-->
-                  <el-button type="text" @click="dialogFormVisible = true">修改密码</el-button>
+                  <el-button type="text" @click="_$power(function(){dialogFormVisible = true},'boss_first_update_pwd')" v-if="!isShow&&level==1">修改密码</el-button>
+                  <el-button type="text" @click="_$power(function(){dialogFormVisible = true},'boss_second_update_pwd')" v-if="!isShow&&level==2">修改密码</el-button>
                 </div>
               </el-col>
             </el-row>
@@ -244,15 +245,14 @@
           </el-col>
           <el-col :span="6">
             <div class="grid-content bg-purple-light" style="width: 100%">
-              <div class="btn btn-primary" @click="goBack" style="width: 45%;margin: 20px 0 100px;">
-                返回
-              </div>
-              <div class="btn btn-primary" @click="create" v-if="isShow" style="width: 45%;float: right;margin: 20px 0 100px;">
+              <!--<div class="btn btn-primary" @click="goBack" style="width: 45%;margin: 20px 0 100px;">-->
+                <!--返回-->
+              <!--</div>-->
+              <div class="btn btn-primary" @click="create" v-if="isShow" style="width: 45%;margin: 20px 0 100px;">
                 创建代理商
               </div>
-              <div class="btn btn-primary" @click="change()" v-if="!isShow" style="width: 45%;float: right;margin: 20px 0 100px;">
-                修改
-              </div>
+              <div class="btn btn-primary" @click="_$power(change,'boss_first_update')" v-if="!isShow&&level==1" style="width: 45%;margin: 20px 0 100px;">修改</div>
+              <div class="btn btn-primary" @click="_$power(change,'boss_second_update')" v-if="!isShow&&level==2" style="width: 45%;margin: 20px 0 100px;">修改</div>
             </div>
           </el-col>
           <el-col :span="8">
@@ -265,6 +265,7 @@
 </template>
 
 <script lang="babel">
+  import Message from './Message.vue'
   export default {
     name: 'agentAddBase',
     data () {
@@ -400,12 +401,15 @@
       create: function () {
         this.$http.post('/admin/user/addFirstDealer2', this.$data.query)
           .then(function (res) {
-            this.$message({
-              showClose: true,
-              message: '创建成功',
-              type: 'success'
-            });
-            this.$router.push('/admin/record/agentListFir')
+            this.$store.commit('MESSAGE_ACCORD_SHOW', {
+              text: '修改成功'
+            })
+//            this.$message({
+//              showClose: true,
+//              message: '创建成功',
+//              type: 'success'
+//            });
+//            this.$router.push('/admin/record/agentListFir')
           }, function (err) {
             this.$message({
               showClose: true,
@@ -426,16 +430,19 @@
         this.$data.query.dealerId = this.$data.query.id;
         this.$http.post('/admin/user/updateDealer2', this.$data.query)
           .then(function (res) {
-            this.$message({
-              showClose: true,
-              message: '修改成功',
-              type: 'success'
-            });
-            if(this.$route.query.level==2){
-              this.$router.push('/admin/record/agentListSec')
-            }else {
-              this.$router.push('/admin/record/agentListFir')
-            }
+            this.$store.commit('MESSAGE_ACCORD_SHOW', {
+              text: '修改成功'
+            })
+//            this.$message({
+//              showClose: true,
+//              message: '修改成功',
+//              type: 'success'
+//            });
+//            if(this.$route.query.level==2){
+//              this.$router.push('/admin/record/agentListSec')
+//            }else {
+//              this.$router.push('/admin/record/agentListFir')
+//            }
           }, function (err) {
             this.$message({
               showClose: true,

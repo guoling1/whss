@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="col-md-12">
-      <div class="box" style="margin-top:15px;overflow: hidden">
+      <div class="box" style="overflow: hidden">
         <div class="box-header">
           <h3 class="box-title">系统对账</h3>
         </div>
@@ -38,9 +38,10 @@
             </li>
             <li class="same">
               <div class="btn btn-primary" @click="search">筛选</div>
+              <div class="btn btn-primary" @click="reset">重置</div>
             </li>
           </ul>
-          <el-table v-loading.body="loading" style="font-size: 12px;margin:15px 0" :data="$records" border :row-style="tableFoot">
+          <el-table v-loading.body="loading" style="font-size: 12px;margin-bottom: 15px" :data="$records" border :row-style="tableFoot">
             <el-table-column type="index" width="62" label="序号" fixed="left"></el-table-column>
             <el-table-column prop="channelName" label="通道名称" ></el-table-column>
             <el-table-column label="交易类型" >
@@ -123,20 +124,20 @@
           </el-form>
         </el-dialog>
         <div class="box box-info mask el-message-box" v-if="isMask">
-            <div class="maskCon">
-              <div class="head">
-                <div class="title">消息</div>
-                <i class="el-icon-close" @click="isMask=false"></i>
-              </div>
-              <div class="body">
-                <div>确定下载文件吗？</div>
-              </div>
-              <div class="foot">
-                <a href="javascript:void(0)" @click="isMask=false" class="el-button el-button--default">取消</a>
-                <a :href="loadURL+loadURL1" @click="isMask=false" class="el-button el-button-default el-button--primary ">下载</a>
-              </div>
+          <div class="maskCon">
+            <div class="head">
+              <div class="title">消息</div>
+              <i class="el-icon-close" @click="isMask=false"></i>
+            </div>
+            <div class="body">
+              <div>确定下载文件吗？</div>
+            </div>
+            <div class="foot">
+              <a href="javascript:void(0)" @click="isMask=false" class="el-button el-button--default">取消</a>
+              <a :href="loadURL+loadURL1" @click="isMask=false" class="el-button el-button-default el-button--primary ">下载</a>
             </div>
           </div>
+        </div>
         <div class="box box-info mask el-message-box" v-if="isCancel">
           <div class="maskCon">
             <div class="head">
@@ -220,6 +221,17 @@
       this.getData()
     },
     methods: {
+      reset: function () {
+        this.query = {
+          pageSize:10,
+          currentPage:1,
+          channelName:"",
+          tradeType:"",
+          startDateStr:"",
+          endDateStr:"",
+          status:""
+        }
+      },
       tableFoot(row, index) {
         console.log(row)
         if (row.status == '2') {
@@ -291,8 +303,9 @@
           type: 'info'
         });
         if(file.result.result=='操作成功'){
-          this.$router.push('/admin/record/accountData');
+//          this.$router.push('/admin/record/accountData');
           sessionStorage.setItem('data',JSON.stringify(file.result.jsonPayResult))
+          window.open("http://admin.qianbaojiajia.com/admin/details/accountData");
         }
       },
       getData: function () {
@@ -367,6 +380,11 @@
 <style scoped lang="less" rel="stylesheet/less">
   ul{
     padding: 0;
+    margin: 0;
+  }
+  label{
+    display: block;
+    margin-bottom: 0;
   }
   .same{
     list-style: none;
@@ -384,65 +402,65 @@
     width: 100%;
     height: 100%;
     background: rgba(0, 0, 0, 0.45);
-  .maskCon {
-    margin: 250px auto;
-    text-align: left;
-    vertical-align: middle;
-    background-color: #fff;
-    width: 420px;
-    border-radius: 3px;
-    font-size: 16px;
-    overflow: hidden;
-    -webkit-backface-visibility: hidden;
-    backface-visibility: hidden;
-  .head {
-    position: relative;
-    padding: 20px 20px 0;
-  .title {
-    padding-left: 0;
-    margin-bottom: 0;
-    font-size: 16px;
-    font-weight: 700;
-    height: 18px;
-    color: #333;
-  }
-  i {
-    font-family: element-icons !important;
-    speak: none;
-    font-style: normal;
-    font-weight: 400;
-    font-variant: normal;
-    text-transform: none;
-    vertical-align: baseline;
-    display: inline-block;
-    -webkit-font-smoothing: antialiased;
-    position: absolute;
-    top: 19px;
-    right: 20px;
-    color: #999;
-    cursor: pointer;
-    line-height: 20px;
-    text-align: center;
-  }
-  }
-  .body {
-    padding: 30px 20px;
-    color: #48576a;
-    font-size: 14px;
-    position: relative;
-  div {
-    margin: 0;
-    line-height: 1.4;
-    font-size: 14px;
-    color: #48576a;
-    font-weight: 400;
-  }
-  }
-  .foot {
-    padding: 10px 20px 15px;
-    text-align: right;
-  }
-  }
+    .maskCon {
+      margin: 250px auto;
+      text-align: left;
+      vertical-align: middle;
+      background-color: #fff;
+      width: 420px;
+      border-radius: 3px;
+      font-size: 16px;
+      overflow: hidden;
+      -webkit-backface-visibility: hidden;
+      backface-visibility: hidden;
+      .head {
+        position: relative;
+        padding: 20px 20px 0;
+        .title {
+          padding-left: 0;
+          margin-bottom: 0;
+          font-size: 16px;
+          font-weight: 700;
+          height: 18px;
+          color: #333;
+        }
+        i {
+          font-family: element-icons !important;
+          speak: none;
+          font-style: normal;
+          font-weight: 400;
+          font-variant: normal;
+          text-transform: none;
+          vertical-align: baseline;
+          display: inline-block;
+          -webkit-font-smoothing: antialiased;
+          position: absolute;
+          top: 19px;
+          right: 20px;
+          color: #999;
+          cursor: pointer;
+          line-height: 20px;
+          text-align: center;
+        }
+      }
+      .body {
+        padding: 30px 20px;
+        color: #48576a;
+        font-size: 14px;
+        position: relative;
+        div {
+          margin: 0;
+          line-height: 1.4;
+          font-size: 14px;
+          color: #48576a;
+          font-weight: 400;
+        }
+      }
+      .foot {
+        padding: 10px 20px 15px;
+        text-align: right;
+      }
+    }
 
   }
 </style>

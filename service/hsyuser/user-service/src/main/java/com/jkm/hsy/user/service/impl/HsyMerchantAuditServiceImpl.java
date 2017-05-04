@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -88,6 +89,16 @@ public class HsyMerchantAuditServiceImpl implements HsyMerchantAuditService {
     public HsyMerchantAuditResponse getDetails(Long id) {
 
         HsyMerchantAuditResponse res = hsyMerchantAuditDao.getDetails(id);
+        if(res.getHxbStatus()==null||"".equals(res.getHxbStatus())){
+            res.setHxbStatus(0);
+        }else{
+            res.setHxbStatus(res.getHxbStatus());
+        }
+        if(res.getHxbOpenProduct()==null||"".equals(res.getHxbOpenProduct())){
+            res.setHxbOpenProduct(0);
+        }else{
+            res.setHxbOpenProduct(res.getHxbOpenProduct());
+        }
         if (res!=null){
             if (res.getStatus()==1){
                 res.setStat("审核已通过");
@@ -152,6 +163,10 @@ public class HsyMerchantAuditServiceImpl implements HsyMerchantAuditService {
 
     @Override
     public void auditPass(HsyMerchantAuditRequest hsyMerchantAuditRequest) {
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date date = new Date();
+        String auditTime = format.format(date);
+        hsyMerchantAuditRequest.setAuditTime(auditTime);
         hsyMerchantAuditDao.updateAuditPass(hsyMerchantAuditRequest);
 
     }
@@ -179,12 +194,12 @@ public class HsyMerchantAuditServiceImpl implements HsyMerchantAuditService {
     }
 
     @Override
-    public void stepChange(int uid) {
+    public void stepChange(Long uid) {
         hsyMerchantAuditDao.stepChange(uid);
     }
 
     @Override
-    public int getUid(Long id) {
+    public long getUid(Long id) {
         return hsyMerchantAuditDao.getUid(id);
     }
 
@@ -401,6 +416,26 @@ public class HsyMerchantAuditServiceImpl implements HsyMerchantAuditService {
     @Override
     public int hsyMerchantSecondListCount(HsyQueryMerchantRequest request) {
         return this.hsyMerchantAuditDao.hsyMerchantSecondListCount(request);
+    }
+
+    @Override
+    public void saveLog(String username, Long id, String checkErrorInfo,int stat) {
+        this.hsyMerchantAuditDao.saveLog(username,id,checkErrorInfo,stat);
+    }
+
+    @Override
+    public List<HsyMerchantInfoCheckRecord> getLog(Long id) {
+        List<HsyMerchantInfoCheckRecord> list = this.hsyMerchantAuditDao.getLog(id);
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        if (list.size()>0){
+            for (int i=0;i<list.size();i++){
+                if (list.get(i).getCreateTime()!=null&&!list.get(i).getCreateTime().equals("")){
+                    String dates = format.format(list.get(i).getCreateTime());
+                    list.get(i).setCreateTimes(dates);
+                }
+            }
+        }
+        return list;
     }
 
 

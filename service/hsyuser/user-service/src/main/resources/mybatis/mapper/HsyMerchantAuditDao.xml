@@ -11,7 +11,7 @@
         SELECT COUNT(a.ID) FROM app_biz_shop a
         LEFT JOIN app_biz_shop_user_role b ON a.ID=b.SID
         LEFT JOIN app_au_user c ON c.ID=b.UID
-        where b.ROLE=1
+        where b.ROLE=1 AND b.TYPE=1
         <if test="globalID!=null and globalID!=''">
             AND a.GLOBALID=#{globalID}
         </if>
@@ -108,6 +108,10 @@
             b.WEIXINRATE,
             b.ALIPAYRATE,
             b.FASTRATE,
+            b.HXBSTATUS,
+            b.HXBREMARKS,
+            b.HXBOPENPRODUCT,
+            b.HXBOPENPRODUCTREMARKS,
 			e.IDCARDNO,
             e.CARDNO,
             e.CARDACCOUNTNAME,
@@ -122,7 +126,7 @@
         LEFT JOIN app_biz_shop_user_role d ON d.SID=c.ID
         LEFT JOIN app_au_user b ON b.ID=d.UID
         LEFT JOIN app_biz_card e ON e.SID=c.ID
-        WHERE c.ID=#{id} AND d.TYPE=1
+        WHERE c.ID=#{id} AND d.TYPE=1 AND d.role=1
     </select>
 
     <!-- 根据districtCode查城市哪个区 -->
@@ -147,7 +151,7 @@
 
     <!-- 审核通过 -->
     <update id="updateAuditPass">
-      UPDATE app_biz_shop SET STATUS=#{status} WHERE ID=#{id}
+      UPDATE app_biz_shop SET STATUS=#{status},AUDITTIME=#{auditTime} WHERE ID=#{id}
     </update>
 
     <!-- 审核不通过 -->
@@ -162,7 +166,7 @@
 
 
     <!-- 审核不通过更改提交资料步骤 -->
-    <select id="getUid" resultType="java.lang.Integer">
+    <select id="getUid" resultType="java.lang.Long">
         SELECT UID FROM app_biz_shop_user_role WHERE SID=#{id}
     </select>
 
@@ -279,4 +283,24 @@
         a.CREATETIME DESC
     </select>
 
+    <insert id="saveLog" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO tb_merchant_info_check_record
+        (
+        name,
+        sid,
+        descr,
+        status
+        )
+        VALUES
+        (
+        #{username},
+        #{id},
+        #{checkErrorInfo},
+        #{stat}
+        );
+    </insert>
+
+    <select id="getLog" resultType="com.jkm.hsy.user.entity.HsyMerchantInfoCheckRecord">
+        SELECT * FROM tb_merchant_info_check_record WHERE sid = #{id}
+    </select>
 </mapper>
