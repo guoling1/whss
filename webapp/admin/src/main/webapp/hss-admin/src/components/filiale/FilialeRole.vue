@@ -3,7 +3,7 @@
     <div class="col-md-12">
       <div class="box" style="margin-top:15px;overflow: hidden">
         <div class="box-header">
-          <h3 class="box-title">角色管理</h3>
+          <h3 class="box-title">分公司员工权限管理</h3>
           <a @click="_$power(issue,'boss_role_add')" class="btn btn-primary" style="float: right;">新增角色</a>
         </div>
         <div class="box-body">
@@ -72,20 +72,20 @@
     },
     methods: {
       issue: function () {
-        window.open('http://admin.qianbaojiajia.com/admin/details/roleAdd')
+        window.open('http://admin.qianbaojiajia.com/admin/details/FilialeRoleAdd')
 //        this.$router.push('/admin/record/roleAdd')
       },
       issue1: function (id) {
-        window.open('http://admin.qianbaojiajia.com/admin/details/roleAdd?id='+id)
+        window.open('http://admin.qianbaojiajia.com/admin/details/FilialeRoleAdd?id='+id)
 //        this.$router.push({path:'/admin/record/roleAdd',query:{id:id}})
       },
       getData: function () {
         this.loading = true;
-        this.$http.post('/admin/user/roleListByPage', this.$data.query)
+        this.$http.post('/admin/dealer/roleOemListByPage', this.query)
           .then(function (res) {
             this.loading = false;
-            this.$data.records = res.data.records;
-            this.$data.count = res.data.count;
+            this.records = res.data.records;
+            this.count = res.data.count;
           }, function (err) {
             this.$data.loading = false;
             this.$message({

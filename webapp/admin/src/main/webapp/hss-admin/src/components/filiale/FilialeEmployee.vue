@@ -4,7 +4,7 @@
       <div class="box" style="margin-top:15px;overflow: hidden">
         <div class="box-header">
           <h3 class="box-title">分公司员工</h3>
-          <a @click="_$power(issue,'boss_staff_add')" class="btn btn-primary" style="float: right;">分公司员工权限</a>
+          <a @click="issue" class="btn btn-primary" style="float: right;">分公司员工权限</a>
         </div>
         <div class="box-body">
           <!--筛选-->
@@ -95,11 +95,11 @@
     },
     methods: {
       issue: function () {
-        window.open('http://admin.qianbaojiajia.com/admin/details/personnelAdd')
+        window.open('http://admin.qianbaojiajia.com/admin/details/filialeRole');
 //        this.$router.push('/admin/record/personnelAdd')
       },
       issue1: function (id) {
-        window.open('http://admin.qianbaojiajia.com/admin/details/personnelAdd?id='+id)
+        window.open('http://admin.qianbaojiajia.com/admin/details/filialeRole?id='+id)
 //        this.$router.push({path:'/admin/record/personnelAdd',query:{id:id}})
       },
       getData: function () {
