@@ -32,4 +32,9 @@ public interface ProductChannelGatewayService {
      */
     void update(ProductChannelGateway productChannelGateway);
 
+    /**
+     * 推荐通道
+     * @param request
+     */
+    void recommend(ProductChannelGateway request);
 }
