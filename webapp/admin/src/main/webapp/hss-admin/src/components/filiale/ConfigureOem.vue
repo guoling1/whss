@@ -186,20 +186,18 @@
       this.$http.get('/admin/dealer/oemDetail/' + this.$route.query.dealerId)
         .then(function (res) {
           this.query = res.data;
-          this.query.templateInfos = [{
-            signCode:101,
-            templateId:"",
-            templateName:"模板名称1"
-          },{
-            signCode:102,
-            templateId:"",
-            templateName:"模板名称2"
-          }];
+        })
+        .catch(err =>{
+          this.$message({
+            showClose: true,
+            message: err.statusMessage,
+            type: 'error'
+          });
         })
     },
     methods: {
       create: function () {
-        this.$data.query.dealerId = this.$data.query.id;
+        this.query.dealerId = this.$route.query.dealerId;
         this.$http.post('/admin/dealer/addOrUpdateOem', this.query)
           .then(function (res) {
             this.$store.commit('MESSAGE_ACCORD_SHOW', {

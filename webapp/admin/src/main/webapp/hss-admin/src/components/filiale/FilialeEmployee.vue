@@ -4,11 +4,15 @@
       <div class="box" style="margin-top:15px;overflow: hidden">
         <div class="box-header">
           <h3 class="box-title">分公司员工</h3>
-          <a @click="_$power(issue,'boss_staff_add')" class="btn btn-primary" style="float: right;">新增员工</a>
+          <a @click="_$power(issue,'boss_staff_add')" class="btn btn-primary" style="float: right;">分公司员工权限</a>
         </div>
         <div class="box-body">
           <!--筛选-->
           <ul class="search">
+            <li class="same">
+              <label>分公司:</label>
+              <el-input style="width: 188px" v-model="query.dealerName" placeholder="请输入内容" size="small"></el-input>
+            </li>
             <li class="same">
               <label>员工编号:</label>
               <el-input style="width: 188px" v-model="query.markCode" placeholder="请输入内容" size="small"></el-input>
@@ -23,6 +27,7 @@
             </li>
             <li class="same">
               <div class="btn btn-primary" @click="search">筛选</div>
+              <div class="btn btn-primary" @click="reset">重置</div>
             </li>
           </ul>
           <!--表格-->
@@ -31,8 +36,7 @@
             <el-table-column prop="markCode" label="员工编号"></el-table-column>
             <el-table-column prop="username" label="登录名"></el-table-column>
             <el-table-column prop="realname" label="姓名"></el-table-column>
-            <el-table-column prop="companyName" label="所属分公司"></el-table-column>
-            <el-table-column prop="deptName" label="所属部门"></el-table-column>
+            <el-table-column prop="belongDealer" label="所属分公司"></el-table-column>
             <el-table-column prop="mobile" label="手机号"></el-table-column>
             <el-table-column prop="email" label="邮箱"></el-table-column>
             <el-table-column prop="roleName" label="角色"></el-table-column>
@@ -73,6 +77,7 @@
     data(){
       return {
         query:{
+          dealerName:'',
           pageNo:1,
           pageSize:10,
           markCode: "",
@@ -99,7 +104,7 @@
       },
       getData: function () {
         this.loading = true;
-        this.$http.post('/admin/user/userList', this.$data.query)
+        this.$http.post('/admin/dealer/oemList', this.query)
           .then(function (res) {
             this.loading = false;
             this.$data.records = res.data.records;
@@ -113,27 +118,6 @@
               type: 'error'
             });
           })
-      },
-      changeTime: function (row, column) {
-        var val=row.createTime;
-        if(val==''||val==null){
-          return ''
-        }else {
-          val = new Date(val)
-          var year=val.getFullYear();
-          var month=val.getMonth()+1;
-          var date=val.getDate();
-          var hour=val.getHours();
-          var minute=val.getMinutes();
-          var second=val.getSeconds();
-          function tod(a) {
-            if(a<10){
-              a = "0"+a
-            }
-            return a;
-          }
-          return year+"-"+tod(month)+"-"+tod(date)+" "+tod(hour)+":"+tod(minute)+":"+tod(second);
-        }
       },
       open: function (val) {
         this.loading = true;
@@ -184,18 +168,18 @@
           })
       },
       search(){
-        this.$data.query.pageNo = 1;
+        this.query.pageNo = 1;
         this.getData()
       },
       //每页条数改变
       handleSizeChange(val) {
-        this.$data.query.pageNo = 1;
-        this.$data.query.pageSize = val;
+        this.query.pageNo = 1;
+        this.query.pageSize = val;
         this.getData()
       },
       //当前页改变时
       handleCurrentChange(val) {
-        this.$data.query.pageNo = val;
+        this.query.pageNo = val;
         this.getData()
       },
     }
