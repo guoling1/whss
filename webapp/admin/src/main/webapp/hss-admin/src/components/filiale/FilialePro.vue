@@ -39,11 +39,11 @@
                               </tr>
                               <tr v-for="channel in channels">
                                 <td>{{channel.channelName}}</td>
-                                <td><input type="text" name="name" v-model="channel.paymentSettleRate">%</td>
+                                <td><input type="number" name="name" v-model="channel.paymentSettleRate">%</td>
                                 <td>{{channel.settleType}}</td>
-                                <td><input type="text" name="name" v-model="channel.withdrawSettleFee">元/笔</td>
-                                <td><input type="text" name="name" v-model="channel.merchantSettleRate">%</td>
-                                <td><input type="text" name="name" v-model="channel.merchantWithdrawFee">元/笔</td>
+                                <td><input type="number" name="name" v-model="channel.withdrawSettleFee">元/笔</td>
+                                <td><input type="number" name="name" v-model="channel.merchantSettleRate">%</td>
+                                <td><input type="number" name="name" v-model="channel.merchantWithdrawFee">元/笔</td>
                               </tr>
                               </tbody></table>
                           </div>
