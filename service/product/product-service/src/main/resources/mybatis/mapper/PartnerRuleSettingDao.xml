@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jkm.hss.product.dao.PartnerRuleSettingDao">
+
+    <!-- 通用查询结果列-->
+    <sql id="Base_Column_List">
+        id,	product_id,  channel_type_sign,	default_profit_space,	common_rate,	clerk_rate,	shopowner_rate,	boss_rate,	status,	create_time,	update_time
+    </sql>
+
+    <!-- 添加 （匹配有值的字段）-->
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO tb_partner_rule_setting
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test="productId != null">
+                product_id,
+            </if>
+            <if test="channelTypeSign != null">
+                channel_type_sign,
+            </if>
+            <if test="defaultProfitSpace != null">
+                default_profit_space,
+            </if>
+            <if test="commonRate != null">
+                common_rate,
+            </if>
+            <if test="clerkRate != null">
+                clerk_rate,
+            </if>
+            <if test="shopownerRate != null">
+                shopowner_rate,
+            </if>
+            <if test="bossRate != null">
+                boss_rate,
+            </if>
+            <if test="status != null">
+                status,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+            <if test="productId!=null">
+                #{productId},
+            </if>
+            <if test="channelTypeSign!=null">
+                #{channelTypeSign},
+            </if>
+            <if test="defaultProfitSpace!=null">
+                #{defaultProfitSpace},
+            </if>
+            <if test="commonRate!=null">
+                #{commonRate},
+            </if>
+            <if test="clerkRate!=null">
+                #{clerkRate},
+            </if>
+            <if test="shopownerRate!=null">
+                #{shopownerRate},
+            </if>
+            <if test="bossRate!=null">
+                #{bossRate},
+            </if>
+            <if test="status!=null">
+                #{status},
+            </if>
+        </trim>
+    </insert>
+
+</mapper>
