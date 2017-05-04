@@ -57,5 +57,9 @@ public class V1BizMapper {
 		bizMapper.put("HSY001040", new String[]{"hsyAppVersionService","findAllPageComponent"});
 		bizMapper.put("HSY001041", new String[]{"hsyShopService","findBankBranchList"});
 		bizMapper.put("HSY001042", new String[]{"hsyShopService","findBankList"});
+		/**
+		 * 公告列表
+		 */
+		bizMapper.put("HSY001043", new String[]{"HsyNoticeService","noticeList"});
 	}
 }
