@@ -26,6 +26,7 @@
         </if>
         <if test="status!=null and status!=''">
         AND a.`STATUS` = #{status}
+        </if>
     </select>
 
 
