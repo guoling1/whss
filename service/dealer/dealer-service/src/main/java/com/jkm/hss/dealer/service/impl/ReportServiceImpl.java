@@ -210,4 +210,9 @@ public class ReportServiceImpl implements ReportService{
 
         return homeReportResponse;
     }
+
+    @Override
+    public void initReport(){
+
+    }
 }

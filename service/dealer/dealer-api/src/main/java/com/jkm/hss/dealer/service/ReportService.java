@@ -17,4 +17,9 @@ public interface ReportService {
      * @return
      */
     HomeReportResponse getHomeReport(long dealerId,final long acountid,int level, String startTime,String endTime);
+
+    /**
+     * 代理商仓储数据生成
+     */
+    void initReport();
 }
