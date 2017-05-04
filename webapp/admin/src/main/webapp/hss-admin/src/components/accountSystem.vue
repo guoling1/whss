@@ -246,13 +246,19 @@
       download:function () {
         this.$http.post(this.downloadUrl,{id:this.downloadId},{emulateJSON: true})
           .then(res => {
-            this.$message({
-              showClose: true,
-              message: res.data.result,
-              type: 'warning'
-            });
-            this.isDownload = false;
-            this.getData();
+          if(res.data.result=='操作成功'){
+          this.isDownload = false;
+          sessionStorage.setItem('data',JSON.stringify(res.data.jsonPayResult))
+          window.open("http://admin.qianbaojiajia.com/admin/details/accountData");
+          }else{
+          this.isDownload = false;
+          this.$message({
+            showClose: true,
+            message: res.data.result,
+            type: 'warning'
+          });
+          }
+
           })
           .catch(err =>{
             this.$message({
