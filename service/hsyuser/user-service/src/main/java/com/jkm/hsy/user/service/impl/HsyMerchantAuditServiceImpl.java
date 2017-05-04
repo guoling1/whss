@@ -447,6 +447,70 @@ public class HsyMerchantAuditServiceImpl implements HsyMerchantAuditService {
         return list;
     }
 
+    public List<HsyMerchantAuditResponse> hsyMerchant(HsyMerchantAuditRequest hsyMerchantAuditRequest) {
+
+        List<HsyMerchantAuditResponse> list = hsyMerchantAuditDao.hsyMerchant(hsyMerchantAuditRequest);
+        if (list.size()>0){
+            for (int i=0;i<list.size();i++){
+                if (list.size()>0){
+                    if (list.get(i).getStatus()==1){
+                        list.get(i).setStat("审核已通过");
+                    }
+                    if (list.get(i).getStatus()==2){
+                        list.get(i).setStat("待审核");
+                    }
+                    if (list.get(i).getStatus()==3){
+                        list.get(i).setStat("审核未通过");
+                    }
+                    if (list.get(i).getStatus()==4){
+                        list.get(i).setStat("商户已注册");
+                    }
+                }
+                String districtCode =list.get(i).getDistrictCode();
+                if (districtCode!=null&&!districtCode.equals("")){
+                    HsyMerchantAuditResponse ret = hsyMerchantAuditDao.getCode(districtCode);
+
+                    if (!ret.getParentCode().equals("0")){
+                        HsyMerchantAuditResponse reu = hsyMerchantAuditDao.getCity(ret.getParentCode());
+                        if (!reu.getParentCode().equals("0")){
+                            HsyMerchantAuditResponse reu1 = hsyMerchantAuditDao.getCityOnly(reu.getParentCode());
+                            list.get(i).setDistrictCode(reu1.getAName()+reu.getAName()+ret.getAName());
+                        }else {
+                            list.get(i).setDistrictCode(reu.getAName()+ret.getAName());
+                        }
+                    }
+                    if(ret.getParentCode().equals("0")){
+                        HsyMerchantAuditResponse reu = hsyMerchantAuditDao.getCityOnly(ret.getCode());
+                        list.get(i).setDistrictCode(reu.getAName());
+                    }
+                }
+                int industryCode = Integer.parseInt(list.get(i).getIndustryCode());
+                if (industryCode==1000){
+                    list.get(i).setIndustryCode(IndustryCodeType.CATERING.industryCodeValue);
+                }
+                if (industryCode==1001){
+                    list.get(i).setIndustryCode(IndustryCodeType.SUPERMARKET.industryCodeValue);
+                }
+                if (industryCode==1002){
+                    list.get(i).setIndustryCode(IndustryCodeType.LIFE_SERVICES.industryCodeValue);
+                }
+                if (industryCode==1003){
+                    list.get(i).setIndustryCode(IndustryCodeType.SHOPPING.industryCodeValue);
+                }
+                if (industryCode==1004){
+                    list.get(i).setIndustryCode(IndustryCodeType.BEAUTY.industryCodeValue);
+                }
+                if (industryCode==1005){
+                    list.get(i).setIndustryCode(IndustryCodeType.EXERCISE.industryCodeValue);
+                }
+                if (industryCode==1006){
+                    list.get(i).setIndustryCode(IndustryCodeType.HOTEL.industryCodeValue);
+                }
+            }
+        }
+        return list;
+    }
+
     @Override
     public String downLoadHsyMerchant(HsyMerchantAuditRequest hsyMerchantAuditRequest, String baseUrl) {
         final String tempDir = this.getTempDir();
