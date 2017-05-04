@@ -9,6 +9,7 @@ import com.jkm.hss.merchant.entity.NoticeResponse;
 import com.jkm.hss.merchant.enums.EnumNotice;
 import com.jkm.hss.merchant.service.PushNoticeService;
 import com.jkm.hsy.user.constant.AppConstant;
+import com.jkm.hsy.user.constant.UploadConsts;
 import com.jkm.hsy.user.entity.AppBizDistrict;
 import com.jkm.hsy.user.entity.AppNotice;
 import com.jkm.hsy.user.entity.AppParam;
@@ -30,7 +31,7 @@ public class HsyNoticeServiceImpl implements HsyNoticeService {
     private PushNoticeService pushNoticeService;
 
     public String noticeList(String dataParam,AppParam appParam)throws ApiHandleException{
-        Gson gson=new GsonBuilder().setDateFormat(AppConstant.DATE_FORMAT).create();
+        Gson gson=new GsonBuilder().setDateFormat(AppConstant.DATE_FORMAT).disableHtmlEscaping().create();
         NoticeRequest apprequest=null;
         try{
             apprequest=gson.fromJson(dataParam, NoticeRequest.class);
@@ -40,7 +41,7 @@ public class HsyNoticeServiceImpl implements HsyNoticeService {
         if(apprequest==null){
             apprequest=new NoticeRequest();
             apprequest.setProductType(EnumProductType.HSY.getId());
-            apprequest.setOffset(1);
+            apprequest.setOffset(0);
             apprequest.setPageSize(1);
         }
 
@@ -52,6 +53,7 @@ public class HsyNoticeServiceImpl implements HsyNoticeService {
                 }
             }
         }
+        final String noticeDomain= UploadConsts.getApplicationConfig().noticedomain();
         List<AppNotice> hsylist= Lists.transform(list, new Function<NoticeResponse, AppNotice>() {
             @Override
             public AppNotice apply(NoticeResponse noticeResponse) {
@@ -61,7 +63,7 @@ public class HsyNoticeServiceImpl implements HsyNoticeService {
                 hsyNoticeResponse.setStatus(noticeResponse.getStatus());
                 hsyNoticeResponse.setPushStatus(noticeResponse.getPushStatus());
                 hsyNoticeResponse.setTitle(noticeResponse.getTitle());
-                hsyNoticeResponse.setUrl("http://192.168.1.99:8080/notice/detail?noticeId="+noticeResponse.getId());
+                hsyNoticeResponse.setUrl(noticeDomain+"/notice/detail?noticeId="+noticeResponse.getId());
                 //http://hsy.qianbaojiajia.com
                 return hsyNoticeResponse;
             }
