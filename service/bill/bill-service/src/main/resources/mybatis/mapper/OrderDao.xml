@@ -984,7 +984,10 @@
         SUM(a.trade_amount)
         FROM
         tb_order a
-        LEFT JOIN tb_merchant_info b ON a.payee = b.account_id
+        LEFT JOIN tb_merchant_info b ON b.account_id=a.payee
+        LEFT JOIN app_au_user z ON z.ACCOUNTID=a.payee
+        LEFT JOIN app_biz_shop_user_role y ON y.UID=z.ID AND y.ROLE=1 AND y.TYPE=1
+        LEFT JOIN app_biz_shop x  ON x.ID=y.SID
         WHERE
         a.trade_type = 1
         <if test="startTime!=null and startTime!=''">
@@ -998,6 +1001,9 @@
         </if>
         <if test="merchantName != null and merchantName!=''">
             AND b.merchant_name LIKE CONCAT('%',#{merchantName},'%')
+        </if>
+        <if test="shortName != null and shortName!=''">
+            AND x.SHORTNAME LIKE CONCAT('%',#{shortName},'%')
         </if>
         <if test="proxyName != null and proxyName!=''">
             AND b.first_dealer_id in (select id from tb_dealer where proxy_name LIKE CONCAT('%',#{proxyName},'%'))
@@ -1013,6 +1019,9 @@
         </if>
         <if test="markCode != null and markCode!=''">
             AND b.mark_code = #{markCode}
+        </if>
+        <if test="globalId != null and globalId!=''">
+            AND x.GLOBALID = #{globalId}
         </if>
         <if test="appId != null and appId!=''">
             AND a.app_id = #{appId}
@@ -1032,6 +1041,7 @@
         <if test="settleStatus != null">
             AND a.settle_status = #{settleStatus}
         </if>
+
         <if test="payChannelSign != null and payChannelSign > 0">
             AND a.pay_channel_sign = #{payChannelSign}
         </if>
