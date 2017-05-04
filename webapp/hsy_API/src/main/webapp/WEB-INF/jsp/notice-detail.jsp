@@ -21,6 +21,6 @@
   <div class="content-box" id="context"></div>
 </div>
 </body>
-<script src="http://static.jinkaimen.cn/vendor/vendor.1.0.9.9.min.js"></script>
-<script src="http://static.jinkaimen.cn/hss/2.2.19/notisDetails.min.js"></script>
+<script src="/js/vendor.2.0.1.min.js"></script>
+<script src="/js/2.0.1/noticeDetail.min.js"></script>
 </html>
