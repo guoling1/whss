@@ -322,8 +322,10 @@ public class HsyUserServiceImpl implements HsyUserService {
         {
             shopQRList=null;
         }
-        map.put("shopQRList",shopQRList);
-        map.put("qrUrl",AppConstant.QR_URL);
+        Map qr=new HashMap();
+        qr.put("shopQRList",shopQRList);
+        qr.put("qrUrl",AppConstant.QR_URL);
+        map.put("qr",qr);
 
         map.put("appAuUser",appAuUserFind);
         map.put("appBizShop",appBizShop);
@@ -996,8 +998,10 @@ public class HsyUserServiceImpl implements HsyUserService {
         {
             shopQRList=null;
         }
-        map.put("shopQRList",shopQRList);
-        map.put("qrUrl",AppConstant.QR_URL);
+        Map qr=new HashMap();
+        qr.put("shopQRList",shopQRList);
+        qr.put("qrUrl",AppConstant.QR_URL);
+        map.put("qr",qr);
         map.put("appAuUser",appAuUserFind);
         map.put("appBizShop",appBizShop);
         map.put("appBizCard",appBizCard);
