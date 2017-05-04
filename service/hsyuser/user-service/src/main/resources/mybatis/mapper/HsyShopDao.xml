@@ -320,4 +320,10 @@
         </if>) x
     </select>
 
+    <select id="findShopListByUID"  resultType="com.jkm.hsy.user.entity.AppBizShop">
+        select ID,NAME,SHORTNAME,TYPE from app_biz_shop shop left join app_biz_shop_user_role sur on shop.ID=sur.SID
+        where sur.UID=#{uid}
+        order by sur.TYPE,shop.CREATETIME
+    </select>
+
 </mapper>
