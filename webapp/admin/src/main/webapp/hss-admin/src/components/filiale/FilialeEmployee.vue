@@ -109,12 +109,12 @@
         }
       },
       issue: function () {
-//        window.open('http://admin.qianbaojiajia.com/admin/details/filialeRole');
-        this.$router.push('/admin/details/filialeRole')
+        window.open('http://admin.qianbaojiajia.com/admin/details/filialeRole');
+//        this.$router.push('/admin/details/filialeRole')
       },
       issue1: function (id) {
-//        window.open('http://admin.qianbaojiajia.com/admin/details/filialeRole?id='+id)
-        this.$router.push({path:'/admin/details/filialeRole',query:{id:id}})
+        window.open('http://admin.qianbaojiajia.com/admin/details/filialeRole?id='+id)
+//        this.$router.push({path:'/admin/details/filialeRole',query:{id:id}})
       },
       getData: function () {
         this.loading = true;

@@ -125,15 +125,15 @@
           type:4,
           list:list
         }).then(res => {
-//          this.$message({
-//            showClose: true,
-//            message: '添加成功',
-//            type: 'success'
-//          });
-//          this.$router.push('/admin/record/role')
-          this.$store.commit('MESSAGE_ACCORD_SHOW', {
-            text: '操作成功'
-          })
+          this.$message({
+            showClose: true,
+            message: '操作成功',
+            type: 'success'
+          });
+          this.$router.go(-1);
+//          this.$store.commit('MESSAGE_ACCORD_SHOW', {
+//            text: '操作成功'
+//          })
         }).catch(err =>{
           this.$message({
             showClose: true,
