@@ -253,7 +253,7 @@
         countHss: 0,
         countHsy: 0,
         currentPage: 1,
-        loading: true,
+        loading: false,
       }
     },
     beforeRouteEnter (to, from, next) {
@@ -272,8 +272,8 @@
       })
     },
     created: function () {
-      this.getDataHss()
-      this.getDataHsy()
+      /*this.getDataHss()
+      this.getDataHsy()*/
     },
     methods: {
       reset: function (val) {
