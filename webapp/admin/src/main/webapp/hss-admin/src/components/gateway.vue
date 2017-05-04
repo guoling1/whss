@@ -4,7 +4,8 @@
       <div class="box" style="margin-top:15px;overflow: hidden">
         <div class="box-header">
           <h3 class="box-title">网关模板</h3>
-          <router-link to="/admin/record/gatewayAdd" class="btn btn-primary" style="float: right;">新增网关通道</router-link>
+          <a href="javascript:window.close();" class="pull-right btn btn-primary" style="margin-left: 15px">关闭</a>
+          <router-link to="/admin/details/gatewayAdd" class="pull-right btn btn-primary">新增网关通道</router-link>
         </div>
         <div class="box-body">
           <ul>
@@ -126,7 +127,8 @@
         })
       },
       detail: function (productId, index) {
-        this.$router.push({path:'/admin/record/gatewayAdd',query:{productId:productId,index:index}})
+//        window.open('http://admin.qianbaojiajia.com/admin/details/gatewayAdd?productId='+productId+'&index='+index);
+        this.$router.push({path:'/admin/details/gatewayAdd',query:{productId:productId,index:index}})
       },
       open: function (id) {
         this.isRecommend = true;
