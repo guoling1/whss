@@ -9,6 +9,7 @@ import com.jkm.hss.merchant.entity.NoticeResponse;
 import com.jkm.hss.merchant.enums.EnumNotice;
 import com.jkm.hss.merchant.enums.EnumType;
 import com.jkm.hss.merchant.service.PushNoticeService;
+import com.jkm.hss.product.enums.EnumProductType;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -70,7 +71,7 @@ public class NoticeController extends BaseController {
             rightNow.add(Calendar.DATE, 1);
             request.setEndTime(sdf.format(rightNow.getTime()));
         }
-        request.setProductType("hsy");
+        request.setProductType(EnumProductType.HSY.getId());
         List<NoticeResponse> list = pushNoticeService.selectList(request);
         if(list.size()>0){
             for (int i=0;i<list.size();i++){
@@ -89,7 +90,7 @@ public class NoticeController extends BaseController {
                 hsyNoticeResponse.setStatus(noticeResponse.getStatus());
                 hsyNoticeResponse.setPushStatus(noticeResponse.getPushStatus());
                 hsyNoticeResponse.setTitle(noticeResponse.getTitle());
-                hsyNoticeResponse.setUrl("http://hsy.qianbaojiajia.com/"+noticeResponse.getId());
+                hsyNoticeResponse.setUrl("http://hsy.qianbaojiajia.com/notice/detail?noticeId="+noticeResponse.getId());
                 return hsyNoticeResponse;
             }
         });

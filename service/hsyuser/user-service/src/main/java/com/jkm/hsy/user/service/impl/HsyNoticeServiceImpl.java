@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import com.jkm.hss.product.enums.EnumProductType;
 
 /**
  * Created by wayne on 17/5/4.
@@ -38,7 +39,7 @@ public class HsyNoticeServiceImpl implements HsyNoticeService {
         }
         if(apprequest==null){
             apprequest=new NoticeRequest();
-            apprequest.setProductType("hsy");
+            apprequest.setProductType(EnumProductType.HSY.getId());
             apprequest.setOffset(1);
             apprequest.setPageSize(1);
         }
@@ -60,7 +61,8 @@ public class HsyNoticeServiceImpl implements HsyNoticeService {
                 hsyNoticeResponse.setStatus(noticeResponse.getStatus());
                 hsyNoticeResponse.setPushStatus(noticeResponse.getPushStatus());
                 hsyNoticeResponse.setTitle(noticeResponse.getTitle());
-                hsyNoticeResponse.setUrl("http://hsy.qianbaojiajia.com/"+noticeResponse.getId());
+                hsyNoticeResponse.setUrl("http://192.168.1.99:8080/notice/detail?noticeId="+noticeResponse.getId());
+                //http://hsy.qianbaojiajia.com
                 return hsyNoticeResponse;
             }
         });
