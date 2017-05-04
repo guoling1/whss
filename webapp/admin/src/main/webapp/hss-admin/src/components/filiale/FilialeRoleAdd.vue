@@ -122,6 +122,7 @@
         this.$http.post('/admin/user/saveRole',{
           roleId:id,
           roleName:this.roleName,
+          type:4,
           list:list
         }).then(res => {
 //          this.$message({

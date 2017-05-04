@@ -178,14 +178,27 @@
         tableData:[],
         id: 0,
         productId: '',
-        fileList1: []
+        fileList1: [],
+        isMask:false
       }
     },
     created: function () {
-      //若为查看详情
       this.$http.get('/admin/dealer/oemDetail/' + this.$route.query.dealerId)
         .then(function (res) {
           this.query = res.data;
+          if (res.data.realQrCodeUrl != null) {
+            this.fileList1.push({
+              url: res.data.realQrCodeUrl
+            })
+            setTimeout(function () {
+              var aSpan = document.getElementById('phone1').getElementsByTagName('span')[0];
+              if (document.getElementsByClassName('el-draggeer__cover__btns').length == 1) {
+                document.getElementsByClassName('el-draggeer__cover__btns')[0].removeChild(aSpan)
+              } else {
+                document.getElementsByClassName('el-draggeer__cover__btns')[1].removeChild(aSpan)
+              }
+            }, 300)
+          }
         })
         .catch(err =>{
           this.$message({
@@ -252,6 +265,7 @@
       },
       //查看照片
       handlePreview: function (file) {
+
         var mask = document.getElementById('mask'),
           img = mask.getElementsByTagName('img')[0];
         img.src = file.url;

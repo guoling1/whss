@@ -72,12 +72,12 @@
     },
     methods: {
       issue: function () {
-        window.open('http://admin.qianbaojiajia.com/admin/details/FilialeRoleAdd')
-//        this.$router.push('/admin/record/roleAdd')
+//        window.open('http://admin.qianbaojiajia.com/admin/details/FilialeRoleAdd')
+        this.$router.push('/admin/details/FilialeRoleAdd')
       },
       issue1: function (id) {
-        window.open('http://admin.qianbaojiajia.com/admin/details/FilialeRoleAdd?id='+id)
-//        this.$router.push({path:'/admin/record/roleAdd',query:{id:id}})
+//        window.open('http://admin.qianbaojiajia.com/admin/details/FilialeRoleAdd?id='+id)
+        this.$router.push({path:'/admin/details/FilialeRoleAdd',query:{id:id}})
       },
       getData: function () {
         this.loading = true;

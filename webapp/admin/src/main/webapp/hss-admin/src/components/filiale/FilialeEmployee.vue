@@ -1,10 +1,10 @@
 <template>
-  <div id="personnelList">
+  <div id="filialeEmployee">
     <div class="col-md-12">
       <div class="box" style="margin-top:15px;overflow: hidden">
         <div class="box-header">
           <h3 class="box-title">分公司员工</h3>
-          <a @click="issue" class="btn btn-primary" style="float: right;">分公司员工权限</a>
+          <a @click="issue" class="pull-right">分公司员工权限</a>
         </div>
         <div class="box-body">
           <!--筛选-->
@@ -40,7 +40,11 @@
             <el-table-column prop="mobile" label="手机号"></el-table-column>
             <el-table-column prop="email" label="邮箱"></el-table-column>
             <el-table-column prop="roleName" label="角色"></el-table-column>
-            <el-table-column prop="createTime" label="注册日期" :formatter="changeTime"></el-table-column>
+            <el-table-column prop="createTime" label="注册日期">
+              <template scope="scope">
+                <span>{{scope.row.createTime|changeDate}}</span>
+              </template>
+            </el-table-column>
             <el-table-column prop="status" label="状态">
               <template scope="scope">
                 <span v-if="records[scope.$index].status==2" type="text" size="small">禁用</span>
@@ -73,7 +77,7 @@
 </template>
 <script lang="babel">
   export default{
-    name: 'personnelList',
+    name: 'filialeEmployee',
     data(){
       return {
         query:{
@@ -87,20 +91,30 @@
         records: [],
         count: 0,
         total: 0,
-        loading: true,
+        loading: true
       }
     },
     created: function () {
       this.getData()
     },
     methods: {
+      reset: function () {
+        this.query={
+          dealerName:'',
+          pageNo:1,
+          pageSize:10,
+          markCode: "",
+          realname: "",
+          mobile: ""
+        }
+      },
       issue: function () {
-        window.open('http://admin.qianbaojiajia.com/admin/details/filialeRole');
-//        this.$router.push('/admin/record/personnelAdd')
+//        window.open('http://admin.qianbaojiajia.com/admin/details/filialeRole');
+        this.$router.push('/admin/details/filialeRole')
       },
       issue1: function (id) {
-        window.open('http://admin.qianbaojiajia.com/admin/details/filialeRole?id='+id)
-//        this.$router.push({path:'/admin/record/personnelAdd',query:{id:id}})
+//        window.open('http://admin.qianbaojiajia.com/admin/details/filialeRole?id='+id)
+        this.$router.push({path:'/admin/details/filialeRole',query:{id:id}})
       },
       getData: function () {
         this.loading = true;
