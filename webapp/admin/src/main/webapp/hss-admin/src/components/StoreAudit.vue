@@ -323,7 +323,7 @@
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer" style="text-align: center">
-          <el-button type="primary" style="width: 200px;margin-top: -50px;position: relative;top: -30px;" @click="changeBankNo">确 定</el-button>
+          <el-button type="primary" style="width: 200px;margin-top: -50px;position: relative;top: -30px;" @click="changeBankNo" :disabled="bankDis">确 定</el-button>
         </div>
       </el-dialog>
       <!--修改归属-->
@@ -487,7 +487,8 @@
           merchantId:''
         },
         isUpload: false,
-        photoType:''
+        photoType:'',
+        bankDis:false
       }
     },
     created: function () {
@@ -631,6 +632,7 @@
       },
       // 修改结算卡
       changeBankNo: function () {
+        this.bankDis = true;
         this.$http.post('/admin/accountBank/changeBankCard',this.bankQuery)
           .then(res=>{
             this.$message({
@@ -640,8 +642,10 @@
             });
             this.getData();
             this.changeBank = false;
+            this.bankDis = false;
           })
           .catch(err=>{
+            this.bankDis = false;
             this.$message({
               showClose: true,
               message: err.statusMessage,
