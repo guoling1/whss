@@ -56,15 +56,15 @@
               </template>
             </el-table-column>
             <el-table-column prop="balanceCount" label="帐平笔数" align="right" ></el-table-column>
-            <el-table-column label="帐平金额（元）" align="right">
+            <el-table-column label="帐平金额（元）" align="right" min-width="90">
               <template scope="scope">{{scope.row.balanceSum|toFix}}</template>
             </el-table-column>
             <el-table-column prop="exCount" label="对方单边笔数"  align="right"></el-table-column>
-            <el-table-column label="对方单边金额（元）"  align="right">
+            <el-table-column label="对方单边金额（元）"  align="right" min-width="90">
               <template scope="scope">{{scope.row.exSum|toFix}}</template>
             </el-table-column>
             <el-table-column prop="inCountWD" label="己方单边笔数"  align="right"></el-table-column>
-            <el-table-column label="己方单边金额（元）"  align="right">
+            <el-table-column label="己方单边金额（元）"  align="right" min-width="90">
               <template scope="scope">{{scope.row.inSumWD|toFix}}</template>
             </el-table-column>
             <el-table-column label="对账状态" align="right" >

@@ -72,7 +72,7 @@
               </template>
             </el-table-column>
             <el-table-column prop="orderSN" label="交易流水" ></el-table-column>
-            <el-table-column label="交易金额" align="right">
+            <el-table-column label="交易金额" align="right" min-width="90">
               <template scope="scope">
                 {{scope.row.tradeAmount|toFix}}
               </template>
