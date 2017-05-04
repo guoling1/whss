@@ -6,16 +6,13 @@
 const message = _require('message');
 const http = _require('http');
 const tools = _require('tools');
-// 引入浏览器特性处理
-const browser = _require('browser');
-browser.elastic_touch('noticeDetails');
 // 定义ajax事件
 let query = tools.GetUrlArg();
 let title =document.getElementById('title');
 let date =document.getElementById('date');
 let context =document.getElementById('context');
 http.post('/notice/noticeDetails', {
-  id: query.id
+  id: query.noticeId
 }, function (data) {
   title.innerHTML = data.title;
   date.innerHTML = tools.dateFormat('YYYY-MM-DD HH:mm:ss',data.createTime);
