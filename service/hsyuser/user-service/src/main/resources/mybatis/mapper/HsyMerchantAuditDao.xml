@@ -59,9 +59,43 @@
         <if test="shortName!=null and shortName!=''">
             AND a.SHORTNAME=#{shortName}
         </if>
+        <if test="cellphone!=null and cellphone!=''">
+            AND c.CELLPHONE=#{cellphone}
+        </if>
         ORDER BY
             a.CREATETIME DESC
         LIMIT #{offset},#{pageSize}
+    </select>
+
+    <!-- 导出hsy商户列表 -->
+    <select id="hsyMerchant" resultType="com.jkm.hsy.user.entity.HsyMerchantAuditResponse">
+        SELECT
+        a.*, c.CELLPHONE,c.DEALERID,
+        (
+        SELECT
+        proxy_name
+        FROM
+        tb_dealer
+        WHERE
+        id = c.DEALERID
+        ) as proxyNames
+        FROM
+        app_biz_shop a
+        LEFT JOIN app_biz_shop_user_role b ON a.ID = b.SID
+        LEFT JOIN app_au_user c ON c.ID = b.UID
+        WHERE
+        b.ROLE = 1 AND b.TYPE=1
+        <if test="globalID!=null and globalID!=''">
+            AND a.GLOBALID=#{globalID}
+        </if>
+        <if test="shortName!=null and shortName!=''">
+            AND a.SHORTNAME=#{shortName}
+        </if>
+        <if test="cellphone!=null and cellphone!=''">
+            AND c.CELLPHONE=#{cellphone}
+        </if>
+        ORDER BY
+        a.CREATETIME DESC
     </select>
 
     <!-- 查询商户待审核列表 -->

@@ -125,9 +125,9 @@
                   <div class="btn btn-primary" @click="search('hsy')">筛选</div>
                   <div class="btn btn-primary" @click="reset('hsy')">重置</div>
                 </li>
-                <!--<li class="same" style="float: right">
-                  <span @click="onload()" download="商户列表" class="btn btn-primary" style="color: #fff">导出</span>
-                </li>-->
+                <li class="same" style="float: right">
+                  <span @click="_$power(onload,'boss_merchant_export')" download="商户列表" class="btn btn-primary">导出</span>
+                </li>
               </ul>
               <!--表格-->
               <el-table v-loading.body="loading" style="font-size: 12px;margin-bottom:15px" :data="recordsHsy" border>

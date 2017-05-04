@@ -8,6 +8,7 @@
         <div class="box-body">
           <el-tabs class="tab" v-model="activeName" type="card">
             <el-tab-pane label="好收收" name="first">
+              <!--筛选-->
               <ul class="search">
                 <li class="same">
                   <label>商户编号:</label>
@@ -122,6 +123,9 @@
                 <li class="same">
                   <div class="btn btn-primary" @click="search('hsy')">筛选</div>
                   <div class="btn btn-primary" @click="reset('hsy')">重置</div>
+                </li>
+                <li class="same" style="float: right">
+                  <span @click="_$power(onload,'boss_merchant_export')" download="商户列表" class="btn btn-primary">导出</span>
                 </li>
               </ul>
               <!--表格-->
@@ -242,38 +246,40 @@
           pageSize:10,
           shortName:'',
           globalID:'',
-          status:'2'
         },
         recordsHss: [],
         recordsHsy: [],
         countHss: 0,
         countHsy: 0,
         currentPage: 1,
-        loading: true,
+        loading: false,
       }
     },
     beforeRouteEnter (to, from, next) {
       next(vm=>{
         vm.$data.fromName = from.name;
-      if(vm.$data.fromName=='StoreAuditHSY'){
-        vm.$data.activeName='second';
-        vm.$data.url='/admin/hsyMerchantList/getMerchantList'
-      }else {
-        vm.$data.activeName='first';
-        vm.$data.url='/admin/query/getAll'
-      }
-      vm.$data.records = '';
-      vm.$data.total = 0;
-      vm.$data.count = 0;
-    })
+        if(vm.$data.fromName=='StoreAuditHSY'){
+          vm.$data.activeName='second';
+          vm.$data.url='/admin/hsyMerchantList/getMerchantList'
+        }else {
+          vm.$data.activeName='first';
+          vm.$data.url='/admin/query/getAll'
+        }
+        vm.$data.records = '';
+        vm.$data.total = 0;
+        vm.$data.count = 0;
+      })
     },
     created: function () {
-      this.getDataHss()
-      this.getDataHsy()
+      /*this.getDataHss()
+       this.getDataHsy()*/
     },
     methods: {
       reset: function (val) {
         if(val == 'hss'){
+          this.dateHss='';
+          this.dateHss1='';
+          this.dateHss2='';
           this.queryHss = {
             pageNo:1,
             pageSize:10,
@@ -296,7 +302,6 @@
             pageSize:10,
             shortName:'',
             globalID:'',
-            status:'2'
           }
         }
       },
@@ -309,9 +314,10 @@
 //        this.$router.push({path:'/admin/record/StoreAudit',query:{id:id,status:status}})
       },
       getDataHss: function () {
+        this.loading = true;
         this.$http.post('/admin/query/getAll',this.queryHss)
           .then(function (res) {
-            this.$data.loading = false;
+            this.loading = false;
             this.$data.recordsHss = res.data.records;
             this.$data.countHss = res.data.count;
             this.$data.totalHss = res.data.totalPage;
@@ -326,6 +332,7 @@
           })
       },
       getDataHsy: function () {
+        this.loading = true;
         this.$http.post('/admin/hsyMerchantList/getCheckPending',this.queryHsy)
           .then(function (res) {
             this.$data.loading = false;
@@ -347,21 +354,21 @@
         this.loading = true;
         this.$http.get('/admin/merchantIn/update')
           .then(res => {
-          this.loading = false;
-          this.$message({
-            showClose: true,
-            message: '同步成功',
-            type: 'success'
-          });
-        })
-        .catch(err => {
-          this.loading = false;
-          this.$message({
-            showClose: true,
-            message: err.statusMessage,
-            type: 'error'
-          });
-        })
+            this.loading = false;
+            this.$message({
+              showClose: true,
+              message: '同步成功',
+              type: 'success'
+            });
+          })
+          .catch(err => {
+            this.loading = false;
+            this.$message({
+              showClose: true,
+              message: err.statusMessage,
+              type: 'error'
+            });
+          })
       },
       onload: function () {
         if(this.activeName == 'first'){
@@ -450,7 +457,7 @@
       }
     },
     watch:{
-      date:function (val,oldVal) {
+      dateHss:function (val,oldVal) {
         if(val!=undefined&&val[0]!=null){
           for(var j=0;j<val.length;j++){
             var str = val[j];
@@ -462,17 +469,17 @@
             }
             str = ary[0] + '-' + ary[1] + '-' + ary[2];
             if(j==0){
-              this.$data.query.startTime = str;
+              this.$data.queryHss.startTime = str;
             }else {
-              this.$data.query.endTime = str;
+              this.$data.queryHss.endTime = str;
             }
           }
         }else {
-          this.$data.query.startTime = '';
-          this.$data.query.endTime = '';
+          this.$data.queryHss.startTime = '';
+          this.$data.queryHss.endTime = '';
         }
       },
-      date1:function (val,oldVal) {
+      dateHss1:function (val,oldVal) {
         if(val!=undefined&&val[0]!=null){
           for(var j=0;j<val.length;j++){
             var str = val[j];
@@ -484,17 +491,17 @@
             }
             str = ary[0] + '-' + ary[1] + '-' + ary[2];
             if(j==0){
-              this.$data.query.startTime1 = str;
+              this.$data.queryHss.startTime1 = str;
             }else {
-              this.$data.query.endTime1 = str;
+              this.$data.queryHss.endTime1 = str;
             }
           }
         }else {
-          this.$data.query.startTime1 = '';
-          this.$data.query.endTime1 = '';
+          this.$data.queryHss.startTime1 = '';
+          this.$data.queryHss.endTime1 = '';
         }
       },
-      date2:function (val,oldVal) {
+      dateHss2:function (val,oldVal) {
         if(val!=undefined&&val[0]!=null){
           for(var j=0;j<val.length;j++){
             var str = val[j];
@@ -506,14 +513,14 @@
             }
             str = ary[0] + '-' + ary[1] + '-' + ary[2];
             if(j==0){
-              this.$data.query.startTime2 = str;
+              this.$data.queryHss.startTime2 = str;
             }else {
-              this.$data.query.endTime2 = str;
+              this.$data.queryHss.endTime2 = str;
             }
           }
         }else {
-          this.$data.query.startTime2 = '';
-          this.$data.query.endTime2 = '';
+          this.$data.queryHss.startTime2 = '';
+          this.$data.queryHss.endTime2 = '';
         }
       },
     },

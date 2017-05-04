@@ -283,6 +283,9 @@
         }
       },
       reset: function () {
+        this.appId='';
+        this.merchantName='';
+        this.markCode='';
         this.query = {
           page:1,
             size:10,
