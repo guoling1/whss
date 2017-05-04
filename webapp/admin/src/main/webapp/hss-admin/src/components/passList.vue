@@ -1,7 +1,7 @@
 <template>
   <div id="passList">
     <div class="col-md-12">
-      <div class="box" style="margin-top:15px;overflow: hidden">
+      <div class="box" style="overflow: hidden">
         <div class="box-header">
           <h3 class="box-title">通道列表</h3>
           <!--<router-link to="/admin/record/passAdd" class="pull-right btn btn-primary" style="margin-left: 20px">新增通道-->

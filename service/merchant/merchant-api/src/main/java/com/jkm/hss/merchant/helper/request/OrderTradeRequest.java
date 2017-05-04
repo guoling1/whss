@@ -9,6 +9,16 @@ import lombok.Data;
 public class OrderTradeRequest {
 
     /**
+     * 店铺shop编码
+     */
+    private String globalId;
+
+    /**
+     * hsy商户名
+     */
+    private String shortName;
+
+    /**
      * 商户编码
      */
     private String markCode;

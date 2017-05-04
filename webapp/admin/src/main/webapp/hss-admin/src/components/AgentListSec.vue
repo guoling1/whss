@@ -1,13 +1,13 @@
 <template>
   <div>
     <div class="col-md-12">
-      <div class="box" style="margin-top:15px;overflow: hidden">
+      <div class="box" style="overflow: hidden">
         <div class="box-header">
           <h3 class="box-title">二级代理商列表</h3>
         </div>
         <div class="box-body">
           <!--筛选-->
-          <el-row :gutter="20" style="">
+          <el-row :gutter="21" style="">
             <el-col :span="3">
               <label>手机号：</label>
               <el-input v-model="query.mobile" placeholder="请输入内容" size="small"></el-input>
@@ -22,7 +22,7 @@
             </el-col>
             <el-col :span="3">
               <label>省市:</label>
-              <div class="select" id="select" @click="open"><span>请选择</span>
+              <div class="select" id="select" @click="open"><span style="color: #1f2d3d">{{selectCon}}</span>
                 <i class="el-icon-caret-bottom" style="float: right;margin-top: 10px"></i>
               </div>
               <ul class="isShow" v-if="isOpen">
@@ -46,8 +46,9 @@
                 <el-option label="好收收" value="hss">好收收</el-option>
               </el-select>
             </el-col>
-            <el-col  :span="1" style="margin-top: 18px">
+            <el-col  :span="3" style="margin-top: 18px">
               <div class="btn btn-primary" @click="search">筛选</div>
+              <div class="btn btn-primary" @click="reset">重置</div>
             </el-col>
           </el-row>
           <!--表格-->
@@ -132,6 +133,7 @@
         },
         isShow:false,
         index:'',
+        selectCon:'全部'
       }
     },
     created: function () {
@@ -151,6 +153,19 @@
       this.getData()
     },
     methods: {
+      reset: function () {
+        this.selectCon = '全部';
+        this.query = {
+          pageNo:1,
+          pageSize:10,
+          mobile:"",//商户编号
+          name:"",  //商户名字
+          markCode:"",
+          sysType:"",
+          firstDealerName:'',
+          districtCode:''
+        };
+      },
       getData: function () {
         this.loading = true;
         this.$http.post('/admin/dealer/listSecondDealer',this.$data.query)
@@ -209,6 +224,7 @@
       select:function (valCode,val) {
         var oCon = document.getElementById('select').getElementsByTagName('span')[0];
         oCon.innerHTML = val;
+        this.selectCon = val;
         oCon.style.color = '#1f2d3d';
         this.$data.query.districtCode = valCode;
         this.$data.isOpen = !this.$data.isOpen;
@@ -217,6 +233,7 @@
       selectAll: function () {
         var oCon = document.getElementById('select').getElementsByTagName('span')[0];
         oCon.innerHTML = '全部';
+        this.selectCon = '全部';
         oCon.style.color = '#1f2d3d';
         this.$data.query.districtCode = '';
         this.$data.isOpen = !this.$data.isOpen;

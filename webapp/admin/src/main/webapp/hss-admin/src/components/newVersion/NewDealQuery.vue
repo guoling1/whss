@@ -1,7 +1,7 @@
 <template>
   <div id="deal">
     <div class="col-md-12">
-      <div class="box" style="margin-top:15px;overflow: hidden">
+      <div class="box" style="overflow: hidden">
         <div class="box-header">
           <h3 class="box-title">交易查询</h3>
           <router-link to="/admin/details/deal" class="pull-right btn btn-primary" style="margin-left: 20px" target="_blank">切换旧版</router-link>
@@ -23,12 +23,20 @@
               <el-input style="width: 188px" v-model="query.sn" placeholder="请输入内容" size="small"></el-input>
             </li>
             <li class="same">
+              <label>业务方：</label>
+              <el-select style="width: 188px" clearable v-model="appId" size="small">
+                <el-option label="全部" value="">全部</el-option>
+                <el-option label="好收收" value="好收收"></el-option>
+                <el-option label="好收银" value="好收银"></el-option>
+              </el-select>
+            </li>
+            <li class="same">
               <label>收款商户编号:</label>
-              <el-input style="width: 188px" v-model="query.markCode" placeholder="请输入内容" size="small"></el-input>
+              <el-input style="width: 188px" v-model="markCode" placeholder="请先选择业务方" size="small" :disabled="appId==''"></el-input>
             </li>
             <li class="same">
               <label>收款商户名称:</label>
-              <el-input style="width: 188px" v-model="query.merchantName" placeholder="请输入内容" size="small"></el-input>
+              <el-input style="width: 188px" v-model="merchantName" placeholder="请先选择业务方" size="small" :disabled="appId==''"></el-input>
             </li>
             <li class="same">
               <label>所属一级代理:</label>
@@ -84,14 +92,6 @@
               </el-select>
             </li>
             <li class="same">
-              <label>业务方：</label>
-              <el-select style="width: 188px" clearable v-model="query.appId" size="small">
-                <el-option label="全部" value="">全部</el-option>
-                <el-option label="好收收" value="好收收"></el-option>
-                <el-option label="好收银" value="好收银"></el-option>
-              </el-select>
-            </li>
-            <li class="same">
               <label>支付渠道：</label>
               <el-select style="width: 188px" clearable v-model="query.payChannelSign" size="small">
                 <el-option label="全部" value=""></el-option>
@@ -100,10 +100,11 @@
             </li>
             <li class="same">
               <div class="btn btn-primary" @click="search">筛选</div>
+              <div class="btn btn-primary" @click="reset">重置</div>
             </li>
           </ul>
           <!--表格-->
-          <el-table v-loading.body="loading" height="620" style="font-size: 12px;margin-bottom: 15px;" :data="records" border>
+          <el-table v-loading.body="loading" height="550" style="font-size: 12px;margin-bottom: 15px;" :data="records" border>
             <el-table-column width="62" label="序号" fixed="left" type="index"></el-table-column>
             <el-table-column prop="appId" label="业务方" min-width="85"></el-table-column>
             <el-table-column label="交易订单号" min-width="112">
@@ -204,8 +205,6 @@
           orderNo:'',
           businessOrderNo:'',
           sn:'',
-          merchantName: '',
-          markCode:"",
           startTime: '',
           endTime: '',
           lessTotalFee: '',
@@ -220,6 +219,9 @@
           payChannelSign:'',
           appId:''
         },
+        appId:'',
+        merchantName: '',
+        markCode:"",
         channelList:[],
         date: '',
         records: [],
@@ -256,29 +258,75 @@
           });
         });
 
-      let time = new Date();
-      this.date = [time,time];
-      for (var j = 0; j < this.date.length; j++) {
-        var str = this.date[j];
-        var ary = [str.getFullYear(), str.getMonth() + 1, str.getDate()];
-        for (var i = 0, len = ary.length; i < len; i++) {
-          if (ary[i] < 10) {
-            ary[i] = '0' + ary[i];
-          }
-        }
-        str = ary[0] + '-' + ary[1] + '-' + ary[2];
-        if (j == 0) {
-          this.query.startTime = str;
-        } else {
-          this.query.endTime = str;
-        }
-      }
+      this.currentDate();
       this.getData();
       this.getAddTotal()
     },
     methods: {
+      currentDate: function () {
+        let time = new Date();
+        this.date = [time,time];
+        for (var j = 0; j < this.date.length; j++) {
+          var str = this.date[j];
+          var ary = [str.getFullYear(), str.getMonth() + 1, str.getDate()];
+          for (var i = 0, len = ary.length; i < len; i++) {
+            if (ary[i] < 10) {
+              ary[i] = '0' + ary[i];
+            }
+          }
+          str = ary[0] + '-' + ary[1] + '-' + ary[2];
+          if (j == 0) {
+            this.query.startTime = str;
+          } else {
+            this.query.endTime = str;
+          }
+        }
+      },
+      reset: function () {
+        this.appId='';
+        this.merchantName='';
+        this.markCode='';
+        this.query = {
+          page:1,
+            size:10,
+            orderNo:'',
+            businessOrderNo:'',
+            sn:'',
+            merchantName: '',
+            startTime: '',
+            endTime: '',
+            lessTotalFee: '',
+            moreTotalFee: '',
+            status: '',
+            settleStatus:'',
+            payType:'',
+            proxyName:'',
+            proxyName1:'',
+            loadUrl: '',
+            loadUrl1: '',
+            payChannelSign:''
+        };
+        this.currentDate()
+      },
       getData: function () {
         this.loading = true;
+        this.query.appId = this.appId;
+        if(this.appId == '好收收'){
+          this.query.markCode = this.markCode;
+          this.query.merchantName = this.merchantName;
+          delete this.query.globalId;
+          delete this.query.shortName;
+        }else if(this.appId == '好收银'){
+          this.query.globalId = this.markCode;
+          this.query.shortName = this.merchantName;
+          delete this.query.markCode;
+          delete this.query.merchantName;
+        }else {
+          this.query.markCode = '';
+          this.query.merchantName = '';
+          this.query.globalId = '';
+          this.query.shortName = '';
+        }
         this.$http.post('/admin/queryOrder/orderList',this.query)
           .then(function (res) {
             this.loading = false;
@@ -380,6 +428,12 @@
         } else {
           this.query.startTime = '';
           this.query.endTime = '';
+        }
+      },
+      appId: function (val) {
+        if(val == ''){
+          this.markCode=''
+          this.merchantName=''
         }
       }
     },

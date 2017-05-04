@@ -661,7 +661,7 @@
         document.getElementById('mask').style.display = 'none'
       },
       toDet:function () {
-        window.open('http://admin.qianbaojiajia.com/admin/details/dataHistory?merchantId='+id);
+        window.open('http://admin.qianbaojiajia.com/admin/details/dataHistory?merchantId='+this.id);
 //        this.$router.push({path:'/admin/record/dataHistory',query:{merchantId:this.id}})
       }
     },
