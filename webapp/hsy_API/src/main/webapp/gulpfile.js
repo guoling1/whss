@@ -23,20 +23,31 @@ gulp.task('less', function () {
     .pipe(gulp.dest('css'));
 });
 
-gulp.task('es', () => {
+gulp.task('vendor', () => {
   return gulp.src([
-    'es6/**/require.js',
-    'es6/**/message.js',
-    'es6/**/http.js',
-    'es6/**/fastclick.js',
+    'es6/vendor/**/require.js',
+    'es6/vendor/**/tools.js',
+    'es6/vendor/**/message.js',
+    'es6/vendor/**/http.js',
+    'es6/vendor/**/fastclick.js',
     //!!以上顺序不得变更
-    'es6/**/keyboard.js',
-    'es6/**/*.js'
+    'es6/vendor/**/keyboard.js'
   ]).pipe(sourcemaps.init())
     .pipe(babel({
       presets: ['es2015']
     }))
-    .pipe(concat('payment.2.0.1.js'))
+    .pipe(concat('vendor.2.0.1.js'))
+    .pipe(uglify())
+    .pipe(rename({suffix: ".min"}))
+    .pipe(sourcemaps.write('.'))
+    .pipe(gulp.dest('js'));
+});
+
+gulp.task('es', () => {
+  return gulp.src('es6/*.js').pipe(sourcemaps.init())
+    .pipe(babel({
+      presets: ['es2015']
+    }))
     .pipe(uglify())
     .pipe(rename({suffix: ".min"}))
     .pipe(sourcemaps.write('.'))
@@ -50,4 +61,4 @@ gulp.task('replace', function () {
 });
 
 // default 使用默认配置 开发时候使用
-gulp.task('build', ['es', 'less', 'replace']);
+gulp.task('build', ['vendor', 'es', 'less', 'replace']);
