@@ -24,7 +24,7 @@ let submit = document.getElementById('submit');
 // 定义初始变量
 let nowPage = 1;
 let payStatusCode = ['4'];
-let payTypeCode = ['1', '2', '3'];
+let payTypeCode = ['1', '2', '3', '4'];
 // 定义加载更多
 let content = document.getElementById('content');
 let list = document.createElement('div');
