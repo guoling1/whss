@@ -237,6 +237,9 @@ input:focus {
         color: #999;
         line-height: 20px;
       }
+      img {
+        width: 95%;
+      }
     }
     .message-box-foot {
       height: 50px;
@@ -651,6 +654,169 @@ input:focus {
   .img {
     width: 100%;
     height: auto;
+  }
+}
+
+// 新版快捷首次支付，再次支付
+#_firstUnionPay, #_againUnionPay {
+  width: 100%;
+  height: auto;
+  min-height: 100%;
+  overflow: auto;
+  background-color: #ededed;
+  .space-title {
+    font-size: 14px;
+    color: #888;
+    text-align: left;
+    padding: 15px 15px 5px;
+  }
+  .order-info {
+    width: 100%;
+    height: 65px;
+    background-color: #FFF;
+    border-top: 1px solid #d6d6d6;
+    border-bottom: 1px solid #d6d6d6;
+    padding: 0 15px;
+    .left {
+      float: left;
+      line-height: 65px;
+      font-size: 14px;
+      color: #222;
+    }
+    .right {
+      float: right;
+      line-height: 65px;
+      font-size: 15px;
+      color: #faa30b;
+    }
+  }
+  .space {
+    width: 100%;
+    height: auto;
+    background-color: #FFF;
+    border-top: 1px solid #d6d6d6;
+    border-bottom: 1px solid #d6d6d6;
+    padding: 0 10px;
+    .group {
+      width: 100%;
+      height: 45px;
+      padding: 0 5px;
+      border-bottom: 1px solid #e6e8eb;
+      position: relative;
+      .left {
+        float: left;
+        width: 50px;
+        line-height: 44px;
+        font-size: 15px;
+        color: #222;
+        margin-right: 20px;
+        text-align: left;
+      }
+      .adaptive {
+        float: left;
+        &.text {
+          line-height: 44px;
+          font-size: 15px;
+          color: #b0b0b0;
+          &.active {
+            color: #000;
+          }
+        }
+        &.ipt {
+          height: 44px;
+          font-size: 15px;
+        }
+        &.ipt::-webkit-input-placeholder {
+          font-size: 15px;
+          color: #b0b0b0;
+        }
+        &.ipt:-moz-placeholder {
+          font-size: 15px;
+          color: #b0b0b0;
+        }
+        &.ipt::-moz-placeholder {
+          font-size: 15px;
+          color: #b0b0b0;
+        }
+        &.ipt:-ms-input-placeholder {
+          font-size: 15px;
+          color: #b0b0b0;
+        }
+      }
+      .magnifying {
+        display: none;
+        position: absolute;
+        top: -50px;
+        left: 50px;
+        width: 250px;
+        height: 59px;
+        background: url("../assets/magnifying.png") no-repeat center;
+        background-size: 250px 59px;
+        line-height: 50px;
+        font-size: 18px;
+        color: #5a5a5a;
+      }
+      .i {
+        float: right;
+        width: 22px;
+        height: 22px;
+        background: url("../assets/i.png") no-repeat center;
+        background-size: 22px 22px;
+        transform: translate3d(0, 11px, 0);
+      }
+      .del {
+        display: none;
+        float: right;
+        width: 30px;
+        height: 44px;
+        background: url("../assets/delete.png") no-repeat right;
+        background-size: 12px 12px;
+      }
+      .btn {
+        float: right;
+        border: 1px solid #3bc596;
+        border-radius: 3px;
+        font-size: 14px;
+        color: #36c493;
+        padding: 0 5px;
+        transform: translate3d(0, 10px, 0);
+      }
+      &.right {
+        background: url("../assets/list-right2.png") no-repeat center right 5px;
+        background-size: 8px 12px;
+      }
+    }
+    .group:nth-last-child(1) {
+      border: none;
+    }
+  }
+  .security-info {
+    padding: 10px 15px 0;
+    font-size: 12px;
+    color: #b0b0b0;
+    text-align: left;
+    .shield {
+      display: inline-block;
+      width: 10px;
+      height: 12px;
+      background: url("../assets/shield.png") no-repeat center;
+      background-size: 10px 12px;
+      margin-right: 5px;
+      transform: translate3d(0, 2px, 0);
+    }
+  }
+  .btn-box {
+    width: 100%;
+    padding: 10px 15px;
+    .btn {
+      width: 100%;
+      height: 45px;
+      line-height: 45px;
+      border-radius: 5px;
+      font-size: 16px;
+      color: #FFF;
+      background-color: #4ecea2;
+    }
   }
 }
 
@@ -2323,6 +2489,15 @@ input:focus {
             margin-left: 3px;
             transform: translate3d(0, 2px, 0);
           }
+          .recommend {
+            display: inline-block;
+            width: 30px;
+            height: 14px;
+            background: url("../assets/recommend.png") no-repeat center;
+            background-size: 30px 14px;
+            margin-left: 3px;
+            transform: translate3d(0, 2px, 0);
+          }
           &.small {
             width: 20%;
           }
@@ -2350,9 +2525,11 @@ input:focus {
       }
     }
     .channel-small {
-      line-height: 30px;
+      line-height: 45px;
       font-size: 12px;
       color: #c1c1c1;
+      text-align: left;
+      padding-left: 15px;
       span {
         display: inline-block;
         width: 12px;
@@ -2361,6 +2538,40 @@ input:focus {
         background-size: 12px 12px;
         margin-right: 5px;
         transform: translate3d(0, 1px, 0);
+      }
+    }
+    .channel-mpt-box {
+      padding: 0 15px;
+      .channel-mpt {
+        width: 100%;
+        height: auto;
+        border-top: 1px solid #e6e8f1;
+        padding-top: 15px;
+        .channel-mpt-title {
+          font-size: 14px;
+          color: #5a5a5a;
+          text-align: left;
+          margin-bottom: 5px;
+        }
+        .channel-mpt-group {
+          font-size: 12px;
+          color: #b0b0b0;
+          text-align: left;
+          .channel-mpt-li {
+            display: inline-block;
+            width: 4px;
+            height: 4px;
+            margin: 0 5px 0 3px;
+            background: url("../assets/channel-mpt-li.png") no-repeat center;
+            background-size: 4px 4px;
+            transform: translate3d(0, -2px, 0);
+          }
+        }
+        .channel-mpt-group-small {
+          font-size: 12px;
+          color: #c1c1c1;
+          text-align: left;
+        }
       }
     }
   }
@@ -2719,10 +2930,11 @@ input:focus {
           }
           .g-list {
             overflow: hidden;
-            margin: 10px 0;
+            margin-top: 10px;
             .li {
               float: left;
               margin-right: 10px;
+              margin-bottom: 10px;
               width: 77px;
               height: 30px;
               line-height: 30px;
@@ -2742,7 +2954,7 @@ input:focus {
         .btn {
           width: 100%;
           height: 47px;
-          margin-top: 25px;
+          margin-top: 15px;
           .cancel {
             float: left;
             width: 50%;
