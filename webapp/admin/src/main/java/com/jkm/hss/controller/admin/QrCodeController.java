@@ -273,6 +273,7 @@ public class QrCodeController extends BaseController {
         RevokeQrCodeRecord revokeQrCodeRecord = new RevokeQrCodeRecord();
         revokeQrCodeRecord.setStartCode(revokeQrCodeRequest.getStartCode());
         revokeQrCodeRecord.setEndCode(revokeQrCodeRequest.getEndCode());
+        revokeQrCodeRecord.setSysType(revokeQrCodeRequest.getSysType());
         revokeQrCodeRecord.setStatus(EnumCommonStatus.NORMAL.getId());
         revokeQrCodeRecord.setFailCount(totalCount-resultCount);
         revokeQrCodeRecord.setSuccessCount(resultCount);
