@@ -9,8 +9,7 @@
   <meta name="viewport"
         content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
   <title>好收收</title>
-  <%--<link rel="stylesheet" href="http://static.jinkaimen.cn/hss/css/style.2.2.15.css">--%>
-  <link rel="stylesheet" href="/css/hss/style.2.2.15.css">
+  <link rel="stylesheet" href="http://static.jinkaimen.cn/hss/css/style.2.2.15.css">
   <link rel="stylesheet" href="http://static.jinkaimen.cn/weui/weui.css">
 </head>
 <body>
@@ -95,7 +94,7 @@
 </div>
 
 </body>
-<script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+<script src="https://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
 <script>
 
   /*
@@ -122,6 +121,5 @@
   });
 </script>
 <script src="http://static.jinkaimen.cn/vendor/vendor.1.0.9.10.min.js"></script>
-<%--<script src="http://static.jinkaimen.cn/hss/2.2.22/upload.min.js"></script>--%>
-<script src="/js/hss/2.2.22/upload.min.js"></script>
+<script src="http://static.jinkaimen.cn/hss/2.2.22/upload.min.js"></script>
 </html>

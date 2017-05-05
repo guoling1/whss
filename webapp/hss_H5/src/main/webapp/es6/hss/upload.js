@@ -20,22 +20,18 @@ let identityHandPic_src = document.getElementById('identityHandPic_src');
 let bankHandPic_src = document.getElementById('bankHandPic_src');
 
 let upload_identityFacePic = new Upload('identityFacePic', function (localId) {
-  alert(localId);
   document.getElementById('identityFacePic_src').setAttribute('src', localId);
 });
 
 let upload_identityOppositePic = new Upload('identityOppositePic', function (localId) {
-  alert(localId);
   document.getElementById('identityOppositePic_src').setAttribute('src', localId);
 });
 
 let upload_identityHandPic = new Upload('identityHandPic', function (localId) {
-  alert(localId);
   document.getElementById('identityHandPic_src').setAttribute('src', localId);
 });
 
 let upload_bankHandPic = new Upload('bankHandPic', function (localId) {
-  alert(localId);
   document.getElementById('bankHandPic_src').setAttribute('src', localId);
 });
 
