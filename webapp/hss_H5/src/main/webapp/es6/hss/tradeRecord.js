@@ -57,7 +57,8 @@ const payStatus = {
 const payType = {
   1: '微信',
   2: '支付宝',
-  3: '快捷'
+  3: '快捷',
+  4: 'QQ钱包',
 };
 // 定义ajax事件
 let getData = function (e, page) {
@@ -162,6 +163,11 @@ let payVariable = {
     type: 'payTypeCode',
     status: true,
     value: 3
+  },
+  payQQ: {
+    type: 'payTypeCode',
+    status: true,
+    value: 4
   }
 };
 let li = document.getElementsByClassName('li');
@@ -176,7 +182,7 @@ for (let i = 0; i < li.length; i++) {
       payVariable[variable]['status'] = !payVariable[variable]['status'];
       return;
     }
-    if (!payVariable.payWx.status && !payVariable.payAli.status && !payVariable.payQuick.status) {
+    if (!payVariable.payWx.status && !payVariable.payAli.status && !payVariable.payQuick.status && !payVariable.payQQ.status) {
       message.prompt_show('至少选择一种支付方式');
       payVariable[variable]['status'] = !payVariable[variable]['status'];
       return;

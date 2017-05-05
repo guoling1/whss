@@ -45,6 +45,7 @@
             <div class="li active" y-variable="payWx">微信扫码</div>
             <div class="li active" y-variable="payAli">支付宝扫码</div>
             <div class="li active" y-variable="payQuick">快捷支付</div>
+            <div class="li active" y-variable="payQQ">QQ钱包</div>
           </div>
         </div>
         <div class="btn">
