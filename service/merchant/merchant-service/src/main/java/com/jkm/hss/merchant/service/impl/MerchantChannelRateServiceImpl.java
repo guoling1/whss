@@ -260,6 +260,7 @@ public class MerchantChannelRateServiceImpl implements MerchantChannelRateServic
                         zhifubaoMerchantPayRate = list.get(i).getMerchantPayRate();
                         signIdList.add(list.get(i).getChannelTypeSign());
                     }
+                    signIdList.add(list.get(i).getChannelTypeSign());
                 }
             }
             if(weixinMerchantPayRate!=null&&zhifubaoMerchantPayRate!=null){

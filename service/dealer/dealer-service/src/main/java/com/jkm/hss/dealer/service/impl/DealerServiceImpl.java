@@ -2501,4 +2501,17 @@ public class DealerServiceImpl implements DealerService {
     public int dealerMerchantSecondCount(QueryMerchantRequest req) {
         return this.dealerDao.dealerMerchantSecondCount(req);
     }
+
+    /**
+     * 二代切换一代
+     *
+     * @param secondDealerId
+     * @param firstDealerId
+     */
+    @Override
+    public int updateBelong(long secondDealerId, long firstDealerId) {
+        return this.dealerDao.updateBelong(secondDealerId,firstDealerId);
+    }
+
+
 }

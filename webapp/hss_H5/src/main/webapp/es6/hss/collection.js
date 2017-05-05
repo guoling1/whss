@@ -14,20 +14,3 @@ new Keyboard({
   inputId: 'key-input',
   keyboardId: 'keyboard'
 });
-
-let know = document.getElementById('know');
-let layer = document.getElementById('layer');
-let layer_x = document.getElementById('layer-x');
-let submit = document.getElementById('submit');
-
-know.addEventListener('click', function () {
-  layer.style.display = 'block';
-});
-
-layer_x.addEventListener('click', function () {
-  layer.style.display = 'none';
-});
-
-submit.addEventListener('click', function () {
-  layer.style.display = 'none';
-});

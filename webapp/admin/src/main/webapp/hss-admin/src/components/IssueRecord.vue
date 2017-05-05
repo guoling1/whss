@@ -5,6 +5,7 @@
         <div class="box-header">
           <h3 class="box-title">二维码分配记录</h3>
           <a @click="_$power(issue,'boss_qr_code_distribute')" class="pull-right btn btn-primary" style="margin-left: 20px">分配二维码</a>
+          <a @click="revoke" class="pull-right btn btn-primary" style="margin-left: 20px">撤回二维码</a>
         </div>
         <div class="box-body">
           <!--筛选-->
@@ -92,6 +93,9 @@
       this.getData();
     },
     methods: {
+      revoke: function () {
+        window.open('http://admin.qianbaojiajia.com/admin/details/codeRevoke')
+      },
       reset: function () {
         this.query = {
           pageNo:1,
