@@ -40,4 +40,10 @@
         SELECT * FROM tb_product_channel_gateway
         WHERE product_type = #{type} AND gateway_type = #{gatewayType} AND product_id = #{productId} AND status = 2 AND gateway_type = 'product'
     </select>
+
+    <update id="recommend">
+        UPDATE tb_product_channel_gateway
+        SET recommend = #{recommend}
+        WHERE id = #{id}
+    </update>
 </mapper>
