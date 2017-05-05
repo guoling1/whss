@@ -1,6 +1,5 @@
-package com.jkm.hss.product.entity;
+package com.jkm.hss.product.helper.request;
 
-import com.jkm.base.common.entity.BaseEntity;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -11,11 +10,7 @@ import java.math.BigDecimal;
  * tb_upgrade_rules
  */
 @Data
-public class UpgradeRules extends BaseEntity{
-    /**
-     * 产品编码
-     */
-    private long productId;
+public class UpgradeRulesRequest {
     /**
      * 合伙人名称
      */
