@@ -318,11 +318,15 @@
         this.loading = true;
         this.$http.post(this.url,this.query,{emulateJSON: true})
           .then(function (res) {
+            setTimeout(()=>{
+              this.loading = false;
+          },1000)
             this.$data.records = res.data.list;
             this.$data.count = res.data.page.totalRecord;
-            this.$data.loading = false;
           },function (err) {
-            this.$data.loading = false;
+            setTimeout(()=>{
+              this.loading = false;
+          },1000)
             this.$message({
               showClose: true,
               message: err.statusMessage,

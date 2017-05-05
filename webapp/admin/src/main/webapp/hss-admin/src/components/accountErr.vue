@@ -201,9 +201,13 @@
           .then(function (res) {
             this.records = res.data.list;
             this.count = res.data.page.totalRecord;
-            this.loading = false;
+            setTimeout(()=>{
+              this.loading = false;
+          },1000)
           },function (err) {
-            this.loading = false;
+            setTimeout(()=>{
+              this.loading = false;
+          },1000)
             this.$message({
               showClose: true,
               message: err.statusMessage,

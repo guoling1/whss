@@ -329,10 +329,11 @@
         }
         this.$http.post('/admin/queryOrder/orderList',this.query)
           .then(function (res) {
-            this.loading = false;
+            setTimeout(()=>{
+              this.loading = false;
+            },1000)
             this.records = res.data.records;
             this.loadUrl1 = res.data.ext;
-            this.loading = false;
             this.count = res.data.count;
             var price=0;
             var toFix = function (val) {
@@ -346,7 +347,9 @@
             }
             this.pageTotal = price;
           },function (err) {
-            this.loading = false;
+            setTimeout(()=>{
+              this.loading = false;
+            },1000)
             this.$message({
               showClose: true,
               message: err.statusMessage,
@@ -398,7 +401,6 @@
             this.addTotal = res.data;
           })
           .catch(err=>{
-            this.loading = false;
             this.$message({
               showClose: true,
               message: err.statusMessage,

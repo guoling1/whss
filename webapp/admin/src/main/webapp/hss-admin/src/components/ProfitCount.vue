@@ -450,7 +450,9 @@
         this.loading = true;
         this.$http.post('/admin/allProfit/companyProfit',this.queryCom)
           .then(function (res) {
-            this.loading = false;
+            setTimeout(()=>{
+              this.loading = false;
+          },1000)
             this.recordsCom = res.data.records;
             this.countCom = res.data.count;
             this.loadUrlCom = res.data.ext;
@@ -464,7 +466,9 @@
             }
             this.pageTotalCom = total;
           }, function (err) {
-            this.$data.loading = false;
+            setTimeout(()=>{
+              this.loading = false;
+          },1000)
             this.$message({
               showClose: true,
               message: err.statusMessage,
@@ -476,7 +480,9 @@
         this.loading = true;
         this.$http.post('/admin/allProfit/firstProfit',this.queryFir)
           .then(function (res) {
-            this.loading = false;
+            setTimeout(()=>{
+              this.loading = false;
+          },1000)
             this.recordsFir = res.data.records;
             this.countFir = res.data.count;
             this.loadUrlFir = res.data.ext;
@@ -490,7 +496,9 @@
             }
             this.pageTotalFir = total;
           }, function (err) {
-            this.$data.loading = false;
+            setTimeout(()=>{
+              this.loading = false;
+          },1000)
             this.$message({
               showClose: true,
               message: err.statusMessage,
@@ -502,7 +510,9 @@
         this.loading = true;
         this.$http.post('/admin/allProfit/secondProfit',this.querySec)
           .then(function (res) {
-            this.loading = false;
+            setTimeout(()=>{
+              this.loading = false;
+          },1000)
             this.recordsSec = res.data.records;
             this.countSec = res.data.count;
             this.loadUrlSec = res.data.ext;
@@ -516,7 +526,9 @@
             }
             this.pageTotalSec = total;
           }, function (err) {
-            this.$data.loading = false;
+            setTimeout(()=>{
+              this.loading = false;
+          },1000)
             this.$message({
               showClose: true,
               message: err.statusMessage,
@@ -554,21 +566,18 @@
       handleSizeChangeCom: function (val) {
         this.queryCom.pageNo = 1;
         this.queryCom.pageSize = val;
-        this.loading = true;
         this.getDataCom()
         this.getAddTotalCom();
       },
       handleSizeChangeFir: function (val) {
         this.queryFir.pageNo = 1;
         this.queryFir.pageSize = val;
-        this.loading = true;
         this.getDataFir()
         this.getAddTotalFir();
       },
       handleSizeChangeSec: function (val) {
         this.querySec.pageNo = 1;
         this.querySec.pageSize = val;
-        this.loading = true;
         this.getDataSec()
         this.getAddTotalSec();
       },
@@ -578,7 +587,6 @@
             this.addTotalCom = res.data;
           })
           .catch(err=>{
-            this.$data.loading = false;
             this.$message({
               showClose: true,
               message: err.statusMessage,
@@ -592,7 +600,6 @@
             this.addTotalFir = res.data;
           })
           .catch(err=>{
-            this.$data.loading = false;
             this.$message({
               showClose: true,
               message: err.statusMessage,
@@ -606,7 +613,6 @@
             this.addTotalSec = res.data;
           })
           .catch(err=>{
-            this.$data.loading = false;
             this.$message({
               showClose: true,
               message: err.statusMessage,

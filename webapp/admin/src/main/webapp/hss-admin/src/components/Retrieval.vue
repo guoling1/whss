@@ -231,7 +231,9 @@
         this.loading = true;
         this.$http.post('/admin/order/withdrawList',this.query)
           .then(function (res) {
-            this.loading = false;
+            setTimeout(()=>{
+              this.loading = false;
+            },1000)
             this.records = res.data.records;
             this.count = res.data.count;
             var price=0,total=0;
@@ -248,7 +250,9 @@
             this.pageTotal = price;
             this.pageTotal1 = total;
           },function (err) {
-            this.loading = false;
+            setTimeout(()=>{
+              this.loading = false;
+            },1000)
             this.$message({
               showClose: true,
               message: err.statusMessage,
@@ -325,7 +329,6 @@
             this.addTotal1 = res.data.poundage;
           })
           .catch(err=>{
-            this.loading = false;
             this.$message({
               showClose: true,
               message: err.statusMessage,

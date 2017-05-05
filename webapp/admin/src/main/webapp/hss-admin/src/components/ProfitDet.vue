@@ -189,9 +189,11 @@
         this.loading = true;
         this.$http.post(this.$data.path, this.$data.query)
           .then(function (res) {
+            setTimeout(()=>{
+              this.loading = false;
+            },1000)
             this.$data.records = res.data.records;
             this.$data.count = res.data.count;
-            this.$data.loading = false;
             var toFix = function (val) {
               return parseFloat(val).toFixed(2)
             };
@@ -204,21 +206,10 @@
             }
             this.pageTotal = total;
             this.pageTotal1 = price;
-            /*if(this.records.length!=0){
-              this.records.push({
-                settleType:"当页总额",
-                splitTotalAmount:total,
-                splitAmount:price
-              },{
-                settleType:"筛选条件统计",
-                splitTotalAmount:'',
-                splitAmount:''
-              });
-              this.records[this.records.length-1].splitTotalAmount = this.total;
-              this.records[this.records.length-1].splitAmount = this.price;
-            }*/
           }, function (err) {
-            this.$data.loading = false;
+            setTimeout(()=>{
+              this.loading = false;
+            },1000)
             this.$message({
               showClose: true,
               message: err.statusMessage,

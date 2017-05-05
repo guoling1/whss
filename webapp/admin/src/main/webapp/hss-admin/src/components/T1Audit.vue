@@ -313,10 +313,12 @@
           this.loading = true;
           this.$http.post('/admin/settle/list',this.$data.query)
             .then(function (res) {
+              setTimeout(()=>{
+                this.loading = false;
+              },1000)
               this.$data.records = res.data.records;
               this.$data.count = res.data.count;
               this.$data.total = res.data.totalPage;
-              this.$data.loading = false;
               var changeTime=function (val) {
                 if(val==''||val==null){
                   return ''
@@ -338,7 +340,9 @@
                 this.$data.records[i].tradeDate = changeTime(this.$data.records[i].tradeDate)
               }
             },function (err) {
-              this.$data.loading = false;
+              setTimeout(()=>{
+                this.loading = false;
+              },1000)
               this.$message({
                 showClose: true,
                 message: err.statusMessage,
