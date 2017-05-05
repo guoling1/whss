@@ -20,71 +20,6 @@
           </div>
         </form>
       </div>
-      <div class="box box-info">
-        <div class="box-header with-border">
-          <h3 class="box-title">商户升级规则设置</h3>
-        </div>
-        <form class="form-horizontal">
-          <div class="box-body">
-            <div class="form-group">
-              <div class="col-xs-12">
-                <el-table :data="tableData1" style="width: 100%;font-size: 12px">
-                  <el-table-column prop="name" label="合伙人等级参与的通道" width="180"></el-table-column>
-                  <el-table-column prop="data1" label="默认分润空间" width="180"></el-table-column>
-                  <el-table-column prop="data2" label="普通（基准费率）"></el-table-column>
-                  <el-table-column prop="data3" label="店员"></el-table-column>
-                  <el-table-column prop="data4" label="店长"></el-table-column>
-                  <el-table-column prop="data5" label="老板"></el-table-column>
-                </el-table>
-                <div class="box box1">
-                  <div class="box-body table-responsive no-padding">
-                    <table class="table table-hover">
-                      <tbody>
-                      <tr>
-                        <th>合伙人等级<br/>参与的通道</th>
-                        <th>默认分润空间</th>
-                        <th>普通（基准费率）</th>
-                        <th>店员</th>
-                        <th>店长</th>
-                        <th>老板</th>
-                      </tr>
-                      <!--<tr>
-                        <td>普通</td>
-                        <td>{{result.upgradeRulesList[0].weixinRate}}%</td>
-                        <td>{{result.upgradeRulesList[0].alipayRate}}%</td>
-                        <td>{{result.upgradeRulesList[0].fastRate}}%</td>
-                        <td>无</td>
-                        <td>无</td>
-                        <td>无</td>
-                        <td>无</td>
-                      </tr>
-                      <tr v-for="(upgrade,index) in result.upgradeRulesList" v-if="index!=0">
-                        <td>{{upgrade.name}}</td>
-                        <td><input type="text" name="name" v-model="upgrade.weixinRate">%</td>
-                        <td><input type="text" name="name" v-model="upgrade.alipayRate">%</td>
-                        <td><input type="text" name="name" v-model="upgrade.fastRate">%</td>
-                        <td><input type="text" name="name" v-model="upgrade.upgradeCost">元</td>
-                        <td><input type="text" name="name" v-model="upgrade.promotionNum">人</td>
-                        <td><input type="text" name="name" v-model="upgrade.directPromoteShall">元</td>
-                        <td><input type="text" name="name" v-model="upgrade.inDirectPromoteShall">元</td>
-                      </tr>-->
-                      <tr >
-                        <td>点击添加通道</td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                      </tr>
-                      </tbody></table>
-                  </div>
-                  <!-- /.box-body -->
-                </div>
-              </div>
-            </div>
-          </div>
-        </form>
-      </div>
       <div class="box box-info" v-if="result.length!=0">
         <div class="box-header with-border">
           <h3 class="box-title">商户升级规则设置</h3>
@@ -189,14 +124,6 @@
     name:"invite",
     data(){
       return{
-        tableData1:[{
-          name:'微信',
-          data1:'',
-          data2:'',
-          data3:'',
-          data4:'',
-          data5:'',
-        }],
         result: '',
         lists:[], //产品列表
         productId:'',
@@ -209,11 +136,9 @@
         .then(function (res) {
           this.$data.lists = res.data
         },function (err) {
-          this.$message({
-            showClose: true,
-            message: err.statusMessage,
-            type: 'error'
-          });
+          this.$store.commit('MESSAGE_ACCORD_SHOW', {
+            text: err.statusMessage
+          })
         })
       //内容
       /*this.$http.post('/admin/upgrade/init', {productId: this.$data.productId})
@@ -251,11 +176,9 @@
             this.$data.result.upgradeRulesList[2].name = '店长'
             this.$data.result.upgradeRulesList[3].name = '老板'
           }, function (err) {
-            this.$message({
-              showClose: true,
-              message: err.statusMessage,
-              type: 'error'
-            });
+            this.$store.commit('MESSAGE_ACCORD_SHOW', {
+              text: err.statusMessage
+            })
           })
       },
       save: function () {
@@ -271,17 +194,13 @@
         }
         this.$http.post('/admin/upgrade/addOrUpdate',query)
           .then(function (res) {
-            this.$message({
-              showClose: true,
-              message: '操作成功',
-              type: 'success'
-            });
+            this.$store.commit('MESSAGE_ACCORD_SHOW', {
+              text: "操作成功"
+            })
           },function (err) {
-            this.$message({
-              showClose: true,
-              message: err.statusMessage,
-              type: 'error'
-            });
+            this.$store.commit('MESSAGE_ACCORD_SHOW', {
+              text: err.statusMessage
+            })
           })
       }
     },
