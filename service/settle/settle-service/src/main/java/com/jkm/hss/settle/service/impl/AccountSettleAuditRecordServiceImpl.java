@@ -253,6 +253,7 @@ public class AccountSettleAuditRecordServiceImpl implements AccountSettleAuditRe
         final int count = this.settleAccountFlowService.getYesterdayDecreaseFlowCount(settleDate);
         if (count > 0) {
             log.error("###############存在已经结算的待结算流水#################");
+            return;
         }
         final List<SettleAccountFlowStatistics> settleAccountFlowStatisticses = this.settleAccountFlowService.statisticsYesterdayFlow(settleDate);
         log.info("今日[{}]的待结算流水统计是[{}]", settleDate, settleAccountFlowStatisticses);
@@ -312,7 +313,7 @@ public class AccountSettleAuditRecordServiceImpl implements AccountSettleAuditRe
                 }
                 accountSettleAuditRecord.setAccountUserType(accountUserType.getId());
                 accountSettleAuditRecord.setAccountId(statistics.getAccountId());
-//                accountSettleAuditRecord.setTradeDate(tradeDate);
+                accountSettleAuditRecord.setTradeDate(statistics.getTradeDate());
                 accountSettleAuditRecord.setTradeNumber(statistics.getCount());
                 accountSettleAuditRecord.setSettleAmount(statistics.getAmount());
                 accountSettleAuditRecord.setAccountCheckStatus(EnumAccountCheckStatus.DUE_ACCOUNT_CHECK.getId());
@@ -441,7 +442,7 @@ public class AccountSettleAuditRecordServiceImpl implements AccountSettleAuditRe
     @Transactional
     public Pair<Integer, String> forceSettleAll(final long recordId) {
         final AccountSettleAuditRecord accountSettleAuditRecord = this.getById(recordId).get();
-        log.info("强制结算-结算审核记录[{]]", recordId);
+        log.info("强制结算-结算审核记录[{}]", recordId);
         if (accountSettleAuditRecord.isDueSettle()) {
             final List<SettleAccountFlow> flows = this.settleAccountFlowService.getByAuditRecordId(recordId);
             if (!CollectionUtils.isEmpty(flows)) {

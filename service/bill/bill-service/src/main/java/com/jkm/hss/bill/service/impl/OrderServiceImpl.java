@@ -409,6 +409,8 @@ public class OrderServiceImpl implements OrderService {
         map.put("payChannelSign",req.getPayChannelSign());
         map.put("markCode",req.getMarkCode());
         map.put("appId",req.getAppId());
+        map.put("globalId",req.getGlobalId());
+        map.put("shortName",req.getShortName());
         List<MerchantTradeResponse> list = this.orderDao.selectOrderList(map);
         if (list.size()>0){
             for (int i=0;i<list.size();i++){
@@ -458,6 +460,8 @@ public class OrderServiceImpl implements OrderService {
         map.put("payChannelSign",req.getPayChannelSign());
         map.put("markCode",req.getMarkCode());
         map.put("appId",req.getAppId());
+        map.put("globalId",req.getGlobalId());
+        map.put("shortName",req.getShortName());
         List<MerchantTradeResponse> list = orderDao.downloadOrderList(map);
         if (list.size()>0){
             for (int i=0;i<list.size();i++){
@@ -1330,6 +1334,8 @@ public class OrderServiceImpl implements OrderService {
         map.put("payChannelSign",req.getPayChannelSign());
         map.put("markCode",req.getMarkCode());
         map.put("appId",req.getAppId());
+        map.put("globalId",req.getGlobalId());
+        map.put("shortName",req.getShortName());
         return orderDao.selectOrderListCount(map);
     }
 

@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="col-md-12">
-      <div class="box" style="margin-top:15px;overflow: hidden">
+      <div class="box" style="overflow: hidden">
         <div class="box-header">
           <h3 class="box-title">系统对账</h3>
         </div>
@@ -38,6 +38,7 @@
             </li>
             <li class="same">
               <div class="btn btn-primary" @click="search">筛选</div>
+              <div class="btn btn-primary" @click="reset">重置</div>
             </li>
           </ul>
           <el-table v-loading.body="loading" style="font-size: 12px;margin-bottom: 15px" :data="$records" border :row-style="tableFoot">
@@ -55,15 +56,15 @@
               </template>
             </el-table-column>
             <el-table-column prop="balanceCount" label="帐平笔数" align="right" ></el-table-column>
-            <el-table-column label="帐平金额（元）" align="right">
+            <el-table-column label="帐平金额（元）" align="right" min-width="90">
               <template scope="scope">{{scope.row.balanceSum|toFix}}</template>
             </el-table-column>
             <el-table-column prop="exCount" label="对方单边笔数"  align="right"></el-table-column>
-            <el-table-column label="对方单边金额（元）"  align="right">
+            <el-table-column label="对方单边金额（元）"  align="right" min-width="90">
               <template scope="scope">{{scope.row.exSum|toFix}}</template>
             </el-table-column>
             <el-table-column prop="inCountWD" label="己方单边笔数"  align="right"></el-table-column>
-            <el-table-column label="己方单边金额（元）"  align="right">
+            <el-table-column label="己方单边金额（元）"  align="right" min-width="90">
               <template scope="scope">{{scope.row.inSumWD|toFix}}</template>
             </el-table-column>
             <el-table-column label="对账状态" align="right" >
@@ -75,9 +76,10 @@
             </el-table-column>
             <el-table-column label="操作">
               <template scope="scope">
-                <el-button @click="handle(scope.row.id,scope.row.tradeDate,scope.row.tradeType,scope.row.channelName)" type="text" size="small" v-if="scope.row.batchNO==undefined&&scope.row.status!=2">上传文件</el-button>
-                <el-button @click="load(scope.row.batchNO)" type="text" size="small" v-if="scope.row.batchNO!=undefined&&scope.row.status!=2">下载文件</el-button>
-                <el-button @click="handle(scope.row.id,scope.row.tradeDate,scope.row.tradeType,scope.row.channelName)" type="text" size="small" v-if="scope.row.batchNO!=undefined&&scope.row.status!=2">重新上传</el-button>
+                <el-button @click="downloadAcc(scope.row.id)" type="text" size="small" v-if="scope.row.handleType==1">联网对账</el-button>
+                <el-button @click="handle(scope.row.id,scope.row.tradeDate,scope.row.tradeType,scope.row.channelName)" type="text" size="small" v-if="scope.row.batchNO==undefined&&scope.row.status!=2&&scope.row.handleType!=1">上传文件</el-button>
+                <el-button @click="load(scope.row.batchNO)" type="text" size="small" v-if="scope.row.batchNO!=undefined&&scope.row.status!=2&&scope.row.handleType!=1">下载文件</el-button>
+                <el-button @click="handle(scope.row.id,scope.row.tradeDate,scope.row.tradeType,scope.row.channelName)" type="text" size="small" v-if="scope.row.batchNO!=undefined&&scope.row.status!=2&&scope.row.handleType!=1">重新上传</el-button>
                 <el-button @click="cancelAcc(scope.row.id)" type="text" size="small" v-if="scope.row.status==0&&scope.row.status!=2">取消对账</el-button>
               </template>
             </el-table-column>
@@ -151,6 +153,21 @@
             </div>
           </div>
         </div>
+        <div class="box box-info mask el-message-box" v-if="isDownload">
+          <div class="maskCon">
+            <div class="head">
+              <div class="title">联网对账</div>
+              <i class="el-icon-close" @click="isDownload=false"></i>
+            </div>
+            <div class="body">
+              <div>确定联网对账吗？</div>
+            </div>
+            <div class="foot">
+              <a href="javascript:void(0)" @click="isDownload=false" class="el-button el-button--default">取消</a>
+              <a @click="download()" class="el-button el-button-default el-button--primary ">确定</a>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -184,28 +201,72 @@
         isShow:false,
         isMask:false,
         loadURL1:'',
+        isDownload:false,
+        downloadId:"",
         //正式
         loadURL:'http://checking.qianbaojiajia.com/external/downloadxlsx/',
         url:'http://checking.qianbaojiajia.com/external/statisticList',
         uploadURL:'http://checking.qianbaojiajia.com/external/banlanceAccount',
-        cancelUrl:'http://checking.qianbaojiajia.com/external/cancelBalance'
+        cancelUrl:'http://checking.qianbaojiajia.com/external/cancelBalance',
+        downloadUrl:'http://checking.qianbaojiajia.com/external/banlanceAccountViaDownload'
         //测试
-        /*loadURL:'http://192.168.0.110:8080/balance/external/downloadxlsx/',
-         url:'http://192.168.0.110:8080/balance/external/statisticList',
-         uploadURL:'http://192.168.0.110:8080/balance/external/banlanceAccount',
-         cancelUrl:'http://192.168.0.110:8080/balance/external/cancelBalance'*/
+//        loadURL:'http://192.168.0.110:8080/balance/external/downloadxlsx/',
+//        url:'http://192.168.0.110:8080/balance/external/statisticList',
+//        uploadURL:'http://192.168.0.110:8080/balance/external/banlanceAccount',
+//        cancelUrl:'http://192.168.0.110:8080/balance/external/cancelBalance',
+//        downloadUrl:'http://192.168.0.110:8080/balance/external/banlanceAccountViaDownload'
       }
     },
     created: function () {
       this.getData()
     },
     methods: {
+      reset: function () {
+        this.query = {
+          pageSize:10,
+          currentPage:1,
+          channelName:"",
+          tradeType:"",
+          startDateStr:"",
+          endDateStr:"",
+          status:""
+        }
+      },
       tableFoot(row, index) {
         console.log(row)
         if (row.status == '2') {
           return {background:'#eef1f6'}
         }
         return '';
+      },
+      downloadAcc:function (id) {
+        this.isDownload = true;
+        this.downloadId = id;
+      },
+      download:function () {
+        this.$http.post(this.downloadUrl,{id:this.downloadId},{emulateJSON: true})
+          .then(res => {
+          if(res.data.result=='操作成功'){
+          this.isDownload = false;
+          sessionStorage.setItem('data',JSON.stringify(res.data.jsonPayResult))
+          window.open("http://admin.qianbaojiajia.com/admin/details/accountData");
+          }else{
+          this.isDownload = false;
+          this.$message({
+            showClose: true,
+            message: res.data.result,
+            type: 'warning'
+          });
+          }
+
+          })
+          .catch(err =>{
+            this.$message({
+              showClose: true,
+              message: err.statusMessage,
+              type: 'error'
+            });
+          })
       },
       cancelAcc:function (id) {
         this.isCancel = true;
