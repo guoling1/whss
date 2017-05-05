@@ -79,5 +79,13 @@ public class UploadConsts {
          */
         @Key("qr_code_url")
         String QRCodeUrl();
+
+        /**
+         * 公告地址
+         * @return
+         */
+        @Key("notice.domain")
+        @DefaultValue("http://hsy.qianbaojiajia.com")
+        String noticedomain();
     }
 }
