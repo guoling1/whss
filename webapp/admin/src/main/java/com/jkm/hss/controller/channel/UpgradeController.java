@@ -11,6 +11,7 @@ import com.jkm.hss.product.enums.EnumPayChannelSign;
 import com.jkm.hss.product.enums.EnumPaymentChannel;
 import com.jkm.hss.product.enums.EnumUpGradeType;
 import com.jkm.hss.product.enums.EnumUpgrade;
+import com.jkm.hss.product.helper.response.ProductAndBasicResponse;
 import com.jkm.hss.product.helper.response.UpgradeRulesResponse;
 import com.jkm.hss.product.servcie.*;
 import lombok.extern.slf4j.Slf4j;
@@ -42,6 +43,20 @@ public class UpgradeController extends BaseController {
     private UpgradeRecommendRulesService upgradeRecommendRulesService;
     @Autowired
     private PartnerRuleSettingService partnerRuleSettingService;
+
+
+    /**
+     * 通道列表
+     * @param req
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "getProductChannelList", method = RequestMethod.POST)
+    public CommonResponse getProductChannelList(@RequestBody final UpgradeRequest req) {
+        List<ProductAndBasicResponse> productAndBasicResponses = productChannelDetailService.getProductChannelList(req.getProductId());
+        return CommonResponse.objectResponse(1, "查询成功", productAndBasicResponses);
+    }
+
     /**
      * 升级推荐设置
      *
