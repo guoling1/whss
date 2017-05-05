@@ -284,7 +284,7 @@ public class QrCodeController extends BaseController {
         revokeQrCodeResponse.setEndCode(revokeQrCodeRequest.getEndCode());
         revokeQrCodeResponse.setSuccessCount(revokeQrCodeRecord.getSuccessCount());
         revokeQrCodeResponse.setFailCount(revokeQrCodeRecord.getFailCount());
-        return CommonResponse.objectResponse(-1, "回收二维码成功",revokeQrCodeResponse);
+        return CommonResponse.objectResponse(CommonResponse.SUCCESS_CODE, "回收二维码成功",revokeQrCodeResponse);
 
     }
 }
