@@ -22,6 +22,7 @@ let bankHandPic_src = document.getElementById('bankHandPic_src');
 let ua = navigator.userAgent.toLowerCase();
 // 获取本地图片
 let getLocalImg = function (id, localId) {
+  alert(localId);
   wx.getLocalImgData({
     localId: localId,
     success: function (res) {
