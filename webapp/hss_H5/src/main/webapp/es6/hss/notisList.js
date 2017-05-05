@@ -40,6 +40,7 @@ let getData = function (e, page) {
     list.innerHTML = '';
   }
   http.post('/notice/noticeList', {
+    productType: 'hss',
     pageNo: nowPage,
     pageSize: 20
   }, function (res) {
