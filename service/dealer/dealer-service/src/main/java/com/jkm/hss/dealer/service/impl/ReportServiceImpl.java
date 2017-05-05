@@ -64,11 +64,11 @@ public class ReportServiceImpl implements ReportService{
 
         //HSS商户注册数-直属
         Integer hssregMerNumberDir=reportDao.getHSSDayregMerNumberDir(dealerId,null,null);
-        //HSS昨日商户注册数-下级代理
+        //HSS商户注册数-下级代理
         Integer hssregMerNumberSub=reportDao.getHSSDayregMerNumberSub(dealerId,null,null);
-        //HSY昨日商户注册数-直属
+        //HSY商户注册数-直属
         Integer hsyregMerNumberDir=reportDao.getHSYDayregMerNumberDir(dealerId,null,null);
-        //HSY昨日商户注册数-下级代理
+        //HSY商户注册数-下级代理
         Integer hsyregMerNumberSub=reportDao.getHSYDayregMerNumberSub(dealerId,null,null);
 
         //HSS昨日商户审核数-直属
@@ -213,6 +213,31 @@ public class ReportServiceImpl implements ReportService{
 
     @Override
     public void initReport(){
+        String endDate=DateFormatUtil.format(new Date(), "yyyy-MM-dd")+" 00:00:00";
+
+        long acountid=0;
+        long dealerId=0;
+        //历史分润统计
+        BigDecimal allProfit=reportDao.getDayProfit(acountid,null,endDate);
+        //HSS商户注册数-直属
+        Integer hssregMerNumberDir=reportDao.getHSSDayregMerNumberDir(dealerId,null,endDate);
+        //HSS商户注册数-下级代理
+        Integer hssregMerNumberSub=reportDao.getHSSDayregMerNumberSub(dealerId,null,endDate);
+        //HSY商户注册数-直属
+        Integer hsyregMerNumberDir=reportDao.getHSYDayregMerNumberDir(dealerId,null,endDate);
+        //HSY商户注册数-下级代理
+        Integer hsyregMerNumberSub=reportDao.getHSYDayregMerNumberSub(dealerId,null,endDate);
+
+        //HSS商户审核数-直属
+        Integer hsscheckMerNumberDir=reportDao.getHSSDaycheckMerNumberDir(dealerId,null,endDate);
+        //HSS商户审核数-下级代理
+        Integer hsscheckMerNumberSub=reportDao.getHSSDaycheckMerNumberSub(dealerId,null,endDate);
+        //HSY商户审核数-直属
+        Integer hsycheckMerNumberDir=reportDao.getHSYDaycheckMerNumberDir(dealerId,null,endDate);
+        //HSY商户审核数-下级代理
+        Integer hsycheckMerNumberSub=reportDao.getHSYDaycheckMerNumberSub(dealerId,null,endDate);
+
+
 
     }
 }
