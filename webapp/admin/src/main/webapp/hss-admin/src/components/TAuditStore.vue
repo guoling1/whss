@@ -233,10 +233,12 @@
         this.loading = true;
         this.$http.post('/admin/settlementRecord/list',this.$data.query)
           .then(function (res) {
-            this.$data.records = res.data.records;
+            setTimeout(()=>{
+              this.loading = false;
+              this.$data.records = res.data.records;
+          },1000)
             this.$data.count = res.data.count;
             this.$data.total = res.data.totalPage;
-            this.$data.loading = false;
             var changeTime=function (val) {
               if(val==''||val==null){
                 return ''
@@ -254,11 +256,13 @@
                 return year+"-"+tod(month)+"-"+tod(date);
               }
             }
-            for(let i = 0; i < this.$data.records.length; i++){
-              this.$data.records[i].tradeDate = changeTime(this.$data.records[i].tradeDate)
+            for(let i = 0; i < res.data.records.length; i++){
+              res.data.records[i].tradeDate = changeTime(res.data.records[i].tradeDate)
             }
           },function (err) {
-            this.$data.loading = false;
+            setTimeout(()=>{
+              this.loading = false;
+          },1000)
             this.$message({
               showClose: true,
               message: err.statusMessage,

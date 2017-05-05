@@ -86,6 +86,8 @@ const Test = r => require.ensure([], () => r(require('components/Test')), 'group
 const AAHome = r => require.ensure([], () => r(require('components/AAHome')), 'group-record');
 const Home = r => require.ensure([], () => r(require('components/Home')), 'group-record');
 const Login = r => require.ensure([], () => r(require('components/Login')), 'group-record');
+
+const CodeRevoke = r => require.ensure([], () => r(require('components/CodeRevoke')), 'group-record');
 const Crumbs = r => require.ensure([], () => r(require('./Crumbs')), 'group-record');
 let routes = [
   {path: '/', redirect: '/admin/login'},
@@ -94,6 +96,7 @@ let routes = [
     path: '/admin/details',
     component: Crumbs,
     children: [
+      {path: 'codeRevoke', name: 'CodeRevoke', component: CodeRevoke},
       {path: 'dataHistory', name: 'DataHistory', component: DataHistory},
       {path: 'template', name: 'Template', component: Template},
       {path: 'templateAdd', name: 'TemplateAdd', component: TemplateAdd},
@@ -171,6 +174,8 @@ let routes = [
     redirect: '/admin/record/home',
     component: AAHome,
     children: [
+      {path: 'codeRevoke', name: 'CodeRevoke', component: CodeRevoke},
+      {path: 'template', name: 'Template', component: Template},
       {path: 'dataHistory', name: 'DataHistory', component: DataHistory},
       {path: 'template', name: 'Template', component: Template},
       {path: 'template', name: 'Template', component: Template},
