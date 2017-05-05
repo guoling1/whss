@@ -176,7 +176,7 @@
               </el-col>
               <el-col :span="8">
                 <div class="grid-content bg-purple-light">
-                  <el-button type="text" @click="dealerMask = true">点击切换</el-button>
+                  <!--<el-button type="text" @click="dealerMask = true">点击切换</el-button>-->
                 </div>
               </el-col>
             </el-row>
