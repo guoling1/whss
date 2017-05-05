@@ -29,7 +29,6 @@ public enum EnumPaymentChannel {
 
     QQPAY(4, "QQ钱包");
 
-
     @Getter
     private int id;
     @Getter

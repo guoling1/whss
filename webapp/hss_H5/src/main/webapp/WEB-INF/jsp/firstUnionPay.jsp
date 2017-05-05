@@ -12,67 +12,78 @@
   <meta name="viewport"
         content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
   <meta name="format-detection" content="telephone=no"/>
-  <title>好收收</title>
-  <link rel="stylesheet" href="http://static.jinkaimen.cn/hss/css/style.2.2.12.css">
+  <title>填写银行卡号</title>
+  <link rel="stylesheet" href="http://static.jinkaimen.cn/hss/css/style.2.2.15.css">
   <link rel="stylesheet" href="http://static.jinkaimen.cn/weui/weui.css">
 </head>
 <body>
 
-<div id="firstUnionPay">
-  <div class="space pd">
-    <div class="small-list">
-      <div class="left">支付金额</div>
-      <div class="right or">¥${amount}</div>
-    </div>
-    <div class="small-list">
-      <div class="left">收款商户</div>
-      <div class="right">${merchantName}</div>
-    </div>
+<div id="_firstUnionPay">
+  <div class="space-title">确认订单信息</div>
+  <div class="order-info">
+    <div class="left">${merchantName}</div>
+    <div class="right">¥${amount}</div>
   </div>
+  <div class="space-title">请填写银行卡信息</div>
   <div class="space">
-    <div class="list">
-      <div class="left">开户名</div>
-      <div class="val">${bankAccountName}</div>
-      <div class="small">只能使用您名下银行卡</div>
+    <div class="group">
+      <div class="left">持卡人</div>
+      <div class="adaptive text active">${bankAccountName}</div>
+      <div class="i" id="know_channel"></div>
     </div>
-    <div class="list">
-      <div class="left">身份证号</div>
-      <div class="val">${idCard}</div>
+    <div class="group right" id="showChooseBank">
+      <div class="left">银行</div>
+      <div id="chooseBank" class="adaptive text">点击选择发卡银行</div>
     </div>
-  </div>
-  <div class="space">
-    <div class="list">
-      <div class="left">所属银行</div>
-      <input id="chooseBank" class="ipt" type="text" placeholder="点击选择" readonly>
+    <div class="group">
+      <div class="magnifying" id="magnifying"></div>
+      <div class="left">卡号</div>
+      <input id="bankCode" class="adaptive ipt" type="number" placeholder="请输入本人银行卡号" readonly>
+      <div class="del" id="del"></div>
     </div>
-    <div class="list">
-      <div class="left">银行卡号</div>
-      <input id="bankCode" class="ipt" type="number" placeholder="请输入信用卡号" readonly>
-    </div>
-  </div>
-  <div class="space">
-    <div class="list" id="showExpireDate" style="display: none;">
+    <div class="group" id="showExpireDate" style="display: none;">
       <div class="left">有效期</div>
-      <input id="expireDate" class="ipt" type="text" placeholder="请选择信用卡有效期" readonly>
-      <div class="mpt" id="check_validity">查看示例</div>
+      <div id="expireDate" class="adaptive text">请选择月份/年份</div>
+      <div class="i" id="check_validity"></div>
     </div>
-    <div class="list" id="showCvv" style="display: none;">
+    <div class="group" id="showCvv" style="display: none;">
       <div class="left">CVV2</div>
-      <input id="cvv2" class="ipt" type="text" placeholder="信用卡背面最后3个数字">
-      <div class="mpt" id="check_cvv">查看示例</div>
+      <input id="cvv2" class="adaptive ipt" type="text" placeholder="卡背面末三位">
+      <div class="i" id="check_cvv"></div>
     </div>
-    <div class="list">
-      <div class="left">开户手机号</div>
-      <input id="mobile" class="ipt" type="text" placeholder="银行预留手机号">
+    <div class="group">
+      <div class="left">手机号</div>
+      <input id="mobile" class="adaptive ipt" type="text" placeholder="请输入银行预留手机号">
     </div>
-    <div class="list">
-      <div class="left">短信验证码</div>
-      <input id="code" class="ipt" type="text" placeholder="输入短信验证码">
-      <div class="mpt" id="sendCode">点击获取</div>
+    <div class="group">
+      <div class="left">验证码</div>
+      <input id="code" class="adaptive ipt" type="text" placeholder="请输入短信验证码">
+      <div class="btn" id="sendCode">点击获取</div>
     </div>
   </div>
+
+  <div class="security-info"><span class="shield"></span>银行卡号由合作银行及持牌支付机构存储，并采用国际认可的Https金融级数据传输加密方式</div>
+
   <div class="btn-box">
     <div class="btn" id="submit">立即支付</div>
+  </div>
+
+
+  <div class="message-space" id="layer-channel">
+    <div class="message-box">
+      <div class="message-box-head">
+        说明
+        <div class="message-x" id="layer-x-channel"></div>
+      </div>
+      <div class="message-box-body">
+        <div>为了资金安全<br>只能绑定当前持卡人的银行卡</div>
+      </div>
+      <div class="message-box-foot">
+        <div class="message-enter" id="submit-channel">
+          确认
+        </div>
+      </div>
+    </div>
   </div>
   <div class="message-space" id="example_validity">
     <div class="message-box">
@@ -109,6 +120,6 @@
   }
 </script>
 <script src="https://res.wx.qq.com/open/libs/weuijs/1.0.0/weui.min.js"></script>
-<script src="http://static.jinkaimen.cn/vendor/vendor.1.0.9.9.min.js"></script>
-<script src="http://static.jinkaimen.cn/hss/2.2.19/firstUnionPay.min.js"></script>
+<script src="http://static.jinkaimen.cn/vendor/vendor.1.0.9.10.min.js"></script>
+<script src="http://static.jinkaimen.cn/hss/2.2.22/firstUnionPay.min.js"></script>
 </html>

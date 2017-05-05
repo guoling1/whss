@@ -52,7 +52,6 @@ public enum EnumPayChannelSign {
      * 卡盟QQ钱包 km_qqpay_code
      */
     KM_QQPAY(203, "km_qqpay", EnumPaymentChannel.QQPAY, "卡盟QQ钱包", EnumUpperChannel.KAMENG, true, EnumBalanceTimeType.D0, false),
-
     //#################################摩宝#############################################
     /**
      * 摩宝快捷
