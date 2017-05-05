@@ -14,7 +14,7 @@
             <el-col :span="10">
               <div class="grid-content bg-purple-light">
                 <el-radio class="radio" v-model="query.productName" label="好收收">好收收</el-radio>
-                <el-radio class="radio" v-model="query.productName" label="好收银" disabled>好收银</el-radio>
+                <el-radio class="radio" v-model="query.productName" label="好收银">好收银</el-radio>
               </div>
             </el-col>
             <el-col :span="6">
@@ -138,6 +138,11 @@
             cancelButtonText: '取消',
             type: 'info'
           }).then(() => {
+            if(this.query.productName == '好收收'){
+            this.query.productType = 'hss'
+          }else if(this.query.productName == '好收银'){
+            this.query.productType = 'hsy'
+          }
             this.$http.post('/admin/pushNotice/notice',this.query)
               .then(res=>{
                 this.$store.commit('MESSAGE_ACCORD_SHOW', {
@@ -200,10 +205,7 @@
       },
       change(){
         this.query.id = this.$route.query.id;
-        console.log(this.inputContent)
-        console.log(this.outputContent)
         this.query.text = this.outputContent;
-        console.log(this.query.text)
         if(this.inputContent!=''&&this.outputContent==''){
           this.$message({
             type: 'warning',
@@ -220,6 +222,11 @@
               cancelButtonText: '取消',
               type: 'info'
             }).then(() => {
+              if(this.query.productName == '好收收'){
+            this.query.productType = 'hss'
+          }else if(this.query.productName == '好收银'){
+            this.query.productType = 'hsy'
+          }
               this.$http.post('/admin/pushNotice/updateNotice', this.query)
                 .then(res => {
                   this.$store.commit('MESSAGE_ACCORD_SHOW', {
