@@ -4,7 +4,7 @@
     <sql id="Base_Column_List">
         id,start_code,end_code,success_count,fail_count,sys_type,operator_id,platform_type,status,create_time,update_time
     </sql>
-    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+    <insert id="add" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO tb_revoke_qr_code_record
         (
         start_code,
