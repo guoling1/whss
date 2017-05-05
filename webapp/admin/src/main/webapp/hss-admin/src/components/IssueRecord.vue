@@ -89,20 +89,7 @@
       }
     },
     created: function () {
-      this.$http.post('/admin/user/distributeRecord',this.$data.query)
-        .then(function (res) {
-          this.$data.loading = false;
-          this.$data.records   = res.data.records;
-          this.$data.count = res.data.count;
-          this.$data.total = res.data.totalPage;
-        }, function (err) {
-          this.$data.loading = false;
-          this.$message({
-            showClose: true,
-            message: err.statusMessage,
-            type: 'error'
-          })
-        })
+      this.getData();
     },
     methods: {
       reset: function () {
@@ -115,6 +102,27 @@
           firstName:"",
           type:"0"
         };
+      },
+      getData: function () {
+        this.loading = true;
+        this.$http.post('/admin/user/distributeRecord',this.query)
+          .then(function (res) {
+            setTimeout(()=>{
+              this.loading = false;
+              this.$data.records   = res.data.records;
+            },1000)
+            this.$data.count = res.data.count;
+            this.$data.total = res.data.totalPage;
+          }, function (err) {
+            setTimeout(()=>{
+              this.loading = false;
+            },1000)
+            this.$message({
+              showClose: true,
+              message: err.statusMessage,
+              type: 'error'
+            })
+          })
       },
       issue: function () {
         window.open('http://admin.qianbaojiajia.com/admin/details/issue')
@@ -144,46 +152,15 @@
       },
       search(){
         this.$data.query.pageNo = 1;
-        this.$data.loading = true;
-        this.$http.post('/admin/user/distributeRecord',this.$data.query)
-          .then(function (res) {
-            this.$data.loading = false;
-            this.$data.records   = res.data.records;
-            this.$data.count = res.data.count;
-            this.$data.total = res.data.totalPage;
-          }, function (err) {
-            this.$data.loading = false;
-            this.$message({
-              showClose: true,
-              message: err.statusMessage,
-              type: 'error'
-            })
-          })
+        this.getData();
       },
       //当前页改变时
       handleCurrentChange(val) {
         this.$data.query.pageNo = val;
-        this.$data.loading = true;
         this.$data.records = '';
-        this.$http.post('/admin/user/distributeRecord',this.$data.query)
-          .then(function (res) {
-            this.$data.loading = false;
-            this.$data.records   = res.data.records;
-            this.$data.count = res.data.count;
-            this.$data.total = res.data.totalPage;
-          }, function (err) {
-            this.$data.loading = false;
-            this.$message({
-              showClose: true,
-              message: err.statusMessage,
-              type: 'error'
-            })
-          })
+        this.getData();
       },
-    },
-    watch:{
-
-    },
+    }
   }
 </script>
 <style scoped lang="less">

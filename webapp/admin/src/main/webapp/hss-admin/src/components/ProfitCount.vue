@@ -452,17 +452,17 @@
           .then(function (res) {
             setTimeout(()=>{
               this.loading = false;
+              this.recordsCom = res.data.records;
           },1000)
-            this.recordsCom = res.data.records;
             this.countCom = res.data.count;
             this.loadUrlCom = res.data.ext;
             var toFix = function (val) {
               return parseFloat(val).toFixed(2)
             };
             var total=0;
-            for (let i = 0; i < this.$data.recordsCom.length; i++) {
+            for (let i = 0; i < res.data.records.length; i++) {
 //              this.$data.records[i].splitAmount = toFix(this.$data.records[i].splitAmount);
-              total = toFix(parseFloat(total)+parseFloat(this.$data.recordsCom[i].splitAmount))
+              total = toFix(parseFloat(total)+parseFloat(res.data.records[i].splitAmount))
             }
             this.pageTotalCom = total;
           }, function (err) {
@@ -482,17 +482,17 @@
           .then(function (res) {
             setTimeout(()=>{
               this.loading = false;
+              this.recordsFir = res.data.records;
           },1000)
-            this.recordsFir = res.data.records;
             this.countFir = res.data.count;
             this.loadUrlFir = res.data.ext;
             var toFix = function (val) {
               return parseFloat(val).toFixed(2)
             };
             var total=0;
-            for (let i = 0; i < this.$data.recordsFir.length; i++) {
+            for (let i = 0; i < res.data.records.length; i++) {
 //              this.$data.records[i].splitAmount = toFix(this.$data.records[i].splitAmount);
-              total = toFix(parseFloat(total)+parseFloat(this.$data.recordsFir[i].splitAmount))
+              total = toFix(parseFloat(total)+parseFloat(res.data.records[i].splitAmount))
             }
             this.pageTotalFir = total;
           }, function (err) {
@@ -512,17 +512,17 @@
           .then(function (res) {
             setTimeout(()=>{
               this.loading = false;
+              this.recordsSec = res.data.records;
           },1000)
-            this.recordsSec = res.data.records;
             this.countSec = res.data.count;
             this.loadUrlSec = res.data.ext;
             var toFix = function (val) {
               return parseFloat(val).toFixed(2)
             };
             var total=0;
-            for (let i = 0; i < this.$data.recordsSec.length; i++) {
+            for (let i = 0; i < res.data.records.length; i++) {
 //              this.$data.records[i].splitAmount = toFix(this.$data.records[i].splitAmount);
-              total = toFix(parseFloat(total)+parseFloat(this.$data.recordsSec[i].splitAmount))
+              total = toFix(parseFloat(total)+parseFloat(res.data.records[i].splitAmount))
             }
             this.pageTotalSec = total;
           }, function (err) {

@@ -320,8 +320,8 @@
           .then(function (res) {
             setTimeout(()=>{
               this.loading = false;
+              this.$data.records = res.data.list;
           },1000)
-            this.$data.records = res.data.list;
             this.$data.count = res.data.page.totalRecord;
           },function (err) {
             setTimeout(()=>{

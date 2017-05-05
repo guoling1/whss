@@ -315,8 +315,8 @@
             .then(function (res) {
               setTimeout(()=>{
                 this.loading = false;
+                this.$data.records = res.data.records;
               },1000)
-              this.$data.records = res.data.records;
               this.$data.count = res.data.count;
               this.$data.total = res.data.totalPage;
               var changeTime=function (val) {
@@ -336,8 +336,8 @@
                   return year+"-"+tod(month)+"-"+tod(date);
                 }
               }
-              for(let i = 0; i < this.$data.records.length; i++){
-                this.$data.records[i].tradeDate = changeTime(this.$data.records[i].tradeDate)
+              for(let i = 0; i < res.data.records.length; i++){
+                res.data.records[i].tradeDate = changeTime(res.data.records[i].tradeDate)
               }
             },function (err) {
               setTimeout(()=>{

@@ -331,18 +331,18 @@
           .then(function (res) {
             setTimeout(()=>{
               this.loading = false;
+              this.records = res.data.records;
             },1000)
-            this.records = res.data.records;
             this.loadUrl1 = res.data.ext;
             this.count = res.data.count;
             var price=0;
             var toFix = function (val) {
               return parseFloat(val).toFixed(2)
             };
-            for (var i = 0; i < this.records.length; i++) {
-              price = toFix(parseFloat(price)+parseFloat(this.records[i].tradeAmount))
-              if (this.records[i].payRate != null) {
-                this.records[i].payRate = (parseFloat(this.records[i].payRate) * 100).toFixed(2) + '%';
+            for (var i = 0; i < res.data.records.length; i++) {
+              price = toFix(parseFloat(price)+parseFloat(res.data.records[i].tradeAmount))
+              if (res.data.records[i].payRate != null) {
+                res.data.records[i].payRate = (parseFloat(res.data.records[i].payRate) * 100).toFixed(2) + '%';
               }
             }
             this.pageTotal = price;

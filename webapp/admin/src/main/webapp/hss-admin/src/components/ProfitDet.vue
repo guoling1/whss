@@ -191,18 +191,18 @@
           .then(function (res) {
             setTimeout(()=>{
               this.loading = false;
+              this.$data.records = res.data.records;
             },1000)
-            this.$data.records = res.data.records;
             this.$data.count = res.data.count;
             var toFix = function (val) {
               return parseFloat(val).toFixed(2)
             };
             var total=0,price = 0;
-            for (let i = 0; i < this.$data.records.length; i++) {
-              this.$data.records[i].splitTotalAmount = toFix(this.$data.records[i].splitTotalAmount);
-              this.$data.records[i].splitAmount = toFix(this.$data.records[i].splitAmount);
-              total = toFix(parseFloat(total)+parseFloat(this.$data.records[i].splitTotalAmount))
-              price = toFix(parseFloat(price)+parseFloat(this.$data.records[i].splitAmount))
+            for (let i = 0; i < res.data.records.length; i++) {
+              res.data.records[i].splitTotalAmount = toFix(res.data.records[i].splitTotalAmount);
+              res.data.records[i].splitAmount = toFix(res.data.records[i].splitAmount);
+              total = toFix(parseFloat(total)+parseFloat(res.data.records[i].splitTotalAmount))
+              price = toFix(parseFloat(price)+parseFloat(res.data.records[i].splitAmount))
             }
             this.pageTotal = total;
             this.pageTotal1 = price;
